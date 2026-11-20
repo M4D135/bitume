@@ -1,0 +1,341 @@
+{
+  "format": "bitume-requalification-demo-pluie-aerien-v1",
+  "date": "2026-11-20T12:25:57.150Z",
+  "identites": {
+    "commit": "eb30f18dfb30fa79f2c5a3684f3cd876398c0984",
+    "arbre": "e015629469ca27ae5e8af4105c8b2b4a946f79aa",
+    "buildSHA256": "98848efea4b0969805008ba37cba7cab67b11434a9d960173ba77b157fcf8ef7",
+    "version": "V0.2.64",
+    "buildOctets": 14317789,
+    "concordantes": true,
+    "buildVerifieLocalement": "capture-demo-aerien/dist/bitume.html"
+  },
+  "correctif": {
+    "base": "80aa1e2913a93b54daf68bd1c3dc6abb520dc69b",
+    "commit": "649fe5dcf53c1ab36e4b5218f3c4765514f77a10",
+    "fichiers": [
+      "tools/captures-demo.mjs",
+      "verifications/captures-demo.test.mjs"
+    ],
+    "runtimeModifie": false,
+    "buildModifie": false,
+    "versionModifiee": false,
+    "scenarios": 12,
+    "imagesParScenario": 3
+  },
+  "preuveOriginale": {
+    "campagne": "demo-pluie-aerien/files/visuel-demo/rapport.json",
+    "campagneSHA256": "61cbeb4996833cfef4141aa8501f186dab1162a3eaa3666aebaedcb5a63757ee",
+    "rapport": "demo-pluie-aerien/files/visuel-demo/apres/pluie-aerien/rapport.json",
+    "rapportSHA256": "1c05b207e9a6b67185ab147261ee7ccec80afe8030745c5aea4cff22cf15c343",
+    "echecs": 1,
+    "erreurs": [
+      "Overlay humide présent dans la vue aérienne"
+    ],
+    "conserveeIntacte": true
+  },
+  "relecture": {
+    "ancienControle": [
+      "Overlay humide présent dans la vue aérienne"
+    ],
+    "nouveauControle": [],
+    "raison": "Le contrôle précédent exigeait propre et masquee, états internes non exportés par BITUME_JEU.vitres. Le correctif lit la visibilité DOM stricte, actif=false, WebGL2 prêt, pluie effective et cinq compteurs de dépôts courants exactement nuls.",
+    "nouvelleCapture": false,
+    "nouvelleExecutionCI": false
+  },
+  "tests": {
+    "suite": "7 tests réussis, 0 échec",
+    "journal": "correctif-aerien-tests.log",
+    "mutationsSurRapportReel": [
+      {
+        "nom": "DOM visible",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "Visibilité DOM absente",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "Vitrage actif",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "État actif absent",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "eau positif",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "eau non fini",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "eau absent",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "embruns positif",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "embruns non fini",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "embruns absent",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "gouttes positif",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "gouttes non fini",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "gouttes absent",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "accumulationNeige positif",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "accumulationNeige non fini",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "accumulationNeige absent",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "neige positif",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "neige non fini",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "neige absent",
+        "rejete": true,
+        "erreurs": [
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "Diagnostic absent",
+        "rejete": true,
+        "erreurs": [
+          "Diagnostic optique absent ou en erreur",
+          "Overlay humide présent dans la vue aérienne"
+        ]
+      },
+      {
+        "nom": "Repli Canvas2D",
+        "rejete": true,
+        "erreurs": [
+          "Diagnostic optique absent ou en erreur"
+        ]
+      },
+      {
+        "nom": "WebGL2 non prêt",
+        "rejete": true,
+        "erreurs": [
+          "Diagnostic optique absent ou en erreur"
+        ]
+      },
+      {
+        "nom": "Contexte perdu",
+        "rejete": true,
+        "erreurs": [
+          "Diagnostic optique absent ou en erreur"
+        ]
+      },
+      {
+        "nom": "Erreur optique",
+        "rejete": true,
+        "erreurs": [
+          "Diagnostic optique absent ou en erreur"
+        ]
+      },
+      {
+        "nom": "Compteur erreurs positif",
+        "rejete": true,
+        "erreurs": [
+          "Diagnostic optique absent ou en erreur"
+        ]
+      },
+      {
+        "nom": "Liste erreurs non vide",
+        "rejete": true,
+        "erreurs": [
+          "Diagnostic optique absent ou en erreur"
+        ]
+      },
+      {
+        "nom": "Pluie nulle",
+        "rejete": true,
+        "erreurs": [
+          "Pluie demandée non exercée"
+        ]
+      },
+      {
+        "nom": "Pluie absente",
+        "rejete": true,
+        "erreurs": [
+          "Pluie demandée non exercée"
+        ]
+      },
+      {
+        "nom": "Pluie non finie",
+        "rejete": true,
+        "erreurs": [
+          "Pluie demandée non exercée"
+        ]
+      }
+    ]
+  },
+  "couverts": {
+    "chemin": "tools/captures-couverts.mjs",
+    "sha256": "ced7681a9d6dbc1ac0d849b6f17bc049c6e70f3ba132520e99a870c30611b963",
+    "champsPrivesAttendus": false,
+    "controles": "Diagnostic WebGL2, contexte pluie, DOM strict et compteurs eau/embruns/gouttes publics déjà utilisés."
+  },
+  "images": [
+    {
+      "chemin": "demo-pluie-aerien/files/visuel-demo/apres/pluie-aerien/0000.png",
+      "sha256": "f92bb7e15c6919472bb3ee40ce9d06d296ab9341f23f519eb0f6e2b50d9fd15d",
+      "inspecteIndividuellement": true,
+      "verdict": "conforme-sur-ce-plan",
+      "constat": "Voiture rouge et piste lisibles en vue hélicoptère ; traits de pluie dans le monde et panache derrière la voiture, sans gouttes ni lentille de visière superposée.",
+      "observation": {
+        "vue": "helico",
+        "actif": false,
+        "pluie": 1,
+        "vitreVisible": false,
+        "backend": "webgl2",
+        "pret": true,
+        "eau": 0,
+        "embruns": 0,
+        "gouttes": 0,
+        "accumulationNeige": 0,
+        "neige": 0,
+        "champsPrivesAbsents": [
+          "propre",
+          "masquee"
+        ]
+      }
+    },
+    {
+      "chemin": "demo-pluie-aerien/files/visuel-demo/apres/pluie-aerien/0001.png",
+      "sha256": "4fe7aaa6dbb9bef1b5a99403d40a1334fbf6bcdb91e68bf628ec7a22bf5375a2",
+      "inspecteIndividuellement": true,
+      "verdict": "conforme-sur-ce-plan",
+      "constat": "Même cadrage aérien dégagé ; évolution de la pluie et du panache, sans apparition d’overlay de visière.",
+      "observation": {
+        "vue": "helico",
+        "actif": false,
+        "pluie": 1,
+        "vitreVisible": false,
+        "backend": "webgl2",
+        "pret": true,
+        "eau": 0,
+        "embruns": 0,
+        "gouttes": 0,
+        "accumulationNeige": 0,
+        "neige": 0,
+        "champsPrivesAbsents": [
+          "propre",
+          "masquee"
+        ]
+      }
+    },
+    {
+      "chemin": "demo-pluie-aerien/files/visuel-demo/apres/pluie-aerien/0002.png",
+      "sha256": "c360153a2c48271a2ce49511252326e8ee56b7e17fe4b674d96dec9548ad3be7",
+      "inspecteIndividuellement": true,
+      "verdict": "conforme-sur-ce-plan",
+      "constat": "Troisième image aérienne lisible, sans voile ni dépôts de visière ; route et voiture restent dégagées.",
+      "observation": {
+        "vue": "helico",
+        "actif": false,
+        "pluie": 1,
+        "vitreVisible": false,
+        "backend": "webgl2",
+        "pret": true,
+        "eau": 0,
+        "embruns": 0,
+        "gouttes": 0,
+        "accumulationNeige": 0,
+        "neige": 0,
+        "champsPrivesAbsents": [
+          "propre",
+          "masquee"
+        ]
+      }
+    }
+  ],
+  "reserves": [
+    "Requalification des preuves conservées, pas une nouvelle exécution du workflow original, dont l’échec reste inchangé.",
+    "Trois poses à horloge prescrite en raster logiciel : aucun essai de conduite, aucune qualification de FPS matériel ni de transition entre cockpit et vue aérienne.",
+    "Le bandeau de démo couvre une partie du haut de la route ; le revêtement conserve des plages claires et sombres très répétitives, sans défaut de visière identifié."
+  ]
+}

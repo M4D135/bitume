@@ -1,0 +1,1101 @@
+{
+  "branche": "etude/procedural",
+  "dossier": "procedural-etude",
+  "categorie": "etude_documents_et_outils",
+  "etat": "Étude des reliefs et du détail procédural, outils de profil et prototype de relief.",
+  "reserve": "Pas de source runtime src/ dans ce delta ; les outils et intentions restent à adapter aux circuits et à PhysX actuels.",
+  "commit_original": "dad93266dc6c82d6c1b49b86d61274f0c86c5134",
+  "arbre_original": "787e0188c8cac291739b2e3098f908926f433073",
+  "base_commune_reelle": "e96eeafe8f53b1c0761bd083b89d6312e8eda03f",
+  "arbre_base": "32a2474150a0f51c020dff4b21f476929aa47c57",
+  "main_observe": "fd92eec1058f61e6191cc5ce090f5fbbd366e8e9",
+  "delta_total_chemins": 73,
+  "chemins_absents_de_main": [
+    "docs/reprise/22-CIRCUITS-PROCEDURAL.md",
+    "docs/reprise/rapports/procedural-2026-11-18/axes/brume-de-jade.csv",
+    "docs/reprise/rapports/procedural-2026-11-18/axes/cap-sequoia.csv",
+    "docs/reprise/rapports/procedural-2026-11-18/axes/haut-col.csv",
+    "docs/reprise/rapports/procedural-2026-11-18/axes/lande-noire.csv",
+    "docs/reprise/rapports/procedural-2026-11-18/axes/port-sable.csv",
+    "docs/reprise/rapports/procedural-2026-11-18/axes/roche-fauve.csv",
+    "docs/reprise/rapports/procedural-2026-11-18/axes/val-brule.csv",
+    "docs/reprise/rapports/procedural-2026-11-18/captures/planche-brume-de-jade-bord.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/captures/planche-brume-de-jade-cockpit.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/captures/planche-cap-sequoia-bord.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/captures/planche-cap-sequoia-cockpit.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/captures/planche-haut-col-bord.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/captures/planche-haut-col-cockpit.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/captures/planche-lande-noire-bord.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/captures/planche-lande-noire-cockpit.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/captures/planche-port-sable-bord.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/captures/planche-port-sable-cockpit.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/captures/planche-roche-fauve-bord.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/captures/planche-roche-fauve-cockpit.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/captures/planche-val-brule-bord.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/captures/planche-val-brule-cockpit.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/captures/tour.json",
+    "docs/reprise/rapports/procedural-2026-11-18/profils.json",
+    "docs/reprise/rapports/procedural-2026-11-18/profils/brume-de-jade.png",
+    "docs/reprise/rapports/procedural-2026-11-18/profils/brume-de-jade.svg",
+    "docs/reprise/rapports/procedural-2026-11-18/profils/cap-sequoia.png",
+    "docs/reprise/rapports/procedural-2026-11-18/profils/cap-sequoia.svg",
+    "docs/reprise/rapports/procedural-2026-11-18/profils/haut-col.png",
+    "docs/reprise/rapports/procedural-2026-11-18/profils/haut-col.svg",
+    "docs/reprise/rapports/procedural-2026-11-18/profils/lande-noire.png",
+    "docs/reprise/rapports/procedural-2026-11-18/profils/lande-noire.svg",
+    "docs/reprise/rapports/procedural-2026-11-18/profils/port-sable.png",
+    "docs/reprise/rapports/procedural-2026-11-18/profils/port-sable.svg",
+    "docs/reprise/rapports/procedural-2026-11-18/profils/roche-fauve.png",
+    "docs/reprise/rapports/procedural-2026-11-18/profils/roche-fauve.svg",
+    "docs/reprise/rapports/procedural-2026-11-18/profils/sept-circuits.png",
+    "docs/reprise/rapports/procedural-2026-11-18/profils/sept-circuits.svg",
+    "docs/reprise/rapports/procedural-2026-11-18/profils/val-brule.png",
+    "docs/reprise/rapports/procedural-2026-11-18/profils/val-brule.svg",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/brume-de-jade.png",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/brume-de-jade.svg",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/cap-sequoia.png",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/cap-sequoia.svg",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/planche-cap-sequoia-bord-prototype-22a.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/planche-cap-sequoia-cockpit-prototype-22a.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/planche-haut-col-bord-prototype-22a.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/planche-haut-col-cockpit-prototype-22a.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/planche-roche-fauve-bord-prototype-22a.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/planche-roche-fauve-cockpit-prototype-22a.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/planche-val-brule-bord-prototype-22a.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/planche-val-brule-cockpit-prototype-22a.jpg",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/tour-prototype-22a.json",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/haut-col.png",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/haut-col.svg",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/lande-noire.png",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/lande-noire.svg",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/port-sable.png",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/port-sable.svg",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/prototype-22a.json",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/roche-fauve.png",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/roche-fauve.svg",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/sept-circuits-propose.png",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/sept-circuits-propose.svg",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/tableau.md",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/val-brule.png",
+    "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/val-brule.svg",
+    "docs/reprise/rapports/procedural-2026-11-18/tableaux.md",
+    "tools/circuits-commun.mjs",
+    "tools/profil-circuits.mjs",
+    "tools/profil-svg.mjs",
+    "tools/prototype-relief.mjs",
+    "tools/tour-captures.mjs"
+  ],
+  "delta_source": {
+    "fichier": "delta-source.patch",
+    "octets": 586589,
+    "sha256": "bfa4c9275ffa1bba3557d97a2c5e81a5c99b31f8dd1445b45ff0f08fbc76fe2d",
+    "nombre_chemins": 19,
+    "verification": "git apply --check --cached puis application ; arbre, modes et objets identiques sur tous les chemins sélectionnés ; aucun autre chemin modifié",
+    "arbre_apres_application_partielle": "6cc4732e6e9343b572e9eaa71092bcb57e2efafa"
+  },
+  "fichiers": [
+    {
+      "path": "docs/reprise/22-CIRCUITS-PROCEDURAL.md",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "939e31862c39c0e11dfeb573620e02db3ca01bf6",
+        "bytes": 41098
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/axes/brume-de-jade.csv",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "7b21bfb95de6b3d3d688d4a296cd0369d1689622",
+        "bytes": 33792
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/axes/cap-sequoia.csv",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "902d6067bf85c989080277ab472e8da343c28bda",
+        "bytes": 34968
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/axes/haut-col.csv",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "2ab585d4bb4f70a363e99be0f467ce783b1ac0be",
+        "bytes": 35065
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/axes/lande-noire.csv",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "34693dfbcf21b4dc02a13658695f2b873438e2d7",
+        "bytes": 31162
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/axes/port-sable.csv",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "ff625501f7dcd43470510d727e0d36cfb022b837",
+        "bytes": 24460
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/axes/roche-fauve.csv",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "924907219d16e07912d80181b69d0170d1408c0d",
+        "bytes": 32762
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/axes/val-brule.csv",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "e307d0c594a013a4a4a14e2d88887fa5a4d3643e",
+        "bytes": 28166
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/captures/planche-brume-de-jade-bord.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "32d8cc9a1df231eddefb9c7ad516fa2598bad543",
+        "bytes": 176924
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/captures/planche-brume-de-jade-cockpit.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "1a2ea80de28dc49ca335a41a1f8f3dfd032ca482",
+        "bytes": 219702
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/captures/planche-cap-sequoia-bord.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "4024c0999c581fbc6a9ba477de97d06026c9d535",
+        "bytes": 194980
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/captures/planche-cap-sequoia-cockpit.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "b2d4d75fbc9d3c0d61302e23c9b3468fd598f743",
+        "bytes": 241797
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/captures/planche-haut-col-bord.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "917d387062a5fba685a5aa509d7aa7c3fe62cec2",
+        "bytes": 192558
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/captures/planche-haut-col-cockpit.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "f65e82192419b1c2cba7a815ec94d4cd09dbc45c",
+        "bytes": 234584
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/captures/planche-lande-noire-bord.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d496aebe826af0ae92cc46f5a904729ccc4630e5",
+        "bytes": 164646
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/captures/planche-lande-noire-cockpit.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "dacd4b5deee8a6a291537154a737e9bee491d434",
+        "bytes": 201613
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/captures/planche-port-sable-bord.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "a960a99ba5a576e708b2423695a05072d63a1c19",
+        "bytes": 143484
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/captures/planche-port-sable-cockpit.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "194f7bd5fae66433a40b1e74b144b27c99e02f57",
+        "bytes": 175816
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/captures/planche-roche-fauve-bord.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "3895a7d1a6787ba0b9527f7b17032cdd0c1c15a8",
+        "bytes": 182074
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/captures/planche-roche-fauve-cockpit.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "1f38469086e113c2eab9b284ec77b605c17810eb",
+        "bytes": 224381
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/captures/planche-val-brule-bord.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "2a5647c0d3bdae72b06e96336d77c5e573ae9345",
+        "bytes": 153615
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/captures/planche-val-brule-cockpit.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "894065884edd3abd3c1b9fd5fc41a12ab53d2e9c",
+        "bytes": 187993
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/captures/tour.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "985f6dcf92da893ea998c9a06b882adf2abf52d5",
+        "bytes": 47778
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/profils.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d5f94c17fa1f169cd4887ee3be8646d12b69dec7",
+        "bytes": 103273
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/profils/brume-de-jade.png",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0f51f1b2b659919a7c259af1f1e74a8e614f055e",
+        "bytes": 70835
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/profils/brume-de-jade.svg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "5e24da8ed0c588fa11178e3e90526049c2f8e935",
+        "bytes": 72179
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/profils/cap-sequoia.png",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "a600816901ad4fc13c435f3413ddb7b5dfce46e6",
+        "bytes": 71050
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/profils/cap-sequoia.svg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "534efaa7bd9f7902bc9cec3e6c7d1ac1313353cb",
+        "bytes": 74284
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/profils/haut-col.png",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "f3f6dcd747ac35ab4e4069a0b23ee5abae9488c1",
+        "bytes": 74912
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/profils/haut-col.svg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "ee405f13dee792f98d9d5020123df4508c71bfc8",
+        "bytes": 75083
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/profils/lande-noire.png",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "6d459f7b4b6aa974a935285836a90e7501f87e12",
+        "bytes": 71453
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/profils/lande-noire.svg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "acd0c288fab403aae016729e12016f059b069c7c",
+        "bytes": 67209
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/profils/port-sable.png",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d93e7f3fe78777a17514b29a721a2b6f2f633499",
+        "bytes": 72097
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/profils/port-sable.svg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0e71ba923a0fb70850a2ffd4d8afa28e5c440478",
+        "bytes": 54566
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/profils/roche-fauve.png",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "407b3e2c5126cc532d0b36e741412e8e0cb8767d",
+        "bytes": 73277
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/profils/roche-fauve.svg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "8c758e912f87ed75309909295ae5b4e4ff0e77b6",
+        "bytes": 69500
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/profils/sept-circuits.png",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "63f0008973288cebbd14e390f17c1450d4d58b8c",
+        "bytes": 93492
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/profils/sept-circuits.svg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "8790bfe6f16862be3d644ac924bfec722171c59f",
+        "bytes": 115214
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/profils/val-brule.png",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "1fa84807878d9a949e95e56c1a46fb65314850c2",
+        "bytes": 73942
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/profils/val-brule.svg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "27bc8e3d641bd6f7ddc06bae67461aaaa90100f8",
+        "bytes": 62309
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/brume-de-jade.png",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "47b86a330eb4c23432372cdbd2a1fe023ab1667b",
+        "bytes": 90060
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/brume-de-jade.svg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "39526f0f73466c19657151cb8d182889a4e5a3bf",
+        "bytes": 100592
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/cap-sequoia.png",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c04717de2fe59a1f33ac03bd686865dab7917882",
+        "bytes": 89851
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/cap-sequoia.svg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "8e4e76db484c9b5b5bda6d68e90280b387d8fb78",
+        "bytes": 105266
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/planche-cap-sequoia-bord-prototype-22a.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "454f07077706d4c2bcec93c79d6e9a78c11730be",
+        "bytes": 196924
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/planche-cap-sequoia-cockpit-prototype-22a.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "5d75b60ccd5e31cd286cd64bcc8fb46311abb6c0",
+        "bytes": 242119
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/planche-haut-col-bord-prototype-22a.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "676496ab3ac43439c2d78d08f719200c6c25551e",
+        "bytes": 194235
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/planche-haut-col-cockpit-prototype-22a.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "fcdd59e9247bbcdbf9ea4b97e39a082b0b7f4965",
+        "bytes": 236091
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/planche-roche-fauve-bord-prototype-22a.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "7b65b441f9d616beedcc25d4852b77f4c4a859e1",
+        "bytes": 183183
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/planche-roche-fauve-cockpit-prototype-22a.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "2cdb6dd9dfbe7fe830240701ad6609ba5575ac4b",
+        "bytes": 226908
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/planche-val-brule-bord-prototype-22a.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "1dfb2ac75f8e6aa60104b60203cea198c55e85d3",
+        "bytes": 154612
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/planche-val-brule-cockpit-prototype-22a.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c9d7cbe21777405da01856cd6958b8144ab3ca43",
+        "bytes": 190007
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/captures/tour-prototype-22a.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "db997a10c2f89b95656269078ed9860091bf4050",
+        "bytes": 30362
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/haut-col.png",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "cf75336daa0d62243864a0f0787498f9c8cb0671",
+        "bytes": 92355
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/haut-col.svg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d165b08bb6d7f8ae2f376e375b67a355b1bb1332",
+        "bytes": 104984
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/lande-noire.png",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "cc64b86e63eda816dac94d9302657e72e2ee3395",
+        "bytes": 90552
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/lande-noire.svg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "a16b75c6280876d3752c2430d19fbae28ef05174",
+        "bytes": 92974
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/port-sable.png",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "4de7b6a9bd9f7152916a09f93a4e4a79c21fff1d",
+        "bytes": 84940
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/port-sable.svg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c30f95d5568930b317a0bef5c604ee3de4ca2c05",
+        "bytes": 74445
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/prototype-22a.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "3f2a03b0b81db818af850f967b847dd127baa1b9",
+        "bytes": 17939
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/roche-fauve.png",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "350481c3a940b5c301845a527c9d8c503edab6d4",
+        "bytes": 94977
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/roche-fauve.svg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "a8f5295cf26ea069fc0ffbba892b06404cbfd3f8",
+        "bytes": 97839
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/sept-circuits-propose.png",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "ae527cbb1568f581942edbafccad1afb90dd39d4",
+        "bytes": 111239
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/sept-circuits-propose.svg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "ff0df2f338133683c5a74c5a5a367ea3668f009e",
+        "bytes": 120131
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/tableau.md",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c76a004d202d6dae7d3e0c9309d0a4df99b75a8f",
+        "bytes": 2665
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/val-brule.png",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "4ee9dcf7e924157e1961420fc0403aa9bb7f9c3e",
+        "bytes": 101064
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/prototype-22a/val-brule.svg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "046a1cb50c37bb4c15bf7f29bd8651f1ea21c374",
+        "bytes": 86131
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/procedural-2026-11-18/tableaux.md",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "cbe982f85c6dc9f513dc5f6b80ec0bc2378a30b6",
+        "bytes": 14369
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "tools/circuits-commun.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "4158725f9c8d494496d88adb5119e670e1fbf4ce",
+        "bytes": 21773
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "tools/profil-circuits.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "e8f12216c0bea94c35b52e7820470bec29d28d04",
+        "bytes": 11815
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "tools/profil-svg.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "e674ea066dfb886d0a4cca0c64daf98b028afb46",
+        "bytes": 13814
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "tools/prototype-relief.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "5a70661c2b4df7233cb839bf34776500d49068d4",
+        "bytes": 23103
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "tools/tour-captures.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0012dff74b0725969c2c6393582f9832c1170c56",
+        "bytes": 15703
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    }
+  ]
+}

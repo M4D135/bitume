@@ -1,0 +1,1134 @@
+{
+  "branche": "etude/photo",
+  "dossier": "photo-etude",
+  "categorie": "etude_documentaire",
+  "etat": "Étude de lumière, ombres, reflets et paliers graphiques, avec scripts et maquettes dans les rapports.",
+  "reserve": "Aucun module runtime n’est modifié par cette branche. Reprendre les idées utiles via le FERRO canonique, avec mesures et preuves visuelles actuelles.",
+  "commit_original": "53048015dc94621ae24a3a7e251867a1b4fb1e0b",
+  "arbre_original": "d123ae93f66bc89df6374a696ef06a2678b377c2",
+  "base_commune_reelle": "8bd3d86a4b1635ad2dd90c5ae8a585711aa196f8",
+  "arbre_base": "a05c259e26830294e5c2cb05b1a50e0ab84b9fcc",
+  "main_observe": "fd92eec1058f61e6191cc5ce090f5fbbd366e8e9",
+  "delta_total_chemins": 77,
+  "chemins_absents_de_main": [
+    "docs/reprise/21-PHOTOREALISME.md",
+    "docs/reprise/rapports/photo-2026-11-18/README.md",
+    "docs/reprise/rapports/photo-2026-11-18/images/annexe-legere-msaa4.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c0-bord-crepuscule.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c0-bord-hiver.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c0-bord-maquette.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c0-bord-nuit.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c0-bord.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c0-cockpit.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c0-haut.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c0-ombre-arbre.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c0-piste-mouillee.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c0-portique.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c0-voiture-34-crepuscule.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c0-voiture-34.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c0-voiture-arriere-pluie.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c0-voiture-haut.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c1-eau-haut-maquette.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c1-eau-haut.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c1-eau-rivage-maquette.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c1-eau-rivage-nuit.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c1-eau-rivage-pluie.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c1-eau-rivage.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c2-bord-maquette.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c2-bord.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c2-tunnel-dedans.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c2-tunnel-sortie.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c4-voiture-34-maquette.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c4-voiture-34.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c6-falaise-contre-jour-maquette.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c6-falaise-mer-maquette.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c6-falaise-mer.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/images/c6-haut.jpg",
+    "docs/reprise/rapports/photo-2026-11-18/integration.patch",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/ab-maquette-c0-1.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/ab-maquette-c0-2.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/ab-maquette-c0-3.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/ab-maquette-c1eau-1.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/ab-maquette-c1eau-2.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/ab-maquette-c1eau-3.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/ab-origine-c0-1.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/ab-origine-c0-2.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/ab-origine-c0-3.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/ab-origine-c1eau-1.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/ab-origine-c1eau-2.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/ab-origine-c1eau-3.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/controle-charge-1757.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/couts-fine-dpr1.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/couts-fine-pluie.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/couts-fine-soleil-b.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/couts-fine-soleil.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/couts-moyenne-dpr2.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/eclat.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/gpu.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/noir.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/scint-cockpit-high.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/scint-cockpit-medium.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/scint-cockpit-off.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/scint-tele-arbre-high-fige.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/scint-tele-arbre-high-vent.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/scint-tele-arbre-medium-fige.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/scint-tele-arbre-off-fige.json",
+    "docs/reprise/rapports/photo-2026-11-18/mesures/scint-tele-arbre-off-vent.json",
+    "docs/reprise/rapports/photo-2026-11-18/outils/couts-cam.js",
+    "docs/reprise/rapports/photo-2026-11-18/outils/eclat.js",
+    "docs/reprise/rapports/photo-2026-11-18/outils/gpu.js",
+    "docs/reprise/rapports/photo-2026-11-18/outils/lancer.py",
+    "docs/reprise/rapports/photo-2026-11-18/outils/lot1.py",
+    "docs/reprise/rapports/photo-2026-11-18/outils/lot2.py",
+    "docs/reprise/rapports/photo-2026-11-18/outils/lot3.py",
+    "docs/reprise/rapports/photo-2026-11-18/outils/maquette.py",
+    "docs/reprise/rapports/photo-2026-11-18/outils/modele.js",
+    "docs/reprise/rapports/photo-2026-11-18/outils/noir.js",
+    "docs/reprise/rapports/photo-2026-11-18/outils/prendre.py",
+    "docs/reprise/rapports/photo-2026-11-18/outils/scint.sh",
+    "docs/reprise/rapports/photo-2026-11-18/outils/scint2.sh",
+    "docs/reprise/rapports/photo-2026-11-18/outils/scintillement.js"
+  ],
+  "delta_source": {
+    "fichier": "delta-source.patch",
+    "octets": 127580,
+    "sha256": "1847387e17b785fb67c9418c1a302e702fd4ab848142266ed5b4c46f2d2318a8",
+    "nombre_chemins": 46,
+    "verification": "git apply --check --cached puis application ; arbre, modes et objets identiques sur tous les chemins sélectionnés ; aucun autre chemin modifié",
+    "arbre_apres_application_partielle": "b4f5853cd79de61595f09637b9d4451979409696"
+  },
+  "fichiers": [
+    {
+      "path": "docs/reprise/21-PHOTOREALISME.md",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "98877b6cf8de254797227ae0e82f48233e814097",
+        "bytes": 51764
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/README.md",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "24852d97879c86726d25e641338b1ac12215858d",
+        "bytes": 3251
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/annexe-legere-msaa4.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "cfd45696f78418dd00211920527be933bb406c3f",
+        "bytes": 9061
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c0-bord-crepuscule.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "7176dcec598f73388c6fdad5536995501fc09274",
+        "bytes": 45297
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c0-bord-hiver.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "7963d248ac6568e109f0ac602e28d59885e4488c",
+        "bytes": 44900
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c0-bord-maquette.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "7020cd30eec30ab5d7f028852be0bb3e944c82ad",
+        "bytes": 49238
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c0-bord-nuit.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "e075eedcb68384b885fccba610323bbaf8ce19d6",
+        "bytes": 39320
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c0-bord.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "504664728a775fbe6f623379eaa936cb74ff7225",
+        "bytes": 47379
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c0-cockpit.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c42bf5d56a04d496b51b1a25b571a2601050329e",
+        "bytes": 66604
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c0-haut.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "06a7f9ec386c9dd121cc5e2001b4f6008842d82c",
+        "bytes": 61762
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c0-ombre-arbre.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "fe6e9814832f87f2b58ea90de7c27a9678c57827",
+        "bytes": 51257
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c0-piste-mouillee.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "7acb621745d657b5d835dcdc32c922c0b424fe58",
+        "bytes": 36393
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c0-portique.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0b7d4f0f1ab2e084432cd68e5f4d31ec4936c6c3",
+        "bytes": 54467
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c0-voiture-34-crepuscule.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "905a28bc178d6a70992da02520637f1f3971cfb0",
+        "bytes": 62509
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c0-voiture-34.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c3b32633c5a35a4f343dc6c89061ed51e45a4d5c",
+        "bytes": 68384
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c0-voiture-arriere-pluie.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "2f201f8f334a9d29d77f699fbf1b3d4838fd15ba",
+        "bytes": 41212
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c0-voiture-haut.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "eac8e0517eae7deb090cc750a86340c720763639",
+        "bytes": 55504
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c1-eau-haut-maquette.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "47907e79ba16ac97930c5bb508ec01612969c915",
+        "bytes": 49616
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c1-eau-haut.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "a48795cb8fa4bb88283cb070a81669b19830d61e",
+        "bytes": 25720
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c1-eau-rivage-maquette.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "04836a36c5013b5ef1d497253373acc16cdc7ea1",
+        "bytes": 38573
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c1-eau-rivage-nuit.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "3a527fdda45143156ed4b9f342130fc02da7cfcc",
+        "bytes": 25773
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c1-eau-rivage-pluie.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "effc7c571f745cf6b6fb57bcb311eb0d28cabb32",
+        "bytes": 30710
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c1-eau-rivage.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "f792f4c2210a92c8842b5ede52cc241d9decbb59",
+        "bytes": 29219
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c2-bord-maquette.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "4ed726a388d76ce78d2c3715df8dc5bece617a39",
+        "bytes": 42767
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c2-bord.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "1298aac4c046591713f7b451206047469a149aeb",
+        "bytes": 41726
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c2-tunnel-dedans.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "18d7080a9649e7d6d7b83f79705f2ce349d9fb21",
+        "bytes": 52074
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c2-tunnel-sortie.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "f8aec2a616dcf0f15bd9bfd09c555ba7679d55da",
+        "bytes": 32004
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c4-voiture-34-maquette.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "b6325288e711fe062fc49b8d19e3f88074e9de2b",
+        "bytes": 73356
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c4-voiture-34.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "2abdbf835b6794767c33630e78b7c7c12ad04254",
+        "bytes": 74343
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c6-falaise-contre-jour-maquette.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "b60e77d58c0fc1bac23e0120b626dce4ea8192d3",
+        "bytes": 42753
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c6-falaise-mer-maquette.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "837a2b885bfba4eb567436c4340f2b51c5edb886",
+        "bytes": 42584
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c6-falaise-mer.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "6b014a7a84f91be230985b1d5c50dc7043edbc2e",
+        "bytes": 30178
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/images/c6-haut.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "70a9ea4b09d535079fe4ee543b48a1b5bebd3493",
+        "bytes": 43161
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/integration.patch",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "730b42717fbe348cc722ae49cc3be003e27cd416",
+        "bytes": 7058
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/ab-maquette-c0-1.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "4edea2fb74ed27faf66c5dc0baac18df9313aa54",
+        "bytes": 378
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/ab-maquette-c0-2.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "43fb8a10a915e5a292d1fb6f78bdc5d935fda7a8",
+        "bytes": 378
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/ab-maquette-c0-3.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d5c213de7ff8c2747d19024acfa5c2ee878054bc",
+        "bytes": 378
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/ab-maquette-c1eau-1.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "cfd8850825205ffec2d40560dea373ab27bfb83c",
+        "bytes": 375
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/ab-maquette-c1eau-2.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "1550df16725a3be4e756ccd898d38d62fb2cb1b0",
+        "bytes": 370
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/ab-maquette-c1eau-3.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "67bef6760e0d70c9eb2a71d96ec3a1273da2c54b",
+        "bytes": 376
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/ab-origine-c0-1.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "75671bad3d5444d700f971d83146dc0c8b619c44",
+        "bytes": 376
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/ab-origine-c0-2.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "1e69ef4fc28a5d0d85504c756b684e57fe5b7b74",
+        "bytes": 378
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/ab-origine-c0-3.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "2cf4b4fe0bea5016a0f62c81e5b16304dc7d14a7",
+        "bytes": 378
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/ab-origine-c1eau-1.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "29ebbe29dd287bf7754891b6084badd7d67f59e4",
+        "bytes": 377
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/ab-origine-c1eau-2.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0e6fbeba63e425489c5d827b24de54d33f5ae507",
+        "bytes": 377
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/ab-origine-c1eau-3.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "92d78e7eb767125c4bcd0cfdc2d1f921c0813ebd",
+        "bytes": 377
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/controle-charge-1757.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0ab8db63889e2a26508cd9b59e5fa498353ec6ac",
+        "bytes": 736
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/couts-fine-dpr1.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "5259f161c99fddeae8ba75513de93e1d71c27ab4",
+        "bytes": 487
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/couts-fine-pluie.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "68e693615a32a6aecc4c38ec50df3f2c54b63619",
+        "bytes": 611
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/couts-fine-soleil-b.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "136bbde8581252fac176b357bd9e72600c5de8ea",
+        "bytes": 709
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/couts-fine-soleil.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "2914c756fd1f694b9789b72870e73e923051465e",
+        "bytes": 536
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/couts-moyenne-dpr2.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "480563f7308c5ba6ed95ee93e48c67947ff9aafc",
+        "bytes": 488
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/eclat.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "a9ee5ed2d548bba77435b6c948163333b108a67e",
+        "bytes": 270
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/gpu.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "000a962616b3143ca86c6e1b86da6635ed777a5a",
+        "bytes": 350
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/noir.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "1cfc5feb453ee9ca446bc8816eaa84bd820c34b2",
+        "bytes": 489
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/scint-cockpit-high.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "f532aae16fd8a8036c682a3632afc4fead9588c4",
+        "bytes": 549
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/scint-cockpit-medium.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "3c322f19f2a58d89d0837c848166e1e88ac4a871",
+        "bytes": 550
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/scint-cockpit-off.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "ec95d943e1bf0ad68bd0ff6adf38f4d77ca3ef31",
+        "bytes": 545
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/scint-tele-arbre-high-fige.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "4ab972b4769a63016536d6e525f14587822104a9",
+        "bytes": 493
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/scint-tele-arbre-high-vent.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "10cfe394eab93649dfe7ff2ae65d7841f86a7d93",
+        "bytes": 492
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/scint-tele-arbre-medium-fige.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "2c2282a365a1884728e73b7186c1a938e6a6f12b",
+        "bytes": 491
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/scint-tele-arbre-off-fige.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c49be6f94c2158e25820c8bb223d2db800c695fe",
+        "bytes": 486
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/mesures/scint-tele-arbre-off-vent.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "2bbc36a5d29158d9502e8945ba481114bb43fc38",
+        "bytes": 488
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/outils/couts-cam.js",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "ed7f68c0e36e0296f48f5e5b5558ff65539fa4a8",
+        "bytes": 3122
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/outils/eclat.js",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "601306ddc3b8b04e90b0640b9f6fbc85db448815",
+        "bytes": 1861
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/outils/gpu.js",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "6193beed95b75890bad6f2bbbf8b94ff0a37d24b",
+        "bytes": 523
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/outils/lancer.py",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "7ce12c1c2d9e3770a1de157fe2bd50d8e6368063",
+        "bytes": 1195
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/outils/lot1.py",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "b12cb970e283712e6b5667c13ea9aa8d8ba90bbd",
+        "bytes": 803
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/outils/lot2.py",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c14c98386b1a422ddb9b379f156db22a93f69637",
+        "bytes": 1746
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/outils/lot3.py",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "422cb3e6d8af173874aa77598b746868871f5dac",
+        "bytes": 8088
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/outils/maquette.py",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "9c3e5d85e23d89678652977a4d66fd026ea83fcb",
+        "bytes": 4294
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/outils/modele.js",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "ccb5ef76497056851c7a1b4427b661e19439c4ae",
+        "bytes": 2106
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/outils/noir.js",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "08ad3b41d259b137ed5b047aba48a42aac6c75fa",
+        "bytes": 1040
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/outils/prendre.py",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "67f1e685d89b2fc4bdcef0ae29072948768e180a",
+        "bytes": 2267
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/outils/scint.sh",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "468e531ff6f51dc6c1d85ed8ed1167c4e694cb57",
+        "bytes": 573
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/outils/scint2.sh",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "8ad6174f42751bb1534a50b34d301ebec309df3f",
+        "bytes": 1434
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/photo-2026-11-18/outils/scintillement.js",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "526e00284ada9b5deec099861229a8f95a593071",
+        "bytes": 4606
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    }
+  ]
+}

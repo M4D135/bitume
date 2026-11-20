@@ -1,0 +1,21 @@
+{
+  "format": "bitume-archive-ci-verifiee-v1",
+  "run": 44734044312,
+  "job": 136280816060,
+  "artifact": 14627748703,
+  "head": "80aa1e2913a93b54daf68bd1c3dc6abb520dc69b",
+  "checkout": "eb30f18dfb30fa79f2c5a3684f3cd876398c0984",
+  "tree": "e015629469ca27ae5e8af4105c8b2b4a946f79aa",
+  "archiveZipSha256": "b75b98b2ae6068f92df21d265ee6f9185f0be90f8e0a0339296e6a4bc0914ca6",
+  "archiveSourcesSha256": "fc7209a9538ee72e1fc65900db3f8964a060cea215ea73a616172d8a1aafa820",
+  "fichiersSources": 3366,
+  "contenusEtModesExactementIdentiques": true,
+  "buildSha256": "98848efea4b0969805008ba37cba7cab67b11434a9d960173ba77b157fcf8ef7",
+  "buildOctets": 14317789,
+  "resultatCI": "Suites reussies : 151\nSuites en echec : 1",
+  "echecConserve": "pilote-exterieur: allocations sur60000poses; correctif en cours",
+  "environnement": [
+    "v24.22.2",
+    "Python 3.14.4"
+  ]
+}

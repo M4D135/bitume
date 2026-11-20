@@ -1,0 +1,408 @@
+{
+  "branche": "feat/bitume-0263-demos-meteo-20261120",
+  "dossier": "pr37-demos-meteo",
+  "categorie": "historique_supplante_avec_preuves",
+  "etat": "Dernier état de la PR #37, basé sur la livraison antérieure 0.2.65 ; dix reçus historiques sont propres à cette tête.",
+  "reserve": "Conserver runtime, version et build 0.2.66. Le seuil poursuite inférieur à 0,1 et les fixtures acceptant zéro dépôt d’embruns sont supplantés ; les contrôles compatibles et les dix reçus font l’objet d’une réconciliation séparée.",
+  "commit_original": "e12420c7db914fa82d420cbbde75d763dea78668",
+  "arbre_original": "b556ef01a388284a96fd990c6d6f4ad7e51a0093",
+  "base_commune_reelle": "80aa1e2913a93b54daf68bd1c3dc6abb520dc69b",
+  "arbre_base": "e015629469ca27ae5e8af4105c8b2b4a946f79aa",
+  "main_observe": "fd92eec1058f61e6191cc5ce090f5fbbd366e8e9",
+  "delta_total_chemins": 20,
+  "chemins_absents_de_main": [
+    "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/CANDIDAT-0265.json",
+    "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/CI-0264.json",
+    "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/CORRECTION-ALLOCATION-PILOTE.json",
+    "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REQUALIFICATION-AERIEN-0264.json",
+    "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REQUALIFICATION-POURSUITE-0264.json",
+    "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-COCKPIT-0264.json",
+    "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-NATURE-VOLANT-0264.json",
+    "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-PLUIE-GRILLE-SPRAY-0264.json",
+    "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-POURSUITE-TUNNEL-0264.json",
+    "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-SECURITE-GESTES-0264.json"
+  ],
+  "delta_source": null,
+  "fichiers": [
+    {
+      "path": "REPRISE.md",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "660358d2c35aa8c2a2de810af85f7e100c61f643",
+        "bytes": 7953
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "7cac7fde96c7230537c4f8769675989a48d51719",
+        "bytes": 8750
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "66cd716ab1ff00fc743508be6528bc503aa97d83",
+        "bytes": 2769
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "SIZE.json",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "3a703a0b9dbfcccd6fbdbf2aa3df870e0f76e6ef",
+        "bytes": 1896
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "4e71a94639e847fa157d382fcaba36f2b9d55e38",
+        "bytes": 1896
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "4d91050e08798aa7379ad0a7e07652383500a48c",
+        "bytes": 1993
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "VERSION.json",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "1914174787638896631b0a4ab7cf6839d6afbdf1",
+        "bytes": 151
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "aff5ef5761725a14c4709d76b2cbd88e4aee880e",
+        "bytes": 151
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "55a6ac080d337e238039da15064cf1a96f816b4e",
+        "bytes": 151
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "dist/bitume.html",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "19bc08ac29880a0423494bb6e5ac736d187e35d9",
+        "bytes": 14317789
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d291fe32e7b3d0262ecdadc96e0ef74e24bd3c9b",
+        "bytes": 14318056
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d28d859c4d6080420ae55738af1e783657b507c3",
+        "bytes": 14370823
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/DEMOS-PILOTES-METEO-2026-11-20.md",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "e6c2283a90f65486460b9f353c1db73334d637b9",
+        "bytes": 2340
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "345ad42ad0cfde5e08fc8fc993981a3c7eca12b4",
+        "bytes": 3734
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "e6c2283a90f65486460b9f353c1db73334d637b9",
+        "bytes": 2340
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/ETAT.json",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "7058133e84a67bc5c2405318221bcc0ca78a8a7a",
+        "bytes": 14166
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "60b3c79db245620ffe252f5e01039755a45ce62c",
+        "bytes": 15813
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "dc627ad699dad753607e2af2856a6e59e894da5e",
+        "bytes": 16790
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "3bf376d6a050211bf6cb1394a4b42552a98da9f2",
+        "bytes": 2684
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "66118b5f8284e31df434dcf46f1fca5c54bb32e0",
+        "bytes": 3179
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "997d1025bd66c8cd64e747a9ca5ba81eff13f899",
+        "bytes": 10172
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/CANDIDAT-0265.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "bcefa9ca1ddf9c30775154f92fbcb23802a67f1e",
+        "bytes": 1528
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/CI-0264.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "e90d83914a19d88d4a70e71c7ecb63e8c790f7d7",
+        "bytes": 866
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/CORRECTION-ALLOCATION-PILOTE.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d2b6bdd88b6dd33f646032983244eef916cce195",
+        "bytes": 3656
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REQUALIFICATION-AERIEN-0264.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "ddee9be413dc0055e878d3f601c7eee8f5bdd730",
+        "bytes": 9919
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REQUALIFICATION-POURSUITE-0264.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "75d9937ee188b6cf0355ba766dad075e87b876bb",
+        "bytes": 13074
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-COCKPIT-0264.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "bb3ff54dd8c510f60b9e798496397f24384bbcf4",
+        "bytes": 1675
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-NATURE-VOLANT-0264.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "e429a6847e08401d004c8319907400af03a6ec89",
+        "bytes": 16449
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-PLUIE-GRILLE-SPRAY-0264.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "54bc94cf50bdbe9d69e751accd7ee4ff27d60fe9",
+        "bytes": 3733
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-POURSUITE-TUNNEL-0264.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "eea6ea966dadd3063bdecadc6f47660729768166",
+        "bytes": 12764
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-SECURITE-GESTES-0264.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "b5d1efb07626bfab2c5d90a27fd2573ba6828991",
+        "bytes": 23869
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "src/voiture.js",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "40e76fcfa1ef34563945928ab09386244d686f11",
+        "bytes": 149617
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "58f1cb1367e3bb07529a8c894677cf710d763f52",
+        "bytes": 149884
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d99c4dea3be6b3282af6c737bcab8121f6395b9a",
+        "bytes": 149865
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "tools/captures-demo.mjs",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "aaca125a10b0b9f2c82b77a022fd112c9f951044",
+        "bytes": 16865
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "3217e38a46f5c40680a98d965044097e7b43399c",
+        "bytes": 18338
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "36fc60ab0b406b03446e493d0105f8b4a9acc518",
+        "bytes": 17078
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "verifications/captures-demo.test.mjs",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0191f42470cd789a2b76422285f6b84c94cf1c91",
+        "bytes": 7923
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "b8a6c144466d1da7e52c66e2e95bfafb1255b781",
+        "bytes": 12438
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d876edcf98a561b2fc4b1fc1df65b7d1cfeb68e8",
+        "bytes": 8165
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    }
+  ]
+}

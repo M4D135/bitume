@@ -1,0 +1,609 @@
+{
+  "branche": "spark/conduite",
+  "dossier": "spark-conduite",
+  "categorie": "historique_a_adapter_p15",
+  "etat": "Prototypes prolongés de conduite et de pneus, sur la base physique historique.",
+  "reserve": "Ne pas remplacer PhysX p15, ses fixtures ou la course actuelle. Reprendre les critères et les intentions séparément après revue et mesures.",
+  "commit_original": "0b6b9f9804aea890e2bc8d7b61df532315683a54",
+  "arbre_original": "b22aa722c4857c8b592a19c7d4728e679a182a4a",
+  "base_commune_reelle": "09b6f23b15150546a3d2662f3909d6cc60a63aa5",
+  "arbre_base": "e60f936cb3b9b847353b592415d3d1f0ba115437",
+  "main_observe": "fd92eec1058f61e6191cc5ce090f5fbbd366e8e9",
+  "delta_total_chemins": 37,
+  "chemins_absents_de_main": [
+    "docs/reprise/17-CONDUITE.md",
+    "docs/reprise/rapports/conduite-2026-11-18/17A-OUTILLAGE.md",
+    "docs/reprise/rapports/conduite-2026-11-18/17B-CHASSIS-PNEUS.md",
+    "docs/reprise/rapports/conduite-2026-11-18/BANC-BASE.md",
+    "docs/reprise/rapports/conduite-2026-11-18/MODELE.md",
+    "docs/reprise/rapports/conduite-2026-11-18/RECHERCHE.md",
+    "docs/reprise/rapports/conduite-2026-11-18/banc-base.json",
+    "docs/reprise/rapports/conduite-2026-11-18/etude-17/etude-criteres.sh",
+    "docs/reprise/rapports/conduite-2026-11-18/etude-17/etude-lacet.mjs",
+    "docs/reprise/rapports/conduite-2026-11-18/etude-17/etude-ligne.mjs",
+    "docs/reprise/rapports/conduite-2026-11-18/etude-17/etude-regime.mjs",
+    "docs/reprise/rapports/conduite-2026-11-18/etude-17/longitudinal.mjs",
+    "docs/reprise/rapports/conduite-2026-11-18/etude-17/regime-etabli.mjs",
+    "docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/criteres.txt",
+    "docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/lacet.json",
+    "docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/lacet.txt",
+    "docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/ligne.json",
+    "docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/ligne.txt",
+    "docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/regime.json",
+    "docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/regime.txt",
+    "src/pneu.js",
+    "tools/banc-conduite.mjs",
+    "tools/cout-pas.mjs",
+    "verifications/banc-conduite.test.mjs",
+    "verifications/conduite-17g.test.mjs",
+    "verifications/conduite-p10.test.mjs",
+    "verifications/conduite-relief.test.mjs",
+    "verifications/etude-conduite-17.test.mjs",
+    "verifications/pneu.test.mjs"
+  ],
+  "delta_source": {
+    "fichier": "delta-source.patch",
+    "octets": 836276,
+    "sha256": "e05242aebd9e953de1b5b7b4e695f4de7b545929bb8c8c61ab3f3df1b28ae664",
+    "nombre_chemins": 33,
+    "verification": "git apply --check --cached puis application ; arbre, modes et objets identiques sur tous les chemins sélectionnés ; aucun autre chemin modifié",
+    "arbre_apres_application_partielle": "95b048045abf0e362e1ecd0b3b66a9e4c192abf8"
+  },
+  "fichiers": [
+    {
+      "path": "construire.py",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c7cdd2d92bc19aa52d2deae20c6980a1e1c5f14d",
+        "bytes": 7650
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "84e4535ece39520886d86c225b1f991425a2c688",
+        "bytes": 7739
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "2cc9a552a300bbe97f279e578db5ddd351d0c82d",
+        "bytes": 9102
+      },
+      "relation_to_main": "different",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/17-CONDUITE.md",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d7615bf4db088af86f35884695963e99bfce9610",
+        "bytes": 48388
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/17A-OUTILLAGE.md",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d5973216dad1656967212f64c4673fd6db4cb92c",
+        "bytes": 6004
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/17B-CHASSIS-PNEUS.md",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "6042ec56dbb5b644867f35d6a72c73b467b127eb",
+        "bytes": 14189
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/BANC-BASE.md",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c6918568cf692583843eea9b77d0eb6811efee05",
+        "bytes": 26016
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/MODELE.md",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0a5d3e76678497c5b77c18388070f87eaa58ec9f",
+        "bytes": 40307
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/RECHERCHE.md",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0d10c86a60722c5a06c4840f30b82d6560303908",
+        "bytes": 26123
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/banc-base.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "a670a34bf0ffb07d97b686677413277a5cc4a0df",
+        "bytes": 129478
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/etude-17/etude-criteres.sh",
+      "base": null,
+      "head": {
+        "mode": "100755",
+        "type": "blob",
+        "sha": "a33d3073e9dcad0768ef4efe912bbcfdf8233edb",
+        "bytes": 1693
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/etude-17/etude-lacet.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "8ee09491072595ad9c22971ede5525f01cf1e8ef",
+        "bytes": 3641
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/etude-17/etude-ligne.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "8f3d7f4bf5c0b0a8c1b891a5e40f872f779a27cb",
+        "bytes": 6577
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/etude-17/etude-regime.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "115696431b5ebac9e6666e94510b5de98b03e776",
+        "bytes": 3106
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/etude-17/longitudinal.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "a8cd6af8bc1d153f7dddced7c2e21cfa808fbc7b",
+        "bytes": 6864
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/etude-17/regime-etabli.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "7b0c922c48a8ae8d204ee7efdce908a05d08ad7e",
+        "bytes": 3743
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/criteres.txt",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "93db883a256cd225a1388804a3a006ed505c167e",
+        "bytes": 19739
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "journal_historique"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/lacet.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "cc5dea1759e2c24b9b4e87e0ab60a992b9472bdd",
+        "bytes": 29071
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/lacet.txt",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "a11a33819433b4e037f6b828d5cc585fa04df055",
+        "bytes": 6481
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "journal_historique"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/ligne.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "48ab61be0b159b346802bd9218dd1ad2cf21bbce",
+        "bytes": 23853
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/ligne.txt",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "647b955609d27db6da1eb28bd50aebd55652e078",
+        "bytes": 7476
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "journal_historique"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/regime.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "509aeff468a2aae99c4b4db5f52ca46cfffcffba",
+        "bytes": 19662
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/conduite-2026-11-18/etude-17/resultats/regime.txt",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "12021ac0dcd6ebadd23a78a844ebee4c7881b37b",
+        "bytes": 4653
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "journal_historique"
+    },
+    {
+      "path": "src/conduite.js",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "04f950912ea6e0127f1855f9ef368ed7bccd983d",
+        "bytes": 47046
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "f3e391c92abff1e82eb5404cd33fca55a50b2c56",
+        "bytes": 61490
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "4e3e1254699cfb5958f8bef81787f9215b00c0d3",
+        "bytes": 54135
+      },
+      "relation_to_main": "different",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "src/course.js",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "50955fc4cbf1f175ac7a6e09eac63c634584226b",
+        "bytes": 50955
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "18744db7b0ce3a6cb9a30bc7e6dece3bf4b814e6",
+        "bytes": 51314
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d0d6a55395c4dfa30894b591e4c273d48e0d6255",
+        "bytes": 59184
+      },
+      "relation_to_main": "different",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "src/pneu.js",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "27d29b031075e785cf7218ab66d678407b18f430",
+        "bytes": 6159
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "tools/banc-conduite.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "7ed866ceec24eb11bfde4afcaa71f9685503e4b5",
+        "bytes": 104332
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "tools/cout-pas.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "2a3ddbf73e0f4666f14712eaaca9991dff7fe718",
+        "bytes": 4467
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "verifications/banc-conduite.test.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "06d7c70d779f8e11e26c20a7f9bbd5c077f4ec9a",
+        "bytes": 3899
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "verifications/conduite-17g.test.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "f957b0f4481f20fad5954414d4f9776ca6261ea1",
+        "bytes": 230
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "verifications/conduite-criteres.test.mjs",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "f433eb0e02f4a005b623a1bda00e354b43898eb0",
+        "bytes": 22065
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c3a31134b6163de5a1306ec59749923bb0715433",
+        "bytes": 22541
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "6199bd8fea1de3024a4a01bad8ee9a31a1eaeb22",
+        "bytes": 22123
+      },
+      "relation_to_main": "different",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "verifications/conduite-p10.test.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "8127fab21d625e5b8c70fc6458cbdf050068f96c",
+        "bytes": 21598
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "verifications/conduite-relief.test.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "6dccece51dfab55857612b1520701c2a0349f0a6",
+        "bytes": 12601
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "verifications/determinisme-simulation.test.mjs",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "a02a14d1d2b34d15824fadbca32ca3a4fefde23e",
+        "bytes": 27999
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "75ffa07722f20ba5f4696f6604e713b1235f940a",
+        "bytes": 28421
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "5de7e177b58ef1950aea1e905f6d497d379c16c7",
+        "bytes": 38169
+      },
+      "relation_to_main": "different",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "verifications/etude-conduite-17.test.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "b61802f7c013b43766d36412d4ddf57bd0abaef9",
+        "bytes": 4224
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "verifications/fixtures/determinisme-p10.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "656857fd3cf938cab9ad154bfa0bdedbf82cabf9",
+        "bytes": 104887
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "955817799bf96703f50802e2a611f08ed7620b25",
+        "bytes": 110282
+      },
+      "relation_to_main": "different",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "verifications/fixtures/determinisme-p9.json",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c8404914f9c4670d2ede9c986238e5b8813a1bac",
+        "bytes": 104873
+      },
+      "head": null,
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c8404914f9c4670d2ede9c986238e5b8813a1bac",
+        "bytes": 104873
+      },
+      "relation_to_main": "different",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "verifications/pneu.test.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "35e45b3aaea11a7f18041e6c22d53b9e6c23bbc5",
+        "bytes": 8676
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "verifications/voiture-identite.test.mjs",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "9d45dd92c6873e2c062378b99c8d0da4188254e2",
+        "bytes": 14628
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "a60d0375b6f254cc6d2b05db1bb3d8923f339a7a",
+        "bytes": 14766
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "81533164025f746d57956f5374252613613b8b6f",
+        "bytes": 14707
+      },
+      "relation_to_main": "different",
+      "preservation": "delta-source.patch"
+    }
+  ]
+}

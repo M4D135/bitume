@@ -1,0 +1,398 @@
+{
+  "branche": "etude/enligne",
+  "dossier": "enligne-etude",
+  "categorie": "prototype_a_reprendre",
+  "etat": "Étude et prototype de mise en relation pair à pair, relais et signalisation.",
+  "reserve": "Porter sur le réseau actuel et vérifier plusieurs réseaux réels. Conserver le salon existant tant que son remplacement n’est pas qualifié.",
+  "commit_original": "654e75e684a0b5335035bb7d1f776d1d6ebe9d10",
+  "arbre_original": "1d3a70f0b2efefbd1bf94f49d95b93833eb5f525",
+  "base_commune_reelle": "7033ced25c3265e961003aabcfb4a52e701e90fe",
+  "arbre_base": "0e2c9669f7dd8088dfccb44c7a822da7e759d4e1",
+  "main_observe": "fd92eec1058f61e6191cc5ce090f5fbbd366e8e9",
+  "delta_total_chemins": 26,
+  "chemins_absents_de_main": [
+    "docs/reprise/27-EN-LIGNE-SANS-SERVEUR.md",
+    "docs/reprise/rapports/enligne-2026-11-18/essai-code-2.json",
+    "docs/reprise/rapports/enligne-2026-11-18/essai-code-3.json",
+    "docs/reprise/rapports/enligne-2026-11-18/essai-code-mqtt.json",
+    "docs/reprise/rapports/enligne-2026-11-18/essai-code-nostr.json",
+    "docs/reprise/rapports/enligne-2026-11-18/essai-code-torrent.json",
+    "docs/reprise/rapports/enligne-2026-11-18/essai-main-2.json",
+    "docs/reprise/rapports/enligne-2026-11-18/essai-main-3.json",
+    "docs/reprise/rapports/enligne-2026-11-18/essai-par-invite-3.json",
+    "docs/reprise/rapports/enligne-2026-11-18/essai-sans-internet-3.json",
+    "docs/reprise/rapports/enligne-2026-11-18/essai-tiers-3.json",
+    "docs/reprise/rapports/enligne-2026-11-18/final-code-2.json",
+    "docs/reprise/rapports/enligne-2026-11-18/final-code-3.json",
+    "docs/reprise/rapports/enligne-2026-11-18/final-main-3.json",
+    "docs/reprise/rapports/enligne-2026-11-18/final-par-invite-3-sous-charge.json",
+    "docs/reprise/rapports/enligne-2026-11-18/final-par-invite-3.json",
+    "docs/reprise/rapports/enligne-2026-11-18/final-sans-internet-3.json",
+    "docs/reprise/rapports/enligne-2026-11-18/final-tiers-3.json",
+    "docs/reprise/rapports/enligne-2026-11-18/integration.patch",
+    "docs/reprise/rapports/enligne-2026-11-18/relais-depuis-chrome.json",
+    "tools/essai-enligne.mjs",
+    "verifications/outils-reseau.mjs",
+    "verifications/reseau-maillage.test.mjs",
+    "verifications/reseau-relais.test.mjs",
+    "verifications/reseau-signalisation.test.mjs"
+  ],
+  "delta_source": {
+    "fichier": "delta-source.patch",
+    "octets": 536554,
+    "sha256": "c2300e32dd0f76ced17544bf1f39f0836edbe3acb454bdcccb92cfa79a294e5c",
+    "nombre_chemins": 26,
+    "verification": "git apply --check --cached puis application ; arbre, modes et objets identiques sur tous les chemins sélectionnés ; aucun autre chemin modifié",
+    "arbre_apres_application_partielle": "1d3a70f0b2efefbd1bf94f49d95b93833eb5f525"
+  },
+  "fichiers": [
+    {
+      "path": "docs/reprise/27-EN-LIGNE-SANS-SERVEUR.md",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "63ccc0932ead1532d270074fbc49c74ac6cc8da2",
+        "bytes": 36327
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/essai-code-2.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "ebaadac9827f00d5f48030b7d2c3fc19e9d0e882",
+        "bytes": 9439
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/essai-code-3.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "e233dea031112897683043019fea2c0eb3a7e6fe",
+        "bytes": 14702
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/essai-code-mqtt.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0ea0e8b36c1c5219ae5ced824606458d8e9bc02c",
+        "bytes": 3272
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/essai-code-nostr.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "331a96a0233a525f2860ffaf3cbe1ba2e648368b",
+        "bytes": 3217
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/essai-code-torrent.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "454e8c117303306774088304924cd7d471a41f5f",
+        "bytes": 3286
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/essai-main-2.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "01202533c2e60a9925de0f16904fb5db5310a6e6",
+        "bytes": 10104
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/essai-main-3.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "13cc1abf8f0a00c1b208e38236b90c82658638b7",
+        "bytes": 15941
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/essai-par-invite-3.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "208fb2cbb39c1d6e923de0221158986933389234",
+        "bytes": 16798
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/essai-sans-internet-3.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c08f1bb9f4b579c1d2fa629254734322e854a893",
+        "bytes": 22618
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/essai-tiers-3.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "8ab155c17489dca2ee6c67aa9ee5067d2ae449b1",
+        "bytes": 16742
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/final-code-2.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "357feee20703d3eae9398b6ea34fc215557aa95c",
+        "bytes": 10428
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/final-code-3.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "db0598a4978b6498911f50afa67e1fc79d0400ff",
+        "bytes": 16785
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/final-main-3.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "87ee0d01f62854c4ca449953cebc6c79dcf426f0",
+        "bytes": 16078
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/final-par-invite-3-sous-charge.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "8f15be6a3dbcde4bb32c1f38d9cc2b7caeb3c338",
+        "bytes": 16779
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/final-par-invite-3.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "40364f6973b5878068b2d79bdb9655e580f00943",
+        "bytes": 16804
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/final-sans-internet-3.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "76648aed24135d3b96b925c42f73df1ad091b9e9",
+        "bytes": 23483
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/final-tiers-3.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c766944dd09c871120c890fb6d47e4285b60908e",
+        "bytes": 16788
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/integration.patch",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "4389bc1c0eb27c8d81d8261678f064b1e034ee46",
+        "bytes": 30349
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/enligne-2026-11-18/relais-depuis-chrome.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "708df75dbce7eacede1b0a1ce57ab5700c273cac",
+        "bytes": 2698
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "src/reseau.js",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "62f4f5ded309ab953020ab7ddbcb8b7c5ebc3577",
+        "bytes": 15157
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "bdbae0a722739d3e62f95fb9de1c85efb04b1b89",
+        "bytes": 94310
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "de9d3dbb6d84eb0b169a8e6c0de3f33cee299f1c",
+        "bytes": 19415
+      },
+      "relation_to_main": "different",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "tools/essai-enligne.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "5aee487baf19e7a10ab868209c93ea4faa19155f",
+        "bytes": 27785
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "verifications/outils-reseau.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "aedb908b65ae009bd69087ea2e079c44206f3708",
+        "bytes": 12327
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "verifications/reseau-maillage.test.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "99c084b3568444ecfc58a1ce3719a295c3a1afa4",
+        "bytes": 18740
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "verifications/reseau-relais.test.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "a6e0e5acf9ee443d6c8a3d474ff9f530fb2c1c0d",
+        "bytes": 33009
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "verifications/reseau-signalisation.test.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "8d14557a583f7a9e5f01d03d409df34acd3834ca",
+        "bytes": 12452
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    }
+  ]
+}

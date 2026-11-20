@@ -1,0 +1,390 @@
+{
+  "branche": "backup/demos-pilotes-20261120",
+  "dossier": "demos-pilotes",
+  "categorie": "historique_supplante",
+  "etat": "Premier checkpoint des démos et du pilote ; les versions livrées 0.2.66 le remplacent.",
+  "reserve": "Conserver la réalisation et les articulations qualifiées de main. Cette sauvegarde ne constitue pas un candidat à réactiver.",
+  "commit_original": "9d6c47a952422d8ee4a392c06ea66a56d38c589c",
+  "arbre_original": "53d99b8e57fef3ccbc2d8d6d396daff8d6b47522",
+  "base_commune_reelle": "f41614e1f3887a79ebbd633df3fde754534f202e",
+  "arbre_base": "06cd776ea3806211a7951f32cca38b82ff05b120",
+  "main_observe": "fd92eec1058f61e6191cc5ce090f5fbbd366e8e9",
+  "delta_total_chemins": 17,
+  "chemins_absents_de_main": [],
+  "delta_source": null,
+  "fichiers": [
+    {
+      "path": ".github/workflows/visuel-demo.yml",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "e1c43ffdf7a6c41418c9285f3f8361cecbc07c57",
+        "bytes": 3018
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "e0822a5a4ee72ec471b5dc40e6021ca2d3f66e1c",
+        "bytes": 3065
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "src/cinema.js",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "b8496a63643fd12afa79f1a2f1e6974a871531a2",
+        "bytes": 14422
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "77c246b244a3a26aa132d4429bc036459b5d7a49",
+        "bytes": 26126
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "e0071c5a136c7dc6533e15a4463c44126c355e1c",
+        "bytes": 26128
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "src/decor.js",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "5242ffa800da8f62c0127bca516d03933eef2ce6",
+        "bytes": 124952
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d2ffe001e5d3fdcc2e95b0269e1b3198877e2fb5",
+        "bytes": 125324
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "9e90771c4d041d1435eeb0d1e2463799ba467b49",
+        "bytes": 131695
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "src/expressions-pilote.js",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "50d48d6b3cb6601df47a0927b8eb3b0b3538d786",
+        "bytes": 11326
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "efe8608854883fb7a7b7906e7bdd0bc22e9eb4c8",
+        "bytes": 12096
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "src/main.js",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "f480e11362a728df9f108743a1d6a19d3fbf81eb",
+        "bytes": 8258
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0b0f046de3f0cc5015d6939f398b2b7017fd116f",
+        "bytes": 10077
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "82f8658dca9586c5fe9fd0263a25163d4a381e2b",
+        "bytes": 10333
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "src/realisateur.js",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "578f587ff389f35c572075e7a09eeeb91af41b54",
+        "bytes": 12939
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "b8ce3bd1d5c11f55c377b635c713c0dbcfc502d4",
+        "bytes": 13904
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "b8ce3bd1d5c11f55c377b635c713c0dbcfc502d4",
+        "bytes": 13904
+      },
+      "relation_to_main": "identical",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "src/voiture.js",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "dce0de88e3f8eb7f4b8a39a6063fd25f6c785e87",
+        "bytes": 140720
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "feae02cfb2239852a3ab3f2feec20c18651f1313",
+        "bytes": 149236
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d99c4dea3be6b3282af6c737bcab8121f6395b9a",
+        "bytes": 149865
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "tools/captures-demo.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "aaca125a10b0b9f2c82b77a022fd112c9f951044",
+        "bytes": 16865
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "36fc60ab0b406b03446e493d0105f8b4a9acc518",
+        "bytes": 17078
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "verifications/captures-demo.test.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0191f42470cd789a2b76422285f6b84c94cf1c91",
+        "bytes": 7923
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d876edcf98a561b2fc4b1fc1df65b7d1cfeb68e8",
+        "bytes": 8165
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "verifications/cinema-raccords.test.mjs",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d48c2e92d71a93d6fbc23454c2b6528442fa05ee",
+        "bytes": 7932
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "4625a9d205b3b54e0f1b2f99dac4425bce5e7fc4",
+        "bytes": 9237
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "4625a9d205b3b54e0f1b2f99dac4425bce5e7fc4",
+        "bytes": 9237
+      },
+      "relation_to_main": "identical",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "verifications/cinema-trajectoires.test.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "9e301921c081b220e3b205748387da1b6494727a",
+        "bytes": 14394
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "9e301921c081b220e3b205748387da1b6494727a",
+        "bytes": 14394
+      },
+      "relation_to_main": "identical",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "verifications/commandes-partage.test.mjs",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "112e3ff0b46c49f6c5e4ae061a01d7cf6d557bf2",
+        "bytes": 19689
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0216ebcb8369550780a8c1b8ab19e21a4030199e",
+        "bytes": 21462
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0216ebcb8369550780a8c1b8ab19e21a4030199e",
+        "bytes": 21462
+      },
+      "relation_to_main": "identical",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "verifications/expressions-pilote.test.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "eb5d2664d81a431233160138b675a2e5a9fc46fd",
+        "bytes": 11685
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "eb5d2664d81a431233160138b675a2e5a9fc46fd",
+        "bytes": 11685
+      },
+      "relation_to_main": "identical",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "verifications/pilote-expressions.test.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "a043cd57aa7a2a29ecd7bf1182a5c11ae43baf23",
+        "bytes": 8163
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "ebaae352eb38687fbddfb0498f38c190ea6993a7",
+        "bytes": 8464
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "verifications/pilote-habitacle.test.mjs",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "becc3c10ced62dcbc380d084d117c62d8a4d50dc",
+        "bytes": 18855
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "462ee789252e5aaacfa72adf47009b58dd850d61",
+        "bytes": 22959
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "671078dec9be2c93cce2196da950a3e92f0c6961",
+        "bytes": 27661
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "verifications/realisateur.test.mjs",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "9cc8244e9f357ad4b0e77565d5f2a5a613f2aaf2",
+        "bytes": 6780
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "3b12189cf26b4fe8f71997f33858c6f2bcee231a",
+        "bytes": 8188
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "3b12189cf26b4fe8f71997f33858c6f2bcee231a",
+        "bytes": 8188
+      },
+      "relation_to_main": "identical",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "verifications/sols-proceduraux.test.mjs",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d1c0698e11ed8f09ccb969e265518cbe81f5cdef",
+        "bytes": 8796
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "b4dcb9192b229443ef899ba2391792d0ee44b863",
+        "bytes": 10550
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "9b5e91c389c239fd4642ec3e37d36a4fd647fb20",
+        "bytes": 10593
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    }
+  ]
+}

@@ -166,15 +166,25 @@ export function verifierRapport(r, s, candidat = true) {
     if (s.realisation && o.plan?.motif !== 'expression') erreurs.push('Le réalisateur n’a pas cadré le geste');
     if (s.pluie) {
       const v = o.vitres?.j1;
-      if (!v || v.erreur || v.perdu || v.erreurs?.length || typeof v.erreurs === 'number' && v.erreurs > 0) erreurs.push('Diagnostic optique absent ou en erreur');
+      if (!v || v.backend !== 'webgl2' || v.pret !== true || v.erreur || v.perdu || v.erreurs?.length || typeof v.erreurs === 'number' && v.erreurs > 0) erreurs.push('Diagnostic optique absent ou en erreur');
+      if (!Number.isFinite(o.vitrage?.pluie) || !(o.vitrage.pluie > 0)) erreurs.push('Pluie demandée non exercée');
       if (s.aerien) {
         // Le diagnostic WebGL expose les dépôts ; propre/masquee appartiennent seulement à l'état
         // interne du repli Canvas. Vérifier les vrais pixels composés via la visibilité du DOM.
         if (o.vitrage?.actif !== false || o.vitreVisible !== false ||
             !['eau', 'accumulationNeige', 'embruns', 'gouttes', 'neige'].every(k => v?.[k] === 0)) erreurs.push('Overlay humide présent dans la vue aérienne');
       } else {
-        if (!(o.vitrage?.actif && o.vitrage.embruns > .6 && v?.eau > 0 && v?.gouttes > 0 && v?.depotsEmbruns > 0 && v?.expulses > 0)) erreurs.push('Fort sillage ou évacuation des gouttes non exercés');
-        if (o.sillage?.sources?.length !== 1 || o.sillage.sources[0].id !== o.sillage.rival || !(o.sillage.casque > .6)) erreurs.push('Le sillage d’un seul rival n’est pas prouvé');
+        const spray = o.sillage;
+        if (!Number.isInteger(spray?.rival) || spray.rival === o.plan?.sujet || !Array.isArray(spray.sources) || spray.sources.length !== 1 ||
+          spray.sources[0]?.id !== spray.rival || !Number.isFinite(spray.casque) || !(spray.casque > .6 && spray.casque <= 1) ||
+          !Number.isFinite(spray.sources[0]?.exposition) || !(Math.abs(spray.sources[0].exposition - spray.casque) < 1e-6)) erreurs.push('Le sillage d’un seul rival n’est pas prouvé');
+        if (!(o.vitrage?.actif === true && o.vitreVisible === true && Number.isFinite(o.vitrage.embruns) && o.vitrage.embruns > .6 && o.vitrage.embruns <= 1 &&
+          ['eau','gouttes','depotsEmbruns','expulses'].every(k => Number.isFinite(v?.[k]) && v[k] > 0))) erreurs.push('Fort sillage ou évacuation des gouttes non exercés');
+        // La poursuite actuelle reçoit un fort panache. Mesurer sa vraie lentille reste nécessaire :
+        // les données du casque ne prouvent pas que les projections atteignent les pixels de cette vue.
+        if (!(Number.isFinite(spray?.lentille) && spray.lentille > .6 && spray.lentille <= 1 &&
+          Number.isFinite(o.vitrage?.embruns) && Math.abs(o.vitrage.embruns - spray.lentille) < 1e-6 &&
+          Number.isFinite(v?.embruns) && Math.abs(v.embruns - spray.lentille) < 1e-6)) erreurs.push('Exposition réelle de la lentille incohérente');
       }
     }
   }

@@ -1,0 +1,262 @@
+{
+  "format": "bitume-reconciliation-pr37-v1",
+  "date": "2026-11-20",
+  "origin": {
+    "pr": 37,
+    "head": "e12420c7db914fa82d420cbbde75d763dea78668",
+    "base_retained": "fd92eec1058f61e6191cc5ce090f5fbbd366e8e9"
+  },
+  "scope": "Contrôles de capture et reçus historiques uniquement ; aucun changement du runtime, du build ou de la version.",
+  "retained": [
+    "Diagnostic WebGL2 prêt et sans erreur, pluie réellement exercée.",
+    "Un seul rival distinct du sujet, exposition de source cohérente.",
+    "Lentille calculée à cam.pos, cohérente avec contexte et statistiques optiques.",
+    "Tests négatifs et contrôle du vrai observateur ; aérien sans overlay courant."
+  ],
+  "rejected": [
+    "Ancien seuil poursuite <0,1 et fixture à0,05 : remplacés sur main par un fort panache >0,6.",
+    "Ancien correctif voiture avec ternaire résiduel : main conserve ses branches numériques explicites.",
+    "Anciens VERSION/SIZE/HTML et anciens états de reprise."
+  ],
+  "historical_receipts": [
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/CANDIDAT-0265.json",
+      "source_commit": "e12420c7db914fa82d420cbbde75d763dea78668",
+      "source_blob": "bcefa9ca1ddf9c30775154f92fbcb23802a67f1e",
+      "source_sha256": "63f23e4cb263aead84ea75dc866d937326b7cace32646c9f6ae7c8fbb93e1118",
+      "preserved_sha256": "63f23e4cb263aead84ea75dc866d937326b7cace32646c9f6ae7c8fbb93e1118",
+      "path_normalized": false
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/CI-0264.json",
+      "source_commit": "e12420c7db914fa82d420cbbde75d763dea78668",
+      "source_blob": "e90d83914a19d88d4a70e71c7ecb63e8c790f7d7",
+      "source_sha256": "eed91a058154f086dc5d41545d103d07e557d127fc907b96d88730db978be1fd",
+      "preserved_sha256": "eed91a058154f086dc5d41545d103d07e557d127fc907b96d88730db978be1fd",
+      "path_normalized": false
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/CORRECTION-ALLOCATION-PILOTE.json",
+      "source_commit": "e12420c7db914fa82d420cbbde75d763dea78668",
+      "source_blob": "d2b6bdd88b6dd33f646032983244eef916cce195",
+      "source_sha256": "33ca191515b11abbbf06a7092bd0293ebd5a360b098ba9c6788c34b161a9c0bb",
+      "preserved_sha256": "33ca191515b11abbbf06a7092bd0293ebd5a360b098ba9c6788c34b161a9c0bb",
+      "path_normalized": false
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REQUALIFICATION-AERIEN-0264.json",
+      "source_commit": "e12420c7db914fa82d420cbbde75d763dea78668",
+      "source_blob": "ddee9be413dc0055e878d3f601c7eee8f5bdd730",
+      "source_sha256": "d460abecef1fb79c9b7dd79be4f25c17e8f43b39c1e082e29c6c6b833cdc479a",
+      "preserved_sha256": "7c08e524e97fc91d92352b883d4a136348b002fd771aa7bcaeded3ba73fd13e8",
+      "path_normalized": true
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REQUALIFICATION-POURSUITE-0264.json",
+      "source_commit": "e12420c7db914fa82d420cbbde75d763dea78668",
+      "source_blob": "75d9937ee188b6cf0355ba766dad075e87b876bb",
+      "source_sha256": "0f96a788983cdf5590ba5f38fcff59065f8295dd29fc2bb3854b3e4ce139e0b9",
+      "preserved_sha256": "0f96a788983cdf5590ba5f38fcff59065f8295dd29fc2bb3854b3e4ce139e0b9",
+      "path_normalized": false
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-COCKPIT-0264.json",
+      "source_commit": "e12420c7db914fa82d420cbbde75d763dea78668",
+      "source_blob": "bb3ff54dd8c510f60b9e798496397f24384bbcf4",
+      "source_sha256": "e7a722054758470bafa293b73e120e833b75c49a77a7455df39cc9fca20596dd",
+      "preserved_sha256": "e7a722054758470bafa293b73e120e833b75c49a77a7455df39cc9fca20596dd",
+      "path_normalized": false
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-NATURE-VOLANT-0264.json",
+      "source_commit": "e12420c7db914fa82d420cbbde75d763dea78668",
+      "source_blob": "e429a6847e08401d004c8319907400af03a6ec89",
+      "source_sha256": "42b75721fa78066077ff27f5c549b36398eced30ef796b26e3cb1e48b896b781",
+      "preserved_sha256": "42b75721fa78066077ff27f5c549b36398eced30ef796b26e3cb1e48b896b781",
+      "path_normalized": false
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-PLUIE-GRILLE-SPRAY-0264.json",
+      "source_commit": "e12420c7db914fa82d420cbbde75d763dea78668",
+      "source_blob": "54bc94cf50bdbe9d69e751accd7ee4ff27d60fe9",
+      "source_sha256": "3d00a0c113cc9993dd6435ffd3ff7b2f3b2b0384b1477f29d92ec341fbdf9cc1",
+      "preserved_sha256": "3d00a0c113cc9993dd6435ffd3ff7b2f3b2b0384b1477f29d92ec341fbdf9cc1",
+      "path_normalized": false
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-POURSUITE-TUNNEL-0264.json",
+      "source_commit": "e12420c7db914fa82d420cbbde75d763dea78668",
+      "source_blob": "eea6ea966dadd3063bdecadc6f47660729768166",
+      "source_sha256": "47e1bf810daf84c068148349ab331be6816322bf2aced955b687cb8973a7a512",
+      "preserved_sha256": "47e1bf810daf84c068148349ab331be6816322bf2aced955b687cb8973a7a512",
+      "path_normalized": false
+    },
+    {
+      "path": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-SECURITE-GESTES-0264.json",
+      "source_commit": "e12420c7db914fa82d420cbbde75d763dea78668",
+      "source_blob": "b5d1efb07626bfab2c5d90a27fd2573ba6828991",
+      "source_sha256": "b8068c5b50af97391f79fb7bc6ccd4e8538278369a32177f9eba7a7f3a3d40fb",
+      "preserved_sha256": "b8068c5b50af97391f79fb7bc6ccd4e8538278369a32177f9eba7a7f3a3d40fb",
+      "path_normalized": false
+    }
+  ],
+  "normalization": {
+    "file": "REQUALIFICATION-AERIEN-0264.json",
+    "field": "couverts.chemin",
+    "new_value": "tools/captures-couverts.mjs",
+    "only_change_in_receipt": true
+  },
+  "validation": {
+    "targeted_suite": "verifications/captures-demo.test.mjs",
+    "tests_passed": 8,
+    "tests_failed": 0,
+    "real_sillage_and_observer_exercised": true,
+    "reports_rechecked": 16,
+    "images_verified": 48,
+    "candidate_images": 36,
+    "reference_images": 12,
+    "failed_reports": 0,
+    "image_hashes_match_previous_review": true,
+    "previous_review": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/REVUE-DEMOS-0266.json",
+    "old_weak_spray_contract_rejected": [
+      "Fort sillage ou évacuation des gouttes non exercés",
+      "Exposition réelle de la lentille incohérente"
+    ],
+    "new_render": false,
+    "full_campaign_rerun": false
+  },
+  "rechecked_reports": [
+    {
+      "group": "bitume-demo-gestes",
+      "variant": "apres",
+      "scenario": "geste-majeur",
+      "sha256": "8111d2285c2112b146646d6f3a90b6cb94a21e5a4bc135e70c03a605207fb2ac",
+      "images": 3
+    },
+    {
+      "group": "bitume-demo-gestes",
+      "variant": "apres",
+      "scenario": "geste-poing",
+      "sha256": "5b516988ce1bd62ecd8d6d2d6eeb3985d291af4d1d005ac552dbbcf78f650896",
+      "images": 3
+    },
+    {
+      "group": "bitume-demo-gestes",
+      "variant": "apres",
+      "scenario": "geste-salut-realisateur",
+      "sha256": "6f248b57b90cb76698c57e32c77a805663330b927331d3027f3f4fb938971343",
+      "images": 3
+    },
+    {
+      "group": "bitume-demo-nature",
+      "variant": "apres",
+      "scenario": "faune-ete",
+      "sha256": "72caac69f4aa377e94c81f767345135b59a7714c00c21176e41f47b114d49107",
+      "images": 3
+    },
+    {
+      "group": "bitume-demo-nature",
+      "variant": "apres",
+      "scenario": "faune-hiver",
+      "sha256": "79b1436f92d5e01fce8480632a381a7e04d3debaa929bbc06f2504116c440304",
+      "images": 3
+    },
+    {
+      "group": "bitume-demo-nature",
+      "variant": "avant",
+      "scenario": "faune-ete",
+      "sha256": "85a387cc9ccc0ab46411893c6a2f27747028192555c15a00fced4b5e9f206720",
+      "images": 3
+    },
+    {
+      "group": "bitume-demo-nature",
+      "variant": "avant",
+      "scenario": "faune-hiver",
+      "sha256": "ba85a651a2882ef2980cb7204c90115018c456c6a879ffb8dfc26a1a6ae67d90",
+      "images": 3
+    },
+    {
+      "group": "bitume-demo-pluie-aerien",
+      "variant": "apres",
+      "scenario": "pluie-aerien",
+      "sha256": "0f4897c3600f882dd19c4d8426ebe2d2d7c36aa7597d0fb63b99d4d8824cf456",
+      "images": 3
+    },
+    {
+      "group": "bitume-demo-pluie-cockpit",
+      "variant": "apres",
+      "scenario": "pluie-cockpit",
+      "sha256": "49b190fb665d89a3d42a87464718b509fdb89557f385bd7c6eaaa863ccacacb9",
+      "images": 3
+    },
+    {
+      "group": "bitume-demo-pluie-poursuite",
+      "variant": "apres",
+      "scenario": "pluie-poursuite-sillage",
+      "sha256": "0c3aacfe16c84af9f38a17d8e5bf179a1a66e26291106096da643cd7afee4b08",
+      "images": 3
+    },
+    {
+      "group": "bitume-demo-securite",
+      "variant": "apres",
+      "scenario": "helico-montagne",
+      "sha256": "9c89af132a1db56bcad16f5602749cefc24af3fa5fd988d3265a2ae5339de32c",
+      "images": 3
+    },
+    {
+      "group": "bitume-demo-securite",
+      "variant": "apres",
+      "scenario": "tele-montagne",
+      "sha256": "9b9373d29db8a40f33e51d3b7e92f91607bd01397b18751c63a342531040bc64",
+      "images": 3
+    },
+    {
+      "group": "bitume-demo-securite",
+      "variant": "avant",
+      "scenario": "helico-montagne",
+      "sha256": "1f0c67f4957dc03ec90d6f90b98a1be88c2afb21c26ffa288abdc81616aa642c",
+      "images": 3
+    },
+    {
+      "group": "bitume-demo-securite",
+      "variant": "avant",
+      "scenario": "tele-montagne",
+      "sha256": "b91d8bac7ccbba007660e7d79c0f5b9369f77a78e7f267727157c67d2d9240e2",
+      "images": 3
+    },
+    {
+      "group": "bitume-demo-volant",
+      "variant": "apres",
+      "scenario": "volant-droite",
+      "sha256": "c63a0983cc0a49f0bd3e67862879deff8281ae2864f2831aa1c1d2f610378af8",
+      "images": 3
+    },
+    {
+      "group": "bitume-demo-volant",
+      "variant": "apres",
+      "scenario": "volant-gauche",
+      "sha256": "2437178fac45b3275ce27a88ea21c60cf946d43706181ccc245a612fc7510679",
+      "images": 3
+    }
+  ],
+  "runtime_and_build": {
+    "unchanged_against_base": true,
+    "version": "0.2.66",
+    "bytes": 14370823,
+    "sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b"
+  },
+  "files": [
+    {
+      "path": "tools/captures-demo.mjs",
+      "sha256": "dae96702d9a9514144dfe38184ff35121a7e1b2bf8330f1f8a28eec763b3fa90"
+    },
+    {
+      "path": "verifications/captures-demo.test.mjs",
+      "sha256": "79ad63204f3a1c483586157f0819b2b400fd5c99887164001e3c6557e55c70a5"
+    }
+  ],
+  "limitations": [
+    "Les reçus 0.2.64 et 0.2.65 restent historiques et ne remplacent pas la qualification 0.2.66.",
+    "Port sélectif : ce commit ne fusionne pas à lui seul la tête PR37 par ascendance."
+  ]
+}

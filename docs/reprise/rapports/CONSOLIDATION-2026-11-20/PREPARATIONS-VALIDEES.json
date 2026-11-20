@@ -1,0 +1,14 @@
+{
+  "commit": "40ec054a6968771d42cdab6ee86a78fdce718acb",
+  "tree": "e6c2aeb4ca366de315bb0a2c9e5c7b8366887221",
+  "base": "fd92eec1058f61e6191cc5ce090f5fbbd366e8e9",
+  "changed_files": 42,
+  "only_archive_paths": true,
+  "worktree_clean": true,
+  "patches_reapplied_exactly": 10,
+  "manifest_refs": 50,
+  "noncontained_heads_to_preserve": 15,
+  "html_sha256_unchanged": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+  "remote_mutations": false,
+  "ci_relaunched": false
+}

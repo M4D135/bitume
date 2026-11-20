@@ -1,0 +1,85 @@
+{
+  "branche": "backup/pluie-abris-20261120",
+  "dossier": "pluie-abris",
+  "categorie": "preparation_active_non_qualifiee",
+  "etat": "Prototype de pluie extérieure visible depuis un abri, avec occlusion spatiale PhysX.",
+  "reserve": "Reprendre les mesures CPU et le compositing raster avant intégration. Le prototype est sauvegardé ; il n’est pas activé dans le jeu 0.2.66.",
+  "commit_original": "d3bd240a1bfa02ac1e0dbcc8f5c4cdb3b7176531",
+  "arbre_original": "65442e902e38ae0e93d80698c8c262ae198422cf",
+  "base_commune_reelle": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
+  "arbre_base": "1f05e9b399e4584b814c4050bad9f5652261b097",
+  "main_observe": "fd92eec1058f61e6191cc5ce090f5fbbd366e8e9",
+  "delta_total_chemins": 3,
+  "chemins_absents_de_main": [
+    "verifications/meteo-couverts-physx.test.mjs"
+  ],
+  "delta_source": {
+    "fichier": "delta-source.patch",
+    "octets": 19430,
+    "sha256": "505758f3cdb1c09d903c5d31cd2327358a8b997d3e5ef34133ceace90b2804a0",
+    "nombre_chemins": 3,
+    "verification": "git apply --check --cached puis application ; arbre, modes et objets identiques sur tous les chemins sélectionnés ; aucun autre chemin modifié",
+    "arbre_apres_application_partielle": "65442e902e38ae0e93d80698c8c262ae198422cf"
+  },
+  "fichiers": [
+    {
+      "path": "src/jeu.js",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "ede018f97c38ec0dd37dcf76baf9939a22d90564",
+        "bytes": 342283
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "e992bbeba82c042f22e8cdde7541e06b1eb9d935",
+        "bytes": 342480
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "ede018f97c38ec0dd37dcf76baf9939a22d90564",
+        "bytes": 342283
+      },
+      "relation_to_main": "different",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "src/meteo.js",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d4be706a234ca2b20e8dd706c004f8b16a8ef148",
+        "bytes": 14928
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "be4c3e87f801fffa4e37a944aa8d93061a01d91d",
+        "bytes": 19677
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d4be706a234ca2b20e8dd706c004f8b16a8ef148",
+        "bytes": 14928
+      },
+      "relation_to_main": "different",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "verifications/meteo-couverts-physx.test.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "ee5600db717aaed60a82379c54218aeada205d23",
+        "bytes": 9667
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    }
+  ]
+}

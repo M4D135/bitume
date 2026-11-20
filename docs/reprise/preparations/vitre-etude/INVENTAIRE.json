@@ -1,0 +1,434 @@
+{
+  "branche": "etude/vitre",
+  "dossier": "vitre-etude",
+  "categorie": "etude_documents_et_tests",
+  "etat": "Étude historique de pluie et neige sur la vitre, bancs, scènes et premier test.",
+  "reserve": "Les optiques et le sillage livrés ont évolué depuis cette étude. Préserver les cas et observations sans restaurer les anciens oracles.",
+  "commit_original": "9e29337b280f6481689fa410b443a189fea74b86",
+  "arbre_original": "f1246d63da9a2f79dd01f4f0355b7ed48e9684c3",
+  "base_commune_reelle": "eb494c1b8315c19a53e0cdfd938eb537a88a7b28",
+  "arbre_base": "c3c526b0f45271efecb9b9d8070ba125d8bd56a9",
+  "main_observe": "fd92eec1058f61e6191cc5ce090f5fbbd366e8e9",
+  "delta_total_chemins": 28,
+  "chemins_absents_de_main": [
+    "docs/reprise/19-VITRE.md",
+    "docs/reprise/rapports/vitre-2026-11-18/capturer-scenes.sh",
+    "docs/reprise/rapports/vitre-2026-11-18/capturer.sh",
+    "docs/reprise/rapports/vitre-2026-11-18/captures/01-bruine-250.jpg",
+    "docs/reprise/rapports/vitre-2026-11-18/captures/02-forte-pluie-250.jpg",
+    "docs/reprise/rapports/vitre-2026-11-18/captures/03-forte-pluie-grille.jpg",
+    "docs/reprise/rapports/vitre-2026-11-18/captures/04-nuage-voiture.jpg",
+    "docs/reprise/rapports/vitre-2026-11-18/captures/05-pluie-exterieure.jpg",
+    "docs/reprise/rapports/vitre-2026-11-18/captures/06-neige-legere.jpg",
+    "docs/reprise/rapports/vitre-2026-11-18/captures/07-forte-neige-lente.jpg",
+    "docs/reprise/rapports/vitre-2026-11-18/captures/08-sec.jpg",
+    "docs/reprise/rapports/vitre-2026-11-18/captures/09-grille-moyenne.jpg",
+    "docs/reprise/rapports/vitre-2026-11-18/captures/10-grille-legere.jpg",
+    "docs/reprise/rapports/vitre-2026-11-18/captures/11-nuage-legere.jpg",
+    "docs/reprise/rapports/vitre-2026-11-18/captures/12-buee.jpg",
+    "docs/reprise/rapports/vitre-2026-11-18/captures/13-grille-graine-7.jpg",
+    "docs/reprise/rapports/vitre-2026-11-18/captures/14-grille-legere-demi.jpg",
+    "docs/reprise/rapports/vitre-2026-11-18/fabriquer-scenes.py",
+    "docs/reprise/rapports/vitre-2026-11-18/lire-mesures.py",
+    "docs/reprise/rapports/vitre-2026-11-18/mesurer.mjs",
+    "docs/reprise/rapports/vitre-2026-11-18/mesures-1.jsonl",
+    "docs/reprise/rapports/vitre-2026-11-18/mesures-2.jsonl",
+    "docs/reprise/rapports/vitre-2026-11-18/mutants.txt",
+    "docs/reprise/rapports/vitre-2026-11-18/muter.py",
+    "docs/reprise/rapports/vitre-2026-11-18/prototype.html",
+    "docs/reprise/rapports/vitre-2026-11-18/scenes.js",
+    "docs/reprise/rapports/vitre-2026-11-18/visiere.js",
+    "verifications/visiere.test.mjs"
+  ],
+  "delta_source": {
+    "fichier": "delta-source.patch",
+    "octets": 1376124,
+    "sha256": "fa68f69a09d5f5a576d44315c05bb6061284e5c6232b88406a4da690a0dc9953",
+    "nombre_chemins": 11,
+    "verification": "git apply --check --cached puis application ; arbre, modes et objets identiques sur tous les chemins sélectionnés ; aucun autre chemin modifié",
+    "arbre_apres_application_partielle": "74e7960c63f41f1ba4008c971ba80dd1ce3ca96d"
+  },
+  "fichiers": [
+    {
+      "path": "docs/reprise/19-VITRE.md",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "8e82050e5d4ce154a5f7ebc2fdc1abdfa7e52fb3",
+        "bytes": 27610
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/capturer-scenes.sh",
+      "base": null,
+      "head": {
+        "mode": "100755",
+        "type": "blob",
+        "sha": "804e36db2949f711ef308b69851aeb5bf61c5d31",
+        "bytes": 2890
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/capturer.sh",
+      "base": null,
+      "head": {
+        "mode": "100755",
+        "type": "blob",
+        "sha": "0731d68fa5b1c2c80c7886e3fd795d4bdc18751e",
+        "bytes": 3163
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/captures/01-bruine-250.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d9dffc9b99d4429055a132e2a2ee6d74c9856dba",
+        "bytes": 187713
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/captures/02-forte-pluie-250.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "e0551cae5682d6eff6d93278c94117267bc3371c",
+        "bytes": 264158
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/captures/03-forte-pluie-grille.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d91e47222270d1a1a3647353f7560810f20355f8",
+        "bytes": 363493
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/captures/04-nuage-voiture.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "453ffdf2111f80306f56e96ef3f936296cc9a5d9",
+        "bytes": 261069
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/captures/05-pluie-exterieure.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "675d390a20fb4f6b13cbd2d63796520f07bac497",
+        "bytes": 139916
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/captures/06-neige-legere.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c46912a759c64481da21fc6e7ba1b43fd7765ea7",
+        "bytes": 153248
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/captures/07-forte-neige-lente.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "687d440021e23070c98b6461eedde53466b7c338",
+        "bytes": 192961
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/captures/08-sec.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "5df6677f95d3c562a1e60b71eecbe09ad4d6c004",
+        "bytes": 174876
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/captures/09-grille-moyenne.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "91993138c03cda3457fe842da925637732a9eaf2",
+        "bytes": 318632
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/captures/10-grille-legere.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "77f43a2ded5fb68e516be88d7f84cec02ed6f39d",
+        "bytes": 228524
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/captures/11-nuage-legere.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "ee4a15b38f69b5906a085924337e5494b9391626",
+        "bytes": 154632
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/captures/12-buee.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "acd7ec78a62f231af0cf3ef20cb878d6e2003978",
+        "bytes": 98982
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/captures/13-grille-graine-7.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "b5735277c8e7306aeaaf2c8a37bcfbadbc3a756c",
+        "bytes": 350372
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/captures/14-grille-legere-demi.jpg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d7c0f213b56a4c7fc2ed61c90935d1895d0d7156",
+        "bytes": 175958
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "image_ou_trace_graphique_generee"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/fabriquer-scenes.py",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "f67b54b94b8234fcd75072ae7b51685c1c9c7203",
+        "bytes": 1238
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/lire-mesures.py",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "02c84ffd28f69abc5fa8a16a6e9acdb05d44a68b",
+        "bytes": 2848
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/mesurer.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "b35989e078d970e56a36da7afa83057d9caab80c",
+        "bytes": 5224
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/mesures-1.jsonl",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "7ca4a16fb5288ada18db3375132bcedea1745e9d",
+        "bytes": 27632
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "journal_historique"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/mesures-2.jsonl",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "4a910a89f82cc2e97f68aec42d17168e4d8f95ef",
+        "bytes": 27619
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "journal_historique"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/mutants.txt",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "9cdbba52d3581fc9ba716fc6de26bb0607edae2e",
+        "bytes": 1451
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "journal_historique"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/muter.py",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "8c45f089d242861ef894915984c91da6e793bbb0",
+        "bytes": 2541
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/prototype.html",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "8d5a2540123b60bd4b03604e90a16bb391400726",
+        "bytes": 20338
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/scenes.js",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "e8cf0fb61beac79efeb59b5f0989e239b62b6d02",
+        "bytes": 1258210
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "docs/reprise/rapports/vitre-2026-11-18/visiere.js",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "b87717c4cb9b6591f2c065fb09debf384b1a1ac2",
+        "bytes": 33687
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    },
+    {
+      "path": "verifications/visiere.test.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "9648ff1f379dc86e9dcf63f2d77bab747ff344fe",
+        "bytes": 13241
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "delta-source.patch"
+    }
+  ]
+}

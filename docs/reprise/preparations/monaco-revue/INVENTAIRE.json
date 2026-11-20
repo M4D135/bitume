@@ -1,0 +1,270 @@
+{
+  "branche": "feat/monaco-revue-mesures-20261120",
+  "dossier": "monaco-revue",
+  "categorie": "historique_supplante",
+  "etat": "Ancienne revue cartographique Monaco ; ses douze chemins sont déjà présents dans main.",
+  "reserve": "Les deux fichiers revue-chaussee et leur générateur sont identiques. Les neuf autres fichiers ont évolué : ne pas réimporter des documents ou tests anciens sur la seule base d’une comparaison de blobs.",
+  "commit_original": "c6d6fe6e5367a65fbe9c71fef31ce11688bc4912",
+  "arbre_original": "29baa5d9f877945e22eaaf40a4a478dfe7151b46",
+  "base_commune_reelle": "560646cf48fe85befafa80c1cf07cfd29e58fe0c",
+  "arbre_base": "29665842d9af3b2ce6a7046deae14f375b6a05ec",
+  "main_observe": "fd92eec1058f61e6191cc5ce090f5fbbd366e8e9",
+  "delta_total_chemins": 12,
+  "chemins_absents_de_main": [],
+  "delta_source": null,
+  "fichiers": [
+    {
+      "path": "REPRISE.md",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "ff3d419dc66bb2effcf23666f0c17d29b0e06f72",
+        "bytes": 2632
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "31b2b75e1ff9dc56c1bd38eac93ca5687bd724ba",
+        "bytes": 2172
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "66cd716ab1ff00fc743508be6528bc503aa97d83",
+        "bytes": 2769
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/references/monaco-2026/README.md",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "37457d00b79d2fcfc46f85cae39d7d7889945fa7",
+        "bytes": 13200
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "4807311ffb20bd371959a5bb9190e7eb6bfe8993",
+        "bytes": 15036
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c65b5f63b5864dee793fffd47ef11c35b3dec940",
+        "bytes": 15557
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/references/monaco-2026/REVUE-SOURCES-20261120.md",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "8a2881b82ffc2c56af054430133c3912e13925ab",
+        "bytes": 3606
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "f21015bf751aecf17dd34303916b7be79c02c9c3",
+        "bytes": 3647
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/references/monaco-2026/qualification-revue.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "dbd546bc0a0393ca6e12614b532f3c1a05eb1c2c",
+        "bytes": 3998
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "89ecad239b0c2287b05c79860e84a9dbd78b53ad",
+        "bytes": 7532
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/references/monaco-2026/revue-chaussee.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "b38eccf27a804692cea130d38769c93e8b293ca8",
+        "bytes": 205826
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "b38eccf27a804692cea130d38769c93e8b293ca8",
+        "bytes": 205826
+      },
+      "relation_to_main": "identical",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/references/monaco-2026/revue-chaussee.svg",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0a7bbac774cf816102ab02f6e54a31e8806e929b",
+        "bytes": 31158
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0a7bbac774cf816102ab02f6e54a31e8806e929b",
+        "bytes": 31158
+      },
+      "relation_to_main": "identical",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/CONTINUATION-AUTONOME-2026-11-19.md",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "69ce4d6efe4c2f5f32fd69d0b40bed1ee2bfddf6",
+        "bytes": 12290
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "6a35fb373c1163c1bd0d90c46e710571a25c2af7",
+        "bytes": 12339
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "8168e7a354ab36efb611a18619242879b33a627f",
+        "bytes": 15948
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/ETAT.json",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "bcdd7722773f9a7cbc4730759b3a9e29308bc5e0",
+        "bytes": 5169
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "59c5811e55484f4ca194683d3e1983e39ba9c76e",
+        "bytes": 6223
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "dc627ad699dad753607e2af2856a6e59e894da5e",
+        "bytes": 16790
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/MONACO-REVUE-2026-11-20.md",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "79f2e736256e31358cb800b0f588d8010b3fcea8",
+        "bytes": 3264
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "cfd112a6b1463d53a9cd061c17cffa78899db699",
+        "bytes": 4643
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/SUIVI-2026-11-19.md",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "65ccd2e987331369a63a413b1961785741f0a9a0",
+        "bytes": 71471
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "12344f795060f1d0516385309b746c64c583196d",
+        "bytes": 72951
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "a5f373c47a36315054b1c4494f0466053ef4636a",
+        "bytes": 77468
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "tools/preparer-monaco-revue.py",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "2cf9b7091608ad13ba0791e9bd78fc1f79fc23a6",
+        "bytes": 26100
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "2cf9b7091608ad13ba0791e9bd78fc1f79fc23a6",
+        "bytes": 26100
+      },
+      "relation_to_main": "identical",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "verifications/monaco-revue.test.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "27255488343b6c05f08e72e822401088c59d0aa4",
+        "bytes": 10171
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "ddf37f70fa454e1ac75dcb0ad0b7b86b435b7b35",
+        "bytes": 9973
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    }
+  ]
+}

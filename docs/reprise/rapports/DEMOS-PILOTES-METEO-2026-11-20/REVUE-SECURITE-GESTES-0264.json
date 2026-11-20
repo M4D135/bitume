@@ -1,0 +1,708 @@
+{
+  "format": "bitume-revue-visuelle-independante-v1",
+  "date": "2026-11-20T12:21:22.750000+00:00",
+  "auteur": "captures_couverts",
+  "candidat": "0.2.64",
+  "checkoutCi": "eb30f18dfb30fa79f2c5a3684f3cd876398c0984",
+  "arbre": "e015629469ca27ae5e8af4105c8b2b4a946f79aa",
+  "buildSha256": "98848efea4b0969805008ba37cba7cab67b11434a9d960173ba77b157fcf8ef7",
+  "referenceSha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+  "identitesConformes": true,
+  "pngInspectesIndividuellement": 21,
+  "groupes": [
+    {
+      "id": "demo-securite",
+      "png": 12,
+      "controleAutomatiqueEchecs": 0,
+      "environnement": "Google Chrome 157.0.8103.50 \nv24.22.2"
+    },
+    {
+      "id": "demo-gestes",
+      "png": 9,
+      "controleAutomatiqueEchecs": 0,
+      "environnement": "Google Chrome 157.0.8103.78 \nv24.22.3"
+    }
+  ],
+  "images": [
+    {
+      "chemin": "demo-securite/files/visuel-demo/apres/helico-montagne/0000.png",
+      "sha256": "519647d206cab37961ea359040f0ca24c3e63b1c6ed45ef7f395de3997be2800",
+      "octets": 528291,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "helico-montagne",
+      "verdict": "correction_visible_acceptee",
+      "observations": "Vue Poursuite choisie par le réalisateur, voiture et chaussée continues et lisibles, caméra dégagée. Pas de paroi traversée ni de sol manquant visible.",
+      "reserves": [
+        "relief-matiere"
+      ],
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "cadre",
+        "n": 2,
+        "cote": 1
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-securite/files/visuel-demo/apres/helico-montagne/0001.png",
+      "sha256": "4c1905c4bf1e5d55dd3160ef2ad34d371b1d73226af446d7fa4612b976dfcb6c",
+      "octets": 528355,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "helico-montagne",
+      "verdict": "correction_visible_acceptee",
+      "observations": "Vue Poursuite choisie par le réalisateur, voiture et chaussée continues et lisibles, caméra dégagée. Pas de paroi traversée ni de sol manquant visible.",
+      "reserves": [
+        "relief-matiere"
+      ],
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "cadre",
+        "n": 2,
+        "cote": 1
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-securite/files/visuel-demo/apres/helico-montagne/0002.png",
+      "sha256": "bd9ad4bc10b5c960b0baec49af073276aee3c56d63da104f5b0365543a644e77",
+      "octets": 528288,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "helico-montagne",
+      "verdict": "correction_visible_acceptee",
+      "observations": "Vue Poursuite choisie par le réalisateur, voiture et chaussée continues et lisibles, caméra dégagée. Pas de paroi traversée ni de sol manquant visible.",
+      "reserves": [
+        "relief-matiere"
+      ],
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "cadre",
+        "n": 2,
+        "cote": 1
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-securite/files/visuel-demo/apres/tele-montagne/0000.png",
+      "sha256": "a55d43a6ae3401af90662113df2708b653026fec31f112a81c4ace3c18c5de9b",
+      "octets": 528970,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "tele-montagne",
+      "verdict": "correction_visible_acceptee",
+      "observations": "Vue Poursuite choisie par le réalisateur, voiture et chaussée continues et lisibles, caméra dégagée. Pas de paroi traversée ni de sol manquant visible.",
+      "reserves": [
+        "relief-matiere"
+      ],
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "cadre",
+        "n": 2,
+        "cote": 1
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-securite/files/visuel-demo/apres/tele-montagne/0001.png",
+      "sha256": "2468911e4113ea4ff5dae14b93ad39875958cae49d67a2cd92053a031d716e5b",
+      "octets": 529066,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "tele-montagne",
+      "verdict": "correction_visible_acceptee",
+      "observations": "Vue Poursuite choisie par le réalisateur, voiture et chaussée continues et lisibles, caméra dégagée. Pas de paroi traversée ni de sol manquant visible.",
+      "reserves": [
+        "relief-matiere"
+      ],
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "cadre",
+        "n": 2,
+        "cote": 1
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-securite/files/visuel-demo/apres/tele-montagne/0002.png",
+      "sha256": "ea5c92dddb2dc7ac3c1239cacbae36a2a7961567615515ace39e2d5daca9e860",
+      "octets": 529002,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "tele-montagne",
+      "verdict": "correction_visible_acceptee",
+      "observations": "Vue Poursuite choisie par le réalisateur, voiture et chaussée continues et lisibles, caméra dégagée. Pas de paroi traversée ni de sol manquant visible.",
+      "reserves": [
+        "relief-matiere"
+      ],
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "cadre",
+        "n": 2,
+        "cote": 1
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-securite/files/visuel-demo/avant/helico-montagne/0000.png",
+      "sha256": "006cc0df72b8fc89378ebeecb12d456a8f300b77b09b84a9362a90f843b548d5",
+      "octets": 311630,
+      "inspecteIndividuellement": true,
+      "variante": "avant",
+      "scenario": "helico-montagne",
+      "verdict": "reference_defaut_reproduit",
+      "observations": "Image de scène remplie par une paroi grise ; voiture et piste masquées. Le rayon enregistré est obstrué.",
+      "reserves": [],
+      "vue": "helico",
+      "plan": {
+        "vue": "helico",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "pilote": null,
+      "obstruction": {
+        "hit": true,
+        "distance": 2.7818362712860107
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-securite/files/visuel-demo/avant/helico-montagne/0001.png",
+      "sha256": "2535dbcd6872d79759e9b646d56073a5560b508e7fd5486fd2753fd3ba599e35",
+      "octets": 311636,
+      "inspecteIndividuellement": true,
+      "variante": "avant",
+      "scenario": "helico-montagne",
+      "verdict": "reference_defaut_reproduit",
+      "observations": "Image de scène remplie par une paroi grise ; voiture et piste masquées. Le rayon enregistré est obstrué.",
+      "reserves": [],
+      "vue": "helico",
+      "plan": {
+        "vue": "helico",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "pilote": null,
+      "obstruction": {
+        "hit": true,
+        "distance": 2.7818362712860107
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-securite/files/visuel-demo/avant/helico-montagne/0002.png",
+      "sha256": "227b8f8f4280069d9bd0eb4814b59c647a2f7c8b96356ad13d1416765d209ddb",
+      "octets": 311577,
+      "inspecteIndividuellement": true,
+      "variante": "avant",
+      "scenario": "helico-montagne",
+      "verdict": "reference_defaut_reproduit",
+      "observations": "Image de scène remplie par une paroi grise ; voiture et piste masquées. Le rayon enregistré est obstrué.",
+      "reserves": [],
+      "vue": "helico",
+      "plan": {
+        "vue": "helico",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "pilote": null,
+      "obstruction": {
+        "hit": true,
+        "distance": 2.7818362712860107
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-securite/files/visuel-demo/avant/tele-montagne/0000.png",
+      "sha256": "cba323e0fceefb957b96abd8ac18890d831c5e008eecc6a4e6b22192b320deb2",
+      "octets": 395511,
+      "inspecteIndividuellement": true,
+      "variante": "avant",
+      "scenario": "tele-montagne",
+      "verdict": "reference_defaut_reproduit",
+      "observations": "Image de scène remplie par une paroi grise ; voiture et piste masquées. Le rayon enregistré est obstrué.",
+      "reserves": [],
+      "vue": "tele",
+      "plan": {
+        "vue": "tele",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "pilote": null,
+      "obstruction": {
+        "hit": true,
+        "distance": 28.46665382385254
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-securite/files/visuel-demo/avant/tele-montagne/0001.png",
+      "sha256": "1ee63e0673ea327580e0b961fb21e1d030b08a9c0bd0e2c396ffd8def9ddabec",
+      "octets": 395588,
+      "inspecteIndividuellement": true,
+      "variante": "avant",
+      "scenario": "tele-montagne",
+      "verdict": "reference_defaut_reproduit",
+      "observations": "Image de scène remplie par une paroi grise ; voiture et piste masquées. Le rayon enregistré est obstrué.",
+      "reserves": [],
+      "vue": "tele",
+      "plan": {
+        "vue": "tele",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "pilote": null,
+      "obstruction": {
+        "hit": true,
+        "distance": 28.46665382385254
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-securite/files/visuel-demo/avant/tele-montagne/0002.png",
+      "sha256": "7c5218e9426ddc143843114441bc20c91cf188fd76866341ec70a3d8564b092e",
+      "octets": 395474,
+      "inspecteIndividuellement": true,
+      "variante": "avant",
+      "scenario": "tele-montagne",
+      "verdict": "reference_defaut_reproduit",
+      "observations": "Image de scène remplie par une paroi grise ; voiture et piste masquées. Le rayon enregistré est obstrué.",
+      "reserves": [],
+      "vue": "tele",
+      "plan": {
+        "vue": "tele",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "pilote": null,
+      "obstruction": {
+        "hit": true,
+        "distance": 28.46665382385254
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-gestes/files/visuel-demo/apres/geste-majeur/0000.png",
+      "sha256": "8922d43c7c36daa99c915f2bce9ea1596abc8f475c7722aabed753f0f0f272a4",
+      "octets": 388577,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "geste-majeur",
+      "verdict": "pose_acceptee_reserve_lisibilite",
+      "observations": "Un bras levé près du casque, l’autre main au volant ; coude et avant-bras restent raccordés sans traversée évidente de coque. La silhouette précise des doigts est partiellement masquée par le sous-titre et peu différenciable de l’autre geste dans ce cadrage.",
+      "reserves": [
+        "lisibilite-doigts"
+      ],
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": "majeur",
+        "gestePhase": 0.303030303030302,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-gestes/files/visuel-demo/apres/geste-majeur/0001.png",
+      "sha256": "492af7e9f9eaa2eac788949fec4329c626e2d1e95ce8e4ea0b21c04ebfd6d447",
+      "octets": 388838,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "geste-majeur",
+      "verdict": "pose_acceptee_reserve_lisibilite",
+      "observations": "Un bras levé près du casque, l’autre main au volant ; coude et avant-bras restent raccordés sans traversée évidente de coque. La silhouette précise des doigts est partiellement masquée par le sous-titre et peu différenciable de l’autre geste dans ce cadrage.",
+      "reserves": [
+        "lisibilite-doigts"
+      ],
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": "majeur",
+        "gestePhase": 0.36363636363636237,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-gestes/files/visuel-demo/apres/geste-majeur/0002.png",
+      "sha256": "6250ba7820e29f5c4da8c030d41a430ff3ff3d2ae77a8014b462f3b543a30b5a",
+      "octets": 388520,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "geste-majeur",
+      "verdict": "pose_acceptee_reserve_lisibilite",
+      "observations": "Un bras levé près du casque, l’autre main au volant ; coude et avant-bras restent raccordés sans traversée évidente de coque. La silhouette précise des doigts est partiellement masquée par le sous-titre et peu différenciable de l’autre geste dans ce cadrage.",
+      "reserves": [
+        "lisibilite-doigts"
+      ],
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": "majeur",
+        "gestePhase": 0.42424242424242276,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-gestes/files/visuel-demo/apres/geste-poing/0000.png",
+      "sha256": "94d78ecf364b1c38ec29680303936eae608b5db29b355b317d4a1abfc26b07a0",
+      "octets": 388507,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "geste-poing",
+      "verdict": "pose_acceptee_reserve_lisibilite",
+      "observations": "Un bras levé près du casque, l’autre main au volant ; coude et avant-bras restent raccordés sans traversée évidente de coque. La silhouette précise des doigts est partiellement masquée par le sous-titre et peu différenciable de l’autre geste dans ce cadrage.",
+      "reserves": [
+        "lisibilite-doigts"
+      ],
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": "poing",
+        "gestePhase": 0.3571428571428559,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-gestes/files/visuel-demo/apres/geste-poing/0001.png",
+      "sha256": "a91693095fc78d2fdc11312c14d451fd816c1888acf36c7b9851817e38a971f6",
+      "octets": 388512,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "geste-poing",
+      "verdict": "pose_acceptee_reserve_lisibilite",
+      "observations": "Un bras levé près du casque, l’autre main au volant ; coude et avant-bras restent raccordés sans traversée évidente de coque. La silhouette précise des doigts est partiellement masquée par le sous-titre et peu différenciable de l’autre geste dans ce cadrage.",
+      "reserves": [
+        "lisibilite-doigts"
+      ],
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": "poing",
+        "gestePhase": 0.42857142857142705,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-gestes/files/visuel-demo/apres/geste-poing/0002.png",
+      "sha256": "cdfc91a8a3387ccc3396eff5725d3ac21b70db04d405169d85f8065d9390b232",
+      "octets": 388385,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "geste-poing",
+      "verdict": "pose_acceptee_reserve_lisibilite",
+      "observations": "Un bras levé près du casque, l’autre main au volant ; coude et avant-bras restent raccordés sans traversée évidente de coque. La silhouette précise des doigts est partiellement masquée par le sous-titre et peu différenciable de l’autre geste dans ce cadrage.",
+      "reserves": [
+        "lisibilite-doigts"
+      ],
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": "poing",
+        "gestePhase": 0.4999999999999983,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-gestes/files/visuel-demo/apres/geste-salut-realisateur/0000.png",
+      "sha256": "1ec8e27ec8d289bfb2f6091245676a3d128243a1851157ca87eeb94fcc57a0fa",
+      "octets": 387512,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "geste-salut-realisateur",
+      "verdict": "pose_acceptee_reserve_lisibilite",
+      "observations": "Un bras levé près du casque, l’autre main au volant ; coude et avant-bras restent raccordés sans traversée évidente de coque. Salut lisible, doigts et pouce écartés.",
+      "reserves": [
+        "lisibilite-doigts"
+      ],
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "expression",
+        "n": 2,
+        "cote": -1
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": "salut",
+        "gestePhase": 0.2777777777777768,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-gestes/files/visuel-demo/apres/geste-salut-realisateur/0001.png",
+      "sha256": "8488f6d85153760584999e7df5e97eb129a9adcbfde3fad90070b5b932029eb6",
+      "octets": 388348,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "geste-salut-realisateur",
+      "verdict": "pose_acceptee_reserve_lisibilite",
+      "observations": "Un bras levé près du casque, l’autre main au volant ; coude et avant-bras restent raccordés sans traversée évidente de coque. Salut lisible, doigts et pouce écartés.",
+      "reserves": [
+        "lisibilite-doigts"
+      ],
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "expression",
+        "n": 2,
+        "cote": -1
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": "salut",
+        "gestePhase": 0.33333333333333215,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "erreurGl": 0
+    },
+    {
+      "chemin": "demo-gestes/files/visuel-demo/apres/geste-salut-realisateur/0002.png",
+      "sha256": "bd43abff70dd029b5a8dd279570b3aaf350d7d1830f559c60b0ea49b05fb96e3",
+      "octets": 387684,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "geste-salut-realisateur",
+      "verdict": "pose_acceptee_reserve_lisibilite",
+      "observations": "Un bras levé près du casque, l’autre main au volant ; coude et avant-bras restent raccordés sans traversée évidente de coque. Salut lisible, doigts et pouce écartés.",
+      "reserves": [
+        "lisibilite-doigts"
+      ],
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "expression",
+        "n": 2,
+        "cote": -1
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": "salut",
+        "gestePhase": 0.3888888888888875,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "erreurGl": 0
+    }
+  ],
+  "conclusion": "Sécurité caméra : obstruction pleine image reproduite dans les six références, absente dans les six captures candidates grâce à la sélection de Poursuite par le réalisateur. Les neuf captures gestes montrent un bras levé et une autre main au volant, sans traversée évidente de la coque. Réserve sur la lisibilité des doigts sous le sous-titre.",
+  "reserves": [
+    {
+      "id": "lisibilite-doigts",
+      "gravite": "composition",
+      "description": "Le sous-titre de la démo recouvre le sommet du gant et de certains doigts ; à 960×540, le poing et le majeur se distinguent peu. Le salut est plus lisible grâce aux doigts et au pouce écartés. Les observations enregistrent cependant les trois types et leurs phases distinctes."
+    },
+    {
+      "id": "relief-matiere",
+      "gravite": "reserve_visuelle",
+      "description": "Les vues de secours montrent une route texturée et continue, mais des accotements lisses et des falaises aux grandes facettes verticales répétées. Elles qualifient le dégagement caméra, pas l’achèvement du relief ou des matières."
+    }
+  ],
+  "limites": [
+    "Le candidat remplace les vues télé/hélico obstruées par la vue Poursuite : ces captures prouvent ce repli, pas le rétablissement d’un cadrage télé/hélico dans ce même emplacement.",
+    "Poses prescrites et trois instants par scénario : aucune validation de course complète, de dépassement réel, de retour du geste au volant ou de cadence matérielle.",
+    "Le compteur 10 FPS est lié à l’horloge commandée ; aucune mesure GPU.",
+    "Pas de référence avant pour les gestes ; comparaison avant/après limitée à la sécurité caméra.",
+    "Identités des manifestes et rapports vérifiées ici ; empreintes GitHub des archives vérifiées auparavant par le parent."
+  ]
+}

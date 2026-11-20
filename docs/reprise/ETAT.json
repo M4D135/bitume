@@ -5,12 +5,12 @@
     "version_publiee_verifiee": "0.2.66",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "publie_sur_main",
-    "lot": "meteo_et_composition_apres_0266",
-    "fiche": "docs/reprise/DEMOS-PILOTES-METEO-2026-11-20.md",
+    "statut": "consolidation_prete_pour_main",
+    "lot": "consolidation_et_plan_habitacle",
+    "fiche": "docs/reprise/preparations/README.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "013",
-    "prochaine_action": "Reprendre le prototype pluie sauvegardé : coût CPU puis compositing ; préparer ensuite les bandeaux de démo et qualifier avant intégration.",
+    "derniere_entree": "014",
+    "prochaine_action": "Publier la consolidation sur main avec les 15 parents historiques ; vérifier puis ajouter le plan habitacle unique, assise plus basse et bras/buste.",
     "dernier_lot_clos": "docs/reprise/COUVERTS-CIMES-INTEGRATION-2026-11-20.md"
   },
   "publication": {
@@ -337,5 +337,21 @@
     "outils_tete": "40774189dc3a68242a3908f72e09f2676519ccbf",
     "qualification_finale_run": 44747519912,
     "commit_fusion": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8"
+  },
+  "consolidation": {
+    "base_main": "fd92eec1058f61e6191cc5ce090f5fbbd366e8e9",
+    "statut": "preparee_validee_publication_a_verifier",
+    "manifeste": "docs/reprise/preparations/MANIFESTE.json",
+    "references": 50,
+    "tetes_non_contenues": 15,
+    "patches_reappliques_exacts": 10,
+    "reconciliation_pr37": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/RECONCILIATION-PR37-0266.json",
+    "validation_pr37": {
+      "suites_ciblees": "8/8",
+      "rapports": "16/16",
+      "empreintes_png": "48/48"
+    },
+    "runtime_inchange": true,
+    "branches_supprimees": false
   }
 }

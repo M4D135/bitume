@@ -1,0 +1,395 @@
+{
+  "format": "bitume-revue-visuelle-independante-v1",
+  "date": "2026-11-20T12:19:07.667530+00:00",
+  "auteur": "captures_couverts",
+  "candidat": "0.2.64",
+  "checkoutCi": "eb30f18dfb30fa79f2c5a3684f3cd876398c0984",
+  "arbre": "e015629469ca27ae5e8af4105c8b2b4a946f79aa",
+  "buildSha256": "98848efea4b0969805008ba37cba7cab67b11434a9d960173ba77b157fcf8ef7",
+  "referenceSha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+  "identitesConformes": true,
+  "pngInspectesIndividuellement": 18,
+  "groupes": [
+    {
+      "id": "demo-nature",
+      "images": 12,
+      "controleAutomatiqueEchecs": 0,
+      "environnement": "Google Chrome 157.0.8103.78 \nv24.22.3"
+    },
+    {
+      "id": "demo-volant",
+      "images": 6,
+      "controleAutomatiqueEchecs": 0,
+      "environnement": "Google Chrome 157.0.8103.50 \nv24.22.2"
+    }
+  ],
+  "images": [
+    {
+      "chemin": "demo-nature/files/visuel-demo/apres/faune-ete/0000.png",
+      "sha256": "17153011e3b8c6dd3eb06844adcaa10651693ddf7ae05fc0e37eb2baf0aa6817",
+      "octets": 279474,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "faune-ete",
+      "verdict": "controle_geometrie_accepte_reserve_matiere",
+      "observations": "Animaux nettement rapprochés et identifiables, appuis visuellement continus avec la pente. Aucun trou ni disparition de sol visible. Pente presque blanche, détail faible ; bandeau recouvrant le haut du groupe.",
+      "reserves": [
+        "terrain-faune",
+        "bandeau-demo",
+        "stries"
+      ],
+      "erreurGl": 0,
+      "obstructionCamera": {
+        "hit": false,
+        "distance": null
+      }
+    },
+    {
+      "chemin": "demo-nature/files/visuel-demo/apres/faune-ete/0001.png",
+      "sha256": "7cab607859637461a78fee123a979becf013882a7f2447401310ccb8d143ccc0",
+      "octets": 279497,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "faune-ete",
+      "verdict": "controle_geometrie_accepte_reserve_matiere",
+      "observations": "Animaux nettement rapprochés et identifiables, appuis visuellement continus avec la pente. Aucun trou ni disparition de sol visible. Pente presque blanche, détail faible ; bandeau recouvrant le haut du groupe.",
+      "reserves": [
+        "terrain-faune",
+        "bandeau-demo",
+        "stries"
+      ],
+      "erreurGl": 0,
+      "obstructionCamera": {
+        "hit": false,
+        "distance": null
+      }
+    },
+    {
+      "chemin": "demo-nature/files/visuel-demo/apres/faune-ete/0002.png",
+      "sha256": "ef545d7e937ce8f1773d143bd78ddcc9f2017088c9f59a609fde731b46b26dd0",
+      "octets": 279548,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "faune-ete",
+      "verdict": "controle_geometrie_accepte_reserve_matiere",
+      "observations": "Animaux nettement rapprochés et identifiables, appuis visuellement continus avec la pente. Aucun trou ni disparition de sol visible. Pente presque blanche, détail faible ; bandeau recouvrant le haut du groupe.",
+      "reserves": [
+        "terrain-faune",
+        "bandeau-demo",
+        "stries"
+      ],
+      "erreurGl": 0,
+      "obstructionCamera": {
+        "hit": false,
+        "distance": null
+      }
+    },
+    {
+      "chemin": "demo-nature/files/visuel-demo/apres/faune-hiver/0000.png",
+      "sha256": "fb16697e7870553fbd36b0c79378c1168fbafa10cef8f575cc749413aa4efa98",
+      "octets": 278663,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "faune-hiver",
+      "verdict": "controle_geometrie_accepte_reserve_matiere",
+      "observations": "Animaux nettement rapprochés et identifiables, appuis visuellement continus avec la pente. Aucun trou ni disparition de sol visible. Pente presque blanche, détail faible ; bandeau recouvrant le haut du groupe.",
+      "reserves": [
+        "terrain-faune",
+        "bandeau-demo",
+        "stries"
+      ],
+      "erreurGl": 0,
+      "obstructionCamera": {
+        "hit": false,
+        "distance": null
+      }
+    },
+    {
+      "chemin": "demo-nature/files/visuel-demo/apres/faune-hiver/0001.png",
+      "sha256": "17f512c20115d39981f4ec26149a50d1ab44008b1343bb59540e3213ff4520fd",
+      "octets": 278781,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "faune-hiver",
+      "verdict": "controle_geometrie_accepte_reserve_matiere",
+      "observations": "Animaux nettement rapprochés et identifiables, appuis visuellement continus avec la pente. Aucun trou ni disparition de sol visible. Pente presque blanche, détail faible ; bandeau recouvrant le haut du groupe.",
+      "reserves": [
+        "terrain-faune",
+        "bandeau-demo",
+        "stries"
+      ],
+      "erreurGl": 0,
+      "obstructionCamera": {
+        "hit": false,
+        "distance": null
+      }
+    },
+    {
+      "chemin": "demo-nature/files/visuel-demo/apres/faune-hiver/0002.png",
+      "sha256": "1a98284e3ccc25e4deed1b827d13148518d5868b3ec09e7668c7b82dec83fd3f",
+      "octets": 278565,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "faune-hiver",
+      "verdict": "controle_geometrie_accepte_reserve_matiere",
+      "observations": "Animaux nettement rapprochés et identifiables, appuis visuellement continus avec la pente. Aucun trou ni disparition de sol visible. Pente presque blanche, détail faible ; bandeau recouvrant le haut du groupe.",
+      "reserves": [
+        "terrain-faune",
+        "bandeau-demo",
+        "stries"
+      ],
+      "erreurGl": 0,
+      "obstructionCamera": {
+        "hit": false,
+        "distance": null
+      }
+    },
+    {
+      "chemin": "demo-nature/files/visuel-demo/avant/faune-ete/0000.png",
+      "sha256": "53b508a8fc65ffb0ede59914be7d28699c6cfb60170cb0bfd5949c76d61b8b43",
+      "octets": 546906,
+      "inspecteIndividuellement": true,
+      "variante": "avant",
+      "scenario": "faune-ete",
+      "verdict": "reference_avec_reserve_heritee",
+      "observations": "Pente présente, animaux petits mais posés sur le sol. Réseau de stries diagonales très visible ; sol clair et pauvre en détail.",
+      "reserves": [
+        "terrain-faune",
+        "stries"
+      ],
+      "erreurGl": 0,
+      "obstructionCamera": {
+        "hit": false,
+        "distance": null
+      }
+    },
+    {
+      "chemin": "demo-nature/files/visuel-demo/avant/faune-ete/0001.png",
+      "sha256": "a3bb22b9a8c78c921d05be25daafe5bfd4a44c49303fdca7d3df3ec1ea56e6e4",
+      "octets": 546971,
+      "inspecteIndividuellement": true,
+      "variante": "avant",
+      "scenario": "faune-ete",
+      "verdict": "reference_avec_reserve_heritee",
+      "observations": "Pente présente, animaux petits mais posés sur le sol. Réseau de stries diagonales très visible ; sol clair et pauvre en détail.",
+      "reserves": [
+        "terrain-faune",
+        "stries"
+      ],
+      "erreurGl": 0,
+      "obstructionCamera": {
+        "hit": false,
+        "distance": null
+      }
+    },
+    {
+      "chemin": "demo-nature/files/visuel-demo/avant/faune-ete/0002.png",
+      "sha256": "e834a4ee4a354d227188a9bbb0996af081cca35b60f7b43b7a96fb99782ca1f6",
+      "octets": 546925,
+      "inspecteIndividuellement": true,
+      "variante": "avant",
+      "scenario": "faune-ete",
+      "verdict": "reference_avec_reserve_heritee",
+      "observations": "Pente présente, animaux petits mais posés sur le sol. Réseau de stries diagonales très visible ; sol clair et pauvre en détail.",
+      "reserves": [
+        "terrain-faune",
+        "stries"
+      ],
+      "erreurGl": 0,
+      "obstructionCamera": {
+        "hit": false,
+        "distance": null
+      }
+    },
+    {
+      "chemin": "demo-nature/files/visuel-demo/avant/faune-hiver/0000.png",
+      "sha256": "7697691e5ef60dc11500de480da68af6cdfdb5420eb261c4d4b57d152d5e13d2",
+      "octets": 548874,
+      "inspecteIndividuellement": true,
+      "variante": "avant",
+      "scenario": "faune-hiver",
+      "verdict": "reference_avec_reserve_heritee",
+      "observations": "Pente présente, animaux petits mais posés sur le sol. Réseau de stries diagonales très visible ; sol clair et pauvre en détail.",
+      "reserves": [
+        "terrain-faune",
+        "stries"
+      ],
+      "erreurGl": 0,
+      "obstructionCamera": {
+        "hit": false,
+        "distance": null
+      }
+    },
+    {
+      "chemin": "demo-nature/files/visuel-demo/avant/faune-hiver/0001.png",
+      "sha256": "bee2683893a63269b7b4cc52c42173ed6fa176b982be8f880c19a5890c108e0b",
+      "octets": 548840,
+      "inspecteIndividuellement": true,
+      "variante": "avant",
+      "scenario": "faune-hiver",
+      "verdict": "reference_avec_reserve_heritee",
+      "observations": "Pente présente, animaux petits mais posés sur le sol. Réseau de stries diagonales très visible ; sol clair et pauvre en détail.",
+      "reserves": [
+        "terrain-faune",
+        "stries"
+      ],
+      "erreurGl": 0,
+      "obstructionCamera": {
+        "hit": false,
+        "distance": null
+      }
+    },
+    {
+      "chemin": "demo-nature/files/visuel-demo/avant/faune-hiver/0002.png",
+      "sha256": "b360d3612aace87f1b0c030f17d2d79bf83d2532b2b1f28af3d46139a2e08774",
+      "octets": 548747,
+      "inspecteIndividuellement": true,
+      "variante": "avant",
+      "scenario": "faune-hiver",
+      "verdict": "reference_avec_reserve_heritee",
+      "observations": "Pente présente, animaux petits mais posés sur le sol. Réseau de stries diagonales très visible ; sol clair et pauvre en détail.",
+      "reserves": [
+        "terrain-faune",
+        "stries"
+      ],
+      "erreurGl": 0,
+      "obstructionCamera": {
+        "hit": false,
+        "distance": null
+      }
+    },
+    {
+      "chemin": "demo-volant/files/visuel-demo/apres/volant-droite/0000.png",
+      "sha256": "f401e754ba88a8b6dd4925465bac25dcb8283b451ad9485b1b4c29a12568a3d0",
+      "octets": 387978,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "volant-droite",
+      "verdict": "accepte_dans_ces_poses",
+      "observations": "Volant placé devant le pilote avec support/tableau visibles. Prise des gants cohérente avec le braquage, bras contenus dans l’ouverture du cockpit ; pas de traversée évidente de la coque ni de volant flottant. Aucun plan avant fourni.",
+      "reserves": [
+        "bandeau-demo"
+      ],
+      "erreurGl": 0,
+      "obstructionCamera": {
+        "hit": false,
+        "distance": null
+      }
+    },
+    {
+      "chemin": "demo-volant/files/visuel-demo/apres/volant-droite/0001.png",
+      "sha256": "f377294c42e7dcdc97dc15b27f514940fa501f17e07ffc361008d67c32cf4ba2",
+      "octets": 388147,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "volant-droite",
+      "verdict": "accepte_dans_ces_poses",
+      "observations": "Volant placé devant le pilote avec support/tableau visibles. Prise des gants cohérente avec le braquage, bras contenus dans l’ouverture du cockpit ; pas de traversée évidente de la coque ni de volant flottant. Aucun plan avant fourni.",
+      "reserves": [
+        "bandeau-demo"
+      ],
+      "erreurGl": 0,
+      "obstructionCamera": {
+        "hit": false,
+        "distance": null
+      }
+    },
+    {
+      "chemin": "demo-volant/files/visuel-demo/apres/volant-droite/0002.png",
+      "sha256": "d7b63bdb81a3508723a90850085710fc0344e4e1e6de52db8284c0233f9cf899",
+      "octets": 387822,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "volant-droite",
+      "verdict": "accepte_dans_ces_poses",
+      "observations": "Volant placé devant le pilote avec support/tableau visibles. Prise des gants cohérente avec le braquage, bras contenus dans l’ouverture du cockpit ; pas de traversée évidente de la coque ni de volant flottant. Aucun plan avant fourni.",
+      "reserves": [
+        "bandeau-demo"
+      ],
+      "erreurGl": 0,
+      "obstructionCamera": {
+        "hit": false,
+        "distance": null
+      }
+    },
+    {
+      "chemin": "demo-volant/files/visuel-demo/apres/volant-gauche/0000.png",
+      "sha256": "8ff5d55ec5d63f6bd75073b5aca3a8ebe5053f2f982b7253ff29a3a7b373c03b",
+      "octets": 387174,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "volant-gauche",
+      "verdict": "accepte_dans_ces_poses",
+      "observations": "Volant placé devant le pilote avec support/tableau visibles. Prise des gants cohérente avec le braquage, bras contenus dans l’ouverture du cockpit ; pas de traversée évidente de la coque ni de volant flottant. Aucun plan avant fourni.",
+      "reserves": [
+        "bandeau-demo"
+      ],
+      "erreurGl": 0,
+      "obstructionCamera": {
+        "hit": false,
+        "distance": null
+      }
+    },
+    {
+      "chemin": "demo-volant/files/visuel-demo/apres/volant-gauche/0001.png",
+      "sha256": "dfff32a8922377a572e1cacd1e92c9d65a8082653f84170eff7a502a790cfc40",
+      "octets": 387437,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "volant-gauche",
+      "verdict": "accepte_dans_ces_poses",
+      "observations": "Volant placé devant le pilote avec support/tableau visibles. Prise des gants cohérente avec le braquage, bras contenus dans l’ouverture du cockpit ; pas de traversée évidente de la coque ni de volant flottant. Aucun plan avant fourni.",
+      "reserves": [
+        "bandeau-demo"
+      ],
+      "erreurGl": 0,
+      "obstructionCamera": {
+        "hit": false,
+        "distance": null
+      }
+    },
+    {
+      "chemin": "demo-volant/files/visuel-demo/apres/volant-gauche/0002.png",
+      "sha256": "a9d28594e4262688644cbe4306f32f95144032638a372b6f9f12061f8fd16927",
+      "octets": 387116,
+      "inspecteIndividuellement": true,
+      "variante": "apres",
+      "scenario": "volant-gauche",
+      "verdict": "accepte_dans_ces_poses",
+      "observations": "Volant placé devant le pilote avec support/tableau visibles. Prise des gants cohérente avec le braquage, bras contenus dans l’ouverture du cockpit ; pas de traversée évidente de la coque ni de volant flottant. Aucun plan avant fourni.",
+      "reserves": [
+        "bandeau-demo"
+      ],
+      "erreurGl": 0,
+      "obstructionCamera": {
+        "hit": false,
+        "distance": null
+      }
+    }
+  ],
+  "conclusion": "18 PNG inspectés individuellement. Aucun trou de sol, traversée évidente du pilote, écran noir ou instabilité entre les trois vues échantillonnées. Ancrage visuel du volant et confinement des bras cohérents sur les deux braquages. Réserve visuelle sur les pentes blanches et peu détaillées de la faune : ne pas clôturer la demande de matière des sols.",
+  "reserves": [
+    {
+      "id": "terrain-faune",
+      "gravite": "reserve_visuelle",
+      "description": "Les six captures candidates de faune montrent une pente continue, mais très blanche et presque sans grain apparent, y compris en été. La demande de terrain riche et texturé procéduralement reste partiellement non satisfaite."
+    },
+    {
+      "id": "bandeau-demo",
+      "gravite": "composition",
+      "description": "Le cadrage plus proche rend la faune lisible, mais le bandeau Démo et le sous-titre masquent une partie des animaux supérieurs et de leurs cornes. Le sous-titre recouvre aussi le haut du casque dans les plans pilote."
+    },
+    {
+      "id": "stries",
+      "gravite": "limite_comparaison",
+      "description": "Les stries diagonales sont très visibles sur les six références faune ; elles ne sont pas saillantes dans le nouveau cadrage rapproché. Le changement de caméra ne permet pas de conclure à leur correction générale."
+    }
+  ],
+  "limites": [
+    "Inspection de captures à poses prescrites : aucune validation de course complète, de collision dynamique ou de cadence matérielle.",
+    "Le compteur 10 FPS visible provient de l’horloge commandée et ne constitue pas une mesure GPU.",
+    "Aucune image avant pour le groupe volant : contrôle des poses gauche/droite uniquement, pas de comparaison visuelle avant/après pour ce groupe.",
+    "Environnements : nature Chrome 157.0.8103.78 / Node v24.22.3 ; volant Chrome 157.0.8103.50 / Node v24.22.2. Comparaisons avant/après confinées au groupe nature.",
+    "Les empreintes des archives GitHub ont été vérifiées par le parent ; cette revue vérifie les identités de leurs manifestes, rapports et PNG extraits."
+  ]
+}

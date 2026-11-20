@@ -1,0 +1,286 @@
+{
+  "format": "bitume-revue-pluie-poursuite-tunnel-v1",
+  "date": "2026-11-20T12:29:35.774363+00:00",
+  "lectureSeule": true,
+  "imagesInspectees": 5,
+  "imagesEtRapportsOriginauxModifies": false,
+  "lots": [
+    {
+      "lot": "demo-pluie-poursuite",
+      "identites": {
+        "commit": "eb30f18dfb30fa79f2c5a3684f3cd876398c0984",
+        "commitConcordant": true,
+        "arbre": "e015629469ca27ae5e8af4105c8b2b4a946f79aa",
+        "arbreAttendu": "e015629469ca27ae5e8af4105c8b2b4a946f79aa",
+        "arbreVerifieDansArchive": true,
+        "buildSHA256": "98848efea4b0969805008ba37cba7cab67b11434a9d960173ba77b157fcf8ef7",
+        "buildConcordantRapportEtManifeste": true,
+        "version": "V0.2.64",
+        "environnement": "Google Chrome 157.0.8103.50 \nv24.22.2"
+      },
+      "rapport": "demo-pluie-poursuite/files/visuel-demo/apres/pluie-poursuite-sillage/rapport.json",
+      "rapportSHA256": "eea841fb8ea2b8d40912d146f37f3b258d49836624b98182dedd0e87e6373209",
+      "campagne": "demo-pluie-poursuite/files/visuel-demo/rapport.json",
+      "campagneSHA256": "4c289444eb56ef8042260e6dc260d890aa4a35e9e63f1060a8e5cef9febf2104",
+      "echecsHistoriques": 1,
+      "erreursHistoriques": [
+        "Fort sillage ou évacuation des gouttes non exercés"
+      ],
+      "images": [
+        {
+          "chemin": "demo-pluie-poursuite/files/visuel-demo/apres/pluie-poursuite-sillage/0000.png",
+          "sha256": "9e4bbca7a57e0ecd0f726f5914e5a48a555f4305bc16dd31685476c819fba765",
+          "inspecteeIndividuellement": true,
+          "verdict": "lisible-mais-fort-sillage-sur-lentille-non-qualifie",
+          "constat": "Voiture et limites de route lisibles. Dépôts de tailles variées visibles sur la lentille ; quelques traits de pluie du monde et panaches clairs derrière les véhicules. Le bandeau cache une partie de l’horizon. La scène ne montre pas un fort brouillard de projections sur la caméra.",
+          "mesures": {
+            "vue": "poursuite",
+            "sources": [
+              {
+                "id": 1,
+                "exposition": 0.756958506986315
+              }
+            ],
+            "casque": 0.756958506986315,
+            "lentille": 0.04821429079292072,
+            "embrunsContexte": 0.04821429079292072,
+            "vitreVisible": true,
+            "obstruction": {
+              "hit": false,
+              "distance": null
+            },
+            "visiere": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "eau": 0.6463429704040723,
+              "embruns": 0.04821429079292062,
+              "gouttes": 18,
+              "expulses": 22,
+              "depotsEau": 43,
+              "depotsEmbruns": 0,
+              "accumulationNeige": 0,
+              "neige": 0
+            }
+          }
+        },
+        {
+          "chemin": "demo-pluie-poursuite/files/visuel-demo/apres/pluie-poursuite-sillage/0001.png",
+          "sha256": "a8ee5c571f40e43ba19c51368a4762df611fd903358465e40e834a9f1d8efba6",
+          "inspecteeIndividuellement": true,
+          "verdict": "lisible-mais-fort-sillage-sur-lentille-non-qualifie",
+          "constat": "Voiture et limites de route lisibles. Dépôts de tailles variées visibles sur la lentille ; quelques traits de pluie du monde et panaches clairs derrière les véhicules. Le bandeau cache une partie de l’horizon. La scène ne montre pas un fort brouillard de projections sur la caméra. Évolution des dépôts et du panache sur la même pose prescrite.",
+          "mesures": {
+            "vue": "poursuite",
+            "sources": [
+              {
+                "id": 1,
+                "exposition": 0.756958506986315
+              }
+            ],
+            "casque": 0.756958506986315,
+            "lentille": 0.04821429079292072,
+            "embrunsContexte": 0.04821429079292072,
+            "vitreVisible": true,
+            "obstruction": {
+              "hit": false,
+              "distance": null
+            },
+            "visiere": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "eau": 0.6464149090251163,
+              "embruns": 0.04821429079292062,
+              "gouttes": 18,
+              "expulses": 23,
+              "depotsEau": 44,
+              "depotsEmbruns": 0,
+              "accumulationNeige": 0,
+              "neige": 0
+            }
+          }
+        },
+        {
+          "chemin": "demo-pluie-poursuite/files/visuel-demo/apres/pluie-poursuite-sillage/0002.png",
+          "sha256": "daea75324d508fa1940eeacc231a8978a9a1ba2aa1c64198a0d1b8804fa45fbe",
+          "inspecteeIndividuellement": true,
+          "verdict": "lisible-mais-fort-sillage-sur-lentille-non-qualifie",
+          "constat": "Voiture et limites de route lisibles. Dépôts de tailles variées visibles sur la lentille ; quelques traits de pluie du monde et panaches clairs derrière les véhicules. Le bandeau cache une partie de l’horizon. La scène ne montre pas un fort brouillard de projections sur la caméra. Évolution des dépôts et du panache sur la même pose prescrite.",
+          "mesures": {
+            "vue": "poursuite",
+            "sources": [
+              {
+                "id": 1,
+                "exposition": 0.756958506986315
+              }
+            ],
+            "casque": 0.756958506986315,
+            "lentille": 0.04821429079292072,
+            "embrunsContexte": 0.04821429079292072,
+            "vitreVisible": true,
+            "obstruction": {
+              "hit": false,
+              "distance": null
+            },
+            "visiere": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "eau": 0.6464818501345997,
+              "embruns": 0.04821429079292062,
+              "gouttes": 18,
+              "expulses": 23,
+              "depotsEau": 44,
+              "depotsEmbruns": 0,
+              "accumulationNeige": 0,
+              "neige": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "lot": "meteo-pluie-tunnel",
+      "identites": {
+        "commit": "eb30f18dfb30fa79f2c5a3684f3cd876398c0984",
+        "commitConcordant": true,
+        "arbre": null,
+        "arbreAttendu": "e015629469ca27ae5e8af4105c8b2b4a946f79aa",
+        "arbreVerifieDansArchive": false,
+        "buildSHA256": "98848efea4b0969805008ba37cba7cab67b11434a9d960173ba77b157fcf8ef7",
+        "buildConcordantRapportEtManifeste": true,
+        "version": "V0.2.64",
+        "environnement": "Google Chrome 157.0.8103.78 \nv24.22.2"
+      },
+      "rapport": "meteo-pluie-tunnel/files/visuel-meteo/apres/tunnel/rapport.json",
+      "rapportSHA256": "58961a4f5ef5981696ce52685a358e1fa67ab49cdfd49f1c8d366b461ff18a85",
+      "campagne": "meteo-pluie-tunnel/files/visuel-meteo/rapport.json",
+      "campagneSHA256": "0a7e6dfc5f7c5fd39906cb31728ccb2d35111ae38ef91ac63032131ff0868767",
+      "echecsHistoriques": 0,
+      "erreursHistoriques": [],
+      "images": [
+        {
+          "chemin": "meteo-pluie-tunnel/files/visuel-meteo/apres/tunnel/0000.png",
+          "sha256": "0b14d6a4b8ece9f2dbdfcc5c31320227ced97e04c34d2ce98ca67de7950abc5e",
+          "inspecteeIndividuellement": true,
+          "verdict": "coherent-sur-la-pose-interieure-avec-reserves",
+          "constat": "Voûte et parois continues, éclairage sombre mais lisible ; dépôts résiduels visibles sur l’image. La voiture bleue très proche masque une grande part de la chaussée et le fond. Aucun portail cadré et aucune pluie extérieure observable depuis cette composition.",
+          "mesures": {
+            "abscisse": 1893,
+            "abri": true,
+            "pluieContexte": 1,
+            "embrunsContexte": 0,
+            "vitreVisible": true,
+            "visiere": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "eau": 0.9044398122346603,
+              "embruns": 0.01827393150049024,
+              "gouttes": 24,
+              "expulses": 16,
+              "depotsEau": 43,
+              "depotsEmbruns": 0,
+              "accumulationNeige": 0,
+              "neige": 0
+            }
+          }
+        },
+        {
+          "chemin": "meteo-pluie-tunnel/files/visuel-meteo/apres/tunnel/0001.png",
+          "sha256": "98bd378b96e01dd4e2756efc4b13e6a485d43002831cf61072f7493d7763917a",
+          "inspecteeIndividuellement": true,
+          "verdict": "coherent-sur-la-pose-interieure-avec-reserves",
+          "constat": "Voûte et parois continues, éclairage sombre mais lisible ; dépôts résiduels visibles sur l’image. La voiture bleue très proche masque une grande part de la chaussée et le fond. Aucun portail cadré et aucune pluie extérieure observable depuis cette composition. La seconde image garde la même pose et quelques dépôts se déplacent ; le rapport mesure une diminution.",
+          "mesures": {
+            "abscisse": 1893,
+            "abri": true,
+            "pluieContexte": 1,
+            "embrunsContexte": 0,
+            "vitreVisible": true,
+            "visiere": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "eau": 0.8665896270662581,
+              "embruns": 0.01588659284306485,
+              "gouttes": 23,
+              "expulses": 17,
+              "depotsEau": 43,
+              "depotsEmbruns": 0,
+              "accumulationNeige": 0,
+              "neige": 0
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "diagnosticPoursuite": {
+    "erreurReelleConservee": "Fort sillage ou évacuation des gouttes non exercés",
+    "unRival": true,
+    "casque": 0.756958506986315,
+    "lentille": 0.04821429079292072,
+    "embrunsContexte": 0.04821429079292072,
+    "depotsEmbruns": [
+      0,
+      0,
+      0
+    ],
+    "expulses": [
+      22,
+      23,
+      23
+    ],
+    "constat": "Le raccord runtime échantillonne cam.pos conformément à docs/METEO.md. Le harness demande >0.6 au contexte de lentille mais dispose explicitement un casque fortement exposé et une caméra en bord de panache. Son test géométrique attend déjà casque>0.6 et lentille<0.1. Le commentaire de la préparation promet au contraire la transmission de l’exposition du pilote : contradiction à trancher, sans effacer la réserve de fortes projections en poursuite.",
+    "correctifCodeRealise": true,
+    "requalificationEnSucces": true,
+    "decision": "Contrat caméra retenu selon docs/METEO.md et le raccord runtime ; le contrôle distingue casque fort et lentille faible. L’objectif de fortes projections sur la lentille demeure réservé.",
+    "preuveRequalification": "requalification-demo-pluie-poursuite.json",
+    "commitCorrectif": "4e017562cdeb4e204922c424fef8ba9fc59fee18"
+  },
+  "porteeTunnel": {
+    "abscisses": [
+      1893,
+      1893
+    ],
+    "bornes": [
+      1798,
+      2058
+    ],
+    "eau": [
+      0.9044398122346603,
+      0.8665896270662581
+    ],
+    "gouttes": [
+      24,
+      23
+    ],
+    "depotsEau": [
+      43,
+      43
+    ],
+    "embruns": [
+      0.01827393150049024,
+      0.01588659284306485
+    ],
+    "deplacementObserve": false,
+    "transitionEntreeSortieProuvee": false,
+    "pluieAuxPortailsProuvee": false,
+    "raison": "Le harness chauffe devant le tunnel puis replace directement les voitures à debut+95 m avant la première image. Les deux PNG sont pris sous la voûte à la même abscisse. Ils montrent le reliquat qui diminue, sans nouvelle entrée mesurée de gouttes ; ils ne montrent pas le passage au portail ni la reprise dehors."
+  },
+  "reserves": [
+    "Fort sillage sur la caméra de poursuite non qualifié ; échec initial conservé, distinct du correctif des champs privés en vue aérienne.",
+    "TREE.txt absent du lot météo-tunnel ; son COMMIT et son build correspondent, mais son arbre n’est pas attesté directement par un fichier d’archive et l’objet de fusion CI n’est pas disponible localement.",
+    "La voiture placée très près du cockpit dans le tunnel masque le fond et réduit l’inspection de la chaussée.",
+    "Aucune preuve de pluie aux portails ni de transitions continues entrée/sortie ; la correction de pluie du monde doit recevoir ses propres captures.",
+    "Séquences à poses prescrites sous SwiftShader, horloge pilotée ; ni course jouée ni FPS matériels. Les deux images tunnel ne suffisent pas pour le contrôle de variation fugitive sur trois images.",
+    "Versions Chrome différentes entre groupes ; aucune comparaison pixel à pixel entre la poursuite et le tunnel."
+  ]
+}

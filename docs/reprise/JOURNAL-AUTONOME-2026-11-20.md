@@ -145,3 +145,25 @@ REPRISE, ETAT, FILE-TRAVAIL et les reçus sont réconciliés : neuf circuits liv
 conservés. La suite vise pluie extérieure/composition ; le prototype est sauvegardé,
 la PR #37 préservée, et les autres destinations restent au programme. Cette clôture
 ne relance aucune campagne et ne modifie ni jeu, ni outils, ni build.
+
+## 014 — consolidation vérifiée, avant publication du plan
+
+Demande de David : fusionner et pousser tout sur une branche, puis ajouter le plan.
+Inventaire : 50 références distantes, 34 secondaires déjà contenues dans main fd92eec1
+et 15 têtes à préserver par ascendance. Dix patches de sources/études se réappliquent
+exactement depuis leurs vraies bases ; 15 notices et les objets de chaque delta sont
+réunis dans `preparations/`. Les anciens builds, captures et physiques ne sont pas
+activés. Les études historiques auparavant signalées introuvables sont bien retrouvées.
+
+PR #37 : dix reçus propres conservés (un seul chemin obsolète normalisé), contrôles
+WebGL/pluie/rival/lentille repris. L'ancien seuil de poursuite à 0,05 est refusé :
+le panache courant reste fort. 8/8 tests ciblés, 16/16 rapports et 48/48 empreintes
+d'images passent, sans nouveau rendu. Runtime, version, p15, FERRO et HTML inchangés.
+La campagne générale 159/159 conserve l'attribution à son candidat ; aucune relance.
+
+Les précisions suivantes de David sont à réunir dans le plan après cette publication :
+bras en collision avec le buste, un seul cockpit pour les deux vues et pilote assis
+plus bas dans la cuve. La lecture confirme des transformations propres aux vues et
+l'absence de régression bras/buste ; la pénétration précise reste à reproduire.
+La publication et l'ascendance des 15 têtes doivent encore être vérifiées avant de
+déclarer la consolidation terminée. Aucun nettoyage de références effectué.

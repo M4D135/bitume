@@ -1,0 +1,113 @@
+{
+  "branche": "backup/meteo-matiere-20261120",
+  "dossier": "meteo-matiere",
+  "categorie": "historique_supplante",
+  "etat": "Premier checkpoint des matières et de la visière ; les travaux ont été repris puis corrigés dans la livraison 0.2.66.",
+  "reserve": "Conserver les optiques et le sillage qualifiés de main ; ne pas restaurer ces anciennes versions.",
+  "commit_original": "99bd04a6e28a26a33314d2366ad516cd6bef6af7",
+  "arbre_original": "04c592b67695cff0d6fa23757c93df4f1f7db66e",
+  "base_commune_reelle": "f41614e1f3887a79ebbd633df3fde754534f202e",
+  "arbre_base": "06cd776ea3806211a7951f32cca38b82ff05b120",
+  "main_observe": "fd92eec1058f61e6191cc5ce090f5fbbd366e8e9",
+  "delta_total_chemins": 4,
+  "chemins_absents_de_main": [],
+  "delta_source": null,
+  "fichiers": [
+    {
+      "path": "src/visiere-optique.js",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "a08698fef40474c93790ff7b61f0613e22d74ac5",
+        "bytes": 18693
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "cb5bd5bf0e8628a575b3784d9afcb795f981aa11",
+        "bytes": 22847
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "30d5681853b26f7085a8164f3d8f4d13cfe4a8b0",
+        "bytes": 23742
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "src/vitre.js",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0728a8503a08eff82235eece22e9c13b407640c3",
+        "bytes": 20808
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "f222ca373a91e679495b2a471003ebe5ddbf2ccd",
+        "bytes": 23145
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "3b8f3080ab9f1b5272da893d5cd1e2072d3f5a41",
+        "bytes": 23688
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "verifications/visiere-optique.test.mjs",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "b514813e5043bd73e73bc02130f3f788179f6612",
+        "bytes": 9373
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "646216fef0b6992d89a427b191812299472cfba9",
+        "bytes": 14731
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "e80fd08d96071394e13707242b71b7baaee3a3f5",
+        "bytes": 15022
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "verifications/vitre-meteo.test.mjs",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "92867e816e6a59d8459f3e005d83293adba819ff",
+        "bytes": 12012
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "baf3e6ddb573b940eb59d9b2cb0be7ad036d1cc6",
+        "bytes": 12591
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c2aad7d3eb8f414cfd68545f2f4e08ea08cf6756",
+        "bytes": 13306
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    }
+  ]
+}

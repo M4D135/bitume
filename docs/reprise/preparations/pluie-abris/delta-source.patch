@@ -1,0 +1,287 @@
+diff --git a/src/jeu.js b/src/jeu.js
+index ede018f97c38ec0dd37dcf76baf9939a22d90564..e992bbeba82c042f22e8cdde7541e06b1eb9d935 100644
+--- a/src/jeu.js
++++ b/src/jeu.js
+@@ -664,10 +664,11 @@
+     const deux = S !== session;
+     if (deux && !pluieVue2) pluieVue2 = creationTardive('pluie', B.meteo.creerPluie($('meteo2')));
+     if (!deux && !pluieVue) pluieVue = creationTardive('pluie', B.meteo.creerPluie($('meteo')));
+-    // sous la voûte du tunnel, il ne pleut pas : la caméra décide, sinon les gouttes disparaissent pendant que la
+-    // vue extérieure montre encore la pluie
+-    const abri = sousLaVoute(S.course.c, cam.pos), neige = precipitationsNeige(S);
+-    (deux ? pluieVue2 : pluieVue).dessiner(abri || neige > 0 ? Object.assign(METEO_ABRI, { t: S.meteo.t }) : S.meteo, cam, dt, { cockpit: vue === 'cockpit', dpr: window.devicePixelRatio || 1 });
++    // La caméra décide des dépôts sur la visière. Le champ de pluie conserve les gouttes dehors,
++    // visibles par les portails ou le côté ouvert d'une galerie, puis masque chaque trait dans le monde.
++    const abri = sousLaVoute(S.course.c, cam.pos) || B.meteo.abriCouverts(S.course.c, cam.pos, S.course.physique), neige = precipitationsNeige(S);
++    S.pluieImage = (deux ? pluieVue2 : pluieVue).dessiner(neige > 0 ? Object.assign(METEO_ABRI, { t: S.meteo.t }) : S.meteo, cam, dt,
++      { cockpit: vue === 'cockpit', dpr: window.devicePixelRatio || 1, palier: profil.palier, circuit: S.course.c, physique: S.course.physique });
+     if (B.vitre) {
+       if (deux && !vitreVue2) vitreVue2 = creationTardive('vitre', B.vitre.creer($('vitre2'), { graine: 2 }));
+       if (!deux && !vitreVue) vitreVue = creationTardive('vitre', B.vitre.creer($('vitre')));
+diff --git a/src/meteo.js b/src/meteo.js
+index d4be706a234ca2b20e8dd706c004f8b16a8ef148..be4c3e87f801fffa4e37a944aa8d93061a01d91d 100644
+--- a/src/meteo.js
++++ b/src/meteo.js
+@@ -83,11 +83,72 @@
+   const SANS_OPTIONS = Object.freeze({});
+   // Couleur constante : l'opacité de chaque lot passe par globalAlpha, sans chaîne rgba à réanalyser.
+   const COULEUR = 'rgb(190,210,225)';
++  const BOITES_COUVERTS = new WeakMap(), VIDE = Object.freeze([]), HAUT = Object.freeze([0, 1, 0]);
++  const RAYON_TOIT = Object.freeze({ mask: 2, staticOnly: true }), RAYON_VUE = Object.freeze({ mask: 3, staticOnly: true });
++  const GENRE_TOIT = /^(voute-(tunnel|galerie)|portail-tunnel)$/;
++  const HIT_CAMERA = {};
++  // Ces boîtes servent uniquement à éviter les requêtes loin des ouvrages. Elles ne décident
++  // jamais qu'une paroi est opaque : cette décision vient des primitives visibles installées dans PhysX.
++  function boitesCouverts(c) {
++    if (!B.couverts || !c || !B.couverts.liste(c).length) return VIDE;
++    const prepare = B.couverts.preparer(c), ancien = BOITES_COUVERTS.get(c);
++    if (ancien?.prepare === prepare) return ancien.boites;
++    const boites = prepare.blocs.map(({ t, axe }) => {
++      const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
++      for (let k = 0; k < axe.length; k += 5) for (let j = 0; j < 3; j++) { min[j] = Math.min(min[j], axe[k + j]); max[j] = Math.max(max[j], axe[k + j]); }
++      const marge = t.mur + 3; min[0] -= marge; max[0] += marge; min[2] -= marge; max[2] += marge;
++      min[1] -= .12; max[1] += t.hauteur + 2;
++      return { min, max };
++    });
++    BOITES_COUVERTS.set(c, { prepare, boites }); return boites;
++  }
++  function traverseBoite(a, b, boite) {
++    let entree = 0, sortie = 1;
++    for (let k = 0; k < 3; k++) {
++      const d = b[k] - a[k];
++      if (Math.abs(d) < 1e-10) { if (a[k] < boite.min[k] || a[k] > boite.max[k]) return false; }
++      else {
++        const p = (boite.min[k] - a[k]) / d, q = (boite.max[k] - a[k]) / d;
++        entree = Math.max(entree, Math.min(p, q)); sortie = Math.min(sortie, Math.max(p, q));
++        if (entree > sortie) return false;
++      }
++    }
++    return true;
++  }
++  function presDuCouvert(cam, point, queue, boites) {
++    for (const b of boites) if (traverseBoite(cam, point, b) || traverseBoite(cam, queue, b)) return true;
++    return false;
++  }
++  function sousToitReel(p, physique, boites, hit, stats) {
++    if (!physique?.world?.raycast || !physique.solids?.acteurs) return false;
++    let distance = 0;
++    for (const b of boites) if (traverseBoite(p, p, b)) distance = Math.max(distance, b.max[1] - p[1]);
++    if (!(distance > .01)) return false;
++    if (stats) stats.rayons++;
++    physique.world.raycast(p, HAUT, distance, RAYON_TOIT, hit);
++    const genre = hit.hit && physique.solids.acteurs.get(hit.body)?.genre;
++    return !!genre && GENRE_TOIT.test(genre);
++  }
++  // L'abri logique reste la référence de l'intérieur. La sonde complète seulement les débords
++  // réellement dessinés (linteaux et rives du toit) ; géométrie et éclairage anciens sont conservés.
++  function abriCouverts(c, p, physique) {
++    return !!B.couverts?.abri(c, p) || sousToitReel(p, physique, boitesCouverts(c), HIT_CAMERA);
++  }
+   function creerPluie(canvas) {
+     const ctx = canvas && canvas.getContext('2d');
+     const graines = new Float64Array(N * 4), segments = new Float32Array(N * 4);
+     const lots = new Uint8Array(N);
+-    const stats = { candidats: 0, visibles: 0, traits: 0, lots: 0, lectures: 0, pixels: 0, propre: true, masquee: false };
++    const stats = { candidats: 0, visibles: 0, traits: 0, lots: 0, lectures: 0, pixels: 0, propre: true, masquee: false,
++      spatiaux: 0, abrites: 0, occultes: 0, rayons: 0 };
++    const point = [0, 0, 0], queue = [0, 0, 0], milieu = [0, 0, 0], direction = [0, 0, 0], hit = {};
++    function occulte(a, b, physique) {
++      if (!physique?.world?.raycast) return false;
++      for (let k = 0; k < 3; k++) direction[k] = b[k] - a[k];
++      const distance = Math.hypot(...direction);
++      if (!(distance > 0)) return false;
++      stats.rayons++; physique.world.raycast(a, direction, distance, RAYON_VUE, hit);
++      return hit.hit;
++    }
+     for (let i = 0; i < N; i++) {
+       graines[i * 4] = hasard(i * 4 + 1) * LARGEUR;
+       graines[i * 4 + 1] = hasard(i * 4 + 2) * HAUTEUR;
+@@ -127,7 +188,7 @@
+     montrer(false); // toile neuve, vide : rien à composer avant la première goutte
+     function dessiner(m, cam, dt, options) {
+       const o = options || SANS_OPTIONS;
+-      stats.candidats = stats.visibles = stats.traits = stats.lots = 0;
++      stats.candidats = stats.visibles = stats.traits = stats.lots = stats.spatiaux = stats.abrites = stats.occultes = stats.rayons = 0;
+       if (!ctx || !cam) return stats;
+       const pluie = clamp(m.pluie || 0, 0, 1), sec = pluie < .025;
+       mesurer(o, sec);
+@@ -158,6 +219,7 @@
+       const deriveX = 1.8 * t + .9 / .61 * (1 - Math.cos(t * .61)) + .5 / 1.47 * (1 - Math.cos(t * 1.47));
+       const deriveZ = .55 * t + .35 / .43 * Math.sin(t * .43);
+       const cible = Math.round((BUDGETS[o.palier] || N) * pluie);
++      const boites = boitesCouverts(o.circuit);
+       stats.candidats = cible;
+       for (let i = 0; i < cible; i++) {
+         const k = i * 4, chute = graines[k + 3];
+@@ -180,6 +242,22 @@
+         const tx = x - (ventX - vx) * EXPOSITION, ty = y + (chute + vy) * EXPOSITION, tz = z - (ventZ - vz) * EXPOSITION;
+         const dp = tx * fx + ty * fy + tz * fz;
+         if (dp < .8) continue;
++        // Ne requêter que des traits déjà projetés dans le cadre et dont le rayon rencontre un
++        // couvert. Aucun quota aléatoire : tous ces traits ont la même protection, même en Légère.
++        // Deux extrémités sèches et trois lignes de vue protègent aussi le flou près d'un pilier.
++        if (boites.length) {
++          point[0] = pos[0] + x; point[1] = pos[1] + y; point[2] = pos[2] + z;
++          queue[0] = pos[0] + tx; queue[1] = pos[1] + ty; queue[2] = pos[2] + tz;
++          if (presDuCouvert(pos, point, queue, boites)) {
++            stats.spatiaux++;
++            if (B.couverts.abri(o.circuit, point) || B.couverts.abri(o.circuit, queue)) { stats.abrites++; continue; }
++            // Une paroi coupe le trait avant toute sonde verticale ou supplémentaire.
++            if (occulte(pos, point, o.physique)) { stats.occultes++; continue; }
++            if (sousToitReel(point, o.physique, boites, hit, stats) || sousToitReel(queue, o.physique, boites, hit, stats)) { stats.abrites++; continue; }
++            for (let k = 0; k < 3; k++) milieu[k] = (point[k] + queue[k]) / 2;
++            if (occulte(pos, queue, o.physique) || occulte(pos, milieu, o.physique)) { stats.occultes++; continue; }
++          }
++        }
+         let dx = w * .5 + (tx * rx + ty * ry + tz * rz) * focale / dp - ex;
+         let dy = h * .5 - (tx * ux + ty * uy + tz * uz) * focale / dp - ey;
+         const longueur = Math.hypot(dx, dy), maximum = Math.min(18, h * .025);
+@@ -240,5 +318,5 @@
+     if (mode === 'variable') return { t: 0, phase: 'clair', tp: 0, pluie: 0, nuage: .12, eclair: 0, prochainEclair: 0, mouille: 0, ventX: 1.8, ventZ: .9, fixe: false };
+     return null;
+   }
+-  B.meteo = { avancer, ambiance, creerPluie, initial, pour, depuisReel, GOUTTES: BUDGETS, MAX_PIXELS };
++  B.meteo = { avancer, ambiance, creerPluie, abriCouverts, initial, pour, depuisReel, GOUTTES: BUDGETS, MAX_PIXELS };
+ })(globalThis.BITUME = globalThis.BITUME || {});
+diff --git a/verifications/meteo-couverts-physx.test.mjs b/verifications/meteo-couverts-physx.test.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..ee5600db717aaed60a82379c54218aeada205d23
+--- /dev/null
++++ b/verifications/meteo-couverts-physx.test.mjs
+@@ -0,0 +1,136 @@
++// Vraies précipitations projetées, vrais ouvrages du décor et vrai PhysX WASM.
++// Le Canvas enregistre les traits : ce banc ne remplace pas les captures du compositing navigateur.
++import assert from 'node:assert/strict';
++import { createRequire } from 'node:module';
++import { createHash } from 'node:crypto';
++import { readFileSync, writeFileSync } from 'node:fs';
++import { chargerPhysX } from './helpers/physx-runtime.mjs';
++const req = createRequire(import.meta.url);
++for (const f of ['circuit', 'couverts', 'carene', 'decor', 'solides-physx', 'meteo', 'vitre']) req('../src/' + f + '.js');
++const B = globalThis.BITUME, M = B.meteo, X = await chargerPhysX();
++const c = B.circuit.creer(47, { theme: 'montagne', longueur: 5200 }), t = c.tunnel;
++c.couverts = [
++  { ...t, id: 'premier', type: 'tunnel', fin: t.debut + 78 },
++  { ...t, id: 'galerie', type: 'galerie', ouvert: 'G', debut: t.debut + 100, fin: t.debut + 154 },
++  { ...t, id: 'second', type: 'tunnel', debut: t.debut + 186 }
++];
++const decor = B.decor.construire(c, { qualite: 'low', vegetation: false });
++const world = X.createWorld({ fixedStep: 1 / 120, maxSubSteps: 1 }), solids = B.solidesPhysX.installer(world, c, decor);
++const physique = { world, solids }, natif = world.raycast; let requetes = 0, controles = 0;
++world.raycast = function (...args) { requetes++; return natif.apply(this, args); };
++const verifier = (nom, f) => { f(); controles++; console.log('ok ' + nom); };
++const rapport = { schema: 1, controles: 0, rayonsNatifs: 0, scenarios: [],
++  limite: 'Temps CPU JavaScript et requêtes WASM, Canvas instrumenté sans raster ; aucun FPS matériel déduit.' };
++
++function toile() {
++  const traits = []; let point;
++  const ctx = { globalAlpha: 1, setTransform() {}, clearRect() { traits.length = 0; }, beginPath() {}, stroke() {}, fill() {},
++    moveTo(x, y) { point = [x, y]; }, lineTo(x, y) { traits.push([...point, x, y]); }, quadraticCurveTo() {}, ellipse() {} };
++  return { width: 960, height: 540, clientWidth: 960, clientHeight: 540, style: {}, traits,
++    getContext: type => type === '2d' ? ctx : null };
++}
++function camera(s, angle = 0, hauteur = 1.2, lateral = 0) {
++  const q = B.circuit.echantillon(c, s);
++  return { pos: [q.x - Math.sin(q.cap) * lateral, q.y + hauteur, q.z + Math.cos(q.cap) * lateral],
++    yaw: q.cap + Math.PI / 2 + angle, pitch: 0, fov: 70 };
++}
++function passage(nom, cam, palier = 'high', n = 60) {
++  const canvas = toile(), pluie = M.creerPluie(canvas), mesures = [], temps = [], empreinte = createHash('sha256');
++  for (let i = 0; i < n; i++) {
++    const avant = requetes, debut = performance.now();
++    const s = pluie.dessiner({ t: 12 + i / 30, pluie: 1 }, cam, 1 / 30, { circuit: c, physique, palier });
++    temps.push(performance.now() - debut); mesures.push({ ...s });
++    empreinte.update(JSON.stringify({ traits: canvas.traits, stats: s }));
++    assert.equal(requetes - avant, s.rayons, 'compteur fidèle aux requêtes natives');
++    assert.ok(s.rayons <= 5 * s.spatiaux, 'au plus cinq rayons par trait déjà projeté près d’un couvert');
++    assert.ok(s.spatiaux <= s.candidats && s.candidats <= M.GOUTTES[palier]);
++  }
++  temps.sort((a, b) => a - b);
++  rapport.scenarios.push({ nom, palier, images: n, traitsEtStatsSha256: empreinte.digest('hex'),
++    traitsMin: Math.min(...mesures.map(s => s.traits)), traitsMax: Math.max(...mesures.map(s => s.traits)),
++    rayonsMax: Math.max(...mesures.map(s => s.rayons)), spatiauxMax: Math.max(...mesures.map(s => s.spatiaux)),
++    cpuMs: { p50: temps[Math.floor(n / 2)], p95: temps[Math.floor(n * .95)], pire: temps[n - 1] } });
++  return { canvas, pluie, mesures };
++}
++
++try {
++  verifier('le fond du tunnel et le mur fermé de la galerie ne laissent passer aucun trait', () => {
++    for (const [nom, cam] of [['fond-tunnel', camera(t.debut + 39)], ['galerie-mur', camera(t.debut + 127, Math.PI / 2)]]) {
++      const r = passage(nom, cam);
++      assert.ok(r.mesures.every(s => s.traits === 0 && s.masquee));
++      assert.ok(r.mesures.some(s => s.abrites > 0 && s.occultes > 0), 'volume et vraies parois exercés');
++    }
++  });
++  verifier('la pluie extérieure demeure visible depuis le portail et le côté ouvert de la galerie', () => {
++    for (const [nom, cam] of [['portail-sortant', camera(t.debut + 3, Math.PI)], ['galerie-ouverte', camera(t.debut + 127, -Math.PI / 2)]]) {
++      assert.equal(B.couverts.abri(c, cam.pos), true);
++      const r = passage(nom, cam);
++      assert.ok(r.mesures.every(s => s.traits > 20), 'pluie dehors visible malgré une caméra abritée');
++      assert.ok(r.mesures.some(s => s.abrites > 0 && s.occultes > 0));
++    }
++  });
++  verifier('les linteaux réels et le dessus du toit sont distingués sans déplacer les ouvrages', () => {
++    const linteau = camera(t.debut - 1.75), ciel = camera(t.debut + 39, 0, t.hauteur + 4);
++    assert.equal(B.couverts.abri(c, linteau.pos), false, 'linteau hors intervalle historique');
++    assert.equal(M.abriCouverts(c, linteau.pos, physique), true, 'linteau dessiné réellement au-dessus');
++    assert.equal(M.abriCouverts(c, ciel.pos, physique), false, 'caméra au-dessus de la couverture');
++    assert.ok(passage('dessus-toit', ciel).mesures.every(s => s.traits > 20));
++  });
++  verifier('loin des couverts, pluie strictement identique et aucune requête native', () => {
++    const cam = camera(0), a = toile(), b = toile(), pa = M.creerPluie(a), pb = M.creerPluie(b);
++    for (let i = 0; i < 60; i++) {
++      const m = { t: 12 + i / 30, pluie: 1 }, avant = requetes;
++      pa.dessiner(m, cam, 1 / 30, { circuit: c, physique, palier: 'high' });
++      assert.equal(requetes, avant); assert.equal(pa.stats.spatiaux, 0);
++      pb.dessiner(m, cam, 1 / 30, { palier: 'high' }); assert.deepEqual(a.traits, b.traits);
++    }
++    passage('dehors', cam);
++  });
++  verifier('Légère garde le même masque et réduit les candidats et le nombre de requêtes', () => {
++    const cam = camera(t.debut + 127, -Math.PI / 2), bas = passage('galerie-ouverte', cam, 'low'), haut = passage('galerie-ouverte', cam, 'high');
++    for (let i = 0; i < bas.mesures.length; i++) {
++      assert.equal(bas.mesures[i].candidats, 420); assert.equal(haut.mesures[i].candidats, 840);
++      assert.ok(bas.mesures[i].rayons <= haut.mesures[i].rayons);
++      assert.ok(bas.mesures[i].traits > 5 && bas.mesures[i].traits <= haut.mesures[i].traits);
++    }
++  });
++  verifier('la pause redessine les mêmes traits et J2 ne modifie pas les tampons de J1', () => {
++    const a = toile(), b = toile(), pa = M.creerPluie(a), pb = M.creerPluie(b), camA = camera(t.debut + 3, Math.PI), camB = camera(t.debut + 127, -Math.PI / 2);
++    const meteo = { t: 14, pluie: 1 }, options = { circuit: c, physique, palier: 'high' };
++    pa.dessiner(meteo, camA, 1 / 60, options); const traits = JSON.stringify(a.traits), stats = JSON.stringify(pa.stats);
++    pb.dessiner({ t: 28, pluie: .8 }, camB, 1 / 30, options);
++    assert.equal(JSON.stringify(a.traits), traits); assert.equal(JSON.stringify(pa.stats), stats);
++    pa.dessiner(meteo, camA, 0, options); assert.equal(JSON.stringify(a.traits), traits);
++    const avant = requetes; pa.dessiner({ t: 14, pluie: 0 }, camA, 0, options);
++    assert.equal(requetes, avant); assert.equal(pa.stats.traits, 0); assert.equal(pa.stats.masquee, true);
++  });
++  verifier('le raccord réel du jeu conserve la pluie dehors et laisse sécher la visière sous abri', () => {
++    const source = readFileSync(process.argv[2] || new URL('../src/jeu.js', import.meta.url), 'utf8');
++    const a = source.indexOf('  let pluieVue = null'), b = source.indexOf('  // menus à la manette', a);
++    assert.ok(a >= 0 && b > a);
++    const v = { id: 0, etat: { v: 35 } }, S = { i: 0, suivie: 0, nature: { saison: { neige: false } }, meteo: { t: 12, pluie: 1 }, course: { c, physique, voitures: [v], joueur: v } };
++    const executer = new Function('B', 'session', 'toile', `
++      const elements = new Map(), $ = id => { if (!elements.has(id)) elements.set(id, toile()); return elements.get(id); };
++      const window = { devicePixelRatio: 1 }, CATALOGUE = [{ theme: 'montagne' }], reglages = { gouttes: 1 };
++      const creationTardive = (nom, valeur) => valeur, sousLaVoute = (c, p) => B.couverts.abri(c, p);
++      const ecran = 'course', retourReglages = 'course';
++      ${source.slice(a, b)}
++      return { dessiner: (S, cam) => dessinerMeteo(S, 1/30, cam, 'cockpit', { palier: 'high' }),
++        pluie: () => pluieVue, vitre: () => vitreVue };
++    `)(B, S, toile);
++    const dehors = camera(0), portail = camera(t.debut + 3, Math.PI);
++    for (let i = 0; i < 90; i++) { S.meteo.t += 1 / 30; executer.dessiner(S, dehors); }
++    const vitre = executer.vitre(); assert.ok(vitre.stats.gouttes > 0);
++    const sequence = vitre.sequence; executer.dessiner(S, portail);
++    assert.equal(S.vitreContexte.abri, true);
++    assert.ok(executer.pluie().stats.traits > 20, 'le jeu ne coupe plus globalement la pluie depuis le portail');
++    assert.equal(vitre.sequence, sequence, 'aucun nouveau dépôt sous le toit'); assert.ok(vitre.stats.gouttes > 0, 'résidu conservé à l’entrée');
++    for (let i = 0; i < 30 * 30; i++) B.vitre.mettreAJour(vitre, 1 / 30, S.vitreContexte);
++    assert.equal(vitre.sequence, sequence); assert.equal(vitre.stats.gouttes, 0, 'séchage résiduel');
++  });
++} finally {
++  rapport.controles = controles; rapport.rayonsNatifs = requetes;
++  if (process.env.BITUME_PLUIE_RAPPORT) writeFileSync(process.env.BITUME_PLUIE_RAPPORT, JSON.stringify(rapport, null, 2) + '\n');
++  B.solidesPhysX.liberer(solids); world.dispose(); X.dispose();
++}
++console.log(`météo couverts : ${controles} contrôles passés, ${requetes} rayons natifs bornés aux traits projetés`);

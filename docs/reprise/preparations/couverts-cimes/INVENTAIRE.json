@@ -1,0 +1,322 @@
+{
+  "branche": "feat/bitume-couverts-cimes-20261120",
+  "dossier": "couverts-cimes",
+  "categorie": "historique_supplante_avec_preuves",
+  "etat": "Étape antérieure de portails et qualification Cimes, reprise dans la livraison unifiée.",
+  "reserve": "Conserver la géométrie et les tests actuellement qualifiés. Les preuves de cette étape restent récupérables dans leur commit d’origine, sans remplacer les reçus 0.2.66.",
+  "commit_original": "6c83902378e923c13683ce853428bc38b879d551",
+  "arbre_original": "1c8c1d9afa09c4f231c84e4fd99d12d49ee26861",
+  "base_commune_reelle": "9459baa8926a5989d25138af51da5e0ea41be81f",
+  "arbre_base": "50960560612aa717c33e52e12ba484eae55e42a2",
+  "main_observe": "fd92eec1058f61e6191cc5ce090f5fbbd366e8e9",
+  "delta_total_chemins": 15,
+  "chemins_absents_de_main": [
+    "docs/reprise/rapports/ROUTE-DES-CIMES-2026-11-20/QUALIFICATION-OUVRAGES.json",
+    "docs/reprise/rapports/ROUTE-DES-CIMES-2026-11-20/physx-douze-ouvrages-neige.json",
+    "docs/reprise/rapports/ROUTE-DES-CIMES-2026-11-20/physx-douze-ouvrages-pluie.json",
+    "docs/reprise/rapports/ROUTE-DES-CIMES-2026-11-20/physx-douze-ouvrages-sec.json"
+  ],
+  "delta_source": null,
+  "fichiers": [
+    {
+      "path": "docs/reprise/ROUTE-DES-CIMES-PORT-P15-2026-11-20.md",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "fadfd3b3b29cccd6cce21a569aa333edf99169bd",
+        "bytes": 6754
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "6f64575f665a5de80297ae9a35dc792cbf797545",
+        "bytes": 8926
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "d7916f3fe468b4694bc14f21b79e846f22d9d6a8",
+        "bytes": 9572
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/rapports/COUVERTS-2026-11-20/RACCORDS-TUNNELS.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "eb48d01f2b02f6bb586fd351ee2fa837df988998",
+        "bytes": 1653
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "eb48d01f2b02f6bb586fd351ee2fa837df988998",
+        "bytes": 1653
+      },
+      "relation_to_main": "identical",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/rapports/ROUTE-DES-CIMES-2026-11-20/QUALIFICATION-OUVRAGES.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "e82a9440321457fe3650c3cfdd627096df97fb7b",
+        "bytes": 2698
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/rapports/ROUTE-DES-CIMES-2026-11-20/RACCORD-GALERIE.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c33329566aa1482bdf6fef6f7a03ec7e264707d8",
+        "bytes": 5493
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "93749e7fe09379343f79cd1dc4d9dea09b96e390",
+        "bytes": 5463
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/rapports/ROUTE-DES-CIMES-2026-11-20/physx-douze-ouvrages-neige.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "5d90b90b6a7818234bb3639f8071e9c89c0ff7c3",
+        "bytes": 31060
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/rapports/ROUTE-DES-CIMES-2026-11-20/physx-douze-ouvrages-pluie.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "2c3ef4ad5c8374d8ec9663b7cf0462b2247f2ae1",
+        "bytes": 30993
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "docs/reprise/rapports/ROUTE-DES-CIMES-2026-11-20/physx-douze-ouvrages-sec.json",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c3e0cb713677d0a24cdd4c7b3057d0a8de514929",
+        "bytes": 27173
+      },
+      "main": null,
+      "relation_to_main": "absent",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "src/couverts.js",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "671112edabd36019ca304bec58901ed5bbc7bc50",
+        "bytes": 11821
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "877bd944ad412e6ad8a98a96a7058cc863249467",
+        "bytes": 12615
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "675d74dfff31cb8eb3e614d0f77adaf891c55a33",
+        "bytes": 12871
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "src/decor.js",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "8bfe7b04b73cc06c8a64e897f72ba6d9f3ffcd91",
+        "bytes": 127850
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "50ef98509dfa70809b4fa9c9c5bc968a44ed3f48",
+        "bytes": 129514
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "9e90771c4d041d1435eeb0d1e2463799ba467b49",
+        "bytes": 131695
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "src/route-des-cimes-decor.js",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "33b231ba9c2de408758bc0ec60b8dbc400662ee2",
+        "bytes": 5779
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "3d6e1de4161f7f26a1de93abe1f4681f7592e902",
+        "bytes": 6881
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "3d6e1de4161f7f26a1de93abe1f4681f7592e902",
+        "bytes": 6881
+      },
+      "relation_to_main": "identical",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "tools/qualification/route-des-cimes-physx.mjs",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "91f2216de9bac631e70d1f7031717d93cbafa3c0",
+        "bytes": 7741
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "fea8bcb35a3274bded4b5ef30c9d8195a377c696",
+        "bytes": 9546
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "fea8bcb35a3274bded4b5ef30c9d8195a377c696",
+        "bytes": 9546
+      },
+      "relation_to_main": "identical",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "verifications/couverts-joints-courbes.test.mjs",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "b489e5ab07601940824ad330c08716fdeffcf5a0",
+        "bytes": 4839
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "f64a8deefd1b62bcdfb508fa59cb1c07c8a6c667",
+        "bytes": 6126
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "f64a8deefd1b62bcdfb508fa59cb1c07c8a6c667",
+        "bytes": 6126
+      },
+      "relation_to_main": "identical",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "verifications/galerie-portails-physx.test.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "99b5844d35fba499e6a07fefa3a93e3f4af12f3c",
+        "bytes": 2389
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "8ec0491ece6d50187171edc0cb175fe36d3f23aa",
+        "bytes": 2405
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "verifications/route-des-cimes-decor.test.mjs",
+      "base": null,
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "014019096897188dddfc20e57de8b49393ec297e",
+        "bytes": 4814
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "014019096897188dddfc20e57de8b49393ec297e",
+        "bytes": 4814
+      },
+      "relation_to_main": "identical",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    },
+    {
+      "path": "verifications/solides-physx-wasm.test.mjs",
+      "base": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "08c237a6f931070599230e5f12546bf534d86edc",
+        "bytes": 8067
+      },
+      "head": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "9ea7fb3b6de9ea43a625998262c206ec2edab783",
+        "bytes": 8300
+      },
+      "main": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0e8110a3dea6f1c7efdf060f2fd7dd7f1606efe2",
+        "bytes": 8280
+      },
+      "relation_to_main": "different",
+      "preservation": "objet_git_original",
+      "motif_non_duplication": "notice_supplantee"
+    }
+  ]
+}
