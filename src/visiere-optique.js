@@ -161,8 +161,10 @@
     const air=Math.pow(clamp((vitesse-8)/100,0,1),1.65);
     const neige=c.abri ? 0 : clamp(nombre(c.neige),0,1);
     const pluie=c.abri || neige>.001 ? 0 : clamp(nombre(c.pluie),0,1);
-    const spray=c.abri ? 0 : clamp(nombre(c.embruns),0,1);
-    const eauCible=clamp((pluie*.95+spray*1.25)*intensite/(1+air*2.8),0,1.55);
+    const spray=c.abri || neige>.001 ? 0 : clamp(nombre(c.embruns),0,1);
+    // L'air évacue les dépôts, mais le panache du rival apporte sans cesse de nouveaux impacts.
+    // Distinguer ce flux de la pluie ambiante garde le sillage visible à grande vitesse.
+    const eauCible=clamp((pluie*.95/(1+air*2.8)+spray*1.25/(1+air*.45))*intensite,0,1.55);
     const neigeCible=clamp(neige*intensite/(1+air*7),0,1.25);
     e.accumulateur+=Math.min(.25,dt);
     while (e.accumulateur+1e-10>=PAS) {
@@ -171,7 +173,7 @@
       e.eau+=(eauCible+fonte-e.eau)*(1-Math.exp(-PAS*(eauCible>e.eau ? .72 : .22+air*1.8)));
       e.neige+=(neigeCible-e.neige)*(1-Math.exp(-PAS*(neigeCible>e.neige ? .10 : .065+air*.6)));
       e.embruns+=(spray*intensite-e.embruns)*(1-Math.exp(-PAS*(spray>e.embruns ? 4 : 1.4)));
-      const filmCible=(pluie*.35+spray*.55)*intensite/(1+air*4);
+      const filmCible=(pluie*.35/(1+air*4)+spray*.55/(1+air*.65))*intensite;
       e.film+=(filmCible-e.film)*(1-Math.exp(-PAS*(filmCible>e.film ? .5 : .3+air)));
       if(e.eau<.0005 && eauCible+fonte===0)e.eau=0;
       if(e.neige<.0005 && neigeCible===0)e.neige=0;

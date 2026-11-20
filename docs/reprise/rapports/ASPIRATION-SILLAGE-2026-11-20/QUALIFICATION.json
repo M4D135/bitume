@@ -1,0 +1,68 @@
+{
+  "date": "2026-11-20",
+  "status": "candidat_pret_CI",
+  "version": "0.2.62",
+  "physique": "p15",
+  "moteur": "FERRO 0.3.15",
+  "base": "f57cbbd8ec831b62d8cdb04d85f6fafa2a2418d4",
+  "cause": "Sens de ecart inverse dans course.aspirer ; la reduction de trainee etait attribuee au meneur.",
+  "correction": "ecart(c, a.etat.s, b.etat.s), du receveur vers le rival devant. Portee, largeur et coefficient conserves.",
+  "mesure": {
+    "fichier": "comparaison.json",
+    "casParVersion": 12,
+    "pasParVersion": 8640,
+    "backend": "PhysX 5.12.0 WASM embarque",
+    "suiveurDepartDerriereM": 20,
+    "dureeS": 6,
+    "contactsVoitures": 0,
+    "replacements": 0,
+    "correctionsPoseVitesse": 0
+  },
+  "determinisme": {
+    "fixture": "verifications/fixtures/determinisme-p15.json",
+    "sha256": "7f65117fb5d8fc531fa9bac69e0bcd6655847ae2ea68091cc721b1ea8bb4a4b4",
+    "processusIndependants": 2,
+    "cas": 3,
+    "secondesParCas": 18,
+    "voituresParCas": 12,
+    "empreintesExactes": 54,
+    "archivesP14Conservees": true
+  },
+  "audio": {
+    "controleGrapheEtRaccord": true,
+    "ecouteMaterielle": false,
+    "controles": 8
+  },
+  "visuel": {
+    "status": "captures_CI_a_faire",
+    "fpsMateriels": false,
+    "scenesCandidatesPrevues": 14,
+    "referencesPrevues": 6,
+    "pngPrevus": 41,
+    "referenceVersion": "0.2.61",
+    "referenceCommit": "f57cbbd8ec831b62d8cdb04d85f6fafa2a2418d4"
+  },
+  "limites": [
+    "Mesure sur droite plane dediee ; pas une vitesse maximale, une course complete ni une validation aerodynamique reelle.",
+    "Les captures prévues emploient des poses figees et le rendu logiciel ; pas de preuve de FPS materiels.",
+    "Manettes et reseau entre machines restent non qualifies ; site non deploye."
+  ],
+  "build": {
+    "octets": 14268457,
+    "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "reconstructionsIdentiques": 2
+  },
+  "degagement": {
+    "qualification": "degagement-qualification.json",
+    "controlesP14": 5,
+    "controlesP15": 5,
+    "runtimeModifie": false,
+    "causeEchecInitial": "Le scénario de trafic p14 ne provoque plus de choc sous p15. Le même tronc est maintenant placé directement dans le scénario contrôlé, sans affaiblir les critères."
+  },
+  "constructionDistante": {
+    "run": 44717651384,
+    "status": "success",
+    "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "fichiersModifiesVerifies": 32
+  }
+}

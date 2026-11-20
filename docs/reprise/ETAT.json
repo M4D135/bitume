@@ -1,16 +1,16 @@
 {
   "date": "2026-11-20",
   "etat_courant": {
-    "version_courante": "0.2.61",
+    "version_courante": "0.2.62",
     "version_publiee_verifiee": "0.2.61",
-    "physique": "p14",
+    "physique": "p15 candidate",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "monaco_14A_carte_et_revue_publiees_acquisition_routiere",
-    "lot": "14A_Monaco_acquisition_routiere",
-    "fiche": "docs/reprise/MONACO-CARTE-REVUE-2026-11-20.md",
+    "statut": "aspiration_sillage_qualification",
+    "lot": "aspiration_sillage",
+    "fiche": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "051",
-    "prochaine_action": "Acquérir les objets BD TOPO ciblés ; comparer niveaux et ruptures, établir datums, dates, incertitudes et limites de course.",
+    "derniere_entree": "052",
+    "prochaine_action": "Qualifier le correctif d’aspiration p15, le souffle et les projections à 300 km/h ; publier et vérifier les captures avant fusion.",
     "dernier_lot_clos": "docs/reprise/MONACO-CARTE-REVUE-2026-11-20.md"
   },
   "publication": {
@@ -181,5 +181,25 @@
     "foundationPr26And28Preserved": true,
     "redundantPr27Closed": true,
     "documentationClosure": "Documents uniquement ; aucune nouvelle campagne locale ni construction."
+  },
+  "qualification_aspiration": {
+    "fiche": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md",
+    "recu": "docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/QUALIFICATION.json",
+    "mesures": "docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/comparaison.json",
+    "p14GainSuiveurM": 0,
+    "p15GainSuiveurA235KmhApres6sM": 5.32421875,
+    "p15GainVitesseA235KmhApres6sKmh": 6.693804953712629,
+    "physiqueModifiee": true,
+    "ferroConserve": true,
+    "status": "candidat_en_qualification"
+  },
+  "suite_correctifs_demo": {
+    "statut": "travail_prepare_separement_a_preserver",
+    "priorites": [
+      "Caméras de démo et sols Haut-Col",
+      "Volant et pilote expressif, gestes Troll",
+      "Gouttes, fusion et expulsion suivant la vitesse"
+    ],
+    "regle": "Ne pas écraser le travail préparé ; réconcilier avec le correctif d’aspiration publié avant de construire la livraison suivante."
   }
 }

@@ -76,7 +76,7 @@
     if (!session || !session.reglagesReference) (ecran === 'course' ? differerStock : ecrireStock)('bitume.reglages', reglages);
   };
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
-  const PHYSIQUE = 'p14', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
+  const PHYSIQUE = 'p15', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const records = lireStock(CLE_RECORDS, {});
   // temps et longueur du fantôme gardé, par circuit : lus une fois, puis tenus à jour à chaque écriture (finTour
   // relisait et analysait le fantôme entier à chaque tour de chrono)
@@ -663,7 +663,7 @@
       const voiture = suivie || S.course.voitures[S.suivie || 0] || S.course.joueur;
       contexte.vitesse = Math.abs(voiture.etat.v || 0); contexte.qualite = profil.palier;
       contexte.pause = ecran === 'pause' || (ecran === 'reglages' && retourReglages === 'pause');
-      contexte.actif = ecran === 'course' || ecran === 'demo' || contexte.pause;
+      contexte.actif = (ecran === 'course' || ecran === 'demo' || contexte.pause) && (vue === 'cockpit' || vue === 'poursuite');
       contexte.intensite = reglages.gouttes; contexte.cockpit = vue === 'cockpit'; contexte.abri = abri;
       contexte.dpr = window.devicePixelRatio || 1;
       // rendreVue vient de dessiner cette caméra : en duo, la source contient encore J2 avant la copie scene2,
@@ -2644,6 +2644,8 @@
     const et = voiture.etat, exterieur = VUES_DEHORS.has(S.vue);
     sortie.id = voiture.id; sortie.regime = et.regime; sortie.gaz = et.gaz; sortie.rapport = et.rapport;
     sortie.v = Math.abs(et.v); sortie.glisse = et.glisse; sortie.surface = et.surface;
+    sortie.aspiration = Number.isFinite(et.aspiration) ? clamp(et.aspiration, 0, 1) : 0;
+    sortie.ventActif = (ecran === 'course' || ecran === 'demo') && (S.vue === 'cockpit' || S.vue === 'poursuite');
     sortie.turbo = et.turbo.reste > 0; sortie.vue = S.vue === 'cockpit' ? 'cockpit' : 'poursuite';
     sortie.muet = exterieur; sortie.tunnel = !exterieur && sousLaVoute(S.course.c, cam.pos);
   }

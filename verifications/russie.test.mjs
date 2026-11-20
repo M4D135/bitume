@@ -1,5 +1,5 @@
 // 13A — Baïkal : tracé et relief originaux, sept circuits historiques intacts et conduite historique à douze.
-// Ce banc conserve la voie de compatibilité sans backend PhysX. Les corps dynamiques du jeu p14 sont
+// Ce banc conserve la voie de compatibilité sans backend PhysX. Les corps dynamiques du jeu p15 sont
 // qualifiés séparément par physique-voitures, physx-circuits et physx-stands avec le vrai WASM intégré.
 // Par défaut les trois courses de trois tours sont exécutées. BITUME_RUSSIE_GEOMETRIE_SEULE=1 sert
 // uniquement au diagnostic court : son rapport indique explicitement que la course n'est pas qualifiée.
@@ -94,8 +94,8 @@ verifier('13A catalogue : Baïkal ajouté après les sept circuits conservés', 
   assert.equal(CATALOGUE.findIndex(k => k.id === CONTRAT.id), 7);
   for (const [cle, valeur] of Object.entries(CONTRAT)) assert.equal(CATALOGUE[7][cle], valeur, cle);
   assert.equal(CATALOGUE.filter(k => k.id === CONTRAT.id).length, 1);
-  assert.equal(sourceJeu.match(/\bPHYSIQUE\s*=\s*['"](p\d+)['"]/)?.[1], 'p14', 'les records suivent la migration PhysX');
-  return { indice: 7, circuitsHistoriques: 7, physique: 'p14', backendDuBanc: 'conduite-historique-sans-physx' };
+  assert.equal(sourceJeu.match(/\bPHYSIQUE\s*=\s*['"](p\d+)['"]/)?.[1], 'p15', 'les records suivent la correction de l’aspiration PhysX');
+  return { indice: 7, circuitsHistoriques: 7, physique: 'p15', backendDuBanc: 'conduite-historique-sans-physx' };
 });
 
 verifier('13A les 84 tableaux numériques des sept anciens tracés restent identiques bit à bit', () => {

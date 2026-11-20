@@ -590,7 +590,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       for (let j = 0; j < V.length; j++) {
         const b = V[j];
         if (b === a) continue;
-        const ds = ecart(c, b.etat.s, a.etat.s), dd = Math.abs(b.etat.d - a.etat.d);
+        // ecart va du premier point au second : b doit être devant la voiture qui reçoit le sillage.
+        const ds = ecart(c, a.etat.s, b.etat.s), dd = Math.abs(b.etat.d - a.etat.d);
         if (ds > LONGUEUR && ds < ASPIRATION.portee && dd < ASPIRATION.cote)
           part = Math.max(part, (1 - ds / ASPIRATION.portee) * (1 - dd / ASPIRATION.cote));
       }

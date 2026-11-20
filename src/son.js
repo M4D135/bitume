@@ -136,7 +136,7 @@
     const vols = { general: 1, moteur: 1, effets: 1 };
     let maitre = null, busMot = null, busEff = null, bruit = null, m = null, m2 = null, pneus = null, vib = null, herbe = null;
     let deuxJoueurs = false, joueur2LibereA = 0;
-    const voix = [], proches = [];
+    const voix = [], proches = [], vents = [];
     // échappement : voix préparées, tampons, lecture de la file de src/echappement.js
     const voixEch = [], tamponsEch = {};
     let echFile = null, echLu = 0, echVu = -1, echJoues = 0, echIgnores = 0;
@@ -204,6 +204,17 @@
       return { o1, pb, pan, sortie, id: -1, libereA: 0 };
     }
 
+    // Air au casque : deux bandes de bruit, sans note ni impulsion déclenchée. Le souffle aigu se ferme dans
+    // le sillage tandis que le grondement turbulent monte. Les deux auditeurs sont prêts avant la course ;
+    // leurs boucles décalées évitent de doubler un même bruit au centre en écran partagé.
+    function vent(numero) {
+      const s = bruitEnBoucle(), ph = filtre('highpass', 110, .7), pb = filtre('lowpass', 2500, .7);
+      const grave = filtre('lowpass', 420, .7), aiguG = gain(0), graveG = gain(0), pan = ctx.createStereoPanner();
+      s.connect(ph); ph.connect(pb).connect(aiguG).connect(pan); ph.connect(grave).connect(graveG).connect(pan);
+      pan.connect(busEff); s.start(ctx.currentTime, numero ? .73 : .13);
+      return { pb, aiguG, graveG, pan };
+    }
+
     function init() {
       const t = ctx.currentTime;
       const lim = ctx.createDynamicsCompressor();
@@ -232,6 +243,7 @@
         s.connect(pb).connect(g).connect(busEff); s.start(t);
         herbe = { g };
       }
+      vents.push(vent(0), vent(1));
       { // échappement : tampons et voix préparés ici, avant le départ (rien n'est construit en course)
         const sr = ctx.sampleRate, synth = synthEchappement(sr);
         for (const genre of GENRES_ECH) tamponsEch[genre] = synth[genre].map(d => {
@@ -282,7 +294,22 @@
       if (moteur !== m || t >= coupFin) vise(moteur.sortie.gain, vol, t, muet ? 0.03 : tc);
     }
 
-    // etat = { pause, joueur: { id, regime, gaz, rapport, v, glisse, surface, turbo, vue, muet },
+    function reglerVent(vent, j, t, silence, poids, pan) {
+      const present = !!j, proche = present && (j.vue === 'cockpit' || j.vue === 'poursuite');
+      const actif = !silence && present && (j.ventActif == null ? proche : !!j.ventActif);
+      const vitesse = present && Number.isFinite(+j.v) ? Math.abs(+j.v) : 0;
+      const air = clamp((vitesse - 8) / 80, 0, 1);
+      const aspiration = present && Number.isFinite(+j.aspiration) ? clamp(+j.aspiration, 0, 1) : 0;
+      const niveau = actif ? air * air * poids * (j.vue === 'poursuite' ? .7 : 1) : 0;
+      // Aucune mémoire d'événement : une coupe de démo ou un changement d'auditeur ne rejoue rien. La
+      // progression est celle de la vraie aspiration, lissée par AudioParam, indépendamment du nombre d'images.
+      vise(vent.pb.frequency, lerp(2500 + 2000 * air, 900 + 900 * air, aspiration), t, .14);
+      vise(vent.aiguG.gain, niveau * .20 * (1 - .58 * aspiration), t, actif ? .12 : .03);
+      vise(vent.graveG.gain, niveau * (.04 + .26 * aspiration), t, actif ? .16 : .03);
+      vise(vent.pan.pan, pan, t, .08);
+    }
+
+    // etat = { pause, joueur: { id, regime, gaz, rapport, v, glisse, surface, turbo, vue, muet, aspiration, ventActif },
     //          joueur2: même structure ou null, rivaux: [{ id, distance, angle, regime, gaz, vRel }] }
     // En duo les distances des rivaux viennent de la caméra humaine la plus proche (adaptateur du jeu).
     function mettreAJour(etat) {
@@ -296,6 +323,8 @@
       deuxJoueurs = !!j2;
       reglerMoteur(m, j, t, silence, j2 ? Math.SQRT1_2 : 1, j2 ? -.24 : 0);
       if (j2) reglerMoteur(m2, j2, t, silence, Math.SQRT1_2, .24);
+      reglerVent(vents[0], j, t, silence, j2 ? Math.SQRT1_2 : 1, j2 ? -.24 : 0);
+      reglerVent(vents[1], j2, t, silence, Math.SQRT1_2, .24);
 
       // rivaux : les trois plus proches, attribution stable, fondu de 0,1 s
       selectionnerRivaux(etat.rivaux, proches, j.muet ? -1 : j.id, j2 && !j2.muet ? j2.id : -1);
@@ -545,6 +574,7 @@
       const t = ctx.currentTime;
       for (const g of [m.sortie.gain, m.echoG.gain, pneus.g1.gain, pneus.g2.gain, vib.g.gain, herbe.g.gain]) vise(g, 0, t, 0.03);
       if (m2) { vise(m2.sortie.gain, 0, t, .03); vise(m2.echoG.gain, 0, t, .03); }
+      for (const v of vents) { vise(v.aiguG.gain, 0, t, .03); vise(v.graveG.gain, 0, t, .03); }
       for (const v of voix) vise(v.sortie.gain, 0, t, .03);
       for (const v of voixEch) vise(v.g.gain, 0, t, .03);
     }

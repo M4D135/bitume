@@ -1,8 +1,8 @@
 {
-  "version": "0.2.61",
-  "raw": 14265416,
-  "gzip": 3396777,
-  "sha256": "c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d",
+  "version": "0.2.62",
+  "raw": 14268457,
+  "gzip": 3397648,
+  "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
   "sources": {
     "moteur/renderer.js": 313289,
     "ferro/engine.js": 2025,
@@ -20,8 +20,8 @@
     "contacts.js": 8314,
     "obstacles.js": 18724,
     "strategie-stands.js": 17278,
-    "course.js": 59080,
-    "son.js": 36962,
+    "course.js": 59184,
+    "son.js": 39168,
     "botanique.js": 21169,
     "ecologie.js": 3127,
     "saisons.js": 5285,
@@ -48,8 +48,8 @@
     "cinema.js": 14422,
     "realisateur.js": 12939,
     "meteo.js": 14928,
-    "visiere-optique.js": 18464,
-    "vitre.js": 20558,
+    "visiere-optique.js": 18693,
+    "vitre.js": 20808,
     "sillage.js": 5445,
     "reseau.js": 19415,
     "pneus-reseau.js": 9636,
@@ -64,7 +64,7 @@
     "scene-bench.js": 23081,
     "vibrations.js": 13482,
     "ombres.js": 12015,
-    "jeu.js": 338052,
+    "jeu.js": 338304,
     "index.html": 55555,
     "style.css": 56289
   }

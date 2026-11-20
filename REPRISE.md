@@ -1,5 +1,15 @@
 # BITUME — reprise courte
 
+## Lot actif — aspiration et projections, candidat 0.2.62 / p15
+
+Le banc natif a révélé une inversion : la p14 réduisait la traînée du meneur, pas du suiveur.
+Le sens est corrigé dans `course.aspirer` ; portée, largeur, coefficient et FERRO sont conservés.
+À 235 km/h, 20 m derrière au départ, le suiveur gagne **5,324 m et 6,694 km/h après 6 s**
+sur une droite contrôlée. Nouveau souffle procédural, projections distinctes de la pluie à 300 km/h.
+**p15** sépare records/fantômes ; nouvelle référence WASM, archives p14 intactes.
+Fiche : `docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md`. Qualification complète/captures à terminer.
+Les correctifs démo/sols/pilotes préparés séparément sont conservés pour la prochaine intégration.
+
 ## Sous-lot livré — Monaco 14A, carte et provenance temporelle
 
 PR **#29** fusionnée : `d0dbd8544be30ab44aaff399ae55761150074636` ; CI **145/145 suites**.
