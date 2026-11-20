@@ -2,16 +2,25 @@
   "schema": 1,
   "discussion": "05",
   "mission": "Sources circuits",
-  "statut": "preparee_non_lancee",
+  "statut": "05A_qualifie_publication_branche",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/05-CIRCUITS.md",
-  "base_main": "d8f02cae45443ae6a1120dc93125d8adfae94422",
+  "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "branche_proposee": "codex/bitume-p05-sources-circuits-20261120",
-  "branche_reelle": null,
+  "branche_reelle": "codex/bitume-p05-sources-circuits-20261120",
   "head": null,
   "pr": null,
-  "sous_lot": null,
-  "preuves": [],
-  "reserves": [],
-  "prochaine_action": "Lire les points ouverts de Monaco et completer une mesure de chaussee utile.",
-  "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00."
+  "sous_lot": "05A-monaco-voirie-portails",
+  "preuves": [
+    "docs/references/monaco-2026/qualification-voirie-p05.json",
+    "docs/references/monaco-2026/VOIRIE-P05-20261120.md"
+  ],
+  "reserves": [
+    "Monaco non jouable ; 415 valeurs null pour chacun des quatre champs routiers.",
+    "Datum/date individuels non qualifies ; largeur indicative non FIA ; devers inconnu.",
+    "Louis-II variation source 6.6 m sur 2.765 m ; portails candidats seulement."
+  ],
+  "prochaine_action": "05B : integrer la nouvelle capture de metadonnees Marseille et documenter le corridor ouvert EMPRISE.",
+  "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
+  "head_semantique": "SHA de livraison renseigne au checkpoint suivant ; ne pas inventer une auto-reference de commit.",
+  "raccordements": "docs/reprise/PARALLELE-2026-11-20/raccordements/05.md"
 }
