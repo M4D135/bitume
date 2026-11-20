@@ -4,7 +4,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import vm from 'node:vm';
-import { SCENARIOS_COUVERTS, optionsCouverts, optionsScenarioCouvert, installerEtatCouverts, verifierCouvert } from '../tools/captures-couverts.mjs';
+import { SCENARIOS_COUVERTS, optionsCouverts, optionsScenarioCouvert, installerEtatCouverts, observerCouverts, verifierCouvert } from '../tools/captures-couverts.mjs';
+import { chargerPhysX } from './helpers/physx-runtime.mjs';
 
 const cas = id => SCENARIOS_COUVERTS.find(s => s.id === id);
 function rapport(s) {
@@ -19,14 +20,15 @@ function rapport(s) {
       const optique={ backend:'webgl2',pret:true,erreur:null,erreurs:0,perdu:false,eau,embruns:0,gouttes:0,
         etapes:s.dessus?0:90+i*90,dessins:30,copiesScene:30,pixelsSource:518400 };
       const j1={ camera:[0,s.dessus?12:1.2,0],abri,interieur,abriVisiere:abri,visiereActive:!s.dessus,
-        lumiere:interieur?1.31:1,lampes:interieur?4:0,type:abri?s.type:null,pluie:1 };
+        lumiere:interieur?1.31:1,lampes:interieur?4:0,type:abri?s.type:null,pluie:1,vue:s.dessus?'helico':'cockpit' };
       const zones={scene:{}};
       if(!s.dessus)Object.assign(zones,{'glace-g':{},'glace-d':{}});
       if(s.duo)Object.assign(zones,{scene2:{},'glace-g2':{},'glace-d2':{}});
       return {etat:{zones},vues:{scene:{noir:.1,luminance:.2},scene2:{noir:.1,luminance:.2}},observation:{
         etapeId:s.portails?phases[i]:s.dessus?'dessus-toit':'interieur',glErreur:0,glPerdu:false,
         pluie:1,j1,j2:s.duo?{...j1,type:'galerie',interieur:false,lumiere:1}:null,
-        sol:{hit:true,y:0,surface:'piste'},toit:{hit:sousToit,y:sousToit?6.4:null,genre:sousToit?'voute-'+s.type:null},yRoute:0,
+        sol:{hit:true,y:0,surface:'piste'},toit:{hit:sousToit,y:sousToit?6.4:null,genre:sousToit?'voute-'+s.type:null},yRoute:0,abscisse:0,
+        survol:s.dessus?{sujetS:80,sujetSousCouvert:false,terrainY:8,surfaceY:8,regardLibre:true,cadreLibre:true}:null,
         vitres:{j1:optique,j2:s.duo?structuredClone(optique):null},
         vitresGL:{j1:{present:true,erreur:0,perdu:false},j2:{present:true,erreur:0,perdu:false}},
         visieresVisibles:{j1:!s.dessus&&eau>0,j2:false}
@@ -105,7 +107,10 @@ test('galerie au jour, deux vues indépendantes et caméra au-dessus du toit',()
   }
   const dessus=cas('cimes-dessus-toit');
   for(const changer of [o=>{o.j1.camera[1]=5;},o=>{o.j1.abriVisiere=true;},o=>{o.j1.visiereActive=true;},
-    o=>{o.vitres.j1.gouttes=1;},o=>{o.visieresVisibles.j1=true;}]) {
+    o=>{o.vitres.j1.gouttes=1;},o=>{o.visieresVisibles.j1=true;},o=>{o.j1.vue='poursuite';},
+    o=>{o.survol=null;},o=>{o.survol.sujetSousCouvert=true;},o=>{o.survol.sujetS=o.abscisse;},
+    o=>{o.survol.terrainY=20;},o=>{o.survol.surfaceY=20;},o=>{o.survol.surfaceY=null;},
+    o=>{o.survol.regardLibre=false;},o=>{o.survol.cadreLibre=false;}]) {
     const r=rapport(dessus);changer(r.images[0].observation);assert.ok(verifierCouvert(r,dessus).length);
   }
 });
@@ -166,4 +171,53 @@ test('les poses prescrites utilisent le vrai lecteur des couverts et ne remplace
   assert.equal(B.couverts.position(c,position(duo.S.cour[1])).type,'galerie');
   assert.equal(B.circuit.echantillon,fonctions.echantillon);
   assert.equal(B.couverts.liste,fonctions.liste);assert.equal(B.couverts.position,fonctions.position);
+});
+
+test('le survol réel des Cimes garde le sujet hors tunnel et les sondes sur sa vraie voûte',async()=>{
+  const require=createRequire(import.meta.url);
+  for(const f of ['circuit','couverts','route-des-cimes','carene','botanique','ecologie','saisons','bords','decor','obstacles','solides-physx','cinema'])require('../src/'+f+'.js');
+  const B=globalThis.BITUME,c=B.routeDesCimes.creer();
+  B.bords.limites(c,B.bords.planifier(c));
+  const decor=B.decor.construire(c,{qualite:'high',vegetation:false,saison:'ete'});
+  c.obstacles=B.obstacles.creer(decor.obstacles);
+  const X=await chargerPhysX(),world=X.createWorld({fixedStep:1/120,maxSubSteps:1,contacts:true});
+  const solids=B.solidesPhysX.installer(world,c,decor);
+  const fonctions={echantillon:B.circuit.echantillon,couvert:B.circuit.dansCouvert,liste:B.couverts.liste,
+    position:B.couverts.position,sol:decor.sol,raycast:world.raycast,valider:B.cinema.valider};
+  try {
+    const s=cas('cimes-dessus-toit'),voitures=Array.from({length:4},(_,id)=>({id,etat:{}}));
+    const S={i:s.circuit,suivie:0,locaux:[0],course:{c,voitures,physique:{world,solids}},
+      prec:voitures.map(()=>({})),cour:voitures.map(()=>({})),meteo:{pluie:1,t:0},tRendu:0};
+    const catalogue=[];catalogue[s.circuit]={id:s.circuitId};
+    const J={session:S,CATALOGUE:catalogue,scene:{decor},rendu:{gl:{canvas:{width:960,height:540},getError:()=>0,isContextLost:()=>false}}};
+    const contexte=vm.createContext({BITUME:B,BITUME_JEU:J,document:{getElementById:()=>null}});
+    const init=vm.runInContext(`(${installerEtatCouverts.toString()})(${JSON.stringify(s)})`,contexte),G=contexte.__COUVERTS_CAPTURE;
+    const t=G.section,centre=t.debut+B.couverts.longueur(c,t)/2,q=B.circuit.echantillon(c,centre);
+    assert.equal(G.abscisse,centre,'les sondes physiques restent au centre de l’ouvrage');
+    assert.equal(init.survol.sondeS,centre);
+    assert.equal(B.circuit.dansCouvert(c,voitures[0].etat.s,8),null,'le vrai garde du rendu doit garder helico');
+    assert.notEqual(voitures[0].etat.s,centre,'le sujet n’est plus confondu avec les sondes');
+    const camera=J.camera(),sujet=S.cour[0],cible=[sujet.x,sujet.y+.65,sujet.z];
+    assert.ok(camera.pos[1]>decor.sol(camera.pos[0],camera.pos[2])+20);
+    assert.ok(camera.pos[1]>init.survol.surfaceY+20);
+    assert.equal(B.cinema.valider(G.survol.cinema,camera,cible,null,0,16/9),true,'plan proche et regard libres');
+    // Cette pose était la fixture de la CI refusée : le sujet déclenchait DANS_LA_ROCHE,
+    // et la hauteur nominale du toit ne représentait pas le relief dessiné au-dessus.
+    const anciennePos=[q.x,q.y+t.hauteur+4,q.z];
+    assert.ok(B.circuit.dansCouvert(c,centre,8),'l’ancienne position du sujet force le repli');
+    assert.ok(anciennePos[1]<Math.max(decor.sol(q.x,q.z),init.survol.surfaceY),'l’ancienne caméra entre dans le relief réel');
+    const ancienneCamera=B.cinema.viser(anciennePos,[q.x,q.y+.65,q.z],60);
+    assert.equal(B.cinema.valider(G.survol.cinema,ancienneCamera,ancienneCamera.cible,null,0,16/9),false);
+    S.camera=camera;S.vue='helico';S.lumiere=1;S.vitreContexte={pluie:1,abri:false,actif:false};
+    const o=vm.runInContext(`(${observerCouverts.toString()})()`,contexte);
+    assert.equal(o.survol.sujetSousCouvert,false);assert.equal(o.survol.regardLibre,true);assert.equal(o.survol.cadreLibre,true);
+    assert.equal(o.sol.surface,'piste');assert.equal(o.toit.genre,'voute-tunnel');
+    assert.ok(Math.abs(o.sol.y-q.y)<.16);assert.ok(o.toit.y-q.y>5&&o.toit.y-q.y<8);
+    assert.equal(o.abscisse,centre);assert.ok(o.j1.camera[1]>o.survol.surfaceY+.6);
+    G.etape(1);
+    assert.equal(G.abscisse,centre);assert.equal(B.circuit.dansCouvert(c,voitures[0].etat.s,8),null);
+    assert.equal(B.circuit.echantillon,fonctions.echantillon);assert.equal(B.circuit.dansCouvert,fonctions.couvert);
+    assert.equal(B.couverts.liste,fonctions.liste);assert.equal(B.couverts.position,fonctions.position);
+    assert.equal(decor.sol,fonctions.sol);assert.equal(world.raycast,fonctions.raycast);assert.equal(B.cinema.valider,fonctions.valider);
+  } finally {B.solidesPhysX.liberer(solids);world.dispose();}
 });

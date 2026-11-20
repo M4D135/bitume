@@ -59,25 +59,48 @@ export function installerEtatCouverts(s) {
     if(e._physx) Object.assign(e._physx,{x:p.x,y:p.y,z:p.z,cap:p.cap,groundCount:4});
     for(const liste of [S.prec,S.cour]) Object.assign(liste[v.id],p);
   };
-  const G = globalThis.__COUVERTS_CAPTURE = { scenario:s, section:t, galerie, etapes, etapeIndex:0, abscisse:dedans, etape(i) {
+  let survol = null;
+  if(s.dessus) {
+    // Le choix de vue du jeu précède la caméra d'essai : un sujet sous le tunnel ferait
+    // légitimement replier « helico » en poursuite, même avec un objectif placé dans le ciel.
+    const sujetS = C.sortie(c,dedans,16,40);
+    if(sujetS === null || B.circuit.dansCouvert(c,sujetS,8)) throw new Error('Sujet aérien encore couvert');
+    const decor = J.scene.decor, monde = co.physique.world, q = B.circuit.echantillon(c,dedans), sujet = B.circuit.echantillon(c,sujetS);
+    const cinema = B.cinema.preparer(c,decor,S.animaux,monde), terrainY = decor.sol(q.x,q.z);
+    const haut = Math.max(cinema.maxY,terrainY,q.y+t.hauteur)+30, profondeur = haut-cinema.minY+100;
+    const surface = monde.raycast([q.x,haut,q.z],[0,-1,0],profondeur,{mask:3,staticOnly:true});
+    if(!Number.isFinite(terrainY) || !surface.hit || !Number.isFinite(surface.y)) throw new Error('Surface réelle du survol absente');
+    const plancher = Math.max(terrainY,surface.y,q.y+t.hauteur), cible = [sujet.x,sujet.y+.65,sujet.z];
+    const aspect = J.rendu.gl.canvas.width/J.rendu.gl.canvas.height;
+    // Monter le poste, sans déplacer le relief ni supprimer un obstacle. Le validateur du jeu
+    // contrôle le regard et les quatre coins de l'objectif dans le vrai monde statique.
+    for(const elevation of [24,40,64,96,144,216]) {
+      const camera = B.cinema.viser([q.x,plancher+elevation,q.z],cible,50);
+      if(B.cinema.valider(cinema,camera,cible,null,0,aspect)) {
+        survol = {sujetS,cinema,camera,terrainY,surfaceY:surface.y,haut,profondeur}; break;
+      }
+    }
+    if(!survol) throw new Error('Aucun survol avec regard dégagé vers le sujet extérieur');
+  }
+  const G = globalThis.__COUVERTS_CAPTURE = { scenario:s, section:t, galerie, etapes, survol, etapeIndex:0, abscisse:dedans, etape(i) {
     const etape = etapes[s.portails?i:0];
     if (!etape) throw new Error('Étape de portail absente : '+i);
     G.etapeIndex = i; G.abscisse = etape.s;
     for(const v of co.voitures) {
       const j2 = s.duo && S.locaux?.[1] === v.id;
-      const abscisse = j2 ? galerie.debut + Math.min(30,C.longueur(c,galerie)/2) : G.abscisse + (v.id === S.suivie ? 0 : 35+v.id*7);
+      const abscisse = j2 ? galerie.debut + Math.min(30,C.longueur(c,galerie)/2) : (survol?.sujetS ?? G.abscisse) + (v.id === S.suivie ? 0 : 35+v.id*7);
       fixer(v,abscisse);
     }
     S.camCap = null; S.tete = null;
     if(S.vueJ2) { S.vueJ2.camCap = null; S.vueJ2.tete = null; }
     if(s.dessus) {
-      const q = B.circuit.echantillon(c,dedans);
-      J.camera = () => ({pos:[q.x,q.y+t.hauteur+4,q.z],yaw:q.cap+Math.PI/2,pitch:-.15,roll:0,fov:60});
+      J.camera = () => ({...survol.camera,pos:survol.camera.pos.slice(),cible:survol.camera.cible.slice()});
     }
   }};
   G.etape(0);
   return { posePrescrite:true, circuitId:s.circuitId, section: {...t}, sections: sections.map(q=>({...q})),
     etapes, longueur:c.longueur, pas:c.pas,
+    survol:survol?{sujetS:survol.sujetS,sondeS:dedans,camera:survol.camera,terrainY:survol.terrainY,surfaceY:survol.surfaceY}:null,
     description:'Pose prescrite, rendu et effets du vrai build. Les cinq phases portail sont des états séparés, pas une traversée roulée.' };
 }
 export function observerCouverts() {
@@ -95,6 +118,18 @@ export function observerCouverts() {
   const present=x=>({hit:!!x.hit,y:x.hit?x.y:null,body:x.hit?x.body:null,
     genre:x.hit?m.acteurs.get(x.body)?.genre||null:null,
     surface:x.hit?B.solidesPhysX.surface(m,x.body,x.faceIndex):null});
+  let survol = null;
+  if(G.survol) {
+    const p=S.camera.pos,sujet=S.cour[S.suivie],sujetS=S.course.voitures[S.suivie].etat.s;
+    const cible=[sujet.x,sujet.y+.65,sujet.z],dir=cible.map((v,i)=>v-p[i]),distance=Math.hypot(...dir);
+    const regard=w.raycast(p,dir.map(v=>v/distance),Math.max(0,distance-.1),{mask:3,staticOnly:true});
+    const haut=Math.max(G.survol.haut,p[1]+20);
+    const surface=w.raycast([p[0],haut,p[2]],[0,-1,0],haut-G.survol.cinema.minY+100,{mask:3,staticOnly:true});
+    survol={sujetS,sujetSousCouvert:!!B.circuit.dansCouvert(c,sujetS,8),
+      terrainY:J.scene.decor.sol(p[0],p[2]),surfaceY:surface.hit?surface.y:null,cible,
+      regardLibre:!regard.hit,obstructionDistance:regard.hit?regard.distance:null,
+      cadreLibre:B.cinema.valider(G.survol.cinema,S.camera,cible,null,S.tRendu,gl.canvas.width/gl.canvas.height)};
+  }
   const vitres=J.vitres, vitresGL={}, visieresVisibles={};
   for (const [joueur,id] of [['j1','vitre'],['j2','vitre2']]) {
     if(joueur==='j2'&&!G.scenario.duo) continue;
@@ -106,7 +141,7 @@ export function observerCouverts() {
     }
   }
   return {glErreur:gl.getError(),glPerdu:gl.isContextLost(),vitres,vitresGL,visieresVisibles,j1:vue(S),j2:G.scenario.duo?vue(S.vueJ2):null,
-    sol:present(sol),toit:present(toit),yRoute:q.y,etape:G.etapeIndex,etapeId:G.etapes[G.scenario.portails?G.etapeIndex:0].id,
+    sol:present(sol),toit:present(toit),survol,yRoute:q.y,etape:G.etapeIndex,etapeId:G.etapes[G.scenario.portails?G.etapeIndex:0].id,
     abscisse:G.abscisse,pluie:S.meteo.pluie,
     sections:C.liste(c).map(t=>({id:t.id||null,type:C.type(t),debut:t.debut,fin:t.fin})),temps:S.meteo.t};
 }
@@ -138,7 +173,13 @@ export function verifierCouvert(r,s) {
     if(sousToit&&o.toit?.genre!=='voute-'+s.type)e.push('Rayon de toit arrêté par un autre solide que la voûte');
     if(interieur&&(!(o.j1?.lumiere>1.20)||!(o.j1?.lampes>0)))e.push('Tunnel non éclairé ou œil non adapté');
     if(s.type==='galerie'&&Math.abs(o.j1?.lumiere-1)>.02)e.push('Galerie obscurcie comme un tunnel');
-    if(s.dessus&&(o.j1?.visiereActive!==false||!(o.j1?.camera?.[1]>o.toit?.y)))e.push('Caméra aérienne non extérieure');
+    if(s.dessus) {
+      const a=o.survol;
+      if(o.j1?.vue!=='helico'||o.j1?.visiereActive!==false||!(o.j1?.camera?.[1]>o.toit?.y))e.push('Caméra aérienne non extérieure');
+      if(a?.sujetSousCouvert!==false||!Number.isFinite(a?.sujetS)||!Number.isFinite(o.abscisse)||Math.abs(a.sujetS-o.abscisse)<1)e.push('Sujet aérien non dégagé des sondes sous le toit');
+      if(!Number.isFinite(a?.terrainY)||!Number.isFinite(a?.surfaceY)||!(o.j1?.camera?.[1]>Math.max(a.terrainY,a.surfaceY)+.6))e.push('Caméra aérienne dans le relief');
+      if(a?.regardLibre!==true||a?.cadreLibre!==true)e.push('Regard aérien obstrué');
+    }
     if(s.duo&&(!o.j2?.abri||!o.j2?.abriVisiere||o.j2?.interieur||o.j2?.type!=='galerie'||!Number.isFinite(o.j2?.lumiere)||Math.abs(o.j2.lumiere-1)>.02))e.push('J2 galerie non indépendant de J1 tunnel');
     for (const joueur of ['j1',...(s.duo?['j2']:[])]) {
       const v=o.vitres?.[joueur], g=o.vitresGL?.[joueur], contexte=o[joueur];

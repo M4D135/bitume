@@ -1,6 +1,12 @@
 name: Images tunnels, galeries et portails
 
 on:
+  push:
+    branches: ['codex/bitume-capture-toit-*']
+    paths:
+      - 'tools/captures-couverts.mjs'
+      - 'verifications/captures-couverts.test.mjs'
+      - '.github/workflows/visuel-couverts.yml'
   pull_request:
     paths:
       - 'src/couverts.js'
@@ -34,13 +40,9 @@ jobs:
       fail-fast: false
       max-parallel: 3
       matrix:
-        cas:
-          - haut-col-portails
-          - cimes-rocher
-          - cimes-echelles
-          - cimes-galerie
-          - cimes-dessus-toit
-          - cimes-deux-vues
+        # Une branche de diagnostic rejoue le seul scénario corrigé. Les PR et
+        # lancements manuels conservent les six groupes de la campagne complète.
+        cas: ${{ fromJSON(github.event_name == 'push' && '["cimes-dessus-toit"]' || '["haut-col-portails","cimes-rocher","cimes-echelles","cimes-galerie","cimes-dessus-toit","cimes-deux-vues"]') }}
     steps:
       - uses: actions/checkout@v4
         with:
