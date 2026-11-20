@@ -68,6 +68,8 @@ try {
   await page.waitForTimeout(240); assert.equal((await lire()).menu.images, avantMasque);
   await page.evaluate(() => { delete document.hidden; document.dispatchEvent(new Event('visibilitychange')); });
   notes('Masquage document simulé : aperçu arrêté');
+  // La reprise protège contre un bouton déjà tenu ; laisser les deux manettes repasser au neutre.
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   await bouton(9, 1); assert.equal((await lire()).menu.etape, 1); await calme('Conditions : aucun aperçu ni scène cachée');
   assert.equal((await lire()).ecran, 'preparation');
   await page.locator('label:has(input[name="saisonDepart"][value="hiver"])').click();
@@ -136,5 +138,5 @@ try {
   notes('Pause/réglages/reprise et démo automatique après inactivité conservées');
   assert.equal(rapport.erreurs.length, 0, rapport.erreurs.join('\n'));
   rapport.statut='ok';
-} catch(e) { rapport.statut='echec'; rapport.echec=String(e.stack||e); console.error(rapport.echec); try{await capture('echec')}catch{} process.exitCode=1; }
+} catch(e) { rapport.statut='echec'; rapport.echec=String(e.stack||e); try { rapport.dernierEtat = await lire(); } catch {} console.error(rapport.echec); try{await capture('echec')}catch{} process.exitCode=1; }
 finally { writeFileSync(path.join(args.sortie,'rapport.json'),JSON.stringify(rapport,null,2)+'\n'); await browser.close(); }

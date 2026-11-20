@@ -7,15 +7,16 @@
   "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "branche_proposee": "codex/bitume-p03-menu-20261120",
   "branche_reelle": "codex/bitume-p03-menu-20261120",
-  "head": "1d09794bf6f3aa9752450ccca3af43788c610a9d",
+  "head": "671837dcd6055f34a98143fdf9ab5e54e3044242",
   "pr": null,
-  "sous_lot": "M1 — parcours, vrai trace cadre, saisie et navigation complete, contrat Troll",
+  "sous_lot": "M1.1 — qualification navigateur, reprise des manettes au neutre",
   "preuves": [
     "21/21 contrôles navigation menu.",
     "11 contrôles aperçu : 9 circuits × 144 rotations × 6 formats, arrêt caché et mouvement réduit.",
     "Copie raccordée : 39/39 manette, 47/47 commandes partagées, 63/63 prêts en ligne, 14/14 contre-tests du raccord.",
     "Applicabilité du patch, syntaxe et construction de qualification réussies ; sources partagées et versions/builds communs intacts.",
-    "Contrats pour 00 et 01 publiés dans raccordements/03.md et 03-TROLL.md."
+    "Contrats pour 00 et 01 publiés dans raccordements/03.md et 03-TROLL.md.",
+    "CI 44782221455 : cinq scénarios réels réussis et capture du tracé complet ; arrêt du banc sur Start envoyé dès la première frame après reprise (front tenu correctement consommé). Banc corrigé : deux frames neutres."
   ],
   "reserves": [
     "Validation navigateur et captures en cours dans Qualification du menu 03 ; Chromium local bloqué avant page (socket Operation not permitted).",
