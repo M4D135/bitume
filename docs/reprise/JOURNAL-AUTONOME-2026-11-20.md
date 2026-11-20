@@ -89,3 +89,12 @@ contenus ; gouttes et panache en cockpit/poursuite, aucun dépôt sur l’écran
 Bandeaux masquant certains sujets et neige claire restent des réserves. Il s’agit de
 captures figées SwiftShader, sans mesure FPS matérielle. Campagne, météo et couverts
 restent à terminer. Reçu : `rapports/COUVERTS-CIMES-2026-11-20/REVUE-DEMOS-0266.json`.
+
+## 009 — campagne entière 0.2.66 réussie et archive contrôlée
+
+Run 44743369726, job 136312371617 : 159/159 suites, zéro échec, 159 journaux présents.
+L’artefact 14631793804 correspond à son digest GitHub ; ses 3 405 fichiers sources
+ont exactement les contenus et modes du candidat. Le build est identique aux deux
+constructions qualifiées. Les quatre échecs 0.2.65 restent dans le reçu historique.
+Reçu : `rapports/COUVERTS-CIMES-2026-11-20/CI-0266-FINALE.json`. Les images météo
+et couverts doivent encore être inspectées avant la fusion. Aucune campagne relancée.

@@ -5,12 +5,12 @@
     "version_publiee_verifiee": "0.2.62",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "candidat_publie_validation_en_cours",
+    "statut": "campagne_159_sur_159_images_meteo_couverts_en_cours",
     "lot": "couverts_cimes_et_correctifs_0265",
     "fiche": "docs/reprise/COUVERTS-CIMES-INTEGRATION-2026-11-20.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "008",
-    "prochaine_action": "Terminer les validations de la tête PR38 1c1ac0c9 et ses images exactes, puis fusionner et consigner les preuves.",
+    "derniere_entree": "009",
+    "prochaine_action": "Terminer les images météo et couverts du candidat exact 0.2.66, puis fusionner la PR38 et publier la clôture.",
     "dernier_lot_clos": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md"
   },
   "publication": {
@@ -330,7 +330,8 @@
     "tete": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
     "arbre": "1f05e9b399e4584b814c4050bad9f5652261b097",
     "recu": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/SUIVI-PUBLICATION-0266.json",
-    "statut": "validation_en_cours",
-    "demos_png_inspectes": 48
+    "statut": "images_meteo_couverts_en_cours",
+    "demos_png_inspectes": 48,
+    "qualification_suites": "159/159"
   }
 }

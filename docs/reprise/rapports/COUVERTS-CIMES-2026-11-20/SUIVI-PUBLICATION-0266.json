@@ -29,7 +29,6 @@
     "recu": "CI-0265-INITIAL.json"
   },
   "a_terminer": [
-    "Résultat de la campagne complète et concordance de ses sources et du build",
     "Inspection des images exactes démos, météo et couverts",
     "Fusion sur main avec contrôle de la tête attendue",
     "Vérification distante après fusion et clôture du journal"
@@ -48,5 +47,13 @@
     "png_reference": 12,
     "recu": "REVUE-DEMOS-0266.json",
     "anomalies_bloquantes_observees": 0
+  },
+  "qualification": {
+    "statut": "success",
+    "suites_reussies": 159,
+    "suites_echouees": 0,
+    "sources_verifiees": 3405,
+    "contenus_et_modes_identiques": true,
+    "recu": "CI-0266-FINALE.json"
   }
 }
