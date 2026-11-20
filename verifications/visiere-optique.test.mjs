@@ -201,4 +201,62 @@ verifier('gouttes et traînées physiques identiques à 30/47/60/120/144 Hz, pla
     assert(e.depots.stats.paires<=maximum*(maximum-1)/2);
   }
 });
+verifier('perles et film : gravité à l’arrêt, transport vers les quatre bords à 300 km/h dans les deux vues',()=>{
+  // Les populations sont encore les mêmes à 0,9 s : aucune disparition ni nouvelle graine
+  // ne peut masquer une direction erronée. Le raster natif vérifie séparément leurs pixels.
+  for(const cockpit of [true,false])for(const vitesse of [0,300/3.6]){
+    const e=O.creerEtat({graine:4});avancer(e,contexte({cockpit,vitesse,largeur:1280,hauteur:720}),.9,120);
+    for(const couche of [0,1,2,3,4]){
+      const t=e.transportUniformes,i=couche*8;
+      assert.equal(e.phaseUniformes[couche*2],0);assert.equal(t[i+3],1);assert.equal(t[i+7],0);
+      for(const [x,y] of [[.2,.2],[.8,.2],[.2,.8],[.8,.8]]){
+        const dx=x*t[i]+t[i+1]-x,dy=y*t[i]+t[i+2]-y;
+        if(!vitesse){assert(Math.abs(dx)<1e-8);assert(dy>0,`couche ${couche}: la gravité monte`);}
+        else {assert(dx*(x-.5)>0,`couche ${couche}: convergence horizontale`);assert(dy*(y-.45)>0,`couche ${couche}: descente dominante`);}
+      }
+    }
+  }
+});
+verifier('changements de flux : positions continues, histoire conservée et projection cohérente',()=>{
+  const e=O.creerEtat(),c=contexte({largeur:1280,hauteur:720,vitesseX:0,vitesseY:0,vitesseZ:-80,cameraYaw:0});
+  avancer(e,c,.8,120);const avant=[...e.transportUniformes],temoin=O.creerEtat();avancer(temoin,c,.8,120);
+  O.avancerEtat(e,0,{...c,cameraYaw:Math.PI/2,ventX:90});assert.deepEqual([...e.transportUniformes],avant);
+  O.avancerEtat(e,1/120,{...c,cameraYaw:Math.PI/2,ventX:90});
+  e.transportUniformes.forEach((v,i)=>assert(Math.abs(v-avant[i])<.02,`saut de position ${i}`));
+  O.avancerEtat(temoin,1/120,c);
+  assert.deepEqual([...e.histoireUniformes],[...temoin.histoireUniformes],'une rafale a réécrit le trajet passé');
+  const flux=V.calculerFlux({...c,cameraYaw:Math.PI/2,ventX:90},{});
+  [flux.expansion,flux.deriveX,flux.deriveY,flux.air,flux.graviteX,flux.graviteY,flux.centreX,flux.centreY]
+    .forEach((v,i)=>assert(Math.abs(e.fluxUniformes[i]-v)<1e-7));
+});
+verifier('renouvellement des perles sans saut : populations pondérées, tampons permanents et cadence conservée',()=>{
+  let ref;
+  for(const hz of [30,47,60,120,144]){
+    const e=O.creerEtat({graine:3}),t=e.transportUniformes,h=e.histoireUniformes,f=e.fluxUniformes,ph=e.phaseUniformes;
+    avancer(e,contexte({vitesse:100}),8,hz);
+    const valeurs=[...t,...h,...ph,...f];
+    if(ref)valeurs.forEach((v,i)=>assert(Math.abs(v-ref[i])<1e-5,`${hz} Hz, transport ${i}`));else ref=valeurs;
+    assert(e.couches.every(c=>c.sequence>0),'le banc ne couvre pas le renouvellement');
+    for(let i=0;i<6;i++){assert(Math.abs(t[i*8+3]+t[i*8+7]-1)<1e-6);assert(t[i*8]>0&&t[i*8+4]>0);}
+    const avant=JSON.stringify(e);avancer(e,contexte({pause:true}),1,hz);assert.equal(JSON.stringify(e),avant);
+    assert.equal(e.transportUniformes,t);assert.equal(e.histoireUniformes,h);assert.equal(e.fluxUniformes,f);assert.equal(e.phaseUniformes,ph);
+  }
+});
+verifier('la vraie frontière WebGL transmet le champ et les trajectoires des couches',()=>{
+  const t=toile(),e=V.creer(t.canvas),c=contexte({vitesse:300/3.6,cameraRoll:.2,ventX:12,sourceScene:{width:1280,height:720}});
+  for(let i=0;i<120;i++)V.mettreAJour(e,1/120,c);
+  assert.deepEqual(t.appels.uniformes.uFlux,[...e.simulation.fluxUniformes.slice(0,4)]);
+  assert.deepEqual(t.appels.uniformes.uGravite,[...e.simulation.fluxUniformes.slice(4)]);
+  assert.deepEqual(t.appels.uniformes.uTransport,[...e.simulation.transportUniformes]);
+  assert.deepEqual(t.appels.uniformes.uHistoire,[...e.simulation.histoireUniformes]);
+  assert.deepEqual(t.appels.uniformes.uPhase,[...e.simulation.phaseUniformes]);
+});
+verifier('une toile momentanément nulle ne contamine pas le transport lors de son retour',()=>{
+  const e=O.creerEtat();
+  for(const [largeur,hauteur] of [[0,720],[1280,0],[-1,-1],[1280,720]]){
+    O.avancerEtat(e,1/60,contexte({vitesse:80,largeur,hauteur}));
+    for(const buffer of [e.uniformes,e.fluxUniformes,e.transportUniformes,e.histoireUniformes])assert(buffer.every(Number.isFinite));
+  }
+  assert.equal(e.uniformes[8],1280);assert.equal(e.uniformes[9],720);
+});
 console.log('visière optique : '+nombre+' contrôles passés');

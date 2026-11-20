@@ -10,17 +10,21 @@ l’historique de main : 34 secondaires déjà contenues, 15 têtes ajoutées co
 **0.2.66 / p15 / FERRO 0.3.15 / neuf circuits**, runtime inchangé.
 HTML : 14 370 823 octets, SHA-256 `18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b`.
 
-## Prochain lot : E0 — trajectoires des gouttes
+## Lot actif : eau, candidat à terminer et qualifier
 
-Plan complet : [PLAN-CORRECTIFS-VISUELS-2026-11-20.md](docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md).
-Fiche active : [eau et vitesse](docs/reprise/EAU-VITESSE-2026-11-20.md), E0–E3.
-Mesurer les trajectoires par couche et caméra, puis corriger le flux relatif : gravité
-à l’arrêt, écartement et sorties visibles par les bords avec la vitesse, dans les deux vues.
+Candidat **0.2.67** récupéré et sauvegardé, 17 fichiers ; 112/112 contrôles de
+trajectoire et dix suites ciblées passent. Build local de 14 382 450 octets,
+SHA-256 `4a10ce1b93c15214ab72de9416801d47d545074291fd5788bee2b9f04c8341d7`.
+**Main jouable reste 0.2.66** ; aucune qualification complète de ce candidat annoncée.
 
-Le [plan habitacle et pilote](docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md)
-reste préparé à H0/B0 : identité des deux habitacles, assise plus basse et bras/buste.
-Premières fiches poussées : `72f92e2c761dc0ead696033e6be06cb9df891695` ; cette reprise les réconcilie.
-**Plans publiés ; corrections visuelles encore à réaliser.**
+Fiche : [eau et vitesse](docs/reprise/EAU-VITESSE-2026-11-20.md).
+Reçu : `docs/reprise/rapports/EAU-VITESSE-2026-11-20/RECUPERATION-0267.json`.
+Terminer repli cinématique, verdict des images natives, puis campagne générale et
+captures du vrai jeu exact ; conserver les échecs/réserves initiaux. Chromium local
+est bloqué (socket), les images de course devront être obtenues par la CI.
+
+Le [plan habitacle/pilote](docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md)
+reste préparé à H0/B0 : habitacle unique, assise plus basse et dégagement bras/buste.
 
 ## Preuves et autres travaux
 
@@ -32,5 +36,5 @@ Premières fiches poussées : `72f92e2c761dc0ead696033e6be06cb9df891695` ; cette
 
 [Publication de consolidation](docs/reprise/rapports/CONSOLIDATION-2026-11-20/PUBLICATION.json) ·
 [Préparations](docs/reprise/preparations/README.md) ·
-[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **016**.
+[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **017**.
 Lecture minimale : ce fichier, `ETAT.json` → `etat_courant`, puis la seule fiche active.

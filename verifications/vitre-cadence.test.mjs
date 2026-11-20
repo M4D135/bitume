@@ -26,23 +26,24 @@ verifier('chaque image montre une position nouvelle, pas seulement les images de
   for (const hz of [60, 120, 144]) {
     const t = toile(), e = V.creer(t.canvas), c = pluie();
     for (let i = 0; i < 4 * hz; i++) V.mettreAJour(e, 1 / hz, c);
-    // Suivre une goutte qui ruisselle : son ellipse doit descendre à chaque image, pas une image sur hz / 30.
+    // Suivre une goutte mobile : son ellipse se déplace à chaque image, pas une image sur hz / 30.
+    // Le flux peut la faire remonter ou sortir latéralement ; ces directions ont leur propre contrôle.
     const goutte = e.gouttes.find(p => p.vivant && p.glisse === 1 && p.age > 1 && p.age < p.duree - 2 && p.y < .6);
     assert(goutte, 'goutte ruisselante');
     // Isoler le mouvement de cette goutte : une fusion supprime légitimement une des deux identités.
     // Les rencontres sont vérifiées séparément ; ici chaque image doit déplacer le même dépôt.
     for (const p of e.gouttes) if (p !== goutte) p.vivant = false;
     e.stats.gouttes = 1; c.abri = true;
-    let precedent = null, montees = 0, immobiles = 0;
+    let precedent = null, mouvements = 0, immobiles = 0;
     for (let i = 0; i < hz / 2; i++) {
       V.mettreAJour(e, 1 / hz, c);
       if (!goutte.vivant) break;
       const moi = corps(t.etat.image).find(el => Math.abs(el[2] - goutte.taille) < 1e-12);
       if (!moi) continue;
-      if (precedent !== null) { if (moi[1] > precedent) montees++; else immobiles++; }
-      precedent = moi[1];
+      if (precedent !== null) { if (Math.hypot(moi[0] - precedent[0], moi[1] - precedent[1]) > 1e-8) mouvements++; else immobiles++; }
+      precedent = moi;
     }
-    assert(montees >= hz / 2 - 3 && immobiles === 0, hz + ' Hz : ' + montees + ' images en mouvement, ' + immobiles + ' figées');
+    assert(mouvements >= hz / 2 - 3 && immobiles === 0, hz + ' Hz : ' + mouvements + ' images en mouvement, ' + immobiles + ' figées');
   }
 });
 verifier('même image aux mêmes instants à 30, 60, 120 et 144 Hz', () => {

@@ -1,0 +1,161 @@
+{
+  "base_candidat": "72f92e2c761dc0ead696033e6be06cb9df891695",
+  "base_integration": "092a00b685219ad1e74d24f24a69182e5a0a5562",
+  "snapshot_stable": true,
+  "fichiers": [
+    {
+      "path": "SIZE.json",
+      "sha256": "c05f06acf5e882fe8d0b587ea5e80a4dbd01fe76325bd68c365591f38e8bfc7c",
+      "bytes": 1993,
+      "nouveau": false
+    },
+    {
+      "path": "VERSION.json",
+      "sha256": "f9ff4967647a6d1eac1305868f4f5aae6f809fad76460d0044c2f8bbb9a79bd7",
+      "bytes": 151,
+      "nouveau": false
+    },
+    {
+      "path": "dist/bitume.html",
+      "sha256": "4a10ce1b93c15214ab72de9416801d47d545074291fd5788bee2b9f04c8341d7",
+      "bytes": 14382450,
+      "nouveau": false
+    },
+    {
+      "path": "src/jeu.js",
+      "sha256": "3bf192ee1da84b54432fe54aeee077baeebd69f22d73bf285398ff2228e8813c",
+      "bytes": 343491,
+      "nouveau": false
+    },
+    {
+      "path": "src/visiere-optique.js",
+      "sha256": "f503d993c797092a6d798add41cc739226ac75bba7905896431348f9ebe98e7a",
+      "bytes": 31259,
+      "nouveau": false
+    },
+    {
+      "path": "src/vitre.js",
+      "sha256": "f9935386db7010277dc1199e6c969af4282ec3dbc139425eaae8d71868bf27be",
+      "bytes": 26590,
+      "nouveau": false
+    },
+    {
+      "path": "tools/captures-couverts.mjs",
+      "sha256": "77272e629825ec33c33928174413fb4e0993b59b40f07d633a12a4096afd49fc",
+      "bytes": 19179,
+      "nouveau": false
+    },
+    {
+      "path": "tools/captures-demo.mjs",
+      "sha256": "e5692ea54da19a3fdb6a7b9dd8b54f58eafbc1fd99be79aa8e2745e795a676c1",
+      "bytes": 18343,
+      "nouveau": false
+    },
+    {
+      "path": "tools/captures-meteo.mjs",
+      "sha256": "0fafc8446f8cabcad3dcae8959d6fe6a86d602686d4f55cca50d6908cd777bcd",
+      "bytes": 20416,
+      "nouveau": false
+    },
+    {
+      "path": "tools/qualifier-visiere-egl.py",
+      "sha256": "6f8e4fc781e8221a91fad7ca53c27c734712feea16f2b9b6adae400756d7a149",
+      "bytes": 11555,
+      "nouveau": false
+    },
+    {
+      "path": "verifications/visiere-optique.test.mjs",
+      "sha256": "a4aa6b0e2080a2117a70ce1665f3e415fba1ce2fe0e1278c9b0caca9f47935af",
+      "bytes": 19179,
+      "nouveau": false
+    },
+    {
+      "path": "verifications/vitre-cadence.test.mjs",
+      "sha256": "4e4f9927a70036b8b8467b88cf7b75f277d34d0340b0ee00be084ba5e357e56c",
+      "bytes": 12374,
+      "nouveau": false
+    },
+    {
+      "path": "verifications/vitre-integration.test.mjs",
+      "sha256": "5a132b34003c5bd7c743e127551f89c61189814f4dbcb514fd96c96d52c5c828",
+      "bytes": 13995,
+      "nouveau": false
+    },
+    {
+      "path": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/TRAJECTOIRES-0266.json",
+      "sha256": "1d11535f4c9f39226753ef25fd5b3af9209fc6da11d40393cc1118abab548aba",
+      "bytes": 224980,
+      "nouveau": true
+    },
+    {
+      "path": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/TRAJECTOIRES-CANDIDAT.json",
+      "sha256": "763c415e27fe920d81fbc098be56a137ce69f06a041b69589f2b0bdf4624b9cd",
+      "bytes": 228311,
+      "nouveau": true
+    },
+    {
+      "path": "tools/qualification/vitre-trajectoires.mjs",
+      "sha256": "28418b5d359d2eca15a54b476df53c11d6671352d4e41601d41af360458a2c42",
+      "bytes": 11759,
+      "nouveau": true
+    },
+    {
+      "path": "verifications/vitre-flux.test.mjs",
+      "sha256": "f45b3405fc282fb0de1af50172ac58b233a9f5b0facd4aabce46cf05ce7abf1b",
+      "bytes": 10250,
+      "nouveau": true
+    }
+  ],
+  "html_sha256": "4a10ce1b93c15214ab72de9416801d47d545074291fd5788bee2b9f04c8341d7",
+  "statut": "candidat_recupere_validation_partielle",
+  "version_candidat": "0.2.67",
+  "validation_cpu": {
+    "scenarios": 56,
+    "controles": 112,
+    "conformes": 112,
+    "dx_px_1s_300_haut_gauche": -206.105999801,
+    "dy_px_1s_300_haut_gauche": -84.072590971,
+    "dy_px_1s_arret": 24.8,
+    "quatre_quadrants_sortis": true,
+    "sechage_dans_scenarios_isoles": 0,
+    "portee": "goutte injectée, sources SHA exacts ; reçu initial conserve VERSION 0.2.66, antérieure à la construction 0.2.67"
+  },
+  "validation_ciblee": {
+    "suites": 10,
+    "reussies": 10,
+    "optique_controles_final": 23,
+    "ancien_resume_optique": 22
+  },
+  "build": {
+    "version": "0.2.67",
+    "octets": 14382450,
+    "sha256": "4a10ce1b93c15214ab72de9416801d47d545074291fd5788bee2b9f04c8341d7",
+    "deux_constructions_identiques": true
+  },
+  "raster_initial": {
+    "cas": 35,
+    "png": 70,
+    "compile_et_rend": true,
+    "intervales_conformes": 8,
+    "intervalles_insuffisants": 8,
+    "intervalles_contraires": 0,
+    "limite": "Les 8 insuffisants concernent les nappes ; le verdict initial EGL ne les intégrait pas. Le bornage JS des dimensions a changé après raster, GLSL déclaré identique et empreinte actuelle vérifiée.",
+    "cout_llvmpipe_ms": {
+      "reference": 16.1,
+      "candidat": 19.66,
+      "portee": "médianes logicielles, pas FPS matériels"
+    }
+  },
+  "reste": [
+    "repli cinématique hors PhysX à fiabiliser",
+    "verdict directionnel EGL à raccorder et nappes à compléter",
+    "campagne générale du candidat final",
+    "captures du jeu complet du candidat exact",
+    "publication qualifiée sur main"
+  ],
+  "captures_locales_jeu": {
+    "images": 0,
+    "blocage": "Chromium socket Operation not permitted"
+  },
+  "runtime_main": "0.2.66"
+}

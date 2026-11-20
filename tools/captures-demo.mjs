@@ -69,7 +69,9 @@ export function preparerEtat(s) {
       tangage: e.tangage, roulis: e.roulis, braquage: e.braquage, roule: v.roule || 0, rebond: [0,0,0,0] };
     if (e._physx) {
       Object.assign(e._physx, { x: pose.x, y: pose.y, z: pose.z, cap: pose.cap, groundCount: 4 });
-      e._physx.velocity[0] = Math.cos(p.cap) * s.vitesse; e._physx.velocity[1] = 0; e._physx.velocity[2] = Math.sin(p.cap) * s.vitesse;
+      const horizontal = s.vitesse * Math.cos(pose.tangage);
+      e._physx.velocity[0] = Math.cos(p.cap) * horizontal; e._physx.velocity[1] = Math.sin(pose.tangage) * s.vitesse;
+      e._physx.velocity[2] = Math.sin(p.cap) * horizontal;
     }
     for (const liste of [S.prec, S.cour]) Object.assign(liste[v.id], pose);
   }

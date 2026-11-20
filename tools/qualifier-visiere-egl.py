@@ -14,6 +14,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import time
 
 import numpy as np
 from PIL import Image
@@ -22,6 +23,7 @@ sys.dont_write_bytecode = True
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--sortie', type=Path, required=True)
 parser.add_argument('--racine', type=Path, default=Path(__file__).resolve().parents[1])
+parser.add_argument('--reference-shader', type=Path, help='Source de référence, pour comparer le coût du même raster et des mêmes uniformes.')
 args = parser.parse_args()
 root, out = args.racine.resolve(), args.sortie.resolve()
 out.mkdir(parents=True, exist_ok=True)
@@ -35,17 +37,26 @@ source = (root / 'src/visiere-optique.js').read_text()
 vertex = re.search(r'const VERTEX = `([\s\S]*?)`;', source).group(1)
 fragment = re.search(r'const FRAGMENT = `([\s\S]*?)`;', source).group(1)
 program = ctx.program(vertex, fragment, varyings=())
+reference_program = None
+if args.reference_shader:
+    reference_source = args.reference_shader.read_text()
+    reference_vertex = re.search(r'const VERTEX = `([\s\S]*?)`;', reference_source).group(1)
+    reference_fragment = re.search(r'const FRAGMENT = `([\s\S]*?)`;', reference_source).group(1)
+    reference_program = ctx.program(reference_vertex, reference_fragment, varyings=())
 
 # La même simulation que le navigateur, y compris interpolation et plafonds du palier.
 node = r'''
 require(process.argv[1]+'/src/visiere-optique.js');require(process.argv[1]+'/src/vitre.js');
 const O=BITUME.visiereOptique,fixtures=[];
+function instantane(e,c,nom){return{nom,qualite:O.QUALITES[c.qualite],scene:c.qualite!=='low',uniformes:[...e.uniformes],
+ gouttes:[...e.gouttesUniformes],trajets:[...e.trajetsUniformes],nombre:e.nbGouttes,stats:{...e.depots.stats},
+ flux:e.fluxUniformes?[...e.fluxUniformes]:null,transport:e.transportUniformes?[...e.transportUniformes]:null,
+ histoire:e.histoireUniformes?[...e.histoireUniformes]:null,phases:e.phaseUniformes?[...e.phaseUniformes]:null};}
 function simuler(nom,ajout,secondes=24,graine=4){
  const e=O.creerEtat({graine}),c={qualite:'high',actif:true,pluie:1,neige:0,embruns:0,vitesse:0,intensite:1,
   cockpit:true,largeur:1280,hauteur:720,...ajout};
  for(let i=0;i<secondes*120;i++)O.avancerEtat(e,1/120,c);
- const f={nom,qualite:O.QUALITES[c.qualite],scene:c.qualite!=='low',uniformes:[...e.uniformes],
-  gouttes:[...e.gouttesUniformes],trajets:[...e.trajetsUniformes],nombre:e.nbGouttes,stats:{...e.depots.stats}};
+ const f=instantane(e,c,nom);
  fixtures.push(f);return {e,c,f};
 }
 simuler('grille-pluie',{});
@@ -61,6 +72,20 @@ simuler('sillage300-poursuite',{pluie:0,vitesse:300/3.6,embruns:.8,cockpit:false
 simuler('neige45',{pluie:0,neige:1,vitesse:45/3.6},30);
 simuler('legere',{qualite:'low',vitesse:235/3.6,embruns:.8});
 simuler('sec',{pluie:0});
+// Même shader et même état du jeu, couches isolées uniquement par leurs poids uniformes.
+// Les centres suivis dans les PNG prouvent le sens du mouvement, distinctement du nombre de sorties.
+if(O.COUCHES)for(const cockpit of [true,false])for(const vitesse of [0,300/3.6])for(const couche of [3,4]){
+ const e=O.creerEtat({graine:4}),c={qualite:'high',actif:true,pluie:1,neige:0,embruns:0,vitesse,intensite:1,
+  cockpit,largeur:1280,hauteur:720};
+ for(let i=1;i<=108;i++){
+  O.avancerEtat(e,1/120,c);if(![12,48,108].includes(i))continue;
+  const nom=`trajet-${cockpit?'cockpit':'poursuite'}-${vitesse?300:0}-${couche===3?'perles':'film'}-${i}`;
+  const f=instantane(e,c,nom);f.uniformes[0]=1.7;f.uniformes[1]=f.uniformes[2]=f.uniformes[3]=0;f.nombre=0;
+  for(let j=0;j<12;j++)if(j!==couche*2)f.transport[j*4+3]=0;
+  f.suivi={groupe:nom.slice(0,nom.lastIndexOf('-')),image:i,cockpit,vitesse,couche,transport:f.transport.slice(couche*8,couche*8+4)};
+  fixtures.push(f);
+ }
+}
 console.log(JSON.stringify(fixtures));
 '''
 fixtures = json.loads(subprocess.check_output(['node', '-e', node, str(root)], text=True))
@@ -107,9 +132,42 @@ g.glFramebufferTexture2D(0x8D40, 0x8CE0, 0x0DE1, textures[1], 0)
 assert g.glCheckFramebufferStatus(0x8D40) == 0x8CD5
 
 
-def uniforme4(nom, valeurs):
+def uniforme4(nom, valeurs, programme=program):
     data = (C.c_float * len(valeurs))(*valeurs)
-    g.glUniform4fv(g.glGetUniformLocation(program, nom.encode()), len(valeurs) // 4, data)
+    g.glUniform4fv(g.glGetUniformLocation(programme, nom.encode()), len(valeurs) // 4, data)
+
+
+def raccorder(f, programme):
+    loc = lambda nom: g.glGetUniformLocation(programme, nom.encode())
+    g.glUseProgram(programme)
+    g.glUniform1i(loc('uScene'), 0)
+    uniforme4('uMeteo', f['uniformes'][:4], programme)
+    uniforme4('uMouvement', f['uniformes'][4:8], programme)
+    uniforme4('uVue', f['uniformes'][8:12], programme)
+    g.glUniform2f(loc('uTexel'), 1 / w, 1 / h)
+    g.glUniform1i(loc('uQualite'), f['qualite'])
+    g.glUniform1i(loc('uAvecScene'), f['scene'])
+    g.glUniform1i(loc('uNbGouttes'), f['nombre'])
+    uniforme4('uGouttes', f['gouttes'], programme)
+    uniforme4('uTrajets', f['trajets'], programme)
+    if f.get('flux'):
+        uniforme4('uFlux', f['flux'][:4], programme)
+        uniforme4('uGravite', f['flux'][4:], programme)
+        uniforme4('uTransport', f['transport'], programme)
+        uniforme4('uHistoire', f['histoire'], programme)
+        uniforme4('uPhase', f['phases'], programme)
+
+
+def mesurer_raster(f, programme):
+    raccorder(f, programme)
+    samples = []
+    for i in range(5):
+        start = time.perf_counter()
+        g.glDrawArrays(0x0004, 0, 3)
+        g.glFinish()
+        if i > 1:
+            samples.append((time.perf_counter() - start) * 1000)
+    return samples
 
 
 report = {
@@ -118,9 +176,8 @@ report = {
     'limites': ['Mire de matière, pas capture de course.', 'Raster logiciel Mesa, ni WebGL navigateur ni FPS matériel qualifiés.'],
     'cas': [],
 }
+suivis = {}
 for f in fixtures:
-    loc = lambda nom: g.glGetUniformLocation(program, nom.encode())
-    g.glUseProgram(program)
     g.glViewport(0, 0, w, h)
     g.glDisable(0x0B71)
     g.glDisable(0x0BE2)
@@ -128,16 +185,12 @@ for f in fixtures:
     g.glClear(0x4000)
     g.glActiveTexture(0x84C0)
     g.glBindTexture(0x0DE1, textures[0])
-    g.glUniform1i(loc('uScene'), 0)
-    uniforme4('uMeteo', f['uniformes'][:4])
-    uniforme4('uMouvement', f['uniformes'][4:8])
-    uniforme4('uVue', f['uniformes'][8:12])
-    g.glUniform2f(loc('uTexel'), 1 / w, 1 / h)
-    g.glUniform1i(loc('uQualite'), f['qualite'])
-    g.glUniform1i(loc('uAvecScene'), f['scene'])
-    g.glUniform1i(loc('uNbGouttes'), f['nombre'])
-    uniforme4('uGouttes', f['gouttes'])
-    uniforme4('uTrajets', f['trajets'])
+    temps = None
+    if not f.get('suivi'):
+        temps = {'candidatMs': mesurer_raster(f, program)}
+        if reference_program:
+            temps['referenceMs'] = mesurer_raster(f, reference_program)
+    raccorder(f, program)
     g.glDrawArrays(0x0004, 0, 3)
     g.glFinish()
     error = g.glGetError()
@@ -160,7 +213,10 @@ for f in fixtures:
         'pixelsAlphaNonNul': int(np.count_nonzero(alpha)), 'alphaMoyen': float(np.mean(alpha) / 255),
         'fractionAlphaDemi': float(np.mean(alpha > 127)), 'alphaBords': float(np.mean(alpha[border]) / 255),
         'alphaCentre': float(np.mean(alpha[~border]) / 255), 'pixelsSha256': hashlib.sha256(pixels.tobytes()).hexdigest(),
+        'rasterLogiciel': temps,
     })
+    if f.get('suivi'):
+        suivis.setdefault(f['suivi']['groupe'], []).append((f, alpha.copy()))
 cases = {c['nom']: c for c in report['cas']}
 assert cases['sillage300']['alphaMoyen'] > cases['pluie300']['alphaMoyen'] * 2
 assert cases['sillage300-poursuite']['alphaMoyen'] > .1

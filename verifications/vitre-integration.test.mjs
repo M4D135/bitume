@@ -39,7 +39,7 @@ const executer = new Function('B', 'prefs', `
     initialiser: S => { session = S; ecran = 'course'; },
     ecran: (nom, retour = 'titre') => { ecran = nom; retourReglages = retour; },
     choisir: valeur => { $('v-gouttes').value = String(valeur); $('v-gouttes').listeners.get('input')({ target: $('v-gouttes') }); },
-    dessiner: (S, vue = 'cockpit', dt = 1/30, abri = false, position = [0,1,0], suivie) => dessinerMeteo(S, dt, { pos: Object.assign([...position], { abri }) }, vue, { palier: 'ultra' }, suivie),
+    dessiner: (S, vue = 'cockpit', dt = 1/30, abri = false, position = [0,1,0], suivie, orientation = {}) => dessinerMeteo(S, dt, { ...orientation, pos: Object.assign([...position], { abri }) }, vue, { palier: 'ultra' }, suivie),
     vues: () => [vitreVue, vitreVue2] };
 `);
 function seance() {
@@ -51,6 +51,45 @@ const jeu = (prefs = {}) => executer(globalThis.BITUME, prefs);
 const avancer = (j, S, s = 3, vue = 'cockpit') => { for (let i = 0; i < s * 30; i++) j.dessiner(S, vue); };
 let controles = 0;
 const verifier = (nom, f) => { f(); controles++; console.log('ok ' + nom); };
+
+verifier('le flux reçoit le vecteur PhysX et le regard réel, sans rafale lors d’une coupe de caméra', () => {
+  const j = jeu(), S = seance(); j.initialiser(S);
+  S.course.joueur.etat.v = -8;
+  S.course.joueur.etat._physx = { velocity: [12, -3, -7] };
+  const orientation = { yaw: .6, pitch: -.2, roll: .3 };
+  j.dessiner(S, 'cockpit', 1/30, false, [0,1,0], undefined, orientation);
+  const c = S.vitreContexte;
+  assert.equal(c.vitesse, -8, 'la marche arrière garde son signe');
+  assert.deepEqual([c.vitesseX,c.vitesseY,c.vitesseZ], [12,-3,-7], 'dérive et vitesse verticale réellement transmises');
+  assert.deepEqual([c.cameraYaw,c.cameraPitch,c.cameraRoll], [.6,-.2,.3]);
+  const flux = { ...j.vues()[0].flux };
+  j.dessiner(S, 'poursuite', 1/30, false, [500,120,-700], undefined, orientation);
+  assert.deepEqual(j.vues()[0].flux, flux, 'la coupe change la position, pas le flux du support');
+  j.dessiner(S, 'poursuite', 1/30, false, [500,120,-700], undefined, { yaw: .6+Math.PI, pitch: -.2, roll: .3 });
+  assert.notEqual(j.vues()[0].flux.deriveX, flux.deriveX, 'le regard arrière reprojette le même mouvement');
+});
+verifier('sans PhysX la pose du support conserve dérive, pente et marche arrière indépendamment du regard', () => {
+  const j = jeu(), S = seance(); j.initialiser(S);
+  Object.assign(S.course.joueur.etat, { v: -3, beta: .1, tangage: .2 }); S.cour = [{ cap: .4 }];
+  j.dessiner(S, 'cockpit', 1/30, false, [0,1,0], undefined, { yaw: 1.5 });
+  const c = S.vitreContexte, vecteur = [c.vitesseX,c.vitesseY,c.vitesseZ];
+  assert(Math.abs(c.vitesseX + 3*Math.cos(.2)*Math.cos(.3)) < 1e-12);
+  assert(Math.abs(c.vitesseY + 3*Math.sin(.2)) < 1e-12);
+  assert(Math.abs(c.vitesseZ + 3*Math.cos(.2)*Math.sin(.3)) < 1e-12);
+  j.dessiner(S, 'poursuite', 1/30, false, [9,4,0], undefined, { yaw: -1.5 });
+  assert.deepEqual([c.vitesseX,c.vitesseY,c.vitesseZ], vecteur);
+});
+verifier('les deux joueurs gardent leur propre mouvement et leur propre orientation de flux', () => {
+  const j = jeu(), S = seance(), J2 = { ...S, suivie: 1, vitreContexte: null }; j.initialiser(S);
+  S.course.voitures[0].etat._physx = { velocity: [0,0,-70] };
+  S.course.voitures[1].etat._physx = { velocity: [40,0,0] };
+  j.dessiner(S, 'cockpit', 1/30, false, [0,1,0], undefined, { yaw: 0 });
+  const a = { ...j.vues()[0].flux };
+  j.dessiner(J2, 'poursuite', 1/30, false, [0,3,0], undefined, { yaw: Math.PI });
+  assert.deepEqual(j.vues()[0].flux, a);
+  assert.notDeepEqual(j.vues()[1].flux, a);
+  assert.deepEqual([J2.vitreContexte.vitesseX,J2.vitreContexte.vitesseZ], [40,0]);
+});
 
 verifier('réglage 0..2 conservé au chargement, valeurs invalides ramenées au défaut 1', () => {
   for (const [entree, attendu] of [[undefined, 1], [null, 1], ['invalide', 1], [-8, 0], [9, 2], [0, 0], [.7, .7], ['1.8', 1.8]]) {

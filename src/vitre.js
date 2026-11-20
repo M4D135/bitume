@@ -10,6 +10,35 @@
     ultra: Object.freeze({ gouttes: 112, neige: 36, dpr: 1.5 })
   });
   const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+  const nombre = (v, defaut = 0) => v != null && Number.isFinite(Number(v)) ? Number(v) : defaut;
+  // Repère écran commun au Canvas et à l'optique : x vers la droite, y vers le bas.
+  // deriveX/Y s'expriment en hauteurs d'écran par seconde (x est donc multiplié par h/w),
+  // expansion en secondes inverses et graviteX/Y sont la projection de la verticale monde.
+  // L'appelant conserve out : aucun vecteur ni objet transitoire dans les pas de simulation.
+  function calculerFlux(c, out) {
+    const yaw = nombre(c.cameraYaw), pitch = nombre(c.cameraPitch), roll = nombre(c.cameraRoll);
+    const cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch), cr = Math.cos(roll), sr = Math.sin(roll);
+    const rx = cy * cr - sy * sp * sr, ry = cp * sr, rz = sy * cr + cy * sp * sr;
+    const ux = -sy * sp * cr - cy * sr, uy = cp * cr, uz = cy * sp * cr - sy * sr;
+    const fx = sy * cp, fy = sp, fz = -cy * cp;
+    const vectoriel = (c.vitesseX != null && Number.isFinite(Number(c.vitesseX))) ||
+      (c.vitesseY != null && Number.isFinite(Number(c.vitesseY))) || (c.vitesseZ != null && Number.isFinite(Number(c.vitesseZ)));
+    // Compatibilité des anciens contextes : la vitesse signée suit leur axe de visée.
+    const vitesse = clamp(nombre(c.vitesse), -120, 120);
+    const vx = vectoriel ? nombre(c.vitesseX) : fx * vitesse;
+    const vy = vectoriel ? nombre(c.vitesseY) : fy * vitesse;
+    const vz = vectoriel ? nombre(c.vitesseZ) : fz * vitesse;
+    const wx = clamp(nombre(c.ventX) - vx, -240, 240), wy = clamp(nombre(c.ventY) - vy, -240, 240), wz = clamp(nombre(c.ventZ) - vz, -240, 240);
+    const norme = Math.hypot(wx, wy, wz), incidence = norme > 1e-9 ? Math.abs(wx * fx + wy * fy + wz * fz) / norme : 0;
+    const air = Math.pow(clamp((norme - 8) / 100, 0, 1), 1.65);
+    out.air = air; out.vitesseAir = norme;
+    // Regarder derrière ne fait pas aspirer l'eau vers le centre : le flux rase aussi le côté arrière.
+    out.expansion = .80 * air * (.15 + .85 * incidence);
+    out.deriveX = clamp(wx * rx + wy * ry + wz * rz, -120, 120) * .0028;
+    out.deriveY = -clamp(wx * ux + wy * uy + wz * uz, -120, 120) * .0028;
+    out.graviteX = -ry; out.graviteY = uy; out.centreX = .5; out.centreY = .45;
+    return out;
+  }
   // Mélange exact aux bornes : k = 0 rend l'état du pas précédent, k = 1 celui du dernier pas, au bit près.
   const melange = (a, b, k) => a * (1 - k) + b * k;
   const hache = n => { n = Math.imul(n ^ (n >>> 16), 0x45d9f3b); n = Math.imul(n ^ (n >>> 16), 0x45d9f3b); return ((n ^ (n >>> 16)) >>> 0) / 4294967296; };
@@ -43,6 +72,7 @@
       graine: options && Number.isInteger(options.graine) ? options.graine | 0 : 0,
       creditEau: 0, creditNeige: 0, largeur: canvas ? canvas.clientWidth || canvas.width || 1 : 1280,
       hauteur: canvas ? canvas.clientHeight || canvas.height || 1 : 720, dpr: 1, dprPalier: null, propre: true, libere: false,
+      flux: { air: 0, vitesseAir: 0, expansion: 0, deriveX: 0, deriveY: 0, graviteX: 0, graviteY: 1, centreX: .5, centreY: .45 },
       opacite: 1, stats: { backend: 'canvas2d', pret: !!contexte, gouttes: 0, neige: 0, dessins: 0, etapes: 0, largeur: 0, hauteur: 0, dpr: 1, pixels: 0, fraction: 0,
         fusionsEau: 0, fusionsNeige: 0, fonte: 0, expulses: 0, seches: 0, surfaceExpulsee: 0,
         depotsEau: 0, depotsEmbruns: 0, eauEvacuee: 0, paires: 0 } };
@@ -148,11 +178,11 @@
     }
     return nombre;
   }
-  function avancer(e, c, budget, pluie, neige, vitesse, vent, intensite) {
+  function avancer(e, c, budget, pluie, neige, vitesse, intensite) {
     e.temps += PAS; e.stats.etapes++;
     const couvert = !!c.abri, eau = couvert || neige ? 0 : pluie, flocons = couvert ? 0 : neige;
     const spray = couvert || neige ? 0 : clamp(Number(c.embruns) || 0, 0, 1);
-    const air = clamp((vitesse - 18) / 102, 0, 1) ** 2, rythme = 3 + vitesse * .12;
+    const flux = e.flux, air = flux.air, aspect = e.hauteur / e.largeur, rythme = 3 + vitesse * .12;
     // L'air évacue la pluie libre ; les pneus de la voiture devant continuent d'envoyer de nouveaux impacts.
     // Le sillage a son propre flux, qui reste abondant à 300 km/h sans ralentir l'évacuation des gouttes présentes.
     const exposition = (c.cockpit === false ? .60 : 1) * intensite;
@@ -176,12 +206,14 @@
       const p = e.gouttes[i]; p.fusion = false; if (!p.vivant) continue;
       p.px = p.x; p.py = p.y; p.pa = p.age; p.pp = p.poids; p.pr = p.taille;
       garderTrajet(p);
-      p.age += PAS * ((eau > .05 || spray > .05 ? 1 : 1.55) + air * 5);
+      // La vitesse déplace l'eau jusqu'au bord ; elle ne simule plus son évacuation en accélérant son âge.
+      p.age += PAS * (eau > .05 || spray > .05 ? 1 : 1.55);
       p.poids = clamp(p.poids + PAS * (i < budget.gouttes ? 5 : -2), 0, 1);
       const mobilite = Math.max(p.glisse, clamp((p.taille - 3.4) / 3, .04, 1));
-      const ruisselle = mobilite * (8 + vitesse * .42) * (p.taille * .35 + p.vitesse);
-      p.y += PAS * (ruisselle + (p.y - .45) * air * 130) / e.hauteur;
-      p.x += PAS * (vent * (.5 + mobilite) + Math.sin(e.temps * p.frequence + p.phase) * p.vitesse + (p.x - .5) * air * 210) / e.largeur;
+      const gravite = mobilite * 8 * (p.taille * .35 + p.vitesse) / 720, entrainement = .30 + .70 * mobilite;
+      const ondulation = Math.sin(e.temps * p.frequence + p.phase) * p.vitesse / 720;
+      p.x += PAS * ((flux.deriveX * entrainement + flux.graviteX * gravite + ondulation) * aspect + (p.x - flux.centreX) * flux.expansion * entrainement);
+      p.y += PAS * (flux.deriveY * entrainement + flux.graviteY * gravite + (p.y - flux.centreY) * flux.expansion * entrainement);
       const dehors = p.y < -.04 || p.y > 1.04 || p.x < -.04 || p.x > 1.04;
       if (p.age >= p.duree || dehors || i >= budget.gouttes && !p.poids) {
         p.vivant = false;
@@ -193,11 +225,13 @@
     for (let i = 0; i < e.neige.length; i++) {
       const p = e.neige[i]; p.fusion = false; if (!p.vivant) continue;
       p.px = p.x; p.py = p.y; p.pa = p.age; p.pp = p.poids; p.pr = p.taille;
+      garderTrajet(p);
       p.age += PAS * ((flocons > .05 ? 1 : 1.35) + air * 4);
       p.poids = clamp(p.poids + PAS * (i < budget.neige ? 4 : -2), 0, 1);
       const fraction = p.age / p.duree;
-      p.y += PAS * (p.vitesse * Math.max(0, fraction - .22) * 7 + (p.y - .4) * air * 220) / e.hauteur;
-      p.x += PAS * (vent * .12 + (p.x - .5) * air * 280) / e.largeur;
+      const gravite = p.vitesse * Math.max(0, fraction - .22) * 7 / 720, entrainement = .60 + .40 * clamp(fraction, 0, 1);
+      p.x += PAS * ((flux.deriveX * entrainement + flux.graviteX * gravite) * aspect + (p.x - flux.centreX) * flux.expansion * entrainement);
+      p.y += PAS * (flux.deriveY * entrainement + flux.graviteY * gravite + (p.y - flux.centreY) * flux.expansion * entrainement);
       // Deux écoulements distincts : la neige devient d'abord humide, puis transparente et ruisselante.
       if (fraction > (p.fonte ? .72 : .42) && p.fonte < 2) {
         if (deposer(e, false, budget.gouttes, p.x, p.y, p.taille * (p.fonte ? .48 : .34))) { gouttes++; p.fonte++; p.fondu = true; e.stats.fonte++; }
@@ -223,9 +257,9 @@
     e.largeur = Math.max(1, Number(c.largeur) || e.largeur); e.hauteur = Math.max(1, Number(c.hauteur) || e.hauteur);
     const pluie = clamp(Number(c.pluie) || 0, 0, 1), neige = clamp(Number(c.neige) || 0, 0, 1);
     const vitesse = clamp(Math.abs(Number(c.vitesse) || 0), 0, 120);
-    const vent = clamp((Number(c.ventX) || 0) * .20 + (Number(c.ventZ) || 0) * .08, -8, 8);
+    calculerFlux(c, e.flux);
     e.accumulateur += Math.min(.25, dt);
-    while (e.accumulateur + 1e-10 >= PAS) { avancer(e, c, budget, pluie, neige, vitesse, vent, intensite); e.accumulateur -= PAS; }
+    while (e.accumulateur + 1e-10 >= PAS) { avancer(e, c, budget, pluie, neige, vitesse, intensite); e.accumulateur -= PAS; }
     return e.stats;
   }
   // Dessin à la fraction k du pas en cours, entre l'état d'avant le dernier pas et celui d'après : la
@@ -260,11 +294,12 @@
           ctx.lineTo(x + decale, y); ctx.stroke();
         }
       }
-      ctx.fillStyle = 'rgba(23,48,61,0.16)'; ctx.beginPath(); ctx.ellipse(x, y, r, r * 1.36, .12 * p.sin, 0, TAU); ctx.fill();
+      const angle = dx * dx + dy * dy > .25 ? Math.atan2(dy, dx) - Math.PI / 2 : .12 * p.sin;
+      ctx.fillStyle = 'rgba(23,48,61,0.16)'; ctx.beginPath(); ctx.ellipse(x, y, r, r * 1.36, angle, 0, TAU); ctx.fill();
       ctx.strokeStyle = 'rgba(12,31,40,0.35)'; ctx.lineWidth = Math.max(.6, r * .22);
-      ctx.beginPath(); ctx.ellipse(x + r * .08, y + r * .13, r * .82, r * 1.04, .12 * p.sin, -.1, 2.5); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(x + r * .08, y + r * .13, r * .82, r * 1.04, angle, -.1, 2.5); ctx.stroke();
       ctx.strokeStyle = 'rgba(225,245,253,0.61)'; ctx.lineWidth = Math.max(.65, r * .17);
-      ctx.beginPath(); ctx.ellipse(x - r * .13, y - r * .21, r * .73, r * .94, .12 * p.sin, 3.35, 5.8); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(x - r * .13, y - r * .21, r * .73, r * .94, angle, 3.35, 5.8); ctx.stroke();
       ctx.fillStyle = 'rgba(242,252,255,0.48)'; ctx.beginPath();
       ctx.ellipse(x - r * .28, y - r * .55, Math.max(.32, r * .14), Math.max(.4, r * .22), -.3, 0, TAU); ctx.fill();
     }
@@ -300,6 +335,7 @@
     const intensite = Number.isFinite(Number(c.intensite)) && c.intensite != null ? clamp(Number(c.intensite), 0, 2) : 1;
     if (!e.contexte || c.actif === false || c.retro === true || !intensite || budget === BUDGETS.off) { effacer(e); return e.stats; }
     if (c.pause === true) return e.stats;
+    calculerFlux(c, e.flux);
     e.opacite = Math.min(1.25, intensite) * (c.cockpit === false ? .55 : 1);
     suivrePalier(e, budget);
     if (!Number.isFinite(dt) || dt <= 0) return e.stats;
@@ -315,8 +351,7 @@
       }
       dimensionner(e, c, budget);
       const vitesse = clamp(Math.abs(Number(c.vitesse) || 0), 0, 120);
-      const vent = clamp((Number(c.ventX) || 0) * .20 + (Number(c.ventZ) || 0) * .08, -8, 8);
-      while (e.accumulateur + 1e-10 >= PAS) { avancer(e, c, budget, pluie, neige, vitesse, vent, intensite); e.accumulateur -= PAS; }
+      while (e.accumulateur + 1e-10 >= PAS) { avancer(e, c, budget, pluie, neige, vitesse, intensite); e.accumulateur -= PAS; }
     } else if (vide && e.propre) return e.stats;
     if (e.stats.gouttes || e.stats.neige || !e.propre) dessiner(e, clamp(e.accumulateur / PAS, 0, 1));
     return e.stats;
@@ -339,5 +374,5 @@
     ctx.globalAlpha = 1; e.propre = false; montrer(e, true);
     return true;
   }
-  B.vitre = { creer, creerSimulation, avancerSimulation, mettreAJour, prechauffer, effacer, liberer, BUDGETS, MAX_PIXELS, FREQUENCE: 30 };
+  B.vitre = { creer, creerSimulation, avancerSimulation, calculerFlux, mettreAJour, prechauffer, effacer, liberer, BUDGETS, MAX_PIXELS, FREQUENCE: 30 };
 })(globalThis.BITUME = globalThis.BITUME || {});
