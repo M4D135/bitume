@@ -362,16 +362,31 @@
     "identiqueLocalReconstructionGitHubEtArchives": true
   },
   "historiqueQualification": {
-    "campagneLocaleInitiale": "Interrompue après 111 journaux sur les 147 suites prévues ; elle ne constitue pas le bilan final.",
+    "campagneLocaleInitiale": "Passage complet local vérifié avant correction du test : 147 suites exécutées, 146 réussies, un échec de dégagement ; empreintes du runtime inchangées.",
+    "observationDocumentairePartielle": "La mention antérieure de 111 journaux était une observation documentaire partielle ; elle ne démontre ni une interruption ni une autre campagne.",
+    "bilanLocalComplet": {
+      "tests": 147,
+      "passed": 146,
+      "failed": 1,
+      "seconds": 635.22,
+      "runtimeHashesUnchanged": true,
+      "summarySha256": "c18d3c79479a9d764b7a4166b35ec7334eb371ba0cdb7ad4ea8d5bbcbc932d16",
+      "onlyFailure": {
+        "test": "verifications/obstacles-degagement.test.mjs",
+        "exitCode": 1,
+        "logSha256": "dc6d29779c0e0610fb1574279799bdb23c5791ccfb593d9ebe0fce837ff6b8fc"
+      }
+    },
     "echecDegagementInitial": "Le choc attendu ne se produisait plus sur le parcours de trafic p15. Le scénario historique corrigé distingue choc, recul et reprise.",
-    "controleHistorique": "Solveur Frenet, cinq contrôles p14/p15. La preuve native distincte emploie PhysX réel.",
+    "controleHistorique": "Solveur de repli historique : 5/5 contrôles en p14 et 5/5 en p15 après correction du seul scénario de test, sans modifier runtime, build ou fixtures. La preuve native distincte emploie PhysX réel ; les CI PR31 (147/147) et PR32 (148/148) restent distinctes du passage local 146/147.",
     "pluie": "Succès du premier passage en environ 31 minutes, aucun timeout ni relance pour ce candidat."
   },
   "reserves": [
     "Scènes à poses figées et rendu logiciel SwiftShader ; aucune mesure de FPS matériels ni course complète par ces captures.",
     "Terrain clair strié des plans faune identique à la référence 0.2.61 ; réserve du lot rendu conservée.",
     "En poursuite, les gouttes restent discrètes dans ces captures ; amélioration de densité à réconcilier avec le travail préparé.",
-    "Écoute matérielle, manettes physiques et réseau entre machines non qualifiés ici ; site non déployé."
+    "Écoute matérielle, manettes physiques et réseau entre machines non qualifiés ici ; site non déployé.",
+    "S8 reste une mesure facultative ouverte : 1 031 °/s² pour une cible ≤ 300 °/s² ; les 46/46 critères obligatoires passent."
   ],
   "suite": "Réconcilier et qualifier le travail préparé sur démos, sols, volant, pilote expressif/gestes et dynamique/densité des gouttes, en préservant p15 et le programme Monaco.",
   "clotureDocumentaire": "Reçu et reprise seulement ; aucun changement des sources du jeu, tests ou build qualifiés."
