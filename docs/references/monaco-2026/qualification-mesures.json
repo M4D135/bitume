@@ -1,0 +1,115 @@
+{
+  "schema": "bitume.monaco-mesures-qualification.v1",
+  "date": "2026-11-20",
+  "base": "4acee2507680bc48ad37e683baef214605ea8632",
+  "runtimeVersion": "0.2.60",
+  "scope": "Registre et acquisitions de preparation Monaco 14A ; aucune modification du jeu.",
+  "localChecks": {
+    "newChecks": {
+      "passed": 20,
+      "failed": 0,
+      "files": 2,
+      "logSha256": "128b28f6fd6f6b62122bc165a4f0c5b59c43be9ca3344724f3a6429a05ce7323"
+    },
+    "historicalMonacoChecks": {
+      "passed": 6,
+      "failed": 0,
+      "files": 1,
+      "logSha256": "cb61a4339d1004a88fb9b9af3f4fd1d9b62be7ed784737f8ca19252b76f11a51"
+    },
+    "offlineRegenerationIdentical": true,
+    "fullRuntimeCampaignRerun": false,
+    "buildRerun": false
+  },
+  "independentComparison": {
+    "points": 415,
+    "observations": 830,
+    "sourceValuesAndCoordinatesExact": true,
+    "spatialMethod": "Nombre d’enroulement angulaire indépendant du rayon pair/impair de l’importeur",
+    "spatialMembershipsEqual": true,
+    "coveredLidarPoints": 415,
+    "usedLidarTiles": 2,
+    "tilePointCounts": {
+      "metadata.412325": 140,
+      "metadata.412327": 275
+    },
+    "tunnelTaggedPoints": 33,
+    "maxAbsoluteDifferenceM": 25.23,
+    "pointsWithAbsoluteDifferenceAbove1m": 32,
+    "gradeReviewSegments": {
+      "lidar": 5,
+      "rge": 12
+    },
+    "eligibleRoadObservations": 0,
+    "roadMeasurementsStillUnknown": {
+      "y": 415,
+      "leftWidthM": 415,
+      "rightWidthM": 415,
+      "bankRadians": 415
+    }
+  },
+  "game": {
+    "sourceAndBuildUnchanged": true,
+    "htmlBytes": 14242311,
+    "htmlSha256": "cf71191600060626c5aa6bbf4523a332e867673984c47e7b48d9eaec79322655",
+    "browserValidationPerformed": false,
+    "deployed": false
+  },
+  "inputs": {
+    "sourceManifest": "sources-mesures.json",
+    "sourceCaptures": 5,
+    "frozenGeometryFiles": 6
+  },
+  "files": [
+    {
+      "file": "docs/references/monaco-2026/bilan-mesures.json",
+      "sha256": "bc7d032fedc564f759387cf32c8e58ada43aa7c8accf4ab0329344278f6dee36",
+      "bytes": 7498
+    },
+    {
+      "file": "docs/references/monaco-2026/mesures-controlees.json",
+      "sha256": "212fc5c1a4848b65471fe4eff55c9e73db99cd68e3311791131b421fd0bad67a",
+      "bytes": 422380
+    },
+    {
+      "file": "docs/references/monaco-2026/mesures-terrain.json",
+      "sha256": "fc53ab6950f9f7be03017ee732d1226f1aab6caed39974c86c77bb4a55f84d51",
+      "bytes": 667275
+    },
+    {
+      "file": "docs/references/monaco-2026/sources-mesures.json",
+      "sha256": "185713865cd2c41c4f6e7738360901fe5c6d0307a0ad11221440ae82d8265bb3",
+      "bytes": 27401
+    },
+    {
+      "file": "tools/monaco_mesures.py",
+      "sha256": "a5240f589f4d9b2554b3bf3d2ff3d31386eadb43aba038c645814c55e1d40df9",
+      "bytes": 8095
+    },
+    {
+      "file": "tools/preparer-monaco-mesures.py",
+      "sha256": "d772112a4bbc3a73e142d8d2dbfbc39b796f7cfc778cc898a16c57a5ccb6c0c7",
+      "bytes": 16264
+    },
+    {
+      "file": "verifications/monaco-altimetrie.test.mjs",
+      "sha256": "3fd5b1030788f99d225c315bfe0c1dd00dc8ea211ef1c2fd2118d87a25634c0b",
+      "bytes": 8147
+    },
+    {
+      "file": "verifications/monaco-mesures.test.mjs",
+      "sha256": "42a93d458eb8971772c35a12a8d0cc501a5b00bdcdec4bdd979daf3b5e2588cf",
+      "bytes": 6876
+    }
+  ],
+  "publication": {
+    "status": "qualified_locally_before_publication",
+    "branch": "codex/bitume-monaco-mesures-14a-20261120",
+    "ciResultNotYetObserved": true
+  },
+  "remaining": [
+    "Altitudes de chaussée distinctes des MNT, surtout tunnels et superpositions.",
+    "Largeurs gauche/droite, dévers, limites de course, lignes FIA et portails.",
+    "Politique saisonnière puis intégration de course ; aucune nouvelle destination jouable."
+  ]
+}

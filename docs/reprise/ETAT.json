@@ -4,13 +4,13 @@
     "version_courante": "0.2.60",
     "physique": "p14",
     "version_publiee_verifiee": "0.2.60",
-    "statut": "publie_sur_main_avec_reserve_de_duree",
+    "statut": "monaco_14A_prepare_qualifie_localement_avant_publication",
     "branche_livraison": "main",
-    "lot": "realisme_bras_roues_matieres_meteo_batiments_stands_et_baikal_13B",
-    "fiche": "docs/reprise/REALISME-2026-11-19.md",
+    "lot": "14A_monaco_acquisitions_altimetriques_et_registre",
+    "fiche": "docs/reprise/MONACO-MESURES-2026-11-20.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "047",
-    "prochaine_action": "Compléter les mesures Monaco 14A à partir du paquet FIA/OSM acquis ; ne pas refaire la livraison 0.2.60.",
+    "derniere_entree": "048",
+    "prochaine_action": "Publier le sous-lot de mesures Monaco et constater sa CI ; ensuite examiner les divergences, tunnels et niveaux de chaussée avant intégration.",
     "publication_precedente": {
       "commit_fusion": "02e8bac6b9ed762e0da06ab7c223e9cbd419968e",
       "tete_qualifiee": "d052f4c30cef0e18ea5e0bef84ca5ecae8af2108",
@@ -55,12 +55,12 @@
   },
   "suite": {
     "lot": "14A_Monaco_sources_et_mesures",
-    "statut": "paquet_sources_qualifie_metrique_complete_restante",
-    "objectif": "Sources FIA/OSM, boucle de rues sans segment inventé ; compléter altitudes, largeurs et dévers avant la reconstruction jouable.",
+    "statut": "terrain_415x2_et_registre_prepares_chaussee_restante",
+    "objectif": "Qualifier chaussée et limites à partir des anomalies identifiées ; préserver les mesures terrain et leur provenance sans remplir arbitrairement le tracé.",
     "fiche_plan": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
-    "apres": "publication_realisme_0260_terminee",
+    "apres": "publication_sous_lot_mesures_14A",
     "autres": "Marseille avec relief mesuré, montagne distincte et six destinations ; tous les lots transversaux restent suivis.",
-    "prochain_sous_lot": "Compléter le registre métrique de chaussée : références exploitables, licence/date/précision/datum ; altitudes, largeurs gauche/droite et dévers restent null tant que non mesurés.",
+    "prochain_sous_lot": "Après publication, examiner les 32 écarts >1m et les tunnels ; acquérir/qualifier altitudes de chaussée, largeurs et dévers datés avec incertitudes.",
     "acquis_a_preserver": "Boucle OSM fermée : 415 points/arêtes, 41 voies, 3323.610 m ; écart à la référence FIA -13.390 m, sans mise à l’échelle arbitraire. Voir docs/references/monaco-2026/README.md."
   },
   "regle": "Un sous-lot à la fois ; préserver les preuves et la reprise courte. Aucun push forcé.",
@@ -199,5 +199,24 @@
       "reserves_observed_in_this_ci": []
     },
     "recu_publication": "docs/reprise/rapports/REALISME-2026-11-19/PUBLICATION-0260.json"
+  },
+  "preparation_monaco": {
+    "statut": "qualifie_localement_avant_publication",
+    "rapport": "docs/references/monaco-2026/qualification-mesures.json",
+    "points": 415,
+    "observations_terrain": 830,
+    "observations_chaussee_eligibles": 0,
+    "comparaison_independante_exacte": true,
+    "ecart_max_entre_produits_m": 25.23,
+    "points_ecart_superieur_1m": 32,
+    "points_tag_tunnel": 33,
+    "tests_cibles": {
+      "reussis": 26,
+      "echecs": 0,
+      "fichiers": 3
+    },
+    "ci_distante_constatee": false,
+    "jeu_et_build_changes": false,
+    "lot_14A_complet": false
   }
 }
