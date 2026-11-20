@@ -1,0 +1,61 @@
+{
+  "format": "bitume-monaco-road-source-probe",
+  "version": 1,
+  "status": "candidate_not_qualified",
+  "readyForRuntime": false,
+  "file": "sources/bdtopo-20261120/sonde-louis-ii.geojson",
+  "url": "https://data.geopf.fr/wfs/ows?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=BDTOPO_V3%3Atroncon_de_route&BBOX=7.4284%2C43.7386%2C7.4292%2C43.7393%2CEPSG%3A4326&COUNT=30&OUTPUTFORMAT=application%2Fjson&SRSNAME=EPSG%3A4326&PROPERTYNAME=geometrie%2Ccleabs%2Cnature%2Cnom_collaboratif_gauche%2Cposition_par_rapport_au_sol%2Cdate_creation%2Cdate_modification%2Cdate_d_apparition%2Cdate_de_confirmation%2Cmethode_d_acquisition_altimetrique%2Cprecision_altimetrique%2Cprecision_planimetrique%2Clargeur_de_chaussee",
+  "acquiredUtc": "2026-11-20T08:53:15.535256+00:00",
+  "httpStatus": 200,
+  "httpDate": null,
+  "bytes": 6210,
+  "sha256": "b9e7772adf67f51af2707b380e3b2da5532cfa1794f3886f2c868f5664702177",
+  "numberMatched": 7,
+  "numberReturned": 7,
+  "responseTimeStamp": "2026-11-20T08:53:15.461Z",
+  "purpose": "Small exploratory probe; no road or track qualification",
+  "license": {
+    "name": "Licence Ouverte 2.0",
+    "url": "https://www.etalab.gouv.fr/licence-ouverte-open-licence/",
+    "attribution": "IGN, BD TOPO ; acquisition du flux le 20 novembre 2026",
+    "evidence": "https://www.ign.fr/institut/des-donnees-et-logiciels-ouverts-au-service-de-la-nation"
+  },
+  "requestInterpretation": {
+    "service": "WFS 2.0.0",
+    "layer": "BDTOPO_V3:troncon_de_route",
+    "bbox": [
+      7.4284,
+      43.7386,
+      7.4292,
+      43.7393
+    ],
+    "bboxOrder": "longitude,latitude for literal EPSG:4326 request",
+    "responseCoordinates": "longitude,latitude,Z as returned; vertical datum not asserted",
+    "countLimit": 30,
+    "completeObjectsMayExtendOutsideBbox": true
+  },
+  "documentation": {
+    "url": "https://data.geopf.fr/annexes/ressources/documentation/DC_BDTOPO_3-5.pdf",
+    "revision": "juillet 2026",
+    "sections": [
+      "Construction lineaire, nature Tunnel",
+      "Troncon de route, Position par rapport au sol",
+      "Troncon de route, Largeur de chaussee"
+    ]
+  },
+  "candidateRoadId": "TRONROUT0000000074274447",
+  "otherUndergroundRoadId": "TRONROUT0000000074274448",
+  "roadSurfaceMeasurementDate": null,
+  "verticalDatum": null,
+  "qualifiedRacePortals": false,
+  "qualifiedRaceWidths": false,
+  "eligibleForRoadProfile": false,
+  "limits": [
+    "L emprise est une sonde, pas une acquisition complete du corridor.",
+    "Le champ date_modification ne date pas le releve.",
+    "Les extremites de l objet routier ne sont pas des portails qualifies.",
+    "La largeur indicative ne represente pas les limites FIA.",
+    "Deux objets souterrains distincts sont presents ; le niveau doit etre identifie.",
+    "Aucune interpolation ou association au trace OSM ne remplit une cote routiere."
+  ]
+}

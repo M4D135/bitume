@@ -191,3 +191,13 @@ largeur constante de circuit. Les fichiers historiques `donnees.json`, `comparai
 `plan.svg`, leurs champs `null` et la longueur de reconnaissance restent inchangés.
 
 Fiche complète : [Monaco — mesures traçables](../../reprise/MONACO-MESURES-2026-11-20.md).
+
+## Revue exhaustive et prochaine source routière
+
+La [revue localisée](revue-mesures.md) couvre tous les 32 écarts >1 m, les 33 points tunnel
+et les 17 alertes de pente : 49 points distincts avec provenance, repères et inconnues.
+`tools/examiner-monaco-mesures.py --check` vérifie sa reproduction hors réseau.
+Les [35 contrôles ciblés](qualification-revue.json) passent ; aucune nouvelle cote routière n'est qualifiée.
+Une [sonde IGN BD TOPO](PISTE-BDTOPO.md) de sept objets donne une piste de données 3D
+sur Louis-II, avec deux voies souterraines à distinguer. Le tracé OSM et les registres
+historiques restent inchangés ; le lot 14A reste ouvert.

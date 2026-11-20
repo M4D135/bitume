@@ -5,12 +5,12 @@
     "version_publiee_verifiee": "0.2.61",
     "physique": "p14",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "0261_publiee_reprise_monaco_14A",
-    "lot": "14A_Monaco_sources_et_mesures",
-    "fiche": "docs/reprise/MONACO-MESURES-2026-11-20.md",
+    "statut": "monaco_14A_revue_qualifiee_publication_a_constater",
+    "lot": "14A_Monaco_revue_mesures",
+    "fiche": "docs/reprise/MONACO-REVUE-2026-11-20.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "049",
-    "prochaine_action": "Examiner les 32 écarts >1 m et les 33 points tunnel ; acquérir ou qualifier chaussée, limites, largeurs, dévers et portails datés avec incertitudes.",
+    "derniere_entree": "050",
+    "prochaine_action": "Publier la revue qualifiee puis acquerir les objets routiers BD TOPO des secteurs prioritaires ; confirmer niveaux, datum, dates et limites de course.",
     "dernier_lot_clos": "docs/reprise/HAUT-COL-METEO-2026-11-20.md"
   },
   "publication": {
@@ -60,9 +60,9 @@
   },
   "suite": {
     "lot": "14A_Monaco_sources_et_mesures",
-    "statut": "chaussee_et_limites_a_qualifier",
+    "statut": "revue_effectuee_acquisition_chaussee_candidate",
     "fiche_plan": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
-    "prochaine_action": "Examiner les 32 écarts >1 m et les 33 points tunnel ; acquérir ou qualifier chaussée, limites, largeurs, dévers et portails datés avec incertitudes.",
+    "prochaine_action": "Acquerir les objets BD TOPO des secteurs Mirabeau Bas, passages couverts et Tabac ; confirmer niveau, datum, dates, incertitudes et limites de course.",
     "references": "docs/references/monaco-2026/README.md",
     "points_boucle_osm": 415,
     "observations_terrain": 830,
@@ -72,7 +72,9 @@
     "altitudes_chaussee_largeurs_devers": "inconnus ; valeurs null conservées",
     "readyForRuntime": false,
     "lot_14A_complet": false,
-    "regles": "Ne pas refaire les acquisitions closes ; ne pas confondre terrain et chaussée ; ne pas corriger la longueur par une mise à l’échelle."
+    "regles": "Ne pas refaire les acquisitions closes ; ne pas confondre terrain et chaussée ; ne pas corriger la longueur par une mise à l’échelle.",
+    "revue": "docs/references/monaco-2026/revue-mesures.md",
+    "source_candidate": "docs/references/monaco-2026/PISTE-BDTOPO.md"
   },
   "catalogue": {
     "jouables": 8,
@@ -93,5 +95,23 @@
     "bitume_0259": "docs/reprise/rapports/COCKPIT-PILOTES-2026-11-19/PUBLICATION-0259.json",
     "bitume_0257": "docs/reprise/rapports/DEMOS-CINEMA-2026-11-19/PUBLICATION-0257.json"
   },
-  "regle": "Un sous-lot à la fois ; préserver les preuves, reprise courte et programme complet ; aucun push forcé."
+  "regle": "Un sous-lot à la fois ; préserver les preuves, reprise courte et programme complet ; aucun push forcé.",
+  "qualification_monaco_revue": {
+    "controles_cibles": 35,
+    "reussis": 35,
+    "echoues": 0,
+    "nouveaux_controles": 9,
+    "ecarts_plus_1m": 32,
+    "points_tunnel": 33,
+    "points_union_ecarts_tunnel": 45,
+    "points_revue_avec_pentes": 49,
+    "groupes_ecarts": 7,
+    "troncons_tunnel": 2,
+    "transitions_osm": 4,
+    "alertes_pente_terrain": 17,
+    "sonde_bdtopo_objets": 7,
+    "observations_chaussee_qualifiees": 0,
+    "recu": "docs/references/monaco-2026/qualification-revue.json",
+    "publication": "a_constater"
+  }
 }

@@ -1,5 +1,17 @@
 # BITUME — reprise courte
 
+## Lot actif — Monaco 14A, revue qualifiée
+
+Fiche : `docs/reprise/MONACO-REVUE-2026-11-20.md`. **35/35 contrôles ciblés réussis**.
+Revue exhaustive : **32 écarts >1 m** en sept groupes, **33 points tunnel**, deux tronçons
+et quatre transitions OSM. Avec les 17 alertes de pente, **49 points distincts** sont détaillés.
+Les 12 écarts hors tunnel se situent près de Mirabeau Bas et Tabac. Reçu :
+`docs/references/monaco-2026/qualification-revue.json`. Publication de ce sous-lot à constater.
+Une sonde publique IGN BD TOPO conserve **7 objets**, dont la voie 3D BD LOUIS II et une
+autre voie souterraine. Source candidate : `docs/references/monaco-2026/PISTE-BDTOPO.md`.
+Suite : acquisition ciblée, identification du bon niveau, datum, date et limites de course.
+Les observations de chaussée qualifiées restent à zéro ; version et build du jeu conservés.
+
 ## Livraison close — Haut-Col et météo 0.2.61
 
 **0.2.61 / p14 / FERRO 0.3.15** publiée ; conduite et moteur conservés.
@@ -19,8 +31,8 @@ Build : **14 265 416 octets**, SHA-256
 
 Les acquisitions sont publiées : boucle OSM **415 points**, **830 observations de terrain**.
 Reçu : `docs/references/monaco-2026/PUBLICATION-MESURES-20261120.json`.
-Examiner les **32 écarts > 1 m** et les **33 points tagués tunnel** ; qualifier chaussée,
-limites de course, largeurs, dévers et portails avec dates, provenance et incertitudes.
+La revue des **32 écarts > 1 m** et des **33 points tagués tunnel** est faite ; qualifier
+chaussée, limites de course, largeurs, dévers et portails avec dates, provenance et incertitudes.
 Les altitudes de chaussée, largeurs et dévers restent inconnus : **Monaco non jouable**,
 `readyForRuntime=false`. Ne pas refaire les acquisitions closes ni assimiler MNT et chaussée.
 Conserver la longueur **3 323,610 m** et l’écart FIA **−13,390 m**, sans mise à l’échelle.
