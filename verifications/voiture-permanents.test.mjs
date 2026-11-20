@@ -150,7 +150,9 @@ verifier('aucun drapeau ne passe d\'une variante à l\'autre', () => {
 });
 
 verifier('voyants : émission allumée puis éteinte sur le même objet', () => {
-  const mod = modeles[0], lampe = s => s.find(o => o.shape === 'sphere' && o.mat === 5 && Math.abs(o.s[0] - .012) < 1e-12);   // lampe de régime
+  // La lampe a désormais sa dimension métrique commune aux vues. Identifier son rôle,
+  // plutôt que l'ancien diamètre propre au cadrage intérieur, puis vérifier sa présence réelle.
+  const mod = modeles[0], lampe = s => s.find(o => o === mod.objetsRendu.habitacle.lampe.objet);
   const a = []; V.cockpit(mod, pose(1), a, Object.assign({}, ETAT, { regime: 12500, rapport: 3 }));
   const b = []; V.cockpit(mod, pose(1), b, Object.assign({}, ETAT, { regime: 9000, rapport: 3 }));
   const la = lampe(a), lb = lampe(b);

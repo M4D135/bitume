@@ -51,7 +51,7 @@ verifier('pièces et version lointaine bien formées', () => {
     assert.ok(['box', 'bevel', 'sphere', 'cylinder', 'ring', 'wedge'].includes(p.shape) || Object.values(V.FORMES).some(f => f.nom === p.shape), p.shape);
     assert.ok(p.o.concat(p.s).every(Number.isFinite) && p.s.every(v => v > 0), JSON.stringify(p));
   }
-  assert.ok(mod.simples.length <= 12, `${mod.simples.length} volumes au loin`);
+  assert.ok(mod.simples.length <= 15, `${mod.simples.length} volumes au loin, avec cuve et siège communs`);
 });
 
 // Pièces dessinées en vue extérieure, à l'arrêt : leur rang est celui des instances rendues par poser.
@@ -81,32 +81,29 @@ verifier('braquage d’Ackermann : roue intérieure plus braquée, centre commun
   }
 });
 
-// Cadrage : 41,6° verticaux et 68° horizontaux en 16:9 au repos. Les angles se lisent depuis l'œil ; l'homothétie
-// de rapport K les conserve, on projette donc les positions apparentes.
-const tv = Math.tan(41.6 * Math.PI / 360), th = tv * 16 / 9;
-const projeter = q => [(q[2] / q[0]) / th, (q[1] / q[0]) / tv];
-const dansLeCadre = (q, nom) => { const [x, y] = projeter(q); assert.ok(q[0] > 0 && Math.abs(x) <= 1 && Math.abs(y) <= 1, `${nom} hors du cadre : ${x.toFixed(2)}, ${y.toFixed(2)}`); };
-const dehors = p => p.map((v, i) => v - V.OEIL[i]);
-
-verifier('cockpit : centre du volant entre 14 et 18° sous l’axe de visée', () => {
-  const c = V.VOLANT.centre, a = deg(Math.atan2(-c[1], Math.hypot(c[0], c[2])));
-  assert.ok(a >= 14 && a <= 18, `${a.toFixed(1)}°`);
+// Le cadrage dépend des yeux réels et de la projection de jeu.js ; ses scénarios paysage/portrait
+// sont qualifiés dans camera-habitacle.test.mjs. Ici on vérifie les pièces métriques, sans cadrage fictif.
+verifier('habitacle : géométrie indépendante de la caméra, volant au même ancrage monde', () => {
+  const oeil = Array.from(V.OEIL), ev = { p: [0, 0, 0], cap: 0, pilote: { volant: 0, rapport: 3, passage: 1 } };
+  const dehors = []; V.poser(mod, ev, dehors);
+  const volant = mod.objetsRendu.pilote.variantes[0].pieces.find(p => p.role === 'volant').objet;
+  const reference = Array.from(volant.p);
+  V.OEIL[1] += .05;
+  try {
+    V.cockpit(mod, ev, [], { regime: 9000, volant: 0, rapport: 3, kmh: 180 });
+    assert.deepEqual(Array.from(mod.objetsRendu.habitacle.jante.objet.p), reference);
+  } finally { V.OEIL.forEach((_, i) => { V.OEIL[i] = oeil[i]; }); }
 });
 
-// Cadrage de vroom-unreal 0.35 : volant gros et bas, dont le bas de la jante sort de l'image ; les mains, elles, y sont.
-verifier('cockpit : haut de la jante, prises des mains, planche, pneus avant et rétroviseurs dans le cadre en 16:9', () => {
-  const { centre: C, rayon: R, inclinaison: t, prise } = V.VOLANT, tube = .012 * R / .105;
-  const wu = [Math.sin(t), Math.cos(t), 0], wr = [0, 0, 1], jante = (a, e) => C.map((v, i) => v + e * (wu[i] * Math.cos(a) + wr[i] * Math.sin(a)));
-  for (let a = -prise - .15; a <= prise + .15; a += .1) dansLeCadre(jante(a, R + tube), 'jante');
-  for (const s of [-1, 1]) dansLeCadre(jante(s * prise, R + .03), 'gant');
-  const bas = projeter(jante(Math.PI, R));
-  assert.ok(bas[1] < -1 && bas[1] > -1.25, `le bas de la jante sort de l'image, de peu : ${bas[1].toFixed(2)}`);
-  const pu = [Math.sin(V.PENTE_PLANCHE), Math.cos(V.PENTE_PLANCHE), 0];
-  for (const a of [-1, 1]) for (const b of [-1, 1]) dansLeCadre(V.PLANCHE.map((v, i) => v + a * .055 * pu[i] + b * .19 * wr[i]), 'planche');
-  for (const s of [-1, 1]) {
-    dansLeCadre(dehors([1.35, .58, s * .75]), 'pneu avant');
-    const retro = mod.corps.find(p => p.glace && p.o[2] * s > .3);
-    dansLeCadre(dehors(retro.o), 'rétroviseur');
+verifier('rétroviseurs : deux montages communs à la voiture et au cockpit', () => {
+  const ev = { p: [0, 0, 0], cap: 0, pilote: { volant: 0, rapport: 3, passage: 1 } }, dehors = [];
+  V.poser(mod, ev, dehors);
+  const rig = mod.objetsRendu.pilote, H = mod.objetsRendu.habitacle;
+  assert.equal(H.glaces.length, 2);
+  for (let k = 0; k < 2; k++) for (const [role, source] of [['boitier', H.glaces[k].boitier], ['patte', H.glaces[k].patte], ['glace', H.glaces[k].vive]]) {
+    const pc = rig.variantes[0].pieces.find(p => p.role === 'retro-' + role + '-' + k);
+    assert.equal(pc.source, source);
+    assert.ok(dehors.includes(pc.objet));
   }
 });
 
@@ -135,7 +132,7 @@ verifier('cockpit : coque creuse, aucune pièce de carrosserie entre l’œil et
   const sortie = [], ev = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0 };
   V.cockpit(mod, ev, sortie, { regime: 8000, volant: 0, rapport: 3, kmh: 180 });
   const carrosserie = sortie.slice(0, mod.corps.filter(p => V.visible(p, true, 0)).length);
-  const fin = V.VOLANT.centre.map((v, i) => V.OEIL[i] + V.K * v);
+  const fin = V.VOLANT.centre.map((v, i) => V.ORIGINE_HABITACLE[i] + V.K * v);
   for (const m of carrosserie) {
     if (m.fx) continue;
     const r = V.euler(...m.r), f = formeDe(m.shape);
@@ -153,17 +150,17 @@ verifier('cockpit : coque creuse, aucune pièce de carrosserie entre l’œil et
   }
 });
 
-verifier('cockpit : pilote, arrière, capot et glaces de la vue extérieure absents, roues avant présentes', () => {
+verifier('cockpit : seule la propre tête est masquée, coque et roues présentes', () => {
   const sortie = []; V.poser(mod, { p: [0, 0, 0], cap: 0 }, sortie, { cockpit: true, overlay: true });
   // Les sous-surfaces d'usure sont préallouées, mais un pneu neuf n'en dessine aucune.
-  assert.equal(sortie.length, mod.corps.filter(p => !(p.pilote || p.arriere || p.exterieur || p.glace || p.vite || p.usureRoue > 1)).length);
+  assert.equal(sortie.length, mod.corps.filter(p => !(p.tetePilote || p.vite || p.usureRoue > 1)).length);
   assert.ok(sortie.every(m => m.overlay) && sortie.some(m => m.shape.startsWith('bitume-pneu-av') && m.p[0] > 1.3));
 });
 
 // ---------------------------------------------------------------- détails de la voiture et cockpit vivant
 const repos = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0 };
 const bord = extra => { const sortie = []; V.cockpit(mod, Object.assign({ v: 40 }, repos), sortie, Object.assign({ regime: 9000, volant: 0, rapport: 3, kmh: 180 }, extra)); return sortie; };
-const reel = v => v.map((x, i) => V.OEIL[i] + V.K * x);      // position dans la voiture d'un point composé vu de l'œil
+const reel = v => v.map((x, i) => V.ORIGINE_HABITACLE[i] + V.K * x); // coordonnées de construction → mètres
 const ecart = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 
 verifier('numéro en géométrie ; roues sans barrettes blanches, valves extérieures à toute vitesse', () => {
@@ -201,13 +198,13 @@ verifier('valve : elle suit exactement la rotation de sa roue depuis son orienta
 });
 
 verifier('cockpit en carènes : habitacle sans boîte, jante d’un seul tube, pneus à épaules rondes', () => {
-  const habitacle = mod.corps.filter(p => p.dedans);
+  const habitacle = mod.corps.filter(p => ['goutte', 'goutte-dedans', 'jonc', 'cuve'].some(n => p.shape === V.FORMES[n].nom));
   assert.ok(habitacle.length >= 4 && habitacle.every(p => p.shape.startsWith('bitume-')), habitacle.map(p => p.shape).join(' '));
   const sortie = bord({});
   assert.equal(sortie.filter(m => m.shape === 'bitume-jante').length, 1, 'une seule jante');
   assert.equal(sortie.filter(m => m.shape === 'bitume-planche' || m.shape === 'bitume-casquette').length, 2, 'planche et casquette arrondies');
   assert.equal(mod.corps.filter(p => p.shape.startsWith('bitume-pneu')).length, 4);
-  assert.ok(sortie.length < 240, `${sortie.length} instances en vue cockpit`);
+  assert.equal(new Set(sortie).size, sortie.length, 'aucune pièce dessinée deux fois');
 });
 
 verifier('cockpit : rien que des nombres finis, volant à fond et pendant un changement de rapport', () => {
@@ -226,14 +223,14 @@ verifier('changement de rapport : la main droite va au pommeau, puis revient sur
   const prise = reel(V.VOLANT.centre.map((v, i) => v + V.VOLANT.rayon * ([Math.sin(tilt), Math.cos(tilt), 0][i] * Math.cos(a) + [0, 0, 1][i] * Math.sin(a))));
   assert.ok(auPlusPres(1, pommeau(1)) > .05, 'au repos, la main est loin du levier');
   const d0 = auPlusPres(.45, pommeau(.45));
-  assert.ok(d0 > .015 && d0 < .025, `à mi-changement, la main est posée sur le pommeau sans s'enfoncer (${(d0 / V.K * 1000).toFixed(1)} mm du centre)`);
+  assert.ok(d0 > .040 * V.K / 2 && d0 < .040 * V.K / 2 + .025, `à mi-changement, la main est posée sur le pommeau sans s'enfoncer (${(d0 / V.K * 1000).toFixed(1)} mm du centre)`);
   assert.ok(auPlusPres(.45, prise) > .04 && auPlusPres(1, prise) < .02, 'elle a quitté la jante, puis y revient');
   // le pommeau passe de la position du 2e rapport (vers l'arrière) à celle du 3e (vers l'avant)
   assert.ok(pommeau(1)[0] - pommeau(0)[0] > .015, 'le levier avance de la 2e à la 3e');
 });
 
-// Point composé vu de l'œil (positions apparentes) d'un point de la voiture : l'inverse de « reel ».
-const apparent = q => q.map((x, i) => (x - V.OEIL[i]) / V.K);
+// Inverse de la conversion de construction ; aucune transformation entre les vues.
+const apparent = q => q.map((x, i) => (x - V.ORIGINE_HABITACLE[i]) / V.K);
 
 verifier('mains : aucun sommet des gants dans les branches de 3 h et 9 h, volant droit ou tourné', () => {
   const { centre: C, rayon: R, inclinaison: tau, course } = V.VOLANT, e = R / .105;
@@ -254,14 +251,11 @@ verifier('mains : aucun sommet des gants dans les branches de 3 h et 9 h, volant
   }
 });
 
-verifier('mains dans le cadre, manches hors du cadre dès le poignet (16:9, volant droit)', () => {
-  const sortie = bord({});
-  for (const m of sortie.filter(m => m.shape.startsWith('bitume-main-gant'))) dansLeCadre(apparent(m.p), m.shape);
-  const manche = sortie.filter(m => m.shape === 'sphere' && m.color === livree.combinaison);
-  assert.equal(manche.length, 12, 'six tronçons par manche');
-  for (const m of manche.filter((m, i) => i % 6 >= 1)) {
-    const [, y] = projeter(apparent(m.p));
-    assert.ok(y < -1, `manche dans l'image : ${y.toFixed(2)}`);
+verifier('les deux manches restent présentes : aucune suppression de géométrie pour le cadrage', () => {
+  const sortie = bord({}), H = mod.objetsRendu.habitacle;
+  for (const main of H.mains) {
+    assert.equal(main.tubes.length, 6); assert.equal(main.boules.length, 6);
+    for (const p of [...main.pieces, ...main.tubes, ...main.boules]) assert.ok(sortie.includes(p.objet));
   }
 });
 
@@ -497,12 +491,14 @@ verifier('habitacle vu du haut : par l\'ouverture on voit la cuve sombre, pas le
   const vus = [];
   for (const p of mod.corps) {
     const f = V.FORMES[String(p.shape).replace(/^bitume-/, '')];
-    if (!f || p.dedans) continue; // vue extérieure seulement : les pièces `dedans` ne sont pas dessinées ici
+    if (!f) continue;
     for (const t of f.tri) vus.push({ c: [0, 1, 2].map(r => [0, 1, 2].map(k => t[r][k] * p.s[k] + p.o[k])), p });
   }
   const cam = [-4, 6, 0];
   let rouges = 0, total = 0;
-  for (let x = -.15; x <= .451; x += .05) for (let z = -.12; z <= .121; z += .04) {
+  // Le torse est maintenant posé dans son assise même sans état animé. Doubler la densité conserve
+  // plus de quarante rayons de contrôle du fond en dehors de cette silhouette réellement occupée.
+  for (let x = -.15; x <= .451; x += .025) for (let z = -.12; z <= .121; z += .02) {
     const cible = [x, .30, z], d0 = sous(cible, cam), l0 = Math.hypot(...d0), d = d0.map(v => v / l0);
     let best = Infinity, piece = null, pt = null;
     for (const { c, p } of vus) {

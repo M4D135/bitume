@@ -2,20 +2,38 @@
   "schema": 1,
   "discussion": "03",
   "mission": "Menu arcade",
-  "statut": "preparee_non_lancee",
+  "statut": "lot_sources_qualifie_pret_pour_integration_00",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/03-MENU.md",
-  "base_main": "d8f02cae45443ae6a1120dc93125d8adfae94422",
+  "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
+  "main_reverifie": "d230d8c6995e44d63b0a072fa3d6362d04a8e5ce",
   "branche_proposee": "codex/bitume-p03-menu-20261120",
-  "branche_reelle": null,
-  "head": null,
-  "pr": null,
-  "sous_lot": null,
-  "preuves": [],
-  "reserves": [],
-  "prochaine_action": "Retrouver les modifications suivies/non suivies du menu puis qualifier le parcours.",
-  "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
+  "branche_reelle": "codex/bitume-p03-menu-20261120",
+  "head": "098122e093fcc99939e1064498a2d45d283d8f0d",
+  "head_note": "SHA source exact qualifié par la CI. Le commit documentaire suivant porte ce reçu sans changer les sources ni le raccord.",
+  "pr": "https://github.com/M4D135/bitume/pull/40",
+  "sous_lot": "M2 — remise qualifiée à 00 et contrat Troll à 01",
+  "rapport": "docs/reprise/PARALLELE-2026-11-20/rapports/03-QUALIFICATION.json",
+  "ci": "https://github.com/M4D135/bitume/actions/runs/44787693042",
+  "preuves": [
+    "196 contrôles ciblés réussis : navigation 21, aperçu 12, manette 39, commandes partagées 47, prêts en ligne 63, raccord 14.",
+    "19 parcours Chromium réussis, aucune exception JS ; départ réel, pause/réglages/reprise, démo automatique, persistance J1/J2 et clavier/tactile simulé.",
+    "Deux séquences B vérifiées étape par étape : bilan → pilotes → conditions → circuit → titre. Nom et code saisis à la deuxième manette sans clavier.",
+    "14 PNG inspectés ou réutilisés après égalité SHA-256 : 1440×900, 390×844, 844×390. Tracé entier, trois cartes bilan complètes, météo sélectionnée, J1/J2 lisibles.",
+    "Tracé issu des XYZ réels ; matrice neuf circuits × 144 rotations × six formats ; aucun dessin après masquage, au repos ou dans les menus opaques.",
+    "131 contrôles existants et 35 groupes nommés conservés. Patch applicable sur main récent ; jeu.js, construire.py, versions/builds et FERRO inchangés.",
+    "Raccord pour 00 et contrat Troll pour 01/00 alignés sur la révision 1 de 00 ; preuve et empreintes attachées au SHA exact."
+  ],
+  "reserves": [
+    "Raccord jeu.js/construire.py appliqué uniquement à une copie de qualification ; assemblage commun et publication restent à 00.",
+    "Troll : le menu persiste les choix et retire prêt ; début réel du geste, son simultané, IA et transport réseau restent à 01/00.",
+    "Préchauffage initial existant conservé ; rendu continu des vitrines opaques et reconstructions à la sélection supprimés dans le raccord.",
+    "Chromium logiciel ; manettes et tactile simulés. Aucun essai de manette physique, audio entendu, réseau entre machines, Xbox ou GPU Intel.",
+    "CI générale rouge au garde de cohérence versions/build commun ; aucun contournement de ce garde ni publication hors du périmètre 00."
+  ],
+  "prochaine_action": "00 reprend les quatre sources, concilie les points d’appel avec 01/02/04, applique le raccord puis qualifie/publie son build commun ; 01 consomme les choix Troll selon le contrat de début réel.",
+  "regle": "État propre à cette discussion sur sa branche ; reprise globale par 00.",
   "preparations_portables": [
     "docs/reprise/PARALLELE-2026-11-20/preparations/arcade.patch"
   ],
-  "preparations_statut": "applicables_individuellement_a_la_base_non_qualifiees"
+  "preparations_statut": "arcade_reprise_et_qualifiee_avec_raccord_propose_dans_copie"
 }

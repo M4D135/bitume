@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "base_main": "fee69c521eccc0e64cc29f762a6d2244b5ade759",
+  "statut": "candidat_construit_ci_et_images_a_qualifier",
+  "version": "0.2.69",
+  "physique": "p15",
+  "ferro": "0.3.15",
+  "circuits": 9,
+  "lots": [
+    {
+      "lot": "01",
+      "head": "224bae15d65f1b0c52866a1faf6b880e6a6ca0b3",
+      "pr": 41
+    },
+    {
+      "lot": "03",
+      "head": "e54b3cc5d48d7e9ff73e97677665cc3bf00f12f3",
+      "pr": 40
+    },
+    {
+      "lot": "04_S1",
+      "head": "6cbfa7e48d8b77ab1f7f7fe252bf4e2e693cacba",
+      "M1_exclu": true
+    }
+  ],
+  "build": {
+    "version": {
+      "version": "0.2.69",
+      "titre": "BITUME",
+      "moteur": "FERRO",
+      "empreinte": "e3429776d1ab5b75d79203defbf61abb9290f6ce4494f5627122f971ebe5900e"
+    },
+    "html_octets": 14472625,
+    "hashes": {
+      "dist/bitume.html": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+      "VERSION.json": "adf1dc7d7653020b1ed3699628324fcb757524b08083eda80d05c505811b8432",
+      "SIZE.json": "082d429feab92d1c7736fe105137943dbce06a18c452a5de0ca7d1cb39db87f3"
+    },
+    "reconstruction_identique": true,
+    "ferro_lock": true
+  },
+  "tests_cibles": {
+    "integration_parallele": 19,
+    "son": 26,
+    "manette": 39,
+    "commandes_partage": 47,
+    "echecs": 0
+  },
+  "correctif_audio": "Reprise depuis menu purge les preecoutes ; une reprise repetee en course conserve les Troll actifs. Cinq voix bornees.",
+  "preferences_reseau": "Schema1 et remappage machine/place, snapshots et compatibilite ancien hote testes en simulation.",
+  "evenements_troll_distants": "non synchronises ; indication explicite a la preparation en ligne",
+  "captures_locales": {
+    "statut": "demarrage_chromium_bloque",
+    "raison": "socket() Operation not permitted ; aucune image du candidat validee localement",
+    "suite": "CI ciblee [capture-assemblage]"
+  },
+  "reserve_animation": "Preuve temporelle Troll T3 acquise sur le même HTML ; orientations, portrait, LOD et raccords menu/saisons assemblés à qualifier.",
+  "qualification_generale": "a_executer_sur_commit_exact",
+  "site_deploye": false,
+  "reconstruction_source": {
+    "arbre_recupere": "dfd28246470fc8a1d58c800dace8409fc24d1c74",
+    "commit_local_historique": "11dd51ef77cf887a9dc3da99ac80592c428fd4a5",
+    "methode": "Reprise des objets Git exacts et ajout des seules preuves T3 ; aucun changement runtime."
+  },
+  "troll_assemble": {
+    "statut": "qualifie",
+    "ci": "https://github.com/M4D135/bitume/actions/runs/44795943660",
+    "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+    "png": 26,
+    "poses": 5080,
+    "preuve": "../preuves/01-troll-assemble.json",
+    "relance": false
+  },
+  "tests_delegues_historique": {
+    "prets_enligne": 63,
+    "raccord_menu": 14,
+    "camera_paysage_portrait_duo": 2
+  },
+  "controles_restants": [
+    "CI générale du commit publié",
+    "Parcours du menu assemblé",
+    "Vues habitacle, duo et saisons ciblées",
+    "Relecture du main reçu après fusion"
+  ]
+}

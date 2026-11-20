@@ -1,0 +1,13 @@
+✔ la campagne exige un HTML identifié, deux vraies vues duo et tous les instants (1.321913ms)
+✔ les deux séquences cohérentes satisfont le contrat sans confondre identifiants et places (1.646432ms)
+✔ les faux succès audio et le déclenchement contournant les vrais appuis sont refusés (2.342136ms)
+✔ une pose figée, une montée manquante et un retour incomplet ne closent pas le pilote (1.547184ms)
+✔ la seconde vue, les quatre rétros et le vrai WebGL font partie de la preuve (1.999099ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13.203808

@@ -805,24 +805,27 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
     return q === 'medium' || q === 'high' ? q : 'low';
   }
   const ESSENCE_BOTANIQUE = essence => (essence === 'pin' || essence === 'conifere') ? essence : 'feuillu';
+  const couronneArbre = o => o.shape === 'foliage' || o.collision !== 'tronc' && o.shape.startsWith('arbre-');
 
   // Habillage d'un arbre déjà construit à l'historique. Moyenne et Fine remplacent les blobs de feuillage par
   // une couronne procédurale de la botanique et donnent au tronc la matière écorce du moteur. Le tronc reste
   // l'objet qui porte la collision, avec ses coordonnées et sa taille d'origine : le solide ne bouge pas d'un
   // centimètre. Aucune valeur de hasard n'est consommée ici, donc aucun arbre ne se déplace ailleurs.
-  function habiller(liste, loin, essence, qualite, h, penche, v) {
+  function habiller(liste, loin, essence, qualite, h, penche, v, nu = false) {
     if (!B.botanique) return;
     const e = ESSENCE_BOTANIQUE(essence);
     for (const o of liste) if (o.mat === 10) o.mat = B.botanique.matiere('ecorce');
-    for (let k = liste.length - 1; k >= 0; k--) if (liste[k].shape === 'foliage') liste.splice(k, 1);
-    for (let k = loin.length - 1; k >= 0; k--) if (loin[k].shape === 'foliage') loin.splice(k, 1);
+    for (let k = liste.length - 1; k >= 0; k--) if (couronneArbre(liste[k])) liste.splice(k, 1);
+    for (let k = loin.length - 1; k >= 0; k--) if (couronneArbre(loin[k])) loin.splice(k, 1);
     const pied = liste.find(o => o.collision === 'tronc');
     if (!pied) return;
     const x = pied.p[0], y = pied.p[1] - pied.s[1] * .5, z = pied.p[2];
-    liste.push({ shape: B.botanique.nomForme(e, false, qualite), p: [x, y + h * .5, z], s: [h, h, h],
-      r: [penche, 0, penche * .7], mat: B.botanique.matiere('feuillage'), color: v });
-    loin.push({ shape: B.botanique.nomForme(e, true, qualite), p: [x, y + h * .5, z], s: [h, h, h],
-      r: [penche, 0, penche * .7], mat: B.botanique.matiere('feuillage'), color: v });
+    const forme = distant => nu ? B.botanique.nomFormeNue(distant, qualite) : B.botanique.nomForme(e, distant, qualite);
+    const mat = B.botanique.matiere(nu ? 'ecorce' : 'feuillage'), couleur = nu ? pied.color : v;
+    liste.push({ shape: forme(false), p: [x, y + h * .5, z], s: [h, h, h],
+      r: [penche, 0, penche * .7], mat, color: couleur });
+    loin.push({ shape: forme(true), p: [x, y + h * .5, z], s: [h, h, h],
+      r: [penche, 0, penche * .7], mat, color: couleur });
   }
 
   function arbre(liste, loin, x, y, z, essence, r, qualite) {
@@ -1083,7 +1086,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
         for (const triangle of n.herbeTriangles || []) for (let j = 0; j < 3; j++) visites[n.indices[triangle + j]] = 1;
         // Le bord sans vibreur est aussi herbeux, mais reste exclu de la plantation des brins.
         if (n.surfaceType === 'accotement') for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 9] === 8) visites[v] = 1;
-        if ((th.volcanique || th.aride || th.karstique || th.pacifique || th.baikal) && saison.neige && n.surfaceType === 'terrain') {
+        if ((th.montagnes || th.volcanique || th.aride || th.karstique || th.pacifique || th.baikal) && saison.neige && n.surfaceType === 'terrain') {
           for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 4] > .45 && (!(th.pacifique || th.baikal) || n.sommets[v * 13 + 1] > th.eau + 1)) visites[v] = 1;
         }
         for (let v = 0; v < visites.length; v++) if (visites[v]) {
@@ -1427,23 +1430,51 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
       if (B.botanique && B.botanique.TRONC_LOINTAIN && tronc && tronc.mat === B.botanique.matiere('ecorce') && !loin.includes(tronc))
         l.loin.push({ shape: B.botanique.TRONC_LOINTAIN, p: tronc.p.slice(), s: tronc.s.slice(), r: tronc.r.slice(), mat: tronc.mat, color: tronc.color.slice() });
     }
+    function saisonArbre(objets, loin, x, z, essence = th.essence, solSource = null) {
+      const pied = objets.find(o => o.collision === 'tronc'), h = pied.s[1] / .84, sol = pied.p[1] - h * .42 + .2;
+      if (ecologie) ecologie.echantillonner(x, z, habitatArbre);
+      // Forêt basse mêlée aux conifères : choix spatial stable, indépendant de la saison et du hasard
+      // historique. Le tronc solide conserve exactement sa position et ses dimensions. Au-dessus de
+      // la bande basse, seuls les conifères historiques restent ; aucun arbre n'est ajouté au col.
+      if (saison && th.montagnes && B.botanique && sol < 120
+        && hache(Math.round(x * 8), Math.round(z * 8), g + 541) < .48 * (1 - lisse(70, 120, sol))) {
+        essence = 'feuillu';
+        const vert = [.17, .31, .09].map(v => v * (.90 + .20 * hache(Math.round(x), Math.round(z), g + 547)));
+        if (qualite !== 'low') habiller(objets, loin, essence, qualite, h, pied.r[0], vert);
+        else {
+          for (const liste of [objets, loin]) for (let i = liste.length - 1; i >= 0; i--) if (couronneArbre(liste[i])) liste.splice(i, 1);
+          const couronne = { shape: 'foliage', p: [x, sol - .2 + h * .80, z], s: [h * .74, h * .68, h * .74], mat: 11, color: vert };
+          objets.push(couronne); loin.push({ ...couronne, p: couronne.p.slice(), s: couronne.s.slice() });
+        }
+      }
+      const nu = !!(saison && saison.id === 'hiver' && essence === 'feuillu' && B.botanique);
+      // Les platanes de bord avaient une seule couronne simple, même en Fine : leurs rameaux restent
+      // au budget de 72 triangles. La forêt détaillée conserve, elle, ses vraies branches détaillées.
+      if (nu) {
+        const detailNu = objets.some(o => o.collision !== 'tronc' && o.shape.startsWith('arbre-')) ? qualite : 'low';
+        habiller(objets, loin, essence, detailNu, h, pied.r[0], pied.color, true);
+      }
+      if (saison) {
+        for (const o of new Set(objets.concat(loin))) if (!nu && couronneArbre(o) && o.color) {
+          o.color = B.saisons.teinte(saison, essence === 'feuillu' ? 'feuillage-caduque' : 'feuillage-persistant', o.color, o.p[0], o.p[2], ecologie ? habitatArbre : null);
+        }
+        if (saison.feuilles && essence === 'feuillu') {
+          sourcesFeuilles.push({ x, y: sol + h * .78, z, rayon: h * .36, sol: solSource ?? sol });
+        }
+      }
+      for (const o of new Set(objets.concat(loin))) if (o.collision === 'tronc' || couronneArbre(o)) Object.defineProperties(o, {
+        essenceArbre: { value: essence }, partieArbre: { value: o.collision === 'tronc' ? 'tronc' : nu ? 'branches' : 'feuillage' }
+      });
+      if (th.baikal) for (const o of new Set(objets.concat(loin))) if (o.essenceArbre) {
+        Object.defineProperty(o, 'essenceBaikal', { value: essence });
+        if (o.collision === 'tronc' && essence === 'feuillu') o.color = [.70, .72, .65];
+      }
+    }
     function retenirArbre(objets, loin, x, z, essence = th.essence) {
       if (maisonsBaikal && maisonsBaikal.some(m => Math.hypot(m.x - x, m.z - z) < 18)) return;
       const richesse = ecologie ? ecologie.echantillonner(x, z, habitatArbre).boisement : 1;
       if (!th.pacifique && (richesse < .08 || hache(Math.round(x * 8), Math.round(z * 8), g + 337) > richesse)) return;
-      if (saison) {
-        for (const liste of [objets, loin]) for (const o of liste) if (o.collision !== 'tronc' && o.color) {
-          o.color = B.saisons.teinte(saison, th.baikal && essence === 'feuillu' ? 'feuillage-caduque' : 'feuillage', o.color, o.p[0], o.p[2], ecologie ? habitatArbre : null);
-        }
-        if (saison.feuilles && essence === 'feuillu') {
-          const pied = objets.find(o => o.collision === 'tronc'), h = pied.s[1] / .84, sol = pied.p[1] - h * .42 + .2;
-          sourcesFeuilles.push({ x, y: sol + h * .78, z, rayon: h * .36, sol });
-        }
-      }
-      if (th.baikal) for (const o of new Set(objets.concat(loin))) {
-        Object.defineProperty(o, 'essenceBaikal', { value: essence });
-        if (o.collision === 'tronc' && essence === 'feuillu') o.color = [.70, .72, .65];
-      }
+      saisonArbre(objets, loin, x, z, essence);
       ajouter(objets, loin, x, z); positionsArbres.push([x, z]);
       if (casesArbres) rangerArbre(objets, loin, x, z);
     }
@@ -1678,7 +1709,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
 
     // Bords de route (lot 22F) : posés après tout le reste, dans des lots à eux (clé préfixée « b ») ajoutés à la fin :
     // les lots et les solides historiques gardent leur contenu, leur ordre et leurs identifiants.
-    if (planBords) B.bords.poser(c, planBords, { limites: lim, qualite, ajouter: (objets, loin, x, z) => {
+    if (planBords) B.bords.poser(c, planBords, { limites: lim, qualite,
+      saisonArbre: (objets, loin, x, z, essence) => saisonArbre(objets, loin, x, z, essence, terrain.sol(x, z)),
+      ajouter: (objets, loin, x, z) => {
       const q = interroger(x, z, 300), proche = q.i >= 0 && q.d < 330;
       const cle = 'b' + (proche ? 'p' + Math.floor(q.i * c.pas / TRONCON) : 'l' + Math.floor(x / 420) + ',' + Math.floor(z / 420));
       let l = groupes.get(cle); if (!l) groupes.set(cle, l = { objets: [], loin: [], lointain: !proche });

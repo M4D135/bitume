@@ -2,20 +2,45 @@
   "schema": 1,
   "discussion": "04",
   "mission": "Saisons et matieres",
-  "statut": "preparee_non_lancee",
+  "statut": "saisons_qualifiees_matieres_en_cours",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/04-SAISON-MATIERES.md",
-  "base_main": "d8f02cae45443ae6a1120dc93125d8adfae94422",
+  "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "branche_proposee": "codex/bitume-p04-saisons-matieres-20261120",
-  "branche_reelle": null,
-  "head": null,
+  "branche_reelle": "codex/bitume-p04-saisons-matieres-20261120",
+  "head": "d93d23971fdf462f6851e09c88d6eb0fa059f169",
   "pr": null,
-  "sous_lot": null,
-  "preuves": [],
-  "reserves": [],
-  "prochaine_action": "Reprendre le lot saisons sans l'audio et qualifier la matrice neuf circuits/quatre saisons.",
+  "sous_lot": "04-S1 clos : saisons qualifiées ; 04-M1 pierres proches en préparation",
+  "preuves": [
+    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S0-REPRISE.json",
+    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-NODE.json",
+    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-COMPARAISON.json",
+    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-CAPTURES-INITIALES.json",
+    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-VISUEL.json",
+    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-FORMES-NUES.json"
+  ],
+  "reserves": [
+    "Aucun gain matériel Xbox/Intel ni FPS annoncé.",
+    "Six formes nues : +269472 octets de géométrie brute par renderer ; mémoire totale du pilote non mesurée.",
+    "Aucune fusion main ni publication du build commun.",
+    "CI commune attend le build publié par 00 ; garde de reconstruction rouge sur la branche de sources.",
+    "Transitions du pigment de terrain demandées à 02 ; shader canonique inchangé."
+  ],
+  "prochaine_action": "Comparer image/coût du raccord ciblé de la recette pierre 23 aux objets montagne en qualité high, puis publier le petit lot vérifié.",
   "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
   "preparations_portables": [
     "docs/reprise/PARALLELE-2026-11-20/preparations/saisons.patch"
   ],
-  "preparations_statut": "applicables_individuellement_a_la_base_non_qualifiees"
+  "preparations_statut": "saisons.patch_reprise_sans_audio",
+  "head_designe": "Dernier commit des sources de ce sous-lot ; le commit de cet état vient ensuite.",
+  "capture_ci": {
+    "runs": [
+      44782100015,
+      44784594393
+    ],
+    "scenes_finales": 44,
+    "png_retenus": 88,
+    "png_inspectes": 104,
+    "png_rejetes_cadrage": 16,
+    "html_sha256": "8aeb52151348c92dfef357d11f6d06684ec98a7ab3d7eaed9f8f6a69ee28a784"
+  }
 }

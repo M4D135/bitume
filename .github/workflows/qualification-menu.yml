@@ -1,0 +1,127 @@
+name: Qualification du menu 03
+
+on:
+  push:
+    branches: ['codex/bitume-p03-menu-20261120']
+    paths:
+      - 'src/index.html'
+      - 'src/style.css'
+      - 'src/navigation-menu.js'
+      - 'src/menu-arcade.js'
+      - 'verifications/menu-arcade*.test.mjs'
+      - 'verifications/navigation-menu.test.mjs'
+      - 'tools/captures-menu-arcade.mjs'
+      - 'docs/reprise/PARALLELE-2026-11-20/raccordements/03-menu.patch'
+      - 'docs/reprise/PARALLELE-2026-11-20/raccordements/03-raccord.test.mjs'
+      - '.github/workflows/qualification-menu.yml'
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: menu-03-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  menu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Identifier le raccord et préserver le build publié
+        shell: bash
+        env:
+          BRANCHE_SOURCE_MENU: ${{ github.ref == 'refs/heads/codex/bitume-p03-menu-20261120' }}
+        run: |
+          set -euo pipefail
+          mkdir -p qualification-menu "$RUNNER_TEMP/bitume-menu-candidat"
+          git rev-parse HEAD > qualification-menu/COMMIT.txt
+          git rev-parse 'HEAD^{tree}' > qualification-menu/TREE.txt
+          python3 - <<'PY' > qualification-menu/MODE.txt
+          import ast
+          import os
+          from pathlib import Path
+          arbre = ast.parse(Path('construire.py').read_text())
+          modules = next(ast.literal_eval(n.value) for n in arbre.body
+                         if isinstance(n, ast.Assign) and any(isinstance(t, ast.Name) and t.id == 'MODULES' for t in n.targets))
+          charge = 'menu-arcade.js' in modules
+          raccorde = 'B.menuArcade.installer(' in Path('src/jeu.js').read_text()
+          if charge and raccorde:
+              print('build-publie-raccorde')
+          elif not charge and not raccorde and os.environ.get('BRANCHE_SOURCE_MENU') == 'true':
+              print('raccord-temporaire-branche-03')
+          else:
+              raise SystemExit('Raccord absent ou partiel : ne pas masquer une intégration incorrecte en rejouant le patch.')
+          PY
+          if [ "$(cat qualification-menu/MODE.txt)" = build-publie-raccorde ]; then
+            # Le candidat assemblé doit reproduire exactement son artefact commité.
+            # Ce garde reste identique à la qualification générale du jeu.
+            python3 construire.py > qualification-menu/construction.log 2>&1
+            git diff --exit-code -- VERSION.json SIZE.json dist/bitume.html
+            git diff --exit-code -- src/ construire.py
+          fi
+          git archive HEAD | tar -x -C "$RUNNER_TEMP/bitume-menu-candidat"
+          cd "$RUNNER_TEMP/bitume-menu-candidat"
+          if [ "$(cat "$GITHUB_WORKSPACE/qualification-menu/MODE.txt")" = raccord-temporaire-branche-03 ]; then
+            # Seule la branche de sources 03 peut encore qualifier son raccord proposé.
+            # Le parcours intégré n'applique jamais ce patch, même en sens inverse.
+            git apply --check docs/reprise/PARALLELE-2026-11-20/raccordements/03-menu.patch
+            git apply docs/reprise/PARALLELE-2026-11-20/raccordements/03-menu.patch
+            python3 construire.py > "$GITHUB_WORKSPACE/qualification-menu/construction.log" 2>&1
+          else
+            cmp dist/bitume.html "$GITHUB_WORKSPACE/dist/bitume.html"
+          fi
+          sha256sum src/jeu.js construire.py src/menu-arcade.js src/index.html src/style.css src/navigation-menu.js > "$GITHUB_WORKSPACE/qualification-menu/SOURCES-CANDIDAT-SHA256.txt"
+          sha256sum dist/bitume.html > "$GITHUB_WORKSPACE/qualification-menu/CANDIDAT-SHA256.txt"
+      - name: Vérifier le parcours et les modules liés
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/bitume-menu-candidat"
+          for test in verifications/menu-arcade*.test.mjs verifications/navigation-menu.test.mjs verifications/manette.test.mjs verifications/commandes-partage.test.mjs verifications/prets-enligne.test.mjs; do
+            node "$test" > "$GITHUB_WORKSPACE/qualification-menu/$(basename "$test").log" 2>&1
+          done
+          node docs/reprise/PARALLELE-2026-11-20/raccordements/03-raccord.test.mjs . > "$GITHUB_WORKSPACE/qualification-menu/raccord.log" 2>&1
+      - name: Capturer et parcourir le candidat dans Chromium
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --prefix "$RUNNER_TEMP/bitume-menu-browser" --no-save --ignore-scripts playwright@1.62.1 > qualification-menu/installation.log 2>&1
+          google-chrome --version > qualification-menu/NAVIGATEUR.txt
+          NODE_PATH="$RUNNER_TEMP/bitume-menu-browser/node_modules" node "$RUNNER_TEMP/bitume-menu-candidat/tools/captures-menu-arcade.mjs" --url "file://$RUNNER_TEMP/bitume-menu-candidat/dist/bitume.html" --sortie "$GITHUB_WORKSPACE/qualification-menu/images" --chrome /usr/bin/google-chrome
+          cd "$RUNNER_TEMP/bitume-menu-candidat"
+          sha256sum --check "$GITHUB_WORKSPACE/qualification-menu/CANDIDAT-SHA256.txt"
+          sha256sum --check "$GITHUB_WORKSPACE/qualification-menu/SOURCES-CANDIDAT-SHA256.txt"
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          preuves = Path(os.environ['GITHUB_WORKSPACE']) / 'qualification-menu'
+          rapport = json.loads((preuves / 'images/rapport.json').read_text())
+          assert rapport['statut'] == 'ok' and not rapport['erreurs'], 'Parcours du menu incomplet'
+          resume = {'mode': (preuves / 'MODE.txt').read_text().strip(),
+                    'commit': (preuves / 'COMMIT.txt').read_text().strip(),
+                    'tree': (preuves / 'TREE.txt').read_text().strip(),
+                    'html_sha256': (preuves / 'CANDIDAT-SHA256.txt').read_text().split()[0],
+                    'controles': len(rapport['controles']), 'png': len(rapport['captures']),
+                    'inspection_visuelle': 'a_faire', 'limites': rapport['limites']}
+          # Le libellé historique « raccord proposé » du rapport brut ne détermine
+          # pas le mode : ce reçu décrit le candidat réellement vérifié ci-dessus.
+          (preuves / 'CANDIDAT.json').write_text(json.dumps(resume, ensure_ascii=False, indent=2) + '\n')
+          print(json.dumps(resume, ensure_ascii=False))
+          PY
+      - name: Conserver uniquement les preuves du menu
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-menu-${{ github.sha }}
+          path: qualification-menu/
+          if-no-files-found: error
+          retention-days: 14

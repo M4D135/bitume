@@ -55,6 +55,7 @@
   const reglagesEnregistres = lireStock('bitume.reglages', {});
   const reglages = Object.assign({}, DEFAUT, reglagesEnregistres);
   Object.assign(reglages, initialiserChoixPneus(reglagesEnregistres));
+  reglages.trollPilotes = B.menuArcade.normaliserTroll(reglagesEnregistres);
   reglages.qualite = B.graphismes.normaliser(reglages.qualite);
   // Cadence d'images (Auto, Écran, 120, 60, 30) : une valeur ancienne, inconnue ou mal écrite revient à Auto.
   reglages.cadence = B.cadence.normaliser(reglages.cadence);
@@ -303,7 +304,9 @@
       detailsRouesGlaces: [new Int8Array(course.voitures.length).fill(-1), new Int8Array(course.voitures.length).fill(-1)],
       contresens: 0, bloque: 0, finA: null, resultats: false, derniereJauge: -9, positionPrec: 0, tempsAffiche: null,
       real: demo ? B.realisateur.creer(graineCourse) : null, cinema: null, planVu: null, suivie: 0, enchaine: false,
-      expressions: B.expressionsPilote ? B.expressionsPilote.creer(course.voitures.length, graineCourse) : null,
+      expressions: B.expressionsPilote ? B.expressionsPilote.creer(course.voitures.length, graineCourse, { ia: joue }) : null,
+      trollEvenement: { sequence: 0, pilote: -1, geste: null, klaxon: 'classique', instant: 0, cote: -1 },
+      trollAudio: { klaxon: 'classique', gain: 0, pan: 0 },
       fx: B.traces.creer(course.voitures.length, graineCourse, course.physique.world),
       // flammes et détonations d'échappement (lot 20) : hasard propre, tiré de la graine de la course
       ech: B.echappement ? B.echappement.creer(course.voitures.length, graineCourse) : null,
@@ -326,7 +329,8 @@
       B.public.regler(sc.public, { presence: B.public.presencePour(conditions.meteo, sc.saison, conditions.moment === 'nuit') });
     }
     if (enl) {
-      S.enLigne = { T0: enl.T0, role: enl.role, humains: enl.humains, seance: enl.seance }; S.enLigneOrigine = true;
+      S.enLigne = { T0: enl.T0, role: enl.role, humains: enl.humains, seance: enl.seance,
+        troll: trollDepart(enl.humains, enl.troll) }; S.enLigneOrigine = true;
       course.distant = (v, dt) => appliquerDistant(S, v, dt);
       EL.recus.clear(); EL.corr.clear(); EL.pasEnvoi = 0;
       initialiserPneusReseau(S, enl);
@@ -339,6 +343,7 @@
       detailsRouesGlaces: [new Int8Array(course.voitures.length).fill(-1), new Int8Array(course.voitures.length).fill(-1)],
       suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null, fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null, animauxVue: null });
     S.locaux = course.voitures.filter(v => v.joueur).map(v => v.id);   // voitures conduites ici (une, ou deux à l'écran partagé)
+    if (joue && S.expressions) configurerTrollLocaux(S);
     if (joue) {
       majPneusHUD(HUD1, course.voitures[S.locaux[0] ?? course.joueur.id].etat);
       if (duo) majPneusHUD(HUD2, course.voitures[S.locaux[1] ?? course.joueur.id].etat);
@@ -422,6 +427,20 @@
   const doigt = { volant: 0, gaz: false, frein: false, derive: false, id: null, x0: 0 };
   let analogique = false;
   let relacherTactile = () => {};
+
+  // Les choix du menu sont copiés au départ, par place locale et non par identifiant de voiture.
+  // Le raccord 03 peut fournir choixTrollLocaux ; les réglages directs restent un repli autonome.
+  function configurerTrollLocaux(S) {
+    const X = B.expressionsPilote;
+    if (!S.expressions || !X?.configurer) return;
+    const choix = typeof choixTrollLocaux === 'function' ? choixTrollLocaux() : reglages.trollPilotes;
+    for (let n = 0; n < S.locaux.length; n++) {
+      // En ligne, le départ fige les préférences négociées ; aucun changement ultérieur du menu
+      // ni ordre différent des machines ne doit remplacer la paire acceptée pour cette voiture.
+      const c = S.enLigne?.troll?.pilotes?.[S.locaux[n]] || choix?.[n];
+      X.configurer(S.expressions, S.locaux[n], { geste: X.normaliserGeste(c?.geste), klaxon: X.normaliserKlaxon(c?.klaxon) });
+    }
+  }
 
   // Un front de touche, de bouton ou un clic tactile : aucune répétition quand on maintient la commande.
   // L'animation choisit sa variante et son côté sans toucher à l'état de conduite ni au hasard de la course.
@@ -562,7 +581,7 @@
         if (nouveau(9)) {
           if (enCourse() || ecran === 'pause') basculerPause();
           else if (ecran === 'titre') { modePrepa = 'course'; activerSon(); aller('preparation'); }
-          else if (ecran === 'preparation') { const b = $('b-depart'); if (b) { activerSon(); b.click(); } }
+          else if (ecran === 'preparation') naviguerManette(nouveau);
           else naviguerManette(nouveau);
         } else if (!enCourse()) naviguerManette(nouveau);
       }
@@ -716,7 +735,34 @@
   function naviguerManette(nouveau, manette = pad.manette) {
     const zone = $(ecran); if (!zone || zone.hidden) return;
     B.navigationMenu.naviguer(zone, nouveau, { pad: manette, temps: performance.now(), activer: activerSon,
-      retour: () => ecran === 'pause' ? basculerPause() : retour() });
+      retour: () => ecran === 'pause' ? basculerPause() : retour(),
+      demarrer: ecran === 'preparation' ? () => { const b = $('b-suivant').hidden ? $('b-depart') : $('b-suivant'); if (b && !b.disabled) b.click(); } : null,
+      valider: el => ecran === 'preparation' && menuArcade.valider(el) });
+  }
+
+  // Les manettes supplémentaires naviguent aussi avant la course, sans prendre une affectation de conduite.
+  // Les appareils déjà lus comme J1/J2 sont exclus : aucun front ne se traite deux fois.
+  const suivisManettesMenu = new Map();
+  function lireAutresManettesMenu(consommer = false) {
+    const menus = ['titre', 'preparation', 'reglages', 'enligne', 'prets', 'pause', 'resultats'];
+    if (document.hidden || !menus.includes(ecran)) { suivisManettesMenu.clear(); return; }
+    const presentes = new Set();
+    for (const p of manettes) {
+      if (p === pad.manette || p === pad2.manette) continue;
+      presentes.add(p.index);
+      let suivi = suivisManettesMenu.get(p.index);
+      const appuye = i => !!(p.buttons[i] && (p.buttons[i].pressed || p.buttons[i].value > .5));
+      if (!suivi || suivi.id !== p.id) {
+        suivi = { id: p.id, boutons: p.buttons.map((_, i) => appuye(i)) };
+        suivisManettesMenu.set(p.index, suivi);
+        if (ecran === 'titre' && p === manettes[1]) pad2.start = appuye(9);
+      }
+      const nouveau = i => appuye(i) && !suivi.boutons[i];
+      if (ecran === 'titre' && (p.buttons.some((_, i) => appuye(i)) || p.axes.some(a => Math.abs(a) > .5))) dernierGeste = performance.now();
+      if (!consommer) naviguerManette(nouveau, p);
+      for (let i = 0; i < p.buttons.length; i++) suivi.boutons[i] = appuye(i);
+    }
+    for (const i of suivisManettesMenu.keys()) if (!presentes.has(i)) suivisManettesMenu.delete(i);
   }
 
   // Deuxième manette : mêmes rapports et protection de dérive que pour le joueur 1 ; son clavier reste indépendant.
@@ -747,7 +793,11 @@
       if (nouveau(3)) changerVue2();
       if ((commande(1) === 'auto' || commande(1) === 'manette') && nouveau(10)) provoquer(1);
     }
-    if (nouveau(9)) { activerSon(); basculerPause(); }
+    if (nouveau(9)) {
+      activerSon();
+      if (ecran === 'preparation') naviguerManette(nouveau, p);
+      else basculerPause();
+    }
     else if (!enCourse()) naviguerManette(nouveau, p);
     for (let i = 0; i < p.buttons.length; i++) pad2.precedent[i] = appuye(i);
     if (Math.abs(pad2.volant) > .05 || pad2.gaz > .05 || pad2.frein > .05) activerSon();
@@ -1113,7 +1163,7 @@
   // rivaux une image sur deux. Une voiture distante est prolongée jusqu'au pas courant et son écart se résorbe en
   // 0,12 s. Les temps officiels arrivent par le canal fiable. Une machine qui part laisse ses voitures à l'ordinateur
   // de l'hôte ; sans hôte, chacun finit la course seul.
-  const EL = { R: null, role: null, recus: new Map(), corr: new Map(), pasEnvoi: 0, pred: {}, vieux: {}, course: null, pneusDe: new Map(),
+  const EL = { R: null, role: null, recus: new Map(), corr: new Map(), pasEnvoi: 0, pred: {}, vieux: {}, course: null, pneusDe: new Map(), trollDe: new Map(),
     numeroSeance: 0, seanceAcceptee: null, dernierDepart: -Infinity };
   const VERSION_CHOIX_PNEUS = 2, VERSION_PNEUS_RESEAU = 1;
   // Empreinte des sources du build, incluant catalogue, générateur, limites et collisions : même piste, même jeu.
@@ -1134,7 +1184,7 @@
   const lienActif = () => !!(EL.R && EL.R.etat === 'connecte');
   function quitterEnLigne() {
     const R = EL.R;
-    annulerConfirmation(); EL.course = null; EL.pneusDe.clear();
+    annulerConfirmation(); EL.course = null; EL.pneusDe.clear(); EL.trollDe.clear();
     EL.R = null; EL.role = null;
     if (R) R.fermer();
     etatEnLigne('');
@@ -1229,7 +1279,7 @@
     const conditions = conditionsCommunes(conditionsDuDepart());
     const prevue = meteoPourConditions(conditions, reglages.circuit, graineCourse + 1);
     EL.course = { i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, ...conditions, eau: B.conduite.eauSurPiste(prevue),
-      versionChoixPneus: VERSION_CHOIX_PNEUS, protocolePneus: VERSION_PNEUS_RESEAU, piste: contratPiste(reglages.circuit) };
+      versionChoixPneus: VERSION_CHOIX_PNEUS, protocolePneus: VERSION_PNEUS_RESEAU, piste: contratPiste(reglages.circuit), schemaTroll: 1 };
     EL.R.envoyer(Object.assign({ t: 'course' }, EL.course));
     majCourseSalon();
   }
@@ -1273,6 +1323,7 @@
     texte($('pr-etat'), incompatibles && incompatibles.length ? 'Choix de pneus incompatibles. Chaque machine doit recharger la même version du jeu et confirmer ses pilotes.' : tousPrets(R, C) ? 'Tout le monde est prêt : départ !' : n + ' machine' + (n > 1 ? 's' : '') + ' prête' + (n > 1 ? 's' : '') + ' sur ' + m + '. La course part quand toutes le sont.');
     texte($('pr-pret'), EL.pretIci ? 'Pas encore prêt' : 'Je suis prêt');
     classe($('pr-pret'), 'principal', !EL.pretIci);
+    texte($('pr-troll-etat'), statutTrollEnLigne());
   }
   function basculerPret() {
     const R = EL.R, C = EL.confirmation;
@@ -1300,7 +1351,8 @@
     if (!R || !C || EL.role !== 'hote') return;
     for (const id of C.prets) if (!R.membres.some(m => m.id === id)) C.prets.delete(id);
     if (C.incompatibles) for (const id of C.incompatibles) if (!R.membres.some(m => m.id === id)) C.incompatibles.delete(id);
-    R.envoyer({ t: 'prets', liste: [...C.prets] });
+    C.trollIncompatibles = [...EL.trollDe].filter(([id, choix]) => !choix.compatible && R.membres.some(m => m.id === id)).map(([id]) => id);
+    R.envoyer({ t: 'prets', liste: [...C.prets], trollIncompatibles: C.trollIncompatibles });
     majPrets();
     if (!tousPrets(R, C)) { clearTimeout(C.minuteur); C.minuteur = null; return; }
     if (C.minuteur != null) return;
@@ -1323,10 +1375,10 @@
     // nouvelle annonce : les pneus conseillés sont présélectionnés quand la météo change, le pilote peut changer
     const eau = clamp(+m.eau || 0, 0, 1), avant = EL.course;
     EL.course = { i: m.i | 0, tours: clamp(m.tours | 0, 1, 99), difficulte: m.difficulte | 0, ...conditionsCommunes(m), eau,
-      versionChoixPneus: VERSION_CHOIX_PNEUS, protocolePneus: VERSION_PNEUS_RESEAU, piste: contratPiste(m.i) };
+      versionChoixPneus: VERSION_CHOIX_PNEUS, protocolePneus: VERSION_PNEUS_RESEAU, piste: contratPiste(m.i), schemaTroll: m.schemaTroll === 1 ? 1 : 0 };
     if (!avant || avant.i !== EL.course.i || avant.saison !== EL.course.saison || Math.abs(avant.eau - eau) > .05) {
       appliquerConseilPneus(B.conduite.pneusConseilles(surfaceAnnoncee(EL.course))); envoyerPneus();
-    }
+    } else if (avant.schemaTroll !== EL.course.schemaTroll) envoyerPneus();
     majCourseSalon();
     if (ecran === 'prets') majPrets();
     return true;
@@ -1337,7 +1389,51 @@
   function messageChoixPneus() {
     const membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
     const pneusPilotes = choixPneusLocaux().slice(0, membre && membre.joueurs === 2 ? 2 : 1);
-    return { versionChoixPneus: VERSION_CHOIX_PNEUS, pneus: pneusPilotes[0], pneusPilotes };
+    const message = { versionChoixPneus: VERSION_CHOIX_PNEUS, pneus: pneusPilotes[0], pneusPilotes };
+    // L'extension est annoncée par l'hôte ; un hôte ancien reçoit son message historique exact.
+    if (EL.role === 'hote' || EL.course?.schemaTroll === 1) message.troll = {
+      schema: 1, pilotes: Array.from({ length: pneusPilotes.length }, (_, n) => paireTroll(reglages.trollPilotes?.[n])) };
+    return message;
+  }
+  // Extension de préférences sur les messages fiables existants, distincte des pneus et des
+  // événements de geste. Aucun paquet de geste ni interprétation de temps distant n'est ajouté.
+  function paireTroll(c) {
+    return { geste: c && ['majeur', 'poing', 'salut'].includes(c.geste) ? c.geste : 'majeur',
+      klaxon: c && ['classique', 'ancien', 'mariage'].includes(c.klaxon) ? c.klaxon : 'classique' };
+  }
+  function paireTrollValide(c) {
+    return !!(c && typeof c === 'object' && !Array.isArray(c) &&
+      Object.hasOwn(c, 'geste') && Object.hasOwn(c, 'klaxon') &&
+      ['majeur', 'poing', 'salut'].includes(c.geste) && ['classique', 'ancien', 'mariage'].includes(c.klaxon));
+  }
+  function lireChoixTrollMessage(m, de) {
+    const membre = EL.R && EL.R.membres.find(x => x.id === de);
+    if (!membre) return null;
+    const nombre = membre.joueurs === 2 ? 2 : 1, t = m && m.troll;
+    const compatible = !!(t && t.schema === 1 && Array.isArray(t.pilotes) && t.pilotes.length === nombre &&
+      Array.from(t.pilotes).every(paireTrollValide));
+    return { compatible, pilotes: Array.from({ length: nombre }, (_, n) => paireTroll(compatible ? t.pilotes[n] : null)) };
+  }
+  function trollDepart(humains, envelope) {
+    const nombres = new Map();
+    const identites = humains.map(h => {
+      const local = nombres.get(h.machine) || 0; nombres.set(h.machine, local + 1);
+      return { machine: h.machine, local };
+    });
+    const lignes = envelope && envelope.schema === 1 && Array.isArray(envelope.pilotes) && envelope.pilotes.length === humains.length
+      ? envelope.pilotes : null;
+    // L'ordre du départ est canonique ; une paire dupliquée, inconnue ou permutée n'est jamais attribuée à un autre pilote.
+    const compatible = !!(lignes && identites.every((h, i) => paireTrollValide(lignes[i]) &&
+      lignes[i].machine === h.machine && lignes[i].local === h.local));
+    return { schema: 1, compatible, pilotes: identites.map((h, i) => ({ ...h, ...paireTroll(compatible ? lignes[i] : null) })) };
+  }
+  function statutTrollEnLigne() {
+    const manque = EL.role === 'invite' && EL.course && EL.course.schemaTroll !== 1;
+    const incompatibles = EL.confirmation?.trollIncompatibles || [];
+    const choix = manque ? 'L’hôte ne négocie pas les choix Troll : valeurs par défaut au départ. '
+      : incompatibles.length ? 'Choix Troll incompatibles sur ' + incompatibles.length + ' machine(s) : valeurs par défaut annoncées. '
+      : 'Les choix Troll sont conservés pour chaque pilote. ';
+    return choix + 'Les gestes et klaxons restent locaux à chaque appareil ; ils ne sont pas encore partagés en ligne.';
   }
   function lireChoixPneusMessage(m, de) {
     const membre = EL.R && EL.R.membres.find(x => x.id === de);
@@ -1368,7 +1464,7 @@
   function nouvelleLiaison() {
     annulerConfirmation();
     if (EL.R) EL.R.fermer();
-    EL.course = null; EL.pneusDe.clear(); EL.seanceAcceptee = null; EL.dernierDepart = -Infinity;
+    EL.course = null; EL.pneusDe.clear(); EL.trollDe.clear(); EL.seanceAcceptee = null; EL.dernierDepart = -Infinity;
     const R = EL.R = B.reseau.creer({ url: B.reseau.adresseSalon(), nom: nomPilote(), joueurs: joueursIci() });
     EL.role = null;
     $('l-choisir').hidden = true; $('l-code-affiche').hidden = true;
@@ -1422,7 +1518,7 @@
       annulerConfirmation();
       if (!locaux.length) { etatEnLigne('La course est partie sans cette machine : attendez la suivante.'); majCourseSalon(); return; }
       EL.seanceAcceptee = m.cfg.seance; EL.dernierDepart = m.cfg.T0;
-      lancerEnLigne(Object.assign({}, m.cfg, conditionsCommunes(m.cfg), { humains, locaux, role: 'invite' }));
+      lancerEnLigne(Object.assign({}, m.cfg, conditionsCommunes(m.cfg), { humains, locaux, role: 'invite', troll: trollDepart(humains, m.cfg.troll) }));
     } else if (m.t === 'pneus-etat' || m.t === 'pneus-service' || m.t === 'pneus-relais') recevoirPneusReseau(S, m, de);
     else if (m.t === 'demande-pneus' && S && S.enLigne && EL.role === 'hote' &&
       m.version === VERSION_PNEUS_RESEAU && m.seance === S.enLigne.seance &&
@@ -1435,7 +1531,12 @@
       EL.confirmation = { prets: new Set(), incompatibles: new Set() }; EL.pretIci = false;
       if (ecran !== 'course' && ecran !== 'pause') aller('prets');
       majCourseSalon();
-    } else if (m.t === 'prets' && de === 0 && EL.confirmation) { EL.confirmation.prets = new Set((Array.isArray(m.liste) ? m.liste : []).map(x => x | 0)); majPrets(); }
+    } else if (m.t === 'prets' && de === 0 && EL.confirmation) {
+      EL.confirmation.prets = new Set((Array.isArray(m.liste) ? m.liste : []).map(x => x | 0));
+      EL.confirmation.trollIncompatibles = [...new Set((Array.isArray(m.trollIncompatibles) ? m.trollIncompatibles : [])
+        .filter(id => Number.isInteger(id) && EL.R.membres.some(x => x.id === id)))].slice(0, 4);
+      majPrets();
+    }
     else if (m.t === 'annuler' && de === 0 && EL.role === 'invite') {
       annulerConfirmation(); EL.seanceAcceptee = null;
       if (retourReglages === 'prets') retourReglages = 'enligne';
@@ -1443,13 +1544,18 @@
       etatEnLigne('L’hôte a annulé le départ.'); majCourseSalon();
     } else if (m.t === 'pret' && EL.role === 'hote' && EL.confirmation && EL.R.membres.some(x => x.id === de) && EL.R.pretAvec(de)) {
       const choix = lireChoixPneusMessage(m, de), C = EL.confirmation;
+      EL.trollDe.set(de, lireChoixTrollMessage(m, de));
       if (m.oui === true && choix) { EL.pneusDe.set(de, choix); C.prets.add(de); C.incompatibles.delete(de); }
       else { C.prets.delete(de); if (m.oui !== false) C.incompatibles.add(de); }
       diffuserPrets();
     } else if (m.t === 'pneus' && EL.role === 'hote' && EL.R.membres.some(x => x.id === de) && EL.R.pretAvec(de)) {
       const choix = lireChoixPneusMessage(m, de), avant = EL.pneusDe.get(de), C = EL.confirmation;
+      const troll = lireChoixTrollMessage(m, de), ancienTroll = EL.trollDe.get(de);
+      EL.trollDe.set(de, troll);
+      const trollChange = !ancienTroll || troll.compatible !== ancienTroll.compatible ||
+        troll.pilotes.some((p, n) => p.geste !== ancienTroll.pilotes[n]?.geste || p.klaxon !== ancienTroll.pilotes[n]?.klaxon);
       if (choix) EL.pneusDe.set(de, choix);
-      if (C && (!choix || !avant || choix.some((p, n) => p !== avant[n]))) {
+      if (C && (!choix || !avant || choix.some((p, n) => p !== avant[n]) || trollChange)) {
         C.prets.delete(de); if (choix) C.incompatibles.delete(de); else C.incompatibles.add(de); diffuserPrets();
       }
     } else if (m.t === 'arrivee' && S && S.enLigne) {
@@ -1459,7 +1565,7 @@
   }
   // une machine (pas l'hôte) quitte la partie : l'ordinateur de l'hôte reprend ses voitures et envoie leur état
   function surDepart(id) {
-    EL.pneusDe.delete(id);
+    EL.pneusDe.delete(id); EL.trollDe.delete(id);
     majSalon();
     if (EL.confirmation && EL.role === 'hote') { EL.confirmation.prets.delete(id); diffuserPrets(); }
     else if (ecran === 'prets') majPrets();
@@ -1471,7 +1577,7 @@
     message('Un pilote est parti', 'ambre'); sousMessage('Sa voiture passe à l’ordinateur');
   }
   function surFermeture(raison) {
-    annulerConfirmation(); EL.course = null; EL.pneusDe.clear();
+    annulerConfirmation(); EL.course = null; EL.pneusDe.clear(); EL.trollDe.clear();
     if (retourReglages === 'prets') retourReglages = 'enligne';
     if (ecran === 'prets') aller('enligne');
     const S = session;
@@ -1501,6 +1607,10 @@
     const cfg = { graine, i: k.i, tours: k.tours, difficulte: k.difficulte, ...conditionsCommunes(k), T0, dateDepart: Date.now() + 4000, humains,
       seance, versionChoixPneus: VERSION_CHOIX_PNEUS, protocolePneus: VERSION_PNEUS_RESEAU, piste: contratPiste(k.i),
       pneus: humains.map(h => { const choix = h.machine === R.id ? choixPneusLocaux() : EL.pneusDe.get(h.machine); const p = choix && choix[h.local]; return B.pneus.estJouable(p) ? p : conseil; }) };
+    cfg.troll = trollDepart(humains, { schema: 1, pilotes: humains.map(h => {
+      const choix = h.machine === R.id ? reglages.trollPilotes : EL.trollDe.get(h.machine)?.pilotes;
+      return { machine: h.machine, local: h.local, ...paireTroll(choix?.[h.local]) };
+    }) });
     EL.seanceAcceptee = seance; EL.dernierDepart = T0;
     R.envoyer({ t: 'depart', cfg });
     lancerEnLigne(Object.assign({}, cfg, { locaux: humains.map((h, k) => h.machine === 0 ? k : -1).filter(k => k >= 0), role: 'hote' }));
@@ -1660,17 +1770,23 @@
   $('pr-reglages').addEventListener('click', () => { retirerPret(); retourReglages = 'prets'; aller('reglages'); });
 
   // ---------------------------------------------------------------- caméras
-  // Champ du cockpit : réglage en degrés horizontaux mesurés en 16:9 (60° par défaut, 36° verticaux). Plus large
-  // que 16:9, le champ vertical est gardé ; plus étroit (fenêtre presque carrée, portrait), la diagonale du cadre de
-  // référence 16:9 : garder tout le champ horizontal ouvrait 66° verticaux dans une fenêtre carrée, d'où des bras
-  // interminables et une image déformée (David, 16/11 : « fov moins prononcé », « bras de 10 km »). Sur téléphone,
-  // David demande un champ plus serré (16/11) : tangente réduite de 18 %. L'ouverture avec la vitesse est discrète
-  // (5 %, 4 % sur téléphone). Le curseur reste mémorisé.
+  // Champ du cockpit : réglage horizontal en 16:9, sans modifier la préférence mémorisée. Le cadre étroit garde
+  // d'abord la diagonale de référence. L'habitacle étant désormais métrique et commun, il ne peut plus rapprocher
+  // ses glaces pour un téléphone : la projection s'ouvre seulement assez pour contenir les deux vrais montages.
+  // La discrète ouverture de vitesse demeure ; la position des yeux et la géométrie ne dépendent pas de l'écran.
+  const INCLINAISON_COCKPIT = -Math.PI / 60;
   function champCockpit(aspect, v) {
     const t = Math.tan(clamp(+reglages.champ || 60, 60, 105) * Math.PI / 360);
     const tv = aspect < 16 / 9 ? Math.hypot(t, t / (16 / 9)) / Math.hypot(1, Math.max(.3, aspect)) : t / (16 / 9);
     const portraitTelephone = estTactile && canvas.clientWidth <= 600 && aspect < 1;
-    const vertical = 2 * Math.atan(tv * (portraitTelephone ? .82 : 1)) * 180 / Math.PI;
+    let tangente = tv * (portraitTelephone ? .82 : 1);
+    if (aspect < 16 / 9) {
+      const miroir = B.voiture.RETRO, oeil = B.voiture.OEIL;
+      const profondeur = Math.max(.1, miroir.x - oeil[0] - miroir.l * .5 * Math.abs(Math.sin(miroir.angle)));
+      const largeur = miroir.z + miroir.l * .5 + .01;
+      tangente = Math.max(tangente, largeur / profondeur / Math.max(.3, aspect));
+    }
+    const vertical = 2 * Math.atan(tangente) * 180 / Math.PI;
     return clamp(vertical * (1 + (portraitTelephone ? .04 : .05) * clamp(v / 85, 0, 1)), 10, 110);
   }
   // La tête du pilote vit : elle part vers l'extérieur du virage et vers l'avant au freinage (2 cm au plus), le regard
@@ -1685,7 +1801,7 @@
     const vib = (et.surface === 'vibreur' ? .006 : et.surface === 'herbe' ? .004 * Math.min(1, et.v / 20) : 0) + .0011 * Math.pow(clamp(et.v / 85, 0, 1), 2);
     return {
       pos: [p.x + o[0], p.y + o[1] + Math.sin(t * 73) * vib * reglages.secousses, p.z + o[2]], yaw: p.cap + Math.PI / 2 + T.regard * .07,
-      pitch: p.tangage * .85 + Math.min(0, T.lon) * .012, roll: -p.roulis * .85 + T.lat * .014,
+      pitch: p.tangage * .85 + INCLINAISON_COCKPIT + Math.min(0, T.lon) * .012, roll: -p.roulis * .85 + T.lat * .014,
       fov: champCockpit(canvas.clientWidth / Math.max(1, canvas.clientHeight), et.v), near: .1, far: PORTEE_VUE
     };
   }
@@ -2310,7 +2426,7 @@
   // vue (J2, puis J1, puis leurs glaces) finit de s'en servir avant que la suivante les réécrive. Seize voitures au
   // plus (onze rivaux, quatre humains) ; au-delà, les tableaux grandissent.
   const nouvellePose = () => ({ p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0, roule: 0, rebond: null, v: 0, etatPneus: null,
-    pilote: { volant: 0, rapport: 1, rapportAvant: 1, passage: 1, alat: 0, along: 0, v: 0, t: 0,
+    pilote: { volant: 0, rapport: 1, rapportAvant: 1, passage: 1, regime: 0, kmh: 0, alat: 0, along: 0, v: 0, t: 0,
       regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0, passageVisuel: null } });
   const nouvellesOptions = () => ({ detail: 'complet', roues: undefined, casse: false, plafond: 'complet', rouesDetail: 0 });
   const POSES_RENDU = Array.from({ length: 16 }, nouvellePose), OPTIONS_POSE = Array.from({ length: 16 }, nouvellesOptions);
@@ -2366,6 +2482,37 @@
     return SUIVEURS;
   }
 
+  // Un seul événement sonore pour chaque départ réel de geste, avant toute vue ou rétroviseur.
+  // Toujours vider la file, même si l'audio est absent/muet ou si un menu masque la séance.
+  // Les voix et tampons appartiennent à son.js ; ce raccord ne crée aucun contexte ni oscillateur.
+  function consommerTroll(S, poses) {
+    const X = B.expressionsPilote;
+    if (!S.expressions || !X?.consommerEvenement) return;
+    const evenement = S.trollEvenement, audio = S.trollAudio, demo = S.type === 'demo';
+    const audible = demo ? ecran === 'demo'
+      : ecran === 'course' && (S.type === 'course' || S.type === 'chrono' || S.type === 'duo');
+    while (X.consommerEvenement(S.expressions, evenement)) {
+      if (!audible || !son) continue;
+      const p = poses[evenement.pilote];
+      if (!p || !Number.isFinite(p.x) || !Number.isFinite(p.y) || !Number.isFinite(p.z)) continue;
+      let ecoute = null, distance2 = Infinity;
+      const nombre = demo ? 1 : S.locaux.length || 1;
+      for (let n = 0; n < nombre; n++) {
+        const id = demo ? S.suivie : S.locaux[n] ?? S.course.joueur.id;
+        const q = poses[id] || (demo ? poses[S.course.joueur.id] : null);
+        if (!q || !Number.isFinite(q.x) || !Number.isFinite(q.y) || !Number.isFinite(q.z) || !Number.isFinite(q.cap)) continue;
+        const dx = p.x - q.x, dy = p.y - q.y, dz = p.z - q.z, d2 = dx * dx + dy * dy + dz * dz;
+        if (d2 < distance2) { distance2 = d2; ecoute = q; }
+      }
+      if (!ecoute) continue;
+      const dx = p.x - ecoute.x, dz = p.z - ecoute.z, ca = Math.cos(ecoute.cap), sa = Math.sin(ecoute.cap);
+      audio.klaxon = evenement.klaxon;
+      audio.gain = B.son.gainDistance(Math.sqrt(distance2));
+      audio.pan = B.son.panoramique(Math.atan2(-dx * sa + dz * ca, dx * ca + dz * sa));
+      son.evenement('troll', audio);
+    }
+  }
+
   function rendreImage(S, alpha, dtImage) {
     appliquerCarte();
     const co = S.course, j = co.joueur;
@@ -2376,7 +2523,10 @@
     // pris au dernier pas, ils avançaient par sauts de 1/120 s (à 144 Hz, une image sur six sans pas les figeait) et
     // devançaient les voitures d'un pas au plus. La vue du joueur 2 hérite des deux valeurs (Object.create).
     S.retardImage = (1 - alpha) * DT; S.tRendu = co.horloge - S.retardImage;
-    if (S.expressions) B.expressionsPilote.actualiser(S.expressions, co, poses, S.tRendu, S.type === 'demo');
+    if (S.expressions) {
+      B.expressionsPilote.actualiser(S.expressions, co, poses, S.tRendu, S.type === 'demo');
+      consommerTroll(S, poses);
+    }
     if (B.sillage) B.sillage.mettreAJour(S.sillage || (S.sillage = creationTardive('sillage', B.sillage.creer())), co.voitures, poses, co.c);
     if (B.mesures.actif) {
       let actives = 0;
@@ -2612,6 +2762,8 @@
       pilote.rapportAvant = voiture.rapportAvant === undefined ? etatPilote.rapport : voiture.rapportAvant;
       pilote.passage = voiture.tPassage === undefined ? 1 : clamp((S.tRendu - voiture.tPassage) / .36, 0, 1);
       pilote.alat = etatPilote.alat; pilote.along = etatPilote.along; pilote.v = etatPilote.v; pilote.t = S.tRendu;
+      // Les instruments appartiennent à la voiture : même mesure pour l'habitacle, les rivaux et les rétros.
+      pilote.regime = etatPilote.regime; pilote.kmh = B.conduite.kmh(etatPilote);
       if (S.expressions) B.expressionsPilote.lire(S.expressions, k, pilote);
       // Hystérésis propre à cette vue : ni la seconde moitié d'écran ni les deux miroirs ne la réécrivent.
       const rouesDetail = S.detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(ev, cam.pos), tanDemi, hauteur, S.detailsRoues[k]);
@@ -3050,9 +3202,45 @@
   const ECRANS = ['titre', 'enligne', 'prets', 'preparation', 'reglages', 'pause', 'resultats'];
   let modePrepa = 'course', retourReglages = 'titre';
   const enCourse = () => ecran === 'course';
+  const menuOpaque = () => ['titre', 'preparation', 'reglages', 'enligne', 'prets'].includes(ecran);
+  const menuArcade = B.menuArcade.installer($('preparation'), { retour, actualiser: () => { majBilanArcade(); majChoixTroll(); } });
+
+  function pilotesMenu() {
+    const membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
+    return modePrepa === 'duo' || (modePrepa === 'enligne' && membre && membre.joueurs === 2) ? 2 : 1;
+  }
+  function choixTrollLocaux() { return B.menuArcade.normaliserTroll(reglages); }
+  function majChoixTroll() {
+    const choix = choixTrollLocaux(), membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
+    $('o-troll-1').hidden = pilotesMenu() !== 2;
+    $('pr-troll-1').hidden = !(membre && membre.joueurs === 2);
+    for (let n = 0; n < 2; n++) for (const prefixe of ['p', 'pr']) {
+      $(prefixe + '-geste-' + n).value = choix[n].geste;
+      $(prefixe + '-klaxon-' + n).value = choix[n].klaxon;
+    }
+    const disponible = !!(son && typeof son.klaxon === 'function');
+    for (const b of document.querySelectorAll('[data-essai-klaxon]')) b.disabled = !disponible;
+    const enLigne = modePrepa === 'enligne' || ecran === 'prets';
+    const notice = enLigne && typeof statutTrollEnLigne === 'function' ? statutTrollEnLigne() : '';
+    for (const id of ['p-troll-etat', 'pr-troll-etat']) if ($(id)) texte($(id), (disponible ? '' : 'Aperçu sonore indisponible. ') + notice);
+  }
+  function majBilanArcade() {
+    const k = conditionsDuDepart(), cat = CATALOGUE[reglages.circuit], nombre = pilotesMenu();
+    texte($('p-bilan-circuit'), cat.nom);
+    texte($('p-bilan-course'), modePrepa === 'chrono' ? 'Contre-la-montre · fantôme personnel' : reglages.tours + ' tours · rivaux ' + ['faciles', 'normaux', 'coriaces'][reglages.difficulte]);
+    texte($('p-bilan-saison'), NOMS_SAISON[k.saison] + ' · ' + NOMS_MOMENT[k.moment]);
+    texte($('p-bilan-meteo'), nomMeteoCourse({ ...k, i: reglages.circuit }));
+    texte($('p-bilan-joueurs'), (nombre === 2 ? 'Deux pilotes locaux' : 'Un pilote local') + (modePrepa === 'enligne' ? ' · en ligne' : ''));
+    const gestes = { majeur: 'doigt d’honneur', poing: 'poing levé', salut: 'salut' };
+    const klaxons = { classique: 'classique', ancien: 'ancien', mariage: 'mariage' };
+    const choix = choixTrollLocaux(), pneus = choixPneusLocaux();
+    texte($('p-bilan-troll'), choix.slice(0, nombre).map((c, n) => 'J' + (n + 1) + '\u00a0: ' + NOMS_PNEUS[pneus[n]] + ' · ' + gestes[c.geste] + ' + klaxon ' + klaxons[c.klaxon]).join(' / '));
+    texte($('b-depart'), modePrepa === 'enligne' ? 'Confirmer la course' : modePrepa === 'chrono' ? 'Lancer le chrono' : 'Prendre le départ');
+  }
 
   function aller(nom) {
     const precedent = ecran;
+    if (nom !== precedent) B.navigationMenu.fermerSaisie(document, false);
     if (nom !== 'course') suspendreAnnoncesVirages();
     if (precedent === 'preparation' && nom !== 'preparation') annulerConditions();
     if (nom === 'preparation' && precedent !== 'preparation' && precedent !== 'reglages') {
@@ -3073,19 +3261,22 @@
     $('jeu').dataset.ecran = nom;
     ecran = nom;
     if (nom === 'titre') dernierGeste = performance.now();
-    if (nom === 'titre' || nom === 'preparation' || nom === 'enligne' || nom === 'prets') {
-      if (!session || session.type !== 'vitrine' || (nom === 'preparation' && session.i !== reglages.circuit)) lancerVitrine(nom === 'preparation' ? reglages.circuit : (session ? session.i : reglages.circuit));
-    }
+    // Les menus opaques ne préparent pas une course invisible. La scène change au vrai départ.
     // en ligne, la pause n'arrête pas la course : pas de « Recommencer »
     if (nom === 'pause') { $('b-recommencer').hidden = !!(session && session.enLigne); $('b-replacer').hidden = aDeux(); majPneusStands(); }
     if (nom === 'enligne') majSalon();
-    if (nom === 'prets') majPrets();
+    if (nom === 'prets') { majPrets(); majChoixTroll(); }
     tactile(nom === 'course' && !aDeux());
-    if (nom === 'preparation') remplirPreparation();
+    if (nom === 'preparation') {
+      remplirPreparation();
+      if (precedent !== 'preparation' && precedent !== 'reglages') menuArcade.ouvrir(0, false);
+      else menuArcade.actualiser();
+    }
+    menuArcade.image(performance.now(), false);
     if (nom === 'reglages') remplirReglages();
     if ($(nom) && B.navigationMenu) B.navigationMenu.initialiser($(nom));
-    // une course arrêtée (pause, réglages, résultats) se tait ; la vitrine des menus continue, moins fort
-    if (son) { if (session && session.type !== 'vitrine' && nom !== 'course' && nom !== 'demo') son.suspendre(); else son.reprendre(); }
+    // Aucun moteur figé derrière un menu ; la musique du titre est commandée séparément.
+    if (son) { if (nom !== 'course' && nom !== 'demo') son.suspendre(); else son.reprendre(); }
     if (son) son.musique(nom === 'titre'); // seule musique du jeu : l'écran titre
     appliquerVolumes();
     if (nom === 'course' || nom === 'demo') { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); return; }
@@ -3162,6 +3353,7 @@
     const resume = CATALOGUE[reglages.circuit].nom + ' · ' + NOMS_SAISON[k.saison] + ' · ' + NOMS_MOMENT[k.moment]
       + (k.horlogeReelle ? ' (heure réelle)' : '') + ' · ' + nomMeteoCourse({ ...k, i: reglages.circuit });
     texte($('p-resume'), resume);
+    majBilanArcade();
     $('p-conditions-reel').hidden = !reel;
     $('p-meteo-sources').hidden = reglages.meteoMode !== 'reel';
     $('p-actualiser-conditions').hidden = !reel && !['saison', 'moment', 'meteo'].some(n => reglages[n + 'Mode'] === 'aleatoire');
@@ -3186,14 +3378,7 @@
       if (numero !== conditionsNumero || ecran !== 'preparation') return null;
       conditionsPreparation = k;
       preselectionnerPneus();
-      if (session && session.type === 'vitrine') {
-        if (session.i !== reglages.circuit || session.nature.saison.id !== k.saison) lancerVitrine(reglages.circuit, k);
-        else {
-          session.conditions = k; session.meteo = meteoPourConditions(k, session.i, graineCourse);
-          session.nature.moment = k.moment; session.nature.horlogeReelle = horlogePartagee(k.horlogeReelle);
-          session.nature.prochaineLumiereReelle = 0;
-        }
-      }
+      // Le départ utilisera ces conditions ; aucun décor caché n’est reconstruit dans le menu.
       if (EL.role === 'hote' && lienActif()) annoncerCourse();
       return k;
     }).catch(erreur => {
@@ -3224,14 +3409,11 @@
     const zone = $('circuits');
     if (!zone.childElementCount) {
       CATALOGUE.forEach((k, i) => {
-        const c = circuit(i), f = fiche(c), b = document.createElement('button');
+        const b = document.createElement('button');
         b.type = 'button'; b.className = 'carte-circuit'; b.setAttribute('role', 'radio'); b.dataset.index = i;
-        b.innerHTML = '<span class="lieu">' + k.lieu + '</span><span class="nom">' + k.nom + '</span><canvas width="320" height="200"></canvas>' +
-          '<p class="fiche"><b>' + f.km + ' km</b> · ' + f.virages + ' virages · ligne droite de ' + f.droite + ' m</p>';
-        const ctx = b.querySelector('canvas').getContext('2d');
-        const p = plan(c, 320, 200, 14);
-        dessinerTrace(ctx, c, p, 10, 'rgba(0,0,0,.55)'); dessinerTrace(ctx, c, p, 5, '#efe8da');
-        b.addEventListener('click', () => { reglages.circuit = i; sauverReglages(); majPreparation(); if (son) son.evenement('clic'); lancerVitrine(i); if (EL.role === 'hote' && lienActif()) annoncerCourse(); });
+        b.innerHTML = '<span class="circuit-rang">' + String(i + 1).padStart(2, '0') + '</span><span class="nom">' + k.nom + '</span>' +
+          '<span class="fiche">' + k.lieu + '</span><span class="circuit-distance">' + (k.longueur / 1000).toFixed(1).replace('.', ',') + ' km</span>';
+        b.addEventListener('click', () => { reglages.circuit = i; sauverReglages(); majPreparation(); if (son) son.evenement('clic'); if (EL.role === 'hote' && lienActif()) annoncerCourse(); });
         zone.appendChild(b);
       });
     }
@@ -3325,7 +3507,10 @@
     for (const r of document.querySelectorAll('input[name="momentDepart"]')) r.checked = r.value === reglages.moment;
     for (const r of document.querySelectorAll('input[name="saisonDepart"]')) r.checked = r.value === reglages.saison;
     afficherConditions();
-    for (const b of $('circuits').children) b.setAttribute('aria-checked', String(+b.dataset.index === reglages.circuit));
+    for (const b of $('circuits').children) { const actif = +b.dataset.index === reglages.circuit; b.setAttribute('aria-checked', String(actif)); b.tabIndex = actif ? 0 : -1; }
+    const c = circuit(reglages.circuit);
+    menuArcade.trace(c, fiche(c), CATALOGUE[reglages.circuit], reglages.circuit, CATALOGUE.length);
+    majChoixTroll(); majBilanArcade();
     const r = records[CATALOGUE[reglages.circuit].id];
     $('p-record').innerHTML = r ? 'Votre record sur ' + CATALOGUE[reglages.circuit].nom + ' : <b>' + chrono(r.tour) + '</b>' : 'Pas encore de temps sur ' + CATALOGUE[reglages.circuit].nom + '.';
   }
@@ -3393,6 +3578,23 @@
   $('v-vibrations').addEventListener('change', e => { reglages.vibrations = e.target.checked ? 'oui' : 'non'; if (!e.target.checked) { secouerManette(0, 0); secouerManette(0, 0, pad2); } sauverReglages(); });
   $('v-carte').addEventListener('change', e => { reglages.carte = e.target.checked ? 'oui' : 'non'; sauverReglages(); appliquerCarte(); });
   $('v-vibration-force').addEventListener('input', e => { reglages.vibrationForce = clamp(+e.target.value, 0, 1); $('v-vibration-force-valeur').textContent = Math.round(reglages.vibrationForce * 100) + ' %'; sauverReglages(); });
+  document.addEventListener('change', e => {
+    const correspondance = /^(geste|klaxon)Pilote([01])$/.exec(e.target.name || '');
+    if (correspondance) {
+      const choix = choixTrollLocaux(); choix[+correspondance[2]][correspondance[1]] = e.target.value;
+      reglages.trollPilotes = B.menuArcade.normaliserTroll({ trollPilotes: choix });
+      retirerPret(); sauverReglages(); majChoixTroll();
+      if (EL.role === 'invite') envoyerPneus();
+    }
+    if (ecran === 'preparation') majBilanArcade();
+  });
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-essai-klaxon]');
+    if (!b || b.disabled || !['preparation', 'prets'].includes(ecran)) return;
+    activerSon();
+    const choix = choixTrollLocaux()[+b.dataset.essaiKlaxon];
+    if (choix && son && son.klaxon) son.klaxon(choix.klaxon, { gain: .75 });
+  });
   const NOMS_ACTIONS = { gaz: 'Accélérer', frein: 'Freiner', gauche: 'Gauche', droite: 'Droite', derive: 'Dérive', haut: 'Rapport +', bas: 'Rapport −', vue: 'Vue', troll: 'Troll / geste' };
   const NOMS_COMMANDES = { auto: 'Auto', manette: 'Manette', clavier: 'Clavier', souris: 'Souris' };
   let captureTouche = null, carteClavier = null;   // action en attente d'une touche ; noms des touches du clavier réel
@@ -3468,6 +3670,7 @@
   function retour() {
     if (prepa.voile) return;   // sous le voile, rien ne se quitte : la préparation finit ou s'annule seule
     if (ecran === 'reglages') { aller(retourReglages || 'titre'); if (ecran === 'pause' && session && session.type !== 'vitrine') rechaufferEnPause(session); }
+    else if (ecran === 'preparation' && menuArcade.retour()) return;
     else if (ecran === 'preparation' && modePrepa === 'enligne') aller('enligne');
     else if (ecran === 'enligne') quitterEnLigne();
     else if (ecran === 'prets') quitterPrets();
@@ -4283,7 +4486,9 @@
     if (prepa.voile && !prepa.attente) { tPrec = 0; B.cadence.oublier(cadence); if (ecran === 'demo') lireManette(); else tenirManettes(); return; }
     // Commandes et menus à chaque rappel, même sans image : les pas de l'image suivante lisent l'état le plus frais.
     // Les messages demandés depuis le rappel précédent s'affichent ici, une fois (voir message).
+    const avantEntrees = ecran;
     lireManette();
+    lireAutresManettesMenu(ecran !== avantEntrees);
     majAttente();
     appliquerMessages();
     const sourisVue = souris.active && enCourse() ? 'oui' : 'non';
@@ -4297,6 +4502,9 @@
     }
     // préparation d'une course à deux : qui joue avec quoi, selon les choix et les manettes branchées
     if (ecran === 'preparation' && modePrepa === 'duo') texte($('p-manettes'), [0, 1].map(n => 'Joueur ' + (n + 1) + ' : ' + entreeDe(n)).join(' · ') + '.');
+    menuArcade.image(t, ecran === 'preparation', gpuModeste || reglages.qualite === 'low');
+    // Aucune simulation ni image de course derrière les écrans opaques ; les entrées et le compte à rebours restent actifs.
+    if (menuOpaque()) { tPrec = 0; B.cadence.oublier(cadence); return; }
     const S = session;
     // vitrine en préparation : les menus vivent, la séance attend la fin de la préparation (le temps qui passe n'est
     // pas du temps à rattraper)
@@ -4847,6 +5055,7 @@
   }
   window.BITUME_JEU = { get session() { return session; }, get rendu() { return rendu; }, get ecran() { return ecran; }, reglages, CATALOGUE, avancer, banc, reference, detecterGraphismes,
     // ce que le banc et le contrôle visuel vérifient sans toucher au jeu : la scène installée et le profil résolu
+    get menuArcade() { return menuArcade.stats(); },
     get scene() { return scene; }, get profil() { return profilDe(session); }, get ancre() { return etatProfils.decor; },
     get vitres() { return { j1: vitreVue ? vitreVue.stats : null, j2: vitreVue2 ? vitreVue2.stats : null }; },
     get son() { return son ? son.stats() : null; }, get palier() { return palier.n; }, get gpuModeste() { return gpuModeste; },

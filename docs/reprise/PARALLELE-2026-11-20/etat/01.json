@@ -2,21 +2,100 @@
   "schema": 1,
   "discussion": "01",
   "mission": "Pilote et Troll",
-  "statut": "preparee_non_lancee",
+  "statut": "T3_troll_J1_J2_qualifie_sur_HTML_assemble_transmis_a_00",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/01-PILOTE-TROLL.md",
-  "base_main": "d8f02cae45443ae6a1120dc93125d8adfae94422",
+  "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "branche_proposee": "codex/bitume-p01-pilote-troll-20261120",
-  "branche_reelle": null,
-  "head": null,
-  "pr": null,
-  "sous_lot": null,
-  "preuves": [],
-  "reserves": [],
-  "prochaine_action": "Retrouver le candidat habitacle et qualifier contacts/coude avant Troll.",
+  "branche_reelle": "codex/bitume-p01-pilote-troll-20261120",
+  "head": "e13dbfba9bdf45eefb92c7f9ffa2654433fe6b84",
+  "pr": 41,
+  "sous_lot": "T3 clos : commandes, son unique, temporalite et retour J1/J2 verifies sur le HTML exact de 00",
+  "preuves": [
+    "docs/reprise/PARALLELE-2026-11-20/preuves/01-habitacle.json",
+    "docs/reprise/PARALLELE-2026-11-20/preuves/01-visuel-module.json",
+    "docs/reprise/PARALLELE-2026-11-20/preuves/01-klaxons.json",
+    "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll.json",
+    "docs/reprise/PARALLELE-2026-11-20/preuves/01-raccord.json",
+    "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble-js.json",
+    "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json"
+  ],
+  "reserves": [
+    "Raccord de 00 observé sur le candidat exact 11dd51e : Troll J1/J2 logique, géométrie et WebGL ciblé qualifiés. Publication du build commun et qualification générale restent à 00.",
+    "26 PNG WebGL duo cockpit/poursuite inspectés pour T3. Les autres orientations/portrait/LOD de l’habitacle et l’écoute audio réelle restent distincts ; mains petites en poursuite, geste levé partiellement hors champ en cockpit.",
+    "Transport des choix et evenements Troll en ligne non implemente dans ce lot ; aucune qualification entre machines.",
+    "Budget de cinq voix audio propose a 00 : quatre humains plus une IA ; tests modules reussis.",
+    "Matieres/shaders supplementaires soumis au budget et au raccord 00/02.",
+    "Physique p15, FERRO, versions, builds communs et main inchanges par 01."
+  ],
+  "prochaine_action": "00 : reprendre la preuve T3 e13dbfb et son reçu documentaire, vérifier le même SHA HTML avant usage, poursuivre les autres groupes du candidat puis publier selon sa qualification générale. 01 : ne pas relancer T3 inchangé.",
   "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
   "preparations_portables": [
     "docs/reprise/PARALLELE-2026-11-20/preparations/habitacle.patch",
     "docs/reprise/PARALLELE-2026-11-20/preparations/audio-troll.patch"
   ],
-  "preparations_statut": "applicables_individuellement_a_la_base_non_qualifiees"
+  "preparations_statut": "habitacle_et_audio_repris_dans_perimetre_01_qualifies_et_pousses",
+  "head_semantique": "Dernier commit publie verifie lors de cette ecriture ; head_sources fige les sources qualifiees. Le commit documentaire courant est un descendant a lire sur la branche.",
+  "head_sources": "2f4bbd0cdb9cb031eef7b93ef5997279a4f75a1d",
+  "main_plus_recent_relu": "d230d8c6995e44d63b0a072fa3d6362d04a8e5ce",
+  "raccordements": [
+    "docs/reprise/PARALLELE-2026-11-20/raccordements/01.md",
+    "docs/reprise/PARALLELE-2026-11-20/raccordements/01-jeu.patch",
+    "docs/reprise/PARALLELE-2026-11-20/raccordements/01-raccord.test.mjs"
+  ],
+  "validation": {
+    "suites_habitacle": 11,
+    "troll_tests": 20,
+    "expressions_historiques_tests": 11,
+    "audio_controles": 25,
+    "raccord_tests": 9,
+    "images_module_canvas2d": 16,
+    "poses_allocations": 60000,
+    "octets_par_pose": 1.052,
+    "gc_mineurs": 0
+  },
+  "pr_url": "https://github.com/M4D135/bitume/pull/41",
+  "pr_statut": "brouillon_sources_raccord_00_requis",
+  "transmission_00": "PR #41, raccordements/01.md, 01-jeu.patch et 01-raccord.test.mjs ; rapprochement menu 03 PR #40.",
+  "ci_observee": {
+    "commit": "5e710039424e3761ee04750619152a0cb279bdb2",
+    "workflow": "Qualification BITUME",
+    "run": 44784958357,
+    "url": "https://github.com/M4D135/bitume/actions/runs/44784958357",
+    "statut": "echec_garde_build_avant_suites",
+    "cause": "La CI reconstruit puis git diff --exit-code constate les ecarts de VERSION.json, SIZE.json et dist/bitume.html ; ces fichiers communs restent reserves a 00.",
+    "suites_ci_executees": false,
+    "action": "Ne pas modifier les builds communs ni assouplir le garde dans 01 ; integration et qualification de publication par 00."
+  },
+  "qualification_assemblee": {
+    "candidat_source": "11dd51ef77cf887a9dc3da99ac80592c428fd4a5",
+    "version": "0.2.69",
+    "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+    "reconstructions_identiques": 2,
+    "statut": "T3_raccord_troll_J1_J2_qualifie_sur_candidat_exact",
+    "raccord_reproduction": "docs/reprise/PARALLELE-2026-11-20/raccordements/01-assemblage-test.json",
+    "limite": "Candidat de 00 observe localement ; aucune publication du build commun, aucune fusion main ni déploiement par 01.",
+    "controle_js": {
+      "scenarios": 4,
+      "poses": 5080,
+      "echantillons_par_sequence": 9,
+      "pas_par_sequence": 253,
+      "tests_oracle": 9,
+      "mutations_detectees": 6,
+      "echecs": 0,
+      "rapport": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble-js.json"
+    },
+    "capture": {
+      "scenes": 2,
+      "images_attendues": 26,
+      "fenetre_secondes": 2.85,
+      "tests_oracle": 5,
+      "statut": "CI_reussie_26_PNG_inspectes",
+      "workflow": ".github/workflows/qualification-troll.yml",
+      "images_inspectees": 26,
+      "run": 44795943660,
+      "conclusion": "success",
+      "outils_commit": "e13dbfba9bdf45eefb92c7f9ffa2654433fe6b84",
+      "rapport": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json"
+    }
+  }
 }

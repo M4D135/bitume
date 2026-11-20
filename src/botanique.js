@@ -207,7 +207,7 @@
     return p;
   }
 
-  function feuillu(tri, p, N) {
+  function feuillu(tri, p, N, nu = false) {
     const P = t => [p.pente[0] * t * t, p.hauteur * t, p.pente[1] * t * t];
     tronc(tri, P, N, .055, .03, 6);
     const pointes = [P(1)];
@@ -220,6 +220,7 @@
         pointes.push(branche(tri, depart2, direction(br.azim + c.gisement, c.inclinaison), c.long, c.chute, N, .014, .006, 4));
       }
     });
+    if (nu) return;
     let k = 0;
     const poser = c => { const a = p.amas[k++]; amas(tri, [c[0] + a.d[0], c[1] + a.d[1], c[2] + a.d[2]], a.r, 6); };
     poser(pointes[0]);
@@ -266,10 +267,10 @@
     for (let i = p.branches.length + 1; indices.length < p.amas.length; i++) indices.push(i % n);
     return indices;
   }
-  function feuilluLoin(tri, p) {
-    const P = t => [p.pente[0] * t * t, p.hauteur * t, p.pente[1] * t * t], F = SILHOUETTE.facesBranche;
+  function feuilluLoin(tri, p, nu = false, leger = false) {
+    const P = t => [p.pente[0] * t * t, p.hauteur * t, p.pente[1] * t * t], F = leger ? 3 : SILHOUETTE.facesBranche;
     // La tête du fût est dans le premier amas, son pied sous terre : aucune coiffe.
-    tronc(tri, P, SILHOUETTE.fut.feuillu, .055, .03, 6, SANS_COIFFE);
+    tronc(tri, P, leger ? 1 : SILHOUETTE.fut.feuillu, .055, .03, 6, SANS_COIFFE);
     const pointes = [P(1)], charpentières = new Map();
     p.branches.forEach((br, i) => {
       const depart = P(br.attache);
@@ -284,7 +285,8 @@
     // Une charpentière coiffée d'un amas disparaît dedans ; une charpentière nue dessine le bord du houppier
     // (jusqu'à 12 % de la largeur de l'arbre en Moyenne) : elle reste, en prisme droit.
     const portees = indicesAmas(p, pointes.length), coiffees = new Set(portees);
-    for (const [i, c] of charpentières) if (!coiffees.has(i)) branche(tri, c[0], c[1], c[2], c[3], 1, .014, .006, F, SANS_COIFFE);
+    for (const [i, c] of charpentières) if (nu || !coiffees.has(i)) branche(tri, c[0], c[1], c[2], c[3], 1, .014, .006, F, nu ? POINTE : SANS_COIFFE);
+    if (nu) return;
     portees.forEach((i, k) => {
       const c = pointes[i], a = p.amas[k];
       amas(tri, [c[0] + a.d[0], c[1] + a.d[1], c[2] + a.d[2]], a.r, 6, true);
@@ -324,9 +326,9 @@
   // pied au sol et cime tombent aux mêmes coordonnées normalisées. La boîte ne dépend que de la forme proche : ses
   // coordonnées ne bougent pas quand la silhouette change (botanique.test.mjs compare leurs empreintes). La
   // silhouette tient dans cette boîte (vérifié aussi) : elle reste dans le cube unité.
-  function normaliser(proche, loin) {
+  function normaliser(proche, loin, reference = proche) {
     const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
-    for (const tri of proche) for (let i = 0; i < 3; i++) for (let k = 0; k < 3; k++) {
+    for (const tri of reference) for (let i = 0; i < 3; i++) for (let k = 0; k < 3; k++) {
       min[k] = Math.min(min[k], tri[i][k]); max[k] = Math.max(max[k], tri[i][k]);
     }
     const taille = Math.max(...max.map((v, i) => v - min[i])), centre = max.map((v, i) => (v + min[i]) / 2);
@@ -357,6 +359,25 @@
   function nomForme(essence, loin, qualite) {
     return 'arbre-' + essence + '-' + (loin ? 'loin' : 'proche') + '-' + qualite;
   }
+  // En hiver le bois du même feuillu reste à sa place : on retire ses amas de feuilles, sans
+  // renormaliser le rameau restant ni déplacer le tronc solide. Un seul objet par arbre et par LOD.
+  const NUS = new Map();
+  function formeNue(loin, qualite) {
+    if (!QUALITES.includes(qualite)) throw new Error('qualité inconnue : ' + qualite);
+    if (!NUS.has(qualite)) {
+      const p = plan('feuillu', qualite), N = BUDGETS[qualite].segments.proche;
+      const reference = [], proche = [], lointain = [];
+      feuillu(reference, p, N);
+      // Légère : tous les rameaux sont présents, en prismes triangulaires. 72 triangles,
+      // comme l'ancienne unique couronne lointaine ; aucun objet JS par branche.
+      if (qualite === 'low') feuilluLoin(proche, p, true, true);
+      else feuillu(proche, p, N, true);
+      feuilluLoin(lointain, p, true, qualite === 'low');
+      NUS.set(qualite, normaliser(proche, lointain, reference));
+    }
+    return NUS.get(qualite)[loin ? 'loin' : 'proche'];
+  }
+  const nomFormeNue = (loin, qualite) => 'arbre-feuillu-nu-' + (loin ? 'loin' : 'proche') + '-' + qualite;
   // Tronc d'écorce de la version lointaine. Le tronc proche est le cylindre du moteur (16 côtés, 64 triangles) ;
   // à la distance de bascule il ne fait que quelques pixels de large. Même cylindre unité (diamètre 1, hauteur 1,
   // centré) réduit à six faces sans fonds, normales lisses comme le cylindre : le fond est sous terre, le haut dans
@@ -390,12 +411,14 @@
     if (!rendu || typeof rendu.forme !== 'function') return false;
     for (const essence of ESSENCES) for (const loin of [false, true]) for (const qualite of QUALITES)
       rendu.forme(nomForme(essence, loin, qualite), forme(essence, loin, qualite));
+    for (const loin of [false, true]) for (const qualite of QUALITES)
+      rendu.forme(nomFormeNue(loin, qualite), formeNue(loin, qualite));
     rendu.forme(TRONC_LOINTAIN, formeTroncLointain());
     return true;
   }
   const matiere = partie => MATIERES[partie];
 
-  B.botanique = { ESSENCES, QUALITES, BUDGETS, SILHOUETTE, MATIERES, TRONC_LOINTAIN, forme, nomForme, formeTroncLointain,
+  B.botanique = { ESSENCES, QUALITES, BUDGETS, SILHOUETTE, MATIERES, TRONC_LOINTAIN, forme, nomForme, formeNue, nomFormeNue, formeTroncLointain,
     organes, installer, matiere };
   installer(typeof window !== 'undefined' ? window.FRender : globalThis.FRender);
 })(globalThis.BITUME = globalThis.BITUME || {});

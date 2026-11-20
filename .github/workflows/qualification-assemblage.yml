@@ -1,0 +1,142 @@
+name: Images du candidat assemble
+
+on:
+  push:
+    branches: ['codex/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: assemblage-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  menu:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[capture-assemblage]')
+    uses: ./.github/workflows/qualification-menu.yml
+  images:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[capture-assemblage]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - groupe: habitacle-orientations
+            outil: habitacle
+            cas: face,profil,trois-quarts
+            scenes: 3
+          - groupe: habitacle-cockpit
+            outil: habitacle
+            cas: cockpit,cockpit-portrait
+            scenes: 2
+          - groupe: habitacle-gestes
+            outil: habitacle
+            cas: braquage-passage,geste-majeur
+            scenes: 2
+          - groupe: habitacle-lod
+            outil: habitacle
+            cas: lod-moyen,lod-simple
+            scenes: 2
+          - groupe: duo
+            outil: meteo
+            cas: duo-vues
+            scenes: 1
+          - groupe: saisons-cimes
+            outil: saisons
+            circuits: '8'
+            saisons: printemps,ete,automne,hiver
+            alpin: oui
+            scenes: 6
+          - groupe: hiver-port-sable
+            outil: saisons
+            circuits: '1'
+            saisons: hiver
+            alpin: non
+            scenes: 1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verifier le build exact et identifier le candidat
+        shell: bash
+        env:
+          OUTIL_CAPTURE: ${{ matrix.outil }}
+        run: |
+          set -euo pipefail
+          mkdir -p qualification
+          git rev-parse HEAD > qualification/COMMIT.txt
+          git rev-parse 'HEAD^{tree}' > qualification/TREE.txt
+          google-chrome --version > qualification/ENVIRONNEMENT.txt
+          node --version >> qualification/ENVIRONNEMENT.txt
+          python3 --version >> qualification/ENVIRONNEMENT.txt
+          python3 construire.py > qualification/build.log 2>&1
+          git diff --exit-code -- VERSION.json SIZE.json dist/bitume.html
+          git diff --exit-code -- src/ construire.py
+          sha256sum dist/bitume.html > qualification/HTML-SHA256.txt
+          sha256sum "tools/captures-$OUTIL_CAPTURE.mjs" tools/controle-visuel.mjs > qualification/OUTILS-SHA256.txt
+          node "verifications/captures-$OUTIL_CAPTURE.test.mjs" > qualification/outillage.log 2>&1
+      - name: Capturer les seules vues de raccordement
+        shell: bash
+        env:
+          OUTIL_CAPTURE: ${{ matrix.outil }}
+          CAS_CAPTURE: ${{ matrix.cas }}
+          CIRCUITS_CAPTURE: ${{ matrix.circuits }}
+          SAISONS_CAPTURE: ${{ matrix.saisons }}
+          ALPIN_CAPTURE: ${{ matrix.alpin }}
+        run: |
+          set -euo pipefail
+          arguments=(--url "file://$GITHUB_WORKSPACE/dist/bitume.html" --sortie qualification/images --chrome /usr/bin/google-chrome)
+          if [ "$OUTIL_CAPTURE" = saisons ]; then
+            arguments+=(--circuits "$CIRCUITS_CAPTURE" --saisons "$SAISONS_CAPTURE" --alpin "$ALPIN_CAPTURE" --qualite high)
+          else
+            arguments+=(--cas "$CAS_CAPTURE")
+          fi
+          # Chaque groupe est borné et conserve ses diagnostics si le runner le coupe.
+          timeout --signal=TERM --kill-after=30s 28m node "tools/captures-$OUTIL_CAPTURE.mjs" "${arguments[@]}" > qualification/captures.log 2>&1
+      - name: Relier toutes les images au meme HTML
+        shell: bash
+        env:
+          GROUPE_CAPTURE: ${{ matrix.groupe }}
+          SCENES_ATTENDUES: ${{ matrix.scenes }}
+        run: |
+          set -euo pipefail
+          sha256sum --check qualification/HTML-SHA256.txt
+          sha256sum --check qualification/OUTILS-SHA256.txt
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          racine = Path('qualification')
+          attendu = (racine / 'HTML-SHA256.txt').read_text().split()[0]
+          campagne = json.loads((racine / 'images/rapport.json').read_text())
+          assert campagne['echecs'] == 0, 'Echec de capture conservé dans le rapport'
+          scenes = []
+          for chemin in sorted((racine / 'images').rglob('rapport.json')):
+              rapport = json.loads(chemin.read_text())
+              if 'build' not in rapport:
+                  continue
+              assert rapport['build']['sha256'] == attendu, f'HTML différent : {chemin}'
+              scenes.append({'rapport': str(chemin.relative_to(racine)), 'images': len(rapport['images'])})
+          assert len(scenes) == int(os.environ['SCENES_ATTENDUES']), 'Nombre de scènes incomplet'
+          resume = {'groupe': os.environ['GROUPE_CAPTURE'], 'commit': (racine / 'COMMIT.txt').read_text().strip(),
+                    'html_sha256': attendu, 'scenes': scenes, 'png': sum(s['images'] for s in scenes),
+                    'erreurs': 0, 'inspection_visuelle': 'a_faire',
+                    'limite': 'Raster logiciel et poses prescrites ; aucune mesure FPS matérielle ni écoute audio.'}
+          (racine / 'RESUME.json').write_text(json.dumps(resume, ensure_ascii=False, indent=2) + '\n')
+          print(json.dumps({k: v for k, v in resume.items() if k != 'scenes'}, ensure_ascii=False))
+          PY
+      - name: Conserver images et rapports meme en cas dechec
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-assemblage-${{ matrix.groupe }}-${{ github.sha }}
+          path: qualification/
+          if-no-files-found: error
+          retention-days: 14

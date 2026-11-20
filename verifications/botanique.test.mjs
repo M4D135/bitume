@@ -103,11 +103,13 @@ verifier('installer enregistre les dix-huit arbres et le tronc lointain, et refu
   assert.equal(A.installer({}), false);
   const enregistrees = new Map();
   assert.equal(A.installer({ forme: (nom, tri) => enregistrees.set(nom, tri) }), true);
-  assert.equal(enregistrees.size, 19);
+  assert.equal(enregistrees.size, 25, 'formes historiques et six rameaux nus préchargés');
   for (const [e, loin, q] of COMBOS)
     assert.equal(enregistrees.get(A.nomForme(e, loin, q)), A.forme(e, loin, q));
   assert.equal(A.TRONC_LOINTAIN, 'arbre-tronc-loin');
   assert.equal(enregistrees.get(A.TRONC_LOINTAIN), A.formeTroncLointain());
+  for (const q of A.QUALITES) for (const loin of [false, true])
+    assert.equal(enregistrees.get(A.nomFormeNue(loin, q)), A.formeNue(loin, q));
 });
 
 // Formes proches figées : nombres de triangles exacts et

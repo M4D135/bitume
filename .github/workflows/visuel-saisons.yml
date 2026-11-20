@@ -1,0 +1,114 @@
+name: Images saisons des neuf circuits
+
+on:
+  push:
+    branches: ['codex/bitume-p04-saisons-matieres-20261120']
+    paths:
+      - 'src/saisons.js'
+      - 'src/botanique.js'
+      - 'src/decor.js'
+      - 'src/bords.js'
+      - 'src/route-des-cimes-decor.js'
+      - 'tools/captures-saisons.mjs'
+      - 'tools/controle-visuel.mjs'
+      - '.github/workflows/visuel-saisons.yml'
+  pull_request:
+    paths:
+      - 'src/saisons.js'
+      - 'src/botanique.js'
+      - 'src/decor.js'
+      - 'src/bords.js'
+      - 'src/route-des-cimes-decor.js'
+      - 'tools/captures-saisons.mjs'
+      - 'tools/controle-visuel.mjs'
+      - '.github/workflows/visuel-saisons.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: visuel-saisons-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        # Le diagnostic de cadrage ne rejoue que les huit vues de forêt basse.
+        # La campagne complète et les vues alpines restent la règle pour les PR.
+        include: >-
+          ${{ fromJSON(github.event_name == 'push' && contains(github.event.head_commit.message, '[capture-cimes]')
+            && '[{"groupe":"high-cimes-reprise","qualite":"high","circuits":"8","alpin":"non"},{"groupe":"low-cimes-reprise","qualite":"low","circuits":"8","alpin":"non"}]'
+            || '[{"groupe":"high-0-2","qualite":"high","circuits":"0,1,2"},{"groupe":"high-3-5","qualite":"high","circuits":"3,4,5"},{"groupe":"high-6-8","qualite":"high","circuits":"6,7,8"},{"groupe":"low-cimes","qualite":"low","circuits":"8"}]') }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Identifier les sources et construire un candidat temporaire
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qualification
+          git rev-parse HEAD > qualification/COMMIT.txt
+          git rev-parse 'HEAD^{tree}' > qualification/TREE.txt
+          google-chrome --version > qualification/ENVIRONNEMENT.txt
+          node --version >> qualification/ENVIRONNEMENT.txt
+          python3 --version >> qualification/ENVIRONNEMENT.txt
+          python3 construire.py 2>&1 | tee qualification/build.log
+          sha256sum dist/bitume.html > qualification/SHA256SUMS.txt
+          # Cette branche livre des sources : le build reste temporaire et non publié.
+          # Le constructeur peut mettre à jour ces trois fichiers suivis, jamais le runtime source.
+          git status --short > qualification/FICHIERS-GENERES.txt
+          python3 - <<'PY'
+          import subprocess
+          autorises = {'VERSION.json', 'SIZE.json', 'dist/bitume.html'}
+          statut = subprocess.check_output(['git', 'status', '--porcelain=v1', '-z', '--untracked-files=all'])
+          for entree in statut.split(b'\0'):
+              if not entree:
+                  continue
+              code, chemin = entree[:2].decode(), entree[3:].decode()
+              if code == '??' and chemin.startswith('qualification/'):
+                  continue
+              if chemin not in autorises:
+                  raise SystemExit('Construction hors périmètre : ' + chemin)
+          print('Sources inchangées ; seuls VERSION.json, SIZE.json et dist/bitume.html sont autorisés.')
+          PY
+      - name: Capturer les saisons et les deux vues alpines en raster logiciel
+        shell: bash
+        env:
+          CIRCUITS_SAISONS: ${{ matrix.circuits }}
+          QUALITE_SAISONS: ${{ matrix.qualite }}
+          ALPIN_SAISONS: ${{ matrix.alpin || 'oui' }}
+        run: |
+          set -euo pipefail
+          node tools/captures-saisons.mjs \
+            --url "file://$GITHUB_WORKSPACE/dist/bitume.html" \
+            --sortie qualification/visuel-saisons \
+            --chrome /usr/bin/google-chrome \
+            --circuits "$CIRCUITS_SAISONS" \
+            --alpin "$ALPIN_SAISONS" \
+            --qualite "$QUALITE_SAISONS" 2>&1 | tee qualification/captures.log
+      - name: Conserver les preuves et les échecs, sans HTML ni sources
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-saisons-${{ matrix.groupe }}-${{ github.sha }}
+          path: |
+            qualification/visuel-saisons/**/*.png
+            qualification/visuel-saisons/**/rapport.json
+            qualification/COMMIT.txt
+            qualification/TREE.txt
+            qualification/SHA256SUMS.txt
+            qualification/ENVIRONNEMENT.txt
+            qualification/FICHIERS-GENERES.txt
+            qualification/build.log
+            qualification/captures.log
+          if-no-files-found: error
+          retention-days: 14
