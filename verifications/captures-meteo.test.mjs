@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
-import { optionsMeteo, optionsScenario, preparerEtat, SCENARIOS, verifierContrasteSillage, verifierRapport } from '../tools/captures-meteo.mjs';
+import { optionsMeteo, optionsScenario, preparerEtat, SCENARIOS, SCENARIOS_E3, verifierContrasteSillage, verifierRapport } from '../tools/captures-meteo.mjs';
 import { optionsCapture } from '../tools/controle-visuel.mjs';
 
 test('options de capture bornées, cas explicites et URL valides', () => {
@@ -27,21 +27,87 @@ test('options de capture bornées, cas explicites et URL valides', () => {
 
 function rapport(s, patch = {}) {
   const eau = s.sec || s.inactif ? 0 : .6;
+  const [largeur, hauteur] = (s.taille || '960,540').split(',').map(Number);
   const optique = { backend: 'webgl2', pret: true, erreur: null, erreurs: [], perdu: false, dessins: 60, etapes: 720, copiesScene: 60, pixelsSource: 518400,
     eau, accumulationNeige: 0, embruns: s.spray ? .6 : 0, gouttes: 0, neige: 0 };
-  const zones = { scene: {} };
-  if (s.duo) zones.scene2 = {};
-  if (!s.faune && (!s.vue || s.vue === 'cockpit') && s.qualite !== 'low') for (const id of ['glace-g', 'glace-d', ...(s.duo ? ['glace-g2', 'glace-d2'] : [])]) zones[id] = {};
+  const zones = { scene: { x: 0, y: 0, width: largeur, height: s.duo ? hauteur / 2 : hauteur } };
+  if (s.duo) zones.scene2 = { x: 0, y: hauteur / 2, width: largeur, height: hauteur / 2 };
+  if (!s.faune && s.qualite !== 'low') {
+    if (!s.vue || s.vue === 'cockpit') for (const id of ['glace-g', 'glace-d']) zones[id] = {};
+    if (s.duo && (!s.vue2 || s.vue2 === 'cockpit')) for (const id of ['glace-g2', 'glace-d2']) zones[id] = {};
+  }
   const positions = [{ id: 0, s: 280, d: 0, v: s.vitesse }, { id: 1, s: 298, d: 0, v: s.vitesse }];
-  return { initialisation: { positions }, erreurs: [], avertissements: [], environnement: { gpu: 'ANGLE SwiftShader' }, images: Array.from({ length: s.images || 2 }, (_, i) => ({
+  return { initialisation: { positions }, erreurs: [], avertissements: [], environnement: { gpu: 'ANGLE SwiftShader', resolution: [largeur, hauteur, 1] }, images: Array.from({ length: s.images || 2 }, (_, i) => ({
     etat: { zones: structuredClone(zones) },
     observation: { glErreur: 0, glPerdu: false, vitres: { j1: structuredClone(optique), j2: structuredClone(optique) },
       j1: { pluie: s.pluie ?? (s.sec ? 0 : s.saison === 'hiver' ? 0 : 1), neige: s.saison === 'hiver' ? 1 : 0, embruns: s.spray ? .6 : 0, abri: !!s.tunnel, qualite: s.qualite || 'high',
-        actif: !s.inactif, vitesse: s.vitesse },
-      vue: s.vue || 'cockpit', precipitation: { pluie: s.pluie ?? (s.sec ? 0 : 1), mouille: s.mouille ?? (s.sec ? 0 : 1) },
-      positions: structuredClone(positions), camera: { pos: [280, 1, 0], yaw: 0, pitch: 0, roll: 0, fov: 60 }, visieresVisibles: { j1: !s.sec && !s.inactif },
-      j2: {}, ecran: s.pause && i < 2 ? 'pause' : 'course', temps: s.pause && i < 2 ? 9 : 9.1, ...structuredClone(patch) } })) };
+        actif: !s.inactif, vitesse: s.vitesse, cockpit: !s.vue || s.vue === 'cockpit', cameraYaw: 0, cameraPitch: 0, cameraRoll: 0 },
+      vue: s.vue || 'cockpit', vue2: s.duo ? s.vue2 || 'cockpit' : null, precipitation: { pluie: s.pluie ?? (s.sec ? 0 : 1), mouille: s.mouille ?? (s.sec ? 0 : 1) },
+      positions: structuredClone(positions), camera: { pos: [280, 1, 0], yaw: 0, pitch: 0, roll: 0, fov: 60 },
+      camera2: s.duo ? { pos: [266, 3, 0], yaw: .4, pitch: .1, roll: 0, fov: 60 } : null,
+      visieresVisibles: { j1: !s.sec && !s.inactif, j2: !!s.duo },
+      j2: { pluie: 1, neige: 0, embruns: 0, abri: false, qualite: s.qualite || 'high', actif: true, vitesse: 12.5,
+        cockpit: !s.vue2 || s.vue2 === 'cockpit', cameraYaw: .4, cameraPitch: .1, cameraRoll: 0 },
+      ecran: s.pause && i < 2 ? 'pause' : 'course', temps: s.pause && i < 2 ? 9 : 9.1, ...structuredClone(patch) } })) };
 }
+
+test('complément E3 explicite : portraits et duo à vues différentes sans élargir la campagne historique', () => {
+  const base = ['--url', 'file:///tmp/bitume.html', '--sortie', '/tmp/images'];
+  const ids = ['sillage300-portrait-cockpit', 'sillage300-portrait-poursuite', 'duo-vues'];
+  assert.deepEqual(SCENARIOS_E3.map(s => s.id), ids);
+  assert.deepEqual(optionsMeteo(base).cas, SCENARIOS.map(s => s.id));
+  assert.deepEqual(optionsMeteo([...base, '--cas', ids.join(',')]).cas, ids);
+  for (const s of SCENARIOS_E3) {
+    const p = optionsScenario(s, 'file:///tmp/bitume.html', '/tmp/e3/' + s.id, { taille: '960,540' });
+    assert.equal(p.images, 3); assert.equal(p.referenceJeu.vue, s.vue);
+    assert.deepEqual(p.taille, s.taille ? [540, 960] : [960, 540]);
+    assert.equal(p.referenceJeu.mode, s.duo ? 'duo' : 'solo');
+    assert.equal(p.referenceJeu.vue2, s.vue2 || 'cockpit');
+  }
+  const duo = SCENARIOS_E3.find(s => s.duo);
+  assert.equal(optionsScenario({ ...duo, vue: 'poursuite', vue2: 'cockpit' }, base[1], base[3], { taille: '960,540' }).referenceJeu.retro, 'oui');
+  assert.throws(() => optionsScenario({ ...duo, duo: false }, base[1], base[3], { taille: '960,540' }), /Seconde vue/);
+  assert.throws(() => optionsScenario({ ...duo, vue2: 'helico' }, base[1], base[3], { taille: '960,540' }), /Seconde vue/);
+});
+
+test('portraits E3 : viewport et scène réellement verticaux, sillage et vue contrôlés', () => {
+  for (const s of SCENARIOS_E3.filter(s => s.taille)) {
+    const r = rapport(s); assert.deepEqual(verifierRapport(r, s, true), [], s.id);
+    const paysage = structuredClone(r); paysage.environnement.resolution = [960, 540, 1];
+    assert(verifierRapport(paysage, s, true).some(e => e.includes('Viewport portrait')));
+    const sansTaille = structuredClone(r); delete sansTaille.environnement.resolution;
+    assert(verifierRapport(sansTaille, s, true).some(e => e.includes('Viewport portrait')));
+    const scenePaysage = structuredClone(r); scenePaysage.images[0].etat.zones.scene = { width: 540, height: 303 };
+    assert(verifierRapport(scenePaysage, s, true).some(e => e.includes('Scène portrait')));
+    for (const changer of [o => { o.vue = 'helico'; }, o => { o.j1.vitesse = 0; }, o => { o.vitres.j1.eau = 0; }]) {
+      const mauvais = structuredClone(r); changer(mauvais.images[0].observation);
+      assert(verifierRapport(mauvais, s, true).length, s.id);
+    }
+  }
+});
+
+test('duo E3 : chaque lentille humide reçoit sa caméra et seuls les rétros du cockpit sont visibles', () => {
+  const s = SCENARIOS_E3.find(s => s.duo), r = rapport(s);
+  assert.deepEqual(verifierRapport(r, s, true), []);
+  for (const changer of [
+    o => { o.vue2 = 'cockpit'; }, o => { o.j2.cockpit = true; }, o => { o.camera2 = null; },
+    o => { o.camera2.pos = [...o.camera.pos]; }, o => { o.j2.cameraYaw = o.camera.yaw; },
+    o => { o.j2.cameraPitch = o.camera.pitch; }, o => { o.j2.cameraRoll = NaN; },
+    o => { o.j2.pluie = 0; }, o => { o.j2.actif = false; }, o => { o.vitres.j2.eau = 0; },
+    o => { o.visieresVisibles.j2 = false; }, o => { delete o.camera2; }
+  ]) {
+    const mauvais = structuredClone(r); changer(mauvais.images[0].observation);
+    assert(verifierRapport(mauvais, s, true).length);
+  }
+  for (const id of ['glace-g2', 'glace-d2']) {
+    const parasite = structuredClone(r); parasite.images[0].etat.zones[id] = {};
+    assert(verifierRapport(parasite, s, true).some(e => e.includes('inattendue')));
+  }
+  for (const id of ['glace-g', 'glace-d']) {
+    const manque = structuredClone(r); delete manque.images[0].etat.zones[id];
+    assert(verifierRapport(manque, s, true).some(e => e.includes('Rétroviseurs incomplets')));
+  }
+});
 
 test('erreurs de page, GL et repli optique silencieux empêchent la qualification', () => {
   const s = SCENARIOS[0];
@@ -181,10 +247,13 @@ test('préparation du témoin : seule l’humidité change, aucune implantation 
   assert.equal(a.S.meteo.mouille, 1); assert.equal(b.S.meteo.mouille, 0);
 });
 
-test('la CI conserve les groupes historiques, couvre tous les scénarios une fois et fige la référence publiée', () => {
+test('la CI conserve les groupes historiques une fois, admet les compléments explicites et fige la référence publiée', () => {
   const yaml = readFileSync(new URL('../.github/workflows/visuel-meteo.yml', import.meta.url), 'utf8');
   const cas = [...yaml.matchAll(/^\s+cas: ([a-z0-9,-]+)$/gm)].flatMap(m => m[1].split(','));
-  assert.equal(new Set(cas).size, cas.length); assert.deepEqual([...cas].sort(), SCENARIOS.map(s => s.id).sort());
+  const complements = new Set(SCENARIOS_E3.map(s => s.id)), historiques = new Set(SCENARIOS.map(s => s.id));
+  assert.equal(new Set(cas).size, cas.length);
+  assert.deepEqual(cas.filter(id => !complements.has(id)).sort(), [...historiques].sort());
+  assert(cas.every(id => historiques.has(id) || complements.has(id)));
   for (const cas of ['pluie-grille', 'pluie-spray235', 'tunnel']) assert.ok(yaml.includes('cas: ' + cas + '\n'));
   assert.match(yaml, /cas: neige45,pause-reprise,legere/);
   assert.match(yaml, /cas: duo,sec,faune-haut-col-ete,faune-haut-col-hiver/);
