@@ -77,6 +77,19 @@ function rayonsSol(w) {
   };
 }
 
+function verifierSupport(c, m, rayon, s, lateral, vide = false) {
+  const demi = c.largeur / 2, q = B.circuit.echantillon(c, s);
+  const x = q.x - Math.sin(q.cap) * lateral, z = q.z + Math.cos(q.cap) * lateral;
+  const attendu = q.y - Math.max(-demi, Math.min(demi, lateral)) * Math.sin(q.devers), hit = rayon(x, z, attendu + 2);
+  if (vide) assert.ok(!hit || hit.y < attendu - .3, `support fictif au-delà du parapet à s=${s}, d=${lateral}`);
+  else {
+    assert.ok(hit, `trou à s=${s}, d=${lateral}`);
+    assert.ok(hit.y > attendu - .3, `support loin sous la route à s=${s}, d=${lateral}`);
+    assert.ok(S.surface(m, hit.id, hit.face));
+  }
+  return hit;
+}
+
 const rapports = [];
 for (const k of catalogue) {
   const c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition }); B.bords.limites(c, B.bords.planifier(c));
@@ -125,14 +138,14 @@ for (const k of catalogue) {
     assert.ok(![...m.acteurs.values()].some(a => /^(eau|limite|mur-frenet)$/.test(a.genre)));
   });
   const rayon = rayonsSol(w);
-  verifier(k.nom + ' : le sol reste présent sous la chaussée et les deux accotements', () => {
+  verifier(k.nom + ' : chaussée et accotements présents, vide conservé au-delà des parapets', () => {
     const demi = c.largeur / 2;
     for (let i = 0; i < c.n; i += 17) for (const lateral of [-demi - 2, -demi + .4, 0, demi - .4, demi + 2]) {
-      const q = B.circuit.echantillon(c, i * c.pas + .73), x = q.x - Math.sin(q.cap) * lateral, z = q.z + Math.cos(q.cap) * lateral;
-      const attendu = q.y - Math.max(-demi, Math.min(demi, lateral)) * Math.sin(q.devers), hit = rayon(x, z, attendu + 2);
-      assert.ok(hit, `trou à s=${i * c.pas + .73}, d=${lateral}`);
-      assert.ok(hit.y > attendu - .3, 'support loin sous la route');
-      assert.ok(S.surface(m, hit.id, hit.face));
+      const s = i * c.pas + .73;
+      // Au-delà des parapets d'un pont, l'ancienne bande d'herbe masquerait la gorge.
+      // Ces sondes restent contrôlées : elles doivent trouver du vide au niveau du tablier.
+      const vide = Math.abs(lateral) > demi + 1.2 && c.ponts?.some(p => s > p.debut + 3 && s < p.fin - 3);
+      verifierSupport(c, m, rayon, s, lateral, vide);
     }
     // Les types proviennent de vrais triangles voisins ; ni la pente ni un plan de hauteur recréé.
     for (const type of ['piste', 'vibreur', 'herbe']) {
@@ -144,15 +157,41 @@ for (const k of catalogue) {
       assert.ok(observe, 'surface absente : ' + type);
     }
   });
-  if (c.tunnel) verifier('Haut-Col : revêtement du tunnel à sa vraie hauteur et murs complets', () => {
+  if (c.ponts?.length) verifier(k.nom + ' : tabliers et raccords continus, trous et supports fictifs détectés', () => {
+    const demi = c.largeur / 2;
+    for (const p of c.ponts) {
+      for (let s = p.debut - 4; s < p.fin + 4; s += 7) for (const lateral of [-demi - .6, -demi + .4, 0, demi - .4, demi + .6])
+        verifierSupport(c, m, rayon, s, lateral);
+      const s = (p.debut + p.fin) / 2, centre = verifierSupport(c, m, rayon, s, 0);
+      const trou = { objets: new Map([...w.objets].filter(([id]) => id !== centre.id)) };
+      assert.throws(() => verifierSupport(c, m, rayonsSol(trou), s, 0), /trou|support loin sous la route/);
+      const q = B.circuit.echantillon(c, s), lateral = demi + 2;
+      verifierSupport(c, m, rayon, s, lateral, true);
+      const pos = [q.x - Math.sin(q.cap) * lateral, q.y - demi * Math.sin(q.devers) - .05, q.z + Math.cos(q.cap) * lateral];
+      const fauxSol = { objets: new Map(w.objets) };
+      fauxSol.objets.set(-1, { pos, half: [.5, .05, .5], options: { queryGroup: 1, quaternion: [0, 0, 0, 1] } });
+      assert.throws(() => verifierSupport(c, m, rayonsSol(fauxSol), s, lateral, true), /support fictif au-delà du parapet/);
+    }
+  });
+  if (c.tunnel) verifier(k.nom + ' : revêtement des tunnels à sa vraie hauteur et murs complets', () => {
     const sols = [...m.acteurs].filter(([, a]) => a.genre === 'sol-tunnel'); assert.ok(sols.length > 30);
     for (const genre of ['mur-tunnel', 'voute-tunnel', 'portail-tunnel', 'roche-tunnel']) assert.ok([...m.acteurs.values()].some(a => a.genre === genre));
+    const portails = (c.couverts || []).filter(t => t.type === 'tunnel').flatMap(t => [t.debut, t.fin].map(s => B.circuit.echantillon(c, s)));
     for (const [id, a] of sols) {
       assert.equal(a.groupe, 1); assert.equal(S.surface(m, id, -1), 'piste');
       const o = w.objets.get(id), hit = rayon(o.pos[0], o.pos[2], o.pos[1] + 1);
-      assert.ok(hit && hit.id === id, 'la nappe ancienne ne doit pas masquer le revêtement physique');
+      // Une rampe raccordée peut rejoindre la vraie nappe de chaussée dans ses derniers millimètres.
+      // Contrôler d'abord chaque dalle seule avec la précision historique, puis le support composé.
+      const propre = rayonsSol({ objets: new Map([[id, o]]) })(o.pos[0], o.pos[2], o.pos[1] + 1);
       const normale = tourner(o.options.quaternion, [0, 1, 0]);
-      assert.ok(Math.abs(hit.y - (o.pos[1] + o.half[1] / normale[1])) < 1e-7);
+      assert.ok(propre && Math.abs(propre.y - (o.pos[1] + o.half[1] / normale[1])) < 1e-7);
+      assert.ok(hit, 'revêtement sans support');
+      if (hit.id !== id) {
+        assert.ok(portails.some(p => Math.hypot(o.pos[0] - p.x, o.pos[2] - p.z) < 6), 'dalle masquée hors raccord de portail');
+        assert.equal(m.acteurs.get(hit.id).genre, 'chaussee', 'seule la vraie chaussée peut rejoindre la rampe');
+        assert.equal(S.surface(m, hit.id, hit.face), 'piste');
+        assert.ok(hit.y >= propre.y && hit.y - propre.y < .015, 'raccord au-delà des 15 mm qualifiés aux portails');
+      }
     }
   });
   const fine = B.decor.construire(c, { ...options, qualite: 'high' }), wf = monde(), mf = S.installer(wf, c, fine);

@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "version": "0.2.65",
+  "pr": 38,
+  "head": "4cbbe874e5aacedc5aba41ac8090eb6d997ffb2a",
+  "ci_merge_commit": "09602adaa5429346c767076c9aff97b4c08a3751",
+  "tree": "46ad7a4d8c2a218072f93b09096e1d0ebd0fe1f3",
+  "ci_run": 44736979469,
+  "ci_job": 136290724421,
+  "ci_url": "https://github.com/M4D135/bitume/actions/runs/44736979469",
+  "status": "failed_corrections_required",
+  "build": {
+    "bytes": 14370567,
+    "sha256": "58c735189996628eefeec8f7efda13fa76a070c18a1695533e1ac1a3a1302f5f",
+    "matches_local": true
+  },
+  "archive": {
+    "id": 14629877279,
+    "sha256": "1318d19afd939043ae92df89522bbc50212abcd8c892c7875d1737d01d2613e1",
+    "source_files_verified": 3397,
+    "contents_and_git_modes_match": true,
+    "mode_note": "Git file type and executable bit; group-write permission added by git archive umask is not part of a Git blob mode."
+  },
+  "suites": {
+    "passed": 155,
+    "failed": 4,
+    "total": 159
+  },
+  "failures": [
+    {
+      "suite": "cinema",
+      "reason": "Dernière assertion limitée à huit signatures après réussite des neuf circuits.",
+      "classification": "oracle_catalogue_obsolete"
+    },
+    {
+      "suite": "solides-physx-geometrie",
+      "reason": "Support attendu au-delà du parapet du Pont de la Gorge ; ne distingue pas le vide latéral du tablier.",
+      "classification": "oracle_geometrie_obsolete"
+    },
+    {
+      "suite": "effets-allocation",
+      "reason": "322344 octets attribués à traces.pas ; itération des listes gelées dans couverts.segment.",
+      "classification": "allocation_runtime_reelle"
+    },
+    {
+      "suite": "voiture-permanents",
+      "reason": "glacesCockpit 9.4 octets/appel pour seuil 8 ; attribution et chauffe à reprendre.",
+      "classification": "mesure_a_diagnostiquer"
+    }
+  ],
+  "previous_pilot_allocation_correction_passed": true,
+  "limits": [
+    "Aucune fusion sur la base de ce résultat.",
+    "La réussite ciblée après correction ne remplace pas une campagne du candidat corrigé.",
+    "Aucun seuil relevé pour accepter un échec."
+  ]
+}

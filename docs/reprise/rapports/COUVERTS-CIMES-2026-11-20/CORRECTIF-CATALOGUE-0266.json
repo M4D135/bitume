@@ -1,0 +1,39 @@
+{
+  "format": "bitume-cinema-catalogue-correction-v1",
+  "date": "2026-11-20",
+  "runtimeChanged": false,
+  "file": "verifications/cinema.test.mjs",
+  "originalFailure": {
+    "source": "CI 44736979469 / commit temporaire09602adaa5429346c767076c9aff97b4c08a3751",
+    "reason": "Les neuf circuits ont passé leurs contrôles, mais le dernier assert attendait encore huit signatures.",
+    "sha256": "385831413b2cabbeebb804419e535b0c8ae2b850a91e6b6a54a890808bafcc76",
+    "log": "cinema-before-ci.log"
+  },
+  "change": "Contrat indépendant explicitant les huit identités historiques dans leur ordre puis Route-des-Cimes ; partition Cimes vérifiée au neuvième rang, neuf panoramas distincts, aucun monde PhysX conservé. Aucun seuil de trajectoire ou de collision assoupli.",
+  "verification": {
+    "command": "node verifications/cinema.test.mjs",
+    "passed": 20,
+    "failed": 0,
+    "physxVersion": "5.12.0",
+    "circuits": [
+      "val-brule",
+      "port-sable",
+      "haut-col",
+      "lande-noire",
+      "roche-fauve",
+      "brume-de-jade",
+      "cap-sequoia",
+      "baikal",
+      "route-des-cimes"
+    ],
+    "trajectorySamples": 75192,
+    "maxCameraStepM": 0.18674678872698744,
+    "limitCameraStepM": 0.5,
+    "log": "cinema-after.log",
+    "log_sha256": "9aa185c9403353fdf261c66f582b4f0e31b5e221741a8d1ae1a01afc8603d9d4",
+    "report": "cinema-after.json",
+    "report_sha256": "ee4b127c532a60001feff4a1545f2bba666383265315b9bc162471766c7a9252"
+  },
+  "patch_sha256": "fe042881dd3acebd2a94d5065dc1b4fbafb7310268ec218ade2168b5c7b96ab9",
+  "file_sha256": "ed8068ea6c9e5432edba63b2dc738c8e21d9689b0181012af4a9d09bc6971e4c"
+}

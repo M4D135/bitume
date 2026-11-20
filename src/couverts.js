@@ -37,7 +37,13 @@
     return d > 0 && d < n; // mêmes portails ouverts que dansTunnel historique
   }
   function segment(c, s, marge = 0, genre = null) {
-    for (const t of liste(c)) if ((!genre || type(t) === genre) && inclut(c, t, s, marge)) return t;
+    // Les listes historiques et la liste vide sont gelées. Leur itération for…of crée
+    // un itérateur et ses résultats dans V8, y compris pour chaque voiture sans couvert.
+    const ts = liste(c);
+    for (let i = 0; i < ts.length; i++) {
+      const t = ts[i];
+      if ((!genre || type(t) === genre) && inclut(c, t, s, marge)) return t;
+    }
     return null;
   }
   function dansTunnel(c, s, marge = 0) { return segment(c, s, marge, 'tunnel') !== null; }

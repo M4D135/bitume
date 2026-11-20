@@ -9,7 +9,7 @@
     "circuits": 8
   },
   "destinations_prevues": 17,
-  "lot_actif": "demos_pilotes",
+  "lot_actif": "couverts",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [

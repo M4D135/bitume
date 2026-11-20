@@ -51,3 +51,19 @@ Le poing est replié dès les premières phalanges ; le panache visuel monte ave
 L'allocation V8 de 16 octets par pose est supprimée via le tampon numérique préalloué ; seuil inchangé.
 Build 0.2.65 reproductible ; CI et images exactes à terminer avant fusion. Les traces des essais restent conservées.
 Reçu : `rapports/COUVERTS-CIMES-2026-11-20/CANDIDAT-0265.json`.
+
+## 006 — CI 0.2.65 examinée, candidat 0.2.66 corrigé
+
+La PR #38 à `4cbbe874` a fourni 3 397 fichiers exactement conformes au candidat,
+mais sa campagne termine à 155/159. Les quatre échecs sont conservés dans
+`rapports/COUVERTS-CIMES-2026-11-20/CI-0265-INITIAL.json`.
+Le catalogue cinéma attendait huit circuits ; le test des sols confondait les bords du pont
+avec les accotements pleins et exigeait la même dalle au premier impact dans un raccord.
+Les neuf circuits restent contrôlés, avec mutations de trou et de faux sol rejetées.
+Une allocation réelle venait de l’itération des listes gelées de couverts : boucle indexée,
+379 764 retours identiques, zéro octet pour les traces dans le banc ciblé.
+La chauffe du banc des glaces est bornée et stabilisée ; seuils inchangés, témoin positif rejeté.
+L’origine exacte de son pic CI reste inconnue ; la nouvelle campagne doit confirmer.
+Les 48 images démos, 41 météo et cinq vues du Tunnel du Rocher de la 0.2.65 sont inspectées.
+Pluie extérieure vue depuis un abri et réserves de composition restent explicitement ouvertes.
+La 0.2.66 est construite deux fois à l’identique ; CI et captures exactes requises avant fusion.

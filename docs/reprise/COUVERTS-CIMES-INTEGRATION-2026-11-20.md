@@ -72,3 +72,21 @@ zéro replacement, aucune pose ni vitesse imposée. Le reçu exact est
 `rapports/ROUTE-DES-CIMES-2026-11-20/QUALIFICATION-DOUZE-PORTAILS.json`.
 Les entrées, milieux et sorties des trois couverts Cimes seront tous photographiés ; les rayons
 identifient la vraie voûte et la surface de piste, pour ne pas accepter une roche à la bonne altitude.
+
+## Reprise de la CI 0.2.65 et candidat 0.2.66
+
+La PR #38 a sauvegardé le jeu complet. Les 3 397 fichiers de son archive CI correspondent
+exactement aux sources locales ; le build reçu est identique. Résultat : **155/159 suites**.
+Les quatre corrections sont décrites dans `rapports/COUVERTS-CIMES-2026-11-20/` :
+allocation réelle des recherches de couverts, chauffe bornée des glaces, catalogue à neuf circuits
+et oracles distinguant tablier, gorge et raccord de portail. Les seuils sont conservés.
+
+La 0.2.66 possède deux builds identiques. La géométrie est inchangée ; 379 764 comparaisons
+du helper modifié rendent les mêmes objets et valeurs. Les images inspectées de 0.2.65
+sont conservées avec leur version : 48 démos, 41 météo et cinq poses du Tunnel du Rocher.
+La nouvelle CI et les images exactes restent à qualifier avant fusion.
+
+La pluie monde extérieure vue depuis un abri demeure une réserve fonctionnelle distincte
+de la visière. Un prototype spatial natif a été retrouvé, mais son coût près des portails
+(p95 8,815 ms, pointe 32,880 ms dans son banc) et son compositing nécessitent une qualification
+séparée. Ne pas lui attribuer les preuves du candidat ni déclarer ce point terminé.

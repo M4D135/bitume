@@ -1,16 +1,16 @@
 {
   "date": "2026-11-20",
   "etat_courant": {
-    "version_courante": "0.2.65",
+    "version_courante": "0.2.66",
     "version_publiee_verifiee": "0.2.62",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "candidat_assemble_a_qualifier",
-    "lot": "couverts_cimes_et_correctifs_0264",
+    "statut": "candidat_corrige_a_qualifier",
+    "lot": "couverts_cimes_et_correctifs_0265",
     "fiche": "docs/reprise/COUVERTS-CIMES-INTEGRATION-2026-11-20.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "004",
-    "prochaine_action": "Pousser le build assemblé puis contrôler CI et images exactes avant fusion sur main.",
+    "derniere_entree": "006",
+    "prochaine_action": "Pousser la 0.2.66 puis contrôler sa CI et ses captures exactes avant fusion sur main.",
     "dernier_lot_clos": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md"
   },
   "publication": {
@@ -63,7 +63,9 @@
       "cible_deg_s2": 300,
       "criteres_obligatoires_reussis": 46,
       "criteres_obligatoires_total": 46
-    }
+    },
+    "pluie_exterieure_depuis_abri": "Champ de pluie monde encore coupé depuis un abri ; prototype spatial local identifié, non intégré et coût à qualifier.",
+    "composition_demo": "Bandeau parfois superposé au geste ou à un animal ; neige claire à grain discret."
   },
   "suite": {
     "lot": "14A_Monaco_sources_et_mesures",
@@ -306,5 +308,21 @@
     "build_sha256": "58c735189996628eefeec8f7efda13fa76a070c18a1695533e1ac1a3a1302f5f",
     "build_reproduit_identique": true,
     "recu": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/CANDIDAT-0265.json"
+  },
+  "qualification_0265_initiale": {
+    "pr": 38,
+    "head": "4cbbe874e5aacedc5aba41ac8090eb6d997ffb2a",
+    "run": 44736979469,
+    "suites_reussies": 155,
+    "suites_echecs": 4,
+    "recu": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/CI-0265-INITIAL.json",
+    "images_inspectees": 94
+  },
+  "candidat_0266": {
+    "version": "0.2.66",
+    "build_octets": 14370823,
+    "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+    "build_reproduit_identique": true,
+    "recu": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/CANDIDAT-0266.json"
   }
 }
