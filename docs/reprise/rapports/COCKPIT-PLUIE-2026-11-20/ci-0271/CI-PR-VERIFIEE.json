@@ -1,0 +1,10 @@
+{
+  "archive_entries": 3901,
+  "git_entries": 3901,
+  "errors": [],
+  "html_sha256": "0e4cdb72ecceb434c086a6bdc365346cfac1900871b95afadd96932cb3fd8ce3",
+  "html_bytes": 14507449,
+  "compared_to_commit": "6a708e2310629af92bf28039b3099572a7496112",
+  "archive_commit": "0c76d30127b602bf7a2c04cad38f14695aecf162",
+  "zip_sha256": "de21cd4ed6a3c5bef24d093a9da175800a8607d2c01d1677750660d7c4549f85"
+}

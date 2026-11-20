@@ -622,3 +622,28 @@ deux reconstructions identiques et 60 contrôles ciblés réussis. La référenc
 négative exige désormais un recouvrement HUD/glace réel aux deux poses ; les
 données manquantes font échouer candidat et référence. Branche de validation
 prévue : `codex/bitume-0271-hud-20261120`. Les PNG de ce nouvel HTML restent attendus.
+
+## 035 — Gardes de présence, deux masques compacts et candidat 0.2.72
+
+La réception 0.2.71 confirme la CI push verte (179 suites Node, huit tests Python,
+3 901 fichiers/modes conformes), mais deux chevauchements réels en 960 × 540 :
+classement sur gant gauche en braquage et régime complet sur main droite au
+neutre. Dix PNG inspectés attestent carte haute et annonce à vitesse élevée.
+Le profil n’a aucune image après expiration DevTools ; autres jobs encore en
+cours au reçu intermédiaire. PR47 reste bloquée par les images, sans relance
+pour effacer les échecs.
+
+Le garde ee3bb57 est repris. La correction CSS suivante limite le classement
+avec la hauteur locale et réserve une colonne aux compteurs complets. L’annonce
+garde sa largeur ; le mode réduit est protégé en solo et par joueur en duo.
+Les témoins des compteurs sélectionnés sont également requis par l’oracle.
+25 contrôles de capture, 13 HUD et 11 options passent ; les 34 copies FERRO
+sont conformes. Deux builds 0.2.72 identiques : 14 509 186 octets, SHA256
+391db2defe23308f88500fdd138d3b8573596d1ca0f53e058ef5c66c0c510a90.
+La nouvelle CI et les images exactes restent requises avant fusion.
+PR43, réserves de performance et six demandes vidéo/survol conservées.
+
+Réserve tardive 0.2.71 : la CI PR `44825452386` termine à **178/179** suites,
+Val-Brûlé **168 ms** pour un seuil strict de **150 ms**. Son archive de
+3 901 fichiers/modes est identique à la CI push verte ; les huit tests Python
+sont sautés en PR après cet échec. Résultat conservé, sans changer le seuil.

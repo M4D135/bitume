@@ -269,6 +269,19 @@ export function verifierHabitacle(r, s, candidat = true) {
           fautes.push('Carte demandée absente du HUD visible : J' + (j + 1) + ', image ' + i);
         if (i ? annonces.length !== 1 || !dansViewport(annonces[0]) : annonces.length !== 0)
           fautes.push('Annonce de virage ' + (i ? 'absente en vitesse-braquage' : 'visible au neutre') + ' : J' + (j + 1));
+        // Le tableau complet est un choix de l'essai : retirer ses compteurs ne doit pas
+        // faire disparaître artificiellement leur recouvrement du volant ou des mains.
+        if (s.tableau === 'complet') {
+          if (o.reglagesHud?.tableau !== 'complet') fautes.push('Tableau complet prescrit non exercé : J' + (j + 1));
+          for (const id of ['vitesse', 'h-regime']) {
+            const compteurs = temoins(id);
+            if (compteurs.length !== 1 || !dansViewport(compteurs[0]))
+              fautes.push('Compteur du tableau complet absent du HUD visible : ' + id + ', J' + (j + 1) + ', image ' + i);
+          }
+        }
+        if (o.reglagesHud?.tableau === 'reduit') for (const id of ['vitesse', 'h-regime']) {
+          if (temoins(id).length) fautes.push('Compteur supplémentaire visible malgré la planche seule : ' + id + ', J' + (j + 1) + ', image ' + i);
+        }
         if (s.cartePosition && cartes.length === 1 && dansViewport(cartes[0])) {
           const carte = cartes[0], milieu = v.x + v.width / 2;
           if (s.cartePosition === 'gauche' ? carte.x + carte.width > milieu + 1e-7 : carte.x < milieu - 1e-7)

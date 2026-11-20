@@ -172,6 +172,9 @@ function rapportCockpit(s, masqueHud = false) {
       d.hud.rectangles.forEach(h => { h.id = d.hud.racine + ':compteur'; });
       d.hud.rectangles.push({ id: d.hud.racine + ':carte:0', x: s.cartePosition === 'gauche' ? 300 : 600, y: 10, width: 100, height: 100 });
       if (i) d.hud.rectangles.push({ id: d.hud.racine + ':h-virage:0', x: 20, y: 170, width: 140, height: 40 });
+      if (s.tableau === 'complet') d.hud.rectangles.push(
+        { id: d.hud.racine + ':vitesse:0', x: 900, y: 480, width: 80, height: 40 },
+        { id: d.hud.racine + ':h-regime:0', x: 900, y: 530, width: 80, height: 30 });
       if (masqueHud) d.hud.rectangles.push({ id: d.hud.racine + ':classement:ligne0', x: 170, y: 350, width: 40, height: 20 });
       return { joueur: j + 1, sujet: j, vitesse: i ? 80 : 0, volant: i ? j ? -.65 : .65 : 0, ...mesurerLisibiliteCockpit(d, SEUILS_COCKPIT) };
     });
@@ -378,6 +381,46 @@ test('l’annonce doit être visible en vitesse-braquage et absente au neutre, p
       const faux = structuredClone(r), annonce = faux.images[1].observation.lisibilite[j].hud.rectangles.find(h => h.id.includes(':h-virage:'));
       faux.images[0].observation.lisibilite[j].hud.rectangles.push(structuredClone(annonce));
       assert(verifierHabitacle(faux, s).some(e => /Annonce de virage visible au neutre/.test(e)), s.id + '/J' + (j + 1));
+    }
+  }
+});
+
+test('tableau complet : vitesse et régime visibles une seule fois, dans chaque vue et aux deux poses', () => {
+  for (const scenario of SCENARIOS_COCKPIT.filter(s => s.cockpit)) {
+    const s = { ...scenario, tableau: 'complet' }, r = rapportCockpit(s);
+    assert.deepEqual(verifierHabitacle(JSON.parse(JSON.stringify(r)), s), []);
+    for (const [i, im] of r.images.entries()) for (let j = 0; j < im.observation.lisibilite.length; j++) {
+      for (const id of ['vitesse', 'h-regime']) for (const changer of [
+        (q, compteur) => { q.hud.rectangles = q.hud.rectangles.filter(h => h !== compteur); },
+        (q, compteur) => { compteur.id = compteur.id.replace(':' + id + ':', ':' + id + '-faux:'); },
+        (q, compteur) => { compteur.width = 0; },
+        (q, compteur) => { compteur.x = q.viewport.x + q.viewport.width; },
+        (q, compteur) => { q.hud.rectangles.push({ ...compteur, id: compteur.id + '-bis' }); }
+      ]) {
+        const faux = structuredClone(r), q = faux.images[i].observation.lisibilite[j];
+        changer(q, q.hud.rectangles.find(h => h.id.includes(':' + id + ':')));
+        for (const candidat of [true, false]) assert(verifierHabitacle(faux, s, candidat).some(e =>
+          e.includes('Compteur du tableau complet absent du HUD visible : ' + id + ', J' + (j + 1) + ', image ' + i)),
+        s.id + '/' + id + '/image' + i + '/J' + (j + 1));
+      }
+    }
+    const reduit = structuredClone(r); reduit.images[0].observation.reglagesHud.tableau = 'reduit';
+    assert(verifierHabitacle(reduit, s).some(e => /Tableau complet prescrit non exercé/.test(e)));
+  }
+});
+
+test('planche seule : aucun compteur supplémentaire ne redevient visible, pour J1/J2 aux deux poses', () => {
+  for (const scenario of SCENARIOS_COCKPIT.filter(s => s.cockpit)) {
+    const s = { ...scenario, tableau: 'reduit' }, r = rapportCockpit(s);
+    assert.deepEqual(verifierHabitacle(JSON.parse(JSON.stringify(r)), s), []);
+    for (const [i, im] of r.images.entries()) for (let j = 0; j < im.observation.lisibilite.length; j++) {
+      for (const id of ['vitesse', 'h-regime']) {
+        const faux = structuredClone(r), q = faux.images[i].observation.lisibilite[j];
+        q.hud.rectangles.push({ id: q.hud.racine + ':' + id + ':intempestif', x: 900, y: 480, width: 80, height: 30 });
+        for (const candidat of [true, false]) assert(verifierHabitacle(faux, s, candidat).some(e =>
+          e.includes('Compteur supplémentaire visible malgré la planche seule : ' + id + ', J' + (j + 1) + ', image ' + i)),
+        s.id + '/' + id + '/image' + i + '/J' + (j + 1));
+      }
     }
   }
 });

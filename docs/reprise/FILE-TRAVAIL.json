@@ -11,7 +11,7 @@
     "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
   },
   "destinations_prevues": 17,
-  "lot_actif": "00D_cockpit_pluie_HUD_0271_en_qualification",
+  "lot_actif": "00D_cockpit_pluie_HUD_0272_en_qualification",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [
@@ -662,65 +662,24 @@
   },
   "base_initiale": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_candidat": {
-    "version": "0.2.69",
-    "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
-    "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
-    "pr": 42,
-    "branche": "codex/bitume-0269-publication-20261120",
+    "version": "0.2.72",
+    "branche": "codex/bitume-0272-hud-compact-20261120",
     "physique": "p15",
     "moteur": "FERRO 0.3.15",
     "circuits": 9,
-    "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
-    "statut": "publie_sur_main_avec_reserves_explicites",
-    "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
-    "preuve_t3": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
-    "portes_restantes": [],
-    "reserves_visuelles": {
-      "cockpit_chaussee": {
-        "statut": "lisibilite_non_certifiee_suivi_ouvert",
-        "formats_px": [
-          [
-            960,
-            540
-          ],
-          [
-            540,
-            960
-          ]
-        ],
-        "camera": "camera_reelle_du_siege",
-        "constat": "Le volant occulte une partie centrale de la chaussée dans les vues inspectées.",
-        "geometrie_m": {
-          "oeil": 0.79,
-          "haut_jante": 0.813807
-        },
-        "portee_tests": "Les tests dits route visible vérifient la projection de l’horizon, pas l’occultation de la chaussée.",
-        "nouvelle_regression_assemblage_etablie": false,
-        "acquis_preserves": [
-          "geometrie_commune",
-          "T3_J1_J2"
-        ],
-        "suite": "Garder un suivi distinct de la lisibilité réelle de la chaussée ; aucune absence d’occultation n’est certifiée."
-      },
-      "lod_exterieur": {
-        "png_inspectes": 4,
-        "taille_coque_px_environ": [
-          25,
-          30
-        ],
-        "silhouette": "validee",
-        "details_bras": "non_lisibles_dans_ces_images"
-      }
-    },
-    "publication": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
-    "alerte_budget_decor": {
-      "statut": "ouvert",
-      "run": 44803588903,
-      "suite": "decor.test.mjs",
-      "mesure_ms_affichee": 172,
-      "seuil_strict_ms": 150,
-      "cause": "non déterminée",
-      "ci_pr_meme_arbre": "suite réussie, durées individuelles non enregistrées"
+    "html_sha256": "391db2defe23308f88500fdd138d3b8573596d1ca0f53e058ef5c66c0c510a90",
+    "statut": "en_qualification",
+    "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0272/BUILD-0272.json",
+    "portes_restantes": [
+      "CI complète exacte",
+      "PNG cockpit et gardes carte/annonce/compteurs",
+      "Réception des preuves Troll/pluie restantes"
+    ],
+    "reserve_decor": "172 puis 152 ms historiques, seuil strict de 150 ms conservé",
+    "candidat_precedent_bloque": {
+      "version": "0.2.71",
+      "pr": 47,
+      "constat": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/ci-0271/RECEPTION-INTERMEDIAIRE.json"
     }
   },
   "demandes_video_survol_2026_11_20": {

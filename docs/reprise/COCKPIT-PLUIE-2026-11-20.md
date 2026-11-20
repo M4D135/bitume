@@ -153,3 +153,33 @@ Les contrôles négatifs avant correction et leurs résultats après sont conser
 Les calculs de disposition prévoient une carte toujours haute, avec réservation
 entre compteurs et chronos et les trois tailles relatives conservées. Cette
 prévision reste à confirmer par les rectangles DOM réels et la revue des PNG.
+
+
+## Réception 0.2.71 et correction compacte 0.2.72
+
+La CI push `44825410913` passe 179 suites Node et huit tests Python ; les
+3 901 fichiers/modes reçus sont identiques au candidat `6a708e2`. Pourtant les
+PNG compacts révèlent deux masques : classement sur gant gauche en braquage
+(3 147,68 px² cumulés), régime complet sur volant/gant droit au neutre
+(455,87/9 163,98 px²). Le seuil de 1 px² reste inchangé. Carte et annonce
+sont présentes, donc ces défauts ne sont pas des témoins manquants.
+
+Le garde publié séparément `ee3bb57` est repris à arbre identique, puis complété
+pour les compteurs : présence obligatoire en mode complet, absence obligatoire
+en mode Planche seule. Il garde les six seuils, poses, 24 pas et résolutions.
+
+0.2.72 ne modifie que style.css dans le runtime : classement limité à la hauteur
+locale et aligné au bord extérieur ; annonce conservant sa largeur ; compteurs
+complets disposés dans une colonne extérieure, vitesse/unité empilées, régime et
+rapport conservés. La jauge de dérive suit cette largeur sans changer son état.
+Le masquage Planche seule est respecté en solo (#jeu) et par joueur en duo.
+49 contrôles ciblés et deux reconstructions passent ; images du nouveau HTML
+encore attendues. Aucun changement de géométrie, conduite, FERRO ni déploiement.
+
+[Réception intermédiaire 0.2.71](rapports/COCKPIT-PLUIE-2026-11-20/ci-0271/RECEPTION-INTERMEDIAIRE.json) ·
+[Construction 0.2.72](rapports/COCKPIT-PLUIE-2026-11-20/candidat-0272/BUILD-0272.json).
+
+Réserve tardive 0.2.71 : la CI PR `44825452386` termine à **178/179** suites,
+Val-Brûlé **168 ms** pour un seuil strict de **150 ms**. Son archive de
+3 901 fichiers/modes est identique à la CI push verte ; les huit tests Python
+sont sautés en PR après cet échec. Résultat conservé, sans changer le seuil.

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "date_utc": "2026-11-20T22:20:41.360571+00:00",
+  "version": "0.2.72",
+  "html_sha256": "391db2defe23308f88500fdd138d3b8573596d1ca0f53e058ef5c66c0c510a90",
+  "html_octets": 14509186,
+  "html_gzip_octets": 3467291,
+  "reconstructions_identiques": 2,
+  "parent": "ee3bb57ee59d62f2da3fa4e552dfbcbf74593301",
+  "branche": "codex/bitume-0272-hud-compact-20261120",
+  "runtime_modifie": [
+    "src/style.css"
+  ],
+  "modules_ferro_verifies": 34,
+  "ferro": "0.3.15",
+  "physique": "p15",
+  "controles_cibles": {
+    "captures_habitacle": 25,
+    "hud_pneus": 13,
+    "options_image": 11,
+    "total": 49
+  },
+  "modifications": [
+    "Classement borné par la hauteur locale, aligné au bord extérieur ; annonce inchangée.",
+    "Compteurs complets étroits avec vitesse/unité empilées et régime/rapport conservés.",
+    "Jauge de dérive contenue dans la même bande latérale.",
+    "Gardes des preuves : carte, annonce, compteurs complets présents ; compteurs supplémentaires absents en planche seule."
+  ],
+  "preuves_navigateur": "attendues_sur_ce_HTML_exact",
+  "chromium_local": "socket() EPERM avant chargement ; aucune capture locale déclarée",
+  "spark": "kbza absent de cet environnement",
+  "site_deploye": false
+}

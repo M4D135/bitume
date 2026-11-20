@@ -1,18 +1,26 @@
 # BITUME — reprise courte
 
-## Correctif utilisateur actif : cockpit et pluie
+## Correctif actif : HUD compact, candidat 0.2.72
 
-La photo utilisateur rend la visibilité cockpit **bloquante**. Géométrie commune
-intérieur/extérieur, volant et tableau abaissés, rétros séparés des mains :
-[contrat et preuves en cours](docs/reprise/COCKPIT-PLUIE-2026-11-20.md).
-La suite comprend pluie en vue arceau, quatre forces, impacts à l’écran et
-gouttes sur les véhicules. Le candidat 0.2.70 est assemblé sur `codex/bitume-cockpit-pluie-20261120`.
-La CI complète est reçue conforme (179 suites Node et huit tests Python), mais
-les PNG révèlent le HUD sur les glaces et la route. **0.2.70 reste bloquée** ;
-le correctif HUD **0.2.71** est assemblé pour `codex/bitume-0271-hud-20261120`.
-Deux reconstructions identiques, 60 contrôles ciblés et verrou FERRO conformes.
-HTML : `0e4cdb72ecceb434c086a6bdc365346cfac1900871b95afadd96932cb3fd8ce3`.
-Ses nouvelles captures et sa CI restent à recevoir avant toute fusion de PR 44.
+La **0.2.71 (PR 47) ne doit pas être fusionnée** : en 960 × 540, le classement
+recouvre le gant gauche en braquage et le régime des compteurs complets recouvre
+la main droite au neutre. Carte et annonce sont bien présentes dans les PNG.
+La CI push passe **179 suites Node et huit tests Python** ; les **3 901 fichiers**
+de son archive sont identiques au commit `6a708e2`.
+[Constat et images des deux défauts](docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/ci-0271/RECEPTION-INTERMEDIAIRE.json).
+
+Le candidat **0.2.72** corrige la largeur du classement et des compteurs sans
+changer le gabarit de l’annonce, la carte ou le modèle commun de la voiture.
+Branche : `codex/bitume-0272-hud-compact-20261120`. Les gardes exigent carte,
+annonce et compteurs sélectionnés ; « Planche seule » conserve leur masquage.
+Deux reconstructions identiques, **49 contrôles ciblés**, **34 copies FERRO**
+conformes. HTML : **14 509 186 octets**, SHA256
+`391db2defe23308f88500fdd138d3b8573596d1ca0f53e058ef5c66c0c510a90`.
+[Construction et limites](docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0272/BUILD-0272.json).
+
+Recevoir la CI et les PNG de ce nouveau HTML avant fusion. Le profil 0.2.71
+reste incomplet après expiration DevTools. La pluie/Troll non modifiés conservent
+leurs preuves et leurs manques. PR 43 reste séparée. Aucun déploiement du site.
 
 
 ## Publié sur main : 0.2.69
@@ -78,7 +86,7 @@ et Marseille reçues ; ces circuits ne sont pas encore jouables.
 [Publication 0.2.68](docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json) ·
 [Réception 05](docs/reprise/PARALLELE-2026-11-20/rapports/00-RECEPTION-05.json).
 
-[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **034**.
+[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **035**.
 Lire ce fichier, `docs/reprise/ETAT.json` → `etat_courant`, puis la fiche active.
 
 ## Demandes ajoutées : vidéo arcade et survol de course
@@ -89,3 +97,8 @@ bandeaux LED informatifs, hélicoptères visibles et drones repris de METAL.
 La vidéo exacte a été examinée ; les sources procédurales des drones sont identifiées.
 Six lots sont ajoutés à FILE-TRAVAIL, tous **planifiés, non livrés**. Les travaux cockpit/pluie,
 la réserve décor et les demandes précédentes restent suivis séparément.
+
+Réserve tardive 0.2.71 : la CI PR `44825452386` termine à **178/179** suites,
+Val-Brûlé **168 ms** pour un seuil strict de **150 ms**. Son archive de
+3 901 fichiers/modes est identique à la CI push verte ; les huit tests Python
+sont sautés en PR après cet échec. Résultat conservé, sans changer le seuil.

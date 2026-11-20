@@ -1,0 +1,232 @@
+{
+  "schema": 1,
+  "date_utc": "2026-11-20T22:20:41.360571+00:00",
+  "candidat": "6a708e2310629af92bf28039b3099572a7496112",
+  "pr": 47,
+  "run_cockpit": 44825410873,
+  "statut": "non_fusionnable_deux_masques_HUD_confirmes",
+  "ci_push": 44825410913,
+  "ci_suites_node": 179,
+  "ci_tests_python": 8,
+  "archive_fichiers_identiques": 3901,
+  "cas_echecs": [
+    {
+      "groupe": "compact",
+      "scenario": "cockpit-compact",
+      "rapport": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/ci-0271/cockpit-compact/rapport.json",
+      "rapport_sha256": "ba445101373b13652e0a74ed89beb6de613f9b4af1d08ba5714ea954e9050385",
+      "png_defaut": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/ci-0271/cockpit-compact/0001.png",
+      "png_sha256": "715bf817cdb2d79b8a3fc5545ea42bab83862f1de00ed8df8413838ff420a570",
+      "html_sha256": "0e4cdb72ecceb434c086a6bdc365346cfac1900871b95afadd96932cb3fd8ce3",
+      "observations": [
+        {
+          "instant": "neutre",
+          "joueur": 1,
+          "erreurs": [],
+          "commandes": [
+            {
+              "role": "volant",
+              "recouvrementPx2": 0,
+              "recouvrements": []
+            },
+            {
+              "role": "gant-0",
+              "recouvrementPx2": 0,
+              "recouvrements": []
+            },
+            {
+              "role": "gant-1",
+              "recouvrementPx2": 0,
+              "recouvrements": []
+            }
+          ],
+          "carte_et_annonce": [
+            {
+              "id": "hud:carte:24",
+              "x": 590.40625,
+              "y": 8,
+              "width": 107.515625,
+              "height": 107.515625
+            }
+          ]
+        },
+        {
+          "instant": "vitesse-braquage",
+          "joueur": 1,
+          "erreurs": [
+            "HUD superposé à la commande : gant-0"
+          ],
+          "commandes": [
+            {
+              "role": "volant",
+              "recouvrementPx2": 0,
+              "recouvrements": []
+            },
+            {
+              "role": "gant-0",
+              "recouvrementPx2": 3147.684935920217,
+              "recouvrements": [
+                {
+                  "id": "hud:LI:20",
+                  "airePx2": 63.701346639609255
+                },
+                {
+                  "id": "hud:saut:21",
+                  "airePx2": 87.01716087109162
+                },
+                {
+                  "id": "hud:LI:22",
+                  "airePx2": 1014.9480688695039
+                },
+                {
+                  "id": "hud:joueur:23",
+                  "airePx2": 1217.0746739521019
+                },
+                {
+                  "id": "hud:LI:24",
+                  "airePx2": 764.9436855879103
+                }
+              ]
+            },
+            {
+              "role": "gant-1",
+              "recouvrementPx2": 0,
+              "recouvrements": []
+            }
+          ],
+          "carte_et_annonce": [
+            {
+              "id": "hud:h-virage:17",
+              "x": 21.109375,
+              "y": 176.0625,
+              "width": 192,
+              "height": 44.9375
+            },
+            {
+              "id": "hud:carte:25",
+              "x": 590.40625,
+              "y": 8,
+              "width": 107.515625,
+              "height": 107.515625
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "groupe": "carte-gauche",
+      "scenario": "cockpit-carte-gauche",
+      "rapport": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/ci-0271/cockpit-carte-gauche/rapport.json",
+      "rapport_sha256": "27ce539a80009a006f349dccfc41c498e15364b4e8052758445ee0c095d3d1ee",
+      "png_defaut": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/ci-0271/cockpit-carte-gauche/0000.png",
+      "png_sha256": "81c0f3085b4f4582205c977dadb125f9fd6441dcb9e2580ee42e3b4ebbcdbaa5",
+      "html_sha256": "0e4cdb72ecceb434c086a6bdc365346cfac1900871b95afadd96932cb3fd8ce3",
+      "observations": [
+        {
+          "instant": "neutre",
+          "joueur": 1,
+          "erreurs": [
+            "HUD superposé à la commande : volant",
+            "HUD superposé à la commande : gant-1"
+          ],
+          "commandes": [
+            {
+              "role": "volant",
+              "recouvrementPx2": 455.8692665823037,
+              "recouvrements": [
+                {
+                  "id": "hud:h-regime:26",
+                  "airePx2": 455.8692665823037
+                }
+              ]
+            },
+            {
+              "role": "gant-0",
+              "recouvrementPx2": 0,
+              "recouvrements": []
+            },
+            {
+              "role": "gant-1",
+              "recouvrementPx2": 9163.984110508143,
+              "recouvrements": [
+                {
+                  "id": "hud:h-regime:26",
+                  "airePx2": 9163.984110508143
+                }
+              ]
+            }
+          ],
+          "carte_et_annonce": [
+            {
+              "id": "hud:carte:24",
+              "x": 262.078125,
+              "y": 8,
+              "width": 134.390625,
+              "height": 134.390625
+            }
+          ]
+        },
+        {
+          "instant": "vitesse-braquage",
+          "joueur": 1,
+          "erreurs": [],
+          "commandes": [
+            {
+              "role": "volant",
+              "recouvrementPx2": 0,
+              "recouvrements": []
+            },
+            {
+              "role": "gant-0",
+              "recouvrementPx2": 0,
+              "recouvrements": []
+            },
+            {
+              "role": "gant-1",
+              "recouvrementPx2": 0,
+              "recouvrements": []
+            }
+          ],
+          "carte_et_annonce": [
+            {
+              "id": "hud:h-virage:17",
+              "x": 746.890625,
+              "y": 176.0625,
+              "width": 192,
+              "height": 44.9375
+            },
+            {
+              "id": "hud:carte:25",
+              "x": 262.078125,
+              "y": 8,
+              "width": 134.390625,
+              "height": 134.390625
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "cas_cockpit_reussis_recus": [
+    "cockpit-paysage",
+    "cockpit-mac",
+    "cockpit-vertical"
+  ],
+  "presence_carte_annonce": "Dix PNG inspectés, carte dessinée et annonce présente en vitesse-braquage, absente au neutre.",
+  "profil": "Aucune image : Page.captureScreenshot expiré ; non qualifié.",
+  "autres_cas": "Encore en cours au constat ; leurs reçus ultérieurs restent distincts.",
+  "seuils_changes": false,
+  "relance_pour_effacer_echec": false,
+  "ci_pr": {
+    "run": 44825452386,
+    "commit_merge": "0c76d30127b602bf7a2c04cad38f14695aecf162",
+    "arbre_identique": true,
+    "suites_reussies": 178,
+    "suites_echec": 1,
+    "suite_echec": "decor.test.mjs",
+    "circuit": "Val-Brûlé",
+    "ms_affichees": 168,
+    "seuil_strict_ms": 150,
+    "tests_python": "non exécutés après échec Node"
+  }
+}

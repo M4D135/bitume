@@ -2,7 +2,7 @@
   "schema": 1,
   "discussion": "00",
   "mission": "Integration",
-  "statut": "qualification_cockpit_pluie_bloquee_HUD",
+  "statut": "qualification_candidat_0272_HUD_compact",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/00-INTEGRATION.md",
   "base_main": "fee69c521eccc0e64cc29f762a6d2244b5ade759",
   "branche_proposee": "codex/bitume-p00-integration-20261120",
@@ -34,7 +34,7 @@
     "FPS Xbox/Intel, manettes physiques, écoute humaine et réseau entre machines non qualifiés.",
     "M1 exclu ; Monaco/Marseille sources uniquement."
   ],
-  "prochaine_action": "Publier le correctif HUD et recevoir les nouveaux PNG et la CI du HTML exact ; préserver PR 43 et les réserves de performance.",
+  "prochaine_action": "Recevoir CI complète et PNG 0.2.72, y compris le compact et les compteurs complets ; conserver PR43 et les preuves historiques.",
   "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
   "base_main_preparation": "d8f02cae45443ae6a1120dc93125d8adfae94422",
   "base_tree": "ecc470298dfb4e5d25966d6614ccecabc3a09006",
@@ -80,7 +80,7 @@
       "commit_integration": "89aa13299221ebc8b5f0474ae5a662680dd6fe32"
     }
   ],
-  "releve_utc": "2026-11-20 20:00:13 UTC",
+  "releve_utc": "2026-11-20T22:20:41.360571+00:00",
   "contrat_revision": 4,
   "contrats": "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
   "inventaire": "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
@@ -212,5 +212,8 @@
     "base": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
     "ci_0270": 44818836125,
     "prochaine_action": "Publier le correctif HUD et recevoir les nouveaux PNG et la CI du HTML exact ; préserver PR 43 et les réserves de performance."
-  }
+  },
+  "branche_candidate": "codex/bitume-0272-hud-compact-20261120",
+  "version_candidate": "0.2.72",
+  "preuve_candidat": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0272/BUILD-0272.json"
 }
