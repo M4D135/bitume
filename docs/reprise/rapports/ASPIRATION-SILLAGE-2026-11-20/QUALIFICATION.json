@@ -1,6 +1,6 @@
 {
   "date": "2026-11-20",
-  "status": "candidat_en_qualification",
+  "status": "candidat_pret_CI",
   "version": "0.2.62",
   "physique": "p15",
   "moteur": "FERRO 0.3.15",
@@ -51,5 +51,18 @@
     "octets": 14268457,
     "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
     "reconstructionsIdentiques": 2
+  },
+  "degagement": {
+    "qualification": "degagement-qualification.json",
+    "controlesP14": 5,
+    "controlesP15": 5,
+    "runtimeModifie": false,
+    "causeEchecInitial": "Le scénario de trafic p14 ne provoque plus de choc sous p15. Le même tronc est maintenant placé directement dans le scénario contrôlé, sans affaiblir les critères."
+  },
+  "constructionDistante": {
+    "run": 44717651384,
+    "status": "success",
+    "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "fichiersModifiesVerifies": 32
   }
 }

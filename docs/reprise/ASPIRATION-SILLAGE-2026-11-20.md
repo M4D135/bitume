@@ -76,7 +76,14 @@ Preuves : `rapports/ASPIRATION-SILLAGE-2026-11-20/QUALIFICATION.json`, `comparai
 `node tools/qualification/aspiration-physx.mjs` ; régression :
 `node verifications/aspiration-physx.test.mjs`.
 
-La qualification complète et les captures navigateur sont requises avant fusion.
+Le premier passage complet local a révélé un scénario de dégagement dépendant d’un accident
+après 80 secondes de trafic p14. Avec p15, ce choc ne se produisait plus. Le même tronc
+est désormais exercé dans une situation pré-impact contrôlée, avec aspiration nulle :
+choc réel, marche arrière, reprise, plus de 250 m, aucun replacement et pneus préservés.
+Les cinq contrôles passent sur p14 et p15 ; ce banc historique utilise explicitement
+le solveur de repli. Aucune règle de jeu n’a été modifiée pour ce contrôle.
+
+La CI complète et les captures navigateur sont requises avant fusion.
 Les captures utilisent des poses fixées sous SwiftShader ; elles ne qualifient pas les
 FPS matériels. L’écoute matérielle, les manettes physiques et le réseau entre machines
 restent à vérifier. Aucun déploiement du site n’est annoncé depuis cet environnement.

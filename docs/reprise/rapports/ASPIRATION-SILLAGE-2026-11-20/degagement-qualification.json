@@ -1,0 +1,62 @@
+{
+  "format": "bitume-obstacles-degagement-qualification-1",
+  "test": "verifications/obstacles-degagement.test.mjs",
+  "test_sha256": "eb5cfb108753d5f5361e7e026b9f34e25b4d050196880b203c11fa801055c8a9",
+  "backend": "solveur de repli historique, sans PhysX",
+  "cause": "Le scénario historique dépendait du peloton après 80 s ; le sillage p15 corrigé évite l’impact émergent. Aucun blocage du rival p15 observé.",
+  "ancien_p14": {
+    "choc": true,
+    "recul": true,
+    "finRecul": true,
+    "positionChoc": 3008.937502312264,
+    "final": {
+      "s": 3260.6421845101813,
+      "d": 1.7426874651367592,
+      "v": 26.138464037705177,
+      "rapport": 2,
+      "degagement": 0
+    }
+  },
+  "ancien_p15": {
+    "choc": false,
+    "recul": false,
+    "finRecul": false,
+    "positionChoc": 0,
+    "final": {
+      "s": 107.05294963294455,
+      "d": 2.3685613363062514,
+      "v": 61.34769121509754,
+      "rapport": 5,
+      "degagement": 0
+    }
+  },
+  "nouveau_scenario": {
+    "duree_s": 30,
+    "departure_s": 3020.5,
+    "departure_d": -11.086,
+    "vitesse_depart_mps": 11.8,
+    "rival_autonome": true,
+    "depart_hors_solides_verifie": true,
+    "aspiration_nulle_tous_les_pas": true,
+    "progression_observee_m": 317.31762392741257,
+    "critere_progression_m": 250,
+    "choc_recul_reprise": true,
+    "replacements": 0,
+    "criteres_pneus_inchanges": true
+  },
+  "qualification": {
+    "p14": {
+      "reussis": 5,
+      "echoues": 0,
+      "journal_sha256": "f231fa6303d1dcec6a3065b461224c3a12ab6b8b0b73cb52322482917631b2de"
+    },
+    "p15": {
+      "reussis": 5,
+      "echoues": 0,
+      "journal_sha256": "f231fa6303d1dcec6a3065b461224c3a12ab6b8b0b73cb52322482917631b2de"
+    }
+  },
+  "runtime_modifie": false,
+  "fixture_modifiee": false,
+  "build_modifie": false
+}

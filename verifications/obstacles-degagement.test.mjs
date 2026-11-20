@@ -1,4 +1,5 @@
-// Régression 12E : conserver le mouvement tangent, puis sortir d'un contact par les commandes normales.
+// Régression 12E du solveur de repli historique (sans installation de PhysX) :
+// conserver le mouvement tangent, puis sortir d'un contact par les commandes normales.
 import { createRequire } from 'node:module';
 import assert from 'node:assert/strict';
 const req = createRequire(import.meta.url);
@@ -48,24 +49,38 @@ verifier('aucune marche arrière IA pour la grille, une attente de trafic ou une
   }
 });
 
-verifier('forêt enneigée réelle : le rival collé au tronc recule et repart sans replacement ni pneus restaurés',()=>{
+verifier('forêt enneigée, solveur de repli : le rival heurte le tronc, recule et repart sans replacement ni pneus restaurés',()=>{
   const c=B.circuit.creer(11,{theme:'foret',longueur:4200});
   const decor=B.decor.construire(c,{qualite:'high',matieres:true,vegetation:true,vegetationQualite:'high',saison:'hiver'});
   c.obstacles=O.creer(decor.obstacles);
   B.meteo.actuel=B.chaussee.preparer({pluie:.75,mouille:0,neigeSol:.75,fixe:true},B.saisons.profil('hiver','foret'));
-  const co=B.course.creer(c,{mode:'course',tours:2,rivaux:11,difficulte:1,graine:2047,placeJoueur:12});
+  const co=B.course.creer(c,{mode:'course',tours:2,rivaux:1,difficulte:1,graine:2047});
+  // L'ancien scénario attendait que le peloton p14 pousse le rival vers ce tronc
+  // après 80 s. Corriger le sens de l'aspiration lui évite désormais cet accident.
+  // Reproduire directement l'approche du même tronc du décor, avant tout contact :
+  // le rival reste piloté par commandesIA, sans faux choc ni mémoire de blocage.
+  co.phase='course';co.feux.vert=true;co.temps=80;co.horloge=80;co.dt=dt;
+  Object.assign(co.joueur.etat,{s:1000,d:0,v:0});
+  Object.assign(co.voitures[1].etat,{s:3020.5,d:-11.086,v:11.8,psi:-.027,beta:.13,omega:.253,
+    volant:1,chargeX:3.22,chargeY:.167,y:B.circuit.echantillon(c,3020.5).y});
+  Object.assign(co.voitures[1].ia,{hab:.946,decal:-.329});
   for(const v of co.voitures)v.etat.pneus='neige';
-  const cible=co.voitures[2],e=cible.etat,graines=e.etatPneus.map(r=>r.graine),usure=[0,0,0,0];
-  const ev=[],cmd={};let choc=false,recul=false,finRecul=false,positionChoc=0;
+  const cible=co.voitures[1],e=cible.etat,graines=e.etatPneus.map(r=>r.graine),usure=[0,0,0,0];
+  const q=B.circuit.echantillon(c,e.s),p=B.circuit.point(c,e.s,e.d);
+  const caisse={x:p[0],z:p[2],angle:q.cap+e.psi+e.beta,hx:2.475,hz:1.01,ymin:e.y,ymax:e.y+1.1};
+  assert.ok(c.obstacles.objets.every(o=>!O.tester(caisse,o)),'le scénario démarre hors des solides');
+  const ev=[],immobile={gaz:0,frein:1,volant:0,boite:'auto',aide:0,marcheArriere:false};
+  let choc=false,recul=false,finRecul=false,positionChoc=0;
   while(co.temps<110) {
-    const auto=B.course.commandesIA(co,co.joueur,cmd);B.course.pas(co,auto,dt,ev);
-    if(ev.some(x=>x.id===2&&x.type==='choc'&&x.obstacle==='tronc')) {choc=true;if(!positionChoc)positionChoc=e.s;}
+    B.course.pas(co,immobile,dt,ev);
+    assert.equal(e.aspiration,0,'le sillage ne participe pas à ce scénario de contact fixe');
+    if(ev.some(x=>x.id===cible.id&&x.type==='choc'&&x.obstacle==='tronc')) {choc=true;if(!positionChoc)positionChoc=e.s;}
     if(choc&&e.rapport===-1&&e.v<-.2)recul=true;
     if(recul&&e.rapport>0&&e.v>8)finRecul=true;
     for(let i=0;i<4;i++){assert.ok(e.etatPneus[i].usure+1e-12>=usure[i]);usure[i]=e.etatPneus[i].usure;}
     assert.equal(e.repositionnements,0,'aucune téléportation du rival testé');
   }
-  assert.ok(choc&&recul&&finRecul,'impact réel, marche arrière physique puis reprise du guidage');
+  assert.ok(choc&&recul&&finRecul,'impact réel, marche arrière commandée puis reprise du guidage');
   assert.ok(B.circuit.ecart(c,positionChoc,e.s)>250,'le rival a quitté la zone qui le bloquait');
   assert.equal(cible.ia.degagement,0);assert.equal(e.servicePneus,0);
   assert.deepEqual(e.etatPneus.map(r=>r.graine),graines);
