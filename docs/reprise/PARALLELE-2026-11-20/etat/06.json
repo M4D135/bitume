@@ -2,19 +2,47 @@
   "schema": 1,
   "discussion": "06",
   "mission": "Pluie extérieure depuis les abris",
-  "statut": "qualification_du_prototype_en_cours",
+  "statut": "source_qualifiee_raster_a_recevoir",
   "branche_reelle": "codex/bitume-p06-pluie-abris-20261120",
   "base": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
   "main_observe": "fee69c521eccc0e64cc29f762a6d2244b5ade759",
   "prototype": "d3bd240a1bfa02ac1e0dbcc8f5c4cdb3b7176531",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/06-PLUIE-ABRIS.md",
-  "propriete": ["src/meteo.js", "verifications/meteo-couverts-physx.test.mjs", "tools/mesurer-pluie-abris.mjs", "tools/captures-pluie-abris.mjs", ".github/workflows/qualification-pluie-abris.yml"],
+  "propriete": [
+    "src/meteo.js",
+    "verifications/meteo-couverts-physx.test.mjs",
+    "tools/mesurer-pluie-abris.mjs",
+    "tools/captures-pluie-abris.mjs",
+    ".github/workflows/qualification-pluie-abris.yml"
+  ],
   "raccord_00": "docs/reprise/PARALLELE-2026-11-20/raccordements/06-jeu.patch",
   "suivi_global_modifie": false,
   "build_commun_modifie": false,
   "physique": "p15",
   "ferro": "0.3.15",
-  "prochaine_action": "Qualifier le masque des traits avec PhysX, mesurer CPU/rayons, puis recevoir le raster du jeu raccordé.",
-  "reserves": ["Prototype non qualifié pour intégration.", "Les caméras et la publication 0.2.70 appartiennent à la conversation concurrente 00."],
-  "site_deploye": false
+  "prochaine_action": "Publier le module/outillage et recevoir les captures CI du HTML raccordé exact.",
+  "reserves": [
+    "Les 11 scénarios PhysX qualifient le centre des traits, pas leurs franges antialias ni tous les rochers de décor.",
+    "Raster navigateur non encore reçu ; Chromium local refuse socket().",
+    "Banc CPU local sans raster ; aucune mesure de FPS matériel Xbox/Intel.",
+    "Raccord jeu.js, build commun et intégration finale réservés à 00."
+  ],
+  "site_deploye": false,
+  "pr": 43,
+  "source_sha256": "e96267b45927e002fcfdfed096866012de9b042054cb948a26fe357b22434504",
+  "physx_controles": 7,
+  "traits_controles": 12,
+  "traits_sondes": 481867,
+  "traits_occultations": 0,
+  "prototype_occultations_conservees": 16,
+  "validateur_raster_controles": 8,
+  "preuves": "docs/reprise/PARALLELE-2026-11-20/preuves/06-pluie-abris",
+  "cpu_rapport": "docs/reprise/PARALLELE-2026-11-20/preuves/06-pluie-abris/mesures-cpu-final.json",
+  "cpu_p95_ms": {
+    "fond": 1.055,
+    "portail": 1.903,
+    "galerie": 1.839,
+    "galerie_low": 0.845,
+    "flou_300": 1.894
+  }
 }

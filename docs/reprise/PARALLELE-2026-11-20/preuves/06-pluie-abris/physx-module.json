@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "controles": 7,
+  "rayonsNatifs": 126943,
+  "scenarios": [
+    {
+      "nom": "fond-tunnel",
+      "palier": "high",
+      "images": 60,
+      "traitsEtStatsSha256": "e34d712d11d2f0cf22199224cfb44bc0cd3463ccf870bbf2903d31ea7899238f",
+      "traitsMin": 0,
+      "traitsMax": 0,
+      "rayonsMax": 154,
+      "spatiauxMax": 194,
+      "cpuMs": {
+        "p50": 0.9357729999999265,
+        "p95": 1.9163119999998344,
+        "pire": 8.407980999999836
+      }
+    },
+    {
+      "nom": "galerie-mur",
+      "palier": "high",
+      "images": 60,
+      "traitsEtStatsSha256": "969d99cb71315894d5ea2cb971e8584fadf22a90732a7ed8576da528d32b9deb",
+      "traitsMin": 0,
+      "traitsMax": 0,
+      "rayonsMax": 192,
+      "spatiauxMax": 201,
+      "cpuMs": {
+        "p50": 1.2075169999998252,
+        "p95": 2.0965889999999945,
+        "pire": 2.7110179999999673
+      }
+    },
+    {
+      "nom": "portail-sortant",
+      "palier": "high",
+      "images": 60,
+      "traitsEtStatsSha256": "99245954b0b11112dae585ab8214a88554bfae427ebdccf578657a04249e1c56",
+      "traitsMin": 94,
+      "traitsMax": 116,
+      "rayonsMax": 546,
+      "spatiauxMax": 199,
+      "cpuMs": {
+        "p50": 2.955887999999959,
+        "p95": 4.333548000000064,
+        "pire": 5.842343000000028
+      }
+    },
+    {
+      "nom": "galerie-ouverte",
+      "palier": "high",
+      "images": 60,
+      "traitsEtStatsSha256": "4a3a4211dde92961c21eed8ecfe5d0b7ba27925893400ef13bd33f7d4a42c1fd",
+      "traitsMin": 62,
+      "traitsMax": 98,
+      "rayonsMax": 555,
+      "spatiauxMax": 190,
+      "cpuMs": {
+        "p50": 1.7105149999999867,
+        "p95": 2.517565999999988,
+        "pire": 4.402099999999791
+      }
+    },
+    {
+      "nom": "dessus-toit",
+      "palier": "high",
+      "images": 60,
+      "traitsEtStatsSha256": "643837d625f72ba4e1e9e44e1a59636632d9d40bbfa152dfa2fc40cb95134062",
+      "traitsMin": 86,
+      "traitsMax": 128,
+      "rayonsMax": 73,
+      "spatiauxMax": 94,
+      "cpuMs": {
+        "p50": 0.3884180000000015,
+        "p95": 0.7941509999998289,
+        "pire": 0.9737990000000991
+      }
+    },
+    {
+      "nom": "dehors",
+      "palier": "high",
+      "images": 60,
+      "traitsEtStatsSha256": "50b463551b3248a1919b9fc1f675801b6db2796974d201382801b480fff6a66e",
+      "traitsMin": 183,
+      "traitsMax": 199,
+      "rayonsMax": 0,
+      "spatiauxMax": 0,
+      "cpuMs": {
+        "p50": 0.07801599999993414,
+        "p95": 0.1040250000000924,
+        "pire": 0.42230799999992996
+      }
+    },
+    {
+      "nom": "galerie-ouverte",
+      "palier": "low",
+      "images": 60,
+      "traitsEtStatsSha256": "3cce26d671ad324804bcb360df8fbfa556d17c5cbb9d04b63bc4ad388699aeee",
+      "traitsMin": 29,
+      "traitsMax": 50,
+      "rayonsMax": 271,
+      "spatiauxMax": 90,
+      "cpuMs": {
+        "p50": 0.8883610000000317,
+        "p95": 1.4063330000001315,
+        "pire": 3.2439970000000358
+      }
+    },
+    {
+      "nom": "galerie-ouverte",
+      "palier": "high",
+      "images": 60,
+      "traitsEtStatsSha256": "4a3a4211dde92961c21eed8ecfe5d0b7ba27925893400ef13bd33f7d4a42c1fd",
+      "traitsMin": 62,
+      "traitsMax": 98,
+      "rayonsMax": 555,
+      "spatiauxMax": 190,
+      "cpuMs": {
+        "p50": 1.9457660000000487,
+        "p95": 2.8723840000002383,
+        "pire": 3.02388000000019
+      }
+    }
+  ],
+  "meteoSha256": "e96267b45927e002fcfdfed096866012de9b042054cb948a26fe357b22434504",
+  "limite": "Temps CPU JavaScript et requêtes WASM, Canvas instrumenté sans raster ; aucun FPS matériel déduit.",
+  "raccord": {
+    "sourceSha256": "b3da80a5b4197b18e8aadefcbeb2510b92d35dfd09e18d6352c3cb3103fbc7ee",
+    "patchSha256": "92543115ffe18c593ba6bef952f10cb0f3f593d5397ef31826aa91c534f35ee6",
+    "portee": "Copie temporaire de jeu.js raccordée, fichier partagé inchangé."
+  }
+}

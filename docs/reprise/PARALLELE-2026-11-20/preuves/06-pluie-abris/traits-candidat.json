@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "meteoSha256": "e96267b45927e002fcfdfed096866012de9b042054cb948a26fe357b22434504",
+  "controles": 12,
+  "traits": 28287,
+  "sondes": 481867,
+  "occultations": 0,
+  "exemples": [],
+  "scenarios": [
+    {
+      "nom": "galerie-piliers-statique",
+      "images": 72,
+      "palier": "high",
+      "traits": 5528,
+      "sondes": 50592,
+      "occultations": 0
+    },
+    {
+      "nom": "galerie-flou-300",
+      "images": 18,
+      "palier": "high",
+      "traits": 1572,
+      "sondes": 43136,
+      "occultations": 0
+    },
+    {
+      "nom": "galerie-flou-300-low",
+      "images": 18,
+      "palier": "low",
+      "traits": 778,
+      "sondes": 21429,
+      "occultations": 0
+    },
+    {
+      "nom": "coin-portail",
+      "images": 60,
+      "palier": "high",
+      "traits": 5260,
+      "sondes": 52069,
+      "occultations": 0
+    },
+    {
+      "nom": "pilier-proche",
+      "images": 40,
+      "palier": "high",
+      "traits": 1928,
+      "sondes": 20191,
+      "occultations": 0
+    },
+    {
+      "nom": "galerie-oblique--0.15-1.2",
+      "images": 40,
+      "palier": "high",
+      "traits": 1892,
+      "sondes": 40814,
+      "occultations": 0
+    },
+    {
+      "nom": "galerie-oblique--0.15-3.8",
+      "images": 40,
+      "palier": "high",
+      "traits": 2192,
+      "sondes": 48180,
+      "occultations": 0
+    },
+    {
+      "nom": "galerie-oblique--0.25-1.2",
+      "images": 40,
+      "palier": "high",
+      "traits": 2027,
+      "sondes": 43380,
+      "occultations": 0
+    },
+    {
+      "nom": "galerie-oblique--0.25-3.8",
+      "images": 40,
+      "palier": "high",
+      "traits": 2375,
+      "sondes": 51877,
+      "occultations": 0
+    },
+    {
+      "nom": "galerie-oblique--0.4-1.2",
+      "images": 40,
+      "palier": "high",
+      "traits": 2188,
+      "sondes": 50835,
+      "occultations": 0
+    },
+    {
+      "nom": "galerie-oblique--0.4-3.8",
+      "images": 40,
+      "palier": "high",
+      "traits": 2547,
+      "sondes": 59364,
+      "occultations": 0
+    }
+  ],
+  "limite": "Centre du trait à pas <= 0,5 pixel, profondeur perspective et vrais murs/toits/portails/piliers PhysX ; ne qualifie ni rochers de décor ni franges antialias Canvas."
+}

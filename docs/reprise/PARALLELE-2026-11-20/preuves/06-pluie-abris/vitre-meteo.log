@@ -1,0 +1,20 @@
+ok deux perles de rayons 3 et 4 donnent une seule lentille de rayon 5, sans perdre de surface
+ok le repli dessine la surface entière pendant la fusion, y compris entre les pas de simulation
+ok fusion bornée : le surplus quitte le dépôt, eau et neige ne forment pas une tache géante
+ok une coulure rapide ramasse une perle traversée entre deux positions du pas
+ok les coulures suivent leur trajet courbe et leurs bords encadrent une lentille translucide
+ok la neige perd progressivement son cœur blanc et laisse de l’eau sur une empreinte humide
+ok des amas se rejoignent sans redevenir secs
+ok la vitesse dégage pluie et neige existantes, sans commande d’essuyage
+ok intensité : faible, normale, forte ; zéro efface même sans nouveau pas
+ok sous une averse continue, la vitesse réduit aussi la quantité qui reste collée
+ok les caméras extérieures atténuent les dépôts et leur opacité ; les rétros restent propres
+ok à 300 km/h une chaussée mouillée sans pluie recharge le repli Canvas avec les projections du rival
+ok les projections gardent le même résultat à 30 et 144 Hz, et ne déposent rien sous abri
+ok pause : aucune avance, aucun pixel redessiné, aucun rattrapage à la reprise
+ok J1/J2 : graines distinctes, distribution non copiée, mais résultat reproductible
+ok fusions, fonte et trajets restent identiques à 30, 60, 120 et 144 Hz
+ok surface, dépôts, interactions et commandes de dessin ont des plafonds fixes
+ok contextes anciens, incomplets ou invalides restent utilisables
+ok le repli Canvas conserve un sillage dense à grande vitesse même sans pluie
+vitre météo : 19 contrôles passés
