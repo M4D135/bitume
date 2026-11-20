@@ -1,5 +1,15 @@
 # BITUME — reprise courte
 
+## Correctif utilisateur actif : cockpit et pluie
+
+La photo utilisateur rend la visibilité cockpit **bloquante**. Géométrie commune
+intérieur/extérieur, volant et tableau abaissés, rétros séparés des mains :
+[contrat et preuves en cours](docs/reprise/COCKPIT-PLUIE-2026-11-20.md).
+La suite comprend pluie en vue arceau, quatre forces, impacts à l’écran et
+gouttes sur les véhicules. Le candidat 0.2.70 est assemblé sur `codex/bitume-cockpit-pluie-20261120`.
+Les preuves visuelles et la CI de ce candidat restent à recevoir avant fusion.
+
+
 ## Publié sur main : 0.2.69
 
 **0.2.69 / p15 / FERRO 0.3.15 / neuf circuits.**

@@ -231,13 +231,31 @@ verifier('les projections à 300 km/h suivent le panache humide, avec des vitres
   const apres = JSON.stringify(j.vues()[0].gouttes);
   j.dessiner(J2, 'poursuite', 1/30, false, [-12,1,0]); assert.equal(JSON.stringify(j.vues()[0].gouttes), apres);
 });
-verifier('les plans aériens et distants n’ont aucun dépôt ; cockpit et poursuite les rétablissent', () => {
+verifier('les plans aériens et distants n’ont aucun dépôt ; toutes les vues embarquées les rétablissent', () => {
   const j = jeu(), S = seance(); j.initialiser(S);
-  for (const vue of ['helico', 'panorama', 'tele', 'faune', 'pilote', 'orbite', 'sol', 'travelling', 'flore', 'peloton', 'aileron']) {
+  for (const vue of ['helico', 'panorama', 'tele', 'faune', 'pilote', 'orbite', 'sol', 'travelling', 'flore', 'peloton']) {
     avancer(j, S, 2, 'cockpit'); assert(j.vues()[0].stats.gouttes > 0);
     j.dessiner(S, vue, 0); assert(j.vues()[0].masquee && j.vues()[0].propre, vue);
   }
-  avancer(j, S, 3, 'poursuite'); assert(j.vues()[0].stats.gouttes > 0);
+  for (const vue of ['cockpit', 'poursuite', 'aileron', 'roue', 'arriere']) {
+    j.dessiner(S, 'helico', 0);
+    avancer(j, S, 3, vue);
+    assert(j.vues()[0].stats.gouttes > 0, vue + ' reçoit des gouttes');
+    assert.equal(S.vitreContexte.actif, true, vue);
+    assert.equal(S.vitreContexte.cockpit, vue === 'cockpit');
+  }
+});
+verifier('vue arceau : abri et sec sans nouveaux dépôts, pause sans avance', () => {
+  const j = jeu(), S = seance(); j.initialiser(S);
+  for (let n = 0; n < 90; n++) j.dessiner(S, 'aileron', 1/30, true);
+  assert.equal(j.vues()[0].stats.gouttes, 0, 'aucune pluie reçue sous toit');
+  S.meteo.pluie = 0; avancer(j, S, 3, 'aileron');
+  assert.equal(j.vues()[0].stats.gouttes, 0, 'aucune goutte créée au sec');
+  S.meteo.pluie = 1; avancer(j, S, 3, 'aileron');
+  assert(j.vues()[0].stats.gouttes > 0, 'pluie reçue derrière l’arceau');
+  const avant = JSON.stringify(j.vues()[0].gouttes), temps = j.vues()[0].temps;
+  j.ecran('pause'); avancer(j, S, 2, 'aileron');
+  assert.equal(JSON.stringify(j.vues()[0].gouttes), avant); assert.equal(j.vues()[0].temps, temps);
 });
 verifier('la poursuite à 2,45 m reçoit des gouttes du rival même sans pluie ambiante', () => {
   const j = jeu(), S = seance(); j.initialiser(S);

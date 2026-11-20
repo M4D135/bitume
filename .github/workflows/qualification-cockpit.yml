@@ -1,0 +1,95 @@
+name: Lisibilite cockpit du candidat exact
+
+on:
+  push:
+    branches: ['codex/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cockpit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cockpit:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[capture-cockpit]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - groupe: mac-reference
+            cas: cockpit-mac
+          - groupe: formats
+            cas: cockpit-paysage,cockpit-vertical
+          - groupe: duo-exterieur
+            cas: cockpit-duo-haut-bas,cockpit-duo-cote,cockpit-profil,cockpit-trois-quarts
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Reconstruire deux fois le HTML exact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qualification
+          git rev-parse HEAD > qualification/OUTILS-COMMIT.txt
+          git rev-parse 'HEAD^{tree}' > qualification/TREE.txt
+          node --version > qualification/ENVIRONNEMENT.txt
+          google-chrome --version >> qualification/ENVIRONNEMENT.txt
+          python3 construire.py > qualification/reconstruction-1.log 2>&1
+          sha256sum dist/bitume.html > qualification/HTML-SHA256.txt
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+          python3 construire.py > qualification/reconstruction-2.log 2>&1
+          sha256sum --check qualification/HTML-SHA256.txt
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+      - name: Verifier les controles positifs et negatifs de l'outil
+        shell: bash
+        run: |
+          set -euo pipefail
+          node verifications/captures-habitacle.test.mjs > qualification/test-outil.log 2>&1
+      - name: Extraire la reference publiee 0.2.69 et verifier son SHA
+        if: matrix.groupe == 'mac-reference'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api 'repos/${{ github.repository }}/contents/dist/bitume.html?ref=89aa13299221ebc8b5f0474ae5a662680dd6fe32' \
+            -H 'Accept: application/vnd.github.raw+json' > qualification/avant-0269.html
+          printf '%s\n' 'bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10  qualification/avant-0269.html' > qualification/AVANT-SHA256.txt
+          sha256sum --check qualification/AVANT-SHA256.txt
+      - name: Capturer les cinq dispositions et les deux etats
+        shell: bash
+        env:
+          CAS_COCKPIT: ${{ matrix.cas }}
+          GROUPE_COCKPIT: ${{ matrix.groupe }}
+        run: |
+          set -euo pipefail
+          args=()
+          if [ "$GROUPE_COCKPIT" = mac-reference ]; then
+            args+=(--avant "file://$GITHUB_WORKSPACE/qualification/avant-0269.html")
+          fi
+          timeout --signal=TERM --kill-after=30s 18m node tools/captures-habitacle.mjs \
+            --url "file://$GITHUB_WORKSPACE/dist/bitume.html" --sortie qualification/images \
+            --cas "$CAS_COCKPIT" --chrome /usr/bin/google-chrome "${args[@]}" \
+            > qualification/captures.log 2>&1
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+      - name: Conserver les preuves y compris en cas d'echec
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-cockpit-${{ matrix.groupe }}-${{ github.sha }}
+          path: |
+            qualification/*.txt
+            qualification/*.json
+            qualification/*.log
+            qualification/images/
+          if-no-files-found: error
+          retention-days: 14

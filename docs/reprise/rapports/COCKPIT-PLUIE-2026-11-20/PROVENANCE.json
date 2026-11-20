@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "base_main": "96f720e788698401a72d41a9e0befa18c88c2e7b",
+  "statut": "candidat_en_preparation_non_qualifie_visuellement",
+  "origine": [
+    {
+      "branche_locale": "codex/bitume-cockpit-correction-20261120",
+      "nature": "travail non commite repris en copie isolee",
+      "diff_sha256": "2b03564d89e29dc8fa23e629a1361c302237496950bb9c62a62a8424834b8c07"
+    },
+    {
+      "branche_locale": "codex/bitume-pluie-impacts-20261120",
+      "nature": "diff runtime et outils applique sans remplacer jeu.js",
+      "diff_sha256": "d045d47cf7dcf3a10acfcd03734b4349563ba7edbd72c73fce08f48c7624254a"
+    }
+  ],
+  "corrections_revue": [
+    "Champ cockpit projete depuis les vrais coins et le regard/inerties de la camera",
+    "Chemin court de carrosserie entierement seche, sans perdre sechage/reprise pluie"
+  ],
+  "reservations": {
+    "PR_43": "pluie visible depuis abris conservee sur sa branche",
+    "budget_decor": "172 ms/150 ms historique reste ouvert",
+    "physique": "p15",
+    "FERRO": "0.3.15, copies canoniques inchangees",
+    "site_deploye": false
+  },
+  "preuves_avant_fusion_requises": [
+    "324 rayons chaussée + cadrage dynamique des glaces",
+    "HTML reconstruit deux fois identique",
+    "CI complete du commit exact",
+    "Captures cockpit et Troll J1/J2",
+    "Captures des quatre forces, impact et carrosserie humide/seche"
+  ]
+}

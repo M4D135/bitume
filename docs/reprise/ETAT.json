@@ -5,12 +5,12 @@
     "version_publiee_verifiee": "0.2.69",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "publie_sur_main_avec_reserves_explicites",
-    "lot": "00C_publication_0269_close_avec_reserves",
-    "fiche": "docs/reprise/PARALLELE-2026-11-20/00-INTEGRATION.md",
+    "statut": "candidat_cockpit_pluie_0270_en_qualification",
+    "lot": "00D_cockpit_pluie",
+    "fiche": "docs/reprise/COCKPIT-PLUIE-2026-11-20.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
     "derniere_entree": "033",
-    "prochaine_action": "Traiter la lisibilité centrale du cockpit et caractériser le budget décor (172 ms affichés ; seuil strict < 150 ms), puis intégrer une prochaine livraison qualifiée.",
+    "prochaine_action": "Recevoir et inspecter les captures cockpit/Troll/pluie du HTML exact et sa CI avant publication normale sur main.",
     "dernier_lot_clos": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
     "fiche_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
     "index": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
@@ -24,7 +24,7 @@
     "dernier_lot_coordination_clos": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
     "runtime_modifie_par_coordination_portee": "0.2.69 publié sur main et contenu reçu vérifié.",
     "preuve_t3": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
-    "reserve_lisibilite_cockpit": "Cockpit 960×540 et 540×960, caméra réelle du siège : le volant occulte une partie centrale de la chaussée. Lisibilité non certifiée, suivi ouvert ; aucune nouvelle régression d’assemblage établie. Géométrie commune et T3 restent acquis.",
+    "reserve_lisibilite_cockpit": "Défaut bloquant signalé par photo utilisateur : volant/tableau trop hauts et glaces superposées. La projection seule de 0.2.69 ne prouvait pas la route libre. Correction géométrique et rayons sur vrais triangles en cours.",
     "alerte_budget_decor": {
       "statut": "ouvert",
       "run": 44803588903,
@@ -36,7 +36,9 @@
     },
     "commit_fusion": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
     "tete_qualifiee": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
-    "pr_publiee": 42
+    "pr_publiee": 42,
+    "branche_candidate": "codex/bitume-cockpit-pluie-20261120",
+    "version_candidate": "0.2.70"
   },
   "publication": {
     "version": "0.2.69",

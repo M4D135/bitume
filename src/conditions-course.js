@@ -9,6 +9,7 @@
 (function (B) {
   'use strict';
   const MODES = Object.freeze(['manuel', 'aleatoire', 'reel']);
+  const FORCES_PLUIE = Object.freeze({ fine: .2, moderee: .45, forte: .75, tres_forte: 1 });
   const SAISONS = ['printemps', 'ete', 'automne', 'hiver'], MOMENTS = ['jour', 'crepuscule', 'nuit', 'cycle'];
   const METEOS = ['soleil', 'pluie', 'variable'], JOUR = 86400000, CACHE = 12 * 60000, DELAI_MIN = 30000;
   const GEO = 'https://get.geojs.io/v1/ip/geo.json', METEO = 'https://api.open-meteo.com/v1/forecast';
@@ -17,6 +18,7 @@
   let cacheGeo = null, cacheMeteo = null, dernierGeo = -Infinity, derniereMeteo = -Infinity, dernierFetch = null, active = null;
   const formats = new Map(), heures = new Map();
   const normaliserMode = id => MODES.includes(id) ? id : 'manuel';
+  const normaliserForcePluie = id => Object.prototype.hasOwnProperty.call(FORCES_PLUIE, id) ? id : 'forte';
   const borne = (v, a, b) => Math.max(a, Math.min(b, v));
   const lisse = (a, b, x) => { const t = borne((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
   const propre = value => typeof value === 'string' ? value.replace(/[\x00-\x1f\x7f]/g, '').slice(0, 80) : '';
@@ -156,7 +158,7 @@
     const sources = { saison: saisonMode, moment: momentMode, meteo: meteoMode };
     const resultat = { saisonMode, momentMode, meteoMode,
       saison: choisir(SAISONS, reglages.saison, 'ete', saisonMode, hasard), moment: choisir(MOMENTS, reglages.moment, 'jour', momentMode, hasard),
-      meteo: choisir(METEOS, reglages.meteo, 'soleil', meteoMode, hasard), mReelle: null, horlogeReelle: null,
+      meteo: choisir(METEOS, reglages.meteo, 'soleil', meteoMode, hasard), forcePluie: normaliserForcePluie(reglages.forcePluie), mReelle: null, horlogeReelle: null,
       meta: { statut: 'ok', sources, lieu: null, message: '', cache: false, limite: false, releve: null, lever: null, coucher: null } };
     if (![saisonMode, momentMode, meteoMode].includes('reel')) return resultat;
     const maintenant = Number.isFinite(options.maintenant) ? options.maintenant : Date.now();
@@ -225,5 +227,5 @@
     resultat.meta.message = messages.join(' ') || (resultat.meta.lieu ? 'Conditions locales : ' + resultat.meta.lieu + '.' : 'Conditions réelles disponibles.');
     return resultat;
   }
-  B.conditionsCourse = { MODES, normaliserMode, resoudre, nuitReelle, saisonReelle, meteoWMO };
+  B.conditionsCourse = { MODES, FORCES_PLUIE, normaliserMode, normaliserForcePluie, resoudre, nuitReelle, saisonReelle, meteoWMO };
 })(globalThis.BITUME = globalThis.BITUME || {});

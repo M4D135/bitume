@@ -1,0 +1,71 @@
+{
+  "compilation": true,
+  "contexte": {
+    "renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+    "version": "4.5 (Core Profile) Mesa 25.0.7-2+deb13u1",
+    "egl": "1.5"
+  },
+  "sources_sha256": {
+    "src/vitre.js": "9292ce3db76995360e50156990688ab9c1fcb6e1700321f9c27d30a29b20797b",
+    "src/visiere-optique.js": "0e42ae8d18e900cda0336362e442d00c2c462e31f74876a31f4c55be5a27ac4d"
+  },
+  "limites": [
+    "Mire procedurale, pas une course.",
+    "Raster Mesa logiciel ; pas une mesure FPS ni un navigateur."
+  ],
+  "cas": [
+    {
+      "nom": "high-0.025",
+      "png_sha256": "d1c7c690a305e388248c7cd0a0f478436c368b272f88161776c3ef61a040aea8",
+      "pixels_alpha": 518400,
+      "impact_max": 0.4320512115955353
+    },
+    {
+      "nom": "high-0.075",
+      "png_sha256": "413b28934384791b09d4659a37df435b8fdb829db317883f01938114abc0e000",
+      "pixels_alpha": 518400,
+      "impact_max": 0.527229905128479
+    },
+    {
+      "nom": "high-0.075-sans-impact",
+      "png_sha256": "ef4d7524909f37d12b6b551c4498a95918653f719ecbefa61dd428635cdb5143",
+      "pixels_alpha": 518400,
+      "impact_max": 0
+    },
+    {
+      "nom": "high-0.3",
+      "png_sha256": "270c1213498f07c9f520599d45a3c57431e03f5446b29574a7e1e126e59aea5d",
+      "pixels_alpha": 518400,
+      "impact_max": 0
+    },
+    {
+      "nom": "low-0.075",
+      "png_sha256": "8c12e18ae6149ad8f98df83d26802e07e6341aa8a74810cdf623b4328b2244ba",
+      "pixels_alpha": 518400,
+      "impact_max": 0.527229905128479
+    },
+    {
+      "nom": "low-0.075-sans-impact",
+      "png_sha256": "ed6121a6343ce90b23db498a8f6345b0989f758de37af90c50618d73343c9b4d",
+      "pixels_alpha": 518400,
+      "impact_max": 0
+    },
+    {
+      "nom": "sec",
+      "png_sha256": "9d65aa70cda78b4e1e6ee4b1e7e0b1d34b2edbc4801c542c335a16c94a694ca5",
+      "pixels_alpha": 0,
+      "impact_max": 0
+    }
+  ],
+  "differences": {
+    "high": {
+      "pixels_changes": 136,
+      "maximum_ecart_canal": 101
+    },
+    "low": {
+      "pixels_changes": 126,
+      "maximum_ecart_canal": 107
+    }
+  },
+  "portee_reprise": "Preuve préparatoire Mesa des seuls modules optiques, pas du jeu assemblé"
+}

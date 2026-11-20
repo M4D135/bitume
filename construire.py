@@ -65,6 +65,7 @@ MODULES = [
     'main.js',
     'cockpit-matieres.js',
     'voiture.js',
+    'eau-carrosserie.js',  # perles attachées aux surfaces peintes, préparées avant la séance
     'animaux.js',
     'traces.js',
     'echappement.js',

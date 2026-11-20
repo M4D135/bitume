@@ -1,0 +1,62 @@
+[
+  {
+    "suite": "pilote-gestes-extremes",
+    "exit": 0,
+    "secondes": 14.23
+  },
+  {
+    "suite": "pilote-surfaces",
+    "exit": 0,
+    "secondes": 0.05
+  },
+  {
+    "suite": "pilote-thorax",
+    "exit": 0,
+    "secondes": 3.0
+  },
+  {
+    "suite": "habitacle-monde",
+    "exit": 0,
+    "secondes": 5.1
+  },
+  {
+    "suite": "vitre-impacts",
+    "exit": 0,
+    "secondes": 0.1
+  },
+  {
+    "suite": "eau-carrosserie-integration",
+    "exit": 0,
+    "secondes": 2.87
+  },
+  {
+    "suite": "conditions-integration",
+    "exit": 0,
+    "secondes": 0.08
+  },
+  {
+    "suite": "captures-habitacle",
+    "exit": 0,
+    "secondes": 0.08
+  },
+  {
+    "suite": "captures-meteo",
+    "exit": 0,
+    "secondes": 0.06
+  },
+  {
+    "suite": "visiere-optique",
+    "exit": 0,
+    "secondes": 0.21
+  },
+  {
+    "suite": "vitre-integration",
+    "exit": 0,
+    "secondes": 0.15
+  },
+  {
+    "suite": "troll-assemble",
+    "exit": 0,
+    "secondes": 0.05
+  }
+]

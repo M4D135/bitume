@@ -1,0 +1,18 @@
+--- avant.js
++++ apres.js
+@@ -142,10 +142,15 @@
+     if (!(dt > 0) || !Number.isFinite(dt) || !Number.isFinite(instant) || instant <= e.dernierInstant) return false;
+     const neige = typeof meteo?.precipitationsNeige === 'boolean' ? meteo.precipitationsNeige : !!meteo?.neige;
+     const pluie = abri || neige ? 0 : clamp(Number.isFinite(meteo?.pluie) ? meteo.pluie : 0, 0, 1), v = Number.isFinite(vitesse) ? vitesse : 0;
++    const dejaSec = e.humide === 0 && pluie === 0;
+     const tau = pluie > e.humide ? 2 : 8 / (1 + Math.abs(v) / 55);
+     e.humide = pluie + (e.humide - pluie) * Math.exp(-dt / tau);
+     if (pluie === 0 && e.humide < 1e-5) e.humide = 0;
+     e.pluie = pluie; e.age += dt; e.revisions++; e.dernierInstant = instant; e.actives = Math.ceil(e.humide * MAX);
++    // Une carrosserie déjà sèche ne parcourt ni ses perles ni ses couleurs. Le dernier pas
++    // de séchage passe encore ci-dessous pour restaurer les attaches et la peinture ;
++    // la prochaine pluie reprend les mêmes pools et recalcule leur transport normalement.
++    if (dejaSec) return true;
+     const p = Number.isFinite(pose?.tangage) ? pose.tangage : 0, r = Number.isFinite(pose?.roulis) ? pose.roulis : 0;
+     // Gravité exprimée dans le repère incliné de la voiture, et air vers l'arrière (inverse en marche arrière).
+     const gx = -.0018 * Math.sin(p) - .0035 * clamp(v / 85, -1, 1), gy = -.0018 * Math.cos(p) * Math.cos(r), gz = .0018 * Math.cos(p) * Math.sin(r);

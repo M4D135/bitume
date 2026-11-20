@@ -372,3 +372,10 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
 - Les rôles 01 à 04 peuvent avancer en parallèle ; 00 possède les raccordements partagés, versions/builds, imports FERRO et suivi global. 05 commence par les sources des circuits.
 - Chaque rôle publie sa branche et son propre état ; 00 rassemble les candidats qualifiés sur main. Préserver les travaux préparés, ne pas réinitialiser les dossiers d'une autre discussion et ne pas confondre un inventaire local avec une publication.
 - Lire la fiche de son rôle et son état, pas toutes les archives ; les prompts complets sont dans ce dossier. Cette préparation ne modifie pas le runtime livré.
+
+
+## Décisions de David — 20 novembre 2026, correction cockpit et pluie
+
+- La visibilité cockpit est bloquante : abaisser volant/tableau dans la géométrie commune, poser les rétros sur leur vraie face et vérifier route/commandes en intérieur et extérieur. Le regard doit garder les commandes visibles, y compris pendant le braquage et en écran partagé.
+- La pluie doit atteindre la caméra derrière l’arceau. Proposer plusieurs forces/abondances, rendre les impacts à l’écran avant leur écoulement et ajouter de l’eau sur les véhicules.
+- Les correctifs reprennent les préparations isolées dans `docs/reprise/COCKPIT-PLUIE-2026-11-20.md` ; préserver la branche d’abris PR 43 et les autres chantiers.

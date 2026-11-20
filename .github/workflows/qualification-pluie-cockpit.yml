@@ -1,0 +1,85 @@
+name: Pluie embarquee et carrosserie du candidat exact
+
+on:
+  push:
+    branches: ['codex/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pluie-cockpit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pluie:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[capture-pluie-cockpit]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - groupe: forces-vues
+            cas: pluie-forces-arceau,pluie-duo-cockpit-arceau,pluie-arceau-sec
+          - groupe: impact
+            cas: pluie-impact-arceau
+          - groupe: carrosserie
+            cas: carrosserie-pluie,carrosserie-sec
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Reconstruire deux fois le HTML exact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qualification
+          git rev-parse HEAD > qualification/COMMIT.txt
+          git rev-parse 'HEAD^{tree}' > qualification/TREE.txt
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          node --version > qualification/ENVIRONNEMENT.txt
+          google-chrome --version >> qualification/ENVIRONNEMENT.txt
+          python3 construire.py > qualification/reconstruction-1.log 2>&1
+          sha256sum dist/bitume.html > qualification/HTML-SHA256.txt
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+          python3 construire.py > qualification/reconstruction-2.log 2>&1
+          sha256sum --check qualification/HTML-SHA256.txt
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+          git ls-files -z src/ construire.py VERSION.json SIZE.json dist/bitume.html FERRO.lock.json \
+            tools/captures-meteo.mjs tools/controle-visuel.mjs | xargs -0 sha256sum > qualification/SHA256SUMS.txt
+      - name: Verifier les controles de l'outil de capture
+        shell: bash
+        run: |
+          set -euo pipefail
+          node verifications/captures-meteo.test.mjs > qualification/test-outil.log 2>&1
+      - name: Capturer les forces, les impacts et la paire de carrosseries
+        shell: bash
+        env:
+          CAS_PLUIE_COCKPIT: ${{ matrix.cas }}
+        run: |
+          set -euo pipefail
+          timeout --signal=TERM --kill-after=30s 18m node tools/captures-meteo.mjs \
+            --url "file://$GITHUB_WORKSPACE/dist/bitume.html" --sortie qualification/images \
+            --cas "$CAS_PLUIE_COCKPIT" --chrome /usr/bin/google-chrome \
+            > qualification/captures.log 2>&1
+          sha256sum --check qualification/SHA256SUMS.txt > qualification/integrite-apres-captures.log 2>&1
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+      - name: Conserver les preuves y compris en cas d'echec
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-pluie-cockpit-${{ matrix.groupe }}-${{ github.sha }}
+          path: |
+            qualification/*.txt
+            qualification/*.json
+            qualification/*.log
+            qualification/images/
+          if-no-files-found: error
+          retention-days: 14

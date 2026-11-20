@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
-import { optionsMeteo, optionsScenario, preparerEtat, SCENARIOS, SCENARIOS_E3, verifierContrasteSillage, verifierRapport } from '../tools/captures-meteo.mjs';
+import { optionsMeteo, optionsScenario, preparerEtat, observerEtat, SCENARIOS, SCENARIOS_E3, SCENARIOS_PLUIE,
+  verifierContrasteSillage, verifierContrasteCarrosserie, verifierRapport } from '../tools/captures-meteo.mjs';
 import { optionsCapture } from '../tools/controle-visuel.mjs';
 
 test('options de capture bornées, cas explicites et URL valides', () => {
@@ -245,6 +246,163 @@ test('préparation du témoin : seule l’humidité change, aucune implantation 
   assert.equal(a.S.meteo.pluie, 0); assert.equal(b.S.meteo.pluie, 0);
   assert.equal(a.S.meteo.nuage, b.S.meteo.nuage);
   assert.equal(a.S.meteo.mouille, 1); assert.equal(b.S.meteo.mouille, 0);
+});
+
+// Fixtures de diagnostic, pas des preuves de pixels. La chronologie ci-dessous vient du vrai
+// modèle optique et du véritable observerEtat : aucune formule d'impact n'est réimplémentée ici.
+function rapportPluie(s) {
+  const r = rapport(s), humide = !s.sec && !s.inactif;
+  for (const [i, im] of r.images.entries()) {
+    const o = im.observation, force = s.forces?.[i] ?? s.pluie ?? (s.sec ? 0 : 1);
+    const lentille = graine => ({ graine, emis: humide ? 8 + i : 0, impactsDessines: humide ? 1 : 0,
+      forceMax: humide ? .3 : 0, sourceCourante: true, pool: 112, uniformes: 128,
+      gouttesDessinees: humide ? 5 : 0, temps: 8 + i / 10 });
+    o.j1.pluie = o.precipitation.pluie = force;
+    if (s.duo) o.j2.pluie = force;
+    o.pluie = { forceDemandee: force, pluieFixe: force, lentilles: { j1: lentille(11) }, impact: null,
+      carrosserie: null, cameraPrescrite: null, tempsRendu: 8 + i / 10 };
+    if (s.duo) o.pluie.lentilles.j2 = lentille(29);
+    if (s.carrosserie) {
+      r.initialisation.cameraPrescrite = { poste: [.95, 1.1, -1.05], cible: [.7, .38, -.30], fov: 40 };
+      o.camera = { pos: [280.95, 1.1, -1.05], yaw: .7, pitch: -.4, roll: 0, fov: 40 };
+      Object.assign(o.j1, { cameraYaw: .7, cameraPitch: -.4 });
+      o.pluie.cameraPrescrite = structuredClone(o.camera);
+      o.pluie.carrosserie = { humide: s.sec ? 0 : .98, pluie: force, actives: s.sec ? 0 : 189,
+        age: 8.1 + i / 10, revisions: 81 + i, pool: 192,
+        dessineesSujet: s.sec ? 0 : 180, dessineesTotal: s.sec ? 0 : 180 };
+      o.temps = 8.1 + i / 10;
+    }
+  }
+  if (!s.instantsImpact) return r;
+
+  const require = createRequire(import.meta.url);
+  require('../src/vitre.js'); require('../src/visiere-optique.js');
+  const O = globalThis.BITUME.visiereOptique, e = O.creerEtat({ graine: 4 });
+  const c = { actif: true, qualite: 'high', pluie: 1, neige: 0, embruns: 0, intensite: 1,
+    cockpit: false, largeur: 960, hauteur: 540, vitesse: 0 };
+  let temps = 0;
+  const avancer = () => { O.avancerEtat(e, 1 / 120, c); temps += 1 / 120; };
+  for (let n = 0; n < 1200 && !e.depots.stats.impactsEmis; n++) avancer();
+  const indice = e.depots.gouttes.findIndex(p => p.vivant && p.impactForce > 0);
+  assert(indice >= 0, 'la fixture attend une arrivée de pluie native');
+  const p = e.depots.gouttes[indice];
+  avancer(); // premier échantillon après naissance, quand le vrai tampon GPU contient l'impact
+  const origine = temps, identite = p.phase;
+  for (const [i, instant] of s.instantsImpact.entries()) {
+    while (temps < origine + instant - 1e-8) avancer();
+    const o = r.images[i].observation;
+    const S = { vitreContexte: o.j1, camera: o.camera, vue: s.vue, sortie: [],
+      meteo: { pluie: 1, pluieFixe: 1, mouille: 1, t: temps }, tRendu: temps };
+    const gl = { getError: () => 0, isContextLost: () => false };
+    const toile = { hidden: false, getContext: () => gl };
+    const environnement = {
+      BITUME_JEU: { session: S, rendu: { gl }, vitres: { j1: o.vitres.j1 }, ecran: 'course' },
+      __METEO_FIXTURE: { qualificationPluie: true, controleSillage: true, positions: () => r.initialisation.positions,
+        forceDemandee: 1, instantDemande: instant,
+        lentilles: { j1: { e: { simulation: e }, contexte: S.vitreContexte, depart: 0 } },
+        impact: { indice, identite, naissance: origine - 1 / 120, origine } },
+      document: { getElementById: id => id === 'vitre' ? toile : null },
+      getComputedStyle: () => ({ display: 'block', visibility: 'visible' })
+    };
+    const observation = vm.runInNewContext(`(${observerEtat.toString()})()`, environnement);
+    r.images[i].observation = JSON.parse(JSON.stringify(observation));
+  }
+  return r;
+}
+
+test('pluie ciblée : six scénarios explicites, 17 images et diagnostics complets acceptés', () => {
+  const ids = ['pluie-forces-arceau', 'pluie-impact-arceau', 'pluie-duo-cockpit-arceau',
+    'pluie-arceau-sec', 'carrosserie-pluie', 'carrosserie-sec'];
+  assert.deepEqual(SCENARIOS_PLUIE.map(s => s.id), ids);
+  assert.equal(SCENARIOS_PLUIE.reduce((n, s) => n + (s.images || 2), 0), 17);
+  const args = ['--url', 'file:///tmp/bitume.html', '--sortie', '/tmp/pluie', '--cas', ids.join(',')];
+  assert.deepEqual(optionsMeteo(args).cas, ids);
+  assert.throws(() => optionsMeteo(args.map(v => v === 'file:///tmp/bitume.html' ? 'http://localhost/bitume.html' : v)), /HTML exact/);
+  for (const s of SCENARIOS_PLUIE) {
+    assert.deepEqual(verifierRapport(rapportPluie(s), s, true), [], s.id);
+    const vide = rapportPluie(s); vide.images = [];
+    assert(verifierRapport(vide, s, true).length, s.id + ' ne doit pas valider une série vide');
+    const incomplet = rapportPluie(s); incomplet.images.pop();
+    assert(verifierRapport(incomplet, s, true).length, s.id + ' exige chaque image');
+  }
+});
+
+test('pluie arceau : une lentille inactive, masquée ou sans arrivée ne prouve pas la pluie', () => {
+  const s = SCENARIOS_PLUIE.find(s => s.id === 'pluie-forces-arceau'), r = rapportPluie(s);
+  for (const [nom, changer] of [
+    ['diagnostic absent', o => { delete o.pluie; }],
+    ['mauvaise vue', o => { o.vue = 'poursuite'; }],
+    ['lentille inactive', o => { o.j1.actif = false; }],
+    ['lentille masquée', o => { o.visieresVisibles.j1 = false; }],
+    ['aucune arrivée', o => { o.pluie.lentilles.j1.emis = 0; }],
+    ['autre source', o => { o.pluie.lentilles.j1.sourceCourante = false; }],
+    ['pluie absente', o => { o.j1.pluie = 0; }],
+    ['mauvaise force', o => { o.precipitation.pluie = 1; }],
+    ['tampon absent', o => { o.pluie.lentilles.j1.uniformes = 0; }]
+  ]) {
+    const mauvais = structuredClone(r); changer(mauvais.images[0].observation);
+    assert(verifierRapport(mauvais, s, true).length, nom);
+  }
+  const sec = SCENARIOS_PLUIE.find(s => s.id === 'pluie-arceau-sec'), temoin = rapportPluie(sec);
+  temoin.images[0].observation.pluie.lentilles.j1.impactsDessines = 1;
+  assert(verifierRapport(temoin, sec, true).length, 'un impact ne doit pas être accepté sur le témoin sec');
+  const duo = SCENARIOS_PLUIE.find(s => s.duo), double = rapportPluie(duo);
+  double.images[0].observation.pluie.lentilles.j2.emis = 0;
+  assert(verifierRapport(double, duo, true).length, 'J1 ne peut pas servir de preuve pour J2');
+});
+
+test('chronologie native : naissance, couronne puis perle doivent appartenir à la même goutte', () => {
+  const s = SCENARIOS_PLUIE.find(s => s.instantsImpact), r = rapportPluie(s);
+  assert.deepEqual(verifierRapport(r, s, true), []);
+  for (const [nom, image, changer] of [
+    ['impact absent', 1, o => { o.pluie.impact = null; }],
+    ['image de naissance absente', 0, o => { o.pluie.impact.instant = 1 / 30; }],
+    ['tampon absent', 1, o => { o.pluie.impact.indiceUniforme = -1; }],
+    ['couronne absente', 1, o => { o.pluie.impact.uniforme[1] = 0; }],
+    ['phase incohérente', 2, o => { o.pluie.impact.uniforme[0] = 0; }],
+    ['impact persistant', 4, o => { o.pluie.impact.uniforme[1] = .2; }],
+    ['perle absente après impact', 4, o => { o.pluie.impact.perle[3] = 0; }],
+    ['particule réutilisée', 3, o => { o.pluie.impact.identiteCourante += .1; }],
+    ['autre goutte cohérente isolément', 3, o => { o.pluie.impact.indice++; o.pluie.impact.identite++; o.pluie.impact.identiteCourante++; }],
+    ['horloge figée', 2, o => { o.pluie.impact.instant = 0; }]
+  ]) {
+    const mauvais = structuredClone(r); changer(mauvais.images[image].observation);
+    assert(verifierRapport(mauvais, s, true).length, nom);
+  }
+  const sansPhases = structuredClone(r);
+  for (const im of sansPhases.images) im.observation.pluie.impact = null;
+  assert(verifierRapport(sansPhases, s, true).length, 'cinq images de pluie ne remplacent pas les cinq phases observées');
+});
+
+test('carrosserie : gouttes présentes dans le rendu et témoin sec sans eau, à mêmes poses', () => {
+  const sh = SCENARIOS_PLUIE.find(s => s.id === 'carrosserie-pluie');
+  const ss = SCENARIOS_PLUIE.find(s => s.id === 'carrosserie-sec');
+  const humide = rapportPluie(sh), sec = rapportPluie(ss);
+  assert.deepEqual(verifierContrasteCarrosserie(humide, sec), []);
+  assert.deepEqual(humide.images[0].observation.positions, sec.images[0].observation.positions);
+  assert(verifierContrasteCarrosserie(humide, null).length, 'témoin obligatoire');
+  for (const [nom, cote, changer] of [
+    ['eau simulée mais aucune goutte dessinée', 'humide', o => { o.pluie.carrosserie.dessineesSujet = 0; }],
+    ['carrosserie sèche sous pluie', 'humide', o => { o.pluie.carrosserie.humide = 0; }],
+    ['témoin avec gouttes', 'sec', o => { o.pluie.carrosserie.dessineesSujet = 1; }],
+    ['témoin mouillé', 'sec', o => { o.pluie.carrosserie.humide = .5; }],
+    ['lentille parasite', 'humide', o => { o.visieresVisibles.j1 = true; }],
+    ['autre caméra', 'sec', o => { o.camera.pos[0] += 1; }],
+    ['pose différente', 'sec', o => { o.positions[0].d += .2; }],
+    ['temps différent', 'sec', o => { o.temps += .1; }],
+    ['durée de mouillage différente', 'sec', o => { o.pluie.carrosserie.age += .1; }]
+  ]) {
+    const a = structuredClone(humide), b = structuredClone(sec);
+    changer((cote === 'humide' ? a : b).images[0].observation);
+    assert(verifierContrasteCarrosserie(a, b).length, nom);
+  }
+  for (const [s, reference] of [[sh, humide], [ss, sec]]) {
+    const manque = structuredClone(reference); manque.images[0].observation.pluie.carrosserie = null;
+    assert(verifierRapport(manque, s, true).length, s.id + ' exige un état carrosserie');
+  }
+  const insuffisant = structuredClone(humide);
+  insuffisant.images[0].observation.pluie.carrosserie.actives = 1;
+  assert(verifierRapport(insuffisant, sh, true).length, 'une goutte isolée ne qualifie pas le mouillage demandé');
 });
 
 test('la CI conserve les groupes historiques une fois, admet les compléments explicites et fige la référence publiée', () => {

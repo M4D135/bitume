@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { capturer, optionsCapture } from './controle-visuel.mjs';
+import { SEUILS_COCKPIT, mesurerLisibiliteCockpit, installerObservationCockpit, observerLisibiliteCockpit } from './qualification/cockpit-lisibilite.mjs';
 
 export const SCENARIOS_HABITACLE = Object.freeze([
   { id: 'face', poste: [1.7, 1.30, 0], cible: [0, .65, 0] },
@@ -19,6 +20,18 @@ export const SCENARIOS_HABITACLE = Object.freeze([
   { id: 'lod-simple', lod: 'simple', fov: 60 }
 ].map(s => Object.freeze({ images: 2, chauffe: 24, pas: 1 / 60, fov: 40, ...s })));
 
+// Campagne ciblée : dix vues du siège (deux états pour cinq dispositions), deux vues extérieures.
+export const SCENARIOS_COCKPIT = Object.freeze([
+  { id: 'cockpit-mac', cockpit: true, taille: '1440,900' },
+  { id: 'cockpit-paysage', cockpit: true, taille: '1280,720' },
+  { id: 'cockpit-vertical', cockpit: true, taille: '540,960' },
+  { id: 'cockpit-duo-haut-bas', cockpit: true, taille: '1440,900', duo: true, partage: 'haut-bas' },
+  { id: 'cockpit-duo-cote', cockpit: true, taille: '1440,900', duo: true, partage: 'cote' },
+  { id: 'cockpit-profil', poste: [-.1, 1.02, -2], cible: [-.05, .62, 0], images: 1, taille: '1280,720' },
+  { id: 'cockpit-trois-quarts', poste: [-1.15, 1.55, 1.25], cible: [.05, .58, 0], images: 1, taille: '1280,720' }
+].map(s => Object.freeze({ images: 2, chauffe: 24, pas: 1 / 60, fov: 40, qualification: true, ...s })));
+const TOUS_SCENARIOS = [...SCENARIOS_HABITACLE, ...SCENARIOS_COCKPIT];
+
 export function optionsHabitacle(argv) {
   const o = {};
   for (let i = 0; i < argv.length; i += 2) {
@@ -30,29 +43,34 @@ export function optionsHabitacle(argv) {
   if (!o.url || !o.sortie) throw new Error('--url file: et --sortie nécessaires');
   for (const k of ['url', 'avant']) if (o[k] && new URL(o[k]).protocol !== 'file:') throw new Error('URL file: nécessaire pour identifier le HTML exact');
   o.cas = o.cas ? o.cas.split(',') : SCENARIOS_HABITACLE.map(s => s.id);
-  if (!o.cas.length || new Set(o.cas).size !== o.cas.length || o.cas.some(id => !SCENARIOS_HABITACLE.some(s => s.id === id))) throw new Error('Scénario habitacle inconnu ou dupliqué');
+  if (!o.cas.length || new Set(o.cas).size !== o.cas.length || o.cas.some(id => !TOUS_SCENARIOS.some(s => s.id === id))) throw new Error('Scénario habitacle inconnu ou dupliqué');
   o.taille ||= '960,540';
   optionsScenarioHabitacle(SCENARIOS_HABITACLE[0], o.url, o.sortie, o);
   return o;
 }
 
 export function optionsScenarioHabitacle(s, url, sortie, o) {
-  const args = ['--url', url, '--sortie', sortie, '--scenario', 'piste', '--images', String(s.images),
+  const args = ['--url', url, '--sortie', sortie, '--scenario', s.duo ? 'duo' : 'piste', '--images', String(Math.max(2, s.images)),
     '--chauffe', String(s.chauffe), '--pas', String(s.pas), '--taille', s.taille || o.taille,
     '--qualite', 'high', '--circuit', '0', '--saison', 'ete', '--meteo', 'sec', '--vitesse', '35',
     '--depart', '280', '--vue', s.cockpit ? 'cockpit' : 'poursuite', '--retro', s.cockpit ? 'oui' : 'non', '--attendre', '120000'];
   if (o.chrome) args.push('--chrome', o.chrome);
-  return optionsCapture(args);
+  if (s.duo) args.push('--vue2', 'cockpit', '--partage', s.partage);
+  const p = optionsCapture(args);
+  // Le runner générique demande une séquence ; une seule image suffit à chacune des deux inspections extérieures.
+  p.images = s.images;
+  return p;
 }
 
 // Sérialisée dans la page : réglage d'une scène de référence, sans appel de rendu de substitution.
 export function preparerHabitacle(s) {
   const J = BITUME_JEU, B = BITUME, S = J.session, co = S.course, sujet = co.joueur.id;
-  if (S.type !== 'course' || !S.reference) throw new Error('Séance réelle de référence requise');
+  if (S.type !== (s.duo ? 'duo' : 'course') || !S.reference) throw new Error('Séance réelle de référence requise');
   S.acc = -1; J.pauseAuto = false; J.reglages.secousses = 0; J.camera = null;
   co.horloge = co.temps = 12;
   for (const v of co.voitures) {
-    const abscisse = 280 + (v.id === sujet ? 0 : 150 + v.id * 12), q = B.circuit.echantillon(co.c, abscisse);
+    const second = s.duo && v.id === S.locaux[1];
+    const abscisse = v.id === sujet ? 280 : second ? 200 : 430 + v.id * 12, q = B.circuit.echantillon(co.c, abscisse);
     const e = v.etat, volant = v.id === sujet ? s.volant || 0 : 0;
     Object.assign(e, { s: abscisse, d: 0, v: 35, psi: 0, beta: 0, volant, braquage: volant * .12,
       rapport: 3, regime: 9000, alat: 0, along: 0, y: q.y, tangage: Math.atan(q.pente || 0), roulis: q.devers || 0 });
@@ -105,6 +123,21 @@ export function preparerHabitacle(s) {
     graineExpression, simulationConduite: false, description: 'Vrai modèle et vrai renderer ; caméra d’inspection via API pour les vues extérieures, caméra réelle du siège en cockpit.' };
 }
 
+// Deux conditions cinématiques prescrites, sans substituer le calcul de caméra ni faire avancer la conduite.
+export function preparerInstantCockpit(i) {
+  const J = BITUME_JEU, S = J.session, F = __HABITACLE_CAPTURE;
+  F.relever = false; F.releves = {}; F.instant = i === 0 ? 'neutre' : 'vitesse-braquage';
+  (S.locaux || [F.sujet]).forEach((id, joueur) => {
+    const e = S.course.voitures[id].etat, volant = i === 0 ? 0 : (joueur ? -.65 : .65);
+    Object.assign(e, { v: i === 0 ? 0 : 80, volant, braquage: volant * .12, alat: 0, along: 0 });
+    for (const poses of [S.prec, S.cour]) poses[id].braquage = e.braquage;
+  });
+  S.tete = null; if (S.vueJ2) S.vueJ2.tete = null;
+  for (let n = 0; n < 24; n++) __BITUME_CAPTURE.avancer(1000 / 60);
+  F.relever = true;
+  return F.instant;
+}
+
 export function observerHabitacle() {
   const J = BITUME_JEU, B = BITUME, S = J.session, F = __HABITACLE_CAPTURE, v = S.course.voitures[F.sujet], p = S.cour[F.sujet];
   const E = S.modeles[F.sujet].objetsRendu, R = E?.pilote, H = E?.habitacle || R?.habitacle, presents = new Set(S.sortie);
@@ -120,7 +153,7 @@ export function observerHabitacle() {
   const cam = S.camera, cible = F.cameraPrescrite?.cible || [p.x, p.y + .65, p.z], direction = cible.map((q, k) => q - cam.pos[k]), distance = Math.hypot(...direction);
   const hit = S.course.physique.world.raycast(cam.pos, direction.map(x => x / distance), Math.max(0, distance - .15), { mask: 3, staticOnly: true });
   const gl = J.rendu.gl;
-  return { type: S.type, ecran: J.ecran, vue: S.vue, cameraImposee: J.camera !== null,
+  return { type: S.type, ecran: J.ecran, vue: S.vue, vue2: S.vueJ2?.vue || null, instant: F.instant || null, cameraImposee: J.camera !== null,
     camera: { pos: [...cam.pos], yaw: cam.yaw, pitch: cam.pitch, roll: cam.roll || 0, fov: cam.fov, near: cam.near },
     cameraPrescrite: F.cameraPrescrite, distanceLOD: F.distanceLOD, obstructionStatique: !!hit.hit,
     glErreur: gl.getError(), glPerdu: gl.isContextLost(), temps: S.tRendu, pose: { ...p }, oeilVoiture: [...B.voiture.OEIL],
@@ -144,12 +177,13 @@ export function verifierHabitacle(r, s, candidat = true) {
   if (!/^[a-f0-9]{64}$/.test(r.build?.sha256 || '') || !/^[a-f0-9]{40}$/.test(r.source?.commit || '')) fautes.push('Identité du build ou des outils absente');
   if (r.environnement?.webgl2 !== true || r.environnement?.physx?.ready !== true) fautes.push('WebGL2 ou PhysX réel absent');
   if (r.initialisation?.entree !== 'BITUME_JEU.reference' || r.initialisation.posesPrescrites !== true) fautes.push('Séance de référence absente');
+  if (s.qualification && s.cockpit && r.initialisation?.observation?.methode !== 'copie passive des triangles opaques transmis au draw original') fautes.push('Observation du vrai draw absente');
   if (r.images?.length !== s.images) fautes.push('Nombre de captures incomplet');
-  if (s.taille && s.taille.split(',').some((n, i) => r.environnement.resolution?.[i] !== Number(n))) fautes.push('Portrait non exercé');
-  for (const im of r.images || []) {
+  if (s.taille && s.taille.split(',').some((n, i) => r.environnement.resolution?.[i] !== Number(n))) fautes.push('Résolution demandée non exercée');
+  for (const [i, im] of (r.images || []).entries()) {
     const o = im.observation;
     if (!o) { fautes.push('Observation absente'); continue; }
-    if (o.type !== 'course' || o.ecran !== 'course' || o.vue !== (s.cockpit ? 'cockpit' : 'poursuite')) fautes.push('Vue réelle différente de la demande');
+    if (o.type !== (s.duo ? 'duo' : 'course') || o.ecran !== 'course' || o.vue !== (s.cockpit ? 'cockpit' : 'poursuite') || s.duo && o.vue2 !== 'cockpit') fautes.push('Vue réelle différente de la demande');
     if (o.cameraImposee !== !s.cockpit) fautes.push('Caméra de siège remplacée ou caméra d’inspection absente');
     if (!cameraValide(o.camera)) fautes.push('Caméra finale invalide');
     if (!s.cockpit && (!cameraValide(o.camera) || !cameraValide(o.cameraPrescrite) || ['yaw', 'pitch', 'fov'].some(k => Math.abs(o.camera[k] - o.cameraPrescrite[k]) > 1e-9) ||
@@ -157,7 +191,17 @@ export function verifierHabitacle(r, s, candidat = true) {
     if (o.glErreur || o.glPerdu) fautes.push('Erreur WebGL');
     if (o.obstructionStatique !== false) fautes.push('Visée masquée par le décor');
     if (!im.etat?.zones?.scene || im.vues?.scene?.noir > .97 && im.vues.scene.luminance < .025) fautes.push('Scène absente ou noire');
-    if (o.volant !== (s.volant || 0)) fautes.push('Braquage non exercé');
+    if (o.volant !== (s.qualification && s.cockpit ? i ? .65 : 0 : s.volant || 0)) fautes.push('Braquage non exercé');
+    if (s.qualification && s.cockpit) {
+      const vues = o.lisibilite || [];
+      if (o.instant !== (i ? 'vitesse-braquage' : 'neutre') || vues.length !== (s.duo ? 2 : 1) || new Set(vues.map(v => v.joueur)).size !== vues.length) fautes.push('Observation des deux états/joueurs incomplète');
+      for (let j = 0; j < (s.duo ? 2 : 1); j++) {
+        const q = vues.find(q => q.joueur === j + 1);
+        if (!q || q.vitesse !== (i ? 80 : 0) || q.volant !== (i ? j ? -.65 : .65 : 0)) fautes.push('Vitesse/braquage J' + (j + 1) + ' non exercé');
+        if (!q?.route || !q?.glaces || !Array.isArray(q?.erreurs)) fautes.push('Mesure réelle de chaussée/glaces absente');
+        if (candidat) for (const erreur of q?.erreurs || []) fautes.push('J' + (j + 1) + ' : ' + erreur);
+      }
+    }
     if (s.passage && !(o.rapport === 3 && o.rapportAvant === 2 && o.passage > .4 && o.passage < .65)) fautes.push('Passage 2→3 non exercé');
     if (s.geste && !(o.expression?.geste === s.geste && o.expression.gesteIntensite > .9)) fautes.push('Geste défavorable non exercé');
     if (s.lod && (o.variantes?.length !== 1 || o.variantes[0].niveau !== (s.lod === 'moyen' ? 1 : 2))) fautes.push('LOD réel différent de l’échantillon');
@@ -166,7 +210,8 @@ export function verifierHabitacle(r, s, candidat = true) {
     if (!s.lod && (o.instruments?.plancheRendue !== o.instruments?.plancheAttendue || !(o.instruments?.plancheRendue > 10) || o.instruments?.aiguillesRendues !== 3 ||
       !(o.instruments?.supportsRendus > 0) || o.instruments?.retrosRendus !== 2)) fautes.push('Commandes ou instruments réellement rendus incomplets');
     if (s.cockpit) {
-      for (const id of ['glace-g', 'glace-d']) if (!im.etat?.zones?.[id]) fautes.push('Image du rétroviseur absente : ' + id);
+      for (const id of ['glace-g', 'glace-d', ...(s.duo ? ['glace-g2', 'glace-d2'] : [])]) if (!im.etat?.zones?.[id]) fautes.push('Image du rétroviseur absente : ' + id);
+      if (s.duo && (!im.etat?.zones?.scene2 || im.vues?.scene2?.noir > .97 && im.vues.scene2.luminance < .025)) fautes.push('Scène J2 absente ou noire');
       if (o.formes?.['pilote-casque']?.length || o.formes?.['pilote-visiere']?.length) fautes.push('Propre tête présente dans la vue du siège');
     }
   }
@@ -175,24 +220,30 @@ export function verifierHabitacle(r, s, candidat = true) {
 
 export async function campagneHabitacle(o) {
   mkdirSync(o.sortie, { recursive: true });
-  const r = { format: 'bitume-captures-habitacle-v1', date: new Date().toISOString(), demandes: [...o.cas], passages: [], echecs: 0,
+  const r = { format: 'bitume-captures-habitacle-v2', date: new Date().toISOString(), demandes: [...o.cas], seuilsCockpit: SEUILS_COCKPIT, passages: [], echecs: 0,
     limites: ['Poses prescrites : aucun essai de conduite ni de performance matérielle.',
       'Les caméras extérieures sont des inspections via l’API du jeu ; les vues cockpit gardent sa vraie caméra.',
       'Les LOD sont sélectionnés par distance sans forcer le modèle ; leurs petits pixels ne prouvent pas le dégagement des bras.',
+      'La lisibilité ciblée mesure vingt rayons vers le vrai sol à 12/20/35/55 m, les triangles opaques de la voiture et les quadrilatères DOM des glaces ; elle ne couvre pas tout le circuit.',
       'La présence de pièces et les images ne prouvent ni absence d’intersection ni identité des sommets : contrôles géométriques séparés requis.',
       'Revue visuelle des PNG encore requise ; deux images ne constituent pas une qualification temporelle complète.'] };
   for (const [variante, url] of [...(o.avant ? [['avant', o.avant]] : []), ['apres', o.url]]) for (const id of o.cas) {
-    const s = SCENARIOS_HABITACLE.find(s => s.id === id), dossier = path.join(variante, id), sortie = path.join(o.sortie, dossier);
+    const s = TOUS_SCENARIOS.find(s => s.id === id), dossier = path.join(variante, id), sortie = path.join(o.sortie, dossier);
     const p = optionsScenarioHabitacle(s, url, sortie, o);
-    p.initialiser = ({ evaluer }) => evaluer(`(${preparerHabitacle.toString()})(${JSON.stringify(s)})`);
-    p.observer = ({ evaluer }) => evaluer(`(${observerHabitacle.toString()})()`);
+    p.initialiser = ({ evaluer }) => evaluer(`(() => { const r = (${preparerHabitacle.toString()})(${JSON.stringify(s)});
+      ${s.qualification && s.cockpit ? `r.observation = (${installerObservationCockpit.toString()})();` : ''} return r; })()`);
+    p.observer = ({ evaluer }) => evaluer(`(() => { const r = (${observerHabitacle.toString()})();
+      ${s.qualification && s.cockpit ? `r.lisibilite = (${observerLisibiliteCockpit.toString()})(${mesurerLisibiliteCockpit.toString()},${JSON.stringify(SEUILS_COCKPIT)});` : ''} return r; })()`);
+    if (s.qualification && s.cockpit) p.avantImage = ({ evaluer, i }) => evaluer(`(${preparerInstantCockpit.toString()})(${i})`);
     if (variante === 'apres' && o.avant) p.reference = path.join(o.sortie, 'avant', id, 'rapport.json');
     const resultat = await capturer(p), erreurs = verifierHabitacle(resultat, s, variante === 'apres');
+    const constatsLisibilite = (resultat.images || []).flatMap(im => (im.observation?.lisibilite || []).flatMap(v => v.erreurs || []));
+    if (variante === 'avant' && id === 'cockpit-mac' && !constatsLisibilite.some(e => /Chaussée utile occultée|Glace superposée|Glace trop large/.test(e))) erreurs.push('Le défaut connu du cockpit de référence n’a pas été détecté');
     const sha = createHash('sha256').update(readFileSync(fileURLToPath(url))).digest('hex');
     if (sha !== resultat.build?.sha256) erreurs.push('Le HTML a changé pendant la capture');
     const empreintes = resultat.images.map(im => { const png = readFileSync(path.join(sortie, im.fichier));
       return { fichier: im.fichier, octets: png.length, sha256: createHash('sha256').update(png).digest('hex') }; });
-    r.passages.push({ variante, scenario: id, dossier, images: resultat.images.length, build: resultat.build, source: resultat.source, empreintes, erreurs });
+    r.passages.push({ variante, scenario: id, dossier, images: resultat.images.length, build: resultat.build, source: resultat.source, empreintes, constatsLisibilite, erreurs });
     r.echecs += erreurs.length ? 1 : 0;
     writeFileSync(path.join(o.sortie, 'rapport.json'), JSON.stringify(r, null, 2) + '\n');
     process.stderr.write(`${variante}/${id} : ${resultat.images.length} images, ${erreurs.length} erreurs\n`);

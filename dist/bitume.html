@@ -178,6 +178,9 @@ input[type="range"] { width: 100%; accent-color: var(--rouge); }
 .source-condition label { flex: 1 1 auto; }
 .source-condition label span { display: block; margin: 0; min-width: 0; padding-left: 9px; padding-right: 9px; font-size: 15px; }
 .valeurs-condition { display: flex; flex-wrap: wrap; gap: 2px; }
+#p-force-pluie { margin-top: 14px; }
+#p-force-pluie > p { flex-basis: 100%; margin: 0 0 6px; color: var(--papier-2); font-size: 12px; }
+#p-force-pluie > label { flex: 1 1 auto; }
 .conditions-retour { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 22px; padding: 14px 0; border-top: 1px solid var(--trait); }
 .conditions-retour p { margin: 0; color: var(--papier); font-size: 14px; }
 .conditions-retour button { flex: none; }
@@ -948,7 +951,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre arcade-titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.69">V0.2.69</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.70">V0.2.70</b>
     </div>
     <a class="signature" href="https://bitume.estrasse.fr/" download="BITUME.html" title="Télécharger BITUME"><img class="signature-avatar" src="data:image/jpeg;base64,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" alt="" />m4d135</a>
     <p class="arcade-surtitre">Choisissez votre mode</p>
@@ -1143,6 +1146,13 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
         <label><input type="radio" name="meteo" value="soleil"><span>Soleil</span></label>
         <label><input type="radio" name="meteo" value="pluie"><span id="p-type-precipitations">Pluie</span></label>
         <label><input type="radio" name="meteo" value="variable"><span>Variable</span></label>
+        </div>
+        <div id="p-force-pluie" class="valeurs-condition" role="group" aria-labelledby="p-force-pluie-titre" hidden>
+          <p id="p-force-pluie-titre">Intensité de la pluie</p>
+          <label><input type="radio" name="forcePluie" value="fine"><span>Fine</span></label>
+          <label><input type="radio" name="forcePluie" value="moderee"><span>Modérée</span></label>
+          <label><input type="radio" name="forcePluie" value="forte"><span>Forte</span></label>
+          <label><input type="radio" name="forcePluie" value="tres_forte"><span>Très forte</span></label>
         </div>
       </fieldset>
         </div>
@@ -71325,9 +71335,9 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   // rétroviseurs : boîtier profilé, glace vers l'arrière (x = 0,53), sur une patte fine fixée au flanc du carénage
   forme('retros', deuxCotes(C.carene([{ x: .61, y0: .560, y1: .575, l: .02, n: 2, z: .47 }, { x: .57, y0: .540, y1: .592, l: .072, n: 3, z: .47 }, { x: .53, y0: .538, y1: .594, l: .078, n: 4, z: .47 }], { cotes: 16, pas: 3 })
     .concat(C.tube([[.565, .53, .27], [.565, .55, .40]], .009, { cotes: 6 }))));
-  // Montage unique des rétroviseurs dans les deux vues. L'ancrage proche de la planche permet
-  // de voir les deux glaces depuis les yeux sans modifier leur géométrie pour le cadrage.
-  const RETRO = { x: .64, y: .64, z: .29, l: .165, h: .05, angle: .12 };
+  // Montage unique des rétroviseurs dans les deux vues. Les glaces sont devant et au-dessus des mains,
+  // écartées du volant dans le monde ; leurs images suivent ces mêmes boîtiers sans déplacement CSS ajouté.
+  const RETRO = { x: .80, y: .78, z: .36, l: .145, h: .05, angle: .12 };
   // repère d'une glace (k = −1 à gauche, 1 à droite) : centre, normale vers le pilote, droite de la glace, rotation
   function cadreGlace(k) {
     const a = k * RETRO.angle, w = [-Math.sin(a), 0, Math.cos(a)];
@@ -71338,7 +71348,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   // précédent, réécrit en place (aucun tableau neuf par image) ; sans lui, un résultat neuf. Les coins dans le repère
   // de la voiture ne dépendent que de RETRO : calculés une fois.
   const GLACES = [-1, 1].map(k => {
-    const g = cadreGlace(k), coin = (dz, dy) => g.c.map((v, i) => v + g.w[i] * dz + (i === 1 ? dy : 0) - g.n[i] * .0035), l = RETRO.l / 2, h = RETRO.h / 2;
+    // Face tournée vers le pilote du fond de glace : centre à +2 mm, demi-épaisseur de 1,5 mm.
+    const g = cadreGlace(k), coin = (dz, dy) => g.c.map((v, i) => v + g.w[i] * dz + (i === 1 ? dy : 0) + g.n[i] * .0035), l = RETRO.l / 2, h = RETRO.h / 2;
     return { k, coins: [coin(-l, h), coin(l, h), coin(l, -h), coin(-l, -h)], c: g.c, n: g.n, w: g.w };
   });
   function tourne(o, M, v) { o[0] = M[0] * v[0] + M[3] * v[1] + M[6] * v[2]; o[1] = M[1] * v[0] + M[4] * v[1] + M[7] * v[2]; o[2] = M[2] * v[0] + M[5] * v[1] + M[8] * v[2]; return o; }
@@ -72238,15 +72249,16 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   const OEIL = [-.062, .790, 0];
   // Échelle de construction commune des commandes. Les coordonnées de leur dessin sont converties une fois
   // en mètres, autour de l'ancrage du volant dans la cellule. Les deux vues posent ces mêmes coordonnées.
-  const K = .9, VOLANT_MONDE = [.25, .70, 0];
+  const K = .9, VOLANT_MONDE = [.30, .62, 0];
   // Géométrie de construction de la jante, avant conversion commune en mètres. Le haut vient vers le pilote ;
   // mains à 9 h et 3 h sur les branches, avec l'axe de prise perpendiculaire à la jante.
   // Le cadrage depuis le siège se règle dans jeu.js, jamais en déformant ces pièces.
   const VOLANT = { centre: [.88, -.244, 0], rayon: .125, inclinaison: -.436, course: 1.6, prise: Math.PI / 2 };
   const ORIGINE_HABITACLE = VOLANT_MONDE.map((v, i) => v - K * VOLANT.centre[i]);
-  // Planche : face au pilote, inclinée de 25° vers l'arrière. Son assise baisse de 65 mm avec le siège ;
-  // le haut de la casquette reste sous les yeux, sans changer le volant ni la géométrie selon la vue.
-  const PLANCHE = [.986, -.163 - .065 / K, 0], PENTE_PLANCHE = .436;
+  // La planche a son propre ancrage métrique : avancer/abaisser la direction ne doit ni la rapprocher des yeux
+  // ni l'entraîner sous l'écran. Les trois vues utilisent la même conversion dans le repère de construction.
+  const PLANCHE_MONDE = [.45, .665, 0], PENTE_PLANCHE = .436;
+  const PLANCHE = PLANCHE_MONDE.map((v, i) => (v - ORIGINE_HABITACLE[i]) / K);
   const COUDE = [.50, -.68, .19];              // repli statique pour les anciennes poses sans état pilote
   const LEVIER = [.818, -.27, .262];           // pommeau du levier de vitesses, à droite du volant, au point mort
   const REGIME_LAMPE = 12000;                  // la lampe de la casquette s'allume : il est temps de monter un rapport
@@ -72475,8 +72487,11 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     for (const k of [-1, 1]) {
       const g = cadreGlace(k), { c, n: nr, w, m } = g;
       const vers = (dx, dy, dz) => plus(c, [nr, -dx], [[0, 1, 0], dy], [w, dz]);
-      // La patte rejoint le flanc réel, sous la peau des trois LOD ; son ancien pied à z .29 restait en l'air.
-      const attache = vers(.06, -GH * .45, -k * .03), pied = [c[0] + .07, .50, k * .22], axe = pied.map((v, i) => v - attache[i]);
+      // Le pied entre dans le vrai flanc, à une abscisse déduite du montage. L'enfoncement reçoit la patte
+      // sous les peaux des trois LOD, au lieu de conserver une largeur fixe qui flotterait près du nez.
+      const attache = vers(.06, -GH * .45, -k * .03), pied = C.pointSection(C.profil(S_GOUTTE)(c[0] - .06), 0);
+      pied[2] *= k * .80;
+      const axe = pied.map((v, i) => v - attache[i]);
       const G = { k, c, n: nr, w, suiveurs: [],
         boitier: dans(fb.nom, plus(c, [m[0], fb.centre[0]], [m[1], fb.centre[1]], [m[2], fb.centre[2]]), fb.taille, PEINTURE, c1, m),
         patte: dans('cylinder', attache.map((v, i) => (v + pied[i]) / 2), [.018, Math.hypot(axe[0], axe[1], axe[2]), .018], PEINTURE, c1, selonAxe(axe)),
@@ -72504,9 +72519,10 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   // Traduction de la géométrie source vers l'assise physique commune, une seule fois à la construction.
   // La pose statique, la pose animée, le cockpit et les LOD utilisent ensuite les mêmes ancrages métriques.
   function originePilote(o, tete) { return [o[0] + PILOTE_RECUL + (tete ? PILOTE_TETE_RECUL : 0), o[1] + PILOTE_BAISSE, o[2]]; }
-  // Le levier commun avance de 20 mm avec la nouvelle assise, pour dégager l'avant-bras droit au volant.
+  // Le levier commun est sous la jante et en avant du trajet de l'avant-bras droit : les rapports pairs
+  // ne ramènent pas le pommeau sous la manche quand la main retrouve le volant abaissé.
   // La cible de la main suit ce même ancrage physique ; le gant garde sa forme et sa prise.
-  const PILOTE_LEVIER = [.20, .57, .16];
+  const PILOTE_LEVIER = [.25, .49, .16];
   const PILOTE_LEVIER_DECALAGE = PILOTE_LEVIER.map((v, i) => v - ORIGINE_HABITACLE[i] - K * LEVIER[i]);
   // La tige descend du pommeau au pivot près du siège et au vrai fond de cuve.
   const PILOTE_PIED_LEVIER = [PILOTE_LEVIER[0], .30, PILOTE_LEVIER[2] + .0108];
@@ -72667,8 +72683,11 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const rayonCercle = Math.sqrt(Math.max(0, haut * haut - avance * avance));
     const projectionZ = Math.sqrt(Math.max(0, 1 - uz * uz));
     if (rayonCercle > 1e-9 && projectionZ > 1e-9) {
-      // Marge angulaire à l'extrême latéral : elle évite la dérivée infinie d'une tangence du cercle.
-      const cos = Math.max(-.995, Math.min(.995, (z - A[j + 2] - uz * avance) / (rayonCercle * projectionZ)));
+      // Approche douce de l'extrême latéral : la dérivée reste continue au raccord et la tangence
+      // est évitée. Le coude suit toujours le cercle des deux os, sans saut quand la cible sature.
+      const cibleCos = (z - A[j + 2] - uz * avance) / (rayonCercle * projectionZ), moduleCos = Math.abs(cibleCos);
+      const excesCos = Math.max(0, moduleCos - .85);
+      const cos = moduleCos <= .85 ? cibleCos : (cibleCos < 0 ? -1 : 1) * (.85 + .10 * excesCos / (.10 + excesCos));
       const sin = Math.sqrt(Math.max(0, 1 - cos * cos)), signe = ux >= 0 ? 1 : -1;
       const px = (-ux * uz * cos + uy * sin * signe) / projectionZ;
       const py = (-uy * uz * cos - ux * sin * signe) / projectionZ, pz = projectionZ * cos;
@@ -72928,9 +72947,12 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       }
       if (cle[6] && k === cle[7] && cle[8] > 0) {
         const intensite = cle[8], mouvement = portionGeste(intensite, .42, 1), dehors = portionGeste(intensite, .06, .26), recul = portionGeste(intensite, .20, .44);
+        const releve = portionGeste(intensite, .36, .54);
         ecart = portionGeste(intensite, 0, .16);
-        gx += EX[0] * .020 * dehors + (WN[0] * .060 + WU[0] * .045) * recul;
-        gy += EX[1] * .020 * dehors + (WN[1] * .060 + WU[1] * .045) * recul;
+        // Depuis la jante abaissée et avancée, dégager le poignet vers le haut et vers le pilote
+        // avant le geste latéral ; la manche franchit le jonc avec la même portée physique des os.
+        gx += EX[0] * .020 * dehors + (WN[0] * .060 + WU[0] * .045) * recul - .050 / K * releve;
+        gy += EX[1] * .020 * dehors + (WN[1] * .060 + WU[1] * .045) * recul + .080 / K * releve;
         gz += EX[2] * .020 * dehors + (WN[2] * .060 + WU[2] * .045) * recul;
         const poignet = main.pieces[3].ferme.c;
         let wx = gx + F[0] * poignet[0] + F[3] * poignet[1] + F[6] * poignet[2];
@@ -72945,7 +72967,10 @@ globalThis.FGeometry=globalThis.BITUME.carene;
         const cibleY = (.820 + (cle[6] === 2 ? .008 * onde : 0) - ORIGINE_HABITACLE[1]) / K;
         const cibleZ = (k * (.240 + (cle[6] === 3 ? .010 * onde : 0)) - ORIGINE_HABITACLE[2]) / K;
         const contour = 4 * mouvement * (1 - mouvement);
-        wx += (cibleX - wx) * mouvement - .015 / .9 * contour;
+        // Au braquage, la main basse passe derrière celle restée sur le haut de la jante.
+        // Le détour cesse avant la pose haute, pour conserver la garde devant le casque.
+        const croisement = Math.max(0, k * phi / VOLANT.course) * (1 - portionGeste(mouvement, .45, .65));
+        wx += (cibleX - wx) * mouvement - (.015 + .040 * croisement) / K * contour;
         wy += (cibleY - wy) * mouvement;
         wz += (cibleZ - wz) * mouvement;
         // Annuler le braquage avant de redresser la main : matrices orthonormales et poignet fixe sous les doigts.
@@ -73110,6 +73135,249 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   }
 
   B.voiture = { modele, preparerPneusService, preparerExpressions, changerPneus, poser, poserRetro, cockpit, fantome, objetsFantome, detailPour, detailRouesPour, distanceRoues2, hypotDans, visible, attitude, angles, mul, mulM, euler, braquages, glacesCockpit, cadreGlace, RETRO, OEIL, ORIGINE_HABITACLE, PILOTE_ASSISE, PILOTE_EPAULES, K, VOLANT, PLANCHE, PENTE_PLANCHE, COUDE, LEVIER, ROUES, EMPATTEMENT, FORMES, SEGMENTS_ROUE, ROUES_FORMES, JANTES_FORMES };
+})(globalThis.BITUME = globalThis.BITUME || {});
+</script>
+<script>
+// ---- eau-carrosserie.js ----
+/* BITUME — eau sur la peinture : attaches barycentriques aux vrais triangles du modèle.
+   Préparer sous le voile, avancer une seule fois par image, puis reposer sans avancer le temps dans chaque vue.
+   Aucun bitmap, aucun shader ajouté, aucune modification des formes de la voiture ou des copies FERRO. */
+(function (B) {
+  'use strict';
+
+  const MAX = 192, LIMITES = Object.freeze({ complet: MAX, moyen: 48, leger: 12, 'moyen-leger': 12,
+    epave: MAX, 'epave-moyen': 48, 'epave-leger': 12, simple: 0 });
+  const NOM = 'bitume-goutte-carrosserie', MAT_EAU = 19, ECART = .00006;
+  const moteur = globalThis.FRender || globalThis.window?.FRender, atlasConnus = new Map();
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+
+  // Calotte de 24 triangles, base y=0 et sommet y=.5. La base touche la peau ; elle n'est pas une sphère flottante.
+  // Les normales lisses emploient la matière brillante native 19 du moteur.
+  function calotte() {
+    const t = [], bas = [], haut = [], nb = [], nh = [];
+    for (let i = 0; i < 8; i++) {
+      const a = i * Math.PI / 4, x = Math.cos(a), z = Math.sin(a), k = Math.SQRT1_2;
+      bas.push([x * .5, 0, z * .5]); haut.push([x * k * .5, k * .5, z * k * .5]);
+      nb.push([x, 0, z]); nh.push([x * k, k, z * k]);
+    }
+    for (let i = 0; i < 8; i++) {
+      const j = (i + 1) % 8;
+      t.push([bas[i], haut[i], haut[j], nb[i], nh[i], nh[j]], [bas[i], haut[j], bas[j], nb[i], nh[j], nb[j]],
+        [haut[i], [0, .5, 0], haut[j], nh[i], [0, 1, 0], nh[j]]);
+    }
+    return t;
+  }
+  const FORME = calotte();
+  if (moteur?.forme) moteur.forme(NOM, FORME);
+
+  function hasard(graine) {
+    let a = graine >>> 0;
+    return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  }
+  const peinte = p => p.mat === 17 && !p.pilote && !p.tetePilote && p.roue === undefined && !p.fx;
+
+  // Même cube unité et mêmes faces que geometry().box du renderer. Seule primitive peinte du modèle courant.
+  function boite() {
+    const t = [];
+    for (let axe = 0; axe < 3; axe++) for (const signe of [-1, 1]) {
+      const a = (axe + 1) % 3, b = (axe + 2) % 3;
+      const p = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(q => { const v = [0, 0, 0]; v[axe] = signe * .5; v[a] = q[0] * .5; v[b] = q[1] * .5; return v; });
+      t.push(signe > 0 ? [p[0], p[1], p[2]] : [p[0], p[2], p[1]], signe > 0 ? [p[0], p[2], p[3]] : [p[0], p[3], p[2]]);
+    }
+    return t;
+  }
+  const BOITE = boite();
+  function catalogue(mod) {
+    const pieces = mod.corps.filter(peinte), moyens = new Set(mod.moyens), epave = new Set(mod.epave);
+    const cle = pieces.map(p => [p.shape, ...p.o, ...p.s, ...(p.m ? p.m.flat() : []), +moyens.has(p), +epave.has(p)].join(',')).join(';');
+    const connu = atlasConnus.get(cle); if (connu) return connu;
+    const formes = new Map(Object.values(B.voiture.FORMES).map(f => [f.nom, f.tri]));
+    const faces = [], candidates = []; let aire = 0;
+    pieces.forEach((p, piece) => {
+      const source = formes.get(p.shape) || (p.shape === 'box' ? BOITE : null);
+      if (!source) throw new Error('Eau : surface peinte non décrite : ' + p.shape);
+      const m = p.m || [[1, 0, 0], [0, 1, 0], [0, 0, 1]], masque = 1 | (moyens.has(p) ? 2 : 0) | (epave.has(p) ? 4 : 0);
+      source.forEach((tri, indice) => {
+        const points = tri.slice(0, 3).map(v => { const q = v.map((x, k) => x * p.s[k]);
+          return p.o.map((x, k) => x + m[0][k] * q[0] + m[1][k] * q[1] + m[2][k] * q[2]); });
+        const a = points[0], b = points[1], c = points[2], u = b.map((x, k) => x - a[k]), v = c.map((x, k) => x - a[k]);
+        const croix = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]], doubleAire = Math.hypot(...croix);
+        if (!(doubleAire > 1e-12)) return;
+        const normal = croix.map(x => x / doubleAire), lu = Math.hypot(...u), lv = Math.hypot(...v), lw = Math.hypot(...b.map((x, k) => x - c[k]));
+        const uu = u.reduce((n, x) => n + x * x, 0), vv = v.reduce((n, x) => n + x * x, 0), uv = u.reduce((n, x, k) => n + x * v[k], 0);
+        const f = { piece, shape: p.shape, indice, masque, a, u, v, normal, doubleAire,
+          hauteurs: [doubleAire / lw, doubleAire / lv, doubleAire / lu], rayonInscrit: doubleAire / (lu + lv + lw),
+          uu, uv, vv, determinant: uu * vv - uv * uv };
+        faces.push(f);
+        // Dessus et flancs, pas les faces sous la voiture ; les très minces filets ne portent pas de grosses perles.
+        if (normal[1] < -.05 || f.rayonInscrit < .0035) return;
+        aire += doubleAire * (.2 + .8 * Math.max(0, normal[1]));
+        f.cumul = aire; candidates.push(f);
+      });
+    });
+    if (!candidates.length) throw new Error('Eau : aucune surface peinte admissible');
+    const atlas = { faces, candidates, aire, pieces: pieces.map(p => p.shape) };
+    atlasConnus.set(cle, atlas); return atlas;
+  }
+
+  // Une autre peau peinte située devant la normale cache l'attache (quille sous le capot, par exemple).
+  function cachee(atlas, face, x, y, z) {
+    const n = face.normal;
+    for (const t of atlas.faces) {
+      if (t === face) continue;
+      const h0 = n[1] * t.v[2] - n[2] * t.v[1], h1 = n[2] * t.v[0] - n[0] * t.v[2], h2 = n[0] * t.v[1] - n[1] * t.v[0];
+      const det = t.u[0] * h0 + t.u[1] * h1 + t.u[2] * h2; if (Math.abs(det) < 1e-12) continue;
+      const sx = x - t.a[0], sy = y - t.a[1], sz = z - t.a[2], u = (sx * h0 + sy * h1 + sz * h2) / det;
+      if (u < 0 || u > 1) continue;
+      const q0 = sy * t.u[2] - sz * t.u[1], q1 = sz * t.u[0] - sx * t.u[2], q2 = sx * t.u[1] - sy * t.u[0];
+      const v = (n[0] * q0 + n[1] * q1 + n[2] * q2) / det; if (v < 0 || u + v > 1) continue;
+      const distance = (t.v[0] * q0 + t.v[1] * q1 + t.v[2] * q2) / det;
+      if (distance > .00015 && distance < 3) return true;
+    }
+    return false;
+  }
+
+  function preparer(modele, graine = 1) {
+    if (modele.eauCarrosserie) return modele.eauCarrosserie;
+    const atlas = catalogue(modele), alea = hasard(graine), peintes = modele.corps.filter(peinte);
+    const couleurs = [], parPiece = new Map();
+    for (const liste of [modele.corps, modele.moyens, modele.simples, modele.epave]) for (const p of liste) if (peinte(p) && !parPiece.has(p)) {
+      const base = [...p.color], couleur = [...base]; p.color = couleur;
+      const lien = { base, couleur }; couleurs.push(lien); parPiece.set(p, lien);
+    }
+    // Les variantes déjà compilées et celles qui seront créées plus tard lisent la même couleur préparée.
+    for (const t of modele.objetsRendu?.tables || []) if (t) {
+      let i = 0;
+      for (const p of t.liste) { if (t.cockpit && p.tetePilote) continue;
+        const lien = parPiece.get(p); if (lien) t.objets[i].color = lien.couleur; i++; }
+    }
+    const gouttes = [];
+    for (let i = 0; i < MAX; i++) {
+      let f, u, v, rayon, marge, x, y, z, trouve = false;
+      for (let essai = 0; essai < 96 && !trouve; essai++) {
+        const choix = alea() * atlas.aire; let lo = 0, hi = atlas.candidates.length - 1;
+        while (lo < hi) { const milieu = (lo + hi) >> 1; if (atlas.candidates[milieu].cumul < choix) lo = milieu + 1; else hi = milieu; }
+        f = atlas.candidates[lo]; rayon = Math.min(.001 + alea() * .0017, f.rayonInscrit * .22);
+        marge = f.hauteurs.map(h => (rayon * 1.8 + ECART) / h);
+        const libre = 1 - marge[0] - marge[1] - marge[2], a = Math.sqrt(alea()), b = alea();
+        u = marge[1] + libre * a * (1 - b); v = marge[2] + libre * a * b;
+        x = f.a[0] + f.u[0] * u + f.v[0] * v; y = f.a[1] + f.u[1] * u + f.v[1] * v; z = f.a[2] + f.u[2] * u + f.v[2] * v;
+        trouve = !cachee(atlas, f, x, y, z);
+      }
+      if (!trouve) throw new Error('Eau : impossible de trouver une attache exposée');
+      const base = parPiece.get(peintes[f.piece]).base, longueur = Math.hypot(...f.u);
+      const tangent = f.u.map(x => x / longueur), n = f.normal, transverse = [tangent[1] * n[2] - tangent[2] * n[1], tangent[2] * n[0] - tangent[0] * n[2], tangent[0] * n[1] - tangent[1] * n[0]];
+      const repere = Float64Array.from([...tangent, ...n, ...transverse]);
+      gouttes.push({ face: f, u, v, u0: u, v0: v, marge, rayon, force: 0, allongement: 1, repere,
+        local: Float64Array.of(x, y, z), objet: { shape: NOM, p: [0, 0, 0], s: [0, 0, 0], r: [0, 0, 0],
+          mat: MAT_EAU, color: base.map((c, k) => c * .42 + [.25, .28, .32][k]), surface: 'object', overlay: false } });
+    }
+    return (modele.eauCarrosserie = { atlas, gouttes, couleurs, matrice: new Float64Array(9), deplacement: new Float64Array(3), humide: 0, pluie: 0,
+      actives: 0, age: 0, revisions: 0, dernierInstant: -Infinity, dernierAjout: 0, dernierLOD: 'simple' });
+  }
+
+  // instant : identifiant monotone de l'image complète (horlogeReelle), partagé par J1, J2 et les glaces.
+  // pose : pose existante {tangage,roulis,...} ; aucune copie nécessaire. Un appel dt=0 ne fait pas vieillir l'eau.
+  function mettreAJour(e, dt, meteo, vitesse, abri, instant, pose) {
+    if (!(dt > 0) || !Number.isFinite(dt) || !Number.isFinite(instant) || instant <= e.dernierInstant) return false;
+    const neige = typeof meteo?.precipitationsNeige === 'boolean' ? meteo.precipitationsNeige : !!meteo?.neige;
+    const pluie = abri || neige ? 0 : clamp(Number.isFinite(meteo?.pluie) ? meteo.pluie : 0, 0, 1), v = Number.isFinite(vitesse) ? vitesse : 0;
+    const dejaSec = e.humide === 0 && pluie === 0;
+    const tau = pluie > e.humide ? 2 : 8 / (1 + Math.abs(v) / 55);
+    e.humide = pluie + (e.humide - pluie) * Math.exp(-dt / tau);
+    if (pluie === 0 && e.humide < 1e-5) e.humide = 0;
+    e.pluie = pluie; e.age += dt; e.revisions++; e.dernierInstant = instant; e.actives = Math.ceil(e.humide * MAX);
+    // Une carrosserie déjà sèche ne parcourt ni ses perles ni ses couleurs. Le dernier pas
+    // de séchage passe encore ci-dessous pour restaurer les attaches et la peinture ;
+    // la prochaine pluie reprend les mêmes pools et recalcule leur transport normalement.
+    if (dejaSec) return true;
+    const p = Number.isFinite(pose?.tangage) ? pose.tangage : 0, r = Number.isFinite(pose?.roulis) ? pose.roulis : 0;
+    // Gravité exprimée dans le repère incliné de la voiture, et air vers l'arrière (inverse en marche arrière).
+    const gx = -.0018 * Math.sin(p) - .0035 * clamp(v / 85, -1, 1), gy = -.0018 * Math.cos(p) * Math.cos(r), gz = .0018 * Math.cos(p) * Math.sin(r);
+    const D = e.deplacement;
+    if (e.humide === 0) { D[0] = 0; D[1] = 0; D[2] = 0; }
+    else { D[0] += gx * dt; D[1] += gy * dt; D[2] += gz * dt; }
+    for (let i = 0; i < MAX; i++) {
+      const g = e.gouttes[i], f = g.face, n = f.normal;
+      g.force = clamp(e.humide * MAX - i, 0, 1); g.allongement = 1 + .65 * clamp(Math.abs(v) / 85, 0, 1);
+      if (e.humide === 0) { g.u = g.u0; g.v = g.v0; }
+      else {
+        const fu = f.u[0] * D[0] + f.u[1] * D[1] + f.u[2] * D[2], fv = f.v[0] * D[0] + f.v[1] * D[1] + f.v[2] * D[2];
+        g.u = Math.max(g.marge[1], g.u0 + (fu * f.vv - fv * f.uv) / f.determinant);
+        g.v = Math.max(g.marge[2], g.v0 + (fv * f.uu - fu * f.uv) / f.determinant);
+        const libre = 1 - g.marge[0] - g.marge[1] - g.marge[2], somme = g.u + g.v - g.marge[1] - g.marge[2];
+        if (somme > libre) { const k = libre / somme; g.u = g.marge[1] + (g.u - g.marge[1]) * k; g.v = g.marge[2] + (g.v - g.marge[2]) * k; }
+      }
+      const composante = gx * n[0] + gy * n[1] + gz * n[2], tx = gx - composante * n[0], ty = gy - composante * n[1], tz = gz - composante * n[2], longueur = Math.hypot(tx, ty, tz), m = g.repere;
+      if (longueur > 1e-12) {
+        m[0] = tx / longueur; m[1] = ty / longueur; m[2] = tz / longueur;
+        m[6] = m[1] * n[2] - m[2] * n[1]; m[7] = m[2] * n[0] - m[0] * n[2]; m[8] = m[0] * n[1] - m[1] * n[0];
+      }
+      g.local[0] = f.a[0] + f.u[0] * g.u + f.v[0] * g.v;
+      g.local[1] = f.a[1] + f.u[1] * g.u + f.v[1] * g.v;
+      g.local[2] = f.a[2] + f.u[2] * g.u + f.v[2] * g.v;
+    }
+    // Mouillage de la peinture : assombrissement progressif ; les perles apportent les reflets brillants.
+    // Les matériaux satinés du modèle sec et ses couleurs d'origine sont conservés/restaurés exactement.
+    const teinte = 1 - .12 * e.humide;
+    for (let i = 0; i < e.couleurs.length; i++) {
+      const c = e.couleurs[i]; c.couleur[0] = c.base[0] * teinte; c.couleur[1] = c.base[1] * teinte; c.couleur[2] = c.base[2] * teinte;
+    }
+    return true;
+  }
+
+  function attitude(M, pose) {
+    const h = pose.cap || 0, p = pose.tangage || 0, r = pose.roulis || 0;
+    const ch = Math.cos(h), sh = Math.sin(h), cp = Math.cos(p), sp = Math.sin(p), cr = Math.cos(r), sr = Math.sin(r);
+    M[0] = ch * cp; M[1] = sp; M[2] = sh * cp;
+    M[3] = -ch * sp * cr - sh * sr; M[4] = cp * cr; M[5] = -sh * sp * cr + ch * sr;
+    M[6] = ch * sp * sr - sh * cr; M[7] = -cp * sr; M[8] = sh * sp * sr + ch * cr;
+  }
+
+  // Diamètre maximal 5,4 mm : ne pas payer des perles devenues sous-pixel parce que la voiture est encore détaillée.
+  // Le film coloré continue d'être actualisé même si la projection coupe toutes les perles.
+  function detailPour(distance2, tanDemi, hauteur, detailVoiture = 'complet', palier = 'high') {
+    if (!(distance2 >= 0) || !Number.isFinite(distance2) || !(tanDemi > 0) || !Number.isFinite(tanDemi) ||
+        !(hauteur > 0) || !Number.isFinite(hauteur) || detailVoiture !== 'complet' && detailVoiture !== 'moyen' && detailVoiture !== 'epave') return 'simple';
+    const pixels = .0054 * hauteur / (2 * tanDemi * Math.max(.15, Math.sqrt(distance2)));
+    if (pixels < .5) return 'simple';
+    const petit = palier !== 'high' && palier !== 'medium';
+    if (detailVoiture === 'epave') return petit ? 'epave-leger' : pixels < 1.1 || palier === 'medium' ? 'epave-moyen' : 'epave';
+    if (detailVoiture === 'moyen') return petit ? 'moyen-leger' : 'moyen';
+    return petit ? 'leger' : pixels < 1.1 || palier === 'medium' ? 'moyen' : 'complet';
+  }
+
+  // Appeler juste après voiture.poser/cockpit ; leur matrice renvoyée peut être réutilisée ici.
+  // Reposer dans J2/J1/rétros ne change ni humidité, ni barycentriques, ni âge, ni graine.
+  function ajouter(sortie, pose, e, lod = 'complet', overlay = false, matrice = null) {
+    const limite = typeof LIMITES[lod] === 'number' ? LIMITES[lod] : 0; e.dernierAjout = 0; e.dernierLOD = lod;
+    if (!e.actives || !limite) return 0;
+    const M = e.matrice;
+    if (matrice) for (let c = 0; c < 3; c++) for (let r = 0; r < 3; r++) M[c * 3 + r] = matrice[c][r];
+    else attitude(M, pose);
+    const px = pose.p ? pose.p[0] : pose.x, py = pose.p ? pose.p[1] : pose.y, pz = pose.p ? pose.p[2] : pose.z;
+    const pas = MAX / limite, masque = lod === 'epave' || lod === 'epave-moyen' || lod === 'epave-leger' ? 4
+      : lod === 'moyen' || lod === 'moyen-leger' ? 2 : 1;
+    for (let i = 0; i < MAX; i += pas) {
+      const g = e.gouttes[i]; if (!(g.force > 0) || !(g.face.masque & masque)) continue;
+      const n = g.face.normal, x = g.local[0] + n[0] * ECART, y = g.local[1] + n[1] * ECART, z = g.local[2] + n[2] * ECART, o = g.objet;
+      o.p[0] = px + M[0] * x + M[3] * y + M[6] * z; o.p[1] = py + M[1] * x + M[4] * y + M[7] * z; o.p[2] = pz + M[2] * x + M[5] * y + M[8] * z;
+      const m = g.repere;
+      const a00 = M[0] * m[0] + M[3] * m[1] + M[6] * m[2], a01 = M[1] * m[0] + M[4] * m[1] + M[7] * m[2], a02 = M[2] * m[0] + M[5] * m[1] + M[8] * m[2];
+      const a12 = M[2] * m[3] + M[5] * m[4] + M[8] * m[5], a22 = M[2] * m[6] + M[5] * m[7] + M[8] * m[8];
+      o.r[1] = -Math.asin(clamp(a02, -1, 1));
+      if (Math.abs(a02) > 1 - 1e-12) {
+        const a10 = M[0] * m[3] + M[3] * m[4] + M[6] * m[5], a11 = M[1] * m[3] + M[4] * m[4] + M[7] * m[5];
+        o.r[0] = Math.atan2(-a02 * a10, a11); o.r[2] = 0;
+      } else { o.r[0] = Math.atan2(a12, a22); o.r[2] = Math.atan2(a01, a00); }
+      const rayon = g.rayon * Math.sqrt(g.force);
+      o.s[0] = 2 * rayon * g.allongement; o.s[1] = rayon * .9; o.s[2] = 2 * rayon;
+      o.overlay = overlay; sortie.push(o); e.dernierAjout++;
+    }
+    return e.dernierAjout;
+  }
+  B.eauCarrosserie = Object.freeze({ preparer, mettreAJour, ajouter, detailPour, LIMITES, NOM, FORME, ECART });
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -77243,12 +77511,14 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     while (reste > 1e-12) {
       const p = Math.max(0, PHASES.indexOf(m.phase));
       const pas = fixe ? reste : Math.min(reste, Math.max(0, DUREES[p] - m.tp));
+      // La force manuelle reste constante toute la course ; le cycle variable garde ses cibles.
+      const ciblePluie = fixe && Number.isFinite(m.pluieFixe) ? clamp(m.pluieFixe, 0, 1) : PLUIE[p];
       const k = -Math.expm1(-pas / 2.5), anciennePluie = m.pluie;
-      m.pluie += (PLUIE[p] - m.pluie) * k;
+      m.pluie += (ciblePluie - m.pluie) * k;
       m.nuage += (NUAGES[p] - m.nuage) * k;
       // Intégrale de la pluie pendant le pas (pas une somme dépendant du nombre d'images).
-      const eau = m.precipitationsNeige === true ? 0 : PLUIE[p] * pas + (anciennePluie - PLUIE[p]) * 2.5 * k;
-      const sechage = m.precipitationsNeige !== true && PLUIE[p] > 0 ? .004 : .012;
+      const eau = m.precipitationsNeige === true ? 0 : ciblePluie * pas + (anciennePluie - ciblePluie) * 2.5 * k;
+      const sechage = m.precipitationsNeige !== true && ciblePluie > 0 ? .004 : .012;
       m.mouille = clamp(m.mouille + eau * .039 - pas * sechage, 0, 1);
       m.t += pas; m.tp += pas; reste -= pas;
       m.eclair = Math.max(0, m.eclair - pas * 6);
@@ -77485,6 +77755,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   uniform int uNbGouttes;
   uniform vec4 uGouttes[32]; // centre en pixels, rayon, opacité ; vraies rencontres du modèle partagé
   uniform vec4 uTrajets[32]; // milieu et fin de la coulure, historique réel des positions
+  uniform vec4 uImpacts[32]; // phase brève, force, orientation, rayon d'arrivée ; même pool que les perles
   float h21(vec2 p) {
     vec3 q = fract(vec3(p.xyx) * vec3(.1031,.1030,.0973));
     q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z);
@@ -77570,12 +77841,29 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   vec4 nappe(vec2 p,float densite) {
     return nappeGeneration(p,densite,8)+nappeGeneration(p,densite,9);
   }
+  vec4 impactGoutte(vec2 delta,vec4 impact) {
+    if(impact.y<.005)return vec4(0);
+    float phase=impact.x,rayon=impact.w*(.65+1.7*phase),angle=impact.z;
+    vec2 axe=vec2(cos(angle),sin(angle)),travers=vec2(-axe.y,axe.x);
+    vec2 local=vec2(dot(delta,axe),dot(delta,travers)/(.60+.25*phase));
+    float a=atan(local.y,local.x),distance=length(local);
+    float irregulier=1.0+.10*sin(a*3.0+angle)+.055*sin(a*7.0-angle);
+    float largeur=max(.7,rayon*.10),bord=abs(distance-rayon*irregulier);
+    float couronne=(1.0-smoothstep(largeur*.5,largeur+1.0,bord))*(.62+.38*sin(a*3.0+angle)*sin(a*3.0+angle));
+    float eclats=(1.0-smoothstep(.55,1.5+impact.w*.08,abs(distance-rayon*(1.15+phase*.45))))
+      *pow(max(0.0,cos(a*3.0-angle)),18.0)*(1.0-phase);
+    float centre=(1.0-smoothstep(rayon*.25,rayon*.8,distance))*(1.0-phase)*.18;
+    float eau=max(couronne*.83,max(eclats*.72,centre))*impact.y;
+    vec2 normale=delta/max(length(delta),.1)*(couronne*.52+eclats*.35)*impact.y;
+    return vec4(normale,eau,(couronne*.22+eclats*.35+centre)*impact.y);
+  }
   vec4 gouttesMobiles(vec2 p) {
     vec4 total=vec4(0);
     for(int i=0;i<32;i++) {
       if(i>=uNbGouttes) break;
-      vec4 g=uGouttes[i],tr=uTrajets[i]; float rayon=g.z;
-      vec2 bas=min(g.xy,min(tr.xy,tr.zw))-rayon*2.3,haut=max(g.xy,max(tr.xy,tr.zw))+rayon*2.3;
+      vec4 g=uGouttes[i],tr=uTrajets[i],impact=uImpacts[i]; float rayon=g.z;
+      float emprise=max(rayon*2.3,impact.y>.005?impact.w*(.65+1.7*impact.x)*1.75+2.0:0.0);
+      vec2 bas=min(g.xy,min(tr.xy,tr.zw))-emprise,haut=max(g.xy,max(tr.xy,tr.zw))+emprise;
       // Les calculs de lentille et de courbe sont locaux ; le reste de l'écran ne parcourt que les emprises.
       if(any(lessThan(p,bas))||any(greaterThan(p,haut))) continue;
       vec2 trajet=g.xy-tr.xy,direction=length(trajet)>.03?normalize(trajet):directionFlux(g.xy,1.0,rayon);
@@ -77602,6 +77890,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
         normale+=ecart/max(length(ecart),.1)*trace*.35;
       }
       total+=vec4(normale,max(m,trace),max(m*(.5+.5*creux),trace*.45));
+      total+=impactGoutte(delta,impact);
     }
     return total;
   }
@@ -77750,7 +78039,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const e={ temps: 0, accumulateur: 0, eau: 0, neige: 0, embruns: 0, film: 0,
       precedent: new Float64Array(4), uniformes: new Float32Array(12), etapes: 0,
       depots: B.vitre.creerSimulation(options), gouttesUniformes: new Float32Array(MAX_GOUTTES_MOBILES * 4),
-      trajetsUniformes: new Float32Array(MAX_GOUTTES_MOBILES * 4), nbGouttes: 0,
+      trajetsUniformes: new Float32Array(MAX_GOUTTES_MOBILES * 4), impactsUniformes: new Float32Array(MAX_GOUTTES_MOBILES * 4), nbGouttes: 0,
       couches:COUCHES.map(()=>({active:0,fondu:0,transition:false,sequence:0,generations:[nouvelleGeneration(),nouvelleGeneration()]})),
       transportUniformes:new Float32Array(48),histoireUniformes:new Float32Array(48),phaseUniformes:new Float32Array(12),
       transportPrecedent:new Float64Array(48),histoirePrecedente:new Float64Array(48),fluxUniformes:new Float32Array(8),
@@ -77758,12 +78047,13 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     reinitialiserTransport(e);return e;
   }
   function preparerDepots(e) {
-    const d=e.depots,k=clamp(d.accumulateur*30,0,1),w=d.largeur,h=d.hauteur,g=e.gouttesUniformes,tr=e.trajetsUniformes;
+    const d=e.depots,k=clamp(d.accumulateur*30,0,1),w=d.largeur,h=d.hauteur,g=e.gouttesUniformes,tr=e.trajetsUniformes,imp=e.impactsUniformes;
     let n=0;
     for(let i=0;i<MAX_GOUTTES_MOBILES;i++) {
       const p=d.gouttes[i];if(!p.vivant&&!p.fusion)continue;
       const age=p.pa*(1-k)+p.age*k,poids=p.pp*(1-k)+p.poids*k;
-      const alpha=clamp(Math.min(1,age/.24,(p.duree-age)/1.5)*poids,0,1);if(alpha<.005)continue;
+      const alpha=clamp(Math.min(1,age/.24,(p.duree-age)/1.5)*poids,0,1);
+      const force=B.vitre.lireImpact(p,k,imp,n*4,d.impactsActifs);if(Math.max(alpha,force)<.005)continue;
       const j=n++*4;
       g[j]=(p.px*(1-k)+p.x*k)*w;g[j+1]=(1-p.py*(1-k)-p.y*k)*h;
       g[j+2]=Math.sqrt(p.pr*p.pr*(1-k)+(p.vivant?p.taille*p.taille:0)*k);g[j+3]=alpha;
@@ -77771,7 +78061,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     }
     // Une sortie par un bord réduit réellement le nombre actif. Ne pas garder d'anciens
     // uniformes dans la fin du tampon : leur contenu ne doit pas dépendre de la cadence.
-    g.fill(0,n*4);tr.fill(0,n*4);e.nbGouttes=n;
+    g.fill(0,n*4);tr.fill(0,n*4);imp.fill(0,n*4);e.nbGouttes=n;
   }
   function avancerEtat(e, dt, c) {
     if (c.pause || !Number.isFinite(dt) || dt <= 0) return;
@@ -77834,7 +78124,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
     gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([0,0,0,255]));
-    e.lieux={}; for(const nom of ['uScene','uMeteo','uMouvement','uVue','uTexel','uQualite','uAvecScene','uNbGouttes','uGouttes','uTrajets','uFlux','uGravite','uTransport','uHistoire','uPhase']) e.lieux[nom]=gl.getUniformLocation(programme,nom);
+    e.lieux={}; for(const nom of ['uScene','uMeteo','uMouvement','uVue','uTexel','uQualite','uAvecScene','uNbGouttes','uGouttes','uTrajets','uImpacts','uFlux','uGravite','uTransport','uHistoire','uPhase']) e.lieux[nom]=gl.getUniformLocation(programme,nom);
     gl.disable(gl.DEPTH_TEST); gl.disable(gl.BLEND); gl.clearColor(0,0,0,0);
     e.pret=true; e.perdu=false; e.stats.pret=true; e.stats.perdu=false;e.stats.erreur=null;
   }
@@ -77848,7 +78138,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       masquee:false,propre:true,perdu:false,libere:false,pret:false,dprPalier:null,largeur:1,hauteur:1,dpr:1,
       stats:{backend:'webgl2',pret:false,perdu:false,erreur:null,copiesScene:0,dessins:0,etapes:0,pixels:0,pixelsSource:0,
         largeur:0,hauteur:0,dpr:1,eau:0,accumulationNeige:0,embruns:0,gouttes:0,neige:0,
-        fusionsEau:0,expulses:0,depotsEau:0,depotsEmbruns:0,surfaceExpulsee:0}};
+        fusionsEau:0,expulses:0,depotsEau:0,depotsEmbruns:0,impactsEmis:0,surfaceExpulsee:0}};
     e.uMeteo=e.simulation.uniformes.subarray(0,4);e.uMouvement=e.simulation.uniformes.subarray(4,8);e.uVue=e.simulation.uniformes.subarray(8,12);
     e.uFlux=e.simulation.fluxUniformes.subarray(0,4);e.uGravite=e.simulation.fluxUniformes.subarray(4,8);
     e.perte=event=>{event.preventDefault(); e.perdu=true; e.pret=false; e.stats.perdu=true; e.stats.pret=false; montrer(e,false);};
@@ -77891,6 +78181,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     gl.uniform2f(e.lieux.uTexel,1/e.source.width,1/e.source.height);gl.uniform1i(e.lieux.uQualite,niveau);gl.uniform1i(e.lieux.uAvecScene,avecScene);
     gl.uniform1i(e.lieux.uNbGouttes,e.simulation.nbGouttes);
     gl.uniform4fv(e.lieux.uGouttes,e.simulation.gouttesUniformes);gl.uniform4fv(e.lieux.uTrajets,e.simulation.trajetsUniformes);
+    gl.uniform4fv(e.lieux.uImpacts,e.simulation.impactsUniformes);
     gl.uniform4fv(e.lieux.uFlux,e.uFlux);gl.uniform4fv(e.lieux.uGravite,e.uGravite);
     gl.uniform4fv(e.lieux.uTransport,e.simulation.transportUniformes);gl.uniform4fv(e.lieux.uHistoire,e.simulation.histoireUniformes);
     gl.uniform4fv(e.lieux.uPhase,e.simulation.phaseUniformes);
@@ -77900,7 +78191,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     if(!e || e.libere)return;
     if(!e.propre && e.pret && !e.perdu){e.gl.clear(e.gl.COLOR_BUFFER_BIT);e.propre=true;}
     const s=e.simulation;s.eau=s.neige=s.embruns=s.film=s.accumulateur=0;s.precedent.fill(0);s.uniformes.fill(0);
-    B.vitre.effacer(s.depots);s.nbGouttes=0;s.gouttesUniformes.fill(0);s.trajetsUniformes.fill(0);
+    B.vitre.effacer(s.depots);s.nbGouttes=0;s.gouttesUniformes.fill(0);s.trajetsUniformes.fill(0);s.impactsUniformes.fill(0);
     reinitialiserTransport(s);
     e.stats.eau=e.stats.accumulationNeige=e.stats.embruns=e.stats.gouttes=0;e.dprPalier=null;montrer(e,false);
   }
@@ -77917,6 +78208,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     e.stats.eau=s.eau;e.stats.accumulationNeige=s.neige;e.stats.embruns=s.embruns;e.stats.etapes=s.etapes;
     e.stats.gouttes=s.depots.stats.gouttes;e.stats.fusionsEau=s.depots.stats.fusionsEau;e.stats.expulses=s.depots.stats.expulses;
     e.stats.depotsEau=s.depots.stats.depotsEau;e.stats.depotsEmbruns=s.depots.stats.depotsEmbruns;e.stats.surfaceExpulsee=s.depots.stats.surfaceExpulsee;
+    e.stats.impactsEmis=s.depots.stats.impactsEmis;
     if(Math.max(s.eau,s.neige,s.embruns,s.film)<.001&&!s.nbGouttes){if(!e.propre){e.gl.clear(e.gl.COLOR_BUFFER_BIT);e.propre=true;}montrer(e,false);return e.stats;}
     dessiner(e,c,niveau,false);return e.stats;
   }
@@ -77988,6 +78280,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     for (let i = 0; i < nombre; i++) p[i] = { vivant: false, fusion: false, x: 0, y: 0, age: 0, duree: 0,
       taille: 0, vitesse: 0, phase: 0, frequence: 0, glisse: 0, poids: 0, fondu: false, cos: 1, sin: 0,
       px: 0, py: 0, pa: 0, pp: 0, pr: 0, fonte: 0, traceAge: 0,
+      impactAge: 0, impactAvant: 0, impactDuree: 0, impactForce: 0, impactRayon: 0,
       traceX: new Float64Array(6), traceY: new Float64Array(6) };
     return p;
   }
@@ -78013,9 +78306,10 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       creditEau: 0, creditNeige: 0, largeur: canvas ? canvas.clientWidth || canvas.width || 1 : 1280,
       hauteur: canvas ? canvas.clientHeight || canvas.height || 1 : 720, dpr: 1, dprPalier: null, propre: true, libere: false,
       flux: { air: 0, vitesseAir: 0, expansion: 0, deriveX: 0, deriveY: 0, graviteX: 0, graviteY: 1, centreX: .5, centreY: .45 },
-      opacite: 1, stats: { backend: 'canvas2d', pret: !!contexte, gouttes: 0, neige: 0, dessins: 0, etapes: 0, largeur: 0, hauteur: 0, dpr: 1, pixels: 0, fraction: 0,
+      opacite: 1, impactsActifs: false, impactTampon: new Float32Array(4),
+      stats: { backend: 'canvas2d', pret: !!contexte, gouttes: 0, neige: 0, dessins: 0, etapes: 0, largeur: 0, hauteur: 0, dpr: 1, pixels: 0, fraction: 0,
         fusionsEau: 0, fusionsNeige: 0, fonte: 0, expulses: 0, seches: 0, surfaceExpulsee: 0,
-        depotsEau: 0, depotsEmbruns: 0, eauEvacuee: 0, paires: 0 } };
+        depotsEau: 0, depotsEmbruns: 0, impactsEmis: 0, eauEvacuee: 0, paires: 0 } };
     montrer(e, false); // toile neuve, vide
     return e;
   }
@@ -78032,6 +78326,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     for (let i = 0; i < e.gouttes.length; i++) e.gouttes[i].vivant = e.gouttes[i].fusion = false;
     for (let i = 0; i < e.neige.length; i++) e.neige[i].vivant = e.neige[i].fusion = false;
     e.stats.gouttes = e.stats.neige = 0; e.accumulateur = e.creditEau = e.creditNeige = 0;
+    e.impactsActifs = false; e.impactTampon.fill(0);
     e.dprPalier = null; // nouvelle séance : le prochain appel actif reprend la définition du palier courant
   }
   function liberer(e) {
@@ -78057,7 +78352,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     e.largeur = largeur; e.hauteur = hauteur; e.dpr = dpr;
     e.stats.largeur = w; e.stats.hauteur = h; e.stats.dpr = dpr; e.stats.pixels = w * h;
   }
-  function deposer(e, neige, limite, x, y, taille, echelle = 1) {
+  function deposer(e, neige, limite, x, y, taille, echelle = 1, impact = 0) {
     const liste = neige ? e.neige : e.gouttes;
     let p = null;
     for (let i = 0; i < limite; i++) if (!liste[i].vivant) { p = liste[i]; break; }
@@ -78073,7 +78368,23 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     p.frequence = .27 + hache(seed + 43) * .65; p.glisse = hache(seed + 47) > .68 ? 1 : .04;
     p.poids = 0; p.fondu = false; p.cos = Math.cos(p.phase); p.sin = Math.sin(p.phase);
     p.px = p.x; p.py = p.y; p.pa = 0; p.pp = 0; p.pr = p.taille; p.fonte = 0; p.traceAge = 0;
+    // L'arrivée se tasse en 180–280 ms, puis seule la perle transportée demeure.
+    // Horloge distincte : une fusion ou la fonte ne doit jamais rejouer une éclaboussure.
+    p.impactAge = p.impactAvant = 0; p.impactDuree = .18 + hache(seed + 53) * .10;
+    p.impactForce = neige ? 0 : impact * (.8 + .2 * hache(seed + 59));
+    // Même une perle fine éclate sur quelques pixels CSS avant de se rassembler.
+    // Le plafond reste local ; une grande goutte ne peut pas blanchir toute la vue.
+    p.impactRayon = Math.min(14, (p.taille + 2.5) * (.9 + .35 * Math.min(1, p.impactForce)));
+    if (p.impactForce > 0) e.stats.impactsEmis++;
     p.traceX.fill(p.x); p.traceY.fill(p.y); return true;
+  }
+  const impactsExposes = c => !c.abri && !(Number(c.neige) > 0) && (Number(c.pluie) > 0 || Number(c.embruns) > 0);
+  // Même enveloppe interpolée pour le Canvas et WebGL. Le tampon appartient à la vue.
+  function lireImpact(p, k, sortie, offset = 0, actif = true) {
+    const phase = p.impactDuree > 0 ? clamp(melange(p.impactAvant, p.impactAge, k) / p.impactDuree, 0, 1) : 1;
+    const force = actif && (p.vivant || p.fusion) ? p.impactForce * Math.min(1, phase / .16) * Math.pow(1 - phase, 1.4) * (p.vivant ? 1 : 1 - k) : 0;
+    sortie[offset] = phase; sortie[offset + 1] = force; sortie[offset + 2] = p.phase; sortie[offset + 3] = p.impactRayon;
+    return force;
   }
   // Six points d'une coulure réelle, gardés dans le pool. L'histoire suit le vent et les fusions ; elle ne
   // dépend pas du nombre d'images dessinées. Les gouttes immobiles ne se voient pas affublées d'un trait vertical.
@@ -78135,7 +78446,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       const gerbe = Math.floor(e.temps * 4) + e.graine * 739;
       const x = enSpray ? .12 + hache(gerbe * 37 + 91) * .76 + (hache(e.sequence * 43 + 7) - .5) * .075 : undefined;
       const y = enSpray ? .10 + hache(gerbe * 53 + 83) * .78 + (hache(e.sequence * 47 + 3) - .5) * .075 : undefined;
-      if (deposer(e, false, budget.gouttes, x, y, undefined, budget.echelleEau || 1)) {
+      const forceImpact = (.25 + .75 * Math.max(eau, spray)) * Math.min(1.35, intensite);
+      if (deposer(e, false, budget.gouttes, x, y, undefined, budget.echelleEau || 1, forceImpact)) {
         e.stats.depotsEau++; if (enSpray) e.stats.depotsEmbruns++;
       }
       e.creditEau--;
@@ -78145,6 +78457,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     for (let i = 0; i < e.gouttes.length; i++) {
       const p = e.gouttes[i]; p.fusion = false; if (!p.vivant) continue;
       p.px = p.x; p.py = p.y; p.pa = p.age; p.pp = p.poids; p.pr = p.taille;
+      p.impactAvant = p.impactAge; p.impactAge += PAS;
+      if (!eau && !spray) p.impactForce = 0;
       garderTrajet(p);
       // La vitesse déplace l'eau jusqu'au bord ; elle ne simule plus son évacuation en accélérant son âge.
       p.age += PAS * (eau > .05 || spray > .05 ? 1 : 1.55);
@@ -78194,6 +78508,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const intensite = c.intensite == null || !Number.isFinite(Number(c.intensite)) ? 1 : clamp(Number(c.intensite), 0, 2);
     if (c.actif === false || c.retro || c.qualite === 'off' || !intensite) { effacer(e); return e.stats; }
     budget = budget || BUDGETS[c.qualite] || BUDGETS.high;
+    e.impactsActifs = impactsExposes(c);
     e.largeur = Math.max(1, Number(c.largeur) || e.largeur); e.hauteur = Math.max(1, Number(c.hauteur) || e.hauteur);
     const pluie = clamp(Number(c.pluie) || 0, 0, 1), neige = clamp(Number(c.neige) || 0, 0, 1);
     const vitesse = clamp(Math.abs(Number(c.vitesse) || 0), 0, 120);
@@ -78212,10 +78527,28 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     for (let i = 0; i < e.gouttes.length; i++) {
       const p = e.gouttes[i]; if (!p.vivant && !p.fusion) continue;
       const age = melange(p.pa, p.age, k), a = clamp(Math.min(1, age / .24, (p.duree - age) / 1.5) * melange(p.pp, p.poids, k) * e.opacite, 0, 1);
-      if (a <= .005) continue;
       const x = melange(p.px, p.x, k) * w, y = melange(p.py, p.y, k) * h;
       const r = Math.sqrt(melange(p.pr * p.pr, p.vivant ? p.taille * p.taille : 0, k));
       if (r < .05) continue;
+      const impact = e.impactTampon;
+      if (lireImpact(p, k, impact, 0, e.impactsActifs) > .005) {
+        const phase = impact[0], rayon = impact[3] * (.65 + 1.7 * phase), aplati = .60 + .25 * phase;
+        ctx.globalAlpha = Math.min(.95, impact[1] * e.opacite);
+        // Couronne brisée et trois micro-éclaboussures, locales et orientées par la graine
+        // de la goutte. Aucun aplat ni reprise d'une grille écran.
+        ctx.strokeStyle = 'rgba(17,44,59,0.50)'; ctx.lineWidth = Math.max(.8, rayon * .12);
+        ctx.beginPath(); ctx.ellipse(x, y, rayon, rayon * aplati, p.phase, .1, 5.4); ctx.stroke();
+        ctx.strokeStyle = 'rgba(219,242,252,0.75)'; ctx.lineWidth = Math.max(.65, rayon * .075);
+        ctx.beginPath(); ctx.ellipse(x - .35, y - .45, rayon, rayon * aplati, p.phase, 3.1, 5.8); ctx.stroke();
+        ctx.fillStyle = 'rgba(209,237,249,0.55)'; ctx.beginPath();
+        for (let j = 0; j < 3; j++) {
+          const angle = p.phase + j * TAU / 3 + .23 * Math.sin(p.phase + j), distance = rayon * (1.15 + phase * .45);
+          const petit = Math.max(.45, impact[3] * (.13 + .035 * j) * (1 - phase));
+          ctx.ellipse(x + Math.cos(angle) * distance, y + Math.sin(angle) * distance * aplati, petit, petit * .72, angle, 0, TAU);
+        }
+        ctx.fill();
+      }
+      if (a <= .005) continue;
       ctx.globalAlpha = a;
       const dx = x - p.traceX[5] * w, dy = y - p.traceY[5] * h;
       if (dx * dx + dy * dy > r * r) {
@@ -78275,6 +78608,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const intensite = Number.isFinite(Number(c.intensite)) && c.intensite != null ? clamp(Number(c.intensite), 0, 2) : 1;
     if (!e.contexte || c.actif === false || c.retro === true || !intensite || budget === BUDGETS.off) { effacer(e); return e.stats; }
     if (c.pause === true) return e.stats;
+    e.impactsActifs = impactsExposes(c);
     calculerFlux(c, e.flux);
     e.opacite = Math.min(1.25, intensite) * (c.cockpit === false ? .55 : 1);
     suivrePalier(e, budget);
@@ -78314,7 +78648,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     ctx.globalAlpha = 1; e.propre = false; montrer(e, true);
     return true;
   }
-  B.vitre = { creer, creerSimulation, avancerSimulation, calculerFlux, mettreAJour, prechauffer, effacer, liberer, BUDGETS, MAX_PIXELS, FREQUENCE: 30 };
+  B.vitre = { creer, creerSimulation, avancerSimulation, calculerFlux, lireImpact, mettreAJour, prechauffer, effacer, liberer, BUDGETS, MAX_PIXELS, FREQUENCE: 30 };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -80419,6 +80753,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
 (function (B) {
   'use strict';
   const MODES = Object.freeze(['manuel', 'aleatoire', 'reel']);
+  const FORCES_PLUIE = Object.freeze({ fine: .2, moderee: .45, forte: .75, tres_forte: 1 });
   const SAISONS = ['printemps', 'ete', 'automne', 'hiver'], MOMENTS = ['jour', 'crepuscule', 'nuit', 'cycle'];
   const METEOS = ['soleil', 'pluie', 'variable'], JOUR = 86400000, CACHE = 12 * 60000, DELAI_MIN = 30000;
   const GEO = 'https://get.geojs.io/v1/ip/geo.json', METEO = 'https://api.open-meteo.com/v1/forecast';
@@ -80427,6 +80762,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
   let cacheGeo = null, cacheMeteo = null, dernierGeo = -Infinity, derniereMeteo = -Infinity, dernierFetch = null, active = null;
   const formats = new Map(), heures = new Map();
   const normaliserMode = id => MODES.includes(id) ? id : 'manuel';
+  const normaliserForcePluie = id => Object.prototype.hasOwnProperty.call(FORCES_PLUIE, id) ? id : 'forte';
   const borne = (v, a, b) => Math.max(a, Math.min(b, v));
   const lisse = (a, b, x) => { const t = borne((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
   const propre = value => typeof value === 'string' ? value.replace(/[\x00-\x1f\x7f]/g, '').slice(0, 80) : '';
@@ -80566,7 +80902,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     const sources = { saison: saisonMode, moment: momentMode, meteo: meteoMode };
     const resultat = { saisonMode, momentMode, meteoMode,
       saison: choisir(SAISONS, reglages.saison, 'ete', saisonMode, hasard), moment: choisir(MOMENTS, reglages.moment, 'jour', momentMode, hasard),
-      meteo: choisir(METEOS, reglages.meteo, 'soleil', meteoMode, hasard), mReelle: null, horlogeReelle: null,
+      meteo: choisir(METEOS, reglages.meteo, 'soleil', meteoMode, hasard), forcePluie: normaliserForcePluie(reglages.forcePluie), mReelle: null, horlogeReelle: null,
       meta: { statut: 'ok', sources, lieu: null, message: '', cache: false, limite: false, releve: null, lever: null, coucher: null } };
     if (![saisonMode, momentMode, meteoMode].includes('reel')) return resultat;
     const maintenant = Number.isFinite(options.maintenant) ? options.maintenant : Date.now();
@@ -80635,7 +80971,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     resultat.meta.message = messages.join(' ') || (resultat.meta.lieu ? 'Conditions locales : ' + resultat.meta.lieu + '.' : 'Conditions réelles disponibles.');
     return resultat;
   }
-  B.conditionsCourse = { MODES, normaliserMode, resoudre, nuitReelle, saisonReelle, meteoWMO };
+  B.conditionsCourse = { MODES, FORCES_PLUIE, normaliserMode, normaliserForcePluie, resoudre, nuitReelle, saisonReelle, meteoWMO };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -82512,7 +82848,7 @@ FERRO.initPhysics().then(function(){
     for (const [cle, valeur] of [...stockEnAttente]) ecrireStock(cle, typeof valeur === 'function' ? valeur() : valeur);
   }
   const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
-    anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'ecran', gouttes: 1,
+    anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'ecran', gouttes: 1, forcePluie: 'forte',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglagesEnregistres = lireStock('bitume.reglages', {});
   const reglages = Object.assign({}, DEFAUT, reglagesEnregistres);
@@ -82527,6 +82863,7 @@ FERRO.initPhysics().then(function(){
   reglages.saisonMode = B.conditionsCourse.normaliserMode(reglages.saisonMode);
   reglages.momentMode = B.conditionsCourse.normaliserMode(reglages.momentMode);
   reglages.meteoMode = B.conditionsCourse.normaliserMode(reglages.meteoMode || (reglages.meteo === 'aleatoire' ? 'aleatoire' : 'manuel'));
+  reglages.forcePluie = B.conditionsCourse.normaliserForcePluie(reglages.forcePluie);
   // Champ du cockpit : 69° n'a été le défaut que l'après-midi du 16/11, et David le trouve trop large (« fov moins
   // prononcé »). Une valeur restée à 69 revient une seule fois au défaut ; tout autre choix du pilote est gardé.
   if (!reglages.champRevu) { if (+reglages.champ === 69) reglages.champ = DEFAUT.champ; reglages.champRevu = true; }
@@ -82772,7 +83109,7 @@ FERRO.initPhysics().then(function(){
       fx: B.traces.creer(course.voitures.length, graineCourse, course.physique.world),
       // flammes et détonations d'échappement (lot 20) : hasard propre, tiré de la graine de la course
       ech: B.echappement ? B.echappement.creer(course.voitures.length, graineCourse) : null,
-      meteo: meteoInit, conditions,
+      meteo: meteoInit, conditions, eauCarrosserieTemps: 0, eauCarrosseriePoint: new Float64Array(3),
       nature: { ambiance: B.ambiance.creer(sc.decor.atmosphere, i === 2), moment: B.ambiance.normaliser(conditions.moment),
         horlogeReelle: horlogePartagee(conditions.horlogeReelle), dateDepart: enl && Number.isFinite(enl.dateDepart) ? enl.dateDepart : null,
         saison: sc.decor.saison || B.saisons.profil(sc.saison, CATALOGUE[i].theme), revisionRendu: -1, faune: null, effetsSaison: null, aurores: null },
@@ -82782,6 +83119,8 @@ FERRO.initPhysics().then(function(){
     };
     // Toutes les montes sont préparées sous le voile : un service ne construit rien en pleine course.
     for (const modele of S.modeles) B.voiture.preparerPneusService(modele);
+    if (B.eauCarrosserie) for (let k = 0; k < S.modeles.length; k++)
+      B.eauCarrosserie.preparer(S.modeles[k], (enl ? enl.graine : graineCourse) + k * 739);
     // bâtis avec la scène (une fois par décor), repris ici de leurs places de départ : sous le voile de la préparation
     S.animaux = animauxDe(sc, S.nature);
     if (demo) S.cinema = B.cinema.preparer(c, sc.decor, S.animaux, course.physique.world);
@@ -83132,6 +83471,25 @@ FERRO.initPhysics().then(function(){
 
   // Météo et pluie projetée : les secondes viennent du rendu, zéro pendant une pause.
   function majMeteo(S, dt) { return B.meteo.avancer(S, dt); }
+  // L'eau appartient à chaque voiture, pas à la caméra. Un seul pas avant J2/J1 et les rétros.
+  function majEauCarrosserie(S, poses, dt, meteo) {
+    if (!B.eauCarrosserie) return;
+    if (dt > 0 && Number.isFinite(dt)) S.eauCarrosserieTemps += dt;
+    const point = S.eauCarrosseriePoint;
+    for (let k = 0; k < S.modeles.length; k++) {
+      const p = poses[k], etat = S.modeles[k].eauCarrosserie;
+      if (!etat || !p) continue;
+      point[0] = p.x; point[1] = p.y + .65; point[2] = p.z;
+      B.eauCarrosserie.mettreAJour(etat, dt, meteo, S.course.voitures[k].etat.v,
+        sousLaVoute(S.course.c, point), S.eauCarrosserieTemps, p);
+    }
+  }
+  function poserEauCarrosserie(S, k, ev, sortie, detail, overlay, matrice, distance2, tanDemi, hauteur, palierVue) {
+    const E = B.eauCarrosserie, etat = S.modeles[k].eauCarrosserie;
+    if (!E || !etat) return;
+    const lod = E.detailPour(distance2, tanDemi, hauteur, detail, palierVue);
+    E.ajouter(sortie, ev, etat, lod, overlay, matrice);
+  }
   let pluieVue = null, pluieVue2 = null, vitreVue = null, vitreVue2 = null;
   const METEO_ABRI = { pluie: 0, nuage: 0, eclair: 0, mouille: 0, ventX: 0, ventZ: 0, t: 0 };
   const ambiancePublic = () => ({ pluie: 0, neige: 0, mouille: 0, feux: 0, vert: false, termine: false });
@@ -83181,7 +83539,8 @@ FERRO.initPhysics().then(function(){
         }
       }
       contexte.pause = ecran === 'pause' || (ecran === 'reglages' && retourReglages === 'pause');
-      contexte.actif = (ecran === 'course' || ecran === 'demo' || contexte.pause) && (vue === 'cockpit' || vue === 'poursuite');
+      // Les lentilles embarquées reçoivent aussi les impacts : arceau, ponton et aileron arrière.
+      contexte.actif = (ecran === 'course' || ecran === 'demo' || contexte.pause) && (vue === 'cockpit' || vue === 'poursuite' || vue === 'aileron' || vue === 'roue' || vue === 'arriere');
       contexte.intensite = reglages.gouttes; contexte.cockpit = vue === 'cockpit'; contexte.abri = abri;
       contexte.dpr = window.devicePixelRatio || 1;
       // rendreVue vient de dessiner cette caméra : en duo, la source contient encore J2 avant la copie scene2,
@@ -83629,7 +83988,7 @@ FERRO.initPhysics().then(function(){
     numeroSeance: 0, seanceAcceptee: null, dernierDepart: -Infinity };
   const VERSION_CHOIX_PNEUS = 2, VERSION_PNEUS_RESEAU = 1;
   // Empreinte des sources du build, incluant catalogue, générateur, limites et collisions : même piste, même jeu.
-  const REVISION_PISTES = 'e3429776d1ab5b75d79203defbf61abb9290f6ce4494f5627122f971ebe5900e';
+  const REVISION_PISTES = '15bd1dbdf7c1fead9f72c0f354619302d78479853c2ec44a54d5dc1ef6e221fd';
   function contratPiste(i) {
     return Number.isInteger(i) && CATALOGUE[i] ? { id: CATALOGUE[i].id, revision: REVISION_PISTES } : null;
   }
@@ -83692,17 +84051,19 @@ FERRO.initPhysics().then(function(){
   const NOMS_MOMENT = { jour: 'jour', crepuscule: 'crépuscule', nuit: 'nuit', cycle: 'cycle jour / nuit' };
   const NOMS_SAISON = { printemps: 'printemps', ete: 'été', automne: 'automne', hiver: 'hiver' };
   function cleConditions() {
-    return [reglages.saisonMode, reglages.saison, reglages.momentMode, reglages.moment, reglages.meteoMode, reglages.meteo].join('|');
+    return [reglages.saisonMode, reglages.saison, reglages.momentMode, reglages.moment, reglages.meteoMode, reglages.meteo, reglages.forcePluie].join('|');
   }
   function conditionsDuDepart() {
     if (conditionsPreparation && conditionsPreparationCle === cleConditions()) return conditionsPreparation;
     return { saison: B.saisons.normaliser(reglages.saison), moment: B.ambiance.normaliser(reglages.moment),
-      meteo: reglages.meteo || 'aleatoire', mReelle: null, horlogeReelle: null };
+      meteo: reglages.meteo || 'aleatoire', forcePluie: B.conditionsCourse.normaliserForcePluie(reglages.forcePluie), mReelle: null, horlogeReelle: null };
   }
   // Même initialisation au conseil, au départ et chez les invités : les flocons ne sont pas
   // de l'eau liquide, et le paysage hivernal fournit une couverture de chaussée explicite.
   function meteoPourConditions(k, i, graine) {
     const m = B.meteo.depuisReel(k.mReelle) || B.meteo.pour(k.meteo) || B.meteo.initial(graine);
+    // Le mode réel garde la mesure reçue. L'ancien choix Pluie conserve ses 0,75 par défaut.
+    if (!k.mReelle && k.meteo === 'pluie') m.pluie = m.pluieFixe = B.conditionsCourse.FORCES_PLUIE[B.conditionsCourse.normaliserForcePluie(k.forcePluie)];
     return B.chaussee.preparer(m, B.saisons.profil(k.saison, CATALOGUE[i].theme));
   }
   function surfaceAnnoncee(k) {
@@ -83726,10 +84087,12 @@ FERRO.initPhysics().then(function(){
   function conditionsCommunes(k) {
     return { saison: B.saisons.normaliser(k.saison), moment: B.ambiance.normaliser(k.moment),
       meteo: ['soleil', 'pluie', 'variable', 'aleatoire'].includes(k.meteo) ? k.meteo : 'soleil',
+      forcePluie: B.conditionsCourse.normaliserForcePluie(k.forcePluie),
       mReelle: B.meteo.depuisReel(k.mReelle), horlogeReelle: horlogePartagee(k.horlogeReelle) };
   }
   function nomMeteoCourse(k) {
-    const nom = NOMS_METEO[k.meteo] || (k.eau > .25 ? 'pluie, tirée au sort' : 'sec, tirée au sort');
+    const force = { fine: 'fine', moderee: 'modérée', forte: 'forte', tres_forte: 'très forte' }[B.conditionsCourse.normaliserForcePluie(k.forcePluie)];
+    const nom = k.meteo === 'pluie' ? 'pluie ' + force : NOMS_METEO[k.meteo] || (k.eau > .25 ? 'pluie, tirée au sort' : 'sec, tirée au sort');
     const profil = B.saisons.profil(k.saison, CATALOGUE[k.i].theme);
     const neige = CATALOGUE[k.i].theme !== 'cote' && (k.mReelle ? k.mReelle.neige : profil.neige);
     if (k.mReelle) return (k.mReelle.pluie > .02 ? neige ? 'neige' : k.mReelle.phase === 'orage' ? 'orage' : 'pluie'
@@ -84236,8 +84599,10 @@ FERRO.initPhysics().then(function(){
   // d'abord la diagonale de référence. L'habitacle étant désormais métrique et commun, il ne peut plus rapprocher
   // ses glaces pour un téléphone : la projection s'ouvre seulement assez pour contenir les deux vrais montages.
   // La discrète ouverture de vitesse demeure ; la position des yeux et la géométrie ne dépendent pas de l'écran.
-  const INCLINAISON_COCKPIT = -Math.PI / 60;
-  function champCockpit(aspect, v) {
+  // Le regard accompagne les commandes métriques abaissées : les yeux restent ceux du pilote,
+  // et le champ mémorisé est conservé. La géométrie commune dégage elle-même la chaussée.
+  const INCLINAISON_COCKPIT = -Math.PI / 18;
+  function champCockpit(aspect, v, cam, glaces, M) {
     const t = Math.tan(clamp(+reglages.champ || 60, 60, 105) * Math.PI / 360);
     const tv = aspect < 16 / 9 ? Math.hypot(t, t / (16 / 9)) / Math.hypot(1, Math.max(.3, aspect)) : t / (16 / 9);
     const portraitTelephone = estTactile && canvas.clientWidth <= 600 && aspect < 1;
@@ -84249,7 +84614,35 @@ FERRO.initPhysics().then(function(){
       tangente = Math.max(tangente, largeur / profondeur / Math.max(.3, aspect));
     }
     const vertical = 2 * Math.atan(tangente) * 180 / Math.PI;
-    return clamp(vertical * (1 + (portraitTelephone ? .04 : .05) * clamp(v / 85, 0, 1)), 10, 110);
+    const base = clamp(vertical * (1 + (portraitTelephone ? .04 : .05) * clamp(v / 85, 0, 1)), 10, 110);
+    if (!cam || !glaces) return base;
+    // La direction du regard et les déplacements de tête changent la projection : le montage nominal
+    // seul ne suffit pas en virage. Projeter les coins réels et l'enveloppe des boîtiers dans ce regard,
+    // avec 3 px de garde, sans déplacer les rétros ni réécrire la préférence de champ du joueur.
+    tangente = Math.tan(base * Math.PI / 360);
+    const cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw), cp = Math.cos(cam.pitch), sp = Math.sin(cam.pitch);
+    const cr = Math.cos(cam.roll), sr = Math.sin(cam.roll), boite = B.voiture.FORMES['retro-boitier'];
+    const gardeX = Math.max(.5, 1 - 6 / Math.max(1, canvas.clientWidth));
+    const gardeY = Math.max(.5, 1 - 6 / Math.max(1, canvas.clientHeight));
+    for (let g = 0; g < glaces.length; g++) for (let j = 0; j < 12; j++) {
+      const glace = glaces[g]; let x, y, z;
+      if (j < 4) {
+        const q = glace.coins[j]; x = q[0] - cam.pos[0]; y = q[1] - cam.pos[1]; z = q[2] - cam.pos[2];
+      } else {
+        // Boîte de la vraie forme procédurale, orientée selon le même montage que sa glace.
+        const n = j - 4, bx = boite.centre[0] + boite.taille[0] * (n & 1 ? .5 : -.5);
+        const by = boite.centre[1] + boite.taille[1] * (n & 2 ? .5 : -.5);
+        const bz = boite.centre[2] + boite.taille[2] * (n & 4 ? .5 : -.5);
+        x = glace.centre[0] - glace.normale[0] * bx + M[1][0] * by + glace.droite[0] * bz - cam.pos[0];
+        y = glace.centre[1] - glace.normale[1] * bx + M[1][1] * by + glace.droite[1] * bz - cam.pos[1];
+        z = glace.centre[2] - glace.normale[2] * bx + M[1][2] * by + glace.droite[2] * bz - cam.pos[2];
+      }
+      const profondeur = x * sy * cp + y * sp - z * cy * cp;
+      const droite = x * cy + z * sy, haut = -x * sy * sp + y * cp + z * cy * sp;
+      tangente = Math.max(tangente, Math.abs(droite * cr + haut * sr) / (profondeur * aspect * gardeX),
+        Math.abs(haut * cr - droite * sr) / (profondeur * gardeY));
+    }
+    return clamp(2 * Math.atan(tangente) * 180 / Math.PI, 10, 110);
   }
   // La tête du pilote vit : elle part vers l'extérieur du virage et vers l'avant au freinage (2 cm au plus), le regard
   // va vers la corde (4° au plus), et le casque tremble à haute vitesse, sur les vibreurs et dans l'herbe.
@@ -84261,11 +84654,19 @@ FERRO.initPhysics().then(function(){
     const OE = B.voiture.OEIL, M = B.voiture.attitude(p.cap, p.tangage, p.roulis);
     const o = B.voiture.mul(M, [OE[0] - T.lon * .02, OE[1] - Math.max(0, -T.lon) * .006, OE[2] - T.lat * .016]);
     const vib = (et.surface === 'vibreur' ? .006 : et.surface === 'herbe' ? .004 * Math.min(1, et.v / 20) : 0) + .0011 * Math.pow(clamp(et.v / 85, 0, 1), 2);
-    return {
+    const cam = {
       pos: [p.x + o[0], p.y + o[1] + Math.sin(t * 73) * vib * reglages.secousses, p.z + o[2]], yaw: p.cap + Math.PI / 2 + T.regard * .07,
       pitch: p.tangage * .85 + INCLINAISON_COCKPIT + Math.min(0, T.lon) * .012, roll: -p.roulis * .85 + T.lat * .014,
-      fov: champCockpit(canvas.clientWidth / Math.max(1, canvas.clientHeight), et.v), near: .1, far: PORTEE_VUE
+      fov: 60, near: .1, far: PORTEE_VUE
     };
+    // La seconde vue hérite de S : elle doit posséder ses buffers, même si J1 a déjà rendu son cockpit.
+    const C = Object.prototype.hasOwnProperty.call(S, 'cadrageCockpit') ? S.cadrageCockpit
+      : (S.cadrageCockpit = { pose: { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0 }, glaces: null });
+    C.pose.p[0] = p.x; C.pose.p[1] = p.y; C.pose.p[2] = p.z;
+    C.pose.cap = p.cap; C.pose.tangage = p.tangage; C.pose.roulis = p.roulis;
+    C.glaces = B.voiture.glacesCockpit(C.pose, C.glaces);
+    cam.fov = champCockpit(canvas.clientWidth / Math.max(1, canvas.clientHeight), et.v, cam, C.glaces, M);
+    return cam;
   }
   // Écran partagé : la poursuite garde la diagonale du cadre 16:9 dans une moitié plus large ou plus étroite
   function champAdapte(f) {
@@ -84356,12 +84757,12 @@ FERRO.initPhysics().then(function(){
   const VUES_DEHORS = new Set(['tele', 'helico', 'orbite', 'travelling', 'sol', 'panorama', 'flore', 'faune', 'pilote', 'peloton']);
   const DANS_LA_ROCHE = new Set(['helico', 'orbite', 'travelling', 'pilote', 'peloton']);   // sous le tunnel, ces caméras seraient dans la montagne
   const CAMERAS_DEMO = new Set(['roue', 'aileron', 'arriere', 'travelling', 'orbite']);
-  function cameraDemo(S, p, plan) {
+  function cameraDemo(S, p, plan, vue = plan && plan.vue) {
     const M = B.voiture.attitude(p.cap, p.tangage, p.roulis), pt = o => { const q = B.voiture.mul(M, o); return [p.x + q[0], p.y + q[1], p.z + q[2]]; };
     const vise = (pos, cible, fov) => { const dx = cible[0] - pos[0], dy = cible[1] - pos[1], dz = cible[2] - pos[2], d = Math.hypot(dx, dy, dz) || 1;
       return { pos, yaw: Math.atan2(dx, -dz), pitch: Math.asin(clamp(dy / d, -1, 1)), roll: 0, fov, near: .1, far: PORTEE_VUE }; };
-    const cote = plan.cote || 1, age = S.tRendu - plan.debut;   // temps rendu : la grue et l'orbite glissent sans sauts
-    switch (plan.vue) {
+    const cote = plan && plan.cote || 1, age = S.tRendu - (plan ? plan.debut : 0);   // temps rendu, même hors réalisateur
+    switch (vue) {
       case 'roue':        // au ras du ponton, la roue avant au premier plan et la piste qui file
         return { pos: pt([-.05, .40, cote * 1.13]), yaw: p.cap + Math.PI / 2 - cote * .07, pitch: -.025 + p.tangage * .85, roll: -p.roulis * .85, fov: 66, near: .05, far: PORTEE_VUE };
       case 'aileron':     // au-dessus de l'arceau, comme les caméras de télévision : casque et nez devant
@@ -84859,7 +85260,9 @@ FERRO.initPhysics().then(function(){
       o.detail = plusLeger(OPTIONS_POSE[k].plafond, detailVoiture(ex * ex + ez * ez, tanDemi, hauteur));
       o.rouesDetail = detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(POSES_RENDU[k], camR.pos), tanDemi, hauteur, detailsRoues[k]);
       o.roues = v.degats && v.degats.roues; o.casse = !!(v.degats && v.degats.casse);
-      B.voiture.poser(S.modeles[k], POSES_RENDU[k], objets, o);
+      const attitude = B.voiture.poser(S.modeles[k], POSES_RENDU[k], objets, o);
+      poserEauCarrosserie(S, k, POSES_RENDU[k], objets, o.casse ? 'epave' : o.detail, false, attitude,
+        ex * ex + ez * ez, tanDemi, hauteur, profilDe(S).palier);
     }
     for (let k = S.iVoitures1, n = S.iEffets0; k < n; k++) if (devantGlace(sortie[k], axe, ox, oy, oz)) objets.push(sortie[k]);
     B.traces.dessiner(S.fx, objets, camR.pos, S.hEffets, axe, 0);
@@ -85013,6 +85416,7 @@ FERRO.initPhysics().then(function(){
       for (let r = 0; r < 4; r++) reb[r] = a * (Math.sin(s0 + r * 1.9) * .6 + Math.sin(s0 * 2.3 + r * .7 + t * 3) * .4);
     }
     const meteo = majMeteo(S, dtImage);
+    majEauCarrosserie(S, poses, dtImage, meteo);
     S.ambianceImage = B.meteo.ambiance(meteo, S.ambianceImage || creationTardive('ambiance', {}));
     if (S.nature) {
       const nature = S.nature;
@@ -85095,7 +85499,7 @@ FERRO.initPhysics().then(function(){
     } else if (vue === 'tele') cam = cameraTele(S, suivie, ps);
     else if (vue === 'helico') cam = cameraHelico(S, ps, dtImage);
     else if (vue === 'sol') cam = cameraSol(S, suivie, ps);
-    else if (CAMERAS_DEMO.has(vue)) cam = cameraDemo(S, ps, S.planVu);
+    else if (CAMERAS_DEMO.has(vue)) cam = cameraDemo(S, ps, S.planVu, vue);
     else cam = vue === 'cockpit' ? cameraCockpit(S, ps, suivie.etat, S.tRendu, dtImage) : cameraPoursuite(S, ps, suivie.etat, dtImage);
     if (S.type === 'demo') {
       const aspect = canvas.clientWidth / Math.max(1, canvas.clientHeight);
@@ -85243,7 +85647,9 @@ FERRO.initPhysics().then(function(){
         // les rivaux de la glace peinte ne servent que sans image réelle des glaces
         etc.derriere = glaceVive ? AUCUN_SUIVEUR : suiveurs(co, poses, k, p);
         etc.ciel = atm.skyBottom; etc.brume = atm.fog; etc.glaceVive = glaceVive;
-        B.voiture.cockpit(S.modeles[k], ev, sortie, etc);
+        const attitude = B.voiture.cockpit(S.modeles[k], ev, sortie, etc);
+        poserEauCarrosserie(S, k, ev, sortie, etc.casse ? 'epave' : 'complet', true, attitude,
+          d2, tanDemi, hauteur, P.palier);
         ombreFin = sortie.length;
         continue;
       }
@@ -85254,7 +85660,9 @@ FERRO.initPhysics().then(function(){
       o.rouesDetail = rouesDetail;
       o.detail = o.plafond === 'complet' && dx * avX + dz * avZ < -DERRIERE_CAMERA ? 'moyen' : o.plafond;
       o.roues = co.voitures[k].degats && co.voitures[k].degats.roues; o.casse = !!(co.voitures[k].degats && co.voitures[k].degats.casse);
-      B.voiture.poser(S.modeles[k], ev, sortie, o);
+      const attitude = B.voiture.poser(S.modeles[k], ev, sortie, o);
+      poserEauCarrosserie(S, k, ev, sortie, o.casse ? 'epave' : o.detail, false, attitude,
+        d2, tanDemi, hauteur, P.palier);
       if (k === suivie.id) ombreFin = sortie.length;
     }
     S.iVoitures1 = sortie.length;
@@ -85808,6 +86216,9 @@ FERRO.initPhysics().then(function(){
     }
     const profil = B.saisons.profil(k.saison, CATALOGUE[reglages.circuit].theme);
     $('p-type-precipitations').textContent = profil.neige ? 'Neige' : 'Pluie';
+    $('p-force-pluie').hidden = reglages.meteoMode !== 'manuel' || reglages.meteo !== 'pluie';
+    $('p-force-pluie-titre').textContent = profil.neige ? 'Intensité de la neige' : 'Intensité de la pluie';
+    for (const r of document.querySelectorAll('input[name="forcePluie"]')) r.checked = r.value === reglages.forcePluie;
     $('p-saison-note').textContent = (reglages.saisonMode === 'manuel' ? '' : NOMS_SAISON[k.saison] + ' · ')
       + (profil.neige ? 'Paysage enneigé. Les précipitations manuelles tombent en flocons.' : k.saison === 'hiver' ? 'Hiver doux à Port-Sable, sans neige.' : 'La saison transforme le paysage.');
     $('p-moment-note').textContent = reglages.momentMode === 'reel' ? 'L’éclairage suit l’heure réelle, à vitesse normale.'
@@ -85847,7 +86258,7 @@ FERRO.initPhysics().then(function(){
       if (numero !== conditionsNumero || erreur.name === 'AbortError') return null;
       // Défaut imprévu : le pilote peut toujours partir avec ses choix manuels visibles.
       conditionsPreparation = { saison: B.saisons.normaliser(choix.saison), moment: B.ambiance.normaliser(choix.moment),
-        meteo: ['soleil', 'pluie', 'variable'].includes(choix.meteo) ? choix.meteo : 'soleil', mReelle: null, horlogeReelle: null,
+        meteo: ['soleil', 'pluie', 'variable'].includes(choix.meteo) ? choix.meteo : 'soleil', forcePluie: B.conditionsCourse.normaliserForcePluie(choix.forcePluie), mReelle: null, horlogeReelle: null,
         meta: { statut: 'repli', message: 'Détection indisponible : conditions manuelles affichées.' } };
       preselectionnerPneus();
       return conditionsPreparation;
@@ -85992,6 +86403,7 @@ FERRO.initPhysics().then(function(){
     }
     if (t.name === 'tours' || t.name === 'difficulte') { reglages[t.name] = +t.value; sauverReglages(); }
     if (t.name === 'meteo') { reglages.meteo = t.value; sauverReglages(); preselectionnerPneus(); }
+    if (t.name === 'forcePluie') { reglages.forcePluie = B.conditionsCourse.normaliserForcePluie(t.value); sauverReglages(); preselectionnerPneus(); }
     if (['pneus', 'pneus2', 'pneusIci', 'pneusPret', 'pneusPret2'].includes(t.name) && choisirPneusPilote(t.name.endsWith('2') ? 1 : 0, t.value)) {
       retirerPret(); sauverReglages(); envoyerPneus(); majChoixPneus();
     }
@@ -85999,7 +86411,7 @@ FERRO.initPhysics().then(function(){
     if (/^pneusStand[01]$/.test(t.name)) choisirPneusStands(+t.name.slice(-1), t.value);
     if (t.name === 'boitePret' && ['auto', 'manuelle'].includes(t.value)) { reglages.boite = t.value; sauverReglages(); }
     if (t.name === 'vuePret' && ['cockpit', 'poursuite'].includes(t.value)) { reglages.vue = t.value; sauverReglages(); }
-    if (['meteo', 'momentDepart', 'saisonDepart', 'saisonMode', 'momentMode', 'meteoMode'].includes(t.name) && ecran === 'preparation') actualiserConditions();
+    if (['meteo', 'forcePluie', 'momentDepart', 'saisonDepart', 'saisonMode', 'momentMode', 'meteoMode'].includes(t.name) && ecran === 'preparation') actualiserConditions();
     if (EL.role === 'hote' && lienActif() && ['tours', 'difficulte'].includes(t.name)) annoncerCourse();
     if (t.name === 'joueursIci') { reglages.joueursLocaux = t.value === '2' ? 2 : 1; sauverReglages(); }
     if (t.name === 'partage') { reglages.partage = t.value === 'cote' ? 'cote' : 'haut-bas'; sauverReglages(); }
@@ -87408,12 +87820,13 @@ FERRO.initPhysics().then(function(){
     const mode = options.mode || 'solo', qualite = options.qualite || 'high';
     const i = options.circuit ?? 0, graine = options.graine ?? 17017;
     const meteo = ['sec', 'clair'].includes(options.meteo) ? 'soleil' : (options.meteo || 'soleil');
+    const forcePluie = B.conditionsCourse.normaliserForcePluie(options.forcePluie);
     const vue = options.vue || 'cockpit', vue2 = options.vue2 || 'cockpit';
     const partage = options.partage || 'haut-bas', glaces = options.retro || 'oui';
     const difficulte = options.difficulte ?? 1, tours = options.tours ?? 3;
     const pilote = options.pilote ?? true;
     const vitesse = options.vitesse ?? 75, mouille = options.mouille ?? (meteo === 'pluie' ? .75 : 0);
-    const vues = ['cockpit', 'poursuite', 'tele', 'helico'];
+    const vues = ['cockpit', 'poursuite', 'tele', 'helico', 'aileron', 'roue', 'arriere'];
     if (!['solo', 'duo'].includes(mode) || !B.graphismes.QUALITES.includes(qualite)) throw new Error('mode ou qualité de référence inconnu');
     if (!Number.isInteger(i) || i < 0 || i >= CATALOGUE.length || !Number.isInteger(graine) || graine < 0 || graine > 0xffffffff) throw new Error('circuit ou graine invalide');
     if (!Number.isInteger(difficulte) || difficulte < 0 || difficulte > 2 || !Number.isInteger(tours) || tours < 1 || tours > 99) throw new Error('difficulté ou nombre de tours invalide');
@@ -87426,13 +87839,13 @@ FERRO.initPhysics().then(function(){
     const depart = options.depart === 'tunnel' ? c.tunnel.debut - 40 : (options.depart ?? 800);
     if (!Number.isFinite(depart)) throw new Error('abscisse de départ invalide');
     restaurerReference();
-    const cles = ['vue', 'vue2', 'partage', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'moment', 'saison', 'retro', 'meteo', 'saisonMode', 'momentMode', 'meteoMode', 'pneus', 'pneusPilotes', 'pneusAutoPilotes', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
+    const cles = ['vue', 'vue2', 'partage', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'moment', 'saison', 'retro', 'meteo', 'forcePluie', 'saisonMode', 'momentMode', 'meteoMode', 'pneus', 'pneusPilotes', 'pneusAutoPilotes', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
     const avant = Object.fromEntries(cles.map(k => [k, reglages[k]])), decorAvant = decorEnrichi;
-    Object.assign(reglages, { vue, vue2, partage, qualite, difficulte, tours, retro: glaces, meteo, saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', secousses: 0, vibrations: 'non', champ: 60 });
+    Object.assign(reglages, { vue, vue2, partage, qualite, difficulte, tours, retro: glaces, meteo, forcePluie, saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', secousses: 0, vibrations: 'non', champ: 60 });
     Object.assign(reglages, B.graphismes.normaliserOptions(options));
     reglages.moment = B.ambiance.normaliser(options.moment ?? 'jour');
     reglages.saison = B.saisons.normaliser(options.saison ?? 'ete');
-    reglages.pneus = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoPourConditions({ meteo, saison: reglages.saison }, i, graine)));
+    reglages.pneus = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoPourConditions({ meteo, forcePluie, saison: reglages.saison }, i, graine)));
     reglages.pneusPilotes = [reglages.pneus, reglages.pneus]; reglages.pneusAutoPilotes = [true, true];
     decorEnrichi = options.decor !== 'reference';
     graineCourse = graine - 1;
@@ -87464,7 +87877,7 @@ FERRO.initPhysics().then(function(){
     // glaces remises à leur état de départ sans réallouer : rien ne naît dans la première image de la référence
     for (const G of [retro.j1, retro.j2]) if (G) { G.cote = 0; remettreLampes(G); }
     S.reference = { graine, circuit: i, circuitId: CATALOGUE[i].id, graineCircuit: CATALOGUE[i].graine,
-      mode, qualite, ...B.graphismes.normaliserOptions(reglages), moment: reglages.moment, saison: reglages.saison, difficulte, tours, pilote, vue, vue2, partage, retro: glaces, meteo, mouille, depart: ramener(depart, c.longueur), vitesse,
+      mode, qualite, ...B.graphismes.normaliserOptions(reglages), moment: reglages.moment, saison: reglages.saison, difficulte, tours, pilote, vue, vue2, partage, retro: glaces, meteo, forcePluie, mouille, depart: ramener(depart, c.longueur), vitesse,
       decor: decorEnrichi ? 'enrichi' : 'reference', tunnel: c.tunnel ? { debut: c.tunnel.debut, fin: c.tunnel.fin } : null };
     $('chargement').classList.add('fini'); aller('course'); appliquerPalier();
     B.mesures.reinitialiser();

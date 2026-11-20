@@ -1,0 +1,42 @@
+[
+  {
+    "suite": "voiture-identite",
+    "exit": 1,
+    "secondes": 5.93
+  },
+  {
+    "suite": "voiture",
+    "exit": 0,
+    "secondes": 6.34
+  },
+  {
+    "suite": "pilote-commun",
+    "exit": 0,
+    "secondes": 6.45
+  },
+  {
+    "suite": "pilote-habitacle",
+    "exit": 0,
+    "secondes": 48.12
+  },
+  {
+    "suite": "pilote-exterieur",
+    "exit": 0,
+    "secondes": 18.11
+  },
+  {
+    "suite": "troll-pilote",
+    "exit": 0,
+    "secondes": 0.2
+  },
+  {
+    "suite": "pneus-pilotes",
+    "exit": 0,
+    "secondes": 0.05
+  },
+  {
+    "suite": "conditions-course",
+    "exit": 0,
+    "secondes": 0.11
+  }
+]

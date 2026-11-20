@@ -1,0 +1,25 @@
+{
+  "version": "0.2.70",
+  "empreinte_sources": "15bd1dbdf7c1fead9f72c0f354619302d78479853c2ec44a54d5dc1ef6e221fd",
+  "html_sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+  "html_octets": 14502704,
+  "sources": {
+    "src/jeu.js": "4e70217c9d1870c60deb89f89f75b72b451df731ec607a71f2d7ef817ef1b292",
+    "src/voiture.js": "e7d86029411af2a745ac01303b3d3ddfe142194f487dc63de6afa369eb6ece03",
+    "src/eau-carrosserie.js": "f1edaf1a7c18992a6d70d0398c98c0739480389b318ae4a9b4443af01b9291fc",
+    "src/vitre.js": "9292ce3db76995360e50156990688ab9c1fcb6e1700321f9c27d30a29b20797b",
+    "src/visiere-optique.js": "0e42ae8d18e900cda0336362e442d00c2c462e31f74876a31f4c55be5a27ac4d"
+  },
+  "reconstruction_deux_fois_identique": true,
+  "physique": "p15",
+  "FERRO": "0.3.15",
+  "preuves_navigateur": "a_recevoir_sur_commit_exact",
+  "CI_complete": "a_recevoir_sur_commit_exact",
+  "captures_demandes": [
+    "cockpit",
+    "troll",
+    "pluie-cockpit"
+  ],
+  "ancien_echec_identite": "Conservé dans geometrie-resultats.json ; 84 groupes changent volontairement. Analyse détaillée puis régénération et 6 contrôles stricts réussis.",
+  "ancien_echec_reseau": "Harness integration-parallele dépourvu du vrai module conditions-course ; ajouté au chargement, 19 tests réussis sans changement des assertions."
+}
