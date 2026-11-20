@@ -41,3 +41,13 @@ La revue du vrai rig a trouvé un saut de poignet à l’interruption d’un ges
 Retour amorti puis trajet du levier sont maintenant partagés entre les vues, sans changer
 la boîte physique. 810 poses sans traversée et 21 tests ciblés réussis. Le build 0.2.64
 est reproductible. CI complète et captures intégrées à contrôler avant fusion.
+
+## 005 — Raccords finaux, revue intégrée et candidat 0.2.65
+
+Le checkpoint 9cc701a sauvegarde les raccords et leurs échecs initiaux. Douze voitures passent sec/pluie/neige,
+les trois couverts et le pont, sans replacement. La revue de 0.2.64 a refusé une fermeture prématurée :
+CI 151/152, poing trop ouvert, projections poursuite trop faibles et contrôle aérien inadapté.
+Le poing est replié dès les premières phalanges ; le panache visuel monte avec la vitesse et l'eau.
+L'allocation V8 de 16 octets par pose est supprimée via le tampon numérique préalloué ; seuil inchangé.
+Build 0.2.65 reproductible ; CI et images exactes à terminer avant fusion. Les traces des essais restent conservées.
+Reçu : `rapports/COUVERTS-CIMES-2026-11-20/CANDIDAT-0265.json`.

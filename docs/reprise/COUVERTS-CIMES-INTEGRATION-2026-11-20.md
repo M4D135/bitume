@@ -29,7 +29,7 @@ modifier les règles générales de conduite pour faire passer la géométrie.
 
 ## Contrôles visuels préparés
 
-`tools/captures-couverts.mjs` prépare **six scènes et dix-huit images** :
+`tools/captures-couverts.mjs` prépare **six scènes et vingt-quatre images** :
 les deux portails de Haut-Col et du Tunnel du Rocher, le second tunnel,
 la galerie éclairée par le jour, la caméra au-dessus du toit et deux vues
 simultanées tunnel/galerie. Les phases de portail sont des poses prescrites,
@@ -37,7 +37,7 @@ pas une conduite enregistrée. Elles contrôlent les vrais modules du HTML,
 les flux d'eau entrants, la décroissance de l'eau résiduelle, la reprise
 de pluie à la sortie, les rayons PhysX, les rétroviseurs et les erreurs GPU.
 
-Les huit contrôles de l'outil passent, dont des mutations de visière absente,
+Les neuf contrôles de l'outil passent, dont des mutations de visière absente,
 de repli de rendu, d'eau constante, de galerie obscurcie et de vues contaminées.
 Ils ne constituent pas des images du jeu. Chromium local échoue au démarrage
 sur une création de socket refusée ; aucun PNG n'est attribué à cet essai.
@@ -56,3 +56,19 @@ Le workflow `visuel-couverts.yml` prépare les six groupes sur GitHub.
 Les limites de performance matérielle, les réserves précédentes et les
 17 destinations du programme restent ouvertes. Le lac, la cascade et
 l'enrichissement complet des sept lieux ne sont pas déclarés terminés.
+
+## Revue intégrée et correction finale des portails
+
+La CI de 0.2.64 termine à 151/152 : allocation du pilote extérieur au-dessus du seuil.
+Ses images ont aussi révélé un poing trop ouvert et un apport de projections insuffisant en poursuite.
+Les corrections sources sont sauvegardées avec les couverts ; le nouveau build sera qualifié ensemble.
+Le contrôle aérien a été raccordé aux champs réels de diagnostic, sans changer les images ni le runtime aérien.
+
+Les six portails réels passent maintenant 882 rayons, avec moins de 15 mm de variation aux seuils.
+Un premier affinage général passait ces rayons mais causait un accident : il est rejeté et conservé dans les preuves.
+La finition des dalles est limitée aux sorties courbes, avec prise en compte du dévers.
+Douze voitures franchissent un tour plus 500 m au sec, sous pluie et sur neige : 80 256 sondes,
+zéro replacement, aucune pose ni vitesse imposée. Le reçu exact est
+`rapports/ROUTE-DES-CIMES-2026-11-20/QUALIFICATION-DOUZE-PORTAILS.json`.
+Les entrées, milieux et sorties des trois couverts Cimes seront tous photographiés ; les rayons
+identifient la vraie voûte et la surface de piste, pour ne pas accepter une roche à la bonne altitude.

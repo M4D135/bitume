@@ -1,16 +1,16 @@
 {
   "date": "2026-11-20",
   "etat_courant": {
-    "version_courante": "0.2.64",
+    "version_courante": "0.2.65",
     "version_publiee_verifiee": "0.2.62",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "candidat_demos_pilotes_meteo",
-    "lot": "demos_pilotes_meteo",
-    "fiche": "docs/reprise/DEMOS-PILOTES-METEO-2026-11-20.md",
+    "statut": "candidat_assemble_a_qualifier",
+    "lot": "couverts_cimes_et_correctifs_0264",
+    "fiche": "docs/reprise/COUVERTS-CIMES-INTEGRATION-2026-11-20.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
     "derniere_entree": "004",
-    "prochaine_action": "Publier le candidat, contrôler CI et captures intégrées avant fusion.",
+    "prochaine_action": "Pousser le build assemblé puis contrôler CI et images exactes avant fusion sur main.",
     "dernier_lot_clos": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md"
   },
   "publication": {
@@ -278,16 +278,33 @@
     "recu": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/QUALIFICATION-0264.json"
   },
   "preparation_couverts_cimes": {
-    "statut": "integration_en_correction",
+    "statut": "roulage_qualifie_images_a_faire",
     "fiche": "docs/reprise/COUVERTS-CIMES-INTEGRATION-2026-11-20.md",
     "base_candidate": "80aa1e2913a93b54daf68bd1c3dc6abb520dc69b",
     "pr_base": 37,
     "circuits_sources": 9,
     "circuits_livres": 8,
-    "build_sources_suivantes_effectue": false,
-    "blocages_constates": [
-      "joints de voûte courbe ouverts",
-      "contact du châssis au raccord de sol avant la galerie"
-    ]
+    "build_sources_suivantes_effectue": true,
+    "blocages_constates": [],
+    "preuves_roulage": "docs/reprise/rapports/ROUTE-DES-CIMES-2026-11-20/QUALIFICATION-DOUZE-PORTAILS.json",
+    "captures_prevues": 24
+  },
+  "revue_integree_0264": {
+    "pr": 37,
+    "tete": "80aa1e2913a93b54daf68bd1c3dc6abb520dc69b",
+    "ci_run": 44734044312,
+    "suites_reussies": 151,
+    "suites_total": 152,
+    "echec": "allocation pilote extérieur : 17,2228 octets/pose ; seuil 4 conservé",
+    "images": "poing trop ouvert, projections poursuite insuffisantes ; contrôle aérien incorrect",
+    "corrections_sources_publiees": "9cc701a7cd866bf7100780b0b6cd4bd80e6e661b",
+    "statut": "non_qualifie_nouveau_candidat_requis"
+  },
+  "candidat_0265": {
+    "version": "0.2.65",
+    "build_octets": 14370567,
+    "build_sha256": "58c735189996628eefeec8f7efda13fa76a070c18a1695533e1ac1a3a1302f5f",
+    "build_reproduit_identique": true,
+    "recu": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/CANDIDAT-0265.json"
   }
 }

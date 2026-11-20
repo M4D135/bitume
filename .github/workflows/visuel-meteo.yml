@@ -5,6 +5,7 @@ on:
     paths:
       - 'src/animaux.js'
       - 'src/cinema.js'
+      - 'src/couverts.js'
       - 'src/jeu.js'
       - 'src/meteo.js'
       - 'src/sillage.js'

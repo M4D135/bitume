@@ -1502,7 +1502,12 @@
     if (!H.piloteReel) { H.piloteReel = true; H.pret = false; }
     let volant = Number.isFinite(etat.volant) ? etat.volant : 0;
     volant = volant < -1 ? -1 : volant > 1 ? 1 : volant;
-    let t = Number.isFinite(etat.passageVisuel) ? etat.passageVisuel : Number.isFinite(etat.passage) ? etat.passage : 1;
+    // Garder la phase dans le tampon numérique : réunir ici une propriété optionnelle et un
+    // nombre à virgule créait un HeapNumber par pose sous V8, même après la chauffe.
+    if (Number.isFinite(etat.passageVisuel)) CLE[1] = etat.passageVisuel;
+    else if (Number.isFinite(etat.passage)) CLE[1] = etat.passage;
+    else CLE[1] = 1;
+    let t = CLE[1];
     t = t < 0 ? 0 : t > 1 ? 1 : t;
     const nB = Number.isFinite(etat.rapport) ? Math.max(-1, Math.min(6, Math.trunc(etat.rapport))) : 0;
     const nA = Number.isFinite(etat.rapportAvant) ? Math.max(-1, Math.min(6, Math.trunc(etat.rapportAvant))) : nB;
