@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { createRequire } from 'node:module';
 import { optionsPierres, scenariosPierres, optionsScenarioPierres, pierreCible, preparerVariantePierres,
-  viserPierres, empreintesPierres, verifierPixelPierres, verifierPierres, comparerPierres } from '../tools/captures-pierres.mjs';
+  viserPierres, empreintesPierres, verifierPixelPierres, observerAvecCoutPierres, verifierPierres, comparerPierres } from '../tools/captures-pierres.mjs';
 
 test('la campagne A/B garde mêmes conditions et refuse les paliers ou variantes non prévus', () => {
   const args = ['--url', 'file:///tmp/bitume.html', '--sortie', '/tmp/pierres'];
@@ -31,7 +31,7 @@ test('les vues et la fixture M1 passent sur les vrais décors et le monde PhysX,
     const o = optionsPierres(['--url', 'file:///tmp/bitume.html', '--sortie', '/tmp/pierres']);
     for (const s of scenariosPierres(o).filter(s => s.variante === 'reference')) {
       const c = creerCircuitSaisons(CATALOGUE_SAISONS[s.circuit]);
-      const d = B.decor.construire(c, { qualite: 'high', saison: s.saison, vegetation: false, solsProceduraux: true });
+      const d = B.decor.construire(c, { qualite: 'high', saison: s.saison, vegetation: false, solsProceduraux: true, pierresProcedurales: true });
       const objets = d.lots.flatMap(l => l.objets), cibles = objets.filter(pierreCible);
       assert(cibles.length > 250); assert(cibles.every(o => o.mat === 23));
       const eau = objets.filter(o => o.mat === 9 && !pierreCible(o));
@@ -39,9 +39,10 @@ test('les vues et la fixture M1 passent sur les vrais décors et le monde PhysX,
       const avant = await empreintesPierres(d), unique = new Set(d.lots.flatMap(l => [...l.objets, ...(l.loin || [])]).filter(pierreCible));
       const selection = preparerVariantePierres(d, 'reference');
       assert.equal(selection.uniques, unique.size);
+      assert.equal(selection.matiereInitiale, 23);
       assert([...unique].every(o => o.mat === 9)); assert(eau.every(o => o.mat === 9));
       assert.deepEqual(await empreintesPierres(d), avant, 'identité de scène entière, hors recette M1');
-      assert.throws(() => preparerVariantePierres(d, 'reference'), /build/, 'un témoin ne doit pas être remappé deux fois');
+      assert.equal(preparerVariantePierres(d, 'reference').matiereInitiale, 9, 'la recette initiale est toujours explicite');
       assert.equal(pierreCible({ mat: 9, collision: 'roche' }), false);
       assert.equal(pierreCible({ mat: 9, solidePhysX: { genre: 'refuge-cimes' }, partie: 'mur-refuge' }), false);
       assert.equal(pierreCible({ mat: 3, solidePhysX: { genre: 'portail-tunnel' } }), false);
@@ -54,6 +55,19 @@ test('les vues et la fixture M1 passent sur les vrais décors et le monde PhysX,
         if (r.touchePierre) assert(s.genres.includes(r.genre));
         assert.throws(() => viserPierres(world, solids, { ...cam, pos: [cam.pos[0], d.sol(cam.pos[0], cam.pos[2]) - 1, cam.pos[2]] }, s, d.sol), /terrain/);
       } finally { if (solids) B.solidesPhysX.liberer(solids); world.dispose(); }
+      if (s.id === 'haut-col-portail' && s.saison === 'ete') {
+        const defaut = B.decor.construire(c, { qualite: 'high', saison: 'ete', vegetation: false, solsProceduraux: true });
+        const ciblesDefaut = new Set(defaut.lots.flatMap(l => [...l.objets, ...(l.loin || [])]).filter(pierreCible));
+        assert(ciblesDefaut.size > 250); assert([...ciblesDefaut].every(o => o.mat === 9), 'le vrai défaut ne doit pas activer M1');
+        const avantDefaut = await empreintesPierres(defaut), active = preparerVariantePierres(defaut, 'procedurale');
+        assert.equal(active.matiereInitiale, 9); assert.equal(active.matiere, 23);
+        assert([...ciblesDefaut].every(o => o.mat === 23));
+        assert.deepEqual(await empreintesPierres(defaut), avantDefaut);
+        ciblesDefaut.values().next().value.mat = 9;
+        const melange = [...ciblesDefaut].map(o => o.mat);
+        assert.throws(() => preparerVariantePierres(defaut, 'reference'), /mélange/);
+        assert.deepEqual([...ciblesDefaut].map(o => o.mat), melange, 'refus avant toute mutation partielle');
+      }
     }
   } finally { X.dispose(); }
 });
@@ -72,7 +86,7 @@ test('le témoin laissé intact, un pixel vide ou une répétition instable ne p
 function recu() {
   const s = { circuitId: 'haut-col', saison: 'ete', variante: 'reference' }, camera = { pos: [1, 2, 3], yaw: .1, pitch: .2, fov: 44 };
   const observation = { ...s, circuit: s.circuitId, camera, cameraPrescrite: structuredClone(camera), glErreur: 0, glPerdu: false,
-    matieres: { uniques: 278, genres: { 'roche-tunnel': 272, 'portail-tunnel': 6 }, matiere: 9 },
+    matieres: { uniques: 278, genres: { 'roche-tunnel': 272, 'portail-tunnel': 6 }, matiereInitiale: 9, matiere: 9 },
     empreintes: Object.fromEntries(['lotsSansRecette', 'nappes', 'solides', 'obstacles', 'racines'].map(k => [k, 'a'.repeat(64)])),
     rendu: { drawCalls: 100, triangles: 1000, instances: 500 },
     cout: { methode: 'draw-identique-readPixels-CPU-performance.now', mesures: 16, echantillonsMs: Array(16).fill(20), p50Ms: 20, simulationInchangee: true,
@@ -109,4 +123,42 @@ test('une caméra remplacée, une mesure absente ou une comparaison géométriqu
   assert(comparerPierres(r, autre).erreurs.some(e => /rendu/.test(e)));
   autre.build.sha256 = 'e'.repeat(64);
   assert(comparerPierres(r, autre).erreurs.some(e => /Builds/.test(e)));
+});
+
+test('un coût expiré conserve les deux observations et traite le rejet tardif de l’évaluateur', async () => {
+  const { s, r } = recu(), bases = r.images.map(im => ({ ...structuredClone(im.observation), cout: null }));
+  let appels = 0, rejeter;
+  const evaluer = () => {
+    appels++;
+    if (appels <= 2) return Promise.resolve(bases[appels - 1]);
+    return new Promise((_resolve, reject) => { rejeter = reject; });
+  };
+  const images = [];
+  for (let i = 0; i < 2; i++) images.push({ fichier: '000' + i + '.png', observation: await observerAvecCoutPierres({ evaluer, i }, 5) });
+  assert.equal(appels, 3); assert.equal(images.length, 2);
+  assert.deepEqual(images[0].observation, bases[0]);
+  const { cout, ...conserve } = images[1].observation, { cout: _cout, ...base } = bases[1];
+  assert.deepEqual(conserve, base);
+  assert.equal(cout.statut, 'non_qualifie'); assert.equal(cout.motif, 'delai_mesure_depasse');
+  assert.equal(cout.objectif, 16); assert.equal(cout.mesures, null);
+  r.images = images;
+  assert(verifierPierres(r, s).some(e => /Mesure/.test(e)), 'le coût incomplet garde la qualification en échec');
+  assert.equal(comparerPierres(r, recu().r).rapportP50, null);
+  rejeter(new Error('Chrome fermé après expiration'));
+  await new Promise(resolve => setImmediate(resolve)); // Le runner refuserait une rejection non traitée.
+});
+
+test('une mesure terminée complète seulement le coût ; une erreur ne détruit pas l’observation', async () => {
+  const { r } = recu(), base = { ...structuredClone(r.images[0].observation), cout: null }, resultat = r.images[1].observation;
+  let appels = 0;
+  const termine = await observerAvecCoutPierres({ i: 1, evaluer: async () => ++appels === 1 ? base : resultat }, 50);
+  assert.deepEqual(termine, { ...base, cout: resultat.cout });
+  appels = 0;
+  const echoue = await observerAvecCoutPierres({ i: 1, evaluer: async () => {
+    if (++appels === 1) return base;
+    throw new Error('Lecture impossible');
+  } }, 50);
+  assert.deepEqual({ ...echoue, cout: null }, base);
+  assert.equal(echoue.cout.statut, 'non_qualifie'); assert.equal(echoue.cout.motif, 'evaluation_cout_echouee');
+  assert.equal(echoue.cout.mesures, null); assert.match(echoue.cout.erreur, /Lecture impossible/);
 });

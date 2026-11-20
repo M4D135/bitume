@@ -1,4 +1,4 @@
-// M1 : les seules différences A/B sont les recettes de pierres identifiées, en qualité Fine.
+// Candidat M1 opt-in : les seules différences A/B sont les recettes de pierres identifiées, en qualité Fine.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { createHash } from 'node:crypto';
@@ -84,7 +84,7 @@ function comparerHerbiers(ancien, actif) {
 
 for (const id of Object.keys(PIERRES)) for (const saison of ['ete', 'hiver']) {
   test(id + ' / ' + saison + ' : matière 23 ciblée, données et budgets identiques', t => {
-    const ancien = creer(id, { saison, pierresProcedurales: false }), actif = creer(id, { saison });
+    const ancien = creer(id, { saison, pierresProcedurales: false }), actif = creer(id, { saison, pierresProcedurales: true });
     const bilan = comparerScenes(ancien, actif, PIERRES[id]);
     for (const cle of ['objets', 'loin']) assert.deepEqual(bilan.comptes[cle], PIERRES[id], 'inventaire pierre ' + cle);
     const pierres = cle => objets(actif, cle).filter(o => o.mat === 23).map(o => JSON.stringify(Object.getOwnPropertyDescriptors(o))).sort();
@@ -100,6 +100,23 @@ for (const id of Object.keys(PIERRES)) for (const saison of ['ete', 'hiver']) {
     }
     const herbier = comparerHerbiers(ancien, actif);
     t.diagnostic(JSON.stringify({ circuit: id, saison, convertis: bilan.comptes, budgets: bilan.budgets, herbier }));
+  });
+}
+
+for (const id of Object.keys(PIERRES)) for (const saison of B.saisons.IDS) {
+  test(id + ' / ' + saison + ' : Fine par défaut strictement identique à pierresProcedurales:false', () => {
+    const ancien = creer(id, { saison, pierresProcedurales: false }), defaut = creer(id, { saison });
+    const bilan = comparerScenes(ancien, defaut);
+    assert.deepEqual(bilan.comptes, { objets: {}, loin: {} }, 'aucune recette de pierre activée sans option');
+    for (const cle of ['objets', 'loin']) {
+      const historique = {};
+      for (const o of objets(defaut, cle)) {
+        const pierre = identitePierre(o);
+        if (o.mat === 9 && Object.hasOwn(PIERRES[id], pierre)) historique[pierre] = (historique[pierre] || 0) + 1;
+      }
+      assert.deepEqual(historique, PIERRES[id], 'toutes les pierres gardent la recette 9 : ' + cle);
+    }
+    comparerHerbiers(ancien, defaut);
   });
 }
 

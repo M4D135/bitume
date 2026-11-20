@@ -56,13 +56,16 @@ export function preparerVariantePierres(d, variante) {
   const cibles = new Set(), occurrences = { proches: 0, lointaines: 0 };
   for (const l of d.lots) for (const [cle, nom] of [['objets', 'proches'], ['loin', 'lointaines']])
     for (const o of l[cle] || []) if (pierreCible(o)) { cibles.add(o); occurrences[nom]++; }
-  if (!cibles.size || [...cibles].some(o => o.mat !== 23)) throw new Error('Le build ne porte pas le lot de pierres M1 attendu');
+  if (!cibles.size) throw new Error('Aucune pierre M1 explicitement marquée dans le build');
+  const initiales = new Set([...cibles].map(o => o.mat));
+  if (initiales.size !== 1) throw new Error('Sélection de pierres incohérente : mélange des recettes 9 et 23');
+  const matiereInitiale = initiales.values().next().value, matiere = variante === 'reference' ? 9 : 23;
   const genres = {};
   for (const o of cibles) {
     genres[o.solidePhysX.genre] = (genres[o.solidePhysX.genre] || 0) + 1;
-    if (variante === 'reference') o.mat = 9;
+    o.mat = matiere;
   }
-  return { uniques: cibles.size, ...occurrences, genres, matiere: variante === 'reference' ? 9 : 23 };
+  return { uniques: cibles.size, ...occurrences, genres, matiereInitiale, matiere };
 }
 export function viserPierres(world, solids, camera, s, sol) {
   const delta = s.cible.map((v, k) => v - camera.pos[k]), distance = Math.hypot(...delta);
@@ -192,6 +195,26 @@ export function observerPierres(i) {
     visee, matieres: F.matieres, empreintes: F.empreintes, rendu, cout,
     glErreur: gl.getError(), glPerdu: gl.isContextLost() };
 }
+export async function observerAvecCoutPierres({ evaluer, i }, delaiMs = 15000) {
+  if (!Number.isInteger(delaiMs) || delaiMs <= 0 || delaiMs > 15000) throw new Error('Délai de mesure invalide');
+  const expression = indice => `(() => { ${[viserPierres, verifierPixelPierres, etatLecturePierres, marquerPixelPierres].map(f => 'const ' + f.name + ' = ' + f.toString() + ';').join('\n')} return (${observerPierres.toString()})(${indice}); })()`;
+  // L'observation de l'image existe avant tout dessin supplémentaire. Le coût ne doit jamais
+  // faire perdre un PNG déjà pris ni les vérifications de sa scène et de sa caméra.
+  const base = await evaluer(expression(0));
+  if (i !== 1) return base;
+  let minuterie;
+  // Le rejet tardif reste traité après l'expiration : capturer ferme Chrome à la fin de cette
+  // dernière image et rejette alors toute évaluation DevTools encore en cours.
+  const mesure = Promise.resolve().then(() => evaluer(expression(1)))
+    .then(observation => ({ observation }), erreur => ({ erreur: String(erreur?.message || erreur) }));
+  try {
+    const resultat = await Promise.race([mesure, new Promise(resolve => { minuterie = setTimeout(() => resolve({ expiration: true }), delaiMs); })]);
+    if (resultat.observation?.cout) return { ...base, cout: resultat.observation.cout };
+    return { ...base, cout: { statut: 'non_qualifie', motif: resultat.expiration ? 'delai_mesure_depasse' : 'evaluation_cout_echouee',
+      delaiMs, objectif: 16, mesures: null, erreur: resultat.erreur || null,
+      limite: 'Nombre de mesures achevées inconnu ; observation du PNG conservée. Aucun coût ni ratio qualifié.' } };
+  } finally { clearTimeout(minuterie); }
+}
 export function verifierPierres(r, s) {
   const erreurs = [];
   if (r.fatal) erreurs.push(r.fatal.split('\n')[0]);
@@ -205,7 +228,8 @@ export function verifierPierres(r, s) {
     if (o.glErreur || o.glPerdu) erreurs.push('Erreur graphique');
     const a = o.camera, b = o.cameraPrescrite;
     if (!a?.pos?.every(Number.isFinite) || !b?.pos || a.pos.some((v, k) => Math.abs(v - b.pos[k]) > 1e-8) || ['yaw', 'pitch', 'fov'].some(k => !Number.isFinite(a[k]) || Math.abs(a[k] - b[k]) > 1e-8)) erreurs.push('Caméra finale différente');
-    if (!(o.matieres?.uniques > 0) || o.matieres.matiere !== (s.variante === 'reference' ? 9 : 23)) erreurs.push('Recette de pierre non exercée');
+    if (!(o.matieres?.uniques > 0) || ![9, 23].includes(o.matieres.matiereInitiale)
+      || o.matieres.matiere !== (s.variante === 'reference' ? 9 : 23)) erreurs.push('Recette de pierre non exercée');
     if (!o.empreintes || ['lotsSansRecette', 'nappes', 'solides', 'obstacles', 'racines'].some(k => !/^[a-f0-9]{64}$/.test(o.empreintes[k] || ''))) erreurs.push('Empreinte de scène absente');
     if (['drawCalls', 'triangles', 'instances'].some(k => !Number.isInteger(o.rendu?.[k]) || o.rendu[k] <= 0)) erreurs.push('Comptage réel absent');
   }
@@ -231,7 +255,8 @@ export function comparerPierres(a, b) {
     const x = a.images?.[i]?.observation, y = b.images?.[i]?.observation;
     if (!x || !y) { erreurs.push('Paire incomplète'); continue; }
     for (const cle of ['camera', 'empreintes', 'rendu']) if (JSON.stringify(x[cle]) !== JSON.stringify(y[cle])) erreurs.push(cle + ' différents');
-    if (x.matieres?.uniques !== y.matieres?.uniques || JSON.stringify(x.matieres?.genres) !== JSON.stringify(y.matieres?.genres)) erreurs.push('Sélection de pierre différente');
+    if (x.matieres?.uniques !== y.matieres?.uniques || x.matieres?.matiereInitiale !== y.matieres?.matiereInitiale
+      || JSON.stringify(x.matieres?.genres) !== JSON.stringify(y.matieres?.genres)) erreurs.push('Sélection de pierre différente');
   }
   const ca = a.images?.[1]?.observation?.cout, cb = b.images?.[1]?.observation?.cout;
   const lectureVerifiee = [ca, cb].every(c => c?.methode === 'draw-identique-readPixels-CPU-performance.now' && c.lecture?.stable && c.lecture?.controlesRemplacement === 22);
@@ -250,7 +275,7 @@ export async function campagnePierres(o) {
     const sortie = path.join(o.sortie, s.nom), p = optionsScenarioPierres(s, o, sortie);
     const fonctions = [pierreCible, preparerVariantePierres, viserPierres, empreintesPierres, preparerPierres];
     p.initialiser = ({ evaluer }) => evaluer(`(async () => { ${fonctions.map(f => 'const ' + f.name + ' = ' + f.toString() + ';').join('\n')} return preparerPierres(${JSON.stringify(s)}); })()`);
-    p.observer = ({ evaluer, i }) => evaluer(`(() => { ${[viserPierres, verifierPixelPierres, etatLecturePierres, marquerPixelPierres].map(f => 'const ' + f.name + ' = ' + f.toString() + ';').join('\n')} return (${observerPierres.toString()})(${i}); })()`);
+    p.observer = observerAvecCoutPierres;
     const resultat = await capturer(p), erreurs = verifierPierres(resultat, s), cle = s.id + ':' + s.saison;
     if (s.variante === 'reference') references.set(cle, resultat);
     else {
