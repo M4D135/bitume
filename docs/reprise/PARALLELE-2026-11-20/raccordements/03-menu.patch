@@ -1,0 +1,270 @@
+diff --git a/construire.py b/construire.py
+index 2cc9a55..d69985b 100644
+--- a/construire.py
++++ b/construire.py
+@@ -85,6 +85,7 @@ MODULES = [
+     'ambiance.js',
+     'conditions-course.js',
+     'navigation-menu.js',
++    'menu-arcade.js',  # écrans arcade, vrai tracé XYZ et aperçu 2D à cadence bornée
+     'autoconfig.js',
+     'scene-bench.js',
+     # vibrations de manette : quatre sorties calculées une fois par image rendue, branchées par jeu.js
+diff --git a/src/jeu.js b/src/jeu.js
+index cf07b58..cf8eec0 100644
+--- a/src/jeu.js
++++ b/src/jeu.js
+@@ -55,6 +55,7 @@
+   const reglagesEnregistres = lireStock('bitume.reglages', {});
+   const reglages = Object.assign({}, DEFAUT, reglagesEnregistres);
+   Object.assign(reglages, initialiserChoixPneus(reglagesEnregistres));
++  reglages.trollPilotes = B.menuArcade.normaliserTroll(reglagesEnregistres);
+   reglages.qualite = B.graphismes.normaliser(reglages.qualite);
+   // Cadence d'images (Auto, Écran, 120, 60, 30) : une valeur ancienne, inconnue ou mal écrite revient à Auto.
+   reglages.cadence = B.cadence.normaliser(reglages.cadence);
+@@ -562,7 +563,7 @@
+         if (nouveau(9)) {
+           if (enCourse() || ecran === 'pause') basculerPause();
+           else if (ecran === 'titre') { modePrepa = 'course'; activerSon(); aller('preparation'); }
+-          else if (ecran === 'preparation') { const b = $('b-depart'); if (b) { activerSon(); b.click(); } }
++          else if (ecran === 'preparation') naviguerManette(nouveau);
+           else naviguerManette(nouveau);
+         } else if (!enCourse()) naviguerManette(nouveau);
+       }
+@@ -716,7 +717,34 @@
+   function naviguerManette(nouveau, manette = pad.manette) {
+     const zone = $(ecran); if (!zone || zone.hidden) return;
+     B.navigationMenu.naviguer(zone, nouveau, { pad: manette, temps: performance.now(), activer: activerSon,
+-      retour: () => ecran === 'pause' ? basculerPause() : retour() });
++      retour: () => ecran === 'pause' ? basculerPause() : retour(),
++      demarrer: ecran === 'preparation' ? () => { const b = $('b-suivant').hidden ? $('b-depart') : $('b-suivant'); if (b && !b.disabled) b.click(); } : null,
++      valider: el => ecran === 'preparation' && menuArcade.valider(el) });
++  }
++
++  // Les manettes supplémentaires naviguent aussi avant la course, sans prendre une affectation de conduite.
++  // Les appareils déjà lus comme J1/J2 sont exclus : aucun front ne se traite deux fois.
++  const suivisManettesMenu = new Map();
++  function lireAutresManettesMenu(consommer = false) {
++    const menus = ['titre', 'preparation', 'reglages', 'enligne', 'prets', 'pause', 'resultats'];
++    if (document.hidden || !menus.includes(ecran)) { suivisManettesMenu.clear(); return; }
++    const presentes = new Set();
++    for (const p of manettes) {
++      if (p === pad.manette || p === pad2.manette) continue;
++      presentes.add(p.index);
++      let suivi = suivisManettesMenu.get(p.index);
++      const appuye = i => !!(p.buttons[i] && (p.buttons[i].pressed || p.buttons[i].value > .5));
++      if (!suivi || suivi.id !== p.id) {
++        suivi = { id: p.id, boutons: p.buttons.map((_, i) => appuye(i)) };
++        suivisManettesMenu.set(p.index, suivi);
++        if (ecran === 'titre' && p === manettes[1]) pad2.start = appuye(9);
++      }
++      const nouveau = i => appuye(i) && !suivi.boutons[i];
++      if (ecran === 'titre' && (p.buttons.some((_, i) => appuye(i)) || p.axes.some(a => Math.abs(a) > .5))) dernierGeste = performance.now();
++      if (!consommer) naviguerManette(nouveau, p);
++      for (let i = 0; i < p.buttons.length; i++) suivi.boutons[i] = appuye(i);
++    }
++    for (const i of suivisManettesMenu.keys()) if (!presentes.has(i)) suivisManettesMenu.delete(i);
+   }
+ 
+   // Deuxième manette : mêmes rapports et protection de dérive que pour le joueur 1 ; son clavier reste indépendant.
+@@ -747,7 +775,11 @@
+       if (nouveau(3)) changerVue2();
+       if ((commande(1) === 'auto' || commande(1) === 'manette') && nouveau(10)) provoquer(1);
+     }
+-    if (nouveau(9)) { activerSon(); basculerPause(); }
++    if (nouveau(9)) {
++      activerSon();
++      if (ecran === 'preparation') naviguerManette(nouveau, p);
++      else basculerPause();
++    }
+     else if (!enCourse()) naviguerManette(nouveau, p);
+     for (let i = 0; i < p.buttons.length; i++) pad2.precedent[i] = appuye(i);
+     if (Math.abs(pad2.volant) > .05 || pad2.gaz > .05 || pad2.frein > .05) activerSon();
+@@ -3050,9 +3082,43 @@
+   const ECRANS = ['titre', 'enligne', 'prets', 'preparation', 'reglages', 'pause', 'resultats'];
+   let modePrepa = 'course', retourReglages = 'titre';
+   const enCourse = () => ecran === 'course';
++  const menuOpaque = () => ['titre', 'preparation', 'reglages', 'enligne', 'prets'].includes(ecran);
++  const menuArcade = B.menuArcade.installer($('preparation'), { retour, actualiser: () => { majBilanArcade(); majChoixTroll(); } });
++
++  function pilotesMenu() {
++    const membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
++    return modePrepa === 'duo' || (modePrepa === 'enligne' && membre && membre.joueurs === 2) ? 2 : 1;
++  }
++  function choixTrollLocaux() { return B.menuArcade.normaliserTroll(reglages); }
++  function majChoixTroll() {
++    const choix = choixTrollLocaux(), membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
++    $('o-troll-1').hidden = pilotesMenu() !== 2;
++    $('pr-troll-1').hidden = !(membre && membre.joueurs === 2);
++    for (let n = 0; n < 2; n++) for (const prefixe of ['p', 'pr']) {
++      $(prefixe + '-geste-' + n).value = choix[n].geste;
++      $(prefixe + '-klaxon-' + n).value = choix[n].klaxon;
++    }
++    const disponible = !!(son && typeof son.klaxon === 'function');
++    for (const b of document.querySelectorAll('[data-essai-klaxon]')) b.disabled = !disponible;
++    for (const id of ['p-troll-etat', 'pr-troll-etat']) if ($(id)) texte($(id), disponible ? '' : 'Aperçu sonore indisponible.');
++  }
++  function majBilanArcade() {
++    const k = conditionsDuDepart(), cat = CATALOGUE[reglages.circuit], nombre = pilotesMenu();
++    texte($('p-bilan-circuit'), cat.nom);
++    texte($('p-bilan-course'), modePrepa === 'chrono' ? 'Contre-la-montre · fantôme personnel' : reglages.tours + ' tours · rivaux ' + ['faciles', 'normaux', 'coriaces'][reglages.difficulte]);
++    texte($('p-bilan-saison'), NOMS_SAISON[k.saison] + ' · ' + NOMS_MOMENT[k.moment]);
++    texte($('p-bilan-meteo'), nomMeteoCourse({ ...k, i: reglages.circuit }));
++    texte($('p-bilan-joueurs'), (nombre === 2 ? 'Deux pilotes locaux' : 'Un pilote local') + (modePrepa === 'enligne' ? ' · en ligne' : ''));
++    const gestes = { majeur: 'doigt d’honneur', poing: 'poing levé', salut: 'salut' };
++    const klaxons = { classique: 'classique', ancien: 'ancien', mariage: 'mariage' };
++    const choix = choixTrollLocaux(), pneus = choixPneusLocaux();
++    texte($('p-bilan-troll'), choix.slice(0, nombre).map((c, n) => 'J' + (n + 1) + ' : ' + NOMS_PNEUS[pneus[n]] + ' · ' + gestes[c.geste] + ' + klaxon ' + klaxons[c.klaxon]).join(' / '));
++    texte($('b-depart'), modePrepa === 'enligne' ? 'Confirmer la course' : modePrepa === 'chrono' ? 'Lancer le chrono' : 'Prendre le départ');
++  }
+ 
+   function aller(nom) {
+     const precedent = ecran;
++    if (nom !== precedent) B.navigationMenu.fermerSaisie(document, false);
+     if (nom !== 'course') suspendreAnnoncesVirages();
+     if (precedent === 'preparation' && nom !== 'preparation') annulerConditions();
+     if (nom === 'preparation' && precedent !== 'preparation' && precedent !== 'reglages') {
+@@ -3073,19 +3139,22 @@
+     $('jeu').dataset.ecran = nom;
+     ecran = nom;
+     if (nom === 'titre') dernierGeste = performance.now();
+-    if (nom === 'titre' || nom === 'preparation' || nom === 'enligne' || nom === 'prets') {
+-      if (!session || session.type !== 'vitrine' || (nom === 'preparation' && session.i !== reglages.circuit)) lancerVitrine(nom === 'preparation' ? reglages.circuit : (session ? session.i : reglages.circuit));
+-    }
++    // Les menus opaques ne préparent pas une course invisible. La scène change au vrai départ.
+     // en ligne, la pause n'arrête pas la course : pas de « Recommencer »
+     if (nom === 'pause') { $('b-recommencer').hidden = !!(session && session.enLigne); $('b-replacer').hidden = aDeux(); majPneusStands(); }
+     if (nom === 'enligne') majSalon();
+-    if (nom === 'prets') majPrets();
++    if (nom === 'prets') { majPrets(); majChoixTroll(); }
+     tactile(nom === 'course' && !aDeux());
+-    if (nom === 'preparation') remplirPreparation();
++    if (nom === 'preparation') {
++      remplirPreparation();
++      if (precedent !== 'preparation' && precedent !== 'reglages') menuArcade.ouvrir(0, false);
++      else menuArcade.actualiser();
++    }
++    menuArcade.image(performance.now(), false);
+     if (nom === 'reglages') remplirReglages();
+     if ($(nom) && B.navigationMenu) B.navigationMenu.initialiser($(nom));
+-    // une course arrêtée (pause, réglages, résultats) se tait ; la vitrine des menus continue, moins fort
+-    if (son) { if (session && session.type !== 'vitrine' && nom !== 'course' && nom !== 'demo') son.suspendre(); else son.reprendre(); }
++    // Aucun moteur figé derrière un menu ; la musique du titre est commandée séparément.
++    if (son) { if (nom !== 'course' && nom !== 'demo') son.suspendre(); else son.reprendre(); }
+     if (son) son.musique(nom === 'titre'); // seule musique du jeu : l'écran titre
+     appliquerVolumes();
+     if (nom === 'course' || nom === 'demo') { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); return; }
+@@ -3162,6 +3231,7 @@
+     const resume = CATALOGUE[reglages.circuit].nom + ' · ' + NOMS_SAISON[k.saison] + ' · ' + NOMS_MOMENT[k.moment]
+       + (k.horlogeReelle ? ' (heure réelle)' : '') + ' · ' + nomMeteoCourse({ ...k, i: reglages.circuit });
+     texte($('p-resume'), resume);
++    majBilanArcade();
+     $('p-conditions-reel').hidden = !reel;
+     $('p-meteo-sources').hidden = reglages.meteoMode !== 'reel';
+     $('p-actualiser-conditions').hidden = !reel && !['saison', 'moment', 'meteo'].some(n => reglages[n + 'Mode'] === 'aleatoire');
+@@ -3186,14 +3256,7 @@
+       if (numero !== conditionsNumero || ecran !== 'preparation') return null;
+       conditionsPreparation = k;
+       preselectionnerPneus();
+-      if (session && session.type === 'vitrine') {
+-        if (session.i !== reglages.circuit || session.nature.saison.id !== k.saison) lancerVitrine(reglages.circuit, k);
+-        else {
+-          session.conditions = k; session.meteo = meteoPourConditions(k, session.i, graineCourse);
+-          session.nature.moment = k.moment; session.nature.horlogeReelle = horlogePartagee(k.horlogeReelle);
+-          session.nature.prochaineLumiereReelle = 0;
+-        }
+-      }
++      // Le départ utilisera ces conditions ; aucun décor caché n’est reconstruit dans le menu.
+       if (EL.role === 'hote' && lienActif()) annoncerCourse();
+       return k;
+     }).catch(erreur => {
+@@ -3224,14 +3287,11 @@
+     const zone = $('circuits');
+     if (!zone.childElementCount) {
+       CATALOGUE.forEach((k, i) => {
+-        const c = circuit(i), f = fiche(c), b = document.createElement('button');
++        const b = document.createElement('button');
+         b.type = 'button'; b.className = 'carte-circuit'; b.setAttribute('role', 'radio'); b.dataset.index = i;
+-        b.innerHTML = '<span class="lieu">' + k.lieu + '</span><span class="nom">' + k.nom + '</span><canvas width="320" height="200"></canvas>' +
+-          '<p class="fiche"><b>' + f.km + ' km</b> · ' + f.virages + ' virages · ligne droite de ' + f.droite + ' m</p>';
+-        const ctx = b.querySelector('canvas').getContext('2d');
+-        const p = plan(c, 320, 200, 14);
+-        dessinerTrace(ctx, c, p, 10, 'rgba(0,0,0,.55)'); dessinerTrace(ctx, c, p, 5, '#efe8da');
+-        b.addEventListener('click', () => { reglages.circuit = i; sauverReglages(); majPreparation(); if (son) son.evenement('clic'); lancerVitrine(i); if (EL.role === 'hote' && lienActif()) annoncerCourse(); });
++        b.innerHTML = '<span class="circuit-rang">' + String(i + 1).padStart(2, '0') + '</span><span class="nom">' + k.nom + '</span>' +
++          '<span class="fiche">' + k.lieu + '</span><span class="circuit-distance">' + (k.longueur / 1000).toFixed(1).replace('.', ',') + ' km</span>';
++        b.addEventListener('click', () => { reglages.circuit = i; sauverReglages(); majPreparation(); if (son) son.evenement('clic'); if (EL.role === 'hote' && lienActif()) annoncerCourse(); });
+         zone.appendChild(b);
+       });
+     }
+@@ -3325,7 +3385,10 @@
+     for (const r of document.querySelectorAll('input[name="momentDepart"]')) r.checked = r.value === reglages.moment;
+     for (const r of document.querySelectorAll('input[name="saisonDepart"]')) r.checked = r.value === reglages.saison;
+     afficherConditions();
+-    for (const b of $('circuits').children) b.setAttribute('aria-checked', String(+b.dataset.index === reglages.circuit));
++    for (const b of $('circuits').children) { const actif = +b.dataset.index === reglages.circuit; b.setAttribute('aria-checked', String(actif)); b.tabIndex = actif ? 0 : -1; }
++    const c = circuit(reglages.circuit);
++    menuArcade.trace(c, fiche(c), CATALOGUE[reglages.circuit], reglages.circuit, CATALOGUE.length);
++    majChoixTroll(); majBilanArcade();
+     const r = records[CATALOGUE[reglages.circuit].id];
+     $('p-record').innerHTML = r ? 'Votre record sur ' + CATALOGUE[reglages.circuit].nom + ' : <b>' + chrono(r.tour) + '</b>' : 'Pas encore de temps sur ' + CATALOGUE[reglages.circuit].nom + '.';
+   }
+@@ -3393,6 +3456,22 @@
+   $('v-vibrations').addEventListener('change', e => { reglages.vibrations = e.target.checked ? 'oui' : 'non'; if (!e.target.checked) { secouerManette(0, 0); secouerManette(0, 0, pad2); } sauverReglages(); });
+   $('v-carte').addEventListener('change', e => { reglages.carte = e.target.checked ? 'oui' : 'non'; sauverReglages(); appliquerCarte(); });
+   $('v-vibration-force').addEventListener('input', e => { reglages.vibrationForce = clamp(+e.target.value, 0, 1); $('v-vibration-force-valeur').textContent = Math.round(reglages.vibrationForce * 100) + ' %'; sauverReglages(); });
++  document.addEventListener('change', e => {
++    const correspondance = /^(geste|klaxon)Pilote([01])$/.exec(e.target.name || '');
++    if (correspondance) {
++      const choix = choixTrollLocaux(); choix[+correspondance[2]][correspondance[1]] = e.target.value;
++      reglages.trollPilotes = B.menuArcade.normaliserTroll({ trollPilotes: choix });
++      retirerPret(); sauverReglages(); majChoixTroll();
++    }
++    if (ecran === 'preparation') majBilanArcade();
++  });
++  document.addEventListener('click', e => {
++    const b = e.target.closest('[data-essai-klaxon]');
++    if (!b || b.disabled || !['preparation', 'prets'].includes(ecran)) return;
++    activerSon();
++    const choix = choixTrollLocaux()[+b.dataset.essaiKlaxon];
++    if (choix && son && son.klaxon) son.klaxon(choix.klaxon, { gain: .75 });
++  });
+   const NOMS_ACTIONS = { gaz: 'Accélérer', frein: 'Freiner', gauche: 'Gauche', droite: 'Droite', derive: 'Dérive', haut: 'Rapport +', bas: 'Rapport −', vue: 'Vue', troll: 'Troll / geste' };
+   const NOMS_COMMANDES = { auto: 'Auto', manette: 'Manette', clavier: 'Clavier', souris: 'Souris' };
+   let captureTouche = null, carteClavier = null;   // action en attente d'une touche ; noms des touches du clavier réel
+@@ -3468,6 +3547,7 @@
+   function retour() {
+     if (prepa.voile) return;   // sous le voile, rien ne se quitte : la préparation finit ou s'annule seule
+     if (ecran === 'reglages') { aller(retourReglages || 'titre'); if (ecran === 'pause' && session && session.type !== 'vitrine') rechaufferEnPause(session); }
++    else if (ecran === 'preparation' && menuArcade.retour()) return;
+     else if (ecran === 'preparation' && modePrepa === 'enligne') aller('enligne');
+     else if (ecran === 'enligne') quitterEnLigne();
+     else if (ecran === 'prets') quitterPrets();
+@@ -4283,7 +4363,9 @@
+     if (prepa.voile && !prepa.attente) { tPrec = 0; B.cadence.oublier(cadence); if (ecran === 'demo') lireManette(); else tenirManettes(); return; }
+     // Commandes et menus à chaque rappel, même sans image : les pas de l'image suivante lisent l'état le plus frais.
+     // Les messages demandés depuis le rappel précédent s'affichent ici, une fois (voir message).
++    const avantEntrees = ecran;
+     lireManette();
++    lireAutresManettesMenu(ecran !== avantEntrees);
+     majAttente();
+     appliquerMessages();
+     const sourisVue = souris.active && enCourse() ? 'oui' : 'non';
+@@ -4297,6 +4379,9 @@
+     }
+     // préparation d'une course à deux : qui joue avec quoi, selon les choix et les manettes branchées
+     if (ecran === 'preparation' && modePrepa === 'duo') texte($('p-manettes'), [0, 1].map(n => 'Joueur ' + (n + 1) + ' : ' + entreeDe(n)).join(' · ') + '.');
++    menuArcade.image(t, ecran === 'preparation', gpuModeste || reglages.qualite === 'low');
++    // Aucune simulation ni image de course derrière les écrans opaques ; les entrées et le compte à rebours restent actifs.
++    if (menuOpaque()) { tPrec = 0; B.cadence.oublier(cadence); return; }
+     const S = session;
+     // vitrine en préparation : les menus vivent, la séance attend la fin de la préparation (le temps qui passe n'est
+     // pas du temps à rattraper)
+@@ -4847,6 +4932,7 @@
+   }
+   window.BITUME_JEU = { get session() { return session; }, get rendu() { return rendu; }, get ecran() { return ecran; }, reglages, CATALOGUE, avancer, banc, reference, detecterGraphismes,
+     // ce que le banc et le contrôle visuel vérifient sans toucher au jeu : la scène installée et le profil résolu
++    get menuArcade() { return menuArcade.stats(); },
+     get scene() { return scene; }, get profil() { return profilDe(session); }, get ancre() { return etatProfils.decor; },
+     get vitres() { return { j1: vitreVue ? vitreVue.stats : null, j2: vitreVue2 ? vitreVue2.stats : null }; },
+     get son() { return son ? son.stats() : null; }, get palier() { return palier.n; }, get gpuModeste() { return gpuModeste; },

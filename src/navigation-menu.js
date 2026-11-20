@@ -1,7 +1,7 @@
 // Navigation des écrans DOM. Le jeu fournit les fronts des boutons et reste seul responsable de Start/pause.
 (function (B) {
   'use strict';
-  const ETATS = new WeakMap(), DELAI = 360, REPETITION = 95;
+  const ETATS = new WeakMap(), INTERACTIONS = new WeakMap(), SAISIES = new WeakMap(), DELAI = 360, REPETITION = 95;
   const COMMANDES = 'button,input,select,textarea,a[href],[role="button"],[role="radio"],[role="checkbox"],[tabindex]';
   const TAB = '[data-menu-tab]', MASQUE = '[hidden],[inert],[aria-hidden="true"]';
   const role = el => el && el.getAttribute('role');
@@ -43,7 +43,10 @@
       if (p) { p.hidden = !actif; if (t.id) p.setAttribute('aria-labelledby', t.id); }
     }
     if (!pairs.length) return false;
-    if (focus) focaliser(cible);
+    // Un appel programmatique peut fermer le panneau qui contient le focus, sans clic sur l'onglet.
+    // Ne pas conserver les commandes du clavier dans ce panneau devenu invisible.
+    const actif = zone.ownerDocument.activeElement;
+    if ((focus || panneaux.some(p => p.hidden && p.contains(actif))) && visible(cible)) focaliser(cible);
     if (changement && zone.dispatchEvent) {
       const Evenement = zone.ownerDocument.defaultView.Event;
       zone.dispatchEvent(new Evenement('menuongletchange', { bubbles: false }));
@@ -53,9 +56,11 @@
 
   function initialiser(zone) {
     if (!zone || !zone.addEventListener) return false;
+    const saisie = SAISIES.get(zone.ownerDocument);
+    if (saisie && zone !== saisie.dialogue && !zone.contains(saisie.cible)) fermerSaisie(zone.ownerDocument, false);
     // À chaque entrée d'écran, attendre le retour au neutre d'un manche tenu pendant la conduite.
-    if (ETATS.has(zone)) { ETATS.get(zone).pads.clear(); ETATS.get(zone).dernier = null; return true; }
-    ETATS.set(zone, { pads: new Map(), dernier: null });
+    if (ETATS.has(zone)) { ETATS.get(zone).pads.clear(); return true; }
+    ETATS.set(zone, { pads: new Map() });
     const listes = new Set(onglets(zone).map(t => t.closest('[data-menu-tabs]')));
     for (const nav of listes) {
       const ts = onglets(zone, nav), actif = ts.find(t => t.getAttribute('aria-selected') === 'true') || ts[0];
@@ -112,6 +117,97 @@
     const Evenement = el.ownerDocument.defaultView.Event;
     el.dispatchEvent(new Evenement('input', { bubbles: true }));
     el.dispatchEvent(new Evenement('change', { bubbles: true }));
+  }
+
+  // Nom et code du salon restent des champs natifs au clavier/tactile. A ouvre ici un brouillon
+  // local, pour que la manette seule puisse aussi les remplir sans dépendre du clavier du système.
+  function fermerSaisie(doc, rendreFocus = true) {
+    const s = SAISIES.get(doc);
+    if (!s) return false;
+    SAISIES.delete(doc);
+    if (s.dialogue.open) s.dialogue.close();
+    if (rendreFocus && visible(s.cible)) focaliser(s.cible);
+    return true;
+  }
+
+  function actualiserSaisie(s) {
+    s.contenu.textContent = s.valeur || '…';
+    s.limite.textContent = s.valeur.length + ' / ' + s.maximum + (s.code ? ' lettres' : ' caractères');
+    for (const b of s.lettres) b.textContent = s.majuscules ? b.dataset.saisieLettre.toUpperCase() : b.dataset.saisieLettre.toLowerCase();
+    s.maj.setAttribute('aria-pressed', String(s.majuscules));
+  }
+
+  function ecrireSaisie(s, texte) {
+    if (s.code) texte = texte.toUpperCase().replace(/[^A-Z]/g, '');
+    else texte = texte.replace(/[\u0000-\u001f\u007f]/g, '');
+    s.valeur = (s.valeur + texte).slice(0, s.maximum); actualiserSaisie(s);
+  }
+
+  function deplacerSaisie(s, direction) {
+    const actif = s.dialogue.ownerDocument.activeElement;
+    let ligne = s.lignes.findIndex(l => l.includes(actif));
+    if (ligne < 0) { focaliser(s.lignes[0][0]); return; }
+    const colonne = s.lignes[ligne].indexOf(actif), sens = direction === 12 || direction === 14 ? -1 : 1;
+    if (direction === 12 || direction === 13) {
+      ligne = (ligne + sens + s.lignes.length) % s.lignes.length;
+      focaliser(s.lignes[ligne][Math.min(colonne, s.lignes[ligne].length - 1)]);
+    } else focaliser(s.lignes[ligne][(colonne + sens + s.lignes[ligne].length) % s.lignes[ligne].length]);
+  }
+
+  function ouvrirSaisie(cible, zone) {
+    if (!['nom', 'code'].includes(cible.dataset.menuSaisie) || cible.readOnly) return false;
+    const doc = cible.ownerDocument, $ = id => doc.getElementById(id), dialogue = $('saisie-manette');
+    if (!dialogue || typeof dialogue.showModal !== 'function') return false;
+    const s = { cible, zone, dialogue, code: cible.dataset.menuSaisie === 'code',
+      contenu: $('sm-contenu'), limite: $('sm-limite'), maj: $('sm-maj'), lettres: [], lignes: [] };
+    const maximum = Number.parseInt(cible.getAttribute('maxlength'), 10);
+    s.maximum = Number.isFinite(maximum) && maximum > 0 ? Math.min(64, maximum) : s.code ? 4 : 16;
+    s.valeur = cible.value.slice(0, s.maximum); s.majuscules = s.code;
+    $('sm-titre').textContent = s.code ? 'Code de la partie' : 'Votre nom';
+    const touches = $('sm-touches'); touches.replaceChildren();
+    const lignes = ['AZERTYUIOP', 'QSDFGHJKLM', 'WXCVBN'];
+    if (!s.code) lignes.push('0123456789', 'ÉÈÀÇÙ-_.\'');
+    for (const lettres of lignes) {
+      const ligne = doc.createElement('div'); ligne.className = 'sm-ligne'; const boutons = [];
+      for (const lettre of lettres) {
+        const b = doc.createElement('button'); b.type = 'button'; b.dataset.saisieLettre = lettre;
+        b.addEventListener('click', () => { if (SAISIES.get(doc) === s) ecrireSaisie(s, b.textContent); });
+        ligne.append(b); boutons.push(b); s.lettres.push(b);
+      }
+      touches.append(ligne); s.lignes.push(boutons);
+    }
+    s.maj.hidden = $('sm-espace').hidden = s.code;
+    const actions = [s.maj, $('sm-espace'), $('sm-effacer'), $('sm-valider'), $('sm-annuler')];
+    s.lignes.push(actions.filter(b => !b.hidden));
+    if (!ETATS.has(dialogue)) {
+      ETATS.set(dialogue, { pads: new Map() });
+      const courant = () => SAISIES.get(doc);
+      $('sm-maj').addEventListener('click', () => { const s = courant(); if (s) { s.majuscules = !s.majuscules; actualiserSaisie(s); } });
+      $('sm-espace').addEventListener('click', () => { const s = courant(); if (s && !s.code) ecrireSaisie(s, ' '); });
+      const effacer = () => { const s = courant(); if (s) { s.valeur = Array.from(s.valeur).slice(0, -1).join(''); actualiserSaisie(s); } };
+      $('sm-effacer').addEventListener('click', effacer);
+      $('sm-annuler').addEventListener('click', () => fermerSaisie(doc));
+      $('sm-valider').addEventListener('click', () => {
+        const s = courant(); if (!s) return;
+        if (visible(s.cible) && !s.cible.readOnly && s.cible.value !== s.valeur) { s.cible.value = s.valeur; notifier(s.cible); }
+        fermerSaisie(doc);
+      });
+      dialogue.addEventListener('cancel', e => { e.preventDefault(); fermerSaisie(doc); });
+      dialogue.addEventListener('close', () => { if (!dialogue.open) fermerSaisie(doc); });
+      dialogue.addEventListener('keydown', e => {
+        const s = courant(); if (!s || e.altKey || e.ctrlKey || e.metaKey) return;
+        const directions = { ArrowUp: 12, ArrowDown: 13, ArrowLeft: 14, ArrowRight: 15 };
+        if (directions[e.key]) deplacerSaisie(s, directions[e.key]);
+        else if (e.key === 'Escape') fermerSaisie(doc);
+        else if (e.key === 'Backspace') effacer();
+        else if (e.key && e.key.length === 1) ecrireSaisie(s, e.key);
+        else return; // Tab/Entrée gardent leur comportement natif dans le dialogue.
+        e.preventDefault(); e.stopPropagation();
+      });
+    }
+    ETATS.get(dialogue).pads.clear(); SAISIES.set(doc, s); actualiserSaisie(s);
+    dialogue.dataset.manette = 'true'; dialogue.showModal(); focaliser(s.lignes[0][0]);
+    return true;
   }
 
   function ajuster(zone, el, g, sens) {
@@ -182,21 +278,37 @@
   }
 
   function naviguer(zone, nouveau, options = {}) {
+    const saisie = zone && SAISIES.get(zone.ownerDocument);
+    if (saisie) {
+      if (saisie.zone !== zone || !visible(saisie.cible) || zone.ownerDocument.hidden) fermerSaisie(zone.ownerDocument, false);
+      else zone = saisie.dialogue;
+    }
     if (!zone || zone.hidden || zone.closest(MASQUE) || zone.ownerDocument.hidden) return false;
     if (!ETATS.has(zone)) initialiser(zone);
     const etat = ETATS.get(zone), front = typeof nouveau === 'function' ? nouveau : () => false;
     const pad = options.pad, temps = Number.isFinite(options.temps) ? options.temps : performance.now();
     const d = deplacement(etat, pad, front, temps);
     const retour = front(1), gauche = front(4), droite = front(5), valider = front(0);
-    if (!retour && !gauche && !droite && !valider && !d) return false; // Aucun parcours DOM sur une image au repos.
+    const demarrer = typeof options.demarrer === 'function' && front(9);
+    if (!retour && !gauche && !droite && !valider && !demarrer && !d) return false; // Aucun parcours DOM sur une image au repos.
     const vue = zone.ownerDocument.defaultView, style = vue && vue.getComputedStyle(zone);
     if (!zone.getClientRects().length || style && (style.visibility === 'hidden' || style.visibility === 'collapse')) return false;
-    const cle = pad && pad.index != null ? pad.index : -1, avant = etat.dernier;
+    const cle = pad && pad.index != null ? pad.index : -1, avant = INTERACTIONS.get(zone.ownerDocument);
     // Deux manettes qui valident ensemble ne doivent pas cocher puis décocher le même réglage.
+    // Le garde-fou suit le document : la première validation peut ouvrir un autre écran avant la lecture de J2.
     if (avant && temps >= avant.temps && (temps === avant.temps || cle !== avant.cle && temps - avant.temps < 60)) return true;
-    etat.dernier = { temps, cle }; zone.dataset.manette = 'true';
+    INTERACTIONS.set(zone.ownerDocument, { temps, cle }); zone.dataset.manette = 'true';
     if (options.activer) options.activer();
+    if (saisie && SAISIES.get(zone.ownerDocument) === saisie) {
+      if (retour) fermerSaisie(zone.ownerDocument);
+      else if (valider) {
+        const actif = zone.ownerDocument.activeElement, cible = saisie.lignes.flat().find(b => b === actif) || saisie.lignes[0][0];
+        focaliser(cible); cible.click();
+      } else if (d) deplacerSaisie(saisie, d);
+      return true; // LB/RB ne doivent pas changer le menu derrière le dialogue.
+    }
     if (retour) { if (options.retour) options.retour(); return true; }
+    if (demarrer) { options.demarrer(); return true; }
     if (gauche || droite) {
       const ts = onglets(zone).filter(visible), actif = ts.find(t => t.getAttribute('aria-selected') === 'true') || ts[0];
       if (actif) {
@@ -211,7 +323,7 @@
     if (!el) return true;
     if (valider) {
       focaliser(el);
-      if (!el.readOnly && !(options.valider && options.valider(el))) el.click();
+      if (!el.readOnly && !ouvrirSaisie(el, zone) && !(options.valider && options.valider(el))) el.click();
       return true;
     }
     const sens = d === 12 || d === 14 ? -1 : 1;
@@ -222,5 +334,5 @@
     return true;
   }
 
-  B.navigationMenu = Object.freeze({ initialiser, ouvrirOnglet, naviguer });
+  B.navigationMenu = Object.freeze({ initialiser, ouvrirOnglet, naviguer, fermerSaisie });
 })(globalThis.BITUME = globalThis.BITUME || {});

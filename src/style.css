@@ -152,7 +152,7 @@ input[type="range"] { width: 100%; accent-color: var(--rouge); }
 .onglets-menu button:hover { border-color: var(--papier-2); }
 .panneaux-menu { flex: 1 1 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; scrollbar-gutter: stable; width: 100%; max-width: 1120px; margin: 0 auto; padding: 18px 6px 22px; }
 .panneau-menu { min-width: 0; }
-.panneau-menu :is(button,input,a) { scroll-margin: 18px; }
+.panneau-menu :is(button,input,select,textarea,a) { scroll-margin: 18px; }
 .panneau-menu .options { margin-top: 18px; }
 .panneau-menu .grille-reglages { grid-template-columns: repeat(2,minmax(0,1fr)); }
 .panneau-menu fieldset { padding: 16px; border: 1px solid var(--trait); border-radius: 5px; background: rgba(12,16,19,.45); }
@@ -182,10 +182,10 @@ input[type="range"] { width: 100%; accent-color: var(--rouge); }
 .aide-manette kbd { display: inline-block; min-width: 21px; margin-right: 5px; padding: 3px 5px; border: 1px solid var(--trait-fort); border-radius: 3px; text-align: center; color: var(--papier); font: 700 11px/1.2 var(--f-texte); }
 .audio-curseurs { max-width: 620px; gap: 24px; }
 .audio-curseurs input { min-height: 38px; }
-.ecran[data-manette="true"] :is(button,a,input[type="range"]):focus,
+.ecran[data-manette="true"] :is(button,a,input,select,textarea,[role="radio"],[role="checkbox"]):focus,
 .onglets-menu button:focus-visible { outline: 3px solid var(--ambre); outline-offset: 3px; }
 .ecran[data-manette="true"] input:focus + span { outline: 3px solid var(--ambre); outline-offset: 3px; }
-button:disabled { cursor: wait; opacity: .55; }
+button:disabled { cursor: not-allowed; opacity: .55; }
 @media (max-width: 900px) {
   .conditions-grille { grid-template-columns: 1fr; }
   .conditions-grille fieldset { display: grid; grid-template-columns: minmax(180px,.8fr) 1fr; gap: 10px 20px; }
@@ -665,11 +665,11 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 .catalogue-circuits { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
 .catalogue-circuits > .arcade-surtitre { flex: none; margin-bottom: 10px; }
 .arcade-preparation .circuits { display: flex; flex-direction: column; flex: 1 1 0; gap: 7px; min-height: 200px; max-height: 515px; overflow-y: auto; scrollbar-width: thin; padding: 3px 8px 3px 3px; overscroll-behavior: contain; }
-.arcade-preparation .carte-circuit { display: grid; grid-template-columns: 26px minmax(0,1fr) 72px; grid-template-rows: auto auto; column-gap: 9px; row-gap: 3px; flex: none; min-height: 67px; padding: 11px 10px; border: 1px solid #38444f; border-left: 3px solid #38444f; background: #19232c; border-radius: 2px; }
+.arcade-preparation .carte-circuit { display: grid; grid-template-columns: 26px minmax(0,1fr) auto; grid-template-rows: auto auto; column-gap: 9px; row-gap: 3px; flex: none; min-height: 67px; padding: 11px 10px; border: 1px solid #38444f; border-left: 3px solid #38444f; background: #19232c; border-radius: 2px; }
 .arcade-preparation .carte-circuit .circuit-rang { grid-row: 1 / 3; align-self: center; font-size: 11px; font-variant-numeric: tabular-nums; color: #8296a6; }
 .arcade-preparation .carte-circuit .nom { grid-column: 2; font-size: 22px; line-height: 1; white-space: normal; }
 .arcade-preparation .carte-circuit .fiche { grid-column: 2; font-size: 10px; line-height: 1.4; color: #99acba; }
-.arcade-preparation .carte-circuit canvas { grid-column: 3; grid-row: 1 / 3; align-self: center; width: 72px; height: 42px; margin: 0; }
+.arcade-preparation .carte-circuit .circuit-distance { grid-column: 3; grid-row: 1 / 3; align-self: center; color: #c3cdd4; font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .arcade-preparation .carte-circuit[aria-checked="true"] { border-color: #eab261; border-left-width: 3px; background: #3b2d24; }
 .arcade-preparation .carte-circuit:hover, .arcade-preparation .carte-circuit:focus-visible { transform: none; outline: 2px solid #eab261; outline-offset: 1px; }
 .arcade-preparation #p-piste > .options { margin-top: 15px; gap: 12px; }
@@ -699,7 +699,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 @media (max-width: 850px) {
   .selection-circuit { grid-template-columns: minmax(0,1.3fr) minmax(210px,1fr); gap: 12px; }
   .arcade-preparation .carte-circuit { grid-template-columns: 21px minmax(0,1fr); }
-  .arcade-preparation .carte-circuit canvas { display: none; }
+  .arcade-preparation .carte-circuit .circuit-distance { grid-column: 2; grid-row: auto; font-size: 11px; }
   .arcade-preparation .carte-circuit .nom { font-size: 20px; }
   .apercu-entete { padding: 16px 16px 0; }
   .chiffres-circuit { padding: 13px 16px; }
@@ -743,4 +743,49 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   #p-trace-3d { height: 180px; }
   .chiffres-circuit { padding-top: 10px; padding-bottom: 10px; }
   .arcade-preparation .panneaux-menu { padding-top: 12px; padding-bottom: 14px; }
+}
+
+/* Un état sonore vide ne réserve pas un espace dans le parcours. */
+#p-troll-etat:empty, #pr-troll-etat:empty { display: none; }
+
+/* Aide adaptée au dernier appareil utilisé ; les touches natives restent disponibles. */
+.ecran:not([data-manette="true"]) .aide-controleur,
+.ecran[data-manette="true"] .aide-clavier, .aide-tactile { display: none; }
+#preparation[data-etape="0"] .aide-options,
+#preparation:not([data-etape="0"]) .aide-circuit { display: none; }
+@media (hover: none) and (pointer: coarse) {
+  .ecran:not([data-manette="true"]) .aide-clavier { display: none; }
+  .ecran:not([data-manette="true"]) .aide-tactile { display: flex; }
+}
+.saisie-manette { width: min(660px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: 24px; border: 1px solid #637783; border-radius: 7px; background: #101a23; color: var(--papier); overflow: auto; touch-action: pan-y; box-shadow: 0 24px 100px #000b; }
+.saisie-manette::backdrop { background: #030608da; }
+.saisie-manette header { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.saisie-manette h2 { margin: 0; font: 750 25px/1.2 var(--f-texte); }
+.saisie-manette button { min-height: 44px; border: 1px solid #415664; border-radius: 4px; background: #22313d; color: var(--papier); padding: 8px 12px; cursor: pointer; }
+.saisie-manette button:hover { background: #314957; }
+.saisie-manette button:focus { outline: 3px solid var(--ambre); outline-offset: 2px; }
+#sm-contenu { margin: 20px 0 6px; padding: 12px 16px; min-height: 55px; border: 1px solid #647583; border-radius: 3px; background: #080d12; font: 650 23px/1.2 var(--f-texte); letter-spacing: .08em; white-space: pre-wrap; overflow-wrap: anywhere; }
+#sm-contenu:empty::after { content: '…'; color: #6c7d89; }
+#sm-limite, .sm-aide { color: var(--papier-2); font-size: 12px; margin: 6px 0 18px; }
+#sm-touches { display: flex; flex-direction: column; gap: 8px; }
+.sm-ligne { display: flex; justify-content: center; gap: 7px; }
+.sm-ligne button { flex: 1 1 0; max-width: 50px; min-width: 0; padding: 6px 2px; }
+.sm-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 12px; }
+.sm-actions button { flex: 1 1 auto; }
+#sm-valider { color: #fff4df; border-color: #e88e58; background: #8d3324; }
+#sm-maj[aria-pressed="true"] { border-color: #eab261; background: #694d22; }
+.sm-aide { margin-bottom: 0; }
+@media (max-width: 600px) {
+  .saisie-manette { padding: 14px; }
+  .saisie-manette h2 { font-size: 20px; }
+  .sm-ligne { gap: 4px; }
+  .sm-ligne button { min-height: 42px; }
+}
+@media (max-height: 500px) {
+  .saisie-manette { padding: 12px 18px; }
+  #sm-contenu { min-height: 40px; margin-top: 10px; padding: 7px 12px; }
+  #sm-limite { margin-bottom: 10px; }
+  .sm-ligne button { min-height: 36px; }
+  #sm-touches, .sm-ligne { gap: 5px; }
+  .sm-actions { margin: 10px 0 6px; }
 }

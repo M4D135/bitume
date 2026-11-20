@@ -1,5 +1,5 @@
 <title>BITUME</title>
-<meta name="description" content="Course de monoplaces rétro, entièrement procédurale : cinq circuits générés, onze rivaux, dérive et turbo. Moteur FERRO, sans aucun fichier d’image ni de son.">
+<meta name="description" content="Course de monoplaces rétro, entièrement procédurale : neuf circuits générés, onze rivaux, dérive et turbo. Moteur FERRO, sans aucun fichier d’image ni de son.">
 <style>
 /*STYLE*/
 </style>
@@ -81,7 +81,7 @@
       <button id="t-gaz" type="button" class="pedale gaz">Gaz</button>
     </div>
     <button id="t-vue" type="button" class="bouton-rond vue" aria-label="Changer de vue">◎</button>
-    <button id="t-troll" type="button" class="bouton-rond troll" aria-label="Troll : faire un geste au rival">Troll</button>
+    <button id="t-troll" type="button" class="bouton-rond troll" aria-label="Troll : geste et klaxon ensemble">Troll</button>
   </div>
 
   <!-- Écran titre -->
@@ -99,7 +99,9 @@
       <button type="button" class="discret arcade-reglages" data-aller="reglages">Réglages <span aria-hidden="true">↗</span></button>
     </nav>
     <p id="titre-attente" class="attente" hidden><span id="titre-attente-texte">Démo dans 5 s</span><i><b></b></i></p>
-    <p class="pied-titre">Clavier, souris, manette ou écran tactile</p>
+    <p class="pied-titre aide-clavier">Tab : parcourir · Entrée : choisir · Échap : retour</p>
+    <p class="pied-titre aide-controleur">Croix ou stick : parcourir · A : choisir · B : retour</p>
+    <p class="pied-titre aide-tactile">Touchez un mode pour commencer</p>
     <p id="aide-console" class="pied-titre" hidden>Xbox : maintenez Menu pour passer aux contrôles de jeu. RT : gaz · LT : frein · A : dérive</p>
   </section>
 
@@ -111,7 +113,7 @@
     </header>
     <div class="salon">
       <div class="ligne-identite">
-        <label class="champ-nom"><span>Votre nom</span><input id="l-nom" maxlength="16" autocomplete="nickname" spellcheck="false" placeholder="Pilote"></label>
+        <label class="champ-nom"><span>Votre nom</span><input data-menu-saisie="nom" id="l-nom" maxlength="16" autocomplete="nickname" spellcheck="false" placeholder="Pilote"></label>
         <fieldset class="champ-joueurs">
           <legend>Pilotes sur cette machine</legend>
           <label><input type="radio" name="joueursIci" value="1"><span>Un</span></label>
@@ -128,7 +130,7 @@
           <h3>Rejoindre</h3>
           <p>Entrez le code que l’hôte vous a donné.</p>
           <div class="ligne-code">
-            <input id="l-code" maxlength="4" autocomplete="off" spellcheck="false" placeholder="ABCD" aria-label="Code de la partie">
+            <input data-menu-saisie="code" id="l-code" maxlength="4" autocomplete="off" spellcheck="false" placeholder="ABCD" aria-label="Code de la partie">
             <button type="button" class="gros" id="l-rejoindre">Rejoindre</button>
           </div>
         </div>
@@ -187,6 +189,7 @@
         <fieldset class="choix-troll" id="pr-troll-0"><legend>Troll · Joueur 1</legend><label class="select-arcade" for="pr-geste-0"><span>Geste</span><select id="pr-geste-0" name="gestePilote0"><option value="majeur">Doigt d’honneur</option><option value="poing">Poing levé</option><option value="salut">Salut</option></select></label><label class="select-arcade" for="pr-klaxon-0"><span>Klaxon</span><select id="pr-klaxon-0" name="klaxonPilote0"><option value="classique">Classique</option><option value="ancien">Ancien · rétro</option><option value="mariage">Mariage · fête</option></select></label><button type="button" class="discret" data-essai-klaxon="0">Écouter le klaxon</button></fieldset>
         <fieldset class="choix-troll" id="pr-troll-1" hidden><legend>Troll · Joueur 2</legend><label class="select-arcade" for="pr-geste-1"><span>Geste</span><select id="pr-geste-1" name="gestePilote1"><option value="majeur">Doigt d’honneur</option><option value="poing">Poing levé</option><option value="salut">Salut</option></select></label><label class="select-arcade" for="pr-klaxon-1"><span>Klaxon</span><select id="pr-klaxon-1" name="klaxonPilote1"><option value="classique">Classique</option><option value="ancien">Ancien · rétro</option><option value="mariage">Mariage · fête</option></select></label><button type="button" class="discret" data-essai-klaxon="1">Écouter le klaxon</button></fieldset>
       </div><p class="note-pneus">Troll déclenche ensemble votre klaxon et votre geste.</p>
+      <p id="pr-troll-etat" class="note-pneus" role="status" aria-live="polite"></p>
       <button type="button" class="discret" id="pr-reglages">Commandes et autres réglages</button>
       <ul id="pr-pilotes" class="liste-pilotes" aria-label="Machines prêtes"></ul>
       <p id="pr-etat" class="note-enligne" role="status" aria-live="polite"></p>
@@ -336,6 +339,7 @@
         <button type="button" class="discret" id="p-reglages-pilote">Régler le pilotage</button>
       </fieldset>
     </div>
+        <p id="p-troll-etat" class="note-pneus" role="status" aria-live="polite"></p>
       </div>
       <div id="p-bilan" class="panneau-menu bilan-arcade" role="tabpanel" data-menu-panel aria-labelledby="onglet-p-bilan" hidden>
         <p class="arcade-surtitre">La grille vous attend</p><h3>Prêt à prendre la piste ?</h3>
@@ -349,7 +353,9 @@
       <button type="button" class="gros principal" id="b-suivant">Conditions →</button>
       <button type="button" class="gros principal" id="b-depart" hidden>Départ →</button>
     </footer>
-    <p class="aide-manette"><span><kbd>↑ ↓</kbd> Parcourir</span><span><kbd>← →</kbd> Régler</span><span><kbd>A</kbd> Valider</span><span><kbd>B</kbd> Retour</span><span><kbd>LB / RB</kbd> Étapes</span></p>
+    <p class="aide-manette aide-controleur"><span class="aide-circuit"><kbd>↑ ↓</kbd> Circuit <kbd>← →</kbd> Autres choix</span><span class="aide-options"><kbd>↑ ↓</kbd> Parcourir <kbd>← →</kbd> Régler</span><span><kbd>A</kbd> Valider</span><span><kbd>B</kbd> Retour</span><span><kbd>LB / RB</kbd> Étapes</span></p>
+    <p class="aide-manette aide-clavier"><span><kbd>Tab</kbd> Parcourir</span><span><kbd>Flèches</kbd> Choisir / régler</span><span><kbd>Entrée</kbd> Valider</span><span><kbd>Échap</kbd> Étape précédente</span></p>
+    <p class="aide-manette aide-tactile">Touchez un circuit ou une étape · Faites défiler les réglages</p>
   </section>
 
   <!-- Réglages persistants, séparés des conditions de course. -->
@@ -570,5 +576,19 @@
   </div>
   <div id="chargement" class="chargement" role="status" aria-live="polite"><span class="chargement-titre">Préparation du circuit…</span><span id="chargement-etape" class="chargement-etape"></span><progress id="chargement-progres" class="chargement-progres" max="1" value="0" aria-label="Progression du chargement"></progress></div>
   <div id="erreur" class="erreur" role="alert" hidden></div>
+  <!-- Saisie facultative à la manette ; clavier et tactile gardent les champs natifs. -->
+  <dialog id="saisie-manette" class="saisie-manette" aria-labelledby="sm-titre" aria-describedby="sm-limite">
+    <header><h2 id="sm-titre">Saisir un texte</h2><button type="button" id="sm-annuler" aria-label="Annuler la saisie">Annuler</button></header>
+    <p id="sm-contenu" role="status" aria-live="polite" aria-atomic="true"></p>
+    <p id="sm-limite"></p>
+    <div id="sm-touches" aria-label="Caractères"></div>
+    <div class="sm-actions">
+      <button type="button" id="sm-maj" aria-pressed="false">Majuscules</button>
+      <button type="button" id="sm-espace">Espace</button>
+      <button type="button" id="sm-effacer">Effacer</button>
+      <button type="button" id="sm-valider">Valider</button>
+    </div>
+    <p class="sm-aide">Croix ou stick : choisir · A : saisir · B : annuler</p>
+  </dialog>
 </main>
 <!--MODULES-->
