@@ -325,10 +325,13 @@
     }
 
     function demarrer() {
-      if (pret) { if (ctx.state === 'suspended') ctx.resume(); return; }
+      if (pret) { if (ctx.state === 'suspended') { viderKlaxons(); ctx.resume(); } return; }
       const AC = typeof window !== 'undefined' && (window.AudioContext || window.webkitAudioContext);
       if (!AC) return;
-      try { ctx = new AC(); if (ctx.state === 'suspended') ctx.resume(); init(); pret = true; }
+      try {
+        ctx = new AC(); if (ctx.state === 'suspended') ctx.resume(); init(); pret = true;
+        ctx.onstatechange = () => { if (ctx && ctx.state !== 'running') viderKlaxons(); };
+      }
       catch (e) { ctx = null; pret = false; }
     }
 
@@ -537,6 +540,19 @@
       echLu = F.n;
     }
 
+    // Une horloge audio suspendue ne peut pas exécuter un fondu futur. Débrancher les sources
+    // immédiatement empêche leur fin de reprendre au retour de l'onglet ou du périphérique.
+    function viderKlaxons() {
+      if (!ctx) return;
+      const t = ctx.currentTime;
+      for (const v of voixKlaxon) if (v.source) {
+        const s = v.source; v.source = null; v.finA = 0;
+        v.g.gain.cancelScheduledValues(t); v.g.gain.setValueAtTime(0, t);
+        try { s.stop(t); } catch (e) { /* source déjà terminée */ }
+        s.disconnect();
+      }
+    }
+
     // Le jeu spatialise l'unique événement Troll et décide quand l'accepter (réseau, IA, cadence).
     // Une préécoute explicite emploie aussi cette méthode, même lorsque les moteurs sont en pause.
     // true = source programmée ; false = audio verrouillé, volume nul ou budget déjà occupé.
@@ -544,7 +560,7 @@
       if (!pret) return false;
       // Ne pas mettre en file un ancien Troll quand le navigateur suspend/interrompt l'audio.
       // Le coordinateur consomme l'événement même dans ce cas, sans le rejouer au réveil.
-      if (ctx.state !== 'running') { klaxonsIgnores++; return false; }
+      if (ctx.state !== 'running') { viderKlaxons(); klaxonsIgnores++; return false; }
       p = p || {};
       const niveau = p.gain == null ? 1 : Number.isFinite(+p.gain) ? clamp(+p.gain, 0, 1) : 0;
       if (!niveau || !vols.general || !vols.effets) { klaxonsIgnores++; return false; }
@@ -666,7 +682,8 @@
       for (const v of vents) { vise(v.aiguG.gain, 0, t, .03); vise(v.graveG.gain, 0, t, .03); }
       for (const v of voix) vise(v.sortie.gain, 0, t, .03);
       for (const v of voixEch) vise(v.g.gain, 0, t, .03);
-      for (const v of voixKlaxon) if (v.source && v.finA > t) {
+      if (ctx.state !== 'running') viderKlaxons();
+      else for (const v of voixKlaxon) if (v.source && v.finA > t) {
         rampe(v.g.gain, 0, t, .012);
         v.source.stop(t + .015); v.finA = Math.min(v.finA, t + .015);
       }

@@ -290,6 +290,65 @@ verifier('klaxons : silence, contexte suspendu et pause sans son mis en attente'
   });
 });
 
+verifier('un contexte suspendu pendant un klaxon libère immédiatement sa voix sans fin différée', () => {
+  avecSon((son, fa, ctx) => {
+    for (const state of ['suspended', 'interrupted']) {
+      assert.equal(son.klaxon('mariage'), true);
+      const source = fa.sources.at(-1); ctx.currentTime += .1;
+      ctx.state = state; ctx.onstatechange();
+      assert.equal(source.debranche, true, 'source physiquement détachée');
+      assert.equal(source.fin, ctx.currentTime, 'aucune durée en attente sur l’horloge gelée');
+      assert.equal(son.stats().klaxons.actives, 0);
+      son.suspendre(); son.reprendre();
+      ctx.state = 'running'; ctx.onstatechange();
+      assert.equal(son.stats().klaxons.actives, 0, 'aucune ancienne voix au réveil');
+    }
+    assert.equal(son.klaxon('ancien'), true);
+    const source = fa.sources.at(-1); ctx.state = 'suspended';
+    // La pause protège aussi le cas où le callback du navigateur n'a pas encore été livré.
+    son.suspendre(); assert.equal(source.debranche, true); assert.equal(son.stats().klaxons.actives, 0);
+    ctx.state = 'running'; son.reprendre();
+    assert.equal(son.stats().klaxons.actives, 0);
+  });
+});
+
+verifier('Troll : les deux vrais modules lancent un son par geste accepté, jamais par demande ni par vue', () => {
+  charger('expressions-pilote.js');
+  const X = B.expressionsPilote;
+  assert.deepEqual(X.KLAXONS, B.son.KLAXONS, 'même catalogue de timbres');
+  avecSon((son, fa, ctx) => {
+    const co = { phase: 'course', termine: false, voitures: [0, 1].map(id => ({ id, joueur: true,
+      progression: 100, etat: { v: 30, rapport: 2 } })) };
+    const poses = [{ x: 100, y: 0, z: 0, cap: 0 }, { x: 100, y: 0, z: 3, cap: 0 }];
+    const E = X.creer(2, 17), depart = fa.sources.length, sortie = {};
+    const e = { sequence: 0, pilote: -1, geste: null, klaxon: null, instant: 0, cote: 0 };
+    X.configurer(E, 0, { geste: 'salut', klaxon: 'ancien' });
+    X.configurer(E, 1, { geste: 'poing', klaxon: 'mariage' });
+    X.actualiser(E, co, poses, 0);
+    const consommer = () => {
+      while (X.consommerEvenement(E, e)) {
+        assert.equal(e.geste, X.lire(E, e.pilote).geste); assert.equal(e.instant, ctx.currentTime);
+        assert.equal(son.evenement('troll', e), true);
+        const source = fa.sources.at(-1);
+        assert.equal(source.debut, ctx.currentTime);
+        assert.equal(source.buffer.getChannelData(0).length, Math.ceil(B.son.DUREES_KLAXON[e.klaxon] * ctx.sampleRate));
+      }
+    };
+    X.demander(E, 0, true); X.demander(E, 1, true); consommer();
+    assert.equal(fa.sources.length, depart, 'une demande ne klaxonne jamais');
+    co.voitures[0].etat.rapport = 3;
+    ctx.currentTime = .01; X.actualiser(E, co, poses, .01); consommer();
+    assert.equal(X.lire(E, 0).geste, null, 'J1 attend son rapport');
+    assert.equal(X.lire(E, 1).geste, 'poing'); assert.equal(fa.sources.length, depart + 1);
+    for (const id of [1, 0, 1, 0]) X.lire(E, id, sortie); consommer();
+    assert.equal(fa.sources.length, depart + 1, 'J2/J1 et leurs miroirs restent des lectures');
+    ctx.currentTime = .38; X.actualiser(E, co, poses, .38); consommer();
+    assert.equal(X.lire(E, 0).geste, 'salut'); assert.equal(fa.sources.length, depart + 2);
+    X.actualiser(E, co, poses, .38); consommer();
+    assert.equal(fa.sources.length, depart + 2, 'même instant et bouton tenu ne redémarrent rien');
+  });
+});
+
 verifier('échappement : tampons et voix préparés au démarrage ; ensuite une source par claquement joué, rien d’autre', () => {
   avecSon((son, fa, ctx) => {
     const st = son.stats().echappement, prets = new Set(fa.tampons), avant = fa.compte().noeuds, osc = fa.oscillateurs.length, src = fa.sources.length;

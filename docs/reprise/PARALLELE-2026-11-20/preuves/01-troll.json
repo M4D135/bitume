@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "lot": "01-T2-Troll",
+  "statut": "modules_qualifies_raccord_00_requis",
+  "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
+  "main_plus_recent_relu": "d230d8c6995e44d63b0a072fa3d6362d04a8e5ce",
+  "main_recent_changements": "trois commits documentaires seulement ; pas de remplacement de source recent",
+  "contrat_00_revision": 1,
+  "preference_menu": "reglages.trollPilotes[n] remappe via S.locaux[n]",
+  "sources": {
+    "src/voiture.js": "b37269498b6a97ee27be729e3c9ea793e7108e02f5850b6d84b4ec5c5a69afe9",
+    "src/expressions-pilote.js": "70cf191dd6d5379c70e01ae9f8500000b0ed54a1f0e24b2eed32994c8b7c16c7",
+    "src/son.js": "59d349e437f924efba5b589e5ea138193fbd7dbea2660c4f496dff76129a460e",
+    "verifications/troll-pilote.test.mjs": "f6222940a0625dbe2328b78cf3be0f86cd5ae0d6d13149fda698f16736951a6a",
+    "verifications/expressions-pilote.test.mjs": "71eb771fabddbe072ebfcdaf36bed85920c1ee45e03a9c9083da5f0f9770916d",
+    "verifications/son.test.mjs": "c4fd5bfb54ae4d174427338a01d17f789dab4d53181da96effde2e66400dd8f6",
+    "verifications/pilote-habitacle.test.mjs": "fb905522766d6f38cc0978a412126a72b9afa361c7ddd6f680a03e992427a604"
+  },
+  "api": {
+    "requete": "demander(E,id,appuye)",
+    "choix": "configurer(E,id,{geste,klaxon})",
+    "consommation": "consommerEvenement(E,sortie) -> boolean",
+    "evenement": [
+      "sequence",
+      "pilote",
+      "geste",
+      "klaxon",
+      "instant",
+      "cote"
+    ],
+    "normaliseurs": [
+      "normaliserGeste",
+      "normaliserKlaxon"
+    ],
+    "file": "N indices et N evenements prealloues, N=nombre de pilotes, 1..64",
+    "ordre": "ordre des demarrages acceptes, sequence globale monotone pendant la vie de E",
+    "expiration": "a la prochaine actualisation nouvelle ; jamais de rejeu sur relecture J2/J1/retros",
+    "saturation": "refus avant geste/son et sans tirage aleatoire ; demande manuelle garde son echeance",
+    "activation_ia": "creer(nombre,graine,{ia:true}) ; desactivee par defaut hors demo pour proteger la vitrine"
+  },
+  "validation": {
+    "troll_pilote": {
+      "commande": "node verifications/troll-pilote.test.mjs",
+      "tests": 20,
+      "reussis": 20
+    },
+    "expressions_historiques": {
+      "commande": "node verifications/expressions-pilote.test.mjs",
+      "tests": 11,
+      "reussis": 11
+    },
+    "audio_et_composition": {
+      "commande": "node verifications/son.test.mjs",
+      "verifications": 25,
+      "reussies": 25
+    },
+    "interruption_geometrique_finale": {
+      "commande": "node --test --test-name-pattern=\"un rapport interrompt\" verifications/pilote-habitacle.test.mjs",
+      "poses": 810,
+      "saut_initial_m": 1.0166492833141305e-06,
+      "pas_max_120hz_m": 0.12980598651223269,
+      "pas_max_240hz_m": 0.06978889683475266,
+      "statut": "reussi"
+    },
+    "file": {
+      "acteurs_simultanes": 64,
+      "evenements_distincts": 64,
+      "buffers_reutilises": true,
+      "consommation_mixte_sans_doublons": true
+    },
+    "aleatoire": {
+      "couples_ia_observes": 9,
+      "graines": 64,
+      "hasard_geste_et_audio_separes": true,
+      "hasard_course_intact": true
+    }
+  },
+  "temporisation": {
+    "manuel_s": 2.5,
+    "attente_rapport_max_s": 0.65,
+    "ia_par_pilote_s": 8,
+    "ia_global_s": 1.2,
+    "demo_global_s": 18,
+    "klaxon_max_s": 0.96,
+    "voix_audio": 5
+  },
+  "limites": [
+    "Choix/menu, appels de boucle et camera de jeu a raccorder par 00.",
+    "Transport des choix et debuts de geste en ligne non implemente dans ce lot ; aucune qualification entre machines.",
+    "Aucun build commun ni publication main ni deploiement.",
+    "Audio entendu et manettes physiques non qualifies ; tests audio en faux contexte."
+  ]
+}

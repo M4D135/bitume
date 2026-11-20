@@ -1,32 +1,46 @@
-/* BITUME — expressions visuelles du pilote, sans effet sur la conduite.
+/* BITUME — expressions du pilote et événement Troll, sans effet sur la conduite.
    Un état par séance, une sortie et un hasard privés par voiture. Aucun acteur n'est modifié.
-   actualiser se fait une fois avant les vues J2/J1 ; lire recopie les champs de la pose. */
+   actualiser puis consommerEvenement se font avant les vues J2/J1 ; lire reste une lecture pure. */
 (function (B) {
   'use strict';
   const GESTES = Object.freeze(['majeur', 'poing', 'salut']);
+  const KLAXONS = Object.freeze(['classique', 'ancien', 'mariage']);
   const DUREES = Object.freeze([1.65, 1.40, 1.80]);
   const LIMITES = Object.freeze({ regard: .32, distance: 18, denivele: 3, vitesse: 8,
     depassement: .8, historique: .5, amorce: .4, regardDuree: 1.45,
-    delaiManuel: 2.5, delaiDemo: 18, probabiliteDemo: .28, attenteDemande: .65 });
+    delaiManuel: 2.5, delaiDemo: 18, probabiliteDemo: .28, attenteDemande: .65,
+    delaiIA: 8, delaiGlobalIA: 1.2 });
   const NEUTRE = Object.freeze({ regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0, passageVisuel: null });
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const lisse = v => { v = clamp(v, 0, 1); return v * v * (3 - 2 * v); };
   const fini = Number.isFinite;
+  const normaliserGeste = valeur => GESTES.includes(valeur) ? valeur : 'majeur';
+  const normaliserKlaxon = valeur => KLAXONS.includes(valeur) ? valeur : 'classique';
 
-  function creer(nombre, graine = 1) {
+  function creer(nombre, graine = 1, options = null) {
     if (!Number.isInteger(nombre) || nombre < 1 || nombre > 64) throw new RangeError('Expressions : 1 à 64 pilotes');
     const pilotes = new Array(nombre);
     for (let i = 0; i < nombre; i++) pilotes[i] = {
       sortie: { regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0, passageVisuel: null },
+      // Sans configuration explicite, conserver le tirage manuel historique des bancs de pose.
+      choixGeste: -1, choixKlaxon: 0, prochainIA: -Infinity,
+      evenement: { id: i, numero: 0, sequence: 0, temps: -Infinity, geste: null, klaxon: null, cote: -1, origine: null },
+      evenementPret: false,
       hasard: ((graine >>> 0) ^ Math.imul(i + 1, 0x9e3779b1) ^ 0x45585052) >>> 0,
+      hasardSon: ((graine >>> 0) ^ Math.imul(i + 1, 0x9e3779b1) ^ 0x4b4c4158) >>> 0,
       tenu: false, demande: false, demandeAvant: NaN, prochainManuel: -Infinity,
       regardA: -Infinity, regardAngle: 0, prochainRegard: -Infinity,
       geste: -1, dernierGeste: -1, gesteA: -Infinity, gesteCote: -1,
       retourA: -Infinity, retourNiveau: 0, passageJusqua: -Infinity,
       passageAnimeDebut: -Infinity, passageAnimeFin: -Infinity,
-      stableDepuis: NaN, depassements: 0, gestesManuels: 0, gestesDemo: 0
+      stableDepuis: NaN, depassements: 0, gestesManuels: 0, gestesDemo: 0, gestesIA: 0
     };
-    return { nombre, pilotes, course: null, phase: null, temps: NaN, prochainAuto: -Infinity,
+    // L'activation explicite distingue la course de la vitrine derrière les menus.
+    return { nombre, pilotes, ia: options?.ia === true, course: null, phase: null, temps: NaN,
+      prochainAuto: -Infinity, prochainIA: -Infinity,
+      // File de N indices vers les N événements préalloués : un départ au plus par pilote/image.
+      // La séquence reste monotone pour toute la vie de E, même après un retour de l'horloge.
+      evenements: new Uint8Array(nombre), evenementsN: 0, evenementsLu: 0, sequence: 0,
       voitures: new Array(nombre).fill(null), references: new Array(nombre).fill(null),
       x: new Float64Array(nombre), y: new Float64Array(nombre), z: new Float64Array(nombre),
       progression: new Float64Array(nombre), rapport: new Float64Array(nombre), repositionnements: new Uint32Array(nombre),
@@ -35,9 +49,45 @@
       duelApres: new Float64Array(nombre * nombre).fill(-Infinity) };
   }
 
+  function configurer(E, id, choix) {
+    if (!Number.isInteger(id) || id < 0 || id >= E?.nombre) return false;
+    const p = E?.pilotes?.[id]; if (!p) return false;
+    // Copier les valeurs : modifier les réglages n'altère ni ces préférences ni le geste déjà lancé.
+    p.choixGeste = GESTES.indexOf(normaliserGeste(choix?.geste));
+    p.choixKlaxon = KLAXONS.indexOf(normaliserKlaxon(choix?.klaxon));
+    return true;
+  }
+  // Contrat 00, révision 1. La sortie appartient à l'appelant et doit être réutilisée.
+  // Une lecture fausse laisse ses champs inchangés. La consommation par id partage les mêmes marques.
+  function consommerEvenement(E, sortie) {
+    if (!E || !sortie || typeof sortie !== 'object') return false;
+    while (E.evenementsLu < E.evenementsN) {
+      const p = E.pilotes[E.evenements[E.evenementsLu]], e = p.evenement;
+      if (!p.evenementPret || e.temps !== E.temps) { E.evenementsLu++; continue; }
+      sortie.sequence = e.sequence; sortie.pilote = e.id; sortie.geste = e.geste;
+      sortie.klaxon = e.klaxon; sortie.instant = e.temps; sortie.cote = e.cote;
+      p.evenementPret = false; E.evenementsLu++; return true;
+    }
+    return false;
+  }
+  function consommer(E, id) {
+    if (!Number.isInteger(id) || id < 0 || id >= E?.nombre) return null;
+    const p = E?.pilotes?.[id]; if (!p || !p.evenementPret) return null;
+    p.evenementPret = false;
+    // Référence réutilisée : à lire maintenant, pas à retenir comme une file différée.
+    return p.evenement.temps === E.temps ? p.evenement : null;
+  }
+
   function hasard(p) {
     p.hasard = (p.hasard + 0x6d2b79f5) >>> 0;
     let t = p.hasard;
+    t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
+  // Le timbre a son flux privé : l'ajout du son ne décale aucun ancien tirage de geste/démo.
+  function hasardKlaxon(p) {
+    p.hasardSon = (p.hasardSon + 0x6d2b79f5) >>> 0;
+    let t = p.hasardSon;
     t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61);
     return ((t ^ t >>> 14) >>> 0) / 4294967296;
   }
@@ -48,7 +98,7 @@
     return front;
   }
   function eteindre(p) {
-    p.geste = -1; p.retourA = -Infinity;
+    p.geste = -1; p.retourA = -Infinity; p.evenementPret = false;
     const o = p.sortie; o.geste = null; o.gestePhase = o.gesteIntensite = 0;
   }
   function neutraliser(p) {
@@ -76,13 +126,29 @@
       p.passageAnimeDebut = t + .14; p.passageAnimeFin = p.passageJusqua;
     }
   }
-  function lancer(p, t, cote, demo) {
+  function lancer(E, p, t, cote, origine) {
+    // N places suffisent par construction. À saturation, ne lancer ni geste ni son, ne tirer aucun hasard.
+    // Une demande manuelle garde son échéance et peut être acceptée à l'image suivante.
+    if (E.evenementsN >= E.evenements.length) return false;
     // Le premier tirage couvre les trois gestes ; ensuite, pas de répétition immédiate du même geste.
-    const u = hasard(p), k = p.dernierGeste < 0 ? Math.floor(u * GESTES.length)
-      : (p.dernierGeste + 1 + Math.floor(u * (GESTES.length - 1))) % GESTES.length;
+    const automatique = origine !== 'manuel';
+    let k = p.choixGeste;
+    if (automatique || k < 0) {
+      const u = hasard(p);
+      k = p.dernierGeste < 0 ? Math.floor(u * GESTES.length)
+        : (p.dernierGeste + 1 + Math.floor(u * (GESTES.length - 1))) % GESTES.length;
+    }
+    const klaxon = automatique ? Math.floor(hasardKlaxon(p) * KLAXONS.length) : p.choixKlaxon;
     p.geste = p.dernierGeste = k; p.gesteA = t; p.gesteCote = cote < 0 ? -1 : 1; p.retourA = -Infinity;
     p.prochainManuel = t + LIMITES.delaiManuel;
-    if (demo) p.gestesDemo++; else p.gestesManuels++;
+    const e = p.evenement;
+    e.numero++; e.sequence = ++E.sequence; e.temps = t; e.geste = GESTES[k]; e.klaxon = KLAXONS[klaxon]; e.cote = p.gesteCote; e.origine = origine;
+    p.evenementPret = true;
+    E.evenements[E.evenementsN++] = e.id;
+    if (origine === 'demo') p.gestesDemo++;
+    else if (origine === 'ia') p.gestesIA++;
+    else p.gestesManuels++;
+    return true;
   }
   function lateral(pose, autre) {
     return -(autre.x - pose.x) * Math.sin(pose.cap) + (autre.z - pose.z) * Math.cos(pose.cap);
@@ -107,8 +173,14 @@
     if (t >= p.prochainRegard && Math.abs(lat) >= .35) {
       p.regardA = t; p.regardAngle = regard; p.prochainRegard = t + LIMITES.regardDuree + .45;
     }
-    if (demo && t >= E.prochainAuto && t >= p.prochainManuel && t >= p.passageJusqua && p.geste < 0 && hasard(p) < LIMITES.probabiliteDemo) {
-      lancer(p, t, lat < -.35 ? -1 : lat > .35 ? 1 : -1, true); E.prochainAuto = t + LIMITES.delaiDemo;
+    const v = E.voitures[id], cible = E.voitures[autre];
+    if (v.distant || t < p.prochainManuel || t < p.passageJusqua || p.geste >= 0) return;
+    const cote = lat < -.35 ? -1 : lat > .35 ? 1 : -1;
+    if (demo && t >= E.prochainAuto && hasard(p) < LIMITES.probabiliteDemo) {
+      if (lancer(E, p, t, cote, 'demo')) E.prochainAuto = t + LIMITES.delaiDemo;
+    } else if (!demo && E.ia && !v.joueur && (!v.humain || v.reprise) &&
+      (cible.joueur || cible.humain) && !cible.reprise && t >= p.prochainIA && t >= E.prochainIA) {
+      if (lancer(E, p, t, cote, 'ia')) { p.prochainIA = t + LIMITES.delaiIA; E.prochainIA = t + LIMITES.delaiGlobalIA; }
     }
   }
   function afficher(p, t) {
@@ -128,13 +200,16 @@
     if (!E || !co || !poses || !fini(t)) return E;
     // Plusieurs vues ou une pause relisent le même état : aucun nouveau tirage au même instant.
     if (E.course === co && E.phase === co.phase && E.temps === t) return E;
+    // Un début non consommé dans son image est périmé, même si l'audio n'a pas encore été déverrouillé.
+    E.evenementsN = E.evenementsLu = 0;
+    for (let i = 0; i < E.nombre; i++) E.pilotes[i].evenementPret = false;
     const dt = t - E.temps, reset = E.course !== co || E.phase !== co.phase || !fini(dt) || dt < 0 || dt > LIMITES.historique;
     const enCourse = co.phase === 'course' && !co.termine;
     if (E.course && E.course !== co || fini(dt) && dt < 0) {
-      E.prochainAuto = -Infinity;
+      E.prochainAuto = E.prochainIA = -Infinity;
       for (let i = 0; i < E.nombre; i++) {
         const p = E.pilotes[i]; neutraliser(p);
-        p.prochainManuel = p.prochainRegard = p.passageJusqua = -Infinity;
+        p.prochainManuel = p.prochainRegard = p.passageJusqua = p.prochainIA = -Infinity;
       }
     }
     if (reset) { E.valide.fill(0); E.armes.fill(0); E.duelApres.fill(-Infinity); }
@@ -165,10 +240,11 @@
     }
     for (let i = 0; i < E.nombre; i++) {
       const p = E.pilotes[i]; if (!E.valide[i] || !p.demande) continue;
+      if (E.voitures[i].distant) { p.demande = false; continue; }
       if (!fini(p.demandeAvant)) p.demandeAvant = t + LIMITES.attenteDemande;
       if (t > p.demandeAvant) p.demande = false;
       else if (p.geste < 0 && t >= p.passageJusqua && t >= p.prochainManuel) {
-        lancer(p, t, coteManuel(E, poses, i, t), false); p.demande = false;
+        if (lancer(E, p, t, coteManuel(E, poses, i, t), 'manuel')) p.demande = false;
       }
     }
     for (let i = 0; i < E.nombre; i++) for (let j = 0; j < E.nombre; j++) if (i !== j) {
@@ -202,5 +278,6 @@
     sortie.regard = o.regard; sortie.geste = o.geste; sortie.gestePhase = o.gestePhase;
     sortie.gesteCote = o.gesteCote; sortie.gesteIntensite = o.gesteIntensite; sortie.passageVisuel = o.passageVisuel; return sortie;
   }
-  B.expressionsPilote = { creer, actualiser, demander, lire, GESTES, LIMITES };
+  B.expressionsPilote = { creer, configurer, actualiser, demander, consommerEvenement, consommer, lire,
+    normaliserGeste, normaliserKlaxon, GESTES, KLAXONS, LIMITES };
 })(globalThis.BITUME = globalThis.BITUME || {});
