@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "nature": "Demandes utilisateur et observations de référence ; aucun runtime modifié",
+  "video": {
+    "source": "https://x.com/games_rozz/status/2123620848644821437/video/1",
+    "compte": "games_rozz",
+    "jeu": "Super Polygon Grand Prix",
+    "media_officiel": "https://video.twimg.com/amplify_video/2123620697851174912/vid/avc1/1920x1080/gjQFKJ2AGDswwwrx.mp4",
+    "duree_s_environ": 18.85,
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "frames_etude": 189,
+    "pas_s_environ": 0.1,
+    "sha256": "9e2f3f8c52e6c16cd18325b7b7007b41362ab7bd3c785d0069c643835c2d25e7",
+    "audio_analyse": false,
+    "transitions_s": [
+      [
+        3.3,
+        3.8
+      ],
+      [
+        10.3,
+        10.9
+      ],
+      [
+        14.0,
+        14.5
+      ]
+    ],
+    "occultation_casque_marquee_s": 10.5,
+    "fleches_analyse_s": [
+      [
+        6,
+        7.6
+      ],
+      [
+        16.2,
+        17.8
+      ]
+    ],
+    "helicoptere_visible_s": [
+      0,
+      3.4
+    ],
+    "limites": [
+      "Vrai dévers physique non établi par la vidéo seule",
+      "Informations de course défilantes non démontrées sur les bandeaux",
+      "Aucun drone identifié dans cet extrait"
+    ],
+    "medias_inclus_runtime": false
+  },
+  "metal": {
+    "depot": "https://github.com/M4D135/METAL",
+    "commit": "747dc3179a4c58bae24c699b0bafe6adaeab156d",
+    "sources": [
+      {
+        "path": "src/avatars.js",
+        "fonction": "MetalAvatars.drone",
+        "role": "Modèle et rotors du drone joueur"
+      },
+      {
+        "path": "src/actors.js",
+        "fonction": "FActors.build, drone type 0",
+        "role": "Nacelle et LOD du drone"
+      },
+      {
+        "path": "src/audio.js",
+        "fonction": "motor:fan",
+        "role": "Base de synthèse à adapter ; aucun rotor déjà qualifié"
+      }
+    ],
+    "objets_mesures": {
+      "drone_joueur_riche": 40,
+      "drone_joueur_leger": 31,
+      "drone_ennemi_riche_proche": 49,
+      "drone_ennemi_moyen": 16,
+      "drone_ennemi_lointain": 6
+    },
+    "mesure_fps": false,
+    "modele_helicoptere_trouve": false,
+    "code_procedural": true,
+    "portage_effectue": false
+  },
+  "lots": [
+    "transitions_vues_continues",
+    "virages_inclines",
+    "panneaux_virages_animes",
+    "bandeaux_led_course",
+    "aeriens_helicopteres",
+    "aeriens_drones_metal"
+  ],
+  "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md"
+}
