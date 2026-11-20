@@ -1,5 +1,18 @@
 # BITUME — reprise courte
 
+## Sous-lot livré — Monaco 14A, carte et provenance temporelle
+
+PR **#29** fusionnée : `d0dbd8544be30ab44aaff399ae55761150074636` ; CI **145/145 suites**.
+Archive de **3 327 sources** vérifiée, contenus et modes exacts ; arbre de fusion identique au candidat.
+Fiche : `docs/reprise/MONACO-CARTE-REVUE-2026-11-20.md`.
+Carte et profils : `docs/references/monaco-2026/revue-chaussee.svg` ; **32 écarts**, sept groupes,
+17 arêtes de pente terrain, deux ensembles de tunnel et quatre extrémités candidates non mesurées.
+Les périodes des dalles IGN sont distinguées des dates individuelles inconnues des cellules MNT.
+**8/8 nouveaux contrôles**, sources et géométrie reconstituées avant revue ; jeu et HTML conservés.
+Reçu : `docs/references/monaco-2026/qualification-revue-cartographie.json`.
+Les apports des PR #26 et #28 sont conservés ; la PR #27 redondante est fermée, sa branche préservée.
+Suite : acquisition routière BD TOPO ciblée, niveaux et ruptures, datums/dates et limites de course.
+
 ## Sous-lot livré — Monaco 14A, revue des mesures
 
 Fiche : `docs/reprise/MONACO-REVUE-2026-11-20.md`. **35/35 contrôles ciblés réussis**.

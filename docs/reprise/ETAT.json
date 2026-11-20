@@ -5,13 +5,13 @@
     "version_publiee_verifiee": "0.2.61",
     "physique": "p14",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "monaco_14A_revue_publiee_acquisition_routiere",
+    "statut": "monaco_14A_carte_et_revue_publiees_acquisition_routiere",
     "lot": "14A_Monaco_acquisition_routiere",
-    "fiche": "docs/reprise/MONACO-REVUE-2026-11-20.md",
+    "fiche": "docs/reprise/MONACO-CARTE-REVUE-2026-11-20.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "050",
-    "prochaine_action": "Acquerir les objets BD TOPO des secteurs prioritaires ; confronter niveaux, datum, dates, incertitudes et limites de course.",
-    "dernier_lot_clos": "docs/reprise/MONACO-REVUE-2026-11-20.md"
+    "derniere_entree": "051",
+    "prochaine_action": "Acquérir les objets BD TOPO ciblés ; comparer niveaux et ruptures, établir datums, dates, incertitudes et limites de course.",
+    "dernier_lot_clos": "docs/reprise/MONACO-CARTE-REVUE-2026-11-20.md"
   },
   "publication": {
     "pr": 24,
@@ -74,7 +74,9 @@
     "lot_14A_complet": false,
     "regles": "Ne pas refaire les acquisitions closes ; ne pas confondre terrain et chaussée ; ne pas corriger la longueur par une mise à l’échelle.",
     "revue": "docs/references/monaco-2026/revue-mesures.md",
-    "source_candidate": "docs/references/monaco-2026/PISTE-BDTOPO.md"
+    "source_candidate": "docs/references/monaco-2026/PISTE-BDTOPO.md",
+    "carte_et_profils": "docs/references/monaco-2026/revue-chaussee.svg",
+    "provenance_temporelle": "Périodes des dalles conservées ; dates individuelles des cellules MNT inconnues."
   },
   "catalogue": {
     "jouables": 8,
@@ -94,7 +96,8 @@
     "bitume_0260": "docs/reprise/rapports/REALISME-2026-11-19/PUBLICATION-0260.json",
     "bitume_0259": "docs/reprise/rapports/COCKPIT-PILOTES-2026-11-19/PUBLICATION-0259.json",
     "bitume_0257": "docs/reprise/rapports/DEMOS-CINEMA-2026-11-19/PUBLICATION-0257.json",
-    "monaco_revue_14A": "docs/references/monaco-2026/PUBLICATION-REVUE-20261120.json"
+    "monaco_revue_14A": "docs/references/monaco-2026/PUBLICATION-REVUE-20261120.json",
+    "monaco_cartographie_14A": "docs/references/monaco-2026/qualification-revue-cartographie.json"
   },
   "regle": "Un sous-lot à la fois ; préserver les preuves, reprise courte et programme complet ; aucun push forcé.",
   "qualification_monaco_revue": {
@@ -141,5 +144,42 @@
     "artifactArchiveIndependentlyDownloaded": false,
     "verification": "Arbre distant et arbre de fusion identiques au candidat ; CI et journal observes. Le workflow reconstruit et refuse tout changement de version, taille ou HTML.",
     "documentationClosure": "Documents uniquement ; aucune reconstruction ni nouvelle campagne locale."
+  },
+  "qualification_monaco_cartographie": {
+    "controles_cibles_reussis": 8,
+    "controles_cibles_echoues": 0,
+    "ci_suites_reussies": 145,
+    "ci_suites_echouees": 0,
+    "ci_run": 44708889823,
+    "sources_archive_verifiees": 3327,
+    "sources_contenus_et_modes_identiques": true,
+    "ecarts_plus_1m": 32,
+    "groupes_ecarts": 7,
+    "aretes_pente_terrain": 17,
+    "troncons_tunnel": 2,
+    "portails_candidats": 4,
+    "portails_mesures": 0,
+    "observations_chaussee_qualifiees": 0,
+    "periodes_dalles_distinctes_des_dates_individuelles": true,
+    "svg_inspecte": true,
+    "recu": "docs/references/monaco-2026/qualification-revue-cartographie.json"
+  },
+  "publication_monaco_cartographie": {
+    "status": "merged",
+    "pr": 29,
+    "url": "https://github.com/M4D135/bitume/pull/29",
+    "head": "b48685ec513c06b1911953868aca6a5413adc040",
+    "candidateTree": "87ce69c34f38dd1e2ee7a18c55e6d49f197d3149",
+    "mergeCommit": "d0dbd8544be30ab44aaff399ae55761150074636",
+    "mergeTreeMatchesCandidate": true,
+    "ciRun": 44708889823,
+    "ciJob": 136195244925,
+    "artifactId": 14617272112,
+    "artifactSha256": "b7ddcf231b7cc901dec9a8cfdff282daac6f1058f2302dafb6b34edd14eb31dd",
+    "sourceFilesVerified": 3327,
+    "buildSha256": "c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d",
+    "foundationPr26And28Preserved": true,
+    "redundantPr27Closed": true,
+    "documentationClosure": "Documents uniquement ; aucune nouvelle campagne locale ni construction."
   }
 }

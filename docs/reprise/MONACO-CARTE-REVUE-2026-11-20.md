@@ -33,7 +33,12 @@ atteignant la fermeture est contrôlé ; les mutations des sources et des dériv
 Revue indépendante et inspection du SVG terminées. La suite de la PR #26 reste distincte :
 `monaco-revue.test.mjs` ; nouveau complément : `monaco-revue-cartographie.test.mjs`.
 Reçu : `../references/monaco-2026/qualification-revue-cartographie.json`.
-La publication/CI de ce complément reste à constater avant de clore ce sous-lot.
+PR **#29** fusionnée : `d0dbd8544be30ab44aaff399ae55761150074636`.
+Tête `b48685ec513c06b1911953868aca6a5413adc040`, arbre `87ce69c34f38dd1e2ee7a18c55e6d49f197d3149`.
+CI `44708889823` : **145/145 suites**, aucun échec. Archive de **3 327 sources** vérifiée,
+contenus et modes identiques ; arbre de fusion identique au candidat. Le HTML reconstruit
+par la CI correspond exactement aux 14 265 416 octets et à l'empreinte 0.2.61 conservée.
+Ce sous-lot cartographique est clos ; sa clôture documentaire ne relance ni tests ni build.
 
 Jeu **0.2.61 / p14 / FERRO 0.3.15** et HTML inchangés. Aucune ancienne campagne locale ni
 construction relancée. Altitudes de chaussée, largeurs et dévers restent inconnus ; aucun

@@ -201,3 +201,32 @@ Les [35 contrôles ciblés](qualification-revue.json) passent ; aucune nouvelle 
 Une [sonde IGN BD TOPO](PISTE-BDTOPO.md) de sept objets donne une piste de données 3D
 sur Louis-II, avec deux voies souterraines à distinguer. Le tracé OSM et les registres
 historiques restent inchangés ; le lot 14A reste ouvert.
+
+## Carte, profils et provenance temporelle
+
+Le [complément cartographique](revue-chaussee.svg) situe les sept groupes des 32 écarts,
+les 17 arêtes de pente terrain à relire, les deux ensembles de tunnel et leurs quatre
+extrémités candidates. Le [registre de revue](revue-chaussee.json) conserve les indices,
+les sources et les inconnues ; il complète `revue-mesures.json/.md` sans les remplacer.
+
+```sh
+python3 tools/preparer-monaco-revue.py
+python3 tools/preparer-monaco-revue.py --check
+node --test verifications/monaco-revue-cartographie.test.mjs
+```
+
+Le générateur reconstruit les entrées OSM et IGN depuis les instantanés et contrôle
+18 fichiers historiques. Les [8 nouveaux contrôles et la CI complète de 145 suites](qualification-revue-cartographie.json)
+sont réussis ; publication par [PR #29](https://github.com/M4D135/bitume/pull/29).
+
+La [revue des sources primaires](REVUE-SOURCES-20261120.md) précise les périodes
+des deux dalles effectivement utilisées et la portée des métadonnées IGN. Une période
+ou une date de dalle ne certifie pas la date individuelle d'une cellule MNT ; cette dernière
+reste inconnue. Les deux accès COPC bornés ont renvoyé 403, sans cause établie ni nuage acquis.
+
+La prochaine acquisition utile reste la [source routière BD TOPO](PISTE-BDTOPO.md) :
+confronter niveaux, topologie et ruptures, établir datums et dates, puis compléter les
+limites de course. Aucune interpolation de ligne 3D candidate ne qualifie automatiquement
+la chaussée. Les champs routiers restent `null`, `readyForRuntime=false`, Monaco non jouable.
+
+Fiche : [publication du complément cartographique](../../reprise/MONACO-CARTE-REVUE-2026-11-20.md).
