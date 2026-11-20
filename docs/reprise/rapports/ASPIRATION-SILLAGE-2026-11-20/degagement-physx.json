@@ -1,0 +1,73 @@
+{
+  "date": "2026-11-20",
+  "status": "reussi",
+  "version": "0.2.62",
+  "physique": "p15",
+  "moteur": "FERRO 0.3.15",
+  "commande": "node verifications/physx-degagement.test.mjs",
+  "node": "v24.22.3",
+  "scenario": {
+    "sol": "Nappe de triangles cuite dans PhysX",
+    "obstacle": "Tronc cylindrique canonique FERRO, rayon 0.8 m, x=104 m, z=4 m",
+    "depart": "Monoplace de 600 kg, x=100 m, z=4 m, 2 m/s ; pneus deja uses",
+    "pilotage": "course.commandesIA et course.pas, 120 Hz",
+    "dureeS": 18,
+    "arriereLibre": "Un seul obstacle devant ; trois rayons natifs de 5 m derriere la voiture a chaque debut de recul"
+  },
+  "mesures": {
+    "backend": "PhysX",
+    "version": "5.12.0",
+    "pas": 2160,
+    "dt": 0.008333333333333333,
+    "contactNatif": 4255,
+    "chocS": 0.35833333333333334,
+    "reculS": 1.5416666666666667,
+    "repriseS": 12.541666666666666,
+    "phasesRecul": 2,
+    "rayonsArriere": 6,
+    "pasRecul": 262,
+    "vitesseReculMin": -3.032908436875614,
+    "xFinal": 277.0819091796875,
+    "vitesseFinale": 47.48096434867159,
+    "replacements": 0,
+    "servicePneus": 0,
+    "ecritures": {
+      "pose": 0,
+      "vitesse": 0,
+      "rotation": 0
+    },
+    "appuisFin": 4
+  },
+  "invariants": {
+    "poseVitesseRotationNonForcees": true,
+    "aucunReplacementOuSecours": true,
+    "tableauEtGrainesPneusConserves": true,
+    "usureMonotoneParRoue": true,
+    "aucunServicePneus": true,
+    "mondeLibere": true
+  },
+  "sensibilite": {
+    "mutation": "Condition de demarrage du degagement IA desactivee dans une copie temporaire du module course ; aucune source runtime versionnee modifiee",
+    "resultat": "echec_attendu",
+    "codeSortie": 1,
+    "assertion": "secours utilisé pour sortir du contact"
+  },
+  "controleComplementaire": {
+    "commande": "node verifications/physique-voitures.test.mjs",
+    "controlesReussis": 14,
+    "resultat": "reussi"
+  },
+  "empreintes": {
+    "src/course.js": "bec39581653d200ca03679c62195bb3bb4087eb666112685ef7687d2a8e247fb",
+    "src/conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+    "src/physique.js": "2dc2dede6b8f8e3a863a09c754bed30baf2cdf38af0dc6b71e9d839eb153a089",
+    "src/solides-physx.js": "27475ef6f49c43431d02f7694fd46e42dd0cf89982d5479b6557a77910f2343b",
+    "src/ferro/physx.js": "b273c4ddbf5bd6871ac55bec727274184cbc627a7e1d5a30ca3a95fd3b525638",
+    "src/ferro/physx-runtime.js": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+    "verifications/physx-degagement.test.mjs": "4ee2d7c65c90119f133066f29d081c36177e5847c2be3f546266d8aad7a9931a"
+  },
+  "limites": [
+    "Scenario controle a un vehicule sur sol plan ; les suites de circuits et de stands couvrent les scenes complexes.",
+    "Pas de mesure FPS materiels ; aucune mutation du runtime, du build ou de la fixture de determinisme."
+  ]
+}
