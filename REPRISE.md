@@ -3,8 +3,15 @@
 ## Lot actif : qualifier et publier la 0.2.66
 
 Base vérifiée sur `main` : **0.2.62 / p15 / FERRO 0.3.15**, huit circuits.
-Le candidat **0.2.65** est sauvegardé en [PR #38](https://github.com/M4D135/bitume/pull/38),
-tête `4cbbe874`. Sa CI termine à **155/159** ; ce résultat reste conservé.
+Le candidat **0.2.66** est sauvegardé en [PR #38](https://github.com/M4D135/bitume/pull/38),
+tête `1c1ac0c9e190368a02101263ddceb6be0b77240d`, arbre `1f05e9b399e4584b814c4050bad9f5652261b097`.
+Sa campagne complète réussit **159/159 suites**, avec **3 405 sources** conformes en contenu
+et mode, et le build exact. Ses 48 images de démo sont inspectées (7/7 groupes réussis).
+Les **113 images retenues** sont inspectées : 48 démos, 41 météo, 24 couverts.
+La scène aérienne est corrigée dans `40774189`, sans changement du jeu ; les deux
+captures refusées restent conservées. Sa nouvelle campagne complète `44747519912`
+est en cours ; la reprise aérienne ciblée `44747519881` réussit. La CI **0.2.65 155/159** reste
+conservée avec ses quatre échecs : cinéma, géométrie, allocation des effets et glaces cockpit.
 
 La **0.2.66** corrige ces quatre échecs. Seul changement runtime : parcours indexé
 des couverts, **379 764 retours identiques**, allocation des traces ramenée à zéro
@@ -14,7 +21,8 @@ Aucun seuil relevé. Les géométries, la conduite p15 et le moteur restent iden
 
 Deux builds identiques : **14 370 823 octets**, SHA-256
 `18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b`.
-Publier puis terminer **CI complète et inspection des images de ce candidat** avant fusion.
+Terminer **CI complète et inspection des images de ce candidat** avant fusion.
+Suivi exact : `docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/SUIVI-PUBLICATION-0266.json`.
 Fiche : `docs/reprise/COUVERTS-CIMES-INTEGRATION-2026-11-20.md`.
 Reçu : `docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/CANDIDAT-0266.json`.
 

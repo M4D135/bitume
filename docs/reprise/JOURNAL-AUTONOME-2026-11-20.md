@@ -67,3 +67,58 @@ L’origine exacte de son pic CI reste inconnue ; la nouvelle campagne doit conf
 Les 48 images démos, 41 météo et cinq vues du Tunnel du Rocher de la 0.2.65 sont inspectées.
 Pluie extérieure vue depuis un abri et réserves de composition restent explicitement ouvertes.
 La 0.2.66 est construite deux fois à l’identique ; CI et captures exactes requises avant fusion.
+
+## 007 — candidat 0.2.66 distant retrouvé et validation suivie
+
+La PR #38 porte maintenant `1c1ac0c9e190368a02101263ddceb6be0b77240d` ; son arbre
+`1f05e9b399e4584b814c4050bad9f5652261b097` correspond exactement au candidat local.
+Les 326 empreintes sources et le HTML de 14 370 823 octets sont conformes au reçu.
+Revue indépendante : aucun seuil relâché ; géométrie, conduite p15 et FERRO inchangés.
+La campagne complète 44743369726 et les captures 44743369792 (démos), 44743369751
+(météo), 44743369605 (couverts) sont suivies sans les relancer. Ce checkpoint ne
+déclare ni leur réussite ni la fusion. Les preuves finales seront ajoutées après inspection.
+Les changements en préparation sur la pluie sous abri restent dans leur lot suivant.
+Reçu courant : `rapports/COUVERTS-CIMES-2026-11-20/SUIVI-PUBLICATION-0266.json`.
+
+## 008 — démos exactes 0.2.66 inspectées
+
+Le run 44743369792 réussit ses sept groupes. Les 48 PNG sont inspectés : 36 candidats
+et 12 références ; chaque archive porte la bonne tête, le bon arbre et le bon build.
+Aucune nouvelle anomalie bloquante observée. Montagne dégagée, volant raccordé, bras
+contenus ; gouttes et panache en cockpit/poursuite, aucun dépôt sur l’écran aérien.
+Bandeaux masquant certains sujets et neige claire restent des réserves. Il s’agit de
+captures figées SwiftShader, sans mesure FPS matérielle. Campagne, météo et couverts
+restent à terminer. Reçu : `rapports/COUVERTS-CIMES-2026-11-20/REVUE-DEMOS-0266.json`.
+
+## 009 — campagne entière 0.2.66 réussie et archive contrôlée
+
+Run 44743369726, job 136312371617 : 159/159 suites, zéro échec, 159 journaux présents.
+L’artefact 14631793804 correspond à son digest GitHub ; ses 3 405 fichiers sources
+ont exactement les contenus et modes du candidat. Le build est identique aux deux
+constructions qualifiées. Les quatre échecs 0.2.65 restent dans le reçu historique.
+Reçu : `rapports/COUVERTS-CIMES-2026-11-20/CI-0266-FINALE.json`. Les images météo
+et couverts doivent encore être inspectées avant la fusion. Aucune campagne relancée.
+
+## 010 — échec du scénario aérien conservé, fusion suspendue
+
+La campagne générale reste à 159/159 et les premières vues tunnel passent. Le groupe
+`cimes-dessus-toit` échoue : la voiture suivie sous le tunnel déclenche le repli normal
+en poursuite, puis une caméra libre est posée dans le relief. Elle reçoit donc une
+visière et ne montre pas le survol attendu. Les deux PNG et leurs observations sont
+attribués au candidat exact. Le correctif porte sur la scène de capture et sa régression,
+avec les mêmes rayons de route/voûte et les mêmes exigences d’absence de dépôt aérien.
+Reçu : `rapports/COUVERTS-CIMES-2026-11-20/ECHEC-CAPTURE-AERIENNE-0266.json`.
+La fusion attend cette reprise et les autres images. Aucun changement runtime annoncé.
+
+## 011 — reprise aérienne réussie et toutes les images inspectées
+
+Le correctif d’outil 40774189 conserve le jeu et son HTML. Les 10 tests ciblés incluent
+la vraie géométrie PhysX : ancienne scène dans le relief, nouvelle caméra dégagée,
+sujet après le portail et sondes toujours sur la voûte. Le run 44747519881 réussit
+ses 2 images aériennes : vraie vue helico, eau/embruns/gouttes nuls, regard et cadre libres.
+Les 22 images de couverts initiales retenues gardent leur provenance ; les 2 refusées restent
+dans la revue initiale. Météo : 7/7 groupes et 41 PNG inspectés. Total retenu : 113 PNG,
+références comprises, avec réserves explicites de pluie sous abri, bandeaux et relief/neige.
+La campagne complète 44747519912 des outils corrigés reste en cours. Les travaux suivants
+(pluie préparée, bandeaux encore sans correctif, PR #37 distincte) sont inventoriés dans
+`rapports/COUVERTS-CIMES-2026-11-20/APRES-0266-PREPARATIONS.json` sans les déclarer intégrés.

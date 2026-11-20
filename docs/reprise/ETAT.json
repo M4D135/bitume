@@ -5,12 +5,12 @@
     "version_publiee_verifiee": "0.2.62",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "candidat_corrige_a_qualifier",
+    "statut": "images113_qualifiees_campagne_outils_corriges_en_cours",
     "lot": "couverts_cimes_et_correctifs_0265",
     "fiche": "docs/reprise/COUVERTS-CIMES-INTEGRATION-2026-11-20.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "006",
-    "prochaine_action": "Pousser la 0.2.66 puis contrôler sa CI et ses captures exactes avant fusion sur main.",
+    "derniere_entree": "011",
+    "prochaine_action": "Terminer la campagne 44747519912 sur 40774189, publier tous les reçus puis fusionner la PR #38.",
     "dernier_lot_clos": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md"
   },
   "publication": {
@@ -324,5 +324,16 @@
     "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
     "build_reproduit_identique": true,
     "recu": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/CANDIDAT-0266.json"
+  },
+  "publication_0266_en_cours": {
+    "pr": 38,
+    "tete": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
+    "arbre": "1f05e9b399e4584b814c4050bad9f5652261b097",
+    "recu": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/SUIVI-PUBLICATION-0266.json",
+    "statut": "images_qualifiees_campagne_outils_corriges_en_cours",
+    "demos_png_inspectes": 48,
+    "qualification_suites": "159/159",
+    "images_retenues": 113,
+    "outils_tete": "40774189dc3a68242a3908f72e09f2676519ccbf"
   }
 }

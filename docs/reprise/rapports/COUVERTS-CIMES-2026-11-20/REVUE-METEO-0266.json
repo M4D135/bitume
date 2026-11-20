@@ -1,0 +1,2123 @@
+{
+  "format": "bitume-visual-meteo-review-v1",
+  "date": "2026-11-20T13:50:49.617655+00:00",
+  "candidate": {
+    "version": "0.2.66",
+    "branch_head": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
+    "ci_commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+    "tree_verified_by_coordinator": "1f05e9b399e4584b814c4050bad9f5652261b097",
+    "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+    "build_bytes": 14370823
+  },
+  "workflow": {
+    "run_id": 44743369751,
+    "url": "https://github.com/M4D135/bitume/actions/runs/44743369751",
+    "jobs": [
+      {
+        "id": 136312371531,
+        "name": "images (sillage-cockpit, sillage300,sillage300-sec)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136312371914,
+        "name": "images (pluie-grille, pluie-grille)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136312371935,
+        "name": "images (vues, duo,sec,faune-haut-col-ete,faune-haut-col-hiver)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136312371937,
+        "name": "images (pluie-spray, pluie-spray235)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136312371982,
+        "name": "images (neige, neige45,pause-reprise,legere)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136312372043,
+        "name": "images (sillage-vues, sillage300-poursuite,sillage300-helico)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136312372110,
+        "name": "images (pluie-tunnel, tunnel)",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "all_jobs_success": true
+  },
+  "scope": {
+    "groups": 7,
+    "passages": 20,
+    "candidate_passages": 14,
+    "images_viewed": 41,
+    "candidate_images": 29,
+    "reference_images": 12,
+    "contact_sheets_viewed": 12,
+    "additional_full_size_images": 2
+  },
+  "identity_verified": true,
+  "identity_method": "Les sept ZIP ont été vérifiés contre leurs digests GitHub, puis COMMIT.txt, SHA256SUMS.txt et tous les rapports individuels ont été recoupés. Les 29 PNG candidats correspondent au HTML 0.2.66 attendu ; les 12 références au HTML 0.2.62. Le workflow météo ne fournit pas TREE.txt : le coordinateur a confirmé par GitHub que le commit CI possède cet arbre et les parents fb6384cb… et 1c1ac0c9….",
+  "followup_provenance": {
+    "coordinator_reported_fixture_only_commit": "40774189dc3a68242a3908f72e09f2676519ccbf",
+    "coordinator_reported_tree": "52c3b4be0c5ea159ffc90a05a60631d0a7956a02",
+    "same_html_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+    "note": "La correction de fixture aérienne ultérieure est distincte de cette campagne météo. Les captures restent attribuées au commit CI indiqué et au même HTML ; aucune nouvelle campagne météo n’a été lancée."
+  },
+  "groups": [
+    {
+      "artifact_id": 14634236740,
+      "artifact_name": "bitume-images-neige-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "archive_sha256": "9e0e91cfadcc1497afa41c3c83bdab15338de3c00cbe753ce077104a559c5e68",
+      "commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+      "reference_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+      "passages": [
+        {
+          "variant": "candidate",
+          "scenario": "legere",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "variant": "candidate",
+          "scenario": "neige45",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "variant": "candidate",
+          "scenario": "pause-reprise",
+          "images": 3,
+          "errors": [],
+          "alerts": [
+            {
+              "image": 1,
+              "vue": "scene",
+              "type": "identique",
+              "valeur": 0
+            },
+            {
+              "image": 1,
+              "vue": "glace-g",
+              "type": "identique",
+              "valeur": 0
+            },
+            {
+              "image": 1,
+              "vue": "glace-d",
+              "type": "identique",
+              "valeur": 0
+            }
+          ]
+        },
+        {
+          "variant": "reference",
+          "scenario": "neige45",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        }
+      ],
+      "failures": 0
+    },
+    {
+      "artifact_id": 14633030968,
+      "artifact_name": "bitume-images-pluie-grille-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "archive_sha256": "2baae53ef60085025eec73ba90a0f857865215fbdb7b39a217bba259dee6e2f4",
+      "commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+      "reference_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+      "passages": [
+        {
+          "variant": "candidate",
+          "scenario": "pluie-grille",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "variant": "reference",
+          "scenario": "pluie-grille",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        }
+      ],
+      "failures": 0
+    },
+    {
+      "artifact_id": 14631738908,
+      "artifact_name": "bitume-images-pluie-spray-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "archive_sha256": "29585ea9c69690068a2a882133a5c069c66050e029082de733e3d8c19377adf5",
+      "commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+      "reference_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+      "passages": [
+        {
+          "variant": "candidate",
+          "scenario": "pluie-spray235",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "variant": "reference",
+          "scenario": "pluie-spray235",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        }
+      ],
+      "failures": 0
+    },
+    {
+      "artifact_id": 14633046351,
+      "artifact_name": "bitume-images-pluie-tunnel-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "archive_sha256": "d65f1116a83b3b380739999de2fdbb3a02b4e0d2969b0aa9842670fde5cd3938",
+      "commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+      "reference_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+      "passages": [
+        {
+          "variant": "candidate",
+          "scenario": "tunnel",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        }
+      ],
+      "failures": 0
+    },
+    {
+      "artifact_id": 14633262573,
+      "artifact_name": "bitume-images-sillage-cockpit-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "archive_sha256": "d1af53b0bf25c205147bdb9d9393a2af36dd73b9c40312f714f1ac2deca3c811",
+      "commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+      "reference_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+      "passages": [
+        {
+          "variant": "candidate",
+          "scenario": "sillage300",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "variant": "candidate",
+          "scenario": "sillage300-sec",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "variant": "reference",
+          "scenario": "sillage300",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        }
+      ],
+      "failures": 0
+    },
+    {
+      "artifact_id": 14634350198,
+      "artifact_name": "bitume-images-sillage-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "archive_sha256": "a0145b04381bad77105b48ba4bd2d8df0ebc62cca0088eca0f1e78dcd7326a98",
+      "commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+      "reference_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+      "passages": [
+        {
+          "variant": "candidate",
+          "scenario": "sillage300-helico",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "variant": "candidate",
+          "scenario": "sillage300-poursuite",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        }
+      ],
+      "failures": 0
+    },
+    {
+      "artifact_id": 14634030301,
+      "artifact_name": "bitume-images-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "archive_sha256": "13eb4a12ca366e9299328ff5399729ee0f10ffa1be66262ed82dc8554a0b7556",
+      "commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+      "reference_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+      "passages": [
+        {
+          "variant": "candidate",
+          "scenario": "duo",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "variant": "candidate",
+          "scenario": "faune-haut-col-ete",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "variant": "candidate",
+          "scenario": "faune-haut-col-hiver",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "variant": "candidate",
+          "scenario": "sec",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "variant": "reference",
+          "scenario": "faune-haut-col-ete",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "variant": "reference",
+          "scenario": "faune-haut-col-hiver",
+          "images": 2,
+          "errors": [],
+          "alerts": []
+        }
+      ],
+      "failures": 0
+    }
+  ],
+  "observations": [
+    {
+      "scenario": "legere",
+      "image": "0000.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": true,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 713,
+          "eau": 1.0112994867780485,
+          "accumulationNeige": 0,
+          "embruns": 0.13924275711034614,
+          "gouttes": 6,
+          "fusionsEau": 0,
+          "expulses": 4,
+          "depotsEau": 10,
+          "depotsEmbruns": 8
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 45,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "low",
+        "intensite": 1,
+        "embruns": 0.1392427571169842,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "legere",
+      "image": "0001.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": true,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 725,
+          "eau": 1.0122876431740075,
+          "accumulationNeige": 0,
+          "embruns": 0.13924275711253456,
+          "gouttes": 6,
+          "fusionsEau": 0,
+          "expulses": 4,
+          "depotsEau": 10,
+          "depotsEmbruns": 8
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 45,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "low",
+        "intensite": 1,
+        "embruns": 0.1392427571169842,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "neige45",
+      "image": "0000.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": true,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 1433,
+          "eau": 0.08876222882269644,
+          "accumulationNeige": 0.6689696358046332,
+          "embruns": 0,
+          "gouttes": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 0,
+        "neige": 1,
+        "vitesse": 12.5,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "neige45",
+      "image": "0001.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": true,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 1445,
+          "eau": 0.08948984910097633,
+          "accumulationNeige": 0.6718626912080871,
+          "embruns": 0,
+          "gouttes": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 0,
+        "neige": 1,
+        "vitesse": 12.5,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "pause-reprise",
+      "image": "0000.png",
+      "screen": "pause",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": false,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 1061,
+          "eau": 1.0412749862351929,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 24,
+          "fusionsEau": 2,
+          "expulses": 12,
+          "depotsEau": 38,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 25,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "pause-reprise",
+      "image": "0001.png",
+      "screen": "pause",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": false,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 1061,
+          "eau": 1.0412749862351929,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 24,
+          "fusionsEau": 2,
+          "expulses": 12,
+          "depotsEau": 38,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 25,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "pause-reprise",
+      "image": "0002.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": true,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 1073,
+          "eau": 1.0413995482621152,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 24,
+          "fusionsEau": 2,
+          "expulses": 12,
+          "depotsEau": 38,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 25,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "pluie-grille",
+      "image": "0000.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": true,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 1073,
+          "eau": 1.1980804767732998,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 23,
+          "fusionsEau": 0,
+          "expulses": 3,
+          "depotsEau": 26,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 0,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "pluie-grille",
+      "image": "0001.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": true,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 1085,
+          "eau": 1.1982138243323281,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 24,
+          "fusionsEau": 0,
+          "expulses": 3,
+          "depotsEau": 27,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 0,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "pluie-spray235",
+      "image": "0000.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": true,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 1073,
+          "eau": 1.8969607548910592,
+          "accumulationNeige": 0,
+          "embruns": 0.9100376449217265,
+          "gouttes": 24,
+          "fusionsEau": 16,
+          "expulses": 38,
+          "depotsEau": 85,
+          "depotsEmbruns": 74
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0.9100376449217281,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "pluie-spray235",
+      "image": "0001.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": true,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 1085,
+          "eau": 1.8971718885261877,
+          "accumulationNeige": 0,
+          "embruns": 0.9100376449217265,
+          "gouttes": 24,
+          "fusionsEau": 16,
+          "expulses": 38,
+          "depotsEau": 85,
+          "depotsEmbruns": 74
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0.9100376449217281,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "tunnel",
+      "image": "0000.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": true,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 1073,
+          "eau": 0.9044398122346603,
+          "accumulationNeige": 0,
+          "embruns": 0.01827393150049024,
+          "gouttes": 24,
+          "fusionsEau": 3,
+          "expulses": 16,
+          "depotsEau": 43,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 35,
+        "abri": true,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "tunnel",
+      "image": "0001.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": true,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 1085,
+          "eau": 0.8665896270662581,
+          "accumulationNeige": 0,
+          "embruns": 0.01588659284306485,
+          "gouttes": 23,
+          "fusionsEau": 3,
+          "expulses": 17,
+          "depotsEau": 43,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 35,
+        "abri": true,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "sillage300",
+      "image": "0000.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": true,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 713,
+          "eau": 1.4451718117186672,
+          "accumulationNeige": 0,
+          "embruns": 0.9392307409321388,
+          "gouttes": 23,
+          "fusionsEau": 21,
+          "expulses": 34,
+          "depotsEau": 85,
+          "depotsEmbruns": 85
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 83.33333333333333,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0.9377724461274026,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "sillage300",
+      "image": "0001.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": true,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 725,
+          "eau": 1.4462655743040036,
+          "accumulationNeige": 0,
+          "embruns": 0.9390107090980715,
+          "gouttes": 24,
+          "fusionsEau": 21,
+          "expulses": 34,
+          "depotsEau": 86,
+          "depotsEmbruns": 86
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 83.33333333333333,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0.9375465028575918,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "sillage300-sec",
+      "image": "0000.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": false,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 713,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 83.33333333333333,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "sillage300-sec",
+      "image": "0001.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": false,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 725,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 83.33333333333333,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "sillage300-helico",
+      "image": "0000.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "helico",
+      "visible": {
+        "j1": false,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 0,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 83.33333333333333,
+        "abri": false,
+        "cockpit": false,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": false
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "sillage300-helico",
+      "image": "0001.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "helico",
+      "visible": {
+        "j1": false,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 0,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 83.33333333333333,
+        "abri": false,
+        "cockpit": false,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": false
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "sillage300-poursuite",
+      "image": "0000.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "poursuite",
+      "visible": {
+        "j1": true,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 713,
+          "eau": 1.2563859254575698,
+          "accumulationNeige": 0,
+          "embruns": 0.8145387454686607,
+          "gouttes": 23,
+          "fusionsEau": 10,
+          "expulses": 29,
+          "depotsEau": 67,
+          "depotsEmbruns": 67
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 83.33333333333333,
+        "abri": false,
+        "cockpit": false,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0.8109796362435087,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "sillage300-poursuite",
+      "image": "0001.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "poursuite",
+      "visible": {
+        "j1": true,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 725,
+          "eau": 1.2568345334298543,
+          "accumulationNeige": 0,
+          "embruns": 0.8140023391625246,
+          "gouttes": 24,
+          "fusionsEau": 10,
+          "expulses": 30,
+          "depotsEau": 69,
+          "depotsEmbruns": 69
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 83.33333333333333,
+        "abri": false,
+        "cockpit": false,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0.8104328126701141,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "duo",
+      "image": "0000.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": true,
+        "j2": true
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 713,
+          "eau": 0.8189168750166878,
+          "accumulationNeige": 0,
+          "embruns": 0.029597031866061354,
+          "gouttes": 24,
+          "fusionsEau": 2,
+          "expulses": 20,
+          "depotsEau": 46,
+          "depotsEmbruns": 0
+        },
+        "j2": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 713,
+          "eau": 1.8736462872825586,
+          "accumulationNeige": 0,
+          "embruns": 0.8202553820847304,
+          "gouttes": 24,
+          "fusionsEau": 7,
+          "expulses": 21,
+          "depotsEau": 52,
+          "depotsEmbruns": 45
+        }
+      },
+      "inputs_j1": {
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 45,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0.029597031867472312,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": {
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 12.5,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0.8202553821238341,
+        "pause": false,
+        "actif": true
+      },
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "duo",
+      "image": "0001.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": true,
+        "j2": true
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 725,
+          "eau": 0.8197170513822317,
+          "accumulationNeige": 0,
+          "embruns": 0.02959703186652652,
+          "gouttes": 24,
+          "fusionsEau": 2,
+          "expulses": 20,
+          "depotsEau": 46,
+          "depotsEmbruns": 0
+        },
+        "j2": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 725,
+          "eau": 1.875477056097088,
+          "accumulationNeige": 0,
+          "embruns": 0.820255382097622,
+          "gouttes": 24,
+          "fusionsEau": 7,
+          "expulses": 22,
+          "depotsEau": 53,
+          "depotsEmbruns": 46
+        }
+      },
+      "inputs_j1": {
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 45,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0.029597031867472312,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": {
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 12.5,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0.8202553821238341,
+        "pause": false,
+        "actif": true
+      },
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "faune-haut-col-ete",
+      "image": "0000.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": false,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 49,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 0,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": true
+    },
+    {
+      "scenario": "faune-haut-col-ete",
+      "image": "0001.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": false,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 61,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 0,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": true
+    },
+    {
+      "scenario": "faune-haut-col-hiver",
+      "image": "0000.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": false,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 49,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 0,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": true
+    },
+    {
+      "scenario": "faune-haut-col-hiver",
+      "image": "0001.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": false,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 61,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 0,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": true
+    },
+    {
+      "scenario": "sec",
+      "image": "0000.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": false,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 49,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 0,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    },
+    {
+      "scenario": "sec",
+      "image": "0001.png",
+      "screen": "course",
+      "gl_error": 0,
+      "gl_lost": false,
+      "view": "cockpit",
+      "visible": {
+        "j1": false,
+        "j2": false
+      },
+      "water": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "etapes": 61,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0
+        },
+        "j2": null
+      },
+      "inputs_j1": {
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 0,
+        "abri": false,
+        "cockpit": true,
+        "qualite": "high",
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false,
+        "actif": true
+      },
+      "inputs_j2": null,
+      "fauna_ground_visible": null
+    }
+  ],
+  "expected_pause_alerts": [
+    {
+      "scenario": "pause-reprise",
+      "image": 1,
+      "vue": "scene",
+      "type": "identique",
+      "valeur": 0
+    },
+    {
+      "scenario": "pause-reprise",
+      "image": 1,
+      "vue": "glace-g",
+      "type": "identique",
+      "valeur": 0
+    },
+    {
+      "scenario": "pause-reprise",
+      "image": 1,
+      "vue": "glace-d",
+      "type": "identique",
+      "valeur": 0
+    }
+  ],
+  "findings": [
+    {
+      "group": "pluie-grille",
+      "result": "Gouttes beaucoup plus nombreuses ; route, instruments et deux rétroviseurs lisibles, pas de vue noire ni corruption. Les deux instants du candidat et les deux références ont été inspectés."
+    },
+    {
+      "group": "pluie-spray",
+      "result": "Panache du rival et projections plus présents à 235 km/h ; visibilité volontairement gênée, route et cockpit conservés. Deux instants candidat et deux références inspectés."
+    },
+    {
+      "group": "pluie-tunnel",
+      "result": "Deux vues sous tunnel inspectées : voûte, murs, lampes et route visibles, pas de traversée ou de vue noire ; eau résiduelle 0,90444 → 0,86659, dépôts stables à 43, apports embruns nuls. Aucune erreur GL ni alerte."
+    },
+    {
+      "group": "vues",
+      "result": "Douze images inspectées. Deux joueurs : scènes et visières indépendantes, sans recopie entre moitiés. Témoin sec sans gouttes ni dépôt. Faune Haut-Col été/hiver : sol et ombres présents sous les animaux, grille diagonale de la référence supprimée ; terrain très clair et grain discret, réserve de matière conservée. Aucune erreur GL ni alerte."
+    },
+    {
+      "group": "neige",
+      "result": "Neuf images inspectées : neige avec flocons et accumulation en bordure, distincte de la pluie ; centre et route lisibles. Accumulation 0,66897 → 0,67186. Pause : deux images et compteurs identiques, puis reprise visible avec progression 1061 → 1073 étapes. Les trois alertes identiques sont attendues pour la pause. Qualité légère : pluie présente et six gouttes suivies, aucune erreur GL."
+    },
+    {
+      "group": "sillage-vues",
+      "result": "Quatre images inspectées à 300 km/h. Poursuite : projections abondantes du sillage même sans pluie active, dépôts embruns 67 → 69 ; voiture et piste lisibles. Vue aérienne : pluie du monde conservée et aucune goutte de visière, eau et dépôts nuls. Aucune erreur ni alerte."
+    },
+    {
+      "group": "sillage-cockpit",
+      "result": "Six images inspectées. À 300 km/h, le sillage mouillé produit des projections plus présentes que dans la référence 0.2.62, sans pluie active ; dépôts embruns 85 → 86, eau 1,44517 → 1,44627. Le témoin sec aux mêmes positions reste sans goutte, eau ni dépôt. Aucune erreur GL ni alerte."
+    }
+  ],
+  "blocking_anomalies_observed": [],
+  "reserves": [
+    {
+      "severity": "non_bloquante_matiere",
+      "description": "Les pentes enneigées de Haut-Col restent très claires et leur grain peu lisible à 960×540. Sol et ombres existent, la grille diagonale de référence a disparu ; cette revue ne clôt pas le travail de matière ou le photoréalisme."
+    }
+  ],
+  "limitations": [
+    "Captures à poses prescrites en raster logiciel ; aucune mesure de FPS matériels ni course complète.",
+    "Deux instants espacés de 0,1 seconde par passage, trois pour pause/reprise : ces captures ne qualifient pas toute la dynamique météorologique.",
+    "La pluie extérieure visible depuis un abri et les portails/galeries relèvent de la revue couverts distincte.",
+    "Aucune écriture dans le dépôt, aucune relance CI, aucun push ni merge par cet audit."
+  ],
+  "images": [
+    {
+      "path": "bitume-images-neige-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/legere/0000.png",
+      "variant": "candidate",
+      "sha256": "c32e1d13531825fd279c59dcbfd6c2f63acc0765db6ecb905f3ca2874e52488c",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 402481
+    },
+    {
+      "path": "bitume-images-neige-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/legere/0001.png",
+      "variant": "candidate",
+      "sha256": "9c01dea6a42d4d3b04e90a11ecbb41e43d1266a0bf42a0979528c64218867a80",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 403112
+    },
+    {
+      "path": "bitume-images-neige-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/neige45/0000.png",
+      "variant": "candidate",
+      "sha256": "ad38d172764c563e9ce1ef1a25c6e347edaa3f76a6c741dfce181172a0ef8414",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 435040
+    },
+    {
+      "path": "bitume-images-neige-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/neige45/0001.png",
+      "variant": "candidate",
+      "sha256": "4eddcc9967cfa0d14c954ee044b0dd4ac45558b74d99096ab30f7dd22f47cc84",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 435480
+    },
+    {
+      "path": "bitume-images-neige-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/pause-reprise/0000.png",
+      "variant": "candidate",
+      "sha256": "ddea06c2b9672f5c751a9504e67c61a94164124dfe104a05bb54c9f450692de7",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 229676
+    },
+    {
+      "path": "bitume-images-neige-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/pause-reprise/0001.png",
+      "variant": "candidate",
+      "sha256": "ddea06c2b9672f5c751a9504e67c61a94164124dfe104a05bb54c9f450692de7",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 229676
+    },
+    {
+      "path": "bitume-images-neige-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/pause-reprise/0002.png",
+      "variant": "candidate",
+      "sha256": "01ccd419dfabf8a4b13aabe36210ba14d8cc191f1c4ad3ed0467b9b9bf33c697",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 466711
+    },
+    {
+      "path": "bitume-images-neige-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/avant/neige45/0000.png",
+      "variant": "reference",
+      "sha256": "36ca0210895dfd4ccd8611f6faead9f3d5ef5c7727b3dc02228b60655f9bfcf8",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 418725
+    },
+    {
+      "path": "bitume-images-neige-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/avant/neige45/0001.png",
+      "variant": "reference",
+      "sha256": "abb6330c323ba02263532a862c7e44a611268c395d149e7cd9ac8a18e9274591",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 419092
+    },
+    {
+      "path": "bitume-images-pluie-grille-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/pluie-grille/0000.png",
+      "variant": "candidate",
+      "sha256": "f53fae80eb5201a05eb25220e466485ca2d669e85f959f43682f0782a7cf4263",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 475541
+    },
+    {
+      "path": "bitume-images-pluie-grille-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/pluie-grille/0001.png",
+      "variant": "candidate",
+      "sha256": "86056f6c0d43598121b897fc07614e195639d9543f8b012386137d05bddff311",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 475372
+    },
+    {
+      "path": "bitume-images-pluie-grille-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/avant/pluie-grille/0000.png",
+      "variant": "reference",
+      "sha256": "e04157d423de31e6930ef702a2ab0e620293d5a421e88d01f9018cd3c09b0414",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 375462
+    },
+    {
+      "path": "bitume-images-pluie-grille-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/avant/pluie-grille/0001.png",
+      "variant": "reference",
+      "sha256": "649f5059f376284bade78f448cdfa1fe9e81860d12c01741ffe9cfc4b5fb1ffb",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 375330
+    },
+    {
+      "path": "bitume-images-pluie-spray-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/pluie-spray235/0000.png",
+      "variant": "candidate",
+      "sha256": "f36137ace9234db76c90d6d1b663ba7d0904e724bcbd88a46b612d7a41b2422b",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 537425
+    },
+    {
+      "path": "bitume-images-pluie-spray-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/pluie-spray235/0001.png",
+      "variant": "candidate",
+      "sha256": "588c10e4c648ef137021f3e5de693eafeb5dc34d424e378e761d1f1498f1b668",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 537455
+    },
+    {
+      "path": "bitume-images-pluie-spray-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/avant/pluie-spray235/0000.png",
+      "variant": "reference",
+      "sha256": "1ee249cbdb601522947c2231ac2b9634feed9b674d25014c1b058a80685359fe",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 440374
+    },
+    {
+      "path": "bitume-images-pluie-spray-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/avant/pluie-spray235/0001.png",
+      "variant": "reference",
+      "sha256": "807d1b0cfbc37cf7bab221be58dfefb3c5c02af532ad29cf9794a5330eb198ab",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 439596
+    },
+    {
+      "path": "bitume-images-pluie-tunnel-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/tunnel/0000.png",
+      "variant": "candidate",
+      "sha256": "b8bf6bdee18f0362bbe74f1358a958f11d12beee5674a313ed8dcfa9e868f220",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 463177
+    },
+    {
+      "path": "bitume-images-pluie-tunnel-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/tunnel/0001.png",
+      "variant": "candidate",
+      "sha256": "2b265a8e8fd4cd0631291412d573547bf8067f5a04eff9d899281cfaf8c1bd13",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 460911
+    },
+    {
+      "path": "bitume-images-sillage-cockpit-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/sillage300-sec/0000.png",
+      "variant": "candidate",
+      "sha256": "bd7c37424c404be98cba264115c3a1ea74793445255ffe35f68e2da19a8575d7",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 378447
+    },
+    {
+      "path": "bitume-images-sillage-cockpit-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/sillage300-sec/0001.png",
+      "variant": "candidate",
+      "sha256": "c53ad99f9a7f5f81c1be9ba7c010df2fe66596171ea1cbab23fbed8a293ba51c",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 378331
+    },
+    {
+      "path": "bitume-images-sillage-cockpit-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/sillage300/0000.png",
+      "variant": "candidate",
+      "sha256": "2385f2804d687832e386e4c2065cfaefe8ce43b1e9ff4b1d4eeef9b7119b7c1a",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 562347
+    },
+    {
+      "path": "bitume-images-sillage-cockpit-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/sillage300/0001.png",
+      "variant": "candidate",
+      "sha256": "5b02bc8de03b5f94be47d8f1ee1fef8eeb57f1a26e40274e96b818e635f9aa54",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 561290
+    },
+    {
+      "path": "bitume-images-sillage-cockpit-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/avant/sillage300/0000.png",
+      "variant": "reference",
+      "sha256": "57ab0b0dad2c34e64155ad3426d9b3553270663a46c4a37e92d28e8f217ea300",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 451965
+    },
+    {
+      "path": "bitume-images-sillage-cockpit-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/avant/sillage300/0001.png",
+      "variant": "reference",
+      "sha256": "401e4e7752c119caf842e8f63728fb947d1e50026749b9d71dd99e2de7c95454",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 451707
+    },
+    {
+      "path": "bitume-images-sillage-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/sillage300-helico/0000.png",
+      "variant": "candidate",
+      "sha256": "be6899eb941094d236b7618e74aa306b2831e6d899eabb51734cc8fa8fad47b7",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 271765
+    },
+    {
+      "path": "bitume-images-sillage-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/sillage300-helico/0001.png",
+      "variant": "candidate",
+      "sha256": "91fbda0e0154b67d588a67fda53b908507a2bc39817664e023dfaf51756aba96",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 271908
+    },
+    {
+      "path": "bitume-images-sillage-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/sillage300-poursuite/0000.png",
+      "variant": "candidate",
+      "sha256": "4f7af92360b90a2768dd544307f6847dd2c86d8bc019e37be6d9cfb83df5ecd8",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 477553
+    },
+    {
+      "path": "bitume-images-sillage-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/sillage300-poursuite/0001.png",
+      "variant": "candidate",
+      "sha256": "46255f16a76619888f86352cc5ed543a6af962f935d6665c4f9ef335b38929f0",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 477902
+    },
+    {
+      "path": "bitume-images-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/duo/0000.png",
+      "variant": "candidate",
+      "sha256": "83b4bbd79b268c3dbc973bf991c5f10b51d8d6057037096cc184b96183c7192e",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": true,
+      "width": 960,
+      "height": 540,
+      "bytes": 536457
+    },
+    {
+      "path": "bitume-images-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/duo/0001.png",
+      "variant": "candidate",
+      "sha256": "0f40cdef56b352acf7a84d5e546c9580f62c001e31f691d79b262e8a4130a8bd",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 537789
+    },
+    {
+      "path": "bitume-images-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/faune-haut-col-ete/0000.png",
+      "variant": "candidate",
+      "sha256": "edcec1358ed7f2cc23acd72bcacd3a7762371eab44b2f954491ce131cf3abe83",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": true,
+      "width": 960,
+      "height": 540,
+      "bytes": 277497
+    },
+    {
+      "path": "bitume-images-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/faune-haut-col-ete/0001.png",
+      "variant": "candidate",
+      "sha256": "4714093a7cf8b3e5cdc8555fe5f041a0abfd02a7cc8f8acb18dc9659d6f3c546",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 277490
+    },
+    {
+      "path": "bitume-images-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/faune-haut-col-hiver/0000.png",
+      "variant": "candidate",
+      "sha256": "206b77073a6ac2aefc6d579bd78a1ef6ee1ac9e8bf58dc3fcf4a80f55c280fad",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 275289
+    },
+    {
+      "path": "bitume-images-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/faune-haut-col-hiver/0001.png",
+      "variant": "candidate",
+      "sha256": "2df87e21e14b6b9e19e8f0aed0e427d78635049bce37c63e44468cb16fbef781",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 275288
+    },
+    {
+      "path": "bitume-images-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/sec/0000.png",
+      "variant": "candidate",
+      "sha256": "61c9e13d709a81ea50110ef72a91d5c17bc883dac2e49c65f893e79a0f9947bd",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 371431
+    },
+    {
+      "path": "bitume-images-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/apres/sec/0001.png",
+      "variant": "candidate",
+      "sha256": "c1d24b4f4ebb6eae7a027f3dde4304d27b77801dedd8852b27347ae75404a15e",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 371419
+    },
+    {
+      "path": "bitume-images-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/avant/faune-haut-col-ete/0000.png",
+      "variant": "reference",
+      "sha256": "29973f9a81c134d2b8f1f0ce8c4ac33ed31b53dfff49deef139a8f17e7410eac",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 549644
+    },
+    {
+      "path": "bitume-images-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/avant/faune-haut-col-ete/0001.png",
+      "variant": "reference",
+      "sha256": "01d70f301661e4e48f62e7fa65d2a3d06ce45fef1685a3ef980c70023cf76a0f",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 549635
+    },
+    {
+      "path": "bitume-images-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/avant/faune-haut-col-hiver/0000.png",
+      "variant": "reference",
+      "sha256": "ddfe1a2f8f047dde8e5d16c3cd4a458481e370f1f5059c90b976ac9f467f74b4",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 552228
+    },
+    {
+      "path": "bitume-images-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/visuel-meteo/avant/faune-haut-col-hiver/0001.png",
+      "variant": "reference",
+      "sha256": "933e636cd41fdd0f7c9b06dd30637c54bf8a95981f6c10517010de6074562ca7",
+      "viewed_contact_sheet": true,
+      "additional_full_size_review": false,
+      "width": 960,
+      "height": 540,
+      "bytes": 552246
+    }
+  ]
+}

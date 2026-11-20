@@ -1,0 +1,92 @@
+{
+  "date": "2026-11-20",
+  "read_only": true,
+  "after_candidate": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
+  "runtime_changes_not_integrated": true,
+  "pluie": {
+    "worktree_name": "bitume-pluie",
+    "branch": "feat/pluie-abris-20261120",
+    "head": "dfea7ca45660c7bfcb9d517c065eb117742b45ae",
+    "working_tree_clean": true,
+    "diff_from_candidate": "3 files changed, 222 insertions, 7 deletions",
+    "files": [
+      "src/jeu.js",
+      "src/meteo.js",
+      "verifications/meteo-couverts-physx.test.mjs"
+    ],
+    "remote_branch_with_same_name_found": false,
+    "known_remote_ref_containing_head_found": false,
+    "status": "commit_local_prepare_qualification_integree_et_visuelle_absente",
+    "receipt_relative_to_previous_session": "pluie-qa/prototype-0266.json",
+    "receipt_summary": {
+      "controles": 7,
+      "rayonsNatifs": 122703,
+      "scenarios": 8,
+      "p95_worst_ms": 22.76348199999984,
+      "worst_ms": 42.643433000000186,
+      "limitations": "Temps CPU JavaScript et requêtes WASM, Canvas instrumenté sans raster ; aucun FPS matériel déduit."
+    },
+    "dependency": "Reprendre apres fusion 0.2.66 et qualifier CPU/compositing du masque spatial PhysX en vraies images."
+  },
+  "bandeaux": {
+    "worktree_name": "bitume-demo-ui",
+    "branch": "fix/demo-bandeaux-20261120",
+    "head": "fc89794c70727e3d45b2813274b1e9a8418634a0",
+    "working_tree_clean": true,
+    "new_diff_from_candidate": false,
+    "remote_branch_with_same_name_found": false,
+    "status": "branche_preparee_sans_correctif",
+    "next_files": [
+      "src/jeu.js",
+      "src/style.css"
+    ],
+    "next_goal": "Dégager les mains et animaux des bandeaux de démo sans gêner les commandes."
+  },
+  "pr37": {
+    "url": "https://github.com/M4D135/bitume/pull/37",
+    "state": "open",
+    "draft": true,
+    "head": "e12420c7db914fa82d420cbbde75d763dea78668",
+    "head_branch": "feat/bitume-0263-demos-meteo-20261120",
+    "ancestor_of_candidate": false,
+    "common_ancestor": "80aa1e2913a93b54daf68bd1c3dc6abb520dc69b",
+    "unique_commit_count": 1,
+    "unique_commit_title": "BITUME 0.2.65 : allocation du pilote corrigée et preuves de qualification",
+    "unique_branch_delta_files": [
+      "REPRISE.md",
+      "SIZE.json",
+      "VERSION.json",
+      "dist/bitume.html",
+      "docs/reprise/DEMOS-PILOTES-METEO-2026-11-20.md",
+      "docs/reprise/ETAT.json",
+      "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
+      "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/CANDIDAT-0265.json",
+      "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/CI-0264.json",
+      "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/CORRECTION-ALLOCATION-PILOTE.json",
+      "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REQUALIFICATION-AERIEN-0264.json",
+      "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REQUALIFICATION-POURSUITE-0264.json",
+      "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-COCKPIT-0264.json",
+      "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-NATURE-VOLANT-0264.json",
+      "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-PLUIE-GRILLE-SPRAY-0264.json",
+      "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-POURSUITE-TUNNEL-0264.json",
+      "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/REVUE-SECURITE-GESTES-0264.json",
+      "src/voiture.js",
+      "tools/captures-demo.mjs",
+      "verifications/captures-demo.test.mjs"
+    ],
+    "unique_branch_delta_stat": "20 files changed, 2610 insertions(+), 30 deletions(-)",
+    "runtime_files": [
+      "src/voiture.js"
+    ],
+    "capture_tools": [
+      "tools/captures-demo.mjs",
+      "verifications/captures-demo.test.mjs"
+    ],
+    "build_files": [
+      "VERSION.json",
+      "SIZE.json",
+      "dist/bitume.html"
+    ],
+    "decision": "Conserver ouverte : sa tête comporte du code, un build et des reçus propres. Comparer les corrections avec 0.2.66 et préserver les preuves avant toute clôture ; ne pas la fusionner aveuglément."
+  }
+}
