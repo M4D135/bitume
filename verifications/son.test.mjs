@@ -80,8 +80,8 @@ function fauxAudio() {
     parametres.push(p); return p;
   };
   // chaque nœud porte son rang de création et retient le nœud auquel il se branche (suite)
-  const noeud = extra => Object.assign({ rang: noeuds++, connect(x) { this.suite = x; return x; }, disconnect() {} }, extra);
-  const source = extra => noeud(Object.assign({ start(t) { actifs++; this.debut = t; if (t < contextes[contextes.length - 1].currentTime - 1e-9) enRetard++; }, stop() {}, set onended(f) { this._fin = f; } }, extra));
+  const noeud = extra => Object.assign({ rang: noeuds++, connect(x) { this.suite = x; return x; }, disconnect() { this.debranche = true; } }, extra);
+  const source = extra => noeud(Object.assign({ start(t) { actifs++; this.debut = t; if (t < contextes[contextes.length - 1].currentTime - 1e-9) enRetard++; }, stop(t) { this.fin = t; }, set onended(f) { this._fin = f; } }, extra));
   class Ctx {
     constructor() { this.currentTime = 0; this.sampleRate = 48000; this.state = 'running'; this.destination = noeud({}); contextes.push(this); }
     resume() {}
@@ -184,7 +184,8 @@ verifier('graphe complet avec un faux contexte audio', function () {
   } finally { delete globalThis.window; }
 });
 
-// David, 12/11/2026 : « pas de musique sauf à l'écran titre ». Un signal de course ne porte ni mélodie ni accord.
+// David, 12/11/2026 : « pas de musique sauf à l'écran titre ». Ces signaux de course restent inchangés.
+// Le 20/11, il demande explicitement un bref klaxon mariage, testé séparément des signaux historiques.
 verifier('signaux de course sans musique : une seule hauteur au plus par signal', function () {
   const fa = fauxAudio();
   globalThis.window = { AudioContext: fa.Ctx };
@@ -218,6 +219,76 @@ function avecSon(f) {
   const fa = fauxAudio(); globalThis.window = { AudioContext: fa.Ctx };
   try { const son = B.son.creer(); son.demarrer(); f(son, fa, fa.contextes[0]); } finally { delete globalThis.window; }
 }
+
+// ---------------------------------------------------------------- klaxons procéduraux du Troll
+verifier('klaxons : trois timbres déterministes, brefs, bornés et silencieux aux extrémités', () => {
+  const S = B.son, vrai = Math.random;
+  Math.random = () => { throw new Error('hasard global audio interdit'); };
+  try {
+    assert.deepEqual(S.KLAXONS, ['classique', 'ancien', 'mariage']);
+    for (const sr of [8000, 48000]) {
+      const a = S.synthKlaxons(sr), b = S.synthKlaxons(sr);
+      for (const type of S.KLAXONS) {
+        const d = a[type]; let pic = 0, energie = 0;
+        assert.equal(d.length, Math.ceil(S.DUREES_KLAXON[type] * sr));
+        assert.ok(d.length / sr <= .96 && d.length / sr > .1, 'appel bref');
+        assert.deepEqual(d, b[type]); assert.equal(d[0], 0); assert.equal(d.at(-1), 0);
+        for (const x of d) { assert.ok(Number.isFinite(x)); pic = Math.max(pic, Math.abs(x)); energie += x * x; }
+        assert.ok(pic > .5 && pic <= .85 + 1e-6); assert.ok(energie / d.length > .01, 'tampon audible');
+      }
+      assert.notDeepEqual(a.classique.slice(0, 800), a.ancien.slice(0, 800));
+      assert.notDeepEqual(a.classique.slice(0, 800), a.mariage.slice(0, 800));
+    }
+    for (const sr of [0, NaN, 44100.5, 192001]) assert.throws(() => S.synthKlaxons(sr), /invalide/);
+    assert.equal(S.normaliserKlaxon('ancien'), 'ancien'); assert.equal(S.normaliserKlaxon(2), 'mariage');
+    for (const type of [null, 'inconnu', -1, 9]) assert.equal(S.normaliserKlaxon(type), 'classique');
+  } finally { Math.random = vrai; }
+});
+
+verifier('Troll sonore : cinq voix préparées, une source par départ et aucun thème musical', () => {
+  const fa = fauxAudio(); globalThis.window = { AudioContext: fa.Ctx };
+  try {
+    const son = B.son.creer();
+    assert.equal(son.klaxon('ancien'), false); assert.equal(fa.contextes.length, 0, 'aucun déblocage implicite');
+    son.demarrer(); const ctx = fa.contextes[0], src = fa.sources.length, noeuds = fa.compte().noeuds;
+    const tampons = new Set(fa.tampons), osc = fa.oscillateurs.length;
+    assert.equal(son.stats().klaxons.budget, 5, 'quatre humains et une IA');
+    for (let i = 0; i < 5; i++) assert.equal(son.evenement('troll', { klaxon: B.son.KLAXONS[i % 3], gain: .5, pan: i - 2 }), true);
+    assert.equal(fa.sources.length - src, 5); assert.equal(fa.compte().noeuds - noeuds, 5, 'seules les sources sont créées');
+    assert.equal(fa.oscillateurs.length, osc); assert.equal(son.stats().musique, false);
+    assert.equal(son.klaxon('classique'), false, 'budget fixe sans croissance');
+    assert.equal(son.stats().klaxons.actives, 5); assert.equal(son.stats().klaxons.joues, 5);
+    fa.sources.slice(src).forEach(s => {
+      assert.ok(tampons.has(s.buffer)); assert.equal(s.loop, false); assert.equal(s.debut, ctx.currentTime);
+      assert.ok(s.fin > s.debut && s.fin - s.debut <= .965 + 1e-9);
+      assert.equal(s.suite.gain.valeurs.at(-1).v, B.son.NIVEAU_KLAXON * .5);
+      assert.ok(Math.abs(s.suite.suite.pan.valeurs.at(-1).v) <= 1);
+    });
+    const ancien = fa.sources[src]; ctx.currentTime += 1;
+    assert.equal(son.klaxon('ancien'), true); assert.equal(son.stats().klaxons.actives, 1);
+    ancien.onended(); assert.equal(son.stats().klaxons.actives, 1, 'fin ancienne sans effet sur la voix réutilisée');
+  } finally { delete globalThis.window; }
+});
+
+verifier('klaxons : silence, contexte suspendu et pause sans son mis en attente', () => {
+  avecSon((son, fa, ctx) => {
+    const debut = fa.sources.length;
+    son.regler({ general: 0 }); assert.equal(son.klaxon(), false);
+    son.regler({ general: 1, effets: 0 }); assert.equal(son.klaxon(), false);
+    son.regler({ effets: 1 });
+    for (const state of ['suspended', 'interrupted', 'closed']) { ctx.state = state; assert.equal(son.klaxon(), false); }
+    ctx.state = 'running';
+    for (const gain of [0, -1, NaN]) assert.equal(son.klaxon('mariage', { gain }), false);
+    assert.equal(fa.sources.length, debut, 'aucune source à rattraper');
+    assert.equal(son.klaxon('mariage', { gain: 4, pan: Infinity }), true);
+    const s = fa.sources.at(-1); assert.equal(s.suite.gain.valeurs.at(-1).v, B.son.NIVEAU_KLAXON);
+    assert.equal(s.suite.suite.pan.valeurs.at(-1).v, 0);
+    son.suspendre(); assert.ok(s.fin <= ctx.currentTime + .015 + 1e-9, 'arrêt bref en pause');
+    ctx.currentTime += 1; son.reprendre(); assert.equal(son.stats().klaxons.actives, 0);
+    assert.equal(fa.sources.length, debut + 1, 'la reprise ne rejoue rien');
+    son.suspendre(); assert.equal(son.klaxon('ancien'), true, 'préécoute explicite autorisée au menu');
+  });
+});
 
 verifier('échappement : tampons et voix préparés au démarrage ; ensuite une source par claquement joué, rien d’autre', () => {
   avecSon((son, fa, ctx) => {

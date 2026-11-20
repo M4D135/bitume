@@ -87,6 +87,57 @@
   const NIVEAU_ECH = { detonation: .42, crepitement: .24, rate: .3 };   // à pleine force, voiture tout près
   const ECH_VOIX = 6, ECH_PAR_IMAGE = 6, ECH_LATENCE = .035;
 
+  // Emote Troll : le même événement du jeu porte le geste et ce timbre. Trois tampons courts,
+  // synthétisés une fois avant la course ; aucun fichier, oscillateur permanent ni minuteur ajouté.
+  // La brève sonnerie de mariage est l'exception demandée à la musique réservée au titre.
+  const KLAXONS = Object.freeze(['classique', 'ancien', 'mariage']);
+  const DUREES_KLAXON = Object.freeze({ classique: .42, ancien: .56, mariage: .96 });
+  // Quatre pilotes humains simultanés, plus une IA (cadence automatique > durée maximale).
+  const KLAXON_VOIX = 5, NIVEAU_KLAXON = .32;
+  function normaliserKlaxon(type) {
+    return KLAXONS.includes(type) ? type : Number.isInteger(type) && type >= 0 && type < KLAXONS.length ? KLAXONS[type] : 'classique';
+  }
+  function synthKlaxons(sr = 48000) {
+    if (!Number.isInteger(sr) || sr < 8000 || sr > 192000) throw new Error('Fréquence audio invalide');
+    const resultat = {}, TAU = Math.PI * 2;
+    const enveloppe = (t, d, attaque, fin) => {
+      if (t <= 0 || t >= d) return 0;
+      const x = Math.min(1, t / attaque, (d - t) / fin);
+      return .5 - .5 * Math.cos(Math.PI * x);
+    };
+    const pavillon = p => Math.sin(p) + .28 * Math.sin(3 * p) + .10 * Math.sin(5 * p);
+    // Motif original de quatre appels, sans accompagnement ni boucle ; moins d'une seconde en tout.
+    const mariage = [[0, .115, 392], [.16, .115, 493.88], [.32, .19, 587.33], [.56, .36, 783.99]];
+    for (const type of KLAXONS) {
+      const duree = DUREES_KLAXON[type], d = new Float32Array(Math.ceil(duree * sr));
+      let phase = 0, pic = 0;
+      for (let i = 0; i < d.length; i++) {
+        const t = i / sr;
+        let v = 0;
+        if (type === 'classique') {
+          // Deux pavillons fixes, sans mélodie ; attaque courte et relâchement doux.
+          v = (.62 * pavillon(TAU * 420 * t) + .38 * pavillon(TAU * 510 * t)) * enveloppe(t, duree, .012, .055);
+        } else if (type === 'ancien') {
+          // Membrane nasale : la pression monte, retombe et fait vibrer le timbre (« ahooga »).
+          const f = 190 + 215 * (1 - Math.exp(-t / .025)) * Math.exp(-t / .22);
+          phase += TAU * f / sr;
+          v = (Math.sin(phase) + .46 * Math.sin(2 * phase) + .21 * Math.sin(3 * phase) + .12 * Math.sin(5 * phase))
+            * (.82 + .18 * Math.sin(TAU * 27 * t) ** 2) * enveloppe(t, duree, .028, .075);
+        } else {
+          for (const [debut, longueur, f] of mariage) {
+            const u = t - debut;
+            if (u > 0 && u < longueur) v += pavillon(TAU * f * u) * enveloppe(u, longueur, .008, .028);
+          }
+        }
+        d[i] = v; pic = Math.max(pic, Math.abs(v));
+      }
+      if (pic) for (let i = 0; i < d.length; i++) d[i] *= .85 / pic;
+      d[0] = d[d.length - 1] = 0;
+      resultat[type] = d;
+    }
+    return resultat;
+  }
+
   // Trois références dans un tampon réutilisé : pas de copie, tri global ni objet temporaire par image.
   // Les ids départagent les distances égales, indépendamment de l'ordre de parcours des voitures.
   function selectionnerRivaux(rivaux, sortie, joueur = -1, joueur2 = -1) {
@@ -140,6 +191,8 @@
     // échappement : voix préparées, tampons, lecture de la file de src/echappement.js
     const voixEch = [], tamponsEch = {};
     let echFile = null, echLu = 0, echVu = -1, echJoues = 0, echIgnores = 0;
+    const voixKlaxon = [], tamponsKlaxon = {};
+    let klaxonsJoues = 0, klaxonsIgnores = 0;
 
     // rampe linéaire courte vers une valeur exacte (un 0 coupe vraiment)
     function rampe(p, v, t, d) { p.cancelScheduledValues(t); p.setValueAtTime(p.value, t); p.linearRampToValueAtTime(v, t + d); }
@@ -256,6 +309,17 @@
           const pb = filtre('lowpass', 8000, .7), g = gain(0), pan = ctx.createStereoPanner();
           pb.connect(g).connect(pan).connect(busMot);
           voixEch.push({ pb, g, pan, source: null, finA: 0, niveau: 0, duree: 1 });
+        }
+      }
+      {
+        const sr = ctx.sampleRate, synth = synthKlaxons(sr);
+        for (const type of KLAXONS) {
+          const d = synth[type], b = ctx.createBuffer(1, d.length, sr);
+          b.getChannelData(0).set(d); tamponsKlaxon[type] = { buffer: b, duree: d.length / sr };
+        }
+        for (let i = 0; i < KLAXON_VOIX; i++) {
+          const g = gain(0), pan = ctx.createStereoPanner();
+          g.connect(pan).connect(busEff); voixKlaxon.push({ g, pan, source: null, finA: 0 });
         }
       }
     }
@@ -473,6 +537,30 @@
       echLu = F.n;
     }
 
+    // Le jeu spatialise l'unique événement Troll et décide quand l'accepter (réseau, IA, cadence).
+    // Une préécoute explicite emploie aussi cette méthode, même lorsque les moteurs sont en pause.
+    // true = source programmée ; false = audio verrouillé, volume nul ou budget déjà occupé.
+    function klaxon(type = 'classique', p = {}) {
+      if (!pret) return false;
+      // Ne pas mettre en file un ancien Troll quand le navigateur suspend/interrompt l'audio.
+      // Le coordinateur consomme l'événement même dans ce cas, sans le rejouer au réveil.
+      if (ctx.state !== 'running') { klaxonsIgnores++; return false; }
+      p = p || {};
+      const niveau = p.gain == null ? 1 : Number.isFinite(+p.gain) ? clamp(+p.gain, 0, 1) : 0;
+      if (!niveau || !vols.general || !vols.effets) { klaxonsIgnores++; return false; }
+      const t = ctx.currentTime, v = voixKlaxon.find(v => v.finA <= t);
+      if (!v) { klaxonsIgnores++; return false; }
+      if (v.source) { try { v.source.disconnect(); } catch (e) { /* fin déjà rendue */ } }
+      const tampon = tamponsKlaxon[normaliserKlaxon(type)], s = ctx.createBufferSource();
+      s.buffer = tampon.buffer; s.loop = false; s.connect(v.g);
+      v.g.gain.cancelScheduledValues(t); v.g.gain.setValueAtTime(NIVEAU_KLAXON * niveau, t);
+      v.pan.pan.setValueAtTime(Number.isFinite(+p.pan) ? clamp(+p.pan, -1, 1) : 0, t);
+      s.onended = () => { finSource.call(s); if (v.source === s) { v.source = null; v.finA = 0; } };
+      s.start(t); s.stop(t + tampon.duree + .005);
+      v.source = s; v.finA = t + tampon.duree; klaxonsJoues++;
+      return true;
+    }
+
     function evenement(nom, p) {
       if (!pret) return;
       p = p || {};
@@ -481,6 +569,7 @@
       // coupent plus que le moteur : le claquement vient de la file, au même instant que la flamme
       const echappe = echVu >= 0 && t - echVu < .5;
       switch (nom) {
+        case 'troll': return klaxon(p.klaxon, p);
         case 'rapport': coupureMoteur(t); if (!echappe) detonation(t, p.haut ? 0.7 : 0.5); break;
         case 'rupteur': coupureMoteur(t); if (!echappe) detonation(t, 0.8); break;
         case 'choc': choc(t, clamp((p.force ?? 8) / 12, 0.2, 1)); break;           // vitesse perdue, m/s
@@ -577,21 +666,28 @@
       for (const v of vents) { vise(v.aiguG.gain, 0, t, .03); vise(v.graveG.gain, 0, t, .03); }
       for (const v of voix) vise(v.sortie.gain, 0, t, .03);
       for (const v of voixEch) vise(v.g.gain, 0, t, .03);
+      for (const v of voixKlaxon) if (v.source && v.finA > t) {
+        rampe(v.g.gain, 0, t, .012);
+        v.source.stop(t + .015); v.finA = Math.min(v.finA, t + .015);
+      }
     }
     function reprendre() { enPause = false; }
     function stats() {
-      let rivaux = 0, fondus = 0, actives = 0;
+      let rivaux = 0, fondus = 0, actives = 0, klaxonsActifs = 0;
       if (pret) for (const v of voix) { if (v.id >= 0) rivaux++; else if (ctx.currentTime < v.libereA) fondus++; }
       if (pret) for (const v of voixEch) if (ctx.currentTime < v.finA) actives++;
+      if (pret) for (const v of voixKlaxon) if (ctx.currentTime < v.finA) klaxonsActifs++;
       const joueurs = pret ? 1 + (deuxJoueurs || ctx.currentTime < joueur2LibereA ? 1 : 0) : 0;
       // les claquements d'échappement ont leur propre budget, à part de celui des moteurs
       return { actif: pret, voix: joueurs + rivaux + fondus, joueurs, rivaux, fondus, budget: 2 + MAX_RIVAUX, musique: musiqueOn,
-        echappement: { voix: pret ? voixEch.length : 0, actives, budget: ECH_VOIX, parImage: ECH_PAR_IMAGE, joues: echJoues, ignores: echIgnores } };
+        echappement: { voix: pret ? voixEch.length : 0, actives, budget: ECH_VOIX, parImage: ECH_PAR_IMAGE, joues: echJoues, ignores: echIgnores },
+        klaxons: { voix: pret ? voixKlaxon.length : 0, actives: klaxonsActifs, budget: KLAXON_VOIX, dureeMax: DUREES_KLAXON.mariage, joues: klaxonsJoues, ignores: klaxonsIgnores } };
     }
 
-    return { demarrer, regler, mettreAJour, evenement, echappement, musique, suspendre, reprendre, stats };
+    return { demarrer, regler, mettreAJour, evenement, echappement, klaxon, musique, suspendre, reprendre, stats };
   }
 
   B.son = { creer, frequenceAllumage, frequenceCycle, spectreMoteur, coupure, gainDistance, doppler, panoramique, selectionnerRivaux, MAX_RIVAUX, THEME,
-    synthEchappement, NIVEAU_ECH, ECH_VOIX, ECH_PAR_IMAGE, ECH_LATENCE };
+    synthEchappement, NIVEAU_ECH, ECH_VOIX, ECH_PAR_IMAGE, ECH_LATENCE,
+    KLAXONS, DUREES_KLAXON, KLAXON_VOIX, NIVEAU_KLAXON, normaliserKlaxon, synthKlaxons };
 })(globalThis.BITUME = globalThis.BITUME || {});

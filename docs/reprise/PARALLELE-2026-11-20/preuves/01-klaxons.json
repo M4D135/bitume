@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "lot": "01-T1-klaxons",
+  "statut": "module_audio_qualifie_raccord_evenement_requis",
+  "preparation": "../preparations/audio-troll.patch",
+  "preparation_sha256": "b48d3fcc8707d7ef789e1af3450f119334458e40cee5b2d802165bb8d15e8cd9",
+  "sources": {
+    "src/son.js": "01c857d260a284b30de2899946ae4290acc942d6ed7450a0432a26a84e987fae",
+    "verifications/son.test.mjs": "f162479609b6c16ba38077bff530ceda1548fcf8b44981955ad55040f363c51b"
+  },
+  "validation": {
+    "commande": "node verifications/son.test.mjs",
+    "verifications_reussies": 23,
+    "timbres": [
+      "classique",
+      "ancien",
+      "mariage"
+    ],
+    "synthese_hz": [
+      8000,
+      48000
+    ],
+    "voix_fixes": 5,
+    "duree_max_s": 0.96,
+    "controles": [
+      "determinisme sans Math.random, energie et amplitude bornees, extremites silencieuses",
+      "une seule source par evenement sur voix et tampons prepares",
+      "quatre humains plus une IA simultanes, saturation bornee",
+      "silence et AudioContext non actif sans evenement en attente",
+      "arret des voix en pause, absence de rejeu a la reprise",
+      "reutilisation des voix sans contamination par une ancienne fin",
+      "signaux et musique de titre historiques preserves"
+    ]
+  },
+  "echec_initial_conserve": {
+    "message": "ancien._fin is not a function",
+    "cause": "test appelait un champ prive perdu par Object.assign dans le faux contexte",
+    "correction": "appel de la propriete publique onended, comme sur la vraie source"
+  },
+  "limites": [
+    "Graphes et tampons verifies avec faux Web Audio ; pas d ecoute sur appareil.",
+    "Le coordinateur 00 raccorde la consommation unique avant les vues et la spatialisation.",
+    "Les choix menu et le transport reseau restent dans leurs perimetres."
+  ]
+}
