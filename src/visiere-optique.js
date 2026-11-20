@@ -5,6 +5,8 @@
   'use strict';
   const PAS = 1 / 120, MAX_PIXELS = 2000000, MAX_SOURCE_PIXELS = 1048576;
   const QUALITES = Object.freeze({ low: 0, medium: 1, high: 2, ultra: 3 });
+  const MAX_GOUTTES_MOBILES = 32;
+  const DEPOTS = Object.freeze([6, 12, 24, 32].map((gouttes, i) => Object.freeze({ gouttes, neige: 0, echelleEau: 1.4 + i * .1 })));
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   const nombre = (v, defaut = 0) => Number.isFinite(Number(v)) && v != null ? Number(v) : defaut;
   const VERTEX = `#version 300 es
@@ -25,6 +27,9 @@
   uniform vec2 uTexel;
   uniform int uQualite;
   uniform bool uAvecScene;
+  uniform int uNbGouttes;
+  uniform vec4 uGouttes[32]; // centre en pixels, rayon, opacité ; vraies rencontres du modèle partagé
+  uniform vec4 uTrajets[32]; // milieu et fin de la coulure, historique réel des positions
   float h21(vec2 p) {
     vec3 q = fract(vec3(p.xyx) * vec3(.1031,.1030,.0973));
     q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z);
@@ -78,6 +83,38 @@
     float m = bords(r,.035)*present*fondu;
     return vec4(clamp(d/rayon,vec2(-1),vec2(1))*m*.65,m,m*(.5+.5*sqrt(max(0.0,1.0-min(r*r,1.0)))));
   }
+  vec4 gouttesMobiles(vec2 p) {
+    vec4 total=vec4(0);
+    for(int i=0;i<32;i++) {
+      if(i>=uNbGouttes) break;
+      vec4 g=uGouttes[i],tr=uTrajets[i]; float rayon=g.z;
+      vec2 bas=min(g.xy,min(tr.xy,tr.zw))-rayon*2.3,haut=max(g.xy,max(tr.xy,tr.zw))+rayon*2.3;
+      // Les calculs de lentille et de courbe sont locaux ; le reste de l'écran ne parcourt que les emprises.
+      if(any(lessThan(p,bas))||any(greaterThan(p,haut))) continue;
+      vec2 n=(p-g.xy)/vec2(rayon,rayon*(1.30+uMouvement.y*.55));
+      float r=length(n),m=bords(r,max(.025,.85/rayon))*g.w;
+      float creux=sqrt(max(0.0,1.0-min(r*r,1.0)));
+      vec2 normale=clamp(n,vec2(-1),vec2(1))*m*creux;
+      float trace=0.0;
+      if(distance(g.xy,tr.zw)>rayon*1.2) {
+        float meilleur=1e9,progres=0.0; vec2 precedent=tr.zw,ecart=vec2(0);
+        // Trois positions du modèle forment une courbe, sans traînée verticale inventée pour les perles fixes.
+        for(int j=1;j<=4;j++) {
+          float t=float(j)*.25;
+          vec2 q=mix(mix(tr.zw,tr.xy,t),mix(tr.xy,g.xy,t),t),v=q-precedent;
+          float f=clamp(dot(p-precedent,v)/max(dot(v,v),.001),0.0,1.0);
+          vec2 d=p-(precedent+f*v);float d2=dot(d,d);
+          if(d2<meilleur){meilleur=d2;progres=(float(j-1)+f)*.25;ecart=d;}
+          precedent=q;
+        }
+        float largeur=max(.7,rayon*mix(.11,.36,progres));
+        trace=(1.0-smoothstep(largeur*.45,largeur+1.0,sqrt(meilleur)))*smoothstep(0.0,.14,progres)*g.w*.62;
+        normale+=ecart/max(length(ecart),.1)*trace*.35;
+      }
+      total+=vec4(normale,max(m,trace),max(m*(.5+.5*creux),trace*.45));
+    }
+    return total;
+  }
   vec3 scene(vec2 p, float flou) {
     p = clamp(p,vec2(.002),vec2(.998));
     vec3 c = texture(uScene,p).rgb;
@@ -91,20 +128,21 @@
   }
   void main() {
     float eau=uMeteo.x, neige=uMeteo.y, embruns=uMeteo.z, film=uMeteo.w;
-    if (max(max(eau,neige),max(embruns,film)) < .001) { couleur=vec4(0); return; }
+    if (max(max(eau,neige),max(embruns,film)) < .001 && uNbGouttes==0) { couleur=vec4(0); return; }
     vec2 p=uv*uVue.xy;
     // Granulométrie : milliers de fines perles, dizaines de grosses gouttes et nappes rares.
-    vec4 a=perles(p,18.0,1.45,clamp(eau*.94,0.0,.97),1.0,.04);
-    vec4 b=perles(p,43.0,3.7,clamp(eau*.83,0.0,.93),2.0,.22);
+    vec4 a=perles(p,15.0,1.65,clamp(eau*.94,0.0,.97),1.0,.04);
+    vec4 b=perles(p,37.0,4.1,clamp(eau*.83,0.0,.93),2.0,.22);
     vec4 c=vec4(0),n=vec4(0);
     if (uQualite > 0) {
-      c=perles(p,91.0,8.9,clamp(eau*.70,0.0,.85),3.0,.65);
+      c=perles(p,77.0,9.7,clamp(eau*.70,0.0,.85),3.0,.65);
       n=nappe(p,clamp((eau-.30)*.48+film*.32,0.0,.65));
     } else { a*=.6; }
-    vec2 normale=a.xy*.23+b.xy*.47+c.xy*.8+n.xy;
-    float goutte=clamp(a.z+b.z+c.z+n.z,0.0,1.0);
-    float relief=clamp(a.w*.3+b.w*.5+c.w*.8+n.w,0.0,1.0);
-    float menisque=clamp((a.z-a.w+b.z-b.w+c.z-c.w+n.z-n.w)*2.0,0.0,1.0);
+    vec4 mobiles=gouttesMobiles(p);
+    vec2 normale=a.xy*.23+b.xy*.47+c.xy*.8+n.xy+mobiles.xy;
+    float goutte=clamp(a.z+b.z+c.z+n.z+mobiles.z,0.0,1.0);
+    float relief=clamp(a.w*.3+b.w*.5+c.w*.8+n.w+mobiles.w,0.0,1.0);
+    float menisque=clamp((a.z-a.w+b.z-b.w+c.z-c.w+n.z-n.w+mobiles.z-mobiles.w)*2.0,0.0,1.0);
     // Brouillard d'eau local dans l'axe : il monte puis retombe dans le modèle, pas d'aplat blanc instantané.
     float turbulent=.5;
     if (embruns>.001 || (uAvecScene && film>.001)) {
@@ -151,9 +189,26 @@
     couleur=vec4(clamp(image,0.0,1.0),alpha);
   }`;
   function creerEtat(options) {
+    if (!B.vitre && typeof module !== 'undefined' && module.exports) require('./vitre.js');
     return { temps: 0, accumulateur: 0, eau: 0, neige: 0, embruns: 0, film: 0,
       precedent: new Float64Array(4), uniformes: new Float32Array(12), etapes: 0,
+      depots: B.vitre.creerSimulation(options), gouttesUniformes: new Float32Array(MAX_GOUTTES_MOBILES * 4),
+      trajetsUniformes: new Float32Array(MAX_GOUTTES_MOBILES * 4), nbGouttes: 0,
       graine: options && Number.isInteger(options.graine) ? options.graine : 0 };
+  }
+  function preparerDepots(e) {
+    const d=e.depots,k=clamp(d.accumulateur*30,0,1),w=d.largeur,h=d.hauteur,g=e.gouttesUniformes,tr=e.trajetsUniformes;
+    let n=0;
+    for(let i=0;i<MAX_GOUTTES_MOBILES;i++) {
+      const p=d.gouttes[i];if(!p.vivant)continue;
+      const age=p.pa*(1-k)+p.age*k,poids=p.pp*(1-k)+p.poids*k;
+      const alpha=clamp(Math.min(1,age/.24,(p.duree-age)/1.5)*poids,0,1);if(alpha<.005)continue;
+      const j=n++*4;
+      g[j]=(p.px*(1-k)+p.x*k)*w;g[j+1]=(1-p.py*(1-k)-p.y*k)*h;
+      g[j+2]=p.pr*(1-k)+p.taille*k;g[j+3]=alpha;
+      tr[j]=p.traceX[2]*w;tr[j+1]=(1-p.traceY[2])*h;tr[j+2]=p.traceX[5]*w;tr[j+3]=(1-p.traceY[5])*h;
+    }
+    e.nbGouttes=n;
   }
   function avancerEtat(e, dt, c) {
     if (c.pause || !Number.isFinite(dt) || dt <= 0) return;
@@ -162,9 +217,8 @@
     const neige=c.abri ? 0 : clamp(nombre(c.neige),0,1);
     const pluie=c.abri || neige>.001 ? 0 : clamp(nombre(c.pluie),0,1);
     const spray=c.abri || neige>.001 ? 0 : clamp(nombre(c.embruns),0,1);
-    // L'air évacue les dépôts, mais le panache du rival apporte sans cesse de nouveaux impacts.
-    // Distinguer ce flux de la pluie ambiante garde le sillage visible à grande vitesse.
-    const eauCible=clamp((pluie*.95/(1+air*2.8)+spray*1.25/(1+air*.45))*intensite,0,1.55);
+    // Le flux de pneus renouvelle la visière même quand l'air chasse efficacement la pluie libre.
+    const eauCible=clamp((pluie*1.20/(1+air*2.8)+spray*1.90/(1+air*.35))*intensite,0,1.90);
     const neigeCible=clamp(neige*intensite/(1+air*7),0,1.25);
     e.accumulateur+=Math.min(.25,dt);
     while (e.accumulateur+1e-10>=PAS) {
@@ -173,7 +227,7 @@
       e.eau+=(eauCible+fonte-e.eau)*(1-Math.exp(-PAS*(eauCible>e.eau ? .72 : .22+air*1.8)));
       e.neige+=(neigeCible-e.neige)*(1-Math.exp(-PAS*(neigeCible>e.neige ? .10 : .065+air*.6)));
       e.embruns+=(spray*intensite-e.embruns)*(1-Math.exp(-PAS*(spray>e.embruns ? 4 : 1.4)));
-      const filmCible=(pluie*.35/(1+air*4)+spray*.55/(1+air*.65))*intensite;
+      const filmCible=clamp((pluie*.40/(1+air*4)+spray*.82/(1+air*.45))*intensite,0,1.5);
       e.film+=(filmCible-e.film)*(1-Math.exp(-PAS*(filmCible>e.film ? .5 : .3+air)));
       if(e.eau<.0005 && eauCible+fonte===0)e.eau=0;
       if(e.neige<.0005 && neigeCible===0)e.neige=0;
@@ -186,8 +240,9 @@
     u[2]=e.precedent[2]*(1-k)+e.embruns*k; u[3]=e.precedent[3]*(1-k)+e.film*k;
     u[4]=Math.max(0,e.temps-PAS+e.accumulateur); u[5]=air;
     u[6]=clamp(nombre(c.ventX)*.2,-8,8); u[7]=clamp(nombre(c.ventZ)*.08,-8,8);
-    u[8]=nombre(c.largeur,1); u[9]=nombre(c.hauteur,1); u[10]=e.graine*37.31;
-    u[11]=(c.cockpit===false ? .36 : 1)*Math.min(1,intensite);
+    u[8]=nombre(c.largeur,e.depots.largeur); u[9]=nombre(c.hauteur,e.depots.hauteur); u[10]=e.graine*37.31;
+    u[11]=(c.cockpit===false ? .64 : 1)*Math.min(1,intensite);
+    B.vitre.avancerSimulation(e.depots,dt,c,DEPOTS[QUALITES[c.qualite]??2]);preparerDepots(e);
   }
   function montrer(e, oui) {
     if (e.masquee===!oui) return;
@@ -212,7 +267,7 @@
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
     gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([0,0,0,255]));
-    e.lieux={}; for(const nom of ['uScene','uMeteo','uMouvement','uVue','uTexel','uQualite','uAvecScene']) e.lieux[nom]=gl.getUniformLocation(programme,nom);
+    e.lieux={}; for(const nom of ['uScene','uMeteo','uMouvement','uVue','uTexel','uQualite','uAvecScene','uNbGouttes','uGouttes','uTrajets']) e.lieux[nom]=gl.getUniformLocation(programme,nom);
     gl.disable(gl.DEPTH_TEST); gl.disable(gl.BLEND); gl.clearColor(0,0,0,0);
     e.pret=true; e.perdu=false; e.stats.pret=true; e.stats.perdu=false;e.stats.erreur=null;
   }
@@ -225,7 +280,8 @@
     const e={canvas,gl,contexte:gl,simulation:creerEtat(options),source:copie,sourceContexte:copie.getContext('2d',{alpha:false}),
       masquee:false,propre:true,perdu:false,libere:false,pret:false,dprPalier:null,largeur:1,hauteur:1,dpr:1,
       stats:{backend:'webgl2',pret:false,perdu:false,erreur:null,copiesScene:0,dessins:0,etapes:0,pixels:0,pixelsSource:0,
-        largeur:0,hauteur:0,dpr:1,eau:0,accumulationNeige:0,embruns:0,gouttes:0,neige:0}};
+        largeur:0,hauteur:0,dpr:1,eau:0,accumulationNeige:0,embruns:0,gouttes:0,neige:0,
+        fusionsEau:0,expulses:0,depotsEau:0,depotsEmbruns:0,surfaceExpulsee:0}};
     e.uMeteo=e.simulation.uniformes.subarray(0,4);e.uMouvement=e.simulation.uniformes.subarray(4,8);e.uVue=e.simulation.uniformes.subarray(8,12);
     e.perte=event=>{event.preventDefault(); e.perdu=true; e.pret=false; e.stats.perdu=true; e.stats.pret=false; montrer(e,false);};
     e.restauration=()=>{if(e.libere)return; try{initialiser(e);}catch(err){e.stats.erreur=String(err.message||err);montrer(e,false);}};
@@ -265,13 +321,16 @@
     gl.uniform1i(e.lieux.uScene,0);gl.uniform4fv(e.lieux.uMeteo,e.uMeteo);
     gl.uniform4fv(e.lieux.uMouvement,e.uMouvement);gl.uniform4fv(e.lieux.uVue,e.uVue);
     gl.uniform2f(e.lieux.uTexel,1/e.source.width,1/e.source.height);gl.uniform1i(e.lieux.uQualite,niveau);gl.uniform1i(e.lieux.uAvecScene,avecScene);
+    gl.uniform1i(e.lieux.uNbGouttes,e.simulation.nbGouttes);
+    gl.uniform4fv(e.lieux.uGouttes,e.simulation.gouttesUniformes);gl.uniform4fv(e.lieux.uTrajets,e.simulation.trajetsUniformes);
     gl.drawArrays(gl.TRIANGLES,0,3);e.stats.dessins++;e.propre=!!chauffe;montrer(e,!chauffe);
   }
   function effacer(e) {
     if(!e || e.libere)return;
     if(!e.propre && e.pret && !e.perdu){e.gl.clear(e.gl.COLOR_BUFFER_BIT);e.propre=true;}
     const s=e.simulation;s.eau=s.neige=s.embruns=s.film=s.accumulateur=0;s.precedent.fill(0);s.uniformes.fill(0);
-    e.stats.eau=e.stats.accumulationNeige=e.stats.embruns=0;e.dprPalier=null;montrer(e,false);
+    B.vitre.effacer(s.depots);s.nbGouttes=0;s.gouttesUniformes.fill(0);s.trajetsUniformes.fill(0);
+    e.stats.eau=e.stats.accumulationNeige=e.stats.embruns=e.stats.gouttes=0;e.dprPalier=null;montrer(e,false);
   }
   function mettreAJour(e,dt,c) {
     if(!e || e.libere)return e ? e.stats : null;
@@ -279,10 +338,15 @@
     if(c.actif===false || c.retro===true || c.qualite==='off' || clamp(nombre(c.intensite,1),0,2)===0){effacer(e);return e.stats;}
     if(c.pause || !e.pret || e.perdu || !Number.isFinite(dt) || dt<=0)return e.stats;
     const niveau=QUALITES[c.qualite]??2, s=e.simulation;
+    // Le jeu transmet la toile, sans dimensions CSS dans le contexte : dépôts et shader doivent partager
+    // celles de cette vue, y compris J2 et un redimensionnement, avant le premier pas de déplacement.
+    dimensionner(e,c,niveau);s.depots.largeur=e.largeur;s.depots.hauteur=e.hauteur;
     avancerEtat(s,dt,c);
     e.stats.eau=s.eau;e.stats.accumulationNeige=s.neige;e.stats.embruns=s.embruns;e.stats.etapes=s.etapes;
-    if(Math.max(s.eau,s.neige,s.embruns,s.film)<.001){if(!e.propre){e.gl.clear(e.gl.COLOR_BUFFER_BIT);e.propre=true;}montrer(e,false);return e.stats;}
-    dimensionner(e,c,niveau);dessiner(e,c,niveau,false);return e.stats;
+    e.stats.gouttes=s.depots.stats.gouttes;e.stats.fusionsEau=s.depots.stats.fusionsEau;e.stats.expulses=s.depots.stats.expulses;
+    e.stats.depotsEau=s.depots.stats.depotsEau;e.stats.depotsEmbruns=s.depots.stats.depotsEmbruns;e.stats.surfaceExpulsee=s.depots.stats.surfaceExpulsee;
+    if(Math.max(s.eau,s.neige,s.embruns,s.film)<.001&&!s.nbGouttes){if(!e.propre){e.gl.clear(e.gl.COLOR_BUFFER_BIT);e.propre=true;}montrer(e,false);return e.stats;}
+    dessiner(e,c,niveau,false);return e.stats;
   }
   function prechauffer(e,c) {
     if(!e || e.libere || !e.pret || e.perdu)return false;c=c||{};
@@ -297,5 +361,5 @@
     if(!e.perdu){e.gl.deleteTexture(e.texture);e.gl.deleteVertexArray(e.vao);e.gl.deleteProgram(e.programme);}
     e.libere=true;e.canvas=null;e.contexte=null;e.source=null;e.sourceContexte=null;e.gl=null;
   }
-  B.visiereOptique={creer,creerEtat,avancerEtat,mettreAJour,prechauffer,effacer,liberer,MAX_PIXELS,MAX_SOURCE_PIXELS,QUALITES};
+  B.visiereOptique={creer,creerEtat,avancerEtat,mettreAJour,prechauffer,effacer,liberer,MAX_PIXELS,MAX_SOURCE_PIXELS,MAX_GOUTTES_MOBILES,QUALITES};
 })(globalThis.BITUME=globalThis.BITUME||{});

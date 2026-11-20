@@ -183,4 +183,12 @@ verifier('contextes anciens, incomplets ou invalides restent utilisables', () =>
   const e = V.creer(toile()); assert.doesNotThrow(() => V.mettreAJour(e, PAS));
   assert.equal(V.mettreAJour(V.creer(null), PAS).gouttes, 0);
 });
+verifier('le repli Canvas conserve un sillage dense à grande vitesse même sans pluie', () => {
+  const t = toile(1280,720), e = V.creer(t, { graine: 4 }), c = contexte({ qualite: 'high', embruns: .8, vitesse: 100 });
+  avancer(e, c, 12);
+  assert(e.stats.gouttes >= 40 && e.stats.depotsEmbruns > 100);
+  assert(e.stats.fusionsEau > 0 && e.stats.expulses > 0 && e.stats.surfaceExpulsee > 0);
+  const depots = e.stats.depotsEau; avancer(e, { ...c, embruns: 0 }, 15);
+  assert.equal(e.stats.depotsEau, depots); assert.equal(e.stats.gouttes, 0); assert(e.propre && e.masquee);
+});
 console.log('vitre météo : ' + controles + ' contrôles passés');
