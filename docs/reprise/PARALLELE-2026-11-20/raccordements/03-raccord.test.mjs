@@ -60,7 +60,7 @@ test('aperçu audio absent explicitement désactivé, disponible avec API klaxon
 });
 test('bilan : mode chrono et confirmation en ligne, pneus et Troll individuels',()=>{
   const a=make(B);a.mode('chrono');a.majBilanArcade();assert.match(a.$('p-bilan-course').textContent,/Contre-la-montre/);assert.match(a.$('b-depart').textContent,/chrono/);
-  a.mode('duo');a.majBilanArcade();assert.match(a.$('p-bilan-troll').textContent,/J1 : Slicks/);assert.match(a.$('p-bilan-troll').textContent,/J2 : Pluie/);
+  a.mode('duo');a.majBilanArcade();assert.match(a.$('p-bilan-troll').textContent,/J1\s: Slicks/);assert.match(a.$('p-bilan-troll').textContent,/J2\s: Pluie/);
   a.mode('enligne');a.majBilanArcade();assert.equal(a.$('b-depart').textContent,'Confirmer la course');
 });
 const image = new Function('ecranInitial','temps','cache',`

@@ -2,14 +2,14 @@
   "schema": 1,
   "discussion": "03",
   "mission": "Menu arcade",
-  "statut": "qualification_paysage_en_cours",
+  "statut": "qualification_finale_en_cours",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/03-MENU.md",
   "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "branche_proposee": "codex/bitume-p03-menu-20261120",
   "branche_reelle": "codex/bitume-p03-menu-20261120",
-  "head": "2d0faaa879381cc2d43e164d7f729f0e0bb7b586",
+  "head": "10f2948784defacef8a1889bb956e019794e0645",
   "pr": "https://github.com/M4D135/bitume/pull/40",
-  "sous_lot": "M1.3 — synchronisation du banc avec la fin de détection graphique",
+  "sous_lot": "M1.4 — valeurs de test conformes aux vrais choix et bilan insécable",
   "preuves": [
     "21/21 contrôles navigation menu.",
     "12 contrôles aperçu : 9 circuits × 144 rotations × 6 formats, arrêt caché et mouvement réduit.",
@@ -19,16 +19,17 @@
     "CI 44782221455 : cinq scénarios réels réussis et capture du tracé complet ; arrêt du banc sur Start envoyé dès la première frame après reprise (front tenu correctement consommé). Banc corrigé : deux frames neutres.",
     "CI dédiée 44782638763 réussie : 19 parcours Chromium, 14 captures, aucune exception JavaScript. Relecture : bureau/portrait lisibles ; correction du tracé et du bilan coupés en paysage en cours.",
     "Comparaison au main récent : 131 contrôles existants et 35 groupes nommés conservés, raccord applicable sans changement de jeu.js/construire.py.",
-    "CI 44784147128 : construction et 196 contrôles ciblés réussis, arrêt du banc avant premier scénario car Passer a disparu pendant le clic à la fin naturelle de la détection ; titre atteint, aucune exception JS. Attente corrigée sans changement runtime."
+    "CI 44784147128 : construction et 196 contrôles ciblés réussis, arrêt du banc avant premier scénario car Passer a disparu pendant le clic à la fin naturelle de la détection ; titre atteint, aucune exception JS. Attente corrigée sans changement runtime.",
+    "CI 44784834119 verte : 19 parcours, 14 PNG inspectés, aucune exception, tracé et trois cartes bilan entièrement visibles en paysage. Fixture corrigée après relecture : soleil et faune off ; contrôle des boutons météo cochés ajouté."
   ],
   "reserves": [
-    "Requalification du paysage 844×390 après compaction et retour du défilement au début à chaque changement d’étape.",
+    "Dernière reprise CI après correction des valeurs injectées par le banc et espace insécable J1/J2 dans le bilan proposé.",
     "CI globale de publication attend un build/version identique aux sources : garde non applicable à cette branche de sources réservée à 00.",
     "Troll son+geste/IA/protocole réseau restent à 01/00 ; le menu conserve les choix et retire prêt après modification.",
     "Préchauffage initial conservé ; rendu continu et reconstructions de scènes cachées arrêtés dans le raccord proposé.",
     "Manettes physiques, audio entendu, réseau entre machines, Xbox et GPU Intel non vérifiés."
   ],
-  "prochaine_action": "Publier le correctif paysage, valider les assertions de visibilité et inspecter les captures ; consigner le candidat final pour 00.",
+  "prochaine_action": "Consigner le SHA et les preuves finales, puis transmettre le lot source et son raccord à 00.",
   "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
   "preparations_portables": [
     "docs/reprise/PARALLELE-2026-11-20/preparations/arcade.patch"

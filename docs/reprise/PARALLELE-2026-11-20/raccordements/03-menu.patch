@@ -114,7 +114,7 @@ index cf07b58..cf8eec0 100644
 +    const gestes = { majeur: 'doigt d’honneur', poing: 'poing levé', salut: 'salut' };
 +    const klaxons = { classique: 'classique', ancien: 'ancien', mariage: 'mariage' };
 +    const choix = choixTrollLocaux(), pneus = choixPneusLocaux();
-+    texte($('p-bilan-troll'), choix.slice(0, nombre).map((c, n) => 'J' + (n + 1) + ' : ' + NOMS_PNEUS[pneus[n]] + ' · ' + gestes[c.geste] + ' + klaxon ' + klaxons[c.klaxon]).join(' / '));
++    texte($('p-bilan-troll'), choix.slice(0, nombre).map((c, n) => 'J' + (n + 1) + '\u00a0: ' + NOMS_PNEUS[pneus[n]] + ' · ' + gestes[c.geste] + ' + klaxon ' + klaxons[c.klaxon]).join(' / '));
 +    texte($('b-depart'), modePrepa === 'enligne' ? 'Confirmer la course' : modePrepa === 'chrono' ? 'Lancer le chrono' : 'Prendre le départ');
 +  }
  

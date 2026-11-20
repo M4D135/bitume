@@ -14,8 +14,9 @@ const rapport = { schema: 1, commit: process.env.GITHUB_SHA || null, nature: 'ra
 const browser = await chromium.launch({ executablePath: args.chrome || '/usr/bin/google-chrome', headless: true,
   args: ['--no-sandbox', '--disable-dev-shm-usage', '--enable-unsafe-swiftshader', '--use-gl=angle', '--use-angle=swiftshader'] });
 const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, hasTouch: true });
-await context.addInitScript(() => {
-  if (!localStorage.getItem('bitume.reglages')) localStorage.setItem('bitume.reglages', JSON.stringify({ qualite: 'low', cadence: '60', retro: 'non', vegetation: 'low', faune: 'non', demo: 'non', meteo: 'sec', saison: 'ete', saisonMode: 'manuel', moment: 'jour', momentMode: 'manuel', meteoMode: 'manuel' }));
+const reglagesInit = { qualite: 'low', cadence: '60', retro: 'non', vegetation: 'low', faune: 'off', demo: 'non', meteo: 'soleil', saison: 'ete', saisonMode: 'manuel', moment: 'jour', momentMode: 'manuel', meteoMode: 'manuel' };
+await context.addInitScript(reglagesInit => {
+  if (!localStorage.getItem('bitume.reglages')) localStorage.setItem('bitume.reglages', JSON.stringify(reglagesInit));
   window.__menuEssai = { vibrations: 0, dessins: 0, pads: [] };
   const etat = window.__menuEssai;
   for (let n = 0; n < 2; n++) etat.pads.push({ index: n, id: 'Manette simulee ' + n, connected: true, mapping: 'standard', timestamp: 0, axes: [0, 0, 0, 0], buttons: Array.from({ length: 17 }, () => ({ pressed: false, touched: false, value: 0 })), vibrationActuator: { playEffect() { etat.vibrations++; return Promise.resolve('complete'); }, reset() { return Promise.resolve('complete'); } } });
@@ -24,7 +25,7 @@ await context.addInitScript(() => {
     const ancien = type.prototype[nom]; if (!ancien) continue;
     type.prototype[nom] = function (...a) { etat.dessins++; return ancien.apply(this, a); };
   }
-});
+}, reglagesInit);
 const page = await context.newPage();
 page.setDefaultTimeout(15000);
 page.on('pageerror', e => rapport.erreurs.push(e.message));
@@ -62,6 +63,11 @@ async function calme(nom, verifierApercu = true) {
   notes(nom, { dessinsWebGL: apres.dessins - avant.dessins, imagesApercu: apres.menu.images - avant.menu.images });
 }
 async function etape(n) { await page.locator('[data-menu-tab="' + ['p-piste','p-conditions','p-pilotes','p-bilan'][n] + '"]').click(); await page.waitForFunction(n => BITUME_JEU.menuArcade.etape === n, n); }
+async function verifierMeteoManuelle() {
+  assert.equal(await page.locator('input[name="meteoMode"][value="manuel"]').isChecked(), true, 'mode météo manuel coché');
+  assert.equal(await page.locator('input[name="meteo"][value="' + reglagesInit.meteo + '"]').isChecked(), true, 'météo manuelle attendue cochée');
+  assert.equal((await lire()).reglages.meteo, reglagesInit.meteo, 'préférence météo conservée sans repli implicite');
+}
 async function cadragePaysage(n) {
   // Observer le premier affichage après le vrai clic d'onglet : aucun scrollIntoView ni scroll de réparation.
   const releve = await page.evaluate(n => {
@@ -109,6 +115,11 @@ async function cadragePaysage(n) {
 }
 try {
   await page.goto(args.url, { waitUntil: 'load', timeout: 120000 });
+  const optionsInconnues = await page.evaluate(reglages => {
+    const noms = { saison: 'saisonDepart', moment: 'momentDepart' };
+    return Object.entries(reglages).filter(([nom, valeur]) => !Array.from(document.querySelectorAll('input[name="' + (noms[nom] || nom) + '"]')).some(el => el.value === valeur)).map(([nom, valeur]) => nom + '=' + valeur);
+  }, reglagesInit);
+  assert.deepEqual(optionsInconnues, [], 'la fixture utilise uniquement les choix réellement proposés');
   await attendreTitre('ouverture'); await calme('Titre opaque sans rendu caché');
   await page.locator('[data-aller="course"]').focus(); await page.keyboard.press('Enter'); await ecran('preparation');
   assert.equal(await page.locator('#circuits [role="radio"]').count(), 9);
@@ -127,7 +138,7 @@ try {
   notes('Masquage document simulé : aperçu arrêté');
   // La reprise protège contre un bouton déjà tenu ; laisser les deux manettes repasser au neutre.
   await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-  await bouton(9, 1); assert.equal((await lire()).menu.etape, 1); await calme('Conditions : aucun aperçu ni scène cachée');
+  await bouton(9, 1); assert.equal((await lire()).menu.etape, 1); await verifierMeteoManuelle(); await calme('Conditions : aucun aperçu ni scène cachée');
   assert.equal((await lire()).ecran, 'preparation');
   await page.locator('label:has(input[name="saisonDepart"][value="hiver"])').click();
   await bouton(9, 0); assert.equal((await lire()).menu.etape, 2);
@@ -147,6 +158,7 @@ try {
     await page.setViewportSize(taille);
     for (let n = 0; n < 4; n++) {
       await etape(n); await page.waitForTimeout(90);
+      if (n === 1) await verifierMeteoManuelle();
       const dimensions = await page.evaluate(() => {
         const p = document.querySelector('#preparation .panneaux-menu'), f = document.querySelector('#preparation .depart-fixe'), rect = f.getBoundingClientRect();
         return { largeur: innerWidth, hauteur: innerHeight, debordement: p.scrollWidth - p.clientWidth, pied: { haut: rect.top, bas: rect.bottom } };
