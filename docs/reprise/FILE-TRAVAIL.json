@@ -456,6 +456,8 @@
     "preparation_circuits": "05",
     "publication": "main apres qualification par 00",
     "reprises": "docs/reprise/PARALLELE-2026-11-20/REPRISES-EXISTANTES.md",
-    "regle": "Conserver les lots et preuves existants. Une discussion par perimetre, un sous-lot par discussion ; raccordements et builds serialises."
+    "regle": "Conserver les lots et preuves existants. Une discussion par perimetre, un sous-lot par discussion ; raccordements et builds serialises.",
+    "preparations_portables": "docs/reprise/PARALLELE-2026-11-20/preparations/MANIFESTE.json",
+    "preparations_statut": "quatre_patches_sauvegardes_non_qualifies"
   }
 }

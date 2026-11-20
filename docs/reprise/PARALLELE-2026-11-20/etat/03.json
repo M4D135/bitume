@@ -13,5 +13,9 @@
   "preuves": [],
   "reserves": [],
   "prochaine_action": "Retrouver les modifications suivies/non suivies du menu puis qualifier le parcours.",
-  "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00."
+  "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
+  "preparations_portables": [
+    "docs/reprise/PARALLELE-2026-11-20/preparations/arcade.patch"
+  ],
+  "preparations_statut": "applicables_individuellement_a_la_base_non_qualifiees"
 }

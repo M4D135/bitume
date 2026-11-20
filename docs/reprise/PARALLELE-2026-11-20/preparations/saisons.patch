@@ -1,0 +1,767 @@
+diff --git a/src/bords.js b/src/bords.js
+index c09e288..9ae5451 100644
+--- a/src/bords.js
++++ b/src/bords.js
+@@ -338,6 +338,9 @@
+             const houppe = { shape: 'foliage', p: [p[0], p[1] + h * .8, p[2]], s: [h * .68, h * .4, h * .68], mat: 11, color: [.16, .3, .11] };
+             objets.push(houppe); loin.push(houppe);
+           }
++          // Même phénologie que la forêt, y compris pour les allées proches de la route.
++          // Les troncs solides et bandes de peinture restent présents et à leurs places historiques.
++          if (outils.saisonArbre) outils.saisonArbre(objets, loin, p[0], p[2], resineux ? 'conifere' : 'feuillu');
+         } else if (d.type === 'rochers' && ra() < .6) {
+           // blocs à demi enterrés, de la couleur de la roche du lieu, un peu plus ou un peu moins clairs
+           const dd = cote * (w + 2.6 + ra() * 3.6), t = 1.2 + ra() * 1.6, p = pointPlan(f, dd, hauteur(f, dd, w) - .3), a = ra() * 6.28, e = .85 + ra() * .3;
+diff --git a/src/botanique.js b/src/botanique.js
+index 3080033..3994e3b 100644
+--- a/src/botanique.js
++++ b/src/botanique.js
+@@ -207,7 +207,7 @@
+     return p;
+   }
+ 
+-  function feuillu(tri, p, N) {
++  function feuillu(tri, p, N, nu = false) {
+     const P = t => [p.pente[0] * t * t, p.hauteur * t, p.pente[1] * t * t];
+     tronc(tri, P, N, .055, .03, 6);
+     const pointes = [P(1)];
+@@ -220,6 +220,7 @@
+         pointes.push(branche(tri, depart2, direction(br.azim + c.gisement, c.inclinaison), c.long, c.chute, N, .014, .006, 4));
+       }
+     });
++    if (nu) return;
+     let k = 0;
+     const poser = c => { const a = p.amas[k++]; amas(tri, [c[0] + a.d[0], c[1] + a.d[1], c[2] + a.d[2]], a.r, 6); };
+     poser(pointes[0]);
+@@ -266,10 +267,10 @@
+     for (let i = p.branches.length + 1; indices.length < p.amas.length; i++) indices.push(i % n);
+     return indices;
+   }
+-  function feuilluLoin(tri, p) {
+-    const P = t => [p.pente[0] * t * t, p.hauteur * t, p.pente[1] * t * t], F = SILHOUETTE.facesBranche;
++  function feuilluLoin(tri, p, nu = false, leger = false) {
++    const P = t => [p.pente[0] * t * t, p.hauteur * t, p.pente[1] * t * t], F = leger ? 3 : SILHOUETTE.facesBranche;
+     // La tête du fût est dans le premier amas, son pied sous terre : aucune coiffe.
+-    tronc(tri, P, SILHOUETTE.fut.feuillu, .055, .03, 6, SANS_COIFFE);
++    tronc(tri, P, leger ? 1 : SILHOUETTE.fut.feuillu, .055, .03, 6, SANS_COIFFE);
+     const pointes = [P(1)], charpentières = new Map();
+     p.branches.forEach((br, i) => {
+       const depart = P(br.attache);
+@@ -284,7 +285,8 @@
+     // Une charpentière coiffée d'un amas disparaît dedans ; une charpentière nue dessine le bord du houppier
+     // (jusqu'à 12 % de la largeur de l'arbre en Moyenne) : elle reste, en prisme droit.
+     const portees = indicesAmas(p, pointes.length), coiffees = new Set(portees);
+-    for (const [i, c] of charpentières) if (!coiffees.has(i)) branche(tri, c[0], c[1], c[2], c[3], 1, .014, .006, F, SANS_COIFFE);
++    for (const [i, c] of charpentières) if (nu || !coiffees.has(i)) branche(tri, c[0], c[1], c[2], c[3], 1, .014, .006, F, nu ? POINTE : SANS_COIFFE);
++    if (nu) return;
+     portees.forEach((i, k) => {
+       const c = pointes[i], a = p.amas[k];
+       amas(tri, [c[0] + a.d[0], c[1] + a.d[1], c[2] + a.d[2]], a.r, 6, true);
+@@ -324,9 +326,9 @@
+   // pied au sol et cime tombent aux mêmes coordonnées normalisées. La boîte ne dépend que de la forme proche : ses
+   // coordonnées ne bougent pas quand la silhouette change (botanique.test.mjs compare leurs empreintes). La
+   // silhouette tient dans cette boîte (vérifié aussi) : elle reste dans le cube unité.
+-  function normaliser(proche, loin) {
++  function normaliser(proche, loin, reference = proche) {
+     const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
+-    for (const tri of proche) for (let i = 0; i < 3; i++) for (let k = 0; k < 3; k++) {
++    for (const tri of reference) for (let i = 0; i < 3; i++) for (let k = 0; k < 3; k++) {
+       min[k] = Math.min(min[k], tri[i][k]); max[k] = Math.max(max[k], tri[i][k]);
+     }
+     const taille = Math.max(...max.map((v, i) => v - min[i])), centre = max.map((v, i) => (v + min[i]) / 2);
+@@ -357,6 +359,25 @@
+   function nomForme(essence, loin, qualite) {
+     return 'arbre-' + essence + '-' + (loin ? 'loin' : 'proche') + '-' + qualite;
+   }
++  // En hiver le bois du même feuillu reste à sa place : on retire ses amas de feuilles, sans
++  // renormaliser le rameau restant ni déplacer le tronc solide. Un seul objet par arbre et par LOD.
++  const NUS = new Map();
++  function formeNue(loin, qualite) {
++    if (!QUALITES.includes(qualite)) throw new Error('qualité inconnue : ' + qualite);
++    if (!NUS.has(qualite)) {
++      const p = plan('feuillu', qualite), N = BUDGETS[qualite].segments.proche;
++      const reference = [], proche = [], lointain = [];
++      feuillu(reference, p, N);
++      // Légère : tous les rameaux sont présents, en prismes triangulaires. 72 triangles,
++      // comme l'ancienne unique couronne lointaine ; aucun objet JS par branche.
++      if (qualite === 'low') feuilluLoin(proche, p, true, true);
++      else feuillu(proche, p, N, true);
++      feuilluLoin(lointain, p, true, qualite === 'low');
++      NUS.set(qualite, normaliser(proche, lointain, reference));
++    }
++    return NUS.get(qualite)[loin ? 'loin' : 'proche'];
++  }
++  const nomFormeNue = (loin, qualite) => 'arbre-feuillu-nu-' + (loin ? 'loin' : 'proche') + '-' + qualite;
+   // Tronc d'écorce de la version lointaine. Le tronc proche est le cylindre du moteur (16 côtés, 64 triangles) ;
+   // à la distance de bascule il ne fait que quelques pixels de large. Même cylindre unité (diamètre 1, hauteur 1,
+   // centré) réduit à six faces sans fonds, normales lisses comme le cylindre : le fond est sous terre, le haut dans
+@@ -390,12 +411,14 @@
+     if (!rendu || typeof rendu.forme !== 'function') return false;
+     for (const essence of ESSENCES) for (const loin of [false, true]) for (const qualite of QUALITES)
+       rendu.forme(nomForme(essence, loin, qualite), forme(essence, loin, qualite));
++    for (const loin of [false, true]) for (const qualite of QUALITES)
++      rendu.forme(nomFormeNue(loin, qualite), formeNue(loin, qualite));
+     rendu.forme(TRONC_LOINTAIN, formeTroncLointain());
+     return true;
+   }
+   const matiere = partie => MATIERES[partie];
+ 
+-  B.botanique = { ESSENCES, QUALITES, BUDGETS, SILHOUETTE, MATIERES, TRONC_LOINTAIN, forme, nomForme, formeTroncLointain,
++  B.botanique = { ESSENCES, QUALITES, BUDGETS, SILHOUETTE, MATIERES, TRONC_LOINTAIN, forme, nomForme, formeNue, nomFormeNue, formeTroncLointain,
+     organes, installer, matiere };
+   installer(typeof window !== 'undefined' ? window.FRender : globalThis.FRender);
+ })(globalThis.BITUME = globalThis.BITUME || {});
+diff --git a/src/decor.js b/src/decor.js
+index 9e90771..0e18803 100644
+--- a/src/decor.js
++++ b/src/decor.js
+@@ -805,24 +805,27 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
+     return q === 'medium' || q === 'high' ? q : 'low';
+   }
+   const ESSENCE_BOTANIQUE = essence => (essence === 'pin' || essence === 'conifere') ? essence : 'feuillu';
++  const couronneArbre = o => o.shape === 'foliage' || o.collision !== 'tronc' && o.shape.startsWith('arbre-');
+ 
+   // Habillage d'un arbre déjà construit à l'historique. Moyenne et Fine remplacent les blobs de feuillage par
+   // une couronne procédurale de la botanique et donnent au tronc la matière écorce du moteur. Le tronc reste
+   // l'objet qui porte la collision, avec ses coordonnées et sa taille d'origine : le solide ne bouge pas d'un
+   // centimètre. Aucune valeur de hasard n'est consommée ici, donc aucun arbre ne se déplace ailleurs.
+-  function habiller(liste, loin, essence, qualite, h, penche, v) {
++  function habiller(liste, loin, essence, qualite, h, penche, v, nu = false) {
+     if (!B.botanique) return;
+     const e = ESSENCE_BOTANIQUE(essence);
+     for (const o of liste) if (o.mat === 10) o.mat = B.botanique.matiere('ecorce');
+-    for (let k = liste.length - 1; k >= 0; k--) if (liste[k].shape === 'foliage') liste.splice(k, 1);
+-    for (let k = loin.length - 1; k >= 0; k--) if (loin[k].shape === 'foliage') loin.splice(k, 1);
++    for (let k = liste.length - 1; k >= 0; k--) if (couronneArbre(liste[k])) liste.splice(k, 1);
++    for (let k = loin.length - 1; k >= 0; k--) if (couronneArbre(loin[k])) loin.splice(k, 1);
+     const pied = liste.find(o => o.collision === 'tronc');
+     if (!pied) return;
+     const x = pied.p[0], y = pied.p[1] - pied.s[1] * .5, z = pied.p[2];
+-    liste.push({ shape: B.botanique.nomForme(e, false, qualite), p: [x, y + h * .5, z], s: [h, h, h],
+-      r: [penche, 0, penche * .7], mat: B.botanique.matiere('feuillage'), color: v });
+-    loin.push({ shape: B.botanique.nomForme(e, true, qualite), p: [x, y + h * .5, z], s: [h, h, h],
+-      r: [penche, 0, penche * .7], mat: B.botanique.matiere('feuillage'), color: v });
++    const forme = distant => nu ? B.botanique.nomFormeNue(distant, qualite) : B.botanique.nomForme(e, distant, qualite);
++    const mat = B.botanique.matiere(nu ? 'ecorce' : 'feuillage'), couleur = nu ? pied.color : v;
++    liste.push({ shape: forme(false), p: [x, y + h * .5, z], s: [h, h, h],
++      r: [penche, 0, penche * .7], mat, color: couleur });
++    loin.push({ shape: forme(true), p: [x, y + h * .5, z], s: [h, h, h],
++      r: [penche, 0, penche * .7], mat, color: couleur });
+   }
+ 
+   function arbre(liste, loin, x, y, z, essence, r, qualite) {
+@@ -1083,7 +1086,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
+         for (const triangle of n.herbeTriangles || []) for (let j = 0; j < 3; j++) visites[n.indices[triangle + j]] = 1;
+         // Le bord sans vibreur est aussi herbeux, mais reste exclu de la plantation des brins.
+         if (n.surfaceType === 'accotement') for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 9] === 8) visites[v] = 1;
+-        if ((th.volcanique || th.aride || th.karstique || th.pacifique || th.baikal) && saison.neige && n.surfaceType === 'terrain') {
++        if ((th.montagnes || th.volcanique || th.aride || th.karstique || th.pacifique || th.baikal) && saison.neige && n.surfaceType === 'terrain') {
+           for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 4] > .45 && (!(th.pacifique || th.baikal) || n.sommets[v * 13 + 1] > th.eau + 1)) visites[v] = 1;
+         }
+         for (let v = 0; v < visites.length; v++) if (visites[v]) {
+@@ -1427,23 +1430,51 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
+       if (B.botanique && B.botanique.TRONC_LOINTAIN && tronc && tronc.mat === B.botanique.matiere('ecorce') && !loin.includes(tronc))
+         l.loin.push({ shape: B.botanique.TRONC_LOINTAIN, p: tronc.p.slice(), s: tronc.s.slice(), r: tronc.r.slice(), mat: tronc.mat, color: tronc.color.slice() });
+     }
+-    function retenirArbre(objets, loin, x, z, essence = th.essence) {
+-      if (maisonsBaikal && maisonsBaikal.some(m => Math.hypot(m.x - x, m.z - z) < 18)) return;
+-      const richesse = ecologie ? ecologie.echantillonner(x, z, habitatArbre).boisement : 1;
+-      if (!th.pacifique && (richesse < .08 || hache(Math.round(x * 8), Math.round(z * 8), g + 337) > richesse)) return;
++    function saisonArbre(objets, loin, x, z, essence = th.essence, solSource = null) {
++      const pied = objets.find(o => o.collision === 'tronc'), h = pied.s[1] / .84, sol = pied.p[1] - h * .42 + .2;
++      if (ecologie) ecologie.echantillonner(x, z, habitatArbre);
++      // Forêt basse mêlée aux conifères : choix spatial stable, indépendant de la saison et du hasard
++      // historique. Le tronc solide conserve exactement sa position et ses dimensions. Au-dessus de
++      // la bande basse, seuls les conifères historiques restent ; aucun arbre n'est ajouté au col.
++      if (saison && th.montagnes && B.botanique && sol < 120
++        && hache(Math.round(x * 8), Math.round(z * 8), g + 541) < .48 * (1 - lisse(70, 120, sol))) {
++        essence = 'feuillu';
++        const vert = [.17, .31, .09].map(v => v * (.90 + .20 * hache(Math.round(x), Math.round(z), g + 547)));
++        if (qualite !== 'low') habiller(objets, loin, essence, qualite, h, pied.r[0], vert);
++        else {
++          for (const liste of [objets, loin]) for (let i = liste.length - 1; i >= 0; i--) if (couronneArbre(liste[i])) liste.splice(i, 1);
++          const couronne = { shape: 'foliage', p: [x, sol - .2 + h * .80, z], s: [h * .74, h * .68, h * .74], mat: 11, color: vert };
++          objets.push(couronne); loin.push({ ...couronne, p: couronne.p.slice(), s: couronne.s.slice() });
++        }
++      }
++      const nu = !!(saison && saison.id === 'hiver' && essence === 'feuillu' && B.botanique);
++      // Les platanes de bord avaient une seule couronne simple, même en Fine : leurs rameaux restent
++      // au budget de 72 triangles. La forêt détaillée conserve, elle, ses vraies branches détaillées.
++      if (nu) {
++        const detailNu = objets.some(o => o.collision !== 'tronc' && o.shape.startsWith('arbre-')) ? qualite : 'low';
++        habiller(objets, loin, essence, detailNu, h, pied.r[0], pied.color, true);
++      }
+       if (saison) {
+-        for (const liste of [objets, loin]) for (const o of liste) if (o.collision !== 'tronc' && o.color) {
+-          o.color = B.saisons.teinte(saison, th.baikal && essence === 'feuillu' ? 'feuillage-caduque' : 'feuillage', o.color, o.p[0], o.p[2], ecologie ? habitatArbre : null);
++        for (const o of new Set(objets.concat(loin))) if (!nu && couronneArbre(o) && o.color) {
++          o.color = B.saisons.teinte(saison, essence === 'feuillu' ? 'feuillage-caduque' : 'feuillage-persistant', o.color, o.p[0], o.p[2], ecologie ? habitatArbre : null);
+         }
+         if (saison.feuilles && essence === 'feuillu') {
+-          const pied = objets.find(o => o.collision === 'tronc'), h = pied.s[1] / .84, sol = pied.p[1] - h * .42 + .2;
+-          sourcesFeuilles.push({ x, y: sol + h * .78, z, rayon: h * .36, sol });
++          sourcesFeuilles.push({ x, y: sol + h * .78, z, rayon: h * .36, sol: solSource ?? sol });
+         }
+       }
+-      if (th.baikal) for (const o of new Set(objets.concat(loin))) {
++      for (const o of new Set(objets.concat(loin))) if (o.collision === 'tronc' || couronneArbre(o)) Object.defineProperties(o, {
++        essenceArbre: { value: essence }, partieArbre: { value: o.collision === 'tronc' ? 'tronc' : nu ? 'branches' : 'feuillage' }
++      });
++      if (th.baikal) for (const o of new Set(objets.concat(loin))) if (o.essenceArbre) {
+         Object.defineProperty(o, 'essenceBaikal', { value: essence });
+         if (o.collision === 'tronc' && essence === 'feuillu') o.color = [.70, .72, .65];
+       }
++    }
++    function retenirArbre(objets, loin, x, z, essence = th.essence) {
++      if (maisonsBaikal && maisonsBaikal.some(m => Math.hypot(m.x - x, m.z - z) < 18)) return;
++      const richesse = ecologie ? ecologie.echantillonner(x, z, habitatArbre).boisement : 1;
++      if (!th.pacifique && (richesse < .08 || hache(Math.round(x * 8), Math.round(z * 8), g + 337) > richesse)) return;
++      saisonArbre(objets, loin, x, z, essence);
+       ajouter(objets, loin, x, z); positionsArbres.push([x, z]);
+       if (casesArbres) rangerArbre(objets, loin, x, z);
+     }
+@@ -1678,7 +1709,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
+ 
+     // Bords de route (lot 22F) : posés après tout le reste, dans des lots à eux (clé préfixée « b ») ajoutés à la fin :
+     // les lots et les solides historiques gardent leur contenu, leur ordre et leurs identifiants.
+-    if (planBords) B.bords.poser(c, planBords, { limites: lim, qualite, ajouter: (objets, loin, x, z) => {
++    if (planBords) B.bords.poser(c, planBords, { limites: lim, qualite,
++      saisonArbre: (objets, loin, x, z, essence) => saisonArbre(objets, loin, x, z, essence, terrain.sol(x, z)),
++      ajouter: (objets, loin, x, z) => {
+       const q = interroger(x, z, 300), proche = q.i >= 0 && q.d < 330;
+       const cle = 'b' + (proche ? 'p' + Math.floor(q.i * c.pas / TRONCON) : 'l' + Math.floor(x / 420) + ',' + Math.floor(z / 420));
+       let l = groupes.get(cle); if (!l) groupes.set(cle, l = { objets: [], loin: [], lointain: !proche });
+diff --git a/src/saisons.js b/src/saisons.js
+index 616e423..ea09704 100644
+--- a/src/saisons.js
++++ b/src/saisons.js
+@@ -13,7 +13,7 @@
+   const profils = {};
+   for (const id of IDS) for (const theme of ['foret', 'cote', 'montagne', 'islande', 'desert', 'asie', 'pacifique', 'baikal']) {
+     const d = DONNEES[id], neige = id === 'hiver' && theme !== 'cote';
+-    profils[id + ':' + theme] = Object.freeze({ id, theme, neige, feuilles: id === 'automne' && (theme === 'foret' || theme === 'asie' || theme === 'baikal'),
++    profils[id + ':' + theme] = Object.freeze({ id, theme, neige, feuilles: id === 'automne' && (theme === 'foret' || theme === 'montagne' || theme === 'asie' || theme === 'baikal'),
+       faune: neige || theme === 'islande' || theme === 'desert' ? 0 : d.faune, soleil: d.soleil, teinteSoleil: Object.freeze(d.teinteSoleil.slice()) });
+   }
+   function profil(id, theme = 'foret') {
+@@ -35,7 +35,8 @@
+   const SEC = [.43, .36, .16], FROID = [.25, .32, .28], NEIGE = [.91, .94, .97];
+   function teinte(p, famille, base, x, z, habitat, sortie) {
+     const resultat = sortie || new Array(3), n = bruit(x, z, 139), nuance = bruit(x + 197, z - 311, 277);
+-    const feuillage = famille === 'feuillage' || famille === 'feuillage-caduque', fleurs = famille === 'fleurs';
++    const feuillage = famille === 'feuillage' || famille === 'feuillage-caduque' || famille === 'feuillage-persistant', fleurs = famille === 'fleurs';
++    const caduc = famille === 'feuillage-caduque' || famille === 'feuillage' && (p.theme === 'foret' || p.theme === 'asie');
+     let cible = base, part = 0;
+     if (p.neige) {
+       cible = NEIGE; part = feuillage ? .55 + .32 * n : famille === 'sol' ? .93 + .04 * n : .78 + .12 * n;
+@@ -49,21 +50,27 @@
+       cible = p.id === 'printemps' ? [.67, .45, .25] : p.id === 'automne' ? [.59, .32, .14] : [.82, .59, .31];
+       part = (p.id === 'ete' ? .10 : .06) + .04 * n;
+     } else if (p.id === 'printemps') {
+-      if (feuillage && (p.theme === 'foret' || p.theme === 'asie')) {
++      if (caduc && (p.theme === 'foret' || p.theme === 'asie')) {
+         const floraison = lisse(.38, .72, n + (habitat ? habitat.fleurs : 0) * .24);
+         cible = nuance < .5 ? BLANC : ROSE; part = floraison * .94;
+-      } else if (!feuillage) {
++      } else if (feuillage) {
++        // Jeunes feuilles boréales/alpines et pousses des persistants ; pas de floraison rose des pins.
++        cible = [base[0] * .88, Math.min(1, base[1] * 1.22 + .025), base[2] * .94];
++        part = caduc ? .64 : .30;
++      } else {
+         cible = fleurs ? ROSE : [base[0] * .88, Math.min(1, base[1] * 1.16), base[2] * .91];
+         part = fleurs ? .14 : .40;
+       }
+     } else if (p.id === 'ete') {
+       cible = SEC;
+-      part = feuillage ? (p.theme === 'foret' || p.theme === 'asie' ? .18 : .09) + .18 * n
++      part = feuillage ? (caduc ? .18 + .18 * n : .06 + .07 * n)
+         : fleurs ? .12 : .22 + .19 * n + (habitat ? (1 - habitat.herbe) * .10 : 0);
+     } else if (p.id === 'automne') {
+-      if (feuillage && (p.theme === 'foret' || p.theme === 'asie' || famille === 'feuillage-caduque')) {
++      if (caduc) {
+         cible = p.theme === 'baikal' ? OR : n < .34 ? CUIVRE : n < .67 ? ORANGE : OR; part = .79 + .18 * nuance;
+-      } else if (!feuillage) { cible = SEC; part = fleurs ? .30 : .35 + .20 * nuance; }
++      } else if (feuillage) {
++        cible = [base[0] * .96, base[1] * .92, base[2] * 1.03]; part = .55;
++      } else { cible = SEC; part = fleurs ? .30 : .35 + .20 * nuance; }
+     } else {
+       // Le Sud reste sans neige, y compris sur les pins, les plantes et leurs sources d'effets.
+       cible = FROID; part = feuillage ? .13 : .20;
+diff --git a/tools/captures-saisons.mjs b/tools/captures-saisons.mjs
+new file mode 100644
+index 0000000..0970fc1
+--- /dev/null
++++ b/tools/captures-saisons.mjs
+@@ -0,0 +1,149 @@
++#!/usr/bin/env node
++// Quatre saisons du même décor et de la même caméra finale. Aucun rendu ni module substitué.
++import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
++import { createHash } from 'node:crypto';
++import path from 'node:path';
++import { fileURLToPath } from 'node:url';
++import { capturer, optionsCapture } from './controle-visuel.mjs';
++
++export const CIRCUITS_SAISONS = Object.freeze([
++  ['val-brule', 1100], ['port-sable', 1450], ['haut-col', 1800], ['lande-noire', 1700],
++  ['roche-fauve', 1900], ['brume-de-jade', 2000], ['cap-sequoia', 1500], ['baikal', 2000], ['route-des-cimes', 1400]
++].map(([id, depart], circuit) => Object.freeze({ id, depart, circuit })));
++export const SAISONS = Object.freeze(['printemps', 'ete', 'automne', 'hiver']);
++export function optionsSaisons(argv) {
++  const o = {};
++  for (let i = 0; i < argv.length; i += 2) {
++    const k = argv[i].replace(/^--/, '');
++    if (!argv[i].startsWith('--') || !['url', 'sortie', 'chrome', 'circuits', 'saisons', 'qualite', 'taille', 'alpin'].includes(k)
++      || o[k] !== undefined || !argv[i + 1] || argv[i + 1].startsWith('--')) throw new Error('Option inconnue ou incomplète : ' + argv[i]);
++    o[k] = argv[i + 1];
++  }
++  if (!o.url || !o.sortie || new URL(o.url).protocol !== 'file:') throw new Error('--url file: et --sortie nécessaires');
++  o.circuits = o.circuits ? o.circuits.split(',').map(Number) : CIRCUITS_SAISONS.map(s => s.circuit);
++  o.saisons = o.saisons ? o.saisons.split(',') : [...SAISONS];
++  if (!o.circuits.length || new Set(o.circuits).size !== o.circuits.length || o.circuits.some(i => !Number.isInteger(i) || !CIRCUITS_SAISONS[i])) throw new Error('Circuit inconnu ou dupliqué');
++  if (!o.saisons.length || new Set(o.saisons).size !== o.saisons.length || o.saisons.some(s => !SAISONS.includes(s))) throw new Error('Saison inconnue ou dupliquée');
++  o.qualite ||= 'high'; o.taille ||= '960,540'; o.alpin ||= 'oui';
++  if (!['oui', 'non'].includes(o.alpin)) throw new Error('--alpin oui|non');
++  optionsScenarioSaisons({ ...CIRCUITS_SAISONS[o.circuits[0]], saison: o.saisons[0] }, o, o.sortie);
++  return o;
++}
++export function scenariosSaisons(o) {
++  const scenes = o.circuits.flatMap(i => o.saisons.map(saison => ({ ...CIRCUITS_SAISONS[i], saison, alpin: false })));
++  if (o.alpin === 'oui' && o.circuits.includes(8)) for (const saison of ['ete', 'hiver']) if (o.saisons.includes(saison))
++    scenes.push({ ...CIRCUITS_SAISONS[8], depart: 4750, saison, alpin: true });
++  return scenes.map(s => ({ ...s, nom: s.id + (s.alpin ? '-alpin' : '') + '-' + s.saison }));
++}
++export function optionsScenarioSaisons(s, o, sortie) {
++  const args = ['--url', o.url, '--sortie', sortie, '--scenario', 'piste', '--circuit', String(s.circuit),
++    '--saison', s.saison, '--meteo', 'sec', '--moment', 'jour', '--qualite', o.qualite,
++    '--taille', o.taille, '--depart', String(s.depart), '--vitesse', '0', '--vue', 'poursuite', '--retro', 'non',
++    '--images', '2', '--chauffe', '4', '--pas', '.1', '--attendre', '120000'];
++  if (o.chrome) args.push('--chrome', o.chrome);
++  return optionsCapture(args);
++}
++
++export function preparerSaisons(s) {
++  const J = BITUME_JEU, B = BITUME, S = J.session, c = S.course.c, d = J.scene.decor;
++  if (J.CATALOGUE[s.circuit]?.id !== s.id || d.saison.id !== s.saison || !S.reference) throw new Error('Circuit/saison de référence différents');
++  J.pauseAuto = false; J.reglages.secousses = 0; S.acc = -1;
++  const q = B.circuit.echantillon(c, s.depart), objets = (d.lotsHerbier || d.lots).flatMap(l => l.objets);
++  const arbres = objets.filter(o => o.collision === 'tronc' && o.essenceArbre);
++  const caducs = arbres.filter(o => o.essenceArbre === 'feuillu');
++  const candidats = s.alpin ? [] : caducs.length ? caducs : arbres;
++  candidats.sort((a, b) => Math.hypot(a.p[0] - q.x, a.p[2] - q.z) - Math.hypot(b.p[0] - q.x, b.p[2] - q.z));
++  let camera = null, cible = null, arbre = null;
++  const world = S.course.physique.world;
++  const libre = (p, cible) => {
++    const delta = cible.map((v, k) => v - p[k]), longueur = Math.hypot(...delta);
++    return !world.raycast(p, delta.map(v => v / longueur), Math.max(0, longueur - .6), { mask: 3, staticOnly: true }).hit;
++  };
++  for (const a of candidats.slice(0, 12)) {
++    const h = a.s[1] / .84, sol = a.p[1] - a.s[1] / 2, vise = [a.p[0], sol + h * .94, a.p[2]];
++    const angle = Math.atan2(q.z - a.p[2], q.x - a.p[0]), distance = Math.max(15, h * 1.6);
++    for (let k = 0; k < 12; k++) {
++      const theta = angle + k * Math.PI / 6, x = a.p[0] + Math.cos(theta) * distance, z = a.p[2] + Math.sin(theta) * distance;
++      const pos = [x, Math.max(d.sol(x, z) + 3.5, sol + h * .38), z];
++      if (!libre(pos, vise)) continue;
++      camera = B.cinema.viser(pos, vise, 54); cible = vise;
++      arbre = { essence: a.essenceArbre, p: [...a.p], s: [...a.s] }; break;
++    }
++    if (camera) break;
++  }
++  if (!camera) {
++    // Biomes sans arbres et échantillon alpin : vraie route et vrai terrain, même visée aux quatre saisons.
++    recherche: for (const avance of [100, 65, 35]) for (const h of [3.5, 7, 12]) {
++      const p = B.circuit.echantillon(c, s.depart + avance), pos = [q.x, q.y + h, q.z], vise = [p.x, p.y + 2, p.z];
++      if (!libre(pos, vise)) continue;
++      camera = B.cinema.viser(pos, vise, 62); cible = vise; break recherche;
++    }
++  }
++  if (!camera) throw new Error('Aucune visée d’inspection dégagée');
++  J.camera = () => camera;
++  globalThis.__SAISONS_CAPTURE = { scenario: s, camera, cible, arbre };
++  return { entree: 'BITUME_JEU.reference', modeleReel: true, arbre, camera, cible,
++    description: 'Même terrain/arbres réels et caméra finale entre saisons ; pas de simulation de conduite ni de mesure FPS.' };
++}
++export function observerSaisonsCapture() {
++  const J = BITUME_JEU, S = J.session, d = J.scene.decor, F = __SAISONS_CAPTURE, cam = S.camera;
++  const objets = (d.lotsHerbier || d.lots).flatMap(l => l.objets), troncs = objets.filter(o => o.collision === 'tronc' && o.essenceArbre);
++  const delta = F.cible.map((v, k) => v - cam.pos[k]), distance = Math.hypot(...delta), gl = J.rendu.gl;
++  return { saison: d.saison.id, circuit: J.CATALOGUE[F.scenario.circuit].id, vue: S.vue,
++    camera: { pos: [...cam.pos], yaw: cam.yaw, pitch: cam.pitch, fov: cam.fov }, cameraPrescrite: F.camera, arbre: F.arbre,
++    obstruction: !!S.course.physique.world.raycast(cam.pos, delta.map(v => v / distance), Math.max(0, distance - .6), { mask: 3, staticOnly: true }).hit,
++    glErreur: gl.getError(), glPerdu: gl.isContextLost(), arbres: troncs.length,
++    caducs: troncs.filter(o => o.essenceArbre === 'feuillu').length, sourcesFeuilles: d.sourcesFeuilles.length,
++    branchesNues: objets.filter(o => o.partieArbre === 'branches').length,
++    couronnesCaduques: objets.filter(o => o.partieArbre === 'feuillage' && o.essenceArbre === 'feuillu').length,
++    temoins: objets.filter(o => o.essenceArbre && o.partieArbre !== 'tronc').slice(0, 12).map(o => ({ essence: o.essenceArbre, partie: o.partieArbre, shape: o.shape, color: [...o.color] })) };
++}
++export function verifierSaisons(r, s) {
++  const erreurs = [];
++  if (r.fatal) erreurs.push(r.fatal.split('\n')[0]);
++  if (r.erreurs?.length) erreurs.push(...r.erreurs);
++  if (!/^[a-f0-9]{64}$/.test(r.build?.sha256 || '') || !/^[a-f0-9]{40}$/.test(r.source?.commit || '')) erreurs.push('Provenance absente');
++  if (r.environnement?.webgl2 !== true || r.environnement?.physx?.ready !== true) erreurs.push('Renderer ou PhysX réel absent');
++  if (r.initialisation?.modeleReel !== true || r.images?.length !== 2) erreurs.push('Référence ou images incomplètes');
++  for (const image of r.images || []) {
++    const o = image.observation;
++    if (!o || o.saison !== s.saison || o.circuit !== s.id || o.vue !== 'poursuite') { erreurs.push('Observation de saison/circuit absente'); continue; }
++    if (o.glErreur || o.glPerdu || o.obstruction !== false) erreurs.push('Erreur graphique ou caméra masquée');
++    const a = o.camera, b = o.cameraPrescrite;
++    if (!a?.pos?.every(Number.isFinite) || !b?.pos || a.pos.some((v, k) => Math.abs(v - b.pos[k]) > 1e-8) || ['yaw', 'pitch', 'fov'].some(k => !Number.isFinite(a[k]) || Math.abs(a[k] - b[k]) > 1e-8)) erreurs.push('Caméra finale différente');
++    if (s.saison === 'hiver' && (o.couronnesCaduques !== 0 || o.branchesNues !== o.caducs)) erreurs.push('Feuillus hivernaux non exercés');
++    if (o.sourcesFeuilles !== (s.saison === 'automne' ? o.caducs : 0)) erreurs.push('Chute des seules feuilles caduques non exercée');
++  }
++  return [...new Set(erreurs)];
++}
++export async function campagneSaisons(o) {
++  mkdirSync(o.sortie, { recursive: true });
++  const r = { format: 'bitume-captures-saisons-v1', passages: [], echecs: 0,
++    limites: ['Images d’inspection du vrai jeu, à relire visuellement ; les comptes et images ne prouvent pas les performances matérielles.',
++      'Deux images par saison, mêmes positions et caméra ; ciel de jour et météo sèche pour comparer les palettes.',
++      'La comparaison physique/géométrique et les budgets appartiennent au contrôle Node des neuf circuits.'] };
++  const cameras = new Map();
++  for (const s of scenariosSaisons(o)) {
++    const sortie = path.join(o.sortie, s.nom), p = optionsScenarioSaisons(s, o, sortie);
++    p.initialiser = ({ evaluer }) => evaluer(`(${preparerSaisons.toString()})(${JSON.stringify(s)})`);
++    p.observer = ({ evaluer }) => evaluer(`(${observerSaisonsCapture.toString()})()`);
++    const resultat = await capturer(p), erreurs = verifierSaisons(resultat, s), cle = s.id + ':' + s.alpin;
++    const camera = JSON.stringify(resultat.initialisation?.camera);
++    if (cameras.has(cle) && camera !== cameras.get(cle)) erreurs.push('Caméra non identique entre saisons');
++    else cameras.set(cle, camera);
++    const sha = createHash('sha256').update(readFileSync(fileURLToPath(o.url))).digest('hex');
++    if (sha !== resultat.build?.sha256) erreurs.push('HTML changé pendant la capture');
++    const empreintes = resultat.images.map(im => ({ fichier: im.fichier,
++      sha256: createHash('sha256').update(readFileSync(path.join(sortie, im.fichier))).digest('hex') }));
++    r.passages.push({ scenario: s.nom, dossier: s.nom, build: resultat.build, source: resultat.source, empreintes, erreurs });
++    r.echecs += erreurs.length ? 1 : 0;
++    writeFileSync(path.join(o.sortie, 'rapport.json'), JSON.stringify(r, null, 2) + '\n');
++    process.stderr.write(s.nom + ' : ' + erreurs.length + ' erreurs\n');
++    if (resultat.fatal && !resultat.images.length) break;
++  }
++  return r;
++}
++if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
++  try { const r = await campagneSaisons(optionsSaisons(process.argv.slice(2))); console.log(JSON.stringify(r, null, 2)); process.exitCode = r.echecs ? 1 : 0; }
++  catch (e) { console.error(e.stack || e.message); process.exitCode = 1; }
++}
+diff --git a/tools/qualification/comparer-saisons.mjs b/tools/qualification/comparer-saisons.mjs
+new file mode 100644
+index 0000000..a4b4d84
+--- /dev/null
++++ b/tools/qualification/comparer-saisons.mjs
+@@ -0,0 +1,56 @@
++#!/usr/bin/env node
++// Deux copies figées des vraies sources, chargées dans deux contextes distincts ; aucun rendu GPU.
++import fs from 'node:fs';
++import path from 'node:path';
++import vm from 'node:vm';
++import { execFileSync } from 'node:child_process';
++import { createHash } from 'node:crypto';
++import { fileURLToPath } from 'node:url';
++import { MODULES_SAISONS, CATALOGUE_SAISONS, observerSaisons, objetsSaisons } from './saisons-circuits.mjs';
++
++const racine = fileURLToPath(new URL('../../', import.meta.url)), o = {};
++for (let i = 2; i < process.argv.length; i += 2) {
++  const k = process.argv[i];
++  if (!['--avant', '--sortie', '--qualite'].includes(k) || o[k] || !process.argv[i + 1]) throw new Error('Option inconnue ou incomplète : ' + k);
++  o[k] = process.argv[i + 1];
++}
++if (!o['--avant'] || !o['--sortie']) throw new Error('Usage : node tools/qualification/comparer-saisons.mjs --avant <commit> --sortie <dossier> [--qualite low|medium|high]');
++const qualite = o['--qualite'] || 'low';
++if (!['low', 'medium', 'high'].includes(qualite)) throw new Error('Qualité inconnue');
++const base = execFileSync('git', ['rev-parse', '--verify', o['--avant'] + '^{commit}'], { cwd: racine, encoding: 'utf8' }).trim();
++const sortie = path.resolve(o['--sortie']); fs.mkdirSync(sortie, { recursive: true });
++const sha = v => createHash('sha256').update(typeof v === 'string' ? v : JSON.stringify(v)).digest('hex');
++const copies = Object.fromEntries(['avant', 'apres'].map(variante => [variante, Object.fromEntries(MODULES_SAISONS.map(n => {
++  const f = 'src/' + n + '.js';
++  return [f, variante === 'avant' ? execFileSync('git', ['show', base + ':' + f], { cwd: racine, encoding: 'utf8', maxBuffer: 8e6 }) : fs.readFileSync(path.join(racine, f), 'utf8')];
++}))]));
++const rapports = {};
++for (const variante of ['avant', 'apres']) {
++  const contexte = vm.createContext({ console, Buffer, createHash, sha }), sources = {};
++  for (const [f, source] of Object.entries(copies[variante])) { sources[f] = sha(source); vm.runInContext(source, contexte, { filename: f }); }
++  vm.runInContext('const objetsSaisons=' + objetsSaisons.toString() + ';globalThis.observer=' + observerSaisons.toString() + ';', contexte);
++  const B = contexte.BITUME, r = rapports[variante] = { format: 'bitume-saisons-budgets-v1', base, sources,
++    conditions: { qualite, vegetation: false, arbres: 220 }, limites: [
++      'Budgets de tous les lots, sans caméra ni GPU ni mesure FPS.',
++      'Les métadonnées d’essence n’existent pas dans la référence historique ; ses compteurs typés sont alors indéterminés.'
++    ], circuits: [] };
++  for (const d of CATALOGUE_SAISONS) {
++    const c = d.partition === 'route-des-cimes' ? B.routeDesCimes.creer() : B.circuit.creer(d.graine, d);
++    B.bords.limites(c, B.bords.planifier(c));
++    const scenes = Array.from(B.saisons.IDS, saison => contexte.observer(B.decor.construire(c, { ...r.conditions, saison })));
++    r.circuits.push({ id: d.id, theme: d.theme, scenes });
++    fs.writeFileSync(path.join(sortie, 'budgets-' + variante + '.json'), JSON.stringify(r, null, 2) + '\n');
++    console.log(variante + ' ' + d.id);
++  }
++}
++const a = rapports.avant, b = rapports.apres, r = { format: 'bitume-saisons-comparaison-v1', sourcesAvant: a.sources, sourcesApres: b.sources, cas: [] };
++let conservation = 0;
++for (let i = 0; i < a.circuits.length; i++) for (let j = 0; j < a.circuits[i].scenes.length; j++) {
++  const x = a.circuits[i].scenes[j], y = b.circuits[i].scenes[j], identite = {};
++  for (const k of ['racinesSHA256', 'obstaclesSHA256', 'troncsSHA256', 'geometrieSolSHA256']) { identite[k] = x[k] === y[k]; if (identite[k]) conservation++; }
++  r.cas.push({ circuit: a.circuits[i].id, saison: x.saison, identite,
++    proche: { avant: x.lotsProches, apres: y.lotsProches }, loin: { avant: x.lotsLointains, apres: y.lotsLointains } });
++}
++r.identitesConservees = conservation; r.identitesAttendues = r.cas.length * 4;
++fs.writeFileSync(path.join(sortie, 'comparaison-budgets.json'), JSON.stringify(r, null, 2) + '\n');
++console.log(JSON.stringify({ identitesConservees: conservation, identitesAttendues: r.identitesAttendues }));
+diff --git a/tools/qualification/saisons-circuits.mjs b/tools/qualification/saisons-circuits.mjs
+new file mode 100644
+index 0000000..170bdc9
+--- /dev/null
++++ b/tools/qualification/saisons-circuits.mjs
+@@ -0,0 +1,85 @@
++#!/usr/bin/env node
++// Inventaire des vrais lots/nappes, sans navigateur ni modification des sources du jeu.
++import fs from 'node:fs';
++import path from 'node:path';
++import vm from 'node:vm';
++import { createRequire } from 'node:module';
++import { createHash } from 'node:crypto';
++import { fileURLToPath } from 'node:url';
++const require = createRequire(import.meta.url), racine = fileURLToPath(new URL('../../', import.meta.url));
++export const MODULES_SAISONS = ['moteur/renderer', 'circuit', 'couverts', 'route-des-cimes', 'carene', 'botanique',
++  'ecologie', 'saisons', 'bords', 'baikal', 'batiments', 'route-des-cimes-decor', 'chaussee', 'virages', 'decor'];
++for (const nom of MODULES_SAISONS) require(path.join(racine, 'src', nom + '.js'));
++export const B = globalThis.BITUME;
++export const sha = v => createHash('sha256').update(typeof v === 'string' ? v : JSON.stringify(v)).digest('hex');
++const jeu = fs.readFileSync(path.join(racine, 'src/jeu.js'), 'utf8');
++const catalogue = jeu.match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/);
++if (!catalogue) throw new Error('Catalogue réel introuvable');
++export const CATALOGUE_SAISONS = JSON.parse(JSON.stringify(vm.runInNewContext('(' + catalogue[1] + ')')));
++export function creerCircuitSaisons(definition) {
++  const c = definition.partition === 'route-des-cimes' ? B.routeDesCimes.creer() : B.circuit.creer(definition.graine, definition);
++  B.bords.limites(c, B.bords.planifier(c)); return c;
++}
++export function objetsSaisons(d, loin = false) {
++  return (d.lotsHerbier || d.lots).flatMap(l => loin ? l.loin || [] : l.objets);
++}
++export function observerSaisons(d) {
++  const objets = objetsSaisons(d), troncs = objets.filter(o => o.collision === 'tronc');
++  const arbre = o => o.essenceArbre || o.essenceBaikal || null;
++  const caducs = troncs.filter(o => arbre(o) === 'feuillu'), persistants = troncs.filter(o => arbre(o) === 'pin' || arbre(o) === 'conifere');
++  const geometrie = createHash('sha256'), couleurs = createHash('sha256');
++  let rocheHaute = 0, rocheHauteBlanche = 0, sommets = 0, somme = [0, 0, 0];
++  for (const n of d.nappes) {
++    const p = new Float32Array(n.sommets.length / 13 * 6), col = new Float32Array(n.sommets.length / 13 * 3);
++    for (let i = 0, a = 0, b = 0; i < n.sommets.length; i += 13) {
++      for (let k = 0; k < 6; k++) p[a++] = n.sommets[i + k];
++      for (let k = 0; k < 3; k++) { const v = n.sommets[i + 10 + k]; col[b++] = v; somme[k] += v; }
++      sommets++;
++      if (n.surfaceType === 'terrain' && n.sommets[i + 1] > 140 && n.sommets[i + 1] < 230 && n.sommets[i + 4] > .65 && n.sommets[i + 9] === 9) {
++        rocheHaute++; if (col[b - 3] > .80 && col[b - 2] > .80 && col[b - 1] > .80) rocheHauteBlanche++;
++      }
++    }
++    geometrie.update(Buffer.from(p.buffer)); geometrie.update(Buffer.from(n.indices.buffer, n.indices.byteOffset, n.indices.byteLength));
++    couleurs.update(Buffer.from(col.buffer));
++  }
++  const rendu = globalThis.FRender.shared.geometry(false), cout = distant => {
++    let instances = 0, triangles = 0;
++    for (const l of d.lots) for (const o of (distant ? l.loin || [] : l.objets)) {
++      const forme = rendu.ranges[o.shape]; if (!forme) throw new Error('Forme absente : ' + o.shape);
++      instances++; triangles += forme.count / 3;
++    }
++    return { instances, triangles };
++  };
++  const feuillage = objets.filter(o => o.partieArbre === 'feuillage');
++  return {
++    saison: d.saison.id, arbres: troncs.length, caducs: caducs.length, persistants: persistants.length,
++    caducsAuDessus120: caducs.filter(o => o.p[1] - o.s[1] / 2 + .2 >= 120).length,
++    branchesNues: objets.filter(o => o.partieArbre === 'branches').length,
++    couronnesCaduques: feuillage.filter(o => arbre(o) === 'feuillu').length,
++    couronnesPersistantes: feuillage.filter(o => arbre(o) !== 'feuillu').length,
++    sourcesFeuilles: d.sourcesFeuilles.length,
++    racinesSHA256: sha(d.arbres), obstaclesSHA256: sha(d.obstacles),
++    troncsSHA256: sha(troncs.map(o => ({ shape: o.shape, p: o.p, s: o.s, r: o.r }))),
++    geometrieSolSHA256: geometrie.digest('hex'), couleursSolSHA256: couleurs.digest('hex'),
++    feuillageSHA256: sha(feuillage.map(o => ({ shape: o.shape, p: o.p, s: o.s, color: o.color }))),
++    paletteSolMoyenne: somme.map(v => v / sommets), rochesHautes: rocheHaute, rochesHautesBlanches: rocheHauteBlanche,
++    lotsProches: cout(false), lotsLointains: cout(true),
++  };
++}
++export function provenanceSaisons() {
++  return Object.fromEntries(MODULES_SAISONS.map(n => [n + '.js', sha(fs.readFileSync(path.join(racine, 'src', n + '.js'), 'utf8'))]));
++}
++if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
++  const sortie = process.argv[2]; if (!sortie) throw new Error('Usage : node tools/qualification/saisons-circuits.mjs rapport.json');
++  const rapport = { format: 'bitume-saisons-neuf-circuits-v1', sources: provenanceSaisons(),
++    conditions: { qualite: 'low', vegetation: false, arbres: 220, saisons: Array.from(B.saisons.IDS) },
++    limites: ['Inventaire de tous les lots : pas un nombre de triangles effectivement visibles dans une caméra ni une mesure FPS.',
++      'Budget de 220 candidats arbres pour rendre les 36 constructions ciblées comparables ; les racines et solides sont conservés.'], circuits: [] };
++  for (const def of CATALOGUE_SAISONS) {
++    const c = creerCircuitSaisons(def), scenes = [];
++    for (const saison of B.saisons.IDS) scenes.push(observerSaisons(B.decor.construire(c, { ...rapport.conditions, saison })));
++    rapport.circuits.push({ id: def.id, theme: def.theme, scenes });
++    fs.mkdirSync(path.dirname(path.resolve(sortie)), { recursive: true }); fs.writeFileSync(sortie, JSON.stringify(rapport, null, 2) + '\n');
++    console.log(def.id + ' : quatre saisons inventoriées');
++  }
++}
+diff --git a/verifications/botanique.test.mjs b/verifications/botanique.test.mjs
+index ffd96da..c182360 100644
+--- a/verifications/botanique.test.mjs
++++ b/verifications/botanique.test.mjs
+@@ -103,11 +103,13 @@ verifier('installer enregistre les dix-huit arbres et le tronc lointain, et refu
+   assert.equal(A.installer({}), false);
+   const enregistrees = new Map();
+   assert.equal(A.installer({ forme: (nom, tri) => enregistrees.set(nom, tri) }), true);
+-  assert.equal(enregistrees.size, 19);
++  assert.equal(enregistrees.size, 25, 'formes historiques et six rameaux nus préchargés');
+   for (const [e, loin, q] of COMBOS)
+     assert.equal(enregistrees.get(A.nomForme(e, loin, q)), A.forme(e, loin, q));
+   assert.equal(A.TRONC_LOINTAIN, 'arbre-tronc-loin');
+   assert.equal(enregistrees.get(A.TRONC_LOINTAIN), A.formeTroncLointain());
++  for (const q of A.QUALITES) for (const loin of [false, true])
++    assert.equal(enregistrees.get(A.nomFormeNue(loin, q)), A.formeNue(loin, q));
+ });
+ 
+ // Formes proches figées : nombres de triangles exacts et
+diff --git a/verifications/captures-saisons.test.mjs b/verifications/captures-saisons.test.mjs
+new file mode 100644
+index 0000000..dd6e4b8
+--- /dev/null
++++ b/verifications/captures-saisons.test.mjs
+@@ -0,0 +1,32 @@
++import assert from 'node:assert/strict';
++import { test } from 'node:test';
++import { optionsSaisons, scenariosSaisons, optionsScenarioSaisons, verifierSaisons } from '../tools/captures-saisons.mjs';
++
++test('couverture des neuf circuits et quatre saisons, plus été/hiver sur la roche alpine', () => {
++  const o = optionsSaisons(['--url', 'file:///tmp/bitume.html', '--sortie', '/tmp/saisons']);
++  const scenes = scenariosSaisons(o); assert.equal(scenes.length, 38);
++  for (let i = 0; i < 9; i++) assert.deepEqual(scenes.filter(s => s.circuit === i && !s.alpin).map(s => s.saison), ['printemps', 'ete', 'automne', 'hiver']);
++  assert.deepEqual(scenes.filter(s => s.alpin).map(s => s.saison), ['ete', 'hiver']);
++  for (const s of scenes) {
++    const p = optionsScenarioSaisons(s, o, '/tmp/' + s.nom);
++    assert.equal(p.images, 2); assert.equal(p.referenceJeu.circuit, s.circuit); assert.equal(p.referenceJeu.saison, s.saison);
++    assert.equal(p.referenceJeu.meteo, 'sec'); assert.equal(p.referenceJeu.moment, 'jour');
++  }
++});
++test('job ciblé par circuit/palier et options ambiguës refusées', () => {
++  const a = ['--url', 'file:///tmp/bitume.html', '--sortie', '/tmp/saisons'];
++  const o = optionsSaisons([...a, '--circuits', '8', '--saisons', 'ete,hiver', '--qualite', 'low', '--alpin', 'non']);
++  assert.equal(scenariosSaisons(o).length, 2);
++  for (const extra of [['--circuits', '8,8'], ['--circuits', '9'], ['--saisons', 'hiver,foo'], ['--alpin', 'peut-etre'], ['--qualite', 'fake']]) assert.throws(() => optionsSaisons([...a, ...extra]));
++});
++test('le vérificateur refuse une caméra remplacée, les couronnes hivernales et une preuve absente', () => {
++  const s = { id: 'route-des-cimes', saison: 'hiver' }, camera = { pos: [1, 2, 3], yaw: .3, pitch: .1, fov: 54 };
++  const observation = { saison: s.saison, circuit: s.id, vue: 'poursuite', camera, cameraPrescrite: structuredClone(camera),
++    glErreur: 0, glPerdu: false, obstruction: false, caducs: 2, branchesNues: 2, couronnesCaduques: 0, sourcesFeuilles: 0 };
++  const r = { build: { sha256: 'a'.repeat(64) }, source: { commit: 'b'.repeat(40) },
++    environnement: { webgl2: true, physx: { ready: true } }, initialisation: { modeleReel: true }, images: [{ observation }, { observation }] };
++  assert.deepEqual(verifierSaisons(r, s), []);
++  const faux = structuredClone(r); faux.images[0].observation.camera.pos[0] += 2; assert(verifierSaisons(faux, s).some(e => /Caméra/.test(e)));
++  const feuilles = structuredClone(r); feuilles.images[0].observation.couronnesCaduques = 1; assert(verifierSaisons(feuilles, s).some(e => /hivernaux/.test(e)));
++  assert(verifierSaisons({ images: [] }, s).length >= 3);
++});
+diff --git a/verifications/saisons-circuits.test.mjs b/verifications/saisons-circuits.test.mjs
+new file mode 100644
+index 0000000..82b8180
+--- /dev/null
++++ b/verifications/saisons-circuits.test.mjs
+@@ -0,0 +1,83 @@
++import assert from 'node:assert/strict';
++import { test } from 'node:test';
++import { B, CATALOGUE_SAISONS, creerCircuitSaisons, objetsSaisons, observerSaisons } from '../tools/qualification/saisons-circuits.mjs';
++
++assert.equal(CATALOGUE_SAISONS.length, 9, 'les neuf circuits réellement sélectionnables');
++for (const definition of CATALOGUE_SAISONS) test(definition.id + ' : quatre saisons, essences cohérentes et géométrie physique conservée', () => {
++  const c = creerCircuitSaisons(definition), toutes = [], decors = {};
++  for (const saison of B.saisons.IDS) {
++    const d = B.decor.construire(c, { qualite: 'low', vegetation: false, arbres: 220, saison });
++    const m = observerSaisons(d); toutes.push(m); decors[saison] = d;
++    assert.equal(m.caducs + m.persistants, m.arbres, 'chaque arbre déclare sa vraie essence');
++    assert.equal(m.sourcesFeuilles, saison === 'automne' ? m.caducs : 0, 'les feuilles viennent des seuls caducs présents');
++    for (const source of d.sourcesFeuilles) assert(Number.isFinite(source.x + source.y + source.z + source.sol) && source.y > source.sol + 2, 'source de feuilles au-dessus de son vrai sol');
++    assert.equal(m.branchesNues, saison === 'hiver' ? m.caducs : 0, 'un rameau permanent par arbre caduc en hiver');
++    if (saison === 'hiver') assert.equal(m.couronnesCaduques, 0, 'aucune boule de feuilles blanchie sur les caducs');
++    if (m.persistants) assert(m.couronnesPersistantes >= m.persistants, 'les aiguilles restent présentes');
++    for (const o of objetsSaisons(d)) if (o.essenceArbre) {
++      assert(o.p.concat(o.s, o.color).every(Number.isFinite));
++      assert(o.color.every(v => v >= 0 && v <= 1));
++      if (o.partieArbre === 'feuillage' && o.essenceArbre !== 'feuillu' && saison !== 'hiver')
++        assert(o.color[1] > o.color[0], 'pin/séquoia/conifère non transformé en feuillu orange');
++    }
++  }
++  const ete = toutes.find(m => m.saison === 'ete'), hiver = toutes.find(m => m.saison === 'hiver');
++  for (const m of toutes) for (const cle of ['racinesSHA256', 'obstaclesSHA256', 'troncsSHA256', 'geometrieSolSHA256'])
++    assert.equal(m[cle], ete[cle], cle + ' ne dépend pas de la saison');
++  for (const saison of B.saisons.IDS) assert.deepEqual(decors[saison].nappes.filter(n => n.surfaceType === 'eau').map(n => n.sommets),
++    decors.ete.nappes.filter(n => n.surfaceType === 'eau').map(n => n.sommets), 'eau non recolorée en neige');
++  assert.equal(new Set(toutes.map(m => m.couleursSolSHA256)).size, 4, 'le terrain répond réellement aux quatre saisons');
++  assert(hiver.lotsProches.instances <= ete.lotsProches.instances, 'aucun objet supplémentaire par branche en Légère');
++  assert(hiver.lotsLointains.triangles <= ete.lotsLointains.triangles, 'aucun surcoût géométrique hivernal du décor lointain');
++  if (definition.theme === 'montagne') {
++    assert(ete.caducs > 0 && ete.persistants > 0, 'la forêt basse est mixte');
++    assert.equal(ete.caducsAuDessus120, 0, 'la forêt haute garde ses conifères');
++  }
++  if (definition.id === 'route-des-cimes') {
++    assert(ete.rochesHautes > 500, 'région rocheuse alpine effectivement échantillonnée');
++    assert.equal(ete.rochesHautesBlanches, 0, 'pas de neige estivale inventée sous la limite permanente');
++    assert.equal(hiver.rochesHautesBlanches, hiver.rochesHautes, 'les pentes rocheuses éligibles reçoivent la neige hivernale');
++    for (let i = 0; i < decors.ete.nappes.length; i++) {
++      const a = decors.ete.nappes[i], b = decors.hiver.nappes[i];
++      if (a.surfaceType !== 'terrain') continue;
++      for (let k = 0; k < a.sommets.length; k += 13) if (a.sommets[k + 4] <= .45)
++        for (let couleur = 10; couleur < 13; couleur++) assert.equal(b.sommets[k + couleur], a.sommets[k + couleur], 'paroi abrupte non enneigée uniformément');
++    }
++  }
++  if (definition.theme === 'cote') {
++    assert.equal(hiver.caducs, 0); assert.equal(decors.hiver.saison.neige, false);
++    for (const o of objetsSaisons(decors.hiver)) if (o.partieArbre === 'feuillage') assert(o.color[0] < .7, 'pins du Sud sans neige');
++  }
++  if (definition.theme === 'islande' || definition.theme === 'desert') assert.equal(ete.arbres, 0, 'pas de forêt inventée dans le biome minéral');
++  if (definition.theme === 'pacifique') assert.equal(ete.caducs, 0, 'séquoias persistants');
++});
++
++test('les rameaux nus gardent leur repère et toutes leurs attaches ; budgets proches/lointains bornés', () => {
++  const A = B.botanique;
++  for (const q of A.QUALITES) {
++    const reference = A.forme('feuillu', false, q), nus = A.formeNue(false, q), loin = A.formeNue(true, q);
++    assert.equal(A.formeNue(false, q), nus, 'forme préconstruite et partagée');
++    assert(nus.length <= reference.length && loin.length <= A.forme('feuillu', true, q).length);
++    for (const t of nus.concat(loin)) for (const p of t.slice(0, 3)) assert(p.every(x => Number.isFinite(x) && Math.abs(x) <= .50000001));
++    const pied = forme => Math.min(...forme.flatMap(t => t.slice(0, 3).map(p => p[1])));
++    assert.equal(pied(nus), pied(reference), 'pas de recentrage du squelette lorsque les feuilles tombent');
++    assert.equal(pied(loin), pied(reference), 'pied identique à la bascule');
++    if (q === 'low') assert.equal(nus.length, 72, 'le budget de la couronne lointaine historique');
++    else assert.deepEqual(nus, reference.slice(0, nus.length), 'chaque triangle du bois détaillé conserve ses sommets et normales d’été');
++  }
++});
++
++test('Fine : un seul houppier ou rameau par caduc, même repère entre été/hiver et aucun feuillage nu au loin', () => {
++  const c = creerCircuitSaisons(CATALOGUE_SAISONS[8]);
++  const ete = B.decor.construire(c, { qualite: 'high', vegetation: false, arbres: 220, saison: 'ete' });
++  const hiver = B.decor.construire(c, { qualite: 'high', vegetation: false, arbres: 220, saison: 'hiver' });
++  for (const distant of [false, true]) {
++    const a = objetsSaisons(ete, distant).filter(o => o.essenceArbre === 'feuillu' && o.partieArbre === 'feuillage');
++    const b = objetsSaisons(hiver, distant).filter(o => o.partieArbre === 'branches');
++    assert(a.length > 0); assert.equal(a.length, b.length);
++    for (let i = 0; i < a.length; i++) {
++      assert.deepEqual(b[i].p, a[i].p); assert.deepEqual(b[i].s, a[i].s); assert.deepEqual(b[i].r, a[i].r);
++      assert.equal(b[i].mat, B.botanique.matiere('ecorce')); assert(b[i].shape.includes('-nu-'));
++    }
++  }
++});
+diff --git a/verifications/saisons.test.mjs b/verifications/saisons.test.mjs
+index 985e57e..5aa7ef7 100644
+--- a/verifications/saisons.test.mjs
++++ b/verifications/saisons.test.mjs
+@@ -44,7 +44,7 @@ verifier('profils figés, été par défaut et aucune neige sur Port-Sable', ()
+     assert.equal(S.normaliser(id), id);
+     const p = S.profil(id, theme); assert.equal(p.id, id); assert.ok(Object.isFrozen(p));
+     assert.equal(p.neige, id === 'hiver' && theme !== 'cote');
+-    assert.equal(p.feuilles, id === 'automne' && theme === 'foret');
++    assert.equal(p.feuilles, id === 'automne' && (theme === 'foret' || theme === 'montagne'));
+     assert.ok(p.faune >= 0 && p.faune <= 1);
+     if (p.neige) assert.equal(p.faune, 0, 'aucun habitat animal à initialiser sur la neige');
+     const sortie = [0, 0, 0], base = [.20, .35, .13];
+@@ -75,8 +75,9 @@ verifier('douze scènes : recoloration seulement, chaussée hivernale lisible, c
+           const asphalte = n.surfaceType === 'accotement' && (mat === 14 || mat === 21)
+             && reference.sommets[v * 13 + 10] < .3
+             && reference.sommets[v * 13 + 10] === reference.sommets[v * 13 + 11];
++          const neigeRocher = d.saison.neige && theme === 'montagne' && n.surfaceType === 'terrain' && n.sommets[v * 13 + 4] > .45;
+           assert.ok(couleur >= 0 && couleur <= 1);
+-          if (!masque[v] && !(d.saison.neige && asphalte)) assert.equal(couleur, reference.sommets[v * 13 + 10 + k], 'marquages, sable, eau, roches et asphalte hors hiver inchangés');
++          if (!masque[v] && !(d.saison.neige && asphalte) && !neigeRocher) assert.equal(couleur, reference.sommets[v * 13 + 10 + k], 'marquages, sable, eau, parois abruptes et asphalte hors hiver inchangés');
+           else if (d.saison.neige && asphalte) assert.ok(couleur >= reference.sommets[v * 13 + 10 + k], 'asphalte enneigé plus clair, ou sec sous abri');
+           else if (d.saison.neige) assert.ok(couleur > .80, 'les vrais accotements et terrains herbeux sont enneigés');
+         }

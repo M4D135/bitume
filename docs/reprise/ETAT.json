@@ -9,12 +9,12 @@
     "lot": "habitacle_saisons_menu",
     "fiche": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "025",
+    "derniere_entree": "026",
     "prochaine_action": "Finaliser le pilote commun puis optimiser les coûts mesurés du rendu ; intégrer saisons, menu arcade et emotes configurables par joueur/IA aléatoires.",
     "dernier_lot_clos": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json",
     "fiche_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
     "index": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
-    "entree_journal": "025",
+    "entree_journal": "026",
     "dernieres_demandes": "docs/reprise/DEMANDES-ARCADE-PERFORMANCE-TROLL-2026-11-20.md",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md"
@@ -494,6 +494,9 @@
     "suite_sources_circuits": "05",
     "runtime_modifie": false,
     "preparations": "docs/reprise/PARALLELE-2026-11-20/REPRISES-EXISTANTES.md",
-    "regle": "Un sous-lot par discussion, perimetres distincts, une integration qualifiee a la fois."
+    "regle": "Un sous-lot par discussion, perimetres distincts, une integration qualifiee a la fois.",
+    "preparations_portables": "docs/reprise/PARALLELE-2026-11-20/preparations/MANIFESTE.json",
+    "reapplications_individuelles_verifiees": 4,
+    "preparations_runtime_qualifiees": false
   }
 }

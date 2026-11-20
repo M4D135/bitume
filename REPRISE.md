@@ -22,7 +22,8 @@ Les anciens tests/images ne sont pas à relancer.
 ensemble. **00** conserve les raccords partagés et la publication ; **05** prépare
 ensuite les sources Monaco/Marseille. Un sous-lot par discussion, un état court
 sur sa branche, une intégration à la fois. Les reprises déjà préparées sont
-inventoriées ; les brouillons locaux récents ne sont pas déclarés transférés.
+inventoriées ; quatre patches portables sont sauvegardés avec leurs empreintes,
+sans application au runtime.
 
 ## Travaux actifs
 
@@ -48,6 +49,6 @@ Coût logiciel de l’optique conservé ; FPS matériels, audio, manettes réell
 réseau entre machines non qualifiés. La préparation pluie extérieure sous abri
 reste distincte. Les autres lots et 17 destinations restent dans FILE-TRAVAIL.
 
-[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **025**.
+[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **026**.
 Lecture minimale : ce fichier, `docs/reprise/ETAT.json` → `etat_courant`,
 puis la fiche du lot traité. Sauvegarder les étapes et poursuivre sans redemander un go.

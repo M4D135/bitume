@@ -1,0 +1,242 @@
+{
+  "schema": 1,
+  "capture_utc": "2026-11-20T16:43:56.561745+00:00",
+  "base_main": "d8f02cae45443ae6a1120dc93125d8adfae94422",
+  "base_tree": "859b95aa2389da28eb7fb2f96088ca6fa1b46f97",
+  "statut": "captures_portables_non_qualifiees",
+  "runtime_modifie": false,
+  "exclusions": [
+    "dist",
+    "VERSION.json",
+    "SIZE.json",
+    "images",
+    "anciens rapports"
+  ],
+  "preparations": [
+    {
+      "id": "habitacle",
+      "patch": "habitacle.patch",
+      "source_branch": "codex/bitume-habitacle-0269-20261120",
+      "source_head_local": "89e4cc35896483fa53d6e586ffe73c9ee261d56b",
+      "source_distant_verifie": false,
+      "inclut_modifications_non_commitees": false,
+      "patch_sha256": "058fa1793435a220071eec9cc3dab7eb669016535d70064f61c78a0aaafd721b",
+      "patch_octets": 195693,
+      "fichiers": [
+        {
+          "path": "src/jeu.js",
+          "sha256": "3f79b16692d0157dac39a812aa27748896867cd210494967991a7bfdf7023651",
+          "octets": 344650
+        },
+        {
+          "path": "src/voiture.js",
+          "sha256": "b37269498b6a97ee27be729e3c9ea793e7108e02f5850b6d84b4ec5c5a69afe9",
+          "octets": 155026
+        },
+        {
+          "path": "tools/captures-habitacle.mjs",
+          "sha256": "8963133a789661b48091c8c2a505c8e166297b3252a4f25b1b17a73e6b9bdb01",
+          "octets": 16355
+        },
+        {
+          "path": "tools/qualification/habitacle-mesures.mjs",
+          "sha256": "eb5cfddf4689c28ae69ac6f80b78d2c4e81e52d5c67f64bd6ab9b930ea55f7df",
+          "octets": 19353
+        },
+        {
+          "path": "tools/qualification/pilote-surfaces.mjs",
+          "sha256": "6599cc0bbb042028a7d091b401e22a567202b3eff15be087fe041d78984b2517",
+          "octets": 10661
+        },
+        {
+          "path": "tools/qualification/pilote-thorax.mjs",
+          "sha256": "0993cf5ae1e1d1dfd25a17554d871f25eae12567d35bf086d7f30c08431171a9",
+          "octets": 9341
+        },
+        {
+          "path": "verifications/captures-habitacle.test.mjs",
+          "sha256": "41b4ddedfafcdc33399e40f2116d5253e521f3d4aaf880d4243e6328949bba99",
+          "octets": 5021
+        },
+        {
+          "path": "verifications/cockpit-camera.test.mjs",
+          "sha256": "766fd2e376cdc5ed9c2b028e9e09046c1512dbf027ac71624d151f83540f98e2",
+          "octets": 5855
+        },
+        {
+          "path": "verifications/habitacle-monde.test.mjs",
+          "sha256": "1035b7f09e73ff057b9cf35ef7ccf0472755eda072d1aef60e29f678123a4e21",
+          "octets": 13532
+        },
+        {
+          "path": "verifications/pilote-commun.test.mjs",
+          "sha256": "50f524b3ea2b6f16a05c9ddd24a6e7442dfcc036eacc6d7e59338d60b5cc4f05",
+          "octets": 11989
+        },
+        {
+          "path": "verifications/pilote-expressions.test.mjs",
+          "sha256": "dd78f1482b4b5aa77af7d167e3eb8e37ada5a76e23e282d23cfa64251c679923",
+          "octets": 8972
+        },
+        {
+          "path": "verifications/pilote-exterieur.test.mjs",
+          "sha256": "6920291fc20ce56f615acbb7223b663c139bb733197da70dfc90f17eb7166829",
+          "octets": 15023
+        },
+        {
+          "path": "verifications/pilote-habitacle.test.mjs",
+          "sha256": "fb905522766d6f38cc0978a412126a72b9afa361c7ddd6f680a03e992427a604",
+          "octets": 30221
+        },
+        {
+          "path": "verifications/pilote-surfaces.test.mjs",
+          "sha256": "8efeaaa60ba308f59e8ca3fc306f5eb08aa94b9ce02bf91cc4388e5de1158489",
+          "octets": 4273
+        },
+        {
+          "path": "verifications/pilote-thorax.test.mjs",
+          "sha256": "2ae2ba8011c7cecf30f152ccfc6f33ae98a960a7a66293b71dbe06736b914e11",
+          "octets": 4458
+        },
+        {
+          "path": "verifications/voiture.test.mjs",
+          "sha256": "3d0640450d0d81a1794a62cb141951fbc27d5c96cb636ddfd150bd794b4971f1",
+          "octets": 37400
+        }
+      ]
+    },
+    {
+      "id": "arcade",
+      "patch": "arcade.patch",
+      "source_branch": "codex/bitume-arcade-20261120",
+      "source_head_local": "f7ef92c9efee9539cb36302665dfac819c43711d",
+      "source_distant_verifie": false,
+      "inclut_modifications_non_commitees": true,
+      "patch_sha256": "65b33f89e91d761525230ff0b05486481e33cd50deee30dff48e922838e4297d",
+      "patch_octets": 59813,
+      "fichiers": [
+        {
+          "path": "construire.py",
+          "sha256": "ee2b259879c1b0ed3791aeb2a4e60727168563de479f164c17f1a7b4b7945bdf",
+          "octets": 9124
+        },
+        {
+          "path": "src/index.html",
+          "sha256": "49a9b9e2342711811848a3c17df475bb23fac2b010eb11c886cb1594ef7273af",
+          "octets": 62063
+        },
+        {
+          "path": "src/navigation-menu.js",
+          "sha256": "1216a2db4e1f8c29ecbee89ba77c8b9327544834596c96aed18c3cb4e49fb60e",
+          "octets": 12629
+        },
+        {
+          "path": "src/style.css",
+          "sha256": "ef75edce7623a2185abf287a577c199258828110bf092b9ed99f9983a3581519",
+          "octets": 68686
+        },
+        {
+          "path": "src/menu-arcade.js",
+          "sha256": "fd1017ea76a46ec0c5de69910c18bb7825af8d57b1d71465e2ef4858e5d465d8",
+          "octets": 12909
+        }
+      ]
+    },
+    {
+      "id": "saisons",
+      "patch": "saisons.patch",
+      "source_branch": "feat/bitume-saisons-20261120",
+      "source_head_local": "91973c61901f532f04128ce02f5b14a5b578125e",
+      "source_distant_verifie": false,
+      "inclut_modifications_non_commitees": false,
+      "patch_sha256": "43403458bcfc466c3cd6759f078e22b8570f86612ccf1c784d9bbad51afcc2d7",
+      "patch_octets": 54562,
+      "fichiers": [
+        {
+          "path": "src/bords.js",
+          "sha256": "6f3a8f8c651fbd9d54cd1830bda81e5c848c7d40b515d09ecfdecfad9ba563c0",
+          "octets": 30277
+        },
+        {
+          "path": "src/botanique.js",
+          "sha256": "7b7fdb36e771e0356bcff031a487c2acf0c87758668bb385d9d7addd6465fb11",
+          "octets": 22599
+        },
+        {
+          "path": "src/decor.js",
+          "sha256": "1e7a0a690747280fc8fef9f7447a16fd57b968114a551b3cfe98e554a2e13198",
+          "octets": 134197
+        },
+        {
+          "path": "src/saisons.js",
+          "sha256": "428f502714e87543bc60c812ef35a1c7688e42d40a76a4fcd0ca9d51bdee70a9",
+          "octets": 5684
+        },
+        {
+          "path": "tools/captures-saisons.mjs",
+          "sha256": "a6dfaa992d2503818c0e75f8bb8377a4d15c06e6b9baacfb330afe1d24276022",
+          "octets": 10867
+        },
+        {
+          "path": "tools/qualification/comparer-saisons.mjs",
+          "sha256": "b34226e08e9fb437c735cc5749bb13c897a3a24b650483e5f95536037b5e9dec",
+          "octets": 4140
+        },
+        {
+          "path": "tools/qualification/saisons-circuits.mjs",
+          "sha256": "6a7b19c7ffd78c33f40d51e61361d4bb3a0385fc1bcdaa4002065237a292e3b2",
+          "octets": 5754
+        },
+        {
+          "path": "verifications/botanique.test.mjs",
+          "sha256": "d14d04274028e862a27960159d7748c99dd4c6cc292e0dcefc0c91db6e4aa068",
+          "octets": 13570
+        },
+        {
+          "path": "verifications/captures-saisons.test.mjs",
+          "sha256": "df9b1be80578fdeb32594b3771ff5ff67c34aee8a092026eea324045c92049e8",
+          "octets": 2671
+        },
+        {
+          "path": "verifications/saisons-circuits.test.mjs",
+          "sha256": "53486c0f5d158e159594598d7650f4656f94024d74e8bf1e33df48e2df140ade",
+          "octets": 6402
+        },
+        {
+          "path": "verifications/saisons.test.mjs",
+          "sha256": "75ae5a7f851c528ff73259831cd8056223ee39bc6ac2bb9d117f4bf647befc9e",
+          "octets": 8415
+        }
+      ]
+    },
+    {
+      "id": "audio-troll",
+      "patch": "audio-troll.patch",
+      "source_branch": "feat/bitume-saisons-20261120",
+      "source_head_local": "91973c61901f532f04128ce02f5b14a5b578125e",
+      "source_distant_verifie": false,
+      "inclut_modifications_non_commitees": true,
+      "patch_sha256": "b48d3fcc8707d7ef789e1af3450f119334458e40cee5b2d802165bb8d15e8cd9",
+      "patch_octets": 10958,
+      "fichiers": [
+        {
+          "path": "src/son.js",
+          "sha256": "862eed4281356532f4b6fdc46904731c703cbde3996f36219f82f542997ebf64",
+          "octets": 44503
+        },
+        {
+          "path": "verifications/son.test.mjs",
+          "sha256": "6190e4c9e07f5a24a9fb065a8e12e7db04b840c18669c4bbc16a78e55a1488ad",
+          "octets": 24980
+        }
+      ]
+    }
+  ],
+  "reapplication_sur_base": {
+    "arbre": "859b95aa2389da28eb7fb2f96088ca6fa1b46f97",
+    "patches_reussis": 4,
+    "patches_total": 4,
+    "methode": "git apply --cached --check, chaque patch independamment",
+    "qualification_runtime": false
+  }
+}

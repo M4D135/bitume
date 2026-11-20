@@ -16,7 +16,7 @@
 
 L'arbre local de référence ef72dddd8db992e424267436a2efc9f3f78f36ca était exactement l'arbre distant d8f02ca, malgré des SHA de commits différents.
 
-Des patches ont été calculés à partir de l'arbre distant vérifié, avec deux lectures identiques par capture. Leurs fichiers n'ont pas pu être transférés avant indisponibilité de l'environnement. **Ces patches ne sont pas fournis ici et ne sont pas déclarés sauvegardés sur GitHub.** Les empreintes ci-dessous permettent d'identifier les captures si elles sont retrouvées, pas de reconstruire leur contenu.
+Les quatre patches ont été récupérés après rétablissement de l'environnement et sont maintenant fournis dans [preparations/](preparations/README.md). Ils partent de l'arbre distant vérifié, avec deux lectures identiques par capture. Leurs SHA256 ont été relus et les quatre contrôles individuels de réapplication sur la base passent. Ils restent **non qualifiés pour le runtime** ; leurs fichiers partagés sont des propositions de raccordement pour 00.
 
 | Capture locale | Octets | SHA256 |
 |---|---:|---|
@@ -29,6 +29,6 @@ Des patches ont été calculés à partir de l'arbre distant vérifié, avec deu
 
 Vérifier d'abord les nouvelles branches/PR et les worktrees disponibles. Ne pas réinitialiser leurs fichiers. Récupérer les modifications non commitées et fichiers non suivis utiles avec provenance, puis les qualifier. Les fichiers jeu.js/construire.py restent des raccords pour 00.
 
-Si les brouillons plus récents restent indisponibles, 01 dispose du checkpoint publié ; 03/04/01-audio disposent de leurs contrats et constats. Continuer utilement à partir de ces sources en notant le manque, sans prétendre avoir restauré les fichiers ni leurs validations.
+Si les worktrees d'origine sont absents, reprendre le patch portable du rôle depuis preparations/. Comparer d'abord avec main et les publications plus récentes. Ne pas attribuer aux fichiers restaurés une validation du jeu qui n'a pas été réalisée.
 
 Un remplacement réalisé depuis les spécifications doit être identifié comme une nouvelle implémentation ; il ne clôt pas la récupération de l'ancien travail et ne reprend pas ses preuves de validation.

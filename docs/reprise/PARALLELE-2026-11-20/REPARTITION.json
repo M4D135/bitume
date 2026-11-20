@@ -28,7 +28,7 @@
     "00 seul produit versions/builds et met a jour suivi global.",
     "02 seul modifie le FERRO canonique ; 00 importe sa version qualifiee.",
     "Propositions de raccord dans raccordements/NN.md.",
-    "Brouillons locaux recenses, non declares transferes ; verifier REPRISES-EXISTANTES.md."
+    "Quatre preparations portables sauvegardees, non qualifiees ; voir preparations/MANIFESTE.json."
   ],
   "lots": [
     {
@@ -132,5 +132,6 @@
         "Runtime futur apres donnees qualifiees et transfert de fichiers"
       ]
     }
-  ]
+  ],
+  "preparations_portables": "preparations/MANIFESTE.json"
 }

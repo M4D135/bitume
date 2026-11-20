@@ -417,3 +417,11 @@ Le dossier PARALLELE-2026-11-20 définit quatre discussions de réalisation (01 
 Les préparations locales habitacle, arcade, saisons et audio ont été inventoriées avec SHA et périmètres ; le worktree Troll recopie le candidat habitacle. Les nouveaux patches capturés localement n'ont pas pu être transférés avant indisponibilité de l'environnement : ils ne sont pas fournis et ne sont pas déclarés publiés. Le checkpoint habitacle déjà présent sur main reste accessible. Les missions commencent par rechercher les travaux plus récents avant toute réécriture.
 
 Publication documentaire uniquement : aucun code du jeu ou de FERRO modifié, aucune nouvelle performance matérielle annoncée, aucun déploiement. L'ancienne règle « un seul sous-lot » devient « un sous-lot par discussion » avec intégrations sérialisées, conformément à cette nouvelle demande.
+
+## 026 — quatre préparations récupérées et rendues portables
+
+Le dossier de répartition et ses prompts ont été publiés puis relus sur main5ed310787cd4e184869c8ac4a54783ddaf55e553 (21 fichiers identiques aux contenus préparés). L'environnement de travail est ensuite redevenu disponible. Les quatre captures locales habitacle, arcade, saisons et audio Troll ont été récupérées ; les empreintes correspondent à l'inventaire. Chacune passe git apply --cached --check sur l'arbre de base859b95aa, sans appliquer de changement au runtime.
+
+Les patches sont conservés dans PARALLELE-2026-11-20/preparations avec un manifeste de provenance et un mode de reprise. Le nouveau menu-arcade.js auparavant non suivi est inclus ; l'audio Troll est séparé du lot saisons ; le diff du worktree Troll, identique à l'habitacle, n'est pas dupliqué. Dist, VERSION/SIZE, images et anciens rapports ne sont pas recopiés.
+
+Ces contrôles attestent la conservation et l'applicabilité individuelle des préparations. Ils ne qualifient ni leur assemblage, ni leurs performances, ni les nouveaux comportements du jeu. Les raccords jeu.js/construire.py restent au coordinateur00. La livraison0.2.68, p15 et FERRO0.3.15 restent inchangés.

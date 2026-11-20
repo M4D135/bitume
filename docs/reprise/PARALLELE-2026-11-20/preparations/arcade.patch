@@ -1,0 +1,518 @@
+diff --git a/construire.py b/construire.py
+index 2cc9a55..329b4df 100644
+--- a/construire.py
++++ b/construire.py
+@@ -85,6 +85,7 @@ MODULES = [
+     'ambiance.js',
+     'conditions-course.js',
+     'navigation-menu.js',
++    'menu-arcade.js',
+     'autoconfig.js',
+     'scene-bench.js',
+     # vibrations de manette : quatre sorties calculées une fois par image rendue, branchées par jeu.js
+diff --git a/src/index.html b/src/index.html
+index 99ee7d9..ccfdeb2 100644
+--- a/src/index.html
++++ b/src/index.html
+@@ -85,17 +85,18 @@
+   </div>
+ 
+   <!-- Écran titre -->
+-  <section id="titre" class="ecran titre" hidden>
++  <section id="titre" class="ecran titre arcade-titre" hidden>
+     <div class="marque">
+       <h1>BITUME</h1><b class="version-jeu" aria-label="Version __VERSION_JEU__">V__VERSION_JEU__</b>
+     </div>
+     <a class="signature" href="https://bitume.estrasse.fr/" download="BITUME.html" title="Télécharger BITUME"><img class="signature-avatar" src="data:image/jpeg;base64,/9j/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBCQkJDAsMGA0NGDIhHCEyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMv/AABEIAW4BbgMBIgACEQEDEQH/xAGiAAABBQEBAQEBAQAAAAAAAAAAAQIDBAUGBwgJCgsQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+gEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoLEQACAQIEBAMEBwUEBAABAncAAQIDEQQFITEGEkFRB2FxEyIygQgUQpGhscEJIzNS8BVictEKFiQ04SXxFxgZGiYnKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqCg4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2dri4+Tl5ufo6ery8/T19vf4+fr/2gAMAwEAAhEDEQA/APd4AHQlxuOep5qXy0/uL+VR2v8Aqz9amoAjdFCMQoBAPIFVPMf++351dk/1bfQ1QoAd5j/32/OrEADoS43HPU81Vq3a/wCrP1oAk8tP7i/lTXRQjEKAQDyBUlNk/wBW30NAFLzH/vt+dHmP/fb86bRQBagAdCXG456nmpfLT+4v5VHa/wCrP1qagCJkUIxCgEA8gVV8x/77fnVx/wDVt9DWdLLHAhklkWNFGSzMAB+JpNpbjSbdupL5j/32/Op4QGQl8Mc9+a4nVPiDpVjuW233cg7xjCf99H+lcff/ABA1u8JWCRbWM9oRkn8T/OsJ4mnE7KWAqz6WPY7i7srSMyXEsMSD+KRgBXOX/j7w9ZBgk/nyDoIY8/qcD9a8anuri7fzLieSVz1Z3LH86irmljW/hO6nlUV8bPR7r4o4GLWxkPoZZf6Af1rIuPiTrkvEQghH+ypJ/UmuPorCWJqPqdsMDQj9k35fGviGYndqD8/3YwMfpVN/EetOPm1S6HPaVh/KszAorN1ZvqbLD0ltE0P7f1jOf7Uvfb9+3+NOHiHWv+grff8Af9/8azaKXPLuP2MOyNiPxZr0f3dVuP8AgUmf55q7B498QRH57xZfaSJT/TP61zVFUqs1syXhqT3ijurb4najHgXNhaygf3FKk/qa27T4oaZIMXNlPA57xgNj+R/SvKqK0jiaiMJ5dRl0se42XizSb/Cw6im7+65KN+tbCys4yshIPPBr52q/Y61qWmuGtL2WID+HcSp/A8VvDGtbo5KmUreDPoKAB0JYBjnqeal8tP7i/lXk+k/E+7t1WLUbVZk/vxna3+B/Su50fxfo+sAJb3aiY/8ALOQhW/DsfwrqhXhPY8yrhatPdG66KEYhQCAeQKqeY/8Afb86uN/qm+hqjWxz+Q7zH/vt+dWIAHQlxuOep5qrVu1/1Z+tAEnlp/cX8qa6KEYhQCAeQKkpsn+rb6GgCl5j/wB9vzo8x/77fnTaKALUADoS43HPU81L5af3F/Ko7X/Vn61NQBG6KEYhQCAeQKqeY/8Afb86uyf6tvoaoUAO8x/77fnViAB0Jcbjnqeaq1btf9WfrQA1WEA2tyTzxTvtKejflUVz/rB9KhoAtGdXBUBsnjmmfZn9VqKP/WL9RV+gCr9mf1WnKwgG1uSeeKsVUuf9YPpQBL9pT0b8qQzq4KgNk8c1Vp0f+sX6igCX7M/qtH2Z/VatUhOKAIFYQDa3JPPFRz6hbWsRlnkEUajJZ8AVy/ibxvYaQzQQEXN2Bjap+VT7n+gry3Vtd1DW5TJeTFlzkRjhF+grmq4lQ0R34bATqu8tEd/rvxNgiDwaTD5z9POf7o+g6mvPNS1nUNWk33t1JL6IThR9F6CqJ5z70V59SvOe57dHB06K91B3z39aKKKxOoKKKKAsFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFKCQQQSMdxSUULQTV1Y6XRvHOsaQBG032qADHlzZPHs3Ufyr0LQ/GGl61iISrb3JH+qmOM/Ru9eMUAkHjqORiuiniJw3OGvgKVRaaM+jBbtz8y1IrCAbW5J54rx7w94/1DSdkN2xu7VRjDH51Hsf8f0r02w1ux1uBZ7OcOMcoeGX2Ir0KVeNT1PDr4SpReuqNb7Sno35UhnVwVAbJ45qrTo/9Yv1FbnN6Ev2Z/VaPsz+q1aooArqwgG1uSeeKd9pT0b8qiuf9YPpUNAFozq4KgNk8c0z7M/qtRR/6xfqKv0AVfsz+q05WEA2tyTzxViql1/rB9KAC6/1g+lQ1agAdCXG456nmpfLT+4v5UAUo/8AWL/vCr9RuihGIUAgHkCqnmP/AH2/OgC/VS6/1g+lR+Y/99vzqxAA6EuNxz1PNAFWnR/6xf8AeFXfLT+6v5Vla1rFjodg9zdMqBQdqqBuY+gFKTUVdjjFydkXry8gsbZ57mVI4kGWZzgCvKfFHxAuNSZrTSy8NqeGk6O4/oKwfEPia/8AEFwTM5W3U/JApyo+vqaxO2OtebXxTl7sdj3cLl8Ye9U3DOcnOc9T60UUVxnrJaWQUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAWDpVmxvrrTbkXFnM0Uq9NvQ/X1FVqKak0xSipKzPWPDXje21Upa3pWC8IwDnCyH29DXYx/6xfTcK+d8nqCeORjrXoHhLx4bfZYau2Y+kVyeqnsG9veu+hiekjw8Zl9vfpnq9FZ6zM6BlkLAjIIbINL5j/32/Ou9aq6PJtbRkl1/rB9Khq1AA6EuNxz1PNS+Wn9xfyoEUo/9Yv+8Kv1G6KEYhQCAeQKqeY/99vzoAv1Uuv9YPpUfmP/AH2/OrEADoS43HPU80ALa/6s/WpqrqwgG1uSeeKd9pT0b8qAJJP9W30NUKtGdXBUBsnjmmfZn9VoAgq1b/6s/WmfZ39VrO1nWrfw9p73FywJ/gVert2FKTUVdlQhKb5Y7i+IfENp4fsGuJ23SMCIoh1dvQV4lrOtXeuXzXV25JP3EH3UHoKNa1m61vUXu7pySeFTsg9BWdXlV67m7LY+hweDjRjeW7CiiiuY9EKKKQkBSScAck5xijyC6S1ForGvPE+nWrmNXM0gONsfP69K0bO4kubZZZIGgLdEY5OKuVOUVdozjWhN2i7liiiioNAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiq13f29givcy+WrHAO0kZ9zToLy1uhm3njlH+ywNVyStdIn2keblvqT0UUVJV+4UenoKKKA6HYeEfGUmlOljfNvsjwrk8xf/Wr1WKRJY1kjcOjDIYdCK+evX0Ndn4L8WtpkyabfPmzc4Ryf9Uf8K7cNiGnys8jHYFSTnA9ftf9WfrU1VYpFjjAJ3A/MCvIIqT7Sno35V6V77HhdbEkn+rb6GqFWjOrgqA2TxzTPsz+q0AQVbtf9WfrUf2Z/VacrCAbW5J54oAZc/6wfSoamuv9YPpUNADo/wDWL9RV+qEf+sX/AHhV4nA54FHmBUvr2DTrOS6uXEcMalmY/wCeteG+JfENx4i1Rrh8rApxDGf4V/xNbXj3xR/a16bC2c/ZLdvmI/5aOO/0FcXXmYqs5PlR7+X4NRXtJbh3ooorjPUsFFFHY0DGSzRwRNLKwVFGWJPQV59rviObUpGhhJS1zwo6t9aveL9Y8yY2ED/u4/8AWEH7x9K5HODXp4agkuaR4OPxrk+SJo6Hb/atZtYiMgyAkeuOf6V6n9OleZ+F3CeILUk4ySB9SpFemHrWONb5kjoyte42FFFFcR6wUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAGZ4gthdaJcr3RfMX6jmvNIZ5baYSRSMjDowODXq97g2FxnGPLb+VeRt94ivSwesWmeFmd41ItHdaD4oF24tL0gSnhJOm4+/pXU142CQcjtXo3hjWP7QszBM2Z4hg8/eX1qMVQUVzRNsvxrk+SZvUUUVwHrhR/9bj2oooDyPRPAviwsU0i/lyRxbyt/6Ca9D/T2r55VmRw6MVZSCGB6e9ev+DfEa61p3kzMPtluuJMn7y/3hXpYWtf3GeDmOE5X7SB1Mf8ArF+oq/VCL76/7wq/XaeSFVLr/WD6Vbqpdf6wfSgCSAB0Jcbjnqeal8tP7i/lUdr/AKs/WpqAI3RQjEKAcdQK4Xx34kfTNP8AsVvIftdwpBw33F7/AI12Wo3kVhp89zMwEcSFmyfQV4Bq+pzavqc15MeXbheyjsK5sTV5I2R6OX4f2k+Z7Ipk85zmkooryT6NBRRRQAVU1O9Fhp09wTyi/KPftVuuU8b3ZS1gtVP+sYuw9hwP1P6VrRjzTSObFVPZ0nI4mWRppWdiSzEkk1H1NKetJXtWS0R8re7uyzY3Btb6GcdY3DV62jrJGroQVYZBHpXjY616H4R1MXdh9lkb99AMAHqV/wDrVx4ynePMj1crrKM3B9ToqKKK8w97UKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigPMzdeuRa6LdOTgsmxfqeP6/pXlp65rrvGWqLLKljE2RGcuR0J9K5E16+Fg4w1Pm8xrc9Wy6CVpaLftp2pRXAztBww9R3rNpVODW8kpRaOKEuWakexqQyhlOVIyD7UtZXhy6+16HbsTlkHlt+HA/TFateHOPLJo+toz54KQUUUVJoFX9I1SfR9ShvoOWjPzKejL3H5VQopptO6JlFTTiz6JsL221LTYry3wY5E3qQOen86PMf++3515n8OPEH2W7fSLiTEM+WhyeFfuPx/nXpX1r2aNT2kLnyuJoujUceg7zH/AL7fnViAB0Jcbjnqeaq1btf9WfrWpzjVYQDa3JPPFL9pT0b1qO5/1g+lUry6jsrOa5mOI4kLMfYDpSbsioq7SOH+JniAOI9It2OP9ZPg/kv9a83HQVZ1C9k1LUJ7yYkvM+8+3pVavGrVHOR9ThKPsqaiFFFFZHSFFFFABXnnjKfzdbKZ4iRU/r/WvQ/WvMPEbl9fuyTnD4/Lj+lduCV5Hl5pJqml3Mg0UUV6R8+LVzTb+XTbxLmI4ZTyPUdxVOjFJpPRlRk4tNbnrOnajb6larNAwAP3lzypq5XlOnanc6ZOJrd9p7jqGHoRXd6V4nstQCrKwt5z/Cx4J9ia8yvhpR1ifQ4THwmuWT1NuigEY6iiuSzR6CknsFFFIzBRkkAepppN7A5pbi0VnXOv6Za5El5GSOoT5j+lZ7+M9MXos7fRB/jWio1H0MZYqjF2cjoaK5weNNMY8xXI/wCAL/jViLxZpLjmd4z/ALUZ/pkU3h6i6ErF0X9o26Kow6vp1xgR3sJJ7bwD+RFXVZX+6wI9jms3CS3RtGrCWzFoooqS7oKKKZLPFBGZJpEjQdWZgAKaTewpSUVeTH/nWLr+vR6VbmOJg104woB+6PU1nav4wjjRotOG9zwZmGAPp61xU08k8rSyuzOxyWJ5Nd1DDa80jycZmEUuSmJNK0shd2LMxySe9R0lFegeG3d3YUUUUCO68DTFrW5hzwjq4H14/pXWVw/gV8XlynrGG/I//XruOgrycWrVD6fL5XoIKKKK5jtCiiigLD4pXhmSSNirqQykeo6V7p4c1Ea5otveIy7iu2Re4YcH/H8a8IruvhprRtNVk02Vv3VyMpnoHA/qOPwFdeEqcs7dzzcxoc9NyW6PVPsz+q05WEA2tyTzxViql1/rB9K9Q+dC5/1g+lcF8R9U+z6bDp8bfPcNuf8A3R0/XH5V6BCd0ZLDdzjnmvD/ABnqP9peJrp1OY4W8qP0wvBI+pyfxrlxU+Wmd2XUvaVbvoc/RRRXlH0wUUUUAFFFFAAeleWa8u3W7wf9NW/nXqecV5r4qi8rX7njAYhh+IrtwT948vNV+7TMOiiivSPnwooooAM0uaMe1FF+gGha6xf2ePIupFA/h3ZH5Grp8W6ucf6Vj6Rr/hWFRUuEH0NY16i2ZtN4o1Zjn7Ww+iKP6VQudRu7s/v7iWT2ZyR+VVKKFCK2QSrVJaNiZoooqjIKKKKAFyR3qeK6uITuimkQ+qsRUFFJpMpSa2ZrQeI9Vg+7eyH/AHsN/OrS+MNWUDMiH3KCuf5oz71Lpw6o1WIqr7TN2XxZqsoIE4QH+6oFZNxeXFy+6aV5D6s2ar04DNNQhHZEyrVJ7sTNGadsb0P5UmKq5nqNooooEFFFFAHW+BlJ1C4b/plt/Nh/hXc1x/gWLEd3Pj+6oPvXYdK8nFP94fTZcrUEFFFFcx3BRRRQAVLa3MlndQ3MJxJE4dT7jmoqM4yfpn6U02tUKSurM+idKvY9T0y2vIiCk0Yce2RyPzqS6/1g+lcH8NdUM2lT6ezsWtm3Lz/A3/18/nXoEADoS+Cc969mlPngmfJYin7Oq4mbqt+NM0C8u84MSMy/72OB+eK8BZi7FmJJJySa9a+JF4bXw7HZg/PcTAnH90cn9cV5JjAxXDjJXmkexlVPlg5MKKKK4z1gooooAKKKKAAVxXja2ZLi3ulHDLsJ9wcj+f6V2tZuvaf/AGjpUsSjMq/On+8P84/Gt8PPlmmcmMp+0otHllKBntSsCGIPGKvaJp7arrljpyZzdXEcPH+0wH9a9htJNny1tbHX+C/hZq/ixVvCVstMz/x8SDJf/cHf6nAr1/Sfgp4R05R9qgn1GUdTPIVGfZUI/I16DaW0VjaQ2tunlwwoERR2AqWvCrY2pJ2i9DoUFY56DwJ4UgTanh3TG4/5aWyMf1B5ouPAvhS5haJvDmlhW4+S1RD+DKMj8K6Giuf21TuVyo8g8Q/AXSrrfNod7LYydoZ8vH+f3h+Oa8m8R/D/AMQ+FSz6jp7tbg4+0w/PH/312/EV9cdKRlV0KMoZTwwxniuqjjqkdJaolwTPh0jBpK+nPFnwb0LXxJPpqppl+eQYVJic+6dvqMfjXg3ibwbrPhK88jVLQojEiOdOY5Po39OtepRxMKu25jKDRzdFKetJW5IUUUUALSUVNFE80ixRIXdzhVUZJPpRtqwIqvadpl9q14lpp1pNdTv0jiQsf0/nXqvgz4I3l+EvfEjNZ233hapxIw/2j/CPzP0r27RvD+k+HrMWulWMNtFjnYvL+5PU/iTXFWx0KekdWaRg3ueI+G/gNqN4En1+7Syj6/Z4MPIfYt90fhmvVdC+G3hXQEH2TSopph/y3uV81ifx4H4YrrOtFeZVxdSp1NVBIrHT7I5U2kGOmPLB/pWfeeEvDuoIVutD0+XPdrZd35gZrZorFVZLZjsjzDxB8DvDepRySaY0umz9RtJePPup5x9CK8J8UeFNU8I6o1jqkIRiMxyLykq56qa+xa8y+OOkJfeBhqAQebp86uGxztc7SPzKn8K7sHip83JJ3IlFWufNJ4NAoNXtKsnv9Qit0z87cn0Hc/lmvXbsmzKEeeSiju/ClsbbQoiRhpmMh/kP0FbdNijWGFI0XaiKFUegHAp1eJUlzSbPraFPkpqIUUUVBqFFFFABRRRQB03gW/8AsXieFGbEc4MTZ9+R+o/Wva4OYj/vGvnO1na1u4bhPvxOrj6g19CW06SWUUgc4kUOCO4Ir0sFK8WjwM1p2mpI8z+Kd15utWtqDkRQ7vxY/wD2NcF3P1ro/Hdx9o8YXuDlYyqD8FH9c1zlcVd3qNnq4OPLRivIKKKKyOoKKKKACiiigAo/z9aKKAaucR4o8PtDI99bLmJjl1A5UnvUfw6ZF+Ieh+ZjH2pcZ6Z7frXdEBgQVBB4Oa43U9Ofw9qtrrNgDshnWQL/AHGByPw4NehRr88XBnh47Bcr9pA+sqKp6VqNvq+l2uoWr7re5iWRD7Efzq5XjSVnZnF6BRRRUgFFFFMAqpqWmWWr2Etjf20dxbygho3Gc/T3+lW6P60Rk07oNz5p+I3wquPC7SanpYe40gnLZ5a3z0Deo968yNfcEsUc8TxSosiOpVkYZBB4r5f+KXgUeENcEtopOmXZLQd9jDqh/mPavaweK9p7k9zGcbao89opT1pygtwBnmu/1MkX9I0m81vUIbCwtnnuZmwiJ/X0HvX0t4B+GOm+ELeO6uBHd6uy/NOfux+yA/z71H8K/A0PhXQI726iH9q3qCSVmHzRL1EY9PevQen1714+LxUm+WOxvCFtQHQe1FFFeaaBRRRQAUUUUAFcX8WXWP4Z6yWYDKRqPr5i12leO/HnxAkOkWegQtma5kE0yg8hF+6CPc8/8Browsb1VYmWx4FFE80ioilnY4CgcmvRfDuhLpdt5suDcyL8x/uD0qDw1oKWMCXk6brh13Ln+AHp+OP510XXrzXo4nEN+7E9bAYLk/eT3CiiiuE9VBRRRQAUUUUAFFFFAw/CvbfCV4Lrwpp8jH7kfl/98kj+QFeJe/vXqnw1uC+gTQ78GKc4HsQP6g11YZ2djyszpc9K3ZnneuSmbXr+Q/xXEhH03Gs+pbl/NupX67nJ/M1FXPN3kz0acbQSCiiipLCiiigAooooAKKKKPUAqlrCxPpN35/+r8tsk+uOP1xUl5f2thCZLmVUHpnk/SuD13xHLqjeTGDHbA/dzy31rpoUZSlc4cXiqcIOLPQfhH8RY9FlGgatIEsZXzbzMeInJ5U/7JP5H6k19BAggEHI9Qc5/Kvh4dPxr07wJ8Xb/wANJHp+qLJe6ao2rg/vYR7Z4I9jWuLwbn78D56E+59KUVj+H/FWi+JrXz9Jv4pwBl0zh0+qnkf5+tbH8/T0ryZRcXZo1TCiiioGFFFFABXPeNPC9t4t8N3OmzgLJt3wS/8APNx0P07fQmuho+nWrpycZJoW6PiO7tprK7mtZkKTQuY5FPZgcEfmK9F+DPhNPEPiVtQvI99lp2HKno8h+6Pwxn8BWL8VIIIPiVrSW+NhlVjj+8UUt+pNeufANYB4KvWTHnG+YSev3Ex+Fe5iKrVDmXUxitT1THGKWj0+lFeDub2CiiiiwBRRRSAKPf07UyWaOCJpZpEjjQZZ3OAB6mvLvGHxq0jSIpLbQguo3gyol5EKH1z/ABfQce9bU6E6jtFCbSOz8X+L9N8H6PJeXsgaUqRBbhvmlf0HoPU9vrXy/c65c+IfGCatqrhpJ51ZuPlUA8KB6DGKpa5r2peIdRe/1S5eed/73AUeijoB7Vlg4bOT7V7WHwypR8zLn95M9jHAori9F8XCJFtr8MVHAlHJH1rr7e5guollglWRG6FT/SuCrRnBu59LQxVOqtHqS0UUVhc6roKKKKYBRRRQAUUUUAFejfCuUb9ShbGMRuP1rzmu3+Gc3laveIWwWgz+TD/GtqL95HNjFemcS3DsPc0lK33j9T/OkrOXxM3h8KCiiipKCiiigAooqC7u4LG3aadwiL+vtTSu7IUpKKuyZmVVYswAAySTjFcvrHi+K3LQ2AEjjjzT91fp61g6z4juNTYxrmK3B4jX+prCzk16NHCpe9I8TF5i37tMsXV3PeTGSeV5HPdj/nFVqKK7UkjyJScndiUZoooEW7O+utPuUubO4lt54zlJI3Ksv0Ir0zw98cdf0wJDqsUOpwDjcx2Sgf7w4P4j8a8poqJ0oTVpIak1sfUejfGbwlqoCz3UmnzH+G6TCg/7y5H54rtbHVNP1JBJY31tcoeQYZlcH8q+J8n1qWKeWBw8UjIw6FTg1xTy6m/hNFUfU+3/AOdFfHVr4z8S2agQa9qSKOi/aXK/lnFXP+Fk+Mf+hgvMf7w/wrD+zX3K9oj65yO/HpXEeMPibofha1kRLmO81LBEdtCwbDf7ZHSvmu/8V+INTUx3utX86HqklwxX8s4rd+HngifxtrRiZnisICGupx156Kv+0ef89aWBhTXPUewnO+iOV1G/udW1K41C7cyTzuZJGx1JrrPh74+ufBOqO7RtcafOQLiEHn/eU9j/ADr6O0zwX4b0myW1tNGshGF2szxB2b6kjLV5v8TPhPYHTJta8O2ot54QXmtYwdjqOSVHYgdhWqxVKp+7a0J5WtT0bQfG3h7xHEjadqlvJIw/1LMEkH/ASc1v5HYg/jXw9kg8cH+VaEGv6zapst9VvYkH8KXDgfoaieXRb91j9qfaQI65yKhuby1sovMurmGBB/FI4X+dfGz+JddkUq+s6gynsblyP51ny3E0775ZXkb1ZiTSWWq+rD2p9X6p8UPB+kgiXWYZ5B/Bagyn/wAdyPzIrz7Xfj/lWj0HSsHtNet0/wCAKf614YaK6KeBpQ1Jc2zovEHjDX/Ez51XUpZo85WIHbGv0Ucf1rnjmkorrjFRVkib3EooopoQverdlf3FhKJLeV42HoeD9RVSik0mrMqMnF3R6DoviqC92wXmIZjwHH3WP9DXSfjmvGxkHiut8PeJ2g2Wt8xaLosh6r9fUVxV8N9qJ7GDzBt8lQ7eigHIBByD0I70V59n1PaTuFFFFIAooooGFdn8NTjxDcdf+PVv/Q0rjK6/4d/8hy5/69j/AOhLWlH4jmxKvTOWvI/KvZ48AbJGXj2NQ1o6/EYfEF+h7XDkfQkms6pn8TNab9xBRRRUlhRRRQHWwyWZIInllYLGg3MTXmuuazLqt0WJ2wqfkT0rpfGl+YbOOzRsGU7nwf4R0/WuD716eEopLmZ4OY4lufs0Jmiiiuw8kSiiigAooooAKKKKACiiigAooooAcozx37CvrT4Z+HU8O+B7GFo8XF0gubgkclnAOPwG0Y9q+YfDNgNU8T6XYEZW4uo42/3SwyfyzX2YoCqFHQDFebmVR8qia0kL1pCM9e9LRXkX7Gx8mfEzw6vhrxzfWsSbbaY/aIOONrc4H0OR+FcbXuv7QenLjRtSVPm/eQO35Mv/ALNXhZ619Hhp89JSOaasxKKKK2JCiiigAooooAKKKKACiiigBaUdaSkoA7fwlrhb/iX3LZ4/dsfTuK6/nuMV4/DM8MqyI2GU5B9K9U0u9GoadBcjGXX5gOx7152LpW95Hv5biHUj7OT1RcooorhPVCiiigArt/hpFv1a8bA+WAD82H+FcRXo/wALYSE1OfbnmNAf++if6VtQV5HJjHanc5rxxbfZ/FN0QMLIFkH4gf1zXO133xRsjDqFlc4GXiKEj/ZOR/M1wNKvHlqNDwc+eimFFFFZHUFHcfWiihbh0Z514wlMmush/wCWSKn6Z/rXPnrW54s/5GC4/wCAf+gisMV7dLSCPksT/FkxKKKK0MAooooAKKKKACiiigAooooAKKKKAOx+Fsay/EnRFf7omLfkpNfWnYZ64r5I+GU62/xG0R26G42f99KV/rX1uepryMx+JG9LYKKKK8w0PKfj8i/8ITYyY+ZdQQA+n7uSvnE19GfH2VR4NsISfma/VgPYI4P/AKEK+c69/A/wUjnqbiUUUV1kBRRRQAUUUUAFFFFABRRRQAUUUUALmu78DXJa0ubcn/VuHGffg/yrhOprr/A2ftN16bB/M1hiUnTZ2YB2rpI7aiiivHPqQooooEFeufDKBYPDUs8gAE1wxBx1AAH9DXkfHWvdfB9qLHwvYQlSGaISHA/vc/1rrwkbs83M52ppGV8TLL7ToAnUZa3kV/wOQf5ivH/5dvpX0FrlouoWFxasOJYSv4np+uK+f5I3ileOQYdSVYe4qsbG0kyMqneDiNoooriPVCjH+FFFAHnvjKHy9bLgcSorZ/T+lc5mu98aWPm2UV2oyYm2tj+6f/r/AM64I17GHnzU0fL46m4VnfqJRRRW5xhRRRQAUUUUAFFFFABRRRQAUUUUAaOiX7aVrlhfp962uElH/AWB/pX2jFKk8McsbBkdQ6sOhB5H86+H6+pPhF4nTXvBkNrLIPtmnAQSgnnb/A3uMcH3FedmNNuCkjWm7Ox39B6enfNFMmmit4HmmkEccalnduigda8dam3Q8K/aC1MPqGkaUrfNFE88gB/vEBf/AEE/nXiZ610vjjxE3ifxff6oCfJeTbAD/DGvC/4/jXM19Jh4clNROabuwooorUkKKKKACiiigAooooAKKKKACiiigBa7nwNAVt7m4I4Z1QZ9uT/OuIQFmwBknsK9T0Wx/s/SYYG+/t3P9TzXNi5qNM9LLKfNV5uxoUUUV5J9EFFFFAdSzp9o1/qNvaJndNIqDHbJwa+gTGIljRFyFQAD0FeR/DrTje+J1nYfu7VC5PueB/M/lXr9z98fSvTwMbRbPn81qc1RRHwjehLfMc9TXivjzTP7N8TzMq7Yrn98nHHPUfnmva7b/V/jXG/ErSDfaIl7EuZLVssB1KNwfy6/nWmJhzQMMBV9nWSfU8goooryD6e4UUUUCIrm3juraSCYZjkXafp/nFeW6pp8um30lvIMbTwf7w7GvV6yde0VNWtflwtygzG3r7V1YatySs9jgx+F9rDmW6PMKSpri3ktpmilQo6nBBqKvVW2h84007MSiiigQUUUUAFFFFAC0UlFAC0lL0pyru7UDSbdho4NdN4R8Sar4W1cappqM6oMTxkEo6ejf40/RvCc13tnvd0UPUL/ABMP6Cu2tbWCzgENvGqRj+Ff61yVsRBLlZ6GHy+dX3paHoWnfGjwfeWay3d3NZTkfNDLA7kHvgqCDXAfEH4pTeKoW0Tw7DMtlKcTSkYaUf3R6L/OqcujabK257KAnOchMZ/KrUFrb2q7beCOJT2RdtcalRi+ZI6Vlk3pJ6HlF5ZXFjOYbiIo47H+lVq9Y1DTLXU4PKuEH+y46qa4LWPDl1pbF9pkgzxIo6fWu6jiY1NHucmJwM6Oq1Rh0tByKK6TgEooooAKKKKACiiigAooooAcfSk70v0q/pOly6pdrDHwvVm9BSbSV2XCEpyUY6s1vCmkG7u/tUqHyIjxkfebtXf1DaWsVlax28K4RBgf1qavHr1faTv0PqMJQ9jTt1CiiisTpCjuKKs2FnJqF/BaQgl5XC/maaV2iZPlTkem/DnTms9De7bKyXTZH+4On9fzru4AHQlwGOepFZ9pbR2dnDbRD93EgQfhxWjbfcP1r26ceWFj5OvU9pNyGqwgG1uSeeKiuRBdW0kEqFo5FKsp7gjB/ninXP8ArB9Khq2k9zJO2q3PB9Z019J1e5snz+7chSf4l7H8sVQr034jaIbi0j1WBMyQ/JLjuvY/gf515l1rxa8OSdmfUYWsq1NPqFFFFZHWFFFFAGLr2gRarGZI9qXKj5WPRvY151c20trM0UqFXU4IIr1+sjXNDh1aAsAFuVHySevsa7cPiHF8sjy8bgozXPDc8xoqa5t5bWdoZkKOhwVPaoa9JO+qPAaadmJRRRQIWilUE1raf4e1DUAGih2of43OB/jUykoq7LhTnPSKuZFKFJ6Cu4tPBFumDdXLSHusY2j8zW9aaNYWWDDaxhv7xXJ/M1hPFwWx308tqy1locDp/h2/1AgrEY4z1kkGB+HrXZ6V4cstMxIVE0//AD0ccA+w7Vs0VxVcVOenQ9ShgKVPV6sOe/P9aKKK5jusFFFFAahSEBgQQCG4Oeh+tLRQDSejOb1Xwha3YaS0IglPO3+A/wCFcdf6Reac5W4hKjsw5U/jXqtI6q6FXUMp6hhkGuunipw31POxOXU6msdGeOGkGO9ekXvhTTbrLRo1vIe6EY/L/Cueu/Bd9Dlrd45l9PuH9eP1rthiYS8jyquArU9bXOZOOxpKvXWl31mCZ7WSNR/EUOPzqketbKSexxyjKL95WG0UUUyRaKUCtXRtDm1abC5WJfvyEdKmUlFXZdOnKpLljuV9P0y51O4EMCZJ6k9FHqTXo+k6VBpNp5UXLn/WORgsf8KmsbC3063EMEYRf4j3b6nvVqvMr4hz0Wx9Dg8FGj7z3CiiiuU9AKKKKADGTx16V3/w10Nri5k1V1+SMGOInux6kfhXDWlrLfXUVrApaSVwiqPU8Zr6A0XTItI0i2sogMRqAxA6t3P5114SnzSuzy8yr+zhyLqWPsz+q05WEA2tyTzxViql1/rB9K9Q+fC6/wBYPpUNWoAHQlxuOep5qXy0/uL+VAGdLBFcwvBMoaKVSjKR1B614f4j0aXQtZntGU7cl4mP8S9Rz9OPwr350UISFAIBwQK5DxnoP9t6UWjGbuAF4v8AaHcfj/OubE0ueN+p34DEeynZ7M8bopWBVirDaV4IPUUleU/M+lTQUUUUgCiiigDnvFGjLfWjXUKDz4hkkD7y+leeEFTivZOx96848T6X/Z+pM0Y/cy5ZD6eor0sJWv7rPEzLDW/eRMHvQBk0d6B1rtPH6nY+EtEiuIzfXChwrYjQ9Mjua7TjGBjHbFc/4OuEl0QRgjdHIQR39c/rXQdznrXkYmTdRo+mwUIqinEKKKK5ztCiiigAooooAKKKKACiiigAooooAKBx0oooAbIiSxtHIoZGGCCOtea+INKXStS8qNiY3G9QeoGTx+lemdse3NcH43YHVIFyMiEZHpya7MHKXPY8zNIRdPme5ytFFL3r1D54t6fZyX95HbRjLO2PoO5r1KxsodPtEt4Fwqjk+p9a5zwbpnlQvfOoDOdseR0966uvMxdW8uVH0GW4dQjzvcKKKK4j07BRRRQMKKK1vDmhza/q8VrGCIvvTP8A3VH9e341UYuUkiKlRU4uTOv+G+gHzf7XuUxzsgUj8z+tepiqltaQWVkkMEapHGm1AB0FR+Y/99vzr2aVNQjY+VxFZ1qjky/VS6/1g+lR+Y/99vzqxAA6EuNxz1PNaGAtr/qz9amqurCAbW5J54p32lPRvyoAkk/1bfQ1Q9MHB9ferRnVwVAbJ45pn2Z/VaAPLPHvhn7PM2r2kZ8lyPPRR91v72PT1rhK+iZ7JZ4nilCOjqQynuK8Z8W+GJfD2oZQF7KU5icc4/2T6V52Ko295Hu4DFqS9nPc5yiiiuHc9cKKKKACs3XdMGqac8QA81MvGff0/GtKjv79aqEnF3RFSKnFxZ49NE8UhR1KsDgg9jUfSvRNe8Mx6kTcW+2K4PUHo/8A9euNudE1C0crLaS8dwpI/MV69KvCa3Pma+EqUpaLQn8PaqdM1FWY/uZCFkHt6/hXpmcgEd68misLt3+W2mY/7MZNem6UJBpVsJkKSCMKwbrxx/SuTGRi2pI9LLJzs4yLlFFFcJ7AUUUUCCiiigAooooAKKKKACiiigAooooC5V1C+i06ykuJj8qjhe7GvL7+8kv7yS5lOXc59h7V3HizT7y/hgFqhkVNxZQR7dq4ptKv0ODZ3GfTyjXpYSMVG73PBzGdScuVLQo9qvaXp76lfRwRg/MRub+6O5q1Y+HdRvJABayIueWkG0D8+td1o+iwaRblY/nmcYkkxj8B7VtWrxitDHC4KdSSbWhft4EtreOCMYSNdoFSUfSivIbbd2fRqPKrIKKKKQwooo/z/hR5Bckt4Jbm4SCBDJK7BVQDqTXuHhHw7H4e0lYiA1zIN0z+p9PoP8awPAvhVdMRNTv4/wDSpFzHGR/qlPc+5rvftKejflXp4WjyrmZ89mGL9o+SOxJJ9xvoaoVaM6uNoDZPHIpn2Z/Va7DzCCrdr/qz9aj+zP6rTlYQDa3JPPFADLn/AFg+lQ1Ndf6wfSoaAHR/6xfqKv1Qj/1i/wC8Kv0AJjisvWLC31O0e0uow8TryMcg+o+lalVbr/WD6UmrqzGm4vmW54V4h8P3OgX7QyAvAx/dTY4Ye/vWPXvep6Xa6vZPa3cYZG6Hup9R71474h8OXegXnlyAvA5/dzAcN7H0NeZiMO4O8dj6LBY1VFyy3MaiiiuQ9HbcKKKKAsFGBRRQJq+4UUUU7glbZBRRRSKCiiigQUUUUAFFFFABRRRQAUUUUAFFFFAWCiiigOW+4UUUUAkFFFFABRRRzngEn2GaFroDelw/zivR/AngsuY9W1KIgLzDEw/8eP8AntTfBngXzTFqWqx4UfNFbt39C3+FeoKoCgDgDt6V34bD/akeJj8c2uSmV7n/AFgHbHFQ1Ndf60fSoa9A8bQdH/rF+oq/VCP/AFi/7wq/QAVUuv8AWD6Vbqpdf6wfSgCSAB0Jcbjnqeal8tP7i/lUdr/qz9amoAjdFCMQoBAPIFVPMf8Avt+dXZP9W30NUKAHeY/99vzqxAA6EuNxz1PNVat2v+rP1oAf5af3V/Kqeo6da6jZS2t1CkkTrgqR+vtV+mv/AKtvoaTV1ZjUmndHiHibwfc6JIbiDM9iTxJjmP8A3hXMfXrX0M6JImyRQykYZT0Irz3xL8Pw2670deerWx4B/wB30+lefXwttYnt4PMOb3ap53RT5YpIJGjlRkdTghhgg0yuF6bnsJpq4UUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAXCij9fatLR9Bv9cuRFZwkr/FK3CIPUmqjFydkTOcYR5nsUIopJ5ViiRpJGOFVRkk+1eo+E/ASWKrf6sivcgZSE8rGff1Nb3hvwdY6BGJABNdkYaZh0/3fSuibAjbtwa9GhhlH3pbnhYvMHO8aexU3v/eYe2aN7jo7fnTfSiuw8paFqAB0Jcbjnqeal8tP7i/lUdr/AKs/WpqAI3RQjEKAQDyBVTzH/vt+dXZP9W30NUKAHeY/99vzqxAA6EuNxz1PNVat2v8Aqz9aAGqwgG1uSeeKd9pT0b8qiuf9YPpUNAFozq4KgNk8c0z7M/qtRR/6xfqKv0AVfsz+q05WEA2tyTzxViqlz/rB9KAJftKejflSGdXBUBsnjmqtOj/1i/UUAS/Zn9Vo+zP6rVqigDmtd8LabrMe25iC3GMrNEPmH19RXlmt+EdS0Rmcxme1/hnQZGPp2r2265kH0qEgFSCAc+vQ1hVw8J+p24bG1KLt0PnjsP8AOaK9e1nwHpmqM0lsPsdwxzmP7p+o/wD1VwGr+DdY0Ys81uZbcf8ALWH5h+PcfjXn1MPOB7dDG0qul7MwKKUjHYikrnOzfYKKKKAuFFFFABRRRQAUUUUAFFFFABRRRQAUUUUBdBRRUkFvLcyiKGN5HboqKWP6UJX0QnJRV2R1JDDLcSiKGNpJG6IoJJrsdF+Hd/esj6k/2SJiMoOZD/h+tel6N4c0zQ48Wduofo0jcufqa6qWFlLVnnYjMadPSGrPP/D/AMNrm423OrP5UfUQD7x+p7V6RY2lrpVstvbwJFGOQIxxWhVS5/1o+lehTpRgeJXxNSs/eZL9oT0b8qQzq4KgNk8ciqtOj/1i/UVqYEv2Z/VaPsz+q1aooArqwgG1uSeeKd9pT0b8qiuf9YPpUNAFozq4KgNk8c0z7M/qtRR/6xfqKv0AVfsz+q05WEA2tyTzxViql1/rB9KAC6/1g+lQ1ZgAdTvG456nmpvKT+4v5UAUo/8AWL/vCr9RsihWIUAgHkCqnmP/AH2/OgC/VS6/1g+lR+Y/99vzqeAB1O8bjnqeaAK1Oj/1i/7wq75Sf3F/KmsihWIUAgHkCgCSiqHmP/fb86PMf++350ASXX+sH0qGrMADqd43HPU81N5Sf3F/KgClH/rF+oq8RketMZFCsQoBAPIFVPMf++350eoLe5k6r4L0XVizTWoimbrLCdjH+h/EVxGq/DK8t3J0+6jnXqEl+Rvpnof0r03zH/vt+dWIAHjJYBjnvzWM6MJ7o6aWLrU9mfP19oWqabn7XYzRgfxbPl/PpWfz6V9KmGMjBRfyrGvvDGjXwYXGnW5cj76rtb8xg1zSwS+yz0aebNaSR4HRXrN38NNKlG+GSeA+gfcP1Gf1rFk+GcsmTa6khHpLGR/ImuaVCSO6GOpvc4CiuquPAOp24JNzaHHozf8AxNYM2nSw/edDg9s1nySN1XiynRT/AC2PORxR5bFQcjNHs2V7aAyitSy0C5vmAikhGf7xI/oa6G0+GupXGPNvLVF/2SzH/wBBFNU5MiWIhE4qivTbX4WW+4C51KRge0Ue0/mSf5VuW/w70G0Tc0DzsB1lkP8ATFaRw8mctTMKa2PGEieVgqIzseigHn8q6DT/AARr2o4K2RhQ/wAdx8g/Lk165a2VnYLttbaKAf8ATNAKteY/99vzrphg0viOGrm0vsI4Sw+GNtbsraldPO2MmOP5V/Pqa66w0qx0uLy7O1jhB6lV5P49T+Na0ADxkt8xz35qXyk/uL+VdUKUIbI4KuKq1PiZSj++g7bhV+o2RQrEKAQDyBVTzH/vt+daGBfqpdf6wfSo/Mf++351PAA6neNxz1PNAFanR/6xf94Vd8pP7i/lTWRQrEKAQDyBQBJRVDzH/vt+dHmP/fb86AJLr/WD6VDVmAB1O8bjnqeam8pP7i/lQBSj/wBYv+8Kv1GyKFYhQCAeQKqeY/8Afb86AL9VLr/WD6VH5j/32/Op4AHQlxuOep5oA//Z" alt="" />m4d135</a>
+-    <nav class="choix" aria-label="Menu principal">
+-      <button type="button" class="gros" data-aller="course">Course</button>
+-      <button type="button" class="gros" data-aller="chrono">Chrono</button>
+-      <button type="button" class="gros" data-aller="duo" id="b-duo">À deux<small id="t-manettes" class="detecte" hidden>2 manettes</small></button>
+-      <button type="button" class="gros" data-aller="enligne">En ligne</button>
+-      <button type="button" class="discret" data-aller="reglages">Réglages</button>
++    <p class="arcade-surtitre">Choisissez votre mode</p>
++    <nav class="choix arcade-modes" aria-label="Menu principal">
++      <button type="button" class="gros mode-arcade" data-aller="course"><span class="mode-numero" aria-hidden="true">01</span><span>Course<small>Vous et onze rivaux</small></span><span class="mode-fleche" aria-hidden="true">↗</span></button>
++      <button type="button" class="gros mode-arcade" data-aller="chrono"><span class="mode-numero" aria-hidden="true">02</span><span>Chrono<small>La piste. Le temps. Votre fantôme.</small></span><span class="mode-fleche" aria-hidden="true">↗</span></button>
++      <button type="button" class="gros mode-arcade" data-aller="duo" id="b-duo"><span class="mode-numero" aria-hidden="true">03</span><span>À deux<small>Écran partagé · deux pilotes</small><small id="t-manettes" class="detecte" hidden>2 manettes</small></span><span class="mode-fleche" aria-hidden="true">↗</span></button>
++      <button type="button" class="gros mode-arcade" data-aller="enligne"><span class="mode-numero" aria-hidden="true">04</span><span>En ligne<small>Retrouvez les autres pilotes</small></span><span class="mode-fleche" aria-hidden="true">↗</span></button>
++      <button type="button" class="discret arcade-reglages" data-aller="reglages">Réglages <span aria-hidden="true">↗</span></button>
+     </nav>
+     <p id="titre-attente" class="attente" hidden><span id="titre-attente-texte">Démo dans 5 s</span><i><b></b></i></p>
+     <p class="pied-titre">Clavier, souris, manette ou écran tactile</p>
+@@ -182,6 +183,10 @@
+           <label><input type="radio" name="vuePret" value="poursuite"><span>Poursuite</span></label>
+         </fieldset>
+       </div>
++      <div class="options options-troll-prets" id="pr-troll-choix">
++        <fieldset class="choix-troll" id="pr-troll-0"><legend>Troll · Joueur 1</legend><label class="select-arcade" for="pr-geste-0"><span>Geste</span><select id="pr-geste-0" name="gestePilote0"><option value="majeur">Doigt d’honneur</option><option value="poing">Poing levé</option><option value="salut">Salut</option></select></label><label class="select-arcade" for="pr-klaxon-0"><span>Klaxon</span><select id="pr-klaxon-0" name="klaxonPilote0"><option value="classique">Classique</option><option value="ancien">Ancien · rétro</option><option value="mariage">Mariage · fête</option></select></label><button type="button" class="discret" data-essai-klaxon="0">Écouter le klaxon</button></fieldset>
++        <fieldset class="choix-troll" id="pr-troll-1" hidden><legend>Troll · Joueur 2</legend><label class="select-arcade" for="pr-geste-1"><span>Geste</span><select id="pr-geste-1" name="gestePilote1"><option value="majeur">Doigt d’honneur</option><option value="poing">Poing levé</option><option value="salut">Salut</option></select></label><label class="select-arcade" for="pr-klaxon-1"><span>Klaxon</span><select id="pr-klaxon-1" name="klaxonPilote1"><option value="classique">Classique</option><option value="ancien">Ancien · rétro</option><option value="mariage">Mariage · fête</option></select></label><button type="button" class="discret" data-essai-klaxon="1">Écouter le klaxon</button></fieldset>
++      </div><p class="note-pneus">Troll déclenche ensemble votre klaxon et votre geste.</p>
+       <button type="button" class="discret" id="pr-reglages">Commandes et autres réglages</button>
+       <ul id="pr-pilotes" class="liste-pilotes" aria-label="Machines prêtes"></ul>
+       <p id="pr-etat" class="note-enligne" role="status" aria-live="polite"></p>
+@@ -190,21 +195,30 @@
+   </section>
+ 
+   <!-- Préparation : chaque condition est choisie avant la course. -->
+-  <section id="preparation" class="ecran preparation menu-coquille" hidden>
++  <section id="preparation" class="ecran preparation menu-coquille arcade-preparation" hidden>
+     <div class="menu-entete">
+       <header class="entete">
+-        <button type="button" class="retour" data-aller="titre" aria-label="Retour">←</button>
+-        <div><h2 id="p-titre">Course</h2><p class="sous">Préparez votre départ.</p></div>
++        <button type="button" class="retour" id="p-retour" aria-label="Étape précédente">←</button>
++        <div><p class="arcade-surtitre">Préparation de la course</p><h2 id="p-titre">Course</h2></div><span id="p-etape" class="arcade-compteur">01 / 04</span>
+       </header>
+     <nav class="onglets-menu" data-menu-tabs role="tablist" aria-label="Préparation de la course">
+-      <button type="button" id="onglet-p-piste" role="tab" data-menu-tab="p-piste" aria-controls="p-piste" aria-selected="true" tabindex="0">Circuit</button>
+-      <button type="button" id="onglet-p-conditions" role="tab" data-menu-tab="p-conditions" aria-controls="p-conditions" aria-selected="false" tabindex="-1">Conditions</button>
+-      <button type="button" id="onglet-p-pilotes" role="tab" data-menu-tab="p-pilotes" aria-controls="p-pilotes" aria-selected="false" tabindex="-1">Pilotes</button>
++      <button type="button" id="onglet-p-piste" role="tab" data-menu-tab="p-piste" aria-controls="p-piste" aria-selected="true" tabindex="0"><span aria-hidden="true">01</span> Circuit</button>
++      <button type="button" id="onglet-p-conditions" role="tab" data-menu-tab="p-conditions" aria-controls="p-conditions" aria-selected="false" tabindex="-1"><span aria-hidden="true">02</span> Conditions</button>
++      <button type="button" id="onglet-p-pilotes" role="tab" data-menu-tab="p-pilotes" aria-controls="p-pilotes" aria-selected="false" tabindex="-1"><span aria-hidden="true">03</span> Pilotes</button>
++      <button type="button" id="onglet-p-bilan" role="tab" data-menu-tab="p-bilan" aria-controls="p-bilan" aria-selected="false" tabindex="-1"><span aria-hidden="true">04</span> Départ</button>
+     </nav>
+     </div>
+     <div class="panneaux-menu">
+       <div id="p-piste" class="panneau-menu" role="tabpanel" data-menu-panel aria-labelledby="onglet-p-piste">
+-    <div id="circuits" class="circuits" role="radiogroup" aria-label="Circuit"></div>
++    <div class="selection-circuit">
++      <article class="apercu-circuit">
++        <div class="apercu-entete"><div><p id="p-circuit-lieu" class="arcade-surtitre"></p><h3 id="p-circuit-nom"></h3></div><span id="p-circuit-numero" class="arcade-compteur"></span></div>
++        <canvas id="p-trace-3d" width="720" height="400" role="img" aria-label="Tracé du circuit en trois dimensions"></canvas>
++        <div class="apercu-legende"><span>Tracé réel · relief</span><button type="button" id="p-rotation" aria-pressed="false">Figer le tracé</button></div>
++        <dl class="chiffres-circuit"><div><dt>Distance</dt><dd><b id="p-circuit-km"></b> km</dd></div><div><dt>Virages</dt><dd><b id="p-circuit-virages"></b></dd></div><div><dt>Amplitude du relief</dt><dd><b id="p-circuit-relief"></b> m</dd></div></dl>
++      </article>
++      <div class="catalogue-circuits"><p class="arcade-surtitre">Votre destination</p><div id="circuits" class="circuits" role="radiogroup" data-menu-axis="vertical" aria-label="Circuit"></div></div>
++    </div>
+     <div class="options">
+       <fieldset id="o-tours">
+         <legend>Tours</legend>
+@@ -306,6 +320,16 @@
+         <label><input type="radio" name="partage" value="haut-bas"><span>L’un sur l’autre</span></label>
+         <label><input type="radio" name="partage" value="cote"><span>Côte à côte</span></label>
+       </fieldset>
++      <fieldset class="choix-troll" id="o-troll-0"><legend>Troll · Joueur 1</legend>
++        <label class="select-arcade" for="p-geste-0"><span>Geste</span><select id="p-geste-0" name="gestePilote0"><option value="majeur">Doigt d’honneur</option><option value="poing">Poing levé</option><option value="salut">Salut</option></select></label>
++        <label class="select-arcade" for="p-klaxon-0"><span>Klaxon</span><select id="p-klaxon-0" name="klaxonPilote0"><option value="classique">Classique</option><option value="ancien">Ancien · rétro</option><option value="mariage">Mariage · fête</option></select></label>
++        <button type="button" class="discret" data-essai-klaxon="0">Écouter le klaxon</button><p class="note-pneus">Un appui sur Troll : votre son et votre geste en même temps.</p>
++      </fieldset>
++      <fieldset class="choix-troll" id="o-troll-1" hidden><legend>Troll · Joueur 2</legend>
++        <label class="select-arcade" for="p-geste-1"><span>Geste</span><select id="p-geste-1" name="gestePilote1"><option value="majeur">Doigt d’honneur</option><option value="poing">Poing levé</option><option value="salut">Salut</option></select></label>
++        <label class="select-arcade" for="p-klaxon-1"><span>Klaxon</span><select id="p-klaxon-1" name="klaxonPilote1"><option value="classique">Classique</option><option value="ancien">Ancien · rétro</option><option value="mariage">Mariage · fête</option></select></label>
++        <button type="button" class="discret" data-essai-klaxon="1">Écouter le klaxon</button><p class="note-pneus">Les concurrents IA choisissent leurs gestes et klaxons au hasard.</p>
++      </fieldset>
+       <fieldset id="o-pilotage">
+         <legend>Pilotage</legend>
+         <p class="note-graphismes">Vue, boîte de vitesses et commandes de chaque pilote.</p>
+@@ -313,12 +337,19 @@
+       </fieldset>
+     </div>
+       </div>
++      <div id="p-bilan" class="panneau-menu bilan-arcade" role="tabpanel" data-menu-panel aria-labelledby="onglet-p-bilan" hidden>
++        <p class="arcade-surtitre">La grille vous attend</p><h3>Prêt à prendre la piste ?</h3>
++        <div class="bilan-grille"><article><span class="etiquette">Destination</span><strong id="p-bilan-circuit"></strong><p id="p-bilan-course"></p></article><article><span class="etiquette">Conditions</span><strong id="p-bilan-saison"></strong><p id="p-bilan-meteo"></p></article><article><span class="etiquette">Pilotes</span><strong id="p-bilan-joueurs"></strong><p id="p-bilan-troll"></p></article></div>
++        <p class="note-pneus">Les choix restent modifiables avec LB / RB ou les étapes ci-dessus.</p>
++      </div>
+     </div>
+     <footer class="actions depart-fixe">
+       <div class="resume-depart"><p id="p-resume" class="resume-course"></p><p id="p-record" class="record"></p></div>
+-      <button type="button" class="gros principal" id="b-depart">Départ</button>
++      <button type="button" class="discret" id="b-precedent">Menu</button>
++      <button type="button" class="gros principal" id="b-suivant">Conditions →</button>
++      <button type="button" class="gros principal" id="b-depart" hidden>Départ →</button>
+     </footer>
+-    <p class="aide-manette"><span><kbd>↑ ↓</kbd> Parcourir</span><span><kbd>← →</kbd> Régler</span><span><kbd>A</kbd> Valider</span><span><kbd>B</kbd> Retour</span><span><kbd>LB / RB</kbd> Onglets</span></p>
++    <p class="aide-manette"><span><kbd>↑ ↓</kbd> Parcourir</span><span><kbd>← →</kbd> Régler</span><span><kbd>A</kbd> Valider</span><span><kbd>B</kbd> Retour</span><span><kbd>LB / RB</kbd> Étapes</span></p>
+   </section>
+ 
+   <!-- Réglages persistants, séparés des conditions de course. -->
+diff --git a/src/navigation-menu.js b/src/navigation-menu.js
+index 92107f2..76da7f5 100644
+--- a/src/navigation-menu.js
++++ b/src/navigation-menu.js
+@@ -34,6 +34,7 @@
+     const panneau = panneaux.find(p => p.id === id || p.dataset.menuPanel === id);
+     if (!cible || !panneau) return false;
+     const nav = cible.closest('[data-menu-tabs]'), pairs = liste.filter(t => t.closest('[data-menu-tabs]') === nav);
++    const changement = cible.getAttribute('aria-selected') !== 'true';
+     // Inclure aussi les onglets désactivés pour ne jamais conserver deux panneaux sélectionnés.
+     for (const t of nav.querySelectorAll(TAB)) {
+       const actif = t === cible;
+@@ -43,6 +44,10 @@
+     }
+     if (!pairs.length) return false;
+     if (focus) focaliser(cible);
++    if (changement && zone.dispatchEvent) {
++      const Evenement = zone.ownerDocument.defaultView.Event;
++      zone.dispatchEvent(new Evenement('menuongletchange', { bubbles: false }));
++    }
+     return true;
+   }
+ 
+@@ -204,10 +209,15 @@
+     const gs = groupes(zone), actif = zone.ownerDocument.activeElement, i = gs.findIndex(g => g.elements.includes(actif));
+     const el = i >= 0 ? actif : selection(gs[0]);
+     if (!el) return true;
+-    if (valider) { focaliser(el); if (!el.readOnly) el.click(); return true; }
++    if (valider) {
++      focaliser(el);
++      if (!el.readOnly && !(options.valider && options.valider(el))) el.click();
++      return true;
++    }
+     const sens = d === 12 || d === 14 ? -1 : 1;
+     if (i < 0) { focaliser(el); return true; }
+-    if ((d === 14 || d === 15) && ajuster(zone, el, gs[i], sens)) { focaliser(zone.ownerDocument.activeElement); return true; }
++    const vertical = gs[i].type === 'choix' && gs[i].cle && gs[i].cle.dataset.menuAxis === 'vertical';
++    if ((vertical ? d === 12 || d === 13 : d === 14 || d === 15) && ajuster(zone, el, gs[i], sens)) { focaliser(zone.ownerDocument.activeElement); return true; }
+     focaliser(selection(gs[(i + sens + gs.length) % gs.length]));
+     return true;
+   }
+diff --git a/src/style.css b/src/style.css
+index 8ae251a..3c515a9 100644
+--- a/src/style.css
++++ b/src/style.css
+@@ -22,7 +22,7 @@
+ * { box-sizing: border-box; }
+ html, body { margin: 0; height: 100%; background: var(--encre); color: var(--papier); overflow: hidden; }
+ body { font: 15px/1.4 var(--f-texte); -webkit-font-smoothing: antialiased; touch-action: none; user-select: none; -webkit-user-select: none; }
+-button, input { font: inherit; color: inherit; }
++button, input, select { font: inherit; color: inherit; }
+ [hidden] { display: none !important; }
+ .texte-accessible { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+ .aide-reglage { margin: 8px 0 0; max-width: 55ch; font-size: 12px; line-height: 1.5; color: var(--papier-2); }
+@@ -617,3 +617,130 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
+   background: rgba(8, 9, 11, .82); border: 1px solid var(--trait); border-left: 3px solid var(--ambre); border-radius: 6px;
+   color: var(--papier); font: 500 11px/1.55 ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+   white-space: pre; font-variant-numeric: tabular-nums; }
++
++/* Arcade : écrans opaques, circuit miniature, gros choix accessibles depuis le canapé. */
++.arcade-titre, .arcade-preparation, #enligne, #prets, #reglages {
++  background: radial-gradient(ellipse at 90% 0, #28313a 0, transparent 55%), #10151b;
++}
++.arcade-titre { justify-content: center; gap: 20px; padding-left: max(var(--marge), calc((100vw - 1180px)/2)); padding-right: max(var(--marge), calc((100vw - 1180px)/2)); }
++.arcade-titre::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .18; background: linear-gradient(132deg, transparent 58%, #e0301e 58%, #e0301e 59%, transparent 59%, transparent 61%, #e0ab65 61%, #e0ab65 61.3%, transparent 61.3%); }
++.arcade-titre > * { position: relative; }
++.arcade-titre .marque { --t-marque: clamp(74px, 11vw, 154px); margin-bottom: 22px; }
++.arcade-surtitre { margin: 0 0 9px; color: #a8b9c4; font: 700 11px/1.4 var(--f-texte); text-transform: uppercase; letter-spacing: .17em; }
++.arcade-titre > .arcade-surtitre { margin-bottom: -8px; }
++.arcade-modes { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; width: 100%; max-width: 1080px; }
++.arcade-modes .mode-arcade { display: grid; grid-template-columns: 40px 1fr 24px; gap: 15px; align-items: center; min-width: 0; width: 100%; min-height: 104px; padding: 20px 24px; border: 1px solid #3b454e; border-left: 5px solid #4a5560; background: #1b242c; font-size: clamp(28px, 3.3vw, 42px); }
++.arcade-modes .mode-arcade:first-child { border-left-color: var(--rouge); background: linear-gradient(110deg, #3b231f, #1b242c); }
++.arcade-modes .mode-arcade:hover, .arcade-modes .mode-arcade:focus-visible { border-color: #eab261; background: #29313a; transform: none; outline: 2px solid #eab261; outline-offset: 2px; }
++.mode-numero { color: #71818d; font: 700 18px/1 var(--f-texte); font-variant-numeric: tabular-nums; }
++.mode-fleche { color: #eab261; font-size: 26px; }
++.arcade-modes .mode-arcade small { display: block; margin: 8px 0 0; color: #aab7c1; font: 500 13px/1.3 var(--f-texte); text-transform: none; letter-spacing: .01em; }
++.arcade-modes .mode-arcade small.detecte { color: #eab261; }
++.arcade-modes .arcade-reglages { min-height: 44px; padding-left: 0; grid-column: 1 / -1; width: max-content; }
++.arcade-reglages span { margin-left: 12px; color: #eab261; }
++.arcade-titre .pied-titre { font-size: 12px; margin-top: 0; }
++.arcade-preparation .menu-entete, .arcade-preparation .panneaux-menu, .arcade-preparation .depart-fixe, .arcade-preparation .aide-manette { max-width: 1320px; }
++.arcade-preparation .entete { margin-bottom: 18px; }
++.arcade-preparation .entete h2 { font-size: clamp(27px, 3.3vw, 42px); }
++.arcade-preparation .entete .arcade-surtitre { margin-bottom: 3px; }
++.arcade-compteur { margin-left: auto; color: #9babb7; font: 600 13px/1 var(--f-texte); font-variant-numeric: tabular-nums; white-space: nowrap; letter-spacing: .1em; }
++.arcade-preparation .onglets-menu { gap: 8px; padding-bottom: 0; border: 0; }
++.arcade-preparation .onglets-menu button { flex: 1; border-radius: 2px; min-height: 46px; background: #1b252e; padding: 10px 14px; text-align: left; }
++.arcade-preparation .onglets-menu button > span { font-size: 12px; margin-right: 9px; opacity: .6; font-variant-numeric: tabular-nums; }
++.arcade-preparation .onglets-menu button[aria-selected="true"] { border-color: #e24b37; background: #983526; box-shadow: inset 0 -3px #f0a758; }
++.selection-circuit { display: grid; grid-template-columns: minmax(0,1.8fr) minmax(250px,.85fr); gap: 22px; align-items: stretch; }
++.apercu-circuit { min-width: 0; overflow: hidden; background: #0c1219; border: 1px solid #3b4a55; border-radius: 3px; }
++.apercu-entete { display: flex; align-items: flex-start; gap: 18px; padding: 20px 22px 0; }
++.apercu-entete .arcade-surtitre { font-size: 10px; }
++.apercu-entete h3 { margin: 0; color: #f2ecdf; font: italic 850 clamp(25px, 3vw, 42px)/1.05 var(--f-titre); text-transform: uppercase; overflow-wrap: anywhere; }
++#p-trace-3d { display: block; width: 100%; height: clamp(195px, 31vh, 370px); margin: 8px 0 0; }
++.apercu-legende { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 0 20px; color: #9baeba; font-size: 11px; }
++.apercu-legende button { min-height: 36px; padding: 7px 11px; border: 1px solid #40525e; border-radius: 2px; background: #17222b; cursor: pointer; font-size: 11px; }
++.apercu-legende button:focus-visible { outline: 3px solid var(--ambre); outline-offset: 2px; }
++.chiffres-circuit { display: grid; grid-template-columns: 1fr .85fr 1.25fr; gap: 8px; margin: 12px 0 0; padding: 16px 22px; border-top: 1px solid #2a3741; }
++.chiffres-circuit > div { min-width: 0; }
++.chiffres-circuit dt { color: #90a0ad; font-size: 10px; text-transform: uppercase; letter-spacing: .08em; }
++.chiffres-circuit dd { margin: 6px 0 0; color: #b5c3cb; font-size: 12px; }
++.chiffres-circuit b { color: #efe8da; font: 750 23px/1 var(--f-titre); font-variant-numeric: tabular-nums; }
++.catalogue-circuits { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
++.catalogue-circuits > .arcade-surtitre { flex: none; margin-bottom: 10px; }
++.arcade-preparation .circuits { display: flex; flex-direction: column; flex: 1 1 0; gap: 7px; min-height: 200px; max-height: 515px; overflow-y: auto; scrollbar-width: thin; padding: 3px 8px 3px 3px; overscroll-behavior: contain; }
++.arcade-preparation .carte-circuit { display: grid; grid-template-columns: 26px minmax(0,1fr) 72px; grid-template-rows: auto auto; column-gap: 9px; row-gap: 3px; flex: none; min-height: 67px; padding: 11px 10px; border: 1px solid #38444f; border-left: 3px solid #38444f; background: #19232c; border-radius: 2px; }
++.arcade-preparation .carte-circuit .circuit-rang { grid-row: 1 / 3; align-self: center; font-size: 11px; font-variant-numeric: tabular-nums; color: #8296a6; }
++.arcade-preparation .carte-circuit .nom { grid-column: 2; font-size: 22px; line-height: 1; white-space: normal; }
++.arcade-preparation .carte-circuit .fiche { grid-column: 2; font-size: 10px; line-height: 1.4; color: #99acba; }
++.arcade-preparation .carte-circuit canvas { grid-column: 3; grid-row: 1 / 3; align-self: center; width: 72px; height: 42px; margin: 0; }
++.arcade-preparation .carte-circuit[aria-checked="true"] { border-color: #eab261; border-left-width: 3px; background: #3b2d24; }
++.arcade-preparation .carte-circuit:hover, .arcade-preparation .carte-circuit:focus-visible { transform: none; outline: 2px solid #eab261; outline-offset: 1px; }
++.arcade-preparation #p-piste > .options { margin-top: 15px; gap: 12px; }
++.arcade-preparation #p-piste > .options fieldset { padding: 8px 14px 7px; }
++.arcade-preparation #p-piste > .options label span { padding: 9px 13px; min-height: 34px; font-size: 15px; }
++.arcade-preparation .depart-fixe { gap: 12px; padding-top: 12px; margin-top: 0; }
++.arcade-preparation .depart-fixe .gros { min-width: 210px; font-size: 29px; padding: 15px 19px; border-radius: 2px; }
++.arcade-preparation #b-precedent { padding: 12px; font-size: 13px; min-height: 44px; }
++.arcade-preparation .resume-depart { flex: 1; }
++.arcade-preparation .resume-course { font-size: 13px; }
++.arcade-preparation .record { font-size: 11px; }
++.choix-troll .select-arcade { display: grid; grid-template-columns: 70px minmax(0,1fr); align-items: center; gap: 10px; width: 100%; margin: 0 0 10px; }
++.choix-troll .select-arcade > span { min-width: 0; padding: 0; margin: 0; min-height: 0; border: 0; background: none; text-align: left; font: 500 13px/1.4 var(--f-texte); text-transform: none; }
++.select-arcade select { min-width: 0; width: 100%; min-height: 44px; padding: 9px 12px; border: 1px solid #54616d; border-radius: 3px; background: #1b2630; color: #f2ecdf; cursor: pointer; }
++.select-arcade select:focus-visible { outline: 3px solid #eab261; outline-offset: 2px; }
++.choix-troll .discret { font-size: 13px; padding: 8px 12px; }
++.options-troll-prets > fieldset { flex: 1 1 260px; border: 1px solid #40505d; padding: 16px; }
++.bilan-arcade { padding: 25px 0; }
++.bilan-arcade h3 { margin: 10px 0 32px; font: italic 800 clamp(28px, 4.8vw, 62px)/1.1 var(--f-titre); text-transform: uppercase; }
++.bilan-grille { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; }
++.bilan-grille article { padding: 24px; border: 1px solid #3f505d; border-top: 3px solid #d84c36; background: #19232c; }
++.bilan-grille strong { display: block; margin: 20px 0 10px; font: 750 27px/1.1 var(--f-titre); }
++.bilan-grille p { margin: 0; color: #aebdca; font-size: 14px; line-height: 1.6; white-space: pre-line; }
++#jeu[data-ecran="titre"] #vue-course, #jeu[data-ecran="preparation"] #vue-course,
++#jeu[data-ecran="enligne"] #vue-course, #jeu[data-ecran="prets"] #vue-course, #jeu[data-ecran="reglages"] #vue-course { visibility: hidden; }
++@media (min-width: 1600px) { .arcade-preparation { --marge: 4vh; } }
++@media (max-width: 850px) {
++  .selection-circuit { grid-template-columns: minmax(0,1.3fr) minmax(210px,1fr); gap: 12px; }
++  .arcade-preparation .carte-circuit { grid-template-columns: 21px minmax(0,1fr); }
++  .arcade-preparation .carte-circuit canvas { display: none; }
++  .arcade-preparation .carte-circuit .nom { font-size: 20px; }
++  .apercu-entete { padding: 16px 16px 0; }
++  .chiffres-circuit { padding: 13px 16px; }
++}
++@media (max-width: 600px) {
++  .arcade-titre { gap: 14px; justify-content: flex-start; padding-top: max(36px, env(safe-area-inset-top)); }
++  .arcade-titre .marque { --t-marque: clamp(65px, 16vw, 96px); margin-bottom: 16px; }
++  .arcade-modes { grid-template-columns: 1fr; gap: 9px; }
++  .arcade-modes .mode-arcade { min-height: 84px; padding: 15px 18px; grid-template-columns: 29px 1fr 20px; font-size: 31px; }
++  .arcade-modes .mode-arcade small { margin-top: 5px; font-size: 12px; }
++  .arcade-preparation .entete { margin-bottom: 12px; }
++  .arcade-preparation .onglets-menu { gap: 5px; }
++  .arcade-preparation .onglets-menu button { padding: 10px 5px; text-align: center; font-size: 12px; min-height: 45px; }
++  .arcade-preparation .onglets-menu button > span { display: none; }
++  .selection-circuit { grid-template-columns: 1fr; gap: 13px; }
++  #p-trace-3d { height: 210px; }
++  .apercu-entete h3 { font-size: 30px; }
++  .arcade-preparation .circuits { display: grid; grid-template-columns: 1fr 1fr; max-height: 188px; flex: none; min-height: 0; }
++  .arcade-preparation .carte-circuit { min-height: 62px; padding: 10px 7px; grid-template-columns: 18px minmax(0,1fr); column-gap: 5px; }
++  .arcade-preparation .carte-circuit .nom { font-size: 18px; }
++  .arcade-preparation .carte-circuit .fiche { font-size: 9px; }
++  .arcade-preparation .depart-fixe .resume-depart { flex: 1 1 100%; }
++  .arcade-preparation .depart-fixe .gros { min-width: 0; flex: 1; font-size: 26px; }
++  .arcade-preparation .depart-fixe #b-precedent { width: 90px; }
++  .arcade-preparation .resume-course { font-size: 11px; }
++  .bilan-arcade { padding: 12px 0; }
++  .bilan-arcade h3 { margin: 8px 0 20px; }
++  .bilan-grille { grid-template-columns: 1fr; gap: 12px; }
++  .bilan-grille article { padding: 18px; }
++  .bilan-grille strong { margin: 10px 0 7px; font-size: 24px; }
++}
++@media (max-height: 600px) and (min-width: 601px) {
++  .arcade-titre { gap: 10px; }
++  .arcade-titre .marque { --t-marque: 74px; margin-bottom: 14px; }
++  .arcade-modes .mode-arcade { min-height: 74px; padding: 12px 18px; font-size: 29px; }
++  .arcade-modes .mode-arcade small { font-size: 11px; margin-top: 4px; }
++  .arcade-titre .pied-titre, .arcade-titre .attente { margin-top: 0; }
++  .arcade-preparation .entete .arcade-surtitre { display: none; }
++  .arcade-preparation .entete { margin-bottom: 9px; }
++  .arcade-preparation .onglets-menu button { min-height: 40px; padding: 7px 12px; }
++  #p-trace-3d { height: 180px; }
++  .chiffres-circuit { padding-top: 10px; padding-bottom: 10px; }
++  .arcade-preparation .panneaux-menu { padding-top: 12px; padding-bottom: 14px; }
++}
+diff --git a/src/menu-arcade.js b/src/menu-arcade.js
+new file mode 100644
+index 0000000..5eda436
+--- /dev/null
++++ b/src/menu-arcade.js
+@@ -0,0 +1,197 @@
++// Aperçu du vrai tracé : projection perspective du relief, sans scène FERRO ni second contexte WebGL.
++(function (B) {
++  'use strict';
++  const ETAPES = Object.freeze(['p-piste', 'p-conditions', 'p-pilotes', 'p-bilan']);
++  const MAX_POINTS = 240, CACHE = new WeakMap();
++  const borner = (v, a, b) => Math.max(a, Math.min(b, v));
++
++  function preparerTrace(c, maximum = MAX_POINTS) {
++    if (!c || !Number.isInteger(c.n) || c.n < 3 || !c.x || !c.z) throw new TypeError('Tracé incomplet');
++    const n = Math.min(c.n, borner(Math.floor(maximum) || MAX_POINTS, 12, MAX_POINTS));
++    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity, y0 = Infinity, y1 = -Infinity;
++    for (let i = 0; i < c.n; i++) {
++      const x = c.x[i], y = c.y ? c.y[i] : 0, z = c.z[i];
++      if (![x, y, z].every(Number.isFinite)) throw new TypeError('Coordonnée de tracé non finie');
++      x0 = Math.min(x0, x); x1 = Math.max(x1, x); z0 = Math.min(z0, z); z1 = Math.max(z1, z);
++      y0 = Math.min(y0, y); y1 = Math.max(y1, y);
++    }
++    const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
++    let rayon = 1;
++    for (let i = 0; i < c.n; i++) rayon = Math.max(rayon, Math.hypot(c.x[i] - cx, c.z[i] - cz));
++    const diametre = rayon * 2, points = new Float64Array(n * 3), indices = new Uint32Array(n);
++    for (let i = 0; i < n; i++) {
++      const j = Math.floor(i * c.n / n); indices[i] = j;
++      points[i * 3] = (c.x[j] - cx) / diametre;
++      points[i * 3 + 1] = ((c.y ? c.y[j] : 0) - y0) / diametre;
++      points[i * 3 + 2] = (c.z[j] - cz) / diametre;
++    }
++    return Object.freeze({ n, points, indices, diametre, centre: Object.freeze([cx, y0, cz]), relief: (y1 - y0) / diametre,
++      altitudeMin: y0, altitudeMax: y1, longueur: c.longueur || 0 });
++  }
++
++  // La même échelle sur les trois axes conserve le relief réel. Le troisième canal est la profondeur.
++  function projeterTrace(trace, rotation, largeur, hauteur, sortie = new Float64Array(trace.n * 3)) {
++    if (sortie.length < trace.n * 3) throw new RangeError('Tampon de projection trop petit');
++    const co = Math.cos(rotation), si = Math.sin(rotation), zoom = Math.min(largeur * .76, hauteur * 1.34) * 2.8 / (1 + trace.relief * .85);
++    const centreY = hauteur * (.55 + Math.min(.14, trace.relief * .22));
++    for (let i = 0; i < trace.n; i++) {
++      const x = trace.points[i * 3], y = trace.points[i * 3 + 1], z = trace.points[i * 3 + 2];
++      const rx = x * co - z * si, rz = x * si + z * co, profondeur = 2.8 + rz * .71 - y * .704;
++      sortie[i * 3] = largeur / 2 + rx * zoom / profondeur;
++      sortie[i * 3 + 1] = centreY + (rz * .704 - y * .71) * zoom / profondeur;
++      sortie[i * 3 + 2] = profondeur;
++    }
++    return sortie;
++  }
++
++  function creerApercu(canvas) {
++    const ctx = canvas.getContext('2d', { alpha: false });
++    let trace = null, proj = null, ordre = [], rotation = -.7, dernier = -Infinity, largeur = 720, hauteur = 400;
++    let tailleSale = true, imageSale = true, pause = false, visible = false, reduit = false, fond = null;
++    const vue = canvas.ownerDocument.defaultView;
++    const media = vue.matchMedia && vue.matchMedia('(prefers-reduced-motion: reduce)');
++    reduit = !!(media && media.matches);
++    const compte = { images: 0, points: 0, derniereMs: 0, maximumMs: 0, resolution: [720, 400] };
++    const trier = (a, b) => proj[b * 3 + 2] - proj[a * 3 + 2];
++    const observer = typeof vue.ResizeObserver === 'function' ? new vue.ResizeObserver(() => { tailleSale = imageSale = true; }) : null;
++    if (observer) observer.observe(canvas); else vue.addEventListener('resize', () => { tailleSale = imageSale = true; });
++    if (media && media.addEventListener) media.addEventListener('change', e => { reduit = e.matches; imageSale = true; });
++    const sol = new Float64Array(6);
++    function pointSol(x, z, offset) {
++      const co = Math.cos(rotation), si = Math.sin(rotation), rx = x * co - z * si, rz = x * si + z * co;
++      const y = -.035, p = 2.8 + rz * .71 - y * .704;
++      const zoom = Math.min(largeur * .76, hauteur * 1.34) * 2.8 / (1 + trace.relief * .85);
++      sol[offset] = largeur / 2 + rx * zoom / p;
++      sol[offset + 1] = hauteur * (.55 + Math.min(.14, trace.relief * .22)) + (rz * .704 - y * .71) * zoom / p;
++    }
++    function dimensionner(leger) {
++      const r = canvas.getBoundingClientRect(), plafond = leger ? 640 : 960;
++      largeur = Math.max(1, Math.round(Math.min(plafond, r.width * Math.min(vue.devicePixelRatio || 1, leger ? 1 : 1.25))));
++      hauteur = Math.max(1, Math.round(largeur * (r.height || 400) / Math.max(1, r.width || 720)));
++      if (canvas.width !== largeur) canvas.width = largeur;
++      if (canvas.height !== hauteur) canvas.height = hauteur;
++      compte.resolution[0] = largeur; compte.resolution[1] = hauteur;
++      fond = ctx.createLinearGradient(0, 0, largeur, hauteur); fond.addColorStop(0, '#18232b'); fond.addColorStop(1, '#090e14');
++      tailleSale = false;
++    }
++    function dessiner(t, actif, leger = false) {
++      const montre = !!actif && !canvas.ownerDocument.hidden;
++      if (!montre || !trace || !ctx) { visible = false; dernier = -Infinity; return false; }
++      if (!visible) { visible = true; tailleSale = imageSale = true; dernier = -Infinity; }
++      if ((pause || reduit) && !imageSale && !tailleSale) return false;
++      if (!imageSale && t - dernier < (leger ? 50 : 1000 / 30)) return false;
++      const debut = vue.performance.now();
++      if (!pause && !reduit && Number.isFinite(dernier)) rotation += Math.min(.1, Math.max(0, (t - dernier) / 1000)) * .19;
++      if (tailleSale) dimensionner(leger);
++      dernier = t; imageSale = false;
++      ctx.fillStyle = fond; ctx.fillRect(0, 0, largeur, hauteur);
++      ctx.strokeStyle = 'rgba(133,176,191,.11)'; ctx.lineWidth = Math.max(.7, largeur / 1000); ctx.beginPath();
++      for (let k = -5; k <= 5; k++) {
++        pointSol(k * .12, -.64, 0); pointSol(k * .12, .64, 3);
++        ctx.moveTo(sol[0], sol[1]); ctx.lineTo(sol[3], sol[4]);
++        pointSol(-.64, k * .12, 0); pointSol(.64, k * .12, 3);
++        ctx.moveTo(sol[0], sol[1]); ctx.lineTo(sol[3], sol[4]);
++      }
++      ctx.stroke();
++      projeterTrace(trace, rotation, largeur, hauteur, proj);
++      // Ombre et supports donnent une lecture du relief sans terrain ni végétation supplémentaires.
++      ctx.strokeStyle = 'rgba(0,0,0,.38)'; ctx.lineWidth = Math.max(5, largeur / 65); ctx.lineJoin = 'round'; ctx.beginPath();
++      for (let i = 0; i <= trace.n; i++) {
++        const j = i % trace.n; pointSol(trace.points[j * 3], trace.points[j * 3 + 2], 0);
++        if (i) ctx.lineTo(sol[0], sol[1]); else ctx.moveTo(sol[0], sol[1]);
++      }
++      ctx.closePath(); ctx.stroke();
++      ctx.strokeStyle = 'rgba(143,184,196,.24)'; ctx.lineWidth = Math.max(1, largeur / 720); ctx.beginPath();
++      for (let i = 0; i < trace.n; i += Math.max(1, Math.floor(trace.n / 18))) {
++        pointSol(trace.points[i * 3], trace.points[i * 3 + 2], 0);
++        ctx.moveTo(proj[i * 3], proj[i * 3 + 1]); ctx.lineTo(sol[0], sol[1]);
++      }
++      ctx.stroke(); ordre.sort(trier); ctx.lineCap = 'round';
++      for (const i of ordre) {
++        const j = (i + 1) % trace.n, e = largeur / 100 * 2.8 / proj[i * 3 + 2];
++        ctx.beginPath(); ctx.moveTo(proj[i * 3], proj[i * 3 + 1]); ctx.lineTo(proj[j * 3], proj[j * 3 + 1]);
++        ctx.strokeStyle = i % 12 < 6 ? '#d64c38' : '#e1dccb'; ctx.lineWidth = Math.max(4, e); ctx.stroke();
++        ctx.strokeStyle = '#52636c'; ctx.lineWidth = Math.max(2, e * .55); ctx.stroke();
++      }
++      const x = proj[0], y = proj[1], r = Math.max(3, largeur / 150);
++      ctx.fillStyle = '#f5bc5b'; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
++      ctx.strokeStyle = '#f5bc5b'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x, y - r); ctx.lineTo(x, y - r - hauteur * .07); ctx.stroke();
++      ctx.fillStyle = '#f5bc5b'; ctx.font = '600 ' + Math.max(9, largeur / 75) + 'px system-ui'; ctx.textAlign = 'center';
++      ctx.fillText('DÉPART', x, y - r - hauteur * .085);
++      ctx.lineCap = 'butt';
++      compte.images++; compte.derniereMs = vue.performance.now() - debut; compte.maximumMs = Math.max(compte.maximumMs, compte.derniereMs);
++      return true;
++    }
++    return Object.freeze({
++      choisir(c) {
++        let prochain = CACHE.get(c); if (!prochain) { prochain = preparerTrace(c); CACHE.set(c, prochain); }
++        if (trace === prochain) return;
++        trace = prochain; proj = new Float64Array(trace.n * 3); ordre = Array.from({ length: trace.n }, (_, i) => i);
++        rotation = -.7; compte.points = trace.n; imageSale = true;
++      },
++      dessiner,
++      pause(value) { pause = !!value; imageSale = true; },
++      get enPause() { return pause; },
++      get mouvementReduit() { return reduit; },
++      stats() { return { ...compte, resolution: [...compte.resolution], rotation, actif: visible, pause: pause || reduit }; }
++    });
++  }
++
++  function installer(zone, options = {}) {
++    const doc = zone.ownerDocument, $ = id => doc.getElementById(id), apercu = creerApercu($('p-trace-3d'));
++    let etape = 0;
++    const avancer = (sens, focus = true) => ouvrir(borner(etape + sens, 0, ETAPES.length - 1), focus);
++    function actualiser() {
++      const actif = zone.querySelector('[data-menu-tab][aria-selected="true"]');
++      etape = Math.max(0, ETAPES.indexOf(actif && actif.dataset.menuTab));
++      zone.dataset.etape = String(etape);
++      $('p-etape').textContent = '0' + (etape + 1) + ' / 04';
++      $('b-precedent').textContent = etape ? 'Précédent' : 'Menu';
++      $('b-suivant').hidden = etape === 3; $('b-depart').hidden = etape !== 3;
++      $('b-suivant').textContent = ['Conditions →', 'Pilotes →', 'Prêt à partir →'][etape] || 'Continuer';
++      if (options.actualiser) options.actualiser(etape);
++    }
++    function focaliser() {
++      const panneau = $(ETAPES[etape]);
++      const cible = panneau.querySelector('[role="radio"][aria-checked="true"],input:checked,select,button') || (etape === 3 ? $('b-depart') : $('b-suivant'));
++      if (cible && !cible.closest('[hidden]')) cible.focus({ preventScroll: true });
++    }
++    function ouvrir(index, focus = true) {
++      B.navigationMenu.ouvrirOnglet(zone, ETAPES[borner(index, 0, 3)]); actualiser();
++      if (focus) focaliser();
++    }
++    zone.addEventListener('menuongletchange', actualiser);
++    $('b-suivant').addEventListener('click', () => avancer(1));
++    $('b-precedent').addEventListener('click', () => options.retour && options.retour());
++    $('p-retour').addEventListener('click', () => options.retour && options.retour());
++    $('p-rotation').addEventListener('click', () => {
++      apercu.pause(!apercu.enPause); $('p-rotation').setAttribute('aria-pressed', String(apercu.enPause));
++      $('p-rotation').textContent = apercu.enPause ? 'Reprendre la rotation' : 'Figer le tracé';
++    });
++    $('circuits').addEventListener('keydown', e => {
++      const carte = e.target.closest('[role="radio"]'); if (!carte || e.altKey || e.ctrlKey || e.metaKey) return;
++      const liste = Array.from($('circuits').children), i = liste.indexOf(carte);
++      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
++        e.preventDefault(); const sens = e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 1;
++        const j = e.key === 'Home' ? 0 : e.key === 'End' ? liste.length - 1 : (i + sens + liste.length) % liste.length;
++        liste[j].click(); liste[j].focus({ preventScroll: true }); liste[j].scrollIntoView({ block: 'nearest' });
++      } else if (e.key === 'Enter' && carte.getAttribute('aria-checked') === 'true') { e.preventDefault(); avancer(1); }
++    });
++    return Object.freeze({
++      ouvrir, actualiser,
++      retour() { if (!etape) return false; avancer(-1); return true; },
++      valider(el) { if (etape === 0 && el && el.closest('#circuits') && el.getAttribute('aria-checked') === 'true') { avancer(1); return true; } return false; },
++      trace(c, fiche, catalogue, index, total) {
++        apercu.choisir(c); $('p-trace-3d').setAttribute('aria-label', 'Tracé en trois dimensions de ' + catalogue.nom + ', avec son relief réel');
++        $('p-circuit-nom').textContent = catalogue.nom; $('p-circuit-lieu').textContent = catalogue.lieu;
++        $('p-circuit-numero').textContent = String(index + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
++        $('p-circuit-km').textContent = fiche.km; $('p-circuit-virages').textContent = String(fiche.virages);
++        const tr = CACHE.get(c); $('p-circuit-relief').textContent = String(Math.round(tr.altitudeMax - tr.altitudeMin));
++      },
++      image(t, actif, leger) { return apercu.dessiner(t, actif && etape === 0, leger); },
++      get etape() { return etape; },
++      stats: () => ({ etape, ...apercu.stats() })
++    });
++  }
++  B.menuArcade = Object.freeze({ ETAPES, MAX_POINTS, preparerTrace, projeterTrace, creerApercu, installer });
++})(globalThis.BITUME = globalThis.BITUME || {});

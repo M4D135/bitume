@@ -13,5 +13,9 @@
   "preuves": [],
   "reserves": [],
   "prochaine_action": "Reprendre le lot saisons sans l'audio et qualifier la matrice neuf circuits/quatre saisons.",
-  "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00."
+  "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
+  "preparations_portables": [
+    "docs/reprise/PARALLELE-2026-11-20/preparations/saisons.patch"
+  ],
+  "preparations_statut": "applicables_individuellement_a_la_base_non_qualifiees"
 }
