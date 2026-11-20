@@ -297,3 +297,45 @@ publication sans skip-ci lance la campagne générale et les 20 groupes d’imag
 de la PR39. Le HTML garde exactement le SHA60184ddf de l’entrée018. Cette preuve
 native sur mire ne remplace pas les images du jeu ni les essais de performance
 matérielle ; le surcoût logiciel initial reste une réserve explicite.
+
+## 020 — eau 0.2.68 qualifiée, fusionnée et preuves publiées
+
+PR #39 fusionnée sur main : `4a04c090535f0c11d3db9900284c31e244a0c79c`.
+Tête qualifiée `3daefb7c9d7decaf77beb94219abcf16d907bb38`, arbre
+`b84d8553d1a53de3258a56e2036b8b16669723f5`, identique au commit CI `4343db0e`
+et au commit de fusion. HTML 0.2.68 : 14 383 155 octets, SHA256
+`60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2`.
+Deux constructions locales identiques ; reconstructions CI concordantes.
+
+Campagne 44761148529, job 136373697930, artefact 14642116718 : 160/160 suites
+Node et 8/8 tests Python. Digest ZIP 21c001b5 vérifié  ; 3 485 fichiers d’archive
+contrôlés en contenu et mode, HTML exact et tous les journaux présents.
+Le suivi natif indépendant reste à 24/24 intervalles et 2 076 mesures sur les
+mêmes 47 rasters ; l’ancien verdict insuffisant n’est pas réécrit.
+
+Démos 44761148653 :7/7 groupes,48 PNG inspectés. Météo 44761148719 :7/7,41 PNG.
+Couverts 44761148534 :6/6 après reprise,24 PNG. Total113 :89 candidat 0.2.68 et
+24 références historiques 0.2.62. Pause figée, J1/J2, air/sec, sillage renouvelé
+à 300 km/h et résidus sous abri concordent avec les rapports et les images.
+Les 21 checks GitHub finaux sont tous réussis sur la tête `3daefb7`.
+
+Premier Cimes-rocher : job 136373698503, artefact 14641565877, port DevTools
+absent avant navigation ; 0 image et aucun runtime exercé. Le workflow parent
+devait finir avant reprise. L’état effectif de tentative 2 a été vérifié même
+si la commande a renvoyé « already running » : seul Cimes-rocher s’exécutait,
+job 136389895636, artefact 14646073492. Cinq PNG réussis ajoutés aux 19 précédents.
+Les 92 empreintes de l’essai 1 restent inchangées ; aucun seuil/code modifié pour
+cette reprise. Les délais de lecture API sont consignés séparément des résultats.
+
+Les reçus complets, inventaires et limites sont dans
+`rapports/EAU-VITESSE-2026-11-20/`, point d’entrée `PUBLICATION-0268.json`.
+Les quatre échecs 0.2.65, les anciennes images aériennes refusées et les analyses
+PNG rejetées sont conservés. Surcoût logiciel initial, FPS matériels non mesurés,
+pluie extérieure depuis abri, bandeaux, neige et alertes miroir historiques restent
+explicites. La publication qui suit cette fusion ne change que preuves/reprise ;
+elle ne modifie ni source, ni outil, ni HTML déjà qualifiés.
+
+Prochaine étape préparée : **H0/B0 habitacle/pilote communs**. Mesurer géométrie
+monde, assise/bassin/yeux et pénétrations bras/buste, conserver les poses fautives,
+puis H1. Les trois demandes du pilote restent ouvertes ; autres travaux et
+17 destinations préservés. Lire REPRISE, etat_courant et la seule fiche active.

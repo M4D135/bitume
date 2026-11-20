@@ -1,0 +1,6229 @@
+{
+  "format": "bitume-revue-visuelle-0268-v1",
+  "date": "2026-11-20T16:01:05.332541+00:00",
+  "groupe": "couverts",
+  "decision": "Revue complète : aucun nouveau défaut bloquant observé dans les captures prescrites.",
+  "version": "0.2.68",
+  "head_pr": "3daefb7c9d7decaf77beb94219abcf16d907bb38",
+  "commit_ci": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+  "tree_ci": "b84d8553d1a53de3258a56e2036b8b16669723f5",
+  "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+  "reference_0262_sha256": null,
+  "run_id": 44761148534,
+  "totaux": {
+    "artefacts": 7,
+    "pngs": 24,
+    "candidats": 24,
+    "references": 0,
+    "inspectes": 24,
+    "planches": 10
+  },
+  "scenarios": {
+    "haut-col-portails": 5,
+    "cimes-rocher": 5,
+    "cimes-echelles": 5,
+    "cimes-galerie": 5,
+    "cimes-dessus-toit": 2,
+    "cimes-deux-vues": 2
+  },
+  "observations_par_scenario": {
+    "cimes-galerie": {
+      "images_inspectees": 5,
+      "defaut_bloquant_observe": false,
+      "abri": [
+        false,
+        true,
+        true,
+        true,
+        false
+      ],
+      "interieur": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "eau": [
+        0.8067267558640112,
+        0.22158130353034755,
+        0.06086231071497484,
+        0.01671665385106285,
+        0.8208169594182262
+      ],
+      "depotsEau": [
+        15,
+        15,
+        15,
+        15,
+        31
+      ],
+      "gouttes": [
+        13,
+        9,
+        3,
+        1,
+        17
+      ],
+      "glErreur": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reserve": "Pluie extérieure non visible depuis galerie ; préexistante.",
+      "comparaison_historique_entree": "qa-0266/couverts/bitume-couverts-cimes-galerie-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252/files/visuel-couverts/cimes-galerie/0000.png : voile extérieur également présent en 0.2.66."
+    },
+    "haut-col-portails": {
+      "images_inspectees": 5,
+      "defaut_bloquant_observe": false,
+      "abri": [
+        false,
+        true,
+        true,
+        true,
+        false
+      ],
+      "interieur": [
+        false,
+        true,
+        true,
+        true,
+        false
+      ],
+      "vue": [
+        "cockpit",
+        "cockpit",
+        "cockpit",
+        "cockpit",
+        "cockpit"
+      ],
+      "type": [
+        null,
+        "tunnel",
+        "tunnel",
+        "tunnel",
+        null
+      ],
+      "eau": [
+        0.8221371596671615,
+        0.23599600966051437,
+        0.06774312298030269,
+        0.01944591126937213,
+        0.8363361778220995
+      ],
+      "gouttes": [
+        13,
+        10,
+        4,
+        1,
+        18
+      ],
+      "depotsEau": [
+        15,
+        15,
+        15,
+        15,
+        32
+      ],
+      "expulses": [
+        2,
+        5,
+        9,
+        10,
+        10
+      ],
+      "glErreur": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reserve": "Pluie extérieure non visible depuis abri ; réserve préexistante."
+    },
+    "cimes-echelles": {
+      "images_inspectees": 5,
+      "defaut_bloquant_observe": false,
+      "abri": [
+        false,
+        true,
+        true,
+        true,
+        false
+      ],
+      "interieur": [
+        false,
+        true,
+        true,
+        true,
+        false
+      ],
+      "vue": [
+        "cockpit",
+        "cockpit",
+        "cockpit",
+        "cockpit",
+        "cockpit"
+      ],
+      "type": [
+        null,
+        "tunnel",
+        "tunnel",
+        "tunnel",
+        null
+      ],
+      "eau": [
+        0.7930013230670767,
+        0.20644225509172126,
+        0.05374184892657868,
+        0.013989944888047199,
+        0.8039476001447445
+      ],
+      "gouttes": [
+        12,
+        8,
+        3,
+        1,
+        17
+      ],
+      "depotsEau": [
+        14,
+        14,
+        14,
+        14,
+        30
+      ],
+      "expulses": [
+        2,
+        6,
+        9,
+        9,
+        9
+      ],
+      "glErreur": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reserve": "Pluie extérieure non visible depuis abri ; réserve préexistante.",
+      "alertes_preexistantes": [
+        {
+          "image": 3,
+          "vue": "glace-g",
+          "type": "blocs-fugitifs",
+          "blocs": [
+            {
+              "x": 5,
+              "y": 1,
+              "ecart": -0.3386
+            }
+          ]
+        },
+        {
+          "image": 3,
+          "vue": "glace-d",
+          "type": "blocs-fugitifs",
+          "blocs": [
+            {
+              "x": 9,
+              "y": 1,
+              "ecart": -0.3399
+            }
+          ]
+        }
+      ],
+      "verification_alertes": "Valeurs identiques au rapport 0.2.66, image 0003 revue en natif ; portail derrière visible, aucun artefact spatial nouveau observé."
+    },
+    "cimes-dessus-toit": {
+      "images_inspectees": 2,
+      "defaut_bloquant_observe": false,
+      "abri": [
+        false,
+        false
+      ],
+      "interieur": [
+        false,
+        false
+      ],
+      "vue": [
+        "helico",
+        "helico"
+      ],
+      "type": [
+        null,
+        null
+      ],
+      "eau": [
+        0,
+        0
+      ],
+      "gouttes": [
+        0,
+        0
+      ],
+      "depotsEau": [
+        0,
+        0
+      ],
+      "expulses": [
+        0,
+        0
+      ],
+      "glErreur": [
+        0,
+        0
+      ],
+      "survol": [
+        {
+          "sujetS": 6759.491665135276,
+          "sujetSousCouvert": false,
+          "terrainY": 223.84891752728032,
+          "surfaceY": 254.5402069091797,
+          "cible": [
+            33.74864940275236,
+            214.11759661617114,
+            -823.3278613973264
+          ],
+          "regardLibre": true,
+          "obstructionDistance": null,
+          "cadreLibre": true
+        },
+        {
+          "sujetS": 6759.491665135276,
+          "sujetSousCouvert": false,
+          "terrainY": 223.84891752728032,
+          "surfaceY": 254.5402069091797,
+          "cible": [
+            33.74864940275236,
+            214.11759661617114,
+            -823.3278613973264
+          ],
+          "regardLibre": true,
+          "obstructionDistance": null,
+          "cadreLibre": true
+        }
+      ],
+      "cameraY": [
+        294.5402069091797,
+        294.5402069091797
+      ],
+      "camera_marge_surface_m": 40,
+      "constat": "Sujet hors couvert, vraie vue helico, regard et cadre libres ; toit/route visibles, eau 0."
+    },
+    "cimes-deux-vues": {
+      "images_inspectees": 2,
+      "defaut_bloquant_observe": false,
+      "j1": "cockpit, tunnel, abri=true, interieur=true",
+      "j2": "cockpit, galerie, abri=true, interieur=false",
+      "eau_j1": [
+        0,
+        0
+      ],
+      "eau_j2": [
+        0,
+        0
+      ],
+      "glErreur": [
+        0,
+        0
+      ],
+      "reserve": "Pluie extérieure non visible depuis abri ; réserve préexistante."
+    },
+    "cimes-rocher": {
+      "images_inspectees": 5,
+      "essai": 2,
+      "job_id": 136389895636,
+      "artefact_id": 14646073492,
+      "defaut_bloquant_observe": false,
+      "phases": [
+        "entree-exterieure",
+        "entree-interieure",
+        "centre",
+        "sortie-interieure",
+        "sortie-exterieure"
+      ],
+      "abri": [
+        false,
+        true,
+        true,
+        true,
+        false
+      ],
+      "interieur": [
+        false,
+        true,
+        true,
+        true,
+        false
+      ],
+      "glErreur": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "glPerdu": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "reserve": "Pluie extérieure invisible depuis abri ; réserve préexistante.",
+      "echec_initial": "Tentative 1 intacte, port DevTools introuvable avant navigation, zéro PNG ; reprise du seul job, aucune modification source.",
+      "eau": [
+        0.7766631119963193,
+        0.19166129158832082,
+        0.04699489298471053,
+        0.011522807712818012,
+        0.7871567343378181
+      ],
+      "gouttes": [
+        12,
+        8,
+        3,
+        1,
+        16
+      ],
+      "depotsEau": [
+        14,
+        14,
+        14,
+        14,
+        29
+      ],
+      "expulses": [
+        2,
+        6,
+        9,
+        9,
+        9
+      ]
+    }
+  },
+  "artefacts": [
+    {
+      "id": 14641565877,
+      "name": "bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "digest": "sha256:c7c3ffb09d544234a97ac556c5bbbbd8b9ccde5f8e3c40cbaab33a5159005698",
+      "repertoire": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "rapports": [
+        {
+          "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/rapport.json",
+          "sha256": "d828735e25da0591381687e3b0fa7bc4a0f29fefa5fc2666810d419c0a853674",
+          "reference": false,
+          "build": {
+            "sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+            "octets": 14383155
+          },
+          "source": {
+            "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {},
+          "erreurs": [],
+          "fatal": "Error: Port DevTools introuvable : [2364:2393:1120/151419.062529:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2364:2393:1120/151420.066595:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2364:2393:1120/151420.751816:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2364:2397:1120/151421.913434:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2364:2397:1120/151421.913590:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2364:2397:1120/151421.913600:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2364:2393:1120/151424.285906:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n\n    at capturer (file:///home/runner/work/bitume/bitume/tools/controle-visuel.mjs:195:22)\n    at async campagneCouverts (file:///home/runner/work/bitume/bitume/tools/captures-couverts.mjs:233:20)\n    at async file:///home/runner/work/bitume/bitume/tools/captures-couverts.mjs:254:15",
+          "avertissements": [],
+          "alertes": [],
+          "images": 0
+        }
+      ],
+      "pngs": 0,
+      "github": {
+        "id": 14641565877,
+        "name": "bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d",
+        "size_in_bytes": 5147,
+        "url": "https://api.github.com/repos/M4D135/bitume/actions/artifacts/14641565877",
+        "archive_download_url": "https://api.github.com/repos/M4D135/bitume/actions/artifacts/14641565877/zip",
+        "expired": false,
+        "created_at": "2026-11-20T15:14:25Z",
+        "expires_at": "2026-12-04T15:14:25Z",
+        "updated_at": "2026-11-20T15:14:25Z",
+        "digest": "sha256:c7c3ffb09d544234a97ac556c5bbbbd8b9ccde5f8e3c40cbaab33a5159005698",
+        "workflow_run": {
+          "id": 44761148534,
+          "repository_id": 1455447967,
+          "head_repository_id": 1455447967,
+          "head_branch": "feat/bitume-eau-0267-20261120",
+          "head_sha": "3daefb7c9d7decaf77beb94219abcf16d907bb38"
+        }
+      },
+      "zip": {
+        "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/artifact.zip",
+        "sha256": "c7c3ffb09d544234a97ac556c5bbbbd8b9ccde5f8e3c40cbaab33a5159005698",
+        "octets": 5147
+      },
+      "essai": 1
+    },
+    {
+      "id": 14642548588,
+      "name": "bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "digest": "sha256:410628010865e3b5288a5f05d8c7cb4ec04666a59a231f58b0fef66dbcb9b6df",
+      "repertoire": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "rapports": [
+        {
+          "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-galerie/rapport.json",
+          "sha256": "c4e8c790c5acc6b30b33ebf4e2a18efe3d36814b92f99a90eb3e00452750d694",
+          "reference": false,
+          "build": {
+            "sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+            "octets": 14383155
+          },
+          "source": {
+            "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.68",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "erreurs": [],
+          "fatal": null,
+          "avertissements": [],
+          "alertes": [],
+          "images": 5
+        }
+      ],
+      "pngs": 5,
+      "github": {
+        "id": 14642548588,
+        "name": "bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d",
+        "size_in_bytes": 2174170,
+        "url": "https://api.github.com/repos/M4D135/bitume/actions/artifacts/14642548588",
+        "archive_download_url": "https://api.github.com/repos/M4D135/bitume/actions/artifacts/14642548588/zip",
+        "expired": false,
+        "created_at": "2026-11-20T15:34:25Z",
+        "expires_at": "2026-12-04T15:34:23Z",
+        "updated_at": "2026-11-20T15:34:25Z",
+        "digest": "sha256:410628010865e3b5288a5f05d8c7cb4ec04666a59a231f58b0fef66dbcb9b6df",
+        "workflow_run": {
+          "id": 44761148534,
+          "repository_id": 1455447967,
+          "head_repository_id": 1455447967,
+          "head_branch": "feat/bitume-eau-0267-20261120",
+          "head_sha": "3daefb7c9d7decaf77beb94219abcf16d907bb38"
+        }
+      },
+      "zip": {
+        "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/artifact.zip",
+        "sha256": "410628010865e3b5288a5f05d8c7cb4ec04666a59a231f58b0fef66dbcb9b6df",
+        "octets": 2174170
+      },
+      "essai": 1
+    },
+    {
+      "id": 14642787484,
+      "name": "bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "digest": "sha256:07c8ba0a5cf46cb0cf0c367cf335b817d42450555e35de668af3060326dd1dc7",
+      "repertoire": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "rapports": [
+        {
+          "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/haut-col-portails/rapport.json",
+          "sha256": "672e095143c7e70b64093db840df4623b4b9db0fa7057a5d932249197e7321b5",
+          "reference": false,
+          "build": {
+            "sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+            "octets": 14383155
+          },
+          "source": {
+            "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.68",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "erreurs": [],
+          "fatal": null,
+          "avertissements": [],
+          "alertes": [],
+          "images": 5
+        }
+      ],
+      "pngs": 5,
+      "github": {
+        "id": 14642787484,
+        "name": "bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d",
+        "size_in_bytes": 2050257,
+        "url": "https://api.github.com/repos/M4D135/bitume/actions/artifacts/14642787484",
+        "archive_download_url": "https://api.github.com/repos/M4D135/bitume/actions/artifacts/14642787484/zip",
+        "expired": false,
+        "created_at": "2026-11-20T15:35:01Z",
+        "expires_at": "2026-12-04T15:35:00Z",
+        "updated_at": "2026-11-20T15:35:01Z",
+        "digest": "sha256:07c8ba0a5cf46cb0cf0c367cf335b817d42450555e35de668af3060326dd1dc7",
+        "workflow_run": {
+          "id": 44761148534,
+          "repository_id": 1455447967,
+          "head_repository_id": 1455447967,
+          "head_branch": "feat/bitume-eau-0267-20261120",
+          "head_sha": "3daefb7c9d7decaf77beb94219abcf16d907bb38"
+        }
+      },
+      "zip": {
+        "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/artifact.zip",
+        "sha256": "07c8ba0a5cf46cb0cf0c367cf335b817d42450555e35de668af3060326dd1dc7",
+        "octets": 2050257
+      },
+      "essai": 1
+    },
+    {
+      "id": 14642782600,
+      "name": "bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "digest": "sha256:be26f7ca30ee29a0200f851907e9bfeb81769e8781b46a0013f2a4c6d0c01f94",
+      "repertoire": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "rapports": [
+        {
+          "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/rapport.json",
+          "sha256": "845e9b407f077dc9797f0b74b353f2af48dda4c915c3a8c84413313a5492d551",
+          "reference": false,
+          "build": {
+            "sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+            "octets": 14383155
+          },
+          "source": {
+            "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.68",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "erreurs": [],
+          "fatal": null,
+          "avertissements": [],
+          "alertes": [
+            {
+              "image": 3,
+              "vue": "glace-g",
+              "type": "blocs-fugitifs",
+              "blocs": [
+                {
+                  "x": 5,
+                  "y": 1,
+                  "ecart": -0.3386
+                }
+              ]
+            },
+            {
+              "image": 3,
+              "vue": "glace-d",
+              "type": "blocs-fugitifs",
+              "blocs": [
+                {
+                  "x": 9,
+                  "y": 1,
+                  "ecart": -0.3399
+                }
+              ]
+            }
+          ],
+          "images": 5
+        }
+      ],
+      "pngs": 5,
+      "github": {
+        "id": 14642782600,
+        "name": "bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d",
+        "size_in_bytes": 2044607,
+        "url": "https://api.github.com/repos/M4D135/bitume/actions/artifacts/14642782600",
+        "archive_download_url": "https://api.github.com/repos/M4D135/bitume/actions/artifacts/14642782600/zip",
+        "expired": false,
+        "created_at": "2026-11-20T15:35:50Z",
+        "expires_at": "2026-12-04T15:35:49Z",
+        "updated_at": "2026-11-20T15:35:50Z",
+        "digest": "sha256:be26f7ca30ee29a0200f851907e9bfeb81769e8781b46a0013f2a4c6d0c01f94",
+        "workflow_run": {
+          "id": 44761148534,
+          "repository_id": 1455447967,
+          "head_repository_id": 1455447967,
+          "head_branch": "feat/bitume-eau-0267-20261120",
+          "head_sha": "3daefb7c9d7decaf77beb94219abcf16d907bb38"
+        }
+      },
+      "zip": {
+        "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/artifact.zip",
+        "sha256": "be26f7ca30ee29a0200f851907e9bfeb81769e8781b46a0013f2a4c6d0c01f94",
+        "octets": 2044607
+      },
+      "essai": 1
+    },
+    {
+      "id": 14642439202,
+      "name": "bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "digest": "sha256:222daeb911287a197f1b1f550282829ec44a6898a49305b05536144b369dfc70",
+      "repertoire": "couverts/bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "rapports": [
+        {
+          "path": "couverts/bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-dessus-toit/rapport.json",
+          "sha256": "85af2fb6584d6c706d095ce2db0106875fd9cd1b26b8d7ec27d69c5e5c646943",
+          "reference": false,
+          "build": {
+            "sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+            "octets": 14383155
+          },
+          "source": {
+            "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.68",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "erreurs": [],
+          "fatal": null,
+          "avertissements": [],
+          "alertes": [],
+          "images": 2
+        }
+      ],
+      "pngs": 2,
+      "github": {
+        "id": 14642439202,
+        "name": "bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d",
+        "size_in_bytes": 918465,
+        "url": "https://api.github.com/repos/M4D135/bitume/actions/artifacts/14642439202",
+        "archive_download_url": "https://api.github.com/repos/M4D135/bitume/actions/artifacts/14642439202/zip",
+        "expired": false,
+        "created_at": "2026-11-20T15:35:24Z",
+        "expires_at": "2026-12-04T15:35:24Z",
+        "updated_at": "2026-11-20T15:35:24Z",
+        "digest": "sha256:222daeb911287a197f1b1f550282829ec44a6898a49305b05536144b369dfc70",
+        "workflow_run": {
+          "id": 44761148534,
+          "repository_id": 1455447967,
+          "head_repository_id": 1455447967,
+          "head_branch": "feat/bitume-eau-0267-20261120",
+          "head_sha": "3daefb7c9d7decaf77beb94219abcf16d907bb38"
+        }
+      },
+      "zip": {
+        "path": "couverts/bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d/artifact.zip",
+        "sha256": "222daeb911287a197f1b1f550282829ec44a6898a49305b05536144b369dfc70",
+        "octets": 918465
+      },
+      "essai": 1
+    },
+    {
+      "id": 14644631102,
+      "name": "bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "digest": "sha256:5891e7bfe03b3323cc66c31ed9fc299b8cc02d1d9b5464993f59b0a685aa4959",
+      "repertoire": "couverts/bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "rapports": [
+        {
+          "path": "couverts/bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-deux-vues/rapport.json",
+          "sha256": "647dafd4d6494a96195de29754ff91bf7e06d6a9c890668960858012d85233f3",
+          "reference": false,
+          "build": {
+            "sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+            "octets": 14383155
+          },
+          "source": {
+            "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.68",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "erreurs": [],
+          "fatal": null,
+          "avertissements": [],
+          "alertes": [],
+          "images": 2
+        }
+      ],
+      "pngs": 2,
+      "github": {
+        "id": 14644631102,
+        "name": "bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d",
+        "size_in_bytes": 961862,
+        "url": "https://api.github.com/repos/M4D135/bitume/actions/artifacts/14644631102",
+        "archive_download_url": "https://api.github.com/repos/M4D135/bitume/actions/artifacts/14644631102/zip",
+        "expired": false,
+        "created_at": "2026-11-20T15:40:16Z",
+        "expires_at": "2026-12-04T15:40:14Z",
+        "updated_at": "2026-11-20T15:40:16Z",
+        "digest": "sha256:5891e7bfe03b3323cc66c31ed9fc299b8cc02d1d9b5464993f59b0a685aa4959",
+        "workflow_run": {
+          "id": 44761148534,
+          "repository_id": 1455447967,
+          "head_repository_id": 1455447967,
+          "head_branch": "feat/bitume-eau-0267-20261120",
+          "head_sha": "3daefb7c9d7decaf77beb94219abcf16d907bb38"
+        }
+      },
+      "zip": {
+        "path": "couverts/bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/artifact.zip",
+        "sha256": "5891e7bfe03b3323cc66c31ed9fc299b8cc02d1d9b5464993f59b0a685aa4959",
+        "octets": 961862
+      },
+      "essai": 1
+    },
+    {
+      "id": 14646073492,
+      "name": "bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "digest": "sha256:264a4dc3bbe79649c16b1de9bdf2c1f9349e601190b148dceb9b91bba77689d4",
+      "repertoire": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "rapports": [
+        {
+          "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/rapport.json",
+          "sha256": "39fc192a686d07c8c338400a49ae885665580b438ef27b14bf59157b3eab1c72",
+          "reference": false,
+          "build": {
+            "sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+            "octets": 14383155
+          },
+          "source": {
+            "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.68",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "erreurs": [],
+          "fatal": null,
+          "avertissements": [],
+          "alertes": [],
+          "images": 5
+        }
+      ],
+      "pngs": 5,
+      "github": {
+        "id": 14646073492,
+        "name": "bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d",
+        "size_in_bytes": 2024648,
+        "url": "https://api.github.com/repos/M4D135/bitume/actions/artifacts/14646073492",
+        "archive_download_url": "https://api.github.com/repos/M4D135/bitume/actions/artifacts/14646073492/zip",
+        "expired": false,
+        "created_at": "2026-11-20T15:59:24Z",
+        "expires_at": "2026-12-04T15:59:23Z",
+        "updated_at": "2026-11-20T15:59:24Z",
+        "digest": "sha256:264a4dc3bbe79649c16b1de9bdf2c1f9349e601190b148dceb9b91bba77689d4",
+        "workflow_run": {
+          "id": 44761148534,
+          "repository_id": 1455447967,
+          "head_repository_id": 1455447967,
+          "head_branch": "feat/bitume-eau-0267-20261120",
+          "head_sha": "3daefb7c9d7decaf77beb94219abcf16d907bb38"
+        }
+      },
+      "zip": {
+        "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/artifact.zip",
+        "sha256": "264a4dc3bbe79649c16b1de9bdf2c1f9349e601190b148dceb9b91bba77689d4",
+        "octets": 2024648
+      },
+      "essai": 2
+    }
+  ],
+  "images": [
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-galerie/0000.png",
+      "scenario": "cimes-galerie",
+      "reference": false,
+      "sha256": "ee3110c65c8b96500f18b6fd3c82ecb96e9dc7c41719dd5324b8876b02dd929f",
+      "octets": 455638,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14642548588,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:38:24.920904+00:00",
+        "constat": "Vue extérieure avant galerie très voilée par météo ; même voile constaté dans PNG 0.2.66 de référence historique. Cockpit, HUD et rétroviseurs lisibles.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 33,
+            "dessins": 33,
+            "etapes": 353,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.8067267558640112,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 13,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 2,
+            "depotsEau": 15,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 267.98861723586856
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            242.73546487852232,
+            267.5134971807262,
+            -1465.0294990709572
+          ],
+          "abri": false,
+          "interieur": false,
+          "section": null,
+          "type": null,
+          "lumiere": 1,
+          "lampes": 1,
+          "pluie": 1,
+          "abriVisiere": false,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 266.7615966796875,
+          "body": 51,
+          "genre": "chaussee",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": false,
+          "y": null,
+          "body": null,
+          "genre": null,
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 266.761574287765,
+        "etape": 0,
+        "etapeId": "entree-exterieure",
+        "abscisse": 6046.9587399358425,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 2.941666666666668
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 6046.9587399358425,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.38523864746094,
+            "y": 339.3154602050781,
+            "width": 146.64137268066406,
+            "height": 45.127593994140625
+          },
+          "glace-d": {
+            "x": 658.0618286132812,
+            "y": 338.9972229003906,
+            "width": 146.66510009765625,
+            "height": 44.8155517578125
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-galerie/0001.png",
+      "scenario": "cimes-galerie",
+      "reference": false,
+      "sha256": "9c66e4b4898657b272cbd177a3d18058aa4d92ec2d44336c147b45fc54e3859e",
+      "octets": 422031,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14642548588,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:38:24.920904+00:00",
+        "constat": "Entrée couverte : toit, poteaux et luminaires continus ; rival et route lisibles, quelques résidus d’eau.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 64,
+            "dessins": 64,
+            "etapes": 725,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.22158130353034755,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 9,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 6,
+            "depotsEau": 15,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 431.10142114655355
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            242.11984414660245,
+            266.3177042810001,
+            -1441.0305658184054
+          ],
+          "abri": true,
+          "interieur": false,
+          "section": "cimes-couvert-1",
+          "type": "galerie",
+          "lumiere": 1,
+          "lampes": 3,
+          "pluie": 1,
+          "abriVisiere": true,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 265.6015930175781,
+          "body": 5393,
+          "genre": "sol-galerie",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": true,
+          "y": 271.9609375,
+          "body": 5397,
+          "genre": "voute-galerie",
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 265.56157558901015,
+        "etape": 1,
+        "etapeId": "entree-interieure",
+        "abscisse": 6070.9587399358425,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 6.041666666666662
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 6070.9587399358425,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.22891235351562,
+            "y": 341.14434814453125,
+            "width": 146.73385620117188,
+            "height": 45.071929931640625
+          },
+          "glace-d": {
+            "x": 658.0774536132812,
+            "y": 341.0953063964844,
+            "width": 146.75933837890625,
+            "height": 44.974639892578125
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-galerie/0002.png",
+      "scenario": "cimes-galerie",
+      "reference": false,
+      "sha256": "1d3e3d6aaf03ea08673eff8e930e681262909d2d2ed09773f556e6b43f231893",
+      "octets": 415728,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14642548588,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:38:24.920904+00:00",
+        "constat": "Milieu galerie : structure ouverte latérale cohérente, eau résiduelle raréfiée ; pas de pluie sous toit.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 95,
+            "dessins": 95,
+            "etapes": 1097,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.06086231071497484,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 3,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 10,
+            "depotsEau": 15,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 524.0285056621674
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            242.11893407233734,
+            256.7693477944249,
+            -1303.021942522637
+          ],
+          "abri": true,
+          "interieur": false,
+          "section": "cimes-couvert-1",
+          "type": "galerie",
+          "lumiere": 1,
+          "lampes": 3,
+          "pluie": 1,
+          "abriVisiere": true,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 256.0502014160156,
+          "body": 5552,
+          "genre": "sol-galerie",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": true,
+          "y": 262.4093322753906,
+          "body": 5553,
+          "genre": "voute-galerie",
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 256.0102054317666,
+        "etape": 2,
+        "etapeId": "centre",
+        "abscisse": 6208.9587399358425,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 9.141666666666652
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 6208.9587399358425,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.13479614257812,
+            "y": 342.5810546875,
+            "width": 146.79580688476562,
+            "height": 45.065185546875
+          },
+          "glace-d": {
+            "x": 658.1048583984375,
+            "y": 342.5994567871094,
+            "width": 146.807373046875,
+            "height": 45.020538330078125
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-galerie/0003.png",
+      "scenario": "cimes-galerie",
+      "reference": false,
+      "sha256": "1f8a6ad20b15483d02976ad760995427c6af1388429e6d0223173e37fc451457",
+      "octets": 374457,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14642548588,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:38:24.920904+00:00",
+        "constat": "Sortie intérieure : paysage et tunnel suivant lisibles ; quelques résidus, reprise de dépôts non encore active. Réserve préexistante : pluie extérieure invisible depuis abri.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 126,
+            "dessins": 126,
+            "etapes": 1469,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.01671665385106285,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 1,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 10,
+            "depotsEau": 15,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 524.0285056621674
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            242.11888139642772,
+            247.0829346634288,
+            -1165.0201062705476
+          ],
+          "abri": true,
+          "interieur": false,
+          "section": "cimes-couvert-1",
+          "type": "galerie",
+          "lumiere": 1,
+          "lampes": 2,
+          "pluie": 1,
+          "abriVisiere": true,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 246.36306762695312,
+          "body": 5706,
+          "genre": "sol-galerie",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": true,
+          "y": 252.72210693359375,
+          "body": 5707,
+          "genre": "voute-galerie",
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 246.32305699723005,
+        "etape": 3,
+        "etapeId": "sortie-interieure",
+        "abscisse": 6346.9587399358425,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 12.24166666666664
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 6346.9587399358425,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.10324096679688,
+            "y": 342.9232177734375,
+            "width": 146.8187255859375,
+            "height": 45.040252685546875
+          },
+          "glace-d": {
+            "x": 658.1122436523438,
+            "y": 342.9926452636719,
+            "width": 146.79486083984375,
+            "height": 45.03558349609375
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-galerie/0004.png",
+      "scenario": "cimes-galerie",
+      "reference": false,
+      "sha256": "06ea2326bd68aa591ffb377e660a30eb9145b2a72ade1c082cc9cdd2a7775b9c",
+      "octets": 447703,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14642548588,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:38:24.920904+00:00",
+        "constat": "Sortie extérieure : retour de gouttes sans masque noir ; scène, route et rétroviseurs lisibles.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 157,
+            "dessins": 157,
+            "etapes": 1841,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.8208169594182262,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 17,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 10,
+            "depotsEau": 31,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 524.0285056621674
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            241.70750553165772,
+            245.28389842481843,
+            -1141.0231852546547
+          ],
+          "abri": false,
+          "interieur": false,
+          "section": null,
+          "type": null,
+          "lumiere": 1,
+          "lampes": 0,
+          "pluie": 1,
+          "abriVisiere": false,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 244.5212860107422,
+          "body": 54,
+          "genre": "chaussee",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": false,
+          "y": null,
+          "body": null,
+          "genre": null,
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 244.5230581535746,
+        "etape": 4,
+        "etapeId": "sortie-exterieure",
+        "abscisse": 6370.9587399358425,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 15.34166666666663
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 6370.9587399358425,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.0470428466797,
+            "y": 343.31597900390625,
+            "width": 146.86155700683594,
+            "height": 44.956573486328125
+          },
+          "glace-d": {
+            "x": 658.1235961914062,
+            "y": 343.5810546875,
+            "width": 146.76153564453125,
+            "height": 45.106964111328125
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/haut-col-portails/0000.png",
+      "scenario": "haut-col-portails",
+      "reference": false,
+      "sha256": "d3f84c9c8d91371007ebc64fe6530ab58be9b311d03421b3b4f9c14615412e66",
+      "octets": 461764,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14642787484,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:39:14.740374+00:00",
+        "constat": "Avant portail : voile de pluie dense, cockpit et rétroviseurs cohérents.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 33,
+            "dessins": 33,
+            "etapes": 353,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.8221371596671615,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 13,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 2,
+            "depotsEau": 15,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 267.98861723586856
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            -549.8181979185189,
+            0.42822858840652134,
+            547.1746864149584
+          ],
+          "abri": false,
+          "interieur": false,
+          "section": null,
+          "type": null,
+          "lumiere": 1,
+          "lampes": 1,
+          "pluie": 1,
+          "abriVisiere": false,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": -0.30718594789505005,
+          "body": 15,
+          "genre": "chaussee",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": false,
+          "y": null,
+          "body": null,
+          "genre": null,
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": -0.30718654167169923,
+        "etape": 0,
+        "etapeId": "entree-exterieure",
+        "abscisse": 1786,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": null,
+            "type": "tunnel",
+            "debut": 1798,
+            "fin": 2058
+          }
+        ],
+        "temps": 2.941666666666668
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 1786,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.661865234375,
+            "y": 332.15167236328125,
+            "width": 146.48291015625,
+            "height": 44.933380126953125
+          },
+          "glace-d": {
+            "x": 657.8955078125,
+            "y": 332.1625671386719,
+            "width": 146.45440673828125,
+            "height": 44.894561767578125
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/haut-col-portails/0001.png",
+      "scenario": "haut-col-portails",
+      "reference": false,
+      "sha256": "4de0a30251d3168d4f9d6d86b381e9319f735d93ce1ba9306279e9feb8779ee4",
+      "octets": 381867,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14642787484,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:39:14.740374+00:00",
+        "constat": "Entrée intérieure : toit, parois et éclairages continus, route/rival visibles ; résidus d’eau.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 64,
+            "dessins": 64,
+            "etapes": 725,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.23599600966051437,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 10,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 5,
+            "depotsEau": 15,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 424.555459217465
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            -528.1214289341925,
+            0.7961308366771203,
+            557.8125158802992
+          ],
+          "abri": true,
+          "interieur": true,
+          "section": null,
+          "type": "tunnel",
+          "lumiere": 1.3133586118804161,
+          "lampes": 3,
+          "pluie": 1,
+          "abriVisiere": true,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 0.10091572254896164,
+          "body": 4926,
+          "genre": "sol-tunnel",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": true,
+          "y": 6.460867404937744,
+          "body": 4929,
+          "genre": "voute-tunnel",
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 0.06090993044527507,
+        "etape": 1,
+        "etapeId": "entree-interieure",
+        "abscisse": 1810,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": null,
+            "type": "tunnel",
+            "debut": 1798,
+            "fin": 2058
+          }
+        ],
+        "temps": 6.041666666666662
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 1810,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1.3133586118804161,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.66452026367188,
+            "y": 332.0751037597656,
+            "width": 146.48382568359375,
+            "height": 44.9344482421875
+          },
+          "glace-d": {
+            "x": 657.896484375,
+            "y": 332.0859375,
+            "width": 146.4510498046875,
+            "height": 44.895599365234375
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/haut-col-portails/0002.png",
+      "scenario": "haut-col-portails",
+      "reference": false,
+      "sha256": "360133918bf01630ab9fcf54f8db2b742a9c847a2aac4fde4e733a7ca55fbde2",
+      "octets": 368190,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14642787484,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:39:14.740374+00:00",
+        "constat": "Centre tunnel : géométrie/route/lampes lisibles, résidus raréfiés.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 95,
+            "dessins": 95,
+            "etapes": 1097,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.06774312298030269,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 4,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 9,
+            "depotsEau": 15,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 513.5618432157478
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            -421.44341021873026,
+            2.678623594314398,
+            610.116274638817
+          ],
+          "abri": true,
+          "interieur": true,
+          "section": null,
+          "type": "tunnel",
+          "lumiere": 1.3198621623870161,
+          "lampes": 3,
+          "pluie": 1,
+          "abriVisiere": true,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 1.983199954032898,
+          "body": 5002,
+          "genre": "sol-tunnel",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": true,
+          "y": 8.34315299987793,
+          "body": 5005,
+          "genre": "voute-tunnel",
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 1.9433024200772064,
+        "etape": 2,
+        "etapeId": "centre",
+        "abscisse": 1928,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": null,
+            "type": "tunnel",
+            "debut": 1798,
+            "fin": 2058
+          }
+        ],
+        "temps": 9.141666666666652
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 1928,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1.3198621623870161,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.6631622314453,
+            "y": 332.1146240234375,
+            "width": 146.4833221435547,
+            "height": 44.933746337890625
+          },
+          "glace-d": {
+            "x": 657.8961181640625,
+            "y": 332.1256103515625,
+            "width": 146.45263671875,
+            "height": 44.89495849609375
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/haut-col-portails/0003.png",
+      "scenario": "haut-col-portails",
+      "reference": false,
+      "sha256": "2013a0f9e77fdaff90f97c84f24780c6eaadc1e363c90dcff41928a1ce1ab5c6",
+      "octets": 361583,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14642787484,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:39:14.740374+00:00",
+        "constat": "Sortie intérieure : extérieur et route lisibles, quelques résidus seulement. Réserve préexistante pluie extérieure invisible depuis abri.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 126,
+            "dessins": 126,
+            "etapes": 1469,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.01944591126937213,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 1,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 10,
+            "depotsEau": 15,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 524.0285056621674
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            -314.76169453307637,
+            4.1884366355456875,
+            662.4218460053982
+          ],
+          "abri": true,
+          "interieur": true,
+          "section": null,
+          "type": "tunnel",
+          "lumiere": 1.3199971392716083,
+          "lampes": 3,
+          "pluie": 1,
+          "abriVisiere": true,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 3.4910058975219727,
+          "body": 3264,
+          "genre": "sol-tunnel",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": true,
+          "y": 9.850988388061523,
+          "body": 3267,
+          "genre": "voute-tunnel",
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 3.451287327306695,
+        "etape": 3,
+        "etapeId": "sortie-interieure",
+        "abscisse": 2046,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": null,
+            "type": "tunnel",
+            "debut": 1798,
+            "fin": 2058
+          }
+        ],
+        "temps": 12.24166666666664
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 2046,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1.3199971392716083,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.64035034179688,
+            "y": 332.8404846191406,
+            "width": 146.47171020507812,
+            "height": 44.923797607421875
+          },
+          "glace-d": {
+            "x": 657.8868408203125,
+            "y": 332.8518371582031,
+            "width": 146.4844970703125,
+            "height": 44.885009765625
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/haut-col-portails/0004.png",
+      "scenario": "haut-col-portails",
+      "reference": false,
+      "sha256": "8a345dc5bcec7ac8e4e21997ebe31a81869acf75c04dc8ccb96ab9fbefeb5daf",
+      "octets": 418512,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14642787484,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:39:14.740374+00:00",
+        "constat": "Après sortie : dépôts d’eau de nouveau visibles, route et scène sans coupure.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 157,
+            "dessins": 157,
+            "etapes": 1841,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.8363361778220995,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 18,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 10,
+            "depotsEau": 32,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 524.0285056621674
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            -293.06333731044276,
+            4.393439188336245,
+            673.0604541769263
+          ],
+          "abri": false,
+          "interieur": false,
+          "section": null,
+          "type": null,
+          "lumiere": 1.0000104096577143,
+          "lampes": 1,
+          "pluie": 1,
+          "abriVisiere": false,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 3.6557459831237793,
+          "body": 18,
+          "genre": "chaussee",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": false,
+          "y": null,
+          "body": null,
+          "genre": null,
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 3.655745742983487,
+        "etape": 4,
+        "etapeId": "sortie-exterieure",
+        "abscisse": 2070,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": null,
+            "type": "tunnel",
+            "debut": 1798,
+            "fin": 2058
+          }
+        ],
+        "temps": 15.34166666666663
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 2070,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1.0000104096577143,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.63356018066406,
+            "y": 333.0585632324219,
+            "width": 146.4695281982422,
+            "height": 44.92083740234375
+          },
+          "glace-d": {
+            "x": 657.8839721679688,
+            "y": 333.0699768066406,
+            "width": 146.49420166015625,
+            "height": 44.882080078125
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/0000.png",
+      "scenario": "cimes-echelles",
+      "reference": false,
+      "sha256": "9a556197dadff27b9424ab4fd706bed3f89e8ba88ff7da143b642aab841afe6c",
+      "octets": 447421,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14642782600,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:39:14.740374+00:00",
+        "constat": "Avant portail : voile de pluie dense, cockpit et rétroviseurs cohérents.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 33,
+            "dessins": 33,
+            "etapes": 353,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.7930013230670767,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 12,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 2,
+            "depotsEau": 14,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 267.98861723586856
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            191.13278014185758,
+            233.2691452829546,
+            -1001.646812366281
+          ],
+          "abri": false,
+          "interieur": false,
+          "section": null,
+          "type": null,
+          "lumiere": 1,
+          "lampes": 1,
+          "pluie": 1,
+          "abriVisiere": false,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 232.50741577148438,
+          "body": 55,
+          "genre": "chaussee",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": false,
+          "y": null,
+          "body": null,
+          "genre": null,
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 232.50758566555734,
+        "etape": 0,
+        "etapeId": "entree-exterieure",
+        "abscisse": 6521.491665135275,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 2.941666666666668
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 6521.491665135276,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.0242462158203,
+            "y": 343.6849365234375,
+            "width": 146.87867736816406,
+            "height": 44.95355224609375
+          },
+          "glace-d": {
+            "x": 658.1328125,
+            "y": 343.9461669921875,
+            "width": 146.7564697265625,
+            "height": 45.10009765625
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/0001.png",
+      "scenario": "cimes-echelles",
+      "reference": false,
+      "sha256": "6d349dfd24419aafb6ec6972cc7b21a05c1fdb892e21b2a99d7e2abe5bf1a8f8",
+      "octets": 377071,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14642782600,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:39:14.740374+00:00",
+        "constat": "Entrée intérieure : toit, parois et éclairages continus, route/rival visibles ; résidus d’eau.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 64,
+            "dessins": 64,
+            "etapes": 725,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.20644225509172126,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 8,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 6,
+            "depotsEau": 14,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 431.10142114655355
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            176.04240767881925,
+            231.34915336960262,
+            -982.9879095571408
+          ],
+          "abri": true,
+          "interieur": true,
+          "section": "cimes-couvert-2",
+          "type": "tunnel",
+          "lumiere": 1.3133586118804161,
+          "lampes": 3,
+          "pluie": 1,
+          "abriVisiere": true,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 230.62759399414062,
+          "body": 5765,
+          "genre": "sol-tunnel",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": true,
+          "y": 236.98648071289062,
+          "body": 5764,
+          "genre": "voute-tunnel",
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 230.58758676982092,
+        "etape": 1,
+        "etapeId": "entree-interieure",
+        "abscisse": 6545.491665135275,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 6.041666666666662
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 6545.491665135276,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1.3133586118804161,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.04647827148438,
+            "y": 343.78155517578125,
+            "width": 146.8594970703125,
+            "height": 45.03094482421875
+          },
+          "glace-d": {
+            "x": 658.130859375,
+            "y": 343.8468933105469,
+            "width": 146.78179931640625,
+            "height": 45.022491455078125
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/0002.png",
+      "scenario": "cimes-echelles",
+      "reference": false,
+      "sha256": "2407606727f1a0f391d4c283a1bf9174df674a93cd28573253845eb45a1bcd85",
+      "octets": 370145,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14642782600,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:39:14.740374+00:00",
+        "constat": "Centre tunnel : géométrie/route/lampes lisibles, résidus raréfiés.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 95,
+            "dessins": 95,
+            "etapes": 1097,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.05374184892657868,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 3,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 9,
+            "depotsEau": 14,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 513.5618432157478
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            129.11990540809177,
+            225.50915699045035,
+            -927.0658265572002
+          ],
+          "abri": true,
+          "interieur": true,
+          "section": "cimes-couvert-2",
+          "type": "tunnel",
+          "lumiere": 1.3198621623870161,
+          "lampes": 3,
+          "pluie": 1,
+          "abriVisiere": true,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 224.78759765625,
+          "body": 5913,
+          "genre": "sol-tunnel",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": true,
+          "y": 231.14646911621094,
+          "body": 5916,
+          "genre": "voute-tunnel",
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 224.74759012862268,
+        "etape": 2,
+        "etapeId": "centre",
+        "abscisse": 6618.491665135275,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 9.141666666666652
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 6618.491665135276,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1.3198621623870161,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.05172729492188,
+            "y": 343.8042297363281,
+            "width": 146.85498046875,
+            "height": 45.049072265625
+          },
+          "glace-d": {
+            "x": 658.1305541992188,
+            "y": 343.82354736328125,
+            "width": 146.7877197265625,
+            "height": 45.00439453125
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/0003.png",
+      "scenario": "cimes-echelles",
+      "reference": false,
+      "sha256": "8a0da99bbcf9f350b09cbac4b815ab041f06094fbf8e24ae143e636c2b944b31",
+      "octets": 369822,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14642782600,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:39:14.740374+00:00",
+        "constat": "Sortie intérieure : extérieur et route lisibles, quelques résidus seulement. Réserve préexistante pluie extérieure invisible depuis abri. Deux alertes miroir identiques aux valeurs 0.2.66 ; aucune corruption visible dans le PNG natif, sans conclure sur un éventuel clignotement entre poses.",
+        "bloquant": false,
+        "image_native_additionnelle": true
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 126,
+            "dessins": 126,
+            "etapes": 1469,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.013989944888047199,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 1,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 9,
+            "depotsEau": 14,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 513.5618432157478
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            82.19599359167228,
+            219.66916000452196,
+            -871.1449263276834
+          ],
+          "abri": true,
+          "interieur": true,
+          "section": "cimes-couvert-2",
+          "type": "tunnel",
+          "lumiere": 1.3199971392716083,
+          "lampes": 3,
+          "pluie": 1,
+          "abriVisiere": true,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 218.94760131835938,
+          "body": 5965,
+          "genre": "sol-tunnel",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": true,
+          "y": 225.3064727783203,
+          "body": 5975,
+          "genre": "voute-tunnel",
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 218.90759348742444,
+        "etape": 3,
+        "etapeId": "sortie-interieure",
+        "abscisse": 6691.491665135275,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 12.24166666666664
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 6691.491665135276,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1.3199971392716083,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.04554748535156,
+            "y": 343.7781982421875,
+            "width": 146.8603057861328,
+            "height": 45.0281982421875
+          },
+          "glace-d": {
+            "x": 658.1312255859375,
+            "y": 343.8502502441406,
+            "width": 146.7806396484375,
+            "height": 45.02532958984375
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/0004.png",
+      "scenario": "cimes-echelles",
+      "reference": false,
+      "sha256": "052662c5906ac118dd344caa9dfe74d4f1bc86f972ced0a41f6d8e13aa37b1e0",
+      "octets": 421054,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14642782600,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:39:14.740374+00:00",
+        "constat": "Après sortie : dépôts d’eau de nouveau visibles, route et scène sans coupure.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 157,
+            "dessins": 157,
+            "etapes": 1841,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.8039476001447445,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 17,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 9,
+            "depotsEau": 30,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 513.5618432157478
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            66.45846515500884,
+            217.74915379700502,
+            -853.028309955676
+          ],
+          "abri": false,
+          "interieur": false,
+          "section": null,
+          "type": null,
+          "lumiere": 1.0000104096577143,
+          "lampes": 1,
+          "pluie": 1,
+          "abriVisiere": false,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 216.98715209960938,
+          "body": 56,
+          "genre": "chaussee",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": false,
+          "y": null,
+          "body": null,
+          "genre": null,
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 216.98759459168798,
+        "etape": 4,
+        "etapeId": "sortie-exterieure",
+        "abscisse": 6715.491665135275,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 15.34166666666663
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 6715.491665135276,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1.0000104096577143,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.02366638183594,
+            "y": 343.68157958984375,
+            "width": 146.87916564941406,
+            "height": 44.9508056640625
+          },
+          "glace-d": {
+            "x": 658.1331787109375,
+            "y": 343.9495544433594,
+            "width": 146.75518798828125,
+            "height": 45.102813720703125
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-dessus-toit/0000.png",
+      "scenario": "cimes-dessus-toit",
+      "reference": false,
+      "sha256": "19807ba2c6e6af5a120db4413beaff743339fbd0aeb041d284ac03eb1f319eb6",
+      "octets": 452024,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14642439202,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:39:14.740374+00:00",
+        "constat": "Vue hélicoptère au-dessus du massif/toit, route et voitures visibles au centre ; pluie du monde visible, aucun dépôt de visière ; aucun intérieur ou masque noir.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 2,
+            "dessins": 2,
+            "etapes": 0,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 0,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 0,
+            "depotsEau": 0,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 0
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": false
+        },
+        "j1": {
+          "camera": [
+            128.96561576977055,
+            294.5402069091797,
+            -926.881949907044
+          ],
+          "abri": false,
+          "interieur": false,
+          "section": null,
+          "type": null,
+          "lumiere": 1,
+          "lampes": 0,
+          "pluie": 1,
+          "abriVisiere": false,
+          "visiereActive": false,
+          "vue": "helico"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 224.78759765625,
+          "body": 5913,
+          "genre": "sol-tunnel",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": true,
+          "y": 231.14646911621094,
+          "body": 5916,
+          "genre": "voute-tunnel",
+          "surface": null
+        },
+        "survol": {
+          "sujetS": 6759.491665135276,
+          "sujetSousCouvert": false,
+          "terrainY": 223.84891752728032,
+          "surfaceY": 254.5402069091797,
+          "cible": [
+            33.74864940275236,
+            214.11759661617114,
+            -823.3278613973264
+          ],
+          "regardLibre": true,
+          "obstructionDistance": null,
+          "cadreLibre": true
+        },
+        "yRoute": 224.74759012862268,
+        "etape": 0,
+        "etapeId": "dessus-toit",
+        "abscisse": 6618.491665135275,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 2.941666666666668
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 6759.491665135276,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-dessus-toit/0001.png",
+      "scenario": "cimes-dessus-toit",
+      "reference": false,
+      "sha256": "e11d4e0a30450c2edc341fae01e319ce60de12d0b7c189c88f83c50416418476",
+      "octets": 452415,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14642439202,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:39:14.740374+00:00",
+        "constat": "Vue hélicoptère au-dessus du massif/toit, route et voitures visibles au centre ; pluie du monde visible, aucun dépôt de visière ; aucun intérieur ou masque noir.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 2,
+            "dessins": 2,
+            "etapes": 0,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 0,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 0,
+            "depotsEau": 0,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 0
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": false
+        },
+        "j1": {
+          "camera": [
+            128.96561576977055,
+            294.5402069091797,
+            -926.881949907044
+          ],
+          "abri": false,
+          "interieur": false,
+          "section": null,
+          "type": null,
+          "lumiere": 1,
+          "lampes": 0,
+          "pluie": 1,
+          "abriVisiere": false,
+          "visiereActive": false,
+          "vue": "helico"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 224.78759765625,
+          "body": 5913,
+          "genre": "sol-tunnel",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": true,
+          "y": 231.14646911621094,
+          "body": 5916,
+          "genre": "voute-tunnel",
+          "surface": null
+        },
+        "survol": {
+          "sujetS": 6759.491665135276,
+          "sujetSousCouvert": false,
+          "terrainY": 223.84891752728032,
+          "surfaceY": 254.5402069091797,
+          "cible": [
+            33.74864940275236,
+            214.11759661617114,
+            -823.3278613973264
+          ],
+          "regardLibre": true,
+          "obstructionDistance": null,
+          "cadreLibre": true
+        },
+        "yRoute": 224.74759012862268,
+        "etape": 0,
+        "etapeId": "dessus-toit",
+        "abscisse": 6618.491665135275,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 3.0416666666666683
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 6759.491665135276,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-deux-vues/0000.png",
+      "scenario": "cimes-deux-vues",
+      "reference": false,
+      "sha256": "1c9025a1c823c6d1522a6e763da5f196fee09ad2a02c53ac3f88a2d070d7d17a",
+      "octets": 460285,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14644631102,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:42:19.538193+00:00",
+        "constat": "Écran partagé propre et cadrage indépendant : J1 tunnel sombre, J2 galerie ouverte ; route, rétroviseurs, HUD et voitures distincts. Aucune eau sur les deux visières abritées.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 2,
+            "dessins": 2,
+            "etapes": 353,
+            "pixels": 259200,
+            "pixelsSource": 259200,
+            "largeur": 960,
+            "hauteur": 270,
+            "dpr": 1,
+            "eau": 0,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 0,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 0,
+            "depotsEau": 0,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 0
+          },
+          "j2": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 1,
+            "dessins": 1,
+            "etapes": 353,
+            "pixels": 259200,
+            "pixelsSource": 259200,
+            "largeur": 960,
+            "hauteur": 270,
+            "dpr": 1,
+            "eau": 0,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 0,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 0,
+            "depotsEau": 0,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 0
+          }
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          },
+          "j2": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": false,
+          "j2": false
+        },
+        "j1": {
+          "camera": [
+            1200.777714164906,
+            250.5896101887291,
+            -2386.107586355362
+          ],
+          "abri": true,
+          "interieur": true,
+          "section": "cimes-couvert-0",
+          "type": "tunnel",
+          "lumiere": 1.3119050722448742,
+          "lampes": 3,
+          "pluie": 1,
+          "abriVisiere": true,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": {
+          "camera": [
+            242.11817893681572,
+            265.16895376673557,
+            -1423.0218037274003
+          ],
+          "abri": true,
+          "interieur": false,
+          "section": "cimes-couvert-1",
+          "type": "galerie",
+          "lumiere": 1,
+          "lampes": 3,
+          "pluie": 1,
+          "abriVisiere": true,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "sol": {
+          "hit": true,
+          "y": 249.90219116210938,
+          "body": 7794,
+          "genre": "sol-tunnel",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": true,
+          "y": 256.2619323730469,
+          "body": 7797,
+          "genre": "voute-tunnel",
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 249.86219190590853,
+        "etape": 0,
+        "etapeId": "interieur",
+        "abscisse": 4428.92933566745,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 2.941666666666668
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 4428.92933566745,
+            "d": 0,
+            "v": 35
+          },
+          {
+            "id": 1,
+            "s": 6088.9587399358425,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1.3119050722448742,
+        "lumiereJ2": 1,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 270
+          },
+          "scene2": {
+            "x": 0,
+            "y": 270,
+            "width": 960,
+            "height": 270
+          },
+          "glace-g": {
+            "x": 317.89739990234375,
+            "y": 164.54380798339844,
+            "width": 73.22012329101562,
+            "height": 22.4498291015625
+          },
+          "glace-d": {
+            "x": 568.9149169921875,
+            "y": 164.54824829101562,
+            "width": 73.2137451171875,
+            "height": 22.43121337890625
+          },
+          "glace-g2": {
+            "x": 317.56231689453125,
+            "y": 441.2714538574219,
+            "width": 73.40335083007812,
+            "height": 22.512969970703125
+          },
+          "glace-d2": {
+            "x": 569.0650024414062,
+            "y": 441.2807312011719,
+            "width": 73.40081787109375,
+            "height": 22.510467529296875
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-deux-vues/0001.png",
+      "scenario": "cimes-deux-vues",
+      "reference": false,
+      "sha256": "b1beaa16c631707a09183c9894ad835169bbe9060cccdd002dc247dffad3fea3",
+      "octets": 460243,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14644631102,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T15:42:19.538193+00:00",
+        "constat": "Écran partagé propre et cadrage indépendant : J1 tunnel sombre, J2 galerie ouverte ; route, rétroviseurs, HUD et voitures distincts. Aucune eau sur les deux visières abritées.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 2,
+            "dessins": 2,
+            "etapes": 365,
+            "pixels": 259200,
+            "pixelsSource": 259200,
+            "largeur": 960,
+            "hauteur": 270,
+            "dpr": 1,
+            "eau": 0,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 0,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 0,
+            "depotsEau": 0,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 0
+          },
+          "j2": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 1,
+            "dessins": 1,
+            "etapes": 365,
+            "pixels": 259200,
+            "pixelsSource": 259200,
+            "largeur": 960,
+            "hauteur": 270,
+            "dpr": 1,
+            "eau": 0,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 0,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 0,
+            "depotsEau": 0,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 0
+          }
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          },
+          "j2": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": false,
+          "j2": false
+        },
+        "j1": {
+          "camera": [
+            1200.777714164906,
+            250.5896101887291,
+            -2386.107586355362
+          ],
+          "abri": true,
+          "interieur": true,
+          "section": "cimes-couvert-0",
+          "type": "tunnel",
+          "lumiere": 1.3128562513294555,
+          "lampes": 3,
+          "pluie": 1,
+          "abriVisiere": true,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": {
+          "camera": [
+            242.11817893681572,
+            265.16895376673557,
+            -1423.0218037274003
+          ],
+          "abri": true,
+          "interieur": false,
+          "section": "cimes-couvert-1",
+          "type": "galerie",
+          "lumiere": 1,
+          "lampes": 3,
+          "pluie": 1,
+          "abriVisiere": true,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "sol": {
+          "hit": true,
+          "y": 249.90219116210938,
+          "body": 7794,
+          "genre": "sol-tunnel",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": true,
+          "y": 256.2619323730469,
+          "body": 7797,
+          "genre": "voute-tunnel",
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 249.86219190590853,
+        "etape": 0,
+        "etapeId": "interieur",
+        "abscisse": 4428.92933566745,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 3.0416666666666683
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 4428.92933566745,
+            "d": 0,
+            "v": 35
+          },
+          {
+            "id": 1,
+            "s": 6088.9587399358425,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1.3128562513294555,
+        "lumiereJ2": 1,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 270
+          },
+          "scene2": {
+            "x": 0,
+            "y": 270,
+            "width": 960,
+            "height": 270
+          },
+          "glace-g": {
+            "x": 317.89739990234375,
+            "y": 164.54380798339844,
+            "width": 73.22012329101562,
+            "height": 22.4498291015625
+          },
+          "glace-d": {
+            "x": 568.9149169921875,
+            "y": 164.54824829101562,
+            "width": 73.2137451171875,
+            "height": 22.43121337890625
+          },
+          "glace-g2": {
+            "x": 317.56231689453125,
+            "y": 441.2714538574219,
+            "width": 73.40335083007812,
+            "height": 22.512969970703125
+          },
+          "glace-d2": {
+            "x": 569.0650024414062,
+            "y": 441.2807312011719,
+            "width": 73.40081787109375,
+            "height": 22.510467529296875
+          }
+        }
+      },
+      "essai": 1
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/0000.png",
+      "scenario": "cimes-rocher",
+      "reference": false,
+      "sha256": "aeada7fbbe394c3eb768b5fe8558e5a590e3bd7a877c2954a5d1ba482690e2a6",
+      "octets": 461955,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14646073492,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T16:01:05.206356+00:00",
+        "constat": "Avant entrée : voile de pluie, structure du portail perceptible, cockpit/HUD/rétroviseurs cohérents.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 33,
+            "dessins": 33,
+            "etapes": 353,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.7766631119963193,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 12,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 2,
+            "depotsEau": 14,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 267.98861723586856
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            1360.21133911488,
+            243.86573029726537,
+            -2351.829535608518
+          ],
+          "abri": false,
+          "interieur": false,
+          "section": null,
+          "type": null,
+          "lumiere": 1,
+          "lampes": 1,
+          "pluie": 1,
+          "abriVisiere": false,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 243.14068603515625,
+          "body": 36,
+          "genre": "chaussee",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": false,
+          "y": null,
+          "body": null,
+          "genre": null,
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 243.1406308196331,
+        "etape": 0,
+        "etapeId": "entree-exterieure",
+        "abscisse": 4264.56945810762,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 2.941666666666668
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 4264.56945810762,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.77371215820312,
+            "y": 328.2185974121094,
+            "width": 146.45437622070312,
+            "height": 44.86370849609375
+          },
+          "glace-d": {
+            "x": 657.74462890625,
+            "y": 328.2508544921875,
+            "width": 146.4805908203125,
+            "height": 44.8472900390625
+          }
+        }
+      },
+      "essai": 2
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/0001.png",
+      "scenario": "cimes-rocher",
+      "reference": false,
+      "sha256": "ad031851c695896dd83f85b079224ed4e881136f1d52ac12b79cbebfa806bff3",
+      "octets": 374757,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14646073492,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T16:01:05.206356+00:00",
+        "constat": "Entrée intérieure : parois et toit continus, rivaux et route lisibles ; résidus d’eau présents.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 64,
+            "dessins": 64,
+            "etapes": 725,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.19166129158832082,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 8,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 6,
+            "depotsEau": 14,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 431.10142114655355
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            1336.212332648547,
+            244.9470605336043,
+            -2352.1639808451055
+          ],
+          "abri": true,
+          "interieur": true,
+          "section": "cimes-couvert-0",
+          "type": "tunnel",
+          "lumiere": 1.3133586118804161,
+          "lampes": 3,
+          "pluie": 1,
+          "abriVisiere": true,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 244.26063537597656,
+          "body": 4522,
+          "genre": "sol-tunnel",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": true,
+          "y": 250.62030029296875,
+          "body": 4521,
+          "genre": "voute-tunnel",
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 244.2206318806072,
+        "etape": 1,
+        "etapeId": "entree-interieure",
+        "abscisse": 4288.56945810762,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 6.041666666666662
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 4288.56945810762,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1.3133586118804161,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.7601776123047,
+            "y": 328.7096862792969,
+            "width": 146.4767608642578,
+            "height": 44.896087646484375
+          },
+          "glace-d": {
+            "x": 657.8035278320312,
+            "y": 328.73907470703125,
+            "width": 146.43701171875,
+            "height": 44.876617431640625
+          }
+        }
+      },
+      "essai": 2
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/0002.png",
+      "scenario": "cimes-rocher",
+      "reference": false,
+      "sha256": "6faa3836853a68620b2268e5642a95e73a1a17190a362193b519ef4eda15d2e8",
+      "octets": 375292,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14646073492,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T16:01:05.206356+00:00",
+        "constat": "Milieu tunnel : géométrie, éclairages et route lisibles, résidus raréfiés ; aucune nouvelle pluie sur visière.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 95,
+            "dessins": 95,
+            "etapes": 1097,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.04699489298471053,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 3,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 9,
+            "depotsEau": 14,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 513.5618432157478
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            1200.777714164906,
+            250.5896101887291,
+            -2386.107586355362
+          ],
+          "abri": true,
+          "interieur": true,
+          "section": "cimes-couvert-0",
+          "type": "tunnel",
+          "lumiere": 1.3198621623870161,
+          "lampes": 3,
+          "pluie": 1,
+          "abriVisiere": true,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 249.90219116210938,
+          "body": 7794,
+          "genre": "sol-tunnel",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": true,
+          "y": 256.2619323730469,
+          "body": 7797,
+          "genre": "voute-tunnel",
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 249.86219190590853,
+        "etape": 2,
+        "etapeId": "centre",
+        "abscisse": 4428.92933566745,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 9.141666666666652
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 4428.92933566745,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1.3198621623870161,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.75537109375,
+            "y": 329.0876159667969,
+            "width": 146.4727783203125,
+            "height": 44.899658203125
+          },
+          "glace-d": {
+            "x": 657.8074340820312,
+            "y": 329.09649658203125,
+            "width": 146.44989013671875,
+            "height": 44.862335205078125
+          }
+        }
+      },
+      "essai": 2
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/0003.png",
+      "scenario": "cimes-rocher",
+      "reference": false,
+      "sha256": "f6dd49a18e30ca1dc6a6f0f2c3c75b5421add2cdf4d2b133cc2fe42f8ac06bd1",
+      "octets": 346535,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14646073492,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T16:01:05.206356+00:00",
+        "constat": "Sortie intérieure : extérieur et route visibles, un résidu subsiste ; réserve préexistante pluie extérieure invisible depuis abri.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 126,
+            "dessins": 126,
+            "etapes": 1469,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.011522807712818012,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 1,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 9,
+            "depotsEau": 14,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 513.5618432157478
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            1068.8739313060814,
+            256.1386141077606,
+            -2434.1076122489385
+          ],
+          "abri": true,
+          "interieur": true,
+          "section": "cimes-couvert-0",
+          "type": "tunnel",
+          "lumiere": 1.3199971392716083,
+          "lampes": 3,
+          "pluie": 1,
+          "abriVisiere": true,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 255.44879150390625,
+          "body": 4718,
+          "genre": "sol-tunnel",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": true,
+          "y": 261.80731201171875,
+          "body": 4723,
+          "genre": "voute-tunnel",
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 255.40878558741852,
+        "etape": 3,
+        "etapeId": "sortie-interieure",
+        "abscisse": 4569.28921322728,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 12.24166666666664
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 4569.289213227279,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1.3199971392716083,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 155.86595153808594,
+            "y": 330.2694396972656,
+            "width": 146.51258850097656,
+            "height": 45.1055908203125
+          },
+          "glace-d": {
+            "x": 657.9934692382812,
+            "y": 329.7558898925781,
+            "width": 146.4271240234375,
+            "height": 44.6309814453125
+          }
+        }
+      },
+      "essai": 2
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/0004.png",
+      "scenario": "cimes-rocher",
+      "reference": false,
+      "sha256": "a446cd18b8abade68b3b9640f7f181899fddd173dbc07e2b1e4219ce77321ef1",
+      "octets": 407193,
+      "dimensions": [
+        960,
+        540
+      ],
+      "artefact_id": 14646073492,
+      "revu": true,
+      "inspection": {
+        "mode": "planche_native_960x540_sans_reduction",
+        "date": "2026-11-20T16:01:05.206356+00:00",
+        "constat": "Sortie extérieure : retour des dépôts d’eau, géométrie/route/rivaux lisibles, aucun masque noir ni coupure.",
+        "bloquant": false,
+        "image_native_additionnelle": false
+      },
+      "observation": {
+        "glErreur": 0,
+        "glPerdu": false,
+        "vitres": {
+          "j1": {
+            "backend": "webgl2",
+            "pret": true,
+            "perdu": false,
+            "erreur": null,
+            "copiesScene": 157,
+            "dessins": 157,
+            "etapes": 1841,
+            "pixels": 518400,
+            "pixelsSource": 518400,
+            "largeur": 960,
+            "hauteur": 540,
+            "dpr": 1,
+            "eau": 0.7871567343378181,
+            "accumulationNeige": 0,
+            "embruns": 0,
+            "gouttes": 16,
+            "neige": 0,
+            "fusionsEau": 0,
+            "expulses": 9,
+            "depotsEau": 29,
+            "depotsEmbruns": 0,
+            "surfaceExpulsee": 513.5618432157478
+          },
+          "j2": null
+        },
+        "vitresGL": {
+          "j1": {
+            "present": true,
+            "erreur": 0,
+            "perdu": false
+          }
+        },
+        "visieresVisibles": {
+          "j1": true
+        },
+        "j1": {
+          "camera": [
+            1046.2296000974643,
+            256.80140306241344,
+            -2442.0778364439097
+          ],
+          "abri": false,
+          "interieur": false,
+          "section": null,
+          "type": null,
+          "lumiere": 1.0000104096577143,
+          "lampes": 1,
+          "pluie": 1,
+          "abriVisiere": false,
+          "visiereActive": true,
+          "vue": "cockpit"
+        },
+        "j2": null,
+        "sol": {
+          "hit": true,
+          "y": 256.0715637207031,
+          "body": 39,
+          "genre": "chaussee",
+          "surface": "piste"
+        },
+        "toit": {
+          "hit": false,
+          "y": null,
+          "body": null,
+          "genre": null,
+          "surface": null
+        },
+        "survol": null,
+        "yRoute": 256.0687869405145,
+        "etape": 4,
+        "etapeId": "sortie-exterieure",
+        "abscisse": 4593.28921322728,
+        "pluie": 1,
+        "sections": [
+          {
+            "id": "cimes-couvert-0",
+            "type": "tunnel",
+            "debut": 4276.56945810762,
+            "fin": 4581.28921322728
+          },
+          {
+            "id": "cimes-couvert-1",
+            "type": "galerie",
+            "debut": 6058.9587399358425,
+            "fin": 6358.9587399358425
+          },
+          {
+            "id": "cimes-couvert-2",
+            "type": "tunnel",
+            "debut": 6533.491665135275,
+            "fin": 6703.491665135275
+          }
+        ],
+        "temps": 15.34166666666663
+      },
+      "etat": {
+        "ecran": "course",
+        "phase": "course",
+        "referenceConservee": true,
+        "horloge": 6,
+        "meteo": "pluie",
+        "joueurs": [
+          {
+            "id": 0,
+            "s": 4593.289213227279,
+            "d": 0,
+            "v": 35
+          }
+        ],
+        "lumiere": 1.0000104096577143,
+        "reflets": false,
+        "zones": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 156.13587951660156,
+            "y": 332.1600341796875,
+            "width": 146.66685485839844,
+            "height": 45.67633056640625
+          },
+          "glace-d": {
+            "x": 658.3182373046875,
+            "y": 330.32275390625,
+            "width": 146.58978271484375,
+            "height": 44.1009521484375
+          }
+        }
+      },
+      "essai": 2
+    }
+  ],
+  "planches": [
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-planche-1.jpg",
+      "sha256": "19671723ced8cddeab0c8bd8a350a2907abb737618bd01e4840fb8cd60a79761",
+      "images": [
+        "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-galerie/0000.png",
+        "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-galerie/0001.png",
+        "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-galerie/0002.png",
+        "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-galerie/0003.png"
+      ]
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-planche-2.jpg",
+      "sha256": "8ece5f4e88f51e548fdd1465b4808241468790f487b8ffda92a371fbc8057cd9",
+      "images": [
+        "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-galerie/0004.png"
+      ]
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-planche-1.jpg",
+      "sha256": "d5b73847d2f399779a95466879bdfa34c493c5bfdeb4261b0c87e1cc680520a2",
+      "images": [
+        "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/haut-col-portails/0000.png",
+        "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/haut-col-portails/0001.png",
+        "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/haut-col-portails/0002.png",
+        "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/haut-col-portails/0003.png"
+      ]
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-planche-2.jpg",
+      "sha256": "29bf1293fa0f9d33e4f7350763c315d6e03e719d2693c32dc38911b87267ead6",
+      "images": [
+        "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/haut-col-portails/0004.png"
+      ]
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-planche-1.jpg",
+      "sha256": "9ff97dd0288f0fa08ef5f762aef0711b435a378f6ed9293522557a85a4e2c32e",
+      "images": [
+        "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/0000.png",
+        "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/0001.png",
+        "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/0002.png",
+        "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/0003.png"
+      ]
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-planche-2.jpg",
+      "sha256": "a292a60d14ca382316ce5b2e5d4d65daedb5519ac48bcb87d65c8258bbbeb5db",
+      "images": [
+        "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/0004.png"
+      ]
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-dessus-toit-planche-1.jpg",
+      "sha256": "6cd234113c35ed1012051392ad80e24832d3b02a9c73cbf18f34775fe05a2a22",
+      "images": [
+        "couverts/bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-dessus-toit/0000.png",
+        "couverts/bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-dessus-toit/0001.png"
+      ]
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-deux-vues-planche-1.jpg",
+      "sha256": "8cf97ea9a360d99d109aa1fbd4123593771079086bd976446b6fbbf18fef9e82",
+      "images": [
+        "couverts/bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-deux-vues/0000.png",
+        "couverts/bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-deux-vues/0001.png"
+      ]
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-planche-1.jpg",
+      "sha256": "666852a3ca5b0a9a24fd0069a8bed066aa40e8e77d6584dca040bee9b14469ad",
+      "images": [
+        "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/0000.png",
+        "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/0001.png",
+        "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/0002.png",
+        "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/0003.png"
+      ]
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-planche-2.jpg",
+      "sha256": "fc048af0e29f7db8cf2958303ae5a5c153cde70a4b87d326b2b582fd0898a2ab",
+      "images": [
+        "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/0004.png"
+      ]
+    }
+  ],
+  "fichiers": [
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/artifact.zip",
+      "octets": 5147,
+      "sha256": "c7c3ffb09d544234a97ac556c5bbbbd8b9ccde5f8e3c40cbaab33a5159005698"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/COMMIT.txt",
+      "octets": 41,
+      "sha256": "f580ffa5a34a80ff37231a250c103eb0f3f0ccf24dcded19be8655e1ab0f1f0d"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/ENVIRONNEMENT.txt",
+      "octets": 38,
+      "sha256": "8408a52da4e2f8ac0589e066814e3ac8be63dbf7fb2eb1f80392e0b698635737"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/SHA256SUMS.txt",
+      "octets": 83,
+      "sha256": "3f15996ee80ebaeee0a466940f36f92ff88b5d9ed40c33ab6760b6b095d2782a"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/TREE.txt",
+      "octets": 41,
+      "sha256": "ad01714c50b223282b631e846c968bf60db7f39d308230ae922016a9e4680d88"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/build.log",
+      "octets": 183,
+      "sha256": "aae63eccd849208f3c81bbc11d62f37042dfc43aa1b1b03b512bff47e4cff8ca"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/index.html",
+      "octets": 4530,
+      "sha256": "cb7c357357019a268da5e192c086cfd7bd4eb31644c82e4d6d24cd621ea1aff4"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/rapport.json",
+      "octets": 3281,
+      "sha256": "d828735e25da0591381687e3b0fa7bc4a0f29fefa5fc2666810d419c0a853674"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/rapport.json",
+      "octets": 1716,
+      "sha256": "af560b415a28613d7b747a985dc1f36467e5a0f51eb54824215ac0f2ec00f176"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/artifact.zip",
+      "octets": 2174170,
+      "sha256": "410628010865e3b5288a5f05d8c7cb4ec04666a59a231f58b0fef66dbcb9b6df"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/COMMIT.txt",
+      "octets": 41,
+      "sha256": "f580ffa5a34a80ff37231a250c103eb0f3f0ccf24dcded19be8655e1ab0f1f0d"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/ENVIRONNEMENT.txt",
+      "octets": 38,
+      "sha256": "8408a52da4e2f8ac0589e066814e3ac8be63dbf7fb2eb1f80392e0b698635737"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/SHA256SUMS.txt",
+      "octets": 83,
+      "sha256": "3f15996ee80ebaeee0a466940f36f92ff88b5d9ed40c33ab6760b6b095d2782a"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/TREE.txt",
+      "octets": 41,
+      "sha256": "ad01714c50b223282b631e846c968bf60db7f39d308230ae922016a9e4680d88"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/build.log",
+      "octets": 183,
+      "sha256": "aae63eccd849208f3c81bbc11d62f37042dfc43aa1b1b03b512bff47e4cff8ca"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-galerie/0000.png",
+      "octets": 455638,
+      "sha256": "ee3110c65c8b96500f18b6fd3c82ecb96e9dc7c41719dd5324b8876b02dd929f"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-galerie/0001.png",
+      "octets": 422031,
+      "sha256": "9c66e4b4898657b272cbd177a3d18058aa4d92ec2d44336c147b45fc54e3859e"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-galerie/0002.png",
+      "octets": 415728,
+      "sha256": "1d3e3d6aaf03ea08673eff8e930e681262909d2d2ed09773f556e6b43f231893"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-galerie/0003.png",
+      "octets": 374457,
+      "sha256": "1f8a6ad20b15483d02976ad760995427c6af1388429e6d0223173e37fc451457"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-galerie/0004.png",
+      "octets": 447703,
+      "sha256": "06ea2326bd68aa591ffb377e660a30eb9145b2a72ade1c082cc9cdd2a7775b9c"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-galerie/index.html",
+      "octets": 4590,
+      "sha256": "dc60af5320056f14c6afef97b2baf06715e8ae10484115debc09f14c7242c85e"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-galerie/rapport.json",
+      "octets": 215362,
+      "sha256": "c4e8c790c5acc6b30b33ebf4e2a18efe3d36814b92f99a90eb3e00452750d694"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-galerie-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/rapport.json",
+      "octets": 2393,
+      "sha256": "96475fd33fbebe9207985e7308c5b98cd52e7fabfe0b5ef1a53bc0bf50a9b138"
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/artifact.zip",
+      "octets": 2050257,
+      "sha256": "07c8ba0a5cf46cb0cf0c367cf335b817d42450555e35de668af3060326dd1dc7"
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/COMMIT.txt",
+      "octets": 41,
+      "sha256": "f580ffa5a34a80ff37231a250c103eb0f3f0ccf24dcded19be8655e1ab0f1f0d"
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/ENVIRONNEMENT.txt",
+      "octets": 38,
+      "sha256": "37041ef63b2b1696d07994aea6f06efee344025a138c9f32a08c311334c0b9ac"
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/SHA256SUMS.txt",
+      "octets": 83,
+      "sha256": "3f15996ee80ebaeee0a466940f36f92ff88b5d9ed40c33ab6760b6b095d2782a"
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/TREE.txt",
+      "octets": 41,
+      "sha256": "ad01714c50b223282b631e846c968bf60db7f39d308230ae922016a9e4680d88"
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/build.log",
+      "octets": 183,
+      "sha256": "aae63eccd849208f3c81bbc11d62f37042dfc43aa1b1b03b512bff47e4cff8ca"
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/haut-col-portails/0000.png",
+      "octets": 461764,
+      "sha256": "d3f84c9c8d91371007ebc64fe6530ab58be9b311d03421b3b4f9c14615412e66"
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/haut-col-portails/0001.png",
+      "octets": 381867,
+      "sha256": "4de0a30251d3168d4f9d6d86b381e9319f735d93ce1ba9306279e9feb8779ee4"
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/haut-col-portails/0002.png",
+      "octets": 368190,
+      "sha256": "360133918bf01630ab9fcf54f8db2b742a9c847a2aac4fde4e733a7ca55fbde2"
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/haut-col-portails/0003.png",
+      "octets": 361583,
+      "sha256": "2013a0f9e77fdaff90f97c84f24780c6eaadc1e363c90dcff41928a1ce1ab5c6"
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/haut-col-portails/0004.png",
+      "octets": 418512,
+      "sha256": "8a345dc5bcec7ac8e4e21997ebe31a81869acf75c04dc8ccb96ab9fbefeb5daf"
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/haut-col-portails/index.html",
+      "octets": 4590,
+      "sha256": "c6cec28bbe81b8fa0a66be841f793de0a921234282d537751f1059e743c0106f"
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/haut-col-portails/rapport.json",
+      "octets": 213500,
+      "sha256": "672e095143c7e70b64093db840df4623b4b9db0fa7057a5d932249197e7321b5"
+    },
+    {
+      "path": "couverts/bitume-couverts-haut-col-portails-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/rapport.json",
+      "octets": 2405,
+      "sha256": "0a11c730be11b123f9fa237765991c768cd2c7b03961d054f45407ae928a27e5"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/artifact.zip",
+      "octets": 2044607,
+      "sha256": "be26f7ca30ee29a0200f851907e9bfeb81769e8781b46a0013f2a4c6d0c01f94"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/COMMIT.txt",
+      "octets": 41,
+      "sha256": "f580ffa5a34a80ff37231a250c103eb0f3f0ccf24dcded19be8655e1ab0f1f0d"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/ENVIRONNEMENT.txt",
+      "octets": 38,
+      "sha256": "37041ef63b2b1696d07994aea6f06efee344025a138c9f32a08c311334c0b9ac"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/SHA256SUMS.txt",
+      "octets": 83,
+      "sha256": "3f15996ee80ebaeee0a466940f36f92ff88b5d9ed40c33ab6760b6b095d2782a"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/TREE.txt",
+      "octets": 41,
+      "sha256": "ad01714c50b223282b631e846c968bf60db7f39d308230ae922016a9e4680d88"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/build.log",
+      "octets": 183,
+      "sha256": "aae63eccd849208f3c81bbc11d62f37042dfc43aa1b1b03b512bff47e4cff8ca"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/0000.png",
+      "octets": 447421,
+      "sha256": "9a556197dadff27b9424ab4fd706bed3f89e8ba88ff7da143b642aab841afe6c"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/0001.png",
+      "octets": 377071,
+      "sha256": "6d349dfd24419aafb6ec6972cc7b21a05c1fdb892e21b2a99d7e2abe5bf1a8f8"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/0002.png",
+      "octets": 370145,
+      "sha256": "2407606727f1a0f391d4c283a1bf9174df674a93cd28573253845eb45a1bcd85"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/0003.png",
+      "octets": 369822,
+      "sha256": "8a0da99bbcf9f350b09cbac4b815ab041f06094fbf8e24ae143e636c2b944b31"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/0004.png",
+      "octets": 421054,
+      "sha256": "052662c5906ac118dd344caa9dfe74d4f1bc86f972ced0a41f6d8e13aa37b1e0"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/index.html",
+      "octets": 4674,
+      "sha256": "c7cf733f3775200f9c4500bd479ff24b81bdfb84ffdb3e6bad068ed8b0675937"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/rapport.json",
+      "octets": 216605,
+      "sha256": "845e9b407f077dc9797f0b74b353f2af48dda4c915c3a8c84413313a5492d551"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/rapport.json",
+      "octets": 2396,
+      "sha256": "16a8110db5a6c3a00b592f66c4b4f23135912d8b9b15eca9a5a6946af858a1ff"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d/artifact.zip",
+      "octets": 918465,
+      "sha256": "222daeb911287a197f1b1f550282829ec44a6898a49305b05536144b369dfc70"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/COMMIT.txt",
+      "octets": 41,
+      "sha256": "f580ffa5a34a80ff37231a250c103eb0f3f0ccf24dcded19be8655e1ab0f1f0d"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/ENVIRONNEMENT.txt",
+      "octets": 38,
+      "sha256": "37041ef63b2b1696d07994aea6f06efee344025a138c9f32a08c311334c0b9ac"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/SHA256SUMS.txt",
+      "octets": 83,
+      "sha256": "3f15996ee80ebaeee0a466940f36f92ff88b5d9ed40c33ab6760b6b095d2782a"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/TREE.txt",
+      "octets": 41,
+      "sha256": "ad01714c50b223282b631e846c968bf60db7f39d308230ae922016a9e4680d88"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/build.log",
+      "octets": 183,
+      "sha256": "aae63eccd849208f3c81bbc11d62f37042dfc43aa1b1b03b512bff47e4cff8ca"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-dessus-toit/0000.png",
+      "octets": 452024,
+      "sha256": "19807ba2c6e6af5a120db4413beaff743339fbd0aeb041d284ac03eb1f319eb6"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-dessus-toit/0001.png",
+      "octets": 452415,
+      "sha256": "e11d4e0a30450c2edc341fae01e319ce60de12d0b7c189c88f83c50416418476"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-dessus-toit/index.html",
+      "octets": 4110,
+      "sha256": "264549af87c5d0109415c01eb8ca97765b661dd546d84f74e62ca879b38e5bcc"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-dessus-toit/rapport.json",
+      "octets": 37675,
+      "sha256": "85af2fb6584d6c706d095ce2db0106875fd9cd1b26b8d7ec27d69c5e5c646943"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-dessus-toit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/rapport.json",
+      "octets": 1777,
+      "sha256": "34699fbe566e0200ecde46062e6c239256db2e122c018de8eb15076da68c2369"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/artifact.zip",
+      "octets": 961862,
+      "sha256": "5891e7bfe03b3323cc66c31ed9fc299b8cc02d1d9b5464993f59b0a685aa4959"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/COMMIT.txt",
+      "octets": 41,
+      "sha256": "f580ffa5a34a80ff37231a250c103eb0f3f0ccf24dcded19be8655e1ab0f1f0d"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/ENVIRONNEMENT.txt",
+      "octets": 38,
+      "sha256": "8408a52da4e2f8ac0589e066814e3ac8be63dbf7fb2eb1f80392e0b698635737"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/SHA256SUMS.txt",
+      "octets": 83,
+      "sha256": "3f15996ee80ebaeee0a466940f36f92ff88b5d9ed40c33ab6760b6b095d2782a"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/TREE.txt",
+      "octets": 41,
+      "sha256": "ad01714c50b223282b631e846c968bf60db7f39d308230ae922016a9e4680d88"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/build.log",
+      "octets": 183,
+      "sha256": "aae63eccd849208f3c81bbc11d62f37042dfc43aa1b1b03b512bff47e4cff8ca"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-deux-vues/0000.png",
+      "octets": 460285,
+      "sha256": "1c9025a1c823c6d1522a6e763da5f196fee09ad2a02c53ac3f88a2d070d7d17a"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-deux-vues/0001.png",
+      "octets": 460243,
+      "sha256": "b1beaa16c631707a09183c9894ad835169bbe9060cccdd002dc247dffad3fea3"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-deux-vues/index.html",
+      "octets": 4108,
+      "sha256": "c000abe0bbcdc60790fbec6d104b122af6c2590c5d662b06e5c998400e4bd46d"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-deux-vues/rapport.json",
+      "octets": 170025,
+      "sha256": "647dafd4d6494a96195de29754ff91bf7e06d6a9c890668960858012d85233f3"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-deux-vues-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/rapport.json",
+      "octets": 1767,
+      "sha256": "befc147969414f0ebbe59e8aaaf0604e024fa86dee31edd681ef13177d745a4c"
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/artifact.zip",
+      "octets": 2024648,
+      "sha256": "264a4dc3bbe79649c16b1de9bdf2c1f9349e601190b148dceb9b91bba77689d4"
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/COMMIT.txt",
+      "octets": 41,
+      "sha256": "f580ffa5a34a80ff37231a250c103eb0f3f0ccf24dcded19be8655e1ab0f1f0d"
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/ENVIRONNEMENT.txt",
+      "octets": 38,
+      "sha256": "37041ef63b2b1696d07994aea6f06efee344025a138c9f32a08c311334c0b9ac"
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/SHA256SUMS.txt",
+      "octets": 83,
+      "sha256": "3f15996ee80ebaeee0a466940f36f92ff88b5d9ed40c33ab6760b6b095d2782a"
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/TREE.txt",
+      "octets": 41,
+      "sha256": "ad01714c50b223282b631e846c968bf60db7f39d308230ae922016a9e4680d88"
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/build.log",
+      "octets": 183,
+      "sha256": "aae63eccd849208f3c81bbc11d62f37042dfc43aa1b1b03b512bff47e4cff8ca"
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/0000.png",
+      "octets": 461955,
+      "sha256": "aeada7fbbe394c3eb768b5fe8558e5a590e3bd7a877c2954a5d1ba482690e2a6"
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/0001.png",
+      "octets": 374757,
+      "sha256": "ad031851c695896dd83f85b079224ed4e881136f1d52ac12b79cbebfa806bff3"
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/0002.png",
+      "octets": 375292,
+      "sha256": "6faa3836853a68620b2268e5642a95e73a1a17190a362193b519ef4eda15d2e8"
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/0003.png",
+      "octets": 346535,
+      "sha256": "f6dd49a18e30ca1dc6a6f0f2c3c75b5421add2cdf4d2b133cc2fe42f8ac06bd1"
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/0004.png",
+      "octets": 407193,
+      "sha256": "a446cd18b8abade68b3b9640f7f181899fddd173dbc07e2b1e4219ce77321ef1"
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/index.html",
+      "octets": 4590,
+      "sha256": "f044cc1d30c5e702f93d29a1f5c6ddc8bb9a25b8bdfbe44c18249d410cecf281"
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/rapport.json",
+      "octets": 216441,
+      "sha256": "39fc192a686d07c8c338400a49ae885665580b438ef27b14bf59157b3eab1c72"
+    },
+    {
+      "path": "couverts/essai-2/artefact-14646073492/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/rapport.json",
+      "octets": 2390,
+      "sha256": "609d281d37aa70c0a2337a970b9b476d6fb3e412a225c680e021872d4ca0088a"
+    }
+  ],
+  "alertes": [
+    {
+      "rapport": "couverts/bitume-couverts-cimes-echelles-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-echelles/rapport.json",
+      "alertes": [
+        {
+          "image": 3,
+          "vue": "glace-g",
+          "type": "blocs-fugitifs",
+          "blocs": [
+            {
+              "x": 5,
+              "y": 1,
+              "ecart": -0.3386
+            }
+          ]
+        },
+        {
+          "image": 3,
+          "vue": "glace-d",
+          "type": "blocs-fugitifs",
+          "blocs": [
+            {
+              "x": 9,
+              "y": 1,
+              "ecart": -0.3399
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "avertissements": [],
+  "echecs_conserves": [
+    {
+      "artefact_id": 14641565877,
+      "rapport": {
+        "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/rapport.json",
+        "sha256": "d828735e25da0591381687e3b0fa7bc4a0f29fefa5fc2666810d419c0a853674",
+        "reference": false,
+        "build": {
+          "sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+          "octets": 14383155
+        },
+        "source": {
+          "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+          "modifications": [
+            "?? qualification/"
+          ]
+        },
+        "environnement": {},
+        "erreurs": [],
+        "fatal": "Error: Port DevTools introuvable : [2364:2393:1120/151419.062529:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2364:2393:1120/151420.066595:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2364:2393:1120/151420.751816:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2364:2397:1120/151421.913434:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2364:2397:1120/151421.913590:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2364:2397:1120/151421.913600:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2364:2393:1120/151424.285906:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n\n    at capturer (file:///home/runner/work/bitume/bitume/tools/controle-visuel.mjs:195:22)\n    at async campagneCouverts (file:///home/runner/work/bitume/bitume/tools/captures-couverts.mjs:233:20)\n    at async file:///home/runner/work/bitume/bitume/tools/captures-couverts.mjs:254:15",
+        "avertissements": [],
+        "alertes": [],
+        "images": 0
+      }
+    }
+  ],
+  "limites": [
+    "Captures de poses prescrites sous WebGL2/SwiftShader et PhysX natif ; aucun FPS matériel ni parcours de conduite qualifié ici.",
+    "Quelques images ne prouvent pas toutes les trajectoires ni la continuité entre toutes les poses.",
+    "Les références 0.2.62 identifient un état historique distinct ; ne pas attribuer toutes leurs différences à la seule 0.2.68."
+  ],
+  "reserves_preexistantes": [
+    "Pluie du monde extérieur non visible depuis un abri ; distincte du transport des résidus déjà déposés sur la visière.",
+    "Rendu très facetté et matériaux neige/lumière historiques, hors modification eau."
+  ],
+  "jobs_finaux": [
+    {
+      "id": 136389895636,
+      "name": "images (cimes-rocher)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44761148534,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Identifier les sources et construire le candidat exact",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et contrôler les vrais portails et les flux météo",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Conserver les preuves et les échecs",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    },
+    {
+      "id": 136389897669,
+      "name": "images (haut-col-portails)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44761148534,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Identifier les sources et construire le candidat exact",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et contrôler les vrais portails et les flux météo",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Conserver les preuves et les échecs",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    },
+    {
+      "id": 136389898998,
+      "name": "images (cimes-deux-vues)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44761148534,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Identifier les sources et construire le candidat exact",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et contrôler les vrais portails et les flux météo",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Conserver les preuves et les échecs",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    },
+    {
+      "id": 136389945815,
+      "name": "images (cimes-echelles)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44761148534,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Identifier les sources et construire le candidat exact",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et contrôler les vrais portails et les flux météo",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Conserver les preuves et les échecs",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    },
+    {
+      "id": 136389946412,
+      "name": "images (cimes-dessus-toit)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44761148534,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Identifier les sources et construire le candidat exact",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et contrôler les vrais portails et les flux météo",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Conserver les preuves et les échecs",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    },
+    {
+      "id": 136389986194,
+      "name": "images (cimes-galerie)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44761148534,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Identifier les sources et construire le candidat exact",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et contrôler les vrais portails et les flux météo",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Conserver les preuves et les échecs",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    }
+  ],
+  "preuve_arbre": "TREE.txt livré dans chaque artefact",
+  "journaux_jobs": [
+    {
+      "path": "couverts/essai-1/logs/job-136373698134.json",
+      "sha256": "0b21bd9a2fd52b3631b7ffb2fd821791702e50f7257ec6be8f471e7bf01e2610",
+      "octets": 21426
+    },
+    {
+      "path": "couverts/essai-1/logs/job-136373698427.json",
+      "sha256": "9b95d5a37c8a6f2cddfc9b9c5b5794be6831dfa4bc54e9593a64a8c45a2d872d",
+      "octets": 21399
+    },
+    {
+      "path": "couverts/essai-1/logs/job-136373698443.json",
+      "sha256": "6c4d1a8c2877f5b368961d4a1fdcaaad3dd78263bce276d2ffd91067fbd5f546",
+      "octets": 22636
+    },
+    {
+      "path": "couverts/essai-1/logs/job-136373698503.json",
+      "sha256": "b60a70c7069065174f52255c68652b7fbe47e71de3f21cbdcb7e05472077648b",
+      "octets": 20757
+    },
+    {
+      "path": "couverts/essai-1/logs/job-136373698514.json",
+      "sha256": "aa313536a6773baa0a6c4108ba8cda191b58a8ecf04c53cb71fe2f9c8e00954c",
+      "octets": 22596
+    },
+    {
+      "path": "couverts/essai-1/logs/job-136373698690.json",
+      "sha256": "46743d056d49c903531279eee9c120d8606e2d6af659f42f763acc6f97cb7edc",
+      "octets": 22606
+    },
+    {
+      "path": "couverts/essai-2/job-136389895636.json",
+      "sha256": "0bd2e26b04d77783d4b64c5de3b7c3db4d4461712630609c648df47854e57e45",
+      "octets": 22588
+    }
+  ],
+  "jobs_initiaux": [
+    {
+      "id": 136373698134,
+      "name": "images (cimes-dessus-toit)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44761148534,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Identifier les sources et construire le candidat exact",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et contrôler les vrais portails et les flux météo",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Conserver les preuves et les échecs",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    },
+    {
+      "id": 136373698427,
+      "name": "images (cimes-deux-vues)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44761148534,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Identifier les sources et construire le candidat exact",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et contrôler les vrais portails et les flux météo",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Conserver les preuves et les échecs",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    },
+    {
+      "id": 136373698443,
+      "name": "images (haut-col-portails)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44761148534,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Identifier les sources et construire le candidat exact",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et contrôler les vrais portails et les flux météo",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Conserver les preuves et les échecs",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    },
+    {
+      "id": 136373698503,
+      "name": "images (cimes-rocher)",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_id": 44761148534,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Identifier les sources et construire le candidat exact",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et contrôler les vrais portails et les flux météo",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 5
+        },
+        {
+          "name": "Conserver les preuves et les échecs",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    },
+    {
+      "id": 136373698514,
+      "name": "images (cimes-galerie)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44761148534,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Identifier les sources et construire le candidat exact",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et contrôler les vrais portails et les flux météo",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Conserver les preuves et les échecs",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    },
+    {
+      "id": 136373698690,
+      "name": "images (cimes-echelles)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44761148534,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Identifier les sources et construire le candidat exact",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et contrôler les vrais portails et les flux météo",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Conserver les preuves et les échecs",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    }
+  ],
+  "sauvegarde_essai1": {
+    "path": "couverts/essai-1/RECU-SAUVEGARDE.json",
+    "sha256": "14b0a2ff619552108131bd4efaf7a3d6f159652e246675eda291c3db9a94c840",
+    "job_echec": 136373698503,
+    "artefact_echec": 14641565877,
+    "pngs": 0
+  },
+  "reprise": {
+    "essai": 2,
+    "job_id": 136389895636,
+    "groupes_repris": [
+      "cimes-rocher"
+    ],
+    "images_essai1": 19,
+    "images_essai2": 5,
+    "repertoire_separe": true,
+    "aucune_suppression_essai1": true
+  }
+}

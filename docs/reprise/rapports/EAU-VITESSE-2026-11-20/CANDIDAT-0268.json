@@ -30,8 +30,8 @@
       "attribution": "Mesures précédant la construction ; VERSION initiale conservée 0.2.66, sources vitre et outil identiques."
     },
     "images_natives": "24_intervalles_conformes_2076_mesures_independantes_reanalyse_des_png",
-    "campagne_generale": "a_lancer",
-    "captures_jeu": "a_lancer",
+    "campagne_generale": "160_sur160_plus8_tests_python_conformes",
+    "captures_jeu": "113_PNG_inspectes_89candidat_24references",
     "oracle_pixels": {
       "tests_regression": 8,
       "negatifs_reels": {
@@ -49,5 +49,8 @@
     "Les quatre échecs 0.2.65, le premier test de cadence, les intervalles natifs insuffisants et les faux positifs de suivi des perles restent consignés.",
     "Habitacle commun, pilote abaissé et dégagement bras/buste restent un lot distinct préparé."
   ],
-  "checkpoint_runtime": "da4ac263bcc45ff3bf429df212045fcd9e344b0a"
+  "checkpoint_runtime": "da4ac263bcc45ff3bf429df212045fcd9e344b0a",
+  "statut_final": "publie_sur_main",
+  "commit_fusion": "4a04c090535f0c11d3db9900284c31e244a0c79c",
+  "recu_final": "PUBLICATION-0268.json"
 }

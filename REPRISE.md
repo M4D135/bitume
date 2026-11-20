@@ -1,46 +1,40 @@
 # BITUME — reprise courte
 
-## Main consolidé ; plan publié
+## Livré sur main : 0.2.68
 
-Consolidation poussée et vérifiée : `9f2246df61c6503ea8fa0f71a28813b15b17f51c`.
-PR #38 puis #37 fusionnées. Les 50 références inventoriées sont conservées dans
-l’historique de main : 34 secondaires déjà contenues, 15 têtes ajoutées comme parents.
-Études/prototypes archivés avec leur état ; branches historiques conservées.
+**0.2.68 / p15 / FERRO 0.3.15 / neuf circuits.** PR #39 fusionnée :
+`4a04c090535f0c11d3db9900284c31e244a0c79c`.
+HTML : 14 383 155 octets, SHA-256
+`60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2`.
+Deux builds locaux identiques ; reconstruction et archive CI exactes.
 
-**0.2.66 / p15 / FERRO 0.3.15 / neuf circuits**, runtime inchangé.
-HTML : 14 370 823 octets, SHA-256 `18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b`.
+L’eau suit le vent relatif et la caméra en cockpit/poursuite. La gravité reste
+présente à l’arrêt ; la vitesse écarte les gouttes et les expulse réellement.
+Perles/nappes/traces cohérentes ; repli de vitesse fondé sur les poses physiques.
 
-## Lot actif : eau, candidat à terminer et qualifier
+**160/160 suites Node, 8/8 tests Python, 21/21 checks GitHub.**
+112 contrôles CPU, 24 intervalles PNG et 2 076 mesures indépendantes conformes.
+**113 images inspectées** : 89 candidat, 24 références historiques 0.2.62.
+[Publication et preuves](docs/reprise/rapports/EAU-VITESSE-2026-11-20/README.md).
 
-Candidat **0.2.68** construit deux fois à l’identique : 14 383 155 octets,
-SHA-256 `60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2`.
-Repli de vitesse hors PhysX corrigé : déplacement entre poses physiques au pas fixe,
-sans confondre tangage visuel et montée ; 18 contrôles d’intégration conformes.
-Les 112 contrôles CPU gardent leurs sources exactes et leur attribution antérieure.
-**Main jouable reste 0.2.66** ; campagne générale et images du jeu final à qualifier.
+## Prochain lot : habitacle et pilote communs — H0/B0
 
-[PR #39](https://github.com/M4D135/bitume/pull/39), checkpoint 0.2.68 publié `da4ac263`
-après le candidat initial 0.2.67 `a8a2369`.
-Fiche : [eau et vitesse](docs/reprise/EAU-VITESSE-2026-11-20.md).
-Reçu : `docs/reprise/rapports/EAU-VITESSE-2026-11-20/CANDIDAT-0268.json`.
-Suivi des motifs dans les PNG : **24/24 intervalles conformes, 2 076 mesures**,
-sans utiliser le transport prédit pour identifier les perles/nappes. Huit tests
-de régression passent ; les images répétées, opacité seule et trajectoires
-inversées sont refusées. L’ancien faux positif et les insuffisances sont conservés.
-Prochaine étape : campagne générale et captures exactes par CI (Chromium local bloqué).
+Lire uniquement le [plan habitacle/pilote](docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md)
+et les extraits nécessaires. Mesurer les écarts en coordonnées monde, les repères
+d’assise et les pénétrations bras/buste avant correction. Objectifs : un seul
+habitacle entre vues, pilote plus bas/enfoncé, bras hors du buste, contacts et gestes
+cohérents. Les références MotionBricks/CMU sont documentées dans ce plan.
+**Ces trois défauts restent à corriger.**
 
-Le [plan habitacle/pilote](docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md)
-reste préparé à H0/B0 : habitacle unique, assise plus basse et dégagement bras/buste.
+## Réserves et reprise
 
-## Preuves et autres travaux
+Les quatre échecs 0.2.65, les deux images aériennes 0.2.66 refusées, le premier
+démarrage Chrome Cimes-rocher et les anciennes analyses PNG refusées sont conservés.
+La reprise Cimes-rocher réussit sur le même code ; aucune baisse de seuil.
+FPS matériels, audio, manettes et réseau entre machines non qualifiés ; pluie
+extérieure depuis abri, bandeaux, neige et alertes miroir historiques restent ouverts.
+Monaco `readyForRuntime=false` ; autres travaux et 17 destinations dans FILE-TRAVAIL.
 
-- Campagne générale 0.2.66 : 159/159, run `44747519912`, tête `40774189` ; 113 images retenues inspectées.
-- Réconciliation #37 : 8/8 tests ciblés, 16/16 rapports, 48/48 empreintes PNG, sans nouveau rendu.
-- Dix patches de préparation se réappliquent exactement. Quatre échecs 0.2.65 et deux images aériennes refusées conservés.
-- Pluie sous abri non qualifiée, bandeaux, neige, relief et 17 destinations restent dans `FILE-TRAVAIL.json`.
-- FPS matériels, audio, manettes et réseau entre machines non qualifiés ; Monaco `readyForRuntime=false`.
-
-[Publication de consolidation](docs/reprise/rapports/CONSOLIDATION-2026-11-20/PUBLICATION.json) ·
-[Préparations](docs/reprise/preparations/README.md) ·
-[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **019**.
+Main reste la branche de publication ; consolidation et prototypes archivés conservés.
+[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **020**.
 Lecture minimale : ce fichier, `ETAT.json` → `etat_courant`, puis la seule fiche active.

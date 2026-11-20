@@ -1,0 +1,141 @@
+{
+  "format": "bitume-qa-ci-snapshot-v1",
+  "repository": "M4D135/bitume",
+  "pr": 39,
+  "run": {
+    "id": 44761148653,
+    "url": "https://github.com/M4D135/bitume/actions/runs/44761148653",
+    "status": "completed",
+    "conclusion": "success",
+    "event": "pull_request",
+    "head_sha": "3daefb7c9d7decaf77beb94219abcf16d907bb38",
+    "run_attempt": 1,
+    "created_at": "2026-11-20T15:13:45Z",
+    "updated_at": "2026-11-20T15:21:53Z"
+  },
+  "ci_commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+  "ci_tree": "b84d8553d1a53de3258a56e2036b8b16669723f5",
+  "jobs": [
+    {
+      "id": 136373698484,
+      "name": "images (pluie-poursuite, pluie-poursuite-sillage)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136373698928,
+      "name": "images (pluie-aerien, pluie-aerien)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136373698956,
+      "name": "images (nature, faune-ete,faune-hiver)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136373699070,
+      "name": "images (volant, volant-gauche,volant-droite)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136373699182,
+      "name": "images (securite, tele-montagne,helico-montagne)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136373699190,
+      "name": "images (pluie-cockpit, pluie-cockpit)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136373699419,
+      "name": "images (gestes, geste-majeur,geste-poing,geste-salut-realisateur)",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 14642241540,
+      "name": "bitume-demo-pluie-aerien-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "digest": "sha256:9ab3986f46d971886ed829a766af90a55c59b46d02b7eb46597b135106e40916",
+      "size_in_bytes": 844936,
+      "expired": false,
+      "created_at": "2026-11-20T15:21:51Z",
+      "expires_at": "2026-12-04T15:21:50Z",
+      "workflow_run_id": 44761148653,
+      "workflow_head_sha": "3daefb7c9d7decaf77beb94219abcf16d907bb38"
+    },
+    {
+      "id": 14641966082,
+      "name": "bitume-demo-pluie-poursuite-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "digest": "sha256:1bf170d3ff51c3e9aa9ccb18b756f0d13ab8ede65419a132c48cbbf00290b5ae",
+      "size_in_bytes": 1184420,
+      "expired": false,
+      "created_at": "2026-11-20T15:18:44Z",
+      "expires_at": "2026-12-04T15:18:43Z",
+      "workflow_run_id": 44761148653,
+      "workflow_head_sha": "3daefb7c9d7decaf77beb94219abcf16d907bb38"
+    },
+    {
+      "id": 14641885836,
+      "name": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "digest": "sha256:bd462623aa3580700d2ba3079c9c20e9d8c79b17aa893ff17107fe38e6943c6f",
+      "size_in_bytes": 5006027,
+      "expired": false,
+      "created_at": "2026-11-20T15:15:54Z",
+      "expires_at": "2026-12-04T15:15:53Z",
+      "workflow_run_id": 44761148653,
+      "workflow_head_sha": "3daefb7c9d7decaf77beb94219abcf16d907bb38"
+    },
+    {
+      "id": 14641456857,
+      "name": "bitume-demo-pluie-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "digest": "sha256:831e7c6892d7a40de5b8400a626c3bd76db39e229e6abc3877a0ae4e7f628f69",
+      "size_in_bytes": 1383277,
+      "expired": false,
+      "created_at": "2026-11-20T15:18:48Z",
+      "expires_at": "2026-12-04T15:18:46Z",
+      "workflow_run_id": 44761148653,
+      "workflow_head_sha": "3daefb7c9d7decaf77beb94219abcf16d907bb38"
+    },
+    {
+      "id": 14641306808,
+      "name": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "digest": "sha256:08b35a8f0cf408280a347fd9b508836ed4630f6328aa4fb782969b4d0a39f647",
+      "size_in_bytes": 3547034,
+      "expired": false,
+      "created_at": "2026-11-20T15:16:50Z",
+      "expires_at": "2026-12-04T15:16:48Z",
+      "workflow_run_id": 44761148653,
+      "workflow_head_sha": "3daefb7c9d7decaf77beb94219abcf16d907bb38"
+    },
+    {
+      "id": 14641089230,
+      "name": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "digest": "sha256:8329365356ff7ea348124c696b3ddf3fa3375c30cd82af4b364040e22c52a464",
+      "size_in_bytes": 5340024,
+      "expired": false,
+      "created_at": "2026-11-20T15:17:41Z",
+      "expires_at": "2026-12-04T15:17:39Z",
+      "workflow_run_id": 44761148653,
+      "workflow_head_sha": "3daefb7c9d7decaf77beb94219abcf16d907bb38"
+    },
+    {
+      "id": 14639873469,
+      "name": "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "digest": "sha256:a4f6bb0b085816af99ae048f1fff929fb43d5d77ed92f68ca0b80f24f0d5ed46",
+      "size_in_bytes": 2360716,
+      "expired": false,
+      "created_at": "2026-11-20T15:14:54Z",
+      "expires_at": "2026-12-04T15:14:54Z",
+      "workflow_run_id": 44761148653,
+      "workflow_head_sha": "3daefb7c9d7decaf77beb94219abcf16d907bb38"
+    }
+  ]
+}

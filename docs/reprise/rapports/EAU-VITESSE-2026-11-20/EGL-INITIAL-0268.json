@@ -1,0 +1,719 @@
+{
+  "source": "GLSL ES 3.00 exact de src/visiere-optique.js et états de la simulation réelle ; mire procédurale.",
+  "sourceSha256": "f503d993c797092a6d798add41cc739226ac75bba7905896431348f9ebe98e7a",
+  "sourcesSha256": {
+    "src/visiere-optique.js": "f503d993c797092a6d798add41cc739226ac75bba7905896431348f9ebe98e7a",
+    "src/vitre.js": "f9935386db7010277dc1199e6c969af4282ec3dbc139425eaae8d71868bf27be",
+    "tools/qualifier-visiere-egl.py": "cf017021a7d4ad786db03f8db71490f70f0f5f12fe0ccf1be5382174e532a1ee",
+    "tools/qualification/visiere-png.py": "2d6a574b6d8c8c0a431e99174ef99f7d464f2b894fc84f94fc43ca9ac5e1b0c2"
+  },
+  "contexte": {
+    "renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+    "version": "4.5 (Core Profile) Mesa 25.0.7-2+deb13u1",
+    "egl": "1.5"
+  },
+  "compilation": true,
+  "limites": [
+    "Mire de matière, pas capture de course.",
+    "Raster logiciel Mesa, ni WebGL navigateur ni FPS matériel qualifiés."
+  ],
+  "cas": [
+    {
+      "nom": "grille-pluie",
+      "qualite": 2,
+      "gouttesMobiles": 22,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 518400,
+      "alphaMoyen": 0.14387143700072622,
+      "fractionAlphaDemi": 0.1216917438271605,
+      "alphaBords": 0.15940214611255257,
+      "alphaCentre": 0.13737873724376706,
+      "pixelsSha256": "8df81816d6127f518e8739c60b40556e374a6248e7cc336926ac4e8bd2b5a731",
+      "rasterLogiciel": {
+        "candidatMs": [
+          19.42487500491552,
+          19.38641699962318,
+          16.5542960021412
+        ]
+      }
+    },
+    {
+      "nom": "pluie235",
+      "qualite": 2,
+      "gouttesMobiles": 13,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 518400,
+      "alphaMoyen": 0.04325172476397967,
+      "fractionAlphaDemi": 0.029135802469135802,
+      "alphaBords": 0.03419451625993886,
+      "alphaCentre": 0.04703814140661284,
+      "pixelsSha256": "0c6ebf3d234463fd9ecc80b051c229f71f1f483fcb4ccdb5010a4db64a47baaf",
+      "rasterLogiciel": {
+        "candidatMs": [
+          13.359999997192062,
+          13.687850994756445,
+          13.23679499910213
+        ]
+      }
+    },
+    {
+      "nom": "pluie300",
+      "qualite": 2,
+      "gouttesMobiles": 7,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 518400,
+      "alphaMoyen": 0.03755766612200436,
+      "fractionAlphaDemi": 0.029155092592592594,
+      "alphaBords": 0.034292511212390527,
+      "alphaCentre": 0.03892268238336363,
+      "pixelsSha256": "a23232b31ad31eccdf6595692c99898d2865dba57620b57764a80f4d7473b6db",
+      "rasterLogiciel": {
+        "candidatMs": [
+          10.728799010394141,
+          11.065152997616678,
+          10.725774001912214
+        ]
+      }
+    },
+    {
+      "nom": "sillage235",
+      "qualite": 2,
+      "gouttesMobiles": 24,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 518400,
+      "alphaMoyen": 0.3850449573347858,
+      "fractionAlphaDemi": 0.25766396604938274,
+      "alphaBords": 0.2493970000304069,
+      "alphaCentre": 0.4417533441238662,
+      "pixelsSha256": "b13f624a37d81f85035b62ba532d64cf86ead7b6f5eb6a6b79747fd3169a7674",
+      "rasterLogiciel": {
+        "candidatMs": [
+          16.988857998512685,
+          17.998655006522313,
+          17.164592005428858
+        ]
+      }
+    },
+    {
+      "nom": "sillage300",
+      "qualite": 2,
+      "gouttesMobiles": 24,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 518400,
+      "alphaMoyen": 0.3820211283587509,
+      "fractionAlphaDemi": 0.2630092592592593,
+      "alphaBords": 0.24589976827875934,
+      "alphaCentre": 0.43892742382437877,
+      "pixelsSha256": "d8917c86f30f23a315493f48666464264aceb29292e5ec9d1b339b93945e8e4e",
+      "rasterLogiciel": {
+        "candidatMs": [
+          20.23837700835429,
+          18.41869400232099,
+          18.548590000136755
+        ]
+      }
+    },
+    {
+      "nom": "sillage300-pause",
+      "qualite": 2,
+      "gouttesMobiles": 24,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 518400,
+      "alphaMoyen": 0.3820211283587509,
+      "fractionAlphaDemi": 0.2630092592592593,
+      "alphaBords": 0.24589976827875934,
+      "alphaCentre": 0.43892742382437877,
+      "pixelsSha256": "d8917c86f30f23a315493f48666464264aceb29292e5ec9d1b339b93945e8e4e",
+      "rasterLogiciel": {
+        "candidatMs": [
+          16.45793000352569,
+          15.784535004058853,
+          14.887022000038996
+        ]
+      }
+    },
+    {
+      "nom": "depots-sans-film",
+      "qualite": 2,
+      "gouttesMobiles": 24,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 4658,
+      "alphaMoyen": 0.0036135091382231907,
+      "fractionAlphaDemi": 0.0038078703703703703,
+      "alphaBords": 0.0013200451254054416,
+      "alphaCentre": 0.0045723045886689965,
+      "pixelsSha256": "676663c829bb48b4769d30afb0a35fb439cc84814afeffecd92adda6f6ac746d",
+      "rasterLogiciel": {
+        "candidatMs": [
+          15.950899993185885,
+          15.307959998608567,
+          14.953671998227946
+        ]
+      }
+    },
+    {
+      "nom": "sillage300-poursuite",
+      "qualite": 2,
+      "gouttesMobiles": 23,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 518400,
+      "alphaMoyen": 0.2439893942144759,
+      "fractionAlphaDemi": 0.05751929012345679,
+      "alphaBords": 0.15713581718078093,
+      "alphaCentre": 0.2802990175830762,
+      "pixelsSha256": "1c8127f044249f57e8eb8922dcc1135e56e81cf02888675f9c775eb3fd2b5b75",
+      "rasterLogiciel": {
+        "candidatMs": [
+          18.08046700898558,
+          17.656910000368953,
+          18.025065000983886
+        ]
+      }
+    },
+    {
+      "nom": "neige45",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 518400,
+      "alphaMoyen": 0.23772341745340111,
+      "fractionAlphaDemi": 0.2434741512345679,
+      "alphaBords": 0.6154135616649082,
+      "alphaCentre": 0.07982794147281065,
+      "pixelsSha256": "cec416c509528f5b59b0add3a5e3b9fa84e40bb45c1f112a2403a8a5037b1ade",
+      "rasterLogiciel": {
+        "candidatMs": [
+          11.93337699805852,
+          11.506686991197057,
+          11.861599996336736
+        ]
+      }
+    },
+    {
+      "nom": "legere",
+      "qualite": 0,
+      "gouttesMobiles": 6,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 518400,
+      "alphaMoyen": 0.15835672355361896,
+      "fractionAlphaDemi": 0.0,
+      "alphaBords": 0.09650547536212137,
+      "alphaCentre": 0.184213983593005,
+      "pixelsSha256": "40dc48e6767eeb6f5520badf33a3f95a3dba23fcb4b0c1d71443b8bec0e8259d",
+      "rasterLogiciel": {
+        "candidatMs": [
+          6.737937001162209,
+          6.685337008093484,
+          7.184677000623196
+        ]
+      }
+    },
+    {
+      "nom": "sec",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 0,
+      "alphaMoyen": 0.0,
+      "fractionAlphaDemi": 0.0,
+      "alphaBords": 0.0,
+      "alphaCentre": 0.0,
+      "pixelsSha256": "11283ef755895422e6f28b93f3d78cad7539891cf2893c9fdccefb923c5bf70b",
+      "rasterLogiciel": {
+        "candidatMs": [
+          0.5574070091824979,
+          0.5597800045507029,
+          0.4917979968013242
+        ]
+      }
+    },
+    {
+      "nom": "trajet-cockpit-0-perles-12",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 28792,
+      "alphaMoyen": 0.03370824255628177,
+      "fractionAlphaDemi": 0.0352758487654321,
+      "alphaBords": 0.03366115069783876,
+      "alphaCentre": 0.03372792957093552,
+      "pixelsSha256": "58eba810857837a7e3a3ee1614682e3c646942c766bd1a8f61486a6103e72f21",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-cockpit-0-perles-48",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 31673,
+      "alphaMoyen": 0.03472599703461632,
+      "fractionAlphaDemi": 0.0352391975308642,
+      "alphaBords": 0.036362773259720364,
+      "alphaCentre": 0.03404173358454389,
+      "pixelsSha256": "7d5b2083317f0d2ebef55725385084b6d32a1dbe53f2a6b248b547ceaa39cdac",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-cockpit-0-perles-108",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 31793,
+      "alphaMoyen": 0.034847880355846045,
+      "fractionAlphaDemi": 0.0362403549382716,
+      "alphaBords": 0.038255340872452734,
+      "alphaCentre": 0.03342337244003083,
+      "pixelsSha256": "5cab53a24d64bdb9232fca607e9ca4c85570bb3eb500439da36adb30e034fcac",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-cockpit-0-film-12",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 24878,
+      "alphaMoyen": 0.035733637436456064,
+      "fractionAlphaDemi": 0.03798418209876543,
+      "alphaBords": 0.03811644412523596,
+      "alphaCentre": 0.034737491780921184,
+      "pixelsSha256": "9cba570b9d3005c9d7585a40f07e84b528eadd41854af57e208b17fdef8617fc",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-cockpit-0-film-48",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 25686,
+      "alphaMoyen": 0.03562299534011135,
+      "fractionAlphaDemi": 0.03794945987654321,
+      "alphaBords": 0.03935034914711162,
+      "alphaCentre": 0.03406475424612402,
+      "pixelsSha256": "a10168544de553165601e01e879cdfa87dd1a67acdde10d0eca799fbdfadf80e",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-cockpit-0-film-108",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 25526,
+      "alphaMoyen": 0.03607042786250303,
+      "fractionAlphaDemi": 0.03882523148148148,
+      "alphaBords": 0.041108279547088324,
+      "alphaCentre": 0.03396432580543754,
+      "pixelsSha256": "f504237a92fd47fa63bfe4ec9b09c1f766e07ec579ffa3c57273bb8bd243e34a",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-cockpit-300-perles-fines-12",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 46544,
+      "alphaMoyen": 0.030478432885499878,
+      "fractionAlphaDemi": 0.02816358024691358,
+      "alphaBords": 0.030944183547958703,
+      "alphaCentre": 0.030283723217629836,
+      "pixelsSha256": "8541c427c0ffce28f3dc6a6b91d328aa0c6737fd1e9a750828d7d2f2a0e56e19",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-cockpit-300-perles-fines-48",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 41882,
+      "alphaMoyen": 0.027275062030985234,
+      "fractionAlphaDemi": 0.025088734567901234,
+      "alphaBords": 0.026983842892973165,
+      "alphaCentre": 0.02739680781947296,
+      "pixelsSha256": "01fe1ea1e0f7fbe31a4a46cf9f660259fb88d1aec3a4708cfa308fbd93b6e9eb",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-cockpit-300-perles-fines-108",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 35150,
+      "alphaMoyen": 0.02278598553618978,
+      "fractionAlphaDemi": 0.02095679012345679,
+      "alphaBords": 0.021544622664905887,
+      "alphaCentre": 0.02330494422343644,
+      "pixelsSha256": "4969337255b8ffc2953bd941a56c18e7d24802c691542690993b629b229313b4",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-cockpit-300-perles-moyennes-12",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 36294,
+      "alphaMoyen": 0.03083583726700557,
+      "fractionAlphaDemi": 0.03093364197530864,
+      "alphaBords": 0.029256792065051815,
+      "alphaCentre": 0.031495965940148106,
+      "pixelsSha256": "ff593c00a2d672d5eaa2985e32815c24a187f1c7e7cf026d892fdcbd87a4c829",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-cockpit-300-perles-moyennes-48",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 32775,
+      "alphaMoyen": 0.027533277354151536,
+      "fractionAlphaDemi": 0.027415123456790123,
+      "alphaBords": 0.029388734993961597,
+      "alphaCentre": 0.026757592916287126,
+      "pixelsSha256": "ea18f72fcada4e2e54e617d99fdf6cd78fc7946a8953facc4b37068cddd601fd",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-cockpit-300-perles-moyennes-108",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 25850,
+      "alphaMoyen": 0.022223387194383926,
+      "fractionAlphaDemi": 0.022204861111111113,
+      "alphaBords": 0.0214532736126074,
+      "alphaCentre": 0.02254533748198695,
+      "pixelsSha256": "981b885c2f1e1fdbb5884d3ed1a4807062f41478d1cc09c47e06134f6250c2c8",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-cockpit-300-perles-12",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 38448,
+      "alphaMoyen": 0.044457372609537645,
+      "fractionAlphaDemi": 0.04643132716049383,
+      "alphaBords": 0.04227585386666297,
+      "alphaCentre": 0.045369368714137825,
+      "pixelsSha256": "0c327519cac43882d0115b49dee3d52f1efe5c7f7c31202020526fb5d8f13e8b",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-cockpit-300-perles-48",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 31769,
+      "alphaMoyen": 0.034870998244977,
+      "fractionAlphaDemi": 0.035069444444444445,
+      "alphaBords": 0.04247630858479662,
+      "alphaCentre": 0.03169155574564229,
+      "pixelsSha256": "7903dbc4131132202fefac1052178d34c5b8399a7ce0e1abd7d77644308804a9",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-cockpit-300-perles-108",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 19765,
+      "alphaMoyen": 0.020459490740740743,
+      "fractionAlphaDemi": 0.0206983024691358,
+      "alphaBords": 0.014917069301727587,
+      "alphaCentre": 0.02277653100406289,
+      "pixelsSha256": "ee3e061099ddaa0c838c420cef6633cac403ab1c5132f8af0e820a7aa72a7a7b",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-cockpit-300-film-12",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 22540,
+      "alphaMoyen": 0.03245703219559429,
+      "fractionAlphaDemi": 0.03457947530864198,
+      "alphaBords": 0.03439127596022672,
+      "alphaCentre": 0.03164841077785324,
+      "pixelsSha256": "1c29478836ddacdd2f615779b048db9643e90ceb51e9b979ba24deecf14c24a2",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-cockpit-300-film-48",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 16609,
+      "alphaMoyen": 0.02359865952553861,
+      "fractionAlphaDemi": 0.02599922839506173,
+      "alphaBords": 0.02708263330065552,
+      "alphaCentre": 0.022142164814313314,
+      "pixelsSha256": "cc9778911163a9f687fe192611881b83bb0f8a2f28545f6ce5cb9304f55c57bc",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-cockpit-300-film-108",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 10588,
+      "alphaMoyen": 0.01425152808036795,
+      "fractionAlphaDemi": 0.016082175925925927,
+      "alphaBords": 0.01971856537339759,
+      "alphaCentre": 0.011966002580652635,
+      "pixelsSha256": "6de4cb5e86af1770bf4a293ae3d176652f64a9da881f148b0cb8e1c2579531e0",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-poursuite-0-perles-12",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 28647,
+      "alphaMoyen": 0.02155196986201888,
+      "fractionAlphaDemi": 0.02966435185185185,
+      "alphaBords": 0.021520502409523704,
+      "alphaCentre": 0.021565125006429643,
+      "pixelsSha256": "11bb9598ded3def130488762126b13e51643fbed828505846250cb85893b24ec",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-poursuite-0-perles-48",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 31422,
+      "alphaMoyen": 0.022203083393851367,
+      "fractionAlphaDemi": 0.029716435185185186,
+      "alphaBords": 0.02325210580734921,
+      "alphaCentre": 0.021764533710116985,
+      "pixelsSha256": "230154588f00ec6d8c5afe132d8f4691ecd56c1e4bc297d6480313207a63b2c2",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-poursuite-0-perles-108",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 31571,
+      "alphaMoyen": 0.022280811244250787,
+      "fractionAlphaDemi": 0.030549768518518518,
+      "alphaBords": 0.024458246875689205,
+      "alphaCentre": 0.021370522107210094,
+      "pixelsSha256": "10c2f288ef53b077aae65a58a9c8b27eb663981faf6e7db9f9e6f1003417e765",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-poursuite-0-film-12",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 24846,
+      "alphaMoyen": 0.02286204914064391,
+      "fractionAlphaDemi": 0.03360146604938272,
+      "alphaBords": 0.024378188155697277,
+      "alphaCentre": 0.022228218750564854,
+      "pixelsSha256": "e222e1a7e4c97f4298280fb91ad556d828a4eb294f59e031d6a7f939b6fb4cb7",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-poursuite-0-film-48",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 25648,
+      "alphaMoyen": 0.022776211873638343,
+      "fractionAlphaDemi": 0.03369791666666667,
+      "alphaBords": 0.025167972560386918,
+      "alphaCentre": 0.021776322949202054,
+      "pixelsSha256": "326b4d282827d13db3246009db5fac56007dcafa431ce1700518c97cca2b1eb4",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-poursuite-0-film-108",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 25492,
+      "alphaMoyen": 0.023074989409343986,
+      "fractionAlphaDemi": 0.03205632716049383,
+      "alphaBords": 0.026278684660890377,
+      "alphaCentre": 0.02173566670158384,
+      "pixelsSha256": "f21e5b47d50ef06cc93ff3a4a7e1cf7647ac4322246aa255b193502aa79cb8a9",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-poursuite-300-perles-fines-12",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 45517,
+      "alphaMoyen": 0.019499508290970708,
+      "fractionAlphaDemi": 0.014799382716049383,
+      "alphaBords": 0.019796827904158935,
+      "alphaCentre": 0.019375212164735468,
+      "pixelsSha256": "a564785f2af2e9f35a26eec32f37b647b3c005ada843e93980f30e914accbb60",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-poursuite-300-perles-fines-48",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 40944,
+      "alphaMoyen": 0.017451933551198257,
+      "fractionAlphaDemi": 0.01314429012345679,
+      "alphaBords": 0.017264893904875615,
+      "alphaCentre": 0.017530126520848045,
+      "pixelsSha256": "a2385764fef357ad1e4d38ba23e7dc6f888076b70f357199a21e9dd2bd6b5f80",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-poursuite-300-perles-fines-108",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 34332,
+      "alphaMoyen": 0.01457859779714355,
+      "fractionAlphaDemi": 0.011300154320987655,
+      "alphaBords": 0.013783083720764935,
+      "alphaCentre": 0.014911166903497355,
+      "pixelsSha256": "d30c2b7ec91d5ac1190a2722fa3dcd737de71b090510bd19ff7f937246f95c73",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-poursuite-300-perles-moyennes-12",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 35764,
+      "alphaMoyen": 0.019723765432098767,
+      "fractionAlphaDemi": 0.02140817901234568,
+      "alphaBords": 0.01871446993365262,
+      "alphaCentre": 0.020145707056932315,
+      "pixelsSha256": "113652165a5986c2542fe8fa69ccd4dba8060bc582e787a37402cce52cd39a70",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-poursuite-300-perles-moyennes-48",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 32315,
+      "alphaMoyen": 0.01761240468409586,
+      "fractionAlphaDemi": 0.019166666666666665,
+      "alphaBords": 0.018799942881182467,
+      "alphaCentre": 0.017115947702763784,
+      "pixelsSha256": "585da1f56ef51a1ed3e24c930cf247563c97d2c46eee0a6e98c1a7019ba083fb",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-poursuite-300-perles-moyennes-108",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 25517,
+      "alphaMoyen": 0.014215073529411766,
+      "fractionAlphaDemi": 0.015736882716049384,
+      "alphaBords": 0.013723655517078616,
+      "alphaCentre": 0.014420513576370803,
+      "pixelsSha256": "53d7893bbe681cd32b484c38f55dc3d442edeb6536054bf54d12e6fd505bbb93",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-poursuite-300-perles-12",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 38202,
+      "alphaMoyen": 0.02842376997095134,
+      "fractionAlphaDemi": 0.03945023148148148,
+      "alphaBords": 0.027030415513737704,
+      "alphaCentre": 0.029006269590290686,
+      "pixelsSha256": "eb375e1e197673db1f1f66e33636570aa80f3f5e50910972f860e8e1206c098a",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-poursuite-300-perles-48",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 31550,
+      "alphaMoyen": 0.022295048111837325,
+      "fractionAlphaDemi": 0.03048611111111111,
+      "alphaBords": 0.02715571254249431,
+      "alphaCentre": 0.02026302017670879,
+      "pixelsSha256": "1ec9b812d388cc81d9a623dbf6fe8a1d45773f1689fd2f222f86f634919f21bc",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-poursuite-300-perles-108",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 19591,
+      "alphaMoyen": 0.013082834059549745,
+      "fractionAlphaDemi": 0.017673611111111112,
+      "alphaBords": 0.009537123318269721,
+      "alphaCentre": 0.014565138254573654,
+      "pixelsSha256": "82afde695fee3b90d3ff86328f320ed81d0fedb4e0ee2cf821d1d426c805c0a9",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-poursuite-300-film-12",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 22515,
+      "alphaMoyen": 0.020766506293875574,
+      "fractionAlphaDemi": 0.03042631172839506,
+      "alphaBords": 0.022002266021013617,
+      "alphaCentre": 0.020249890032359264,
+      "pixelsSha256": "9d275ec95cd758763f8d21482c115f3203b44dbf54fe0b4732dc8ab508591ea7",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-poursuite-300-film-48",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 16584,
+      "alphaMoyen": 0.015085307734204793,
+      "fractionAlphaDemi": 0.022042824074074076,
+      "alphaBords": 0.017310311832563346,
+      "alphaCentre": 0.014155132333672367,
+      "pixelsSha256": "af542938c5c40f53fd4fb66a276d08b4c45cf19489fc73dbac5b96e98c36d1a8",
+      "rasterLogiciel": null
+    },
+    {
+      "nom": "trajet-poursuite-300-film-108",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 10575,
+      "alphaMoyen": 0.00912669450496248,
+      "fractionAlphaDemi": 0.010121527777777778,
+      "alphaBords": 0.012634343728265308,
+      "alphaCentre": 0.007660302140283256,
+      "pixelsSha256": "57aa63d39c8a45d92d30944333364b20959d356df43b4fd59f30673865d9751d",
+      "rasterLogiciel": null
+    }
+  ],
+  "raster": {
+    "reussi": true,
+    "cas": 47,
+    "erreursGL": 0
+  },
+  "trajectoires": {
+    "reussi": false,
+    "groupes": 12,
+    "intervalles": 24,
+    "conformes": 18,
+    "nonConformes": 0,
+    "insuffisants": 6,
+    "appariements": 890,
+    "mesuresHorsCentre": 610,
+    "recu": "trajectoires-png.json",
+    "sha256": "41f4177ce524a6be054b86ad470b59467ca25241d9a8904c4eb899756828ecb0"
+  },
+  "sourcesStables": true,
+  "reussi": false,
+  "statut": "trajectoires_insuffisantes"
+}

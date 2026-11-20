@@ -2,7 +2,7 @@
 
 ## Point de départ : consolidation publiée avant ce plan
 
-La 0.2.66 est livrée sur `main` : physique **p15**, FERRO **0.3.15**, neuf circuits.
+Au point de départ, la 0.2.66 est livrée sur `main` : physique **p15**, FERRO **0.3.15**, neuf circuits.
 La PR #38 a été fusionnée, puis la consolidation `9f2246df61c6503ea8fa0f71a28813b15b17f51c`
 a réuni l’historique des 50 références inventoriées. Les 15 têtes auparavant non contenues
 sont des parents de ce commit ; les 34 autres références secondaires étaient déjà contenues.
@@ -18,7 +18,7 @@ Le jeu et son build n’ont pas changé pendant cette consolidation : 14 370 823
 SHA-256 `18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b`.
 Les premières fiches ont été poussées **après** cette fusion dans `72f92e2c761dc0ead696033e6be06cb9df891695`. Cette réconciliation conserve les deux fiches et ajoute le présent point d’entrée, les consignes et les reçus complets.
 
-## Les quatre demandes à réaliser
+## Les quatre demandes et leur état
 
 | Demande de David | Contrat à tenir | Fiche complète |
 |---|---|---|
@@ -27,14 +27,16 @@ Les premières fiches ont été poussées **après** cette fusion dans `72f92e2c
 | Bras en collision avec le buste | Mesurer la silhouette et les pénétrations, corriger buste/ancrages/coudes/manches et vérifier le cycle entier des gestes aux trois LOD. | Même fiche, B0–B5 et références MotionBricks/CMU |
 | Vitesse qui écarte les gouttes | Flux relatif projeté dans chaque caméra, gravité basse vitesse puis écoulement et évacuation vers les bords ; toutes les couches optiques suivent ce flux. | [Eau et vitesse](EAU-VITESSE-2026-11-20.md), E0–E3 |
 
-**État exact :** diagnostics de lecture et plans publiés ; les quatre corrections visuelles
-restent à implémenter et qualifier. Les anciennes validations ne démontrent ni l’identité
-de l’habitacle en coordonnées monde, ni l’absence de collision bras/buste, ni la bonne
-direction du transport des gouttes. Les tests manquants sont décrits dans les fiches.
+**État exact :** l’eau et la vitesse sont livrées en **0.2.68**, PR #39 fusionnée
+(`4a04c09`) : 160/160 suites, 8/8 tests Python et 113 images inspectées.
+[Publication et limites](rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json).
+Les trois demandes habitacle/assise/bras restent à implémenter et qualifier. Les
+validations d’eau ne démontrent ni l’identité géométrique monde de l’habitacle,
+ni l’absence de collision bras/buste.
 
 ## Ordre de travail et preuves
 
-Un seul petit lot actif : **E0**, puis E1, conformément au point de reprise de la première publication des fiches. Reproduire les trajectoires par couche, vitesse et caméra avant de régler le flux. Les contrats signés, l’écartement dans les quadrants et les sorties par les bords restent distincts du séchage.
+Le correctif eau est publié. Le prochain petit lot est **H0/B0** ; ses mesures précèdent toute modification d’habitacle ou de pilote. Les preuves d’eau distinguent positions signées, sorties par les bords et séchage.
 
 Le chantier habitacle/pilote est préparé à **H0 / B0** : inventorier les écarts de géométrie et les repères d’assise, puis reproduire les pénétrations sur les surfaces réellement affichées. Conserver les poses qui échouent ; ne pas attribuer leur cause sans mesure.
 
@@ -43,7 +45,7 @@ H2/B4 requalifient l’identité monde, les LOD, les contacts et les allocations
 et publie un candidat vérifié. Les anciens artifices de cadrage sont remplacés par le réglage
 de caméra ; les anciennes références restent des preuves historiques.
 
-E0–E3 corrigent le transport des gouttes, en distinguant pluie dans le monde,
+E0–E3 ont corrigé et qualifié le transport des gouttes dans les cas prescrits, en distinguant pluie dans le monde,
 perles, nappes, grosses gouttes et traces. Les tests suivent des trajectoires signées et des
 séquences ; compter des expulsions ou regarder une seule image ne suffit pas. La pluie vue
 depuis un abri reste un autre problème déjà préparé, à raccorder avec ses propres validations.

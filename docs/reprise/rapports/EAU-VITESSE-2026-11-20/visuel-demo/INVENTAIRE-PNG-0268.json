@@ -1,0 +1,5972 @@
+[
+  {
+    "id": "gestes/apres/geste-majeur/0000.png",
+    "file": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-majeur/0000.png",
+    "sha256": "a2c2b2c1273edded93320bb3c0575e259c32b42fe01bfa5313b6676abe40deb4",
+    "bytes": 388683,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.5,
+    "group": "gestes",
+    "scenario": "geste-majeur",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -758.1250448907621,
+          1.12,
+          -325.1273653993454
+        ],
+        "cible": [
+          -756.2657704324519,
+          0.76,
+          -324.8673284739964
+        ],
+        "yaw": 1.7097543236533614,
+        "pitch": -0.18945770924541566,
+        "roll": 0,
+        "fov": 50,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": "majeur",
+        "gestePhase": 0.303030303030302,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -756.2955997476314,
+            0.7,
+            -324.9938599402644
+          ],
+          "r": [
+            1.8252364044451463,
+            -0.4236046983437244,
+            1.4642964119271926
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.491666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Main levée et doigt central allongé présents sur les trois images ; la légende traverse le haut du geste. Le PNG 0001 a aussi été revu individuellement à sa résolution native. Réserve de composition conservée."
+    }
+  },
+  {
+    "id": "gestes/apres/geste-majeur/0001.png",
+    "file": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-majeur/0001.png",
+    "sha256": "d7d2a8637730239520dfe456d2bdb081a84fe58516408d8ea685ff73627a1bdb",
+    "bytes": 388922,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.6,
+    "group": "gestes",
+    "scenario": "geste-majeur",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -758.1250164151503,
+          1.12,
+          -325.1272446100856
+        ],
+        "cible": [
+          -756.2657704324519,
+          0.76,
+          -324.8673284739964
+        ],
+        "yaw": 1.7096927036799456,
+        "pitch": -0.18946213562859118,
+        "roll": 0,
+        "fov": 50,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": "majeur",
+        "gestePhase": 0.36363636363636237,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -756.2955997476314,
+            0.7,
+            -324.9938599402644
+          ],
+          "r": [
+            1.8252364044451463,
+            -0.4236046983437244,
+            1.4642964119271926
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.591666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Main levée et doigt central allongé présents sur les trois images ; la légende traverse le haut du geste. Le PNG 0001 a aussi été revu individuellement à sa résolution native. Réserve de composition conservée."
+    }
+  },
+  {
+    "id": "gestes/apres/geste-majeur/0002.png",
+    "file": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-majeur/0002.png",
+    "sha256": "9a21d9a4988929c1d401cc58248edac0fcb5befea413a6f86acd24c9e94cf9ff",
+    "bytes": 388503,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.7,
+    "group": "gestes",
+    "scenario": "geste-majeur",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -758.1249827967437,
+          1.12,
+          -325.12710200586366
+        ],
+        "cible": [
+          -756.2657704324519,
+          0.76,
+          -324.8673284739964
+        ],
+        "yaw": 1.709619951127897,
+        "pitch": -0.1894673607909626,
+        "roll": 0,
+        "fov": 50,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": "majeur",
+        "gestePhase": 0.42424242424242276,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -756.2955997476314,
+            0.7,
+            -324.9938599402644
+          ],
+          "r": [
+            1.8252364044451463,
+            -0.4236046983437244,
+            1.4642964119271926
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.691666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Main levée et doigt central allongé présents sur les trois images ; la légende traverse le haut du geste. Le PNG 0001 a aussi été revu individuellement à sa résolution native. Réserve de composition conservée."
+    }
+  },
+  {
+    "id": "gestes/apres/geste-poing/0000.png",
+    "file": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-poing/0000.png",
+    "sha256": "1fc535e2ec01ed8a6121bf7cd07bc615b07fded4fdabf46408cd72e288e773ae",
+    "bytes": 388401,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.5,
+    "group": "gestes",
+    "scenario": "geste-poing",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -758.1250448907621,
+          1.12,
+          -325.1273653993454
+        ],
+        "cible": [
+          -756.2657704324519,
+          0.76,
+          -324.8673284739964
+        ],
+        "yaw": 1.7097543236533614,
+        "pitch": -0.18945770924541566,
+        "roll": 0,
+        "fov": 50,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": "poing",
+        "gestePhase": 0.3571428571428559,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -756.2955997476314,
+            0.7,
+            -324.9938599402644
+          ],
+          "r": [
+            1.8252364044451463,
+            -0.4236046983437244,
+            1.4642964119271926
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.491666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Poing levé visible et stable sur les trois images ; silhouette fermée distincte de la main ouverte du salut. La légende reste proche du geste."
+    }
+  },
+  {
+    "id": "gestes/apres/geste-poing/0001.png",
+    "file": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-poing/0001.png",
+    "sha256": "4b58efe1606c770757fc3d10497ac1d152eeef9fe8412d8781746b767c85e217",
+    "bytes": 388479,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.6,
+    "group": "gestes",
+    "scenario": "geste-poing",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -758.1250164151503,
+          1.12,
+          -325.1272446100856
+        ],
+        "cible": [
+          -756.2657704324519,
+          0.76,
+          -324.8673284739964
+        ],
+        "yaw": 1.7096927036799456,
+        "pitch": -0.18946213562859118,
+        "roll": 0,
+        "fov": 50,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": "poing",
+        "gestePhase": 0.42857142857142705,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -756.2955997476314,
+            0.7,
+            -324.9938599402644
+          ],
+          "r": [
+            1.8252364044451463,
+            -0.4236046983437244,
+            1.4642964119271926
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.591666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Poing levé visible et stable sur les trois images ; silhouette fermée distincte de la main ouverte du salut. La légende reste proche du geste."
+    }
+  },
+  {
+    "id": "gestes/apres/geste-poing/0002.png",
+    "file": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-poing/0002.png",
+    "sha256": "014c30d89521aae1616a8641de03873f97d31371fa2b11829697dd9ff073ef90",
+    "bytes": 388374,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.7,
+    "group": "gestes",
+    "scenario": "geste-poing",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -758.1249827967437,
+          1.12,
+          -325.12710200586366
+        ],
+        "cible": [
+          -756.2657704324519,
+          0.76,
+          -324.8673284739964
+        ],
+        "yaw": 1.709619951127897,
+        "pitch": -0.1894673607909626,
+        "roll": 0,
+        "fov": 50,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": "poing",
+        "gestePhase": 0.4999999999999983,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -756.2955997476314,
+            0.7,
+            -324.9938599402644
+          ],
+          "r": [
+            1.8252364044451463,
+            -0.4236046983437244,
+            1.4642964119271926
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.691666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Poing levé visible et stable sur les trois images ; silhouette fermée distincte de la main ouverte du salut. La légende reste proche du geste."
+    }
+  },
+  {
+    "id": "gestes/apres/geste-salut-realisateur/0000.png",
+    "file": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-salut-realisateur/0000.png",
+    "sha256": "1ec8e27ec8d289bfb2f6091245676a3d128243a1851157ca87eeb94fcc57a0fa",
+    "bytes": 387512,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.5,
+    "group": "gestes",
+    "scenario": "geste-salut-realisateur",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "expression",
+        "n": 2,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -758.1208343299593,
+          1.12,
+          -325.10950483402655
+        ],
+        "cible": [
+          -756.2657704324519,
+          0.76,
+          -324.8673284739964
+        ],
+        "yaw": 1.7006109693202038,
+        "pitch": -0.19010674051955448,
+        "roll": 0,
+        "fov": 50,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": "salut",
+        "gestePhase": 0.2777777777777768,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -756.2955997476314,
+            0.7,
+            -324.9938599402644
+          ],
+          "r": [
+            1.8252364044451463,
+            -0.4236046983437244,
+            1.4642964119271926
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.491666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Paume ouverte et doigts visibles sur les trois images ; cadrage pilote demandé par le réalisateur. Le bandeau et sa légende gênent le haut des doigts."
+    }
+  },
+  {
+    "id": "gestes/apres/geste-salut-realisateur/0001.png",
+    "file": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-salut-realisateur/0001.png",
+    "sha256": "8488f6d85153760584999e7df5e97eb129a9adcbfde3fad90070b5b932029eb6",
+    "bytes": 388348,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.6,
+    "group": "gestes",
+    "scenario": "geste-salut-realisateur",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "expression",
+        "n": 2,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -758.1185497974287,
+          1.12,
+          -325.09981419080884
+        ],
+        "cible": [
+          -756.2657704324519,
+          0.76,
+          -324.8673284739964
+        ],
+        "yaw": 1.69562335726756,
+        "pitch": -0.19045417781174975,
+        "roll": 0,
+        "fov": 50,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": "salut",
+        "gestePhase": 0.33333333333333215,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -756.2955997476314,
+            0.7,
+            -324.9938599402644
+          ],
+          "r": [
+            1.8252364044451463,
+            -0.4236046983437244,
+            1.4642964119271926
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.591666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Paume ouverte et doigts visibles sur les trois images ; cadrage pilote demandé par le réalisateur. Le bandeau et sa légende gênent le haut des doigts."
+    }
+  },
+  {
+    "id": "gestes/apres/geste-salut-realisateur/0002.png",
+    "file": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-salut-realisateur/0002.png",
+    "sha256": "bd43abff70dd029b5a8dd279570b3aaf350d7d1830f559c60b0ea49b05fb96e3",
+    "bytes": 387684,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.7,
+    "group": "gestes",
+    "scenario": "geste-salut-realisateur",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "expression",
+        "n": 2,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -758.1158664968258,
+          1.12,
+          -325.088432033435
+        ],
+        "cible": [
+          -756.2657704324519,
+          0.76,
+          -324.8673284739964
+        ],
+        "yaw": 1.6897414233182124,
+        "pitch": -0.19085791200542157,
+        "roll": 0,
+        "fov": 50,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": "salut",
+        "gestePhase": 0.3888888888888875,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -756.2955997476314,
+            0.7,
+            -324.9938599402644
+          ],
+          "r": [
+            1.8252364044451463,
+            -0.4236046983437244,
+            1.4642964119271926
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.691666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Paume ouverte et doigts visibles sur les trois images ; cadrage pilote demandé par le réalisateur. Le bandeau et sa légende gênent le haut des doigts."
+    }
+  },
+  {
+    "id": "nature/avant/faune-ete/0000.png",
+    "file": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/faune-ete/0000.png",
+    "sha256": "53b508a8fc65ffb0ede59914be7d28699c6cfb60170cb0bfd5949c76d61b8b43",
+    "bytes": 546906,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.5,
+    "group": "nature",
+    "scenario": "faune-ete",
+    "variant": "avant",
+    "candidate": false,
+    "build_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": false,
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -897.6497101602218,
+          357.5035141612349,
+          -379.3040500067016
+        ],
+        "cible": [
+          -917.3627372745292,
+          353.5035141612349,
+          -358.30794174848904
+        ],
+        "yaw": -2.387702320411953,
+        "pitch": -0.13800602365751968,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8384759313796,
+        "sol": 352.8384759313796,
+        "distance": 29.076450952617947,
+        "taille": 1.2789196727985837,
+        "fractionHauteur": 0.07193377498892262
+      },
+      "pilote": null,
+      "volant": 0,
+      "volants": [],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.491666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "reference",
+      "notes": "Référence historique : bouquetins petits mais visibles, terrain blanc parcouru de motifs répétitifs ; trois images examinées."
+    }
+  },
+  {
+    "id": "nature/avant/faune-ete/0001.png",
+    "file": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/faune-ete/0001.png",
+    "sha256": "a3bb22b9a8c78c921d05be25daafe5bfd4a44c49303fdca7d3df3ec1ea56e6e4",
+    "bytes": 546971,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.6,
+    "group": "nature",
+    "scenario": "faune-ete",
+    "variant": "avant",
+    "candidate": false,
+    "build_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": false,
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -897.6497101602218,
+          357.5035141612349,
+          -379.3040500067016
+        ],
+        "cible": [
+          -917.3627372745292,
+          353.5035141612349,
+          -358.30794174848904
+        ],
+        "yaw": -2.387702320411953,
+        "pitch": -0.13800602365751968,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8384759313796,
+        "sol": 352.8384759313796,
+        "distance": 29.076450952617947,
+        "taille": 1.2789196727985837,
+        "fractionHauteur": 0.07193377498892262
+      },
+      "pilote": null,
+      "volant": 0,
+      "volants": [],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.591666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "reference",
+      "notes": "Référence historique : bouquetins petits mais visibles, terrain blanc parcouru de motifs répétitifs ; trois images examinées."
+    }
+  },
+  {
+    "id": "nature/avant/faune-ete/0002.png",
+    "file": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/faune-ete/0002.png",
+    "sha256": "e834a4ee4a354d227188a9bbb0996af081cca35b60f7b43b7a96fb99782ca1f6",
+    "bytes": 546925,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.7,
+    "group": "nature",
+    "scenario": "faune-ete",
+    "variant": "avant",
+    "candidate": false,
+    "build_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": false,
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -897.6497101602218,
+          357.5035141612349,
+          -379.3040500067016
+        ],
+        "cible": [
+          -917.3627372745292,
+          353.5035141612349,
+          -358.30794174848904
+        ],
+        "yaw": -2.387702320411953,
+        "pitch": -0.13800602365751968,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8384759313796,
+        "sol": 352.8384759313796,
+        "distance": 29.076450952617947,
+        "taille": 1.2789196727985837,
+        "fractionHauteur": 0.07193377498892262
+      },
+      "pilote": null,
+      "volant": 0,
+      "volants": [],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.691666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "reference",
+      "notes": "Référence historique : bouquetins petits mais visibles, terrain blanc parcouru de motifs répétitifs ; trois images examinées."
+    }
+  },
+  {
+    "id": "nature/avant/faune-hiver/0000.png",
+    "file": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/faune-hiver/0000.png",
+    "sha256": "7697691e5ef60dc11500de480da68af6cdfdb5420eb261c4d4b57d152d5e13d2",
+    "bytes": 548874,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.5,
+    "group": "nature",
+    "scenario": "faune-hiver",
+    "variant": "avant",
+    "candidate": false,
+    "build_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": false,
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -897.594816496741,
+          357.569388141843,
+          -379.4924357386925
+        ],
+        "cible": [
+          -917.3078436110484,
+          353.569388141843,
+          -358.49632748048
+        ],
+        "yaw": -2.387702320411953,
+        "pitch": -0.13800602365751968,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8943367384928,
+        "sol": 352.8943367384928,
+        "distance": 29.076450952617947,
+        "taille": 1.2981757756733454,
+        "fractionHauteur": 0.07301684861803145
+      },
+      "pilote": null,
+      "volant": 0,
+      "volants": [],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "hiver",
+      "temps": 12.491666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "reference",
+      "notes": "Référence historique : bouquetins petits mais visibles, terrain blanc parcouru de motifs répétitifs ; trois images examinées."
+    }
+  },
+  {
+    "id": "nature/avant/faune-hiver/0001.png",
+    "file": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/faune-hiver/0001.png",
+    "sha256": "bee2683893a63269b7b4cc52c42173ed6fa176b982be8f880c19a5890c108e0b",
+    "bytes": 548840,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.6,
+    "group": "nature",
+    "scenario": "faune-hiver",
+    "variant": "avant",
+    "candidate": false,
+    "build_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": false,
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -897.594816496741,
+          357.569388141843,
+          -379.4924357386925
+        ],
+        "cible": [
+          -917.3078436110484,
+          353.569388141843,
+          -358.49632748048
+        ],
+        "yaw": -2.387702320411953,
+        "pitch": -0.13800602365751968,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8943367384928,
+        "sol": 352.8943367384928,
+        "distance": 29.076450952617947,
+        "taille": 1.2981757756733454,
+        "fractionHauteur": 0.07301684861803145
+      },
+      "pilote": null,
+      "volant": 0,
+      "volants": [],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "hiver",
+      "temps": 12.591666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "reference",
+      "notes": "Référence historique : bouquetins petits mais visibles, terrain blanc parcouru de motifs répétitifs ; trois images examinées."
+    }
+  },
+  {
+    "id": "nature/avant/faune-hiver/0002.png",
+    "file": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/faune-hiver/0002.png",
+    "sha256": "b360d3612aace87f1b0c030f17d2d79bf83d2532b2b1f28af3d46139a2e08774",
+    "bytes": 548747,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.7,
+    "group": "nature",
+    "scenario": "faune-hiver",
+    "variant": "avant",
+    "candidate": false,
+    "build_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": false,
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -897.594816496741,
+          357.569388141843,
+          -379.4924357386925
+        ],
+        "cible": [
+          -917.3078436110484,
+          353.569388141843,
+          -358.49632748048
+        ],
+        "yaw": -2.387702320411953,
+        "pitch": -0.13800602365751968,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8943367384928,
+        "sol": 352.8943367384928,
+        "distance": 29.076450952617947,
+        "taille": 1.2981757756733454,
+        "fractionHauteur": 0.07301684861803145
+      },
+      "pilote": null,
+      "volant": 0,
+      "volants": [],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "hiver",
+      "temps": 12.691666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "reference",
+      "notes": "Référence historique : bouquetins petits mais visibles, terrain blanc parcouru de motifs répétitifs ; trois images examinées."
+    }
+  },
+  {
+    "id": "nature/apres/faune-ete/0000.png",
+    "file": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/faune-ete/0000.png",
+    "sha256": "17153011e3b8c6dd3eb06844adcaa10651693ddf7ae05fc0e37eb2baf0aa6817",
+    "bytes": 279474,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.5,
+    "group": "nature",
+    "scenario": "faune-ete",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -908.4149614110077,
+          354.6545418667536,
+          -367.83811028178184
+        ],
+        "cible": [
+          -917.3627372745292,
+          353.5035141612349,
+          -358.30794174848904
+        ],
+        "yaw": -2.3877023204119534,
+        "pitch": -0.08782394078984455,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8384759313796,
+        "sol": 352.8384759313796,
+        "distance": 13.122944408769495,
+        "taille": 1.2789196727985837,
+        "fractionHauteur": 0.15938335293902123
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.491666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Candidat : bouquetins nettement plus lisibles, membres/appuis et ombres présents sur les trois images ; réserve terrain très clair et bandeau de démo recouvrant une partie du sujet."
+    }
+  },
+  {
+    "id": "nature/apres/faune-ete/0001.png",
+    "file": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/faune-ete/0001.png",
+    "sha256": "7cab607859637461a78fee123a979becf013882a7f2447401310ccb8d143ccc0",
+    "bytes": 279497,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.6,
+    "group": "nature",
+    "scenario": "faune-ete",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -908.4149614110077,
+          354.6545418667536,
+          -367.83811028178184
+        ],
+        "cible": [
+          -917.3627372745292,
+          353.5035141612349,
+          -358.30794174848904
+        ],
+        "yaw": -2.3877023204119534,
+        "pitch": -0.08782394078984455,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8384759313796,
+        "sol": 352.8384759313796,
+        "distance": 13.122944408769495,
+        "taille": 1.2789196727985837,
+        "fractionHauteur": 0.15938335293902123
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.591666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Candidat : bouquetins nettement plus lisibles, membres/appuis et ombres présents sur les trois images ; réserve terrain très clair et bandeau de démo recouvrant une partie du sujet."
+    }
+  },
+  {
+    "id": "nature/apres/faune-ete/0002.png",
+    "file": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/faune-ete/0002.png",
+    "sha256": "ef545d7e937ce8f1773d143bd78ddcc9f2017088c9f59a609fde731b46b26dd0",
+    "bytes": 279548,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.7,
+    "group": "nature",
+    "scenario": "faune-ete",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -908.4149614110077,
+          354.6545418667536,
+          -367.83811028178184
+        ],
+        "cible": [
+          -917.3627372745292,
+          353.5035141612349,
+          -358.30794174848904
+        ],
+        "yaw": -2.3877023204119534,
+        "pitch": -0.08782394078984455,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8384759313796,
+        "sol": 352.8384759313796,
+        "distance": 13.122944408769495,
+        "taille": 1.2789196727985837,
+        "fractionHauteur": 0.15938335293902123
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.691666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Candidat : bouquetins nettement plus lisibles, membres/appuis et ombres présents sur les trois images ; réserve terrain très clair et bandeau de démo recouvrant une partie du sujet."
+    }
+  },
+  {
+    "id": "nature/apres/faune-hiver/0000.png",
+    "file": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/faune-hiver/0000.png",
+    "sha256": "fb16697e7870553fbd36b0c79378c1168fbafa10cef8f575cc749413aa4efa98",
+    "bytes": 278663,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.5,
+    "group": "nature",
+    "scenario": "faune-hiver",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -908.2253452186668,
+          354.737746339949,
+          -368.16998736009737
+        ],
+        "cible": [
+          -917.3078436110484,
+          353.569388141843,
+          -358.49632748048
+        ],
+        "yaw": -2.3877023204119525,
+        "pitch": -0.08782394078984505,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8943367384928,
+        "sol": 352.8943367384928,
+        "distance": 13.320530522213247,
+        "taille": 1.2981757756733454,
+        "fractionHauteur": 0.15938335293902142
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "hiver",
+      "temps": 12.491666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Candidat : bouquetins nettement plus lisibles, membres/appuis et ombres présents sur les trois images ; réserve terrain très clair et bandeau de démo recouvrant une partie du sujet."
+    }
+  },
+  {
+    "id": "nature/apres/faune-hiver/0001.png",
+    "file": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/faune-hiver/0001.png",
+    "sha256": "17f512c20115d39981f4ec26149a50d1ab44008b1343bb59540e3213ff4520fd",
+    "bytes": 278781,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.6,
+    "group": "nature",
+    "scenario": "faune-hiver",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -908.2253452186668,
+          354.737746339949,
+          -368.16998736009737
+        ],
+        "cible": [
+          -917.3078436110484,
+          353.569388141843,
+          -358.49632748048
+        ],
+        "yaw": -2.3877023204119525,
+        "pitch": -0.08782394078984505,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8943367384928,
+        "sol": 352.8943367384928,
+        "distance": 13.320530522213247,
+        "taille": 1.2981757756733454,
+        "fractionHauteur": 0.15938335293902142
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "hiver",
+      "temps": 12.591666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Candidat : bouquetins nettement plus lisibles, membres/appuis et ombres présents sur les trois images ; réserve terrain très clair et bandeau de démo recouvrant une partie du sujet."
+    }
+  },
+  {
+    "id": "nature/apres/faune-hiver/0002.png",
+    "file": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/faune-hiver/0002.png",
+    "sha256": "1a98284e3ccc25e4deed1b827d13148518d5868b3ec09e7668c7b82dec83fd3f",
+    "bytes": 278565,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.7,
+    "group": "nature",
+    "scenario": "faune-hiver",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "faune",
+      "plan": {
+        "vue": "faune",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -908.2253452186668,
+          354.737746339949,
+          -368.16998736009737
+        ],
+        "cible": [
+          -917.3078436110484,
+          353.569388141843,
+          -358.49632748048
+        ],
+        "yaw": -2.3877023204119525,
+        "pitch": -0.08782394078984505,
+        "roll": 0,
+        "fov": 34,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": {
+        "indice": 0,
+        "y": 352.8943367384928,
+        "sol": 352.8943367384928,
+        "distance": 13.320530522213247,
+        "taille": 1.2981757756733454,
+        "fractionHauteur": 0.15938335293902142
+      },
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "hiver",
+      "temps": 12.691666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Candidat : bouquetins nettement plus lisibles, membres/appuis et ombres présents sur les trois images ; réserve terrain très clair et bandeau de démo recouvrant une partie du sujet."
+    }
+  },
+  {
+    "id": "pluie-aerien/apres/pluie-aerien/0000.png",
+    "file": "bitume-demo-pluie-aerien-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-aerien/0000.png",
+    "sha256": "f92bb7e15c6919472bb3ee40ce9d06d296ab9341f23f519eb0f6e2b50d9fd15d",
+    "bytes": 276240,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 9.1,
+    "group": "pluie-aerien",
+    "scenario": "pluie-aerien",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "helico",
+      "plan": {
+        "vue": "helico",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -804.1563371067866,
+          21,
+          -191.3246841781469
+        ],
+        "cible": [
+          -817.3323045280846,
+          0.65,
+          -218.27637953322417
+        ],
+        "yaw": -0.4547067880414523,
+        "pitch": -0.4735975293936114,
+        "roll": 0,
+        "fov": 38,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -817.4421042565954,
+            0.7,
+            -218.5009769945165
+          ],
+          "r": [
+            2.0654096159500512,
+            -0.38915351638405277,
+            1.368958441792947
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 21.091666666666725,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Les trois vues aériennes gardent véhicule, piste mouillée et pluie dans le monde ; aucune couche de perles ou nappes collées à l’écran. Le bandeau central et les motifs de piste restent des réserves de présentation."
+    }
+  },
+  {
+    "id": "pluie-aerien/apres/pluie-aerien/0001.png",
+    "file": "bitume-demo-pluie-aerien-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-aerien/0001.png",
+    "sha256": "4fe7aaa6dbb9bef1b5a99403d40a1334fbf6bcdb91e68bf628ec7a22bf5375a2",
+    "bytes": 276415,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 9.2,
+    "group": "pluie-aerien",
+    "scenario": "pluie-aerien",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "helico",
+      "plan": {
+        "vue": "helico",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -804.1563371067866,
+          21,
+          -191.3246841781469
+        ],
+        "cible": [
+          -817.3323045280846,
+          0.65,
+          -218.27637953322417
+        ],
+        "yaw": -0.4547067880414523,
+        "pitch": -0.4735975293936114,
+        "roll": 0,
+        "fov": 38,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -817.4421042565954,
+            0.7,
+            -218.5009769945165
+          ],
+          "r": [
+            2.0654096159500512,
+            -0.38915351638405277,
+            1.368958441792947
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 21.191666666666727,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Les trois vues aériennes gardent véhicule, piste mouillée et pluie dans le monde ; aucune couche de perles ou nappes collées à l’écran. Le bandeau central et les motifs de piste restent des réserves de présentation."
+    }
+  },
+  {
+    "id": "pluie-aerien/apres/pluie-aerien/0002.png",
+    "file": "bitume-demo-pluie-aerien-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-aerien/0002.png",
+    "sha256": "c360153a2c48271a2ce49511252326e8ee56b7e17fe4b674d96dec9548ad3be7",
+    "bytes": 276526,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 9.3,
+    "group": "pluie-aerien",
+    "scenario": "pluie-aerien",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "helico",
+      "plan": {
+        "vue": "helico",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -804.1563371067866,
+          21,
+          -191.3246841781469
+        ],
+        "cible": [
+          -817.3323045280846,
+          0.65,
+          -218.27637953322417
+        ],
+        "yaw": -0.4547067880414523,
+        "pitch": -0.4735975293936114,
+        "roll": 0,
+        "fov": 38,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -817.4421042565954,
+            0.7,
+            -218.5009769945165
+          ],
+          "r": [
+            2.0654096159500512,
+            -0.38915351638405277,
+            1.368958441792947
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 21.29166666666673,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Les trois vues aériennes gardent véhicule, piste mouillée et pluie dans le monde ; aucune couche de perles ou nappes collées à l’écran. Le bandeau central et les motifs de piste restent des réserves de présentation."
+    }
+  },
+  {
+    "id": "pluie-cockpit/apres/pluie-cockpit/0000.png",
+    "file": "bitume-demo-pluie-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-cockpit/0000.png",
+    "sha256": "47a8eb70a426cfdd45815b77dd82df34d062386ca93b00e23b085b5603ee71b1",
+    "bytes": 457295,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 9.1,
+    "group": "pluie-cockpit",
+    "scenario": "pluie-cockpit",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "cockpit",
+      "plan": {
+        "vue": "cockpit",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -756.1693987987949,
+          0.74,
+          -324.4585345060538
+        ],
+        "cible": [
+          -756.2382356799784,
+          0.65,
+          -324.7505301974414
+        ],
+        "yaw": -0.23151901171721367,
+        "pitch": 0,
+        "roll": 0,
+        "fov": 37.3651132086565,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [],
+      "sillage": {
+        "rival": 1,
+        "sources": [
+          {
+            "id": 1,
+            "exposition": 0.8605631901573365
+          }
+        ],
+        "casque": 0.8605631901573365,
+        "lentille": 0.8656915687205431
+      },
+      "vitrage": {
+        "actif": true,
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "cockpit": true,
+        "intensite": 1,
+        "embruns": 0.8656915687205431,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 94,
+          "dessins": 94,
+          "etapes": 1073,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 1.8969607548910592,
+          "accumulationNeige": 0,
+          "embruns": 0.8656915687205414,
+          "gouttes": 23,
+          "neige": 0,
+          "fusionsEau": 19,
+          "expulses": 44,
+          "depotsEau": 86,
+          "depotsEmbruns": 76,
+          "surfaceExpulsee": 2254.5391870449794
+        },
+        "j2": null
+      },
+      "vitreVisible": true,
+      "saison": "ete",
+      "temps": 21.091666666666725,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Trois images à 9.1/9.2/9.3 s examinées : perles de tailles variées, nappes et reflets composés visibles ; cockpit, piste et rival restent lisibles malgré les embruns. Pas de voile uniforme ni de corruption nouvelle observée. L’image seule ne démontre pas la trajectoire physique. Bandeau central conservé comme réserve."
+    }
+  },
+  {
+    "id": "pluie-cockpit/apres/pluie-cockpit/0001.png",
+    "file": "bitume-demo-pluie-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-cockpit/0001.png",
+    "sha256": "266e6cff9ba3c45f4c50fc8b7fd5f53aa339e9146a09da1d4bc55553fe29ab99",
+    "bytes": 455018,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 9.2,
+    "group": "pluie-cockpit",
+    "scenario": "pluie-cockpit",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "cockpit",
+      "plan": {
+        "vue": "cockpit",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -756.1693987987949,
+          0.74,
+          -324.4585345060538
+        ],
+        "cible": [
+          -756.2382356799784,
+          0.65,
+          -324.7505301974414
+        ],
+        "yaw": -0.23151901171721367,
+        "pitch": 0,
+        "roll": 0,
+        "fov": 37.3651132086565,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [],
+      "sillage": {
+        "rival": 1,
+        "sources": [
+          {
+            "id": 1,
+            "exposition": 0.8605631901573365
+          }
+        ],
+        "casque": 0.8605631901573365,
+        "lentille": 0.8656915687205431
+      },
+      "vitrage": {
+        "actif": true,
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "cockpit": true,
+        "intensite": 1,
+        "embruns": 0.8656915687205431,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 95,
+          "dessins": 95,
+          "etapes": 1085,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 1.8971718885261877,
+          "accumulationNeige": 0,
+          "embruns": 0.8656915687205414,
+          "gouttes": 24,
+          "neige": 0,
+          "fusionsEau": 19,
+          "expulses": 45,
+          "depotsEau": 88,
+          "depotsEmbruns": 78,
+          "surfaceExpulsee": 2261.085148974068
+        },
+        "j2": null
+      },
+      "vitreVisible": true,
+      "saison": "ete",
+      "temps": 21.191666666666727,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Trois images à 9.1/9.2/9.3 s examinées : perles de tailles variées, nappes et reflets composés visibles ; cockpit, piste et rival restent lisibles malgré les embruns. Pas de voile uniforme ni de corruption nouvelle observée. L’image seule ne démontre pas la trajectoire physique. Bandeau central conservé comme réserve."
+    }
+  },
+  {
+    "id": "pluie-cockpit/apres/pluie-cockpit/0002.png",
+    "file": "bitume-demo-pluie-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-cockpit/0002.png",
+    "sha256": "191e4c9582fcc261d81d5c529daec28c977d4c5d82dc26fb2e92951baab37d86",
+    "bytes": 452460,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 9.3,
+    "group": "pluie-cockpit",
+    "scenario": "pluie-cockpit",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "cockpit",
+      "plan": {
+        "vue": "cockpit",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -756.1693987987949,
+          0.74,
+          -324.4585345060538
+        ],
+        "cible": [
+          -756.2382356799784,
+          0.65,
+          -324.7505301974414
+        ],
+        "yaw": -0.23151901171721367,
+        "pitch": 0,
+        "roll": 0,
+        "fov": 37.3651132086565,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [],
+      "sillage": {
+        "rival": 1,
+        "sources": [
+          {
+            "id": 1,
+            "exposition": 0.8605631901573365
+          }
+        ],
+        "casque": 0.8605631901573365,
+        "lentille": 0.8656915687205431
+      },
+      "vitrage": {
+        "actif": true,
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "cockpit": true,
+        "intensite": 1,
+        "embruns": 0.8656915687205431,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 96,
+          "dessins": 96,
+          "etapes": 1097,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 1.8973683548968197,
+          "accumulationNeige": 0,
+          "embruns": 0.8656915687205414,
+          "gouttes": 23,
+          "neige": 0,
+          "fusionsEau": 20,
+          "expulses": 46,
+          "depotsEau": 89,
+          "depotsEmbruns": 79,
+          "surfaceExpulsee": 2280.4503142836907
+        },
+        "j2": null
+      },
+      "vitreVisible": true,
+      "saison": "ete",
+      "temps": 21.29166666666673,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Trois images à 9.1/9.2/9.3 s examinées : perles de tailles variées, nappes et reflets composés visibles ; cockpit, piste et rival restent lisibles malgré les embruns. Pas de voile uniforme ni de corruption nouvelle observée. L’image seule ne démontre pas la trajectoire physique. Bandeau central conservé comme réserve."
+    }
+  },
+  {
+    "id": "pluie-poursuite/apres/pluie-poursuite-sillage/0000.png",
+    "file": "bitume-demo-pluie-poursuite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-poursuite-sillage/0000.png",
+    "sha256": "b4023b24bb5f7f44d6df495e825fc752feb84449a5899750bdf1c2b5d13ef0e6",
+    "bytes": 391023,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 9.1,
+    "group": "pluie-poursuite",
+    "scenario": "pluie-poursuite-sillage",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -754.5402592774507,
+          2.45,
+          -317.5479698098806
+        ],
+        "cible": [
+          -756.2382356799784,
+          0.65,
+          -324.7505301974414
+        ],
+        "yaw": -0.23151901171721698,
+        "pitch": -0.23860932250819994,
+        "roll": 0,
+        "fov": 70.1437908496732,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -756.2955997476314,
+            0.7,
+            -324.9938599402644
+          ],
+          "r": [
+            1.8252364044451463,
+            -0.4236046983437244,
+            1.4642964119271926
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": {
+        "rival": 1,
+        "sources": [
+          {
+            "id": 1,
+            "exposition": 0.8605631901573365
+          }
+        ],
+        "casque": 0.8605631901573365,
+        "lentille": 0.6631411450393534
+      },
+      "vitrage": {
+        "actif": true,
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0.6631411450393534,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 94,
+          "dessins": 94,
+          "etapes": 1073,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 1.6537740753239951,
+          "accumulationNeige": 0,
+          "embruns": 0.6631411450393517,
+          "gouttes": 24,
+          "neige": 0,
+          "fusionsEau": 5,
+          "expulses": 49,
+          "depotsEau": 78,
+          "depotsEmbruns": 70,
+          "surfaceExpulsee": 2137.0946121304155
+        },
+        "j2": null
+      },
+      "vitreVisible": true,
+      "saison": "ete",
+      "temps": 21.091666666666725,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Trois images à 9.1/9.2/9.3 s examinées : voiture suivie et rival visibles, panache présent, perles et nappes sur la lentille. Formes orientées vers les bords et variation entre images compatibles avec le nouveau rendu ; aucune mesure indépendante de trajectoire déduite de ces trois poses. Bandeau central conservé comme réserve."
+    }
+  },
+  {
+    "id": "pluie-poursuite/apres/pluie-poursuite-sillage/0001.png",
+    "file": "bitume-demo-pluie-poursuite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-poursuite-sillage/0001.png",
+    "sha256": "8335d96ba23828cf3621b54363b613cd7bbc4ff10b222ef429f384844e4e974d",
+    "bytes": 389343,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 9.2,
+    "group": "pluie-poursuite",
+    "scenario": "pluie-poursuite-sillage",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -754.5402592774507,
+          2.45,
+          -317.5479698098806
+        ],
+        "cible": [
+          -756.2382356799784,
+          0.65,
+          -324.7505301974414
+        ],
+        "yaw": -0.23151901171721698,
+        "pitch": -0.23860932250819994,
+        "roll": 0,
+        "fov": 70.1437908496732,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -756.2955997476314,
+            0.7,
+            -324.9938599402644
+          ],
+          "r": [
+            1.8252364044451463,
+            -0.4236046983437244,
+            1.4642964119271926
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": {
+        "rival": 1,
+        "sources": [
+          {
+            "id": 1,
+            "exposition": 0.8605631901573365
+          }
+        ],
+        "casque": 0.8605631901573365,
+        "lentille": 0.6631411450393534
+      },
+      "vitrage": {
+        "actif": true,
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0.6631411450393534,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 95,
+          "dessins": 95,
+          "etapes": 1085,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 1.6539581420377132,
+          "accumulationNeige": 0,
+          "embruns": 0.6631411450393517,
+          "gouttes": 23,
+          "neige": 0,
+          "fusionsEau": 5,
+          "expulses": 50,
+          "depotsEau": 78,
+          "depotsEmbruns": 70,
+          "surfaceExpulsee": 2156.459777440038
+        },
+        "j2": null
+      },
+      "vitreVisible": true,
+      "saison": "ete",
+      "temps": 21.191666666666727,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Trois images à 9.1/9.2/9.3 s examinées : voiture suivie et rival visibles, panache présent, perles et nappes sur la lentille. Formes orientées vers les bords et variation entre images compatibles avec le nouveau rendu ; aucune mesure indépendante de trajectoire déduite de ces trois poses. Bandeau central conservé comme réserve."
+    }
+  },
+  {
+    "id": "pluie-poursuite/apres/pluie-poursuite-sillage/0002.png",
+    "file": "bitume-demo-pluie-poursuite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-poursuite-sillage/0002.png",
+    "sha256": "8f7be635593b3c88b60afdf36e0dff354eb507ceb3732f889e27fa5178bf421c",
+    "bytes": 385316,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 9.3,
+    "group": "pluie-poursuite",
+    "scenario": "pluie-poursuite-sillage",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -754.5402592774507,
+          2.45,
+          -317.5479698098806
+        ],
+        "cible": [
+          -756.2382356799784,
+          0.65,
+          -324.7505301974414
+        ],
+        "yaw": -0.23151901171721698,
+        "pitch": -0.23860932250819994,
+        "roll": 0,
+        "fov": 70.1437908496732,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -756.2955997476314,
+            0.7,
+            -324.9938599402644
+          ],
+          "r": [
+            1.8252364044451463,
+            -0.4236046983437244,
+            1.4642964119271926
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": {
+        "rival": 1,
+        "sources": [
+          {
+            "id": 1,
+            "exposition": 0.8605631901573365
+          }
+        ],
+        "casque": 0.8605631901573365,
+        "lentille": 0.6631411450393534
+      },
+      "vitrage": {
+        "actif": true,
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0.6631411450393534,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 96,
+          "dessins": 96,
+          "etapes": 1097,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 1.6541294218017177,
+          "accumulationNeige": 0,
+          "embruns": 0.6631411450393517,
+          "gouttes": 24,
+          "neige": 0,
+          "fusionsEau": 5,
+          "expulses": 50,
+          "depotsEau": 79,
+          "depotsEmbruns": 71,
+          "surfaceExpulsee": 2156.459777440038
+        },
+        "j2": null
+      },
+      "vitreVisible": true,
+      "saison": "ete",
+      "temps": 21.29166666666673,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Trois images à 9.1/9.2/9.3 s examinées : voiture suivie et rival visibles, panache présent, perles et nappes sur la lentille. Formes orientées vers les bords et variation entre images compatibles avec le nouveau rendu ; aucune mesure indépendante de trajectoire déduite de ces trois poses. Bandeau central conservé comme réserve."
+    }
+  },
+  {
+    "id": "securite/avant/tele-montagne/0000.png",
+    "file": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/tele-montagne/0000.png",
+    "sha256": "cba323e0fceefb957b96abd8ac18890d831c5e008eecc6a4e6b22192b320deb2",
+    "bytes": 395511,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.5,
+    "group": "securite",
+    "scenario": "tele-montagne",
+    "variant": "avant",
+    "candidate": false,
+    "build_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": false,
+      "vue": "tele",
+      "plan": {
+        "vue": "tele",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -273.5207963437923,
+          8.313522064957837,
+          709.3715437292046
+        ],
+        "cible": [
+          -640.8478623104372,
+          -0.9592839472405609,
+          502.5432462780442
+        ],
+        "yaw": -1.0579792532464316,
+        "pitch": -0.022230317607734557,
+        "roll": 0,
+        "fov": 10,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": true,
+        "distance": 28.46665382385254
+      },
+      "faune": null,
+      "pilote": null,
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -640.6298513415488,
+            -0.9067558082887688,
+            502.65013608777963
+          ],
+          "r": [
+            -0.4164152050793775,
+            0.19116286387875492,
+            1.976551687279004
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 40,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.491666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "reference_expected_obstruction",
+      "notes": "Référence 0.2.62 : les trois images montrent un gros plan de terrain gris masquant le véhicule ; témoin historique attendu, pas une image du candidat."
+    }
+  },
+  {
+    "id": "securite/avant/tele-montagne/0001.png",
+    "file": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/tele-montagne/0001.png",
+    "sha256": "1ee63e0673ea327580e0b961fb21e1d030b08a9c0bd0e2c396ffd8def9ddabec",
+    "bytes": 395588,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.6,
+    "group": "securite",
+    "scenario": "tele-montagne",
+    "variant": "avant",
+    "candidate": false,
+    "build_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": false,
+      "vue": "tele",
+      "plan": {
+        "vue": "tele",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -273.5207963437923,
+          8.313522064957837,
+          709.3715437292046
+        ],
+        "cible": [
+          -640.8478623104372,
+          -0.9592839472405609,
+          502.5432462780442
+        ],
+        "yaw": -1.0579792532464316,
+        "pitch": -0.022230317607734557,
+        "roll": 0,
+        "fov": 10,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": true,
+        "distance": 28.46665382385254
+      },
+      "faune": null,
+      "pilote": null,
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -640.6298513415488,
+            -0.9067558082887688,
+            502.65013608777963
+          ],
+          "r": [
+            -0.4164152050793775,
+            0.19116286387875492,
+            1.976551687279004
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 40,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.591666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "reference_expected_obstruction",
+      "notes": "Référence 0.2.62 : les trois images montrent un gros plan de terrain gris masquant le véhicule ; témoin historique attendu, pas une image du candidat."
+    }
+  },
+  {
+    "id": "securite/avant/tele-montagne/0002.png",
+    "file": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/tele-montagne/0002.png",
+    "sha256": "7c5218e9426ddc143843114441bc20c91cf188fd76866341ec70a3d8564b092e",
+    "bytes": 395474,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.7,
+    "group": "securite",
+    "scenario": "tele-montagne",
+    "variant": "avant",
+    "candidate": false,
+    "build_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": false,
+      "vue": "tele",
+      "plan": {
+        "vue": "tele",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -273.5207963437923,
+          8.313522064957837,
+          709.3715437292046
+        ],
+        "cible": [
+          -640.8478623104372,
+          -0.9592839472405609,
+          502.5432462780442
+        ],
+        "yaw": -1.0579792532464316,
+        "pitch": -0.022230317607734557,
+        "roll": 0,
+        "fov": 10,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": true,
+        "distance": 28.46665382385254
+      },
+      "faune": null,
+      "pilote": null,
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -640.6298513415488,
+            -0.9067558082887688,
+            502.65013608777963
+          ],
+          "r": [
+            -0.4164152050793775,
+            0.19116286387875492,
+            1.976551687279004
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 40,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.691666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "reference_expected_obstruction",
+      "notes": "Référence 0.2.62 : les trois images montrent un gros plan de terrain gris masquant le véhicule ; témoin historique attendu, pas une image du candidat."
+    }
+  },
+  {
+    "id": "securite/avant/helico-montagne/0000.png",
+    "file": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/helico-montagne/0000.png",
+    "sha256": "006cc0df72b8fc89378ebeecb12d456a8f300b77b09b84a9362a90f843b548d5",
+    "bytes": 311630,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.5,
+    "group": "securite",
+    "scenario": "helico-montagne",
+    "variant": "avant",
+    "candidate": false,
+    "build_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": false,
+      "vue": "helico",
+      "plan": {
+        "vue": "helico",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -319.72548105102214,
+          24.655745742983488,
+          659.9881235226449
+        ],
+        "cible": [
+          -292.7889185236775,
+          4.305745742983487,
+          673.1950004892276
+        ],
+        "yaw": 2.0266502865249376,
+        "pitch": -0.47359752939361127,
+        "roll": 0,
+        "fov": 38,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": true,
+        "distance": 2.7818362712860107
+      },
+      "faune": null,
+      "pilote": null,
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -292.56924109046395,
+            4.357629676078008,
+            673.3027073590199
+          ],
+          "r": [
+            -0.4168816100738778,
+            0.19009321453328712,
+            1.9740901317360544
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 40,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.491666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "reference_expected_obstruction",
+      "notes": "Référence 0.2.62 : les trois images sont obstruées par le terrain, sans véhicule lisible ; témoin historique attendu, pas une image du candidat."
+    }
+  },
+  {
+    "id": "securite/avant/helico-montagne/0001.png",
+    "file": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/helico-montagne/0001.png",
+    "sha256": "2535dbcd6872d79759e9b646d56073a5560b508e7fd5486fd2753fd3ba599e35",
+    "bytes": 311636,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.6,
+    "group": "securite",
+    "scenario": "helico-montagne",
+    "variant": "avant",
+    "candidate": false,
+    "build_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": false,
+      "vue": "helico",
+      "plan": {
+        "vue": "helico",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -319.72548105102214,
+          24.655745742983488,
+          659.9881235226449
+        ],
+        "cible": [
+          -292.7889185236775,
+          4.305745742983487,
+          673.1950004892276
+        ],
+        "yaw": 2.0266502865249376,
+        "pitch": -0.47359752939361127,
+        "roll": 0,
+        "fov": 38,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": true,
+        "distance": 2.7818362712860107
+      },
+      "faune": null,
+      "pilote": null,
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -292.56924109046395,
+            4.357629676078008,
+            673.3027073590199
+          ],
+          "r": [
+            -0.4168816100738778,
+            0.19009321453328712,
+            1.9740901317360544
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 40,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.591666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "reference_expected_obstruction",
+      "notes": "Référence 0.2.62 : les trois images sont obstruées par le terrain, sans véhicule lisible ; témoin historique attendu, pas une image du candidat."
+    }
+  },
+  {
+    "id": "securite/avant/helico-montagne/0002.png",
+    "file": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/helico-montagne/0002.png",
+    "sha256": "227b8f8f4280069d9bd0eb4814b59c647a2f7c8b96356ad13d1416765d209ddb",
+    "bytes": 311577,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.7,
+    "group": "securite",
+    "scenario": "helico-montagne",
+    "variant": "avant",
+    "candidate": false,
+    "build_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": false,
+      "vue": "helico",
+      "plan": {
+        "vue": "helico",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -319.72548105102214,
+          24.655745742983488,
+          659.9881235226449
+        ],
+        "cible": [
+          -292.7889185236775,
+          4.305745742983487,
+          673.1950004892276
+        ],
+        "yaw": 2.0266502865249376,
+        "pitch": -0.47359752939361127,
+        "roll": 0,
+        "fov": 38,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": true,
+        "distance": 2.7818362712860107
+      },
+      "faune": null,
+      "pilote": null,
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -292.56924109046395,
+            4.357629676078008,
+            673.3027073590199
+          ],
+          "r": [
+            -0.4168816100738778,
+            0.19009321453328712,
+            1.9740901317360544
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 40,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.691666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "reference_expected_obstruction",
+      "notes": "Référence 0.2.62 : les trois images sont obstruées par le terrain, sans véhicule lisible ; témoin historique attendu, pas une image du candidat."
+    }
+  },
+  {
+    "id": "securite/apres/tele-montagne/0000.png",
+    "file": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/tele-montagne/0000.png",
+    "sha256": "a55d43a6ae3401af90662113df2708b653026fec31f112a81c4ace3c18c5de9b",
+    "bytes": 528970,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.5,
+    "group": "securite",
+    "scenario": "tele-montagne",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "cadre",
+        "n": 2,
+        "cote": 1
+      },
+      "camera": {
+        "pos": [
+          -647.4922144005155,
+          0.8407160527594394,
+          499.28554995962037
+        ],
+        "cible": [
+          -640.8478623104372,
+          -0.9592839472405609,
+          502.5432462780442
+        ],
+        "yaw": 2.0266502865249483,
+        "pitch": -0.23860932250820055,
+        "roll": 0,
+        "fov": 67.76470588235294,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -640.6298513415488,
+            -0.9067558082887688,
+            502.65013608777963
+          ],
+          "r": [
+            -0.4164152050793775,
+            0.19116286387875492,
+            1.976551687279004
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": true,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 40,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 49,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.491666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Les trois vues de poursuite montrent voiture entière, piste et horizon ; le cadrage dangereux de la référence a disparu. Relief très clair et bandeau central conservés comme réserves."
+    }
+  },
+  {
+    "id": "securite/apres/tele-montagne/0001.png",
+    "file": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/tele-montagne/0001.png",
+    "sha256": "2468911e4113ea4ff5dae14b93ad39875958cae49d67a2cd92053a031d716e5b",
+    "bytes": 529066,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.6,
+    "group": "securite",
+    "scenario": "tele-montagne",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "cadre",
+        "n": 2,
+        "cote": 1
+      },
+      "camera": {
+        "pos": [
+          -647.4922144005155,
+          0.8407160527594394,
+          499.28554995962037
+        ],
+        "cible": [
+          -640.8478623104372,
+          -0.9592839472405609,
+          502.5432462780442
+        ],
+        "yaw": 2.0266502865249483,
+        "pitch": -0.23860932250820055,
+        "roll": 0,
+        "fov": 67.76470588235294,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -640.6298513415488,
+            -0.9067558082887688,
+            502.65013608777963
+          ],
+          "r": [
+            -0.4164152050793775,
+            0.19116286387875492,
+            1.976551687279004
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": true,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 40,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 61,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.591666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Les trois vues de poursuite montrent voiture entière, piste et horizon ; le cadrage dangereux de la référence a disparu. Relief très clair et bandeau central conservés comme réserves."
+    }
+  },
+  {
+    "id": "securite/apres/tele-montagne/0002.png",
+    "file": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/tele-montagne/0002.png",
+    "sha256": "ea5c92dddb2dc7ac3c1239cacbae36a2a7961567615515ace39e2d5daca9e860",
+    "bytes": 529002,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.7,
+    "group": "securite",
+    "scenario": "tele-montagne",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "cadre",
+        "n": 2,
+        "cote": 1
+      },
+      "camera": {
+        "pos": [
+          -647.4922144005155,
+          0.8407160527594394,
+          499.28554995962037
+        ],
+        "cible": [
+          -640.8478623104372,
+          -0.9592839472405609,
+          502.5432462780442
+        ],
+        "yaw": 2.0266502865249483,
+        "pitch": -0.23860932250820055,
+        "roll": 0,
+        "fov": 67.76470588235294,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -640.6298513415488,
+            -0.9067558082887688,
+            502.65013608777963
+          ],
+          "r": [
+            -0.4164152050793775,
+            0.19116286387875492,
+            1.976551687279004
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": true,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 40,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 73,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.691666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Les trois vues de poursuite montrent voiture entière, piste et horizon ; le cadrage dangereux de la référence a disparu. Relief très clair et bandeau central conservés comme réserves."
+    }
+  },
+  {
+    "id": "securite/apres/helico-montagne/0000.png",
+    "file": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/helico-montagne/0000.png",
+    "sha256": "594a0360016b42d6e520b0e603bd59988bb896312060a710d0c4ad3cc68a4ca9",
+    "bytes": 528282,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.5,
+    "group": "securite",
+    "scenario": "helico-montagne",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "cadre",
+        "n": 2,
+        "cote": 1
+      },
+      "camera": {
+        "pos": [
+          -299.4332706137559,
+          6.105745742983487,
+          669.9373041708038
+        ],
+        "cible": [
+          -292.7889185236775,
+          4.305745742983487,
+          673.1950004892276
+        ],
+        "yaw": 2.026650286524938,
+        "pitch": -0.23860932250819972,
+        "roll": 0,
+        "fov": 67.76470588235294,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -292.56924109046395,
+            4.357629676078008,
+            673.3027073590199
+          ],
+          "r": [
+            -0.4168816100738778,
+            0.19009321453328712,
+            1.9740901317360544
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": true,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 40,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 49,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.491666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Les trois vues de poursuite montrent voiture entière et piste ; repli de cadre cohérent avec le rapport, sans obstruction visible. Relief très clair et bandeau central conservés comme réserves."
+    }
+  },
+  {
+    "id": "securite/apres/helico-montagne/0001.png",
+    "file": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/helico-montagne/0001.png",
+    "sha256": "ed42d404fc529aba8302e0cd87f3104c0f6d526ed92845c7a6f96f48f7785c93",
+    "bytes": 528317,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.6,
+    "group": "securite",
+    "scenario": "helico-montagne",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "cadre",
+        "n": 2,
+        "cote": 1
+      },
+      "camera": {
+        "pos": [
+          -299.4332706137559,
+          6.105745742983487,
+          669.9373041708038
+        ],
+        "cible": [
+          -292.7889185236775,
+          4.305745742983487,
+          673.1950004892276
+        ],
+        "yaw": 2.026650286524938,
+        "pitch": -0.23860932250819972,
+        "roll": 0,
+        "fov": 67.76470588235294,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -292.56924109046395,
+            4.357629676078008,
+            673.3027073590199
+          ],
+          "r": [
+            -0.4168816100738778,
+            0.19009321453328712,
+            1.9740901317360544
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": true,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 40,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 61,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.591666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Les trois vues de poursuite montrent voiture entière et piste ; repli de cadre cohérent avec le rapport, sans obstruction visible. Relief très clair et bandeau central conservés comme réserves."
+    }
+  },
+  {
+    "id": "securite/apres/helico-montagne/0002.png",
+    "file": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/helico-montagne/0002.png",
+    "sha256": "f46771a0c8b9841ff964439853cd3c0a72924901a532a50873bfa7cbdf706639",
+    "bytes": 528255,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.7,
+    "group": "securite",
+    "scenario": "helico-montagne",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "poursuite",
+      "plan": {
+        "vue": "poursuite",
+        "sujet": 0,
+        "motif": "cadre",
+        "n": 2,
+        "cote": 1
+      },
+      "camera": {
+        "pos": [
+          -299.4332706137559,
+          6.105745742983487,
+          669.9373041708038
+        ],
+        "cible": [
+          -292.7889185236775,
+          4.305745742983487,
+          673.1950004892276
+        ],
+        "yaw": 2.026650286524938,
+        "pitch": -0.23860932250819972,
+        "roll": 0,
+        "fov": 67.76470588235294,
+        "near": 0.1,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0,
+      "volants": [
+        {
+          "p": [
+            -292.56924109046395,
+            4.357629676078008,
+            673.3027073590199
+          ],
+          "r": [
+            -0.4168816100738778,
+            0.19009321453328712,
+            1.9740901317360544
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": true,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 40,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 73,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.691666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted_with_existing_reservations",
+      "notes": "Les trois vues de poursuite montrent voiture entière et piste ; repli de cadre cohérent avec le rapport, sans obstruction visible. Relief très clair et bandeau central conservés comme réserves."
+    }
+  },
+  {
+    "id": "volant/apres/volant-gauche/0000.png",
+    "file": "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/volant-gauche/0000.png",
+    "sha256": "8ff5d55ec5d63f6bd75073b5aca3a8ebe5053f2f982b7253ff29a3a7b373c03b",
+    "bytes": 387174,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.5,
+    "group": "volant",
+    "scenario": "volant-gauche",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -758.1250448907621,
+          1.12,
+          -325.1273653993454
+        ],
+        "cible": [
+          -756.2657704324519,
+          0.76,
+          -324.8673284739964
+        ],
+        "yaw": 1.7097543236533614,
+        "pitch": -0.18945770924541566,
+        "roll": 0,
+        "fov": 50,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": -0.7,
+      "volants": [
+        {
+          "p": [
+            -756.2955997476314,
+            0.7,
+            -324.9938599402644
+          ],
+          "r": [
+            1.2737995504951898,
+            -0.3958803663045098,
+            2.699282577117105
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.491666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted",
+      "notes": "Trois positions rendues examinées ; volant et gants visibles, braquages gauche/droite distincts, pilote et coque présents. Pas de rupture de géométrie observée ; proportions et habitacle commun restent un lot distinct."
+    }
+  },
+  {
+    "id": "volant/apres/volant-gauche/0001.png",
+    "file": "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/volant-gauche/0001.png",
+    "sha256": "dfff32a8922377a572e1cacd1e92c9d65a8082653f84170eff7a502a790cfc40",
+    "bytes": 387437,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.6,
+    "group": "volant",
+    "scenario": "volant-gauche",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -758.1250164151503,
+          1.12,
+          -325.1272446100856
+        ],
+        "cible": [
+          -756.2657704324519,
+          0.76,
+          -324.8673284739964
+        ],
+        "yaw": 1.7096927036799456,
+        "pitch": -0.18946213562859118,
+        "roll": 0,
+        "fov": 50,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": -0.7,
+      "volants": [
+        {
+          "p": [
+            -756.2955997476314,
+            0.7,
+            -324.9938599402644
+          ],
+          "r": [
+            1.2737995504951898,
+            -0.3958803663045098,
+            2.699282577117105
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.591666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted",
+      "notes": "Trois positions rendues examinées ; volant et gants visibles, braquages gauche/droite distincts, pilote et coque présents. Pas de rupture de géométrie observée ; proportions et habitacle commun restent un lot distinct."
+    }
+  },
+  {
+    "id": "volant/apres/volant-gauche/0002.png",
+    "file": "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/volant-gauche/0002.png",
+    "sha256": "a9d28594e4262688644cbe4306f32f95144032638a372b6f9f12061f8fd16927",
+    "bytes": 387116,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.7,
+    "group": "volant",
+    "scenario": "volant-gauche",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -758.1249827967437,
+          1.12,
+          -325.12710200586366
+        ],
+        "cible": [
+          -756.2657704324519,
+          0.76,
+          -324.8673284739964
+        ],
+        "yaw": 1.709619951127897,
+        "pitch": -0.1894673607909626,
+        "roll": 0,
+        "fov": 50,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": -0.7,
+      "volants": [
+        {
+          "p": [
+            -756.2955997476314,
+            0.7,
+            -324.9938599402644
+          ],
+          "r": [
+            1.2737995504951898,
+            -0.3958803663045098,
+            2.699282577117105
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.691666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted",
+      "notes": "Trois positions rendues examinées ; volant et gants visibles, braquages gauche/droite distincts, pilote et coque présents. Pas de rupture de géométrie observée ; proportions et habitacle commun restent un lot distinct."
+    }
+  },
+  {
+    "id": "volant/apres/volant-droite/0000.png",
+    "file": "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/volant-droite/0000.png",
+    "sha256": "f401e754ba88a8b6dd4925465bac25dcb8283b451ad9485b1b4c29a12568a3d0",
+    "bytes": 387978,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.5,
+    "group": "volant",
+    "scenario": "volant-droite",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -758.1250448907621,
+          1.12,
+          -325.1273653993454
+        ],
+        "cible": [
+          -756.2657704324519,
+          0.76,
+          -324.8673284739964
+        ],
+        "yaw": 1.7097543236533614,
+        "pitch": -0.18945770924541566,
+        "roll": 0,
+        "fov": 50,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0.7,
+      "volants": [
+        {
+          "p": [
+            -756.2955997476314,
+            0.7,
+            -324.9938599402644
+          ],
+          "r": [
+            2.0602375152806793,
+            0.027450213844486912,
+            0.40614665758090845
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.491666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted",
+      "notes": "Trois positions rendues examinées ; volant et gants visibles, braquages gauche/droite distincts, pilote et coque présents. Pas de rupture de géométrie observée ; proportions et habitacle commun restent un lot distinct."
+    }
+  },
+  {
+    "id": "volant/apres/volant-droite/0001.png",
+    "file": "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/volant-droite/0001.png",
+    "sha256": "f377294c42e7dcdc97dc15b27f514940fa501f17e07ffc361008d67c32cf4ba2",
+    "bytes": 388147,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.6,
+    "group": "volant",
+    "scenario": "volant-droite",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -758.1250164151503,
+          1.12,
+          -325.1272446100856
+        ],
+        "cible": [
+          -756.2657704324519,
+          0.76,
+          -324.8673284739964
+        ],
+        "yaw": 1.7096927036799456,
+        "pitch": -0.18946213562859118,
+        "roll": 0,
+        "fov": 50,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0.7,
+      "volants": [
+        {
+          "p": [
+            -756.2955997476314,
+            0.7,
+            -324.9938599402644
+          ],
+          "r": [
+            2.0602375152806793,
+            0.027450213844486912,
+            0.40614665758090845
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.591666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted",
+      "notes": "Trois positions rendues examinées ; volant et gants visibles, braquages gauche/droite distincts, pilote et coque présents. Pas de rupture de géométrie observée ; proportions et habitacle commun restent un lot distinct."
+    }
+  },
+  {
+    "id": "volant/apres/volant-droite/0002.png",
+    "file": "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/volant-droite/0002.png",
+    "sha256": "d7b63bdb81a3508723a90850085710fc0344e4e1e6de52db8284c0233f9cf899",
+    "bytes": 387822,
+    "dimensions": [
+      960,
+      540
+    ],
+    "time_seconds": 0.7,
+    "group": "volant",
+    "scenario": "volant-droite",
+    "variant": "apres",
+    "candidate": true,
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "observation": {
+      "type": "demo",
+      "ecran": "demo",
+      "cameraImposee": false,
+      "gardeDisponible": true,
+      "vue": "pilote",
+      "plan": {
+        "vue": "pilote",
+        "sujet": 0,
+        "motif": "course",
+        "n": 1,
+        "cote": -1
+      },
+      "camera": {
+        "pos": [
+          -758.1249827967437,
+          1.12,
+          -325.12710200586366
+        ],
+        "cible": [
+          -756.2657704324519,
+          0.76,
+          -324.8673284739964
+        ],
+        "yaw": 1.709619951127897,
+        "pitch": -0.1894673607909626,
+        "roll": 0,
+        "fov": 50,
+        "near": 0.08,
+        "secours": false
+      },
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "faune": null,
+      "pilote": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      },
+      "volant": 0.7,
+      "volants": [
+        {
+          "p": [
+            -756.2955997476314,
+            0.7,
+            -324.9938599402644
+          ],
+          "r": [
+            2.0602375152806793,
+            0.027450213844486912,
+            0.40614665758090845
+          ],
+          "s": [
+            0.2491071428571429,
+            0.022927255303543892,
+            0.2491071428571429
+          ]
+        }
+      ],
+      "sillage": null,
+      "vitrage": {
+        "actif": false,
+        "pluie": 0,
+        "neige": 0,
+        "vitesse": 30,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "vitres": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "copiesScene": 3,
+          "dessins": 3,
+          "etapes": 0,
+          "pixels": 518400,
+          "pixelsSource": 518400,
+          "largeur": 960,
+          "hauteur": 540,
+          "dpr": 1,
+          "eau": 0,
+          "accumulationNeige": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "neige": 0,
+          "fusionsEau": 0,
+          "expulses": 0,
+          "depotsEau": 0,
+          "depotsEmbruns": 0,
+          "surfaceExpulsee": 0
+        },
+        "j2": null
+      },
+      "vitreVisible": false,
+      "saison": "ete",
+      "temps": 12.691666666666665,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    "visual_inspection": {
+      "inspected": true,
+      "method": "contact_sheet_native_960x540",
+      "status": "accepted",
+      "notes": "Trois positions rendues examinées ; volant et gants visibles, braquages gauche/droite distincts, pilote et coque présents. Pas de rupture de géométrie observée ; proportions et habitacle commun restent un lot distinct."
+    }
+  }
+]

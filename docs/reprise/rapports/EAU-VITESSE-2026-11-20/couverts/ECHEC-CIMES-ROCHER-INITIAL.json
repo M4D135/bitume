@@ -1,0 +1,76 @@
+{
+  "format": "bitume-echec-visuel-1",
+  "date": "2026-11-20T15:18:51.282745+00:00",
+  "statut": "echec_demarrage_chrome_conserve",
+  "version": "0.2.68",
+  "pr": 39,
+  "run_id": 44761148534,
+  "job_id": 136373698503,
+  "artefact": {
+    "id": 14641565877,
+    "name": "bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d",
+    "digest": "sha256:c7c3ffb09d544234a97ac556c5bbbbd8b9ccde5f8e3c40cbaab33a5159005698"
+  },
+  "provenance": {
+    "head_pr": "3daefb7c9d7decaf77beb94219abcf16d907bb38",
+    "commit_ci": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+    "tree_ci": "b84d8553d1a53de3258a56e2036b8b16669723f5",
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2"
+  },
+  "html_octets": 14383155,
+  "images_attendues": 5,
+  "images_produites": 0,
+  "cause": "Error: Port DevTools introuvable : [2364:2393:1120/151419.062529:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2364:2393:1120/151420.066595:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2364:2393:1120/151420.751816:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2364:2397:1120/151421.913434:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2364:2397:1120/151421.913590:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2364:2397:1120/151421.913600:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2364:2393:1120/151424.285906:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n\n    at capturer (file:///home/runner/work/bitume/bitume/tools/controle-visuel.mjs:195:22)\n    at async campagneCouverts (file:///home/runner/work/bitume/bitume/tools/captures-couverts.mjs:233:20)\n    at async file:///home/runner/work/bitume/bitume/tools/captures-couverts.mjs:254:15",
+  "diagnostic": "Échec avant réception du port DevTools ; aucune image ni observation du jeu. Les autres contrôles de présence WebGL/PhysX et de scène échouent par absence de données. Aucun défaut du runtime établi par cet artefact.",
+  "fichiers": [
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/artifact.zip",
+      "octets": 5147,
+      "sha256": "c7c3ffb09d544234a97ac556c5bbbbd8b9ccde5f8e3c40cbaab33a5159005698"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/COMMIT.txt",
+      "octets": 41,
+      "sha256": "f580ffa5a34a80ff37231a250c103eb0f3f0ccf24dcded19be8655e1ab0f1f0d"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/ENVIRONNEMENT.txt",
+      "octets": 38,
+      "sha256": "8408a52da4e2f8ac0589e066814e3ac8be63dbf7fb2eb1f80392e0b698635737"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/SHA256SUMS.txt",
+      "octets": 83,
+      "sha256": "3f15996ee80ebaeee0a466940f36f92ff88b5d9ed40c33ab6760b6b095d2782a"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/TREE.txt",
+      "octets": 41,
+      "sha256": "ad01714c50b223282b631e846c968bf60db7f39d308230ae922016a9e4680d88"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/build.log",
+      "octets": 183,
+      "sha256": "aae63eccd849208f3c81bbc11d62f37042dfc43aa1b1b03b512bff47e4cff8ca"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/index.html",
+      "octets": 4530,
+      "sha256": "cb7c357357019a268da5e192c086cfd7bd4eb31644c82e4d6d24cd621ea1aff4"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/cimes-rocher/rapport.json",
+      "octets": 3281,
+      "sha256": "d828735e25da0591381687e3b0fa7bc4a0f29fefa5fc2666810d419c0a853674"
+    },
+    {
+      "path": "couverts/bitume-couverts-cimes-rocher-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-couverts/rapport.json",
+      "octets": 1716,
+      "sha256": "af560b415a28613d7b747a985dc1f36467e5a0f51eb54824215ac0f2ec00f176"
+    }
+  ],
+  "reprise": {
+    "autorite": "orchestrateur uniquement",
+    "effectuee_par_relecteur": false
+  }
+}

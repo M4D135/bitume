@@ -3,13 +3,14 @@
   "date": "2026-11-20",
   "base": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_livre": {
-    "version": "0.2.66",
+    "version": "0.2.68",
     "physique": "p15",
     "moteur": "FERRO 0.3.15",
-    "circuits": 9
+    "circuits": 9,
+    "commit_fusion": "4a04c090535f0c11d3db9900284c31e244a0c79c"
   },
   "destinations_prevues": 17,
-  "lot_actif": "eau_vitesse",
+  "lot_actif": "habitacle_pilote_commun",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [
@@ -49,17 +50,29 @@
     {
       "id": "eau_vitesse",
       "objectif": "Écarter et évacuer les gouttes selon vitesse, flux et orientation caméra",
-      "etat": "in_progress",
-      "phase": "candidat_0268_pret_campagne_complete",
+      "etat": "published",
+      "phase": "0268_validation_prescrite_terminee",
       "dependances": [
         "references"
       ],
       "fiche": "docs/reprise/EAU-VITESSE-2026-11-20.md",
-      "prochain_sous_lot": "integration_et_qualification",
       "cloture": "Trajectoires signées et couches optiques cohérentes en cockpit/poursuite ; gravité lente et souffle rapide ; pause/J1J2/abris/aérien préservés ; séquences visuelles et coût qualifiés",
       "preuves": [
         "docs/reprise/rapports/EAU-VITESSE-2026-11-20/RECUPERATION-0267.json",
-        "docs/reprise/rapports/EAU-VITESSE-2026-11-20/CANDIDAT-0268.json"
+        "docs/reprise/rapports/EAU-VITESSE-2026-11-20/CANDIDAT-0268.json",
+        "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json"
+      ],
+      "livraison": {
+        "version": "0.2.68",
+        "pr": 39,
+        "commit_fusion": "4a04c090535f0c11d3db9900284c31e244a0c79c",
+        "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2"
+      },
+      "limites": [
+        "Mires natives et captures prescrites ; pas toutes les vitesses, orientations ou situations de conduite libre.",
+        "Couche micro0 et gravité des fines non qualifiées séparément par les PNG natifs.",
+        "Aucun FPS matériel qualifié ; premier banc llvmpipe en poursuite19,66 ms contre16,10 ms, réserve conservée.",
+        "Pluie extérieure vue depuis un abri, bandeaux, neige/relief et deux alertes miroir historiques restent ouverts."
       ]
     },
     {
@@ -96,7 +109,7 @@
         "pr": 38,
         "commit_fusion": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8"
       },
-      "reste": "Gouttes selon vitesse/flux dans eau_vitesse ; pluie extérieure depuis abri, neige et rendu à enrichir ; prototype abri sauvegardé non intégré."
+      "reste": "Transport des gouttes livré0.2.68 ; pluie extérieure depuis abri, neige et rendu à enrichir ; prototype abri sauvegardé non intégré."
     },
     {
       "id": "couverts",
@@ -384,7 +397,8 @@
     "26 faune",
     "28A/C herbier saisons",
     "p15 aspiration et dégagement natif",
-    "0.2.66 démos/pilotes/météo, socle multi-couverts et Route-des-Cimes"
+    "0.2.66 démos/pilotes/météo, socle multi-couverts et Route-des-Cimes",
+    "0.2.68 eau projetée selon vitesse et caméra, perles/nappes et contrôle indépendant des pixels"
   ],
   "limites_transversales": [
     "FPS matériels",
@@ -394,7 +408,6 @@
   ],
   "plan_correctifs_visuels": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
   "ordre_courant": [
-    "eau_vitesse",
     "habitacle_pilote_commun"
   ]
 }

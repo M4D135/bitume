@@ -1,0 +1,328 @@
+{
+  "format": "bitume-revue-demos-v1",
+  "repository": "M4D135/bitume",
+  "pr": 39,
+  "run_id": 44761148653,
+  "run_url": "https://github.com/M4D135/bitume/actions/runs/44761148653",
+  "ci_conclusion": "success",
+  "pr_head": "3daefb7c9d7decaf77beb94219abcf16d907bb38",
+  "ci_commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+  "tree": "b84d8553d1a53de3258a56e2036b8b16669723f5",
+  "candidate": {
+    "version": "0.2.68",
+    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "build_bytes": 14383155,
+    "identity_verification": "COMMIT.txt et TREE.txt des sept ZIP, SHA256SUMS.txt et build.sha256/build.octets de tous les passages candidat ; accord avec le build exact fourni par le parent."
+  },
+  "reference": {
+    "version": "0.2.62",
+    "build_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "pngs": 12,
+    "scope": "Comparaison historique des groupes nature et securite ; ces PNG ne sont pas ceux du candidat."
+  },
+  "counts": {
+    "jobs_success": 7,
+    "artifact_zips": 7,
+    "passages": 16,
+    "contact_sheets_native": 16,
+    "pngs": 48,
+    "candidate_pngs": 36,
+    "reference_pngs": 12,
+    "visually_inspected_pngs": 48,
+    "additional_native_detail_reviews": 1
+  },
+  "provenance": {
+    "all_zip_digests_match_github": true,
+    "all_artifacts_match_run_and_pr_head": true,
+    "all_artifact_commit_tree_match": true,
+    "all_candidate_reports_match_build": true,
+    "source_tracked_commit_matches_ci": true,
+    "allowed_untracked_report_output": "qualification/"
+  },
+  "automated_observations": {
+    "reported_failures": 0,
+    "errors_alerts_warnings": 0,
+    "candidate_gl_errors": 0,
+    "candidate_gl_context_losses": 0,
+    "candidate_forced_cameras": 0,
+    "candidate_obstruction_hits": 0,
+    "candidate_emergency_cameras": 0,
+    "rain": {
+      "pluie-cockpit": {
+        "pngs": 3,
+        "camera": "cockpit",
+        "speed_kmh": 235,
+        "overlay_visible": true,
+        "overlay_active": true,
+        "rain_intensity": [
+          1,
+          1
+        ],
+        "lens_spray": [
+          0.8656915687205431,
+          0.8656915687205431
+        ],
+        "water": [
+          1.8969607548910592,
+          1.8973683548968197
+        ],
+        "drops": [
+          23,
+          24
+        ],
+        "expulsions": [
+          44,
+          46
+        ],
+        "rival_ids": [
+          1
+        ],
+        "webgl2_ready": true
+      },
+      "pluie-poursuite-sillage": {
+        "pngs": 3,
+        "camera": "poursuite",
+        "speed_kmh": 235,
+        "overlay_visible": true,
+        "overlay_active": true,
+        "rain_intensity": [
+          1,
+          1
+        ],
+        "lens_spray": [
+          0.6631411450393534,
+          0.6631411450393534
+        ],
+        "water": [
+          1.6537740753239951,
+          1.6541294218017177
+        ],
+        "drops": [
+          23,
+          24
+        ],
+        "expulsions": [
+          49,
+          50
+        ],
+        "rival_ids": [
+          1
+        ],
+        "webgl2_ready": true
+      },
+      "pluie-aerien": {
+        "pngs": 3,
+        "camera": "helico",
+        "speed_kmh": 235,
+        "overlay_visible": false,
+        "overlay_active": false,
+        "rain_intensity": [
+          1,
+          1
+        ],
+        "lens_spray": [
+          0,
+          0
+        ],
+        "water": [
+          0,
+          0
+        ],
+        "drops": [
+          0,
+          0
+        ],
+        "expulsions": [
+          0,
+          0
+        ],
+        "rival_ids": [],
+        "webgl2_ready": true
+      }
+    }
+  },
+  "artifacts": [
+    {
+      "group": "gestes",
+      "artifact_id": 14641306808,
+      "artifact_name": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "zip_digest": "sha256:08b35a8f0cf408280a347fd9b508836ed4630f6328aa4fb782969b4d0a39f647",
+      "png_count": 9,
+      "reported_failures": 0,
+      "reports": [
+        "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-majeur/rapport.json",
+        "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-poing/rapport.json",
+        "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-salut-realisateur/rapport.json"
+      ]
+    },
+    {
+      "group": "nature",
+      "artifact_id": 14641885836,
+      "artifact_name": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "zip_digest": "sha256:bd462623aa3580700d2ba3079c9c20e9d8c79b17aa893ff17107fe38e6943c6f",
+      "png_count": 12,
+      "reported_failures": 0,
+      "reports": [
+        "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/faune-ete/rapport.json",
+        "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/faune-hiver/rapport.json",
+        "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/faune-ete/rapport.json",
+        "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/faune-hiver/rapport.json"
+      ]
+    },
+    {
+      "group": "pluie-aerien",
+      "artifact_id": 14642241540,
+      "artifact_name": "bitume-demo-pluie-aerien-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "zip_digest": "sha256:9ab3986f46d971886ed829a766af90a55c59b46d02b7eb46597b135106e40916",
+      "png_count": 3,
+      "reported_failures": 0,
+      "reports": [
+        "bitume-demo-pluie-aerien-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-aerien/rapport.json"
+      ]
+    },
+    {
+      "group": "pluie-cockpit",
+      "artifact_id": 14641456857,
+      "artifact_name": "bitume-demo-pluie-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "zip_digest": "sha256:831e7c6892d7a40de5b8400a626c3bd76db39e229e6abc3877a0ae4e7f628f69",
+      "png_count": 3,
+      "reported_failures": 0,
+      "reports": [
+        "bitume-demo-pluie-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-cockpit/rapport.json"
+      ]
+    },
+    {
+      "group": "pluie-poursuite",
+      "artifact_id": 14641966082,
+      "artifact_name": "bitume-demo-pluie-poursuite-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "zip_digest": "sha256:1bf170d3ff51c3e9aa9ccb18b756f0d13ab8ede65419a132c48cbbf00290b5ae",
+      "png_count": 3,
+      "reported_failures": 0,
+      "reports": [
+        "bitume-demo-pluie-poursuite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-poursuite-sillage/rapport.json"
+      ]
+    },
+    {
+      "group": "securite",
+      "artifact_id": 14641089230,
+      "artifact_name": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "zip_digest": "sha256:8329365356ff7ea348124c696b3ddf3fa3375c30cd82af4b364040e22c52a464",
+      "png_count": 12,
+      "reported_failures": 0,
+      "reports": [
+        "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/tele-montagne/rapport.json",
+        "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/helico-montagne/rapport.json",
+        "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/tele-montagne/rapport.json",
+        "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/helico-montagne/rapport.json"
+      ]
+    },
+    {
+      "group": "volant",
+      "artifact_id": 14639873469,
+      "artifact_name": "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "zip_digest": "sha256:a4f6bb0b085816af99ae048f1fff929fb43d5d77ed92f68ca0b80f24f0d5ed46",
+      "png_count": 6,
+      "reported_failures": 0,
+      "reports": [
+        "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/volant-gauche/rapport.json",
+        "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/volant-droite/rapport.json"
+      ]
+    }
+  ],
+  "visual_review": {
+    "method": "Lecture de toutes les images sur 16 planches, PNG 960×540 conservés sans réduction ; détail ambigu du majeur revu dans le PNG natif individuel. Les images originales restent dans les artefacts du run.",
+    "findings": [
+      {
+        "group": "gestes",
+        "candidate_pngs": 9,
+        "reference_pngs": 0,
+        "findings": [
+          "Main levée et doigt central allongé présents sur les trois images ; la légende traverse le haut du geste. Le PNG 0001 a aussi été revu individuellement à sa résolution native. Réserve de composition conservée.",
+          "Poing levé visible et stable sur les trois images ; silhouette fermée distincte de la main ouverte du salut. La légende reste proche du geste.",
+          "Paume ouverte et doigts visibles sur les trois images ; cadrage pilote demandé par le réalisateur. Le bandeau et sa légende gênent le haut des doigts."
+        ]
+      },
+      {
+        "group": "nature",
+        "candidate_pngs": 6,
+        "reference_pngs": 6,
+        "findings": [
+          "Référence historique : bouquetins petits mais visibles, terrain blanc parcouru de motifs répétitifs ; trois images examinées.",
+          "Candidat : bouquetins nettement plus lisibles, membres/appuis et ombres présents sur les trois images ; réserve terrain très clair et bandeau de démo recouvrant une partie du sujet."
+        ]
+      },
+      {
+        "group": "pluie-aerien",
+        "candidate_pngs": 3,
+        "reference_pngs": 0,
+        "findings": [
+          "Les trois vues aériennes gardent véhicule, piste mouillée et pluie dans le monde ; aucune couche de perles ou nappes collées à l’écran. Le bandeau central et les motifs de piste restent des réserves de présentation."
+        ]
+      },
+      {
+        "group": "pluie-cockpit",
+        "candidate_pngs": 3,
+        "reference_pngs": 0,
+        "findings": [
+          "Trois images à 9.1/9.2/9.3 s examinées : perles de tailles variées, nappes et reflets composés visibles ; cockpit, piste et rival restent lisibles malgré les embruns. Pas de voile uniforme ni de corruption nouvelle observée. L’image seule ne démontre pas la trajectoire physique. Bandeau central conservé comme réserve."
+        ]
+      },
+      {
+        "group": "pluie-poursuite",
+        "candidate_pngs": 3,
+        "reference_pngs": 0,
+        "findings": [
+          "Trois images à 9.1/9.2/9.3 s examinées : voiture suivie et rival visibles, panache présent, perles et nappes sur la lentille. Formes orientées vers les bords et variation entre images compatibles avec le nouveau rendu ; aucune mesure indépendante de trajectoire déduite de ces trois poses. Bandeau central conservé comme réserve."
+        ]
+      },
+      {
+        "group": "securite",
+        "candidate_pngs": 6,
+        "reference_pngs": 6,
+        "findings": [
+          "Référence 0.2.62 : les trois images montrent un gros plan de terrain gris masquant le véhicule ; témoin historique attendu, pas une image du candidat.",
+          "Référence 0.2.62 : les trois images sont obstruées par le terrain, sans véhicule lisible ; témoin historique attendu, pas une image du candidat.",
+          "Les trois vues de poursuite montrent voiture entière, piste et horizon ; le cadrage dangereux de la référence a disparu. Relief très clair et bandeau central conservés comme réserves.",
+          "Les trois vues de poursuite montrent voiture entière et piste ; repli de cadre cohérent avec le rapport, sans obstruction visible. Relief très clair et bandeau central conservés comme réserves."
+        ]
+      },
+      {
+        "group": "volant",
+        "candidate_pngs": 6,
+        "reference_pngs": 0,
+        "findings": [
+          "Trois positions rendues examinées ; volant et gants visibles, braquages gauche/droite distincts, pilote et coque présents. Pas de rupture de géométrie observée ; proportions et habitacle commun restent un lot distinct."
+        ]
+      }
+    ],
+    "second_reader": {
+      "reader": "root",
+      "images": [
+        "pluie-cockpit/apres/pluie-cockpit/0001.png",
+        "pluie-poursuite/apres/pluie-poursuite-sillage/0001.png"
+      ],
+      "finding": "Perles et nappes composées visibles, formes radiales, piste et véhicule lisibles ; aucun écran uniforme ni artefact nouveau évident. Réserve du bandeau conservée. Pas de conclusion de trajectoire à partir d’une image."
+    }
+  },
+  "decision": {
+    "status": "accepted_with_existing_reservations",
+    "blocking_findings": [],
+    "scope": "Revue des démos composées de la PR39 pour ce build ; aucune approbation implicite des autres gates ou des lots futurs."
+  },
+  "reservations": [
+    "Bandeau central et légende recouvrent encore certaines parties des animaux et gestes ; composition à améliorer dans le lot prévu.",
+    "Relief de montagne très clair, motifs du sol et proportions générales restent des travaux distincts ; cette revue ne les clôture pas."
+  ],
+  "limits": [
+    "Démos mises en scène, trois images par passage ; cela ne remplace pas la conduite libre ni la couverture de toutes les caméras.",
+    "Rendu Chromium/SwiftShader à 960×540 ; le compteur 10 FPS de la capture ne mesure pas les performances sur GPU matériel.",
+    "Les formes et différences visibles sont compatibles avec le rendu d’eau attendu ; ces captures ne mesurent pas la trajectoire radiale. La preuve temporelle reste celle du banc natif indépendant des uniformes et des tests CPU.",
+    "Les douze PNG de référence 0.2.62 comprennent les obstructions historiques attendues."
+  ],
+  "evidence_files": {
+    "CI-FINAL.json": "b9eb9fdb5be5641f96f9bb4d67a68c7227369641929c9fcbc26fd688c3bda998",
+    "INVENTAIRE-PNG-0268.json": "a6b6e26f7b22c515cdd12e00c78f8177c0fcc9263524700c80549e978aa9a054",
+    "CONTROLES-ARTEFACTS-0268.json": "4108fba27082956ed2bcb0302bd138f0fb509a5c1584dc2d5737f6c217bc5e8f",
+    "INSPECTION-PROGRESS.json": "82e1dc282c14c6734314b13cba7c331803de04801bc9dbe7697ea64384d33d61"
+  }
+}

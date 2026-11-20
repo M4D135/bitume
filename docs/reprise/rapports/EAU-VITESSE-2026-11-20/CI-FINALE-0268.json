@@ -1,0 +1,214 @@
+{
+  "date": "2026-11-20",
+  "pr": 39,
+  "head": "3daefb7c9d7decaf77beb94219abcf16d907bb38",
+  "base": "092a00b685219ad1e74d24f24a69182e5a0a5562",
+  "ci_commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+  "tree": "b84d8553d1a53de3258a56e2036b8b16669723f5",
+  "total": 21,
+  "success": 21,
+  "checks": [
+    {
+      "id": 136389986194,
+      "name": "images (cimes-galerie)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148534/job/136389986194",
+      "started_at": "2026-11-20T15:14:29Z",
+      "completed_at": "2026-11-20T15:34:27Z"
+    },
+    {
+      "id": 136389946412,
+      "name": "images (cimes-dessus-toit)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148534/job/136389946412",
+      "started_at": "2026-11-20T15:34:29Z",
+      "completed_at": "2026-11-20T15:35:27Z"
+    },
+    {
+      "id": 136389945815,
+      "name": "images (cimes-echelles)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148534/job/136389945815",
+      "started_at": "2026-11-20T15:13:47Z",
+      "completed_at": "2026-11-20T15:35:52Z"
+    },
+    {
+      "id": 136389898998,
+      "name": "images (cimes-deux-vues)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148534/job/136389898998",
+      "started_at": "2026-11-20T15:35:05Z",
+      "completed_at": "2026-11-20T15:40:19Z"
+    },
+    {
+      "id": 136389897669,
+      "name": "images (haut-col-portails)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148534/job/136389897669",
+      "started_at": "2026-11-20T15:13:47Z",
+      "completed_at": "2026-11-20T15:35:03Z"
+    },
+    {
+      "id": 136389895636,
+      "name": "images (cimes-rocher)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148534/job/136389895636",
+      "started_at": "2026-11-20T15:41:25Z",
+      "completed_at": "2026-11-20T15:59:26Z"
+    },
+    {
+      "id": 136373699419,
+      "name": "images (gestes, geste-majeur,geste-poing,geste-salut-realisateur)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148653/job/136373699419",
+      "started_at": "2026-11-20T15:14:58Z",
+      "completed_at": "2026-11-20T15:16:52Z"
+    },
+    {
+      "id": 136373699190,
+      "name": "images (pluie-cockpit, pluie-cockpit)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148653/job/136373699190",
+      "started_at": "2026-11-20T15:15:57Z",
+      "completed_at": "2026-11-20T15:18:50Z"
+    },
+    {
+      "id": 136373699182,
+      "name": "images (securite, tele-montagne,helico-montagne)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148653/job/136373699182",
+      "started_at": "2026-11-20T15:13:47Z",
+      "completed_at": "2026-11-20T15:17:43Z"
+    },
+    {
+      "id": 136373699136,
+      "name": "images (neige, neige45,pause-reprise,legere)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148719/job/136373699136",
+      "started_at": "2026-11-20T15:30:32Z",
+      "completed_at": "2026-11-20T15:46:32Z"
+    },
+    {
+      "id": 136373699104,
+      "name": "images (pluie-spray, pluie-spray235)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148719/job/136373699104",
+      "started_at": "2026-11-20T15:13:48Z",
+      "completed_at": "2026-11-20T15:31:17Z"
+    },
+    {
+      "id": 136373699070,
+      "name": "images (volant, volant-gauche,volant-droite)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148653/job/136373699070",
+      "started_at": "2026-11-20T15:13:47Z",
+      "completed_at": "2026-11-20T15:14:57Z"
+    },
+    {
+      "id": 136373699041,
+      "name": "images (sillage-vues, sillage300-poursuite,sillage300-helico)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148719/job/136373699041",
+      "started_at": "2026-11-20T15:41:06Z",
+      "completed_at": "2026-11-20T15:45:35Z"
+    },
+    {
+      "id": 136373699024,
+      "name": "images (pluie-grille, pluie-grille)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148719/job/136373699024",
+      "started_at": "2026-11-20T15:13:47Z",
+      "completed_at": "2026-11-20T15:30:29Z"
+    },
+    {
+      "id": 136373698995,
+      "name": "images (vues, duo,sec,faune-haut-col-ete,faune-haut-col-hiver)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148719/job/136373698995",
+      "started_at": "2026-11-20T15:30:36Z",
+      "completed_at": "2026-11-20T15:41:04Z"
+    },
+    {
+      "id": 136373698992,
+      "name": "images (pluie-tunnel, tunnel)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148719/job/136373698992",
+      "started_at": "2026-11-20T15:13:47Z",
+      "completed_at": "2026-11-20T15:30:34Z"
+    },
+    {
+      "id": 136373698956,
+      "name": "images (nature, faune-ete,faune-hiver)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148653/job/136373698956",
+      "started_at": "2026-11-20T15:13:47Z",
+      "completed_at": "2026-11-20T15:15:56Z"
+    },
+    {
+      "id": 136373698928,
+      "name": "images (pluie-aerien, pluie-aerien)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148653/job/136373698928",
+      "started_at": "2026-11-20T15:17:45Z",
+      "completed_at": "2026-11-20T15:21:52Z"
+    },
+    {
+      "id": 136373698484,
+      "name": "images (pluie-poursuite, pluie-poursuite-sillage)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148653/job/136373698484",
+      "started_at": "2026-11-20T15:16:53Z",
+      "completed_at": "2026-11-20T15:18:46Z"
+    },
+    {
+      "id": 136373698328,
+      "name": "images (sillage-cockpit, sillage300,sillage300-sec)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148719/job/136373698328",
+      "started_at": "2026-11-20T15:31:18Z",
+      "completed_at": "2026-11-20T15:49:09Z"
+    },
+    {
+      "id": 136373697930,
+      "name": "qualification",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/M4D135/bitume/actions/runs/44761148529/job/136373697930",
+      "started_at": "2026-11-20T15:13:47Z",
+      "completed_at": "2026-11-20T15:21:40Z"
+    }
+  ],
+  "runs": {
+    "qualification": 44761148529,
+    "demos": 44761148653,
+    "meteo": 44761148719,
+    "couverts": 44761148534
+  },
+  "reprise_couverts": {
+    "attempt": 2,
+    "job": 136389895636,
+    "statut": "success",
+    "artifact": 14646073492,
+    "initial_failure_preserved": true
+  }
+}
