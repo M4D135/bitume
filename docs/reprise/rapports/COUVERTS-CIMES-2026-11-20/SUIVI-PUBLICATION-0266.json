@@ -20,7 +20,12 @@
     "version": "0.2.65",
     "suites_reussies": 155,
     "suites_total": 159,
-    "echecs": ["cinema", "solides-physx-geometrie", "effets-allocation", "glacesCockpit"],
+    "echecs": [
+      "cinema",
+      "solides-physx-geometrie",
+      "effets-allocation",
+      "glacesCockpit"
+    ],
     "recu": "CI-0265-INITIAL.json"
   },
   "a_terminer": [
@@ -34,5 +39,14 @@
     "Bandeaux de démo pouvant masquer certains sujets",
     "Neige claire avec grain discret",
     "FPS matériels, manettes, écoute et réseau entre machines non qualifiés"
-  ]
+  ],
+  "demos": {
+    "statut": "success_images_inspectees",
+    "groupes_reussis": 7,
+    "png_inspectes": 48,
+    "png_candidat": 36,
+    "png_reference": 12,
+    "recu": "REVUE-DEMOS-0266.json",
+    "anomalies_bloquantes_observees": 0
+  }
 }

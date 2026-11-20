@@ -79,3 +79,13 @@ La campagne complète 44743369726 et les captures 44743369792 (démos), 44743369
 déclare ni leur réussite ni la fusion. Les preuves finales seront ajoutées après inspection.
 Les changements en préparation sur la pluie sous abri restent dans leur lot suivant.
 Reçu courant : `rapports/COUVERTS-CIMES-2026-11-20/SUIVI-PUBLICATION-0266.json`.
+
+## 008 — démos exactes 0.2.66 inspectées
+
+Le run 44743369792 réussit ses sept groupes. Les 48 PNG sont inspectés : 36 candidats
+et 12 références ; chaque archive porte la bonne tête, le bon arbre et le bon build.
+Aucune nouvelle anomalie bloquante observée. Montagne dégagée, volant raccordé, bras
+contenus ; gouttes et panache en cockpit/poursuite, aucun dépôt sur l’écran aérien.
+Bandeaux masquant certains sujets et neige claire restent des réserves. Il s’agit de
+captures figées SwiftShader, sans mesure FPS matérielle. Campagne, météo et couverts
+restent à terminer. Reçu : `rapports/COUVERTS-CIMES-2026-11-20/REVUE-DEMOS-0266.json`.

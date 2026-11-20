@@ -5,7 +5,8 @@
 Base vérifiée sur `main` : **0.2.62 / p15 / FERRO 0.3.15**, huit circuits.
 Le candidat **0.2.66** est sauvegardé en [PR #38](https://github.com/M4D135/bitume/pull/38),
 tête `1c1ac0c9e190368a02101263ddceb6be0b77240d`, arbre `1f05e9b399e4584b814c4050bad9f5652261b097`.
-Sa qualification complète et ses captures sont en cours. La CI **0.2.65 155/159** reste
+Ses 48 images de démo sont inspectées (7/7 groupes réussis). Sa qualification complète
+et ses captures météo/couverts sont en cours. La CI **0.2.65 155/159** reste
 conservée avec ses quatre échecs : cinéma, géométrie, allocation des effets et glaces cockpit.
 
 La **0.2.66** corrige ces quatre échecs. Seul changement runtime : parcours indexé
