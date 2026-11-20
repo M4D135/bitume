@@ -65,3 +65,12 @@ et Marseille reçues ; ces circuits ne sont pas encore jouables.
 
 [Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **033**.
 Lire ce fichier, `docs/reprise/ETAT.json` → `etat_courant`, puis la fiche active.
+
+## Demandes ajoutées : vidéo arcade et survol de course
+
+[Liste détaillée du 20 novembre](docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md) :
+transitions continues entre vues, virages inclinés, panneaux de virage clignotants,
+bandeaux LED informatifs, hélicoptères visibles et drones repris de METAL.
+La vidéo exacte a été examinée ; les sources procédurales des drones sont identifiées.
+Six lots sont ajoutés à FILE-TRAVAIL, tous **planifiés, non livrés**. Les travaux cockpit/pluie,
+la réserve décor et les demandes précédentes restent suivis séparément.
