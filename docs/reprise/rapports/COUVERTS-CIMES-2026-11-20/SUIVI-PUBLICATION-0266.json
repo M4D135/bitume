@@ -1,0 +1,38 @@
+{
+  "version": "0.2.66",
+  "statut": "candidat_publie_validation_en_cours",
+  "date": "2026-11-20",
+  "repository": "M4D135/bitume",
+  "pr": 38,
+  "head": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
+  "tree": "1f05e9b399e4584b814c4050bad9f5652261b097",
+  "build_octets": 14370823,
+  "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+  "empreintes_sources_conformes": 326,
+  "seuils_de_test_conserves": true,
+  "qualification_run": 44743369726,
+  "demos_run": 44743369792,
+  "meteo_run": 44743369751,
+  "couverts_run": 44743369605,
+  "relance_effectuee": false,
+  "fusion_effectuee": false,
+  "precedent": {
+    "version": "0.2.65",
+    "suites_reussies": 155,
+    "suites_total": 159,
+    "echecs": ["cinema", "solides-physx-geometrie", "effets-allocation", "glacesCockpit"],
+    "recu": "CI-0265-INITIAL.json"
+  },
+  "a_terminer": [
+    "Résultat de la campagne complète et concordance de ses sources et du build",
+    "Inspection des images exactes démos, météo et couverts",
+    "Fusion sur main avec contrôle de la tête attendue",
+    "Vérification distante après fusion et clôture du journal"
+  ],
+  "reserves_conservees": [
+    "Pluie extérieure visible depuis un abri : correctif séparé en préparation",
+    "Bandeaux de démo pouvant masquer certains sujets",
+    "Neige claire avec grain discret",
+    "FPS matériels, manettes, écoute et réseau entre machines non qualifiés"
+  ]
+}

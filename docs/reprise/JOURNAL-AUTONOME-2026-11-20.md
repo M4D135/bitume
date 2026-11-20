@@ -67,3 +67,15 @@ L’origine exacte de son pic CI reste inconnue ; la nouvelle campagne doit conf
 Les 48 images démos, 41 météo et cinq vues du Tunnel du Rocher de la 0.2.65 sont inspectées.
 Pluie extérieure vue depuis un abri et réserves de composition restent explicitement ouvertes.
 La 0.2.66 est construite deux fois à l’identique ; CI et captures exactes requises avant fusion.
+
+## 007 — candidat 0.2.66 distant retrouvé et validation suivie
+
+La PR #38 porte maintenant `1c1ac0c9e190368a02101263ddceb6be0b77240d` ; son arbre
+`1f05e9b399e4584b814c4050bad9f5652261b097` correspond exactement au candidat local.
+Les 326 empreintes sources et le HTML de 14 370 823 octets sont conformes au reçu.
+Revue indépendante : aucun seuil relâché ; géométrie, conduite p15 et FERRO inchangés.
+La campagne complète 44743369726 et les captures 44743369792 (démos), 44743369751
+(météo), 44743369605 (couverts) sont suivies sans les relancer. Ce checkpoint ne
+déclare ni leur réussite ni la fusion. Les preuves finales seront ajoutées après inspection.
+Les changements en préparation sur la pluie sous abri restent dans leur lot suivant.
+Reçu courant : `rapports/COUVERTS-CIMES-2026-11-20/SUIVI-PUBLICATION-0266.json`.
