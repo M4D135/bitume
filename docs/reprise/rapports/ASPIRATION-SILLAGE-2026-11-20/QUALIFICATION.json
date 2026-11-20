@@ -1,6 +1,6 @@
 {
   "date": "2026-11-20",
-  "status": "candidat_pret_CI",
+  "status": "publie_sur_main",
   "version": "0.2.62",
   "physique": "p15",
   "moteur": "FERRO 0.3.15",
@@ -34,13 +34,19 @@
     "controles": 8
   },
   "visuel": {
-    "status": "captures_CI_a_faire",
+    "status": "qualifie",
     "fpsMateriels": false,
     "scenesCandidatesPrevues": 14,
     "referencesPrevues": 6,
     "pngPrevus": 41,
     "referenceVersion": "0.2.61",
-    "referenceCommit": "f57cbbd8ec831b62d8cdb04d85f6fafa2a2418d4"
+    "referenceCommit": "f57cbbd8ec831b62d8cdb04d85f6fafa2a2418d4",
+    "run": 44718437031,
+    "pngVerifies": 41,
+    "imagesVisualisees": 37,
+    "referencesIdentiquesVerifiees": 4,
+    "groupesReussis": 5,
+    "erreurs": 0
   },
   "limites": [
     "Mesure sur droite plane dediee ; pas une vitesse maximale, une course complete ni une validation aerodynamique reelle.",
@@ -57,12 +63,28 @@
     "controlesP14": 5,
     "controlesP15": 5,
     "runtimeModifie": false,
-    "causeEchecInitial": "Le scénario de trafic p14 ne provoque plus de choc sous p15. Le même tronc est maintenant placé directement dans le scénario contrôlé, sans affaiblir les critères."
+    "causeEchecInitial": "Le scénario de trafic p14 ne provoque plus de choc sous p15. Le même tronc est maintenant placé directement dans le scénario contrôlé, sans affaiblir les critères.",
+    "natif": "degagement-physx.json",
+    "ciNatifConcordant": true,
+    "mutationDeclenchementDetectee": true
   },
   "constructionDistante": {
     "run": 44717651384,
     "status": "success",
     "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
     "fichiersModifiesVerifies": 32
+  },
+  "publication": "PUBLICATION-0262.json",
+  "ci": {
+    "jeu": {
+      "run": 44718436891,
+      "suitesReussies": 147,
+      "suitesEchouees": 0
+    },
+    "avecDegagementNatif": {
+      "run": 44718771726,
+      "suitesReussies": 148,
+      "suitesEchouees": 0
+    }
   }
 }

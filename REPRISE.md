@@ -1,14 +1,28 @@
 # BITUME — reprise courte
 
-## Lot actif — aspiration et projections, candidat 0.2.62 / p15
+## Livraison close — aspiration, projections et dégagement 0.2.62 / p15
 
-Le banc natif a révélé une inversion : la p14 réduisait la traînée du meneur, pas du suiveur.
-Le sens est corrigé dans `course.aspirer` ; portée, largeur, coefficient et FERRO sont conservés.
-À 235 km/h, 20 m derrière au départ, le suiveur gagne **5,324 m et 6,694 km/h après 6 s**
-sur une droite contrôlée. Nouveau souffle procédural, projections distinctes de la pluie à 300 km/h.
-**p15** sépare records/fantômes ; nouvelle référence WASM, archives p14 intactes.
-Fiche : `docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md`. Qualification complète/captures à terminer.
-Les correctifs démo/sols/pilotes préparés séparément sont conservés pour la prochaine intégration.
+**0.2.62 / p15 / FERRO 0.3.15** publiée sur `main`.
+PR **#31** : `27bdf08de3a712e6658b71d428d2a7d1af3fece5`, **147/147 suites**.
+Complément natif PR **#32** : `3fc9421eb87c9bfdc296673e48220c0667626058`, **148/148 suites**.
+Les deux arbres de fusion sont identiques à leurs candidats qualifiés.
+**41 PNG vérifiés**, cinq groupes réussis : 37 images visualisées et quatre références
+faune identiques aux candidats inspectés. Archives de **3 337 puis 3 339 sources** conformes.
+L’aspiration bénéficie au suiveur ; gain contrôlé à 235 km/h de **5,324 m et 6,694 km/h en 6 s**.
+Le dégagement est prouvé dans le vrai PhysX : choc, recul puis reprise, sans replacement,
+vitesse imposée ni réparation des pneus. L’ancien test attendait un choc qui n’avait plus lieu.
+Fiche : `docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md`.
+Reçu : `docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/PUBLICATION-0262.json`.
+Build **14 268 457 octets**, SHA-256
+`439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297`.
+
+## Prochain lot prioritaire — travail démo, sols et pilotes déjà préparé
+
+Réconcilier ce travail avec `main` p15 : caméras/sols Haut-Col, ancrage du volant,
+pilote expressif et gestes, gouttes plus dynamiques et plus denses. Les dépôts à 300 km/h
+sont renforcés en cockpit mais restent discrets en poursuite sur les captures actuelles.
+Préserver les branches de travail et les preuves closes ; ne pas relancer la qualification 0.2.62.
+La suite Monaco 14A et tout le programme restent conservés ci-dessous.
 
 ## Sous-lot livré — Monaco 14A, carte et provenance temporelle
 

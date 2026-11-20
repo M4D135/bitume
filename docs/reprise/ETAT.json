@@ -2,44 +2,43 @@
   "date": "2026-11-20",
   "etat_courant": {
     "version_courante": "0.2.62",
-    "version_publiee_verifiee": "0.2.61",
-    "physique": "p15 candidate",
+    "version_publiee_verifiee": "0.2.62",
+    "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "aspiration_sillage_qualification",
-    "lot": "aspiration_sillage",
+    "statut": "aspiration_sillage_publie_qualifie",
+    "lot": "aspiration_sillage_clos",
     "fiche": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "052",
-    "prochaine_action": "Qualifier le correctif d’aspiration p15, le souffle et les projections à 300 km/h ; publier et vérifier les captures avant fusion.",
-    "dernier_lot_clos": "docs/reprise/MONACO-CARTE-REVUE-2026-11-20.md"
+    "derniere_entree": "053",
+    "prochaine_action": "Réconcilier le travail démo/sols/volant/pilotes/gouttes préparé avec main p15, puis qualifier un prochain petit lot.",
+    "dernier_lot_clos": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md"
   },
   "publication": {
-    "pr": 24,
-    "branche": "fix/haut-col-meteo-0261-20261120",
-    "tete": "a57aabe5a8be7d5d1877447555f899dc7cfb2ba9",
-    "arbre": "def0835e416192dd74a854db025b7d53890f6924",
-    "commit_fusion": "934132724de6eb368122868ce63feb341b7f9c73",
-    "recu_final": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/PUBLICATION-0261.json",
+    "pr": 32,
+    "pr_jeu": 31,
+    "branche": "test/bitume-degagement-physx-p15-20261120",
+    "tete": "86ebfce674ed42d81e11fdc7251ce421614d08dc",
+    "arbre": "1667d290b85268c4f7d0621cd26d6ae03fc82959",
+    "commit_fusion": "3fc9421eb87c9bfdc296673e48220c0667626058",
+    "recu_final": "docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/PUBLICATION-0262.json",
     "statut": "publie_sur_main"
   },
   "qualification": {
-    "build_octets": 14265416,
-    "build_sha256": "c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d",
+    "build_octets": 14268457,
+    "build_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "campagne_finale_run": 44718771726,
+    "campagne_finale_resultat": "148/148 suites, zéro échec",
+    "campagne_jeu_run": 44718436891,
+    "campagne_jeu_resultat": "147/147 suites, zéro échec",
+    "sources_archive_verifiees": 3339,
+    "sources_contenus_et_modes_identiques": true,
+    "arbres_fusion_identiques_aux_candidats": true,
+    "visuel_final_run": 44718437031,
+    "visuel_final_resultat": "5/5 groupes, 20 passages, 41 PNG vérifiés ; zéro erreur.",
+    "inspection_visuelle": "37 images visualisées ; quatre références faune identiques aux candidats inspectés.",
+    "degagement_natif": "Choc, recul et reprise dans le vrai PhysX, sans replacement ni réparation ; mutation du déclenchement détectée.",
     "runtime_inchange_par_correctifs_qualification": true,
-    "conduite_p14_et_moteur_inchanges": true,
-    "campagne_precedente": "143/143 suites ; 31 PNG, dix scènes candidates et cinq références inspectées.",
-    "qualification_finale_run": 44690920229,
-    "qualification_finale_resultat": "143/143 ; archive et 3 309 sources vérifiées, contenus et modes identiques.",
-    "visuel_final_run": 44690920192,
-    "visuel_final_resultat": "success ; 15 passages, dix scènes candidates, cinq références, 31 PNG vérifiés et inspectés.",
-    "artefacts_finaux_verifies": "Qualification, vues, neige et pluie finale vérifiés ; tête, arbre et build concordants.",
-    "captures_finales_inspectees": "31/31 PNG ; poses figées et rendu logiciel, sans qualification des FPS matériels.",
-    "recu_candidat": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/QUALIFICATION.json",
-    "recu_premier_passage": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/CI-PR24-INITIAL.json",
-    "recu_deuxieme_passage": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/CI-PR24-DEUXIEME.json",
-    "pluie_relance_job": 136150737900,
-    "recu_publication": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/PUBLICATION-0261.json",
-    "historique_timeout_pluie": "Première tentative arrêtée à 35 min ; quatre passages et huit PNG complets. Relance réussie, historique conservé dans le reçu."
+    "recu_publication": "docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/PUBLICATION-0262.json"
   },
   "reserves": {
     "construction_ms": {
@@ -56,7 +55,8 @@
     "manettes_physiques_qualifiees": false,
     "reseau_entre_machines_qualifie": false,
     "site_deploye": false,
-    "spark_disponible": false
+    "spark_disponible": false,
+    "projections_poursuite": "Présentes mais discrètes dans les captures à 300 km/h ; densité/dynamique à réconcilier avec le travail préparé."
   },
   "suite": {
     "lot": "14A_Monaco_sources_et_mesures",
@@ -97,7 +97,8 @@
     "bitume_0259": "docs/reprise/rapports/COCKPIT-PILOTES-2026-11-19/PUBLICATION-0259.json",
     "bitume_0257": "docs/reprise/rapports/DEMOS-CINEMA-2026-11-19/PUBLICATION-0257.json",
     "monaco_revue_14A": "docs/references/monaco-2026/PUBLICATION-REVUE-20261120.json",
-    "monaco_cartographie_14A": "docs/references/monaco-2026/qualification-revue-cartographie.json"
+    "monaco_cartographie_14A": "docs/references/monaco-2026/qualification-revue-cartographie.json",
+    "bitume_0262": "docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/PUBLICATION-0262.json"
   },
   "regle": "Un sous-lot à la fois ; préserver les preuves, reprise courte et programme complet ; aucun push forcé.",
   "qualification_monaco_revue": {
@@ -191,15 +192,48 @@
     "p15GainVitesseA235KmhApres6sKmh": 6.693804953712629,
     "physiqueModifiee": true,
     "ferroConserve": true,
-    "status": "candidat_en_qualification"
+    "status": "publie_sur_main",
+    "recu_publication": "docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/PUBLICATION-0262.json",
+    "ci_suites_reussies": 148,
+    "ci_suites_echouees": 0,
+    "png_verifies": 41,
+    "degagement_natif": "docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/degagement-physx.json"
   },
   "suite_correctifs_demo": {
-    "statut": "travail_prepare_separement_a_preserver",
+    "statut": "prochain_lot_prioritaire_travail_prepare_a_reconcilier",
     "priorites": [
       "Caméras de démo et sols Haut-Col",
       "Volant et pilote expressif, gestes Troll",
       "Gouttes, fusion et expulsion suivant la vitesse"
     ],
     "regle": "Ne pas écraser le travail préparé ; réconcilier avec le correctif d’aspiration publié avant de construire la livraison suivante."
+  },
+  "publication_haut_col_meteo_0261": {
+    "pr": 24,
+    "branche": "fix/haut-col-meteo-0261-20261120",
+    "tete": "a57aabe5a8be7d5d1877447555f899dc7cfb2ba9",
+    "arbre": "def0835e416192dd74a854db025b7d53890f6924",
+    "commit_fusion": "934132724de6eb368122868ce63feb341b7f9c73",
+    "recu_final": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/PUBLICATION-0261.json",
+    "statut": "publie_sur_main"
+  },
+  "qualification_haut_col_meteo_0261": {
+    "build_octets": 14265416,
+    "build_sha256": "c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d",
+    "runtime_inchange_par_correctifs_qualification": true,
+    "conduite_p14_et_moteur_inchanges": true,
+    "campagne_precedente": "143/143 suites ; 31 PNG, dix scènes candidates et cinq références inspectées.",
+    "qualification_finale_run": 44690920229,
+    "qualification_finale_resultat": "143/143 ; archive et 3 309 sources vérifiées, contenus et modes identiques.",
+    "visuel_final_run": 44690920192,
+    "visuel_final_resultat": "success ; 15 passages, dix scènes candidates, cinq références, 31 PNG vérifiés et inspectés.",
+    "artefacts_finaux_verifies": "Qualification, vues, neige et pluie finale vérifiés ; tête, arbre et build concordants.",
+    "captures_finales_inspectees": "31/31 PNG ; poses figées et rendu logiciel, sans qualification des FPS matériels.",
+    "recu_candidat": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/QUALIFICATION.json",
+    "recu_premier_passage": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/CI-PR24-INITIAL.json",
+    "recu_deuxieme_passage": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/CI-PR24-DEUXIEME.json",
+    "pluie_relance_job": 136150737900,
+    "recu_publication": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/PUBLICATION-0261.json",
+    "historique_timeout_pluie": "Première tentative arrêtée à 35 min ; quatre passages et huit PNG complets. Relance réussie, historique conservé dans le reçu."
   }
 }
