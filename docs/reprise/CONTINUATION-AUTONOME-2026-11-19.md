@@ -1,5 +1,8 @@
 # Programme autonome — améliorations prévues par Claude
 
+Suite opérationnelle du 20 novembre : [objectifs et méthode](OBJECTIFS-EXECUTION-2026-11-20.md),
+[file structurée](FILE-TRAVAIL.json), [six références](../references/objectifs-utilisateur-2026-11-20/README.md).
+
 ## Demande et règle de progression
 
 Le 19 novembre 2026, David demande de continuer en autonomie **toute la liste des améliorations prévues par Claude**.
@@ -112,8 +115,8 @@ l'essai entre deux réseaux restent à qualifier. Détails et références :
 
 ## Accès et niveaux de preuve
 
-Le lanceur Spark prévu par le projet et la configuration SSH vers le Mac ne sont pas présents dans cet
-environnement. Le développement continue ici ; ne pas prétendre à un calcul délégué au Spark ou à un déploiement.
+Les scripts `tools/spark/` sont présents ; aucun accès au lanceur local `kbza` de David ni au Mac
+n’est établi ici. Ne pas confondre ces scripts avec une délégation effectivement exécutée ou un déploiement.
 Le démarrage local de Chromium a été bloqué par la création d'une socket (`Operation not permitted`).
 Les captures WebGL2 finales ont été réalisées en Actions sous SwiftShader et inspectées : elles montrent
 des états disposés à poses figées, sans qualification d'une course complète ni des FPS sur matériel.

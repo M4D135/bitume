@@ -1,5 +1,15 @@
 # BITUME — reprise courte
 
+## Priorité du 20 novembre — modèles, objectifs et continuation
+
+Les six références utilisateur sont archivées avec empreintes :
+`docs/references/objectifs-utilisateur-2026-11-20/README.md`.
+Modèle courant, objectifs et méthode : `docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md`.
+File complète : `docs/reprise/FILE-TRAVAIL.json` ; journal : `docs/reprise/JOURNAL-AUTONOME-2026-11-20.md`.
+Publier ce socle en premier, sauvegarder les checkpoints, puis intégrer les lots qualifiés
+démos/pilotes/météo. Route-des-Cimes se prépare séparément. Commits fréquents, sorties
+bornées et reprise par lot ; toutes les 17 destinations et les lots transversaux sont conservés.
+
 ## Livraison close — aspiration, projections et dégagement 0.2.62 / p15
 
 **0.2.62 / p15 / FERRO 0.3.15** publiée sur `main`.
@@ -88,5 +98,5 @@ Durées historiques : **188 ms Val-Brûlé, 154/167 ms Haut-Col**, seuil inchang
 Les lignes diagonales du terrain clair sont héritées et restent à diagnostiquer dans le lot rendu.
 Captures à poses figées sous SwiftShader : ni course complète ni mesure FPS sur matériel.
 Manettes physiques, réseau entre machines, FPS matériels et site restent non qualifiés.
-Site non déployé ici ; Spark absent. Un sous-lot à la fois, reprise courte, aucun push forcé.
+Site non déployé ici ; scripts Spark présents, accès au lanceur de David non établi. Un sous-lot à la fois, reprise courte, aucun push forcé.
 Historique 0.2.60 : `docs/reprise/rapports/REALISME-2026-11-19/PUBLICATION-0260.json`.

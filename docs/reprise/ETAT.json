@@ -8,9 +8,9 @@
     "statut": "aspiration_sillage_publie_qualifie",
     "lot": "aspiration_sillage_clos",
     "fiche": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md",
-    "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "054",
-    "prochaine_action": "Réconcilier le travail démo/sols/volant/pilotes/gouttes préparé avec main p15, puis qualifier un prochain petit lot.",
+    "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
+    "derniere_entree": "001",
+    "prochaine_action": "Publier d’abord références, modèles et programme complet ; sauvegarder les branches de travail, puis qualifier démos/pilotes/météo sur p15.",
     "dernier_lot_clos": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md"
   },
   "publication": {
@@ -253,5 +253,13 @@
     "references_historiques": "Notices conservées ; objets et prototypes anciens non retrouvés dans les dépôts inspectés, sans conclusion de perte sur le poste d’origine.",
     "reseau": "Aucune IP à fournir ; ancienne note sur la visibilité des IP auprès des relais expliquée. Préparation et essais à poursuivre, salon conservé avant qualification du remplacement.",
     "priorite": "Réconcilier les travaux démo, sols, volant, pilotes et gouttes déjà préparés avec la base publiée ; préserver les autres lots."
+  },
+  "execution_autonome": {
+    "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
+    "file": "docs/reprise/FILE-TRAVAIL.json",
+    "references": "docs/references/objectifs-utilisateur-2026-11-20/README.md",
+    "priorite_utilisateur": "Publication GitHub des modèles, objectifs et feuille de route avant la suite",
+    "lot_actif": "references",
+    "statut": "publication_documentaire_preparee"
   }
 }
