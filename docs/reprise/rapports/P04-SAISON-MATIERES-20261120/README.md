@@ -84,10 +84,48 @@ assemblée reste à 00. Les [raccords 04](../../PARALLELE-2026-11-20/raccordemen
 détaillent aussi la demande à 02 sur l'interpolation du pigment du terrain.
 Ni physique p15, ni climat, ni graine, ni cockpit, ni shader FERRO ne sont modifiés.
 
-## M1 — premier lot de pierres proches
+## M1 — essai de pierre, conservé en option
 
-Sources publiées en `26e7c56` après clôture de S1 : raccord ciblé de la recette
-pierre 23 existante sur les rochers et ouvrages de montagne, en qualité high
-seulement. [Le reçu Node](M1-NODE.json) conserve les invariants et les comptes
-exacts. Les captures A/B et leur coût doivent encore être examinés avant de
-conclure ce lot.
+**L’activation automatique est rejetée**, retrait publié en `b015497`. Le défaut garde la matière 9 ; la
+recette 23 reste disponible par `pierresProcedurales: true`, en high seulement.
+Il s’agit d’un candidat à reprendre avec 02, pas d’une amélioration graphique
+validée pour tous les joueurs.
+
+Le raccord cible 278 pierres à Haut-Col et 682 aux Cimes. Le béton, l’eau, les
+fossés et les autres objets restent exclus. Aucun sommet, collision, palette,
+masque d’herbe, graine ou donnée climatique ne change. Les 22 tests finaux passent,
+y compris l’égalité exacte défaut/false en high aux quatre saisons des deux
+montagnes, avec herbiers indépendants. Les six tests finaux de l’outil passent aussi.
+[Contrôles initiaux](M1-NODE.json) et
+[décision finale, tests et limites](M1-DECISION.json).
+
+| Vue A/B réelle | Résultat de l’inspection |
+| --- | --- |
+| [Portail sombre de Haut-Col](images/M1-HAUT-COL-PORTAIL.jpg) | Recette 23 plus lisse ; gain de grain/relief non démontré. |
+| [Pont des Cimes à environ 109 m](images/M1-CIMES-PONT-DISTANT.jpg) | Effet discret, sans régression visible ; détail fin peu lisible à cette distance. |
+| [Pierre éclairée des Cimes à environ 18 m](images/M1-CIMES-ROCHE-ECLAIREE.jpg) | Strates plus lisibles, mais perte de grain fin et pas de gain net de relief. |
+
+Les 24 PNG été/hiver ont été inspectés. Les comparaisons utilisent les recettes
+9/23 sur les mêmes objets du même candidat, pas deux builds historiques.
+L’HTML est identique entre les deux campagnes :
+`d66623243cfadbca3b0c896c76cb46b442e01c820282064dab84e23e243ad935`.
+
+La [première campagne](https://github.com/M4D135/bitume/actions/runs/44786811877)
+réussit les comptes et empreintes A/B ; ses temps `draw + finish` sont conservés
+comme données brutes **non concluantes**. La
+[reprise avec lecture CPU](https://github.com/M4D135/bitume/actions/runs/44788669375)
+produit huit images mais échoue sur quatre expirations de mesure à 120 s.
+Quatre observations runtime sont complètes ; les quatre seconds PNG sont écrits
+avant l’observation interrompue. Aucune série de coût complète n’est disponible,
+et aucun gain, absence de surcoût ou FPS matériel n’est revendiqué.
+
+Le nouvel outil conserve l’observation avant de mesurer et limite cette mesure
+à 15 s côté Node. Une série incomplète reste explicitement non qualifiée, sans
+ratio. Les [preuves initiales](M1-CAPTURES-INITIALES.json), le
+[choix physique de la vue éclairée](M1-VUE-ECLAIREE.json) et les échecs restent
+conservés pour la reprise, avec les empreintes des images.
+
+À reprendre par 02 : grain intermédiaire et relief normal utile après filtrage,
+ainsi que le pigment continu du terrain. À 00 : garder le défaut sûr, intégrer
+S1 et reconstruire/qualifier l’assemblage commun. Aucune fusion main ni
+publication de build n’est faite par 04.
