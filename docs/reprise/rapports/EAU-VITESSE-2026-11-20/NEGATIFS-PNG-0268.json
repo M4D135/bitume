@@ -1,0 +1,396 @@
+{
+  "scriptAnalyseSha256": "c8591fcc5873b6ac71b96fd592d780548d0e83b52aab688c4e27f3772a99a4c1",
+  "etatsRendusSha256": "e46e52142646266989c482b85adb2d329b5a820ffed54bf27d89f9b8484f1a8b",
+  "reussi": true,
+  "controles": [
+    {
+      "mode": "repete",
+      "attenduReussi": false,
+      "reussi": false,
+      "controleConforme": true,
+      "synthese": {
+        "groupes": 4,
+        "intervalles": 8,
+        "conformes": 0,
+        "nonConformes": 8,
+        "insuffisants": 0,
+        "appariements": 5506,
+        "mesuresHorsCentre": 3304
+      },
+      "intervalles": [
+        {
+          "groupe": "trajet-cockpit-300-film",
+          "intervalleImages": [
+            12,
+            48
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 41,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-film",
+          "intervalleImages": [
+            48,
+            108
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 41,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles",
+          "intervalleImages": [
+            12,
+            48
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 88,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles",
+          "intervalleImages": [
+            48,
+            108
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 88,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles-fines",
+          "intervalleImages": [
+            12,
+            48
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 1192,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles-fines",
+          "intervalleImages": [
+            48,
+            108
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 1192,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles-moyennes",
+          "intervalleImages": [
+            12,
+            48
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 331,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles-moyennes",
+          "intervalleImages": [
+            48,
+            108
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 331,
+          "conformes": 0
+        }
+      ]
+    },
+    {
+      "mode": "opacite_seule",
+      "attenduReussi": false,
+      "reussi": false,
+      "controleConforme": true,
+      "synthese": {
+        "groupes": 4,
+        "intervalles": 8,
+        "conformes": 0,
+        "nonConformes": 8,
+        "insuffisants": 0,
+        "appariements": 2276,
+        "mesuresHorsCentre": 1392
+      },
+      "intervalles": [
+        {
+          "groupe": "trajet-cockpit-300-film",
+          "intervalleImages": [
+            12,
+            48
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 41,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-film",
+          "intervalleImages": [
+            48,
+            108
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 41,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles",
+          "intervalleImages": [
+            12,
+            48
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 88,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles",
+          "intervalleImages": [
+            48,
+            108
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 87,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles-fines",
+          "intervalleImages": [
+            12,
+            48
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 442,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles-fines",
+          "intervalleImages": [
+            48,
+            108
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 210,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles-moyennes",
+          "intervalleImages": [
+            12,
+            48
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 259,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles-moyennes",
+          "intervalleImages": [
+            48,
+            108
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 224,
+          "conformes": 0
+        }
+      ]
+    },
+    {
+      "mode": "inverse",
+      "attenduReussi": false,
+      "reussi": false,
+      "controleConforme": true,
+      "synthese": {
+        "groupes": 4,
+        "intervalles": 8,
+        "conformes": 0,
+        "nonConformes": 8,
+        "insuffisants": 0,
+        "appariements": 1820,
+        "mesuresHorsCentre": 1062
+      },
+      "intervalles": [
+        {
+          "groupe": "trajet-cockpit-300-film",
+          "intervalleImages": [
+            12,
+            48
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 16,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-film",
+          "intervalleImages": [
+            48,
+            108
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 21,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles",
+          "intervalleImages": [
+            12,
+            48
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 40,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles",
+          "intervalleImages": [
+            48,
+            108
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 54,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles-fines",
+          "intervalleImages": [
+            12,
+            48
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 268,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles-fines",
+          "intervalleImages": [
+            48,
+            108
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 354,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles-moyennes",
+          "intervalleImages": [
+            12,
+            48
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 141,
+          "conformes": 0
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles-moyennes",
+          "intervalleImages": [
+            48,
+            108
+          ],
+          "statut": "non_conforme",
+          "mesuresHorsCentre": 168,
+          "conformes": 0
+        }
+      ]
+    },
+    {
+      "mode": "sans_transport",
+      "attenduReussi": true,
+      "reussi": true,
+      "controleConforme": true,
+      "synthese": {
+        "groupes": 4,
+        "intervalles": 8,
+        "conformes": 8,
+        "nonConformes": 0,
+        "insuffisants": 0,
+        "appariements": 1800,
+        "mesuresHorsCentre": 999
+      },
+      "intervalles": [
+        {
+          "groupe": "trajet-cockpit-300-film",
+          "intervalleImages": [
+            12,
+            48
+          ],
+          "statut": "conforme",
+          "mesuresHorsCentre": 19,
+          "conformes": 19
+        },
+        {
+          "groupe": "trajet-cockpit-300-film",
+          "intervalleImages": [
+            48,
+            108
+          ],
+          "statut": "conforme",
+          "mesuresHorsCentre": 12,
+          "conformes": 12
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles",
+          "intervalleImages": [
+            12,
+            48
+          ],
+          "statut": "conforme",
+          "mesuresHorsCentre": 51,
+          "conformes": 51
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles",
+          "intervalleImages": [
+            48,
+            108
+          ],
+          "statut": "conforme",
+          "mesuresHorsCentre": 29,
+          "conformes": 29
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles-fines",
+          "intervalleImages": [
+            12,
+            48
+          ],
+          "statut": "conforme",
+          "mesuresHorsCentre": 345,
+          "conformes": 345
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles-fines",
+          "intervalleImages": [
+            48,
+            108
+          ],
+          "statut": "conforme",
+          "mesuresHorsCentre": 254,
+          "conformes": 254
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles-moyennes",
+          "intervalleImages": [
+            12,
+            48
+          ],
+          "statut": "conforme",
+          "mesuresHorsCentre": 158,
+          "conformes": 158
+        },
+        {
+          "groupe": "trajet-cockpit-300-perles-moyennes",
+          "intervalleImages": [
+            48,
+            108
+          ],
+          "statut": "conforme",
+          "mesuresHorsCentre": 131,
+          "conformes": 131
+        }
+      ],
+      "mesuresIdentiquesSansTransport": true
+    }
+  ]
+}

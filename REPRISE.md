@@ -17,7 +17,8 @@ SHA-256 `60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2`.
 Repli de vitesse hors PhysX corrigé : déplacement entre poses physiques au pas fixe,
 sans confondre tangage visuel et montée ; 18 contrôles d’intégration conformes.
 Les 112 contrôles CPU gardent leurs sources exactes et leur attribution antérieure.
-**Main jouable reste 0.2.66** ; campagne générale et images du jeu final à qualifier.
+**Main jouable reste 0.2.66**. Campagne générale exacte réussie : **160/160 suites
+Node et 8/8 tests Python**, run `44761148529`. Images en cours de clôture.
 
 [PR #39](https://github.com/M4D135/bitume/pull/39), checkpoint 0.2.68 publié `da4ac263`
 après le candidat initial 0.2.67 `a8a2369`.
@@ -27,10 +28,16 @@ Suivi des motifs dans les PNG : **24/24 intervalles conformes, 2 076 mesures**,
 sans utiliser le transport prédit pour identifier les perles/nappes. Huit tests
 de régression passent ; les images répétées, opacité seule et trajectoires
 inversées sont refusées. L’ancien faux positif et les insuffisances sont conservés.
-Prochaine étape : campagne générale et captures exactes par CI (Chromium local bloqué).
+Démo : **48/48 PNG inspectés**, 16/16 rapports conformes. Complément portrait et
+duo de caméras différentes : **9/9 PNG inspectés**, run `44762219230` réussi,
+HTML inchangé. Les groupes météo et couverts restants terminent leur campagne.
+Un démarrage Chromium de `cimes-rocher` a échoué avant chargement du jeu :
+échec conservé, reprise de ce seul job à effectuer après la fin de sa campagne.
+Prochaine étape : terminer ces images exactes, puis fusionner PR39 qualifiée.
 
 Le [plan habitacle/pilote](docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md)
-reste préparé à H0/B0 : habitacle unique, assise plus basse et dégagement bras/buste.
+avance séparément : géométrie métrique commune et cavité réelle préparées ;
+assise/bras et cadrage depuis les yeux réels restent à qualifier avant intégration.
 
 ## Preuves et autres travaux
 
@@ -42,5 +49,5 @@ reste préparé à H0/B0 : habitacle unique, assise plus basse et dégagement br
 
 [Publication de consolidation](docs/reprise/rapports/CONSOLIDATION-2026-11-20/PUBLICATION.json) ·
 [Préparations](docs/reprise/preparations/README.md) ·
-[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **019**.
+[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **020**.
 Lecture minimale : ce fichier, `ETAT.json` → `etat_courant`, puis la seule fiche active.

@@ -1,0 +1,616 @@
+{
+  "format": "bitume-revue-demo-0268-v1",
+  "date": "2026-11-20T15:34:20.106027+00:00",
+  "run": 44761148653,
+  "decision": "Intégration visuelle démo 0.2.68 examinée favorablement dans les scénarios capturés ; réserves conservées. Aucun accord de fusion ou publication.",
+  "source": {
+    "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+    "tree": "b84d8553d1a53de3258a56e2036b8b16669723f5",
+    "candidate": {
+      "version": "0.2.68",
+      "sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+      "octets": 14383155
+    },
+    "reference": {
+      "version": "0.2.62",
+      "commit": "f41614e1f3887a79ebbd633df3fde754534f202e",
+      "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+      "octets": 14268457
+    },
+    "treeEvidence": {
+      "mode": "API GitHub commit consultée par agent root",
+      "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "tree": "b84d8553d1a53de3258a56e2036b8b16669723f5",
+      "parentsPrefixes": [
+        "092a00b",
+        "3daefb7"
+      ],
+      "locale": "7 TREE.txt concordants ; objet git absent du clone inspecteur"
+    }
+  },
+  "comptes": {
+    "artefacts": 7,
+    "rapportsCampagne": 7,
+    "rapportsScene": 16,
+    "images": 48,
+    "apres": 36,
+    "avant": 12,
+    "inspectees": 48,
+    "imagesPleineResolution": 18,
+    "erreursVerification": 0
+  },
+  "identites": [
+    {
+      "artifact": "bitume-demo-pluie-aerien-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "tree": "b84d8553d1a53de3258a56e2036b8b16669723f5",
+      "sha256s": {
+        "dist/bitume.html": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+        "qualification/reference-0262.html": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297"
+      }
+    },
+    {
+      "artifact": "bitume-demo-pluie-poursuite-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "tree": "b84d8553d1a53de3258a56e2036b8b16669723f5",
+      "sha256s": {
+        "dist/bitume.html": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+        "qualification/reference-0262.html": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297"
+      }
+    },
+    {
+      "artifact": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "tree": "b84d8553d1a53de3258a56e2036b8b16669723f5",
+      "sha256s": {
+        "dist/bitume.html": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+        "qualification/reference-0262.html": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297"
+      }
+    },
+    {
+      "artifact": "bitume-demo-pluie-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "tree": "b84d8553d1a53de3258a56e2036b8b16669723f5",
+      "sha256s": {
+        "dist/bitume.html": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+        "qualification/reference-0262.html": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297"
+      }
+    },
+    {
+      "artifact": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "tree": "b84d8553d1a53de3258a56e2036b8b16669723f5",
+      "sha256s": {
+        "dist/bitume.html": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+        "qualification/reference-0262.html": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297"
+      }
+    },
+    {
+      "artifact": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "tree": "b84d8553d1a53de3258a56e2036b8b16669723f5",
+      "sha256s": {
+        "dist/bitume.html": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+        "qualification/reference-0262.html": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297"
+      }
+    },
+    {
+      "artifact": "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "commit": "4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "tree": "b84d8553d1a53de3258a56e2036b8b16669723f5",
+      "sha256s": {
+        "dist/bitume.html": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+        "qualification/reference-0262.html": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297"
+      }
+    }
+  ],
+  "archives": [
+    {
+      "artifact": "bitume-demo-pluie-aerien-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "id": 14642241540,
+      "digestExpected": "sha256:9ab3986f46d971886ed829a766af90a55c59b46d02b7eb46597b135106e40916",
+      "digestActual": "sha256:9ab3986f46d971886ed829a766af90a55c59b46d02b7eb46597b135106e40916",
+      "digestMatches": true,
+      "extractedDifferences": [],
+      "pngs": 3
+    },
+    {
+      "artifact": "bitume-demo-pluie-poursuite-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "id": 14641966082,
+      "digestExpected": "sha256:1bf170d3ff51c3e9aa9ccb18b756f0d13ab8ede65419a132c48cbbf00290b5ae",
+      "digestActual": "sha256:1bf170d3ff51c3e9aa9ccb18b756f0d13ab8ede65419a132c48cbbf00290b5ae",
+      "digestMatches": true,
+      "extractedDifferences": [],
+      "pngs": 3
+    },
+    {
+      "artifact": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "id": 14641885836,
+      "digestExpected": "sha256:bd462623aa3580700d2ba3079c9c20e9d8c79b17aa893ff17107fe38e6943c6f",
+      "digestActual": "sha256:bd462623aa3580700d2ba3079c9c20e9d8c79b17aa893ff17107fe38e6943c6f",
+      "digestMatches": true,
+      "extractedDifferences": [],
+      "pngs": 12
+    },
+    {
+      "artifact": "bitume-demo-pluie-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "id": 14641456857,
+      "digestExpected": "sha256:831e7c6892d7a40de5b8400a626c3bd76db39e229e6abc3877a0ae4e7f628f69",
+      "digestActual": "sha256:831e7c6892d7a40de5b8400a626c3bd76db39e229e6abc3877a0ae4e7f628f69",
+      "digestMatches": true,
+      "extractedDifferences": [],
+      "pngs": 3
+    },
+    {
+      "artifact": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "id": 14641306808,
+      "digestExpected": "sha256:08b35a8f0cf408280a347fd9b508836ed4630f6328aa4fb782969b4d0a39f647",
+      "digestActual": "sha256:08b35a8f0cf408280a347fd9b508836ed4630f6328aa4fb782969b4d0a39f647",
+      "digestMatches": true,
+      "extractedDifferences": [],
+      "pngs": 9
+    },
+    {
+      "artifact": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "id": 14641089230,
+      "digestExpected": "sha256:8329365356ff7ea348124c696b3ddf3fa3375c30cd82af4b364040e22c52a464",
+      "digestActual": "sha256:8329365356ff7ea348124c696b3ddf3fa3375c30cd82af4b364040e22c52a464",
+      "digestMatches": true,
+      "extractedDifferences": [],
+      "pngs": 12
+    },
+    {
+      "artifact": "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d",
+      "id": 14639873469,
+      "digestExpected": "sha256:a4f6bb0b085816af99ae048f1fff929fb43d5d77ed92f68ca0b80f24f0d5ed46",
+      "digestActual": "sha256:a4f6bb0b085816af99ae048f1fff929fb43d5d77ed92f68ca0b80f24f0d5ed46",
+      "digestMatches": true,
+      "extractedDifferences": [],
+      "pngs": 6
+    }
+  ],
+  "verificationRapportsSHA256": "00dd9368ec3629d729450b476692b9478f638821b9de4e972b67280a69d485be",
+  "scenes": [
+    {
+      "variante": "apres",
+      "scenario": "pluie-aerien",
+      "rapport": "bitume-demo-pluie-aerien-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-aerien/rapport.json",
+      "rapportSHA256": "bb96136bf07b4fb6eb99bdd54c58db5c49155da9be541cc667204b9fb291183f",
+      "observationVisuelle": "Vraie vue hélicoptère sur piste dégagée ; traînées de pluie monde et panache visibles, aucune goutte de lentille.",
+      "images": [
+        {
+          "fichier": "bitume-demo-pluie-aerien-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-aerien/0000.png",
+          "sha256": "f92bb7e15c6919472bb3ee40ce9d06d296ab9341f23f519eb0f6e2b50d9fd15d",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540"
+        },
+        {
+          "fichier": "bitume-demo-pluie-aerien-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-aerien/0001.png",
+          "sha256": "4fe7aaa6dbb9bef1b5a99403d40a1334fbf6bcdb91e68bf628ec7a22bf5375a2",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540"
+        },
+        {
+          "fichier": "bitume-demo-pluie-aerien-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-aerien/0002.png",
+          "sha256": "c360153a2c48271a2ce49511252326e8ee56b7e17fe4b674d96dec9548ad3be7",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540"
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "pluie-poursuite-sillage",
+      "rapport": "bitume-demo-pluie-poursuite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-poursuite-sillage/rapport.json",
+      "rapportSHA256": "346a10999141b64fc3ec7cfddbe9ffaec7ef2f04409e1956ef88db7ee86fccf5",
+      "observationVisuelle": "Gouttes sur la lentille et panache du rival présents ; voiture suivie et route lisibles, trois images sans rupture de composition.",
+      "images": [
+        {
+          "fichier": "bitume-demo-pluie-poursuite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-poursuite-sillage/0000.png",
+          "sha256": "b4023b24bb5f7f44d6df495e825fc752feb84449a5899750bdf1c2b5d13ef0e6",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540"
+        },
+        {
+          "fichier": "bitume-demo-pluie-poursuite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-poursuite-sillage/0001.png",
+          "sha256": "8335d96ba23828cf3621b54363b613cd7bbc4ff10b222ef429f384844e4e974d",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540"
+        },
+        {
+          "fichier": "bitume-demo-pluie-poursuite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-poursuite-sillage/0002.png",
+          "sha256": "8f7be635593b3c88b60afdf36e0dff354eb507ceb3732f889e27fa5178bf421c",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540"
+        }
+      ]
+    },
+    {
+      "variante": "avant",
+      "scenario": "faune-ete",
+      "rapport": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/faune-ete/rapport.json",
+      "rapportSHA256": "c1a86d834b72e4115bfd66fe70e275a13e4cb9b3bb5ca86bbc1a51468ae024b9",
+      "observationVisuelle": "Bouquetins petits dans un plan large ; terrain clair strié, HUD dégagé.",
+      "images": [
+        {
+          "fichier": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/faune-ete/0000.png",
+          "sha256": "53b508a8fc65ffb0ede59914be7d28699c6cfb60170cb0bfd5949c76d61b8b43",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/faune-ete/0001.png",
+          "sha256": "a3bb22b9a8c78c921d05be25daafe5bfd4a44c49303fdca7d3df3ec1ea56e6e4",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/faune-ete/0002.png",
+          "sha256": "e834a4ee4a354d227188a9bbb0996af081cca35b60f7b43b7a96fb99782ca1f6",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        }
+      ]
+    },
+    {
+      "variante": "avant",
+      "scenario": "faune-hiver",
+      "rapport": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/faune-hiver/rapport.json",
+      "rapportSHA256": "b04fa1d08229bfbca405e48491227b162446ce8d5ab4cc439e4a28f1761572f2",
+      "observationVisuelle": "Bouquetins petits dans un plan large ; manteaux sombres discernables.",
+      "images": [
+        {
+          "fichier": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/faune-hiver/0000.png",
+          "sha256": "7697691e5ef60dc11500de480da68af6cdfdb5420eb261c4d4b57d152d5e13d2",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/faune-hiver/0001.png",
+          "sha256": "bee2683893a63269b7b4cc52c42173ed6fa176b982be8f880c19a5890c108e0b",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/faune-hiver/0002.png",
+          "sha256": "b360d3612aace87f1b0c030f17d2d79bf83d2532b2b1f28af3d46139a2e08774",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "faune-ete",
+      "rapport": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/faune-ete/rapport.json",
+      "rapportSHA256": "9f990e9ca3b7a2d32226f0937c64c8007e60796cc1eee42e5748705b7515913e",
+      "observationVisuelle": "Bouquetins beaucoup plus lisibles et posés sur la pente ; HUD démo chevauche le haut du sujet le plus éloigné.",
+      "images": [
+        {
+          "fichier": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/faune-ete/0000.png",
+          "sha256": "17153011e3b8c6dd3eb06844adcaa10651693ddf7ae05fc0e37eb2baf0aa6817",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/faune-ete/0001.png",
+          "sha256": "7cab607859637461a78fee123a979becf013882a7f2447401310ccb8d143ccc0",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/faune-ete/0002.png",
+          "sha256": "ef545d7e937ce8f1773d143bd78ddcc9f2017088c9f59a609fde731b46b26dd0",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "faune-hiver",
+      "rapport": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/faune-hiver/rapport.json",
+      "rapportSHA256": "99f3dbe6f3c61f6ebc8d6689a4bba838cfd87c329f9cb8ba299bc724c0553c73",
+      "observationVisuelle": "Groupe et silhouettes lisibles, appuis visuels sur pente ; manteaux sombres distincts de la variante été.",
+      "images": [
+        {
+          "fichier": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/faune-hiver/0000.png",
+          "sha256": "fb16697e7870553fbd36b0c79378c1168fbafa10cef8f575cc749413aa4efa98",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/faune-hiver/0001.png",
+          "sha256": "17f512c20115d39981f4ec26149a50d1ab44008b1343bb59540e3213ff4520fd",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-nature-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/faune-hiver/0002.png",
+          "sha256": "1a98284e3ccc25e4deed1b827d13148518d5868b3ec09e7668c7b82dec83fd3f",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "pluie-cockpit",
+      "rapport": "bitume-demo-pluie-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-cockpit/rapport.json",
+      "rapportSHA256": "c1b47087c95e43a7606a359640aae8d7b81f3c6a04836ba4e400ec4ff3f5d8b3",
+      "observationVisuelle": "Gouttes de lentille, cockpit et rival dans le panache composés ensemble ; forte brume mais instrument 235 et scène reconnaissables, aucun écran noir ni joint visible.",
+      "images": [
+        {
+          "fichier": "bitume-demo-pluie-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-cockpit/0000.png",
+          "sha256": "47a8eb70a426cfdd45815b77dd82df34d062386ca93b00e23b085b5603ee71b1",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540"
+        },
+        {
+          "fichier": "bitume-demo-pluie-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-cockpit/0001.png",
+          "sha256": "266e6cff9ba3c45f4c50fc8b7fd5f53aa339e9146a09da1d4bc55553fe29ab99",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540"
+        },
+        {
+          "fichier": "bitume-demo-pluie-cockpit-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/pluie-cockpit/0002.png",
+          "sha256": "191e4c9582fcc261d81d5c529daec28c977d4c5d82dc26fb2e92951baab37d86",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540"
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "geste-majeur",
+      "rapport": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-majeur/rapport.json",
+      "rapportSHA256": "6902c03d168cae68587be284fe52d7911d8523228b97d8b1514f8d105d07dd9d",
+      "observationVisuelle": "Main levée et doigt distinct à pleine résolution ; avant-bras et buste visibles, haut casque/doigt proche du bandeau démo.",
+      "images": [
+        {
+          "fichier": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-majeur/0000.png",
+          "sha256": "a2c2b2c1273edded93320bb3c0575e259c32b42fe01bfa5313b6676abe40deb4",
+          "inspectee": true,
+          "methode": "planche 480×270 par image + pleine résolution 960×540"
+        },
+        {
+          "fichier": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-majeur/0001.png",
+          "sha256": "d7d2a8637730239520dfe456d2bdb081a84fe58516408d8ea685ff73627a1bdb",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-majeur/0002.png",
+          "sha256": "9a21d9a4988929c1d401cc58248edac0fcb5befea413a6f86acd24c9e94cf9ff",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "geste-poing",
+      "rapport": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-poing/rapport.json",
+      "rapportSHA256": "45cfcf6e8a5dc876e6203844006a64b1b4ad7b78f8a157ac85bfd5d90151bc79",
+      "observationVisuelle": "Poing fermé levé distinct à pleine résolution ; raccord du membre au buste reste à qualifier avec H1+B2.",
+      "images": [
+        {
+          "fichier": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-poing/0000.png",
+          "sha256": "1fc535e2ec01ed8a6121bf7cd07bc615b07fded4fdabf46408cd72e288e773ae",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-poing/0001.png",
+          "sha256": "4b58efe1606c770757fc3d10497ac1d152eeef9fe8412d8781746b767c85e217",
+          "inspectee": true,
+          "methode": "planche 480×270 par image + pleine résolution 960×540"
+        },
+        {
+          "fichier": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-poing/0002.png",
+          "sha256": "014c30d89521aae1616a8641de03873f97d31371fa2b11829697dd9ff073ef90",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "geste-salut-realisateur",
+      "rapport": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-salut-realisateur/rapport.json",
+      "rapportSHA256": "60f172106781047ce9504aa0253d7cc69c8e99fc5eaae2e851221e7ad1d79a22",
+      "observationVisuelle": "Paume ouverte et doigts distincts ; cadrage auprès du pilote effectivement obtenu, haut des doigts chevauché par le bandeau.",
+      "images": [
+        {
+          "fichier": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-salut-realisateur/0000.png",
+          "sha256": "1ec8e27ec8d289bfb2f6091245676a3d128243a1851157ca87eeb94fcc57a0fa",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-salut-realisateur/0001.png",
+          "sha256": "8488f6d85153760584999e7df5e97eb129a9adcbfde3fad90070b5b932029eb6",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-gestes-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/geste-salut-realisateur/0002.png",
+          "sha256": "bd43abff70dd029b5a8dd279570b3aaf350d7d1830f559c60b0ea49b05fb96e3",
+          "inspectee": true,
+          "methode": "planche 480×270 par image + pleine résolution 960×540"
+        }
+      ]
+    },
+    {
+      "variante": "avant",
+      "scenario": "tele-montagne",
+      "rapport": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/tele-montagne/rapport.json",
+      "rapportSHA256": "7391646c790d4e19a80e5670457df7851006fd4124b66c6a4a8743eb92322258",
+      "observationVisuelle": "Vue bouchée par une surface proche, voiture et route absentes.",
+      "images": [
+        {
+          "fichier": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/tele-montagne/0000.png",
+          "sha256": "cba323e0fceefb957b96abd8ac18890d831c5e008eecc6a4e6b22192b320deb2",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/tele-montagne/0001.png",
+          "sha256": "1ee63e0673ea327580e0b961fb21e1d030b08a9c0bd0e2c396ffd8def9ddabec",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/tele-montagne/0002.png",
+          "sha256": "7c5218e9426ddc143843114441bc20c91cf188fd76866341ec70a3d8564b092e",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        }
+      ]
+    },
+    {
+      "variante": "avant",
+      "scenario": "helico-montagne",
+      "rapport": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/helico-montagne/rapport.json",
+      "rapportSHA256": "2d3607b09ace7e71279f4f4db03d2a74b80935ee413aa1ae6fa37059efd8d8d7",
+      "observationVisuelle": "Vue bouchée par le relief ; pas de voiture ni de route lisible.",
+      "images": [
+        {
+          "fichier": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/helico-montagne/0000.png",
+          "sha256": "006cc0df72b8fc89378ebeecb12d456a8f300b77b09b84a9362a90f843b548d5",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/helico-montagne/0001.png",
+          "sha256": "2535dbcd6872d79759e9b646d56073a5560b508e7fd5486fd2753fd3ba599e35",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/avant/helico-montagne/0002.png",
+          "sha256": "227b8f8f4280069d9bd0eb4814b59c647a2f7c8b96356ad13d1416765d209ddb",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "tele-montagne",
+      "rapport": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/tele-montagne/rapport.json",
+      "rapportSHA256": "45a7534942fca81f4bef7cb87d10c20337e815ce12f4a0fe17570a6448c0e10b",
+      "observationVisuelle": "Poursuite dégagée, voiture entière et piste lisibles sur les trois images.",
+      "images": [
+        {
+          "fichier": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/tele-montagne/0000.png",
+          "sha256": "a55d43a6ae3401af90662113df2708b653026fec31f112a81c4ace3c18c5de9b",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/tele-montagne/0001.png",
+          "sha256": "2468911e4113ea4ff5dae14b93ad39875958cae49d67a2cd92053a031d716e5b",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/tele-montagne/0002.png",
+          "sha256": "ea5c92dddb2dc7ac3c1239cacbae36a2a7961567615515ace39e2d5daca9e860",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "helico-montagne",
+      "rapport": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/helico-montagne/rapport.json",
+      "rapportSHA256": "ee607b0fcfbf8afce84809f83252606062b858461103f6be107acd9f30bedac0",
+      "observationVisuelle": "Poursuite dégagée, voiture entière et piste lisibles sur les trois images ; arrière-plan rocheux facetté.",
+      "images": [
+        {
+          "fichier": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/helico-montagne/0000.png",
+          "sha256": "594a0360016b42d6e520b0e603bd59988bb896312060a710d0c4ad3cc68a4ca9",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/helico-montagne/0001.png",
+          "sha256": "ed42d404fc529aba8302e0cd87f3104c0f6d526ed92845c7a6f96f48f7785c93",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        },
+        {
+          "fichier": "bitume-demo-securite-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/helico-montagne/0002.png",
+          "sha256": "f46771a0c8b9841ff964439853cd3c0a72924901a532a50873bfa7cbdf706639",
+          "inspectee": true,
+          "methode": "planche 480×270 par image"
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "volant-gauche",
+      "rapport": "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/volant-gauche/rapport.json",
+      "rapportSHA256": "817b34d6b45d7fe0be939d164f8d0c45746ae6b2c74ebef99ea2523e2f3cc507",
+      "observationVisuelle": "Jante extérieure, gants et pose de braquage visibles sur les trois images ; réserves d’assise et anatomie conservées.",
+      "images": [
+        {
+          "fichier": "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/volant-gauche/0000.png",
+          "sha256": "8ff5d55ec5d63f6bd75073b5aca3a8ebe5053f2f982b7253ff29a3a7b373c03b",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540"
+        },
+        {
+          "fichier": "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/volant-gauche/0001.png",
+          "sha256": "dfff32a8922377a572e1cacd1e92c9d65a8082653f84170eff7a502a790cfc40",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540"
+        },
+        {
+          "fichier": "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/volant-gauche/0002.png",
+          "sha256": "a9d28594e4262688644cbe4306f32f95144032638a372b6f9f12061f8fd16927",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540"
+        }
+      ]
+    },
+    {
+      "variante": "apres",
+      "scenario": "volant-droite",
+      "rapport": "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/volant-droite/rapport.json",
+      "rapportSHA256": "0071baeca98bad4f4843ba5c74e8b6ce869b2569f4711a61ceb9b9b188060a1f",
+      "observationVisuelle": "Pose de mains/volant différente du braquage gauche, jante visible sur les trois images ; réserves bras-buste conservées.",
+      "images": [
+        {
+          "fichier": "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/volant-droite/0000.png",
+          "sha256": "f401e754ba88a8b6dd4925465bac25dcb8283b451ad9485b1b4c29a12568a3d0",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540"
+        },
+        {
+          "fichier": "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/volant-droite/0001.png",
+          "sha256": "f377294c42e7dcdc97dc15b27f514940fa501f17e07ffc361008d67c32cf4ba2",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540"
+        },
+        {
+          "fichier": "bitume-demo-volant-4343db0e812b81c22ac79dd801d6f5328405c33d/files/visuel-demo/apres/volant-droite/0002.png",
+          "sha256": "d7b63bdb81a3508723a90850085710fc0344e4e1e6de52db8284c0233f9cf899",
+          "inspectee": true,
+          "methode": "pleine résolution 960×540"
+        }
+      ]
+    }
+  ],
+  "limites": [
+    "Images figées sur poses prescrites ; aucune qualification de conduite, collision ou FPS matériel.",
+    "Raster logiciel SwiftShader, 960×540, DPR 1 ; l’indication 10 FPS à l’écran ne mesure pas le débit matériel.",
+    "Les directions de ruissellement ne sont pas déduites des captures ; elles relèvent des mesures natives distinctes.",
+    "La référence avant est 0.2.62, pas 0.2.66.",
+    "Géométrie habitacle et raccords pilote/bras/buste/assise non clos : H1+B2 conserve sa qualification propre.",
+    "HUD démo chevauche le haut du casque et certains doigts dans les plans pilote ; visibilité des gestes confirmée mais cadrage perfectible.",
+    "Provenance commit/tree concordante dans les sept archives et attribution arbre confirmée via API GitHub côté root ; objet git 4343db0 absent du clone inspecteur, arbre non recalculé localement. Les HTML 0.2.68 local et 0.2.62 extrait du commit f41614e ont été hachés séparément et concordent."
+  ]
+}

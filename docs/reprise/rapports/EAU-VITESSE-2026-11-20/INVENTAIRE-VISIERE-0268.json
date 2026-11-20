@@ -1,0 +1,569 @@
+{
+  "format": "bitume-visiere-inventaire-1",
+  "description": "Chemins relatifs au dossier de preuves. PNG originaux et premier rapport rouge conservés ; aucune nouvelle rasterisation pendant la réanalyse.",
+  "fichiers": [
+    {
+      "chemin": "shader-egl-verdict-01/depots-sans-film-overlay.png",
+      "octets": 20857,
+      "sha256": "8effdd1f578eb67cb3214e8de86775b6b94f552bcd979efe3e82ec1fe7c083ec"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/depots-sans-film.png",
+      "octets": 19217,
+      "sha256": "a4ecc3ada4298a11a31abdefd3f270201af13163d3fde8d2ce3cd4c9454f61db"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/etats.json",
+      "octets": 261915,
+      "sha256": "e46e52142646266989c482b85adb2d329b5a820ffed54bf27d89f9b8484f1a8b"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/grille-pluie-overlay.png",
+      "octets": 529215,
+      "sha256": "f664d610a25e9287944548dd3ad33122e1c141bf9b4e1ff2b85f8a0d1ec508e8"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/grille-pluie.png",
+      "octets": 301823,
+      "sha256": "c62ec680981fb9bec1a6b28256513664ee9d00ec869a8f149f6b029c3acd7c64"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/legere-overlay.png",
+      "octets": 317943,
+      "sha256": "2fa484f5128639875c33ce40eade7a538900dd3d66a6bc034c79becf6b4fefa1"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/legere.png",
+      "octets": 170507,
+      "sha256": "375d5ae4a484d523906ca7f748df45ae45208e4a5ff0326b68319b131dbd1f27"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/neige45-overlay.png",
+      "octets": 428534,
+      "sha256": "dd98090ad83a7021dd8a770e1c12e085ba1e21c9affd4b63d6b262b9ff6d90ff"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/neige45.png",
+      "octets": 326071,
+      "sha256": "ff6d4ec656efa54edc0d72e428ddbcb7b458201dead517f9f1216a4e9836b67e"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/pluie235-overlay.png",
+      "octets": 233954,
+      "sha256": "3dbed72139e1568be403585ae30a28efaf96697a679995b5f49cf264be974d83"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/pluie235.png",
+      "octets": 104978,
+      "sha256": "8d207fe8497638fd108f44c492a6fb9d4f8b4b6b62ee80fd11116b3bf2d8d856"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/pluie300-overlay.png",
+      "octets": 180325,
+      "sha256": "bc7a487ce5537771ecf4173ccddc85e9ae4a59b4ef6c7d52c3430eb75770053b"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/pluie300.png",
+      "octets": 91737,
+      "sha256": "69a094073f6289aecf3207b1997875e968595ec934b81d65668e457cf1c09481"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/rapport.json",
+      "octets": 23944,
+      "sha256": "f524795d25478bc7d2925fde3243bdcddc5d86e6f46fef7548ba1012934815a4"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/sec-overlay.png",
+      "octets": 2090,
+      "sha256": "999360eebbd725d06fa9d4f36424f077ccc8c347d567988a614e96b66e105321"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/sec.png",
+      "octets": 7696,
+      "sha256": "a36a5cf24aaa48e012905a51a7de5ee47ba46d42b809e6b7af882eb06531d931"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/sillage235-overlay.png",
+      "octets": 526681,
+      "sha256": "b8b9dbc9182f76dcfde171f6c062f830b73e3690c29eb22dd0259d391e79cc14"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/sillage235.png",
+      "octets": 344595,
+      "sha256": "5ac37d57be87a1481a7fba913b981b3b3401e7260fe1ac968d0b4a69838cd666"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/sillage300-overlay.png",
+      "octets": 530402,
+      "sha256": "4ce38fde8cfd71d8eda4570d5bc4f3c10ff4b691bd68a34f997ccc51bc6e9cb6"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/sillage300-pause-overlay.png",
+      "octets": 530402,
+      "sha256": "4ce38fde8cfd71d8eda4570d5bc4f3c10ff4b691bd68a34f997ccc51bc6e9cb6"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/sillage300-pause.png",
+      "octets": 352433,
+      "sha256": "f3097d13e98ad25af8fe266f9a358c7c90843519c66728bc90c67411e065a1ca"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/sillage300-poursuite-overlay.png",
+      "octets": 506967,
+      "sha256": "203cc2160d56057f9a67f5b8215366f6c60a26fd33b3760705aaa2c3b253695a"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/sillage300-poursuite.png",
+      "octets": 293419,
+      "sha256": "4d006889ef04add2a4124c01ece9832eb3bc77faff65ff4fbc246ef454d9e685"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/sillage300.png",
+      "octets": 352433,
+      "sha256": "f3097d13e98ad25af8fe266f9a358c7c90843519c66728bc90c67411e065a1ca"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/sources/qualifier-visiere-egl.py",
+      "octets": 13465,
+      "sha256": "cf017021a7d4ad786db03f8db71490f70f0f5f12fe0ccf1be5382174e532a1ee"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/sources/visiere-optique.js",
+      "octets": 31259,
+      "sha256": "f503d993c797092a6d798add41cc739226ac75bba7905896431348f9ebe98e7a"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/sources/visiere-png.py",
+      "octets": 17992,
+      "sha256": "2d6a574b6d8c8c0a431e99174ef99f7d464f2b894fc84f94fc43ca9ac5e1b0c2"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/sources/vitre.js",
+      "octets": 26590,
+      "sha256": "f9935386db7010277dc1199e6c969af4282ec3dbc139425eaae8d71868bf27be"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajectoires-png.json",
+      "octets": 624470,
+      "sha256": "41f4177ce524a6be054b86ad470b59467ca25241d9a8904c4eb899756828ecb0"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-0-film-108-overlay.png",
+      "octets": 60653,
+      "sha256": "73e8eb0046b8886baf70404515e7153562a22d7d1851a9dfbefe5651d2ee3db3"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-0-film-108.png",
+      "octets": 54648,
+      "sha256": "cb45c8d489a4e07df1924e51d4ce73e67dc8447d03a1647b06db8d45f602e8c1"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-0-film-12-overlay.png",
+      "octets": 60208,
+      "sha256": "15d2f42ef46787262e2f6036d01d875d3e72c922d9c1edc6f955109adb427454"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-0-film-12.png",
+      "octets": 55066,
+      "sha256": "8b08476f1c1fefa5908500b969a91fdf8655e1127ed1a79561a04f440381ddf8"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-0-film-48-overlay.png",
+      "octets": 60331,
+      "sha256": "df57a6c3d8191f5c0100d5686e3b986c77c9476d255bc9b2437099bcd9bf3fa3"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-0-film-48.png",
+      "octets": 54901,
+      "sha256": "6ae476a6519a5d3117aad84f0e0ecf1ea25fee51cd5be356f8f795e29d1193f8"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-0-perles-108-overlay.png",
+      "octets": 108602,
+      "sha256": "206b2ffa67857ad3df27fcf7b8cf93d2ff560a2656a307ebd3a9bc08be96854c"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-0-perles-108.png",
+      "octets": 75087,
+      "sha256": "83156bbb7a34295c342aab833ca42033ee9a4ca94e973292f04e9e1d2c56e133"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-0-perles-12-overlay.png",
+      "octets": 97241,
+      "sha256": "5aeb8a2f98cb22c33f77c2a1669738a7f28f37e20c5d6a5cf4e1709eae2fcc9d"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-0-perles-12.png",
+      "octets": 71718,
+      "sha256": "7d68f99c7b5e31688af9a6d073a236d2f17d5293f3d6cba72447fba844647dde"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-0-perles-48-overlay.png",
+      "octets": 107073,
+      "sha256": "27160fbd637b3bedcab1dfd96a89ffbb95c359707901bc7a438731eacb49a941"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-0-perles-48.png",
+      "octets": 74766,
+      "sha256": "6d29b805ab674238c9882c2a64e584239f865417581323e0a582c77c9fa62066"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-film-108-overlay.png",
+      "octets": 26836,
+      "sha256": "ce423caee027b24641c88941590ca199a3913cef24934c4a92d2e206c4484a34"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-film-108.png",
+      "octets": 27991,
+      "sha256": "0c2dcff53a24d044712cabfa810c6b396442d93071f3059d9fe877a71d68698a"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-film-12-overlay.png",
+      "octets": 54674,
+      "sha256": "05192d287a4c4241c200652e3f934a9316360ab9da864cc7f0cb52ca6f079956"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-film-12.png",
+      "octets": 50474,
+      "sha256": "d3f9df2592e1c0c9df69c18b6c8a0653635dac4e325bbc6ad06dac99e7c1d278"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-film-48-overlay.png",
+      "octets": 40538,
+      "sha256": "fbe3efe82fb17a36c8dd0947d075a290784f44f79cd3929d27ca9a51e5f62014"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-film-48.png",
+      "octets": 39502,
+      "sha256": "d7df9d982c47680ebac39cb3421928908806bfee1ce29d155cc7ef75507e3587"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-perles-108-overlay.png",
+      "octets": 66495,
+      "sha256": "6671db28ad8062bd9fd0c4371e780c2c681510a16f0c35eca6bd1045ba887a80"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-perles-108.png",
+      "octets": 47751,
+      "sha256": "3102a45c263b30f90c23ce7739c6b254991bc7440219f9715ec5ef3a21be08a6"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-perles-12-overlay.png",
+      "octets": 122977,
+      "sha256": "44083518d73ebd06d861a515df681fb2bc490570edccbad6d0043edcf193846c"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-perles-12.png",
+      "octets": 85979,
+      "sha256": "7976aa0e88fd3732f2fe93769c3be90b719b92c36f44894b724b49d0f26a37f0"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-perles-48-overlay.png",
+      "octets": 101696,
+      "sha256": "39d412dd6ac3e574a0025c6b3778bef92bfd2d06c8e1b840d144311bccb1250c"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-perles-48.png",
+      "octets": 70653,
+      "sha256": "316ba6e5f2a7198cbc7b332d465a19c756143b3b3b1fecce5c8779ea4b04d45d"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-perles-fines-108-overlay.png",
+      "octets": 203742,
+      "sha256": "10225629a86b474c3d66384cb16f8f4b59b4791b21cae92ec638c4c51183a69b"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-perles-fines-108.png",
+      "octets": 94851,
+      "sha256": "acf025f5a94a8db1865522174e5e3001162af76a583343b664e8166386482f81"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-perles-fines-12-overlay.png",
+      "octets": 263180,
+      "sha256": "eff989528b7db4a7fcff942bc6c0a8d43f1fc4169d9413802dce1d5e463f97b7"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-perles-fines-12.png",
+      "octets": 120872,
+      "sha256": "6a14bdb8d3dbd4d45881d71eab6aeff94a5ac1747d2b6a1ad488cb9d2719c4d7"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-perles-fines-48-overlay.png",
+      "octets": 239879,
+      "sha256": "83cd969077667d05d097e28a0c2e5e25c14e4b4bc6bfd16751ac4de6fca5e056"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-perles-fines-48.png",
+      "octets": 110829,
+      "sha256": "97744cf4fc2238aface1faeabd4121f7cf117693d7304ae0ea815e8d491e592f"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-perles-moyennes-108-overlay.png",
+      "octets": 121206,
+      "sha256": "20204f9c939bbb9ecc9dda4f2cb7880a8bb27f5983695e0099b9a09a08145e8f"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-perles-moyennes-108.png",
+      "octets": 68993,
+      "sha256": "ce5102846a1714f548533ac468ac975dc3fe07a666b5d3d34751402e2116ae10"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-perles-moyennes-12-overlay.png",
+      "octets": 166682,
+      "sha256": "ca9d7ce280116c0fc39d46e8e04f0beb77ec92562cc88a7c25da2f0aaf191f5a"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-perles-moyennes-12.png",
+      "octets": 91568,
+      "sha256": "c45f1bd583bc17d6305065f40b8bf24fd6ce6eabc9a28497d61fad698643a755"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-perles-moyennes-48-overlay.png",
+      "octets": 151975,
+      "sha256": "2738e3beebefca31e47a274fb91c6cb5b7eb2efde47b3268744b005d31c61933"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-cockpit-300-perles-moyennes-48.png",
+      "octets": 83661,
+      "sha256": "57b8e4d1861c9532ba36b073f3c363104686180e11321fccd14dd0f6f9bdfc81"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-0-film-108-overlay.png",
+      "octets": 60109,
+      "sha256": "52ad67fd2750991e98cc27e422877e11b772407d5f0471e59a32d93d8afcff7d"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-0-film-108.png",
+      "octets": 48810,
+      "sha256": "f4661a93cfc6defeea1f6b0e0bf78e979e37799ae0a276006d248a53bd5624cd"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-0-film-12-overlay.png",
+      "octets": 59693,
+      "sha256": "6cc7c09706991dc3594cfabb8ed859050f1ae3fa09e1f3fd9e8a725c65345b6a"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-0-film-12.png",
+      "octets": 49072,
+      "sha256": "260feb0cdf651ce388dbee78c69059209af6550a1b06fadaba8681a4862c8023"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-0-film-48-overlay.png",
+      "octets": 59776,
+      "sha256": "35cd86ddb050bcdccb99dcdeee358978a978c63e3fc1eaa9ce33653e0dec4fcb"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-0-film-48.png",
+      "octets": 49031,
+      "sha256": "cb914dabcddeee1b59e789e4dfd77ee506e3cd309871ed5edb6c442acf857bc8"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-0-perles-108-overlay.png",
+      "octets": 106262,
+      "sha256": "cddeeeddb4259e4f6d0d2dbfc983b72e385c259d09acfdfa724b9b86a193e856"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-0-perles-108.png",
+      "octets": 66927,
+      "sha256": "4594b640e1a04c18ae7c87fc98cf85e32ce690beef377885bfa2e528714915aa"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-0-perles-12-overlay.png",
+      "octets": 95384,
+      "sha256": "2dd3d601a59cca254acdf440414c3eefbc0da1c01d716ec3bde45d4d66114c04"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-0-perles-12.png",
+      "octets": 64305,
+      "sha256": "eb1df3bcd5c555480314d9c81d43e6d239b6f52f35da974ee309e5fc05bd10c5"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-0-perles-48-overlay.png",
+      "octets": 104861,
+      "sha256": "823766af43dda26e060a409257a6975432b9eb0a7dd5adcefb1b08543e2fd1c7"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-0-perles-48.png",
+      "octets": 66629,
+      "sha256": "fd97e6de49629ca1145052d63c3870b7c73363a905dc4bc566788c43b27a8575"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-film-108-overlay.png",
+      "octets": 26664,
+      "sha256": "28145e1f1c43ba49fc906b98eec8736c6334861d33303a22231dc9cd7565cb52"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-film-108.png",
+      "octets": 25390,
+      "sha256": "41927ee4092c62161f68c49e960117fd2cd1e9441faa9a643188b69d195e44fd"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-film-12-overlay.png",
+      "octets": 54305,
+      "sha256": "084a997e5ef3f826bf6457ed8bf267bd7ec47eb245275d10129eb2558e45712d"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-film-12.png",
+      "octets": 45413,
+      "sha256": "ed2e5b9acf199a5a7d4717e57aeaca73c78a5c27773c235458893d21571d76c6"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-film-48-overlay.png",
+      "octets": 40152,
+      "sha256": "2c24361419fb1872d6e0bc78a4df2daf81e025617b14b692be6fb4fb0ce955ea"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-film-48.png",
+      "octets": 35521,
+      "sha256": "a643724cf9afd08db2d2692b6060e9eef81da277acc1532e0416e72005cfe3a7"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-perles-108-overlay.png",
+      "octets": 64923,
+      "sha256": "ef392de6a97a856d86c8d4325229aa1189ed8f59bbca9419a302ef8e1aaa2e45"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-perles-108.png",
+      "octets": 43085,
+      "sha256": "cd01a8def0d3ddaeae688203440a60f91dd9a51e19022bdeaa5f01983400f46e"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-perles-12-overlay.png",
+      "octets": 120543,
+      "sha256": "49b8c3750f9fc6eeb90dee52d7cf0b88c05d490fb1c78fd006e5819f05cd8a58"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-perles-12.png",
+      "octets": 76925,
+      "sha256": "207e6982a9a018a0465a0c79b0bbfbffc49be038e1946682400164f04ad2e000"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-perles-48-overlay.png",
+      "octets": 99559,
+      "sha256": "1c693129a34d42f15d0e21b4d6629ab84d6e844eea10f26fc0e442137e558f91"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-perles-48.png",
+      "octets": 63149,
+      "sha256": "b6b7f452e5a27470e069dab9a092a9f7ae70e461c1b7de238894e828370db2c6"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-perles-fines-108-overlay.png",
+      "octets": 198806,
+      "sha256": "48e854ffba24aa579847d00e2df6abeeedd6a94399d974838b4caa686a9181b1"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-perles-fines-108.png",
+      "octets": 83743,
+      "sha256": "531eb7c558bf4be3bceb3b9c445e94426ef080e3b6aef060dc892df43fcf73a5"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-perles-fines-12-overlay.png",
+      "octets": 257180,
+      "sha256": "b0721e3e206ae3e2040fb458152a72221156e4807e9011560f76a4466c930856"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-perles-fines-12.png",
+      "octets": 106044,
+      "sha256": "8d81d93ce92b4b197e2b0cbed246143164e2aa5d2d028bb40532c63ff1e0a2c1"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-perles-fines-48-overlay.png",
+      "octets": 235212,
+      "sha256": "48b9e8013bd8b02251c0c182d03756decc6515bb5af1a2f214b205c5866648b8"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-perles-fines-48.png",
+      "octets": 97625,
+      "sha256": "ee0654f899e5c5eae21fa2f7bc6092f83fade2adda899bf43c9d1c72c5ed8475"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-perles-moyennes-108-overlay.png",
+      "octets": 118253,
+      "sha256": "d92b007b6fee53d0addc0faa8c954e8d85658895d845d2ea11381f39bbae8acf"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-perles-moyennes-108.png",
+      "octets": 62175,
+      "sha256": "68527ad6d744e181698337a0d7b6eef08e8f0eee2a4649a9ee547d29a3ba3a84"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-perles-moyennes-12-overlay.png",
+      "octets": 162453,
+      "sha256": "5950e8a5586902171186315ef6e45aae7603d37e7825b9b2e06e8dac99598369"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-perles-moyennes-12.png",
+      "octets": 82014,
+      "sha256": "b00e6aa41bca712591092ebfc5c23e1e6c54555eebf454e494cdc706f3e1dc42"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-perles-moyennes-48-overlay.png",
+      "octets": 148114,
+      "sha256": "e64b807c6187734a9fade4a0b660a15ced7bff664e85ed16131e0535a9b0a804"
+    },
+    {
+      "chemin": "shader-egl-verdict-01/trajet-poursuite-300-perles-moyennes-48.png",
+      "octets": 75456,
+      "sha256": "1b4471d9d50a34f671b479b29d893259561fae55a34d360229b13fb102d1a314"
+    },
+    {
+      "chemin": "ANALYSE-PNG-INDEPENDANTE-FINALE.json",
+      "octets": 2198230,
+      "sha256": "9bf51d31752da6c343d35dc0952d925d4d8a1efdc56556fdb7e8144c4af5a555"
+    },
+    {
+      "chemin": "negatifs-png-reels/RESUME.json",
+      "octets": 9631,
+      "sha256": "20aba424ab6a4a83a0576d87c17bddad2abfe6f7ac9381b7c18c2ccc0f212c85"
+    },
+    {
+      "chemin": "negatifs-png-reels.py",
+      "octets": 2890,
+      "sha256": "0d4306de64df5c4df3d7c418f4ee36b9cd35539bfa02810cc67d843dee72db85"
+    },
+    {
+      "chemin": "visiere-png-tests-final.log",
+      "octets": 106,
+      "sha256": "c5e1bcc6861425af6c4073b2c2d3b426d631d21d74376b9c79bab8ac22736a89"
+    },
+    {
+      "chemin": "negatifs-png-reels/repete/rapport.json",
+      "octets": 3045302,
+      "sha256": "624c59a2824c35b3bbae82fc28b62b60de8b7ec0d4d96888f8f6a48a529679b9"
+    },
+    {
+      "chemin": "negatifs-png-reels/opacite_seule/rapport.json",
+      "octets": 1411455,
+      "sha256": "e52147d24f29fcd10f3ad547c39ec695196283c282c1b698f7e2fe4d1a7de19c"
+    },
+    {
+      "chemin": "negatifs-png-reels/inverse/rapport.json",
+      "octets": 1115371,
+      "sha256": "876a1dd72cdd8987a46f97a5de83bc6be11223b5552a6a46d7457c0d187b9b7b"
+    },
+    {
+      "chemin": "negatifs-png-reels/sans_transport/rapport.json",
+      "octets": 1096285,
+      "sha256": "25f2960db9ccb790318421ebe3ec9aa60d5e0067726b3698dfaf70ecdfd8745e"
+    }
+  ],
+  "livraison": {
+    "DIRECTION-PNG-0268.json": {
+      "octets": 37145,
+      "sha256": "6d5c2debf391625c68cb4f1599dc4bc19aa664cd5821a87cc4e27293b3845760"
+    },
+    "EGL-INITIAL-0268.json": {
+      "octets": 23944,
+      "sha256": "f524795d25478bc7d2925fde3243bdcddc5d86e6f46fef7548ba1012934815a4"
+    },
+    "NEGATIFS-PNG-0268.json": {
+      "octets": 9631,
+      "sha256": "20aba424ab6a4a83a0576d87c17bddad2abfe6f7ac9381b7c18c2ccc0f212c85"
+    },
+    "TESTS-ANALYSE-PNG-0268.log": {
+      "octets": 106,
+      "sha256": "c5e1bcc6861425af6c4073b2c2d3b426d631d21d74376b9c79bab8ac22736a89"
+    }
+  }
+}

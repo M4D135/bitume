@@ -297,3 +297,31 @@ publication sans skip-ci lance la campagne générale et les 20 groupes d’imag
 de la PR39. Le HTML garde exactement le SHA60184ddf de l’entrée018. Cette preuve
 native sur mire ne remplace pas les images du jeu ni les essais de performance
 matérielle ; le surcoût logiciel initial reste une réserve explicite.
+
+
+## 020 — tests complets conformes et compléments portrait/duo
+
+Le candidat PR39 `3daefb7c` est qualifié par la CI générale `44761148529` :
+160/160 suites Node et 8/8 tests Python. Le commit de fusion testé `4343db0e`
+porte exactement l’arbre `b84d8553` du candidat ; reconstruction propre, HTML
+0.2.68 SHA256 `60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2`.
+
+Les 48 PNG de démo sont inspectés, leurs 16 rapports conformes, et les 7 archives
+vérifiées. L’avant est explicitement 0.2.62. Les réserves pilote/habitacle et
+bandeaux proches de tête/doigts restent ouvertes. Le complément E3 publié
+`073b70dd` ajoute seulement outils/tests/workflow : portraits cockpit et poursuite
+à 300 km/h, duo cockpit/poursuite indépendant. Run 44762219230 réussi, neuf PNG
+inspectés, trois rapports conformes ; HTML strictement identique.
+
+Les reçus portables des trajectoires natives, des négatifs et de leur revue
+indépendante sont conservés avec les preuves CI et de composition. Ils ne
+qualifient pas les FPS matériels et ne réécrivent pas les verdicts initiaux.
+La campagne météo/couverts poursuit ses derniers groupes. Le premier
+`cimes-rocher` échoue avant le chargement du jeu (port DevTools absent, zéro PNG) ;
+une reprise ciblée attend la fin de la campagne, GitHub refusant la reprise d’un
+job tant que son run est actif. Main demeure 0.2.66 jusqu’à cette clôture.
+
+H1+B2 est préparé séparément : pièces de l’habitacle métriques et communes,
+cavité ouverte à fond conservé, planche abaissée 65 mm. L’assise, le thorax, les
+trajectoires des bras et la caméra réelle ne sont pas encore acceptés ; aucun
+build habitacle ni changement de physique p15/FERRO n’est publié comme terminé.

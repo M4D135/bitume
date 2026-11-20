@@ -1,0 +1,1429 @@
+{
+  "format": "bitume-png-trajectoires-2",
+  "reussi": true,
+  "protocole": {
+    "alphaSuperieurA": 32,
+    "composantesConnexite": 8,
+    "pixelsMinimum": 5,
+    "margeBordPx": 8,
+    "centroides": "Moyenne des centres de pixels pondérée par leur alpha RGBA natif.",
+    "identites": "Géométrie des voisinages pour les fines/moyennes ; motifs alpha pour grandes perles/nappes. Aucun uniforme ni transport déclaré.",
+    "perlesFinesMoyennes": "Six voisins PNG, géométrie normalisée par leur distance RMS ; correspondance mutuelle, erreur RMS <=0,035 et ratio premier/second <=0,6. Aucun transport prédit.",
+    "centreUV": [
+      0.5,
+      0.45
+    ],
+    "bandeCentraleExclueUV": 0.12,
+    "directionRepos": "dy > 0.75 px et |dx| < 1 px",
+    "direction300": "dx et dy signés vers le quadrant de départ, chacun > 0.75 px",
+    "suffisance": "12 mesures par intervalle, dont au moins 2 par quadrant ; 90 % conformes dans chaque quadrant.",
+    "registration": {
+      "fenetrePx": 17,
+      "recherchePx": 144,
+      "candidatsMaximumParQuadrant": 24,
+      "correlationMinimum": 0.92,
+      "margePicMinimum": 0.025,
+      "erreurAllerRetourMaximumPx": 1.25,
+      "methode": "Motifs alpha disjoints, variations dans deux axes, ZNCC exhaustive et retour mutuel ; ni transport ni direction prédits.",
+      "nappes": "Zone déterminée par le centre alpha de la nappe ; motifs encore visibles utilisables même si la nappe touche le cadre."
+    },
+    "limites": "Couches isolées à densité fixée et graine commune. Ne démontre ni toutes les gouttes ni la scène complète, les FPS ou le réalisme subjectif."
+  },
+  "provenance": {
+    "etatsSha256": "e46e52142646266989c482b85adb2d329b5a820ffed54bf27d89f9b8484f1a8b",
+    "scriptSha256": "c8591fcc5873b6ac71b96fd592d780548d0e83b52aab688c4e27f3772a99a4c1"
+  },
+  "synthese": {
+    "groupes": 12,
+    "intervalles": 24,
+    "conformes": 24,
+    "nonConformes": 0,
+    "insuffisants": 0,
+    "appariements": 3550,
+    "mesuresHorsCentre": 2076
+  },
+  "images": {
+    "trajet-cockpit-0-perles-12-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "5aeb8a2f98cb22c33f77c2a1669738a7f28f37e20c5d6a5cf4e1709eae2fcc9d"
+    },
+    "trajet-cockpit-0-perles-48-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "27160fbd637b3bedcab1dfd96a89ffbb95c359707901bc7a438731eacb49a941"
+    },
+    "trajet-cockpit-0-perles-108-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "206b2ffa67857ad3df27fcf7b8cf93d2ff560a2656a307ebd3a9bc08be96854c"
+    },
+    "trajet-cockpit-0-film-12-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "15d2f42ef46787262e2f6036d01d875d3e72c922d9c1edc6f955109adb427454"
+    },
+    "trajet-cockpit-0-film-48-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "df57a6c3d8191f5c0100d5686e3b986c77c9476d255bc9b2437099bcd9bf3fa3"
+    },
+    "trajet-cockpit-0-film-108-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "73e8eb0046b8886baf70404515e7153562a22d7d1851a9dfbefe5651d2ee3db3"
+    },
+    "trajet-cockpit-300-perles-fines-12-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "rejeteesPetites": 1537,
+      "rejeteesBord": 113,
+      "pixelsAuDessusDuSeuil": 28255,
+      "sha256": "eff989528b7db4a7fcff942bc6c0a8d43f1fc4169d9413802dce1d5e463f97b7"
+    },
+    "trajet-cockpit-300-perles-fines-48-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "rejeteesPetites": 1373,
+      "rejeteesBord": 108,
+      "pixelsAuDessusDuSeuil": 25389,
+      "sha256": "83cd969077667d05d097e28a0c2e5e25c14e4b4bc6bfd16751ac4de6fca5e056"
+    },
+    "trajet-cockpit-300-perles-fines-108-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "rejeteesPetites": 1212,
+      "rejeteesBord": 51,
+      "pixelsAuDessusDuSeuil": 21163,
+      "sha256": "10225629a86b474c3d66384cb16f8f4b59b4791b21cae92ec638c4c51183a69b"
+    },
+    "trajet-cockpit-300-perles-moyennes-12-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "rejeteesPetites": 7,
+      "rejeteesBord": 56,
+      "pixelsAuDessusDuSeuil": 24436,
+      "sha256": "ca9d7ce280116c0fc39d46e8e04f0beb77ec92562cc88a7c25da2f0aaf191f5a"
+    },
+    "trajet-cockpit-300-perles-moyennes-48-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "rejeteesPetites": 4,
+      "rejeteesBord": 44,
+      "pixelsAuDessusDuSeuil": 21572,
+      "sha256": "2738e3beebefca31e47a274fb91c6cb5b7eb2efde47b3268744b005d31c61933"
+    },
+    "trajet-cockpit-300-perles-moyennes-108-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "rejeteesPetites": 5,
+      "rejeteesBord": 30,
+      "pixelsAuDessusDuSeuil": 17389,
+      "sha256": "20204f9c939bbb9ecc9dda4f2cb7880a8bb27f5983695e0099b9a09a08145e8f"
+    },
+    "trajet-cockpit-300-perles-12-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "44083518d73ebd06d861a515df681fb2bc490570edccbad6d0043edcf193846c"
+    },
+    "trajet-cockpit-300-perles-48-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "39d412dd6ac3e574a0025c6b3778bef92bfd2d06c8e1b840d144311bccb1250c"
+    },
+    "trajet-cockpit-300-perles-108-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "6671db28ad8062bd9fd0c4371e780c2c681510a16f0c35eca6bd1045ba887a80"
+    },
+    "trajet-cockpit-300-film-12-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "05192d287a4c4241c200652e3f934a9316360ab9da864cc7f0cb52ca6f079956"
+    },
+    "trajet-cockpit-300-film-48-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "fbe3efe82fb17a36c8dd0947d075a290784f44f79cd3929d27ca9a51e5f62014"
+    },
+    "trajet-cockpit-300-film-108-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "ce423caee027b24641c88941590ca199a3913cef24934c4a92d2e206c4484a34"
+    },
+    "trajet-poursuite-0-perles-12-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "2dd3d601a59cca254acdf440414c3eefbc0da1c01d716ec3bde45d4d66114c04"
+    },
+    "trajet-poursuite-0-perles-48-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "823766af43dda26e060a409257a6975432b9eb0a7dd5adcefb1b08543e2fd1c7"
+    },
+    "trajet-poursuite-0-perles-108-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "cddeeeddb4259e4f6d0d2dbfc983b72e385c259d09acfdfa724b9b86a193e856"
+    },
+    "trajet-poursuite-0-film-12-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "6cc7c09706991dc3594cfabb8ed859050f1ae3fa09e1f3fd9e8a725c65345b6a"
+    },
+    "trajet-poursuite-0-film-48-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "35cd86ddb050bcdccb99dcdeee358978a978c63e3fc1eaa9ce33653e0dec4fcb"
+    },
+    "trajet-poursuite-0-film-108-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "52ad67fd2750991e98cc27e422877e11b772407d5f0471e59a32d93d8afcff7d"
+    },
+    "trajet-poursuite-300-perles-fines-12-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "rejeteesPetites": 1695,
+      "rejeteesBord": 100,
+      "pixelsAuDessusDuSeuil": 24527,
+      "sha256": "b0721e3e206ae3e2040fb458152a72221156e4807e9011560f76a4466c930856"
+    },
+    "trajet-poursuite-300-perles-fines-48-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "rejeteesPetites": 1513,
+      "rejeteesBord": 92,
+      "pixelsAuDessusDuSeuil": 22124,
+      "sha256": "48b9e8013bd8b02251c0c182d03756decc6515bb5af1a2f214b205c5866648b8"
+    },
+    "trajet-poursuite-300-perles-fines-108-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "rejeteesPetites": 1309,
+      "rejeteesBord": 42,
+      "pixelsAuDessusDuSeuil": 18258,
+      "sha256": "48e854ffba24aa579847d00e2df6abeeedd6a94399d974838b4caa686a9181b1"
+    },
+    "trajet-poursuite-300-perles-moyennes-12-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "rejeteesPetites": 6,
+      "rejeteesBord": 54,
+      "pixelsAuDessusDuSeuil": 22226,
+      "sha256": "5950e8a5586902171186315ef6e45aae7603d37e7825b9b2e06e8dac99598369"
+    },
+    "trajet-poursuite-300-perles-moyennes-48-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "rejeteesPetites": 4,
+      "rejeteesBord": 43,
+      "pixelsAuDessusDuSeuil": 19820,
+      "sha256": "e64b807c6187734a9fade4a0b660a15ced7bff664e85ed16131e0535a9b0a804"
+    },
+    "trajet-poursuite-300-perles-moyennes-108-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "rejeteesPetites": 2,
+      "rejeteesBord": 30,
+      "pixelsAuDessusDuSeuil": 15933,
+      "sha256": "d92b007b6fee53d0addc0faa8c954e8d85658895d845d2ea11381f39bbae8acf"
+    },
+    "trajet-poursuite-300-perles-12-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "49b8c3750f9fc6eeb90dee52d7cf0b88c05d490fb1c78fd006e5819f05cd8a58"
+    },
+    "trajet-poursuite-300-perles-48-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "1c693129a34d42f15d0e21b4d6629ab84d6e844eea10f26fc0e442137e558f91"
+    },
+    "trajet-poursuite-300-perles-108-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "ef392de6a97a856d86c8d4325229aa1189ed8f59bbca9419a302ef8e1aaa2e45"
+    },
+    "trajet-poursuite-300-film-12-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "084a997e5ef3f826bf6457ed8bf267bd7ec47eb245275d10129eb2558e45712d"
+    },
+    "trajet-poursuite-300-film-48-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "2c24361419fb1872d6e0bc78a4df2daf81e025617b14b692be6fb4fb0ce955ea"
+    },
+    "trajet-poursuite-300-film-108-overlay.png": {
+      "dimensions": [
+        960,
+        540
+      ],
+      "sha256": "28145e1f1c43ba49fc906b98eec8736c6334861d33303a22231dc9cd7565cb52"
+    }
+  },
+  "intervalles": [
+    {
+      "groupe": "trajet-cockpit-0-film",
+      "intervalleImages": [
+        12,
+        48
+      ],
+      "vitesseKmh": 0.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "registration_motifs_alpha",
+      "motifsChoisis": 74,
+      "motifsRejetes": 37,
+      "composantesAvant": 0,
+      "composantesApres": 0,
+      "observationsAvantEligibles": 74,
+      "appariementsUniques": 37,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 5,
+          "conformes": 5,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 10,
+          "conformes": 10,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 10,
+          "conformes": 10,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 12,
+          "conformes": 12,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 37,
+      "conformes": 37,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "2eb0e960c4ffce3b31318c4401ee692eadca5ad6c439433127947e08f9eac4dd"
+    },
+    {
+      "groupe": "trajet-cockpit-0-film",
+      "intervalleImages": [
+        48,
+        108
+      ],
+      "vitesseKmh": 0.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "registration_motifs_alpha",
+      "motifsChoisis": 73,
+      "motifsRejetes": 39,
+      "composantesAvant": 0,
+      "composantesApres": 0,
+      "observationsAvantEligibles": 73,
+      "appariementsUniques": 34,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 5,
+          "conformes": 5,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 10,
+          "conformes": 10,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 9,
+          "conformes": 9,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 10,
+          "conformes": 10,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 34,
+      "conformes": 34,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "c0b49fa4e31a1ba7a53825346db336425933a3d8d4c9de7e1163bc2534d240cd"
+    },
+    {
+      "groupe": "trajet-cockpit-0-perles",
+      "intervalleImages": [
+        12,
+        48
+      ],
+      "vitesseKmh": 0.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "registration_motifs_alpha",
+      "motifsChoisis": 96,
+      "motifsRejetes": 56,
+      "composantesAvant": 0,
+      "composantesApres": 0,
+      "observationsAvantEligibles": 96,
+      "appariementsUniques": 40,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 10,
+          "conformes": 10,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 7,
+          "conformes": 7,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 12,
+          "conformes": 12,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 11,
+          "conformes": 11,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 40,
+      "conformes": 40,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "7f68798f4f950f51cdbaa4c0927229987850928ce2fc6075d626240cbea55058"
+    },
+    {
+      "groupe": "trajet-cockpit-0-perles",
+      "intervalleImages": [
+        48,
+        108
+      ],
+      "vitesseKmh": 0.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "registration_motifs_alpha",
+      "motifsChoisis": 96,
+      "motifsRejetes": 66,
+      "composantesAvant": 0,
+      "composantesApres": 0,
+      "observationsAvantEligibles": 96,
+      "appariementsUniques": 30,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 8,
+          "conformes": 8,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 8,
+          "conformes": 8,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 7,
+          "conformes": 7,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 7,
+          "conformes": 7,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 30,
+      "conformes": 30,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "63a10c51d5d1dfda3482836fe668b7593b133f8d3421370dc644bfb77b8f9c4c"
+    },
+    {
+      "groupe": "trajet-cockpit-300-film",
+      "intervalleImages": [
+        12,
+        48
+      ],
+      "vitesseKmh": 300.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "registration_motifs_alpha",
+      "motifsChoisis": 67,
+      "motifsRejetes": 48,
+      "composantesAvant": 0,
+      "composantesApres": 0,
+      "observationsAvantEligibles": 67,
+      "appariementsUniques": 19,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 3,
+          "conformes": 3,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 8,
+          "conformes": 8,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 2,
+          "conformes": 2,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 6,
+          "conformes": 6,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 19,
+      "conformes": 19,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "903c6371b126f5c1a9e0400acb2e9b69503083b6d4e0c23b2ef3857da384d5fa"
+    },
+    {
+      "groupe": "trajet-cockpit-300-film",
+      "intervalleImages": [
+        48,
+        108
+      ],
+      "vitesseKmh": 300.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "registration_motifs_alpha",
+      "motifsChoisis": 55,
+      "motifsRejetes": 43,
+      "composantesAvant": 0,
+      "composantesApres": 0,
+      "observationsAvantEligibles": 55,
+      "appariementsUniques": 12,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 3,
+          "conformes": 3,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 3,
+          "conformes": 3,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 3,
+          "conformes": 3,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 3,
+          "conformes": 3,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 12,
+      "conformes": 12,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "db152ef12457eb524a6e54e680fb0a13f2ef6135b1bd5e0450f02d32aba36971"
+    },
+    {
+      "groupe": "trajet-cockpit-300-perles",
+      "intervalleImages": [
+        12,
+        48
+      ],
+      "vitesseKmh": 300.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "registration_motifs_alpha",
+      "motifsChoisis": 96,
+      "motifsRejetes": 45,
+      "composantesAvant": 0,
+      "composantesApres": 0,
+      "observationsAvantEligibles": 96,
+      "appariementsUniques": 51,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 12,
+          "conformes": 12,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 13,
+          "conformes": 13,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 14,
+          "conformes": 14,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 12,
+          "conformes": 12,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 51,
+      "conformes": 51,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "78c21c0b1aed92ba1fb77995f23fe2b5f7e5d7748806491151faba09d3f2789e"
+    },
+    {
+      "groupe": "trajet-cockpit-300-perles",
+      "intervalleImages": [
+        48,
+        108
+      ],
+      "vitesseKmh": 300.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "registration_motifs_alpha",
+      "motifsChoisis": 96,
+      "motifsRejetes": 67,
+      "composantesAvant": 0,
+      "composantesApres": 0,
+      "observationsAvantEligibles": 96,
+      "appariementsUniques": 29,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 10,
+          "conformes": 10,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 6,
+          "conformes": 6,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 8,
+          "conformes": 8,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 5,
+          "conformes": 5,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 29,
+      "conformes": 29,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "fd2e40071a909f552e5a0b710b8779b6a6dfb989d04917f26337a6e5ab3de734"
+    },
+    {
+      "groupe": "trajet-cockpit-300-perles-fines",
+      "intervalleImages": [
+        12,
+        48
+      ],
+      "vitesseKmh": 300.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "voisinages_centroides",
+      "composantesAvant": 2035,
+      "composantesApres": 1830,
+      "observationsAvantEligibles": 2035,
+      "appariementsUniques": 626,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 83,
+          "conformes": 83,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 61,
+          "conformes": 61,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 111,
+          "conformes": 111,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 90,
+          "conformes": 90,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 345,
+      "conformes": 345,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "2d40fbbfcce6261608e43bb6ee1a71caae349756cc318de1b7e2632a682f0959"
+    },
+    {
+      "groupe": "trajet-cockpit-300-perles-fines",
+      "intervalleImages": [
+        48,
+        108
+      ],
+      "vitesseKmh": 300.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "voisinages_centroides",
+      "composantesAvant": 1830,
+      "composantesApres": 1516,
+      "observationsAvantEligibles": 1830,
+      "appariementsUniques": 464,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 59,
+          "conformes": 59,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 49,
+          "conformes": 49,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 82,
+          "conformes": 82,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 64,
+          "conformes": 64,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 254,
+      "conformes": 254,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "244577881e2033f742dfa7760e9d0f68e7e320e8cb37eb67cd6318875fe64a1f"
+    },
+    {
+      "groupe": "trajet-cockpit-300-perles-moyennes",
+      "intervalleImages": [
+        12,
+        48
+      ],
+      "vitesseKmh": 300.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "voisinages_centroides",
+      "composantesAvant": 589,
+      "composantesApres": 512,
+      "observationsAvantEligibles": 589,
+      "appariementsUniques": 337,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 24,
+          "conformes": 24,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 37,
+          "conformes": 37,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 58,
+          "conformes": 58,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 39,
+          "conformes": 39,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 158,
+      "conformes": 158,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "1837b68ca77a09b3bfd3dbb9621f76a2e3d2aae90191c40d7bb392e951fc0a92"
+    },
+    {
+      "groupe": "trajet-cockpit-300-perles-moyennes",
+      "intervalleImages": [
+        48,
+        108
+      ],
+      "vitesseKmh": 300.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "voisinages_centroides",
+      "composantesAvant": 512,
+      "composantesApres": 413,
+      "observationsAvantEligibles": 512,
+      "appariementsUniques": 262,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 31,
+          "conformes": 31,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 38,
+          "conformes": 38,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 34,
+          "conformes": 34,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 28,
+          "conformes": 28,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 131,
+      "conformes": 131,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "68369d01632b738fa50a497da1e37e425fb77d29e261a59102235266f3f35b2a"
+    },
+    {
+      "groupe": "trajet-poursuite-0-film",
+      "intervalleImages": [
+        12,
+        48
+      ],
+      "vitesseKmh": 0.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "registration_motifs_alpha",
+      "motifsChoisis": 75,
+      "motifsRejetes": 38,
+      "composantesAvant": 0,
+      "composantesApres": 0,
+      "observationsAvantEligibles": 75,
+      "appariementsUniques": 37,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 5,
+          "conformes": 5,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 10,
+          "conformes": 10,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 10,
+          "conformes": 10,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 12,
+          "conformes": 12,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 37,
+      "conformes": 37,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "9510d05307f2856ef5be9810bdc64dae6f05c45000fe223b915e56022a93b4ff"
+    },
+    {
+      "groupe": "trajet-poursuite-0-film",
+      "intervalleImages": [
+        48,
+        108
+      ],
+      "vitesseKmh": 0.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "registration_motifs_alpha",
+      "motifsChoisis": 72,
+      "motifsRejetes": 39,
+      "composantesAvant": 0,
+      "composantesApres": 0,
+      "observationsAvantEligibles": 72,
+      "appariementsUniques": 33,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 5,
+          "conformes": 5,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 10,
+          "conformes": 10,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 8,
+          "conformes": 8,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 10,
+          "conformes": 10,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 33,
+      "conformes": 33,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "245f1ad8f051928da1b57d95707bec2f1a024ed639f98d14b2aef44020a60b4a"
+    },
+    {
+      "groupe": "trajet-poursuite-0-perles",
+      "intervalleImages": [
+        12,
+        48
+      ],
+      "vitesseKmh": 0.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "registration_motifs_alpha",
+      "motifsChoisis": 96,
+      "motifsRejetes": 56,
+      "composantesAvant": 0,
+      "composantesApres": 0,
+      "observationsAvantEligibles": 96,
+      "appariementsUniques": 40,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 10,
+          "conformes": 10,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 8,
+          "conformes": 8,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 11,
+          "conformes": 11,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 11,
+          "conformes": 11,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 40,
+      "conformes": 40,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "c8253584fb32609b488c3d58a0b131aa191240c8c3339d49e1a56189b90d02b0"
+    },
+    {
+      "groupe": "trajet-poursuite-0-perles",
+      "intervalleImages": [
+        48,
+        108
+      ],
+      "vitesseKmh": 0.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "registration_motifs_alpha",
+      "motifsChoisis": 96,
+      "motifsRejetes": 66,
+      "composantesAvant": 0,
+      "composantesApres": 0,
+      "observationsAvantEligibles": 96,
+      "appariementsUniques": 30,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 8,
+          "conformes": 8,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 7,
+          "conformes": 7,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 7,
+          "conformes": 7,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 8,
+          "conformes": 8,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 30,
+      "conformes": 30,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "57e6127c32f97b22bedc3f8bb9d142d99f2ccaf700d1b9b263184625bc0711e8"
+    },
+    {
+      "groupe": "trajet-poursuite-300-film",
+      "intervalleImages": [
+        12,
+        48
+      ],
+      "vitesseKmh": 300.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "registration_motifs_alpha",
+      "motifsChoisis": 66,
+      "motifsRejetes": 47,
+      "composantesAvant": 0,
+      "composantesApres": 0,
+      "observationsAvantEligibles": 66,
+      "appariementsUniques": 19,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 3,
+          "conformes": 3,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 8,
+          "conformes": 8,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 2,
+          "conformes": 2,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 6,
+          "conformes": 6,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 19,
+      "conformes": 19,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "4c9533ad59bbc921d817d553dbb7133c91a32fc1dc6328179a8d81fc7751541c"
+    },
+    {
+      "groupe": "trajet-poursuite-300-film",
+      "intervalleImages": [
+        48,
+        108
+      ],
+      "vitesseKmh": 300.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "registration_motifs_alpha",
+      "motifsChoisis": 50,
+      "motifsRejetes": 38,
+      "composantesAvant": 0,
+      "composantesApres": 0,
+      "observationsAvantEligibles": 50,
+      "appariementsUniques": 12,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 3,
+          "conformes": 3,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 3,
+          "conformes": 3,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 3,
+          "conformes": 3,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 3,
+          "conformes": 3,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 12,
+      "conformes": 12,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "8930df32ae3413a27d48291d4460706e536affdebbbc3fe0649185757f68400a"
+    },
+    {
+      "groupe": "trajet-poursuite-300-perles",
+      "intervalleImages": [
+        12,
+        48
+      ],
+      "vitesseKmh": 300.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "registration_motifs_alpha",
+      "motifsChoisis": 96,
+      "motifsRejetes": 46,
+      "composantesAvant": 0,
+      "composantesApres": 0,
+      "observationsAvantEligibles": 96,
+      "appariementsUniques": 50,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 12,
+          "conformes": 12,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 11,
+          "conformes": 11,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 14,
+          "conformes": 14,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 13,
+          "conformes": 13,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 50,
+      "conformes": 50,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "3a48b5924bbf68a9a73d60d2a250dbc67eb3132f2a3452fe2302080bba274a00"
+    },
+    {
+      "groupe": "trajet-poursuite-300-perles",
+      "intervalleImages": [
+        48,
+        108
+      ],
+      "vitesseKmh": 300.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "registration_motifs_alpha",
+      "motifsChoisis": 92,
+      "motifsRejetes": 63,
+      "composantesAvant": 0,
+      "composantesApres": 0,
+      "observationsAvantEligibles": 92,
+      "appariementsUniques": 29,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 9,
+          "conformes": 9,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 7,
+          "conformes": 7,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 8,
+          "conformes": 8,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 5,
+          "conformes": 5,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 29,
+      "conformes": 29,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "3b36c216370a3b2a74c8d0546aab5748ae3ab8bc13b2d3fa3c7a69f899811124"
+    },
+    {
+      "groupe": "trajet-poursuite-300-perles-fines",
+      "intervalleImages": [
+        12,
+        48
+      ],
+      "vitesseKmh": 300.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "voisinages_centroides",
+      "composantesAvant": 1788,
+      "composantesApres": 1625,
+      "observationsAvantEligibles": 1788,
+      "appariementsUniques": 463,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 58,
+          "conformes": 58,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 41,
+          "conformes": 41,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 72,
+          "conformes": 72,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 49,
+          "conformes": 49,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 220,
+      "conformes": 220,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "39e044f85e19a1481577c9338b395eab24f05579c2a5c5cf771f2f8e3f94d9f9"
+    },
+    {
+      "groupe": "trajet-poursuite-300-perles-fines",
+      "intervalleImages": [
+        48,
+        108
+      ],
+      "vitesseKmh": 300.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "voisinages_centroides",
+      "composantesAvant": 1625,
+      "composantesApres": 1356,
+      "observationsAvantEligibles": 1625,
+      "appariementsUniques": 301,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 32,
+          "conformes": 32,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 38,
+          "conformes": 38,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 64,
+          "conformes": 64,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 45,
+          "conformes": 45,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 179,
+      "conformes": 179,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "003ea566023eee86e2d0674a29fc876d2000f8cf61e4a1d356da0f3ae15782ea"
+    },
+    {
+      "groupe": "trajet-poursuite-300-perles-moyennes",
+      "intervalleImages": [
+        12,
+        48
+      ],
+      "vitesseKmh": 300.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "voisinages_centroides",
+      "composantesAvant": 571,
+      "composantesApres": 502,
+      "observationsAvantEligibles": 571,
+      "appariementsUniques": 333,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 18,
+          "conformes": 18,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 37,
+          "conformes": 37,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 56,
+          "conformes": 56,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 51,
+          "conformes": 51,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 162,
+      "conformes": 162,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "2b05c4426eb8ccb42991cd040ebc11a78282c6b67d3752107cc4e0de73b73aa9"
+    },
+    {
+      "groupe": "trajet-poursuite-300-perles-moyennes",
+      "intervalleImages": [
+        48,
+        108
+      ],
+      "vitesseKmh": 300.0,
+      "dimensions": [
+        960,
+        540
+      ],
+      "methode": "voisinages_centroides",
+      "composantesAvant": 502,
+      "composantesApres": 402,
+      "observationsAvantEligibles": 502,
+      "appariementsUniques": 262,
+      "quadrants": {
+        "haut-gauche": {
+          "mesures": 31,
+          "conformes": 31,
+          "tropFaibles": 0
+        },
+        "haut-droite": {
+          "mesures": 39,
+          "conformes": 39,
+          "tropFaibles": 0
+        },
+        "bas-gauche": {
+          "mesures": 33,
+          "conformes": 33,
+          "tropFaibles": 0
+        },
+        "bas-droite": {
+          "mesures": 22,
+          "conformes": 22,
+          "tropFaibles": 0
+        }
+      },
+      "mesuresHorsCentre": 125,
+      "conformes": 125,
+      "tauxConforme": 1.0,
+      "statut": "conforme",
+      "correspondancesSha256": "be304cf6de9e00477bbc469d3a95d5da06709f95f3bb1a15b8b1f9f1d4bdd8c0"
+    }
+  ],
+  "detailConserve": {
+    "format": "analyse condensée sans duplication des listes de correspondances",
+    "rapportCompletSha256": "9bf51d31752da6c343d35dc0952d925d4d8a1efdc56556fdb7e8144c4af5a555"
+  }
+}
