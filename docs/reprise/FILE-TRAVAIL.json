@@ -1,15 +1,15 @@
 {
   "schema": 1,
   "date": "2026-11-20",
-  "base": "f41614e1f3887a79ebbd633df3fde754534f202e",
+  "base": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8",
   "runtime_livre": {
-    "version": "0.2.62",
+    "version": "0.2.66",
     "physique": "p15",
     "moteur": "FERRO 0.3.15",
-    "circuits": 8
+    "circuits": 9
   },
   "destinations_prevues": 17,
-  "lot_actif": "couverts",
+  "lot_actif": "meteo",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [
@@ -41,7 +41,15 @@
         "references"
       ],
       "cloture": "Géométrie, trajectoires natives, commandes et captures intégrées",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/REVUE-DEMOS-0266.json"
+      ],
+      "livraison_socle": {
+        "version": "0.2.66",
+        "pr": 38,
+        "commit_fusion": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8"
+      },
+      "reste": "Bandeaux masquant certains gestes/animaux ; conserver la réalisation qualifiée."
     },
     {
       "id": "meteo",
@@ -51,7 +59,15 @@
         "references"
       ],
       "cloture": "Shader réel, mouvement, abri, J1/J2, pause, vues et captures",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/REVUE-METEO-0266.json"
+      ],
+      "livraison_socle": {
+        "version": "0.2.66",
+        "pr": 38,
+        "commit_fusion": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8"
+      },
+      "reste": "Pluie extérieure visible depuis un abri, neige et rendu encore à enrichir ; prototype sauvegardé non intégré."
     },
     {
       "id": "couverts",
@@ -62,8 +78,15 @@
       ],
       "cloture": "Physique, météo, lumière, caméra et rétros partagent les sections",
       "preuves": [
-        "docs/reprise/rapports/COUVERTS-2026-11-20/QUALIFICATION.json"
-      ]
+        "docs/reprise/rapports/COUVERTS-2026-11-20/QUALIFICATION.json",
+        "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/REVUE-COUVERTS-0266.json"
+      ],
+      "livraison_socle": {
+        "version": "0.2.66",
+        "pr": 38,
+        "commit_fusion": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8"
+      },
+      "reste": "Socle et trois ouvrages Cimes publiés ; poursuivre l’extension prévue et les réserves météo."
     },
     {
       "id": "cimes",
@@ -73,7 +96,15 @@
         "couverts"
       ],
       "cloture": "Tracé fermé, Mur 30 %, 3 couverts, pont/gorge, châssis et IA",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/PUBLICATION-0266.json"
+      ],
+      "livraison_socle": {
+        "version": "0.2.66",
+        "pr": 38,
+        "commit_fusion": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8"
+      },
+      "reste": "Sept lieux complets, lac/cascade et finition du relief restent au programme."
     },
     {
       "id": "haut_col",
@@ -323,7 +354,8 @@
     "24 vibrations",
     "26 faune",
     "28A/C herbier saisons",
-    "p15 aspiration et dégagement natif"
+    "p15 aspiration et dégagement natif",
+    "0.2.66 démos/pilotes/météo, socle multi-couverts et Route-des-Cimes"
   ],
   "limites_transversales": [
     "FPS matériels",

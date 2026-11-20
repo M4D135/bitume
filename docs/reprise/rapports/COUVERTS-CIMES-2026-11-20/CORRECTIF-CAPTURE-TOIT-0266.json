@@ -29,9 +29,7 @@
       "sha256": "f974274e37e7c2f42fe82608100b8997b2324c4ffc8c8bc5ea9b19cc9777f0e3"
     }
   ],
-  "pending": [
-    "Fusion et contrôle distant de main."
-  ],
+  "pending": [],
   "chromium_local_run": false,
   "full_campaign_rerun": true,
   "pushed": true,
@@ -43,7 +41,9 @@
     "images_statut": "success",
     "qualification_run": 44747519912,
     "qualification_statut": "success",
-    "qualification_recu": "CI-0266-CAPTURE-CORRIGEE.json"
+    "qualification_recu": "CI-0266-CAPTURE-CORRIGEE.json",
+    "integre_sur_main": true,
+    "merge_commit": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8"
   },
   "etat_avant_publication": {
     "pushed": false,

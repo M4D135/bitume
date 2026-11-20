@@ -1,7 +1,7 @@
 {
   "version": "0.2.66",
   "date": "2026-11-20",
-  "statut": "qualifie_pret_a_fusionner",
+  "statut": "publie_sur_main",
   "repository": "M4D135/bitume",
   "pr": 38,
   "qualified_head": "40774189dc3a68242a3908f72e09f2676519ccbf",
@@ -68,6 +68,13 @@
     "Sept lieux complets des Cimes, lac/cascade et programme des 17 destinations restent à poursuivre.",
     "FPS matériels, manettes, audio et réseaux distincts non qualifiés par les captures SwiftShader."
   ],
-  "merge_verified": false,
-  "site_deployed": false
+  "merge_verified": true,
+  "site_deployed": false,
+  "pr_head": "5b83dddd47283ed406bd27555324c5df56172f5d",
+  "merge_commit": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8",
+  "merge_tree": "d370309f6f3b98e6105425117d8b11d0d518872a",
+  "merge_tree_matches_candidate": true,
+  "main_build_verified": true,
+  "main_runtime_matches_qualified_head": true,
+  "documentation_closure": "Le commit portant cette clôture ne change que les documents ; le jeu et les outils restent ceux de la tête qualifiée."
 }

@@ -133,3 +133,15 @@ après la tête qualifiée. Reçu principal : `rapports/COUVERTS-CIMES-2026-11-2
 Le prototype pluie est également sauvegardé sur `backup/pluie-abris-20261120`, arbre exact
 65442e90, commit d3bd240a ; il reste non intégré et non qualifié. La PR #37 reste conservée.
 Prochaine opération : réunir ces preuves dans la PR #38, fusionner puis vérifier main.
+
+## 013 — PR #38 fusionnée, main reçu et vérifié
+
+Fusion `f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8`, tête de PR `5b83dddd` :
+l’arbre distant `d370309f` est strictement celui du candidat final. Le HTML reçu garde
+14 370 823 octets et son empreinte 18b15fd0…adf3b. Après la tête qualifiée 40774189,
+les seuls écarts sont les documents et reçus. La version 0.2.66 est publiée sur main.
+REPRISE, ETAT, FILE-TRAVAIL et les reçus sont réconciliés : neuf circuits livrés,
+159/159 suites, 113 images retenues, deux captures refusées et quatre échecs 0.2.65
+conservés. La suite vise pluie extérieure/composition ; le prototype est sauvegardé,
+la PR #37 préservée, et les autres destinations restent au programme. Cette clôture
+ne relance aucune campagne et ne modifie ni jeu, ni outils, ni build.

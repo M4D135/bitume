@@ -2,43 +2,40 @@
   "date": "2026-11-20",
   "etat_courant": {
     "version_courante": "0.2.66",
-    "version_publiee_verifiee": "0.2.62",
+    "version_publiee_verifiee": "0.2.66",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "qualifie_pret_a_fusionner",
-    "lot": "couverts_cimes_et_correctifs_0265",
-    "fiche": "docs/reprise/COUVERTS-CIMES-INTEGRATION-2026-11-20.md",
+    "statut": "publie_sur_main",
+    "lot": "meteo_et_composition_apres_0266",
+    "fiche": "docs/reprise/DEMOS-PILOTES-METEO-2026-11-20.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "012",
-    "prochaine_action": "Mettre les preuves documentaires dans la PR #38, fusionner la 0.2.66 puis vérifier main et consigner le commit de fusion.",
-    "dernier_lot_clos": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md"
+    "derniere_entree": "013",
+    "prochaine_action": "Reprendre le prototype pluie sauvegardé : coût CPU puis compositing ; préparer ensuite les bandeaux de démo et qualifier avant intégration.",
+    "dernier_lot_clos": "docs/reprise/COUVERTS-CIMES-INTEGRATION-2026-11-20.md"
   },
   "publication": {
-    "pr": 32,
-    "pr_jeu": 31,
-    "branche": "test/bitume-degagement-physx-p15-20261120",
-    "tete": "86ebfce674ed42d81e11fdc7251ce421614d08dc",
-    "arbre": "1667d290b85268c4f7d0621cd26d6ae03fc82959",
-    "commit_fusion": "3fc9421eb87c9bfdc296673e48220c0667626058",
-    "recu_final": "docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/PUBLICATION-0262.json",
+    "pr": 38,
+    "branche": "feat/bitume-couverts-final-20261120-ec92",
+    "tete": "5b83dddd47283ed406bd27555324c5df56172f5d",
+    "arbre": "d370309f6f3b98e6105425117d8b11d0d518872a",
+    "tete_qualifiee": "40774189dc3a68242a3908f72e09f2676519ccbf",
+    "commit_fusion": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8",
+    "recu_final": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/PUBLICATION-0266.json",
     "statut": "publie_sur_main"
   },
   "qualification": {
-    "build_octets": 14268457,
-    "build_sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
-    "campagne_finale_run": 44718771726,
-    "campagne_finale_resultat": "148/148 suites, zéro échec",
-    "campagne_jeu_run": 44718436891,
-    "campagne_jeu_resultat": "147/147 suites, zéro échec",
-    "sources_archive_verifiees": 3339,
+    "build_octets": 14370823,
+    "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+    "campagne_finale_run": 44747519912,
+    "campagne_finale_resultat": "159/159 suites, zéro échec",
+    "sources_archive_verifiees": 3405,
     "sources_contenus_et_modes_identiques": true,
-    "arbres_fusion_identiques_aux_candidats": true,
-    "visuel_final_run": 44718437031,
-    "visuel_final_resultat": "5/5 groupes, 20 passages, 41 PNG vérifiés ; zéro erreur.",
-    "inspection_visuelle": "37 images visualisées ; quatre références faune identiques aux candidats inspectés.",
-    "degagement_natif": "Choc, recul et reprise dans le vrai PhysX, sans replacement ni réparation ; mutation du déclenchement détectée.",
-    "runtime_inchange_par_correctifs_qualification": true,
-    "recu_publication": "docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/PUBLICATION-0262.json"
+    "arbre_fusion_identique_au_candidat": true,
+    "images_retenues_inspectees": 113,
+    "images_references_comprises": 24,
+    "images_aeriennes_refusees_conservees": 2,
+    "groupes_visuels_retenus": 20,
+    "recu_publication": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/PUBLICATION-0266.json"
   },
   "reserves": {
     "construction_ms": {
@@ -56,7 +53,7 @@
     "reseau_entre_machines_qualifie": false,
     "site_deploye": false,
     "spark_disponible": false,
-    "projections_poursuite": "Présentes mais discrètes dans les captures à 300 km/h ; densité/dynamique à réconcilier avec le travail préparé.",
+    "projections_poursuite": "Renforcées et contrôlées en 0.2.66 à 235/300 km/h ; pluie extérieure vue depuis un abri encore à corriger.",
     "lissage_S8_facultatif": {
       "obligatoire": false,
       "pire_deg_s2": 1031,
@@ -65,7 +62,9 @@
       "criteres_obligatoires_total": 46
     },
     "pluie_exterieure_depuis_abri": "Champ de pluie monde encore coupé depuis un abri ; prototype spatial local identifié, non intégré et coût à qualifier.",
-    "composition_demo": "Bandeau parfois superposé au geste ou à un animal ; neige claire à grain discret."
+    "composition_demo": "Bandeau parfois superposé au geste ou à un animal ; neige claire à grain discret.",
+    "cimes": "Socle publié ; relief très facetté et sept lieux complets, lac/cascade encore à poursuivre.",
+    "demos": "Bandeaux sur certains sujets ; neige Haut-Col claire et grain discret."
   },
   "suite": {
     "lot": "14A_Monaco_sources_et_mesures",
@@ -209,13 +208,13 @@
     "degagement_natif": "docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/degagement-physx.json"
   },
   "suite_correctifs_demo": {
-    "statut": "prochain_lot_prioritaire_travail_prepare_a_reconcilier",
+    "statut": "socle_publie_0266_reserves_a_poursuivre",
     "priorites": [
-      "Caméras de démo et sols Haut-Col",
-      "Volant et pilote expressif, gestes Troll",
-      "Gouttes, fusion et expulsion suivant la vitesse"
+      "Pluie extérieure vue depuis un abri",
+      "Bandeaux sur les sujets de démonstration",
+      "Neige claire et relief facetté"
     ],
-    "regle": "Ne pas écraser le travail préparé ; réconcilier avec le correctif d’aspiration publié avant de construire la livraison suivante."
+    "regle": "Reprendre depuis la 0.2.66 qualifiée ; préserver le prototype pluie sauvegardé et les reçus de la PR #37."
   },
   "publication_haut_col_meteo_0261": {
     "pr": 24,
@@ -251,18 +250,18 @@
     "programme": "docs/reprise/CONTINUATION-AUTONOME-2026-11-19.md",
     "statut": "branches_historiques_et_livraisons_partielles_distinguees",
     "base_conduite": "p15 ; ne pas réappliquer directement les jets p9 du lot 17",
-    "huitieme_circuit": "Baïkal ; Route-des-Cimes distincte et non intégrée",
+    "huitieme_circuit": "Baïkal reste le huitième ; Route-des-Cimes est le neuvième, socle publié en 0.2.66.",
     "references_historiques": "Notices conservées ; objets et prototypes anciens non retrouvés dans les dépôts inspectés, sans conclusion de perte sur le poste d’origine.",
     "reseau": "Aucune IP à fournir ; ancienne note sur la visibilité des IP auprès des relais expliquée. Préparation et essais à poursuivre, salon conservé avant qualification du remplacement.",
-    "priorite": "Réconcilier les travaux démo, sols, volant, pilotes et gouttes déjà préparés avec la base publiée ; préserver les autres lots."
+    "priorite": "Reprendre pluie extérieure et composition après la 0.2.66 ; préserver les autres lots, le prototype sauvegardé et les reçus distincts de la PR #37."
   },
   "execution_autonome": {
     "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
     "file": "docs/reprise/FILE-TRAVAIL.json",
     "references": "docs/references/objectifs-utilisateur-2026-11-20/README.md",
     "priorite_utilisateur": "Publication GitHub des modèles, objectifs et feuille de route avant la suite",
-    "lot_actif": "demos_pilotes",
-    "statut": "references_publiees_integration_code_en_cours",
+    "lot_actif": "meteo",
+    "statut": "socle_0266_publie_suite_preparee",
     "recu_references": "docs/reprise/rapports/REFERENCES-OBJECTIFS-2026-11-20/PUBLICATION.json"
   },
   "candidat_0263": {
@@ -280,16 +279,17 @@
     "recu": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/QUALIFICATION-0264.json"
   },
   "preparation_couverts_cimes": {
-    "statut": "roulage_qualifie_images_a_faire",
+    "statut": "socle_publie_sur_main",
     "fiche": "docs/reprise/COUVERTS-CIMES-INTEGRATION-2026-11-20.md",
     "base_candidate": "80aa1e2913a93b54daf68bd1c3dc6abb520dc69b",
     "pr_base": 37,
     "circuits_sources": 9,
-    "circuits_livres": 8,
+    "circuits_livres": 9,
     "build_sources_suivantes_effectue": true,
     "blocages_constates": [],
     "preuves_roulage": "docs/reprise/rapports/ROUTE-DES-CIMES-2026-11-20/QUALIFICATION-DOUZE-PORTAILS.json",
-    "captures_prevues": 24
+    "captures_prevues": 24,
+    "captures_inspectees": 24
   },
   "revue_integree_0264": {
     "pr": 37,
@@ -325,16 +325,17 @@
     "build_reproduit_identique": true,
     "recu": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/CANDIDAT-0266.json"
   },
-  "publication_0266_en_cours": {
+  "publication_0266": {
     "pr": 38,
     "tete": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
     "arbre": "1f05e9b399e4584b814c4050bad9f5652261b097",
     "recu": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/PUBLICATION-0266.json",
-    "statut": "qualifie_pret_a_fusionner",
+    "statut": "publie_sur_main",
     "demos_png_inspectes": 48,
     "qualification_suites": "159/159",
     "images_retenues": 113,
     "outils_tete": "40774189dc3a68242a3908f72e09f2676519ccbf",
-    "qualification_finale_run": 44747519912
+    "qualification_finale_run": 44747519912,
+    "commit_fusion": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8"
   }
 }

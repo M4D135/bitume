@@ -1,6 +1,6 @@
 {
   "version": "0.2.66",
-  "statut": "qualifie_pret_a_fusionner",
+  "statut": "publie_sur_main",
   "date": "2026-11-20",
   "repository": "M4D135/bitume",
   "pr": 38,
@@ -15,7 +15,7 @@
   "meteo_run": 44743369751,
   "couverts_run": 44743369605,
   "relance_effectuee": false,
-  "fusion_effectuee": false,
+  "fusion_effectuee": true,
   "precedent": {
     "version": "0.2.65",
     "suites_reussies": 155,
@@ -28,10 +28,7 @@
     ],
     "recu": "CI-0265-INITIAL.json"
   },
-  "a_terminer": [
-    "Fusion sur main avec contrôle de la tête attendue",
-    "Vérification distante après fusion et clôture du journal"
-  ],
+  "a_terminer": [],
   "reserves_conservees": [
     "Pluie extérieure visible depuis un abri : correctif séparé en préparation",
     "Bandeaux de démo pouvant masquer certains sujets",
@@ -87,5 +84,8 @@
     "suites_echouees": 0,
     "sources_verifiees": 3405,
     "recu": "CI-0266-CAPTURE-CORRIGEE.json"
-  }
+  },
+  "merge_commit": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8",
+  "merge_tree": "d370309f6f3b98e6105425117d8b11d0d518872a",
+  "main_verifie": true
 }

@@ -1,10 +1,11 @@
 # BITUME — reprise courte
 
-## Jalon : 0.2.66 qualifiée, fusion à terminer
+## Livré sur main : 0.2.66
 
 La [PR #38](https://github.com/M4D135/bitume/pull/38) réunit démos, pilotes, météo,
 multi-couverts et **Route-des-Cimes, neuvième circuit**. Physique **p15**, FERRO **0.3.15**.
-`main` attend encore cette fusion ; ne pas annoncer la publication avant contrôle distant.
+Fusion vérifiée : `f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8`.
+Arbre reçu identique au candidat ; fichier jouable et sources qualifiées conformes.
 
 Tête des outils qualifiée : `40774189dc3a68242a3908f72e09f2676519ccbf`.
 Arbre : `52c3b4be0c5ea159ffc90a05a60631d0a7956a02`. Les commits suivants ne portent que les documents.
@@ -25,7 +26,7 @@ HTML : **14 370 823 octets**, SHA-256
 
 Reçu principal : `docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/PUBLICATION-0266.json`.
 Fiche : `docs/reprise/COUVERTS-CIMES-INTEGRATION-2026-11-20.md`.
-Journal détaillé : `docs/reprise/JOURNAL-AUTONOME-2026-11-20.md`, entrée **012**.
+Journal détaillé : `docs/reprise/JOURNAL-AUTONOME-2026-11-20.md`, entrée **013**.
 
 ## Suite préparée et réserves
 
