@@ -1,8 +1,8 @@
 {
-  "version": "0.2.73",
-  "raw": 14510109,
-  "gzip": 3467516,
-  "sha256": "09c386ac0fdaccd7f6417839536a73c32217ce3ed2f91263907f443168394910",
+  "version": "0.2.74",
+  "raw": 14511004,
+  "gzip": 3467712,
+  "sha256": "761bccd8953eef06332dd5929c9826216c589dfdbede77324809d69201783db9",
   "sources": {
     "moteur/renderer.js": 313289,
     "ferro/engine.js": 2025,
@@ -72,6 +72,6 @@
     "ombres.js": 12015,
     "jeu.js": 364438,
     "index.html": 64500,
-    "style.css": 84013
+    "style.css": 84908
   }
 }

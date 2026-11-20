@@ -660,3 +660,30 @@ explicitement les annonces pour les captures ; aucune disparition ne peut
 valider leur placement. Le virage stabilisé précédent est incomplet, non reçu
 comme preuve. CI et PNG 0.2.73 sont requis avant fusion ; PR43 et réserves
 historiques restent séparées. Aucun déploiement du site.
+
+## 037 — Réception 0.2.73 et candidat 0.2.74 en braquages stabilisés
+
+Le petit duo corrigé garde les noms lisibles et dégage annonces, compteurs et
+glaces. Les deux CI complètes .73 réussissent (179 suites Node et huit tests
+Python chacune) ; leurs 3 927 fichiers et modes correspondent exactement à
+l'arbre f0ce14c0. Les 43 PNG pluie/Troll ont été reçus et inspectés.
+
+Le complément stabilisé est cette fois complet : 120 pas pour chaque pose,
+deux PNG, mais le gant droit est recouvert à −0,35 par le régime (1 366,34 px²)
+et deux lignes du classement (704,56 px²). La PR 49 reste bloquée et son échec
+est conservé. Le profil .73 a expiré dans Page.captureScreenshot avant tout PNG ;
+ce n'est pas une preuve de défaut géométrique. La preuve profil .72 utilise le
+même modèle et les mêmes modules FERRO.
+
+Le CSS .74 conserve polices et largeurs, retire les espacements verticaux du
+classement et remonte son bas de 42 px tout en gardant le haut de l'annonce.
+La seule barre de régime est bornée à 12 cqh. Portée : cockpit non tactile,
+ratio de 6/5 à 2 et hauteur locale de 400 à 600 px. Les autres formats conservent
+leur disposition. Les vrais triangles et caméras reproduisent l'échec .73 ; le
+calcul des nouveaux rectangles donne zéro recouvrement sur six poses, sans
+remplacer la réception navigateur attendue. Un miroir stabilisé +0,35 est ajouté.
+
+0.2.74 construite deux fois à l'identique, 60 contrôles ciblés réussis et 34 copies
+FERRO conformes. CI exacte et dix nouveaux PNG requis avant fusion. Aucun seuil
+ni pas de simulation retiré, défaut Non et choix mémorisés conservés. Réserves
+décor historiques inchangées ; aucun déploiement du site.

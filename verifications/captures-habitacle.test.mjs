@@ -61,10 +61,10 @@ test('identité exacte, caméra finale et état WebGL sont nécessaires même po
   }
 });
 
-test('qualification ciblée : vingt PNG, cas historiques conservés, braquage stabilisé et duo compact distincts', () => {
-  assert.equal(SCENARIOS_COCKPIT.reduce((n, s) => n + s.images, 0), 20);
+test('qualification ciblée : vingt-deux PNG, cas historiques conservés, braquages stabilisés symétriques et duo compact distincts', () => {
+  assert.equal(SCENARIOS_COCKPIT.reduce((n, s) => n + s.images, 0), 22);
   const cas = SCENARIOS_COCKPIT.map(s => s.id).join(','), o = optionsHabitacle(['--url', 'file:///tmp/b.html', '--sortie', '/tmp/c', '--cas', cas]);
-  assert.equal(o.cas.length, 11);
+  assert.equal(o.cas.length, 12);
   for (const id of ['cockpit-compact', 'cockpit-carte-gauche']) {
     const s = SCENARIOS_COCKPIT.find(s => s.id === id);
     assert(s?.cockpit); assert.equal(s.taille, '960,540'); assert.equal(s.images, 2);
@@ -73,10 +73,11 @@ test('qualification ciblée : vingt PNG, cas historiques conservés, braquage st
     assert.equal(s.rival, 18);
     assert.deepEqual([s.cartePosition, s.carteTaille, s.tableau], id === 'cockpit-compact' ? ['droite', 'normale', 'reduit'] : ['gauche', 'grande', 'complet']);
   }
-  for (const [id, volant] of [['cockpit-carte-gauche-stabilise', -.35]]) {
-    const s = SCENARIOS_COCKPIT.find(s => s.id === id), ancien = SCENARIOS_COCKPIT.find(s => s.id === id.replace('-stabilise', ''));
+  for (const [id, volant, cote] of [['cockpit-carte-gauche-stabilise', -.35, 'gauche'], ['cockpit-carte-droite-stabilise', .35, 'droite']]) {
+    const s = SCENARIOS_COCKPIT.find(s => s.id === id), ancien = SCENARIOS_COCKPIT.find(s => s.id === 'cockpit-carte-gauche');
     assert.equal(s.volantVitesse, volant); assert.equal(s.chauffeInstant, 120); assert.equal(s.pas, 1 / 60);
-    for (const cle of ['cockpit', 'taille', 'rival', 'cartePosition', 'carteTaille', 'tableau', 'images', 'chauffe']) assert.equal(s[cle], ancien[cle], cle);
+    assert.equal(s.cartePosition, cote);
+    for (const cle of ['cockpit', 'taille', 'rival', 'carteTaille', 'tableau', 'images', 'chauffe']) assert.equal(s[cle], ancien[cle], cle);
   }
   const compact = SCENARIOS_COCKPIT.find(s => s.id === 'cockpit-duo-compact');
   assert.deepEqual([compact.taille, compact.duo, compact.partage, compact.volantVitesse, compact.chauffeInstant], ['960,540', true, 'haut-bas', .65, 24]);

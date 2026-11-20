@@ -618,6 +618,17 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .jauge-derive i { width: auto; flex: 1; }
 }
 
+/* Petit paysage : six lignes gardent leur largeur et leurs polices. Le retrait des
+   paddings verticaux (24 px), des six intervalles (12 px) et du séparateur (6 px)
+   remonte le bas du classement de 42 px sans déplacer le haut de l'annonce.
+   Les fenêtres plus basses gardent leur disposition ; le partage compact a son bloc dédié. */
+@container affichage-course (min-aspect-ratio: 6/5) and (max-aspect-ratio: 2/1) and (min-height: 400px) and (max-height: 600px) {
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .hud-rivaux { bottom: calc(30% + 42px); gap: 0; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement { gap: 0; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li { padding-block: 0; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .regime { width: min(100%,12cqh); justify-self: end; }
+}
+
 /* Petit partage haut/bas : les lignes gardent leurs textes et leur ancrage bas, mais prennent
    moins de hauteur pour laisser l'annonce sous POSITION/TOUR. Le panneau déjà borné suffit
    à dégager les mains ; la largeur complète conserve des noms reconnaissables à cette échelle. */

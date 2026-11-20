@@ -1,0 +1,62 @@
+{
+  "version": "0.2.74",
+  "base_commit": "f7f4ed54f9f79b2e8d560e6d0402f80949233641",
+  "branche": "codex/bitume-0274-hud-stabilise-20261121",
+  "html": {
+    "raw": 14511004,
+    "gzip": 3467712,
+    "sha256": "761bccd8953eef06332dd5929c9826216c589dfdbede77324809d69201783db9"
+  },
+  "source_fingerprint": "f23e3e0c16b61ef99e8f659aded3a666c262bfc33883219da8e72a3889e1e5e0",
+  "reconstruction_deux_fois_identique": true,
+  "ferro": {
+    "version": "0.3.15",
+    "modules_conformes": 34
+  },
+  "physique": "p15",
+  "sources_runtime_modifiees_depuis_0273": [
+    "src/style.css"
+  ],
+  "objectif": [
+    "Dégager le classement et le régime du gant en braquage maintenu, sans réduction des textes ni des largeurs des noms.",
+    "Conserver le défaut Non des annonces et les choix mémorisés, ainsi que le petit duo corrigé en .73."
+  ],
+  "css": {
+    "conteneur_ratio_min": "6/5",
+    "conteneur_ratio_max": "2/1",
+    "hauteur_min_px": 400,
+    "hauteur_max_px": 600,
+    "panneau_remonte_px": 42,
+    "annonce_position_conservee_dans_scene_cible": true,
+    "regime_largeur_max": "12cqh"
+  },
+  "controle_geometrique_preparatoire": "Vrais triangles/poses/caméras .73 reproduits à <1e-6 px² ; rectangles CSS attendus donnent zéro masque pour six poses. La composition réelle du navigateur reste à recevoir.",
+  "controles_locaux": {
+    "options_image": 11,
+    "hud": 13,
+    "captures_habitacle": 30,
+    "cockpit_visibilite": 6,
+    "total": 60
+  },
+  "outils_capture": {
+    "annonces": "Écran explicitement activé, gardes de présence maintenues",
+    "cas_stabilises": [
+      "carte gauche, -.35",
+      "carte droite, +.35"
+    ],
+    "pas_par_pose_stabilisee": 120,
+    "seuils_inchanges": true,
+    "complement": "5 jobs indépendants, 10 PNG attendus"
+  },
+  "portes": [
+    "CI complète sur commit exact et archive rapprochée",
+    "10 PNG du nouveau HTML : petit duo, deux compacts et braquages stabilisés gauche/droite avec annonce activée",
+    "Réception des preuves .73 inchangées : formats hors portée CSS, pluie/Troll et géométrie extérieure"
+  ],
+  "reference_negative_0273": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/RECEPTION-0273.json",
+  "site_deploye": false,
+  "reserves": [
+    "Budget décor historique 172/152/168/155 ms pour seuil strict150 ms, cause non déterminée.",
+    "Aucun FPS matériel Xbox/Intel, manette physique ou écoute humaine qualifiés."
+  ]
+}

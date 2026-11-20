@@ -30,6 +30,8 @@ export const SCENARIOS_COCKPIT = Object.freeze([
     cartePosition: 'gauche', carteTaille: 'grande', tableau: 'complet' },
   { id: 'cockpit-carte-gauche-stabilise', cockpit: true, taille: '960,540', rival: 18,
     cartePosition: 'gauche', carteTaille: 'grande', tableau: 'complet', volantVitesse: -.35, chauffeInstant: 120 },
+  { id: 'cockpit-carte-droite-stabilise', cockpit: true, taille: '960,540', rival: 18,
+    cartePosition: 'droite', carteTaille: 'grande', tableau: 'complet', volantVitesse: .35, chauffeInstant: 120 },
   { id: 'cockpit-vertical', cockpit: true, taille: '540,960' },
   { id: 'cockpit-duo-haut-bas', cockpit: true, taille: '1440,900', duo: true, partage: 'haut-bas' },
   { id: 'cockpit-duo-compact', cockpit: true, taille: '960,540', duo: true, partage: 'haut-bas' },

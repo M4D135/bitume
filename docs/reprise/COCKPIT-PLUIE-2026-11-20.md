@@ -183,3 +183,15 @@ Réserve tardive 0.2.71 : la CI PR `44825452386` termine à **178/179** suites,
 Val-Brûlé **168 ms** pour un seuil strict de **150 ms**. Son archive de
 3 901 fichiers/modes est identique à la CI push verte ; les huit tests Python
 sont sautés en PR après cet échec. Résultat conservé, sans changer le seuil.
+
+## Réception 0.2.73 et correctif stabilisé 0.2.74
+
+La [réception .73](rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/RECEPTION-0273.json)
+valide le petit duo et conserve le défaut réel du virage maintenu : régime et
+classement sur le gant droit. La CI générale est verte, les 43 PNG pluie/Troll
+sont inspectés ; la fusion de PR49 reste bloquée.
+
+Le [candidat .74](rapports/COCKPIT-PLUIE-2026-11-20/candidat-0274/BUILD-0274.json)
+conserve les textes et la largeur des noms, compacte les espaces du classement
+et raccourcit la barre de régime dans le seul petit paysage. Les deux braquages
+stabilisés, annonce activée, sont requis sur son HTML exact avant publication.

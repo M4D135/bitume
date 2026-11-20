@@ -1,25 +1,29 @@
 # BITUME — reprise courte
 
-## Correctif actif : HUD duo compact, candidat 0.2.73
+## Correctif actif : HUD en virage maintenu, candidat 0.2.74
 
-La **0.2.72 (PR 48) reste bloquée** en petit partage haut/bas : annonce sur
-POSITION/TOUR pour J1 et J2, barre santé sur la glace gauche, noms trop tronqués.
-CI PR verte (179 suites Node et huit tests Python), CI push : Val-Brûlé à
-155 ms pour un seuil strict de 150 ms. Archives exactes reçues.
-[Réception conservée](docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/REFERENCE-0272.json).
+La **0.2.73 (PR 49) reste bloquée** : le petit duo est conforme, mais le braquage
+stabilisé à −0,35 révèle un recouvrement du gant droit par le régime et deux lignes
+du classement. Les 120 pas et les deux PNG sont complets ; ce défaut n'est pas
+une expiration. CI push et PR vertes : 179 suites Node et huit tests Python chacune,
+3 927 fichiers et modes strictement identiques. Les 43 PNG pluie/Troll sont inspectés.
+[Réception conservée](docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/RECEPTION-0273.json).
 
-Le candidat **0.2.73** resserre les espacements verticaux et rend la largeur du
-classement aux noms, sans réduire les polices. Les annonces sont sur **Non** au
-premier lancement ; les choix enregistrés sont conservés. Les captures activent
-explicitement l'annonce pour contrôler son placement.
-Branche : `codex/bitume-0273-reprise-20261121`. HTML : **14,510,109 octets**,
-SHA256 `09c386ac0fdaccd7f6417839536a73c32217ce3ed2f91263907f443168394910`. Reconstruit deux fois à l'identique ; 34 modules FERRO conformes.
-[Construction et limites](docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/BUILD-0273.json).
+Le candidat **0.2.74** resserre les espaces du classement dans le petit paysage
+et raccourcit la barre de régime. Les polices et la largeur des noms sont conservées.
+L'annonce garde sa position. Le petit duo corrigé et les annonces sur **Non** au
+premier lancement, avec choix enregistrés préservés, sont conservés.
+Branche : `codex/bitume-0274-hud-stabilise-20261121`. HTML : **14 511 004 octets**,
+SHA256 `761bccd8953eef06332dd5929c9826216c589dfdbede77324809d69201783db9`. Deux reconstructions identiques,
+34 modules FERRO conformes ; 60 contrôles ciblés réussis.
+[Construction et limites](docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0274/BUILD-0274.json).
 
-Recevoir CI et PNG exacts avant fusion : cockpit, petit duo J1/J2 et virage
-maintenu avec tableau complet, plus pluie/Troll. Le complément stabilisé 0.2.72
-reste incomplet après expiration ; il n'est pas une preuve de dégagement.
-PR 43 et autres discussions préservées. Aucun déploiement du site.
+Recevoir la CI et les **dix PNG exacts** avant fusion : petit duo J1/J2, compacts,
+virages maintenus −0,35 et +0,35 avec grande carte des deux côtés. L'annonce est
+explicitement activée. Les preuves .73 hors portée du nouveau CSS et la géométrie
+pluie/Troll inchangée restent identifiées comme telles. Le profil .73 a expiré sans
+PNG ; la preuve .72 sur modèle identique reste disponible. PR 43 et les autres
+discussions sont préservées. Aucun déploiement du site.
 
 ## Publié sur main : 0.2.69
 
@@ -84,7 +88,7 @@ et Marseille reçues ; ces circuits ne sont pas encore jouables.
 [Publication 0.2.68](docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json) ·
 [Réception 05](docs/reprise/PARALLELE-2026-11-20/rapports/00-RECEPTION-05.json).
 
-[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **036**.
+[Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **037**.
 Lire ce fichier, `docs/reprise/ETAT.json` → `etat_courant`, puis la fiche active.
 
 ## Demandes ajoutées : vidéo arcade et survol de course

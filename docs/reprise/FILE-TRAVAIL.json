@@ -11,7 +11,7 @@
     "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
   },
   "destinations_prevues": 17,
-  "lot_actif": "00D_cockpit_pluie_HUD_duo_0273_en_qualification",
+  "lot_actif": "00D_cockpit_pluie_HUD_stabilise_0274_en_qualification",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [
@@ -662,25 +662,24 @@
   },
   "base_initiale": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_candidat": {
-    "version": "0.2.73",
-    "branche": "codex/bitume-0273-reprise-20261121",
+    "version": "0.2.74",
+    "branche": "codex/bitume-0274-hud-stabilise-20261121",
     "physique": "p15",
     "moteur": "FERRO 0.3.15",
     "circuits": 9,
-    "html_sha256": "09c386ac0fdaccd7f6417839536a73c32217ce3ed2f91263907f443168394910",
+    "html_sha256": "761bccd8953eef06332dd5929c9826216c589dfdbede77324809d69201783db9",
     "statut": "en_qualification",
-    "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/BUILD-0273.json",
+    "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0274/BUILD-0274.json",
     "portes_restantes": [
       "CI complète sur commit exact et archive rapprochée",
-      "Captures cockpit dont duo compact J1/J2 avec annonces activées",
-      "Virage maintenu avec tableau complet et grande carte gauche",
-      "Réception pluie/Troll du candidat"
+      "10 PNG du nouveau HTML : petit duo, deux compacts et braquages stabilisés gauche/droite avec annonce activée",
+      "Réception des preuves .73 inchangées : formats hors portée CSS, pluie/Troll et géométrie extérieure"
     ],
     "reserve_decor": "172, 152, 168 et 155 ms historiques, seuil strict de 150 ms conservé",
     "candidat_precedent_bloque": {
-      "version": "0.2.72",
-      "pr": 48,
-      "constat": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/REFERENCE-0272.json"
+      "version": "0.2.73",
+      "pr": 49,
+      "constat": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/RECEPTION-0273.json"
     }
   },
   "demandes_video_survol_2026_11_20": {
