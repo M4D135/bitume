@@ -722,7 +722,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   .arcade-preparation .carte-circuit .nom { font-size: 18px; }
   .arcade-preparation .carte-circuit .fiche { font-size: 9px; }
   .arcade-preparation .depart-fixe .resume-depart { flex: 1 1 100%; }
-  .arcade-preparation .depart-fixe .gros { min-width: 0; flex: 1; font-size: 26px; }
+  .arcade-preparation .depart-fixe .gros { min-width: 0; flex: 1; min-height: 48px; padding: 13px 8px; font-size: clamp(16px, 5vw, 23px); white-space: nowrap; }
   .arcade-preparation .depart-fixe #b-precedent { width: 90px; }
   .arcade-preparation .resume-course { font-size: 11px; }
   .bilan-arcade { padding: 12px 0; }
@@ -743,6 +743,68 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   #p-trace-3d { height: 180px; }
   .chiffres-circuit { padding-top: 10px; padding-bottom: 10px; }
   .arcade-preparation .panneaux-menu { padding-top: 12px; padding-bottom: 14px; }
+}
+
+/* En paysage court, le tracé occupe une zone entière ; seuls le catalogue et les
+   réglages supplémentaires défilent. Les actions gardent une cible de 44 px. */
+@media (max-height: 540px) and (min-width: 601px) {
+  .arcade-preparation { --marge: 10px; }
+  .arcade-preparation .entete { gap: 8px; margin-bottom: 4px; }
+  .arcade-preparation .entete h2 { font-size: 21px; }
+  .arcade-preparation .entete .arcade-compteur { font-size: 10px; }
+  .arcade-preparation .onglets-menu { gap: 6px; }
+  .arcade-preparation .onglets-menu button { min-height: 44px; padding: 8px 6px; font-size: 13px; white-space: nowrap; }
+  .arcade-preparation .panneaux-menu { padding: 6px 4px 8px; scrollbar-width: thin; }
+  .arcade-preparation .panneau-menu :is(button,input,select,textarea,a) { scroll-margin: 4px; }
+  .arcade-preparation .intro-menu { margin-bottom: 8px; font-size: 12px; }
+  .arcade-preparation .panneau-menu fieldset { padding: 10px; }
+  .arcade-preparation .panneau-menu fieldset label span { min-height: 44px; }
+  .arcade-preparation .conditions-grille { gap: 10px; }
+  .arcade-preparation .conditions-grille fieldset { gap: 6px 12px; }
+  .arcade-preparation .depart-fixe { flex-wrap: nowrap; gap: 8px; padding-top: 6px; }
+  .arcade-preparation .depart-fixe .gros { min-width: 0; min-height: 44px; padding: 10px 12px; font-size: 22px; white-space: nowrap; }
+  .arcade-preparation #b-precedent { flex: none; padding: 10px; }
+  .arcade-preparation .resume-course { margin-bottom: 2px; font-size: 11px; line-height: 1.2; }
+  .arcade-preparation .record { font-size: 10px; line-height: 1.2; }
+  .arcade-preparation .aide-manette { gap: 4px 14px; margin-top: 4px; font-size: 10px; line-height: 1.3; }
+  .arcade-preparation .aide-manette kbd { padding: 2px 4px; font-size: 10px; }
+
+  .arcade-preparation #p-piste { height: 100%; }
+  .arcade-preparation .selection-circuit { height: 100%; min-height: 180px; max-height: 320px; grid-template-columns: minmax(0,1.35fr) minmax(210px,1fr); gap: 12px; }
+  .arcade-preparation .apercu-circuit { display: grid; grid-template-columns: minmax(0,1fr) 120px; grid-template-rows: auto minmax(70px,1fr) auto; grid-template-areas: "titre titre" "trace trace" "chiffres legende"; min-height: 0; }
+  .arcade-preparation .apercu-entete { grid-area: titre; gap: 8px; padding: 6px 10px 0; }
+  .arcade-preparation .apercu-entete > div { min-width: 0; }
+  .arcade-preparation .apercu-entete .arcade-surtitre { margin-bottom: 3px; font-size: 9px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .arcade-preparation .apercu-entete h3 { font-size: 22px; }
+  .arcade-preparation .apercu-entete .arcade-compteur { font-size: 10px; }
+  .arcade-preparation #p-trace-3d { grid-area: trace; height: 100%; min-height: 0; margin: 0; }
+  .arcade-preparation .apercu-legende { grid-area: legende; display: grid; justify-content: stretch; gap: 0; padding: 0 6px 3px; }
+  .arcade-preparation .apercu-legende > span { font-size: 9px; line-height: 1.2; text-align: center; }
+  .arcade-preparation .apercu-legende button { min-height: 44px; padding: 6px; font-size: 10px; }
+  .arcade-preparation .chiffres-circuit { grid-area: chiffres; align-self: center; gap: 6px; margin: 0; padding: 6px 8px; border-top: 0; }
+  .arcade-preparation .chiffres-circuit dt { font-size: 8px; letter-spacing: .03em; }
+  .arcade-preparation .chiffres-circuit dd { margin-top: 3px; font-size: 10px; }
+  .arcade-preparation .chiffres-circuit b { font-size: 18px; }
+  .arcade-preparation .catalogue-circuits > .arcade-surtitre { margin-bottom: 4px; font-size: 9px; }
+  .arcade-preparation .circuits { min-height: 0; max-height: none; gap: 5px; }
+  .arcade-preparation .carte-circuit { min-height: 54px; padding: 7px 8px; }
+  .arcade-preparation .carte-circuit .nom { font-size: 18px; }
+  .arcade-preparation #p-piste > .options { margin-top: 10px; }
+  .arcade-preparation #p-piste > .options label span { min-height: 44px; }
+
+  .arcade-preparation .bilan-arcade { padding: 2px 0; }
+  .arcade-preparation .bilan-arcade > .arcade-surtitre { margin-bottom: 3px; font-size: 9px; }
+  .arcade-preparation .bilan-arcade h3 { margin: 0 0 8px; font-size: 22px; }
+  .arcade-preparation .bilan-grille { gap: 10px; }
+  .arcade-preparation .bilan-grille article { padding: 10px; }
+  .arcade-preparation .bilan-grille .etiquette { font-size: 9px; letter-spacing: .08em; }
+  .arcade-preparation .bilan-grille strong { margin: 6px 0; font-size: 18px; }
+  .arcade-preparation .bilan-grille p { font-size: 11px; line-height: 1.4; }
+  .arcade-preparation .bilan-arcade > .note-pneus { margin-top: 6px; font-size: 10px; }
+}
+@media (max-height: 540px) and (min-width: 760px) {
+  .arcade-preparation .menu-entete { display: grid; grid-template-columns: minmax(260px,.9fr) minmax(0,1.5fr); align-items: center; gap: 12px; }
+  .arcade-preparation .entete { margin-bottom: 0; }
 }
 
 /* Un état sonore vide ne réserve pas un espace dans le parcours. */

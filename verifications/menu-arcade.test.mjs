@@ -212,4 +212,38 @@ verifier('Troll : choix indépendants, valeurs bornées, aucun alias vers les r�
     [{ geste: 'majeur', klaxon: 'ancien' }, { geste: 'poing', klaxon: 'classique' }]);
 });
 
+verifier('changement d’étape : défilement central remis au début, réglage courant et liste préservés', () => {
+  const t = toile(), defilement = { scrollTop: 123 }, catalogue = { scrollTop: 72 };
+  const elements = new Map(), selection = { dataset: { menuTab: A.ETAPES[0] } };
+  function element(id) {
+    if (!elements.has(id)) elements.set(id, { ...evenements(), id, hidden: false, disabled: false, visibility: 'visible',
+      setAttribute() {}, matches: () => false, closest() { return this.hidden ? this : null; },
+      getClientRects: () => [{}], querySelectorAll: () => [], focus() {}, scrollIntoView() {} });
+    return elements.get(id);
+  }
+  t.doc.getElementById = id => id === 'p-trace-3d' ? t.canvas : element(id);
+  Object.assign(element('circuits'), catalogue);
+  const zone = { ...evenements(), ownerDocument: t.doc, dataset: {},
+    querySelector: s => s === '.panneaux-menu' ? defilement : selection };
+  const ancien = B.navigationMenu;
+  B.navigationMenu = { ouvrirOnglet(z, id) {
+    if (!A.ETAPES.includes(id)) return false;
+    if (selection.dataset.menuTab !== id) { selection.dataset.menuTab = id; z.emettre('menuongletchange'); }
+    return true;
+  } };
+  const menu = A.installer(zone);
+  try {
+    assert.equal(defilement.scrollTop, 123, 'installer ne déclenche aucun changement d’écran');
+    menu.actualiser(); assert.equal(defilement.scrollTop, 123, 'actualiser conserve le réglage en cours');
+    menu.ouvrir(1, false); assert.equal(defilement.scrollTop, 0, 'entrée suivante au début');
+    defilement.scrollTop = 210;
+    menu.actualiser(); assert.equal(defilement.scrollTop, 210, 'un changement de condition ne saute pas au début');
+    menu.ouvrir(1, false); assert.equal(defilement.scrollTop, 210, 'réouvrir l’étape sélectionnée ne déplace pas le contenu');
+    menu.ouvrir(3, false); assert.equal(defilement.scrollTop, 0, 'bilan au début');
+    defilement.scrollTop = 99; assert.equal(menu.retour(), true); assert.equal(menu.etape, 2);
+    assert.equal(defilement.scrollTop, 0, 'retour à une autre étape au début');
+    assert.equal(element('circuits').scrollTop, 72, 'le défilement propre au catalogue n’est pas réinitialisé');
+  } finally { menu.detruire(); if (ancien) B.navigationMenu = ancien; else delete B.navigationMenu; }
+});
+
 console.log(`${controles} contrôles du menu arcade réussis ; neuf circuits, 144 rotations et six formats.`);

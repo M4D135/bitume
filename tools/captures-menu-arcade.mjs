@@ -48,6 +48,51 @@ async function calme(nom, verifierApercu = true) {
   notes(nom, { dessinsWebGL: apres.dessins - avant.dessins, imagesApercu: apres.menu.images - avant.menu.images });
 }
 async function etape(n) { await page.locator('[data-menu-tab="' + ['p-piste','p-conditions','p-pilotes','p-bilan'][n] + '"]').click(); await page.waitForFunction(n => BITUME_JEU.menuArcade.etape === n, n); }
+async function cadragePaysage(n) {
+  // Observer le premier affichage après le vrai clic d'onglet : aucun scrollIntoView ni scroll de réparation.
+  const releve = await page.evaluate(n => {
+    const zone = document.getElementById('preparation'), panneau = zone.querySelector('.panneaux-menu');
+    const entete = zone.querySelector('.menu-entete').getBoundingClientRect(), pied = zone.querySelector('.depart-fixe').getBoundingClientRect();
+    const rectangle = r => ({ gauche: r.left, haut: r.top, droite: r.right, bas: r.bottom });
+    const contient = (cadre, r) => r.left >= cadre.gauche - 1 && r.top >= cadre.haut - 1 && r.right <= cadre.droite + 1 && r.bottom <= cadre.bas + 1;
+    function mesurer(el, nom, texte = false) {
+      if (!el) return { nom, visible: false, motif: 'élément absent' };
+      const r = el.getBoundingClientRect(), cadre = { gauche: 0, haut: Math.max(0, entete.bottom), droite: innerWidth, bas: Math.min(innerHeight, pied.top) };
+      const styleCible = getComputedStyle(el), ancetres = [];
+      let masque = el.hidden || styleCible.display === 'none' || styleCible.visibility === 'hidden' || styleCible.visibility === 'collapse' || +styleCible.opacity === 0;
+      // Les éléments d'un conteneur scrollable peuvent être dans le viewport tout en étant rognés par ce conteneur.
+      for (let parent = texte ? el : el.parentElement; parent; parent = parent.parentElement) {
+        const style = getComputedStyle(parent), p = parent.getBoundingClientRect();
+        if (style.display === 'none' || style.visibility === 'hidden' || style.visibility === 'collapse' || +style.opacity === 0 || parent.hidden) masque = true;
+        const coupeX = /^(auto|scroll|hidden|clip)$/.test(style.overflowX), coupeY = /^(auto|scroll|hidden|clip)$/.test(style.overflowY);
+        if (coupeX) { cadre.gauche = Math.max(cadre.gauche, p.left + parent.clientLeft); cadre.droite = Math.min(cadre.droite, p.left + parent.clientLeft + parent.clientWidth); }
+        if (coupeY) { cadre.haut = Math.max(cadre.haut, p.top + parent.clientTop); cadre.bas = Math.min(cadre.bas, p.top + parent.clientTop + parent.clientHeight); }
+        if (coupeX || coupeY) ancetres.push({ element: parent.id || parent.className || parent.tagName, scrollTop: parent.scrollTop, coupeX, coupeY });
+      }
+      let contenu = null;
+      if (texte) {
+        const carte = el.closest('.bilan-grille article'), c = carte.getBoundingClientRect();
+        cadre.gauche = Math.max(cadre.gauche, c.left); cadre.haut = Math.max(cadre.haut, c.top);
+        cadre.droite = Math.min(cadre.droite, c.right); cadre.bas = Math.min(cadre.bas, c.bottom);
+        const range = document.createRange(); range.selectNodeContents(el);
+        const lignes = Array.from(range.getClientRects()).filter(l => l.width > 0 && l.height > 0);
+        contenu = { lignes: lignes.length, complet: !!el.textContent.trim() && lignes.length > 0 && lignes.every(l => contient(cadre, l)) };
+      }
+      return { nom, rectangle: rectangle(r), zoneVisible: cadre, ancetres, contenu,
+        visible: !masque && r.width > 0 && r.height > 0 && contient(cadre, r) && (!contenu || contenu.complet) };
+    }
+    const cartes = Array.from(zone.querySelectorAll('.bilan-grille article'));
+    const cibles = n === 0 ? [mesurer(document.getElementById('p-trace-3d'), 'canvas du tracé')] : [
+      ...cartes.map((c, i) => mesurer(c, 'carte bilan ' + (i + 1))),
+      ...['p-bilan-circuit','p-bilan-course','p-bilan-saison','p-bilan-meteo','p-bilan-joueurs','p-bilan-troll'].map(id => mesurer(document.getElementById(id), id, true))
+    ];
+    return { etape: n + 1, largeur: innerWidth, hauteur: innerHeight, scrollTop: panneau.scrollTop, cartes: cartes.length, cibles };
+  }, n);
+  (rapport.visibilitePaysage ||= []).push(releve);
+  assert.ok(Math.abs(releve.scrollTop) <= 1, 'nouvelle étape ouverte au milieu du panneau : ' + JSON.stringify(releve));
+  if (n === 3) assert.equal(releve.cartes, 3, 'les trois cartes du bilan doivent être présentes');
+  for (const cible of releve.cibles) assert.equal(cible.visible, true, 'paysage : contenu coupé au premier affichage : ' + JSON.stringify(cible));
+}
 try {
   await page.goto(args.url, { waitUntil: 'load', timeout: 120000 });
   await page.waitForFunction(() => window.BITUME_JEU && (BITUME_JEU.ecran === 'titre' || !document.getElementById('autodetection').hidden), null, { timeout: 120000 });
@@ -96,6 +141,7 @@ try {
       });
       assert.ok(dimensions.debordement <= 2, 'panneau déborde horizontalement : ' + JSON.stringify(dimensions));
       assert.ok(dimensions.pied.haut >= 0 && dimensions.pied.bas <= taille.height + 1, 'actions hors écran');
+      if (taille.width > taille.height && taille.height <= 430 && (n === 0 || n === 3)) await cadragePaysage(n);
       await capture('etape-' + (n + 1) + '-' + taille.width + 'x' + taille.height);
     }
   }

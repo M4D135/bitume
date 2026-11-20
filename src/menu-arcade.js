@@ -200,7 +200,12 @@
       if (detruit) return;
       version++;
       const actif = zone.querySelector('[data-menu-tab][aria-selected="true"]');
+      const precedente = etape;
       etape = Math.max(0, ETAPES.indexOf(actif && actif.dataset.menuTab));
+      if (etape !== precedente) {
+        const contenu = zone.querySelector('.panneaux-menu');
+        if (contenu) contenu.scrollTop = 0; // Une nouvelle étape s'ouvre au début, sans déplacer les réglages en cours.
+      }
       zone.dataset.etape = String(etape);
       $('p-etape').textContent = '0' + (etape + 1) + ' / 04';
       $('b-precedent').textContent = etape ? 'Précédent' : 'Menu';
