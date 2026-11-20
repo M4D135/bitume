@@ -42,9 +42,11 @@ node --test verifications/monaco-revue.test.mjs verifications/monaco-mesures.tes
 La revue s'ajoute aux acquisitions closes ; elle ne les télécharge pas à nouveau. Les fichiers
 OSM, les 830 observations, les registres existants et le HTML autonome restent inchangés.
 **35/35 contrôles ciblés réussissent**, dont neuf nouveaux, dans quatre fichiers de tests.
-Le contrôle hors réseau retrouve les sorties et les 15 empreintes d'entrée. Dix gardes
-de fichiers historiques, version, moteur et HTML restent identiques. Reçu :
-`../references/monaco-2026/qualification-revue.json`. Publication encore à constater.
+Le contrôle hors réseau retrouve les sorties et les 15 empreintes d'entrée. Les dix fichiers
+historiques contrôlés, dont version, moteur et HTML, restent identiques. Reçu :
+`../references/monaco-2026/qualification-revue.json`. PR [#26](https://github.com/M4D135/bitume/pull/26) fusionnée : `ed32c88e0878e57cd5e64476360047d2354f4816`.
+CI [44706854811](https://github.com/M4D135/bitume/actions/runs/44706854811) : **144/144 suites réussies** ;
+arbre de fusion identique au candidat. Reçu : `../references/monaco-2026/PUBLICATION-REVUE-20261120.json`.
 
 Une sonde WFS IGN supplémentaire, distincte des acquisitions closes, conserve sept objets
 de voirie autour du boulevard Louis-II, dont deux voies souterraines distinctes.

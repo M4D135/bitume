@@ -5,13 +5,13 @@
     "version_publiee_verifiee": "0.2.61",
     "physique": "p14",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "monaco_14A_revue_qualifiee_publication_a_constater",
-    "lot": "14A_Monaco_revue_mesures",
+    "statut": "monaco_14A_revue_publiee_acquisition_routiere",
+    "lot": "14A_Monaco_acquisition_routiere",
     "fiche": "docs/reprise/MONACO-REVUE-2026-11-20.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
     "derniere_entree": "050",
-    "prochaine_action": "Publier la revue qualifiee puis acquerir les objets routiers BD TOPO des secteurs prioritaires ; confirmer niveaux, datum, dates et limites de course.",
-    "dernier_lot_clos": "docs/reprise/HAUT-COL-METEO-2026-11-20.md"
+    "prochaine_action": "Acquerir les objets BD TOPO des secteurs prioritaires ; confronter niveaux, datum, dates, incertitudes et limites de course.",
+    "dernier_lot_clos": "docs/reprise/MONACO-REVUE-2026-11-20.md"
   },
   "publication": {
     "pr": 24,
@@ -93,7 +93,8 @@
     "monaco_mesures_14A": "docs/references/monaco-2026/PUBLICATION-MESURES-20261120.json",
     "bitume_0260": "docs/reprise/rapports/REALISME-2026-11-19/PUBLICATION-0260.json",
     "bitume_0259": "docs/reprise/rapports/COCKPIT-PILOTES-2026-11-19/PUBLICATION-0259.json",
-    "bitume_0257": "docs/reprise/rapports/DEMOS-CINEMA-2026-11-19/PUBLICATION-0257.json"
+    "bitume_0257": "docs/reprise/rapports/DEMOS-CINEMA-2026-11-19/PUBLICATION-0257.json",
+    "monaco_revue_14A": "docs/references/monaco-2026/PUBLICATION-REVUE-20261120.json"
   },
   "regle": "Un sous-lot à la fois ; préserver les preuves, reprise courte et programme complet ; aucun push forcé.",
   "qualification_monaco_revue": {
@@ -112,6 +113,33 @@
     "sonde_bdtopo_objets": 7,
     "observations_chaussee_qualifiees": 0,
     "recu": "docs/references/monaco-2026/qualification-revue.json",
-    "publication": "a_constater"
+    "publication": "publie_sur_main",
+    "pr": 26,
+    "ci_suites_reussies": 144,
+    "ci_suites_echouees": 0,
+    "ci_run": 44706854811,
+    "commit_fusion": "ed32c88e0878e57cd5e64476360047d2354f4816"
+  },
+  "publication_monaco_revue": {
+    "status": "merged",
+    "pr": 26,
+    "url": "https://github.com/M4D135/bitume/pull/26",
+    "head": "4fba4b0cea7dad3254822fbda25c217708526607",
+    "candidateTree": "c155250cf75370a1e42aed69a3e677a83c637c6e",
+    "mergeCommit": "ed32c88e0878e57cd5e64476360047d2354f4816",
+    "mergeTreeMatchesCandidate": true,
+    "ciRun": 44706854811,
+    "ciJob": 136188503585,
+    "ciTestFilesPassed": 144,
+    "ciTestFilesFailed": 0,
+    "ciLogSha256": "025ec9020be071010879524c1a70295b08f7b98e15dd8503b5d7faf3f8b32c53",
+    "gameVersion": "0.2.61",
+    "physics": "p14",
+    "engine": "FERRO 0.3.15",
+    "htmlBytes": 14265416,
+    "htmlSha256": "c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d",
+    "artifactArchiveIndependentlyDownloaded": false,
+    "verification": "Arbre distant et arbre de fusion identiques au candidat ; CI et journal observes. Le workflow reconstruit et refuse tout changement de version, taille ou HTML.",
+    "documentationClosure": "Documents uniquement ; aucune reconstruction ni nouvelle campagne locale."
   }
 }
