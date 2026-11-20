@@ -5,12 +5,12 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import vm from 'node:vm';
 const require = createRequire(import.meta.url);
-for (const f of ['circuit', 'carene', 'chaussee', 'botanique', 'ecologie', 'saisons', 'vegetation', 'bords', 'decor']) require('../src/' + f + '.js');
+for (const f of ['circuit', 'route-des-cimes', 'carene', 'chaussee', 'botanique', 'ecologie', 'saisons', 'vegetation', 'bords', 'decor']) require('../src/' + f + '.js');
 const B = globalThis.BITUME, sourceJeu = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const catalogue = vm.runInNewContext(sourceJeu.match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1]);
 const rapports = []; let controles = 0;
 function verifier(nom, f) { const r = f(); controles++; console.log('ok  ' + nom); if (r) rapports.push({ nom, ...r }); }
-function circuit(k) { const c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom }); B.bords.limites(c, B.bords.planifier(c)); return c; }
+function circuit(k) { const c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition }); B.bords.limites(c, B.bords.planifier(c)); return c; }
 function empreinte(x) { return createHash('sha256').update(JSON.stringify(x)).digest('hex'); }
 function solides(d) { return d.lotsHerbier.flatMap(l => l.objets).map(o => o.solidePhysX || null); }
 function photographieVegetation(qualite, actif) {

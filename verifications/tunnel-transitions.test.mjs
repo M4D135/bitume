@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 const req = createRequire(import.meta.url);
-for (const f of ['carene', 'circuit', 'ferro/vehicle-dynamics', 'conduite', 'decor', 'graphismes']) req('../src/' + f + '.js');
+for (const f of ['carene', 'circuit', 'couverts', 'ferro/vehicle-dynamics', 'conduite', 'decor', 'graphismes']) req('../src/' + f + '.js');
 const B = globalThis.BITUME;
 const page = req('node:fs').readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 
@@ -17,7 +17,7 @@ function extraire(debutMarque, finMarque) {
   return page.slice(a, b);
 }
 
-const sourceTunnel = extraire('  const TUNNEL_PAS = 10', '  // ---------------------------------------------------------------- rétroviseurs');
+const sourceTunnel = extraire('  function preparerTunnel(c)', '  // ---------------------------------------------------------------- rétroviseurs');
 // creationTardive : filet de jeu.js, qui compte ce qui naît dans le chemin d'une image au lieu de la préparation
 const tunnelF = new Function('scene', 'B', 'creationTardive', sourceTunnel + '\nreturn { preparerTunnel, sousLaVoute, lampesTunnel, remettreLampes, LAMPE_RAYON, LAMPE_MAX, LAMPE_MIN, LAMPE_PUISSANCE };');
 const sourceReflets = extraire('  const REFLET_PRISE =', '\n  // ---------------------------------------------------------------- tunnel : lampes');

@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "statut": "qualification_locale_socle_avant_integration_cimes",
+  "base": "fb6384cb1b3407eecdb72cf9471f137a459334d9",
+  "physique": "p15",
+  "ferro": "0.3.15",
+  "version_modifiee": false,
+  "nouveaux_controles": 12,
+  "rayons_physx_wasm": 336,
+  "regressions_suites": 10,
+  "regressions_controles": 114,
+  "echecs_finaux": 0,
+  "geometries_historiques_preservees": 9,
+  "validation_captures": false,
+  "fps_materiel_mesure": false,
+  "roulage_cimes_integre": false,
+  "files_sha256": {
+    "src/couverts.js": "b973db5de7dce46ef76d3d6ed74840fbdcad70cc4457454f677d7a4439e6732d",
+    "src/circuit.js": "5eca453cf75f588144bcba655850c9f12b4b5495de8d3703c76a8b9a9de45634",
+    "src/decor.js": "dae025f28c055ddbf2aa8778d779628d1b14e7a3a2c0eede25ce310ec86eee01",
+    "src/jeu.js": "e1d075b2d2078caa6e2df3c404c3d9ca1d6ef1aea9e004edd85831e1124392e2",
+    "src/chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+    "construire.py": "56a0bcf22b4f96c59a4d07687dafd80b80471b22d9aab8db25ac31949a697157",
+    "verifications/couverts-multiples.test.mjs": "9ea4f8dfadddad6e6f604c23929c81e46d663103d6fc48702df9f54fbed59767",
+    "verifications/couverts-physx.test.mjs": "01169d80de57c84d1fa32362ccd20b1ea72dc07ced90936dc61dae94210f45ce"
+  }
+}

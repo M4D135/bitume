@@ -1,5 +1,16 @@
 # BITUME — reprise courte
 
+## Intégration couverts et Route-des-Cimes en préparation
+
+La 0.2.64 est sauvegardée en PR #37, tête `80aa1e2`, arbre exact `e0156294`.
+Sa CI et ses captures intégrées sont en cours ; `main` reste en 0.2.62.
+Les sources du lot suivant réunissent Route-des-Cimes et le socle multi-couverts.
+Deux défauts réels sont en correction : joints de voûte courbe ouverts, et contact du
+châssis contre le raccord de sol à l’entrée de la galerie. Les preuves initiales sont
+conservées ; pas de fusion ni de qualification du nouveau circuit à ce stade.
+Fiche : `docs/reprise/COUVERTS-CIMES-INTEGRATION-2026-11-20.md`.
+Le HTML versionné reste celui de la 0.2.64 jusqu’à la construction du prochain candidat.
+
 ## Candidat 0.2.64 — démos, pilotes et météo
 
 Les deux branches sont assemblées sur p15 ; build reproductible, FERRO 0.3.15 conforme.

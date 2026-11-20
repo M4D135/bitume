@@ -5,6 +5,7 @@ import { test } from 'node:test';
 
 const charger = createRequire(import.meta.url);
 charger('../src/circuit.js');
+charger('../src/route-des-cimes.js');
 charger('../src/virages.js');
 const B = globalThis.BITUME, { planifier, lire, creerVoix } = B.virages;
 const ramener = (s, L) => ((s % L) + L) % L;
@@ -232,11 +233,15 @@ const sourceJeu = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8'
 const declaration = sourceJeu.match(/  const CATALOGUE = \[[\s\S]*?\n  \];/);
 assert.ok(declaration, 'catalogue réel disponible');
 const catalogue = new Function(declaration[0] + '; return CATALOGUE;')();
-assert.equal(catalogue.length, 8);
+assert.equal(catalogue.length, 9);
+assert.equal(catalogue[8].id, 'route-des-cimes');
 for (const configuration of catalogue) test(`${configuration.nom} : les vrais virages serrés sont couverts sans toucher au tracé`, () => {
   const c = B.circuit.creer(configuration.graine, configuration), avant = structuredClone(c);
   const plan = planifier(c), suivi = {}, annonces = new Map();
-  assert.ok(plan.length >= 3 && plan.length <= 12, `${plan.length} annonces pour ${c.longueur} m`);
+  // Les huit circuits historiques gardent leur plafond ; le parcours dirigé de 9,7 km
+  // conserve ses 20 vrais virages, sans en supprimer pour satisfaire le budget des circuits courts.
+  const maximum = configuration.partition ? Math.ceil(c.longueur / 400) : 12;
+  assert.ok(plan.length >= 3 && plan.length <= maximum, `${plan.length} annonces pour ${c.longueur} m`);
   assert.ok(plan.some(v => v.difficulte >= 2));
   for (const v of plan) {
     for (const champ of ['debut', 'sommet', 'fin']) assert.ok(v[champ] >= 0 && v[champ] < c.longueur);

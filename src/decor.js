@@ -114,6 +114,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
     const a = c.cap[i];
     return { i, s: i * c.pas, x: c.x[i], y: c.y[i], z: c.z[i], a, t: [Math.cos(a), 0, Math.sin(a)], r: [-Math.sin(a), 0, Math.cos(a)], devers: c.devers[i], k: c.courbure[i] };
   }
+  // Les portails explicites peuvent tomber entre deux points : préserver leur abscisse exacte.
+  function cadreOuvrage(c, i) {
+    if (Number.isInteger(i)) return cadre(c, i);
+    const e = B.circuit.echantillon(c, i * c.pas), a = e.cap;
+    return { i: ((Math.floor(i) % c.n) + c.n) % c.n, s: i * c.pas, x: e.x, y: e.y, z: e.z, a, t: [Math.cos(a), 0, Math.sin(a)], r: [-Math.sin(a), 0, Math.cos(a)], devers: e.devers, k: e.courbure };
+  }
   // Hauteur de la chaussée au décalage d (dévers compris) ; au-delà du bord, la pente du dévers s'arrête.
   function hauteurRoute(f, d, w) {
     const dd = Math.max(-w, Math.min(w, d));
@@ -569,7 +575,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
       const w = c.largeur / 2;
       for (let i = 0; i < c.n; i++) {
         const j = (i + 1) % c.n, s = B.circuit.ecart(c, 0, i * c.pas);
-        const tunnel = B.circuit.dansTunnel && B.circuit.dansTunnel(c, i * c.pas, 25);
+        const tunnel = B.circuit.dansCouvert && B.circuit.dansCouvert(c, i * c.pas, 25);
         const paddock = s > enceinte.debut - 20 && s < enceinte.fin + 20;
         const gauche = tunnel ? Math.max(lim.G[i], lim.G[j]) + 32 : w + 1.24;
         const droite = tunnel ? Math.max(lim.D[i], lim.D[j]) + 32 : paddock ? w + 28 : w + 1.24;
@@ -1140,13 +1146,20 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
     // et la montagne autour (flancs posés au sol contre les murs, crête sur la voûte, rien ne dépasse à l'intérieur).
     // L'intérieur est éclairé « dedans » (outdoor: false : ni soleil ni ciel, seulement les lampes) ; la chaussée y est
     // doublée d'un revêtement intérieur, car la nappe de la route reste éclairée par le ciel. Pas de pluie dedans (jeu.js).
-    if (c.tunnel) {
-      const T = c.tunnel, PAS_T = 3, iD = Math.round(T.debut / c.pas), iF = Math.round(T.fin / c.pas), M = T.mur, H = T.hauteur;
+    for (const T of (B.couverts ? B.couverts.liste(c) : c.tunnel ? [c.tunnel] : [])) {
+      if (T.type === 'galerie') {
+        const galerie = B.couverts.construireGalerie(c, T);
+        for (const lot of galerie.lots) ajouter(lot.objets, lot.loin, lot.x, lot.z);
+        if (!tunnelLampes) tunnelLampes = [];
+        tunnelLampes.push(...galerie.lampes);
+        continue;
+      }
+      const PAS_T = 3, iD = T.debut / c.pas, iF = (T.debut + (B.couverts ? B.couverts.longueur(c, T) : T.fin - T.debut)) / c.pas, M = T.mur, H = T.hauteur;
       const BETON = [.50, .50, .48], VOUTE = [.22, .22, .23], SOL = [.20, .20, .205], LIGNE = [.82, .82, .78];
       const ROCHE = [.43, .41, .38], ROCHE2 = [.36, .35, .33], ROCHE3 = [.48, .46, .42];
-      tunnelLampes = [];
+      if (!tunnelLampes) tunnelLampes = [];
       for (let i = iD; i < iF; i += PAS_T) {
-        const f0 = cadre(c, i), f1 = cadre(c, Math.min(i + PAS_T, iF)), y0 = hauteurRoute(f0, 0, w), y1 = hauteurRoute(f1, 0, w);
+        const f0 = cadreOuvrage(c, i), f1 = cadreOuvrage(c, Math.min(i + PAS_T, iF)), y0 = hauteurRoute(f0, 0, w), y1 = hauteurRoute(f1, 0, w);
         const objets = [], loin = [];
         const a0 = pointPlan(f0, 0, y0), a1 = pointPlan(f1, 0, y1), axe = [a1[0] - a0[0], a1[1] - a0[1], a1[2] - a0[2]], long = Math.hypot(...axe) + .05;
         const no = [Math.sin(f0.devers) * f0.r[0], Math.cos(f0.devers), Math.sin(f0.devers) * f0.r[2]], rotSol = angles(...base(axe, no));
@@ -1163,7 +1176,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
           objets.push(mur); loin.push(mur);
           // bande réfléchissante, et une lampe tous les 12 m de chaque côté, en quinconce
           objets.push({ shape: 'box', p: [m[0] - f0.r[0] * cote * .32, m[1] + .9, m[2] - f0.r[2] * cote * .32], s: [long, .14, .02], r: rot, mat: 16, color: [.85, .72, .2], outdoor: false });
-          if (((i - iD) / PAS_T + (cote > 0 ? 0 : 2)) % 4 === 0) {
+          if ((Math.round((i - iD) / PAS_T) + (cote > 0 ? 0 : 2)) % 4 === 0) {
             const lampe = { shape: 'box', p: [m[0] - f0.r[0] * cote * .34, m[1] + H - .6, m[2] - f0.r[2] * cote * .34], s: [1.1, .16, .08], r: rot, mat: 5, color: [1, .86, .58], emissive: 2.4, outdoor: false };
             objets.push(lampe); loin.push(lampe);
             tunnelLampes.push([m[0] - f0.r[0] * cote * 1.2, m[1] + H - .9, m[2] - f0.r[2] * cote * 1.2]);
@@ -1182,12 +1195,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
       for (let i = iD - 10; i <= iF + 10; i += 5) {
         const t = (i - iD) / nT, interieur = i >= iD + 4 && i <= iF - 4, horsTunnel = i < iD || i > iF;
         const P = 1 - Math.pow(Math.min(1, Math.abs(2 * t - 1)), 4), Hc = 15 + 14 * P, recul = horsTunnel ? Math.min(i < iD ? iD - i : i - iF, 10) / 10 : 0;
-        const f = cadre(c, i), y = hauteurRoute(f, 0, w), objets = [], h = k => hache(i, k, g + 101);
+        const f = cadreOuvrage(c, i), y = hauteurRoute(f, 0, w), objets = [], h = k => hache(i, k, g + 101);
         if (i >= iD + 3 && i <= iF - 3) {
           const haut = Hc - .5 + 3 * h(1) - (H + .7);
-          objets.push({ shape: 'bevel', p: pointPlan(f, (h(2) - .5) * 4, y + H + .7 + haut / 2), s: [12 + 4 * h(3), haut, 2 * M + 8], r: angles(...base(f.t, [0, 1, 0])), mat: 9, color: ROCHES[i % 3] });
+          objets.push({ shape: 'bevel', p: pointPlan(f, (h(2) - .5) * 4, y + H + .7 + haut / 2), s: [12 + 4 * h(3), haut, 2 * M + 8], r: angles(...base(f.t, [0, 1, 0])), mat: 9, color: ROCHES[((Math.floor(i) % 3) + 3) % 3] });
           // un piton par-dessus, de travers, pour casser la ligne de crête
-          if (h(4) > .45) objets.push({ shape: 'octa', p: pointPlan(f, (h(5) - .5) * 16, y + Hc + 1.5 + 2 * h(6)), s: [9 + 6 * h(7), 5 + 6 * h(8), 8 + 6 * h(9)], r: [h(11) * .5, h(12) * 6.3, h(13) * .5], mat: 9, color: ROCHES[(i + 1) % 3] });
+          if (h(4) > .45) objets.push({ shape: 'octa', p: pointPlan(f, (h(5) - .5) * 16, y + Hc + 1.5 + 2 * h(6)), s: [9 + 6 * h(7), 5 + 6 * h(8), 8 + 6 * h(9)], r: [h(11) * .5, h(12) * 6.3, h(13) * .5], mat: 9, color: ROCHES[((Math.floor(i + 1) % 3) + 3) % 3] });
         }
         for (const cote of [-1, 1]) {
           let lat = M + .6;
@@ -1201,7 +1214,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
             const lacet = k ? (h(30 + k) - .5) * .7 : 0, penche = k ? (h(40 + k) - .5) * .3 : 0;
             const av = [Math.cos(f.a + lacet), 0, Math.sin(f.a + lacet)], dessus = [f.r[0] * penche * cote, 1, f.r[2] * penche * cote];
             const pointu = k >= 2 && h(60 + k) > .5;   // dehors, des blocs pointus pour une silhouette de rocher
-            objets.push({ shape: pointu ? 'octa' : 'bevel', p: pointPlan(f, cote * centre, y - 2 + (haut + 2) / 2 + (pointu ? haut * .2 : 0)), s: [11 + 5 * h(50 + k), (haut + 2) * (pointu ? 1.5 : 1), large * (pointu ? 1.3 : 1)], r: angles(...base(av, dessus)), mat: 9, color: ROCHES[(i + k + (cote > 0)) % 3] });
+            objets.push({ shape: pointu ? 'octa' : 'bevel', p: pointPlan(f, cote * centre, y - 2 + (haut + 2) / 2 + (pointu ? haut * .2 : 0)), s: [11 + 5 * h(50 + k), (haut + 2) * (pointu ? 1.5 : 1), large * (pointu ? 1.3 : 1)], r: angles(...base(av, dessus)), mat: 9, color: ROCHES[((Math.floor(i + k + (cote > 0)) % 3) + 3) % 3] });
           }
         }
         if (objets.length) {
@@ -1211,7 +1224,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
       }
       // portails : façade de roche percée à la taille de la voûte, à chaque bout, encadrée de béton (piédroits et linteau)
       for (const [i, sens] of [[iD, -1], [iF, 1]]) {
-        const f = cadre(c, i), y = hauteurRoute(f, 0, w), rot = capRot(f.a), objets = [];
+        const f = cadreOuvrage(c, i), y = hauteurRoute(f, 0, w), rot = capRot(f.a), objets = [];
         const devant = (d, h) => { const p = pointPlan(f, d, y + h); return [p[0] + f.t[0] * sens * 1.75, p[1], p[2] + f.t[2] * sens * 1.75]; };
         for (const cote of [-1, 1]) {
           objets.push({ shape: 'bevel', p: pointPlan(f, cote * (M + 7.3), y + 7.5), s: [3, 15.5, 14], r: rot, mat: 9, color: ROCHE });
@@ -1237,7 +1250,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
       let entree = v.i; while (Math.abs(c.courbure[((entree - 1) % c.n + c.n) % c.n]) > 1 / 400 && v.i - entree < 60) entree--;
       const nouveauRepere = reperes && reperes.virages.some(q => distanceRepere(c, q.debut, v.i * c.pas) <= q.longueur);
       for (const [metres, barres] of (nouveauRepere ? [] : [[150, 3], [100, 2], [50, 1]])) {
-        const f = cadre(c, entree - metres / c.pas), yb = hauteurRoute(f, ext * w, w);
+        const f = cadre(c, Math.round((entree * c.pas - metres) / c.pas)), yb = hauteurRoute(f, ext * w, w);
         const p = pointPlan(f, ext * (w + 3.2), yb), rot = capRot(f.a);
         const objets = [{ shape: 'box', p: [p[0], p[1] + 1.3, p[2]], s: [.08, 1.5, 1.2], r: rot, mat: 16, color: [.93, .93, .9] },
           { shape: 'cylinder', p: [p[0], p[1] + .3, p[2]], s: [.08, .6, .08], mat: 0, color: [.5, .5, .5] }];

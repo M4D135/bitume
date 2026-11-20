@@ -44,7 +44,7 @@
       source.id = v.id === undefined ? i : v.id;
       source.p[0] = p.x; source.p[1] = p.y + .35; source.p[2] = p.z;
       const vitesse = Math.abs(e.v);
-      if (v.abandon || vitesse < .5 || (circuit && B.circuit && B.circuit.dansTunnel && B.circuit.dansTunnel(circuit, e.s, 0))) continue;
+      if (v.abandon || vitesse < .5 || (circuit && B.circuit && (B.circuit.dansCouvert || B.circuit.dansTunnel)?.(circuit, e.s, 0))) continue;
       // Le cap dessiné inclut le dérapage de la caisse ; le flux suit la vitesse réelle.
       const capVitesse = p.cap - (Number.isFinite(e.beta) ? e.beta : 0);
       source.velocity[0] = Math.cos(capVitesse) * e.v;

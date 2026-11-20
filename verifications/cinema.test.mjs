@@ -5,7 +5,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import vm from 'node:vm';
 import { chargerPhysX } from './helpers/physx-runtime.mjs';
 const require = createRequire(import.meta.url);
-for (const f of ['circuit','conduite','carene','botanique','ecologie','saisons','vegetation','bords','decor','obstacles','solides-physx','ambiance','animaux','course','cinema','realisateur']) require('../src/'+f+'.js');
+for (const f of ['circuit', 'route-des-cimes','conduite','carene','botanique','ecologie','saisons','vegetation','bords','decor','obstacles','solides-physx','ambiance','animaux','course','cinema','realisateur']) require('../src/'+f+'.js');
 const B = globalThis.BITUME, X = await chargerPhysX(), Cine = B.cinema, R = B.realisateur;
 const catalogue = vm.runInNewContext(readFileSync(new URL('../src/jeu.js',import.meta.url),'utf8').match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1]);
 let controles=0;
@@ -17,7 +17,7 @@ const distance=(a,b)=>Math.hypot(...a.map((v,i)=>v-b[i]));
 const signatures = new Set();
 try {
 for(const k of catalogue) {
- const c=B.circuit.creer(k.graine,{theme:k.theme,longueur:k.longueur,nom:k.nom}); B.bords.limites(c,B.bords.planifier(c));
+ const c=B.circuit.creer(k.graine,{theme:k.theme,longueur:k.longueur,nom:k.nom,partition:k.partition}); B.bords.limites(c,B.bords.planifier(c));
  const decor=B.decor.construire(c,{qualite:'high',vegetationQualite:'high',saison:'ete'});c.obstacles=B.obstacles.creer(decor.obstacles);
  const animaux=B.animaux.creer(c,decor,{saison:'ete'}), world=X.createWorld({fixedStep:1/120,maxSubSteps:1}), montage=B.solidesPhysX.installer(world,c,decor);
  try {

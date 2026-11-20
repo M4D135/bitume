@@ -97,7 +97,7 @@
       let meilleur = null;
       for (let j = 0; j < 6; j++) {
         const s = (secteur + (j + .5) / 6) * c.longueur / 8;
-        if (B.circuit.dansTunnel(c, s, 90)) continue;
+        if (B.circuit.dansCouvert(c, s, 90)) continue;
         const q = B.circuit.echantillon(c, s), score = q.y + Math.abs(q.courbure) * 1800 + Math.abs(q.pente || 0) * 180;
         if (!meilleur || score > meilleur.score) meilleur = { type: 'panorama', s, cap: q.cap, cible: [q.x, q.y + 2, q.z], rayon: 105, hauteur: 48, label: 'Relief et tracé', score };
       }
@@ -117,7 +117,7 @@
     for (const v of candidats) {
       const { o, arbre, taille } = v, cle = Math.floor(o.p[0] / 120) + ':' + Math.floor(o.p[2] / 120);
       if (cellules.has(cle)) continue;
-      const s = plusProche(c, o.p[0], o.p[2]); if (B.circuit.dansTunnel(c, s, 80)) continue;
+      const s = plusProche(c, o.p[0], o.p[2]); if (B.circuit.dansCouvert(c, s, 80)) continue;
       cellules.add(cle);
       flore.push({ type: 'flore', s, cap: B.circuit.echantillon(c, s).cap, cible: [o.p[0], o.p[1] + taille * (arbre ? .22 : .15), o.p[2]],
         rayon: arbre ? Math.max(20, taille * 1.6) : Math.max(5.5, taille * 4), hauteur: arbre ? Math.max(5, taille * .45) : 1.8,

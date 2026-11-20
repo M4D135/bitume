@@ -56,12 +56,14 @@
     {
       "id": "couverts",
       "objectif": "Plusieurs passages couverts et niveaux cohérents",
-      "etat": "planned",
+      "etat": "in_progress",
       "dependances": [
         "references"
       ],
       "cloture": "Physique, météo, lumière, caméra et rétros partagent les sections",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/COUVERTS-2026-11-20/QUALIFICATION.json"
+      ]
     },
     {
       "id": "cimes",

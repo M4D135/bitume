@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 const require = createRequire(import.meta.url);
-for (const f of ['circuit', 'carene', 'botanique', 'ecologie', 'saisons', 'vegetation', 'bords', 'decor', 'obstacles', 'solides-physx']) require('../src/' + f + '.js');
+for (const f of ['circuit', 'route-des-cimes', 'carene', 'botanique', 'ecologie', 'saisons', 'vegetation', 'bords', 'decor', 'obstacles', 'solides-physx']) require('../src/' + f + '.js');
 const B = globalThis.BITUME, S = B.solidesPhysX;
 const catalogue = vm.runInNewContext(readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8').match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1]);
 const hash = x => createHash('sha256').update(JSON.stringify(x)).digest('hex');
@@ -79,7 +79,7 @@ function rayonsSol(w) {
 
 const rapports = [];
 for (const k of catalogue) {
-  const c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur }); B.bords.limites(c, B.bords.planifier(c));
+  const c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition }); B.bords.limites(c, B.bords.planifier(c));
   const options = { qualite: 'low', saison: 'ete', vegetation: false }, d = B.decor.construire(c, options);
   c.obstacles = B.obstacles.creer(d.obstacles);
   const avant = hash({ x: c.x, y: c.y, z: c.z, cap: c.cap, G: c.limiteG, D: c.limiteD, obstacles: d.obstacles });

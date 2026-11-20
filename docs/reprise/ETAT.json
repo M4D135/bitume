@@ -276,5 +276,18 @@
     "build_sha256": "98848efea4b0969805008ba37cba7cab67b11434a9d960173ba77b157fcf8ef7",
     "build_reproduit_identique": true,
     "recu": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/QUALIFICATION-0264.json"
+  },
+  "preparation_couverts_cimes": {
+    "statut": "integration_en_correction",
+    "fiche": "docs/reprise/COUVERTS-CIMES-INTEGRATION-2026-11-20.md",
+    "base_candidate": "80aa1e2913a93b54daf68bd1c3dc6abb520dc69b",
+    "pr_base": 37,
+    "circuits_sources": 9,
+    "circuits_livres": 8,
+    "build_sources_suivantes_effectue": false,
+    "blocages_constates": [
+      "joints de voûte courbe ouverts",
+      "contact du châssis au raccord de sol avant la galerie"
+    ]
   }
 }

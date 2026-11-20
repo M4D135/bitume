@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { chargerPhysX } from './helpers/physx-runtime.mjs';
 
 const require = createRequire(import.meta.url);
-for (const f of ['circuit', 'conduite', 'degats', 'contacts', 'obstacles', 'botanique', 'ecologie', 'saisons',
+for (const f of ['circuit', 'route-des-cimes', 'conduite', 'degats', 'contacts', 'obstacles', 'botanique', 'ecologie', 'saisons',
   'vegetation', 'bords', 'carene', 'decor', 'meteo', 'strategie-stands', 'course', 'solides-physx', 'physique']) require('../src/' + f + '.js');
 const B = globalThis.BITUME, X = globalThis.FPhysX = await chargerPhysX(), DT = 1 / 120;
 const NEUTRE = Object.freeze({ gaz: 0, frein: 0, volant: 0, derive: false, haut: false, bas: false, boite: 'auto', aide: 0 });
@@ -17,7 +17,7 @@ const FREIN = Object.freeze({ ...NEUTRE, frein: 1 }), GAZ = Object.freeze({ ...N
 const src = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const CATALOGUE = new Function(src.match(/  const CATALOGUE = \[[\s\S]*?\n  \];/)[0] + '; return CATALOGUE;')();
 const resultats = [], circuits = new Map();
-const fichiers = ['src/course.js', 'src/strategie-stands.js', 'src/physique.js', 'src/conduite.js', 'src/solides-physx.js',
+const fichiers = ['src/route-des-cimes.js', 'src/course.js', 'src/strategie-stands.js', 'src/physique.js', 'src/conduite.js', 'src/solides-physx.js',
   'src/circuit.js', 'src/decor.js', 'src/bords.js', 'src/ferro/physx-runtime.js',
   'verifications/physx-stands.test.mjs', 'verifications/helpers/physx-runtime.mjs'];
 const empreintes = Object.fromEntries(fichiers.map(f => [f, createHash('sha256').update(readFileSync(new URL('../' + f, import.meta.url))).digest('hex')]));
@@ -80,7 +80,7 @@ function fixture() {
 }
 function reelle(id = 'val-brule', meteo = 'sec', distance = 8, approche = false) {
   if (!circuits.has(id)) {
-    const k = CATALOGUE.find(x => x.id === id), c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom });
+    const k = CATALOGUE.find(x => x.id === id), c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition });
     B.bords.limites(c, B.bords.planifier(c));
     const decor = B.decor.construire(c, { qualite: 'high', matieres: true, vegetation: true, vegetationQualite: 'high', saison: 'ete' });
     c.obstacles = B.obstacles.creer(decor.obstacles); circuits.set(id, { c, decor });
@@ -163,8 +163,8 @@ verifier('PhysX : une impulsion pendant le service l’annule et garde les pneus
   } finally { B.physique.liberer(s.co); }
 });
 
-for (const meteo of ['sec', 'pluie', 'neige']) verifier(`PhysX : trajet IA complet vers le vrai garage puis sortie sous ${meteo}`, () => {
-  const s = reelle('val-brule', meteo, 8, true), { co, v, e, c, ph } = s;
+for (const id of ['val-brule', 'route-des-cimes']) for (const meteo of ['sec', 'pluie', 'neige']) verifier(`PhysX : ${id}, trajet IA complet vers le vrai garage puis sortie sous ${meteo}`, () => {
+  const s = reelle(id, meteo, 8, true), { co, v, e, c, ph } = s;
   try {
     const calls = surveillerEcritures(co), roues = e.etatPneus, debut = co.horloge;
     let service = null, fin = null, pret = false, maxMouvementService = 0;

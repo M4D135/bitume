@@ -18,7 +18,8 @@
     { id: 'roche-fauve', nom: 'Roche-Fauve', lieu: 'Afrique · hauts plateaux d’ocre', theme: 'desert', graine: 107, longueur: 4800 },
     { id: 'brume-de-jade', nom: 'Brume-de-Jade', lieu: 'Asie · pics calcaires et terrasses', theme: 'asie', graine: 131, longueur: 5000 },
     { id: 'cap-sequoia', nom: 'Cap-Séquoia', lieu: 'États-Unis · falaises du Pacifique', theme: 'pacifique', graine: 157, longueur: 5200 },
-    { id: 'baikal', nom: 'Baïkal', lieu: 'Russie · rives et promontoire', theme: 'baikal', graine: 179, longueur: 5400 }
+    { id: 'baikal', nom: 'Baïkal', lieu: 'Russie · rives et promontoire', theme: 'baikal', graine: 179, longueur: 5400 },
+    { id: 'route-des-cimes', nom: 'Route-des-Cimes', lieu: 'Grand parcours de montagne · cirque de l’Aiglière', theme: 'montagne', graine: 181, longueur: 9697.52858032384, partition: 'route-des-cimes' }
   ];
 
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
@@ -114,7 +115,7 @@
   function circuit(i) {
     if (!circuits[i]) {
       const k = CATALOGUE[i];
-      circuits[i] = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom });
+      circuits[i] = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition });
       // lot 22F : le parapet, le muret ou le bord du fossé d'un bord dangereux devient la limite (une fois, à la création)
       if (B.bords) B.bords.limites(circuits[i], B.bords.planifier(circuits[i]));
     }
@@ -665,7 +666,7 @@
     if (!deux && !pluieVue) pluieVue = creationTardive('pluie', B.meteo.creerPluie($('meteo')));
     // sous la voûte du tunnel, il ne pleut pas : la caméra décide, sinon les gouttes disparaissent pendant que la
     // vue extérieure montre encore la pluie
-    const abri = !VUES_DEHORS.has(vue) && sousLaVoute(S.course.c, cam.pos), neige = precipitationsNeige(S);
+    const abri = sousLaVoute(S.course.c, cam.pos), neige = precipitationsNeige(S);
     (deux ? pluieVue2 : pluieVue).dessiner(abri || neige > 0 ? Object.assign(METEO_ABRI, { t: S.meteo.t }) : S.meteo, cam, dt, { cockpit: vue === 'cockpit', dpr: window.devicePixelRatio || 1 });
     if (B.vitre) {
       if (deux && !vitreVue2) vitreVue2 = creationTardive('vitre', B.vitre.creer($('vitre2'), { graine: 2 }));
@@ -1733,7 +1734,10 @@
     const c = S.course.c, T = S.tele, s = v.etat.s;
     if (!T.poste || B.circuit.ecart(c, T.poste.s, s) > 18 || B.circuit.ecart(c, T.poste.s, s) < -200) {
       let sp = ramener(s + 60 + T.alea() * 60, c.longueur);
-      if (B.circuit.dansTunnel(c, sp, 25)) sp = ramener(c.tunnel.fin + 30 + T.alea() * 30, c.longueur);   // pas de caméra dans la roche
+      if (B.circuit.dansCouvert(c, sp, 25)) {
+        sp = B.couverts.sortie(c, sp, 25, 5 + T.alea() * 30);
+        if (sp === null) return cameraPoursuite(S, p, v.etat, 0);
+      }
       const e = B.circuit.echantillon(c, sp);
       const cote = e.courbure > 1e-4 ? -1 : e.courbure < -1e-4 ? 1 : (T.alea() < .5 ? -1 : 1);
       // derrière la glissière ; le long des tribunes et des stands, sur l'accotement, plus bas, pour rester devant eux
@@ -1776,7 +1780,10 @@
     const c = S.course.c, s = v.etat.s, plan = S.planVu;
     if (!S.sol || S.sol.plan !== plan) {
       let sp = ramener(s + 55 + plan.angle * 4, c.longueur);
-      if (B.circuit.dansTunnel(c, sp, 25)) sp = ramener(c.tunnel.fin + 30, c.longueur);
+      if (B.circuit.dansCouvert(c, sp, 25)) {
+        sp = B.couverts.sortie(c, sp, 25);
+        if (sp === null) return cameraPoursuite(S, p, v.etat, 0);
+      }
       const e = B.circuit.echantillon(c, sp);
       const cote = e.courbure > 1e-4 ? 1 : e.courbure < -1e-4 ? -1 : plan.cote;
       // lot 22F : un muret (limite à 1 m du bord) ou un parapet (1,4 m) commence à la limite ; à 1,1 m du bord, la
@@ -1912,26 +1919,13 @@
   // voiture suivie : en poursuite, en poursuite rapprochée ou à deux, la caméra peut être encore sous la voûte quand
   // la voiture en est sortie, ou l'inverse. L'axe du tunnel est échantillonné une fois par scène (une vingtaine de
   // points, la portion est droite par construction) ; le test d'une caméra ne coûte ensuite qu'une comparaison.
-  const TUNNEL_PAS = 10, TUNNEL_MARGE = 3;
-  const tunnel = { scene: -1, n: 0, axe: null, demi: 0 };
   function preparerTunnel(c) {
-    if (tunnel.scene === scene.index) return tunnel.n > 0;
-    tunnel.scene = scene.index; tunnel.n = 0;
-    const t = c && c.tunnel;
-    if (!t) return false;
-    const n = Math.max(2, Math.round((t.fin - t.debut) / TUNNEL_PAS) + 1);
-    if (!tunnel.axe || tunnel.axe.length < n * 2) tunnel.axe = creationTardive('axeTunnel', new Float64Array(n * 2));
-    for (let i = 0; i < n; i++) { const e = B.circuit.echantillon(c, t.debut + (t.fin - t.debut) * i / (n - 1)); tunnel.axe[2 * i] = e.x; tunnel.axe[2 * i + 1] = e.z; }
-    tunnel.n = n; tunnel.demi = t.mur + TUNNEL_MARGE;
-    return true;
+    return B.couverts.preparer(c).blocs.length > 0;
   }
-  // la caméra (ou tout point) est-elle sous la voûte, ou juste devant un portail ?
-  function sousLaVoute(c, p) {
-    if (!preparerTunnel(c)) return false;
-    const x = p[0], z = p[2], A = tunnel.axe;
-    let dm = Infinity;
-    for (let i = 0; i < tunnel.n; i++) { const dx = A[2 * i] - x, dz = A[2 * i + 1] - z, d = dx * dx + dz * dz; if (d < dm) dm = d; }
-    return dm < tunnel.demi * tunnel.demi;
+  // Altitude, parois et portails réels : une caméra au-dessus du toit reste dehors.
+  // Le troisième argument distingue le tunnel fermé de la galerie qui reçoit le jour.
+  function sousLaVoute(c, p, interieur = false) {
+    return interieur ? B.couverts.interieur(c, p) : B.couverts.abri(c, p);
   }
 
   // Une lampe n'éclaire que ce qui est près d'elle : le moteur éteint toute lampe de portée 18 m au-delà de 18 m
@@ -1961,9 +1955,9 @@
     let et = porteur[cle];
     if (!et || et.rev !== rev || et.n !== LT.length) et = porteur[cle] = creationTardive('lampes', nouvelEtatLampes(rev, LT.length));
     const k = 1 - Math.exp(-Math.max(0, dtImage) / LAMPE_LISSAGE), r = LAMPE_RAYON, plat = r * (1 - LAMPE_PLAT);
-    const cx = cam.pos[0], cz = cam.pos[2], P = et.p, n = et.n;
+    const cx = cam.pos[0], cy = cam.pos[1], cz = cam.pos[2], P = et.p, n = et.n;
     for (let i = 0; i < n; i++) {
-      const q = LT[i], dx = q[0] - cx, dz = q[2] - cz, d = Math.sqrt(dx * dx + dz * dz);
+      const q = LT[i], dx = q[0] - cx, dy = q[1] - cy, dz = q[2] - cz, d = Math.sqrt(dx * dx + dy * dy + dz * dz);
       let cible = 0;
       if (d < r) { const u = d <= plat ? 1 : (r - d) / (r - plat); cible = LAMPE_PUISSANCE * u * u * (3 - 2 * u); }
       const v = P[i] + (cible - P[i]) * k;
@@ -2445,7 +2439,7 @@
     const P = profilDe(S); // menu + gouverneur + capacités du moteur, décidé une fois par image
     sortie.length = 0;
     let cam;
-    if (DANS_LA_ROCHE.has(vue) && B.circuit.dansTunnel(co.c, suivie.etat.s, 8)) {
+    if (DANS_LA_ROCHE.has(vue) && B.circuit.dansCouvert(co.c, suivie.etat.s, 8)) {
       if (S.type === 'demo') {
         S.planVu = B.realisateur.replier(S.real, co, 'poursuite', suivie.id);
         suivie = co.voitures[S.planVu.sujet];
@@ -2564,7 +2558,7 @@
       contexte.nuit = nature.ambiance.nuit; contexte.pluie = meteo.pluie || 0;
       contexte.neige = precipitationsNeige(S);
       contexte.ventX = meteo.ventX || 0; contexte.ventZ = meteo.ventZ || 0; contexte.pose = cam.pos;
-      contexte.abri = sousLaVoute(c, cam.pos) && cam.pos[1] < ps.y + (c.tunnel ? c.tunnel.hauteur : 5) + .5;
+      contexte.abri = sousLaVoute(c, cam.pos);
       B.effetsSaison.dessiner(nature.effetsSaison, horlogeReelle, contexte, sortie);
     }
 
@@ -2575,7 +2569,7 @@
       const contexte = S.auroresVue || (S.auroresVue = creationTardive('contexteAurores', { vue: S === session ? 0 : 1, qualite: 'low', nuit: 0, pluie: 0, neige: 0, nuages: 0, tunnel: false }));
       contexte.qualite = P.palier; contexte.nuit = nature.ambiance.nuit;
       contexte.pluie = meteo.pluie || 0; contexte.neige = precipitationsNeige(S); contexte.nuages = meteo.nuage || 0;
-      contexte.tunnel = sousLaVoute(c, cam.pos) && cam.pos[1] < ps.y + (c.tunnel ? c.tunnel.hauteur : 5) + .5;
+      contexte.tunnel = sousLaVoute(c, cam.pos);
       B.aurores.dessiner(nature.aurores, S.tRendu, contexte, sortie);
     }
 
@@ -2664,7 +2658,7 @@
     // Tunnel : l'œil s'adapte d'après la caméra, pas d'après la seule voiture suivie. En entrant, l'intérieur paraît
     // d'abord sombre puis s'éclaircit (0,8 s) ; en sortant, le jour éblouit un instant (0,3 s). Les lampes gardent
     // leur puissance : seules l'adaptation de l'œil et les contributions lissées de lampesTunnel changent.
-    const sousVoute = !VUES_DEHORS.has(vue) && sousLaVoute(c, cam.pos), cibleLumiere = sousVoute ? 1.32 : 1;
+    const sousVoute = sousLaVoute(c, cam.pos, true), cibleLumiere = sousVoute ? 1.32 : 1;
     S.lumiere = S.lumiere ?? 1;
     S.lumiere += (cibleLumiere - S.lumiere) * (1 - Math.exp(-dtImage / (cibleLumiere > S.lumiere ? .8 : .3)));
     const LT = scene.decor.tunnelLampes;
@@ -2717,7 +2711,7 @@
     sortie.aspiration = Number.isFinite(et.aspiration) ? clamp(et.aspiration, 0, 1) : 0;
     sortie.ventActif = (ecran === 'course' || ecran === 'demo') && (S.vue === 'cockpit' || S.vue === 'poursuite');
     sortie.turbo = et.turbo.reste > 0; sortie.vue = S.vue === 'cockpit' ? 'cockpit' : 'poursuite';
-    sortie.muet = exterieur; sortie.tunnel = !exterieur && sousLaVoute(S.course.c, cam.pos);
+    sortie.muet = exterieur; sortie.tunnel = !exterieur && sousLaVoute(S.course.c, cam.pos, true);
   }
   // écoute des claquements d'échappement par voiture (src/son.js, echappement) : entendue du cockpit, distance, angle
   const ecouteEchappement = n => ({ dedans: new Uint8Array(n), distance: new Float64Array(n), angle: new Float64Array(n) });
