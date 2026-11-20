@@ -1,0 +1,56 @@
+{
+  "date": "2026-11-20",
+  "commit": "0af125bd5b4515fc8baa101c9712c07efbd476c6",
+  "base": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
+  "scope": [
+    "tools/captures-couverts.mjs",
+    "verifications/captures-couverts.test.mjs"
+  ],
+  "runtime_unchanged": true,
+  "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+  "root_cause": "Le sujet sous le tunnel déclenche le repli DANS_LA_ROCHE vers poursuite avant la caméra imposée ; route + hauteur nominale + 4 m reste sous le relief réel.",
+  "correction": "Sujet après le portail, hors des marges de couvert ; caméra au-dessus du terrain et du premier impact PhysX, avec visée et plan proche contrôlés par le validateur du jeu. Les sondes sol/toit gardent le centre du tunnel.",
+  "oracle": "Vue helico explicite, sujet hors couvert, dégagement terrain/PhysX et regard/cadre libres requis ; toit physique réel, eau/embruns/gouttes nuls toujours exigés.",
+  "targeted_tests": {
+    "file": "verifications/captures-couverts.test.mjs",
+    "passed": 10,
+    "failed": 0,
+    "real_physx_regression": true,
+    "old_fixture_rejected": true,
+    "original_negative_oracles_preserved": true
+  },
+  "files": [
+    {
+      "path": "tools/captures-couverts.mjs",
+      "sha256": "eb3c8f1a0f686dba41c9bf4a238d43f574d6582fe4ddbfc95ca57554d34a94e9"
+    },
+    {
+      "path": "verifications/captures-couverts.test.mjs",
+      "sha256": "f974274e37e7c2f42fe82608100b8997b2324c4ffc8c8bc5ea9b19cc9777f0e3"
+    }
+  ],
+  "pending": [
+    "Fusion et contrôle distant de main."
+  ],
+  "chromium_local_run": false,
+  "full_campaign_rerun": true,
+  "pushed": true,
+  "publication": {
+    "commit": "40774189dc3a68242a3908f72e09f2676519ccbf",
+    "tree": "52c3b4be0c5ea159ffc90a05a60631d0a7956a02",
+    "branch": "codex/bitume-capture-toit-0266-20261120",
+    "images_run": 44747519881,
+    "images_statut": "success",
+    "qualification_run": 44747519912,
+    "qualification_statut": "success",
+    "qualification_recu": "CI-0266-CAPTURE-CORRIGEE.json"
+  },
+  "etat_avant_publication": {
+    "pushed": false,
+    "pending": [
+      "Nouvelle capture GHA du seul survol, sur le même HTML 0.2.66.",
+      "Inspection des deux PNG ; les contrôles de géométrie seuls ne prouvent pas la composition visuelle."
+    ],
+    "full_campaign_rerun": false
+  }
+}

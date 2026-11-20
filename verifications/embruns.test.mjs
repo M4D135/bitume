@@ -46,6 +46,21 @@ verifier('deux chaussées superposées ne partagent pas un panache', () => {
   assert.equal(mesure(pont, [-12, 1, 0]), 0);
   assert(mesure(pont, [-12, 19, 0]) > .6);
 });
+verifier('le panache rapide atteint la poursuite sans arroser la vue aérienne ni la chaussée sèche', () => {
+  const camera = [-25.4, 2.45, 0], rapide = source(235 / 3.6), tresRapide = source(300 / 3.6);
+  const humide = mesure(rapide, camera), faible = mesure(rapide, camera, .2), lent = mesure(source(40 / 3.6), camera);
+  assert(humide > .6, 'projections fortes à la vraie hauteur de caméra');
+  assert(mesure(tresRapide, camera) >= humide, 'la grande vitesse ne tarit pas les projections');
+  assert(faible < humide * .35 && lent < .05, 'faible eau et basse vitesse restent discrètes');
+  assert.equal(mesure(rapide, camera, 0), 0); assert.equal(mesure(rapide, camera, 1, 7), 0);
+  assert.equal(mesure(tresRapide, [-25.4, 21, 0]), 0);
+  // Au-dessus de la chaussée, l'exposition se réduit sans remonter avant de s'annuler.
+  let precedente = 1;
+  for (let y = 1; y <= 8; y += .1) {
+    const courant = mesure(rapide, [-25.4, y, 0]); assert(courant <= precedente); precedente = courant;
+  }
+  assert.equal(precedente, 0);
+});
 verifier('entrées absentes ou non finies : aucune opacité invalide', () => {
   for (const p of [null, [], [NaN, 1, 0], [0, Infinity, 0]]) assert.equal(mesure(source(), p), 0);
   assert.equal(mesure(null, [-12, 1, 0]), 0);

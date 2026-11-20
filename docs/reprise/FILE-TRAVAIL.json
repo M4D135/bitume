@@ -9,7 +9,7 @@
     "circuits": 8
   },
   "destinations_prevues": 17,
-  "lot_actif": "references",
+  "lot_actif": "couverts",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [
@@ -26,10 +26,12 @@
     {
       "id": "references",
       "objectif": "Références, modèles et programme complet",
-      "etat": "prepared",
+      "etat": "published",
       "dependances": [],
       "cloture": "Empreintes, liens et JSON ; publier en premier",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/REFERENCES-OBJECTIFS-2026-11-20/PUBLICATION.json"
+      ]
     },
     {
       "id": "demos_pilotes",
@@ -54,12 +56,14 @@
     {
       "id": "couverts",
       "objectif": "Plusieurs passages couverts et niveaux cohérents",
-      "etat": "planned",
+      "etat": "in_progress",
       "dependances": [
         "references"
       ],
       "cloture": "Physique, météo, lumière, caméra et rétros partagent les sections",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/COUVERTS-2026-11-20/QUALIFICATION.json"
+      ]
     },
     {
       "id": "cimes",

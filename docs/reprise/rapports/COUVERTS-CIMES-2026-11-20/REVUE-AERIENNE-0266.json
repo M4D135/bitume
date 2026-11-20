@@ -1,0 +1,278 @@
+{
+  "version": "0.2.66",
+  "status": "passed",
+  "group": {
+    "scenario": "cimes-dessus-toit",
+    "artifact_id": 14633861903,
+    "artifact_name": "bitume-couverts-cimes-dessus-toit-40774189dc3a68242a3908f72e09f2676519ccbf",
+    "artifact_digest": "sha256:0246b9cc77d252ce567a135aa900763919cbab24f33d3ccda1dc13338e0335a3",
+    "provenance": {
+      "head": "40774189dc3a68242a3908f72e09f2676519ccbf",
+      "ci_run": 44747519881,
+      "ci_commit": "40774189dc3a68242a3908f72e09f2676519ccbf",
+      "tree": "52c3b4be0c5ea159ffc90a05a60631d0a7956a02",
+      "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b"
+    },
+    "images_expected": 2,
+    "images_reviewed": 2,
+    "automated_errors": [],
+    "findings": [
+      "Les deux images montrent une vue aérienne dégagée : relief couvrant le tunnel au premier plan, chaussée et voitures visibles au-delà.",
+      "Le mode réel est helico ; le sujet est hors couvert ; la caméra est située 40 mètres au-dessus de la surface PhysX relevée sous elle.",
+      "Aucune goutte ni projection sur la visière aérienne : eau, embruns et gouttes à zéro, toile masquée. La pluie dans le monde reste visible.",
+      "Le regard et le cadre sont validés dans le vrai monde statique ; les rayons séparés au centre du tunnel trouvent toujours la chaussée et la voûte attendues.",
+      "Le relief reste très facetté ; la correction de fixture ne constitue pas une amélioration esthétique du paysage."
+    ],
+    "blocking_findings": [],
+    "images": [
+      {
+        "fichier": "0000.png",
+        "etape": "dessus-toit",
+        "octets": 452024,
+        "sha256": "19807ba2c6e6af5a120db4413beaff743339fbd0aeb041d284ac03eb1f319eb6",
+        "dimensions": [
+          960,
+          540
+        ],
+        "visually_reviewed": true,
+        "observation": {
+          "glErreur": 0,
+          "glPerdu": false,
+          "vitres": {
+            "j1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 2,
+              "dessins": 2,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "surfaceExpulsee": 0
+            },
+            "j2": null
+          },
+          "vitresGL": {
+            "j1": {
+              "present": true,
+              "erreur": 0,
+              "perdu": false
+            }
+          },
+          "visieresVisibles": {
+            "j1": false
+          },
+          "j1": {
+            "camera": [
+              128.96561576977055,
+              294.5402069091797,
+              -926.881949907044
+            ],
+            "abri": false,
+            "interieur": false,
+            "section": null,
+            "type": null,
+            "lumiere": 1,
+            "lampes": 0,
+            "pluie": 1,
+            "abriVisiere": false,
+            "visiereActive": false,
+            "vue": "helico"
+          },
+          "j2": null,
+          "sol": {
+            "hit": true,
+            "y": 224.78759765625,
+            "body": 5913,
+            "genre": "sol-tunnel",
+            "surface": "piste"
+          },
+          "toit": {
+            "hit": true,
+            "y": 231.14646911621094,
+            "body": 5916,
+            "genre": "voute-tunnel",
+            "surface": null
+          },
+          "survol": {
+            "sujetS": 6759.491665135276,
+            "sujetSousCouvert": false,
+            "terrainY": 223.84891752728032,
+            "surfaceY": 254.5402069091797,
+            "cible": [
+              33.74864940275236,
+              214.11759661617114,
+              -823.3278613973264
+            ],
+            "regardLibre": true,
+            "obstructionDistance": null,
+            "cadreLibre": true
+          },
+          "yRoute": 224.74759012862268,
+          "etape": 0,
+          "etapeId": "dessus-toit",
+          "abscisse": 6618.491665135275,
+          "pluie": 1,
+          "sections": [
+            {
+              "id": "cimes-couvert-0",
+              "type": "tunnel",
+              "debut": 4276.56945810762,
+              "fin": 4581.28921322728
+            },
+            {
+              "id": "cimes-couvert-1",
+              "type": "galerie",
+              "debut": 6058.9587399358425,
+              "fin": 6358.9587399358425
+            },
+            {
+              "id": "cimes-couvert-2",
+              "type": "tunnel",
+              "debut": 6533.491665135275,
+              "fin": 6703.491665135275
+            }
+          ],
+          "temps": 2.941666666666668
+        }
+      },
+      {
+        "fichier": "0001.png",
+        "etape": "dessus-toit",
+        "octets": 452415,
+        "sha256": "e11d4e0a30450c2edc341fae01e319ce60de12d0b7c189c88f83c50416418476",
+        "dimensions": [
+          960,
+          540
+        ],
+        "visually_reviewed": true,
+        "observation": {
+          "glErreur": 0,
+          "glPerdu": false,
+          "vitres": {
+            "j1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 2,
+              "dessins": 2,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "surfaceExpulsee": 0
+            },
+            "j2": null
+          },
+          "vitresGL": {
+            "j1": {
+              "present": true,
+              "erreur": 0,
+              "perdu": false
+            }
+          },
+          "visieresVisibles": {
+            "j1": false
+          },
+          "j1": {
+            "camera": [
+              128.96561576977055,
+              294.5402069091797,
+              -926.881949907044
+            ],
+            "abri": false,
+            "interieur": false,
+            "section": null,
+            "type": null,
+            "lumiere": 1,
+            "lampes": 0,
+            "pluie": 1,
+            "abriVisiere": false,
+            "visiereActive": false,
+            "vue": "helico"
+          },
+          "j2": null,
+          "sol": {
+            "hit": true,
+            "y": 224.78759765625,
+            "body": 5913,
+            "genre": "sol-tunnel",
+            "surface": "piste"
+          },
+          "toit": {
+            "hit": true,
+            "y": 231.14646911621094,
+            "body": 5916,
+            "genre": "voute-tunnel",
+            "surface": null
+          },
+          "survol": {
+            "sujetS": 6759.491665135276,
+            "sujetSousCouvert": false,
+            "terrainY": 223.84891752728032,
+            "surfaceY": 254.5402069091797,
+            "cible": [
+              33.74864940275236,
+              214.11759661617114,
+              -823.3278613973264
+            ],
+            "regardLibre": true,
+            "obstructionDistance": null,
+            "cadreLibre": true
+          },
+          "yRoute": 224.74759012862268,
+          "etape": 0,
+          "etapeId": "dessus-toit",
+          "abscisse": 6618.491665135275,
+          "pluie": 1,
+          "sections": [
+            {
+              "id": "cimes-couvert-0",
+              "type": "tunnel",
+              "debut": 4276.56945810762,
+              "fin": 4581.28921322728
+            },
+            {
+              "id": "cimes-couvert-1",
+              "type": "galerie",
+              "debut": 6058.9587399358425,
+              "fin": 6358.9587399358425
+            },
+            {
+              "id": "cimes-couvert-2",
+              "type": "tunnel",
+              "debut": 6533.491665135275,
+              "fin": 6703.491665135275
+            }
+          ],
+          "temps": 3.0416666666666683
+        }
+      }
+    ]
+  }
+}

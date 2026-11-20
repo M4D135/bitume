@@ -1,16 +1,16 @@
 {
   "date": "2026-11-20",
   "etat_courant": {
-    "version_courante": "0.2.62",
+    "version_courante": "0.2.66",
     "version_publiee_verifiee": "0.2.62",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "aspiration_sillage_publie_qualifie",
-    "lot": "aspiration_sillage_clos",
-    "fiche": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md",
+    "statut": "qualifie_pret_a_fusionner",
+    "lot": "couverts_cimes_et_correctifs_0265",
+    "fiche": "docs/reprise/COUVERTS-CIMES-INTEGRATION-2026-11-20.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "001",
-    "prochaine_action": "Publier d’abord références, modèles et programme complet ; sauvegarder les branches de travail, puis qualifier démos/pilotes/météo sur p15.",
+    "derniere_entree": "012",
+    "prochaine_action": "Mettre les preuves documentaires dans la PR #38, fusionner la 0.2.66 puis vérifier main et consigner le commit de fusion.",
     "dernier_lot_clos": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md"
   },
   "publication": {
@@ -63,7 +63,9 @@
       "cible_deg_s2": 300,
       "criteres_obligatoires_reussis": 46,
       "criteres_obligatoires_total": 46
-    }
+    },
+    "pluie_exterieure_depuis_abri": "Champ de pluie monde encore coupé depuis un abri ; prototype spatial local identifié, non intégré et coût à qualifier.",
+    "composition_demo": "Bandeau parfois superposé au geste ou à un animal ; neige claire à grain discret."
   },
   "suite": {
     "lot": "14A_Monaco_sources_et_mesures",
@@ -259,7 +261,80 @@
     "file": "docs/reprise/FILE-TRAVAIL.json",
     "references": "docs/references/objectifs-utilisateur-2026-11-20/README.md",
     "priorite_utilisateur": "Publication GitHub des modèles, objectifs et feuille de route avant la suite",
-    "lot_actif": "references",
-    "statut": "publication_documentaire_preparee"
+    "lot_actif": "demos_pilotes",
+    "statut": "references_publiees_integration_code_en_cours",
+    "recu_references": "docs/reprise/rapports/REFERENCES-OBJECTIFS-2026-11-20/PUBLICATION.json"
+  },
+  "candidat_0263": {
+    "version": "0.2.63",
+    "build_octets": 14316546,
+    "build_sha256": "05d5ed2af9dc800491b2afe9ff5928641a463b15e2ccdd0420660696e4c946ee",
+    "build_reproduit_identique": true,
+    "recu": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/QUALIFICATION-0263.json"
+  },
+  "candidat_0264": {
+    "version": "0.2.64",
+    "build_octets": 14317789,
+    "build_sha256": "98848efea4b0969805008ba37cba7cab67b11434a9d960173ba77b157fcf8ef7",
+    "build_reproduit_identique": true,
+    "recu": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/QUALIFICATION-0264.json"
+  },
+  "preparation_couverts_cimes": {
+    "statut": "roulage_qualifie_images_a_faire",
+    "fiche": "docs/reprise/COUVERTS-CIMES-INTEGRATION-2026-11-20.md",
+    "base_candidate": "80aa1e2913a93b54daf68bd1c3dc6abb520dc69b",
+    "pr_base": 37,
+    "circuits_sources": 9,
+    "circuits_livres": 8,
+    "build_sources_suivantes_effectue": true,
+    "blocages_constates": [],
+    "preuves_roulage": "docs/reprise/rapports/ROUTE-DES-CIMES-2026-11-20/QUALIFICATION-DOUZE-PORTAILS.json",
+    "captures_prevues": 24
+  },
+  "revue_integree_0264": {
+    "pr": 37,
+    "tete": "80aa1e2913a93b54daf68bd1c3dc6abb520dc69b",
+    "ci_run": 44734044312,
+    "suites_reussies": 151,
+    "suites_total": 152,
+    "echec": "allocation pilote extérieur : 17,2228 octets/pose ; seuil 4 conservé",
+    "images": "poing trop ouvert, projections poursuite insuffisantes ; contrôle aérien incorrect",
+    "corrections_sources_publiees": "9cc701a7cd866bf7100780b0b6cd4bd80e6e661b",
+    "statut": "non_qualifie_nouveau_candidat_requis"
+  },
+  "candidat_0265": {
+    "version": "0.2.65",
+    "build_octets": 14370567,
+    "build_sha256": "58c735189996628eefeec8f7efda13fa76a070c18a1695533e1ac1a3a1302f5f",
+    "build_reproduit_identique": true,
+    "recu": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/CANDIDAT-0265.json"
+  },
+  "qualification_0265_initiale": {
+    "pr": 38,
+    "head": "4cbbe874e5aacedc5aba41ac8090eb6d997ffb2a",
+    "run": 44736979469,
+    "suites_reussies": 155,
+    "suites_echecs": 4,
+    "recu": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/CI-0265-INITIAL.json",
+    "images_inspectees": 94
+  },
+  "candidat_0266": {
+    "version": "0.2.66",
+    "build_octets": 14370823,
+    "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+    "build_reproduit_identique": true,
+    "recu": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/CANDIDAT-0266.json"
+  },
+  "publication_0266_en_cours": {
+    "pr": 38,
+    "tete": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
+    "arbre": "1f05e9b399e4584b814c4050bad9f5652261b097",
+    "recu": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/PUBLICATION-0266.json",
+    "statut": "qualifie_pret_a_fusionner",
+    "demos_png_inspectes": 48,
+    "qualification_suites": "159/159",
+    "images_retenues": 113,
+    "outils_tete": "40774189dc3a68242a3908f72e09f2676519ccbf",
+    "qualification_finale_run": 44747519912
   }
 }

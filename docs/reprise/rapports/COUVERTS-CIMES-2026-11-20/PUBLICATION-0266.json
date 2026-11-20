@@ -1,0 +1,73 @@
+{
+  "version": "0.2.66",
+  "date": "2026-11-20",
+  "statut": "qualifie_pret_a_fusionner",
+  "repository": "M4D135/bitume",
+  "pr": 38,
+  "qualified_head": "40774189dc3a68242a3908f72e09f2676519ccbf",
+  "qualified_tree": "52c3b4be0c5ea159ffc90a05a60631d0a7956a02",
+  "physique": "p15",
+  "moteur": "FERRO 0.3.15",
+  "circuits": 9,
+  "build_octets": 14370823,
+  "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+  "qualification": {
+    "initial_run": 44743369726,
+    "final_run": 44747519912,
+    "final_job": 136326556024,
+    "artifact_id": 14634652050,
+    "artifact_sha256": "a140670123c5a68e532d64ed7e5b22141935faa1869dd9b5cc928d910fe06973",
+    "suites_passed": 159,
+    "suites_failed": 0,
+    "sources_verified": 3405,
+    "source_contents_and_modes_identical": true,
+    "all_suite_logs_present": true,
+    "receipt": "CI-0266-CAPTURE-CORRIGEE.json"
+  },
+  "visual": {
+    "demos_run": 44743369792,
+    "meteo_run": 44743369751,
+    "couverts_initial_run": 44743369605,
+    "couverts_corrected_run": 44747519881,
+    "groups_retained": 20,
+    "images_retained_reviewed": 113,
+    "candidate_images_retained": 89,
+    "reference_images_retained": 24,
+    "demos_images": 48,
+    "meteo_images": 41,
+    "couverts_images": 24,
+    "initial_rejected_images_preserved": 2,
+    "runtime_and_build_identical_between_capture_heads": true,
+    "receipts": [
+      "REVUE-DEMOS-0266.json",
+      "REVUE-METEO-0266.json",
+      "REVUE-COUVERTS-0266.json",
+      "REVUE-COUVERTS-0266-INITIALE.json",
+      "REVUE-AERIENNE-0266.json"
+    ]
+  },
+  "history_preserved": {
+    "initial_0265_suites": "155/159",
+    "initial_0265_receipt": "CI-0265-INITIAL.json",
+    "aerial_fixture_failure": "ECHEC-CAPTURE-AERIENNE-0266.json",
+    "aerial_fixture_correction": "CORRECTIF-CAPTURE-TOIT-0266.json",
+    "initial_0266_qualification": "CI-0266-FINALE.json"
+  },
+  "documentation_only_after_qualified_head": true,
+  "next_preparation": {
+    "rain_backup_branch": "backup/pluie-abris-20261120",
+    "rain_backup_head": "d3bd240a1bfa02ac1e0dbcc8f5c4cdb3b7176531",
+    "rain_integrated": false,
+    "receipt": "SAUVEGARDE-PLUIE-PREPAREE.json",
+    "inventory": "APRES-0266-PREPARATIONS.json"
+  },
+  "reserves": [
+    "Pluie extérieure visible depuis un abri à corriger et qualifier.",
+    "Bandeaux de démo pouvant couvrir des mains ou des animaux.",
+    "Neige Haut-Col claire et grain discret ; relief des Cimes très facetté.",
+    "Sept lieux complets des Cimes, lac/cascade et programme des 17 destinations restent à poursuivre.",
+    "FPS matériels, manettes, audio et réseaux distincts non qualifiés par les captures SwiftShader."
+  ],
+  "merge_verified": false,
+  "site_deployed": false
+}

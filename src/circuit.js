@@ -2,6 +2,7 @@
    Tracé : polygone étoilé dont les sommets sont arrondis par de vrais arcs de cercle (les côtés deviennent de vraies
    lignes droites), transitions de courbure adoucies, puis relief, dévers, vibreurs, trajectoire idéale et vitesse
    de référence. Premier jet du Spark (QAD) pour l'interface, repris par Claude pour la génération du tracé. */
+if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couverts) require('./couverts.js');
 (function (B) {
   'use strict';
 
@@ -218,7 +219,7 @@
     return d;
   }
 
-  function vitesses(x, z, cap, ligne, n) {
+  function vitesses(x, z, cap, ligne, n, pas = PAS) {
     const px = new Float64Array(n), pz = new Float64Array(n), v = new Float64Array(n);
     for (let i = 0; i < n; i++) { px[i] = x[i] - Math.sin(cap[i]) * ligne[i]; pz[i] = z[i] + Math.cos(cap[i]) * ligne[i]; }
     const MU = 1.55, AERO = .00155, VMAX = 86, H = 3;
@@ -230,11 +231,19 @@
       const den = k - MU * AERO;
       v[i] = den <= 0 ? VMAX : Math.min(VMAX, Math.sqrt(MU * 9.81 / den));
     }
-    for (let j = 2 * n - 1; j >= 0; j--) { const i = j % n, s = (i + 1) % n; v[i] = Math.min(v[i], Math.sqrt(v[s] * v[s] + 2 * 16 * PAS)); }
+    for (let j = 2 * n - 1; j >= 0; j--) { const i = j % n, s = (i + 1) % n; v[i] = Math.min(v[i], Math.sqrt(v[s] * v[s] + 2 * 16 * pas)); }
     // poussée à fond de la monoplace (enveloppe des six rapports mesurée sur conduite.js, boîte auto)
     const poussee = u => Math.max(.05, Math.min(12, 15.59 - .2592 * u + .000899 * u * u));
-    for (let j = 1; j <= 2 * n; j++) { const i = j % n, p = (i - 1 + n) % n; v[i] = Math.min(v[i], Math.sqrt(v[p] * v[p] + 2 * poussee(v[p]) * PAS)); }
+    for (let j = 1; j <= 2 * n; j++) { const i = j % n, p = (i - 1 + n) % n; v[i] = Math.min(v[i], Math.sqrt(v[p] * v[p] + 2 * poussee(v[p]) * pas)); }
     return v;
+  }
+
+  // Préparation explicite des seules partitions qualifiées séparément. Les huit générateurs historiques
+  // conservent leurs appels et leurs résultats ; aucune table de vitesses issue d'une ancienne étude n'est importée.
+  function preparerParcours(c) {
+    c.ligne = trajectoire(c.x, c.z, c.cap, c.n, c.largeur);
+    c.vitesse = vitesses(c.x, c.z, c.cap, c.ligne, c.n, c.pas);
+    return c;
   }
 
   // Limites latérales : glissières à 20 m, rapprochées à l'intérieur des virages serrés (repère valable : 1 − κd > 0,3).
@@ -253,6 +262,10 @@
 
   // ---------------------------------------------------------------- création
   function creer(graine, options = {}) {
+    if (options.partition !== undefined) {
+      if (options.partition !== 'route-des-cimes' || graine !== 181 || !B.routeDesCimes) throw new Error('BITUME : partition absente ou identité invalide');
+      return B.routeDesCimes.creer();
+    }
     const theme = options.theme || 'foret', vise = options.longueur || 4500, nom = options.nom || 'Circuit ' + graine;
     for (let essai = 0; essai < 400; essai++) {
       const r = alea((graine >>> 0) * 2654435761 + essai * 40503);
@@ -463,10 +476,31 @@
   // ---------------------------------------------------------------- lecture
   // dans le tunnel (marge en mètres de part et d'autre) ?
   function dansTunnel(c, s, marge = 0) {
+    if (B.couverts) return B.couverts.dansTunnel(c, s, marge);
+    if (c && c.couverts) {
+      const t = dansCouvert(c, s, marge);
+      return !!t && t.type === 'tunnel';
+    }
     const t = c && c.tunnel;
     if (!t) return false;
     const L = c.longueur, x = ((s % L) + L) % L;
     return x > t.debut - marge && x < t.fin + marge;
+  }
+  // Retourne l'ouvrage lui-même, sans allocation, pour la chaussée, la lumière et les caméras.
+  // Le premier tunnel reste exposé par c.tunnel pour les consommateurs historiques.
+  function dansCouvert(c, s, marge = 0) {
+    if (B.couverts) return B.couverts.segment(c, s, marge);
+    if (!c) return null;
+    const x = ((s % c.longueur) + c.longueur) % c.longueur;
+    if (c.couverts) {
+      for (let i = 0; i < c.couverts.length; i++) {
+        const t = c.couverts[i];
+        if (x > t.debut - marge && x < t.fin + marge) return t;
+      }
+      return null;
+    }
+    const t = c.tunnel;
+    return t && x > t.debut - marge && x < t.fin + marge ? t : null;
   }
   const ramener = (c, s) => { const L = c.longueur; s %= L; return s < 0 ? s + L : s; };
   // `sortie`, facultatif : objet de l'appelant, rempli et rendu au lieu d'un objet neuf. Le pas de simulation lit
@@ -475,7 +509,7 @@
   function echantillon(c, s, sortie) {
     if (c.type === 'trace-explicite') return echantillonTrace(c, s, sortie);
     s = ramener(c, s);
-    const f = s / PAS, i = Math.floor(f) % c.n, j = (i + 1) % c.n, t = f - Math.floor(f);
+    const f = s / c.pas, i = Math.floor(f) % c.n, j = (i + 1) % c.n, t = f - Math.floor(f);
     const X = c.x, Y = c.y, Z = c.z, K = c.courbure, Pe = c.pente, D = c.devers, Li = c.ligne, V = c.vitesse;
     const x = X[i] + (X[j] - X[i]) * t, y = Y[i] + (Y[j] - Y[i]) * t, z = Z[i] + (Z[j] - Z[i]) * t;
     const cap = c.cap[i] + angle(c.cap[j] - c.cap[i]) * t, courbure = K[i] + (K[j] - K[i]) * t;
@@ -512,15 +546,16 @@
   }
   function vibreurA(c, s, cote) {
     if (c.type === 'trace-explicite') return false; // aucun vibreur déduit du seul relevé de l'axe
-    const i = Math.round(ramener(c, s) / PAS) % c.n;
+    const i = Math.round(ramener(c, s) / c.pas) % c.n;
     return !!(c.vibreur[i] & (cote < 0 ? 1 : 2));
   }
   function limiteA(c, s, cote) {
     if (c.type === 'trace-explicite') return lireTrace(c, s, cote < 0 ? 'limiteG' : 'limiteD');
-    const i = Math.round(ramener(c, s) / PAS) % c.n;
+    const i = Math.round(ramener(c, s) / c.pas) % c.n;
     return cote < 0 ? c.limiteG[i] : c.limiteD[i];
   }
   function valider(c) {
+    if (c && c.partition === 'route-des-cimes') return B.routeDesCimes.valider(c);
     if (c && c.type === 'trace-explicite') return validerTrace(c);
     const pb = [];
     const finis = ['x', 'y', 'z', 'cap', 'courbure', 'pente', 'devers', 'ligne', 'vitesse'].every(k => c[k].length === c.n && c[k].every(Number.isFinite));
@@ -536,5 +571,5 @@
     return pb;
   }
 
-  B.circuit = { creer, creerDepuisTrace, echantillon, point, repere, ecart, vibreurA, limiteA, largeurA, valider, dansTunnel, choisirTunnel, PAS, LARGEUR };
+  B.circuit = { creer, creerDepuisTrace, preparerParcours, echantillon, point, repere, ecart, vibreurA, limiteA, largeurA, valider, dansTunnel, dansCouvert, choisirTunnel, PAS, LARGEUR };
 })(globalThis.BITUME = globalThis.BITUME || {});

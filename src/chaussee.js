@@ -21,8 +21,8 @@
   function lire(c, s, meteo, sortie) {
     const m = objet(meteo === undefined ? B.meteo && B.meteo.actuel : meteo);
     const out = sortie && typeof sortie === 'object' ? sortie : {};
-    const abri = !!(c && Number.isFinite(s) && B.circuit && typeof B.circuit.dansTunnel === 'function'
-      && B.circuit.dansTunnel(c, s));
+    const abri = !!(c && Number.isFinite(s) && B.circuit && typeof B.circuit.dansCouvert === 'function'
+      && B.circuit.dansCouvert(c, s));
     const flocons = typeof m.precipitationsNeige === 'boolean' ? m.precipitationsNeige : m.reel === true && m.neige === true;
     // .6 conserve la pondération historique de l'eau résiduelle. Une chute de neige n'est
     // pas une pluie liquide ; de l'eau déjà présente peut néanmoins coexister avec la neige.

@@ -1,0 +1,81 @@
+name: Images tunnels, galeries et portails
+
+on:
+  push:
+    branches: ['codex/bitume-capture-toit-*']
+    paths:
+      - 'tools/captures-couverts.mjs'
+      - 'verifications/captures-couverts.test.mjs'
+      - '.github/workflows/visuel-couverts.yml'
+  pull_request:
+    paths:
+      - 'src/couverts.js'
+      - 'src/circuit.js'
+      - 'src/route-des-cimes.js'
+      - 'src/route-des-cimes-decor.js'
+      - 'src/decor.js'
+      - 'src/jeu.js'
+      - 'src/cinema.js'
+      - 'src/meteo.js'
+      - 'src/vitre.js'
+      - 'src/visiere-optique.js'
+      - 'tools/captures-couverts.mjs'
+      - 'tools/captures-meteo.mjs'
+      - 'tools/controle-visuel.mjs'
+      - '.github/workflows/visuel-couverts.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: visuel-couverts-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        # Une branche de diagnostic rejoue le seul scénario corrigé. Les PR et
+        # lancements manuels conservent les six groupes de la campagne complète.
+        cas: ${{ fromJSON(github.event_name == 'push' && '["cimes-dessus-toit"]' || '["haut-col-portails","cimes-rocher","cimes-echelles","cimes-galerie","cimes-dessus-toit","cimes-deux-vues"]') }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Identifier les sources et construire le candidat exact
+        shell: bash
+        run: |
+          mkdir -p qualification
+          python3 construire.py > qualification/build.log
+          git diff --exit-code -- VERSION.json SIZE.json dist/bitume.html
+          git rev-parse HEAD > qualification/COMMIT.txt
+          git rev-parse 'HEAD^{tree}' > qualification/TREE.txt
+          sha256sum dist/bitume.html > qualification/SHA256SUMS.txt
+          google-chrome --version > qualification/ENVIRONNEMENT.txt
+          node --version >> qualification/ENVIRONNEMENT.txt
+      - name: Capturer et contrôler les vrais portails et les flux météo
+        shell: bash
+        run: |
+          node tools/captures-couverts.mjs --url "file://$GITHUB_WORKSPACE/dist/bitume.html" --sortie qualification/visuel-couverts --chrome /usr/bin/google-chrome --cas "${{ matrix.cas }}"
+      - name: Conserver les preuves et les échecs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-couverts-${{ matrix.cas }}-${{ github.sha }}
+          path: |
+            qualification/visuel-couverts/
+            qualification/COMMIT.txt
+            qualification/TREE.txt
+            qualification/SHA256SUMS.txt
+            qualification/ENVIRONNEMENT.txt
+            qualification/build.log
+          if-no-files-found: error
+          retention-days: 14

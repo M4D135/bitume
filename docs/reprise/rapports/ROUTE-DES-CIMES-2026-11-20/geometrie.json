@@ -1,0 +1,201 @@
+{
+  "base": "f41614e",
+  "physique": "p15",
+  "provenance": {
+    "source": "tools/lieux-partitions.mjs",
+    "constructeur": "tools/lieux-trace.mjs",
+    "base": "f41614e",
+    "sourceSHA256": "4e6ef531f90ee49518cd92ffe171297252534d723072c60863158b9fbeefa279",
+    "identiteHistorique": "haut-col-etude-22F",
+    "identiteRuntime": "route-des-cimes",
+    "longueurPlanFinalM": 9698,
+    "sequencesFinalesRetrouvees": false,
+    "qualificationCatalogue": false,
+    "versionPhysique": "p15",
+    "reconstruction": "Étude métrique et objectif utilisateur ; Mur +40 m à 22 %, raccord haut +30 m à 7 %, première branche des Lacets à 3 %.",
+    "avertissement": "Le commit historique final n’a pas été retrouvé ; la reconstruction ne revendique pas son identité.",
+    "variante": "reconstruction-2026-11-20"
+  },
+  "etude": {
+    "longueur": 9618.688511242242,
+    "denivele": 270.5801225704711,
+    "penteMin": -0.09999998339493862,
+    "penteMax": 0.30000001660506137,
+    "rayonMin": 32,
+    "longueurAu20": 290.0207598523863,
+    "longueurCouverte": 774.7197551196596,
+    "ecartAuPlanFinalM": -79.31148875775762
+  },
+  "reconstruction": {
+    "longueur": 9697.52858032384,
+    "denivele": 270.28010796346786,
+    "penteMin": -0.09999995398901786,
+    "penteMax": 0.3000000460109821,
+    "rayonMin": 32,
+    "longueurAu20": 329.98395870353244,
+    "longueurCouverte": 774.7197551196596,
+    "ecartAuPlanFinalM": -0.47141967615971225
+  },
+  "n": 4849,
+  "pas": 1.9999027800214149,
+  "fermeture": {
+    "angleAjuste": 0,
+    "allongements": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -97.00014329096115,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      75.40686474859703,
+      0,
+      0,
+      0,
+      0.05262684123363215,
+      0,
+      0
+    ],
+    "residuPlan": 0.04772791117003216,
+    "residuCap": -0.000008345156970790413,
+    "residuVertical": -0.0004461928144139669
+  },
+  "lieux": [
+    {
+      "n": 1,
+      "nom": "Le Bois Noir",
+      "court": "forêt dense de sapins, esses en montée, troncs à 3 m du bord",
+      "debut": 789.5820830351892,
+      "fin": 2173.759763742356
+    },
+    {
+      "n": 2,
+      "nom": "Le Mur",
+      "court": "rampe droite, près de 300 m au-delà de 20 % et une pointe à 30 %, après la gauche lente de la Scierie",
+      "debut": 2344.4455984481265,
+      "fin": 2894.4455984481265
+    },
+    {
+      "n": 3,
+      "nom": "Les Lacets",
+      "court": "trois épingles empilées, murs de pierre sèche entre les branches",
+      "debut": 2894.4455984481265,
+      "fin": 4076.56945810762
+    },
+    {
+      "n": 4,
+      "nom": "Le Balcon du Cirque",
+      "court": "corniche taillée dans la paroi, grand virage, le vide à gauche",
+      "debut": 4581.28921322728,
+      "fin": 5547.63132764866
+    },
+    {
+      "n": 5,
+      "nom": "Col de l'Aiglière",
+      "court": "replat sommital, lac, refuge, galerie paravalanche",
+      "debut": 5547.63132764866,
+      "fin": 6058.9587399358425
+    },
+    {
+      "n": 6,
+      "nom": "Pont de la Gorge",
+      "court": "arche de pierre au-dessus de la gorge, cascade en aval",
+      "debut": 7887.1527022713235,
+      "fin": 8017.1527022713235
+    },
+    {
+      "n": 7,
+      "nom": "Virage du Vide",
+      "court": "gauche convexe, contre-dévers, parapet bas au-dessus de la vallée",
+      "debut": 8601.999077259241,
+      "fin": 8797.475953482606
+    }
+  ],
+  "couverts": [
+    {
+      "type": "tunnel",
+      "nom": "Tunnel du Rocher",
+      "debut": 4276.56945810762,
+      "fin": 4581.28921322728,
+      "id": "cimes-couvert-0",
+      "mur": 7.6,
+      "hauteur": 6.4
+    },
+    {
+      "type": "galerie",
+      "nom": "Galerie des Avalanches",
+      "ouvert": "G",
+      "debut": 6058.9587399358425,
+      "fin": 6358.9587399358425,
+      "id": "cimes-couvert-1",
+      "mur": 7.6,
+      "hauteur": 6.4
+    },
+    {
+      "type": "tunnel",
+      "nom": "Tunnel des Échelles",
+      "debut": 6533.491665135275,
+      "fin": 6703.491665135275,
+      "id": "cimes-couvert-2",
+      "mur": 7.6,
+      "hauteur": 6.4
+    }
+  ],
+  "ponts": [
+    {
+      "type": "arche",
+      "nom": "Pont de la Gorge",
+      "debut": 7887.1527022713235,
+      "fin": 8017.1527022713235
+    }
+  ],
+  "geometrieValide": [],
+  "testsRoute": 8,
+  "sourceHashes": {
+    "src/circuit.js": "d481a9a964559b0112eabedfc9e1ff42f3ed32e2dfcbbc7159c21342792427d7",
+    "src/route-des-cimes.js": "a83165c51644fde40545ea84d10748a56a2ddf4caed0b8372cf119ad7c4a4efa",
+    "tools/lieux-partitions.mjs": "4e6ef531f90ee49518cd92ffe171297252534d723072c60863158b9fbeefa279",
+    "tools/lieux-trace.mjs": "461e35d34f9eff43a02a56e7533967f753faae87432015f1a13074f0273fe8eb",
+    "verifications/route-des-cimes.test.mjs": "3999723d5e773dcd2be5528a8f792dfb68aa23532fa8c6ac2545011a91085330"
+  }
+}

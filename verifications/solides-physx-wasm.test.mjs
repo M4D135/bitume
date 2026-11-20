@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import { chargerPhysX } from './helpers/physx-runtime.mjs';
 const require = createRequire(import.meta.url);
-for (const f of ['circuit', 'carene', 'botanique', 'ecologie', 'saisons', 'vegetation', 'bords', 'decor', 'obstacles', 'solides-physx']) require('../src/' + f + '.js');
+for (const f of ['circuit', 'route-des-cimes', 'carene', 'botanique', 'ecologie', 'saisons', 'vegetation', 'bords', 'decor', 'obstacles', 'solides-physx']) require('../src/' + f + '.js');
 const B = globalThis.BITUME, S = B.solidesPhysX, X = await chargerPhysX();
 const catalogue = vm.runInNewContext(readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8').match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1]);
 let nombre = 0;
@@ -13,7 +13,7 @@ function verifier(nom, f) { f(); nombre++; console.log('ok  ' + nom); }
 function tourner(r, v) { const [x, y, z] = r || [0, 0, 0], [a, b, c] = v, b1 = Math.cos(x) * b - Math.sin(x) * c, c1 = Math.sin(x) * b + Math.cos(x) * c, a2 = Math.cos(y) * a + Math.sin(y) * c1, c2 = -Math.sin(y) * a + Math.cos(y) * c1; return [Math.cos(z) * a2 - Math.sin(z) * b1, Math.sin(z) * a2 + Math.cos(z) * b1, c2]; }
 const rapports = [];
 for (const k of catalogue) {
-  const c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur }); B.bords.limites(c, B.bords.planifier(c));
+  const c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition }); B.bords.limites(c, B.bords.planifier(c));
   const decor = B.decor.construire(c, { qualite: 'low', vegetation: false, saison: 'ete' }); c.obstacles = B.obstacles.creer(decor.obstacles);
   const world = X.createWorld({ fixedStep: 1 / 120, maxSubSteps: 1, contacts: true }), montage = S.installer(world, c, decor);
   const marques = (decor.lotsHerbier || decor.lots).flatMap(l => l.objets).filter(o => o.solidePhysX && !o.collision);
@@ -22,7 +22,10 @@ for (const k of catalogue) {
     verifier(k.nom + ' : rayons de suspension sur chaussée, vibreurs et accotements', () => {
       const w = c.largeur / 2, hit = {};
       for (let i = 0; i < c.n; i += 19) for (const d of [-w - 2, -w + .5, 0, w - .5, w + 2]) {
-        const q = B.circuit.echantillon(c, i * c.pas + .37), x = q.x - Math.sin(q.cap) * d, z = q.z + Math.cos(q.cap) * d;
+        const s = i * c.pas + .37;
+        // Sur un vrai pont, l’herbe au-delà du parapet n’est plus un sol de roulement.
+        if (Math.abs(d) > w + 1 && c.ponts?.some(p => s > p.debut + 3 && s < p.fin - 3)) continue;
+        const q = B.circuit.echantillon(c, s), x = q.x - Math.sin(q.cap) * d, z = q.z + Math.cos(q.cap) * d;
         const sol = q.y - Math.max(-w, Math.min(w, d)) * Math.sin(q.devers);
         world.raycast([x, sol + 2, z], [0, -1, 0], 3, { mask: 1, staticOnly: true }, hit); rayons++;
         assert.ok(hit.hit, `appui absent à s=${i * c.pas + .37}, d=${d}`);

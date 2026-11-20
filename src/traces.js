@@ -175,7 +175,7 @@
       VC[0] = Math.cos(cap) * et.v; VC[1] = Math.sin(cap) * et.v; VC[2] = eau;
       const auSol = et._physx ? et._physx.groundCount > 0 : !(et.bond > .03), herbe = et.surface === 'herbe';
       for (let w = 0; w < 4; w++) roue(fx, k, w, et, p, auSol, herbe);
-      if (eau > .12 && et.v > 14 && auSol && !(B.circuit.dansTunnel && B.circuit.dansTunnel(co.c, et.s))) embrun(fx, et, p);
+      if (eau > .12 && et.v > 14 && auSol && !(B.circuit.dansCouvert && B.circuit.dansCouvert(co.c, et.s))) embrun(fx, et, p);
       // glissière touchée pendant ce trentième de seconde
       if (et.choc > choc - PAS && et.v > 6) mur(fx, et, p);
     }

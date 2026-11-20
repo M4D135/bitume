@@ -8,14 +8,14 @@ import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
 import { chargerPhysX } from './helpers/physx-runtime.mjs';
 const require = createRequire(import.meta.url);
-for (const f of ['circuit', 'conduite', 'degats', 'contacts', 'obstacles', 'botanique', 'ecologie', 'saisons', 'vegetation',
+for (const f of ['circuit', 'route-des-cimes', 'conduite', 'degats', 'contacts', 'obstacles', 'botanique', 'ecologie', 'saisons', 'vegetation',
   'bords', 'carene', 'decor', 'meteo', 'strategie-stands', 'course', 'solides-physx', 'physique']) require('../src/' + f + '.js');
 const B = globalThis.BITUME, X = globalThis.FPhysX = await chargerPhysX(), DT = 1 / 120;
 const catalogue = vm.runInNewContext(readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8')
   .match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1]);
 const NEUTRE = { gaz: 0, frein: 0, volant: 0, aide: 0, guidage: 0, boite: 'auto', marcheArriere: false };
 const FREIN = { ...NEUTRE, frein: 1 }, rapports = [];
-const fichiers = ['src/circuit.js', 'src/conduite.js', 'src/course.js', 'src/physique.js', 'src/solides-physx.js',
+const fichiers = ['src/route-des-cimes.js', 'src/circuit.js', 'src/conduite.js', 'src/course.js', 'src/physique.js', 'src/solides-physx.js',
   'src/decor.js', 'src/bords.js', 'src/ferro/physx-runtime.js', 'verifications/physx-circuits.test.mjs',
   'verifications/helpers/physx-runtime.mjs'];
 const empreintes = Object.fromEntries(fichiers.map(f => [f, createHash('sha256')
@@ -30,7 +30,7 @@ function verifier(nom, f) {
   finally { r.dureeExecutionMs = performance.now() - debut; rapports.push(r); }
 }
 function construire(k) {
-  const c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom });
+  const c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition });
   B.bords.limites(c, B.bords.planifier(c));
   const decor = B.decor.construire(c, { qualite: 'high', vegetation: false, saison: 'ete' });
   c.obstacles = B.obstacles.creer(decor.obstacles);

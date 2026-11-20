@@ -1,16 +1,16 @@
-// Recette de sol FERRO 25 : seul le numéro de matière change après la préparation du décor.
+// Sols naturels FERRO 25 (terre/herbe/neige) et 23 (roche) : seules les matières changent.
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import vm from 'node:vm';
 const require = createRequire(import.meta.url);
-for (const f of ['circuit', 'carene', 'chaussee', 'botanique', 'ecologie', 'saisons', 'vegetation', 'bords', 'decor']) require('../src/' + f + '.js');
+for (const f of ['circuit', 'route-des-cimes', 'carene', 'chaussee', 'botanique', 'ecologie', 'saisons', 'vegetation', 'bords', 'decor']) require('../src/' + f + '.js');
 const B = globalThis.BITUME, sourceJeu = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const catalogue = vm.runInNewContext(sourceJeu.match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1]);
 const rapports = []; let controles = 0;
 function verifier(nom, f) { const r = f(); controles++; console.log('ok  ' + nom); if (r) rapports.push({ nom, ...r }); }
-function circuit(k) { const c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom }); B.bords.limites(c, B.bords.planifier(c)); return c; }
+function circuit(k) { const c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition }); B.bords.limites(c, B.bords.planifier(c)); return c; }
 function empreinte(x) { return createHash('sha256').update(JSON.stringify(x)).digest('hex'); }
 function solides(d) { return d.lotsHerbier.flatMap(l => l.objets).map(o => o.solidePhysX || null); }
 function photographieVegetation(qualite, actif) {
@@ -42,7 +42,7 @@ function photographieVegetation(qualite, actif) {
 }
 function comparer(ancien, actif) {
   assert.equal(actif.nappes.length, ancien.nappes.length);
-  let convertis = 0, accotementsEnneiges = 0, neigeClaire = 0, eau = 0;
+  let convertis = 0, accotementsEnneiges = 0, neigeClaire = 0, neigeAlpine = 0, roches = 0, eau = 0;
   for (let i = 0; i < ancien.nappes.length; i++) {
     const a = ancien.nappes[i], b = actif.nappes[i], attendu = new Float32Array(a.sommets);
     assert.equal(b.surfaceType, a.surfaceType); assert.deepEqual(b.indices, a.indices, 'indices modifiés');
@@ -51,6 +51,14 @@ function comparer(ancien, actif) {
     const sol = a.surfaceType === 'accotement' || a.surfaceType === 'terrain';
     for (let k = 9; k < attendu.length; k += 13) {
       if (attendu[k] === 12) eau++;
+      if (a.surfaceType === 'terrain') {
+        assert.notEqual(b.sommets[k], 3, 'le terrain reçoit les joints du béton architectural');
+        if (attendu[k] === 3) {
+          assert.ok(attendu[k + 1] > .9 && attendu[k + 2] > .9 && attendu[k + 3] > .9, 'le matériau 3 de terrain doit être la neige alpine');
+          attendu[k] = 25; convertis++; neigeAlpine++; continue;
+        }
+        if (attendu[k] === 9) { attendu[k] = 23; convertis++; roches++; continue; }
+      }
       if (attendu[k] !== 8 || !sol) continue;
       attendu[k] = 25; convertis++;
       if (actif.saison.neige && a.surfaceType === 'accotement') {
@@ -75,13 +83,30 @@ function comparer(ancien, actif) {
     assert.deepEqual(actif.surfaceHerbe(x, z, {}), ancien.surfaceHerbe(x, z, {}), 'appui ou couleur du masque d’herbe modifié');
   }
   if (actif.saison.neige) { assert.ok(accotementsEnneiges > 0); assert.equal(neigeClaire, accotementsEnneiges, 'la neige des accotements a perdu sa palette claire'); }
-  return { convertis, sommetsEauPreserves: eau, sommetsNeigeClairs: neigeClaire, trianglesHerbier: h.triangles.length };
+  return { convertis, sommetsNeigeAlpine: neigeAlpine, sommetsRoche: roches, sommetsEauPreserves: eau, sommetsNeigeClairs: neigeClaire, trianglesHerbier: h.triangles.length };
 }
+
+verifier('Haut-Col : aucun triangle de terrain ne reçoit le béton des bâtiments', () => {
+  const d = B.decor.construire(circuit(catalogue.find(k => k.id === 'haut-col')), {
+    qualite: 'low', saison: 'ete', vegetation: false, solsProceduraux: true,
+  });
+  let triangles = 0, fuites = 0, neige = 0;
+  for (const n of d.nappes) if (n.surfaceType === 'terrain') for (let k = 0; k < n.indices.length; k += 3) {
+    triangles++;
+    const ids = [n.indices[k], n.indices[k + 1], n.indices[k + 2]];
+    if (ids.some(i => n.sommets[i * 13 + 9] === 3)) fuites++;
+    if (ids.every(i => n.sommets[i * 13 + 9] === 25 && n.sommets[i * 13 + 10] > .9)) neige++;
+  }
+  assert.equal(fuites, 0, fuites + ' triangles naturels utilisent le béton architectural');
+  assert.ok(neige > 0, 'la neige alpine blanche doit rester présente');
+  assert.ok(d.lots.some(l => l.objets.some(o => o.mat === 3)), 'le béton des bâtiments doit rester présent');
+  return { trianglesTerrain: triangles, trianglesNeige: neige, trianglesBeton: fuites };
+});
 
 // Circuits indépendants : aucun herbier déjà préparé par le témoin ne peut masquer une mauvaise lecture du mode 25.
 for (const k of catalogue) for (const qualite of ['low', 'high']) {
   const temoin = circuit(k), enrichi = circuit(k);
-  for (const saison of B.saisons.IDS) verifier(k.id + ' / ' + qualite + ' / ' + saison + ' : surfaces identiques, recette 8 → 25 seule', () => {
+  for (const saison of B.saisons.IDS) verifier(k.id + ' / ' + qualite + ' / ' + saison + ' : surfaces identiques, sols 8/3 → 25 et roche 9 → 23', () => {
     const options = { qualite, saison, matieres: true, vegetation: false };
     const ancien = B.decor.construire(temoin, { ...options, solsProceduraux: false });
     const actif = B.decor.construire(enrichi, { ...options, solsProceduraux: true });
@@ -116,4 +141,5 @@ verifier('le jeu active les sols procéduraux dans tous les profils et modes de 
 });
 const bilan = { controles, cas: rapports };
 if (process.env.BITUME_RAPPORT_SOLS) writeFileSync(process.env.BITUME_RAPPORT_SOLS, JSON.stringify(bilan, null, 2) + '\n');
-console.log(JSON.stringify({ controles, comparaisons: rapports.length, convertis: rapports.reduce((s, r) => s + r.convertis, 0) }));
+console.log(JSON.stringify({ controles, comparaisons: rapports.length, convertis: rapports.reduce((s, r) => s + (r.convertis || 0), 0),
+  neigeAlpine: rapports.reduce((s, r) => s + (r.sommetsNeigeAlpine || 0), 0), roches: rapports.reduce((s, r) => s + (r.sommetsRoche || 0), 0) }));

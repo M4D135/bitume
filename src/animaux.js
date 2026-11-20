@@ -1160,7 +1160,10 @@
     };
     const enc = decor.enceinte || { debut: -160, fin: 310 };
     for (let s = enc.debut; s <= enc.fin; s += 8) disque((c.depart || 0) + s, R_ENCEINTE, ENCEINTE);
-    if (c.tunnel) for (let s = c.tunnel.debut - 60; s <= c.tunnel.fin + 60; s += 8) disque(s, R_TUNNEL, TUNNEL);
+    for (const t of (B.couverts ? B.couverts.liste(c) : c.tunnel ? [c.tunnel] : [])) {
+      const fin = t.debut + (B.couverts ? B.couverts.longueur(c, t) : t.fin - t.debut);
+      for (let s = t.debut - 60; s <= fin + 60; s += 8) disque(s, R_TUNNEL, TUNNEL);
+    }
     return G;
   }
   function cellule(G, x, z) {

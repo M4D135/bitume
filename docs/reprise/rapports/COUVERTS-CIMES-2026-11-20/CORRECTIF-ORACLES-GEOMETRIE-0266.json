@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "fix": "solides-physx-geometrie-oracles-pont-raccords",
+  "runtimeModifieParCeCorrectif": false,
+  "fichiersModifies": [
+    "verifications/solides-physx-geometrie.test.mjs"
+  ],
+  "diagnostic": {
+    "pont": "Six sondes historiques à d=±8m exigeaient un sol roulant au-delà du parapet ; quatre atteignent la vraie gorge de52,425à55,158m plus bas, deux ne rencontrent aucun triangle de support.",
+    "sondesAnciennes": [
+      {
+        "s": 7922.3449116648235,
+        "lateral": -8,
+        "attendu": 117.00907228521719,
+        "observe": 63.28046598023373,
+        "ecart": -53.72860630498346,
+        "genre": "terrain",
+        "ponts": [
+          {
+            "type": "arche",
+            "nom": "Pont de la Gorge",
+            "debut": 7887.1527022713235,
+            "fin": 8017.1527022713235
+          }
+        ]
+      },
+      {
+        "s": 7922.3449116648235,
+        "lateral": 8,
+        "attendu": 117.00909235883223,
+        "observe": 64.58373507510176,
+        "ecart": -52.42535728373048,
+        "genre": "terrain",
+        "ponts": [
+          {
+            "type": "arche",
+            "nom": "Pont de la Gorge",
+            "debut": 7887.1527022713235,
+            "fin": 8017.1527022713235
+          }
+        ]
+      },
+      {
+        "s": 7956.343258925188,
+        "lateral": -8,
+        "attendu": 116.66910041371848,
+        "observe": 61.911007080397965,
+        "ecart": -54.75809333332052,
+        "genre": "terrain",
+        "ponts": [
+          {
+            "type": "arche",
+            "nom": "Pont de la Gorge",
+            "debut": 7887.1527022713235,
+            "fin": 8017.1527022713235
+          }
+        ]
+      },
+      {
+        "s": 7956.343258925188,
+        "lateral": 8,
+        "attendu": 116.66910041371848,
+        "observe": 61.51100652295483,
+        "ecart": -55.15809389076365,
+        "genre": "terrain",
+        "ponts": [
+          {
+            "type": "arche",
+            "nom": "Pont de la Gorge",
+            "debut": 7887.1527022713235,
+            "fin": 8017.1527022713235
+          }
+        ]
+      },
+      {
+        "s": 7990.341606185552,
+        "lateral": -8,
+        "attendu": 116.25488879612818,
+        "observe": null,
+        "ecart": null,
+        "genre": null,
+        "ponts": [
+          {
+            "type": "arche",
+            "nom": "Pont de la Gorge",
+            "debut": 7887.1527022713235,
+            "fin": 8017.1527022713235
+          }
+        ]
+      },
+      {
+        "s": 7990.341606185552,
+        "lateral": 8,
+        "attendu": 116.25072681397985,
+        "observe": null,
+        "ecart": null,
+        "genre": null,
+        "ponts": [
+          {
+            "type": "arche",
+            "nom": "Pont de la Gorge",
+            "debut": 7887.1527022713235,
+            "fin": 8017.1527022713235
+          }
+        ]
+      }
+    ],
+    "raccords": "Deux dalles de sortie sont recouvertes par la vraie chaussée de0,975et1,847mm. La géométrie et les appuis sont corrects; exiger le même ID acteur était faux sur un raccord.",
+    "dalles": [
+      {
+        "id": 4747,
+        "pos": [
+          1057.9514400820842,
+          255.70273783048512,
+          -2438.0580207843395
+        ],
+        "half": [
+          0.263846024684609,
+          0.05,
+          7.6
+        ],
+        "hit": {
+          "id": 39,
+          "y": 255.75373840114543,
+          "genre": "chaussee"
+        },
+        "normal": [
+          0.015145415484692188,
+          0.9994842111589274,
+          0.02831833388130039
+        ],
+        "haut": 255.75276363323596,
+        "superpositionM": 0.0009747679094687101
+      },
+      {
+        "id": 4748,
+        "pos": [
+          1057.505238414179,
+          255.71459175272665,
+          -2438.2166557102732
+        ],
+        "half": [
+          0.263860982199284,
+          0.05,
+          7.6
+        ],
+        "hit": {
+          "id": 39,
+          "y": 255.76646840588634,
+          "genre": "chaussee"
+        },
+        "normal": [
+          0.01735662520275725,
+          0.99941030587579,
+          0.029627488432717133
+        ],
+        "haut": 255.76462125483008,
+        "superpositionM": 0.0018471510562676485
+      }
+    ]
+  },
+  "correction": {
+    "seuilSupportM": 0.3,
+    "seuilSupportInchange": true,
+    "precisionHauteurDalleM": 1e-07,
+    "precisionHauteurDalleConserveeSurRayonIsole": true,
+    "limiteSuperpositionRaccordM": 0.015,
+    "origineLimite": "seuil15mm déjà qualifié aux six portails; chaussée seule dans les6m du portail",
+    "tousCircuitsConserves": 9,
+    "sondesPontNonIgnorees": true,
+    "mutationTrouDuTablierRejetee": true,
+    "mutationSupportFictifDansGorgeRejetee": true
+  },
+  "validation": {
+    "commande": "node verifications/solides-physx-geometrie.test.mjs",
+    "exitCode": 0,
+    "controles": 49,
+    "circuits": 9,
+    "logSha256": "2e57c6bba5bca170692c17c4687d784489da174bf5b2371e776d99d6e602eb53",
+    "testSha256": "6891686d164d0651056c64ae23ef7871dd4bed23267eb85a3ff8dcd6c556b8c3",
+    "diffCheck": true
+  },
+  "portee": "Un seul test modifié, aucune source runtime, aucun build/version, commit ou push dans ce correctif."
+}

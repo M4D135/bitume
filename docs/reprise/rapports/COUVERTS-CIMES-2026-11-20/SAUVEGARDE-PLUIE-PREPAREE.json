@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "repository": "M4D135/bitume",
+  "status": "prototype_sauvegarde_non_qualifie",
+  "branch": "backup/pluie-abris-20261120",
+  "branch_url": "https://github.com/M4D135/bitume/tree/backup/pluie-abris-20261120",
+  "local_commit": "dfea7ca45660c7bfcb9d517c065eb117742b45ae",
+  "local_parent": "fc89794c70727e3d45b2813274b1e9a8418634a0",
+  "remote_commit": "d3bd240a1bfa02ac1e0dbcc8f5c4cdb3b7176531",
+  "remote_parent": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
+  "remote_commit_url": "https://github.com/M4D135/bitume/commit/d3bd240a1bfa02ac1e0dbcc8f5c4cdb3b7176531",
+  "local_tree": "65442e902e38ae0e93d80698c8c262ae198422cf",
+  "remote_tree": "65442e902e38ae0e93d80698c8c262ae198422cf",
+  "trees_identical": true,
+  "base_tree": "1f05e9b399e4584b814c4050bad9f5652261b097",
+  "base_parent_trees_identical": true,
+  "commit_message": "prototype pluie sous abri, non qualifié [skip ci]\n\nSauvegarde exacte du checkpoint dfea7ca45660c7bfcb9d517c065eb117742b45ae : pluie extérieure visible depuis les portails et galeries, avec masquage spatial des traits par les ouvrages réels.\n\nPréparation conservée sur une branche dédiée. Coût CPU des requêtes PhysX et compositing raster à qualifier avant intégration. Le HTML et la version sont ceux de la base 0.2.66 ; ce prototype ne constitue pas une nouvelle livraison construite.",
+  "publication": {
+    "branch_absence_verified_before_create": true,
+    "absence_checks": 2,
+    "branch_created": true,
+    "existing_ref_overwritten": false,
+    "ref_and_commit_refetched": true,
+    "source_worktree_clean_before_and_after": true,
+    "source_worktree_modified": false,
+    "main_or_pr38_modified": false,
+    "pull_request_created": false,
+    "raw_logs_or_internal_paths_added": false
+  },
+  "delta": {
+    "files": [
+      {
+        "path": "src/jeu.js",
+        "bytes": 342480,
+        "chars": 339833,
+        "sha256": "5d95560468291bccef9afdf0e91aa61d8ac28aaae1104f4d6733595bfe623382",
+        "blob": "e992bbeba82c042f22e8cdde7541e06b1eb9d935",
+        "mode": "100644"
+      },
+      {
+        "path": "src/meteo.js",
+        "bytes": 19677,
+        "chars": 19575,
+        "sha256": "652f362680e3b6a5d8e9f72b4a85ee465bf185905b8779ceaac3f5acc7559696",
+        "blob": "be4c3e87f801fffa4e37a944aa8d93061a01d91d",
+        "mode": "100644"
+      },
+      {
+        "path": "verifications/meteo-couverts-physx.test.mjs",
+        "bytes": 9667,
+        "chars": 9611,
+        "sha256": "b863ac0817286be28f69df71361220b7afedb7dd640a8a8f4813406731b34f06",
+        "blob": "ee5600db717aaed60a82379c54218aeada205d23",
+        "mode": "100644"
+      }
+    ],
+    "files_count": 3,
+    "insertions": 222,
+    "deletions": 7,
+    "diff_check_passed": true
+  },
+  "content": "Pluie extérieure conservée depuis les portails et le côté ouvert des galeries ; masque spatial appuyé sur les ouvrages PhysX, dépôts de visière abrités et test natif dédié.",
+  "qualification": {
+    "status": "non_qualifie_pour_integration",
+    "tests_reexecuted": false,
+    "build_rebuilt": false,
+    "html_and_version_unchanged_from_base": true,
+    "html_version": "0.2.66",
+    "html_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+    "note": "Le HTML conservé ne contient pas les nouvelles sources du prototype. Reconstruire et qualifier un nouveau candidat avant intégration."
+  },
+  "reserves": [
+    "Coût CPU des requêtes PhysX/WASM près des portails et galeries à qualifier ; aucune performance matérielle garantie.",
+    "Le test natif utilise un Canvas instrumenté sans raster. Le compositing réel dans le navigateur, les occlusions fines et les deux vues restent à inspecter.",
+    "Ces sources restent hors livraison ; la sauvegarde ne ferme pas la réserve de pluie extérieure vue depuis un abri."
+  ],
+  "prochaine_etape": "Reprendre cette branche après clôture de la livraison courante, mesurer le coût et le compositing, puis reconstruire et qualifier avant toute fusion."
+}

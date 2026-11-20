@@ -7,6 +7,7 @@ import assert from 'node:assert/strict';
 const root = process.argv[3] || resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const source = readFileSync(process.argv[2] || join(root, 'src/jeu.js'), 'utf8');
 const { B, CD, DT, circuit, commande } = await import(pathToFileURL(join(root, 'verifications/phase2/outils.mjs')).href);
+await import(pathToFileURL(join(root, 'src/expressions-pilote.js')).href);
 function extraire(nom) {
   const debut = source.indexOf(`  function ${nom}(`);
   assert(debut >= 0, nom);
@@ -327,6 +328,34 @@ for (const joueur of [0, 1]) test('molette réservée au propriétaire souris J'
   assert.equal(session.course.voitures[joueur].etat.rapport, 2);
   assert.equal(session.course.voitures[1 - joueur].etat.rapport, 1);
   assert.equal((joueur ? api.j2() : api.j1()).haut, false);
+});
+test('Troll : touches J1/J2 distinctes, maintien ignoré, nouveau front accepté', () => {
+  const { api, session } = preparer();
+  session.expressions = B.expressionsPilote.creer(2, 17);
+  const p = session.expressions.pilotes;
+  api.event('keydown', { code: 'KeyG', key: 'g' });
+  assert(p[0].demande); assert(!p[1].demande);
+  p[0].demande = false;
+  api.event('keydown', { code: 'KeyG', key: 'g', repeat: true }); assert(!p[0].demande);
+  api.event('keydown', { code: 'NumpadDecimal', key: ',' }); assert(p[1].demande);
+  api.event('keyup', { code: 'KeyG' }); api.event('keydown', { code: 'KeyG', key: 'g' }); assert(p[0].demande);
+});
+test('Troll : remappage et écran pause respectés', () => {
+  const { api, session } = preparer({ reglages: { touches: [{ troll: ['KeyT'] }, {}] } });
+  session.expressions = B.expressionsPilote.creer(2, 17);
+  const p = session.expressions.pilotes[0];
+  api.event('keydown', { code: 'KeyG', key: 'g' }); assert(!p.demande);
+  api.event('keydown', { code: 'KeyT', key: 't' }); assert(p.demande);
+  p.demande = false; api.setScreen('pause'); api.event('keydown', { code: 'KeyT', key: 't' }); assert(!p.demande);
+});
+test('Troll L3 : manette de J2, pas de geste à la connexion ni pendant le maintien', () => {
+  const { api, session, navigator } = preparer();
+  session.expressions = B.expressionsPilote.creer(2, 17);
+  const p = session.expressions.pilotes;
+  navigator.pads = [manette(0, { 10: 1 })]; api.poll(); assert(!p[0].demande && !p[1].demande);
+  navigator.pads = [manette(0)]; api.poll();
+  navigator.pads = [manette(0, { 10: 1 })]; api.poll(); assert(p[1].demande && !p[0].demande);
+  p[1].demande = false; api.poll(); assert(!p[1].demande);
 });
 console.log(`${reussis}/${reussis + echecs.length} contrôles commandes partagées tenus`);
 if (echecs.length) process.exitCode = 1;

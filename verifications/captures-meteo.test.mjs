@@ -185,9 +185,9 @@ test('la CI conserve les groupes historiques, couvre tous les scénarios une foi
   const yaml = readFileSync(new URL('../.github/workflows/visuel-meteo.yml', import.meta.url), 'utf8');
   const cas = [...yaml.matchAll(/^\s+cas: ([a-z0-9,-]+)$/gm)].flatMap(m => m[1].split(','));
   assert.equal(new Set(cas).size, cas.length); assert.deepEqual([...cas].sort(), SCENARIOS.map(s => s.id).sort());
-  assert.match(yaml, /cas: pluie-grille,pluie-spray235,tunnel/);
+  for (const cas of ['pluie-grille', 'pluie-spray235', 'tunnel']) assert.ok(yaml.includes('cas: ' + cas + '\n'));
   assert.match(yaml, /cas: neige45,pause-reprise,legere/);
   assert.match(yaml, /cas: duo,sec,faune-haut-col-ete,faune-haut-col-hiver/);
-  assert.match(yaml, /git show f57cbbd8ec831b62d8cdb04d85f6fafa2a2418d4:dist\/bitume.html/);
+  assert.match(yaml, /git show f41614e1f3887a79ebbd633df3fde754534f202e:dist\/bitume.html/);
   assert.match(yaml, /git diff --exit-code -- VERSION.json SIZE.json dist\/bitume.html/);
 });

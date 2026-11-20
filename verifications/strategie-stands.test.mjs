@@ -6,7 +6,7 @@ import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 const require = createRequire(import.meta.url);
-for (const nom of ['circuit', 'conduite', 'degats', 'contacts', 'obstacles', 'botanique', 'ecologie', 'saisons',
+for (const nom of ['circuit', 'route-des-cimes', 'conduite', 'degats', 'contacts', 'obstacles', 'botanique', 'ecologie', 'saisons',
   'vegetation', 'bords', 'carene', 'decor', 'meteo', 'strategie-stands', 'course', 'pneus-reseau']) require('../src/' + nom + '.js');
 const B = globalThis.BITUME, DT = 1 / 120;
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
@@ -20,7 +20,7 @@ const circuits = new Map();
 function circuit(id) {
   if (!circuits.has(id)) {
     const k = CATALOGUE.find(k => k.id === id); assert.ok(k);
-    const c = B.circuit.creer(k.graine, {theme: k.theme, longueur: k.longueur, nom: k.nom});
+    const c = B.circuit.creer(k.graine, {theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition});
     B.bords.limites(c, B.bords.planifier(c));
     const decor = B.decor.construire(c, {qualite: 'high', matieres: true, vegetation: true, vegetationQualite: 'high', saison: 'ete'});
     c.obstacles = B.obstacles.creer(decor.obstacles);

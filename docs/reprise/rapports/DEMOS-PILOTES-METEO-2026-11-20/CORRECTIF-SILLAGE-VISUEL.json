@@ -1,0 +1,155 @@
+{
+  "format": "bitume-correctif-sillage-visuel-v1",
+  "date": "2026-11-20T12:27:22.977331+00:00",
+  "probleme": "La caméra de poursuite à 2,45 m ne recevait presque aucun dépôt du seul rival à 18 m ; le validateur aérien exigeait deux propriétés absentes du diagnostic WebGL.",
+  "correction": "Panache de projections plus haut et dense avec vitesse et chaussée mouillée, profil vertical progressif. Aucun changement aux sources aérodynamiques, à la conduite, au moteur ou à l’exclusion des vues aériennes. Contrôle aérien limité aux propriétés réellement exposées : actif, visibilité DOM, eau/neige/embruns/gouttes.",
+  "candidatReference": "0.2.64",
+  "headReference": "80aa1e2913a93b54daf68bd1c3dc6abb520dc69b",
+  "capturesInitiales": {
+    "run": 44734044202,
+    "poursuite": {
+      "artifact": 14628361590,
+      "sha256": "b035fed25ab2d2390d8bcff0fff55d9f11b5be4b3765ecae41b2eba8fccaaa1d",
+      "exposition": 0.04821429079292072,
+      "depotsEmbruns": 0
+    },
+    "aerien": {
+      "artifact": 14628022271,
+      "sha256": "084268794d7184307b40e59b3a672f7ff30eaf0266acedcc85300cd132ed2e92",
+      "relectureRapportExact": "reussie_apres_correction_outil",
+      "imagePropre": true
+    }
+  },
+  "mesure": {
+    "circuit": "val-brule",
+    "graine": 11,
+    "abscisseM": 280,
+    "rivalEnAvantM": 18,
+    "hauteurCameraM": 2.45,
+    "reculCameraM": 7.4,
+    "avant": [
+      {
+        "kmh": 40,
+        "casque": 0.02301549282820181,
+        "poursuite": 0,
+        "poursuiteSec": 0,
+        "aerien": 0
+      },
+      {
+        "kmh": 90,
+        "casque": 0.3016148688634037,
+        "poursuite": 0.007585299696941883,
+        "poursuiteSec": 0,
+        "aerien": 0
+      },
+      {
+        "kmh": 150,
+        "casque": 0.6171110030791203,
+        "poursuite": 0.02909497112554238,
+        "poursuiteSec": 0,
+        "aerien": 0
+      },
+      {
+        "kmh": 235,
+        "casque": 0.7569585069863141,
+        "poursuite": 0.048214290792920944,
+        "poursuiteSec": 0,
+        "aerien": 0
+      },
+      {
+        "kmh": 300,
+        "casque": 0.7789715730339377,
+        "poursuite": 0.053441270416227704,
+        "poursuiteSec": 0,
+        "aerien": 0
+      }
+    ],
+    "apres": [
+      {
+        "kmh": 40,
+        "casque": 0.030082927580236785,
+        "poursuite": 0,
+        "poursuiteSec": 0,
+        "aerien": 0
+      },
+      {
+        "kmh": 90,
+        "casque": 0.3789720680153841,
+        "poursuite": 0.04378703259338501,
+        "poursuiteSec": 0,
+        "aerien": 0
+      },
+      {
+        "kmh": 150,
+        "casque": 0.7298367743383027,
+        "poursuite": 0.3565069277964493,
+        "poursuiteSec": 0,
+        "aerien": 0
+      },
+      {
+        "kmh": 235,
+        "casque": 0.8605631901573358,
+        "poursuite": 0.6631411450393521,
+        "poursuiteSec": 0,
+        "aerien": 0
+      },
+      {
+        "kmh": 300,
+        "casque": 0.878594399764893,
+        "poursuite": 0.7170657586149375,
+        "poursuiteSec": 0,
+        "aerien": 0
+      }
+    ]
+  },
+  "tests": [
+    {
+      "suite": "sillage",
+      "code": 0,
+      "secondes": 0.096
+    },
+    {
+      "suite": "embruns",
+      "code": 0,
+      "secondes": 0.063
+    },
+    {
+      "suite": "captures-demo",
+      "code": 0,
+      "secondes": 0.16
+    },
+    {
+      "suite": "vitre-integration",
+      "code": 0,
+      "secondes": 0.221
+    },
+    {
+      "suite": "visiere-optique",
+      "code": 0,
+      "secondes": 0.291
+    },
+    {
+      "suite": "vitre-meteo",
+      "code": 0,
+      "secondes": 2.989
+    },
+    {
+      "suite": "captures-meteo",
+      "code": 0,
+      "secondes": 0.12
+    }
+  ],
+  "empreintes": {
+    "src/sillage.js": "4aaa82cd1f99d1e2d776cb32e1d4d7a2f82b36f11e340c3ec0f662fa270bb503",
+    "tools/captures-demo.mjs": "f1d17f4b43eee69a459e293c3c6f1b7f061e2de7d9990fe1b53b50881eb13e32",
+    "verifications/captures-demo.test.mjs": "5c2d302f215ed7ae5ce4da7022925439fc18057fc033c3669203660ed6806863",
+    "verifications/embruns.test.mjs": "98b90d5c785519b4bd0a19c9a0505acae9f1c09c55517755bf03cf22f1f54e49",
+    "verifications/vitre-integration.test.mjs": "91d0b8e24c821fc51ae20cb63efe65ebf7b30d7297e079b2e5e27fa2def0c51f"
+  },
+  "limites": [
+    "Les nouvelles captures du HTML assemblé restent à produire et inspecter.",
+    "Le contrôle de dépôts en poursuite sans pluie utilise les vraies fonctions jeu/vitre et le repli Canvas ; ce test ne vaut pas qualification WebGL.",
+    "Le volume du panache est un réglage visuel de gameplay, pas une simulation de dynamique des fluides.",
+    "Aucune mesure FPS matérielle."
+  ]
+}

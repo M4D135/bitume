@@ -1,0 +1,31 @@
+{
+  "version": "0.2.66",
+  "date": "2026-11-20",
+  "head": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
+  "tree": "1f05e9b399e4584b814c4050bad9f5652261b097",
+  "ci_commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+  "run": 44743369726,
+  "job": 136312371617,
+  "zip_sha256": "30fffafdcaba5f35e9a426b15f195340d9bb26984480e25221f79cb2d7c2b1c8",
+  "zip_digest_matches_github": true,
+  "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+  "build_octets": 14370823,
+  "build_matches_candidate": true,
+  "sources_archive_sha256": "450f6a5b3070dcfdcec77a709bb6bc40d77e7b8a2991fc42145ce0422f0a878d",
+  "source_files_verified": 3405,
+  "source_contents_and_modes_identical": true,
+  "suites_expected": 159,
+  "suites_passed": 159,
+  "suites_failed": 0,
+  "all_suite_logs_present": true,
+  "environment": [
+    "v24.22.2",
+    "Python 3.14.4"
+  ],
+  "statut": "success",
+  "limitations": [
+    "Cette preuve ne remplace pas la revue des images ni les mesures sur matériel."
+  ],
+  "artifact_id": 14631793804,
+  "workflow_url": "https://github.com/M4D135/bitume/actions/runs/44743369726"
+}

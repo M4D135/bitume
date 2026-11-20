@@ -11,7 +11,7 @@ import { comparerDeterminismePhysX as comparer, validerScenesPhysX } from './ref
 
 const require = createRequire(import.meta.url), DT = 1 / 120, PAS_SECONDE = 120;
 const MARQUEUR = '@@BITUME_DETERMINISME_PHYSX@@';
-const MODULES = ['circuit', 'conduite', 'degats', 'contacts', 'obstacles', 'botanique', 'ecologie',
+const MODULES = ['circuit', 'route-des-cimes', 'conduite', 'degats', 'contacts', 'obstacles', 'botanique', 'ecologie',
   'saisons', 'vegetation', 'bords', 'carene', 'decor', 'meteo', 'strategie-stands', 'course',
   'solides-physx', 'physique'];
 const CAS = [
@@ -113,7 +113,7 @@ async function rejouer(Ecrivain, etatCourse, physique) {
   const cas = {};
   for (const options of CAS) {
     const k = catalogue.find(c => c.id === options.circuit); assert.ok(k, options.circuit);
-    const c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom });
+    const c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition });
     B.bords.limites(c, B.bords.planifier(c));
     const decor = B.decor.construire(c, { qualite: 'low', matieres: true, vegetation: false, saison: options.saison });
     c.obstacles = B.obstacles.creer(decor.obstacles);

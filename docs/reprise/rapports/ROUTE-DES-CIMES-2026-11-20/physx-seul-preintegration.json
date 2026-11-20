@@ -1,0 +1,224 @@
+{
+  "schema": 1,
+  "physique": "p15",
+  "backend": {
+    "ready": true,
+    "version": "5.12.0",
+    "worlds": 0,
+    "queryCount": 0
+  },
+  "dt": 0.008333333333333333,
+  "rivaux": 0,
+  "meteo": "sec",
+  "dureeMax": 420,
+  "sourceHashes": {
+    "src/circuit.js": "d481a9a964559b0112eabedfc9e1ff42f3ed32e2dfcbbc7159c21342792427d7",
+    "src/route-des-cimes.js": "a83165c51644fde40545ea84d10748a56a2ddf4caed0b8372cf119ad7c4a4efa",
+    "src/conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+    "src/course.js": "bec39581653d200ca03679c62195bb3bb4087eb666112685ef7687d2a8e247fb",
+    "src/physique.js": "2dc2dede6b8f8e3a863a09c754bed30baf2cdf38af0dc6b71e9d839eb153a089",
+    "src/solides-physx.js": "27475ef6f49c43431d02f7694fd46e42dd0cf89982d5479b6557a77910f2343b",
+    "src/bords.js": "ef0488472987ff35d36f3a2bbd76e5a086cb7edf8bc038dfb01676dfe933b638",
+    "src/chaussee.js": "26845218ad17b60301f97f3374ac31fc4a61fab75b137d9497bb7742a983753d",
+    "src/ferro/physx.js": "b273c4ddbf5bd6871ac55bec727274184cbc627a7e1d5a30ca3a95fd3b525638",
+    "src/ferro/physx-runtime.js": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+    "tools/qualification/route-des-cimes-physx.mjs": "8be9d31bf74ec8815ca4e165274932ddc5fd58ac9ba8620acde3863aa88f602b"
+  },
+  "decor": {
+    "chemin": "bitume-cimes-decor-indices.cjs",
+    "sha256": "42f8ff1221e87e1495a6417bf36996a92e6822f54351e3c6bfe3091bcc3807c4"
+  },
+  "geometrie": {
+    "longueur": 9697.52858032384,
+    "denivele": 270.28010796346786,
+    "penteMin": -0.09999995398901786,
+    "penteMax": 0.3000000460109821,
+    "rayonMin": 32,
+    "longueurAu20": 329.98395870353244,
+    "longueurCouverte": 774.7197551196596,
+    "ecartAuPlanFinalM": -0.47141967615971225
+  },
+  "progres": [
+    {
+      "t": 0.008333333333333333,
+      "voitures": [
+        {
+          "id": 0,
+          "s": 9657.528866717057,
+          "d": -3.4068108980618957e-06,
+          "v": 0.032021684267065836,
+          "appuis": 4,
+          "replacements": 0
+        }
+      ]
+    },
+    {
+      "t": 40.008333333331706,
+      "voitures": [
+        {
+          "id": 0,
+          "s": 1762.121189792666,
+          "d": 4.663955672489255,
+          "v": 47.37166494053074,
+          "appuis": 4,
+          "replacements": 0
+        }
+      ]
+    },
+    {
+      "t": 80.00833333334307,
+      "voitures": [
+        {
+          "id": 0,
+          "s": 3365.328916957753,
+          "d": -4.626797385622618,
+          "v": 19.11407752866611,
+          "appuis": 4,
+          "replacements": 0
+        }
+      ]
+    },
+    {
+      "t": 120.0083333333749,
+      "voitures": [
+        {
+          "id": 0,
+          "s": 4934.4273572337115,
+          "d": -4.667927832742652,
+          "v": 67.78953786030912,
+          "appuis": 4,
+          "replacements": 0
+        }
+      ]
+    },
+    {
+      "t": 160.00833333335214,
+      "voitures": [
+        {
+          "id": 0,
+          "s": 7559.709644090075,
+          "d": -4.15570944728814,
+          "v": 54.9805486526119,
+          "appuis": 4,
+          "replacements": 0
+        }
+      ]
+    },
+    {
+      "t": 200.00833333331576,
+      "voitures": [
+        {
+          "id": 0,
+          "s": 215.73441617650133,
+          "d": -4.246148116094023,
+          "v": 71.68668771902304,
+          "appuis": 4,
+          "replacements": 0
+        }
+      ]
+    }
+  ],
+  "corrections": {
+    "setPose": 0,
+    "setVelocity": 0,
+    "setAngularVelocity": 0
+  },
+  "reussi": true,
+  "constructionMs": 1953.367945,
+  "provenance": {
+    "source": "tools/lieux-partitions.mjs",
+    "constructeur": "tools/lieux-trace.mjs",
+    "base": "f41614e",
+    "sourceSHA256": "4e6ef531f90ee49518cd92ffe171297252534d723072c60863158b9fbeefa279",
+    "identiteHistorique": "haut-col-etude-22F",
+    "identiteRuntime": "route-des-cimes",
+    "longueurPlanFinalM": 9698,
+    "sequencesFinalesRetrouvees": false,
+    "qualificationCatalogue": false,
+    "versionPhysique": "p15",
+    "reconstruction": "Étude métrique et objectif utilisateur ; Mur +40 m à 22 %, raccord haut +30 m à 7 %, première branche des Lacets à 3 %.",
+    "avertissement": "Le commit historique final n’a pas été retrouvé ; la reconstruction ne revendique pas son identité.",
+    "variante": "reconstruction-2026-11-20"
+  },
+  "statiques": {
+    "nappes": 291,
+    "obstaclesHistoriques": 2103,
+    "complements": 5603,
+    "trianglesSol": 162578,
+    "trianglesObstacles": 106620,
+    "trianglesEauIgnores": 0
+  },
+  "ouvrages": {
+    "declares": [
+      {
+        "type": "tunnel",
+        "nom": "Tunnel du Rocher",
+        "debut": 4276.56945810762,
+        "fin": 4581.28921322728,
+        "id": "cimes-couvert-0",
+        "mur": 7.6,
+        "hauteur": 6.4
+      },
+      {
+        "type": "galerie",
+        "nom": "Galerie des Avalanches",
+        "ouvert": "G",
+        "debut": 6058.9587399358425,
+        "fin": 6358.9587399358425,
+        "id": "cimes-couvert-1",
+        "mur": 7.6,
+        "hauteur": 6.4
+      },
+      {
+        "type": "tunnel",
+        "nom": "Tunnel des Échelles",
+        "debut": 6533.491665135275,
+        "fin": 6703.491665135275,
+        "id": "cimes-couvert-2",
+        "mur": 7.6,
+        "hauteur": 6.4
+      }
+    ],
+    "ponts": [
+      {
+        "type": "arche",
+        "nom": "Pont de la Gorge",
+        "debut": 7887.1527022713235,
+        "fin": 8017.1527022713235
+      }
+    ],
+    "solsTunnel": 51,
+    "galerieConstruite": false
+  },
+  "pas": 24404,
+  "dureeSimulee": 203.36666666664604,
+  "executionMs": 4482.303635,
+  "placementsSupplementaires": 0,
+  "voitures": [
+    {
+      "id": 0,
+      "distanceDepart": 0,
+      "maxAbsD": 4.888141666210648,
+      "minCaisseSol": -0.04602622985839844,
+      "maxCaisseSol": 0.0379180908203125,
+      "sansSol": 0,
+      "sousSol": 0,
+      "sansAppui": 0,
+      "maxSansAppuiS": 0,
+      "dernierSansAppuiS": 0,
+      "couvertsParcourus": [
+        "Tunnel du Rocher",
+        "Galerie des Avalanches",
+        "Tunnel des Échelles"
+      ],
+      "pontsParcourus": [
+        "Pont de la Gorge"
+      ],
+      "sondesSol": 2034,
+      "distance": 10197.74194989931,
+      "replacements": 0,
+      "tours": 1,
+      "appuisFin": 4
+    }
+  ]
+}

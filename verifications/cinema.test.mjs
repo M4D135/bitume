@@ -5,9 +5,11 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import vm from 'node:vm';
 import { chargerPhysX } from './helpers/physx-runtime.mjs';
 const require = createRequire(import.meta.url);
-for (const f of ['circuit','conduite','carene','botanique','ecologie','saisons','vegetation','bords','decor','obstacles','solides-physx','ambiance','animaux','course','cinema','realisateur']) require('../src/'+f+'.js');
+for (const f of ['circuit', 'route-des-cimes','conduite','carene','botanique','ecologie','saisons','vegetation','bords','decor','obstacles','solides-physx','ambiance','animaux','course','cinema','realisateur']) require('../src/'+f+'.js');
 const B = globalThis.BITUME, X = await chargerPhysX(), Cine = B.cinema, R = B.realisateur;
 const catalogue = vm.runInNewContext(readFileSync(new URL('../src/jeu.js',import.meta.url),'utf8').match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1]);
+// Les huit identités déjà livrées restent dans leur ordre ; Cimes est un neuvième parcours distinct.
+const circuitsAttendus = ['val-brule','port-sable','haut-col','lande-noire','roche-fauve','brume-de-jade','cap-sequoia','baikal','route-des-cimes'];
 let controles=0;
 const rapports=[];
 function verifier(nom,f) { f(); controles++; console.log('ok  '+nom); }
@@ -17,7 +19,7 @@ const distance=(a,b)=>Math.hypot(...a.map((v,i)=>v-b[i]));
 const signatures = new Set();
 try {
 for(const k of catalogue) {
- const c=B.circuit.creer(k.graine,{theme:k.theme,longueur:k.longueur,nom:k.nom}); B.bords.limites(c,B.bords.planifier(c));
+ const c=B.circuit.creer(k.graine,{theme:k.theme,longueur:k.longueur,nom:k.nom,partition:k.partition}); B.bords.limites(c,B.bords.planifier(c));
  const decor=B.decor.construire(c,{qualite:'high',vegetationQualite:'high',saison:'ete'});c.obstacles=B.obstacles.creer(decor.obstacles);
  const animaux=B.animaux.creer(c,decor,{saison:'ete'}), world=X.createWorld({fixedStep:1/120,maxSubSteps:1}), montage=B.solidesPhysX.installer(world,c,decor);
  try {
@@ -85,7 +87,12 @@ for(const k of catalogue) {
   rapports.push(rapport);console.log(JSON.stringify(rapport));
  } finally {B.solidesPhysX.liberer(montage);world.dispose();}
 }
-verifier('huit identités de circuit et aucun monde natif conservé',()=>{assert.equal(signatures.size,8);assert.equal(X.status().worlds,0);});
+verifier('huit circuits historiques, Route-des-Cimes distincte et aucun monde natif conservé',()=>{
+ assert.deepEqual(rapports.map(r=>r.circuit),circuitsAttendus,'un circuit historique manque, a changé de place ou Cimes ne termine pas le catalogue');
+ assert.equal(catalogue[8].partition,'route-des-cimes','le neuvième circuit doit utiliser la partition Cimes');
+ assert.equal(signatures.size,circuitsAttendus.length,'les neuf circuits doivent conserver des plans de panorama distincts');
+ assert.equal(X.status().worlds,0);
+});
 }finally{
  if(process.env.BITUME_CINEMA_REPORT)writeFileSync(process.env.BITUME_CINEMA_REPORT,JSON.stringify({controles,versionPhysX:X.status().version,rapports},null,2)+'\n');
 }

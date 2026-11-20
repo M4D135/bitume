@@ -1,0 +1,1614 @@
+{
+  "schema": 2,
+  "date": "2026-11-20T13:50:55.147812+00:00",
+  "status": "review_complete_with_existing_reservations",
+  "version": "0.2.66",
+  "pr": 38,
+  "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+  "build_octets": 14370823,
+  "runtime_base_head": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
+  "repair_head": "40774189dc3a68242a3908f72e09f2676519ccbf",
+  "images_reviewed": 24,
+  "images_retained": 24,
+  "images_reviewed_including_superseded": 26,
+  "retained_from_initial_run": 22,
+  "retained_from_targeted_retry": 2,
+  "successful_groups": 6,
+  "failed_groups_retained": 0,
+  "blocking_findings": [],
+  "initial_review": "REVUE-COUVERTS-0266-INITIALE.json",
+  "initial_failure_diagnostic": "ECHEC-DESSUS-TOIT-0266.md",
+  "provenance_rule": "Les 22 PNG conservés du premier run gardent leur commit CI dbfeb7c7 et leur arbre 1f05e9b3. Seuls les deux nouveaux PNG aériens portent le commit 40774189 et l’arbre 52c3b4be. Tous ouvrent le même HTML 0.2.66.",
+  "runtime_identity": {
+    "verified": true,
+    "changed_paths": [
+      ".github/workflows/visuel-couverts.yml",
+      "tools/captures-couverts.mjs",
+      "verifications/captures-couverts.test.mjs"
+    ],
+    "unchanged_paths": [
+      "src/",
+      "construire.py",
+      "VERSION.json",
+      "SIZE.json",
+      "dist/bitume.html"
+    ],
+    "source_tree_git_sha1": "76e930580f8097a022fad57fe253cc9bb8d5011f",
+    "html_blob_git_sha1": "d28d859c4d6080420ae55738af1e783657b507c3"
+  },
+  "initial_ci": {
+    "run": 44743369605,
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 136312371162,
+        "name": "images (haut-col-portails)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136312371552,
+        "name": "images (cimes-dessus-toit)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "id": 136312371578,
+        "name": "images (cimes-galerie)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136312371594,
+        "name": "images (cimes-echelles)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136312371844,
+        "name": "images (cimes-rocher)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136312372042,
+        "name": "images (cimes-deux-vues)",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "successful_groups": 5,
+    "failed_groups": 1
+  },
+  "targeted_retry_ci": {
+    "run": 44747519881,
+    "job": 136326556794,
+    "conclusion": "success",
+    "scenario": "cimes-dessus-toit"
+  },
+  "groups": [
+    {
+      "scenario": "haut-col-portails",
+      "artifact_id": 14632846122,
+      "artifact_name": "bitume-couverts-haut-col-portails-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "artifact_digest": "sha256:8d816dc9127e934ec1a8169e22336436f4ece00533a86c4704da6c39c5a5db8a",
+      "images_expected": 5,
+      "images_reviewed": 5,
+      "automated_errors": [],
+      "findings": [
+        "Les cinq poses montrent une chaussée continue, des murs, un toit et des rétroviseurs présents, sans trou ni traversée visible.",
+        "La visière se dégage progressivement sous le toit et reçoit de nouveau des gouttes après la sortie.",
+        "Le relief extérieur reste clair et facetté ; cette finition demeure à améliorer dans le programme."
+      ],
+      "blocking_findings": [],
+      "images": [
+        {
+          "fichier": "0000.png",
+          "etape": "entree-exterieure",
+          "octets": 476851,
+          "sha256": "87d94e67185b785d4e69cd050c7c8220e60377803071c6e871b8f3592be9ba7f",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                -549.8181979185189,
+                0.42822858840652134,
+                547.1746864149584
+              ],
+              "abri": false,
+              "interieur": false,
+              "visor_active": true,
+              "lumiere": 1,
+              "vue": "cockpit",
+              "water": 0.7980712724496355,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": -0.30718594789505005,
+            "body": 15,
+            "genre": "chaussee",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": false,
+            "y": null,
+            "body": null,
+            "genre": null,
+            "surface": null
+          }
+        },
+        {
+          "fichier": "0001.png",
+          "etape": "entree-interieure",
+          "octets": 385712,
+          "sha256": "0a4cc732dab12e0fa4db0dde94b9e6f7a931353a9365bc5cd6fc6aee407282e1",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                -528.1214289341925,
+                0.7961308366771203,
+                557.8125158802992
+              ],
+              "abri": true,
+              "interieur": true,
+              "visor_active": true,
+              "lumiere": 1.3133586118804161,
+              "vue": "cockpit",
+              "water": 0.21207523036638984,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 0.10091572254896164,
+            "body": 4926,
+            "genre": "sol-tunnel",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": true,
+            "y": 6.460867404937744,
+            "body": 4929,
+            "genre": "voute-tunnel",
+            "surface": null
+          }
+        },
+        {
+          "fichier": "0002.png",
+          "etape": "centre",
+          "octets": 368141,
+          "sha256": "2d5cfc6bb82e4bc565f4cc082fb8019b0835ae065c50eb381f66c047e661f627",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                -421.44341021873026,
+                2.678623594314398,
+                610.116274638817
+              ],
+              "abri": true,
+              "interieur": true,
+              "visor_active": true,
+              "lumiere": 1.3198621623870161,
+              "vue": "cockpit",
+              "water": 0.05635574777288515,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 1.983199954032898,
+            "body": 5002,
+            "genre": "sol-tunnel",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": true,
+            "y": 8.34315299987793,
+            "body": 5005,
+            "genre": "voute-tunnel",
+            "surface": null
+          }
+        },
+        {
+          "fichier": "0003.png",
+          "etape": "sortie-interieure",
+          "octets": 361635,
+          "sha256": "9cc4e01a4b983cc52bb7228494647199970309b0aaf997f2fc94b1391d207b5a",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                -314.76169453307637,
+                4.1884366355456875,
+                662.4218460053982
+              ],
+              "abri": true,
+              "interieur": true,
+              "visor_active": true,
+              "lumiere": 1.3199971392716083,
+              "vue": "cockpit",
+              "water": 0.014975677742064097,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 3.4910058975219727,
+            "body": 3264,
+            "genre": "sol-tunnel",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": true,
+            "y": 9.850988388061523,
+            "body": 3267,
+            "genre": "voute-tunnel",
+            "surface": null
+          }
+        },
+        {
+          "fichier": "0004.png",
+          "etape": "sortie-exterieure",
+          "octets": 467340,
+          "sha256": "a3570649c2e16b758a2d553a240ac28d6aa5f7a0a9179dd0372629b4bdea36df",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                -293.06333731044276,
+                4.393439188336245,
+                673.0604541769263
+              ],
+              "abri": false,
+              "interieur": false,
+              "visor_active": true,
+              "lumiere": 1.0000104096577143,
+              "vue": "cockpit",
+              "water": 0.8114339100682334,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 3.6557459831237793,
+            "body": 18,
+            "genre": "chaussee",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": false,
+            "y": null,
+            "body": null,
+            "genre": null,
+            "surface": null
+          }
+        }
+      ],
+      "provenance": {
+        "head": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
+        "ci_run": 44743369605,
+        "ci_commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+        "tree": "1f05e9b399e4584b814c4050bad9f5652261b097",
+        "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b"
+      }
+    },
+    {
+      "scenario": "cimes-rocher",
+      "artifact_id": 14632672561,
+      "artifact_name": "bitume-couverts-cimes-rocher-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "artifact_digest": "sha256:332a880d3bf7f26978720741caf3ae8ece11979216e08594c7696f8aa927b1e2",
+      "images_expected": 5,
+      "images_reviewed": 5,
+      "automated_errors": [],
+      "findings": [
+        "Les cinq poses montrent chaussée, murs, toit et rétroviseurs sans trou ni traversée visible, y compris dans le coude.",
+        "Le décrochement de l’eau sous le toit puis son retour à la sortie sont visibles.",
+        "Le relief à la sortie reste clair, très facetté et parfois en dents de scie ; finition à reprendre dans le programme, sans masquer cette réserve.",
+        "La pluie monde vue depuis l’intérieur reste la réserve connue."
+      ],
+      "blocking_findings": [],
+      "images": [
+        {
+          "fichier": "0000.png",
+          "etape": "entree-exterieure",
+          "octets": 482474,
+          "sha256": "2689187e48a85cbfb04b4d3e96d1a5d72c7d08108fd175eea2b9ff73ad2b3e19",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                1360.21133911488,
+                243.86573029726537,
+                -2351.829535608518
+              ],
+              "abri": false,
+              "interieur": false,
+              "visor_active": true,
+              "lumiere": 1,
+              "vue": "cockpit",
+              "water": 0.7980712724496355,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 243.14068603515625,
+            "body": 36,
+            "genre": "chaussee",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": false,
+            "y": null,
+            "body": null,
+            "genre": null,
+            "surface": null
+          }
+        },
+        {
+          "fichier": "0001.png",
+          "etape": "entree-interieure",
+          "octets": 382682,
+          "sha256": "95aec4eeaa889ded430fe2f961e9343c7a1950ed447fa9020904e5930b57be50",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                1336.212332648547,
+                244.9470605336043,
+                -2352.1639808451055
+              ],
+              "abri": true,
+              "interieur": true,
+              "visor_active": true,
+              "lumiere": 1.3133586118804161,
+              "vue": "cockpit",
+              "water": 0.21207523036638984,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 244.26063537597656,
+            "body": 4522,
+            "genre": "sol-tunnel",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": true,
+            "y": 250.62030029296875,
+            "body": 4521,
+            "genre": "voute-tunnel",
+            "surface": null
+          }
+        },
+        {
+          "fichier": "0002.png",
+          "etape": "centre",
+          "octets": 375576,
+          "sha256": "0d0a11d57de3137db54a5df549e4e019dd44ee361943374e8cd1f96634ffdaca",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                1200.777714164906,
+                250.5896101887291,
+                -2386.107586355362
+              ],
+              "abri": true,
+              "interieur": true,
+              "visor_active": true,
+              "lumiere": 1.3198621623870161,
+              "vue": "cockpit",
+              "water": 0.05635574777288515,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 249.90219116210938,
+            "body": 7794,
+            "genre": "sol-tunnel",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": true,
+            "y": 256.2619323730469,
+            "body": 7797,
+            "genre": "voute-tunnel",
+            "surface": null
+          }
+        },
+        {
+          "fichier": "0003.png",
+          "etape": "sortie-interieure",
+          "octets": 346800,
+          "sha256": "9e95912544143989acc141d3e688807b20f2e1a295241666993ab17ab1155943",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                1068.8739313060814,
+                256.1386141077606,
+                -2434.1076122489385
+              ],
+              "abri": true,
+              "interieur": true,
+              "visor_active": true,
+              "lumiere": 1.3199971392716083,
+              "vue": "cockpit",
+              "water": 0.014975677742064097,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 255.44879150390625,
+            "body": 4718,
+            "genre": "sol-tunnel",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": true,
+            "y": 261.80731201171875,
+            "body": 4723,
+            "genre": "voute-tunnel",
+            "surface": null
+          }
+        },
+        {
+          "fichier": "0004.png",
+          "etape": "sortie-exterieure",
+          "octets": 456573,
+          "sha256": "3131299e850289d74f992b4f59a6eb39755468fb22be88a049853dfab4b93058",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                1046.2296000974643,
+                256.80140306241344,
+                -2442.0778364439097
+              ],
+              "abri": false,
+              "interieur": false,
+              "visor_active": true,
+              "lumiere": 1.0000104096577143,
+              "vue": "cockpit",
+              "water": 0.8114339100682334,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 256.0715637207031,
+            "body": 39,
+            "genre": "chaussee",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": false,
+            "y": null,
+            "body": null,
+            "genre": null,
+            "surface": null
+          }
+        }
+      ],
+      "provenance": {
+        "head": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
+        "ci_run": 44743369605,
+        "ci_commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+        "tree": "1f05e9b399e4584b814c4050bad9f5652261b097",
+        "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b"
+      }
+    },
+    {
+      "scenario": "cimes-echelles",
+      "artifact_id": 14631344735,
+      "artifact_name": "bitume-couverts-cimes-echelles-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "artifact_digest": "sha256:f96dbe0b35c55a4eb25b98bb6e8e1e3d5c39eadfc470db3cf2db31183e453c0b",
+      "images_expected": 5,
+      "images_reviewed": 5,
+      "automated_errors": [],
+      "findings": [
+        "Les cinq poses montrent une chaussée continue, des murs, un toit et des rétroviseurs présents, sans trou ni traversée visible.",
+        "La sortie retrouve le paysage montagneux et les projections après la décroissance de l’eau sous le toit.",
+        "La pluie monde vue depuis l’intérieur reste la réserve connue ; les captures ne la déclarent pas résolue."
+      ],
+      "blocking_findings": [],
+      "images": [
+        {
+          "fichier": "0000.png",
+          "etape": "entree-exterieure",
+          "octets": 469803,
+          "sha256": "63def79e6511ade3f0ed0ced8646697c5da5e434fc0ecf947edb89065bdc93f1",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                191.13278014185758,
+                233.2691452829546,
+                -1001.646812366281
+              ],
+              "abri": false,
+              "interieur": false,
+              "visor_active": true,
+              "lumiere": 1,
+              "vue": "cockpit",
+              "water": 0.7980712724496355,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 232.50741577148438,
+            "body": 55,
+            "genre": "chaussee",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": false,
+            "y": null,
+            "body": null,
+            "genre": null,
+            "surface": null
+          }
+        },
+        {
+          "fichier": "0001.png",
+          "etape": "entree-interieure",
+          "octets": 383817,
+          "sha256": "9b666b771bb6d92da50df81af1cf73c969cade7863c42b9f0061ed1790093305",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                176.04240767881925,
+                231.34915336960262,
+                -982.9879095571408
+              ],
+              "abri": true,
+              "interieur": true,
+              "visor_active": true,
+              "lumiere": 1.3133586118804161,
+              "vue": "cockpit",
+              "water": 0.21207523036638984,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 230.62759399414062,
+            "body": 5765,
+            "genre": "sol-tunnel",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": true,
+            "y": 236.98648071289062,
+            "body": 5764,
+            "genre": "voute-tunnel",
+            "surface": null
+          }
+        },
+        {
+          "fichier": "0002.png",
+          "etape": "centre",
+          "octets": 370386,
+          "sha256": "5a286292653f63cc07764e2e3f7938de304473d856b1643a801c54a6972a9ba4",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                129.11990540809177,
+                225.50915699045035,
+                -927.0658265572002
+              ],
+              "abri": true,
+              "interieur": true,
+              "visor_active": true,
+              "lumiere": 1.3198621623870161,
+              "vue": "cockpit",
+              "water": 0.05635574777288515,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 224.78759765625,
+            "body": 5913,
+            "genre": "sol-tunnel",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": true,
+            "y": 231.14646911621094,
+            "body": 5916,
+            "genre": "voute-tunnel",
+            "surface": null
+          }
+        },
+        {
+          "fichier": "0003.png",
+          "etape": "sortie-interieure",
+          "octets": 370078,
+          "sha256": "7332c13ff6b1014d7b0b88cdf180698f001c961b6673855313c61dfcd980ba47",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                82.19599359167228,
+                219.66916000452196,
+                -871.1449263276834
+              ],
+              "abri": true,
+              "interieur": true,
+              "visor_active": true,
+              "lumiere": 1.3199971392716083,
+              "vue": "cockpit",
+              "water": 0.014975677742064097,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 218.94760131835938,
+            "body": 5965,
+            "genre": "sol-tunnel",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": true,
+            "y": 225.3064727783203,
+            "body": 5975,
+            "genre": "voute-tunnel",
+            "surface": null
+          }
+        },
+        {
+          "fichier": "0004.png",
+          "etape": "sortie-exterieure",
+          "octets": 465876,
+          "sha256": "1e00b24c04385a429ed66d2af5d821a785c3351529a72e455b930bd4615db21c",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                66.45846515500884,
+                217.74915379700502,
+                -853.028309955676
+              ],
+              "abri": false,
+              "interieur": false,
+              "visor_active": true,
+              "lumiere": 1.0000104096577143,
+              "vue": "cockpit",
+              "water": 0.8114339100682334,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 216.98715209960938,
+            "body": 56,
+            "genre": "chaussee",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": false,
+            "y": null,
+            "body": null,
+            "genre": null,
+            "surface": null
+          }
+        }
+      ],
+      "provenance": {
+        "head": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
+        "ci_run": 44743369605,
+        "ci_commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+        "tree": "1f05e9b399e4584b814c4050bad9f5652261b097",
+        "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b"
+      }
+    },
+    {
+      "scenario": "cimes-galerie",
+      "artifact_id": 14633561921,
+      "artifact_name": "bitume-couverts-cimes-galerie-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "artifact_digest": "sha256:6d860962a8dee17245963699ac401dc0ee4ccc80d2ec66da42f5a9b51ac17dc3",
+      "images_expected": 5,
+      "images_reviewed": 5,
+      "automated_errors": [],
+      "findings": [
+        "Les cinq poses montrent les piliers, le toit, le mur intérieur et une chaussée continue, sans traversée visible.",
+        "Le côté ouvert conserve la lumière du jour : la galerie ne reçoit pas l’exposition sombre du tunnel.",
+        "L’eau résiduelle décroît sous le toit puis revient à la sortie ; les deux rétroviseurs demeurent rendus.",
+        "La pluie extérieure vue depuis le côté ouvert et le relief très facetté restent les réserves connues."
+      ],
+      "blocking_findings": [],
+      "images": [
+        {
+          "fichier": "0000.png",
+          "etape": "entree-exterieure",
+          "octets": 476490,
+          "sha256": "5aecb8a6a50ea0feda2b4c0556d09a4f4a99b9d412d77a7ca70494aa99e14bf3",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                242.73546487852232,
+                267.5134971807262,
+                -1465.0294990709572
+              ],
+              "abri": false,
+              "interieur": false,
+              "visor_active": true,
+              "lumiere": 1,
+              "vue": "cockpit",
+              "water": 0.7980712724496355,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 266.7615966796875,
+            "body": 51,
+            "genre": "chaussee",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": false,
+            "y": null,
+            "body": null,
+            "genre": null,
+            "surface": null
+          }
+        },
+        {
+          "fichier": "0001.png",
+          "etape": "entree-interieure",
+          "octets": 426850,
+          "sha256": "c79c6169a7a5384d8f665b1531d7780cd0b554b8d1f9dff65efa956e4a9a0ec0",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                242.11984414660245,
+                266.3177042810001,
+                -1441.0305658184054
+              ],
+              "abri": true,
+              "interieur": false,
+              "visor_active": true,
+              "lumiere": 1,
+              "vue": "cockpit",
+              "water": 0.21207523036638984,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 265.6015930175781,
+            "body": 5393,
+            "genre": "sol-galerie",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": true,
+            "y": 271.9609375,
+            "body": 5397,
+            "genre": "voute-galerie",
+            "surface": null
+          }
+        },
+        {
+          "fichier": "0002.png",
+          "etape": "centre",
+          "octets": 415979,
+          "sha256": "1b81c8a9da86aefa884224c7701e737994e9832f5db474aaec55d8c4cd03f429",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                242.11893407233734,
+                256.7693477944249,
+                -1303.021942522637
+              ],
+              "abri": true,
+              "interieur": false,
+              "visor_active": true,
+              "lumiere": 1,
+              "vue": "cockpit",
+              "water": 0.05635574777288515,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 256.0502014160156,
+            "body": 5552,
+            "genre": "sol-galerie",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": true,
+            "y": 262.4093322753906,
+            "body": 5553,
+            "genre": "voute-galerie",
+            "surface": null
+          }
+        },
+        {
+          "fichier": "0003.png",
+          "etape": "sortie-interieure",
+          "octets": 374658,
+          "sha256": "3ca56ba809fa89a140fe695b8ac367b733815d5dbbb1545f5af543ca7d2fc287",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                242.11888139642772,
+                247.0829346634288,
+                -1165.0201062705476
+              ],
+              "abri": true,
+              "interieur": false,
+              "visor_active": true,
+              "lumiere": 1,
+              "vue": "cockpit",
+              "water": 0.014975677742064097,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 246.36306762695312,
+            "body": 5706,
+            "genre": "sol-galerie",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": true,
+            "y": 252.72210693359375,
+            "body": 5707,
+            "genre": "voute-galerie",
+            "surface": null
+          }
+        },
+        {
+          "fichier": "0004.png",
+          "etape": "sortie-exterieure",
+          "octets": 484112,
+          "sha256": "8ebcaea6912e47521cacfd2842017a903a0a83033e1a76c06ef1a9572ce233f8",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                241.70750553165772,
+                245.28389842481843,
+                -1141.0231852546547
+              ],
+              "abri": false,
+              "interieur": false,
+              "visor_active": true,
+              "lumiere": 1,
+              "vue": "cockpit",
+              "water": 0.8114339100682334,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 244.5212860107422,
+            "body": 54,
+            "genre": "chaussee",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": false,
+            "y": null,
+            "body": null,
+            "genre": null,
+            "surface": null
+          }
+        }
+      ],
+      "provenance": {
+        "head": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
+        "ci_run": 44743369605,
+        "ci_commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+        "tree": "1f05e9b399e4584b814c4050bad9f5652261b097",
+        "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b"
+      }
+    },
+    {
+      "scenario": "cimes-dessus-toit",
+      "artifact_id": 14633861903,
+      "artifact_name": "bitume-couverts-cimes-dessus-toit-40774189dc3a68242a3908f72e09f2676519ccbf",
+      "artifact_digest": "sha256:0246b9cc77d252ce567a135aa900763919cbab24f33d3ccda1dc13338e0335a3",
+      "provenance": {
+        "head": "40774189dc3a68242a3908f72e09f2676519ccbf",
+        "ci_run": 44747519881,
+        "ci_commit": "40774189dc3a68242a3908f72e09f2676519ccbf",
+        "tree": "52c3b4be0c5ea159ffc90a05a60631d0a7956a02",
+        "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b"
+      },
+      "images_expected": 2,
+      "images_reviewed": 2,
+      "automated_errors": [],
+      "findings": [
+        "Les deux images montrent une vue aérienne dégagée : relief couvrant le tunnel au premier plan, chaussée et voitures visibles au-delà.",
+        "Le mode réel est helico ; le sujet est hors couvert ; la caméra est située 40 mètres au-dessus de la surface PhysX relevée sous elle.",
+        "Aucune goutte ni projection sur la visière aérienne : eau, embruns et gouttes à zéro, toile masquée. La pluie dans le monde reste visible.",
+        "Le regard et le cadre sont validés dans le vrai monde statique ; les rayons séparés au centre du tunnel trouvent toujours la chaussée et la voûte attendues.",
+        "Le relief reste très facetté ; la correction de fixture ne constitue pas une amélioration esthétique du paysage."
+      ],
+      "blocking_findings": [],
+      "images": [
+        {
+          "fichier": "0000.png",
+          "etape": "dessus-toit",
+          "octets": 452024,
+          "sha256": "19807ba2c6e6af5a120db4413beaff743339fbd0aeb041d284ac03eb1f319eb6",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "observation": {
+            "glErreur": 0,
+            "glPerdu": false,
+            "vitres": {
+              "j1": {
+                "backend": "webgl2",
+                "pret": true,
+                "perdu": false,
+                "erreur": null,
+                "copiesScene": 2,
+                "dessins": 2,
+                "etapes": 0,
+                "pixels": 518400,
+                "pixelsSource": 518400,
+                "largeur": 960,
+                "hauteur": 540,
+                "dpr": 1,
+                "eau": 0,
+                "accumulationNeige": 0,
+                "embruns": 0,
+                "gouttes": 0,
+                "neige": 0,
+                "fusionsEau": 0,
+                "expulses": 0,
+                "depotsEau": 0,
+                "depotsEmbruns": 0,
+                "surfaceExpulsee": 0
+              },
+              "j2": null
+            },
+            "vitresGL": {
+              "j1": {
+                "present": true,
+                "erreur": 0,
+                "perdu": false
+              }
+            },
+            "visieresVisibles": {
+              "j1": false
+            },
+            "j1": {
+              "camera": [
+                128.96561576977055,
+                294.5402069091797,
+                -926.881949907044
+              ],
+              "abri": false,
+              "interieur": false,
+              "section": null,
+              "type": null,
+              "lumiere": 1,
+              "lampes": 0,
+              "pluie": 1,
+              "abriVisiere": false,
+              "visiereActive": false,
+              "vue": "helico"
+            },
+            "j2": null,
+            "sol": {
+              "hit": true,
+              "y": 224.78759765625,
+              "body": 5913,
+              "genre": "sol-tunnel",
+              "surface": "piste"
+            },
+            "toit": {
+              "hit": true,
+              "y": 231.14646911621094,
+              "body": 5916,
+              "genre": "voute-tunnel",
+              "surface": null
+            },
+            "survol": {
+              "sujetS": 6759.491665135276,
+              "sujetSousCouvert": false,
+              "terrainY": 223.84891752728032,
+              "surfaceY": 254.5402069091797,
+              "cible": [
+                33.74864940275236,
+                214.11759661617114,
+                -823.3278613973264
+              ],
+              "regardLibre": true,
+              "obstructionDistance": null,
+              "cadreLibre": true
+            },
+            "yRoute": 224.74759012862268,
+            "etape": 0,
+            "etapeId": "dessus-toit",
+            "abscisse": 6618.491665135275,
+            "pluie": 1,
+            "sections": [
+              {
+                "id": "cimes-couvert-0",
+                "type": "tunnel",
+                "debut": 4276.56945810762,
+                "fin": 4581.28921322728
+              },
+              {
+                "id": "cimes-couvert-1",
+                "type": "galerie",
+                "debut": 6058.9587399358425,
+                "fin": 6358.9587399358425
+              },
+              {
+                "id": "cimes-couvert-2",
+                "type": "tunnel",
+                "debut": 6533.491665135275,
+                "fin": 6703.491665135275
+              }
+            ],
+            "temps": 2.941666666666668
+          }
+        },
+        {
+          "fichier": "0001.png",
+          "etape": "dessus-toit",
+          "octets": 452415,
+          "sha256": "e11d4e0a30450c2edc341fae01e319ce60de12d0b7c189c88f83c50416418476",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "observation": {
+            "glErreur": 0,
+            "glPerdu": false,
+            "vitres": {
+              "j1": {
+                "backend": "webgl2",
+                "pret": true,
+                "perdu": false,
+                "erreur": null,
+                "copiesScene": 2,
+                "dessins": 2,
+                "etapes": 0,
+                "pixels": 518400,
+                "pixelsSource": 518400,
+                "largeur": 960,
+                "hauteur": 540,
+                "dpr": 1,
+                "eau": 0,
+                "accumulationNeige": 0,
+                "embruns": 0,
+                "gouttes": 0,
+                "neige": 0,
+                "fusionsEau": 0,
+                "expulses": 0,
+                "depotsEau": 0,
+                "depotsEmbruns": 0,
+                "surfaceExpulsee": 0
+              },
+              "j2": null
+            },
+            "vitresGL": {
+              "j1": {
+                "present": true,
+                "erreur": 0,
+                "perdu": false
+              }
+            },
+            "visieresVisibles": {
+              "j1": false
+            },
+            "j1": {
+              "camera": [
+                128.96561576977055,
+                294.5402069091797,
+                -926.881949907044
+              ],
+              "abri": false,
+              "interieur": false,
+              "section": null,
+              "type": null,
+              "lumiere": 1,
+              "lampes": 0,
+              "pluie": 1,
+              "abriVisiere": false,
+              "visiereActive": false,
+              "vue": "helico"
+            },
+            "j2": null,
+            "sol": {
+              "hit": true,
+              "y": 224.78759765625,
+              "body": 5913,
+              "genre": "sol-tunnel",
+              "surface": "piste"
+            },
+            "toit": {
+              "hit": true,
+              "y": 231.14646911621094,
+              "body": 5916,
+              "genre": "voute-tunnel",
+              "surface": null
+            },
+            "survol": {
+              "sujetS": 6759.491665135276,
+              "sujetSousCouvert": false,
+              "terrainY": 223.84891752728032,
+              "surfaceY": 254.5402069091797,
+              "cible": [
+                33.74864940275236,
+                214.11759661617114,
+                -823.3278613973264
+              ],
+              "regardLibre": true,
+              "obstructionDistance": null,
+              "cadreLibre": true
+            },
+            "yRoute": 224.74759012862268,
+            "etape": 0,
+            "etapeId": "dessus-toit",
+            "abscisse": 6618.491665135275,
+            "pluie": 1,
+            "sections": [
+              {
+                "id": "cimes-couvert-0",
+                "type": "tunnel",
+                "debut": 4276.56945810762,
+                "fin": 4581.28921322728
+              },
+              {
+                "id": "cimes-couvert-1",
+                "type": "galerie",
+                "debut": 6058.9587399358425,
+                "fin": 6358.9587399358425
+              },
+              {
+                "id": "cimes-couvert-2",
+                "type": "tunnel",
+                "debut": 6533.491665135275,
+                "fin": 6703.491665135275
+              }
+            ],
+            "temps": 3.0416666666666683
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "cimes-deux-vues",
+      "artifact_id": 14634120289,
+      "artifact_name": "bitume-couverts-cimes-deux-vues-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "artifact_digest": "sha256:9bab60808cc04870ff7207f852c42af8192eaac7b3134b8c79ee88ad9d0c70b5",
+      "images_expected": 2,
+      "images_reviewed": 2,
+      "automated_errors": [],
+      "findings": [
+        "Deux images avec deux vues simultanées inspectées : J1 tunnel sombre éclairé par ses lampes, J2 galerie ouverte à gauche et éclairée par le jour.",
+        "Les deux chaussées, les quatre rétroviseurs et les HUD restent distincts et présents ; aucune contamination de l’exposition n’est visible.",
+        "Pas de gouttes nouvelles sous les deux ouvrages ; la pluie extérieure visible depuis la galerie reste la réserve connue."
+      ],
+      "blocking_findings": [],
+      "images": [
+        {
+          "fichier": "0000.png",
+          "etape": "interieur",
+          "octets": 460285,
+          "sha256": "1c9025a1c823c6d1522a6e763da5f196fee09ad2a02c53ac3f88a2d070d7d17a",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                1200.777714164906,
+                250.5896101887291,
+                -2386.107586355362
+              ],
+              "abri": true,
+              "interieur": true,
+              "visor_active": true,
+              "lumiere": 1.3119050722448742,
+              "vue": "cockpit",
+              "water": 0,
+              "spray": 0,
+              "visor_visible": false
+            },
+            "j2": {
+              "camera": [
+                242.11817893681572,
+                265.16895376673557,
+                -1423.0218037274003
+              ],
+              "abri": true,
+              "interieur": false,
+              "visor_active": true,
+              "lumiere": 1,
+              "vue": "cockpit",
+              "water": 0,
+              "spray": 0,
+              "visor_visible": false
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 249.90219116210938,
+            "body": 7794,
+            "genre": "sol-tunnel",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": true,
+            "y": 256.2619323730469,
+            "body": 7797,
+            "genre": "voute-tunnel",
+            "surface": null
+          }
+        },
+        {
+          "fichier": "0001.png",
+          "etape": "interieur",
+          "octets": 460243,
+          "sha256": "b1beaa16c631707a09183c9894ad835169bbe9060cccdd002dc247dffad3fea3",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                1200.777714164906,
+                250.5896101887291,
+                -2386.107586355362
+              ],
+              "abri": true,
+              "interieur": true,
+              "visor_active": true,
+              "lumiere": 1.3128562513294555,
+              "vue": "cockpit",
+              "water": 0,
+              "spray": 0,
+              "visor_visible": false
+            },
+            "j2": {
+              "camera": [
+                242.11817893681572,
+                265.16895376673557,
+                -1423.0218037274003
+              ],
+              "abri": true,
+              "interieur": false,
+              "visor_active": true,
+              "lumiere": 1,
+              "vue": "cockpit",
+              "water": 0,
+              "spray": 0,
+              "visor_visible": false
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 249.90219116210938,
+            "body": 7794,
+            "genre": "sol-tunnel",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": true,
+            "y": 256.2619323730469,
+            "body": 7797,
+            "genre": "voute-tunnel",
+            "surface": null
+          }
+        }
+      ],
+      "provenance": {
+        "head": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
+        "ci_run": 44743369605,
+        "ci_commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+        "tree": "1f05e9b399e4584b814c4050bad9f5652261b097",
+        "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b"
+      }
+    }
+  ],
+  "superseded_failures": [
+    {
+      "scenario": "cimes-dessus-toit",
+      "artifact_id": 14632882401,
+      "artifact_name": "bitume-couverts-cimes-dessus-toit-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "artifact_digest": "sha256:cabba679a4c9e0ab9961248fc1b3a507df99e14d1ef19db948d989669a39c6e6",
+      "images_expected": 2,
+      "images_reviewed": 2,
+      "automated_errors": [
+        "Caméra aérienne non extérieure",
+        "Dépôt aérien inattendu"
+      ],
+      "findings": [
+        "Les deux images exactes montrent une paroi/le relief plein cadre avec une visière mouillée.",
+        "Le vrai mode observé est poursuite après repli normal de helico, alors que la fixture impose ensuite une pose au-dessus de la voûte.",
+        "Caméra au-dessus du toit PhysX mais insuffisamment haute pour dégager le terrain couvrant le tunnel."
+      ],
+      "blocking_findings": [
+        "Scénario aérien non qualifié : mode poursuite et visière active, image occultée."
+      ],
+      "images": [
+        {
+          "fichier": "0000.png",
+          "etape": "dessus-toit",
+          "octets": 465210,
+          "sha256": "d05e854ffc9b7ccda865779568633301a0f50931f74184cd03989651462403dc",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                128.96561576977055,
+                235.14759012862268,
+                -926.881949907044
+              ],
+              "abri": false,
+              "interieur": false,
+              "visor_active": true,
+              "lumiere": 1,
+              "vue": "poursuite",
+              "water": 0.7980712724496355,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 224.78759765625,
+            "body": 5913,
+            "genre": "sol-tunnel",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": true,
+            "y": 231.14646911621094,
+            "body": 5916,
+            "genre": "voute-tunnel",
+            "surface": null
+          }
+        },
+        {
+          "fichier": "0001.png",
+          "etape": "dessus-toit",
+          "octets": 466347,
+          "sha256": "d480e8322c0df220a08108ceda217d855851ae6f4cfb20440449c438f9a75587",
+          "dimensions": [
+            960,
+            540
+          ],
+          "visually_reviewed": true,
+          "players": {
+            "j1": {
+              "camera": [
+                128.96561576977055,
+                235.14759012862268,
+                -926.881949907044
+              ],
+              "abri": false,
+              "interieur": false,
+              "visor_active": true,
+              "lumiere": 1,
+              "vue": "poursuite",
+              "water": 0.8056509235597322,
+              "spray": 0,
+              "visor_visible": true
+            }
+          },
+          "gl_error": 0,
+          "gl_lost": false,
+          "floor": {
+            "hit": true,
+            "y": 224.78759765625,
+            "body": 5913,
+            "genre": "sol-tunnel",
+            "surface": "piste"
+          },
+          "roof": {
+            "hit": true,
+            "y": 231.14646911621094,
+            "body": 5916,
+            "genre": "voute-tunnel",
+            "surface": null
+          }
+        }
+      ],
+      "provenance": {
+        "head": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
+        "ci_run": 44743369605,
+        "ci_commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+        "tree": "1f05e9b399e4584b814c4050bad9f5652261b097",
+        "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b"
+      }
+    }
+  ],
+  "reservations": [
+    "La pluie monde extérieure vue depuis un abri reste coupée ; ce candidat ne corrige pas cette réserve préexistante.",
+    "Le relief extérieur reste clair, facetté et localement en dents de scie ; l’enrichissement de Route-des-Cimes est toujours au programme."
+  ],
+  "limits": [
+    "Les phases de portail sont des poses prescrites séparées, pas une traversée roulée.",
+    "Rendu logiciel indiqué par les rapports : le compteur FPS visible dans les PNG ne qualifie pas une carte graphique.",
+    "Les observations de géométrie et de shader complètent l’inspection visuelle, sans qualifier les performances matérielles ni les interactions manette/audio.",
+    "La revue finale combine cinq groupes du premier run et la reprise aérienne ciblée ; elle ne présente pas le premier run échoué comme réussi."
+  ]
+}

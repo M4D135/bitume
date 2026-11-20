@@ -5,7 +5,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 
 const ici = path.dirname(fileURLToPath(import.meta.url)), req = createRequire(import.meta.url);
-for (const f of ['circuit', 'conduite', 'course', 'realisateur']) req(path.join(ici, '..', 'src', f + '.js'));
+for (const f of ['circuit', 'conduite', 'course', 'realisateur', 'expressions-pilote']) req(path.join(ici, '..', 'src', f + '.js'));
 const B = globalThis.BITUME, R = B.realisateur, DT = 1 / 120;
 
 let compte = 0;
@@ -103,4 +103,30 @@ verifier('même course et même graine : mêmes plans ; autre graine : autre fil
   assert.notEqual(resume(filmer(4242, 8, 2)), resume(film));
 });
 
+verifier('un vrai dépassement avec geste démo appelle le gros plan du bon côté, sans recoupes', () => {
+  const c = B.circuit.creer(29, { theme: 'cote', longueur: 3600 });
+  const co = B.course.creer(c, { rivaux: 1, tours: 3, graine: 1 });
+  co.phase = 'course'; co.horloge = 10;
+  const real = R.creer(7), E = B.expressionsPilote.creer(co.voitures.length, 1);
+  R.replier(real, co, 'tele', 0);
+  const poses = co.voitures.map((v, id) => ({ x: 0, y: 0, z: id * 3, cap: 0 }));
+  let planExpression = null;
+  for (let k = 0; k <= 105; k++) {
+    const t = k / 60; co.horloge = 10 + t;
+    for (let id = 0; id < co.voitures.length; id++) {
+      const v = co.voitures[id]; v.etat.v = id ? 30 : 34; v.etat.rapport = 4;
+      v.progression = id ? 100 + 30 * t : 96 + 34 * t; poses[id].x = v.progression;
+    }
+    B.expressionsPilote.actualiser(E, co, poses, co.horloge, true);
+    const p = R.tenir(real, co, {}, E);
+    if (p.motif === 'expression') {
+      assert.equal(p.vue, 'pilote'); assert.equal(p.sujet, 0); assert.equal(p.cote, 1);
+      if (planExpression) assert.strictEqual(p, planExpression); else planExpression = p;
+    }
+  }
+  assert(planExpression, 'le geste auto doit être cadré pendant sa durée');
+  assert.equal(E.pilotes[0].gestesDemo, 1);
+  real.sprint = true;
+  assert.strictEqual(R.tenir(real, co, {}, E), planExpression, 'le sprint garde la priorité');
+});
 console.log(`${compte} vérifications réussies`);

@@ -11,7 +11,7 @@ const racine = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const contexte = vm.createContext({ console });
 vm.runInContext('globalThis.window = globalThis;', contexte);
 for (const nom of ['moteur/renderer.js', 'carene.js', 'main.js', 'humain-donnees.js', 'humain-corps.js', 'ferro/vehicle-dynamics.js',
-  'pneus.js', 'usure-pneus.js', 'chaussee.js', 'conduite.js', 'voiture.js'])
+  'pneus.js', 'usure-pneus.js', 'chaussee.js', 'conduite.js', 'expressions-pilote.js', 'voiture.js'])
   vm.runInContext(fs.readFileSync(path.join(racine, 'src', nom), 'utf8'), contexte, { filename: nom });
 const V = contexte.BITUME.voiture;
 const formes = new Map(), geometrie = contexte.FRender.shared.geometry(false);
@@ -23,7 +23,7 @@ for (const f of Object.values(V.FORMES)) {
     triangles.push([0, 1, 2].map(k => Array.from(geometrie.vertices.slice(geometrie.indices[i + k] * 6, geometrie.indices[i + k] * 6 + 3))));
   formes.set(f.nom, triangles);
 }
-const primitives = new Map([['cylinder', []], ['sphere', []]]);
+const primitives = new Map([['cylinder', []], ['sphere', []], ['box', []]]);
 for (const niveau of [false, true, 2]) {
   const g = contexte.FRender.shared.geometry(niveau);
   for (const [nom, niveaux] of primitives) {
@@ -189,6 +189,128 @@ const etapes = [0, .08, .15, .25, .3, .45, .5, .65, .75, .85, .93, 1];
 const passages = [[-1, 0], [0, -1], [0, 1], [1, 0]];
 for (let n = 1; n < 6; n++) passages.push([n, n + 1], [n + 1, n]);
 
+test('volant fixé : moyeu, arbre, palier, planche et cuve sont réellement reliés dans les trois LOD', () => {
+  const modele = creer(), ev = pose();
+  let reference = null;
+  for (const detail of ['complet', 'moyen', 'simple']) for (const volant of [-1, 0, 1]) {
+    ev.pilote.volant = volant;
+    const { pieces, sortie } = dessiner(modele, ev, detail), piece = role => pieces.find(p => p.role === role).objet;
+    const fixes = ['planche', 'casquette', ...[0, 1, 2, 3, 4].map(n => 'support-volant-' + n)];
+    const etatFixe = JSON.stringify(fixes.map(role => { const o = piece(role); return [o.shape, ...['p', 's', 'r'].map(k => Array.from(o[k]))]; }));
+    if (reference === null) reference = etatFixe; else assert.equal(etatFixe, reference, 'les supports restent fixes malgré le braquage et le LOD');
+    const colonne = triangles(piece('support-volant-0')), palier = triangles(piece('support-volant-1'));
+    const planche = build(triangles(piece('planche'))), cuve = build(triangles(sortie.find(o => o.shape === (detail === 'simple' ? 'bitume-loin-caisse' : 'bitume-cuve'))));
+    assert.ok(crossing(colonne, build(triangles(piece('moyeu-0')))), 'arbre serti dans le moyeu');
+    assert.ok(crossing(colonne, build(palier)), 'arbre dans le palier');
+    assert.ok(crossing(palier, planche), 'palier rejoint la planche');
+    assert.ok(crossing(triangles(piece('support-volant-2')), planche), 'platine réellement fixée à la planche');
+    for (const role of ['support-volant-3', 'support-volant-4']) {
+      const montant = triangles(piece(role));
+      assert.ok(crossing(montant, planche), role + ' rejoint la planche');
+      assert.ok(crossing(montant, cuve), role + ' rejoint le fond visible dans le LOD ' + detail);
+    }
+  }
+});
+
+test('gestes : surfaces des mains et bras sans traversée de la coque, du casque ni de la direction', () => {
+  const modele = creer(), ev = pose();
+  const reference = dessiner(modele, ev), obstacles = coque(reference.sortie);
+  for (const p of reference.pieces.filter(p => p.role === 'planche' || p.role === 'casquette' || p.role.startsWith('support-volant-') || p.role.startsWith('moyeu-')))
+    obstacles.push({ nom: p.role, arbre: build(triangles(p.objet)) });
+  let poses = 0;
+  for (const geste of ['majeur', 'poing', 'salut']) for (const gesteCote of [-1, 1]) for (const volant of [-1, -.5, 0, .5, 1])
+    for (const regard of Math.abs(volant) === 1 ? [-.32, 0, .32] : [0]) {
+    Object.assign(ev.pilote, { volant, regard, geste, gesteCote, gestePhase: .43 });
+    const rendu = dessiner(modele, ev), obstaclesPose = obstacles.slice();
+    for (const nom of ['pilote-casque', 'pilote-visiere']) {
+      const o = rendu.sortie.find(o => o.shape === 'bitume-' + nom);
+      if (o) obstaclesPose.push({ nom, arbre: build(triangles(o)) });
+    }
+    const jante = build(triangles(modele.objetsRendu.pilote.variantes[0].pieces.find(p => p.role === 'volant').objet));
+    for (const gesteIntensite of regard === 0 ? [0, .03, .06, .10, .14, .20, .26, .36, .44, .50, .60, .70, .80, .90, 1] : [.44, .50, .60, .70, .80, .90, 1]) {
+      ev.pilote.gesteIntensite = gesteIntensite;
+      const { pieces } = dessiner(modele, ev);
+      for (const piece of pieces.filter(p => /^(gant|bras|avant-bras|manche-joint|coude)-/.test(p.role))) {
+        for (const { nom, arbre } of obstaclesPose)
+          assert.ok(!traversee(piece.objet, arbre), `${piece.role}/${nom} : ${geste}, côté=${gesteCote}, volant=${volant}, intensité=${gesteIntensite}`);
+        if (piece.role.startsWith('gant-')) assert.ok(!traversee(piece.objet, jante), `${piece.role}/jante : ${geste}, côté=${gesteCote}, volant=${volant}, intensité=${gesteIntensite}`);
+      }
+      poses++;
+    }
+  }
+  console.log('gestes : ' + poses + ' poses, surfaces Float32 des mains/bras et obstacles réellement affichés');
+});
+
+test('un rapport interrompt le geste sans téléporter les poignets ni traverser le cockpit', () => {
+  const X = contexte.BITUME.expressionsPilote, modele = creer(), graines = new Map();
+  function seance(cote, graine) {
+    const co = { phase: 'course', termine: false, voitures: [0, 1].map(id => ({ id, progression: 100,
+      tPassage: -100, etat: { v: 30, rapport: 3 } })) };
+    const poses = [{ x: 100, y: 0, z: 0, cap: 0 }, { x: 100, y: 0, z: cote * 3, cap: 0 }], E = X.creer(2, graine);
+    X.actualiser(E, co, poses, 0); X.demander(E, 0, true); X.demander(E, 0, false);
+    return { co, poses, E };
+  }
+  function avancer(s, t) {
+    s.co.voitures.forEach((v, i) => { v.progression = 100 + t * 30; s.poses[i].x = v.progression; });
+    X.actualiser(s.E, s.co, s.poses, t);
+  }
+  for (let graine = 1; graines.size < 3 && graine <= 128; graine++) {
+    const s = seance(-1, graine); avancer(s, 1 / 120);
+    graines.set(X.lire(s.E, 0).geste, graine);
+  }
+  assert.equal(graines.size, 3, 'les trois vrais tirages manuels sont exercés');
+  let controles = 0, sautInitial = 0, pasMaximum = 0, demiPasMaximum = 0;
+  for (const [geste, graine] of graines) for (const cote of [-1, 1]) for (const volant of [-1, 0, 1]) {
+    const s = seance(cote, graine), ev = pose();
+    ev.pilote.volant = volant; ev.pilote.rapportAvant = ev.pilote.rapport = 3;
+    for (let n = 1; n <= 60; n++) avancer(s, n / 120);
+    X.lire(s.E, 0, ev.pilote);
+    assert.equal(ev.pilote.geste, geste); assert.equal(ev.pilote.gesteCote, cote); assert.equal(ev.pilote.gesteIntensite, 1);
+    const reference = dessiner(modele, ev), obstacles = coque(reference.sortie);
+    for (const p of reference.pieces.filter(p => p.role === 'planche' || p.role === 'casquette' || p.role.startsWith('support-volant-') || p.role.startsWith('moyeu-')))
+      obstacles.push({ nom: p.role, arbre: build(triangles(p.objet)) });
+    const jante = build(triangles(reference.pieces.find(p => p.role === 'volant').objet));
+    let avant = Array.from(modele.objetsRendu.habitacle.articulations);
+    const debut = .5 + 1e-5;
+    s.co.voitures[0].etat.rapport = 4; s.co.voitures[0].tPassage = debut;
+    ev.pilote.rapport = 4;
+    for (let n = 0; n <= 44; n++) {
+      const t = debut + n / 120;
+      let milieu = null;
+      if (n > 0) {
+        const demiTemps = t - 1 / 240;
+        avancer(s, demiTemps); X.lire(s.E, 0, ev.pilote); ev.pilote.passage = Math.min(1, (demiTemps - debut) / .36);
+        V.poser(modele, ev, []); milieu = Array.from(modele.objetsRendu.habitacle.articulations);
+      }
+      avancer(s, t); X.lire(s.E, 0, ev.pilote); ev.pilote.passage = Math.min(1, (t - debut) / .36);
+      const rendu = dessiner(modele, ev), H = modele.objetsRendu.habitacle;
+      for (const j of [6, 15]) {
+        const delta = Math.sqrt(d2(Array.from(H.articulations.slice(j, j + 3)), avant.slice(j, j + 3)));
+        if (n === 0) { sautInitial = Math.max(sautInitial, delta); assert.ok(delta < .001, 'poignet téléporté au déclenchement : ' + delta); }
+        else {
+          pasMaximum = Math.max(pasMaximum, delta);
+          demiPasMaximum = Math.max(demiPasMaximum, Math.sqrt(d2(milieu.slice(j, j + 3), avant.slice(j, j + 3))),
+            Math.sqrt(d2(milieu.slice(j, j + 3), Array.from(H.articulations.slice(j, j + 3)))));
+        }
+      }
+      avant = Array.from(H.articulations);
+      const mobiles = ['pilote-casque', 'pilote-visiere'].map(nom => ({ nom,
+        arbre: build(triangles(rendu.sortie.find(o => o.shape === 'bitume-' + nom))) }));
+      mobiles.push({ nom: 'pommeau', arbre: build(triangles(rendu.pieces.find(p => p.role === 'pommeau').objet)) });
+      for (const piece of rendu.pieces.filter(p => /^(gant|bras|avant-bras|manche-joint|coude)-/.test(p.role))) {
+        for (const { nom, arbre } of obstacles.concat(mobiles))
+          assert.ok(!traversee(piece.objet, arbre), `${piece.role}/${nom} : geste=${geste}, côté=${cote}, volant=${volant}, retour=${n}/120`);
+        if (piece.role.startsWith('gant-')) assert.ok(!traversee(piece.objet, jante), `${piece.role}/jante : geste=${geste}, côté=${cote}, volant=${volant}, retour=${n}/120`);
+      }
+      if (n >= 18) assert.equal(ev.pilote.geste, null, 'le rapport rend effectivement la main au levier');
+      controles++;
+    }
+    assert.equal(s.E.pilotes[0].gestesManuels, 1, 'aucun nouveau geste déclenché pendant le passage');
+  }
+  assert.ok(demiPasMaximum < pasMaximum * .65, 'un saut ne décroît pas quand le pas est divisé par deux');
+  console.log('transition geste/rapport : ' + controles + ' poses, saut initial=' + sautInitial + ' m, pas maximal 120/240 Hz=' + pasMaximum + '/' + demiPasMaximum + ' m');
+});
+
 // Ces cas empêchent le contrôleur lui-même de prendre un croisement pour un succès.
 test('le contrôleur distingue traversée, séparation et simple proximité', () => {
   const t = [[0, 0, 0], [1, 0, 0], [0, 1, 0]];
@@ -243,6 +365,7 @@ test('volant, levier, gants et bras restent séparés des triangles du cockpit p
     const { pieces } = dessiner(modele, ev);
     for (const piece of pieces) {
       if (!(piece.source || piece.de !== undefined || piece.joint !== undefined)) continue;
+      if (piece.role.startsWith('support-volant-')) continue; // montants volontairement fixés dans la cuve ; liaison contrôlée ci-dessous
       for (const { nom, arbre } of obstacle) {
         if (piece.role === 'levier' && nom === 'console-levier') continue; // deux millimètres sertis au pied
         assert.ok(!traversee(piece.objet, arbre), `${piece.role}/${nom} traverse : volant=${volant}, ${rapportAvant}→${rapport}, passage=${passage}`);
@@ -283,6 +406,7 @@ test('joueur et rival, LOD et attitude de caisse conservent les dégagements des
       const { pieces } = dessiner(modele, ev, detail);
       for (const piece of pieces) {
         if (!(piece.source || piece.de !== undefined || piece.joint !== undefined)) continue;
+        if (piece.role.startsWith('support-volant-')) continue; // pièces fixes de liaison, testées séparément
         for (const { nom, arbre } of obstacle) {
           if (piece.role === 'levier' && nom === 'console-levier') continue;
           assert.ok(!traversee(piece.objet, arbre), `${detail}/${piece.role}/${nom}, volant=${volant}, passage=${passage}`);

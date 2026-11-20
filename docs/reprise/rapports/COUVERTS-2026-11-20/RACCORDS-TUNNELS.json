@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "lot": "raccords_portails_tunnels_explicites",
+  "base": "bf2ca52bea60b989354afaf8ff5a41ae88da50cf",
+  "probleme": "La tranche du revêtement intérieur de quatre centimètres peut heurter le châssis à l’entrée en pente. Le roulage Cimes a signalé un contact sol-tunnel avant les Échelles.",
+  "correction": "Raccord entrée/sortie de 2 mm à 4 cm sur six mètres, centre de dalle décalé selon sa normale réelle ; marquages alignés sur le revêtement.",
+  "portee": "Uniquement les tunnels explicites type=tunnel ; ancien Haut-Col sans type conservé.",
+  "sourceSha256": {
+    "src/decor.js": "78b1612dc515628b1ca60213315e9042a89496de48b805ce5d90411769127e3d",
+    "verifications/couverts-joints-courbes.test.mjs": "c335edb68bb0782b9b7a179c5e2ca59af805570f9b62a3bf0a47467e03f46f70"
+  },
+  "qualification": {
+    "controlesCibles": 8,
+    "reussis": 8,
+    "rayonsPhysX": 6864,
+    "dontRayonsRaccords": 288,
+    "ancienCode": "Régression avant raccord : butée de50,09mm huit centimètres avant le portail, d=-4m.",
+    "limiteRaccordPortailMm": 15,
+    "couvertsPhysXExistants": {
+      "controles": 4,
+      "rayons": 336,
+      "echecs": 0
+    },
+    "couvertsMultiplesExistants": {
+      "controles": 8,
+      "echecs": 0
+    },
+    "hashDecorHistoriqueHautCol": "2e49fb1e8165fa17d1c5b89bc606fdde358172c81483df11eb37570b5f488065",
+    "historiqueIdentique": true
+  },
+  "limites": [
+    "Checkpoint ciblé : campagne douze voitures et captures intégrées à terminer.",
+    "Le tunnel historique reste inchangé ; son éventuel défaut de bord hérité n’est pas déclaré corrigé."
+  ]
+}

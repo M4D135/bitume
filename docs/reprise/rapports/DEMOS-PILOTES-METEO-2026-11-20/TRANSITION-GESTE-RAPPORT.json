@@ -1,0 +1,30 @@
+{
+  "date": "2026-11-20",
+  "base": "3267d60",
+  "defaut": "Le rig annulait immédiatement le geste pendant un changement de rapport, malgré le retour amorti fourni par le module d'expressions.",
+  "reproduction_avant": {
+    "geste": "salut",
+    "cote": "gauche",
+    "saut_poignet_m": 0.2952741210944909
+  },
+  "correction": "Consommer le retour amorti de 140 ms puis le trajet du levier, dans la fenêtre d'animation du rapport. La phase visuelle est partagée par cockpit, extérieur et rétroviseurs ; aucune écriture dans la boîte physique.",
+  "qualification": {
+    "regression_geometrique": "node --test --test-name-pattern='un rapport interrompt' verifications/pilote-habitacle.test.mjs",
+    "poses_verifiees": 810,
+    "gestes": 3,
+    "cotes": 2,
+    "braquages": [-1, 0, 1],
+    "traversees_coque_casque_jante_pommeau": 0,
+    "saut_initial_max_m": 0.0000010166492834251528,
+    "pas_max_120_hz_m": 0.12353349901728887,
+    "pas_max_240_hz_m": 0.06920281282966702,
+    "continuite": "Le saut initial disparaît ; les déplacements du trajet diminuent quand le pas de rendu est divisé par deux.",
+    "suites_ciblees": ["expressions-pilote.test.mjs", "pilote-expressions.test.mjs", "pilote-commun.test.mjs"],
+    "tests_cibles_reussis": 21,
+    "regressions_nouvelles_reussies": 1,
+    "echecs_restants": 0
+  },
+  "physique": "p15 conservée",
+  "moteur": "FERRO 0.3.15 conservé",
+  "limite": "Géométrie et continuité numériques ; aucune mesure de FPS ni appréciation des captures navigateur dans ce reçu."
+}

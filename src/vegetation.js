@@ -382,7 +382,7 @@
       return objet;
     }
     function interdit(i) {
-      return Math.abs(B.circuit.ecart(c, 0, i * c.pas)) < 360 || (B.circuit.dansTunnel && B.circuit.dansTunnel(c, i * c.pas, 20));
+      return Math.abs(B.circuit.ecart(c, 0, i * c.pas)) < 360 || (B.circuit.dansCouvert && B.circuit.dansCouvert(c, i * c.pas, 20));
     }
     for (let station = 0, i = 0; i < c.n && station < stations; i += pas, station++) {
       const hasardStation = [r(), r(), r(), r(), r(), r(), r(), r()];

@@ -44,7 +44,7 @@
       source.id = v.id === undefined ? i : v.id;
       source.p[0] = p.x; source.p[1] = p.y + .35; source.p[2] = p.z;
       const vitesse = Math.abs(e.v);
-      if (v.abandon || vitesse < .5 || (circuit && B.circuit && B.circuit.dansTunnel && B.circuit.dansTunnel(circuit, e.s, 0))) continue;
+      if (v.abandon || vitesse < .5 || (circuit && B.circuit && (B.circuit.dansCouvert || B.circuit.dansTunnel)?.(circuit, e.s, 0))) continue;
       // Le cap dessiné inclut le dérapage de la caisse ; le flux suit la vitesse réelle.
       const capVitesse = p.cap - (Number.isFinite(e.beta) ? e.beta : 0);
       source.velocity[0] = Math.cos(capVitesse) * e.v;
@@ -74,10 +74,15 @@
       if (!Number.isFinite(dx) || !Number.isFinite(dy) || !Number.isFinite(dz)) continue;
       const derriere = -(dx * vx + dz * vz) / vitesse, lateral = Math.abs(dx * vz - dz * vx) / vitesse;
       const portee = 12 + Math.min(vitesse, 100) * .85, rayon = 1.6 + Math.max(0, derriere) * .085;
-      const hauteur = 1.35 + Math.max(0, derriere) * .032;
+      // À grande vitesse, l'eau pulvérisée remonte dans le sillage turbulent. L'ancien plafond bas
+      // perdait presque toute la caméra de poursuite (2,45 m), alors que le casque recevait le nuage.
+      // Une chaussée peu mouillée ou une voiture lente conservent un panache bas ; le cœur humide
+      // s'amenuise progressivement jusqu'à son sommet, sans palier opaque ni dépendance à la vue.
+      const pulverisation = eau * clamp((vitesse - 20) / 50, 0, 1);
+      const hauteur = 1.35 + Math.max(0, derriere) * (.032 + .035 * pulverisation) + .50 * pulverisation;
       if (derriere <= 0 || derriere >= portee || lateral >= rayon || dy < -1 || dy > hauteur) continue;
       const bord = 1 - lateral / rayon, distance = 1 - derriere / portee;
-      const vertical = 1 - Math.max(0, dy) / hauteur;
+      const altitude = Math.max(0, dy) / hauteur, vertical = 1 - altitude * altitude;
       charge += eau * clamp((vitesse - 8) / 42, 0, 1) * bord * bord * distance * vertical * 2.8;
     }
     return 1 - Math.exp(-charge);

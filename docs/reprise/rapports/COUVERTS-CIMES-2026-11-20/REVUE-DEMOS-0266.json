@@ -1,0 +1,1701 @@
+{
+  "format": "bitume-visual-demo-review-v1",
+  "date": "2026-11-20",
+  "status": "complete_with_documented_reserves",
+  "candidate": {
+    "version": "0.2.66",
+    "branch_head": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
+    "ci_commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+    "tree": "1f05e9b399e4584b814c4050bad9f5652261b097",
+    "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+    "build_bytes": 14370823
+  },
+  "run": 44743369792,
+  "scope": {
+    "groups": 7,
+    "images_viewed": 48,
+    "candidate_images": 36,
+    "reference_images": 12,
+    "contact_sheets_viewed": 7,
+    "additional_full_size_images": [
+      "apres/faune-hiver/0001.png",
+      "apres/volant-droite/0001.png",
+      "apres/pluie-poursuite-sillage/0001.png",
+      "apres/geste-poing/0001.png"
+    ]
+  },
+  "identity_verified": true,
+  "archive_digests_verified": [
+    {
+      "artifact_id": 14631907766,
+      "name": "bitume-demo-gestes-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "sha256": "04f8c971576b17c965ab8f19189ce29681b071c5d707b34f8ace360867a0a293"
+    },
+    {
+      "artifact_id": 14631298257,
+      "name": "bitume-demo-nature-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "sha256": "508b3bc1791217dfdbaead652d5c89259116d94ecb0f00ffc4aa4a9721a83929"
+    },
+    {
+      "artifact_id": 14631539206,
+      "name": "bitume-demo-pluie-aerien-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "sha256": "e8b64f9eed4d8c42a9bcfc234db74c1a41e8798222595884787b4db9243331a3"
+    },
+    {
+      "artifact_id": 14632835199,
+      "name": "bitume-demo-pluie-cockpit-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "sha256": "8d9c9c104f48afff5729e1a2bf3162aaa6f083c5dc4672a806285b34b8570ee5"
+    },
+    {
+      "artifact_id": 14631333928,
+      "name": "bitume-demo-pluie-poursuite-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "sha256": "1a872da560e9db399e80d7ea69c0293699c0c18c9d53ae4f800f6ed6632cde55"
+    },
+    {
+      "artifact_id": 14631682933,
+      "name": "bitume-demo-securite-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "sha256": "2c97d426bce6efa5a6d6f83c60e6f8e3835316db452d7a76dc4f907dca4d4c51"
+    },
+    {
+      "artifact_id": 14631767605,
+      "name": "bitume-demo-volant-dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "sha256": "ec1b9b627df9c7f69958d9d6b0c3c0d62af5e5c7a8a52e61ce3b665d96b0ac40"
+    }
+  ],
+  "groups": [
+    {
+      "group": "bitume-demo-gestes",
+      "artifact": 14631907766,
+      "ci_commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "tree": "1f05e9b399e4584b814c4050bad9f5652261b097",
+      "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+      "passages": [
+        {
+          "scenario": "geste-majeur",
+          "variante": "apres",
+          "images": 3,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "scenario": "geste-poing",
+          "variante": "apres",
+          "images": 3,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "scenario": "geste-salut-realisateur",
+          "variante": "apres",
+          "images": 3,
+          "errors": [],
+          "alerts": []
+        }
+      ],
+      "errors": 0,
+      "viewed_contact_sheet": "bitume-demo-gestes.jpg"
+    },
+    {
+      "group": "bitume-demo-nature",
+      "artifact": 14631298257,
+      "ci_commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "tree": "1f05e9b399e4584b814c4050bad9f5652261b097",
+      "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+      "passages": [
+        {
+          "scenario": "faune-ete",
+          "variante": "apres",
+          "images": 3,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "scenario": "faune-hiver",
+          "variante": "apres",
+          "images": 3,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "scenario": "faune-ete",
+          "variante": "avant",
+          "images": 3,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "scenario": "faune-hiver",
+          "variante": "avant",
+          "images": 3,
+          "errors": [],
+          "alerts": []
+        }
+      ],
+      "errors": 0,
+      "viewed_contact_sheet": "bitume-demo-nature.jpg"
+    },
+    {
+      "group": "bitume-demo-pluie-aerien",
+      "artifact": 14631539206,
+      "ci_commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "tree": "1f05e9b399e4584b814c4050bad9f5652261b097",
+      "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+      "passages": [
+        {
+          "scenario": "pluie-aerien",
+          "variante": "apres",
+          "images": 3,
+          "errors": [],
+          "alerts": []
+        }
+      ],
+      "errors": 0,
+      "viewed_contact_sheet": "bitume-demo-pluie-aerien.jpg"
+    },
+    {
+      "group": "bitume-demo-pluie-cockpit",
+      "artifact": 14632835199,
+      "ci_commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "tree": "1f05e9b399e4584b814c4050bad9f5652261b097",
+      "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+      "passages": [
+        {
+          "scenario": "pluie-cockpit",
+          "variante": "apres",
+          "images": 3,
+          "errors": [],
+          "alerts": []
+        }
+      ],
+      "errors": 0,
+      "viewed_contact_sheet": "bitume-demo-pluie-cockpit.jpg"
+    },
+    {
+      "group": "bitume-demo-pluie-poursuite",
+      "artifact": 14631333928,
+      "ci_commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "tree": "1f05e9b399e4584b814c4050bad9f5652261b097",
+      "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+      "passages": [
+        {
+          "scenario": "pluie-poursuite-sillage",
+          "variante": "apres",
+          "images": 3,
+          "errors": [],
+          "alerts": []
+        }
+      ],
+      "errors": 0,
+      "viewed_contact_sheet": "bitume-demo-pluie-poursuite.jpg"
+    },
+    {
+      "group": "bitume-demo-securite",
+      "artifact": 14631682933,
+      "ci_commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "tree": "1f05e9b399e4584b814c4050bad9f5652261b097",
+      "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+      "passages": [
+        {
+          "scenario": "helico-montagne",
+          "variante": "apres",
+          "images": 3,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "scenario": "tele-montagne",
+          "variante": "apres",
+          "images": 3,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "scenario": "helico-montagne",
+          "variante": "avant",
+          "images": 3,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "scenario": "tele-montagne",
+          "variante": "avant",
+          "images": 3,
+          "errors": [],
+          "alerts": []
+        }
+      ],
+      "errors": 0,
+      "viewed_contact_sheet": "bitume-demo-securite.jpg"
+    },
+    {
+      "group": "bitume-demo-volant",
+      "artifact": 14631767605,
+      "ci_commit": "dbfeb7c7eb5a3e81d9ab27aef2d4cec97c5ff252",
+      "tree": "1f05e9b399e4584b814c4050bad9f5652261b097",
+      "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+      "passages": [
+        {
+          "scenario": "volant-droite",
+          "variante": "apres",
+          "images": 3,
+          "errors": [],
+          "alerts": []
+        },
+        {
+          "scenario": "volant-gauche",
+          "variante": "apres",
+          "images": 3,
+          "errors": [],
+          "alerts": []
+        }
+      ],
+      "errors": 0,
+      "viewed_contact_sheet": "bitume-demo-volant.jpg"
+    }
+  ],
+  "observations": [
+    "Les plans téléobjectif et hélicoptère montagne rejetés passent à une poursuite dégagée : la référence 0.2.62 était dans la paroi.",
+    "Sol enneigé présent sous les animaux, sans quadrillage béton de la référence ; matière très claire au grain discret.",
+    "La colonne relie le volant au cockpit ; poses de braquage avec bras contenus dans la coque.",
+    "Les trois gestes sont présents, mais le bandeau de démo en masque une partie.",
+    "Gouttes denses, masses fusionnées et projections visibles en cockpit et poursuite derrière une voiture à 235 km/h.",
+    "La vue aérienne conserve la pluie dans le monde et le panache derrière la monoplace, sans gouttes collées à l’écran ; diagnostic optique à eau nulle.",
+    "Les 36 images candidates ne signalent aucune obstruction caméra ; les scènes et le sujet restent visibles."
+  ],
+  "reserves": [
+    "Bandeau de démonstration sur les mains et parfois sur un animal ; cadrage à améliorer.",
+    "Neige très claire, détail discret ; qualification esthétique non équivalente au photoréalisme visé."
+  ],
+  "blocking_anomalies_observed": [],
+  "limitations": [
+    "Captures figées 960×540 en SwiftShader, pas un banc FPS matériel ni un essai manette/audio.",
+    "Les gestes masqués ne permettent pas de qualifier visuellement toutes les phalanges sur ces images."
+  ],
+  "images": [
+    {
+      "group": "bitume-demo-gestes",
+      "file": "apres/geste-majeur/0000.png",
+      "sha256": "a2c2b2c1273edded93320bb3c0575e259c32b42fe01bfa5313b6676abe40deb4",
+      "bytes": 388683,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.499999999999998,
+      "view": "pilote",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": "majeur",
+        "gestePhase": 0.303030303030302,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-gestes",
+      "file": "apres/geste-majeur/0001.png",
+      "sha256": "d7d2a8637730239520dfe456d2bdb081a84fe58516408d8ea685ff73627a1bdb",
+      "bytes": 388922,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.599999999999998,
+      "view": "pilote",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": "majeur",
+        "gestePhase": 0.36363636363636237,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-gestes",
+      "file": "apres/geste-majeur/0002.png",
+      "sha256": "9a21d9a4988929c1d401cc58248edac0fcb5befea413a6f86acd24c9e94cf9ff",
+      "bytes": 388503,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.699999999999998,
+      "view": "pilote",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": "majeur",
+        "gestePhase": 0.42424242424242276,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-gestes",
+      "file": "apres/geste-poing/0000.png",
+      "sha256": "1fc535e2ec01ed8a6121bf7cd07bc615b07fded4fdabf46408cd72e288e773ae",
+      "bytes": 388401,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.499999999999998,
+      "view": "pilote",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": "poing",
+        "gestePhase": 0.3571428571428559,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-gestes",
+      "file": "apres/geste-poing/0001.png",
+      "sha256": "4b58efe1606c770757fc3d10497ac1d152eeef9fe8412d8781746b767c85e217",
+      "bytes": 388479,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.599999999999998,
+      "view": "pilote",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": "poing",
+        "gestePhase": 0.42857142857142705,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-gestes",
+      "file": "apres/geste-poing/0002.png",
+      "sha256": "014c30d89521aae1616a8641de03873f97d31371fa2b11829697dd9ff073ef90",
+      "bytes": 388374,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.699999999999998,
+      "view": "pilote",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": "poing",
+        "gestePhase": 0.4999999999999983,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-gestes",
+      "file": "apres/geste-salut-realisateur/0000.png",
+      "sha256": "1ec8e27ec8d289bfb2f6091245676a3d128243a1851157ca87eeb94fcc57a0fa",
+      "bytes": 387512,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.499999999999998,
+      "view": "pilote",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": "salut",
+        "gestePhase": 0.2777777777777768,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-gestes",
+      "file": "apres/geste-salut-realisateur/0001.png",
+      "sha256": "8488f6d85153760584999e7df5e97eb129a9adcbfde3fad90070b5b932029eb6",
+      "bytes": 388348,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.599999999999998,
+      "view": "pilote",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": "salut",
+        "gestePhase": 0.33333333333333215,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-gestes",
+      "file": "apres/geste-salut-realisateur/0002.png",
+      "sha256": "bd43abff70dd029b5a8dd279570b3aaf350d7d1830f559c60b0ea49b05fb96e3",
+      "bytes": 387684,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.699999999999998,
+      "view": "pilote",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": "salut",
+        "gestePhase": 0.3888888888888875,
+        "gesteCote": -1,
+        "gesteIntensite": 1,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-nature",
+      "file": "apres/faune-ete/0000.png",
+      "sha256": "17153011e3b8c6dd3eb06844adcaa10651693ddf7ae05fc0e37eb2baf0aa6817",
+      "bytes": 279474,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.499999999999998,
+      "view": "faune",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-nature",
+      "file": "apres/faune-ete/0001.png",
+      "sha256": "7cab607859637461a78fee123a979becf013882a7f2447401310ccb8d143ccc0",
+      "bytes": 279497,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.599999999999998,
+      "view": "faune",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-nature",
+      "file": "apres/faune-ete/0002.png",
+      "sha256": "ef545d7e937ce8f1773d143bd78ddcc9f2017088c9f59a609fde731b46b26dd0",
+      "bytes": 279548,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.699999999999998,
+      "view": "faune",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-nature",
+      "file": "apres/faune-hiver/0000.png",
+      "sha256": "fb16697e7870553fbd36b0c79378c1168fbafa10cef8f575cc749413aa4efa98",
+      "bytes": 278663,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.499999999999998,
+      "view": "faune",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-nature",
+      "file": "apres/faune-hiver/0001.png",
+      "sha256": "17f512c20115d39981f4ec26149a50d1ab44008b1343bb59540e3213ff4520fd",
+      "bytes": 278781,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.599999999999998,
+      "view": "faune",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-nature",
+      "file": "apres/faune-hiver/0002.png",
+      "sha256": "1a98284e3ccc25e4deed1b827d13148518d5868b3ec09e7668c7b82dec83fd3f",
+      "bytes": 278565,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.699999999999998,
+      "view": "faune",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-nature",
+      "file": "avant/faune-ete/0000.png",
+      "sha256": "53b508a8fc65ffb0ede59914be7d28699c6cfb60170cb0bfd5949c76d61b8b43",
+      "bytes": 546906,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.499999999999998,
+      "view": "faune",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": null
+    },
+    {
+      "group": "bitume-demo-nature",
+      "file": "avant/faune-ete/0001.png",
+      "sha256": "a3bb22b9a8c78c921d05be25daafe5bfd4a44c49303fdca7d3df3ec1ea56e6e4",
+      "bytes": 546971,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.599999999999998,
+      "view": "faune",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": null
+    },
+    {
+      "group": "bitume-demo-nature",
+      "file": "avant/faune-ete/0002.png",
+      "sha256": "e834a4ee4a354d227188a9bbb0996af081cca35b60f7b43b7a96fb99782ca1f6",
+      "bytes": 546925,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.699999999999998,
+      "view": "faune",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": null
+    },
+    {
+      "group": "bitume-demo-nature",
+      "file": "avant/faune-hiver/0000.png",
+      "sha256": "7697691e5ef60dc11500de480da68af6cdfdb5420eb261c4d4b57d152d5e13d2",
+      "bytes": 548874,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.499999999999998,
+      "view": "faune",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": null
+    },
+    {
+      "group": "bitume-demo-nature",
+      "file": "avant/faune-hiver/0001.png",
+      "sha256": "bee2683893a63269b7b4cc52c42173ed6fa176b982be8f880c19a5890c108e0b",
+      "bytes": 548840,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.599999999999998,
+      "view": "faune",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": null
+    },
+    {
+      "group": "bitume-demo-nature",
+      "file": "avant/faune-hiver/0002.png",
+      "sha256": "b360d3612aace87f1b0c030f17d2d79bf83d2532b2b1f28af3d46139a2e08774",
+      "bytes": 548747,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.699999999999998,
+      "view": "faune",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": null
+    },
+    {
+      "group": "bitume-demo-pluie-aerien",
+      "file": "apres/pluie-aerien/0000.png",
+      "sha256": "f92bb7e15c6919472bb3ee40ce9d06d296ab9341f23f519eb0f6e2b50d9fd15d",
+      "bytes": 276240,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 21.10000000000006,
+      "view": "helico",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-pluie-aerien",
+      "file": "apres/pluie-aerien/0001.png",
+      "sha256": "4fe7aaa6dbb9bef1b5a99403d40a1334fbf6bcdb91e68bf628ec7a22bf5375a2",
+      "bytes": 276415,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 21.20000000000006,
+      "view": "helico",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-pluie-aerien",
+      "file": "apres/pluie-aerien/0002.png",
+      "sha256": "c360153a2c48271a2ce49511252326e8ee56b7e17fe4b674d96dec9548ad3be7",
+      "bytes": 276526,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 21.30000000000006,
+      "view": "helico",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-pluie-cockpit",
+      "file": "apres/pluie-cockpit/0000.png",
+      "sha256": "51bdfd1f7a2b87ca12cedabffa6a10a0204d82bcd6f44c722ec15274e96cc742",
+      "bytes": 521874,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 21.10000000000006,
+      "view": "cockpit",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-pluie-cockpit",
+      "file": "apres/pluie-cockpit/0001.png",
+      "sha256": "4e3b46d9ec3e8b822c91554399f71d18526f67474da6f6a20b949db9883361b1",
+      "bytes": 521366,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 21.20000000000006,
+      "view": "cockpit",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-pluie-cockpit",
+      "file": "apres/pluie-cockpit/0002.png",
+      "sha256": "2e72895d0d15fd3d098fc62ef8fe7be9fd9e81a6e5a3b44486863280c2f79e89",
+      "bytes": 522214,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 21.30000000000006,
+      "view": "cockpit",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-pluie-poursuite",
+      "file": "apres/pluie-poursuite-sillage/0000.png",
+      "sha256": "85f861049ff3be7416435d99adbef7b1f156f05e4b452e4c75c1a4ef9920b486",
+      "bytes": 439274,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 21.10000000000006,
+      "view": "poursuite",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-pluie-poursuite",
+      "file": "apres/pluie-poursuite-sillage/0001.png",
+      "sha256": "e42629cb50c12eb99a4b60e1bf06b82fb742276a82f6b0aee2399f1cd986868f",
+      "bytes": 439833,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 21.20000000000006,
+      "view": "poursuite",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-pluie-poursuite",
+      "file": "apres/pluie-poursuite-sillage/0002.png",
+      "sha256": "e2e8dfcd5a67a65a8145118d0046155b0251d1156ec8ed0bb50dee19ebd21448",
+      "bytes": 439103,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 21.30000000000006,
+      "view": "poursuite",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-securite",
+      "file": "apres/helico-montagne/0000.png",
+      "sha256": "594a0360016b42d6e520b0e603bd59988bb896312060a710d0c4ad3cc68a4ca9",
+      "bytes": 528282,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.499999999999998,
+      "view": "poursuite",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-securite",
+      "file": "apres/helico-montagne/0001.png",
+      "sha256": "ed42d404fc529aba8302e0cd87f3104c0f6d526ed92845c7a6f96f48f7785c93",
+      "bytes": 528317,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.599999999999998,
+      "view": "poursuite",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-securite",
+      "file": "apres/helico-montagne/0002.png",
+      "sha256": "f46771a0c8b9841ff964439853cd3c0a72924901a532a50873bfa7cbdf706639",
+      "bytes": 528255,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.699999999999998,
+      "view": "poursuite",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-securite",
+      "file": "apres/tele-montagne/0000.png",
+      "sha256": "a55d43a6ae3401af90662113df2708b653026fec31f112a81c4ace3c18c5de9b",
+      "bytes": 528970,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.499999999999998,
+      "view": "poursuite",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-securite",
+      "file": "apres/tele-montagne/0001.png",
+      "sha256": "2468911e4113ea4ff5dae14b93ad39875958cae49d67a2cd92053a031d716e5b",
+      "bytes": 529066,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.599999999999998,
+      "view": "poursuite",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-securite",
+      "file": "apres/tele-montagne/0002.png",
+      "sha256": "ea5c92dddb2dc7ac3c1239cacbae36a2a7961567615515ace39e2d5daca9e860",
+      "bytes": 529002,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.699999999999998,
+      "view": "poursuite",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-securite",
+      "file": "avant/helico-montagne/0000.png",
+      "sha256": "006cc0df72b8fc89378ebeecb12d456a8f300b77b09b84a9362a90f843b548d5",
+      "bytes": 311630,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.499999999999998,
+      "view": "helico",
+      "obstruction": {
+        "hit": true,
+        "distance": 2.7818362712860107
+      },
+      "driver": null
+    },
+    {
+      "group": "bitume-demo-securite",
+      "file": "avant/helico-montagne/0001.png",
+      "sha256": "2535dbcd6872d79759e9b646d56073a5560b508e7fd5486fd2753fd3ba599e35",
+      "bytes": 311636,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.599999999999998,
+      "view": "helico",
+      "obstruction": {
+        "hit": true,
+        "distance": 2.7818362712860107
+      },
+      "driver": null
+    },
+    {
+      "group": "bitume-demo-securite",
+      "file": "avant/helico-montagne/0002.png",
+      "sha256": "227b8f8f4280069d9bd0eb4814b59c647a2f7c8b96356ad13d1416765d209ddb",
+      "bytes": 311577,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.699999999999998,
+      "view": "helico",
+      "obstruction": {
+        "hit": true,
+        "distance": 2.7818362712860107
+      },
+      "driver": null
+    },
+    {
+      "group": "bitume-demo-securite",
+      "file": "avant/tele-montagne/0000.png",
+      "sha256": "cba323e0fceefb957b96abd8ac18890d831c5e008eecc6a4e6b22192b320deb2",
+      "bytes": 395511,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.499999999999998,
+      "view": "tele",
+      "obstruction": {
+        "hit": true,
+        "distance": 28.46665382385254
+      },
+      "driver": null
+    },
+    {
+      "group": "bitume-demo-securite",
+      "file": "avant/tele-montagne/0001.png",
+      "sha256": "1ee63e0673ea327580e0b961fb21e1d030b08a9c0bd0e2c396ffd8def9ddabec",
+      "bytes": 395588,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.599999999999998,
+      "view": "tele",
+      "obstruction": {
+        "hit": true,
+        "distance": 28.46665382385254
+      },
+      "driver": null
+    },
+    {
+      "group": "bitume-demo-securite",
+      "file": "avant/tele-montagne/0002.png",
+      "sha256": "7c5218e9426ddc143843114441bc20c91cf188fd76866341ec70a3d8564b092e",
+      "bytes": 395474,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.699999999999998,
+      "view": "tele",
+      "obstruction": {
+        "hit": true,
+        "distance": 28.46665382385254
+      },
+      "driver": null
+    },
+    {
+      "group": "bitume-demo-volant",
+      "file": "apres/volant-droite/0000.png",
+      "sha256": "f401e754ba88a8b6dd4925465bac25dcb8283b451ad9485b1b4c29a12568a3d0",
+      "bytes": 387978,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.499999999999998,
+      "view": "pilote",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-volant",
+      "file": "apres/volant-droite/0001.png",
+      "sha256": "f377294c42e7dcdc97dc15b27f514940fa501f17e07ffc361008d67c32cf4ba2",
+      "bytes": 388147,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.599999999999998,
+      "view": "pilote",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-volant",
+      "file": "apres/volant-droite/0002.png",
+      "sha256": "d7b63bdb81a3508723a90850085710fc0344e4e1e6de52db8284c0233f9cf899",
+      "bytes": 387822,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.699999999999998,
+      "view": "pilote",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-volant",
+      "file": "apres/volant-gauche/0000.png",
+      "sha256": "8ff5d55ec5d63f6bd75073b5aca3a8ebe5053f2f982b7253ff29a3a7b373c03b",
+      "bytes": 387174,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.499999999999998,
+      "view": "pilote",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-volant",
+      "file": "apres/volant-gauche/0001.png",
+      "sha256": "dfff32a8922377a572e1cacd1e92c9d65a8082653f84170eff7a502a790cfc40",
+      "bytes": 387437,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.599999999999998,
+      "view": "pilote",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    },
+    {
+      "group": "bitume-demo-volant",
+      "file": "apres/volant-gauche/0002.png",
+      "sha256": "a9d28594e4262688644cbe4306f32f95144032638a372b6f9f12061f8fd16927",
+      "bytes": 387116,
+      "resolution": [
+        960,
+        540
+      ],
+      "viewed": true,
+      "cameraScreen": "demo",
+      "clock": 12.699999999999998,
+      "view": "pilote",
+      "obstruction": {
+        "hit": false,
+        "distance": null
+      },
+      "driver": {
+        "regard": 0,
+        "geste": null,
+        "gestePhase": 0,
+        "gesteCote": -1,
+        "gesteIntensite": 0,
+        "passageVisuel": null
+      }
+    }
+  ],
+  "weather_diagnostics": [
+    {
+      "file": "apres/pluie-aerien/0000.png",
+      "vitrage": {
+        "actif": false,
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "sillage": null,
+      "optic": {
+        "backend": "webgl2",
+        "pret": true,
+        "erreur": null,
+        "dessins": 3,
+        "eau": 0,
+        "gouttes": 0
+      }
+    },
+    {
+      "file": "apres/pluie-aerien/0001.png",
+      "vitrage": {
+        "actif": false,
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "sillage": null,
+      "optic": {
+        "backend": "webgl2",
+        "pret": true,
+        "erreur": null,
+        "dessins": 3,
+        "eau": 0,
+        "gouttes": 0
+      }
+    },
+    {
+      "file": "apres/pluie-aerien/0002.png",
+      "vitrage": {
+        "actif": false,
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0,
+        "pause": false
+      },
+      "sillage": null,
+      "optic": {
+        "backend": "webgl2",
+        "pret": true,
+        "erreur": null,
+        "dessins": 3,
+        "eau": 0,
+        "gouttes": 0
+      }
+    },
+    {
+      "file": "apres/pluie-cockpit/0000.png",
+      "vitrage": {
+        "actif": true,
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "cockpit": true,
+        "intensite": 1,
+        "embruns": 0.8656915687205431,
+        "pause": false
+      },
+      "sillage": {
+        "rival": 1,
+        "sources": [
+          {
+            "id": 1,
+            "exposition": 0.8605631901573365
+          }
+        ],
+        "casque": 0.8605631901573365,
+        "lentille": 0.8656915687205431
+      },
+      "optic": {
+        "backend": "webgl2",
+        "pret": true,
+        "erreur": null,
+        "dessins": 94,
+        "eau": 1.8969607548910592,
+        "gouttes": 24
+      }
+    },
+    {
+      "file": "apres/pluie-cockpit/0001.png",
+      "vitrage": {
+        "actif": true,
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "cockpit": true,
+        "intensite": 1,
+        "embruns": 0.8656915687205431,
+        "pause": false
+      },
+      "sillage": {
+        "rival": 1,
+        "sources": [
+          {
+            "id": 1,
+            "exposition": 0.8605631901573365
+          }
+        ],
+        "casque": 0.8605631901573365,
+        "lentille": 0.8656915687205431
+      },
+      "optic": {
+        "backend": "webgl2",
+        "pret": true,
+        "erreur": null,
+        "dessins": 95,
+        "eau": 1.8971718885261877,
+        "gouttes": 24
+      }
+    },
+    {
+      "file": "apres/pluie-cockpit/0002.png",
+      "vitrage": {
+        "actif": true,
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "cockpit": true,
+        "intensite": 1,
+        "embruns": 0.8656915687205431,
+        "pause": false
+      },
+      "sillage": {
+        "rival": 1,
+        "sources": [
+          {
+            "id": 1,
+            "exposition": 0.8605631901573365
+          }
+        ],
+        "casque": 0.8605631901573365,
+        "lentille": 0.8656915687205431
+      },
+      "optic": {
+        "backend": "webgl2",
+        "pret": true,
+        "erreur": null,
+        "dessins": 96,
+        "eau": 1.8973683548968197,
+        "gouttes": 24
+      }
+    },
+    {
+      "file": "apres/pluie-poursuite-sillage/0000.png",
+      "vitrage": {
+        "actif": true,
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0.6631411450393534,
+        "pause": false
+      },
+      "sillage": {
+        "rival": 1,
+        "sources": [
+          {
+            "id": 1,
+            "exposition": 0.8605631901573365
+          }
+        ],
+        "casque": 0.8605631901573365,
+        "lentille": 0.6631411450393534
+      },
+      "optic": {
+        "backend": "webgl2",
+        "pret": true,
+        "erreur": null,
+        "dessins": 94,
+        "eau": 1.6699812967079135,
+        "gouttes": 23
+      }
+    },
+    {
+      "file": "apres/pluie-poursuite-sillage/0001.png",
+      "vitrage": {
+        "actif": true,
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0.6631411450393534,
+        "pause": false
+      },
+      "sillage": {
+        "rival": 1,
+        "sources": [
+          {
+            "id": 1,
+            "exposition": 0.8605631901573365
+          }
+        ],
+        "casque": 0.8605631901573365,
+        "lentille": 0.6631411450393534
+      },
+      "optic": {
+        "backend": "webgl2",
+        "pret": true,
+        "erreur": null,
+        "dessins": 95,
+        "eau": 1.670167167301631,
+        "gouttes": 24
+      }
+    },
+    {
+      "file": "apres/pluie-poursuite-sillage/0002.png",
+      "vitrage": {
+        "actif": true,
+        "pluie": 1,
+        "neige": 0,
+        "vitesse": 65.27777777777777,
+        "cockpit": false,
+        "intensite": 1,
+        "embruns": 0.6631411450393534,
+        "pause": false
+      },
+      "sillage": {
+        "rival": 1,
+        "sources": [
+          {
+            "id": 1,
+            "exposition": 0.8605631901573365
+          }
+        ],
+        "casque": 0.8605631901573365,
+        "lentille": 0.6631411450393534
+      },
+      "optic": {
+        "backend": "webgl2",
+        "pret": true,
+        "erreur": null,
+        "dessins": 96,
+        "eau": 1.6703401256317079,
+        "gouttes": 24
+      }
+    }
+  ],
+  "decision": "Revue visuelle des sept groupes terminée ; aucune anomalie bloquante nouvelle observée, réserves de composition et de détail neige conservées. Les autres validations de la PR restent indépendantes."
+}

@@ -36,6 +36,7 @@ function alea(graine) {
 if (process.argv[2] === '--mesure') {
   const { PerformanceObserver, constants } = await import('node:perf_hooks');
   const { Session } = await import('node:inspector');
+  const { getHeapCodeStatistics } = await import('node:v8');
   const session = new Session(); session.connect();   // dans le processus même : aucun port ouvert
   const post = (m, p) => new Promise((ok, ko) => session.post(m, p || {}, (e, r) => e ? ko(e) : ok(r)));
   await post('HeapProfiler.enable');
@@ -54,20 +55,34 @@ if (process.argv[2] === '--mesure') {
   const mineurs = [], observateur = new PerformanceObserver(l => { for (const e of l.getEntries()) if (e.detail.kind === constants.NODE_PERFORMANCE_GC_MINOR) mineurs.push(1); });
   observateur.observe({ entryTypes: ['gc'] });
   const somme = n => n.children.reduce((s, e) => s + somme(e), n.selfSize);
+  const codeMachine = () => getHeapCodeStatistics().code_and_metadata_size;
+  const pause = () => new Promise(r => setTimeout(r, 15));
   const resultat = {};
   for (const [nom, [f, parTour]] of Object.entries(cas)) {
     const tourner = n => { for (let i = 0; i < n; i++) { puits.n = 0; ev.p[0] = 10 + i * .01; ev.cap = .3 + i * 1e-4; ev.roule = i * .05; ev.braquage = Math.sin(i * .003) * .2; f(i); } };
-    for (let k = 0; k < 6; k++) tourner(5000);       // échauffement : le compilateur optimise aussi la boucle elle-même
-    globalThis.gc();                                  // jeune génération vide au départ : un reste d'échauffement ne compte pas
-    await new Promise(r => setTimeout(r, 10));
+    // Un GC après la chauffe peut jeter du code optimisé ; une chauffe synchrone ne laisse pas non plus
+    // installer les compilations de fond. Ramasser avant, puis laisser deux phases stables de code machine.
+    // Borne stricte : 30 phases au plus, une seule mesure, jamais un nouvel essai selon les octets obtenus.
+    globalThis.gc();
+    await pause();
+    let phases = 0, stables = 0;
+    for (; phases < 30 && (phases < 6 || stables < 2); phases++) {
+      const avantCode = codeMachine();
+      tourner(5000);
+      await pause();
+      stables = codeMachine() === avantCode ? stables + 1 : 0;
+    }
+    assert.ok(stables >= 2, `${nom} : code non stabilisé après ${phases} phases de chauffe`);
     const avant = mineurs.length, N = 150000;
     // un échantillon tous les 4 Kio alloués en moyenne, objets ramassés compris : estimation sans biais des octets
     await post('HeapProfiler.startSampling', { samplingInterval: 4096, includeObjectsCollectedByMinorGC: true, includeObjectsCollectedByMajorGC: true });
+    const codeAvant = codeMachine();
     tourner(N);
+    const codePendantMesure = codeMachine() - codeAvant;
     let octets;
     try { octets = somme((await post('HeapProfiler.stopSampling')).profile.head); } catch (e) { octets = Infinity; }   // profil trop gros pour être rendu
     await new Promise(r => setTimeout(r, 10));
-    resultat[nom] = { appels: N * parTour, mineurs: mineurs.length - avant, octets: octets / (N * parTour) };
+    resultat[nom] = { appels: N * parTour, mineurs: mineurs.length - avant, octets: octets / (N * parTour), phasesChauffe: phases, codePendantMesure };
   }
   console.log(JSON.stringify(resultat));
   process.exit(0);
@@ -243,6 +258,7 @@ verifier('hypotDans : Math.hypot de ce moteur au bit près', () => {
 verifier('aucune allocation en régime permanent (octets alloués, ramasse-miettes mineurs)', () => {
   const sortie = execFileSync(process.execPath, ['--max-semi-space-size=1', '--expose-gc', fichier, '--mesure'], { encoding: 'utf8', timeout: 600000 });
   const r = JSON.parse(sortie.trim().split('\n').pop());
+  console.log('    mesures ' + JSON.stringify(r));
   // Un seul nombre emballé (16 octets) par appel : 16 octets estimés par appel, et 2 ramasse-miettes mineurs en
   // 150 000 appels sur ce réglage. Seuils : 8 octets par appel (la boucle de mesure et une recompilation ponctuelle
   // pèsent jusqu'à 2 octets par appel), un ramasse-miettes.

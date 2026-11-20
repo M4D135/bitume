@@ -1,0 +1,46 @@
+{
+  "version": "0.2.66",
+  "statut": "echec_de_scene_prescrite_conserve",
+  "head": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
+  "tree": "1f05e9b399e4584b814c4050bad9f5652261b097",
+  "run": 44743369605,
+  "artifact_id": 14632882401,
+  "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
+  "scenario": "cimes-dessus-toit",
+  "erreurs": [
+    "Caméra aérienne non extérieure",
+    "Dépôt aérien inattendu"
+  ],
+  "cause": "La voiture suivie est sous un tunnel : le repli normal DANS_LA_ROCHE sélectionne poursuite avant la caméra libre. La caméra prescrite au-dessus de la voûte reste masquée par le relief.",
+  "action": "Corriger uniquement la scène de capture et sa régression ; conserver les critères de vue aérienne, les rayons route/toit et le build.",
+  "images": [
+    {
+      "fichier": "0000.png",
+      "sha256": "d05e854ffc9b7ccda865779568633301a0f50931f74184cd03989651462403dc",
+      "camera": [
+        128.96561576977055,
+        235.14759012862268,
+        -926.881949907044
+      ],
+      "vue": "poursuite",
+      "visiere_active": true,
+      "eau": 0.7980712724496355,
+      "gouttes": 8,
+      "toit_y": 231.14646911621094
+    },
+    {
+      "fichier": "0001.png",
+      "sha256": "d480e8322c0df220a08108ceda217d855851ae6f4cfb20440449c438f9a75587",
+      "camera": [
+        128.96561576977055,
+        235.14759012862268,
+        -926.881949907044
+      ],
+      "vue": "poursuite",
+      "visiere_active": true,
+      "eau": 0.8056509235597322,
+      "gouttes": 8,
+      "toit_y": 231.14646911621094
+    }
+  ]
+}

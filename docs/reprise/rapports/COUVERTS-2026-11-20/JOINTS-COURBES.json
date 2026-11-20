@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "lot": "couverts_joints_courbes",
+  "base": "0a5f3eccf8cc8b3a73cf479dc165b72509c71a7b",
+  "probleme": "Les dalles de longueur centrale laissent des fentes au revêtement, à la voûte et entre les murs des tunnels courbes.",
+  "correction": "Recouvrement aux joints intérieurs selon les directions voisines ; longueur propre à chaque mur. Extrémités des portails conservées.",
+  "sourceSha256": {
+    "src/decor.js": "d9f4e89a8f13c9a2224023149ec09e795e609aeef7158cebf9cfdf2aa2d71823",
+    "verifications/couverts-joints-courbes.test.mjs": "7fe9d7afa0fd33d48f2156211b6520b059e9ac21df5bc4fd8d868faf37e2861b"
+  },
+  "regression": {
+    "fichier": "verifications/couverts-joints-courbes.test.mjs",
+    "controles": 6,
+    "reussis": 6,
+    "rayonsPhysX": 6576,
+    "ancienCode": "échec attendu : fente dans le revêtement à s=45.27793470920322, d=4, sens=-1",
+    "portee": "Deux directions de courbure, montée/descente, pas et portails non entiers ; primitives exactes rendues et installées dans PhysX ; nappe extérieure exclue pour ne pas masquer les fentes."
+  },
+  "hautColHistorique": {
+    "geometrieCompleteIdentique": true,
+    "sha256JsonLotsNappesLampes": "2e49fb1e8165fa17d1c5b89bc606fdde358172c81483df11eb37570b5f488065",
+    "options": {
+      "graine": 47,
+      "theme": "montagne",
+      "longueur": 5200,
+      "qualite": "low",
+      "vegetation": false
+    }
+  },
+  "suitesExistantes": {
+    "couverts_multiples": 8,
+    "couverts_physx": {
+      "controles": 4,
+      "rayons": 336
+    },
+    "tunnel": 6,
+    "tunnel_transitions": 9,
+    "decor_identite": 9,
+    "echecs": 0
+  },
+  "routeDesCimesSondeComplementaire": {
+    "cas": "Voûte à d=-6,-4,0,4,6 m, hauteur1,2 m ; pas0,25 m autour des trois ouvrages.",
+    "rayonsParVersion": 15865,
+    "fentesVouteAvant": 20,
+    "fentesVouteApres": 0,
+    "remarque": "Les linteaux des portails débordent du volume d’abri déclaré avant/après ; ce correctif ne change pas leur emprise."
+  },
+  "limites": [
+    "Contrôles géométriques et PhysX ; captures et course intégrées restent à qualifier.",
+    "Les limites météo aux portails et la galerie ne sont pas modifiées par ce correctif."
+  ]
+}

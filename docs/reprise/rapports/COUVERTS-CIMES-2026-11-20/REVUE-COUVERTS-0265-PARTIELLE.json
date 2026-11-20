@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "status": "partial_candidate_superseded_after_ci_failure",
+  "version": "0.2.65",
+  "ci_run": 44736979590,
+  "ci_commit": "09602adaa5429346c767076c9aff97b4c08a3751",
+  "tree": "46ad7a4d8c2a218072f93b09096e1d0ebd0fe1f3",
+  "build_sha256": "58c735189996628eefeec8f7efda13fa76a070c18a1695533e1ac1a3a1302f5f",
+  "archive_id": 14630685748,
+  "archive_digest": "sha256:fc24afa5845160ff76e137860b90f26e78207da2b616450293f902a62452fe66",
+  "scenario": "cimes-rocher",
+  "images_reviewed": 5,
+  "planned_images_all_scenarios": 24,
+  "automated_errors": [],
+  "images": [
+    {
+      "fichier": "0000.png",
+      "etape": "entree-exterieure",
+      "octets": 482474,
+      "sha256": "2689187e48a85cbfb04b4d3e96d1a5d72c7d08108fd175eea2b9ff73ad2b3e19"
+    },
+    {
+      "fichier": "0001.png",
+      "etape": "entree-interieure",
+      "octets": 382682,
+      "sha256": "95aec4eeaa889ded430fe2f961e9343c7a1950ed447fa9020904e5930b57be50"
+    },
+    {
+      "fichier": "0002.png",
+      "etape": "centre",
+      "octets": 375576,
+      "sha256": "0d0a11d57de3137db54a5df549e4e019dd44ee361943374e8cd1f96634ffdaca"
+    },
+    {
+      "fichier": "0003.png",
+      "etape": "sortie-interieure",
+      "octets": 346800,
+      "sha256": "9e95912544143989acc141d3e688807b20f2e1a295241666993ab17ab1155943"
+    },
+    {
+      "fichier": "0004.png",
+      "etape": "sortie-exterieure",
+      "octets": 456573,
+      "sha256": "3131299e850289d74f992b4f59a6eb39755468fb22be88a049853dfab4b93058"
+    }
+  ],
+  "findings": [
+    "Chaussée, voûte, murs et rétroviseurs visibles aux cinq poses ; pas de trou ni traversée observé.",
+    "Eau résiduelle : 0.798071, 0.212075, 0.056356, 0.014976 ; retour 0.811434 à la sortie.",
+    "Pluie extérieure vue depuis un abri encore coupée par le raccord météo ; correction spatiale séparée à qualifier.",
+    "Relief extérieur clair et facetté ; enrichissement des lieux et des matières toujours dans le programme."
+  ],
+  "limits": [
+    "Cinq poses prescrites, sans conduite enregistrée ni FPS matériel.",
+    "Ce groupe ne clôture pas les cinq autres groupes couverts."
+  ]
+}

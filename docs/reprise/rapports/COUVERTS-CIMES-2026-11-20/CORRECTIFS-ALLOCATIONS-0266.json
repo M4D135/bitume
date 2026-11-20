@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "candidate_initial": "0.2.65",
+  "ci_initiale": {
+    "suites_reussies": 155,
+    "suites_total": 159,
+    "traces_octets": 322344,
+    "glaces_octets_par_appel": 9.4
+  },
+  "correction_couverts": {
+    "fichier": "src/couverts.js",
+    "fonction": "segment",
+    "cause": "for...of sur les listes gelées générait itérateur et résultats à chaque recherche, incorporés dans traces.pas par V8.",
+    "correction": "Parcours indexé, mêmes valeurs et objets retournés.",
+    "reproduction_locale_octets": 319336,
+    "diagnostic_vrais_modules_octets": 318000,
+    "apres_octets": 0,
+    "passes": 300,
+    "dessins": 1800,
+    "seuil_octets": 0,
+    "comparaison": {
+      "comparaisons": 379764,
+      "identiteObjetsConservee": true,
+      "variantes": 6,
+      "genres": [
+        null,
+        "tunnel",
+        "galerie"
+      ],
+      "cas": "sans couvert, liste vide, tunnel historique, multiples et intervalle bouclant, valeurs non finies"
+    }
+  },
+  "banc_voiture": {
+    "fichier": "verifications/voiture-permanents.test.mjs",
+    "runtime_voiture_inchange": true,
+    "ancien_banc": "Six phases synchrones suivies d’un GC ; les compilations de fond n’avaient pas de point de contrôle entre phases, et le GC pouvait désoptimiser le code chaud.",
+    "nouveau_banc": "GC avant la chauffe, pauses entre phases, deux phases stables de taille du code machine ; borne 30 phases puis une seule mesure, aucune relance selon les octets.",
+    "limite_diagnostic": "Le profil détaillé du pic CI n’était pas conservé ; son attribution exacte reste inconnue. Les deux profils locaux initiaux n’ont pas reproduit 9,4 octets/appel, mais montrent des désoptimisations V8 du banc.",
+    "mesures_initiales_locales_glaces": [
+      0.05552,
+      0.027626666666666667
+    ],
+    "mesure_finale_glaces_octets_par_appel_arrondie": 0.1,
+    "gc_mineurs_final": 0,
+    "appels_glaces": 150000,
+    "seuil_octets_par_appel": 8,
+    "seuil_gc_mineurs": 1,
+    "témoin_allocation_connue": {
+      "glacesCockpit": {
+        "appels": 5000,
+        "mineurs": 2,
+        "octets": 1427.2352,
+        "phasesChauffe": 10,
+        "codePendantMesure": 0
+      }
+    },
+    "témoin_rejete_par_seuils": true
+  },
+  "validation_ciblee": {
+    "effets_allocation": "3 tests réussis ; témoins positifs conservés, 0 octet pour traces et sillage permanent",
+    "couverts_multiples": "8 vérifications réussies",
+    "voiture_permanents": "12 vérifications réussies ; cinq chemins sous 8 octets/appel, zéro GC mineur"
+  },
+  "sources_sha256": {
+    "src/couverts.js": "338c7e518a0d8cb199db30736ed9fc267756b80b4c6b1b5db643b1b62c266d74",
+    "verifications/voiture-permanents.test.mjs": "862ad4aa1e23981b8acee436898fd11c34931cdd8092b148bf4972b25f552be3"
+  },
+  "pas_de_modification": [
+    "src/traces.js",
+    "src/voiture.js",
+    "conduite",
+    "PhysX",
+    "FERRO",
+    "seuils de tests",
+    "build/version"
+  ],
+  "suite": "Qualification complète du nouveau candidat par le parent ; ne pas attribuer ces résultats à l’ancien HTML."
+}

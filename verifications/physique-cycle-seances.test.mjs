@@ -7,7 +7,7 @@ import { createHash } from 'node:crypto';
 import vm from 'node:vm';
 import { chargerPhysX } from './helpers/physx-runtime.mjs';
 const require = createRequire(import.meta.url);
-for (const f of ['circuit', 'conduite', 'degats', 'contacts', 'obstacles', 'course', 'solides-physx', 'physique',
+for (const f of ['circuit', 'route-des-cimes', 'conduite', 'degats', 'contacts', 'obstacles', 'course', 'solides-physx', 'physique',
   'carene', 'humain-donnees', 'humain-corps', 'main', 'voiture', 'traces', 'botanique', 'ecologie', 'saisons', 'vegetation', 'bords', 'decor', 'ambiance', 'meteo']) require('../src/' + f + '.js');
 const B = globalThis.BITUME, X = globalThis.FPhysX = await chargerPhysX();
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8'), rapports = [];
@@ -18,7 +18,7 @@ function fonction(nom) {
   return source.slice(debut, fin + 4);
 }
 const fonctions = ['lancer', 'graine32', 'remplirPoses'].map(fonction).join('\n');
-const k = catalogue[0], c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom });
+const k = catalogue[0], c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition });
 B.bords.limites(c, B.bords.planifier(c));
 const decor = B.decor.construire(c, { qualite: 'low', vegetation: false, saison: 'ete', solsProceduraux: true });
 c.obstacles = B.obstacles.creer(decor.obstacles);

@@ -137,6 +137,18 @@ verifier('les plans aériens et distants n’ont aucun dépôt ; cockpit et pour
   }
   avancer(j, S, 3, 'poursuite'); assert(j.vues()[0].stats.gouttes > 0);
 });
+verifier('la poursuite à 2,45 m reçoit des gouttes du rival même sans pluie ambiante', () => {
+  const j = jeu(), S = seance(); j.initialiser(S);
+  S.meteo.pluie = 0; S.meteo.mouille = 1; S.course.voitures[0].etat.v = 235 / 3.6;
+  S.sillage = globalThis.BITUME.sillage.creer();
+  globalThis.BITUME.sillage.mettreAJour(S.sillage, [{ id: 7, etat: { v: 235 / 3.6, s: 0 } }], [{ x: 0, y: 0, z: 0, cap: 0 }]);
+  for (let i = 0; i < 180; i++) j.dessiner(S, 'poursuite', 1/30, false, [-25.4,2.45,0]);
+  assert(S.vitreContexte.embruns > .6); assert(j.vues()[0].stats.gouttes > 0, 'eau réellement déposée sans pluie');
+  j.dessiner(S, 'helico', 0, false, [-25.4,21,0]);
+  assert(j.vues()[0].masquee && j.vues()[0].propre, 'la vue aérienne efface la visière');
+  for (let i = 0; i < 180; i++) j.dessiner(S, 'poursuite', 1/30, true, [-25.4,2.45,0]);
+  assert.equal(S.vitreContexte.embruns, 0); assert.equal(j.vues()[0].stats.gouttes, 0, 'aucune nouvelle projection sous abri');
+});
 verifier('les glaces J1/J2 sont composées après les deux vitres ; le HUD reste après la scène', () => {
   for (const glace of ['glace-g', 'glace-d', 'glaces2']) for (const vitre of ['vitre', 'vitre2'])
     assert(html.indexOf('id="' + glace + '"') > html.indexOf('id="' + vitre + '"'));

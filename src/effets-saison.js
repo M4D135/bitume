@@ -46,7 +46,7 @@
     // Un masque conservateur couvre aussi les portails vus depuis l'extérieur.
     if (c.x && c.z && c.y) for (let i = 0; i < c.x.length; i++) {
       const cx = Math.floor(c.x[i] / CELLULE), cz = Math.floor(c.z[i] / CELLULE);
-      const tunnel = B.circuit && B.circuit.dansTunnel && B.circuit.dansTunnel(c, i * (c.pas || 4), 18);
+      const tunnel = B.circuit && (B.circuit.dansCouvert || B.circuit.dansTunnel)?.(c, i * (c.pas || 4), 18);
       const rayon = tunnel ? 2 : 1;
       for (let dz = -rayon; dz <= rayon; dz++) for (let dx = -rayon; dx <= rayon; dx++) {
         const cle = cleSol(cx + dx, cz + dz);
