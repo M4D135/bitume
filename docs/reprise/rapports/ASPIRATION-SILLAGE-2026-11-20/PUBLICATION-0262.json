@@ -1,0 +1,378 @@
+{
+  "format": "bitume-publication-0262-v1",
+  "date": "2026-11-20",
+  "status": "publie_sur_main",
+  "version": "0.2.62",
+  "physique": "p15",
+  "moteur": "FERRO 0.3.15",
+  "jeu": {
+    "pr": 31,
+    "head": "05e99510a09052baeadff5d83369f4ab001b9ce6",
+    "tree": "736048cac03e5fe474757816d442dc2f70f60be8",
+    "merge": "27bdf08de3a712e6658b71d428d2a7d1af3fece5",
+    "mergeTreeMatchesCandidate": true,
+    "qualification": {
+      "archiveSha256": "d4711382c5e1c1175e5e7ac7dac7112f8d0a627ed98ec5ecd9afe55f2c0e7cf0",
+      "archiveBytes": 71350144,
+      "checkout": "8db4a0fbbccabad81933bce83278d0bba8a3b5e6",
+      "environment": "v24.22.2\nPython 3.14.4",
+      "summary": "Suites reussies : 147\nSuites en echec : 0",
+      "tree": "736048cac03e5fe474757816d442dc2f70f60be8",
+      "sourceFiles": 3337,
+      "mismatches": [],
+      "buildBytes": 14268457,
+      "buildSha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+      "artifactId": 14620733055
+    },
+    "run": 44718436891,
+    "job": 136227671911
+  },
+  "degagementNatif": {
+    "pr": 32,
+    "head": "86ebfce674ed42d81e11fdc7251ce421614d08dc",
+    "tree": "1667d290b85268c4f7d0621cd26d6ae03fc82959",
+    "merge": "3fc9421eb87c9bfdc296673e48220c0667626058",
+    "mergeTreeMatchesCandidate": true,
+    "qualification": {
+      "archiveSha256": "46bc726b6a54bf364309165dd3a7408d635712ad4c348cc571ae3f05dc191336",
+      "archiveBytes": 71354726,
+      "checkout": "bd9c0a6c5087e3212929795890d0f2fffc48390b",
+      "environment": "v24.22.2\nPython 3.14.4",
+      "summary": "Suites reussies : 148\nSuites en echec : 0",
+      "tree": "1667d290b85268c4f7d0621cd26d6ae03fc82959",
+      "sourceFiles": 3339,
+      "mismatches": [],
+      "buildBytes": 14268457,
+      "buildSha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+      "format": "bitume-degagement-native-ci-v1",
+      "date": "2026-11-20",
+      "pr": 32,
+      "head": "86ebfce674ed42d81e11fdc7251ce421614d08dc",
+      "run": 44718771726,
+      "job": 136228807705,
+      "artifactId": 14621352264,
+      "testsPassed": 148,
+      "testsFailed": 0,
+      "native": {
+        "backend": "PhysX",
+        "version": "5.12.0",
+        "pas": 2160,
+        "dt": 0.008333333333333333,
+        "contactNatif": 4255,
+        "chocS": 0.35833333333333334,
+        "reculS": 1.5416666666666667,
+        "repriseS": 12.541666666666666,
+        "phasesRecul": 2,
+        "rayonsArriere": 6,
+        "pasRecul": 262,
+        "vitesseReculMin": -3.032908436875614,
+        "xFinal": 277.0819091796875,
+        "vitesseFinale": 47.48096434867159,
+        "replacements": 0,
+        "servicePneus": 0,
+        "ecritures": {
+          "pose": 0,
+          "vitesse": 0,
+          "rotation": 0
+        },
+        "appuisFin": 4
+      },
+      "visualPR": 31,
+      "visualRun": 44718437031,
+      "visualsStillRequired": false
+    },
+    "preuveLocale": "degagement-physx.json",
+    "mutationDeclenchementDesactive": "echec_attendu",
+    "relectureIndependante": "sans_blocage"
+  },
+  "visuel": {
+    "run": 44718437031,
+    "status": "success",
+    "jobsSucceeded": 5,
+    "jobsTotal": 5,
+    "pngCount": 41,
+    "passages": 20,
+    "errors": 0,
+    "candidateScenarios": 14,
+    "referenceScenarios": 6,
+    "allImagesReviewed": true,
+    "inspectionNote": "37 distinct PNG inspected visually; four reference fauna PNG are byte-identical to inspected candidate images. The pale striped fauna terrain is unchanged from 0.2.61. Chase droplets are modest; cockpit 300 km/h improvement is clear. No hardware FPS or full race qualification.",
+    "groups": {
+      "vues": {
+        "artifactId": 14620138470,
+        "zipSha256": "55f6886a0b3ef3ee477bd6e5a02c9f9aca1994f6e71f14474be81d122fb23514",
+        "pngCount": 12,
+        "passages": 6,
+        "errors": 0,
+        "review": "8 candidate PNG inspected. Four fauna reference PNG are binary identical to candidates. Duo split view and dry cockpit/mirrors render correctly. Pale striped terrain in fauna images remains identical to 0.2.61; known reservation preserved.",
+        "pngManifest": [
+          {
+            "path": "visuel-meteo/apres/duo/0000.png",
+            "bytes": 444629,
+            "sha256": "d7bbf07e6aa6b27db21a113a021495a76b77ba54b9aa0659b886932e675ec567"
+          },
+          {
+            "path": "visuel-meteo/apres/duo/0001.png",
+            "bytes": 444972,
+            "sha256": "4b2e90381157836326241c4c77effa43f6030e9342e989f727709890d70efdc5"
+          },
+          {
+            "path": "visuel-meteo/apres/faune-haut-col-ete/0000.png",
+            "bytes": 549644,
+            "sha256": "29973f9a81c134d2b8f1f0ce8c4ac33ed31b53dfff49deef139a8f17e7410eac"
+          },
+          {
+            "path": "visuel-meteo/apres/faune-haut-col-ete/0001.png",
+            "bytes": 549635,
+            "sha256": "01d70f301661e4e48f62e7fa65d2a3d06ce45fef1685a3ef980c70023cf76a0f"
+          },
+          {
+            "path": "visuel-meteo/apres/faune-haut-col-hiver/0000.png",
+            "bytes": 552228,
+            "sha256": "ddfe1a2f8f047dde8e5d16c3cd4a458481e370f1f5059c90b976ac9f467f74b4"
+          },
+          {
+            "path": "visuel-meteo/apres/faune-haut-col-hiver/0001.png",
+            "bytes": 552246,
+            "sha256": "933e636cd41fdd0f7c9b06dd30637c54bf8a95981f6c10517010de6074562ca7"
+          },
+          {
+            "path": "visuel-meteo/apres/sec/0000.png",
+            "bytes": 369849,
+            "sha256": "da1f1faee64d6e3a05cc3b6253935684723f0b375a3392bbb30509e32346e9d4"
+          },
+          {
+            "path": "visuel-meteo/apres/sec/0001.png",
+            "bytes": 369824,
+            "sha256": "8d6eccbb841ee79251f735b7939b52289ba38f462c78a846a65ce8202f8b448e"
+          },
+          {
+            "path": "visuel-meteo/avant/faune-haut-col-ete/0000.png",
+            "bytes": 549644,
+            "sha256": "29973f9a81c134d2b8f1f0ce8c4ac33ed31b53dfff49deef139a8f17e7410eac"
+          },
+          {
+            "path": "visuel-meteo/avant/faune-haut-col-ete/0001.png",
+            "bytes": 549635,
+            "sha256": "01d70f301661e4e48f62e7fa65d2a3d06ce45fef1685a3ef980c70023cf76a0f"
+          },
+          {
+            "path": "visuel-meteo/avant/faune-haut-col-hiver/0000.png",
+            "bytes": 552228,
+            "sha256": "ddfe1a2f8f047dde8e5d16c3cd4a458481e370f1f5059c90b976ac9f467f74b4"
+          },
+          {
+            "path": "visuel-meteo/avant/faune-haut-col-hiver/0001.png",
+            "bytes": 552246,
+            "sha256": "933e636cd41fdd0f7c9b06dd30637c54bf8a95981f6c10517010de6074562ca7"
+          }
+        ]
+      },
+      "neige": {
+        "artifactId": 14621377889,
+        "zipSha256": "8829360fa9de1c5e191775a5d95355b486b733bba74230da8d133da82f8f2ef4",
+        "pngCount": 9,
+        "passages": 4,
+        "errors": 0,
+        "review": "All 9 PNG inspected. Snow/frost present and scene readable. Pause snapshots identical; resume restores rain droplets. Low-quality fallback renders; mirrors intentionally painted, matching profile. No black frame or visible new clipping.",
+        "pngManifest": [
+          {
+            "path": "visuel-meteo/apres/legere/0000.png",
+            "bytes": 345898,
+            "sha256": "e3e36d584fd65e8b398c6047f5f7438e8f3bb4544dcf4b8df99e3bc87ed51220"
+          },
+          {
+            "path": "visuel-meteo/apres/legere/0001.png",
+            "bytes": 346722,
+            "sha256": "6b83bff5ce717b66e236c66c634184abab5e175d99a7e085d2dbafb35a6170d6"
+          },
+          {
+            "path": "visuel-meteo/apres/neige45/0000.png",
+            "bytes": 418725,
+            "sha256": "36ca0210895dfd4ccd8611f6faead9f3d5ef5c7727b3dc02228b60655f9bfcf8"
+          },
+          {
+            "path": "visuel-meteo/apres/neige45/0001.png",
+            "bytes": 419092,
+            "sha256": "abb6330c323ba02263532a862c7e44a611268c395d149e7cd9ac8a18e9274591"
+          },
+          {
+            "path": "visuel-meteo/apres/pause-reprise/0000.png",
+            "bytes": 228782,
+            "sha256": "f24aa3bc5f2f2558296c8a55d013d3923e13dd316b76e9361bd5c052ea77e938"
+          },
+          {
+            "path": "visuel-meteo/apres/pause-reprise/0001.png",
+            "bytes": 228782,
+            "sha256": "f24aa3bc5f2f2558296c8a55d013d3923e13dd316b76e9361bd5c052ea77e938"
+          },
+          {
+            "path": "visuel-meteo/apres/pause-reprise/0002.png",
+            "bytes": 371842,
+            "sha256": "bf6549e72be719a318a93a0cfbd37f98aed8685a3e84667d72ff1521f7069e90"
+          },
+          {
+            "path": "visuel-meteo/avant/neige45/0000.png",
+            "bytes": 418725,
+            "sha256": "36ca0210895dfd4ccd8611f6faead9f3d5ef5c7727b3dc02228b60655f9bfcf8"
+          },
+          {
+            "path": "visuel-meteo/avant/neige45/0001.png",
+            "bytes": 419092,
+            "sha256": "abb6330c323ba02263532a862c7e44a611268c395d149e7cd9ac8a18e9274591"
+          }
+        ]
+      },
+      "sillage-vues": {
+        "artifactId": 14622035649,
+        "zipSha256": "f06d9af86fb7ab999a288d4266a8b9e56322430dee17faf4eb0f466a5e0701b4",
+        "pngCount": 4,
+        "passages": 2,
+        "errors": 0,
+        "review": "All 4 PNG inspected. Chase camera at 300 km/h has subtle droplets and rendered spray plume; helicopter has falling rain/world spray but no visor droplet deposit. No black frame or visible new clipping. Chase droplets are modest, so these captures do not substantiate a claim of strongly obstructed visibility.",
+        "pngManifest": [
+          {
+            "path": "visuel-meteo/apres/sillage300-helico/0000.png",
+            "bytes": 271651,
+            "sha256": "c55e49e99c29eeb46886e3591e2f3258adf566f9bb097794a921db459b8fae25"
+          },
+          {
+            "path": "visuel-meteo/apres/sillage300-helico/0001.png",
+            "bytes": 271890,
+            "sha256": "c57976b0ab315ac1d64dd692e9cc768515f0d0ac3aa5c226b83c8954422ba07e"
+          },
+          {
+            "path": "visuel-meteo/apres/sillage300-poursuite/0000.png",
+            "bytes": 321890,
+            "sha256": "1d5b8fd52c2fbb4144bd8742224fbcd0eae86fe1c8f31f657bb196bb9fce98b5"
+          },
+          {
+            "path": "visuel-meteo/apres/sillage300-poursuite/0001.png",
+            "bytes": 321866,
+            "sha256": "fb319f77307fdfa928ff49438ce6701d6e68978d38b044e4c21a8ab0ada69cc7"
+          }
+        ]
+      },
+      "sillage-cockpit": {
+        "artifactId": 14622465524,
+        "zipSha256": "e30e6547a38ca80e3ba6b3f7fc84126aa993df1f995804c23aabdb44cd3c3d5e",
+        "pngCount": 6,
+        "passages": 3,
+        "errors": 0,
+        "contrastErrors": [],
+        "review": "All 6 PNG inspected. Candidate 300 km/h cockpit has visibly more droplets than 0.2.61 at identical camera/vehicle positions. Dry-road control has no droplet layer. Wet/dry change also alters road reflections as stated by the harness. No black frame or new visible geometry defect.",
+        "pngManifest": [
+          {
+            "path": "visuel-meteo/apres/sillage300/0000.png",
+            "bytes": 451965,
+            "sha256": "57ab0b0dad2c34e64155ad3426d9b3553270663a46c4a37e92d28e8f217ea300"
+          },
+          {
+            "path": "visuel-meteo/apres/sillage300/0001.png",
+            "bytes": 451707,
+            "sha256": "401e4e7752c119caf842e8f63728fb947d1e50026749b9d71dd99e2de7c95454"
+          },
+          {
+            "path": "visuel-meteo/apres/sillage300-sec/0000.png",
+            "bytes": 377199,
+            "sha256": "a38d62bf0e52419f10edccbe5903e81770a4c16a69a6ff2db42f682de56df7d8"
+          },
+          {
+            "path": "visuel-meteo/apres/sillage300-sec/0001.png",
+            "bytes": 377061,
+            "sha256": "ab2c4dd15e7f8c5b40a7ad4a2c27b70c0da2b8a9682a7f226415af342aa71988"
+          },
+          {
+            "path": "visuel-meteo/avant/sillage300/0000.png",
+            "bytes": 421716,
+            "sha256": "30e2a9394d5bebb9b2787128eaba78b1604ffc4b579b3881ca5363ced4542378"
+          },
+          {
+            "path": "visuel-meteo/avant/sillage300/0001.png",
+            "bytes": 420795,
+            "sha256": "0596c2e8752e3c8c24843536120b1c831b1f4593ea19a50cd2a7d9904fd310c1"
+          }
+        ]
+      },
+      "pluie": {
+        "artifactId": 14622666801,
+        "zipSha256": "d0f6f73dacc67f86a60325116c1156b1fdf4e055d153a8ac3a04db591f26de74",
+        "pngCount": 10,
+        "passages": 5,
+        "errors": 0,
+        "review": "All 10 PNG inspected. Rain-grid and 235 km/h spray compare correctly with reference; candidate retains more spray droplets. Tunnel wall/road/ceiling render visibly; existing droplets persist temporarily under shelter as expected. No black frame or new visible geometry defect. Job completed successfully around 31 minutes, without rerun.",
+        "pngManifest": [
+          {
+            "path": "visuel-meteo/apres/pluie-grille/0000.png",
+            "bytes": 375462,
+            "sha256": "e04157d423de31e6930ef702a2ab0e620293d5a421e88d01f9018cd3c09b0414"
+          },
+          {
+            "path": "visuel-meteo/apres/pluie-grille/0001.png",
+            "bytes": 375330,
+            "sha256": "649f5059f376284bade78f448cdfa1fe9e81860d12c01741ffe9cfc4b5fb1ffb"
+          },
+          {
+            "path": "visuel-meteo/apres/pluie-spray235/0000.png",
+            "bytes": 440374,
+            "sha256": "1ee249cbdb601522947c2231ac2b9634feed9b674d25014c1b058a80685359fe"
+          },
+          {
+            "path": "visuel-meteo/apres/pluie-spray235/0001.png",
+            "bytes": 439596,
+            "sha256": "807d1b0cfbc37cf7bab221be58dfefb3c5c02af532ad29cf9794a5330eb198ab"
+          },
+          {
+            "path": "visuel-meteo/apres/tunnel/0000.png",
+            "bytes": 393433,
+            "sha256": "014ac6e5e3c2af2a5e668977e3061fb490ba6b004b718d63c74530da089ccb14"
+          },
+          {
+            "path": "visuel-meteo/apres/tunnel/0001.png",
+            "bytes": 394765,
+            "sha256": "44008e38cf9f753cc0372de21974e9c57b254453bac5c57c4c4235a66b8239a2"
+          },
+          {
+            "path": "visuel-meteo/avant/pluie-grille/0000.png",
+            "bytes": 375462,
+            "sha256": "e04157d423de31e6930ef702a2ab0e620293d5a421e88d01f9018cd3c09b0414"
+          },
+          {
+            "path": "visuel-meteo/avant/pluie-grille/0001.png",
+            "bytes": 375330,
+            "sha256": "649f5059f376284bade78f448cdfa1fe9e81860d12c01741ffe9cfc4b5fb1ffb"
+          },
+          {
+            "path": "visuel-meteo/avant/pluie-spray235/0000.png",
+            "bytes": 422462,
+            "sha256": "790f92c9017fbb686704ae9516c6d53c3d3e8614263e9a8d2fa4fcf2159761d5"
+          },
+          {
+            "path": "visuel-meteo/avant/pluie-spray235/0001.png",
+            "bytes": 421963,
+            "sha256": "1d079ad5560433300f7c39510b9eed9e25f55580cba09a818e9cd44c6a6018e4"
+          }
+        ]
+      }
+    }
+  },
+  "build": {
+    "bytes": 14268457,
+    "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "identiqueLocalReconstructionGitHubEtArchives": true
+  },
+  "historiqueQualification": {
+    "campagneLocaleInitiale": "Interrompue après 111 journaux sur les 147 suites prévues ; elle ne constitue pas le bilan final.",
+    "echecDegagementInitial": "Le choc attendu ne se produisait plus sur le parcours de trafic p15. Le scénario historique corrigé distingue choc, recul et reprise.",
+    "controleHistorique": "Solveur Frenet, cinq contrôles p14/p15. La preuve native distincte emploie PhysX réel.",
+    "pluie": "Succès du premier passage en environ 31 minutes, aucun timeout ni relance pour ce candidat."
+  },
+  "reserves": [
+    "Scènes à poses figées et rendu logiciel SwiftShader ; aucune mesure de FPS matériels ni course complète par ces captures.",
+    "Terrain clair strié des plans faune identique à la référence 0.2.61 ; réserve du lot rendu conservée.",
+    "En poursuite, les gouttes restent discrètes dans ces captures ; amélioration de densité à réconcilier avec le travail préparé.",
+    "Écoute matérielle, manettes physiques et réseau entre machines non qualifiés ici ; site non déployé."
+  ],
+  "suite": "Réconcilier et qualifier le travail préparé sur démos, sols, volant, pilote expressif/gestes et dynamique/densité des gouttes, en préservant p15 et le programme Monaco.",
+  "clotureDocumentaire": "Reçu et reprise seulement ; aucun changement des sources du jeu, tests ou build qualifiés."
+}

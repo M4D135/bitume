@@ -6,7 +6,7 @@ Poursuite du jeu après la publication vérifiée de la 0.2.61. Mesurer le gain 
 l’aspiration dans PhysX, rendre l’entrée et la sortie du sillage perceptibles au son,
 et conserver les projections d’un rival sur la visière à grande vitesse.
 
-Candidat **0.2.62 / p15 / FERRO 0.3.15**, qualification en cours. Les correctifs de démo,
+Version **0.2.62 / p15 / FERRO 0.3.15**, publiée sur `main` et qualifiée. Les correctifs de démo,
 sols, volant et pilotes préparés dans une autre reprise sont conservés séparément.
 
 ## Défaut physique confirmé et correction
@@ -87,3 +87,31 @@ La CI complète et les captures navigateur sont requises avant fusion.
 Les captures utilisent des poses fixées sous SwiftShader ; elles ne qualifient pas les
 FPS matériels. L’écoute matérielle, les manettes physiques et le réseau entre machines
 restent à vérifier. Aucun déploiement du site n’est annoncé depuis cet environnement.
+
+
+## Publication vérifiée et contrôle PhysX du dégagement
+
+PR #31 fusionnée au commit `27bdf08de3a712e6658b71d428d2a7d1af3fece5` : **147/147 suites**,
+**41 PNG** vérifiés dans cinq groupes, 14 scènes candidates et six références. Les 37 images
+visualisées et quatre références faune identiques ne montrent aucun défaut nouveau sur ce lot.
+Le groupe pluie termine en environ 31 minutes sans timeout ni relance.
+
+La PR #32 ajoute le contrôle natif `verifications/physx-degagement.test.mjs` et son reçu,
+sans changer le jeu. Fusion `3fc9421eb87c9bfdc296673e48220c0667626058` : **148/148 suites**.
+Un châssis dynamique de 600 kg heurte un vrai tronc sur un sol triangulé. Le contrôleur IA
+provoque le recul puis la reprise ; les assertions surveillent les contacts natifs, l’ordre
+des phases, l’espace libre derrière et les pneus pendant 2 160 pas à 120 Hz.
+Choc à 0,358 s, premier recul à 1,542 s, reprise à 12,542 s ; deux manœuvres, quatre appuis
+retrouvés, zéro replacement, secours, vitesse/pose imposée ou service des pneus. Désactiver
+le déclenchement du dégagement dans une copie temporaire fait échouer le test. La CI
+reproduit exactement les mesures locales ; une relecture indépendante confirme le contrôle.
+
+Les archives de 3 337 puis 3 339 sources ont été téléchargées et comparées intégralement
+(contenus et modes), ainsi que le HTML. Les arbres des deux fusions sont ceux des candidats.
+Reçu complet : `rapports/ASPIRATION-SILLAGE-2026-11-20/PUBLICATION-0262.json`.
+
+Réserves : terrain clair strié identique à 0.2.61 ; projections encore discrètes en poursuite
+sur ces captures, malgré un renforcement clair en cockpit. Les poses figées et SwiftShader
+ne qualifient pas les FPS matériels ni une course complète. Le site n’est pas déployé ici.
+Suite prioritaire : réconcilier les démos/sols, volant, pilote expressif/gestes et dynamique
+des gouttes déjà préparés, en conservant p15, Monaco et l’ensemble du programme.
