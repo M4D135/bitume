@@ -1,52 +1,112 @@
 {
   "date": "2026-11-20",
   "etat_courant": {
-    "version_courante": "0.2.68",
-    "version_publiee_verifiee": "0.2.68",
+    "version_courante": "0.2.69",
+    "version_publiee_verifiee": "0.2.69",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "coordination_00_contrats_et_P0_02_publies_aucun_nouveau_runtime",
-    "lot": "00A_inventaire_contrats_et_reception_02_P0",
+    "statut": "publie_sur_main_avec_reserves_explicites",
+    "lot": "00C_publication_0269_close_avec_reserves",
     "fiche": "docs/reprise/PARALLELE-2026-11-20/00-INTEGRATION.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "030",
-    "prochaine_action": "Qualifier le candidat assemble0.2.69 sur son commit exact puis fusionner.",
-    "dernier_lot_clos": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json",
+    "derniere_entree": "033",
+    "prochaine_action": "Traiter la lisibilité centrale du cockpit et caractériser le budget décor (172 ms affichés ; seuil strict < 150 ms), puis intégrer une prochaine livraison qualifiée.",
+    "dernier_lot_clos": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
     "fiche_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
     "index": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
-    "entree_journal": "030",
+    "entree_journal": "033",
     "dernieres_demandes": "docs/reprise/DEMANDES-ARCADE-PERFORMANCE-TROLL-2026-11-20.md",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md",
     "contrats_integration": "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
     "inventaire_branches": "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
-    "runtime_modifie_par_coordination": false,
-    "dernier_lot_coordination_clos": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-20261120.json"
+    "runtime_modifie_par_coordination": true,
+    "dernier_lot_coordination_clos": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
+    "runtime_modifie_par_coordination_portee": "0.2.69 publié sur main et contenu reçu vérifié.",
+    "preuve_t3": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
+    "reserve_lisibilite_cockpit": "Cockpit 960×540 et 540×960, caméra réelle du siège : le volant occulte une partie centrale de la chaussée. Lisibilité non certifiée, suivi ouvert ; aucune nouvelle régression d’assemblage établie. Géométrie commune et T3 restent acquis.",
+    "alerte_budget_decor": {
+      "statut": "ouvert",
+      "run": 44803588903,
+      "suite": "decor.test.mjs",
+      "mesure_ms_affichee": 172,
+      "seuil_strict_ms": 150,
+      "cause": "non déterminée",
+      "ci_pr_meme_arbre": "suite réussie, durées individuelles non enregistrées"
+    },
+    "commit_fusion": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
+    "tete_qualifiee": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+    "pr_publiee": 42
   },
   "publication": {
-    "version": "0.2.68",
-    "pr": 39,
-    "branche": "feat/bitume-eau-0267-20261120",
-    "tete": "3daefb7c9d7decaf77beb94219abcf16d907bb38",
-    "arbre": "b84d8553d1a53de3258a56e2036b8b16669723f5",
-    "tete_qualifiee": "3daefb7c9d7decaf77beb94219abcf16d907bb38",
-    "commit_fusion": "4a04c090535f0c11d3db9900284c31e244a0c79c",
-    "recu_final": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json",
-    "statut": "publie_sur_main"
+    "version": "0.2.69",
+    "pr": 42,
+    "branche": "codex/bitume-0269-publication-20261120",
+    "tete_qualifiee": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+    "arbre": "18b147cb15a5900a1257686b211ddb7c9769b29d",
+    "commit_fusion": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
+    "recu_final": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
+    "statut": "publie_sur_main_avec_reserves_explicites"
   },
   "qualification": {
-    "version": "0.2.68",
-    "build_octets": 14383155,
-    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
-    "campagne_finale_run": 44761148529,
-    "campagne_finale_resultat": "160/160 suites Node et 8 tests Python réussis",
-    "sources_archive_verifiees": 3485,
-    "sources_contenus_et_modes_identiques": true,
-    "arbre_fusion_identique_au_candidat": true,
-    "images_retenues_inspectees": 122,
-    "images_references_comprises": 24,
-    "recu_publication": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json",
-    "qualification_deja_close_non_relancee_par_00": true
+    "version": "0.2.69",
+    "build_octets": 14472625,
+    "build_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+    "ci_pr": {
+      "schema": 1,
+      "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+      "ci_checkout": "40e8c62184134a1080f185846a97a8f50270d598",
+      "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
+      "archive_sha256": "72627b9ef4eb4b45b4dc9bdd646842d3d7c789b301d01a758776acc03818f65a",
+      "sources_fichiers": 3777,
+      "sources_octets": 138871550,
+      "sources_et_modes_identiques": true,
+      "html_octets": 14472625,
+      "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+      "suites_node": 176,
+      "suites_echec": 0,
+      "tests_python": 8,
+      "troll_tests": 9,
+      "troll_oracles_negatifs": 6,
+      "troll_ignores": 0,
+      "run": 44803603591,
+      "job": 136521697469,
+      "conclusion": "success",
+      "artifact_id": 14662647273
+    },
+    "ci_push": {
+      "run": 44803588903,
+      "job": 136521651250,
+      "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+      "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
+      "conclusion": "failure",
+      "suites_reussies": 175,
+      "suites_echec": 1,
+      "tests_python": "non_executés_apres_echec_node",
+      "suite": "verifications/decor.test.mjs",
+      "mesure": "Val-Brûlé : construction du décor",
+      "mesure_ms": 172,
+      "seuil_ms": 150,
+      "condition": "strictement moins de 150 ms",
+      "cause_ecart": "non_isolée ; aucune cause matérielle ou de charge mesurée",
+      "comparaison": "La même suite passe dans la CI PR 44803603591 sur le même arbre exact.",
+      "statut_alerte": "ouverte",
+      "seuil_modifie": false,
+      "relance_pour_obtenir_vert": false,
+      "artifact_id": 14663042199,
+      "artifact_octets": 80816769,
+      "artifact_sha256": "830f376acc558f15b71bc26ad6c6ee6e2996b29708bd62f7bda8136dc151ee34",
+      "log_sha256": "9d7b69c225d260c5eafd60ae77c2b988eff689dae20db3c0a8f3ad860c6663e9",
+      "profil": "low_historique_sans_options",
+      "mesure_ms_arrondie": true,
+      "chauffe_ou_repetitions": false,
+      "portee": "Un appel synchrone D.construire(c), hors création du circuit et chargement des modules ; aucun rendu WebGL/GPU/FPS ni préparation complète de séance.",
+      "comparaison_pr": "Les trois constructions Val-Brûlé, Port-Sable et Haut-Col satisfont chacune ms < 150 ; durées individuelles non enregistrées."
+    },
+    "images_assemblees_inspectees": 49,
+    "troll_png_reutilises": 26,
+    "recu_publication": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
+    "tous_les_runs_verts": false
   },
   "reserves": {
     "construction_ms": {
@@ -76,8 +136,18 @@
     "composition_demo": "Bandeau parfois superposé au geste ou à un animal ; neige claire à grain discret.",
     "cimes": "Socle publié ; relief très facetté et sept lieux complets, lac/cascade encore à poursuivre.",
     "demos": "Bandeaux sur certains sujets ; neige Haut-Col claire et grain discret.",
-    "habitacle_pilote": "Deux représentations/transformations d’habitacle encore présentes ; assise à abaisser ; contrôle bras/buste absent. Diagnostic mesuré/correction à réaliser selon le plan.",
-    "gouttes_vitesse": "Transport vitesse/caméra E0–E3 qualifié et publié en 0.2.68 ; limites restantes dans PUBLICATION-0268.json : pas toutes les poses/vitesses, micro0 et gravité des fines non qualifiées séparément."
+    "habitacle_pilote": "Habitacle et assise communs publiés en 0.2.69, géométrie et Troll J1/J2 acquis ; visibilité centrale de la chaussée à traiter. Les images LOD lointaines ne permettent pas une inspection fine des bras.",
+    "gouttes_vitesse": "Transport vitesse/caméra E0–E3 qualifié et publié en 0.2.68 ; limites restantes dans PUBLICATION-0268.json : pas toutes les poses/vitesses, micro0 et gravité des fines non qualifiées séparément.",
+    "budget_decor_0269": {
+      "statut": "ouvert",
+      "run": 44803588903,
+      "suite": "decor.test.mjs",
+      "mesure_ms_affichee": 172,
+      "seuil_strict_ms": 150,
+      "cause": "non déterminée",
+      "ci_pr_meme_arbre": "suite réussie, durées individuelles non enregistrées"
+    },
+    "lisibilite_cockpit_0269": "Le volant occulte une partie centrale de la chaussée en caméra réelle du siège, surtout en paysage. Les tests de projection ne mesurent pas cette occultation ; suivi ouvert."
   },
   "suite": {
     "lot": "14A_Monaco_sources_et_mesures",
@@ -274,9 +344,10 @@
     "file": "docs/reprise/FILE-TRAVAIL.json",
     "references": "docs/references/objectifs-utilisateur-2026-11-20/README.md",
     "priorite_utilisateur": "Publication GitHub des modèles, objectifs et feuille de route avant la suite",
-    "lot_actif": "meteo",
-    "statut": "socle_0266_publie_suite_preparee",
-    "recu_references": "docs/reprise/rapports/REFERENCES-OBJECTIFS-2026-11-20/PUBLICATION.json"
+    "lot_actif": "00C_publication_0269_close_avec_reserves",
+    "statut": "publie_sur_main_avec_reserves_explicites",
+    "recu_references": "docs/reprise/rapports/REFERENCES-OBJECTIFS-2026-11-20/PUBLICATION.json",
+    "recu_publication": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
   },
   "candidat_0263": {
     "version": "0.2.63",
@@ -486,10 +557,10 @@
   },
   "repartition_parallele": {
     "date": "2026-11-20",
-    "statut": "contrats_00_et_P0_02_publies",
+    "statut": "01_03_04S1_publies_sur_main_0269_avec_reserves",
     "index": "docs/reprise/PARALLELE-2026-11-20/README.md",
     "registre": "docs/reprise/PARALLELE-2026-11-20/REPARTITION.json",
-    "base_main_verifiee": "d8f02cae45443ae6a1120dc93125d8adfae94422",
+    "base_main_verifiee": "fee69c521eccc0e64cc29f762a6d2244b5ade759",
     "coordinateur": "00",
     "premier_groupe": [
       "01",
@@ -498,7 +569,7 @@
       "04"
     ],
     "suite_sources_circuits": "05",
-    "runtime_modifie": false,
+    "runtime_modifie": true,
     "preparations": "docs/reprise/PARALLELE-2026-11-20/REPRISES-EXISTANTES.md",
     "regle": "Un sous-lot par discussion, perimetres distincts, une integration qualifiee a la fois.",
     "preparations_portables": "docs/reprise/PARALLELE-2026-11-20/preparations/MANIFESTE.json",
@@ -520,16 +591,8 @@
     },
     "contrats": "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
     "inventaire": "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
-    "lots_prets_observes": [
-      "02/P0_documentaire"
-    ],
+    "lots_prets_observes": [],
     "lots_runtime_prets_observes": [],
-    "etats_non_livres_inchanges": [
-      "01",
-      "03",
-      "04",
-      "05"
-    ],
     "etat_02_importe_exact": true,
     "livraison_documentaire_retenue": {
       "discussion": "02",
@@ -539,11 +602,44 @@
       "fichiers": 3,
       "runtime_modifie": false
     },
-    "publication_00": {
-      "commit": "a8a6435c529fe326e9f26124f25ba0911d3b70fb",
-      "tree": "d2a766837812905aa9ab421fd77d80c7625d25f2",
-      "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-20261120.json"
-    }
+    "publication_00": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
+    "runtime_candidat_modifie": true,
+    "releve_candidat_00": {
+      "commit": "7999de565e2c643f7723462caf7683b570c75e8b",
+      "tree": "31059af44e77aac5b733c9e4b29e9b9efe25ee57",
+      "pr": 42,
+      "releve_utc": "2026-11-20 19:20:31 UTC"
+    },
+    "etats_proprietaires_importes_sans_reecriture": [
+      "01",
+      "03",
+      "04"
+    ],
+    "releve_00_portee": "Inventaire initial historique ; les livraisons et le candidat courants sont décrits ci-dessus.",
+    "etats_non_livres_inchanges_au_releve_initial": [
+      "01",
+      "03",
+      "04",
+      "05"
+    ],
+    "prochaine_action": "Traiter la lisibilité centrale cockpit et caractériser le budget décor172/150ms ; intégrer ensuite une prochaine livraison qualifiée.",
+    "preparations_statut": "patches_historiques_conserves_livraisons_01_03_04S1_publiees_0269",
+    "releve_main": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
+    "releve_utc": "2026-11-20 20:00:13 UTC",
+    "lots_prets_observes_historique": [
+      "01_pilote_Troll",
+      "03_menu",
+      "04_S1_saisons"
+    ],
+    "lots_runtime_publies": [
+      "01_pilote_Troll",
+      "03_menu",
+      "04_S1_saisons_sans_M1"
+    ],
+    "tete_qualifiee_00": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+    "commit_fusion_00": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
+    "publication_00_portee": "Runtime 0.2.69 publié et reçu sur main, avec réserves cockpit et budget décor ; reçu documentaire 00A conservé dans l’historique.",
+    "checkpoints_observes_portee": "Inventaire initial conservé ; publication courante décrite par le reçu 0.2.69."
   },
   "historique_alias_avant_coordination_00": {
     "date": "2026-11-20",
@@ -600,68 +696,204 @@
     "regle": "Les trois fichiers de cloture apres le SHA qualifie sont documentaires ; sources et outils qualifies conserves exactement."
   },
   "candidat_assemble_0269": {
+    "statut": "publie",
+    "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+    "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
+    "publication": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
+    "reserves": {
+      "visibilite_cockpit": "Le volant occulte une partie centrale de la chaussée en caméra réelle du siège, surtout en paysage. Les tests de projection ne mesurent pas cette occultation ; suivi ouvert.",
+      "budget_decor": {
+        "statut": "ouvert",
+        "run": 44803588903,
+        "suite": "decor.test.mjs",
+        "mesure_ms_affichee": 172,
+        "seuil_strict_ms": 150,
+        "cause": "non déterminée",
+        "ci_pr_meme_arbre": "suite réussie, durées individuelles non enregistrées"
+      },
+      "lod": "Les quatre images LOD extérieures attestent une silhouette de 25–30 pixels ; les détails des bras ne sont pas inspectables.",
+      "reseau": "Préférences Troll négociées, événements geste/son distants non synchronisés et limitation affichée avant course.",
+      "materiel": "FPS Xbox/Intel, manettes physiques, écoute humaine et réseau entre machines non qualifiés."
+    }
+  },
+  "historique_avant_publication_0269": {
+    "publication": {
+      "version": "0.2.68",
+      "pr": 39,
+      "branche": "feat/bitume-eau-0267-20261120",
+      "tete": "3daefb7c9d7decaf77beb94219abcf16d907bb38",
+      "arbre": "b84d8553d1a53de3258a56e2036b8b16669723f5",
+      "tete_qualifiee": "3daefb7c9d7decaf77beb94219abcf16d907bb38",
+      "commit_fusion": "4a04c090535f0c11d3db9900284c31e244a0c79c",
+      "recu_final": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json",
+      "statut": "publie_sur_main"
+    },
+    "qualification": {
+      "version": "0.2.68",
+      "build_octets": 14383155,
+      "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+      "campagne_finale_run": 44761148529,
+      "campagne_finale_resultat": "160/160 suites Node et 8 tests Python réussis",
+      "sources_archive_verifiees": 3485,
+      "sources_contenus_et_modes_identiques": true,
+      "arbre_fusion_identique_au_candidat": true,
+      "images_retenues_inspectees": 122,
+      "images_references_comprises": 24,
+      "recu_publication": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json",
+      "qualification_deja_close_non_relancee_par_00": true
+    },
+    "champs_candidat": {
+      "version_candidate": "0.2.69",
+      "commit_candidat": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+      "pr_candidate": 42,
+      "runtime_candidat_modifie": true
+    },
+    "reserve_habitacle_pilote": "Deux représentations/transformations d’habitacle encore présentes ; assise à abaisser ; contrôle bras/buste absent. Diagnostic mesuré/correction à réaliser selon le plan.",
+    "execution_autonome": {
+      "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
+      "file": "docs/reprise/FILE-TRAVAIL.json",
+      "references": "docs/references/objectifs-utilisateur-2026-11-20/README.md",
+      "priorite_utilisateur": "Publication GitHub des modèles, objectifs et feuille de route avant la suite",
+      "lot_actif": "00C_qualification_assemblage_01_03_04S1",
+      "statut": "candidat_0269_sur_branche_main_0268_conserve",
+      "recu_references": "docs/reprise/rapports/REFERENCES-OBJECTIFS-2026-11-20/PUBLICATION.json"
+    }
+  },
+  "publication_0269": {
     "schema": 1,
-    "base_main": "fee69c521eccc0e64cc29f762a6d2244b5ade759",
-    "statut": "candidat_construit_ci_et_images_a_qualifier",
+    "statut": "publie_sur_main_avec_reserves_explicites",
     "version": "0.2.69",
     "physique": "p15",
     "ferro": "0.3.15",
     "circuits": 9,
-    "lots": [
-      {
-        "lot": "01",
-        "head": "d99d55cba227b0a70b6ceca0688f48324d8a7d69",
-        "pr": 41
-      },
-      {
-        "lot": "03",
-        "head": "e54b3cc5d48d7e9ff73e97677665cc3bf00f12f3",
-        "pr": 40
-      },
-      {
-        "lot": "04_S1",
-        "head": "6cbfa7e48d8b77ab1f7f7fe252bf4e2e693cacba",
-        "M1_exclu": true
-      }
-    ],
-    "build": {
-      "version": {
-        "version": "0.2.69",
-        "titre": "BITUME",
-        "moteur": "FERRO",
-        "empreinte": "e3429776d1ab5b75d79203defbf61abb9290f6ce4494f5627122f971ebe5900e"
-      },
+    "pr": 42,
+    "url": "https://github.com/M4D135/bitume/pull/42",
+    "branche": "codex/bitume-0269-publication-20261120",
+    "base_main": "fee69c521eccc0e64cc29f762a6d2244b5ade759",
+    "tete_qualifiee": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+    "arbre_qualifie": "18b147cb15a5900a1257686b211ddb7c9769b29d",
+    "commit_fusion": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
+    "arbre_main_recu": "18b147cb15a5900a1257686b211ddb7c9769b29d",
+    "main_relu_apres_fusion": true,
+    "arbre_main_identique_au_candidat": true,
+    "date_fusion_utc": "2026-11-20T19:52:30Z",
+    "html": {
+      "octets": 14472625,
+      "sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+      "git_blob": "9a5ebcb0a6914c40df65a6b606c7fe1cb44949e7",
+      "empreinte_sources": "e3429776d1ab5b75d79203defbf61abb9290f6ce4494f5627122f971ebe5900e",
+      "reconstruction_identique_deux_fois": true
+    },
+    "ci_pr": {
+      "schema": 1,
+      "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+      "ci_checkout": "40e8c62184134a1080f185846a97a8f50270d598",
+      "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
+      "archive_sha256": "72627b9ef4eb4b45b4dc9bdd646842d3d7c789b301d01a758776acc03818f65a",
+      "sources_fichiers": 3777,
+      "sources_octets": 138871550,
+      "sources_et_modes_identiques": true,
       "html_octets": 14472625,
-      "hashes": {
-        "dist/bitume.html": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
-        "VERSION.json": "adf1dc7d7653020b1ed3699628324fcb757524b08083eda80d05c505811b8432",
-        "SIZE.json": "082d429feab92d1c7736fe105137943dbce06a18c452a5de0ca7d1cb39db87f3"
+      "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+      "suites_node": 176,
+      "suites_echec": 0,
+      "tests_python": 8,
+      "troll_tests": 9,
+      "troll_oracles_negatifs": 6,
+      "troll_ignores": 0,
+      "run": 44803603591,
+      "job": 136521697469,
+      "conclusion": "success",
+      "artifact_id": 14662647273
+    },
+    "ci_push": {
+      "run": 44803588903,
+      "job": 136521651250,
+      "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+      "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
+      "conclusion": "failure",
+      "suites_reussies": 175,
+      "suites_echec": 1,
+      "tests_python": "non_executés_apres_echec_node",
+      "suite": "verifications/decor.test.mjs",
+      "mesure": "Val-Brûlé : construction du décor",
+      "mesure_ms": 172,
+      "seuil_ms": 150,
+      "condition": "strictement moins de 150 ms",
+      "cause_ecart": "non_isolée ; aucune cause matérielle ou de charge mesurée",
+      "comparaison": "La même suite passe dans la CI PR 44803603591 sur le même arbre exact.",
+      "statut_alerte": "ouverte",
+      "seuil_modifie": false,
+      "relance_pour_obtenir_vert": false,
+      "artifact_id": 14663042199,
+      "artifact_octets": 80816769,
+      "artifact_sha256": "830f376acc558f15b71bc26ad6c6ee6e2996b29708bd62f7bda8136dc151ee34",
+      "log_sha256": "9d7b69c225d260c5eafd60ae77c2b988eff689dae20db3c0a8f3ad860c6663e9",
+      "profil": "low_historique_sans_options",
+      "mesure_ms_arrondie": true,
+      "chauffe_ou_repetitions": false,
+      "portee": "Un appel synchrone D.construire(c), hors création du circuit et chargement des modules ; aucun rendu WebGL/GPU/FPS ni préparation complète de séance.",
+      "comparaison_pr": "Les trois constructions Val-Brûlé, Port-Sable et Haut-Col satisfont chacune ms < 150 ; durées individuelles non enregistrées."
+    },
+    "tous_les_runs_verts": false,
+    "decision_publication": "Fusion normale autorisée par GitHub après réussite de la CI PR sur l’arbre exact et vérification indépendante de tous les fichiers de son archive ; le résultat final du contrôle push parallèle est arrivé après la fusion et son dépassement de budget reste ouvert. Aucun seuil changé, aucune relance pour effacer ce résultat.",
+    "images": {
+      "ci": 44801007532,
+      "commit_images": "7999de565e2c643f7723462caf7683b570c75e8b",
+      "html_identique": true,
+      "groupes": 8,
+      "png_inspectes": 49,
+      "parcours_menu": 19,
+      "recu": "docs/reprise/PARALLELE-2026-11-20/preuves/00-assemblage-0269/RECEPTION.json"
+    },
+    "troll": {
+      "ci": 44795943660,
+      "html_identique": true,
+      "png_inspectes": 26,
+      "poses": 5080,
+      "recu": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
+      "relance": false
+    },
+    "correction_bancs": {
+      "fichiers_tests_et_fixture": 8,
+      "suites_corrigees": 7,
+      "controles_cibles_reussis": 90,
+      "runtime_modifie": false,
+      "preuve": "docs/reprise/PARALLELE-2026-11-20/preuves/00-assemblage-0269/ci-initiale/correction-bancs.json"
+    },
+    "branches_sources": {
+      "01": "224bae15d65f1b0c52866a1faf6b880e6a6ca0b3",
+      "03": "e54b3cc5d48d7e9ff73e97677665cc3bf00f12f3",
+      "04_S1": "6cbfa7e48d8b77ab1f7f7fe252bf4e2e693cacba",
+      "M1_exclu": true,
+      "parents_conserves": true,
+      "pr_40_41_fusionnees": true
+    },
+    "ferro_verrou_et_34_copies_identiques": true,
+    "reserves": {
+      "visibilite_cockpit": "Le volant occulte une partie centrale de la chaussée en caméra réelle du siège, surtout en paysage. Les tests de projection ne mesurent pas cette occultation ; suivi ouvert.",
+      "budget_decor": {
+        "statut": "ouvert",
+        "run": 44803588903,
+        "suite": "decor.test.mjs",
+        "mesure_ms_affichee": 172,
+        "seuil_strict_ms": 150,
+        "cause": "non déterminée",
+        "ci_pr_meme_arbre": "suite réussie, durées individuelles non enregistrées"
       },
-      "reconstruction_identique": true,
-      "ferro_lock": true
+      "lod": "Les quatre images LOD extérieures attestent une silhouette de 25–30 pixels ; les détails des bras ne sont pas inspectables.",
+      "reseau": "Préférences Troll négociées, événements geste/son distants non synchronisés et limitation affichée avant course.",
+      "materiel": "FPS Xbox/Intel, manettes physiques, écoute humaine et réseau entre machines non qualifiés."
     },
-    "tests_cibles": {
-      "integration_parallele": 19,
-      "son": 26,
-      "manette": 39,
-      "commandes_partage": 47,
-      "echecs": 0
+    "cloture_documentaire": {
+      "base_main": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
+      "runtime_inchange": true,
+      "nouvelle_campagne_declenchee": false,
+      "commit": "voir le commit qui ajoute ce reçu"
     },
-    "tests_delegues": {
-      "prets_enligne": 63,
-      "raccord_menu": 14,
-      "camera_paysage_portrait_duo": 2
-    },
-    "correctif_audio": "Reprise depuis menu purge les preecoutes ; une reprise repetee en course conserve les Troll actifs. Cinq voix bornees.",
-    "preferences_reseau": "Schema1 et remappage machine/place, snapshots et compatibilite ancien hote testes en simulation.",
-    "evenements_troll_distants": "non synchronises ; indication explicite a la preparation en ligne",
-    "captures_locales": {
-      "statut": "demarrage_chromium_bloque",
-      "raison": "socket() Operation not permitted ; aucune image du candidat validee localement",
-      "suite": "CI ciblee [capture-assemblage]"
-    },
-    "reserve_animation": "Inspection WebGL et naturel temporel du coude encore requis.",
-    "qualification_generale": "a_executer_sur_commit_exact",
-    "site_deploye": false
-  }
+    "site_deploye": false,
+    "push_force": false,
+    "date_commit_fusion_utc": "2026-11-20T19:52:29Z"
+  },
+  "suite_portee": "Suivi distinct des sources Monaco, conservé ; la prochaine action de coordination figure dans etat_courant."
 }

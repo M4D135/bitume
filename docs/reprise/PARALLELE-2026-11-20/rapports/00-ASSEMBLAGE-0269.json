@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "base_main": "fee69c521eccc0e64cc29f762a6d2244b5ade759",
-  "statut": "captures_assemblees_recues_bancs_anciens_corriges_ci_generale_a_reprendre",
+  "statut": "publie_sur_main_avec_reserves_explicites",
   "version": "0.2.69",
   "physique": "p15",
   "ferro": "0.3.15",
@@ -57,17 +57,62 @@
   "captures_locales": {
     "statut": "demarrage_chromium_bloque",
     "raison": "socket() Operation not permitted ; aucune image du candidat validee localement",
-    "suite": "CI ciblee [capture-assemblage]"
+    "suite": "Blocage local conservé comme historique ; captures du même HTML reçues et inspectées dans la CI 44801007532."
   },
   "reserve_animation": "T3 et 49 images assemblées inspectés ; limites locales détaillées dans les reçus. Lisibilité centrale du cockpit reste à suivre.",
   "qualification_generale": {
-    "statut": "echec_initial_7_bancs_anciens_correction_ciblee_en_cours",
-    "run_initial": 44801006792,
-    "job_initial": 136512831574,
-    "suites_reussies": 169,
-    "suites_echec": 7,
-    "preuves": "../preuves/00-assemblage-0269/ci-initiale/",
-    "runtime_inchange": true
+    "ci_pr": {
+      "schema": 1,
+      "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+      "ci_checkout": "40e8c62184134a1080f185846a97a8f50270d598",
+      "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
+      "archive_sha256": "72627b9ef4eb4b45b4dc9bdd646842d3d7c789b301d01a758776acc03818f65a",
+      "sources_fichiers": 3777,
+      "sources_octets": 138871550,
+      "sources_et_modes_identiques": true,
+      "html_octets": 14472625,
+      "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+      "suites_node": 176,
+      "suites_echec": 0,
+      "tests_python": 8,
+      "troll_tests": 9,
+      "troll_oracles_negatifs": 6,
+      "troll_ignores": 0,
+      "run": 44803603591,
+      "job": 136521697469,
+      "conclusion": "success",
+      "artifact_id": 14662647273
+    },
+    "ci_push": {
+      "run": 44803588903,
+      "job": 136521651250,
+      "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+      "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
+      "conclusion": "failure",
+      "suites_reussies": 175,
+      "suites_echec": 1,
+      "tests_python": "non_executés_apres_echec_node",
+      "suite": "verifications/decor.test.mjs",
+      "mesure": "Val-Brûlé : construction du décor",
+      "mesure_ms": 172,
+      "seuil_ms": 150,
+      "condition": "strictement moins de 150 ms",
+      "cause_ecart": "non_isolée ; aucune cause matérielle ou de charge mesurée",
+      "comparaison": "La même suite passe dans la CI PR 44803603591 sur le même arbre exact.",
+      "statut_alerte": "ouverte",
+      "seuil_modifie": false,
+      "relance_pour_obtenir_vert": false,
+      "artifact_id": 14663042199,
+      "artifact_octets": 80816769,
+      "artifact_sha256": "830f376acc558f15b71bc26ad6c6ee6e2996b29708bd62f7bda8136dc151ee34",
+      "log_sha256": "9d7b69c225d260c5eafd60ae77c2b988eff689dae20db3c0a8f3ad860c6663e9",
+      "profil": "low_historique_sans_options",
+      "mesure_ms_arrondie": true,
+      "chauffe_ou_repetitions": false,
+      "portee": "Un appel synchrone D.construire(c), hors création du circuit et chargement des modules ; aucun rendu WebGL/GPU/FPS ni préparation complète de séance.",
+      "comparaison_pr": "Les trois constructions Val-Brûlé, Port-Sable et Haut-Col satisfont chacune ms < 150 ; durées individuelles non enregistrées."
+    },
+    "tous_les_runs_verts": false
   },
   "site_deploye": false,
   "reconstruction_source": {
@@ -90,13 +135,10 @@
     "camera_paysage_portrait_duo": 2,
     "camera_paysage_portrait_duo_deja_comptes_dans_integration": true
   },
-  "controles_restants": [
-    "CI générale exacte après correction des sept bancs anciens",
-    "Vérification du main reçu après fusion"
-  ],
+  "controles_restants": [],
   "candidat_publication": {
-    "commit": "7999de565e2c643f7723462caf7683b570c75e8b",
-    "tree": "31059af44e77aac5b733c9e4b29e9b9efe25ee57",
+    "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+    "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
     "branche": "codex/bitume-0269-publication-20261120",
     "pr": "https://github.com/M4D135/bitume/pull/42"
   },
@@ -118,5 +160,30 @@
     "preuve": "../preuves/00-assemblage-0269/RECEPTION.json",
     "reserve": "Volant devant une partie centrale de chaussée en cockpit ; la projection de l’horizon ne mesure pas l’occultation. LOD distant : silhouette seulement, détails bras non inspectables."
   },
-  "correctifs_bancs": "Chargement des vrais modules menu/navigation ; DOM de frontière complété ; vitrine cachée intacte et conditions transmises au départ ; quatre roues du cockpit commun ; référence géométrique stricte actualisée après comparaison explicite."
+  "correctifs_bancs": "Chargement des vrais modules menu/navigation ; DOM de frontière complété ; vitrine cachée intacte et conditions transmises au départ ; quatre roues du cockpit commun ; référence géométrique stricte actualisée après comparaison explicite.",
+  "publication": {
+    "commit_fusion": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
+    "main_verifie": true,
+    "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
+    "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
+  },
+  "reserves": {
+    "visibilite_cockpit": "Le volant occulte une partie centrale de la chaussée en caméra réelle du siège, surtout en paysage. Les tests de projection ne mesurent pas cette occultation ; suivi ouvert.",
+    "budget_decor": {
+      "statut": "ouvert",
+      "run": 44803588903,
+      "suite": "decor.test.mjs",
+      "mesure_ms_affichee": 172,
+      "seuil_strict_ms": 150,
+      "cause": "non déterminée",
+      "ci_pr_meme_arbre": "suite réussie, durées individuelles non enregistrées"
+    },
+    "lod": "Les quatre images LOD extérieures attestent une silhouette de 25–30 pixels ; les détails des bras ne sont pas inspectables.",
+    "reseau": "Préférences Troll négociées, événements geste/son distants non synchronisés et limitation affichée avant course.",
+    "materiel": "FPS Xbox/Intel, manettes physiques, écoute humaine et réseau entre machines non qualifiés."
+  },
+  "prochains_travaux": [
+    "Lisibilité centrale du cockpit",
+    "Caractériser le dépassement isolé du budget de construction du décor"
+  ]
 }

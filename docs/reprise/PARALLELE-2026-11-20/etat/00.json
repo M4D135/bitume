@@ -2,14 +2,14 @@
   "schema": 1,
   "discussion": "00",
   "mission": "Integration",
-  "statut": "candidat_0269_assemble_qualification_ouverte",
+  "statut": "publie_sur_main_avec_reserves_explicites",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/00-INTEGRATION.md",
   "base_main": "fee69c521eccc0e64cc29f762a6d2244b5ade759",
   "branche_proposee": "codex/bitume-p00-integration-20261120",
-  "branche_reelle": "codex/bitume-p00-assemblage-20261120",
-  "head": "a8a6435c529fe326e9f26124f25ba0911d3b70fb",
-  "pr": null,
-  "sous_lot": "00C_assemblage_01_03_04S1",
+  "branche_reelle": "codex/bitume-0269-publication-20261120",
+  "head": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+  "pr": 42,
+  "sous_lot": "00C_publication_0269_close_avec_reserves",
   "preuves": [
     "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
     "docs/reprise/PARALLELE-2026-11-20/rapports/00-QUALIFICATION-DOCUMENTAIRE.json",
@@ -17,20 +17,28 @@
     "docs/reprise/PARALLELE-2026-11-20/rapports/02-P0-INVENTAIRE.md",
     "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-20261120.json",
     "docs/reprise/PARALLELE-2026-11-20/rapports/00-RECEPTION-05.json",
-    "docs/reprise/PARALLELE-2026-11-20/rapports/00-ASSEMBLAGE-0269.json"
+    "docs/reprise/PARALLELE-2026-11-20/rapports/00-ASSEMBLAGE-0269.json",
+    "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
+    "docs/reprise/PARALLELE-2026-11-20/rapports/03-QUALIFICATION.json",
+    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-VISUEL.json",
+    "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
+    "docs/reprise/PARALLELE-2026-11-20/preuves/00-assemblage-0269/RECEPTION.json",
+    "docs/reprise/PARALLELE-2026-11-20/preuves/00-assemblage-0269/ci-finale/RECEPTION-CI.json",
+    "docs/reprise/PARALLELE-2026-11-20/preuves/00-assemblage-0269/ci-finale/ALERTE-BUDGET-DECOR.json"
   ],
   "reserves": [
-    "01/03 recevables pour assemblage, pas pour fusion brute : raccords jeu.js et build commun necessaires.",
-    "04 S1 qualifie au niveau modules/captures ; assembler 6cbfa7e uniquement. M1 pierres exclu.",
-    "02 P0 deja integre ; aucune nouvelle version FERRO qualifiee.",
-    "Sources Monaco/Marseille completees ; mesures encore inconnues, circuits non jouables.",
-    "FPS Xbox/Intel, manettes/audio reels et reseau entre machines non qualifies."
+    "Le volant occulte une partie centrale de la chaussée en caméra réelle du siège, surtout en paysage. Les tests de projection ne mesurent pas cette occultation ; suivi ouvert.",
+    "Budget décor : 172 ms affichés pour un seuil strict < 150 ms dans le push parallèle ; PR verte sur le même arbre, cause non déterminée.",
+    "Les quatre images LOD extérieures attestent une silhouette de 25–30 pixels ; les détails des bras ne sont pas inspectables.",
+    "Préférences Troll négociées, événements geste/son distants non synchronisés et limitation affichée avant course.",
+    "FPS Xbox/Intel, manettes physiques, écoute humaine et réseau entre machines non qualifiés.",
+    "M1 exclu ; Monaco/Marseille sources uniquement."
   ],
-  "prochaine_action": "Publier le candidat avec marque capture-assemblage, verifier CI exacte et images, corriger puis fusionner sans force si qualifie.",
+  "prochaine_action": "Suivre la lisibilité cockpit et l’alerte budget décor ; prochaine intégration qualifiée indépendante.",
   "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
   "base_main_preparation": "d8f02cae45443ae6a1120dc93125d8adfae94422",
-  "base_tree": "409499e1631489b667f34bf83e37682cd18657ae",
-  "head_signification": "Dernier jalon qualifié et publié vérifié ; sa clôture documentaire est un descendant, HEAD actuel à lire sur la branche.",
+  "base_tree": "ecc470298dfb4e5d25966d6614ccecabc3a09006",
+  "head_signification": "Tête qualifiée de la PR 42 fusionnée ; le commit de fusion reçu figure dans publication. La clôture documentaire conserve le runtime.",
   "lots_integres": [
     {
       "discussion": "02",
@@ -52,45 +60,107 @@
       "ci_run": 44783388788,
       "ci_conclusion": "success",
       "commit_integration": "fee69c521eccc0e64cc29f762a6d2244b5ade759"
+    },
+    {
+      "discussion": "01",
+      "head": "224bae15d65f1b0c52866a1faf6b880e6a6ca0b3",
+      "statut": "publie_sur_main",
+      "commit_integration": "89aa13299221ebc8b5f0474ae5a662680dd6fe32"
+    },
+    {
+      "discussion": "03",
+      "head": "e54b3cc5d48d7e9ff73e97677665cc3bf00f12f3",
+      "statut": "publie_sur_main",
+      "commit_integration": "89aa13299221ebc8b5f0474ae5a662680dd6fe32"
+    },
+    {
+      "discussion": "04_S1",
+      "head": "6cbfa7e48d8b77ab1f7f7fe252bf4e2e693cacba",
+      "statut": "publie_sur_main",
+      "commit_integration": "89aa13299221ebc8b5f0474ae5a662680dd6fe32"
     }
   ],
-  "lots_prets_observes": [
-    "05_sources",
-    "01_modules_pilote_troll",
-    "03_menu",
-    "04_S1_saisons"
-  ],
-  "releve_utc": "2026-11-20 17:10:00 UTC",
-  "contrat_revision": 1,
+  "releve_utc": "2026-11-20 20:00:13 UTC",
+  "contrat_revision": 4,
   "contrats": "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
   "inventaire": "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
   "runtime_livre": {
-    "version": "0.2.68",
+    "version": "0.2.69",
     "physique": "p15",
     "ferro": "0.3.15",
     "circuits": 9,
-    "html_octets": 14383155,
-    "html_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
+    "html_octets": 14472625,
+    "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
     "modules_ferro_verifies": 34,
-    "recu": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json"
+    "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
   },
-  "runtime_modifie": false,
-  "nouveau_build": false,
+  "runtime_modifie": true,
+  "nouveau_build": true,
   "campagne_0268_relancee": false,
   "site_deploye": false,
   "livraisons_attendues": {
-    "01": "Habitacle commun : contacts bras/buste/coque, coude continu, trois niveaux de détail, raccord caméra ; Troll ensuite.",
-    "02": "Mesure parent/candidat reproductible, premier gain isolé ; SHA FERRO qualifié si moteur modifié.",
-    "03": "Écrans/focus/manette et vrai tracé 3D, arrêt des aperçus cachés, raccords jeu.js/construire.py.",
-    "04": "Matrice neuf circuits × quatre saisons, preuves Route-des-Cimes, invariants graines/climat/physique/budgets.",
-    "05": "Sources routières Monaco/Marseille avec provenance, niveaux/datum/incertitudes ; aucun nouveau circuit jouable."
+    "01": "Pilote/Troll publié ; T3 et vues assemblées reçus. Suivi distinct de la visibilité centrale en cockpit.",
+    "02": "Premier gain mesuré indépendant ; SHA canonique qualifié si FERRO change. Aucun gain ajouté à cette publication.",
+    "03": "Menu publié et 19 parcours du jeu commun reçus ; mesures matérielles encore non qualifiées.",
+    "04": "S1 publié ; contrôles communs Cimes/Port-Sable reçus. M1 reste séparé et non intégré.",
+    "05": "Sources/outils déjà reçus sur main ; inconnues géométriques explicites, aucun nouveau circuit jouable annoncé."
   },
-  "lots_runtime_prets_observes": [
-    "01_et_03_avec_raccords_00",
-    "04_S1_sans_M1"
-  ],
-  "relecture_consignee_utc": "2026-11-20 17:15:12 UTC",
+  "lots_runtime_prets_observes": [],
+  "relecture_consignee_utc": "2026-11-20 20:00:13 UTC",
   "checkpoints_observes": [
+    {
+      "discussion": "01",
+      "head": "224bae15d65f1b0c52866a1faf6b880e6a6ca0b3",
+      "sources_assemblees": "d99d55cba227b0a70b6ceca0688f48324d8a7d69",
+      "statut": "pilote_Troll_publies_0269_preuve_T3_reprise"
+    },
+    {
+      "discussion": "02",
+      "head": "0e42588fa03a10cf12444af81193dbc7458e601e",
+      "statut": "P0_documentaire_deja_publie_aucun_gain_moteur_ajoute"
+    },
+    {
+      "discussion": "03",
+      "head": "e54b3cc5d48d7e9ff73e97677665cc3bf00f12f3",
+      "statut": "menu_publie_0269"
+    },
+    {
+      "discussion": "04",
+      "head": "6cbfa7e48d8b77ab1f7f7fe252bf4e2e693cacba",
+      "statut": "S1_publie_0269_M1_exclu"
+    },
+    {
+      "discussion": "05",
+      "head": "fa290886089a650981c688ebaac893159912a62b",
+      "statut": "sources_outils_deja_publies_sur_main"
+    }
+  ],
+  "publication": {
+    "commit": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
+    "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
+    "main_verifie": true,
+    "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
+    "pr": 42
+  },
+  "candidat": {
+    "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+    "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
+    "statut": "publie",
+    "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
+  },
+  "dernier_head_publie_00A": "a8a6435c529fe326e9f26124f25ba0911d3b70fb",
+  "releve_initial_utc": "2026-11-20 17:10:00 UTC",
+  "runtime_modifie_sur_main": true,
+  "runtime_modifie_portee": "0.2.69 publié et vérifié ; clôture documentaire sans changement runtime.",
+  "publication_candidat": {
+    "pr": 42,
+    "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+    "main_fusionne": true,
+    "main_reception_verifiee": true
+  },
+  "publication_portee": "Publication runtime 0.2.69 reçue sur main ; historique 00A conservé séparément.",
+  "portes_restantes": [],
+  "checkpoints_historiques_171512": [
     {
       "discussion": "01",
       "head": "007970e5c8f2973ec3070462908fee48dbc0965d",
@@ -117,76 +187,22 @@
       "statut": "aucune_livraison_distante_observee"
     }
   ],
-  "publication": {
+  "publication_00A_historique": {
     "commit": "a8a6435c529fe326e9f26124f25ba0911d3b70fb",
     "tree": "d2a766837812905aa9ab421fd77d80c7625d25f2",
     "main_verifie": true,
     "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-20261120.json",
     "pr": null
   },
-  "candidat": {
-    "schema": 1,
-    "base_main": "fee69c521eccc0e64cc29f762a6d2244b5ade759",
-    "statut": "candidat_construit_ci_et_images_a_qualifier",
-    "version": "0.2.69",
-    "physique": "p15",
-    "ferro": "0.3.15",
-    "circuits": 9,
-    "lots": [
-      {
-        "lot": "01",
-        "head": "d99d55cba227b0a70b6ceca0688f48324d8a7d69",
-        "pr": 41
-      },
-      {
-        "lot": "03",
-        "head": "e54b3cc5d48d7e9ff73e97677665cc3bf00f12f3",
-        "pr": 40
-      },
-      {
-        "lot": "04_S1",
-        "head": "6cbfa7e48d8b77ab1f7f7fe252bf4e2e693cacba",
-        "M1_exclu": true
-      }
-    ],
-    "build": {
-      "version": {
-        "version": "0.2.69",
-        "titre": "BITUME",
-        "moteur": "FERRO",
-        "empreinte": "e3429776d1ab5b75d79203defbf61abb9290f6ce4494f5627122f971ebe5900e"
-      },
-      "html_octets": 14472625,
-      "hashes": {
-        "dist/bitume.html": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
-        "VERSION.json": "adf1dc7d7653020b1ed3699628324fcb757524b08083eda80d05c505811b8432",
-        "SIZE.json": "082d429feab92d1c7736fe105137943dbce06a18c452a5de0ca7d1cb39db87f3"
-      },
-      "reconstruction_identique": true,
-      "ferro_lock": true
-    },
-    "tests_cibles": {
-      "integration_parallele": 19,
-      "son": 26,
-      "manette": 39,
-      "commandes_partage": 47,
-      "echecs": 0
-    },
-    "tests_delegues": {
-      "prets_enligne": 63,
-      "raccord_menu": 14,
-      "camera_paysage_portrait_duo": 2
-    },
-    "correctif_audio": "Reprise depuis menu purge les preecoutes ; une reprise repetee en course conserve les Troll actifs. Cinq voix bornees.",
-    "preferences_reseau": "Schema1 et remappage machine/place, snapshots et compatibilite ancien hote testes en simulation.",
-    "evenements_troll_distants": "non synchronises ; indication explicite a la preparation en ligne",
-    "captures_locales": {
-      "statut": "demarrage_chromium_bloque",
-      "raison": "socket() Operation not permitted ; aucune image du candidat validee localement",
-      "suite": "CI ciblee [capture-assemblage]"
-    },
-    "reserve_animation": "Inspection WebGL et naturel temporel du coude encore requis.",
-    "qualification_generale": "a_executer_sur_commit_exact",
-    "site_deploye": false
-  }
+  "lots_prets_observes_historique": [
+    "05_sources",
+    "01_modules_pilote_troll",
+    "03_menu",
+    "04_S1_saisons"
+  ],
+  "lots_runtime_publies": [
+    "01_pilote_Troll",
+    "03_menu",
+    "04_S1_sans_M1"
+  ]
 }

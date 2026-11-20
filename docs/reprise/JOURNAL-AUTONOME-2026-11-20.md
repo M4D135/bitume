@@ -493,3 +493,102 @@ Les sources PR41 pilote/Troll, PR40 menu et le seul jalon saisonsS1 6cbfa7e sont
 Un défaut audio a été reproduit puis corrigé : les préécoutes encore actives occupaient les cinq voix au départ. La reprise depuis pause les purge ; les reprises répétées en course ne coupent pas les emotes. Les quatre suites ciblées réussissent (19 intégration,26 audio,39 manette,47 commandes partagées). Les suites de raccord/prêts et les contrôles caméra sont aussi conservés.
 
 La construction0.2.69 est identique deux fois, verrou FERRO conforme. Les tentatives de captures locales échouent avant démarrage du jeu à cause du refus système de socket Chromium ; aucune image locale n'est acceptée. Le workflow d'assemblage cible le commit/HTML exact et garde l'inspection visuelle ouverte. Aucun nouveau gain moteur, mesure matérielle ou déploiement n'est annoncé.
+## 031 — candidat 0.2.69 publié sur branche, qualification commune en cours
+
+L'arbre complet `dfd28246470fc8a1d58c800dace8409fc24d1c74` du candidat local
+`11dd51e` a été récupéré sur GitHub. Le commit local lui-même n'avait pas été
+publié. Les sources, les raccords et les fichiers de build ont été conservés ;
+les preuves/outils T3 de `224bae1` et l'exécution sur l'HTML réel dans la CI générale
+complètent le candidat. Publication sur la branche `codex/bitume-0269-publication-20261120` :
+`7999de565e2c643f7723462caf7683b570c75e8b`,
+arbre `31059af44e77aac5b733c9e4b29e9b9efe25ee57`,
+base main `fee69c521eccc0e64cc29f762a6d2244b5ade759`,
+[PR #42](https://github.com/M4D135/bitume/pull/42).
+
+L'HTML reste exactement celui de T3 : **0.2.69 / p15 / FERRO 0.3.15 / neuf circuits**,
+14 472 625 octets, SHA256
+`bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10`.
+Les quatre sources saisons sont identiques au jalon S1 `6cbfa7e` ; les pierres
+M1 sont exclues. Le verrou et ses 34 modules sont identiques à main.
+Les autres lots, les sources 05 déjà reçues et les états propriétaires restent conservés.
+
+[T3 44795943660](https://github.com/M4D135/bitume/actions/runs/44795943660) est clos
+sur cet HTML : 5 080 poses et 26 PNG inspectés. Le reçu est repris sans relancer
+la campagne. Les contrôles ciblés prêts en ligne 63/63 et intégration 19/19
+passent ; les deux contrôles caméra figurent dans ces 19 et ne s'ajoutent pas au total.
+Les contrats reflètent les cinq voix fixes et la correction audio déjà assemblée.
+
+Au relevé du 20 novembre à 19:20:31 UTC, la
+[CI générale 44801006792](https://github.com/M4D135/bitume/actions/runs/44801006792)
+est en cours et les
+[images assemblées 44801007532](https://github.com/M4D135/bitume/actions/runs/44801007532)
+sont en file d'attente, sur ce même commit. Restent la fin des contrôles,
+l'inspection des parcours/images, puis la fusion et la vérification de la réception
+sur main. Les anciennes campagnes closes ne sont pas relancées.
+
+**Main livré reste 0.2.68.** Ce jalon publie un candidat sur branche, pas un runtime
+qualifié sur main. Les événements Troll distants ne sont pas synchronisés ; les
+limites d'écoute audio, de manettes physiques, de réseau réel et de performances
+matérielles sont conservées. Aucun déploiement du site.
+
+Complément d'inspection de 031 : à 960×540 et 540×960, depuis la caméra réelle
+du siège, le volant occulte une partie centrale de la chaussée. L'audit
+géométrique situe l'œil à 0,790 m et le haut de jante à 0,813807 m. Les tests
+dits « route visible » contrôlent la projection de l'horizon et n'évaluent pas
+l'occultation. Aucune nouvelle régression d'assemblage n'est établie ; géométrie
+commune et T3 restent acquis. Le suivi de lisibilité cockpit reste ouvert,
+sans certification d'une chaussée dégagée ni nouveau blocage des entrées Troll.
+
+Les quatre PNG LOD extérieurs présentent une coque d'environ 25–30 pixels :
+silhouette validée, détails des bras non lisibles. Les reçus d'inspection
+précisent cette portée ; ces vues ne certifient pas les contacts fins des bras.
+
+
+## 032 — Réception des images assemblées et réconciliation des bancs
+
+La campagne `44801007532` réussit ses huit groupes : **49 PNG originaux inspectés**,
+dont 14 images et 19 parcours du menu. Réserve cockpit conservée ; vues LOD
+lointaines limitées à la silhouette. L'HTML reste `bd1e5c2e…`, identique à T3.
+
+La CI générale initiale `44801006792` donne 169 suites réussies et sept échecs.
+Les bancs anciens ne chargeaient pas toutes les dépendances menu/Troll ; une
+attente météo concernait encore la vitrine cachée, et les références géométriques
+précédaient le pilote commun. Le correctif `7a8a53e` est poussé sur PR42 : huit
+fichiers de tests/fixture, 90 contrôles ciblés réussis, aucune modification du
+runtime/build/verrou. Comparaison stricte de 134 groupes dans deux configurations,
+tolérance 1e-9 et entrelacements conservés. Les roues gardent formes et cotes.
+
+Les diagnostics initiaux, dont un démarrage Chromium sans port DevTools dans
+la campagne démos/volant, sont conservés avec les reçus et images.
+CI générales du correctif : `44803588903` (push), `44803603591` (PR).
+La fusion attend leur résultat ; main livré reste 0.2.68.
+
+
+## 033 — Publication 0.2.69 sur main, réserves conservées
+
+La PR 42 est fusionnée normalement le 20 novembre à 19:52:30 UTC :
+`89aa13299221ebc8b5f0474ae5a662680dd6fe32`, arbre `18b147cb15a5900a1257686b211ddb7c9769b29d`.
+La tête et VERSION.json ont été relues après fusion. L’arbre reçu est identique
+au candidat `7a8a53e` et au merge technique `40e8c621` testé par la CI PR. Les PR
+40 et 41 sont fusionnées par ascendance ; leurs branches sont conservées.
+
+CI PR 44803603591 réussie : **176 suites Node, 8 tests Python**. L’archive ZIP
+contient 80 816 454 octets, SHA256 `72627b9e…` ; comparaison indépendante des
+**3 777 fichiers et modes** (138 871 550 octets) sans écart. HTML 0.2.69 :
+**14 472 625 octets**, SHA256 `bd1e5c2e…` ; p15, FERRO 0.3.15 et neuf circuits.
+49 PNG assemblés inspectés et 26 PNG T3 réutilisés.
+
+Le push parallèle 44803588903 finit à 19:53:04 UTC avec **175 suites réussies**
+et **un échec de budget décor** : Val-Brûlé, **172 ms affichés**, seuil strict
+**< 150 ms**. Python n’a pas été exécuté dans ce run après l’échec Node.
+La même suite passe dans la PR sur l’arbre identique ; sa durée exacte n’est
+pas enregistrée. Cause de l’écart non déterminée : aucun seuil changé, aucune
+relance pour obtenir un résultat vert. Ce résultat tardif est conservé dans le
+reçu de publication et dans le suivi actif.
+
+La visibilité centrale en cockpit et le budget de construction du décor restent
+ouverts. Les limites LOD, réseau, audio, manettes et FPS matériels sont explicites.
+Les documents de clôture conservent ces réserves sans changer le runtime publié.
+Aucun déploiement du site.
+
+Reçu : `docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json`.

@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+  "ci_checkout": "40e8c62184134a1080f185846a97a8f50270d598",
+  "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
+  "archive_sha256": "72627b9ef4eb4b45b4dc9bdd646842d3d7c789b301d01a758776acc03818f65a",
+  "sources_fichiers": 3777,
+  "sources_octets": 138871550,
+  "sources_et_modes_identiques": true,
+  "html_octets": 14472625,
+  "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+  "suites_node": 176,
+  "suites_echec": 0,
+  "tests_python": 8,
+  "troll_tests": 9,
+  "troll_oracles_negatifs": 6,
+  "troll_ignores": 0
+}
