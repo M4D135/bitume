@@ -340,3 +340,12 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
   raccordés à la voie et aux emplacements de service existants. Conserver les dégagements des voitures.
 - Ces priorités passent avant les nouveaux circuits. Le décor Baïkal et la base des tracés explicites
   déjà préparés sont conservés, puis le programme complet continue sans attendre un nouveau « go ».
+
+## Décisions de David — 20 novembre 2026, habitacle, assise et eau
+
+- Consolider et pousser le travail sur **main** avant d’ajouter le plan ; conserver les préparations et leur provenance. Point de départ : `docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md`.
+- La voiture et son habitacle doivent être identiques en vue intérieure et extérieure : mêmes dimensions, pièces, commandes et ancrages dans le monde. Seules caméra/projection et simplifications de détail cohérentes changent. Cette décision remplace les anciennes coques et transformations propres au cadrage intérieur.
+- Le pilote doit être assis plus bas et davantage enfoncé dans la cuve, avec une seule assise et la même pose pour les deux vues. Mesurer siège/bassin, épaules, casque et yeux ; conserver la prise des commandes et les dégagements.
+- Les bras ne doivent plus traverser le buste. Vérifier la silhouette, les épaules, les coudes et les manches sur les surfaces réellement affichées, pendant les gestes et aux trois niveaux de détail. MotionBricks et CMU mocap GLB sont les références fournies pour étudier corps et mouvements ; leur usage/provenance est décrit dans la fiche.
+- En cockpit et en poursuite, la vitesse doit écarter et évacuer les gouttes ; elles ne doivent pas conserver une descente verticale dominante à grande vitesse. Le flux dépend du mouvement et du repère caméra ; gravité à basse vitesse, trajectoires et couches optiques cohérentes. Fiche `docs/reprise/EAU-VITESSE-2026-11-20.md`.
+- Un seul petit lot actif selon `REPRISE.md` : les fiches décrivent E0–E3 pour l’eau et H0–H2/B0–B5 pour l’habitacle/pilote. Le plan publié ne vaut pas correction ni validation de ces défauts.

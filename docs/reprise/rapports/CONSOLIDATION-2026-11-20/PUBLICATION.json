@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "statut": "consolidation_publiee_verifiee",
+  "branche": "main",
+  "commit": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
+  "arbre": "4e9d600ebd8b5d60ae533941e87a21e16cc1e952",
+  "ancien_main": "fd92eec1058f61e6191cc5ce090f5fbbd366e8e9",
+  "verification": {
+    "reference_main_relue": true,
+    "arbre_distant_identique_au_local": true,
+    "parents_ordonnes_verifies": 16,
+    "tetes_historiques_parents_directs": 15,
+    "references_avant_publication_identiques_au_manifeste": 50,
+    "references_secondaires_deja_ancetres_ancien_main": 34,
+    "manifeste": "docs/reprise/preparations/MANIFESTE.json",
+    "methode_ascendance": "15 têtes parents directs du commit vérifié ; 34 références secondaires déjà contenues dans son premier parent selon le manifeste ; main initial = premier parent."
+  },
+  "pr37": {
+    "numero": 37,
+    "statut": "closed",
+    "merged": true,
+    "tete": "e12420c7db914fa82d420cbbde75d763dea78668",
+    "commit_fusion": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
+    "recu_reconciliation": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/RECONCILIATION-PR37-0266.json"
+  },
+  "validation_preparations": {
+    "patches_exactement_reappliques": 10,
+    "notices": 15,
+    "recu": "docs/reprise/rapports/CONSOLIDATION-2026-11-20/PREPARATIONS-VALIDEES.json"
+  },
+  "validation_controles_demo": {
+    "tests_cibles": "8/8",
+    "rapports_existants": "16/16",
+    "empreintes_png": "48/48",
+    "nouveaux_rendus": 0
+  },
+  "runtime": {
+    "version": "0.2.66",
+    "physique": "p15",
+    "ferro": "0.3.15",
+    "sources_inchangees": true,
+    "html_octets": 14370823,
+    "html_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b"
+  },
+  "limites": {
+    "preparations_non_activees": true,
+    "branches_historiques_conservees": true,
+    "suppression_de_branche": false,
+    "campagne_generale_reexecutee": false,
+    "site_deploye": false,
+    "defauts_visuels_corriges": false
+  },
+  "suite": {
+    "fiche": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
+    "publication_plan_apres_consolidation": true,
+    "premier_lot": "E0_trajectoires_eau_par_couche_et_camera",
+    "premiere_publication_plans": "72f92e2c761dc0ead696033e6be06cb9df891695",
+    "habitacle_prepare": "H0_B0"
+  }
+}

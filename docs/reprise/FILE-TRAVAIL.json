@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "date": "2026-11-20",
-  "base": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8",
+  "base": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_livre": {
     "version": "0.2.66",
     "physique": "p15",
@@ -9,7 +9,7 @@
     "circuits": 9
   },
   "destinations_prevues": 17,
-  "lot_actif": "meteo",
+  "lot_actif": "eau_vitesse",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [
@@ -34,6 +34,32 @@
       ]
     },
     {
+      "id": "habitacle_pilote_commun",
+      "objectif": "Même habitacle monde entre vues, assise plus basse et bras dégagés du buste",
+      "etat": "planned",
+      "phase": "plan_publie_diagnostic_de_lecture",
+      "dependances": [
+        "references"
+      ],
+      "fiche": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
+      "prochain_sous_lot": "H0_B0",
+      "cloture": "Identité géométrique monde sans homothétie par vue ; assise commune mesurée ; dégagements bras/buste/coque et contacts ; gestes et LOD ; images exactes et coût qualifiés",
+      "preuves": []
+    },
+    {
+      "id": "eau_vitesse",
+      "objectif": "Écarter et évacuer les gouttes selon vitesse, flux et orientation caméra",
+      "etat": "planned",
+      "phase": "plan_publie_diagnostic_de_lecture",
+      "dependances": [
+        "references"
+      ],
+      "fiche": "docs/reprise/EAU-VITESSE-2026-11-20.md",
+      "prochain_sous_lot": "E0",
+      "cloture": "Trajectoires signées et couches optiques cohérentes en cockpit/poursuite ; gravité lente et souffle rapide ; pause/J1J2/abris/aérien préservés ; séquences visuelles et coût qualifiés",
+      "preuves": []
+    },
+    {
       "id": "demos_pilotes",
       "objectif": "Caméras, sols, volant et pilote expressif",
       "etat": "in_progress",
@@ -49,7 +75,7 @@
         "pr": 38,
         "commit_fusion": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8"
       },
-      "reste": "Bandeaux masquant certains gestes/animaux ; conserver la réalisation qualifiée."
+      "reste": "Habitacle unique, assise plus basse et bras/buste dans le lot prioritaire habitacle_pilote_commun ; bandeaux masquant certains gestes/animaux encore ouverts."
     },
     {
       "id": "meteo",
@@ -67,7 +93,7 @@
         "pr": 38,
         "commit_fusion": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8"
       },
-      "reste": "Pluie extérieure visible depuis un abri, neige et rendu encore à enrichir ; prototype sauvegardé non intégré."
+      "reste": "Gouttes selon vitesse/flux dans eau_vitesse ; pluie extérieure depuis abri, neige et rendu à enrichir ; prototype abri sauvegardé non intégré."
     },
     {
       "id": "couverts",
@@ -362,5 +388,10 @@
     "manettes et audio physiques",
     "liaison entre réseaux réels",
     "Monaco : chaussée largeurs dévers non qualifiés"
+  ],
+  "plan_correctifs_visuels": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
+  "ordre_courant": [
+    "eau_vitesse",
+    "habitacle_pilote_commun"
   ]
 }

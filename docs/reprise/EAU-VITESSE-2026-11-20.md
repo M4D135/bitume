@@ -1,7 +1,7 @@
 # Eau, vitesse et orientation des gouttes — plan E0 à E3
 
 Demande du 20 novembre 2026 : en **cockpit et poursuite**, l’écoulement dépend de la vitesse et du flux d’air. **À l’arrêt, les gouttes peuvent descendre ; en roulant, elles doivent s’écarter et être évacuées visiblement.** Vérifier la direction et la trajectoire dans chaque vue, en plus de la quantité réellement évacuée. Une disparition par séchage ne remplace pas une sortie visible par le bord.
-Base consolidée vérifiée : `main` à `9f2246df61c6503ea8fa0f71a28813b15b17f51c`, BITUME **0.2.66**, physique **p15**, FERRO **0.3.15**. Cette fiche est prête à publier ; elle ne modifie pas le runtime et ne constitue pas une qualification du correctif.
+Base consolidée vérifiée : `main` à `9f2246df61c6503ea8fa0f71a28813b15b17f51c`, BITUME **0.2.66**, physique **p15**, FERRO **0.3.15**. Cette fiche est publiée ; elle ne modifie pas le runtime et ne constitue pas une qualification du correctif.
 
 ## Diagnostic confirmé dans le code
 
@@ -58,6 +58,15 @@ Répéter les trajectoires identifiées en cockpit et en poursuite, avec la cam�
 
 ## Reprise et publication
 
-Publier ce plan avec le [plan habitacle/pilote](PILOTE-HABITACLE-COMMUN-2026-11-20.md), puis commencer E0 et E1. Chaque lot conserve son échec initial et son reçu de correction, avec commit source, empreinte du build et prochaines actions. Mettre à jour la reprise courte à chaque publication. Les contrôles de direction/trajectoire et les images du candidat exact conditionnent la clôture E3.
+Ce plan et le [plan habitacle/pilote](PILOTE-HABITACLE-COMMUN-2026-11-20.md) sont publiés après la consolidation. Prochain lot actif : E0, puis E1. Chaque lot conserve son échec initial et son reçu de correction, avec commit source, empreinte du build et prochaines actions. Mettre à jour la reprise courte à chaque publication. Les contrôles de direction/trajectoire et les images du candidat exact conditionnent la clôture E3.
 
 Le prototype pluie extérieure sous abri reste une préparation distincte ; la correction de transport des gouttes collées ne permet pas de le déclarer intégré. Le chantier habitacle H0/B0 reste ouvert, avec assise commune plus basse et contrôle bras/buste. Les autres lots sont conservés dans `FILE-TRAVAIL.json`.
+
+
+## Sources de code et reprise
+
+Lecture primaire : [jeu.js](https://github.com/M4D135/bitume/blob/9f2246df61c6503ea8fa0f71a28813b15b17f51c/src/jeu.js), [vitre.js](https://github.com/M4D135/bitume/blob/9f2246df61c6503ea8fa0f71a28813b15b17f51c/src/vitre.js), [visiere-optique.js](https://github.com/M4D135/bitume/blob/9f2246df61c6503ea8fa0f71a28813b15b17f51c/src/visiere-optique.js), [meteo.js](https://github.com/M4D135/bitume/blob/9f2246df61c6503ea8fa0f71a28813b15b17f51c/src/meteo.js). Tests à faire évoluer : `vitre.test.mjs`, `vitre-meteo.test.mjs`, `vitre-cadence.test.mjs`, `vitre-integration.test.mjs`, `visiere-optique.test.mjs` et les captures météo/démos pertinentes.
+
+Après chaque lot : commit borné, preuves attribuées à la version exacte, échec initial conservé, journal et reprise courte mis à jour. Le travail reste dans le code du jeu ; une éventuelle évolution de FERRO doit passer par sa référence canonique. Aucun gain FPS ne sera déduit des seuls tests CPU.
+
+L’ordre avec le correctif d’habitacle et les autres travaux est fixé dans l’[index du plan](PLAN-CORRECTIFS-VISUELS-2026-11-20.md). Le prototype pluie sous abri conserve son état non qualifié et sa provenance dans [les préparations](preparations/pluie-abris/README.md).

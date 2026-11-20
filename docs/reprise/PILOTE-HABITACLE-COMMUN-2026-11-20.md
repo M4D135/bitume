@@ -199,6 +199,9 @@ Le diagnostic géométrique doit enregistrer les poses les plus défavorables et
 
 ## Reprise et articulation avec le programme complet
 
-**Prochains lots du pilote : H0 et B0**, inventaire métrique commun, reproduction du défaut et régression bras/buste. Publier cette fiche avant leur implémentation. Chaque lot donne lieu à un commit borné, un reçu court et une mise à jour de `REPRISE.md`, `ETAT.json` et du journal ; les sorties détaillées restent dans leurs artefacts.
+**Prochains lots du pilote : H0 et B0**, inventaire métrique commun, reproduction du défaut et régression bras/buste. Cette fiche est publiée avant leur implémentation. Chaque lot donne lieu à un commit borné, un reçu court et une mise à jour de `REPRISE.md`, `ETAT.json` et du journal ; les sorties détaillées restent dans leurs artefacts.
 
 Les autres travaux restent dans [FILE-TRAVAIL.json](FILE-TRAVAIL.json) : pluie visible depuis les abris, composition des démos, finitions Cimes, Monaco, Marseille et programme des 17 destinations. Le prototype pluie et les études historiques sont conservés par la consolidation, avec leurs réserves propres. Le dégagement du pilote et l’identité de l’habitacle restent des corrections prioritaires. La demande sur les gouttes dispose d’une fiche indépendante [E0 à E3](EAU-VITESSE-2026-11-20.md) ; son exécution ne clôt pas le présent chantier.
+
+
+Point d’entrée commun : [plan des correctifs visuels](PLAN-CORRECTIFS-VISUELS-2026-11-20.md). La première publication de cette fiche est `72f92e2c761dc0ead696033e6be06cb9df891695` ; cette réconciliation conserve son contenu et le contrat d’assise commune plus basse.

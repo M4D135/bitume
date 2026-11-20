@@ -191,3 +191,45 @@ Les petites perles, nappes, grosses gouttes et traces sont toutes concernées.
 Ces deux fiches sont prêtes à publier avant l’implémentation. Prochain lot météo :
 E0/E1 ; chantier habitacle toujours ouvert H0/B0. Cette préparation documentaire
 ne relance ni campagne ni capture, ne modifie aucun runtime et ne clôt aucun défaut.
+
+## 016 — plans réconciliés, point d’entrée et reçus publiés
+
+Main a avancé pendant la préparation documentaire : `72f92e2c` a publié les deux
+fiches et le contrat d’écoulement mesurable. La réconciliation conserve ce travail,
+son ordre E0/E1 et son journal 015 ; elle garde un seul nom canonique pour le pilote,
+`PILOTE-HABITACLE-COMMUN-2026-11-20.md`. Elle ajoute l’index des quatre demandes,
+les consignes et FILE-TRAVAIL, les sources de code de l’eau et le reçu de consolidation.
+Le garde de publication sur SHA attendu a détecté cette avance ; aucun push forcé.
+
+
+Main distant relu : `9f2246df61c6503ea8fa0f71a28813b15b17f51c`, arbre `4e9d600e`,
+identique au local. Les 16 parents ordonnés sont vérifiés : main précédent et les
+15 têtes historiques. Les 50 références/SHA avant publication étaient exactement
+ceux du manifeste ; les 34 autres secondaires étaient déjà contenues. PR #37 marquée
+closed/merged avec ce commit. Les anciennes branches restent des références d’archive ;
+main est la branche de travail. Les prototypes ne sont pas activés par cette fusion.
+
+Après ce push, ajout de `PLAN-CORRECTIFS-VISUELS-2026-11-20.md` et des deux fiches
+complètes habitacle/pilote et eau/vitesse. Quatre demandes enregistrées : même cockpit
+entre vues, pilote plus bas/enfoncé, bras hors buste, gouttes écartées par la vitesse.
+Lecture confirmée : coque/échelles propres aux vues et test d’équivalence après
+transformation ; absence de contrôle bras/buste ; transport des dépôts sans vecteur
+caméra, descente renforcée par la vitesse et tests anciens imposant encore cette descente.
+L’attribution visuelle précise et les mesures restent à faire ; aucune correction
+runtime annoncée. MotionBricks et CMU sont documentés, sans importer de modèle/clip.
+
+Le point courant reprend E0/E1 pour l’eau, selon la première publication des fiches ;
+H0/B0 habitacle reste ouvert avec assise commune, silhouette/IK/gestes et qualification. FILE-TRAVAIL garde les autres travaux et les
+17 destinations. Les preuves 159/159, 113 images, quatre échecs 0.2.65 et deux images
+aériennes refusées conservent leur attribution. Plan/documentation seulement après
+la consolidation : aucun build, test ou rendu supplémentaire n’est nécessaire ici.
+
+Note de reprise Git : la publication utilise les objets GitHub avec arbre local
+strictement égal et déplacement de main sans force sous SHA attendu. L’ancien dépôt
+local reconstruit possède des trous d’objets historiques : deux fetchs ont échoué
+(deltas puis ancien parent absent). Les objets du main distant ont néanmoins été
+reçus ; leur commit, arbre et 16 parents ont été contrôlés avant d’aligner la référence
+locale et main sans changer les fichiers. Ne pas confondre ce défaut de récupération
+locale avec un échec du push ou des validations du jeu.
+
+Le checkout local est borné en shallow au commit de consolidation 9f2246df pour représenter les objets historiques absents ; les 16 parents du vrai commit distant restent intacts. Les arbres et blobs reçus du commit documentaire concurrent sont vérifiés par leurs SHA avant réconciliation.
