@@ -33,3 +33,11 @@ Les deux lots sont réunis et le build de 14 316 546 octets est reproductible.
 initial Val-Brûlé à 165 ms reste déclaré, seuil 150 ms inchangé. FERRO : 34 modules exacts.
 Les 11 rendus natifs de météo correspondent à la source intégrée. CI/captures à suivre.
 Reçu : `rapports/DEMOS-PILOTES-METEO-2026-11-20/QUALIFICATION-0263.json`.
+
+## 004 — retour geste/rapport et candidat 0.2.64
+
+Checkpoint 0.2.63 sauvegardé : `0c438413a111113801c568e9fb5b331c759848ac`, arbre exact.
+La revue du vrai rig a trouvé un saut de poignet à l’interruption d’un geste.
+Retour amorti puis trajet du levier sont maintenant partagés entre les vues, sans changer
+la boîte physique. 810 poses sans traversée et 21 tests ciblés réussis. Le build 0.2.64
+est reproductible. CI complète et captures intégrées à contrôler avant fusion.

@@ -2294,13 +2294,13 @@
   // plus (onze rivaux, quatre humains) ; au-delà, les tableaux grandissent.
   const nouvellePose = () => ({ p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0, roule: 0, rebond: null, v: 0, etatPneus: null,
     pilote: { volant: 0, rapport: 1, rapportAvant: 1, passage: 1, alat: 0, along: 0, v: 0, t: 0,
-      regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0 } });
+      regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0, passageVisuel: null } });
   const nouvellesOptions = () => ({ detail: 'complet', roues: undefined, casse: false, plafond: 'complet', rouesDetail: 0 });
   const POSES_RENDU = Array.from({ length: 16 }, nouvellePose), OPTIONS_POSE = Array.from({ length: 16 }, nouvellesOptions);
   const POSE_FANTOME = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0 };
   const ETAT_COCKPIT = { regime: 0, volant: 0, rapport: 0, kmh: 0, roues: undefined, casse: false, passage: 1, rapportAvant: undefined,
     derriere: null, ciel: null, brume: null, glaceVive: false, rouesDetail: 0,
-    regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0 };
+    regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0, passageVisuel: null };
   const SUIVEURS = [], RESERVE_SUIVEURS = Array.from({ length: 16 }, () => ({ x: 0, z: 0, couleur: null })), AUCUN_SUIVEUR = Object.freeze([]);
   const SOLEILS = [{ center: [0, 0, 0], extent: 0, depth: 0 }, { center: [0, 0, 0], extent: 0, depth: 0 }];
   const LAMPES_PORTIQUE = [], FEU_ALLUME = [1, .14, .06], FEU_ETEINT = [.1, .03, .03], TAILLE_FEU = [.56, .05, .56];
@@ -2608,6 +2608,7 @@
         etc.passage = pilote.passage; etc.rapportAvant = pilote.rapportAvant;
         etc.regard = pilote.regard; etc.geste = pilote.geste; etc.gestePhase = pilote.gestePhase;
         etc.gesteCote = pilote.gesteCote; etc.gesteIntensite = pilote.gesteIntensite;
+        etc.passageVisuel = pilote.passageVisuel;
         // les rivaux de la glace peinte ne servent que sans image réelle des glaces
         etc.derriere = glaceVive ? AUCUN_SUIVEUR : suiveurs(co, poses, k, p);
         etc.ciel = atm.skyBottom; etc.brume = atm.fog; etc.glaceVive = glaceVive;

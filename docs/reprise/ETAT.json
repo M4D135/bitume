@@ -1,7 +1,7 @@
 {
   "date": "2026-11-20",
   "etat_courant": {
-    "version_courante": "0.2.63",
+    "version_courante": "0.2.64",
     "version_publiee_verifiee": "0.2.62",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
@@ -9,7 +9,7 @@
     "lot": "demos_pilotes_meteo",
     "fiche": "docs/reprise/DEMOS-PILOTES-METEO-2026-11-20.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "003",
+    "derniere_entree": "004",
     "prochaine_action": "Publier le candidat, contrôler CI et captures intégrées avant fusion.",
     "dernier_lot_clos": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md"
   },
@@ -269,5 +269,12 @@
     "build_sha256": "05d5ed2af9dc800491b2afe9ff5928641a463b15e2ccdd0420660696e4c946ee",
     "build_reproduit_identique": true,
     "recu": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/QUALIFICATION-0263.json"
+  },
+  "candidat_0264": {
+    "version": "0.2.64",
+    "build_octets": 14317789,
+    "build_sha256": "98848efea4b0969805008ba37cba7cab67b11434a9d960173ba77b157fcf8ef7",
+    "build_reproduit_identique": true,
+    "recu": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/QUALIFICATION-0264.json"
   }
 }

@@ -1502,7 +1502,7 @@
     if (!H.piloteReel) { H.piloteReel = true; H.pret = false; }
     let volant = Number.isFinite(etat.volant) ? etat.volant : 0;
     volant = volant < -1 ? -1 : volant > 1 ? 1 : volant;
-    let t = Number.isFinite(etat.passage) ? etat.passage : 1;
+    let t = Number.isFinite(etat.passageVisuel) ? etat.passageVisuel : Number.isFinite(etat.passage) ? etat.passage : 1;
     t = t < 0 ? 0 : t > 1 ? 1 : t;
     const nB = Number.isFinite(etat.rapport) ? Math.max(-1, Math.min(6, Math.trunc(etat.rapport))) : 0;
     const nA = Number.isFinite(etat.rapportAvant) ? Math.max(-1, Math.min(6, Math.trunc(etat.rapportAvant))) : nB;
@@ -1670,7 +1670,9 @@
   const U = new Float64Array(3), RD = new Float64Array(3), EX = new Float64Array(3), HT = new Float64Array(3), GC = new Float64Array(3), ANGLE = new Float64Array(1),
     BOUT = new Float64Array(3), ICI = new Float64Array(3), AV = new Float64Array(3), P1 = new Float64Array(3), P2 = new Float64Array(3), CLE = new Float64Array(10);
   function cleExpressions(etat, reel) {
-    const geste = reel && CLE[1] === 1 ? etat.geste : null;
+    // L'état d'expression porte déjà le retour amorti lorsqu'un rapport change. Le couper ici
+    // téléportait le poignet levé de presque 30 cm ; les deux mains doivent consommer cette enveloppe.
+    const geste = reel ? etat.geste : null;
     CLE[6] = geste === 'majeur' ? 1 : geste === 'poing' ? 2 : geste === 'salut' ? 3 : 0;
     CLE[7] = etat.gesteCote === -1 ? -1 : 1;
     CLE[8] = CLE[6] && Number.isFinite(etat.gesteIntensite) ? Math.max(0, Math.min(1, etat.gesteIntensite)) : 0;
@@ -1882,7 +1884,9 @@
     }
     // Volant, levier et mains : recalculés seulement quand braquage, passage ou rapports changent
     let x = etat.volant || 0; x = x < -1 ? -1 : x > 1 ? 1 : x;
-    let t = etat.passage === undefined ? 1 : etat.passage; t = t < 0 ? 0 : t > 1 ? 1 : t;
+    const expression = ev.pilote || etat;
+    let t = H.piloteReel && Number.isFinite(expression.passageVisuel) ? expression.passageVisuel : etat.passage === undefined ? 1 : etat.passage;
+    t = t < 0 ? 0 : t > 1 ? 1 : t;
     const nA = etat.rapportAvant === undefined ? etat.rapport : etat.rapportAvant, nB = etat.rapport, cle = H.cle;
     CLE[0] = x * VOLANT.course; CLE[1] = t;
     CLE[2] = nA > 0 ? (nA % 2 ? 1 : -1) * .024 : 0; CLE[3] = nA > 0 ? (Math.floor((nA - 1) / 2) - 1) * .017 : 0;   // grille(nA)

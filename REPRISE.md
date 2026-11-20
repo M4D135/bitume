@@ -1,9 +1,10 @@
 # BITUME — reprise courte
 
-## Candidat 0.2.63 — démos, pilotes et météo
+## Candidat 0.2.64 — démos, pilotes et météo
 
 Les deux branches sont assemblées sur p15 ; build reproductible, FERRO 0.3.15 conforme.
 Campagne locale : 150/152 puis deux reprises ciblées réussies ; dépassement initial Val-Brûlé 165 ms conservé.
+Retour geste/rapport corrigé : 810 poses sans traversée ; boîte physique conservée.
 Shader natif : 11/11. CI et captures intégrées à terminer avant fusion.
 Fiche : `docs/reprise/DEMOS-PILOTES-METEO-2026-11-20.md`.
 Route-des-Cimes et couverts sont préparés séparément ; aucune clôture globale du programme.

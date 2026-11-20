@@ -11,7 +11,7 @@ const racine = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const contexte = vm.createContext({ console });
 vm.runInContext('globalThis.window = globalThis;', contexte);
 for (const nom of ['moteur/renderer.js', 'carene.js', 'main.js', 'humain-donnees.js', 'humain-corps.js', 'ferro/vehicle-dynamics.js',
-  'pneus.js', 'usure-pneus.js', 'chaussee.js', 'conduite.js', 'voiture.js'])
+  'pneus.js', 'usure-pneus.js', 'chaussee.js', 'conduite.js', 'expressions-pilote.js', 'voiture.js'])
   vm.runInContext(fs.readFileSync(path.join(racine, 'src', nom), 'utf8'), contexte, { filename: nom });
 const V = contexte.BITUME.voiture;
 const formes = new Map(), geometrie = contexte.FRender.shared.geometry(false);
@@ -239,6 +239,76 @@ test('gestes : surfaces des mains et bras sans traversée de la coque, du casque
     }
   }
   console.log('gestes : ' + poses + ' poses, surfaces Float32 des mains/bras et obstacles réellement affichés');
+});
+
+test('un rapport interrompt le geste sans téléporter les poignets ni traverser le cockpit', () => {
+  const X = contexte.BITUME.expressionsPilote, modele = creer(), graines = new Map();
+  function seance(cote, graine) {
+    const co = { phase: 'course', termine: false, voitures: [0, 1].map(id => ({ id, progression: 100,
+      tPassage: -100, etat: { v: 30, rapport: 3 } })) };
+    const poses = [{ x: 100, y: 0, z: 0, cap: 0 }, { x: 100, y: 0, z: cote * 3, cap: 0 }], E = X.creer(2, graine);
+    X.actualiser(E, co, poses, 0); X.demander(E, 0, true); X.demander(E, 0, false);
+    return { co, poses, E };
+  }
+  function avancer(s, t) {
+    s.co.voitures.forEach((v, i) => { v.progression = 100 + t * 30; s.poses[i].x = v.progression; });
+    X.actualiser(s.E, s.co, s.poses, t);
+  }
+  for (let graine = 1; graines.size < 3 && graine <= 128; graine++) {
+    const s = seance(-1, graine); avancer(s, 1 / 120);
+    graines.set(X.lire(s.E, 0).geste, graine);
+  }
+  assert.equal(graines.size, 3, 'les trois vrais tirages manuels sont exercés');
+  let controles = 0, sautInitial = 0, pasMaximum = 0, demiPasMaximum = 0;
+  for (const [geste, graine] of graines) for (const cote of [-1, 1]) for (const volant of [-1, 0, 1]) {
+    const s = seance(cote, graine), ev = pose();
+    ev.pilote.volant = volant; ev.pilote.rapportAvant = ev.pilote.rapport = 3;
+    for (let n = 1; n <= 60; n++) avancer(s, n / 120);
+    X.lire(s.E, 0, ev.pilote);
+    assert.equal(ev.pilote.geste, geste); assert.equal(ev.pilote.gesteCote, cote); assert.equal(ev.pilote.gesteIntensite, 1);
+    const reference = dessiner(modele, ev), obstacles = coque(reference.sortie);
+    for (const p of reference.pieces.filter(p => p.role === 'planche' || p.role === 'casquette' || p.role.startsWith('support-volant-') || p.role.startsWith('moyeu-')))
+      obstacles.push({ nom: p.role, arbre: build(triangles(p.objet)) });
+    const jante = build(triangles(reference.pieces.find(p => p.role === 'volant').objet));
+    let avant = Array.from(modele.objetsRendu.habitacle.articulations);
+    const debut = .5 + 1e-5;
+    s.co.voitures[0].etat.rapport = 4; s.co.voitures[0].tPassage = debut;
+    ev.pilote.rapport = 4;
+    for (let n = 0; n <= 44; n++) {
+      const t = debut + n / 120;
+      let milieu = null;
+      if (n > 0) {
+        const demiTemps = t - 1 / 240;
+        avancer(s, demiTemps); X.lire(s.E, 0, ev.pilote); ev.pilote.passage = Math.min(1, (demiTemps - debut) / .36);
+        V.poser(modele, ev, []); milieu = Array.from(modele.objetsRendu.habitacle.articulations);
+      }
+      avancer(s, t); X.lire(s.E, 0, ev.pilote); ev.pilote.passage = Math.min(1, (t - debut) / .36);
+      const rendu = dessiner(modele, ev), H = modele.objetsRendu.habitacle;
+      for (const j of [6, 15]) {
+        const delta = Math.sqrt(d2(Array.from(H.articulations.slice(j, j + 3)), avant.slice(j, j + 3)));
+        if (n === 0) { sautInitial = Math.max(sautInitial, delta); assert.ok(delta < .001, 'poignet téléporté au déclenchement : ' + delta); }
+        else {
+          pasMaximum = Math.max(pasMaximum, delta);
+          demiPasMaximum = Math.max(demiPasMaximum, Math.sqrt(d2(milieu.slice(j, j + 3), avant.slice(j, j + 3))),
+            Math.sqrt(d2(milieu.slice(j, j + 3), Array.from(H.articulations.slice(j, j + 3)))));
+        }
+      }
+      avant = Array.from(H.articulations);
+      const mobiles = ['pilote-casque', 'pilote-visiere'].map(nom => ({ nom,
+        arbre: build(triangles(rendu.sortie.find(o => o.shape === 'bitume-' + nom))) }));
+      mobiles.push({ nom: 'pommeau', arbre: build(triangles(rendu.pieces.find(p => p.role === 'pommeau').objet)) });
+      for (const piece of rendu.pieces.filter(p => /^(gant|bras|avant-bras|manche-joint|coude)-/.test(p.role))) {
+        for (const { nom, arbre } of obstacles.concat(mobiles))
+          assert.ok(!traversee(piece.objet, arbre), `${piece.role}/${nom} : geste=${geste}, côté=${cote}, volant=${volant}, retour=${n}/120`);
+        if (piece.role.startsWith('gant-')) assert.ok(!traversee(piece.objet, jante), `${piece.role}/jante : geste=${geste}, côté=${cote}, volant=${volant}, retour=${n}/120`);
+      }
+      if (n >= 18) assert.equal(ev.pilote.geste, null, 'le rapport rend effectivement la main au levier');
+      controles++;
+    }
+    assert.equal(s.E.pilotes[0].gestesManuels, 1, 'aucun nouveau geste déclenché pendant le passage');
+  }
+  assert.ok(demiPasMaximum < pasMaximum * .65, 'un saut ne décroît pas quand le pas est divisé par deux');
+  console.log('transition geste/rapport : ' + controles + ' poses, saut initial=' + sautInitial + ' m, pas maximal 120/240 Hz=' + pasMaximum + '/' + demiPasMaximum + ' m');
 });
 
 // Ces cas empêchent le contrôleur lui-même de prendre un croisement pour un succès.

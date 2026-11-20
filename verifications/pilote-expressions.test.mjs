@@ -102,13 +102,8 @@ test('temps, intensité et côté invalident la pose ; regard signé indépendan
   }
 });
 
-test('le levier reste prioritaire et les entrées non finies ne contaminent pas le rig', () => {
-  const modele = creer(), ev = pose(); ev.pilote.passage = .5; V.poser(modele, ev, []);
-  const H = modele.objetsRendu.habitacle, levier = instantane(H);
-  for (const gesteCote of [-1, 1]) {
-    Object.assign(ev.pilote, { geste: 'majeur', gesteCote, gesteIntensite: 1 }); V.poser(modele, ev, []);
-    assert.equal(instantane(H), levier, 'aucun geste pendant le passage');
-  }
+test('les entrées non finies ne contaminent pas le rig', () => {
+  const modele = creer(), ev = pose();
   Object.assign(ev.pilote, { passage: 1, regard: NaN, gesteIntensite: Infinity, gestePhase: NaN });
   const sortie = []; V.poser(modele, ev, sortie);
   for (const o of sortie) for (const k of ['p', 'r', 's']) assert.ok(o[k].every(Number.isFinite));

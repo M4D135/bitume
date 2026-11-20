@@ -1,6 +1,6 @@
 /* BITUME — expressions visuelles du pilote, sans effet sur la conduite.
    Un état par séance, une sortie et un hasard privés par voiture. Aucun acteur n'est modifié.
-   actualiser se fait une fois avant les vues J2/J1 ; lire ne fait que recopier cinq champs. */
+   actualiser se fait une fois avant les vues J2/J1 ; lire recopie les champs de la pose. */
 (function (B) {
   'use strict';
   const GESTES = Object.freeze(['majeur', 'poing', 'salut']);
@@ -8,7 +8,7 @@
   const LIMITES = Object.freeze({ regard: .32, distance: 18, denivele: 3, vitesse: 8,
     depassement: .8, historique: .5, amorce: .4, regardDuree: 1.45,
     delaiManuel: 2.5, delaiDemo: 18, probabiliteDemo: .28, attenteDemande: .65 });
-  const NEUTRE = Object.freeze({ regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0 });
+  const NEUTRE = Object.freeze({ regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0, passageVisuel: null });
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const lisse = v => { v = clamp(v, 0, 1); return v * v * (3 - 2 * v); };
   const fini = Number.isFinite;
@@ -17,12 +17,13 @@
     if (!Number.isInteger(nombre) || nombre < 1 || nombre > 64) throw new RangeError('Expressions : 1 à 64 pilotes');
     const pilotes = new Array(nombre);
     for (let i = 0; i < nombre; i++) pilotes[i] = {
-      sortie: { regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0 },
+      sortie: { regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0, passageVisuel: null },
       hasard: ((graine >>> 0) ^ Math.imul(i + 1, 0x9e3779b1) ^ 0x45585052) >>> 0,
       tenu: false, demande: false, demandeAvant: NaN, prochainManuel: -Infinity,
       regardA: -Infinity, regardAngle: 0, prochainRegard: -Infinity,
       geste: -1, dernierGeste: -1, gesteA: -Infinity, gesteCote: -1,
       retourA: -Infinity, retourNiveau: 0, passageJusqua: -Infinity,
+      passageAnimeDebut: -Infinity, passageAnimeFin: -Infinity,
       stableDepuis: NaN, depassements: 0, gestesManuels: 0, gestesDemo: 0
     };
     return { nombre, pilotes, course: null, phase: null, temps: NaN, prochainAuto: -Infinity,
@@ -52,6 +53,7 @@
   }
   function neutraliser(p) {
     eteindre(p); p.demande = false; p.regardA = -Infinity; p.regardAngle = 0; p.sortie.regard = 0;
+    p.passageAnimeDebut = p.passageAnimeFin = -Infinity; p.sortie.passageVisuel = null;
   }
   function sain(v, pose) {
     const e = v?.etat;
@@ -69,6 +71,9 @@
   function interrompre(p, t) {
     if (p.geste >= 0 && p.retourA === -Infinity) {
       p.retourNiveau = enveloppe(p, t); p.retourA = t;
+      // Rendre d'abord la main à la jante, puis suivre le trajet validé du levier. Superposer les
+      // deux trajets faisait traverser la jante à la main droite. La boîte réelle n'est pas décalée.
+      p.passageAnimeDebut = t + .14; p.passageAnimeFin = p.passageJusqua;
     }
   }
   function lancer(p, t, cote, demo) {
@@ -108,6 +113,8 @@
   }
   function afficher(p, t) {
     const o = p.sortie, ageRegard = t - p.regardA;
+    o.passageVisuel = t < p.passageAnimeFin && p.passageAnimeFin > p.passageAnimeDebut
+      ? clamp((t - p.passageAnimeDebut) / (p.passageAnimeFin - p.passageAnimeDebut), 0, 1) : null;
     o.regard = ageRegard >= 0 && ageRegard < LIMITES.regardDuree
       ? p.regardAngle * lisse(ageRegard / .18) * (1 - lisse((ageRegard - .65) / .8)) : 0;
     if (p.geste < 0) { o.geste = null; o.gestePhase = o.gesteIntensite = 0; return; }
@@ -146,7 +153,9 @@
         Math.hypot(q.x - E.x[i], q.y - E.y[i], q.z - E.z[i]) <= limite;
       if (!continu) {
         p.stableDepuis = t; p.regardA = -Infinity; p.regardAngle = 0;
-        if (avant || E.course && E.course !== co || fini(dt) && dt < 0) { eteindre(p); p.demande = false; }
+        if (avant || E.course && E.course !== co || fini(dt) && dt < 0) {
+          eteindre(p); p.demande = false; p.passageAnimeDebut = p.passageAnimeFin = -Infinity;
+        }
       }
       E.continu[i] = continu && t - p.stableDepuis >= LIMITES.amorce ? 1 : 0;
       if (avant && E.references[i] === v && et.rapport !== E.rapport[i]) p.passageJusqua = t + .36;
@@ -191,7 +200,7 @@
     const o = E?.pilotes[id]?.sortie || NEUTRE;
     if (!sortie) return o;
     sortie.regard = o.regard; sortie.geste = o.geste; sortie.gestePhase = o.gestePhase;
-    sortie.gesteCote = o.gesteCote; sortie.gesteIntensite = o.gesteIntensite; return sortie;
+    sortie.gesteCote = o.gesteCote; sortie.gesteIntensite = o.gesteIntensite; sortie.passageVisuel = o.passageVisuel; return sortie;
   }
   B.expressionsPilote = { creer, actualiser, demander, lire, GESTES, LIMITES };
 })(globalThis.BITUME = globalThis.BITUME || {});

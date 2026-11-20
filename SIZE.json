@@ -1,8 +1,8 @@
 {
-  "version": "0.2.63",
-  "raw": 14316546,
-  "gzip": 3411552,
-  "sha256": "05d5ed2af9dc800491b2afe9ff5928641a463b15e2ccdd0420660696e4c946ee",
+  "version": "0.2.64",
+  "raw": 14317789,
+  "gzip": 3411900,
+  "sha256": "98848efea4b0969805008ba37cba7cab67b11434a9d960173ba77b157fcf8ef7",
   "sources": {
     "moteur/renderer.js": 313289,
     "ferro/engine.js": 2025,
@@ -41,11 +41,11 @@
     "public.js": 94461,
     "main.js": 10077,
     "cockpit-matieres.js": 1397,
-    "voiture.js": 149236,
+    "voiture.js": 149617,
     "animaux.js": 150348,
     "traces.js": 45631,
     "echappement.js": 30407,
-    "expressions-pilote.js": 11326,
+    "expressions-pilote.js": 12096,
     "cinema.js": 26126,
     "realisateur.js": 13904,
     "meteo.js": 14928,
@@ -65,7 +65,7 @@
     "scene-bench.js": 23081,
     "vibrations.js": 13482,
     "ombres.js": 12015,
-    "jeu.js": 343056,
+    "jeu.js": 343148,
     "index.html": 55680,
     "style.css": 56816
   }
