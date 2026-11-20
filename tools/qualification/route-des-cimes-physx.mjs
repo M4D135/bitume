@@ -4,12 +4,12 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { dirname, resolve, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { chargerPhysX } from '../../verifications/helpers/physx-runtime.mjs';
 const require = createRequire(import.meta.url), racine = fileURLToPath(new URL('../../', import.meta.url));
-for (const f of ['circuit', 'route-des-cimes', 'conduite', 'degats', 'contacts', 'obstacles', 'botanique', 'ecologie', 'saisons',
+for (const f of ['circuit', 'couverts', 'route-des-cimes', 'conduite', 'degats', 'contacts', 'obstacles', 'botanique', 'ecologie', 'saisons',
   'vegetation', 'bords', 'carene', 'meteo', 'strategie-stands', 'course', 'solides-physx', 'physique']) require(racine + 'src/' + f + '.js');
 const decorPath = process.env.BITUME_CIMES_DECOR ? resolve(process.env.BITUME_CIMES_DECOR) : racine + 'src/decor.js';
 require(decorPath);
@@ -18,14 +18,14 @@ const rivaux = Number(process.env.RIVAUX || 0), duree = Number(process.env.DUREE
 assert.ok(Number.isInteger(rivaux) && rivaux >= 0 && rivaux <= 11); assert.ok(duree > 0 && Number.isFinite(duree));
 assert.ok(['sec', 'pluie', 'neige'].includes(meteo));
 const sortie = resolve(process.env.RAPPORT || '/tmp/bitume-route-des-cimes-physx.json');
-const fichiers = ['src/circuit.js', 'src/route-des-cimes.js', 'src/conduite.js', 'src/course.js', 'src/physique.js',
+const fichiers = ['src/circuit.js', 'src/couverts.js', 'src/route-des-cimes.js', 'src/route-des-cimes-decor.js', 'src/conduite.js', 'src/course.js', 'src/physique.js',
   'src/solides-physx.js', 'src/bords.js', 'src/chaussee.js', 'src/ferro/physx.js', 'src/ferro/physx-runtime.js',
   'tools/qualification/route-des-cimes-physx.mjs'];
 const sha = p => createHash('sha256').update(readFileSync(p)).digest('hex');
-const rapport = { schema: 1, physique: 'p15', backend: X.status(), dt, rivaux, meteo, dureeMax: duree,
+const rapport = { schema: 2, physique: 'p15', backend: X.status(), dt, rivaux, meteo, dureeMax: duree,
   sourceHashes: Object.fromEntries(fichiers.map(p => [p, sha(racine + p)])),
-  decor: { chemin: decorPath, sha256: sha(decorPath) },
-  geometrie: null, progres: [], corrections: { setPose: 0, setVelocity: 0, setAngularVelocity: 0 }, reussi: false };
+  decor: { source: process.env.BITUME_CIMES_DECOR ? basename(decorPath) : 'src/decor.js', candidatExterne: !!process.env.BITUME_CIMES_DECOR, sha256: sha(decorPath) },
+  geometrie: null, progres: [], evenements: [], corrections: { setPose: 0, setVelocity: 0, setAngularVelocity: 0 }, reussi: false };
 let co;
 try {
   const debut = performance.now(), c = B.routeDesCimes.creer();
@@ -44,7 +44,23 @@ try {
   rapport.statiques = p.solids.statistiques;
   rapport.ouvrages = { declares: c.couverts.map(t => ({ ...t })), ponts: c.ponts.map(t => ({ ...t })),
     solsTunnel: [...p.solids.acteurs.values()].filter(a => a.genre === 'sol-tunnel').length,
-    galerieConstruite: !!scene.couverts?.some?.(t => t.type === 'galerie') };
+    galerieConstruite: [...p.solids.acteurs.values()].some(a => a.genre === 'sol-galerie'), pontConstruit: !!scene.cimes?.pont,
+    rayonsOuvrages: [] };
+  assert.ok(rapport.ouvrages.galerieConstruite, 'galerie réellement construite');
+  assert.ok(rapport.ouvrages.pontConstruit, 'pont réellement construit');
+  for (const t of c.couverts) {
+    const q = B.circuit.echantillon(c, (t.debut + t.fin) / 2), origine = [q.x, q.y + 1, q.z];
+    const toit = p.world.raycast(origine, [0, 1, 0], t.hauteur + 2, { mask: 2, staticOnly: true });
+    const sol = p.world.raycast(origine, [0, -1, 0], 2, { mask: 1, staticOnly: true });
+    assert.ok(toit.hit && sol.hit, 'sol et toit réels : ' + t.nom);
+    const genreToit = p.solids.acteurs.get(toit.body)?.genre;
+    assert.equal(genreToit, t.type === 'galerie' ? 'voute-galerie' : 'voute-tunnel');
+    rapport.ouvrages.rayonsOuvrages.push({ nom: t.nom, toit: genreToit, sol: p.solids.acteurs.get(sol.body)?.genre });
+  }
+  const pont = c.ponts[0], q = B.circuit.echantillon(c, (pont.debut + pont.fin) / 2), r = [-Math.sin(q.cap), 0, Math.cos(q.cap)];
+  const passage = p.world.raycast([q.x - r[0] * 20, q.y - 20, q.z - r[2] * 20], r, 40, { mask: 1 | 2, staticOnly: true });
+  assert.equal(passage.hit, false, 'le vide sous l’arche doit être réellement ouvert');
+  rapport.ouvrages.archeOuverte = true;
   for (const nom of Object.keys(rapport.corrections)) {
     const original = p.world[nom];
     p.world[nom] = function (...args) { rapport.corrections[nom]++; return original.apply(this, args); };
@@ -55,9 +71,14 @@ try {
   const cmd = {}, ev = [], origine = [0, 0, 0], hit = {}; let pas = 0;
   for (; pas < duree / dt; pas++) {
     B.course.pas(co, B.course.commandesIA(co, co.joueur, cmd), dt, ev);
+    for (const x of ev) if (['choc','accident','replacement','contact'].includes(x.type)) {
+      const v = co.voitures[x.id ?? x.a];
+      rapport.evenements.push({ t: co.horloge, ...x, s: v?.etat.s, d: v?.etat.d, v: v?.etat.v });
+    }
     for (let k = 0; k < co.voitures.length; k++) {
       const v = co.voitures[k], e = v.etat, ph = e._physx, m = mesures[k];
       assert.ok([ph.x, ph.y, ph.z, e.v, e.d, e.s].every(Number.isFinite), 'état natif non fini');
+      assert.equal(e.repositionnements, 0, 'replacement voiture ' + v.id + ' à s=' + e.s);
       m.maxAbsD = Math.max(m.maxAbsD, Math.abs(e.d));
       if (!ph.groundCount) { m.sansAppui++; m.dernierSansAppuiS += dt; m.maxSansAppuiS = Math.max(m.maxSansAppuiS, m.dernierSansAppuiS); }
       else m.dernierSansAppuiS = 0;
@@ -92,7 +113,7 @@ try {
     assert.equal(v.couvertsParcourus.length, 3); assert.equal(v.pontsParcourus.length, 1);
   }
   rapport.reussi = true;
-} catch (e) { rapport.erreur = e.stack; throw e; }
+} catch (e) { rapport.erreur = String(e); throw e; }
 finally {
   if (co) B.physique.liberer(co); X.dispose(); mkdirSync(dirname(sortie), { recursive: true });
   writeFileSync(sortie, JSON.stringify(rapport, null, 2) + '\n');

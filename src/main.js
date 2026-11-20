@@ -72,7 +72,10 @@
         // se dresse seul, le salut déploie quatre doigts légèrement écartés, le poing les replie dans la paume.
         const etendu = geste === 'salut' || geste === 'majeur' && doigt.nom === 'majeur';
         const longueur = doigt.nom === 'majeur' ? .081 : doigt.nom === 'index' ? .071 : doigt.nom === 'annulaire' ? .074 : .059;
-        const pli = [[.028, -.010], [.034, -.033], [.018, -.046], [-.004, -.045]];
+        // Un poing fléchit dès la première phalange vers la paume. Projeter d'abord
+        // les doigts de 34 mm puis ramener seulement leurs bouts dessinait encore
+        // une main ouverte, malgré un test d'extrémités correctement repliées.
+        const pli = [[.009, -.022], [.008, -.042], [-.013, -.048], [-.028, -.033]];
         for (let n = 0; n < 4; n++) {
           const d = etendu ? longueur * [.28, .57, .82, 1][n] : pli[n][0];
           const paume = etendu ? -[.001, .002, .004, .007][n] : pli[n][1];

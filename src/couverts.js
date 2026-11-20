@@ -152,6 +152,12 @@
     if (type(t) !== 'galerie') throw new TypeError('Couverts : une galerie est requise');
     const lots = [], lampes = [], debut = t.debut, fin = debut + longueur(c, t), ouvert = t.ouvert === 'G' ? -1 : 1, ferme = -ouvert;
     const beton = [.48, .49, .47], toit = [.32, .34, .35], M = t.mur, H = t.hauteur;
+    // Les 4 cm de surépaisseur se raccordent sur six mètres à chaque portail : une dalle
+    // constante présentait sa tranche aux roues et à la caisse avant les premiers appuis.
+    const rehausse = s => {
+      const u = borner(Math.min(s - debut, fin - s) / 6, 0, 1);
+      return .002 + .038 * u * u * (3 - 2 * u);
+    };
     for (let s = debut, numero = 0; s < fin; s = Math.min(fin, s + 6), numero++) {
       const suivant = Math.min(fin, s + 6), a = B.circuit.echantillon(c, s), b = B.circuit.echantillon(c, suivant), q = B.circuit.echantillon(c, (s + suivant) / 2);
       const axe = [b.x - a.x, b.y - a.y, b.z - a.z], r = orientation(axe), droit = [-Math.sin(q.cap), 0, Math.cos(q.cap)];
@@ -160,7 +166,11 @@
       const milieu = [(a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2], objets = [];
       // Revêtement abrité indépendant du terrain enneigé, éclairé par le jour latéral.
       const bank = q.devers || 0, normal = [Math.sin(bank) * droit[0], Math.cos(bank), Math.sin(bank) * droit[2]];
-      objets.push(solide([milieu[0], milieu[1] - .01, milieu[2]], [long, .1, 2 * M], orientation(axe, normal), 'sol-galerie', [.20, .20, .205], 7, 1, 'piste'));
+      const h0 = rehausse(s), h1 = rehausse(suivant), axeSol = [axe[0], axe[1] + h1 - h0, axe[2]], normeSol = Math.hypot(...axeSol);
+      const tangent = axeSol.map(v => v / normeSol), produit = tangent.reduce((s, v, i) => s + v * normal[i], 0);
+      const nSol = normal.map((v, i) => v - produit * tangent[i]), nLongueur = Math.hypot(...nSol);
+      const centreSol = milieu.map((v, i) => v + (i === 1 ? (h0 + h1) / 2 : 0) - .05 * nSol[i] / nLongueur);
+      objets.push(solide(centreSol, [normeSol + long - Math.hypot(...axe), .1, 2 * M], orientation(axeSol, normal), 'sol-galerie', [.20, .20, .205], 7, 1, 'piste'));
       objets.push(solide([milieu[0], milieu[1] + H + .35, milieu[2]], [long, .7, 2 * M + 1.4], r, 'voute-galerie', toit));
       const d = ferme * (M + .3), y = milieu[1] - d * Math.sin(q.devers || 0);
       objets.push(solide([milieu[0] + droit[0] * d, y + H / 2, milieu[2] + droit[2] * d], [long, H + .12, .6], r, 'mur-galerie', beton));

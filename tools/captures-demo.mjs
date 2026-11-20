@@ -168,7 +168,10 @@ export function verifierRapport(r, s, candidat = true) {
       const v = o.vitres?.j1;
       if (!v || v.erreur || v.perdu || v.erreurs?.length || typeof v.erreurs === 'number' && v.erreurs > 0) erreurs.push('Diagnostic optique absent ou en erreur');
       if (s.aerien) {
-        if (o.vitrage?.actif !== false || o.vitreVisible || v?.propre !== true || v?.masquee !== true || v?.eau !== 0 || v?.embruns !== 0 || v?.gouttes !== 0) erreurs.push('Overlay humide présent dans la vue aérienne');
+        // Le diagnostic WebGL expose les dépôts ; propre/masquee appartiennent seulement à l'état
+        // interne du repli Canvas. Vérifier les vrais pixels composés via la visibilité du DOM.
+        if (o.vitrage?.actif !== false || o.vitreVisible !== false ||
+            !['eau', 'accumulationNeige', 'embruns', 'gouttes', 'neige'].every(k => v?.[k] === 0)) erreurs.push('Overlay humide présent dans la vue aérienne');
       } else {
         if (!(o.vitrage?.actif && o.vitrage.embruns > .6 && v?.eau > 0 && v?.gouttes > 0 && v?.depotsEmbruns > 0 && v?.expulses > 0)) erreurs.push('Fort sillage ou évacuation des gouttes non exercés');
         if (o.sillage?.sources?.length !== 1 || o.sillage.sources[0].id !== o.sillage.rival || !(o.sillage.casque > .6)) erreurs.push('Le sillage d’un seul rival n’est pas prouvé');

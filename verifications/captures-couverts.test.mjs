@@ -26,7 +26,7 @@ function rapport(s) {
       return {etat:{zones},vues:{scene:{noir:.1,luminance:.2},scene2:{noir:.1,luminance:.2}},observation:{
         etapeId:s.portails?phases[i]:s.dessus?'dessus-toit':'interieur',glErreur:0,glPerdu:false,
         pluie:1,j1,j2:s.duo?{...j1,type:'galerie',interieur:false,lumiere:1}:null,
-        sol:{hit:true,y:0},toit:{hit:sousToit,y:sousToit?6.4:null},yRoute:0,
+        sol:{hit:true,y:0,surface:'piste'},toit:{hit:sousToit,y:sousToit?6.4:null,genre:sousToit?'voute-'+s.type:null},yRoute:0,
         vitres:{j1:optique,j2:s.duo?structuredClone(optique):null},
         vitresGL:{j1:{present:true,erreur:0,perdu:false},j2:{present:true,erreur:0,perdu:false}},
         visieresVisibles:{j1:!s.dessus&&eau>0,j2:false}
@@ -35,11 +35,13 @@ function rapport(s) {
   };
 }
 
-test('six scènes distinctes et dix-huit images, deux portails vus dedans et dehors',()=>{
+test('six scènes distinctes et vingt-quatre images, tous les portails vus dedans et dehors',()=>{
   const base=['--url','file:///tmp/bitume.html','--sortie','/tmp/couverts'];
   const o=optionsCouverts(base);
   assert.equal(o.cas.length,6);
-  assert.equal(SCENARIOS_COUVERTS.reduce((n,s)=>n+(s.images||2),0),18);
+  assert.equal(SCENARIOS_COUVERTS.reduce((n,s)=>n+(s.images||2),0),24);
+  assert.deepEqual(SCENARIOS_COUVERTS.filter(s=>s.portails).map(s=>s.id),
+    ['haut-col-portails','cimes-rocher','cimes-echelles','cimes-galerie']);
   for(const s of SCENARIOS_COUVERTS) {
     const p=optionsScenarioCouvert(s,o);
     assert.equal(p.images,s.images||2);assert.equal(p.referenceJeu.circuit,s.circuit);
@@ -89,17 +91,36 @@ test('les cinq phases refusent eau constante, reprises absentes et faux abri aux
 
 test('galerie au jour, deux vues indépendantes et caméra au-dessus du toit',()=>{
   const galerie=cas('cimes-galerie');
-  for(const changer of [o=>{o.j1.lumiere=1.31;},o=>{o.vitres.j1.eau=.2;},o=>{o.vitres.j1.gouttes=1;}]) {
-    const r=rapport(galerie);changer(r.images[0].observation);assert.ok(verifierCouvert(r,galerie).length);
+  for(const i of [0,1,2,3,4]) {
+    const r=rapport(galerie);r.images[i].observation.j1.lumiere=1.31;
+    assert.ok(verifierCouvert(r,galerie).length);
   }
   const duo=cas('cimes-deux-vues');
   for(const changer of [o=>{o.j2=o.j1;},o=>{o.j2=null;},o=>{o.j2.lumiere=NaN;},o=>{o.vitres.j2.backend='canvas2d';}]) {
     const r=rapport(duo);changer(r.images[0].observation);assert.ok(verifierCouvert(r,duo).length);
   }
+  for(const joueur of ['j1','j2'])for(const champ of ['eau','embruns','gouttes']) {
+    const r=rapport(duo);r.images[0].observation.vitres[joueur][champ]=.2;
+    assert.ok(verifierCouvert(r,duo).length,'apport sous le toit '+joueur+'/'+champ);
+  }
   const dessus=cas('cimes-dessus-toit');
   for(const changer of [o=>{o.j1.camera[1]=5;},o=>{o.j1.abriVisiere=true;},o=>{o.j1.visiereActive=true;},
     o=>{o.vitres.j1.gouttes=1;},o=>{o.visieresVisibles.j1=true;}]) {
     const r=rapport(dessus);changer(r.images[0].observation);assert.ok(verifierCouvert(r,dessus).length);
+  }
+});
+
+test('une roche au-dessus de la route ou un sol hors chaussée ne valide pas un ouvrage',()=>{
+  for(const s of SCENARIOS_COUVERTS) {
+    const i=s.portails?2:0;
+    for(const genre of [null,'rocher','mur-tunnel','voute-'+(s.type==='tunnel'?'galerie':'tunnel')]) {
+      const r=rapport(s);r.images[i].observation.toit.genre=genre;
+      assert.ok(verifierCouvert(r,s).length,s.id+' / faux toit '+genre);
+    }
+    for(const surface of [null,'herbe','vibreur']) {
+      const r=rapport(s);r.images[i].observation.sol.surface=surface;
+      assert.ok(verifierCouvert(r,s).length,s.id+' / faux appui '+surface);
+    }
   }
 });
 

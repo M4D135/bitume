@@ -10,8 +10,8 @@ import { preparerEtat } from './captures-meteo.mjs';
 export const SCENARIOS_COUVERTS = Object.freeze([
   { id: 'haut-col-portails', circuit: 2, circuitId: 'haut-col', type: 'tunnel', ordinal: 0, portails: true, images: 5 },
   { id: 'cimes-rocher', circuit: 8, circuitId: 'route-des-cimes', type: 'tunnel', ordinal: 0, portails: true, images: 5 },
-  { id: 'cimes-echelles', circuit: 8, circuitId: 'route-des-cimes', type: 'tunnel', ordinal: 1 },
-  { id: 'cimes-galerie', circuit: 8, circuitId: 'route-des-cimes', type: 'galerie', ordinal: 0 },
+  { id: 'cimes-echelles', circuit: 8, circuitId: 'route-des-cimes', type: 'tunnel', ordinal: 1, portails: true, images: 5 },
+  { id: 'cimes-galerie', circuit: 8, circuitId: 'route-des-cimes', type: 'galerie', ordinal: 0, portails: true, images: 5 },
   { id: 'cimes-dessus-toit', circuit: 8, circuitId: 'route-des-cimes', type: 'tunnel', ordinal: 1, dessus: true },
   { id: 'cimes-deux-vues', circuit: 8, circuitId: 'route-des-cimes', type: 'tunnel', ordinal: 0, duo: true }
 ].map(Object.freeze));
@@ -46,7 +46,7 @@ export function installerEtatCouverts(s) {
   if (J.CATALOGUE[S.i]?.id !== s.circuitId) throw new Error('Catalogue chargé différent du scénario : '+s.circuitId);
   const sections = C.liste(c), t = sections.filter(q => C.type(q) === s.type)[s.ordinal], galerie = sections.find(q => C.type(q) === 'galerie');
   if (!t || s.duo && !galerie) throw new Error('Ouvrage requis absent dans la page');
-  const premier = t.debut, dernier = premier + C.longueur(c,t), dedans = s.type === 'galerie' ? premier + Math.min(30,(dernier-premier)/2) : (premier+dernier)/2;
+  const premier = t.debut, dernier = premier + C.longueur(c,t), dedans = (premier+dernier)/2;
   const marge = Math.min(12, (dernier-premier)/4), etapes = s.portails ? [
     { id:'entree-exterieure', s:premier-12, abri:false }, { id:'entree-interieure', s:premier+marge, abri:true },
     { id:'centre', s:dedans, abri:true }, { id:'sortie-interieure', s:dernier-marge, abri:true },
@@ -89,10 +89,12 @@ export function observerCouverts() {
       lumiere:V.lumiere,lampes:Array.from(V.lampesTunnel?.p||[]).filter(x=>x>0).length,
       pluie:v?.pluie,abriVisiere:v?.abri,visiereActive:v?.actif,vue:V.vue};
   };
-  const t=G.section,q=B.circuit.echantillon(c,G.abscisse),w=S.course.physique.world;
+  const t=G.section,q=B.circuit.echantillon(c,G.abscisse),w=S.course.physique.world,m=S.course.physique.solids;
   const sol=w.raycast([q.x,q.y+1,q.z],[0,-1,0],2,{mask:1,staticOnly:true});
   const toit=w.raycast([q.x,q.y+1,q.z],[0,1,0],t.hauteur+2,{mask:2,staticOnly:true});
-  const present=x=>({hit:!!x.hit,y:x.hit?x.y:null,body:x.hit?x.body:null});
+  const present=x=>({hit:!!x.hit,y:x.hit?x.y:null,body:x.hit?x.body:null,
+    genre:x.hit?m.acteurs.get(x.body)?.genre||null:null,
+    surface:x.hit?B.solidesPhysX.surface(m,x.body,x.faceIndex):null});
   const vitres=J.vitres, vitresGL={}, visieresVisibles={};
   for (const [joueur,id] of [['j1','vitre'],['j2','vitre2']]) {
     if(joueur==='j2'&&!G.scenario.duo) continue;
@@ -129,9 +131,11 @@ export function verifierCouvert(r,s) {
     if(!Array.isArray(o.j1?.camera)||o.j1.camera.length!==3||!o.j1.camera.every(Number.isFinite))e.push('Caméra invalide');
     if(!Number.isFinite(o.j1?.lumiere))e.push('Exposition absente');
     if(!o.sol?.hit||!Number.isFinite(o.sol.y)||!Number.isFinite(o.yRoute)||Math.abs(o.sol.y-o.yRoute)>.16)e.push('Appui physique absent ou incohérent');
+    if(o.sol?.surface!=='piste')e.push('Appui physique hors chaussée');
     const sousToit=!s.portails||i>0&&i<4;
     if(o.toit?.hit!==sousToit)e.push('Toit physique incohérent avec les portails');
     if(sousToit&&!(o.toit.y-o.yRoute>5&&o.toit.y-o.yRoute<8))e.push('Hauteur de toit incohérente');
+    if(sousToit&&o.toit?.genre!=='voute-'+s.type)e.push('Rayon de toit arrêté par un autre solide que la voûte');
     if(interieur&&(!(o.j1?.lumiere>1.20)||!(o.j1?.lampes>0)))e.push('Tunnel non éclairé ou œil non adapté');
     if(s.type==='galerie'&&Math.abs(o.j1?.lumiere-1)>.02)e.push('Galerie obscurcie comme un tunnel');
     if(s.dessus&&(o.j1?.visiereActive!==false||!(o.j1?.camera?.[1]>o.toit?.y)))e.push('Caméra aérienne non extérieure');

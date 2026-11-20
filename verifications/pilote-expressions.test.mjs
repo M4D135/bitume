@@ -41,6 +41,15 @@ test('les trois gestes ont des doigts distincts ; majeur dressé seul et quatre 
       assert.ok(longueurs.every((l, i) => i === 1 || l < .005), 'trois doigts repliés');
     } else if (geste === 'salut') assert.ok(longueurs.every(l => l > .055), 'quatre doigts ouverts');
     else assert.ok(longueurs.every(l => l < .005), 'quatre bouts revenus dans la paume');
+    for (let i = 0; i < main.points.doigts.length; i++) {
+      if (geste === 'salut' || geste === 'majeur' && i === 1) continue;
+      const doigt = main.points.doigts[i], jointure = doigt[1];
+      // Contrôler toute la phalange : un bout replié seul peut cacher un doigt
+      // toujours dressé, comme le montrait la capture intégrée du poing 0.2.64.
+      const avance = doigt.slice(2).map(p => -p.reduce((s, x, k) => s + (x - jointure[k]) * M.AXE[k], 0));
+      assert.ok(avance.every(d => d <= .012), 'phalanges réellement fléchies : ' + geste + '/' + i);
+      assert.ok(avance.at(-1) < -.020, 'bout ramené vers le poignet : ' + geste + '/' + i);
+    }
     assert.deepEqual(Array.from(main.points.poignet), Array.from(M.construire().points.poignet), 'ancrage du poignet inchangé');
     for (const tri of main.gant) assert.ok(tri.every(p => p.every(Number.isFinite)), 'vraie géométrie finie');
   }

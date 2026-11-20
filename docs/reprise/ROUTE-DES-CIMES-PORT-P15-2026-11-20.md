@@ -115,3 +115,48 @@ Les raccords du décor et leur qualification sont encore en cours dans ce checkp
 Le lac du col, la cascade et l’enrichissement complet des sept lieux ne sont pas déclarés
 terminés par ces premiers ouvrages. Le contrôle natif des stands inclut désormais
 Route-des-Cimes dans les trois conditions (sec, pluie et neige).
+
+
+### Qualification des ouvrages raccordés — en cours
+
+Le pont ouvert, la gorge, les corniches et le refuge sont raccordés au décor réel :
+9 contrôles de tracé et 9 contrôles de décor passent, ainsi que 26 contrôles PhysX du
+catalogue à neuf circuits. L’ancienne preuve à douze voitures utilisait encore un
+décor sans galerie ; elle reste une préintégration.
+
+La première course avec les trois couverts construits révèle une marche à l’entrée
+de la galerie, avec choc puis replacement. Le revêtement se raccorde maintenant aux
+deux portails sur six mètres : la régression native de 294 rayons échoue sur la
+tranche initiale de 41,4 mm et passe avec une variation maximale de 8,64 mm.
+La course suivante franchit la galerie mais révèle la même tranche devant le
+Tunnel des Échelles : le raccord du tunnel et la campagne complète restent requis.
+Reçu : `rapports/ROUTE-DES-CIMES-2026-11-20/RACCORD-GALERIE.json`.
+Aucun build, aucune version ni règle de conduite ne change dans ce checkpoint.
+
+
+### Six portails et douze voitures qualifiés — 20 novembre
+
+Les raccords de la galerie et des tunnels explicites sont maintenant vérifiés dans
+le décor réellement construit. L’extension du contrôle aux six portails a décelé un
+rebord latéral de 26,1 mm à la sortie du Tunnel du Rocher : le dévers d’une dalle
+longue ne suivait pas la chaussée jusqu’au portail. La finition est limitée aux
+sorties, en conservant les entrées et le corps des ouvrages déjà éprouvés.
+
+Une première variante affinant toutes les dalles a passé les rayons mais provoqué
+un accident dans le roulage à grande vitesse ; elle est rejetée et ses trois échecs
+sont conservés dans le reçu. La variante finale passe les deux exigences :
+
+- six portails réels : **882 rayons**, variation maximale **8,64 mm**, seuil inchangé **15 mm** ;
+- joints courbes : **8 contrôles**, **6 864 rayons natifs** ; tunnel historique : **6 contrôles** ; décor Cimes : **9 contrôles** ;
+- douze voitures : **205,808 s au sec**, **232,392 s sous pluie**, **230,467 s sur neige** ;
+- chacune dépasse **un tour + 500 m**, traverse les **trois couverts et le pont** ;
+- **80 256 sondes** au total, aucun sol absent ou traversé selon les seuils du banc,
+  aucune perte complète d’appui, aucun replacement, aucune pose ou vitesse imposée.
+
+Une seule graine de course (42) est utilisée ; les sorties de piste sur les
+dégagements sont conservées dans les mesures. Conduite p15 et FERRO restent inchangés.
+Ces preuves ne qualifient ni le rendu final ni les FPS matériels. Le lac, la cascade
+et l’enrichissement des sept lieux restent ouverts.
+
+Reçu : `rapports/ROUTE-DES-CIMES-2026-11-20/QUALIFICATION-DOUZE-PORTAILS.json`,
+avec les trois rapports `physx-douze-portails-{sec,pluie,neige}.json`.

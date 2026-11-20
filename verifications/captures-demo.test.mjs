@@ -15,8 +15,8 @@ function rapport(s) {
     pilote: s.geste ? { geste: s.geste, gesteIntensite: 1 } : null,
     sillage: s.spray ? { rival: 1, sources: [{ id: 1, exposition: .76 }], casque: .76, lentille: .05 } : null,
     vitrage: { actif: !s.aerien, embruns: .8 }, vitreVisible: !s.aerien,
-    vitres: { j1: { erreur: null, erreurs: 0, perdu: false, propre: !!s.aerien, masquee: !!s.aerien, eau: s.aerien ? 0 : 20, embruns: s.aerien ? 0 : 10,
-      gouttes: s.aerien ? 0 : 20, depotsEmbruns: 600, expulses: 250 } } };
+    vitres: { j1: { backend: 'webgl2', erreur: null, perdu: false, eau: s.aerien ? 0 : 20, embruns: s.aerien ? 0 : 10,
+      gouttes: s.aerien ? 0 : 20, neige: 0, accumulationNeige: 0, depotsEmbruns: 600, expulses: 250 } } };
   return { initialisation: { entree: 'BITUME_JEU.demo', cameraImposee: false }, environnement: { gpu: 'ANGLE SwiftShader' }, erreurs: [], avertissements: [],
     images: Array.from({ length: s.images }, () => ({ observation: structuredClone(o), vues: { scene: { noir: .02, luminance: .4 } } })) };
 }
@@ -85,13 +85,16 @@ test('pluie en sillage et vue aérienne sans overlay sont des preuves distinctes
   const s = SCENARIOS.find(s => s.aerien);
   rejette(s, (_, o) => { o.vitreVisible = true; }, 'Overlay');
   rejette(s, (_, o) => { o.vitrage.actif = true; }, 'Overlay');
-  for (const cle of ['propre','masquee']) rejette(s, (_, o) => { o.vitres.j1[cle] = false; }, 'Overlay');
-  for (const cle of ['eau','embruns','gouttes']) rejette(s, (_, o) => { o.vitres.j1[cle] = 1; }, 'Overlay');
+  rejette(s, (_, o) => { delete o.vitreVisible; }, 'Overlay');
+  for (const cle of ['eau','accumulationNeige','embruns','gouttes','neige']) {
+    rejette(s, (_, o) => { o.vitres.j1[cle] = 1; }, 'Overlay');
+    rejette(s, (_, o) => { delete o.vitres.j1[cle]; }, 'Overlay');
+  }
   const historiques = rapport(s); historiques.images[0].observation.vitres.j1.expulses = 1800;
   assert.deepEqual(verifierRapport(historiques, s), [], 'un compteur cumulé ne prouve pas un overlay encore composé');
 });
 
-test('un seul rival à18m arrose le casque alors que la caméra de poursuite sort du panache', () => {
+test('un seul rival à18m arrose le casque et la vraie hauteur de poursuite à235km/h', () => {
   const require = createRequire(import.meta.url); require('../src/circuit.js'); require('../src/sillage.js');
   const B = globalThis.BITUME, c = B.circuit.creer(11, { theme: 'foret', longueur: 4200 }), p = B.circuit.echantillon(c, 280);
   const voitures = [], poses = [];
@@ -102,10 +105,11 @@ test('un seul rival à18m arrose le casque alors que la caméra de poursuite sor
   const etat = B.sillage.creer(); B.sillage.mettreAJour(etat, voitures, poses, c);
   const camera = [p.x - 7.4 * Math.cos(p.cap), p.y + 2.45, p.z - 7.4 * Math.sin(p.cap)];
   const casque = [p.x, p.y + .95, p.z];
-  assert(B.sillage.exposition(etat, camera, 1, 0) < .1);
+  assert(B.sillage.exposition(etat, camera, 1, 0) > .6, 'la poursuite reçoit réellement les projections du rival');
   assert(B.sillage.exposition(etat, casque, 1, 0) > .6);
   assert.equal(etat.sources.filter(source => B.sillage.exposition({ sources: [source] }, casque, 1, 0) > 1e-6).length, 1);
   assert.equal(B.sillage.exposition(etat, camera, 0, 0), 0, 'l’exposition ne dépend plus du mouillage');
+  assert.equal(B.sillage.exposition(etat, [camera[0], p.y + 21, camera[2]], 1, 0), 0, 'le plan aérien reste hors du panache');
 });
 
 test('erreurs page/GL, image noire et archive incomplète bloquent le résultat', () => {

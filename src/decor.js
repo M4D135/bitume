@@ -4,6 +4,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaus
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virages) require('./virages.js');
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.baikal) require('./baikal.js');
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batiments) require('./batiments.js');
+if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimesDecor) require('./route-des-cimes-decor.js');
 (function (B) {
   'use strict';
 
@@ -294,7 +295,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
           }
           const ia = sommet(nap, p0, n0, mat, col0), ib = sommet(nap, p1, n1, mat, col1);
           const prec = premiers[b];
-          if (prec.length) {
+          if (prec.length && !(B.cimesDecor && B.cimesDecor.couperAccotement(c, f.s - c.pas / 2, type))) {
             const [pa, pb] = prec;
             if (type === 'herbe' || type === 'jupe') herbeTriangles.push(nap.i.length, nap.i.length + 3);
             nap.i.push(pa, pb, ib, pa, ib, ia);
@@ -395,6 +396,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
           h += (th.eau - 18 - h) * falaise;
         } else h -= 34 * lisse(merDebut - 40, merDebut + 220, p) * lisse(60, 140, d);
       }
+      if (B.cimesDecor) h = B.cimesDecor.relief(c, x, z, q, h);
       return { h, d };
     };
     for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
@@ -1177,10 +1179,51 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
         const long = longueurAxe + .05 + ajout0 + ajout1, translation = (ajout1 - ajout0) / (2 * longueurAxe);
         const no = [Math.sin(f0.devers) * f0.r[0], Math.cos(f0.devers), Math.sin(f0.devers) * f0.r[2]], rotSol = angles(...base(axe, no));
         const milieu = (d, h) => { const p = pointPlan(f0, d, (y0 + y1) / 2 + h), q = pointPlan(f1, d, 0); return [(p[0] + q[0]) / 2 + axe[0] * translation, p[1] + axe[1] * translation, (p[2] + q[2]) / 2 + axe[2] * translation]; };
-        // revêtement intérieur (4 cm au-dessus de la nappe) et lignes de rive
-        const sol = marquerSolide({ shape: 'box', p: milieu(0, -.01), s: [long, .1, 2 * M], r: rotSol, mat: 7, color: SOL, outdoor: false, surface: 'object' }, 'sol-tunnel', 1, 'piste');
-        objets.push(sol); loin.push(sol);
-        for (const cote of [-1, 1]) objets.push({ shape: 'box', p: milieu(cote * (w - .15), .045), s: [long, .02, .26], r: rotSol, mat: 7, color: LIGNE, outdoor: false, surface: 'object' });
+        // Affiner seulement la sortie : une variation de dévers laisse un rebord latéral
+        // au terme d'une dalle. La géométrie d'entrée et du corps déjà roulée reste identique.
+        if (T.type === 'tunnel' && (iF - suivant) * c.pas < 12) {
+          const rehausse = j => { const u = Math.max(0, Math.min(1, Math.min(j - iD, iF - j) * c.pas / 6)); return .002 + .038 * u * u * (3 - 2 * u); };
+          const pasSol = .5 / c.pas;
+          const nombre = Math.ceil((suivant - i) / pasSol);
+          for (let partie = 0; partie < nombre; partie++) {
+            const j0 = i + (suivant - i) * partie / nombre, j1 = i + (suivant - i) * (partie + 1) / nombre;
+            const q0 = cadreOuvrage(c, j0), q1 = cadreOuvrage(c, j1), h0 = rehausse(j0), h1 = rehausse(j1);
+            const direction = [q1.x - q0.x, q1.y + h1 - q0.y - h0, q1.z - q0.z], longueur = Math.hypot(...direction);
+            const horizontale = Math.hypot(direction[0], direction[2]), devers = (q0.devers + q1.devers) / 2;
+            const normale = [-Math.sin(devers) * direction[2] / horizontale, 1, Math.sin(devers) * direction[0] / horizontale];
+            const axes = base(direction, normale), rotation = angles(...axes);
+            const angle = Math.abs(Math.atan2(Math.sin(q1.a - q0.a), Math.cos(q1.a - q0.a)));
+            const taille = longueur + .05 + 2 * M * Math.tan(Math.min(angle / 2, .45));
+            const dessus = [(q0.x + q1.x) / 2, (q0.y + q1.y + h0 + h1) / 2, (q0.z + q1.z) / 2];
+            const position = dessus.map((v, k) => v - .05 * axes[1][k]);
+            const sol = marquerSolide({ shape: 'box', p: position, s: [taille, .1, 2 * M], r: rotation, mat: 7, color: SOL, outdoor: false, surface: 'object' }, 'sol-tunnel', 1, 'piste');
+            objets.push(sol); loin.push(sol);
+            for (const cote of [-1, 1]) {
+              const p = dessus.map((v, k) => v + cote * (w - .15) * axes[2][k] + .005 * axes[1][k]);
+              objets.push({ shape: 'box', p, s: [taille, .02, .26], r: rotation, mat: 7, color: LIGNE, outdoor: false, surface: 'object' });
+            }
+          }
+        } else {
+          // Revêtement intérieur et lignes de rive. Les ouvrages explicites raccordent leur
+          // surépaisseur de 4 cm sur six mètres : sur une descente, sa tranche verticale arrêtait
+          // le châssis avant l'entrée. Le tunnel historique sans type garde sa géométrie qualifiée.
+          let positionSol = milieu(0, -.01), rotationSol = rotSol, longSol = long, centreDessus = null, axesSol = null;
+          if (T.type === 'tunnel') {
+            const rehausse = j => { const u = Math.max(0, Math.min(1, Math.min(j - iD, iF - j) * c.pas / 6)); return .002 + .038 * u * u * (3 - 2 * u); };
+            const h0 = rehausse(i), h1 = rehausse(suivant), axeSol = [axe[0], axe[1] + h1 - h0, axe[2]], normeSol = Math.hypot(...axeSol);
+            axesSol = base(axeSol, no); rotationSol = angles(...axesSol);
+            const decalageSol = (ajout1 - ajout0) / (2 * normeSol);
+            centreDessus = [(a0[0] + a1[0]) / 2, (y0 + y1 + h0 + h1) / 2, (a0[2] + a1[2]) / 2].map((v, k) => v + axeSol[k] * decalageSol);
+            positionSol = centreDessus.map((v, k) => v - .05 * axesSol[1][k]);
+            longSol = normeSol + .05 + ajout0 + ajout1;
+          }
+          const sol = marquerSolide({ shape: 'box', p: positionSol, s: [longSol, .1, 2 * M], r: rotationSol, mat: 7, color: SOL, outdoor: false, surface: 'object' }, 'sol-tunnel', 1, 'piste');
+          objets.push(sol); loin.push(sol);
+          for (const cote of [-1, 1]) {
+            const p = centreDessus ? centreDessus.map((v, k) => v + cote * (w - .15) * axesSol[2][k] + .005 * axesSol[1][k]) : milieu(cote * (w - .15), .045);
+            objets.push({ shape: 'box', p, s: [longSol, .02, .26], r: rotationSol, mat: 7, color: LIGNE, outdoor: false, surface: 'object' });
+          }
+        }
         for (const cote of [-1, 1]) {
           const p0 = pointPlan(f0, cote * (M + .3), y0), p1 = pointPlan(f1, cote * (M + .3), y1);
           const dir = [p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]], rot = angles(...base(dir, [0, 1, 0]));
@@ -1650,6 +1693,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
       l.objets.push(...objets); l.loin.push(...loin);
     });
 
+    const lieuxCimes = B.cimesDecor && B.cimesDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter });
+
     // Finition des lots : sphère englobante et portée.
     const lots = [];
     for (const l of groupes.values()) {
@@ -1687,6 +1732,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
       arbres: positionsArbres,
       enceinte: { debut: avant - 10, fin: apres + 50 } };
     if (architecture) Object.defineProperty(decor, 'architecture', { value: architecture });
+    if (lieuxCimes) decor.cimes = lieuxCimes;
     if (terrain.paysageBaikal) Object.defineProperty(decor, 'baikal', { value: Object.freeze({
       plan: terrain.paysageBaikal, maisons: maisonsBaikal,
       lieux: Object.freeze([{ nom: 'Cap des Pins', t: terrain.paysageBaikal.cap }, { nom: 'Anse Claire', t: terrain.paysageBaikal.baie }, { nom: 'Éperon du Nord', t: 880 }].map(l => {

@@ -1,0 +1,411 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "lot": "Route-des-Cimes : six portails et roulage douze voitures",
+  "commitSource": "1c111b6e8ca6b5a0395b9e55f95a3db577bc170b",
+  "physique": "p15",
+  "moteur": "FERRO 0.3.15 inchangé",
+  "reussi": true,
+  "sourceSha256": {
+    "src/decor.js": "6fe90d79ae4126b9228d571fb9bc7acc7103e7b8744ced00ec2bacf911c97dec",
+    "src/couverts.js": "84c7ea91127f538bcdebf07176e8ebcdff0ea18ce02e4a30e28d858115582d84",
+    "verifications/galerie-portails-physx.test.mjs": "208dbe1676d61bd98846417efc9b970dc1f57d8ae480e186b57a4f3989ca58e2",
+    "verifications/couverts-joints-courbes.test.mjs": "c335edb68bb0782b9b7a179c5e2ca59af805570f9b62a3bf0a47467e03f46f70",
+    "tools/qualification/route-des-cimes-physx.mjs": "dfa7cf0b1346864fb5404d4e07576a534932f3930181d3773e2ac458f0aafe71"
+  },
+  "correction": "Raccord de surépaisseur aux portails de la galerie et des tunnels explicites ; finition du dévers par dalles courtes seulement aux sorties. Entrées et corps conservés après qualification dynamique.",
+  "testsCibles": {
+    "sixPortailsReels": {
+      "rayons": 882,
+      "marcheMaximumM": 0.008633907079882874,
+      "seuilM": 0.015
+    },
+    "jointsCourbes": {
+      "controles": 8,
+      "rayons": 6864
+    },
+    "tunnelHistorique": {
+      "controles": 6
+    },
+    "decorRouteDesCimes": {
+      "controles": 9
+    }
+  },
+  "historiqueConserve": [
+    {
+      "etape": "Avant raccord galerie",
+      "rapportSourceSha256": "54933df6e05b823840a03b498a0c8ae1c0fbc916efe576512bb3dc51b49716ee",
+      "decorSha256": "f9f6a608d1c016aa28e2ef630abaa6013ea1f3ed59765df3b02c699dbe4559e7",
+      "reussi": false,
+      "erreur": "AssertionError [ERR_ASSERTION]: replacement voiture 6 à s=6055.772413580713",
+      "corrections": {
+        "setPose": 1,
+        "setVelocity": 1,
+        "setAngularVelocity": 1
+      },
+      "derniersChocs": [
+        {
+          "t": 131.99166666671096,
+          "type": "choc",
+          "id": 6,
+          "force": 59.682768834965344,
+          "obstacle": "sol-galerie",
+          "obstacleId": 5359,
+          "s": 6056.965504806045,
+          "d": -2.9470823536213953,
+          "v": 0
+        },
+        {
+          "t": 132.29166666671068,
+          "type": "choc",
+          "id": 6,
+          "force": 5.421240896247647,
+          "obstacle": "pilier-galerie",
+          "obstacleId": 5404,
+          "s": 6057.231879362684,
+          "d": -6.289508563337703,
+          "v": -9.54408976621487
+        }
+      ]
+    },
+    {
+      "etape": "Galerie corrigée, avant raccord tunnel",
+      "rapportSourceSha256": "acdf8e27edce18a20a26ca37806785b1fb5c10e9c6448d11eb02a3afd5ddb578",
+      "decorSha256": "f9f6a608d1c016aa28e2ef630abaa6013ea1f3ed59765df3b02c699dbe4559e7",
+      "reussi": false,
+      "erreur": "AssertionError [ERR_ASSERTION]: replacement voiture 4 à s=6530.938526137723",
+      "corrections": {
+        "setPose": 1,
+        "setVelocity": 1,
+        "setAngularVelocity": 1
+      },
+      "derniersChocs": [
+        {
+          "t": 136.83333333337322,
+          "type": "choc",
+          "id": 4,
+          "force": 75.31081336056359,
+          "obstacle": "sol-tunnel",
+          "obstacleId": 5726,
+          "s": 6531.528057629395,
+          "d": 4.762086970703229,
+          "v": 0
+        }
+      ]
+    }
+  ],
+  "regressionLateraleAvantFinition": {
+    "ouvrage": "Tunnel du Rocher",
+    "portail": "sortie",
+    "decalageLateralM": -5,
+    "abscisseM": 4581.28921322728,
+    "marcheM": 0.026092026972378335,
+    "seuilM": 0.015,
+    "resultat": "échec détecté par extension du contrôle aux six portails"
+  },
+  "variantesRejetees": [
+    {
+      "etape": "Affinage généralisé rejeté : sec",
+      "rapportSourceSha256": "29633a6d861a34c0b293b49d08c0c666c74e0b75e76a9cfe2d49131d06b010b4",
+      "decorSha256": "3006b0ed6b66816682734ce38948f10520df840000462ef0032d0ff9e19629c5",
+      "reussi": false,
+      "erreur": "AssertionError [ERR_ASSERTION]: replacement voiture 4 à s=6563.847059621228",
+      "corrections": {
+        "setPose": 1,
+        "setVelocity": 1,
+        "setAngularVelocity": 1
+      },
+      "derniersChocs": [
+        {
+          "t": 137.12500000003962,
+          "type": "choc",
+          "id": 4,
+          "force": 4.8621515192615465,
+          "obstacle": "mur-tunnel",
+          "obstacleId": 5873,
+          "s": 6545.839003080662,
+          "d": 6.294030373303748,
+          "v": 36.33029842628444
+        },
+        {
+          "t": 137.35833333337274,
+          "type": "choc",
+          "id": 4,
+          "force": 11.176151882859664,
+          "obstacle": "voute-tunnel",
+          "obstacleId": 5880,
+          "s": 6553.655132356271,
+          "d": 6.169747893436489,
+          "v": -16.018128389332823
+        },
+        {
+          "t": 137.35833333337274,
+          "type": "choc",
+          "id": 4,
+          "force": 1.7517839009440908,
+          "obstacle": "mur-tunnel",
+          "obstacleId": 5879,
+          "s": 6553.655132356271,
+          "d": 6.169747893436489,
+          "v": -16.018128389332823
+        }
+      ]
+    },
+    {
+      "etape": "Affinage généralisé rejeté : pluie",
+      "rapportSourceSha256": "c7edfcc0572d644d0c2b350cf68aa0e6071e32469e9499512a231dbf5df2a5e0",
+      "decorSha256": "3006b0ed6b66816682734ce38948f10520df840000462ef0032d0ff9e19629c5",
+      "reussi": false,
+      "erreur": "AssertionError [ERR_ASSERTION]: replacement voiture 5 à s=6558.608239600151",
+      "corrections": {
+        "setPose": 1,
+        "setVelocity": 1,
+        "setAngularVelocity": 1
+      },
+      "derniersChocs": [
+        {
+          "t": 146.0500000000315,
+          "type": "choc",
+          "id": 5,
+          "force": 6.672487598422514,
+          "obstacle": "mur-tunnel",
+          "obstacleId": 5858,
+          "s": 6542.810237960657,
+          "d": 6.467787356766898,
+          "v": 27.185760616434553
+        },
+        {
+          "t": 146.35000000003123,
+          "type": "choc",
+          "id": 5,
+          "force": 0.8757147826777201,
+          "obstacle": "mur-tunnel",
+          "obstacleId": 5873,
+          "s": 6550.811469191129,
+          "d": 6.837980504467615,
+          "v": 26.311148633842276
+        },
+        {
+          "t": 146.47500000003112,
+          "type": "choc",
+          "id": 5,
+          "force": 0.5660979664341711,
+          "obstacle": "mur-tunnel",
+          "obstacleId": 5879,
+          "s": 6554.19053748298,
+          "d": 6.899550758755054,
+          "v": -26.485793765710884
+        }
+      ]
+    },
+    {
+      "etape": "Affinage généralisé rejeté : neige",
+      "rapportSourceSha256": "6aa6fe339f64a9f1232af001490c929a4d7b47b6b81de4795d8b1eddbb2bf926",
+      "decorSha256": "3006b0ed6b66816682734ce38948f10520df840000462ef0032d0ff9e19629c5",
+      "reussi": false,
+      "erreur": "AssertionError [ERR_ASSERTION]: replacement voiture 0 à s=6588.698636520721",
+      "corrections": {
+        "setPose": 1,
+        "setVelocity": 1,
+        "setAngularVelocity": 1
+      },
+      "derniersChocs": [
+        {
+          "t": 7.975000000000186,
+          "type": "choc",
+          "id": 10,
+          "force": 4.896573237808257,
+          "obstacle": "pilier",
+          "obstacleId": 321,
+          "s": 61.53757036362367,
+          "d": -12.75181747472036,
+          "v": 0.7623744879266787
+        },
+        {
+          "t": 8.833333333333472,
+          "type": "choc",
+          "id": 10,
+          "force": 0.944940694173215,
+          "obstacle": "gradin",
+          "obstacleId": 311,
+          "s": 62.22430366296976,
+          "d": -13.153750910400808,
+          "v": 0.6646049637314668
+        },
+        {
+          "t": 161.98333333335034,
+          "type": "choc",
+          "id": 0,
+          "force": 1.909843500101373,
+          "obstacle": "mur-tunnel",
+          "obstacleId": 5885,
+          "s": 6557.65219097921,
+          "d": 5.752306409913187,
+          "v": 0
+        }
+      ]
+    }
+  ],
+  "campagnesFinales": [
+    {
+      "meteo": "sec",
+      "rapport": "physx-douze-portails-sec.json",
+      "sha256": "d5c338c05dd1754b5408918878e5fd1eaac76119c5d14c6448fbac11c5f79c0c",
+      "reussi": true,
+      "voitures": 12,
+      "dureeSimuleeS": 205.8083333333105,
+      "distanceMinimumM": 10197.642924749729,
+      "distanceMaximumM": 10803.18071251901,
+      "sondesSol": 24708,
+      "sansSol": 0,
+      "sousSol": 0,
+      "replacements": 0,
+      "maxSansAppuiS": 0,
+      "maxAbsDM": 6.677440055107537,
+      "couvertsParVoiture": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "pontsParVoiture": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "placementsSupplementaires": 0,
+      "corrections": {
+        "setPose": 0,
+        "setVelocity": 0,
+        "setAngularVelocity": 0
+      },
+      "evenements": 3
+    },
+    {
+      "meteo": "pluie",
+      "rapport": "physx-douze-portails-pluie.json",
+      "sha256": "b3ec1d8828ef508bff14e70c06f42d4578129513296ca78951cc9a8b225cca0d",
+      "reussi": true,
+      "voitures": 12,
+      "dureeSimuleeS": 232.39166666661964,
+      "distanceMinimumM": 10197.714338529533,
+      "distanceMaximumM": 11778.326799759496,
+      "sondesSol": 27888,
+      "sansSol": 0,
+      "sousSol": 0,
+      "replacements": 0,
+      "maxSansAppuiS": 0,
+      "maxAbsDM": 18.88641033172656,
+      "couvertsParVoiture": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "pontsParVoiture": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "placementsSupplementaires": 0,
+      "corrections": {
+        "setPose": 0,
+        "setVelocity": 0,
+        "setAngularVelocity": 0
+      },
+      "evenements": 14
+    },
+    {
+      "meteo": "neige",
+      "rapport": "physx-douze-portails-neige.json",
+      "sha256": "656a07dacfe2bdb9605e901a8e8a4fceb4c6a2bd6168575d72e7cf065c41495d",
+      "reussi": true,
+      "voitures": 12,
+      "dureeSimuleeS": 230.4666666666214,
+      "distanceMinimumM": 10198.009963026007,
+      "distanceMaximumM": 10909.620946387771,
+      "sondesSol": 27660,
+      "sansSol": 0,
+      "sousSol": 0,
+      "replacements": 0,
+      "maxSansAppuiS": 0,
+      "maxAbsDM": 18.912356469171346,
+      "couvertsParVoiture": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "pontsParVoiture": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "placementsSupplementaires": 0,
+      "corrections": {
+        "setPose": 0,
+        "setVelocity": 0,
+        "setAngularVelocity": 0
+      },
+      "evenements": 21
+    }
+  ],
+  "limites": [
+    "Une graine de course (42), onze rivaux et joueur confié à l’IA ; un tour et 500 m au minimum pour chaque voiture.",
+    "Les trois ouvrages et le pont sont réellement construits, traversés par chaque voiture et sondés dans le moteur PhysX natif.",
+    "Les trajectoires mouillées et enneigées utilisent aussi les dégagements ; décalages latéraux maximaux conservés sans les masquer.",
+    "Aucun gain FPS matériel, rendu final, écoute ou manette physique n’est qualifié par ces mesures.",
+    "Le lac du col, la cascade et l’enrichissement complet des sept lieux restent à réaliser."
+  ]
+}
