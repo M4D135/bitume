@@ -6,6 +6,7 @@ const require = createRequire(import.meta.url);
 require('../src/conduite.js');
 require('../src/meteo.js');
 require('../src/saisons.js');
+require('../src/conditions-course.js');
 const B = globalThis.BITUME;
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const html = readFileSync(new URL('../src/index.html', import.meta.url), 'utf8');

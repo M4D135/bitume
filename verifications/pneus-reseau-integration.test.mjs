@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-for (const nom of ['circuit', 'conduite', 'degats', 'contacts', 'course', 'meteo', 'ambiance', 'saisons', 'graphismes', 'reseau', 'pneus-reseau']) require('../src/' + nom + '.js');
+for (const nom of ['circuit', 'conduite', 'degats', 'contacts', 'course', 'meteo', 'ambiance', 'saisons', 'conditions-course', 'graphismes', 'reseau', 'pneus-reseau']) require('../src/' + nom + '.js');
 const modules = globalThis.BITUME;
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const debut = source.indexOf('  const EL = ');
