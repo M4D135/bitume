@@ -11,8 +11,8 @@ Base historique publiée : **0.2.59 / p14 / FERRO 0.3.14**, huit circuits. La CI
 seules traces à signature héritée, cockpit/nature/décor réussis. Reçu `rapports/COCKPIT-PILOTES-2026-11-19/PUBLICATION-0259.json`.
 La réserve de durée du décor est conservée. Les publications 0.2.57 et 0.2.59 sont closes ; ne pas les recommencer.
 
-Union actuelle **0.2.60 / p14 / FERRO 0.3.15** : **137/137 suites réussies** dans la campagne complète, aucun échec dans ce passage. Des dépassements de construction restent observés dans les trois passages ciblés inchangés de l’optimisation : 188 ms sur Val-Brûlé, 154 et 167 ms sur Haut-Col, pour un seuil de 150 ms. Cette réserve ne disparaît pas avec un passage complet réussi.
-Deux builds identiques, 60 scripts valides et verrou FERRO conforme ; publication distante à constater.
+Union actuelle **0.2.61 / p14 / FERRO 0.3.15** : **143/143 suites réussies**, archive de 3 309 sources exacte et **31 PNG** vérifiés (dix scènes candidates, cinq références). PR #24 fusionnée ; conduite, moteur et build conservés pendant les corrections de qualification.
+La publication 0.2.60 est close : PR #20, reçu `rapports/REALISME-2026-11-19/PUBLICATION-0260.json`. Clôture 0.2.61 : `rapports/HAUT-COL-METEO-2026-11-20/PUBLICATION-0261.json`. Les dépassements historiques restent ouverts : 188 ms Val-Brûlé, 154/167 ms Haut-Col, seuil inchangé de 150 ms. Les captures SwiftShader ne qualifient pas les FPS matériels.
 
 ## Priorités ajoutées pendant la continuation
 
@@ -28,12 +28,12 @@ intégrés et qualifiés localement ; les paquets Monaco/Marseille n’ajoutent 
 
 ## File complète réconciliée
 
-| Lots | Travail | État après qualification locale 0.2.60 | Suite concrète |
+| Lots | Travail | État après publication 0.2.61 | Suite concrète |
 |---|---|---|---|
 | 5B | Chargement, cadence, allocations, arbres et rétroviseurs | Socle livré en 0.2.40 | Conserver ; mesures matérielles séparées. |
 | 12A–12F4 | Roues, quatre montes, usure, choix par pilote, service, réseau, stratégie des stands | Code livré jusqu'en 0.2.52 et adapté à p14 | Captures et mesures réelles encore ouvertes. |
 | 13A | Tracé et relief Baïkal | Livré, ID `baikal`, indice 7, graine 179 | Préserver tracé, départ et stands. |
-| **13B** | **Lac, berges rocheuses, promontoire, forêt boréale, clairières, hameau et saisons** | Intégré et qualifié localement avec le réalisme | Publier ; conserver les contrôles de piste/faune et les réserves matérielles. |
+| **13B** | **Lac, berges rocheuses, promontoire, forêt boréale, clairières, hameau et saisons** | Publié avec le réalisme 0.2.60, PR #20 close | Conserver les contrôles de piste/faune et les réserves matérielles. |
 | 14A | Sources Monaco 2026 | Boucle FIA/OSM conservée ; 830 observations terrain IGN et registre contrôlé sur 415 points, publiés ; CI 139/139 | Chaussée non qualifiée ; 32 écarts >1 m entre produits, tunnels et niveaux à examiner. Largeurs/dévers inconnus. Voir `MONACO-MESURES-2026-11-20.md`. |
 | 14B | Construction depuis un tracé explicite | Fondation intégrée et qualifiée ; 34 contrôles dédiés | Fournir les données du site, IA/grille/stands et qualifier la course avant catalogue. |
 | 14C | Murs, épingle, grille, IA et collisions Monaco | À réaliser après données/tracé | Enveloppes réelles de la voiture et séparation des rues voisines. |
@@ -47,13 +47,13 @@ intégrés et qualifiés localement ; les paquets Monaco/Marseille n’ajoutent 
 | 16A–16F | Six destinations originales supplémentaires | Conception à préciser puis réalisation | Fjord-d'Argent, Crêtes-des-Carpates, Landes-d'Écosse, Sierra-Cuivrée, Baie-du-Corail, Col-des-Andes. |
 | 17 | Conduite et aides | p14 livré ; Légère appliquée par défaut, autres choix encore partiels ou absents | Calibrer 521 ch, différencier l’ABS et revoir la dérive active/le guidage clavier ; détails du constat ci-dessous. |
 | 18 | Public humain animé | Livré depuis 0.2.41 | Préserver les spectateurs/rétroviseurs ; anciennes fiches non mises à jour. |
-| 19 | Pluie et neige sur la vitre, effet plus riche | Fusion, ruissellement, fonte, vitesse et réglage intégrés et qualifiés localement | Inspection en jeu sur matériel ; aucun geste d’essuyage ajouté. |
+| 19 | Pluie et neige sur la vitre, effet plus riche | Optique 0.2.61 publiée : réfraction, gouttes, ruissellement, embruns, neige humide et fonte ; 31 captures du lot inspectées | Inspection sur matériel et coût réel ouverts ; vitesse et réglage 0–2 conservés, aucun geste d’essuyage. |
 | 20 | Flammes, détonations et sons d'échappement | Livré depuis 0.2.41 | Préserver joueur/concurrents et rendu des rétros. |
-| 21 | Ombres, éclairage, eau, reflets, grain | Ombres, flaques et sols partiellement livrés | Reflets voiture/personnages, tunnels, palier Photo, courbe conservant les teintes et nuit sombre ; moteur dans FERRO canonique. |
+| 21 | Ombres, éclairage, eau, reflets, grain | Ombres, flaques et sols partiellement livrés ; lignes diagonales héritées sur les pentes claires, cause à diagnostiquer | Reflets voiture/personnages, tunnels, palier Photo, courbe conservant les teintes et nuit sombre ; diagnostiquer le terrain sans présumer la cause, correction moteur dans FERRO canonique. |
 | 22B–22D | Lieux caractéristiques, vrais vides/gorges, ponts, niveaux superposés et 1–2 passages couverts par circuit | Jets préparés, intégration restante | Adapter à la géométrie réellement utilisée par PhysX ; vérifier éclairage, météo et absence de traversée dans chaque vue et les rétros. |
 | 23/25 | Matières cockpit/voiture, métal/peinture, freins, chaleur et salissures | Programme partiellement restant | Réutiliser roues/échappement et conserver la silhouette et les ancrages corrigés du lot réalisme. Cuir/tissu fins intégrés et qualifiés localement ; freins/chaleur/salissures restent ouverts. |
 | 24 | Vibrations par manette | Livré depuis 0.2.40 | Essai matériel restant ; quatre sorties et J1/J2 conservés. |
-| 26 | Animaux propres aux biomes | Livré depuis 0.2.41 | Étendre aux nouveaux biomes ; aucun animal ne traverse la piste. |
+| 26 | Animaux propres aux biomes | Livré depuis 0.2.41 ; caméra Haut-Col corrigée en 0.2.61, appuis contrôlés et plans été/hiver inspectés | Étendre aux nouveaux biomes ; aucun animal ne traverse la piste. |
 | 27 | Invitations sans serveur dédié à gérer | Prototype non intégré | Réconcilier signalisation par code/invitation et replis, puis essai entre réseaux. |
 | 28A/28C | Herbier et saisons moins coûteux | Livrés en 0.2.40 | Conserver. |
 | 28B/28D | Précréation du catalogue et installation progressive | Partiel/à vérifier | Mesurer les tâches restantes au chargement, puis répartir le travail utile. |
@@ -72,7 +72,7 @@ Les sept circuits historiques et Baïkal restent aux mêmes indices. Ajouter Mon
 sans remplacer Haut-Col. Les six propositions restent dans le programme : **17 destinations** si elles sont
 toutes réalisées, sans effacer une demande pour conserver l'ancien total de 16.
 
-Priorité d'intégration : correctifs de réalisme ci-dessus, 13B, puis Monaco et ses fonctions communes, Marseille, montagne distincte et six
+Les correctifs de réalisme 0.2.61 et 13B sont publiés. Suite d’intégration : Monaco et ses fonctions communes, Marseille, montagne distincte et six
 destinations. Les acquisitions de sources et les fonctions indépendantes peuvent être préparées en parallèle.
 Les améliorations transversales s'intègrent par lots séparés selon leurs dépendances, avec une seule tête livrée.
 

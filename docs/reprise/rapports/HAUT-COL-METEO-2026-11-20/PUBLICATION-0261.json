@@ -1,0 +1,230 @@
+{
+  "format": "bitume-publication-0261-v1",
+  "date": "2026-11-20",
+  "status": "published_on_main",
+  "repository": "M4D135/bitume",
+  "version": "0.2.61",
+  "physics": "p14",
+  "engine": "FERRO 0.3.15 canonique",
+  "pr": 24,
+  "prUrl": "https://github.com/M4D135/bitume/pull/24",
+  "branch": "fix/haut-col-meteo-0261-20261120",
+  "head": "a57aabe5a8be7d5d1877447555f899dc7cfb2ba9",
+  "tree": "def0835e416192dd74a854db025b7d53890f6924",
+  "ciCheckout": "874d595b89cc6f2f6084beb16da71fa856fa9f66",
+  "merge": "934132724de6eb368122868ce63feb341b7f9c73",
+  "mergedTreeMatchesQualifiedTree": true,
+  "build": {
+    "bytes": 14265416,
+    "sha256": "c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d",
+    "unchangedByQualificationCorrections": true
+  },
+  "qualification": {
+    "runId": 44690920229,
+    "jobId": 136136231908,
+    "url": "https://github.com/M4D135/bitume/actions/runs/44690920229",
+    "conclusion": "success",
+    "passed": 143,
+    "failed": 0,
+    "total": 143,
+    "artifactId": 14608423874,
+    "artifactSha256": "b17c708a537f2d142e579682f4852a0b18220d6e6d50d41c61a52c0c7fe5660f",
+    "artifactBytes": 71221850,
+    "artifactVerified": true,
+    "sourceFilesVerified": 3309,
+    "sourceContentsAndModesMatch": true,
+    "node": "24.22.2",
+    "python": "3.14.4"
+  },
+  "visual": {
+    "runId": 44690920192,
+    "url": "https://github.com/M4D135/bitume/actions/runs/44690920192",
+    "status": "completed",
+    "finalConclusion": "success",
+    "candidateScenariosExpected": 10,
+    "referenceScenariosExpected": 5,
+    "pngsExpected": 31,
+    "views": {
+      "jobId": 136136231921,
+      "conclusion": "success",
+      "artifactId": 14608717933,
+      "artifactSha256": "af43c273f9a86e67b882593451c96feb99f893d60a06507cb883298fdf21e6e0",
+      "artifactBytes": 5883246,
+      "artifactVerified": true,
+      "checkoutAndBuildVerified": true,
+      "passages": 6,
+      "pngs": 12,
+      "reportErrors": 0,
+      "identicalToPreviouslyInspectedPngs": true
+    },
+    "snow": {
+      "jobId": 136136231628,
+      "conclusion": "success",
+      "artifactId": 14608934892,
+      "artifactSha256": "42b3140584692b44262b68795605e244328a5fd566ac1fd47543d8ab777480ff",
+      "artifactBytes": 3190501,
+      "artifactVerified": true,
+      "checkoutAndBuildVerified": true,
+      "passages": 4,
+      "pngs": 9,
+      "reportErrors": 0,
+      "identicalToPreviouslyInspectedPngs": true
+    },
+    "rainFirstAttempt": {
+      "jobId": 136136231956,
+      "conclusion": "cancelled",
+      "artifactId": 14609588755,
+      "artifactSha256": "71efa675aaf38f448fd4d9a2ac20da4ba33f73a076750e5c26b37664a539ffe8",
+      "artifactBytes": 3035103,
+      "artifactVerified": true,
+      "checkoutAndBuildVerified": true,
+      "passages": 4,
+      "pngs": 8,
+      "reportErrors": 0,
+      "identicalToPreviouslyInspectedPngs": true,
+      "timeoutMinutes": 35,
+      "missingScenario": "apres/tunnel",
+      "missingPngs": 2
+    },
+    "rainRetry": {
+      "jobId": 136150737900,
+      "status": "completed",
+      "conclusion": "success",
+      "artifactId": 14611014932,
+      "artifactSha256": "3eecb143f473efb8f65964f1763bab9bffc579878eb888d62a69dfd4b4dd96d2",
+      "artifactBytes": 3847242,
+      "artifactVerified": true,
+      "checkoutAndBuildVerified": true,
+      "passages": 5,
+      "pngs": 10,
+      "reportErrors": 0,
+      "reportsVerified": true,
+      "imagesInspected": true,
+      "inspectionBasis": "identical_to_previous_inspection",
+      "pngsIdenticalToPrior": 10,
+      "pngManifest": [
+        {
+          "path": "avant/pluie-grille/0000.png",
+          "sha256": "ab5922c8af1b113ef1ce86c90ac7c991e0c9fba5bebd91dbead453b7c622f9cb"
+        },
+        {
+          "path": "avant/pluie-grille/0001.png",
+          "sha256": "02ac80d95f11fa495e313f92ee51c8ae097181a0a96757180f16030584aaa636"
+        },
+        {
+          "path": "avant/pluie-spray235/0000.png",
+          "sha256": "9452418ba7ce54022dc627104606aa49d4981f1153696f53be856c3c7a585daf"
+        },
+        {
+          "path": "avant/pluie-spray235/0001.png",
+          "sha256": "682c904f3ea6727d4a6cb2e03c79c65cdc8b21da4003ae5a67034ad453f9db4e"
+        },
+        {
+          "path": "apres/pluie-grille/0000.png",
+          "sha256": "e04157d423de31e6930ef702a2ab0e620293d5a421e88d01f9018cd3c09b0414"
+        },
+        {
+          "path": "apres/pluie-grille/0001.png",
+          "sha256": "649f5059f376284bade78f448cdfa1fe9e81860d12c01741ffe9cfc4b5fb1ffb"
+        },
+        {
+          "path": "apres/pluie-spray235/0000.png",
+          "sha256": "790f92c9017fbb686704ae9516c6d53c3d3e8614263e9a8d2fa4fcf2159761d5"
+        },
+        {
+          "path": "apres/pluie-spray235/0001.png",
+          "sha256": "1d079ad5560433300f7c39510b9eed9e25f55580cba09a818e9cd44c6a6018e4"
+        },
+        {
+          "path": "apres/tunnel/0000.png",
+          "sha256": "eaa3271be5dbcd235c648749226d46991ba7d21380ce4976312f644655ebf05d"
+        },
+        {
+          "path": "apres/tunnel/0001.png",
+          "sha256": "c561afa785dbbb179bcecbc400710a386325e0f6ff5a5b278503b31b69d62e1e"
+        }
+      ]
+    },
+    "inspectionReuse": {
+      "previousRunId": 44688763784,
+      "previousPngsInspected": 31,
+      "currentPngsIdentical": 21,
+      "effectiveParametersStatesAndObservationsIdentical": true,
+      "viewsAndSnowPngs": 21,
+      "completedReportsErrors": 0,
+      "pausePngsByteIdentical": true,
+      "scope": "Vues et neige uniquement ; pluie relancée décrite séparément dans rainRetry."
+    },
+    "completion": {
+      "passages": 15,
+      "candidateScenarios": 10,
+      "referenceScenarios": 5,
+      "pngs": 31,
+      "reportErrors": 0,
+      "imagesInspected": true
+    }
+  },
+  "qualificationHistory": [
+    {
+      "qualificationRunId": 44686881553,
+      "visualRunId": 44686881119,
+      "head": "4355cea7ad43de50529d9052a479f900cd68ab73",
+      "result": "142/143 ; captures non qualifiées",
+      "causes": [
+        "Contrat météo historique à cinq arguments au lieu de six.",
+        "Course de référence installée avant la fin du démarrage asynchrone, remplacée ensuite par titre/démo."
+      ],
+      "corrections": "Raccord réel exécuté avec sentinelles ; démarrage terminé avant référence, séance conservée et contrôlée.",
+      "receipt": "CI-PR24-INITIAL.json"
+    },
+    {
+      "qualificationRunId": 44688763745,
+      "visualRunId": 44688763784,
+      "head": "c1e4490c6fd3cba933bf7e1704755c907b8602d7",
+      "result": "143/143 ; 31 PNG inspectés, seul contrat Légère en échec",
+      "cause": "Le validateur exigeait des toiles rétro dynamiques alors que low prévoit des glaces peintes.",
+      "correction": "Absence obligatoire en Légère ; deux images en Fine solo, quatre en duo ; profil effectif contrôlé.",
+      "receipt": "CI-PR24-DEUXIEME.json"
+    },
+    {
+      "visualRunId": 44690920192,
+      "jobId": 136136231956,
+      "result": "cancelled après 35 minutes, quatre passages et huit PNG pluie complets ; tunnel non produit",
+      "runtimeOrWorkflowChangeForRetry": false,
+      "retryJobId": 136150737900
+    }
+  ],
+  "reserves": {
+    "constructionMs": {
+      "threshold": 150,
+      "Val-Brule": [
+        188
+      ],
+      "Haut-Col": [
+        154,
+        167
+      ]
+    },
+    "terrain": "Lignes diagonales sur les pentes claires présentes avant/après ; diagnostic du rendu restant, toute correction moteur passe par FERRO canonique."
+  },
+  "limits": {
+    "raster": "SwiftShader logiciel",
+    "referencePosesFrozen": true,
+    "completeDrivingCampaignQualified": false,
+    "hardwareFpsQualified": false,
+    "physicalControllersQualified": false,
+    "crossMachineNetworkQualified": false,
+    "siteDeployed": false,
+    "physicsAndEngineUnchanged": true
+  },
+  "continuation": {
+    "nextLot": "Monaco 14A : chaussée et limites à qualifier ; conserver les acquisitions closes.",
+    "monaco": "415 points OSM, 830 observations terrain acquises ; 32 écarts >1 m, 33 points tunnel ; chaussée, largeurs et dévers inconnus ; readyForRuntime=false.",
+    "playableCircuits": 8,
+    "plannedDestinations": 17,
+    "fullProgramme": "docs/reprise/CONTINUATION-AUTONOME-2026-11-19.md",
+    "monacoReceipt": "docs/references/monaco-2026/PUBLICATION-MESURES-20261120.json"
+  },
+  "mergeAllowedByThisReceipt": true,
+  "observedAt": "2026-11-20T08:02:53Z"
+}

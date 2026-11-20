@@ -129,8 +129,19 @@
     }
   },
   "ci": {
-    "statut": "a_realiser",
-    "visuel": "captures Chromium SwiftShader requises avant fusion"
+    "statut": "publie_et_verifie",
+    "pr": 24,
+    "head": "a57aabe5a8be7d5d1877447555f899dc7cfb2ba9",
+    "tree": "def0835e416192dd74a854db025b7d53890f6924",
+    "merge": "934132724de6eb368122868ce63feb341b7f9c73",
+    "qualificationRun": 44690920229,
+    "qualification": "143/143",
+    "sourcesVerifiees": 3309,
+    "visuelRun": 44690920192,
+    "visuel": "success : 15 passages et 31 PNG vérifiés et inspectés",
+    "pluieRelanceJob": 136150737900,
+    "recu": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/PUBLICATION-0261.json",
+    "historique": "Contrats de qualification corrigés et premier timeout pluie à 35 min conservés dans le reçu."
   },
   "reservesHistoriques": {
     "seuilMs": 150,
