@@ -103,13 +103,25 @@
     }
   ],
   "publication": {
-    "status": "qualified_locally_before_publication",
-    "branch": "codex/bitume-monaco-mesures-14a-20261120",
-    "ciResultNotYetObserved": true
+    "status": "published_on_main",
+    "pr": 22,
+    "head": "eaded11a0f265b7879e189436fae7d1c08d77152",
+    "merge": "f09c7008979103a7d2885f43407614ce58958e85",
+    "qualifiedTree": "96d42a09231718909d6af70cd88cd0a571c42d1f",
+    "ciResultNotYetObserved": false,
+    "receipt": "PUBLICATION-MESURES-20261120.json"
   },
   "remaining": [
     "Altitudes de chaussée distinctes des MNT, surtout tunnels et superpositions.",
     "Largeurs gauche/droite, dévers, limites de course, lignes FIA et portails.",
     "Politique saisonnière puis intégration de course ; aucune nouvelle destination jouable."
-  ]
+  ],
+  "ci": {
+    "runId": 44641222540,
+    "conclusion": "success",
+    "passed": 139,
+    "failed": 0,
+    "total": 139,
+    "archiveVerified": true
+  }
 }

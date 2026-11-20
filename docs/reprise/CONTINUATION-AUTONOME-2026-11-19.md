@@ -34,7 +34,7 @@ intégrés et qualifiés localement ; les paquets Monaco/Marseille n’ajoutent 
 | 12A–12F4 | Roues, quatre montes, usure, choix par pilote, service, réseau, stratégie des stands | Code livré jusqu'en 0.2.52 et adapté à p14 | Captures et mesures réelles encore ouvertes. |
 | 13A | Tracé et relief Baïkal | Livré, ID `baikal`, indice 7, graine 179 | Préserver tracé, départ et stands. |
 | **13B** | **Lac, berges rocheuses, promontoire, forêt boréale, clairières, hameau et saisons** | Intégré et qualifié localement avec le réalisme | Publier ; conserver les contrôles de piste/faune et les réserves matérielles. |
-| 14A | Sources Monaco 2026 | Boucle FIA/OSM conservée ; 830 observations terrain IGN et registre contrôlé sur 415 points, qualifiés localement | Chaussée non qualifiée ; 32 écarts >1 m entre produits, tunnels et niveaux à examiner. Largeurs/dévers inconnus. Voir `MONACO-MESURES-2026-11-20.md`. |
+| 14A | Sources Monaco 2026 | Boucle FIA/OSM conservée ; 830 observations terrain IGN et registre contrôlé sur 415 points, publiés ; CI 139/139 | Chaussée non qualifiée ; 32 écarts >1 m entre produits, tunnels et niveaux à examiner. Largeurs/dévers inconnus. Voir `MONACO-MESURES-2026-11-20.md`. |
 | 14B | Construction depuis un tracé explicite | Fondation intégrée et qualifiée ; 34 contrôles dédiés | Fournir les données du site, IA/grille/stands et qualifier la course avant catalogue. |
 | 14C | Murs, épingle, grille, IA et collisions Monaco | À réaliser après données/tracé | Enveloppes réelles de la voiture et séparation des rues voisines. |
 | 14D | Tunnel et voie des stands Monaco | À réaliser | Voies/couches explicites, progression et service corrects, météo/lumière. |

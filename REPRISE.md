@@ -7,7 +7,7 @@ Le jeu **0.2.60 / p14 / FERRO 0.3.15** est livré et clos : PR #20, reçu
 Le sous-lot actuel ajoute des données de préparation et des outils ; **aucune nouvelle course jouable**.
 Lire `docs/reprise/ETAT.json`, puis `docs/reprise/MONACO-MESURES-2026-11-20.md`.
 
-## Résultat local, prêt à publier
+## Sous-lot publié — PR #22
 
 Deux acquisitions IGN sur les mêmes **415 points OSM**, soit **830 observations de terrain**,
 avec requêtes, réponses, dates et empreintes figées. Les métadonnées WFS rattachent les 415 points
@@ -23,7 +23,8 @@ Les 33 points tagués tunnel et les fortes variations locales sont isolés pour 
 La génération hors réseau et `--check` concordent. Les six fichiers de référence OSM, le runtime,
 la version et le HTML restent identiques. La campagne locale 0.2.60 et son build ne sont pas relancés.
 Qualification : `docs/references/monaco-2026/qualification-mesures.json`.
-La CI de cette nouvelle préparation reste à constater à la publication, séparément du résultat local.
+CI PR #22 : **139/139 suites réussies**, aucun échec, archive vérifiée.
+Fusion `f09c7008979103a7d2885f43407614ce58958e85`. Reçu : `docs/references/monaco-2026/PUBLICATION-MESURES-20261120.json`.
 
 ## Ce qui reste ouvert
 
@@ -32,7 +33,7 @@ et les dévers du tracé restent `null` ; `readyForRuntime` reste faux. Une alti
 pas le niveau d'une route couverte ou portée par un ouvrage. Une résolution de 50 cm ne constitue
 pas une précision vérifiée de 50 cm. La largeur FIA isolée ne devient pas une largeur constante.
 
-Après publication de ce sous-lot, examiner les points signalés et acquérir des mesures de chaussée,
+La publication du sous-lot est close. Examiner les points signalés et acquérir des mesures de chaussée,
 limites de course et portails, datées et assorties d'incertitudes. Ne pas réacquérir la boucle OSM déjà
 résolue ni corriger son écart de −13,390 m par une mise à l'échelle. La politique saisonnière et
 l'intégration de course suivent les données. **14A complet n'est pas clos.**
