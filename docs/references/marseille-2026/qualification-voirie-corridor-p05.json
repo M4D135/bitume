@@ -1,0 +1,966 @@
+{
+  "schema": 1,
+  "subLot": "05C-marseille-voirie-corridor",
+  "baseMain": "1c71bb341d20df4328e5178497503ee4ad26a131",
+  "parentPublished": "3251b6b7d3d383046363b26ad7decd95a5438125",
+  "checkedUtc": "2026-11-20T17:26:40.104064+00:00",
+  "status": "sources_et_corridor_ouvert_qualifies_pas_de_circuit_jouable",
+  "readyForRuntime": false,
+  "checks": [
+    {
+      "command": "node --test verifications/marseille-voirie.test.mjs",
+      "exitCode": 0,
+      "tests": 6,
+      "passed": 6,
+      "failed": 0,
+      "log": "qualification-voirie-corridor-tests.log"
+    },
+    {
+      "command": "python3 tools/preparer-marseille-voirie.py --check",
+      "exitCode": 0,
+      "networkUsed": false
+    }
+  ],
+  "summary": {
+    "sourceFeatures": 305,
+    "roadAxes": 229,
+    "constructionAxes": 76,
+    "roadAxesWithExcludedZ": 23,
+    "excludedNonRoadOrFictitiousAxes": 41,
+    "sourceLevelsRoads": {
+      "0": 225,
+      "-1": 4
+    },
+    "tunnelEndpointRecords": 8,
+    "confirmedPortals": 0
+  },
+  "corridor": {
+    "status": "proposition_reconnaissance_non_choisie_comme_course",
+    "closed": false,
+    "exactXZJoins": 12,
+    "startXZ": [
+      -610,
+      430.20001220703125
+    ],
+    "endXZ": [
+      -610,
+      71.80000305175781
+    ],
+    "sourcePolylineLengthM": 1638.3978458038205,
+    "lengthIsCertifiedCourseLength": false,
+    "roadLevelsConfirmed": false,
+    "raceDirectionSelected": false,
+    "queryBboxLonLat": [
+      5.365266732,
+      43.29187771,
+      5.37521643,
+      43.29681657
+    ]
+  },
+  "preparationDependencies": {
+    "applyBefore": "05A",
+    "publishedCommit": "466afcd",
+    "publishedTreePrefix": "836336ed",
+    "reason": "Validateur de propriétés et d’axes BD TOPO partagé ; projection Marseille fournie explicitement, aucun calcul de proximité Monaco réutilisé.",
+    "tools": [
+      {
+        "file": "preparer-monaco-voirie.py",
+        "sha256": "1f86c43314d72d2e4ea17c71a1640a22adb3140a3a4ee0d11bcbde0367cdbd8f"
+      },
+      {
+        "file": "preparer-monaco-revue.py",
+        "sha256": "de3670a08d0b160f5d13a812ddd0438f13a674e044b533e8f385b014e5f798bc"
+      },
+      {
+        "file": "preparer-monaco-mesures.py",
+        "sha256": "d772112a4bbc3a73e142d8d2dbfbc39b796f7cfc778cc898a16c57a5ccb6c0c7"
+      },
+      {
+        "file": "preparer-monaco-14a.py",
+        "sha256": "20c054fc6ab2ff4cd0fec56d5ed66a3d358113db1419644d2655406e8b4ce996"
+      },
+      {
+        "file": "monaco_mesures.py",
+        "sha256": "a5240f589f4d9b2554b3bf3d2ff3d31386eadb43aba038c645814c55e1d40df9"
+      }
+    ]
+  },
+  "protectedFilesComparedToPublishedParent": [
+    {
+      "path": "FERRO.lock.json",
+      "gitBlob": "6083fd3ae347baf4fcd2adb06ac926b8d47c6bd1",
+      "bytes": 5522
+    },
+    {
+      "path": "SIZE.json",
+      "gitBlob": "5a6d55b12f022a9eeaf2e9daeb9a066b6d2d9149",
+      "bytes": 1993
+    },
+    {
+      "path": "VERSION.json",
+      "gitBlob": "3b1c93924dcb1b4864cf3154c541b7047ed0b3cc",
+      "bytes": 151
+    },
+    {
+      "path": "construire.py",
+      "gitBlob": "2cc9a552a300bbe97f279e578db5ddd351d0c82d",
+      "bytes": 9102
+    },
+    {
+      "path": "dist/bitume.html",
+      "gitBlob": "5ccafb129d40f11ec9ea9192f2607f7650809606",
+      "bytes": 14383155
+    },
+    {
+      "path": "docs/references/marseille-2026/METADONNEES-20261120.md",
+      "gitBlob": "47b13913983e2052bcac66809aa8835dc1fb8328",
+      "bytes": 4475
+    },
+    {
+      "path": "docs/references/marseille-2026/README.md",
+      "gitBlob": "c5c27f6312a85bcf79cc7723c4bccb2b50c32c37",
+      "bytes": 12219
+    },
+    {
+      "path": "docs/references/marseille-2026/coeur.json",
+      "gitBlob": "324dcd89c90819a3325431dc97f8ddaba8e4b054",
+      "bytes": 1993967
+    },
+    {
+      "path": "docs/references/marseille-2026/grille.json",
+      "gitBlob": "caae9ca180882ead625825f0195392d787d62682",
+      "bytes": 644537
+    },
+    {
+      "path": "docs/references/marseille-2026/inventaire.json",
+      "gitBlob": "eab65120a7bfe67b7cc9cfcf747bbf31cfd2a071",
+      "bytes": 2592842
+    },
+    {
+      "path": "docs/references/marseille-2026/metadonnees-grille.json",
+      "gitBlob": "20c4010b628bfd846ddc5621e9b22eefd599276b",
+      "bytes": 64841
+    },
+    {
+      "path": "docs/references/marseille-2026/qualification-metadonnees-p05.json",
+      "gitBlob": "e37aebf92676e0c055cd35b0d06fb85f11ce72d9",
+      "bytes": 23472
+    },
+    {
+      "path": "docs/references/marseille-2026/qualification-metadonnees-tests.log",
+      "gitBlob": "15f67053168cb030209203ed49e4d61d55616e9f",
+      "bytes": 640
+    },
+    {
+      "path": "docs/references/marseille-2026/qualification.json",
+      "gitBlob": "3eeb41f0b1864828062cb029e7d51abffa99ca38",
+      "bytes": 9082
+    },
+    {
+      "path": "docs/references/marseille-2026/sources-metadonnees.json",
+      "gitBlob": "268ae9c57bfd15eee260ba90b0891fbc58ac5372",
+      "bytes": 2792
+    },
+    {
+      "path": "docs/references/marseille-2026/sources.json",
+      "gitBlob": "90cbe86736c95d64af2da881a8d6e76c2e61e559",
+      "bytes": 9649
+    },
+    {
+      "path": "docs/references/marseille-2026/sources/emprise-ASSETS.md",
+      "gitBlob": "c2dd18e8227dc2eaf03dbfffcc8016cb0de9152e",
+      "bytes": 2753
+    },
+    {
+      "path": "docs/references/marseille-2026/sources/emprise-LANDMARKS.md",
+      "gitBlob": "be1ca63b7a526a808da6180c95aa3c109dbdb3e6",
+      "bytes": 6219
+    },
+    {
+      "path": "docs/references/marseille-2026/sources/emprise-WORLD.md",
+      "gitBlob": "0900a47396f170d6ef70285439d97943d1e09d4c",
+      "bytes": 4384
+    },
+    {
+      "path": "docs/references/marseille-2026/sources/emprise-marseille.js",
+      "gitBlob": "3ae57a817b1426cc969ea2de6e363dd083231355",
+      "bytes": 245035
+    },
+    {
+      "path": "docs/references/marseille-2026/sources/ign-grille-acquisition.json",
+      "gitBlob": "d13af7d2cfffc6c2e0f48dda4d506b26ab96185b",
+      "bytes": 658
+    },
+    {
+      "path": "docs/references/marseille-2026/sources/ign-grille-requete.json",
+      "gitBlob": "b684d1270a4fb98f8ec05cb7f774a35275f89422",
+      "bytes": 105738
+    },
+    {
+      "path": "docs/references/marseille-2026/sources/ign-grille.json",
+      "gitBlob": "f9ec995772c9758644ae9cb959bc70d0c34dfd01",
+      "bytes": 302653
+    },
+    {
+      "path": "docs/references/marseille-2026/sources/ign-ressource.json",
+      "gitBlob": "68214be9b729eb4fb1e495fb67e59eb60717234a",
+      "bytes": 1415
+    },
+    {
+      "path": "docs/references/marseille-2026/sources/ign-trois-points.json",
+      "gitBlob": "b5928313e53585938f502126721185aa3e365d14",
+      "bytes": 848
+    },
+    {
+      "path": "docs/references/marseille-2026/sources/metadonnees-20261120/lidar-tiles.geojson",
+      "gitBlob": "fff2f7597cf7ce03f4da9a49b34b7fd96f37ae26",
+      "bytes": 7620
+    },
+    {
+      "path": "docs/references/monaco-2026/PISTE-BDTOPO.md",
+      "gitBlob": "9c7a7ebab4ed3f02245918f88c2b7ab17ff50129",
+      "bytes": 2598
+    },
+    {
+      "path": "docs/references/monaco-2026/PUBLICATION-MESURES-20261120.json",
+      "gitBlob": "67874fc3882f3bb4cd303c039dc2d6209df81b84",
+      "bytes": 2953
+    },
+    {
+      "path": "docs/references/monaco-2026/PUBLICATION-REVUE-20261120.json",
+      "gitBlob": "0cc8c54fab135053e6ac1415aee7f3fd6386753e",
+      "bytes": 1012
+    },
+    {
+      "path": "docs/references/monaco-2026/README.md",
+      "gitBlob": "c65b5f63b5864dee793fffd47ef11c35b3dec940",
+      "bytes": 15557
+    },
+    {
+      "path": "docs/references/monaco-2026/REVUE-SOURCES-20261120.md",
+      "gitBlob": "f21015bf751aecf17dd34303916b7be79c02c9c3",
+      "bytes": 3647
+    },
+    {
+      "path": "docs/references/monaco-2026/VOIRIE-P05-20261120.md",
+      "gitBlob": "f82db0e47e044a6833b4bde94118c34f1befda5e",
+      "bytes": 4596
+    },
+    {
+      "path": "docs/references/monaco-2026/bdtopo-sonde.json",
+      "gitBlob": "a458e4d69b5189d718a671057d6a781a6d2d8bff",
+      "bytes": 2848
+    },
+    {
+      "path": "docs/references/monaco-2026/bilan-mesures.json",
+      "gitBlob": "153834132e2e16699eeed3e76d51dced63e1fd01",
+      "bytes": 7498
+    },
+    {
+      "path": "docs/references/monaco-2026/comparaison.json",
+      "gitBlob": "fbea096b86f54704bd2521c10c712d3fddaaa7e0",
+      "bytes": 1424
+    },
+    {
+      "path": "docs/references/monaco-2026/donnees.json",
+      "gitBlob": "e0c0092f90504214c98374547039606e613824d8",
+      "bytes": 371030
+    },
+    {
+      "path": "docs/references/monaco-2026/mesures-controlees.json",
+      "gitBlob": "9ecbef9b0041bf07469ccb0f5b23a2fa31b5aa25",
+      "bytes": 422380
+    },
+    {
+      "path": "docs/references/monaco-2026/mesures-terrain.json",
+      "gitBlob": "abeb75058224f628c0fca4f8ddcc42fcb454fb5e",
+      "bytes": 667275
+    },
+    {
+      "path": "docs/references/monaco-2026/plan.svg",
+      "gitBlob": "0600431117ee0ab4ae46fbe1c5378b375057635e",
+      "bytes": 13407
+    },
+    {
+      "path": "docs/references/monaco-2026/qualification-mesures.json",
+      "gitBlob": "8d255cfddc3c4c97ad2441eb2366082998c52a6b",
+      "bytes": 4063
+    },
+    {
+      "path": "docs/references/monaco-2026/qualification-revue-cartographie.json",
+      "gitBlob": "0d1a198244db969ffd3c400243293813e8986e14",
+      "bytes": 7311
+    },
+    {
+      "path": "docs/references/monaco-2026/qualification-revue.json",
+      "gitBlob": "89ecad239b0c2287b05c79860e84a9dbd78b53ad",
+      "bytes": 7532
+    },
+    {
+      "path": "docs/references/monaco-2026/qualification-voirie-p05-tests.log",
+      "gitBlob": "5e65f2c727000a7e61867d47b17e08bea1f772d2",
+      "bytes": 1013
+    },
+    {
+      "path": "docs/references/monaco-2026/qualification-voirie-p05.json",
+      "gitBlob": "5ba86fd0eb2c75a1147a80afb3cfd3ed29651524",
+      "bytes": 23569
+    },
+    {
+      "path": "docs/references/monaco-2026/qualification.json",
+      "gitBlob": "5ebc50cfb3a8d8ae6f36e859d39ef77a18cb58ca",
+      "bytes": 2127
+    },
+    {
+      "path": "docs/references/monaco-2026/reperes.json",
+      "gitBlob": "f0c888bc5eec74a756112b56ae2579823c7642a5",
+      "bytes": 6539
+    },
+    {
+      "path": "docs/references/monaco-2026/revue-chaussee.json",
+      "gitBlob": "b38eccf27a804692cea130d38769c93e8b293ca8",
+      "bytes": 205826
+    },
+    {
+      "path": "docs/references/monaco-2026/revue-chaussee.svg",
+      "gitBlob": "0a7bbac774cf816102ab02f6e54a31e8806e929b",
+      "bytes": 31158
+    },
+    {
+      "path": "docs/references/monaco-2026/revue-mesures.json",
+      "gitBlob": "fb97233458798ae2188cdee97f9cefe6674c09bd",
+      "bytes": 150368
+    },
+    {
+      "path": "docs/references/monaco-2026/revue-mesures.md",
+      "gitBlob": "5895c49fe8c40293a8f671107d0dd1d9672289d7",
+      "bytes": 7730
+    },
+    {
+      "path": "docs/references/monaco-2026/sources-mesures.json",
+      "gitBlob": "8d45ba3777c11f4ac54fb2f327f504ca86f2a7be",
+      "bytes": 27401
+    },
+    {
+      "path": "docs/references/monaco-2026/sources-voirie-p05.json",
+      "gitBlob": "7401320f756128254a99fa7fcd5f59afa4b430cf",
+      "bytes": 11483
+    },
+    {
+      "path": "docs/references/monaco-2026/sources.json",
+      "gitBlob": "d980b34942f0bbb94007838395c1150c39277bf0",
+      "bytes": 4141
+    },
+    {
+      "path": "docs/references/monaco-2026/sources/bdtopo-20261120/sonde-louis-ii.geojson",
+      "gitBlob": "874ddfe6e46fa194f42a6797bd19e9d7ea2c8234",
+      "bytes": 6210
+    },
+    {
+      "path": "docs/references/monaco-2026/sources/mesures-20261120/lidar-415.json",
+      "gitBlob": "fc53f115ca35cfab0047ff9c58d4fb9758f07fc3",
+      "bytes": 189892
+    },
+    {
+      "path": "docs/references/monaco-2026/sources/mesures-20261120/lidar-resource.json",
+      "gitBlob": "36a2f314aa20ea662a890f604b887de1247b382d",
+      "bytes": 1844
+    },
+    {
+      "path": "docs/references/monaco-2026/sources/mesures-20261120/lidar-tiles.geojson",
+      "gitBlob": "c51ac5ae442c658f937568995f0b240a758ddc45",
+      "bytes": 9616
+    },
+    {
+      "path": "docs/references/monaco-2026/sources/mesures-20261120/rge-415.json",
+      "gitBlob": "b7536b56100ac1cbd9ad9ebb8db9de07809c23eb",
+      "bytes": 766754
+    },
+    {
+      "path": "docs/references/monaco-2026/sources/mesures-20261120/rge-resource.json",
+      "gitBlob": "60fd8c0801732dc50b362af461a8a05b76c78da4",
+      "bytes": 62976
+    },
+    {
+      "path": "docs/references/monaco-2026/sources/osm-148194-v61.osm",
+      "gitBlob": "3be81d2bffb88ae0e9e26b0fa90973db2127399e",
+      "bytes": 117107
+    },
+    {
+      "path": "docs/references/monaco-2026/sources/osm-ostende-monte-carlo.osm",
+      "gitBlob": "739810d03da17fdebea68b8ab7e37ab73e49854f",
+      "bytes": 279194
+    },
+    {
+      "path": "docs/references/monaco-2026/sources/osm-way-1551240829-v1.osm",
+      "gitBlob": "3fe93100bb5a165c40ca8e0cf5d2ad197cdc87df",
+      "bytes": 774
+    },
+    {
+      "path": "docs/references/monaco-2026/sources/voirie-p05-20261120/constructions-prioritaires.geojson",
+      "gitBlob": "1ee7370ebd23f8e4ea652ba9176af2e4f5d43b04",
+      "bytes": 28391
+    },
+    {
+      "path": "docs/references/monaco-2026/sources/voirie-p05-20261120/mirabeau-bas.geojson",
+      "gitBlob": "dd622c81dd8add14fb68b992f01a66ef821c7124",
+      "bytes": 5922
+    },
+    {
+      "path": "docs/references/monaco-2026/sources/voirie-p05-20261120/portier.geojson",
+      "gitBlob": "f8b0458b48b320b3b0b060fc5dfc9280dda93976",
+      "bytes": 14325
+    },
+    {
+      "path": "docs/references/monaco-2026/sources/voirie-p05-20261120/tabac-quais.geojson",
+      "gitBlob": "9957121b1624a2086fbb8c7006d245799417d3eb",
+      "bytes": 16857
+    },
+    {
+      "path": "docs/references/monaco-2026/topologie.json",
+      "gitBlob": "9ebd00331d6566c0a023b7c3c3b92d3d33e9da8f",
+      "bytes": 1584
+    },
+    {
+      "path": "docs/references/monaco-2026/voirie-p05.json",
+      "gitBlob": "3888d83fb24f8b58bde98f7bbed1a06c4746984f",
+      "bytes": 522874
+    },
+    {
+      "path": "docs/references/monaco-2026/voirie-p05.md",
+      "gitBlob": "f5566e817fa411ee32b420acbb370d071898801f",
+      "bytes": 2272
+    },
+    {
+      "path": "src/ambiance.js",
+      "gitBlob": "0f505fbea52259f1e098421714dfe6743773c269",
+      "bytes": 3005
+    },
+    {
+      "path": "src/animaux.js",
+      "gitBlob": "c87e391007d267dec06a7ea473e988f627963871",
+      "bytes": 150501
+    },
+    {
+      "path": "src/aurores.js",
+      "gitBlob": "89fd70a1074479d633fbc6d018ae78566fc809a3",
+      "bytes": 7324
+    },
+    {
+      "path": "src/autoconfig.js",
+      "gitBlob": "85349b7bb10304b775a59b4dfbce2e01781f52fc",
+      "bytes": 32656
+    },
+    {
+      "path": "src/baikal.js",
+      "gitBlob": "354cdb9b98e156fdea287709bf5b66b308fb4012",
+      "bytes": 7810
+    },
+    {
+      "path": "src/batiments.js",
+      "gitBlob": "d3662f1afd5553a36bbeaa21c6ac985b625174a6",
+      "bytes": 14306
+    },
+    {
+      "path": "src/bords.js",
+      "gitBlob": "c09e288064c4613cc1bf4f55f5315fb15b71ff1c",
+      "bytes": 29964
+    },
+    {
+      "path": "src/botanique.js",
+      "gitBlob": "3080033268b6eccf0214e020591a5c2b0c7bf490",
+      "bytes": 21169
+    },
+    {
+      "path": "src/cadence.js",
+      "gitBlob": "50890a29e4fff146178b7d2f1e0135ec771e59c8",
+      "bytes": 41306
+    },
+    {
+      "path": "src/carene.js",
+      "gitBlob": "add629f6c14343b2bf8704fa2e3fe5454f263e01",
+      "bytes": 16443
+    },
+    {
+      "path": "src/chaussee.js",
+      "gitBlob": "ecaa14f0f88be27887e396f45b4f20e0f8996207",
+      "bytes": 2043
+    },
+    {
+      "path": "src/cinema.js",
+      "gitBlob": "e0071c5a136c7dc6533e15a4463c44126c355e1c",
+      "bytes": 26128
+    },
+    {
+      "path": "src/circuit.js",
+      "gitBlob": "0b832ce6dc556be05d055b84ce22a50c41469c10",
+      "bytes": 32385
+    },
+    {
+      "path": "src/cockpit-matieres.js",
+      "gitBlob": "839c0cdaed0a0fb98ef538a816477e222fa7dc26",
+      "bytes": 1397
+    },
+    {
+      "path": "src/conditions-course.js",
+      "gitBlob": "390d6e196b4fddbad894870d5d6a98cb99861a9a",
+      "bytes": 17868
+    },
+    {
+      "path": "src/conduite.js",
+      "gitBlob": "4e3e1254699cfb5958f8bef81787f9215b00c0d3",
+      "bytes": 54135
+    },
+    {
+      "path": "src/contacts.js",
+      "gitBlob": "158e47921d7a24899d4e62b68d4f2eb48c8a1be9",
+      "bytes": 8314
+    },
+    {
+      "path": "src/course.js",
+      "gitBlob": "d0d6a55395c4dfa30894b591e4c273d48e0d6255",
+      "bytes": 59184
+    },
+    {
+      "path": "src/couverts.js",
+      "gitBlob": "675d74dfff31cb8eb3e614d0f77adaf891c55a33",
+      "bytes": 12871
+    },
+    {
+      "path": "src/decor.js",
+      "gitBlob": "9e90771c4d041d1435eeb0d1e2463799ba467b49",
+      "bytes": 131695
+    },
+    {
+      "path": "src/degats.js",
+      "gitBlob": "d81b0b47544ff572ddf5d9989d505f055e0e0af4",
+      "bytes": 6201
+    },
+    {
+      "path": "src/echappement.js",
+      "gitBlob": "b49a1d162f39f37a580591ee2576afcbc0e541e5",
+      "bytes": 30407
+    },
+    {
+      "path": "src/ecologie.js",
+      "gitBlob": "e51125e407eb5c3e87aca73a538da478e249b8e5",
+      "bytes": 3127
+    },
+    {
+      "path": "src/effets-saison.js",
+      "gitBlob": "5997f8a1c1506e3ef06d2f4a58bf2385c65aeb93",
+      "bytes": 17336
+    },
+    {
+      "path": "src/expressions-pilote.js",
+      "gitBlob": "efe8608854883fb7a7b7906e7bdd0bc22e9eb4c8",
+      "bytes": 12096
+    },
+    {
+      "path": "src/faune.js",
+      "gitBlob": "cb7ea66462d4aa1e3269fef4eb443dfd16faf8df",
+      "bytes": 27962
+    },
+    {
+      "path": "src/ferro/audio.js",
+      "gitBlob": "af3bce469bc67ba2c8e50075c1e4c9aed37ef9e1",
+      "bytes": 77233
+    },
+    {
+      "path": "src/ferro/backends.js",
+      "gitBlob": "d01331e685bb52f26888a4cc8c2116fb7f55b3b2",
+      "bytes": 4652
+    },
+    {
+      "path": "src/ferro/brain.js",
+      "gitBlob": "b9521d890aadc49478e9c23d3d7417219e9957d2",
+      "bytes": 8923
+    },
+    {
+      "path": "src/ferro/crowd-webgpu.js",
+      "gitBlob": "fa513856ddd58860871d5f6f1dabc760e8b18527",
+      "bytes": 17138
+    },
+    {
+      "path": "src/ferro/crowd.js",
+      "gitBlob": "eb367bf9ca45bc49d82b64f22512253d4121e37f",
+      "bytes": 59966
+    },
+    {
+      "path": "src/ferro/demo.js",
+      "gitBlob": "af2ea179dc1a0cf16f88687b16d7c0cad6259640",
+      "bytes": 28562
+    },
+    {
+      "path": "src/ferro/destruction.js",
+      "gitBlob": "d09f2fe0e378df0ed6b604dafab818a484b8afc1",
+      "bytes": 42672
+    },
+    {
+      "path": "src/ferro/effects.js",
+      "gitBlob": "8cd58ef870cd6a5041731410cb827484c5235bdb",
+      "bytes": 20784
+    },
+    {
+      "path": "src/ferro/engine.js",
+      "gitBlob": "7cb6517950c501b89e9b106d5291dc3446049110",
+      "bytes": 2025
+    },
+    {
+      "path": "src/ferro/fmath.js",
+      "gitBlob": "a8020d15c3755e0bcdb475c624a76294a539f91f",
+      "bytes": 19961
+    },
+    {
+      "path": "src/ferro/gpu-profile.js",
+      "gitBlob": "0877284f2fd322dbc6b437dc2c8c8f93c1e78574",
+      "bytes": 2548
+    },
+    {
+      "path": "src/ferro/imuse.js",
+      "gitBlob": "0a57f3e6189094721dd7d4f4c5aaed61838f4d07",
+      "bytes": 10260
+    },
+    {
+      "path": "src/ferro/input.js",
+      "gitBlob": "3f67bb1d56d0f5392c471e88fe26e70060abd1e4",
+      "bytes": 17991
+    },
+    {
+      "path": "src/ferro/jobs.js",
+      "gitBlob": "8979c182d19ce19c8212e7d94b1681c8b0e4d52c",
+      "bytes": 5829
+    },
+    {
+      "path": "src/ferro/loop.js",
+      "gitBlob": "2cd067a98af8fbeeb6fa89fa54b3db94ce17f2d8",
+      "bytes": 7685
+    },
+    {
+      "path": "src/ferro/materials.js",
+      "gitBlob": "c6780913a1319001822d8ce247147b26cff715e0",
+      "bytes": 1866
+    },
+    {
+      "path": "src/ferro/motion.js",
+      "gitBlob": "6b12360fca118453e021b1f92e9b6bae5c7395d0",
+      "bytes": 8452
+    },
+    {
+      "path": "src/ferro/music.js",
+      "gitBlob": "9a5ec62b807489a71c78ec4157a4fdfb635bba58",
+      "bytes": 61763
+    },
+    {
+      "path": "src/ferro/navigation.js",
+      "gitBlob": "2ae15c57370395c6f286a21dea3bd40ee890ad21",
+      "bytes": 18607
+    },
+    {
+      "path": "src/ferro/passages.js",
+      "gitBlob": "8d01f50dc397c571cc28041db55652d796ed799d",
+      "bytes": 10190
+    },
+    {
+      "path": "src/ferro/physics-geometry.js",
+      "gitBlob": "8d40b005d1269d7644de616b5cb9a0a025b462d2",
+      "bytes": 19455
+    },
+    {
+      "path": "src/ferro/physics.js",
+      "gitBlob": "32f729393d6da2fac74699ed5262c05992b4046d",
+      "bytes": 81287
+    },
+    {
+      "path": "src/ferro/physx-runtime.js",
+      "gitBlob": "98a6e986852a3d4d779a84ed15ca3673319cb4ba",
+      "bytes": 12063280
+    },
+    {
+      "path": "src/ferro/physx.js",
+      "gitBlob": "5769655d95f77dc3e95cabcb7d88da6edbc47f4d",
+      "bytes": 29091
+    },
+    {
+      "path": "src/ferro/recipes.js",
+      "gitBlob": "accec6a6210326b0e7c6dcaf424f88fd3a833390",
+      "bytes": 10939
+    },
+    {
+      "path": "src/ferro/reflections.js",
+      "gitBlob": "f6c6677dd57ed0c1916b9e0a2589db12e3ee771d",
+      "bytes": 11548
+    },
+    {
+      "path": "src/ferro/schedule.js",
+      "gitBlob": "966d538c06bcc5cef3f7b3b63649341318cbb9f9",
+      "bytes": 4221
+    },
+    {
+      "path": "src/ferro/skies.js",
+      "gitBlob": "c0355ce177892c53344201604b8a0ccf8878bcbe",
+      "bytes": 23094
+    },
+    {
+      "path": "src/ferro/surface.js",
+      "gitBlob": "017271a036bec6191a98ee92d8e5ed2004643490",
+      "bytes": 3419
+    },
+    {
+      "path": "src/ferro/vehicle-dynamics.js",
+      "gitBlob": "fe0f013f0c89bddea87182d55b19aaf6b5f227cc",
+      "bytes": 3980
+    },
+    {
+      "path": "src/ferro/webgpu-renderer.js",
+      "gitBlob": "6f61aa5a9d446167499cd39d3baf2b525c8c53a4",
+      "bytes": 60445
+    },
+    {
+      "path": "src/ferro/webgpu-shaders.js",
+      "gitBlob": "308ef1e799fa509716716cecc637e08ed76063f8",
+      "bytes": 504851
+    },
+    {
+      "path": "src/graphismes.js",
+      "gitBlob": "d6404ff462ab516538654d71cf85db0045bf6b1f",
+      "bytes": 22491
+    },
+    {
+      "path": "src/humain-corps.js",
+      "gitBlob": "6c7877258388e1ef63ae5b65f83611214c3706d3",
+      "bytes": 3116
+    },
+    {
+      "path": "src/humain-donnees.js",
+      "gitBlob": "c520f985d4f66daa37258eb220d9702cf7718939",
+      "bytes": 4559
+    },
+    {
+      "path": "src/index.html",
+      "gitBlob": "99ee7d94f6f7ed648aaa6d2ea9530a233bb84b6d",
+      "bytes": 55698
+    },
+    {
+      "path": "src/jeu.js",
+      "gitBlob": "cf07b58de6046a765ff4be0e299d5fb03d305745",
+      "bytes": 344196
+    },
+    {
+      "path": "src/main.js",
+      "gitBlob": "82f8658dca9586c5fe9fd0263a25163d4a381e2b",
+      "bytes": 10333
+    },
+    {
+      "path": "src/mesures.js",
+      "gitBlob": "4950a299a7db1c89643d5fcb4eb724e0b10984ea",
+      "bytes": 19248
+    },
+    {
+      "path": "src/meteo.js",
+      "gitBlob": "d4be706a234ca2b20e8dd706c004f8b16a8ef148",
+      "bytes": 14928
+    },
+    {
+      "path": "src/moteur/PROVENANCE.md",
+      "gitBlob": "49589d4c371e7184d68b09cae4dda6bdcb113405",
+      "bytes": 10471
+    },
+    {
+      "path": "src/moteur/renderer.js",
+      "gitBlob": "1675c6415bb6cd3d1f3f9f58aeabd613d06e7e4b",
+      "bytes": 313289
+    },
+    {
+      "path": "src/navigation-menu.js",
+      "gitBlob": "92107f2a3787c27ff14b4a62c33d5855435e1d39",
+      "bytes": 12161
+    },
+    {
+      "path": "src/obstacles.js",
+      "gitBlob": "1fa2a31d4e218e6485319eab40ca3393d6cc0120",
+      "bytes": 18724
+    },
+    {
+      "path": "src/ombres.js",
+      "gitBlob": "d586c32e1bea919bb30a94b3181ba4e1e6c144af",
+      "bytes": 12015
+    },
+    {
+      "path": "src/physique.js",
+      "gitBlob": "1c5d060b7314c0d863324b65eeb200008b3c45c3",
+      "bytes": 20158
+    },
+    {
+      "path": "src/pneus-reseau.js",
+      "gitBlob": "8519a8e08bf81d630e14742220afa2bf66418bf4",
+      "bytes": 9636
+    },
+    {
+      "path": "src/pneus.js",
+      "gitBlob": "5381dba5f7854a2472c50ff44fe00d2fcf2243f5",
+      "bytes": 9420
+    },
+    {
+      "path": "src/public.js",
+      "gitBlob": "e1f3f50a74cc24094cecaf5d91032f570edb3944",
+      "bytes": 94461
+    },
+    {
+      "path": "src/qualite.js",
+      "gitBlob": "605287e592030703a227e952bb0b9429ff82d773",
+      "bytes": 5329
+    },
+    {
+      "path": "src/realisateur.js",
+      "gitBlob": "b8ce3bd1d5c11f55c377b635c713c0dbcfc502d4",
+      "bytes": 13904
+    },
+    {
+      "path": "src/reseau.js",
+      "gitBlob": "de9d3dbb6d84eb0b169a8e6c0de3f33cee299f1c",
+      "bytes": 19415
+    },
+    {
+      "path": "src/route-des-cimes-decor.js",
+      "gitBlob": "3d6e1de4161f7f26a1de93abe1f4681f7592e902",
+      "bytes": 6881
+    },
+    {
+      "path": "src/route-des-cimes.js",
+      "gitBlob": "7e5db75ad4212b34a315976f464d66c8b81ed6a2",
+      "bytes": 24290
+    },
+    {
+      "path": "src/saisons.js",
+      "gitBlob": "616e4231225f3c63f36c1d31f5b9529d3d05226c",
+      "bytes": 5285
+    },
+    {
+      "path": "src/scene-bench.js",
+      "gitBlob": "0af5bb63cae514c9c2a215eba245e0b5f2e1522a",
+      "bytes": 23081
+    },
+    {
+      "path": "src/sillage.js",
+      "gitBlob": "4e7ecf652b5775f768258167038c8ae65cc443e0",
+      "bytes": 6008
+    },
+    {
+      "path": "src/solides-physx.js",
+      "gitBlob": "70b81297a8fd888a6f8ed8979a739e0574826d6d",
+      "bytes": 8703
+    },
+    {
+      "path": "src/son.js",
+      "gitBlob": "4fbf59cdbd332a0ad8246cae3d8870dafcb01b0e",
+      "bytes": 39168
+    },
+    {
+      "path": "src/strategie-stands.js",
+      "gitBlob": "a2659322443267c36d20b6bb4cb93c2387892447",
+      "bytes": 17278
+    },
+    {
+      "path": "src/style.css",
+      "gitBlob": "8ae251ae12c3d6c007766b2f4f1e3bf79d49790a",
+      "bytes": 56816
+    },
+    {
+      "path": "src/traces.js",
+      "gitBlob": "86c20700301d76639de310c2458493da4806aa33",
+      "bytes": 45633
+    },
+    {
+      "path": "src/usure-pneus.js",
+      "gitBlob": "a49dd8f1aeac97c7ec8c36e3eabdf75981b87290",
+      "bytes": 5633
+    },
+    {
+      "path": "src/vegetation.js",
+      "gitBlob": "339cfa566656154b758d79704bbd069ea59a0f92",
+      "bytes": 37443
+    },
+    {
+      "path": "src/vibrations.js",
+      "gitBlob": "c85773c1ef3829f5a22e9a603472f9378e018105",
+      "bytes": 13482
+    },
+    {
+      "path": "src/virages.js",
+      "gitBlob": "f251b51a8189d8706664afb248a1c65e44d2fa68",
+      "bytes": 10206
+    },
+    {
+      "path": "src/visiere-optique.js",
+      "gitBlob": "52a61af9f0c8280a6c139c2d0b8bab8acafd1d13",
+      "bytes": 31259
+    },
+    {
+      "path": "src/vitre.js",
+      "gitBlob": "dbd19102cf7ba59b7c074fcb215ee050ce5b5e90",
+      "bytes": 26590
+    },
+    {
+      "path": "src/voiture.js",
+      "gitBlob": "d99c4dea3be6b3282af6c737bcab8121f6395b9a",
+      "bytes": 149865
+    },
+    {
+      "path": "tools/preparer-marseille-metadonnees.mjs",
+      "gitBlob": "74a83b94eb3cc92081a90eb57c07fd8595ca08bd",
+      "bytes": 8768
+    },
+    {
+      "path": "tools/preparer-monaco-voirie.py",
+      "gitBlob": "79043219bb0dff8b428bfd1edac023855551bc2e",
+      "bytes": 21610
+    },
+    {
+      "path": "verifications/marseille-metadonnees.test.mjs",
+      "gitBlob": "1f0877cd82fee581b53949f5a06ab30cefb10138",
+      "bytes": 5855
+    },
+    {
+      "path": "verifications/monaco-voirie.test.mjs",
+      "gitBlob": "3b317428dc43d612c401968d717e8684bbdcd218",
+      "bytes": 10318
+    }
+  ],
+  "runtimeChanged": false,
+  "buildProduced": false,
+  "deploymentPerformed": false,
+  "files": [
+    {
+      "path": "tools/preparer-marseille-voirie.py",
+      "bytes": 14899,
+      "sha256": "601dd1864db55d1955dd3b0c5b8b1453256ac5ed05220f358da177e1cfa00750"
+    },
+    {
+      "path": "verifications/marseille-voirie.test.mjs",
+      "bytes": 8437,
+      "sha256": "9025722515216d39de4f9bc58de55d1c26e8436edac05a98812cf88fba6e127c"
+    },
+    {
+      "path": "docs/references/marseille-2026/sources-voirie-corridor-p05.json",
+      "bytes": 8728,
+      "sha256": "e3a8bd830974e5a7c5ccf4c311518aefd5084e5ad36b39e365dd5aea12c20238"
+    },
+    {
+      "path": "docs/references/marseille-2026/voirie-corridor-p05.json",
+      "bytes": 609040,
+      "sha256": "48c53db92a8a74e25a38c192610bd8262c9507071d5f57f2c490d4a39bc78711"
+    },
+    {
+      "path": "docs/references/marseille-2026/voirie-corridor-p05.md",
+      "bytes": 2914,
+      "sha256": "8b2382f9501beb7c91a3023db8fe77b0603746d6d945f4e3d64557b94b2de9f3"
+    },
+    {
+      "path": "docs/references/marseille-2026/qualification-voirie-corridor-tests.log",
+      "bytes": 802,
+      "sha256": "5aa48c928ffe2525347746b25fadc00a78d728631bcd096ef23a73eeb15c73d7"
+    }
+  ],
+  "stagingNote": "Une premiere commande a demande new_files au lieu de newFiles dans le manifeste de copie ; aucune source copiee ni aucun test execute lors de cette commande. Copie corrigee et empreintes integralement verifiees avant les six tests ci-dessus."
+}
