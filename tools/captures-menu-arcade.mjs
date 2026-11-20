@@ -31,6 +31,20 @@ page.on('pageerror', e => rapport.erreurs.push(e.message));
 const notes = (nom, preuve = {}) => { rapport.controles.push({ nom, statut: 'ok', ...preuve }); console.log('OK ' + nom); };
 const lire = () => page.evaluate(() => ({ ecran: BITUME_JEU.ecran, menu: BITUME_JEU.menuArcade, reglages: BITUME_JEU.reglages, dessins: __menuEssai.dessins, vibrations: __menuEssai.vibrations, session: { i: BITUME_JEU.session?.i, type: BITUME_JEU.session?.type } }));
 const ecran = n => page.waitForFunction(n => window.BITUME_JEU?.ecran === n, n, { timeout: 120000 });
+async function attendreTitre(phase) {
+  const pret = () => window.BITUME_JEU?.ecran === 'titre' && document.getElementById('titre')?.hidden === false && document.getElementById('autodetection')?.hidden === true;
+  await page.waitForFunction(() => window.BITUME_JEU && (BITUME_JEU.ecran === 'titre' || document.getElementById('autodetection')?.hidden === false), null, { timeout: 120000 });
+  const passer = page.locator('#detection-annuler');
+  if (await passer.isVisible()) {
+    try { await passer.click({ timeout: 2000 }); }
+    catch (erreur) {
+      // L'autodétection peut finir pendant l'attente de stabilité du bouton. Ne tolérer que cet état final observé.
+      if (!await page.evaluate(pret).catch(() => false)) throw erreur;
+      (rapport.autodetection ||= []).push({ phase, statut: 'terminee_pendant_clic', titreVisible: true, detectionFermee: true });
+    }
+  }
+  await page.waitForFunction(pret, null, { timeout: 120000 });
+}
 async function bouton(n, controleur = 0) {
   await page.evaluate(({ n, controleur }) => { const p = __menuEssai.pads[controleur]; p.timestamp = performance.now(); p.buttons[n].pressed = true; p.buttons[n].value = 1; }, { n, controleur });
   await page.waitForTimeout(90);
@@ -95,9 +109,7 @@ async function cadragePaysage(n) {
 }
 try {
   await page.goto(args.url, { waitUntil: 'load', timeout: 120000 });
-  await page.waitForFunction(() => window.BITUME_JEU && (BITUME_JEU.ecran === 'titre' || !document.getElementById('autodetection').hidden), null, { timeout: 120000 });
-  if (await page.locator('#detection-annuler').isVisible()) await page.locator('#detection-annuler').click();
-  await ecran('titre'); await calme('Titre opaque sans rendu caché');
+  await attendreTitre('ouverture'); await calme('Titre opaque sans rendu caché');
   await page.locator('[data-aller="course"]').focus(); await page.keyboard.press('Enter'); await ecran('preparation');
   assert.equal(await page.locator('#circuits [role="radio"]').count(), 9);
   await page.locator('#circuits [aria-checked="true"]').focus(); await page.keyboard.press('End');
@@ -166,7 +178,7 @@ try {
   await page.locator('#l-code').focus(); await bouton(0, 1); await capture('saisie-manette'); await bouton(1, 1);
   notes('Deuxième manette : code sans clavier, brouillon et annulation du nom');
   assert.equal((await lire()).vibrations, 0); notes('Aucune vibration dans les menus');
-  await page.reload({waitUntil:'load'}); await ecran('titre');
+  await page.reload({waitUntil:'load'}); await attendreTitre('rechargement');
   r = await lire(); assert.deepEqual(r.reglages.trollPilotes, [{ geste:'poing',klaxon:'ancien' },{ geste:'salut',klaxon:'mariage' }]);
   assert.equal(r.reglages.saison,'hiver'); notes('Persistance après rechargement des conditions et choix des deux pilotes');
   await page.locator('[data-aller="course"]').click(); await ecran('preparation');

@@ -7,9 +7,9 @@
   "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "branche_proposee": "codex/bitume-p03-menu-20261120",
   "branche_reelle": "codex/bitume-p03-menu-20261120",
-  "head": "f14d6dae4c1616d83764a2cabbb448e21f8be3c2",
+  "head": "2d0faaa879381cc2d43e164d7f729f0e0bb7b586",
   "pr": "https://github.com/M4D135/bitume/pull/40",
-  "sous_lot": "M1.2 — affichage paysage et reprise du défilement",
+  "sous_lot": "M1.3 — synchronisation du banc avec la fin de détection graphique",
   "preuves": [
     "21/21 contrôles navigation menu.",
     "12 contrôles aperçu : 9 circuits × 144 rotations × 6 formats, arrêt caché et mouvement réduit.",
@@ -18,7 +18,8 @@
     "Contrats pour 00 et 01 publiés dans raccordements/03.md et 03-TROLL.md.",
     "CI 44782221455 : cinq scénarios réels réussis et capture du tracé complet ; arrêt du banc sur Start envoyé dès la première frame après reprise (front tenu correctement consommé). Banc corrigé : deux frames neutres.",
     "CI dédiée 44782638763 réussie : 19 parcours Chromium, 14 captures, aucune exception JavaScript. Relecture : bureau/portrait lisibles ; correction du tracé et du bilan coupés en paysage en cours.",
-    "Comparaison au main récent : 131 contrôles existants et 35 groupes nommés conservés, raccord applicable sans changement de jeu.js/construire.py."
+    "Comparaison au main récent : 131 contrôles existants et 35 groupes nommés conservés, raccord applicable sans changement de jeu.js/construire.py.",
+    "CI 44784147128 : construction et 196 contrôles ciblés réussis, arrêt du banc avant premier scénario car Passer a disparu pendant le clic à la fin naturelle de la détection ; titre atteint, aucune exception JS. Attente corrigée sans changement runtime."
   ],
   "reserves": [
     "Requalification du paysage 844×390 après compaction et retour du défilement au début à chaque changement d’étape.",
