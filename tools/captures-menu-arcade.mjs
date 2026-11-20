@@ -17,10 +17,14 @@ const context = await browser.newContext({ viewport: { width: 1440, height: 900 
 const reglagesInit = { qualite: 'low', cadence: '60', retro: 'non', vegetation: 'low', faune: 'off', demo: 'non', meteo: 'soleil', saison: 'ete', saisonMode: 'manuel', moment: 'jour', momentMode: 'manuel', meteoMode: 'manuel' };
 await context.addInitScript(reglagesInit => {
   if (!localStorage.getItem('bitume.reglages')) localStorage.setItem('bitume.reglages', JSON.stringify(reglagesInit));
-  window.__menuEssai = { vibrations: 0, dessins: 0, pads: [] };
+  window.__menuEssai = { vibrations: 0, dessins: 0, pads: [], lecturesManettes: 0, transitionManette: null };
   const etat = window.__menuEssai;
   for (let n = 0; n < 2; n++) etat.pads.push({ index: n, id: 'Manette simulee ' + n, connected: true, mapping: 'standard', timestamp: 0, axes: [0, 0, 0, 0], buttons: Array.from({ length: 17 }, () => ({ pressed: false, touched: false, value: 0 })), vibrationActuator: { playEffect() { etat.vibrations++; return Promise.resolve('complete'); }, reset() { return Promise.resolve('complete'); } } });
-  Object.defineProperty(navigator, 'getGamepads', { value: () => etat.pads });
+  Object.defineProperty(navigator, 'getGamepads', { value: () => {
+    etat.lecturesManettes++;
+    if (etat.transitionManette) etat.transitionManette.lectures++;
+    return etat.pads;
+  } });
   for (const type of [window.WebGLRenderingContext, window.WebGL2RenderingContext]) if (type) for (const nom of ['drawArrays', 'drawElements', 'drawArraysInstanced', 'drawElementsInstanced']) {
     const ancien = type.prototype[nom]; if (!ancien) continue;
     type.prototype[nom] = function (...a) { etat.dessins++; return ancien.apply(this, a); };
@@ -30,7 +34,7 @@ const page = await context.newPage();
 page.setDefaultTimeout(15000);
 page.on('pageerror', e => rapport.erreurs.push(e.message));
 const notes = (nom, preuve = {}) => { rapport.controles.push({ nom, statut: 'ok', ...preuve }); console.log('OK ' + nom); };
-const lire = () => page.evaluate(() => ({ ecran: BITUME_JEU.ecran, menu: BITUME_JEU.menuArcade, reglages: BITUME_JEU.reglages, dessins: __menuEssai.dessins, vibrations: __menuEssai.vibrations, session: { i: BITUME_JEU.session?.i, type: BITUME_JEU.session?.type } }));
+const lire = () => page.evaluate(() => ({ ecran: BITUME_JEU.ecran, menu: BITUME_JEU.menuArcade, reglages: BITUME_JEU.reglages, dessins: __menuEssai.dessins, vibrations: __menuEssai.vibrations, session: { i: BITUME_JEU.session?.i, type: BITUME_JEU.session?.type }, manettesSimulees: { lectures: __menuEssai.lecturesManettes, transition: __menuEssai.transitionManette } }));
 const ecran = n => page.waitForFunction(n => window.BITUME_JEU?.ecran === n, n, { timeout: 120000 });
 const deuxImages = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 async function attendreTitre(phase) {
@@ -48,10 +52,30 @@ async function attendreTitre(phase) {
   await page.waitForFunction(pret, null, { timeout: 120000 });
 }
 async function bouton(n, controleur = 0) {
-  await page.evaluate(({ n, controleur }) => { const p = __menuEssai.pads[controleur]; p.timestamp = performance.now(); p.buttons[n].pressed = true; p.buttons[n].value = 1; }, { n, controleur });
-  await page.waitForTimeout(90);
-  await page.evaluate(({ n, controleur }) => { const p = __menuEssai.pads[controleur]; p.buttons[n].pressed = false; p.buttons[n].value = 0; }, { n, controleur });
-  await page.waitForTimeout(90);
+  for (const appuye of [true, false]) {
+    await page.evaluate(({ n, controleur, appuye }) => {
+      const p = __menuEssai.pads[controleur], depuis = performance.now();
+      p.timestamp = depuis; Object.assign(p.buttons[n], { pressed: appuye, touched: appuye, value: Number(appuye) });
+      const transition = __menuEssai.transitionManette = { bouton: n, controleur, appuye, depuis, images: 0, lectures: 0 };
+      requestAnimationFrame(() => { transition.images++; requestAnimationFrame(() => transition.images++); });
+    }, { n, controleur, appuye });
+    // Le jeu échantillonne les boutons en RAF. Un simple délai peut perdre un appui ou un relâchement
+    // sur un runner ralenti : chacun doit traverser deux images ET deux lectures réelles de la manette.
+    await page.waitForFunction(() => {
+      const t = __menuEssai.transitionManette;
+      return t.images >= 2 && t.lectures >= 2 && performance.now() - t.depuis >= 90;
+    });
+  }
+}
+async function retourTitreManette(parcours) {
+  assert.equal((await lire()).menu.etape, 3, parcours + ' : départ du bilan');
+  for (const etapeAttendue of [2, 1, 0, null]) {
+    await bouton(1);
+    const etat = await lire(), ecranAttendu = etapeAttendue === null ? 'titre' : 'preparation';
+    (rapport.retoursManette ||= []).push({ parcours, ecranAttendu, etapeAttendue, ecran: etat.ecran, etape: etat.menu.etape, manettesSimulees: etat.manettesSimulees });
+    assert.equal(etat.ecran, ecranAttendu, parcours + ' : écran après B vers ' + (etapeAttendue ?? 'titre'));
+    if (etapeAttendue !== null) assert.equal(etat.menu.etape, etapeAttendue, parcours + ' : étape après B');
+  }
 }
 async function capture(nom) {
   await page.screenshot({ path: path.join(args.sortie, nom + '.png') });
@@ -149,7 +173,7 @@ try {
   await bouton(1, 1); await ecran('preparation'); assert.equal((await lire()).menu.etape, 2);
   await bouton(9); assert.equal((await lire()).menu.etape, 3); assert.equal((await lire()).ecran, 'preparation');
   notes('Start progresse jusqu’au bilan, retour des réglages conserve l’étape');
-  for (let i = 0; i < 4; i++) await bouton(1); await ecran('titre');
+  await retourTitreManette('Course');
   await page.locator('[data-aller="duo"]').click(); await ecran('preparation'); await etape(2);
   assert.equal(await page.locator('#o-troll-1').isVisible(), true);
   await page.selectOption('#p-geste-1', 'salut'); await page.selectOption('#p-klaxon-1', 'mariage');
@@ -173,7 +197,7 @@ try {
   }
   notes('Quatre étapes : 12 captures et actions visibles en bureau, portrait et paysage');
   await page.setViewportSize({width:1440,height:900});
-  for (let i = 0; i < 4; i++) await bouton(1); await ecran('titre'); await capture('titre-1440x900');
+  await retourTitreManette('Duo après captures'); await capture('titre-1440x900');
   await page.locator('[data-aller="chrono"]').tap(); await ecran('preparation');
   assert.equal(await page.locator('#o-tours').isVisible(), false); assert.equal(await page.locator('#o-chrono').isVisible(), true);
   await page.locator('#b-suivant').tap(); assert.equal((await lire()).menu.etape, 1);
