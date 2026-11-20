@@ -22,7 +22,7 @@ une surimpression Canvas2D sans réfraction : son bilan précédent ne vaut pas 
 - Tout procédural, préchargé et borné par qualité. FERRO verrouillé et conduite p14 conservés.
 - Pas de reprise de la campagne locale 0.2.60 ; contrôles du nouveau candidat et CI à son jalon.
 
-## État
+## État initial du candidat avant PR
 
 Le candidat **0.2.61** est construit. **15/15 suites ciblées passent**. Le shader exact compile et
 rend sans erreur sous EGL Mesa llvmpipe ; cette preuve utilise un fond synthétique. Les captures
@@ -74,3 +74,18 @@ Les deux images de pause sont identiques octet par octet et les compteurs repren
 Les lignes diagonales sur les pentes claires sont visibles avant et après : réserve de rendu
 terrain conservée pour FERRO, distincte de la correction caméra. Aucun runtime ni build modifié
 par les correctifs de qualification. Reçu : `rapports/HAUT-COL-METEO-2026-11-20/CI-PR24-DEUXIEME.json`.
+
+## Clôture de publication 0.2.61
+
+PR #24 fusionnée : `934132724de6eb368122868ce63feb341b7f9c73` ; tête `a57aabe5a8be7d5d1877447555f899dc7cfb2ba9`.
+Arbre fusionné `def0835e416192dd74a854db025b7d53890f6924` identique au candidat. CI `44690920229` : **143/143**,
+archive vérifiée de **3 309 sources**. Le jeu 0.2.61 et son build n’ont pas changé pendant les corrections de qualification.
+CI visuelle `44690920192` réussie : **15 passages et 31 PNG**, dix scènes candidates et cinq références inspectées.
+La première tentative pluie s’est arrêtée à 35 minutes après quatre passages/huit PNG ; la relance du même code,
+job `136150737900`, termine les cinq passages/dix PNG pluie, y compris le tunnel. L’échec de durée reste dans le reçu.
+
+Les appuis Haut-Col sont visibles dans les plans vérifiés ; réfraction, embruns, neige, duo, pause/reprise, abri,
+Légère et sec sont contrôlés. Ces états à poses figées sous SwiftShader ne valent pas une campagne de conduite ni des FPS matériels.
+Réserves historiques 188/154/167 ms pour 150 ms, lignes diagonales du terrain clair à diagnostiquer, essais matériels,
+manettes et réseaux ouverts. FERRO/p14 conservés ; site non déployé. Suite : Monaco 14A, données de chaussée et limites.
+Reçu final : `rapports/HAUT-COL-METEO-2026-11-20/PUBLICATION-0261.json`.

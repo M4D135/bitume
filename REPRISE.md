@@ -1,57 +1,38 @@
 # BITUME — reprise courte
 
-## Lot actif — Haut-Col et météo réaliste
+## Livraison close — Haut-Col et météo 0.2.61
 
-Demande du 20/11 : corriger le sol absent dans les plans faune Haut-Col et reprendre les effets
-pluie/neige du prototype Claude montré dans les captures. Fiche active :
-`docs/reprise/HAUT-COL-METEO-2026-11-20.md`. Candidat 0.2.61 publié en **PR #24**, physique p14 conservée.
-CI corrigée : **143/143**, archive de **3 308 sources** conforme. **31 PNG** produits sur les dix
-scènes candidates et cinq références ; seul le validateur Légère réclamait des rétros dynamiques
-absents de ce profil. Contrat corrigé, nouvelle CI requise avant fusion ; jeu et build inchangés.
+**0.2.61 / p14 / FERRO 0.3.15** publiée ; conduite et moteur conservés.
+PR **#24**, fusion `934132724de6eb368122868ce63feb341b7f9c73` ; arbre identique au candidat qualifié.
+Fiche : `docs/reprise/HAUT-COL-METEO-2026-11-20.md`.
+Reçu : `docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/PUBLICATION-0261.json`.
+CI `44690920229` : **143/143**, archive de **3 309 sources** vérifiée.
+Visuel `44690920192` : **31 PNG**, dix scènes candidates et cinq références vérifiées et inspectées.
+La première tentative pluie a atteint 35 min ; ses huit PNG et le timeout restent consignés.
+La relance complète aussi le tunnel. Les correctifs de qualification conservent le jeu et le build.
+Haut-Col contrôle les appuis sous les sabots ; réfraction, gouttes, ruissellement, embruns et neige
+humide sont intégrés, avec états J1/J2 et pause distincts. Coût sur matériel toujours à qualifier.
+Build : **14 265 416 octets**, SHA-256
+`c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d`.
 
-## Dernier sous-lot clos — Monaco 14A, relevés et registre contrôlé
+## Suite — Monaco 14A
 
-Le jeu **0.2.60 / p14 / FERRO 0.3.15** est livré et clos : PR #20, reçu
-`docs/reprise/rapports/REALISME-2026-11-19/PUBLICATION-0260.json`. Ne pas refaire cette livraison.
-Le sous-lot actuel ajoute des données de préparation et des outils ; **aucune nouvelle course jouable**.
-Monaco reste préparatoire et reprendra après ce correctif prioritaire.
+Les acquisitions sont publiées : boucle OSM **415 points**, **830 observations de terrain**.
+Reçu : `docs/references/monaco-2026/PUBLICATION-MESURES-20261120.json`.
+Examiner les **32 écarts > 1 m** et les **33 points tagués tunnel** ; qualifier chaussée,
+limites de course, largeurs, dévers et portails avec dates, provenance et incertitudes.
+Les altitudes de chaussée, largeurs et dévers restent inconnus : **Monaco non jouable**,
+`readyForRuntime=false`. Ne pas refaire les acquisitions closes ni assimiler MNT et chaussée.
+Conserver la longueur **3 323,610 m** et l’écart FIA **−13,390 m**, sans mise à l’échelle.
+Plan : `docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md`. **14A demeure ouvert.**
 
-## Sous-lot publié — PR #22
+## Programme et réserves conservés
 
-Deux acquisitions IGN sur les mêmes **415 points OSM**, soit **830 observations de terrain**,
-avec requêtes, réponses, dates et empreintes figées. Les métadonnées WFS rattachent les 415 points
-à deux dalles LiDAR, système vertical IGN69, relevés de mai–juin 2021. La date HTTP de 2026
-n'est pas présentée comme la date de mesure de la chaussée.
-
-Le croisement indépendant retrouve exactement les valeurs et rattachements de l'importeur :
-**32 points avec un écart supérieur à 1 m**, maximum **25,23 m** dans un secteur tagué tunnel.
-Ces écarts sont diagnostiques : le datum et la date individuels du RGE ne sont pas établis.
-Les 33 points tagués tunnel et les fortes variations locales sont isolés pour la revue.
-
-**26/26 contrôles ciblés passent** (20 nouveaux, 6 de la reconnaissance historique), trois fichiers.
-La génération hors réseau et `--check` concordent. Les six fichiers de référence OSM, le runtime,
-la version et le HTML restent identiques. La campagne locale 0.2.60 et son build ne sont pas relancés.
-Qualification : `docs/references/monaco-2026/qualification-mesures.json`.
-CI PR #22 : **139/139 suites réussies**, aucun échec, archive vérifiée.
-Fusion `f09c7008979103a7d2885f43407614ce58958e85`. Reçu : `docs/references/monaco-2026/PUBLICATION-MESURES-20261120.json`.
-
-## Ce qui reste ouvert
-
-**Zéro observation n'est qualifiée comme chaussée.** Les 415 valeurs `y`, les largeurs gauche/droite
-et les dévers du tracé restent `null` ; `readyForRuntime` reste faux. Une altitude de MNT ne donne
-pas le niveau d'une route couverte ou portée par un ouvrage. Une résolution de 50 cm ne constitue
-pas une précision vérifiée de 50 cm. La largeur FIA isolée ne devient pas une largeur constante.
-
-La publication du sous-lot est close. Examiner les points signalés et acquérir des mesures de chaussée,
-limites de course et portails, datées et assorties d'incertitudes. Ne pas réacquérir la boucle OSM déjà
-résolue ni corriger son écart de −13,390 m par une mise à l'échelle. La politique saisonnière et
-l'intégration de course suivent les données. **14A complet n'est pas clos.**
-
-## Programme et limites conservés
-
-**17 destinations prévues, 8 jouables** ; Marseille, montagne distincte de Haut-Col, six propositions
-et lots transversaux restent dans `docs/reprise/CONTINUATION-AUTONOME-2026-11-19.md`.
-Réserve de durée 0.2.60 : **188 ms Val-Brûlé, 154 et 167 ms Haut-Col**, seuil inchangé 150 ms.
-Jeu complet en navigateur, manettes physiques, essais entre réseaux et FPS matériels restent à valider.
-Aucun accès Mac/VPS : **site non déployé depuis cet environnement**. Spark absent ici ; aucun calcul
-ne lui est attribué. Un sous-lot à la fois, publications et reprises courtes, pas de push forcé.
+**8 circuits jouables / 17 destinations prévues**. Montagne distincte de Haut-Col, Marseille
+avec relief, six propositions et lots transversaux : `docs/reprise/CONTINUATION-AUTONOME-2026-11-19.md`.
+Durées historiques : **188 ms Val-Brûlé, 154/167 ms Haut-Col**, seuil inchangé **150 ms**.
+Les lignes diagonales du terrain clair sont héritées et restent à diagnostiquer dans le lot rendu.
+Captures à poses figées sous SwiftShader : ni course complète ni mesure FPS sur matériel.
+Manettes physiques, réseau entre machines, FPS matériels et site restent non qualifiés.
+Site non déployé ici ; Spark absent. Un sous-lot à la fois, reprise courte, aucun push forcé.
+Historique 0.2.60 : `docs/reprise/rapports/REALISME-2026-11-19/PUBLICATION-0260.json`.

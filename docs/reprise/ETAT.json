@@ -1,229 +1,97 @@
 {
   "date": "2026-11-20",
   "etat_courant": {
-    "version_courante": "0.2.60",
+    "version_courante": "0.2.61",
+    "version_publiee_verifiee": "0.2.61",
     "physique": "p14",
-    "version_publiee_verifiee": "0.2.60",
-    "statut": "haut_col_meteo_pr24_derniere_qualification",
-    "branche_livraison": "fix/haut-col-meteo-0261-20261120",
-    "lot": "haut_col_sol_et_meteo_realiste",
-    "fiche": "docs/reprise/HAUT-COL-METEO-2026-11-20.md",
+    "moteur": "FERRO 0.3.15 canonique",
+    "statut": "0261_publiee_reprise_monaco_14A",
+    "lot": "14A_Monaco_sources_et_mesures",
+    "fiche": "docs/reprise/MONACO-MESURES-2026-11-20.md",
     "suivi_actif": "docs/reprise/SUIVI-2026-11-19.md",
-    "derniere_entree": "048",
-    "prochaine_action": "Vérifier la dernière CI de la PR #24 après correction du contrat de rétroviseurs Légère ; inspecter toutes les images puis fusionner et clore la reprise.",
-    "publication_precedente": {
-      "commit_fusion": "02e8bac6b9ed762e0da06ab7c223e9cbd419968e",
-      "tete_qualifiee": "d052f4c30cef0e18ea5e0bef84ca5ecae8af2108",
-      "arbre_qualifie": "0397a5a4d9fe66b7459cda06fc101ee473b59ae2"
+    "derniere_entree": "049",
+    "prochaine_action": "Examiner les 32 écarts >1 m et les 33 points tunnel ; acquérir ou qualifier chaussée, limites, largeurs, dévers et portails datés avec incertitudes.",
+    "dernier_lot_clos": "docs/reprise/HAUT-COL-METEO-2026-11-20.md"
+  },
+  "publication": {
+    "pr": 24,
+    "branche": "fix/haut-col-meteo-0261-20261120",
+    "tete": "a57aabe5a8be7d5d1877447555f899dc7cfb2ba9",
+    "arbre": "def0835e416192dd74a854db025b7d53890f6924",
+    "commit_fusion": "934132724de6eb368122868ce63feb341b7f9c73",
+    "recu_final": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/PUBLICATION-0261.json",
+    "statut": "publie_sur_main"
+  },
+  "qualification": {
+    "build_octets": 14265416,
+    "build_sha256": "c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d",
+    "runtime_inchange_par_correctifs_qualification": true,
+    "conduite_p14_et_moteur_inchanges": true,
+    "campagne_precedente": "143/143 suites ; 31 PNG, dix scènes candidates et cinq références inspectées.",
+    "qualification_finale_run": 44690920229,
+    "qualification_finale_resultat": "143/143 ; archive et 3 309 sources vérifiées, contenus et modes identiques.",
+    "visuel_final_run": 44690920192,
+    "visuel_final_resultat": "success ; 15 passages, dix scènes candidates, cinq références, 31 PNG vérifiés et inspectés.",
+    "artefacts_finaux_verifies": "Qualification, vues, neige et pluie finale vérifiés ; tête, arbre et build concordants.",
+    "captures_finales_inspectees": "31/31 PNG ; poses figées et rendu logiciel, sans qualification des FPS matériels.",
+    "recu_candidat": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/QUALIFICATION.json",
+    "recu_premier_passage": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/CI-PR24-INITIAL.json",
+    "recu_deuxieme_passage": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/CI-PR24-DEUXIEME.json",
+    "pluie_relance_job": 136150737900,
+    "recu_publication": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/PUBLICATION-0261.json",
+    "historique_timeout_pluie": "Première tentative arrêtée à 35 min ; quatre passages et huit PNG complets. Relance réussie, historique conservé dans le reçu."
+  },
+  "reserves": {
+    "construction_ms": {
+      "val_brule": 188,
+      "haut_col": [
+        154,
+        167
+      ],
+      "seuil": 150
     },
-    "publication": {
-      "pr": 20,
-      "commit_fusion": "50c2a540b3903c1a67f982b1ff1a57fc59a4478a",
-      "tete_qualifiee": "43720ca0d8fd2a78c60fb37aa8ed181dcbbd30a7",
-      "arbre_qualifie": "43c220669d7360d7565f189df372148722b72904",
-      "recu": "docs/reprise/rapports/REALISME-2026-11-19/PUBLICATION-0260.json"
-    }
+    "terrain": "Lignes diagonales sur les pentes claires présentes avant/après, à diagnostiquer dans le lot rendu ; toute correction du moteur passe par FERRO canonique.",
+    "captures": "États disposés à poses figées, raster logiciel SwiftShader ; pas une validation de course complète.",
+    "fps_materiels_qualifies": false,
+    "manettes_physiques_qualifiees": false,
+    "reseau_entre_machines_qualifie": false,
+    "site_deploye": false,
+    "spark_disponible": false
   },
-  "livraison_precedente": {
-    "version": "0.2.57",
-    "pr": 15,
-    "fusion": "940eabb9ff828c4577996319921f6cb1bd2ced0e",
-    "ci": "125/126 sur push, PR et main après correctif du test nature ; seules traces héritées.",
-    "publication": "docs/reprise/rapports/DEMOS-CINEMA-2026-11-19/PUBLICATION-0257.json",
-    "anterieures": "0.2.55/0.2.56 closes ; preuves préservées."
-  },
-  "reconciliation": {
-    "pr16": "Coque simplifiée ouverte ; intégrée et marquée fusionnée dans d052f4c.",
-    "pr17": "Levier fixé et tige à tous les niveaux ; union finale 0.2.59.",
-    "preuves": "Les deux rapports 0.2.58 et leurs limites sont conservés dans le dossier cockpit."
+  "suite": {
+    "lot": "14A_Monaco_sources_et_mesures",
+    "statut": "chaussee_et_limites_a_qualifier",
+    "fiche_plan": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
+    "prochaine_action": "Examiner les 32 écarts >1 m et les 33 points tunnel ; acquérir ou qualifier chaussée, limites, largeurs, dévers et portails datés avec incertitudes.",
+    "references": "docs/references/monaco-2026/README.md",
+    "points_boucle_osm": 415,
+    "observations_terrain": 830,
+    "observations_chaussee_eligibles": 0,
+    "longueur_osm_m": 3323.61,
+    "ecart_fia_m": -13.39,
+    "altitudes_chaussee_largeurs_devers": "inconnus ; valeurs null conservées",
+    "readyForRuntime": false,
+    "lot_14A_complet": false,
+    "regles": "Ne pas refaire les acquisitions closes ; ne pas confondre terrain et chaussée ; ne pas corriger la longueur par une mise à l’échelle."
   },
   "catalogue": {
-    "jouables_dans_build": 8,
-    "baikal": {
-      "id": "baikal",
-      "index": 7,
-      "graine": 179,
-      "decors_details": "13B intégré et qualifié localement dans l’union ; inspection matérielle distincte."
-    },
+    "jouables": 8,
+    "destinations_prevues": 17,
+    "baikal": "id baikal, index 7, graine 179 ; 13B conservé.",
     "ajouts_demandes": [
       "Grand circuit de montagne distinct de Haut-Col",
       "Monaco ultra fidèle",
       "Spéciale Marseille depuis EMPRISE avec relief mesuré"
     ],
     "propositions_conservees": 6,
-    "regle": "Conserver les sept circuits historiques et toutes les demandes ; ne pas supprimer la montagne pour tenir l’ancien compte de 16."
+    "programme_complet": "docs/reprise/CONTINUATION-AUTONOME-2026-11-19.md",
+    "regle": "Conserver les sept circuits historiques, Baïkal, toutes les demandes et les lots transversaux."
   },
-  "suite": {
-    "lot": "14A_Monaco_sources_et_mesures",
-    "statut": "terrain_415x2_et_registre_prepares_chaussee_restante",
-    "objectif": "Qualifier chaussée et limites à partir des anomalies identifiées ; préserver les mesures terrain et leur provenance sans remplir arbitrairement le tracé.",
-    "fiche_plan": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
-    "apres": "sous_lot_mesures_14A_publie",
-    "autres": "Marseille avec relief mesuré, montagne distincte et six destinations ; tous les lots transversaux restent suivis.",
-    "prochain_sous_lot": "Examiner les 32 écarts >1m et les tunnels ; acquérir/qualifier altitudes de chaussée, largeurs et dévers datés avec incertitudes.",
-    "acquis_a_preserver": "Boucle OSM fermée : 415 points/arêtes, 41 voies, 3323.610 m ; écart à la référence FIA -13.390 m, sans mise à l’échelle arbitraire. Voir docs/references/monaco-2026/README.md."
+  "recus_historiques": {
+    "monaco_mesures_14A": "docs/references/monaco-2026/PUBLICATION-MESURES-20261120.json",
+    "bitume_0260": "docs/reprise/rapports/REALISME-2026-11-19/PUBLICATION-0260.json",
+    "bitume_0259": "docs/reprise/rapports/COCKPIT-PILOTES-2026-11-19/PUBLICATION-0259.json",
+    "bitume_0257": "docs/reprise/rapports/DEMOS-CINEMA-2026-11-19/PUBLICATION-0257.json"
   },
-  "regle": "Un sous-lot à la fois ; préserver les preuves et la reprise courte. Aucun push forcé.",
-  "candidat": {
-    "version_cible": "0.2.61",
-    "statut": "ci_143_sur_143_31_images_contrat_legere_corrige",
-    "physique": "p14",
-    "moteur": "FERRO 0.3.15 canonique",
-    "lots": [
-      "sol et caméra des plans animaliers Haut-Col",
-      "visière pluie/neige avec effets optiques et nuage d’eau"
-    ],
-    "pr": 24,
-    "premiere_ci": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/CI-PR24-INITIAL.json",
-    "deuxieme_ci": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/CI-PR24-DEUXIEME.json"
-  },
-  "acces": {
-    "ci_distante": "CI de la PR #20 : 137/137 suites réussies, aucun échec. Le blocage de lancement FERRO décrit précédemment ne vaut pas pour cette exécution BITUME.",
-    "deploiement": "Aucun accès au Mac/VPS depuis cet environnement ; script existant deposer.sh conservé. Aucun déploiement effectué.",
-    "navigateur": "Jeu complet et FPS matériels non qualifiés ; CPU/maillages et sondes EGL distincts."
-  },
-  "validation_0259_historique": {
-    "ciblee": "6/6 suites : 71 contrôles cockpit/voitures et registre ; 840 poses détaillées + 150 poses LOD réels.",
-    "ci": "PR : 126/127 ; push du candidat : 125/127 ; après fusion sur main : 126/127. Aucun échec hors réserves documentées.",
-    "reserves": [
-      "traces.test.mjs : signature héritée exacte.",
-      "decor.test.mjs : Val-Brûlé : 166 ms / 150 ms sur push du candidat ; réussi sur PR et après fusion. Réserve de durée conservée."
-    ],
-    "ci_apres_fusion": {
-      "run_id": 44602433260,
-      "job_id": 135837112728,
-      "head": "02e8bac6b9ed762e0da06ab7c223e9cbd419968e",
-      "url": "https://github.com/M4D135/bitume/actions/runs/44602433260",
-      "status": "completed",
-      "conclusion": "failure",
-      "passed": 126,
-      "failed_count": 1,
-      "total": 127,
-      "failed": [
-        "verifications/traces.test.mjs"
-      ],
-      "trace_signature_matches_0257": true,
-      "unexpected_failures": [],
-      "key_suites": {
-        "verifications/pilote-habitacle.test.mjs": "PASS",
-        "verifications/pilote-exterieur.test.mjs": "PASS",
-        "verifications/nature-integration.test.mjs": "PASS",
-        "verifications/decor.test.mjs": "PASS"
-      }
-    },
-    "build_octets": 14186762,
-    "build_sha256": "cb02e2250a2e4a7d06bd0fdea659fce641a016975e224bac2823574888439cd4",
-    "reproductible": true,
-    "archive_ci_verifiee": true,
-    "rapport": "docs/reprise/rapports/COCKPIT-PILOTES-2026-11-19/QUALIFICATION-0259.json",
-    "publication": "docs/reprise/rapports/COCKPIT-PILOTES-2026-11-19/PUBLICATION-0259.json",
-    "jeu_navigateur_valide": false,
-    "manette_physique_validee": false,
-    "fps_materiels_mesures": false,
-    "site_deploye": false
-  },
-  "validation": {
-    "statut": "publie_sur_main_avec_reserve_de_duree",
-    "execution": "locale, Node 24, même inventaire que le workflow",
-    "build_octets": 14242311,
-    "build_sha256": "cf71191600060626c5aa6bbf4523a332e867673984c47e7b48d9eaec79322655",
-    "reproductible": true,
-    "scripts_analyses": 60,
-    "ci_distante_executee": true,
-    "archive_ci_verifiee": true,
-    "jeu_navigateur_valide": false,
-    "manette_physique_validee": false,
-    "fps_materiels_mesures": false,
-    "site_deploye": false,
-    "premier_passage": "docs/reprise/rapports/REALISME-2026-11-19/PREMIER-PASSAGE-0260.json",
-    "source_et_entrees_stables": true,
-    "campagnes_precedentes": [
-      "docs/reprise/rapports/REALISME-2026-11-19/PREMIER-PASSAGE-0260.json",
-      "docs/reprise/rapports/REALISME-2026-11-19/DEUXIEME-PASSAGE-0260.json"
-    ],
-    "optimisation": "docs/reprise/rapports/REALISME-2026-11-19/OPTIMISATION-DECOR-0260.json",
-    "suites": {
-      "reussies": 137,
-      "echecs": 0,
-      "total": 137,
-      "non_executees": []
-    },
-    "echecs": [],
-    "reserves": [
-      "Des dépassements de construction restent observés dans les trois passages ciblés inchangés de l’optimisation : 188 ms sur Val-Brûlé, 154 et 167 ms sur Haut-Col, pour un seuil de 150 ms. Cette réserve ne disparaît pas avec un passage complet réussi."
-    ],
-    "rapport": "docs/reprise/rapports/REALISME-2026-11-19/QUALIFICATION-0260.json",
-    "sources_tests_build_inchanges_pendant_campagne": true,
-    "ci_distante": {
-      "run_id": 44637107077,
-      "job_id": 135958316464,
-      "url": "https://github.com/M4D135/bitume/actions/runs/44637107077",
-      "head_sha": "43720ca0d8fd2a78c60fb37aa8ed181dcbbd30a7",
-      "qualified_tree": "43c220669d7360d7565f189df372148722b72904",
-      "passed": 137,
-      "failed": 0,
-      "total": 137,
-      "conclusion": "success",
-      "completed": true,
-      "first_log": "2026-11-19T23:22:32.6809271Z",
-      "last_log": "2026-11-19T23:30:59.3985269Z",
-      "failed_suites": [],
-      "reserves_preserved": [
-        "188 ms à Val-Brûlé, 154 et 167 ms à Haut-Col dans les passages ciblés locaux (seuil 150 ms).",
-        "Jeu complet navigateur, manettes physiques, FPS matériels et déploiement du site non validés."
-      ],
-      "artifact_id": 14585242424,
-      "artifact_sha256": "658289243d15604db18002b23b611d7c9746b18ae5a3d0f65d82899e4324b3d1",
-      "artifact_bytes": 71085200,
-      "artifact_verified": true,
-      "build_sha256": "cf71191600060626c5aa6bbf4523a332e867673984c47e7b48d9eaec79322655",
-      "build_bytes": 14242311,
-      "build_matches_qualified": true,
-      "ci_archive_summary": "Suites reussies : 137\nSuites en echec : 0",
-      "ci_checkout_commit": "f874b549d977b064b99785c0e58f942923cfa74b",
-      "source_archive_matches_qualified_tree": true,
-      "source_archive_files": 3281,
-      "source_archive_mismatches": [],
-      "verified_at": "2026-11-19T23:32:28.430302+00:00",
-      "duration_seconds": 506.718,
-      "reserves_observed_in_this_ci": []
-    },
-    "recu_publication": "docs/reprise/rapports/REALISME-2026-11-19/PUBLICATION-0260.json"
-  },
-  "preparation_monaco": {
-    "statut": "publie_sur_main",
-    "rapport": "docs/references/monaco-2026/qualification-mesures.json",
-    "points": 415,
-    "observations_terrain": 830,
-    "observations_chaussee_eligibles": 0,
-    "comparaison_independante_exacte": true,
-    "ecart_max_entre_produits_m": 25.23,
-    "points_ecart_superieur_1m": 32,
-    "points_tag_tunnel": 33,
-    "tests_cibles": {
-      "reussis": 26,
-      "echecs": 0,
-      "fichiers": 3
-    },
-    "ci_distante_constatee": true,
-    "jeu_et_build_changes": false,
-    "lot_14A_complet": false,
-    "publication": {
-      "status": "published_on_main",
-      "pr": 22,
-      "head": "eaded11a0f265b7879e189436fae7d1c08d77152",
-      "merge": "f09c7008979103a7d2885f43407614ce58958e85",
-      "qualifiedTree": "96d42a09231718909d6af70cd88cd0a571c42d1f",
-      "ciResultNotYetObserved": false,
-      "receipt": "PUBLICATION-MESURES-20261120.json"
-    },
-    "ci": {
-      "runId": 44641222540,
-      "conclusion": "success",
-      "passed": 139,
-      "failed": 0,
-      "total": 139,
-      "archiveVerified": true
-    }
-  }
+  "regle": "Un sous-lot à la fois ; préserver les preuves, reprise courte et programme complet ; aucun push forcé."
 }
