@@ -664,10 +664,11 @@
     const deux = S !== session;
     if (deux && !pluieVue2) pluieVue2 = creationTardive('pluie', B.meteo.creerPluie($('meteo2')));
     if (!deux && !pluieVue) pluieVue = creationTardive('pluie', B.meteo.creerPluie($('meteo')));
-    // sous la voûte du tunnel, il ne pleut pas : la caméra décide, sinon les gouttes disparaissent pendant que la
-    // vue extérieure montre encore la pluie
-    const abri = sousLaVoute(S.course.c, cam.pos), neige = precipitationsNeige(S);
-    (deux ? pluieVue2 : pluieVue).dessiner(abri || neige > 0 ? Object.assign(METEO_ABRI, { t: S.meteo.t }) : S.meteo, cam, dt, { cockpit: vue === 'cockpit', dpr: window.devicePixelRatio || 1 });
+    // La caméra décide des dépôts sur la visière. Le champ de pluie conserve les gouttes dehors,
+    // visibles par les portails ou le côté ouvert d'une galerie, puis masque chaque trait dans le monde.
+    const abri = sousLaVoute(S.course.c, cam.pos) || B.meteo.abriCouverts(S.course.c, cam.pos, S.course.physique), neige = precipitationsNeige(S);
+    S.pluieImage = (deux ? pluieVue2 : pluieVue).dessiner(neige > 0 ? Object.assign(METEO_ABRI, { t: S.meteo.t }) : S.meteo, cam, dt,
+      { cockpit: vue === 'cockpit', dpr: window.devicePixelRatio || 1, palier: profil.palier, circuit: S.course.c, physique: S.course.physique });
     if (B.vitre) {
       if (deux && !vitreVue2) vitreVue2 = creationTardive('vitre', B.vitre.creer($('vitre2'), { graine: 2 }));
       if (!deux && !vitreVue) vitreVue = creationTardive('vitre', B.vitre.creer($('vitre')));
