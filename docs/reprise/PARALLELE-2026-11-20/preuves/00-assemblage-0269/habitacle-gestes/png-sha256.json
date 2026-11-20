@@ -1,0 +1,22 @@
+[
+  {
+    "chemin": "images/apres/braquage-passage/0000.png",
+    "octets": 365444,
+    "sha256": "cafa66a5ac9f6b14dcd0e80ca6e3876c388d60481f6889af1b74260b517a248d"
+  },
+  {
+    "chemin": "images/apres/braquage-passage/0001.png",
+    "octets": 365388,
+    "sha256": "d8f6113315acdebd26eb94067ae93a64b151bf8d4364907959009beaa2bd7589"
+  },
+  {
+    "chemin": "images/apres/geste-majeur/0000.png",
+    "octets": 398093,
+    "sha256": "4f4c527f0e2f4d39c1412d35c3247955c2dae835d06a66d804add4515d6a0119"
+  },
+  {
+    "chemin": "images/apres/geste-majeur/0001.png",
+    "octets": 398080,
+    "sha256": "bcf9ade2efed8ba85f1b74ba259d8d2e413867b8bb1049ffcebfbf0c4febc569"
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "chemin": "images/route-des-cimes-alpin-ete/0000.png",
+    "octets": 413444,
+    "sha256": "c1b15d75fc55408fcda1e934210898acb45c05d9fd1767191897c177985a3a7c"
+  },
+  {
+    "chemin": "images/route-des-cimes-alpin-ete/0001.png",
+    "octets": 413421,
+    "sha256": "751f91881d108e9b7e5a3e95f37f1777cbbf297e81a8b9b856af96c0514fcc35"
+  },
+  {
+    "chemin": "images/route-des-cimes-alpin-hiver/0000.png",
+    "octets": 426600,
+    "sha256": "104985aed4d0e9ce1355e087b7b47aaa118e538bd3749c9d53c76375410a2627"
+  },
+  {
+    "chemin": "images/route-des-cimes-alpin-hiver/0001.png",
+    "octets": 426654,
+    "sha256": "a9ebac08317bdb2c177e97b40b9d14fc3ff591606fb3b52375dca4525cc78215"
+  },
+  {
+    "chemin": "images/route-des-cimes-automne/0000.png",
+    "octets": 374421,
+    "sha256": "9192afbd536291c5c31efb0b76792dd5e960bac6b6e94042785db29aa577f928"
+  },
+  {
+    "chemin": "images/route-des-cimes-automne/0001.png",
+    "octets": 373823,
+    "sha256": "35ee917529e41ccb6a825c0609ba12a625c9771005be95ef6fced06d4ca88ca0"
+  },
+  {
+    "chemin": "images/route-des-cimes-ete/0000.png",
+    "octets": 383079,
+    "sha256": "0b911d762627be183d514ac42d36fe1b53d835bd54a31d93944c558c30523306"
+  },
+  {
+    "chemin": "images/route-des-cimes-ete/0001.png",
+    "octets": 382863,
+    "sha256": "1560a2ec1c972bb9b39843d1c27c388d4b018aa0343d95dda61bf29edb730f7c"
+  },
+  {
+    "chemin": "images/route-des-cimes-hiver/0000.png",
+    "octets": 408837,
+    "sha256": "d7c0f079720a3daaacea5998cd126b250c2cbfc3554ef22e5d29a0e119f66a8d"
+  },
+  {
+    "chemin": "images/route-des-cimes-hiver/0001.png",
+    "octets": 408814,
+    "sha256": "dd04f4f17d58712faadf01e11b89e4deb9bf47e516f9f306059f5595838c54af"
+  },
+  {
+    "chemin": "images/route-des-cimes-printemps/0000.png",
+    "octets": 364646,
+    "sha256": "b27693cbc025c7653c84d83e54b8305d8a258350252d5928269cd96109dc5f82"
+  },
+  {
+    "chemin": "images/route-des-cimes-printemps/0001.png",
+    "octets": 364572,
+    "sha256": "1d777403f5263891f190fe0528ad1e6f096dadff7ea700943f6944e5ea4ba254"
+  }
+]

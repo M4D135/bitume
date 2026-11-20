@@ -1,0 +1,72 @@
+[
+  {
+    "chemin": "images/etape-1-1440x900.png",
+    "octets": 331792,
+    "sha256": "adb126e2e4c8c82c28e8e409647507405c3246fce033b49908c48a147c9131f2"
+  },
+  {
+    "chemin": "images/etape-1-390x844.png",
+    "octets": 136354,
+    "sha256": "f2589f8fdec34dd3f580de5660d1ecaf0609981c9e72d51e52e614b5195258c2"
+  },
+  {
+    "chemin": "images/etape-1-844x390.png",
+    "octets": 124610,
+    "sha256": "c7d214757fb96a5d062bcfc067f3eb973329aa4aaa4fae9511ef94d86b412170"
+  },
+  {
+    "chemin": "images/etape-2-1440x900.png",
+    "octets": 228215,
+    "sha256": "b607f015b51802e6a4117d3cce80bddb68ede2a24c1b111aa25140b73f17161a"
+  },
+  {
+    "chemin": "images/etape-2-390x844.png",
+    "octets": 118966,
+    "sha256": "829ef47c1ea847b3a9384825e257981600f7246d613713d817cb6b8c3eeb08bd"
+  },
+  {
+    "chemin": "images/etape-2-844x390.png",
+    "octets": 96509,
+    "sha256": "e3d18b43aa9dec81d46c894dc009100bbc003ea62d94978b602ef13308c2b508"
+  },
+  {
+    "chemin": "images/etape-3-1440x900.png",
+    "octets": 263240,
+    "sha256": "f702bfd788c06498e49f542716c0c09acf2969e08512ef722f2702f3b653b980"
+  },
+  {
+    "chemin": "images/etape-3-390x844.png",
+    "octets": 112341,
+    "sha256": "024888a0a1d69e28892a5981c6f9fc4879bbac6c9612cf2fe1fab351895b185f"
+  },
+  {
+    "chemin": "images/etape-3-844x390.png",
+    "octets": 89652,
+    "sha256": "822228d5ea29f621890d066bc7c57aab9408803d756e3f7f7d37fce253fa97f3"
+  },
+  {
+    "chemin": "images/etape-4-1440x900.png",
+    "octets": 200758,
+    "sha256": "7e18dde611dce9cd8bdea5b3cf1c5d76780e8fcf83c88abf70d9561ca9334aa4"
+  },
+  {
+    "chemin": "images/etape-4-390x844.png",
+    "octets": 102108,
+    "sha256": "8aa3aede13054ef0df911b53f9bb065383c5e1b8a59f06a5e29b011a20dabfb3"
+  },
+  {
+    "chemin": "images/etape-4-844x390.png",
+    "octets": 88328,
+    "sha256": "b85a577fd311d8acd60019be57870f89b6efc0347f6181d3eeced9fce4053199"
+  },
+  {
+    "chemin": "images/saisie-manette.png",
+    "octets": 95389,
+    "sha256": "c338936160e1690a086e192a1e743c95ca021f8a1fb377a0b14892063820cd1a"
+  },
+  {
+    "chemin": "images/titre-1440x900.png",
+    "octets": 224748,
+    "sha256": "8e265533769715d3a6a191190b348b303102ac9af4733b81171f3c39bb63dafc"
+  }
+]

@@ -5,6 +5,8 @@ import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 for (const nom of ['graphismes', 'pneus', 'ambiance', 'saisons', 'chaussee', 'meteo', 'conditions-course', 'cadence', 'circuit', 'conduite', 'vitre', 'sillage']) require('../src/' + nom + '.js');
+// Dépendance réelle de la lecture commune des réglages avant les contrôles de la vitre.
+require('../src/menu-arcade.js');
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const html = readFileSync(new URL('../src/index.html', import.meta.url), 'utf8');
 function bloc(debut, fin) {
@@ -25,7 +27,8 @@ const executer = new Function('B', 'prefs', `
         moveTo() {}, lineTo() {}, quadraticCurveTo() {}, ellipse() {}, stroke() {}, fill() {} }) });
     return elements.get(id);
   };
-  const document = { querySelectorAll: () => [] }, window = { devicePixelRatio: 1 };
+  // Les contrôles voisins installent aussi des écouteurs globaux ; les conserver sans simuler un clic.
+  const document = Object.assign(new EventTarget(), { querySelectorAll: () => [] }), window = { devicePixelRatio: 1 };
   const majCommandes = () => {}, majDetectionGraphique = () => {}, appliquerVolumes = () => {}, appliquerCarte = () => {}, secouerManette = () => {}, pad2 = {};
   const CATALOGUE = [{ theme: 'foret' }, { theme: 'cote' }];
   const VUES_DEHORS = new Set(['tele', 'helico', 'orbite', 'travelling', 'sol', 'panorama', 'flore', 'faune', 'pilote', 'peloton']);

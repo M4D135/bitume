@@ -4,6 +4,10 @@
 // le moteur lit de chaque objet (forme, place, taille, rotation, matière, couleur, drapeaux, émission) ne doit pas
 // changer, même quand les appels s'entrelacent entre voitures et variantes (cockpit, rétroviseur, vue extérieure,
 // épave) comme dans jeu.js.
+// Référence visuelle renouvelée pour 0.2.69 (voiture.js du candidat 7999de5, blob 50a2d151) : thorax fermé,
+// assise abaissée, cavité réelle et géométrie commune aux vues, avec les quatre roues posées en cockpit.
+// Les cotes/maillages de roue et leurs poses extérieures restent identiques à main fee69c5 ; les groupes
+// fantôme et glaces conservent leurs empreintes d'objets. Les tolérances et contrôles d'entrelacement sont inchangés.
 //   node verifications/voiture-identite.test.mjs                  vérifier
 //   BITUME_FIGER=1 node verifications/voiture-identite.test.mjs   réécrire l'empreinte : seulement pour un changement
 //                                                                 d'image voulu, à dire dans le commit

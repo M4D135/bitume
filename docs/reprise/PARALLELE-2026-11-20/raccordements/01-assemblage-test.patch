@@ -1,0 +1,1891 @@
+diff --git a/construire.py b/construire.py
+index 2cc9a55..d69985b 100644
+--- a/construire.py
++++ b/construire.py
+@@ -85,6 +85,7 @@ MODULES = [
+     'ambiance.js',
+     'conditions-course.js',
+     'navigation-menu.js',
++    'menu-arcade.js',  # écrans arcade, vrai tracé XYZ et aperçu 2D à cadence bornée
+     'autoconfig.js',
+     'scene-bench.js',
+     # vibrations de manette : quatre sorties calculées une fois par image rendue, branchées par jeu.js
+diff --git a/src/bords.js b/src/bords.js
+index c09e288..9ae5451 100644
+--- a/src/bords.js
++++ b/src/bords.js
+@@ -338,6 +338,9 @@
+             const houppe = { shape: 'foliage', p: [p[0], p[1] + h * .8, p[2]], s: [h * .68, h * .4, h * .68], mat: 11, color: [.16, .3, .11] };
+             objets.push(houppe); loin.push(houppe);
+           }
++          // Même phénologie que la forêt, y compris pour les allées proches de la route.
++          // Les troncs solides et bandes de peinture restent présents et à leurs places historiques.
++          if (outils.saisonArbre) outils.saisonArbre(objets, loin, p[0], p[2], resineux ? 'conifere' : 'feuillu');
+         } else if (d.type === 'rochers' && ra() < .6) {
+           // blocs à demi enterrés, de la couleur de la roche du lieu, un peu plus ou un peu moins clairs
+           const dd = cote * (w + 2.6 + ra() * 3.6), t = 1.2 + ra() * 1.6, p = pointPlan(f, dd, hauteur(f, dd, w) - .3), a = ra() * 6.28, e = .85 + ra() * .3;
+diff --git a/src/botanique.js b/src/botanique.js
+index 3080033..3994e3b 100644
+--- a/src/botanique.js
++++ b/src/botanique.js
+@@ -207,7 +207,7 @@
+     return p;
+   }
+ 
+-  function feuillu(tri, p, N) {
++  function feuillu(tri, p, N, nu = false) {
+     const P = t => [p.pente[0] * t * t, p.hauteur * t, p.pente[1] * t * t];
+     tronc(tri, P, N, .055, .03, 6);
+     const pointes = [P(1)];
+@@ -220,6 +220,7 @@
+         pointes.push(branche(tri, depart2, direction(br.azim + c.gisement, c.inclinaison), c.long, c.chute, N, .014, .006, 4));
+       }
+     });
++    if (nu) return;
+     let k = 0;
+     const poser = c => { const a = p.amas[k++]; amas(tri, [c[0] + a.d[0], c[1] + a.d[1], c[2] + a.d[2]], a.r, 6); };
+     poser(pointes[0]);
+@@ -266,10 +267,10 @@
+     for (let i = p.branches.length + 1; indices.length < p.amas.length; i++) indices.push(i % n);
+     return indices;
+   }
+-  function feuilluLoin(tri, p) {
+-    const P = t => [p.pente[0] * t * t, p.hauteur * t, p.pente[1] * t * t], F = SILHOUETTE.facesBranche;
++  function feuilluLoin(tri, p, nu = false, leger = false) {
++    const P = t => [p.pente[0] * t * t, p.hauteur * t, p.pente[1] * t * t], F = leger ? 3 : SILHOUETTE.facesBranche;
+     // La tête du fût est dans le premier amas, son pied sous terre : aucune coiffe.
+-    tronc(tri, P, SILHOUETTE.fut.feuillu, .055, .03, 6, SANS_COIFFE);
++    tronc(tri, P, leger ? 1 : SILHOUETTE.fut.feuillu, .055, .03, 6, SANS_COIFFE);
+     const pointes = [P(1)], charpentières = new Map();
+     p.branches.forEach((br, i) => {
+       const depart = P(br.attache);
+@@ -284,7 +285,8 @@
+     // Une charpentière coiffée d'un amas disparaît dedans ; une charpentière nue dessine le bord du houppier
+     // (jusqu'à 12 % de la largeur de l'arbre en Moyenne) : elle reste, en prisme droit.
+     const portees = indicesAmas(p, pointes.length), coiffees = new Set(portees);
+-    for (const [i, c] of charpentières) if (!coiffees.has(i)) branche(tri, c[0], c[1], c[2], c[3], 1, .014, .006, F, SANS_COIFFE);
++    for (const [i, c] of charpentières) if (nu || !coiffees.has(i)) branche(tri, c[0], c[1], c[2], c[3], 1, .014, .006, F, nu ? POINTE : SANS_COIFFE);
++    if (nu) return;
+     portees.forEach((i, k) => {
+       const c = pointes[i], a = p.amas[k];
+       amas(tri, [c[0] + a.d[0], c[1] + a.d[1], c[2] + a.d[2]], a.r, 6, true);
+@@ -324,9 +326,9 @@
+   // pied au sol et cime tombent aux mêmes coordonnées normalisées. La boîte ne dépend que de la forme proche : ses
+   // coordonnées ne bougent pas quand la silhouette change (botanique.test.mjs compare leurs empreintes). La
+   // silhouette tient dans cette boîte (vérifié aussi) : elle reste dans le cube unité.
+-  function normaliser(proche, loin) {
++  function normaliser(proche, loin, reference = proche) {
+     const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
+-    for (const tri of proche) for (let i = 0; i < 3; i++) for (let k = 0; k < 3; k++) {
++    for (const tri of reference) for (let i = 0; i < 3; i++) for (let k = 0; k < 3; k++) {
+       min[k] = Math.min(min[k], tri[i][k]); max[k] = Math.max(max[k], tri[i][k]);
+     }
+     const taille = Math.max(...max.map((v, i) => v - min[i])), centre = max.map((v, i) => (v + min[i]) / 2);
+@@ -357,6 +359,25 @@
+   function nomForme(essence, loin, qualite) {
+     return 'arbre-' + essence + '-' + (loin ? 'loin' : 'proche') + '-' + qualite;
+   }
++  // En hiver le bois du même feuillu reste à sa place : on retire ses amas de feuilles, sans
++  // renormaliser le rameau restant ni déplacer le tronc solide. Un seul objet par arbre et par LOD.
++  const NUS = new Map();
++  function formeNue(loin, qualite) {
++    if (!QUALITES.includes(qualite)) throw new Error('qualité inconnue : ' + qualite);
++    if (!NUS.has(qualite)) {
++      const p = plan('feuillu', qualite), N = BUDGETS[qualite].segments.proche;
++      const reference = [], proche = [], lointain = [];
++      feuillu(reference, p, N);
++      // Légère : tous les rameaux sont présents, en prismes triangulaires. 72 triangles,
++      // comme l'ancienne unique couronne lointaine ; aucun objet JS par branche.
++      if (qualite === 'low') feuilluLoin(proche, p, true, true);
++      else feuillu(proche, p, N, true);
++      feuilluLoin(lointain, p, true, qualite === 'low');
++      NUS.set(qualite, normaliser(proche, lointain, reference));
++    }
++    return NUS.get(qualite)[loin ? 'loin' : 'proche'];
++  }
++  const nomFormeNue = (loin, qualite) => 'arbre-feuillu-nu-' + (loin ? 'loin' : 'proche') + '-' + qualite;
+   // Tronc d'écorce de la version lointaine. Le tronc proche est le cylindre du moteur (16 côtés, 64 triangles) ;
+   // à la distance de bascule il ne fait que quelques pixels de large. Même cylindre unité (diamètre 1, hauteur 1,
+   // centré) réduit à six faces sans fonds, normales lisses comme le cylindre : le fond est sous terre, le haut dans
+@@ -390,12 +411,14 @@
+     if (!rendu || typeof rendu.forme !== 'function') return false;
+     for (const essence of ESSENCES) for (const loin of [false, true]) for (const qualite of QUALITES)
+       rendu.forme(nomForme(essence, loin, qualite), forme(essence, loin, qualite));
++    for (const loin of [false, true]) for (const qualite of QUALITES)
++      rendu.forme(nomFormeNue(loin, qualite), formeNue(loin, qualite));
+     rendu.forme(TRONC_LOINTAIN, formeTroncLointain());
+     return true;
+   }
+   const matiere = partie => MATIERES[partie];
+ 
+-  B.botanique = { ESSENCES, QUALITES, BUDGETS, SILHOUETTE, MATIERES, TRONC_LOINTAIN, forme, nomForme, formeTroncLointain,
++  B.botanique = { ESSENCES, QUALITES, BUDGETS, SILHOUETTE, MATIERES, TRONC_LOINTAIN, forme, nomForme, formeNue, nomFormeNue, formeTroncLointain,
+     organes, installer, matiere };
+   installer(typeof window !== 'undefined' ? window.FRender : globalThis.FRender);
+ })(globalThis.BITUME = globalThis.BITUME || {});
+diff --git a/src/decor.js b/src/decor.js
+index 9e90771..0e18803 100644
+--- a/src/decor.js
++++ b/src/decor.js
+@@ -805,24 +805,27 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
+     return q === 'medium' || q === 'high' ? q : 'low';
+   }
+   const ESSENCE_BOTANIQUE = essence => (essence === 'pin' || essence === 'conifere') ? essence : 'feuillu';
++  const couronneArbre = o => o.shape === 'foliage' || o.collision !== 'tronc' && o.shape.startsWith('arbre-');
+ 
+   // Habillage d'un arbre déjà construit à l'historique. Moyenne et Fine remplacent les blobs de feuillage par
+   // une couronne procédurale de la botanique et donnent au tronc la matière écorce du moteur. Le tronc reste
+   // l'objet qui porte la collision, avec ses coordonnées et sa taille d'origine : le solide ne bouge pas d'un
+   // centimètre. Aucune valeur de hasard n'est consommée ici, donc aucun arbre ne se déplace ailleurs.
+-  function habiller(liste, loin, essence, qualite, h, penche, v) {
++  function habiller(liste, loin, essence, qualite, h, penche, v, nu = false) {
+     if (!B.botanique) return;
+     const e = ESSENCE_BOTANIQUE(essence);
+     for (const o of liste) if (o.mat === 10) o.mat = B.botanique.matiere('ecorce');
+-    for (let k = liste.length - 1; k >= 0; k--) if (liste[k].shape === 'foliage') liste.splice(k, 1);
+-    for (let k = loin.length - 1; k >= 0; k--) if (loin[k].shape === 'foliage') loin.splice(k, 1);
++    for (let k = liste.length - 1; k >= 0; k--) if (couronneArbre(liste[k])) liste.splice(k, 1);
++    for (let k = loin.length - 1; k >= 0; k--) if (couronneArbre(loin[k])) loin.splice(k, 1);
+     const pied = liste.find(o => o.collision === 'tronc');
+     if (!pied) return;
+     const x = pied.p[0], y = pied.p[1] - pied.s[1] * .5, z = pied.p[2];
+-    liste.push({ shape: B.botanique.nomForme(e, false, qualite), p: [x, y + h * .5, z], s: [h, h, h],
+-      r: [penche, 0, penche * .7], mat: B.botanique.matiere('feuillage'), color: v });
+-    loin.push({ shape: B.botanique.nomForme(e, true, qualite), p: [x, y + h * .5, z], s: [h, h, h],
+-      r: [penche, 0, penche * .7], mat: B.botanique.matiere('feuillage'), color: v });
++    const forme = distant => nu ? B.botanique.nomFormeNue(distant, qualite) : B.botanique.nomForme(e, distant, qualite);
++    const mat = B.botanique.matiere(nu ? 'ecorce' : 'feuillage'), couleur = nu ? pied.color : v;
++    liste.push({ shape: forme(false), p: [x, y + h * .5, z], s: [h, h, h],
++      r: [penche, 0, penche * .7], mat, color: couleur });
++    loin.push({ shape: forme(true), p: [x, y + h * .5, z], s: [h, h, h],
++      r: [penche, 0, penche * .7], mat, color: couleur });
+   }
+ 
+   function arbre(liste, loin, x, y, z, essence, r, qualite) {
+@@ -1083,7 +1086,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
+         for (const triangle of n.herbeTriangles || []) for (let j = 0; j < 3; j++) visites[n.indices[triangle + j]] = 1;
+         // Le bord sans vibreur est aussi herbeux, mais reste exclu de la plantation des brins.
+         if (n.surfaceType === 'accotement') for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 9] === 8) visites[v] = 1;
+-        if ((th.volcanique || th.aride || th.karstique || th.pacifique || th.baikal) && saison.neige && n.surfaceType === 'terrain') {
++        if ((th.montagnes || th.volcanique || th.aride || th.karstique || th.pacifique || th.baikal) && saison.neige && n.surfaceType === 'terrain') {
+           for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 4] > .45 && (!(th.pacifique || th.baikal) || n.sommets[v * 13 + 1] > th.eau + 1)) visites[v] = 1;
+         }
+         for (let v = 0; v < visites.length; v++) if (visites[v]) {
+@@ -1427,23 +1430,51 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
+       if (B.botanique && B.botanique.TRONC_LOINTAIN && tronc && tronc.mat === B.botanique.matiere('ecorce') && !loin.includes(tronc))
+         l.loin.push({ shape: B.botanique.TRONC_LOINTAIN, p: tronc.p.slice(), s: tronc.s.slice(), r: tronc.r.slice(), mat: tronc.mat, color: tronc.color.slice() });
+     }
+-    function retenirArbre(objets, loin, x, z, essence = th.essence) {
+-      if (maisonsBaikal && maisonsBaikal.some(m => Math.hypot(m.x - x, m.z - z) < 18)) return;
+-      const richesse = ecologie ? ecologie.echantillonner(x, z, habitatArbre).boisement : 1;
+-      if (!th.pacifique && (richesse < .08 || hache(Math.round(x * 8), Math.round(z * 8), g + 337) > richesse)) return;
++    function saisonArbre(objets, loin, x, z, essence = th.essence, solSource = null) {
++      const pied = objets.find(o => o.collision === 'tronc'), h = pied.s[1] / .84, sol = pied.p[1] - h * .42 + .2;
++      if (ecologie) ecologie.echantillonner(x, z, habitatArbre);
++      // Forêt basse mêlée aux conifères : choix spatial stable, indépendant de la saison et du hasard
++      // historique. Le tronc solide conserve exactement sa position et ses dimensions. Au-dessus de
++      // la bande basse, seuls les conifères historiques restent ; aucun arbre n'est ajouté au col.
++      if (saison && th.montagnes && B.botanique && sol < 120
++        && hache(Math.round(x * 8), Math.round(z * 8), g + 541) < .48 * (1 - lisse(70, 120, sol))) {
++        essence = 'feuillu';
++        const vert = [.17, .31, .09].map(v => v * (.90 + .20 * hache(Math.round(x), Math.round(z), g + 547)));
++        if (qualite !== 'low') habiller(objets, loin, essence, qualite, h, pied.r[0], vert);
++        else {
++          for (const liste of [objets, loin]) for (let i = liste.length - 1; i >= 0; i--) if (couronneArbre(liste[i])) liste.splice(i, 1);
++          const couronne = { shape: 'foliage', p: [x, sol - .2 + h * .80, z], s: [h * .74, h * .68, h * .74], mat: 11, color: vert };
++          objets.push(couronne); loin.push({ ...couronne, p: couronne.p.slice(), s: couronne.s.slice() });
++        }
++      }
++      const nu = !!(saison && saison.id === 'hiver' && essence === 'feuillu' && B.botanique);
++      // Les platanes de bord avaient une seule couronne simple, même en Fine : leurs rameaux restent
++      // au budget de 72 triangles. La forêt détaillée conserve, elle, ses vraies branches détaillées.
++      if (nu) {
++        const detailNu = objets.some(o => o.collision !== 'tronc' && o.shape.startsWith('arbre-')) ? qualite : 'low';
++        habiller(objets, loin, essence, detailNu, h, pied.r[0], pied.color, true);
++      }
+       if (saison) {
+-        for (const liste of [objets, loin]) for (const o of liste) if (o.collision !== 'tronc' && o.color) {
+-          o.color = B.saisons.teinte(saison, th.baikal && essence === 'feuillu' ? 'feuillage-caduque' : 'feuillage', o.color, o.p[0], o.p[2], ecologie ? habitatArbre : null);
++        for (const o of new Set(objets.concat(loin))) if (!nu && couronneArbre(o) && o.color) {
++          o.color = B.saisons.teinte(saison, essence === 'feuillu' ? 'feuillage-caduque' : 'feuillage-persistant', o.color, o.p[0], o.p[2], ecologie ? habitatArbre : null);
+         }
+         if (saison.feuilles && essence === 'feuillu') {
+-          const pied = objets.find(o => o.collision === 'tronc'), h = pied.s[1] / .84, sol = pied.p[1] - h * .42 + .2;
+-          sourcesFeuilles.push({ x, y: sol + h * .78, z, rayon: h * .36, sol });
++          sourcesFeuilles.push({ x, y: sol + h * .78, z, rayon: h * .36, sol: solSource ?? sol });
+         }
+       }
+-      if (th.baikal) for (const o of new Set(objets.concat(loin))) {
++      for (const o of new Set(objets.concat(loin))) if (o.collision === 'tronc' || couronneArbre(o)) Object.defineProperties(o, {
++        essenceArbre: { value: essence }, partieArbre: { value: o.collision === 'tronc' ? 'tronc' : nu ? 'branches' : 'feuillage' }
++      });
++      if (th.baikal) for (const o of new Set(objets.concat(loin))) if (o.essenceArbre) {
+         Object.defineProperty(o, 'essenceBaikal', { value: essence });
+         if (o.collision === 'tronc' && essence === 'feuillu') o.color = [.70, .72, .65];
+       }
++    }
++    function retenirArbre(objets, loin, x, z, essence = th.essence) {
++      if (maisonsBaikal && maisonsBaikal.some(m => Math.hypot(m.x - x, m.z - z) < 18)) return;
++      const richesse = ecologie ? ecologie.echantillonner(x, z, habitatArbre).boisement : 1;
++      if (!th.pacifique && (richesse < .08 || hache(Math.round(x * 8), Math.round(z * 8), g + 337) > richesse)) return;
++      saisonArbre(objets, loin, x, z, essence);
+       ajouter(objets, loin, x, z); positionsArbres.push([x, z]);
+       if (casesArbres) rangerArbre(objets, loin, x, z);
+     }
+@@ -1678,7 +1709,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
+ 
+     // Bords de route (lot 22F) : posés après tout le reste, dans des lots à eux (clé préfixée « b ») ajoutés à la fin :
+     // les lots et les solides historiques gardent leur contenu, leur ordre et leurs identifiants.
+-    if (planBords) B.bords.poser(c, planBords, { limites: lim, qualite, ajouter: (objets, loin, x, z) => {
++    if (planBords) B.bords.poser(c, planBords, { limites: lim, qualite,
++      saisonArbre: (objets, loin, x, z, essence) => saisonArbre(objets, loin, x, z, essence, terrain.sol(x, z)),
++      ajouter: (objets, loin, x, z) => {
+       const q = interroger(x, z, 300), proche = q.i >= 0 && q.d < 330;
+       const cle = 'b' + (proche ? 'p' + Math.floor(q.i * c.pas / TRONCON) : 'l' + Math.floor(x / 420) + ',' + Math.floor(z / 420));
+       let l = groupes.get(cle); if (!l) groupes.set(cle, l = { objets: [], loin: [], lointain: !proche });
+diff --git a/src/index.html b/src/index.html
+index 99ee7d9..b66d669 100644
+--- a/src/index.html
++++ b/src/index.html
+@@ -1,5 +1,5 @@
+ <title>BITUME</title>
+-<meta name="description" content="Course de monoplaces rétro, entièrement procédurale : cinq circuits générés, onze rivaux, dérive et turbo. Moteur FERRO, sans aucun fichier d’image ni de son.">
++<meta name="description" content="Course de monoplaces rétro, entièrement procédurale : neuf circuits générés, onze rivaux, dérive et turbo. Moteur FERRO, sans aucun fichier d’image ni de son.">
+ <style>
+ /*STYLE*/
+ </style>
+@@ -81,24 +81,27 @@
+       <button id="t-gaz" type="button" class="pedale gaz">Gaz</button>
+     </div>
+     <button id="t-vue" type="button" class="bouton-rond vue" aria-label="Changer de vue">◎</button>
+-    <button id="t-troll" type="button" class="bouton-rond troll" aria-label="Troll : faire un geste au rival">Troll</button>
++    <button id="t-troll" type="button" class="bouton-rond troll" aria-label="Troll : geste et klaxon ensemble">Troll</button>
+   </div>
+ 
+   <!-- Écran titre -->
+-  <section id="titre" class="ecran titre" hidden>
++  <section id="titre" class="ecran titre arcade-titre" hidden>
+     <div class="marque">
+       <h1>BITUME</h1><b class="version-jeu" aria-label="Version __VERSION_JEU__">V__VERSION_JEU__</b>
+     </div>
+     <a class="signature" href="https://bitume.estrasse.fr/" download="BITUME.html" title="Télécharger BITUME"><img class="signature-avatar" src="data:image/jpeg;base64,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" alt="" />m4d135</a>
+-    <nav class="choix" aria-label="Menu principal">
+-      <button type="button" class="gros" data-aller="course">Course</button>
+-      <button type="button" class="gros" data-aller="chrono">Chrono</button>
+-      <button type="button" class="gros" data-aller="duo" id="b-duo">À deux<small id="t-manettes" class="detecte" hidden>2 manettes</small></button>
+-      <button type="button" class="gros" data-aller="enligne">En ligne</button>
+-      <button type="button" class="discret" data-aller="reglages">Réglages</button>
++    <p class="arcade-surtitre">Choisissez votre mode</p>
++    <nav class="choix arcade-modes" aria-label="Menu principal">
++      <button type="button" class="gros mode-arcade" data-aller="course"><span class="mode-numero" aria-hidden="true">01</span><span>Course<small>Vous et onze rivaux</small></span><span class="mode-fleche" aria-hidden="true">↗</span></button>
++      <button type="button" class="gros mode-arcade" data-aller="chrono"><span class="mode-numero" aria-hidden="true">02</span><span>Chrono<small>La piste. Le temps. Votre fantôme.</small></span><span class="mode-fleche" aria-hidden="true">↗</span></button>
++      <button type="button" class="gros mode-arcade" data-aller="duo" id="b-duo"><span class="mode-numero" aria-hidden="true">03</span><span>À deux<small>Écran partagé · deux pilotes</small><small id="t-manettes" class="detecte" hidden>2 manettes</small></span><span class="mode-fleche" aria-hidden="true">↗</span></button>
++      <button type="button" class="gros mode-arcade" data-aller="enligne"><span class="mode-numero" aria-hidden="true">04</span><span>En ligne<small>Retrouvez les autres pilotes</small></span><span class="mode-fleche" aria-hidden="true">↗</span></button>
++      <button type="button" class="discret arcade-reglages" data-aller="reglages">Réglages <span aria-hidden="true">↗</span></button>
+     </nav>
+     <p id="titre-attente" class="attente" hidden><span id="titre-attente-texte">Démo dans 5 s</span><i><b></b></i></p>
+-    <p class="pied-titre">Clavier, souris, manette ou écran tactile</p>
++    <p class="pied-titre aide-clavier">Tab : parcourir · Entrée : choisir · Échap : retour</p>
++    <p class="pied-titre aide-controleur">Croix ou stick : parcourir · A : choisir · B : retour</p>
++    <p class="pied-titre aide-tactile">Touchez un mode pour commencer</p>
+     <p id="aide-console" class="pied-titre" hidden>Xbox : maintenez Menu pour passer aux contrôles de jeu. RT : gaz · LT : frein · A : dérive</p>
+   </section>
+ 
+@@ -110,7 +113,7 @@
+     </header>
+     <div class="salon">
+       <div class="ligne-identite">
+-        <label class="champ-nom"><span>Votre nom</span><input id="l-nom" maxlength="16" autocomplete="nickname" spellcheck="false" placeholder="Pilote"></label>
++        <label class="champ-nom"><span>Votre nom</span><input data-menu-saisie="nom" id="l-nom" maxlength="16" autocomplete="nickname" spellcheck="false" placeholder="Pilote"></label>
+         <fieldset class="champ-joueurs">
+           <legend>Pilotes sur cette machine</legend>
+           <label><input type="radio" name="joueursIci" value="1"><span>Un</span></label>
+@@ -127,7 +130,7 @@
+           <h3>Rejoindre</h3>
+           <p>Entrez le code que l’hôte vous a donné.</p>
+           <div class="ligne-code">
+-            <input id="l-code" maxlength="4" autocomplete="off" spellcheck="false" placeholder="ABCD" aria-label="Code de la partie">
++            <input data-menu-saisie="code" id="l-code" maxlength="4" autocomplete="off" spellcheck="false" placeholder="ABCD" aria-label="Code de la partie">
+             <button type="button" class="gros" id="l-rejoindre">Rejoindre</button>
+           </div>
+         </div>
+@@ -182,6 +185,11 @@
+           <label><input type="radio" name="vuePret" value="poursuite"><span>Poursuite</span></label>
+         </fieldset>
+       </div>
++      <div class="options options-troll-prets" id="pr-troll-choix">
++        <fieldset class="choix-troll" id="pr-troll-0"><legend>Troll · Joueur 1</legend><label class="select-arcade" for="pr-geste-0"><span>Geste</span><select id="pr-geste-0" name="gestePilote0"><option value="majeur">Doigt d’honneur</option><option value="poing">Poing levé</option><option value="salut">Salut</option></select></label><label class="select-arcade" for="pr-klaxon-0"><span>Klaxon</span><select id="pr-klaxon-0" name="klaxonPilote0"><option value="classique">Classique</option><option value="ancien">Ancien · rétro</option><option value="mariage">Mariage · fête</option></select></label><button type="button" class="discret" data-essai-klaxon="0">Écouter le klaxon</button></fieldset>
++        <fieldset class="choix-troll" id="pr-troll-1" hidden><legend>Troll · Joueur 2</legend><label class="select-arcade" for="pr-geste-1"><span>Geste</span><select id="pr-geste-1" name="gestePilote1"><option value="majeur">Doigt d’honneur</option><option value="poing">Poing levé</option><option value="salut">Salut</option></select></label><label class="select-arcade" for="pr-klaxon-1"><span>Klaxon</span><select id="pr-klaxon-1" name="klaxonPilote1"><option value="classique">Classique</option><option value="ancien">Ancien · rétro</option><option value="mariage">Mariage · fête</option></select></label><button type="button" class="discret" data-essai-klaxon="1">Écouter le klaxon</button></fieldset>
++      </div><p class="note-pneus">Troll déclenche ensemble votre klaxon et votre geste.</p>
++      <p id="pr-troll-etat" class="note-pneus" role="status" aria-live="polite"></p>
+       <button type="button" class="discret" id="pr-reglages">Commandes et autres réglages</button>
+       <ul id="pr-pilotes" class="liste-pilotes" aria-label="Machines prêtes"></ul>
+       <p id="pr-etat" class="note-enligne" role="status" aria-live="polite"></p>
+@@ -190,21 +198,30 @@
+   </section>
+ 
+   <!-- Préparation : chaque condition est choisie avant la course. -->
+-  <section id="preparation" class="ecran preparation menu-coquille" hidden>
++  <section id="preparation" class="ecran preparation menu-coquille arcade-preparation" hidden>
+     <div class="menu-entete">
+       <header class="entete">
+-        <button type="button" class="retour" data-aller="titre" aria-label="Retour">←</button>
+-        <div><h2 id="p-titre">Course</h2><p class="sous">Préparez votre départ.</p></div>
++        <button type="button" class="retour" id="p-retour" aria-label="Étape précédente">←</button>
++        <div><p class="arcade-surtitre">Préparation de la course</p><h2 id="p-titre">Course</h2></div><span id="p-etape" class="arcade-compteur">01 / 04</span>
+       </header>
+     <nav class="onglets-menu" data-menu-tabs role="tablist" aria-label="Préparation de la course">
+-      <button type="button" id="onglet-p-piste" role="tab" data-menu-tab="p-piste" aria-controls="p-piste" aria-selected="true" tabindex="0">Circuit</button>
+-      <button type="button" id="onglet-p-conditions" role="tab" data-menu-tab="p-conditions" aria-controls="p-conditions" aria-selected="false" tabindex="-1">Conditions</button>
+-      <button type="button" id="onglet-p-pilotes" role="tab" data-menu-tab="p-pilotes" aria-controls="p-pilotes" aria-selected="false" tabindex="-1">Pilotes</button>
++      <button type="button" id="onglet-p-piste" role="tab" data-menu-tab="p-piste" aria-controls="p-piste" aria-selected="true" tabindex="0"><span aria-hidden="true">01</span> Circuit</button>
++      <button type="button" id="onglet-p-conditions" role="tab" data-menu-tab="p-conditions" aria-controls="p-conditions" aria-selected="false" tabindex="-1"><span aria-hidden="true">02</span> Conditions</button>
++      <button type="button" id="onglet-p-pilotes" role="tab" data-menu-tab="p-pilotes" aria-controls="p-pilotes" aria-selected="false" tabindex="-1"><span aria-hidden="true">03</span> Pilotes</button>
++      <button type="button" id="onglet-p-bilan" role="tab" data-menu-tab="p-bilan" aria-controls="p-bilan" aria-selected="false" tabindex="-1"><span aria-hidden="true">04</span> Départ</button>
+     </nav>
+     </div>
+     <div class="panneaux-menu">
+       <div id="p-piste" class="panneau-menu" role="tabpanel" data-menu-panel aria-labelledby="onglet-p-piste">
+-    <div id="circuits" class="circuits" role="radiogroup" aria-label="Circuit"></div>
++    <div class="selection-circuit">
++      <article class="apercu-circuit">
++        <div class="apercu-entete"><div><p id="p-circuit-lieu" class="arcade-surtitre"></p><h3 id="p-circuit-nom"></h3></div><span id="p-circuit-numero" class="arcade-compteur"></span></div>
++        <canvas id="p-trace-3d" width="720" height="400" role="img" aria-label="Tracé du circuit en trois dimensions"></canvas>
++        <div class="apercu-legende"><span>Tracé réel · relief</span><button type="button" id="p-rotation" aria-pressed="false">Figer le tracé</button></div>
++        <dl class="chiffres-circuit"><div><dt>Distance</dt><dd><b id="p-circuit-km"></b> km</dd></div><div><dt>Virages</dt><dd><b id="p-circuit-virages"></b></dd></div><div><dt>Amplitude du relief</dt><dd><b id="p-circuit-relief"></b> m</dd></div></dl>
++      </article>
++      <div class="catalogue-circuits"><p class="arcade-surtitre">Votre destination</p><div id="circuits" class="circuits" role="radiogroup" data-menu-axis="vertical" aria-label="Circuit"></div></div>
++    </div>
+     <div class="options">
+       <fieldset id="o-tours">
+         <legend>Tours</legend>
+@@ -306,19 +323,39 @@
+         <label><input type="radio" name="partage" value="haut-bas"><span>L’un sur l’autre</span></label>
+         <label><input type="radio" name="partage" value="cote"><span>Côte à côte</span></label>
+       </fieldset>
++      <fieldset class="choix-troll" id="o-troll-0"><legend>Troll · Joueur 1</legend>
++        <label class="select-arcade" for="p-geste-0"><span>Geste</span><select id="p-geste-0" name="gestePilote0"><option value="majeur">Doigt d’honneur</option><option value="poing">Poing levé</option><option value="salut">Salut</option></select></label>
++        <label class="select-arcade" for="p-klaxon-0"><span>Klaxon</span><select id="p-klaxon-0" name="klaxonPilote0"><option value="classique">Classique</option><option value="ancien">Ancien · rétro</option><option value="mariage">Mariage · fête</option></select></label>
++        <button type="button" class="discret" data-essai-klaxon="0">Écouter le klaxon</button><p class="note-pneus">Un appui sur Troll : votre son et votre geste en même temps.</p>
++      </fieldset>
++      <fieldset class="choix-troll" id="o-troll-1" hidden><legend>Troll · Joueur 2</legend>
++        <label class="select-arcade" for="p-geste-1"><span>Geste</span><select id="p-geste-1" name="gestePilote1"><option value="majeur">Doigt d’honneur</option><option value="poing">Poing levé</option><option value="salut">Salut</option></select></label>
++        <label class="select-arcade" for="p-klaxon-1"><span>Klaxon</span><select id="p-klaxon-1" name="klaxonPilote1"><option value="classique">Classique</option><option value="ancien">Ancien · rétro</option><option value="mariage">Mariage · fête</option></select></label>
++        <button type="button" class="discret" data-essai-klaxon="1">Écouter le klaxon</button><p class="note-pneus">Les concurrents IA choisissent leurs gestes et klaxons au hasard.</p>
++      </fieldset>
+       <fieldset id="o-pilotage">
+         <legend>Pilotage</legend>
+         <p class="note-graphismes">Vue, boîte de vitesses et commandes de chaque pilote.</p>
+         <button type="button" class="discret" id="p-reglages-pilote">Régler le pilotage</button>
+       </fieldset>
+     </div>
++        <p id="p-troll-etat" class="note-pneus" role="status" aria-live="polite"></p>
++      </div>
++      <div id="p-bilan" class="panneau-menu bilan-arcade" role="tabpanel" data-menu-panel aria-labelledby="onglet-p-bilan" hidden>
++        <p class="arcade-surtitre">La grille vous attend</p><h3>Prêt à prendre la piste ?</h3>
++        <div class="bilan-grille"><article><span class="etiquette">Destination</span><strong id="p-bilan-circuit"></strong><p id="p-bilan-course"></p></article><article><span class="etiquette">Conditions</span><strong id="p-bilan-saison"></strong><p id="p-bilan-meteo"></p></article><article><span class="etiquette">Pilotes</span><strong id="p-bilan-joueurs"></strong><p id="p-bilan-troll"></p></article></div>
++        <p class="note-pneus">Les choix restent modifiables avec LB / RB ou les étapes ci-dessus.</p>
+       </div>
+     </div>
+     <footer class="actions depart-fixe">
+       <div class="resume-depart"><p id="p-resume" class="resume-course"></p><p id="p-record" class="record"></p></div>
+-      <button type="button" class="gros principal" id="b-depart">Départ</button>
++      <button type="button" class="discret" id="b-precedent">Menu</button>
++      <button type="button" class="gros principal" id="b-suivant">Conditions →</button>
++      <button type="button" class="gros principal" id="b-depart" hidden>Départ →</button>
+     </footer>
+-    <p class="aide-manette"><span><kbd>↑ ↓</kbd> Parcourir</span><span><kbd>← →</kbd> Régler</span><span><kbd>A</kbd> Valider</span><span><kbd>B</kbd> Retour</span><span><kbd>LB / RB</kbd> Onglets</span></p>
++    <p class="aide-manette aide-controleur"><span class="aide-circuit"><kbd>↑ ↓</kbd> Circuit <kbd>← →</kbd> Autres choix</span><span class="aide-options"><kbd>↑ ↓</kbd> Parcourir <kbd>← →</kbd> Régler</span><span><kbd>A</kbd> Valider</span><span><kbd>B</kbd> Retour</span><span><kbd>LB / RB</kbd> Étapes</span></p>
++    <p class="aide-manette aide-clavier"><span><kbd>Tab</kbd> Parcourir</span><span><kbd>Flèches</kbd> Choisir / régler</span><span><kbd>Entrée</kbd> Valider</span><span><kbd>Échap</kbd> Étape précédente</span></p>
++    <p class="aide-manette aide-tactile">Touchez un circuit ou une étape · Faites défiler les réglages</p>
+   </section>
+ 
+   <!-- Réglages persistants, séparés des conditions de course. -->
+@@ -539,5 +576,19 @@
+   </div>
+   <div id="chargement" class="chargement" role="status" aria-live="polite"><span class="chargement-titre">Préparation du circuit…</span><span id="chargement-etape" class="chargement-etape"></span><progress id="chargement-progres" class="chargement-progres" max="1" value="0" aria-label="Progression du chargement"></progress></div>
+   <div id="erreur" class="erreur" role="alert" hidden></div>
++  <!-- Saisie facultative à la manette ; clavier et tactile gardent les champs natifs. -->
++  <dialog id="saisie-manette" class="saisie-manette" aria-labelledby="sm-titre" aria-describedby="sm-limite">
++    <header><h2 id="sm-titre">Saisir un texte</h2><button type="button" id="sm-annuler" aria-label="Annuler la saisie">Annuler</button></header>
++    <p id="sm-contenu" role="status" aria-live="polite" aria-atomic="true"></p>
++    <p id="sm-limite"></p>
++    <div id="sm-touches" aria-label="Caractères"></div>
++    <div class="sm-actions">
++      <button type="button" id="sm-maj" aria-pressed="false">Majuscules</button>
++      <button type="button" id="sm-espace">Espace</button>
++      <button type="button" id="sm-effacer">Effacer</button>
++      <button type="button" id="sm-valider">Valider</button>
++    </div>
++    <p class="sm-aide">Croix ou stick : choisir · A : saisir · B : annuler</p>
++  </dialog>
+ </main>
+ <!--MODULES-->
+diff --git a/src/jeu.js b/src/jeu.js
+index cf07b58..a185b81 100644
+--- a/src/jeu.js
++++ b/src/jeu.js
+@@ -55,6 +55,7 @@
+   const reglagesEnregistres = lireStock('bitume.reglages', {});
+   const reglages = Object.assign({}, DEFAUT, reglagesEnregistres);
+   Object.assign(reglages, initialiserChoixPneus(reglagesEnregistres));
++  reglages.trollPilotes = B.menuArcade.normaliserTroll(reglagesEnregistres);
+   reglages.qualite = B.graphismes.normaliser(reglages.qualite);
+   // Cadence d'images (Auto, Écran, 120, 60, 30) : une valeur ancienne, inconnue ou mal écrite revient à Auto.
+   reglages.cadence = B.cadence.normaliser(reglages.cadence);
+@@ -303,7 +304,9 @@
+       detailsRouesGlaces: [new Int8Array(course.voitures.length).fill(-1), new Int8Array(course.voitures.length).fill(-1)],
+       contresens: 0, bloque: 0, finA: null, resultats: false, derniereJauge: -9, positionPrec: 0, tempsAffiche: null,
+       real: demo ? B.realisateur.creer(graineCourse) : null, cinema: null, planVu: null, suivie: 0, enchaine: false,
+-      expressions: B.expressionsPilote ? B.expressionsPilote.creer(course.voitures.length, graineCourse) : null,
++      expressions: B.expressionsPilote ? B.expressionsPilote.creer(course.voitures.length, graineCourse, { ia: joue }) : null,
++      trollEvenement: { sequence: 0, pilote: -1, geste: null, klaxon: 'classique', instant: 0, cote: -1 },
++      trollAudio: { klaxon: 'classique', gain: 0, pan: 0 },
+       fx: B.traces.creer(course.voitures.length, graineCourse, course.physique.world),
+       // flammes et détonations d'échappement (lot 20) : hasard propre, tiré de la graine de la course
+       ech: B.echappement ? B.echappement.creer(course.voitures.length, graineCourse) : null,
+@@ -326,7 +329,8 @@
+       B.public.regler(sc.public, { presence: B.public.presencePour(conditions.meteo, sc.saison, conditions.moment === 'nuit') });
+     }
+     if (enl) {
+-      S.enLigne = { T0: enl.T0, role: enl.role, humains: enl.humains, seance: enl.seance }; S.enLigneOrigine = true;
++      S.enLigne = { T0: enl.T0, role: enl.role, humains: enl.humains, seance: enl.seance,
++        troll: trollDepart(enl.humains, enl.troll) }; S.enLigneOrigine = true;
+       course.distant = (v, dt) => appliquerDistant(S, v, dt);
+       EL.recus.clear(); EL.corr.clear(); EL.pasEnvoi = 0;
+       initialiserPneusReseau(S, enl);
+@@ -339,6 +343,7 @@
+       detailsRouesGlaces: [new Int8Array(course.voitures.length).fill(-1), new Int8Array(course.voitures.length).fill(-1)],
+       suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null, fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null, animauxVue: null });
+     S.locaux = course.voitures.filter(v => v.joueur).map(v => v.id);   // voitures conduites ici (une, ou deux à l'écran partagé)
++    if (joue && S.expressions) configurerTrollLocaux(S);
+     if (joue) {
+       majPneusHUD(HUD1, course.voitures[S.locaux[0] ?? course.joueur.id].etat);
+       if (duo) majPneusHUD(HUD2, course.voitures[S.locaux[1] ?? course.joueur.id].etat);
+@@ -423,6 +428,20 @@
+   let analogique = false;
+   let relacherTactile = () => {};
+ 
++  // Les choix du menu sont copiés au départ, par place locale et non par identifiant de voiture.
++  // Le raccord 03 peut fournir choixTrollLocaux ; les réglages directs restent un repli autonome.
++  function configurerTrollLocaux(S) {
++    const X = B.expressionsPilote;
++    if (!S.expressions || !X?.configurer) return;
++    const choix = typeof choixTrollLocaux === 'function' ? choixTrollLocaux() : reglages.trollPilotes;
++    for (let n = 0; n < S.locaux.length; n++) {
++      // En ligne, le départ fige les préférences négociées ; aucun changement ultérieur du menu
++      // ni ordre différent des machines ne doit remplacer la paire acceptée pour cette voiture.
++      const c = S.enLigne?.troll?.pilotes?.[S.locaux[n]] || choix?.[n];
++      X.configurer(S.expressions, S.locaux[n], { geste: X.normaliserGeste(c?.geste), klaxon: X.normaliserKlaxon(c?.klaxon) });
++    }
++  }
++
+   // Un front de touche, de bouton ou un clic tactile : aucune répétition quand on maintient la commande.
+   // L'animation choisit sa variante et son côté sans toucher à l'état de conduite ni au hasard de la course.
+   function provoquer(n = 0) {
+@@ -562,7 +581,7 @@
+         if (nouveau(9)) {
+           if (enCourse() || ecran === 'pause') basculerPause();
+           else if (ecran === 'titre') { modePrepa = 'course'; activerSon(); aller('preparation'); }
+-          else if (ecran === 'preparation') { const b = $('b-depart'); if (b) { activerSon(); b.click(); } }
++          else if (ecran === 'preparation') naviguerManette(nouveau);
+           else naviguerManette(nouveau);
+         } else if (!enCourse()) naviguerManette(nouveau);
+       }
+@@ -716,7 +735,34 @@
+   function naviguerManette(nouveau, manette = pad.manette) {
+     const zone = $(ecran); if (!zone || zone.hidden) return;
+     B.navigationMenu.naviguer(zone, nouveau, { pad: manette, temps: performance.now(), activer: activerSon,
+-      retour: () => ecran === 'pause' ? basculerPause() : retour() });
++      retour: () => ecran === 'pause' ? basculerPause() : retour(),
++      demarrer: ecran === 'preparation' ? () => { const b = $('b-suivant').hidden ? $('b-depart') : $('b-suivant'); if (b && !b.disabled) b.click(); } : null,
++      valider: el => ecran === 'preparation' && menuArcade.valider(el) });
++  }
++
++  // Les manettes supplémentaires naviguent aussi avant la course, sans prendre une affectation de conduite.
++  // Les appareils déjà lus comme J1/J2 sont exclus : aucun front ne se traite deux fois.
++  const suivisManettesMenu = new Map();
++  function lireAutresManettesMenu(consommer = false) {
++    const menus = ['titre', 'preparation', 'reglages', 'enligne', 'prets', 'pause', 'resultats'];
++    if (document.hidden || !menus.includes(ecran)) { suivisManettesMenu.clear(); return; }
++    const presentes = new Set();
++    for (const p of manettes) {
++      if (p === pad.manette || p === pad2.manette) continue;
++      presentes.add(p.index);
++      let suivi = suivisManettesMenu.get(p.index);
++      const appuye = i => !!(p.buttons[i] && (p.buttons[i].pressed || p.buttons[i].value > .5));
++      if (!suivi || suivi.id !== p.id) {
++        suivi = { id: p.id, boutons: p.buttons.map((_, i) => appuye(i)) };
++        suivisManettesMenu.set(p.index, suivi);
++        if (ecran === 'titre' && p === manettes[1]) pad2.start = appuye(9);
++      }
++      const nouveau = i => appuye(i) && !suivi.boutons[i];
++      if (ecran === 'titre' && (p.buttons.some((_, i) => appuye(i)) || p.axes.some(a => Math.abs(a) > .5))) dernierGeste = performance.now();
++      if (!consommer) naviguerManette(nouveau, p);
++      for (let i = 0; i < p.buttons.length; i++) suivi.boutons[i] = appuye(i);
++    }
++    for (const i of suivisManettesMenu.keys()) if (!presentes.has(i)) suivisManettesMenu.delete(i);
+   }
+ 
+   // Deuxième manette : mêmes rapports et protection de dérive que pour le joueur 1 ; son clavier reste indépendant.
+@@ -747,7 +793,11 @@
+       if (nouveau(3)) changerVue2();
+       if ((commande(1) === 'auto' || commande(1) === 'manette') && nouveau(10)) provoquer(1);
+     }
+-    if (nouveau(9)) { activerSon(); basculerPause(); }
++    if (nouveau(9)) {
++      activerSon();
++      if (ecran === 'preparation') naviguerManette(nouveau, p);
++      else basculerPause();
++    }
+     else if (!enCourse()) naviguerManette(nouveau, p);
+     for (let i = 0; i < p.buttons.length; i++) pad2.precedent[i] = appuye(i);
+     if (Math.abs(pad2.volant) > .05 || pad2.gaz > .05 || pad2.frein > .05) activerSon();
+@@ -1113,7 +1163,7 @@
+   // rivaux une image sur deux. Une voiture distante est prolongée jusqu'au pas courant et son écart se résorbe en
+   // 0,12 s. Les temps officiels arrivent par le canal fiable. Une machine qui part laisse ses voitures à l'ordinateur
+   // de l'hôte ; sans hôte, chacun finit la course seul.
+-  const EL = { R: null, role: null, recus: new Map(), corr: new Map(), pasEnvoi: 0, pred: {}, vieux: {}, course: null, pneusDe: new Map(),
++  const EL = { R: null, role: null, recus: new Map(), corr: new Map(), pasEnvoi: 0, pred: {}, vieux: {}, course: null, pneusDe: new Map(), trollDe: new Map(),
+     numeroSeance: 0, seanceAcceptee: null, dernierDepart: -Infinity };
+   const VERSION_CHOIX_PNEUS = 2, VERSION_PNEUS_RESEAU = 1;
+   // Empreinte des sources du build, incluant catalogue, générateur, limites et collisions : même piste, même jeu.
+@@ -1134,7 +1184,7 @@
+   const lienActif = () => !!(EL.R && EL.R.etat === 'connecte');
+   function quitterEnLigne() {
+     const R = EL.R;
+-    annulerConfirmation(); EL.course = null; EL.pneusDe.clear();
++    annulerConfirmation(); EL.course = null; EL.pneusDe.clear(); EL.trollDe.clear();
+     EL.R = null; EL.role = null;
+     if (R) R.fermer();
+     etatEnLigne('');
+@@ -1229,7 +1279,7 @@
+     const conditions = conditionsCommunes(conditionsDuDepart());
+     const prevue = meteoPourConditions(conditions, reglages.circuit, graineCourse + 1);
+     EL.course = { i: reglages.circuit, tours: reglages.tours, difficulte: reglages.difficulte, ...conditions, eau: B.conduite.eauSurPiste(prevue),
+-      versionChoixPneus: VERSION_CHOIX_PNEUS, protocolePneus: VERSION_PNEUS_RESEAU, piste: contratPiste(reglages.circuit) };
++      versionChoixPneus: VERSION_CHOIX_PNEUS, protocolePneus: VERSION_PNEUS_RESEAU, piste: contratPiste(reglages.circuit), schemaTroll: 1 };
+     EL.R.envoyer(Object.assign({ t: 'course' }, EL.course));
+     majCourseSalon();
+   }
+@@ -1273,6 +1323,7 @@
+     texte($('pr-etat'), incompatibles && incompatibles.length ? 'Choix de pneus incompatibles. Chaque machine doit recharger la même version du jeu et confirmer ses pilotes.' : tousPrets(R, C) ? 'Tout le monde est prêt : départ !' : n + ' machine' + (n > 1 ? 's' : '') + ' prête' + (n > 1 ? 's' : '') + ' sur ' + m + '. La course part quand toutes le sont.');
+     texte($('pr-pret'), EL.pretIci ? 'Pas encore prêt' : 'Je suis prêt');
+     classe($('pr-pret'), 'principal', !EL.pretIci);
++    texte($('pr-troll-etat'), statutTrollEnLigne());
+   }
+   function basculerPret() {
+     const R = EL.R, C = EL.confirmation;
+@@ -1300,7 +1351,8 @@
+     if (!R || !C || EL.role !== 'hote') return;
+     for (const id of C.prets) if (!R.membres.some(m => m.id === id)) C.prets.delete(id);
+     if (C.incompatibles) for (const id of C.incompatibles) if (!R.membres.some(m => m.id === id)) C.incompatibles.delete(id);
+-    R.envoyer({ t: 'prets', liste: [...C.prets] });
++    C.trollIncompatibles = [...EL.trollDe].filter(([id, choix]) => !choix.compatible && R.membres.some(m => m.id === id)).map(([id]) => id);
++    R.envoyer({ t: 'prets', liste: [...C.prets], trollIncompatibles: C.trollIncompatibles });
+     majPrets();
+     if (!tousPrets(R, C)) { clearTimeout(C.minuteur); C.minuteur = null; return; }
+     if (C.minuteur != null) return;
+@@ -1323,10 +1375,10 @@
+     // nouvelle annonce : les pneus conseillés sont présélectionnés quand la météo change, le pilote peut changer
+     const eau = clamp(+m.eau || 0, 0, 1), avant = EL.course;
+     EL.course = { i: m.i | 0, tours: clamp(m.tours | 0, 1, 99), difficulte: m.difficulte | 0, ...conditionsCommunes(m), eau,
+-      versionChoixPneus: VERSION_CHOIX_PNEUS, protocolePneus: VERSION_PNEUS_RESEAU, piste: contratPiste(m.i) };
++      versionChoixPneus: VERSION_CHOIX_PNEUS, protocolePneus: VERSION_PNEUS_RESEAU, piste: contratPiste(m.i), schemaTroll: m.schemaTroll === 1 ? 1 : 0 };
+     if (!avant || avant.i !== EL.course.i || avant.saison !== EL.course.saison || Math.abs(avant.eau - eau) > .05) {
+       appliquerConseilPneus(B.conduite.pneusConseilles(surfaceAnnoncee(EL.course))); envoyerPneus();
+-    }
++    } else if (avant.schemaTroll !== EL.course.schemaTroll) envoyerPneus();
+     majCourseSalon();
+     if (ecran === 'prets') majPrets();
+     return true;
+@@ -1337,7 +1389,51 @@
+   function messageChoixPneus() {
+     const membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
+     const pneusPilotes = choixPneusLocaux().slice(0, membre && membre.joueurs === 2 ? 2 : 1);
+-    return { versionChoixPneus: VERSION_CHOIX_PNEUS, pneus: pneusPilotes[0], pneusPilotes };
++    const message = { versionChoixPneus: VERSION_CHOIX_PNEUS, pneus: pneusPilotes[0], pneusPilotes };
++    // L'extension est annoncée par l'hôte ; un hôte ancien reçoit son message historique exact.
++    if (EL.role === 'hote' || EL.course?.schemaTroll === 1) message.troll = {
++      schema: 1, pilotes: Array.from({ length: pneusPilotes.length }, (_, n) => paireTroll(reglages.trollPilotes?.[n])) };
++    return message;
++  }
++  // Extension de préférences sur les messages fiables existants, distincte des pneus et des
++  // événements de geste. Aucun paquet de geste ni interprétation de temps distant n'est ajouté.
++  function paireTroll(c) {
++    return { geste: c && ['majeur', 'poing', 'salut'].includes(c.geste) ? c.geste : 'majeur',
++      klaxon: c && ['classique', 'ancien', 'mariage'].includes(c.klaxon) ? c.klaxon : 'classique' };
++  }
++  function paireTrollValide(c) {
++    return !!(c && typeof c === 'object' && !Array.isArray(c) &&
++      Object.hasOwn(c, 'geste') && Object.hasOwn(c, 'klaxon') &&
++      ['majeur', 'poing', 'salut'].includes(c.geste) && ['classique', 'ancien', 'mariage'].includes(c.klaxon));
++  }
++  function lireChoixTrollMessage(m, de) {
++    const membre = EL.R && EL.R.membres.find(x => x.id === de);
++    if (!membre) return null;
++    const nombre = membre.joueurs === 2 ? 2 : 1, t = m && m.troll;
++    const compatible = !!(t && t.schema === 1 && Array.isArray(t.pilotes) && t.pilotes.length === nombre &&
++      Array.from(t.pilotes).every(paireTrollValide));
++    return { compatible, pilotes: Array.from({ length: nombre }, (_, n) => paireTroll(compatible ? t.pilotes[n] : null)) };
++  }
++  function trollDepart(humains, envelope) {
++    const nombres = new Map();
++    const identites = humains.map(h => {
++      const local = nombres.get(h.machine) || 0; nombres.set(h.machine, local + 1);
++      return { machine: h.machine, local };
++    });
++    const lignes = envelope && envelope.schema === 1 && Array.isArray(envelope.pilotes) && envelope.pilotes.length === humains.length
++      ? envelope.pilotes : null;
++    // L'ordre du départ est canonique ; une paire dupliquée, inconnue ou permutée n'est jamais attribuée à un autre pilote.
++    const compatible = !!(lignes && identites.every((h, i) => paireTrollValide(lignes[i]) &&
++      lignes[i].machine === h.machine && lignes[i].local === h.local));
++    return { schema: 1, compatible, pilotes: identites.map((h, i) => ({ ...h, ...paireTroll(compatible ? lignes[i] : null) })) };
++  }
++  function statutTrollEnLigne() {
++    const manque = EL.role === 'invite' && EL.course && EL.course.schemaTroll !== 1;
++    const incompatibles = EL.confirmation?.trollIncompatibles || [];
++    const choix = manque ? 'L’hôte ne négocie pas les choix Troll : valeurs par défaut au départ. '
++      : incompatibles.length ? 'Choix Troll incompatibles sur ' + incompatibles.length + ' machine(s) : valeurs par défaut annoncées. '
++      : 'Les choix Troll sont conservés pour chaque pilote. ';
++    return choix + 'Les gestes et klaxons restent locaux à chaque appareil ; ils ne sont pas encore partagés en ligne.';
+   }
+   function lireChoixPneusMessage(m, de) {
+     const membre = EL.R && EL.R.membres.find(x => x.id === de);
+@@ -1368,7 +1464,7 @@
+   function nouvelleLiaison() {
+     annulerConfirmation();
+     if (EL.R) EL.R.fermer();
+-    EL.course = null; EL.pneusDe.clear(); EL.seanceAcceptee = null; EL.dernierDepart = -Infinity;
++    EL.course = null; EL.pneusDe.clear(); EL.trollDe.clear(); EL.seanceAcceptee = null; EL.dernierDepart = -Infinity;
+     const R = EL.R = B.reseau.creer({ url: B.reseau.adresseSalon(), nom: nomPilote(), joueurs: joueursIci() });
+     EL.role = null;
+     $('l-choisir').hidden = true; $('l-code-affiche').hidden = true;
+@@ -1422,7 +1518,7 @@
+       annulerConfirmation();
+       if (!locaux.length) { etatEnLigne('La course est partie sans cette machine : attendez la suivante.'); majCourseSalon(); return; }
+       EL.seanceAcceptee = m.cfg.seance; EL.dernierDepart = m.cfg.T0;
+-      lancerEnLigne(Object.assign({}, m.cfg, conditionsCommunes(m.cfg), { humains, locaux, role: 'invite' }));
++      lancerEnLigne(Object.assign({}, m.cfg, conditionsCommunes(m.cfg), { humains, locaux, role: 'invite', troll: trollDepart(humains, m.cfg.troll) }));
+     } else if (m.t === 'pneus-etat' || m.t === 'pneus-service' || m.t === 'pneus-relais') recevoirPneusReseau(S, m, de);
+     else if (m.t === 'demande-pneus' && S && S.enLigne && EL.role === 'hote' &&
+       m.version === VERSION_PNEUS_RESEAU && m.seance === S.enLigne.seance &&
+@@ -1435,7 +1531,12 @@
+       EL.confirmation = { prets: new Set(), incompatibles: new Set() }; EL.pretIci = false;
+       if (ecran !== 'course' && ecran !== 'pause') aller('prets');
+       majCourseSalon();
+-    } else if (m.t === 'prets' && de === 0 && EL.confirmation) { EL.confirmation.prets = new Set((Array.isArray(m.liste) ? m.liste : []).map(x => x | 0)); majPrets(); }
++    } else if (m.t === 'prets' && de === 0 && EL.confirmation) {
++      EL.confirmation.prets = new Set((Array.isArray(m.liste) ? m.liste : []).map(x => x | 0));
++      EL.confirmation.trollIncompatibles = [...new Set((Array.isArray(m.trollIncompatibles) ? m.trollIncompatibles : [])
++        .filter(id => Number.isInteger(id) && EL.R.membres.some(x => x.id === id)))].slice(0, 4);
++      majPrets();
++    }
+     else if (m.t === 'annuler' && de === 0 && EL.role === 'invite') {
+       annulerConfirmation(); EL.seanceAcceptee = null;
+       if (retourReglages === 'prets') retourReglages = 'enligne';
+@@ -1443,13 +1544,18 @@
+       etatEnLigne('L’hôte a annulé le départ.'); majCourseSalon();
+     } else if (m.t === 'pret' && EL.role === 'hote' && EL.confirmation && EL.R.membres.some(x => x.id === de) && EL.R.pretAvec(de)) {
+       const choix = lireChoixPneusMessage(m, de), C = EL.confirmation;
++      EL.trollDe.set(de, lireChoixTrollMessage(m, de));
+       if (m.oui === true && choix) { EL.pneusDe.set(de, choix); C.prets.add(de); C.incompatibles.delete(de); }
+       else { C.prets.delete(de); if (m.oui !== false) C.incompatibles.add(de); }
+       diffuserPrets();
+     } else if (m.t === 'pneus' && EL.role === 'hote' && EL.R.membres.some(x => x.id === de) && EL.R.pretAvec(de)) {
+       const choix = lireChoixPneusMessage(m, de), avant = EL.pneusDe.get(de), C = EL.confirmation;
++      const troll = lireChoixTrollMessage(m, de), ancienTroll = EL.trollDe.get(de);
++      EL.trollDe.set(de, troll);
++      const trollChange = !ancienTroll || troll.compatible !== ancienTroll.compatible ||
++        troll.pilotes.some((p, n) => p.geste !== ancienTroll.pilotes[n]?.geste || p.klaxon !== ancienTroll.pilotes[n]?.klaxon);
+       if (choix) EL.pneusDe.set(de, choix);
+-      if (C && (!choix || !avant || choix.some((p, n) => p !== avant[n]))) {
++      if (C && (!choix || !avant || choix.some((p, n) => p !== avant[n]) || trollChange)) {
+         C.prets.delete(de); if (choix) C.incompatibles.delete(de); else C.incompatibles.add(de); diffuserPrets();
+       }
+     } else if (m.t === 'arrivee' && S && S.enLigne) {
+@@ -1459,7 +1565,7 @@
+   }
+   // une machine (pas l'hôte) quitte la partie : l'ordinateur de l'hôte reprend ses voitures et envoie leur état
+   function surDepart(id) {
+-    EL.pneusDe.delete(id);
++    EL.pneusDe.delete(id); EL.trollDe.delete(id);
+     majSalon();
+     if (EL.confirmation && EL.role === 'hote') { EL.confirmation.prets.delete(id); diffuserPrets(); }
+     else if (ecran === 'prets') majPrets();
+@@ -1471,7 +1577,7 @@
+     message('Un pilote est parti', 'ambre'); sousMessage('Sa voiture passe à l’ordinateur');
+   }
+   function surFermeture(raison) {
+-    annulerConfirmation(); EL.course = null; EL.pneusDe.clear();
++    annulerConfirmation(); EL.course = null; EL.pneusDe.clear(); EL.trollDe.clear();
+     if (retourReglages === 'prets') retourReglages = 'enligne';
+     if (ecran === 'prets') aller('enligne');
+     const S = session;
+@@ -1501,6 +1607,10 @@
+     const cfg = { graine, i: k.i, tours: k.tours, difficulte: k.difficulte, ...conditionsCommunes(k), T0, dateDepart: Date.now() + 4000, humains,
+       seance, versionChoixPneus: VERSION_CHOIX_PNEUS, protocolePneus: VERSION_PNEUS_RESEAU, piste: contratPiste(k.i),
+       pneus: humains.map(h => { const choix = h.machine === R.id ? choixPneusLocaux() : EL.pneusDe.get(h.machine); const p = choix && choix[h.local]; return B.pneus.estJouable(p) ? p : conseil; }) };
++    cfg.troll = trollDepart(humains, { schema: 1, pilotes: humains.map(h => {
++      const choix = h.machine === R.id ? reglages.trollPilotes : EL.trollDe.get(h.machine)?.pilotes;
++      return { machine: h.machine, local: h.local, ...paireTroll(choix?.[h.local]) };
++    }) });
+     EL.seanceAcceptee = seance; EL.dernierDepart = T0;
+     R.envoyer({ t: 'depart', cfg });
+     lancerEnLigne(Object.assign({}, cfg, { locaux: humains.map((h, k) => h.machine === 0 ? k : -1).filter(k => k >= 0), role: 'hote' }));
+@@ -1660,17 +1770,23 @@
+   $('pr-reglages').addEventListener('click', () => { retirerPret(); retourReglages = 'prets'; aller('reglages'); });
+ 
+   // ---------------------------------------------------------------- caméras
+-  // Champ du cockpit : réglage en degrés horizontaux mesurés en 16:9 (60° par défaut, 36° verticaux). Plus large
+-  // que 16:9, le champ vertical est gardé ; plus étroit (fenêtre presque carrée, portrait), la diagonale du cadre de
+-  // référence 16:9 : garder tout le champ horizontal ouvrait 66° verticaux dans une fenêtre carrée, d'où des bras
+-  // interminables et une image déformée (David, 16/11 : « fov moins prononcé », « bras de 10 km »). Sur téléphone,
+-  // David demande un champ plus serré (16/11) : tangente réduite de 18 %. L'ouverture avec la vitesse est discrète
+-  // (5 %, 4 % sur téléphone). Le curseur reste mémorisé.
++  // Champ du cockpit : réglage horizontal en 16:9, sans modifier la préférence mémorisée. Le cadre étroit garde
++  // d'abord la diagonale de référence. L'habitacle étant désormais métrique et commun, il ne peut plus rapprocher
++  // ses glaces pour un téléphone : la projection s'ouvre seulement assez pour contenir les deux vrais montages.
++  // La discrète ouverture de vitesse demeure ; la position des yeux et la géométrie ne dépendent pas de l'écran.
++  const INCLINAISON_COCKPIT = -Math.PI / 60;
+   function champCockpit(aspect, v) {
+     const t = Math.tan(clamp(+reglages.champ || 60, 60, 105) * Math.PI / 360);
+     const tv = aspect < 16 / 9 ? Math.hypot(t, t / (16 / 9)) / Math.hypot(1, Math.max(.3, aspect)) : t / (16 / 9);
+     const portraitTelephone = estTactile && canvas.clientWidth <= 600 && aspect < 1;
+-    const vertical = 2 * Math.atan(tv * (portraitTelephone ? .82 : 1)) * 180 / Math.PI;
++    let tangente = tv * (portraitTelephone ? .82 : 1);
++    if (aspect < 16 / 9) {
++      const miroir = B.voiture.RETRO, oeil = B.voiture.OEIL;
++      const profondeur = Math.max(.1, miroir.x - oeil[0] - miroir.l * .5 * Math.abs(Math.sin(miroir.angle)));
++      const largeur = miroir.z + miroir.l * .5 + .01;
++      tangente = Math.max(tangente, largeur / profondeur / Math.max(.3, aspect));
++    }
++    const vertical = 2 * Math.atan(tangente) * 180 / Math.PI;
+     return clamp(vertical * (1 + (portraitTelephone ? .04 : .05) * clamp(v / 85, 0, 1)), 10, 110);
+   }
+   // La tête du pilote vit : elle part vers l'extérieur du virage et vers l'avant au freinage (2 cm au plus), le regard
+@@ -1685,7 +1801,7 @@
+     const vib = (et.surface === 'vibreur' ? .006 : et.surface === 'herbe' ? .004 * Math.min(1, et.v / 20) : 0) + .0011 * Math.pow(clamp(et.v / 85, 0, 1), 2);
+     return {
+       pos: [p.x + o[0], p.y + o[1] + Math.sin(t * 73) * vib * reglages.secousses, p.z + o[2]], yaw: p.cap + Math.PI / 2 + T.regard * .07,
+-      pitch: p.tangage * .85 + Math.min(0, T.lon) * .012, roll: -p.roulis * .85 + T.lat * .014,
++      pitch: p.tangage * .85 + INCLINAISON_COCKPIT + Math.min(0, T.lon) * .012, roll: -p.roulis * .85 + T.lat * .014,
+       fov: champCockpit(canvas.clientWidth / Math.max(1, canvas.clientHeight), et.v), near: .1, far: PORTEE_VUE
+     };
+   }
+@@ -2310,7 +2426,7 @@
+   // vue (J2, puis J1, puis leurs glaces) finit de s'en servir avant que la suivante les réécrive. Seize voitures au
+   // plus (onze rivaux, quatre humains) ; au-delà, les tableaux grandissent.
+   const nouvellePose = () => ({ p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0, roule: 0, rebond: null, v: 0, etatPneus: null,
+-    pilote: { volant: 0, rapport: 1, rapportAvant: 1, passage: 1, alat: 0, along: 0, v: 0, t: 0,
++    pilote: { volant: 0, rapport: 1, rapportAvant: 1, passage: 1, regime: 0, kmh: 0, alat: 0, along: 0, v: 0, t: 0,
+       regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0, passageVisuel: null } });
+   const nouvellesOptions = () => ({ detail: 'complet', roues: undefined, casse: false, plafond: 'complet', rouesDetail: 0 });
+   const POSES_RENDU = Array.from({ length: 16 }, nouvellePose), OPTIONS_POSE = Array.from({ length: 16 }, nouvellesOptions);
+@@ -2366,6 +2482,37 @@
+     return SUIVEURS;
+   }
+ 
++  // Un seul événement sonore pour chaque départ réel de geste, avant toute vue ou rétroviseur.
++  // Toujours vider la file, même si l'audio est absent/muet ou si un menu masque la séance.
++  // Les voix et tampons appartiennent à son.js ; ce raccord ne crée aucun contexte ni oscillateur.
++  function consommerTroll(S, poses) {
++    const X = B.expressionsPilote;
++    if (!S.expressions || !X?.consommerEvenement) return;
++    const evenement = S.trollEvenement, audio = S.trollAudio, demo = S.type === 'demo';
++    const audible = demo ? ecran === 'demo'
++      : ecran === 'course' && (S.type === 'course' || S.type === 'chrono' || S.type === 'duo');
++    while (X.consommerEvenement(S.expressions, evenement)) {
++      if (!audible || !son) continue;
++      const p = poses[evenement.pilote];
++      if (!p || !Number.isFinite(p.x) || !Number.isFinite(p.y) || !Number.isFinite(p.z)) continue;
++      let ecoute = null, distance2 = Infinity;
++      const nombre = demo ? 1 : S.locaux.length || 1;
++      for (let n = 0; n < nombre; n++) {
++        const id = demo ? S.suivie : S.locaux[n] ?? S.course.joueur.id;
++        const q = poses[id] || (demo ? poses[S.course.joueur.id] : null);
++        if (!q || !Number.isFinite(q.x) || !Number.isFinite(q.y) || !Number.isFinite(q.z) || !Number.isFinite(q.cap)) continue;
++        const dx = p.x - q.x, dy = p.y - q.y, dz = p.z - q.z, d2 = dx * dx + dy * dy + dz * dz;
++        if (d2 < distance2) { distance2 = d2; ecoute = q; }
++      }
++      if (!ecoute) continue;
++      const dx = p.x - ecoute.x, dz = p.z - ecoute.z, ca = Math.cos(ecoute.cap), sa = Math.sin(ecoute.cap);
++      audio.klaxon = evenement.klaxon;
++      audio.gain = B.son.gainDistance(Math.sqrt(distance2));
++      audio.pan = B.son.panoramique(Math.atan2(-dx * sa + dz * ca, dx * ca + dz * sa));
++      son.evenement('troll', audio);
++    }
++  }
++
+   function rendreImage(S, alpha, dtImage) {
+     appliquerCarte();
+     const co = S.course, j = co.joueur;
+@@ -2376,7 +2523,10 @@
+     // pris au dernier pas, ils avançaient par sauts de 1/120 s (à 144 Hz, une image sur six sans pas les figeait) et
+     // devançaient les voitures d'un pas au plus. La vue du joueur 2 hérite des deux valeurs (Object.create).
+     S.retardImage = (1 - alpha) * DT; S.tRendu = co.horloge - S.retardImage;
+-    if (S.expressions) B.expressionsPilote.actualiser(S.expressions, co, poses, S.tRendu, S.type === 'demo');
++    if (S.expressions) {
++      B.expressionsPilote.actualiser(S.expressions, co, poses, S.tRendu, S.type === 'demo');
++      consommerTroll(S, poses);
++    }
+     if (B.sillage) B.sillage.mettreAJour(S.sillage || (S.sillage = creationTardive('sillage', B.sillage.creer())), co.voitures, poses, co.c);
+     if (B.mesures.actif) {
+       let actives = 0;
+@@ -2612,6 +2762,8 @@
+       pilote.rapportAvant = voiture.rapportAvant === undefined ? etatPilote.rapport : voiture.rapportAvant;
+       pilote.passage = voiture.tPassage === undefined ? 1 : clamp((S.tRendu - voiture.tPassage) / .36, 0, 1);
+       pilote.alat = etatPilote.alat; pilote.along = etatPilote.along; pilote.v = etatPilote.v; pilote.t = S.tRendu;
++      // Les instruments appartiennent à la voiture : même mesure pour l'habitacle, les rivaux et les rétros.
++      pilote.regime = etatPilote.regime; pilote.kmh = B.conduite.kmh(etatPilote);
+       if (S.expressions) B.expressionsPilote.lire(S.expressions, k, pilote);
+       // Hystérésis propre à cette vue : ni la seconde moitié d'écran ni les deux miroirs ne la réécrivent.
+       const rouesDetail = S.detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(ev, cam.pos), tanDemi, hauteur, S.detailsRoues[k]);
+@@ -3050,9 +3202,45 @@
+   const ECRANS = ['titre', 'enligne', 'prets', 'preparation', 'reglages', 'pause', 'resultats'];
+   let modePrepa = 'course', retourReglages = 'titre';
+   const enCourse = () => ecran === 'course';
++  const menuOpaque = () => ['titre', 'preparation', 'reglages', 'enligne', 'prets'].includes(ecran);
++  const menuArcade = B.menuArcade.installer($('preparation'), { retour, actualiser: () => { majBilanArcade(); majChoixTroll(); } });
++
++  function pilotesMenu() {
++    const membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
++    return modePrepa === 'duo' || (modePrepa === 'enligne' && membre && membre.joueurs === 2) ? 2 : 1;
++  }
++  function choixTrollLocaux() { return B.menuArcade.normaliserTroll(reglages); }
++  function majChoixTroll() {
++    const choix = choixTrollLocaux(), membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
++    $('o-troll-1').hidden = pilotesMenu() !== 2;
++    $('pr-troll-1').hidden = !(membre && membre.joueurs === 2);
++    for (let n = 0; n < 2; n++) for (const prefixe of ['p', 'pr']) {
++      $(prefixe + '-geste-' + n).value = choix[n].geste;
++      $(prefixe + '-klaxon-' + n).value = choix[n].klaxon;
++    }
++    const disponible = !!(son && typeof son.klaxon === 'function');
++    for (const b of document.querySelectorAll('[data-essai-klaxon]')) b.disabled = !disponible;
++    const enLigne = modePrepa === 'enligne' || ecran === 'prets';
++    const notice = enLigne && typeof statutTrollEnLigne === 'function' ? statutTrollEnLigne() : '';
++    for (const id of ['p-troll-etat', 'pr-troll-etat']) if ($(id)) texte($(id), (disponible ? '' : 'Aperçu sonore indisponible. ') + notice);
++  }
++  function majBilanArcade() {
++    const k = conditionsDuDepart(), cat = CATALOGUE[reglages.circuit], nombre = pilotesMenu();
++    texte($('p-bilan-circuit'), cat.nom);
++    texte($('p-bilan-course'), modePrepa === 'chrono' ? 'Contre-la-montre · fantôme personnel' : reglages.tours + ' tours · rivaux ' + ['faciles', 'normaux', 'coriaces'][reglages.difficulte]);
++    texte($('p-bilan-saison'), NOMS_SAISON[k.saison] + ' · ' + NOMS_MOMENT[k.moment]);
++    texte($('p-bilan-meteo'), nomMeteoCourse({ ...k, i: reglages.circuit }));
++    texte($('p-bilan-joueurs'), (nombre === 2 ? 'Deux pilotes locaux' : 'Un pilote local') + (modePrepa === 'enligne' ? ' · en ligne' : ''));
++    const gestes = { majeur: 'doigt d’honneur', poing: 'poing levé', salut: 'salut' };
++    const klaxons = { classique: 'classique', ancien: 'ancien', mariage: 'mariage' };
++    const choix = choixTrollLocaux(), pneus = choixPneusLocaux();
++    texte($('p-bilan-troll'), choix.slice(0, nombre).map((c, n) => 'J' + (n + 1) + '\u00a0: ' + NOMS_PNEUS[pneus[n]] + ' · ' + gestes[c.geste] + ' + klaxon ' + klaxons[c.klaxon]).join(' / '));
++    texte($('b-depart'), modePrepa === 'enligne' ? 'Confirmer la course' : modePrepa === 'chrono' ? 'Lancer le chrono' : 'Prendre le départ');
++  }
+ 
+   function aller(nom) {
+     const precedent = ecran;
++    if (nom !== precedent) B.navigationMenu.fermerSaisie(document, false);
+     if (nom !== 'course') suspendreAnnoncesVirages();
+     if (precedent === 'preparation' && nom !== 'preparation') annulerConditions();
+     if (nom === 'preparation' && precedent !== 'preparation' && precedent !== 'reglages') {
+@@ -3073,19 +3261,22 @@
+     $('jeu').dataset.ecran = nom;
+     ecran = nom;
+     if (nom === 'titre') dernierGeste = performance.now();
+-    if (nom === 'titre' || nom === 'preparation' || nom === 'enligne' || nom === 'prets') {
+-      if (!session || session.type !== 'vitrine' || (nom === 'preparation' && session.i !== reglages.circuit)) lancerVitrine(nom === 'preparation' ? reglages.circuit : (session ? session.i : reglages.circuit));
+-    }
++    // Les menus opaques ne préparent pas une course invisible. La scène change au vrai départ.
+     // en ligne, la pause n'arrête pas la course : pas de « Recommencer »
+     if (nom === 'pause') { $('b-recommencer').hidden = !!(session && session.enLigne); $('b-replacer').hidden = aDeux(); majPneusStands(); }
+     if (nom === 'enligne') majSalon();
+-    if (nom === 'prets') majPrets();
++    if (nom === 'prets') { majPrets(); majChoixTroll(); }
+     tactile(nom === 'course' && !aDeux());
+-    if (nom === 'preparation') remplirPreparation();
++    if (nom === 'preparation') {
++      remplirPreparation();
++      if (precedent !== 'preparation' && precedent !== 'reglages') menuArcade.ouvrir(0, false);
++      else menuArcade.actualiser();
++    }
++    menuArcade.image(performance.now(), false);
+     if (nom === 'reglages') remplirReglages();
+     if ($(nom) && B.navigationMenu) B.navigationMenu.initialiser($(nom));
+-    // une course arrêtée (pause, réglages, résultats) se tait ; la vitrine des menus continue, moins fort
+-    if (son) { if (session && session.type !== 'vitrine' && nom !== 'course' && nom !== 'demo') son.suspendre(); else son.reprendre(); }
++    // Aucun moteur figé derrière un menu ; la musique du titre est commandée séparément.
++    if (son) { if (nom !== 'course' && nom !== 'demo') son.suspendre(); else son.reprendre(); }
+     if (son) son.musique(nom === 'titre'); // seule musique du jeu : l'écran titre
+     appliquerVolumes();
+     if (nom === 'course' || nom === 'demo') { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); return; }
+@@ -3162,6 +3353,7 @@
+     const resume = CATALOGUE[reglages.circuit].nom + ' · ' + NOMS_SAISON[k.saison] + ' · ' + NOMS_MOMENT[k.moment]
+       + (k.horlogeReelle ? ' (heure réelle)' : '') + ' · ' + nomMeteoCourse({ ...k, i: reglages.circuit });
+     texte($('p-resume'), resume);
++    majBilanArcade();
+     $('p-conditions-reel').hidden = !reel;
+     $('p-meteo-sources').hidden = reglages.meteoMode !== 'reel';
+     $('p-actualiser-conditions').hidden = !reel && !['saison', 'moment', 'meteo'].some(n => reglages[n + 'Mode'] === 'aleatoire');
+@@ -3186,14 +3378,7 @@
+       if (numero !== conditionsNumero || ecran !== 'preparation') return null;
+       conditionsPreparation = k;
+       preselectionnerPneus();
+-      if (session && session.type === 'vitrine') {
+-        if (session.i !== reglages.circuit || session.nature.saison.id !== k.saison) lancerVitrine(reglages.circuit, k);
+-        else {
+-          session.conditions = k; session.meteo = meteoPourConditions(k, session.i, graineCourse);
+-          session.nature.moment = k.moment; session.nature.horlogeReelle = horlogePartagee(k.horlogeReelle);
+-          session.nature.prochaineLumiereReelle = 0;
+-        }
+-      }
++      // Le départ utilisera ces conditions ; aucun décor caché n’est reconstruit dans le menu.
+       if (EL.role === 'hote' && lienActif()) annoncerCourse();
+       return k;
+     }).catch(erreur => {
+@@ -3224,14 +3409,11 @@
+     const zone = $('circuits');
+     if (!zone.childElementCount) {
+       CATALOGUE.forEach((k, i) => {
+-        const c = circuit(i), f = fiche(c), b = document.createElement('button');
++        const b = document.createElement('button');
+         b.type = 'button'; b.className = 'carte-circuit'; b.setAttribute('role', 'radio'); b.dataset.index = i;
+-        b.innerHTML = '<span class="lieu">' + k.lieu + '</span><span class="nom">' + k.nom + '</span><canvas width="320" height="200"></canvas>' +
+-          '<p class="fiche"><b>' + f.km + ' km</b> · ' + f.virages + ' virages · ligne droite de ' + f.droite + ' m</p>';
+-        const ctx = b.querySelector('canvas').getContext('2d');
+-        const p = plan(c, 320, 200, 14);
+-        dessinerTrace(ctx, c, p, 10, 'rgba(0,0,0,.55)'); dessinerTrace(ctx, c, p, 5, '#efe8da');
+-        b.addEventListener('click', () => { reglages.circuit = i; sauverReglages(); majPreparation(); if (son) son.evenement('clic'); lancerVitrine(i); if (EL.role === 'hote' && lienActif()) annoncerCourse(); });
++        b.innerHTML = '<span class="circuit-rang">' + String(i + 1).padStart(2, '0') + '</span><span class="nom">' + k.nom + '</span>' +
++          '<span class="fiche">' + k.lieu + '</span><span class="circuit-distance">' + (k.longueur / 1000).toFixed(1).replace('.', ',') + ' km</span>';
++        b.addEventListener('click', () => { reglages.circuit = i; sauverReglages(); majPreparation(); if (son) son.evenement('clic'); if (EL.role === 'hote' && lienActif()) annoncerCourse(); });
+         zone.appendChild(b);
+       });
+     }
+@@ -3325,7 +3507,10 @@
+     for (const r of document.querySelectorAll('input[name="momentDepart"]')) r.checked = r.value === reglages.moment;
+     for (const r of document.querySelectorAll('input[name="saisonDepart"]')) r.checked = r.value === reglages.saison;
+     afficherConditions();
+-    for (const b of $('circuits').children) b.setAttribute('aria-checked', String(+b.dataset.index === reglages.circuit));
++    for (const b of $('circuits').children) { const actif = +b.dataset.index === reglages.circuit; b.setAttribute('aria-checked', String(actif)); b.tabIndex = actif ? 0 : -1; }
++    const c = circuit(reglages.circuit);
++    menuArcade.trace(c, fiche(c), CATALOGUE[reglages.circuit], reglages.circuit, CATALOGUE.length);
++    majChoixTroll(); majBilanArcade();
+     const r = records[CATALOGUE[reglages.circuit].id];
+     $('p-record').innerHTML = r ? 'Votre record sur ' + CATALOGUE[reglages.circuit].nom + ' : <b>' + chrono(r.tour) + '</b>' : 'Pas encore de temps sur ' + CATALOGUE[reglages.circuit].nom + '.';
+   }
+@@ -3393,6 +3578,23 @@
+   $('v-vibrations').addEventListener('change', e => { reglages.vibrations = e.target.checked ? 'oui' : 'non'; if (!e.target.checked) { secouerManette(0, 0); secouerManette(0, 0, pad2); } sauverReglages(); });
+   $('v-carte').addEventListener('change', e => { reglages.carte = e.target.checked ? 'oui' : 'non'; sauverReglages(); appliquerCarte(); });
+   $('v-vibration-force').addEventListener('input', e => { reglages.vibrationForce = clamp(+e.target.value, 0, 1); $('v-vibration-force-valeur').textContent = Math.round(reglages.vibrationForce * 100) + ' %'; sauverReglages(); });
++  document.addEventListener('change', e => {
++    const correspondance = /^(geste|klaxon)Pilote([01])$/.exec(e.target.name || '');
++    if (correspondance) {
++      const choix = choixTrollLocaux(); choix[+correspondance[2]][correspondance[1]] = e.target.value;
++      reglages.trollPilotes = B.menuArcade.normaliserTroll({ trollPilotes: choix });
++      retirerPret(); sauverReglages(); majChoixTroll();
++      if (EL.role === 'invite') envoyerPneus();
++    }
++    if (ecran === 'preparation') majBilanArcade();
++  });
++  document.addEventListener('click', e => {
++    const b = e.target.closest('[data-essai-klaxon]');
++    if (!b || b.disabled || !['preparation', 'prets'].includes(ecran)) return;
++    activerSon();
++    const choix = choixTrollLocaux()[+b.dataset.essaiKlaxon];
++    if (choix && son && son.klaxon) son.klaxon(choix.klaxon, { gain: .75 });
++  });
+   const NOMS_ACTIONS = { gaz: 'Accélérer', frein: 'Freiner', gauche: 'Gauche', droite: 'Droite', derive: 'Dérive', haut: 'Rapport +', bas: 'Rapport −', vue: 'Vue', troll: 'Troll / geste' };
+   const NOMS_COMMANDES = { auto: 'Auto', manette: 'Manette', clavier: 'Clavier', souris: 'Souris' };
+   let captureTouche = null, carteClavier = null;   // action en attente d'une touche ; noms des touches du clavier réel
+@@ -3468,6 +3670,7 @@
+   function retour() {
+     if (prepa.voile) return;   // sous le voile, rien ne se quitte : la préparation finit ou s'annule seule
+     if (ecran === 'reglages') { aller(retourReglages || 'titre'); if (ecran === 'pause' && session && session.type !== 'vitrine') rechaufferEnPause(session); }
++    else if (ecran === 'preparation' && menuArcade.retour()) return;
+     else if (ecran === 'preparation' && modePrepa === 'enligne') aller('enligne');
+     else if (ecran === 'enligne') quitterEnLigne();
+     else if (ecran === 'prets') quitterPrets();
+@@ -4283,7 +4486,9 @@
+     if (prepa.voile && !prepa.attente) { tPrec = 0; B.cadence.oublier(cadence); if (ecran === 'demo') lireManette(); else tenirManettes(); return; }
+     // Commandes et menus à chaque rappel, même sans image : les pas de l'image suivante lisent l'état le plus frais.
+     // Les messages demandés depuis le rappel précédent s'affichent ici, une fois (voir message).
++    const avantEntrees = ecran;
+     lireManette();
++    lireAutresManettesMenu(ecran !== avantEntrees);
+     majAttente();
+     appliquerMessages();
+     const sourisVue = souris.active && enCourse() ? 'oui' : 'non';
+@@ -4297,6 +4502,9 @@
+     }
+     // préparation d'une course à deux : qui joue avec quoi, selon les choix et les manettes branchées
+     if (ecran === 'preparation' && modePrepa === 'duo') texte($('p-manettes'), [0, 1].map(n => 'Joueur ' + (n + 1) + ' : ' + entreeDe(n)).join(' · ') + '.');
++    menuArcade.image(t, ecran === 'preparation', gpuModeste || reglages.qualite === 'low');
++    // Aucune simulation ni image de course derrière les écrans opaques ; les entrées et le compte à rebours restent actifs.
++    if (menuOpaque()) { tPrec = 0; B.cadence.oublier(cadence); return; }
+     const S = session;
+     // vitrine en préparation : les menus vivent, la séance attend la fin de la préparation (le temps qui passe n'est
+     // pas du temps à rattraper)
+@@ -4847,6 +5055,7 @@
+   }
+   window.BITUME_JEU = { get session() { return session; }, get rendu() { return rendu; }, get ecran() { return ecran; }, reglages, CATALOGUE, avancer, banc, reference, detecterGraphismes,
+     // ce que le banc et le contrôle visuel vérifient sans toucher au jeu : la scène installée et le profil résolu
++    get menuArcade() { return menuArcade.stats(); },
+     get scene() { return scene; }, get profil() { return profilDe(session); }, get ancre() { return etatProfils.decor; },
+     get vitres() { return { j1: vitreVue ? vitreVue.stats : null, j2: vitreVue2 ? vitreVue2.stats : null }; },
+     get son() { return son ? son.stats() : null; }, get palier() { return palier.n; }, get gpuModeste() { return gpuModeste; },
+diff --git a/src/menu-arcade.js b/src/menu-arcade.js
+new file mode 100644
+index 0000000..de44950
+--- /dev/null
++++ b/src/menu-arcade.js
+@@ -0,0 +1,294 @@
++// Aperçu du vrai tracé : projection perspective du relief, sans scène FERRO ni second contexte WebGL.
++(function (B) {
++  'use strict';
++  const ETAPES = Object.freeze(['p-piste', 'p-conditions', 'p-pilotes', 'p-bilan']);
++  const MAX_POINTS = 240, CACHE = new WeakMap(), INSTALLATIONS = new WeakMap();
++  const GESTES = Object.freeze(['majeur', 'poing', 'salut']), KLAXONS = Object.freeze(['classique', 'ancien', 'mariage']);
++  const borner = (v, a, b) => Math.max(a, Math.min(b, v));
++
++  function normaliserTroll(source) {
++    const choix = source && Array.isArray(source.trollPilotes) ? source.trollPilotes : [];
++    return [0, 1].map(i => ({
++      geste: choix[i] && GESTES.includes(choix[i].geste) ? choix[i].geste : 'majeur',
++      klaxon: choix[i] && KLAXONS.includes(choix[i].klaxon) ? choix[i].klaxon : 'classique'
++    }));
++  }
++
++  function preparerTrace(c, maximum = MAX_POINTS) {
++    if (!c || !Number.isInteger(c.n) || c.n < 3 || !c.x || !c.z) throw new TypeError('Tracé incomplet');
++    const n = Math.min(c.n, borner(Math.floor(maximum) || MAX_POINTS, 12, MAX_POINTS));
++    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity, y0 = Infinity, y1 = -Infinity;
++    for (let i = 0; i < c.n; i++) {
++      const x = c.x[i], y = c.y ? c.y[i] : 0, z = c.z[i];
++      if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z)) throw new TypeError('Coordonnée de tracé non finie');
++      x0 = Math.min(x0, x); x1 = Math.max(x1, x); z0 = Math.min(z0, z); z1 = Math.max(z1, z);
++      y0 = Math.min(y0, y); y1 = Math.max(y1, y);
++    }
++    const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
++    let rayon = 1;
++    for (let i = 0; i < c.n; i++) rayon = Math.max(rayon, Math.hypot(c.x[i] - cx, c.z[i] - cz));
++    const diametre = rayon * 2, points = new Float64Array(n * 3), indices = new Uint32Array(n);
++    for (let i = 0; i < n; i++) {
++      const j = Math.floor(i * c.n / n); indices[i] = j;
++      points[i * 3] = (c.x[j] - cx) / diametre;
++      points[i * 3 + 1] = ((c.y ? c.y[j] : 0) - y0) / diametre;
++      points[i * 3 + 2] = (c.z[j] - cz) / diametre;
++    }
++    return Object.freeze({ n, points, indices, diametre, centre: Object.freeze([cx, y0, cz]), relief: (y1 - y0) / diametre,
++      altitudeMin: y0, altitudeMax: y1, longueur: c.longueur || 0 });
++  }
++
++  // Enveloppe valable pour toute rotation : ni tracé coupé, ni zoom qui respire à chaque image.
++  function cadrer(trace, largeur, hauteur, cadre) {
++    if (!(Number.isFinite(largeur) && largeur > 0 && Number.isFinite(hauteur) && hauteur > 0)) throw new RangeError('Taille de projection invalide');
++    const distance = 2.8 + trace.relief * .704, proche = distance - .355 - trace.relief * .704;
++    const haut = (-.352 - trace.relief * .71) / proche, bas = .352 / (distance + .355);
++    const zoom = Math.min(largeur * .84 * proche, hauteur * .77 / (bas - haut));
++    cadre[0] = zoom; cadre[1] = hauteur * .535 - (haut + bas) * zoom / 2; cadre[2] = distance;
++    return cadre;
++  }
++
++  // La même échelle sur les trois axes conserve le relief réel. Le troisième canal est la profondeur.
++  function projeter(trace, rotation, largeur, sortie, cadre) {
++    if (!Number.isFinite(rotation)) throw new RangeError('Rotation de projection invalide');
++    if (sortie.length < trace.n * 3) throw new RangeError('Tampon de projection trop petit');
++    const co = Math.cos(rotation), si = Math.sin(rotation), zoom = cadre[0], centreY = cadre[1], distance = cadre[2];
++    for (let i = 0; i < trace.n; i++) {
++      const x = trace.points[i * 3], y = trace.points[i * 3 + 1], z = trace.points[i * 3 + 2];
++      const rx = x * co - z * si, rz = x * si + z * co, profondeur = distance + rz * .71 - y * .704;
++      sortie[i * 3] = largeur / 2 + rx * zoom / profondeur;
++      sortie[i * 3 + 1] = centreY + (rz * .704 - y * .71) * zoom / profondeur;
++      sortie[i * 3 + 2] = profondeur;
++    }
++    return sortie;
++  }
++
++  function projeterTrace(trace, rotation, largeur, hauteur, sortie = new Float64Array(trace.n * 3)) {
++    return projeter(trace, rotation, largeur, sortie, cadrer(trace, largeur, hauteur, new Float64Array(3)));
++  }
++
++  function creerApercu(canvas) {
++    const doc = canvas.ownerDocument, vue = doc.defaultView;
++    let ctx = null, source = null, affiche = null, trace = null, proj = null, ordre = [], rotation = -.7, dernier = -Infinity, largeur = 720, hauteur = 400;
++    let tailleSale = true, imageSale = true, pause = false, visible = false, reduit = false, fond = null, detruit = false, sansContexte = false, ancienLeger = null;
++    const media = vue.matchMedia && vue.matchMedia('(prefers-reduced-motion: reduce)');
++    reduit = !!(media && media.matches);
++    const compte = { images: 0, points: 0, preparations: 0, derniereMs: 0, maximumMs: 0, resolution: [720, 400] };
++    const trier = (a, b) => proj[b * 3 + 2] - proj[a * 3 + 2];
++    const redimensionner = () => { tailleSale = imageSale = true; };
++    const suspendre = () => { visible = false; dernier = -Infinity; };
++    const visibilite = () => { suspendre(); imageSale = true; };
++    const mouvement = e => { reduit = !!e.matches; imageSale = true; dernier = -Infinity; };
++    const observer = typeof vue.ResizeObserver === 'function' ? new vue.ResizeObserver(redimensionner) : null;
++    if (observer) observer.observe(canvas);
++    vue.addEventListener('resize', redimensionner); doc.addEventListener('visibilitychange', visibilite);
++    if (media && media.addEventListener) media.addEventListener('change', mouvement);
++    else if (media && media.addListener) media.addListener(mouvement);
++    const sol = new Float64Array(6), cadre = new Float64Array(3);
++    let co = 1, si = 0;
++    function pointSol(x, z, offset) {
++      const rx = x * co - z * si, rz = x * si + z * co, y = -.035, p = cadre[2] + rz * .71 - y * .704;
++      sol[offset] = largeur / 2 + rx * cadre[0] / p;
++      sol[offset + 1] = cadre[1] + (rz * .704 - y * .71) * cadre[0] / p;
++    }
++    function dimensionner(leger, r) {
++      const facteur = Math.min(vue.devicePixelRatio || 1, leger ? 1 : 1.25, (leger ? 640 : 960) / r.width, (leger ? 360 : 540) / r.height);
++      largeur = Math.max(1, Math.round(r.width * facteur)); hauteur = Math.max(1, Math.round(r.height * facteur));
++      if (canvas.width !== largeur) canvas.width = largeur;
++      if (canvas.height !== hauteur) canvas.height = hauteur;
++      compte.resolution[0] = largeur; compte.resolution[1] = hauteur;
++      fond = ctx.createLinearGradient(0, 0, largeur, hauteur); fond.addColorStop(0, '#18232b'); fond.addColorStop(1, '#090e14');
++      cadrer(trace, largeur, hauteur, cadre); tailleSale = false;
++    }
++    function dessiner(t, actif, leger = false) {
++      if (detruit || !actif || doc.hidden || !source || sansContexte || canvas.closest('[hidden],[inert],[aria-hidden="true"]')) { suspendre(); return false; }
++      t = Number.isFinite(t) ? t : vue.performance.now();
++      if (t < dernier) dernier = -Infinity;
++      // Les demandes rapprochées (défilement du catalogue compris) sont réunies en une seule image.
++      if (t - dernier + .000001 < (leger ? 50 : 1000 / 30)) return false;
++      if (visible && source === affiche && (pause || reduit) && !imageSale && !tailleSale && ancienLeger === !!leger) return false;
++      const rectangle = canvas.getBoundingClientRect();
++      const style = vue.getComputedStyle && vue.getComputedStyle(canvas);
++      if (!(rectangle.width > 0 && rectangle.height > 0) || style && (style.visibility === 'hidden' || style.visibility === 'collapse') ||
++          rectangle.bottom <= 0 || rectangle.right <= 0 || rectangle.top >= vue.innerHeight || rectangle.left >= vue.innerWidth) { suspendre(); return false; }
++      if (!ctx) { ctx = canvas.getContext('2d', { alpha: false }); if (!ctx) { sansContexte = true; suspendre(); return false; } }
++      const debut = vue.performance.now();
++      if (source !== affiche) {
++        let prochain = CACHE.get(source);
++        if (!prochain) { prochain = preparerTrace(source); CACHE.set(source, prochain); compte.preparations++; }
++        trace = prochain; affiche = source;
++        proj = new Float64Array(trace.n * 3); ordre = Array.from({ length: trace.n }, (_, i) => i);
++        rotation = -.7; compte.points = trace.n; tailleSale = imageSale = true; dernier = -Infinity;
++      }
++      if (!visible) { visible = true; tailleSale = imageSale = true; dernier = -Infinity; }
++      if (ancienLeger !== !!leger) { ancienLeger = !!leger; tailleSale = imageSale = true; }
++      if ((pause || reduit) && !imageSale && !tailleSale) return false;
++      if (!pause && !reduit && Number.isFinite(dernier)) rotation = (rotation + Math.min(.1, Math.max(0, (t - dernier) / 1000)) * .19) % (Math.PI * 2);
++      if (tailleSale) dimensionner(leger, rectangle);
++      co = Math.cos(rotation); si = Math.sin(rotation);
++      dernier = t; imageSale = false;
++      ctx.fillStyle = fond; ctx.fillRect(0, 0, largeur, hauteur);
++      ctx.strokeStyle = 'rgba(133,176,191,.11)'; ctx.lineWidth = Math.max(.7, largeur / 1000); ctx.beginPath();
++      for (let k = -5; k <= 5; k++) {
++        pointSol(k * .12, -.64, 0); pointSol(k * .12, .64, 3);
++        ctx.moveTo(sol[0], sol[1]); ctx.lineTo(sol[3], sol[4]);
++        pointSol(-.64, k * .12, 0); pointSol(.64, k * .12, 3);
++        ctx.moveTo(sol[0], sol[1]); ctx.lineTo(sol[3], sol[4]);
++      }
++      ctx.stroke();
++      projeter(trace, rotation, largeur, proj, cadre);
++      // Ombre et supports donnent une lecture du relief sans terrain ni végétation supplémentaires.
++      ctx.strokeStyle = 'rgba(0,0,0,.38)'; ctx.lineWidth = Math.max(5, largeur / 65); ctx.lineJoin = 'round'; ctx.beginPath();
++      for (let i = 0; i <= trace.n; i++) {
++        const j = i % trace.n; pointSol(trace.points[j * 3], trace.points[j * 3 + 2], 0);
++        if (i) ctx.lineTo(sol[0], sol[1]); else ctx.moveTo(sol[0], sol[1]);
++      }
++      ctx.closePath(); ctx.stroke();
++      ctx.strokeStyle = 'rgba(143,184,196,.24)'; ctx.lineWidth = Math.max(1, largeur / 720); ctx.beginPath();
++      for (let i = 0; i < trace.n; i += Math.max(1, Math.floor(trace.n / 18))) {
++        pointSol(trace.points[i * 3], trace.points[i * 3 + 2], 0);
++        ctx.moveTo(proj[i * 3], proj[i * 3 + 1]); ctx.lineTo(sol[0], sol[1]);
++      }
++      ctx.stroke(); ordre.sort(trier); ctx.lineCap = 'round';
++      for (const i of ordre) {
++        const j = (i + 1) % trace.n, e = Math.min(largeur, hauteur * 2) / 100 * cadre[2] / proj[i * 3 + 2];
++        ctx.beginPath(); ctx.moveTo(proj[i * 3], proj[i * 3 + 1]); ctx.lineTo(proj[j * 3], proj[j * 3 + 1]);
++        ctx.strokeStyle = i % 12 < 6 ? '#d64c38' : '#e1dccb'; ctx.lineWidth = Math.max(4, e); ctx.stroke();
++        ctx.strokeStyle = '#52636c'; ctx.lineWidth = Math.max(2, e * .55); ctx.stroke();
++      }
++      const x = proj[0], y = proj[1], r = Math.max(3, largeur / 150);
++      ctx.fillStyle = '#f5bc5b'; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
++      ctx.strokeStyle = '#f5bc5b'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x, y - r); ctx.lineTo(x, y - r - hauteur * .07); ctx.stroke();
++      ctx.fillStyle = '#f5bc5b'; ctx.font = '600 ' + Math.max(9, largeur / 75) + 'px system-ui'; ctx.textAlign = 'center';
++      ctx.fillText('DÉPART', x, Math.max(12, y - r - hauteur * .085));
++      ctx.lineCap = 'butt';
++      compte.images++; compte.derniereMs = vue.performance.now() - debut; compte.maximumMs = Math.max(compte.maximumMs, compte.derniereMs);
++      return true;
++    }
++    return Object.freeze({
++      choisir(c) {
++        if (detruit || source === c) return;
++        if (!c || typeof c !== 'object') throw new TypeError('Tracé incomplet');
++        source = c; imageSale = true; // Aucune lecture des coordonnées ni allocation avant une image visible.
++      },
++      dessiner,
++      suspendre,
++      pause(value) { if (pause !== !!value) { pause = !!value; imageSale = true; dernier = -Infinity; } },
++      detruire() {
++        if (detruit) return;
++        detruit = true; suspendre();
++        if (observer) observer.disconnect();
++        vue.removeEventListener('resize', redimensionner); doc.removeEventListener('visibilitychange', visibilite);
++        if (media && media.removeEventListener) media.removeEventListener('change', mouvement);
++        else if (media && media.removeListener) media.removeListener(mouvement);
++        source = affiche = trace = proj = fond = ctx = null; ordre.length = 0;
++      },
++      get enPause() { return pause; },
++      get mouvementReduit() { return reduit; },
++      stats() { return { ...compte, resolution: [...compte.resolution], rotation, actif: visible, pause: pause || reduit,
++        altitudeMin: trace ? trace.altitudeMin : null, altitudeMax: trace ? trace.altitudeMax : null, detruit }; }
++    });
++  }
++
++  function installer(zone, options = {}) {
++    if (INSTALLATIONS.has(zone)) return INSTALLATIONS.get(zone);
++    const doc = zone.ownerDocument, $ = id => doc.getElementById(id), apercu = creerApercu($('p-trace-3d'));
++    let etape = 0, version = 0, reliefSale = false, detruit = false, mouvementAffiche = null;
++    const retirer = [], ecouter = (el, type, f) => { el.addEventListener(type, f); retirer.push(() => el.removeEventListener(type, f)); };
++    const avancer = (sens, focus = true) => ouvrir(borner(etape + sens, 0, ETAPES.length - 1), focus);
++    function actualiser() {
++      if (detruit) return;
++      version++;
++      const actif = zone.querySelector('[data-menu-tab][aria-selected="true"]');
++      const precedente = etape;
++      etape = Math.max(0, ETAPES.indexOf(actif && actif.dataset.menuTab));
++      if (etape !== precedente) {
++        const contenu = zone.querySelector('.panneaux-menu');
++        if (contenu) contenu.scrollTop = 0; // Une nouvelle étape s'ouvre au début, sans déplacer les réglages en cours.
++      }
++      zone.dataset.etape = String(etape);
++      $('p-etape').textContent = '0' + (etape + 1) + ' / 04';
++      $('b-precedent').textContent = etape ? 'Précédent' : 'Menu';
++      $('b-suivant').hidden = etape === 3; $('b-depart').hidden = etape !== 3;
++      $('b-suivant').textContent = ['Conditions →', 'Pilotes →', 'Prêt à partir →'][etape] || 'Continuer';
++      if (etape !== 0) apercu.suspendre();
++      if (options.actualiser) options.actualiser(etape);
++    }
++    function disponible(el) {
++      if (!el || el.disabled || el.matches(':disabled') || el.closest('[hidden],[inert],[aria-hidden="true"],[aria-disabled="true"]') || !el.getClientRects().length) return false;
++      const style = doc.defaultView.getComputedStyle(el);
++      return style.visibility !== 'hidden' && style.visibility !== 'collapse';
++    }
++    function focaliser() {
++      const panneau = $(ETAPES[etape]);
++      const selection = Array.from(panneau.querySelectorAll('[role="radio"][aria-checked="true"],input:checked')).find(disponible);
++      const cible = selection || Array.from(panneau.querySelectorAll('select,button,input')).find(disponible) || (etape === 3 ? $('b-depart') : $('b-suivant'));
++      if (disponible(cible)) {
++        cible.focus({ preventScroll: true });
++        const voyant = cible.type === 'radio' || cible.type === 'checkbox' ? cible.closest('label') || cible : cible;
++        voyant.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'auto' });
++      }
++    }
++    function ouvrir(index, focus = true) {
++      if (detruit) return false;
++      const avant = version, cible = ETAPES[borner(Number.isFinite(index) ? Math.trunc(index) : 0, 0, ETAPES.length - 1)];
++      if (!B.navigationMenu.ouvrirOnglet(zone, cible)) return false;
++      if (version === avant) actualiser(); // Un changement d'onglet a déjà notifié le bilan une seule fois.
++      if (focus) focaliser();
++      return true;
++    }
++    ecouter(zone, 'menuongletchange', actualiser);
++    ecouter($('b-suivant'), 'click', () => avancer(1));
++    ecouter($('b-precedent'), 'click', () => options.retour && options.retour());
++    ecouter($('p-retour'), 'click', () => options.retour && options.retour());
++    function rotation() {
++      const bouton = $('p-rotation'), reduit = apercu.mouvementReduit;
++      mouvementAffiche = reduit; bouton.disabled = reduit;
++      bouton.setAttribute('aria-pressed', String(apercu.enPause || reduit));
++      bouton.textContent = reduit ? 'Rotation désactivée' : apercu.enPause ? 'Reprendre la rotation' : 'Figer le tracé';
++      bouton.title = reduit ? 'Mouvement réduit demandé dans le système' : '';
++    }
++    rotation();
++    ecouter($('p-rotation'), 'click', () => {
++      apercu.pause(!apercu.enPause); rotation();
++    });
++    ecouter($('circuits'), 'keydown', e => {
++      const carte = e.target.closest('[role="radio"]'); if (!carte || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || !disponible(carte)) return;
++      const liste = Array.from($('circuits').querySelectorAll('[role="radio"]')).filter(disponible), i = liste.indexOf(carte);
++      if (i < 0) return;
++      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
++        e.preventDefault(); const sens = e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 1;
++        const j = e.key === 'Home' ? 0 : e.key === 'End' ? liste.length - 1 : (i + sens + liste.length) % liste.length;
++        liste[j].click(); liste[j].focus({ preventScroll: true }); liste[j].scrollIntoView({ block: 'nearest', behavior: 'auto' });
++      } else if (e.key === 'Enter' && carte.getAttribute('aria-checked') === 'true') { e.preventDefault(); if (!e.repeat) avancer(1); }
++    });
++    const api = Object.freeze({
++      ouvrir, actualiser,
++      retour() { if (detruit || !etape) return false; avancer(-1); return true; },
++      valider(el) { if (!detruit && etape === 0 && disponible(el) && zone.contains(el) && el.closest('#circuits') && el.getAttribute('aria-checked') === 'true') { avancer(1); return true; } return false; },
++      trace(c, fiche, catalogue, index, total) {
++        if (detruit) return;
++        apercu.choisir(c); $('p-trace-3d').setAttribute('aria-label', 'Tracé en trois dimensions de ' + catalogue.nom + ', avec son relief réel');
++        $('p-circuit-nom').textContent = catalogue.nom; $('p-circuit-lieu').textContent = catalogue.lieu;
++        $('p-circuit-numero').textContent = String(index + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
++        $('p-circuit-km').textContent = fiche.km; $('p-circuit-virages').textContent = String(fiche.virages);
++        const tr = CACHE.get(c); reliefSale = !tr;
++        $('p-circuit-relief').textContent = tr ? String(Math.round(tr.altitudeMax - tr.altitudeMin)) : '…';
++      },
++      image(t, actif, leger) {
++        if (detruit) return false;
++        if (mouvementAffiche !== apercu.mouvementReduit) rotation();
++        const dessine = apercu.dessiner(t, actif && etape === 0, leger);
++        if (dessine && reliefSale) { const s = apercu.stats(); $('p-circuit-relief').textContent = String(Math.round(s.altitudeMax - s.altitudeMin)); reliefSale = false; }
++        return dessine;
++      },
++      suspendre: apercu.suspendre,
++      detruire() { if (!detruit) { detruit = true; retirer.forEach(f => f()); apercu.detruire(); INSTALLATIONS.delete(zone); } },
++      get etape() { return etape; },
++      stats: () => ({ etape, ...apercu.stats() })
++    });
++    INSTALLATIONS.set(zone, api);
++    return api;
++  }
++  B.menuArcade = Object.freeze({ ETAPES, MAX_POINTS, preparerTrace, projeterTrace, creerApercu, installer, normaliserTroll });
++})(globalThis.BITUME = globalThis.BITUME || {});
+diff --git a/src/navigation-menu.js b/src/navigation-menu.js
+index 92107f2..3c3b3ce 100644
+--- a/src/navigation-menu.js
++++ b/src/navigation-menu.js
+@@ -1,7 +1,7 @@
+ // Navigation des écrans DOM. Le jeu fournit les fronts des boutons et reste seul responsable de Start/pause.
+ (function (B) {
+   'use strict';
+-  const ETATS = new WeakMap(), DELAI = 360, REPETITION = 95;
++  const ETATS = new WeakMap(), INTERACTIONS = new WeakMap(), SAISIES = new WeakMap(), DELAI = 360, REPETITION = 95;
+   const COMMANDES = 'button,input,select,textarea,a[href],[role="button"],[role="radio"],[role="checkbox"],[tabindex]';
+   const TAB = '[data-menu-tab]', MASQUE = '[hidden],[inert],[aria-hidden="true"]';
+   const role = el => el && el.getAttribute('role');
+@@ -34,6 +34,7 @@
+     const panneau = panneaux.find(p => p.id === id || p.dataset.menuPanel === id);
+     if (!cible || !panneau) return false;
+     const nav = cible.closest('[data-menu-tabs]'), pairs = liste.filter(t => t.closest('[data-menu-tabs]') === nav);
++    const changement = cible.getAttribute('aria-selected') !== 'true';
+     // Inclure aussi les onglets désactivés pour ne jamais conserver deux panneaux sélectionnés.
+     for (const t of nav.querySelectorAll(TAB)) {
+       const actif = t === cible;
+@@ -42,15 +43,24 @@
+       if (p) { p.hidden = !actif; if (t.id) p.setAttribute('aria-labelledby', t.id); }
+     }
+     if (!pairs.length) return false;
+-    if (focus) focaliser(cible);
++    // Un appel programmatique peut fermer le panneau qui contient le focus, sans clic sur l'onglet.
++    // Ne pas conserver les commandes du clavier dans ce panneau devenu invisible.
++    const actif = zone.ownerDocument.activeElement;
++    if ((focus || panneaux.some(p => p.hidden && p.contains(actif))) && visible(cible)) focaliser(cible);
++    if (changement && zone.dispatchEvent) {
++      const Evenement = zone.ownerDocument.defaultView.Event;
++      zone.dispatchEvent(new Evenement('menuongletchange', { bubbles: false }));
++    }
+     return true;
+   }
+ 
+   function initialiser(zone) {
+     if (!zone || !zone.addEventListener) return false;
++    const saisie = SAISIES.get(zone.ownerDocument);
++    if (saisie && zone !== saisie.dialogue && !zone.contains(saisie.cible)) fermerSaisie(zone.ownerDocument, false);
+     // À chaque entrée d'écran, attendre le retour au neutre d'un manche tenu pendant la conduite.
+-    if (ETATS.has(zone)) { ETATS.get(zone).pads.clear(); ETATS.get(zone).dernier = null; return true; }
+-    ETATS.set(zone, { pads: new Map(), dernier: null });
++    if (ETATS.has(zone)) { ETATS.get(zone).pads.clear(); return true; }
++    ETATS.set(zone, { pads: new Map() });
+     const listes = new Set(onglets(zone).map(t => t.closest('[data-menu-tabs]')));
+     for (const nav of listes) {
+       const ts = onglets(zone, nav), actif = ts.find(t => t.getAttribute('aria-selected') === 'true') || ts[0];
+@@ -109,6 +119,97 @@
+     el.dispatchEvent(new Evenement('change', { bubbles: true }));
+   }
+ 
++  // Nom et code du salon restent des champs natifs au clavier/tactile. A ouvre ici un brouillon
++  // local, pour que la manette seule puisse aussi les remplir sans dépendre du clavier du système.
++  function fermerSaisie(doc, rendreFocus = true) {
++    const s = SAISIES.get(doc);
++    if (!s) return false;
++    SAISIES.delete(doc);
++    if (s.dialogue.open) s.dialogue.close();
++    if (rendreFocus && visible(s.cible)) focaliser(s.cible);
++    return true;
++  }
++
++  function actualiserSaisie(s) {
++    s.contenu.textContent = s.valeur || '…';
++    s.limite.textContent = s.valeur.length + ' / ' + s.maximum + (s.code ? ' lettres' : ' caractères');
++    for (const b of s.lettres) b.textContent = s.majuscules ? b.dataset.saisieLettre.toUpperCase() : b.dataset.saisieLettre.toLowerCase();
++    s.maj.setAttribute('aria-pressed', String(s.majuscules));
++  }
++
++  function ecrireSaisie(s, texte) {
++    if (s.code) texte = texte.toUpperCase().replace(/[^A-Z]/g, '');
++    else texte = texte.replace(/[\u0000-\u001f\u007f]/g, '');
++    s.valeur = (s.valeur + texte).slice(0, s.maximum); actualiserSaisie(s);
++  }
++
++  function deplacerSaisie(s, direction) {
++    const actif = s.dialogue.ownerDocument.activeElement;
++    let ligne = s.lignes.findIndex(l => l.includes(actif));
++    if (ligne < 0) { focaliser(s.lignes[0][0]); return; }
++    const colonne = s.lignes[ligne].indexOf(actif), sens = direction === 12 || direction === 14 ? -1 : 1;
++    if (direction === 12 || direction === 13) {
++      ligne = (ligne + sens + s.lignes.length) % s.lignes.length;
++      focaliser(s.lignes[ligne][Math.min(colonne, s.lignes[ligne].length - 1)]);
++    } else focaliser(s.lignes[ligne][(colonne + sens + s.lignes[ligne].length) % s.lignes[ligne].length]);
++  }
++
++  function ouvrirSaisie(cible, zone) {
++    if (!['nom', 'code'].includes(cible.dataset.menuSaisie) || cible.readOnly) return false;
++    const doc = cible.ownerDocument, $ = id => doc.getElementById(id), dialogue = $('saisie-manette');
++    if (!dialogue || typeof dialogue.showModal !== 'function') return false;
++    const s = { cible, zone, dialogue, code: cible.dataset.menuSaisie === 'code',
++      contenu: $('sm-contenu'), limite: $('sm-limite'), maj: $('sm-maj'), lettres: [], lignes: [] };
++    const maximum = Number.parseInt(cible.getAttribute('maxlength'), 10);
++    s.maximum = Number.isFinite(maximum) && maximum > 0 ? Math.min(64, maximum) : s.code ? 4 : 16;
++    s.valeur = cible.value.slice(0, s.maximum); s.majuscules = s.code;
++    $('sm-titre').textContent = s.code ? 'Code de la partie' : 'Votre nom';
++    const touches = $('sm-touches'); touches.replaceChildren();
++    const lignes = ['AZERTYUIOP', 'QSDFGHJKLM', 'WXCVBN'];
++    if (!s.code) lignes.push('0123456789', 'ÉÈÀÇÙ-_.\'');
++    for (const lettres of lignes) {
++      const ligne = doc.createElement('div'); ligne.className = 'sm-ligne'; const boutons = [];
++      for (const lettre of lettres) {
++        const b = doc.createElement('button'); b.type = 'button'; b.dataset.saisieLettre = lettre;
++        b.addEventListener('click', () => { if (SAISIES.get(doc) === s) ecrireSaisie(s, b.textContent); });
++        ligne.append(b); boutons.push(b); s.lettres.push(b);
++      }
++      touches.append(ligne); s.lignes.push(boutons);
++    }
++    s.maj.hidden = $('sm-espace').hidden = s.code;
++    const actions = [s.maj, $('sm-espace'), $('sm-effacer'), $('sm-valider'), $('sm-annuler')];
++    s.lignes.push(actions.filter(b => !b.hidden));
++    if (!ETATS.has(dialogue)) {
++      ETATS.set(dialogue, { pads: new Map() });
++      const courant = () => SAISIES.get(doc);
++      $('sm-maj').addEventListener('click', () => { const s = courant(); if (s) { s.majuscules = !s.majuscules; actualiserSaisie(s); } });
++      $('sm-espace').addEventListener('click', () => { const s = courant(); if (s && !s.code) ecrireSaisie(s, ' '); });
++      const effacer = () => { const s = courant(); if (s) { s.valeur = Array.from(s.valeur).slice(0, -1).join(''); actualiserSaisie(s); } };
++      $('sm-effacer').addEventListener('click', effacer);
++      $('sm-annuler').addEventListener('click', () => fermerSaisie(doc));
++      $('sm-valider').addEventListener('click', () => {
++        const s = courant(); if (!s) return;
++        if (visible(s.cible) && !s.cible.readOnly && s.cible.value !== s.valeur) { s.cible.value = s.valeur; notifier(s.cible); }
++        fermerSaisie(doc);
++      });
++      dialogue.addEventListener('cancel', e => { e.preventDefault(); fermerSaisie(doc); });
++      dialogue.addEventListener('close', () => { if (!dialogue.open) fermerSaisie(doc); });
++      dialogue.addEventListener('keydown', e => {
++        const s = courant(); if (!s || e.altKey || e.ctrlKey || e.metaKey) return;
++        const directions = { ArrowUp: 12, ArrowDown: 13, ArrowLeft: 14, ArrowRight: 15 };
++        if (directions[e.key]) deplacerSaisie(s, directions[e.key]);
++        else if (e.key === 'Escape') fermerSaisie(doc);
++        else if (e.key === 'Backspace') effacer();
++        else if (e.key && e.key.length === 1) ecrireSaisie(s, e.key);
++        else return; // Tab/Entrée gardent leur comportement natif dans le dialogue.
++        e.preventDefault(); e.stopPropagation();
++      });
++    }
++    ETATS.get(dialogue).pads.clear(); SAISIES.set(doc, s); actualiserSaisie(s);
++    dialogue.dataset.manette = 'true'; dialogue.showModal(); focaliser(s.lignes[0][0]);
++    return true;
++  }
++
+   function ajuster(zone, el, g, sens) {
+     if (el.readOnly) return true;
+     if (el.type === 'range') {
+@@ -177,21 +278,37 @@
+   }
+ 
+   function naviguer(zone, nouveau, options = {}) {
++    const saisie = zone && SAISIES.get(zone.ownerDocument);
++    if (saisie) {
++      if (saisie.zone !== zone || !visible(saisie.cible) || zone.ownerDocument.hidden) fermerSaisie(zone.ownerDocument, false);
++      else zone = saisie.dialogue;
++    }
+     if (!zone || zone.hidden || zone.closest(MASQUE) || zone.ownerDocument.hidden) return false;
+     if (!ETATS.has(zone)) initialiser(zone);
+     const etat = ETATS.get(zone), front = typeof nouveau === 'function' ? nouveau : () => false;
+     const pad = options.pad, temps = Number.isFinite(options.temps) ? options.temps : performance.now();
+     const d = deplacement(etat, pad, front, temps);
+     const retour = front(1), gauche = front(4), droite = front(5), valider = front(0);
+-    if (!retour && !gauche && !droite && !valider && !d) return false; // Aucun parcours DOM sur une image au repos.
++    const demarrer = typeof options.demarrer === 'function' && front(9);
++    if (!retour && !gauche && !droite && !valider && !demarrer && !d) return false; // Aucun parcours DOM sur une image au repos.
+     const vue = zone.ownerDocument.defaultView, style = vue && vue.getComputedStyle(zone);
+     if (!zone.getClientRects().length || style && (style.visibility === 'hidden' || style.visibility === 'collapse')) return false;
+-    const cle = pad && pad.index != null ? pad.index : -1, avant = etat.dernier;
++    const cle = pad && pad.index != null ? pad.index : -1, avant = INTERACTIONS.get(zone.ownerDocument);
+     // Deux manettes qui valident ensemble ne doivent pas cocher puis décocher le même réglage.
++    // Le garde-fou suit le document : la première validation peut ouvrir un autre écran avant la lecture de J2.
+     if (avant && temps >= avant.temps && (temps === avant.temps || cle !== avant.cle && temps - avant.temps < 60)) return true;
+-    etat.dernier = { temps, cle }; zone.dataset.manette = 'true';
++    INTERACTIONS.set(zone.ownerDocument, { temps, cle }); zone.dataset.manette = 'true';
+     if (options.activer) options.activer();
++    if (saisie && SAISIES.get(zone.ownerDocument) === saisie) {
++      if (retour) fermerSaisie(zone.ownerDocument);
++      else if (valider) {
++        const actif = zone.ownerDocument.activeElement, cible = saisie.lignes.flat().find(b => b === actif) || saisie.lignes[0][0];
++        focaliser(cible); cible.click();
++      } else if (d) deplacerSaisie(saisie, d);
++      return true; // LB/RB ne doivent pas changer le menu derrière le dialogue.
++    }
+     if (retour) { if (options.retour) options.retour(); return true; }
++    if (demarrer) { options.demarrer(); return true; }
+     if (gauche || droite) {
+       const ts = onglets(zone).filter(visible), actif = ts.find(t => t.getAttribute('aria-selected') === 'true') || ts[0];
+       if (actif) {
+@@ -204,13 +321,18 @@
+     const gs = groupes(zone), actif = zone.ownerDocument.activeElement, i = gs.findIndex(g => g.elements.includes(actif));
+     const el = i >= 0 ? actif : selection(gs[0]);
+     if (!el) return true;
+-    if (valider) { focaliser(el); if (!el.readOnly) el.click(); return true; }
++    if (valider) {
++      focaliser(el);
++      if (!el.readOnly && !ouvrirSaisie(el, zone) && !(options.valider && options.valider(el))) el.click();
++      return true;
++    }
+     const sens = d === 12 || d === 14 ? -1 : 1;
+     if (i < 0) { focaliser(el); return true; }
+-    if ((d === 14 || d === 15) && ajuster(zone, el, gs[i], sens)) { focaliser(zone.ownerDocument.activeElement); return true; }
++    const vertical = gs[i].type === 'choix' && gs[i].cle && gs[i].cle.dataset.menuAxis === 'vertical';
++    if ((vertical ? d === 12 || d === 13 : d === 14 || d === 15) && ajuster(zone, el, gs[i], sens)) { focaliser(zone.ownerDocument.activeElement); return true; }
+     focaliser(selection(gs[(i + sens + gs.length) % gs.length]));
+     return true;
+   }
+ 
+-  B.navigationMenu = Object.freeze({ initialiser, ouvrirOnglet, naviguer });
++  B.navigationMenu = Object.freeze({ initialiser, ouvrirOnglet, naviguer, fermerSaisie });
+ })(globalThis.BITUME = globalThis.BITUME || {});
+diff --git a/src/saisons.js b/src/saisons.js
+index 616e423..ea09704 100644
+--- a/src/saisons.js
++++ b/src/saisons.js
+@@ -13,7 +13,7 @@
+   const profils = {};
+   for (const id of IDS) for (const theme of ['foret', 'cote', 'montagne', 'islande', 'desert', 'asie', 'pacifique', 'baikal']) {
+     const d = DONNEES[id], neige = id === 'hiver' && theme !== 'cote';
+-    profils[id + ':' + theme] = Object.freeze({ id, theme, neige, feuilles: id === 'automne' && (theme === 'foret' || theme === 'asie' || theme === 'baikal'),
++    profils[id + ':' + theme] = Object.freeze({ id, theme, neige, feuilles: id === 'automne' && (theme === 'foret' || theme === 'montagne' || theme === 'asie' || theme === 'baikal'),
+       faune: neige || theme === 'islande' || theme === 'desert' ? 0 : d.faune, soleil: d.soleil, teinteSoleil: Object.freeze(d.teinteSoleil.slice()) });
+   }
+   function profil(id, theme = 'foret') {
+@@ -35,7 +35,8 @@
+   const SEC = [.43, .36, .16], FROID = [.25, .32, .28], NEIGE = [.91, .94, .97];
+   function teinte(p, famille, base, x, z, habitat, sortie) {
+     const resultat = sortie || new Array(3), n = bruit(x, z, 139), nuance = bruit(x + 197, z - 311, 277);
+-    const feuillage = famille === 'feuillage' || famille === 'feuillage-caduque', fleurs = famille === 'fleurs';
++    const feuillage = famille === 'feuillage' || famille === 'feuillage-caduque' || famille === 'feuillage-persistant', fleurs = famille === 'fleurs';
++    const caduc = famille === 'feuillage-caduque' || famille === 'feuillage' && (p.theme === 'foret' || p.theme === 'asie');
+     let cible = base, part = 0;
+     if (p.neige) {
+       cible = NEIGE; part = feuillage ? .55 + .32 * n : famille === 'sol' ? .93 + .04 * n : .78 + .12 * n;
+@@ -49,21 +50,27 @@
+       cible = p.id === 'printemps' ? [.67, .45, .25] : p.id === 'automne' ? [.59, .32, .14] : [.82, .59, .31];
+       part = (p.id === 'ete' ? .10 : .06) + .04 * n;
+     } else if (p.id === 'printemps') {
+-      if (feuillage && (p.theme === 'foret' || p.theme === 'asie')) {
++      if (caduc && (p.theme === 'foret' || p.theme === 'asie')) {
+         const floraison = lisse(.38, .72, n + (habitat ? habitat.fleurs : 0) * .24);
+         cible = nuance < .5 ? BLANC : ROSE; part = floraison * .94;
+-      } else if (!feuillage) {
++      } else if (feuillage) {
++        // Jeunes feuilles boréales/alpines et pousses des persistants ; pas de floraison rose des pins.
++        cible = [base[0] * .88, Math.min(1, base[1] * 1.22 + .025), base[2] * .94];
++        part = caduc ? .64 : .30;
++      } else {
+         cible = fleurs ? ROSE : [base[0] * .88, Math.min(1, base[1] * 1.16), base[2] * .91];
+         part = fleurs ? .14 : .40;
+       }
+     } else if (p.id === 'ete') {
+       cible = SEC;
+-      part = feuillage ? (p.theme === 'foret' || p.theme === 'asie' ? .18 : .09) + .18 * n
++      part = feuillage ? (caduc ? .18 + .18 * n : .06 + .07 * n)
+         : fleurs ? .12 : .22 + .19 * n + (habitat ? (1 - habitat.herbe) * .10 : 0);
+     } else if (p.id === 'automne') {
+-      if (feuillage && (p.theme === 'foret' || p.theme === 'asie' || famille === 'feuillage-caduque')) {
++      if (caduc) {
+         cible = p.theme === 'baikal' ? OR : n < .34 ? CUIVRE : n < .67 ? ORANGE : OR; part = .79 + .18 * nuance;
+-      } else if (!feuillage) { cible = SEC; part = fleurs ? .30 : .35 + .20 * nuance; }
++      } else if (feuillage) {
++        cible = [base[0] * .96, base[1] * .92, base[2] * 1.03]; part = .55;
++      } else { cible = SEC; part = fleurs ? .30 : .35 + .20 * nuance; }
+     } else {
+       // Le Sud reste sans neige, y compris sur les pins, les plantes et leurs sources d'effets.
+       cible = FROID; part = feuillage ? .13 : .20;
+diff --git a/src/son.js b/src/son.js
+index 474dc03..e16a0f5 100644
+--- a/src/son.js
++++ b/src/son.js
+@@ -688,7 +688,12 @@
+         v.source.stop(t + .015); v.finA = Math.min(v.finA, t + .015);
+       }
+     }
+-    function reprendre() { enPause = false; }
++    function reprendre() {
++      // Les préécoutes du menu ne doivent ni continuer en course ni occuper les voix
++      // des premiers Troll. Les reprises répétées en course conservent les sons actifs.
++      if (enPause) viderKlaxons();
++      enPause = false;
++    }
+     function stats() {
+       let rivaux = 0, fondus = 0, actives = 0, klaxonsActifs = 0;
+       if (pret) for (const v of voix) { if (v.id >= 0) rivaux++; else if (ctx.currentTime < v.libereA) fondus++; }
+diff --git a/src/style.css b/src/style.css
+index 8ae251a..9b76aec 100644
+--- a/src/style.css
++++ b/src/style.css
+@@ -22,7 +22,7 @@
+ * { box-sizing: border-box; }
+ html, body { margin: 0; height: 100%; background: var(--encre); color: var(--papier); overflow: hidden; }
+ body { font: 15px/1.4 var(--f-texte); -webkit-font-smoothing: antialiased; touch-action: none; user-select: none; -webkit-user-select: none; }
+-button, input { font: inherit; color: inherit; }
++button, input, select { font: inherit; color: inherit; }
+ [hidden] { display: none !important; }
+ .texte-accessible { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+ .aide-reglage { margin: 8px 0 0; max-width: 55ch; font-size: 12px; line-height: 1.5; color: var(--papier-2); }
+@@ -152,7 +152,7 @@ input[type="range"] { width: 100%; accent-color: var(--rouge); }
+ .onglets-menu button:hover { border-color: var(--papier-2); }
+ .panneaux-menu { flex: 1 1 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; scrollbar-gutter: stable; width: 100%; max-width: 1120px; margin: 0 auto; padding: 18px 6px 22px; }
+ .panneau-menu { min-width: 0; }
+-.panneau-menu :is(button,input,a) { scroll-margin: 18px; }
++.panneau-menu :is(button,input,select,textarea,a) { scroll-margin: 18px; }
+ .panneau-menu .options { margin-top: 18px; }
+ .panneau-menu .grille-reglages { grid-template-columns: repeat(2,minmax(0,1fr)); }
+ .panneau-menu fieldset { padding: 16px; border: 1px solid var(--trait); border-radius: 5px; background: rgba(12,16,19,.45); }
+@@ -182,10 +182,10 @@ input[type="range"] { width: 100%; accent-color: var(--rouge); }
+ .aide-manette kbd { display: inline-block; min-width: 21px; margin-right: 5px; padding: 3px 5px; border: 1px solid var(--trait-fort); border-radius: 3px; text-align: center; color: var(--papier); font: 700 11px/1.2 var(--f-texte); }
+ .audio-curseurs { max-width: 620px; gap: 24px; }
+ .audio-curseurs input { min-height: 38px; }
+-.ecran[data-manette="true"] :is(button,a,input[type="range"]):focus,
++.ecran[data-manette="true"] :is(button,a,input,select,textarea,[role="radio"],[role="checkbox"]):focus,
+ .onglets-menu button:focus-visible { outline: 3px solid var(--ambre); outline-offset: 3px; }
+ .ecran[data-manette="true"] input:focus + span { outline: 3px solid var(--ambre); outline-offset: 3px; }
+-button:disabled { cursor: wait; opacity: .55; }
++button:disabled { cursor: not-allowed; opacity: .55; }
+ @media (max-width: 900px) {
+   .conditions-grille { grid-template-columns: 1fr; }
+   .conditions-grille fieldset { display: grid; grid-template-columns: minmax(180px,.8fr) 1fr; gap: 10px 20px; }
+@@ -617,3 +617,237 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
+   background: rgba(8, 9, 11, .82); border: 1px solid var(--trait); border-left: 3px solid var(--ambre); border-radius: 6px;
+   color: var(--papier); font: 500 11px/1.55 ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+   white-space: pre; font-variant-numeric: tabular-nums; }
++
++/* Arcade : écrans opaques, circuit miniature, gros choix accessibles depuis le canapé. */
++.arcade-titre, .arcade-preparation, #enligne, #prets, #reglages {
++  background: radial-gradient(ellipse at 90% 0, #28313a 0, transparent 55%), #10151b;
++}
++.arcade-titre { justify-content: center; gap: 20px; padding-left: max(var(--marge), calc((100vw - 1180px)/2)); padding-right: max(var(--marge), calc((100vw - 1180px)/2)); }
++.arcade-titre::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .18; background: linear-gradient(132deg, transparent 58%, #e0301e 58%, #e0301e 59%, transparent 59%, transparent 61%, #e0ab65 61%, #e0ab65 61.3%, transparent 61.3%); }
++.arcade-titre > * { position: relative; }
++.arcade-titre .marque { --t-marque: clamp(74px, 11vw, 154px); margin-bottom: 22px; }
++.arcade-surtitre { margin: 0 0 9px; color: #a8b9c4; font: 700 11px/1.4 var(--f-texte); text-transform: uppercase; letter-spacing: .17em; }
++.arcade-titre > .arcade-surtitre { margin-bottom: -8px; }
++.arcade-modes { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; width: 100%; max-width: 1080px; }
++.arcade-modes .mode-arcade { display: grid; grid-template-columns: 40px 1fr 24px; gap: 15px; align-items: center; min-width: 0; width: 100%; min-height: 104px; padding: 20px 24px; border: 1px solid #3b454e; border-left: 5px solid #4a5560; background: #1b242c; font-size: clamp(28px, 3.3vw, 42px); }
++.arcade-modes .mode-arcade:first-child { border-left-color: var(--rouge); background: linear-gradient(110deg, #3b231f, #1b242c); }
++.arcade-modes .mode-arcade:hover, .arcade-modes .mode-arcade:focus-visible { border-color: #eab261; background: #29313a; transform: none; outline: 2px solid #eab261; outline-offset: 2px; }
++.mode-numero { color: #71818d; font: 700 18px/1 var(--f-texte); font-variant-numeric: tabular-nums; }
++.mode-fleche { color: #eab261; font-size: 26px; }
++.arcade-modes .mode-arcade small { display: block; margin: 8px 0 0; color: #aab7c1; font: 500 13px/1.3 var(--f-texte); text-transform: none; letter-spacing: .01em; }
++.arcade-modes .mode-arcade small.detecte { color: #eab261; }
++.arcade-modes .arcade-reglages { min-height: 44px; padding-left: 0; grid-column: 1 / -1; width: max-content; }
++.arcade-reglages span { margin-left: 12px; color: #eab261; }
++.arcade-titre .pied-titre { font-size: 12px; margin-top: 0; }
++.arcade-preparation .menu-entete, .arcade-preparation .panneaux-menu, .arcade-preparation .depart-fixe, .arcade-preparation .aide-manette { max-width: 1320px; }
++.arcade-preparation .entete { margin-bottom: 18px; }
++.arcade-preparation .entete h2 { font-size: clamp(27px, 3.3vw, 42px); }
++.arcade-preparation .entete .arcade-surtitre { margin-bottom: 3px; }
++.arcade-compteur { margin-left: auto; color: #9babb7; font: 600 13px/1 var(--f-texte); font-variant-numeric: tabular-nums; white-space: nowrap; letter-spacing: .1em; }
++.arcade-preparation .onglets-menu { gap: 8px; padding-bottom: 0; border: 0; }
++.arcade-preparation .onglets-menu button { flex: 1; border-radius: 2px; min-height: 46px; background: #1b252e; padding: 10px 14px; text-align: left; }
++.arcade-preparation .onglets-menu button > span { font-size: 12px; margin-right: 9px; opacity: .6; font-variant-numeric: tabular-nums; }
++.arcade-preparation .onglets-menu button[aria-selected="true"] { border-color: #e24b37; background: #983526; box-shadow: inset 0 -3px #f0a758; }
++.selection-circuit { display: grid; grid-template-columns: minmax(0,1.8fr) minmax(250px,.85fr); gap: 22px; align-items: stretch; }
++.apercu-circuit { min-width: 0; overflow: hidden; background: #0c1219; border: 1px solid #3b4a55; border-radius: 3px; }
++.apercu-entete { display: flex; align-items: flex-start; gap: 18px; padding: 20px 22px 0; }
++.apercu-entete .arcade-surtitre { font-size: 10px; }
++.apercu-entete h3 { margin: 0; color: #f2ecdf; font: italic 850 clamp(25px, 3vw, 42px)/1.05 var(--f-titre); text-transform: uppercase; overflow-wrap: anywhere; }
++#p-trace-3d { display: block; width: 100%; height: clamp(195px, 31vh, 370px); margin: 8px 0 0; }
++.apercu-legende { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 0 20px; color: #9baeba; font-size: 11px; }
++.apercu-legende button { min-height: 36px; padding: 7px 11px; border: 1px solid #40525e; border-radius: 2px; background: #17222b; cursor: pointer; font-size: 11px; }
++.apercu-legende button:focus-visible { outline: 3px solid var(--ambre); outline-offset: 2px; }
++.chiffres-circuit { display: grid; grid-template-columns: 1fr .85fr 1.25fr; gap: 8px; margin: 12px 0 0; padding: 16px 22px; border-top: 1px solid #2a3741; }
++.chiffres-circuit > div { min-width: 0; }
++.chiffres-circuit dt { color: #90a0ad; font-size: 10px; text-transform: uppercase; letter-spacing: .08em; }
++.chiffres-circuit dd { margin: 6px 0 0; color: #b5c3cb; font-size: 12px; }
++.chiffres-circuit b { color: #efe8da; font: 750 23px/1 var(--f-titre); font-variant-numeric: tabular-nums; }
++.catalogue-circuits { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
++.catalogue-circuits > .arcade-surtitre { flex: none; margin-bottom: 10px; }
++.arcade-preparation .circuits { display: flex; flex-direction: column; flex: 1 1 0; gap: 7px; min-height: 200px; max-height: 515px; overflow-y: auto; scrollbar-width: thin; padding: 3px 8px 3px 3px; overscroll-behavior: contain; }
++.arcade-preparation .carte-circuit { display: grid; grid-template-columns: 26px minmax(0,1fr) auto; grid-template-rows: auto auto; column-gap: 9px; row-gap: 3px; flex: none; min-height: 67px; padding: 11px 10px; border: 1px solid #38444f; border-left: 3px solid #38444f; background: #19232c; border-radius: 2px; }
++.arcade-preparation .carte-circuit .circuit-rang { grid-row: 1 / 3; align-self: center; font-size: 11px; font-variant-numeric: tabular-nums; color: #8296a6; }
++.arcade-preparation .carte-circuit .nom { grid-column: 2; font-size: 22px; line-height: 1; white-space: normal; }
++.arcade-preparation .carte-circuit .fiche { grid-column: 2; font-size: 10px; line-height: 1.4; color: #99acba; }
++.arcade-preparation .carte-circuit .circuit-distance { grid-column: 3; grid-row: 1 / 3; align-self: center; color: #c3cdd4; font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
++.arcade-preparation .carte-circuit[aria-checked="true"] { border-color: #eab261; border-left-width: 3px; background: #3b2d24; }
++.arcade-preparation .carte-circuit:hover, .arcade-preparation .carte-circuit:focus-visible { transform: none; outline: 2px solid #eab261; outline-offset: 1px; }
++.arcade-preparation #p-piste > .options { margin-top: 15px; gap: 12px; }
++.arcade-preparation #p-piste > .options fieldset { padding: 8px 14px 7px; }
++.arcade-preparation #p-piste > .options label span { padding: 9px 13px; min-height: 34px; font-size: 15px; }
++.arcade-preparation .depart-fixe { gap: 12px; padding-top: 12px; margin-top: 0; }
++.arcade-preparation .depart-fixe .gros { min-width: 210px; font-size: 29px; padding: 15px 19px; border-radius: 2px; }
++.arcade-preparation #b-precedent { padding: 12px; font-size: 13px; min-height: 44px; }
++.arcade-preparation .resume-depart { flex: 1; }
++.arcade-preparation .resume-course { font-size: 13px; }
++.arcade-preparation .record { font-size: 11px; }
++.choix-troll .select-arcade { display: grid; grid-template-columns: 70px minmax(0,1fr); align-items: center; gap: 10px; width: 100%; margin: 0 0 10px; }
++.choix-troll .select-arcade > span { min-width: 0; padding: 0; margin: 0; min-height: 0; border: 0; background: none; text-align: left; font: 500 13px/1.4 var(--f-texte); text-transform: none; }
++.select-arcade select { min-width: 0; width: 100%; min-height: 44px; padding: 9px 12px; border: 1px solid #54616d; border-radius: 3px; background: #1b2630; color: #f2ecdf; cursor: pointer; }
++.select-arcade select:focus-visible { outline: 3px solid #eab261; outline-offset: 2px; }
++.choix-troll .discret { font-size: 13px; padding: 8px 12px; }
++.options-troll-prets > fieldset { flex: 1 1 260px; border: 1px solid #40505d; padding: 16px; }
++.bilan-arcade { padding: 25px 0; }
++.bilan-arcade h3 { margin: 10px 0 32px; font: italic 800 clamp(28px, 4.8vw, 62px)/1.1 var(--f-titre); text-transform: uppercase; }
++.bilan-grille { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; }
++.bilan-grille article { padding: 24px; border: 1px solid #3f505d; border-top: 3px solid #d84c36; background: #19232c; }
++.bilan-grille strong { display: block; margin: 20px 0 10px; font: 750 27px/1.1 var(--f-titre); }
++.bilan-grille p { margin: 0; color: #aebdca; font-size: 14px; line-height: 1.6; white-space: pre-line; }
++#jeu[data-ecran="titre"] #vue-course, #jeu[data-ecran="preparation"] #vue-course,
++#jeu[data-ecran="enligne"] #vue-course, #jeu[data-ecran="prets"] #vue-course, #jeu[data-ecran="reglages"] #vue-course { visibility: hidden; }
++@media (min-width: 1600px) { .arcade-preparation { --marge: 4vh; } }
++@media (max-width: 850px) {
++  .selection-circuit { grid-template-columns: minmax(0,1.3fr) minmax(210px,1fr); gap: 12px; }
++  .arcade-preparation .carte-circuit { grid-template-columns: 21px minmax(0,1fr); }
++  .arcade-preparation .carte-circuit .circuit-distance { grid-column: 2; grid-row: auto; font-size: 11px; }
++  .arcade-preparation .carte-circuit .nom { font-size: 20px; }
++  .apercu-entete { padding: 16px 16px 0; }
++  .chiffres-circuit { padding: 13px 16px; }
++}
++@media (max-width: 600px) {
++  .arcade-titre { gap: 14px; justify-content: flex-start; padding-top: max(36px, env(safe-area-inset-top)); }
++  .arcade-titre .marque { --t-marque: clamp(65px, 16vw, 96px); margin-bottom: 16px; }
++  .arcade-modes { grid-template-columns: 1fr; gap: 9px; }
++  .arcade-modes .mode-arcade { min-height: 84px; padding: 15px 18px; grid-template-columns: 29px 1fr 20px; font-size: 31px; }
++  .arcade-modes .mode-arcade small { margin-top: 5px; font-size: 12px; }
++  .arcade-preparation .entete { margin-bottom: 12px; }
++  .arcade-preparation .onglets-menu { gap: 5px; }
++  .arcade-preparation .onglets-menu button { padding: 10px 5px; text-align: center; font-size: 12px; min-height: 45px; }
++  .arcade-preparation .onglets-menu button > span { display: none; }
++  .selection-circuit { grid-template-columns: 1fr; gap: 13px; }
++  #p-trace-3d { height: 210px; }
++  .apercu-entete h3 { font-size: 30px; }
++  .arcade-preparation .circuits { display: grid; grid-template-columns: 1fr 1fr; max-height: 188px; flex: none; min-height: 0; }
++  .arcade-preparation .carte-circuit { min-height: 62px; padding: 10px 7px; grid-template-columns: 18px minmax(0,1fr); column-gap: 5px; }
++  .arcade-preparation .carte-circuit .nom { font-size: 18px; }
++  .arcade-preparation .carte-circuit .fiche { font-size: 9px; }
++  .arcade-preparation .depart-fixe .resume-depart { flex: 1 1 100%; }
++  .arcade-preparation .depart-fixe .gros { min-width: 0; flex: 1; min-height: 48px; padding: 13px 8px; font-size: clamp(16px, 5vw, 23px); white-space: nowrap; }
++  .arcade-preparation .depart-fixe #b-precedent { width: 90px; }
++  .arcade-preparation .resume-course { font-size: 11px; }
++  .bilan-arcade { padding: 12px 0; }
++  .bilan-arcade h3 { margin: 8px 0 20px; }
++  .bilan-grille { grid-template-columns: 1fr; gap: 12px; }
++  .bilan-grille article { padding: 18px; }
++  .bilan-grille strong { margin: 10px 0 7px; font-size: 24px; }
++}
++@media (max-height: 600px) and (min-width: 601px) {
++  .arcade-titre { gap: 10px; }
++  .arcade-titre .marque { --t-marque: 74px; margin-bottom: 14px; }
++  .arcade-modes .mode-arcade { min-height: 74px; padding: 12px 18px; font-size: 29px; }
++  .arcade-modes .mode-arcade small { font-size: 11px; margin-top: 4px; }
++  .arcade-titre .pied-titre, .arcade-titre .attente { margin-top: 0; }
++  .arcade-preparation .entete .arcade-surtitre { display: none; }
++  .arcade-preparation .entete { margin-bottom: 9px; }
++  .arcade-preparation .onglets-menu button { min-height: 40px; padding: 7px 12px; }
++  #p-trace-3d { height: 180px; }
++  .chiffres-circuit { padding-top: 10px; padding-bottom: 10px; }
++  .arcade-preparation .panneaux-menu { padding-top: 12px; padding-bottom: 14px; }
++}
++
++/* En paysage court, le tracé occupe une zone entière ; seuls le catalogue et les
++   réglages supplémentaires défilent. Les actions gardent une cible de 44 px. */
++@media (max-height: 540px) and (min-width: 601px) {
++  .arcade-preparation { --marge: 10px; }
++  .arcade-preparation .entete { gap: 8px; margin-bottom: 4px; }
++  .arcade-preparation .entete h2 { font-size: 21px; }
++  .arcade-preparation .entete .arcade-compteur { font-size: 10px; }
++  .arcade-preparation .onglets-menu { gap: 6px; }
++  .arcade-preparation .onglets-menu button { min-height: 44px; padding: 8px 6px; font-size: 13px; white-space: nowrap; }
++  .arcade-preparation .panneaux-menu { padding: 6px 4px 8px; scrollbar-width: thin; }
++  .arcade-preparation .panneau-menu :is(button,input,select,textarea,a) { scroll-margin: 4px; }
++  .arcade-preparation .intro-menu { margin-bottom: 8px; font-size: 12px; }
++  .arcade-preparation .panneau-menu fieldset { padding: 10px; }
++  .arcade-preparation .panneau-menu fieldset label span { min-height: 44px; }
++  .arcade-preparation .conditions-grille { gap: 10px; }
++  .arcade-preparation .conditions-grille fieldset { gap: 6px 12px; }
++  .arcade-preparation .depart-fixe { flex-wrap: nowrap; gap: 8px; padding-top: 6px; }
++  .arcade-preparation .depart-fixe .gros { min-width: 0; min-height: 44px; padding: 10px 12px; font-size: 22px; white-space: nowrap; }
++  .arcade-preparation #b-precedent { flex: none; padding: 10px; }
++  .arcade-preparation .resume-course { margin-bottom: 2px; font-size: 11px; line-height: 1.2; }
++  .arcade-preparation .record { font-size: 10px; line-height: 1.2; }
++  .arcade-preparation .aide-manette { gap: 4px 14px; margin-top: 4px; font-size: 10px; line-height: 1.3; }
++  .arcade-preparation .aide-manette kbd { padding: 2px 4px; font-size: 10px; }
++
++  .arcade-preparation #p-piste { height: 100%; }
++  .arcade-preparation .selection-circuit { height: 100%; min-height: 180px; max-height: 320px; grid-template-columns: minmax(0,1.35fr) minmax(210px,1fr); gap: 12px; }
++  .arcade-preparation .apercu-circuit { display: grid; grid-template-columns: minmax(0,1fr) 120px; grid-template-rows: auto minmax(70px,1fr) auto; grid-template-areas: "titre titre" "trace trace" "chiffres legende"; min-height: 0; }
++  .arcade-preparation .apercu-entete { grid-area: titre; gap: 8px; padding: 6px 10px 0; }
++  .arcade-preparation .apercu-entete > div { min-width: 0; }
++  .arcade-preparation .apercu-entete .arcade-surtitre { margin-bottom: 3px; font-size: 9px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
++  .arcade-preparation .apercu-entete h3 { font-size: 22px; }
++  .arcade-preparation .apercu-entete .arcade-compteur { font-size: 10px; }
++  .arcade-preparation #p-trace-3d { grid-area: trace; height: 100%; min-height: 0; margin: 0; }
++  .arcade-preparation .apercu-legende { grid-area: legende; display: grid; justify-content: stretch; gap: 0; padding: 0 6px 3px; }
++  .arcade-preparation .apercu-legende > span { font-size: 9px; line-height: 1.2; text-align: center; }
++  .arcade-preparation .apercu-legende button { min-height: 44px; padding: 6px; font-size: 10px; }
++  .arcade-preparation .chiffres-circuit { grid-area: chiffres; align-self: center; gap: 6px; margin: 0; padding: 6px 8px; border-top: 0; }
++  .arcade-preparation .chiffres-circuit dt { font-size: 8px; letter-spacing: .03em; }
++  .arcade-preparation .chiffres-circuit dd { margin-top: 3px; font-size: 10px; }
++  .arcade-preparation .chiffres-circuit b { font-size: 18px; }
++  .arcade-preparation .catalogue-circuits > .arcade-surtitre { margin-bottom: 4px; font-size: 9px; }
++  .arcade-preparation .circuits { min-height: 0; max-height: none; gap: 5px; }
++  .arcade-preparation .carte-circuit { min-height: 54px; padding: 7px 8px; }
++  .arcade-preparation .carte-circuit .nom { font-size: 18px; }
++  .arcade-preparation #p-piste > .options { margin-top: 10px; }
++  .arcade-preparation #p-piste > .options label span { min-height: 44px; }
++
++  .arcade-preparation .bilan-arcade { padding: 2px 0; }
++  .arcade-preparation .bilan-arcade > .arcade-surtitre { margin-bottom: 3px; font-size: 9px; }
++  .arcade-preparation .bilan-arcade h3 { margin: 0 0 8px; font-size: 22px; }
++  .arcade-preparation .bilan-grille { gap: 10px; }
++  .arcade-preparation .bilan-grille article { padding: 10px; }
++  .arcade-preparation .bilan-grille .etiquette { font-size: 9px; letter-spacing: .08em; }
++  .arcade-preparation .bilan-grille strong { margin: 6px 0; font-size: 18px; }
++  .arcade-preparation .bilan-grille p { font-size: 11px; line-height: 1.4; }
++  .arcade-preparation .bilan-arcade > .note-pneus { margin-top: 6px; font-size: 10px; }
++}
++@media (max-height: 540px) and (min-width: 760px) {
++  .arcade-preparation .menu-entete { display: grid; grid-template-columns: minmax(260px,.9fr) minmax(0,1.5fr); align-items: center; gap: 12px; }
++  .arcade-preparation .entete { margin-bottom: 0; }
++}
++
++/* Un état sonore vide ne réserve pas un espace dans le parcours. */
++#p-troll-etat:empty, #pr-troll-etat:empty { display: none; }
++
++/* Aide adaptée au dernier appareil utilisé ; les touches natives restent disponibles. */
++.ecran:not([data-manette="true"]) .aide-controleur,
++.ecran[data-manette="true"] .aide-clavier, .aide-tactile { display: none; }
++#preparation[data-etape="0"] .aide-options,
++#preparation:not([data-etape="0"]) .aide-circuit { display: none; }
++@media (hover: none) and (pointer: coarse) {
++  .ecran:not([data-manette="true"]) .aide-clavier { display: none; }
++  .ecran:not([data-manette="true"]) .aide-tactile { display: flex; }
++}
++.saisie-manette { width: min(660px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: 24px; border: 1px solid #637783; border-radius: 7px; background: #101a23; color: var(--papier); overflow: auto; touch-action: pan-y; box-shadow: 0 24px 100px #000b; }
++.saisie-manette::backdrop { background: #030608da; }
++.saisie-manette header { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
++.saisie-manette h2 { margin: 0; font: 750 25px/1.2 var(--f-texte); }
++.saisie-manette button { min-height: 44px; border: 1px solid #415664; border-radius: 4px; background: #22313d; color: var(--papier); padding: 8px 12px; cursor: pointer; }
++.saisie-manette button:hover { background: #314957; }
++.saisie-manette button:focus { outline: 3px solid var(--ambre); outline-offset: 2px; }
++#sm-contenu { margin: 20px 0 6px; padding: 12px 16px; min-height: 55px; border: 1px solid #647583; border-radius: 3px; background: #080d12; font: 650 23px/1.2 var(--f-texte); letter-spacing: .08em; white-space: pre-wrap; overflow-wrap: anywhere; }
++#sm-contenu:empty::after { content: '…'; color: #6c7d89; }
++#sm-limite, .sm-aide { color: var(--papier-2); font-size: 12px; margin: 6px 0 18px; }
++#sm-touches { display: flex; flex-direction: column; gap: 8px; }
++.sm-ligne { display: flex; justify-content: center; gap: 7px; }
++.sm-ligne button { flex: 1 1 0; max-width: 50px; min-width: 0; padding: 6px 2px; }
++.sm-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 12px; }
++.sm-actions button { flex: 1 1 auto; }
++#sm-valider { color: #fff4df; border-color: #e88e58; background: #8d3324; }
++#sm-maj[aria-pressed="true"] { border-color: #eab261; background: #694d22; }
++.sm-aide { margin-bottom: 0; }
++@media (max-width: 600px) {
++  .saisie-manette { padding: 14px; }
++  .saisie-manette h2 { font-size: 20px; }
++  .sm-ligne { gap: 4px; }
++  .sm-ligne button { min-height: 42px; }
++}
++@media (max-height: 500px) {
++  .saisie-manette { padding: 12px 18px; }
++  #sm-contenu { min-height: 40px; margin-top: 10px; padding: 7px 12px; }
++  #sm-limite { margin-bottom: 10px; }
++  .sm-ligne button { min-height: 36px; }
++  #sm-touches, .sm-ligne { gap: 5px; }
++  .sm-actions { margin: 10px 0 6px; }
++}

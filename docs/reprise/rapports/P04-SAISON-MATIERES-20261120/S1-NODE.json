@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "lot": "04-S1",
+  "commit_controles": "259ed2bb8ba39375f6b792459c24997cfac6e701",
+  "commit_sources": "722d732ebb1d4f26227593ca160b7deede56cb9b",
+  "statut": "node_qualifie_images_en_cours",
+  "commande": "node --test verifications/saisons-circuits.test.mjs verifications/saisons-cache.test.mjs",
+  "tests": 31,
+  "reussis": 31,
+  "echecs": 0,
+  "preparations_matrice": 108,
+  "circuits": 9,
+  "saisons": 4,
+  "qualites": 3,
+  "caches": {
+    "baikal": {
+      "decoupes": 1,
+      "reprises": 4,
+      "retour_ete_identique": true,
+      "reconstruction_neuve_identique": true
+    },
+    "route-des-cimes": {
+      "decoupes": 1,
+      "reprises": 4,
+      "retour_ete_identique": true,
+      "reconstruction_neuve_identique": true
+    }
+  },
+  "comparaison": "S1-COMPARAISON.json",
+  "captures": {
+    "run_id": 44782100015,
+    "url": "https://github.com/M4D135/bitume/actions/runs/44782100015",
+    "scenes_attendues": 44,
+    "png_attendus": 88,
+    "inspectees": 0
+  },
+  "echec_local": {
+    "etape": "demarrage_Chromium_avant_ouverture_du_jeu",
+    "raison": "socket() failed: Operation not permitted",
+    "images": 0,
+    "elevation": "refusee_par_politique_approbation",
+    "repli": "workflow_dedie_sources_04"
+  },
+  "ci_commune": {
+    "run_id": 44781475663,
+    "conclusion": "failure",
+    "cause_verifiee": "git diff --exit-code detecte uniquement SIZE.json, VERSION.json et dist/bitume.html reconstruits, avant lancement des suites.",
+    "raccord": "00 construit et qualifie le build commun ; aucune modification de son workflow."
+  },
+  "physique": "p15",
+  "ferro": "0.3.15",
+  "limites": [
+    "Qualification visuelle en attente de capture et inspection des images.",
+    "Aucun gain matériel Xbox/Intel ni FPS annoncé.",
+    "Aucune fusion main ni publication du build commun."
+  ]
+}

@@ -171,9 +171,9 @@ function dessiner(modele, ev, detail = 'complet') {
   return { sortie, pieces: modele.objetsRendu.pilote.variantes[index].pieces };
 }
 const piecesCoque = {
-  complet: ['goutte', 'goutte-dedans', 'jonc', 'bulle', 'cuve'],
-  moyen: ['goutte', 'cuve'],
-  simple: ['loin-caisse', 'loin-dessus', 'loin-quille']
+  complet: ['goutte', 'goutte-dedans', 'jonc', 'bulle', 'cuve', 'assise-pilote', 'siege-supports'],
+  moyen: ['goutte', 'cuve', 'assise-pilote', 'siege-supports'],
+  simple: ['loin-caisse', 'loin-dessus', 'loin-quille', 'cuve', 'assise-pilote', 'siege-supports']
 };
 function coque(sortie, detail = 'complet') {
   const obstacles = piecesCoque[detail].map(nom => {
@@ -199,7 +199,7 @@ test('volant fixé : moyeu, arbre, palier, planche et cuve sont réellement reli
     const etatFixe = JSON.stringify(fixes.map(role => { const o = piece(role); return [o.shape, ...['p', 's', 'r'].map(k => Array.from(o[k]))]; }));
     if (reference === null) reference = etatFixe; else assert.equal(etatFixe, reference, 'les supports restent fixes malgré le braquage et le LOD');
     const colonne = triangles(piece('support-volant-0')), palier = triangles(piece('support-volant-1'));
-    const planche = build(triangles(piece('planche'))), cuve = build(triangles(sortie.find(o => o.shape === (detail === 'simple' ? 'bitume-loin-caisse' : 'bitume-cuve'))));
+    const planche = build(triangles(piece('planche'))), cuve = build(triangles(sortie.find(o => o.shape === 'bitume-cuve')));
     assert.ok(crossing(colonne, build(triangles(piece('moyeu-0')))), 'arbre serti dans le moyeu');
     assert.ok(crossing(colonne, build(palier)), 'arbre dans le palier');
     assert.ok(crossing(palier, planche), 'palier rejoint la planche');
@@ -209,6 +209,40 @@ test('volant fixé : moyeu, arbre, palier, planche et cuve sont réellement reli
       assert.ok(crossing(montant, planche), role + ' rejoint la planche');
       assert.ok(crossing(montant, cuve), role + ' rejoint le fond visible dans le LOD ' + detail);
     }
+  }
+});
+
+test('rétroviseurs communs : chaque patte relie son boîtier à la carrosserie dans les trois LOD', () => {
+  const modele = creer(), ev = pose();
+  for (const detail of ['complet', 'moyen', 'simple']) {
+    const { pieces, sortie } = dessiner(modele, ev, detail), obstacles = coque(sortie, detail);
+    for (let k = 0; k < 2; k++) {
+      const piece = role => pieces.find(p => p.role === role + '-' + k).objet;
+      const patte = triangles(piece('retro-patte'));
+      assert.ok(crossing(patte, build(triangles(piece('retro-boitier')))), `patte du rétro ${k} fixée à son boîtier en ${detail}`);
+      assert.ok(obstacles.some(o => crossing(patte, o.arbre)), `patte du rétro ${k} fixée à la carrosserie en ${detail}`);
+    }
+  }
+});
+
+test('assise basse : appui du thorax, coussin, traverses et fond de cuve forment une liaison réelle', () => {
+  const modele = creer(), ev = pose();
+  for (const detail of ['complet', 'moyen', 'simple']) {
+    const { sortie } = dessiner(modele, ev, detail);
+    const trouver = nom => sortie.find(o => o.shape === 'bitume-' + nom);
+    const torse = triangles(sortie.find(o => /^bitume-pilote-buste(?:-|$)/.test(o.shape)));
+    const assise = triangles(trouver('assise-pilote')), supports = triangles(trouver('siege-supports'));
+    const fond = build(triangles(trouver('cuve'))), bas = Math.min(...torse.flat().map(p => p[1]));
+    const bordInferieur = torse.flat().filter(p => Math.abs(p[1] - bas) < 1e-8);
+    const appui = [0, 1, 2].map(k => (Math.min(...bordInferieur.map(p => p[k])) + Math.max(...bordInferieur.map(p => p[k]))) / 2);
+    for (let k = 0; k < 3; k++) assert.ok(Math.abs(appui[k] - V.PILOTE_ASSISE[k]) < 1e-8, 'repère d’assise mesuré sur le bas affiché du thorax');
+    assert.ok(Math.min(...assise.map(t => pt2(appui, t))) < 1e-16, 'le coussin porte le point d’appui réel');
+    assert.ok(Math.max(...assise.flat().map(p => p[1])) <= bas + 1e-8, 'le coussin reste sous la peau du thorax');
+    assert.ok(crossing(assise, build(torse)), 'thorax au contact du coussin');
+    assert.ok(crossing(supports, build(assise)), 'traverses fixées sous le coussin');
+    assert.ok(crossing(supports, fond), 'traverses fixées au vrai fond de cuve');
+    assert.ok(Math.max(...supports.flat().map(p => p[1])) < bas - .02, 'les supports restent sous le thorax');
+    assert.ok(bas < .30 && bas > .24, 'appui physiquement bas dans la cellule');
   }
 });
 
@@ -230,7 +264,7 @@ test('gestes : surfaces des mains et bras sans traversée de la coque, du casque
     for (const gesteIntensite of regard === 0 ? [0, .03, .06, .10, .14, .20, .26, .36, .44, .50, .60, .70, .80, .90, 1] : [.44, .50, .60, .70, .80, .90, 1]) {
       ev.pilote.gesteIntensite = gesteIntensite;
       const { pieces } = dessiner(modele, ev);
-      for (const piece of pieces.filter(p => /^(gant|bras|avant-bras|manche-joint|coude)-/.test(p.role))) {
+      for (const piece of pieces.filter(p => /^(gant|epaule|bras|avant-bras|manche-joint|coude)-/.test(p.role))) {
         for (const { nom, arbre } of obstaclesPose)
           assert.ok(!traversee(piece.objet, arbre), `${piece.role}/${nom} : ${geste}, côté=${gesteCote}, volant=${volant}, intensité=${gesteIntensite}`);
         if (piece.role.startsWith('gant-')) assert.ok(!traversee(piece.objet, jante), `${piece.role}/jante : ${geste}, côté=${gesteCote}, volant=${volant}, intensité=${gesteIntensite}`);
@@ -284,9 +318,9 @@ test('un rapport interrompt le geste sans téléporter les poignets ni traverser
       }
       avancer(s, t); X.lire(s.E, 0, ev.pilote); ev.pilote.passage = Math.min(1, (t - debut) / .36);
       const rendu = dessiner(modele, ev), H = modele.objetsRendu.habitacle;
-      for (const j of [6, 15]) {
+      for (const j of [3, 6, 12, 15]) {
         const delta = Math.sqrt(d2(Array.from(H.articulations.slice(j, j + 3)), avant.slice(j, j + 3)));
-        if (n === 0) { sautInitial = Math.max(sautInitial, delta); assert.ok(delta < .001, 'poignet téléporté au déclenchement : ' + delta); }
+        if (n === 0) { sautInitial = Math.max(sautInitial, delta); assert.ok(delta < .001, 'coude ou poignet téléporté au déclenchement : ' + delta); }
         else {
           pasMaximum = Math.max(pasMaximum, delta);
           demiPasMaximum = Math.max(demiPasMaximum, Math.sqrt(d2(milieu.slice(j, j + 3), avant.slice(j, j + 3))),
@@ -297,7 +331,7 @@ test('un rapport interrompt le geste sans téléporter les poignets ni traverser
       const mobiles = ['pilote-casque', 'pilote-visiere'].map(nom => ({ nom,
         arbre: build(triangles(rendu.sortie.find(o => o.shape === 'bitume-' + nom))) }));
       mobiles.push({ nom: 'pommeau', arbre: build(triangles(rendu.pieces.find(p => p.role === 'pommeau').objet)) });
-      for (const piece of rendu.pieces.filter(p => /^(gant|bras|avant-bras|manche-joint|coude)-/.test(p.role))) {
+      for (const piece of rendu.pieces.filter(p => /^(gant|epaule|bras|avant-bras|manche-joint|coude)-/.test(p.role))) {
         for (const { nom, arbre } of obstacles.concat(mobiles))
           assert.ok(!traversee(piece.objet, arbre), `${piece.role}/${nom} : geste=${geste}, côté=${cote}, volant=${volant}, retour=${n}/120`);
         if (piece.role.startsWith('gant-')) assert.ok(!traversee(piece.objet, jante), `${piece.role}/jante : geste=${geste}, côté=${cote}, volant=${volant}, retour=${n}/120`);
@@ -308,7 +342,7 @@ test('un rapport interrompt le geste sans téléporter les poignets ni traverser
     assert.equal(s.E.pilotes[0].gestesManuels, 1, 'aucun nouveau geste déclenché pendant le passage');
   }
   assert.ok(demiPasMaximum < pasMaximum * .65, 'un saut ne décroît pas quand le pas est divisé par deux');
-  console.log('transition geste/rapport : ' + controles + ' poses, saut initial=' + sautInitial + ' m, pas maximal 120/240 Hz=' + pasMaximum + '/' + demiPasMaximum + ' m');
+  console.log('transition geste/rapport : ' + controles + ' poses, coudes et poignets, saut initial=' + sautInitial + ' m, pas maximal 120/240 Hz=' + pasMaximum + '/' + demiPasMaximum + ' m');
 });
 
 // Ces cas empêchent le contrôleur lui-même de prendre un croisement pour un succès.
@@ -365,7 +399,7 @@ test('volant, levier, gants et bras restent séparés des triangles du cockpit p
     const { pieces } = dessiner(modele, ev);
     for (const piece of pieces) {
       if (!(piece.source || piece.de !== undefined || piece.joint !== undefined)) continue;
-      if (piece.role.startsWith('support-volant-')) continue; // montants volontairement fixés dans la cuve ; liaison contrôlée ci-dessous
+      if (piece.role.startsWith('support-volant-') || piece.role.startsWith('retro-patte-')) continue; // fixations à la coque, contrôlées par leurs tests de liaison
       for (const { nom, arbre } of obstacle) {
         if (piece.role === 'levier' && nom === 'console-levier') continue; // deux millimètres sertis au pied
         assert.ok(!traversee(piece.objet, arbre), `${piece.role}/${nom} traverse : volant=${volant}, ${rapportAvant}→${rapport}, passage=${passage}`);
@@ -406,7 +440,7 @@ test('joueur et rival, LOD et attitude de caisse conservent les dégagements des
       const { pieces } = dessiner(modele, ev, detail);
       for (const piece of pieces) {
         if (!(piece.source || piece.de !== undefined || piece.joint !== undefined)) continue;
-        if (piece.role.startsWith('support-volant-')) continue; // pièces fixes de liaison, testées séparément
+        if (piece.role.startsWith('support-volant-') || piece.role.startsWith('retro-patte-')) continue; // pièces fixes de liaison, testées séparément
         for (const { nom, arbre } of obstacle) {
           if (piece.role === 'levier' && nom === 'console-levier') continue;
           assert.ok(!traversee(piece.objet, arbre), `${detail}/${piece.role}/${nom}, volant=${volant}, passage=${passage}`);
@@ -430,7 +464,7 @@ test('le levier est fixé dans une console jointe à la cuve, seul son pied est 
     assert.ok(support && tige, detail + ' : ni console ni tige supprimée');
     const supportTriangles = triangles(support.objet), arbre = build(supportTriangles);
     assert.ok(crossing(supportTriangles, cuveArbre), 'console rattachée à la cuve de référence');
-    const fondAffiche = obstaclesAffiches.find(o => o.nom === (detail === 'simple' ? 'loin-caisse' : 'cuve'));
+    const fondAffiche = obstaclesAffiches.find(o => o.nom === 'cuve');
     assert.ok(fondAffiche && crossing(supportTriangles, fondAffiche.arbre), detail + ' : console rattachée au fond réellement affiché');
     for (const { nom, arbre: coqueArbre } of obstacle) {
       if (nom === 'cuve' || nom === 'console-levier') continue;

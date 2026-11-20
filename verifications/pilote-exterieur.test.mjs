@@ -58,6 +58,11 @@ if (process.argv.includes('--allocation')) {
 }
 
 const V = charger(), modele = () => V.modele(livree);
+// Bornes larges de la vraie cuve ouverte ; les traversées de ses triangles sont contrôlées dans pilote-habitacle.
+// Le fond plein historique à y=.48 n'est plus la limite inférieure de l'assise.
+const fondCuve = V.FORMES.cuve.centre[1] - V.FORMES.cuve.taille[1] / 2;
+const bordCuve = V.FORMES.jonc.centre[1] + V.FORMES.jonc.taille[1] / 2;
+const demiLargeurCuve = V.FORMES.cuve.taille[2] / 2;
 function dessiner(mod, ev, o) { const sortie = []; V.poser(mod, ev, sortie, o); return sortie; }
 
 test('le contrat de pose reste en lecture seule et le rendu historique revient sans résidu', () => {
@@ -107,7 +112,9 @@ test('630 poses : segments de 21/23 cm, coudes repliés dans la cuve et matrices
       const j = h * 9;
       proche(distance(point(A, j), point(A, j + 3)), .21);
       proche(distance(point(A, j + 3), point(A, j + 6)), .23);
-      assert.ok(A[j + 4] > .515 && A[j + 4] < .64 && Math.abs(A[j + 5]) < .18, 'coude sous le bord, au-dessus du fond et proche du buste');
+      assert.ok(A[j + 4] - .0375 > fondCuve && A[j + 4] + .0375 < bordCuve &&
+        A[j + 4] < Math.max(A[j + 1], A[j + 7]) && Math.abs(A[j + 5]) + .0375 < demiLargeurCuve,
+        'coude replié sous le haut de la chaîne et dans la vraie profondeur de cuve : ' + JSON.stringify({ volant, rapport, phase: f / 20, joints: Array.from(A.slice(j, j + 9)), fondCuve, bordCuve, demiLargeurCuve }));
     }
     for (const o of sortie) for (const k of ['p', 'r', 's', 'color']) assert.ok(Array.from(o[k]).every(Number.isFinite), k);
   }
@@ -156,10 +163,9 @@ test('les gants gardent formes, repères et prises autour des ancrages extérieu
       const H = mod.objetsRendu.habitacle, source = H.mains[h].pieces[0], sourceAncrage = auLevier ? H.pommeau : H.jante;
       assert.equal(dehors[3], source.objet.shape);
       for (let k = 0; k < 3; k++) {
-        // L'écartement de la prise reste exact ; les centres extérieurs sont définis par la cellule réelle,
-        // indépendamment du cadrage rapproché de la vue depuis le siège.
-        proche(dehors[0][k] - ancrage[k], .9 * (source.o[k] - sourceAncrage.o[k]) / V.K);
-        proche(dehors[1][k], source.objet.r[k]); proche(dehors[2][k], .9 * source.objet.s[k] / V.K);
+        // Mêmes positions et dimensions métriques dans les deux vues : aucune remise à l'échelle.
+        proche(dehors[0][k] - ancrage[k], source.o[k] - sourceAncrage.o[k]);
+        proche(dehors[1][k], source.objet.r[k]); proche(dehors[2][k], source.objet.s[k]);
       }
     }
   }
@@ -170,7 +176,7 @@ test('bras contenus au centre et au levier : coudes abaissés et prise naturelle
   for (const passage of [0, .15, .3, .45, .65, .82, 1]) {
     ev.pilote.passage = passage; dessiner(mod, ev); const A = mod.objetsRendu.pilote.articulations;
     for (const j of [0, 9]) {
-      assert.ok(A[j + 4] + .0375 < .65 && A[j + 4] - .0375 > .48, 'coude dans la profondeur utile de la cuve');
+      assert.ok(A[j + 4] + .0375 < bordCuve && A[j + 4] - .0375 > fondCuve, 'coude dans la profondeur utile de la cuve');
       assert.ok(Math.abs(A[j + 8]) < .18 && A[j + 7] < .74, 'prise contenue près du volant ou du levier');
     }
   }

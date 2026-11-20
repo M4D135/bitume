@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "statut": "inspection_visuelle_terminee_aucun_blocage_observe",
+  "groupe": "habitacle-gestes",
+  "commit": "7999de565e2c643f7723462caf7683b570c75e8b",
+  "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+  "methode": "Quatre PNG originaux ouverts individuellement ; agrandissements des bras/buste/volant consultés en complément. Planche de lecture dérivée des originaux.",
+  "images": [
+    {
+      "fichier": "braquage-passage/0000.png",
+      "sha256": "cafa66a5ac9f6b14dcd0e80ca6e3876c388d60481f6889af1b74260b517a248d",
+      "inspectee": true
+    },
+    {
+      "fichier": "braquage-passage/0001.png",
+      "sha256": "d8f6113315acdebd26eb94067ae93a64b151bf8d4364907959009beaa2bd7589",
+      "inspectee": true
+    },
+    {
+      "fichier": "geste-majeur/0000.png",
+      "sha256": "4f4c527f0e2f4d39c1412d35c3247955c2dae835d06a66d804add4515d6a0119",
+      "inspectee": true
+    },
+    {
+      "fichier": "geste-majeur/0001.png",
+      "sha256": "bcf9ade2efed8ba85f1b74ba259d8d2e413867b8bb1049ffcebfbf0c4febc569",
+      "inspectee": true
+    }
+  ],
+  "scenes": [
+    {
+      "scene": "braquage-passage",
+      "instants": [
+        0.41666666666666835,
+        0.43333333333333507
+      ],
+      "images_identiques_pixels": false,
+      "erreurs": 0
+    },
+    {
+      "scene": "geste-majeur",
+      "instants": [
+        0.41666666666666835,
+        0.43333333333333507
+      ],
+      "images_identiques_pixels": false,
+      "erreurs": 0
+    }
+  ],
+  "observations": [
+    {
+      "scene": "braquage-passage",
+      "constats": [
+        "Pilote assis dans la cuve ; bras visible sous le casque vers le volant et main abaissée dans l’habitacle.",
+        "Pas de traversée manifeste de la coque ou du volant dans les portions visibles.",
+        "Le casque, l’arceau, le bord de cuve et le HUD masquent plusieurs contacts, notamment la seconde épaule et une partie du haut du corps."
+      ]
+    },
+    {
+      "scene": "geste-majeur",
+      "constats": [
+        "Le bras levé et la main au majeur dressé sont lisibles devant le casque ; la continuité du coude et de l’avant-bras est visible.",
+        "L’autre main reste placée contre la jante du volant ; pas de traversée manifeste de la coque dans ce cadrage.",
+        "Le chevauchement du bras et du casque à l’image est une occultation de cette vue ; il ne prouve ni n’exclut un contact volumique en profondeur."
+      ]
+    }
+  ],
+  "limites": [
+    "Deux images par pose prescrite, espacées d’environ 16,7 ms : absence de contrôle temporel complet ou de tous les angles.",
+    "Les poses et caméras sont injectées dans le vrai jeu ; ces images ne prouvent pas le déclenchement clavier ni le couplage son/geste, qualifiés séparément par T3.",
+    "HUD et géométrie occultent des zones : ne pas déduire une absence universelle de contacts bras/buste/coque.",
+    "Raster SwiftShader et horloge commandée ; le 60 FPS affiché ne constitue aucune mesure matérielle.",
+    "Aucune écoute audio ni essai de manette physique."
+  ],
+  "planche": "planchecontact.jpg",
+  "runtime_modifie": false
+}

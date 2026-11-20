@@ -1,0 +1,80 @@
+name: Troll J1 J2 du candidat exact
+
+on:
+  push:
+    branches: ['codex/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: troll-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  troll:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[qualif-troll]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Checkout temporaire de la base source epinglee
+        uses: actions/checkout@v4
+        with:
+          ref: d99d55cba227b0a70b6ceca0688f48324d8a7d69
+          path: qualification/candidat
+          persist-credentials: false
+      - name: Reconstituer deux fois le HTML exact de 00 sans modifier les sources de 01
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rev-parse HEAD > qualification/OUTILS-COMMIT.txt
+          node --version > qualification/ENVIRONNEMENT.txt
+          google-chrome --version >> qualification/ENVIRONNEMENT.txt
+          python3 tools/qualification/preparer-troll-assemble.py \
+            --checkout qualification/candidat --sortie qualification/reconstruction.json \
+            > qualification/reconstruction.log 2>&1
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+      - name: Verifier les controles contre les faux positifs
+        shell: bash
+        env:
+          BITUME_HTML: ${{ github.workspace }}/qualification/candidat/dist/bitume.html
+        run: |
+          set -euo pipefail
+          node verifications/troll-assemble.test.mjs > qualification/test-raccord.log 2>&1
+          node verifications/captures-troll.test.mjs > qualification/test-captures.log 2>&1
+      - name: Exercer les raccords et poses extraits du HTML exact
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tools/qualification/troll-assemble.mjs \
+            --html qualification/candidat/dist/bitume.html \
+            --sortie qualification/raccord-assemble.json \
+            > qualification/raccord-assemble.log 2>&1
+      - name: Capturer J1 et J2 pendant toute leur animation
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout --signal=TERM --kill-after=30s 18m node tools/captures-troll.mjs \
+            --url "file://$GITHUB_WORKSPACE/qualification/candidat/dist/bitume.html" \
+            --sortie qualification/images --chrome /usr/bin/google-chrome \
+            > qualification/captures.log 2>&1
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+      - name: Conserver uniquement les preuves et images de qualification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-troll-${{ github.sha }}
+          path: |
+            qualification/*.txt
+            qualification/*.json
+            qualification/*.log
+            qualification/images/
+          if-no-files-found: error
+          retention-days: 14

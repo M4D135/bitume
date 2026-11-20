@@ -108,14 +108,26 @@ verifier('passages entre détails : quatre pneus, mêmes objets permanents, dime
 verifier('cockpit et rétroviseur acceptent leur détail sans écraser les objets de la vue principale', () => {
   const mod = V.modele(livree), vue = [], cockpit = [], retro = [];
   V.poser(mod, pose, vue, { rouesDetail: 0 });
-  const noms = vue.filter(roue).map(o => o.shape);
+  const rouesVue = vue.filter(roue), noms = rouesVue.map(o => o.shape);
+  const empreinte = objets => objets.map(o => ({ shape: o.shape, p: Array.from(o.p), s: Array.from(o.s) }));
+  const vueInitiale = empreinte(rouesVue);
   V.cockpit(mod, pose, cockpit, { regime: 9000, rapport: 3, rouesDetail: 1 });
-  assert.equal(cockpit.filter(roue).length, 2);
-  assert.ok(cockpit.filter(roue).every(o => o.shape === V.ROUES_FORMES.av.pluie[1].nom));
+  // Le cockpit métrique partage désormais la voiture complète : les quatre roues sont posées,
+  // même si la caméra du siège ne voit pas celles de l'essieu arrière. Leur détail reste propre à la vue.
+  const rouesCockpit = cockpit.filter(roue);
+  assert.equal(rouesCockpit.length, 4);
+  for (let i = 0; i < 4; i++) {
+    assert.equal(rouesCockpit[i].shape, V.ROUES_FORMES[i < 2 ? 'av' : 'ar'].pluie[1].nom);
+    assert.deepEqual(Array.from(rouesCockpit[i].p), vueInitiale[i].p, 'même place monde pour la roue ' + i);
+    assert.deepEqual(Array.from(rouesCockpit[i].s), vueInitiale[i].s, 'mêmes cotes pour la roue ' + i);
+  }
+  const cockpitInitial = empreinte(rouesCockpit);
   V.poserRetro(mod, pose, retro, { rouesDetail: 2 });
   assert.equal(retro.filter(roue).length, 2);
   assert.ok(retro.filter(roue).every(o => o.shape === V.ROUES_FORMES.ar.pluie[2].nom));
   assert.deepEqual(vue.filter(roue).map(o => o.shape), noms, 'tables indépendantes');
+  assert.deepEqual(empreinte(rouesVue), vueInitiale, 'la pose cockpit/rétro conserve les quatre roues de la grande vue');
+  assert.deepEqual(empreinte(rouesCockpit), cockpitInitial, 'la pose rétro conserve les quatre roues du cockpit');
   const fantome = V.objetsFantome();
   assert.equal(fantome.objets.filter(roue).length, 4, 'pas de cylindre grossier sur le fantôme');
 });

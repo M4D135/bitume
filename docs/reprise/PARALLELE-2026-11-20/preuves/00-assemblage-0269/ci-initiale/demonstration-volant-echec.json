@@ -1,0 +1,9 @@
+{
+  "run": 44801055049,
+  "job": 136513002171,
+  "conclusion": "failure",
+  "cause": "Port DevTools introuvable au démarrage Chromium, avant le chargement du jeu : zéro image ; pas de défaut runtime établi.",
+  "artifact": 14661052442,
+  "artifact_sha256": "cde048078b00fb15c964bc6b5b07fb00d675729842c2f022d199b9388f2dd2a5",
+  "log_sha256": "c601ee5c55a24a55ab465a83e914deda6145628756d0a5e3f046e56449f33e19"
+}

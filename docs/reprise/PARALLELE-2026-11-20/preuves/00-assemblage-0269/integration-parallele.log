@@ -1,0 +1,27 @@
+✔ assemblage réel : un raccord unique avant J2/J1 et instruments communs (1.367649ms)
+✔ création : IA activée seulement pour les séances jouées ; sorties préallouées (6.193397ms)
+✔ les choix J1/J2 sont copiés aux vrais ID locaux, puis prennent le helper 03 quand disponible (0.983098ms)
+✔ le vrai début de rendreImage appelle actualiser/consommer une fois et ne sonne pas sur demander/lire (1.728434ms)
+✔ une demande différée par la boîte reste silencieuse jusqu’au départ effectif (1.10524ms)
+✔ menu, pause et vitrine drainent la file sans son ni reprise tardive (3.763293ms)
+✔ audio absent, non initialisé ou muet : l’événement est consommé une seule fois (1.750877ms)
+✔ spatialisation : auditeur J2 le plus proche, puis sujet de démo ; gain/pan bornés (2.479648ms)
+✔ la capacité maximale de 64 événements est drainée hors écran sans appel audio (2.357387ms)
+✔ le départ en ligne fige les choix négociés aux vrais ID locaux (1.136335ms)
+✔ menu assemblé : persistance J1/J2, retour, démo automatique, arrêt caché et fronts manette (57.398591ms)
+✔ préférences réseau : deux machines/deux pilotes, identité non contiguë, enveloppe distincte et copies (2.984638ms)
+✔ changement Troll après confirmation retire prêt et annule le départ sans changer les pneus (0.459322ms)
+✔ messages Troll invalides : défauts explicites, aucun décalage de pilote, auteur inconnu refusé (0.624947ms)
+✔ départ : rejet des permutations/duplications de paires machine-place, indépendance des pneus (0.460113ms)
+✔ ancien hôte : message historique conservé et absence de négociation annoncée au joueur (0.528313ms)
+✔ nettoyage des préférences à la sortie : aucune machine supprimée conservée (0.510437ms)
+✔ caméra du jeu : mêmes yeux dans le monde, indépendants du format et du champ mémorisé (1.025481ms)
+✔ cadrage réel : piste, mains, haut de jante et deux glaces en paysage, portrait et partage (40.919834ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3735.265599

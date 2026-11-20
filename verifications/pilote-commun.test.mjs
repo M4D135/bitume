@@ -27,17 +27,14 @@ test('490 poses : mêmes gants, commandes et manches dans les deux vues et les t
       Object.assign(ev.pilote, { volant, rapportAvant, rapport, passage }); V.poser(mod, ev, []);
       const R = mod.objetsRendu.pilote, H = R.habitacle, reference = snapshot(H), etat = { ...ev.pilote, regime: 9000, kmh: 150 };
       assert.equal(R.articulations, H.articulations, 'un seul tableau d’articulations');
-      const volantPiece = R.variantes[0].pieces.find(p => p.role === 'volant');
-      const echelle = volantPiece.objet.s[0] / volantPiece.source.objet.s[0];
-      const translation = Array.from(volantPiece.objet.p).map((x, i) => x - echelle * volantPiece.source.o[i]);
       for (const [detail, index] of [['complet', 0], ['moyen', 6], ['simple', 2]]) {
         V.poser(mod, ev, [], { detail });
-        for (const p of R.variantes[index].pieces) if (p.source) {
+        for (const p of R.variantes[index].pieces) if (p.source && p.source.visible !== false) {
           assert.equal(p.objet.shape, p.simple || p.source.objet.shape, 'même forme, sauf simplification LOD déclarée');
           const rotation = V.euler(...p.objet.r), attendue = p.source.rep?.m || [1, 0, 0, 0, 1, 0, 0, 0, 1];
           for (let k = 0; k < 3; k++) {
-            maximum = Math.max(maximum, Math.abs(p.objet.p[k] - translation[k] - echelle * p.source.o[k]),
-              Math.abs(p.objet.s[k] - echelle * p.source.objet.s[k]));
+            maximum = Math.max(maximum, Math.abs(p.objet.p[k] - p.source.o[k]),
+              Math.abs(p.objet.s[k] - p.source.objet.s[k]));
             for (let j = 0; j < 3; j++) maximum = Math.max(maximum, Math.abs(rotation[j][k] - attendue[j * 3 + k]));
           }
         }
@@ -45,7 +42,7 @@ test('490 poses : mêmes gants, commandes et manches dans les deux vues et les t
           assert.ok(R.variantes[index].pieces.some(p => p.source === source), 'manche provenant du modèle commun');
       }
       for (let h = 0; h < 2; h++) for (let k = 0; k < 3; k++)
-        maximum = Math.max(maximum, Math.abs(R.articulations[h * 9 + 3 + k] - translation[k] - echelle * H.mains[h].boules[5].o[k]));
+        maximum = Math.max(maximum, Math.abs(R.articulations[h * 9 + 3 + k] - H.mains[h].boules[5].o[k]));
       V.cockpit(mod, ev, [], etat); assert.equal(snapshot(H), reference, 'extérieur puis intérieur');
       V.cockpit(mod, ancien, [], etat); V.poserRetro(mod, ev, []); assert.equal(snapshot(H), reference, 'ancien cadrage puis rétroviseur');
       V.cockpit(mod, ev, [], etat); V.poser(mod, ev, []); assert.equal(snapshot(H), reference, 'intérieur puis extérieur');
@@ -74,7 +71,7 @@ function locaux(nom) {
   }
   return sommets.get(nom);
 }
-const apparent = p => p.map((x, i) => (x - V.OEIL[i]) / V.K);
+const apparent = p => p.map((x, i) => (x - V.ORIGINE_HABITACLE[i]) / V.K);
 
 // Distance à la surface entière : une face peut traverser le pommeau alors que ses trois sommets sont dehors.
 const sub = (a, b) => a.map((x, i) => x - b[i]), dot = (a, b) => a.reduce((s, x, i) => s + x * b[i], 0);
@@ -118,7 +115,7 @@ test('mode réel : sommets dégagés de la jante et surfaces dégagées du pomme
         const o = piece.objet, m = V.euler(...o.r);
         const points = locaux(o.shape).map(p => {
           const x = p[0] * o.s[0], y = p[1] * o.s[1], z = p[2] * o.s[2];
-          return [0, 1, 2].map(i => (o.p[i] + m[0][i] * x + m[1][i] * y + m[2][i] * z - V.OEIL[i]) / V.K);
+          return [0, 1, 2].map(i => (o.p[i] + m[0][i] * x + m[1][i] * y + m[2][i] * z - V.ORIGINE_HABITACLE[i]) / V.K);
         });
         for (const q of points) {
           const dx = q[0] - C[0], dy = q[1] - C[1], dz = q[2] - C[2], h = dx * wn[0] + dy * wn[1];
@@ -145,23 +142,26 @@ test('mode réel : sommets dégagés de la jante et surfaces dégagées du pomme
 
 test('le poignet suit un trajet continu et les doigts utilisent seulement leurs prises préparées', () => {
   const mod = creer(), ev = pose(), variantes = new Set(), nombreFormes = Object.keys(V.FORMES).length;
-  let maximum = 0, poses = 0;
+  let maximum = 0, maximumCoude = 0, poses = 0;
   for (const volant of [-1, -.5, 0, .5, 1]) for (const [rapportAvant, rapport] of [[2, 3], [6, 5]]) {
     Object.assign(ev.pilote, { volant, rapportAvant, rapport });
-    let precedent = null, depart = null, formeDepart = null;
+    let precedent = null, coudesPrecedents = null, depart = null, formeDepart = null;
     for (let n = 0; n <= 1000; n++) {
       ev.pilote.passage = n / 1000; V.poser(mod, ev, []);
       const R = mod.objetsRendu.pilote, poignet = Array.from(R.articulations.slice(15, 18));
+      const coudes = [Array.from(R.articulations.slice(3, 6)), Array.from(R.articulations.slice(12, 15))];
       const gant = R.habitacle.mains[1].pieces[0].objet;
       assert.ok(geometrie.ranges[gant.shape], 'prise déjà enregistrée avant le premier rendu');
       variantes.add(gant.shape);
       if (precedent) maximum = Math.max(maximum, Math.hypot(...poignet.map((x, k) => x - precedent[k])));
       else { depart = poignet; formeDepart = gant.shape; }
+      if (coudesPrecedents) for (let h = 0; h < 2; h++)
+        maximumCoude = Math.max(maximumCoude, Math.hypot(...coudes[h].map((x, k) => x - coudesPrecedents[h][k])));
       if (n === 1000) {
         assert.deepEqual(poignet, depart, 'retour exact du poignet sur la jante');
         assert.equal(gant.shape, formeDepart, 'doigts refermés au retour');
       }
-      precedent = poignet; poses++;
+      precedent = poignet; coudesPrecedents = coudes; poses++;
     }
     // Une entrée infinitésimale ne doit pas changer soudainement le maillage ni la position du gant.
     for (const passage of [1e-9, 1 - 1e-9]) {
@@ -172,7 +172,8 @@ test('le poignet suit un trajet continu et les doigts utilisent seulement leurs 
     }
   }
   assert.ok(maximum < .006, 'pas du poignet à phase 0,001 : ' + maximum);
+  assert.ok(maximumCoude < .006, 'aucun saut de branche IK du coude à phase 0,001 : ' + maximumCoude);
   assert.equal(variantes.size, 6, 'fermé, quatre intermédiaires, ouvert ; aucun morphing reconstruit par image');
   assert.equal(Object.keys(V.FORMES).length, nombreFormes, 'registre inchangé pendant les poses');
-  console.log(`trajet du poignet : ${poses} poses, pas maximal ${(1000 * maximum).toFixed(3)} mm par phase 0,001`);
+  console.log(`trajets articulés : ${poses} poses, pas maximal poignet/coude ${(1000 * maximum).toFixed(3)}/${(1000 * maximumCoude).toFixed(3)} mm par phase 0,001`);
 });

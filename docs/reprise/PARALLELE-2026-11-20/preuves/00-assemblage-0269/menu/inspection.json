@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "statut": "inspection_visuelle_terminee_aucun_blocage_observe",
+  "commit": "7999de565e2c643f7723462caf7683b570c75e8b",
+  "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+  "artefact": 14660523344,
+  "methode": "Les 14 PNG originaux ont été ouverts individuellement avec leurs noms, à leur définition native ; aucun montage substitué aux originaux.",
+  "images": [
+    {
+      "fichier": "etape-1-1440x900.png",
+      "sha256": "adb126e2e4c8c82c28e8e409647507405c3246fce033b49908c48a147c9131f2",
+      "inspectee": true
+    },
+    {
+      "fichier": "etape-1-390x844.png",
+      "sha256": "f2589f8fdec34dd3f580de5660d1ecaf0609981c9e72d51e52e614b5195258c2",
+      "inspectee": true
+    },
+    {
+      "fichier": "etape-1-844x390.png",
+      "sha256": "c7d214757fb96a5d062bcfc067f3eb973329aa4aaa4fae9511ef94d86b412170",
+      "inspectee": true
+    },
+    {
+      "fichier": "etape-2-1440x900.png",
+      "sha256": "b607f015b51802e6a4117d3cce80bddb68ede2a24c1b111aa25140b73f17161a",
+      "inspectee": true
+    },
+    {
+      "fichier": "etape-2-390x844.png",
+      "sha256": "829ef47c1ea847b3a9384825e257981600f7246d613713d817cb6b8c3eeb08bd",
+      "inspectee": true
+    },
+    {
+      "fichier": "etape-2-844x390.png",
+      "sha256": "e3d18b43aa9dec81d46c894dc009100bbc003ea62d94978b602ef13308c2b508",
+      "inspectee": true
+    },
+    {
+      "fichier": "etape-3-1440x900.png",
+      "sha256": "f702bfd788c06498e49f542716c0c09acf2969e08512ef722f2702f3b653b980",
+      "inspectee": true
+    },
+    {
+      "fichier": "etape-3-390x844.png",
+      "sha256": "024888a0a1d69e28892a5981c6f9fc4879bbac6c9612cf2fe1fab351895b185f",
+      "inspectee": true
+    },
+    {
+      "fichier": "etape-3-844x390.png",
+      "sha256": "822228d5ea29f621890d066bc7c57aab9408803d756e3f7f7d37fce253fa97f3",
+      "inspectee": true
+    },
+    {
+      "fichier": "etape-4-1440x900.png",
+      "sha256": "7e18dde611dce9cd8bdea5b3cf1c5d76780e8fcf83c88abf70d9561ca9334aa4",
+      "inspectee": true
+    },
+    {
+      "fichier": "etape-4-390x844.png",
+      "sha256": "8aa3aede13054ef0df911b53f9bb065383c5e1b8a59f06a5e29b011a20dabfb3",
+      "inspectee": true
+    },
+    {
+      "fichier": "etape-4-844x390.png",
+      "sha256": "b85a577fd311d8acd60019be57870f89b6efc0347f6181d3eeced9fce4053199",
+      "inspectee": true
+    },
+    {
+      "fichier": "saisie-manette.png",
+      "sha256": "c338936160e1690a086e192a1e743c95ca021f8a1fb377a0b14892063820cd1a",
+      "inspectee": true
+    },
+    {
+      "fichier": "titre-1440x900.png",
+      "sha256": "8e265533769715d3a6a191190b348b303102ac9af4733b81171f3c39bb63dafc",
+      "inspectee": true
+    }
+  ],
+  "observations": [
+    "Le titre affiche V0.2.69 et les quatre modes ; boutons et textes lisibles.",
+    "Les quatre étapes sont distinguées et les actions de pied de page restent visibles aux trois formats.",
+    "Route-des-Cimes et son tracé, distance, virages et relief sont lisibles dans les trois formats.",
+    "Au format bureau, les choix Troll distincts J1 poing levé/ancien et J2 salut/mariage sont visibles sans recouvrement.",
+    "Le bilan reproduit ces deux choix dans les trois formats ; le bouton Prendre le départ est visible.",
+    "Le clavier de code de partie présente AZER, le focus A, Annuler, Effacer et Valider sans recouvrement visible.",
+    "Les vues mobiles des étapes Conditions et Pilotes ne montrent que la partie haute des panneaux défilants ; ce cadrage ne permet pas une inspection visuelle de tous leurs champs inférieurs."
+  ],
+  "controle_fonctionnel_distinct": {
+    "source": "preuves/images/rapport.json",
+    "parcours_ok": 19,
+    "erreurs": 0,
+    "commentaire": "Les constats de départ réel, pause/réglages/reprise, persistance et arrêt du rendu caché proviennent du rapport automatisé, pas des seuls PNG."
+  },
+  "limites": [
+    "Chromium logiciel",
+    "Manettes et tactile simulés",
+    "Aucune écoute audio",
+    "Réseau entre machines non essayé",
+    "Les PNG figent un instant ; ils ne prouvent pas seuls la navigation et le défilement."
+  ],
+  "fichiers_modifies_runtime": []
+}

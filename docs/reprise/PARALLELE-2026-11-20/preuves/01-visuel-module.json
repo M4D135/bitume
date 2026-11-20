@@ -1,0 +1,611 @@
+{
+  "schema": 1,
+  "lot": "01-visuel-module",
+  "statut": "seize_images_logicielles_inspectees",
+  "reference": "1c71bb341d20df4328e5178497503ee4ad26a131",
+  "outil": "tools/captures-pilote-module.mjs",
+  "outil_sha256": "143e51a0d7c47636f467a7fd8c5255417a93e58a9b1a47ecbb257547d8caa79d",
+  "moteur": "FERRO Canvas2D natif, sans substitution des fonctions de modele",
+  "commande": "node tools/captures-pilote-module.mjs --moteur logiciel --sortie DOSSIER_NEUF --reference 1c71bb341d20df4328e5178497503ee4ad26a131",
+  "taille": [
+    960,
+    640
+  ],
+  "constats": [
+    "Le profil et le trois-quarts montrent le casque et le thorax du candidat plus bas dans la cuve que la référence.",
+    "Les bras restent visuellement dans la cellule sur repos, braquage/passage et majeur retenus ; cela ne prouve pas les contacts de toutes les poses.",
+    "La baisse de silhouette est visible aussi en LOD moyen/simple prescrits ; leur rendu rapproché sert seulement à inspecter les surfaces.",
+    "Les commandes/instruments extérieurs sont visibles dans la même cellule du candidat.",
+    "La vue prescrite depuis OEIL cadre le volant beaucoup plus près que la référence. La projection réelle, les deux miroirs, le portrait et la lisibilité du jeu restent à qualifier par 00."
+  ],
+  "limites": [
+    "Fallback Canvas2D livré par FERRO, exécuté intact sur une surface Canvas native ; aucun socket ni navigateur.",
+    "Géométrie du fallback plus simple ; ce résultat ne qualifie pas WebGL2, le shader ni ses matériaux/reflets.",
+    "Banc du module uniquement : aucun jeu.js, HUD, météo, démo, raccord intégré ni performance matérielle.",
+    "Caméra OEIL et LOD prescrits pour inspection : caméra du jeu et seuils de bascule réservés à 00."
+  ],
+  "chromium_echec": {
+    "etape": "demarrage avant page",
+    "erreur": "process_singleton_posix.cc:297 socket() failed: Operation not permitted",
+    "qualification_webgl": false
+  },
+  "variantes": {
+    "reference": {
+      "empreintes": {
+        "src/moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+        "src/carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+        "src/main.js": "a9d0e01bad528131a2a52a55dde6c1c4c28ac1f1c540819a102a95666627e7b6",
+        "src/humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+        "src/humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+        "src/ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+        "src/pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+        "src/usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+        "src/chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+        "src/conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+        "src/cockpit-matieres.js": "b88094a12d76c75b0213c82e1e5450373ca3fb5e210905d42937a794c08b1b1e",
+        "src/voiture.js": "7a74f97f4a219efa28759285ea331bc2c0f768612557d01747a8ca3e7c2e120a"
+      },
+      "environnement": {
+        "navigateur": "Node v24.22.3 / @napi-rs/canvas",
+        "webgl": null,
+        "gpu": null,
+        "backend": "canvas2d"
+      },
+      "images": [
+        {
+          "id": "face",
+          "fichier": "reference/face.png",
+          "sha256": "a015b05a3e0c14291676e39d7d9683012464bb70b5a439c6e277ca63f54df6b2",
+          "octets": 307350,
+          "camera": {
+            "pos": [
+              1.7,
+              1.3,
+              0
+            ],
+            "yaw": -1.5707963267948966,
+            "pitch": -0.3703234297027748,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": false,
+          "oeil": [
+            -0.3,
+            0.74,
+            0
+          ],
+          "assise": null,
+          "resolution": [
+            960,
+            640
+          ]
+        },
+        {
+          "id": "profil",
+          "fichier": "reference/profil.png",
+          "sha256": "de1a83878b7a68ff35e1c59c2ca6efc90fe6a9c9f9449d6899243ea8ed95286f",
+          "octets": 283820,
+          "camera": {
+            "pos": [
+              -0.1,
+              1.02,
+              -2
+            ],
+            "yaw": 3.1165978599708732,
+            "pitch": -0.1973354911298735,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": false,
+          "oeil": [
+            -0.3,
+            0.74,
+            0
+          ],
+          "assise": null,
+          "resolution": [
+            960,
+            640
+          ]
+        },
+        {
+          "id": "trois-quarts",
+          "fichier": "reference/trois-quarts.png",
+          "sha256": "327b91a481e33b0dcefb8d5de3046f52a3bc010c9c050c310cfe218ed4132398",
+          "octets": 314318,
+          "camera": {
+            "pos": [
+              -1.15,
+              1.55,
+              1.25
+            ],
+            "yaw": 0.7649928327109102,
+            "pitch": -0.5103334372306366,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": false,
+          "oeil": [
+            -0.3,
+            0.74,
+            0
+          ],
+          "assise": null,
+          "resolution": [
+            960,
+            640
+          ]
+        },
+        {
+          "id": "cockpit",
+          "fichier": "reference/cockpit.png",
+          "sha256": "cb1966d6b284dc978ac753c4494e850bac17dba4cb625bd6f40fb1be3a8ad719",
+          "octets": 300425,
+          "camera": {
+            "pos": [
+              -0.3,
+              0.74,
+              0
+            ],
+            "yaw": 1.5707963267948966,
+            "pitch": -0.05235987755982988,
+            "roll": 0,
+            "fov": 42.10344887074584,
+            "near": 0.1,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": true,
+          "oeil": [
+            -0.3,
+            0.74,
+            0
+          ],
+          "assise": null,
+          "resolution": [
+            960,
+            640
+          ]
+        },
+        {
+          "id": "braquage-passage",
+          "fichier": "reference/braquage-passage.png",
+          "sha256": "98967ba100203cadbab0fda67e1cd12307f1a76f448e08548f80b8c48eb27660",
+          "octets": 311496,
+          "camera": {
+            "pos": [
+              -1.15,
+              1.55,
+              1.25
+            ],
+            "yaw": 0.7649928327109102,
+            "pitch": -0.5103334372306366,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": false,
+          "oeil": [
+            -0.3,
+            0.74,
+            0
+          ],
+          "assise": null,
+          "resolution": [
+            960,
+            640
+          ]
+        },
+        {
+          "id": "majeur",
+          "fichier": "reference/majeur.png",
+          "sha256": "7e6a9bf20d2cf7160ff040d460e15bbc0506d9b2022f956dfbbe7ad8246fa52e",
+          "octets": 307283,
+          "camera": {
+            "pos": [
+              0.85,
+              1.25,
+              -1.65
+            ],
+            "yaw": -2.656365661022457,
+            "pitch": -0.27683832448030743,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": false,
+          "oeil": [
+            -0.3,
+            0.74,
+            0
+          ],
+          "assise": null,
+          "resolution": [
+            960,
+            640
+          ]
+        },
+        {
+          "id": "lod-moyen",
+          "fichier": "reference/lod-moyen.png",
+          "sha256": "5b11f9c058ff616447689b6f9cf5a10822fff36edc2da9e14b492a71f9a8ebdc",
+          "octets": 261761,
+          "camera": {
+            "pos": [
+              -1.15,
+              1.55,
+              1.25
+            ],
+            "yaw": 0.7649928327109102,
+            "pitch": -0.5103334372306366,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "moyen",
+          "cockpit": false,
+          "oeil": [
+            -0.3,
+            0.74,
+            0
+          ],
+          "assise": null,
+          "resolution": [
+            960,
+            640
+          ]
+        },
+        {
+          "id": "lod-simple",
+          "fichier": "reference/lod-simple.png",
+          "sha256": "2456f5eda947542adf0f608f39af3211ba6582fc0da40f74377259990891a35a",
+          "octets": 178017,
+          "camera": {
+            "pos": [
+              -1.15,
+              1.55,
+              1.25
+            ],
+            "yaw": 0.7649928327109102,
+            "pitch": -0.5103334372306366,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "simple",
+          "cockpit": false,
+          "oeil": [
+            -0.3,
+            0.74,
+            0
+          ],
+          "assise": null,
+          "resolution": [
+            960,
+            640
+          ]
+        }
+      ]
+    },
+    "candidat": {
+      "empreintes": {
+        "src/moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+        "src/carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+        "src/main.js": "a9d0e01bad528131a2a52a55dde6c1c4c28ac1f1c540819a102a95666627e7b6",
+        "src/humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+        "src/humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+        "src/ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+        "src/pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+        "src/usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+        "src/chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+        "src/conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+        "src/cockpit-matieres.js": "b88094a12d76c75b0213c82e1e5450373ca3fb5e210905d42937a794c08b1b1e",
+        "src/voiture.js": "b37269498b6a97ee27be729e3c9ea793e7108e02f5850b6d84b4ec5c5a69afe9"
+      },
+      "environnement": {
+        "navigateur": "Node v24.22.3 / @napi-rs/canvas",
+        "webgl": null,
+        "gpu": null,
+        "backend": "canvas2d"
+      },
+      "images": [
+        {
+          "id": "face",
+          "fichier": "candidat/face.png",
+          "sha256": "242b4f16c5b2bb2f3fbc8d12b497dace663a7caac86469aed684ae4bc2985c3b",
+          "octets": 326160,
+          "camera": {
+            "pos": [
+              1.7,
+              1.3,
+              0
+            ],
+            "yaw": -1.5707963267948966,
+            "pitch": -0.3703234297027748,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": false,
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "resolution": [
+            960,
+            640
+          ]
+        },
+        {
+          "id": "profil",
+          "fichier": "candidat/profil.png",
+          "sha256": "20c1cea6847117f62c7ae8ddc68f976940e129008365dfecb7f875bc40c05772",
+          "octets": 283835,
+          "camera": {
+            "pos": [
+              -0.1,
+              1.02,
+              -2
+            ],
+            "yaw": 3.1165978599708732,
+            "pitch": -0.1973354911298735,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": false,
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "resolution": [
+            960,
+            640
+          ]
+        },
+        {
+          "id": "trois-quarts",
+          "fichier": "candidat/trois-quarts.png",
+          "sha256": "632e15e93e4ed2adb678f15c0b771849437157f20935af191894791f15d6246f",
+          "octets": 318867,
+          "camera": {
+            "pos": [
+              -1.15,
+              1.55,
+              1.25
+            ],
+            "yaw": 0.7649928327109102,
+            "pitch": -0.5103334372306366,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": false,
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "resolution": [
+            960,
+            640
+          ]
+        },
+        {
+          "id": "cockpit",
+          "fichier": "candidat/cockpit.png",
+          "sha256": "06b0afa08a1968bb3da074173bc68a239101178476a841f2ad58af8211585d76",
+          "octets": 310593,
+          "camera": {
+            "pos": [
+              -0.062,
+              0.79,
+              0
+            ],
+            "yaw": 1.5707963267948966,
+            "pitch": -0.05235987755982988,
+            "roll": 0,
+            "fov": 42.10344887074584,
+            "near": 0.1,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": true,
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "resolution": [
+            960,
+            640
+          ]
+        },
+        {
+          "id": "braquage-passage",
+          "fichier": "candidat/braquage-passage.png",
+          "sha256": "7a090ec6c089cdc12a4509477de3fc0af9879d12cf8ad7167dd23585bfcbef25",
+          "octets": 318820,
+          "camera": {
+            "pos": [
+              -1.15,
+              1.55,
+              1.25
+            ],
+            "yaw": 0.7649928327109102,
+            "pitch": -0.5103334372306366,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": false,
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "resolution": [
+            960,
+            640
+          ]
+        },
+        {
+          "id": "majeur",
+          "fichier": "candidat/majeur.png",
+          "sha256": "2abfa67c5e3a7e61b49402975ee6421a25392076000edd8373b4ec8aac6b2c05",
+          "octets": 309960,
+          "camera": {
+            "pos": [
+              0.85,
+              1.25,
+              -1.65
+            ],
+            "yaw": -2.656365661022457,
+            "pitch": -0.27683832448030743,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": false,
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "resolution": [
+            960,
+            640
+          ]
+        },
+        {
+          "id": "lod-moyen",
+          "fichier": "candidat/lod-moyen.png",
+          "sha256": "55721c957f1fa4835206caa78dd84072f66e008f193ef1696fbb6a7c686b8240",
+          "octets": 271954,
+          "camera": {
+            "pos": [
+              -1.15,
+              1.55,
+              1.25
+            ],
+            "yaw": 0.7649928327109102,
+            "pitch": -0.5103334372306366,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "moyen",
+          "cockpit": false,
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "resolution": [
+            960,
+            640
+          ]
+        },
+        {
+          "id": "lod-simple",
+          "fichier": "candidat/lod-simple.png",
+          "sha256": "0489175da973a68f10e2a14b80849e83a221a936c564c56dcc5e303218ab95bd",
+          "octets": 195250,
+          "camera": {
+            "pos": [
+              -1.15,
+              1.55,
+              1.25
+            ],
+            "yaw": 0.7649928327109102,
+            "pitch": -0.5103334372306366,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "simple",
+          "cockpit": false,
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "resolution": [
+            960,
+            640
+          ]
+        }
+      ]
+    }
+  },
+  "conservation": "PNG de travail conserves pendant la seance ; ce recu et l outil versionnes permettent leur reproduction. Aucune image de ce banc ne qualifie le jeu assemble."
+}

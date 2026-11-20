@@ -1,0 +1,30 @@
+{
+  "groupe": "duo",
+  "inspecteur": "root",
+  "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+  "statut": "aucun_blocage_supplementaire_de_partage_observe",
+  "observations": [
+    "Trois PNG originaux examinés : J1 cockpit en haut et J2 poursuite en bas, sous pluie.",
+    "Séparation des deux vues, HUD distincts, deux rétroviseurs J1 et voiture J2 présents ; aucune fuite de panneau entre les vues observée.",
+    "Réserve cockpit commune conservée : volant devant une partie du centre de chaussée.",
+    "Les gouttes présentes dans les deux vues ne constituent pas une nouvelle qualification complète de la campagne eau."
+  ],
+  "limites": [
+    "Scène de référence contrôlée, pas de conduite matérielle ni essai réseau.",
+    "Les 10 FPS affichés ne mesurent pas les performances matérielles."
+  ],
+  "fichiers": [
+    {
+      "chemin": "images/apres/duo-vues/0000.png",
+      "sha256": "8bb009069a2fb9c3e9a9a0e305b3cdd799ab05323830d0aaa5cbfa7a5ce7eeec"
+    },
+    {
+      "chemin": "images/apres/duo-vues/0001.png",
+      "sha256": "06b1413a183fe130ce9317e4bf91f43b22ca1ae562cf9b3dde82fc6f7946d8cc"
+    },
+    {
+      "chemin": "images/apres/duo-vues/0002.png",
+      "sha256": "ea80cf30d76abca6879d6c87aa1c69c3940b395fd6dd2eb847a1cfe62134a083"
+    }
+  ]
+}

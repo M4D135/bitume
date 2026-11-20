@@ -1,0 +1,263 @@
+{
+  "schema": 1,
+  "lot": "01-H1-B4",
+  "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
+  "commit_sources": "007970e5c8f2973ec3070462908fee48dbc0965d",
+  "statut": "conforme_modules_sur_echantillons_raccord_00_requis",
+  "provenance": {
+    "patch": "../preparations/habitacle.patch",
+    "sha256": "058fa1793435a220071eec9cc3dab7eb669016535d70064f61c78a0aaafd721b",
+    "candidat_origine": "89e4cc35896483fa53d6e586ffe73c9ee261d56b"
+  },
+  "sources": {
+    "src/moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+    "src/carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+    "src/main.js": "a9d0e01bad528131a2a52a55dde6c1c4c28ac1f1c540819a102a95666627e7b6",
+    "src/humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+    "src/humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+    "src/ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+    "src/pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+    "src/usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+    "src/chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+    "src/conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+    "src/expressions-pilote.js": "91d762d627a8e1090eb86636ff95c641d1ecdcd9d0b7536f74cb11bc9d04acbd",
+    "src/voiture.js": "b37269498b6a97ee27be729e3c9ea793e7108e02f5850b6d84b4ec5c5a69afe9",
+    "tools/qualification/pilote-surfaces.mjs": "6599cc0bbb042028a7d091b401e22a567202b3eff15be087fe041d78984b2517",
+    "tools/qualification/pilote-thorax.mjs": "0993cf5ae1e1d1dfd25a17554d871f25eae12567d35bf086d7f30c08431171a9"
+  },
+  "suites_reussies": [
+    "verifications/voiture.test.mjs",
+    "verifications/habitacle-monde.test.mjs",
+    "verifications/pilote-commun.test.mjs",
+    "verifications/pilote-habitacle.test.mjs",
+    "verifications/pilote-surfaces.test.mjs",
+    "verifications/pilote-thorax.test.mjs",
+    "verifications/pilote-expressions.test.mjs",
+    "verifications/captures-habitacle.test.mjs",
+    "verifications/voiture-permanents.test.mjs",
+    "verifications/pilote-exterieur.test.mjs",
+    "verifications/pilote-gestes-extremes.test.mjs"
+  ],
+  "contacts_complets": {
+    "poses": 99,
+    "contacts_hors_attache": 0,
+    "lod": [
+      "complet",
+      "moyen",
+      "simple"
+    ],
+    "os_erreur_max_m": 8.326672684688674e-17
+  },
+  "regression_extremes": {
+    "poses": 60,
+    "contacts_hors_attache": 0,
+    "scenarios": [
+      {
+        "nom": "extremum-oscillation",
+        "geste": "poing",
+        "gesteCote": -1,
+        "volant": -1,
+        "gesteIntensite": 0.65,
+        "gestePhase": 0.08333333333333333,
+        "passage": 1
+      },
+      {
+        "nom": "extremum-oscillation",
+        "geste": "poing",
+        "gesteCote": -1,
+        "volant": -1,
+        "gesteIntensite": 0.65,
+        "gestePhase": 0.25,
+        "passage": 1
+      },
+      {
+        "nom": "extremum-oscillation",
+        "geste": "poing",
+        "gesteCote": -1,
+        "volant": -1,
+        "gesteIntensite": 1,
+        "gestePhase": 0.08333333333333333,
+        "passage": 1
+      },
+      {
+        "nom": "extremum-oscillation",
+        "geste": "poing",
+        "gesteCote": -1,
+        "volant": -1,
+        "gesteIntensite": 1,
+        "gestePhase": 0.25,
+        "passage": 1
+      },
+      {
+        "nom": "extremum-oscillation",
+        "geste": "poing",
+        "gesteCote": 1,
+        "volant": 1,
+        "gesteIntensite": 0.65,
+        "gestePhase": 0.08333333333333333,
+        "passage": 1
+      },
+      {
+        "nom": "extremum-oscillation",
+        "geste": "poing",
+        "gesteCote": 1,
+        "volant": 1,
+        "gesteIntensite": 0.65,
+        "gestePhase": 0.25,
+        "passage": 1
+      },
+      {
+        "nom": "extremum-oscillation",
+        "geste": "poing",
+        "gesteCote": 1,
+        "volant": 1,
+        "gesteIntensite": 1,
+        "gestePhase": 0.08333333333333333,
+        "passage": 1
+      },
+      {
+        "nom": "extremum-oscillation",
+        "geste": "poing",
+        "gesteCote": 1,
+        "volant": 1,
+        "gesteIntensite": 1,
+        "gestePhase": 0.25,
+        "passage": 1
+      },
+      {
+        "nom": "extremum-oscillation",
+        "geste": "salut",
+        "gesteCote": -1,
+        "volant": -1,
+        "gesteIntensite": 0.65,
+        "gestePhase": 0.08333333333333333,
+        "passage": 1
+      },
+      {
+        "nom": "extremum-oscillation",
+        "geste": "salut",
+        "gesteCote": -1,
+        "volant": -1,
+        "gesteIntensite": 0.65,
+        "gestePhase": 0.25,
+        "passage": 1
+      },
+      {
+        "nom": "extremum-oscillation",
+        "geste": "salut",
+        "gesteCote": -1,
+        "volant": -1,
+        "gesteIntensite": 1,
+        "gestePhase": 0.08333333333333333,
+        "passage": 1
+      },
+      {
+        "nom": "extremum-oscillation",
+        "geste": "salut",
+        "gesteCote": -1,
+        "volant": -1,
+        "gesteIntensite": 1,
+        "gestePhase": 0.25,
+        "passage": 1
+      },
+      {
+        "nom": "extremum-oscillation",
+        "geste": "salut",
+        "gesteCote": 1,
+        "volant": 1,
+        "gesteIntensite": 0.65,
+        "gestePhase": 0.08333333333333333,
+        "passage": 1
+      },
+      {
+        "nom": "extremum-oscillation",
+        "geste": "salut",
+        "gesteCote": 1,
+        "volant": 1,
+        "gesteIntensite": 0.65,
+        "gestePhase": 0.25,
+        "passage": 1
+      },
+      {
+        "nom": "extremum-oscillation",
+        "geste": "salut",
+        "gesteCote": 1,
+        "volant": 1,
+        "gesteIntensite": 1,
+        "gestePhase": 0.08333333333333333,
+        "passage": 1
+      },
+      {
+        "nom": "extremum-oscillation",
+        "geste": "salut",
+        "gesteCote": 1,
+        "volant": 1,
+        "gesteIntensite": 1,
+        "gestePhase": 0.25,
+        "passage": 1
+      },
+      {
+        "nom": "pire-coude-audit",
+        "geste": "salut",
+        "gesteCote": -1,
+        "volant": -1,
+        "gesteIntensite": 0.775,
+        "gestePhase": 0.75,
+        "passage": 1
+      },
+      {
+        "nom": "pire-coude-audit",
+        "geste": "salut",
+        "gesteCote": -1,
+        "volant": -1,
+        "gesteIntensite": 0.776,
+        "gestePhase": 0.75,
+        "passage": 1
+      },
+      {
+        "nom": "pire-coude-audit",
+        "geste": "salut",
+        "gesteCote": 1,
+        "volant": 1,
+        "gesteIntensite": 0.775,
+        "gestePhase": 0.75,
+        "passage": 1
+      },
+      {
+        "nom": "pire-coude-audit",
+        "geste": "salut",
+        "gesteCote": 1,
+        "volant": 1,
+        "gesteIntensite": 0.776,
+        "gestePhase": 0.75,
+        "passage": 1
+      }
+    ],
+    "test": "verifications/pilote-gestes-extremes.test.mjs",
+    "coude_pas_intensite_0001_m": 0.001242,
+    "coude_demi_pas_m": 0.000621
+  },
+  "audit_dense": {
+    "poses": 150150,
+    "max_pas_coude_m": 0.001242,
+    "conclusion": "aucun basculement brutal observe ; poses les plus mobiles conservees dans la regression"
+  },
+  "allocations_pilote": {
+    "poses": 60000,
+    "octets_par_pose": 1.052,
+    "gc_mineurs": 0,
+    "seuil_octets_par_pose": 4,
+    "seuil_gc_mineurs": 2
+  },
+  "echec_initial_conserve": {
+    "test": "verifications/voiture-permanents.test.mjs",
+    "message": "voyants : emission allumee puis eteinte sur le meme objet : meme objet",
+    "cause": "oracle identifiant la lampe par ancien diametre .012 ; le modele commun emploie la taille metrique",
+    "correction": "identifier la source de la lampe puis verifier sa presence rendue, permanence et extinction/rallumage"
+  },
+  "limites": [
+    "Grilles finies de poses, pas preuve de tous les mouvements continus.",
+    "Aucun build commun genere ou publie ; camera/instruments jeu.js et images du jeu assemble appartiennent a 00.",
+    "Pas de mesure FPS materielle, audio reel, manette ou reseau."
+  ]
+}

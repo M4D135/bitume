@@ -85,6 +85,7 @@ MODULES = [
     'ambiance.js',
     'conditions-course.js',
     'navigation-menu.js',
+    'menu-arcade.js',  # écrans arcade, vrai tracé XYZ et aperçu 2D à cadence bornée
     'autoconfig.js',
     'scene-bench.js',
     # vibrations de manette : quatre sorties calculées une fois par image rendue, branchées par jeu.js

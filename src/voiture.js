@@ -127,11 +127,9 @@
     return (FORMES[nom] = f);
   }
   const deuxCotes = t => t.concat(C.miroir(t));
-  // Pilotes (David, 16/11 : « pour les pilotes, les modèles d'EMPRISE pour le buste et la tête, c'est parfait ») :
-  // tête et buste du personnage procédural d'EMPRISE (src/humain-donnees.js et src/humain-corps.js, copies exactes
-  // du commit 509b2ec d'EMPRISE), assis dans la monoplace. Casque intégral : la tête lissée et agrandie, ouverte
-  // devant les yeux ; visière teintée, et derrière elle le visage. Sans ces modules (tests Node), les primitives
-  // d'avant restent.
+  // Tête procédurale d'EMPRISE (copies exactes du commit 509b2ec) sous un casque intégral : la coque est ouverte
+  // devant les yeux, avec une visière et le visage derrière. Le thorax propre à l'assise est construit plus bas ;
+  // il remplace le torse filtré qui conservait des fragments de bras rigides et des bords ouverts.
   const HUMAIN = (() => {
     const R = globalThis.RADE, h = R && R.humanData, b = R && R.bodyData;
     if (!h || !b) return null;
@@ -139,15 +137,6 @@
     // des indices d'EMPRISE est gardé (sens direct vu de dehors, comme les carènes ; l'ordre 0, 2, 1 retournait les
     // faces et le pilote se voyait de l'intérieur)
     const rot = q => [q[2], q[1], -q[0]], place = q => [q[2], q[1] - .781, -q[0]];
-    const normales = (pos, ids) => {
-      const n = pos.map(() => [0, 0, 0]);
-      for (let i = 0; i < ids.length; i += 3) {
-        const [a, c, d] = [ids[i], ids[i + 1], ids[i + 2]], u = pos[c].map((v, k) => v - pos[a][k]), v = pos[d].map((x, k) => x - pos[a][k]);
-        const f = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]];
-        for (const j of [a, c, d]) for (let k = 0; k < 3; k++) n[j][k] += f[k];
-      }
-      return n.map(x => { const l = Math.hypot(x[0], x[1], x[2]) || 1; return x.map(v => v / l); });
-    };
     const triangles = (pos, nor, ids, garder, filtre = pos) => {
       const t = [];
       for (let i = 0; i < ids.length; i += 3) {
@@ -186,17 +175,65 @@
     }
     return {
       casque: coque, visiere, bande,
-      visage: triangles(h.positions, h.normals, h.indices, (x, y, z) => z > -.01 && y > 1.6),
-      // Buste sans le bas des bras (ils pendaient hors de la coque) : sous l'épaule, seulement le torse. Les épaules
-      // (63 cm d'EMPRISE) traversaient le jonc du cockpit, large de 44 cm (David, 16/11 : « le perso est en collision
-      // avec le cockpit niveau épaule ») : au-delà de 16 cm de l'axe, le buste est resserré au quart ; 40 cm au plus.
-      buste: (() => {
-        const serre = b.positions.map(q => { const x = Math.abs(q[0]); return x > .16 ? [Math.sign(q[0]) * (.16 + (x - .16) * .25), q[1], q[2]] : q; });
-        return triangles(serre, normales(serre, b.indices), b.indices, (x, y) => y > 1.2 && (Math.abs(x) < .19 || y > 1.38), b.positions);
-      })()
+      visage: triangles(h.positions, h.normals, h.indices, (x, y, z) => z > -.01 && y > 1.6)
     };
   })();
-  if (HUMAIN) for (const nom of ['casque', 'visiere', 'bande', 'visage', 'buste']) if (HUMAIN[nom].length) forme('pilote-' + nom, HUMAIN[nom]);
+  if (HUMAIN) for (const nom of ['casque', 'visiere', 'bande', 'visage']) if (HUMAIN[nom].length) forme('pilote-' + nom, HUMAIN[nom]);
+  // Thorax fermé, sans bras dans le maillage. Même profil aux trois niveaux : bassin, taille, poitrine,
+  // épaules et cou ; seuls le nombre de côtés et l'interpolation changent. Les dimensions sont en mètres,
+  // avant le recul et l'abaissement communs de l'assise appliqués à la pose.
+  const SECTIONS_THORAX = [
+    [.407, .000, .130, .120], [.440, -.005, .132, .125], [.500, -.010, .134, .130],
+    [.560, -.015, .132, .135], [.620, -.020, .120, .140], [.670, -.025, .105, .140],
+    [.710, -.025, .088, .150], [.730, -.025, .077, .173], [.748, -.030, .060, .090],
+    [.766, -.040, .055, .064]
+  ];
+  function thoraxPilote(cotes, pas) {
+    const sections = SECTIONS_THORAX.map(([y, x, profondeur, largeur]) =>
+      ({ x: y, y0: x - profondeur, y1: x + profondeur, l: largeur, n: 2 }));
+    const tourner = p => [p[1], p[0], p[2]];
+    return C.carene(sections, { cotes, pas, bouts: true, vif: 70 }).map(t =>
+      [tourner(t[0]), tourner(t[2]), tourner(t[1]), tourner(t[3]), tourner(t[5]), tourner(t[4])]);
+  }
+  forme('pilote-buste', thoraxPilote(32, 2));
+  forme('pilote-buste-moyen', thoraxPilote(20, 1));
+  forme('pilote-buste-simple', thoraxPilote(12, 1));
+  // Les peaux de carrosserie avaient un fond plein sous le pilote. Retirer uniquement la cavité
+  // intérieure, sous le jonc, laisse la vraie silhouette extérieure et ses normales intactes.
+  // Découpe exacte des faces (pas un filtrage par leur centre) : aucune grande face ne traverse le siège.
+  function creuserCellule(triangles) {
+    const plans = [[0, -.30, 1], [0, .54, -1], [1, .14, 1], [1, .625, -1], [2, -.235, 1], [2, .235, -1]], sortie = [];
+    const decouper = (poly, axe, limite, sens, dedans) => {
+      const resultat = [];
+      for (let i = 0; i < poly.length; i++) {
+        const a = poly[i], b = poly[(i + 1) % poly.length], da = (a.p[axe] - limite) * sens, db = (b.p[axe] - limite) * sens;
+        const ia = dedans ? da >= 0 : da <= 0, ib = dedans ? db >= 0 : db <= 0;
+        if (ia) resultat.push(a);
+        if (ia !== ib) {
+          const t = da / (da - db);
+          resultat.push({ p: a.p.map((v, k) => v + (b.p[k] - v) * t), n: norme(a.n.map((v, k) => v + (b.n[k] - v) * t)) });
+        }
+      }
+      return resultat;
+    };
+    const ajouter = poly => {
+      for (let i = 1; i + 1 < poly.length; i++) {
+        const a = poly[0], b = poly[i], c = poly[i + 1], ab = b.p.map((v, k) => v - a.p[k]), ac = c.p.map((v, k) => v - a.p[k]);
+        if (Math.hypot(...croix(ab, ac)) > 1e-12) sortie.push([a.p, b.p, c.p, a.n, b.n, c.n]);
+      }
+    };
+    for (const t of triangles) {
+      if (plans.some(([axe, limite, sens]) => t.slice(0, 3).every(p => (p[axe] - limite) * sens < 0))) { sortie.push(t); continue; }
+      let poly = [0, 1, 2].map(i => ({ p: t[i], n: t[i + 3] }));
+      for (const [axe, limite, sens] of plans) {
+        ajouter(decouper(poly, axe, limite, sens, false));
+        poly = decouper(poly, axe, limite, sens, true);
+        if (poly.length < 3) break;
+      }
+    }
+    return sortie;
+  }
+
   // Sections (x : abscisse, y0–y1 : bas et haut, l : demi-largeur, n : exposant), de l'avant vers l'arrière, mesurées
   // sur les photos de la voiture de 1980 (trois quarts avant de haut).
   // BITUME (voi-1) : la dernière section prolonge la quille sous les pontons ; sans elle, le flanc reste percé derrière la roue avant
@@ -212,7 +249,7 @@
   const S_BULLE = [{ x: .64, y0: .60, y1: .62, l: .05, n: 2 }, { x: .50, y0: .58, y1: .76, l: .22, n: 2.2 }, { x: .34, y0: .58, y1: .80, l: .27, n: 2.4 }, { x: .16, y0: .58, y1: .78, l: .29, n: 2.4 }];
   forme('quille', C.carene(S_QUILLE, { cotes: 16 }));
   forme('fleche', C.carene(S_FLECHE, { cotes: 28, pas: 5 }));
-  forme('pontons', C.carene(S_PONTONS, { cotes: 28 }));
+  forme('pontons', creuserCellule(C.carene(S_PONTONS, { cotes: 28 })));
   // voi-6 : la bande suit la peau des pontons, décalée de 4 mm le long des normales (une carène à part, à
   // flancs presque droits, sortait jusqu'à 19 cm de la peau), coupée sous y0 + 0,07
   {
@@ -225,8 +262,11 @@
   }
   {
     const exterieur = C.carene(S_GOUTTE, { cotes: 28, pas: 5, ouverture: OUVERTURE });
-    forme('goutte', exterieur);
-    forme('goutte-dedans', C.carene(S_GOUTTE, { cotes: 28, pas: 5, ouverture: OUVERTURE, interieur: true }).slice(exterieur.length));
+    const peau = creuserCellule(exterieur);
+    forme('goutte', peau);
+    // La doublure suit toute la vraie peau. Les anciennes cloisons en éventail fermaient la cavité
+    // au niveau du ventre ; une peau intérieure complète les remplace sans trou vu depuis le siège.
+    forme('goutte-dedans', peau.map(t => [t[0], t[2], t[1], t[3].map(v => -v), t[5].map(v => -v), t[4].map(v => -v)]));
     // jonc du bord de l'ouverture : il suit le bord gauche, l'arc arrière, le bord droit et l'arc avant de l'ouverture
     // (voi-4 : trois points par arc, sinon la corde de Catmull-Rom bombe hors de l'ouverture et passe sous la peau)
     const g = C.profil(S_GOUTTE), bord = [], w = OUVERTURE.angle / 2;
@@ -253,12 +293,8 @@
   // rétroviseurs : boîtier profilé, glace vers l'arrière (x = 0,53), sur une patte fine fixée au flanc du carénage
   forme('retros', deuxCotes(C.carene([{ x: .61, y0: .560, y1: .575, l: .02, n: 2, z: .47 }, { x: .57, y0: .540, y1: .592, l: .072, n: 3, z: .47 }, { x: .53, y0: .538, y1: .594, l: .078, n: 4, z: .47 }], { cotes: 16, pas: 3 })
     .concat(C.tube([[.565, .53, .27], [.565, .55, .40]], .009, { cotes: 6 }))));
-  // Rétroviseurs de la vue cockpit (David, 16/11 : « les deux rétros bien visibles et bien foutus »). Sur la vraie
-  // voiture, les glaces sont à 30° du regard, au bord de l'image, et petites. En vue cockpit, elles viennent à 17° de
-  // part et d'autre, entre la planche et les pneus avant qu'elles ne cachent pas, plus grandes, un peu tournées vers
-  // le pilote ; la vue extérieure garde les rétroviseurs à leur place. Glace : centre (x, y, ±z), largeur l, hauteur
-  // h, rotation vers le pilote.
-  // David, 16/11 au soir : « plus bas un peu, plus petits, plus écrasés les rétros » (avant : y .665, 19 × 7,4 cm)
+  // Montage unique des rétroviseurs dans les deux vues. L'ancrage proche de la planche permet
+  // de voir les deux glaces depuis les yeux sans modifier leur géométrie pour le cadrage.
   const RETRO = { x: .64, y: .64, z: .29, l: .165, h: .05, angle: .12 };
   // repère d'une glace (k = −1 à gauche, 1 à droite) : centre, normale vers le pilote, droite de la glace, rotation
   function cadreGlace(k) {
@@ -397,13 +433,13 @@
       [-2.23, .98], [-2.23, .79], [-2.20, .74], [-2.13, .72]], .55, .57)));
   }
   // version lointaine : trois carènes à huit côtés
-  forme('loin-caisse', C.carene([{ x: 2.08, y0: .20, y1: .25, l: .05, n: 3 }, { x: 1.60, y0: .12, y1: .34, l: .26, n: 4 }, { x: 1.05, y0: .11, y1: .40, l: .52, n: 5 },
-    { x: .60, y0: .10, y1: .43, l: .72, n: 5 }, { x: -.88, y0: .10, y1: .45, l: .70, n: 5 }, { x: -1.08, y0: .12, y1: .43, l: .50, n: 5 }, { x: -1.30, y0: .16, y1: .40, l: .30, n: 4 }], { cotes: 8, pas: 1 }));
+  forme('loin-caisse', creuserCellule(C.carene([{ x: 2.08, y0: .20, y1: .25, l: .05, n: 3 }, { x: 1.60, y0: .12, y1: .34, l: .26, n: 4 }, { x: 1.05, y0: .11, y1: .40, l: .52, n: 5 },
+    { x: .60, y0: .10, y1: .43, l: .72, n: 5 }, { x: -.88, y0: .10, y1: .45, l: .70, n: 5 }, { x: -1.08, y0: .12, y1: .43, l: .50, n: 5 }, { x: -1.30, y0: .16, y1: .40, l: .30, n: 4 }], { cotes: 8, pas: 1 })));
   forme('loin-dessus', C.carene([S_GOUTTE[0], S_GOUTTE[2], S_GOUTTE[3], S_MOTEUR[0], S_MOTEUR[1], S_MOTEUR[2]], { cotes: 8, pas: 1 }));
   // Le niveau lointain garde lui aussi une cellule ouverte : son ancien dessus plein coupait les mains et les
   // avant-bras du pilote animé, même quand le modèle détaillé était dégagé. Même ouverture que la goutte proche.
-  forme('loin-dessus-pilote', C.carene([S_GOUTTE[0], S_GOUTTE[2], S_GOUTTE[3], S_MOTEUR[0], S_MOTEUR[1], S_MOTEUR[2]],
-    { cotes: 8, pas: 1, ouverture: OUVERTURE, interieur: true }));
+  forme('loin-dessus-pilote', creuserCellule(C.carene([S_GOUTTE[0], S_GOUTTE[2], S_GOUTTE[3], S_MOTEUR[0], S_MOTEUR[1], S_MOTEUR[2]],
+    { cotes: 8, pas: 1, ouverture: OUVERTURE, interieur: true })));
   forme('loin-quille', C.carene(S_QUILLE, { cotes: 8, pas: 1 }));
   // Roues : formes partagées, préparées avant le moteur. Aucun cylindre générique du décor n'est alourdi.
   // L'axe local y traverse la jante. Le profil est annulaire : aucune face en éventail ne bouche le moyeu.
@@ -585,7 +621,26 @@
     forme('epaules-jonc', deuxCotes(C.tube(bord, .008, { cotes: 8, pas: 3 })));
   }
   forme('dome', C.carene([{ x: .40, y0: .40, y1: .60, l: .14, n: 2.5 }, { x: .70, y0: .40, y1: .645, l: .19, n: 2.5 }, { x: 1.00, y0: .40, y1: .58, l: .17, n: 2.5 }, { x: 1.30, y0: .38, y1: .42, l: .04, n: 2.5 }], { cotes: 28 }));
-  forme('cuve', C.carene([{ x: -.45, y0: .12, y1: .48, l: .26, n: 4 }, { x: .30, y0: .12, y1: .48, l: .22, n: 4 }, { x: .80, y0: .15, y1: .47, l: .10, n: 3 }], { cotes: 16 }));
+  const S_CUVE = [{ x: -.45, y0: .12, y1: .48, l: .26, n: 4 }, { x: .30, y0: .12, y1: .48, l: .22, n: 4 }, { x: .80, y0: .15, y1: .47, l: .10, n: 3 }];
+  forme('cuve', C.carene(S_CUVE, { cotes: 24, ouverture: { de: .80, a: -.45, angle: 2.4 }, interieur: 'tout' }));
+  const PROFIL_CUVE = C.profil(S_CUVE);
+  function fondCuve(x, z) {
+    const s = PROFIL_CUVE(x), h = (s.y1 - s.y0) / 2;
+    return (s.y1 + s.y0) / 2 - h * Math.pow(Math.max(0, 1 - Math.pow(Math.abs(z) / s.l, s.n)), 1 / s.n);
+  }
+  // Appui inférieur du thorax fermé. L'assise porte réellement cette surface et ses traverses
+  // descendent dans le fond de cuve : ces pièces fixes restent communes à tous les niveaux de détail.
+  const PILOTE_ASSISE = [-.10, .277, 0];
+  forme('assise-pilote', C.carene([
+    { x: -.250, y0: .251, y1: .269, l: .090, n: 4 },
+    { x: -.230, y0: .249, y1: PILOTE_ASSISE[1], l: .145, n: 4 },
+    { x: .030, y0: .249, y1: PILOTE_ASSISE[1], l: .145, n: 4 },
+    { x: .050, y0: .251, y1: .269, l: .090, n: 4 }
+  ], { cotes: 24, pas: 1 }));
+  forme('siege-supports', [].concat(...[-.20, 0].map(x => C.carene([
+    { x: x - .012, y0: fondCuve(x, 0) - .004, y1: .253, l: .100, n: 4 },
+    { x: x + .012, y0: fondCuve(x, 0) - .004, y1: .253, l: .100, n: 4 }
+  ], { cotes: 12, pas: 1 }))));
   {
     // saute-vent : ruban mince en arc devant l'ouverture, vu des deux côtés, et son arête claire
     const haut = [], bas = [];
@@ -604,61 +659,52 @@
   function modele(livree) {
     const c1 = livree.couleur, c2 = livree.seconde || BLANC, casque = livree.casque || c2, combi = livree.combinaison || c1.map(v => v * .7);
     const corps = [], simples = [], moyennes = new Set();
-    const P = (shape, o, s, mat, color, extra) => { const p = piece(shape, o, s, mat, color, extra); corps.push(p); return p; };
+    const P = (shape, o, s, mat, color, extra) => {
+      const origine = extra && (extra.pilote || extra.tetePilote) ? originePilote(o, !!extra.tetePilote) : o;
+      const p = piece(shape, origine, s, mat, color, extra); corps.push(p); return p;
+    };
     // Version moyenne (voir detailPour) : la silhouette sans ses détails de quelques centimètres. Carènes de la caisse,
     // bande de la seconde couleur, cuve, capot moteur, ailerons et dérives, casque et visière, pneus, fonds de jante et
     // moyeux ; ni numéros, filets, suspensions, mécanique arrière, rayons ni repères des pneus.
     const Moy = p => { moyennes.add(p); return p; };
-    const AR = extra => Object.assign({ arriere: true }, extra); // derrière l'œil du cockpit : pas dessiné dans cette vue
+    const AR = extra => Object.assign({ arriere: true }, extra); // pièces du train et du carénage arrière, communes aux vues
     const pilote = { pilote: true }, tetePilote = { pilote: true, tetePilote: true };
 
     // Carrosserie : quille de nez, grand capot en flèche qui devient les pontons, carénage du cockpit en goutte sur
     // l'axe, capot moteur, saute-vent en bulle teintée. Filet et bande basse de la seconde couleur.
     const L = (nom, mat, color, extra) => P(FORMES[nom].nom, FORMES[nom].centre, FORMES[nom].taille, mat, color, extra);
-    const dehors = { exterieur: true }; // remplacé en vue cockpit (voir cockpit)
     Moy(L('quille', PEINTURE, c1));
     Moy(L('fleche', PEINTURE, c1));
     Moy(L('pontons', PEINTURE, c1));
     Moy(L('bande', PEINTURE, c2));
     L('filet', PEINTURE, c2);
-    Moy(L('goutte', PEINTURE, c1, dehors));
-    L('goutte-dedans', MAT, c1.map(v => v * .22), dehors);
-    L('jonc', MAT, NOIR, dehors);
-    L('bulle', METAL_MAT, [.30, .50, .86], { fx: true, alpha: .3, exterieur: true });
+    Moy(L('goutte', PEINTURE, c1));
+    L('goutte-dedans', MAT, c1.map(v => v * .22));
+    L('jonc', MAT, NOIR);
+    L('bulle', METAL_MAT, [.30, .50, .86], { fx: true, alpha: .3 });
     Moy(L('moteur', PEINTURE, c1, AR()));
     L('arceau', METAL_MAT, ARGENT, AR());
-    L('retros', PEINTURE, c1, dehors);                 // vue cockpit : rétroviseurs dédiés (voir RETRO)
     L('basculeurs', MAT, NOIR);
     L('triangles', METAL_MAT, SOMBRE);
     // Aileron avant argent de 1,62 m, bord de fuite relevé, et ses deux dérives rouges
     Moy(P('box', [2.11, .13, 0], [.38, .025, 1.62], LAQUE, ARGENT, { m: euler(0, 0, -.08) }));
     for (const k of [-1, 1]) Moy(P('box', [2.11, .17, k * .81], [.38, .19, .02], PEINTURE, c1));
-    // Habitacle de la vue cockpit (dessiné seulement dans cette vue) : épaules, jonc, dôme, saute-vent.
-    // voi-5 : la cuve sombre se dessine aussi en vue extérieure — sans elle, vu du dessus, l'habitacle paraît
-    // plein couleur caisse ; prolongée par la quille (voi-1), elle ne se voit de dehors que par l'ouverture.
-    const dedans = { dedans: true };
-    L('epaules', PEINTURE, c1, dedans);
-    L('epaules-jonc', MAT, NOIR, dedans);
-    L('flancs', MAT, [.05, .05, .055], dedans);
-    L('dome', PEINTURE, c1, dedans);
+    // Cuve, coque, jonc et saute-vent sont identiques depuis le siège et depuis l'extérieur.
     Moy(L('cuve', MAT, [.035, .035, .04]));
-    L('pare-brise', METAL_MAT, [.30, .50, .86], { fx: true, alpha: .2, dedans: true });
-    L('pare-brise-arete', METAL_MAT, [.86, .9, .94], { fx: true, alpha: .5, dedans: true });
-    // Pilote : buste et tête d'EMPRISE sous un casque intégral (voir HUMAIN), sinon casque, visière et épaules simples
-    if (FORMES['pilote-buste'] && FORMES['pilote-casque']) {
+    Moy(L('assise-pilote', MAT, [.045, .042, .040]));
+    Moy(L('siege-supports', METAL_MAT, [.12, .125, .13]));
+    // Thorax fermé commun ; la tête détaillée garde un repli en primitives pour les outils sans HUMAIN.
+    L('pilote-buste', TISSU, combi, pilote);
+    if (FORMES['pilote-casque']) {
       const PEAUX = [[.86, .66, .54], [.74, .54, .41], [.55, .38, .27], [.92, .76, .64]], peau = PEAUX[(livree.numero || 0) % PEAUX.length];
-      L('pilote-buste', TISSU, combi, pilote);
       Moy(L('pilote-casque', LAQUE, casque, tetePilote));
       if (FORMES['pilote-bande']) L('pilote-bande', LAQUE, c1, tetePilote);
       if (FORMES['pilote-visage']) L('pilote-visage', MAT, peau, tetePilote);
       if (FORMES['pilote-visiere']) Moy(L('pilote-visiere', METAL_MAT, [.05, .07, .11], { fx: true, alpha: .62, pilote: true, tetePilote: true }));
     } else {
-      Moy(P('sphere', [0, .865, 0], [.27, .29, .27], LAQUE, casque, tetePilote));
-      Moy(P('box', [.11, .875, 0], [.07, .07, .2], METAL_MAT, [.05, .06, .09], tetePilote));
-      P('sphere', [-.04, .66, 0], [.30, .20, .38], TISSU, combi, pilote);
+      Moy(P('sphere', [.018, .914, 0], [.272, .33, .276], LAQUE, casque, tetePilote));
+      Moy(P('box', [.13, .920, 0], [.07, .07, .2], METAL_MAT, [.05, .06, .09], tetePilote));
     }
-    // Glaces des rétroviseurs, tournées vers le pilote (en vue cockpit : glace vivante)
-    for (const k of [-1, 1]) P('box', [.527, .566, k * .47], [.004, .048, .132], METAL_MAT, [.2, .23, .27], { glace: true });
     L('suspension-arriere', MAT, CARBONE, AR());
     L('cardans-arriere', METAL_MAT, SOMBRE, AR());
     L('freins-arriere', METAL_MAT, ACIER, AR());
@@ -732,17 +778,21 @@
 
     // Version lointaine : trois carènes à huit côtés, les ailerons, le casque et les quatre roues
     const loin = nom => piece(FORMES[nom].nom, FORMES[nom].centre, FORMES[nom].taille, PEINTURE, c1);
+    const casqueSimple = FORMES['pilote-casque'] || { centre: [.018, .914, 0], taille: [.272, .33, .276] };
     simples.push(loin('loin-caisse'), loin('loin-dessus'), loin('loin-quille'),
+      piece(FORMES.cuve.nom, FORMES.cuve.centre, FORMES.cuve.taille, MAT, [.035, .035, .04]),
+      piece(FORMES['assise-pilote'].nom, FORMES['assise-pilote'].centre, FORMES['assise-pilote'].taille, MAT, [.045, .042, .040]),
+      piece(FORMES['siege-supports'].nom, FORMES['siege-supports'].centre, FORMES['siege-supports'].taille, METAL_MAT, [.12, .125, .13]),
       piece('box', [2.11, .13, 0], [.38, .04, 1.62], LAQUE, ARGENT),
       piece('box', [-2.05, .90, 0], [.34, .06, 1.10], PEINTURE, c2),
       piece(FORMES['mat-aileron'].nom, FORMES['mat-aileron'].centre, FORMES['mat-aileron'].taille, METAL_MAT, ARGENT),
-      piece('sphere', [0, .865, 0], [.27, .29, .27], LAQUE, casque, { tetePilote: true }));
+      piece('sphere', originePilote(casqueSimple.centre, true), casqueSimple.taille, LAQUE, casque, { tetePilote: true }));
     ROUES.forEach((w, i) => {
       const formes = ROUES_FORMES[w.avant ? 'av' : 'ar'][typePneus], f = formes[3];
       simples.push(piece(f.nom, [w.x, w.r, w.z], f.taille, MAT, PNEU, { m: ROUE_AXE, roue: i, tourne: phasesRoues[i], formesRoues: formes, usureRoue: 1 }));
     });
     // Après casse, ne reste que la cellule du pilote et l'arceau ; roues et carrosserie sont des débris.
-    const epave = corps.filter(p => p.pilote || ['cuve', 'goutte', 'goutte-dedans', 'arceau'].some(n => p.shape === FORMES[n].nom));
+    const epave = corps.filter(p => p.pilote || ['cuve', 'goutte', 'goutte-dedans', 'arceau', 'assise-pilote', 'siege-supports'].some(n => p.shape === FORMES[n].nom));
     const mod = { corps, simples, epave, moyens: corps.filter(p => moyennes.has(p)), livree };
     B.cockpitMatieres?.pilote(corps);
     preparer(mod);
@@ -797,7 +847,7 @@
     const lier = (t, cockpit) => {
       let i = 0;
       for (const p of t.liste) {
-        if (cockpit ? p.pilote || p.arriere || p.exterieur || p.glace : p.dedans) continue;
+        if (cockpit && p.tetePilote) continue;
         const index = indices.get(p);
         if (index !== undefined) liens.push({ table: t, indexObjet: i, indexPiece: index });
         i++;
@@ -842,13 +892,11 @@
   // ---------------------------------------------------------------- pose dans le monde
   // ev = { p: [x, y, z] (sol sous le milieu de l'empattement), cap, tangage, roulis, braquage (rad, droite positive),
   //        roule (distance parcourue, m : fait tourner les roues), v (vitesse, m/s : repères ou flou des pneus) }
-  // Une pièce se dessine-t-elle ? En vue cockpit, ni le pilote, ni l'arrière, ni le carénage et les glaces de la vue
-  // extérieure ; l'habitacle (dedans) seulement dans cette vue ; les repères des pneus à basse vitesse seulement, leur
-  // bande floue au-delà.
+  // Même voiture dans les deux vues. Seule la propre tête est masquée depuis ses yeux ;
+  // les roues gardent leur sélection de détail et leur flou selon la vitesse.
   function visible(pc, cockpit, v) {
     if (pc.usureRoue > 1) return false; // supports réservés à la pose dynamique ; le modèle sans état est neuf
-    if (cockpit && (pc.pilote || pc.arriere || pc.exterieur || pc.glace)) return false;
-    if (!cockpit && pc.dedans) return false;
+    if (cockpit && pc.tetePilote) return false;
     return !(pc.lent && v > VITESSE_FLOU) && !(pc.vite && !(v > VITESSE_FLOU));
   }
 
@@ -889,8 +937,7 @@
       lent: null, vite: null, tete: null, buste: null, bulle: -1, dessusLoin: -1, cockpit, rotTete: trois(), rotM: trois(), fixes: [], groupes: [], faitG: null, faitF: null };
     const o = [], roues = [], decale = [], d = [], portee = [], lent = [], vite = [], tete = [], buste = [];
     for (const pc of liste) {
-      if (cockpit && (pc.pilote || pc.arriere || pc.exterieur || pc.glace)) continue;
-      if (!cockpit && pc.dedans) continue;
+      if (cockpit && pc.tetePilote) continue;
       const objet = { shape: pc.shape, p: trois(), s: pc.s, r: t.rotM, mat: pc.mat, color: pc.color, surface: 'object' };
       if (pc.usureRoue) objet.color = pc.color.slice();
       if (pc.usureRoue === 5) objet.s = pc.s.slice();
@@ -1033,7 +1080,6 @@
           z = PILOTE_COU[2] + tete[2] * dx + tete[5] * dy + tete[8] * dz;
         }
       }
-      if (tete && (t.tete[i] || t.buste[i])) x += PILOTE_RECUL;
       let a = M[0] * x + M[3] * y + M[6] * z, b = M[1] * x + M[4] * y + M[7] * z, c = M[2] * x + M[5] * y + M[8] * z;
       if (roue >= 0) {
         // `decale` place la pièce hors de l'axe, dans le repère de la roue ; `rebond` (m, par roue) : course de
@@ -1155,32 +1201,27 @@
   }
 
   // ---------------------------------------------------------------- cockpit
-  // Œil du cockpit dans le repère de la voiture. Ce n'est pas l'œil du pilote : il est plus bas et 0,30 m plus en
-  // arrière, 16 cm au-dessus des pneus avant pour les cadrer aux coins du bas, comme dans vroom-unreal 0.35. Pour la
-  // même raison, le capot de l'habitacle y est plus bas que sur la voiture vue de dehors : le nez se voit au milieu.
-  const OEIL = [-.30, .74, 0];
-  // Volant, planche, gants et avant-bras sont composés à leur place apparente vue de l'œil (VOLANT.centre : 1 m devant,
-  // 16° sous l'horizon), puis ramenés vers l'œil par une homothétie de rapport K. L'image ne change pas et l'ensemble
-  // tient dans l'habitacle, devant le capot.
-  const K = .5;
-  // Cadrage de vroom-unreal 0.35 : le volant est gros et bas, 16,8° sous l'horizon ; le bas de sa jante sort de l'image
-  // (41,6° de champ vertical), les mains sont au premier plan et les manches quittent le champ dès le poignet.
-  // Comme dans vroom-unreal, la face du volant regarde le pilote et un peu le bas (inclinaison négative : le haut de la
-  // jante vient vers lui) : l'axe des mains, perpendiculaire au volant, prolonge celui des avant-bras qui montent du bas
-  // de l'image, sans casser le poignet. Mains à 9 h et 3 h, sur les branches (prise : angle depuis le haut de la jante).
-  // David (16/11 : « rapproche le pilote du volant, il a des bras de 10 km ») : l'ensemble volant, planche et levier
-  // est 12 % plus près de l'œil, 15,5° sous l'horizon pour garder les mains dans un cadre 16:9 de 60°, et les coudes
-  // plus bas : les manches sortent de l'image juste après les poignets, même dans une fenêtre presque carrée.
+  // Centre des yeux neutres du pilote dans le repère voiture, mesuré sur le modèle HUMAIN.
+  // Ce point règle uniquement la caméra : il ne déplace ni ne redimensionne les pièces de l'habitacle.
+  const OEIL = [-.062, .790, 0];
+  // Échelle de construction commune des commandes. Les coordonnées de leur dessin sont converties une fois
+  // en mètres, autour de l'ancrage du volant dans la cellule. Les deux vues posent ces mêmes coordonnées.
+  const K = .9, VOLANT_MONDE = [.25, .70, 0];
+  // Géométrie de construction de la jante, avant conversion commune en mètres. Le haut vient vers le pilote ;
+  // mains à 9 h et 3 h sur les branches, avec l'axe de prise perpendiculaire à la jante.
+  // Le cadrage depuis le siège se règle dans jeu.js, jamais en déformant ces pièces.
   const VOLANT = { centre: [.88, -.244, 0], rayon: .125, inclinaison: -.436, course: 1.6, prise: Math.PI / 2 };
-  // Planche : face au pilote, inclinée de 25° vers l'arrière ; elle ne suit pas l'inclinaison du volant.
-  const PLANCHE = [.986, -.163, 0], PENTE_PLANCHE = .436;
-  const COUDE = [.50, -.68, .19];              // coude du pilote, bras repliés près du corps, sous l'image (vroom-unreal)
+  const ORIGINE_HABITACLE = VOLANT_MONDE.map((v, i) => v - K * VOLANT.centre[i]);
+  // Planche : face au pilote, inclinée de 25° vers l'arrière. Son assise baisse de 65 mm avec le siège ;
+  // le haut de la casquette reste sous les yeux, sans changer le volant ni la géométrie selon la vue.
+  const PLANCHE = [.986, -.163 - .065 / K, 0], PENTE_PLANCHE = .436;
+  const COUDE = [.50, -.68, .19];              // repli statique pour les anciennes poses sans état pilote
   const LEVIER = [.818, -.27, .262];           // pommeau du levier de vitesses, à droite du volant, au point mort
   const REGIME_LAMPE = 12000;                  // la lampe de la casquette s'allume : il est temps de monter un rapport
   // Afficheurs à sept segments : a en haut, puis b, c, d, e, f dans le sens des aiguilles d'une montre, g au milieu.
   const SEGMENTS = { 0: 'abcdef', 1: 'bc', 2: 'abdeg', 3: 'abcdg', 4: 'bcfg', 5: 'acdfg', 6: 'acdefg', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg', N: 'ceg', R: 'abefg', '-': 'g' };
   const AMBRE = [1, .56, .12], ETEINT = [.09, .035, .02];
-  // Formes libres du cockpit, en positions apparentes (voir K). Planche et casquette dans le repère de la planche
+  // Formes libres des commandes, dans le repère de construction (voir K), commun à toutes les vues.
   // (x : vers la droite, y : vers le haut de la planche, z : vers le pilote) ; jante et branches dans celui du volant
   // (x : vers le haut de la jante, y : vers le pilote, z : vers la droite de la jante).
   {
@@ -1235,12 +1276,14 @@
   //          ciel, brume (couleurs du jour, pour les glaces des rétroviseurs) }
   function cockpit(mod, ev, sortie, etat) {
     const e = etatRendu(mod), M = attitudeDans(MS, ev);
+    if (ev.pilote) preparerPiloteExterieur(e.pilote, ev.pilote);
     poserTable(tableDe(e, mod, etat.casse ? EPAVE : CORPS, 3), M, ev, sortie, etat.roues, false,
-      etat.rouesDetail === undefined ? 0 : Math.max(0, Math.min(3, etat.rouesDetail | 0)));
+      etat.rouesDetail === undefined ? 0 : Math.max(0, Math.min(3, etat.rouesDetail | 0)), ev.pilote ? e.pilote.tete : null);
     const H = e.habitacle || (e.habitacle = construireHabitacle(mod));
     const articule = !!ev.pilote;
     if (H.piloteReel !== articule) { H.piloteReel = articule; H.pret = false; }
     habitacle(H, M, ev, sortie, etat);
+    if (articule) poserPiloteExterieur(e.pilote, 10, M, ev, sortie, false);
     return imbriquee(e.M3, M);
   }
 
@@ -1284,7 +1327,7 @@
     const H = { rotM: trois(), epoque: 0, c2, pret: false, cle: new Float64Array(10), planche: [], lampe: null, alerte: null, aiguilles: [],
       rapport: null, diagonale: null, vitesse: [], volant: [], rJante: null, jante: null, branches: null, rCaches: null, caches: [], vis: [],
       ruban: null, moyeu: [], supportVolant: [], tige: null, pommeau: null, mains: null, glaces: [],
-      piloteReel: false, articulations: new Float64Array(18) };
+      piloteReel: false, articulations: new Float64Array(18), instrumentsPrets: false, instrumentsCle: new Float64Array(4) };
     const reperes = [];
     const repere = m => {   // repère fixe, partagé par les pièces de même rotation
       const f = aplatir(m);
@@ -1298,7 +1341,7 @@
       return { objet: { shape, p: trois(), s, r: rep ? rep.r : H.rotM, mat, color, overlay: true, surface: 'object', emissive }, o: new Float64Array(3), rep };
     };
     const reduite = s => { const q = trois(); q[0] = s[0] * K; q[1] = s[1] * K; q[2] = s[2] * K; return q; };
-    // mettre : pièce composée vue de l'œil (place apparente v, ramenée vers lui) ; dans : pièce à sa vraie place
+    // mettre : dessin converti dans le repère métrique commun ; dans : pièce déjà définie en mètres
     const mettre = (shape, v, s, mat, color, m, emissive) => { const e = emplacement(shape, reduite(s), mat, color, m, emissive); if (v) { e.o[0] = v[0]; e.o[1] = v[1]; e.o[2] = v[2]; versVoiture(e.o); } return e; };
     const dans = (shape, o, s, mat, color, m) => { const e = emplacement(shape, s, mat, color, m, undefined); if (o) { e.o[0] = o[0]; e.o[1] = o[1]; e.o[2] = o[2]; } return e; };
     const cadre = [WR, PU, PN], rond = [PU, PN, WR], plat = [PN.map(v => -v), PU, WR];
@@ -1358,8 +1401,8 @@
     H.moyeu.push(mettre('cylinder', plus(CV, [WN, .002]), [.060 * E_VOLANT, .012, .060 * E_VOLANT], METAL_MAT, ACIER, H.rJante));
     H.moyeu.push(mettre('cylinder', plus(CV, [WN, .008]), [.040 * E_VOLANT, .012, .040 * E_VOLANT], MAT, NOIR, H.rJante));
     V.push(...H.moyeu);
-    // L'arbre suit l'axe du moyeu jusqu'à la vraie face de la planche ; le palier et les attaches sont fixes.
-    // La copie extérieure conservait seulement jante/branches : ni cette liaison, ni même la planche n'existaient.
+    // L'arbre suit l'axe du moyeu jusqu'à la vraie face de la planche ; le palier et les attaches sont fixes
+    // et gardent leurs dimensions métriques dans les deux vues.
     const profondeurColonne = ((CV[0] - PLANCHE[0]) * PN[0] + (CV[1] - PLANCHE[1]) * PN[1]) / (WN[0] * PN[0] + WN[1] * PN[1]);
     const fondColonne = plus(CV, [WN, -profondeurColonne]), axeFixe = [WU, WN, WR];
     H.supportVolant.push(mettre('cylinder', plus(CV, [WN, -.5 * profondeurColonne]), [.029, profondeurColonne + .010, .029], METAL_MAT, ACIER, axeFixe));
@@ -1367,7 +1410,7 @@
     H.supportVolant.push(mettre('box', plus(fondColonne, [PN, -.004]), [.084, .028, .018], MAT, [.055, .055, .06], cadre));
     // Deux montants descendent de la planche dans la cuve. Leur place physique est partagée par les trois vues.
     for (const k of [-1, 1]) {
-      const haut = sur(k * .14, -.036, -.008), bas = [.40, .415, k * .126].map((v, i) => ((v - PILOTE_DECALAGE[i]) / PILOTE_ECHELLE - OEIL[i]) / K);
+      const haut = sur(k * .14, -.036, -.008), bas = [.40, fondCuve(.40, .126) - .004, k * .126].map((v, i) => (v - ORIGINE_HABITACLE[i]) / K);
       const axe = haut.map((v, i) => v - bas[i]), centre = haut.map((v, i) => (v + bas[i]) * .5);
       H.supportVolant.push(mettre('cylinder', centre, [.026, Math.hypot(...axe) + .008, .026], MAT, [.045, .045, .05], selonAxe(axe)));
     }
@@ -1400,7 +1443,8 @@
     for (const k of [-1, 1]) {
       const g = cadreGlace(k), { c, n: nr, w, m } = g;
       const vers = (dx, dy, dz) => plus(c, [nr, -dx], [[0, 1, 0], dy], [w, dz]);
-      const attache = vers(.06, -GH * .45, -k * .03), pied = [c[0] + .07, .56, k * .29], axe = pied.map((v, i) => v - attache[i]);
+      // La patte rejoint le flanc réel, sous la peau des trois LOD ; son ancien pied à z .29 restait en l'air.
+      const attache = vers(.06, -GH * .45, -k * .03), pied = [c[0] + .07, .50, k * .22], axe = pied.map((v, i) => v - attache[i]);
       const G = { k, c, n: nr, w, suiveurs: [],
         boitier: dans(fb.nom, plus(c, [m[0], fb.centre[0]], [m[1], fb.centre[1]], [m[2], fb.centre[2]]), fb.taille, PEINTURE, c1, m),
         patte: dans('cylinder', attache.map((v, i) => (v + pied[i]) / 2), [.018, Math.hypot(axe[0], axe[1], axe[2]), .018], PEINTURE, c1, selonAxe(axe)),
@@ -1418,37 +1462,40 @@
     return B.cockpitMatieres ? B.cockpitMatieres.habitacle(H) : H;
   }
 
-  // Pilote extérieur : la même cinématique de prise/levier que le cockpit, ramenée à la taille du corps réel.
+  // Pilote extérieur : copies de rendu de l'habitacle métrique commun, sans transformation propre à cette vue.
   // ev.pilote ajoute regard (rad, +droite), geste, gesteCote (-1 gauche), gestePhase et gesteIntensite.
   // Cet objet permanent est fourni par jeu.js. L'animation
   // est une fonction de cette pose : ni horloge cachée, ni avancement par caméra, ni écriture dans la simulation.
-  // Sans ce champ, les anciennes poses et leurs empreintes restent strictement inchangées.
-  const PILOTE_COU = [0, .772, 0], PILOTE_RECUL = -.10, PILOTE_VOLANT = [.25, .70, 0], PILOTE_ECHELLE = .9 / K;
-  const PILOTE_DECALAGE = PILOTE_VOLANT.map((v, i) => v - (OEIL[i] + K * CV[i]) * PILOTE_ECHELLE);
-  // Les places du cockpit sont choisies pour son cadrage. Leur homothétie seule plaçait le pied du levier dans
-  // le flanc droit. Les ancrages extérieurs sont mesurés dans la cellule : volant avancé, levier à l'intérieur
-  // du jonc. La main droite applique le même déplacement à la cible de sa courbe, sans déformer le gant.
-  const PILOTE_LEVIER = [.18, .57, .16];
-  const PILOTE_LEVIER_DECALAGE = PILOTE_LEVIER.map((v, i) => v - PILOTE_DECALAGE[i] - PILOTE_ECHELLE * (OEIL[i] + K * LEVIER[i]));
-  // Pied au-dessus du fond réel de la cuve (y ≈ .48), serti dans la console à y .50.
-  const PILOTE_PIED_LEVIER = [PILOTE_LEVIER[0], .50, PILOTE_LEVIER[2] + .0108];
+  // Sans ce champ, la même voiture reste statique pour les outils employant l'ancienne API de pose.
+  const PILOTE_COU = [-.14, .642, 0], PILOTE_RECUL = -.10, PILOTE_BAISSE = -.13, PILOTE_TETE_RECUL = -.04;
+  const PILOTE_EPAULES = [-.09, .60, .16];
+  // Traduction de la géométrie source vers l'assise physique commune, une seule fois à la construction.
+  // La pose statique, la pose animée, le cockpit et les LOD utilisent ensuite les mêmes ancrages métriques.
+  function originePilote(o, tete) { return [o[0] + PILOTE_RECUL + (tete ? PILOTE_TETE_RECUL : 0), o[1] + PILOTE_BAISSE, o[2]]; }
+  // Le levier commun avance de 20 mm avec la nouvelle assise, pour dégager l'avant-bras droit au volant.
+  // La cible de la main suit ce même ancrage physique ; le gant garde sa forme et sa prise.
+  const PILOTE_LEVIER = [.20, .57, .16];
+  const PILOTE_LEVIER_DECALAGE = PILOTE_LEVIER.map((v, i) => v - ORIGINE_HABITACLE[i] - K * LEVIER[i]);
+  // La tige descend du pommeau au pivot près du siège et au vrai fond de cuve.
+  const PILOTE_PIED_LEVIER = [PILOTE_LEVIER[0], .30, PILOTE_LEVIER[2] + .0108];
+  const FOND_CONSOLE = fondCuve(PILOTE_PIED_LEVIER[0], PILOTE_PIED_LEVIER[2]) - .004;
   // Le pied est fixé à une petite console arrondie, elle-même ancrée dans le fond de la cuve. Son sommet
   // reçoit les deux derniers millimètres de la tige ; le reste du débattement est libre dans l'habitacle.
   forme('console-levier-pilote', C.carene([
-    { x: PILOTE_PIED_LEVIER[0] - .06, y0: .415, y1: PILOTE_PIED_LEVIER[1] - .012, l: .012, n: 3, z: PILOTE_PIED_LEVIER[2] },
-    { x: PILOTE_PIED_LEVIER[0] - .025, y0: .415, y1: PILOTE_PIED_LEVIER[1] + .002, l: .030, n: 4, z: PILOTE_PIED_LEVIER[2] },
-    { x: PILOTE_PIED_LEVIER[0] + .025, y0: .415, y1: PILOTE_PIED_LEVIER[1] + .002, l: .030, n: 4, z: PILOTE_PIED_LEVIER[2] },
-    { x: PILOTE_PIED_LEVIER[0] + .06, y0: .415, y1: PILOTE_PIED_LEVIER[1] - .012, l: .012, n: 3, z: PILOTE_PIED_LEVIER[2] }
+    { x: PILOTE_PIED_LEVIER[0] - .06, y0: FOND_CONSOLE, y1: PILOTE_PIED_LEVIER[1] - .012, l: .012, n: 3, z: PILOTE_PIED_LEVIER[2] },
+    { x: PILOTE_PIED_LEVIER[0] - .025, y0: FOND_CONSOLE, y1: PILOTE_PIED_LEVIER[1] + .002, l: .030, n: 4, z: PILOTE_PIED_LEVIER[2] },
+    { x: PILOTE_PIED_LEVIER[0] + .025, y0: FOND_CONSOLE, y1: PILOTE_PIED_LEVIER[1] + .002, l: .030, n: 4, z: PILOTE_PIED_LEVIER[2] },
+    { x: PILOTE_PIED_LEVIER[0] + .06, y0: FOND_CONSOLE, y1: PILOTE_PIED_LEVIER[1] - .012, l: .012, n: 3, z: PILOTE_PIED_LEVIER[2] }
   ], { cotes: 16, pas: 3 }));
 
   function construirePiloteExterieur(mod, H) {
     const liv = mod.livree, combi = liv.combinaison || liv.couleur.map(v => v * .7);
     const tissuPilote = B.cockpitMatieres ? B.cockpitMatieres.tissu : TISSU;
-    const R = { habitacle: H, tete: new Float64Array(9), articulations: H.articulations, variantes: [] };
+    const R = { habitacle: H, tete: new Float64Array(9), articulations: H.articulations, variantes: [], cockpit: null };
     // Une réserve par LOD/overlay et par rétroviseur : aucune place, rotation ou taille ne passe d'une vue à l'autre.
-    for (let variante = 0; variante < 10; variante++) {
-      const li = variante < 8 ? variante >> 1 : variante === 8 ? CORPS : EPAVE;
-      const niveau = li === SIMPLES ? 2 : li === MOYENS ? 1 : 0, overlay = variante < 8 && !!(variante & 1);
+    for (let variante = 0; variante < 11; variante++) {
+      const li = variante < 8 ? variante >> 1 : (variante === 8 || variante === 10) ? CORPS : EPAVE;
+      const niveau = li === SIMPLES ? 2 : li === MOYENS ? 1 : 0, overlay = variante === 10 || (variante < 8 && !!(variante & 1));
       const V = { niveau, rotM: trois(), pieces: [] };
       const objet = (shape, mat, color) => {
         const o = { shape, p: trois(), s: trois(), r: trois(), mat, color, surface: 'object' };
@@ -1463,20 +1510,44 @@
       ajouter('volant', H.jante, niveau === 2 ? 'cylinder' : null);
       if (niveau < 2) ajouter('branches', H.branches, null);
       for (let i = 0; i < H.moyeu.length; i++) ajouter('moyeu-' + i, H.moyeu[i], null);
-      ajouter('planche', H.planche[0], null); ajouter('casquette', H.planche[5], null);
+      for (let i = 0; i < H.planche.length; i++) {
+        if (niveau > 0 && i !== 0 && i !== 5) continue;
+        ajouter(i === 0 ? 'planche' : i === 5 ? 'casquette' : 'planche-' + i, H.planche[i], null);
+      }
+      if (niveau === 0) {
+        for (let i = 0; i < H.rapport.length; i++) ajouter('rapport-' + i, H.rapport[i], null);
+        ajouter('rapport-diagonale', H.diagonale, null);
+        for (let k = 0; k < H.vitesse.length; k++) for (let i = 0; i < H.vitesse[k].length; i++)
+          ajouter('vitesse-' + k + '-' + i, H.vitesse[k][i], null);
+        for (let i = 0; i < H.caches.length; i++) ajouter('cache-volant-' + i, H.caches[i], null);
+        for (let i = 0; i < H.vis.length; i++) ajouter('vis-volant-' + i, H.vis[i], null);
+        ajouter('ruban-volant', H.ruban, null);
+      }
       for (let i = 0; i < H.supportVolant.length; i++) ajouter('support-volant-' + i, H.supportVolant[i], null);
       ajouter('levier', H.tige, null); ajouter('pommeau', H.pommeau, null);
+      for (let k = 0; k < H.glaces.length; k++) {
+        const G = H.glaces[k];
+        ajouter('retro-boitier-' + k, G.boitier, null);
+        ajouter('retro-patte-' + k, G.patte, null);
+        ajouter('retro-glace-' + k, G.vive, null);
+      }
       {
         const f = FORMES['console-levier-pilote'], o = objet(f.nom, MAT, [.035, .035, .04]);
         o.s[0] = f.taille[0]; o.s[1] = f.taille[1]; o.s[2] = f.taille[2]; o.r = V.rotM;
         V.pieces.push({ role: 'console-levier', fixe: f.centre, objet: o });
       }
       if (niveau > 0) {
-        const o = objet('sphere', tissuPilote, combi); o.s[0] = .30; o.s[1] = .20; o.s[2] = .38; o.r = V.rotM;
-        V.pieces.push({ role: 'buste', fixe: [-.04 + PILOTE_RECUL, .66, 0], objet: o });
+        const f = FORMES[niveau === 1 ? 'pilote-buste-moyen' : 'pilote-buste-simple'], o = objet(f.nom, tissuPilote, combi);
+        o.s[0] = f.taille[0]; o.s[1] = f.taille[1]; o.s[2] = f.taille[2]; o.r = V.rotM;
+        V.pieces.push({ role: 'buste', fixe: originePilote(f.centre, false), objet: o });
       }
       for (let h = 0; h < 2; h++) {
         const main = H.mains[h], j = h * 9;
+        {
+          // Raccord local du thorax à l'humérus : diamètre 52 mm, contenu dans la zone d'attache de 35 mm.
+          const o = objet('sphere', tissuPilote, combi); o.s[0] = o.s[1] = o.s[2] = .052; o.r = V.rotM;
+          V.pieces.push({ role: 'epaule-' + h, joint: j, objet: o });
+        }
         for (let q = 0; q < (niveau === 0 ? main.pieces.length : 1); q++)
           ajouter('gant-' + h + '-' + q, main.pieces[q], niveau === 2 ? 'sphere' : null);
         {
@@ -1492,13 +1563,18 @@
         const o = objet('sphere', tissuPilote, combi); o.s[0] = o.s[1] = o.s[2] = .075; o.r = V.rotM;
         V.pieces.push({ role: 'coude-' + h, joint: j + 3, objet: o });
       }
-      R.variantes.push(V);
+      if (variante === 10) {
+        // Épaules, bras supérieurs, coudes et console sont aussi visibles depuis le siège ; buffers distincts.
+        V.pieces = V.pieces.filter(p => !p.source && (p.de !== undefined || p.joint !== undefined || p.role === 'console-levier'));
+        R.cockpit = V;
+      } else R.variantes.push(V);
     }
     return R;
   }
 
   function preparerPiloteExterieur(R, etat) {
     const H = R.habitacle, cle = H.cle;
+    actualiserInstruments(H, etat);
     if (!H.piloteReel) { H.piloteReel = true; H.pret = false; }
     let volant = Number.isFinite(etat.volant) ? etat.volant : 0;
     volant = volant < -1 ? -1 : volant > 1 ? 1 : volant;
@@ -1534,53 +1610,68 @@
 
   function articulationPilote(H, h) {
     const A = H.articulations, j = h * 9, cote = h === 0 ? -1 : 1;
-    // La prise dégagée demande jusqu'à 43,6 cm de portée. Ces 21/23 cm gardent les os constants,
-    // avec le coude au-dessus du fond réel de la cuve ; aucun allongement pendant le geste.
+    // Os constants de 21 et 23 cm, raccordés aux épaules du thorax assis. Le poignet est celui du gant
+    // réellement posé sur la commande ; le coude est construit sur le cercle exact de l'IK à deux segments.
     const poignet = H.mains[h].pieces[3].o, haut = .21, avant = .23;
-    A[j] = -.025 + PILOTE_RECUL; A[j + 1] = .73; A[j + 2] = cote * .14;
-    for (let k = 0; k < 3; k++) A[j + 6 + k] = PILOTE_DECALAGE[k] + PILOTE_ECHELLE * poignet[k];
+    A[j] = PILOTE_EPAULES[0]; A[j + 1] = PILOTE_EPAULES[1]; A[j + 2] = cote * PILOTE_EPAULES[2];
+    for (let k = 0; k < 3; k++) A[j + 6 + k] = poignet[k];
     const dx = A[j + 6] - A[j], dy = A[j + 7] - A[j + 1], dz = A[j + 8] - A[j + 2];
     const distance = Math.max(1e-9, Math.sqrt(dx * dx + dy * dy + dz * dz)), ux = dx / distance, uy = dy / distance, uz = dz / distance;
-    // Pli vers le bas de la cuve. L'ancien pôle positif (.65, ±1) levait et écartait les coudes.
-    // À la jante, le pôle historique reste inchangé. Quand la main se lève, ramener le coude vers le buste
-    // empêche l'humérus de traverser le jonc ; les deux os conservent exactement leurs longueurs.
-    const versBuste = H.cle[6] && H.cle[7] === cote ? .9 * portionGeste(H.cle[8], .44, .85) : 0;
-    const lateral = -cote * versBuste, produit = -uy + lateral * uz;
-    let bx = versBuste ? -ux * produit : ux * uy, by = versBuste ? -1 - uy * produit : -1 + uy * uy, bz = versBuste ? lateral - uz * produit : uz * uy;
+    const avance = (haut * haut - avant * avant + distance * distance) / (2 * distance);
+    // Le pôle guide les gestes vers l'avant et le bas ; le passage au levier réduit l'écartement.
+    // À la conduite, la cible latérale du coude laisse la place au thorax et à la paroi. Sa projection
+    // sur le cercle épaule/poignet conserve les deux longueurs, puis se raccorde continûment au geste.
+    const geste = H.cle[6] && H.cle[7] === cote ? portionGeste(H.cle[8], .44, .85) : 0;
+    const passageLevier = h === 1 ? Math.max(0, Math.min(1, (.16 - A[j + 6]) / .08)) * Math.max(0, Math.min(1, (.67 - A[j + 7]) / .10)) : 0;
+    const sansGeste = .30 * (1 - passageLevier);
+    const poleGeste = -.60 + .25 * Math.max(0, Math.min(1, (.190 - Math.abs(A[j + 8])) / .030));
+    const lateral = cote * (sansGeste + (poleGeste - sansGeste) * geste);
+    const produit = .40 * ux - uy + lateral * uz;
+    let bx = .40 - ux * produit, by = -1 - uy * produit, bz = lateral - uz * produit;
+    const levee = Math.max(0, Math.min(1, (A[j + 7] - .68) / .10));
+    const z = cote * (.190 - .075 * levee * levee * (3 - 2 * levee));
+    // Cercle d'intersection des deux longueurs : sa projection latérale est bornée avant
+    // de choisir la solution basse, sans basculer sur un autre pôle si la cible z est hors d'atteinte.
+    const rayonCercle = Math.sqrt(Math.max(0, haut * haut - avance * avance));
+    const projectionZ = Math.sqrt(Math.max(0, 1 - uz * uz));
+    if (rayonCercle > 1e-9 && projectionZ > 1e-9) {
+      // Marge angulaire à l'extrême latéral : elle évite la dérivée infinie d'une tangence du cercle.
+      const cos = Math.max(-.995, Math.min(.995, (z - A[j + 2] - uz * avance) / (rayonCercle * projectionZ)));
+      const sin = Math.sqrt(Math.max(0, 1 - cos * cos)), signe = ux >= 0 ? 1 : -1;
+      const px = (-ux * uz * cos + uy * sin * signe) / projectionZ;
+      const py = (-uy * uz * cos - ux * sin * signe) / projectionZ, pz = projectionZ * cos;
+      const nb = Math.sqrt(bx * bx + by * by + bz * bz);
+      if (nb > 1e-9) {
+        bx = (1 - geste) * px + geste * bx / nb;
+        by = (1 - geste) * py + geste * by / nb;
+        bz = (1 - geste) * pz + geste * bz / nb;
+      }
+    }
     let norme = Math.sqrt(bx * bx + by * by + bz * bz);
     if (norme < 1e-9) { bx = -uz; by = 0; bz = ux; norme = Math.sqrt(bx * bx + bz * bz); }
     if (norme < 1e-9) { bx = 1; by = 0; bz = 0; norme = 1; }
-    const avance = (haut * haut - avant * avant + distance * distance) / (2 * distance);
-    const rayon = Math.sqrt(Math.max(0, haut * haut - avance * avance)) / norme;
+    const rayon = rayonCercle / norme;
     A[j + 3] = A[j] + ux * avance + bx * rayon;
     A[j + 4] = A[j + 1] + uy * avance + by * rayon;
     A[j + 5] = A[j + 2] + uz * avance + bz * rayon;
     const co = H.mains[h].coude;
-    for (let k = 0; k < 3; k++) co[k] = ((A[j + 3 + k] - PILOTE_DECALAGE[k]) / PILOTE_ECHELLE - OEIL[k]) / K;
+    for (let k = 0; k < 3; k++) co[k] = (A[j + 3 + k] - ORIGINE_HABITACLE[k]) / K;
   }
 
   function poserPiloteExterieur(R, variante, M, ev, sortie, retro) {
-    const V = R.variantes[variante], A = R.articulations;
+    const V = variante === 10 ? R.cockpit : R.variantes[variante], A = R.articulations;
     const px = ev.p[0], py = ev.p[1], pz = ev.p[2], ca = retro ? Math.cos(ev.cap) : 0, sa = retro ? Math.sin(ev.cap) : 0;
     anglesDans(V.rotM, M);
     for (let i = 0; i < V.pieces.length; i++) {
       const e = V.pieces[i], objet = e.objet, p = objet.p;
       let x, y, z;
       if (e.source) {
-        const source = e.source, local = source.o, taille = source.objet.s;
-        x = PILOTE_DECALAGE[0] + PILOTE_ECHELLE * local[0];
-        y = PILOTE_DECALAGE[1] + PILOTE_ECHELLE * local[1];
-        z = PILOTE_DECALAGE[2] + PILOTE_ECHELLE * local[2];
-        // Les décalages de commandes appartiennent désormais au modèle commun préparé dans majVolant.
-        // Ici il ne reste que le changement d'échelle/cadrage global de la vue extérieure.
-        objet.shape = e.simple || source.objet.shape;
-        objet.s[0] = PILOTE_ECHELLE * taille[0]; objet.s[1] = PILOTE_ECHELLE * taille[1]; objet.s[2] = PILOTE_ECHELLE * taille[2];
-        if (source.rep) anglesPiloteProduit(objet.r, M, source.rep.m);
+        const source = e.source, local = source.o;
+        if (source.visible === false) continue;
+        x = local[0]; y = local[1]; z = local[2];
       } else if (e.de !== undefined) {
         const a = e.de, b = e.a;
         x = (A[a] + A[b]) * .5; y = (A[a + 1] + A[b + 1]) * .5; z = (A[a + 2] + A[b + 2]) * .5;
-        AXE[0] = A[b] - A[a]; AXE[1] = A[b + 1] - A[a + 1]; AXE[2] = A[b + 2] - A[a + 2];
-        hypotDans(AXE, 3); objet.s[1] = AXE[3]; selonAxeDans(e.m, AXE); anglesProduit(objet.r, M, e.m);
       } else if (e.joint !== undefined) {
         const j = e.joint; x = A[j]; y = A[j + 1]; z = A[j + 2];
       } else { x = e.fixe[0]; y = e.fixe[1]; z = e.fixe[2]; }
@@ -1588,6 +1679,18 @@
       if (retro) {
         const dx = X - px, dz = Z - pz, xc = dx * ca + dz * sa, zc = dz * ca - dx * sa;
         if (!(Math.abs(xc - X_ARRIERE) < .5 && Math.abs(zc) > .55)) continue;
+      }
+      // Même filtre en coordonnées monde ; les rotations et copies ne servent qu'aux pièces retenues.
+      if (e.source) {
+        const source = e.source, taille = source.objet.s;
+        objet.mat = source.objet.mat; objet.color = source.objet.color; objet.emissive = source.objet.emissive;
+        objet.shape = e.simple || source.objet.shape;
+        objet.s[0] = taille[0]; objet.s[1] = taille[1]; objet.s[2] = taille[2];
+        if (source.rep) anglesPiloteProduit(objet.r, M, source.rep.m);
+      } else if (e.de !== undefined) {
+        const a = e.de, b = e.a;
+        AXE[0] = A[b] - A[a]; AXE[1] = A[b + 1] - A[a + 1]; AXE[2] = A[b + 2] - A[a + 2];
+        hypotDans(AXE, 3); objet.s[1] = AXE[3]; selonAxeDans(e.m, AXE); anglesProduit(objet.r, M, e.m);
       }
       p[0] = X; p[1] = Y; p[2] = Z;
       sortie.push(objet);
@@ -1598,8 +1701,8 @@
   // selonAxe, pour les mêmes nombres au bit près.
   // Les nombres y passent d'une fonction à l'autre par des Float64Array : un nombre à virgule passé à une fonction, ou
   // rendu par elle, que le compilateur ne développe pas en ligne serait emballé dans un objet neuf à chaque appel.
-  // Place apparente vue de l'œil → place dans la voiture, en place dans o
-  function versVoiture(o) { o[0] = OEIL[0] + K * o[0]; o[1] = OEIL[1] + K * o[1]; o[2] = OEIL[2] + K * o[2]; }
+  // Coordonnées de construction → mètres dans la voiture. Cette opération ne dépend jamais de la caméra.
+  function versVoiture(o) { o[0] = ORIGINE_HABITACLE[0] + K * o[0]; o[1] = ORIGINE_HABITACLE[1] + K * o[1]; o[2] = ORIGINE_HABITACLE[2] + K * o[2]; }
   // forme libre posée : origine a + m0·c0 + m1·c1 + m2·c2 (m à plat, c : centre de la forme)
   function poseeDans(o, a, m, c) {
     o[0] = ((a[0] + m[0] * c[0]) + m[3] * c[1]) + m[6] * c[2]; o[1] = ((a[1] + m[1] * c[0]) + m[4] * c[1]) + m[7] * c[2]; o[2] = ((a[2] + m[2] * c[0]) + m[5] * c[1]) + m[8] * c[2];
@@ -1665,6 +1768,7 @@
   }
   // Pose d'une pièce de l'habitacle : place dans le monde (P : ev.p), rotation de son repère (une fois par pose et par repère)
   function placer(H, e, M, P, sortie) {
+    if (e.visible === false) return;
     const o = e.o, p = e.objet.p, x = o[0], y = o[1], z = o[2], rep = e.rep;
     p[0] = P[0] + (M[0] * x + M[3] * y + M[6] * z); p[1] = P[1] + (M[1] * x + M[4] * y + M[7] * z); p[2] = P[2] + (M[2] * x + M[5] * y + M[8] * z);
     if (rep !== null && rep.epoque !== H.epoque) { if (H.piloteReel) anglesPiloteProduit(rep.r, M, rep.m); else anglesProduit(rep.r, M, rep.m); rep.epoque = H.epoque; }
@@ -1757,11 +1861,11 @@
         // pendant le trajet ; la main s'écarte d'abord vers le dehors et vers le pilote avant de tourner, et le
         // gant passe en variante doigts ouverts dès qu'il ne touche plus le tube (ecart à fond)
         ecart = H.piloteReel ? ouverture : Math.min(t, 1 - t) / .02; ecart = ecart < 0 ? 0 : ecart > 1 ? 1 : ecart;
-        const mouvement = H.piloteReel ? retrait : ecart, dehors = H.piloteReel ? radial : ecart, degagement = H.piloteReel ? .020 : .016, reculPrise = H.piloteReel ? .060 : .016;
+        const mouvement = H.piloteReel ? retrait : ecart, dehors = H.piloteReel ? radial : ecart, degagement = H.piloteReel ? .020 : .016, reculPrise = H.piloteReel ? .030 : .016;
         gx = gx + EX[0] * degagement * dehors + WN[0] * reculPrise * mouvement; gy = gy + EX[1] * degagement * dehors + WN[1] * reculPrise * mouvement; gz = gz + EX[2] * degagement * dehors + WN[2] * reculPrise * mouvement;
         // Point de contrôle surélevé du Bézier : la main contourne le pommeau avant de s'y poser.
         // Le cadrage isolé garde sa courbe historique ; le pilote commun porte cette courbe au poignet.
-        const reculTrajet = 0, hauteurTrajet = H.piloteReel ? .28 : .15;
+        const reculTrajet = 0, hauteurTrajet = H.piloteReel ? .23 : .15;
         // Courbe du poignet, puis pose du gant autour de ce poignet. La courbe de l'ancien cadrage portait
         // le point de prise : le pivot du gant emportait alors la manchette au travers du pommeau.
         const poignet = main.pieces[3].ferme.c;
@@ -1775,7 +1879,7 @@
           cibleZ += wz * c + (WN[0] * wy - WN[1] * wx) * s;
         }
         // La main passe au-dessus et à l'intérieur du pommeau, puis repose sa paume dessus.
-        const soX = cibleX + WU[0] * hauteurTrajet + WN[0] * reculTrajet, soY = cibleY + WU[1] * hauteurTrajet + WN[1] * reculTrajet, soZ = cibleZ + WU[2] * hauteurTrajet + WN[2] * reculTrajet - (H.piloteReel ? .10 : 0);
+        const soX = cibleX + WU[0] * hauteurTrajet + WN[0] * reculTrajet, soY = cibleY + WU[1] * hauteurTrajet + WN[1] * reculTrajet, soZ = cibleZ + WU[2] * hauteurTrajet + WN[2] * reculTrajet;
         gx = gx * (1 - vl) ** 2 + soX * 2 * vl * (1 - vl) + cibleX * vl ** 2; gy = gy * (1 - vl) ** 2 + soY * 2 * vl * (1 - vl) + cibleY * vl ** 2; gz = gz * (1 - vl) ** 2 + soZ * 2 * vl * (1 - vl) + cibleZ * vl ** 2;
         // cockpit-4 : le repère de départ porte déjà −phi ; sans le +phi, la paume restait tournée du braquage au
         // pommeau (91,5° du bas volant à fond)
@@ -1801,17 +1905,17 @@
         let wy = gy + F[1] * poignet[0] + F[4] * poignet[1] + F[7] * poignet[2];
         let wz = gz + F[2] * poignet[0] + F[5] * poignet[1] + F[8] * poignet[2];
         // La main haute est déjà devant la visière : son dégagement ne recule jamais la manchette dans le casque.
-        wx = Math.max(wx, ((.100 - PILOTE_DECALAGE[0]) / PILOTE_ECHELLE - OEIL[0]) / K);
+        wx = Math.max(wx, (.100 - ORIGINE_HABITACLE[0]) / K);
         // Poignet à côté du casque, au-dessus du jonc. Une seule main quitte le volant, l'autre garde sa prise.
         // Le salut oscille légèrement, le poing se lève de 8 mm : les modulations s'annulent avec le geste.
         const onde = Math.sin(cle[9] * Math.PI * 6) * mouvement;
-        const cibleX = ((.080 - PILOTE_DECALAGE[0]) / PILOTE_ECHELLE - OEIL[0]) / K;
-        const cibleY = ((.920 + (cle[6] === 2 ? .008 * onde : 0) - PILOTE_DECALAGE[1]) / PILOTE_ECHELLE - OEIL[1]) / K;
-        const cibleZ = ((k * (.240 + (cle[6] === 3 ? .010 * onde : 0)) - PILOTE_DECALAGE[2]) / PILOTE_ECHELLE - OEIL[2]) / K;
+        const cibleX = (.080 - ORIGINE_HABITACLE[0]) / K;
+        const cibleY = (.820 + (cle[6] === 2 ? .008 * onde : 0) - ORIGINE_HABITACLE[1]) / K;
+        const cibleZ = (k * (.240 + (cle[6] === 3 ? .010 * onde : 0)) - ORIGINE_HABITACLE[2]) / K;
         const contour = 4 * mouvement * (1 - mouvement);
         wx += (cibleX - wx) * mouvement - .015 / .9 * contour;
         wy += (cibleY - wy) * mouvement;
-        wz += (cibleZ - wz) * mouvement + k * .055 / .9 * contour;
+        wz += (cibleZ - wz) * mouvement;
         // Annuler le braquage avant de redresser la main : matrices orthonormales et poignet fixe sous les doigts.
         ANGLE[0] = phi * mouvement; tournerColonnes(F, WN, ANGLE);
         AXE[0] = 0; AXE[1] = 0; AXE[2] = 1; ANGLE[0] = (Math.PI / 2 + TAU) * mouvement; tournerColonnes(F, AXE, ANGLE);
@@ -1853,10 +1957,14 @@
     }
   }
 
-  function habitacle(H, M, ev, sortie, etat) {
-    const P = ev.p, regime = etat.regime || 0;
-    H.epoque++;
-    anglesDans(H.rotM, M);
+  function actualiserInstruments(H, etat) {
+    const ralenti = B.conduite.PARAMS.ralenti, regime = Number.isFinite(etat.regime) ? etat.regime : ralenti;
+    const r = etat.rapport, kmh = Math.min(999, Math.max(0, Math.round(etat.kmh || 0))), cle = H.instrumentsCle;
+    // La vue cockpit relit la même planche après la pose du pilote ; les glaces la relisent aussi.
+    // Le cache ne garde que ses entrées, sans pose monde ni valeur propre à une caméra.
+    if (H.instrumentsPrets && Object.is(cle[0], regime) && Object.is(cle[1], r) && Object.is(cle[2], kmh) && Object.is(cle[3], ralenti)) return;
+    H.instrumentsPrets = typeof r === 'number';
+    if (H.instrumentsPrets) { cle[0] = regime; cle[1] = r; cle[2] = kmh; cle[3] = ralenti; }
     // Planche : lampe de régime ; compte-tours (graduations ivoire tous les 1 000 tr/min, zone rouge dès 12 000,
     // aiguille orange) ; température d'eau à gauche, pression d'huile à droite (elle suit le régime) ; témoin vert du
     // contact, témoin rouge (ralenti ou surrégime ; voi-8 : jamais sous le ralenti de conduite.js, seuil pris dans PARAMS)
@@ -1872,21 +1980,26 @@
       m[0] = d0; m[1] = d1; m[2] = d2; m[3] = PN[0]; m[4] = PN[1]; m[5] = PN[2];
       m[6] = d1 * PN[2] - d2 * PN[1]; m[7] = d2 * PN[0] - d0 * PN[2]; m[8] = d0 * PN[1] - d1 * PN[0];
     }
-    placerTout(H, H.planche, M, P, sortie);
     // Rapport à gauche, vitesse à droite, en segments ambre
-    const r = etat.rapport;
     afficher(H.rapport, masqueRapport(r));
-    placerTout(H, H.rapport, M, P, sortie);
-    if (r < 0) placer(H, H.diagonale, M, P, sortie);
-    const kmh = Math.min(999, Math.max(0, Math.round(etat.kmh || 0)));
-    if (kmh === kmh) {   // entier de 0 à 999 : centaines et dizaines seulement quand elles s'écrivent
-      if (kmh >= 100) { afficher(H.vitesse[0], MASQUE_CHIFFRE[Math.floor(kmh / 100)]); placerTout(H, H.vitesse[0], M, P, sortie); }
-      if (kmh >= 10) { afficher(H.vitesse[1], MASQUE_CHIFFRE[Math.floor(kmh / 10) % 10]); placerTout(H, H.vitesse[1], M, P, sortie); }
-      afficher(H.vitesse[2], MASQUE_CHIFFRE[kmh % 10]); placerTout(H, H.vitesse[2], M, P, sortie);
-    } else {             // vitesse illisible (NaN) : son texte, caractère par caractère
-      const texte = String(kmh).padStart(3, ' ');
-      for (let k = 0; k < 3; k++) if (texte[k] !== ' ' || k === 2) { afficher(H.vitesse[k], masqueTexte(texte[k])); placerTout(H, H.vitesse[k], M, P, sortie); }
+    H.diagonale.visible = r < 0;
+    for (let k = 0; k < 3; k++) {
+      const diviseur = k === 0 ? 100 : k === 1 ? 10 : 1, visible = k === 2 || kmh >= diviseur;
+      const groupe = H.vitesse[k];
+      afficher(groupe, MASQUE_CHIFFRE[Math.floor(kmh / diviseur) % 10]);
+      for (let n = 0; n < groupe.length; n++) groupe[n].visible = visible;
     }
+  }
+
+  function habitacle(H, M, ev, sortie, etat) {
+    const P = ev.p;
+    H.epoque++;
+    anglesDans(H.rotM, M);
+    actualiserInstruments(H, etat);
+    placerTout(H, H.planche, M, P, sortie);
+    placerTout(H, H.rapport, M, P, sortie);
+    placer(H, H.diagonale, M, P, sortie);
+    for (let k = 0; k < 3; k++) placerTout(H, H.vitesse[k], M, P, sortie);
     // Volant, levier et mains : recalculés seulement quand braquage, passage ou rapports changent
     let x = etat.volant || 0; x = x < -1 ? -1 : x > 1 ? 1 : x;
     const expression = ev.pilote || etat;
@@ -1910,7 +2023,8 @@
       const G = H.glaces[j];
       placer(H, G.boitier, M, P, sortie); placer(H, G.patte, M, P, sortie);
       // image réelle posée par le jeu : la glace n'est plus qu'un fond sombre sous elle
-      if (etat.glaceVive) { placer(H, G.vive, M, P, sortie); continue; }
+      placer(H, G.vive, M, P, sortie);
+      if (etat.glaceVive) continue;
       teinte(G.ciel, ciel, .75); placer(H, G.ciel, M, P, sortie);
       teinte(G.brume, brume, .6); placer(H, G.brume, M, P, sortie);
       placer(H, G.fond, M, P, sortie);
@@ -1963,5 +2077,5 @@
     for (let i = 0; i < F.objets.length; i++) { monde(F.objets[i].p, M, F.o[i], P); sortie.push(F.objets[i]); }
   }
 
-  B.voiture = { modele, preparerPneusService, preparerExpressions, changerPneus, poser, poserRetro, cockpit, fantome, objetsFantome, detailPour, detailRouesPour, distanceRoues2, hypotDans, visible, attitude, angles, mul, mulM, euler, braquages, glacesCockpit, cadreGlace, RETRO, OEIL, K, VOLANT, PLANCHE, PENTE_PLANCHE, COUDE, LEVIER, ROUES, EMPATTEMENT, FORMES, SEGMENTS_ROUE, ROUES_FORMES, JANTES_FORMES };
+  B.voiture = { modele, preparerPneusService, preparerExpressions, changerPneus, poser, poserRetro, cockpit, fantome, objetsFantome, detailPour, detailRouesPour, distanceRoues2, hypotDans, visible, attitude, angles, mul, mulM, euler, braquages, glacesCockpit, cadreGlace, RETRO, OEIL, ORIGINE_HABITACLE, PILOTE_ASSISE, PILOTE_EPAULES, K, VOLANT, PLANCHE, PENTE_PLANCHE, COUDE, LEVIER, ROUES, EMPATTEMENT, FORMES, SEGMENTS_ROUE, ROUES_FORMES, JANTES_FORMES };
 })(globalThis.BITUME = globalThis.BITUME || {});

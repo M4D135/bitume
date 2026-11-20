@@ -1,0 +1,314 @@
+{
+  "schema": 1,
+  "statut": "qualification_visuelle_saisons_acceptee",
+  "sources_runtime": "722d732ebb1d4f26227593ca160b7deede56cb9b",
+  "sources_outillage": [
+    "259ed2bb8ba39375f6b792459c24997cfac6e701",
+    "d93d23971fdf462f6851e09c88d6eb0fa059f169"
+  ],
+  "html_sha256": "8aeb52151348c92dfef357d11f6d06684ec98a7ab3d7eaed9f8f6a69ee28a784",
+  "html_octets": 14387799,
+  "build": "Candidat temporaire reconstruit avec construire.py inchangé ; numéro non réservé et HTML non livré.",
+  "runs": [
+    {
+      "id": 44782100015,
+      "url": "https://github.com/M4D135/bitume/actions/runs/44782100015",
+      "jobs_reussis": 4,
+      "scenes": 44,
+      "png_inspectes": 88,
+      "png_retenus": 72,
+      "png_rejetes_cadrage": 16
+    },
+    {
+      "id": 44784594393,
+      "url": "https://github.com/M4D135/bitume/actions/runs/44784594393",
+      "jobs_reussis": 2,
+      "scenes": 8,
+      "png_inspectes": 16,
+      "png_retenus": 16,
+      "remplace": "Forêt basse des Cimes, high et low ; cadrage seulement, même HTML."
+    }
+  ],
+  "bilan": {
+    "circuits": 9,
+    "saisons": 4,
+    "scenes_finales": 44,
+    "png_inspectes_total": 104,
+    "png_retenus": 88,
+    "png_rejetes_cadrage": 16,
+    "erreurs_graphiques_signalees": 0,
+    "images_inspectees_visuellement": true
+  },
+  "selection_finale": {
+    "initiales": "S1-CAPTURES-INITIALES.json : les 72 entrées images portant resultat_visuel=exploitable.",
+    "reprises": "Les 16 entrées images_reprise de ce reçu.",
+    "couverture": "36 scènes high (9 × 4), 2 vues alpines high (été/hiver), 4 scènes Cimes low, 2 vues alpines low (été/hiver)."
+  },
+  "cadrage_cimes": {
+    "controle": "Enveloppes des troncs permanents et neuf rayons PhysX sur la silhouette ; aucune sélection fondée sur la couronne saisonnière.",
+    "tests": {
+      "commande": "node --test verifications/captures-saisons.test.mjs",
+      "reussis": 4,
+      "foret_reelle_troncs": 754
+    },
+    "cameras": {
+      "high-cimes-reprise": {
+        "pos": [
+          728.0181827532936,
+          45.13006713042463,
+          -1050.6999833771083
+        ],
+        "cible": [
+          723.7389674513493,
+          46.44873863567466,
+          -1071.1357245366826
+        ],
+        "yaw": -0.20641611268868912,
+        "pitch": 0.06307411789691215,
+        "roll": 0,
+        "fov": 54,
+        "near": 0.08,
+        "far": 6000,
+        "sujetNature": false
+      },
+      "low-cimes-reprise": {
+        "pos": [
+          728.0181827532936,
+          45.13006713042463,
+          -1050.6999833771083
+        ],
+        "cible": [
+          723.7389674513493,
+          46.44873863567466,
+          -1071.1357245366826
+        ],
+        "yaw": -0.20641611268868912,
+        "pitch": 0.06307411789691215,
+        "roll": 0,
+        "fov": 54,
+        "near": 0.08,
+        "far": 6000,
+        "sujetNature": false
+      }
+    },
+    "sujets": {
+      "high-cimes-reprise": {
+        "essence": "feuillu",
+        "p": [
+          723.7389674513493,
+          44.47073137779961,
+          -1071.1357245366826
+        ],
+        "s": [
+          0.4945018144687638,
+          9.230700536750257,
+          0.4945018144687638
+        ]
+      },
+      "low-cimes-reprise": {
+        "essence": "feuillu",
+        "p": [
+          723.7389674513493,
+          44.47073137779961,
+          -1071.1357245366826
+        ],
+        "s": [
+          0.4945018144687638,
+          9.230700536750257,
+          0.4945018144687638
+        ]
+      }
+    },
+    "memes_cameras_et_sujets_aux_quatre_saisons": true,
+    "caducs": 290,
+    "branches_nues_hiver": 290,
+    "sources_feuilles_automne": 290
+  },
+  "images_reprise": [
+    {
+      "groupe": "high-cimes-reprise",
+      "scene": "route-des-cimes-automne",
+      "fichier": "0000.png",
+      "sha256": "9192afbd536291c5c31efb0b76792dd5e960bac6b6e94042785db29aa577f928",
+      "resultat_visuel": "exploitable",
+      "glErreur": 0,
+      "glPerdu": false,
+      "foretLibre": true,
+      "obstruction": false
+    },
+    {
+      "groupe": "high-cimes-reprise",
+      "scene": "route-des-cimes-automne",
+      "fichier": "0001.png",
+      "sha256": "35ee917529e41ccb6a825c0609ba12a625c9771005be95ef6fced06d4ca88ca0",
+      "resultat_visuel": "exploitable",
+      "glErreur": 0,
+      "glPerdu": false,
+      "foretLibre": true,
+      "obstruction": false
+    },
+    {
+      "groupe": "high-cimes-reprise",
+      "scene": "route-des-cimes-ete",
+      "fichier": "0000.png",
+      "sha256": "0b911d762627be183d514ac42d36fe1b53d835bd54a31d93944c558c30523306",
+      "resultat_visuel": "exploitable",
+      "glErreur": 0,
+      "glPerdu": false,
+      "foretLibre": true,
+      "obstruction": false
+    },
+    {
+      "groupe": "high-cimes-reprise",
+      "scene": "route-des-cimes-ete",
+      "fichier": "0001.png",
+      "sha256": "1560a2ec1c972bb9b39843d1c27c388d4b018aa0343d95dda61bf29edb730f7c",
+      "resultat_visuel": "exploitable",
+      "glErreur": 0,
+      "glPerdu": false,
+      "foretLibre": true,
+      "obstruction": false
+    },
+    {
+      "groupe": "high-cimes-reprise",
+      "scene": "route-des-cimes-hiver",
+      "fichier": "0000.png",
+      "sha256": "d7c0f079720a3daaacea5998cd126b250c2cbfc3554ef22e5d29a0e119f66a8d",
+      "resultat_visuel": "exploitable",
+      "glErreur": 0,
+      "glPerdu": false,
+      "foretLibre": true,
+      "obstruction": false
+    },
+    {
+      "groupe": "high-cimes-reprise",
+      "scene": "route-des-cimes-hiver",
+      "fichier": "0001.png",
+      "sha256": "dd04f4f17d58712faadf01e11b89e4deb9bf47e516f9f306059f5595838c54af",
+      "resultat_visuel": "exploitable",
+      "glErreur": 0,
+      "glPerdu": false,
+      "foretLibre": true,
+      "obstruction": false
+    },
+    {
+      "groupe": "high-cimes-reprise",
+      "scene": "route-des-cimes-printemps",
+      "fichier": "0000.png",
+      "sha256": "b27693cbc025c7653c84d83e54b8305d8a258350252d5928269cd96109dc5f82",
+      "resultat_visuel": "exploitable",
+      "glErreur": 0,
+      "glPerdu": false,
+      "foretLibre": true,
+      "obstruction": false
+    },
+    {
+      "groupe": "high-cimes-reprise",
+      "scene": "route-des-cimes-printemps",
+      "fichier": "0001.png",
+      "sha256": "1d777403f5263891f190fe0528ad1e6f096dadff7ea700943f6944e5ea4ba254",
+      "resultat_visuel": "exploitable",
+      "glErreur": 0,
+      "glPerdu": false,
+      "foretLibre": true,
+      "obstruction": false
+    },
+    {
+      "groupe": "low-cimes-reprise",
+      "scene": "route-des-cimes-automne",
+      "fichier": "0000.png",
+      "sha256": "88ee02e3cfe2a17e23baabd4ed78c525d6c4e6f0b8fd64a7344a2720b4cc3b42",
+      "resultat_visuel": "exploitable",
+      "glErreur": 0,
+      "glPerdu": false,
+      "foretLibre": true,
+      "obstruction": false
+    },
+    {
+      "groupe": "low-cimes-reprise",
+      "scene": "route-des-cimes-automne",
+      "fichier": "0001.png",
+      "sha256": "be30a4e87a44c60e5399910bca245d1dc731fb19c0949dc02d1b68c6c2a6d987",
+      "resultat_visuel": "exploitable",
+      "glErreur": 0,
+      "glPerdu": false,
+      "foretLibre": true,
+      "obstruction": false
+    },
+    {
+      "groupe": "low-cimes-reprise",
+      "scene": "route-des-cimes-ete",
+      "fichier": "0000.png",
+      "sha256": "d7f98fca8bc538cbbbcde2bd1e4cfabede09fe49c4bc6f7bef377ed7c7b1fdef",
+      "resultat_visuel": "exploitable",
+      "glErreur": 0,
+      "glPerdu": false,
+      "foretLibre": true,
+      "obstruction": false
+    },
+    {
+      "groupe": "low-cimes-reprise",
+      "scene": "route-des-cimes-ete",
+      "fichier": "0001.png",
+      "sha256": "2682cfc509b773361a4562fab440345ce6057b392cc49a9d4954255a7cee4519",
+      "resultat_visuel": "exploitable",
+      "glErreur": 0,
+      "glPerdu": false,
+      "foretLibre": true,
+      "obstruction": false
+    },
+    {
+      "groupe": "low-cimes-reprise",
+      "scene": "route-des-cimes-hiver",
+      "fichier": "0000.png",
+      "sha256": "e63cc3b2645a36d5bf1b4cda7018e58fea61f64e5bad331ad3ed852709589a56",
+      "resultat_visuel": "exploitable",
+      "glErreur": 0,
+      "glPerdu": false,
+      "foretLibre": true,
+      "obstruction": false
+    },
+    {
+      "groupe": "low-cimes-reprise",
+      "scene": "route-des-cimes-hiver",
+      "fichier": "0001.png",
+      "sha256": "a0f5d1ac1cce1a86b879e728df014ba20d811e1dea3b79fec1ecc52bd3f593be",
+      "resultat_visuel": "exploitable",
+      "glErreur": 0,
+      "glPerdu": false,
+      "foretLibre": true,
+      "obstruction": false
+    },
+    {
+      "groupe": "low-cimes-reprise",
+      "scene": "route-des-cimes-printemps",
+      "fichier": "0000.png",
+      "sha256": "7d86f04d596b0a40f9e0bd457b82bcef3e536f5c571481c7952460809300d1c4",
+      "resultat_visuel": "exploitable",
+      "glErreur": 0,
+      "glPerdu": false,
+      "foretLibre": true,
+      "obstruction": false
+    },
+    {
+      "groupe": "low-cimes-reprise",
+      "scene": "route-des-cimes-printemps",
+      "fichier": "0001.png",
+      "sha256": "17fb7736c076c3e9f0c3a258e8ef7e324557376fd4b2f875941345dc9a1b6754",
+      "resultat_visuel": "exploitable",
+      "glErreur": 0,
+      "glPerdu": false,
+      "foretLibre": true,
+      "obstruction": false
+    }
+  ],
+  "budget_registre": "S1-FORMES-NUES.json : +269472 octets de géométrie brute par renderer ; aucune hausse de triangles/instances préparés dans les 108 cas comparés.",
+  "limites": [
+    "Captures représentatives à une pose et deux instants, jour sec ; ne constituent pas une inspection exhaustive de chaque mètre ou météo.",
+    "Raster SwiftShader, horloge RAF commandée : le compteur 10 FPS ne mesure pas les performances matérielles.",
+    "Persistants, caducs et climats observés sans défaut saisonnier bloquant ; feuillages facettés, tronc/squelette distincts et grandes facettes du terrain restent visibles.",
+    "La correction des captures Cimes est un changement d’outillage, pas un changement de rendu. Les 16 anciennes images masquées restent explicitement rejetées.",
+    "CI commune bloquée par le garde du build généré volontairement non livré : qualification assemblée et publication confiées à 00.",
+    "Aucun shader FERRO, physique p15, cockpit, audio Troll, jeu.js, constructeur ou artefact de livraison modifié."
+  ]
+}

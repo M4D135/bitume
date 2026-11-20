@@ -1,0 +1,2 @@
+2fa66ea3102ba7978dddbdfb5cae7bb2bc88c0a72fe2f5a3fd37e8d07ee1071e  tools/captures-meteo.mjs
+2722939bcff81ab74be92479550d138694b9107c510e7e2bcd16bbf1060e2da9  tools/controle-visuel.mjs

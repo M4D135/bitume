@@ -338,6 +338,9 @@
             const houppe = { shape: 'foliage', p: [p[0], p[1] + h * .8, p[2]], s: [h * .68, h * .4, h * .68], mat: 11, color: [.16, .3, .11] };
             objets.push(houppe); loin.push(houppe);
           }
+          // Même phénologie que la forêt, y compris pour les allées proches de la route.
+          // Les troncs solides et bandes de peinture restent présents et à leurs places historiques.
+          if (outils.saisonArbre) outils.saisonArbre(objets, loin, p[0], p[2], resineux ? 'conifere' : 'feuillu');
         } else if (d.type === 'rochers' && ra() < .6) {
           // blocs à demi enterrés, de la couleur de la roche du lieu, un peu plus ou un peu moins clairs
           const dd = cote * (w + 2.6 + ra() * 3.6), t = 1.2 + ra() * 1.6, p = pointPlan(f, dd, hauteur(f, dd, w) - .3), a = ra() * 6.28, e = .85 + ra() * .3;

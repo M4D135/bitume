@@ -38,6 +38,8 @@ jobs:
           set -o pipefail
           python3 construire.py 2>&1 | tee qualification/build.log
           git diff --exit-code -- VERSION.json SIZE.json dist/bitume.html
+          # Les oracles du raccord lisent le HTML réellement publié.
+          export BITUME_HTML="$GITHUB_WORKSPACE/dist/bitume.html"
           failures=0
           passed=0
           for test in verifications/*.test.mjs; do

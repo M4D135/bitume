@@ -5,6 +5,8 @@ import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 for (const nom of ['circuit', 'conduite', 'degats', 'contacts', 'course', 'meteo', 'ambiance', 'saisons', 'graphismes']) require('../src/' + nom + '.js');
+// La lecture réelle des réglages normalise aussi les préférences Troll depuis le menu.
+require('../src/menu-arcade.js');
 const B = globalThis.BITUME;
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const html = readFileSync(new URL('../src/index.html', import.meta.url), 'utf8');

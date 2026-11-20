@@ -1,0 +1,137 @@
+{
+  "schema": 1,
+  "lot": "04-S0",
+  "statut": "sources_reprises_controles_node_passes_captures_a_faire",
+  "base": "1c71bb341d20df4328e5178497503ee4ad26a131",
+  "commit_sources": "722d732ebb1d4f26227593ca160b7deede56cb9b",
+  "preparation_sha256": "43403458bcfc466c3cd6759f078e22b8570f86612ccf1c784d9bbad51afcc2d7",
+  "sources_sha256": {
+    "src/bords.js": "6f3a8f8c651fbd9d54cd1830bda81e5c848c7d40b515d09ecfdecfad9ba563c0",
+    "src/botanique.js": "7b7fdb36e771e0356bcff031a487c2acf0c87758668bb385d9d7addd6465fb11",
+    "src/decor.js": "1e7a0a690747280fc8fef9f7447a16fd57b968114a551b3cfe98e554a2e13198",
+    "src/saisons.js": "428f502714e87543bc60c812ef35a1c7688e42d40a76a4fcd0ca9d51bdee70a9",
+    "tools/captures-saisons.mjs": "a6dfaa992d2503818c0e75f8bb8377a4d15c06e6b9baacfb330afe1d24276022",
+    "tools/qualification/comparer-saisons.mjs": "b34226e08e9fb437c735cc5749bb13c897a3a24b650483e5f95536037b5e9dec",
+    "tools/qualification/saisons-circuits.mjs": "6a7b19c7ffd78c33f40d51e61361d4bb3a0385fc1bcdaa4002065237a292e3b2",
+    "verifications/botanique.test.mjs": "d14d04274028e862a27960159d7748c99dd4c6cc292e0dcefc0c91db6e4aa068",
+    "verifications/captures-saisons.test.mjs": "df9b1be80578fdeb32594b3771ff5ff67c34aee8a092026eea324045c92049e8",
+    "verifications/saisons-circuits.test.mjs": "53486c0f5d158e159594598d7650f4656f94024d74e8bf1e33df48e2df140ade",
+    "verifications/saisons.test.mjs": "75ae5a7f851c528ff73259831cd8056223ee39bc6ac2bb9d117f4bf647befc9e"
+  },
+  "suites": [
+    {
+      "test": "saisons",
+      "code": 0,
+      "secondes": 5.24,
+      "conclusion": [
+        "}"
+      ]
+    },
+    {
+      "test": "botanique",
+      "code": 0,
+      "secondes": 0.52,
+      "conclusion": [
+        "}"
+      ]
+    },
+    {
+      "test": "saisons-circuits",
+      "code": 0,
+      "secondes": 8.47,
+      "conclusion": [
+        "ℹ duration_ms 8148.132635"
+      ]
+    },
+    {
+      "test": "captures-saisons",
+      "code": 0,
+      "secondes": 0.1,
+      "conclusion": [
+        "ℹ duration_ms 14.661605"
+      ]
+    },
+    {
+      "test": "herbier-saisons",
+      "code": 0,
+      "secondes": 50.63,
+      "conclusion": [
+        "herbier-saisons : 6 circuits contrôlés"
+      ]
+    },
+    {
+      "test": "nature-integration",
+      "code": 0,
+      "secondes": 0.09,
+      "conclusion": [
+        "4 contrôles intégration nature réussis."
+      ]
+    },
+    {
+      "test": "nature-preparation",
+      "code": 0,
+      "secondes": 3.73,
+      "conclusion": [
+        "préparations de la nature : 4 contrôles passés"
+      ]
+    },
+    {
+      "test": "bords",
+      "code": 0,
+      "secondes": 1.52,
+      "conclusion": [
+        "7 vérifications des bords de route"
+      ]
+    },
+    {
+      "test": "bords-integration",
+      "code": 0,
+      "secondes": 6.48,
+      "conclusion": [
+        "15 vérifications de l'intégration des bords de route"
+      ]
+    },
+    {
+      "test": "route-des-cimes-decor",
+      "code": 0,
+      "secondes": 1.74,
+      "conclusion": [
+        "Route-des-Cimes décor : 9 vérifications réussies"
+      ]
+    },
+    {
+      "test": "decor-identite",
+      "code": 0,
+      "secondes": 4.07,
+      "conclusion": [
+        "décor : 9 géométries de référence inchangées (linux/x64/node-24.22.3)"
+      ]
+    },
+    {
+      "test": "decor-obstacles",
+      "code": 0,
+      "secondes": 0.85,
+      "conclusion": [
+        "}"
+      ]
+    },
+    {
+      "test": "baikal-decor",
+      "code": 0,
+      "secondes": 3.84,
+      "conclusion": [
+        "8/8 contrôles 13B réussis"
+      ]
+    }
+  ],
+  "resume": {
+    "suites_reussies": 13,
+    "suites_total": 13,
+    "combinaisons_matrice_legere": 36
+  },
+  "limites": [
+    "Pas de qualification visuelle à ce jalon.",
+    "Trois paliers, caches Cimes/Baikal et comparaison au parent en cours.",
+    "Aucun build partagé, aucun fichier audio, aucun module FERRO ni physique modifié."
+  ]
+}

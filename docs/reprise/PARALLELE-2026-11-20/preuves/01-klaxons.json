@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "lot": "01-T1-klaxons",
+  "statut": "module_audio_et_evenement_canonique_qualifies_raccord_00_requis",
+  "preparation": "../preparations/audio-troll.patch",
+  "preparation_sha256": "b48d3fcc8707d7ef789e1af3450f119334458e40cee5b2d802165bb8d15e8cd9",
+  "sources": {
+    "src/son.js": "59d349e437f924efba5b589e5ea138193fbd7dbea2660c4f496dff76129a460e",
+    "verifications/son.test.mjs": "c4fd5bfb54ae4d174427338a01d17f789dab4d53181da96effde2e66400dd8f6"
+  },
+  "validation": {
+    "commande": "node verifications/son.test.mjs",
+    "verifications_reussies": 25,
+    "timbres": [
+      "classique",
+      "ancien",
+      "mariage"
+    ],
+    "synthese_hz": [
+      8000,
+      48000
+    ],
+    "voix_fixes": 5,
+    "duree_max_s": 0.96,
+    "controles": [
+      "determinisme sans Math.random, energie et amplitude bornees, extremites silencieuses",
+      "une seule source par evenement sur voix et tampons prepares",
+      "quatre humains plus une IA simultanes, saturation bornee",
+      "silence et AudioContext non actif sans evenement en attente",
+      "arret des voix en pause, absence de rejeu a la reprise",
+      "reutilisation des voix sans contamination par une ancienne fin",
+      "signaux et musique de titre historiques preserves",
+      "suspension pendant un klaxon : arret/debranchement immediats sur horloge gelee",
+      "composition des vrais modules expressions/audio via consommerEvenement, J1 retarde par rapport et J2 immediat, aucune repetition par les vues"
+    ]
+  },
+  "echec_initial_conserve": {
+    "message": "ancien._fin is not a function",
+    "cause": "test appelait un champ prive perdu par Object.assign dans le faux contexte",
+    "correction": "appel de la propriete publique onended, comme sur la vraie source"
+  },
+  "limites": [
+    "Graphes et tampons verifies avec faux Web Audio ; pas d ecoute sur appareil.",
+    "Le coordinateur 00 raccorde la consommation unique avant les vues et la spatialisation.",
+    "Les choix menu et le transport reseau restent dans leurs perimetres."
+  ],
+  "defaut_revue_corrige": {
+    "reproduction": "Mariage actif a t=0.1, contexte suspendu : ancienne source encore raccordee ; une pause programmee a t+0.015 attendait le reveil.",
+    "correction": "viderKlaxons sur changement etat audio et gardes demarrer/klaxon/suspendre ; debranchement immediat lorsque horloge suspendue.",
+    "contre_test": "un contexte suspendu pendant un klaxon libere immediatement sa voix sans fin differee",
+    "revue_correction": "relue sans autre defaut concret identifie"
+  }
+}

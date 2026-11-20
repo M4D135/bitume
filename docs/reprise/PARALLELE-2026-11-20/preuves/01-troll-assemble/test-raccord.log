@@ -1,0 +1,17 @@
+✔ options : candidat et rapport distincts, options inconnues/répétées refusées (1.691547ms)
+✔ HTML incomplet ou module dupliqué : refus sans repli sur src (1.146764ms)
+✔ candidat exact : commandes, sons, temporalité et retour des vrais modèles (3884.957247ms)
+✔ oracle négatif : consommation coupée (3350.349195ms)
+✔ oracle négatif : choix J2 remplacé par J1 (3224.886995ms)
+✔ oracle négatif : son émis deux fois (3209.01454ms)
+✔ oracle négatif : répétition clavier acceptée (3632.590807ms)
+✔ oracle négatif : phase figée (3226.03913ms)
+✔ oracle négatif : retour supprimé (3457.049378ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23993.925299

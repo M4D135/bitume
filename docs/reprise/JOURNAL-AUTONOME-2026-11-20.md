@@ -485,3 +485,11 @@ lecture des têtes/états, sans attente en boucle ni réapplication des prépara
 Les trois jalons de sources Monaco/Marseille sont reçus depuis fa29088. La CI44783388788 est réussie sur le code d638652 ; seules trois clôtures documentaires suivent. Les trois suites sources ont été rejouées dans l'assemblage sans modifier le runtime0.2.68/p15/FERRO0.3.15. Les inconnues et les statuts non jouables sont conservés.
 
 Les PR41 (pilote/Troll) et40 (menu) sont maintenant recevables pour raccordement par00. Le jalon saisonsS1 6cbfa7e est retenu, hors M1 pierres en cours. Les tests de raccord des branches vérifient leurs bases temporaires, pas encore le futur jeu.js assemblé ; ils seront adaptés au fichier réellement intégré avant qualification. Aucun nouveau moteur FERRO qualifié : ne pas importer P1.
+
+## 030 — candidat commun0.2.69 construit
+
+Les sources PR41 pilote/Troll, PR40 menu et le seul jalon saisonsS1 6cbfa7e sont assemblées. Les raccords s'appliquent au vrai jeu.js ; les nouvelles vérifications lisent ce fichier intégré. Les choix Troll J1/J2 sont figés à la séance ; les préférences en ligne sont négociées dans le protocole existant. Le transport des événements distants reste absent et explicitement indiqué.
+
+Un défaut audio a été reproduit puis corrigé : les préécoutes encore actives occupaient les cinq voix au départ. La reprise depuis pause les purge ; les reprises répétées en course ne coupent pas les emotes. Les quatre suites ciblées réussissent (19 intégration,26 audio,39 manette,47 commandes partagées). Les suites de raccord/prêts et les contrôles caméra sont aussi conservés.
+
+La construction0.2.69 est identique deux fois, verrou FERRO conforme. Les tentatives de captures locales échouent avant démarrage du jeu à cause du refus système de socket Chromium ; aucune image locale n'est acceptée. Le workflow d'assemblage cible le commit/HTML exact et garde l'inspection visuelle ouverte. Aucun nouveau gain moteur, mesure matérielle ou déploiement n'est annoncé.

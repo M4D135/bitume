@@ -1,0 +1,183 @@
+{
+  "format": "bitume-captures-troll-v1",
+  "date": "2026-11-20T18:47:30.936Z",
+  "demandes": [
+    "duo-cockpit",
+    "duo-poursuite"
+  ],
+  "passages": [
+    {
+      "scenario": "duo-cockpit",
+      "dossier": "duo-cockpit",
+      "images": 13,
+      "build": {
+        "sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+        "octets": 14472625
+      },
+      "source": {
+        "commit": "e13dbfba9bdf45eefb92c7f9ffa2654433fe6b84",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "empreintes": [
+        {
+          "fichier": "0000.png",
+          "octets": 1014967,
+          "sha256": "541f3b9dc130b20d57df5032615a97144a9ad2b58c434f840d62bce5bdbd7e64"
+        },
+        {
+          "fichier": "0001.png",
+          "octets": 1015291,
+          "sha256": "381be0ff8217a96b7b0b9534c99d5a41037a416091b9940f5f43cc552770345c"
+        },
+        {
+          "fichier": "0002.png",
+          "octets": 1023911,
+          "sha256": "eb1fa25785d4a3c57a9fa839c897be1bad1665ba331da7e490130b9c78a0b01c"
+        },
+        {
+          "fichier": "0003.png",
+          "octets": 1004737,
+          "sha256": "f10829a8d95829b0d81a211f249520b2e5211dac421faa4500640233d27be3f3"
+        },
+        {
+          "fichier": "0004.png",
+          "octets": 999192,
+          "sha256": "fb412ce78ddd8967e6688edf313c2fc00d8c1979939bca49dd230ba006ec60d8"
+        },
+        {
+          "fichier": "0005.png",
+          "octets": 998633,
+          "sha256": "00c721bbf3b2189c376b63ef85d4c3b6fcebca8ca5d1a61d958c63d6dbef2a56"
+        },
+        {
+          "fichier": "0006.png",
+          "octets": 999201,
+          "sha256": "46e64ee4981acb40964e69701aa4377b444469f2f66898ece829294bf485ad79"
+        },
+        {
+          "fichier": "0007.png",
+          "octets": 1017455,
+          "sha256": "762640732d1a75c5c2aa902c3fada3a57c8300d9a4f27dcf4ed9c37862dd06b9"
+        },
+        {
+          "fichier": "0008.png",
+          "octets": 1008875,
+          "sha256": "f1970f23be9b09c77a02d728f1814f62523e8289b8f8f55ff1b8c28dd8af9d15"
+        },
+        {
+          "fichier": "0009.png",
+          "octets": 1024360,
+          "sha256": "954469044dc79aa3855de345a22650c3371e65d03d3ca422db1e0d018628d35b"
+        },
+        {
+          "fichier": "0010.png",
+          "octets": 1014770,
+          "sha256": "ba1943d4a370be1d108f5b907c7d3f1a76c22d341946bf5f5a1a3de383fa035c"
+        },
+        {
+          "fichier": "0011.png",
+          "octets": 1014797,
+          "sha256": "4d8cb2e07d103a3aa5922afe053f29822dccc9e2a13bf2cafceaf0159b901226"
+        },
+        {
+          "fichier": "0012.png",
+          "octets": 1014651,
+          "sha256": "42a28df9cb75885aad54ac0f01dcd667e7198e1ce978a94d3aa77d74decaa784"
+        }
+      ],
+      "erreurs": []
+    },
+    {
+      "scenario": "duo-poursuite",
+      "dossier": "duo-poursuite",
+      "images": 13,
+      "build": {
+        "sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+        "octets": 14472625
+      },
+      "source": {
+        "commit": "e13dbfba9bdf45eefb92c7f9ffa2654433fe6b84",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "empreintes": [
+        {
+          "fichier": "0000.png",
+          "octets": 866900,
+          "sha256": "759d285e43dc1256f031bbc855f7f101ecdb36211a0f824e7cd2e4f1b9867feb"
+        },
+        {
+          "fichier": "0001.png",
+          "octets": 867082,
+          "sha256": "f5a3e2e523bc75e738d81f44262bf37608eeffad58366caf10f3c12116c8c163"
+        },
+        {
+          "fichier": "0002.png",
+          "octets": 866932,
+          "sha256": "3c9864449da717527de6dce9a8097d1d695243b26036cd059bd590c338d5f3d0"
+        },
+        {
+          "fichier": "0003.png",
+          "octets": 867001,
+          "sha256": "37cb19bfffd06a3e3405fc30589cbbc547b1afa695de3cace8d41223a14c32ba"
+        },
+        {
+          "fichier": "0004.png",
+          "octets": 867555,
+          "sha256": "f3d4048e3e77b677fa9236063d66e234be2362bfae5262bc4777dcfa9ea5f9e7"
+        },
+        {
+          "fichier": "0005.png",
+          "octets": 867566,
+          "sha256": "73067f78805756a6d909080af03763d882c3f466b161d6ce8bc8166c28d74e1c"
+        },
+        {
+          "fichier": "0006.png",
+          "octets": 867188,
+          "sha256": "d1c943bd7a1900fd5d65010fa105146811a5cc6a780e661f7457e6cf7928d9f4"
+        },
+        {
+          "fichier": "0007.png",
+          "octets": 866784,
+          "sha256": "56151c58f552d1c5c7aca8888f1c883b1fe9079118e6052067a655141b0ac79a"
+        },
+        {
+          "fichier": "0008.png",
+          "octets": 867014,
+          "sha256": "5cda1df6d13bbac7feb42327a2466b4ac3b405387f09dd455f15f0ac6ea1c0f9"
+        },
+        {
+          "fichier": "0009.png",
+          "octets": 866540,
+          "sha256": "73019f0027e32bde951032ab84af7c361ea665c1c7f9f7b9d54f5b11f23cad73"
+        },
+        {
+          "fichier": "0010.png",
+          "octets": 866966,
+          "sha256": "1971b4e8f68fa66eeef99f53e46743949aa7410c3db7e294f3606cae66271cf4"
+        },
+        {
+          "fichier": "0011.png",
+          "octets": 866807,
+          "sha256": "a3e5f9af5b87d0705ad39551ec2bc71776f095a0eaac1f75f8576a932f95dab7"
+        },
+        {
+          "fichier": "0012.png",
+          "octets": 866469,
+          "sha256": "b7c403554d12188e506df829b64dfa574a92fa4f6d74acdace150d7109d3ea6c"
+        }
+      ],
+      "erreurs": []
+    }
+  ],
+  "echecs": 0,
+  "limites": [
+    "Horloge de rendu commandée et voitures immobiles ; aucun essai de conduite ni FPS matériel.",
+    "WebAudio réel et compteur de sources ; aucune écoute humaine ni vérification du périphérique sonore.",
+    "Clavier automatisé CDP ; aucune manette physique ni synchronisation réseau.",
+    "Les captures et articulations échantillonnent le geste ; inspection des PNG requise pour son naturel visuel."
+  ]
+}

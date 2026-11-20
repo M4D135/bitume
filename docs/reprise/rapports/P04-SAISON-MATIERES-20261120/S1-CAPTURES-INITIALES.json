@@ -1,0 +1,903 @@
+{
+  "schema": 1,
+  "sources": [
+    "259ed2bb8ba39375f6b792459c24997cfac6e701"
+  ],
+  "html_sha256": [
+    "8aeb52151348c92dfef357d11f6d06684ec98a7ab3d7eaed9f8f6a69ee28a784"
+  ],
+  "run": "https://github.com/M4D135/bitume/actions/runs/44782100015",
+  "jobs_reussis": 4,
+  "scenes": 44,
+  "png_inspectes": 88,
+  "png_exploitables": 72,
+  "png_rejetes_cadrage": 16,
+  "images": [
+    {
+      "groupe": "high-0-2",
+      "scene": "haut-col-automne",
+      "fichier": "0000.png",
+      "sha256": "327be537874c9e585a6f0fbee9c87b28b43346e993917143e7b8bc82bf5222c6",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "haut-col-automne",
+      "fichier": "0001.png",
+      "sha256": "b9bf580c12e64d0926e22818276e5ebfcad90fc592768395cabbf4058a11c337",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "haut-col-ete",
+      "fichier": "0000.png",
+      "sha256": "e801cd8d4f2eaf23e6e02d67fb97db152ed4db05c086155e569f17249ad4536f",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "haut-col-ete",
+      "fichier": "0001.png",
+      "sha256": "df2831dc2c9c2615fbd5dd98268981ba3c4c93ad4e27fd025371d1d26069e010",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "haut-col-hiver",
+      "fichier": "0000.png",
+      "sha256": "1d5cbabb54f9a66fd0a0f8cdfbb8d34a26bf9a41f6cb7d1fd29b2c2b277d30ed",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "haut-col-hiver",
+      "fichier": "0001.png",
+      "sha256": "8e6992fe455bef50c4f97ef711d41ac309c5a0303962bbf2210d72ab1e150b6c",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "haut-col-printemps",
+      "fichier": "0000.png",
+      "sha256": "b7517b8543fa17f1f312f4d39b0e693e937735959e4859e66e00236772ff6bcf",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "haut-col-printemps",
+      "fichier": "0001.png",
+      "sha256": "56ec321bcf0b551211b29ad9704fc364af2d4fa78c71910676aee1246eaa5c13",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "port-sable-automne",
+      "fichier": "0000.png",
+      "sha256": "2dec9b2cf9e767e69726f3651312813ade684f0c631feb03d2395fb50a421e12",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "port-sable-automne",
+      "fichier": "0001.png",
+      "sha256": "a2d26ab3c6fb1272cc424e33093418bd6c04ba7053c81dfa3b851a3df499ea49",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "port-sable-ete",
+      "fichier": "0000.png",
+      "sha256": "ebf120aae642b80922179c25789729f8c59e29bb68140b6ccab8db0fb04187f8",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "port-sable-ete",
+      "fichier": "0001.png",
+      "sha256": "09a0b030a9b99bf783fc8dd82fb9318ae9523833fa1adf353683206413f77f08",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "port-sable-hiver",
+      "fichier": "0000.png",
+      "sha256": "84a07e09d17d0b77642417410fb89a56ff80b4335dea8a76ad8d6f3bbfeb64b0",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "port-sable-hiver",
+      "fichier": "0001.png",
+      "sha256": "c9521da37c765026ed84bbae393a35216f70ddb8fb0219f3edf4253f2633001c",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "port-sable-printemps",
+      "fichier": "0000.png",
+      "sha256": "e173e9a6b57493651016eca48d080fd59082c2ef2da97c811937a03619550224",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "port-sable-printemps",
+      "fichier": "0001.png",
+      "sha256": "890c5a73daa55b2d5fad0f9fcea0a410aeb7dc2a84ca713142d63badb2139cf3",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "val-brule-automne",
+      "fichier": "0000.png",
+      "sha256": "05e9d33337ab8ff488639c93092f626b057fc27b2a5e8437359f470dea4f9df4",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "val-brule-automne",
+      "fichier": "0001.png",
+      "sha256": "42e1206c2b8e5c5dfee4823f8e97b3e3cd8d87af2e4338a75b9f1c5bb5e74651",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "val-brule-ete",
+      "fichier": "0000.png",
+      "sha256": "0fcbeccea7877505c1573ac8ae0a82f117f884e566934af1d09d6437b05190b1",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "val-brule-ete",
+      "fichier": "0001.png",
+      "sha256": "a45547b3e24e19b34813baa28aeeb3b80eca7b54ba60ac4240f466f0f51c54d9",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "val-brule-hiver",
+      "fichier": "0000.png",
+      "sha256": "b659f33e5e3b49dada0faf44cb28cf2f91fe4fc2b549499762e71ca81212de57",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "val-brule-hiver",
+      "fichier": "0001.png",
+      "sha256": "bc3813e754a34394dcd8dd8328556a566024ee141ec2bbdf36561356fcab7763",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "val-brule-printemps",
+      "fichier": "0000.png",
+      "sha256": "46010f7b1dad16dd2fed20588f2dc11bf97e82dcd9408e75b94ce697783ad8c0",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-0-2",
+      "scene": "val-brule-printemps",
+      "fichier": "0001.png",
+      "sha256": "7c1da6ae3151ab95077671b5447735d75d475d2b6f7750f7a1bcf3edae1a8ec3",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "brume-de-jade-automne",
+      "fichier": "0000.png",
+      "sha256": "651401a11bf3ce9dc5264142514f00a6e0c53711c59d57b9668c42a3a38a4adc",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "brume-de-jade-automne",
+      "fichier": "0001.png",
+      "sha256": "b096495caf7041dd7a9aa233d0eb3a6e0d9bf30e868d95dd62384fa6e0e50fa3",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "brume-de-jade-ete",
+      "fichier": "0000.png",
+      "sha256": "8365c7cd9ee996e636a262a2ed6e3ba144cf1100a2d965f0ccabe2d461291b2e",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "brume-de-jade-ete",
+      "fichier": "0001.png",
+      "sha256": "09a30d79eb106835c8a167b77a57665ac332b2e1d4353ef4838c97b2965d34f3",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "brume-de-jade-hiver",
+      "fichier": "0000.png",
+      "sha256": "371a4b77c9963002afdcc7b315d2574e78151e7527e6451323d7e9cc65674427",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "brume-de-jade-hiver",
+      "fichier": "0001.png",
+      "sha256": "28820d3921c5a882469a4fc81b06d6337eb916d33394797242289c69787fe963",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "brume-de-jade-printemps",
+      "fichier": "0000.png",
+      "sha256": "d3dbebb0a50e8b07ff31cd9664e10a5aa6b11b21e3925c73d1d5895536e22db8",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "brume-de-jade-printemps",
+      "fichier": "0001.png",
+      "sha256": "ab2ea4a8780f0e55a68b971e542a6d1739b93e31a3b762b1945d44818954895b",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "lande-noire-automne",
+      "fichier": "0000.png",
+      "sha256": "5f5f38806dbf5c60d92f00900456625152035ae2490dab25e1f4aefe65876751",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "lande-noire-automne",
+      "fichier": "0001.png",
+      "sha256": "f82d3f32f3ed55c5ffae1373858d676ef0a0d68b095feeb0f6f3be6b0deec54b",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "lande-noire-ete",
+      "fichier": "0000.png",
+      "sha256": "f17a0107e4f76f6702af3ad59db78de80437d90ff5d154a982c36db1ef076d0d",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "lande-noire-ete",
+      "fichier": "0001.png",
+      "sha256": "e8f6fb868c2bb8011e0a8cfa58d2c1211536ceadbd587c8daab100f739a7e083",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "lande-noire-hiver",
+      "fichier": "0000.png",
+      "sha256": "218c4ff68aef214b5f5270169883a1511e625d4915ee1ef629bd02da16b0d0a6",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "lande-noire-hiver",
+      "fichier": "0001.png",
+      "sha256": "b5327d8cb22044a589ff5784daf3c443e32b840d83e01386bc0d7b47319cf974",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "lande-noire-printemps",
+      "fichier": "0000.png",
+      "sha256": "7bf754d02b917f4e85ee756f9d60224c9aa5454d26a3210f6188ec092fc34768",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "lande-noire-printemps",
+      "fichier": "0001.png",
+      "sha256": "3385bc96c49c499c2aa936d3fb2e6c0e07522fd5c5fbfdfff3bc5d8d916c14c4",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "roche-fauve-automne",
+      "fichier": "0000.png",
+      "sha256": "05e28ed3d09fd99671725eda3966d3a22fa106f9f498f9f8e03a033d9eb6767d",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "roche-fauve-automne",
+      "fichier": "0001.png",
+      "sha256": "3d9cc3cbf14fe0c773191581a0ee4dc5dea87f94ea2031b7f2e11a7460d3aefa",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "roche-fauve-ete",
+      "fichier": "0000.png",
+      "sha256": "06ce3343bd80d9d663dc6fd0bc90ab470fbfe028b6c7825b26fa66c983ae4f40",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "roche-fauve-ete",
+      "fichier": "0001.png",
+      "sha256": "74fb140c24c95da1184496a3ec61777f2bf428c35cb9e3fa6ff446d901bcef89",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "roche-fauve-hiver",
+      "fichier": "0000.png",
+      "sha256": "48241e5b996ea9d2da56ccb466db6525f0db285d9118b244a49cf0cfb27662c1",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "roche-fauve-hiver",
+      "fichier": "0001.png",
+      "sha256": "0da90c8db2c47469a99d37560ff552bd0c3e33a9aef68efc82dbebd354e8b3c1",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "roche-fauve-printemps",
+      "fichier": "0000.png",
+      "sha256": "a3b43d13f0b08986d594e6e131dd063348728dccba706bfec363b644651058d1",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-3-5",
+      "scene": "roche-fauve-printemps",
+      "fichier": "0001.png",
+      "sha256": "f566bd7b003891f1fc6d84b1e957a799e2494f5763383e2d520612eae596523c",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "baikal-automne",
+      "fichier": "0000.png",
+      "sha256": "f0bfff7f17e82d6ebb692beebba238018edcedcc386f4b51bd011be9239793ac",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "baikal-automne",
+      "fichier": "0001.png",
+      "sha256": "6c75787feb7a202b8c0bce5c3d061ba9b8aa1b08bfcd295340da7c4b4ca61a37",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "baikal-ete",
+      "fichier": "0000.png",
+      "sha256": "d6729757f97523874aa10bc5c088ae165be636b33c57f1273b13d9617258ca23",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "baikal-ete",
+      "fichier": "0001.png",
+      "sha256": "fdafe1713141e6704bd699f3397adee07e5c94c6c076a4ff349bc60a54ae5890",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "baikal-hiver",
+      "fichier": "0000.png",
+      "sha256": "1456473126a66b13eb3f8c2746bacdabb55ca1dcc4e6dc7c52a665fedd996a72",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "baikal-hiver",
+      "fichier": "0001.png",
+      "sha256": "84d5cc93432016634200d31947927d8271f3ce1c7b3eaa8baf9a74bf76e01dd2",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "baikal-printemps",
+      "fichier": "0000.png",
+      "sha256": "5d5e44aaa8eda25505a5027dccb7554a58c84f7ac7d0d51d8ed7c018a8bef3e3",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "baikal-printemps",
+      "fichier": "0001.png",
+      "sha256": "48b99b05f259f4c7aa1bbb3227b9f1bed6267539c2475f85c2021a4c1fc172d0",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "cap-sequoia-automne",
+      "fichier": "0000.png",
+      "sha256": "914fb368fbea8fc570c7f9525cedce8a2063b6d26e484c78f9aff03dcc9b9b74",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "cap-sequoia-automne",
+      "fichier": "0001.png",
+      "sha256": "a606f21639deb23621e10dd2a75d5dc7e78890aab858a090604decca7f941fa4",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "cap-sequoia-ete",
+      "fichier": "0000.png",
+      "sha256": "59ef205ccd8873aa6bd7a5bdae0ec5841dfb04cdfef0562e001d2f90b3c03ccd",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "cap-sequoia-ete",
+      "fichier": "0001.png",
+      "sha256": "38084200ca1e112ff3675386477411b5cc6b2494f3dcba89c1d962c2c63d0654",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "cap-sequoia-hiver",
+      "fichier": "0000.png",
+      "sha256": "873eb981fe2179f91e0ae87b4e50ba2283420a33231856994d088d2a5bafd9a4",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "cap-sequoia-hiver",
+      "fichier": "0001.png",
+      "sha256": "2469c742b29f58aa0a3e96053e7f115e6c16d93a583709a09bab79fca3925b0f",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "cap-sequoia-printemps",
+      "fichier": "0000.png",
+      "sha256": "4a5f20f2de60d4b0476d3c39f8036de3a2587a109e3362ac652b37b7ca1a825b",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "cap-sequoia-printemps",
+      "fichier": "0001.png",
+      "sha256": "93317bd9a73610a7c827c55149541213d422dd4547aab76fb2535d2cab07f24e",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "route-des-cimes-alpin-ete",
+      "fichier": "0000.png",
+      "sha256": "c1b15d75fc55408fcda1e934210898acb45c05d9fd1767191897c177985a3a7c",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "route-des-cimes-alpin-ete",
+      "fichier": "0001.png",
+      "sha256": "751f91881d108e9b7e5a3e95f37f1777cbbf297e81a8b9b856af96c0514fcc35",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "route-des-cimes-alpin-hiver",
+      "fichier": "0000.png",
+      "sha256": "104985aed4d0e9ce1355e087b7b47aaa118e538bd3749c9d53c76375410a2627",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "route-des-cimes-alpin-hiver",
+      "fichier": "0001.png",
+      "sha256": "a9ebac08317bdb2c177e97b40b9d14fc3ff591606fb3b52375dca4525cc78215",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "route-des-cimes-automne",
+      "fichier": "0000.png",
+      "sha256": "579d7e473a35439bbc935e4aea6a9c1ca8c30a5e387aca8bf448fecd32f278f9",
+      "resultat_visuel": "rejete_cadrage_sujet_masque",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "route-des-cimes-automne",
+      "fichier": "0001.png",
+      "sha256": "f6711e3ce75dda4d162ec0c61981321be46459a34a288c233ccdab27f34c9b03",
+      "resultat_visuel": "rejete_cadrage_sujet_masque",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "route-des-cimes-ete",
+      "fichier": "0000.png",
+      "sha256": "ee3d7817ac8a979b8e622b7d5c725e6740d1ca6b8e01ffdf7585c7f8e0078ee5",
+      "resultat_visuel": "rejete_cadrage_sujet_masque",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "route-des-cimes-ete",
+      "fichier": "0001.png",
+      "sha256": "0654b9387dcd1fae1c9314bf9a7c5b753ad365c234cd2ee9f9d629bee0bff455",
+      "resultat_visuel": "rejete_cadrage_sujet_masque",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "route-des-cimes-hiver",
+      "fichier": "0000.png",
+      "sha256": "e54403443fb4a91ac4df85facd82ab27b1a8806dd904aab4aef3f3f1b173328e",
+      "resultat_visuel": "rejete_cadrage_sujet_masque",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "route-des-cimes-hiver",
+      "fichier": "0001.png",
+      "sha256": "c1e023d4f26c5fb177c22d905e6bad276ff96a973be7d8b2502d3f37c927b377",
+      "resultat_visuel": "rejete_cadrage_sujet_masque",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "route-des-cimes-printemps",
+      "fichier": "0000.png",
+      "sha256": "29c231bcbb2d517644fd9165cf0ca3497eca6c8db7513b80d8d6e21c829db095",
+      "resultat_visuel": "rejete_cadrage_sujet_masque",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "high-6-8",
+      "scene": "route-des-cimes-printemps",
+      "fichier": "0001.png",
+      "sha256": "2a29f9ba129d13c8091cf76c7c91be2bab7e723ea7aa4cf9f8168b63fa6466dc",
+      "resultat_visuel": "rejete_cadrage_sujet_masque",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "low-cimes",
+      "scene": "route-des-cimes-alpin-ete",
+      "fichier": "0000.png",
+      "sha256": "e8337755590f063a155bf081a9717c97fa35351897669d935973ae2891b92ef9",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "low-cimes",
+      "scene": "route-des-cimes-alpin-ete",
+      "fichier": "0001.png",
+      "sha256": "60865286092cfc0da0a75b8b8791d65258973fd321d8a0e878c2cc9645c4662f",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "low-cimes",
+      "scene": "route-des-cimes-alpin-hiver",
+      "fichier": "0000.png",
+      "sha256": "7a505221e7dc3e70df1b17a8e11c6ff3b4f304776bf20dfc4578790cd477d062",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "low-cimes",
+      "scene": "route-des-cimes-alpin-hiver",
+      "fichier": "0001.png",
+      "sha256": "0da3909e74e99d22b0eefa84e7f7c4b183c3c68ca8278aad07e867848163ab0f",
+      "resultat_visuel": "exploitable",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "low-cimes",
+      "scene": "route-des-cimes-automne",
+      "fichier": "0000.png",
+      "sha256": "8bbdc195eaa74e3e7f7014887397158f96dc99ca7e754b5bd66fcb97712373a5",
+      "resultat_visuel": "rejete_cadrage_sujet_masque",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "low-cimes",
+      "scene": "route-des-cimes-automne",
+      "fichier": "0001.png",
+      "sha256": "fc3d673d251df39b15cf193af2e5fbbcb210a7d4fc6675eadfe2a331d3bb6382",
+      "resultat_visuel": "rejete_cadrage_sujet_masque",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "low-cimes",
+      "scene": "route-des-cimes-ete",
+      "fichier": "0000.png",
+      "sha256": "ec8366eba1aaaf039b6b32e04cfae568af9a9d241fc206b0c58d4d95b0f5b6d0",
+      "resultat_visuel": "rejete_cadrage_sujet_masque",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "low-cimes",
+      "scene": "route-des-cimes-ete",
+      "fichier": "0001.png",
+      "sha256": "9590eeb73d843bdc6597314a2868ea280adf60ea660100d827d937ad7a207499",
+      "resultat_visuel": "rejete_cadrage_sujet_masque",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "low-cimes",
+      "scene": "route-des-cimes-hiver",
+      "fichier": "0000.png",
+      "sha256": "1909e2d668b6ea2e0d1cc267c0256fcf1bcc7da7d17299870dbad2d928cb177e",
+      "resultat_visuel": "rejete_cadrage_sujet_masque",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "low-cimes",
+      "scene": "route-des-cimes-hiver",
+      "fichier": "0001.png",
+      "sha256": "b7eccde031c9bf93f339ee3deec33dfeef65eeaad0da8974510e5674362badba",
+      "resultat_visuel": "rejete_cadrage_sujet_masque",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "low-cimes",
+      "scene": "route-des-cimes-printemps",
+      "fichier": "0000.png",
+      "sha256": "d6b7e92ff33eb471a7b67a459b82e312da5017cdc50f9246a3177478b15a1c55",
+      "resultat_visuel": "rejete_cadrage_sujet_masque",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    },
+    {
+      "groupe": "low-cimes",
+      "scene": "route-des-cimes-printemps",
+      "fichier": "0001.png",
+      "sha256": "44e3fafa8223d86a6f8b06188aaae4bd6c3c5ddd2876b197472693e6f6e2e915",
+      "resultat_visuel": "rejete_cadrage_sujet_masque",
+      "alertes": 0,
+      "glErreur": 0,
+      "glPerdu": false
+    }
+  ],
+  "conclusion": "Inspection complémentaire obligatoire : les seize PNG forestiers Cimes high/low sont masqués malgré les contrôles techniques verts. Leur reprise ciblée est publiée en d93d239.",
+  "limites": [
+    "Rendu logiciel SwiftShader, horloge rAF commandée ; badge FPS sans valeur matérielle.",
+    "Deux frames par scène ; aucune qualification de roulage prolongé ou de scintillement sur trois frames.",
+    "Facettes de terrain et formes très géométriques des arbres restent visibles ; aucun photoréalisme revendiqué."
+  ]
+}

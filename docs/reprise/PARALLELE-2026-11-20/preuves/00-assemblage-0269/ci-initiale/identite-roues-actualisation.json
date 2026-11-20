@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "statut": "reference_visuelle_actualisee_controles_stricts_conserves",
+  "base_main": "fee69c521eccc0e64cc29f762a6d2244b5ade759",
+  "candidat_sources": "7999de565e2c643f7723462caf7683b570c75e8b",
+  "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+  "raison": "La référence 0.2.68 conserve les objets du cockpit distinct et l’ancien pilote. Le lot reçu remplace volontairement le thorax, abaisse le siège, creuse la cavité et partage la géométrie entre cockpit et extérieur.",
+  "controle_reference_ancienne": {
+    "methode": "Même suite avec voiture.js de main fee69c5 et modules dépendants inchangés, sans modifier le fixture",
+    "resultat": "6/6 réussis, 134 groupes par configuration"
+  },
+  "comparaison": {
+    "primitives": {
+      "groupes": 134,
+      "groupes_identiques": [
+        "fantome",
+        "glaces"
+      ],
+      "groupes_modifies": 132,
+      "modification_ordre_seul": 0,
+      "nature": "Le contenu/nombre des objets change avec les nouvelles pièces et leurs coordonnées ; aucun écart ne s’explique seulement par un ordre ou un index.",
+      "groupes_poses_exterieures_roues_identiques": 32,
+      "autres_groupes_roues_identiques": [
+        "fantome",
+        "glaces",
+        "images/glace"
+      ],
+      "groupes_empreinte_roues_modifiee": 91,
+      "portee_ecarts_roues": "Uniquement les groupes comprenant un cockpit : ses pièces arrière ne sont plus retirées.",
+      "formes_roues_identiques": true,
+      "cotes_roues_identiques": true,
+      "maillages_existants_modifies": [
+        "pontons",
+        "goutte",
+        "goutte-dedans",
+        "loin-caisse",
+        "loin-dessus-pilote",
+        "cuve",
+        "console-levier-pilote"
+      ],
+      "maillages_ajoutes": [
+        "pilote-buste",
+        "pilote-buste-moyen",
+        "pilote-buste-simple",
+        "assise-pilote",
+        "siege-supports"
+      ]
+    },
+    "emprise": {
+      "groupes": 134,
+      "groupes_identiques": [
+        "fantome",
+        "glaces"
+      ],
+      "groupes_modifies": 132,
+      "modification_ordre_seul": 0,
+      "nature": "Le contenu/nombre des objets change avec les nouvelles pièces et leurs coordonnées ; aucun écart ne s’explique seulement par un ordre ou un index.",
+      "groupes_poses_exterieures_roues_identiques": 32,
+      "autres_groupes_roues_identiques": [
+        "fantome",
+        "glaces",
+        "images/glace"
+      ],
+      "groupes_empreinte_roues_modifiee": 91,
+      "portee_ecarts_roues": "Uniquement les groupes comprenant un cockpit : ses pièces arrière ne sont plus retirées.",
+      "formes_roues_identiques": true,
+      "cotes_roues_identiques": true,
+      "maillages_existants_modifies": [
+        "pilote-buste",
+        "pontons",
+        "goutte",
+        "goutte-dedans",
+        "loin-caisse",
+        "loin-dessus-pilote",
+        "cuve",
+        "console-levier-pilote"
+      ],
+      "maillages_ajoutes": [
+        "pilote-buste-moyen",
+        "pilote-buste-simple",
+        "assise-pilote",
+        "siege-supports"
+      ]
+    }
+  },
+  "justification_maillages": "Les pontons, goutte/doublure, caisse/dessus lointains sont creusés pour la cavité ; cuve/console suivent le siège ; thorax fermé aux trois détails, assise et supports ajoutés. Aucun maillage de roue ni aucune carène hors de cette liste ne change.",
+  "portee_golden": "Descripteurs d’objets lus par le renderer, arrondis à 1e-9. Les deux groupes fantome/glaces sont inchangés au niveau de ces descripteurs ; les maillages sont comparés séparément ci-dessus.",
+  "roues_detail": {
+    "ancien_attendu_cockpit": 2,
+    "attendu_cockpit_commun": 4,
+    "controles_conserves_ou_precises": [
+      "Quatre pneus avant/arrière au détail demandé",
+      "Même position monde et mêmes dimensions que la vue extérieure",
+      "Aucune mutation des quatre objets de la grande vue après cockpit/rétro",
+      "Aucune mutation des quatre objets du cockpit après rétro",
+      "Deux pneus arrière au détail propre aux rétroviseurs"
+    ],
+    "resultat": "8/8 réussis"
+  },
+  "identite": {
+    "regeneration": "BITUME_FIGER=1 node verifications/voiture-identite.test.mjs",
+    "verification_stricte": "node verifications/voiture-identite.test.mjs",
+    "tolérance": 1e-09,
+    "groupes_par_configuration": 134,
+    "configurations": 2,
+    "invariants_retros_entrelacement": "Conservés sans réduction ni filtre supplémentaire",
+    "resultat": "6/6 réussis après régénération puis exécution stricte sans BITUME_FIGER",
+    "fixture_sha256": "9e721e9b19fd3892a6138d52485c63481eb3b1687c08e5423dde6126d5b02c1f"
+  },
+  "runtime_modifie": false,
+  "fichiers": [
+    "verifications/roues-detail.test.mjs",
+    "verifications/voiture-identite.test.mjs",
+    "verifications/fixtures/voiture-identite.json"
+  ]
+}

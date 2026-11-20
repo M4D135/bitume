@@ -9,12 +9,12 @@
     "lot": "00A_inventaire_contrats_et_reception_02_P0",
     "fiche": "docs/reprise/PARALLELE-2026-11-20/00-INTEGRATION.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "029",
-    "prochaine_action": "Coordination00 : assembler pilote/Troll, menu et saisonsS1 qualifies localement ; construire et qualifier le candidat commun.",
+    "derniere_entree": "030",
+    "prochaine_action": "Qualifier le candidat assemble0.2.69 sur son commit exact puis fusionner.",
     "dernier_lot_clos": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json",
     "fiche_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
     "index": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
-    "entree_journal": "029",
+    "entree_journal": "030",
     "dernieres_demandes": "docs/reprise/DEMANDES-ARCADE-PERFORMANCE-TROLL-2026-11-20.md",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md",
@@ -598,5 +598,70 @@
     "ferro": "0.3.15",
     "nouveaux_circuits_jouables": false,
     "regle": "Les trois fichiers de cloture apres le SHA qualifie sont documentaires ; sources et outils qualifies conserves exactement."
+  },
+  "candidat_assemble_0269": {
+    "schema": 1,
+    "base_main": "fee69c521eccc0e64cc29f762a6d2244b5ade759",
+    "statut": "candidat_construit_ci_et_images_a_qualifier",
+    "version": "0.2.69",
+    "physique": "p15",
+    "ferro": "0.3.15",
+    "circuits": 9,
+    "lots": [
+      {
+        "lot": "01",
+        "head": "d99d55cba227b0a70b6ceca0688f48324d8a7d69",
+        "pr": 41
+      },
+      {
+        "lot": "03",
+        "head": "e54b3cc5d48d7e9ff73e97677665cc3bf00f12f3",
+        "pr": 40
+      },
+      {
+        "lot": "04_S1",
+        "head": "6cbfa7e48d8b77ab1f7f7fe252bf4e2e693cacba",
+        "M1_exclu": true
+      }
+    ],
+    "build": {
+      "version": {
+        "version": "0.2.69",
+        "titre": "BITUME",
+        "moteur": "FERRO",
+        "empreinte": "e3429776d1ab5b75d79203defbf61abb9290f6ce4494f5627122f971ebe5900e"
+      },
+      "html_octets": 14472625,
+      "hashes": {
+        "dist/bitume.html": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+        "VERSION.json": "adf1dc7d7653020b1ed3699628324fcb757524b08083eda80d05c505811b8432",
+        "SIZE.json": "082d429feab92d1c7736fe105137943dbce06a18c452a5de0ca7d1cb39db87f3"
+      },
+      "reconstruction_identique": true,
+      "ferro_lock": true
+    },
+    "tests_cibles": {
+      "integration_parallele": 19,
+      "son": 26,
+      "manette": 39,
+      "commandes_partage": 47,
+      "echecs": 0
+    },
+    "tests_delegues": {
+      "prets_enligne": 63,
+      "raccord_menu": 14,
+      "camera_paysage_portrait_duo": 2
+    },
+    "correctif_audio": "Reprise depuis menu purge les preecoutes ; une reprise repetee en course conserve les Troll actifs. Cinq voix bornees.",
+    "preferences_reseau": "Schema1 et remappage machine/place, snapshots et compatibilite ancien hote testes en simulation.",
+    "evenements_troll_distants": "non synchronises ; indication explicite a la preparation en ligne",
+    "captures_locales": {
+      "statut": "demarrage_chromium_bloque",
+      "raison": "socket() Operation not permitted ; aucune image du candidat validee localement",
+      "suite": "CI ciblee [capture-assemblage]"
+    },
+    "reserve_animation": "Inspection WebGL et naturel temporel du coude encore requis.",
+    "qualification_generale": "a_executer_sur_commit_exact",
+    "site_deploye": false
   }
 }

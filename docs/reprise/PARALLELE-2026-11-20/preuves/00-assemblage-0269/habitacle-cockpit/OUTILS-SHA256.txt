@@ -1,0 +1,2 @@
+8963133a789661b48091c8c2a505c8e166297b3252a4f25b1b17a73e6b9bdb01  tools/captures-habitacle.mjs
+2722939bcff81ab74be92479550d138694b9107c510e7e2bcd16bbf1060e2da9  tools/controle-visuel.mjs
