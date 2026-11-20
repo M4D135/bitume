@@ -14,3 +14,22 @@ Aucun changement du runtime, du build ou de sa version.
 Travaux parallèles préparés à cette date : démos/pilotes `b928fe7`, météo `b98bad5`.
 Ce sont des checkpoints locaux, pas des livraisons. Leur sauvegarde distante et leur qualification
 intégrée seront consignées séparément. Route-des-Cimes est en reconstruction documentée.
+
+## 002 — socle et checkpoints publiés
+
+PR #36 fusionnée : `fb6384cb1b3407eecdb72cf9471f137a459334d9`, arbre exact vérifié.
+Les branches `backup/demos-pilotes-20261120` et `backup/meteo-matiere-20261120`
+sauvegardent les premiers lots de code, avec arbres identiques aux checkpoints locaux.
+Reçu : `rapports/REFERENCES-OBJECTIFS-2026-11-20/PUBLICATION.json`.
+Raccords démo intégrés localement ; qualification intégrée et captures à poursuivre.
+La matrice météo sépare les trois scènes pluie pour réduire le risque de timeout,
+sans enlever un scénario ni réduire la résolution ; comparaison à la version publiée 0.2.62.
+
+## 003 — candidat 0.2.63 intégré et repris
+
+Les deux lots sont réunis et le build de 14 316 546 octets est reproductible.
+150/152 suites dans la campagne récupérée ; le simulateur du regard arrière a été adapté
+à la nouvelle poursuite, puis les deux échecs ont passé leur reprise ciblée. Le dépassement
+initial Val-Brûlé à 165 ms reste déclaré, seuil 150 ms inchangé. FERRO : 34 modules exacts.
+Les 11 rendus natifs de météo correspondent à la source intégrée. CI/captures à suivre.
+Reçu : `rapports/DEMOS-PILOTES-METEO-2026-11-20/QUALIFICATION-0263.json`.

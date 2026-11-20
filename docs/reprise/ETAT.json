@@ -1,16 +1,16 @@
 {
   "date": "2026-11-20",
   "etat_courant": {
-    "version_courante": "0.2.62",
+    "version_courante": "0.2.63",
     "version_publiee_verifiee": "0.2.62",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "aspiration_sillage_publie_qualifie",
-    "lot": "aspiration_sillage_clos",
-    "fiche": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md",
+    "statut": "candidat_demos_pilotes_meteo",
+    "lot": "demos_pilotes_meteo",
+    "fiche": "docs/reprise/DEMOS-PILOTES-METEO-2026-11-20.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "001",
-    "prochaine_action": "Publier d’abord références, modèles et programme complet ; sauvegarder les branches de travail, puis qualifier démos/pilotes/météo sur p15.",
+    "derniere_entree": "003",
+    "prochaine_action": "Publier le candidat, contrôler CI et captures intégrées avant fusion.",
     "dernier_lot_clos": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md"
   },
   "publication": {
@@ -259,7 +259,15 @@
     "file": "docs/reprise/FILE-TRAVAIL.json",
     "references": "docs/references/objectifs-utilisateur-2026-11-20/README.md",
     "priorite_utilisateur": "Publication GitHub des modèles, objectifs et feuille de route avant la suite",
-    "lot_actif": "references",
-    "statut": "publication_documentaire_preparee"
+    "lot_actif": "demos_pilotes",
+    "statut": "references_publiees_integration_code_en_cours",
+    "recu_references": "docs/reprise/rapports/REFERENCES-OBJECTIFS-2026-11-20/PUBLICATION.json"
+  },
+  "candidat_0263": {
+    "version": "0.2.63",
+    "build_octets": 14316546,
+    "build_sha256": "05d5ed2af9dc800491b2afe9ff5928641a463b15e2ccdd0420660696e4c946ee",
+    "build_reproduit_identique": true,
+    "recu": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/QUALIFICATION-0263.json"
   }
 }

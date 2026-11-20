@@ -65,6 +65,7 @@ MODULES = [
     'animaux.js',
     'traces.js',
     'echappement.js',
+    'expressions-pilote.js',
     'cinema.js',
     'realisateur.js',
     'meteo.js',

@@ -302,6 +302,7 @@
       detailsRouesGlaces: [new Int8Array(course.voitures.length).fill(-1), new Int8Array(course.voitures.length).fill(-1)],
       contresens: 0, bloque: 0, finA: null, resultats: false, derniereJauge: -9, positionPrec: 0, tempsAffiche: null,
       real: demo ? B.realisateur.creer(graineCourse) : null, cinema: null, planVu: null, suivie: 0, enchaine: false,
+      expressions: B.expressionsPilote ? B.expressionsPilote.creer(course.voitures.length, graineCourse) : null,
       fx: B.traces.creer(course.voitures.length, graineCourse, course.physique.world),
       // flammes et détonations d'échappement (lot 20) : hasard propre, tiré de la graine de la course
       ech: B.echappement ? B.echappement.creer(course.voitures.length, graineCourse) : null,
@@ -398,10 +399,10 @@
   // Commandes de chaque joueur (David, 16/11 : « choix manette, clavier ou souris, et gérer les touches de chacun » ;
   // « clavier normal pour un et pavé numérique pour l'autre ») : appareil choisi (auto, manette, clavier, souris) et
   // jusqu'à deux touches par action, réglables ; positions physiques des touches (e.code).
-  const ACTIONS = ['gaz', 'frein', 'gauche', 'droite', 'derive', 'haut', 'bas', 'vue'];
+  const ACTIONS = ['gaz', 'frein', 'gauche', 'droite', 'derive', 'haut', 'bas', 'vue', 'troll'];
   const TOUCHES_DEFAUT = [
-    { gaz: ['ArrowUp', 'KeyW'], frein: ['ArrowDown', 'KeyS'], gauche: ['ArrowLeft', 'KeyA'], droite: ['ArrowRight', 'KeyD'], derive: ['Space', 'ShiftLeft', 'ShiftRight'], haut: ['KeyE'], bas: ['KeyQ'], vue: ['KeyC'] },
-    { gaz: ['Numpad8'], frein: ['Numpad5', 'Numpad2'], gauche: ['Numpad4'], droite: ['Numpad6'], derive: ['Numpad0'], haut: ['Numpad9'], bas: ['Numpad7'], vue: ['NumpadEnter'] }
+    { gaz: ['ArrowUp', 'KeyW'], frein: ['ArrowDown', 'KeyS'], gauche: ['ArrowLeft', 'KeyA'], droite: ['ArrowRight', 'KeyD'], derive: ['Space', 'ShiftLeft', 'ShiftRight'], haut: ['KeyE'], bas: ['KeyQ'], vue: ['KeyC'], troll: ['KeyG'] },
+    { gaz: ['Numpad8'], frein: ['Numpad5', 'Numpad2'], gauche: ['Numpad4'], droite: ['Numpad6'], derive: ['Numpad0'], haut: ['Numpad9'], bas: ['Numpad7'], vue: ['NumpadEnter'], troll: ['NumpadDecimal'] }
   ];
   const commande = n => (reglages.commandes && reglages.commandes[n]) || 'auto';
   const toucheDe = (n, action) => (reglages.touches && reglages.touches[n] && reglages.touches[n][action]) || TOUCHES_DEFAUT[n][action];
@@ -420,6 +421,15 @@
   const doigt = { volant: 0, gaz: false, frein: false, derive: false, id: null, x0: 0 };
   let analogique = false;
   let relacherTactile = () => {};
+
+  // Un front de touche, de bouton ou un clic tactile : aucune répétition quand on maintient la commande.
+  // L'animation choisit sa variante et son côté sans toucher à l'état de conduite ni au hasard de la course.
+  function provoquer(n = 0) {
+    if (!enCourse() || !session?.expressions || (n === 1 && session.type !== 'duo')) return;
+    const id = session.locaux?.[n] ?? session.course.joueur.id;
+    B.expressionsPilote.demander(session.expressions, id, true);
+    B.expressionsPilote.demander(session.expressions, id, false);
+  }
 
   // conduite par position physique des touches (e.code : ZQSD et WASD au même endroit) ; vue, son et pause par lettre
   addEventListener('keydown', e => {
@@ -444,11 +454,13 @@
       if (toucheDe(0, 'haut').includes(e.code)) impulsions.haut = true;
       if (toucheDe(0, 'bas').includes(e.code)) impulsions.bas = true;
       if (toucheDe(0, 'vue').includes(e.code)) changerVue();
+      if (toucheDe(0, 'troll').includes(e.code)) provoquer(0);
     }
     if (session && session.type === 'duo' && (commande(1) === 'auto' || commande(1) === 'clavier')) {
       if (toucheDe(1, 'haut').includes(e.code)) impulsions2.haut = true;
       if (toucheDe(1, 'bas').includes(e.code)) impulsions2.bas = true;
       if (toucheDe(1, 'vue').includes(e.code)) changerVue2();
+      if (toucheDe(1, 'troll').includes(e.code)) provoquer(1);
     }
     if (lettre === 'm') couperSon();
   });
@@ -542,6 +554,7 @@
         if (nouveau(5)) impulsions.haut = true;
         if (nouveau(4)) impulsions.bas = true;
         if (nouveau(3)) changerVue();
+        if (nouveau(10)) provoquer(0);
       }
       // Si J2 vient de changer d'écran, consommer aussi les fronts de J1 sans agir une seconde fois.
       if (ecran === ecranLecture) {
@@ -708,6 +721,7 @@
       if (nouveau(5)) impulsions2.haut = true;
       if (nouveau(4)) impulsions2.bas = true;
       if (nouveau(3)) changerVue2();
+      if ((commande(1) === 'auto' || commande(1) === 'manette') && nouveau(10)) provoquer(1);
     }
     if (nouveau(9)) { activerSon(); basculerPause(); }
     else if (!enCourse()) naviguerManette(nouveau, p);
@@ -819,6 +833,7 @@
     };
     addEventListener('resize', relacherTactile);
     $('t-vue').addEventListener('click', changerVue);
+    $('t-troll').addEventListener('click', () => provoquer(0));
     $('b-pause').addEventListener('click', () => basculerPause());
   })();
 
@@ -2278,12 +2293,14 @@
   // vue (J2, puis J1, puis leurs glaces) finit de s'en servir avant que la suivante les réécrive. Seize voitures au
   // plus (onze rivaux, quatre humains) ; au-delà, les tableaux grandissent.
   const nouvellePose = () => ({ p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0, roule: 0, rebond: null, v: 0, etatPneus: null,
-    pilote: { volant: 0, rapport: 1, rapportAvant: 1, passage: 1, alat: 0, along: 0, v: 0, t: 0 } });
+    pilote: { volant: 0, rapport: 1, rapportAvant: 1, passage: 1, alat: 0, along: 0, v: 0, t: 0,
+      regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0 } });
   const nouvellesOptions = () => ({ detail: 'complet', roues: undefined, casse: false, plafond: 'complet', rouesDetail: 0 });
   const POSES_RENDU = Array.from({ length: 16 }, nouvellePose), OPTIONS_POSE = Array.from({ length: 16 }, nouvellesOptions);
   const POSE_FANTOME = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0 };
   const ETAT_COCKPIT = { regime: 0, volant: 0, rapport: 0, kmh: 0, roues: undefined, casse: false, passage: 1, rapportAvant: undefined,
-    derriere: null, ciel: null, brume: null, glaceVive: false, rouesDetail: 0 };
+    derriere: null, ciel: null, brume: null, glaceVive: false, rouesDetail: 0,
+    regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0 };
   const SUIVEURS = [], RESERVE_SUIVEURS = Array.from({ length: 16 }, () => ({ x: 0, z: 0, couleur: null })), AUCUN_SUIVEUR = Object.freeze([]);
   const SOLEILS = [{ center: [0, 0, 0], extent: 0, depth: 0 }, { center: [0, 0, 0], extent: 0, depth: 0 }];
   const LAMPES_PORTIQUE = [], FEU_ALLUME = [1, .14, .06], FEU_ETEINT = [.1, .03, .03], TAILLE_FEU = [.56, .05, .56];
@@ -2342,6 +2359,7 @@
     // pris au dernier pas, ils avançaient par sauts de 1/120 s (à 144 Hz, une image sur six sans pas les figeait) et
     // devançaient les voitures d'un pas au plus. La vue du joueur 2 hérite des deux valeurs (Object.create).
     S.retardImage = (1 - alpha) * DT; S.tRendu = co.horloge - S.retardImage;
+    if (S.expressions) B.expressionsPilote.actualiser(S.expressions, co, poses, S.tRendu, S.type === 'demo');
     if (B.sillage) B.sillage.mettreAJour(S.sillage || (S.sillage = creationTardive('sillage', B.sillage.creer())), co.voitures, poses, co.c);
     if (B.mesures.actif) {
       let actives = 0;
@@ -2411,7 +2429,7 @@
     if (S.type === 'vitrine') { suivie = co.voitures[co.classement[S.suiviRang || 0]] || j; vue = 'tele'; }
     else if (S.type === 'demo') {
       B.cinema.regler(S.cinema, { faune: B.animaux.qualite(reglages.faune, P.palier), nuit: S.nature?.ambiance.nuit || 0, pluie: meteo.pluie || 0 });
-      const pl = B.realisateur.tenir(S.real, co, S.cinema);
+      const pl = B.realisateur.tenir(S.real, co, S.cinema, S.expressions);
       // coupe : les caméras lissées repartent de la nouvelle voiture, les écarts du son aussi
       if (S.planVu !== pl) { S.planVu = pl; S.camCap = null; S.tete = null; S.tele.poste = null; S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0; }
       vue = pl.vue; suivie = co.voitures[pl.sujet];
@@ -2428,7 +2446,7 @@
     sortie.length = 0;
     let cam;
     if (DANS_LA_ROCHE.has(vue) && B.circuit.dansTunnel(co.c, suivie.etat.s, 8)) {
-      if (S.type === 'demo' && B.cinema.VUES.includes(vue)) {
+      if (S.type === 'demo') {
         S.planVu = B.realisateur.replier(S.real, co, 'poursuite', suivie.id);
         suivie = co.voitures[S.planVu.sujet];
         S.camCap = null; S.tete = null; S.tele.poste = null; S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0;
@@ -2436,28 +2454,76 @@
       vue = 'poursuite';
     }
     let ps = poses[suivie.id];
-    const exterieur = VUES_DEHORS.has(vue);
     if (B.cinema.VUES.includes(vue)) {
       cam = B.cinema.camera(S.cinema, S.planVu, poses, co, S.tRendu);
       if (!cam) {
         // Coupe explicite, sans conserver l'ancien plan ni ses filtres quand son sujet devient masqué.
-        S.planVu = B.realisateur.replier(S.real, co, 'tele', suivie.id); S.camCap = null; S.tete = null; S.tele.poste = null;
+        S.planVu = B.realisateur.replier(S.real, co, 'poursuite', suivie.id); S.camCap = null; S.tete = null; S.tele.poste = null;
         suivie = co.voitures[S.planVu.sujet]; ps = poses[suivie.id];
         S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0;
-        vue = 'tele'; cam = cameraTele(S, suivie, ps);
+        vue = 'poursuite'; cam = cameraPoursuite(S, ps, suivie.etat, dtImage);
       }
     } else if (vue === 'tele') cam = cameraTele(S, suivie, ps);
     else if (vue === 'helico') cam = cameraHelico(S, ps, dtImage);
     else if (vue === 'sol') cam = cameraSol(S, suivie, ps);
     else if (CAMERAS_DEMO.has(vue)) cam = cameraDemo(S, ps, S.planVu);
     else cam = vue === 'cockpit' ? cameraCockpit(S, ps, suivie.etat, S.tRendu, dtImage) : cameraPoursuite(S, ps, suivie.etat, dtImage);
+    if (S.type === 'demo') {
+      const aspect = canvas.clientWidth / Math.max(1, canvas.clientHeight);
+      // Toutes les vues passent par le même contrôle, y compris les anciens plans télé, sol et orbite.
+      // Un refus change réellement de plan : le repli ne revient pas dans le plan masqué à l'image suivante.
+      const accepte = vue === 'poursuite' || B.cinema.valider(S.cinema, cam, cam.cible || [ps.x, ps.y + .65, ps.z], S.planVu, S.tRendu, aspect);
+      if (accepte) S.secoursCamera = null;
+      else if (S.secoursCamera === S.planVu) {
+        // Une voiture coincée ne provoque pas une rafale de coupes : conserver le dernier cadre libre,
+        // puis reprendre le support embarqué dès qu'il redevient possible.
+        cam = B.cinema.secours(S.cinema, aspect);
+        if (!cam) return;
+        vue = cam.sujetNature ? 'panorama' : 'tele';
+      } else {
+        S.planVu = B.realisateur.replier(S.real, co, 'poursuite', suivie.id);
+        suivie = co.voitures[S.planVu.sujet]; ps = poses[suivie.id];
+        S.camCap = null; S.tete = null; S.tele.poste = null;
+        S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0;
+        vue = 'poursuite'; cam = cameraPoursuite(S, ps, suivie.etat, dtImage);
+      }
+      if (vue === 'poursuite') {
+        const libre = B.cinema.poursuite(S.cinema, cam, ps, S.planVu, S.tRendu, aspect);
+        if (libre) cam = libre;
+        else {
+          // Si aucun bras extérieur ne tient, coupe sur le support embarqué au-dessus de l'arceau.
+          S.planVu = B.realisateur.replier(S.real, co, 'aileron', suivie.id);
+          suivie = co.voitures[S.planVu.sujet]; ps = poses[suivie.id];
+          S.camCap = null; S.tete = null; S.tele.poste = null;
+          S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0;
+          vue = 'aileron'; cam = cameraDemo(S, ps, S.planVu);
+          if (!B.cinema.valider(S.cinema, cam, cam.cible || [ps.x, ps.y + .65, ps.z], S.planVu, S.tRendu, aspect)) {
+            S.planVu = B.realisateur.replier(S.real, co, 'cockpit', suivie.id);
+            S.camCap = null; S.tete = null;
+            vue = 'cockpit'; cam = cameraCockpit(S, ps, suivie.etat, S.tRendu, dtImage);
+            if (!B.cinema.valider(S.cinema, cam, [ps.x, ps.y + .65, ps.z], S.planVu, S.tRendu, aspect)) {
+              S.secoursCamera = S.planVu;
+              cam = B.cinema.secours(S.cinema, aspect);
+              if (!cam) return;
+              vue = cam.sujetNature ? 'panorama' : 'tele';
+            }
+          }
+        }
+      }
+    }
+    const exterieur = VUES_DEHORS.has(vue);
     if (regardArriereVoulu(S, suivie, vue)) cam = cameraRegardArriere(S, ps, cam);
     if (cameraEssai) cam = Object.assign({ roll: 0, near: .1, far: PORTEE_VUE, fov: 40 }, cameraEssai(pj, cam));
     if (S.secousse > 0 && !cam.sujetNature) {
+      const pitchSur = cam.pitch, yawSur = cam.yaw;
       const a = S.secousse * .05 * reglages.secousses, t = horlogeReelle;
       cam.pitch += Math.sin(t * 61) * a * .5; cam.yaw += Math.sin(t * 47) * a * .35;
+      if (S.type === 'demo' && a > 0 && !B.cinema.valider(S.cinema, cam, cam.cible || [ps.x, ps.y + .65, ps.z], S.planVu, S.tRendu, canvas.clientWidth / Math.max(1, canvas.clientHeight))) {
+        cam.pitch = pitchSur; cam.yaw = yawSur;
+      }
       S.secousse = Math.max(0, S.secousse - dtImage * 2.6);
     }
+    if (S.type === 'demo' && !S.secoursCamera) cam = B.cinema.souffle(S.cinema, cam, S.planVu, poses, co, S.tRendu, reglages.secousses, canvas.clientWidth / Math.max(1, canvas.clientHeight));
     // axe horizontal du regard, en deux nombres (plus de tableau neuf par image)
     const avX = Math.sin(cam.yaw), avZ = -Math.cos(cam.yaw);
     // ombres du soleil autour de ce que l'on regarde : devant le pilote (jusqu'à 176 m), ou autour de la voiture filmée.
@@ -2529,6 +2595,7 @@
       pilote.rapportAvant = voiture.rapportAvant === undefined ? etatPilote.rapport : voiture.rapportAvant;
       pilote.passage = voiture.tPassage === undefined ? 1 : clamp((S.tRendu - voiture.tPassage) / .36, 0, 1);
       pilote.alat = etatPilote.alat; pilote.along = etatPilote.along; pilote.v = etatPilote.v; pilote.t = S.tRendu;
+      if (S.expressions) B.expressionsPilote.lire(S.expressions, k, pilote);
       // Hystérésis propre à cette vue : ni la seconde moitié d'écran ni les deux miroirs ne la réécrivent.
       const rouesDetail = S.detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(ev, cam.pos), tanDemi, hauteur, S.detailsRoues[k]);
       if (k === suivie.id) ombreDebut = sortie.length;
@@ -2539,6 +2606,8 @@
         etc.rouesDetail = rouesDetail;
         etc.roues = co.voitures[k].degats && co.voitures[k].degats.roues; etc.casse = !!(et.degats && et.degats.casse);
         etc.passage = pilote.passage; etc.rapportAvant = pilote.rapportAvant;
+        etc.regard = pilote.regard; etc.geste = pilote.geste; etc.gestePhase = pilote.gestePhase;
+        etc.gesteCote = pilote.gesteCote; etc.gesteIntensite = pilote.gesteIntensite;
         // les rivaux de la glace peinte ne servent que sans image réelle des glaces
         etc.derriere = glaceVive ? AUCUN_SUIVEUR : suiveurs(co, poses, k, p);
         etc.ciel = atm.skyBottom; etc.brume = atm.fog; etc.glaceVive = glaceVive;
@@ -2652,7 +2721,7 @@
   // écoute des claquements d'échappement par voiture (src/son.js, echappement) : entendue du cockpit, distance, angle
   const ecouteEchappement = n => ({ dedans: new Uint8Array(n), distance: new Float64Array(n), angle: new Float64Array(n) });
   function majSon(S, cam, dtImage) {
-    if (!son || !sonActif) return;
+    if (!son || !sonActif || !cam) return;
     // la voiture entendue de l'intérieur est celle que l'on suit de près : le joueur, ou celle du plan de la démo
     const co = S.course, ks = S.suivie || 0, poses = tampons.poses;
     const S2 = S.type === 'duo' ? S.vueJ2 : null, cam2 = S2 && S2.camera, k2 = cam2 ? S.locaux[1] : -1;
@@ -3306,7 +3375,7 @@
   $('v-vibrations').addEventListener('change', e => { reglages.vibrations = e.target.checked ? 'oui' : 'non'; if (!e.target.checked) { secouerManette(0, 0); secouerManette(0, 0, pad2); } sauverReglages(); });
   $('v-carte').addEventListener('change', e => { reglages.carte = e.target.checked ? 'oui' : 'non'; sauverReglages(); appliquerCarte(); });
   $('v-vibration-force').addEventListener('input', e => { reglages.vibrationForce = clamp(+e.target.value, 0, 1); $('v-vibration-force-valeur').textContent = Math.round(reglages.vibrationForce * 100) + ' %'; sauverReglages(); });
-  const NOMS_ACTIONS = { gaz: 'Accélérer', frein: 'Freiner', gauche: 'Gauche', droite: 'Droite', derive: 'Dérive', haut: 'Rapport +', bas: 'Rapport −', vue: 'Vue' };
+  const NOMS_ACTIONS = { gaz: 'Accélérer', frein: 'Freiner', gauche: 'Gauche', droite: 'Droite', derive: 'Dérive', haut: 'Rapport +', bas: 'Rapport −', vue: 'Vue', troll: 'Troll / geste' };
   const NOMS_COMMANDES = { auto: 'Auto', manette: 'Manette', clavier: 'Clavier', souris: 'Souris' };
   let captureTouche = null, carteClavier = null;   // action en attente d'une touche ; noms des touches du clavier réel
   try { if (navigator.keyboard && navigator.keyboard.getLayoutMap) navigator.keyboard.getLayoutMap().then(m => { carteClavier = m; majCommandes(); }, () => {}); } catch (e) { /* pas d'API de disposition */ }
@@ -3341,7 +3410,7 @@
       }
       html += '</tbody></table></div>';
     }
-    zone.innerHTML = html + '<p class="note-commandes">Cliquez une touche puis appuyez sur la nouvelle (Échap annule). Souris : pointeur à gauche ou à droite pour tourner, bouton gauche pour accélérer, droit pour freiner, molette pour les rapports. Manette : gâchettes, stick gauche, A pour la dérive, RB et LB pour les rapports, Y pour la vue, stick droit maintenu vers le bas pour regarder derrière en vue Poursuite, Start pour la pause. Pause : Échap ou P · son : M.</p>'
+    zone.innerHTML = html + '<p class="note-commandes">Cliquez une touche puis appuyez sur la nouvelle (Échap annule). Souris : pointeur à gauche ou à droite pour tourner, bouton gauche pour accélérer, droit pour freiner, molette pour les rapports. Manette : gâchettes, stick gauche, A pour la dérive, RB et LB pour les rapports, Y pour la vue, clic du stick gauche (L3) pour Troll, stick droit maintenu vers le bas pour regarder derrière en vue Poursuite, Start pour la pause. Pause : Échap ou P · son : M.</p>'
       + '<button type="button" class="discret" id="r-touches-defaut">Touches par défaut</button>';
   }
   $('r-commandes').addEventListener('click', e => {
@@ -3557,6 +3626,7 @@
     ajouter({ shape: 'octa', p: devant(11, -1.5, 1.5), s: [.1, .1, .1], mat: 5, emissive: 2 });
     ajouter({ shape: 'cylinder', p: devant(12, 0, 2), s: [.56, .05, .56], mat: 5, emissive: 3, color: [1, .14, .06] });
     if (B.aurores && S.c && S.c.theme === 'islande') ajouter({ shape: 'bitume-aurore-0', p: devant(40, 0, 10), s: [1, 1, 1], mat: 7, fx: true, alpha: .2, emissive: 5, outdoor: true, surface: 'object' });
+    if (B.voiture.preparerExpressions) B.voiture.preparerExpressions(l, devant(6, 0, 0));
     B.voiture.fantome({ p: devant(14, 2.5, -.6), cap: cam.yaw - Math.PI / 2, tangage: 0, roulis: 0 }, l);
     return l;
   }

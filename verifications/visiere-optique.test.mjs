@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
-require('../src/visiere-optique.js');require('../src/vitre.js');
+require('../src/visiere-optique.js');require('../src/vitre.js');require('../src/sillage.js');
 const O=globalThis.BITUME.visiereOptique,V=globalThis.BITUME.vitre;
 let nombre=0;const verifier=(nom,f)=>{f();nombre++;console.log('ok '+nom);};
 const contexte=(ajout={})=>({qualite:'high',actif:true,pluie:1,neige:0,embruns:0,vitesse:0,intensite:1,cockpit:true,...ajout});
@@ -116,6 +116,89 @@ verifier('pause ne copie ni ne dessine ; zéro, rétro et off effacent immédiat
     for(let i=0;i<60;i++)V.mettreAJour(e,1/60,c);const stats={...e.stats};
     V.mettreAJour(e,.1,{...c,pause:true});assert.deepEqual(e.stats,stats);
     V.mettreAJour(e,0,{...c,pause:true,...option});assert(e.propre && e.masquee);assert.equal(e.simulation.eau,0);
+  }
+});
+verifier('sans dimensions dans le contexte du jeu, dépôts et traînées suivent chaque toile et son redimensionnement',()=>{
+  const c=Object.freeze(contexte({pluie:0})),vues=[];
+  for(const [largeur,hauteur] of [[960,540],[480,270]]){
+    const t=toile();t.canvas.clientWidth=largeur;t.canvas.clientHeight=hauteur;
+    const e=V.creer(t.canvas),d=e.simulation.depots,p=d.gouttes[0];
+    Object.assign(p,{vivant:true,x:.8,y:.65,px:.8,py:.65,taille:3,pr:3,age:1,pa:1,duree:30,
+      poids:1,pp:1,glisse:.04,vitesse:0,phase:0,frequence:.5});p.traceX.fill(.8);p.traceY.fill(.65);d.stats.gouttes=1;
+    V.mettreAJour(e,1/120,c);
+    assert.equal(d.largeur,largeur);assert.equal(d.hauteur,hauteur);
+    assert.deepEqual(t.appels.uniformes.uVue.slice(0,2),[largeur,hauteur]);
+    assert(Math.abs(t.appels.uniformes.uGouttes[0]/largeur-.8)<1e-6);
+    assert(Math.abs(t.appels.uniformes.uGouttes[1]/hauteur-.35)<1e-6);
+    assert(Math.abs(t.appels.uniformes.uTrajets[2]/largeur-.8)<1e-6);
+    assert(Math.abs(t.appels.uniformes.uTrajets[3]/hauteur-.35)<1e-6);
+    vues.push({t,e,d});
+  }
+  const {t,e,d}=vues[0],autre=JSON.stringify(vues[1].e.simulation);
+  t.canvas.clientWidth=1440;t.canvas.clientHeight=810;V.mettreAJour(e,1/120,c);
+  assert.equal(d.largeur,1440);assert.equal(d.hauteur,810);
+  assert(Math.abs(t.appels.uniformes.uGouttes[0]/1440-.8)<1e-6);
+  assert(Math.abs(t.appels.uniformes.uTrajets[3]/810-.35)<1e-6);
+  assert.equal(JSON.stringify(vues[1].e.simulation),autre);
+  assert.equal(c.largeur,undefined);assert.equal(c.hauteur,undefined);
+});
+verifier('sillage réel à 360 km/h : dépôts denses, fusions, sorties aux bords et récupération hors panache',()=>{
+  const S=globalThis.BITUME.sillage,wake=S.creer();
+  S.mettreAJour(wake,[{id:7,etat:{v:100,s:0}}],[{x:0,y:0,z:0,cap:0}]);
+  const embruns=S.exposition(wake,[-12,1,0],1,0);assert(embruns>.75);
+  const libre=O.creerEtat({graine:4}),suiveur=O.creerEtat({graine:4}),c=contexte({vitesse:100,largeur:1280,hauteur:720});
+  avancer(libre,c,12);avancer(suiveur,{...c,embruns},12);
+  assert(suiveur.eau>libre.eau*3.5 && suiveur.eau<=1.9);
+  assert(suiveur.depots.stats.gouttes>=libre.depots.stats.gouttes*2);
+  assert(suiveur.depots.stats.fusionsEau>10 && suiveur.depots.stats.expulses>10);
+  assert(suiveur.depots.stats.surfaceExpulsee>0 && suiveur.nbGouttes>=16);
+  const pool=suiveur.depots.gouttes.slice(),buffer=suiveur.gouttesUniformes;
+  assert(suiveur.trajetsUniformes.some((v,i)=>i<suiveur.nbGouttes*4 && Math.abs(v-suiveur.gouttesUniformes[i%4<2?i:i-2])>3));
+  avancer(suiveur,c,6);assert(Math.abs(suiveur.eau-libre.eau)<.01,'retour à la pluie libre');
+  avancer(suiveur,{...c,pluie:0},15);assert.equal(suiveur.eau,0);assert.equal(suiveur.nbGouttes,0);
+  assert.equal(suiveur.depots.stats.gouttes,0);assert.equal(suiveur.gouttesUniformes,buffer);
+  pool.forEach((p,i)=>assert.equal(p,suiveur.depots.gouttes[i]));
+});
+verifier('route humide sans pluie dépose de l’eau ; sur route sèche, le vrai sillage n’en crée pas',()=>{
+  const S=globalThis.BITUME.sillage,wake=S.creer();S.mettreAJour(wake,[{id:7,etat:{v:100,s:0}}],[{x:0,y:0,z:0,cap:0}]);
+  for(const mouille of [0,1]){
+    const e=O.creerEtat({graine:4}),embruns=S.exposition(wake,[-12,1,0],mouille,0);
+    avancer(e,contexte({pluie:0,embruns,vitesse:100}),12);
+    if(mouille){assert(e.eau>1 && e.depots.stats.depotsEmbruns>50 && e.nbGouttes>10);}
+    else {assert.equal(e.eau,0);assert.equal(e.nbGouttes,0);assert.equal(e.depots.stats.depotsEau,0);}
+  }
+});
+verifier('la fusion conserve toute l’aire visible à chaque image, même sans film diffus',()=>{
+  const t=toile(),e=V.creer(t.canvas),d=e.simulation.depots;
+  for(const [i,r,x] of [[0,3,.4],[1,4,.402]]){
+    const p=d.gouttes[i];Object.assign(p,{vivant:true,x,y:.4,px:x,py:.4,taille:r,pr:r,age:1,pa:1,duree:30,
+      poids:1,pp:1,glisse:.04,vitesse:0,phase:0,frequence:.5});p.traceX.fill(x);p.traceY.fill(.4);
+  }
+  d.stats.gouttes=2;
+  V.mettreAJour(e,1/30,contexte({pluie:0,largeur:1000,hauteur:600}));
+  assert.equal(e.stats.fusionsEau,1);assert.equal(e.stats.gouttes,1);assert.equal(e.simulation.eau,0);
+  assert.equal(t.appels.uniformes.uNbGouttes,2,'le dépôt absorbé demeure visible au début de la fusion');
+  assert.equal(t.appels.uniformes.uGouttes[2],3);assert.equal(t.appels.uniformes.uGouttes[6],4);
+  for(let image=1;image<=4;image++){
+    V.mettreAJour(e,1/120,contexte({pluie:0,largeur:1000,hauteur:600}));
+    const u=t.appels.uniformes,n=u.uNbGouttes;
+    const aire=u.uGouttes[2]**2+(n>1?u.uGouttes[6]**2:0);
+    assert(Math.abs(aire-25)<.00001,`aire perdue à l’image ${image}: ${aire}`);
+  }
+  assert.equal(t.appels.uniformes.uNbGouttes,1);assert.equal(t.appels.uniformes.uGouttes[2],5);
+  assert(e.stats.dessins>0 && !e.masquee);
+});
+verifier('gouttes et traînées physiques identiques à 30/47/60/120/144 Hz, plafonds par qualité',()=>{
+  let ref;
+  for(const hz of [30,47,60,120,144]){
+    const e=O.creerEtat({graine:4});avancer(e,contexte({embruns:.8,vitesse:100,largeur:1280,hauteur:720}),8,hz);
+    const valeurs=[...e.gouttesUniformes,...e.trajetsUniformes,e.nbGouttes,e.depots.stats.fusionsEau,e.depots.stats.expulses];
+    if(ref)valeurs.forEach((v,i)=>assert(Math.abs(v-ref[i])<1e-4,`${hz} Hz, dépôt ${i}`));else ref=valeurs;
+  }
+  for(const [qualite,maximum] of [['low',6],['medium',12],['high',24],['ultra',32]]){
+    const e=O.creerEtat();avancer(e,contexte({qualite,embruns:1,vitesse:65,intensite:2}),10);
+    assert(e.depots.stats.gouttes>0 && e.depots.stats.gouttes<=maximum);assert(e.nbGouttes<=maximum);
+    assert(e.depots.stats.paires<=maximum*(maximum-1)/2);
   }
 });
 console.log('visière optique : '+nombre+' contrôles passés');

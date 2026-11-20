@@ -1,13 +1,21 @@
 # BITUME — reprise courte
 
+## Candidat 0.2.63 — démos, pilotes et météo
+
+Les deux branches sont assemblées sur p15 ; build reproductible, FERRO 0.3.15 conforme.
+Campagne locale : 150/152 puis deux reprises ciblées réussies ; dépassement initial Val-Brûlé 165 ms conservé.
+Shader natif : 11/11. CI et captures intégrées à terminer avant fusion.
+Fiche : `docs/reprise/DEMOS-PILOTES-METEO-2026-11-20.md`.
+Route-des-Cimes et couverts sont préparés séparément ; aucune clôture globale du programme.
+
 ## Priorité du 20 novembre — modèles, objectifs et continuation
 
 Les six références utilisateur sont archivées avec empreintes :
 `docs/references/objectifs-utilisateur-2026-11-20/README.md`.
 Modèle courant, objectifs et méthode : `docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md`.
 File complète : `docs/reprise/FILE-TRAVAIL.json` ; journal : `docs/reprise/JOURNAL-AUTONOME-2026-11-20.md`.
-Publier ce socle en premier, sauvegarder les checkpoints, puis intégrer les lots qualifiés
-démos/pilotes/météo. Route-des-Cimes se prépare séparément. Commits fréquents, sorties
+Socle publié par PR #36 (`fb6384c`), deux branches de checkpoints sauvegardées.
+Suite : intégrer et qualifier démos/pilotes/météo. Route-des-Cimes se prépare séparément. Commits fréquents, sorties
 bornées et reprise par lot ; toutes les 17 destinations et les lots transversaux sont conservés.
 
 ## Livraison close — aspiration, projections et dégagement 0.2.62 / p15

@@ -1,0 +1,149 @@
+{
+  "source": "GLSL ES 3.00 exact de src/visiere-optique.js et états de la simulation réelle ; mire procédurale.",
+  "sourceSha256": "01ad9b0920cf8716c2b5e07b1d58de275a2a9695d6baf39f218ca4001d4d1817",
+  "contexte": {
+    "renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+    "version": "4.5 (Core Profile) Mesa 25.0.7-2+deb13u1",
+    "egl": "1.5"
+  },
+  "compilation": true,
+  "limites": [
+    "Mire de matière, pas capture de course.",
+    "Raster logiciel Mesa, ni WebGL navigateur ni FPS matériel qualifiés."
+  ],
+  "cas": [
+    {
+      "nom": "grille-pluie",
+      "qualite": 2,
+      "gouttesMobiles": 22,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 518400,
+      "alphaMoyen": 0.1530263404744614,
+      "fractionAlphaDemi": 0.13130015432098766,
+      "alphaBords": 0.1529028150005921,
+      "alphaCentre": 0.1530779809892888,
+      "pixelsSha256": "06f6bb6693843ba882ec063f7b5beb2613b5fd5c2d39ddbd3e8ad8244249c807"
+    },
+    {
+      "nom": "pluie235",
+      "qualite": 2,
+      "gouttesMobiles": 24,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 518400,
+      "alphaMoyen": 0.06997825133139675,
+      "fractionAlphaDemi": 0.05710069444444445,
+      "alphaBords": 0.07295348293280238,
+      "alphaCentre": 0.06873443912963234,
+      "pixelsSha256": "4bbaa73f24384a98cc208ae9a7e6a95c239d3d4aff5f28157bf973a2606f19f8"
+    },
+    {
+      "nom": "pluie300",
+      "qualite": 2,
+      "gouttesMobiles": 14,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 518400,
+      "alphaMoyen": 0.05117614530380053,
+      "fractionAlphaDemi": 0.04391396604938272,
+      "alphaBords": 0.053799100596732555,
+      "alphaCentre": 0.05007960418192952,
+      "pixelsSha256": "9431fa2a19b0cfa7d2c86a7978aade2718ba91ba6961aaa9ce61001c0a765c43"
+    },
+    {
+      "nom": "sillage235",
+      "qualite": 2,
+      "gouttesMobiles": 23,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 518400,
+      "alphaMoyen": 0.4314946365892036,
+      "fractionAlphaDemi": 0.33086805555555554,
+      "alphaBords": 0.3100964438147518,
+      "alphaCentre": 0.4822458296639461,
+      "pixelsSha256": "9ddf0b4449ef3f5580e17d17f98f7726376a25df06a830ef7ac53e4760f15aae"
+    },
+    {
+      "nom": "sillage300",
+      "qualite": 2,
+      "gouttesMobiles": 24,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 518400,
+      "alphaMoyen": 0.42124092985959816,
+      "fractionAlphaDemi": 0.3168595679012346,
+      "alphaBords": 0.3018392849421993,
+      "alphaCentre": 0.47115745494249905,
+      "pixelsSha256": "3e0ff49656b756d3e86f4c6299b57aa1cd30c8bc8d39e3896b8c1bce0f774d26"
+    },
+    {
+      "nom": "sillage300-pause",
+      "qualite": 2,
+      "gouttesMobiles": 24,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 518400,
+      "alphaMoyen": 0.42124092985959816,
+      "fractionAlphaDemi": 0.3168595679012346,
+      "alphaBords": 0.3018392849421993,
+      "alphaCentre": 0.47115745494249905,
+      "pixelsSha256": "3e0ff49656b756d3e86f4c6299b57aa1cd30c8bc8d39e3896b8c1bce0f774d26"
+    },
+    {
+      "nom": "depots-sans-film",
+      "qualite": 2,
+      "gouttesMobiles": 24,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 4409,
+      "alphaMoyen": 0.0036471344710723792,
+      "fractionAlphaDemi": 0.0039313271604938275,
+      "alphaBords": 0.0029613258647785126,
+      "alphaCentre": 0.003933840592431254,
+      "pixelsSha256": "53e73fd83cfd177e49a86b6ec76fcb23f85631079893b9def31cfc124af65858"
+    },
+    {
+      "nom": "sillage300-poursuite",
+      "qualite": 2,
+      "gouttesMobiles": 22,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 518400,
+      "alphaMoyen": 0.2691151128661341,
+      "fractionAlphaDemi": 0.11406057098765432,
+      "alphaBords": 0.19260868131612943,
+      "alphaCentre": 0.30109905422733524,
+      "pixelsSha256": "22de33fa4236fd55041d60ad855710186560ccb88bf5e0479668db81d05fd62b"
+    },
+    {
+      "nom": "neige45",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 518400,
+      "alphaMoyen": 0.2366719922536916,
+      "fractionAlphaDemi": 0.24299189814814814,
+      "alphaBords": 0.6140795062635043,
+      "alphaCentre": 0.07889467140875131,
+      "pixelsSha256": "f3a45bc338a250b53a10e1f8ec606b54ea623828105b10e4608fc8e86bb212ad"
+    },
+    {
+      "nom": "legere",
+      "qualite": 0,
+      "gouttesMobiles": 6,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 518400,
+      "alphaMoyen": 0.16369017792302107,
+      "fractionAlphaDemi": 0.0,
+      "alphaBords": 0.10415388004458141,
+      "alphaCentre": 0.18857966004404283,
+      "pixelsSha256": "420ff5104fb3348aa9fd704c3868a284813f709feb4af487287b765089a2bc10"
+    },
+    {
+      "nom": "sec",
+      "qualite": 2,
+      "gouttesMobiles": 0,
+      "erreurGL": 0,
+      "pixelsAlphaNonNul": 0,
+      "alphaMoyen": 0.0,
+      "fractionAlphaDemi": 0.0,
+      "alphaBords": 0.0,
+      "alphaCentre": 0.0,
+      "pixelsSha256": "11283ef755895422e6f28b93f3d78cad7539891cf2893c9fdccefb923c5bf70b"
+    }
+  ],
+  "reussi": true
+}

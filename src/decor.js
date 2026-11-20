@@ -1729,11 +1729,17 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
     // Les gradins pour public.js : non énumérables eux aussi, hors des empreintes du décor.
     if (gradins) Object.defineProperty(decor, 'gradins', { value: gradins, enumerable: false });
     if (options.solsProceduraux === true) {
-      // L'herbier et les palettes saisonnières lisent d'abord le sol historique. La recette FERRO 25
-      // enrichit ensuite les seules nappes de terre/herbe ; positions, couleurs et surfaces PhysX restent intactes.
+      // L'herbier et les palettes saisonnières lisent d'abord le sol historique. FERRO 25 reconnaît aussi
+      // la neige blanche : elle garde son pigment et son grain minéral, sans brins ni joints de béton.
+      // La roche utilise la recette 23. Seules les nappes changent de matière, après la préparation ;
+      // le béton des bâtiments, les positions, couleurs et surfaces PhysX restent intacts.
       ouvrirHerbier();
       for (const n of decor.nappes) if (n.surfaceType === 'accotement' || n.surfaceType === 'terrain') {
-        for (let k = 9; k < n.sommets.length; k += 13) if (n.sommets[k] === 8) n.sommets[k] = 25;
+        const terrain = n.surfaceType === 'terrain';
+        for (let k = 9; k < n.sommets.length; k += 13) {
+          if (n.sommets[k] === 8 || terrain && n.sommets[k] === 3) n.sommets[k] = 25;
+          else if (terrain && n.sommets[k] === 9) n.sommets[k] = 23;
+        }
       }
     }
     return decor;

@@ -1,0 +1,29 @@
+{
+  "format": 1,
+  "date": "2026-11-20",
+  "publication_references": {
+    "pr": 36,
+    "commit": "30c3496f689bab575f34be08d688f553277fde38",
+    "merge": "fb6384cb1b3407eecdb72cf9471f137a459334d9",
+    "tree": "1043bc45ff8b3097a48f106a8235abdcde81fb61",
+    "tree_equal_local": true,
+    "six_original_blobs_verified": true,
+    "runtime_unchanged": true
+  },
+  "checkpoints": [
+    {
+      "branch": "backup/demos-pilotes-20261120",
+      "remote_commit": "9d6c47a952422d8ee4a392c06ea66a56d38c589c",
+      "local_commit": "d54b6a4e69b9c9f2b573b033ad6c0a7f57187003",
+      "tree": "53d99b8e57fef3ccbc2d8d6d396daff8d6b47522",
+      "state": "prepared_not_release"
+    },
+    {
+      "branch": "backup/meteo-matiere-20261120",
+      "remote_commit": "99bd04a6e28a26a33314d2366ad516cd6bef6af7",
+      "local_commit": "b98bad52d7c68e321d3ea5f519493d444694aa46",
+      "tree": "04c592b67695cff0d6fa23757c93df4f1f7db66e",
+      "state": "prepared_not_release"
+    }
+  ]
+}

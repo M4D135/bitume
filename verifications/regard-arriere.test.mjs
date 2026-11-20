@@ -6,8 +6,9 @@ import { chargerPhysX } from './helpers/physx-runtime.mjs';
 const require = createRequire(import.meta.url);
 for (const f of ['circuit', 'conduite']) require('../src/' + f + '.js');
 const B = globalThis.BITUME;
-// Le montage cinéma d'une autre branche peut ajouter cette sélection au même raccord ; aucun plan cinéma ici.
-B.cinema ||= { VUES: [] };
+// Ici on vérifie les commandes, pas les obstacles de la réalisation (cinema-trajectoires.test.mjs).
+// La démo garde donc son cadre de poursuite, sans activer le regard arrière du joueur.
+B.cinema ||= { VUES: [], poursuite: (_cinema, camera) => camera };
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 function extraire(nom) {
   const debut = source.indexOf(`  function ${nom}(`); assert(debut >= 0, nom);

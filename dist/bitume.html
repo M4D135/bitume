@@ -401,6 +401,8 @@ body.tactile .case .barre-sante { height: 4px; margin-top: 3px; }
 .pedale.gaz { border-color: rgba(224,80,60,.75); }
 .pedale.appuye { background: rgba(224,48,30,.58); border-color: var(--papier); box-shadow: inset 0 0 0 1px rgba(242,236,223,.55); }
 .bouton-rond.vue { position: absolute; left: max(8px,env(safe-area-inset-left)); bottom: calc(max(8px,env(safe-area-inset-bottom)) + 112px); width: 44px; height: 44px; border-radius: 8px; border-color: rgba(242,236,223,.35); background: rgba(10,12,15,.18); text-shadow: 0 1px 3px #000; pointer-events: auto; }
+.bouton-rond.troll { position: absolute; left: calc(max(8px,env(safe-area-inset-left)) + 52px); bottom: calc(max(8px,env(safe-area-inset-bottom)) + 112px); width: 60px; height: 44px; border-radius: 8px; border-color: rgba(242,236,223,.35); background: rgba(10,12,15,.18); color: var(--papier); font: 800 11px/1 var(--f-titre); text-transform: uppercase; text-shadow: 0 1px 3px #000; pointer-events: auto; touch-action: manipulation; }
+.bouton-rond.troll:active { background: rgba(224,48,30,.58); border-color: var(--papier); }
 body.tactile #b-pause { display: block; }
 
 /* ------------------------------------------------------------------ petits écrans */
@@ -706,12 +708,13 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       <button id="t-gaz" type="button" class="pedale gaz">Gaz</button>
     </div>
     <button id="t-vue" type="button" class="bouton-rond vue" aria-label="Changer de vue">◎</button>
+    <button id="t-troll" type="button" class="bouton-rond troll" aria-label="Troll : faire un geste au rival">Troll</button>
   </div>
 
   <!-- Écran titre -->
   <section id="titre" class="ecran titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.62">V0.2.62</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.63">V0.2.63</b>
     </div>
     <a class="signature" href="https://bitume.estrasse.fr/" download="BITUME.html" title="Télécharger BITUME"><img class="signature-avatar" src="data:image/jpeg;base64,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" alt="" />m4d135</a>
     <nav class="choix" aria-label="Menu principal">
@@ -66670,11 +66673,17 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batim
     // Les gradins pour public.js : non énumérables eux aussi, hors des empreintes du décor.
     if (gradins) Object.defineProperty(decor, 'gradins', { value: gradins, enumerable: false });
     if (options.solsProceduraux === true) {
-      // L'herbier et les palettes saisonnières lisent d'abord le sol historique. La recette FERRO 25
-      // enrichit ensuite les seules nappes de terre/herbe ; positions, couleurs et surfaces PhysX restent intactes.
+      // L'herbier et les palettes saisonnières lisent d'abord le sol historique. FERRO 25 reconnaît aussi
+      // la neige blanche : elle garde son pigment et son grain minéral, sans brins ni joints de béton.
+      // La roche utilise la recette 23. Seules les nappes changent de matière, après la préparation ;
+      // le béton des bâtiments, les positions, couleurs et surfaces PhysX restent intacts.
       ouvrirHerbier();
       for (const n of decor.nappes) if (n.surfaceType === 'accotement' || n.surfaceType === 'terrain') {
-        for (let k = 9; k < n.sommets.length; k += 13) if (n.sommets[k] === 8) n.sommets[k] = 25;
+        const terrain = n.surfaceType === 'terrain';
+        for (let k = 9; k < n.sommets.length; k += 13) {
+          if (n.sommets[k] === 8 || terrain && n.sommets[k] === 3) n.sommets[k] = 25;
+          else if (terrain && n.sommets[k] === 9) n.sommets[k] = 23;
+        }
       }
     }
     return decor;
@@ -69614,11 +69623,13 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   // 12,4 mm : la peau se recoupait) ; le premier point de contact est un peu plus haut sur la jante.
   const POUCE = { r: [.0160, .0158, .0124, .0108, .0094], eminence: [[.016, .012, .018], [.036, .020, .026]], tour: [[.028, -20], [.040, -32], [.052, -36]] };
 
-  function construire(ouvert) {
+  function construire(ouvert, expression) {
     const C = B.carene;
     // Les booléens gardent exactement les deux maillages historiques. Une fraction prépare une prise
     // intermédiaire au chargement : aucun sommet n'est reconstruit pendant l'animation des doigts.
     const ouverture = typeof ouvert === 'number' ? Math.max(0, Math.min(1, ouvert)) : ouvert ? 1 : 0;
+    const geste = expression && ['majeur', 'poing', 'salut'].includes(expression.geste) ? expression.geste : null;
+    const progression = geste ? Number.isFinite(expression.progression) ? Math.max(0, Math.min(1, expression.progression)) : 1 : 0;
     const K = AUTOUR(0, JOINTURES.theta, JOINTURES.d);            // jointure du majeur et de l'annulaire : origine du dos
     const a = AXE, bz = [0, 1, 0], Y = croix(bz, a);              // Y : normale au dos de la main, vers le dehors
     const m = [a, Y, bz];
@@ -69633,6 +69644,20 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       const psi = doigt.s / JANTE.R, jointure = AUTOUR(psi, JOINTURES.theta, JOINTURES.d), r = doigt.r;
       const rayons = EFFILE.map(f => r * f);
       const pts = [additionner(jointure, multiplier(a, .024)), jointure, ...doigt.tour.map((t, i) => AUTOUR(psi, JOINTURES.theta + (t * deg - JOINTURES.theta) * serrage, JANTE.r + rayons[i + 2] + JEU))];
+      if (geste) {
+        // Les jointures et le poignet restent identiques à la prise. Seules les phalanges changent : le majeur
+        // se dresse seul, le salut déploie quatre doigts légèrement écartés, le poing les replie dans la paume.
+        const etendu = geste === 'salut' || geste === 'majeur' && doigt.nom === 'majeur';
+        const longueur = doigt.nom === 'majeur' ? .081 : doigt.nom === 'index' ? .071 : doigt.nom === 'annulaire' ? .074 : .059;
+        const pli = [[.028, -.010], [.034, -.033], [.018, -.046], [-.004, -.045]];
+        for (let n = 0; n < 4; n++) {
+          const d = etendu ? longueur * [.28, .57, .82, 1][n] : pli[n][0];
+          const paume = etendu ? -[.001, .002, .004, .007][n] : pli[n][1];
+          const ecart = geste === 'salut' ? doigt.s * .30 * (n + 1) / 4 : 0;
+          const cible = additionner(jointure, additionner(multiplier(a, -d), additionner(multiplier(Y, paume), multiplier(bz, ecart))));
+          for (let k = 0; k < 3; k++) pts[n + 2][k] += (cible[k] - pts[n + 2][k]) * progression;
+        }
+      }
       gant.push(...C.tube(pts, rayons, { cotes: 10, pas: 4, bouts: true }));
       pointsDoigts.push(pts); jointures.push(jointure);
     }
@@ -69651,6 +69676,14 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const eminence = POUCE.eminence.map(([x, y, z]) => additionner(additionner(W, multiplier(a, -x)), additionner(multiplier(bz, y), multiplier(Y, -z))));
     const pliPouce = ouverture === 0 ? 1 : ouverture === 1 ? .3 : 1 - .7 * ouverture;
     const pouce = [...eminence, ...POUCE.tour.map(([s, t], i) => AUTOUR(s / JANTE.R, t * deg * pliPouce, JANTE.r + POUCE.r[i + 2] + 4 * JEU))];
+    if (geste) {
+      const cibles = geste === 'salut' ? [[.030, .040, -.022], [.016, .063, -.020], [.003, .075, -.020]]
+        : [[.014, .030, -.038], [-.003, .012, -.046], [-.002, -.008, -.048]];
+      for (let n = 0; n < 3; n++) {
+        const [x, y, z] = cibles[n], cible = additionner(K, additionner(multiplier(a, x), additionner(multiplier(bz, y), multiplier(Y, z))));
+        for (let k = 0; k < 3; k++) pouce[n + 2][k] += (cible[k] - pouce[n + 2][k]) * progression;
+      }
+    }
     gant.push(...C.tube(pouce, POUCE.r, { cotes: 12, pas: 4, bouts: true }));
 
     // --- Paume : cuir sombre côté jante, sous le dos ---
@@ -69777,6 +69810,17 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const a00 = M[0] * x + M[3] * y + M[6] * z, a01 = M[1] * x + M[4] * y + M[7] * z, a02 = M[2] * x + M[5] * y + M[8] * z;
     const a12 = M[2] * m[3] + M[5] * m[4] + M[8] * m[5], a22 = M[2] * m[6] + M[5] * m[7] + M[8] * m[8];
     r[0] = Math.atan2(a12, a22); r[1] = -Math.asin(Math.max(-1, Math.min(1, a02))); r[2] = Math.atan2(a01, a00);
+    return r;
+  }
+  function anglesPiloteProduit(r, M, m) {
+    anglesProduit(r, M, m);
+    const a02 = M[2] * m[0] + M[5] * m[1] + M[8] * m[2];
+    // Planche transverse : à ±90° de lacet, les deux atan2(0,0) perdaient sa pente de 25°.
+    // Fixer un angle libre et retrouver l'autre garde la vraie matrice, y compris voiture retournée.
+    if (Math.abs(a02) > 1 - 1e-12) {
+      const a10 = M[0] * m[3] + M[3] * m[4] + M[6] * m[5], a11 = M[1] * m[3] + M[4] * m[4] + M[7] * m[5];
+      r[0] = Math.atan2(-a02 * a10, a11); r[2] = 0;
+    }
     return r;
   }
   const T_A = new Float64Array(9), T_B = new Float64Array(9), T_C = new Float64Array(9), T_D = new Float64Array(9), ANG = new Float64Array(3);
@@ -70910,6 +70954,27 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   const PRISES_MAIN = ['main-gant-d'];
   for (let n = 1; n < 5; n++) { const nom = 'main-gant-d-prise-' + n; forme(nom, B.main.construire(n / 5).gant); PRISES_MAIN.push(nom); }
   PRISES_MAIN.push('main-gant-d-ouvert');
+  // Variantes préparées une fois : les deux mains savent quitter la jante, puis déplier des doigts lisibles.
+  const PRISES_GAUCHE = ['main-gant-g'], GESTES_MAIN = { majeur: { d: [], g: [] }, poing: { d: [], g: [] }, salut: { d: [], g: [] } };
+  for (let n = 1; n <= 5; n++) { const nom = 'main-gant-g-prise-' + n; forme(nom, C.miroir(B.main.construire(n / 5).gant)); PRISES_GAUCHE.push(nom); }
+  for (const geste of ['majeur', 'poing', 'salut']) for (let n = 0; n <= 5; n++) {
+    const gant = B.main.construire(1, { geste, progression: n / 5 }).gant;
+    for (const cote of ['d', 'g']) {
+      const nom = 'main-geste-' + geste + '-' + cote + '-' + n;
+      forme(nom, cote === 'd' ? gant : C.miroir(gant)); GESTES_MAIN[geste][cote].push(nom);
+    }
+  }
+  const FORMES_EXPRESSIONS = [...PRISES_MAIN, ...PRISES_GAUCHE, ...Object.values(GESTES_MAIN).flatMap(g => [...g.d, ...g.g])];
+  // Appel sous le voile : les sommets sont déjà dans le buffer GPU global, mais chaque packer d'instances
+  // prépare aussi ici ses groupes de formes (vue extérieure et overlay), avant le premier geste en démo.
+  function preparerExpressions(sortie, p) {
+    const mat = B.cockpitMatieres ? B.cockpitMatieres.tissu : TISSU;
+    for (const nom of FORMES_EXPRESSIONS) for (const overlay of [false, true]) {
+      const f = FORMES[nom];
+      sortie.push({ shape: f.nom, p: Array.from(p), s: f.taille.map(v => v * .9 * ECHELLE), r: [0, 0, 0], mat, color: IVOIRE, surface: 'object', overlay });
+    }
+    return FORMES_EXPRESSIONS.length * 2;
+  }
   const clarte = c => .3 * c[0] + .59 * c[1] + .11 * c[2], ecart = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
   // Courbes de l'habitacle, écrites en place dans habitacle et majVolant (aucun appel par pose) : borner(x, a, b) vaut
   // x < a ? a : x > b ? b : x ; lisse(a, b, x) vaut u·u·(3 − 2u), u = borner((x − a) / (b − a), 0, 1). Position du
@@ -70968,9 +71033,9 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   // change, par les mêmes opérations dans le même ordre : l'image ne dépend pas de ce qui a été gardé.
   function construireHabitacle(mod) {
     const liv = mod.livree, c1 = liv.couleur, c2 = liv.seconde || BLANC;
-    const H = { rotM: trois(), epoque: 0, c2, pret: false, cle: new Float64Array(6), planche: [], lampe: null, alerte: null, aiguilles: [],
+    const H = { rotM: trois(), epoque: 0, c2, pret: false, cle: new Float64Array(10), planche: [], lampe: null, alerte: null, aiguilles: [],
       rapport: null, diagonale: null, vitesse: [], volant: [], rJante: null, jante: null, branches: null, rCaches: null, caches: [], vis: [],
-      ruban: null, tige: null, pommeau: null, mains: null, glaces: [],
+      ruban: null, moyeu: [], supportVolant: [], tige: null, pommeau: null, mains: null, glaces: [],
       piloteReel: false, articulations: new Float64Array(18) };
     const reperes = [];
     const repere = m => {   // repère fixe, partagé par les pièces de même rotation
@@ -71042,8 +71107,22 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     V.push(H.jante = mettre(FORMES.jante.nom, null, FORMES.jante.taille, TISSU, [.045, .045, .05], H.rJante));
     V.push(H.branches = mettre(FORMES.branches.nom, null, FORMES.branches.taille, METAL_MAT, ACIER, H.rJante));
     for (let j = 0; j < 3; j++) for (let q = 0; q < 2; q++) { const b = mettre('box', null, [RV * .17, .003, .010 * E_VOLANT], MAT, NOIR, H.rCaches[j]); H.caches.push(b); V.push(b); }
-    V.push(mettre('cylinder', plus(CV, [WN, .002]), [.060 * E_VOLANT, .012, .060 * E_VOLANT], METAL_MAT, ACIER, H.rJante));
-    V.push(mettre('cylinder', plus(CV, [WN, .008]), [.040 * E_VOLANT, .012, .040 * E_VOLANT], MAT, NOIR, H.rJante));
+    H.moyeu.push(mettre('cylinder', plus(CV, [WN, .002]), [.060 * E_VOLANT, .012, .060 * E_VOLANT], METAL_MAT, ACIER, H.rJante));
+    H.moyeu.push(mettre('cylinder', plus(CV, [WN, .008]), [.040 * E_VOLANT, .012, .040 * E_VOLANT], MAT, NOIR, H.rJante));
+    V.push(...H.moyeu);
+    // L'arbre suit l'axe du moyeu jusqu'à la vraie face de la planche ; le palier et les attaches sont fixes.
+    // La copie extérieure conservait seulement jante/branches : ni cette liaison, ni même la planche n'existaient.
+    const profondeurColonne = ((CV[0] - PLANCHE[0]) * PN[0] + (CV[1] - PLANCHE[1]) * PN[1]) / (WN[0] * PN[0] + WN[1] * PN[1]);
+    const fondColonne = plus(CV, [WN, -profondeurColonne]), axeFixe = [WU, WN, WR];
+    H.supportVolant.push(mettre('cylinder', plus(CV, [WN, -.5 * profondeurColonne]), [.029, profondeurColonne + .010, .029], METAL_MAT, ACIER, axeFixe));
+    H.supportVolant.push(mettre('cylinder', plus(fondColonne, [WN, .012]), [.055, .034, .055], MAT, [.065, .065, .07], axeFixe));
+    H.supportVolant.push(mettre('box', plus(fondColonne, [PN, -.004]), [.084, .028, .018], MAT, [.055, .055, .06], cadre));
+    // Deux montants descendent de la planche dans la cuve. Leur place physique est partagée par les trois vues.
+    for (const k of [-1, 1]) {
+      const haut = sur(k * .14, -.036, -.008), bas = [.40, .415, k * .126].map((v, i) => ((v - PILOTE_DECALAGE[i]) / PILOTE_ECHELLE - OEIL[i]) / K);
+      const axe = haut.map((v, i) => v - bas[i]), centre = haut.map((v, i) => (v + bas[i]) * .5);
+      H.supportVolant.push(mettre('cylinder', centre, [.026, Math.hypot(...axe) + .008, .026], MAT, [.045, .045, .05], selonAxe(axe)));
+    }
     for (let b = 0; b < 3; b++) { const v = mettre('cylinder', null, [.007 * E_VOLANT, .004, .007 * E_VOLANT], METAL_MAT, ARGENT, H.rJante); H.vis.push(v); V.push(v); }
     const TUBE = .0225 * E_VOLANT;
     V.push(H.ruban = mettre('cylinder', null, [TUBE + .003, .010, TUBE + .003], TISSU, IVOIRE, libre()));
@@ -71058,7 +71137,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       PIECES_MAIN.forEach((nom, q) => {
         const ferme = variante('main-' + nom + '-' + cote), e = emplacement(ferme.nom, ferme.s, TISSU, couleurs[q], rep, undefined);
         e.ferme = ferme; e.ouvert = k > 0 && nom === 'gant' ? variante('main-gant-d-ouvert') : ferme;
-        e.prises = k > 0 && nom === 'gant' ? PRISES_MAIN.map(variante) : null;
+        e.prises = nom === 'gant' ? (k > 0 ? PRISES_MAIN : PRISES_GAUCHE).map(variante) : null;
+        e.gestes = nom === 'gant' ? [null, GESTES_MAIN.majeur[cote].map(variante), GESTES_MAIN.poing[cote].map(variante), GESTES_MAIN.salut[cote].map(variante)] : null;
         main.pieces.push(e); V.push(e);
       });
       for (let n = 1; n <= 6; n++) {
@@ -71091,7 +71171,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   }
 
   // Pilote extérieur : la même cinématique de prise/levier que le cockpit, ramenée à la taille du corps réel.
-  // ev.pilote = { volant, rapport, rapportAvant, passage } est un objet permanent fourni par jeu.js. L'animation
+  // ev.pilote ajoute regard (rad, +droite), geste, gesteCote (-1 gauche), gestePhase et gesteIntensite.
+  // Cet objet permanent est fourni par jeu.js. L'animation
   // est une fonction de cette pose : ni horloge cachée, ni avancement par caméra, ni écriture dans la simulation.
   // Sans ce champ, les anciennes poses et leurs empreintes restent strictement inchangées.
   const PILOTE_COU = [0, .772, 0], PILOTE_RECUL = -.10, PILOTE_VOLANT = [.25, .70, 0], PILOTE_ECHELLE = .9 / K;
@@ -71133,6 +71214,9 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       };
       ajouter('volant', H.jante, niveau === 2 ? 'cylinder' : null);
       if (niveau < 2) ajouter('branches', H.branches, null);
+      for (let i = 0; i < H.moyeu.length; i++) ajouter('moyeu-' + i, H.moyeu[i], null);
+      ajouter('planche', H.planche[0], null); ajouter('casquette', H.planche[5], null);
+      for (let i = 0; i < H.supportVolant.length; i++) ajouter('support-volant-' + i, H.supportVolant[i], null);
       ajouter('levier', H.tige, null); ajouter('pommeau', H.pommeau, null);
       {
         const f = FORMES['console-levier-pilote'], o = objet(f.nom, MAT, [.035, .035, .04]);
@@ -71177,8 +71261,9 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     CLE[0] = volant * VOLANT.course; CLE[1] = t;
     CLE[2] = nA > 0 ? (nA % 2 ? 1 : -1) * .024 : 0; CLE[3] = nA > 0 ? (Math.floor((nA - 1) / 2) - 1) * .017 : 0;
     CLE[4] = nB > 0 ? (nB % 2 ? 1 : -1) * .024 : 0; CLE[5] = nB > 0 ? (Math.floor((nB - 1) / 2) - 1) * .017 : 0;
+    cleExpressions(etat, true);
     let change = !H.pret;
-    for (let i = 0; i < 6; i++) if (!Object.is(cle[i], CLE[i])) { cle[i] = CLE[i]; change = true; }
+    for (let i = 0; i < 10; i++) if (!Object.is(cle[i], CLE[i])) { cle[i] = CLE[i]; change = true; }
     if (change) { majVolant(H); H.pret = true; }
 
     // Même aller/retour au levier que les mains. Le regard anticipe doucement le braquage et accompagne le passage,
@@ -71186,7 +71271,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     let u = t / .3, retour = (t - .65) / .35;
     u = u < 0 ? 0 : u > 1 ? 1 : u; retour = retour < 0 ? 0 : retour > 1 ? 1 : retour;
     const prise = u * u * (3 - 2 * u) * (1 - retour * retour * (3 - 2 * retour));
-    ANG[0] = -(.22 * volant + .10 * prise); ANG[1] = -.10 * prise; ANG[2] = -.035 * volant;
+    const regard = Number.isFinite(etat.regard) ? Math.max(-.32, Math.min(.32, etat.regard)) : 0;
+    ANG[0] = -Math.max(-.46, Math.min(.46, .22 * volant + .10 * prise + regard)); ANG[1] = -.10 * prise; ANG[2] = -.035 * volant;
     produitDans(R.tete, eulerDe(T_A, ANG, 0, 1), produitDans(T_B, eulerDe(T_C, ANG, 1, 2), eulerDe(T_D, ANG, 2, 0)));
 
     // Les articulations sont calculées dans majVolant, en même temps que les mains et les manches.
@@ -71203,8 +71289,11 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const dx = A[j + 6] - A[j], dy = A[j + 7] - A[j + 1], dz = A[j + 8] - A[j + 2];
     const distance = Math.max(1e-9, Math.sqrt(dx * dx + dy * dy + dz * dz)), ux = dx / distance, uy = dy / distance, uz = dz / distance;
     // Pli vers le bas de la cuve. L'ancien pôle positif (.65, ±1) levait et écartait les coudes.
-    // Aucun terme latéral : la flexion reste près du buste, à l'intérieur des flancs.
-    let bx = ux * uy, by = -1 + uy * uy, bz = uz * uy;
+    // À la jante, le pôle historique reste inchangé. Quand la main se lève, ramener le coude vers le buste
+    // empêche l'humérus de traverser le jonc ; les deux os conservent exactement leurs longueurs.
+    const versBuste = H.cle[6] && H.cle[7] === cote ? .9 * portionGeste(H.cle[8], .44, .85) : 0;
+    const lateral = -cote * versBuste, produit = -uy + lateral * uz;
+    let bx = versBuste ? -ux * produit : ux * uy, by = versBuste ? -1 - uy * produit : -1 + uy * uy, bz = versBuste ? lateral - uz * produit : uz * uy;
     let norme = Math.sqrt(bx * bx + by * by + bz * bz);
     if (norme < 1e-9) { bx = -uz; by = 0; bz = ux; norme = Math.sqrt(bx * bx + bz * bz); }
     if (norme < 1e-9) { bx = 1; by = 0; bz = 0; norme = 1; }
@@ -71233,7 +71322,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
         // Ici il ne reste que le changement d'échelle/cadrage global de la vue extérieure.
         objet.shape = e.simple || source.objet.shape;
         objet.s[0] = PILOTE_ECHELLE * taille[0]; objet.s[1] = PILOTE_ECHELLE * taille[1]; objet.s[2] = PILOTE_ECHELLE * taille[2];
-        if (source.rep) anglesProduit(objet.r, M, source.rep.m);
+        if (source.rep) anglesPiloteProduit(objet.r, M, source.rep.m);
       } else if (e.de !== undefined) {
         const a = e.de, b = e.a;
         x = (A[a] + A[b]) * .5; y = (A[a + 1] + A[b + 1]) * .5; z = (A[a + 2] + A[b + 2]) * .5;
@@ -71325,13 +71414,23 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   function placer(H, e, M, P, sortie) {
     const o = e.o, p = e.objet.p, x = o[0], y = o[1], z = o[2], rep = e.rep;
     p[0] = P[0] + (M[0] * x + M[3] * y + M[6] * z); p[1] = P[1] + (M[1] * x + M[4] * y + M[7] * z); p[2] = P[2] + (M[2] * x + M[5] * y + M[8] * z);
-    if (rep !== null && rep.epoque !== H.epoque) { anglesProduit(rep.r, M, rep.m); rep.epoque = H.epoque; }
+    if (rep !== null && rep.epoque !== H.epoque) { if (H.piloteReel) anglesPiloteProduit(rep.r, M, rep.m); else anglesProduit(rep.r, M, rep.m); rep.epoque = H.epoque; }
     sortie.push(e.objet);
   }
   function placerTout(H, liste, M, P, sortie) { for (let i = 0; i < liste.length; i++) placer(H, liste[i], M, P, sortie); }
 
   const U = new Float64Array(3), RD = new Float64Array(3), EX = new Float64Array(3), HT = new Float64Array(3), GC = new Float64Array(3), ANGLE = new Float64Array(1),
-    BOUT = new Float64Array(3), ICI = new Float64Array(3), AV = new Float64Array(3), P1 = new Float64Array(3), P2 = new Float64Array(3), CLE = new Float64Array(6);
+    BOUT = new Float64Array(3), ICI = new Float64Array(3), AV = new Float64Array(3), P1 = new Float64Array(3), P2 = new Float64Array(3), CLE = new Float64Array(10);
+  function cleExpressions(etat, reel) {
+    const geste = reel && CLE[1] === 1 ? etat.geste : null;
+    CLE[6] = geste === 'majeur' ? 1 : geste === 'poing' ? 2 : geste === 'salut' ? 3 : 0;
+    CLE[7] = etat.gesteCote === -1 ? -1 : 1;
+    CLE[8] = CLE[6] && Number.isFinite(etat.gesteIntensite) ? Math.max(0, Math.min(1, etat.gesteIntensite)) : 0;
+    CLE[9] = CLE[6] && Number.isFinite(etat.gestePhase) ? Math.max(0, Math.min(1, etat.gestePhase)) : 0;
+  }
+  // L'intensité déjà lissée est le paramètre du trajet. Ces portions placent seulement ses étapes mécaniques :
+  // délier les doigts, dégager la jante, lever le poignet et enfin former le geste ; retour par le même chemin.
+  function portionGeste(x, a, b) { const u = Math.max(0, Math.min(1, (x - a) / (b - a))); return u * u * (3 - 2 * u); }
   // Volant (braquage phi), levier (passage t, grille de départ gA et d'arrivée gB) et mains, d'après H.cle = (phi, t,
   // gAx, gAy, gBx, gBy). lisse(a, b, x) et borner(x, a, b) (voir plus haut) y sont écrits en place, mêmes opérations.
   // Volant : jante gainée, trois branches d'aluminium ajourées, flasque, cache et vis, ruban blanc en haut de la jante.
@@ -71393,7 +71492,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       const main = H.mains[h], k = main.k, F = main.rep.m, co = main.coude;
       // repère de la prise : x vers le pilote, y le long de la jante vers le haut, z vers le moyeu (miroir à gauche)
       for (let i = 0; i < 3; i++) { const rk = RD[i] * k; EX[i] = U[i] * cP + rk * sP; HT[i] = U[i] * sP - rk * cP; }
-      let gx = CV[0] + EX[0] * RV, gy = CV[1] + EX[1] * RV, gz = CV[2] + EX[2] * RV, ecart = 0;
+      let gx = CV[0] + EX[0] * RV, gy = CV[1] + EX[1] * RV, gz = CV[2] + EX[2] * RV, ecart = 0, doigtsGeste = -1;
       F[0] = WN[0]; F[1] = WN[1]; F[2] = WN[2]; F[3] = HT[0]; F[4] = HT[1]; F[5] = HT[2]; F[6] = -k * EX[0]; F[7] = -k * EX[1]; F[8] = -k * EX[2];
       if (k > 0 && (vl > 0 || H.piloteReel && ouverture > 0)) {
         // La paume rejoint réellement le pommeau (jeu de 0,9 mm), au lieu de flotter 18 mm au-dessus.
@@ -71435,10 +71534,42 @@ globalThis.FGeometry=globalThis.BITUME.carene;
           gy -= F[1] * poignet[0] + F[4] * poignet[1] + F[7] * poignet[2];
           gz -= F[2] * poignet[0] + F[5] * poignet[1] + F[8] * poignet[2];
         }
-
+      }
+      if (cle[6] && k === cle[7] && cle[8] > 0) {
+        const intensite = cle[8], mouvement = portionGeste(intensite, .42, 1), dehors = portionGeste(intensite, .06, .26), recul = portionGeste(intensite, .20, .44);
+        ecart = portionGeste(intensite, 0, .16);
+        gx += EX[0] * .020 * dehors + (WN[0] * .060 + WU[0] * .045) * recul;
+        gy += EX[1] * .020 * dehors + (WN[1] * .060 + WU[1] * .045) * recul;
+        gz += EX[2] * .020 * dehors + (WN[2] * .060 + WU[2] * .045) * recul;
+        const poignet = main.pieces[3].ferme.c;
+        let wx = gx + F[0] * poignet[0] + F[3] * poignet[1] + F[6] * poignet[2];
+        let wy = gy + F[1] * poignet[0] + F[4] * poignet[1] + F[7] * poignet[2];
+        let wz = gz + F[2] * poignet[0] + F[5] * poignet[1] + F[8] * poignet[2];
+        // La main haute est déjà devant la visière : son dégagement ne recule jamais la manchette dans le casque.
+        wx = Math.max(wx, ((.100 - PILOTE_DECALAGE[0]) / PILOTE_ECHELLE - OEIL[0]) / K);
+        // Poignet à côté du casque, au-dessus du jonc. Une seule main quitte le volant, l'autre garde sa prise.
+        // Le salut oscille légèrement, le poing se lève de 8 mm : les modulations s'annulent avec le geste.
+        const onde = Math.sin(cle[9] * Math.PI * 6) * mouvement;
+        const cibleX = ((.080 - PILOTE_DECALAGE[0]) / PILOTE_ECHELLE - OEIL[0]) / K;
+        const cibleY = ((.920 + (cle[6] === 2 ? .008 * onde : 0) - PILOTE_DECALAGE[1]) / PILOTE_ECHELLE - OEIL[1]) / K;
+        const cibleZ = ((k * (.240 + (cle[6] === 3 ? .010 * onde : 0)) - PILOTE_DECALAGE[2]) / PILOTE_ECHELLE - OEIL[2]) / K;
+        const contour = 4 * mouvement * (1 - mouvement);
+        wx += (cibleX - wx) * mouvement - .015 / .9 * contour;
+        wy += (cibleY - wy) * mouvement;
+        wz += (cibleZ - wz) * mouvement + k * .055 / .9 * contour;
+        // Annuler le braquage avant de redresser la main : matrices orthonormales et poignet fixe sous les doigts.
+        ANGLE[0] = phi * mouvement; tournerColonnes(F, WN, ANGLE);
+        AXE[0] = 0; AXE[1] = 0; AXE[2] = 1; ANGLE[0] = (Math.PI / 2 + TAU) * mouvement; tournerColonnes(F, AXE, ANGLE);
+        AXE[0] = 1; AXE[1] = 0; AXE[2] = 0; ANGLE[0] = -k * Math.atan2(B.main.AXE[2], B.main.AXE[0]) * mouvement; tournerColonnes(F, AXE, ANGLE);
+        AXE[0] = 0; AXE[1] = 1; AXE[2] = 0; ANGLE[0] = k * (.42 + (cle[6] === 3 ? .09 * onde : 0)) * mouvement; tournerColonnes(F, AXE, ANGLE);
+        gx = wx - F[0] * poignet[0] - F[3] * poignet[1] - F[6] * poignet[2];
+        gy = wy - F[1] * poignet[0] - F[4] * poignet[1] - F[7] * poignet[2];
+        gz = wz - F[2] * poignet[0] - F[5] * poignet[1] - F[8] * poignet[2];
+        if (intensite >= .48) doigtsGeste = Math.min(5, Math.floor(portionGeste(intensite, .48, 1) * 5 + 1e-8));
       }
       for (let q = 0; q < 5; q++) {
-        const e = main.pieces[q], fo = H.piloteReel && e.prises ? e.prises[Math.min(5, Math.floor(ecart * 5 + 1e-8))] : ecart >= .25 ? e.ouvert : e.ferme, c = fo.c, o = e.objet, p = e.o;
+        const e = main.pieces[q], fo = doigtsGeste >= 0 && e.gestes ? e.gestes[cle[6]][doigtsGeste]
+          : H.piloteReel && e.prises ? e.prises[Math.min(5, Math.floor(ecart * 5 + 1e-8))] : ecart >= .25 ? e.ouvert : e.ferme, c = fo.c, o = e.objet, p = e.o;
         p[0] = ((gx + F[0] * c[0]) + F[3] * c[1]) + F[6] * c[2]; p[1] = ((gy + F[1] * c[0]) + F[4] * c[1]) + F[7] * c[2]; p[2] = ((gz + F[2] * c[0]) + F[5] * c[1]) + F[8] * c[2]; versVoiture(p);
         if (o.shape !== fo.nom) { o.shape = fo.nom; o.s = fo.s; }
       }
@@ -71508,10 +71639,12 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     CLE[0] = x * VOLANT.course; CLE[1] = t;
     CLE[2] = nA > 0 ? (nA % 2 ? 1 : -1) * .024 : 0; CLE[3] = nA > 0 ? (Math.floor((nA - 1) / 2) - 1) * .017 : 0;   // grille(nA)
     CLE[4] = nB > 0 ? (nB % 2 ? 1 : -1) * .024 : 0; CLE[5] = nB > 0 ? (Math.floor((nB - 1) / 2) - 1) * .017 : 0;   // grille(nB)
+    cleExpressions(ev.pilote || etat, H.piloteReel);
     let change = !H.pret;
-    for (let i = 0; i < 6; i++) if (!Object.is(cle[i], CLE[i])) { cle[i] = CLE[i]; change = true; }
+    for (let i = 0; i < 10; i++) if (!Object.is(cle[i], CLE[i])) { cle[i] = CLE[i]; change = true; }
     if (change) { majVolant(H); H.pret = true; }
     placerTout(H, H.volant, M, P, sortie);
+    if (H.piloteReel) placerTout(H, H.supportVolant, M, P, sortie);
     // Rétroviseurs (voir RETRO) : boîtier de la couleur de la voiture, patte vers le flanc de l'habitacle, glace. Le
     // fond de la glace montre ciel, horizon et piste, et les voitures qui suivent à leur place ; quand le jeu pose
     // dessus l'image réelle de la scène arrière (jeu.js, majGlaces), ce fond reste dessous.
@@ -71573,7 +71706,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     for (let i = 0; i < F.objets.length; i++) { monde(F.objets[i].p, M, F.o[i], P); sortie.push(F.objets[i]); }
   }
 
-  B.voiture = { modele, preparerPneusService, changerPneus, poser, poserRetro, cockpit, fantome, objetsFantome, detailPour, detailRouesPour, distanceRoues2, hypotDans, visible, attitude, angles, mul, mulM, euler, braquages, glacesCockpit, cadreGlace, RETRO, OEIL, K, VOLANT, PLANCHE, PENTE_PLANCHE, COUDE, LEVIER, ROUES, EMPATTEMENT, FORMES, SEGMENTS_ROUE, ROUES_FORMES, JANTES_FORMES };
+  B.voiture = { modele, preparerPneusService, preparerExpressions, changerPneus, poser, poserRetro, cockpit, fantome, objetsFantome, detailPour, detailRouesPour, distanceRoues2, hypotDans, visible, attitude, angles, mul, mulM, euler, braquages, glacesCockpit, cadreGlace, RETRO, OEIL, K, VOLANT, PLANCHE, PENTE_PLANCHE, COUDE, LEVIER, ROUES, EMPATTEMENT, FORMES, SEGMENTS_ROUE, ROUES_FORMES, JANTES_FORMES };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -74735,6 +74868,206 @@ globalThis.FGeometry=globalThis.BITUME.carene;
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
+// ---- expressions-pilote.js ----
+/* BITUME — expressions visuelles du pilote, sans effet sur la conduite.
+   Un état par séance, une sortie et un hasard privés par voiture. Aucun acteur n'est modifié.
+   actualiser se fait une fois avant les vues J2/J1 ; lire ne fait que recopier cinq champs. */
+(function (B) {
+  'use strict';
+  const GESTES = Object.freeze(['majeur', 'poing', 'salut']);
+  const DUREES = Object.freeze([1.65, 1.40, 1.80]);
+  const LIMITES = Object.freeze({ regard: .32, distance: 18, denivele: 3, vitesse: 8,
+    depassement: .8, historique: .5, amorce: .4, regardDuree: 1.45,
+    delaiManuel: 2.5, delaiDemo: 18, probabiliteDemo: .28, attenteDemande: .65 });
+  const NEUTRE = Object.freeze({ regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0 });
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const lisse = v => { v = clamp(v, 0, 1); return v * v * (3 - 2 * v); };
+  const fini = Number.isFinite;
+
+  function creer(nombre, graine = 1) {
+    if (!Number.isInteger(nombre) || nombre < 1 || nombre > 64) throw new RangeError('Expressions : 1 à 64 pilotes');
+    const pilotes = new Array(nombre);
+    for (let i = 0; i < nombre; i++) pilotes[i] = {
+      sortie: { regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0 },
+      hasard: ((graine >>> 0) ^ Math.imul(i + 1, 0x9e3779b1) ^ 0x45585052) >>> 0,
+      tenu: false, demande: false, demandeAvant: NaN, prochainManuel: -Infinity,
+      regardA: -Infinity, regardAngle: 0, prochainRegard: -Infinity,
+      geste: -1, dernierGeste: -1, gesteA: -Infinity, gesteCote: -1,
+      retourA: -Infinity, retourNiveau: 0, passageJusqua: -Infinity,
+      stableDepuis: NaN, depassements: 0, gestesManuels: 0, gestesDemo: 0
+    };
+    return { nombre, pilotes, course: null, phase: null, temps: NaN, prochainAuto: -Infinity,
+      voitures: new Array(nombre).fill(null), references: new Array(nombre).fill(null),
+      x: new Float64Array(nombre), y: new Float64Array(nombre), z: new Float64Array(nombre),
+      progression: new Float64Array(nombre), rapport: new Float64Array(nombre), repositionnements: new Uint32Array(nombre),
+      valide: new Uint8Array(nombre), continu: new Uint8Array(nombre),
+      armes: new Uint8Array(nombre * nombre), derriereA: new Float64Array(nombre * nombre),
+      duelApres: new Float64Array(nombre * nombre).fill(-Infinity) };
+  }
+
+  function hasard(p) {
+    p.hasard = (p.hasard + 0x6d2b79f5) >>> 0;
+    let t = p.hasard;
+    t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
+  function demander(E, id, appuye) {
+    const p = E?.pilotes[id]; if (!p) return false;
+    const front = !!appuye && !p.tenu; p.tenu = !!appuye;
+    if (front) { p.demande = true; p.demandeAvant = fini(E.temps) ? E.temps + LIMITES.attenteDemande : NaN; }
+    return front;
+  }
+  function eteindre(p) {
+    p.geste = -1; p.retourA = -Infinity;
+    const o = p.sortie; o.geste = null; o.gestePhase = o.gesteIntensite = 0;
+  }
+  function neutraliser(p) {
+    eteindre(p); p.demande = false; p.regardA = -Infinity; p.regardAngle = 0; p.sortie.regard = 0;
+  }
+  function sain(v, pose) {
+    const e = v?.etat;
+    return !!e && !!pose && fini(pose.x) && fini(pose.y) && fini(pose.z) && fini(pose.cap) &&
+      fini(v.progression) && fini(e.v) && fini(e.rapport) && !v.fini && !v.abandon && !e.accident && !e.recuperation &&
+      !e.reparation && !e.stands && !e.degats?.casse && !v.degats?.casse && !(e.rapport < 0);
+  }
+  function enveloppe(p, t) {
+    if (p.geste < 0) return 0;
+    const age = Math.max(0, t - p.gesteA), duree = DUREES[p.geste];
+    let niveau = lisse(age / .24) * (1 - lisse((age - duree + .36) / .36));
+    if (p.retourA !== -Infinity) niveau = Math.min(niveau, p.retourNiveau * (1 - lisse((t - p.retourA) / .14)));
+    return niveau;
+  }
+  function interrompre(p, t) {
+    if (p.geste >= 0 && p.retourA === -Infinity) {
+      p.retourNiveau = enveloppe(p, t); p.retourA = t;
+    }
+  }
+  function lancer(p, t, cote, demo) {
+    // Le premier tirage couvre les trois gestes ; ensuite, pas de répétition immédiate du même geste.
+    const u = hasard(p), k = p.dernierGeste < 0 ? Math.floor(u * GESTES.length)
+      : (p.dernierGeste + 1 + Math.floor(u * (GESTES.length - 1))) % GESTES.length;
+    p.geste = p.dernierGeste = k; p.gesteA = t; p.gesteCote = cote < 0 ? -1 : 1; p.retourA = -Infinity;
+    p.prochainManuel = t + LIMITES.delaiManuel;
+    if (demo) p.gestesDemo++; else p.gestesManuels++;
+  }
+  function lateral(pose, autre) {
+    return -(autre.x - pose.x) * Math.sin(pose.cap) + (autre.z - pose.z) * Math.cos(pose.cap);
+  }
+  function coteManuel(E, poses, id, t) {
+    const p = E.pilotes[id];
+    if (t - p.regardA < LIMITES.regardDuree && Math.abs(p.regardAngle) > .01) return p.regardAngle < 0 ? -1 : 1;
+    const pose = poses[id]; let distance = LIMITES.distance ** 2, cote = -1;
+    for (let j = 0; j < E.nombre; j++) if (j !== id && E.valide[j]) {
+      const q = poses[j], dx = q.x - pose.x, dy = q.y - pose.y, dz = q.z - pose.z, d = dx * dx + dy * dy + dz * dz;
+      if (Math.abs(dy) <= LIMITES.denivele && d < distance) {
+        const lat = lateral(pose, q); if (Math.abs(lat) < .35) continue;
+        distance = d; cote = lat < 0 ? -1 : 1;
+      }
+    }
+    return cote;
+  }
+  function depasser(E, poses, id, autre, t, demo) {
+    const p = E.pilotes[id], pose = poses[id], q = poses[autre]; p.depassements++;
+    const lat = lateral(pose, q), longitudinal = (q.x - pose.x) * Math.cos(pose.cap) + (q.z - pose.z) * Math.sin(pose.cap);
+    const regard = clamp(Math.atan2(lat, Math.max(4, Math.abs(longitudinal))), -LIMITES.regard, LIMITES.regard);
+    if (t >= p.prochainRegard && Math.abs(lat) >= .35) {
+      p.regardA = t; p.regardAngle = regard; p.prochainRegard = t + LIMITES.regardDuree + .45;
+    }
+    if (demo && t >= E.prochainAuto && t >= p.prochainManuel && t >= p.passageJusqua && p.geste < 0 && hasard(p) < LIMITES.probabiliteDemo) {
+      lancer(p, t, lat < -.35 ? -1 : lat > .35 ? 1 : -1, true); E.prochainAuto = t + LIMITES.delaiDemo;
+    }
+  }
+  function afficher(p, t) {
+    const o = p.sortie, ageRegard = t - p.regardA;
+    o.regard = ageRegard >= 0 && ageRegard < LIMITES.regardDuree
+      ? p.regardAngle * lisse(ageRegard / .18) * (1 - lisse((ageRegard - .65) / .8)) : 0;
+    if (p.geste < 0) { o.geste = null; o.gestePhase = o.gesteIntensite = 0; return; }
+    const age = t - p.gesteA;
+    if (age >= DUREES[p.geste] || p.retourA !== -Infinity && t - p.retourA >= .14) { eteindre(p); return; }
+    o.geste = GESTES[p.geste]; o.gestePhase = clamp(age / DUREES[p.geste], 0, 1);
+    o.gesteCote = p.gesteCote; o.gesteIntensite = enveloppe(p, t);
+  }
+
+  function actualiser(E, co, poses, t, demo = false) {
+    if (!E || !co || !poses || !fini(t)) return E;
+    // Plusieurs vues ou une pause relisent le même état : aucun nouveau tirage au même instant.
+    if (E.course === co && E.phase === co.phase && E.temps === t) return E;
+    const dt = t - E.temps, reset = E.course !== co || E.phase !== co.phase || !fini(dt) || dt < 0 || dt > LIMITES.historique;
+    const enCourse = co.phase === 'course' && !co.termine;
+    if (E.course && E.course !== co || fini(dt) && dt < 0) {
+      E.prochainAuto = -Infinity;
+      for (let i = 0; i < E.nombre; i++) {
+        const p = E.pilotes[i]; neutraliser(p);
+        p.prochainManuel = p.prochainRegard = p.passageJusqua = -Infinity;
+      }
+    }
+    if (reset) { E.valide.fill(0); E.armes.fill(0); E.duelApres.fill(-Infinity); }
+    E.voitures.fill(null);
+    for (let k = 0; k < co.voitures.length; k++) {
+      const v = co.voitures[k]; if (Number.isInteger(v.id) && v.id >= 0 && v.id < E.nombre) E.voitures[v.id] = v;
+    }
+    // Historique du vrai mouvement : un replacement, une nouvelle grille ou un grand saut temporel ne passe pas pour un duel.
+    for (let i = 0; i < E.nombre; i++) {
+      const p = E.pilotes[i], v = E.voitures[i], q = poses[i], et = v?.etat, avant = E.valide[i];
+      const actif = enCourse && sain(v, q); E.continu[i] = 0;
+      if (!actif) { neutraliser(p); p.stableDepuis = NaN; E.valide[i] = 0; E.references[i] = v; continue; }
+      const limite = 3 + Math.abs(et.v) * Math.max(0, dt) * 2;
+      const continu = !reset && avant && E.references[i] === v && (et.repositionnements || 0) === E.repositionnements[i] &&
+        Math.abs(v.progression - E.progression[i]) <= limite && v.progression >= E.progression[i] - .2 &&
+        Math.hypot(q.x - E.x[i], q.y - E.y[i], q.z - E.z[i]) <= limite;
+      if (!continu) {
+        p.stableDepuis = t; p.regardA = -Infinity; p.regardAngle = 0;
+        if (avant || E.course && E.course !== co || fini(dt) && dt < 0) { eteindre(p); p.demande = false; }
+      }
+      E.continu[i] = continu && t - p.stableDepuis >= LIMITES.amorce ? 1 : 0;
+      if (avant && E.references[i] === v && et.rapport !== E.rapport[i]) p.passageJusqua = t + .36;
+      if (fini(v.tPassage) && v.tPassage <= t + .05) p.passageJusqua = Math.max(p.passageJusqua, v.tPassage + .36);
+      if (t < p.passageJusqua) interrompre(p, t);
+      E.valide[i] = 1; E.references[i] = v;
+    }
+    for (let i = 0; i < E.nombre; i++) {
+      const p = E.pilotes[i]; if (!E.valide[i] || !p.demande) continue;
+      if (!fini(p.demandeAvant)) p.demandeAvant = t + LIMITES.attenteDemande;
+      if (t > p.demandeAvant) p.demande = false;
+      else if (p.geste < 0 && t >= p.passageJusqua && t >= p.prochainManuel) {
+        lancer(p, t, coteManuel(E, poses, i, t), false); p.demande = false;
+      }
+    }
+    for (let i = 0; i < E.nombre; i++) for (let j = 0; j < E.nombre; j++) if (i !== j) {
+      const k = i * E.nombre + j;
+      if (!E.continu[i] || !E.continu[j] || E.voitures[i].etat.v < LIMITES.vitesse || E.voitures[j].etat.v < LIMITES.vitesse) { E.armes[k] = 0; continue; }
+      const a = poses[i], b = poses[j], dx = a.x - b.x, dy = a.y - b.y, dz = a.z - b.z;
+      const ecart = E.voitures[i].progression - E.voitures[j].progression;
+      if (dx * dx + dy * dy + dz * dz > LIMITES.distance ** 2 || Math.abs(dy) > LIMITES.denivele || Math.abs(ecart) > 16 || t < E.duelApres[k]) { E.armes[k] = 0; continue; }
+      if (ecart <= -LIMITES.depassement) { E.armes[k] = 1; E.derriereA[k] = t; }
+      else if (E.armes[k] && ecart >= LIMITES.depassement) {
+        E.armes[k] = 0;
+        if (t - E.derriereA[k] <= 2.5) {
+          E.duelApres[k] = E.duelApres[j * E.nombre + i] = t + 4;
+          depasser(E, poses, i, j, t, demo);
+        }
+      }
+    }
+    for (let i = 0; i < E.nombre; i++) {
+      const p = E.pilotes[i], v = E.voitures[i], q = poses[i];
+      if (E.valide[i]) {
+        E.x[i] = q.x; E.y[i] = q.y; E.z[i] = q.z; E.progression[i] = v.progression; E.rapport[i] = v.etat.rapport;
+        E.repositionnements[i] = v.etat.repositionnements || 0;
+        afficher(p, t);
+      }
+    }
+    E.course = co; E.phase = co.phase; E.temps = t; return E;
+  }
+  function lire(E, id, sortie) {
+    const o = E?.pilotes[id]?.sortie || NEUTRE;
+    if (!sortie) return o;
+    sortie.regard = o.regard; sortie.geste = o.geste; sortie.gestePhase = o.gestePhase;
+    sortie.gesteCote = o.gesteCote; sortie.gesteIntensite = o.gesteIntensite; return sortie;
+  }
+  B.expressionsPilote = { creer, actualiser, demander, lire, GESTES, LIMITES };
+})(globalThis.BITUME = globalThis.BITUME || {});
+</script>
+<script>
 // ---- cinema.js ----
 /* BITUME — cadrages originaux des démos, préparés dans le décor réellement construit.
    Lecture seule : ni voiture, ni animal, ni horloge, ni tirage de simulation ne sont modifiés. */
@@ -74746,6 +75079,77 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   const lisse = u => { u = clamp(u, 0, 1); return u * u * (3 - 2 * u); };
   const BAS = Object.freeze([0, -1, 0]), PAS_TRAJET = 24;
   const fini = p => Array.isArray(p) && p.length === 3 && p.every(Number.isFinite);
+  const GEOMETRIES = new Map();
+  function rochersVisuels(decor) {
+    // Ces rochers sont dessinés mais ne participent pas à la conduite. La caméra lit leurs triangles,
+    // sans ajouter de corps au monde PhysX ni transformer les houppiers en murs opaques.
+    const resultat = [], vus = new Set();
+    for (const lot of (decor.lotsHerbier || []).concat(decor.lots || [])) for (const o of lot.objets || []) {
+      if (vus.has(o)) continue; vus.add(o);
+      if (o.collision || o.solidePhysX || Math.floor(o.mat) !== 9 || !['sphere', 'octa'].includes(o.shape) || !fini(o.p) || !fini(o.s)) continue;
+      if (!GEOMETRIES.has(o.shape)) {
+        const g = globalThis.FRender?.shared?.geometry(), plage = g?.ranges[o.shape], triangles = [];
+        if (plage) for (let k = 0; k < plage.count; k++) {
+          const v = g.indices[plage.offset / 4 + k] * 6;
+          triangles.push(g.vertices[v], g.vertices[v + 1], g.vertices[v + 2]);
+        }
+        if (triangles.length) GEOMETRIES.set(o.shape, new Float32Array(triangles));
+      }
+      const r = o.r || [0, 0, 0], rayon = Math.hypot(...o.s) / 2;
+      resultat.push({ p: o.p, s: o.s, rayon, triangles: GEOMETRIES.get(o.shape),
+        cx: Math.cos(r[0]), sx: Math.sin(r[0]), cy: Math.cos(r[1]), sy: Math.sin(r[1]), cz: Math.cos(r[2]), sz: Math.sin(r[2]) });
+    }
+    return resultat;
+  }
+  function localRocher(o, v, point) {
+    const x = v[0] - (point ? o.p[0] : 0), y = v[1] - (point ? o.p[1] : 0), z = v[2] - (point ? o.p[2] : 0);
+    const xz = o.cz * x + o.sz * y, yz = -o.sz * x + o.cz * y;
+    const xy = o.cy * xz - o.sy * z, zy = o.sy * xz + o.cy * z;
+    return [xy / o.s[0], (o.cx * yz + o.sx * zy) / o.s[1], (-o.sx * yz + o.cx * zy) / o.s[2]];
+  }
+  function impactVisuel(C, origine, direction, longueur) {
+    let premier = Infinity;
+    for (const o of C.visuels || []) {
+      const qx = origine[0] - o.p[0], qy = origine[1] - o.p[1], qz = origine[2] - o.p[2];
+      const b = qx * direction[0] + qy * direction[1] + qz * direction[2];
+      const discriminant = b * b - (qx ** 2 + qy ** 2 + qz ** 2 - o.rayon ** 2);
+      if (discriminant < 0) continue;
+      const r = Math.sqrt(discriminant);
+      if (-b + r < 0 || -b - r > Math.min(longueur, premier)) continue;
+      // Un contexte sans géométrie FERRO peut seulement refuser l'enveloppe ; le jeu utilise les triangles.
+      if (!o.triangles) { premier = Math.min(premier, Math.max(0, -b - r)); continue; }
+      const p = localRocher(o, origine, true), d = localRocher(o, direction, false), T = o.triangles;
+      for (let k = 0; k < T.length; k += 9) {
+        const ax = T[k + 3] - T[k], ay = T[k + 4] - T[k + 1], az = T[k + 5] - T[k + 2];
+        const bx = T[k + 6] - T[k], by = T[k + 7] - T[k + 1], bz = T[k + 8] - T[k + 2];
+        const hx = d[1] * bz - d[2] * by, hy = d[2] * bx - d[0] * bz, hz = d[0] * by - d[1] * bx;
+        const det = ax * hx + ay * hy + az * hz; if (Math.abs(det) < 1e-12) continue;
+        const sx = p[0] - T[k], sy = p[1] - T[k + 1], sz = p[2] - T[k + 2];
+        const u = (sx * hx + sy * hy + sz * hz) / det; if (u < 0 || u > 1) continue;
+        const qx = sy * az - sz * ay, qy = sz * ax - sx * az, qz = sx * ay - sy * ax;
+        const v = (d[0] * qx + d[1] * qy + d[2] * qz) / det; if (v < 0 || u + v > 1) continue;
+        const t = (bx * qx + by * qy + bz * qz) / det;
+        if (t >= 0 && t <= longueur) premier = Math.min(premier, t);
+      }
+    }
+    return premier;
+  }
+  function impact(C, de, vers, depart = 0, suite = 0) {
+    const dir = C.rayon, origine = C.origine;
+    const dx = vers[0] - de[0], dy = vers[1] - de[1], dz = vers[2] - de[2], d = Math.hypot(dx, dy, dz);
+    if (d < 1e-7) return Infinity;
+    depart = Math.min(depart, d * .45);
+    dir[0] = dx / d; dir[1] = dy / d; dir[2] = dz / d;
+    for (let j = 0; j < 3; j++) origine[j] = de[j] + dir[j] * depart;
+    const longueur = d - depart + suite;
+    let distance = impactVisuel(C, origine, dir, longueur);
+    if (C.monde?.raycast) {
+      C.requetes++;
+      const h = C.monde.raycast(origine, dir, longueur, { mask: 3, staticOnly: true }, C.hit);
+      if (h.hit) distance = Math.min(distance, Number.isFinite(h.distance) ? h.distance : 0);
+    }
+    return distance + depart;
+  }
   function plusProche(c, x, z) {
     let d = Infinity, k = 0;
     for (let i = 0; i < c.n; i += 4) { const q = (c.x[i] - x) ** 2 + (c.z[i] - z) ** 2; if (q < d) { d = q; k = i; } }
@@ -74792,7 +75196,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
         label: /fleur/.test(String(o.shape)) ? 'Fleurs des abords' : arbre ? 'Sous les arbres' : 'Végétation des abords' });
       if (flore.length === 12) break;
     }
-    const data = { panorama, flore, maxY, minY }; CACHE.set(decor, data); return data;
+    const data = { panorama, flore, maxY, minY, visuels: rochersVisuels(decor) }; CACHE.set(decor, data); return data;
   }
   function preparer(c, decor, animaux, monde) {
     const base = statiques(c, decor), faune = [];
@@ -74808,7 +75212,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const C = { c, decor, animaux, monde, ancres: { panorama: base.panorama, flore: base.flore, faune }, maxY: base.maxY, minY: base.minY,
       options: { faune: 'off', nuit: 0, pluie: 0 }, animal: {}, poseVue: { x: 0, y: 0, z: 0 },
       rayon: [0, 0, 0], origine: [0, 0, 0], cible: [0, 0, 0], position: [0, 0, 0], appui: [0, 0, 0], hit: {}, solHit: {}, requetes: 0,
-      trajets: new WeakMap(), plans: new WeakMap() };
+      trajets: new WeakMap(), plans: new WeakMap(), cadres: new WeakMap(), bras: new WeakMap(), visuels: base.visuels, dernierCadre: null };
     // Les panoramas et les travellings de végétation sont contrôlés pour tout le plan pendant le chargement.
     // Aucun tronc qui entre ou sort d'un rayon ne change ensuite la distance de prise de vue.
     for (const a of base.panorama.concat(base.flore)) C.trajets.set(a, [preparerTrajet(C, a, -1), preparerTrajet(C, a, 1)]);
@@ -74856,14 +75260,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     return segmentLibre(C, pos, cible, margeSujet);
   }
   function segmentLibre(C, pos, cible, margeSujet) {
-    if (!C.monde?.raycast) return true;
-    const dir = C.rayon, origin = C.origine;
-    for (let j = 0; j < 3; j++) dir[j] = pos[j] - cible[j];
-    const d = Math.hypot(...dir); if (d < Math.max(.7, margeSujet + .4)) return false;
-    for (let j = 0; j < 3; j++) { dir[j] /= d; origin[j] = cible[j] + dir[j] * margeSujet; }
-    C.requetes++;
-    const h = C.monde.raycast(origin, dir, d - margeSujet + .25, { mask: 3, staticOnly: true }, C.hit);
-    return !h.hit;
+    const d = Math.hypot(...pos.map((v, j) => v - cible[j]));
+    return d >= Math.max(.7, margeSujet + .4) && impact(C, cible, pos, margeSujet, .25) === Infinity;
   }
   function appuiVisible(C, a, pos) {
     // Voir le corps au-dessus d'une crête ne suffit pas : le pli de terrain peut cacher les pattes et
@@ -74907,19 +75305,121 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   function posteAnimal(C, a, cible, cote) {
     // Un poste fixe suit du regard l'animal vivant : le panoramique reste fluide et la caméra ne traverse
     // pas le décor en poursuivant un oiseau ou une bête en fuite. Sa disparition termine le plan.
-    const p = [0, 0, 0];
-    for (const offset of [0, Math.PI / 2, -Math.PI / 2, Math.PI]) {
+    const p = [0, 0, 0], terrestre = a.famille === 'sol';
+    const taille = a.taille * (terrestre ? C.animal.echelle : 1), ouverture = 2 * Math.tan(34 * Math.PI / 360);
+    // La taille de l'habitat n'est pas celle du sujet. Viser environ 16 % de l'image garde du paysage
+    // tout en rendant l'animal lisible ; on compare les postes, pas seulement le premier rayon libre.
+    const rayon = terrestre ? clamp(taille / (ouverture * .16), 4.8, 32) : a.rayon;
+    const hauteur = terrestre ? clamp(taille * .9, 1.1, 2.8) : a.hauteur;
+    let meilleur = null, score = Infinity;
+    for (const facteur of terrestre ? [1, 1.18, .82] : [1]) for (const offset of [0, Math.PI / 4, -Math.PI / 4, Math.PI / 2, -Math.PI / 2, 3 * Math.PI / 4, -3 * Math.PI / 4, Math.PI]) {
       const angle = a.cap + cote * 1.05 + offset;
-      p[0] = cible[0] - Math.cos(angle) * a.rayon; p[2] = cible[2] - Math.sin(angle) * a.rayon;
-      p[1] = Math.max(cible[1] + a.hauteur, sol(C, p[0], p[2], cible[1] + a.hauteur) + 1);
-      if (libre(C, p, cible) && appuiVisible(C, a, p)) return p.slice();
+      p[0] = cible[0] - Math.cos(angle) * rayon * facteur; p[2] = cible[2] - Math.sin(angle) * rayon * facteur;
+      p[1] = Math.max(cible[1] + hauteur, sol(C, p[0], p[2], cible[1] + hauteur) + .7);
+      const d = Math.hypot(...p.map((v, j) => v - cible[j])), fraction = taille / (d * ouverture);
+      const plongee = Math.atan2(p[1] - cible[1], Math.hypot(p[0] - cible[0], p[2] - cible[2]));
+      if (terrestre && (fraction < .10 || fraction > .25 || plongee > .6)) continue;
+      if (!libre(C, p, cible) || !appuiVisible(C, a, p)) continue;
+      const valeur = Math.abs(fraction - .16) * 5 + Math.abs(plongee) * .7 + Math.abs(offset) * .002;
+      if (valeur < score) { score = valeur; meilleur = p.slice(); }
     }
-    return null;
+    return meilleur;
   }
   function viser(pos, cible, fov, nature = false) {
     const dx = cible[0] - pos[0], dy = cible[1] - pos[1], dz = cible[2] - pos[2], d = Math.hypot(dx, dy, dz) || 1;
     return { pos: pos.slice(), cible: cible.slice(), yaw: Math.atan2(dx, -dz), pitch: Math.asin(clamp(dy / d, -1, 1)), roll: 0,
       fov: clamp(fov, 26, 64), near: .08, far: 6000, sujetNature: nature };
+  }
+  function objectif(cam, aspect) {
+    if (!cam || !fini(cam.pos) || ![cam.yaw, cam.pitch, cam.fov, aspect].every(Number.isFinite) || aspect <= 0 || cam.fov <= 0 || cam.fov >= 150) return null;
+    const near = cam.near ?? .1, roll = cam.roll || 0;
+    if (!Number.isFinite(near) || near <= 0 || !Number.isFinite(roll)) return null;
+    const sy = Math.sin(cam.yaw), cy = Math.cos(cam.yaw), sp = Math.sin(cam.pitch), cp = Math.cos(cam.pitch);
+    const cr = Math.cos(roll), sr = Math.sin(roll), droite = [cy, 0, sy], haut = [-sy * sp, cp, cy * sp];
+    const h = near * Math.tan(cam.fov * Math.PI / 360) + .06, w = (h - .06) * aspect + .06;
+    const centre = [cam.pos[0] + sy * cp * near, cam.pos[1] + sp * near, cam.pos[2] - cy * cp * near];
+    const points = [cam.pos.slice()];
+    for (const x of [-1, 1]) for (const y of [-1, 1]) points.push(centre.map((v, k) =>
+      v + x * w * (droite[k] * cr + haut[k] * sr) + y * h * (haut[k] * cr - droite[k] * sr)));
+    return points;
+  }
+  function valider(C, cam, cible, plan, t, aspect = 16 / 9) {
+    if (!C || !fini(cible)) return false;
+    const points = objectif(cam, aspect); if (!points) return false;
+    const marge = plan?.ancre?.margeSujet || .15;
+    // Une hauteur depuis le ciel confondrait le toit du tunnel avec son sol. Les cinq rayons partent
+    // du sujet réel : la visée et tout le plan proche doivent rester dans le même espace libre.
+    for (const p of points) if (impact(C, cible, p, marge, .04) !== Infinity) return false;
+    const avant = plan && C.cadres.get(plan);
+    if (avant && Number.isFinite(t) && t > avant.t) {
+      for (let k = 0; k < points.length; k++) if (impact(C, avant.points[k], points[k], 0, .04) !== Infinity) return false;
+    }
+    if (plan) C.cadres.set(plan, { points, t });
+    C.dernierCadre = { cam: { ...cam, pos: cam.pos.slice(), cible: cible.slice() }, aspect };
+    return true;
+  }
+  function secours(C, aspect = 16 / 9) {
+    if (!C) return null;
+    const dernier = C.dernierCadre;
+    // Le monde statique est inchangé pendant la séance. Conserver aussi l'ancienne cible numérique
+    // évite de réorienter ce poste sûr vers une voiture désormais derrière un mur.
+    if (dernier && (dernier.aspect === aspect || valider(C, dernier.cam, dernier.cam.cible, null, 0, aspect)))
+      return { ...dernier.cam, pos: dernier.cam.pos.slice(), cible: dernier.cam.cible.slice(), secours: true };
+    for (const a of C.ancres.panorama) {
+      const trajet = C.trajets.get(a)?.find(Boolean); if (!trajet) continue;
+      const cam = viser(placer(a, trajet, .5, [0, 0, 0]), a.cible, 46, true);
+      if (!valider(C, cam, cam.cible, null, 0, aspect)) continue;
+      C.poseVue.x = cam.pos[0]; C.poseVue.y = cam.pos[1]; C.poseVue.z = cam.pos[2];
+      return { ...cam, secours: true };
+    }
+    return null; // le raccord conserve alors l'image précédente, il n'invente pas de poste
+  }
+  function poursuite(C, cam, p, plan, t, aspect = 16 / 9) {
+    if (!C || !cam || !p || ![p.x, p.y, p.z].every(Number.isFinite)) return null;
+    const cible = [p.x, p.y + .65, p.z], souhaite = [cam.pos[0], p.y + 2.45, cam.pos[2]];
+    const direction = souhaite.map((v, k) => v - cible[k]), longueur = Math.hypot(...direction);
+    if (!Number.isFinite(longueur) || longueur < 1.2) return null;
+    for (let k = 0; k < 3; k++) direction[k] /= longueur;
+    const cadre = { ...cam, pos: souhaite, cible, yaw: Math.atan2(-direction[0], direction[2]), pitch: Math.asin(-direction[1]), roll: 0 };
+    const points = objectif(cadre, aspect); if (!points) return null;
+    let libre = longueur;
+    // Un bras de caméra, indépendant de la conduite : cinq rayons parallèles réservent aussi les
+    // coins de l'objectif. Le décor proche raccourcit le bras ; il ne le pousse pas sur une montagne.
+    for (const q of points) {
+      const de = cible.map((v, k) => v + q[k] - souhaite[k]);
+      libre = Math.min(libre, impact(C, de, q, 0, .2) - .2);
+    }
+    const avant = plan && C.bras.get(plan);
+    if (avant && Number.isFinite(t) && t >= avant.t) libre = Math.min(libre, avant.longueur + (t - avant.t) * 3);
+    if (libre < 1.2) return null;
+    cadre.pos = cible.map((v, k) => v + direction[k] * libre);
+    if (!valider(C, cadre, cible, plan, t, aspect)) return null;
+    if (plan) C.bras.set(plan, { longueur: libre, t });
+    return cadre;
+  }
+  function souffle(C, cam, plan, poses, co, t, intensite, aspect = 16 / 9) {
+    if (!C || !cam || !['tele', 'sol'].includes(plan?.vue) || !(intensite > 0)) return cam;
+    let yaw = 0, pitch = 0, roll = 0;
+    for (const v of co?.voitures || []) {
+      const p = poses[v.id], e = v.etat; if (!p || !e) continue;
+      const vitesse = e._physx?.velocity, vx = vitesse ? vitesse[0] : Math.cos(p.cap) * e.v, vz = vitesse ? vitesse[2] : Math.sin(p.cap) * e.v;
+      const norme = Math.hypot(vx, vz); if (!Number.isFinite(norme) || norme < 12) continue;
+      const dx = p.x - cam.pos[0], dz = p.z - cam.pos[2], temps = (dx * vx + dz * vz) / (norme * norme);
+      if (temps <= 0 || temps >= 1) continue;
+      const lateral = (dz * vx - dx * vz) / norme, distance = Math.hypot(lateral, p.y + .5 - cam.pos[1]);
+      if (distance >= 20) continue;
+      // Réponse amortie au passage : fonction de la pose/vitesse réelle, identique à 30/60/120 Hz.
+      // Aucun oscillateur au repos, aucune impulsion avant le passage ou loin du poste.
+      const force = Math.min(1.6, (norme / 70) ** 2) * (1 - distance / 20) ** 2;
+      const impulsion = force * Math.sin(temps * 20) * Math.exp(-temps * 6) * (1 - lisse((temps - .7) / .3));
+      yaw += Math.sign(lateral) * impulsion * .003; pitch += impulsion * .0015; roll += Math.sign(lateral) * impulsion * .002;
+    }
+    const gain = clamp(intensite, 0, 1);
+    yaw = clamp(yaw, -.004, .004) * gain; pitch = clamp(pitch, -.002, .002) * gain; roll = clamp(roll, -.003, .003) * gain;
+    if (Math.abs(yaw) + Math.abs(pitch) + Math.abs(roll) < 1e-8) return cam;
+    const final = { ...cam, yaw: cam.yaw + yaw, pitch: cam.pitch + pitch, roll: (cam.roll || 0) + roll };
+    const p = poses[plan.sujet], cible = cam.cible || (p && [p.x, p.y + .65, p.z]);
+    return valider(C, final, cible, plan, t, aspect) ? final : cam;
   }
   function camera(C, plan, poses, co, t) {
     if (!C || !plan || !VUES.includes(plan.vue)) return null;
@@ -74934,7 +75434,12 @@ globalThis.FGeometry=globalThis.BITUME.carene;
         if (!C.plans.has(plan)) C.plans.set(plan, posteAnimal(C, ancre, cible, cote));
         const poste = C.plans.get(plan); if (!poste) return null;
         for (let j = 0; j < 3; j++) pos[j] = poste[j];
-        if (Math.hypot(pos[0] - cible[0], pos[1] - cible[1], pos[2] - cible[2]) < 4) return null;
+        const distance = Math.hypot(pos[0] - cible[0], pos[1] - cible[1], pos[2] - cible[2]);
+        if (distance < 4) return null;
+        if (ancre.famille === 'sol') {
+          const fraction = ancre.taille * C.animal.echelle / (distance * 2 * Math.tan(34 * Math.PI / 360));
+          if (fraction < .10 || fraction > .28) return null;
+        }
       } else {
         const trajets = C.trajets.get(ancre), trajet = trajets?.[cote < 0 ? 0 : 1] || trajets?.find(Boolean);
         if (!trajet) return null;
@@ -74966,7 +75471,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     C.poseVue.x = cam.pos[0]; C.poseVue.y = cam.pos[1]; C.poseVue.z = cam.pos[2];
     return cam;
   }
-  B.cinema = { VUES, NATURE, preparer, regler, choisir, disponible, camera, libre, viser };
+  B.cinema = { VUES, NATURE, preparer, regler, choisir, disponible, camera, libre, viser, valider, poursuite, souffle, secours };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -75017,7 +75522,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
 
   function creer(graine) {
     return { alea: mulberry32((graine >>> 0) + 0x51ED270B), plan: null, n: 0, vert: -1, vainqueur: -1, sprint: false,
-      vus: {}, ordre: null, action: null, cinema: null, plansCourse: 0, natureTour: 0, natureDerniere: -1e9 };
+      vus: {}, ordre: null, action: null, cinema: null, plansCourse: 0, natureTour: 0, natureDerniere: -1e9,
+      expressionDerniere: -Infinity, expressionVue: { regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0 } };
   }
 
   // côté du milieu de la piste, vu de la voiture : les caméras latérales s'y placent, loin des arbres et des rails
@@ -75106,7 +75612,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     }
   }
 
-  function tenir(R, co, cinema = null) {
+  function tenir(R, co, cinema = null, expressions = null) {
     R.cinema = cinema;
     const t = co.horloge, p = R.plan, V = co.voitures;
     // La première découverte tient dans le délai existant : les feux et le départ restent en temps réel.
@@ -75148,6 +75654,17 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       if (a && t - a.t < 1.2 && p.motif !== 'action' && t - p.debut > .8 && !V[a.id].fini) {
         const vue = tirer(R, ['orbite', 'tele', 'sol'].filter(v => v !== p.vue).map(v => [v, 1]));
         return couper(R, co, vue, a.id, 4.2, 'action', { ralenti: t + RALENTI_DUREE, facteur: RALENTI });
+      }
+      // Montrer une réaction réellement déclenchée après un dépassement. Le cadre prend le côté de la main,
+      // reste assez longtemps pour son retour au volant, et passe par les mêmes gardes de relief que les autres.
+      if (cinema && expressions && B.expressionsPilote && p.motif !== 'action' && t - p.debut > .8 && t - R.expressionDerniere > 12) {
+        for (let id = 0; id < V.length; id++) {
+          const v = V[id], e = B.expressionsPilote.lire(expressions, id, R.expressionVue);
+          if (!v.fini && !v.abandon && v.etat.v > ALLURE && e.geste && e.gestePhase < .35 && e.gesteIntensite > .12) {
+            R.expressionDerniere = t; R.ordre = co.classement.slice();
+            return couper(R, co, 'pilote', id, 2.8, 'expression', { cote: e.gesteCote });
+          }
+        }
       }
       // Un dépassement dans les huit premiers : on coupe sur celui qui vient de passer
       const ordre = co.classement;
@@ -75442,6 +75959,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   'use strict';
   const PAS = 1 / 120, MAX_PIXELS = 2000000, MAX_SOURCE_PIXELS = 1048576;
   const QUALITES = Object.freeze({ low: 0, medium: 1, high: 2, ultra: 3 });
+  const MAX_GOUTTES_MOBILES = 32;
+  const DEPOTS = Object.freeze([6, 12, 24, 32].map((gouttes, i) => Object.freeze({ gouttes, neige: 0, echelleEau: 1.4 + i * .1 })));
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   const nombre = (v, defaut = 0) => Number.isFinite(Number(v)) && v != null ? Number(v) : defaut;
   const VERTEX = `#version 300 es
@@ -75462,6 +75981,9 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   uniform vec2 uTexel;
   uniform int uQualite;
   uniform bool uAvecScene;
+  uniform int uNbGouttes;
+  uniform vec4 uGouttes[32]; // centre en pixels, rayon, opacité ; vraies rencontres du modèle partagé
+  uniform vec4 uTrajets[32]; // milieu et fin de la coulure, historique réel des positions
   float h21(vec2 p) {
     vec3 q = fract(vec3(p.xyx) * vec3(.1031,.1030,.0973));
     q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z);
@@ -75490,17 +76012,21 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     float rayon = taille * (.48 + alea.x*alea.x*.94) / cellule;
     vec2 axes = vec2(rayon,rayon*(1.12+mobilite*(.5+air*1.5)));
     vec2 n = d/max(axes,vec2(.001));
-    float asymetrie = 1.0 + sin(atan(n.y,n.x)*3.0+alea.y*6.283)*.10*taille/12.0;
+    float angle = atan(n.y,n.x);
+    float asymetrie = 1.0 + sin(angle*3.0+alea.y*6.283)*(couche==6.0 ? .23 : .10*taille/12.0);
+    if (couche==6.0) asymetrie+=sin(angle*5.0-alea.x*11.0)*.11;
     float r = length(n)*asymetrie;
-    float aa = max(.018, .8/ max(taille,1.0));
+    // Anticrénelage dans l'espace des pixels réellement rendus : les perles de moins d'un pixel
+    // gardent une empreinte continue lors d'une baisse de définition ou en écran partagé.
+    float aa = clamp(fwidth(r)*.72,.018,.58);
     float masque = bords(r,aa) * presence * apparition;
     float longueur = rayon*1.5+mobilite*pow(vie,2.0)*.32;
     float tx = d.x-sin(d.y*25.0+alea.x*12.0)*rayon*.16;
     float trace = (1.0-smoothstep(rayon*.09,rayon*.31,abs(tx))) * smoothstep(rayon*.6,rayon*1.6,d.y);
     trace *= (1.0-smoothstep(longueur*.72,longueur,d.y))*mobilite*presence*apparition;
     float creux = sqrt(max(0.0,1.0-min(r*r,1.0)));
-    vec2 normale = clamp(n,vec2(-1),vec2(1))*masque*creux;
-    return vec4(normale+vec2(sign(tx)*trace*.12,0.0),max(masque,trace*.34),max(masque*(.5+.5*creux),trace*.2));
+    vec2 normale = clamp(n,vec2(-1),vec2(1))*masque*(.20+.80*creux);
+    return vec4(normale+vec2(sign(tx)*trace*.12,0.0),max(masque,trace*.34),max(masque*(.34+.66*creux),trace*.2));
   }
   vec4 nappe(vec2 p, float densite) {
     vec2 q = mat2(.932,.362,-.362,.932)*p/vec2(157.0,191.0), id = floor(q), a = h22(id+103.0+uVue.z);
@@ -75515,6 +76041,38 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     float m = bords(r,.035)*present*fondu;
     return vec4(clamp(d/rayon,vec2(-1),vec2(1))*m*.65,m,m*(.5+.5*sqrt(max(0.0,1.0-min(r*r,1.0)))));
   }
+  vec4 gouttesMobiles(vec2 p) {
+    vec4 total=vec4(0);
+    for(int i=0;i<32;i++) {
+      if(i>=uNbGouttes) break;
+      vec4 g=uGouttes[i],tr=uTrajets[i]; float rayon=g.z;
+      vec2 bas=min(g.xy,min(tr.xy,tr.zw))-rayon*2.3,haut=max(g.xy,max(tr.xy,tr.zw))+rayon*2.3;
+      // Les calculs de lentille et de courbe sont locaux ; le reste de l'écran ne parcourt que les emprises.
+      if(any(lessThan(p,bas))||any(greaterThan(p,haut))) continue;
+      vec2 n=(p-g.xy)/vec2(rayon,rayon*(1.30+uMouvement.y*.55));
+      float r=length(n),m=bords(r,max(.025,.85/rayon))*g.w;
+      float creux=sqrt(max(0.0,1.0-min(r*r,1.0)));
+      vec2 normale=clamp(n,vec2(-1),vec2(1))*m*(.18+.82*creux);
+      float trace=0.0;
+      if(distance(g.xy,tr.zw)>rayon*1.2) {
+        float meilleur=1e9,progres=0.0; vec2 precedent=tr.zw,ecart=vec2(0);
+        // Trois positions du modèle forment une courbe, sans traînée verticale inventée pour les perles fixes.
+        for(int j=1;j<=4;j++) {
+          float t=float(j)*.25;
+          vec2 q=mix(mix(tr.zw,tr.xy,t),mix(tr.xy,g.xy,t),t),v=q-precedent;
+          float f=clamp(dot(p-precedent,v)/max(dot(v,v),.001),0.0,1.0);
+          vec2 d=p-(precedent+f*v);float d2=dot(d,d);
+          if(d2<meilleur){meilleur=d2;progres=(float(j-1)+f)*.25;ecart=d;}
+          precedent=q;
+        }
+        float largeur=max(.7,rayon*mix(.11,.36,progres));
+        trace=(1.0-smoothstep(largeur*.45,largeur+1.0,sqrt(meilleur)))*smoothstep(0.0,.14,progres)*g.w*.62;
+        normale+=ecart/max(length(ecart),.1)*trace*.35;
+      }
+      total+=vec4(normale,max(m,trace),max(m*(.5+.5*creux),trace*.45));
+    }
+    return total;
+  }
   vec3 scene(vec2 p, float flou) {
     p = clamp(p,vec2(.002),vec2(.998));
     vec3 c = texture(uScene,p).rgb;
@@ -75528,20 +76086,24 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   }
   void main() {
     float eau=uMeteo.x, neige=uMeteo.y, embruns=uMeteo.z, film=uMeteo.w;
-    if (max(max(eau,neige),max(embruns,film)) < .001) { couleur=vec4(0); return; }
+    if (max(max(eau,neige),max(embruns,film)) < .001 && uNbGouttes==0) { couleur=vec4(0); return; }
     vec2 p=uv*uVue.xy;
-    // Granulométrie : milliers de fines perles, dizaines de grosses gouttes et nappes rares.
-    vec4 a=perles(p,18.0,1.45,clamp(eau*.94,0.0,.97),1.0,.04);
-    vec4 b=perles(p,43.0,3.7,clamp(eau*.83,0.0,.93),2.0,.22);
+    // Deux granulométries fines indépendantes : des milliers de micro-impacts ponctuels, puis
+    // des perles à ménisque net. Le panache renouvelle ces impacts même à grande vitesse.
+    vec4 micro=vec4(0);
+    if (uQualite > 0) micro=perles(p+vec2(3.7,8.1),9.5,.76,clamp(eau*.72,0.0,.93),7.0,.015);
+    vec4 a=perles(p,15.0,1.85,clamp(eau*.94,0.0,.97),1.0,.04);
+    vec4 b=perles(p,35.0,4.1,clamp(eau*.83,0.0,.93),2.0,.22);
     vec4 c=vec4(0),n=vec4(0);
     if (uQualite > 0) {
-      c=perles(p,91.0,8.9,clamp(eau*.70,0.0,.85),3.0,.65);
+      c=perles(p,77.0,9.7,clamp(eau*.70,0.0,.85),3.0,.65);
       n=nappe(p,clamp((eau-.30)*.48+film*.32,0.0,.65));
     } else { a*=.6; }
-    vec2 normale=a.xy*.23+b.xy*.47+c.xy*.8+n.xy;
-    float goutte=clamp(a.z+b.z+c.z+n.z,0.0,1.0);
-    float relief=clamp(a.w*.3+b.w*.5+c.w*.8+n.w,0.0,1.0);
-    float menisque=clamp((a.z-a.w+b.z-b.w+c.z-c.w+n.z-n.w)*2.0,0.0,1.0);
+    vec4 mobiles=gouttesMobiles(p);
+    vec2 normale=micro.xy*.20+a.xy*.44+b.xy*.68+c.xy*.9+n.xy+mobiles.xy;
+    float goutte=clamp(micro.z+a.z+b.z+c.z+n.z+mobiles.z,0.0,1.0);
+    float relief=clamp(micro.w*.16+a.w*.3+b.w*.5+c.w*.8+n.w+mobiles.w,0.0,1.0);
+    float menisque=clamp((micro.z-micro.w+a.z-a.w+b.z-b.w+c.z-c.w+n.z-n.w+mobiles.z-mobiles.w)*1.7,0.0,1.0);
     // Brouillard d'eau local dans l'axe : il monte puis retombe dans le modèle, pas d'aplat blanc instantané.
     float turbulent=.5;
     if (embruns>.001 || (uAvecScene && film>.001)) {
@@ -75550,20 +76112,24 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     }
     vec2 centre=uv-vec2(.5,.57);
     float panache=exp(-dot(centre*vec2(1.8,1.45),centre*vec2(1.8,1.45))*2.1);
-    float voile=clamp(embruns*panache*(.35+turbulent*.68),0.0,.88);
+    float voile=clamp(embruns*panache*(.44+turbulent*.78),0.0,.88);
     // La neige humide s'agglomère irrégulièrement sur le pourtour, avec de petits amas au centre.
     float grain=0.0,blanc=0.0;
     if (neige>.001) {
       vec2 bord= min(uv,1.0-uv);
       float distanceBord=min(bord.x*1.32,bord.y);
-      float dentelle=bruit(p/37.0+uVue.z)*.020 + bruit(p/11.0)*.007;
+      float dentelle=bruit(p/37.0+uVue.z)*.024 + bruit(p/11.0)*.010;
       float lobes=bruit(p/vec2(173.0,109.0)+uVue.z);
       float coin=exp(-length(bord*vec2(1.3,1.0))*11.0);
       float epaisseur=neige*((.021+.078*(1.0-uv.y))*(.35+1.15*lobes)+coin*.046+dentelle);
       float bourrelet=(1.0-smoothstep(epaisseur*.52,epaisseur+.022+lobes*.015,distanceBord))*neige;
       grain=bruit(p*.39+uVue.z)*.5+bruit(p*.13)*.5;
-      vec4 amas=perles(p,64.0,4.4,clamp(neige*.53,0.0,.74),6.0,.08);
-      blanc=clamp(bourrelet*(.75+.25*grain)+amas.z*neige*(.35+.65*grain),0.0,.96);
+      vec4 amas=perles(p,48.0,4.5,clamp(neige*.65,0.0,.82),6.0,.08);
+      float cristaux=smoothstep(.44,.75,bruit(p*.71+uVue.z))*.34;
+      // Des cœurs granuleux blancs dans des ménisques translucides, pas des disques opaques.
+      normale+=amas.xy*neige*.35;
+      goutte=clamp(goutte+amas.z*neige*.35,0.0,1.0);
+      blanc=clamp(bourrelet*(.68+.32*grain)+amas.z*neige*(.26+.53*grain+cristaux),0.0,.96);
     }
     float brume=clamp(film*.065+neige*.04,0.0,.13);
     float alpha=clamp(max(goutte*.90,max(voile,blanc)) + brume,0.0,.98)*uVue.w;
@@ -75575,8 +76141,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       image=scene(uv+deviation,clamp(relief*.45+voile*.88+blanc*.72,0.0,1.0));
       float ombre=smoothstep(.01,.24,dot(normale,normalize(vec2(.35,-.94))));
       float reflet=pow(smoothstep(.02,.33,dot(-normale,normalize(vec2(.35,-.94)))),2.0);
-      image *= 1.0-ombre*(.08+menisque*.32)-menisque*.17;
-      image += vec3(.72,.85,.94)*reflet*(.09+menisque*.43);
+      image *= 1.0-ombre*(.10+menisque*.37)-menisque*.19;
+      image += vec3(.72,.85,.94)*reflet*(.11+menisque*.43);
     } else {
       // Légère : ménisques contrastés sur fond transparent, aucune copie ni lecture de la scène.
       float lumiere=dot(-normale,normalize(vec2(.35,-.94)));
@@ -75588,9 +76154,26 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     couleur=vec4(clamp(image,0.0,1.0),alpha);
   }`;
   function creerEtat(options) {
+    if (!B.vitre && typeof module !== 'undefined' && module.exports) require('./vitre.js');
     return { temps: 0, accumulateur: 0, eau: 0, neige: 0, embruns: 0, film: 0,
       precedent: new Float64Array(4), uniformes: new Float32Array(12), etapes: 0,
+      depots: B.vitre.creerSimulation(options), gouttesUniformes: new Float32Array(MAX_GOUTTES_MOBILES * 4),
+      trajetsUniformes: new Float32Array(MAX_GOUTTES_MOBILES * 4), nbGouttes: 0,
       graine: options && Number.isInteger(options.graine) ? options.graine : 0 };
+  }
+  function preparerDepots(e) {
+    const d=e.depots,k=clamp(d.accumulateur*30,0,1),w=d.largeur,h=d.hauteur,g=e.gouttesUniformes,tr=e.trajetsUniformes;
+    let n=0;
+    for(let i=0;i<MAX_GOUTTES_MOBILES;i++) {
+      const p=d.gouttes[i];if(!p.vivant&&!p.fusion)continue;
+      const age=p.pa*(1-k)+p.age*k,poids=p.pp*(1-k)+p.poids*k;
+      const alpha=clamp(Math.min(1,age/.24,(p.duree-age)/1.5)*poids,0,1);if(alpha<.005)continue;
+      const j=n++*4;
+      g[j]=(p.px*(1-k)+p.x*k)*w;g[j+1]=(1-p.py*(1-k)-p.y*k)*h;
+      g[j+2]=Math.sqrt(p.pr*p.pr*(1-k)+(p.vivant?p.taille*p.taille:0)*k);g[j+3]=alpha;
+      tr[j]=p.traceX[2]*w;tr[j+1]=(1-p.traceY[2])*h;tr[j+2]=p.traceX[5]*w;tr[j+3]=(1-p.traceY[5])*h;
+    }
+    e.nbGouttes=n;
   }
   function avancerEtat(e, dt, c) {
     if (c.pause || !Number.isFinite(dt) || dt <= 0) return;
@@ -75599,9 +76182,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const neige=c.abri ? 0 : clamp(nombre(c.neige),0,1);
     const pluie=c.abri || neige>.001 ? 0 : clamp(nombre(c.pluie),0,1);
     const spray=c.abri || neige>.001 ? 0 : clamp(nombre(c.embruns),0,1);
-    // L'air évacue les dépôts, mais le panache du rival apporte sans cesse de nouveaux impacts.
-    // Distinguer ce flux de la pluie ambiante garde le sillage visible à grande vitesse.
-    const eauCible=clamp((pluie*.95/(1+air*2.8)+spray*1.25/(1+air*.45))*intensite,0,1.55);
+    // Le flux de pneus renouvelle la visière même quand l'air chasse efficacement la pluie libre.
+    const eauCible=clamp((pluie*1.20/(1+air*2.8)+spray*1.90/(1+air*.35))*intensite,0,1.90);
     const neigeCible=clamp(neige*intensite/(1+air*7),0,1.25);
     e.accumulateur+=Math.min(.25,dt);
     while (e.accumulateur+1e-10>=PAS) {
@@ -75610,7 +76192,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       e.eau+=(eauCible+fonte-e.eau)*(1-Math.exp(-PAS*(eauCible>e.eau ? .72 : .22+air*1.8)));
       e.neige+=(neigeCible-e.neige)*(1-Math.exp(-PAS*(neigeCible>e.neige ? .10 : .065+air*.6)));
       e.embruns+=(spray*intensite-e.embruns)*(1-Math.exp(-PAS*(spray>e.embruns ? 4 : 1.4)));
-      const filmCible=(pluie*.35/(1+air*4)+spray*.55/(1+air*.65))*intensite;
+      const filmCible=clamp((pluie*.40/(1+air*4)+spray*.82/(1+air*.45))*intensite,0,1.5);
       e.film+=(filmCible-e.film)*(1-Math.exp(-PAS*(filmCible>e.film ? .5 : .3+air)));
       if(e.eau<.0005 && eauCible+fonte===0)e.eau=0;
       if(e.neige<.0005 && neigeCible===0)e.neige=0;
@@ -75623,8 +76205,9 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     u[2]=e.precedent[2]*(1-k)+e.embruns*k; u[3]=e.precedent[3]*(1-k)+e.film*k;
     u[4]=Math.max(0,e.temps-PAS+e.accumulateur); u[5]=air;
     u[6]=clamp(nombre(c.ventX)*.2,-8,8); u[7]=clamp(nombre(c.ventZ)*.08,-8,8);
-    u[8]=nombre(c.largeur,1); u[9]=nombre(c.hauteur,1); u[10]=e.graine*37.31;
-    u[11]=(c.cockpit===false ? .36 : 1)*Math.min(1,intensite);
+    u[8]=nombre(c.largeur,e.depots.largeur); u[9]=nombre(c.hauteur,e.depots.hauteur); u[10]=e.graine*37.31;
+    u[11]=(c.cockpit===false ? .64 : 1)*Math.min(1,intensite);
+    B.vitre.avancerSimulation(e.depots,dt,c,DEPOTS[QUALITES[c.qualite]??2]);preparerDepots(e);
   }
   function montrer(e, oui) {
     if (e.masquee===!oui) return;
@@ -75649,7 +76232,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
     gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([0,0,0,255]));
-    e.lieux={}; for(const nom of ['uScene','uMeteo','uMouvement','uVue','uTexel','uQualite','uAvecScene']) e.lieux[nom]=gl.getUniformLocation(programme,nom);
+    e.lieux={}; for(const nom of ['uScene','uMeteo','uMouvement','uVue','uTexel','uQualite','uAvecScene','uNbGouttes','uGouttes','uTrajets']) e.lieux[nom]=gl.getUniformLocation(programme,nom);
     gl.disable(gl.DEPTH_TEST); gl.disable(gl.BLEND); gl.clearColor(0,0,0,0);
     e.pret=true; e.perdu=false; e.stats.pret=true; e.stats.perdu=false;e.stats.erreur=null;
   }
@@ -75662,7 +76245,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const e={canvas,gl,contexte:gl,simulation:creerEtat(options),source:copie,sourceContexte:copie.getContext('2d',{alpha:false}),
       masquee:false,propre:true,perdu:false,libere:false,pret:false,dprPalier:null,largeur:1,hauteur:1,dpr:1,
       stats:{backend:'webgl2',pret:false,perdu:false,erreur:null,copiesScene:0,dessins:0,etapes:0,pixels:0,pixelsSource:0,
-        largeur:0,hauteur:0,dpr:1,eau:0,accumulationNeige:0,embruns:0,gouttes:0,neige:0}};
+        largeur:0,hauteur:0,dpr:1,eau:0,accumulationNeige:0,embruns:0,gouttes:0,neige:0,
+        fusionsEau:0,expulses:0,depotsEau:0,depotsEmbruns:0,surfaceExpulsee:0}};
     e.uMeteo=e.simulation.uniformes.subarray(0,4);e.uMouvement=e.simulation.uniformes.subarray(4,8);e.uVue=e.simulation.uniformes.subarray(8,12);
     e.perte=event=>{event.preventDefault(); e.perdu=true; e.pret=false; e.stats.perdu=true; e.stats.pret=false; montrer(e,false);};
     e.restauration=()=>{if(e.libere)return; try{initialiser(e);}catch(err){e.stats.erreur=String(err.message||err);montrer(e,false);}};
@@ -75702,13 +76286,16 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     gl.uniform1i(e.lieux.uScene,0);gl.uniform4fv(e.lieux.uMeteo,e.uMeteo);
     gl.uniform4fv(e.lieux.uMouvement,e.uMouvement);gl.uniform4fv(e.lieux.uVue,e.uVue);
     gl.uniform2f(e.lieux.uTexel,1/e.source.width,1/e.source.height);gl.uniform1i(e.lieux.uQualite,niveau);gl.uniform1i(e.lieux.uAvecScene,avecScene);
+    gl.uniform1i(e.lieux.uNbGouttes,e.simulation.nbGouttes);
+    gl.uniform4fv(e.lieux.uGouttes,e.simulation.gouttesUniformes);gl.uniform4fv(e.lieux.uTrajets,e.simulation.trajetsUniformes);
     gl.drawArrays(gl.TRIANGLES,0,3);e.stats.dessins++;e.propre=!!chauffe;montrer(e,!chauffe);
   }
   function effacer(e) {
     if(!e || e.libere)return;
     if(!e.propre && e.pret && !e.perdu){e.gl.clear(e.gl.COLOR_BUFFER_BIT);e.propre=true;}
     const s=e.simulation;s.eau=s.neige=s.embruns=s.film=s.accumulateur=0;s.precedent.fill(0);s.uniformes.fill(0);
-    e.stats.eau=e.stats.accumulationNeige=e.stats.embruns=0;e.dprPalier=null;montrer(e,false);
+    B.vitre.effacer(s.depots);s.nbGouttes=0;s.gouttesUniformes.fill(0);s.trajetsUniformes.fill(0);
+    e.stats.eau=e.stats.accumulationNeige=e.stats.embruns=e.stats.gouttes=0;e.dprPalier=null;montrer(e,false);
   }
   function mettreAJour(e,dt,c) {
     if(!e || e.libere)return e ? e.stats : null;
@@ -75716,10 +76303,15 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     if(c.actif===false || c.retro===true || c.qualite==='off' || clamp(nombre(c.intensite,1),0,2)===0){effacer(e);return e.stats;}
     if(c.pause || !e.pret || e.perdu || !Number.isFinite(dt) || dt<=0)return e.stats;
     const niveau=QUALITES[c.qualite]??2, s=e.simulation;
+    // Le jeu transmet la toile, sans dimensions CSS dans le contexte : dépôts et shader doivent partager
+    // celles de cette vue, y compris J2 et un redimensionnement, avant le premier pas de déplacement.
+    dimensionner(e,c,niveau);s.depots.largeur=e.largeur;s.depots.hauteur=e.hauteur;
     avancerEtat(s,dt,c);
     e.stats.eau=s.eau;e.stats.accumulationNeige=s.neige;e.stats.embruns=s.embruns;e.stats.etapes=s.etapes;
-    if(Math.max(s.eau,s.neige,s.embruns,s.film)<.001){if(!e.propre){e.gl.clear(e.gl.COLOR_BUFFER_BIT);e.propre=true;}montrer(e,false);return e.stats;}
-    dimensionner(e,c,niveau);dessiner(e,c,niveau,false);return e.stats;
+    e.stats.gouttes=s.depots.stats.gouttes;e.stats.fusionsEau=s.depots.stats.fusionsEau;e.stats.expulses=s.depots.stats.expulses;
+    e.stats.depotsEau=s.depots.stats.depotsEau;e.stats.depotsEmbruns=s.depots.stats.depotsEmbruns;e.stats.surfaceExpulsee=s.depots.stats.surfaceExpulsee;
+    if(Math.max(s.eau,s.neige,s.embruns,s.film)<.001&&!s.nbGouttes){if(!e.propre){e.gl.clear(e.gl.COLOR_BUFFER_BIT);e.propre=true;}montrer(e,false);return e.stats;}
+    dessiner(e,c,niveau,false);return e.stats;
   }
   function prechauffer(e,c) {
     if(!e || e.libere || !e.pret || e.perdu)return false;c=c||{};
@@ -75734,7 +76326,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     if(!e.perdu){e.gl.deleteTexture(e.texture);e.gl.deleteVertexArray(e.vao);e.gl.deleteProgram(e.programme);}
     e.libere=true;e.canvas=null;e.contexte=null;e.source=null;e.sourceContexte=null;e.gl=null;
   }
-  B.visiereOptique={creer,creerEtat,avancerEtat,mettreAJour,prechauffer,effacer,liberer,MAX_PIXELS,MAX_SOURCE_PIXELS,QUALITES};
+  B.visiereOptique={creer,creerEtat,avancerEtat,mettreAJour,prechauffer,effacer,liberer,MAX_PIXELS,MAX_SOURCE_PIXELS,MAX_GOUTTES_MOBILES,QUALITES};
 })(globalThis.BITUME=globalThis.BITUME||{});
 </script>
 <script>
@@ -75757,7 +76349,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   function pool(nombre) {
     const p = new Array(nombre);
     // px, py, pa et pp gardent position, âge et poids d'avant le dernier pas, pour dessiner entre deux pas.
-    for (let i = 0; i < nombre; i++) p[i] = { vivant: false, x: 0, y: 0, age: 0, duree: 0,
+    for (let i = 0; i < nombre; i++) p[i] = { vivant: false, fusion: false, x: 0, y: 0, age: 0, duree: 0,
       taille: 0, vitesse: 0, phase: 0, frequence: 0, glisse: 0, poids: 0, fondu: false, cos: 1, sin: 0,
       px: 0, py: 0, pa: 0, pp: 0, pr: 0, fonte: 0, traceAge: 0,
       traceX: new Float64Array(6), traceY: new Float64Array(6) };
@@ -75776,12 +76368,17 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const optique = B.visiereOptique && B.visiereOptique.creer(canvas, options);
     if (optique) { optique.optique = true; return optique; }
     const contexte = canvas && typeof canvas.getContext === 'function' ? canvas.getContext('2d', { alpha: true }) : null;
+    return creerSimulation(options, canvas, contexte);
+  }
+  // Même dépôt mobile pour la réfraction WebGL et le repli Canvas ; aucun contexte ni pixel requis ici.
+  function creerSimulation(options, canvas = null, contexte = null) {
     const e = { canvas, contexte, gouttes: pool(112), neige: pool(36), accumulateur: 0, temps: 0, sequence: 0, masquee: false,
       graine: options && Number.isInteger(options.graine) ? options.graine | 0 : 0,
-      creditEau: 0, creditNeige: 0, largeur: canvas ? canvas.clientWidth || canvas.width || 1 : 1,
-      hauteur: canvas ? canvas.clientHeight || canvas.height || 1 : 1, dpr: 1, dprPalier: null, propre: true, libere: false,
+      creditEau: 0, creditNeige: 0, largeur: canvas ? canvas.clientWidth || canvas.width || 1 : 1280,
+      hauteur: canvas ? canvas.clientHeight || canvas.height || 1 : 720, dpr: 1, dprPalier: null, propre: true, libere: false,
       opacite: 1, stats: { backend: 'canvas2d', pret: !!contexte, gouttes: 0, neige: 0, dessins: 0, etapes: 0, largeur: 0, hauteur: 0, dpr: 1, pixels: 0, fraction: 0,
-        fusionsEau: 0, fusionsNeige: 0, fonte: 0, expulses: 0, eauEvacuee: 0, paires: 0 } };
+        fusionsEau: 0, fusionsNeige: 0, fonte: 0, expulses: 0, seches: 0, surfaceExpulsee: 0,
+        depotsEau: 0, depotsEmbruns: 0, eauEvacuee: 0, paires: 0 } };
     montrer(e, false); // toile neuve, vide
     return e;
   }
@@ -75795,8 +76392,8 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     if (e.optique) { B.visiereOptique.effacer(e); return; }
     if (!e.propre) viderPixels(e);
     montrer(e, false);
-    for (let i = 0; i < e.gouttes.length; i++) e.gouttes[i].vivant = false;
-    for (let i = 0; i < e.neige.length; i++) e.neige[i].vivant = false;
+    for (let i = 0; i < e.gouttes.length; i++) e.gouttes[i].vivant = e.gouttes[i].fusion = false;
+    for (let i = 0; i < e.neige.length; i++) e.neige[i].vivant = e.neige[i].fusion = false;
     e.stats.gouttes = e.stats.neige = 0; e.accumulateur = e.creditEau = e.creditNeige = 0;
     e.dprPalier = null; // nouvelle séance : le prochain appel actif reprend la définition du palier courant
   }
@@ -75823,17 +76420,17 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     e.largeur = largeur; e.hauteur = hauteur; e.dpr = dpr;
     e.stats.largeur = w; e.stats.hauteur = h; e.stats.dpr = dpr; e.stats.pixels = w * h;
   }
-  function deposer(e, neige, limite, x, y, taille) {
+  function deposer(e, neige, limite, x, y, taille, echelle = 1) {
     const liste = neige ? e.neige : e.gouttes;
     let p = null;
     for (let i = 0; i < limite; i++) if (!liste[i].vivant) { p = liste[i]; break; }
     if (!p) return false;
     const seed = Math.imul(++e.sequence, 2654435761) ^ 731 ^ Math.imul(e.graine, 374761393);
-    p.vivant = true; p.x = Number.isFinite(x) ? x : .025 + hache(seed) * .95;
+    p.vivant = true; p.fusion = false; p.x = Number.isFinite(x) ? x : .025 + hache(seed) * .95;
     p.y = Number.isFinite(y) ? y : .025 + hache(seed + 17) * .93;
     p.age = 0; p.duree = (neige ? 7 : 8) + hache(seed + 23) * (neige ? 10 : 13);
     // Beaucoup de perles fines et quelques impacts larges, sans agrandir toute la pluie uniformément.
-    p.taille = Number.isFinite(taille) ? taille : neige ? 4 + hache(seed + 31) * 7 : 1.1 + hache(seed + 31) ** 2 * 6.4;
+    p.taille = Number.isFinite(taille) ? taille : neige ? 4 + hache(seed + 31) * 7 : (1.1 + hache(seed + 31) ** 2 * 6.4) * echelle;
     p.taille = clamp(p.taille, .5, neige ? MAX_RAYON_NEIGE : MAX_RAYON_EAU);
     p.vitesse = .5 + hache(seed + 37) * 2.5; p.phase = hache(seed + 41) * TAU;
     p.frequence = .27 + hache(seed + 43) * .65; p.glisse = hache(seed + 47) > .68 ? 1 : .04;
@@ -75876,7 +76473,9 @@ globalThis.FGeometry=globalThis.BITUME.carene;
         a.age = fraction * a.duree;
         a.fonte = Math.max(a.fonte, b.fonte); a.fondu = a.fonte > 0;
         e.stats.eauEvacuee += Math.max(0, masse - maximum * maximum);
-        b.vivant = false; nombre++;
+        // Le dépôt absorbé reste dessinable pendant le pas interpolé : son aire décroît pendant que
+        // celle du receveur grandit. À 144 Hz, la fusion ne perd donc pas une perle durant quatre images.
+        b.vivant = false; b.fusion = true; nombre++;
         if (neige) e.stats.fusionsNeige++; else e.stats.fusionsEau++;
       }
     }
@@ -75886,19 +76485,28 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     e.temps += PAS; e.stats.etapes++;
     const couvert = !!c.abri, eau = couvert || neige ? 0 : pluie, flocons = couvert ? 0 : neige;
     const spray = couvert || neige ? 0 : clamp(Number(c.embruns) || 0, 0, 1);
-    const air = clamp((vitesse - 18) / 102, 0, 1) ** 2, rythme = 2 + vitesse * .07;
-    // La pluie ambiante adhère moins à grande vitesse ; les projections du rival restent un flux distinct.
-    // La vitesse continue d'évacuer les gouttes déjà présentes : sortir du sillage dégage la visière.
-    const exposition = (c.cockpit === false ? .42 : 1) * intensite;
-    const fluxPluie = eau * rythme / (1 + air * 3.5);
-    const fluxSpray = spray * (12 + vitesse * .22) / (1 + air * .6);
-    e.creditEau = Math.min(3, e.creditEau + PAS * (fluxPluie + fluxSpray) * budget.gouttes / 24 * exposition);
+    const air = clamp((vitesse - 18) / 102, 0, 1) ** 2, rythme = 3 + vitesse * .12;
+    // L'air évacue la pluie libre ; les pneus de la voiture devant continuent d'envoyer de nouveaux impacts.
+    // Le sillage a son propre flux, qui reste abondant à 300 km/h sans ralentir l'évacuation des gouttes présentes.
+    const exposition = (c.cockpit === false ? .60 : 1) * intensite;
+    const fluxPluie = eau * rythme / (1 + air * 3.5), fluxSpray = spray * (22 + vitesse * .36) / (1 + air * .55);
+    e.creditEau = Math.min(4, e.creditEau + PAS * (fluxPluie + fluxSpray) * budget.gouttes / 24 * exposition);
     e.creditNeige = Math.min(2, e.creditNeige + PAS * flocons * (1 + vitesse * .035) * budget.neige / 12 * exposition / (1 + air * 3.5));
-    while (e.creditEau >= 1) { deposer(e, false, budget.gouttes); e.creditEau--; }
+    while (e.creditEau >= 1) {
+      // Impacts groupés du panache, renouvelés quatre fois par seconde. Le test balayé décide des fusions.
+      const enSpray = spray > .05 && hache(e.sequence * 13 + 5) < fluxSpray / Math.max(.001, fluxPluie + fluxSpray);
+      const gerbe = Math.floor(e.temps * 4) + e.graine * 739;
+      const x = enSpray ? .12 + hache(gerbe * 37 + 91) * .76 + (hache(e.sequence * 43 + 7) - .5) * .075 : undefined;
+      const y = enSpray ? .10 + hache(gerbe * 53 + 83) * .78 + (hache(e.sequence * 47 + 3) - .5) * .075 : undefined;
+      if (deposer(e, false, budget.gouttes, x, y, undefined, budget.echelleEau || 1)) {
+        e.stats.depotsEau++; if (enSpray) e.stats.depotsEmbruns++;
+      }
+      e.creditEau--;
+    }
     while (e.creditNeige >= 1) { deposer(e, true, budget.neige); e.creditNeige--; }
     let gouttes = 0, restes = 0;
     for (let i = 0; i < e.gouttes.length; i++) {
-      const p = e.gouttes[i]; if (!p.vivant) continue;
+      const p = e.gouttes[i]; p.fusion = false; if (!p.vivant) continue;
       p.px = p.x; p.py = p.y; p.pa = p.age; p.pp = p.poids; p.pr = p.taille;
       garderTrajet(p);
       p.age += PAS * ((eau > .05 || spray > .05 ? 1 : 1.55) + air * 5);
@@ -75907,11 +76515,16 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       const ruisselle = mobilite * (8 + vitesse * .42) * (p.taille * .35 + p.vitesse);
       p.y += PAS * (ruisselle + (p.y - .45) * air * 130) / e.hauteur;
       p.x += PAS * (vent * (.5 + mobilite) + Math.sin(e.temps * p.frequence + p.phase) * p.vitesse + (p.x - .5) * air * 210) / e.largeur;
-      if (p.age >= p.duree || p.y < -.04 || p.y > 1.04 || p.x < -.04 || p.x > 1.04 || i >= budget.gouttes && !p.poids) { p.vivant = false; if (air > .1) e.stats.expulses++; }
+      const dehors = p.y < -.04 || p.y > 1.04 || p.x < -.04 || p.x > 1.04;
+      if (p.age >= p.duree || dehors || i >= budget.gouttes && !p.poids) {
+        p.vivant = false;
+        if (dehors) { e.stats.expulses++; e.stats.surfaceExpulsee += p.taille * p.taille; }
+        else if (p.age >= p.duree) e.stats.seches++;
+      }
       else gouttes++;
     }
     for (let i = 0; i < e.neige.length; i++) {
-      const p = e.neige[i]; if (!p.vivant) continue;
+      const p = e.neige[i]; p.fusion = false; if (!p.vivant) continue;
       p.px = p.x; p.py = p.y; p.pa = p.age; p.pp = p.poids; p.pr = p.taille;
       p.age += PAS * ((flocons > .05 ? 1 : 1.35) + air * 4);
       p.poids = clamp(p.poids + PAS * (i < budget.neige ? 4 : -2), 0, 1);
@@ -75922,13 +76535,31 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       if (fraction > (p.fonte ? .72 : .42) && p.fonte < 2) {
         if (deposer(e, false, budget.gouttes, p.x, p.y, p.taille * (p.fonte ? .48 : .34))) { gouttes++; p.fonte++; p.fondu = true; e.stats.fonte++; }
       }
-      if (fraction >= 1 || p.y < -.03 || p.y > 1.03 || p.x < -.03 || p.x > 1.03 || i >= budget.neige && !p.poids) { p.vivant = false; if (air > .1) e.stats.expulses++; }
+      const dehors = p.y < -.03 || p.y > 1.03 || p.x < -.03 || p.x > 1.03;
+      if (fraction >= 1 || dehors || i >= budget.neige && !p.poids) {
+        p.vivant = false;
+        if (dehors) { e.stats.expulses++; e.stats.surfaceExpulsee += p.taille * p.taille; }
+        else if (fraction >= 1) e.stats.seches++;
+      }
       else restes++;
     }
     e.stats.paires = 0;
     gouttes -= fusionner(e, e.gouttes, budget.gouttes, false);
     restes -= fusionner(e, e.neige, budget.neige, true);
     e.stats.gouttes = gouttes; e.stats.neige = restes;
+  }
+  function avancerSimulation(e, dt, c, budget) {
+    if (!e || !c || c.pause || !Number.isFinite(dt) || dt <= 0) return e?.stats;
+    const intensite = c.intensite == null || !Number.isFinite(Number(c.intensite)) ? 1 : clamp(Number(c.intensite), 0, 2);
+    if (c.actif === false || c.retro || c.qualite === 'off' || !intensite) { effacer(e); return e.stats; }
+    budget = budget || BUDGETS[c.qualite] || BUDGETS.high;
+    e.largeur = Math.max(1, Number(c.largeur) || e.largeur); e.hauteur = Math.max(1, Number(c.hauteur) || e.hauteur);
+    const pluie = clamp(Number(c.pluie) || 0, 0, 1), neige = clamp(Number(c.neige) || 0, 0, 1);
+    const vitesse = clamp(Math.abs(Number(c.vitesse) || 0), 0, 120);
+    const vent = clamp((Number(c.ventX) || 0) * .20 + (Number(c.ventZ) || 0) * .08, -8, 8);
+    e.accumulateur += Math.min(.25, dt);
+    while (e.accumulateur + 1e-10 >= PAS) { avancer(e, c, budget, pluie, neige, vitesse, vent, intensite); e.accumulateur -= PAS; }
+    return e.stats;
   }
   // Dessin à la fraction k du pas en cours, entre l'état d'avant le dernier pas et celui d'après : la
   // simulation reste à 30 Hz, le mouvement suit la cadence d'affichage. À k = 1, tracés exacts de l'état du dernier pas.
@@ -75938,10 +76569,12 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     // Quelques traits et contours : ni lecture de pixels, ni réfraction plein écran.
     ctx.lineCap = 'round'; ctx.lineJoin = 'round';
     for (let i = 0; i < e.gouttes.length; i++) {
-      const p = e.gouttes[i]; if (!p.vivant) continue;
+      const p = e.gouttes[i]; if (!p.vivant && !p.fusion) continue;
       const age = melange(p.pa, p.age, k), a = clamp(Math.min(1, age / .24, (p.duree - age) / 1.5) * melange(p.pp, p.poids, k) * e.opacite, 0, 1);
       if (a <= .005) continue;
-      const x = melange(p.px, p.x, k) * w, y = melange(p.py, p.y, k) * h, r = melange(p.pr, p.taille, k);
+      const x = melange(p.px, p.x, k) * w, y = melange(p.py, p.y, k) * h;
+      const r = Math.sqrt(melange(p.pr * p.pr, p.vivant ? p.taille * p.taille : 0, k));
+      if (r < .05) continue;
       ctx.globalAlpha = a;
       const dx = x - p.traceX[5] * w, dy = y - p.traceY[5] * h;
       if (dx * dx + dy * dy > r * r) {
@@ -75969,10 +76602,12 @@ globalThis.FGeometry=globalThis.BITUME.carene;
       ctx.ellipse(x - r * .28, y - r * .55, Math.max(.32, r * .14), Math.max(.4, r * .22), -.3, 0, TAU); ctx.fill();
     }
     for (let i = 0; i < e.neige.length; i++) {
-      const p = e.neige[i]; if (!p.vivant) continue;
+      const p = e.neige[i]; if (!p.vivant && !p.fusion) continue;
       const age = melange(p.pa, p.age, k), f = age / p.duree, a = clamp(Math.min(1, age / .3, (1 - f) * 3) * melange(p.pp, p.poids, k) * e.opacite, 0, 1);
       if (a <= .005) continue;
-      const x = melange(p.px, p.x, k) * w, y = melange(p.py, p.y, k) * h, rayon = melange(p.pr, p.taille, k);
+      const x = melange(p.px, p.x, k) * w, y = melange(p.py, p.y, k) * h;
+      const rayon = Math.sqrt(melange(p.pr * p.pr, p.vivant ? p.taille * p.taille : 0, k));
+      if (rayon < .05) continue;
       const humide = clamp((f - .18) / .66, 0, 1), r = rayon * (1 - humide * .68), impact = 1 + Math.max(0, 1 - age / .24) * .32;
       // L'impact s'étale en une empreinte humide ; le cœur granuleux se réduit et laisse un ménisque
       // transparent pendant la fonte. La neige ne se transforme pas en croix dessinées sur le verre.
@@ -75998,7 +76633,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     const intensite = Number.isFinite(Number(c.intensite)) && c.intensite != null ? clamp(Number(c.intensite), 0, 2) : 1;
     if (!e.contexte || c.actif === false || c.retro === true || !intensite || budget === BUDGETS.off) { effacer(e); return e.stats; }
     if (c.pause === true) return e.stats;
-    e.opacite = Math.min(1.25, intensite) * (c.cockpit === false ? .48 : 1);
+    e.opacite = Math.min(1.25, intensite) * (c.cockpit === false ? .55 : 1);
     suivrePalier(e, budget);
     if (!Number.isFinite(dt) || dt <= 0) return e.stats;
     e.accumulateur += Math.min(.25, dt);
@@ -76037,7 +76672,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     ctx.globalAlpha = 1; e.propre = false; montrer(e, true);
     return true;
   }
-  B.vitre = { creer, mettreAJour, prechauffer, effacer, liberer, BUDGETS, MAX_PIXELS, FREQUENCE: 30 };
+  B.vitre = { creer, creerSimulation, avancerSimulation, mettreAJour, prechauffer, effacer, liberer, BUDGETS, MAX_PIXELS, FREQUENCE: 30 };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -80063,6 +80698,7 @@ FERRO.initPhysics().then(function(){
       detailsRouesGlaces: [new Int8Array(course.voitures.length).fill(-1), new Int8Array(course.voitures.length).fill(-1)],
       contresens: 0, bloque: 0, finA: null, resultats: false, derniereJauge: -9, positionPrec: 0, tempsAffiche: null,
       real: demo ? B.realisateur.creer(graineCourse) : null, cinema: null, planVu: null, suivie: 0, enchaine: false,
+      expressions: B.expressionsPilote ? B.expressionsPilote.creer(course.voitures.length, graineCourse) : null,
       fx: B.traces.creer(course.voitures.length, graineCourse, course.physique.world),
       // flammes et détonations d'échappement (lot 20) : hasard propre, tiré de la graine de la course
       ech: B.echappement ? B.echappement.creer(course.voitures.length, graineCourse) : null,
@@ -80159,10 +80795,10 @@ FERRO.initPhysics().then(function(){
   // Commandes de chaque joueur (David, 16/11 : « choix manette, clavier ou souris, et gérer les touches de chacun » ;
   // « clavier normal pour un et pavé numérique pour l'autre ») : appareil choisi (auto, manette, clavier, souris) et
   // jusqu'à deux touches par action, réglables ; positions physiques des touches (e.code).
-  const ACTIONS = ['gaz', 'frein', 'gauche', 'droite', 'derive', 'haut', 'bas', 'vue'];
+  const ACTIONS = ['gaz', 'frein', 'gauche', 'droite', 'derive', 'haut', 'bas', 'vue', 'troll'];
   const TOUCHES_DEFAUT = [
-    { gaz: ['ArrowUp', 'KeyW'], frein: ['ArrowDown', 'KeyS'], gauche: ['ArrowLeft', 'KeyA'], droite: ['ArrowRight', 'KeyD'], derive: ['Space', 'ShiftLeft', 'ShiftRight'], haut: ['KeyE'], bas: ['KeyQ'], vue: ['KeyC'] },
-    { gaz: ['Numpad8'], frein: ['Numpad5', 'Numpad2'], gauche: ['Numpad4'], droite: ['Numpad6'], derive: ['Numpad0'], haut: ['Numpad9'], bas: ['Numpad7'], vue: ['NumpadEnter'] }
+    { gaz: ['ArrowUp', 'KeyW'], frein: ['ArrowDown', 'KeyS'], gauche: ['ArrowLeft', 'KeyA'], droite: ['ArrowRight', 'KeyD'], derive: ['Space', 'ShiftLeft', 'ShiftRight'], haut: ['KeyE'], bas: ['KeyQ'], vue: ['KeyC'], troll: ['KeyG'] },
+    { gaz: ['Numpad8'], frein: ['Numpad5', 'Numpad2'], gauche: ['Numpad4'], droite: ['Numpad6'], derive: ['Numpad0'], haut: ['Numpad9'], bas: ['Numpad7'], vue: ['NumpadEnter'], troll: ['NumpadDecimal'] }
   ];
   const commande = n => (reglages.commandes && reglages.commandes[n]) || 'auto';
   const toucheDe = (n, action) => (reglages.touches && reglages.touches[n] && reglages.touches[n][action]) || TOUCHES_DEFAUT[n][action];
@@ -80181,6 +80817,15 @@ FERRO.initPhysics().then(function(){
   const doigt = { volant: 0, gaz: false, frein: false, derive: false, id: null, x0: 0 };
   let analogique = false;
   let relacherTactile = () => {};
+
+  // Un front de touche, de bouton ou un clic tactile : aucune répétition quand on maintient la commande.
+  // L'animation choisit sa variante et son côté sans toucher à l'état de conduite ni au hasard de la course.
+  function provoquer(n = 0) {
+    if (!enCourse() || !session?.expressions || (n === 1 && session.type !== 'duo')) return;
+    const id = session.locaux?.[n] ?? session.course.joueur.id;
+    B.expressionsPilote.demander(session.expressions, id, true);
+    B.expressionsPilote.demander(session.expressions, id, false);
+  }
 
   // conduite par position physique des touches (e.code : ZQSD et WASD au même endroit) ; vue, son et pause par lettre
   addEventListener('keydown', e => {
@@ -80205,11 +80850,13 @@ FERRO.initPhysics().then(function(){
       if (toucheDe(0, 'haut').includes(e.code)) impulsions.haut = true;
       if (toucheDe(0, 'bas').includes(e.code)) impulsions.bas = true;
       if (toucheDe(0, 'vue').includes(e.code)) changerVue();
+      if (toucheDe(0, 'troll').includes(e.code)) provoquer(0);
     }
     if (session && session.type === 'duo' && (commande(1) === 'auto' || commande(1) === 'clavier')) {
       if (toucheDe(1, 'haut').includes(e.code)) impulsions2.haut = true;
       if (toucheDe(1, 'bas').includes(e.code)) impulsions2.bas = true;
       if (toucheDe(1, 'vue').includes(e.code)) changerVue2();
+      if (toucheDe(1, 'troll').includes(e.code)) provoquer(1);
     }
     if (lettre === 'm') couperSon();
   });
@@ -80303,6 +80950,7 @@ FERRO.initPhysics().then(function(){
         if (nouveau(5)) impulsions.haut = true;
         if (nouveau(4)) impulsions.bas = true;
         if (nouveau(3)) changerVue();
+        if (nouveau(10)) provoquer(0);
       }
       // Si J2 vient de changer d'écran, consommer aussi les fronts de J1 sans agir une seconde fois.
       if (ecran === ecranLecture) {
@@ -80469,6 +81117,7 @@ FERRO.initPhysics().then(function(){
       if (nouveau(5)) impulsions2.haut = true;
       if (nouveau(4)) impulsions2.bas = true;
       if (nouveau(3)) changerVue2();
+      if ((commande(1) === 'auto' || commande(1) === 'manette') && nouveau(10)) provoquer(1);
     }
     if (nouveau(9)) { activerSon(); basculerPause(); }
     else if (!enCourse()) naviguerManette(nouveau, p);
@@ -80580,6 +81229,7 @@ FERRO.initPhysics().then(function(){
     };
     addEventListener('resize', relacherTactile);
     $('t-vue').addEventListener('click', changerVue);
+    $('t-troll').addEventListener('click', () => provoquer(0));
     $('b-pause').addEventListener('click', () => basculerPause());
   })();
 
@@ -80839,7 +81489,7 @@ FERRO.initPhysics().then(function(){
     numeroSeance: 0, seanceAcceptee: null, dernierDepart: -Infinity };
   const VERSION_CHOIX_PNEUS = 2, VERSION_PNEUS_RESEAU = 1;
   // Empreinte des sources du build, incluant catalogue, générateur, limites et collisions : même piste, même jeu.
-  const REVISION_PISTES = 'fa32718f3054fdbe63963e4e3165c069a3340125b39d3ab05def51176dc7a3e5';
+  const REVISION_PISTES = '1a2e1da08cd3806e8d071b22eee69b855ddda3645e114dc2f0e538f1d05fa525';
   function contratPiste(i) {
     return Number.isInteger(i) && CATALOGUE[i] ? { id: CATALOGUE[i].id, revision: REVISION_PISTES } : null;
   }
@@ -82039,12 +82689,14 @@ FERRO.initPhysics().then(function(){
   // vue (J2, puis J1, puis leurs glaces) finit de s'en servir avant que la suivante les réécrive. Seize voitures au
   // plus (onze rivaux, quatre humains) ; au-delà, les tableaux grandissent.
   const nouvellePose = () => ({ p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0, roule: 0, rebond: null, v: 0, etatPneus: null,
-    pilote: { volant: 0, rapport: 1, rapportAvant: 1, passage: 1, alat: 0, along: 0, v: 0, t: 0 } });
+    pilote: { volant: 0, rapport: 1, rapportAvant: 1, passage: 1, alat: 0, along: 0, v: 0, t: 0,
+      regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0 } });
   const nouvellesOptions = () => ({ detail: 'complet', roues: undefined, casse: false, plafond: 'complet', rouesDetail: 0 });
   const POSES_RENDU = Array.from({ length: 16 }, nouvellePose), OPTIONS_POSE = Array.from({ length: 16 }, nouvellesOptions);
   const POSE_FANTOME = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0 };
   const ETAT_COCKPIT = { regime: 0, volant: 0, rapport: 0, kmh: 0, roues: undefined, casse: false, passage: 1, rapportAvant: undefined,
-    derriere: null, ciel: null, brume: null, glaceVive: false, rouesDetail: 0 };
+    derriere: null, ciel: null, brume: null, glaceVive: false, rouesDetail: 0,
+    regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0 };
   const SUIVEURS = [], RESERVE_SUIVEURS = Array.from({ length: 16 }, () => ({ x: 0, z: 0, couleur: null })), AUCUN_SUIVEUR = Object.freeze([]);
   const SOLEILS = [{ center: [0, 0, 0], extent: 0, depth: 0 }, { center: [0, 0, 0], extent: 0, depth: 0 }];
   const LAMPES_PORTIQUE = [], FEU_ALLUME = [1, .14, .06], FEU_ETEINT = [.1, .03, .03], TAILLE_FEU = [.56, .05, .56];
@@ -82103,6 +82755,7 @@ FERRO.initPhysics().then(function(){
     // pris au dernier pas, ils avançaient par sauts de 1/120 s (à 144 Hz, une image sur six sans pas les figeait) et
     // devançaient les voitures d'un pas au plus. La vue du joueur 2 hérite des deux valeurs (Object.create).
     S.retardImage = (1 - alpha) * DT; S.tRendu = co.horloge - S.retardImage;
+    if (S.expressions) B.expressionsPilote.actualiser(S.expressions, co, poses, S.tRendu, S.type === 'demo');
     if (B.sillage) B.sillage.mettreAJour(S.sillage || (S.sillage = creationTardive('sillage', B.sillage.creer())), co.voitures, poses, co.c);
     if (B.mesures.actif) {
       let actives = 0;
@@ -82172,7 +82825,7 @@ FERRO.initPhysics().then(function(){
     if (S.type === 'vitrine') { suivie = co.voitures[co.classement[S.suiviRang || 0]] || j; vue = 'tele'; }
     else if (S.type === 'demo') {
       B.cinema.regler(S.cinema, { faune: B.animaux.qualite(reglages.faune, P.palier), nuit: S.nature?.ambiance.nuit || 0, pluie: meteo.pluie || 0 });
-      const pl = B.realisateur.tenir(S.real, co, S.cinema);
+      const pl = B.realisateur.tenir(S.real, co, S.cinema, S.expressions);
       // coupe : les caméras lissées repartent de la nouvelle voiture, les écarts du son aussi
       if (S.planVu !== pl) { S.planVu = pl; S.camCap = null; S.tete = null; S.tele.poste = null; S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0; }
       vue = pl.vue; suivie = co.voitures[pl.sujet];
@@ -82189,7 +82842,7 @@ FERRO.initPhysics().then(function(){
     sortie.length = 0;
     let cam;
     if (DANS_LA_ROCHE.has(vue) && B.circuit.dansTunnel(co.c, suivie.etat.s, 8)) {
-      if (S.type === 'demo' && B.cinema.VUES.includes(vue)) {
+      if (S.type === 'demo') {
         S.planVu = B.realisateur.replier(S.real, co, 'poursuite', suivie.id);
         suivie = co.voitures[S.planVu.sujet];
         S.camCap = null; S.tete = null; S.tele.poste = null; S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0;
@@ -82197,28 +82850,76 @@ FERRO.initPhysics().then(function(){
       vue = 'poursuite';
     }
     let ps = poses[suivie.id];
-    const exterieur = VUES_DEHORS.has(vue);
     if (B.cinema.VUES.includes(vue)) {
       cam = B.cinema.camera(S.cinema, S.planVu, poses, co, S.tRendu);
       if (!cam) {
         // Coupe explicite, sans conserver l'ancien plan ni ses filtres quand son sujet devient masqué.
-        S.planVu = B.realisateur.replier(S.real, co, 'tele', suivie.id); S.camCap = null; S.tete = null; S.tele.poste = null;
+        S.planVu = B.realisateur.replier(S.real, co, 'poursuite', suivie.id); S.camCap = null; S.tete = null; S.tele.poste = null;
         suivie = co.voitures[S.planVu.sujet]; ps = poses[suivie.id];
         S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0;
-        vue = 'tele'; cam = cameraTele(S, suivie, ps);
+        vue = 'poursuite'; cam = cameraPoursuite(S, ps, suivie.etat, dtImage);
       }
     } else if (vue === 'tele') cam = cameraTele(S, suivie, ps);
     else if (vue === 'helico') cam = cameraHelico(S, ps, dtImage);
     else if (vue === 'sol') cam = cameraSol(S, suivie, ps);
     else if (CAMERAS_DEMO.has(vue)) cam = cameraDemo(S, ps, S.planVu);
     else cam = vue === 'cockpit' ? cameraCockpit(S, ps, suivie.etat, S.tRendu, dtImage) : cameraPoursuite(S, ps, suivie.etat, dtImage);
+    if (S.type === 'demo') {
+      const aspect = canvas.clientWidth / Math.max(1, canvas.clientHeight);
+      // Toutes les vues passent par le même contrôle, y compris les anciens plans télé, sol et orbite.
+      // Un refus change réellement de plan : le repli ne revient pas dans le plan masqué à l'image suivante.
+      const accepte = vue === 'poursuite' || B.cinema.valider(S.cinema, cam, cam.cible || [ps.x, ps.y + .65, ps.z], S.planVu, S.tRendu, aspect);
+      if (accepte) S.secoursCamera = null;
+      else if (S.secoursCamera === S.planVu) {
+        // Une voiture coincée ne provoque pas une rafale de coupes : conserver le dernier cadre libre,
+        // puis reprendre le support embarqué dès qu'il redevient possible.
+        cam = B.cinema.secours(S.cinema, aspect);
+        if (!cam) return;
+        vue = cam.sujetNature ? 'panorama' : 'tele';
+      } else {
+        S.planVu = B.realisateur.replier(S.real, co, 'poursuite', suivie.id);
+        suivie = co.voitures[S.planVu.sujet]; ps = poses[suivie.id];
+        S.camCap = null; S.tete = null; S.tele.poste = null;
+        S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0;
+        vue = 'poursuite'; cam = cameraPoursuite(S, ps, suivie.etat, dtImage);
+      }
+      if (vue === 'poursuite') {
+        const libre = B.cinema.poursuite(S.cinema, cam, ps, S.planVu, S.tRendu, aspect);
+        if (libre) cam = libre;
+        else {
+          // Si aucun bras extérieur ne tient, coupe sur le support embarqué au-dessus de l'arceau.
+          S.planVu = B.realisateur.replier(S.real, co, 'aileron', suivie.id);
+          suivie = co.voitures[S.planVu.sujet]; ps = poses[suivie.id];
+          S.camCap = null; S.tete = null; S.tele.poste = null;
+          S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0;
+          vue = 'aileron'; cam = cameraDemo(S, ps, S.planVu);
+          if (!B.cinema.valider(S.cinema, cam, cam.cible || [ps.x, ps.y + .65, ps.z], S.planVu, S.tRendu, aspect)) {
+            S.planVu = B.realisateur.replier(S.real, co, 'cockpit', suivie.id);
+            S.camCap = null; S.tete = null;
+            vue = 'cockpit'; cam = cameraCockpit(S, ps, suivie.etat, S.tRendu, dtImage);
+            if (!B.cinema.valider(S.cinema, cam, [ps.x, ps.y + .65, ps.z], S.planVu, S.tRendu, aspect)) {
+              S.secoursCamera = S.planVu;
+              cam = B.cinema.secours(S.cinema, aspect);
+              if (!cam) return;
+              vue = cam.sujetNature ? 'panorama' : 'tele';
+            }
+          }
+        }
+      }
+    }
+    const exterieur = VUES_DEHORS.has(vue);
     if (regardArriereVoulu(S, suivie, vue)) cam = cameraRegardArriere(S, ps, cam);
     if (cameraEssai) cam = Object.assign({ roll: 0, near: .1, far: PORTEE_VUE, fov: 40 }, cameraEssai(pj, cam));
     if (S.secousse > 0 && !cam.sujetNature) {
+      const pitchSur = cam.pitch, yawSur = cam.yaw;
       const a = S.secousse * .05 * reglages.secousses, t = horlogeReelle;
       cam.pitch += Math.sin(t * 61) * a * .5; cam.yaw += Math.sin(t * 47) * a * .35;
+      if (S.type === 'demo' && a > 0 && !B.cinema.valider(S.cinema, cam, cam.cible || [ps.x, ps.y + .65, ps.z], S.planVu, S.tRendu, canvas.clientWidth / Math.max(1, canvas.clientHeight))) {
+        cam.pitch = pitchSur; cam.yaw = yawSur;
+      }
       S.secousse = Math.max(0, S.secousse - dtImage * 2.6);
     }
+    if (S.type === 'demo' && !S.secoursCamera) cam = B.cinema.souffle(S.cinema, cam, S.planVu, poses, co, S.tRendu, reglages.secousses, canvas.clientWidth / Math.max(1, canvas.clientHeight));
     // axe horizontal du regard, en deux nombres (plus de tableau neuf par image)
     const avX = Math.sin(cam.yaw), avZ = -Math.cos(cam.yaw);
     // ombres du soleil autour de ce que l'on regarde : devant le pilote (jusqu'à 176 m), ou autour de la voiture filmée.
@@ -82290,6 +82991,7 @@ FERRO.initPhysics().then(function(){
       pilote.rapportAvant = voiture.rapportAvant === undefined ? etatPilote.rapport : voiture.rapportAvant;
       pilote.passage = voiture.tPassage === undefined ? 1 : clamp((S.tRendu - voiture.tPassage) / .36, 0, 1);
       pilote.alat = etatPilote.alat; pilote.along = etatPilote.along; pilote.v = etatPilote.v; pilote.t = S.tRendu;
+      if (S.expressions) B.expressionsPilote.lire(S.expressions, k, pilote);
       // Hystérésis propre à cette vue : ni la seconde moitié d'écran ni les deux miroirs ne la réécrivent.
       const rouesDetail = S.detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(ev, cam.pos), tanDemi, hauteur, S.detailsRoues[k]);
       if (k === suivie.id) ombreDebut = sortie.length;
@@ -82300,6 +83002,8 @@ FERRO.initPhysics().then(function(){
         etc.rouesDetail = rouesDetail;
         etc.roues = co.voitures[k].degats && co.voitures[k].degats.roues; etc.casse = !!(et.degats && et.degats.casse);
         etc.passage = pilote.passage; etc.rapportAvant = pilote.rapportAvant;
+        etc.regard = pilote.regard; etc.geste = pilote.geste; etc.gestePhase = pilote.gestePhase;
+        etc.gesteCote = pilote.gesteCote; etc.gesteIntensite = pilote.gesteIntensite;
         // les rivaux de la glace peinte ne servent que sans image réelle des glaces
         etc.derriere = glaceVive ? AUCUN_SUIVEUR : suiveurs(co, poses, k, p);
         etc.ciel = atm.skyBottom; etc.brume = atm.fog; etc.glaceVive = glaceVive;
@@ -82413,7 +83117,7 @@ FERRO.initPhysics().then(function(){
   // écoute des claquements d'échappement par voiture (src/son.js, echappement) : entendue du cockpit, distance, angle
   const ecouteEchappement = n => ({ dedans: new Uint8Array(n), distance: new Float64Array(n), angle: new Float64Array(n) });
   function majSon(S, cam, dtImage) {
-    if (!son || !sonActif) return;
+    if (!son || !sonActif || !cam) return;
     // la voiture entendue de l'intérieur est celle que l'on suit de près : le joueur, ou celle du plan de la démo
     const co = S.course, ks = S.suivie || 0, poses = tampons.poses;
     const S2 = S.type === 'duo' ? S.vueJ2 : null, cam2 = S2 && S2.camera, k2 = cam2 ? S.locaux[1] : -1;
@@ -83067,7 +83771,7 @@ FERRO.initPhysics().then(function(){
   $('v-vibrations').addEventListener('change', e => { reglages.vibrations = e.target.checked ? 'oui' : 'non'; if (!e.target.checked) { secouerManette(0, 0); secouerManette(0, 0, pad2); } sauverReglages(); });
   $('v-carte').addEventListener('change', e => { reglages.carte = e.target.checked ? 'oui' : 'non'; sauverReglages(); appliquerCarte(); });
   $('v-vibration-force').addEventListener('input', e => { reglages.vibrationForce = clamp(+e.target.value, 0, 1); $('v-vibration-force-valeur').textContent = Math.round(reglages.vibrationForce * 100) + ' %'; sauverReglages(); });
-  const NOMS_ACTIONS = { gaz: 'Accélérer', frein: 'Freiner', gauche: 'Gauche', droite: 'Droite', derive: 'Dérive', haut: 'Rapport +', bas: 'Rapport −', vue: 'Vue' };
+  const NOMS_ACTIONS = { gaz: 'Accélérer', frein: 'Freiner', gauche: 'Gauche', droite: 'Droite', derive: 'Dérive', haut: 'Rapport +', bas: 'Rapport −', vue: 'Vue', troll: 'Troll / geste' };
   const NOMS_COMMANDES = { auto: 'Auto', manette: 'Manette', clavier: 'Clavier', souris: 'Souris' };
   let captureTouche = null, carteClavier = null;   // action en attente d'une touche ; noms des touches du clavier réel
   try { if (navigator.keyboard && navigator.keyboard.getLayoutMap) navigator.keyboard.getLayoutMap().then(m => { carteClavier = m; majCommandes(); }, () => {}); } catch (e) { /* pas d'API de disposition */ }
@@ -83102,7 +83806,7 @@ FERRO.initPhysics().then(function(){
       }
       html += '</tbody></table></div>';
     }
-    zone.innerHTML = html + '<p class="note-commandes">Cliquez une touche puis appuyez sur la nouvelle (Échap annule). Souris : pointeur à gauche ou à droite pour tourner, bouton gauche pour accélérer, droit pour freiner, molette pour les rapports. Manette : gâchettes, stick gauche, A pour la dérive, RB et LB pour les rapports, Y pour la vue, stick droit maintenu vers le bas pour regarder derrière en vue Poursuite, Start pour la pause. Pause : Échap ou P · son : M.</p>'
+    zone.innerHTML = html + '<p class="note-commandes">Cliquez une touche puis appuyez sur la nouvelle (Échap annule). Souris : pointeur à gauche ou à droite pour tourner, bouton gauche pour accélérer, droit pour freiner, molette pour les rapports. Manette : gâchettes, stick gauche, A pour la dérive, RB et LB pour les rapports, Y pour la vue, clic du stick gauche (L3) pour Troll, stick droit maintenu vers le bas pour regarder derrière en vue Poursuite, Start pour la pause. Pause : Échap ou P · son : M.</p>'
       + '<button type="button" class="discret" id="r-touches-defaut">Touches par défaut</button>';
   }
   $('r-commandes').addEventListener('click', e => {
@@ -83318,6 +84022,7 @@ FERRO.initPhysics().then(function(){
     ajouter({ shape: 'octa', p: devant(11, -1.5, 1.5), s: [.1, .1, .1], mat: 5, emissive: 2 });
     ajouter({ shape: 'cylinder', p: devant(12, 0, 2), s: [.56, .05, .56], mat: 5, emissive: 3, color: [1, .14, .06] });
     if (B.aurores && S.c && S.c.theme === 'islande') ajouter({ shape: 'bitume-aurore-0', p: devant(40, 0, 10), s: [1, 1, 1], mat: 7, fx: true, alpha: .2, emissive: 5, outdoor: true, surface: 'object' });
+    if (B.voiture.preparerExpressions) B.voiture.preparerExpressions(l, devant(6, 0, 0));
     B.voiture.fantome({ p: devant(14, 2.5, -.6), cap: cam.yaw - Math.PI / 2, tangage: 0, roulis: 0 }, l);
     return l;
   }

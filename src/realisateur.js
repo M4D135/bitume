@@ -44,7 +44,8 @@
 
   function creer(graine) {
     return { alea: mulberry32((graine >>> 0) + 0x51ED270B), plan: null, n: 0, vert: -1, vainqueur: -1, sprint: false,
-      vus: {}, ordre: null, action: null, cinema: null, plansCourse: 0, natureTour: 0, natureDerniere: -1e9 };
+      vus: {}, ordre: null, action: null, cinema: null, plansCourse: 0, natureTour: 0, natureDerniere: -1e9,
+      expressionDerniere: -Infinity, expressionVue: { regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0 } };
   }
 
   // côté du milieu de la piste, vu de la voiture : les caméras latérales s'y placent, loin des arbres et des rails
@@ -133,7 +134,7 @@
     }
   }
 
-  function tenir(R, co, cinema = null) {
+  function tenir(R, co, cinema = null, expressions = null) {
     R.cinema = cinema;
     const t = co.horloge, p = R.plan, V = co.voitures;
     // La première découverte tient dans le délai existant : les feux et le départ restent en temps réel.
@@ -175,6 +176,17 @@
       if (a && t - a.t < 1.2 && p.motif !== 'action' && t - p.debut > .8 && !V[a.id].fini) {
         const vue = tirer(R, ['orbite', 'tele', 'sol'].filter(v => v !== p.vue).map(v => [v, 1]));
         return couper(R, co, vue, a.id, 4.2, 'action', { ralenti: t + RALENTI_DUREE, facteur: RALENTI });
+      }
+      // Montrer une réaction réellement déclenchée après un dépassement. Le cadre prend le côté de la main,
+      // reste assez longtemps pour son retour au volant, et passe par les mêmes gardes de relief que les autres.
+      if (cinema && expressions && B.expressionsPilote && p.motif !== 'action' && t - p.debut > .8 && t - R.expressionDerniere > 12) {
+        for (let id = 0; id < V.length; id++) {
+          const v = V[id], e = B.expressionsPilote.lire(expressions, id, R.expressionVue);
+          if (!v.fini && !v.abandon && v.etat.v > ALLURE && e.geste && e.gestePhase < .35 && e.gesteIntensite > .12) {
+            R.expressionDerniere = t; R.ordre = co.classement.slice();
+            return couper(R, co, 'pilote', id, 2.8, 'expression', { cote: e.gesteCote });
+          }
+        }
       }
       // Un dépassement dans les huit premiers : on coupe sur celui qui vient de passer
       const ordre = co.classement;

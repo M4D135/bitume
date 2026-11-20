@@ -36,6 +36,19 @@ verifier('deux perles de rayons 3 et 4 donnent une seule lentille de rayon 5, sa
   assert(Math.abs(p.x - .40128) < 1e-12, 'centre de surface des deux impacts');
   assert.equal(surface(e), 25); assert.equal(e.stats.eauEvacuee, 0);
 });
+verifier('le repli dessine la surface entière pendant la fusion, y compris entre les pas de simulation', () => {
+  const t = toile(), e = V.creer(t);
+  depot(e, false, 0, .4, .4, 3); depot(e, false, 1, .402, .4, 4);
+  V.mettreAJour(e, PAS, contexte());
+  for (let image = 0; image <= 4; image++) {
+    const corps = t.image.filter(d => d.style === 'rgba(23,48,61,0.16)');
+    assert.equal(corps.length, image === 4 ? 1 : 2);
+    const aire = corps.reduce((s, d) => s + d.chemin[0][3] ** 2, 0);
+    assert(Math.abs(aire - 25) < 1e-10, 'aire visible disparue pendant la fusion');
+    if (image < 4) V.mettreAJour(e, 1 / 120, contexte());
+  }
+  V.effacer(e); assert(e.gouttes.every(p => !p.vivant && !p.fusion));
+});
 verifier('fusion bornée : le surplus quitte le dépôt, eau et neige ne forment pas une tache géante', () => {
   for (const neige of [false, true]) {
     const e = V.creer(toile()), r = neige ? 18 : 10, maximum = neige ? 19 : 12;
@@ -182,5 +195,13 @@ verifier('contextes anciens, incomplets ou invalides restent utilisables', () =>
   }
   const e = V.creer(toile()); assert.doesNotThrow(() => V.mettreAJour(e, PAS));
   assert.equal(V.mettreAJour(V.creer(null), PAS).gouttes, 0);
+});
+verifier('le repli Canvas conserve un sillage dense à grande vitesse même sans pluie', () => {
+  const t = toile(1280,720), e = V.creer(t, { graine: 4 }), c = contexte({ qualite: 'high', embruns: .8, vitesse: 100 });
+  avancer(e, c, 12);
+  assert(e.stats.gouttes >= 40 && e.stats.depotsEmbruns > 100);
+  assert(e.stats.fusionsEau > 0 && e.stats.expulses > 0 && e.stats.surfaceExpulsee > 0);
+  const depots = e.stats.depotsEau; avancer(e, { ...c, embruns: 0 }, 15);
+  assert.equal(e.stats.depotsEau, depots); assert.equal(e.stats.gouttes, 0); assert(e.propre && e.masquee);
 });
 console.log('vitre météo : ' + controles + ' contrôles passés');
