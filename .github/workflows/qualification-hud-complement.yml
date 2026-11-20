@@ -14,18 +14,19 @@ concurrency:
 
 jobs:
   hud-complement:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[capture-hud-complement]')
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[capture-hud-complement]') || contains(github.event.head_commit.message, '[capture-hud-stabilise]')
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: ${{ matrix.duree_job }}
     strategy:
       fail-fast: false
       max-parallel: 2
       matrix:
-        include:
-          - groupe: duo-compact
-            cas: cockpit-duo-compact
-          - groupe: carte-gauche-stabilise
-            cas: cockpit-carte-gauche-stabilise
+        include: >-
+          ${{ fromJSON(
+            github.event_name == 'push' && contains(github.event.head_commit.message, '[capture-hud-stabilise]')
+            && '[{"groupe":"carte-gauche-stabilise","cas":"cockpit-carte-gauche-stabilise","duree_capture":"30m","duree_job":40}]'
+            || '[{"groupe":"duo-compact","cas":"cockpit-duo-compact","duree_capture":"18m","duree_job":25},{"groupe":"carte-gauche-stabilise","cas":"cockpit-carte-gauche-stabilise","duree_capture":"30m","duree_job":40},{"groupe":"compact","cas":"cockpit-compact","duree_capture":"18m","duree_job":25},{"groupe":"carte-gauche","cas":"cockpit-carte-gauche","duree_capture":"18m","duree_job":25}]'
+          ) }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -54,9 +55,10 @@ jobs:
         shell: bash
         env:
           CAS_COCKPIT: ${{ matrix.cas }}
+          DUREE_CAPTURE: ${{ matrix.duree_capture }}
         run: |
           set -euo pipefail
-          timeout --signal=TERM --kill-after=30s 18m node tools/captures-habitacle.mjs \
+          timeout --signal=TERM --kill-after=30s "$DUREE_CAPTURE" node tools/captures-habitacle.mjs \
             --url "file://$GITHUB_WORKSPACE/dist/bitume.html" --sortie qualification/images \
             --cas "$CAS_COCKPIT" --chrome /usr/bin/google-chrome \
             > qualification/captures.log 2>&1
