@@ -2,20 +2,27 @@
   "schema": 1,
   "discussion": "04",
   "mission": "Saisons et matieres",
-  "statut": "preparee_non_lancee",
+  "statut": "en_cours_sources_reprises",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/04-SAISON-MATIERES.md",
-  "base_main": "d8f02cae45443ae6a1120dc93125d8adfae94422",
+  "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "branche_proposee": "codex/bitume-p04-saisons-matieres-20261120",
-  "branche_reelle": null,
-  "head": null,
+  "branche_reelle": "codex/bitume-p04-saisons-matieres-20261120",
+  "head": "722d732ebb1d4f26227593ca160b7deede56cb9b",
   "pr": null,
-  "sous_lot": null,
-  "preuves": [],
-  "reserves": [],
-  "prochaine_action": "Reprendre le lot saisons sans l'audio et qualifier la matrice neuf circuits/quatre saisons.",
+  "sous_lot": "04-S0 : reprise saisons seule, premiers controles Node",
+  "preuves": [
+    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S0-REPRISE.json"
+  ],
+  "reserves": [
+    "Pas de qualification visuelle à ce jalon.",
+    "Trois paliers, caches Cimes/Baikal et comparaison au parent en cours.",
+    "Aucun build partagé, aucun fichier audio, aucun module FERRO ni physique modifié."
+  ],
+  "prochaine_action": "Terminer les 3 paliers et caches Cimes/Baikal, comparer les budgets au parent puis inspecter les captures du vrai jeu.",
   "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
   "preparations_portables": [
     "docs/reprise/PARALLELE-2026-11-20/preparations/saisons.patch"
   ],
-  "preparations_statut": "applicables_individuellement_a_la_base_non_qualifiees"
+  "preparations_statut": "saisons.patch_reprise_sans_audio",
+  "head_designe": "Dernier commit des sources de ce sous-lot ; le commit de cet état vient ensuite."
 }
