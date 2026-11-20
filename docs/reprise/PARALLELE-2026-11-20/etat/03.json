@@ -2,17 +2,24 @@
   "schema": 1,
   "discussion": "03",
   "mission": "Menu arcade",
-  "statut": "preparee_non_lancee",
+  "statut": "reprise_en_cours_non_qualifiee",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/03-MENU.md",
-  "base_main": "d8f02cae45443ae6a1120dc93125d8adfae94422",
+  "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "branche_proposee": "codex/bitume-p03-menu-20261120",
-  "branche_reelle": null,
-  "head": null,
+  "branche_reelle": "codex/bitume-p03-menu-20261120",
+  "head": "voir HEAD de cette branche ; le prochain jalon cite son parent",
   "pr": null,
-  "sous_lot": null,
-  "preuves": [],
-  "reserves": [],
-  "prochaine_action": "Retrouver les modifications suivies/non suivies du menu puis qualifier le parcours.",
+  "sous_lot": "M0 — restauration de la preparation portable",
+  "preuves": [
+    "Préparation arcade SHA256 65b33f89e91d761525230ff0b05486481e33cd50deee30dff48e922838e4297d ; git apply --check réussi sur les quatre fichiers possédés.",
+    "main 1c71bb3 et branches/PR vérifiés au démarrage : aucune publication plus récente du menu."
+  ],
+  "reserves": [
+    "Préparation restaurée non qualifiée ; menu-arcade.js pas encore inclus par construire.py.",
+    "Raccords jeu.js/construire.py réservés à 00 ; aucune version ni build commun modifié.",
+    "Manette physique, audio et Xbox/Intel non vérifiés."
+  ],
+  "prochaine_action": "Qualifier séparément parcours, navigation manette et aperçu ; rédiger raccords 00 et contrat Troll 01.",
   "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
   "preparations_portables": [
     "docs/reprise/PARALLELE-2026-11-20/preparations/arcade.patch"

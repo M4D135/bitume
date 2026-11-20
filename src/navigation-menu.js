@@ -34,6 +34,7 @@
     const panneau = panneaux.find(p => p.id === id || p.dataset.menuPanel === id);
     if (!cible || !panneau) return false;
     const nav = cible.closest('[data-menu-tabs]'), pairs = liste.filter(t => t.closest('[data-menu-tabs]') === nav);
+    const changement = cible.getAttribute('aria-selected') !== 'true';
     // Inclure aussi les onglets désactivés pour ne jamais conserver deux panneaux sélectionnés.
     for (const t of nav.querySelectorAll(TAB)) {
       const actif = t === cible;
@@ -43,6 +44,10 @@
     }
     if (!pairs.length) return false;
     if (focus) focaliser(cible);
+    if (changement && zone.dispatchEvent) {
+      const Evenement = zone.ownerDocument.defaultView.Event;
+      zone.dispatchEvent(new Evenement('menuongletchange', { bubbles: false }));
+    }
     return true;
   }
 
@@ -204,10 +209,15 @@
     const gs = groupes(zone), actif = zone.ownerDocument.activeElement, i = gs.findIndex(g => g.elements.includes(actif));
     const el = i >= 0 ? actif : selection(gs[0]);
     if (!el) return true;
-    if (valider) { focaliser(el); if (!el.readOnly) el.click(); return true; }
+    if (valider) {
+      focaliser(el);
+      if (!el.readOnly && !(options.valider && options.valider(el))) el.click();
+      return true;
+    }
     const sens = d === 12 || d === 14 ? -1 : 1;
     if (i < 0) { focaliser(el); return true; }
-    if ((d === 14 || d === 15) && ajuster(zone, el, gs[i], sens)) { focaliser(zone.ownerDocument.activeElement); return true; }
+    const vertical = gs[i].type === 'choix' && gs[i].cle && gs[i].cle.dataset.menuAxis === 'vertical';
+    if ((vertical ? d === 12 || d === 13 : d === 14 || d === 15) && ajuster(zone, el, gs[i], sens)) { focaliser(zone.ownerDocument.activeElement); return true; }
     focaliser(selection(gs[(i + sens + gs.length) % gs.length]));
     return true;
   }
