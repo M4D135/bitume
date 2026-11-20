@@ -1,0 +1,49 @@
+{
+  "groupe": "habitacle-cockpit",
+  "inspecteur": "root",
+  "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+  "statut": "reception_avec_reserve_de_visibilite_centrale",
+  "observations": [
+    "Quatre PNG originaux examinés : caméra réelle du siège, paysage et portrait, deux images par format.",
+    "Mains, jante, instruments et deux rétroviseurs présents ; la géométrie du siège reste commune aux vues.",
+    "Le volant masque une partie centrale de la chaussée dans ce cadrage neutre, surtout en paysage. Ce constat ne vient pas d’une caméra d’inspection.",
+    "Aucune nouvelle régression de raccord démontrée ; ne pas assimiler les tests de projection à une certification de visibilité de la chaussée."
+  ],
+  "analyse_geometrie": {
+    "oeil_y_m": 0.79,
+    "haut_jante_y_m": 0.813807,
+    "paysage_960_540": {
+      "horizon_fraction_y": 0.421,
+      "haut_jante_fraction_y": 0.286,
+      "bas_jante_fraction_y": 1.258
+    },
+    "portrait_540_960": {
+      "horizon_fraction_y": 0.474,
+      "haut_jante_fraction_y": 0.43,
+      "bas_jante_fraction_y": 0.748
+    },
+    "limite_tests": "Projection d’un point d’horizon et présence des pièces dans le cadre ; aucune recherche d’occultation par le volant ou la planche."
+  },
+  "limites": [
+    "Poses prescrites, pas de parcours de conduite humaine.",
+    "FPS affichés non qualifiés matériellement."
+  ],
+  "fichiers": [
+    {
+      "chemin": "images/apres/cockpit/0000.png",
+      "sha256": "883e73d73ce20da30474d19751cceefe57abe95d9f5ed3c03211c6def6182ae9"
+    },
+    {
+      "chemin": "images/apres/cockpit/0001.png",
+      "sha256": "1b768dcb5ce76b711fe1d97c1662211a3e66e5c79b895e8aadaa518c822a2b6f"
+    },
+    {
+      "chemin": "images/apres/cockpit-portrait/0000.png",
+      "sha256": "6c18f7b3e3676e41d5f06574ec4b68a2710c50b9299fa0d628cdcaa7221f3491"
+    },
+    {
+      "chemin": "images/apres/cockpit-portrait/0001.png",
+      "sha256": "4be05fb64fe2f5829316c793d5e95b981be2afa61c0e35ed67f58d9acbfa3f22"
+    }
+  ]
+}

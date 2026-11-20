@@ -1,0 +1,15 @@
+{
+  "mode": "build-publie-raccorde",
+  "commit": "7999de565e2c643f7723462caf7683b570c75e8b",
+  "tree": "31059af44e77aac5b733c9e4b29e9b9efe25ee57",
+  "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+  "controles": 19,
+  "png": 14,
+  "inspection_visuelle": "a_faire",
+  "limites": [
+    "Chromium logiciel",
+    "manettes et tactile simules",
+    "audio non ecoute",
+    "reseau entre machines non essaye"
+  ]
+}

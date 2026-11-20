@@ -4,6 +4,8 @@ import assert from 'node:assert/strict';
 createRequire(import.meta.url)('../src/qualite.js');
 createRequire(import.meta.url)('../src/graphismes.js');
 createRequire(import.meta.url)('../src/pneus.js');
+createRequire(import.meta.url)('../src/navigation-menu.js');
+createRequire(import.meta.url)('../src/menu-arcade.js');
 const Q = globalThis.BITUME.qualite;
 const creer = n => ({ n, somme: 0, compte: 0, t: 0, aise: 0 });
 function images(p, fps, n, options) { let changements = 0; for (let i = 0; i < n; i++) if (Q.avancer(p, 1 / fps, options)) changements++; return changements; }
@@ -217,10 +219,14 @@ function bloc(debut, fin) {
 const integration = new Function('B', `
   const reglages = { qualite: 'auto' }, redimensions = [], ecouteurs = new Map(), elements = new Map();
   const $ = id => {
-    if (!elements.has(id)) elements.set(id, { hidden: false, dataset: {}, querySelector: () => null });
+    if (!elements.has(id)) elements.set(id, { ownerDocument: document, hidden: false, dataset: {}, attributes: {},
+      querySelector: () => null, querySelectorAll: () => [], addEventListener() {}, removeEventListener() {},
+      setAttribute(n, v) { this.attributes[n] = v; } });
     return elements.get(id);
   };
-  const document = { hidden: false, activeElement: null, querySelectorAll: () => [], addEventListener: (nom, f) => ecouteurs.set(nom, f) };
+  const document = { hidden: false, activeElement: null, getElementById: $, querySelectorAll: () => [],
+    addEventListener: (nom, f) => ecouteurs.set(nom, f), removeEventListener() {},
+    defaultView: { addEventListener() {}, removeEventListener() {}, performance } };
   const rendu = { resize: valeur => redimensions.push(valeur) }, gpuModeste = false, estTactile = true;
   const texte = (element, valeur) => { element.textContent = valeur; }, NOMS_PNEUS = B.pneus.NOMS_PNEUS;
   const session = { type: 'course' }, son = null, hud2 = $('hud2'), pad2 = {}, EL = { role: null };
@@ -232,6 +238,7 @@ const integration = new Function('B', `
   const empreinteDetection = () => empreinte;
   ${bloc('  function majPneusStands(', '  function preselectionnerPneus(')}
   ${bloc('  const palier = ', '  // effets permis par le profil résolu')}
+  ${bloc('  function retour()', "  $('r-retour').addEventListener")}
   ${bloc("  let ecran = 'chargement';", "  document.addEventListener('click', e => {")}
   ${bloc("  document.addEventListener('change', e => {", "  for (const nom of ['general', 'moteur', 'effets'])")}
   ecran = 'course';

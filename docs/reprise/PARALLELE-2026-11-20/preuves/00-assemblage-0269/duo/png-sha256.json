@@ -1,0 +1,17 @@
+[
+  {
+    "chemin": "images/apres/duo-vues/0000.png",
+    "octets": 485823,
+    "sha256": "8bb009069a2fb9c3e9a9a0e305b3cdd799ab05323830d0aaa5cbfa7a5ce7eeec"
+  },
+  {
+    "chemin": "images/apres/duo-vues/0001.png",
+    "octets": 486427,
+    "sha256": "06b1413a183fe130ce9317e4bf91f43b22ca1ae562cf9b3dde82fc6f7946d8cc"
+  },
+  {
+    "chemin": "images/apres/duo-vues/0002.png",
+    "octets": 485446,
+    "sha256": "ea80cf30d76abca6879d6c87aa1c69c3940b395fd6dd2eb847a1cfe62134a083"
+  }
+]

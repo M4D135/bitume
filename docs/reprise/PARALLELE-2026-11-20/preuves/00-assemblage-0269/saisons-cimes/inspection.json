@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "groupe": "saisons-cimes",
+  "statut": "inspection_visuelle_terminee_aucun_blocage_observe",
+  "commit": "7999de565e2c643f7723462caf7683b570c75e8b",
+  "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+  "methode": "Les 12 PNG originaux ont été ouverts individuellement avec leur nom à leur définition native. Planche dérivée des originaux pour lecture comparative.",
+  "images": [
+    {
+      "fichier": "route-des-cimes-printemps/0000.png",
+      "sha256": "b27693cbc025c7653c84d83e54b8305d8a258350252d5928269cd96109dc5f82",
+      "inspectee": true
+    },
+    {
+      "fichier": "route-des-cimes-printemps/0001.png",
+      "sha256": "1d777403f5263891f190fe0528ad1e6f096dadff7ea700943f6944e5ea4ba254",
+      "inspectee": true
+    },
+    {
+      "fichier": "route-des-cimes-ete/0000.png",
+      "sha256": "0b911d762627be183d514ac42d36fe1b53d835bd54a31d93944c558c30523306",
+      "inspectee": true
+    },
+    {
+      "fichier": "route-des-cimes-ete/0001.png",
+      "sha256": "1560a2ec1c972bb9b39843d1c27c388d4b018aa0343d95dda61bf29edb730f7c",
+      "inspectee": true
+    },
+    {
+      "fichier": "route-des-cimes-automne/0000.png",
+      "sha256": "9192afbd536291c5c31efb0b76792dd5e960bac6b6e94042785db29aa577f928",
+      "inspectee": true
+    },
+    {
+      "fichier": "route-des-cimes-automne/0001.png",
+      "sha256": "35ee917529e41ccb6a825c0609ba12a625c9771005be95ef6fced06d4ca88ca0",
+      "inspectee": true
+    },
+    {
+      "fichier": "route-des-cimes-hiver/0000.png",
+      "sha256": "d7c0f079720a3daaacea5998cd126b250c2cbfc3554ef22e5d29a0e119f66a8d",
+      "inspectee": true
+    },
+    {
+      "fichier": "route-des-cimes-hiver/0001.png",
+      "sha256": "dd04f4f17d58712faadf01e11b89e4deb9bf47e516f9f306059f5595838c54af",
+      "inspectee": true
+    },
+    {
+      "fichier": "route-des-cimes-alpin-ete/0000.png",
+      "sha256": "c1b15d75fc55408fcda1e934210898acb45c05d9fd1767191897c177985a3a7c",
+      "inspectee": true
+    },
+    {
+      "fichier": "route-des-cimes-alpin-ete/0001.png",
+      "sha256": "751f91881d108e9b7e5a3e95f37f1777cbbf297e81a8b9b856af96c0514fcc35",
+      "inspectee": true
+    },
+    {
+      "fichier": "route-des-cimes-alpin-hiver/0000.png",
+      "sha256": "104985aed4d0e9ce1355e087b7b47aaa118e538bd3749c9d53c76375410a2627",
+      "inspectee": true
+    },
+    {
+      "fichier": "route-des-cimes-alpin-hiver/0001.png",
+      "sha256": "a9ebac08317bdb2c177e97b40b9d14fc3ff591606fb3b52375dca4525cc78215",
+      "inspectee": true
+    }
+  ],
+  "observations": [
+    {
+      "scene": "foret_printemps_ete",
+      "constats": [
+        "L’arbre feuillu central conserve son tronc et sa couronne au même emplacement ; couronne verte au printemps puis plus olive en été.",
+        "Le terrain reste non enneigé et la route est visible à droite."
+      ]
+    },
+    {
+      "scene": "foret_automne",
+      "constats": [
+        "La couronne centrale devient ocre/dorée ; plusieurs couronnes éloignées changent également de teinte.",
+        "Les conifères et le relief restent présents."
+      ]
+    },
+    {
+      "scene": "foret_hiver",
+      "constats": [
+        "La couronne de feuilles centrale disparaît ; tronc, branches et rameaux sont lisibles.",
+        "Le sol devient enneigé ; les conifères restent présents et les caducs éloignés apparaissent dénudés."
+      ]
+    },
+    {
+      "scene": "alpin_ete",
+      "constats": [
+        "Chaussée sombre et accotements beige/vert visibles ; relief majoritairement minéral avec une zone claire résiduelle au loin."
+      ]
+    },
+    {
+      "scene": "alpin_hiver",
+      "constats": [
+        "Enneigement nettement plus étendu sur terrain, talus et chaussée que dans la vue d’été correspondante.",
+        "La route, le virage et les glissières restent discernables ; pas de noir complet ni de géométrie manquante manifeste."
+      ]
+    }
+  ],
+  "erreurs_rapports": 0,
+  "limites": [
+    "Six cadrages locaux et deux instants par scène : aucune couverture visuelle complète de Route-des-Cimes ni des neuf circuits.",
+    "Le feuillu cible est identifié par le rapport ; l’inspection porte sur la couronne et le ramage rendus, sans expertise botanique.",
+    "Même caméra prescrite pour les comparaisons saisonnières, véhicule immobile ; aucune qualification de conduite.",
+    "Raster SwiftShader et horloge commandée ; le 10 FPS affiché ne constitue pas une mesure matérielle.",
+    "Aucune écoute audio ou manette physique."
+  ],
+  "planche": "planchecontact.jpg",
+  "runtime_modifie": false
+}

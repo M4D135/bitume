@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-for (const file of ['conduite', 'meteo', 'ambiance', 'saisons', 'conditions-course']) require('../src/' + file + '.js');
+for (const file of ['conduite', 'meteo', 'ambiance', 'saisons', 'conditions-course', 'navigation-menu', 'menu-arcade']) require('../src/' + file + '.js');
 const production = globalThis.BITUME, source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const NOW = Date.UTC(2026, 10, 18, 12);
 function extrait(debut, fin, apres = 0) {
@@ -13,7 +13,9 @@ function extrait(debut, fin, apres = 0) {
 }
 const reseau = extrait('  const EL = ', '  function envoyerEtats(');
 const preparation = extrait('  function annulerConditions()', "  $('p-actualiser-conditions').addEventListener");
-const ecrans = extrait('  function aller(nom)', "  document.addEventListener('click'");
+// Le bilan des conditions et les transitions utilisent maintenant les vrais raccords du menu arcade.
+const ecrans = extrait('  const menuArcade = ', "  document.addEventListener('click'");
+const retour = extrait('  function retour()', "  $('r-retour').addEventListener");
 const pneus = extrait('  function initialiserChoixPneus(', '  function majPreparation()');
 const demarrer = extrait('  function demarrerSeance(', '  function basculerPause(');
 const departBouton = extrait("  $('b-depart').addEventListener", '  function demarrerSeance(');
@@ -26,11 +28,14 @@ const fabriquer = new Function('B', 'options', `
   const setTimeout = (f, d) => { const id = ++serial; timers.set(id, { f, t: maintenant + d }); return id; };
   const clearTimeout = id => timers.delete(id);
   const $ = id => {
-    if (!elements.has(id)) elements.set(id, { hidden: false, disabled: false, textContent: '', innerHTML: '', dataset: {},
-      classList: { add() {}, remove() {} }, handlers: {}, addEventListener(n, f) { this.handlers[n] = f; }, querySelector() { return null; } });
+    if (!elements.has(id)) elements.set(id, { ownerDocument: document, hidden: false, disabled: false, textContent: '', innerHTML: '', dataset: {},
+      classList: { add() {}, remove() {} }, handlers: {}, attributes: {},
+      addEventListener(n, f) { this.handlers[n] = f; }, removeEventListener() {},
+      setAttribute(n, v) { this.attributes[n] = v; }, querySelector() { return null; }, querySelectorAll: () => [] });
     return elements.get(id);
   };
-  const document = { querySelector: $, querySelectorAll: () => [], activeElement: null };
+  const document = { querySelector: $, getElementById: $, querySelectorAll: () => [], activeElement: null,
+    addEventListener() {}, removeEventListener() {}, defaultView: { addEventListener() {}, removeEventListener() {}, performance } };
   const texte = (e, t) => { e.textContent = t; }, classe = () => {}, clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   const ECRANS = ['titre','enligne','prets','preparation','reglages','pause','resultats'];
   const CATALOGUE = [{ id: 'val-brule', nom: 'Forêt', theme: 'foret' }, { id: 'port-sable', nom: 'Port-Sable', theme: 'cote' }, { id: 'haut-col', nom: 'Haut-Col', theme: 'montagne' }];
@@ -61,11 +66,12 @@ const fabriquer = new Function('B', 'options', `
   ${reseau}
   ${preparation}
   ${pneus}
+  ${retour}
   ${ecrans}
   ${demarrer}
   ${departBouton}
   return { $, EL, reglages, resolutions, messages, departs, actualiserConditions, annulerConditions, conditionsDuDepart,
-    conditionsCommunes, horlogePartagee, nomMeteoCourse, aller, departEnLigne, recevoirCourse, surMessageEnLigne, contratPiste,
+    conditionsCommunes, horlogePartagee, nomMeteoCourse, meteoPourConditions, aller, departEnLigne, recevoirCourse, surMessageEnLigne, contratPiste,
     etat: () => ({ ecran, conditionsPreparation, conditionsPreparationCle, conditionsEnCours, session }),
     mode: mode => { modePrepa = mode; }, session: s => { session = s; },
     mettreConditions: value => { conditionsPreparation = value; conditionsPreparationCle = cleConditions(); },
@@ -112,25 +118,31 @@ test('changement de choix annule la recherche et une réponse tardive ne remplac
   assert.strictEqual(f.conditionsDuDepart(), k); assert.equal(f.$('b-depart').disabled, false);
 });
 
-test('vitrine hivernale : actualiser la météo conserve la chaussée préparée sans reconstruire la séance', async () => {
+test('préparation hivernale : vitrine cachée intacte, nouvelles conditions et chaussée cohérentes au départ', async () => {
   for (const [i, theme] of [[0, 'foret'], [1, 'cote'], [2, 'montagne']]) {
-    const f = fixture(), profil = production.saisons.profil('hiver', theme);
-    Object.assign(f.reglages, { circuit: i, saison: 'hiver', meteo: 'pluie' });
-    const vitrine = { type: 'vitrine', i, nature: { saison: profil },
-      meteo: production.chaussee.preparer(production.meteo.pour('soleil'), profil) };
-    f.session(vitrine);
-    // Changer les seules précipitations garde le circuit et le paysage déjà construits.
     for (const mReelle of [null, { reel: true, neige: true, phase: 'pluie', pluie: .4, mouille: 0 }]) {
+      const f = fixture(), profil = production.saisons.profil('hiver', theme);
+      Object.assign(f.reglages, { circuit: i, saison: 'hiver', meteo: 'pluie' });
+      const vitrine = { type: 'vitrine', i, nature: { saison: profil },
+        meteo: production.chaussee.preparer(production.meteo.pour('soleil'), profil) };
+      f.session(vitrine);
       const avant = vitrine.meteo, attente = f.actualiserConditions(true), k = snapshot({ mReelle });
       f.resolutions.at(-1).resolve(k);
       assert.strictEqual(await attente, k);
       assert.strictEqual(f.etat().session, vitrine);
-      assert.equal(f.departs.length, 0, 'la branche conserve bien la vitrine existante');
-      assert.notEqual(vitrine.meteo, avant, 'les nouvelles observations sont appliquées');
-      assert.equal(vitrine.meteo.neigeSol, theme === 'cote' ? 0 : .75);
-      assert.equal(vitrine.meteo.precipitationsNeige, theme !== 'cote');
-      for (let pas = 0; pas < 60; pas++) production.meteo.avancer(vitrine, .1);
-      const surface = production.chaussee.lire(null, 0, vitrine.meteo);
+      assert.equal(f.departs.length, 0, 'aucune séance cachée reconstruite dans le menu');
+      assert.strictEqual(vitrine.meteo, avant, 'la vitrine cachée conserve sa météo jusqu’au départ');
+      await f.cliquerDepart(); f.avancer(30);
+      const depart = f.departs.find(d => d.type === 'course');
+      assert(depart, 'la course est préparée au départ');
+      assert.strictEqual(depart.conditions, k, 'le départ consomme les nouvelles observations');
+      // Le constructeur 3D est hors banc ; sa préparation météo reste la vraie fonction de jeu.js.
+      const seance = { meteo: f.meteoPourConditions(depart.conditions, depart.i, 100) };
+      assert.notEqual(seance.meteo, avant, 'les nouvelles observations produisent la météo de course');
+      assert.equal(seance.meteo.neigeSol, theme === 'cote' ? 0 : .75);
+      assert.equal(seance.meteo.precipitationsNeige, theme !== 'cote');
+      for (let pas = 0; pas < 60; pas++) production.meteo.avancer(seance, .1);
+      const surface = production.chaussee.lire(null, 0, seance.meteo);
       if (theme === 'cote') {
         assert.equal(surface.neige, 0);
         assert.ok(surface.eau > 0, 'les précipitations restent liquides au Sud');

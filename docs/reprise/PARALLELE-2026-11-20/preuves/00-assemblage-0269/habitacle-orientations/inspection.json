@@ -1,0 +1,38 @@
+{
+  "groupe": "habitacle-orientations",
+  "inspecteur": "root",
+  "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+  "statut": "aucun_blocage_visible_dans_les_vues_inspectees",
+  "observations": [
+    "Six PNG originaux examinés : face, profil et trois-quarts, deux images par vue.",
+    "Assise et cuve communes visibles ; mains sur le volant dans les vues de profil et trois-quarts. Aucune discontinuité apparente des bras ou du coude dans ces poses.",
+    "La coque masque une partie du buste ; le bandeau de virage recouvre le haut du casque. Ces images ne prouvent pas tous les contacts cachés.",
+    "Les images sont des poses prescrites ; le compteur FPS affiché ne constitue pas une mesure matérielle."
+  ],
+  "fichiers": [
+    {
+      "chemin": "images/apres/face/0000.png",
+      "sha256": "c32ca74c04da10e0e7b8c8580e64aba321858a6007798b1b7a0c27ec130f6920"
+    },
+    {
+      "chemin": "images/apres/face/0001.png",
+      "sha256": "07bc9c977923e390543cb9fd453fc311abcf076a3a2f82f71a251545340b796d"
+    },
+    {
+      "chemin": "images/apres/profil/0000.png",
+      "sha256": "f9b4ab47fe87b552d212c5915fd81bff74c92ff168bc033c96d0e058c3df13ec"
+    },
+    {
+      "chemin": "images/apres/profil/0001.png",
+      "sha256": "35d9de9d9c71fd66f33250cac8e84bac7e010fd37f6e329d9833b659059e3d5a"
+    },
+    {
+      "chemin": "images/apres/trois-quarts/0000.png",
+      "sha256": "0d49e5b7eadabccf973fa524187a42e8e4bed4c27b9a104b1725cb7596314d20"
+    },
+    {
+      "chemin": "images/apres/trois-quarts/0001.png",
+      "sha256": "05ec92a16f80b0986ce3c6a531af18270de662445d41c8cbf5bff29acd2e835b"
+    }
+  ]
+}

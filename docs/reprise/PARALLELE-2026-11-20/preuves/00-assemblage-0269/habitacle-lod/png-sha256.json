@@ -1,0 +1,22 @@
+[
+  {
+    "chemin": "images/apres/lod-moyen/0000.png",
+    "octets": 307784,
+    "sha256": "f18c2e86857111618846043a157bcb0406a974886cc79925fb0425c18f478290"
+  },
+  {
+    "chemin": "images/apres/lod-moyen/0001.png",
+    "octets": 307769,
+    "sha256": "a55788537d16d8dcdfda6614c6fcc869b1b3f426061a317c8d4a16e292ee7586"
+  },
+  {
+    "chemin": "images/apres/lod-simple/0000.png",
+    "octets": 307684,
+    "sha256": "514786fccb7e3d6d7a88e44711789f7af6460ca287e65b7777b30826b1bebffd"
+  },
+  {
+    "chemin": "images/apres/lod-simple/0001.png",
+    "octets": 307732,
+    "sha256": "be183fa3d559717c1dc6f0208cb4ea8b89509f398dafa865e530470c293d468e"
+  }
+]

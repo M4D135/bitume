@@ -1,0 +1,12 @@
+✔ inspection bornée à neuf scènes et deux images, vrais cockpits et LOD par distance (2.584111ms)
+✔ identité exacte, caméra finale et état WebGL sont nécessaires même pour la référence (2.149732ms)
+✔ les instruments réellement présents sont distincts du modèle disponible et des anciens manques (0.41865ms)
+✔ cockpit, passage, geste, portrait et LOD refusent leurs faux positifs (0.850785ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9.989623

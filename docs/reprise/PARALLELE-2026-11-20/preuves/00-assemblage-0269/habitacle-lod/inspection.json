@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "groupe": "habitacle-lod",
+  "commit": "7999de565e2c643f7723462caf7683b570c75e8b",
+  "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+  "methode": "Chaque PNG original ouvert individuellement à sa définition native, avec son nom. Planche annotée dérivée des originaux.",
+  "images": [
+    {
+      "fichier": "apres/lod-moyen/0000.png",
+      "sha256": "f18c2e86857111618846043a157bcb0406a974886cc79925fb0425c18f478290",
+      "inspectee": true
+    },
+    {
+      "fichier": "apres/lod-moyen/0001.png",
+      "sha256": "a55788537d16d8dcdfda6614c6fcc869b1b3f426061a317c8d4a16e292ee7586",
+      "inspectee": true
+    },
+    {
+      "fichier": "apres/lod-simple/0000.png",
+      "sha256": "514786fccb7e3d6d7a88e44711789f7af6460ca287e65b7777b30826b1bebffd",
+      "inspectee": true
+    },
+    {
+      "fichier": "apres/lod-simple/0001.png",
+      "sha256": "be183fa3d559717c1dc6f0208cb4ea8b89509f398dafa865e530470c293d468e",
+      "inspectee": true
+    }
+  ],
+  "blocage_visuel_observe": false,
+  "erreurs_rapports": 0,
+  "planche": "planchecontact.jpg",
+  "runtime_modifie": false,
+  "statut": "inspection_terminee_silhouette_observable_details_non_resolus",
+  "observations": [
+    "Dans les deux niveaux de détail, la voiture reste présente au centre de la piste ; la coque et les roues forment une silhouette cohérente, sans disparition manifeste.",
+    "Le cadrage lointain réduit la voiture à environ 25–30 pixels de large à 960×540.",
+    "Les détails du pilote, de ses bras et leurs contacts avec buste/volant/coque ne sont pas résolus par ces images. Ces PNG ne suffisent pas à qualifier leur géométrie fine."
+  ],
+  "limites": [
+    "La preuve visuelle porte sur la présence et la silhouette à distance, pas sur la lisibilité anatomique des niveaux moyen/simple.",
+    "Deux instants et poses/caméras prescrites ; aucune transition dynamique complète entre niveaux de détail.",
+    "Les contrôles géométriques des trois niveaux restent une preuve distincte des présents PNG.",
+    "Raster SwiftShader et horloge commandée ; le 60 FPS affiché ne mesure aucune performance matérielle.",
+    "Aucune écoute audio ou manette physique."
+  ]
+}

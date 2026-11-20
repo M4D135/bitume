@@ -1,0 +1,17 @@
+{
+  "statut": "sept_suites_ciblees_reussies_localement_ci_globale_a_reprendre",
+  "runtime_inchange": true,
+  "suites": {
+    "choix-pneus-integration": 13,
+    "conditions-integration": 11,
+    "options-image": 11,
+    "qualite": 23,
+    "roues-detail": 8,
+    "vitre-integration": 18,
+    "voiture-identite": 6
+  },
+  "echecs": 0,
+  "conditions": "Vitrine cachée inchangée ; les nouvelles conditions sont contrôlées au départ avec meteoPourConditions réel.",
+  "modules": "Vrais modules navigation-menu et menu-arcade chargés ; DOM complété aux interfaces utilisées.",
+  "reference_geometrique": "Comparaison main/candidat conservée dans identite-roues-actualisation.json ; 134 groupes dans deux configurations, précision 1e-9 et entrelacements conservés."
+}

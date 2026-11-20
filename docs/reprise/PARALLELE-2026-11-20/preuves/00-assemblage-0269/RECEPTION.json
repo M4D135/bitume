@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "commit": "7999de565e2c643f7723462caf7683b570c75e8b",
+  "tree": "31059af44e77aac5b733c9e4b29e9b9efe25ee57",
+  "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+  "ci": "https://github.com/M4D135/bitume/actions/runs/44801007532",
+  "inspection": "49 PNG originaux inspectés ; réserve de visibilité centrale cockpit ; détails fins non lisibles sur les captures LOD distantes.",
+  "groupes": [
+    {
+      "groupe": "menu",
+      "png": 14,
+      "artefact": {
+        "id": 14660523344,
+        "name": "bitume-menu-7999de565e2c643f7723462caf7683b570c75e8b",
+        "bytes": 2200850,
+        "digest": "sha256:e0fb41cbd6198d89b7462bd95033fe6b5c5d0944a2180b74e4d0dd80e6f094dc",
+        "group": "menu"
+      },
+      "rapports_compresses_sha256": "b2ed56ced462d90d4d74ac4659680ed8c86bd987046a494a1d08c368470453e0",
+      "planche_sha256": "d69fcbadbbf612d099fbeec027e1520a0a801456f6333865c123fe7a124c36ca",
+      "inspection": "inspection.json"
+    },
+    {
+      "groupe": "habitacle-orientations",
+      "png": 6,
+      "artefact": {
+        "id": 14660658413,
+        "name": "bitume-assemblage-habitacle-orientations-7999de565e2c643f7723462caf7683b570c75e8b",
+        "digest": "sha256:3973dc93a0c9ea58e70393632f786f1d70ac87a53a5c6fde41ea5d8b76ba8628",
+        "bytes": 2304471
+      },
+      "rapports_compresses_sha256": "c259192f3fc8b3105468f5a46952136f86d62fd51a9a77c85a262d6f5509d5b0",
+      "planche_sha256": "fe0a273b66809841adebc061b44fc1c893c2d8a08ab525c9b3aba42f8c547452",
+      "inspection": "inspection.json"
+    },
+    {
+      "groupe": "habitacle-cockpit",
+      "png": 4,
+      "artefact": {
+        "id": 14660432639,
+        "name": "bitume-assemblage-habitacle-cockpit-7999de565e2c643f7723462caf7683b570c75e8b",
+        "digest": "sha256:3962f31a5d036cb79ece82983f7ebbf5d9557f5348aed843b7c4e45c87c04aec",
+        "bytes": 1610433,
+        "group": "habitacle-cockpit"
+      },
+      "rapports_compresses_sha256": "14fffe8d270fd4663cf472244365ae803354ff80eb530331c616af05d75656e0",
+      "planche_sha256": "c9d6781f5b79a6f32e0c71a6756efc8727b94e4783ed522c9a0d58498cd3d0d8",
+      "inspection": "inspection.json"
+    },
+    {
+      "groupe": "habitacle-gestes",
+      "png": 4,
+      "artefact": {
+        "id": 14660189154,
+        "name": "bitume-assemblage-habitacle-gestes-7999de565e2c643f7723462caf7683b570c75e8b",
+        "digest": "sha256:be6d4b0b56ee4c2259bb241401d4276ed12cc81f9ae3f7f58ad4be23825d4824",
+        "bytes": 1567316,
+        "group": "habitacle-gestes"
+      },
+      "rapports_compresses_sha256": "051a6697430bb5ab70468f0978f20b4eb6a16756151e4f810a954a008c388023",
+      "planche_sha256": "88f6a3b9a680fe63f45a7eb8eb49565a8e79eca2e8f304d8c6870c42476db590",
+      "inspection": "inspection.json"
+    },
+    {
+      "groupe": "habitacle-lod",
+      "png": 4,
+      "artefact": {
+        "id": 14661357275,
+        "name": "bitume-assemblage-habitacle-lod-7999de565e2c643f7723462caf7683b570c75e8b",
+        "digest": "sha256:52c73d2290c3c0411336084a55956c449c1d5343a09c2f6143d9cb8bdd92dd62",
+        "bytes": 1260462,
+        "group": "habitacle-lod"
+      },
+      "rapports_compresses_sha256": "2c81f3db00c7fc601f3b855c5a83d598ae0c11824c274c289dd3dd222138fdbd",
+      "planche_sha256": "50762671b1cf91df45e4b630dac58266d1c3af3056b17fb329e763159b7eebc9",
+      "inspection": "inspection.json"
+    },
+    {
+      "groupe": "duo",
+      "png": 3,
+      "artefact": {
+        "id": 14661313088,
+        "name": "bitume-assemblage-duo-7999de565e2c643f7723462caf7683b570c75e8b",
+        "digest": "sha256:0e615cde96a26413a8c066bd6f4b3d0ea43ff71be5c333b5589684ba97ec795b",
+        "bytes": 1505537,
+        "group": "duo"
+      },
+      "rapports_compresses_sha256": "6f42c26046968292f022b711440d5f433206ee2c76c8d842028df337fcf54cf9",
+      "planche_sha256": "534fc9fa2f063d909274b21bb504ce9c1d1f6b6a2eb681af48298a736ee5c881",
+      "inspection": "inspection.json"
+    },
+    {
+      "groupe": "saisons-cimes",
+      "png": 12,
+      "artefact": {
+        "id": 14661068904,
+        "name": "bitume-assemblage-saisons-cimes-7999de565e2c643f7723462caf7683b570c75e8b",
+        "digest": "sha256:079f97f8d9108d524b27ceebeda732d61ca5b4292992fdeb9dca89714a82930e",
+        "bytes": 4812155,
+        "group": "saisons-cimes"
+      },
+      "rapports_compresses_sha256": "1042c41a4687c48be58d4ef1e2809bd19dac52d6effdd464a1c4a4515598be9a",
+      "planche_sha256": "8dc18d03b69aed87e9123565e7b206bedd1258db282276594abdf83dfbf79efc",
+      "inspection": "inspection.json"
+    },
+    {
+      "groupe": "hiver-port-sable",
+      "png": 2,
+      "artefact": {
+        "id": 14660108013,
+        "name": "bitume-assemblage-hiver-port-sable-7999de565e2c643f7723462caf7683b570c75e8b",
+        "digest": "sha256:f43cc8bb6dfea68133b39874460c5d88e7bfe51cd2b57fd8bd47e86742647597",
+        "bytes": 611969,
+        "group": "hiver-port-sable"
+      },
+      "rapports_compresses_sha256": "2ab0812567b3de6df9be6a3ec4ee00cefa18548e3ddc6650508a335446ef4c22",
+      "planche_sha256": "d49547ff902b70af91657efbeedacd5d2a97619d2b19497a3a51d9cfa01d306a",
+      "inspection": "inspection.json"
+    }
+  ],
+  "png_total": 49,
+  "copies_texte": "Espaces de fin de ligne et lignes vides finales normalisés dans les copies lisibles .txt/.log ; les archives CI identifiées par SHA et les rapports JSON comprimés conservent les données de preuve."
+}

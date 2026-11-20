@@ -1,0 +1,12 @@
+✔ couverture des neuf circuits et quatre saisons, plus été/hiver sur la roche alpine (4.447582ms)
+✔ job ciblé par circuit/palier et options ambiguës refusées (0.5784ms)
+✔ le vérificateur refuse une caméra remplacée, les couronnes hivernales et une preuve absente (1.616156ms)
+✔ Cimes : le cadrage réel masqué est refusé, un caduc dégagé reste identique aux quatre saisons (5085.298609ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5097.461323

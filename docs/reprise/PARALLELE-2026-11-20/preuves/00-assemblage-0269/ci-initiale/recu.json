@@ -1,0 +1,20 @@
+{
+  "run": 44801006792,
+  "job": 136512831574,
+  "commit": "7999de565e2c643f7723462caf7683b570c75e8b",
+  "conclusion": "failure",
+  "suites_reussies": 169,
+  "suites_echec": 7,
+  "python": "non_execute_apres_echec_node",
+  "log_sha256": "1b20d7eeb5412a1431712100d08038c1680066018d596ee26e9154d766c57771",
+  "suites_a_reconcilier": [
+    "choix-pneus-integration",
+    "conditions-integration",
+    "options-image",
+    "qualite",
+    "roues-detail",
+    "vitre-integration",
+    "voiture-identite"
+  ],
+  "analyse": "Bancs antérieurs aux dépendances du menu et à la géométrie commune du pilote ; corrections ciblées à qualifier sans changer le runtime."
+}

@@ -1,0 +1,19 @@
+{
+  "groupe": "habitacle-gestes",
+  "commit": "7999de565e2c643f7723462caf7683b570c75e8b",
+  "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+  "scenes": [
+    {
+      "rapport": "images/apres/braquage-passage/rapport.json",
+      "images": 2
+    },
+    {
+      "rapport": "images/apres/geste-majeur/rapport.json",
+      "images": 2
+    }
+  ],
+  "png": 4,
+  "erreurs": 0,
+  "inspection_visuelle": "a_faire",
+  "limite": "Raster logiciel et poses prescrites ; aucune mesure FPS matérielle ni écoute audio."
+}

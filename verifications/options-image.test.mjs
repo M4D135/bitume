@@ -14,6 +14,8 @@ require('../src/conditions-course.js');
 require('../src/qualite.js');
 // la lecture des réglages normalise aussi la cadence d'images (src/cadence.js, chargé avant jeu.js)
 require('../src/cadence.js');
+// Dépendance réelle de la lecture des réglages, même pour un banc limité aux options Image.
+require('../src/menu-arcade.js');
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 function bloc(debut, fin) {
   const a = source.indexOf(debut), b = source.indexOf(fin, a);

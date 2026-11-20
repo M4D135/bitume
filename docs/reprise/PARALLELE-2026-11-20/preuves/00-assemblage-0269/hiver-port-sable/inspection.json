@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "groupe": "hiver-port-sable",
+  "commit": "7999de565e2c643f7723462caf7683b570c75e8b",
+  "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+  "methode": "Chaque PNG original ouvert individuellement à sa définition native, avec son nom. Planche annotée dérivée des originaux.",
+  "images": [
+    {
+      "fichier": "port-sable-hiver/0000.png",
+      "sha256": "84a07e09d17d0b77642417410fb89a56ff80b4335dea8a76ad8d6f3bbfeb64b0",
+      "inspectee": true
+    },
+    {
+      "fichier": "port-sable-hiver/0001.png",
+      "sha256": "c9521da37c765026ed84bbae393a35216f70ddb8fb0219f3edf4253f2633001c",
+      "inspectee": true
+    }
+  ],
+  "blocage_visuel_observe": false,
+  "erreurs_rapports": 0,
+  "planche": "planchecontact.jpg",
+  "runtime_modifie": false,
+  "statut": "inspection_visuelle_terminee_aucun_blocage_observe",
+  "observations": [
+    "Le pin central et les arbres visibles conservent leur feuillage vert.",
+    "Le sol reste dans des tons sable/ocre/vert ; aucune couche blanche ni enneigement généralisé visible dans ce cadrage hivernal.",
+    "Le tronc et la silhouette du pin sont lisibles ; les deux images ne présentent pas de noir complet ou de géométrie manquante manifeste."
+  ],
+  "limites": [
+    "Un cadrage local de Port-Sable en hiver ne constitue pas une inspection de tout le circuit.",
+    "Deux instants, caméra d’inspection prescrite et absence de conduite simulée.",
+    "Raster SwiftShader et horloge commandée ; le 10 FPS affiché ne mesure aucune performance matérielle.",
+    "Aucune écoute audio ou manette physique."
+  ]
+}
