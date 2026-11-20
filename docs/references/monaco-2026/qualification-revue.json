@@ -1,0 +1,212 @@
+{
+  "format": "bitume-monaco-review-qualification",
+  "version": 1,
+  "date": "2026-11-20",
+  "scope": "Revue exhaustive des observations terrain et sonde routiere candidate ; aucun changement du jeu.",
+  "base": {
+    "githubCommit": "560646cf48fe85befafa80c1cf07cfd29e58fe0c",
+    "tree": "29665842d9af3b2ce6a7046deae14f375b6a05ec",
+    "gameVersion": "0.2.61",
+    "physics": "p14",
+    "engine": "FERRO 0.3.15"
+  },
+  "localTests": {
+    "command": "node --test verifications/monaco-revue.test.mjs verifications/monaco-mesures.test.mjs verifications/monaco-altimetrie.test.mjs verifications/monaco-sources.test.mjs",
+    "testFiles": 4,
+    "tests": 35,
+    "passed": 35,
+    "failed": 0,
+    "skipped": 0,
+    "node": "v24.22.3",
+    "python": "Python 3.12.14",
+    "logSha256": "41fa8d0525c926d933f8b671439d91a3958c9077d0feef656fd2e0b7cc1e46d2",
+    "rawLogPublished": false,
+    "oldFullCampaignRerunLocally": false
+  },
+  "reviewSummary": {
+    "pointCount": 415,
+    "differencePoints": 32,
+    "differencePointsTunnelTagged": 20,
+    "differencePointsWithoutTunnelTag": 12,
+    "differenceGroups": 7,
+    "tunnelPoints": 33,
+    "tunnelEdges": 31,
+    "tunnelGroups": 2,
+    "osmTagTransitions": 4,
+    "terrainGradeAlerts": 17,
+    "distinctGradeEdges": 17,
+    "reviewedPoints": 49,
+    "eligibleRoadMeasurements": 0,
+    "unknownRoadMeasurements": {
+      "y": 415,
+      "leftWidthM": 415,
+      "rightWidthM": 415,
+      "bankRadians": 415
+    }
+  },
+  "frozenInputs": [
+    {
+      "file": "bilan-mesures.json",
+      "bytes": 7498,
+      "sha256": "bc7d032fedc564f759387cf32c8e58ada43aa7c8accf4ab0329344278f6dee36"
+    },
+    {
+      "file": "comparaison.json",
+      "bytes": 1424,
+      "sha256": "d5b9b653321104b62bf65e6d27127265eaae3cd5a4d1439d126b96f2b6941351"
+    },
+    {
+      "file": "donnees.json",
+      "bytes": 371030,
+      "sha256": "ef0f1271d06bb4fa78cbfc82b6ad88eafba4f55bf5ad0cbec9d336db25b6bfcd"
+    },
+    {
+      "file": "mesures-controlees.json",
+      "bytes": 422380,
+      "sha256": "212fc5c1a4848b65471fe4eff55c9e73db99cd68e3311791131b421fd0bad67a"
+    },
+    {
+      "file": "mesures-terrain.json",
+      "bytes": 667275,
+      "sha256": "fc53ab6950f9f7be03017ee732d1226f1aab6caed39974c86c77bb4a55f84d51"
+    },
+    {
+      "file": "plan.svg",
+      "bytes": 13407,
+      "sha256": "64e536c29ddd7884bd0806033bf295bace13cae8ce34ca3d051be6baa93b8a41"
+    },
+    {
+      "file": "reperes.json",
+      "bytes": 6539,
+      "sha256": "6d263fb0dcdfa10f8b55e99702b136979f5cdf0e69b20d075c41928d4eabc367"
+    },
+    {
+      "file": "sources-mesures.json",
+      "bytes": 27401,
+      "sha256": "185713865cd2c41c4f6e7738360901fe5c6d0307a0ad11221440ae82d8265bb3"
+    },
+    {
+      "file": "sources.json",
+      "bytes": 4141,
+      "sha256": "3f9421778f7298481d23a6dac59666e6ebfc93886c732c87211fb18eec09eb81"
+    },
+    {
+      "file": "sources/mesures-20261120/lidar-415.json",
+      "bytes": 189892,
+      "sha256": "cfd081cba8496b7b3145e06a2a94ac23c9362717a140a63915d04dd34f093495"
+    },
+    {
+      "file": "sources/mesures-20261120/lidar-resource.json",
+      "bytes": 1844,
+      "sha256": "d6aba03eb4220964a41358eb35c9ff2225212842503e9681b7718a5e66168c0b"
+    },
+    {
+      "file": "sources/mesures-20261120/lidar-tiles.geojson",
+      "bytes": 9616,
+      "sha256": "11c849787fb86da32f5e97cebf15a3788585af1e81dec84f9417e37152752fdf"
+    },
+    {
+      "file": "sources/mesures-20261120/rge-415.json",
+      "bytes": 766754,
+      "sha256": "248a14fbf1f315c4efb8eb753d9fa4506c8363bd62a5f3ee13af61362089beb8"
+    },
+    {
+      "file": "sources/mesures-20261120/rge-resource.json",
+      "bytes": 62976,
+      "sha256": "b514f703660a8a8df43340f01dfdf376c163a457cbc7d9beb63886430a5fe571"
+    },
+    {
+      "file": "topologie.json",
+      "bytes": 1584,
+      "sha256": "30f65fd94e1aca35c930a313653cd51924b3066c9fb2d7f909374f1b741838cc"
+    }
+  ],
+  "unchangedGuards": [
+    {
+      "file": "VERSION.json",
+      "bytes": 151,
+      "sha256": "5d247a754b0eb9c936bdc898c05f5760971b3825f0ec5ace75ffaa06aacbfaeb"
+    },
+    {
+      "file": "SIZE.json",
+      "bytes": 1859,
+      "sha256": "39613eefd3de84cc3f17961369585a37f645f463f6b3d28ad6ca408070a21eac"
+    },
+    {
+      "file": "dist/bitume.html",
+      "bytes": 14265416,
+      "sha256": "c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d"
+    },
+    {
+      "file": "FERRO.lock.json",
+      "bytes": 5522,
+      "sha256": "f0003205bc89775777a49a4895d8f611be9262b339439e00a1f38bc1d983a4c2"
+    },
+    {
+      "file": "docs/references/monaco-2026/donnees.json",
+      "bytes": 371030,
+      "sha256": "ef0f1271d06bb4fa78cbfc82b6ad88eafba4f55bf5ad0cbec9d336db25b6bfcd"
+    },
+    {
+      "file": "docs/references/monaco-2026/comparaison.json",
+      "bytes": 1424,
+      "sha256": "d5b9b653321104b62bf65e6d27127265eaae3cd5a4d1439d126b96f2b6941351"
+    },
+    {
+      "file": "docs/references/monaco-2026/plan.svg",
+      "bytes": 13407,
+      "sha256": "64e536c29ddd7884bd0806033bf295bace13cae8ce34ca3d051be6baa93b8a41"
+    },
+    {
+      "file": "docs/references/monaco-2026/mesures-terrain.json",
+      "bytes": 667275,
+      "sha256": "fc53ab6950f9f7be03017ee732d1226f1aab6caed39974c86c77bb4a55f84d51"
+    },
+    {
+      "file": "docs/references/monaco-2026/mesures-controlees.json",
+      "bytes": 422380,
+      "sha256": "212fc5c1a4848b65471fe4eff55c9e73db99cd68e3311791131b421fd0bad67a"
+    },
+    {
+      "file": "docs/references/monaco-2026/bilan-mesures.json",
+      "bytes": 7498,
+      "sha256": "bc7d032fedc564f759387cf32c8e58ada43aa7c8accf4ab0329344278f6dee36"
+    }
+  ],
+  "runtimeVersionEngineWorkflowUnchanged": true,
+  "newRoadMeasurementsQualified": 0,
+  "roadSourceProbe": {
+    "receipt": "bdtopo-sonde.json",
+    "objects": 7,
+    "sha256": "b9e7772adf67f51af2707b380e3b2da5532cfa1794f3886f2c868f5664702177",
+    "status": "candidate_not_qualified"
+  },
+  "publication": {
+    "status": "pending_observation"
+  },
+  "reserves": {
+    "constructionMs": {
+      "valBrule": 188,
+      "hautCol": [
+        154,
+        167
+      ],
+      "threshold": 150
+    },
+    "monacoRuntimeReady": false,
+    "hardwareFpsQualified": false,
+    "siteDeployed": false
+  },
+  "independentReview": {
+    "status": "passed",
+    "method": "Recalcul depuis reponses IGN brutes et tags des voies du XML OSM ; comparaison complete et controle des 15 empreintes.",
+    "reviewedPoints": 49,
+    "additionalGradeOnlyPointIndices": [
+      193,
+      196,
+      284,
+      285
+    ],
+    "blockingIssues": 0
+  }
+}
