@@ -2,31 +2,32 @@
   "schema": 1,
   "discussion": "01",
   "mission": "Pilote et Troll",
-  "statut": "qualification_troll_j1_j2_sur_html_assemble_en_cours",
+  "statut": "T3_troll_J1_J2_qualifie_sur_HTML_assemble_transmis_a_00",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/01-PILOTE-TROLL.md",
   "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "branche_proposee": "codex/bitume-p01-pilote-troll-20261120",
   "branche_reelle": "codex/bitume-p01-pilote-troll-20261120",
-  "head": "aaef801e021f30cd3b6e9da6f18094e57965bcd3",
+  "head": "e13dbfba9bdf45eefb92c7f9ffa2654433fe6b84",
   "pr": 41,
-  "sous_lot": "T3 preuve temporelle commandes J1/J2 et consommation audio unique sur candidat exact 00",
+  "sous_lot": "T3 clos : commandes, son unique, temporalite et retour J1/J2 verifies sur le HTML exact de 00",
   "preuves": [
     "docs/reprise/PARALLELE-2026-11-20/preuves/01-habitacle.json",
     "docs/reprise/PARALLELE-2026-11-20/preuves/01-visuel-module.json",
     "docs/reprise/PARALLELE-2026-11-20/preuves/01-klaxons.json",
     "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll.json",
     "docs/reprise/PARALLELE-2026-11-20/preuves/01-raccord.json",
-    "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble-js.json"
+    "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble-js.json",
+    "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json"
   ],
   "reserves": [
-    "Raccord jeu.js camera/projection/instruments et consommation Troll propose, a integrer par 00 avec le menu 03.",
-    "Qualification WebGL du jeu assemble, paysage/portrait/duo/retroviseurs et audio reel reste a 00 ; captures isolees Canvas2D uniquement.",
+    "Raccord de 00 observé sur le candidat exact 11dd51e : Troll J1/J2 logique, géométrie et WebGL ciblé qualifiés. Publication du build commun et qualification générale restent à 00.",
+    "26 PNG WebGL duo cockpit/poursuite inspectés pour T3. Les autres orientations/portrait/LOD de l’habitacle et l’écoute audio réelle restent distincts ; mains petites en poursuite, geste levé partiellement hors champ en cockpit.",
     "Transport des choix et evenements Troll en ligne non implemente dans ce lot ; aucune qualification entre machines.",
     "Budget de cinq voix audio propose a 00 : quatre humains plus une IA ; tests modules reussis.",
     "Matieres/shaders supplementaires soumis au budget et au raccord 00/02.",
     "Physique p15, FERRO, versions, builds communs et main inchanges par 01."
   ],
-  "prochaine_action": "Terminer les contrôles Troll J1/J2 extraits du HTML puis les captures Chromium en CI dédiée ; inspecter les images et transmettre la preuve ciblée à 00.",
+  "prochaine_action": "00 : reprendre la preuve T3 e13dbfb et son reçu documentaire, vérifier le même SHA HTML avant usage, poursuivre les autres groupes du candidat puis publier selon sa qualification générale. 01 : ne pas relancer T3 inchangé.",
   "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
   "preparations_portables": [
     "docs/reprise/PARALLELE-2026-11-20/preparations/habitacle.patch",
@@ -70,7 +71,7 @@
     "version": "0.2.69",
     "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
     "reconstructions_identiques": 2,
-    "statut": "raccord_logique_geometrique_qualifie_captures_CI_ouvertes",
+    "statut": "T3_raccord_troll_J1_J2_qualifie_sur_candidat_exact",
     "raccord_reproduction": "docs/reprise/PARALLELE-2026-11-20/raccordements/01-assemblage-test.json",
     "limite": "Candidat de 00 observe localement ; aucune publication du build commun, aucune fusion main ni déploiement par 01.",
     "controle_js": {
@@ -88,8 +89,13 @@
       "images_attendues": 26,
       "fenetre_secondes": 2.85,
       "tests_oracle": 5,
-      "statut": "a_executer_en_CI_et_inspecter",
-      "workflow": ".github/workflows/qualification-troll.yml"
+      "statut": "CI_reussie_26_PNG_inspectes",
+      "workflow": ".github/workflows/qualification-troll.yml",
+      "images_inspectees": 26,
+      "run": 44795943660,
+      "conclusion": "success",
+      "outils_commit": "e13dbfba9bdf45eefb92c7f9ffa2654433fe6b84",
+      "rapport": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json"
     }
   }
 }
