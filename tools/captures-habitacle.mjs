@@ -132,7 +132,7 @@ export function preparerHabitacle(s) {
   __BITUME_CAPTURE.avancer = ms => { co.horloge += ms / 1000; co.temps = co.horloge; return avancer(ms); };
   return { entree: 'BITUME_JEU.reference', type: S.type, sujet, posesPrescrites: true, cameraPrescrite: !s.cockpit,
     reglagesHud: { carte: J.reglages.carte, cartePosition: J.reglages.cartePosition,
-      carteTaille: J.reglages.carteTaille, tableau: J.reglages.tableau }, rivalDistance: s.rival || null,
+      carteTaille: J.reglages.carteTaille, tableau: J.reglages.tableau, annoncesVirages: J.reglages.annoncesVirages }, rivalDistance: s.rival || null,
     graineExpression, simulationConduite: false, description: 'Vrai modèle et vrai renderer ; caméra d’inspection via API pour les vues extérieures, caméra réelle du siège en cockpit.' };
 }
 
@@ -191,7 +191,7 @@ export function observerHabitacle() {
   const gl = J.rendu.gl;
   return { type: S.type, ecran: J.ecran, vue: S.vue, vue2: S.vueJ2?.vue || null, instant: F.instant || null, cameraImposee: J.camera !== null,
     reglagesHud: { carte: J.reglages.carte, cartePosition: J.reglages.cartePosition,
-      carteTaille: J.reglages.carteTaille, tableau: J.reglages.tableau },
+      carteTaille: J.reglages.carteTaille, tableau: J.reglages.tableau, annoncesVirages: J.reglages.annoncesVirages },
     rivalDistance: F.scenario.rival ? S.course.voitures[F.sujet === 0 ? 1 : 0].etat.s - v.etat.s : null,
     camera: { pos: [...cam.pos], yaw: cam.yaw, pitch: cam.pitch, roll: cam.roll || 0, fov: cam.fov, near: cam.near },
     cameraPrescrite: F.cameraPrescrite, distanceLOD: F.distanceLOD, obstructionStatique: !!hit.hit,
@@ -252,6 +252,11 @@ export function verifierHabitacle(r, s, candidat = true) {
     const volantVitesse = s.volantVitesse ?? .65;
     if (o.volant !== (s.qualification && s.cockpit ? i ? volantVitesse : 0 : s.volant || 0)) fautes.push('Braquage non exercé');
     if (s.qualification && s.cockpit) {
+      // Les anciens rapports restent relisibles grâce aux témoins DOM ci-dessous. Dès que
+      // le réglage est tracé, initialisation et observation doivent toutes deux attester Écran.
+      if ((r.initialisation?.reglagesHud?.annoncesVirages !== undefined || o.reglagesHud?.annoncesVirages !== undefined) &&
+        (r.initialisation?.reglagesHud?.annoncesVirages !== 'ecran' || o.reglagesHud?.annoncesVirages !== 'ecran'))
+        fautes.push('Annonce de virage : réglage Écran prescrit non exercé');
       if (s.chauffeInstant === 120) {
         const chauffe = (r.phasesHabitacle || []).filter(e => e.image === i && /^chauffe-/.test(e.phase));
         if (chauffe.length !== 120 || chauffe.some((e, n) => e.phase !== `chauffe-${n + 1}/120` || e.etat !== 'terminee' ||

@@ -5,16 +5,16 @@
     "version_publiee_verifiee": "0.2.69",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "candidat_0272_en_qualification_HUD_compact",
+    "statut": "candidat_0273_en_qualification_HUD_duo_compact",
     "lot": "00D_cockpit_pluie",
     "fiche": "docs/reprise/COCKPIT-PLUIE-2026-11-20.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "035",
-    "prochaine_action": "Recevoir CI et PNG du HTML 0.2.72 exact, contrôler carte/annonce/compteurs sélectionnés et absence de recouvrement des mains ; ne pas fusionner PR47 qui garde les deux défauts 0.2.71.",
+    "derniere_entree": "036",
+    "prochaine_action": "Recevoir la CI et les PNG exacts 0.2.73, annonce activée en petit duo J1/J2 et virage maintenu complet ; fusion seulement après qualification.",
     "dernier_lot_clos": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
     "fiche_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
     "index": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
-    "entree_journal": "035",
+    "entree_journal": "036",
     "dernieres_demandes": "docs/reprise/DEMANDES-ARCADE-PERFORMANCE-TROLL-2026-11-20.md",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md",
@@ -24,7 +24,7 @@
     "dernier_lot_coordination_clos": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
     "runtime_modifie_par_coordination_portee": "0.2.69 publié sur main et contenu reçu vérifié.",
     "preuve_t3": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
-    "reserve_lisibilite_cockpit": "0.2.71 : classement sur gant-0 en compact et régime complet sur volant/gant-1 au neutre ; correctif CSS 0.2.72 construit, nouveaux PNG attendus.",
+    "reserve_lisibilite_cockpit": "0.2.72 : annonce sur position/tour et barre santé sur glace en duo compact ; 0.2.73 en qualification, aucune clôture visuelle présumée.",
     "alerte_budget_decor": {
       "statut": "ouvert",
       "run": 44803588903,
@@ -43,16 +43,23 @@
           "run": 44825452386,
           "ms": 168,
           "arbre_identique_push_vert": true
+        },
+        {
+          "version": "0.2.72",
+          "run": 44831750422,
+          "ms": 155,
+          "arbre_identique_pr_vert": true
         }
       ]
     },
     "commit_fusion": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
     "tete_qualifiee": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
     "pr_publiee": 42,
-    "branche_candidate": "codex/bitume-0272-hud-compact-20261120",
-    "version_candidate": "0.2.72",
-    "branche_pr": "codex/bitume-0272-hud-compact-20261120",
-    "preuve_candidat_0272": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0272/BUILD-0272.json"
+    "branche_candidate": "codex/bitume-0273-reprise-20261121",
+    "version_candidate": "0.2.73",
+    "branche_pr": "codex/bitume-0273-reprise-20261121",
+    "preuve_candidat_0272": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0272/BUILD-0272.json",
+    "preuve_candidat_0273": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/BUILD-0273.json"
   },
   "publication": {
     "version": "0.2.69",

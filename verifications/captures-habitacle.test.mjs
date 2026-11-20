@@ -32,7 +32,7 @@ test('référence seule : option explicite et exclusive du couple avant/après',
 function rapport(s) {
   const cam = { pos: [1, 2, 3], yaw: .2, pitch: -.1, roll: 0, fov: 40 };
   const o = { type: s.duo ? 'duo' : 'course', ecran: 'course', vue: s.cockpit ? 'cockpit' : 'poursuite', vue2: s.duo ? 'cockpit' : null, cameraImposee: !s.cockpit,
-    reglagesHud: { carte: 'oui', cartePosition: s.cartePosition || 'droite', carteTaille: s.carteTaille || 'normale', tableau: s.tableau || 'reduit' }, rivalDistance: s.rival || null,
+    reglagesHud: { carte: 'oui', cartePosition: s.cartePosition || 'droite', carteTaille: s.carteTaille || 'normale', tableau: s.tableau || 'reduit', annoncesVirages: 'ecran' }, rivalDistance: s.rival || null,
     camera: cam, cameraPrescrite: s.cockpit ? null : structuredClone(cam), glErreur: 0, glPerdu: false,
     obstructionStatique: false, volant: s.volant || 0, rapport: 3, rapportAvant: s.passage ? 2 : 3, passage: .5,
     expression: { geste: s.geste || null, gesteIntensite: s.geste ? 1 : 0 },
@@ -41,7 +41,7 @@ function rapport(s) {
     instruments: { plancheAttendue: 54, plancheRendue: 54, aiguillesRendues: 3, supportsRendus: 5, retrosRendus: 2 } };
   return { source: { commit: 'a'.repeat(40) }, build: { sha256: 'b'.repeat(64) },
     environnement: { webgl2: true, physx: { ready: true }, resolution: [...(s.taille ? s.taille.split(',').map(Number) : [960, 540]), 1] },
-    initialisation: { entree: 'BITUME_JEU.reference', posesPrescrites: true,
+    initialisation: { entree: 'BITUME_JEU.reference', posesPrescrites: true, reglagesHud: structuredClone(o.reglagesHud),
       ...(s.qualification && s.cockpit ? { observation: { methode: 'copie passive des triangles opaques transmis au draw original' } } : {}) }, erreurs: [], avertissements: [],
     images: Array.from({ length: s.images }, () => ({ observation: structuredClone(o), etat: { zones: { scene: {}, ...(s.cockpit ? { 'glace-g': {}, 'glace-d': {} } : {}),
       ...(s.duo ? { scene2: {}, 'glace-g2': {}, 'glace-d2': {} } : {}) } },
@@ -466,6 +466,22 @@ test('les rapports JSON exigent la carte visible aux deux poses et pour chaque j
 test('l’annonce doit être visible en vitesse-braquage et absente au neutre, pour J1 et J2', () => {
   for (const s of SCENARIOS_COCKPIT.filter(s => s.cockpit)) {
     const r = rapportCockpit(s);
+    for (const changer of [
+      r => { r.images[1].observation.reglagesHud.annoncesVirages = 'non'; },
+      r => { delete r.images[1].observation.reglagesHud.annoncesVirages; },
+      r => { r.initialisation.reglagesHud.annoncesVirages = 'non'; }
+    ]) {
+      const faux = structuredClone(r); changer(faux);
+      assert(verifierHabitacle(faux, s).some(e => /réglage Écran prescrit non exercé/.test(e)), 'un réglage incohérent ne doit pas valider une annonce résiduelle');
+    }
+    const defautNon = structuredClone(r);
+    defautNon.initialisation.reglagesHud.annoncesVirages = 'non';
+    for (const im of defautNon.images) {
+      im.observation.reglagesHud.annoncesVirages = 'non';
+      for (const q of im.observation.lisibilite) q.hud.rectangles = q.hud.rectangles.filter(h => !h.id.includes(':h-virage:'));
+    }
+    for (let j = 0; j < r.images[1].observation.lisibilite.length; j++)
+      assert(verifierHabitacle(defautNon, s).some(e => e === 'Annonce de virage absente en vitesse-braquage : J' + (j + 1)), 'le nouveau défaut Non ne contourne pas le garde J' + (j + 1));
     for (let j = 0; j < r.images[1].observation.lisibilite.length; j++) {
       for (const changer of [
         (q, annonce) => { q.hud.rectangles = q.hud.rectangles.filter(h => h !== annonce); },

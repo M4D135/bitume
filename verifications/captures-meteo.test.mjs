@@ -233,11 +233,13 @@ test('préparation du témoin : seule l’humidité change, aucune implantation 
     const B = { circuit: { echantillon: (c, s) => ({ x: s, z: 0, y: 0, cap: 0, pente: 0, devers: 0 }) }, traces: { pas() {} } };
     const pas = B.traces.pas;
     const avancer = () => 1;
-    const contexte = { BITUME_JEU: { session: S, reglages: {}, ecran: 'course' }, BITUME: B, __BITUME_CAPTURE: { avancer } };
+    const contexte = { BITUME_JEU: { session: S, reglages: { annoncesVirages: 'non' }, ecran: 'course' }, BITUME: B, __BITUME_CAPTURE: { avancer } };
     const c = vm.createContext(contexte), s = SCENARIOS.find(s => s.id === id);
     const initialisation = vm.runInContext(`(${preparerEtat.toString()})(${JSON.stringify(s)})`, c);
     assert.equal(B.traces.pas, pas);
     assert.equal(S.acc, -1); assert.equal(initialisation.poseFigee, true);
+    assert.equal(contexte.BITUME_JEU.reglages.annoncesVirages, 'ecran', 'le nouveau défaut Non ne retire pas le HUD des témoins météo');
+    assert.equal(initialisation.annoncesVirages, 'ecran');
     assert.equal(S.course.voitures[1].etat.s, 298);
     return { initialisation: JSON.parse(JSON.stringify(initialisation)), S };
   };

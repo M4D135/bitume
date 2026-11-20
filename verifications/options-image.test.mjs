@@ -86,9 +86,9 @@ const options = x => Object.fromEntries(['anticrenelage','ombres','vegetation'].
 let controles = 0;
 function verifier(nom, f) { f(); controles++; console.log('ok ' + nom); }
 
-verifier('annonces de virage : défaut écran, trois choix persistés, valeurs invalides refusées', () => {
-  assert.equal(jeu().reglages.annoncesVirages,'ecran');
-  assert.equal(jeu({annoncesVirages:'inconnue'}).reglages.annoncesVirages,'ecran');
+verifier('annonces de virage : désactivées par défaut, trois choix persistés, valeurs invalides refusées', () => {
+  assert.equal(jeu().reglages.annoncesVirages,'non');
+  assert.equal(jeu({annoncesVirages:'inconnue'}).reglages.annoncesVirages,'non');
   for (const mode of ['non','ecran','voix']) {
     const j=jeu(); j.choisir('annoncesVirages',mode);
     assert.equal(j.reglages.annoncesVirages,mode);

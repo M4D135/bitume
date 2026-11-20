@@ -647,3 +647,16 @@ Réserve tardive 0.2.71 : la CI PR `44825452386` termine à **178/179** suites,
 Val-Brûlé **168 ms** pour un seuil strict de **150 ms**. Son archive de
 3 901 fichiers/modes est identique à la CI push verte ; les huit tests Python
 sont sautés en PR après cet échec. Résultat conservé, sans changer le seuil.
+
+## 036 — Candidat 0.2.73, petit duo et annonces désactivées par défaut
+
+Le reçu 0.2.72 conserve les deux archives CI identiques (PR 179/179, push
+178/179 avec Val-Brûlé 155 ms/150) et les masques constatés chez J1/J2.
+Le CSS réduit les espaces et marges du petit partage haut/bas, élargit les noms
+sans réduire les textes. Le défaut des annonces passe à Non dans le runtime
+et l'interface ; les trois préférences déjà enregistrées restent conservées.
+Deux reconstructions identiques et verrou FERRO conforme. L'outil active
+explicitement les annonces pour les captures ; aucune disparition ne peut
+valider leur placement. Le virage stabilisé précédent est incomplet, non reçu
+comme preuve. CI et PNG 0.2.73 sont requis avant fusion ; PR43 et réserves
+historiques restent séparées. Aucun déploiement du site.

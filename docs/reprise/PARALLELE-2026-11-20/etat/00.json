@@ -2,11 +2,11 @@
   "schema": 1,
   "discussion": "00",
   "mission": "Integration",
-  "statut": "qualification_candidat_0272_HUD_compact",
+  "statut": "qualification_candidat_0273_HUD_duo_compact",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/00-INTEGRATION.md",
   "base_main": "fee69c521eccc0e64cc29f762a6d2244b5ade759",
   "branche_proposee": "codex/bitume-p00-integration-20261120",
-  "branche_reelle": "codex/bitume-0269-publication-20261120",
+  "branche_reelle": "codex/bitume-0273-reprise-20261121",
   "head": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
   "pr": 42,
   "sous_lot": "00D_cockpit_pluie",
@@ -24,7 +24,8 @@
     "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
     "docs/reprise/PARALLELE-2026-11-20/preuves/00-assemblage-0269/RECEPTION.json",
     "docs/reprise/PARALLELE-2026-11-20/preuves/00-assemblage-0269/ci-finale/RECEPTION-CI.json",
-    "docs/reprise/PARALLELE-2026-11-20/preuves/00-assemblage-0269/ci-finale/ALERTE-BUDGET-DECOR.json"
+    "docs/reprise/PARALLELE-2026-11-20/preuves/00-assemblage-0269/ci-finale/ALERTE-BUDGET-DECOR.json",
+    "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/BUILD-0273.json"
   ],
   "reserves": [
     "Le volant occulte une partie centrale de la chaussée en caméra réelle du siège, surtout en paysage. Les tests de projection ne mesurent pas cette occultation ; suivi ouvert.",
@@ -34,7 +35,7 @@
     "FPS Xbox/Intel, manettes physiques, écoute humaine et réseau entre machines non qualifiés.",
     "M1 exclu ; Monaco/Marseille sources uniquement."
   ],
-  "prochaine_action": "Recevoir CI complète et PNG 0.2.72, y compris le compact et les compteurs complets ; conserver PR43 et les preuves historiques.",
+  "prochaine_action": "Recevoir la CI et les PNG exacts 0.2.73, annonce activée en petit duo J1/J2 et virage maintenu complet ; fusion seulement après qualification.",
   "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
   "base_main_preparation": "d8f02cae45443ae6a1120dc93125d8adfae94422",
   "base_tree": "ecc470298dfb4e5d25966d6614ccecabc3a09006",
@@ -159,7 +160,12 @@
     "main_reception_verifiee": true
   },
   "publication_portee": "Publication runtime 0.2.69 reçue sur main ; historique 00A conservé séparément.",
-  "portes_restantes": [],
+  "portes_restantes": [
+    "CI complète sur commit exact et archive rapprochée",
+    "Captures cockpit dont duo compact J1/J2 avec annonces activées",
+    "Virage maintenu avec tableau complet et grande carte gauche",
+    "Réception pluie/Troll du candidat"
+  ],
   "checkpoints_historiques_171512": [
     {
       "discussion": "01",
@@ -208,12 +214,12 @@
   "etat_actif_cockpit_pluie": {
     "fiche": "docs/reprise/COCKPIT-PLUIE-2026-11-20.md",
     "pr": 44,
-    "statut": "0.2.70 bloquée par le HUD ; 0.2.71 en préparation",
+    "statut": "0.2.72 bloquée en petit duo ; 0.2.73 en qualification",
     "base": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
     "ci_0270": 44818836125,
-    "prochaine_action": "Publier le correctif HUD et recevoir les nouveaux PNG et la CI du HTML exact ; préserver PR 43 et les réserves de performance."
+    "prochaine_action": "Recevoir la CI et les PNG exacts 0.2.73, annonce activée en petit duo J1/J2 et virage maintenu complet ; fusion seulement après qualification."
   },
-  "branche_candidate": "codex/bitume-0272-hud-compact-20261120",
-  "version_candidate": "0.2.72",
-  "preuve_candidat": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0272/BUILD-0272.json"
+  "branche_candidate": "codex/bitume-0273-reprise-20261121",
+  "version_candidate": "0.2.73",
+  "preuve_candidat": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/BUILD-0273.json"
 }

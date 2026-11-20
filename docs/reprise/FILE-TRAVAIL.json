@@ -11,7 +11,7 @@
     "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
   },
   "destinations_prevues": 17,
-  "lot_actif": "00D_cockpit_pluie_HUD_0272_en_qualification",
+  "lot_actif": "00D_cockpit_pluie_HUD_duo_0273_en_qualification",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [
@@ -662,24 +662,25 @@
   },
   "base_initiale": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_candidat": {
-    "version": "0.2.72",
-    "branche": "codex/bitume-0272-hud-compact-20261120",
+    "version": "0.2.73",
+    "branche": "codex/bitume-0273-reprise-20261121",
     "physique": "p15",
     "moteur": "FERRO 0.3.15",
     "circuits": 9,
-    "html_sha256": "391db2defe23308f88500fdd138d3b8573596d1ca0f53e058ef5c66c0c510a90",
+    "html_sha256": "09c386ac0fdaccd7f6417839536a73c32217ce3ed2f91263907f443168394910",
     "statut": "en_qualification",
-    "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0272/BUILD-0272.json",
+    "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/BUILD-0273.json",
     "portes_restantes": [
-      "CI complète exacte",
-      "PNG cockpit et gardes carte/annonce/compteurs",
-      "Réception des preuves Troll/pluie restantes"
+      "CI complète sur commit exact et archive rapprochée",
+      "Captures cockpit dont duo compact J1/J2 avec annonces activées",
+      "Virage maintenu avec tableau complet et grande carte gauche",
+      "Réception pluie/Troll du candidat"
     ],
-    "reserve_decor": "172 puis 152 ms historiques, seuil strict de 150 ms conservé",
+    "reserve_decor": "172, 152, 168 et 155 ms historiques, seuil strict de 150 ms conservé",
     "candidat_precedent_bloque": {
-      "version": "0.2.71",
-      "pr": 47,
-      "constat": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/ci-0271/RECEPTION-INTERMEDIAIRE.json"
+      "version": "0.2.72",
+      "pr": 48,
+      "constat": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/REFERENCE-0272.json"
     }
   },
   "demandes_video_survol_2026_11_20": {

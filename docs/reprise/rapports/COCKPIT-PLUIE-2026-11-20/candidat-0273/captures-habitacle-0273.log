@@ -1,0 +1,345 @@
+[habitacle temoin-duo] image 0 preparer-instant
+✔ inspection bornée à neuf scènes et deux images, vrais cockpits et LOD par distance (2.270068ms)
+✔ référence seule : option explicite et exclusive du couple avant/après (0.354376ms)
+✔ identité exacte, caméra finale et état WebGL sont nécessaires même pour la référence (2.027448ms)
+✔ qualification ciblée : vingt PNG, cas historiques conservés, braquage stabilisé et duo compact distincts (0.749001ms)
+[habitacle temoin-duo] image 0 chauffe-1/24
+[habitacle temoin-duo] image 0 chauffe-2/24
+[habitacle temoin-duo] image 0 chauffe-3/24
+[habitacle temoin-duo] image 0 chauffe-4/24
+[habitacle temoin-duo] image 0 chauffe-5/24
+[habitacle temoin-duo] image 0 chauffe-6/24
+[habitacle temoin-duo] image 0 chauffe-7/24
+[habitacle temoin-duo] image 0 chauffe-8/24
+[habitacle temoin-duo] image 0 chauffe-9/24
+[habitacle temoin-duo] image 0 chauffe-10/24
+[habitacle temoin-duo] image 0 chauffe-11/24
+[habitacle temoin-duo] image 0 chauffe-12/24
+[habitacle temoin-duo] image 0 chauffe-13/24
+[habitacle temoin-duo] image 0 chauffe-14/24
+[habitacle temoin-duo] image 0 chauffe-15/24
+[habitacle temoin-duo] image 0 chauffe-16/24
+[habitacle temoin-duo] image 0 chauffe-17/24
+[habitacle temoin-duo] image 0 chauffe-18/24
+[habitacle temoin-duo] image 0 chauffe-19/24
+[habitacle temoin-duo] image 0 chauffe-20/24
+[habitacle temoin-duo] image 0 chauffe-21/24
+[habitacle temoin-duo] image 0 chauffe-22/24
+[habitacle temoin-duo] image 0 chauffe-23/24
+[habitacle temoin-duo] image 0 chauffe-24/24
+[habitacle temoin-duo] image 0 armer-observation
+[habitacle temoin-duo] image 0 frame-et-PNG
+[habitacle temoin-duo] image 1 preparer-instant
+[habitacle temoin-duo] image 1 chauffe-1/24
+[habitacle temoin-duo] image 1 chauffe-2/24
+[habitacle temoin-duo] image 1 chauffe-3/24
+[habitacle temoin-duo] image 1 chauffe-4/24
+[habitacle temoin-duo] image 1 chauffe-5/24
+[habitacle temoin-duo] image 1 chauffe-6/24
+[habitacle temoin-duo] image 1 chauffe-7/24
+[habitacle temoin-duo] image 1 chauffe-8/24
+[habitacle temoin-duo] image 1 chauffe-9/24
+[habitacle temoin-duo] image 1 chauffe-10/24
+[habitacle temoin-duo] image 1 chauffe-11/24
+[habitacle temoin-duo] image 1 chauffe-12/24
+[habitacle temoin-duo] image 1 chauffe-13/24
+[habitacle temoin-duo] image 1 chauffe-14/24
+[habitacle temoin-duo] image 1 chauffe-15/24
+[habitacle temoin-duo] image 1 chauffe-16/24
+[habitacle temoin-duo] image 1 chauffe-17/24
+[habitacle temoin-duo] image 1 chauffe-18/24
+[habitacle temoin-duo] image 1 chauffe-19/24
+[habitacle temoin-duo] image 1 chauffe-20/24
+[habitacle temoin-duo] image 1 chauffe-21/24
+[habitacle temoin-duo] image 1 chauffe-22/24
+[habitacle temoin-duo] image 1 chauffe-23/24
+[habitacle temoin-duo] image 1 chauffe-24/24
+[habitacle temoin-duo] image 1 armer-observation
+[habitacle temoin-duo] image 1 frame-et-PNG
+[habitacle temoin-interruption] image 1 preparer-instant
+✔ chauffe cockpit : 24 rappels réels séparés, mêmes poses duo, relevé uniquement sur la frame suivante (8.813945ms)
+[habitacle temoin-interruption] image 1 chauffe-1/24
+[habitacle temoin-interruption] image 1 chauffe-2/24
+[habitacle temoin-interruption] image 1 chauffe-3/24
+[habitacle temoin-interruption] image 1 chauffe-4/24
+[habitacle temoin-interruption] image 1 chauffe-5/24
+[habitacle temoin-interruption] image 1 chauffe-6/24
+[habitacle cockpit-carte-gauche-stabilise] image 0 preparer-instant
+✔ une commande de chauffe interrompue reste un échec tracé et n’arme pas une observation incomplète (1.692551ms)
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-1/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-2/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-3/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-4/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-5/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-6/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-7/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-8/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-9/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-10/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-11/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-12/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-13/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-14/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-15/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-16/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-17/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-18/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-19/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-20/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-21/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-22/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-23/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-24/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-25/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-26/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-27/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-28/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-29/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-30/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-31/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-32/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-33/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-34/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-35/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-36/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-37/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-38/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-39/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-40/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-41/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-42/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-43/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-44/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-45/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-46/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-47/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-48/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-49/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-50/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-51/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-52/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-53/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-54/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-55/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-56/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-57/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-58/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-59/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-60/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-61/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-62/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-63/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-64/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-65/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-66/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-67/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-68/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-69/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-70/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-71/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-72/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-73/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-74/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-75/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-76/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-77/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-78/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-79/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-80/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-81/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-82/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-83/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-84/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-85/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-86/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-87/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-88/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-89/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-90/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-91/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-92/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-93/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-94/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-95/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-96/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-97/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-98/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-99/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-100/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-101/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-102/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-103/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-104/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-105/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-106/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-107/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-108/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-109/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-110/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-111/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-112/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-113/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-114/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-115/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-116/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-117/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-118/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-119/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 chauffe-120/120
+[habitacle cockpit-carte-gauche-stabilise] image 0 armer-observation
+[habitacle cockpit-carte-gauche-stabilise] image 0 frame-et-PNG
+[habitacle cockpit-carte-gauche-stabilise] image 1 preparer-instant
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-1/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-2/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-3/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-4/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-5/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-6/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-7/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-8/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-9/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-10/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-11/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-12/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-13/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-14/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-15/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-16/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-17/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-18/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-19/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-20/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-21/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-22/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-23/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-24/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-25/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-26/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-27/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-28/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-29/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-30/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-31/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-32/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-33/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-34/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-35/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-36/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-37/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-38/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-39/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-40/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-41/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-42/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-43/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-44/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-45/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-46/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-47/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-48/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-49/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-50/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-51/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-52/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-53/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-54/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-55/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-56/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-57/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-58/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-59/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-60/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-61/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-62/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-63/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-64/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-65/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-66/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-67/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-68/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-69/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-70/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-71/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-72/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-73/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-74/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-75/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-76/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-77/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-78/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-79/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-80/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-81/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-82/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-83/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-84/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-85/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-86/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-87/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-88/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-89/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-90/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-91/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-92/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-93/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-94/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-95/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-96/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-97/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-98/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-99/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-100/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-101/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-102/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-103/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-104/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-105/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-106/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-107/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-108/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-109/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-110/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-111/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-112/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-113/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-114/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-115/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-116/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-117/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-118/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-119/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 chauffe-120/120
+[habitacle cockpit-carte-gauche-stabilise] image 1 armer-observation
+[habitacle cockpit-carte-gauche-stabilise] image 1 frame-et-PNG
+✔ braquages stabilisés : 120 rappels réels de 1/60 s, signes prescrits et relevé après la chauffe (11.966373ms)
+✔ chaussée : vrai sol, faces opaques, plan proche et roulis, sans faux masque par les faces arrière (9.829402ms)
+✔ contrôles négatifs : ancien œil trop bas et obstacle réel devant une chaussée pourtant projetée (1.372556ms)
+✔ contrôles négatifs : glace sur le volant, sur un gant, trop grande ou DOM désolidarisé (2.783669ms)
+✔ les quadrilatères/triangles importent, pas leur seule boîte, et les données absentes échouent (1.947218ms)
+✔ HUD : une glace, un point central de chaussée ou une commande masqués échouent aux seuils inchangés (1.109596ms)
+✔ HUD : données absentes, incomplètes, invalides ou empruntées à l’autre joueur refusées (0.800818ms)
+✔ HUD interne : annonce sur POSITION/TOUR, carte et FPS sont détectés au seuil de 1 px² (3.163263ms)
+✔ HUD interne : propre rectangle, parent/enfant et autre joueur exclus ; frères distincts conservés (0.141901ms)
+✔ HUD DOM : rectangles transformés propres à J1/J2, clipping et visibilité réelle sans conteneurs vides (2.714357ms)
+✔ le rapport exige les deux états, les deux joueurs et les erreurs réelles de géométrie (18.586914ms)
+✔ les cas stabilisés refusent une chauffe de 24 pas, interrompue, sans rappel ou à cadence différente (3.142712ms)
+✔ relecture JSON : le chevauchement annonce/compteur ne passe pas avec un ancien tableau d’erreurs vide (1.902523ms)
+✔ les rapports JSON exigent la carte visible aux deux poses et pour chaque joueur (32.377383ms)
+✔ l’annonce doit être visible en vitesse-braquage et absente au neutre, pour J1 et J2 (60.270542ms)
+✔ tableau complet : vitesse et régime visibles une seule fois, dans chaque vue et aux deux poses (66.954148ms)
+✔ planche seule : aucun compteur supplémentaire ne redevient visible, pour J1/J2 aux deux poses (12.187311ms)
+✔ les cas compacts exigent le côté réel de la carte, même avec les bons réglages déclarés (3.690234ms)
+✔ la référence négative exige aussi sa carte et l’annonce dans les bons états (1.093201ms)
+✔ HUD de référence : les preuves absentes ou invalides restent des échecs structurels (2.226984ms)
+✔ référence paysage : intersection de glace réelle, supérieure au seuil et explicitement constatée aux deux poses (1.55702ms)
+✔ observation passive : même draw et mêmes arguments, copie distincte J2 puis J1 malgré la liste partagée (0.82902ms)
+✔ les instruments réellement présents sont distincts du modèle disponible et des anciens manques (0.319795ms)
+✔ cockpit, passage, geste, portrait et LOD refusent leurs faux positifs (0.53225ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 359.715955

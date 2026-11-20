@@ -75,6 +75,8 @@ export function optionsMeteo(argv) {
 export function preparerEtat(s) {
   const J = BITUME_JEU, B = BITUME, S = J.session, co = S.course, c = co.c;
   S.acc = -1; J.pauseAuto = false; J.reglages.gouttes = 1;
+  // Conserver le HUD des témoins historiques malgré le nouveau défaut utilisateur Non.
+  J.reglages.annoncesVirages = 'ecran';
   const pluie = s.pluie ?? (s.sec ? 0 : 1), mouille = s.mouille ?? (s.sec ? 0 : 1);
   Object.assign(S.meteo, { reel: true, fixe: true, pluie, pluieFixe: pluie, nuage: s.nuage ?? (s.sec ? .12 : .9), phase: pluie > 0 ? 'pluie' : 'clair', mouille,
     neige: s.saison === 'hiver', precipitationsNeige: pluie > 0 && s.saison === 'hiver', eclair: 0 });
@@ -166,6 +168,7 @@ export function preparerEtat(s) {
     return avancer(ms);
   };
   return { poseFigee: true, vitesseEffetsKmh: s.vitesse * 3.6, faune, positions: F.controleSillage ? F.positions() : null,
+    annoncesVirages: J.reglages.annoncesVirages,
     cameraPrescrite: s.carrosserie ? { poste: [.95, 1.1, -1.05], cible: [.7, .38, -.30], fov: 40 } : null,
     qualificationPluie: !!s.qualificationPluie,
     description: 'Positions fixées par outil; horloge météo et rendu réels. Aucun essai de conduite ou de FPS.' };
@@ -256,6 +259,7 @@ export function observerEtat() {
       cameraPrescrite: F.cameraPrescrite, tempsRendu: S.tRendu };
   }
   return { glErreur: gl.getError(), glPerdu: gl.isContextLost(), vitres, vitresGL, visieresVisibles,
+    annoncesVirages: J.reglages?.annoncesVirages,
     j1: contexte(S.vitreContexte), j2: contexte(S.vueJ2?.vitreContexte), faune: __METEO_FIXTURE.faune,
     vue: S.vue, vue2: S.vueJ2?.vue || null, positions: __METEO_FIXTURE.controleSillage ? __METEO_FIXTURE.positions() : null,
     camera: S.camera ? { pos: [...S.camera.pos], yaw: S.camera.yaw, pitch: S.camera.pitch, roll: S.camera.roll || 0, fov: S.camera.fov } : null,

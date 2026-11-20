@@ -618,6 +618,16 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .jauge-derive i { width: auto; flex: 1; }
 }
 
+/* Petit partage haut/bas : les lignes gardent leurs textes et leur ancrage bas, mais prennent
+   moins de hauteur pour laisser l'annonce sous POSITION/TOUR. Le panneau déjà borné suffit
+   à dégager les mains ; la largeur complète conserve des noms reconnaissables à cette échelle. */
+@container affichage-course (min-aspect-ratio: 6/5) and (max-height: 400px) {
+  body:not(.tactile) #jeu[data-partage="haut-bas"] :is(#hud, #hud2)[data-vue="cockpit"] .classement { width: 100%; gap: 1px; }
+  body:not(.tactile) #jeu[data-partage="haut-bas"] :is(#hud, #hud2)[data-vue="cockpit"] .classement li { padding-block: 0; }
+  body:not(.tactile) #jeu[data-partage="haut-bas"] :is(#hud, #hud2)[data-vue="cockpit"] .case.sante .nom-pneus { margin-top: 4px; }
+  body:not(.tactile) #jeu[data-partage="haut-bas"] :is(#hud, #hud2)[data-vue="cockpit"] .case.sante .barre-sante { margin-top: 2px; }
+}
+
 /* Entre 6/5 et 2/1, les glaces occupent les coins hauts : la carte prend une place réservée entre les
    compteurs et les chronos. Sa borne suit la hauteur locale, avec les mêmes rapports 3/4, 1 et 5/4. */
 @container affichage-course (min-aspect-ratio: 6/5) and (max-aspect-ratio: 2/1) {
