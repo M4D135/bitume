@@ -1,0 +1,1113 @@
+{
+  "schema": 1,
+  "discussion": "03",
+  "date": "2026-11-20",
+  "statut": "lot_sources_qualifie_pour_integration_00",
+  "branche": "codex/bitume-p03-menu-20261120",
+  "head_source": "098122e093fcc99939e1064498a2d45d283d8f0d",
+  "tree_source": "76182fdea8ae275a42209258187542b5727c52c1",
+  "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
+  "main_reverifie": "d230d8c6995e44d63b0a072fa3d6362d04a8e5ce",
+  "pr": "https://github.com/M4D135/bitume/pull/40",
+  "perimetre": {
+    "sources_runtime": [
+      "src/index.html",
+      "src/style.css",
+      "src/navigation-menu.js",
+      "src/menu-arcade.js"
+    ],
+    "fichiers_du_lot": [
+      ".github/workflows/qualification-menu.yml",
+      "docs/reprise/PARALLELE-2026-11-20/etat/03.json",
+      "docs/reprise/PARALLELE-2026-11-20/raccordements/03-TROLL.md",
+      "docs/reprise/PARALLELE-2026-11-20/raccordements/03-menu.patch",
+      "docs/reprise/PARALLELE-2026-11-20/raccordements/03-raccord.test.mjs",
+      "docs/reprise/PARALLELE-2026-11-20/raccordements/03.md",
+      "src/index.html",
+      "src/menu-arcade.js",
+      "src/navigation-menu.js",
+      "src/style.css",
+      "tools/captures-menu-arcade.mjs",
+      "verifications/menu-arcade.test.mjs",
+      "verifications/navigation-menu.test.mjs"
+    ],
+    "proteges_identiques_main": {
+      "src/jeu.js": "cf07b58de6046a765ff4be0e299d5fb03d305745",
+      "construire.py": "2cc9a552a300bbe97f279e578db5ddd351d0c82d",
+      "VERSION.json": "3b1c93924dcb1b4864cf3154c541b7047ed0b3cc",
+      "SIZE.json": "5a6d55b12f022a9eeaf2e9daeb9a066b6d2d9149",
+      "FERRO.lock.json": "6083fd3ae347baf4fcd2adb06ac926b8d47c6bd1",
+      "dist/bitume.html": "5ccafb129d40f11ec9ea9192f2607f7650809606"
+    },
+    "main_fusionne": false,
+    "build_commun_publie": false,
+    "socle": "0.2.68 / p15 / FERRO 0.3.15"
+  },
+  "preparation": {
+    "chemin": "preparations/arcade.patch",
+    "sha256": "65b33f89e91d761525230ff0b05486481e33cd50deee30dff48e922838e4297d",
+    "reprise": "quatre sources possédées par 03, puis finition sur la branche dédiée"
+  },
+  "raccord": {
+    "chemin": "raccordements/03-menu.patch",
+    "sha256": "2d2661855db17df0559a44336da5833a06ebcf92aa1fbf4b73cdbc92dcad4c0c",
+    "destinataire": "00",
+    "fichiers_proposes": [
+      "src/jeu.js",
+      "construire.py"
+    ],
+    "git_apply_check": "ok",
+    "contrat_troll": "raccordements/03-TROLL.md"
+  },
+  "tests_cibles": {
+    "total": 196,
+    "suites": [
+      {
+        "journal": "navigation-menu.test.mjs.log",
+        "controles": 21,
+        "statut": "ok",
+        "sha256": "ae8bc1b9deda3352019b5f786c537847671163e2de0cfd330b2424927abe9e49"
+      },
+      {
+        "journal": "menu-arcade.test.mjs.log",
+        "controles": 12,
+        "statut": "ok",
+        "sha256": "c69cdfecbfafde7cc27f82ad30c0ba902e34b417a6ceb693185c5dee8637f92d"
+      },
+      {
+        "journal": "manette.test.mjs.log",
+        "controles": 39,
+        "statut": "ok",
+        "sha256": "527fe2f9af5cfc2e58856be62dfe704b26638740ff6c9033f33332096787238d"
+      },
+      {
+        "journal": "commandes-partage.test.mjs.log",
+        "controles": 47,
+        "statut": "ok",
+        "sha256": "4029cd2ea676795f3503ffab30131fee34595f718cc46f820a9191d752eb209e"
+      },
+      {
+        "journal": "prets-enligne.test.mjs.log",
+        "controles": 63,
+        "statut": "ok",
+        "sha256": "5bfc9aaf075a54a23b8684567331dc9c406526c115130d8eac2547e2b3d4a5b6"
+      },
+      {
+        "journal": "raccord.log",
+        "controles": 14,
+        "statut": "ok",
+        "sha256": "6e559fa0f402d41ff4e0610b8122cb47e4757a4c467162c554aa9f5fdb1b114c"
+      }
+    ],
+    "projection": "9 circuits × 144 rotations × 6 formats ; XYZ réels, relief et cadrage",
+    "conservation_html": {
+      "anciens_controles_conserves": 131,
+      "groupes_nommes_conserves": 35,
+      "identifiants_dupliques": 0
+    }
+  },
+  "ci": {
+    "nom": "Qualification du menu 03",
+    "run_id": 44787693042,
+    "job_id": 136466798358,
+    "conclusion": "success",
+    "url": "https://github.com/M4D135/bitume/actions/runs/44787693042",
+    "navigateur": "Google Chrome 157.0.8103.78",
+    "playwright": "1.62.1",
+    "rendu": "logiciel"
+  },
+  "artefact": {
+    "id": 14654682559,
+    "url": "https://github.com/M4D135/bitume/actions/runs/44787693042/artifacts/14654682559",
+    "sha256_zip": "6a8070b12396213fc66357a8cd83c78bba1d2482f0f4325d761e73549969b227",
+    "octets_zip": 2199086,
+    "expiration": "2026-12-04T17:56:10Z",
+    "contenu": "captures, rapport JSON, identifiants et journaux ; aucun build HTML livré"
+  },
+  "candidat_html_non_publie_sha256": "07ad344d972167f0f72fab87ba112358d0b5e527838926ab71634714d828c203",
+  "parcours_navigateur": {
+    "schema": 1,
+    "commit": "098122e093fcc99939e1064498a2d45d283d8f0d",
+    "nature": "raccord propose applique dans une copie temporaire",
+    "controles": [
+      {
+        "nom": "Titre opaque sans rendu caché",
+        "statut": "ok",
+        "dessinsWebGL": 0,
+        "imagesApercu": 0
+      },
+      {
+        "nom": "Clavier : neuf circuits, sélection réelle de Route-des-Cimes, scène inchangée",
+        "statut": "ok"
+      },
+      {
+        "nom": "Tracé figé sans nouveau dessin",
+        "statut": "ok",
+        "dessinsWebGL": 0,
+        "imagesApercu": 0
+      },
+      {
+        "nom": "Mouvement réduit sans animation persistante",
+        "statut": "ok",
+        "dessinsWebGL": 0,
+        "imagesApercu": 0
+      },
+      {
+        "nom": "Masquage document simulé : aperçu arrêté",
+        "statut": "ok"
+      },
+      {
+        "nom": "Conditions : aucun aperçu ni scène cachée",
+        "statut": "ok",
+        "dessinsWebGL": 0,
+        "imagesApercu": 0
+      },
+      {
+        "nom": "Réglages : aucun rendu caché",
+        "statut": "ok",
+        "dessinsWebGL": 0,
+        "imagesApercu": 0
+      },
+      {
+        "nom": "Start progresse jusqu’au bilan, retour des réglages conserve l’étape",
+        "statut": "ok"
+      },
+      {
+        "nom": "Troll J1/J2 indépendant et bilan fidèle",
+        "statut": "ok"
+      },
+      {
+        "nom": "Quatre étapes : 12 captures et actions visibles en bureau, portrait et paysage",
+        "statut": "ok"
+      },
+      {
+        "nom": "Chrono et tactile simulé : options adaptées, retour clavier",
+        "statut": "ok"
+      },
+      {
+        "nom": "Salon sans rendu caché",
+        "statut": "ok",
+        "dessinsWebGL": 0,
+        "imagesApercu": 0
+      },
+      {
+        "nom": "Deuxième manette : code sans clavier, brouillon et annulation du nom",
+        "statut": "ok"
+      },
+      {
+        "nom": "Aucune vibration dans les menus",
+        "statut": "ok"
+      },
+      {
+        "nom": "Persistance après rechargement des conditions et choix des deux pilotes",
+        "statut": "ok"
+      },
+      {
+        "nom": "Départ réel et pause après les étapes arcade",
+        "statut": "ok"
+      },
+      {
+        "nom": "Réglages depuis la pause : rendu suspendu",
+        "statut": "ok",
+        "dessinsWebGL": 0,
+        "imagesApercu": 0
+      },
+      {
+        "nom": "Retour de démonstration vers le titre opaque",
+        "statut": "ok",
+        "dessinsWebGL": 0,
+        "imagesApercu": 0
+      },
+      {
+        "nom": "Pause/réglages/reprise et démo automatique après inactivité conservées",
+        "statut": "ok"
+      }
+    ],
+    "captures": [
+      "etape-1-1440x900.png",
+      "etape-2-1440x900.png",
+      "etape-3-1440x900.png",
+      "etape-4-1440x900.png",
+      "etape-1-390x844.png",
+      "etape-2-390x844.png",
+      "etape-3-390x844.png",
+      "etape-4-390x844.png",
+      "etape-1-844x390.png",
+      "etape-2-844x390.png",
+      "etape-3-844x390.png",
+      "etape-4-844x390.png",
+      "titre-1440x900.png",
+      "saisie-manette.png"
+    ],
+    "erreurs": [],
+    "limites": [
+      "Chromium logiciel",
+      "manettes et tactile simules",
+      "audio non ecoute",
+      "reseau entre machines non essaye"
+    ],
+    "retoursManette": [
+      {
+        "parcours": "Course",
+        "ecranAttendu": "preparation",
+        "etapeAttendue": 2,
+        "ecran": "preparation",
+        "etape": 2,
+        "manettesSimulees": {
+          "lectures": 107,
+          "transition": {
+            "bouton": 1,
+            "controleur": 0,
+            "appuye": false,
+            "depuis": 16130.700000000012,
+            "images": 2,
+            "lectures": 3
+          }
+        }
+      },
+      {
+        "parcours": "Course",
+        "ecranAttendu": "preparation",
+        "etapeAttendue": 1,
+        "ecran": "preparation",
+        "etape": 1,
+        "manettesSimulees": {
+          "lectures": 112,
+          "transition": {
+            "bouton": 1,
+            "controleur": 0,
+            "appuye": false,
+            "depuis": 16465.79999999999,
+            "images": 2,
+            "lectures": 2
+          }
+        }
+      },
+      {
+        "parcours": "Course",
+        "ecranAttendu": "preparation",
+        "etapeAttendue": 0,
+        "ecran": "preparation",
+        "etape": 0,
+        "manettesSimulees": {
+          "lectures": 118,
+          "transition": {
+            "bouton": 1,
+            "controleur": 0,
+            "appuye": false,
+            "depuis": 16801.20000000001,
+            "images": 2,
+            "lectures": 2
+          }
+        }
+      },
+      {
+        "parcours": "Course",
+        "ecranAttendu": "titre",
+        "etapeAttendue": null,
+        "ecran": "titre",
+        "etape": 0,
+        "manettesSimulees": {
+          "lectures": 124,
+          "transition": {
+            "bouton": 1,
+            "controleur": 0,
+            "appuye": false,
+            "depuis": 17002.79999999999,
+            "images": 2,
+            "lectures": 3
+          }
+        }
+      },
+      {
+        "parcours": "Duo après captures",
+        "ecranAttendu": "preparation",
+        "etapeAttendue": 2,
+        "ecran": "preparation",
+        "etape": 2,
+        "manettesSimulees": {
+          "lectures": 271,
+          "transition": {
+            "bouton": 1,
+            "controleur": 0,
+            "appuye": false,
+            "depuis": 21135.400000000023,
+            "images": 2,
+            "lectures": 4
+          }
+        }
+      },
+      {
+        "parcours": "Duo après captures",
+        "ecranAttendu": "preparation",
+        "etapeAttendue": 1,
+        "ecran": "preparation",
+        "etape": 1,
+        "manettesSimulees": {
+          "lectures": 277,
+          "transition": {
+            "bouton": 1,
+            "controleur": 0,
+            "appuye": false,
+            "depuis": 21360.5,
+            "images": 2,
+            "lectures": 3
+          }
+        }
+      },
+      {
+        "parcours": "Duo après captures",
+        "ecranAttendu": "preparation",
+        "etapeAttendue": 0,
+        "ecran": "preparation",
+        "etape": 0,
+        "manettesSimulees": {
+          "lectures": 285,
+          "transition": {
+            "bouton": 1,
+            "controleur": 0,
+            "appuye": false,
+            "depuis": 21624.900000000023,
+            "images": 2,
+            "lectures": 5
+          }
+        }
+      },
+      {
+        "parcours": "Duo après captures",
+        "ecranAttendu": "titre",
+        "etapeAttendue": null,
+        "ecran": "titre",
+        "etape": 0,
+        "manettesSimulees": {
+          "lectures": 295,
+          "transition": {
+            "bouton": 1,
+            "controleur": 0,
+            "appuye": false,
+            "depuis": 21951.900000000023,
+            "images": 2,
+            "lectures": 6
+          }
+        }
+      }
+    ],
+    "visibilitePaysage": [
+      {
+        "etape": 1,
+        "largeur": 844,
+        "hauteur": 390,
+        "scrollTop": 0,
+        "cartes": 3,
+        "cibles": [
+          {
+            "nom": "canvas du tracé",
+            "rectangle": {
+              "gauche": 15,
+              "haut": 103.890625,
+              "droite": 469.125,
+              "bas": 245.203125
+            },
+            "zoneVisible": {
+              "gauche": 15,
+              "haut": 61,
+              "droite": 469,
+              "bas": 303
+            },
+            "ancetres": [
+              {
+                "element": "apercu-circuit",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "panneaux-menu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "preparation",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "jeu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "tactile",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "HTML",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              }
+            ],
+            "contenu": null,
+            "visible": true
+          }
+        ]
+      },
+      {
+        "etape": 4,
+        "largeur": 844,
+        "hauteur": 390,
+        "scrollTop": 0,
+        "cartes": 3,
+        "cibles": [
+          {
+            "nom": "carte bilan 1",
+            "rectangle": {
+              "gauche": 14,
+              "haut": 109.78125,
+              "droite": 276,
+              "bas": 205.359375
+            },
+            "zoneVisible": {
+              "gauche": 10,
+              "haut": 54,
+              "droite": 824,
+              "bas": 312
+            },
+            "ancetres": [
+              {
+                "element": "panneaux-menu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "preparation",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "jeu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "tactile",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "HTML",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              }
+            ],
+            "contenu": null,
+            "visible": true
+          },
+          {
+            "nom": "carte bilan 2",
+            "rectangle": {
+              "gauche": 286,
+              "haut": 109.78125,
+              "droite": 548,
+              "bas": 205.359375
+            },
+            "zoneVisible": {
+              "gauche": 10,
+              "haut": 54,
+              "droite": 824,
+              "bas": 312
+            },
+            "ancetres": [
+              {
+                "element": "panneaux-menu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "preparation",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "jeu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "tactile",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "HTML",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              }
+            ],
+            "contenu": null,
+            "visible": true
+          },
+          {
+            "nom": "carte bilan 3",
+            "rectangle": {
+              "gauche": 558,
+              "haut": 109.78125,
+              "droite": 820,
+              "bas": 205.359375
+            },
+            "zoneVisible": {
+              "gauche": 10,
+              "haut": 54,
+              "droite": 824,
+              "bas": 312
+            },
+            "ancetres": [
+              {
+                "element": "panneaux-menu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "preparation",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "jeu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "tactile",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "HTML",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              }
+            ],
+            "contenu": null,
+            "visible": true
+          },
+          {
+            "nom": "p-bilan-circuit",
+            "rectangle": {
+              "gauche": 25,
+              "haut": 137.78125,
+              "droite": 265,
+              "bas": 157.578125
+            },
+            "zoneVisible": {
+              "gauche": 14,
+              "haut": 109.78125,
+              "droite": 276,
+              "bas": 205.359375
+            },
+            "ancetres": [
+              {
+                "element": "panneaux-menu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "preparation",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "jeu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "tactile",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "HTML",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              }
+            ],
+            "contenu": {
+              "lignes": 1,
+              "complet": true
+            },
+            "visible": true
+          },
+          {
+            "nom": "p-bilan-course",
+            "rectangle": {
+              "gauche": 25,
+              "haut": 163.578125,
+              "droite": 265,
+              "bas": 178.96875
+            },
+            "zoneVisible": {
+              "gauche": 14,
+              "haut": 109.78125,
+              "droite": 276,
+              "bas": 205.359375
+            },
+            "ancetres": [
+              {
+                "element": "panneaux-menu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "preparation",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "jeu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "tactile",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "HTML",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              }
+            ],
+            "contenu": {
+              "lignes": 1,
+              "complet": true
+            },
+            "visible": true
+          },
+          {
+            "nom": "p-bilan-saison",
+            "rectangle": {
+              "gauche": 297,
+              "haut": 137.78125,
+              "droite": 537,
+              "bas": 157.578125
+            },
+            "zoneVisible": {
+              "gauche": 286,
+              "haut": 109.78125,
+              "droite": 548,
+              "bas": 205.359375
+            },
+            "ancetres": [
+              {
+                "element": "panneaux-menu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "preparation",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "jeu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "tactile",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "HTML",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              }
+            ],
+            "contenu": {
+              "lignes": 1,
+              "complet": true
+            },
+            "visible": true
+          },
+          {
+            "nom": "p-bilan-meteo",
+            "rectangle": {
+              "gauche": 297,
+              "haut": 163.578125,
+              "droite": 537,
+              "bas": 178.96875
+            },
+            "zoneVisible": {
+              "gauche": 286,
+              "haut": 109.78125,
+              "droite": 548,
+              "bas": 205.359375
+            },
+            "ancetres": [
+              {
+                "element": "panneaux-menu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "preparation",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "jeu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "tactile",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "HTML",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              }
+            ],
+            "contenu": {
+              "lignes": 1,
+              "complet": true
+            },
+            "visible": true
+          },
+          {
+            "nom": "p-bilan-joueurs",
+            "rectangle": {
+              "gauche": 569,
+              "haut": 137.78125,
+              "droite": 809,
+              "bas": 157.578125
+            },
+            "zoneVisible": {
+              "gauche": 558,
+              "haut": 109.78125,
+              "droite": 820,
+              "bas": 205.359375
+            },
+            "ancetres": [
+              {
+                "element": "panneaux-menu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "preparation",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "jeu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "tactile",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "HTML",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              }
+            ],
+            "contenu": {
+              "lignes": 1,
+              "complet": true
+            },
+            "visible": true
+          },
+          {
+            "nom": "p-bilan-troll",
+            "rectangle": {
+              "gauche": 569,
+              "haut": 163.578125,
+              "droite": 809,
+              "bas": 194.359375
+            },
+            "zoneVisible": {
+              "gauche": 558,
+              "haut": 109.78125,
+              "droite": 820,
+              "bas": 205.359375
+            },
+            "ancetres": [
+              {
+                "element": "panneaux-menu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "preparation",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "jeu",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "tactile",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              },
+              {
+                "element": "HTML",
+                "scrollTop": 0,
+                "coupeX": true,
+                "coupeY": true
+              }
+            ],
+            "contenu": {
+              "lignes": 2,
+              "complet": true
+            },
+            "visible": true
+          }
+        ]
+      }
+    ],
+    "statut": "ok"
+  },
+  "captures_inspectees": [
+    {
+      "fichier": "etape-1-1440x900.png",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "sha256": "06df3be8f55eb38991fdd13f8a8498442d2acbd3a5e3110e28b57ff5909abd43",
+      "inspection": "original M16 inspecté visuellement",
+      "resultat": "aucun défaut bloquant"
+    },
+    {
+      "fichier": "etape-2-1440x900.png",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "sha256": "b607f015b51802e6a4117d3cce80bddb68ede2a24c1b111aa25140b73f17161a",
+      "inspection": "original M16 inspecté visuellement",
+      "resultat": "aucun défaut bloquant"
+    },
+    {
+      "fichier": "etape-3-1440x900.png",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "sha256": "6d2cfdcafabb56eab50b6eb433208cbb076ab181eff9d8670c3360f941776763",
+      "inspection": "inspection M13 réutilisée après égalité SHA-256",
+      "resultat": "aucun défaut bloquant"
+    },
+    {
+      "fichier": "etape-4-1440x900.png",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "sha256": "7e18dde611dce9cd8bdea5b3cf1c5d76780e8fcf83c88abf70d9561ca9334aa4",
+      "inspection": "inspection M13 réutilisée après égalité SHA-256",
+      "resultat": "aucun défaut bloquant"
+    },
+    {
+      "fichier": "etape-1-390x844.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "sha256": "9edb3c02dfcf16d38d4e802b3d0bb38878abc99af511fdd9ce269a58a2ffc0f6",
+      "inspection": "original M16 inspecté visuellement",
+      "resultat": "aucun défaut bloquant"
+    },
+    {
+      "fichier": "etape-2-390x844.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "sha256": "829ef47c1ea847b3a9384825e257981600f7246d613713d817cb6b8c3eeb08bd",
+      "inspection": "inspection M13 réutilisée après égalité SHA-256",
+      "resultat": "aucun défaut bloquant"
+    },
+    {
+      "fichier": "etape-3-390x844.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "sha256": "024888a0a1d69e28892a5981c6f9fc4879bbac6c9612cf2fe1fab351895b185f",
+      "inspection": "inspection M13 réutilisée après égalité SHA-256",
+      "resultat": "aucun défaut bloquant"
+    },
+    {
+      "fichier": "etape-4-390x844.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "sha256": "8aa3aede13054ef0df911b53f9bb065383c5e1b8a59f06a5e29b011a20dabfb3",
+      "inspection": "original M16 inspecté visuellement",
+      "resultat": "aucun défaut bloquant"
+    },
+    {
+      "fichier": "etape-1-844x390.png",
+      "dimensions": [
+        844,
+        390
+      ],
+      "sha256": "d2f07303ca3d19fd8e05a0f535973dc8c9fb07aa5614e298c9d6d560d4610dba",
+      "inspection": "original M16 inspecté visuellement",
+      "resultat": "aucun défaut bloquant"
+    },
+    {
+      "fichier": "etape-2-844x390.png",
+      "dimensions": [
+        844,
+        390
+      ],
+      "sha256": "e3d18b43aa9dec81d46c894dc009100bbc003ea62d94978b602ef13308c2b508",
+      "inspection": "inspection M13 réutilisée après égalité SHA-256",
+      "resultat": "aucun défaut bloquant"
+    },
+    {
+      "fichier": "etape-3-844x390.png",
+      "dimensions": [
+        844,
+        390
+      ],
+      "sha256": "822228d5ea29f621890d066bc7c57aab9408803d756e3f7f7d37fce253fa97f3",
+      "inspection": "inspection M13 réutilisée après égalité SHA-256",
+      "resultat": "aucun défaut bloquant"
+    },
+    {
+      "fichier": "etape-4-844x390.png",
+      "dimensions": [
+        844,
+        390
+      ],
+      "sha256": "b85a577fd311d8acd60019be57870f89b6efc0347f6181d3eeced9fce4053199",
+      "inspection": "original M16 inspecté visuellement",
+      "resultat": "aucun défaut bloquant"
+    },
+    {
+      "fichier": "titre-1440x900.png",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "sha256": "2d912c9b98858693b9fd4aacf0e69a5e9395857bbd7f5a12ad85d657ed82b65e",
+      "inspection": "inspection M13 réutilisée après égalité SHA-256",
+      "resultat": "aucun défaut bloquant"
+    },
+    {
+      "fichier": "saisie-manette.png",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "sha256": "c338936160e1690a086e192a1e743c95ca021f8a1fb377a0b14892063820cd1a",
+      "inspection": "inspection M13 réutilisée après égalité SHA-256",
+      "resultat": "aucun défaut bloquant"
+    }
+  ],
+  "ci_globale": {
+    "run_id": 44787705225,
+    "conclusion": "failure",
+    "url": "https://github.com/M4D135/bitume/actions/runs/44787705225",
+    "cause_verifiee": "git diff --exit-code -- VERSION.json SIZE.json dist/bitume.html après reconstruction ; les builds communs appartiennent à 00, pas à ce lot source"
+  },
+  "corrections_de_qualification": [
+    {
+      "run": 44782221455,
+      "sujet": "Start simulé tenu dès la réapparition du document ; deux frames neutres requises par la protection de reprise."
+    },
+    {
+      "run": 44782638763,
+      "sujet": "19 parcours verts ; relecture visuelle a révélé le tracé et le bilan rognés en paysage. CSS compact et remise du défilement au début corrigés."
+    },
+    {
+      "run": 44784147128,
+      "sujet": "Fin naturelle de détection pendant le clic Passer ; le banc accepte uniquement le titre atteint et la détection réellement fermée."
+    },
+    {
+      "run": 44784834119,
+      "sujet": "19 parcours et 14 images validés ; valeurs de fixture météo/faune corrigées ensuite pour correspondre aux options HTML."
+    },
+    {
+      "run": 44785755259,
+      "sujet": "La mesure Figer comptait la dernière image statique utile ; synchronisation sur deux RAF, égalités strictes conservées ensuite."
+    },
+    {
+      "run": 44786289168,
+      "sujet": "Fenêtres de boutons de 90 ms perdant un relâchement entre deux lectures ; reproduction déterministe et observation de deux RAF/deux lectures par état, sans répétition corrective."
+    }
+  ],
+  "limites": [
+    "Raccord jeu.js/construire.py appliqué uniquement à une copie de qualification ; assemblage commun et publication restent à 00.",
+    "Troll : le menu persiste les choix et retire prêt ; début réel du geste, son simultané, IA et transport réseau restent à 01/00.",
+    "Préchauffage initial existant conservé ; rendu continu des vitrines opaques et reconstructions à la sélection supprimés dans le raccord.",
+    "Chromium logiciel ; manettes et tactile simulés. Aucun essai de manette physique, audio entendu, réseau entre machines, Xbox ou GPU Intel.",
+    "Conditions et Pilotes restent défilants dans les petits formats ; la sélection Soleil est aussi vérifiée par isChecked(), même hors de la capture initiale."
+  ],
+  "prochaine_action": "00 reprend les quatre sources, concilie les points d’appel avec 01/02/04, applique le raccord puis qualifie/publie son build commun ; 01 consomme les choix Troll selon le contrat de début réel."
+}
