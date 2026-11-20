@@ -32,6 +32,9 @@ concurrency:
 
 jobs:
   images:
+    # Le lot pierres a sa comparaison été/hiver dédiée ; ne pas rejouer les 88 PNG
+    # de phénologie lorsque seuls ses raccords de matières sont qualifiés.
+    if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[capture-pierres]')
     runs-on: ubuntu-latest
     timeout-minutes: 35
     strategy:

@@ -105,9 +105,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
     }
   };
   const PUBLICITES = [[.86, .12, .08], [.98, .78, .10], [.10, .28, .70], [.06, .52, .30], [.95, .95, .92], [.08, .08, .09], [.92, .40, .06], [.40, .14, .55]];
-  // Recettes opt-in de FERRO : seules les surfaces de Val-Brûlé changent. Les marquages de piste restent sur
-  // leur matière historique et les glissières gardent leur métal galvanisé ; 24 désigne une vraie tôle peinte.
+  // Recettes FERRO du pilote Val-Brûlé, dont la roche est aussi utilisée par M1 en montagne. Les marquages
+  // de piste gardent leur matière historique et les glissières leur métal galvanisé ; 24 est une tôle peinte.
   const MATIERES_PILOTES = Object.freeze({ asphalte: 21, beton: 22, roche: 23, metalPeint: 24 });
+  // M1 : les ouvrages rocheux de montagne ont des identités explicites. Les fossés, rochers libres et
+  // parements en béton ne sont pas sélectionnés par leur seule matière historique.
+  const PIERRES_MONTAGNE = new Set(['roche-tunnel', 'portail-tunnel', 'arche-cimes', 'tympan-cimes', 'rive-pont-cimes']);
 
   // ---------------------------------------------------------------- géométrie du circuit
   function cadre(c, i) {
@@ -1058,6 +1061,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
   function construire(c, options = {}) {
     const th = Object.assign({}, THEMES[c.theme] || THEMES.foret), g = (c.graine * 7919 + 13) >>> 0, r = alea(g);
     const qualite = normaliserQualite(options.qualite);
+    const pierresProcedurales = c.theme === 'montagne' && qualite === 'high'
+      && options.matieres !== false && options.pierresProcedurales !== false;
     const ecologie = B.ecologie ? B.ecologie.creer(c.graine, c.theme) : null;
     const saison = B.saisons ? B.saisons.profil(options.saison, c.theme) : null;
     if (c.theme === 'foret' && options.matieres !== false) th.matieres = MATIERES_PILOTES;
@@ -1737,6 +1742,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
       if (th.matieres) for (const objets of [l.objets, l.loin]) for (const o of objets) {
         if (o.mat === 3) o.mat = th.matieres.beton;
         else if (o.mat === 9) o.mat = th.matieres.roche;
+      }
+      // La recette FERRO 23 reste réservée à Fine, indépendamment des sols procéduraux. Les versions
+      // proches et lointaines gardent leurs pigments, primitives et métadonnées physiques d'origine.
+      if (pierresProcedurales) for (const objets of [l.objets, l.loin]) for (const o of objets) {
+        const genre = o.solidePhysX?.genre;
+        if (o.mat === 9 && (PIERRES_MONTAGNE.has(genre) || genre === 'refuge-cimes' && o.partie === 'socle-refuge')) o.mat = MATIERES_PILOTES.roche;
       }
       let mx = 0, my = 0, mz = 0;
       for (const o of l.objets) { mx += o.p[0]; my += o.p[1]; mz += o.p[2]; }

@@ -1,0 +1,97 @@
+name: Images des pierres de montagne
+
+on:
+  push:
+    branches: ['codex/bitume-p04-saisons-matieres-20261120']
+    paths:
+      - 'src/decor.js'
+      - 'src/route-des-cimes-decor.js'
+      - 'tools/captures-pierres.mjs'
+      - 'tools/controle-visuel.mjs'
+      - '.github/workflows/visuel-pierres.yml'
+  pull_request:
+    paths:
+      - 'src/decor.js'
+      - 'src/route-des-cimes-decor.js'
+      - 'tools/captures-pierres.mjs'
+      - 'tools/controle-visuel.mjs'
+      - '.github/workflows/visuel-pierres.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: visuel-pierres-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        vue: ['haut-col-portail', 'route-des-cimes-pont']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Identifier les sources et construire un candidat temporaire
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qualification
+          git rev-parse HEAD > qualification/COMMIT.txt
+          git rev-parse 'HEAD^{tree}' > qualification/TREE.txt
+          google-chrome --version > qualification/ENVIRONNEMENT.txt
+          node --version >> qualification/ENVIRONNEMENT.txt
+          python3 --version >> qualification/ENVIRONNEMENT.txt
+          python3 construire.py 2>&1 | tee qualification/build.log
+          sha256sum dist/bitume.html > qualification/SHA256SUMS.txt
+          git status --short > qualification/FICHIERS-GENERES.txt
+          python3 - <<'PY'
+          import subprocess
+          autorises = {'VERSION.json', 'SIZE.json', 'dist/bitume.html'}
+          statut = subprocess.check_output(['git', 'status', '--porcelain=v1', '-z', '--untracked-files=all'])
+          for entree in statut.split(b'\0'):
+              if not entree:
+                  continue
+              code, chemin = entree[:2].decode(), entree[3:].decode()
+              if code == '??' and chemin.startswith('qualification/'):
+                  continue
+              if chemin not in autorises:
+                  raise SystemExit('Construction hors périmètre : ' + chemin)
+          print('Sources inchangées ; seuls VERSION.json, SIZE.json et dist/bitume.html sont autorisés.')
+          PY
+      - name: Comparer les pierres et mesurer le dessin en raster logiciel
+        shell: bash
+        env:
+          VUE_PIERRES: ${{ matrix.vue }}
+        run: |
+          set -euo pipefail
+          node tools/captures-pierres.mjs \
+            --url "file://$GITHUB_WORKSPACE/dist/bitume.html" \
+            --sortie qualification/visuel-pierres \
+            --chrome /usr/bin/google-chrome \
+            --vues "$VUE_PIERRES" --saisons ete,hiver 2>&1 | tee qualification/captures.log
+      - name: Conserver les preuves et les échecs, sans HTML ni sources
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-pierres-${{ matrix.vue }}-${{ github.sha }}
+          path: |
+            qualification/visuel-pierres/**/*.png
+            qualification/visuel-pierres/**/rapport.json
+            qualification/COMMIT.txt
+            qualification/TREE.txt
+            qualification/SHA256SUMS.txt
+            qualification/ENVIRONNEMENT.txt
+            qualification/FICHIERS-GENERES.txt
+            qualification/build.log
+            qualification/captures.log
+          if-no-files-found: error
+          retention-days: 14
