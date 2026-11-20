@@ -1,12 +1,12 @@
 # BITUME — reprise courte
 
-## Lot actif — Monaco 14A, revue qualifiée
+## Sous-lot livré — Monaco 14A, revue des mesures
 
 Fiche : `docs/reprise/MONACO-REVUE-2026-11-20.md`. **35/35 contrôles ciblés réussis**.
 Revue exhaustive : **32 écarts >1 m** en sept groupes, **33 points tunnel**, deux tronçons
 et quatre transitions OSM. Avec les 17 alertes de pente, **49 points distincts** sont détaillés.
 Les 12 écarts hors tunnel se situent près de Mirabeau Bas et Tabac. Reçu :
-`docs/references/monaco-2026/qualification-revue.json`. Publication de ce sous-lot à constater.
+`docs/references/monaco-2026/qualification-revue.json`. PR **#26** fusionnée : `ed32c88e0878e57cd5e64476360047d2354f4816`. CI **144/144 suites** ; arbre de fusion identique au candidat.
 Une sonde publique IGN BD TOPO conserve **7 objets**, dont la voie 3D BD LOUIS II et une
 autre voie souterraine. Source candidate : `docs/references/monaco-2026/PISTE-BDTOPO.md`.
 Suite : acquisition ciblée, identification du bon niveau, datum, date et limites de course.

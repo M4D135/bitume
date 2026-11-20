@@ -1,0 +1,22 @@
+{
+  "status": "merged",
+  "pr": 26,
+  "url": "https://github.com/M4D135/bitume/pull/26",
+  "head": "4fba4b0cea7dad3254822fbda25c217708526607",
+  "candidateTree": "c155250cf75370a1e42aed69a3e677a83c637c6e",
+  "mergeCommit": "ed32c88e0878e57cd5e64476360047d2354f4816",
+  "mergeTreeMatchesCandidate": true,
+  "ciRun": 44706854811,
+  "ciJob": 136188503585,
+  "ciTestFilesPassed": 144,
+  "ciTestFilesFailed": 0,
+  "ciLogSha256": "025ec9020be071010879524c1a70295b08f7b98e15dd8503b5d7faf3f8b32c53",
+  "gameVersion": "0.2.61",
+  "physics": "p14",
+  "engine": "FERRO 0.3.15",
+  "htmlBytes": 14265416,
+  "htmlSha256": "c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d",
+  "artifactArchiveIndependentlyDownloaded": false,
+  "verification": "Arbre distant et arbre de fusion identiques au candidat ; CI et journal observes. Le workflow reconstruit et refuse tout changement de version, taille ou HTML.",
+  "documentationClosure": "Documents uniquement ; aucune reconstruction ni nouvelle campagne locale."
+}
