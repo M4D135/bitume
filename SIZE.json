@@ -1,8 +1,8 @@
 {
-  "version": "0.2.79",
-  "raw": 14554537,
-  "gzip": 3479462,
-  "sha256": "77d774fd99484f7ddc2a6bbafe801c9dd2ea8f670af0c51ce1377a7e4a429aa8",
+  "version": "0.2.80",
+  "raw": 14549596,
+  "gzip": 3478044,
+  "sha256": "20185cd2341e2aefb7a5167a35c1f4d68a50eedf1d9fabaa8491c329fa87410a",
   "sources": {
     "moteur/renderer.js": 313289,
     "ferro/engine.js": 2025,
@@ -66,13 +66,13 @@
     "conditions-course.js": 18160,
     "navigation-menu.js": 19510,
     "menu-arcade.js": 19410,
-    "autoconfig.js": 32656,
+    "autoconfig.js": 34713,
     "scene-bench.js": 23081,
     "vibrations.js": 13482,
     "ombres.js": 12015,
     "visites.js": 6566,
-    "jeu.js": 364762,
-    "index.html": 68183,
+    "jeu.js": 357703,
+    "index.html": 68244,
     "style.css": 85476
   }
 }

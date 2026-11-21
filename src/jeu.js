@@ -4699,7 +4699,7 @@
       if (!gl) return false;
       const info = gl.getExtension('WEBGL_debug_renderer_info'), nom = String(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
       materielRendu = [nom, gl.getParameter(gl.MAX_TEXTURE_SIZE), navigator.hardwareConcurrency || 0].join('|');
-      gpuModeste = /intel|uhd|iris|hd graphics|mali|adreno|powervr|swiftshader|llvmpipe|software|microsoft basic|radeon\(tm\) graphics|vega [0-9]+ graphics/i.test(nom) || (navigator.hardwareConcurrency || 8) <= 4;
+      gpuModeste = B.autoconfig.recommander(capacitesDeclarees()).selection === 'low';
       const perte = gl.getExtension('WEBGL_lose_context'); if (perte) perte.loseContext();
       return true;
     } catch (e) { return false; }
@@ -4711,6 +4711,16 @@
   }
   // Une détection par version du jeu et par machine (processeur graphique annoncé) : ni la fenêtre ni l'écran n'y
   // entrent. La version est celle du badge du titre, posée par construire.py.
+  function capacitesDeclarees() {
+    let pointeurGrossier = false;
+    try { pointeurGrossier = matchMedia('(pointer: coarse)').matches; } catch (_) { /* indication facultative */ }
+    return { userAgent: navigator.userAgent, platform: navigator.platform,
+      mobile: navigator.userAgentData && navigator.userAgentData.mobile,
+      maxTouchPoints: navigator.maxTouchPoints, hardwareConcurrency: navigator.hardwareConcurrency,
+      deviceMemory: navigator.deviceMemory, pointeurGrossier,
+      petitEcran: Math.min(innerWidth, innerHeight) <= 900,
+      gpu: String(materielRendu || '').split('|')[0] };
+  }
   function empreinteDetection() {
     return B.autoconfig.empreinte(materielRendu, versionJeu());
   }
@@ -4750,43 +4760,10 @@
       // la recommandation reste affichée ; les options que le joueur a gardées ou changées depuis sont nommées
       const choisis = B.autoconfig.reglages(dernier.selection), nom = B.autoconfig.profils[dernier.selection].nom;
       const gardes = B.autoconfig.CLES.filter(k => reglages[k] !== choisis[k]);
-      const encore = (dernier.tentatives | 0) < B.autoconfig.TENTATIVES;
-      const refuse = !dernier.cadenceBridee && dernier.provisoire && Array.isArray(dernier.mesures)
-        ? dernier.mesures.find(m => m && m.provisoire && B.autoconfig.profils[m.profil]) : null;
-      etat.textContent = (gardes.length ? 'Recommandé : ' + nom + ' · vos choix gardés : ' + gardes.map(k => B.autoconfig.NOMS[k]).join(', ') + '.'
-        : 'Dernière détection : ' + nom + ' · réglages appliqués.')
-        + (dernier.cadenceBridee ? encore
-          ? ' Écran bridé à 30 images par seconde pendant le test (économie d’énergie ?) : nouvelle mesure à la prochaine ouverture.'
-          : ' Écran bridé à 30 images par seconde à chaque test (économie d’énergie ?) : relancez la détection sans elle.'
-          : !refuse ? '' : encore
-            ? ' ' + B.autoconfig.profils[refuse.profil].nom + ' refusée de peu, peut-être parce qu’un autre programme occupait la machine : nouvelle mesure à la prochaine ouverture.'
-            : ' ' + B.autoconfig.profils[refuse.profil].nom + ' refusée de peu à chaque test : relancez la détection quand la machine est au repos.');
-    } else etat.textContent = dernier && dernier.statut === 'interrompu'
-      ? (dernier.motif === 'annule' ? 'Détection passée · réglages conservés.' : 'Détection interrompue · réglages conservés.') : 'Aucune mesure enregistrée.';
-  }
-  function imageDetection() {
-    return new Promise(resolve => {
-      let fini = false;
-      const finir = valeur => { if (!fini) { fini = true; clearTimeout(delai); resolve(valeur); } };
-      const delai = setTimeout(() => finir(null), 1800);
-      requestAnimationFrame(t => {
-        // La boucle du jeu attend le banc ; B doit malgré tout permettre de le passer à la manette.
-        try {
-          const liste = navigator.getGamepads ? navigator.getGamepads() : [];
-          for (const p of liste || []) if (p && p.connected && p.buttons[1] && p.buttons[1].pressed) annulerDetection = true;
-        } catch (_) { /* navigateur sans accès aux manettes */ }
-        finir(t);
-      });
-    });
-  }
-  // Page en arrière-plan (lien ouvert dans un nouvel onglet, session du navigateur reprise) : un onglet caché ne
-  // dessine rien et ne dit rien de la machine. Le test attend que le joueur regarde la page.
-  function premierPlan() {
-    if (!document.hidden) return Promise.resolve();
-    return new Promise(resolve => {
-      const vu = () => { if (!document.hidden) { document.removeEventListener('visibilitychange', vu); resolve(); } };
-      document.addEventListener('visibilitychange', vu);
-    });
+      etat.textContent = 'Profil estimé : ' + nom + ' · capacités déclarées, sans test de charge.'
+        + (gardes.length ? ' Vos choix gardés : ' + gardes.map(k => B.autoconfig.NOMS[k]).join(', ') + '.'
+          : ' Réglages appliqués.');
+    } else etat.textContent = 'Profil prudent disponible, sans test de charge.';
   }
   // toutAppliquer (détection lancée à la main) : demande explicite de remplacer TOUS les choix graphiques. Une
   // détection automatique (nouvelle version) ne change que les options que le joueur n'a pas modifiées depuis la
@@ -4800,16 +4777,13 @@
     }
     const choisis = B.autoconfig.reglages(resultat.selection);
     if (!choisis) return false;
-    // sans trace lisible de la précédente : la référence la plus proche des réglages actuels (valeurs d'usine ou palier)
+    // Sans trace de la recommandation précédente, seuls les réglages d'usine sont automatiques.
     const usine = Object.fromEntries(B.autoconfig.CLES.map(k => [k, DEFAUT[k]]));
-    const ref = B.autoconfig.reference(precedent) || B.autoconfig.referenceProbable(reglages, usine);
+    const ref = B.autoconfig.reference(precedent) || usine;
     const f = B.autoconfig.fusionner(reglages, ref, choisis, !!toutAppliquer);
     Object.assign(reglages, f.valeurs);
     resultat.appliques = f.reference; resultat.gardes = f.gardes;
-    // mesure sous un écran bridé à 30 Hz, ou palier refusé de peu : appliquée, mais refaite à l'ouverture suivante
-    // (B.autoconfig.cacheValide)
-    if (resultat.cadenceBridee || resultat.provisoire) resultat.tentatives = B.autoconfig.tentatives(precedent, resultat);
-    // Après une mesure réelle, l'ancien indice fondé sur le nom du GPU n'impose plus un faux plafond.
+    // Recommandation prudente ; aucun essai de rendu n'a été lancé.
     gpuModeste = resultat.selection === 'low';
     capacitesRendu = Object.freeze({ ...capacitesRendu, gpuModeste });
     Object.assign(palier, { n: 0, somme: 0, compte: 0, t: 0, aise: 0 });
@@ -4820,82 +4794,19 @@
   }
   async function detecterGraphismes(auDemarrage = false) {
     if (detectionGraphiqueActive || !rendu || (session && session.enLigne) || (EL && EL.R)) return null;
-    // le banc prend le moteur : une préparation en cours s'arrête et la vitrine reprend sa scène
-    if (prepa.enCours) abandonnerPreparation();
-    detectionGraphiqueActive = true; annulerDetection = false;
-    const ecranAvant = ecran, partageAvant = jeu.dataset.partage, focusAvant = document.activeElement;
-    const profilAvant = !!(rendu.profile && rendu.profile());
-    const elements = [...ECRANS.map($), $('hud'), hud2, $('demo'), $('meteo'), $('meteo2'), $('vitre'), $('vitre2'), $('glace-g'), $('glace-d'), $('glaces2')];
-    const masques = elements.map(el => [el, el.hidden]);
-    for (const [el] of masques) el.hidden = true;
-    ecran = 'detection'; jeu.dataset.ecran = 'detection'; jeu.dataset.partage = '';
-    $('autodetection').hidden = false; $('detection-progres').value = 0;
-    $('detection-annuler').textContent = auDemarrage ? 'Passer' : 'Annuler';
-    $('detection-annuler').focus({ preventScroll: true });
-    $('chargement').classList.add('fini');
-    if (son) { son.musique(false); son.suspendre(); }
-    let parcours = null, resultat = null, glacesPretees = false;
-    // Mesure à la taille de l'écran entier (le plein écran) et non de la fenêtre du moment : la toile prend le temps
-    // du test les dimensions de l'écran, dans le sens de la fenêtre ; #jeu coupe ce qui dépasse.
-    const styleToile = canvas.style.cssText, ecranVu = window.screen || {};
-    const grand = Math.max(ecranVu.width | 0, ecranVu.height | 0), petit = Math.min(ecranVu.width | 0, ecranVu.height | 0), paysage = innerWidth >= innerHeight;
-    canvas.style.width = Math.max(innerWidth, paysage ? grand : petit) + 'px';
-    canvas.style.height = Math.max(innerHeight, paysage ? petit : grand) + 'px';
+    detectionGraphiqueActive = true;
     try {
-      // Peindre l'indication avant de construire le parcours procédural.
-      await imageDetection();
-      // Le moteur des rétroviseurs est prêté au parcours s'il existe déjà ; sinon le parcours en crée un le temps
-      // du test. La mesure paie ainsi les glaces comme la course. Le moteur prêté rend ensuite le décor de la séance.
-      glacesPretees = !!retro.rendu;
-      parcours = B.sceneBench.creer(rendu, { ...capacitesRendu, gpuModeste: false }, glacesPretees ? { glaces: retro.rendu } : undefined);
-      // terminer : lecture d'un pixel qui force la fin du travail graphique, une fois par rafale d'images. Onglet passé
-      // en arrière-plan pendant le test : il reprend au retour du joueur, dans la même séance, sans compter d'échec
-      // (vingt reprises au plus : au-delà, le test reprendra à l'ouverture suivante).
-      for (let reprises = 0; ; reprises++) {
-        resultat = await B.autoconfig.executer({ empreinte: empreinteDetection, image: imageDetection,
-          annule: () => annulerDetection, masque: () => document.hidden, perdu: () => contexteRenduPerdu,
-          sonder: parcours.sonder, preparer: parcours.preparer, activerGlaces: parcours.activerGlaces, simuler: parcours.simuler,
-          dessiner: parcours.dessiner, terminer: parcours.terminer,
-          progression: (texte, fraction) => { $('detection-texte').textContent = texte; $('detection-progres').value = Math.min(1, fraction); } });
-        if (resultat.statut !== 'interrompu' || resultat.motif !== 'onglet_masque' || annulerDetection || reprises >= 20) break;
-        $('detection-texte').textContent = 'Test en pause : il reprend quand la page revient au premier plan.';
-        await premierPlan();
-        await imageDetection();
-      }
-      // une détection à la main annulée laisse la précédente en place
-      if (auDemarrage || resultat.statut === 'ok') derniereDetection = resultat;
+      const resultat = B.autoconfig.passive(capacitesDeclarees(), empreinteDetection());
+      derniereDetection = resultat;
       appliquerDetection(resultat, !auDemarrage);
-    } catch (e) {
-      resultat = { statut: 'interrompu', motif: 'erreur', empreinte: empreinteDetection() };
-      if (auDemarrage) { derniereDetection = resultat; appliquerDetection(resultat, false); }
-      console.warn('BITUME : détection graphique interrompue', e);
+      if (!auDemarrage && !contexteRenduPerdu) appliquerPalier();
+      if (!auDemarrage && !contexteRenduPerdu && session && session.type === 'vitrine') lancerVitrine(session.i);
+      if (!auDemarrage && ecran === 'reglages') remplirReglages();
+      return resultat;
     } finally {
-      if (parcours) parcours.liberer();
-      canvas.style.cssText = styleToile;
-      // le moteur prêté garde le décor du parcours : la prochaine glace réinstalle celui de la séance
-      if (glacesPretees) retro.scene = null;
-      try {
-        if (rendu.profile) { rendu.profile(false); if (profilAvant) rendu.profile(true); }
-        // La séance et ses obstacles n'ont jamais été remplacés. Restituer uniquement son décor au renderer.
-        restaurerDecorApresDetection();
-      } catch (e) { console.warn('BITUME : restauration du rendu après détection', e); }
-      finally {
-        ecran = ecranAvant; jeu.dataset.ecran = ecranAvant; jeu.dataset.partage = partageAvant || '';
-        for (const [el, cache] of masques) el.hidden = cache;
-        $('autodetection').hidden = true;
-        detectionGraphiqueActive = false;
-        if (!contexteRenduPerdu) appliquerPalier();
-        oublierIntervalle();
-        if (!auDemarrage) {
-          if (!contexteRenduPerdu && session && session.type === 'vitrine' && resultat && resultat.statut === 'ok') lancerVitrine(session.i);
-          if (ecran === 'reglages') remplirReglages();
-          if (son && session && session.type === 'vitrine') son.reprendre();
-          if (son) son.musique(ecranAvant === 'titre');
-          if (focusAvant && focusAvant.focus) focusAvant.focus({ preventScroll: true });
-        }
-      }
+      detectionGraphiqueActive = false;
+      majDetectionGraphique();
     }
-    return resultat;
   }
   $('r-detecter').addEventListener('click', () => { void detecterGraphismes(false); });
   $('detection-annuler').addEventListener('click', () => { annulerDetection = true; });
@@ -4912,7 +4823,8 @@
   function preferenceGraphique() {
     const proto = window.HTMLCanvasElement && window.HTMLCanvasElement.prototype;
     if (!proto || proto.getContextOrigine) return;
-    let fragile = /^((?!chrome|chromium|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent || '');
+    let fragile = B.autoconfig.recommander(capacitesDeclarees()).mobile
+      || /^((?!chrome|chromium|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent || '');
     if (!fragile) {
       try {
         const essai = document.createElement('canvas').getContext('webgl2', { powerPreference: 'high-performance' });
@@ -4961,14 +4873,11 @@
       canvas.addEventListener('webglcontextrestored', contexteGraphiqueRetabli);
       palier.n = gpuModeste ? 1 : 0;
       if (rendu.stats.backend !== 'webgl2') { erreur('WebGL2 indisponible', 'Le rendu de secours ne sait pas dessiner la piste. Activez l’accélération graphique du navigateur.'); return; }
-      B.graphismes.stabiliser(etatProfils, reglages.qualite, palier.n, horlogeProfils());
-      appliquerPalier();
       const mesure = lireStock(B.autoconfig.CLE, null);
-      // Le test tourne au premier chargement d'une version sur cette machine, puis plus jamais pour elle (ni au
-      // redimensionnement, ni sur un autre écran) ; il reste relançable dans l'onglet Image. Les détections des
-      // révisions précédentes (dont celle qui choisissait Légère sur un Apple M5) sont refaites une fois.
-      // Page ouverte en arrière-plan : le test attend qu'elle passe au premier plan (premierPlan).
-      if (!B.autoconfig.cacheValide(mesure, empreinteDetection())) { await premierPlan(); await detecterGraphismes(true); }
+      // La migration d'une ancienne mesure, un premier lancement ou une nouvelle
+      // version ne déclenchent qu'une lecture passive des capacités déclarées.
+      if (!B.autoconfig.cacheValide(mesure, empreinteDetection()) || mesure.methode !== B.autoconfig.METHODE_PASSIVE)
+        await detecterGraphismes(true);
       else {
         derniereDetection = mesure;
         if (mesure.statut === 'ok') {
@@ -4976,6 +4885,10 @@
           capacitesRendu = Object.freeze({ ...capacitesRendu, gpuModeste });
         }
       }
+      // Résoudre le profil avant la première allocation de cibles de rendu :
+      // un téléphone ne passe pas brièvement par le profil Auto plus coûteux.
+      B.graphismes.stabiliser(etatProfils, reglages.qualite, palier.n, horlogeProfils());
+      appliquerPalier();
       // qualité Auto : le palier appris sur cette machine, plutôt que de repayer les secondes lentes du premier départ
       if (restaurerPalier()) { B.graphismes.stabiliser(etatProfils, reglages.qualite, palier.n, horlogeProfils()); appliquerPalier(); }
       // Moteur des rétroviseurs dès la page, quand une course pourra montrer des glaces vives : sa création ne tombe

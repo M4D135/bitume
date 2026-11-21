@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import { deflateSync } from 'node:zlib';
 import vm from 'node:vm';
 import { decoderPng, mesurerImage, analyserSequence, comparerSequences, difference } from '../tools/visuel-images.mjs';
-import { optionsCapture, horlogeCapture, attendreDemarrage } from '../tools/controle-visuel.mjs';
+import { optionsCapture, horlogeCapture, attendreDemarrage, capturer } from '../tools/controle-visuel.mjs';
+import { instrumenterDemarrageMobile } from '../tools/qualification/demarrage-mobile.mjs';
 
 function crc32(b) {
   let c = 0xffffffff;
@@ -174,4 +175,28 @@ test('un renderer créé sans démarrage terminé n’est jamais qualifié prêt
   await assert.rejects(attendreDemarrage(async code => code.includes('const J')
     ? { pret: false, ecran: 'chargement', type: 'vitrine', preparation: true } : null,
   5, async () => new Promise(r => setTimeout(r, 2))), /Démarrage du jeu inachevé/);
+});
+
+test('le crochet avant navigation est une fonction avant tout lancement de navigateur', async () => {
+  await assert.rejects(capturer({ avantNavigation: true }), /Crochet de capture invalide : avantNavigation/);
+});
+
+test('les compteurs mobiles voient les appels natifs sans remplacer résultat, arguments ni exception', () => {
+  const ctx = vm.createContext({ localStorage: {} });
+  vm.runInContext('(' + instrumenterDemarrageMobile.toString() + ')()', ctx);
+  const resultat = {}, promesse = Promise.resolve(17), erreur = new Error('origine');
+  let receveur, argument;
+  ctx.BITUME.autoconfig = { executer(x) { receveur = this; argument = x; return resultat; }, passive() { return promesse; } };
+  ctx.BITUME.sceneBench = { creer() { return resultat; } };
+  assert.equal(ctx.__BITUME_MOBILE.appels.benchmark, 0, 'installer les wrappers ne lance aucun banc');
+  assert.equal(ctx.BITUME.autoconfig.executer(23), resultat);
+  assert.equal(receveur, ctx.BITUME.autoconfig); assert.equal(argument, 23);
+  assert.equal(ctx.BITUME.autoconfig.passive(), promesse, 'promesse native inchangée');
+  assert.equal(ctx.BITUME.sceneBench.creer(), resultat);
+  ctx.BITUME.autoconfig.executer = () => { throw erreur; };
+  assert.throws(() => ctx.BITUME.autoconfig.executer(), e => e === erreur);
+  assert.equal(ctx.__BITUME_MOBILE.appels.benchmark, 2);
+  assert.equal(ctx.__BITUME_MOBILE.appels.sceneBench, 1);
+  assert.equal(ctx.__BITUME_MOBILE.appels.passive, 1);
+  assert.ok(Object.values(ctx.__BITUME_MOBILE.surveilles).every(Boolean));
 });

@@ -425,9 +425,9 @@
     <div class="grille-reglages">
       <fieldset class="detection-reglages" aria-describedby="r-detection-etat">
         <legend>Détection graphique</legend>
-        <button type="button" class="discret" id="r-detecter">Détecter et appliquer</button>
-        <p class="note-graphismes">Un court test choisit les réglages adaptés et remplace les choix graphiques actuels.</p>
-        <p class="note-graphismes" id="r-detection-etat" role="status">Aucune mesure enregistrée.</p>
+        <button type="button" class="discret" id="r-detecter">Appliquer le profil conseillé</button>
+        <p class="note-graphismes">Choisit un profil prudent à partir des capacités déclarées de l’appareil, sans test de charge. Ce bouton remplace vos choix graphiques actuels.</p>
+        <p class="note-graphismes" id="r-detection-etat" role="status">Profil conseillé sans test de charge.</p>
       </fieldset>
       <fieldset>
         <legend>Qualité générale</legend>
@@ -629,9 +629,9 @@
     <div class="detection-carte">
       <span class="detection-surtitre">BITUME</span>
       <h2 id="detection-titre">Réglage automatique</h2>
-      <p id="detection-texte" role="status" aria-live="polite">Mesure de la fluidité…</p>
+      <p id="detection-texte" role="status" aria-live="polite">Lecture des capacités de l’appareil…</p>
       <progress id="detection-progres" max="1" value="0" aria-label="Progression de la détection"></progress>
-      <p class="detection-note">Quelques secondes pour adapter l’image à cet appareil. Bouton B pour passer.</p>
+      <p class="detection-note">Profil prudent, sans test de performances.</p>
       <button type="button" class="discret" id="detection-annuler">Passer</button>
     </div>
   </div>

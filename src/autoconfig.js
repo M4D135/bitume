@@ -1,5 +1,5 @@
-/* BITUME — détection locale des réglages. Mesure le rendu, jamais le nom du GPU pour choisir un palier : le nom ne
-   sert qu'à reconnaître un rendu logiciel (aucune carte graphique), qui conclut Légère sans figer la page. */
+/* BITUME — réglages locaux. Le jeu utilise uniquement les capacités déclarées du navigateur.
+   Le banc de rafales reste disponible pour les outils de qualification explicitement lancés. */
 (function (B) {
   'use strict';
   // REVISION entre dans l'empreinte et dans la validité du cache : la monter fait refaire une fois les détections
@@ -9,6 +9,7 @@
   // fil principal mesuré une image par rappel, comme en course ; palier proche de la limite mesuré deux ou trois fois,
   // refus de peu provisoire.
   const REVISION = 4, CLE = 'bitume.detection.v1', METHODE = 'rafales';
+  const METHODE_PASSIVE = 'capacites-declarees';
   const CLES = Object.freeze(['qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'retro']);
   // Noms courts des options, pour dire dans l'onglet Image lesquelles le joueur a gardées.
   const NOMS = Object.freeze({ qualite: 'qualité', anticrenelage: 'anticrénelage', ombres: 'ombres', vegetation: 'végétation',
@@ -128,6 +129,30 @@
     const p = profils[id];
     return p ? Object.fromEntries(CLES.map(k => [k, p[k]])) : null;
   }
+  // Aucun dessin, chronomètre, contexte supplémentaire ou essai de charge. Ces
+  // informations peuvent manquer (notamment sur iOS) : l'inconnu reste prudent.
+  // Le nom de la puce ne permet pas de promettre un débit d'images.
+  function recommander(capacites = {}) {
+    const ua = String(capacites.userAgent || ''), plate = String(capacites.platform || '');
+    const touches = Number.isFinite(capacites.maxTouchPoints) ? Math.max(0, capacites.maxTouchPoints) : 0;
+    const mobile = capacites.mobile === true || /android|iphone|ipad|ipod|mobile/i.test(ua)
+      || (/mac/i.test(plate) && touches > 1)
+      || (capacites.pointeurGrossier === true && touches > 0 && capacites.petitEcran === true);
+    const coeurs = Number.isFinite(capacites.hardwareConcurrency) && capacites.hardwareConcurrency > 0 ? capacites.hardwareConcurrency : null;
+    const memoire = Number.isFinite(capacites.deviceMemory) && capacites.deviceMemory > 0 ? capacites.deviceMemory : null;
+    const gpu = String(capacites.gpu || '');
+    const logiciel = /swiftshader|llvmpipe|software|microsoft basic/i.test(gpu);
+    const integre = /intel|uhd|iris|hd graphics|mali|adreno|powervr|radeon\(tm\) graphics|vega [0-9]+ graphics/i.test(gpu);
+    const incomplet = !coeurs && !memoire;
+    const selection = mobile || logiciel || integre || incomplet || (coeurs && coeurs <= 4) || (memoire && memoire <= 4) ? 'low' : 'medium';
+    return { selection, mobile, coeurs, memoire, logiciel, integre, incomplet };
+  }
+  function passive(capacites, cle) {
+    const appareil = recommander(capacites);
+    return { revision: REVISION, methode: METHODE_PASSIVE, statut: 'ok', empreinte: cle,
+      selection: appareil.selection, reglages: reglages(appareil.selection), appareil,
+      mesures: [], date: Date.now(), performancesMesurees: false };
+  }
   // Le cache dit si la détection de cette version a déjà eu lieu sur cette machine : réussie, passée par le joueur, ou
   // interrompue TENTATIVES fois. Une mesure prise sous un écran bridé à 30 Hz est provisoire : le bridage vient le
   // plus souvent de l'économie d'énergie de Chrome, signe d'une machine qui n'est pas dans son état ordinaire
@@ -139,6 +164,8 @@
   // mesurer (src/jeu.js, premierPlan), et une trace laissée ainsi ne compte pas parmi les tentatives.
   function cacheValide(cache, cle) {
     if (!cache || cache.revision !== REVISION || cache.empreinte !== cle) return false;
+    if (cache.methode === METHODE_PASSIVE) return cache.statut === 'ok'
+      && Object.prototype.hasOwnProperty.call(profils, cache.selection) && cache.performancesMesurees === false;
     if (cache.statut === 'ok') return Object.prototype.hasOwnProperty.call(profils, cache.selection)
       && Array.isArray(cache.mesures) && cache.mesures.length > 0
       && (!(cache.cadenceBridee || cache.provisoire) || (cache.tentatives | 0) >= TENTATIVES);
@@ -423,7 +450,7 @@
       return { revision: REVISION, statut: 'interrompu', motif: e && e.motif || 'erreur', empreinte: cle, mesures, methode: METHODE };
     }
   }
-  B.autoconfig = { REVISION, CLE, CLES, NOMS, METHODE, BUDGET, FRACTION, LIMITE, IMAGES_SEULES, COURSE_PROCESSEUR, PART_PROCESSEUR,
+  B.autoconfig = { REVISION, CLE, CLES, NOMS, METHODE, METHODE_PASSIVE, recommander, passive, BUDGET, FRACTION, LIMITE, IMAGES_SEULES, COURSE_PROCESSEUR, PART_PROCESSEUR,
     LIMITE_PROCESSEUR, GRIS_BAS, GRIS_HAUT, SERIES_MAX, PART_GLACES, EXTREME, ESPOIR, ESPOIR_VITE, SONDE_MS, COURSE_SIMULATION, TENTATIVES,
     DUREE_MAX, DELAI, PREPARATION_MAX, profils, empreinte, reglages, cacheValide, tentatives, reference, referenceProbable, fusionner, marquer,
     bilanRafales, zone, combiner, limiteProfil, choisir, peutEssayerExtreme, executer };

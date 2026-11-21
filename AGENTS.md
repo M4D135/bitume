@@ -448,3 +448,14 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
   transitions, puis membres/manches ; la vue extérieure reste déterminante.
 - Les anciennes réserves R4b ont été corrigées. Les états historiques restent archivés ;
   `REPRISE.md` et les alias actifs d’`ETAT.json` décrivent la réception courante.
+
+## Décision de David — 21 novembre 2026, démarrage sur téléphone
+
+- Le test de performances au démarrage fait planter le navigateur sur téléphone.
+  Remplacer la mesure en charge par une détection passive des capacités déclarées.
+- Aucun banc de rendu, rafale GPU, scène de mesure ni rétroviseur supplémentaire
+  au démarrage ou à la redétection dans Image. Profil prudent sur mobile/iPad ;
+  préserver les réglages explicitement modifiés et les commandes de jeu.
+- Cette demande remplace les anciennes obligations de benchmark au premier
+  lancement de chaque version. Les bancs de qualification restent des outils
+  déclenchés explicitement, hors du parcours normal du joueur.

@@ -202,5 +202,15 @@
       "bitume_0269": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
     }
   },
-  "regle": "Les alias ci-dessus décrivent la base effectivement publiée. Les états .75/.77 et réserves R4b historiques sont archivés; ne pas les réappliquer à main. Une preuve appartient à son commit et à son HTML exact."
+  "regle": "Les alias ci-dessus décrivent la base effectivement publiée. Les états .75/.77 et réserves R4b historiques sont archivés; ne pas les réappliquer à main. Une preuve appartient à son commit et à son HTML exact.",
+  "demarrage_mobile_0280": {
+    "statut": "candidat_a_qualifier",
+    "version": "0.2.80",
+    "fiche": "docs/reprise/DEMARRAGE-MOBILE-SANS-BANC-2026-11-21.md",
+    "methode": "capacites-declarees",
+    "banc_automatique": false,
+    "controles_cibles": 103,
+    "essai_telephone_physique": false,
+    "mains_0279_conservees": true
+  }
 }

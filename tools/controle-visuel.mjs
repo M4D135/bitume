@@ -139,7 +139,7 @@ function planche(rapport) {
 export async function capturer(o) {
   // Crochets réservés aux scénarios versionnés des outils, jamais lus dans la page ou en ligne de commande.
   // Ils servent à disposer un état visuel et à observer le rendu réel sans ajouter de commandes au jeu livré.
-  for (const cle of ['initialiser', 'avantImage', 'observer'])
+  for (const cle of ['avantNavigation', 'initialiser', 'avantImage', 'observer'])
     if (o[cle] !== undefined && typeof o[cle] !== 'function') throw new Error('Crochet de capture invalide : ' + cle);
   mkdirSync(o.sortie, { recursive: true });
   if (existsSync(path.join(o.sortie, 'rapport.json')) || existsSync(path.join(o.sortie, '0000.png')))
@@ -216,6 +216,7 @@ export async function capturer(o) {
     await envoyer('Runtime.enable'); await envoyer('Page.enable');
     await envoyer('Emulation.setDeviceMetricsOverride', { width: o.taille[0], height: o.taille[1], deviceScaleFactor: 1, mobile: false });
     await envoyer('Page.addScriptToEvaluateOnNewDocument', { source: horlogeCapture(o.referenceJeu.graine) });
+    if (o.avantNavigation) await o.avantNavigation({ evaluer, envoyer, rapport });
     await envoyer('Page.navigate', { url: o.url });
     rapport.demarrage = await attendreDemarrage(evaluer, o.attendre, dormir);
     if (!await evaluer('typeof BITUME_JEU.reference === "function"')) throw new Error('Ce build doit exposer BITUME_JEU.reference(options) pour les captures reproductibles');

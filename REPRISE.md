@@ -1,5 +1,12 @@
 # BITUME — reprise courte
 
+## Priorité : démarrage téléphone sans banc
+
+Candidat **0.2.80 / p15 / FERRO 0.3.15** : détection passive, sans scène de
+mesure ni rafale GPU. Les 103 contrôles ciblés passent ; réception navigateur
+et publication en cours. [Fiche](docs/reprise/DEMARRAGE-MOBILE-SANS-BANC-2026-11-21.md).
+Les mains restent sur leur branche et seront intégrées après leurs images.
+
 ## Point d’entrée : personnages et mains après Gemini
 
 Lire [le lot mains](docs/reprise/MAINS-REALISME-2026-11-21.md), puis

@@ -1,0 +1,64 @@
+name: Premier demarrage mobile sans banc
+
+on:
+  push:
+    branches: ['codex/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: demarrage-mobile-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mobile:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[capture-mobile]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Identifier et reconstruire le candidat exact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qualification-mobile
+          git rev-parse HEAD > qualification-mobile/COMMIT.txt
+          node --version > qualification-mobile/ENVIRONNEMENT.txt
+          google-chrome --version >> qualification-mobile/ENVIRONNEMENT.txt
+          python3 construire.py > qualification-mobile/reconstruction-1.log 2>&1
+          sha256sum dist/bitume.html > qualification-mobile/HTML-SHA256.txt
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+          python3 construire.py > qualification-mobile/reconstruction-2.log 2>&1
+          sha256sum --check qualification-mobile/HTML-SHA256.txt
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+          sha256sum tools/controle-visuel.mjs tools/qualification/demarrage-mobile.mjs > qualification-mobile/OUTILS-SHA256.txt
+      - name: Verifier le crochet et les compteurs natifs
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check tools/qualification/demarrage-mobile.mjs
+          node verifications/controle-visuel.test.mjs > qualification-mobile/tests.log 2>&1
+      - name: Demarrer le vrai jeu dans un profil mobile vierge
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout --signal=TERM --kill-after=20s 14m node tools/qualification/demarrage-mobile.mjs \
+            --url "file://$GITHUB_WORKSPACE/dist/bitume.html" --sortie qualification-mobile/images \
+            --chrome /usr/bin/google-chrome > qualification-mobile/captures.log 2>&1
+          sha256sum --check qualification-mobile/HTML-SHA256.txt
+          sha256sum --check qualification-mobile/OUTILS-SHA256.txt
+      - name: Conserver rapports et images meme en cas d'echec
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-demarrage-mobile-${{ github.sha }}
+          path: qualification-mobile/
+          if-no-files-found: error
+          retention-days: 14
