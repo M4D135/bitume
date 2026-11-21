@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "nature": "sauvegarde_des_preparations_et_publication_du_suivi",
+  "sources": {
+    "branche": "codex/bitume-0280-implantation-126ck-20261121",
+    "commit_distant": "39c80f5c2d47bfadd2c9362e8b70b0c5d6a20f46",
+    "arbre_distant": "008397ddf8025df63e82c03d1c49d91e74d9a554",
+    "commit_local": "be512918067c1bc12f2bfd37bd8f67777adcf270",
+    "checkpoint_local": "12050e2a830e3eea866c893548cd0f7af544975c",
+    "arbre_identique_verifie": true,
+    "ref_distante_relue": true,
+    "qualification_globale": false,
+    "html_base": "0.2.78, anterieur aux derniers raccords ; reconstruction requise"
+  },
+  "poignets": {
+    "branche": "codex/bitume-126ck-poignets-20261121",
+    "commit_distant": "d487e7f501d124df214ba8b7a5a6edcf7b544ff3",
+    "arbre_distant": "86b8e91467a5a5e153882541704c75a3cb2a8c7b",
+    "commit_local": "fc0155259d063685dac5116d9102cbf2fcb22423",
+    "arbre_identique_verifie": true,
+    "ref_distante_relue": true,
+    "integre_a_la_branche_sources": false,
+    "reserves": [
+      "Contact avant-bras/pommeau lors du rapport interrompant le geste",
+      "Allocation cockpit, 16,936 octets/appel et 2 GC mineurs",
+      "Gestes extremes et images WebGL a recevoir"
+    ]
+  },
+  "runtime_main": {
+    "version": "0.2.77",
+    "commit_depart": "11e7e55f087484e1099963d42b04309b6bc6220c",
+    "physique": "p15",
+    "ferro": "0.3.15",
+    "html_git_blob": "4d8fa6fa661562ed54d167906d832b946e754230",
+    "html_sha256": "09aa278d0ced47fd88728d33c59a13fda1a808571df117072ad6d7af251be564",
+    "modifie_par_ce_jalon": false
+  },
+  "publication_main": {
+    "base_verifiee": "11e7e55f087484e1099963d42b04309b6bc6220c",
+    "portee": [
+      "AGENTS.md",
+      "REPRISE.md",
+      "docs/"
+    ],
+    "recu_dans_le_commit_documentaire": true
+  },
+  "qualification_ciblee": {
+    "checkpoint": "12050e2a830e3eea866c893548cd0f7af544975c",
+    "cameras_course": {
+      "reussis": 6,
+      "echecs": 0
+    },
+    "visites_serveur": {
+      "reussis": 16,
+      "echecs": 0
+    },
+    "visites_navigateur": {
+      "reussis": 12,
+      "echecs": 0
+    },
+    "portee": "Controles relances par audit de reprise ; aucune qualification visuelle globale ni validation du transport HTTP deploye"
+  },
+  "parcours": {
+    "depart": "sommet routier du col de Larche / Colle della Maddalena",
+    "arrivee": "Vinadio",
+    "route": "SS21",
+    "echelle": 1,
+    "topologie": "ouverte",
+    "distance_mesuree_m": null,
+    "sources_detaillees_acquises": false,
+    "jouable": false,
+    "fiche": "docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md"
+  },
+  "site_deploye": false,
+  "push_force": false,
+  "prochaine_action": "Corriger les deux reserves du candidat poignets, recevoir les sources puis construire et qualifier le jeu assemble ; L0 geographique peut avancer separement."
+}

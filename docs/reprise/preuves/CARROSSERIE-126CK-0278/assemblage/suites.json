@@ -1,0 +1,158 @@
+[
+  {
+    "suite": "carrosserie-126ck",
+    "code": 0,
+    "duree_secondes": 4.48,
+    "journal": "carrosserie-126ck.log",
+    "fin": [
+      "ℹ cancelled 0",
+      "ℹ skipped 0",
+      "ℹ todo 0",
+      "ℹ duration_ms 182.302381"
+    ]
+  },
+  {
+    "suite": "carene",
+    "code": 0,
+    "duree_secondes": 0.11,
+    "journal": "carene.log",
+    "fin": [
+      "ok  miroir : les normales suivent la permutation des sommets (garde carene-5)",
+      "ok  arêtes vives gardées : un dièdre de 90° ne se lisse pas (garde carene-5)",
+      "ok  tube hors plan : chaque sommet à r ± 1 % de l'axe lissé (garde carene-5)",
+      "carène : 14 vérifications passées"
+    ]
+  },
+  {
+    "suite": "voiture",
+    "code": 0,
+    "duree_secondes": 9.81,
+    "journal": "voiture.log",
+    "fin": [
+      "ok  bande des pontons : une peau décalée de 4 mm, pas un caisson à flancs droits (voi-6)",
+      "ok  paume au pommeau : paume vers le bas quel que soit le braquage (cockpit-4)",
+      "ok  trajet au pommeau : les doigts ne traversent ni la jante ni la branche de 3 h (cockpit-3)",
+      "33 vérifications réussies"
+    ]
+  },
+  {
+    "suite": "voiture-identite",
+    "code": 0,
+    "duree_secondes": 8.74,
+    "journal": "voiture-identite.log",
+    "fin": [
+      "ok  emprise : la pose réduite des rétroviseurs rend la roue arrière de la pose entière filtrée",
+      "ok  primitives : 134 groupes de poses identiques à l'empreinte",
+      "ok  emprise : 134 groupes de poses identiques à l'empreinte",
+      "6 vérifications réussies (8.6 s)"
+    ]
+  },
+  {
+    "suite": "voiture-permanents",
+    "code": 0,
+    "duree_secondes": 11.61,
+    "journal": "voiture-permanents.log",
+    "fin": [
+      "    mesures {\"poser\":{\"appels\":600000,\"mineurs\":1,\"octets\":0,\"phasesChauffe\":11,\"codePendantMesure\":0},\"cockpit\":{\"appels\":150000,\"mineurs\":0,\"octets\":0,\"phasesChauffe\":6,\"codePendantMesure\":0},\"fantome\":{\"appels\":150000,\"mineurs\":1,\"octets\":0.05536,\"phasesChauffe\":8,\"codePendantMesure\":0},\"poserRetro\":{\"appels\":150000,\"mineurs\":0,\"octets\":0,\"phasesChauffe\":6,\"codePendantMesure\":0},\"glacesCockpit\":{\"appels\":150000,\"mineurs\":0,\"octets\":0,\"phasesChauffe\":6,\"codePendantMesure\":0}}",
+      "    poser 0.00 o/appel, 1 GC en 600000 ; cockpit 0.00 o/appel, 0 GC en 150000 ; fantome 0.06 o/appel, 1 GC en 150000 ; poserRetro 0.00 o/appel, 0 GC en 150000 ; glacesCockpit 0.00 o/appel, 0 GC en 150000",
+      "ok  aucune allocation en régime permanent (octets alloués, ramasse-miettes mineurs)",
+      "12 vérifications réussies (10.3 s)"
+    ]
+  },
+  {
+    "suite": "pilote-commun",
+    "code": 0,
+    "duree_secondes": 10.21,
+    "journal": "pilote-commun.log",
+    "fin": [
+      "ℹ cancelled 0",
+      "ℹ skipped 0",
+      "ℹ todo 0",
+      "ℹ duration_ms 6577.277176"
+    ]
+  },
+  {
+    "suite": "pilote-habitacle",
+    "code": 0,
+    "duree_secondes": 66.03,
+    "journal": "pilote-habitacle.log",
+    "fin": [
+      "ℹ cancelled 0",
+      "ℹ skipped 0",
+      "ℹ todo 0",
+      "ℹ duration_ms 59662.43533"
+    ]
+  },
+  {
+    "suite": "pilote-exterieur",
+    "code": 0,
+    "duree_secondes": 27.57,
+    "journal": "pilote-exterieur.log",
+    "fin": [
+      "ℹ cancelled 0",
+      "ℹ skipped 0",
+      "ℹ todo 0",
+      "ℹ duration_ms 23828.219126"
+    ]
+  },
+  {
+    "suite": "cockpit-mecanique",
+    "code": 0,
+    "duree_secondes": 4.42,
+    "journal": "cockpit-mecanique.log",
+    "fin": [
+      "ℹ cancelled 0",
+      "ℹ skipped 0",
+      "ℹ todo 0",
+      "ℹ duration_ms 20.995501"
+    ]
+  },
+  {
+    "suite": "cockpit-visibilite",
+    "code": 0,
+    "duree_secondes": 18.64,
+    "journal": "cockpit-visibilite.log",
+    "fin": [
+      "ℹ cancelled 0",
+      "ℹ skipped 0",
+      "ℹ todo 0",
+      "ℹ duration_ms 14312.552175"
+    ]
+  },
+  {
+    "suite": "retroviseurs-reflexion",
+    "code": 0,
+    "duree_secondes": 3.65,
+    "journal": "retroviseurs-reflexion.log",
+    "fin": [
+      "ℹ cancelled 0",
+      "ℹ skipped 0",
+      "ℹ todo 0",
+      "ℹ duration_ms 27.943484"
+    ]
+  },
+  {
+    "suite": "eau-carrosserie-integration",
+    "code": 0,
+    "duree_secondes": 6.23,
+    "journal": "eau-carrosserie-integration.log",
+    "fin": [
+      "ℹ cancelled 0",
+      "ℹ skipped 0",
+      "ℹ todo 0",
+      "ℹ duration_ms 2448.799118"
+    ]
+  },
+  {
+    "suite": "pneus-pilotes",
+    "code": 0,
+    "duree_secondes": 0.06,
+    "journal": "pneus-pilotes.log",
+    "fin": [
+      "ok types inconnus et noms du prototype reviennent à l’ancienne préférence, ou aux slicks",
+      "ok anciennes sauvegardes absentes ou mal formées restent utilisables",
+      "ok la migration ne lit ni préférence ni entrée de tableau héritée",
+      "6 contrôles préférences des pneus par pilote réussis"
+    ]
+  }
+]

@@ -1,30 +1,30 @@
 {
   "date": "2026-11-21",
   "etat_courant": {
-    "version_courante": "0.2.75",
-    "version_publiee_verifiee": "0.2.75",
+    "version_courante": "0.2.77",
+    "version_publiee_verifiee": "0.2.77",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "poste_0277_en_preparation_pour_essai_utilisateur",
-    "lot": "habitacle_pilote_commun",
-    "fiche": "docs/reprise/POSTE-126CK-0277.md",
+    "statut": "checkpoint_126ck_visites_cameras_route_larche_vinadio_planifiee",
+    "lot": "reception_commune_126ck_pilote_cameras_compteurs",
+    "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "041",
-    "prochaine_action": "Qualifier puis publier le poste .77 sur main pour essai ; poursuivre la carrosserie 126 CK en branche distincte.",
+    "derniere_entree": "044",
+    "prochaine_action": "Finir la réception poignets/caméras/compteurs, reconstruire puis qualifier le vrai jeu assemblé. En parallèle documentaire : L0 du sommet du col de Larche à Vinadio, sans départ de Barcelonnette.",
     "dernier_lot_clos": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
     "fiche_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
-    "index": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
-    "entree_journal": "041",
-    "dernieres_demandes": "docs/reprise/OBJECTIF-126CK-2026-11-21.md",
+    "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md",
+    "entree_journal": "044",
+    "dernieres_demandes": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md",
     "contrats_integration": "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
     "inventaire_branches": "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
     "runtime_modifie_par_coordination": true,
     "dernier_lot_coordination_clos": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
-    "runtime_modifie_par_coordination_portee": "Candidat .77 : poste, miroirs, FOV 70°, pluie/neige arrière et klaxons ; main reste .75 avant publication.",
+    "runtime_modifie_par_coordination_portee": "Préparations de sources : implantation complète 126 CK, pilote/mains, six caméras et compteurs du titre. Main conserve le runtime .77 dans le jalon documentaire; HTML .78 de base à reconstruire.",
     "preuve_t3": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
-    "reserve_lisibilite_cockpit": "Formes .75/.76 refusées ; première reprise du volant et des cadrans .77 à vérifier en images du vrai jeu.",
+    "reserve_lisibilite_cockpit": "Voiture complète non encore qualifiée dans le vrai jeu assemblé. Géométrie unique, occultation naturelle du volant acceptée, vue extérieure prioritaire pour les poignets.",
     "alerte_budget_decor": {
       "statut": "ouvert",
       "run": 44803588903,
@@ -68,11 +68,11 @@
         "proprietaire_suivant": "04"
       }
     },
-    "commit_fusion": "b1e5e98b9029f6254b86dcfb49780883315a9418",
-    "tete_qualifiee": "5d59cae6630c49ae62c47303100d61dd63daea56",
-    "pr_publiee": 51,
-    "branche_candidate": "codex/bitume-0277-publication-20261121",
-    "version_candidate": "0.2.77",
+    "commit_fusion": "11e7e55f087484e1099963d42b04309b6bc6220c",
+    "tete_qualifiee": "f596ac442e99f754c9b0d420f8c21a644a86da3e",
+    "pr_publiee": 54,
+    "branche_candidate": "codex/bitume-0280-implantation-126ck-20261121",
+    "version_candidate": null,
     "branche_pr": null,
     "preuve_candidat_0272": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0272/BUILD-0272.json",
     "preuve_candidat_0273": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/BUILD-0273.json",
@@ -82,55 +82,59 @@
     "fiche_cockpit_pluie": "docs/reprise/COCKPIT-PLUIE-2026-11-20.md",
     "preuve_publication_0275": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
     "statut_candidat_0275": "publie_sur_main",
-    "candidat_126ck_construit": true
+    "candidat_126ck_construit": false,
+    "version_html_base_candidate": "0.2.78",
+    "fiche_checkpoint": "docs/reprise/rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md",
+    "fiche_nouveau_parcours": "docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md"
   },
   "publication": {
-    "version": "0.2.75",
-    "pr": 51,
-    "branche": "codex/bitume-0275-fps-cockpit-20261121",
-    "tete_qualifiee": "5d59cae6630c49ae62c47303100d61dd63daea56",
-    "arbre": "2d019e71d09ea31be7588cde0f401606cbf934af",
-    "commit_fusion": "b1e5e98b9029f6254b86dcfb49780883315a9418",
-    "recu_final": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
+    "version": "0.2.77",
+    "pr": 54,
+    "url": "https://github.com/M4D135/bitume/pull/54",
+    "tete_qualifiee": "f596ac442e99f754c9b0d420f8c21a644a86da3e",
+    "commit_fusion": "11e7e55f087484e1099963d42b04309b6bc6220c",
     "statut": "publie_sur_main_avec_reserve_budget_decor",
-    "main_recu_identique_au_candidat": true,
+    "verification_publication": "PR 54 et commit de main relus ; sauvegardes des sources et des poignets verifiees par leur arbre et leur reference, voir le recu du 21 novembre.",
+    "preuves_qualification": [
+      "docs/reprise/rapports/POSTE-126CK-0277/ci/push/14700170862/RECEPTION.json",
+      "docs/reprise/rapports/POSTE-126CK-0277/ci/pull_request/14699846418/RECEPTION.json"
+    ],
     "site_deploye": false
   },
   "qualification": {
-    "version": "0.2.75",
-    "build_octets": 14511184,
-    "build_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
+    "version": "0.2.77",
+    "tete_qualifiee": "f596ac442e99f754c9b0d420f8c21a644a86da3e",
+    "arbre_candidat": "1018c6083eca028eb4a8867b2f60d66faccb909b",
+    "build_octets": 14513844,
+    "build_sha256": "09aa278d0ced47fd88728d33c59a13fda1a808571df117072ad6d7af251be564",
+    "recu_build": "docs/reprise/rapports/POSTE-126CK-0277/BUILD-0277.json",
     "ci_push": {
-      "run": 44845571993,
-      "conclusion": "success",
-      "suites_node": 179,
+      "run": 44884329345,
+      "suites_node": 182,
       "suites_echec": 0,
       "tests_python": 8,
-      "sources_fichiers": 3988,
-      "sources_et_modes_identiques": true
+      "sources_fichiers": 4213,
+      "sources_et_modes_identiques": true,
+      "qualification_recue": true,
+      "recu": "docs/reprise/rapports/POSTE-126CK-0277/ci/push/14700170862/RECEPTION.json"
     },
     "ci_pr": {
-      "run": 44845586813,
-      "conclusion": "success",
-      "suites_node": 179,
+      "run": 44884333041,
+      "suites_node": 182,
       "suites_echec": 0,
       "tests_python": 8,
-      "sources_fichiers": 3988,
-      "sources_et_modes_identiques": true
+      "sources_fichiers": 4213,
+      "sources_et_modes_identiques": true,
+      "qualification_recue": true,
+      "recu": "docs/reprise/rapports/POSTE-126CK-0277/ci/pull_request/14699846418/RECEPTION.json"
     },
-    "images_exactes": 10,
-    "groupes_visuels": 5,
-    "run_hud": 44845571914,
-    "braquages_stabilises": [
-      -0.35,
-      0.35
-    ],
-    "pas_par_pose_stabilisee": 120,
-    "badge_fps_visible_et_degage": true,
-    "recu_publication": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
-    "limites": "Captures logicielles de poses prescrites ; aucun FPS matériel ni essai de conduite réel qualifié par ces images.",
-    "tous_les_runs_verts": true,
-    "images_assemblees_inspectees": 10
+    "recu_profil": "docs/reprise/rapports/POSTE-126CK-0277/RECEPTION-PROFIL.json",
+    "provenance": "Reçus .77 déjà produits et relus, recopiés sans modification ; aucune nouvelle campagne exécutée pour cette correction documentaire.",
+    "portee": "Ces preuves portent uniquement sur le poste .77 ; elles ne qualifient ni les sources de refonte 12050e2 ni le lot poignets fc01552.",
+    "reserve_decor": "Seuil strict <150 ms conservé ; les réussites .77 ne lèvent pas la réserve historique sans mesure comparative.",
+    "fidelite_126ck_complete_validee": false,
+    "essai_utilisateur_valide": false,
+    "limites": "Captures logicielles de poses prescrites ; FPS matériels, manettes, écoute humaine et réseau réel non qualifiés."
   },
   "reserves": {
     "construction_ms": {
@@ -226,7 +230,7 @@
     "bitume_0262": "docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/PUBLICATION-0262.json",
     "bitume_0269": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
   },
-  "regle": "Un sous-lot à la fois ; préserver les preuves, reprise courte et programme complet ; aucun push forcé.",
+  "regle": "Un sous-lot par discussion, intégration sérialisée des fichiers partagés ; préserver preuves et préparations ; aucun push forcé.",
   "qualification_monaco_revue": {
     "controles_cibles": 35,
     "reussis": 35,
@@ -938,7 +942,7 @@
     "push_force": false,
     "date_commit_fusion_utc": "2026-11-20T19:52:29Z"
   },
-  "suite_portee": "Objectif 126 CK et références complètes prioritaires ; pluie arrière, son, FOV 70°, miroirs et décor conservés dans les préparations séparées.",
+  "suite_portee": "Réception 126 CK/pilote, six vues de conduite et compteurs du titre ; sources du parcours réel sommet du col de Larche→Vinadio. Programme antérieur conservé.",
   "qualification_cockpit_pluie_0270": {
     "commit_outils": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
     "tree": "5ca64577b6044672a61feda146c405e18e6294c6",
@@ -1155,7 +1159,128 @@
   "demande_publication_0277": {
     "demande": "push main je veux test puis continue le projet",
     "fiche": "docs/reprise/POSTE-126CK-0277.md",
-    "statut": "preparation",
-    "site_deploye": false
+    "statut": "publie_sur_main",
+    "site_deploye": false,
+    "pr": 54,
+    "commit_fusion": "11e7e55f087484e1099963d42b04309b6bc6220c"
+  },
+  "jalon_2026_11_21_suite": {
+    "nature": "sauvegarde_sources_sur_branche_et_publication_feuille_de_route",
+    "runtime_main_base": "11e7e55f087484e1099963d42b04309b6bc6220c",
+    "runtime_main_version": "0.2.77",
+    "deploiement_site": false,
+    "branche_sources": "codex/bitume-0280-implantation-126ck-20261121",
+    "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md",
+    "checkpoint": "docs/reprise/rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md",
+    "compteurs": {
+      "libelles": [
+        "Visites",
+        "Visiteurs uniques"
+      ],
+      "ecran": "titre",
+      "identite": "UUID navigateur persistant ; hash serveur, sans IP",
+      "visite": "session après 30 minutes inactives",
+      "controles_dedies_reussis": 28,
+      "activation_en_ligne": false,
+      "fiche": "docs/reprise/VISITES-TITRE-2026-11-21.md"
+    },
+    "mains": {
+      "priorite": "prise naturelle surtout en vue extérieure",
+      "statut": "candidat R4b isolé non intégré ; allocation et contact à corriger avant réception générale",
+      "branche": "codex/bitume-126ck-poignets-20261121",
+      "commit": "fc0155259d063685dac5116d9102cbf2fcb22423",
+      "integre_au_checkpoint_12050e2": false,
+      "rapport_sur_branche": "docs/reprise/rapports/MODELE-126CK-2026-11-21/POIGNETS-R4B.md",
+      "reserves": [
+        "voiture-permanents : chemin cockpit, 16,936 octets/appel et 2 GC mineurs sur 150 000 appels ; seuil inchangé.",
+        "pilote-habitacle : un rapport interrompt le geste ; contact avant-bras-1-1/pommeau, majeur gauche, volant neutre, retour 0/120 ; seuil inchangé.",
+        "Gestes extrêmes à relancer après les derniers raccords des doigts/pouce ; aucune image WebGL ni qualification générale du candidat intégré."
+      ],
+      "commit_distant": "d487e7f501d124df214ba8b7a5a6edcf7b544ff3"
+    },
+    "vues": [
+      "cockpit",
+      "arceau",
+      "nez",
+      "aileron-avant",
+      "poursuite-proche",
+      "poursuite"
+    ],
+    "parcours": {
+      "nom": "Col de Larche → Vinadio",
+      "depart": "sommet routier du col de Larche / Colle della Maddalena",
+      "arrivee": "Vinadio",
+      "route": "SS21",
+      "sens": "descente vers Italie",
+      "distance_indicative_km": 32.2,
+      "distance_mesuree": null,
+      "echelle": 1,
+      "topologie": "ouverte",
+      "depart_barcelonnette_remplace": true,
+      "statut": "planifie_sources_identifiees_non_acquises",
+      "fiche": "docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md"
+    },
+    "sauvegarde_github": {
+      "statut": "sources_et_poignets_sauvegardes_arbres_verifies",
+      "sources_commit": "39c80f5c2d47bfadd2c9362e8b70b0c5d6a20f46",
+      "poignets_commit": "d487e7f501d124df214ba8b7a5a6edcf7b544ff3",
+      "recu": "docs/reprise/rapports/MODELE-126CK-2026-11-21/SAUVEGARDE-2026-11-21.json"
+    }
+  },
+  "historique_alias_avant_publication_0277": {
+    "publication": {
+      "version": "0.2.75",
+      "pr": 51,
+      "branche": "codex/bitume-0275-fps-cockpit-20261121",
+      "tete_qualifiee": "5d59cae6630c49ae62c47303100d61dd63daea56",
+      "arbre": "2d019e71d09ea31be7588cde0f401606cbf934af",
+      "commit_fusion": "b1e5e98b9029f6254b86dcfb49780883315a9418",
+      "recu_final": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
+      "statut": "publie_sur_main_avec_reserve_budget_decor",
+      "main_recu_identique_au_candidat": true,
+      "site_deploye": false
+    },
+    "qualification": {
+      "version": "0.2.75",
+      "build_octets": 14511184,
+      "build_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
+      "ci_push": {
+        "run": 44845571993,
+        "conclusion": "success",
+        "suites_node": 179,
+        "suites_echec": 0,
+        "tests_python": 8,
+        "sources_fichiers": 3988,
+        "sources_et_modes_identiques": true
+      },
+      "ci_pr": {
+        "run": 44845586813,
+        "conclusion": "success",
+        "suites_node": 179,
+        "suites_echec": 0,
+        "tests_python": 8,
+        "sources_fichiers": 3988,
+        "sources_et_modes_identiques": true
+      },
+      "images_exactes": 10,
+      "groupes_visuels": 5,
+      "run_hud": 44845571914,
+      "braquages_stabilises": [
+        -0.35,
+        0.35
+      ],
+      "pas_par_pose_stabilisee": 120,
+      "badge_fps_visible_et_degage": true,
+      "recu_publication": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
+      "limites": "Captures logicielles de poses prescrites ; aucun FPS matériel ni essai de conduite réel qualifié par ces images.",
+      "tous_les_runs_verts": true,
+      "images_assemblees_inspectees": 10
+    },
+    "demande_publication_0277": {
+      "demande": "push main je veux test puis continue le projet",
+      "fiche": "docs/reprise/POSTE-126CK-0277.md",
+      "statut": "preparation",
+      "site_deploye": false
+    }
   }
 }

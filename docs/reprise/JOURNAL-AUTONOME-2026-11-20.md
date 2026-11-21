@@ -770,3 +770,71 @@ les miroirs, le FOV 70°, la météo arrière et les timbres de klaxon préparé
 textuel obsolète de pitch est retiré du test Troll ; la couverture réelle de projection
 reste. La forme complète 126 CK continue séparément. Qualification du nouveau candidat
 et publication à consigner ; les reçus .76 restent historiques et ne le valident pas.
+
+## 042 — 21 novembre : refonte sauvegardée et feuille de route pour la suite
+
+Le runtime .77 a été publié par PR 54, main `11e7e55f087484e1099963d42b04309b6bc6220c`.
+Les références réelles et le plan de voiture complète ont ensuite été sauvegardés
+sur `codex/bitume-0280-implantation-126ck-20261121` au commit `20d7770b8eb76087cb134e842ef7b426c2437bbd`.
+La refonte prépare une nouvelle implantation commune du cockpit, la cuve, le siège,
+les pontons, l’arrière et les ailes, puis la posture du pilote. Aucune fidélité
+complète n’est annoncée validée ; les derniers raccords demandent une reconstruction
+et une qualification du vrai jeu. Voir [le checkpoint](rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md).
+
+David ajoute les compteurs **Visites / Visiteurs uniques** sur le titre, la tenue
+naturelle du volant (poignets surtout en vue extérieure), puis les six vues
+classiques de conduite. Les préparations sont réunies sur la branche ; les
+compteurs ont 28 contrôles dédiés réussis et les caméras leurs contrôles propres.
+Le service de comptage n’est pas déployé. Les images WebGL du candidat assemblé,
+le HUD portrait/duo et les vérifications transversales restent à recevoir.
+
+Nouvelle demande géographique : après une première idée Barcelonnette → Larche →
+Vinadio, David demande plus court et précise **départ du haut du col**. La décision
+retenue est **sommet du col de Larche/Maddalena → Vinadio, SS21, environ 32 km**,
+à l’échelle réelle. [Fiche détaillée L0–L6](COL-DE-LARCHE-VINADIO-2026-11-21.md) :
+sources OSM/DTM Piemonte, IGN pour les panoramas frontaliers, tracé/profil vérifiés,
+parcours ouvert, terrain, lieux, collisions, IA, chrono, streaming et réception.
+Les sources primaires sont identifiées ; l’acquisition et la construction restent
+à faire. Aucun tronçon de montée depuis Barcelonnette n’est conservé dans le périmètre.
+
+La [feuille de route réunie](FEUILLE-DE-ROUTE-2026-11-21.md), `REPRISE.md`, l’état et
+le rôle 05 permettent la continuation depuis GitHub. Publication documentaire sur
+main, préparations runtime sur branche ; p15 et FERRO conservés, aucun déploiement
+du site. Les autres circuits, travaux décor, PR 43 et sources Monaco/Marseille restent.
+
+## 043 — 21 novembre : reprise des sauvegardes et état précis du lot poignets
+
+Les alias courants `publication` et `qualification` de `ETAT.json` désignent
+désormais le poste **.77 / PR 54 / main `11e7e55f087484e1099963d42b04309b6bc6220c`**,
+vérifié par la coordination via l’API GitHub. Leurs anciennes valeurs .75 sont
+conservées dans `historique_alias_avant_publication_0277` ; la demande de
+publication .77 est marquée réalisée. Les reçus CI .77 existants sont recopiés
+sans modification : push 44884329345 et PR 44884333041, chacun 182 suites Node
+réussies, zéro échec, huit tests Python, 4 213 fichiers/modes identiques et HTML
+SHA256 `09aa278d0ced47fd88728d33c59a13fda1a808571df117072ad6d7af251be564`.
+Ces preuves historiques ne qualifient pas la refonte en cours ; aucune campagne
+ni reconstruction n’est relancée pour cette correction documentaire.
+
+Le candidat poignets **`fc0155259d063685dac5116d9102cbf2fcb22423`** est repéré
+sur `codex/bitume-126ck-poignets-20261121`, **hors du checkpoint `12050e2`**.
+Son rapport conserve deux défauts : 16,936 octets/appel et 2 GC mineurs sur le
+chemin cockpit du banc de permanence ; contact `avant-bras-1-1/pommeau` lorsqu’un
+rapport interrompt le geste majeur gauche, volant neutre, retour `0/120`.
+Corriger ces causes sans relever les seuils, relancer les gestes extrêmes après
+les derniers raccords, puis recevoir les images extérieures du vrai jeu.
+
+La sauvegarde GitHub des préparations et du suivi est encore en cours lors de
+cette entrée ; ses reçus exacts seront ajoutés après vérification distante.
+Le plan sommet du col → Vinadio reste inchangé. Aucun runtime publié par ce
+correctif, aucun déploiement, aucune qualification globale de la refonte déclarée.
+
+
+## 044 — Sauvegardes GitHub reçues, feuille de route réunie sur main
+
+Sources : `39c80f5c2d47bfadd2c9362e8b70b0c5d6a20f46`, arbre identique à `be51291`.
+Poignets séparés : `d487e7f501d124df214ba8b7a5a6edcf7b544ff3`, arbre identique à `fc01552`.
+Les deux références et arbres ont été relus via GitHub. Le jalon main porte uniquement
+AGENTS, REPRISE et docs ; runtime .77 conservé. Reçu :
+`rapports/MODELE-126CK-2026-11-21/SAUVEGARDE-2026-11-21.json`.
+Le plan conserve sommet du col → Vinadio à l’échelle réelle, parcours ouvert et arrivée.
+Les deux réserves poignets, la réception WebGL et l’acquisition L0 restent à terminer.

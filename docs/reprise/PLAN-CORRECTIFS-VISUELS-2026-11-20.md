@@ -2,6 +2,12 @@
 
 ## Avancement courant
 
+**Ajout du 21 novembre :** [feuille de route réunie](FEUILLE-DE-ROUTE-2026-11-21.md)
+pour la 126 CK, les poignets en vue extérieure, les six caméras et les compteurs
+du titre. Le nouveau parcours réel commence désormais au **sommet du col de
+Larche et arrive à Vinadio** ; [plan détaillé](COL-DE-LARCHE-VINADIO-2026-11-21.md).
+Lire `REPRISE.md` pour distinguer runtime publié et sources préparées sur branche.
+
 Eau0.2.68 publiée et qualifiée ([reçu](rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json)). Habitacle/assise/bras en préparation mesurée ; [checkpoint non qualifié](preparations/habitacle-commun-2026-11-20/README.md). Les nouvelles demandes [saisons sur neuf circuits](SAISONS-CATALOGUE-2026-11-20.md) et [menu arcade/manette/profils modestes](MENU-ARCADE-PROFILS-2026-11-20.md) s’ajoutent au suivi. Le plan initial conservé ci-dessous décrit le point de départ ; la reprise courte et FILE-TRAVAIL portent l’état à jour.
 
 ## Point de départ : consolidation publiée avant ce plan

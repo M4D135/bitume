@@ -20,6 +20,26 @@ Marseille : provenance EMPRISE, corridor et relief cohérent avant reconstructio
 
 ## Suite préparée
 
+### Ajout du 21 novembre — col de Larche → Vinadio
+
+Demande explicite ajoutée au programme : vrai tracé et vrai relief du **sommet du
+col de Larche/Maddalena jusqu’à Vinadio**, dans le sens de la descente par la SS21.
+La correction utilisateur supprime le départ de Barcelonnette : ne pas acquérir
+la montée D900 pour la piste jouable. Environ 32 km, longueur finale à mesurer.
+
+Lire [la fiche détaillée](../COL-DE-LARCHE-VINADIO-2026-11-21.md). Premier lot L0 :
+sources et manifeste, deux lignes précisément situées, voie routière ordonnée,
+DTM piémontais prioritaire, IGN seulement aux panoramas/frontière utiles. Préserver
+les préparations Monaco/Marseille ; la coordination peut lancer cette acquisition
+indépendante sans toucher au runtime partagé. Données et licences vérifiées,
+inconnus conservés, pas de fermeture synthétique ni remise à l’échelle.
+
+Un parcours ouvert est nécessaire : préparer le contrat et transmettre à 00 les
+modifications de `circuit.js`/course/IA/menu/réseau. Aucun ajout jouable avant cette
+qualification. La fiche donne les sous-lots L0–L6, fichiers proposés et preuves.
+
+### Programme antérieur conservé
+
 Route-des-Cimes est déjà le neuvième circuit ; poursuivre sept lieux, lac/cascade et relief. Haut-Col garde identifiant, graine et plan. Baïkal est le huitième. Préserver les 17 destinations et distinguer demandes, propositions et livraisons.
 
 Passage au runtime après données suffisantes, raccords acceptés par 00 et libération du décor par 04 ; puis contrôles PhysX/IA/couverts et images. Aucun partage implicite de circuit.js ou route-des-cimes-decor.js.
