@@ -2,14 +2,14 @@
   "schema": 1,
   "discussion": "00",
   "mission": "Integration",
-  "statut": "qualification_candidat_0275_FPS",
+  "statut": "publication_0275_close_reserve_decor_ouverte",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/00-INTEGRATION.md",
-  "base_main": "fee69c521eccc0e64cc29f762a6d2244b5ade759",
+  "base_main": "b1e5e98b9029f6254b86dcfb49780883315a9418",
   "branche_proposee": "codex/bitume-p00-integration-20261120",
-  "branche_reelle": "codex/bitume-0274-hud-stabilise-20261121",
-  "head": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
-  "pr": 42,
-  "sous_lot": "00D_cockpit_pluie",
+  "branche_reelle": "codex/bitume-0275-cloture-20261121",
+  "head": "b1e5e98b9029f6254b86dcfb49780883315a9418",
+  "pr": 51,
+  "sous_lot": "budget_construction_decor_0269",
   "preuves": [
     "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
     "docs/reprise/PARALLELE-2026-11-20/rapports/00-QUALIFICATION-DOCUMENTAIRE.json",
@@ -27,21 +27,23 @@
     "docs/reprise/PARALLELE-2026-11-20/preuves/00-assemblage-0269/ci-finale/ALERTE-BUDGET-DECOR.json",
     "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/BUILD-0273.json",
     "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/RECEPTION-0273.json",
-    "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0274/BUILD-0274.json"
+    "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0274/BUILD-0274.json",
+    "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
+    "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/diagnostic-decor/DIAGNOSTIC.json"
   ],
   "reserves": [
-    "Le volant occulte une partie centrale de la chaussée en caméra réelle du siège, surtout en paysage. Les tests de projection ne mesurent pas cette occultation ; suivi ouvert.",
-    "Budget décor : 172 ms affichés pour un seuil strict < 150 ms dans le push parallèle ; PR verte sur le même arbre, cause non déterminée.",
+    "Cockpit/HUD qualifiés sur dix PNG de cinq groupes exacts 0.2.75 ; captures logicielles de poses prescrites, pas un essai matériel de conduite.",
+    "Budget décor ouvert : 172/152/168/155 ms historiques ; diagnostic local 151,87/138,20/141,13/84,43/85,68 ms, un échec strict <150 ms. Aucun gain prouvé.",
     "Les quatre images LOD extérieures attestent une silhouette de 25–30 pixels ; les détails des bras ne sont pas inspectables.",
     "Préférences Troll négociées, événements geste/son distants non synchronisés et limitation affichée avant course.",
     "FPS Xbox/Intel, manettes physiques, écoute humaine et réseau entre machines non qualifiés.",
     "M1 exclu ; Monaco/Marseille sources uniquement."
   ],
-  "prochaine_action": "Recevoir CI et dix PNG exacts 0.2.75, dont les deux virages maintenus avec FPS visible ; conserver le défaut .74.",
+  "prochaine_action": "Transmettre au propriétaire 04 la piste de stockage fixe des indices des nappes Route (19 323 couples temporaires), puis qualifier identité géométrique et mesures alternées avant toute intégration. Aucun code de cette optimisation appliqué.",
   "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
   "base_main_preparation": "d8f02cae45443ae6a1120dc93125d8adfae94422",
-  "base_tree": "ecc470298dfb4e5d25966d6614ccecabc3a09006",
-  "head_signification": "Tête qualifiée de la PR 42 fusionnée ; le commit de fusion reçu figure dans publication. La clôture documentaire conserve le runtime.",
+  "base_tree": "2d019e71d09ea31be7588cde0f401606cbf934af",
+  "head_signification": "Commit main reçu après fusion PR51, arbre exact du candidat 0.2.75 ; clôture documentaire sans changement runtime.",
   "lots_integres": [
     {
       "discussion": "02",
@@ -83,33 +85,33 @@
       "commit_integration": "89aa13299221ebc8b5f0474ae5a662680dd6fe32"
     }
   ],
-  "releve_utc": "2026-11-20T23:57:00.078070+00:00",
+  "releve_utc": "2026-11-21T01:12:16.475124+00:00",
   "contrat_revision": 4,
   "contrats": "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
   "inventaire": "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
   "runtime_livre": {
-    "version": "0.2.69",
+    "version": "0.2.75",
     "physique": "p15",
     "ferro": "0.3.15",
     "circuits": 9,
-    "html_octets": 14472625,
-    "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+    "html_octets": 14511184,
+    "html_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
     "modules_ferro_verifies": 34,
-    "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
+    "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
   },
-  "runtime_modifie": true,
-  "nouveau_build": true,
+  "runtime_modifie": false,
+  "nouveau_build": false,
   "campagne_0268_relancee": false,
   "site_deploye": false,
   "livraisons_attendues": {
-    "01": "Pilote/Troll publié ; T3 et vues assemblées reçus. Suivi distinct de la visibilité centrale en cockpit.",
+    "01": "Pilote/Troll et correctifs cockpit/HUD publiés ; T3 et cas requis reçus. Limites des détails LOD lointains conservées.",
     "02": "Premier gain mesuré indépendant ; SHA canonique qualifié si FERRO change. Aucun gain ajouté à cette publication.",
     "03": "Menu publié et 19 parcours du jeu commun reçus ; mesures matérielles encore non qualifiées.",
-    "04": "S1 publié ; contrôles communs Cimes/Port-Sable reçus. M1 reste séparé et non intégré.",
+    "04": "S1 publié, M1 séparé. Recevoir la piste de stockage fixe des indices Route, puis identité géométrique et mesures alternées ; aucune optimisation appliquée par 00.",
     "05": "Sources/outils déjà reçus sur main ; inconnues géométriques explicites, aucun nouveau circuit jouable annoncé."
   },
   "lots_runtime_prets_observes": [],
-  "relecture_consignee_utc": "2026-11-20 20:00:13 UTC",
+  "relecture_consignee_utc": "2026-11-21T01:12:16.475124+00:00",
   "checkpoints_observes": [
     {
       "discussion": "01",
@@ -139,33 +141,30 @@
     }
   ],
   "publication": {
-    "commit": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
-    "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
+    "commit": "b1e5e98b9029f6254b86dcfb49780883315a9418",
+    "tree": "2d019e71d09ea31be7588cde0f401606cbf934af",
     "main_verifie": true,
-    "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
-    "pr": 42
+    "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
+    "pr": 51
   },
   "candidat": {
-    "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
-    "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
+    "commit": "5d59cae6630c49ae62c47303100d61dd63daea56",
+    "tree": "2d019e71d09ea31be7588cde0f401606cbf934af",
     "statut": "publie",
-    "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
+    "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
   },
   "dernier_head_publie_00A": "a8a6435c529fe326e9f26124f25ba0911d3b70fb",
   "releve_initial_utc": "2026-11-20 17:10:00 UTC",
   "runtime_modifie_sur_main": true,
-  "runtime_modifie_portee": "0.2.69 publié et vérifié ; clôture documentaire sans changement runtime.",
+  "runtime_modifie_portee": "0.2.75 publiée et reçue sur main ; aucun changement runtime pendant cette clôture.",
   "publication_candidat": {
-    "pr": 42,
-    "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+    "pr": 51,
+    "commit": "5d59cae6630c49ae62c47303100d61dd63daea56",
     "main_fusionne": true,
     "main_reception_verifiee": true
   },
-  "publication_portee": "Publication runtime 0.2.69 reçue sur main ; historique 00A conservé séparément.",
-  "portes_restantes": [
-    "CI complète du commit exact et archive rapprochée",
-    "10 PNG du nouveau HTML, annonces activées et badge FPS visible aux deux virages maintenus"
-  ],
+  "publication_portee": "Publication 0.2.75 reçue sur main ; historiques 00A/.69 et échecs .70–.74 conservés.",
+  "portes_restantes": [],
   "checkpoints_historiques_171512": [
     {
       "discussion": "01",
@@ -209,18 +208,75 @@
   "lots_runtime_publies": [
     "01_pilote_Troll",
     "03_menu",
-    "04_S1_sans_M1"
+    "04_S1_sans_M1",
+    "00D_cockpit_pluie_HUD_0275"
   ],
   "etat_actif_cockpit_pluie": {
     "fiche": "docs/reprise/COCKPIT-PLUIE-2026-11-20.md",
-    "pr": 44,
-    "statut": "0.2.74 bloquée par le badge FPS ; 0.2.75 en qualification",
+    "pr": 51,
+    "statut": "0.2.75 publiee_sur_main_preuves_recues",
     "base": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
     "ci_0270": 44818836125,
-    "prochaine_action": "Recevoir CI et dix PNG exacts 0.2.75, dont les deux virages maintenus avec FPS visible ; conserver le défaut .74.",
-    "pr_precedente": 50
+    "prochaine_action": "Lot correctif clos ; préserver les échecs .70–.74 et poursuivre le diagnostic décor séparément.",
+    "pr_precedente": 50,
+    "recu_publication": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
   },
   "branche_candidate": "codex/bitume-0275-fps-cockpit-20261121",
   "version_candidate": "0.2.75",
-  "preuve_candidat": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0275/BUILD-0275.json"
+  "preuve_candidat": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0275/BUILD-0275.json",
+  "historique_alias_0269": {
+    "publication": {
+      "commit": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
+      "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
+      "main_verifie": true,
+      "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
+      "pr": 42
+    },
+    "candidat": {
+      "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+      "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
+      "statut": "publie",
+      "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
+    },
+    "runtime_livre": {
+      "version": "0.2.69",
+      "physique": "p15",
+      "ferro": "0.3.15",
+      "circuits": 9,
+      "html_octets": 14472625,
+      "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+      "modules_ferro_verifies": 34,
+      "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
+    },
+    "reserves": [
+      "Le volant occulte une partie centrale de la chaussée en caméra réelle du siège, surtout en paysage. Les tests de projection ne mesurent pas cette occultation ; suivi ouvert.",
+      "Budget décor : 172 ms affichés pour un seuil strict < 150 ms dans le push parallèle ; PR verte sur le même arbre, cause non déterminée.",
+      "Les quatre images LOD extérieures attestent une silhouette de 25–30 pixels ; les détails des bras ne sont pas inspectables.",
+      "Préférences Troll négociées, événements geste/son distants non synchronisés et limitation affichée avant course.",
+      "FPS Xbox/Intel, manettes physiques, écoute humaine et réseau entre machines non qualifiés.",
+      "M1 exclu ; Monaco/Marseille sources uniquement."
+    ],
+    "publication_candidat": {
+      "pr": 42,
+      "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
+      "main_fusionne": true,
+      "main_reception_verifiee": true
+    }
+  },
+  "prochain_lot_decor": {
+    "statut": "ouvert",
+    "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/diagnostic-decor/DIAGNOSTIC.json",
+    "mesures_locales_ms": [
+      151.87,
+      138.2,
+      141.13,
+      84.43,
+      85.68
+    ],
+    "seuil_strict_ms": 150,
+    "echecs_sur_5": 1,
+    "gain_prouve": false,
+    "optimisation_appliquee": false,
+    "proprietaire_suivant": "04"
+  }
 }

@@ -1,17 +1,18 @@
 {
   "schema": 1,
-  "date": "2026-11-20",
-  "base": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
+  "date": "2026-11-21",
+  "base": "b1e5e98b9029f6254b86dcfb49780883315a9418",
   "runtime_livre": {
-    "version": "0.2.69",
+    "version": "0.2.75",
     "physique": "p15",
     "moteur": "FERRO 0.3.15",
     "circuits": 9,
-    "commit_fusion": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
-    "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
+    "commit_fusion": "b1e5e98b9029f6254b86dcfb49780883315a9418",
+    "html_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
+    "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
   },
   "destinations_prevues": 17,
-  "lot_actif": "00D_cockpit_pluie_FPS_0275_en_qualification",
+  "lot_actif": "budget_construction_decor_0269",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [
@@ -38,13 +39,13 @@
     {
       "id": "habitacle_pilote_commun",
       "objectif": "Même habitacle monde entre vues, assise plus basse et bras dégagés du buste",
-      "etat": "in_progress",
-      "phase": "pilote_et_Troll_publies_0269_reserve_lisibilite_cockpit",
+      "etat": "published",
+      "phase": "pilote_Troll_cockpit_HUD_publies_0275",
       "dependances": [
         "references"
       ],
       "fiche": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
-      "prochain_sous_lot": "evaluer_visibilite_chaussee_cockpit_sans_fausser_geometrie_commune",
+      "prochain_sous_lot": "clos_pour_le_correctif_cockpit_HUD_0275",
       "cloture": "Identité géométrique monde sans homothétie par vue ; assise commune mesurée ; dégagements bras/buste/coque et contacts ; gestes et LOD ; images exactes et coût qualifiés",
       "preuves": [
         "docs/reprise/preparations/habitacle-commun-2026-11-20/CHECKPOINT.json",
@@ -52,21 +53,44 @@
         "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll.json",
         "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
         "docs/reprise/PARALLELE-2026-11-20/rapports/00-ASSEMBLAGE-0269.json",
-        "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
+        "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
+        "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
       ],
-      "acquis": "Contacts/continuité/LOD qualifiés au niveau modules ; raccord assemblé et Troll temporel J1/J2 T3 qualifiés sur le même HTML.",
-      "reste": "Le volant occulte une partie centrale de la chaussée en caméra réelle du siège, surtout en paysage. Les tests de projection ne mesurent pas cette occultation ; suivi ouvert.",
-      "reserve_lisibilite_cockpit": "Cockpit 960×540 et 540×960, caméra réelle du siège : le volant occulte une partie centrale de la chaussée. Lisibilité non certifiée, suivi ouvert ; aucune nouvelle régression d’assemblage établie. Géométrie commune et T3 restent acquis.",
+      "acquis": "Géométrie commune et T3 conservés ; cockpit/rétros/pluie/HUD reçus et publiés en 0.2.75, dont dix PNG exacts et les deux braquages maintenus.",
+      "reste": "Limites LOD et matérielles conservées ; enrichissements de matières et autres travaux dans leurs lots distincts.",
+      "reserve_lisibilite_cockpit": "Blocage corrigé sur les cinq groupes exacts 0.2.75 ; pas de qualification universelle de tous les formats.",
       "limite_images_lod": "Quatre PNG LOD extérieurs : coque d’environ 25–30 pixels, silhouette validée ; détails des bras non lisibles dans ces images.",
       "suivi_lisibilite_cockpit": {
-        "statut": "ouvert",
-        "objet": "Évaluer la visibilité réelle de la chaussée depuis le siège ; les tests de projection de l’horizon ne qualifient pas l’occultation.",
-        "acquis": "Géométrie commune et réception T3 préservées ; aucun blocage des entrées Troll établi par ce constat."
+        "statut": "clos_sur_cas_qualifies_0275",
+        "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
+        "png": 10,
+        "groupes": 5
       },
       "publication_0269": {
         "commit_fusion": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
         "pr": 42,
         "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
+      },
+      "historique_lisibilite_0269": {
+        "reste": "Le volant occulte une partie centrale de la chaussée en caméra réelle du siège, surtout en paysage. Les tests de projection ne mesurent pas cette occultation ; suivi ouvert.",
+        "reserve_lisibilite_cockpit": "Cockpit 960×540 et 540×960, caméra réelle du siège : le volant occulte une partie centrale de la chaussée. Lisibilité non certifiée, suivi ouvert ; aucune nouvelle régression d’assemblage établie. Géométrie commune et T3 restent acquis.",
+        "suivi_lisibilite_cockpit": {
+          "statut": "ouvert",
+          "objet": "Évaluer la visibilité réelle de la chaussée depuis le siège ; les tests de projection de l’horizon ne qualifient pas l’occultation.",
+          "acquis": "Géométrie commune et réception T3 préservées ; aucun blocage des entrées Troll établi par ce constat."
+        }
+      },
+      "publication_0275": {
+        "version": "0.2.75",
+        "pr": 51,
+        "branche": "codex/bitume-0275-fps-cockpit-20261121",
+        "tete_qualifiee": "5d59cae6630c49ae62c47303100d61dd63daea56",
+        "arbre": "2d019e71d09ea31be7588cde0f401606cbf934af",
+        "commit_fusion": "b1e5e98b9029f6254b86dcfb49780883315a9418",
+        "recu_final": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
+        "statut": "publie_sur_main_avec_reserve_budget_decor",
+        "main_recu_identique_au_candidat": true,
+        "site_deploye": false
       }
     },
     {
@@ -442,14 +466,32 @@
     {
       "id": "budget_construction_decor_0269",
       "objectif": "Caractériser le dépassement observé du budget CPU de construction du décor",
-      "etat": "planned",
-      "phase": "alerte_172ms_seuil_strict150ms",
+      "etat": "in_progress",
+      "phase": "diagnostic_0275_reserve_ouverte_piste_non_appliquee",
       "preuves": [
         "docs/reprise/PARALLELE-2026-11-20/preuves/00-assemblage-0269/ci-finale/ALERTE-BUDGET-DECOR.json",
-        "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
+        "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
+        "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/diagnostic-decor/DIAGNOSTIC.json"
       ],
-      "prochain_sous_lot": "Mesurer dans des conditions comparables sans relever le seuil ni attribuer une cause non mesurée.",
-      "cloture": "Écart expliqué et coût qualifié ; aucun gain matériel déclaré à partir de ce seul test."
+      "prochain_sous_lot": "Transmettre au propriétaire 04 la piste de stockage fixe des indices des nappes Route (19 323 couples temporaires), puis qualifier identité géométrique et mesures alternées avant toute intégration. Aucun code de cette optimisation appliqué.",
+      "cloture": "Identité géométrique et mesures alternées qualifiées avant intégration ; seuil strict <150 ms conservé, aucun gain matériel déduit de ce seul test.",
+      "proprietaire": "04",
+      "diagnostic_0275": {
+        "statut": "ouvert",
+        "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/diagnostic-decor/DIAGNOSTIC.json",
+        "mesures_locales_ms": [
+          151.87,
+          138.2,
+          141.13,
+          84.43,
+          85.68
+        ],
+        "seuil_strict_ms": 150,
+        "echecs_sur_5": 1,
+        "gain_prouve": false,
+        "optimisation_appliquee": false,
+        "proprietaire_suivant": "04"
+      }
     },
     {
       "id": "transitions_vues_continues",
@@ -552,6 +594,11 @@
       "lot": "00C_assemblage_0269",
       "version": "0.2.69",
       "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
+    },
+    {
+      "lot": "00D_cockpit_pluie_HUD_0275",
+      "version": "0.2.75",
+      "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
     }
   ],
   "limites_transversales": [
@@ -562,7 +609,6 @@
   ],
   "plan_correctifs_visuels": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
   "ordre_courant": [
-    "habitacle_pilote_commun",
     "budget_construction_decor_0269",
     "menu_arcade_profils_modestes"
   ],
@@ -609,13 +655,13 @@
     "regle": "Conserver les lots et preuves existants. Une discussion par perimetre, un sous-lot par discussion ; raccordements et builds serialises.",
     "preparations_portables": "docs/reprise/PARALLELE-2026-11-20/preparations/MANIFESTE.json",
     "preparations_statut": "patches_historiques_conserves_livraisons_01_03_04S1_publiees_0269",
-    "dernier_jalon_00": "publication_0269",
-    "releve_main": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
-    "releve_utc": "2026-11-20 20:00:13 UTC",
+    "dernier_jalon_00": "publication_0275",
+    "releve_main": "b1e5e98b9029f6254b86dcfb49780883315a9418",
+    "releve_utc": "2026-11-21T01:12:16.475124+00:00",
     "contrats": "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
     "inventaire": "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
     "lots_prets_observes": [],
-    "prochaine_action": "Lisibilité cockpit et alerte de budget décor ; prochaine livraison qualifiée des rôles parallèles.",
+    "prochaine_action": "Transmettre au propriétaire 04 la piste de stockage fixe des indices des nappes Route (19 323 couples temporaires), puis qualifier identité géométrique et mesures alternées avant toute intégration. Aucun code de cette optimisation appliqué.",
     "integration": "Premier petit lot indépendant prêt ; ne pas attendre la fin des autres chantiers.",
     "lots_runtime_prets_observes": [],
     "checkpoints_observes": [
@@ -632,10 +678,10 @@
       "fichiers": 3,
       "runtime_modifie": false
     },
-    "publication_00": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
-    "dernier_jalon_publie_00": "publication_0269",
-    "publication_00_portee": "Runtime 0.2.69 publié et reçu sur main, avec réserves cockpit et budget décor ; reçu documentaire 00A conservé dans l’historique.",
-    "checkpoints_observes_portee": "Inventaire initial conservé ; publication courante décrite par le reçu 0.2.69.",
+    "publication_00": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
+    "dernier_jalon_publie_00": "publication_0275",
+    "publication_00_portee": "Runtime 0.2.75 publié et reçu sur main ; réserve CPU décor ouverte, PR43 et états propriétaires conservés.",
+    "checkpoints_observes_portee": "Inventaire initial historique conservé ; publication courante décrite par le reçu 0.2.75.",
     "lots_prets_observes_historique": [
       "01_pilote_Troll",
       "03_menu",
@@ -644,7 +690,8 @@
     "lots_runtime_publies": [
       "01_pilote_Troll",
       "03_menu",
-      "04_S1_saisons_sans_M1"
+      "04_S1_saisons_sans_M1",
+      "00D_cockpit_pluie_HUD_0275"
     ],
     "candidat_00_historique": {
       "commit": "7999de565e2c643f7723462caf7683b570c75e8b",
@@ -652,8 +699,8 @@
       "version": "0.2.69",
       "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-ASSEMBLAGE-0269.json"
     },
-    "tete_qualifiee_00": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
-    "commit_fusion_00": "89aa13299221ebc8b5f0474ae5a662680dd6fe32"
+    "tete_qualifiee_00": "5d59cae6630c49ae62c47303100d61dd63daea56",
+    "commit_fusion_00": "b1e5e98b9029f6254b86dcfb49780883315a9418"
   },
   "reception_sources_05": {
     "head": "fa290886089a650981c688ebaac893159912a62b",
@@ -668,18 +715,18 @@
     "moteur": "FERRO 0.3.15",
     "circuits": 9,
     "html_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
-    "statut": "en_qualification",
+    "statut": "publie_sur_main",
     "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0275/BUILD-0275.json",
-    "portes_restantes": [
-      "CI complète du commit exact et archive rapprochée",
-      "10 PNG du nouveau HTML, annonces activées et badge FPS visible aux deux virages maintenus"
-    ],
-    "reserve_decor": "172, 152, 168 et 155 ms historiques, seuil strict de 150 ms conservé",
+    "portes_restantes": [],
+    "reserve_decor": "Ouverte : 172/152/168/155 ms historiques ; diagnostic local 151,87/138,20/141,13/84,43/85,68 ms, un échec au seuil strict <150 ms ; aucun gain prouvé.",
     "candidat_precedent_bloque": {
       "version": "0.2.74",
       "pr": 50,
       "constat": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0274/RECEPTION-0274.json"
-    }
+    },
+    "commit": "5d59cae6630c49ae62c47303100d61dd63daea56",
+    "commit_fusion": "b1e5e98b9029f6254b86dcfb49780883315a9418",
+    "recu_publication": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
   },
   "demandes_video_survol_2026_11_20": {
     "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
@@ -695,5 +742,13 @@
     "etat": "demandes_enregistrees_implementation_planifiee",
     "qualification_cockpit_pluie_independante": true,
     "demandes_precedentes_preservees": true
+  },
+  "runtime_livre_0269_historique": {
+    "version": "0.2.69",
+    "physique": "p15",
+    "moteur": "FERRO 0.3.15",
+    "circuits": 9,
+    "commit_fusion": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
+    "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
   }
 }

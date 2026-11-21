@@ -1,0 +1,715 @@
+{
+  "sampling_interval_us": 100,
+  "sampled_ms": 150.655,
+  "profile_duration_ms": 150.868,
+  "timed_build": {
+    "node": "v24.22.3",
+    "profilage": true,
+    "scope": "Premier D.construire(c) sans options, après imports et C.creer ; protocole Val-Brûlé decor.test.mjs",
+    "parameters": {
+      "graine": 11,
+      "theme": "foret",
+      "longueur": 4200,
+      "nom": "Val-Brûlé"
+    },
+    "wall_ms": 128.723981,
+    "cpu_user_ms": 171.585,
+    "cpu_system_ms": 94.315,
+    "strict_threshold_ms": 150,
+    "under_threshold": true,
+    "circuit_samples": 2111,
+    "circuit_length": 4222,
+    "arbres": 2600,
+    "lots": 85,
+    "obstacles": 3970,
+    "nappes": 117,
+    "decor_json_sha256": "a75b007ced3f613d4d152f5b2f38b3cceca5c8276ae3574cae5b116aa96d5db7",
+    "decor_keys": [
+      "nappes",
+      "lots",
+      "atmosphere",
+      "portique",
+      "obstacles",
+      "sol",
+      "niveauEau",
+      "limites",
+      "theme",
+      "arbres",
+      "enceinte"
+    ]
+  },
+  "hotspots": [
+    {
+      "function": "post",
+      "file": "node:inspector",
+      "line": 115,
+      "self_ms": 21.731,
+      "inclusive_ms": 21.731,
+      "samples": 0
+    },
+    {
+      "function": "(garbage collector)",
+      "file": "",
+      "line": 0,
+      "self_ms": 20.842,
+      "inclusive_ms": 20.842,
+      "samples": 98
+    },
+    {
+      "function": "construire",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 1058,
+      "self_ms": 18.533,
+      "inclusive_ms": 96.358,
+      "samples": 113
+    },
+    {
+      "function": "nappesRoute",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 237,
+      "self_ms": 12.629,
+      "inclusive_ms": 24.771,
+      "samples": 76
+    },
+    {
+      "function": "(anonymous)",
+      "file": "file:///workspace/scratch/ea118b42480b/qa-decor-0275/mesure.mjs",
+      "line": 0,
+      "self_ms": 11.398,
+      "inclusive_ms": 129.487,
+      "samples": 69
+    },
+    {
+      "function": "saisonArbre",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 1433,
+      "self_ms": 8.735,
+      "inclusive_ms": 8.735,
+      "samples": 52
+    },
+    {
+      "function": "nappesTerrain",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 316,
+      "self_ms": 6.411,
+      "inclusive_ms": 19.037,
+      "samples": 17
+    },
+    {
+      "function": "arbre",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 831,
+      "self_ms": 5.405,
+      "inclusive_ms": 6.674,
+      "samples": 33
+    },
+    {
+      "function": "interroger",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 172,
+      "self_ms": 4.012,
+      "inclusive_ms": 4.012,
+      "samples": 24
+    },
+    {
+      "function": "nappe",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 195,
+      "self_ms": 3.886,
+      "inclusive_ms": 3.886,
+      "samples": 22
+    },
+    {
+      "function": "prendre",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 454,
+      "self_ms": 2.334,
+      "inclusive_ms": 5.198,
+      "samples": 15
+    },
+    {
+      "function": "sommet",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 198,
+      "self_ms": 1.802,
+      "inclusive_ms": 1.802,
+      "samples": 11
+    },
+    {
+      "function": "interroger",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 172,
+      "self_ms": 1.64,
+      "inclusive_ms": 1.64,
+      "samples": 10
+    },
+    {
+      "function": "retenirArbre",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 1473,
+      "self_ms": 1.511,
+      "inclusive_ms": 12.875,
+      "samples": 9
+    },
+    {
+      "function": "pointPlan",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 129,
+      "self_ms": 1.469,
+      "inclusive_ms": 1.469,
+      "samples": 9
+    },
+    {
+      "function": "cadre",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 113,
+      "self_ms": 1.325,
+      "inclusive_ms": 1.325,
+      "samples": 8
+    },
+    {
+      "function": "vers",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 856,
+      "self_ms": 1.076,
+      "inclusive_ms": 1.076,
+      "samples": 1
+    },
+    {
+      "function": "hache",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 22,
+      "self_ms": 1.061,
+      "inclusive_ms": 1.061,
+      "samples": 5
+    },
+    {
+      "function": "fbm",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 33,
+      "self_ms": 1.049,
+      "inclusive_ms": 1.049,
+      "samples": 6
+    },
+    {
+      "function": "hauteur",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 340,
+      "self_ms": 1.007,
+      "inclusive_ms": 6.942,
+      "samples": 6
+    },
+    {
+      "function": "interroger",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 172,
+      "self_ms": 0.996,
+      "inclusive_ms": 0.996,
+      "samples": 6
+    },
+    {
+      "function": "stands",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/batiments.js",
+      "line": 65,
+      "self_ms": 0.988,
+      "inclusive_ms": 1.826,
+      "samples": 6
+    },
+    {
+      "function": "finir",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 209,
+      "self_ms": 0.967,
+      "inclusive_ms": 0.967,
+      "samples": 6
+    },
+    {
+      "function": "lisse",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 38,
+      "self_ms": 0.874,
+      "inclusive_ms": 0.874,
+      "samples": 5
+    },
+    {
+      "function": "hauteurRoute",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 125,
+      "self_ms": 0.836,
+      "inclusive_ms": 0.836,
+      "samples": 5
+    },
+    {
+      "function": "couleur",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 406,
+      "self_ms": 0.765,
+      "inclusive_ms": 2.388,
+      "samples": 3
+    },
+    {
+      "function": "base",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 48,
+      "self_ms": 0.698,
+      "inclusive_ms": 0.698,
+      "samples": 4
+    },
+    {
+      "function": "boite",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/batiments.js",
+      "line": 22,
+      "self_ms": 0.674,
+      "inclusive_ms": 0.674,
+      "samples": 2
+    },
+    {
+      "function": "panneau",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 1009,
+      "self_ms": 0.672,
+      "inclusive_ms": 0.672,
+      "samples": 4
+    },
+    {
+      "function": "fbm",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 33,
+      "self_ms": 0.665,
+      "inclusive_ms": 0.665,
+      "samples": 4
+    },
+    {
+      "function": "tribune",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 853,
+      "self_ms": 0.627,
+      "inclusive_ms": 2.206,
+      "samples": 4
+    },
+    {
+      "function": "bruit",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 27,
+      "self_ms": 0.605,
+      "inclusive_ms": 0.605,
+      "samples": 3
+    },
+    {
+      "function": "interroger",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 172,
+      "self_ms": 0.591,
+      "inclusive_ms": 0.591,
+      "samples": 4
+    },
+    {
+      "function": "(anonymous)",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 287,
+      "self_ms": 0.585,
+      "inclusive_ms": 0.585,
+      "samples": 3
+    },
+    {
+      "function": "melange",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 39,
+      "self_ms": 0.582,
+      "inclusive_ms": 0.823,
+      "samples": 3
+    },
+    {
+      "function": "ajouter",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 1107,
+      "self_ms": 0.566,
+      "inclusive_ms": 1.322,
+      "samples": 1
+    },
+    {
+      "function": "zoneSansRepere",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 969,
+      "self_ms": 0.564,
+      "inclusive_ms": 0.678,
+      "samples": 3
+    },
+    {
+      "function": "preparerReperes",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 982,
+      "self_ms": 0.56,
+      "inclusive_ms": 2.055,
+      "samples": 3
+    },
+    {
+      "function": "poserReperes",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 1007,
+      "self_ms": 0.515,
+      "inclusive_ms": 1.187,
+      "samples": 3
+    },
+    {
+      "function": "angles",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 44,
+      "self_ms": 0.499,
+      "inclusive_ms": 0.499,
+      "samples": 3
+    },
+    {
+      "function": "ajouter",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 1107,
+      "self_ms": 0.497,
+      "inclusive_ms": 2.466,
+      "samples": 3
+    },
+    {
+      "function": "sol",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 494,
+      "self_ms": 0.496,
+      "inclusive_ms": 0.496,
+      "samples": 3
+    },
+    {
+      "function": "lisse",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 38,
+      "self_ms": 0.484,
+      "inclusive_ms": 0.484,
+      "samples": 3
+    },
+    {
+      "function": "sommet",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 198,
+      "self_ms": 0.476,
+      "inclusive_ms": 0.476,
+      "samples": 1
+    },
+    {
+      "function": "varier",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 40,
+      "self_ms": 0.452,
+      "inclusive_ms": 0.944,
+      "samples": 3
+    },
+    {
+      "function": "hauteurRoute",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 125,
+      "self_ms": 0.345,
+      "inclusive_ms": 0.345,
+      "samples": 1
+    },
+    {
+      "function": "fbm",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 33,
+      "self_ms": 0.343,
+      "inclusive_ms": 0.948,
+      "samples": 2
+    },
+    {
+      "function": "lotDe",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 1103,
+      "self_ms": 0.329,
+      "inclusive_ms": 0.329,
+      "samples": 2
+    },
+    {
+      "function": "(anonymous)",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 40,
+      "self_ms": 0.328,
+      "inclusive_ms": 0.492,
+      "samples": 2
+    },
+    {
+      "function": "(program)",
+      "file": "",
+      "line": 0,
+      "self_ms": 0.326,
+      "inclusive_ms": 0.326,
+      "samples": 4
+    },
+    {
+      "function": "(anonymous)",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 14,
+      "self_ms": 0.325,
+      "inclusive_ms": 0.325,
+      "samples": 2
+    },
+    {
+      "function": "planifier",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/virages.js",
+      "line": 11,
+      "self_ms": 0.324,
+      "inclusive_ms": 0.647,
+      "samples": 2
+    },
+    {
+      "function": "nappe",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 195,
+      "self_ms": 0.316,
+      "inclusive_ms": 0.316,
+      "samples": 1
+    },
+    {
+      "function": "(anonymous)",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 14,
+      "self_ms": 0.309,
+      "inclusive_ms": 0.309,
+      "samples": 1
+    },
+    {
+      "function": "(anonymous)",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 39,
+      "self_ms": 0.241,
+      "inclusive_ms": 0.241,
+      "samples": 2
+    },
+    {
+      "function": "indexAxe",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 149,
+      "self_ms": 0.198,
+      "inclusive_ms": 0.198,
+      "samples": 1
+    },
+    {
+      "function": "(anonymous)",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 14,
+      "self_ms": 0.194,
+      "inclusive_ms": 0.194,
+      "samples": 1
+    },
+    {
+      "function": "echantillon",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/circuit.js",
+      "line": 509,
+      "self_ms": 0.172,
+      "inclusive_ms": 0.172,
+      "samples": 1
+    },
+    {
+      "function": "(anonymous)",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 988,
+      "self_ms": 0.17,
+      "inclusive_ms": 0.17,
+      "samples": 1
+    },
+    {
+      "function": "finir",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 209,
+      "self_ms": 0.17,
+      "inclusive_ms": 0.17,
+      "samples": 1
+    },
+    {
+      "function": "marquerSolide",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 61,
+      "self_ms": 0.167,
+      "inclusive_ms": 0.167,
+      "samples": 1
+    },
+    {
+      "function": "couperAccotement",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/route-des-cimes-decor.js",
+      "line": 37,
+      "self_ms": 0.166,
+      "inclusive_ms": 0.166,
+      "samples": 1
+    },
+    {
+      "function": "lotDe",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 1103,
+      "self_ms": 0.165,
+      "inclusive_ms": 0.165,
+      "samples": 1
+    },
+    {
+      "function": "objet",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/batiments.js",
+      "line": 14,
+      "self_ms": 0.164,
+      "inclusive_ms": 0.164,
+      "samples": 1
+    },
+    {
+      "function": "(anonymous)",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 14,
+      "self_ms": 0.164,
+      "inclusive_ms": 0.164,
+      "samples": 1
+    },
+    {
+      "function": "marque",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/batiments.js",
+      "line": 179,
+      "self_ms": 0.164,
+      "inclusive_ms": 0.336,
+      "samples": 1
+    },
+    {
+      "function": "hache",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 22,
+      "self_ms": 0.163,
+      "inclusive_ms": 0.163,
+      "samples": 1
+    },
+    {
+      "function": "tube",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/batiments.js",
+      "line": 24,
+      "self_ms": 0.163,
+      "inclusive_ms": 0.305,
+      "samples": 1
+    },
+    {
+      "function": "auvent",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/batiments.js",
+      "line": 30,
+      "self_ms": 0.163,
+      "inclusive_ms": 0.163,
+      "samples": 1
+    },
+    {
+      "function": "(anonymous)",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/virages.js",
+      "line": 52,
+      "self_ms": 0.162,
+      "inclusive_ms": 0.162,
+      "samples": 1
+    },
+    {
+      "function": "ramener",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/virages.js",
+      "line": 9,
+      "self_ms": 0.161,
+      "inclusive_ms": 0.161,
+      "samples": 1
+    },
+    {
+      "function": "asphalte",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 242,
+      "self_ms": 0.158,
+      "inclusive_ms": 1.106,
+      "samples": 1
+    },
+    {
+      "function": "point",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/batiments.js",
+      "line": 12,
+      "self_ms": 0.142,
+      "inclusive_ms": 0.142,
+      "samples": 0
+    },
+    {
+      "function": "lisse",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 38,
+      "self_ms": 0.135,
+      "inclusive_ms": 0.135,
+      "samples": 0
+    },
+    {
+      "function": "ecart",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/circuit.js",
+      "line": 541,
+      "self_ms": 0.114,
+      "inclusive_ms": 0.114,
+      "samples": 0
+    },
+    {
+      "function": "lotDe",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 1103,
+      "self_ms": 0.102,
+      "inclusive_ms": 0.102,
+      "samples": 0
+    },
+    {
+      "function": "maison",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/batiments.js",
+      "line": 128,
+      "self_ms": 0.022,
+      "inclusive_ms": 0.49,
+      "samples": 1
+    },
+    {
+      "function": "(root)",
+      "file": "",
+      "line": 0,
+      "self_ms": 0.0,
+      "inclusive_ms": 150.655,
+      "samples": 0
+    },
+    {
+      "function": "post",
+      "file": "file:///workspace/scratch/ea118b42480b/qa-decor-0275/mesure.mjs",
+      "line": 12,
+      "self_ms": 0.0,
+      "inclusive_ms": 21.731,
+      "samples": 0
+    },
+    {
+      "function": "(anonymous)",
+      "file": "file:///workspace/scratch/ea118b42480b/qa-decor-0275/mesure.mjs",
+      "line": 12,
+      "self_ms": 0.0,
+      "inclusive_ms": 21.731,
+      "samples": 0
+    },
+    {
+      "function": "(anonymous)",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/decor.js",
+      "line": 868,
+      "self_ms": 0.0,
+      "inclusive_ms": 0.194,
+      "samples": 0
+    },
+    {
+      "function": "biseau",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/batiments.js",
+      "line": 23,
+      "self_ms": 0.0,
+      "inclusive_ms": 0.164,
+      "samples": 0
+    },
+    {
+      "function": "auvent",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/batiments.js",
+      "line": 30,
+      "self_ms": 0.0,
+      "inclusive_ms": 0.674,
+      "samples": 0
+    },
+    {
+      "function": "voieService",
+      "file": "file:///workspace/scratch/ea118b42480b/bitume/src/batiments.js",
+      "line": 176,
+      "self_ms": 0.0,
+      "inclusive_ms": 0.336,
+      "samples": 0
+    }
+  ]
+}

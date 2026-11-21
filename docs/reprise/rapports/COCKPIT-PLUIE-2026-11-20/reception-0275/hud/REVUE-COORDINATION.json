@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "review": "Seconde revue visuelle des PNG originaux par coordination00",
+  "candidate": "5d59cae6630c49ae62c47303100d61dd63daea56",
+  "images": [
+    {
+      "path": "duo-compact/files/images/apres/cockpit-duo-compact/0001.png",
+      "sha256": "a50cee14d4685e63f2328697f2461d6cc0f51de384ad182c3385956c34404cea",
+      "observation": "J1/J2 : annonces séparées POSITION/TOUR, santé hors des glaces, mains et rétros lisibles."
+    },
+    {
+      "path": "carte-gauche/files/images/apres/cockpit-carte-gauche/0001.png",
+      "sha256": "2b508ac3b715817a2227aba73132b6a5fa9aaa213310d04c7501aa04f50e5c87",
+      "observation": "Grande carte gauche : badge FPS séparé des mains ; annonce, compteurs et classement à droite dégagés."
+    },
+    {
+      "path": "carte-gauche-stabilise/files/images/apres/cockpit-carte-gauche-stabilise/0001.png",
+      "sha256": "a4e93e7c717fdb3e18c2ae0d7e3821781e6d70e8052f321186da015917db91cd",
+      "observation": "Virage maintenu gauche : gant droit séparé du classement/régime, badge FPS à gauche dégagé, route centrale visible."
+    },
+    {
+      "path": "carte-droite-stabilise/files/images/apres/cockpit-carte-droite-stabilise/0001.png",
+      "sha256": "da940c0735a51a3b1618a8547dbb88c597d09e10d9ed1302f22deb42c224a519",
+      "observation": "Virage maintenu droite : badge FPS visible et séparé du gant gauche ; classement, annonce et route centrale dégagés."
+    }
+  ],
+  "complete": true
+}

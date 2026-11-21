@@ -1,0 +1,10 @@
+{
+  "0000.png": {
+    "conforme": true,
+    "constats": "PNG original 960×540 inspecté, deux vues 960×270. Deux classements lisibles, carte propre à chaque joueur, quatre glaces présentes. Barres santé hors des glaces. Commandes visibles et aucune superposition des panneaux sur les gants ; FPS global visible en J1."
+  },
+  "0001.png": {
+    "conforme": true,
+    "constats": "PNG original 960×540 inspecté en braquage J1/J2. Annonces distinctes 60 m et 140 m sous POSITION/TOUR, sans masque ; classements dégagés des gants. Santé hors des glaces, cartes entières et chaussée centrale visible. FPS global reste visible en J1."
+  }
+}

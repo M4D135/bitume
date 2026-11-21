@@ -1,0 +1,10 @@
+{
+  "0000.png": {
+    "conforme": true,
+    "constats": "PNG original 960×540 inspecté après 120 pas. Grande carte droite, glaces et compteurs complets visibles. Badge FPS sous le classement gauche, séparé des gants ; route centrale dégagée."
+  },
+  "0001.png": {
+    "conforme": true,
+    "constats": "PNG original 960×540 inspecté après les 120 pas de braquage +0,35. Le badge FPS ne recouvre plus le gant gauche : espace visible entre son bord droit et le gant. Classement, annonce Droite serrée 60 m, compteurs, carte et deux glaces présents et dégagés des commandes et de la chaussée centrale."
+  }
+}

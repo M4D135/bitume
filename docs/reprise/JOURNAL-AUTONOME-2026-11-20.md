@@ -705,3 +705,33 @@ a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225.
 Revue indépendante favorable ; marge préparatoire de 56,002 px aux commandes et
 19 px au classement sur huit poses. CI et dix nouveaux PNG requis avant fusion.
 Aucun déploiement ; p15, FERRO 0.3.15, PR 43 et travaux parallèles préservés.
+
+
+## 039 — 21 novembre : publication 0.2.75 et réserve décor ouverte
+
+La PR 51 est fusionnée sur main au commit
+`b1e5e98b9029f6254b86dcfb49780883315a9418`. L’arbre reçu
+`2d019e71d09ea31be7588cde0f401606cbf934af` est strictement identique au
+candidat `5d59cae6630c49ae62c47303100d61dd63daea56`.
+Les CI push 44845571993 et PR 44845586813 passent chacune 179 suites Node,
+zéro échec et huit tests Python. Deux ZIP reçus et rapprochés : 3 988 fichiers
+et modes identiques ; HTML 14 511 184 octets, SHA256
+`a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225`.
+
+Les dix PNG des cinq groupes du run 44845571914 sont reçus et inspectés :
+petit duo J1/J2, compacts et deux braquages maintenus −0,35/+0,35 avec 120 pas
+par pose. Badge FPS visible et dégagé, annonces présentes aux instants requis,
+glaces/commandes/chaussée conformes sur ces cas. Le défaut .74 et les échecs
+.70–.73 restent archivés ; aucun seuil ni témoin n’est retiré.
+[Publication et preuves](rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json).
+
+Réserve décor toujours ouverte : cinq appels locaux donnent 151,87 / 138,20 /
+141,13 / 84,43 / 85,68 ms, dont un échec au seuil strict <150 ms. Les anciennes
+mesures 172/152/168/155 ms restent conservées ; aucun gain n’est démontré.
+Piste préparée pour 04 : stockage fixe des indices des nappes Route pour éviter
+19 323 couples temporaires ; identité géométrique et mesures alternées à qualifier.
+Aucun code de cette optimisation appliqué. [Diagnostic](rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/diagnostic-decor/DIAGNOSTIC.json).
+
+Clôture documentaire uniquement : p15, FERRO 0.3.15, neuf circuits, « Planche seule »,
+annonces Non au premier lancement et préférences enregistrées préservés.
+PR43, états propriétaires 01–05, M1 et programme restant conservés. Aucun déploiement.

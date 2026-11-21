@@ -1,0 +1,583 @@
+{
+  "format": "bitume-captures-habitacle-v2",
+  "date": "2026-11-21T00:42:25.579Z",
+  "demandes": [
+    "cockpit-carte-gauche"
+  ],
+  "seuilsCockpit": {
+    "routeCadreeMin": 0.9,
+    "routeOcculteeMax": 0.05,
+    "routeCentraleOcculteeMax": 0,
+    "largeurGlaceMax": 0.18,
+    "erreurDomMaxPx": 2,
+    "recouvrementMaxPx2": 1
+  },
+  "passages": [
+    {
+      "variante": "apres",
+      "scenario": "cockpit-carte-gauche",
+      "dossier": "apres/cockpit-carte-gauche",
+      "images": 2,
+      "build": {
+        "sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
+        "octets": 14511184
+      },
+      "source": {
+        "commit": "5d59cae6630c49ae62c47303100d61dd63daea56",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "empreintes": [
+        {
+          "fichier": "0000.png",
+          "octets": 417923,
+          "sha256": "5da67b58b25ff39fa9a1c22b638af7db290b7618c9edff60c047279465defba6"
+        },
+        {
+          "fichier": "0001.png",
+          "octets": 426919,
+          "sha256": "2b508ac3b715817a2227aba73132b6a5fa9aaa213310d04c7501aa04f50e5c87"
+        }
+      ],
+      "constatsLisibilite": [],
+      "phasesHabitacle": [
+        {
+          "image": null,
+          "phase": "initialisation",
+          "etat": "terminee"
+        },
+        {
+          "image": 0,
+          "phase": "preparer-instant",
+          "etat": "terminee"
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-1/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1416.6666666666683,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-2/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1433.333333333335,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-3/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1450.0000000000018,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-4/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1466.6666666666686,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-5/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1483.3333333333353,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-6/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1500.000000000002,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-7/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1516.6666666666688,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-8/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1533.3333333333355,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-9/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1550.0000000000023,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-10/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1566.666666666669,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-11/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1583.3333333333358,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-12/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1600.0000000000025,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-13/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1616.6666666666692,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-14/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1633.333333333336,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-15/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1650.0000000000027,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-16/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1666.6666666666695,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-17/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1683.3333333333362,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-18/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1700.000000000003,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-19/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1716.6666666666697,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-20/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1733.3333333333364,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-21/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1750.0000000000032,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-22/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1766.66666666667,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-23/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1783.3333333333367,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "chauffe-24/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1800.0000000000034,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 0,
+          "phase": "armer-observation",
+          "etat": "terminee"
+        },
+        {
+          "image": 0,
+          "phase": "frame-et-PNG",
+          "etat": "recus"
+        },
+        {
+          "image": 0,
+          "phase": "observation",
+          "etat": "terminee"
+        },
+        {
+          "image": 1,
+          "phase": "preparer-instant",
+          "etat": "terminee"
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-1/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1833.333333333337,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-2/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1850.0000000000036,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-3/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1866.6666666666704,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-4/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1883.3333333333371,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-5/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1900.0000000000039,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-6/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1916.6666666666706,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-7/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1933.3333333333374,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-8/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1950.000000000004,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-9/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1966.6666666666708,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-10/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 1983.3333333333376,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-11/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 2000.0000000000043,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-12/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 2016.666666666671,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-13/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 2033.3333333333378,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-14/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 2050.0000000000045,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-15/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 2066.666666666671,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-16/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 2083.3333333333376,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-17/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 2100.000000000004,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-18/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 2116.6666666666706,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-19/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 2133.333333333337,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-20/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 2150.0000000000036,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-21/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 2166.66666666667,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-22/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 2183.3333333333367,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-23/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 2200.000000000003,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "chauffe-24/24",
+          "etat": "terminee",
+          "horloge": {
+            "temps": 2216.6666666666697,
+            "callbacks": 1,
+            "attente": 1
+          }
+        },
+        {
+          "image": 1,
+          "phase": "armer-observation",
+          "etat": "terminee"
+        },
+        {
+          "image": 1,
+          "phase": "frame-et-PNG",
+          "etat": "recus"
+        },
+        {
+          "image": 1,
+          "phase": "observation",
+          "etat": "terminee"
+        }
+      ],
+      "erreurs": []
+    }
+  ],
+  "echecs": 0,
+  "limites": [
+    "Poses prescrites : aucun essai de conduite ni de performance matérielle.",
+    "Les caméras extérieures sont des inspections via l’API du jeu ; les vues cockpit gardent sa vraie caméra.",
+    "Les LOD sont sélectionnés par distance sans forcer le modèle ; leurs petits pixels ne prouvent pas le dégagement des bras.",
+    "La lisibilité ciblée mesure vingt rayons vers le vrai sol à 12/20/35/55 m, les triangles opaques de la voiture, les quadrilatères DOM des glaces et les masques visibles du HUD ; elle ne couvre pas tout le circuit.",
+    "La présence de pièces et les images ne prouvent ni absence d’intersection ni identité des sommets : contrôles géométriques séparés requis.",
+    "Revue visuelle des PNG encore requise ; deux images ne constituent pas une qualification temporelle complète."
+  ]
+}

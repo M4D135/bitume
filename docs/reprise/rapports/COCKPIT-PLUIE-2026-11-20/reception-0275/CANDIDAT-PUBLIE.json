@@ -1,0 +1,21 @@
+{
+  "version": "0.2.75",
+  "pr": 51,
+  "url": "https://github.com/M4D135/bitume/pull/51",
+  "branch": "codex/bitume-0275-fps-cockpit-20261121",
+  "local_provenance": "da60f654bdcd4a1a6cdb3d14fcdb29032d100a44",
+  "published_commit": "5d59cae6630c49ae62c47303100d61dd63daea56",
+  "published_tree": "2d019e71d09ea31be7588cde0f401606cbf934af",
+  "readback_tree": "2d019e71d09ea31be7588cde0f401606cbf934af",
+  "html_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
+  "unique_blobs_verified": 59,
+  "files_changed_since_0274": 65,
+  "same_content_and_modes": true,
+  "ci_push": 44845571993,
+  "ci_pr": 44845586813,
+  "hud_run": 44845571914,
+  "site_deployed": false,
+  "merge_pending_at_publication": true,
+  "commit_fusion": "b1e5e98b9029f6254b86dcfb49780883315a9418",
+  "published_on_main": true
+}

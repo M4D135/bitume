@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "reference_version": "0.2.73",
+  "reference_commit": "f7f4ed54f9f79b2e8d560e6d0402f80949233641",
+  "candidate_version": "0.2.75",
+  "candidate_commit": "5d59cae6630c49ae62c47303100d61dd63daea56",
+  "changed_runtime_sources": [
+    "src/style.css"
+  ],
+  "physics": "p15",
+  "canonical_FERRO": "0.3.15",
+  "qualification_exacte_requise": "HUD des cinq groupes .75 et CI/archives .75 ; pas une réutilisation de PNG HUD .73 comme preuve .75",
+  "preuves_historiques_conservees": "Pluie et Troll .73 restent des captures .73 ; leurs sources dédiées, géométrie, conditions et raccords jeu sont identiques dans le candidat .75. Limites et références dans candidat-0273/RECEPTION-0273.json et reception-0274/ANALYSE-REUTILISATION-0274.json.",
+  "nouvelle_campagne_redundante": false
+}

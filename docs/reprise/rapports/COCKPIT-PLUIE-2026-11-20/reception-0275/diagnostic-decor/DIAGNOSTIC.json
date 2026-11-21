@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "commit": "5d59cae6630c49ae62c47303100d61dd63daea56",
+  "task": "Diagnostic seulement ; aucun changement runtime ni seuil",
+  "protocole": {
+    "source": "verifications/decor.test.mjs",
+    "imports": [
+      "carene.js",
+      "circuit.js",
+      "decor.js"
+    ],
+    "circuit": {
+      "graine": 11,
+      "theme": "foret",
+      "longueur_demandee": 4200,
+      "nom": "Val-Brûlé"
+    },
+    "appel_mesure": "D.construire(c)",
+    "options": "aucune",
+    "processus": "cinq processus Node frais, un appel par processus ; pas de chauffe",
+    "exclusions": "imports, création du circuit et empreinte hors mesure ; aucun WebGL/GPU/PhysX de séance ni FPS",
+    "seuil": "strictement < 150 ms, inchangé"
+  },
+  "mesures": {
+    "wall_ms": [
+      151.871872,
+      138.199408,
+      141.132089,
+      84.430921,
+      85.67600999999999
+    ],
+    "median_ms": 138.199408,
+    "echecs": 1,
+    "meme_hash_decor_enumerable": true,
+    "hash_limite": "JSON enumerable du décor ; les propriétés non énumérables et fonctions ne sont pas couvertes"
+  },
+  "profil_separe": {
+    "construction_ms": 128.723981,
+    "interval_us": 100,
+    "nappesRoute_inclusif_ms": 24.771,
+    "nappesTerrain_inclusif_ms": 19.037,
+    "gc_ms": 20.842,
+    "precautions": "Profil unique instrumenté : échantillonnage et allocation/GC donnent une piste, pas la cause prouvée de la dispersion ni un gain attendu. Le temps Profiler.post est exclu de la durée D.construire."
+  },
+  "prochain_levier_unique": {
+    "fichier": "src/decor.js",
+    "fonction": "nappesRoute",
+    "cible": "premiers[b] = [ia, ib] alloue un couple à chaque bande et chaque ligne",
+    "volume_val_brule": "19 323 couples temporaires (2 147 lignes × 9 bandes), en plus des 324 tableaux initiaux",
+    "proposition": "Un stockage fixe des deux indices précédents par bande et par nappe, avec sentinelle initiale, évite ces couples temporaires sans modifier ordre des sommets/triangles, nombres, tirages ou calculs de positions. Aucun prototype implémenté.",
+    "qualification_requise": "Comparer strictement sommets/indices et métadonnées de surfaces/herbe à référence ; tests existants décor/identité ; mêmes appels froids alternés avant/après, sans modifier <150 ms."
+  },
+  "limites": [
+    "Réserve reproduite une fois sur cinq localement : elle reste ouverte.",
+    "L’environnement local et celui de GitHub ne sont pas équivalents ; cause précise des écarts 84–152 ms non isolée.",
+    "Mesure du chemin historique low sans modules facultatifs de végétation/saisons ; pas la préparation complète de course.",
+    "Aucun gain FPS, Xbox, Intel ou GPU déduit.",
+    "Aucune nouvelle campagne générale, aucun changement du code ou des seuils, aucun push."
+  ],
+  "files_sha256": {
+    "PROFIL.json": "2380b9927690f1b5561a6f04cb0df3134308f69787e69a57dc4b3ed1ae553db4",
+    "mesure-3.json": "a9348dc2edf3ab4dd81c0005c48b03df4fef7abb641fd7add5a862623dc85cf5",
+    "mesure-2.json": "751339623a399cb80d376791f9f524422e1a09af3b786b66a2720f722141e769",
+    "mesure-5.json": "7d21208fdce3ebb676333fd6a9b44a56c7c645a725c55ea30f9dcf5809b7cba3",
+    "mesure.mjs": "f9470ef3dff86209937a717aaee1e310e1f49a05febaac4da3cb08b8241c3eea",
+    "mesure-1.json": "47722b546dfaf8baf265861494aa608d1a9519e841abfefb493f1b1b357d5c3a",
+    "mesure-4.json": "c58847e93f0a22093dfd67f445adb760e1dcbc2a80c55b68497c38d6b2d8f221",
+    "MESURES.json": "9a253f0cba1f7f5120a900263ff4f99ec944dbe20272e7e73bc73ab53dd14b9a",
+    "val-brule.cpuprofile": "ac12e06d14bc08db97cfc35d8fdf0bd9f52692de942d8cdb5474427467161739",
+    "mesure-profilee.json": "e8a80159773011cfed393d73feb150d1e2d5f42ea84cf2cd00467bcd5f53ca8a"
+  },
+  "git_status_observed": ""
+}

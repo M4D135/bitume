@@ -1,0 +1,22 @@
+{
+  "statut": "demarrage_chromium_echoue",
+  "cas": "cockpit-carte-droite-stabilise",
+  "head": "da60f654bdcd4a1a6cdb3d14fcdb29032d100a44",
+  "html": {
+    "sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
+    "octets": 14511184
+  },
+  "exit_code": 1,
+  "images": 0,
+  "erreurs": [
+    "Error: Chrome arrêté : /usr/bin/chromium: 9: [: 5225713664: unexpected operator",
+    "WebGL2 ou PhysX réel absent",
+    "Séance de référence absente",
+    "Observation du vrai draw absente",
+    "Nombre de captures incomplet",
+    "Résolution demandée non exercée"
+  ],
+  "captures_supplementaires_lancees": false,
+  "seuils_poses_html_modifies": false,
+  "reprise": "Utiliser la campagne GitHub autorisée ; aucun nouvel essai local ni modification du pilote."
+}

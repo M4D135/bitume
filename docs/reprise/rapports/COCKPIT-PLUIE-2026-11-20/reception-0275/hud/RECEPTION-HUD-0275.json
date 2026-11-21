@@ -1,0 +1,1015 @@
+{
+  "version": "0.2.75",
+  "run_id": 44845571914,
+  "commit": "5d59cae6630c49ae62c47303100d61dd63daea56",
+  "tree": "2d019e71d09ea31be7588cde0f401606cbf934af",
+  "html_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
+  "scenes": [
+    {
+      "groupe": "duo-compact",
+      "scenario": "cockpit-duo-compact",
+      "recu": true,
+      "images": [
+        {
+          "fichier": "0000.png",
+          "octets": 459841,
+          "sha256": "01321065b7e0becf5f770cd83a158831a55b46261916465d4ab3e3fcb225af41",
+          "chemin": "duo-compact/files/images/apres/cockpit-duo-compact/0000.png",
+          "dimensions": [
+            960,
+            540
+          ],
+          "identite_conforme": true,
+          "instant": "neutre",
+          "annonces": "ecran",
+          "tableau": "reduit",
+          "vues": [
+            {
+              "joueur": 1,
+              "vitesse": 0,
+              "volant": 0,
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g",
+                  "recouvrement_hud_px2": 0
+                },
+                {
+                  "id": "glace-d",
+                  "recouvrement_hud_px2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "erreurs": [],
+              "annonce": [],
+              "classement": []
+            },
+            {
+              "joueur": 2,
+              "vitesse": 0,
+              "volant": 0,
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g2",
+                  "recouvrement_hud_px2": 0
+                },
+                {
+                  "id": "glace-d2",
+                  "recouvrement_hud_px2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "erreurs": [],
+              "annonce": [],
+              "classement": []
+            }
+          ],
+          "inspection_visuelle": {
+            "conforme": true,
+            "constats": "PNG original 960×540 inspecté, deux vues 960×270. Deux classements lisibles, carte propre à chaque joueur, quatre glaces présentes. Barres santé hors des glaces. Commandes visibles et aucune superposition des panneaux sur les gants ; FPS global visible en J1."
+          }
+        },
+        {
+          "fichier": "0001.png",
+          "octets": 451675,
+          "sha256": "a50cee14d4685e63f2328697f2461d6cc0f51de384ad182c3385956c34404cea",
+          "chemin": "duo-compact/files/images/apres/cockpit-duo-compact/0001.png",
+          "dimensions": [
+            960,
+            540
+          ],
+          "identite_conforme": true,
+          "instant": "vitesse-braquage",
+          "annonces": "ecran",
+          "tableau": "reduit",
+          "vues": [
+            {
+              "joueur": 1,
+              "vitesse": 80,
+              "volant": 0.65,
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g",
+                  "recouvrement_hud_px2": 0
+                },
+                {
+                  "id": "glace-d",
+                  "recouvrement_hud_px2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "erreurs": [],
+              "annonce": [
+                {
+                  "id": "hud:h-virage:17",
+                  "element": "hud:element-31",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 65.20500183105469,
+                  "width": 138.24000549316406,
+                  "height": 32.355003356933594
+                }
+              ],
+              "classement": []
+            },
+            {
+              "joueur": 2,
+              "vitesse": 80,
+              "volant": -0.65,
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g2",
+                  "recouvrement_hud_px2": 0
+                },
+                {
+                  "id": "glace-d2",
+                  "recouvrement_hud_px2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "erreurs": [],
+              "annonce": [
+                {
+                  "id": "hud2:h-virage:17",
+                  "element": "hud2:element-31",
+                  "ancetres": [
+                    "hud2:element-32",
+                    "hud2:element-4",
+                    "hud2:element-5",
+                    "hud2:element-6",
+                    "hud2:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 335.20501708984375,
+                  "width": 138.24000549316406,
+                  "height": 32.35498046875
+                }
+              ],
+              "classement": []
+            }
+          ],
+          "inspection_visuelle": {
+            "conforme": true,
+            "constats": "PNG original 960×540 inspecté en braquage J1/J2. Annonces distinctes 60 m et 140 m sous POSITION/TOUR, sans masque ; classements dégagés des gants. Santé hors des glaces, cartes entières et chaussée centrale visible. FPS global reste visible en J1."
+          }
+        }
+      ],
+      "archive_sha256": "3cdf143e081b91a857ecf1deca3de8f4243c996c3d1a8fcfea022f8cbf5a7013",
+      "artefact": {
+        "artifact_id": 14682214876,
+        "name": "bitume-hud-complement-duo-compact-5d59cae6630c49ae62c47303100d61dd63daea56",
+        "octets": 977816,
+        "sha256": "3cdf143e081b91a857ecf1deca3de8f4243c996c3d1a8fcfea022f8cbf5a7013",
+        "github_digest": "sha256:3cdf143e081b91a857ecf1deca3de8f4243c996c3d1a8fcfea022f8cbf5a7013",
+        "run_id": 44845571914
+      },
+      "identite": {
+        "commit": "5d59cae6630c49ae62c47303100d61dd63daea56",
+        "tree": "2d019e71d09ea31be7588cde0f401606cbf934af",
+        "html_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225"
+      },
+      "identite_conforme": true,
+      "erreurs_campagne": [],
+      "constats_lisibilite": [],
+      "chauffe_par_image": [
+        {
+          "image": 0,
+          "pas_requis": 24,
+          "pas_observes": 24,
+          "tous_termines": true
+        },
+        {
+          "image": 1,
+          "pas_requis": 24,
+          "pas_observes": 24,
+          "tous_termines": true
+        }
+      ],
+      "erreurs_reverification": [],
+      "complet": true,
+      "inspection_visuelle_complete": true,
+      "qualifie": true
+    },
+    {
+      "groupe": "carte-gauche-stabilise",
+      "scenario": "cockpit-carte-gauche-stabilise",
+      "recu": true,
+      "images": [
+        {
+          "fichier": "0000.png",
+          "octets": 417590,
+          "sha256": "eb3a8fec6515b7335b4d0b9307369697b67ed4038e7de1f882e2d408c429e7ef",
+          "chemin": "carte-gauche-stabilise/files/images/apres/cockpit-carte-gauche-stabilise/0000.png",
+          "dimensions": [
+            960,
+            540
+          ],
+          "identite_conforme": true,
+          "instant": "neutre",
+          "annonces": "ecran",
+          "tableau": "complet",
+          "vues": [
+            {
+              "joueur": 1,
+              "vitesse": 0,
+              "volant": 0,
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g",
+                  "recouvrement_hud_px2": 0
+                },
+                {
+                  "id": "glace-d",
+                  "recouvrement_hud_px2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "erreurs": [],
+              "annonce": [],
+              "classement": []
+            }
+          ],
+          "inspection_visuelle": {
+            "conforme": true,
+            "constats": "PNG original 960×540 inspecté après 120 pas. Grande carte gauche, glaces, classement et compteurs complets présents ; FPS à gauche dégagé des gants et de la route. Pose neutre sans annonce."
+          }
+        },
+        {
+          "fichier": "0001.png",
+          "octets": 419221,
+          "sha256": "a4e93e7c717fdb3e18c2ae0d7e3821781e6d70e8052f321186da015917db91cd",
+          "chemin": "carte-gauche-stabilise/files/images/apres/cockpit-carte-gauche-stabilise/0001.png",
+          "dimensions": [
+            960,
+            540
+          ],
+          "identite_conforme": true,
+          "instant": "vitesse-braquage",
+          "annonces": "ecran",
+          "tableau": "complet",
+          "vues": [
+            {
+              "joueur": 1,
+              "vitesse": 80,
+              "volant": -0.35,
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g",
+                  "recouvrement_hud_px2": 0
+                },
+                {
+                  "id": "glace-d",
+                  "recouvrement_hud_px2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "erreurs": [],
+              "annonce": [
+                {
+                  "id": "hud:h-virage:17",
+                  "element": "hud:element-31",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 746.890625,
+                  "y": 176.0625,
+                  "width": 192,
+                  "height": 44.9375
+                }
+              ],
+              "classement": []
+            }
+          ],
+          "inspection_visuelle": {
+            "conforme": true,
+            "constats": "PNG original 960×540 inspecté après les 120 pas de braquage −0,35. Gant droit dégagé du classement et du régime, FPS à gauche séparé des commandes. Grande carte gauche et deux glaces entières ; annonce Droite serrée 60 m visible à droite. Chaussée centrale et rival visibles."
+          }
+        }
+      ],
+      "archive_sha256": "9bef83139b7aafdce466403a3233e359aacd6f104de997290793bf4d91b76708",
+      "artefact": {
+        "artifact_id": 14683214450,
+        "name": "bitume-hud-complement-carte-gauche-stabilise-5d59cae6630c49ae62c47303100d61dd63daea56",
+        "octets": 889018,
+        "sha256": "9bef83139b7aafdce466403a3233e359aacd6f104de997290793bf4d91b76708",
+        "github_digest": "sha256:9bef83139b7aafdce466403a3233e359aacd6f104de997290793bf4d91b76708",
+        "run_id": 44845571914
+      },
+      "identite": {
+        "commit": "5d59cae6630c49ae62c47303100d61dd63daea56",
+        "tree": "2d019e71d09ea31be7588cde0f401606cbf934af",
+        "html_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225"
+      },
+      "identite_conforme": true,
+      "erreurs_campagne": [],
+      "constats_lisibilite": [],
+      "chauffe_par_image": [
+        {
+          "image": 0,
+          "pas_requis": 120,
+          "pas_observes": 120,
+          "tous_termines": true
+        },
+        {
+          "image": 1,
+          "pas_requis": 120,
+          "pas_observes": 120,
+          "tous_termines": true
+        }
+      ],
+      "erreurs_reverification": [],
+      "complet": true,
+      "inspection_visuelle_complete": true,
+      "qualifie": true
+    },
+    {
+      "groupe": "carte-droite-stabilise",
+      "scenario": "cockpit-carte-droite-stabilise",
+      "recu": true,
+      "images": [
+        {
+          "fichier": "0000.png",
+          "octets": 417664,
+          "sha256": "1fd22dca09b97000e9b79bd57a8dbef6c244f91a46b996213d8b580473812929",
+          "chemin": "carte-droite-stabilise/files/images/apres/cockpit-carte-droite-stabilise/0000.png",
+          "dimensions": [
+            960,
+            540
+          ],
+          "identite_conforme": true,
+          "instant": "neutre",
+          "annonces": "ecran",
+          "tableau": "complet",
+          "vues": [
+            {
+              "joueur": 1,
+              "vitesse": 0,
+              "volant": 0,
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g",
+                  "recouvrement_hud_px2": 0
+                },
+                {
+                  "id": "glace-d",
+                  "recouvrement_hud_px2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "erreurs": [],
+              "annonce": [],
+              "classement": []
+            }
+          ],
+          "inspection_visuelle": {
+            "conforme": true,
+            "constats": "PNG original 960×540 inspecté après 120 pas. Grande carte droite, glaces et compteurs complets visibles. Badge FPS sous le classement gauche, séparé des gants ; route centrale dégagée."
+          }
+        },
+        {
+          "fichier": "0001.png",
+          "octets": 421564,
+          "sha256": "da940c0735a51a3b1618a8547dbb88c597d09e10d9ed1302f22deb42c224a519",
+          "chemin": "carte-droite-stabilise/files/images/apres/cockpit-carte-droite-stabilise/0001.png",
+          "dimensions": [
+            960,
+            540
+          ],
+          "identite_conforme": true,
+          "instant": "vitesse-braquage",
+          "annonces": "ecran",
+          "tableau": "complet",
+          "vues": [
+            {
+              "joueur": 1,
+              "vitesse": 80,
+              "volant": 0.35,
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g",
+                  "recouvrement_hud_px2": 0
+                },
+                {
+                  "id": "glace-d",
+                  "recouvrement_hud_px2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "erreurs": [],
+              "annonce": [
+                {
+                  "id": "hud:h-virage:17",
+                  "element": "hud:element-31",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 176.0625,
+                  "width": 192,
+                  "height": 44.9375
+                }
+              ],
+              "classement": []
+            }
+          ],
+          "inspection_visuelle": {
+            "conforme": true,
+            "constats": "PNG original 960×540 inspecté après les 120 pas de braquage +0,35. Le badge FPS ne recouvre plus le gant gauche : espace visible entre son bord droit et le gant. Classement, annonce Droite serrée 60 m, compteurs, carte et deux glaces présents et dégagés des commandes et de la chaussée centrale."
+          }
+        }
+      ],
+      "archive_sha256": "f5286dd6fd01d42037c3036540b2de4f8e0082cfa2b95f89d6ca268d4a55d12d",
+      "artefact": {
+        "artifact_id": 14683632307,
+        "name": "bitume-hud-complement-carte-droite-stabilise-5d59cae6630c49ae62c47303100d61dd63daea56",
+        "octets": 891477,
+        "sha256": "f5286dd6fd01d42037c3036540b2de4f8e0082cfa2b95f89d6ca268d4a55d12d",
+        "github_digest": "sha256:f5286dd6fd01d42037c3036540b2de4f8e0082cfa2b95f89d6ca268d4a55d12d",
+        "run_id": 44845571914
+      },
+      "identite": {
+        "commit": "5d59cae6630c49ae62c47303100d61dd63daea56",
+        "tree": "2d019e71d09ea31be7588cde0f401606cbf934af",
+        "html_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225"
+      },
+      "identite_conforme": true,
+      "erreurs_campagne": [],
+      "constats_lisibilite": [],
+      "chauffe_par_image": [
+        {
+          "image": 0,
+          "pas_requis": 120,
+          "pas_observes": 120,
+          "tous_termines": true
+        },
+        {
+          "image": 1,
+          "pas_requis": 120,
+          "pas_observes": 120,
+          "tous_termines": true
+        }
+      ],
+      "erreurs_reverification": [],
+      "complet": true,
+      "inspection_visuelle_complete": true,
+      "qualifie": true
+    },
+    {
+      "groupe": "compact",
+      "scenario": "cockpit-compact",
+      "recu": true,
+      "images": [
+        {
+          "fichier": "0000.png",
+          "octets": 411654,
+          "sha256": "01db7dffc6d0f430b1b6cd69f26e1572e383d919337657659a2c4d7aec368c70",
+          "chemin": "compact/files/images/apres/cockpit-compact/0000.png",
+          "dimensions": [
+            960,
+            540
+          ],
+          "identite_conforme": true,
+          "instant": "neutre",
+          "annonces": "ecran",
+          "tableau": "reduit",
+          "vues": [
+            {
+              "joueur": 1,
+              "vitesse": 0,
+              "volant": 0,
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g",
+                  "recouvrement_hud_px2": 0
+                },
+                {
+                  "id": "glace-d",
+                  "recouvrement_hud_px2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "erreurs": [],
+              "annonce": [],
+              "classement": []
+            }
+          ],
+          "inspection_visuelle": {
+            "conforme": true,
+            "constats": "PNG original 960×540 inspecté. Carte droite entière, deux glaces visibles, classement et badge FPS distincts. Badge hors des gants, volant et chaussée centrale. Planche seule conservée. Aucun bandeau de virage au neutre."
+          }
+        },
+        {
+          "fichier": "0001.png",
+          "octets": 421014,
+          "sha256": "b12efec1d204fc25acec3536472ba559eff8fa245d59b3ba6545c9185aaaffcb",
+          "chemin": "compact/files/images/apres/cockpit-compact/0001.png",
+          "dimensions": [
+            960,
+            540
+          ],
+          "identite_conforme": true,
+          "instant": "vitesse-braquage",
+          "annonces": "ecran",
+          "tableau": "reduit",
+          "vues": [
+            {
+              "joueur": 1,
+              "vitesse": 80,
+              "volant": 0.65,
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g",
+                  "recouvrement_hud_px2": 0
+                },
+                {
+                  "id": "glace-d",
+                  "recouvrement_hud_px2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "erreurs": [],
+              "annonce": [
+                {
+                  "id": "hud:h-virage:17",
+                  "element": "hud:element-31",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 176.0625,
+                  "width": 192,
+                  "height": 44.9375
+                }
+              ],
+              "classement": []
+            }
+          ],
+          "inspection_visuelle": {
+            "conforme": true,
+            "constats": "PNG original 960×540 inspecté en braquage. Annonce Droite serrée 60 m visible sous la glace gauche ; classement et FPS séparés du gant visible et de la chaussée centrale. Carte et deux glaces entières ; textes conservés."
+          }
+        }
+      ],
+      "archive_sha256": "f913890c32574298cf9f3791782413915be7cf3a254d7ac2b49ad6bea4670c58",
+      "artefact": {
+        "artifact_id": 14683385233,
+        "name": "bitume-hud-complement-compact-5d59cae6630c49ae62c47303100d61dd63daea56",
+        "octets": 878369,
+        "sha256": "f913890c32574298cf9f3791782413915be7cf3a254d7ac2b49ad6bea4670c58",
+        "github_digest": "sha256:f913890c32574298cf9f3791782413915be7cf3a254d7ac2b49ad6bea4670c58",
+        "run_id": 44845571914
+      },
+      "identite": {
+        "commit": "5d59cae6630c49ae62c47303100d61dd63daea56",
+        "tree": "2d019e71d09ea31be7588cde0f401606cbf934af",
+        "html_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225"
+      },
+      "identite_conforme": true,
+      "erreurs_campagne": [],
+      "constats_lisibilite": [],
+      "chauffe_par_image": [
+        {
+          "image": 0,
+          "pas_requis": 24,
+          "pas_observes": 24,
+          "tous_termines": true
+        },
+        {
+          "image": 1,
+          "pas_requis": 24,
+          "pas_observes": 24,
+          "tous_termines": true
+        }
+      ],
+      "erreurs_reverification": [],
+      "complet": true,
+      "inspection_visuelle_complete": true,
+      "qualifie": true
+    },
+    {
+      "groupe": "carte-gauche",
+      "scenario": "cockpit-carte-gauche",
+      "recu": true,
+      "images": [
+        {
+          "fichier": "0000.png",
+          "octets": 417923,
+          "sha256": "5da67b58b25ff39fa9a1c22b638af7db290b7618c9edff60c047279465defba6",
+          "chemin": "carte-gauche/files/images/apres/cockpit-carte-gauche/0000.png",
+          "dimensions": [
+            960,
+            540
+          ],
+          "identite_conforme": true,
+          "instant": "neutre",
+          "annonces": "ecran",
+          "tableau": "complet",
+          "vues": [
+            {
+              "joueur": 1,
+              "vitesse": 0,
+              "volant": 0,
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g",
+                  "recouvrement_hud_px2": 0
+                },
+                {
+                  "id": "glace-d",
+                  "recouvrement_hud_px2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "erreurs": [],
+              "annonce": [],
+              "classement": []
+            }
+          ],
+          "inspection_visuelle": {
+            "conforme": true,
+            "constats": "PNG original 960×540 inspecté. Grande carte gauche et glaces entières ; compteurs complets à droite lisibles. Badge FPS à gauche dégagé des gants et de la chaussée centrale, classement à droite séparé des commandes."
+          }
+        },
+        {
+          "fichier": "0001.png",
+          "octets": 426919,
+          "sha256": "2b508ac3b715817a2227aba73132b6a5fa9aaa213310d04c7501aa04f50e5c87",
+          "chemin": "carte-gauche/files/images/apres/cockpit-carte-gauche/0001.png",
+          "dimensions": [
+            960,
+            540
+          ],
+          "identite_conforme": true,
+          "instant": "vitesse-braquage",
+          "annonces": "ecran",
+          "tableau": "complet",
+          "vues": [
+            {
+              "joueur": 1,
+              "vitesse": 80,
+              "volant": 0.65,
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g",
+                  "recouvrement_hud_px2": 0
+                },
+                {
+                  "id": "glace-d",
+                  "recouvrement_hud_px2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "erreurs": [],
+              "annonce": [
+                {
+                  "id": "hud:h-virage:17",
+                  "element": "hud:element-31",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 746.890625,
+                  "y": 176.0625,
+                  "width": 192,
+                  "height": 44.9375
+                }
+              ],
+              "classement": []
+            }
+          ],
+          "inspection_visuelle": {
+            "conforme": true,
+            "constats": "PNG original 960×540 inspecté. Annonce Droite serrée 60 m à droite, grande carte gauche, vitesse/régime/rapport visibles. Aucun masque du badge, du classement ou des compteurs sur le gant en braquage ; glaces et route centrale dégagées."
+          }
+        }
+      ],
+      "archive_sha256": "b1851fdb12fc3c082aa13bf0145d8d421fb878955b6bb6bbb8900e86503764c4",
+      "artefact": {
+        "artifact_id": 14683540296,
+        "name": "bitume-hud-complement-carte-gauche-5d59cae6630c49ae62c47303100d61dd63daea56",
+        "octets": 890748,
+        "sha256": "b1851fdb12fc3c082aa13bf0145d8d421fb878955b6bb6bbb8900e86503764c4",
+        "github_digest": "sha256:b1851fdb12fc3c082aa13bf0145d8d421fb878955b6bb6bbb8900e86503764c4",
+        "run_id": 44845571914
+      },
+      "identite": {
+        "commit": "5d59cae6630c49ae62c47303100d61dd63daea56",
+        "tree": "2d019e71d09ea31be7588cde0f401606cbf934af",
+        "html_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225"
+      },
+      "identite_conforme": true,
+      "erreurs_campagne": [],
+      "constats_lisibilite": [],
+      "chauffe_par_image": [
+        {
+          "image": 0,
+          "pas_requis": 24,
+          "pas_observes": 24,
+          "tous_termines": true
+        },
+        {
+          "image": 1,
+          "pas_requis": 24,
+          "pas_observes": 24,
+          "tous_termines": true
+        }
+      ],
+      "erreurs_reverification": [],
+      "complet": true,
+      "inspection_visuelle_complete": true,
+      "qualifie": true
+    }
+  ],
+  "run_url": "https://github.com/M4D135/bitume/actions/runs/44845571914",
+  "limites": [
+    "Captures logicielles de poses prescrites, pas de mesure FPS matérielle ni essai de conduite."
+  ],
+  "seuils_cockpit": {
+    "routeCadreeMin": 0.9,
+    "routeOcculteeMax": 0.05,
+    "routeCentraleOcculteeMax": 0,
+    "largeurGlaceMax": 0.18,
+    "erreurDomMaxPx": 2,
+    "recouvrementMaxPx2": 1
+  },
+  "complet": true,
+  "qualifie": true
+}

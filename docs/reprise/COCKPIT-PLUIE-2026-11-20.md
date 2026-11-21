@@ -1,5 +1,8 @@
 # Cockpit et pluie — correctif du 20 novembre 2026
 
+**Statut au 21 novembre : 0.2.75 publiée sur main via PR51 ; correctif reçu.**
+[Reçu final](rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json). Les comptes rendus de candidats ci-dessous restent historiques ; réserve CPU décor séparée et ouverte.
+
 ## Demande et périmètre
 
 La photo utilisateur montre un volant et un tableau trop hauts, avec des glaces
@@ -203,3 +206,29 @@ preuve négative et incident Chrome gauche conservés dans `reception-0274`.
 La .75 remonte uniquement le badge FPS sous le classement ; son affichage est
 exigé dans les contrôles stabilisés. 61 contrôles ciblés passent. Recevoir les
 nouvelles captures des deux sens avant fusion ; aucune police ni seuil réduit.
+
+
+## Publication 0.2.75 — 21 novembre 2026
+
+PR51 fusionnée au commit `b1e5e98b9029f6254b86dcfb49780883315a9418`,
+arbre exact `2d019e71d09ea31be7588cde0f401606cbf934af` du candidat `5d59cae`.
+Deux CI complètes : 179 suites Node sans échec et huit tests Python chacune.
+Chaque archive reçue contient 3 988 fichiers et modes identiques ; HTML
+14 511 184 octets, SHA256 `a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225`.
+
+Dix PNG, cinq groupes, reçus et inspectés sur ce HTML exact : petit duo J1/J2,
+compacts et deux virages maintenus ±0,35, 120 pas par pose. Le badge FPS reste
+visible et dégagé ; les contrôles et images confirment les commandes, glaces,
+chaussée et annonces dans ces cas. Les anciens échecs .70–.74 sont conservés.
+La qualification porte sur des poses prescrites en rendu logiciel, pas sur les
+FPS matériels ni un essai de conduite réel. [Reçu et preuves](rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json).
+
+La réserve décor demeure ouverte : diagnostic local 151,87 / 138,20 / 141,13 /
+84,43 / 85,68 ms, dont un échec au seuil strict <150 ms ; aucun gain prouvé.
+La piste des indices Route en stockage fixe (19 323 couples temporaires évitables)
+est préparée pour 04, sans code appliqué ; identité géométrique et mesures alternées
+restent à qualifier. [Diagnostic](rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/diagnostic-decor/DIAGNOSTIC.json).
+
+Physique p15, FERRO 0.3.15 et neuf circuits conservés. Annonces Non au premier
+lancement, choix existants et Planche seule préservés. PR43 et autres chantiers
+restent séparés ; aucun déploiement du site.

@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "date_utc": "2026-11-21T01:10:50.180004+00:00",
+  "statut": "publie_sur_main_avec_reserves_explicites",
+  "version": "0.2.75",
+  "physique": "p15",
+  "ferro": "0.3.15",
+  "circuits": 9,
+  "pr": 51,
+  "url": "https://github.com/M4D135/bitume/pull/51",
+  "branche": "codex/bitume-0275-fps-cockpit-20261121",
+  "base_main": "4aba3444be3a928edacebbb5055a4647ebe65c40",
+  "provenance_locale": "da60f654bdcd4a1a6cdb3d14fcdb29032d100a44",
+  "tete_qualifiee": "5d59cae6630c49ae62c47303100d61dd63daea56",
+  "arbre_qualifie": "2d019e71d09ea31be7588cde0f401606cbf934af",
+  "commit_fusion": "b1e5e98b9029f6254b86dcfb49780883315a9418",
+  "arbre_main_recu": "2d019e71d09ea31be7588cde0f401606cbf934af",
+  "main_relu_apres_fusion": true,
+  "arbre_main_identique_au_candidat": true,
+  "html": {
+    "octets": 14511184,
+    "sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
+    "git_blob": "baa3c0b79e73112af1201705d6e1e3c6d65fec2e",
+    "reconstructions_identiques": 2
+  },
+  "controle_local_candidat": {
+    "tests_cibles": 61,
+    "ferro_modules_conformes": 34
+  },
+  "ci": {
+    "push": {
+      "run_id": 44845571993,
+      "artifact_id": 14683640694,
+      "archive_sha256": "d50d8ad1765b6cac1460320e01b3dfc894d5cb6de141fd0adda32b8d8aef4f3b",
+      "github_digest_verified": true,
+      "source_files": 3988,
+      "identical_content_and_modes": true,
+      "html_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
+      "node_suites_passed": 179,
+      "node_suites_failed": 0,
+      "python_tests": 8,
+      "python_result": "OK",
+      "checkout_commit_received": "5d59cae6630c49ae62c47303100d61dd63daea56",
+      "recu": "ci/push/RECEPTION.json",
+      "conclusion": "success"
+    },
+    "pull_request": {
+      "run_id": 44845586813,
+      "artifact_id": 14683646160,
+      "archive_sha256": "d4c3de3bbe495c9082ebbbd5ce176187ea40402752844b6861987ff52451765b",
+      "github_digest_verified": true,
+      "source_files": 3988,
+      "identical_content_and_modes": true,
+      "html_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
+      "node_suites_passed": 179,
+      "node_suites_failed": 0,
+      "python_tests": 8,
+      "python_result": "OK",
+      "checkout_commit_received": "2bfa64d3f89888019d7ea858fe6af8d2166f6153",
+      "recu": "ci/pull_request/RECEPTION.json",
+      "conclusion": "success"
+    }
+  },
+  "hud": {
+    "run": 44845571914,
+    "conclusion": "success",
+    "groupes": 5,
+    "png_originaux_inspectes": 10,
+    "identites_et_digests_conformes": true,
+    "erreurs_campagne": 0,
+    "erreurs_relecture": 0,
+    "pas_par_pose_stabilisee": 120,
+    "poses_stabilisees": [
+      -0.35,
+      0.35
+    ],
+    "annonces_activees_pour_captures": true,
+    "fps_visible_et_degage": true,
+    "recu": "hud/RECEPTION-HUD-0275.json",
+    "seconde_revue": "hud/REVUE-COORDINATION.json"
+  },
+  "preuves_reutilisees": "PERIMETRE-PREUVES.json",
+  "preuves_negatives_precedentes_conservees": true,
+  "reserves": {
+    "decor": {
+      "statut": "ouverte",
+      "seuil_strict_ms": 150,
+      "seuil_modifie": false,
+      "ci_durees_individuelles_non_enregistrees": true,
+      "diagnostic_local": "diagnostic-decor/DIAGNOSTIC.json",
+      "processus_froids": 5,
+      "depassements_locaux": 1,
+      "mesures_ms": [
+        151.871872,
+        138.199408,
+        141.132089,
+        84.430921,
+        85.67600999999999
+      ],
+      "cause_dispersion": "non isolee",
+      "prochaine_piste": "Eviter les 19323 couples temporaires de nappesRoute ; aucun prototype ni gain mesure."
+    },
+    "materiel": "FPS Xbox/Intel, manettes physiques, ecoute et reseau entre machines non qualifies.",
+    "captures": "Poses prescrites et raster logiciel ; ne valent pas essai de conduite complet ni mesure FPS.",
+    "pr_43": "Pluie depuis les abris et travaux paralleles conserves separement."
+  },
+  "site_deploye": false,
+  "push_force": false,
+  "cloture_documentaire": {
+    "runtime_modifie": false,
+    "nouvelle_campagne_requise": false,
+    "base_main": "b1e5e98b9029f6254b86dcfb49780883315a9418"
+  }
+}
