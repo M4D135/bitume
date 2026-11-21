@@ -1,0 +1,54 @@
+{
+  "format": "bitume-larche-vinadio-inconnus-1",
+  "pretPourRuntime": false,
+  "mesuresAbsentesOuIncertaines": [
+    {
+      "id": "largeur_chaussee",
+      "gravite": "elevee",
+      "constat": "Tag OSM 'width' renseigné sur 0/84 voies SS21 (84/84 portent lanes=2).",
+      "regle": "largeurGM et largeurDM restent null dans trace-l1.json ; ne pas les remplacer par une constante présentée comme mesurée."
+    },
+    {
+      "id": "devers_chaussee",
+      "gravite": "elevee",
+      "constat": "Aucun dévers routier n'est disponible dans OSM ni déductible fiablement d'un MNT 5 m.",
+      "regle": "deversRad reste null dans trace-l1.json ; les coupes terrain ±15 m / ±40 m mesurent le versant naturel, pas la chaussée."
+    },
+    {
+      "id": "altitude_tunnels_et_paravalanches",
+      "gravite": "elevee",
+      "constat": "6 tunnels/paravalanches détectés dans OSM : le LiDAR DTM 5 m mesure le versant ou le toit au-dessus de l'ouvrage, pas le radier routier.",
+      "regle": "yChausseeM reste null sur tous les points tunnel/paravalanche ; une interpolation linéaire entre portails sert uniquement au calcul indicatif D+/D-."
+    },
+    {
+      "id": "altitude_tabliers_ponts",
+      "gravite": "moyenne",
+      "constat": "16 ponts taggés dans OSM : le DTM 5 m (sol nu filtré) peut plonger dans le lit du torrent sous le tablier.",
+      "regle": "yChausseeM reste null sur les points taggés pont ; niveau du tablier à contrôler sur profils d'entrée/sortie."
+    },
+    {
+      "id": "anciennete_lidar_2009_2011",
+      "gravite": "moyenne",
+      "constat": "Le DTM 5 m Regione Piemonte provient de la campagne ICE 2009–2011 (métadonnées révisées le 19/02/2026).",
+      "regle": "Vérifier séparément tout réaménagement routier ou paravalanche postérieur à 2011 avant L3/L4."
+    },
+    {
+      "id": "datum_vertical_frontiere",
+      "gravite": "faible",
+      "constat": "Comparaison mesurée sur 25 points frontaliers (s = 0..626 m) : écart moyen Piemonte - IGN69 = 0.023 m, max absolu = 0.727 m.",
+      "regle": "Aucune constante manuelle n'est ajoutée ; l'écart reste dans l'incertitude nominale ±0,30 m du DTM 5 m."
+    },
+    {
+      "id": "anomalies_pente_hors_ouvrage",
+      "gravite": "moyenne",
+      "constat": "2 segments hors ouvrage taggé dépassent 14 % sur le MNT brut 5 m (soutènement de lacet ou culée de pont non couverte par le tag).",
+      "regle": "Consignés dans trace-l1.json (anomaliesPenteTerrain) pour filtrage contrôlé et vérification avant L3."
+    },
+    {
+      "id": "ligne_arrivee_vinadio_precise",
+      "gravite": "faible",
+      "constat": "Ligne d'arrivée proposée au nœud OSM 4295216268 (32,249 km, sortie centre Vinadio) avec 568 m de décélération sur la SS21 droite.",
+      "regle": "Emplacement final et visibilité exacte du Fort Albertino à valider visuellement en L3/L4."
+    }
+  ]
+}

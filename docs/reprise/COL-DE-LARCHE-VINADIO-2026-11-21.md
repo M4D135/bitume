@@ -24,8 +24,16 @@ Le col est proche de 2 000 m d’altitude [S1]. Les altitudes exactes du départ
 de l’arrivée, le dénivelé cumulé et les pentes restent à mesurer sur les données
 retenues. Ne pas transformer une altitude touristique en cote de chaussée.
 
-**État : plan et sources identifiées. Aucune polyligne finale, aucun terrain
-reconstruit et aucun trajet jouable ne sont livrés par cette fiche.**
+**État (21/11, soir) : L0 acquis et L1 reconstruit hors ligne** dans
+[`docs/references/larche-vinadio-2026/`](../references/larche-vinadio-2026/README.md) :
+chaîne OSM SS21 unique (84 voies, aucun trou), DTM 5 m Regione Piemonte (CC BY 4.0)
+sur les 1 042 nœuds, contrôle IGN RGE ALTI à la frontière (écart moyen +0,023 m),
+**32 249 m en plan** du sommet (1 992,97 m) à Vinadio (889,46 m), sans remise à
+l’échelle, 6 tunnels/paravalanches, 16 ponts, 21 épingles. Largeurs, dévers et
+radiers d’ouvrages restent `null` (registre `inconnus.json`). Reproduction :
+`python3 tools/preparer-larche-vinadio.py --check`, test
+`verifications/larche-vinadio-sources.test.mjs`. **Aucun trajet jouable** : L2
+(contrat de parcours ouvert) est le prochain lot.
 
 ## Sources primaires et usage prévu
 

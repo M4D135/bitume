@@ -1,0 +1,275 @@
+{
+  "format": "bitume-larche-vinadio-manifest-1",
+  "parcours": "Sommet du col de Larche (Colle della Maddalena) -> Vinadio (SS21)",
+  "identifiantReserve": "larche",
+  "topologie": "ouvert",
+  "echelle": "1:1",
+  "dateCollecte": "2026-11-21",
+  "pretPourRuntime": false,
+  "departBarcelonnetteExclu": true,
+  "projection": {
+    "sourceGeographique": "EPSG:4326 (WGS84)",
+    "metrique": "EPSG:32632 (WGS84 / UTM zone 32N)",
+    "origineLocale": {
+      "osmNodeId": 928715494,
+      "nom": "Col de Larche / Colle della Maddalena",
+      "lat": 44.4218328,
+      "lon": 6.8984272,
+      "utm32nE": 332705.811,
+      "utm32nN": 4920874.595,
+      "zTerrainDtm5M": 1992.969,
+      "convention": "x = E - E0 (Est), z = -(N - N0) (Sud positif / Nord négatif, repère droitier avec y vers le haut), y = altitude m"
+    }
+  },
+  "extremsProposes": {
+    "depart": {
+      "osmNodeId": 928715494,
+      "sPlanM": 0.0,
+      "lat": 44.4218328,
+      "lon": 6.8984272,
+      "zTerrainDtm5M": 1992.969
+    },
+    "arrivee": {
+      "osmNodeId": 4295216268,
+      "sPlanM": 32249.325,
+      "lat": 44.3085152,
+      "lon": 7.1771704,
+      "zTerrainDtm5M": 889.456,
+      "justification": "Sortie de Via Roma / centre de Vinadio sur la SS21 vérifiée (32,249 km, sans traverser le fort Albertino)."
+    },
+    "finDeceleration": {
+      "osmNodeId": 452592466,
+      "sPlanM": 32816.805,
+      "longueurZoneM": 567.48,
+      "lat": 44.3099871,
+      "lon": 7.1837143,
+      "zTerrainDtm5M": 884.692
+    }
+  },
+  "licencesEtDroits": {
+    "voirieOSM": {
+      "producteur": "Contributeurs OpenStreetMap",
+      "licence": "ODbL 1.0 (https://www.openstreetmap.org/copyright)",
+      "attribution": "© OpenStreetMap contributors"
+    },
+    "terrainPiemont": {
+      "producteur": "Regione Piemonte — Geoportale Piemonte",
+      "jeuDeDonnees": "RIPRESA AEREA ICE 2009-2011 - DTM 5",
+      "identifiantMetadonnees": "r_piemon:224de2ac-023e-441c-9ae0-ea493b217a8e",
+      "dateMetadonnees": "2026-02-19",
+      "licence": "CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/deed.it)",
+      "resolutionM": 5,
+      "precisionNominaleM": 0.3,
+      "nodata": -99
+    },
+    "terrainFrontiereIGN": {
+      "producteur": "IGN — Géoplateforme",
+      "jeuDeDonnees": "RGE ALTI (ign_rge_alti_wld)",
+      "licence": "Licence Ouverte 2.0 (Etalab)",
+      "usage": "Contrôle inter-datum à la frontière du col de Larche (25 points sur le premier kilomètre) ; aucune montée française D900 incluse."
+    }
+  },
+  "sourcesFigees": [
+    {
+      "fichier": "sources/osm-ss21-corridor.json",
+      "octets": 163473,
+      "sha256": "f86e34ec9ebf6335ec7d4c160f4d31930490b1d3b9539fdeb29dd0efcc5a4e34"
+    },
+    {
+      "fichier": "sources/piemonte-dtm5-samples.json",
+      "octets": 486369,
+      "sha256": "88b72ab6e316fb0c4c5918af11bd92936cc4ed1064d939007710d15eacc698f4"
+    },
+    {
+      "fichier": "sources/ign-rge-alti-frontiere.json",
+      "octets": 8257,
+      "sha256": "8d4807cb1096083767ba981feacad5c32ce89e9eeb2fdc67c76ff0f1c514fe24"
+    },
+    {
+      "fichier": "sources/piemonte-dtm5-metadata.xml",
+      "octets": 33913,
+      "sha256": "52a8759395f749b3a1d86c15c06b6ac6fc1830df9bc68a81eb49af53a501c2a3"
+    },
+    {
+      "fichier": "sources/piemonte-dtm5-describecoverage.xml",
+      "octets": 3738,
+      "sha256": "4f0dce4d0c484884758c3cf24f6ec4a372b824479e5f1c0127e23678c4de064b"
+    }
+  ],
+  "bandesWcsDtm5Brutes": [
+    {
+      "strip": 0,
+      "bbox32632": [
+        332605,
+        4918045,
+        335250,
+        4920975
+      ],
+      "resM": 5,
+      "width": 529,
+      "height": 586,
+      "bytes": 1241979,
+      "sha256": "e2f11a7762075ec3462f1163285545bba91dcb610d1ffe6a4d0a565d4c4501f7",
+      "url": "https://geomap.reteunitaria.piemonte.it/ws/taims/rp-01/taimsdtmwcs/wcs_ice_2009_2011_dtm?SERVICE=WCS&VERSION=1.0.0&REQUEST=GetCoverage&COVERAGE=DTM&CRS=EPSG:32632&BBOX=332605,4918045,335250,4920975&RESX=5&RESY=5&FORMAT=GEOTIFF_16",
+      "pointsSampled": 349
+    },
+    {
+      "strip": 1,
+      "bbox32632": [
+        334940,
+        4917100,
+        337660,
+        4918565
+      ],
+      "resM": 5,
+      "width": 544,
+      "height": 293,
+      "bytes": 638787,
+      "sha256": "5c75a25beba6f3719f2ade81e66db3cb1f24ed87146e2a41ebb99071fc5204f2",
+      "url": "https://geomap.reteunitaria.piemonte.it/ws/taims/rp-01/taimsdtmwcs/wcs_ice_2009_2011_dtm?SERVICE=WCS&VERSION=1.0.0&REQUEST=GetCoverage&COVERAGE=DTM&CRS=EPSG:32632&BBOX=334940,4917100,337660,4918565&RESX=5&RESY=5&FORMAT=GEOTIFF_16",
+      "pointsSampled": 72
+    },
+    {
+      "strip": 2,
+      "bbox32632": [
+        337440,
+        4913905,
+        340245,
+        4917325
+      ],
+      "resM": 5,
+      "width": 561,
+      "height": 684,
+      "bytes": 1537155,
+      "sha256": "84de5132cb6ba975f6029e240a09a68eb505eb84726c54a73bc42ec994e269e9",
+      "url": "https://geomap.reteunitaria.piemonte.it/ws/taims/rp-01/taimsdtmwcs/wcs_ice_2009_2011_dtm?SERVICE=WCS&VERSION=1.0.0&REQUEST=GetCoverage&COVERAGE=DTM&CRS=EPSG:32632&BBOX=337440,4913905,340245,4917325&RESX=5&RESY=5&FORMAT=GEOTIFF_16",
+      "pointsSampled": 148
+    },
+    {
+      "strip": 3,
+      "bbox32632": [
+        339965,
+        4912180,
+        342725,
+        4914250
+      ],
+      "resM": 5,
+      "width": 552,
+      "height": 414,
+      "bytes": 915651,
+      "sha256": "b91b1eba3b547e39c4d691aa1db99d92c0959efc713effa7adf5d8c48aaa9e0d",
+      "url": "https://geomap.reteunitaria.piemonte.it/ws/taims/rp-01/taimsdtmwcs/wcs_ice_2009_2011_dtm?SERVICE=WCS&VERSION=1.0.0&REQUEST=GetCoverage&COVERAGE=DTM&CRS=EPSG:32632&BBOX=339965,4912180,342725,4914250&RESX=5&RESY=5&FORMAT=GEOTIFF_16",
+      "pointsSampled": 120
+    },
+    {
+      "strip": 4,
+      "bbox32632": [
+        342460,
+        4911475,
+        345160,
+        4912410
+      ],
+      "resM": 5,
+      "width": 540,
+      "height": 187,
+      "bytes": 404859,
+      "sha256": "3856da2e2bf1bfcb734a70eb80fdd3e9e242cf00b912ca859735bb9a18a8e864",
+      "url": "https://geomap.reteunitaria.piemonte.it/ws/taims/rp-01/taimsdtmwcs/wcs_ice_2009_2011_dtm?SERVICE=WCS&VERSION=1.0.0&REQUEST=GetCoverage&COVERAGE=DTM&CRS=EPSG:32632&BBOX=342460,4911475,345160,4912410&RESX=5&RESY=5&FORMAT=GEOTIFF_16",
+      "pointsSampled": 76
+    },
+    {
+      "strip": 5,
+      "bbox32632": [
+        344955,
+        4909510,
+        347740,
+        4911680
+      ],
+      "resM": 5,
+      "width": 557,
+      "height": 434,
+      "bytes": 968547,
+      "sha256": "cf19ada3999657e8145a710068b3739834bea658f1fef0695ae397356641eac0",
+      "url": "https://geomap.reteunitaria.piemonte.it/ws/taims/rp-01/taimsdtmwcs/wcs_ice_2009_2011_dtm?SERVICE=WCS&VERSION=1.0.0&REQUEST=GetCoverage&COVERAGE=DTM&CRS=EPSG:32632&BBOX=344955,4909510,347740,4911680&RESX=5&RESY=5&FORMAT=GEOTIFF_16",
+      "pointsSampled": 88
+    },
+    {
+      "strip": 6,
+      "bbox32632": [
+        347495,
+        4906915,
+        350250,
+        4909910
+      ],
+      "resM": 5,
+      "width": 551,
+      "height": 599,
+      "bytes": 1322231,
+      "sha256": "4511544baa447b7028ba644dd697bb5a18798077f82bb71588302223ff9ba9f8",
+      "url": "https://geomap.reteunitaria.piemonte.it/ws/taims/rp-01/taimsdtmwcs/wcs_ice_2009_2011_dtm?SERVICE=WCS&VERSION=1.0.0&REQUEST=GetCoverage&COVERAGE=DTM&CRS=EPSG:32632&BBOX=347495,4906915,350250,4909910&RESX=5&RESY=5&FORMAT=GEOTIFF_16",
+      "pointsSampled": 64
+    },
+    {
+      "strip": 7,
+      "bbox32632": [
+        349970,
+        4906710,
+        352730,
+        4907355
+      ],
+      "resM": 5,
+      "width": 552,
+      "height": 129,
+      "bytes": 285611,
+      "sha256": "af6c45297a76918854e5113c49c8b1403dea0672caa4698a1a31d0fcbdd3869a",
+      "url": "https://geomap.reteunitaria.piemonte.it/ws/taims/rp-01/taimsdtmwcs/wcs_ice_2009_2011_dtm?SERVICE=WCS&VERSION=1.0.0&REQUEST=GetCoverage&COVERAGE=DTM&CRS=EPSG:32632&BBOX=349970,4906710,352730,4907355&RESX=5&RESY=5&FORMAT=GEOTIFF_16",
+      "pointsSampled": 54
+    },
+    {
+      "strip": 8,
+      "bbox32632": [
+        352450,
+        4907110,
+        355245,
+        4908015
+      ],
+      "resM": 5,
+      "width": 559,
+      "height": 181,
+      "bytes": 405639,
+      "sha256": "63ec693990311836c4a0c959fc72d5e939c18fe75865737b9d1bd9efe132d14f",
+      "url": "https://geomap.reteunitaria.piemonte.it/ws/taims/rp-01/taimsdtmwcs/wcs_ice_2009_2011_dtm?SERVICE=WCS&VERSION=1.0.0&REQUEST=GetCoverage&COVERAGE=DTM&CRS=EPSG:32632&BBOX=352450,4907110,355245,4908015&RESX=5&RESY=5&FORMAT=GEOTIFF_16",
+      "pointsSampled": 71
+    },
+    {
+      "strip": 9,
+      "bbox32632": [
+        354980,
+        4907795,
+        355635,
+        4908050
+      ],
+      "resM": 5,
+      "width": 131,
+      "height": 51,
+      "bytes": 27191,
+      "sha256": "a29530509252653434ab3e64e53350b5fa3f1004ef84d74b48664d4e81a7cd59",
+      "url": "https://geomap.reteunitaria.piemonte.it/ws/taims/rp-01/taimsdtmwcs/wcs_ice_2009_2011_dtm?SERVICE=WCS&VERSION=1.0.0&REQUEST=GetCoverage&COVERAGE=DTM&CRS=EPSG:32632&BBOX=354980,4907795,355635,4908050&RESX=5&RESY=5&FORMAT=GEOTIFF_16",
+      "pointsSampled": 9
+    }
+  ],
+  "grilleVallee100m": {
+    "bbox32632": [
+      331000,
+      4905000,
+      357000,
+      4923000
+    ],
+    "resM": 100,
+    "width": 260,
+    "height": 180,
+    "rawBytes": 187843,
+    "rawSha256": "20fc9ccaf0575029233cabf21a9fe8439cb43ef58569c013181aed6c70544bd8"
+  },
+  "commandeReproduction": "python3 tools/preparer-larche-vinadio.py --check"
+}

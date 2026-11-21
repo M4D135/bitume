@@ -852,3 +852,14 @@ en `z=0,198`). Build reproductible `dist/bitume.html` (`0.2.79`, `sha256`
 captures WebGL2 + 4 gros plans poignets + 6 caméras de conduite vérifiés visuellement.
 Fusionné sur `main` et déployé sur `bitume.estrasse.fr` à la demande de David (21/11).
 Suite immédiate : L0 Col de Larche → Vinadio.
+
+
+## 046 — L0/L1 Col de Larche → Vinadio acquis et reconstruit
+
+Paquet `docs/references/larche-vinadio-2026/` : instantané OSM SS21 (ODbL), DTM 5 m
+Regione Piemonte ICE 2009–2011 (CC BY 4.0, 10 bandes WCS EPSG:32632 + grille vallée
+100 m), 25 sondages IGN RGE ALTI frontière (LO 2.0). Outil hors ligne
+`tools/preparer-larche-vinadio.py` (`--check`), 3 tests dédiés verts.
+Résultat : 32 249 m en plan, 1 992,97 → 889,46 m, 6 tunnels/paravalanches,
+16 ponts, 21 épingles ; largeurs/dévers/radiers inconnus et conservés `null`.
+Runtime inchangé (0.2.79 en ligne). Prochain lot : L2, parcours ouvert.
