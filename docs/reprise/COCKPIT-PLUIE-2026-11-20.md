@@ -1,6 +1,9 @@
 # Cockpit et pluie — correctif du 20 novembre 2026
 
-**Statut au 21 novembre : 0.2.75 publiée sur main via PR51 ; correctif reçu.**
+> **Réouvert le 21 novembre :** David refuse les formes .75/.76 et choisit la 126 CK.
+> [Référence actuelle et état exact](OBJECTIF-126CK-2026-11-21.md). Les preuves ci-dessous restent historiques.
+
+**Statut au 21 novembre : 0.2.75 publiée sur main via PR 51 ; correctif reçu.**
 [Reçu final](rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json). Les comptes rendus de candidats ci-dessous restent historiques ; réserve CPU décor séparée et ouverte.
 
 ## Demande et périmètre
@@ -210,7 +213,7 @@ nouvelles captures des deux sens avant fusion ; aucune police ni seuil réduit.
 
 ## Publication 0.2.75 — 21 novembre 2026
 
-PR51 fusionnée au commit `b1e5e98b9029f6254b86dcfb49780883315a9418`,
+PR 51 fusionnée au commit `b1e5e98b9029f6254b86dcfb49780883315a9418`,
 arbre exact `2d019e71d09ea31be7588cde0f401606cbf934af` du candidat `5d59cae`.
 Deux CI complètes : 179 suites Node sans échec et huit tests Python chacune.
 Chaque archive reçue contient 3 988 fichiers et modes identiques ; HTML
@@ -230,5 +233,5 @@ est préparée pour 04, sans code appliqué ; identité géométrique et mesures
 restent à qualifier. [Diagnostic](rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/diagnostic-decor/DIAGNOSTIC.json).
 
 Physique p15, FERRO 0.3.15 et neuf circuits conservés. Annonces Non au premier
-lancement, choix existants et Planche seule préservés. PR43 et autres chantiers
+lancement, choix existants et Planche seule préservés. PR 43 et autres chantiers
 restent séparés ; aucun déploiement du site.

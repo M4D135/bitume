@@ -615,7 +615,7 @@ contre les vraies glaces, commandes et points de chaussée, sans changer ses seu
 Deux cas compacts avec rival à 18 m complètent les neuf scènes candidat ; la
 référence a son propre job. Les pas Troll sont séparés entre commandes DevTools,
 en conservant instants, événements, borne et délai. Nouvelles preuves à recevoir
-après construction 0.2.71 ; aucun déploiement du site ni intégration de PR43.
+après construction 0.2.71 ; aucun déploiement du site ni intégration de PR 43.
 
 Construction du correctif : 0.2.71, 14 507 449 octets, SHA256 `0e4cdb72…`,
 deux reconstructions identiques et 60 contrôles ciblés réussis. La référence
@@ -641,7 +641,7 @@ Les témoins des compteurs sélectionnés sont également requis par l’oracle.
 sont conformes. Deux builds 0.2.72 identiques : 14 509 186 octets, SHA256
 391db2defe23308f88500fdd138d3b8573596d1ca0f53e058ef5c66c0c510a90.
 La nouvelle CI et les images exactes restent requises avant fusion.
-PR43, réserves de performance et six demandes vidéo/survol conservées.
+PR 43, réserves de performance et six demandes vidéo/survol conservées.
 
 Réserve tardive 0.2.71 : la CI PR `44825452386` termine à **178/179** suites,
 Val-Brûlé **168 ms** pour un seuil strict de **150 ms**. Son archive de
@@ -658,7 +658,7 @@ et l'interface ; les trois préférences déjà enregistrées restent conservée
 Deux reconstructions identiques et verrou FERRO conforme. L'outil active
 explicitement les annonces pour les captures ; aucune disparition ne peut
 valider leur placement. Le virage stabilisé précédent est incomplet, non reçu
-comme preuve. CI et PNG 0.2.73 sont requis avant fusion ; PR43 et réserves
+comme preuve. CI et PNG 0.2.73 sont requis avant fusion ; PR 43 et réserves
 historiques restent séparées. Aucun déploiement du site.
 
 ## 037 — Réception 0.2.73 et candidat 0.2.74 en braquages stabilisés
@@ -734,4 +734,25 @@ Aucun code de cette optimisation appliqué. [Diagnostic](rapports/COCKPIT-PLUIE-
 
 Clôture documentaire uniquement : p15, FERRO 0.3.15, neuf circuits, « Planche seule »,
 annonces Non au premier lancement et préférences enregistrées préservés.
-PR43, états propriétaires 01–05, M1 et programme restant conservés. Aucun déploiement.
+PR 43, états propriétaires 01–05, M1 et programme restant conservés. Aucun déploiement.
+
+
+## 040 — 21 novembre : référence 126 CK, galerie complète et étude race
+
+David refuse à nouveau le cockpit montré (.76) et fournit la galerie RenderBlade
+comme objectif. La 126 CK devient la cible visuelle, en remplacement de la 312 T5.
+Les 40 vues 1920×1920 et la couverture 400×400 sont reçues sans modification,
+9 270 341 octets, toutes décodables et identifiées par SHA256.
+[Galerie et manifeste](../references/ferrari-126ck-renderblade-2026-11-21/README.md).
+Les formes ne sont pas annoncées corrigées ; le jalon publie les références.
+
+La PR 52 (.76, 02afea62…) reste bloquée : volant/tableau refusés, reflets vers le
+sol et le pneu, deux CI générales en échec dont la réception précise se poursuit.
+Les préparations miroirs, pluie arrière, klaxons et FOV 70° sont conservées hors main.
+Aucun build ni changement de p15/FERRO dans cette publication documentaire.
+
+Autre demande : [étude de satyam-fp/race](REFERENCE-RACE-2026-11-21.md) au commit
+4a2a65f146aa0e70547c191c77a2490511db44a8. Huit idées précises raccordées aux lots
+existants ; sources Rust absentes, shaders embarqués et interfaces JS examinés,
+aucun code ou asset repris, aucune performance ni qualité de conduite jouée revendiquée.
+PR 43, autres préparations et réserve décor préservés. Aucun déploiement.

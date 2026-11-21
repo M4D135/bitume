@@ -1,0 +1,217 @@
+{
+  "schema": 1,
+  "version": "0.2.76",
+  "statut": "PARTIEL BLOQUE",
+  "reception_arretee_utc": "2026-11-21T07:39:50.752975+00:00",
+  "candidate_commit": "02afea62e9241704bd1ec0a679fe268e0f6db08f",
+  "candidate_tree": "3844233140b3cbfd93181315c8c0aa85897f0b16",
+  "html_sha256": "b1548922357e0db72f96d56ff32bf3c977a5029e477164613b475b6c13b7721d",
+  "html_bytes": 14514541,
+  "node_suites_expected": 180,
+  "publication_ou_approbation_autorisee_par_ce_recu": false,
+  "motifs_blocage": [
+    "Reflets orientés vers sol/pneu, horizon absent dans les glaces.",
+    "Volant et tableau refusés par l’utilisateur ; nouvelle cible Ferrari 126CK RenderHub.",
+    "Échecs CI non effacés : integration-parallele dans les deux runs, décor 154 ms dans le push.",
+    "Étape Python sautée dans les deux runs après échec Node."
+  ],
+  "ci": [
+    {
+      "kind": "push",
+      "run_id": 44879380158,
+      "job_id": 136771083241,
+      "github_conclusion": "failure",
+      "artifact_id": 14698295725,
+      "archive_sha256": "43264e24ed1e8037e6ad3317f7f3770ca9241c168b7de6e373ce4c82552f2729",
+      "source_files": 4124,
+      "received_source_files": 4124,
+      "identical_content_and_modes": true,
+      "source_tree": "3844233140b3cbfd93181315c8c0aa85897f0b16",
+      "checkout_commit": "02afea62e9241704bd1ec0a679fe268e0f6db08f",
+      "html_sha256": "b1548922357e0db72f96d56ff32bf3c977a5029e477164613b475b6c13b7721d",
+      "html_bytes": 14514541,
+      "html_matches_candidate": true,
+      "node_suites_passed": 178,
+      "node_suites_failed": 2,
+      "node_suite_count_matches": true,
+      "failed_suites": [
+        "integration-parallele.test.mjs",
+        "decor.test.mjs"
+      ],
+      "failure_details": {
+        "integration-parallele": "Assertion textuelle exige encore INCLINAISON_COCKPIT = -Math.PI / 18 ; premier contrôle échoue, 18/19 contrôles internes réussissent.",
+        "decor": "Val-Brûlé : 154 ms pour un seuil strict inférieur à 150 ms."
+      },
+      "python_step_conclusion": "skipped",
+      "receipt": "ci/push/14698295725/RECEPTION.json",
+      "full_job_log": "github-job-136771083241.log"
+    },
+    {
+      "kind": "pull_request",
+      "run_id": 44879383728,
+      "job_id": 136771093164,
+      "github_conclusion": "failure",
+      "artifact_id": 14697403269,
+      "archive_sha256": "00b3fcd9cb9ba41ced75b81caa025e8cd8531611f594b5156282cd4d806ecbc2",
+      "source_files": 4124,
+      "received_source_files": 4124,
+      "identical_content_and_modes": true,
+      "source_tree": "3844233140b3cbfd93181315c8c0aa85897f0b16",
+      "checkout_commit": "8b047a44a28a51e7a1b772c0c5b3798c64c19590",
+      "html_sha256": "b1548922357e0db72f96d56ff32bf3c977a5029e477164613b475b6c13b7721d",
+      "html_bytes": 14514541,
+      "html_matches_candidate": true,
+      "node_suites_passed": 179,
+      "node_suites_failed": 1,
+      "node_suite_count_matches": true,
+      "failed_suites": [
+        "integration-parallele.test.mjs"
+      ],
+      "failure_details": {
+        "integration-parallele": "Assertion textuelle exige encore INCLINAISON_COCKPIT = -Math.PI / 18 ; premier contrôle échoue, 18/19 contrôles internes réussissent."
+      },
+      "python_step_conclusion": "skipped",
+      "receipt": "ci/pull_request/14697403269/RECEPTION.json",
+      "full_job_log": "github-job-136771093164.log"
+    }
+  ],
+  "reserves": [
+    "Les 4 124 contenus et modes de chaque archive source correspondent exactement au candidat ; cela ne rend pas les suites réussies.",
+    "Le merge de test PR possède un autre SHA de checkout mais le même contenu/arbre qualifié.",
+    "Le succès décor de la PR sans durée ne clôt pas les dépassements historiques, ni le nouveau 154 ms du push.",
+    "Les captures reçues sont celles du HTML exact, mais leurs oracles verts ne lèvent pas le défaut des reflets ni le refus utilisateur.",
+    "Deux jobs de capture étaient encore distants au dernier relevé. Ils peuvent finir ; leurs futurs résultats ne sont ni reçus ni approuvés ici.",
+    "Aucune relance, suppression de résultat, modification de seuil, runtime ou workflow."
+  ],
+  "preuves": {
+    "blocage": "BLOCAGE-VISUEL-0276.json",
+    "revue_partielle": "REVUE-VISUELLE-AGENT.json",
+    "archives_brutes": "archives/",
+    "attentes": "expected.json"
+  },
+  "captures": {
+    "run_id": 44879380163,
+    "groupes_recus": 11,
+    "png_recus": 20,
+    "png_inspectes_avant_arret": 12,
+    "inspection_exhaustive_arretee": true,
+    "groupes": [
+      {
+        "group": "carte-gauche",
+        "artifact_id": 14697880887,
+        "images_received": 2,
+        "images_inspected": 2,
+        "identities_verified": true,
+        "visual_approval": false,
+        "receipt": "cockpit/carte-gauche/14697880887/RECEPTION.json"
+      },
+      {
+        "group": "carte-gauche-stabilise",
+        "artifact_id": 14697349615,
+        "images_received": 2,
+        "images_inspected": 0,
+        "identities_verified": true,
+        "visual_approval": false,
+        "receipt": "cockpit/carte-gauche-stabilise/14697349615/RECEPTION.json"
+      },
+      {
+        "group": "compact",
+        "artifact_id": 14697417131,
+        "images_received": 2,
+        "images_inspected": 2,
+        "identities_verified": true,
+        "visual_approval": false,
+        "receipt": "cockpit/compact/14697417131/RECEPTION.json"
+      },
+      {
+        "group": "duo-compact",
+        "artifact_id": 14698315677,
+        "images_received": 2,
+        "images_inspected": 0,
+        "identities_verified": true,
+        "visual_approval": false,
+        "receipt": "cockpit/duo-compact/14698315677/RECEPTION.json"
+      },
+      {
+        "group": "duo-cote",
+        "artifact_id": 14698326098,
+        "images_received": 2,
+        "images_inspected": 0,
+        "identities_verified": true,
+        "visual_approval": false,
+        "receipt": "cockpit/duo-cote/14698326098/RECEPTION.json"
+      },
+      {
+        "group": "duo-haut-bas",
+        "artifact_id": 14698405083,
+        "images_received": 2,
+        "images_inspected": 0,
+        "identities_verified": true,
+        "visual_approval": false,
+        "receipt": "cockpit/duo-haut-bas/14698405083/RECEPTION.json"
+      },
+      {
+        "group": "mac",
+        "artifact_id": 14697154788,
+        "images_received": 2,
+        "images_inspected": 2,
+        "identities_verified": true,
+        "visual_approval": false,
+        "receipt": "cockpit/mac/14697154788/RECEPTION.json"
+      },
+      {
+        "group": "paysage",
+        "artifact_id": 14697845209,
+        "images_received": 2,
+        "images_inspected": 2,
+        "identities_verified": true,
+        "visual_approval": false,
+        "receipt": "cockpit/paysage/14697845209/RECEPTION.json"
+      },
+      {
+        "group": "profil",
+        "artifact_id": 14697079529,
+        "images_received": 1,
+        "images_inspected": 1,
+        "identities_verified": true,
+        "visual_approval": false,
+        "receipt": "cockpit/profil/14697079529/RECEPTION.json"
+      },
+      {
+        "group": "trois-quarts",
+        "artifact_id": 14697183672,
+        "images_received": 1,
+        "images_inspected": 1,
+        "identities_verified": true,
+        "visual_approval": false,
+        "receipt": "cockpit/trois-quarts/14697183672/RECEPTION.json"
+      },
+      {
+        "group": "vertical",
+        "artifact_id": 14696754244,
+        "images_received": 2,
+        "images_inspected": 2,
+        "identities_verified": true,
+        "visual_approval": false,
+        "receipt": "cockpit/vertical/14696754244/RECEPTION.json"
+      }
+    ],
+    "jobs_non_termines_au_dernier_releve": [
+      {
+        "job_id": 136771083681,
+        "name": "cockpit (carte-droite-stabilise, cockpit-carte-droite-stabilise)",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "job_id": 136771083951,
+        "name": "cockpit (reference-0270, cockpit-paysage)",
+        "status": "in_progress",
+        "conclusion": null
+      }
+    ],
+    "reference_0270_recue": false,
+    "derniere_situation_distante": "github-run-44879380163-final.json",
+    "aucune_approbation_esthetique": true
+  }
+}

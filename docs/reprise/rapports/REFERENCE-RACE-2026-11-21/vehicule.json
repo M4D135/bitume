@@ -1,0 +1,89 @@
+{
+  "date": "2026-11-21",
+  "scope": "Lecture statique : conduite, réactions, commandes et caméra. Aucun code du dépôt de référence exécuté, aucun asset ni code repris dans BITUME, aucun fichier BITUME modifié.",
+  "reference": {
+    "url": "https://github.com/satyam-fp/race",
+    "commit": "4a2a65f146aa0e70547c191c77a2490511db44a8",
+    "commit_date": "2026-11-20T20:17:15+05:30",
+    "commit_subject": "Tachyon Sprint: v0 and v1 web builds",
+    "version_read": "v1",
+    "licence": "Aucun fichier LICENSE/COPYING ni attribution de licence trouvé dans le checkout. Aucun droit de reprise du code ou des assets établi par cette lecture. Les idées ci-dessous demanderaient une réalisation originale avec les moyens procéduraux de BITUME.",
+    "source_boundary": "v1/game.js désigne sim/src/race.rs comme propriétaire de la simulation ; ce fichier et les sources Rust ne figurent pas dans le dépôt publié. v1/car.js est une interface wasm-bindgen et car_bg.wasm un binaire. Aucun désassemblage ni tentative de reconstitution effectué.",
+    "not_verified": [
+      "Algorithmes et paramètres de suspension, amortissement, inertie, adhérence, glisse et réponse aux chocs",
+      "Algorithme de placement, lissage ou collision des caméras",
+      "Qualité ressentie en conduite, performances, stabilité ou réalisme ; aucun essai joué"
+    ]
+  },
+  "attested_interfaces": [
+    {
+      "topic": "Commandes et aides",
+      "source": "v1/game.js : controls() lignes 268–284 ; applySettings() ligne 68 ; firstRun() lignes 610–625",
+      "url": "https://github.com/satyam-fp/race/blob/4a2a65f146aa0e70547c191c77a2490511db44a8/v1/game.js#L268-L284",
+      "facts": "Zone morte de stick 0,10 suivie d'un remappage linéaire sur toute la course. Accélérateur/frein prennent le maximum clavier/gâchette analogique ; frein à main binaire. Premier lancement : ABS et stabilité actifs, boîte auto ; TC fort au clavier, faible à la manette. Il s'agit des commandes envoyées, pas d'une preuve de leur réalisation physique interne."
+    },
+    {
+      "topic": "Vibrations",
+      "source": "v1/game.js : FEEL, RUMBLE et rumble(feel), lignes 235–264",
+      "url": "https://github.com/satyam-fp/race/blob/4a2a65f146aa0e70547c191c77a2490511db44a8/v1/game.js#L235-L264",
+      "facts": "Six causes annoncées : blocage, patinage, dérive, vibreur, herbe, choc. La plus forte gagne ; un choc conserve la priorité pendant 0,2 s. Requêtes dual-rumble de 80 ms, amplitudes bornées à 1, silence hors conduite et en pause. Les signaux proviennent de la simulation opaque."
+    },
+    {
+      "topic": "Caméra et écoute",
+      "source": "v1/game.js : VIEWS ligne 42 ; v1/sound.js : VIEWS lignes 64–69 et play() lignes 262–286",
+      "url": "https://github.com/satyam-fp/race/blob/4a2a65f146aa0e70547c191c77a2490511db44a8/v1/game.js#L42",
+      "audio_url": "https://github.com/satyam-fp/race/blob/4a2a65f146aa0e70547c191c77a2490511db44a8/v1/sound.js#L64-L69",
+      "facts": "Quatre choix exposés : poursuite lointaine, poursuite proche, capot, pare-chocs. La table sonore modifie moteur, échappement, pneus, vent et roulement selon l'index de vue. Aucun recul, FOV, ressort de caméra ou véritable poste de conduite modélisé ne peut être déduit de cette seule interface."
+    }
+  ],
+  "ideas": [
+    {
+      "priority": 1,
+      "idea": "Distinguer à l'oreille l'approche de la limite, le blocage, le patinage et la dérive, avec une localisation gauche/droite.",
+      "reference_evidence": "v1/sound.js, play() lignes 295–342 : chaque roue fournit on/use/slip/slide/load ; le pré-crissement monte à partir de use=0,9, puis les classes se séparent au-delà de use=1. Les roues de gauche et de droite alimentent deux côtés. Les valeurs use/slip ne sont pas documentées suffisamment pour en transporter les seuils.",
+      "source_url": "https://github.com/satyam-fp/race/blob/4a2a65f146aa0e70547c191c77a2490511db44a8/v1/sound.js#L295-L342",
+      "bitume_fit": "src/son.js, mettreAJour() vers lignes 402–444, utilise actuellement un niveau joueur.glisse pour les pneus ; src/vibrations.js, calculer(), distingue déjà glisse avant/arrière, patinage et blocage. Étudier la même lisibilité dans le son procédural en utilisant les télémétries p15 déjà disponibles ; conserver leur résolution réelle, sans inventer quatre mesures indépendantes si seuls deux essieux sont exposés.",
+      "classification": "Présentation sonore ; p15/PhysX inchangés si l'on ne fait que lire les états existants.",
+      "physics_boundary": "Modifier les seuils de glisse, courbes de pneus, charges, TC ou freinage serait un changement de conduite distinct. Ne pas reprendre les seuils de la référence comme paramètres physiques.",
+      "verification_needed": "Comparer sur trajectoire/rejeu identiques freinage bloqué, accélération avec patinage et dérive ; demander si les trois se reconnaissent à l'écoute. Ne promettre aucun gain avant cette écoute."
+    },
+    {
+      "priority": 2,
+      "idea": "Séparer le coup initial contre un obstacle du raclement qui dure pendant le contact.",
+      "reference_evidence": "v1/sound.js, play() lignes 353–380 : type d'obstacle rail/pneus/mur/voiture ; coup à l'apparition du contact ou nouvelle poussée nettement supérieure ; raclement après six appels consécutifs et vitesse >2 ; réarmement après trois appels sans contact. HEAVY=1500 est annoncé en N·s. Les compteurs sont des appels, pas des durées garanties.",
+      "source_url": "https://github.com/satyam-fp/race/blob/4a2a65f146aa0e70547c191c77a2490511db44a8/v1/sound.js#L353-L380",
+      "bitume_fit": "src/son.js, choc() et evenement() vers lignes 486 et 603–615, produit déjà des coups pour choc/contact. Envisager une couche procédurale continue pilotée par le contact réel et sa durée, et une extinction rapide à la séparation ; vérifier d'abord que les contacts PhysX existants exposent type et persistance suffisants.",
+      "classification": "Présentation sonore et éventuellement vibration ; aucune force ni contrainte supplémentaire.",
+      "physics_boundary": "Les forces de BITUME utilisées par ces événements sont décrites en m/s, alors que la référence annonce des N·s : aucune conversion implicite ni reprise de HEAVY. Changer restitution ou friction de contact relèverait de la physique.",
+      "verification_needed": "Utiliser des durées en secondes dans BITUME, avec un même raclement à 30/60/120 images/s ; pas de rafale de coups pendant un contact continu et pas de son après séparation."
+    },
+    {
+      "priority": 3,
+      "idea": "Rendre les conséquences d'un choc compréhensibles dans la pause ou aux stands, à partir des avaries réellement présentes.",
+      "reference_evidence": "v1/game.js, damage(state) lignes 799–817 : vue en plan des points d'impact, taille/couleur liées à l'intensité, information de perte de puissance state.worn. Le panneau apparaît au premier impact et reste ensuite. L'interface prétend afficher l'état fourni ; elle ne permet pas de vérifier la loi de dégâts.",
+      "source_url": "https://github.com/satyam-fp/race/blob/4a2a65f146aa0e70547c191c77a2490511db44a8/v1/game.js#L799-L817",
+      "bitume_fit": "src/degats.js dispose déjà de roues, casse, adher, trainee, sante() et avaries() ; src/jeu.js affiche une jauge de santé. Un résumé visuel localisé limité aux informations effectivement disponibles peut expliquer l'état et le service requis sans ajouter un panneau permanent au cockpit. Ne pas dessiner des points d'impact précis si BITUME ne les conserve pas.",
+      "classification": "Présentation de l'état existant, sans nouvelle pénalité mécanique.",
+      "physics_boundary": "Ne pas importer la perte de puissance state.worn, ni changer les effets d'adhérence/traînée ou la réparation d'urgence de BITUME.",
+      "verification_needed": "Chaque indication doit correspondre à une avarie existante et disparaître selon la vraie réparation ; aucun pourcentage de puissance inventé."
+    },
+    {
+      "priority": 4,
+      "idea": "Avant une remise en piste, expliquer brièvement pourquoi la voiture est bloquée et rappeler la commande utile.",
+      "reference_evidence": "v1/game.js, wayBack(state,running) lignes 752–788 : invite après deux secondes de blocage ou trois secondes à contresens ; demande de marche arrière si le nez est contre un obstacle ; libellé de commande dépendant des touches/manette réellement configurées. L'invite est retirée quand la voiture repart ; aucun déplacement automatique n'est effectué dans cette fonction.",
+      "source_url": "https://github.com/satyam-fp/race/blob/4a2a65f146aa0e70547c191c77a2490511db44a8/v1/game.js#L752-L788",
+      "bitume_fit": "src/jeu.js vers lignes 1160–1168 possède déjà détection de contresens et de blocage, puis remise en piste après trois secondes de blocage. Une indication courte peut réutiliser cet état et les commandes réelles, sans nouvelle détection parallèle ni intervention sur la caisse.",
+      "classification": "Présentation si l'on explique le comportement de récupération actuel.",
+      "physics_boundary": "Retarder, supprimer ou remplacer la remise en piste automatique changerait les règles et le comportement de conduite ; décision séparée, hors maintien strict de p15.",
+      "verification_needed": "Aucune invite pendant un arrêt volontaire ou au stand ; libellés exacts clavier/manette ; disparition immédiate au redémarrage."
+    }
+  ],
+  "already_present_or_not_retained": [
+    "Les vibrations différenciées, la zone morte remappée et le mix sonore selon la caméra existent déjà dans BITUME : ne pas les annoncer comme nouveautés de cette analyse.",
+    "Le stick BITUME a déjà une zone morte de 0,06 et un exposant de 1,22 (src/jeu.js, entrée manette). Copier 0,10 linéaire ne serait pas une amélioration démontrée ; cela changerait les commandes ressenties.",
+    "Les aides TC/ABS/stabilité activées automatiquement par périphérique modifieraient la conduite. Elles ne doivent pas être importées dans p15 au titre d'un simple retour visuel.",
+    "Le mix de caméras de la référence n'apporte aucune justification à un nouveau cadrage du cockpit .76, ni à des tremblements ajoutés.",
+    "La présence d'assets de sons enregistrés ou générés dans la référence n'est pas une recommandation de les reprendre : toute piste audio ci-dessus reste procédurale et originale."
+  ],
+  "implementation_status": "Pistes uniquement. Aucun changement runtime, test, build, commit ou publication réalisé pour cette étude. La qualification cockpit .76 reste un travail séparé."
+}

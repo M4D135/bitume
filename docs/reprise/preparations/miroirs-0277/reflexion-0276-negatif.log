@@ -1,0 +1,67 @@
+reflets — sources voiture.js:13a96a4d8b596f70fe085829f68ec41b4202443151430716cd9e44f97bdd9508 jeu.js:f3888a459bb82f049839889ccf9415016be2ca316404629033a4780e78085c7a style.css:486ef7ae38f86b31a88d3be8058917b2760eff9e192b78b653dc03dfe45ba956
+{"glace":-1,"pitchDeg":-10.41081109707522,"fovVertical":9.932204801001571,"toile":[330,100],"horizonFractionHauteur":-0.5572219096461348}
+✖ glace, boîtier et coins partagent le vrai plan incliné vers les yeux (14.21908ms)
+✖ peindreGlace conserve un horizon utile au milieu des deux reflets (0.970082ms)
+✖ le centre d’une voiture à 10, 20 ou 30 m derrière reste dans le champ utile (0.239792ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 29.925855
+
+✖ failing tests:
+
+test at verifications/retroviseurs-reflexion.test.mjs:67:1
+✖ glace, boîtier et coins partagent le vrai plan incliné vers les yeux (14.21908ms)
+  AssertionError [ERR_ASSERTION]: la normale mécanique remonte réellement vers les yeux
+      at TestContext.<anonymous> (file:///workspace/scratch/ea118b42480b/bitume-miroirs/verifications/retroviseurs-reflexion.test.mjs:75:7)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at verifications/retroviseurs-reflexion.test.mjs:95:1
+✖ peindreGlace conserve un horizon utile au milieu des deux reflets (0.970082ms)
+  AssertionError [ERR_ASSERTION]: horizon entre 30 et 70 % de la hauteur, pas seulement dans un coin
+      at TestContext.<anonymous> (file:///workspace/scratch/ea118b42480b/bitume-miroirs/verifications/retroviseurs-reflexion.test.mjs:101:5)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at verifications/retroviseurs-reflexion.test.mjs:110:1
+✖ le centre d’une voiture à 10, 20 ou 30 m derrière reste dans le champ utile (0.239792ms)
+  AssertionError [ERR_ASSERTION]: centre du suiveur à 10 m dans la zone centrale, glace 0, œil -0.082,0.79,-0.016, projection 0.35879352687797084,-0.40542365381532275,10.505882840945329
+      at TestContext.<anonymous> (file:///workspace/scratch/ea118b42480b/bitume-miroirs/verifications/retroviseurs-reflexion.test.mjs:115:7)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

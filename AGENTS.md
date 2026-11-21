@@ -379,3 +379,23 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
 - La visibilité cockpit est bloquante : abaisser volant/tableau dans la géométrie commune, poser les rétros sur leur vraie face et vérifier route/commandes en intérieur et extérieur. Le regard doit garder les commandes visibles, y compris pendant le braquage et en écran partagé.
 - La pluie doit atteindre la caméra derrière l’arceau. Proposer plusieurs forces/abondances, rendre les impacts à l’écran avant leur écoulement et ajouter de l’eau sur les véhicules.
 - Les correctifs reprennent les préparations isolées dans `docs/reprise/COCKPIT-PLUIE-2026-11-20.md` ; préserver la branche d’abris PR 43 et les autres chantiers.
+
+
+## Décisions de David — 21 novembre 2026, référence voiture prioritaire
+
+- Les cockpits .75 puis .76 sont refusés. La galerie **RenderBlade / Ferrari F1 126 Ck 1980**
+  fournie par David devient la cible visuelle et remplace la 312 T5 comme objectif de forme.
+  Références complètes : `docs/references/ferrari-126ck-renderblade-2026-11-21/README.md`.
+- David demande explicitement de récupérer toutes ces images et de les publier dans GitHub.
+  Ce dossier documentaire peut contenir les images sources ; le runtime du jeu reste procédural.
+- Reprendre volant, moyeu, branches et instrumentation depuis les vues détaillées, puis toute la
+  voiture. Ne pas confondre contrôles de dégagement réussis et fidélité au modèle demandé.
+  Fiche active : `docs/reprise/OBJECTIF-126CK-2026-11-21.md`.
+- Le champ demandé est **70° par défaut**. Le candidat utilise l'unité verticale ; valeurs numériques
+  déjà mémorisées conservées. Même géométrie monde dans toutes les vues, cadrage à vérifier en images.
+- En regard arrière, pluie et neige calmes dos au vent, avec gravité et mouvement résiduel.
+  Les trois timbres de klaxon doivent être repris ; les préparations .76 restent isolées tant que non qualifiées.
+- Référence supplémentaire : `satyam-fp/race`, commit `4a2a65f146aa0e70547c191c77a2490511db44a8`.
+  Étude `docs/reprise/REFERENCE-RACE-2026-11-21.md` ; idées originales à adapter, aucun code/asset importé.
+- Poursuivre par petits lots, garder les états et refus explicites. PR 43, préparation des miroirs,
+  météo/son/FOV et travail décor sont conservés. Ce jalon ne modifie ni p15 ni FERRO et ne déploie rien.

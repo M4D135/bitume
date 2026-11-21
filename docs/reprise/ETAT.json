@@ -5,26 +5,26 @@
     "version_publiee_verifiee": "0.2.75",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "publie_0275_reserve_budget_decor_ouverte",
-    "lot": "budget_construction_decor_0269",
-    "fiche": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/diagnostic-decor/DIAGNOSTIC.json",
+    "statut": "references_126ck_documentees_cockpits_0275_0276_refuses",
+    "lot": "reference_voiture_126ck",
+    "fiche": "docs/reprise/OBJECTIF-126CK-2026-11-21.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "039",
-    "prochaine_action": "Transmettre au propriétaire 04 la piste de stockage fixe des indices des nappes Route (19 323 couples temporaires), puis qualifier identité géométrique et mesures alternées avant toute intégration. Aucun code de cette optimisation appliqué.",
+    "derniere_entree": "040",
+    "prochaine_action": "Publier les 41 références puis reprendre la voiture et son cockpit depuis la 126 CK RenderBlade, FOV demandé 70°.",
     "dernier_lot_clos": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
     "fiche_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
     "index": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
-    "entree_journal": "039",
-    "dernieres_demandes": "docs/reprise/DEMANDES-ARCADE-PERFORMANCE-TROLL-2026-11-20.md",
+    "entree_journal": "040",
+    "dernieres_demandes": "docs/reprise/OBJECTIF-126CK-2026-11-21.md",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md",
     "contrats_integration": "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
     "inventaire_branches": "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
-    "runtime_modifie_par_coordination": true,
+    "runtime_modifie_par_coordination": false,
     "dernier_lot_coordination_clos": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
-    "runtime_modifie_par_coordination_portee": "0.2.75 publiée sur main et contenu reçu identique au candidat ; clôture documentaire sans changement runtime.",
+    "runtime_modifie_par_coordination_portee": "Publication documentaire uniquement : références 126 CK et étude race ; runtime main .75 conservé sans approbation esthétique.",
     "preuve_t3": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
-    "reserve_lisibilite_cockpit": "Blocage HUD clos sur les cinq groupes exacts 0.2.75 ; captures logicielles de poses prescrites, sans généralisation à tous les formats.",
+    "reserve_lisibilite_cockpit": "Réouverte : forme des cockpits .75 et .76 refusée ; nouvelle cible 126 CK, reflets .76 sans horizon utile.",
     "alerte_budget_decor": {
       "statut": "ouvert",
       "run": 44803588903,
@@ -159,7 +159,7 @@
     "composition_demo": "Bandeau parfois superposé au geste ou à un animal ; neige claire à grain discret.",
     "cimes": "Socle publié ; relief très facetté et sept lieux complets, lac/cascade encore à poursuivre.",
     "demos": "Bandeaux sur certains sujets ; neige Haut-Col claire et grain discret.",
-    "habitacle_pilote": "Habitacle commun et Troll conservés ; correctifs cockpit/rétros/pluie/HUD publiés en 0.2.75. Dix PNG de cinq groupes exacts conformes ; les images LOD lointaines ne permettent toujours pas une inspection fine des bras.",
+    "habitacle_pilote": "Formes .75/.76 refusées. Objectif actuel : modèle126CK RenderBlade et galerie complète ; correctif non livré.",
     "gouttes_vitesse": "Transport vitesse/caméra E0–E3 qualifié et publié en 0.2.68 ; limites restantes dans PUBLICATION-0268.json : pas toutes les poses/vitesses, micro0 et gravité des fines non qualifiées séparément.",
     "budget_decor_0269": {
       "statut": "ouvert",
@@ -674,7 +674,7 @@
     ],
     "tete_qualifiee_00": "5d59cae6630c49ae62c47303100d61dd63daea56",
     "commit_fusion_00": "b1e5e98b9029f6254b86dcfb49780883315a9418",
-    "publication_00_portee": "Runtime 0.2.75 publié et reçu sur main ; réserve CPU décor ouverte, PR43 et états propriétaires conservés.",
+    "publication_00_portee": "Runtime 0.2.75 publié et reçu sur main ; réserve CPU décor ouverte, PR 43 et états propriétaires conservés.",
     "checkpoints_observes_portee": "Inventaire initial historique conservé ; publication courante décrite par le reçu 0.2.75.",
     "releve_candidat_00_historique_0269": {
       "commit": "7999de565e2c643f7723462caf7683b570c75e8b",
@@ -937,7 +937,7 @@
     "push_force": false,
     "date_commit_fusion_utc": "2026-11-20T19:52:29Z"
   },
-  "suite_portee": "Sources Monaco/Marseille et anciens états conservés ; prochaine action de coordination : transmission du diagnostic décor au propriétaire 04.",
+  "suite_portee": "Objectif 126 CK et références complètes prioritaires ; pluie arrière, son, FOV 70°, miroirs et décor conservés dans les préparations séparées.",
   "qualification_cockpit_pluie_0270": {
     "commit_outils": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
     "tree": "5ca64577b6044672a61feda146c405e18e6294c6",
@@ -1074,5 +1074,77 @@
       "recu_references": "docs/reprise/rapports/REFERENCES-OBJECTIFS-2026-11-20/PUBLICATION.json",
       "recu_publication": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
     }
+  },
+  "objectif_voiture_126ck": {
+    "source": "https://www.renderhub.com/renderblade/ferrari-f1-126-ck-1980",
+    "auteur": "RenderBlade",
+    "remplace_reference_visuelle": "312 T5",
+    "fiche": "docs/reprise/OBJECTIF-126CK-2026-11-21.md",
+    "galerie": "docs/references/ferrari-126ck-renderblade-2026-11-21/README.md",
+    "manifeste": "docs/references/ferrari-126ck-renderblade-2026-11-21/MANIFEST.json",
+    "images_detaillees": 40,
+    "couverture": 1,
+    "images_detaillees_dimensions": [
+      1920,
+      1920
+    ],
+    "total_octets": 9270341,
+    "modele_runtime_corrige": false,
+    "fov_demande": 70,
+    "fov_unite_candidate": "verticale",
+    "statut": "references_documentees",
+    "paires_rendu_filaire_verifiees": 20
+  },
+  "candidat_poste_0276": {
+    "pr": 52,
+    "branche": "codex/bitume-0276-cockpit-312t5-20261121",
+    "commit": "02afea62e9241704bd1ec0a679fe268e0f6db08f",
+    "statut": "bloque_refus_utilisateur_et_ci",
+    "formes_refusees": [
+      "volant",
+      "moyeu",
+      "branches",
+      "instrumentation"
+    ],
+    "reflets": "miroirs trop dirigés vers sol et pneu après abaissement",
+    "ci_push": 44879380158,
+    "ci_pr": 44879383728,
+    "conclusion_ci": "failure",
+    "diagnostic_suites": {
+      "push": {
+        "reussies": 178,
+        "echecs": [
+          "integration-parallele",
+          "decor"
+        ],
+        "decor_ms": 154
+      },
+      "pr": {
+        "reussies": 179,
+        "echecs": [
+          "integration-parallele"
+        ]
+      },
+      "total": 180,
+      "integration": "assertion textuelle exigeant INCLINAISON_COCKPIT = -Math.PI /18",
+      "tests_python": "sautés après échecs Node",
+      "archives_exactes_fichiers": 4124
+    },
+    "fusionne": false,
+    "recu": "docs/reprise/rapports/POSTE-CONDUITE-2026-11-21/reception-0276/RECEPTION-PARTIELLE-BLOQUEE-0276.json"
+  },
+  "inspiration_race": {
+    "url": "https://github.com/satyam-fp/race",
+    "commit": "4a2a65f146aa0e70547c191c77a2490511db44a8",
+    "fiche": "docs/reprise/REFERENCE-RACE-2026-11-21.md",
+    "pistes": 8,
+    "runtime_modifie": false
+  },
+  "preparation_miroirs": {
+    "base": "02afea62e9241704bd1ec0a679fe268e0f6db08f",
+    "chemin": "docs/reprise/preparations/miroirs-0277/README.md",
+    "statut": "patch_conserve_non_integre_non_construit",
+    "reflets_webgl_qualifies": false,
+    "ancrages_126ck_a_requalifier": true
   }
 }
