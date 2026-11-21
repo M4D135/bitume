@@ -7,8 +7,9 @@
   // d'un pixel mettait le fil principal, le processus graphique et la carte en série : Légère choisie sur un Apple M5
   // qui tient Moyenne à 60 images par seconde). Révision 3 : rafales d'images en vol, simulation comprise. Révision 4 :
   // fil principal mesuré une image par rappel, comme en course ; palier proche de la limite mesuré deux ou trois fois,
-  // refus de peu provisoire.
-  const REVISION = 4, CLE = 'bitume.detection.v1', METHODE = 'rafales';
+  // refus de peu provisoire. Révision 5 : Xbox déclarée par le navigateur,
+  // recommandation prudente sans mesure ; les anciens choix explicites restent conservés.
+  const REVISION = 5, CLE = 'bitume.detection.v1', METHODE = 'rafales';
   const METHODE_PASSIVE = 'capacites-declarees';
   const CLES = Object.freeze(['qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'retro']);
   // Noms courts des options, pour dire dans l'onglet Image lesquelles le joueur a gardées.
@@ -134,6 +135,12 @@
   // Le nom de la puce ne permet pas de promettre un débit d'images.
   function recommander(capacites = {}) {
     const ua = String(capacites.userAgent || ''), plate = String(capacites.platform || '');
+    const plateUa = String(capacites.userAgentData && capacites.userAgentData.platform || '');
+    // Le navigateur de la console dispose de ses propres ressources : le nom
+    // AMD et le nombre de cœurs ne prouvent pas le budget disponible à Edge.
+    // Seule une déclaration de plate-forme identifie la console. Une manette
+    // Xbox branchée sur un ordinateur ne doit jamais changer son profil.
+    const xbox = /\bxbox\b/i.test(ua) || /\bxbox\b/i.test(plate) || /\bxbox\b/i.test(plateUa);
     const touches = Number.isFinite(capacites.maxTouchPoints) ? Math.max(0, capacites.maxTouchPoints) : 0;
     const mobile = capacites.mobile === true || /android|iphone|ipad|ipod|mobile/i.test(ua)
       || (/mac/i.test(plate) && touches > 1)
@@ -144,8 +151,8 @@
     const logiciel = /swiftshader|llvmpipe|software|microsoft basic/i.test(gpu);
     const integre = /intel|uhd|iris|hd graphics|mali|adreno|powervr|radeon\(tm\) graphics|vega [0-9]+ graphics/i.test(gpu);
     const incomplet = !coeurs && !memoire;
-    const selection = mobile || logiciel || integre || incomplet || (coeurs && coeurs <= 4) || (memoire && memoire <= 4) ? 'low' : 'medium';
-    return { selection, mobile, coeurs, memoire, logiciel, integre, incomplet };
+    const selection = xbox || mobile || logiciel || integre || incomplet || (coeurs && coeurs <= 4) || (memoire && memoire <= 4) ? 'low' : 'medium';
+    return { selection, mobile, console: xbox ? 'xbox' : null, xbox, coeurs, memoire, logiciel, integre, incomplet };
   }
   function passive(capacites, cle) {
     const appareil = recommander(capacites);

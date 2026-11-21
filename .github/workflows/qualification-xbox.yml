@@ -1,0 +1,67 @@
+name: Commandes et profil Xbox Edge
+
+on:
+  push:
+    branches: ['codex/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: commandes-xbox-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  xbox:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[capture-xbox]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Identifier et reconstruire le candidat exact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qualification-xbox
+          git rev-parse HEAD > qualification-xbox/COMMIT.txt
+          node --version > qualification-xbox/ENVIRONNEMENT.txt
+          google-chrome --version >> qualification-xbox/ENVIRONNEMENT.txt
+          python3 construire.py > qualification-xbox/reconstruction-1.log 2>&1
+          sha256sum dist/bitume.html > qualification-xbox/HTML-SHA256.txt
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+          python3 construire.py > qualification-xbox/reconstruction-2.log 2>&1
+          sha256sum --check qualification-xbox/HTML-SHA256.txt
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+          sha256sum tools/controle-visuel.mjs tools/qualification/demarrage-mobile.mjs tools/qualification/commandes-xbox.mjs > qualification-xbox/OUTILS-SHA256.txt
+      - name: Verifier les commandes et les parcours PC conserves
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check tools/qualification/commandes-xbox.mjs
+          for test in verifications/commandes-manette.test.mjs verifications/manette.test.mjs verifications/commandes-partage.test.mjs verifications/navigation-menu.test.mjs verifications/autoconfig-passive.test.mjs; do
+            node "$test" > "qualification-xbox/$(basename "$test").log" 2>&1
+          done
+      - name: Parcourir le vrai jeu avec le profil Xbox 4K et la manette virtuelle
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --prefix "$RUNNER_TEMP/bitume-xbox-browser" --no-save --ignore-scripts playwright@1.62.1 > qualification-xbox/installation.log 2>&1
+          NODE_PATH="$RUNNER_TEMP/bitume-xbox-browser/node_modules" timeout --signal=TERM --kill-after=20s 20m node tools/qualification/commandes-xbox.mjs \
+            --url "file://$GITHUB_WORKSPACE/dist/bitume.html" --sortie qualification-xbox/images \
+            --chrome /usr/bin/google-chrome > qualification-xbox/parcours.log 2>&1
+          sha256sum --check qualification-xbox/HTML-SHA256.txt
+          sha256sum --check qualification-xbox/OUTILS-SHA256.txt
+      - name: Conserver rapports et images meme en cas d'echec
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-commandes-xbox-${{ github.sha }}
+          path: qualification-xbox/
+          if-no-files-found: error
+          retention-days: 14

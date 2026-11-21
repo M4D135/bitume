@@ -1,0 +1,10 @@
+OK Premier démarrage Xbox 4K sans banc et framebuffer borné
+OK Croix et A ouvrent la préparation, B revient, sans activation de pointeur
+OK B annule la capture sans changer les affectations ni quitter les réglages
+OK A ouvre la capture, X affecte Accélérer et le choix est sauvegardé
+OK Affectation conservée après un vrai rechargement
+Error: Attente expirée : départ réel et feux verts
+    at attendre (file:///home/runner/work/bitume/bitume/tools/qualification/commandes-xbox.mjs:147:11)
+    at async qualifierCommandesXbox (file:///home/runner/work/bitume/bitume/tools/qualification/commandes-xbox.mjs:236:5)
+    at async file:///home/runner/work/bitume/bitume/tools/qualification/commandes-xbox.mjs:315:15
+{"statut":"echec","commit":"0a731d512df76cee4b12a4bb98231f270198a0b2","htmlSha256":"53945452b79fdf63c587e5d993f8cd4e8990a9409dd9a750d5405768f64de844","controles":5,"png":3,"erreurs":0}

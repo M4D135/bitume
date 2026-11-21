@@ -16,7 +16,7 @@ const DT = 1 / 120;
 const CHOIX = Object.freeze([{ geste: 'salut', klaxon: 'ancien' }, { geste: 'poing', klaxon: 'mariage' }]);
 const MODULES = Object.freeze(['carene.js', 'main.js', 'humain-donnees.js', 'humain-corps.js',
   'ferro/vehicle-dynamics.js', 'pneus.js', 'usure-pneus.js', 'chaussee.js', 'conduite.js',
-  'voiture.js', 'expressions-pilote.js', 'son.js', 'menu-arcade.js']);
+  'voiture.js', 'expressions-pilote.js', 'son.js', 'menu-arcade.js', 'autoconfig.js', 'commandes-manette.js']);
 const LIMITES = Object.freeze([
   'Modules et raccords extraits du HTML identifié, sans exécution de la page complète.',
   'Événements DOM, état de course, horloge et API Web Audio simulés ; aucun appui matériel ni audio entendu.',
@@ -106,7 +106,8 @@ function audioSimule() {
 }
 
 function creerFabrique(modules) {
-  const contexte = vm.createContext({ console, performance: { now: () => 10000 } });
+  const contexte = vm.createContext({ console, performance: { now: () => 10000 },
+    navigator: { userAgent: 'Qualification du HTML BITUME', platform: '', maxTouchPoints: 0 } });
   for (const nom of MODULES) vm.runInContext(modules.get(nom), contexte, { filename: 'HTML/' + nom, timeout: 30000 });
   const source = modules.get('jeu.js');
   const declarations = plage(source, '  const touches =', '  // conduite par position physique');

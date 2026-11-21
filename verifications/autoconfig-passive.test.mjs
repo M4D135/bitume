@@ -37,6 +37,48 @@ test('un ordinateur déclaré capable part au plus en Moyenne, sans promettre de
   }
 });
 
+test('Xbox déclarée reste légère même avec les mêmes capacités qu’un ordinateur', () => {
+  const capable = { ...bureau, hardwareConcurrency: 16, deviceMemory: 16, gpu: 'AMD Radeon Graphics' };
+  const pc = A.passive(capable, 'ordinateur');
+  assert.equal(pc.selection, 'medium'); assert.equal(pc.appareil.xbox, false); assert.equal(pc.appareil.console, null);
+  for (const declaration of [
+    { userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) Chrome/144 Safari/537.36 Edg/144' },
+    { userAgent: 'Mozilla/5.0 (Xbox Series X) Edge' },
+    { userAgent: 'Mozilla/5.0 (xbox series s) Edge' },
+    { platform: 'Xbox' },
+    { userAgentData: { platform: 'Xbox', mobile: false } }
+  ]) {
+    const resultat = A.passive({ ...capable, ...declaration }, 'console');
+    assert.equal(resultat.selection, 'low'); assert.equal(resultat.appareil.xbox, true);
+    assert.equal(resultat.appareil.console, 'xbox'); assert.equal(resultat.appareil.mobile, false);
+    assert.deepEqual(resultat.reglages, A.reglages('low'));
+    assert.equal(resultat.reglages.anticrenelage, 'off'); assert.equal(resultat.reglages.ombres, 'off');
+    assert.equal(resultat.reglages.retro, 'non');
+    assert.equal(resultat.performancesMesurees, false); assert.deepEqual(resultat.mesures, []);
+  }
+});
+
+test('une manette Xbox sur PC ne fait pas passer l’ordinateur pour une console', () => {
+  const resultat = A.recommander({ ...bureau,
+    gamepadId: 'Xbox Wireless Controller (STANDARD GAMEPAD Vendor: 045e Product: 0b13)',
+    gamepads: [{ id: 'Xbox Series Controller', mapping: 'standard' }],
+    userAgentData: { platform: 'Windows', mobile: false }
+  });
+  assert.equal(resultat.selection, 'medium'); assert.equal(resultat.xbox, false); assert.equal(resultat.console, null);
+});
+
+test('la recommandation Xbox remplace l’ancien profil automatique et conserve les choix modifiés', () => {
+  const reference = A.reglages('medium'), recommandes = A.passive({ ...bureau, platform: 'Xbox' }, 'console').reglages;
+  const migration = A.fusionner(reference, reference, recommandes, false);
+  assert.deepEqual(migration.valeurs, A.reglages('low')); assert.deepEqual(migration.gardes, []);
+  const choisis = { ...reference, ombres: 'high', qualite: 'high', commandes: ['manette', 'clavier'] };
+  const automatique = A.fusionner(choisis, reference, recommandes, false);
+  assert.equal(automatique.valeurs.qualite, 'high'); assert.equal(automatique.valeurs.ombres, 'high');
+  assert.equal(automatique.valeurs.retro, 'non');
+  assert.deepEqual(choisis.commandes, ['manette', 'clavier']);
+  assert.deepEqual(A.fusionner(choisis, reference, recommandes, true).valeurs, A.reglages('low'));
+});
+
 test('la recommandation passive a un cache distinct d’une performance mesurée', () => {
   const cle = A.empreinte('appareil', '0.2.80'), r = A.passive({}, cle);
   assert.equal(A.cacheValide(r, cle), true);
@@ -44,4 +86,5 @@ test('la recommandation passive a un cache distinct d’une performance mesurée
   assert.equal(A.cacheValide({ ...r, selection: 'inconnue' }, cle), false);
   assert.equal(A.cacheValide(r, A.empreinte('appareil', '0.2.81')), false);
   assert.equal(A.cacheValide({ ...r, methode: A.METHODE }, cle), false, 'aucune fausse série de rafales');
+  assert.equal(A.cacheValide({ ...r, revision: A.REVISION - 1 }, cle), false, 'revoir une ancienne classification sans test de charge');
 });

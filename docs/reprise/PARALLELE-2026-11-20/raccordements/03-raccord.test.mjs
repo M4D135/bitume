@@ -64,12 +64,13 @@ test('bilan : mode chrono et confirmation en ligne, pneus et Troll individuels',
   a.mode('enligne');a.majBilanArcade();assert.equal(a.$('b-depart').textContent,'Confirmer la course');
 });
 const image = new Function('ecranInitial','temps','cache',`
-  let ecran=ecranInitial, dernierGeste=0, tPrec=77, detectionGraphiqueActive=false;
+  let ecran=ecranInitial, dernierGeste=0, tPrec=77, detectionGraphiqueActive=false, captureManette=null;
   const elements=new Map(), $=id=>{if(!elements.has(id))elements.set(id,{hidden:false,textContent:''});return elements.get(id);};
   const appels={raf:0,entrees:0,autres:0,oubli:0,apercus:[],demo:0};
   const document={hidden:cache},performance={now:()=>temps},ATTENTE_DEMO=5;
   const reglages={demo:'oui',circuit:0,qualite:'auto'},rendu={},session={},nbManettes=0,manettes=[],pad2={start:false};
   const prepa={voile:false,enCours:false,attente:false},souris={active:false},jeu={dataset:{}},gpuModeste=false,modePrepa='course';
+  const consoleXbox=false,dernierSignalManette=-Infinity,majEtatManettes=()=>{},entreeDe=()=> 'clavier';
   const requestAnimationFrame=()=>appels.raf++,lireManette=()=>appels.entrees++,lireAutresManettesMenu=()=>appels.autres++;
   const appliquerMessages=()=>{},enCourse=()=>false,texte=(el,t)=>el.textContent=t,style=()=>{},clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   const lancerDemo=()=>{appels.demo++; ecran='demo'; prepa.enCours=true;};
@@ -86,7 +87,7 @@ for(const e of ['titre','preparation','reglages','enligne','prets'])test('menu o
 test('titre : départ auto démo conservé à 5 s même sans rendu de vitrine',()=>{const {appels}=image('titre',5100,false);assert.equal(appels.demo,1);assert.equal(appels.apercus[0][1],false);});
 test('titre caché : compte à rebours suspendu, pas de lancement démo',()=>{const {appels,dernierGeste}=image('titre',9000,true);assert.equal(appels.demo,0);assert.equal(dernierGeste,9000);});
 const autres = new Function(`
-  let ecran='preparation'; const document={hidden:false},performance={now:()=>50}; let dernierGeste=0;
+  let ecran='preparation',captureManette=null; const document={hidden:false},performance={now:()=>50}; let dernierGeste=0;
   const pad={manette:null},pad2={manette:null,start:false},manettes=[],suivisManettesMenu=new Map(),appels=[];
   const naviguerManette=(front,p)=>appels.push({index:p.index,boutons:[0,1,9].filter(front)});
   ${extraire('lireAutresManettesMenu')}

@@ -21,6 +21,7 @@ DIST = ICI / 'dist'
 # Ordre d'exécution : le moteur, puis la simulation (circuit, conduite, course), le son, le décor, les carènes, la
 # voiture, les traces et la fumée, le réalisateur de la démo, la coque.
 MODULES = [
+    'ferro/surface.js',  # taille physique et plafond de pixels, copie FERRO verrouillée
     'moteur/renderer.js',
     'ferro/engine.js',
     'ferro/physx-runtime.js',
@@ -88,6 +89,7 @@ MODULES = [
     'navigation-menu.js',
     'menu-arcade.js',  # écrans arcade, vrai tracé XYZ et aperçu 2D à cadence bornée
     'autoconfig.js',
+    'commandes-manette.js',  # affectations analogiques indépendantes de chaque joueur
     'scene-bench.js',
     # vibrations de manette : quatre sorties calculées une fois par image rendue, branchées par jeu.js
     'vibrations.js',

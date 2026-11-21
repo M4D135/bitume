@@ -1,0 +1,20 @@
+{
+  "commit": "0a731d512df76cee4b12a4bb98231f270198a0b2",
+  "html_sha256": "53945452b79fdf63c587e5d993f8cd4e8990a9409dd9a750d5405768f64de844",
+  "ci_run": 44928652979,
+  "ci_job": 136920216670,
+  "suites_reussies": 193,
+  "suites_echec": 2,
+  "echecs": {
+    "integration-parallele.test.mjs": "captureManette is not defined (03-raccord.test.mjs)",
+    "troll-assemble.test.mjs": "commandesManette absent des modules extraits du HTML"
+  },
+  "xbox_run": 44928653056,
+  "xbox_artifact": 14716118902,
+  "mobile_run": 44928653119,
+  "mobile_artifact": 14715759420,
+  "mobile_conclusion": "success",
+  "eau_portrait_run": 44928673786,
+  "eau_portrait_job": 136920278300,
+  "eau_portrait_erreur": "glace-g et glace-d hors cadre, contrôle de projection physique ajouté en .82"
+}

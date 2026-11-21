@@ -1,5 +1,20 @@
 # BITUME — reprise courte
 
+## Priorité : Xbox Edge, candidat 0.2.83
+
+Manette prioritaire sur le pointeur, affectations boutons/axes par joueur,
+configuration accessible en solo et profil console prudent. Scène 3D plafonnée
+à 720p en 16:9 ; aucun banc automatique. La réception .81 a révélé deux bancs
+à raccorder, un délai de capture trop court et des colonnes de commandes
+chevauchantes. La .82 corrige aussi le statut solo et l’annulation avec stick
+décalé. La .83 supprime le conflit entre une affectation du stick droit et
+le regard arrière implicite. Nouvelle CI et parcours navigateur en réception.
+[Fiche du correctif](docs/reprise/XBOX-EDGE-COMMANDES-2026-11-21.md).
+
+La PR #56 des mains reste sauvegardée séparément ; son candidat historique .81
+devra être rebasé et renuméroté après ce correctif. La prise au pommeau attend
+encore une image où la main est visible.
+
 ## Publié : démarrage téléphone sans banc
 
 **0.2.80 / p15 / FERRO 0.3.15** publiée sur `main`, commit **`6526493`** :
@@ -34,8 +49,8 @@ La voiture et son implantation par rapport aux essieux précèdent le pilote.
 Une seule géométrie monde dans toutes les vues ; occultation naturelle du volant
 acceptée. [Plan R0–R5](docs/reprise/MODELE-COMPLET-126CK-2026-11-21.md).
 
-Lot actif : **M1–M3, doigts et transitions**, sur
-`codex/bitume-mains-realisme-20261121` ; conserver le rig R4b et qualifier les
+Après le correctif Xbox : **M1–M3, doigts et transitions**, sur
+`codex/bitume-mains-0281-20261121` ; conserver le rig R4b et qualifier les
 surfaces et captures comparées .79/candidat. Puis M4 personnages/manches et
 **L0–L2 Larche → Vinadio**. [Programme complet](docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md).
 Préserver décor, PR 43, Monaco/Marseille et les 9 circuits existants.
