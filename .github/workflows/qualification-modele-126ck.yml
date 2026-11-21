@@ -1,0 +1,136 @@
+name: Modele complet 126 CK du candidat exact
+
+on:
+  push:
+    branches: ['codex/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: modele-126ck-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  modele:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[capture-modele]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - groupe: dessus-profil
+            cas: dessus,dessus-vide,profil
+            comparaisons: 1
+          - groupe: trois-quarts-arriere
+            cas: trois-quarts,arriere,arriere-plongeant
+            comparaisons: 0
+          - groupe: habitacle-avec-sans-pilote
+            cas: habitacle-avec-pilote,habitacle-vide
+            comparaisons: 1
+          - groupe: cockpit-portrait
+            cas: cockpit,cockpit-portrait
+            comparaisons: 0
+          - groupe: braquage-passage-troll
+            cas: braquage,passage,troll
+            comparaisons: 0
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Reconstruire deux fois le candidat identique
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qualification
+          git rev-parse HEAD > qualification/COMMIT.txt
+          git rev-parse 'HEAD^{tree}' > qualification/TREE.txt
+          node --version > qualification/ENVIRONNEMENT.txt
+          google-chrome --version >> qualification/ENVIRONNEMENT.txt
+          python3 --version >> qualification/ENVIRONNEMENT.txt
+          python3 construire.py > qualification/reconstruction-1.log 2>&1
+          sha256sum dist/bitume.html > qualification/HTML-SHA256.txt
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+          python3 construire.py > qualification/reconstruction-2.log 2>&1
+          sha256sum --check qualification/HTML-SHA256.txt
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+          sha256sum tools/qualification/captures-modele-126ck.mjs tools/captures-habitacle.mjs \
+            tools/controle-visuel.mjs tools/visuel-images.mjs tools/qualification/cockpit-lisibilite.mjs \
+            verifications/captures-modele-126ck.test.mjs > qualification/OUTILS-SHA256.txt
+      - name: Verifier l'outil et ses temoins negatifs
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check tools/qualification/captures-modele-126ck.mjs
+          node verifications/captures-modele-126ck.test.mjs > qualification/test-outil.log 2>&1
+      - name: Capturer le modele dans le vrai jeu
+        shell: bash
+        env:
+          CAS_MODELE: ${{ matrix.cas }}
+        run: |
+          set -euo pipefail
+          timeout --signal=TERM --kill-after=30s 28m node tools/qualification/captures-modele-126ck.mjs \
+            --url "file://$GITHUB_WORKSPACE/dist/bitume.html" --sortie qualification/images \
+            --cas "$CAS_MODELE" --chrome /usr/bin/google-chrome \
+            > qualification/captures.log 2>&1
+      - name: Relier les images et comparaisons au candidat exact
+        shell: bash
+        env:
+          GROUPE_MODELE: ${{ matrix.groupe }}
+          CAS_MODELE: ${{ matrix.cas }}
+          COMPARAISONS_MODELE: ${{ matrix.comparaisons }}
+        run: |
+          set -euo pipefail
+          sha256sum --check qualification/HTML-SHA256.txt
+          sha256sum --check qualification/OUTILS-SHA256.txt
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          racine = Path('qualification')
+          attendu = (racine / 'HTML-SHA256.txt').read_text().split()[0]
+          campagne = json.loads((racine / 'images/rapport.json').read_text())
+          cas = os.environ['CAS_MODELE'].split(',')
+          assert campagne['format'] == 'bitume-modele-126ck-1'
+          assert campagne['htmlSha256'] == attendu, 'HTML de campagne incorrect'
+          assert campagne['echecs'] == 0, 'Echec conservé dans la campagne'
+          assert [p['scenario'] for p in campagne['passages']] == cas, 'Scènes manquantes ou remplacées'
+          assert len(campagne['comparaisons']) == int(os.environ['COMPARAISONS_MODELE']), 'Comparaison avec/sans pilote absente'
+          assert all(not c['erreurs'] for c in campagne['comparaisons']), 'Géométrie différente avec/sans pilote'
+          scenes = []
+          for passage in campagne['passages']:
+              assert not passage['erreurs'], 'Erreur de présence ou de géométrie'
+              chemin = racine / 'images' / passage['scenario'] / 'rapport.json'
+              rapport = json.loads(chemin.read_text())
+              assert rapport['build']['sha256'] == attendu, f'HTML différent : {chemin}'
+              assert rapport['environnement']['webgl2'] is True, 'WebGL2 absent'
+              assert not rapport.get('fatal') and not rapport['erreurs'], 'Erreur de capture'
+              assert len(rapport['images']) == len(passage['images']) == 1, 'Nombre de PNG incomplet'
+              for image in passage['images']:
+                  png = racine / 'images' / image['fichier']
+                  assert hashlib.sha256(png.read_bytes()).hexdigest() == image['sha256'], f'PNG altéré : {png}'
+              scenes.append({'scenario': passage['scenario'], 'rapport': str(chemin.relative_to(racine)), 'images': passage['images']})
+          resume = {'groupe': os.environ['GROUPE_MODELE'], 'commit': (racine / 'COMMIT.txt').read_text().strip(),
+                    'tree': (racine / 'TREE.txt').read_text().strip(), 'html_sha256': attendu, 'scenes': scenes,
+                    'comparaisons': campagne['comparaisons'], 'png': len(scenes), 'erreurs': 0,
+                    'inspection_visuelle': 'a_faire',
+                    'limite': 'Vrai jeu sous SwiftShader, poses prescrites ; fidélité à inspecter, aucun FPS matériel qualifié.'}
+          (racine / 'RESUME.json').write_text(json.dumps(resume, ensure_ascii=False, indent=2) + '\n')
+          print(json.dumps({k: v for k, v in resume.items() if k not in ('scenes', 'comparaisons')}, ensure_ascii=False))
+          PY
+      - name: Conserver les preuves et images meme en cas d'echec
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-modele-126ck-${{ matrix.groupe }}-${{ github.sha }}
+          path: qualification/
+          if-no-files-found: error
+          retention-days: 14

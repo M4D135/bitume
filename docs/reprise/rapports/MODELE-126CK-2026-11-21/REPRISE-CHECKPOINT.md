@@ -124,6 +124,28 @@ contexte isolé au compteur optionnel.
 7. Corriger les défauts observés et publier le runtime qualifié sur main.
    La fidélité finale reste soumise à l’essai du joueur, pas seulement à la CI.
 
+## Réception locale 21/11 (poignets R4b + assemblage 0280 + captures WebGL2)
+
+- **Branche `codex/bitume-126ck-poignets-20261121` (`9b15210`) :** les deux défauts mesurés de R4b ont été levés sans relâcher aucun seuil :
+  - `voiture-permanents` : suppression du ternaire tagué sur `passageVisuel`/`passage` dans `habitacle()` (`cockpit` ramené de 16,9 o/appel à **0,00–0,07 o/appel, 1 GC**).
+  - `pilote-habitacle` : dégagement continu de la manche droite au-dessus et à l’intérieur de la grille de levier (suppression du creux vers le bas à mesure de l’alignement + déviation douce sans allocation des points de contrôle/nœuds de Bézier), jeu minimal mesuré **+2,87 mm** sur 41 braquages × 8 rapports ; 9/9 suites pilote/allocation vertes.
+- **Intégration sur `codex/bitume-0280-implantation-126ck-20261121` (`f86e58f`) puis fusion sur `main` (demande David 21/11) :**
+  - `src/main.js`, `verifications/pilote-poignets.test.mjs`, `POIGNETS-R4B.md` et les 7 blocs poignets/manche/allocation de `src/voiture.js` intégrés en conservant l’implantation `0280` (`OEIL = [.595, .886, 0]`, `PILOTE_TETE_ORIGINE = [.517, -.034, 0]`, 6 caméras et compteurs de visites).
+  - **Défauts réels corrigés dans `src/voiture.js` :**
+    1. `FORMES['bulle-pilote']` et `FORMES['loin-dessus-pilote']` passés en alias non énumérables (`formes-libres` vert).
+    2. `assise-pilote` et `siege-dossier` rétablis séparés dans `mod.simples` (16 volumes) pour conserver le contrôle thorax/siège aux trois LOD (`pilote-thorax` et `pilote-habitacle` verts).
+    3. `poser()` et `poserRetro()` n’émettent plus `e.pilote` sur une voiture cassée (`o.casse === true`), rendant `crash` (22/22) et `pieces` (21/21) verts.
+    4. `creuserQuille()` : fermeture de la fente de jour de 15–30 mm sous la cuve entre `x = 0,94` et `1,35` (59 points de jour ramenés à **0**, `voi-1` vert, aucune traversée de `console-levier-pilote` aux trois LOD).
+    5. Cloison avant de `S_CUVE` fermée à `x = 1,345` (face intérieure doublée vers `−x`), supprimant les tranches rouges de `fleche`/`goutte`/`quille` visibles derrière le volant dans `cockpit` et `cockpit-portrait`.
+    6. Attache intérieure arrière du triangle inférieur avant déplacée de `[1.18, .15, .17]` à `[1.18, .15, .198]` (**0,00 mm** de dépassement dans le plancher de cuve, contact extérieur `2,60 mm <= 11 mm`, `voi-7` vert).
+  - **Harnais et assertions obsolètes 312 T5 mis à jour sans affaiblir les seuils :** `choix-pneus-integration`, `cinema-raccords`, `conditions-integration`, `voiture`, `habitacle-monde`, `cockpit-visibilite`, `integration-parallele`, `tools/qualification/troll-assemble.mjs` (os `0,27/0,29 m`) ; `verifications/fixtures/voiture-identite.json` renouvelé (`134/134` groupes primitives + emprise).
+  - **Build reproductible (`construire.py` × 2) :** `dist/bitume.html` **version 0.2.79**, `14 554 537` octets (`3 479 462` gzip), `sha256` identique sur deux constructions consécutives : `77d774fd99484f7ddc2a6bbafe801c9dd2ea8f670af0c51ce1377a7e4a429aa8` ; **34 modules `FERRO 0.3.15` vérifiés**, `p15` et les 9 circuits inchangés (`git diff main..HEAD` vide sur `src/ferro/`, `FERRO.lock.json`, `src/conduite.js`, `src/physique.js`, `src/circuit.js`, `src/decor.js`, `src/baikal.js`, `src/route-des-cimes.js`).
+  - **Captures WebGL2 locales (Chrome + SwiftShader sur `77d774fd99484f7d`) :** `captures-modele-126ck.mjs` **13/13 passages, 0 erreur** (comparaisons structurelles `dessus`/`dessus-vide` et `habitacle-avec-pilote`/`habitacle-vide` identiques), plus 4 gros plans extérieurs de poignets (neutre et braquages extrêmes), les 6 caméras de conduite (`cockpit`, `arceau`, `nez`, `aileron-avant`, `poursuite-proche`, `poursuite`) et l’état hors ligne des compteurs du titre (`Visites— / Visiteurs uniques—`), tous examinés visuellement.
+  - **Limites explicites :**
+    - Tests locaux Mac ARM64 (`185/190` verts ; 5 échecs SHA-256 `libm` Linux x86_64 sur fichiers inchangés depuis `main`).
+    - `verifications/visiere-png.test.py` non exécuté localement (`numpy` absent).
+    - Captures WebGL2 sous SwiftShader (pas de mesure FPS matériel).
+
 ## Suite demandée et préservée
 
 Lire [la feuille de route réunie](../../FEUILLE-DE-ROUTE-2026-11-21.md).

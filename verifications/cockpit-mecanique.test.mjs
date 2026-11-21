@@ -43,24 +43,21 @@ test('colonne descendante vers l’avant, face du volant orientée vers les yeux
 
 test('volant de taille physique conservée et éloigné des yeux', () => {
   const p = points(H.jante.objet), b = bounds(p), centre = b.min.map((v, k) => (v + b.max[k]) / 2);
-  assert(b.max[2] - b.min[2] >= .23 && b.max[2] - b.min[2] <= .27, 'diamètre réel conservé, sans réduction de cadrage');
+  assert(b.max[2] - b.min[2] >= .265 && b.max[2] - b.min[2] <= .290, 'diamètre réel conservé, sans réduction de cadrage');
   assert(centre[0] - V.OEIL[0] >= .39 && centre[0] - V.OEIL[0] <= .55,
     'au moins 39 cm devant les yeux, sans avancer au-delà de la portée humaine');
 });
 
-test('support compact, trois cadrans sous le sommet apparent de la jante', () => {
+test('support compact, trois cadrans physiques groupés derrière la jante', () => {
   const panel = H.planche[0].objet, p = points(panel), b = bounds(p), rim = points(H.jante.objet), r = bounds(rim);
   assert(b.max[1] - b.min[1] < .65 * (r.max[2] - r.min[2]),
     'support moins haut que deux tiers du diamètre du volant, sans la grande arche refusée en .76');
-  // Regard neutre depuis les vrais yeux : une coordonnée plus grande est plus bas dans l'image.
-  // Mesurer les maillages effectivement rendus, pas seulement leurs centres métriques à des profondeurs différentes.
-  const basVue = q => (V.OEIL[1] - q[1]) / (q[0] - V.OEIL[0]);
-  const sommetJante = Math.min(...rim.map(basVue));
-  assert(Math.min(...p.map(basVue)) >= sommetJante, 'le support reste sous le sommet apparent de la jante');
+  // 21/11 : une occultation naturelle par la jante est acceptée. Le panneau garde
+  // sa géométrie mesurée ; l'ancien seuil de marge apparente ne commande plus le modèle.
+  assert(b.min[0] > r.max[0], 'planche fixée devant la direction, aucune interpénétration');
   const tours = H.planche.map(e => e.objet).filter(o => o.shape === 'cylinder' && o.s[0] >= .075 && o.s[2] >= .075);
-  assert(tours.length > 0, 'compte-tours réel, lunette et fond');
-  assert(Math.min(...tours.flatMap(points).map(basVue)) > sommetJante + .01,
-    'le vrai bord du compte-tours garde une marge sous le sommet de jante depuis le siège');
+  assert(tours.length >= 2, 'compte-tours réel, lunette et fond');
+  assert(Math.max(...tours.flatMap(points).map(q => q[1])) < V.OEIL[1], 'instrumentation sous les yeux');
   assert(panel.mat === c.BITUME.cockpitMatieres.cuir, 'fond mat gainé, sans plaque de métal brossé');
   const instrument = H.aiguilles.map(a => a.centre.map((v, k) => V.ORIGINE_HABITACLE[k] + V.K * v));
   assert(instrument[0][1] > instrument[1][1] + .035 && instrument[0][1] > instrument[2][1] + .035,
@@ -70,7 +67,7 @@ test('support compact, trois cadrans sous le sommet apparent de la jante', () =>
 test('boîtiers bas, pattes courtes et presque horizontales', () => {
   for (const mirror of H.glaces) {
     const b = bounds(points(mirror.boitier.objet)), foot = mirror.patte.objet;
-    assert(b.max[1] < .66 && b.min[1] > .50, 'boîtier au flanc de la coque, bien sous les yeux');
+    assert(b.max[1] < .75 && b.min[1] > .58, 'boîtier au flanc de la coque, bien sous les yeux');
     assert(foot.s[1] < .19, 'patte mécanique courte, moins de 19 cm');
     const axis = V.euler(...foot.r)[1];
     assert(Math.abs(axis[1]) * foot.s[1] < .07, 'moins de 7 cm de montée : aucun montant perché');

@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { chargerPhysX } from './helpers/physx-runtime.mjs';
 const require = createRequire(import.meta.url);
-for (const f of ['circuit', 'conduite']) require('../src/' + f + '.js');
+for (const f of ['circuit', 'carene', 'main', 'ferro/vehicle-dynamics', 'pneus', 'usure-pneus', 'conduite', 'voiture']) require('../src/' + f + '.js');
 const B = globalThis.BITUME;
 // Ici on vérifie les commandes, pas les obstacles de la réalisation (cinema-trajectoires.test.mjs).
 // La démo garde donc son cadre de poursuite, sans activer le regard arrière du joueur.
@@ -26,8 +26,9 @@ const raccord = source.slice(debutVue, finVue) + '    return cam;\n  }';
 const ligne = nom => { const m = source.match(new RegExp('^  const ' + nom + ' = [^\\n]+;', 'm')); assert(m, nom); return m[0]; };
 const fabrique = new Function('navigator', 'B', 'session', 'reglages', 'poses', `
   let ecran = 'course', dernierGeste = 0;
+  const compteurVisites = null; // Le compteur du titre est hors du contexte isolé de commandes.
   const enCourse = () => ecran === 'course', activerSon = () => {}, naviguerManette = () => {};
-  const changerVue = () => {}, changerVue2 = () => {}, basculerPause = () => { ecran = ecran === 'course' ? 'pause' : 'course'; };
+  const sauverReglages = () => {}, basculerPause = () => { ecran = ecran === 'course' ? 'pause' : 'course'; };
   const sortirDemo = () => { ecran = 'titre'; }, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const angle = a => Math.atan2(Math.sin(a), Math.cos(a)), PORTEE_VUE = 6000;
   const canvas = { clientWidth: 1280, clientHeight: 720 }, scene = { decor: { sol: () => 0 } };
@@ -35,8 +36,9 @@ const fabrique = new Function('navigator', 'B', 'session', 'reglages', 'poses', 
   const cameraCockpit = () => ({ pos: [0, 1, 0], yaw: 0, pitch: 0, roll: 0, fov: 60 });
   const cameraTele = cameraCockpit, cameraHelico = cameraCockpit, cameraSol = cameraCockpit, cameraDemo = cameraCockpit;
   ${declarations}
-  ${['lireManette', 'lireManette2', 'commandesJoueur', 'commandesJoueur2', 'champAdapte', 'cameraPoursuite', 'regardArriereVoulu', 'cameraRegardArriere'].map(extraire).join('\n')}
-  ${['RAYON_REGARD', 'VUES_DEHORS', 'DANS_LA_ROCHE', 'CAMERAS_DEMO'].map(ligne).join('\n')}
+  ${['lireManette', 'lireManette2', 'commandesJoueur', 'commandesJoueur2', 'changerVue', 'changerVue2', 'reglerVue', 'champAdapte', 'cameraEmbarquee', 'cameraPoursuite', 'regardArriereVoulu', 'cameraRegardArriere'].map(extraire).join('\n')}
+  ${source.slice(source.indexOf('  const ANCRAGES_CAMERAS ='), source.indexOf('  function cameraEmbarquee('))}
+  ${['RAYON_REGARD', 'VUES_COURSE', 'VUES_DEHORS', 'DANS_LA_ROCHE', 'CAMERAS_DEMO'].map(ligne).join('\n')}
   ${raccord}
   return { poll: lireManette, j1: commandesJoueur, j2: commandesJoueur2, pad, pad2,
     camera: (S = session, vue = 'poursuite', suivie = S === session ? session.course.joueur : session.course.voitures[session.locaux[1]]) => rendreVue(S, suivie, vue, 1/60, {}),
@@ -69,6 +71,24 @@ verifier('appui, maintien et relâchement : vrai raccord caméra, retour exact �
   for (let i = 0; i < 10; i++) { const cam = f.api.camera(); assert(arriere(cam)); assert(axeX(cam) < -.999); assert(cam.pos[0] > 0); }
   p.axes[3] = 0; f.api.poll(); const apres = f.api.camera(); assert(!arriere(apres)); assert.deepEqual(apres, avant);
   assert.equal(f.reglages.vue, 'poursuite');
+});
+for (const vue of ['cockpit', 'arceau', 'nez', 'aileron-avant', 'poursuite-proche', 'poursuite']) verifier('retour exact après regard arrière : ' + vue, () => {
+  const f = preparer(), p = manette(); f.navigator.pads = [p]; f.api.poll(); f.reglages.vue = vue;
+  const avant = f.api.camera(f.S, vue); p.axes[3] = 1; f.api.poll();
+  const derriere = f.api.camera(f.S, vue); assert(arriere(derriere));
+  assert(Math.cos(derriere.yaw - avant.yaw) < -.999, 'axe retourné');
+  p.axes[3] = 0; f.api.poll(); assert.deepEqual(f.api.camera(f.S, vue), avant);
+  assert.equal(f.reglages.vue, vue);
+});
+verifier('Y parcourt les six vues indépendamment pour chaque manette', () => {
+  const f = preparer({ duo: true }), p1 = manette(0), p2 = manette(1);
+  f.navigator.pads = [p1,p2]; f.api.poll(); f.reglages.vue = f.reglages.vue2 = 'cockpit';
+  for (const vue of ['arceau','nez','aileron-avant','poursuite-proche','poursuite','cockpit']) {
+    p1.buttons[3] = { value: 1, pressed: true }; f.api.poll(); assert.equal(f.reglages.vue, vue); assert.equal(f.reglages.vue2, 'cockpit');
+    f.api.poll(); assert.equal(f.reglages.vue, vue, 'maintien ne répète pas le cycle');
+    p1.buttons[3] = { value: 0, pressed: false }; f.api.poll();
+  }
+  p2.buttons[3] = { value: 1, pressed: true }; f.api.poll(); assert.equal(f.reglages.vue2, 'arceau'); assert.equal(f.reglages.vue, 'cockpit');
 });
 verifier('zone morte et hystérésis : pas de flottement, ni de déclenchement sur un autre axe', () => {
   const f = preparer(), p = manette(); f.navigator.pads = [p]; f.api.poll();
@@ -103,8 +123,8 @@ verifier('la manette unique reste affectée au joueur 2 en écran partagé', () 
   const f = preparer({ duo: true }); f.navigator.pads = [manette(0, 1)]; f.api.poll();
   assert(!arriere(f.api.camera())); assert(arriere(f.api.camera(f.S.vueJ2)));
 });
-verifier('cockpit, menus, démos, banc et commandes clavier/souris ne prennent pas le regard arrière', () => {
-  const f = preparer(); f.navigator.pads = [manette(0, 1)]; f.api.poll(); assert(!arriere(f.api.camera(f.S, 'cockpit')));
+verifier('menus, démos, banc et commandes clavier/souris ne prennent pas le regard arrière', () => {
+  const f = preparer(); f.navigator.pads = [manette(0, 1)]; f.api.poll();
   for (const e of ['titre', 'pause', 'reglages', 'preparation', 'resultats', 'demo']) { f.api.setScreen(e); assert(!arriere(f.api.camera()), e); }
   f.api.setScreen('course');
   for (const type of ['demo', 'vitrine']) { f.S.type = type; assert(!arriere(f.api.camera()), type); }
@@ -144,7 +164,7 @@ for (const obstacle of ['paroi', 'plafond']) verifier('rayon natif PhysX : ne pa
   } finally { w.dispose(); }
 });
 verifier('aide en français précise le maintien du stick et la vue concernée', () => {
-  assert(source.includes('stick droit maintenu vers le bas pour regarder derrière en vue Poursuite'));
+  assert(source.includes('stick droit maintenu vers le bas pour regarder derrière dans les six vues'));
   assert.equal(X.status().worlds, 0);
 });
 console.log(controles + ' vérifications regard arrière réussies');

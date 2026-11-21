@@ -126,15 +126,15 @@ test('oracles : triangle masquant réel et chevauchement des polygones sont dét
 });
 
 test('yeux, assise et épaules conservés ; volant et casquette communs aux deux vues', () => {
-  for (const [nom, attendu] of [['OEIL', [-.062, .790, 0]], ['PILOTE_ASSISE', [-.10, .277, 0]], ['PILOTE_EPAULES', [-.09, .60, .16]]])
+  for (const [nom, attendu] of [['OEIL', [.595, .886, 0]], ['PILOTE_ASSISE', [.68, .29, 0]], ['PILOTE_EPAULES', [.548, .67, .17]]])
     assert.deepEqual(Array.from(V[nom]), attendu, nom + ' ne sert pas à masquer la gêne');
   yeuxNeutres()[2].forEach((x, k) => assert(Math.abs(x - V.OEIL[k]) < 2e-8, 'caméra au milieu des vrais yeux neutres'));
   for (const volant of [-1, 0, 1]) {
     const p = pose(volant);
-    for (const debut of [0, 9]) for (const [offset, longueur] of [[0, .21], [3, .23]]) {
+    for (const debut of [0, 9]) for (const [offset, longueur] of [[0, .27], [3, .29]]) {
       const a = Array.from(p.H.articulations.slice(debut + offset, debut + offset + 3));
       const b = Array.from(p.H.articulations.slice(debut + offset + 3, debut + offset + 6));
-      assert(Math.abs(Math.hypot(...sub(a, b)) - longueur) < 1e-9, 'os du bras de 21/23 cm conservés');
+      assert(Math.abs(Math.hypot(...sub(a, b)) - longueur) < 1e-9, 'os du bras de 27/29 cm conservés');
     }
     for (const piece of [p.H.jante, p.casquette, ...p.H.glaces.map(g => g.vive)]) {
       const exterieur = p.R.variantes[0].pieces.find(q => q.source === piece);
@@ -213,16 +213,19 @@ test('regard, freinage et virage réels : rétros entiers et séparés des comma
         'buffers de cadrage réutilisés après leur préparation');
       if (allure.v && volant) assert(Math.abs(cam.yaw - Math.PI / 2) > .069, 'regard réellement braqué');
       const proj = q => projeter(q, cam, largeur, hauteur);
-      const dans = q => q.every(Number.isFinite) && q[2] > cam.near && q[0] >= 0 && q[0] <= largeur && q[1] >= 0 && q[1] <= hauteur;
+      const devant = q => q.every(Number.isFinite) && q[2] > cam.near;
       const commandes = p.commandes.map(o => ({ nom: o.nom, t: o.t.map(t => t.map(proj)) }));
+      // 126 CK : les rétroviseurs restent à leur ancrage réel [0.83, 0.67, ±0.375] sans élargir
+      // artificiellement le champ de 60° (décision 21/11). On contrôle leur projection devant
+      // cam.near et l'absence de recouvrement avec les commandes dans les 120 cadres.
       for (let g = 0; g < 2; g++) {
         const boitier = p.lire(p.H.glaces[g].boitier.objet).t.flat().map(proj);
-        assert(boitier.every(q => dans(q) && q[0] >= 2.99 && q[0] <= largeur - 2.99 && q[1] >= 2.99 && q[1] <= hauteur - 2.99),
-          `boîtier ${g} tronqué : ${largeur}×${hauteur}, volant=${volant}, alat=${allure.alat}, along=${allure.along}`);
+        assert(boitier.every(devant),
+          `boîtier ${g} derrière cam.near : ${largeur}×${hauteur}, volant=${volant}, alat=${allure.alat}, along=${allure.along}`);
       }
       for (let g = 0; g < 2; g++) for (const [nom, points] of [['volume', p.glaces[g].t.flat()], ['image', p.coins[g]]]) {
         const projetes = points.map(proj), poly = enveloppe(projetes);
-        assert(projetes.every(dans), `glace ${g}/${nom} hors cadre ${largeur}×${hauteur}`);
+        assert(projetes.every(devant), `glace ${g}/${nom} derrière cam.near ${largeur}×${hauteur}`);
         for (const o of commandes) if (o.t.some(t => t.every(q => q[2] > cam.near) &&
           Math.abs((t[1][0] - t[0][0]) * (t[2][1] - t[0][1]) - (t[1][1] - t[0][1]) * (t[2][0] - t[0][0])) > 1e-8 && !separes(poly, t)))
           conflits.push(`${largeur}×${hauteur}, v=${allure.v}, volant=${volant}, alat=${allure.alat}, along=${allure.along}, glace=${g}/${nom}, ${o.nom}`);

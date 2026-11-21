@@ -25,6 +25,7 @@ const debutStock = source.indexOf('  const DEFAUT = '), finStock = source.indexO
 const debutChange = source.indexOf("  document.addEventListener('change', e => {"), finChange = source.indexOf('\n  });', debutChange) + 6;
 assert.ok(debutStock >= 0 && finStock > debutStock && debutChange >= 0 && finChange > debutChange);
 const catalogue = source.match(/  const CATALOGUE = \[[\s\S]*?\n  \];/)[0];
+const vuesCourse = source.match(/^  const VUES_COURSE = [^\n]+;/m)[0];
 function dom() {
   const elements = new Map(), groupes = new Map(), ecouteurs = new Map();
   for (const m of html.matchAll(/<[^>]+\bid="([^"]+)"[^>]*>/g)) elements.set(m[1], {
@@ -51,6 +52,7 @@ const assembler = new Function('B', 'D', 'stock', `
   const lireStock = (cle, defaut) => { assertStock(cle); return stock == null ? defaut : structuredClone(stock); };
   function assertStock(cle) { if (cle !== 'bitume.reglages') throw new Error('clé de réglages inattendue'); }
   ${catalogue}
+  ${vuesCourse}
   ${fonctions}
   ${source.slice(debutStock, finStock)}
   const NOMS_PNEUS = B.pneus.NOMS_PNEUS;

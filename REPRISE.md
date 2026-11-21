@@ -14,21 +14,13 @@ Vrai tracé et vrai relief, échelle 1:1, parcours ouvert avec arrivée.
 
 ## Publication et préparations
 
-Runtime de départ publié sur main : **0.2.77 / p15 / FERRO 0.3.15**, PR 54,
-commit `11e7e55f087484e1099963d42b04309b6bc6220c`. Le présent jalon publie le suivi
-sur main ; les sources de la refonte sont sur
-**`codex/bitume-0280-implantation-126ck-20261121`**, sans qualification globale.
-[État exact et prochains contrôles](docs/reprise/rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md).
-[Sauvegardes GitHub vérifiées](docs/reprise/rapports/MODELE-126CK-2026-11-21/SAUVEGARDE-2026-11-21.json) :
-sources `39c80f5`, poignets isolés `d487e7f`.
-Le HTML de préparation .78 précède ces derniers raccords ; reconstruire avant essai.
+Runtime publié sur `main` : **0.2.79 / p15 / FERRO 0.3.15** (126 CK complète, poignets R4b corrigés, six caméras de conduite, compteurs **Visites / Visiteurs uniques**), `dist/bitume.html` `sha256` `77d774fd99484f7d`, fusionné depuis `codex/bitume-0280-implantation-126ck-20261121` (`f86e58f`) sur décision explicite de David (21/11).
+[État exact et résultats de réception](docs/reprise/rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md).
 
 La voiture et son implantation par rapport aux essieux précèdent le pilote.
 Une seule géométrie monde dans toutes les vues ; occultation naturelle du volant
-acceptée. Les modèles .75/.76 restent refusés ; des tests verts ne valent pas
-validation visuelle de la 126 CK. [Plan R0–R5](docs/reprise/MODELE-COMPLET-126CK-2026-11-21.md).
+acceptée. [Plan R0–R5](docs/reprise/MODELE-COMPLET-126CK-2026-11-21.md).
 
-Prochaine action : finir la réception des mains/caméras/compteurs et la qualification
-du candidat assemblé ; l’acquisition L0 Larche/Vinadio peut avancer séparément.
-Préserver décor, PR 43, Monaco/Marseille et le programme antérieur.
-Réserve construction décor <150 ms ouverte. Aucun déploiement du site dans ce jalon.
+Prochaine action : **Lot L0–L2 Col de Larche → Vinadio** (acquisition géographique réelle, tracé/profil SS21 et parcours ouvert), puis suite du programme autonome.
+Préserver décor, PR 43, Monaco/Marseille et les 9 circuits existants.
+Réserve construction décor <150 ms ouverte.

@@ -181,6 +181,12 @@ function coque(sortie, detail = 'complet') {
     assert.ok(objet, 'pièce de cockpit toujours présente : ' + nom);
     return { nom, arbre: build(triangles(objet)) };
   });
+  // Le dossier et ses détails sont des obstacles réels pour les membres. Leur
+  // appui sur le dos est qualifié séparément, à partir du thorax fermé rendu.
+  for (const nom of ['siege-dossier', 'siege-stries', 'siege-coutures']) {
+    const objet = sortie.find(o => o.shape === 'bitume-' + nom);
+    if (objet) obstacles.push({ nom, arbre: build(triangles(objet)) });
+  }
   const consoleLevier = sortie.find(o => o.shape === 'bitume-console-levier-pilote');
   if (consoleLevier) obstacles.push({ nom: 'console-levier', arbre: build(triangles(consoleLevier)) });
   return obstacles;

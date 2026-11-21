@@ -109,7 +109,7 @@ verifier('souffle seulement autorisé par le cadrage, indépendant du moteur mue
     son.mettreAJour({ joueur: joueur({ vue, muet: true, aspiration: 1 }) });
     assert(cible(v.aigu) > 0 && cible(v.grave) > 0, vue);
   }
-  for (const vue of ['cockpit', 'poursuite', 'helico', 'tele', 'faune']) {
+  for (const vue of ['cockpit', 'arceau', 'nez', 'aileron-avant', 'poursuite-proche', 'poursuite', 'helico', 'tele', 'faune']) {
     son.mettreAJour({ joueur: joueur({ vue, ventActif: false }) });
     assert.equal(cible(v.aigu), 0); assert.equal(cible(v.grave), 0);
   }
@@ -166,16 +166,16 @@ verifier('le vrai raccord du jeu transmet l’aspiration du pilote suivi et auto
   const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
   const debut = source.indexOf('  function decrireMoteur('), fin = source.indexOf('  // écoute des claquements', debut);
   assert(debut >= 0 && fin > debut);
-  const description = new Function('ecran', 'VUES_DEHORS', 'sousLaVoute', 'clamp', source.slice(debut, fin) + '; return decrireMoteur;');
+  const description = new Function('ecran', 'VUES_DEHORS', 'sousLaVoute', 'clamp', source.match(/^  const VUES_COURSE = [^\n]+;/m)[0] + '\n' + source.slice(debut, fin) + '; return decrireMoteur;');
   const v = { id: 7, etat: { v: 300 / 3.6, regime: 10000, gaz: 1, rapport: 6, glisse: 0, surface: 0, turbo: { reste: 0 }, aspiration: .8 } };
   const avant = JSON.stringify(v), resultat = {};
   for (const ecran of ['titre', 'reglages', 'pause', 'course', 'demo']) {
     const decrire = description(ecran, new Set(['helico', 'tele', 'faune']), () => false, (x,a,b) => Math.max(a, Math.min(b,x)));
-    for (const vue of ['cockpit', 'poursuite', 'helico', 'tele', 'faune']) {
+    for (const vue of ['cockpit', 'arceau', 'nez', 'aileron-avant', 'poursuite-proche', 'poursuite', 'helico', 'tele', 'faune']) {
       decrire(resultat, { vue, course: { c: {} } }, v, { pos: [0,1,0] });
       assert.equal(resultat.id, 7); assert.equal(resultat.aspiration, .8);
       son.mettreAJour({ joueur: resultat });
-      const attendu = ['course','demo'].includes(ecran) && ['cockpit','poursuite'].includes(vue);
+      const attendu = ['course','demo'].includes(ecran) && ['cockpit','arceau','nez','aileron-avant','poursuite-proche','poursuite'].includes(vue);
       assert.equal(cible(vents[0].aigu) > 0, attendu, ecran + '/' + vue);
     }
   }

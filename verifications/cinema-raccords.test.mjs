@@ -21,7 +21,7 @@ assert(debut >= 0 && fin > debut, 'raccord de production introuvable');
 const constantes = ['VUES_DEHORS', 'DANS_LA_ROCHE', 'CAMERAS_DEMO', 'PORTEE_VUE'].map(n => {
   const ligne = source.match(new RegExp('^  const ' + n + ' = [^\\n]+;', 'm'));
   assert(ligne, n); return ligne[0];
-}).join('\n');
+}).join('\n') + '\n' + source.match(/^  const ANCRAGES_CAMERAS = Object\.freeze\(\{[\s\S]*?\n  \}\);/m)[0];
 const raccord = new Function('B', 'tampons', 'reglages', 'profilDe', 'cameraTele', 'cameraPoursuite', 'cameraDemo', 'soleilDe',
   'session', 'cameraEssai', 'horlogeReelle', 'clamp', regard + '\n' + constantes + '\n' + source.slice(debut, fin) +
   '\nreturn { cam, vue, suivie, ps };\n}\nreturn rendreVue;');

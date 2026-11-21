@@ -6,6 +6,7 @@
 #     ~/apps/bitume/current                        lien vers la version en ligne, basculé d'un coup
 #     ~/apps/caddy-shared/vhosts.d/bitume.estrasse.fr.Caddyfile   copie de deploiement/, appliquée par caddy-shared-apply
 #     ~/apps/bitume/salon/salon.mjs                 salon du jeu en ligne (serveur/salon.mjs), service utilisateur
+#     ~/apps/bitume/salon/visites.mjs               compteur global ; données durables dans donnees/, hors releases
 #     ~/.config/systemd/user/bitume-salon.service   bitume-salon sur 127.0.0.1:8790, servi par Caddy sous /salon ;
 #                                                   reposé et relancé seulement s'il a changé (les parties en cours tombent)
 # Le VPS n'a pas accès au dépôt privé : la page part du Mac.
@@ -53,15 +54,18 @@ DISTANT
 
 # Salon du jeu en ligne : posé et relancé s'il a changé (fichier ou unité)
 salon_local="$depot/serveur/salon.mjs"
+visites_local="$depot/serveur/visites.mjs"
 unite_local="$depot/deploiement/bitume-salon.service"
 unite_distante=.config/systemd/user/bitume-salon.service
 if ! ssh -o BatchMode=yes "$hote" "cmp -s - $racine/salon/salon.mjs" < "$salon_local" ||
+   ! ssh -o BatchMode=yes "$hote" "cmp -s - $racine/salon/visites.mjs" < "$visites_local" ||
    ! ssh -o BatchMode=yes "$hote" "cmp -s - $unite_distante" < "$unite_local" ||
    ! ssh -o BatchMode=yes "$hote" "systemctl --user is-active --quiet bitume-salon"; then
   ssh -o BatchMode=yes "$hote" "install -d -m 755 $racine/salon .config/systemd/user"
   scp -q -o BatchMode=yes "$salon_local" "$hote:$racine/salon/salon.mjs.new"
+  scp -q -o BatchMode=yes "$visites_local" "$hote:$racine/salon/visites.mjs.new"
   scp -q -o BatchMode=yes "$unite_local" "$hote:$unite_distante.new"
-  ssh -o BatchMode=yes "$hote" "chmod 644 $racine/salon/salon.mjs.new $unite_distante.new && mv $racine/salon/salon.mjs.new $racine/salon/salon.mjs && mv $unite_distante.new $unite_distante && systemctl --user daemon-reload && systemctl --user enable --quiet bitume-salon && systemctl --user restart bitume-salon"
+  ssh -o BatchMode=yes "$hote" "chmod 644 $racine/salon/salon.mjs.new $racine/salon/visites.mjs.new $unite_distante.new && mv $racine/salon/visites.mjs.new $racine/salon/visites.mjs && mv $racine/salon/salon.mjs.new $racine/salon/salon.mjs && mv $unite_distante.new $unite_distante && systemctl --user daemon-reload && systemctl --user enable --quiet bitume-salon && systemctl --user restart bitume-salon"
   echo "salon posé et relancé"
 fi
 

@@ -716,6 +716,10 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 .arcade-modes .arcade-reglages { min-height: 44px; padding-left: 0; grid-column: 1 / -1; width: max-content; }
 .arcade-reglages span { margin-left: 12px; color: #eab261; }
 .arcade-titre .pied-titre { font-size: 12px; margin-top: 0; }
+.compteur-visites { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 0; padding: 4px 0 0; color: var(--papier-3); font-size: 11px; line-height: 1.4; }
+.compteur-visites > div { display: flex; align-items: baseline; gap: 7px; }
+.compteur-visites dt { font-weight: 400; }
+.compteur-visites dd { margin: 0; color: var(--papier); font-variant-numeric: tabular-nums; font-weight: 650; }
 .arcade-preparation .menu-entete, .arcade-preparation .panneaux-menu, .arcade-preparation .depart-fixe, .arcade-preparation .aide-manette { max-width: 1320px; }
 .arcade-preparation .entete { margin-bottom: 18px; }
 .arcade-preparation .entete h2 { font-size: clamp(27px, 3.3vw, 42px); }

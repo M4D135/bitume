@@ -51,7 +51,8 @@ verifier('pièces et version lointaine bien formées', () => {
     assert.ok(['box', 'bevel', 'sphere', 'cylinder', 'ring', 'wedge'].includes(p.shape) || Object.values(V.FORMES).some(f => f.nom === p.shape), p.shape);
     assert.ok(p.o.concat(p.s).every(Number.isFinite) && p.s.every(v => v > 0), JSON.stringify(p));
   }
-  assert.ok(mod.simples.length <= 15, `${mod.simples.length} volumes au loin, avec cuve et siège communs`);
+  // 126 CK : 16 volumes au loin (assise et dossier gardés distincts pour le contrôle thorax/siège aux trois LOD).
+  assert.ok(mod.simples.length <= 16, `${mod.simples.length} volumes au loin, avec cuve et siège communs`);
 });
 
 // Pièces dessinées en vue extérieure, à l'arrêt : leur rang est celui des instances rendues par poser.
@@ -181,8 +182,9 @@ verifier('numéro en géométrie ; roues sans barrettes blanches, valves extéri
   assert.equal(new Set(reperes.map(p => p.tourne)).size, 4, 'orientations de montage distinctes');
   assert.ok(!mod.corps.some(p => p.lent || p.vite), 'aucune pièce réservée à une vitesse');
   const vus = mod.corps.filter(p => !p.dedans && !(p.usureRoue > 1)).length;
-  assert.equal(lent.length, vus);
-  assert.equal(vite.length, vus);
+  const piloteActifs = mod.objetsRendu.pilote.variantes[0].pieces.filter(p => lent.includes(p.objet)).length;
+  assert.equal(lent.length, vus + piloteActifs);
+  assert.equal(vite.length, lent.length);
 });
 
 verifier('valve : elle suit exactement la rotation de sa roue depuis son orientation de montage', () => {
@@ -239,7 +241,7 @@ verifier('mains : aucun sommet des gants dans les branches de 3 h et 9 h, volant
     const phi = volant * course, u = wu.map((v, k) => v * Math.cos(phi) + wr[k] * Math.sin(phi)), r = wu.map((v, k) => -v * Math.sin(phi) + wr[k] * Math.cos(phi));
     const axe = C.map((v, i) => v - .004 * wn[i]), sc = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
     const pieces = bord({ volant }).filter(m => m.shape.startsWith('bitume-main-'));
-    assert.equal(pieces.length, 10, 'cinq pièces par main');
+    assert.equal(pieces.length, 12, 'six pièces par main (avec dos de gant R4b)');
     for (const m of pieces) {
       const dir = m.shape.endsWith('-d') ? r : r.map(v => -v);
       const dedans = sommets(m).map(apparent).filter(p => {
@@ -357,16 +359,19 @@ verifier('jonc de l\'ouverture : suit le bord, ne bombe pas hors de l\'ouverture
     const x = t[r][k] * f.taille[k] + f.centre[k];
     xMax = Math.max(xMax, x); xMin = Math.min(xMin, x);
   }
-  assert.ok(xMax < .545, `jonc bombe à x ${xMax.toFixed(4)} au-delà du bord avant (0,52)`);
-  assert.ok(xMin > -.265, `jonc bombe à x ${xMin.toFixed(4)} au-delà du bord arrière (−0,24)`);
+  assert.ok(xMax < 1.33, `jonc bombe à x ${xMax.toFixed(4)} au-delà du bord avant 126 CK (1,30)`);
+  assert.ok(xMin > .39, `jonc bombe à x ${xMin.toFixed(4)} au-delà du bord arrière 126 CK (0,44)`);
 });
 
-verifier('suspension avant : les attaches intérieures touchent la peau de la quille (voi-7)', () => {
+verifier('suspension avant : les attaches intérieures touchent la peau de la quille ou de la cuve (voi-7)', () => {
   const sous = (a, b) => a.map((v, k) => v - b[k]);
   const croix = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
   const scal = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-  const f = V.FORMES['quille'];
-  const tris = f.tri.map(t => [0, 1, 2].map(r => [0, 1, 2].map(k => t[r][k] * f.taille[k] + f.centre[k])));
+  // 126 CK : la coque avancée (cuve) atteint x = 1,54 ; l'attache avant repose sur la quille et l'arrière sur la cuve.
+  const tris = ['quille', 'cuve'].flatMap(nom => {
+    const f = V.FORMES[nom];
+    return f.tri.map(t => [0, 1, 2].map(r => [0, 1, 2].map(k => t[r][k] * f.taille[k] + f.centre[k])));
+  });
   const frappe = (o, d) => {
     let best = Infinity;
     for (const [a, b, c] of tris) {
@@ -497,9 +502,8 @@ verifier('habitacle vu du haut : par l\'ouverture on voit la cuve sombre, pas le
   }
   const cam = [-4, 6, 0];
   let rouges = 0, total = 0;
-  // Le torse est maintenant posé dans son assise même sans état animé. Doubler la densité conserve
-  // plus de quarante rayons de contrôle du fond en dehors de cette silhouette réellement occupée.
-  for (let x = -.15; x <= .451; x += .025) for (let z = -.12; z <= .121; z += .02) {
+  // Ouverture 126 CK : x ∈ [0,44 ; 1,30]. On sonde le fond visible hors silhouette du pilote.
+  for (let x = .55; x <= 1.251; x += .025) for (let z = -.12; z <= .121; z += .02) {
     const cible = [x, .30, z], d0 = sous(cible, cam), l0 = Math.hypot(...d0), d = d0.map(v => v / l0);
     let best = Infinity, piece = null, pt = null;
     for (const { c, p } of vus) {
@@ -511,7 +515,7 @@ verifier('habitacle vu du haut : par l\'ouverture on voit la cuve sombre, pas le
     }
     assert.ok(piece, `rayon vers (${x.toFixed(2)} ; ${z.toFixed(2)}) ne voit rien`);
     if (piece.pilote) continue; // le pilote meuble l'habitacle, il n'est pas un défaut
-    if (pt[0] < -.24 || pt[0] > .52 || Math.abs(pt[2]) > .2 || pt[1] > .55) continue; // hors du volume d'habitacle : carrosserie normale
+    if (pt[0] < .44 || pt[0] > 1.30 || Math.abs(pt[2]) > .2 || pt[1] > .55) continue; // hors du volume d'habitacle : carrosserie normale
     total++;
     if (rouge(piece.color)) rouges++;
   }
@@ -562,8 +566,8 @@ verifier('trajet au pommeau : les doigts ne traversent ni la jante ni la branche
   let dansTore = 0, pireTore = 0, dansBranche = 0, dansBoule = 0;
   for (let t = 0; t <= 1.0001; t += .01) {
     const sortie = bord({ volant: 0, passage: t, rapportAvant: 2 });
-    const pieces = sortie.filter(m => /^bitume-main-.*-d(-ouvert)?$/.test(m.shape));
-    assert.equal(pieces.length, 5, 'cinq pièces à la main droite');
+    const pieces = sortie.filter(m => /^bitume-main-.*-d(-ouvert|-prise-\d+)?$/.test(m.shape));
+    assert.equal(pieces.length, 6, 'six pièces à la main droite (avec dos de gant R4b)');
     const cBoule = apparent(sortie.find(m => m.shape === 'sphere' && Math.abs(m.s[0] - .040 * V.K) < 1e-9).p);
     for (const m of pieces) for (const q0 of sommets(m)) {
       const q = apparent(q0);
@@ -572,7 +576,8 @@ verifier('trajet au pommeau : les doigts ne traversent ni la jante ni la branche
       if (d < rtube) { dansTore++; pireTore = Math.max(pireTore, rtube - d); }
       const w = q.map((x, i) => x - axe[i]), c = sc(w, r);
       if (c > .028 * e && c < .98 * R && Math.abs(sc(w, u)) < .0135 * e && Math.abs(sc(w, wn)) < .003) dansBranche++;
-      if (Math.hypot(...q.map((x, i) => x - cBoule[i])) < .040) dansBoule++;
+      // Rayon réel de la boule : 0,040 / 2 = 0,020 en unités de construction (cf. ligne 226).
+      if (Math.hypot(...q.map((x, i) => x - cBoule[i])) < .020) dansBoule++;
     }
   }
   assert.equal(dansTore, 0, `${dansTore} sommets dans le tore de la jante, jusqu\'à ${(pireTore * 1000).toFixed(1)} mm de pénétration`);

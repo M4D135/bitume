@@ -105,6 +105,10 @@
     <p class="pied-titre aide-controleur">Croix ou stick : parcourir · A : choisir · B : retour</p>
     <p class="pied-titre aide-tactile">Touchez un mode pour commencer</p>
     <p id="aide-console" class="pied-titre" hidden>Xbox : maintenez Menu pour passer aux contrôles de jeu. RT : gaz · LT : frein · A : dérive</p>
+    <dl id="compteur-visites" class="compteur-visites" aria-label="Fréquentation du jeu" aria-live="polite">
+      <div><dt>Visites</dt><dd id="compteur-total">—</dd></div>
+      <div><dt>Visiteurs uniques</dt><dd id="compteur-uniques">—</dd></div>
+    </dl>
   </section>
 
   <!-- Jeu en ligne à deux : créer ou rejoindre une partie -->
@@ -182,9 +186,22 @@
           <label><input type="radio" name="boitePret" value="manuelle"><span>Manuelle</span></label>
         </fieldset>
         <fieldset>
-          <legend>Vue</legend>
+          <legend>Vue · Joueur 1</legend>
           <label><input type="radio" name="vuePret" value="cockpit"><span>Cockpit</span></label>
-          <label><input type="radio" name="vuePret" value="poursuite"><span>Poursuite</span></label>
+          <label><input type="radio" name="vuePret" value="arceau"><span>Arceau · T-cam</span></label>
+          <label><input type="radio" name="vuePret" value="nez"><span>Nez</span></label>
+          <label><input type="radio" name="vuePret" value="aileron-avant"><span>Aileron avant</span></label>
+          <label><input type="radio" name="vuePret" value="poursuite-proche"><span>Poursuite proche</span></label>
+          <label><input type="radio" name="vuePret" value="poursuite"><span>Poursuite éloignée</span></label>
+        </fieldset>
+        <fieldset id="pr-vue-2" hidden>
+          <legend>Vue · Joueur 2</legend>
+          <label><input type="radio" name="vuePret2" value="cockpit"><span>Cockpit</span></label>
+          <label><input type="radio" name="vuePret2" value="arceau"><span>Arceau · T-cam</span></label>
+          <label><input type="radio" name="vuePret2" value="nez"><span>Nez</span></label>
+          <label><input type="radio" name="vuePret2" value="aileron-avant"><span>Aileron avant</span></label>
+          <label><input type="radio" name="vuePret2" value="poursuite-proche"><span>Poursuite proche</span></label>
+          <label><input type="radio" name="vuePret2" value="poursuite"><span>Poursuite éloignée</span></label>
         </fieldset>
       </div>
       <div class="options options-troll-prets" id="pr-troll-choix">
@@ -320,6 +337,28 @@
         <label><input type="radio" name="pneus2" value="pluie"><span>Pluie</span></label>
         <label><input type="radio" name="pneus2" value="neige"><span>Neige</span></label>
       </fieldset>
+      <fieldset id="o-vue">
+        <legend>Vue · Joueur 1</legend>
+        <label class="select-arcade" for="p-vue"><span>Caméra</span><select id="p-vue" name="vueDepart">
+          <option value="cockpit">Cockpit</option>
+          <option value="arceau">Arceau · T-cam</option>
+          <option value="nez">Nez</option>
+          <option value="aileron-avant">Aileron avant</option>
+          <option value="poursuite-proche">Poursuite proche</option>
+          <option value="poursuite">Poursuite éloignée</option>
+        </select></label>
+      </fieldset>
+      <fieldset id="o-vue-2" hidden>
+        <legend>Vue · Joueur 2</legend>
+        <label class="select-arcade" for="p-vue-2"><span>Caméra</span><select id="p-vue-2" name="vueDepart2">
+          <option value="cockpit">Cockpit</option>
+          <option value="arceau">Arceau · T-cam</option>
+          <option value="nez">Nez</option>
+          <option value="aileron-avant">Aileron avant</option>
+          <option value="poursuite-proche">Poursuite proche</option>
+          <option value="poursuite">Poursuite éloignée</option>
+        </select></label>
+      </fieldset>
       <fieldset id="o-commandes" hidden>
         <legend>Commandes</legend>
         <div class="ligne-commande"><b>Joueur 1</b><label><input type="radio" name="cmd0" value="auto"><span>Auto</span></label><label><input type="radio" name="cmd0" value="manette"><span>Manette</span></label><label><input type="radio" name="cmd0" value="clavier"><span>Clavier</span></label><label><input type="radio" name="cmd0" value="souris"><span>Souris</span></label></div>
@@ -344,7 +383,7 @@
       </fieldset>
       <fieldset id="o-pilotage">
         <legend>Pilotage</legend>
-        <p class="note-graphismes">Vue, boîte de vitesses, annonces des virages et commandes.</p>
+        <p class="note-graphismes">Boîte de vitesses, annonces des virages et commandes.</p>
         <button type="button" class="discret" id="p-reglages-pilote">Régler le pilotage</button>
       </fieldset>
     </div>
@@ -456,9 +495,22 @@
       <div id="r-pilotage" class="panneau-menu" role="tabpanel" data-menu-panel aria-labelledby="onglet-r-pilotage" hidden>
     <div class="grille-reglages">
       <fieldset>
-        <legend>Vue</legend>
+        <legend>Vue · Joueur 1</legend>
         <label><input type="radio" name="vue" value="cockpit"><span>Cockpit</span></label>
-        <label><input type="radio" name="vue" value="poursuite"><span>Poursuite</span></label>
+        <label><input type="radio" name="vue" value="arceau"><span>Arceau · T-cam</span></label>
+        <label><input type="radio" name="vue" value="nez"><span>Nez</span></label>
+        <label><input type="radio" name="vue" value="aileron-avant"><span>Aileron avant</span></label>
+        <label><input type="radio" name="vue" value="poursuite-proche"><span>Poursuite proche</span></label>
+        <label><input type="radio" name="vue" value="poursuite"><span>Poursuite éloignée</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Vue · Joueur 2</legend>
+        <label><input type="radio" name="vue2" value="cockpit"><span>Cockpit</span></label>
+        <label><input type="radio" name="vue2" value="arceau"><span>Arceau · T-cam</span></label>
+        <label><input type="radio" name="vue2" value="nez"><span>Nez</span></label>
+        <label><input type="radio" name="vue2" value="aileron-avant"><span>Aileron avant</span></label>
+        <label><input type="radio" name="vue2" value="poursuite-proche"><span>Poursuite proche</span></label>
+        <label><input type="radio" name="vue2" value="poursuite"><span>Poursuite éloignée</span></label>
       </fieldset>
       <fieldset>
         <legend>Boîte</legend>

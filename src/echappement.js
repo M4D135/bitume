@@ -24,14 +24,14 @@
   'use strict';
 
   // ------------------------------------------------------------------ sorties
-  // Embouchures des quatre tubes de voiture.js (formes « echappements-hauts » et « echappements-bas ») : dernier point
+  // Embouchures 126 CK des quatre tubes de voiture.js (formes « echappements-hauts » et « echappements-bas ») : dernier point
   // de chaque tube et son rayon, dans le repère de la voiture (x vers l'avant, y vers le haut, z vers la droite). Les
   // tubes finissent dans l'axe : la flamme part vers −x. Banc 0 : côté gauche (z < 0).
   const SORTIES = Object.freeze([
-    Object.freeze({ x: -2.03, y: .54, z: -.29, r: .043, banc: 0, haut: true }),
-    Object.freeze({ x: -2.03, y: .54, z: .29, r: .043, banc: 1, haut: true }),
-    Object.freeze({ x: -2.00, y: .16, z: -.29, r: .039, banc: 0, haut: false }),
-    Object.freeze({ x: -2.00, y: .16, z: .29, r: .039, banc: 1, haut: false })
+    Object.freeze({ x: -1.42, y: .58, z: -.215, r: .065, banc: 0, haut: true }),
+    Object.freeze({ x: -1.42, y: .58, z: .215, r: .065, banc: 1, haut: true }),
+    Object.freeze({ x: -1.82, y: .16, z: -.36, r: .035, banc: 0, haut: false }),
+    Object.freeze({ x: -1.82, y: .16, z: .36, r: .035, banc: 1, haut: false })
   ]);
   const NS = SORTIES.length, TOUTES = (1 << NS) - 1;
   const BANC = [1 | 4, 2 | 8];                 // sorties d'un banc : le tube haut et le tube bas du même côté

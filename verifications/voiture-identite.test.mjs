@@ -12,6 +12,10 @@
 // corrigés, levier et trajectoires des bras adaptés. 84/134 groupes changent dans chaque configuration ;
 // leurs nombres d'objets et d'appels restent identiques, ainsi que toutes les empreintes de roues.
 // Seuls les maillages retro-boitier et console-levier-pilote changent. Voir le rapport COCKPIT-PLUIE/IDENTITE.
+// Référence renouvelée pour 0.2.78, à partir du poste .77 f596ac4 : nez/pontons et leurs filets,
+// nouvelles prises frontales ; le numéro du nez suit la nouvelle peau. 117/134 groupes changent
+// dans chaque configuration. Ancrages, roues et pièces du poste identiques ; aucun seuil changé.
+// Voir preuves/CARROSSERIE-126CK-0278/assemblage/invariants.json et l'outil raccord-carrosserie-126ck.
 //   node verifications/voiture-identite.test.mjs                  vérifier
 //   BITUME_FIGER=1 node verifications/voiture-identite.test.mjs   réécrire l'empreinte : seulement pour un changement
 //                                                                 d'image voulu, à dire dans le commit

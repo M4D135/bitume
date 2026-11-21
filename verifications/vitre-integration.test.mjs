@@ -108,6 +108,20 @@ verifier('le vrai raccord garde la même vitesse physique mais calme la lentille
   assert.equal(arriere.expansion, 0); assert.equal(arriere.air, 0); assert.equal(arriere.graviteY, 1);
   assert.equal(S.vitreContexte.actif, true, 'la lentille arrière reste active');
 });
+verifier('les six vues reçoivent pluie et neige selon leur axe, avant et arrière', () => {
+  for (const neige of [false,true]) for (const vue of ['cockpit','arceau','nez','aileron-avant','poursuite-proche','poursuite']) {
+    const j = jeu(), S = seance(); j.initialiser(S); S.nature.saison.neige = neige;
+    Object.assign(S.meteo,{ventX:0,ventZ:0});
+    S.course.joueur.etat.v = 80; S.course.joueur.etat._physx = {velocity:[80,0,0]};
+    j.dessiner(S,vue,1/30,false,[1,.5,0],undefined,{yaw:Math.PI/2});
+    assert(S.vitreContexte.actif,vue); assert.equal(S.vitreContexte.cockpit,vue==='cockpit');
+    assert.equal(S.vitreContexte.neige,neige?1:0); assert.equal(S.vitreContexte.pluie,neige?0:1);
+    assert(j.vues()[0].flux.expansion>.3,vue+' flux avant');
+    j.dessiner(S,vue,1/30,false,[-2.34,.5,0],undefined,{yaw:-Math.PI/2});
+    assert(S.vitreContexte.actif); assert.equal(j.vues()[0].flux.expansion,0); assert.equal(j.vues()[0].flux.air,0);
+    assert.equal(j.vues()[0].flux.graviteY,1); assert.deepEqual([S.vitreContexte.vitesseX,S.vitreContexte.vitesseY,S.vitreContexte.vitesseZ],[80,0,0]);
+  }
+});
 verifier('sans PhysX, une accélération sur route plate ne transforme pas le tangage en montée', () => {
   const { S, et, contexte: c } = supportClassique();
   assert(et.along > 0 && et.tangage > .05, 'véritable accélération et attitude non horizontale');

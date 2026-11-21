@@ -200,8 +200,9 @@ test('les yeux déclarés viennent du visage réellement placé et regardent à 
   const yeux = Array.from(humain.eyes, p => tourner(p).map((x, k) => x + decalage[k]));
   const milieu = [0, 1, 2].map(k => (yeux[0][k] + yeux[1][k]) / 2);
   for (let k = 0; k < 3; k++) assert.ok(Math.abs(milieu[k] - V.OEIL[k]) < 2e-8, 'caméra au milieu des deux vrais yeux');
-  assert.ok(Math.abs(milieu[1] - .920 + .130) < 2e-8, 'baisse physique de 13 cm mesurée depuis les anciens yeux');
-  assert.ok(Math.abs(milieu[0] + .022 + .040) < 2e-8, 'recul de tête de 4 cm mesuré depuis les anciens yeux');
+  // Implantation 126 CK (poste avancé devant l'arceau, yeux réels [0.595, 0.886, 0]).
+  assert.ok(Math.abs(milieu[0] - .595) < 2e-8, 'position longitudinale 126 CK des vrais yeux');
+  assert.ok(Math.abs(milieu[1] - .886) < 2e-8, 'hauteur 126 CK des vrais yeux');
   const visiere = trianglesMonde(sortie.find(o => o.shape === V.FORMES['pilote-visiere'].nom));
   const casque = trianglesMonde(sortie.find(o => o.shape === V.FORMES['pilote-casque'].nom));
   for (const oeil of yeux) {
@@ -233,8 +234,8 @@ function rayonsVerticaux(nom, x, z, haut, bas) {
 }
 
 test('la cuve ouverte offre une profondeur réelle sans ancien couvercle ni fond de carrosserie à travers le bassin', () => {
-  for (const x of [-.18, -.10, .05, .20]) for (const z of [-.12, 0, .12]) {
-    for (const nom of ['cuve', 'pontons', 'goutte', 'goutte-dedans', 'loin-caisse', 'loin-dessus-pilote'])
+  for (const x of [.55, .68, .85, 1.05]) for (const z of [-.12, 0, .12]) {
+    for (const nom of ['cuve', 'pontons', 'quille', 'fleche', 'goutte', 'goutte-dedans', 'loin-caisse', 'loin-dessus-pilote'])
       assert.equal(rayonsVerticaux(nom, x, z, .60, .18).length, 0, `${nom} bouche la cellule en ${x}, ${z}`);
     assert.ok(rayonsVerticaux('cuve', x, z, .18, .08).length > 0, 'un vrai fond existe sous le siège');
   }

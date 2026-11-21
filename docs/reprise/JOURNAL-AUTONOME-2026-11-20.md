@@ -838,3 +838,17 @@ AGENTS, REPRISE et docs ; runtime .77 conservé. Reçu :
 `rapports/MODELE-126CK-2026-11-21/SAUVEGARDE-2026-11-21.json`.
 Le plan conserve sommet du col → Vinadio à l’échelle réelle, parcours ouvert et arrivée.
 Les deux réserves poignets, la réception WebGL et l’acquisition L0 restent à terminer.
+
+
+## 045 — Réception 0.2.79 (126 CK + R4b + 6 caméras + visites) publiée sur main
+
+Poignets R4b corrigés (`9b15210`, 0,00 o/appel cockpit, jeu manche/pommeau +2,87 mm),
+intégrés sur `0280` (`f86e58f`) avec corrections réelles de `src/voiture.js` (alias
+non énumérables, siège séparé en LOD simple, épave sans pilote, fermeture fente sous
+cuve `creuserQuille`, cloison avant de cuve en `x=1,345`, attache arrière de triangle
+en `z=0,198`). Build reproductible `dist/bitume.html` (`0.2.79`, `sha256`
+`77d774fd99484f7d`), 34 modules FERRO 0.3.15 vérifiés, p15 et 9 circuits intacts.
+185/190 suites vertes sur Mac ARM64 (5 SHA-256 `libm` Linux non touchés) + 13/13
+captures WebGL2 + 4 gros plans poignets + 6 caméras de conduite vérifiés visuellement.
+Fusionné sur `main` et déployé sur `bitume.estrasse.fr` à la demande de David (21/11).
+Suite immédiate : L0 Col de Larche → Vinadio.

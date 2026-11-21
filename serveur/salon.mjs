@@ -15,6 +15,7 @@
 
 import http from 'node:http';
 import crypto from 'node:crypto';
+import { creerCompteurVisites, creerRouteVisites } from './visites.mjs';
 
 const PORT = +(process.env.PORT || 8790), HOTE = process.env.HOTE || '127.0.0.1';
 const MAX_OCTETS = 64 * 1024, MAX_FRAGMENTS = 1024, LETTRES = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
@@ -120,7 +121,9 @@ function recevoir(c, opcode, donnees) {
   }
 }
 
+const repondreVisites = creerRouteVisites(creerCompteurVisites());
 const serveur = http.createServer((req, res) => {
+  if (req.url === '/salon/visites') { void repondreVisites(req, res); return; }
   res.writeHead(req.url === '/salon/sante' ? 200 : 404, { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' });
   res.end(req.url === '/salon/sante' ? `salon BITUME : ${salons.size} partie(s), ${clients} machine(s)\n` : 'introuvable\n');
 });
