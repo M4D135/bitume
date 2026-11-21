@@ -1,13 +1,14 @@
 # BITUME — reprise courte
 
-## Priorité : Xbox Edge, candidat 0.2.82
+## Priorité : Xbox Edge, candidat 0.2.83
 
 Manette prioritaire sur le pointeur, affectations boutons/axes par joueur,
 configuration accessible en solo et profil console prudent. Scène 3D plafonnée
 à 720p en 16:9 ; aucun banc automatique. La réception .81 a révélé deux bancs
 à raccorder, un délai de capture trop court et des colonnes de commandes
 chevauchantes. La .82 corrige aussi le statut solo et l’annulation avec stick
-décalé. Nouvelle CI et parcours navigateur en réception.
+décalé. La .83 supprime le conflit entre une affectation du stick droit et
+le regard arrière implicite. Nouvelle CI et parcours navigateur en réception.
 [Fiche du correctif](docs/reprise/XBOX-EDGE-COMMANDES-2026-11-21.md).
 
 La PR #56 des mains reste sauvegardée séparément ; son candidat historique .81

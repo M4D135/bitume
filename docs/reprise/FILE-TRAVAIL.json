@@ -12,7 +12,7 @@
     "recu": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json"
   },
   "destinations_prevues": 17,
-  "lot_actif": "mains_realisme",
+  "lot_actif": "xbox_edge_commandes",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [
@@ -702,6 +702,7 @@
   ],
   "plan_correctifs_visuels": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
   "ordre_courant": [
+    "xbox_edge_commandes",
     "mains_realisme",
     "personnages_manches",
     "larche_vinadio",
@@ -806,11 +807,12 @@
   },
   "base_initiale": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_candidat": {
-    "statut": "mains_realisme_en_cours",
-    "version": null,
-    "base_runtime_main": "0.2.79",
-    "branche": "codex/bitume-mains-realisme-20261121",
-    "fiche": "docs/reprise/MAINS-REALISME-2026-11-21.md"
+    "statut": "xbox_edge_en_reception",
+    "version": "0.2.83",
+    "base_runtime_main": "0.2.80",
+    "branche": "codex/bitume-xbox-edge-20261121",
+    "fiche": "docs/reprise/XBOX-EDGE-COMMANDES-2026-11-21.md",
+    "suite": "PR #56 mains, à rebaser et renuméroter après publication console"
   },
   "demandes_video_survol_2026_11_20": {
     "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
@@ -850,7 +852,8 @@
       "klaxons réalistes",
       "inspiration satyam-fp/race"
     ],
-    "suite_personnages_mains": "docs/reprise/MAINS-REALISME-2026-11-21.md"
+    "suite_personnages_mains": "docs/reprise/MAINS-REALISME-2026-11-21.md",
+    "priorite_courante": "Xbox Edge : commandes manette, accélération, pointeur et charge graphique."
   },
   "inspiration_race": {
     "fiche": "docs/reprise/REFERENCE-RACE-2026-11-21.md",

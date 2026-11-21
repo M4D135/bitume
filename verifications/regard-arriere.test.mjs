@@ -48,13 +48,13 @@ function manette(index = 0, arriere = 0, options = {}) {
   return { index, id: options.id || 'pad-' + index, connected: true, mapping: 'standard', axes: [options.volant || 0, 0, options.horizontal || 0, arriere],
     buttons: Array.from({ length: 17 }, (_, i) => ({ value: options.boutons?.[i] || 0, pressed: !!options.boutons?.[i] })) };
 }
-function preparer({ duo = false, locaux = [0, 1], commandes = ['auto', 'auto'], monde = null } = {}) {
+function preparer({ duo = false, locaux = [0, 1], commandes = ['auto', 'auto'], manettes, monde = null } = {}) {
   const voitures = Array.from({ length: Math.max(...locaux) + 2 }, (_, id) => ({ id, etat: B.conduite.creer(100, 0) }));
   const co = { c: { tunnel: null }, voitures, joueur: voitures[locaux[0]], physique: monde ? { world: monde } : null };
   const S = { type: duo ? 'duo' : 'course', course: co, locaux, camCap: null, regardArriere: false, sortie: [], rouleVu: [], secousse: 0, tRendu: 1 };
   if (duo) S.vueJ2 = Object.assign(Object.create(S), { camCap: null, regardArriere: false, sortie: [], rouleVu: [] });
   const poses = voitures.map((_, i) => ({ x: 0, y: 0, z: i * 20, cap: 0, tangage: 0, roulis: 0 }));
-  const reglages = { commandes, boite: 'auto', aide: .35, vue: 'poursuite', vue2: 'poursuite' };
+  const reglages = { commandes, manettes, boite: 'auto', aide: .35, vue: 'poursuite', vue2: 'poursuite' };
   const navigator = { pads: [], getGamepads() { return this.pads; } };
   const api = fabrique(navigator, B, S, reglages, poses);
   return { api, navigator, S, poses, reglages };
@@ -96,6 +96,32 @@ verifier('zone morte et hystérésis : pas de flottement, ni de déclenchement s
     p.axes[3] = a; f.api.poll(); assert.equal(arriere(f.api.camera()), attendu, 'axe ' + a);
   }
   p.axes = [1, 1, 1, 0]; p.buttons[11] = { value: 1, pressed: true }; f.api.poll(); assert(!arriere(f.api.camera()));
+});
+for (const n of [0, 1]) verifier('Accélérer au stick droit bas ne retourne plus la vue de J' + (n + 1), () => {
+  const affectations = [B.commandesManette.normaliser(), B.commandesManette.normaliser()];
+  affectations[n] = B.commandesManette.affecter(affectations[n], 'gaz', { type: 'axe', index: 3, sens: 1, origine: 0 });
+  const avant = JSON.stringify(affectations), f = preparer({ duo: true, manettes: affectations });
+  const p = manette(0, 1), q = manette(1, 1); f.navigator.pads = [p, q]; f.api.poll();
+  assert.equal((n ? f.api.j2() : f.api.j1()).gaz, 1);
+  assert.equal(arriere(f.api.camera()), n !== 0);
+  assert.equal(arriere(f.api.camera(f.S.vueJ2)), n !== 1);
+  assert.equal(JSON.stringify(affectations), avant, 'les affectations personnelles restent intactes');
+  f.navigator.pads[n].axes[3] = 0; f.api.poll();
+  assert.equal((n ? f.api.j2() : f.api.j1()).gaz, 0);
+  assert(!arriere(f.api.camera(n ? f.S.vueJ2 : f.S)));
+});
+verifier('affecter seulement le stick droit haut conserve le regard arrière vers le bas', () => {
+  const m = B.commandesManette.affecter(null, 'gaz', { type: 'axe', index: 3, sens: -1, origine: 0 });
+  const f = preparer({ manettes: [m] }), p = manette(0, -1); f.navigator.pads = [p]; f.api.poll();
+  assert.equal(f.api.j1().gaz, 1); assert(!arriere(f.api.camera()));
+  p.axes[3] = 1; f.api.poll(); assert.equal(f.api.j1().gaz, 0); assert(arriere(f.api.camera()));
+});
+for (const origine of [-1, 1]) verifier('gâchette sur axe 4 au repos ' + origine + ' : aucun regard arrière parasite', () => {
+  const m = B.commandesManette.affecter(null, 'gaz', { type: 'axe', index: 3, sens: -origine, origine });
+  const f = preparer({ manettes: [m] }), p = manette(0, origine); p.mapping = ''; f.navigator.pads = [p];
+  for (const [valeur, gaz] of [[origine, 0], [0, (0.5 - 0.06) / 0.94], [-origine, 1]]) {
+    p.axes[3] = valeur; f.api.poll(); assert.equal(f.api.j1().gaz, gaz); assert(!arriere(f.api.camera()));
+  }
 });
 verifier('pédales, volant, rapports et état de voiture sont identiques avec le regard arrière', () => {
   const a = preparer(), b = preparer();

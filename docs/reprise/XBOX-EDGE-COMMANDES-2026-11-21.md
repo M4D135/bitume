@@ -11,7 +11,7 @@ David signale un jeu très lent dans Edge sur Xbox, une manette en conflit avec 
 - La détection passive ne reconnaissait pas Xbox. Des capacités déclarées comparables à celles d'un PC pouvaient choisir Moyenne fixe, anticrénelage 4× et rétroviseurs réels.
 - La résolution numérique du profil ne plafonnait pas le nombre de pixels : sur un viewport 3840×2160 à DPR 1, Moyenne pouvait rendre 8 294 400 pixels ; même Légère en rendait 5 308 416.
 
-## Correctif candidat 0.2.82
+## Correctif candidat 0.2.83
 
 La console est reconnue par sa plate-forme déclarée, jamais par le nom d'une manette branchée sur PC. Elle reçoit un profil Légère prudent sans test de charge. La migration revoit les anciennes recommandations automatiques et conserve les options déjà modifiées par le joueur.
 
@@ -64,6 +64,19 @@ ancrages 126 CK sortent du champ étroit. La géométrie reste inchangée ;
 l’oracle contrôle désormais les coins monde, la toile préparée et son
 placement avant d’accepter cette absence du cadre. Un miroir attendu dans
 le champ, caché, vide ou déplacé reste un échec.
+
+## Revue complémentaire .83
+
+La revue indépendante de la .82 a reproduit un conflit : affecter Accélérer
+au stick droit bas produisait aussi un regard arrière. Une affectation
+explicite de ce demi-axe prend maintenant priorité sur le geste implicite ;
+une gâchette dont le repos est à −1 ou +1 réserve son axe entier. Le demi-axe
+haut centré et le regard arrière par défaut restent indépendants. L’aide
+des commandes indique ce comportement.
+
+Les régressions reproduisent le conflit pour J1 et J2, les deux repos de
+gâchette et le demi-axe opposé. 161 contrôles ciblés réussissent ; la CI et
+le parcours navigateur du nouveau HTML restent à recevoir avant fusion.
 
 ## Travaux conservés
 

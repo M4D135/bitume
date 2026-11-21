@@ -16,7 +16,7 @@
     "dernier_lot_clos": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
     "prochaine_action": "Recevoir les commandes du vrai jeu en profil Xbox, la CI et le plafond de pixels ; publier, puis reprendre la PR 56 mains.",
     "branche_candidate": "codex/bitume-xbox-edge-20261121",
-    "version_candidate": "0.2.82",
+    "version_candidate": "0.2.83",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md"
   },
@@ -238,7 +238,7 @@
     "banc_automatique": false,
     "essai_xbox_physique": false,
     "mains_pr56_conservees": true,
-    "version_candidate": "0.2.82",
+    "version_candidate": "0.2.83",
     "reception_initiale": {
       "commit": "0a731d512df76cee4b12a4bb98231f270198a0b2",
       "ci_run": 44928652979,
@@ -257,6 +257,16 @@
         "parcours navigateur Auto et contrôles de débordement",
         "projection physique des rétros dans l’oracle portrait"
       ]
+    },
+    "revue_0283": {
+      "conflit_corrige": "Une affectation explicite du stick droit bas ne déclenche plus le regard arrière implicite.",
+      "controles_cibles_reussis": 161,
+      "cas": [
+        "J1 et J2 indépendants",
+        "demi-axe opposé conservé",
+        "gâchettes au repos à -1 et +1"
+      ],
+      "qualification_exacte": "en_attente"
     }
   }
 }

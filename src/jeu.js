@@ -1928,7 +1928,17 @@
     const autorise = n >= 0 && ecran === 'course' && (S.type === 'course' || S.type === 'chrono' || S.type === 'duo') &&
       !S.banc && !S.reference && VUES_COURSE.includes(vue) && suivie.id === id &&
       (choix === 'auto' || choix === 'manette') && manette?.connected && Number.isFinite(axe);
-    S.regardArriere = !!autorise && axe >= (S.regardArriere ? .35 : .55);
+    // Une affectation explicite prime sur ce geste implicite. Le demi-axe haut
+    // centré reste indépendant ; une gâchette au repos à ±1 occupe l'axe entier.
+    let libre = true;
+    if (autorise) for (let a = 0; libre && a < ACTIONS.length; a++) {
+      const liens = configurationsManettes[n][ACTIONS[a]];
+      for (let k = 0; k < liens.length; k++) {
+        const l = liens[k];
+        if (l.type === 'axe' && l.index === 3 && (l.sens > 0 || l.origine !== 0)) { libre = false; break; }
+      }
+    }
+    S.regardArriere = !!autorise && libre && axe >= (S.regardArriere ? .35 : .55);
     return S.regardArriere;
   }
   const RAYON_REGARD = { origine: [0, 0, 0], direction: [0, 0, 0], hit: {} };
@@ -3771,7 +3781,7 @@
       }
       html += '</tbody></table></div>';
     }
-    zone.innerHTML = html + '<p class="note-commandes">Manette : choisissez une action avec A, relâchez les commandes, puis pressez un bouton ou déplacez un stick. B ou Menu annule. Menu reste réservé à la pause ; stick droit maintenu vers le bas pour regarder derrière dans les six vues. Les affectations sont propres à chaque joueur.</p>'
+    zone.innerHTML = html + '<p class="note-commandes">Manette : choisissez une action avec A, relâchez les commandes, puis pressez un bouton ou déplacez un stick. B ou Menu annule. Menu reste réservé à la pause ; stick droit maintenu vers le bas pour regarder derrière dans les six vues, sauf si ce mouvement est affecté à une autre action. Les affectations sont propres à chaque joueur.</p>'
       + '<p class="note-commandes">Clavier : choisissez une touche puis pressez la nouvelle ; Échap annule. Souris : choisissez explicitement « Souris » pour conduire avec le pointeur lorsqu’une manette est branchée. Pause : Échap ou P · son : M.</p>'
       + '<div class="actions-commandes"><button type="button" class="discret" id="r-touches-defaut">Clavier par défaut</button><button type="button" class="discret" id="r-pad-defaut">Manettes par défaut</button><button type="button" class="discret" id="r-pad-annuler"' + (captureManette || captureTouche ? '' : ' hidden') + '>Annuler l’affectation</button></div>';
     if (focus) { const suivant = zone.querySelector(focus); if (suivant && !suivant.hidden) suivant.focus({ preventScroll: true }); }
