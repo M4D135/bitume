@@ -1,0 +1,13 @@
+{
+  "candidate_commit": "1813c5440a9b8da34990f4e38c6c51a1d7bb1700",
+  "run_id": 44840693094,
+  "job_id": 136648025031,
+  "artifact_id": 14680941758,
+  "artifact_sha256": "d8c788d5092cecd7634a992242e530b6ad906ac388835007d53d355c9442a989",
+  "html_sha256": "761bccd8953eef06332dd5929c9826216c589dfdbede77324809d69201783db9",
+  "case": "cockpit-carte-gauche-stabilise",
+  "png_received": 0,
+  "failure": "Port DevTools introuvable au démarrage de Chrome avant WebGL2/PhysX, séance et rendu.",
+  "qualification": "incomplète ; aucune conclusion de dégagement",
+  "next_action": "Relance ciblée du seul job de capture, sans changement des sources, seuils, poses ni 120 pas. Conserver les deux tentatives et leur provenance."
+}

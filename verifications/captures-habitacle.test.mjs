@@ -202,6 +202,7 @@ function rapportCockpit(s, masqueHud = false) {
       const { d } = sceneMesure(); d.joueur = j + 1; d.hud.joueur = j + 1; d.hud.racine = j ? 'hud2' : 'hud';
       d.hud.rectangles.forEach(h => { h.id = d.hud.racine + ':compteur'; });
       d.hud.rectangles.push({ id: d.hud.racine + ':carte:0', x: s.cartePosition === 'gauche' ? 300 : 600, y: 10, width: 100, height: 100 });
+      if (s.chauffeInstant === 120) d.hud.rectangles.push({ id: d.hud.racine + ':h-fps:0', x: 20, y: 560, width: 80, height: 23 });
       if (i) d.hud.rectangles.push({ id: d.hud.racine + ':h-virage:0', x: 20, y: 170, width: 140, height: 40 });
       if (s.tableau === 'complet') d.hud.rectangles.push(
         { id: d.hud.racine + ':vitesse:0', x: 900, y: 480, width: 80, height: 40 },
@@ -406,6 +407,21 @@ test('le rapport exige les deux états, les deux joueurs et les erreurs réelles
       o => { o.reglagesHud.carteTaille = 'absente'; }, o => { o.reglagesHud.tableau = 'absent'; }]) {
       const faux = structuredClone(r); changer(faux.images[0].observation);
       assert(verifierHabitacle(faux, s).length, 'préférences/rival du compact réellement prescrits');
+    }
+  }
+});
+
+test('les cas stabilisés exigent le badge FPS visible aux deux instants sans le masquer ni le sortir du cadre', () => {
+  for (const s of SCENARIOS_COCKPIT.filter(s => s.chauffeInstant === 120)) {
+    const r = rapportCockpit(s); assert.deepEqual(verifierHabitacle(r, s), []);
+    for (const i of [0, 1]) for (const changer of [
+      h => { h.rectangles = h.rectangles.filter(x => !x.id.includes(':h-fps:')); },
+      h => { h.rectangles.find(x => x.id.includes(':h-fps:')).width = 0; },
+      h => { h.rectangles.find(x => x.id.includes(':h-fps:')).x = 1000; },
+      h => { h.rectangles.push({ ...h.rectangles.find(x => x.id.includes(':h-fps:')) }); }
+    ]) {
+      const faux = structuredClone(r); changer(faux.images[i].observation.lisibilite[0].hud);
+      assert(verifierHabitacle(faux, s).some(e => e.includes('Compteur FPS absent')), s.id + ', image ' + i);
     }
   }
 });

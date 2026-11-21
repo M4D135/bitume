@@ -627,6 +627,8 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement { gap: 0; }
   body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li { padding-block: 0; }
   body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .regime { width: min(100%,12cqh); justify-self: end; }
+  /* Le badge FPS reste sous le classement, hors du trajet du poignet en braquage maintenu. */
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .fps { bottom: 30%; }
 }
 
 /* Petit partage haut/bas : les lignes gardent leurs textes et leur ancrage bas, mais prennent

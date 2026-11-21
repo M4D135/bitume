@@ -195,3 +195,11 @@ Le [candidat .74](rapports/COCKPIT-PLUIE-2026-11-20/candidat-0274/BUILD-0274.jso
 conserve les textes et la largeur des noms, compacte les espaces du classement
 et raccourcit la barre de régime dans le seul petit paysage. Les deux braquages
 stabilisés, annonce activée, sont requis sur son HTML exact avant publication.
+
+### Réception .74 et candidat .75 — 21 novembre
+
+La .74 conserve un défaut FPS/gant gauche à +0,35 : 75,62 px², seuil 1. CI verte,
+preuve négative et incident Chrome gauche conservés dans `reception-0274`.
+La .75 remonte uniquement le badge FPS sous le classement ; son affichage est
+exigé dans les contrôles stabilisés. 61 contrôles ciblés passent. Recevoir les
+nouvelles captures des deux sens avant fusion ; aucune police ni seuil réduit.

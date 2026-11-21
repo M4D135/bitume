@@ -1,0 +1,35 @@
+{
+  "candidate_commit": "1813c5440a9b8da34990f4e38c6c51a1d7bb1700",
+  "html_sha256": "761bccd8953eef06332dd5929c9826216c589dfdbede77324809d69201783db9",
+  "captures_locales": [
+    {
+      "nom": "local-gauche",
+      "images": 0,
+      "erreurs": [
+        [
+          "Error: Chrome arrêté : /usr/bin/chromium: 9: [: 5225713664: unexpected operator",
+          "WebGL2 ou PhysX réel absent",
+          "Séance de référence absente",
+          "Observation du vrai draw absente",
+          "Nombre de captures incomplet",
+          "Résolution demandée non exercée"
+        ]
+      ]
+    },
+    {
+      "nom": "local-gauche-binaire",
+      "images": 0,
+      "erreurs": [
+        [
+          "Error: Chrome arrêté : [23:23:1121/011159.607301:FATAL:chrome/browser/process_singleton_posix.cc:297] Check failed: . socket() failed: Operation not permitted (1)",
+          "WebGL2 ou PhysX réel absent",
+          "Séance de référence absente",
+          "Observation du vrai draw absente",
+          "Nombre de captures incomplet",
+          "Résolution demandée non exercée"
+        ]
+      ]
+    }
+  ],
+  "suite": "Réception GitHub conservée ; aucune modification des protections de l’environnement."
+}

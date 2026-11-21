@@ -290,6 +290,12 @@ export function verifierHabitacle(r, s, candidat = true) {
           fautes.push('Carte demandée absente du HUD visible : J' + (j + 1) + ', image ' + i);
         if (i ? annonces.length !== 1 || !dansViewport(annonces[0]) : annonces.length !== 0)
           fautes.push('Annonce de virage ' + (i ? 'absente en vitesse-braquage' : 'visible au neutre') + ' : J' + (j + 1));
+        // Le badge recouvrait un poignet en virage maintenu : le cacher ne doit pas valider le correctif.
+        if (s.chauffeInstant === 120) {
+          const fps = temoins('h-fps');
+          if (fps.length !== 1 || !dansViewport(fps[0]))
+            fautes.push('Compteur FPS absent du HUD visible : J' + (j + 1) + ', image ' + i);
+        }
         // Le tableau complet est un choix de l'essai : retirer ses compteurs ne doit pas
         // faire disparaître artificiellement leur recouvrement du volant ou des mains.
         if (s.tableau === 'complet') {

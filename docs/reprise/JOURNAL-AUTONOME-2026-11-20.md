@@ -687,3 +687,21 @@ remplacer la réception navigateur attendue. Un miroir stabilisé +0,35 est ajou
 FERRO conformes. CI exacte et dix nouveaux PNG requis avant fusion. Aucun seuil
 ni pas de simulation retiré, défaut Non et choix mémorisés conservés. Réserves
 décor historiques inchangées ; aucun déploiement du site.
+
+## 038 — 21 novembre : badge FPS, candidat 0.2.75
+
+Les deux CI de la 0.2.74 passent 179 suites Node et huit tests Python ; les deux
+archives de 3 935 fichiers/modes sont exactes. Huit PNG inspectés : petit duo et
+compacts conformes, mais badge FPS sur gant gauche à +0,35 (75,6178301613 px²,
+seuil 1). Le cas gauche échoue avant rendu au démarrage de Chrome ; incident
+conservé. PR 50 reste bloquée ; aucune relance pour effacer un défaut visuel.
+
+0.2.75 : seul le placement vertical du badge change dans le bloc cockpit paysage
+400–600 px, ratio 6/5–2. Il reste sous le classement, visible et à taille inchangée.
+La garde de présence FPS refuse disparition, taille nulle, sortie et duplication
+aux deux instants des deux cas stabilisés. Les 120 pas et tous les seuils restent.
+61 contrôles ciblés ; deux builds identiques, HTML SHA256
+a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225.
+Revue indépendante favorable ; marge préparatoire de 56,002 px aux commandes et
+19 px au classement sur huit poses. CI et dix nouveaux PNG requis avant fusion.
+Aucun déploiement ; p15, FERRO 0.3.15, PR 43 et travaux parallèles préservés.

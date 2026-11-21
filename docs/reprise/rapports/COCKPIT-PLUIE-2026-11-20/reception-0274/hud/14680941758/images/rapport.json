@@ -1,0 +1,53 @@
+{
+  "format": "bitume-captures-habitacle-v2",
+  "date": "2026-11-20T23:59:58.490Z",
+  "demandes": [
+    "cockpit-carte-gauche-stabilise"
+  ],
+  "seuilsCockpit": {
+    "routeCadreeMin": 0.9,
+    "routeOcculteeMax": 0.05,
+    "routeCentraleOcculteeMax": 0,
+    "largeurGlaceMax": 0.18,
+    "erreurDomMaxPx": 2,
+    "recouvrementMaxPx2": 1
+  },
+  "passages": [
+    {
+      "variante": "apres",
+      "scenario": "cockpit-carte-gauche-stabilise",
+      "dossier": "apres/cockpit-carte-gauche-stabilise",
+      "images": 0,
+      "build": {
+        "sha256": "761bccd8953eef06332dd5929c9826216c589dfdbede77324809d69201783db9",
+        "octets": 14511004
+      },
+      "source": {
+        "commit": "1813c5440a9b8da34990f4e38c6c51a1d7bb1700",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "empreintes": [],
+      "constatsLisibilite": [],
+      "phasesHabitacle": [],
+      "erreurs": [
+        "Error: Port DevTools introuvable : [2572:2635:1121/000010.225192:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")",
+        "WebGL2 ou PhysX réel absent",
+        "Séance de référence absente",
+        "Observation du vrai draw absente",
+        "Nombre de captures incomplet",
+        "Résolution demandée non exercée"
+      ]
+    }
+  ],
+  "echecs": 1,
+  "limites": [
+    "Poses prescrites : aucun essai de conduite ni de performance matérielle.",
+    "Les caméras extérieures sont des inspections via l’API du jeu ; les vues cockpit gardent sa vraie caméra.",
+    "Les LOD sont sélectionnés par distance sans forcer le modèle ; leurs petits pixels ne prouvent pas le dégagement des bras.",
+    "La lisibilité ciblée mesure vingt rayons vers le vrai sol à 12/20/35/55 m, les triangles opaques de la voiture, les quadrilatères DOM des glaces et les masques visibles du HUD ; elle ne couvre pas tout le circuit.",
+    "La présence de pièces et les images ne prouvent ni absence d’intersection ni identité des sommets : contrôles géométriques séparés requis.",
+    "Revue visuelle des PNG encore requise ; deux images ne constituent pas une qualification temporelle complète."
+  ]
+}

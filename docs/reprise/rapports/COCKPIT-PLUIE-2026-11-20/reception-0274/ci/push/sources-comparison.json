@@ -1,0 +1,10 @@
+{
+  "archive": "files/qualification/bitume-sources.tar.gz",
+  "archive_sha256": "533a7e352a8fe830e7d01a91c3485c4ba0014b2e7668de466d6afcaa7cd2627e",
+  "reference": "1813c5440a9b8da34990f4e38c6c51a1d7bb1700",
+  "tree": "ae42fbb546af0c25dd1fb07bab27a8abf00fdd5a",
+  "expected_files": 3935,
+  "received_files": 3935,
+  "identical_content_and_modes": true,
+  "errors": []
+}

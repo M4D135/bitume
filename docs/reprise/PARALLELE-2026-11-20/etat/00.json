@@ -2,7 +2,7 @@
   "schema": 1,
   "discussion": "00",
   "mission": "Integration",
-  "statut": "qualification_candidat_0274_HUD_stabilise",
+  "statut": "qualification_candidat_0275_FPS",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/00-INTEGRATION.md",
   "base_main": "fee69c521eccc0e64cc29f762a6d2244b5ade759",
   "branche_proposee": "codex/bitume-p00-integration-20261120",
@@ -37,7 +37,7 @@
     "FPS Xbox/Intel, manettes physiques, écoute humaine et réseau entre machines non qualifiés.",
     "M1 exclu ; Monaco/Marseille sources uniquement."
   ],
-  "prochaine_action": "Recevoir la CI exacte et les dix PNG 0.2.74, annonces activées, dont les deux virages stabilisés ; comparer les archives avant fusion.",
+  "prochaine_action": "Recevoir CI et dix PNG exacts 0.2.75, dont les deux virages maintenus avec FPS visible ; conserver le défaut .74.",
   "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
   "base_main_preparation": "d8f02cae45443ae6a1120dc93125d8adfae94422",
   "base_tree": "ecc470298dfb4e5d25966d6614ccecabc3a09006",
@@ -163,9 +163,8 @@
   },
   "publication_portee": "Publication runtime 0.2.69 reçue sur main ; historique 00A conservé séparément.",
   "portes_restantes": [
-    "CI complète sur commit exact et archive rapprochée",
-    "10 PNG du nouveau HTML : petit duo, deux compacts et braquages stabilisés gauche/droite avec annonce activée",
-    "Réception des preuves .73 inchangées : formats hors portée CSS, pluie/Troll et géométrie extérieure"
+    "CI complète du commit exact et archive rapprochée",
+    "10 PNG du nouveau HTML, annonces activées et badge FPS visible aux deux virages maintenus"
   ],
   "checkpoints_historiques_171512": [
     {
@@ -215,13 +214,13 @@
   "etat_actif_cockpit_pluie": {
     "fiche": "docs/reprise/COCKPIT-PLUIE-2026-11-20.md",
     "pr": 44,
-    "statut": "0.2.73 bloquée en braquage stabilisé ; 0.2.74 en qualification",
+    "statut": "0.2.74 bloquée par le badge FPS ; 0.2.75 en qualification",
     "base": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
     "ci_0270": 44818836125,
-    "prochaine_action": "Recevoir la CI exacte et les dix PNG 0.2.74, annonces activées, dont les deux virages stabilisés ; comparer les archives avant fusion.",
-    "pr_precedente": 49
+    "prochaine_action": "Recevoir CI et dix PNG exacts 0.2.75, dont les deux virages maintenus avec FPS visible ; conserver le défaut .74.",
+    "pr_precedente": 50
   },
-  "branche_candidate": "codex/bitume-0274-hud-stabilise-20261121",
-  "version_candidate": "0.2.74",
-  "preuve_candidat": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0274/BUILD-0274.json"
+  "branche_candidate": "codex/bitume-0275-fps-cockpit-20261121",
+  "version_candidate": "0.2.75",
+  "preuve_candidat": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0275/BUILD-0275.json"
 }

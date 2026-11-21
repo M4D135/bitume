@@ -1,29 +1,26 @@
 # BITUME — reprise courte
 
-## Correctif actif : HUD en virage maintenu, candidat 0.2.74
+## Correctif actif : badge FPS, candidat 0.2.75
 
-La **0.2.73 (PR 49) reste bloquée** : le petit duo est conforme, mais le braquage
-stabilisé à −0,35 révèle un recouvrement du gant droit par le régime et deux lignes
-du classement. Les 120 pas et les deux PNG sont complets ; ce défaut n'est pas
-une expiration. CI push et PR vertes : 179 suites Node et huit tests Python chacune,
-3 927 fichiers et modes strictement identiques. Les 43 PNG pluie/Troll sont inspectés.
-[Réception conservée](docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/RECEPTION-0273.json).
+La **0.2.74 (PR 50) reste bloquée** : le badge FPS recouvre le gant gauche de
+75,62 px² en virage maintenu à +0,35. Les huit PNG reçus conservent ce constat ;
+le virage gauche n’a pas démarré après une erreur Chrome. Les deux CI sont vertes :
+179 suites Node et huit tests Python chacune, 3 935 fichiers/modes exacts.
+[Réception et images conservées](docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0274/RECEPTION-0274.json).
 
-Le candidat **0.2.74** resserre les espaces du classement dans le petit paysage
-et raccourcit la barre de régime. Les polices et la largeur des noms sont conservées.
-L'annonce garde sa position. Le petit duo corrigé et les annonces sur **Non** au
-premier lancement, avec choix enregistrés préservés, sont conservés.
-Branche : `codex/bitume-0274-hud-stabilise-20261121`. HTML : **14 511 004 octets**,
-SHA256 `761bccd8953eef06332dd5929c9826216c589dfdbede77324809d69201783db9`. Deux reconstructions identiques,
-34 modules FERRO conformes ; 60 contrôles ciblés réussis.
-[Construction et limites](docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0274/BUILD-0274.json).
+La **0.2.75** remonte le badge sous le classement dans le petit cockpit paysage,
+sans réduire les textes ni masquer le compteur. Les contrôles stabilisés exigent
+sa présence ; les 120 pas, annonces actives et seuils restent conservés.
+Branche : `codex/bitume-0275-fps-cockpit-20261121`. HTML : **14 511 184 octets**,
+SHA256 `a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225`.
+Deux reconstructions identiques, 34 modules FERRO conformes, **61 contrôles ciblés**.
+[Construction et limites](docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0275/BUILD-0275.json).
 
-Recevoir la CI et les **dix PNG exacts** avant fusion : petit duo J1/J2, compacts,
-virages maintenus −0,35 et +0,35 avec grande carte des deux côtés. L'annonce est
-explicitement activée. Les preuves .73 hors portée du nouveau CSS et la géométrie
-pluie/Troll inchangée restent identifiées comme telles. Le profil .73 a expiré sans
-PNG ; la preuve .72 sur modèle identique reste disponible. PR 43 et les autres
-discussions sont préservées. Aucun déploiement du site.
+Recevoir CI/archives et les dix PNG exacts avant fusion : petit duo J1/J2,
+compacts et les deux virages maintenus, avec le badge FPS présent. La mesure
+préparatoire donne zéro recouvrement sur huit poses, mais ne vaut pas capture.
+Les annonces restent sur **Non** au premier lancement et les choix enregistrés
+sont conservés. PR 43 et travaux parallèles préservés. Aucun déploiement du site.
 
 ## Publié sur main : 0.2.69
 
