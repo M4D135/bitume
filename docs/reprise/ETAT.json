@@ -1,53 +1,63 @@
 {
   "date": "2026-11-21",
   "etat_courant": {
-    "version_courante": "0.2.79",
-    "version_publiee_verifiee": "0.2.79",
+    "version_courante": "0.2.80",
+    "version_publiee_verifiee": "0.2.80",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
     "circuits": 9,
-    "commit_fusion": "d4081241ad40dced72fd4e77c97a4775ed0398ad",
-    "tete_qualifiee": "d4081241ad40dced72fd4e77c97a4775ed0398ad",
-    "statut": "base_Gemini_0279_verifiee_nouveau_lot_mains_en_cours",
+    "commit_fusion": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+    "tete_qualifiee": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+    "statut": "demarrage_mobile_0280_publie_suite_mains_en_cours",
     "lot": "mains_realisme",
     "fiche": "docs/reprise/MAINS-REALISME-2026-11-21.md",
     "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md",
     "dernieres_demandes": "docs/reprise/MAINS-REALISME-2026-11-21.md",
-    "dernier_lot_clos": "docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json",
-    "prochaine_action": "Corriger la contraction des doigts, les volumes des gants et les transitions puis comparer les vrais rendus .79/candidat. Continuer ensuite les personnages et Larche/Vinadio.",
+    "dernier_lot_clos": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
+    "prochaine_action": "Recevoir les nouvelles mains en images et réduire leur coût mémoire avant intégration ; préserver le démarrage sans banc de .80.",
     "branche_candidate": "codex/bitume-mains-realisme-20261121",
     "version_candidate": null,
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md"
   },
   "publication": {
-    "version": "0.2.79",
-    "commit_fusion": "d4081241ad40dced72fd4e77c97a4775ed0398ad",
-    "commit_sources": "f86e58ff4114e5db83c4384b4a31fc3801fb353a",
+    "version": "0.2.80",
+    "commit_fusion": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+    "commit_sources": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
     "statut": "publie_sur_main",
-    "url": "https://github.com/M4D135/bitume/commit/d4081241ad40dced72fd4e77c97a4775ed0398ad",
-    "recu": "docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json",
+    "url": "https://github.com/M4D135/bitume/commit/6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+    "recu": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
     "site_deploiement_verifie": false
   },
   "qualification": {
-    "version": "0.2.79",
-    "tete_qualifiee": "d4081241ad40dced72fd4e77c97a4775ed0398ad",
-    "build_octets": 14554537,
-    "build_sha256": "77d774fd99484f7ddc2a6bbafe801c9dd2ea8f670af0c51ce1377a7e4a429aa8",
+    "version": "0.2.80",
+    "tete_qualifiee": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+    "build_octets": 14549596,
+    "build_sha256": "20185cd2341e2aefb7a5167a35c1f4d68a50eedf1d9fabaa8491c329fa87410a",
     "ci": {
-      "run": 44903497167,
-      "job": 136844123358,
+      "run": 44922327402,
+      "job": 136900842905,
       "conclusion": "success",
-      "suites_node": 190,
+      "suites_node": 192,
       "suites_echec": 0,
       "tests_python": 8,
       "reconstruction_identique": true
     },
-    "recu": "docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json",
+    "recu": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
     "capture_Gemini": "docs/reprise/rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md",
     "captures_base_reinspectees_dans_cette_reprise": false,
     "essai_utilisateur_valide": false,
-    "limites": "La CI .79 et le reçu Gemini ne valident pas le réalisme final demandé. FPS matériels, manettes physiques et réseau réel non qualifiés."
+    "limites": "La CI .79 et le reçu Gemini ne valident pas le réalisme final demandé. FPS matériels, manettes physiques et réseau réel non qualifiés.",
+    "demarrage_mobile": {
+      "run": 44922327560,
+      "conclusion": "success",
+      "png_inspectes": 2,
+      "appel_banc": 0,
+      "appel_scene_banc": 0,
+      "profil": "low",
+      "navigateur": "Chrome + caractéristiques iPhone émulées",
+      "telephone_physique": false
+    }
   },
   "acquis_0279": {
     "voiture": "126 CK et implantation commune à toutes les caméras",
@@ -184,7 +194,7 @@
     "priorite_utilisateur": "Après audit du main avancé avec Gemini : personnages et mains plus réalistes.",
     "lot_actif": "mains_realisme",
     "statut": "en_cours",
-    "recu_publication": "docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json"
+    "recu_publication": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json"
   },
   "recus_historiques": {
     "etat_complet_avant_reconciliation": "docs/reprise/archives/ETAT-AVANT-MAINS-2026-11-21.json",
@@ -204,13 +214,19 @@
   },
   "regle": "Les alias ci-dessus décrivent la base effectivement publiée. Les états .75/.77 et réserves R4b historiques sont archivés; ne pas les réappliquer à main. Une preuve appartient à son commit et à son HTML exact.",
   "demarrage_mobile_0280": {
-    "statut": "candidat_a_qualifier",
+    "statut": "publie_sur_main",
     "version": "0.2.80",
     "fiche": "docs/reprise/DEMARRAGE-MOBILE-SANS-BANC-2026-11-21.md",
     "methode": "capacites-declarees",
     "banc_automatique": false,
     "controles_cibles": 103,
     "essai_telephone_physique": false,
-    "mains_0279_conservees": true
+    "mains_0279_conservees": true,
+    "commit": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+    "recu": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
+    "ci_node": 192,
+    "ci_python": 8,
+    "reception_webgl": true,
+    "png_inspectes": 2
   }
 }

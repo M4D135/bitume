@@ -1,15 +1,15 @@
 {
   "schema": 1,
   "date": "2026-11-21",
-  "base": "d4081241ad40dced72fd4e77c97a4775ed0398ad",
+  "base": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
   "runtime_livre": {
-    "version": "0.2.79",
+    "version": "0.2.80",
     "physique": "p15",
     "moteur": "FERRO 0.3.15",
     "circuits": 9,
-    "commit_fusion": "d4081241ad40dced72fd4e77c97a4775ed0398ad",
-    "html_sha256": "77d774fd99484f7ddc2a6bbafe801c9dd2ea8f670af0c51ce1377a7e4a429aa8",
-    "recu": "docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json"
+    "commit_fusion": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+    "html_sha256": "20185cd2341e2aefb7a5167a35c1f4d68a50eedf1d9fabaa8491c329fa87410a",
+    "recu": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json"
   },
   "destinations_prevues": 17,
   "lot_actif": "mains_realisme",
@@ -26,6 +26,16 @@
   ],
   "regle": "Une preuve appartient à une version exacte. Sauvegarder les checkpoints ; intégrer les candidats qualifiés ; poursuivre sans redemander un go.",
   "lots": [
+    {
+      "id": "demarrage_mobile_passif",
+      "objectif": "Démarrer sur téléphone sans scène ni rafale de benchmark",
+      "etat": "published",
+      "fiche": "docs/reprise/DEMARRAGE-MOBILE-SANS-BANC-2026-11-21.md",
+      "preuves": [
+        "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json"
+      ],
+      "limite": "Chrome iPhone émulé ; Safari/iOS physique et site servi non vérifiés."
+    },
     {
       "id": "references",
       "objectif": "Références, modèles et programme complet",

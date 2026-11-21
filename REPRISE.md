@@ -1,11 +1,15 @@
 # BITUME — reprise courte
 
-## Priorité : démarrage téléphone sans banc
+## Publié : démarrage téléphone sans banc
 
-Candidat **0.2.80 / p15 / FERRO 0.3.15** : détection passive, sans scène de
-mesure ni rafale GPU. Les 103 contrôles ciblés passent ; réception navigateur
-et publication en cours. [Fiche](docs/reprise/DEMARRAGE-MOBILE-SANS-BANC-2026-11-21.md).
-Les mains restent sur leur branche et seront intégrées après leurs images.
+**0.2.80 / p15 / FERRO 0.3.15** publiée sur `main`, commit **`6526493`** :
+détection passive, sans scène de mesure ni rafale GPU. **192 suites Node et
+8 tests Python passent**. Le vrai démarrage et le bouton Image sont contrôlés
+dans Chrome avec profil iPhone : zéro appel au banc, deux PNG inspectés.
+[Reçu](docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json).
+Safari/iOS physique et déploiement du site restent non vérifiés.
+Les mains de .79 sont conservées ; les nouvelles poses attendent leur réception
+visuelle et la réduction de leur coût mémoire avant intégration.
 
 ## Point d’entrée : personnages et mains après Gemini
 
@@ -20,7 +24,7 @@ Vrai tracé et vrai relief, échelle 1:1, parcours ouvert avec arrivée.
 
 ## Publication et préparations
 
-Base publiée vérifiée : **0.2.79 / p15 / FERRO 0.3.15**, `main` **`d408124`**,
+Base géométrique Gemini : **0.2.79 / p15 / FERRO 0.3.15**, commit **`d408124`**,
 126 CK, poignets R4b corrigés, six caméras et compteurs du titre intégrés.
 HTML `77d774fd99484f7d` ; **190 suites Node et 8 tests Python réussis** dans la CI
 du commit exact. [Reçu](docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json).

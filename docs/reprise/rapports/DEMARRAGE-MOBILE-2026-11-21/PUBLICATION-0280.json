@@ -1,0 +1,53 @@
+{
+  "date": "2026-11-21",
+  "version": "0.2.80",
+  "statut": "publie_sur_main",
+  "commit_sources": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+  "commit_main_au_jalon": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+  "arbre_sources": "29f75e6c30cc266ac75e20c384f96d4097df1c34",
+  "html_sha256": "20185cd2341e2aefb7a5167a35c1f4d68a50eedf1d9fabaa8491c329fa87410a",
+  "html_octets": 14549596,
+  "physique": "p15",
+  "moteur": "FERRO 0.3.15",
+  "circuits": 9,
+  "mains_base": "0.2.79 ; src/main.js et src/voiture.js inchangés",
+  "ci": {
+    "run": 44922327402,
+    "job": 136900842905,
+    "conclusion": "success",
+    "suites_node": 192,
+    "suites_echec": 0,
+    "tests_python": 8,
+    "reconstruction_identique": true,
+    "log": "reception-0280/ci-generale.log.gz"
+  },
+  "navigateur": {
+    "run": 44922327560,
+    "artifact": 14714092799,
+    "artifact_sha256": "19428263c802182a2398e74fe3e1cce1944745deccd72c0ed37ea95547deb7b5",
+    "conclusion": "success",
+    "demarrage_vitrine_termine": true,
+    "webgl2": true,
+    "physx": true,
+    "erreurs": 0,
+    "profil": "low",
+    "appels_benchmark_demarrage_et_bouton": 0,
+    "appels_sceneBench_demarrage_et_bouton": 0,
+    "appels_passive_demarrage": 1,
+    "appels_passive_apres_bouton": 2,
+    "rapport": "reception-0280/images/rapport.json",
+    "resume": "reception-0280/images/RESUME.json",
+    "png_inspectes": [
+      "reception-0280/images/0000.png",
+      "reception-0280/images/0001.png"
+    ],
+    "inspection": "Course, route, voiture, HUD et commandes tactiles visibles ; profil Légère avant et après le bouton Image."
+  },
+  "limites": {
+    "telephone_physique_essaye": false,
+    "fps_materiels_mesures": false,
+    "deploiement_site_verifie": false,
+    "navigateur": "Chrome émulant viewport, toucher et identifiants iPhone ; ne remplace pas Safari/iOS matériel."
+  },
+  "suite": "Réalisme des mains : réduire le surcoût de préparation et recevoir les gros plans du candidat avant intégration."
+}
