@@ -459,3 +459,11 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
 - Cette demande remplace les anciennes obligations de benchmark au premier
   lancement de chaque version. Les bancs de qualification restent des outils
   déclenchés explicitement, hors du parcours normal du joueur.
+
+## Décision de David — 21 novembre 2026, Xbox Edge prioritaire
+
+- Corriger le jeu très lent sur Xbox Edge, le conflit manette/pointeur, l'accélération indisponible et la configuration des commandes.
+- Priorité à ce correctif ; conserver le candidat mains de la PR #56.
+- Le mode Auto doit privilégier la manette, avec réglages de boutons et axes par joueur et parcours praticable sans clavier. Le navigateur garde le contrôle de sa bascule pointeur/manette ; afficher une aide exacte.
+- Profil console prudent sans benchmark, budget de pixels borné et options personnelles conservées. Ne pas annoncer de FPS Xbox sans essai sur console.
+- Fiche : `docs/reprise/XBOX-EDGE-COMMANDES-2026-11-21.md`.

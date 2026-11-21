@@ -1,0 +1,37 @@
+{
+  "base": "44e768211608e5af8eb389df97ddd9e5b05d5201",
+  "candidat": "0a731d512df76cee4b12a4bb98231f270198a0b2",
+  "code_voiture_identique": true,
+  "voiture_sha256": "be7c8a0c72617564b2818060703058c8fca87d29a4ddfabcf5b7f61e55726481",
+  "fonctions": {
+    "champCockpit": {
+      "identique": true,
+      "sha256": "8ed524bfaebead2314c5c385fc732da991b501ba6e8fd3ad148a42b0315d064a"
+    },
+    "cameraCockpit": {
+      "identique": true,
+      "sha256": "78ea47f242d7133821c6d7a9c45c0d19ef91d0b32ebe4e4176a6cfe3c6c7cf14"
+    },
+    "projeterCoin": {
+      "identique": true,
+      "sha256": "34abec20217791d25081c110793b1cdfe95f1c137b8a48aee05597e3c9f4bdfa"
+    },
+    "majGlaces": {
+      "identique": true,
+      "sha256": "6f013b127ec7ae290c1a2d77ece3863fa2dcec4e3ee7272280c7b027903e5c7e"
+    },
+    "poserGlaces": {
+      "identique": true,
+      "sha256": "ab4e0e5fa20f3ed13425d8ee3b134ea61aa7f7ce88ae3e4146bf5fd0dce8eeb1"
+    },
+    "reference": {
+      "identique": true,
+      "sha256": "ecb7c4ca8c3d14d27e8618e116580ecc4a802756850e135c639ff72004da426e"
+    }
+  },
+  "artefact": 14717070996,
+  "run": 44928673786,
+  "job": 136920278300,
+  "statut_initial": "echec_oracle_presence_inconditionnelle",
+  "limite": "Pas de qualification navigateur du nouvel oracle ; les observations natives supplémentaires doivent être reçues de GitHub."
+}

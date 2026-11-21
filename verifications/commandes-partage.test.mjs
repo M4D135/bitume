@@ -8,6 +8,8 @@ const root = process.argv[3] || resolve(dirname(fileURLToPath(import.meta.url)),
 const source = readFileSync(process.argv[2] || join(root, 'src/jeu.js'), 'utf8');
 const { B, CD, DT, circuit, commande } = await import(pathToFileURL(join(root, 'verifications/phase2/outils.mjs')).href);
 await import(pathToFileURL(join(root, 'src/expressions-pilote.js')).href);
+await import(pathToFileURL(join(root, 'src/commandes-manette.js')).href);
+await import(pathToFileURL(join(root, 'src/autoconfig.js')).href);
 function extraire(nom) {
   const debut = source.indexOf(`  function ${nom}(`);
   assert(debut >= 0, nom);
@@ -24,6 +26,7 @@ const ecouteurs = source.slice(source.indexOf('  // conduite par position physiq
 const fabrique = new Function('navigator', 'B', 'session', 'reglages', `
   let ecran = 'course', dernierGeste = 0;
   const compteurVisites = null; // Le compteur du titre est hors du contexte isolé de commandes.
+  const nomTouche = c => c;
   const actions = [], enCourse = () => ecran === 'course', activerSon = () => {};
   const changerVue = () => actions.push('vue1'), changerVue2 = () => actions.push('vue2');
   const basculerPause = () => { actions.push('pause'); ecran = ecran === 'course' ? 'pause' : 'course'; };
@@ -33,9 +36,9 @@ const fabrique = new Function('navigator', 'B', 'session', 'reglages', `
   const addEventListener = (type, fn) => { if (!ecouteurs.has(type)) ecouteurs.set(type, []); ecouteurs.get(type).push(fn); };
   ${declarations}
   ${ecouteurs}
-  ${['lireManette', 'lireManette2', 'commandesJoueur', 'commandesJoueur2'].map(extraire).join('\n')}
+  ${['lireManette', 'lireManette2', 'commandesJoueur', 'commandesJoueur2', 'entreeDe'].map(extraire).join('\n')}
   return { touches, souris, pad, pad2, impulsions2, actions,
-    poll: lireManette, j1: commandesJoueur, j2: commandesJoueur2,
+    poll: lireManette, j1: commandesJoueur, j2: commandesJoueur2, entreeDe,
     event: (type, valeurs = {}) => { const e = { preventDefault() {}, ...valeurs }; for (const fn of ecouteurs.get(type) || []) fn(e); },
     get screen() { return ecran; },
     setSession: s => { session = s; }, setScreen: s => { ecran = s; } };
@@ -46,12 +49,12 @@ function seance(locaux = [0, 1]) {
 }
 function preparer(options = {}) {
   const reglages = { boite: 'auto', aide: .35, ...options.reglages };
-  const session = seance(options.locaux), navigator = { pads: [], getGamepads() { return this.pads; } };
+  const session = seance(options.locaux), navigator = { pads: [], userAgent: options.userAgent || '', getGamepads() { return this.pads; } };
   return { reglages, session, navigator, api: fabrique(navigator, B, session, reglages),
     etat: session.course.voitures[session.locaux[1]].etat };
 }
 const manette = (index = 0, boutons = {}, axe = 0, id = 'manette-' + index) => ({
-  index, id, connected: true, axes: [axe],
+  index, id, connected: true, mapping: 'standard', axes: [axe],
   buttons: Array.from({ length: 16 }, (_, i) => ({ value: boutons[i] || 0, pressed: !!boutons[i] }))
 });
 const activerSouris = api => Object.assign(api.souris, { active: true, gaz: true, x: 650, largeur: 1000 });
@@ -81,6 +84,29 @@ for (const choixJ2 of ['auto', 'souris']) test('clavier J1 Auto et souris J2 ' +
   assert.equal(api.j1().gaz, 1); // ordre réel du pas de simulation : J1, puis J2
   const j2 = api.j2();
   assert.equal(j2.gaz, 1); assert.equal(j2.volant, .5); assert.equal(api.souris.active, true);
+});
+test('le statut solo Xbox annonce la manette réellement affectée à J1 en Auto', () => {
+  const { api, navigator, session } = preparer({ userAgent: 'Xbox' });
+  session.type = 'course'; navigator.pads = [manette(0, { 7: .75 })]; api.poll();
+  assert.equal(api.j1().gaz, .75);
+  assert.match(api.entreeDe(0, false), /^manette(?: ou |$)/);
+  assert.doesNotMatch(api.entreeDe(0, false), /souris|non détectée/);
+});
+test('le statut duo conserve la seule manette sur J2 en Auto', () => {
+  const { api, navigator } = preparer();
+  navigator.pads = [manette(0, { 7: .75 })]; api.poll();
+  assert.equal(api.j1().gaz, 0); assert.equal(api.j2().gaz, .75);
+  assert.doesNotMatch(api.entreeDe(0, true), /manette/);
+  assert.match(api.entreeDe(1, true), /^manette(?: ou |$)/);
+});
+test('le statut solo respecte Clavier explicite et le repli souris Auto sur PC', () => {
+  const { api, navigator, session, reglages } = preparer({ reglages: { commandes: ['clavier', 'auto'] } });
+  session.type = 'course'; navigator.pads = [manette(0, { 7: 1 })]; api.poll();
+  assert.equal(api.j1().gaz, 0); assert.doesNotMatch(api.entreeDe(0, false), /manette|souris/);
+  reglages.commandes[0] = 'auto'; navigator.pads = []; api.poll();
+  assert.match(api.entreeDe(0, false), /clavier.*souris/);
+  reglages.commandes[0] = 'manette';
+  assert.equal(api.entreeDe(0, false), 'manette (non détectée)');
 });
 test('manette J1 Auto et souris J2 explicite simultanées', () => {
   const { api, navigator } = preparer({ reglages: { commandes: ['auto', 'souris'] } });
@@ -357,6 +383,74 @@ test('Troll L3 : manette de J2, pas de geste à la connexion ni pendant le maint
   navigator.pads = [manette(0)]; api.poll();
   navigator.pads = [manette(0, { 10: 1 })]; api.poll(); assert(p[1].demande && !p[0].demande);
   p[1].demande = false; api.poll(); assert(!p[1].demande);
+});
+test('une manette solo neutre garde la priorité sur les clics souris Auto', () => {
+  const { api, navigator, session } = preparer(); session.type = 'course';
+  navigator.pads = [manette()]; api.poll();
+  api.event('pointerdown', { pointerType: 'mouse', clientX: 990, buttons: 1 });
+  api.event('pointermove', { pointerType: 'mouse', clientX: 0, buttons: 1 });
+  assert.equal(api.souris.active, false);
+  const c = api.j1(); assert.deepEqual([c.gaz, c.frein, c.volant], [0, 0, 0]);
+  activerSouris(api); // un clic précédant la connexion ne doit pas reprendre la direction.
+  const ancien = api.j1(); assert.deepEqual([ancien.gaz, ancien.frein, ancien.volant], [0, 0, 0]);
+});
+test('le pointeur Auto de Xbox ne devient jamais un volant, même sans Gamepad reçu', () => {
+  const { api, session } = preparer({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox Series X) Edg/142.0.0.0' });
+  session.type = 'course'; api.poll();
+  api.event('pointerdown', { pointerType: 'mouse', clientX: 990, buttons: 1 });
+  assert.equal(api.souris.active, false);
+  const c = api.j1(); assert.deepEqual([c.gaz, c.frein, c.volant], [0, 0, 0]);
+});
+for (const userAgent of ['', 'Mozilla/5.0 (Xbox; Xbox One) Edg/142']) test('la souris explicitement choisie reste pilotable, console ' + !!userAgent, () => {
+  const { api, navigator, session } = preparer({ userAgent, reglages: { commandes: ['souris', 'auto'] } });
+  session.type = 'course'; navigator.pads = [manette()]; api.poll();
+  api.event('pointerdown', { pointerType: 'mouse', clientX: 650, buttons: 1 });
+  const c = api.j1(); assert.equal(api.souris.active, true); assert.equal(c.gaz, 1); assert.equal(c.volant, .5);
+});
+test('un bouton de l’interface en course n’active pas la conduite souris', () => {
+  const { api, session } = preparer(); session.type = 'course';
+  api.event('pointerdown', { pointerType: 'mouse', clientX: 990, buttons: 1, target: { closest: () => ({}) } });
+  assert.equal(api.souris.active, false); assert.equal(api.j1().gaz, 0);
+});
+test('une manette neutre J2 ne vole pas le clavier J1 et ignore le pointeur Auto de J2', () => {
+  const { api, navigator } = preparer(); navigator.pads = [manette()]; api.poll();
+  api.touches.add('KeyW'); api.event('pointerdown', { pointerType: 'mouse', clientX: 990, buttons: 1 });
+  assert.equal(api.j1().gaz, 1); const j2 = api.j2(); assert.deepEqual([j2.gaz, j2.volant], [0, 0]);
+});
+test('RT remplacé par X et vue remplacée par R3 sont réellement lus par la conduite', () => {
+  let m = B.commandesManette.affecter(null, 'gaz', { type: 'bouton', index: 2 });
+  m = B.commandesManette.affecter(m, 'vue', { type: 'bouton', index: 11 });
+  const { api, navigator, session } = preparer({ reglages: { manettes: [m, null] } }); session.type = 'course';
+  navigator.pads = [manette()]; api.poll();
+  navigator.pads = [manette(0, { 7: .8, 3: 1 })]; api.poll(); assert.equal(api.j1().gaz, 0); assert.deepEqual(api.actions, []);
+  navigator.pads = [manette(0, { 2: .7, 11: 1 })]; api.poll();
+  const c = api.j1(); assert.equal(c.gaz, .7); assert.equal(c.derive, false); assert.deepEqual(api.actions, ['vue1']);
+  api.poll(); assert.deepEqual(api.actions, ['vue1'], 'un maintien ne répète pas la nouvelle vue');
+});
+test('les affectations manette J1 et J2 restent indépendantes', () => {
+  const m = B.commandesManette.affecter(null, 'gaz', { type: 'bouton', index: 2 });
+  const { api, navigator } = preparer({ reglages: { manettes: [m, null] } });
+  navigator.pads = [manette(0), manette(1)]; api.poll();
+  navigator.pads = [manette(0, { 2: .7 }), manette(1, { 2: 1, 7: .4 })]; api.poll();
+  const a = api.j1(), b = api.j2();
+  assert.deepEqual([a.gaz, a.derive, b.gaz, b.derive], [.7, false, .4, true]);
+});
+test('une gâchette remappée sur un axe non standard accélère sans clavier', () => {
+  const m = B.commandesManette.affecter(null, 'gaz', { type: 'axe', index: 2, sens: 1, origine: -1 });
+  const { api, navigator, session } = preparer({ reglages: { manettes: [m, null] } }); session.type = 'course';
+  const p = manette(); p.mapping = ''; p.axes = [0, 0, -1]; navigator.pads = [p]; api.poll(); assert.equal(api.j1().gaz, 0);
+  p.axes[2] = 1; api.poll(); assert.equal(api.j1().gaz, 1);
+  p.axes[2] = -1; api.poll(); assert.equal(api.j1().gaz, 0);
+});
+test('une action remappée tenue à la reconnexion ne crée pas d’impulsion', () => {
+  const m = B.commandesManette.affecter(null, 'vue', { type: 'bouton', index: 11 });
+  const { api, navigator, session } = preparer({ reglages: { manettes: [m, null] } }); session.type = 'course';
+  navigator.pads = [manette()]; api.poll();
+  navigator.pads = [manette(0, { 11: 1 })]; api.poll(); assert.deepEqual(api.actions, ['vue1']);
+  navigator.pads = []; api.poll(); navigator.pads = [manette(0, { 11: 1 })]; api.poll(); api.poll();
+  assert.deepEqual(api.actions, ['vue1']);
+  navigator.pads = [manette()]; api.poll(); navigator.pads = [manette(0, { 11: 1 })]; api.poll();
+  assert.deepEqual(api.actions, ['vue1', 'vue1']);
 });
 console.log(`${reussis}/${reussis + echecs.length} contrôles commandes partagées tenus`);
 if (echecs.length) process.exitCode = 1;

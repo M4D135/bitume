@@ -362,9 +362,9 @@
       <fieldset id="o-commandes" hidden>
         <legend>Commandes</legend>
         <div class="ligne-commande"><b>Joueur 1</b><label><input type="radio" name="cmd0" value="auto"><span>Auto</span></label><label><input type="radio" name="cmd0" value="manette"><span>Manette</span></label><label><input type="radio" name="cmd0" value="clavier"><span>Clavier</span></label><label><input type="radio" name="cmd0" value="souris"><span>Souris</span></label></div>
-        <div class="ligne-commande"><b>Joueur 2</b><label><input type="radio" name="cmd1" value="auto"><span>Auto</span></label><label><input type="radio" name="cmd1" value="manette"><span>Manette</span></label><label><input type="radio" name="cmd1" value="clavier"><span>Clavier</span></label><label><input type="radio" name="cmd1" value="souris"><span>Souris</span></label></div>
+        <div class="ligne-commande" id="p-commandes-j2"><b>Joueur 2</b><label><input type="radio" name="cmd1" value="auto"><span>Auto</span></label><label><input type="radio" name="cmd1" value="manette"><span>Manette</span></label><label><input type="radio" name="cmd1" value="clavier"><span>Clavier</span></label><label><input type="radio" name="cmd1" value="souris"><span>Souris</span></label></div>
         <p id="p-manettes" class="note-pneus"></p>
-        <button type="button" class="discret" id="p-touches">Régler les touches</button>
+        <button type="button" class="discret" id="p-touches">Configurer les commandes</button>
       </fieldset>
       <fieldset id="o-partage" hidden>
         <legend>Écran</legend>
@@ -428,6 +428,7 @@
         <button type="button" class="discret" id="r-detecter">Appliquer le profil conseillé</button>
         <p class="note-graphismes">Choisit un profil prudent à partir des capacités déclarées de l’appareil, sans test de charge. Ce bouton remplace vos choix graphiques actuels.</p>
         <p class="note-graphismes" id="r-detection-etat" role="status">Profil conseillé sans test de charge.</p>
+        <p class="note-graphismes aide-xbox" hidden>Xbox : scène 3D limitée à 720p pour alléger le rendu sur téléviseur. Menus et textes restent à la résolution de l’écran.</p>
       </fieldset>
       <fieldset>
         <legend>Qualité générale</legend>
@@ -567,6 +568,8 @@
         </div>
       </div>
       <div id="r-commandes-panel" class="panneau-menu" role="tabpanel" data-menu-panel aria-labelledby="onglet-r-commandes-panel" hidden>
+      <p id="r-manette-etat" class="etat-manette" role="status" aria-live="polite">Appuyez sur un bouton de la manette pour la détecter.</p>
+      <p class="note-commandes aide-xbox" hidden>Xbox / Edge : maintenez Menu ≡ pour basculer du pointeur aux commandes de jeu. A valide, B revient, LB / RB changent d’onglet.</p>
       <fieldset>
         <legend>Manette</legend>
         <label><input type="checkbox" id="v-vibrations"><span>Vibrations (moteur, route, chocs)</span></label>

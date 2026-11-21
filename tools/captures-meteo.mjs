@@ -215,7 +215,19 @@ export async function preparerImageMeteo(s, i, evaluer) {
 export function observerEtat() {
   const J = BITUME_JEU, S = J.session, gl = J.rendu.gl, F = __METEO_FIXTURE;
   const contexte = v => v ? Object.fromEntries(['pluie', 'neige', 'vitesse', 'vitesseX', 'vitesseY', 'vitesseZ', 'cameraYaw', 'cameraPitch', 'cameraRoll', 'abri', 'cockpit', 'qualite', 'intensite', 'embruns', 'pause', 'actif'].map(k => [k, v[k]])) : null;
-  const vitres = J.vitres || null, vitresGL = {}, visieresVisibles = {};
+  const vitres = J.vitres || null, vitresGL = {}, visieresVisibles = {}, glaces = {};
+  // Les ancrages 126 CK restent physiques : en portrait une glace peut sortir du champ.
+  // Observer les vrais coins employés par la caméra et la vraie toile, sans les déplacer.
+  for (const [V, ids] of [[S, ['glace-g', 'glace-d']], [S.vueJ2, ['glace-g2', 'glace-d2']]]) {
+    if (V?.vue !== 'cockpit' || !V.cadrageCockpit?.glaces) continue;
+    for (let i = 0; i < 2; i++) {
+      const toile = document.getElementById(ids[i]), css = toile && getComputedStyle(toile), r = toile?.getBoundingClientRect();
+      glaces[ids[i]] = { coins: V.cadrageCockpit.glaces[i].coins.map(p => Array.from(p)),
+        affichee: !!toile && !toile.hidden && css.display !== 'none' && css.visibility !== 'hidden',
+        pixels: toile ? [toile.width, toile.height] : null,
+        cadre: r ? { x: r.x, y: r.y, width: r.width, height: r.height } : null };
+    }
+  }
   for (const [joueur, id] of [['j1', 'vitre'], ['j2', 'vitre2']]) {
     const toile = document.getElementById(id), css = toile && getComputedStyle(toile);
     visieresVisibles[joueur] = !!toile && !toile.hidden && css.display !== 'none' && css.visibility !== 'hidden';
@@ -258,7 +270,7 @@ export function observerEtat() {
     pluie = { forceDemandee: F.forceDemandee, pluieFixe: S.meteo.pluieFixe, lentilles, impact, carrosserie,
       cameraPrescrite: F.cameraPrescrite, tempsRendu: S.tRendu };
   }
-  return { glErreur: gl.getError(), glPerdu: gl.isContextLost(), vitres, vitresGL, visieresVisibles,
+  return { glErreur: gl.getError(), glPerdu: gl.isContextLost(), vitres, vitresGL, visieresVisibles, glaces,
     annoncesVirages: J.reglages?.annoncesVirages,
     j1: contexte(S.vitreContexte), j2: contexte(S.vueJ2?.vitreContexte), faune: __METEO_FIXTURE.faune,
     vue: S.vue, vue2: S.vueJ2?.vue || null, positions: __METEO_FIXTURE.controleSillage ? __METEO_FIXTURE.positions() : null,
@@ -266,6 +278,29 @@ export function observerEtat() {
     camera2: S.vueJ2?.camera ? { pos: [...S.vueJ2.camera.pos], yaw: S.vueJ2.camera.yaw, pitch: S.vueJ2.camera.pitch, roll: S.vueJ2.camera.roll || 0, fov: S.vueJ2.camera.fov } : null,
     precipitation: { pluie: S.meteo.pluie, neige: S.meteo.precipitationsNeige, mouille: S.meteo.mouille },
     temps: S.meteo.t, ecran: J.ecran, pluie };
+}
+
+// Projection indépendante des coins monde observés, dans la zone du joueur.
+// Une zone DOM absente n'est justifiée que par une toile préparée dont la position réelle
+// coïncide avec ces coins et dont le rectangle est entièrement hors du champ.
+export function projeterGlace(coins, camera, zone) {
+  if (!Array.isArray(coins) || coins.length !== 4 || coins.some(p => !Array.isArray(p) || p.length !== 3 || !p.every(Number.isFinite)) ||
+      !Array.isArray(camera?.pos) || camera.pos.length !== 3 || !camera.pos.every(Number.isFinite) ||
+      ![camera.yaw, camera.pitch, camera.roll, camera.fov, zone?.x, zone?.y, zone?.width, zone?.height].every(Number.isFinite) ||
+      !(camera.fov > 0 && camera.fov < 180 && zone.width > 0 && zone.height > 0)) return null;
+  const cy = Math.cos(camera.yaw), sy = Math.sin(camera.yaw), cp = Math.cos(camera.pitch), sp = Math.sin(camera.pitch);
+  const cr = Math.cos(camera.roll), sr = Math.sin(camera.roll), t = Math.tan(camera.fov * Math.PI / 360);
+  const points = [];
+  for (const p of coins) {
+    const [x, y, z] = p.map((v, i) => v - camera.pos[i]), profondeur = x * sy * cp + y * sp - z * cy * cp;
+    if (!(profondeur >= .05)) return null;
+    const droite = x * cy + z * sy, haut = -x * sy * sp + y * cp + z * cy * sp;
+    points.push([zone.x + (zone.width + (droite * cr + haut * sr) * zone.height / (profondeur * t)) / 2,
+      zone.y + (zone.height - (haut * cr - droite * sr) * zone.height / (profondeur * t)) / 2]);
+  }
+  if (!points.every(p => p.every(Number.isFinite))) return null;
+  const x = Math.min(...points.map(p => p[0])), y = Math.min(...points.map(p => p[1]));
+  return { x, y, width: Math.max(...points.map(p => p[0])) - x, height: Math.max(...points.map(p => p[1])) - y };
 }
 
 export function verifierRapport(r, s, candidat) {
@@ -286,13 +321,25 @@ export function verifierRapport(r, s, candidat) {
     const qualite = s.qualite || 'high';
     if (!s.faune && o.j1?.qualite !== qualite) fautes.push('Qualité rendue différente du scénario');
     // Légère conserve les glaces peintes de la voiture, sans toiles ni rendus arrière (graphismes.PROFILS.low).
-    // Fine doit montrer les deux vraies images pour chaque joueur ; une caméra faune les masque aussi.
+    // Fine conserve les deux vraies toiles ; leur présence dans le PNG suit leur projection physique.
+    // Une caméra faune les masque aussi.
     const glaces = !s.faune && qualite !== 'low' ? [
       ...(!s.vue || s.vue === 'cockpit' ? ['glace-g', 'glace-d'] : []),
       ...(s.duo && (!s.vue2 || s.vue2 === 'cockpit') ? ['glace-g2', 'glace-d2'] : [])
     ] : [];
     for (const id of ['glace-g', 'glace-d', 'glace-g2', 'glace-d2']) {
-      if (glaces.includes(id) && !im.etat.zones[id]) fautes.push('Rétroviseurs incomplets : ' + id);
+      let horsChamp = false;
+      const g = o.glaces?.[id], j2 = id.endsWith('2'), zone = im.etat.zones[j2 ? 'scene2' : 'scene'];
+      if (glaces.includes(id) && g) {
+        const p = projeterGlace(g.coins, j2 ? o.camera2 : o.camera, zone);
+        const prete = g.affichee === true && Array.isArray(g.pixels) && g.pixels.length === 2 && g.pixels.every(n => Number.isInteger(n) && n > 0);
+        const raccord = p && g.cadre && ['x', 'y', 'width', 'height'].every(k => Number.isFinite(g.cadre[k]) && Math.abs(g.cadre[k] - p[k]) <= 2);
+        if (!prete) fautes.push('Rétroviseur non préparé : ' + id);
+        if (!raccord) fautes.push('Projection du rétroviseur incohérente : ' + id);
+        horsChamp = !!(prete && raccord && (p.x + p.width <= zone.x || p.y + p.height <= zone.y ||
+          p.x >= zone.x + zone.width || p.y >= zone.y + zone.height));
+      }
+      if (glaces.includes(id) && !im.etat.zones[id] && !horsChamp) fautes.push('Rétroviseurs incomplets : ' + id);
       if (!glaces.includes(id) && im.etat.zones[id]) fautes.push('Toile de rétroviseur inattendue : ' + id);
     }
     if (s.tunnel && o.j1?.abri !== true) fautes.push('Caméra non abritée dans le tunnel');

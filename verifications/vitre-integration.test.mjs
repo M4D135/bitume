@@ -16,7 +16,7 @@ function bloc(debut, fin) {
 const executer = new Function('B', 'prefs', `
   ${source.match(/  const DT = [^;]+;/)[0]}
   const stockage = { 'bitume.reglages': JSON.stringify(prefs) }, elements = new Map();
-  let session = null, ecran = 'titre', retourReglages = 'titre', captureTouche = null;
+  let session = null, ecran = 'titre', retourReglages = 'titre', captureTouche = null, captureManette = null;
   const localStorage = { getItem: k => stockage[k] || null, setItem: (k,v) => { stockage[k] = v; } };
   const setTimeout = () => 0, matchMedia = () => ({ matches: false });
   const clamp = (x,a,b) => Math.max(a,Math.min(b,x));
