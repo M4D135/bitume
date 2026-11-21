@@ -40,14 +40,25 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     };
   }
   function clamp(x, a, b) { return x < a ? a : (x > b ? b : x); }
-  function ramener(s, L) { return ((s % L) + L) % L; }
+  function ramener(s, L, c) {
+    if (c && c.ouvert) return s < 0 ? 0 : s > L ? L : s;
+    return ((s % L) + L) % L;
+  }
   function ecart(c, s1, s2) { return B.circuit.ecart(c, s1, s2); }
   // lecture interpolée d'un tableau du circuit, sans allocation
   function lire(c, tab, s) {
+    if (c.ouvert) {
+      const sc = s < 0 ? 0 : s > c.longueur ? c.longueur : s;
+      const f = sc / c.pas, fi = Math.floor(f), i = Math.min(fi, c.n - 1), j = Math.min(i + 1, c.n - 1), t = i === j ? 0 : f - fi;
+      return tab[i] + (tab[j] - tab[i]) * t;
+    }
     const f = ramener(s, c.longueur) / c.pas, fi = Math.floor(f), i = fi % c.n, j = (i + 1) % c.n;
     return tab[i] + (tab[j] - tab[i]) * (f - fi);
   }
-  function sLigne(c, s) { return ramener(s - (c.depart || 0), c.longueur); }
+  function sLigne(c, s) {
+    if (c.ouvert) return s - (c.depart || 0);
+    return ramener(s - (c.depart || 0), c.longueur);
+  }
   const AIDE_IA = 0.35;
   const NEUTRE = Object.freeze({ gaz: 0, frein: 0, volant: 0, derive: false, haut: false, bas: false, boite: 'auto', aide: 0 });
   const CHAUSSEE_IA = {}, CHAUSSEE_ANTICIPEE = {}, CHAUSSEE_CHAUFFE = {};
@@ -113,22 +124,35 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
         degagementEssais: 0, degagementOrigineS: 0, degagementOrigineD: 0 });
     }
 
+    if (!c.vitesse && B.circuit && B.circuit.preparerParcours) B.circuit.preparerParcours(c);
     // grille : ordre des rivaux tiré de la graine, le joueur à sa place
     const ordre = voitures.slice(premierRival);
     for (let i = ordre.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [ordre[i], ordre[j]] = [ordre[j], ordre[i]]; }
     ordre.splice(Math.min(placeJoueur - 1, ordre.length), 0, ...voitures.slice(0, premierRival));
+    const depart = c.depart || 0;
     ordre.forEach((v, k) => {
-      const s = chrono ? -40 : -10 - 8 * k, d = chrono ? 0 : (k % 2 === 0 ? -2.4 : 2.4);
-      v.etat = B.conduite.creer(ramener((c.depart || 0) + s, L), d);
+      const d = chrono ? 0 : (k % 2 === 0 ? -2.4 : 2.4);
+      let sAbs, prog;
+      if (c.ouvert) {
+        const baseS = depart >= 120 ? depart - 10 : depart + 10 + 8 * (ordre.length - 1);
+        sAbs = chrono ? Math.max(0, Math.min(depart + 10, (c.arrivee || L) - 1)) : Math.max(0, Math.min(baseS - 8 * k, (c.arrivee || L) - 1));
+        prog = sAbs - depart;
+      } else {
+        const s = chrono ? -40 : -10 - 8 * k;
+        sAbs = ramener(depart + s, L);
+        prog = s;
+      }
+      v.etat = B.conduite.creer(sAbs, d);
       Object.assign(v.etat, B.pneus.creerEtat('slicks', { seance: graine, voiture: v.id }));
       v.degats = B.degats ? B.degats.creer() : null; v.etat.degats = v.degats;
-      v.progression = s; v.position = k + 1;
+      v.progression = prog; v.position = k + 1;
     });
 
     let tRef = 0;
     for (let i = 0; i < c.n; i++) tRef += c.pas / c.vitesse[i];
+    const toursTotal = c.ouvert ? 1 : (chrono ? 0 : Math.max(1, Math.round(o.tours ?? 3)));
     return {
-      c, graine, mode: chrono ? 'chrono' : 'course', toursTotal: chrono ? 0 : Math.max(1, Math.round(o.tours ?? 3)), difficulte,
+      c, graine, mode: chrono ? 'chrono' : 'course', toursTotal, difficulte,
       phase: chrono ? 'course' : 'grille', horloge: 0, temps: 0, dt: 1 / 120,
       feux: { allumes: 0, vert: chrono }, delaiVert: 0.4 + rng() * 1.0,
       voitures, joueur: voitures[humains ? humains.locaux[0] : 0], classement: ordre.map(v => v.id), enLigne: !!humains && !!humains.enLigne, duo,
@@ -480,7 +504,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
         let force;
         if (ol < olat) {
           const sg = ds >= 0 ? 1 : -1; // b devant a si sg > 0
-          a.s = ramener(a.s - sg * ol / 2, L); b.s = ramener(b.s + sg * ol / 2, L);
+          a.s = ramener(a.s - sg * ol / 2, L, c); b.s = ramener(b.s + sg * ol / 2, L, c);
           const ar = sg > 0 ? a : b, av = sg > 0 ? b : a, vr = ar.v - av.v;
           if (vr > 0) { ar.v -= 0.30 * vr; av.v += 0.15 * vr; }
           force = Math.max(0, vr);
@@ -509,6 +533,18 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
 
   function passageLigne(course, v, tPassage, ev) {
     if (v.abandon) return;
+    if (course.c.ouvert) {
+      if (v.fini) return;
+      const temps = tPassage - v.debutTour, valide = v.tourValide !== false, meilleur = valide && (v.meilleur === null || temps < v.meilleur);
+      v.debutTour = tPassage; v.tours = 1; v.tempsTours.push(temps);
+      if (meilleur) v.meilleur = temps;
+      ev.push({ type: 'tour', id: v.id, tour: 1, temps, meilleur, valide });
+      v.fini = true; v.tempsFinal = tPassage; course.finisseurs++;
+      if (course.drapeau === null) course.drapeau = tPassage;
+      ev.push({ type: 'arrivee', id: v.id, position: course.finisseurs });
+      if (v.joueur) course.phase = 'arrivee';
+      return;
+    }
     if (course.mode === 'chrono') {
       if (!course.chronoParti) { course.chronoParti = true; v.debutTour = tPassage; v.tourValide = true; course.enreg.n = 0; course.enreg.prochain = 0; return; }
     } else if (v.passages === 0 || v.fini) return; // départ compté depuis le vert ; rien après l'arrivée
@@ -764,7 +800,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       // voiture distante : son état vient du réseau, prolongé jusqu'à ce pas (jeu.js, reseau.js)
       if (v.distant) { if (course.distant) course.distant(v, dt); continue; }
       let cmd;
-      if (!v.joueur || v.fini) cmd = commandesIA(course, v, cmdsIA[i] || (cmdsIA[i] = {}));
+      if (!v.joueur || v.fini) {
+        cmd = commandesIA(course, v, cmdsIA[i] || (cmdsIA[i] = {}));
+        if (c.ouvert && v.fini) { cmd.gaz = 0; cmd.frein = v.etat.v > 2 ? .72 : .25; cmd.derive = false; }
+      }
       else cmd = (Array.isArray(cmdJoueur) ? cmdJoueur[v.id] : cmdJoueur) || NEUTRE;   // écran partagé : une commande par voiture
       const service = v.etat.stands;
       if (service && service.phase === 'service') {
@@ -792,16 +831,26 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       const v = V[i], a = course.sAvant[i], b = sLigne(c, v.etat.s);
       if(v.etat.recuperation || (v.degats&&(v.degats.casse||B.degats?.uneRouePerdue(v.degats))))v.tourValide=false;
       const replacements=v.etat.repositionnements||0;
-      if(replacements!==v.repositionnements){v.tourValide=false;v.repositionnements=replacements;course.sAvant[i]=b;v.progression=v.passages*L+b;continue;}
-      // Un franchissement réellement parcouru peut finir le tour, marqué non valide après accident.
-      if (a > 0.75 * L && b < 0.25 * L) {
-        v.passages++;
-        if (v.passages > v.maxPassages) {
-          v.maxPassages = v.passages;
-          passageLigne(course, v, t0 + dt * (L - a) / (L - a + b), ev);
+      if(replacements!==v.repositionnements){v.tourValide=false;v.repositionnements=replacements;course.sAvant[i]=b;v.progression=c.ouvert?b:v.passages*L+b;continue;}
+      if (c.ouvert) {
+        const seuil = (c.arrivee === undefined ? L : c.arrivee) - (c.depart || 0);
+        if (!v.fini && a < seuil && b >= seuil) {
+          v.passages = 1; v.maxPassages = 1;
+          const frac = b > a ? (seuil - a) / (b - a) : 1;
+          passageLigne(course, v, t0 + dt * frac, ev);
         }
-      } else if (a < 0.25 * L && b > 0.75 * L) v.passages--;
-      v.progression = v.passages * L + b;
+        v.progression = b;
+      } else {
+        // Un franchissement réellement parcouru peut finir le tour, marqué non valide après accident.
+        if (a > 0.75 * L && b < 0.25 * L) {
+          v.passages++;
+          if (v.passages > v.maxPassages) {
+            v.maxPassages = v.passages;
+            passageLigne(course, v, t0 + dt * (L - a) / (L - a + b), ev);
+          }
+        } else if (a < 0.25 * L && b > 0.75 * L) v.passages--;
+        v.progression = v.passages * L + b;
+      }
       if (course.mode === 'chrono' && course.chronoParti && v.joueur && v.tourValide !== false) enregistrer(course, v, course.temps);
     }
     majClassement(course);
@@ -827,9 +876,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
 
   // Retour manuel : même abscisse, aucun passage ajouté, tour courant non homologué.
   function replacer(course,v=course.joueur) {
-    const ev=B.conduite.replacer(v.etat,course.c);v.tourValide=false;v.repositionnements=v.etat.repositionnements;
-    const i=course.voitures.indexOf(v);if(i>=0)course.sAvant[i]=sLigne(course.c,v.etat.s);
-    v.progression=v.passages*course.c.longueur+sLigne(course.c,v.etat.s);
+    const c = course.c;
+    if (c.ouvert) v.etat.s = Math.max(0, Math.min(v.etat.s, c.longueur - 20));
+    const ev=B.conduite.replacer(v.etat,c);v.tourValide=false;v.repositionnements=v.etat.repositionnements;
+    const i=course.voitures.indexOf(v);if(i>=0)course.sAvant[i]=sLigne(c,v.etat.s);
+    v.progression=c.ouvert?sLigne(c,v.etat.s):v.passages*c.longueur+sLigne(c,v.etat.s);
     for(const x of ev)x.id=v.id;return ev;
   }
 
@@ -848,7 +899,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     const ta = D[4 * i], tb = D[4 * i + 4], u = tb > ta ? clamp((t - ta) / (tb - ta), 0, 1) : 0;
     const sa = D[4 * i + 1], sb = D[4 * i + 5];
     return {
-      s: ramener(sa + ecart(c, sa, sb) * u, c.longueur),
+      s: ramener(sa + ecart(c, sa, sb) * u, c.longueur, c),
       d: D[4 * i + 2] + (D[4 * i + 6] - D[4 * i + 2]) * u,
       angle: D[4 * i + 3] + (D[4 * i + 7] - D[4 * i + 3]) * u
     };

@@ -204,13 +204,15 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
   }
 
   // Trajectoire idéale : bande élastique à plusieurs échelles (pas de 16, 8, 4, 2 m), bornée à la piste.
-  function trajectoire(x, z, cap, n, largeur) {
-    const d = new Float64Array(n), borne = largeur / 2 - 1.4;
+  function trajectoire(x, z, cap, n, largeur, ouvert = false) {
+    const d = new Float64Array(n), borne = Math.max(.2, largeur / 2 - 1.4);
     const rx = new Float64Array(n), rz = new Float64Array(n);
     for (let i = 0; i < n; i++) { rx[i] = -Math.sin(cap[i]); rz[i] = Math.cos(cap[i]); }
     for (const [h, tours] of [[24, 140], [12, 140], [6, 120], [3, 100], [1, 80]]) {
-      for (let t = 0; t < tours; t++) for (let i = 0; i < n; i++) {
-        const a = (i - h + n) % n, b = (i + h) % n;
+      const i0 = ouvert ? 1 : 0, i1 = ouvert ? n - 1 : n;
+      for (let t = 0; t < tours; t++) for (let i = i0; i < i1; i++) {
+        const a = ouvert ? Math.max(0, i - h) : (i - h + n) % n;
+        const b = ouvert ? Math.min(n - 1, i + h) : (i + h) % n;
         const mx = (x[a] + rx[a] * d[a] + x[b] + rx[b] * d[b]) / 2, mz = (z[a] + rz[a] * d[a] + z[b] + rz[b] * d[b]) / 2;
         const cible = (mx - x[i]) * rx[i] + (mz - z[i]) * rz[i];
         d[i] = borner(d[i] + .55 * (cible - d[i]), -borne, borne);
@@ -219,17 +221,30 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     return d;
   }
 
-  function vitesses(x, z, cap, ligne, n, pas = PAS) {
+  function vitesses(x, z, cap, ligne, n, pas = PAS, ouvert = false, arrivee = Infinity) {
     const px = new Float64Array(n), pz = new Float64Array(n), v = new Float64Array(n);
     for (let i = 0; i < n; i++) { px[i] = x[i] - Math.sin(cap[i]) * ligne[i]; pz[i] = z[i] + Math.cos(cap[i]) * ligne[i]; }
     const MU = 1.55, AERO = .00155, VMAX = 86, H = 3;
     for (let i = 0; i < n; i++) {
-      const a = (i - H + n) % n, b = (i + H) % n;
+      const a = ouvert ? Math.max(0, i - H) : (i - H + n) % n;
+      const b = ouvert ? Math.min(n - 1, i + H) : (i + H) % n;
+      if (ouvert && (a === i || b === i)) { v[i] = VMAX; continue; }
       const a1 = Math.atan2(pz[i] - pz[a], px[i] - px[a]), a2 = Math.atan2(pz[b] - pz[i], px[b] - px[i]);
       const ds = (Math.hypot(pz[i] - pz[a], px[i] - px[a]) + Math.hypot(pz[b] - pz[i], px[b] - px[i])) / 2;
       const k = Math.abs(angle(a2 - a1)) / Math.max(ds, .5);
       const den = k - MU * AERO;
       v[i] = den <= 0 ? VMAX : Math.min(VMAX, Math.sqrt(MU * 9.81 / den));
+    }
+    if (ouvert) {
+      if (Number.isFinite(arrivee) && arrivee < (n - 1) * pas) {
+        const iFin = Math.min(n - 1, Math.ceil(arrivee / pas));
+        v[n - 1] = 2;
+        for (let i = n - 2; i >= iFin; i--) v[i] = Math.min(v[i], Math.sqrt(v[i + 1] * v[i + 1] + 2 * 10 * pas));
+      }
+      for (let i = n - 2; i >= 0; i--) v[i] = Math.min(v[i], Math.sqrt(v[i + 1] * v[i + 1] + 2 * 16 * pas));
+      const poussee = u => Math.max(.05, Math.min(12, 15.59 - .2592 * u + .000899 * u * u));
+      for (let i = 1; i < n; i++) v[i] = Math.min(v[i], Math.sqrt(v[i - 1] * v[i - 1] + 2 * poussee(v[i - 1]) * pas));
+      return v;
     }
     for (let j = 2 * n - 1; j >= 0; j--) { const i = j % n, s = (i + 1) % n; v[i] = Math.min(v[i], Math.sqrt(v[s] * v[s] + 2 * 16 * pas)); }
     // poussée à fond de la monoplace (enveloppe des six rapports mesurée sur conduite.js, boîte auto)
@@ -241,8 +256,15 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
   // Préparation explicite des seules partitions qualifiées séparément. Les huit générateurs historiques
   // conservent leurs appels et leurs résultats ; aucune table de vitesses issue d'une ancienne étude n'est importée.
   function preparerParcours(c) {
-    c.ligne = trajectoire(c.x, c.z, c.cap, c.n, c.largeur);
-    c.vitesse = vitesses(c.x, c.z, c.cap, c.ligne, c.n, c.pas);
+    if (c.largeur === undefined && c.largeurG && c.largeurD) {
+      let minL = Infinity;
+      for (let i = 0; i < c.n; i++) minL = Math.min(minL, c.largeurG[i] + c.largeurD[i]);
+      c.largeur = Number.isFinite(minL) && minL > 0 ? minL : LARGEUR;
+    }
+    if (!c.vibreur) c.vibreur = new Uint8Array(c.n);
+    c.ligne = trajectoire(c.x, c.z, c.cap, c.n, c.largeur, !!c.ouvert);
+    c.vitesse = vitesses(c.x, c.z, c.cap, c.ligne, c.n, c.pas, !!c.ouvert, c.ouvert ? c.arrivee : Infinity);
+    if (c.type === 'trace-explicite') c.pretPourCourse = true;
     return c;
   }
 
@@ -364,11 +386,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
   // Les consommateurs de course/décor à largeur fixe, les croisements et couches restent à raccorder et qualifier.
   const CHAMPS_TRACE = Object.freeze(['x', 'y', 'z', 'largeurG', 'largeurD', 'devers', 'limiteG', 'limiteD']);
   const CHAMPS_LECTURE_TRACE = Object.freeze([...CHAMPS_TRACE, 'courbure', 'pente']);
-  function creerDepuisTrace(donnees) {
+  function creerDepuisTrace(donnees, options = {}) {
     const erreur = message => { throw new RangeError('BITUME : tracé explicite — ' + message); };
     if (!donnees || donnees.unite !== 'm') erreur('unité locale métrique « m » requise');
     const points = donnees.points;
-    if (!Array.isArray(points) || points.length < 4 || points.length > 250001) erreur('au moins trois sommets et leur fermeture explicite requis (250 000 segments maximum)');
+    const ouvert = (options && options.topologie === 'ouvert') || donnees.topologie === 'ouvert';
+    if (!Array.isArray(points) || points.length < (ouvert ? 2 : 4) || points.length > 250001) erreur('au moins trois sommets et leur fermeture explicite requis (250 000 segments maximum)');
     const pasMax = donnees.pasMax === undefined ? PAS : donnees.pasMax;
     if (!Number.isFinite(pasMax) || pasMax <= 0) erreur('pasMax doit être strictement positif et fini');
     if (donnees.nom !== undefined && (typeof donnees.nom !== 'string' || !donnees.nom.trim())) erreur('nom invalide');
@@ -385,7 +408,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
       return Object.freeze(q);
     });
     const m = source.length - 1;
-    if (!champs.every(k => source[0][k] === source[m][k])) erreur('boucle non fermée : dernier point et profils différents du premier');
+    if (!ouvert && !champs.every(k => source[0][k] === source[m][k])) erreur('boucle non fermée : dernier point et profils différents du premier');
     const abscisses = new Float64Array(m + 1);
     for (let i = 0; i < m; i++) {
       const a = source[i], b = source[i + 1], ds = Math.hypot(b.x - a.x, b.z - a.z);
@@ -393,36 +416,53 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
       abscisses[i + 1] = abscisses[i] + ds;
       if (!Number.isFinite(abscisses[i + 1]) || abscisses[i + 1] <= abscisses[i]) erreur('longueur non représentable');
     }
-    for (let i = 0; i < m; i++) {
-      const a = source[(i + m - 1) % m], b = source[i], d = source[i + 1];
+    for (let i = ouvert ? 1 : 0; i < m; i++) {
+      const a = source[ouvert ? i - 1 : (i + m - 1) % m], b = source[i], d = source[i + 1];
       const ux = b.x - a.x, uz = b.z - a.z, vx = d.x - b.x, vz = d.z - b.z;
       const lu = Math.hypot(ux, uz), lv = Math.hypot(vx, vz);
       if (Math.hypot(ux / lu + vx / lv, uz / lu + vz / lv) < 1e-8) erreur('demi-tour ponctuel au sommet ' + i);
     }
     const L = abscisses[m], n = Math.max(8, Math.ceil(L / pasMax));
     if (!Number.isSafeInteger(n) || n > 250000) erreur('résolution supérieure à 250 000 échantillons');
-    const pas = L / n, c = { type: 'trace-explicite', formatTrace: 1, unite: 'm', pretPourCourse: false,
+    const pas = ouvert ? L / (n - 1) : L / n;
+    const c = { type: 'trace-explicite', formatTrace: 1, unite: 'm', pretPourCourse: false,
       nom: donnees.nom || 'Tracé explicite', longueur: L, pas, n, depart: 0,
       sourceTrace: Object.freeze(source), abscissesSource: abscisses };
+    if (ouvert) {
+      c.ouvert = true;
+      c.topologie = 'ouvert';
+      c.depart = donnees.depart === undefined ? 0 : donnees.depart;
+      c.arrivee = donnees.arrivee === undefined ? L : donnees.arrivee;
+      if (!Number.isFinite(c.depart) || !Number.isFinite(c.arrivee) || !(c.depart >= 0 && c.arrivee > c.depart && c.arrivee <= L)) {
+        erreur('topologie ouverte : 0 <= depart < arrivee <= longueur requis');
+      }
+      c.zoneDeceleration = [c.arrivee, L];
+    }
     for (const k of champs) c[k] = new Float64Array(n);
     let segment = 0;
     for (let i = 0; i < n; i++) {
-      const s = i * pas;
+      const s = ouvert && i === n - 1 ? L : i * pas;
       while (segment < m - 1 && s >= abscisses[segment + 1]) segment++;
       const a = source[segment], b = source[segment + 1];
       const t = (s - abscisses[segment]) / (abscisses[segment + 1] - abscisses[segment]);
       for (const k of champs) c[k][i] = a[k] + (b[k] - a[k]) * t;
     }
     c.cap = new Float64Array(n); c.courbure = new Float64Array(n); c.pente = new Float64Array(n);
-    // Dérivées centrées sur la grille périodique. Le cap est une direction, sa différence est donc repliée à ±π.
-    // Une résolution qui écrase une boucle ou un demi-tour est rejetée, pas réparée en déplaçant les points.
+    // Dérivées centrées (bornées sans rebouclage en mode ouvert, périodiques en boucle fermée).
     for (let i = 0; i < n; i++) {
-      const a = (i + n - 1) % n, b = (i + 1) % n, dx = c.x[b] - c.x[a], dz = c.z[b] - c.z[a];
-      if (Math.hypot(dx, dz) < 1e-9 || Math.hypot(c.x[b] - c.x[i], c.z[b] - c.z[i]) < 1e-9) erreur('tangente dégénérée : diminuer pasMax ou corriger le relevé');
+      const a = ouvert ? Math.max(0, i - 1) : (i + n - 1) % n;
+      const b = ouvert ? Math.min(n - 1, i + 1) : (i + 1) % n;
+      const dx = c.x[b] - c.x[a], dz = c.z[b] - c.z[a], ds = ouvert ? (b - a) * pas : 2 * pas;
+      if (Math.hypot(dx, dz) < 1e-9 || (b !== i && Math.hypot(c.x[b] - c.x[i], c.z[b] - c.z[i]) < 1e-9)) erreur('tangente dégénérée : diminuer pasMax ou corriger le relevé');
       c.cap[i] = Math.atan2(dz, dx);
-      c.pente[i] = (c.y[b] - c.y[a]) / (2 * pas);
+      c.pente[i] = (c.y[b] - c.y[a]) / ds;
     }
-    for (let i = 0; i < n; i++) c.courbure[i] = angle(c.cap[(i + 1) % n] - c.cap[(i + n - 1) % n]) / (2 * pas);
+    for (let i = 0; i < n; i++) {
+      const a = ouvert ? Math.max(0, i - 1) : (i + n - 1) % n;
+      const b = ouvert ? Math.min(n - 1, i + 1) : (i + 1) % n;
+      const ds = ouvert ? (b - a) * pas : 2 * pas;
+      c.courbure[i] = angle(c.cap[b] - c.cap[a]) / ds;
+    }
     const problemes = validerTrace(c);
     if (problemes.length) erreur(problemes.join(' ; '));
     return c;
@@ -431,9 +471,18 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
   function validerTrace(c) {
     const pb = [], n = c && c.n;
     if (!Number.isSafeInteger(n) || n < 8 || n > 250000 || !Number.isFinite(c.pas) || c.pas <= 0 || !Number.isFinite(c.longueur) || c.longueur <= 0) return ['grille métrique invalide'];
-    if (Math.abs(c.longueur - n * c.pas) > Math.max(1e-9, c.longueur * 1e-12)) pb.push('longueur différente de n × pas');
+    const attendue = c.ouvert ? (n - 1) * c.pas : n * c.pas;
+    if (Math.abs(c.longueur - attendue) > Math.max(1e-9, c.longueur * 1e-12)) pb.push('longueur différente de n × pas');
     const champs = ['x', 'y', 'z', 'cap', 'courbure', 'pente', 'devers', 'largeurG', 'largeurD', 'limiteG', 'limiteD'];
     if (!champs.every(k => c[k] && c[k].length === n && c[k].every(Number.isFinite))) return pb.concat('valeurs non finies ou tableaux de mauvaise taille');
+    if (c.ouvert) {
+      if (!Number.isFinite(c.depart) || !Number.isFinite(c.arrivee) || !(c.depart >= 0 && c.arrivee > c.depart && c.arrivee <= c.longueur)) pb.push('bornes depart/arrivee invalides');
+      for (let i = 0; i < n; i++) {
+        if (i < n - 1 && Math.hypot(c.x[i + 1] - c.x[i], c.z[i + 1] - c.z[i]) < 1e-9) { pb.push('segment échantillonné nul'); break; }
+        if (c.largeurG[i] <= 0 || c.largeurD[i] <= 0 || c.limiteG[i] < c.largeurG[i] || c.limiteD[i] < c.largeurD[i] || Math.abs(c.devers[i]) >= Math.PI / 2) { pb.push('profil de chaussée invalide'); break; }
+      }
+      return pb;
+    }
     for (let i = 0; i < n; i++) {
       const j = (i + 1) % n;
       if (Math.hypot(c.x[j] - c.x[i], c.z[j] - c.z[i]) < 1e-9) { pb.push('segment échantillonné nul'); break; }
@@ -443,14 +492,28 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
   }
 
   function lireTrace(c, s, champ) {
+    if (c.ouvert) {
+      const f = ramener(c, s) / c.pas, entier = Math.floor(f), i = Math.min(entier, c.n - 1), j = Math.min(i + 1, c.n - 1), t = i === j ? 0 : f - entier;
+      return c[champ][i] + (c[champ][j] - c[champ][i]) * t;
+    }
     const f = ramener(c, s) / c.pas, entier = Math.floor(f), i = entier % c.n, j = (i + 1) % c.n;
     return c[champ][i] + (c[champ][j] - c[champ][i]) * (f - entier);
   }
   function echantillonTrace(c, s, sortie) {
     if (!sortie) sortie = {};
+    if (c.ouvert) {
+      const f = ramener(c, s) / c.pas, entier = Math.floor(f), i = Math.min(entier, c.n - 1), j = Math.min(i + 1, c.n - 1), t = i === j ? 0 : f - entier;
+      for (const k of CHAMPS_LECTURE_TRACE) sortie[k] = c[k][i] + (c[k][j] - c[k][i]) * t;
+      sortie.cap = c.cap[i] + angle(c.cap[j] - c.cap[i]) * t;
+      if (c.ligne) sortie.ligne = c.ligne[i] + (c.ligne[j] - c.ligne[i]) * t;
+      if (c.vitesse) sortie.vitesse = c.vitesse[i] + (c.vitesse[j] - c.vitesse[i]) * t;
+      return sortie;
+    }
     const f = ramener(c, s) / c.pas, entier = Math.floor(f), i = entier % c.n, j = (i + 1) % c.n;
     for (const k of CHAMPS_LECTURE_TRACE) sortie[k] = c[k][i] + (c[k][j] - c[k][i]) * (f - entier);
     sortie.cap = c.cap[i] + angle(c.cap[j] - c.cap[i]) * (f - entier);
+    if (c.ligne) sortie.ligne = c.ligne[i] + (c.ligne[j] - c.ligne[i]) * (f - entier);
+    if (c.vitesse) sortie.vitesse = c.vitesse[i] + (c.vitesse[j] - c.vitesse[i]) * (f - entier);
     return sortie;
   }
   // Demi-largeur gauche/droite ; le générateur historique reste à largeur constante.
@@ -483,7 +546,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     }
     const t = c && c.tunnel;
     if (!t) return false;
-    const L = c.longueur, x = ((s % L) + L) % L;
+    const L = c.longueur;
+    const x = c.ouvert ? Math.max(0, Math.min(s, L)) : ((s % L) + L) % L;
     return x > t.debut - marge && x < t.fin + marge;
   }
   // Retourne l'ouvrage lui-même, sans allocation, pour la chaussée, la lumière et les caméras.
@@ -491,7 +555,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
   function dansCouvert(c, s, marge = 0) {
     if (B.couverts) return B.couverts.segment(c, s, marge);
     if (!c) return null;
-    const x = ((s % c.longueur) + c.longueur) % c.longueur;
+    const x = c.ouvert ? Math.max(0, Math.min(s, c.longueur)) : ((s % c.longueur) + c.longueur) % c.longueur;
     if (c.couverts) {
       for (let i = 0; i < c.couverts.length; i++) {
         const t = c.couverts[i];
@@ -502,7 +566,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     const t = c.tunnel;
     return t && x > t.debut - marge && x < t.fin + marge ? t : null;
   }
-  const ramener = (c, s) => { const L = c.longueur; s %= L; return s < 0 ? s + L : s; };
+  const ramener = (c, s) => {
+    if (c.ouvert) return s < 0 ? 0 : s > c.longueur ? c.longueur : s;
+    const L = c.longueur; s %= L; return s < 0 ? s + L : s;
+  };
   // `sortie`, facultatif : objet de l'appelant, rempli et rendu au lieu d'un objet neuf. Le pas de simulation lit
   // le tracé des dizaines de fois par voiture et par pas ; sans objet à remplir, chaque lecture est un objet jeté.
   // Les nombres sont les mêmes au bit près dans les deux cas (mêmes opérations, même ordre).
@@ -539,6 +606,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     return { t, r, n };
   }
   function ecart(c, s1, s2) {
+    if (c.ouvert) return s2 - s1;
     const L = c.longueur;
     let d = (s2 - s1) % L;
     if (d < -L / 2) d += L; else if (d >= L / 2) d -= L;
@@ -571,5 +639,5 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     return pb;
   }
 
-  B.circuit = { creer, creerDepuisTrace, preparerParcours, echantillon, point, repere, ecart, vibreurA, limiteA, largeurA, valider, dansTunnel, dansCouvert, choisirTunnel, PAS, LARGEUR };
+  B.circuit = { creer, creerDepuisTrace, preparerParcours, ramener, echantillon, point, repere, ecart, vibreurA, limiteA, largeurA, valider, dansTunnel, dansCouvert, choisirTunnel, PAS, LARGEUR };
 })(globalThis.BITUME = globalThis.BITUME || {});

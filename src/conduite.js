@@ -586,7 +586,14 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
     const thetaN = angle(thetaB + (r - k * dsdt) * dt);
     etat.psi = angle(thetaN - etat.beta);
     const dsdt2 = etat.v * Math.cos(etat.psi) / den;
-    etat.s = ramener(etat.s + dsdt2 * dt, c.longueur);
+    if (c.ouvert) {
+      const sNew = etat.s + dsdt2 * dt;
+      if (sNew <= 0) { etat.s = 0; if (etat.v < 0) etat.v = 0; }
+      else if (sNew >= c.longueur) { etat.s = c.longueur; if (etat.v > 0) etat.v = 0; }
+      else etat.s = sNew;
+    } else {
+      etat.s = ramener(etat.s + dsdt2 * dt, c.longueur);
+    }
     etat.d += etat.v * Math.sin(etat.psi) * dt;
     etat.distance += Math.abs(dsdt2) * dt;
 
@@ -726,7 +733,14 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
     const den = Math.max(1 - k * etat.d, 0.1);
     const psiV = angle(e.cap - etat.beta);
     const dsdt = etat.v * Math.cos(psiV) / den;
-    etat.s = ramener(etat.s + etat.v * Math.cos(etat.psi) / den * dt, c.longueur);
+    if (c.ouvert) {
+      const sNew = etat.s + etat.v * Math.cos(etat.psi) / den * dt;
+      if (sNew <= 0) { etat.s = 0; if (etat.v < 0) etat.v = 0; }
+      else if (sNew >= c.longueur) { etat.s = c.longueur; if (etat.v > 0) etat.v = 0; }
+      else etat.s = sNew;
+    } else {
+      etat.s = ramener(etat.s + etat.v * Math.cos(etat.psi) / den * dt, c.longueur);
+    }
     etat.d += etat.v * Math.sin(etat.psi) * dt;
     etat.psi = angle(etat.psi + etat.omega * dt);
     // hauteur et attitude
@@ -782,7 +796,13 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
     const q=B.circuit.echantillon(c,etat.s,LU.reculA),body=q.cap+etat.psi+etat.beta;
     etat.braquage=etat.volant*P.braquageMeca;etat.omega=etat.v*Math.tan(etat.braquage)/L;
     const rel=angle(body-q.cap),ds=etat.v*Math.cos(rel)/Math.max(.1,1-q.courbure*etat.d)*dt;
-    etat.s=ramener(etat.s+ds,c.longueur);etat.d+=etat.v*Math.sin(rel)*dt;etat.distance+=ds;
+    if (c.ouvert) {
+      const sNew = etat.s + ds;
+      if (sNew <= 0) { etat.s = 0; if (etat.v < 0) etat.v = 0; }
+      else if (sNew >= c.longueur) { etat.s = c.longueur; if (etat.v > 0) etat.v = 0; }
+      else etat.s = sNew;
+    } else etat.s=ramener(etat.s+ds,c.longueur);
+    etat.d+=etat.v*Math.sin(rel)*dt;etat.distance+=ds;
     etat.psi=angle(body+etat.omega*dt-B.circuit.echantillon(c,etat.s,LU.reculB).cap);etat.beta=0;
     etat.along=(etat.v-avant)/dt;etat.alat=etat.v*etat.omega;etat.glisse=0;
     const kc=expTauFixe(TAU.charge,P.chargeTau,dt);

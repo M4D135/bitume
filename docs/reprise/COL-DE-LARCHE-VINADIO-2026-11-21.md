@@ -24,16 +24,10 @@ Le col est proche de 2 000 m d’altitude [S1]. Les altitudes exactes du départ
 de l’arrivée, le dénivelé cumulé et les pentes restent à mesurer sur les données
 retenues. Ne pas transformer une altitude touristique en cote de chaussée.
 
-**État (21/11, soir) : L0 acquis et L1 reconstruit hors ligne** dans
-[`docs/references/larche-vinadio-2026/`](../references/larche-vinadio-2026/README.md) :
-chaîne OSM SS21 unique (84 voies, aucun trou), DTM 5 m Regione Piemonte (CC BY 4.0)
-sur les 1 042 nœuds, contrôle IGN RGE ALTI à la frontière (écart moyen +0,023 m),
-**32 249 m en plan** du sommet (1 992,97 m) à Vinadio (889,46 m), sans remise à
-l’échelle, 6 tunnels/paravalanches, 16 ponts, 21 épingles. Largeurs, dévers et
-radiers d’ouvrages restent `null` (registre `inconnus.json`). Reproduction :
-`python3 tools/preparer-larche-vinadio.py --check`, test
-`verifications/larche-vinadio-sources.test.mjs`. **Aucun trajet jouable** : L2
-(contrat de parcours ouvert) est le prochain lot.
+**État (21/11, soir) : L0 acquis, L1 reconstruit hors ligne et L2 (moteur de parcours ouvert) livré en 0.2.85** :
+- **L0 + L1** dans [`docs/references/larche-vinadio-2026/`](../references/larche-vinadio-2026/README.md) : chaîne OSM SS21 unique (84 voies, aucun trou), DTM 5 m Regione Piemonte (CC BY 4.0) sur les 1 042 nœuds, contrôle IGN RGE ALTI à la frontière (écart moyen +0,023 m), **32 249 m en plan** du sommet (1 992,97 m) à Vinadio (889,46 m), sans remise à l’échelle, 6 tunnels/paravalanches, 16 ponts, 21 épingles (`python3 tools/preparer-larche-vinadio.py --check`, `verifications/larche-vinadio-sources.test.mjs`).
+- **L2 (parcours ouvert)** dans `src/circuit.js`, `src/conduite.js` et `src/course.js` : `topologie: 'ouvert'` (`ouvert: true`, `depart`, `arrivee`, `zoneDeceleration`), bornage `[0, L]` sans rebouclage modulo, grille ordonnée, franchissement unique de la ligne d'arrivée, décélération après arrivée et non-régression bit-à-bit sur les 9 circuits fermés (`verifications/parcours-ouvert.test.mjs`, 8/8 réussis y compris chargement et validation de `trace-l1.json`).
+- **Prochaines étapes :** L3 (terrain, ouvrages et décor du corridor) puis L4 (entrée jouable `larche` au catalogue).
 
 ## Sources primaires et usage prévu
 
