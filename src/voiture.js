@@ -2308,14 +2308,60 @@
       localDans(BOUT, FP, GC, VERS_A, k); localDans(ICI, FP, GC, VERS_B, k);
       AXE[0] = ICI[0] - BOUT[0]; AXE[1] = ICI[1] - BOUT[1]; AXE[2] = ICI[2] - BOUT[2]; hypotDans(AXE, 3);
       const l = AXE[3] || 1, f8 = .08 * ECHELLE, d0 = AXE[0] / l, d1 = AXE[1] / l, d2 = AXE[2] / l;
+      const creuxManche = -.019 * (1 - naturel);
       for (let i = 0; i < 3; i++) {
         P2[i] = BOUT[i] + (i === 0 ? d0 : i === 1 ? d1 : d2) * f8;
-        P1[i] = (co[i] + (BOUT[i] - co[i]) * .48) + (i === 1 ? 1 : 0) * -.019;
+        P1[i] = (co[i] + (BOUT[i] - co[i]) * .48) + (i === 1 ? creuxManche : 0);
         AV[i] = BOUT[i];
+      }
+      const rPom = H.pommeau.objet.s[0] * .5;
+      if (H.piloteReel && k > 0) {
+        // Dégager la courbe de la manche droite par le haut et l'intérieur de toute la grille du levier.
+        const gardeCtrl = main.tubes[3].objet.s[0] * .5 + rPom + .020;
+        for (let pass = 0; pass < 2; pass++) {
+          const C = pass === 0 ? P2 : P1;
+          const wx = ORIGINE_HABITACLE[0] + K * C[0], wy = ORIGINE_HABITACLE[1] + K * C[1], wz = ORIGINE_HABITACLE[2] + K * C[2];
+          const lx = Math.max(PILOTE_LEVIER[0] - .030 * K, Math.min(PILOTE_LEVIER[0] + .030 * K, wx));
+          const lz = Math.max(PILOTE_LEVIER[2] - .022 * K, Math.min(PILOTE_LEVIER[2] + .022 * K, wz));
+          const dx = wx - lx, dy = wy - PILOTE_LEVIER[1], dz = wz - lz;
+          if (Math.sqrt(dx * dx + Math.max(0, dy) ** 2 + dz * dz) < gardeCtrl) {
+            const ey = Math.max(0, wy - (PILOTE_LEVIER[1] - .045)), ez = Math.min(0, wz - (PILOTE_LEVIER[2] + .035));
+            const ex = dx * .25, norm = Math.sqrt(ex * ex + ey * ey + ez * ez) || 1;
+            const ux = ex / norm, uy = ey / norm, uz = ez / norm;
+            let lo = 0, hi = gardeCtrl + .07;
+            for (let it = 0; it < 12; it++) {
+              const mid = (lo + hi) * .5, tx = wx + ux * mid, ty = wy + uy * mid, tz = wz + uz * mid;
+              const tlx = Math.max(PILOTE_LEVIER[0] - .030 * K, Math.min(PILOTE_LEVIER[0] + .030 * K, tx));
+              const tlz = Math.max(PILOTE_LEVIER[2] - .022 * K, Math.min(PILOTE_LEVIER[2] + .022 * K, tz));
+              if (Math.sqrt((tx - tlx) ** 2 + Math.max(0, ty - PILOTE_LEVIER[1]) ** 2 + (tz - tlz) ** 2) < gardeCtrl) lo = mid; else hi = mid;
+            }
+            C[0] += ux * hi / K; C[1] += uy * hi / K; C[2] += uz * hi / K;
+          }
+        }
       }
       for (let n = 1; n <= 6; n++) {
         const f = n / 6, tube = main.tubes[n - 1], o = tube.o, ob = main.boules[n - 1].o;
         for (let i = 0; i < 3; i++) ICI[i] = (1 - f) ** 3 * BOUT[i] + 3 * (1 - f) ** 2 * f * P2[i] + 3 * (1 - f) * f * f * P1[i] + f ** 3 * co[i];
+        if (H.piloteReel && k > 0 && n < 6) {
+          const wx = ORIGINE_HABITACLE[0] + K * ICI[0], wy = ORIGINE_HABITACLE[1] + K * ICI[1], wz = ORIGINE_HABITACLE[2] + K * ICI[2];
+          const lx = Math.max(PILOTE_LEVIER[0] - .024 * K, Math.min(PILOTE_LEVIER[0] + .024 * K, wx));
+          const lz = Math.max(PILOTE_LEVIER[2] - .017 * K, Math.min(PILOTE_LEVIER[2] + .017 * K, wz));
+          const dx = wx - lx, dy = wy - PILOTE_LEVIER[1], dz = wz - lz;
+          const garde = main.tubes[n].objet.s[0] * .5 + rPom + .007;
+          if (Math.sqrt(dx * dx + Math.max(0, dy) ** 2 + dz * dz) < garde) {
+            const ey = Math.max(0, wy - (PILOTE_LEVIER[1] - .045)), ez = Math.min(0, wz - (PILOTE_LEVIER[2] + .035));
+            const ex = dx * .25, norm = Math.sqrt(ex * ex + ey * ey + ez * ez) || 1;
+            const ux = ex / norm, uy = ey / norm, uz = ez / norm;
+            let lo = 0, hi = garde + .06;
+            for (let it = 0; it < 12; it++) {
+              const mid = (lo + hi) * .5, tx = wx + ux * mid, ty = wy + uy * mid, tz = wz + uz * mid;
+              const tlx = Math.max(PILOTE_LEVIER[0] - .024 * K, Math.min(PILOTE_LEVIER[0] + .024 * K, tx));
+              const tlz = Math.max(PILOTE_LEVIER[2] - .017 * K, Math.min(PILOTE_LEVIER[2] + .017 * K, tz));
+              if (Math.sqrt((tx - tlx) ** 2 + Math.max(0, ty - PILOTE_LEVIER[1]) ** 2 + (tz - tlz) ** 2) < garde) lo = mid; else hi = mid;
+            }
+            ICI[0] += ux * hi / K; ICI[1] += uy * hi / K; ICI[2] += uz * hi / K;
+          }
+        }
         o[0] = (AV[0] + ICI[0]) / 2; o[1] = (AV[1] + ICI[1]) / 2; o[2] = (AV[2] + ICI[2]) / 2; versVoiture(o);
         AXE[0] = ICI[0] - AV[0]; AXE[1] = ICI[1] - AV[1]; AXE[2] = ICI[2] - AV[2]; hypotDans(AXE, 3);
         tube.objet.s[1] = AXE[3] * K;
@@ -2372,7 +2418,9 @@
     // Volant, levier et mains : recalculés seulement quand braquage, passage ou rapports changent
     let x = etat.volant || 0; x = x < -1 ? -1 : x > 1 ? 1 : x;
     const expression = ev.pilote || etat;
-    let t = H.piloteReel && Number.isFinite(expression.passageVisuel) ? expression.passageVisuel : etat.passage === undefined ? 1 : etat.passage;
+    let t = 1;
+    if (H.piloteReel && Number.isFinite(expression.passageVisuel)) t = +expression.passageVisuel;
+    else if (etat.passage !== undefined) t = +etat.passage;
     t = t < 0 ? 0 : t > 1 ? 1 : t;
     const nA = etat.rapportAvant === undefined ? etat.rapport : etat.rapportAvant, nB = etat.rapport, cle = H.cle;
     CLE[0] = x * VOLANT.course; CLE[1] = t;
