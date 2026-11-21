@@ -1,0 +1,131 @@
+name: Mains realistes avant et apres
+
+on:
+  push:
+    branches: ['codex/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mains-realisme-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mains:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[capture-mains]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - groupe: prise-braquage-cockpit
+            cas: prise-gauche,prise-droite,braquage-gauche,braquage-droite,cockpit
+          - groupe: salut-passage
+            cas: salut,passage
+          - groupe: majeur-poing
+            cas: majeur,poing
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: d4081241ad40dced72fd4e77c97a4775ed0398ad
+          path: reference-0279
+          persist-credentials: false
+          sparse-checkout: |
+            /dist/bitume.html
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Identifier la reference et reconstruire le candidat identique
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qualification-mains
+          git rev-parse HEAD > qualification-mains/COMMIT.txt
+          git rev-parse 'HEAD^{tree}' > qualification-mains/TREE.txt
+          printf '%s\n' d4081241ad40dced72fd4e77c97a4775ed0398ad > qualification-mains/REFERENCE-COMMIT.txt
+          printf '%s\n' '77d774fd99484f7ddc2a6bbafe801c9dd2ea8f670af0c51ce1377a7e4a429aa8  reference-0279/dist/bitume.html' | sha256sum --check
+          node --version > qualification-mains/ENVIRONNEMENT.txt
+          google-chrome --version >> qualification-mains/ENVIRONNEMENT.txt
+          python3 construire.py > qualification-mains/reconstruction-1.log 2>&1
+          sha256sum dist/bitume.html > qualification-mains/HTML-SHA256.txt
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+          python3 construire.py > qualification-mains/reconstruction-2.log 2>&1
+          sha256sum --check qualification-mains/HTML-SHA256.txt
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+          sha256sum tools/qualification/captures-mains-realisme.mjs tools/qualification/captures-modele-126ck.mjs \
+            tools/captures-habitacle.mjs tools/controle-visuel.mjs tools/visuel-images.mjs \
+            tools/qualification/cockpit-lisibilite.mjs > qualification-mains/OUTILS-SHA256.txt
+      - name: Verifier les temoins negatifs de la comparaison
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check tools/qualification/captures-mains-realisme.mjs
+          node verifications/captures-mains-realisme.test.mjs > qualification-mains/test-outil.log 2>&1
+      - name: Comparer les memes phases dans les deux vrais HTML
+        shell: bash
+        env:
+          CAS_MAINS: ${{ matrix.cas }}
+        run: |
+          set -euo pipefail
+          timeout --signal=TERM --kill-after=30s 28m node tools/qualification/captures-mains-realisme.mjs \
+            --url "file://$GITHUB_WORKSPACE/dist/bitume.html" \
+            --avant "file://$GITHUB_WORKSPACE/reference-0279/dist/bitume.html" \
+            --sortie qualification-mains/images --cas "$CAS_MAINS" --chrome /usr/bin/google-chrome \
+            > qualification-mains/captures.log 2>&1
+      - name: Verifier identites et integrite des PNG
+        shell: bash
+        env:
+          CAS_MAINS: ${{ matrix.cas }}
+        run: |
+          set -euo pipefail
+          sha256sum --check qualification-mains/HTML-SHA256.txt
+          sha256sum --check qualification-mains/OUTILS-SHA256.txt
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+          python3 - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          racine = Path('qualification-mains')
+          r = json.loads((racine / 'images/rapport.json').read_text())
+          assert r['format'] == 'bitume-mains-realisme-1'
+          assert r['builds']['avant'] == '77d774fd99484f7ddc2a6bbafe801c9dd2ea8f670af0c51ce1377a7e4a429aa8'
+          assert r['builds']['candidat'] == (racine / 'HTML-SHA256.txt').read_text().split()[0]
+          assert [p['scenario'] for p in r['passages']] == os.environ['CAS_MAINS'].split(',')
+          assert r['echecs'] == 0
+          images = 0
+          for passage in r['passages']:
+              assert not passage['comparaison']
+              for version in ('avant', 'candidat'):
+                  resultat = passage[version]
+                  assert not resultat['erreurs'] and resultat['images']
+                  rapport = json.loads((racine / 'images' / version / passage['scenario'] / 'rapport.json').read_text())
+                  assert rapport['build']['sha256'] == r['builds'][version]
+                  assert rapport['environnement']['webgl2'] is True
+                  assert rapport['environnement']['physx']['ready'] is True
+                  assert not rapport.get('fatal') and not rapport['erreurs']
+                  assert len(rapport['images']) == len(resultat['images'])
+                  for image in resultat['images']:
+                      png = racine / 'images' / image['fichier']
+                      assert hashlib.sha256(png.read_bytes()).hexdigest() == image['sha256']
+                      images += 1
+          resume = {'commit': (racine / 'COMMIT.txt').read_text().strip(), 'builds': r['builds'],
+                    'scenarios': len(r['passages']), 'png': images, 'erreurs': 0,
+                    'inspection_visuelle': 'a_faire', 'fps_materiels_qualifies': False}
+          (racine / 'RESUME.json').write_text(json.dumps(resume, indent=2) + '\n')
+          print(json.dumps(resume))
+          PY
+      - name: Conserver les images et rapports meme en cas d'echec
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-mains-${{ matrix.groupe }}-${{ github.sha }}
+          path: qualification-mains/
+          if-no-files-found: error
+          retention-days: 14
