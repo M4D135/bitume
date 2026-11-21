@@ -59,3 +59,18 @@ complète le programme sans réappliquer les changements déjà livrés par Gemi
 Les résultats du candidat et les limites visuelles doivent être consignés dans
 `rapports/MAINS-REALISME-2026-11-21/` avant sa publication. Un test géométrique
 réussi ne remplace pas la comparaison visuelle des doigts, pouces et manchettes.
+
+## Candidat 0.2.81 en réception
+
+La base courante est la .80 mobile qualifiée, `6526493`, avec géométrie .79
+identique. Le candidat assemble les doigts de longueurs conservées, les
+proportions corrigées et les treize états de gestes préparés. Le partage exact
+des coordonnées immuables réduit le heap du modèle sans changer ses triangles.
+[Mesures et contrôles](rapports/MAINS-REALISME-2026-11-21/RECEPTION-MAINS-MEMOIRE.md).
+
+Branche `codex/bitume-mains-0281-20261121` ; seuls `src/main.js` et
+`src/voiture.js` changent dans le runtime. Build reconstruit à l'identique,
+HTML `eeccabb95b3baa9f`. Dix fichiers ciblés et la revue indépendante passent.
+Réception CI générale, parcours mobile et gros plans avant/après en cours.
+Les états restent discrets ; aucune interpolation continue ni mesure FPS
+matérielle n'est annoncée.

@@ -173,7 +173,7 @@ test('le poignet suit un trajet continu et les doigts utilisent seulement leurs 
   }
   assert.ok(maximum < .006, 'pas du poignet à phase 0,001 : ' + maximum);
   assert.ok(maximumCoude < .006, 'aucun saut de branche IK du coude à phase 0,001 : ' + maximumCoude);
-  assert.equal(variantes.size, 6, 'fermé, quatre intermédiaires, ouvert ; aucun morphing reconstruit par image');
+  assert.equal(variantes.size, 13, 'fermé, onze intermédiaires, ouvert ; aucun morphing reconstruit par image');
   assert.equal(Object.keys(V.FORMES).length, nombreFormes, 'registre inchangé pendant les poses');
   console.log(`trajets articulés : ${poses} poses, pas maximal poignet/coude ${(1000 * maximum).toFixed(3)}/${(1000 * maximumCoude).toFixed(3)} mm par phase 0,001`);
 });

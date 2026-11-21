@@ -1,5 +1,14 @@
 # BITUME — reprise courte
 
+## Candidat en réception : mains 0.2.81
+
+Branche `codex/bitume-mains-0281-20261121` : doigts aux longueurs conservées,
+proportions corrigées, treize états et coordonnées immuables partagées.
+Dix fichiers de contrôles ciblés passent, avec les invariants hors mains.
+Le heap du modèle mesuré baisse ; les buffers restent supérieurs de 4,53 Mo.
+CI et captures comparées du vrai jeu en cours : ne pas annoncer le réalisme
+validé avant inspection. [Préparation](docs/reprise/rapports/MAINS-REALISME-2026-11-21/RECEPTION-MAINS-MEMOIRE.md).
+
 ## Publié : démarrage téléphone sans banc
 
 **0.2.80 / p15 / FERRO 0.3.15** publiée sur `main`, commit **`6526493`** :
