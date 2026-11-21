@@ -1,5 +1,12 @@
 # BITUME — feuille de route
 
+> **Référence voiture actualisée le 21 novembre 2026 :** David choisit désormais la
+> galerie RenderBlade de la **126 CK** comme objectif visuel, en remplacement de la
+> 312 T5 mentionnée dans l'historique ci-dessous. [Objectif et état du chantier](docs/reprise/OBJECTIF-126CK-2026-11-21.md)
+> · [41 images reçues avec provenance](docs/references/ferrari-126ck-renderblade-2026-11-21/README.md).
+> Cette publication de références ne modifie pas la physique ni le modèle actuellement livré.
+
+
 État au 12 novembre 2026, après l'essai 0.1 et l'analyse d'écart avec vroom-unreal.
 
 ## Où on en est

@@ -1,0 +1,111 @@
+{
+  "date": "2026-11-21",
+  "status": "correctif_miroirs_fige_sans_build",
+  "worktree": "/workspace/scratch/ea118b42480b/bitume-miroirs",
+  "branche": "codex/bitume-0277-retros-312t5-20261121",
+  "base_commit": "02afea62e9241704bd1ec0a679fe268e0f6db08f",
+  "scope": "Miroirs uniquement. Aucun nouvel habillage volant/planche. La cible utilisateur est désormais la 126 CK RenderHub ; ceci ne constitue aucune validation du cockpit .76 ni de sa fidélité.",
+  "modification": {
+    "inclinaison_mecanique_rad": 0.1,
+    "centres_m": [
+      [
+        0.66,
+        0.59,
+        -0.37
+      ],
+      [
+        0.66,
+        0.59,
+        0.37
+      ]
+    ],
+    "repere": "Normale n vers le pilote et le haut, droite w horizontale, haut u=n×w. Matrice physique [-n,u,w].",
+    "pieces": "Glace vive, boîtier, fonds simples et suiveurs peints utilisent le même repère ; coins et enveloppe de champCockpit cohérents.",
+    "maintenu": "Centres, dimensions des glaces, yeux, assise, volant, mains, FOV principal 70° vertical, pitch principal 0.",
+    "peindreGlace_identique_a_la_0276": true,
+    "reglage_reflet_historique": "Ouverture latérale ±0.16 rad, hausse caméra 0.10 m, correction pitch +0.06 rad conservées ; aucun biais ajouté.",
+    "choix": ".10 rad place l’horizon autour de la moitié ; .12 rad le descendait vers les trois quarts avec les réglages historiques."
+  },
+  "oracle": {
+    "methode": "Exécution de peindreGlace extraite du jeu et capture de la caméra envoyée à draw ; lecture de la taille CSS réelle de la toile (330×100).",
+    "candidat": [
+      {
+        "glace": -1,
+        "pitchDeg": 0.3639124289826982,
+        "fovVertical": 9.932204801001571,
+        "toile": [
+          330,
+          100
+        ],
+        "horizonFractionHauteur": 0.5365483354576774
+      },
+      {
+        "glace": 1,
+        "pitchDeg": 0.3639124289826982,
+        "fovVertical": 9.932204801001571,
+        "toile": [
+          330,
+          100
+        ],
+        "horizonFractionHauteur": 0.5365483354576774
+      }
+    ],
+    "temoin_0276": [
+      {
+        "glace": -1,
+        "pitchDeg": -10.41081109707522,
+        "fovVertical": 9.932204801001571,
+        "toile": [
+          330,
+          100
+        ],
+        "horizonFractionHauteur": -0.5572219096461348
+      }
+    ],
+    "contrats": "Orthobase et vrais objets rendus cohérents à plat et en pente/dévers ; horizon entre 30 et 70 % ; centre du suiveur à 10/20/30 m dans la zone utile avec les déplacements d’œil de 16/20 mm.",
+    "limite": "Projection géométrique et rendu intercepté, sans WebGL. Le test des suiveurs vérifie le centre projeté, pas leur occlusion complète par le décor ou la voiture. La qualité des reflets doit encore être inspectée dans les vrais PNG du candidat."
+  },
+  "tests": {
+    "reflexion-candidat": {
+      "tests": 3,
+      "pass": 3,
+      "fail": 0
+    },
+    "reflexion-0276-negatif": {
+      "tests": 3,
+      "pass": 0,
+      "fail": 3
+    },
+    "cockpit-visibilite": {
+      "tests": 7,
+      "pass": 7,
+      "fail": 0
+    },
+    "cockpit-mecanique": {
+      "tests": 4,
+      "pass": 4,
+      "fail": 0
+    }
+  },
+  "seuils_anciens_modifies": false,
+  "sources_sha256": {
+    "src/voiture.js": "6cd93229c74ed9aeff7c5aef19cc6a01b1ee531d3cd83943a9711f8976ad547c",
+    "src/jeu.js": "155b498f75c9b447a79ae94ef57883cda239adfbc72c9fa8531bed0bd0f6e5ac",
+    "src/style.css": "486ef7ae38f86b31a88d3be8058917b2760eff9e192b78b653dc03dfe45ba956",
+    "verifications/retroviseurs-reflexion.test.mjs": "16db04d9cbf6be054657e3f6ae15b6a23cc3e7bc91f87904a49b728041ded433",
+    "verifications/cockpit-visibilite.test.mjs": "f181ac4d1b77e9f80e4b1ff9505f0eeae1b4733a0218c45e34ca9f91057d9bb5",
+    "verifications/cockpit-mecanique.test.mjs": "92571c4a68d7f518436b07b3d1732380a7573c272ee1187a7e30371d8d394e77"
+  },
+  "temoin_sources_sha256": {
+    "src/voiture.js": "13a96a4d8b596f70fe085829f68ec41b4202443151430716cd9e44f97bdd9508",
+    "src/jeu.js": "f3888a459bb82f049839889ccf9415016be2ca316404629033a4780e78085c7a",
+    "src/style.css": "486ef7ae38f86b31a88d3be8058917b2760eff9e192b78b653dc03dfe45ba956"
+  },
+  "logs": {
+    "reflexion-candidat": "/workspace/scratch/ea118b42480b/qa-miroirs-0277/reflexion-candidat.log",
+    "reflexion-0276-negatif": "/workspace/scratch/ea118b42480b/qa-miroirs-0277/reflexion-0276-negatif.log",
+    "cockpit-visibilite": "/workspace/scratch/ea118b42480b/qa-miroirs-0277/cockpit-visibilite.log",
+    "cockpit-mecanique": "/workspace/scratch/ea118b42480b/qa-miroirs-0277/cockpit-mecanique.log"
+  },
+  "limitations": "Aucune fixture d’identité régénérée ; aucun build, commit, push, CI, capture WebGL ou publication. Aucun contrôle facultatif supplémentaire après les 7+4 contrôles et le nouvel oracle."
+}

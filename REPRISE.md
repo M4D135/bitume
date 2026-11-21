@@ -1,46 +1,33 @@
 # BITUME — reprise courte
 
-## Publié sur main — 21 novembre 2026
+## Priorité — modèle 126 CK demandé par David
 
-**0.2.75 / p15 / FERRO 0.3.15 / neuf circuits.**
-[PR #51](https://github.com/M4D135/bitume/pull/51) fusionnée :
-`b1e5e98b9029f6254b86dcfb49780883315a9418`, arbre `2d019e71`, identique
-au candidat `5d59cae`. [Reçu final et preuves](docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json).
+Les cockpits **.75 et .76 sont refusés**. La référence actuelle est la
+**126 CK RenderBlade**, avec toutes ses images récupérées :
+[40 vues détaillées + couverture](docs/references/ferrari-126ck-renderblade-2026-11-21/README.md).
+La 312 T5 reste historique, elle n'est plus l'objectif de forme.
 
-- Deux CI exactes réussies : **179 suites Node, zéro échec et huit tests Python chacune**.
-  Chaque archive contient **3 988 fichiers et modes identiques** au candidat.
-- **10 PNG / cinq groupes reçus et inspectés** : petit duo J1/J2, compacts et
-  braquages maintenus à **−0,35 et +0,35, 120 pas par pose**. Badge FPS présent
-  et dégagé ; glaces, commandes, chaussée et annonces conformes dans ces cas.
-- HTML : **14 511 184 octets**, SHA256
-  `a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225`.
+Lire la [fiche active](docs/reprise/OBJECTIF-126CK-2026-11-21.md), puis seulement
+`etat_courant` dans `docs/reprise/ETAT.json`. Prochaine action : reconstruire
+fidèlement le poste et la voiture depuis ces vues. FOV demandé : **70°**.
+Une galerie publiée ne vaut pas modèle corrigé ou validé.
 
-Le cockpit commun, les rétros et la pluie embarquée sont publiés avec les
-correctifs HUD. « Planche seule » et les textes sont conservés. Annonces sur
-**Non** au premier lancement ; choix déjà enregistrés conservés. Aucun déploiement du site.
+## État réel
 
-## Prochaine étape : budget CPU du décor, propriétaire 04
+Main livre encore **0.2.75 / p15 / FERRO 0.3.15**, PR 51. Les preuves de publication
+sont conservées, mais elles n'approuvent plus la forme du cockpit.
+Le candidat [PR 52 (.76)](https://github.com/M4D135/bitume/pull/52) est bloqué :
+volant/tableau refusés, reflets des miroirs vers le sol/pneu, CI générales en échec.
+Une inclinaison mécanique des glaces est en préparation isolée, sans nouveau build.
+Pluie/neige calmes dos au vent, trois nouveaux klaxons et FOV 70° restent préparés
+sur la branche .76 ; aucune de ces corrections n'est annoncée livrée sur main.
 
-La réserve reste **ouverte** : diagnostic local **151,87 / 138,20 / 141,13 /
-84,43 / 85,68 ms**, soit un échec au seuil strict **< 150 ms**. Aucun gain prouvé.
-Les dépassements historiques **172 / 152 / 168 / 155 ms** restent conservés.
-[Diagnostic et piste préparée](docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/diagnostic-decor/DIAGNOSTIC.json).
+## Autres travaux conservés
 
-Transmettre à 04 le stockage fixe des indices des nappes Route pour éviter
-**19 323 couples temporaires**, puis vérifier identité géométrique et mesures
-alternées. Aucun code de cette optimisation n’a été appliqué.
+[Huit idées issues de satyam-fp/race](docs/reprise/REFERENCE-RACE-2026-11-21.md)
+sont raccordées aux lots existants : décor, matières, coût de rendu et retour de conduite.
+PR 43, M1, états propriétaires et sources Monaco/Marseille préservés.
+Décor en pause : comparaison 82/117 cas, aucun gain CPU prouvé, réserve <150 ms ouverte.
+FPS matériels, manettes, écoute et réseau réel non qualifiés. Aucun déploiement.
 
-## Travaux et limites conservés
-
-PR 43 (pluie sous abri), chantiers parallèles 01–05 et états propriétaires préservés.
-Saisons S1, menu arcade et Troll acquis ; matières M1 encore séparées. Monaco et
-Marseille restent des sources, sans nouveau circuit jouable. Les six demandes
-[vidéo arcade et survol](docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md) restent planifiées.
-FPS Xbox/Intel, manettes physiques, écoute et réseau réel ne sont pas qualifiés.
-Les événements Troll distants ne sont pas synchronisés ; limite affichée avant course.
-
-Les échecs .70–.74 et la publication .69 restent dans la
-[fiche cockpit/pluie](docs/reprise/COCKPIT-PLUIE-2026-11-20.md) et le
-[reçu .69](docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json).
-Reprendre `docs/reprise/ETAT.json` → `etat_courant`, puis la fiche active et
-[FILE-TRAVAIL](docs/reprise/FILE-TRAVAIL.json). [Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **039**.
+[FILE-TRAVAIL](docs/reprise/FILE-TRAVAIL.json) · [Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **040**.

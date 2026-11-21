@@ -1,0 +1,847 @@
+{
+  "version_schema": 1,
+  "date_inspection": "2026-11-21",
+  "source_url": "https://www.renderhub.com/renderblade/ferrari-f1-126-ck-1980",
+  "auteur_indique": "RenderBlade",
+  "objet": "Référence visuelle Ferrari F1 126 CK fournie par David pour l’objectif voiture de BITUME.",
+  "methode": "Inspection visuelle individuelle des 40 fichiers originaux, puis comparaison de chaque rendu avec sa vue filaire homologue. Aucune modification d’image.",
+  "bilan": {
+    "vues_detaillees": 40,
+    "rendus": 20,
+    "filaires": 20,
+    "paires_verifiees": 20
+  },
+  "couverture_hors_inventaire": {
+    "fichier": "images/ferrari-f1-126-ck-1980.jpg",
+    "raison": "Couverture distincte des 40 vues détaillées ; pas une 41e vue détaillée."
+  },
+  "limites": [
+    "Ce sont des rendus d’un modèle 3D, pas des photographies historiques ni des plans cotés.",
+    "Le pairage atteste le cadrage et les volumes homologues visibles ; il ne certifie pas une identité numérique des caméras ou du maillage.",
+    "Les filaires montrent les formes et la topologie affichée, sans la livrée ni les graduations de cadrans des rendus.",
+    "La galerie ne fournit pas de vue exactement placée aux yeux d’un pilote, ni de cote exploitable directement.",
+    "Les vues générales et latérales complètent le gros plan 16/36 ; les pièces masquées ne sont pas reconstituées par cet inventaire."
+  ],
+  "reperes_prioritaires": {
+    "cockpit": {
+      "rendus": [
+        16,
+        9,
+        12
+      ],
+      "filaires": [
+        36,
+        29,
+        32
+      ],
+      "usage": "16/36 : détail axial depuis l’arrière ; 09/29 : implantation en plan ; 12/32 : volumes depuis l’avant."
+    },
+    "volant": {
+      "rendus": [
+        16,
+        9,
+        12
+      ],
+      "filaires": [
+        36,
+        29,
+        32
+      ],
+      "complements_profil": [
+        2,
+        4,
+        11,
+        22,
+        24,
+        31
+      ],
+      "usage": "16/36 est la référence principale : jante complète, trois branches, moyeu et colonne. Les profils montrent l’inclinaison et la hauteur relative au saute-vent."
+    },
+    "tableau": {
+      "rendu_detail": 16,
+      "filaire_volumes": 36,
+      "complements_rendus": [
+        7,
+        8,
+        13
+      ],
+      "complements_filaires": [
+        27,
+        28,
+        33
+      ],
+      "usage": "16 montre de face le tableau noir, un grand cadran central et deux petits latéraux, partiellement recouverts par le volant. 36 distingue les volumes sans graduations. 07/08/13 restent des aperçus éloignés."
+    },
+    "siege_harnais": {
+      "rendus": [
+        16,
+        9,
+        12
+      ],
+      "filaires": [
+        36,
+        29,
+        32
+      ],
+      "usage": "16/36 montre les côtes du siège et des flancs, les sangles et la boucle ; 12/32 complète le dossier depuis l’avant."
+    },
+    "retroviseurs": {
+      "rendus": [
+        16,
+        12,
+        9,
+        11,
+        14,
+        5
+      ],
+      "filaires": [
+        36,
+        32,
+        29,
+        31,
+        34,
+        25
+      ],
+      "usage": "16/36 : coques et glaces depuis l’arrière ; 12/32 : forme et implantation depuis l’avant ; 09/29 : symétrie en plan ; 11/31 : profil ; 14/34 et 05/25 : hauteur relative."
+    },
+    "saute_vent_jonc": {
+      "rendus": [
+        16,
+        12,
+        11,
+        14
+      ],
+      "filaires": [
+        36,
+        32,
+        31,
+        34
+      ],
+      "usage": "Contours, fixations et position relative au volant ; le rendu 16 aide à lire les matières, le filaire 36 les limites des surfaces."
+    }
+  },
+  "paires_verifiees": [
+    {
+      "rendu": 1,
+      "filaire": 21,
+      "verifiee_visuellement": true,
+      "preuve": "Mêmes positions des roues, du nez, de l’aileron arrière et de l’arceau ; version 21 filaire sans livrée."
+    },
+    {
+      "rendu": 2,
+      "filaire": 22,
+      "verifiee_visuellement": true,
+      "preuve": "Profil, proportions et projection des deux roues du côté visible identiques ; version 22 filaire."
+    },
+    {
+      "rendu": 3,
+      "filaire": 23,
+      "verifiee_visuellement": true,
+      "preuve": "Mêmes contours du nez, roues et ponton opposé ; filaire 23 au même cadrage."
+    },
+    {
+      "rendu": 4,
+      "filaire": 24,
+      "verifiee_visuellement": true,
+      "preuve": "Même silhouette, mêmes positions des deux roues proches, du volant et de l’arceau ; filaire 24."
+    },
+    {
+      "rendu": 5,
+      "filaire": 25,
+      "verifiee_visuellement": true,
+      "preuve": "Axe central, arceau, roues, écopes et aileron coïncident dans la vue filaire 25."
+    },
+    {
+      "rendu": 6,
+      "filaire": 26,
+      "verifiee_visuellement": true,
+      "preuve": "Mêmes contours des roues arrière, aileron et support central ; mécanique présentée sous le même angle en 26."
+    },
+    {
+      "rendu": 7,
+      "filaire": 27,
+      "verifiee_visuellement": true,
+      "preuve": "Mêmes emplacements de l’aileron, roue arrière proche et prises d’air ; filaire 27 homologue."
+    },
+    {
+      "rendu": 8,
+      "filaire": 28,
+      "verifiee_visuellement": true,
+      "preuve": "Même projection roue arrière, aileron, échappements et cockpit ; version 28 filaire."
+    },
+    {
+      "rendu": 9,
+      "filaire": 29,
+      "verifiee_visuellement": true,
+      "preuve": "Même projection verticale du nez, des roues, du siège, du volant et des rétroviseurs ; filaire 29 homologue."
+    },
+    {
+      "rendu": 10,
+      "filaire": 30,
+      "verifiee_visuellement": true,
+      "preuve": "Mêmes contours roue/jante, valve, vis de la joue et bord du ponton ; filaire 30 homologue."
+    },
+    {
+      "rendu": 11,
+      "filaire": 31,
+      "verifiee_visuellement": true,
+      "preuve": "Mêmes centre de roue, valve, ouvertures de jante, contour du nez et profil de rétroviseur ; filaire 31 homologue."
+    },
+    {
+      "rendu": 12,
+      "filaire": 32,
+      "verifiee_visuellement": true,
+      "preuve": "Même axe central et contours du cockpit, du siège, des deux rétroviseurs, des roues et de l’aileron ; filaire 32 homologue."
+    },
+    {
+      "rendu": 13,
+      "filaire": 33,
+      "verifiee_visuellement": true,
+      "preuve": "Même projection de l’aileron, des quatre sorties visibles, de l’arceau et du grand cadran ; filaire 33 homologue."
+    },
+    {
+      "rendu": 14,
+      "filaire": 34,
+      "verifiee_visuellement": true,
+      "preuve": "Alignements frontaux des roues, écopes, ressorts, rétroviseurs et arceau identiques ; filaire 34 homologue."
+    },
+    {
+      "rendu": 15,
+      "filaire": 35,
+      "verifiee_visuellement": true,
+      "preuve": "Même projection des pneus, du carter, des ressorts, du support d’aileron et du feu ; filaire 35 homologue."
+    },
+    {
+      "rendu": 16,
+      "filaire": 36,
+      "verifiee_visuellement": true,
+      "preuve": "Même cadrage du volant, trois cadrans, harnais, rétroviseurs et arceau ; filaire 36 homologue, cadrans sans leurs textures."
+    },
+    {
+      "rendu": 17,
+      "filaire": 37,
+      "verifiee_visuellement": true,
+      "preuve": "Mêmes ouvertures de pontons, raccords mécaniques, ressorts et écopes ; filaire 37 homologue."
+    },
+    {
+      "rendu": 18,
+      "filaire": 38,
+      "verifiee_visuellement": true,
+      "preuve": "Mêmes attaches de suspension, écope, durite, roue et découpe du nez ; filaire 38 homologue."
+    },
+    {
+      "rendu": 19,
+      "filaire": 39,
+      "verifiee_visuellement": true,
+      "preuve": "Même perspective du carter, des tubes, du pylône et de ses vis, ainsi que du boîtier à ailettes ; filaire 39 homologue."
+    },
+    {
+      "rendu": 20,
+      "filaire": 40,
+      "verifiee_visuellement": true,
+      "preuve": "Même alignement des deux tubes, carters en volute, ouverture centrale et boulons de la bride ; filaire 40 homologue."
+    }
+  ],
+  "vues": [
+    {
+      "num": 1,
+      "fichier": "images/ferrari-f1-126-ck-1980-01.jpg",
+      "type": "rendu",
+      "cadrage": "Trois-quarts avant en légère plongée, voiture complète, nez vers la droite de l’image.",
+      "elements_utiles": [
+        "Proportions générales",
+        "Ailerons et nez",
+        "Pontons, roues et suspensions",
+        "Ouverture du cockpit, arceau et rétroviseurs vus de l’extérieur"
+      ],
+      "interet_cockpit": "secondaire",
+      "homologue": 21,
+      "paire_verifiee": true
+    },
+    {
+      "num": 2,
+      "fichier": "images/ferrari-f1-126-ck-1980-02.jpg",
+      "type": "rendu",
+      "cadrage": "Profil latéral quasi complet, nez vers la droite de l’image.",
+      "elements_utiles": [
+        "Empattement et diamètres relatifs des roues",
+        "Ligne du ponton et grilles",
+        "Hauteur de l’ouverture, du volant et du saute-vent",
+        "Arceau et supports d’ailerons"
+      ],
+      "interet_cockpit": "secondaire",
+      "homologue": 22,
+      "paire_verifiee": true
+    },
+    {
+      "num": 3,
+      "fichier": "images/ferrari-f1-126-ck-1980-03.jpg",
+      "type": "rendu",
+      "cadrage": "Trois-quarts avant en légère plongée depuis l’autre côté, nez vers la gauche de l’image.",
+      "elements_utiles": [
+        "Volumes du nez et des pontons",
+        "Suspensions avant",
+        "Deux rétroviseurs extérieurs",
+        "Volant, arceau et entrée du siège partiellement visibles"
+      ],
+      "interet_cockpit": "secondaire",
+      "homologue": 23,
+      "paire_verifiee": true
+    },
+    {
+      "num": 4,
+      "fichier": "images/ferrari-f1-126-ck-1980-04.jpg",
+      "type": "rendu",
+      "cadrage": "Profil latéral opposé à 02, nez vers la gauche de l’image.",
+      "elements_utiles": [
+        "Silhouette latérale",
+        "Rapport de hauteur volant/saute-vent/ouverture du cockpit",
+        "Arceau, prises d’air et jupe latérale"
+      ],
+      "interet_cockpit": "secondaire",
+      "homologue": 24,
+      "paire_verifiee": true
+    },
+    {
+      "num": 5,
+      "fichier": "images/ferrari-f1-126-ck-1980-05.jpg",
+      "type": "rendu",
+      "cadrage": "Vue frontale centrée, légère plongée, voiture entière.",
+      "elements_utiles": [
+        "Voie avant et largeur d’aileron",
+        "Symétrie du nez, suspensions et écopes de frein",
+        "Hauteur relative des deux rétroviseurs, du saute-vent et du haut du volant"
+      ],
+      "interet_cockpit": "secondaire",
+      "homologue": 25,
+      "paire_verifiee": true
+    },
+    {
+      "num": 6,
+      "fichier": "images/ferrari-f1-126-ck-1980-06.jpg",
+      "type": "rendu",
+      "cadrage": "Vue arrière centrée à hauteur moyenne.",
+      "elements_utiles": [
+        "Transmission et suspension arrière",
+        "Support central d’aileron",
+        "Échappements et organes mécaniques arrière",
+        "Largeur des pneus arrière"
+      ],
+      "interet_cockpit": "non_visible",
+      "homologue": 26,
+      "paire_verifiee": true
+    },
+    {
+      "num": 7,
+      "fichier": "images/ferrari-f1-126-ck-1980-07.jpg",
+      "type": "rendu",
+      "cadrage": "Trois-quarts arrière, nez vers la gauche de l’image, voiture complète.",
+      "elements_utiles": [
+        "Groupe mécanique arrière et échappements",
+        "Jonction capot/pontons",
+        "Aileron arrière",
+        "Face du volant et cadran aperçus dans le cockpit"
+      ],
+      "interet_cockpit": "secondaire",
+      "homologue": 27,
+      "paire_verifiee": true
+    },
+    {
+      "num": 8,
+      "fichier": "images/ferrari-f1-126-ck-1980-08.jpg",
+      "type": "rendu",
+      "cadrage": "Trois-quarts arrière opposé à 07, nez vers la droite de l’image.",
+      "elements_utiles": [
+        "Arrière mécanique sous l’aileron",
+        "Pontons et ouvertures du capot",
+        "Arceau",
+        "Volant et haut de l’instrumentation visibles à distance"
+      ],
+      "interet_cockpit": "secondaire",
+      "homologue": 28,
+      "paire_verifiee": true
+    },
+    {
+      "num": 9,
+      "fichier": "images/ferrari-f1-126-ck-1980-09.jpg",
+      "type": "rendu",
+      "cadrage": "Vue de dessus centrée, voiture entière, nez en haut de l’image.",
+      "elements_utiles": [
+        "Plan des pontons et ouverture du cockpit",
+        "Volant à trois branches, colonne et instrumentation partiellement visibles",
+        "Siège côtelé et sangles du harnais",
+        "Position symétrique des deux rétroviseurs",
+        "Arceau et mécanique arrière"
+      ],
+      "interet_cockpit": "prioritaire_plan",
+      "homologue": 29,
+      "paire_verifiee": true
+    },
+    {
+      "num": 10,
+      "fichier": "images/ferrari-f1-126-ck-1980-10.jpg",
+      "type": "rendu",
+      "cadrage": "Gros plan latéral d’une roue arrière et de la joue d’aileron.",
+      "elements_utiles": [
+        "Jante à quatre branches, écrou central et rivets",
+        "Flanc du pneu, valve et marquages",
+        "Joue d’aileron arrière et ses fixations",
+        "Suspension aperçue derrière la jante"
+      ],
+      "interet_cockpit": "non_visible",
+      "homologue": 30,
+      "paire_verifiee": true
+    },
+    {
+      "num": 11,
+      "fichier": "images/ferrari-f1-126-ck-1980-11.jpg",
+      "type": "rendu",
+      "cadrage": "Gros plan latéral de la roue avant, nez vers la droite.",
+      "elements_utiles": [
+        "Jante à quatre branches et disque de frein perforé",
+        "Flanc du pneu, valve, rivets et écrou",
+        "Panneau latéral du nez et fixations",
+        "Profil du rétroviseur, saute-vent et sommet du volant"
+      ],
+      "interet_cockpit": "secondaire_profil",
+      "homologue": 31,
+      "paire_verifiee": true
+    },
+    {
+      "num": 12,
+      "fichier": "images/ferrari-f1-126-ck-1980-12.jpg",
+      "type": "rendu",
+      "cadrage": "Vue frontale centrée en forte plongée, voiture complète.",
+      "elements_utiles": [
+        "Ouverture du cockpit, siège côtelé et harnais",
+        "Forme et hauteur des deux rétroviseurs",
+        "Volant vu depuis l’avant et enveloppe arrière de l’instrumentation",
+        "Saute-vent, attaches et arceau",
+        "Écopes et géométrie de suspension avant"
+      ],
+      "interet_cockpit": "prioritaire_volumes",
+      "homologue": 32,
+      "paire_verifiee": true
+    },
+    {
+      "num": 13,
+      "fichier": "images/ferrari-f1-126-ck-1980-13.jpg",
+      "type": "rendu",
+      "cadrage": "Vue arrière centrée en plongée, voiture presque entière.",
+      "elements_utiles": [
+        "Échappements, transmission, suspension et support d’aileron arrière",
+        "Capot, arceau et bouchon de réservoir",
+        "Grand cadran central et dos des rétroviseurs visibles à distance"
+      ],
+      "interet_cockpit": "secondaire",
+      "homologue": 33,
+      "paire_verifiee": true
+    },
+    {
+      "num": 14,
+      "fichier": "images/ferrari-f1-126-ck-1980-14.jpg",
+      "type": "rendu",
+      "cadrage": "Vue frontale centrée basse, à hauteur des roues.",
+      "elements_utiles": [
+        "Silhouette frontale du nez et de l’aileron",
+        "Suspensions et ressorts avant",
+        "Entrées d’air de frein et pontons",
+        "Hauteurs relatives des rétroviseurs, du saute-vent, du haut du volant et de l’arceau"
+      ],
+      "interet_cockpit": "secondaire_hauteurs",
+      "homologue": 34,
+      "paire_verifiee": true
+    },
+    {
+      "num": 15,
+      "fichier": "images/ferrari-f1-126-ck-1980-15.jpg",
+      "type": "rendu",
+      "cadrage": "Vue arrière centrée basse, gros cadrage sur le train arrière.",
+      "elements_utiles": [
+        "Demi-arbres, triangles, biellettes et combinés ressort/amortisseur",
+        "Carter de transmission et assemblages",
+        "Support central d’aileron et feu arrière",
+        "Sorties d’échappement et écopes de frein"
+      ],
+      "interet_cockpit": "non_visible",
+      "homologue": 35,
+      "paire_verifiee": true
+    },
+    {
+      "num": 16,
+      "fichier": "images/ferrari-f1-126-ck-1980-16.jpg",
+      "type": "rendu",
+      "cadrage": "Gros plan axial du cockpit depuis l’arrière en plongée, regard vers l’avant.",
+      "elements_utiles": [
+        "Volant complet à trois branches, moyeu, rivets et colonne",
+        "Tableau noir à un grand cadran central et deux petits latéraux, commandes sous les cadrans",
+        "Siège et flancs côtelés, sangles et boucle du harnais",
+        "Deux coques et glaces de rétroviseur",
+        "Ouverture, jonc, saute-vent et fixation de l’arceau"
+      ],
+      "interet_cockpit": "prioritaire_detail",
+      "homologue": 36,
+      "paire_verifiee": true
+    },
+    {
+      "num": 17,
+      "fichier": "images/ferrari-f1-126-ck-1980-17.jpg",
+      "type": "rendu",
+      "cadrage": "Gros plan de dessus du groupe arrière, cockpit hors cadre.",
+      "elements_utiles": [
+        "Échappements, carter et fixations mécaniques",
+        "Suspension arrière, biellettes et écopes",
+        "Ouvertures triangulaires des pontons",
+        "Bord arrière du capot et ses découpes"
+      ],
+      "interet_cockpit": "non_visible",
+      "homologue": 37,
+      "paire_verifiee": true
+    },
+    {
+      "num": 18,
+      "fichier": "images/ferrari-f1-126-ck-1980-18.jpg",
+      "type": "rendu",
+      "cadrage": "Gros plan en plongée du train avant, roue à droite de l’image.",
+      "elements_utiles": [
+        "Bras supérieur, triangle inférieur, rotules et porte-moyeu",
+        "Disque, étrier, durite et écope de frein",
+        "Raccords des bras dans le nez",
+        "Bande de roulement et flanc du pneu"
+      ],
+      "interet_cockpit": "non_visible",
+      "homologue": 38,
+      "paire_verifiee": true
+    },
+    {
+      "num": 19,
+      "fichier": "images/ferrari-f1-126-ck-1980-19.jpg",
+      "type": "rendu",
+      "cadrage": "Gros plan oblique et bas sous l’aileron arrière.",
+      "elements_utiles": [
+        "Carter de transmission, nervures et boulonnerie",
+        "Demi-arbre, liaisons de suspension et freins",
+        "Quatre sorties d’échappement visibles",
+        "Pylône et attaches d’aileron, boîtier jaune à ailettes"
+      ],
+      "interet_cockpit": "non_visible",
+      "homologue": 39,
+      "paire_verifiee": true
+    },
+    {
+      "num": 20,
+      "fichier": "images/ferrari-f1-126-ck-1980-20.jpg",
+      "type": "rendu",
+      "cadrage": "Très gros plan axial depuis l’arrière sous la découpe du capot.",
+      "elements_utiles": [
+        "Deux carters en volute et raccords des gros tubes d’échappement",
+        "Conduit central ouvert et bride circulaire boulonnée",
+        "Dégagement sous le capot",
+        "Assemblages et continuité des volumes mécaniques"
+      ],
+      "interet_cockpit": "non_visible",
+      "homologue": 40,
+      "paire_verifiee": true
+    },
+    {
+      "num": 21,
+      "fichier": "images/ferrari-f1-126-ck-1980-21.jpg",
+      "type": "filaire",
+      "cadrage": "Trois-quarts avant en légère plongée, voiture complète, nez vers la droite de l’image.",
+      "elements_utiles": [
+        "Proportions générales",
+        "Ailerons et nez",
+        "Pontons, roues et suspensions",
+        "Ouverture du cockpit, arceau et rétroviseurs vus de l’extérieur"
+      ],
+      "interet_cockpit": "secondaire",
+      "homologue": 1,
+      "paire_verifiee": true
+    },
+    {
+      "num": 22,
+      "fichier": "images/ferrari-f1-126-ck-1980-22.jpg",
+      "type": "filaire",
+      "cadrage": "Profil latéral quasi complet, nez vers la droite de l’image.",
+      "elements_utiles": [
+        "Empattement et diamètres relatifs des roues",
+        "Ligne du ponton et grilles",
+        "Hauteur de l’ouverture, du volant et du saute-vent",
+        "Arceau et supports d’ailerons"
+      ],
+      "interet_cockpit": "secondaire",
+      "homologue": 2,
+      "paire_verifiee": true
+    },
+    {
+      "num": 23,
+      "fichier": "images/ferrari-f1-126-ck-1980-23.jpg",
+      "type": "filaire",
+      "cadrage": "Trois-quarts avant en légère plongée depuis l’autre côté, nez vers la gauche de l’image.",
+      "elements_utiles": [
+        "Volumes du nez et des pontons",
+        "Suspensions avant",
+        "Deux rétroviseurs extérieurs",
+        "Volant, arceau et entrée du siège partiellement visibles"
+      ],
+      "interet_cockpit": "secondaire",
+      "homologue": 3,
+      "paire_verifiee": true
+    },
+    {
+      "num": 24,
+      "fichier": "images/ferrari-f1-126-ck-1980-24.jpg",
+      "type": "filaire",
+      "cadrage": "Profil latéral opposé à 02, nez vers la gauche de l’image.",
+      "elements_utiles": [
+        "Silhouette latérale",
+        "Rapport de hauteur volant/saute-vent/ouverture du cockpit",
+        "Arceau, prises d’air et jupe latérale"
+      ],
+      "interet_cockpit": "secondaire",
+      "homologue": 4,
+      "paire_verifiee": true
+    },
+    {
+      "num": 25,
+      "fichier": "images/ferrari-f1-126-ck-1980-25.jpg",
+      "type": "filaire",
+      "cadrage": "Vue frontale centrée, légère plongée, voiture entière.",
+      "elements_utiles": [
+        "Voie avant et largeur d’aileron",
+        "Symétrie du nez, suspensions et écopes de frein",
+        "Hauteur relative des deux rétroviseurs, du saute-vent et du haut du volant"
+      ],
+      "interet_cockpit": "secondaire",
+      "homologue": 5,
+      "paire_verifiee": true
+    },
+    {
+      "num": 26,
+      "fichier": "images/ferrari-f1-126-ck-1980-26.jpg",
+      "type": "filaire",
+      "cadrage": "Vue arrière centrée à hauteur moyenne.",
+      "elements_utiles": [
+        "Transmission et suspension arrière",
+        "Support central d’aileron",
+        "Échappements et organes mécaniques arrière",
+        "Largeur des pneus arrière"
+      ],
+      "interet_cockpit": "non_visible",
+      "homologue": 6,
+      "paire_verifiee": true
+    },
+    {
+      "num": 27,
+      "fichier": "images/ferrari-f1-126-ck-1980-27.jpg",
+      "type": "filaire",
+      "cadrage": "Trois-quarts arrière, nez vers la gauche de l’image, voiture complète.",
+      "elements_utiles": [
+        "Groupe mécanique arrière et échappements",
+        "Jonction capot/pontons",
+        "Aileron arrière",
+        "Face du volant et cadran aperçus dans le cockpit"
+      ],
+      "interet_cockpit": "secondaire",
+      "homologue": 7,
+      "paire_verifiee": true
+    },
+    {
+      "num": 28,
+      "fichier": "images/ferrari-f1-126-ck-1980-28.jpg",
+      "type": "filaire",
+      "cadrage": "Trois-quarts arrière opposé à 07, nez vers la droite de l’image.",
+      "elements_utiles": [
+        "Arrière mécanique sous l’aileron",
+        "Pontons et ouvertures du capot",
+        "Arceau",
+        "Volant et haut de l’instrumentation visibles à distance"
+      ],
+      "interet_cockpit": "secondaire",
+      "homologue": 8,
+      "paire_verifiee": true
+    },
+    {
+      "num": 29,
+      "fichier": "images/ferrari-f1-126-ck-1980-29.jpg",
+      "type": "filaire",
+      "cadrage": "Vue de dessus centrée, voiture entière, nez en haut de l’image.",
+      "elements_utiles": [
+        "Plan des pontons et ouverture du cockpit",
+        "Volant à trois branches, colonne et instrumentation partiellement visibles",
+        "Siège côtelé et sangles du harnais",
+        "Position symétrique des deux rétroviseurs",
+        "Arceau et mécanique arrière"
+      ],
+      "interet_cockpit": "prioritaire_plan",
+      "homologue": 9,
+      "paire_verifiee": true
+    },
+    {
+      "num": 30,
+      "fichier": "images/ferrari-f1-126-ck-1980-30.jpg",
+      "type": "filaire",
+      "cadrage": "Gros plan latéral d’une roue arrière et de la joue d’aileron.",
+      "elements_utiles": [
+        "Jante à quatre branches, écrou central et rivets",
+        "Flanc du pneu, valve et marquages",
+        "Joue d’aileron arrière et ses fixations",
+        "Suspension aperçue derrière la jante"
+      ],
+      "interet_cockpit": "non_visible",
+      "homologue": 10,
+      "paire_verifiee": true
+    },
+    {
+      "num": 31,
+      "fichier": "images/ferrari-f1-126-ck-1980-31.jpg",
+      "type": "filaire",
+      "cadrage": "Gros plan latéral de la roue avant, nez vers la droite.",
+      "elements_utiles": [
+        "Jante à quatre branches et disque de frein perforé",
+        "Flanc du pneu, valve, rivets et écrou",
+        "Panneau latéral du nez et fixations",
+        "Profil du rétroviseur, saute-vent et sommet du volant"
+      ],
+      "interet_cockpit": "secondaire_profil",
+      "homologue": 11,
+      "paire_verifiee": true
+    },
+    {
+      "num": 32,
+      "fichier": "images/ferrari-f1-126-ck-1980-32.jpg",
+      "type": "filaire",
+      "cadrage": "Vue frontale centrée en forte plongée, voiture complète.",
+      "elements_utiles": [
+        "Ouverture du cockpit, siège côtelé et harnais",
+        "Forme et hauteur des deux rétroviseurs",
+        "Volant vu depuis l’avant et enveloppe arrière de l’instrumentation",
+        "Saute-vent, attaches et arceau",
+        "Écopes et géométrie de suspension avant"
+      ],
+      "interet_cockpit": "prioritaire_volumes",
+      "homologue": 12,
+      "paire_verifiee": true
+    },
+    {
+      "num": 33,
+      "fichier": "images/ferrari-f1-126-ck-1980-33.jpg",
+      "type": "filaire",
+      "cadrage": "Vue arrière centrée en plongée, voiture presque entière.",
+      "elements_utiles": [
+        "Échappements, transmission, suspension et support d’aileron arrière",
+        "Capot, arceau et bouchon de réservoir",
+        "Grand cadran central et dos des rétroviseurs visibles à distance"
+      ],
+      "interet_cockpit": "secondaire",
+      "homologue": 13,
+      "paire_verifiee": true
+    },
+    {
+      "num": 34,
+      "fichier": "images/ferrari-f1-126-ck-1980-34.jpg",
+      "type": "filaire",
+      "cadrage": "Vue frontale centrée basse, à hauteur des roues.",
+      "elements_utiles": [
+        "Silhouette frontale du nez et de l’aileron",
+        "Suspensions et ressorts avant",
+        "Entrées d’air de frein et pontons",
+        "Hauteurs relatives des rétroviseurs, du saute-vent, du haut du volant et de l’arceau"
+      ],
+      "interet_cockpit": "secondaire_hauteurs",
+      "homologue": 14,
+      "paire_verifiee": true
+    },
+    {
+      "num": 35,
+      "fichier": "images/ferrari-f1-126-ck-1980-35.jpg",
+      "type": "filaire",
+      "cadrage": "Vue arrière centrée basse, gros cadrage sur le train arrière.",
+      "elements_utiles": [
+        "Demi-arbres, triangles, biellettes et combinés ressort/amortisseur",
+        "Carter de transmission et assemblages",
+        "Support central d’aileron et feu arrière",
+        "Sorties d’échappement et écopes de frein"
+      ],
+      "interet_cockpit": "non_visible",
+      "homologue": 15,
+      "paire_verifiee": true
+    },
+    {
+      "num": 36,
+      "fichier": "images/ferrari-f1-126-ck-1980-36.jpg",
+      "type": "filaire",
+      "cadrage": "Gros plan axial du cockpit depuis l’arrière en plongée, regard vers l’avant.",
+      "elements_utiles": [
+        "Volant complet à trois branches, moyeu, rivets et colonne",
+        "Tableau noir à un grand cadran central et deux petits latéraux, commandes sous les cadrans",
+        "Siège et flancs côtelés, sangles et boucle du harnais",
+        "Deux coques et glaces de rétroviseur",
+        "Ouverture, jonc, saute-vent et fixation de l’arceau"
+      ],
+      "interet_cockpit": "prioritaire_detail",
+      "homologue": 16,
+      "paire_verifiee": true
+    },
+    {
+      "num": 37,
+      "fichier": "images/ferrari-f1-126-ck-1980-37.jpg",
+      "type": "filaire",
+      "cadrage": "Gros plan de dessus du groupe arrière, cockpit hors cadre.",
+      "elements_utiles": [
+        "Échappements, carter et fixations mécaniques",
+        "Suspension arrière, biellettes et écopes",
+        "Ouvertures triangulaires des pontons",
+        "Bord arrière du capot et ses découpes"
+      ],
+      "interet_cockpit": "non_visible",
+      "homologue": 17,
+      "paire_verifiee": true
+    },
+    {
+      "num": 38,
+      "fichier": "images/ferrari-f1-126-ck-1980-38.jpg",
+      "type": "filaire",
+      "cadrage": "Gros plan en plongée du train avant, roue à droite de l’image.",
+      "elements_utiles": [
+        "Bras supérieur, triangle inférieur, rotules et porte-moyeu",
+        "Disque, étrier, durite et écope de frein",
+        "Raccords des bras dans le nez",
+        "Bande de roulement et flanc du pneu"
+      ],
+      "interet_cockpit": "non_visible",
+      "homologue": 18,
+      "paire_verifiee": true
+    },
+    {
+      "num": 39,
+      "fichier": "images/ferrari-f1-126-ck-1980-39.jpg",
+      "type": "filaire",
+      "cadrage": "Gros plan oblique et bas sous l’aileron arrière.",
+      "elements_utiles": [
+        "Carter de transmission, nervures et boulonnerie",
+        "Demi-arbre, liaisons de suspension et freins",
+        "Quatre sorties d’échappement visibles",
+        "Pylône et attaches d’aileron, boîtier jaune à ailettes"
+      ],
+      "interet_cockpit": "non_visible",
+      "homologue": 19,
+      "paire_verifiee": true
+    },
+    {
+      "num": 40,
+      "fichier": "images/ferrari-f1-126-ck-1980-40.jpg",
+      "type": "filaire",
+      "cadrage": "Très gros plan axial depuis l’arrière sous la découpe du capot.",
+      "elements_utiles": [
+        "Deux carters en volute et raccords des gros tubes d’échappement",
+        "Conduit central ouvert et bride circulaire boulonnée",
+        "Dégagement sous le capot",
+        "Assemblages et continuité des volumes mécaniques"
+      ],
+      "interet_cockpit": "non_visible",
+      "homologue": 20,
+      "paire_verifiee": true
+    }
+  ]
+}

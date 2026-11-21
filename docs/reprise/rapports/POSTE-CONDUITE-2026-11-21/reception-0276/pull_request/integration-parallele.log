@@ -1,0 +1,48 @@
+✖ assemblage réel : un raccord unique avant J2/J1 et instruments communs (29.480323ms)
+✔ création : IA activée seulement pour les séances jouées ; sorties préallouées (7.878507ms)
+✔ les choix J1/J2 sont copiés aux vrais ID locaux, puis prennent le helper 03 quand disponible (1.34362ms)
+✔ le vrai début de rendreImage appelle actualiser/consommer une fois et ne sonne pas sur demander/lire (2.187957ms)
+✔ une demande différée par la boîte reste silencieuse jusqu’au départ effectif (1.34975ms)
+✔ menu, pause et vitrine drainent la file sans son ni reprise tardive (5.410403ms)
+✔ audio absent, non initialisé ou muet : l’événement est consommé une seule fois (2.422426ms)
+✔ spatialisation : auditeur J2 le plus proche, puis sujet de démo ; gain/pan bornés (3.284469ms)
+✔ la capacité maximale de 64 événements est drainée hors écran sans appel audio (3.106203ms)
+✔ le départ en ligne fige les choix négociés aux vrais ID locaux (1.366494ms)
+✔ menu assemblé : persistance J1/J2, retour, démo automatique, arrêt caché et fronts manette (36.711737ms)
+✔ préférences réseau : deux machines/deux pilotes, identité non contiguë, enveloppe distincte et copies (3.348434ms)
+✔ changement Troll après confirmation retire prêt et annule le départ sans changer les pneus (0.765719ms)
+✔ messages Troll invalides : défauts explicites, aucun décalage de pilote, auteur inconnu refusé (0.815243ms)
+✔ départ : rejet des permutations/duplications de paires machine-place, indépendance des pneus (0.606683ms)
+✔ ancien hôte : message historique conservé et absence de négociation annoncée au joueur (0.526834ms)
+✔ nettoyage des préférences à la sortie : aucune machine supprimée conservée (0.672341ms)
+✔ caméra du jeu : mêmes yeux dans le monde, indépendants du format et du champ mémorisé (2.368465ms)
+✔ projection : horizon, mains, haut de jante et deux glaces en paysage, portrait et partage (49.829703ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 18
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3727.3297
+
+✖ failing tests:
+
+test at verifications/integration-parallele.test.mjs:64:1
+✖ assemblage réel : un raccord unique avant J2/J1 et instruments communs (29.480323ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert(source.includes('INCLINAISON_COCKPIT = -Math.PI / 18'))
+  
+      at TestContext.<anonymous> (file:///home/runner/work/bitume/bitume/verifications/integration-parallele.test.mjs:71:3)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

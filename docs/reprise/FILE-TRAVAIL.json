@@ -12,7 +12,7 @@
     "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
   },
   "destinations_prevues": 17,
-  "lot_actif": "budget_construction_decor_0269",
+  "lot_actif": "reference_voiture_126ck",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [
@@ -34,7 +34,8 @@
       "cloture": "Empreintes, liens et JSON ; publier en premier",
       "preuves": [
         "docs/reprise/rapports/REFERENCES-OBJECTIFS-2026-11-20/PUBLICATION.json"
-      ]
+      ],
+      "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md"
     },
     {
       "id": "habitacle_pilote_commun",
@@ -91,7 +92,10 @@
         "statut": "publie_sur_main_avec_reserve_budget_decor",
         "main_recu_identique_au_candidat": true,
         "site_deploye": false
-      }
+      },
+      "statut": "in_progress",
+      "fiche_active": "docs/reprise/OBJECTIF-126CK-2026-11-21.md",
+      "reserve": "Les cockpits .75 et .76 sont refusés ; reprise depuis la référence 126 CK."
     },
     {
       "id": "eau_vitesse",
@@ -313,7 +317,8 @@
         "references"
       ],
       "cloture": "521 ch calibrés, niveaux ABS, physique versionnée et contrôles",
-      "preuves": []
+      "preuves": [],
+      "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md"
     },
     {
       "id": "rendu",
@@ -323,7 +328,8 @@
         "demos_pilotes"
       ],
       "cloture": "Défauts reproduits puis corrigés ; moteur via FERRO canonique",
-      "preuves": []
+      "preuves": [],
+      "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md"
     },
     {
       "id": "matieres",
@@ -333,7 +339,8 @@
         "demos_pilotes"
       ],
       "cloture": "Silhouette, ancrages et cockpit préservés ; effets mesurés",
-      "preuves": []
+      "preuves": [],
+      "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md"
     },
     {
       "id": "reseau",
@@ -373,7 +380,8 @@
         "chargement"
       ],
       "cloture": "Ne se réalise que pour un coût établi, avec repli",
-      "preuves": []
+      "preuves": [],
+      "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md"
     },
     {
       "id": "records",
@@ -461,7 +469,8 @@
         "commit_fusion": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
         "pr": 42,
         "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
-      }
+      },
+      "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md"
     },
     {
       "id": "budget_construction_decor_0269",
@@ -576,6 +585,16 @@
       "proprietaire_propose": "Même module aérien ; raccords 00, son 01, coûts 02",
       "cloture": "Provenance METAL, adaptation repère/hauteur, rotors, LOD et pools ; aucun système de combat importé",
       "runtime_livre": false
+    },
+    {
+      "id": "reference_voiture_126ck",
+      "titre": "Galerie complète126CK et nouvel objectif voiture",
+      "statut": "prepared",
+      "fiche": "docs/reprise/OBJECTIF-126CK-2026-11-21.md",
+      "references": "docs/references/ferrari-126ck-renderblade-2026-11-21/README.md",
+      "images": 41,
+      "runtime_modifie": false,
+      "suite": "Reprendre le cockpit puis la voiture depuis les vues rendues et filaires."
     }
   ],
   "lots_livres_a_preserver": [
@@ -609,6 +628,8 @@
   ],
   "plan_correctifs_visuels": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
   "ordre_courant": [
+    "reference_voiture_126ck",
+    "habitacle_pilote_commun",
     "budget_construction_decor_0269",
     "menu_arcade_profils_modestes"
   ],
@@ -680,7 +701,7 @@
     },
     "publication_00": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
     "dernier_jalon_publie_00": "publication_0275",
-    "publication_00_portee": "Runtime 0.2.75 publié et reçu sur main ; réserve CPU décor ouverte, PR43 et états propriétaires conservés.",
+    "publication_00_portee": "Runtime 0.2.75 publié et reçu sur main ; réserve CPU décor ouverte, PR 43 et états propriétaires conservés.",
     "checkpoints_observes_portee": "Inventaire initial historique conservé ; publication courante décrite par le reçu 0.2.75.",
     "lots_prets_observes_historique": [
       "01_pilote_Troll",
@@ -750,5 +771,26 @@
     "circuits": 9,
     "commit_fusion": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
     "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
+  },
+  "priorite_utilisateur_2026_11_21": {
+    "fiche": "docs/reprise/OBJECTIF-126CK-2026-11-21.md",
+    "reference": "126 CK RenderBlade",
+    "remplace": "312 T5",
+    "galerie_complete": "docs/references/ferrari-126ck-renderblade-2026-11-21/README.md",
+    "refus": [
+      "cockpit 0.2.75",
+      "cockpit 0.2.76"
+    ],
+    "autres_demandes": [
+      "FOV 70°",
+      "pluie/neige calmes dos au vent",
+      "klaxons réalistes",
+      "inspiration satyam-fp/race"
+    ]
+  },
+  "inspiration_race": {
+    "fiche": "docs/reprise/REFERENCE-RACE-2026-11-21.md",
+    "pistes": 8,
+    "etat": "etude_terminee_non_implementee"
   }
 }

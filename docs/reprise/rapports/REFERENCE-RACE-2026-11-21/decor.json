@@ -1,0 +1,204 @@
+{
+  "schema": 1,
+  "date_utc": "2026-11-21T07:26:38.185552+00:00",
+  "mission": "Revue decor/environnement statique, sans execution de la reference ni modification BITUME.",
+  "reference": {
+    "depot": "https://github.com/satyam-fp/race",
+    "commit": "4a2a65f146aa0e70547c191c77a2490511db44a8",
+    "fichiers_suivis": 469,
+    "publication": "Builds v0/v1 ; index racine redirige vers v0. Les constatations de shaders ci-dessous concernent explicitement v1.",
+    "wasm_sha256": "c77e9cc8b4330b5bad4b14725447131dc19f08c84a6dd2aac116330c7229966e"
+  },
+  "licence": {
+    "statut": "Aucune licence ou notice de reutilisation trouvee dans l arbre suivi examine.",
+    "fichiers_licence_readme_credit": [],
+    "decision": "Aucun code, binaire, modele, texture ou son repris. Idees a reimplementer de facon originale. Un nom de dossier haven ne constitue pas une preuve de licence de chaque asset."
+  },
+  "portee_sources": {
+    "lisible": [
+      "v1/game.js : interface, reglages, carte, effets de retour ; pas de generation du terrain.",
+      "v1/car.js : colle wasm-bindgen, pas le generateur de decor.",
+      "v1/assets/bc/list.txt : inventaire des ressources, pas une preuve de placement.",
+      "Shaders WGSL/WESL presents textuellement dans v1/car_bg.wasm : extraction ASCII statique seulement."
+    ],
+    "absent": "Les sources Rust de terrain, routes et placement ne sont pas publiees dans cet arbre. Les noms src/country.rs et src/ground.rs figurent dans le binaire, mais ne sont pas des fichiers consultables du depot.",
+    "non_fait": [
+      "Execution ou instanciation WebAssembly",
+      "Chargement du jeu dans un navigateur",
+      "Import d assets",
+      "Mesure CPU/GPU ou affirmation du rendu reel de la scene"
+    ],
+    "preuves_embarquees": [
+      {
+        "identifiant": "embedded://bevy_car/ground.wesl",
+        "conteneur": "v1/car_bg.wasm",
+        "debut_octets": 61617614,
+        "longueur_octets": 17173,
+        "sha256_texte": "47b3020681b85ea4fc510769aef14327b68e79377eab1c40e02f8e6b4b603b54",
+        "lignes": "Numerotation locale de la chaine ASCII, pas des lignes du fichier binaire."
+      },
+      {
+        "identifiant": "embedded://bevy_car/woods.wesl",
+        "conteneur": "v1/car_bg.wasm",
+        "debut_octets": 61635023,
+        "longueur_octets": 1989,
+        "sha256_texte": "0815ef0ac014e3460d77f2b835a02155b7247401cd460f792e027856a1aaf1b1",
+        "lignes": "Numerotation locale de la chaine ASCII, pas des lignes du fichier binaire."
+      },
+      {
+        "identifiant": "embedded://bevy_car/woods_prepass.wesl",
+        "conteneur": "v1/car_bg.wasm",
+        "debut_octets": 61637048,
+        "longueur_octets": 1896,
+        "sha256_texte": "665eed0b740001e8d1e22c469aa4e16f7053acb87f7720442be35984e3cbd55e",
+        "lignes": "Numerotation locale de la chaine ASCII, pas des lignes du fichier binaire."
+      }
+    ]
+  },
+  "comparaison_bitume": {
+    "racine": "/workspace/scratch/ea118b42480b/bitume-cockpit",
+    "head_au_recu": "02afea62e9241704bd1ec0a679fe268e0f6db08f",
+    "fichiers_et_fonctions": {
+      "src/decor.js": [
+        "nappesRoute",
+        "couleurPrairie",
+        "arbre",
+        "habiller",
+        "lots arbres et regroupement en cases"
+      ],
+      "src/ecologie.js": [
+        "creer",
+        "echantillonner"
+      ],
+      "src/vegetation.js": [
+        "couverture des poches ecologiques et raccord aux nappes"
+      ],
+      "src/batiments.js": [
+        "stands"
+      ],
+      "src/moteur/renderer.js": [
+        "surfaceNoise",
+        "fragment du monde : recettes et asphalte"
+      ]
+    },
+    "empreintes": {
+      "src/decor.js": "1e7a0a690747280fc8fef9f7447a16fd57b968114a551b3cfe98e554a2e13198",
+      "src/ecologie.js": "02e6ac06d118767e7020953dfe41542853892774ee649626f6110feb06d6d010",
+      "src/vegetation.js": "09ecfd4bf397d38939a2536191ba8f5c2f3acd238c7455e4b2bfae3c8fd8d642",
+      "src/batiments.js": "67fd03ce58096e60aee06f31160ec849bf950fb6d500c8731a62a1bb08938025",
+      "src/moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8"
+    }
+  },
+  "idees_retenues": [
+    {
+      "priorite": 1,
+      "titre": "Reprises et joints de chaussee organises dans le sens de la route",
+      "preuve": {
+        "commit": "4a2a65f146aa0e70547c191c77a2490511db44a8",
+        "fichier": "v1/car_bg.wasm",
+        "url": "https://github.com/satyam-fp/race/blob/4a2a65f146aa0e70547c191c77a2490511db44a8/v1/car_bg.wasm",
+        "source_embarquee": "ground.wesl",
+        "fonctions": [
+          "fragment",
+          "patches",
+          "Shine"
+        ],
+        "lignes_dans_chaine_extraite": "159-167, 321-354"
+      },
+      "observe": "Le shader calcule des bandes de pose, des troncons decales selon la bande, des joints scelles et une rugosite par troncon. Les creux du granulat reduisent aussi le reflet. Ce ne sont pas seulement des taches de couleur isotropes.",
+      "bitume_existant": "nappesRoute/asphalte colore deja la route avec un bruit lent longitudinal ; les materiaux 14 et recette 21 ont deja granulat, fissures et reprises. Ne pas refaire ces effets generiques.",
+      "difference_utile": "Donner une logique de chantier aux reprises : orientations suivant la tangente, longs raccords discontinus, troncons a matite differente. Cela fournit des reperes de defilement et casse un reflet uniforme sans ajouter de flou de vitesse.",
+      "adaptation_originale": "Deriver une recette propre des coordonnees metriques s/d du circuit et de sa graine ; conserver relief, adherences, marquages et classifications PhysX. Ne reprendre ni coefficients ni textures du depot.",
+      "budget": "Reperes prepares une fois par nappe ; aucune recherche du point de route par fragment ou par image. Commencer par la variation de troncons dans les couleurs existantes. La rugosite et les joints fins demandent une voie qualifiee dans FERRO commun, sans passe ou texture externe supplementaire.",
+      "limite": "Pas de gain GPU mesure ; une piste mate et une piste humide doivent rester lisibles sous plusieurs angles de soleil."
+    },
+    {
+      "priorite": 2,
+      "titre": "Bords terre-gravier-herbe decoupes par relief plutot que fondus",
+      "preuve": {
+        "commit": "4a2a65f146aa0e70547c191c77a2490511db44a8",
+        "fichier": "v1/car_bg.wasm",
+        "url": "https://github.com/satyam-fp/race/blob/4a2a65f146aa0e70547c191c77a2490511db44a8/v1/car_bg.wasm",
+        "source_embarquee": "ground.wesl",
+        "fonctions": [
+          "by_height",
+          "patches",
+          "fragment"
+        ],
+        "lignes_dans_chaine_extraite": "141-145, 159-167, 305-318"
+      },
+      "observe": "Le masque de bord est perturbe en metres puis arbitre avec la hauteur de la couche : les mottes et pierres terminent le bord, au lieu de deux images simplement fondues. La source utilise notamment ce mecanisme pour le gravier sur herbe et la bande usee de l accotement.",
+      "bitume_existant": "couleurPrairie/ecologie relient deja sol nu, fleurs, boisement et herbe ; vegetation partage ces poches et les niveaux de detail. Le melange de couleur ecologique existe donc deja.",
+      "difference_utile": "Travailler seulement les contacts proches entre deux sols et l usure pres de la chaussee : petits ilots, dents de terre, granulats dans les interstices, avec continuite de la teinte a distance.",
+      "adaptation_originale": "Employer les hauteurs procedurales des recettes propres a BITUME, un masque stable issu de la graine et une largeur bornee. Limiter aux transitions compatibles avec les surfaces de conduite ; aucun gravier visuel contradictoire sur une zone physiquement asphaltee.",
+      "budget": "Deux recettes maximum dans la bande et une moyenne au loin ; reutiliser le maillage ou une seule voie de materiau opaque, eviter les couches alpha superposees. Filtrage en taille de pixel et derivees calculees avant les branches. Toute extension shader passe par FERRO canonique.",
+      "limite": "La source fait appel a des photographies ; seules les regles de transition inspirent une implementation independante. Aucun import des JPG/KTX2."
+    },
+    {
+      "priorite": 3,
+      "titre": "Ne plus evaluer les details de sol devenus invisibles",
+      "preuve": {
+        "commit": "4a2a65f146aa0e70547c191c77a2490511db44a8",
+        "fichier": "v1/car_bg.wasm",
+        "url": "https://github.com/satyam-fp/race/blob/4a2a65f146aa0e70547c191c77a2490511db44a8/v1/car_bg.wasm",
+        "source_embarquee": "ground.wesl",
+        "fonctions": [
+          "fragment"
+        ],
+        "lignes_dans_chaine_extraite": "181-193, 214-231, 262-297"
+      },
+      "observe": "Une branche proche reserve les lectures de normales et couches supplementaires au voisinage ; le grain tres fin disparait progressivement puis son evaluation est sautee. Les derivees des coordonnees sont calculees avant les branches.",
+      "bitume_existant": "surfaceNoise et fineDetail filtrent deja le grain avec fwidth. Dans le source lu, surfaceNoise calcule encore noise puis multiplie son ecart par detail ; le simple filtrage de resultat est donc deja present.",
+      "difference_utile": "Tester une vraie voie lointaine qui retourne la moyenne avant les calculs fins lorsque leur poids est nul. Ce choix concerne le cout des materiaux, pas une nouvelle bascule de geometrie deja realisee.",
+      "adaptation_originale": "Conserver les frequences, palettes et distances apparentes de BITUME ; baser le seuil sur la couverture en pixels plutot que reprendre les 28 m de la reference. Garder les transitions continues et les derivees hors des branches divergentes.",
+      "budget": "Aucune nouvelle geometrie, passe, allocation CPU ou lecture de texture. Mesurer sur GPU reel a image et reglages identiques : le compilateur peut deja optimiser une partie du calcul et la divergence peut annuler le gain.",
+      "limite": "Le commentaire de la reference mentionne un budget 16,7 ms ; ce chiffre n est ni une mesure reproduite ici ni une promesse pour BITUME. Candidat pour FERRO commun uniquement."
+    },
+    {
+      "priorite": 4,
+      "titre": "Silhouettes lointaines de foret orientees autour de leur pied",
+      "preuve": [
+        {
+          "commit": "4a2a65f146aa0e70547c191c77a2490511db44a8",
+          "fichier": "v1/car_bg.wasm",
+          "url": "https://github.com/satyam-fp/race/blob/4a2a65f146aa0e70547c191c77a2490511db44a8/v1/car_bg.wasm",
+          "source_embarquee": "woods.wesl",
+          "fonctions": [
+            "vertex"
+          ],
+          "lignes_dans_chaine_extraite": "1-46"
+        },
+        {
+          "commit": "4a2a65f146aa0e70547c191c77a2490511db44a8",
+          "fichier": "v1/car_bg.wasm",
+          "url": "https://github.com/satyam-fp/race/blob/4a2a65f146aa0e70547c191c77a2490511db44a8/v1/car_bg.wasm",
+          "source_embarquee": "woods_prepass.wesl",
+          "fonctions": [
+            "vertex"
+          ],
+          "lignes_dans_chaine_extraite": "1-53"
+        }
+      ],
+      "observe": "Chaque carte conserve le pied de l arbre et tourne horizontalement vers l oeil. La normale et la tangente suivent la carte ; la passe de profondeur reproduit exactement cette position. Cela evite les cartes croisees vues par la tranche.",
+      "bitume_existant": "decor.arbre/habiller et les lots par cases de 60 m disposent deja de formes proches/lointaines, de bascules selon la taille projetee et de silhouettes conservant les pieds. Le simple ajout de LOD serait redondant.",
+      "difference_utile": "Un niveau tres lointain pour les massifs denses pourrait remplacer les amas de petites formes par des silhouettes moins couteuses, sans toucher les arbres isoles proches ni supprimer la foret a distance.",
+      "adaptation_originale": "Generer les silhouettes et normales depuis les arbres proceduraux propres a BITUME au chargement, ou utiliser une silhouette polygonale originale. Reutiliser centres et lots existants. Rotation par vue sur GPU, y compris retros et ecran partage ; aucune copie de woods.png ou des GLB.",
+      "budget": "Option de second rang : moins de sommets peut augmenter le remplissage alpha. Encadrer atlas et recouvrement, comparer le cout ombres/couleur/retros, conserver un repli geometrique. Pas de recalcul CPU des cartes a chaque image ni de passe de capture recurrente.",
+      "limite": "Risque de silhouette tournante, transitions et profondeur incoherente ; ne retenir que si le GPU reel gagne a image acceptable. Evolution FERRO canonique requise, pas retouche locale de la copie verrouillee."
+    }
+  ],
+  "deja_realise_ou_non_retenu": [
+    "Arbres a deux resolutions, herbe/fougeres/ecologie et teinte du sol commune : deja presents.",
+    "Garages, servantes, pneus, bidons, lampes, tribunes et reperes de freinage : deja presents ; le manifeste ne justifie pas une nouvelle copie de mobilier.",
+    "Details de granulat, fissures, reprises, normales et rugosite : deja presents ; seuls leurs arrangements ou leur cout sont pistes nouvelles.",
+    "Terrain en relief, spline de route, repartition spatiale, ciel et effets vitesse visuels : fonctionnement du generateur non prouve par les sources publiees ; ne pas en inventer une recette.",
+    "Photos de sol, normal maps, cubemaps Pisa, textures woods, modeles haven/props/GT et sons : aucun import retenu."
+  ],
+  "garde_fous_bitume": [
+    "Physique p15, reliefs, graines et classifications de surface conserves.",
+    "Seuil de 150 ms non remplace et aucun budget assoupli.",
+    "Extensions de shaders via FERRO canonique et version qualifiee, jamais edition locale du verrou.",
+    "Aucun benefice FPS/Xbox/GPU affirme sans mesure equivalente sur cible."
+  ],
+  "conclusion": "Quatre pistes fondees sur des shaders effectivement lisibles ; priorite a la logique de chaussee et aux transitions de sol. Pas de mecanisme de placement reconstitue ni de promesse de performance."
+}

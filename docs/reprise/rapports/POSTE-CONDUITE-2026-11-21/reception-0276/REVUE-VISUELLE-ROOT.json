@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "commit": "02afea62e9241704bd1ec0a679fe268e0f6db08f",
+  "statut": "revue_partielle_exterieur",
+  "images_inspectees": [
+    {
+      "chemin": "/workspace/scratch/ea118b42480b/qa-poste-ci-0276/cockpit/profil/14697079529/files/images/apres/cockpit-profil/0000.png",
+      "sha256": "2b42de9993f16164f7f0bfdff25efc4bfcf6d728d7ededebc9d89e82a1307eb0"
+    },
+    {
+      "chemin": "/workspace/scratch/ea118b42480b/qa-poste-ci-0276/cockpit/trois-quarts/14697183672/files/images/apres/cockpit-trois-quarts/0000.png",
+      "sha256": "e1b58e21fa58afbd45d60ad658773b2d27b2e69ca84de94489b360b4e616385b"
+    }
+  ],
+  "constats": [
+    "Profil : jante presque verticale devant le pilote, sans ancien montage orienté vers le ciel. La carrosserie masque une partie de la colonne ; son sens descendant est établi par les triangles et le contrôle mécanique.",
+    "Profil et trois quarts : boîtiers de rétros bas, supports courts au flanc ; pas de longues antennes à hauteur des yeux.",
+    "Trois quarts : planche sombre en arche, compte-tours au-dessus des cadrans latéraux, mains sur le volant et habitacle commun."
+  ],
+  "limites": [
+    "Vue cockpit, braquages et autres formats encore en attente.",
+    "Ces images ne certifient pas des cotes internes constructeur ni toute pose animée.",
+    "Le badge 60 FPS de la capture ne constitue pas une mesure de performance matérielle."
+  ]
+}

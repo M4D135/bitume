@@ -1,0 +1,630 @@
+{
+  "schema": 1,
+  "source": "https://www.renderhub.com/renderblade/ferrari-f1-126-ck-1980",
+  "titre_source": "Ferrari F1 126 Ck 1980",
+  "auteur": "RenderBlade",
+  "reception_utc": "2026-11-21T07:33:40.190924+00:00",
+  "page_sha256": "b1540b3f65f0c782c24f388a521ae86723946c89e60354038e8a61cdf6b489ea",
+  "images_galerie_annoncees": 40,
+  "images_galerie_recues": 40,
+  "couvertures_recues": 1,
+  "images": [
+    {
+      "fichier": "ferrari-f1-126-ck-1980.jpg",
+      "role": "couverture",
+      "numero": null,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980.jpg",
+      "octets": 11062,
+      "sha256": "5e9a858d1c5cbd653215d644565a077255d385d604ecf08b4453cf3373f09f36",
+      "dimensions": [
+        400,
+        400
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-01.jpg",
+      "role": "galerie",
+      "numero": 1,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-01.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-01.jpg",
+      "octets": 128489,
+      "sha256": "2dc3f6b686dfa4c14b07c17087796813f66b06aef3212ee34b37b19881d482ae",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-02.jpg",
+      "role": "galerie",
+      "numero": 2,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-02.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-02.jpg",
+      "octets": 104084,
+      "sha256": "f5671829587c1cc4e58581468dbc58d9dd185261d000aa85caea015083285480",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-03.jpg",
+      "role": "galerie",
+      "numero": 3,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-03.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-03.jpg",
+      "octets": 122834,
+      "sha256": "1626429d3bf24ea826ce73e13a5f5bf860c48bbe499ce532be550c0d7a354dd8",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-04.jpg",
+      "role": "galerie",
+      "numero": 4,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-04.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-04.jpg",
+      "octets": 104671,
+      "sha256": "eb310c6f91f8617d28ec943ae275946b8287613b06d207434b3be86b540ebedb",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-05.jpg",
+      "role": "galerie",
+      "numero": 5,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-05.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-05.jpg",
+      "octets": 128128,
+      "sha256": "5f53be6068a3629dc6edfcd5ad83da84150a07c9aa7ee97edcf9bbb6c8487430",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-06.jpg",
+      "role": "galerie",
+      "numero": 6,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-06.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-06.jpg",
+      "octets": 130641,
+      "sha256": "eed2f33ba09d1d437c70db19ba4b9a2eb78b79db616d105b98616382fffca327",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-07.jpg",
+      "role": "galerie",
+      "numero": 7,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-07.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-07.jpg",
+      "octets": 123348,
+      "sha256": "9b5fcb0ff01ff1f7af0433ddc4ca4eb70ef99d1d2569c33dac9b3e0cae52cbf3",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-08.jpg",
+      "role": "galerie",
+      "numero": 8,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-08.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-08.jpg",
+      "octets": 122829,
+      "sha256": "6d2e1e0d0907f4daac44c321cfb72784a8f7b2be7a7384f3257df5e9c7b0de27",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-09.jpg",
+      "role": "galerie",
+      "numero": 9,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-09.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-09.jpg",
+      "octets": 124674,
+      "sha256": "faba7ea383ea13da55dc127bbdc162c3a34f6026332dd65ebf631d716e28a1bb",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-10.jpg",
+      "role": "galerie",
+      "numero": 10,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-10.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-10.jpg",
+      "octets": 168079,
+      "sha256": "2e9ca2e9787b3c08a9d728ed2121904713de20beb03ac3c46bbf77c9f9c61c78",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-11.jpg",
+      "role": "galerie",
+      "numero": 11,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-11.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-11.jpg",
+      "octets": 152929,
+      "sha256": "87e7ceaa79de315a6a86ab35b64a1f6002d6925b86f3fb6b95fbd01f3a1b45c8",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-12.jpg",
+      "role": "galerie",
+      "numero": 12,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-12.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-12.jpg",
+      "octets": 180488,
+      "sha256": "a27745accf3183cd0278194718329e0db7cc0cccb55875e05435a55da01d4ceb",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-13.jpg",
+      "role": "galerie",
+      "numero": 13,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-13.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-13.jpg",
+      "octets": 158593,
+      "sha256": "3babb71ac42316ad00d8025f5a49f7c394cec0e7fb0cea66b56c3d4f55fda7d5",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-14.jpg",
+      "role": "galerie",
+      "numero": 14,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-14.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-14.jpg",
+      "octets": 118106,
+      "sha256": "8c9fe26fff6adb640bbdd1c6f75ad0dc8e714199bc59699f18658d89664653ea",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-15.jpg",
+      "role": "galerie",
+      "numero": 15,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-15.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-15.jpg",
+      "octets": 140742,
+      "sha256": "dc0603b3c9a5fd23bc6c44767e4675c0a0a8e724348117ae88a4dead760051b6",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-16.jpg",
+      "role": "galerie",
+      "numero": 16,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-16.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-16.jpg",
+      "octets": 249423,
+      "sha256": "f0d04ededcb8c9edeaa4ab1068802cab66ff06b557f399f747a78e47945d00ad",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-17.jpg",
+      "role": "galerie",
+      "numero": 17,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-17.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-17.jpg",
+      "octets": 297243,
+      "sha256": "fc0542869dea00dbcf9fe61330a44ea30aa2068c341f01aa0bc38fb3d1f3b6f8",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-18.jpg",
+      "role": "galerie",
+      "numero": 18,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-18.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-18.jpg",
+      "octets": 189216,
+      "sha256": "c1f70e3d4da6a1d8fd08b13927fd48bc767c3741fe310a067ff44f1b5fea8d36",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-19.jpg",
+      "role": "galerie",
+      "numero": 19,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-19.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-19.jpg",
+      "octets": 302103,
+      "sha256": "91810b5e4c7129b08448e5e4004fa44b3fc593e6e05abdebe7c0c5c4d7ca37d5",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-20.jpg",
+      "role": "galerie",
+      "numero": 20,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-20.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-20.jpg",
+      "octets": 264401,
+      "sha256": "1c53a57a99a8a05d1cb50c09da0e12bb05fcc85ac15a85cc75a91adc6a684d54",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-21.jpg",
+      "role": "galerie",
+      "numero": 21,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-21.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-21.jpg",
+      "octets": 214263,
+      "sha256": "3ade5df684e91bd5f2431673a73512fe45d1df867b72cd3cecc91c25596f8b38",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-22.jpg",
+      "role": "galerie",
+      "numero": 22,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-22.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-22.jpg",
+      "octets": 159326,
+      "sha256": "e83236cd197c34dbe861aac3ac144c69e9ea67dc6e9a3ae61f21e14b8eac7062",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-23.jpg",
+      "role": "galerie",
+      "numero": 23,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-23.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-23.jpg",
+      "octets": 218944,
+      "sha256": "91bdab2759d251288ddfdbfd883fff4977ff5030dd100d9f75de1bfd4486cb92",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-24.jpg",
+      "role": "galerie",
+      "numero": 24,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-24.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-24.jpg",
+      "octets": 157540,
+      "sha256": "986ff08c910de2d78921e331f70a92a25c6c8cd6c54e3b4c7c66b277c2bb91cb",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-25.jpg",
+      "role": "galerie",
+      "numero": 25,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-25.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-25.jpg",
+      "octets": 246322,
+      "sha256": "d39bf1fd1d62feaab9dc8f5df584c6b9321b0f313255a916030f0fdecebc377e",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-26.jpg",
+      "role": "galerie",
+      "numero": 26,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-26.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-26.jpg",
+      "octets": 198603,
+      "sha256": "d23f35fa737edd10a065467ba8896bb6f61e07e3721b5416ef7fbca6c3b59b83",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-27.jpg",
+      "role": "galerie",
+      "numero": 27,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-27.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-27.jpg",
+      "octets": 198294,
+      "sha256": "40ce784f09d0ee140c3f1436310c4ba6e26be8314e6fa388caed4293144d305f",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-28.jpg",
+      "role": "galerie",
+      "numero": 28,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-28.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-28.jpg",
+      "octets": 207430,
+      "sha256": "802ffa4798cb7494931df494767bc696e45a04f4d09c79db8592e41bb9f4dd04",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-29.jpg",
+      "role": "galerie",
+      "numero": 29,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-29.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-29.jpg",
+      "octets": 206525,
+      "sha256": "8b9b490d26805656f16ba7776747265f40d9e44f957486f874e72d19a6c86197",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-30.jpg",
+      "role": "galerie",
+      "numero": 30,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-30.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-30.jpg",
+      "octets": 322990,
+      "sha256": "701c80b26dfaecdb20ec9a588f18d8e01c29e6dc1d278d300d701c8cbbc7d7e4",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-31.jpg",
+      "role": "galerie",
+      "numero": 31,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-31.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-31.jpg",
+      "octets": 275646,
+      "sha256": "53c5dd72f9924e58b7ededd50e09bbad4af9725077d137840fd2821a4b63b730",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-32.jpg",
+      "role": "galerie",
+      "numero": 32,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-32.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-32.jpg",
+      "octets": 347248,
+      "sha256": "52290fcfd9e36527d33cccbdb35f00419613d687d58011ed7a1b1efa846b8aa7",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-33.jpg",
+      "role": "galerie",
+      "numero": 33,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-33.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-33.jpg",
+      "octets": 317650,
+      "sha256": "5939936d25923267dcdb7d835b5b0d683afd952b6eae82b575bf64d9a6a37599",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-34.jpg",
+      "role": "galerie",
+      "numero": 34,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-34.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-34.jpg",
+      "octets": 221525,
+      "sha256": "cc84bc84da0987dda0d3eeb543604da3305d12295bc3852d291ff922d92d295b",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-35.jpg",
+      "role": "galerie",
+      "numero": 35,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-35.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-35.jpg",
+      "octets": 217662,
+      "sha256": "542db09d82d3ccdc897bb0960076072e898404523e07ed44f58a79acd177c0ae",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-36.jpg",
+      "role": "galerie",
+      "numero": 36,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-36.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-36.jpg",
+      "octets": 551336,
+      "sha256": "1223489029970441a40318a6c81951da136571b63d2d1bf47e8c643069209ec6",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-37.jpg",
+      "role": "galerie",
+      "numero": 37,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-37.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-37.jpg",
+      "octets": 550168,
+      "sha256": "75990dc621457ccbba18fe54e5571376fe8c16f899cf0fb02c707c7d4a010fe1",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-38.jpg",
+      "role": "galerie",
+      "numero": 38,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-38.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-38.jpg",
+      "octets": 313729,
+      "sha256": "f348da5231a0ad292139979b3009e7203851afef933b13c9f106784b8c26a649",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-39.jpg",
+      "role": "galerie",
+      "numero": 39,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-39.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-39.jpg",
+      "octets": 472148,
+      "sha256": "96f45cb9d3e020d7c7692d3aab835e55de91813680546703a7df8c68fe99f8bd",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    },
+    {
+      "fichier": "ferrari-f1-126-ck-1980-40.jpg",
+      "role": "galerie",
+      "numero": 40,
+      "url_source": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-40.jpg",
+      "url_recue": "https://cdn.renderhub.com/renderblade/ferrari-f1-126-ck-1980/ferrari-f1-126-ck-1980-40.jpg",
+      "octets": 550909,
+      "sha256": "7577f37faeba094f4b8956aa45913903ac7eace5831c3a78c39158688afccefa",
+      "dimensions": [
+        1920,
+        1920
+      ],
+      "format": "JPEG",
+      "mime": "image/jpeg"
+    }
+  ],
+  "licence_indiquee_pour_le_modele_3d": "Extended Use License (IP Restricted), restriction Editorial Use Only selon la fiche ; aucun achat de modèle ni transfert de licence effectué.",
+  "statut_references": "Images de présentation publiques récupérées sur demande explicite du propriétaire de BITUME ; provenance et fichiers conservés, aucun asset du modèle 3D importé dans le jeu."
+}
