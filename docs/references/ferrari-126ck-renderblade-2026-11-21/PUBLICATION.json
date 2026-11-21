@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "pr": 53,
+  "url": "https://github.com/M4D135/bitume/pull/53",
+  "candidat": "d8fe0f9b0e82d2f3aadb2ddfea52e88d6c1d520d",
+  "commit_main": "eb10c539749a1d0a978ba3b2a78c128e368db194",
+  "arbre": "b27b05f195cc93c0c1c4ad18d98e63ef5e7cd128",
+  "images": 41,
+  "vues_detaillees": 40,
+  "couvertures": 1,
+  "paires_inspectees": 20,
+  "octets": 9270341,
+  "images_main_identiques_aux_originaux": true,
+  "runtime_modifie": false,
+  "site_deploye": false
+}

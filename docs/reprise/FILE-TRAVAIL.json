@@ -12,7 +12,7 @@
     "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
   },
   "destinations_prevues": 17,
-  "lot_actif": "reference_voiture_126ck",
+  "lot_actif": "habitacle_pilote_commun",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [
@@ -589,12 +589,15 @@
     {
       "id": "reference_voiture_126ck",
       "titre": "Galerie complète126CK et nouvel objectif voiture",
-      "statut": "prepared",
+      "statut": "published",
       "fiche": "docs/reprise/OBJECTIF-126CK-2026-11-21.md",
       "references": "docs/references/ferrari-126ck-renderblade-2026-11-21/README.md",
       "images": 41,
       "runtime_modifie": false,
-      "suite": "Reprendre le cockpit puis la voiture depuis les vues rendues et filaires."
+      "suite": "Reprendre le cockpit puis la voiture depuis les vues rendues et filaires.",
+      "publication": "docs/references/ferrari-126ck-renderblade-2026-11-21/PUBLICATION.json",
+      "pr": 53,
+      "commit": "eb10c539749a1d0a978ba3b2a78c128e368db194"
     }
   ],
   "lots_livres_a_preserver": [
@@ -628,7 +631,6 @@
   ],
   "plan_correctifs_visuels": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
   "ordre_courant": [
-    "reference_voiture_126ck",
     "habitacle_pilote_commun",
     "budget_construction_decor_0269",
     "menu_arcade_profils_modestes"
@@ -730,24 +732,13 @@
   },
   "base_initiale": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_candidat": {
-    "version": "0.2.75",
-    "branche": "codex/bitume-0275-fps-cockpit-20261121",
-    "physique": "p15",
-    "moteur": "FERRO 0.3.15",
-    "circuits": 9,
-    "html_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
-    "statut": "publie_sur_main",
-    "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0275/BUILD-0275.json",
-    "portes_restantes": [],
-    "reserve_decor": "Ouverte : 172/152/168/155 ms historiques ; diagnostic local 151,87/138,20/141,13/84,43/85,68 ms, un échec au seuil strict <150 ms ; aucun gain prouvé.",
-    "candidat_precedent_bloque": {
-      "version": "0.2.74",
-      "pr": 50,
-      "constat": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0274/RECEPTION-0274.json"
-    },
-    "commit": "5d59cae6630c49ae62c47303100d61dd63daea56",
-    "commit_fusion": "b1e5e98b9029f6254b86dcfb49780883315a9418",
-    "recu_publication": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
+    "statut": "aucun_candidat_126ck_construit",
+    "version": null,
+    "base_runtime_main": "0.2.75",
+    "preparations_conservees": [
+      "PR52 / 02afea62 : météo, son, FOV et modèle refusé",
+      "docs/reprise/preparations/miroirs-0277/README.md"
+    ]
   },
   "demandes_video_survol_2026_11_20": {
     "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
@@ -792,5 +783,25 @@
     "fiche": "docs/reprise/REFERENCE-RACE-2026-11-21.md",
     "pistes": 8,
     "etat": "etude_terminee_non_implementee"
+  },
+  "dernier_runtime_candidat_publie_historique": {
+    "version": "0.2.75",
+    "branche": "codex/bitume-0275-fps-cockpit-20261121",
+    "physique": "p15",
+    "moteur": "FERRO 0.3.15",
+    "circuits": 9,
+    "html_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
+    "statut": "publie_sur_main",
+    "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0275/BUILD-0275.json",
+    "portes_restantes": [],
+    "reserve_decor": "Ouverte : 172/152/168/155 ms historiques ; diagnostic local 151,87/138,20/141,13/84,43/85,68 ms, un échec au seuil strict <150 ms ; aucun gain prouvé.",
+    "candidat_precedent_bloque": {
+      "version": "0.2.74",
+      "pr": 50,
+      "constat": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0274/RECEPTION-0274.json"
+    },
+    "commit": "5d59cae6630c49ae62c47303100d61dd63daea56",
+    "commit_fusion": "b1e5e98b9029f6254b86dcfb49780883315a9418",
+    "recu_publication": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
   }
 }

@@ -6,6 +6,8 @@ Les cockpits **.75 et .76 sont refusés**. La référence actuelle est la
 **126 CK RenderBlade**, avec toutes ses images récupérées :
 [40 vues détaillées + couverture](docs/references/ferrari-126ck-renderblade-2026-11-21/README.md).
 La 312 T5 reste historique, elle n'est plus l'objectif de forme.
+**Références publiées sur main**, PR 53, commit `eb10c539` ;
+[reçu et vérification des 41 originaux](docs/references/ferrari-126ck-renderblade-2026-11-21/PUBLICATION.json).
 
 Lire la [fiche active](docs/reprise/OBJECTIF-126CK-2026-11-21.md), puis seulement
 `etat_courant` dans `docs/reprise/ETAT.json`. Prochaine action : reconstruire
@@ -16,7 +18,7 @@ Une galerie publiée ne vaut pas modèle corrigé ou validé.
 
 Main livre encore **0.2.75 / p15 / FERRO 0.3.15**, PR 51. Les preuves de publication
 sont conservées, mais elles n'approuvent plus la forme du cockpit.
-Le candidat [PR 52 (.76)](https://github.com/M4D135/bitume/pull/52) est bloqué :
+Le candidat [PR 52 (.76)](https://github.com/M4D135/bitume/pull/52) est clos sans fusion :
 volant/tableau refusés, reflets des miroirs vers le sol/pneu, CI générales en échec.
 Une inclinaison mécanique des glaces est en préparation isolée, sans nouveau build.
 Pluie/neige calmes dos au vent, trois nouveaux klaxons et FOV 70° restent préparés

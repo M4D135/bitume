@@ -5,12 +5,12 @@
     "version_publiee_verifiee": "0.2.75",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "references_126ck_documentees_cockpits_0275_0276_refuses",
-    "lot": "reference_voiture_126ck",
+    "statut": "references_126ck_publiees_sur_main_cockpits_0275_0276_refuses",
+    "lot": "habitacle_pilote_commun",
     "fiche": "docs/reprise/OBJECTIF-126CK-2026-11-21.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
     "derniere_entree": "040",
-    "prochaine_action": "Publier les 41 références puis reprendre la voiture et son cockpit depuis la 126 CK RenderBlade, FOV demandé 70°.",
+    "prochaine_action": "Reprendre le volant et le poste puis la voiture depuis les références 126 CK publiées ; FOV demandé 70°, pluie arrière et klaxons conservés dans les préparations.",
     "dernier_lot_clos": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
     "fiche_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
     "index": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
@@ -71,9 +71,9 @@
     "commit_fusion": "b1e5e98b9029f6254b86dcfb49780883315a9418",
     "tete_qualifiee": "5d59cae6630c49ae62c47303100d61dd63daea56",
     "pr_publiee": 51,
-    "branche_candidate": "codex/bitume-0275-fps-cockpit-20261121",
-    "version_candidate": "0.2.75",
-    "branche_pr": "codex/bitume-0275-fps-cockpit-20261121",
+    "branche_candidate": null,
+    "version_candidate": null,
+    "branche_pr": null,
     "preuve_candidat_0272": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0272/BUILD-0272.json",
     "preuve_candidat_0273": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/BUILD-0273.json",
     "preuve_candidat_0274": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0274/BUILD-0274.json",
@@ -81,7 +81,8 @@
     "preuve_candidat_0275": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0275/BUILD-0275.json",
     "fiche_cockpit_pluie": "docs/reprise/COCKPIT-PLUIE-2026-11-20.md",
     "preuve_publication_0275": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
-    "statut_candidat_0275": "publie_sur_main"
+    "statut_candidat_0275": "publie_sur_main",
+    "candidat_126ck_construit": false
   },
   "publication": {
     "version": "0.2.75",
@@ -1092,8 +1093,11 @@
     "modele_runtime_corrige": false,
     "fov_demande": 70,
     "fov_unite_candidate": "verticale",
-    "statut": "references_documentees",
-    "paires_rendu_filaire_verifiees": 20
+    "statut": "references_publiees_sur_main",
+    "paires_rendu_filaire_verifiees": 20,
+    "publication": "docs/references/ferrari-126ck-renderblade-2026-11-21/PUBLICATION.json",
+    "pr": 53,
+    "commit_publication": "eb10c539749a1d0a978ba3b2a78c128e368db194"
   },
   "candidat_poste_0276": {
     "pr": 52,
@@ -1131,7 +1135,8 @@
       "archives_exactes_fichiers": 4124
     },
     "fusionne": false,
-    "recu": "docs/reprise/rapports/POSTE-CONDUITE-2026-11-21/reception-0276/RECEPTION-PARTIELLE-BLOQUEE-0276.json"
+    "recu": "docs/reprise/rapports/POSTE-CONDUITE-2026-11-21/reception-0276/RECEPTION-PARTIELLE-BLOQUEE-0276.json",
+    "pr_fermee_sans_fusion": true
   },
   "inspiration_race": {
     "url": "https://github.com/satyam-fp/race",

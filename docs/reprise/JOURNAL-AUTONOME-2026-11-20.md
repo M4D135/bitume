@@ -756,3 +756,8 @@ Autre demande : [étude de satyam-fp/race](REFERENCE-RACE-2026-11-21.md) au comm
 existants ; sources Rust absentes, shaders embarqués et interfaces JS examinés,
 aucun code ou asset repris, aucune performance ni qualité de conduite jouée revendiquée.
 PR 43, autres préparations et réserve décor préservés. Aucun déploiement.
+
+Publication documentaire confirmée : PR 53 fusionnée, main `eb10c539749a1d0a978ba3b2a78c128e368db194`,
+arbre `b27b05f195cc93c0c1c4ad18d98e63ef5e7cd128`. Les 41 images relues depuis Git
+sont identiques aux originaux. Runtime .75 inchangé. PR 52 close sans fusion ; branche
+conservée. [Reçu](../references/ferrari-126ck-renderblade-2026-11-21/PUBLICATION.json).
