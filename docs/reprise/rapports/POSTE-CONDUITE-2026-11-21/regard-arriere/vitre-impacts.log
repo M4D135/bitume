@@ -1,0 +1,16 @@
+impacts en 4 s / force initiale : [[2,0.3362877079658211],[5,0.49392257107479964],[8,0.683084406805574],[12,0.8407192699145526]]
+✔ arrivée brève puis perle persistante : âge d’impact distinct et aucun nouveau pool (10.692045ms)
+✔ pluie fine, modérée, forte et très forte : davantage d’arrivées et impacts plus marqués (16.064873ms)
+✔ sec, abri, neige et fonte ne créent aucun impact ; eau présente conservée sous abri (18.863471ms)
+✔ impacts identiques à 30/47/60/120/144 Hz, pause exacte et graines J1/J2 indépendantes (33.116403ms)
+✔ l’impact suit la perle, gravité à l’arrêt et expulsion radiale à 300 km/h conservées (0.986076ms)
+✔ Canvas2D dessine une couronne locale avant le ruissellement, sans lecture de pixels (1.55245ms)
+✔ le vrai raccord WebGL reçoit les impacts en Légère et Fine, avec ses plafonds et sa source de vue (8.71151ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 96.436408

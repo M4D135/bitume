@@ -1,8 +1,8 @@
 {
-  "version": "0.2.75",
-  "raw": 14511184,
-  "gzip": 3467777,
-  "sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
+  "version": "0.2.77",
+  "raw": 14513844,
+  "gzip": 3468992,
+  "sha256": "09aa278d0ced47fd88728d33c59a13fda1a808571df117072ad6d7af251be564",
   "sources": {
     "moteur/renderer.js": 313289,
     "ferro/engine.js": 2025,
@@ -24,7 +24,7 @@
     "obstacles.js": 18724,
     "strategie-stands.js": 17278,
     "course.js": 59184,
-    "son.js": 45844,
+    "son.js": 47554,
     "botanique.js": 22599,
     "ecologie.js": 3127,
     "saisons.js": 5684,
@@ -43,8 +43,8 @@
     "humain-corps.js": 3116,
     "public.js": 94461,
     "main.js": 10333,
-    "cockpit-matieres.js": 1397,
-    "voiture.js": 156377,
+    "cockpit-matieres.js": 1453,
+    "voiture.js": 156659,
     "eau-carrosserie.js": 16332,
     "animaux.js": 150501,
     "traces.js": 45633,
@@ -54,7 +54,7 @@
     "realisateur.js": 13904,
     "meteo.js": 15134,
     "visiere-optique.js": 32928,
-    "vitre.js": 29741,
+    "vitre.js": 30162,
     "sillage.js": 6008,
     "reseau.js": 19415,
     "pneus-reseau.js": 9636,
@@ -70,8 +70,8 @@
     "scene-bench.js": 23081,
     "vibrations.js": 13482,
     "ombres.js": 12015,
-    "jeu.js": 364438,
-    "index.html": 64500,
+    "jeu.js": 364620,
+    "index.html": 64509,
     "style.css": 85088
   }
 }

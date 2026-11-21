@@ -94,6 +94,20 @@ verifier('le flux reçoit le vecteur PhysX et le regard réel, sans rafale lors 
   j.dessiner(S, 'poursuite', 1/30, false, [500,120,-700], undefined, { yaw: .6+Math.PI, pitch: -.2, roll: .3 });
   assert.notEqual(j.vues()[0].flux.deriveX, flux.deriveX, 'le regard arrière reprojette le même mouvement');
 });
+verifier('le vrai raccord garde la même vitesse physique mais calme la lentille tournée derrière', () => {
+  const j = jeu(), S = seance(); j.initialiser(S);
+  Object.assign(S.meteo, { ventX: 0, ventZ: 0 });
+  S.course.joueur.etat.v = 80;
+  S.course.joueur.etat._physx = { velocity: [0, 0, -80] };
+  j.dessiner(S, 'poursuite', 1/30, false, [0,2,0], undefined, { yaw: 0 });
+  const avant = { ...j.vues()[0].flux };
+  j.dessiner(S, 'poursuite', 1/30, false, [0,2,-14.8], undefined, { yaw: Math.PI });
+  const arriere = j.vues()[0].flux;
+  assert.deepEqual([S.vitreContexte.vitesseX,S.vitreContexte.vitesseY,S.vitreContexte.vitesseZ], [0,0,-80]);
+  assert(avant.expansion > .3 && avant.air > .5);
+  assert.equal(arriere.expansion, 0); assert.equal(arriere.air, 0); assert.equal(arriere.graviteY, 1);
+  assert.equal(S.vitreContexte.actif, true, 'la lentille arrière reste active');
+});
 verifier('sans PhysX, une accélération sur route plate ne transforme pas le tangage en montée', () => {
   const { S, et, contexte: c } = supportClassique();
   assert(et.along > 0 && et.tangage > .05, 'véritable accélération et attitude non horizontale');

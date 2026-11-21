@@ -1,0 +1,22 @@
+visibilité — sources voiture.js:13a96a4d8b596f70fe085829f68ec41b4202443151430716cd9e44f97bdd9508 jeu.js:f3888a459bb82f049839889ccf9415016be2ca316404629033a4780e78085c7a
+volant=-1 haut jante=0.718605 casquette=0.738529 yeux=0.79
+volant=0 haut jante=0.718658 casquette=0.738529 yeux=0.79
+volant=1 haut jante=0.718605 casquette=0.738529 yeux=0.79
+cadrage 16:9 : champ vertical=70°, largeur jante=25.525 %
+chaussée : 324 rayons, 0 occultés
+glaces : 120 cadres, 0 recouvrements ou marges < 2 px
+✔ oracles : triangle masquant réel et chevauchement des polygones sont détectés (0.994037ms)
+✔ yeux, assise et épaules conservés ; volant et casquette communs aux deux vues (217.413147ms)
+✔ jante et casquette sous les yeux, volant de taille physique conservée (4.223433ms)
+✔ 70° verticaux en 16:9 : la jante occupe entre un cinquième et trois dixièmes de la largeur (2.673048ms)
+✔ chaussée à 10/20/40/80 m : aucun triangle opaque sur les 324 rayons du corridor central (8091.774908ms)
+✔ regard, freinage et virage réels : rétros entiers et séparés des commandes dans les vrais cadres (6106.901782ms)
+✔ la seconde vue garde son propre cadrage quand elle hérite de la séance J1 (0.765696ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14431.450513

@@ -86,6 +86,14 @@ const options = x => Object.fromEntries(['anticrenelage','ombres','vegetation'].
 let controles = 0;
 function verifier(nom, f) { f(); controles++; console.log('ok ' + nom); }
 
+verifier('champ cockpit : défaut 70 degrés, choix mémorisés conservés et référence fidèle au défaut', () => {
+  assert.equal(jeu().reglages.champ, 70);
+  for (const champ of [60, 70, 95, 105]) assert.equal(jeu({ champ }).reglages.champ, champ);
+  const j = jeu({ champ: 95 });
+  j.reference(); assert.equal(j.reglages.champ, 70);
+  j.restaurerReference(); assert.equal(j.reglages.champ, 95);
+});
+
 verifier('annonces de virage : désactivées par défaut, trois choix persistés, valeurs invalides refusées', () => {
   assert.equal(jeu().reglages.annoncesVirages,'non');
   assert.equal(jeu({annoncesVirages:'inconnue'}).reglages.annoncesVirages,'non');

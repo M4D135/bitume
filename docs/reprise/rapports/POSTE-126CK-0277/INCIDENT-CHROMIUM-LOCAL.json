@@ -1,0 +1,77 @@
+{
+  "format": "bitume-controle-visuel",
+  "formatVersion": 1,
+  "date": "2026-11-21T08:09:05.906Z",
+  "url": "file:///workspace/scratch/9369bec02074/bitume/dist/bitume.html",
+  "scenario": "piste",
+  "variante": "enrichi",
+  "parametres": {
+    "graine": 17017,
+    "circuit": 0,
+    "qualite": "high",
+    "mode": "solo",
+    "vue": "cockpit",
+    "vue2": "cockpit",
+    "meteo": "sec",
+    "moment": "jour",
+    "saison": "ete",
+    "partage": "haut-bas",
+    "retro": "oui",
+    "depart": 280,
+    "vitesse": 35,
+    "images": 2,
+    "pas": 0.016666666666666666,
+    "chauffe": 24,
+    "taille": [
+      1280,
+      720
+    ],
+    "angle": "swiftshader"
+  },
+  "horloge": {
+    "mode": "raf-commande",
+    "departMs": 1000,
+    "pasMs": 16.666666666666668,
+    "performancesQualifiees": false
+  },
+  "source": {
+    "commit": "2aaa67f6e9ba2477279dd01fb58b20d8acb21e9f",
+    "modifications": [
+      "M .github/workflows/qualification-cockpit.yml",
+      " M AGENTS.md",
+      " M REPRISE.md",
+      " M SIZE.json",
+      " M VERSION.json",
+      " M dist/bitume.html",
+      " M docs/reprise/ETAT.json",
+      " M docs/reprise/FILE-TRAVAIL.json",
+      " M docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
+      " M src/cockpit-matieres.js",
+      " M src/jeu.js",
+      " M src/voiture.js",
+      " M verifications/cockpit-mecanique.test.mjs",
+      " M verifications/fixtures/voiture-identite.json",
+      " M verifications/integration-parallele.test.mjs",
+      "?? docs/reprise/POSTE-126CK-0277.md",
+      "?? verifications/retroviseurs-reflexion.test.mjs"
+    ]
+  },
+  "build": {
+    "sha256": "4b919cd89105a32cdd405b103ece658b7f0b981d0cbfcff5c1088ff78c969469",
+    "octets": 14513845
+  },
+  "environnement": {},
+  "referenceJeu": null,
+  "images": [],
+  "alertes": [],
+  "erreurs": [],
+  "avertissements": [],
+  "limites": [
+    "Temps rAF commandé, aucune conclusion FPS/temps image réel à partir de cette séquence.",
+    "Les alertes visuelles sont des candidats à examiner, pas des défauts prouvés.",
+    "Le son, les manettes physiques et une partie WebRTC entre machines ne sont pas qualifiés.",
+    "Les zones rectangulaires suivent les toiles visibles ; les éléments de HUD superposés peuvent masquer un défaut local.",
+    "Deux images : aucun contrôle de variation fugitive sur trois images."
+  ],
+  "fatal": "Error: Chrome arrêté : /usr/bin/chromium: 9: [: 5225713664: unexpected operator\n[24:24:1121/090906.215939:FATAL:chrome/browser/process_singleton_posix.cc:297] Check failed: . socket() failed: Operation not permitted (1)\n[1121/090906.216119:ERROR:third_party/crashpad/crashpad/util/linux/scoped_ptrace_attach.cc:27] ptrace: Operation not permitted (1)\n[46:46:0100/000000.252048:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)\n[45:45:0100/000000.252623:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)\n\n    at capturer (file:///workspace/scratch/9369bec02074/bitume/tools/controle-visuel.mjs:190:24)\n    at async campagneHabitacle (file:///workspace/scratch/9369bec02074/bitume/tools/captures-habitacle.mjs:366:22)\n    at async file:///workspace/scratch/9369bec02074/bitume/tools/captures-habitacle.mjs:383:19"
+}

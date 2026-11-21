@@ -29,13 +29,17 @@
     const vy = vectoriel ? nombre(c.vitesseY) : fy * vitesse;
     const vz = vectoriel ? nombre(c.vitesseZ) : fz * vitesse;
     const wx = clamp(nombre(c.ventX) - vx, -240, 240), wy = clamp(nombre(c.ventY) - vy, -240, 240), wz = clamp(nombre(c.ventZ) - vz, -240, 240);
-    const norme = Math.hypot(wx, wy, wz), incidence = norme > 1e-9 ? Math.abs(wx * fx + wy * fy + wz * fz) / norme : 0;
-    const air = Math.pow(clamp((norme - 8) / 100, 0, 1), 1.65);
-    out.air = air; out.vitesseAir = norme;
-    // Regarder derrière ne fait pas aspirer l'eau vers le centre : le flux rase aussi le côté arrière.
-    out.expansion = .80 * air * (.15 + .85 * incidence);
-    out.deriveX = clamp(wx * rx + wy * ry + wz * rz, -120, 120) * .0028;
-    out.deriveY = -clamp(wx * ux + wy * uy + wz * uz, -120, 120) * .0028;
+    const norme = Math.hypot(wx, wy, wz), entrant = Math.max(0, -(wx * fx + wy * fy + wz * fz));
+    const tangentX = wx * rx + wy * ry + wz * rz, tangentY = wx * ux + wy * uy + wz * uz;
+    // Seule la normale entrante charge la face observée. Dos au vent, la composante
+    // qui s'en éloigne ne devient ni pression frontale ni aspiration ; le cisaillement
+    // tangent et la gravité restent présents, y compris en dérive ou avec du vent latéral.
+    const expose = Math.hypot(entrant, tangentX, tangentY), incidence = norme > 1e-9 ? entrant / norme : 0;
+    const air = Math.pow(clamp((expose - 8) / 100, 0, 1), 1.65);
+    out.air = air; out.vitesseAir = norme; out.vitesseIncidente = entrant;
+    out.expansion = .80 * air * incidence;
+    out.deriveX = clamp(tangentX, -120, 120) * .0028;
+    out.deriveY = -clamp(tangentY, -120, 120) * .0028;
     out.graviteX = -ry; out.graviteY = uy; out.centreX = .5; out.centreY = .45;
     return out;
   }
@@ -73,7 +77,7 @@
       graine: options && Number.isInteger(options.graine) ? options.graine | 0 : 0,
       creditEau: 0, creditNeige: 0, largeur: canvas ? canvas.clientWidth || canvas.width || 1 : 1280,
       hauteur: canvas ? canvas.clientHeight || canvas.height || 1 : 720, dpr: 1, dprPalier: null, propre: true, libere: false,
-      flux: { air: 0, vitesseAir: 0, expansion: 0, deriveX: 0, deriveY: 0, graviteX: 0, graviteY: 1, centreX: .5, centreY: .45 },
+      flux: { air: 0, vitesseAir: 0, vitesseIncidente: 0, expansion: 0, deriveX: 0, deriveY: 0, graviteX: 0, graviteY: 1, centreX: .5, centreY: .45 },
       opacite: 1, impactsActifs: false, impactTampon: new Float32Array(4),
       stats: { backend: 'canvas2d', pret: !!contexte, gouttes: 0, neige: 0, dessins: 0, etapes: 0, largeur: 0, hauteur: 0, dpr: 1, pixels: 0, fraction: 0,
         fusionsEau: 0, fusionsNeige: 0, fonte: 0, expulses: 0, seches: 0, surfaceExpulsee: 0,
@@ -197,11 +201,14 @@
     }
     return nombre;
   }
-  function avancer(e, c, budget, pluie, neige, vitesse, intensite) {
+  function avancer(e, c, budget, pluie, neige, intensite) {
     e.temps += PAS; e.stats.etapes++;
     const couvert = !!c.abri, eau = couvert || neige ? 0 : pluie, flocons = couvert ? 0 : neige;
     const spray = couvert || neige ? 0 : clamp(Number(c.embruns) || 0, 0, 1);
-    const flux = e.flux, air = flux.air, aspect = e.hauteur / e.largeur, rythme = 3 + vitesse * .12;
+    const flux = e.flux, air = flux.air, aspect = e.hauteur / e.largeur;
+    // L'arrivée sur cette face suit aussi la vitesse relative incidente : une lentille
+    // tournée dos au vent ne reçoit pas un surcroît d'impacts par la seule vitesse du véhicule.
+    const vitesse = Math.min(120, flux.vitesseIncidente), rythme = 3 + vitesse * .12;
     // L'air évacue la pluie libre ; les pneus de la voiture devant continuent d'envoyer de nouveaux impacts.
     // Le sillage a son propre flux, qui reste abondant à 300 km/h sans ralentir l'évacuation des gouttes présentes.
     const exposition = (c.cockpit === false ? .60 : 1) * intensite;
@@ -279,10 +286,9 @@
     e.impactsActifs = impactsExposes(c);
     e.largeur = Math.max(1, Number(c.largeur) || e.largeur); e.hauteur = Math.max(1, Number(c.hauteur) || e.hauteur);
     const pluie = clamp(Number(c.pluie) || 0, 0, 1), neige = clamp(Number(c.neige) || 0, 0, 1);
-    const vitesse = clamp(Math.abs(Number(c.vitesse) || 0), 0, 120);
     calculerFlux(c, e.flux);
     e.accumulateur += Math.min(.25, dt);
-    while (e.accumulateur + 1e-10 >= PAS) { avancer(e, c, budget, pluie, neige, vitesse, intensite); e.accumulateur -= PAS; }
+    while (e.accumulateur + 1e-10 >= PAS) { avancer(e, c, budget, pluie, neige, intensite); e.accumulateur -= PAS; }
     return e.stats;
   }
   // Dessin à la fraction k du pas en cours, entre l'état d'avant le dernier pas et celui d'après : la
@@ -392,8 +398,7 @@
         return e.stats;
       }
       dimensionner(e, c, budget);
-      const vitesse = clamp(Math.abs(Number(c.vitesse) || 0), 0, 120);
-      while (e.accumulateur + 1e-10 >= PAS) { avancer(e, c, budget, pluie, neige, vitesse, intensite); e.accumulateur -= PAS; }
+      while (e.accumulateur + 1e-10 >= PAS) { avancer(e, c, budget, pluie, neige, intensite); e.accumulateur -= PAS; }
     } else if (vide && e.propre) return e.stats;
     if (e.stats.gouttes || e.stats.neige || !e.propre) dessiner(e, clamp(e.accumulateur / PAS, 0, 1));
     return e.stats;

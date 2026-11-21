@@ -1,0 +1,12 @@
+gestes extrêmes : 60 poses de surfaces, trois LOD, aucun contact hors attache
+continuité du coude aux extrêmes : [{"cote":-1,"pasM":0.0011124396737509736,"demiPasM":0.0005562234201019658},{"cote":1,"pasM":0.0011124396737509736,"demiPasM":0.0005562234201019658}]
+✔ poing/salut extrêmes : thorax, coque, tête et autre bras dégagés aux trois LOD (15451.143669ms)
+✔ le pire intervalle de coude reste continu quand le pas d’intensité est divisé par deux (4513.095978ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19970.999665

@@ -1,0 +1,21 @@
+ok le flux reçoit le vecteur PhysX et le regard réel, sans rafale lors d’une coupe de caméra
+ok le vrai raccord garde la même vitesse physique mais calme la lentille tournée derrière
+ok sans PhysX, une accélération sur route plate ne transforme pas le tangage en montée
+ok sans PhysX, montée et recul suivent les poses physiques et restent indépendants du regard
+ok sans PhysX, la dérive utilise le déplacement du véhicule et pas l’axe de sa caisse
+ok sans PhysX, un replacement égalise les poses et ne crée aucune rafale
+ok sans poses précédentes, le repli minimal garde le recul dans le plan sans inventer une vitesse verticale
+ok les deux joueurs gardent leur propre mouvement et leur propre orientation de flux
+ok réglage 0..2 conservé au chargement, valeurs invalides ramenées au défaut 1
+ok curseur standard accessible, valeur affichée, persistance et rendu utilisent le même choix
+ok vues cockpit/extérieures et les deux vitres restent indépendantes
+ok la vraie pause et son menu de réglages conservent les dépôts, reprise sans saut de temps
+ok précipitations neige réelles, saison et exception côtière restent celles du jeu
+ok la source optique suit le rendu courant et les embruns sont propres à chaque caméra
+ok un changement de voiture filmée emploie immédiatement sa vitesse et son identifiant
+ok les projections à 300 km/h suivent le panache humide, avec des vitres J1/J2 indépendantes
+ok les plans aériens et distants n’ont aucun dépôt ; toutes les vues embarquées les rétablissent
+ok vue arceau : abri et sec sans nouveaux dépôts, pause sans avance
+ok la poursuite à 2,45 m reçoit des gouttes du rival même sans pluie ambiante
+ok les glaces J1/J2 sont composées après les deux vitres ; le HUD reste après la scène
+vitre intégration : 20 contrôles passés

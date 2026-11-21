@@ -68,7 +68,8 @@ test('assemblage réel : un raccord unique avant J2/J1 et instruments communs', 
   const j2 = source.indexOf('rendreVue(S.vueJ2', debutImage);
   assert(actualiser < consommation && consommation < j2);
   assert(!extraire('provoquer').includes('son'));
-  assert(source.includes('INCLINAISON_COCKPIT = -Math.PI / 18'));
+  // Le cadrage réel et le champ sont couverts par cockpit-visibilite.test.mjs et
+  // options-image.test.mjs ; le raccord Troll n'impose pas une inclinaison historique.
   assert(source.includes('pilote.regime = etatPilote.regime; pilote.kmh = B.conduite.kmh(etatPilote);'));
   assert.equal(sha(readFileSync(path.join(racine, 'src/jeu.js'))), partageAvant);
 });

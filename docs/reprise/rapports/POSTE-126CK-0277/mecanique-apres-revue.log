@@ -1,0 +1,12 @@
+✔ colonne descendante vers l’avant, face du volant orientée vers les yeux (0.854658ms)
+✔ volant de taille physique conservée et éloigné des yeux (6.076329ms)
+✔ support compact, trois cadrans sous le sommet apparent de la jante (5.159377ms)
+✔ boîtiers bas, pattes courtes et presque horizontales (2.20234ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 20.718076

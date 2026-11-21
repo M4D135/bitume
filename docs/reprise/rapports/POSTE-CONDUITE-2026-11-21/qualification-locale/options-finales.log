@@ -1,0 +1,13 @@
+ok champ cockpit : défaut 70 degrés, choix mémorisés conservés et référence fidèle au défaut
+ok annonces de virage : désactivées par défaut, trois choix persistés, valeurs invalides refusées
+ok chargement : anciennes préférences et choix invalides reprennent le profil
+ok gestionnaire change : les trois choix sont sauvegardés et rechargés
+ok cadence : valeur normalisée au chargement, choix du menu sauvegardé et donné à la cadence
+ok faune et moment avant départ : préférences indépendantes persistées
+ok saison choisie avant départ : sauvegarde et cache du décor distincts
+ok AA et ombres changent le profil sans reconstruire le circuit ni la séance
+ok végétation : application à la séance suivante et cache distinguant la densité
+ok reference(options) applique les surcharges et restitue les préférences précédentes
+ok stockage : écritures de course différées, relues fraîches, calculées à la vidange
+ok références successives sans options reviennent au profil, puis aux choix antérieurs
+options image : 12 contrôles passés

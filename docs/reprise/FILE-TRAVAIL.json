@@ -40,13 +40,13 @@
     {
       "id": "habitacle_pilote_commun",
       "objectif": "Même habitacle monde entre vues, assise plus basse et bras dégagés du buste",
-      "etat": "published",
-      "phase": "pilote_Troll_cockpit_HUD_publies_0275",
+      "etat": "in_progress",
+      "phase": "poste_0277_pour_essai",
       "dependances": [
         "references"
       ],
       "fiche": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
-      "prochain_sous_lot": "clos_pour_le_correctif_cockpit_HUD_0275",
+      "prochain_sous_lot": "publication_poste_0277_puis_carrosserie_126ck",
       "cloture": "Identité géométrique monde sans homothétie par vue ; assise commune mesurée ; dégagements bras/buste/coque et contacts ; gestes et LOD ; images exactes et coût qualifiés",
       "preuves": [
         "docs/reprise/preparations/habitacle-commun-2026-11-20/CHECKPOINT.json",
@@ -58,8 +58,8 @@
         "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
       ],
       "acquis": "Géométrie commune et T3 conservés ; cockpit/rétros/pluie/HUD reçus et publiés en 0.2.75, dont dix PNG exacts et les deux braquages maintenus.",
-      "reste": "Limites LOD et matérielles conservées ; enrichissements de matières et autres travaux dans leurs lots distincts.",
-      "reserve_lisibilite_cockpit": "Blocage corrigé sur les cinq groupes exacts 0.2.75 ; pas de qualification universelle de tous les formats.",
+      "reste": "Fidélité du modèle complet 126 CK, finition des commandes, appréciation du joueur et limites matérielles.",
+      "reserve_lisibilite_cockpit": "Refus .75/.76 conservés ; première reprise .77 à qualifier en images.",
       "limite_images_lod": "Quatre PNG LOD extérieurs : coque d’environ 25–30 pixels, silhouette validée ; détails des bras non lisibles dans ces images.",
       "suivi_lisibilite_cockpit": {
         "statut": "clos_sur_cas_qualifies_0275",
@@ -94,7 +94,7 @@
         "site_deploye": false
       },
       "statut": "in_progress",
-      "fiche_active": "docs/reprise/OBJECTIF-126CK-2026-11-21.md",
+      "fiche_active": "docs/reprise/POSTE-126CK-0277.md",
       "reserve": "Les cockpits .75 et .76 sont refusés ; reprise depuis la référence 126 CK."
     },
     {
@@ -732,13 +732,15 @@
   },
   "base_initiale": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_candidat": {
-    "statut": "aucun_candidat_126ck_construit",
-    "version": null,
+    "statut": "preparation_0277",
+    "version": "0.2.77",
     "base_runtime_main": "0.2.75",
     "preparations_conservees": [
       "PR52 / 02afea62 : météo, son, FOV et modèle refusé",
       "docs/reprise/preparations/miroirs-0277/README.md"
-    ]
+    ],
+    "branche": "codex/bitume-0277-publication-20261121",
+    "fiche": "docs/reprise/POSTE-126CK-0277.md"
   },
   "demandes_video_survol_2026_11_20": {
     "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",

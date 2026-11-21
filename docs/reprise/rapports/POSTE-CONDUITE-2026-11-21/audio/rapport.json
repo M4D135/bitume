@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "source": "src/son.js",
+  "source_sha256": "ed5a117edfb8876b4a6d52f1fc4858ef689e1b6b5988d7754574fb7b3c9bbe7b",
+  "frequence_hz": 48000,
+  "format": "WAV PCM 16 bits mono",
+  "appel": "BITUME.son.synthKlaxons(frequence_hz)",
+  "ecoute_effectuee": false,
+  "gain_lecture_jeu": 0.32,
+  "limites": [
+    "Tampons seuls avant gain, spatialisation et mixage du jeu ; écoute à effectuer.",
+    "Les mesures de crête et de spectre ne prouvent pas le réalisme perçu."
+  ],
+  "sons": [
+    {
+      "type": "classique",
+      "fichier": "classique.wav",
+      "duree_s": 0.42,
+      "echantillons": 20160,
+      "crete": 0.8500000238418579,
+      "rms": 0.26338794045544395,
+      "sha256": "333d8ab2ae971d3fbb58f77cddd7178b680ecbf92efbb9d7653e407e95d117cf",
+      "tampon_float32_sha256": "8e55b2a9e3f75eea57b77d645400a16a0c9dc84c1e1669ae85da1f3749b89f33"
+    },
+    {
+      "type": "ancien",
+      "fichier": "ancien.wav",
+      "duree_s": 0.5600208333333333,
+      "echantillons": 26881,
+      "crete": 0.8500000238418579,
+      "rms": 0.3413687882739999,
+      "sha256": "b88ef67cc9ce7e49cfb3ad650838548765d424d5f12ac9c9d968f6c052b878d7",
+      "tampon_float32_sha256": "7ebcff55579f554ba8788037707152eb6a8208f69fac636538cad99d36c9054a"
+    },
+    {
+      "type": "mariage",
+      "fichier": "mariage.wav",
+      "duree_s": 0.96,
+      "echantillons": 46080,
+      "crete": 0.8500000238418579,
+      "rms": 0.3110314903101435,
+      "sha256": "2f9b648c7479818f0763f2f869d48450d0f74b2d4341637a05c7b6a10e720240",
+      "tampon_float32_sha256": "8525db1b4910fc801b3260ca792e6029f21bb34ceaa1ba0719fe68294b211a24"
+    }
+  ]
+}

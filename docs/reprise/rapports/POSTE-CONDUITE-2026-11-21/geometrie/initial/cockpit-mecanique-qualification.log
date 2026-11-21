@@ -1,0 +1,12 @@
+✔ colonne descendante vers l’avant, face du volant orientée vers les yeux (0.958665ms)
+✔ volant de taille physique conservée et éloigné des yeux (4.019118ms)
+✔ tableau sombre en arche, compte-tours au-dessus des deux petits cadrans (3.374456ms)
+✔ boîtiers bas, pattes courtes et presque horizontales (2.729934ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16.821145

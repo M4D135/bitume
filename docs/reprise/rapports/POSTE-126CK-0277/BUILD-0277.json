@@ -1,0 +1,42 @@
+{
+  "version": "0.2.77",
+  "statut": "candidat_construit_pour_captures",
+  "base_main": "a80ca31c35a552a4f80773926911daad57121ba3",
+  "physique": "p15",
+  "moteur": "FERRO 0.3.15",
+  "modules_verrouilles_verifies": 34,
+  "html": {
+    "path": "dist/bitume.html",
+    "sha256": "09aa278d0ced47fd88728d33c59a13fda1a808571df117072ad6d7af251be564",
+    "bytes": 14513844
+  },
+  "sources_sha256": {
+    "src/voiture.js": "906a5f0bed62e383a41ee6781535ce725b5d8611a22c26c7b2881829c5661e7e",
+    "src/cockpit-matieres.js": "a68c5c0aba3226164c21c8b9171a874aaa0ec31bb44e5ffe24ba0c34bdf4193d",
+    "src/jeu.js": "155b498f75c9b447a79ae94ef57883cda239adfbc72c9fa8531bed0bd0f6e5ac",
+    "src/vitre.js": "7596a3e045ea5c8143a238b49c028f633a4725c53e7c38f6c06616e3d87f0922",
+    "src/son.js": "ed5a117edfb8876b4a6d52f1fc4858ef689e1b6b5988d7754574fb7b3c9bbe7b",
+    "src/index.html": "acb6aedffc3b8dab8ae2462e1d1c32313b3380cd7c87ce0e1fad89e8a588d9a1"
+  },
+  "deux_constructions_identiques": true,
+  "regression_cadrans": {
+    "tests": 2,
+    "rayons": 216,
+    "occultations_candidat": 0,
+    "occultations_temoin": 13
+  },
+  "captures_webgl": "a_recevoir_sur_commit_exact",
+  "campagnes": [
+    "capture-poste",
+    "capture-hud-complement",
+    "capture-pluie-cockpit"
+  ],
+  "limites": [
+    "Essai utilisateur non reçu",
+    "Voiture complète 126 CK encore en cours",
+    "Certains segments numériques peuvent être masqués par les mains ou la jante selon la pose",
+    "Réserve décor stricte <150 ms ouverte",
+    "Aucun déploiement site",
+    "FPS matériels, manettes, écoute humaine et réseau réel non qualifiés"
+  ]
+}
