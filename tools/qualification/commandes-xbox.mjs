@@ -64,10 +64,14 @@ export function observerConduiteXbox() {
 
 export function releverXbox() {
   const J = BITUME_JEU, trace = __BITUME_XBOX, passive = __BITUME_MOBILE;
-  const toile = document.getElementById('scene'), gl = J.rendu?.gl, S = J.session;
+  const toile = document.getElementById('scene'), gl = J.rendu?.gl, S = J.session, chargement = J.chargement;
   return {
     ecran: J.ecran, etape: J.menuArcade.etape, type: S?.type, phase: S?.course?.phase,
     reference: !!S?.reference, pilotageAuto: J.pilotageAuto,
+    horloge: S?.course?.horloge, feux: S?.course?.feux, cadence: J.cadence,
+    chargement: { enCours: chargement.enCours, voile: chargement.voile, etape: chargement.etape },
+    modeCommandes: J.reglages.commandes || ['auto', 'auto'],
+    statutPreparation: document.getElementById('p-manettes')?.textContent || '',
     qualite: J.reglages.qualite, manettes: J.reglages.manettes,
     stocke: JSON.parse(localStorage.getItem('bitume.reglages')),
     cache: JSON.parse(localStorage.getItem(BITUME.autoconfig.CLE)),
@@ -138,11 +142,17 @@ export async function qualifierCommandesXbox(o) {
       }, ms);
     }
   };
-  const attendre = async (predicat, description, ms = 1000 / 60) => {
-    const fin = Date.now() + 180000;
+  const attendre = async (predicat, description, ms = 1000 / 60, delai = 180000) => {
+    const fin = Date.now() + delai; let prochainReleve = Date.now() + 30000;
     while (Date.now() < fin) {
       if (await page.evaluate(predicat)) return;
       await pas(1, ms); await new Promise(r => setTimeout(r, 5));
+      if (Date.now() >= prochainReleve) {
+        const q = await lire();
+        console.log(JSON.stringify({ attente: description, ecran: q.ecran, phase: q.phase,
+          horloge: q.horloge, feux: q.feux, chargement: q.chargement }));
+        prochainReleve = Date.now() + 30000;
+      }
     }
     throw new Error('Attente expirée : ' + description);
   };
@@ -174,6 +184,24 @@ export async function qualifierCommandesXbox(o) {
     await page.screenshot({ path: path.join(o.sortie, nom + '.png'), animations: 'disabled' });
     rapport.captures.push(nom + '.png');
   };
+  const dispositionCommandes = async () => {
+    const q = await page.evaluate(() => {
+      const boites = [...document.querySelectorAll('.joueur-commandes')].map(el => {
+        const b = el.getBoundingClientRect(), t = el.querySelector('table').getBoundingClientRect();
+        return { x: b.x, y: b.y, droite: b.right, bas: b.bottom, tableDroite: t.right,
+          debordement: el.scrollWidth - el.clientWidth };
+      });
+      return { largeur: innerWidth, boites };
+    });
+    assert.equal(q.boites.length, 2);
+    for (const b of q.boites) {
+      assert.ok(b.x >= 0 && b.droite <= q.largeur + 1, 'colonne dans la largeur de l’écran');
+      assert.ok(b.tableDroite <= b.droite + 1 && b.debordement <= 1, 'tableau de commandes sans débordement');
+    }
+    const [a, b] = q.boites;
+    assert.ok(a.droite <= b.x + 1 || a.bas <= b.y + 1, 'commandes J1/J2 sans chevauchement');
+    noter('Colonnes de commandes lisibles sur ' + q.largeur + ' pixels', q);
+  };
   const titrePret = async () => {
     await attendre(() => {
       const J = window.BITUME_JEU;
@@ -200,6 +228,7 @@ export async function qualifierCommandesXbox(o) {
     const pointeurAvant = q.pointeur;
     await choisir('[data-aller="course"]'); q = await lire();
     assert.equal(q.ecran, 'preparation'); assert.equal(q.etape, 0, 'A n’ouvre qu’une étape');
+    assert.match(q.statutPreparation, /Joueur 1 : manette/, 'le solo Auto annonce la manette affectée à J1');
     assert.equal(q.pointeur, pointeurAvant, 'parcours effectué sans pointeur synthétique');
     await bouton(1); assert.equal((await lire()).ecran, 'titre');
     noter('Croix et A ouvrent la préparation, B revient, sans activation de pointeur');
@@ -214,6 +243,16 @@ export async function qualifierCommandesXbox(o) {
     assert.equal(q.annulerVisible, false); assert.deepEqual(q.manettes, avantAnnulation);
     noter('B annule la capture sans changer les affectations ni quitter les réglages');
 
+    await cibler(gazUi); await valeur(0, 1); await pas(1);
+    await page.evaluate(() => { __BITUME_XBOX.pads[0].axes[0] = .4; });
+    await valeur(0, 0); await pas(2);
+    assert.equal((await lire()).annulerVisible, true, 'capture maintenue avec le stick décalé');
+    await bouton(1); q = await lire();
+    assert.equal(q.annulerVisible, false); assert.equal(q.ecran, 'reglages');
+    assert.deepEqual(q.manettes, avantAnnulation);
+    await page.evaluate(() => { __BITUME_XBOX.pads[0].axes[0] = 0; }); await pas(2);
+    noter('B permet de quitter une capture même si le stick ne revient pas au neutre');
+
     await choisir(gazUi); await pas(2); await bouton(2); q = await lire();
     assert.equal(q.annulerVisible, false);
     assert.notDeepEqual(q.manettes?.[0]?.gaz, avantAnnulation?.[0]?.gaz, 'affectation RT remplacée');
@@ -222,8 +261,15 @@ export async function qualifierCommandesXbox(o) {
     const etiquette = await page.locator(gazUi).textContent();
     assert.match(etiquette, /X/); assert.doesNotMatch(etiquette, /RT/);
     noter('A ouvre la capture, X affecte Accélérer et le choix est sauvegardé', { affectations, etiquette });
+    await dispositionCommandes();
     await capture('affectations-xbox');
     assert.equal(q.vibrations, 0, 'aucune vibration dans les menus');
+    for (const [width, height] of [[1280, 720], [390, 844]]) {
+      await page.setViewportSize({ width, height }); await pas(2);
+      await dispositionCommandes();
+      await capture('affectations-' + width + 'x' + height);
+    }
+    await page.setViewportSize({ width: 3840, height: 2160 }); await pas(2);
 
     await page.reload({ waitUntil: 'load', timeout: 180000 }); await titrePret();
     q = await lire(); verifierProfilXbox(q); assert.deepEqual(q.manettes, affectations);
@@ -234,7 +280,7 @@ export async function qualifierCommandesXbox(o) {
     q = await lire(); assert.equal(q.etape, 3, 'bilan avant départ');
     await choisir('#b-depart');
     await attendre(() => BITUME_JEU.ecran === 'course' && !BITUME_JEU.chargement.enCours &&
-      !BITUME_JEU.chargement.voile && BITUME_JEU.session?.course?.phase === 'course', 'départ réel et feux verts', 100);
+      !BITUME_JEU.chargement.voile && BITUME_JEU.session?.course?.phase === 'course', 'départ réel et feux verts', 100, 480000);
     q = await commandeFraiche(); verifierProfilXbox(q);
     const vitesseSansGaz = q.vitesse;
     await valeur(2, 1); q = await commandeFraiche(12);
@@ -250,6 +296,9 @@ export async function qualifierCommandesXbox(o) {
     await choisir('#b-reglages-pause'); await ongletCommandes();
     await choisir('#r-pad-defaut'); q = await lire();
     assert.notDeepEqual(q.manettes?.[0]?.gaz, affectations[0].gaz, 'retour aux commandes par défaut');
+    await cibler('input[name="rcmd0"]'); await bouton(14);
+    assert.equal(await page.locator('input[name="rcmd0"][value="auto"]').isChecked(), true,
+      'le mode Auto est choisi à la manette dans le menu');
     await bouton(1); assert.equal((await lire()).ecran, 'pause');
     await bouton(1); assert.equal((await lire()).ecran, 'course');
     q = await commandeFraiche(); const vitesseAvantRt = q.vitesse;
@@ -274,6 +323,7 @@ export async function qualifierCommandesXbox(o) {
 
     await page.mouse.move(3800, 1080); await page.mouse.down();
     q = await commandeFraiche(); await page.mouse.up();
+    assert.equal(q.modeCommandes[0], 'auto', 'conflit pointeur vérifié en vrai mode Auto');
     assert.equal(q.commande.gaz, 0, 'le clic pointeur Edge n’accélère pas en mode console');
     assert.equal(q.commande.volant, 0, 'le pointeur Edge ne détourne pas le volant');
     assert.notEqual(q.souris, 'oui');

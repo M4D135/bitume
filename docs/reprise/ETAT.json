@@ -16,7 +16,7 @@
     "dernier_lot_clos": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
     "prochaine_action": "Recevoir les commandes du vrai jeu en profil Xbox, la CI et le plafond de pixels ; publier, puis reprendre la PR 56 mains.",
     "branche_candidate": "codex/bitume-xbox-edge-20261121",
-    "version_candidate": "0.2.81",
+    "version_candidate": "0.2.82",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md"
   },
@@ -237,6 +237,26 @@
     "resolution_pixels_max": 921600,
     "banc_automatique": false,
     "essai_xbox_physique": false,
-    "mains_pr56_conservees": true
+    "mains_pr56_conservees": true,
+    "version_candidate": "0.2.82",
+    "reception_initiale": {
+      "commit": "0a731d512df76cee4b12a4bb98231f270198a0b2",
+      "ci_run": 44928652979,
+      "suites_reussies": 193,
+      "suites_echec": 2,
+      "cause_ci": "Dépendances de banc absentes : captureManette dans 03-raccord et commandesManette dans troll-assemble.",
+      "xbox_run": 44928653056,
+      "cause_xbox": "Attente expirée aux feux après 557 pas de conduite, soit 4,64 s simulées ; affectation X et rechargement vérifiés.",
+      "mobile_run": 44928653119,
+      "mobile_conclusion": "success",
+      "correctifs_0282": [
+        "statut solo exact",
+        "annulation B/Menu avant armement avec stick décalé",
+        "deux colonnes de commandes sans troisième colonne implicite",
+        "dépendances des bancs intégrées",
+        "parcours navigateur Auto et contrôles de débordement",
+        "projection physique des rétros dans l’oracle portrait"
+      ]
+    }
   }
 }

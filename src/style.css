@@ -662,7 +662,8 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 /* Commandes des joueurs : appareil et touches (réglages), choix rapide à la préparation d'une course à deux */
 #jeu[data-souris="oui"] { cursor: none; }
 #jeu[data-manette="oui"] { cursor: none; }
-.commandes-joueurs { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px 30px; }
+.commandes-joueurs { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 30px; }
+.joueur-commandes { min-width: 0; }
 .joueur-commandes h3 { margin: 0 0 10px; font: italic 800 24px/1 var(--f-titre); text-transform: uppercase; }
 .choix-commande { margin-bottom: 12px; }
 .table-touches { border-collapse: collapse; width: 100%; max-width: 620px; }
@@ -672,6 +673,9 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 .touche-manette { color: #c7edb9; border-color: #536b50; }
 .etat-manette { color: var(--papier-2); font-size: 14px; line-height: 1.5; min-height: 1.5em; }
 .actions-commandes { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 12px; }
+@media (max-width: 960px) {
+  .commandes-joueurs { grid-template-columns: minmax(0, 1fr); }
+}
 @media (max-width: 480px) {
   .table-touches th { padding-right: 4px; font-size: 10px; letter-spacing: 0; white-space: normal; }
   .table-touches td { padding: 3px 2px; }

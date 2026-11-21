@@ -983,15 +983,16 @@
     $('b-pause').addEventListener('click', () => basculerPause());
   })();
 
-  // ce que tient chaque joueur dans une course à deux, en clair
-  function entreeDe(n) {
-    const [m1, m2] = assigner(manettes), m = n ? m2 : m1, c = commande(n), codes = ['gaz', 'gauche', 'frein', 'droite'].map(a => toucheDe(n, a)[0]);
+  // Même affectation que la course préparée : en solo, le premier pad va à J1.
+  function entreeDe(n, duo = true) {
+    const c = commande(n), ms = duo ? assigner(manettes) : [manettes[0] || null, null];
+    const m = c === 'auto' || c === 'manette' ? ms[n] : null, codes = ['gaz', 'gauche', 'frein', 'droite'].map(a => toucheDe(n, a)[0]);
     const texteClavier = codes.every(k => /^Numpad\d$/.test(k || '')) ? 'pavé numérique (' + codes.map(k => k.slice(6)).join(' ') + ')' : 'clavier (' + codes.map(nomTouche).join(' ') + ')';
     const morceaux = [];
     if (m) morceaux.push('manette');
     else if (c === 'manette') morceaux.push('manette (non détectée)');
     if (c === 'auto' || c === 'clavier') morceaux.push(texteClavier);
-    if (sourisPour(n, true) && (c === 'souris' || !m)) morceaux.push('souris');
+    if (sourisPour(n, duo) && (c === 'souris' || !m)) morceaux.push('souris');
     return morceaux.join(' ou ') || 'rien';
   }
   function changerVue2() {
@@ -4705,7 +4706,7 @@
       pad2.start = start2;
     }
     // préparation d'une course à deux : qui joue avec quoi, selon les choix et les manettes branchées
-    if (ecran === 'preparation') texte($('p-manettes'), (modePrepa === 'duo' ? [0, 1] : [0]).map(n => 'Joueur ' + (n + 1) + ' : ' + entreeDe(n)).join(' · ') + '.');
+    if (ecran === 'preparation') texte($('p-manettes'), (modePrepa === 'duo' ? [0, 1] : [0]).map(n => 'Joueur ' + (n + 1) + ' : ' + entreeDe(n, modePrepa === 'duo')).join(' · ') + '.');
     menuArcade.image(t, ecran === 'preparation', gpuModeste || reglages.qualite === 'low');
     // Aucune simulation ni image de course derrière les écrans opaques ; les entrées et le compte à rebours restent actifs.
     if (menuOpaque()) { tPrec = 0; B.cadence.oublier(cadence); return; }

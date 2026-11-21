@@ -1,0 +1,841 @@
+{
+  "format": "bitume-commandes-xbox-1",
+  "statut": "echec",
+  "commit": "0a731d512df76cee4b12a4bb98231f270198a0b2",
+  "htmlSha256": "53945452b79fdf63c587e5d993f8cd4e8990a9409dd9a750d5405768f64de844",
+  "controles": [
+    {
+      "nom": "Premier démarrage Xbox 4K sans banc et framebuffer borné",
+      "observation": {
+        "ecran": "titre",
+        "etape": 0,
+        "type": "vitrine",
+        "phase": "grille",
+        "reference": false,
+        "pilotageAuto": false,
+        "qualite": "low",
+        "stocke": {
+          "vue": "cockpit",
+          "vue2": "poursuite",
+          "partage": "haut-bas",
+          "boite": "auto",
+          "aide": 0.35,
+          "qualite": "low",
+          "cadence": "auto",
+          "general": 0.8,
+          "moteur": 0.9,
+          "effets": 0.9,
+          "tours": 3,
+          "difficulte": 1,
+          "circuit": 0,
+          "champ": 70,
+          "retro": "non",
+          "pneus": "slicks",
+          "tableau": "reduit",
+          "carte": "oui",
+          "cartePosition": "droite",
+          "carteTaille": "normale",
+          "demo": "oui",
+          "vibrations": "oui",
+          "vibrationForce": 0.5,
+          "meteo": "aleatoire",
+          "anticrenelage": "off",
+          "ombres": "off",
+          "vegetation": "off",
+          "faune": "off",
+          "moment": "jour",
+          "saison": "ete",
+          "saisonMode": "manuel",
+          "momentMode": "manuel",
+          "annoncesVirages": "non",
+          "gouttes": 1,
+          "forcePluie": "forte",
+          "secousses": 1,
+          "pneusPilotes": [
+            "slicks",
+            "slicks"
+          ],
+          "pneusAutoPilotes": [
+            true,
+            true
+          ],
+          "trollPilotes": [
+            {
+              "geste": "majeur",
+              "klaxon": "classique"
+            },
+            {
+              "geste": "majeur",
+              "klaxon": "classique"
+            }
+          ],
+          "meteoMode": "aleatoire",
+          "champRevu": true
+        },
+        "cache": {
+          "revision": 5,
+          "methode": "capacites-declarees",
+          "statut": "ok",
+          "empreinte": "dhmapo",
+          "selection": "low",
+          "reglages": {
+            "qualite": "low",
+            "anticrenelage": "off",
+            "ombres": "off",
+            "vegetation": "off",
+            "faune": "off",
+            "retro": "non"
+          },
+          "appareil": {
+            "selection": "low",
+            "mobile": false,
+            "console": "xbox",
+            "xbox": true,
+            "coeurs": 4,
+            "memoire": 16,
+            "logiciel": true,
+            "integre": false,
+            "incomplet": false
+          },
+          "mesures": [],
+          "date": 1700002178176,
+          "performancesMesurees": false,
+          "appliques": {
+            "qualite": "low",
+            "anticrenelage": "off",
+            "ombres": "off",
+            "vegetation": "off",
+            "faune": "off",
+            "retro": "non"
+          },
+          "gardes": []
+        },
+        "stockageInitial": [],
+        "appels": {
+          "benchmark": 0,
+          "sceneBench": 0,
+          "passive": 1
+        },
+        "surveilles": {
+          "benchmark": true,
+          "sceneBench": true,
+          "passive": true
+        },
+        "viewport": [
+          3840,
+          2160,
+          1
+        ],
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox Series X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0",
+        "framebuffer": [
+          1280,
+          720
+        ],
+        "toile": [
+          1280,
+          720
+        ],
+        "webgl2": true,
+        "physx": true,
+        "lectures": 2,
+        "commandes": 0,
+        "commande": null,
+        "vitesse": 0,
+        "pointeur": 0,
+        "vibrations": 0,
+        "souris": "non",
+        "statutManette": "Manette non reçue. Maintenez Menu ≡ pour passer aux commandes de jeu dans Edge, puis appuyez sur A.",
+        "statutJoueur": "Aucune manette affectée",
+        "annulerVisible": false,
+        "actif": "<button type=\"button\" class=\"gros mode-arcade\" data-aller=\"course\"><span class=\"mode-numero\" aria-hidden=\"true\">01</span><span>Course<small>Vous et onze rivaux</small></span><span class=\"mode-fleche\" aria-hidden=\"true\">↗</span></button>"
+      }
+    },
+    {
+      "nom": "Croix et A ouvrent la préparation, B revient, sans activation de pointeur"
+    },
+    {
+      "nom": "B annule la capture sans changer les affectations ni quitter les réglages"
+    },
+    {
+      "nom": "A ouvre la capture, X affecte Accélérer et le choix est sauvegardé",
+      "affectations": [
+        {
+          "gaz": [
+            {
+              "type": "bouton",
+              "index": 2
+            }
+          ],
+          "frein": [
+            {
+              "type": "bouton",
+              "index": 6
+            }
+          ],
+          "gauche": [
+            {
+              "type": "axe",
+              "index": 0,
+              "sens": -1,
+              "origine": 0
+            }
+          ],
+          "droite": [
+            {
+              "type": "axe",
+              "index": 0,
+              "sens": 1,
+              "origine": 0
+            }
+          ],
+          "derive": [
+            {
+              "type": "bouton",
+              "index": 0
+            }
+          ],
+          "haut": [
+            {
+              "type": "bouton",
+              "index": 5
+            }
+          ],
+          "bas": [
+            {
+              "type": "bouton",
+              "index": 4
+            }
+          ],
+          "vue": [
+            {
+              "type": "bouton",
+              "index": 3
+            }
+          ],
+          "troll": [
+            {
+              "type": "bouton",
+              "index": 10
+            }
+          ]
+        },
+        {
+          "gaz": [
+            {
+              "type": "bouton",
+              "index": 7
+            }
+          ],
+          "frein": [
+            {
+              "type": "bouton",
+              "index": 6
+            }
+          ],
+          "gauche": [
+            {
+              "type": "axe",
+              "index": 0,
+              "sens": -1,
+              "origine": 0
+            }
+          ],
+          "droite": [
+            {
+              "type": "axe",
+              "index": 0,
+              "sens": 1,
+              "origine": 0
+            }
+          ],
+          "derive": [
+            {
+              "type": "bouton",
+              "index": 0
+            },
+            {
+              "type": "bouton",
+              "index": 2
+            }
+          ],
+          "haut": [
+            {
+              "type": "bouton",
+              "index": 5
+            }
+          ],
+          "bas": [
+            {
+              "type": "bouton",
+              "index": 4
+            }
+          ],
+          "vue": [
+            {
+              "type": "bouton",
+              "index": 3
+            }
+          ],
+          "troll": [
+            {
+              "type": "bouton",
+              "index": 10
+            }
+          ]
+        }
+      ],
+      "etiquette": "X"
+    },
+    {
+      "nom": "Affectation conservée après un vrai rechargement",
+      "affectations": [
+        {
+          "gaz": [
+            {
+              "type": "bouton",
+              "index": 2
+            }
+          ],
+          "frein": [
+            {
+              "type": "bouton",
+              "index": 6
+            }
+          ],
+          "gauche": [
+            {
+              "type": "axe",
+              "index": 0,
+              "sens": -1,
+              "origine": 0
+            }
+          ],
+          "droite": [
+            {
+              "type": "axe",
+              "index": 0,
+              "sens": 1,
+              "origine": 0
+            }
+          ],
+          "derive": [
+            {
+              "type": "bouton",
+              "index": 0
+            }
+          ],
+          "haut": [
+            {
+              "type": "bouton",
+              "index": 5
+            }
+          ],
+          "bas": [
+            {
+              "type": "bouton",
+              "index": 4
+            }
+          ],
+          "vue": [
+            {
+              "type": "bouton",
+              "index": 3
+            }
+          ],
+          "troll": [
+            {
+              "type": "bouton",
+              "index": 10
+            }
+          ]
+        },
+        {
+          "gaz": [
+            {
+              "type": "bouton",
+              "index": 7
+            }
+          ],
+          "frein": [
+            {
+              "type": "bouton",
+              "index": 6
+            }
+          ],
+          "gauche": [
+            {
+              "type": "axe",
+              "index": 0,
+              "sens": -1,
+              "origine": 0
+            }
+          ],
+          "droite": [
+            {
+              "type": "axe",
+              "index": 0,
+              "sens": 1,
+              "origine": 0
+            }
+          ],
+          "derive": [
+            {
+              "type": "bouton",
+              "index": 0
+            },
+            {
+              "type": "bouton",
+              "index": 2
+            }
+          ],
+          "haut": [
+            {
+              "type": "bouton",
+              "index": 5
+            }
+          ],
+          "bas": [
+            {
+              "type": "bouton",
+              "index": 4
+            }
+          ],
+          "vue": [
+            {
+              "type": "bouton",
+              "index": 3
+            }
+          ],
+          "troll": [
+            {
+              "type": "bouton",
+              "index": 10
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "captures": [
+    "titre-xbox-4k.png",
+    "affectations-xbox.png",
+    "echec.png"
+  ],
+  "erreurs": [],
+  "limites": [
+    "Chrome/SwiftShader avec identité Xbox Edge, écran CSS 4K et Gamepad API virtuels ; console et manette physiques non qualifiées.",
+    "Temps rAF commandé : aucune mesure ni promesse de FPS matériels.",
+    "Les observateurs comptent les appels et copient les commandes ; les fonctions natives et leurs résultats restent exécutés.",
+    "La démonstration automatique est désactivée en mémoire pour garder le parcours stable ; aucun profil graphique n’est préchargé."
+  ],
+  "echec": "Error: Attente expirée : départ réel et feux verts\n    at attendre (file:///home/runner/work/bitume/bitume/tools/qualification/commandes-xbox.mjs:147:11)\n    at async qualifierCommandesXbox (file:///home/runner/work/bitume/bitume/tools/qualification/commandes-xbox.mjs:236:5)\n    at async file:///home/runner/work/bitume/bitume/tools/qualification/commandes-xbox.mjs:315:15",
+  "dernierEtat": {
+    "ecran": "course",
+    "etape": 3,
+    "type": "course",
+    "phase": "feux",
+    "reference": false,
+    "pilotageAuto": false,
+    "qualite": "low",
+    "manettes": [
+      {
+        "gaz": [
+          {
+            "type": "bouton",
+            "index": 2
+          }
+        ],
+        "frein": [
+          {
+            "type": "bouton",
+            "index": 6
+          }
+        ],
+        "gauche": [
+          {
+            "type": "axe",
+            "index": 0,
+            "sens": -1,
+            "origine": 0
+          }
+        ],
+        "droite": [
+          {
+            "type": "axe",
+            "index": 0,
+            "sens": 1,
+            "origine": 0
+          }
+        ],
+        "derive": [
+          {
+            "type": "bouton",
+            "index": 0
+          }
+        ],
+        "haut": [
+          {
+            "type": "bouton",
+            "index": 5
+          }
+        ],
+        "bas": [
+          {
+            "type": "bouton",
+            "index": 4
+          }
+        ],
+        "vue": [
+          {
+            "type": "bouton",
+            "index": 3
+          }
+        ],
+        "troll": [
+          {
+            "type": "bouton",
+            "index": 10
+          }
+        ]
+      },
+      {
+        "gaz": [
+          {
+            "type": "bouton",
+            "index": 7
+          }
+        ],
+        "frein": [
+          {
+            "type": "bouton",
+            "index": 6
+          }
+        ],
+        "gauche": [
+          {
+            "type": "axe",
+            "index": 0,
+            "sens": -1,
+            "origine": 0
+          }
+        ],
+        "droite": [
+          {
+            "type": "axe",
+            "index": 0,
+            "sens": 1,
+            "origine": 0
+          }
+        ],
+        "derive": [
+          {
+            "type": "bouton",
+            "index": 0
+          },
+          {
+            "type": "bouton",
+            "index": 2
+          }
+        ],
+        "haut": [
+          {
+            "type": "bouton",
+            "index": 5
+          }
+        ],
+        "bas": [
+          {
+            "type": "bouton",
+            "index": 4
+          }
+        ],
+        "vue": [
+          {
+            "type": "bouton",
+            "index": 3
+          }
+        ],
+        "troll": [
+          {
+            "type": "bouton",
+            "index": 10
+          }
+        ]
+      }
+    ],
+    "stocke": {
+      "vue": "cockpit",
+      "vue2": "poursuite",
+      "partage": "haut-bas",
+      "boite": "auto",
+      "aide": 0.35,
+      "qualite": "low",
+      "cadence": "auto",
+      "general": 0.8,
+      "moteur": 0.9,
+      "effets": 0.9,
+      "tours": 3,
+      "difficulte": 1,
+      "circuit": 0,
+      "champ": 70,
+      "retro": "non",
+      "pneus": "slicks",
+      "tableau": "reduit",
+      "carte": "oui",
+      "cartePosition": "droite",
+      "carteTaille": "normale",
+      "demo": "non",
+      "vibrations": "oui",
+      "vibrationForce": 0.5,
+      "meteo": "aleatoire",
+      "anticrenelage": "off",
+      "ombres": "off",
+      "vegetation": "off",
+      "faune": "off",
+      "moment": "jour",
+      "saison": "ete",
+      "saisonMode": "manuel",
+      "momentMode": "manuel",
+      "annoncesVirages": "non",
+      "gouttes": 1,
+      "forcePluie": "forte",
+      "secousses": 1,
+      "pneusPilotes": [
+        "slicks",
+        "slicks"
+      ],
+      "pneusAutoPilotes": [
+        true,
+        true
+      ],
+      "trollPilotes": [
+        {
+          "geste": "majeur",
+          "klaxon": "classique"
+        },
+        {
+          "geste": "majeur",
+          "klaxon": "classique"
+        }
+      ],
+      "meteoMode": "aleatoire",
+      "champRevu": true,
+      "manettes": [
+        {
+          "gaz": [
+            {
+              "type": "bouton",
+              "index": 2
+            }
+          ],
+          "frein": [
+            {
+              "type": "bouton",
+              "index": 6
+            }
+          ],
+          "gauche": [
+            {
+              "type": "axe",
+              "index": 0,
+              "sens": -1,
+              "origine": 0
+            }
+          ],
+          "droite": [
+            {
+              "type": "axe",
+              "index": 0,
+              "sens": 1,
+              "origine": 0
+            }
+          ],
+          "derive": [
+            {
+              "type": "bouton",
+              "index": 0
+            }
+          ],
+          "haut": [
+            {
+              "type": "bouton",
+              "index": 5
+            }
+          ],
+          "bas": [
+            {
+              "type": "bouton",
+              "index": 4
+            }
+          ],
+          "vue": [
+            {
+              "type": "bouton",
+              "index": 3
+            }
+          ],
+          "troll": [
+            {
+              "type": "bouton",
+              "index": 10
+            }
+          ]
+        },
+        {
+          "gaz": [
+            {
+              "type": "bouton",
+              "index": 7
+            }
+          ],
+          "frein": [
+            {
+              "type": "bouton",
+              "index": 6
+            }
+          ],
+          "gauche": [
+            {
+              "type": "axe",
+              "index": 0,
+              "sens": -1,
+              "origine": 0
+            }
+          ],
+          "droite": [
+            {
+              "type": "axe",
+              "index": 0,
+              "sens": 1,
+              "origine": 0
+            }
+          ],
+          "derive": [
+            {
+              "type": "bouton",
+              "index": 0
+            },
+            {
+              "type": "bouton",
+              "index": 2
+            }
+          ],
+          "haut": [
+            {
+              "type": "bouton",
+              "index": 5
+            }
+          ],
+          "bas": [
+            {
+              "type": "bouton",
+              "index": 4
+            }
+          ],
+          "vue": [
+            {
+              "type": "bouton",
+              "index": 3
+            }
+          ],
+          "troll": [
+            {
+              "type": "bouton",
+              "index": 10
+            }
+          ]
+        }
+      ],
+      "commandes": [
+        "manette",
+        "auto"
+      ]
+    },
+    "cache": {
+      "revision": 5,
+      "methode": "capacites-declarees",
+      "statut": "ok",
+      "empreinte": "dhmapo",
+      "selection": "low",
+      "reglages": {
+        "qualite": "low",
+        "anticrenelage": "off",
+        "ombres": "off",
+        "vegetation": "off",
+        "faune": "off",
+        "retro": "non"
+      },
+      "appareil": {
+        "selection": "low",
+        "mobile": false,
+        "console": "xbox",
+        "xbox": true,
+        "coeurs": 4,
+        "memoire": 16,
+        "logiciel": true,
+        "integre": false,
+        "incomplet": false
+      },
+      "mesures": [],
+      "date": 1700002178176,
+      "performancesMesurees": false,
+      "appliques": {
+        "qualite": "low",
+        "anticrenelage": "off",
+        "ombres": "off",
+        "vegetation": "off",
+        "faune": "off",
+        "retro": "non"
+      },
+      "gardes": []
+    },
+    "stockageInitial": [
+      "bitume.detection.v1",
+      "bitume.reglages"
+    ],
+    "appels": {
+      "benchmark": 0,
+      "sceneBench": 0,
+      "passive": 0
+    },
+    "surveilles": {
+      "benchmark": true,
+      "sceneBench": true,
+      "passive": true
+    },
+    "viewport": [
+      3840,
+      2160,
+      1
+    ],
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox Series X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0",
+    "framebuffer": [
+      1280,
+      720
+    ],
+    "toile": [
+      1280,
+      720
+    ],
+    "webgl2": true,
+    "physx": true,
+    "lectures": 553,
+    "commandes": 557,
+    "commande": {
+      "gaz": 0,
+      "frein": 0,
+      "volant": 0,
+      "derive": false,
+      "haut": false,
+      "bas": false
+    },
+    "vitesse": 4.607316126514344e-8,
+    "pointeur": 0,
+    "vibrations": 0,
+    "souris": "non",
+    "statutManette": "Manette non reçue. Maintenez Menu ≡ pour passer aux commandes de jeu dans Edge, puis appuyez sur A.",
+    "statutJoueur": "Aucune manette affectée",
+    "annulerVisible": false,
+    "actif": "<body>\n<style>\n/* BITUME : interface. Polices du système seulement, aucune ressource extérieure. */\n:root {\n  --encre: #0b0d10;\n  --nuit: rgba(10, 12, 15, .78);\n  --nuit-legere: rgba(10, 12, 15, .52);\n  --papier: #f2ecdf;\n  --papier-2: #c9c1b0;\n  --papier-3: #8d877b;\n  --rouge: #e0301e;\n  --rouge-fonce: #9e1d12;\n  --ambre: #f4a51c;\n  --vert: #3cc77"
+  }
+}

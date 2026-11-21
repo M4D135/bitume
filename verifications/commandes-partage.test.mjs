@@ -26,6 +26,7 @@ const ecouteurs = source.slice(source.indexOf('  // conduite par position physiq
 const fabrique = new Function('navigator', 'B', 'session', 'reglages', `
   let ecran = 'course', dernierGeste = 0;
   const compteurVisites = null; // Le compteur du titre est hors du contexte isolé de commandes.
+  const nomTouche = c => c;
   const actions = [], enCourse = () => ecran === 'course', activerSon = () => {};
   const changerVue = () => actions.push('vue1'), changerVue2 = () => actions.push('vue2');
   const basculerPause = () => { actions.push('pause'); ecran = ecran === 'course' ? 'pause' : 'course'; };
@@ -35,9 +36,9 @@ const fabrique = new Function('navigator', 'B', 'session', 'reglages', `
   const addEventListener = (type, fn) => { if (!ecouteurs.has(type)) ecouteurs.set(type, []); ecouteurs.get(type).push(fn); };
   ${declarations}
   ${ecouteurs}
-  ${['lireManette', 'lireManette2', 'commandesJoueur', 'commandesJoueur2'].map(extraire).join('\n')}
+  ${['lireManette', 'lireManette2', 'commandesJoueur', 'commandesJoueur2', 'entreeDe'].map(extraire).join('\n')}
   return { touches, souris, pad, pad2, impulsions2, actions,
-    poll: lireManette, j1: commandesJoueur, j2: commandesJoueur2,
+    poll: lireManette, j1: commandesJoueur, j2: commandesJoueur2, entreeDe,
     event: (type, valeurs = {}) => { const e = { preventDefault() {}, ...valeurs }; for (const fn of ecouteurs.get(type) || []) fn(e); },
     get screen() { return ecran; },
     setSession: s => { session = s; }, setScreen: s => { ecran = s; } };
@@ -83,6 +84,29 @@ for (const choixJ2 of ['auto', 'souris']) test('clavier J1 Auto et souris J2 ' +
   assert.equal(api.j1().gaz, 1); // ordre réel du pas de simulation : J1, puis J2
   const j2 = api.j2();
   assert.equal(j2.gaz, 1); assert.equal(j2.volant, .5); assert.equal(api.souris.active, true);
+});
+test('le statut solo Xbox annonce la manette réellement affectée à J1 en Auto', () => {
+  const { api, navigator, session } = preparer({ userAgent: 'Xbox' });
+  session.type = 'course'; navigator.pads = [manette(0, { 7: .75 })]; api.poll();
+  assert.equal(api.j1().gaz, .75);
+  assert.match(api.entreeDe(0, false), /^manette(?: ou |$)/);
+  assert.doesNotMatch(api.entreeDe(0, false), /souris|non détectée/);
+});
+test('le statut duo conserve la seule manette sur J2 en Auto', () => {
+  const { api, navigator } = preparer();
+  navigator.pads = [manette(0, { 7: .75 })]; api.poll();
+  assert.equal(api.j1().gaz, 0); assert.equal(api.j2().gaz, .75);
+  assert.doesNotMatch(api.entreeDe(0, true), /manette/);
+  assert.match(api.entreeDe(1, true), /^manette(?: ou |$)/);
+});
+test('le statut solo respecte Clavier explicite et le repli souris Auto sur PC', () => {
+  const { api, navigator, session, reglages } = preparer({ reglages: { commandes: ['clavier', 'auto'] } });
+  session.type = 'course'; navigator.pads = [manette(0, { 7: 1 })]; api.poll();
+  assert.equal(api.j1().gaz, 0); assert.doesNotMatch(api.entreeDe(0, false), /manette|souris/);
+  reglages.commandes[0] = 'auto'; navigator.pads = []; api.poll();
+  assert.match(api.entreeDe(0, false), /clavier.*souris/);
+  reglages.commandes[0] = 'manette';
+  assert.equal(api.entreeDe(0, false), 'manette (non détectée)');
 });
 test('manette J1 Auto et souris J2 explicite simultanées', () => {
   const { api, navigator } = preparer({ reglages: { commandes: ['auto', 'souris'] } });

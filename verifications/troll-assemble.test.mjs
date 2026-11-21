@@ -35,21 +35,32 @@ test('candidat exact : commandes, sons, temporalité et retour des vrais modèle
   assert.equal(r.echecs, 0, JSON.stringify(r.controles.filter(c => c.statut !== 'ok')));
   assert.equal(r.controles.length, 4);
   assert.equal(r.qualificationWebGL, false); assert.equal(r.ecouteAudio, false);
+  for (const nom of ['autoconfig.js', 'commandes-manette.js']) assert.match(r.modules[nom], /^[a-f0-9]{64}$/, nom + ' identifié depuis le HTML');
   for (const c of r.controles.slice(0, 2)) {
     assert.equal(c.preuve.mesures.length, 9); assert.equal(c.preuve.pas, 253);
     assert(c.preuve.poses >= 2500); assert.equal(c.preuve.sources.length, 2);
   }
 });
 
-for (const [nom, avant, apres] of [
-  ['consommation coupée', '      consommerTroll(S, poses);', '      /* consommation retirée pour contrôle négatif */'],
-  ['choix J2 remplacé par J1', 'const c = S.enLigne?.troll?.pilotes?.[S.locaux[n]] || choix?.[n];', 'const c = choix?.[0];'],
-  ['son émis deux fois', "      son.evenement('troll', audio);", "      son.evenement('troll', audio); son.evenement('troll', audio);"],
-  ['répétition clavier acceptée', '    if (e.repeat) { if (course) e.preventDefault(); return; }', '    if (false) { if (course) e.preventDefault(); return; }'],
-  ['phase figée', 'o.gestePhase = clamp(age / DUREES[p.geste], 0, 1);', 'o.gestePhase = 0;'],
-  ['retour supprimé', 'if (age >= DUREES[p.geste] || p.retourA !== -Infinity && t - p.retourA >= .14)', 'if (false)']
+for (const nom of ['autoconfig.js', 'commandes-manette.js']) test('dépendance de commandes absente : ' + nom, options, () => {
+  const r = qualifierHtml(mutation('// ---- ' + nom + ' ----', '// ---- absent-' + nom + ' ----'));
+  assert.equal(r.echecs, 1); assert.equal(r.controles.length, 1);
+  assert.equal(r.controles[0].nom, 'chargement-HTML-exact');
+  assert.equal(r.controles[0].erreur, 'Module embarqué absent : ' + nom);
+});
+
+for (const [nom, avant, apres, attendu] of [
+  ['consommation coupée', '      consommerTroll(S, poses);', '      /* consommation retirée pour contrôle négatif */', /exactement une source audio par départ accepté/],
+  ['choix J2 remplacé par J1', 'const c = S.enLigne?.troll?.pilotes?.[S.locaux[n]] || choix?.[n];', 'const c = choix?.[0];', /choix du geste conservé par place locale/],
+  ['son émis deux fois', "      son.evenement('troll', audio);", "      son.evenement('troll', audio); son.evenement('troll', audio);", /exactement une source audio par départ accepté/],
+  ['répétition clavier acceptée', '    if (e.repeat) { if (course) e.preventDefault(); return; }', '    if (false) { if (course) e.preventDefault(); return; }', /répétition clavier ignorée même après réarmement/],
+  ['phase figée', 'o.gestePhase = clamp(age / DUREES[p.geste], 0, 1);', 'o.gestePhase = 0;', /phase temporelle strictement croissante/],
+  ['retour supprimé', 'if (age >= DUREES[p.geste] || p.retourA !== -Infinity && t - p.retourA >= .14)', 'if (false)', /retour terminé à la durée attendue/]
 ]) test('oracle négatif : ' + nom, options, () => {
   const r = qualifierHtml(mutation(avant, apres));
   assert(r.echecs > 0, 'la qualification doit refuser : ' + nom);
   assert(r.controles.some(c => c.nom !== 'chargement-HTML-exact' && c.statut === 'echec'), 'la mutation doit atteindre une assertion de comportement');
+  const echecs = r.controles.filter(c => c.statut === 'echec');
+  assert(echecs.every(c => /^AssertionError\b/.test(c.pile?.[0] || '')), 'aucun échec de montage ne doit valider le contrôle négatif');
+  assert(echecs.some(c => attendu.test(c.erreur)), 'la mutation doit atteindre son assertion métier : ' + nom);
 });

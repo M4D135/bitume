@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
-import { optionsMeteo, optionsScenario, preparerEtat, preparerImageMeteo, observerEtat, SCENARIOS, SCENARIOS_E3, SCENARIOS_PLUIE,
+import { optionsMeteo, optionsScenario, preparerEtat, preparerImageMeteo, observerEtat, projeterGlace, SCENARIOS, SCENARIOS_E3, SCENARIOS_PLUIE,
   verifierContrasteSillage, verifierContrasteCarrosserie, verifierRapport } from '../tools/captures-meteo.mjs';
 import { optionsCapture } from '../tools/controle-visuel.mjs';
 
@@ -108,6 +108,47 @@ test('duo E3 : chaque lentille humide reçoit sa caméra et seuls les rétros du
     const manque = structuredClone(r); delete manque.images[0].etat.zones[id];
     assert(verifierRapport(manque, s, true).some(e => e.includes('Rétroviseurs incomplets')));
   }
+});
+
+test('rétros hors champ : coins monde, toile préparée et projection CSS sont tous nécessaires', () => {
+  const s = SCENARIOS_E3.find(s => s.id === 'sillage300-portrait-cockpit'), r = rapport(s);
+  const coins = (cam, gauche, droite, profondeur = -1) => [[gauche, .1], [droite, .1], [droite, -.1], [gauche, -.1]]
+    .map(([x, y]) => [cam.pos[0] + x, cam.pos[1] + y, cam.pos[2] + profondeur]);
+  for (const im of r.images) {
+    im.observation.glaces = {};
+    for (const [id, x] of [['glace-g', -3], ['glace-d', 2]]) {
+      const c = coins(im.observation.camera, x, x + 1);
+      im.observation.glaces[id] = { coins: c, pixels: [512, 256], affichee: true,
+        cadre: projeterGlace(c, im.observation.camera, im.etat.zones.scene) };
+      delete im.etat.zones[id];
+    }
+  }
+  assert.deepEqual(verifierRapport(r, s, true), [], 'deux toiles intactes et réellement hors cadre');
+  for (const [nom, changer] of [
+    ['sans preuve', o => { delete o.glaces['glace-g']; }],
+    ['toile cachée', o => { o.glaces['glace-g'].affichee = false; }],
+    ['toile vide', o => { o.glaces['glace-g'].pixels[0] = 0; }],
+    ['coins absents', o => { delete o.glaces['glace-g'].coins; }],
+    ['coin non fini', o => { o.glaces['glace-g'].coins[0][0] = NaN; }],
+    ['coin derrière la caméra', o => { o.glaces['glace-g'].coins[0][2] = o.camera.pos[2] + 1; }],
+    ['toile déplacée', o => { o.glaces['glace-g'].cadre.x += 10; }],
+    ['toile réduite', o => { o.glaces['glace-g'].cadre.width = 0; }],
+    ['caméra absente', o => { delete o.camera; }]
+  ]) {
+    const mauvais = structuredClone(r); changer(mauvais.images[0].observation);
+    assert(verifierRapport(mauvais, s, true).some(e => e.includes('Rétroviseurs incomplets')), nom);
+  }
+  const visible = structuredClone(r), im = visible.images[0], g = im.observation.glaces['glace-g'];
+  g.coins = coins(im.observation.camera, -.1, .1);
+  g.cadre = projeterGlace(g.coins, im.observation.camera, im.etat.zones.scene);
+  assert(verifierRapport(visible, s, true).some(e => e.includes('Rétroviseurs incomplets')), 'un rétro cadré ne peut manquer');
+  im.etat.zones['glace-g'] = { ...g.cadre };
+  assert.deepEqual(verifierRapport(visible, s, true), []);
+
+  const camera = { pos: [0, 0, 0], yaw: 0, pitch: 0, roll: 0, fov: 90 }, zone = { x: 0, y: 540, width: 960, height: 540 };
+  const c = coins(camera, -.1, .1), p = projeterGlace(c, camera, zone);
+  assert(Math.abs(p.x - 453) < 1e-9 && Math.abs(p.y - 783) < 1e-9, 'projection décalée dans la moitié J2');
+  assert(Math.abs(p.width - 54) < 1e-9 && Math.abs(p.height - 54) < 1e-9, 'taille physique projetée');
 });
 
 test('erreurs de page, GL et repli optique silencieux empêchent la qualification', () => {

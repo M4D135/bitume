@@ -11,7 +11,7 @@ David signale un jeu très lent dans Edge sur Xbox, une manette en conflit avec 
 - La détection passive ne reconnaissait pas Xbox. Des capacités déclarées comparables à celles d'un PC pouvaient choisir Moyenne fixe, anticrénelage 4× et rétroviseurs réels.
 - La résolution numérique du profil ne plafonnait pas le nombre de pixels : sur un viewport 3840×2160 à DPR 1, Moyenne pouvait rendre 8 294 400 pixels ; même Légère en rendait 5 308 416.
 
-## Correctif candidat 0.2.81
+## Correctif candidat 0.2.82
 
 La console est reconnue par sa plate-forme déclarée, jamais par le nom d'une manette branchée sur PC. Elle reçoit un profil Légère prudent sans test de charge. La migration revoit les anciennes recommandations automatiques et conserve les options déjà modifiées par le joueur.
 
@@ -33,6 +33,37 @@ Le jeu affiche cette aide et l'état des entrées reçues. Il ne peut pas promet
 Contrôles ciblés des entrées, réaffectations, captures, reconnexions, duo, menus, profil passif et véritable FSurface. Les anciennes assertions de conduite restent conservées. La qualification navigateur prescrit une UA Xbox, un écran 4K et une Gamepad API virtuelle dans Chrome ; elle observe le vrai jeu et les commandes reçues par la conduite.
 
 Chromium local est bloqué avant chargement par `socket() failed: Operation not permitted`. Les captures du vrai HTML passent donc par GitHub Actions, workflow `qualification-xbox.yml`, marqueur `[capture-xbox]`. La CI du candidat et ces images doivent réussir avant fusion. Une mesure de taille de framebuffer ne prouve pas un gain de FPS Xbox. Aucun essai Xbox matériel ni déploiement du site n'est annoncé.
+
+## Réception initiale .81 et correctifs .82
+
+Le commit `0a731d5` reconstruit exactement le HTML `53945452b79fdf63`.
+La CI [44928652979](https://github.com/M4D135/bitume/actions/runs/44928652979)
+réussit 193 suites et en échoue deux : leurs montages isolés ne chargent pas
+les nouvelles dépendances d’entrées. Les raccords de menus et l’outil Troll
+sont complétés, avec les assertions métier et les cas négatifs conservés.
+
+Le parcours Xbox [44928653056](https://github.com/M4D135/bitume/actions/runs/44928653056)
+confirme le framebuffer 1280×720, aucun banc, la navigation et l’affectation de
+X à Accélérer conservée après rechargement. Il expire aux feux après 557 pas
+de conduite, environ 4,64 s simulées, avant le vert. Le budget réel de cette
+attente passe de 3 à 8 minutes pour SwiftShader ; phase, horloge et feux sont
+observés pendant l’attente. Ni les feux ni les commandes natives ne sont
+forcés. L’accélération reste à recevoir sur ce nouveau parcours.
+
+La revue corrige deux défauts runtime : le statut de préparation solo
+appliquait la règle duo et un stick décalé empêchait de sortir de capture
+avant armement. Le libellé utilise désormais le mode préparé ; un nouvel
+appui B/Menu annule même avant le neutre, avec boutons déjà tenus consommés.
+La capture des réglages a également révélé une troisième colonne implicite
+qui provoquait un chevauchement : la grille utilise deux colonnes, puis une
+sur petit écran. Le parcours vérifiera leurs dimensions à 3840, 1280 et
+390 pixels, et choisira réellement Auto avant l’essai du pointeur.
+
+Le contrôle météo portrait exigeait des rétros à l’image alors que les
+ancrages 126 CK sortent du champ étroit. La géométrie reste inchangée ;
+l’oracle contrôle désormais les coins monde, la toile préparée et son
+placement avant d’accepter cette absence du cadre. Un miroir attendu dans
+le champ, caché, vide ou déplacé reste un échec.
 
 ## Travaux conservés
 

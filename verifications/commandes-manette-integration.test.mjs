@@ -64,6 +64,13 @@ for (const touche of [1, 9]) verifier('annuler avec bouton ' + touche + ' reste 
   assert.equal(f.api.capture, null); assert.equal(f.api.screen, 'reglages'); assert.equal(f.api.sauvegardes, 0); assert.deepEqual(f.api.actions, []);
   appuyer(f.p, touche, 0); f.api.poll();
 });
+for (const touche of [1, 9]) verifier('annuler avant armement malgré un stick décalé, bouton ' + touche, () => {
+  const f = preparer(); f.p.axes[0] = .4; f.api.clic('gaz');
+  f.api.poll(); f.api.poll(); assert.equal(f.api.capture.suivi.pret, false);
+  appuyer(f.p, touche); f.api.poll(); f.api.poll();
+  assert.equal(f.api.capture, null); assert.equal(f.api.screen, 'reglages');
+  assert.equal(f.api.sauvegardes, 0); assert.deepEqual(f.api.actions, []);
+});
 verifier('le bouton utilisé pour affecter la vue ne valide pas le menu ni la première image de course', () => {
   const f = preparer(); f.api.clic('vue'); neutre(f); appuyer(f.p, 0); f.api.poll(); f.api.poll();
   assert.deepEqual(f.api.actions, []); f.api.screenTo('course'); f.api.poll(); assert.deepEqual(f.api.actions, []);

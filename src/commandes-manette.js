@@ -58,6 +58,7 @@
     if (Number.isFinite(b.value) && b.value > 0) return limite(b.value);
     return b.pressed ? 1 : 0;
   }
+  const annulation = p => (bouton(p, 1) > .5 ? 1 : 0) | (bouton(p, 9) > .5 ? 2 : 0);
   function valeur(p, l) {
     if (l.type === 'bouton') return bouton(p, l.index);
     const v = p && p.axes && p.axes[l.index];
@@ -87,6 +88,7 @@
 
   function preparerCapture(c, p) {
     c.index = p.index; c.id = p.id || ''; c.pret = false; c._neutres = 0; c._presente = true;
+    c._annulation = annulation(p);
     c.origines = [];
     for (let i = 0; i < Math.min(16, (p.axes || []).length); i++) {
       const v = p.axes[i];
@@ -96,7 +98,7 @@
     }
   }
   function creerCapture(p) {
-    const c = { pret: false, annule: false, liaison: null, raison: '', index: -1, id: '', origines: [], _presente: false, _neutres: 0 };
+    const c = { pret: false, annule: false, liaison: null, raison: '', index: -1, id: '', origines: [], _presente: false, _neutres: 0, _annulation: 0 };
     if (p && p.connected !== false) preparerCapture(c, p);
     return c;
   }
@@ -106,6 +108,12 @@
     if (!p || p.connected === false) { c.pret = false; c._presente = false; c.raison = 'deconnectee'; return null; }
     if (!c._presente || c.index !== p.index || c.id !== (p.id || '')) preparerCapture(c, p);
     c.raison = '';
+    // Une dérive de stick ne doit jamais enfermer le joueur dans « Relâchez ».
+    // Seul un nouvel appui B/Menu annule ; ceux tenus à l'ouverture ou à la
+    // reconnexion sont consommés jusqu'à leur relâchement.
+    const retour = annulation(p), nouvelAppui = retour & ~c._annulation;
+    c._annulation = retour;
+    if (nouvelAppui) { c.annule = true; c.raison = 'annulee'; return null; }
     if (!c.pret) {
       let neutre = true;
       for (let i = 0; i < Math.min(64, (p.buttons || []).length); i++) if (bouton(p, i) > .25) neutre = false;
@@ -114,7 +122,6 @@
       c.pret = c._neutres >= 2;
       return null;
     }
-    if (bouton(p, 1) > .5 || bouton(p, 9) > .5) { c.annule = true; c.raison = 'annulee'; return null; }
     for (let i = 0; i < Math.min(64, (p.buttons || []).length); i++) {
       if (!reserve(i) && bouton(p, i) > .55) { c.liaison = { type: 'bouton', index: i }; return c.liaison; }
     }

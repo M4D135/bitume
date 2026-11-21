@@ -73,8 +73,28 @@ test('une gâchette déclarée comme axe est configurable sans clavier', () => {
   const m = M.affecter(null, 'gaz', l); p.axes[2] = -1; assert.equal(M.lire(p, m).gaz, 0);
   p.axes[2] = 1; assert.equal(M.lire(p, m).gaz, 1);
 });
-test('B ou Menu annule seulement après retour au neutre', () => {
+test('B ou Menu tenu à l’ouverture doit être relâché avant un nouvel appui d’annulation', () => {
   for (const i of [1, 9]) { const p = pad(); presser(p, i); const c = M.creerCapture(p); M.avancerCapture(c, p); assert.equal(c.annule, false); presser(p, i, 0); armer(c, p); presser(p, i); assert.equal(M.avancerCapture(c, p), null); assert.equal(c.annule, true); }
+});
+test('B et Menu annulent même si une dérive de stick empêche l’armement', () => {
+  for (const i of [1, 9]) {
+    const p = pad([.4, 0, 0, 0]), c = M.creerCapture(p);
+    for (let n = 0; n < 4; n++) M.avancerCapture(c, p);
+    assert.equal(c.pret, false); presser(p, i);
+    assert.equal(M.avancerCapture(c, p), null); assert.equal(c.annule, true);
+    assert.equal(c.liaison, null); assert.equal(c.raison, 'annulee');
+  }
+});
+test('annulation tenue à l’ouverture ou reconnexion : sortie possible au nouvel appui sans neutre du stick', () => {
+  for (const i of [1, 9]) for (const reconnexion of [false, true]) {
+    const p = pad([.4, 0, 0, 0]); presser(p, i);
+    const c = M.creerCapture(reconnexion ? null : p);
+    if (reconnexion) M.avancerCapture(c, null);
+    for (let n = 0; n < 3; n++) M.avancerCapture(c, p);
+    assert.equal(c.annule, false); assert.equal(c.pret, false);
+    presser(p, i, 0); M.avancerCapture(c, p); presser(p, i);
+    M.avancerCapture(c, p); assert.equal(c.annule, true); assert.equal(c.liaison, null);
+  }
 });
 test('annuler depuis le bouton du menu interdit toute affectation ultérieure', () => {
   const p = pad(), c = M.creerCapture(p); armer(c, p); c.annule = true; presser(p, 7);
