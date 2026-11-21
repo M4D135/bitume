@@ -245,6 +245,33 @@ verifier('klaxons : trois timbres déterministes, brefs, bornés et silencieux a
   } finally { Math.random = vrai; }
 });
 
+function amplitudeKlaxon(d, sr, f, debut, fin) {
+  const premier = Math.ceil(debut * sr), n = Math.floor(fin * sr) - premier;
+  let re = 0, im = 0, poids = 0;
+  for (let i = 0; i < n; i++) {
+    const w = .5 - .5 * Math.cos(2 * Math.PI * i / (n - 1)), p = 2 * Math.PI * f * (i + premier) / sr;
+    re += d[i + premier] * w * Math.cos(p); im += d[i + premier] * w * Math.sin(p); poids += w;
+  }
+  return 2 * Math.hypot(re, im) / poids;
+}
+
+verifier('klaxon classique : deux trompes stables avec des harmoniques paires, pas deux bips purs', () => {
+  const sr = 48000, d = B.son.synthKlaxons(sr).classique;
+  for (const f of [400, 500]) {
+    const fondamentale = amplitudeKlaxon(d, sr, f, .08, .32);
+    assert(fondamentale > .06, 'la fondamentale de chaque trompe reste présente');
+    assert(amplitudeKlaxon(d, sr, 2 * f, .08, .32) > fondamentale * .8, 'la membrane porte aussi le deuxième harmonique');
+    assert(amplitudeKlaxon(d, sr, 3 * f, .08, .32) > fondamentale * .5, 'le pavillon conserve son mordant médium');
+  }
+});
+
+verifier('klaxon aigu à 8 kHz : les harmoniques hors bande ne se replient pas dans le son', () => {
+  const sr = 8000, f = 783.99, d = B.son.synthKlaxons(sr).mariage;
+  const fondamentale = amplitudeKlaxon(d, sr, f, .62, .86);
+  assert(fondamentale > .1);
+  assert(amplitudeKlaxon(d, sr, sr - 6 * f, .62, .86) < fondamentale * .01, 'pas de sixième harmonique replié');
+});
+
 verifier('Troll sonore : cinq voix préparées, une source par départ et aucun thème musical', () => {
   const fa = fauxAudio(); globalThis.window = { AudioContext: fa.Ctx };
   try {

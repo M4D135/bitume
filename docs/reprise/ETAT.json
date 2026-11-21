@@ -5,26 +5,26 @@
     "version_publiee_verifiee": "0.2.75",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "references_126ck_publiees_sur_main_cockpits_0275_0276_refuses",
+    "statut": "poste_0277_en_preparation_pour_essai_utilisateur",
     "lot": "habitacle_pilote_commun",
-    "fiche": "docs/reprise/OBJECTIF-126CK-2026-11-21.md",
+    "fiche": "docs/reprise/POSTE-126CK-0277.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "040",
-    "prochaine_action": "Reprendre le volant et le poste puis la voiture depuis les références 126 CK publiées ; FOV demandé 70°, pluie arrière et klaxons conservés dans les préparations.",
+    "derniere_entree": "041",
+    "prochaine_action": "Qualifier puis publier le poste .77 sur main pour essai ; poursuivre la carrosserie 126 CK en branche distincte.",
     "dernier_lot_clos": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
     "fiche_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
     "index": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
-    "entree_journal": "040",
+    "entree_journal": "041",
     "dernieres_demandes": "docs/reprise/OBJECTIF-126CK-2026-11-21.md",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md",
     "contrats_integration": "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
     "inventaire_branches": "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
-    "runtime_modifie_par_coordination": false,
+    "runtime_modifie_par_coordination": true,
     "dernier_lot_coordination_clos": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
-    "runtime_modifie_par_coordination_portee": "Publication documentaire uniquement : références 126 CK et étude race ; runtime main .75 conservé sans approbation esthétique.",
+    "runtime_modifie_par_coordination_portee": "Candidat .77 : poste, miroirs, FOV 70°, pluie/neige arrière et klaxons ; main reste .75 avant publication.",
     "preuve_t3": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
-    "reserve_lisibilite_cockpit": "Réouverte : forme des cockpits .75 et .76 refusée ; nouvelle cible 126 CK, reflets .76 sans horizon utile.",
+    "reserve_lisibilite_cockpit": "Formes .75/.76 refusées ; première reprise du volant et des cadrans .77 à vérifier en images du vrai jeu.",
     "alerte_budget_decor": {
       "statut": "ouvert",
       "run": 44803588903,
@@ -71,8 +71,8 @@
     "commit_fusion": "b1e5e98b9029f6254b86dcfb49780883315a9418",
     "tete_qualifiee": "5d59cae6630c49ae62c47303100d61dd63daea56",
     "pr_publiee": 51,
-    "branche_candidate": null,
-    "version_candidate": null,
+    "branche_candidate": "codex/bitume-0277-publication-20261121",
+    "version_candidate": "0.2.77",
     "branche_pr": null,
     "preuve_candidat_0272": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0272/BUILD-0272.json",
     "preuve_candidat_0273": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/BUILD-0273.json",
@@ -82,7 +82,7 @@
     "fiche_cockpit_pluie": "docs/reprise/COCKPIT-PLUIE-2026-11-20.md",
     "preuve_publication_0275": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
     "statut_candidat_0275": "publie_sur_main",
-    "candidat_126ck_construit": false
+    "candidat_126ck_construit": true
   },
   "publication": {
     "version": "0.2.75",
@@ -1151,5 +1151,11 @@
     "statut": "patch_conserve_non_integre_non_construit",
     "reflets_webgl_qualifies": false,
     "ancrages_126ck_a_requalifier": true
+  },
+  "demande_publication_0277": {
+    "demande": "push main je veux test puis continue le projet",
+    "fiche": "docs/reprise/POSTE-126CK-0277.md",
+    "statut": "preparation",
+    "site_deploye": false
   }
 }

@@ -41,7 +41,7 @@ test('cuir, tissu, métal brossé et peinture restent distincts dans les objets 
   const m=V.modele(livres[0]),h=m.objetsRendu.habitacle;
   assert.equal(A.cuir,candidat.FRender.materials.fineLeather??7);
   assert.equal(A.tissu,candidat.FRender.materials.wovenFabric??18);
-  assert.equal(h.planche[0].objet.mat,0);assert.equal(h.jante.objet.mat,A.cuir);
+  assert.equal(h.planche[0].objet.mat,A.cuir);assert.equal(h.jante.objet.mat,A.cuir);
   assert.equal(h.branches.objet.mat,0);assert.equal(h.tige.objet.mat,0);assert.equal(h.pommeau.objet.mat,0);
   for(const main of h.mains){
     main.pieces.forEach((piece,i)=>assert.equal(piece.objet.mat,i===1||i===2?A.cuir:A.tissu));

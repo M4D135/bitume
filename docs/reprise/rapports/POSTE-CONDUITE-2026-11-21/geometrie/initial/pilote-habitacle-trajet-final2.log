@@ -1,0 +1,16 @@
+transition geste/rapport : 810 poses, coudes et poignets, saut initial=0.0000010166492833141305 m, pas maximal 120/240 Hz=0.11322770974727497/0.06306721879261579 m
+mains/jante : 380 poses, surfaces Float32 de chaque gant/paume/garde/manchette/sangle
+cockpit : 840 poses, commandes/gants/bras sans traversée de la coque ni du support (ancrage de tige exclu)
+cockpit : 150 poses joueur/rival, trois coques réellement affichées, braquages extrêmes et attitude composée
+✔ un rapport interrompt le geste sans téléporter les poignets ni traverser le cockpit (20829.118386ms)
+✔ les surfaces de tous les éléments des mains se dégagent de la jante pendant le passage (9446.602605ms)
+✔ volant, levier, gants et bras restent séparés des triangles du cockpit pendant les passages (4396.488473ms)
+✔ joueur et rival, LOD et attitude de caisse conservent les dégagements des commandes (3440.646321ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 38121.224248

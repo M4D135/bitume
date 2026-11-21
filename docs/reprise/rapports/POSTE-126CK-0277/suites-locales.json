@@ -1,0 +1,22 @@
+[
+  {
+    "suite": "pilote-commun",
+    "exit_code": 0
+  },
+  {
+    "suite": "pilote-exterieur",
+    "exit_code": 0
+  },
+  {
+    "suite": "pilote-gestes-extremes",
+    "exit_code": 0
+  },
+  {
+    "suite": "habitacle-monde",
+    "exit_code": 0
+  },
+  {
+    "suite": "options-image",
+    "exit_code": 0
+  }
+]

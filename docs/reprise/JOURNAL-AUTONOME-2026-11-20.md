@@ -761,3 +761,12 @@ Publication documentaire confirmée : PR 53 fusionnée, main `eb10c539749a1d0a97
 arbre `b27b05f195cc93c0c1c4ad18d98e63ef5e7cd128`. Les 41 images relues depuis Git
 sont identiques aux originaux. Runtime .75 inchangé. PR 52 close sans fusion ; branche
 conservée. [Reçu](../references/ferrari-126ck-renderblade-2026-11-21/PUBLICATION.json).
+
+## 041 — 21 novembre : poste .77 pour essai sur main
+
+David demande de pousser main pour tester, puis de poursuivre le projet. Le lot
+[poste .77](POSTE-126CK-0277.md) réunit le volant repris depuis sa photo, les cadrans,
+les miroirs, le FOV 70°, la météo arrière et les timbres de klaxon préparés. Le contrat
+textuel obsolète de pitch est retiré du test Troll ; la couverture réelle de projection
+reste. La forme complète 126 CK continue séparément. Qualification du nouveau candidat
+et publication à consigner ; les reçus .76 restent historiques et ne le valident pas.

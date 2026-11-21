@@ -14,34 +14,19 @@ concurrency:
 
 jobs:
   cockpit:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[capture-cockpit]')
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[capture-cockpit]') || contains(github.event.head_commit.message, '[capture-poste]')
     runs-on: ubuntu-latest
     timeout-minutes: 25
     strategy:
       fail-fast: false
       max-parallel: 3
-      matrix:
-        include:
-          - groupe: mac
-            cas: cockpit-mac
-          - groupe: paysage
-            cas: cockpit-paysage
-          - groupe: compact
-            cas: cockpit-compact
-          - groupe: carte-gauche
-            cas: cockpit-carte-gauche
-          - groupe: vertical
-            cas: cockpit-vertical
-          - groupe: duo-haut-bas
-            cas: cockpit-duo-haut-bas
-          - groupe: duo-cote
-            cas: cockpit-duo-cote
-          - groupe: profil
-            cas: cockpit-profil
-          - groupe: trois-quarts
-            cas: cockpit-trois-quarts
-          - groupe: reference-0270
-            cas: cockpit-paysage
+      # Le lot poste contrôle la géométrie commune et les projections utiles.
+      # La campagne complète reste disponible avec [capture-cockpit] ou à la main.
+      matrix: ${{ fromJSON(
+        github.event_name == 'push' && contains(github.event.head_commit.message, '[capture-poste]')
+        && '{"include":[{"groupe":"paysage","cas":"cockpit-paysage"},{"groupe":"profil","cas":"cockpit-profil"},{"groupe":"trois-quarts","cas":"cockpit-trois-quarts"},{"groupe":"vertical","cas":"cockpit-vertical"},{"groupe":"duo-haut-bas","cas":"cockpit-duo-haut-bas"},{"groupe":"duo-cote","cas":"cockpit-duo-cote"}]}'
+        || '{"include":[{"groupe":"paysage","cas":"cockpit-paysage"},{"groupe":"profil","cas":"cockpit-profil"},{"groupe":"trois-quarts","cas":"cockpit-trois-quarts"},{"groupe":"mac","cas":"cockpit-mac"},{"groupe":"compact","cas":"cockpit-compact"},{"groupe":"carte-gauche","cas":"cockpit-carte-gauche"},{"groupe":"vertical","cas":"cockpit-vertical"},{"groupe":"duo-haut-bas","cas":"cockpit-duo-haut-bas"},{"groupe":"duo-cote","cas":"cockpit-duo-cote"},{"groupe":"carte-gauche-stabilise","cas":"cockpit-carte-gauche-stabilise"},{"groupe":"carte-droite-stabilise","cas":"cockpit-carte-droite-stabilise"},{"groupe":"duo-compact","cas":"cockpit-duo-compact"},{"groupe":"reference-0270","cas":"cockpit-paysage"}]}'
+        ) }}
     steps:
       - uses: actions/checkout@v4
         with:

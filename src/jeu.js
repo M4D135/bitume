@@ -49,7 +49,7 @@
     vidangePrevue = false;
     for (const [cle, valeur] of [...stockEnAttente]) ecrireStock(cle, typeof valeur === 'function' ? valeur() : valeur);
   }
-  const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
+  const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 70, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
     anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'non', gouttes: 1, forcePluie: 'forte',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglagesEnregistres = lireStock('bitume.reglages', {});
@@ -1797,15 +1797,15 @@
   $('pr-reglages').addEventListener('click', () => { retirerPret(); retourReglages = 'prets'; aller('reglages'); });
 
   // ---------------------------------------------------------------- caméras
-  // Champ du cockpit : réglage horizontal en 16:9, sans modifier la préférence mémorisée. Le cadre étroit garde
+  // Champ du cockpit : réglage vertical, comme FERRO, en 16:9, sans réécrire la valeur mémorisée. Le cadre étroit garde
   // d'abord la diagonale de référence. L'habitacle étant désormais métrique et commun, il ne peut plus rapprocher
   // ses glaces pour un téléphone : la projection s'ouvre seulement assez pour contenir les deux vrais montages.
   // La discrète ouverture de vitesse demeure ; la position des yeux et la géométrie ne dépendent pas de l'écran.
-  // Le regard accompagne les commandes métriques abaissées : les yeux restent ceux du pilote,
-  // et le champ mémorisé est conservé. La géométrie commune dégage elle-même la chaussée.
-  const INCLINAISON_COCKPIT = -Math.PI / 18;
+  // À 70° verticaux, le regard horizontal retrouve le volant bas de la référence sans
+  // rapetisser la voiture : les vrais yeux et les pièces métriques restent communs aux vues.
+  const INCLINAISON_COCKPIT = 0;
   function champCockpit(aspect, v, cam, glaces, M) {
-    const t = Math.tan(clamp(+reglages.champ || 60, 60, 105) * Math.PI / 360);
+    const t = Math.tan(clamp(+reglages.champ || 70, 60, 105) * Math.PI / 360) * (16 / 9);
     const tv = aspect < 16 / 9 ? Math.hypot(t, t / (16 / 9)) / Math.hypot(1, Math.max(.3, aspect)) : t / (16 / 9);
     const portraitTelephone = estTactile && canvas.clientWidth <= 600 && aspect < 1;
     let tangente = tv * (portraitTelephone ? .82 : 1);
@@ -1835,9 +1835,11 @@
         const n = j - 4, bx = boite.centre[0] + boite.taille[0] * (n & 1 ? .5 : -.5);
         const by = boite.centre[1] + boite.taille[1] * (n & 2 ? .5 : -.5);
         const bz = boite.centre[2] + boite.taille[2] * (n & 4 ? .5 : -.5);
-        x = glace.centre[0] - glace.normale[0] * bx + M[1][0] * by + glace.droite[0] * bz - cam.pos[0];
-        y = glace.centre[1] - glace.normale[1] * bx + M[1][1] * by + glace.droite[1] * bz - cam.pos[1];
-        z = glace.centre[2] - glace.normale[2] * bx + M[1][2] * by + glace.droite[2] * bz - cam.pos[2];
+        // Le haut de la glace est normale × droite, pas la verticale de la caisse : le boîtier est incliné.
+        const gn = glace.normale, gd = glace.droite;
+        x = glace.centre[0] - gn[0] * bx + (gn[1] * gd[2] - gn[2] * gd[1]) * by + gd[0] * bz - cam.pos[0];
+        y = glace.centre[1] - gn[1] * bx + (gn[2] * gd[0] - gn[0] * gd[2]) * by + gd[1] * bz - cam.pos[1];
+        z = glace.centre[2] - gn[2] * bx + (gn[0] * gd[1] - gn[1] * gd[0]) * by + gd[2] * bz - cam.pos[2];
       }
       const profondeur = x * sy * cp + y * sp - z * cy * cp;
       const droite = x * cy + z * sy, haut = -x * sy * sp + y * cp + z * cy * sp;
@@ -5045,7 +5047,7 @@
     restaurerReference();
     const cles = ['vue', 'vue2', 'partage', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'moment', 'saison', 'retro', 'meteo', 'forcePluie', 'saisonMode', 'momentMode', 'meteoMode', 'pneus', 'pneusPilotes', 'pneusAutoPilotes', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
     const avant = Object.fromEntries(cles.map(k => [k, reglages[k]])), decorAvant = decorEnrichi;
-    Object.assign(reglages, { vue, vue2, partage, qualite, difficulte, tours, retro: glaces, meteo, forcePluie, saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', secousses: 0, vibrations: 'non', champ: 60 });
+    Object.assign(reglages, { vue, vue2, partage, qualite, difficulte, tours, retro: glaces, meteo, forcePluie, saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', secousses: 0, vibrations: 'non', champ: DEFAUT.champ });
     Object.assign(reglages, B.graphismes.normaliserOptions(options));
     reglages.moment = B.ambiance.normaliser(options.moment ?? 'jour');
     reglages.saison = B.saisons.normaliser(options.saison ?? 'ete');

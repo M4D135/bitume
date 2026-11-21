@@ -105,32 +105,55 @@
       const x = Math.min(1, t / attaque, (d - t) / fin);
       return .5 - .5 * Math.cos(Math.PI * x);
     };
-    const pavillon = p => Math.sin(p) + .28 * Math.sin(3 * p) + .10 * Math.sin(5 * p);
+    // Une membrane excite le pavillon : les harmoniques paires et la zone médium portent
+    // le mordant d'un avertisseur. Les anciens sinus à trois partiels sonnaient comme un bip.
+    // Synthèse originale, sans enregistrement ; les partiels au-delà de la bande audio sont retirés.
+    const trompe = [.62, .95, .72, .44, .28, .18, .12, .075, .05, .03, .018, .01];
+    const mecanique = [1, .82, .76, .54, .39, .28, .20, .14, .09, .055, .03, .018];
+    function ajouterPavillon(d, debut, longueur, frequence, niveau, graine, ancien = false) {
+      const spectre = ancien ? mecanique : trompe, fMax = ancien ? 340 : frequence * 1.002;
+      const partiels = Math.min(spectre.length, Math.floor(sr * .45 / fMax));
+      const a = 1 - Math.exp(-TAU * Math.min(4200, sr * .3) / sr), b = 1 - Math.exp(-TAU * 650 / sr);
+      let phase = 0, souffle = 0, grave = 0, hasard = graine >>> 0;
+      const premier = Math.ceil(debut * sr), dernier = Math.min(d.length, Math.ceil((debut + longueur) * sr));
+      for (let i = premier; i < dernier; i++) {
+        const t = i / sr - debut;
+        hasard = (Math.imul(hasard, 1664525) + 1013904223) >>> 0;
+        souffle += a * (hasard / 2147483648 - 1 - souffle);
+        grave += b * (souffle - grave);
+        // Brève mise en pression ; le modèle ancien garde sa montée et sa retombée mécaniques.
+        const f = ancien ? 225 + 110 * (1 - Math.exp(-t / .025)) * Math.exp(-t / .3)
+          : frequence * (1 - .012 * Math.exp(-t / .008));
+        phase += TAU * f * (1 + .001 * grave) / sr;
+        if (phase >= TAU) phase -= TAU;
+        const s = Math.sin(phase), c = Math.cos(phase);
+        let sn = s, cn = c, onde = 0;
+        for (let h = 0; h < partiels; h++) {
+          onde += spectre[h] * sn;
+          const suivant = sn * c + cn * s; cn = cn * c - sn * s; sn = suivant;
+        }
+        // Faible souffle filtré et contact de départ : matière sonore, sans bruit blanc dominant.
+        const contact = (.025 + .14 * Math.exp(-t / .008)) * (souffle - grave);
+        const pression = 1 + .018 * grave;
+        d[i] += niveau * (onde * pression + contact) * enveloppe(t, longueur, ancien ? .018 : .006, ancien ? .055 : .022);
+      }
+    }
     // Motif original de quatre appels, sans accompagnement ni boucle ; moins d'une seconde en tout.
     const mariage = [[0, .115, 392], [.16, .115, 493.88], [.32, .19, 587.33], [.56, .36, 783.99]];
     for (const type of KLAXONS) {
       const duree = DUREES_KLAXON[type], d = new Float32Array(Math.ceil(duree * sr));
-      let phase = 0, pic = 0;
-      for (let i = 0; i < d.length; i++) {
-        const t = i / sr;
-        let v = 0;
-        if (type === 'classique') {
-          // Deux pavillons fixes, sans mélodie ; attaque courte et relâchement doux.
-          v = (.62 * pavillon(TAU * 420 * t) + .38 * pavillon(TAU * 510 * t)) * enveloppe(t, duree, .012, .055);
-        } else if (type === 'ancien') {
-          // Membrane nasale : la pression monte, retombe et fait vibrer le timbre (« ahooga »).
-          const f = 190 + 215 * (1 - Math.exp(-t / .025)) * Math.exp(-t / .22);
-          phase += TAU * f / sr;
-          v = (Math.sin(phase) + .46 * Math.sin(2 * phase) + .21 * Math.sin(3 * phase) + .12 * Math.sin(5 * phase))
-            * (.82 + .18 * Math.sin(TAU * 27 * t) ** 2) * enveloppe(t, duree, .028, .075);
-        } else {
-          for (const [debut, longueur, f] of mariage) {
-            const u = t - debut;
-            if (u > 0 && u < longueur) v += pavillon(TAU * f * u) * enveloppe(u, longueur, .008, .028);
-          }
-        }
-        d[i] = v; pic = Math.max(pic, Math.abs(v));
+      if (type === 'classique') {
+        // Paire grave/aiguë 400/500 Hz, accord fixe d'avertisseur à deux trompes.
+        // Quelques millisecondes séparent leurs attaques, sans succession de notes.
+        ajouterPavillon(d, 0, duree, 400, .55, 0x40c11);
+        ajouterPavillon(d, .006, duree - .006, 500, .45, 0x50c11);
+      } else if (type === 'ancien') ajouterPavillon(d, 0, duree, 0, 1, 0xa009a, true);
+      else for (let k = 0; k < mariage.length; k++) {
+        const [debut, longueur, f] = mariage[k];
+        ajouterPavillon(d, debut, longueur, f, 1, 0x6a71a9e + k);
       }
+      let pic = 0;
+      for (let i = 0; i < d.length; i++) pic = Math.max(pic, Math.abs(d[i]));
       if (pic) for (let i = 0; i < d.length; i++) d[i] *= .85 / pic;
       d[0] = d[d.length - 1] = 0;
       resultat[type] = d;

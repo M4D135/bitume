@@ -1,0 +1,37 @@
+[
+  {
+    "suite": "vitre-flux",
+    "code": 0,
+    "log": "/workspace/scratch/ea118b42480b/qa-regard-arriere-0276/vitre-flux.log"
+  },
+  {
+    "suite": "visiere-optique",
+    "code": 0,
+    "log": "/workspace/scratch/ea118b42480b/qa-regard-arriere-0276/visiere-optique.log"
+  },
+  {
+    "suite": "vitre-integration",
+    "code": 0,
+    "log": "/workspace/scratch/ea118b42480b/qa-regard-arriere-0276/vitre-integration.log"
+  },
+  {
+    "suite": "vitre-meteo",
+    "code": 0,
+    "log": "/workspace/scratch/ea118b42480b/qa-regard-arriere-0276/vitre-meteo.log"
+  },
+  {
+    "suite": "vitre-impacts",
+    "code": 0,
+    "log": "/workspace/scratch/ea118b42480b/qa-regard-arriere-0276/vitre-impacts.log"
+  },
+  {
+    "suite": "vitre-cadence",
+    "code": 0,
+    "log": "/workspace/scratch/ea118b42480b/qa-regard-arriere-0276/vitre-cadence.log"
+  },
+  {
+    "suite": "vitre",
+    "code": 0,
+    "log": "/workspace/scratch/ea118b42480b/qa-regard-arriere-0276/vitre.log"
+  }
+]

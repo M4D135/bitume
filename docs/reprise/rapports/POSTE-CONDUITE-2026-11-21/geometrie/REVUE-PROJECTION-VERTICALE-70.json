@@ -1,0 +1,134 @@
+{
+  "format": "bitume-revue-projection-verticale-1",
+  "date_utc": "2026-11-21T07:11:38.272437+00:00",
+  "statut": "mesures_independantes_terminees",
+  "base_publiee": "ccb1cb1c5ef0efff1f51c064bab2816c99f23d6b",
+  "methode": {
+    "chargement": "Modules runtime reels dans VM isolee ; cameraCockpit et champCockpit extraits de jeu.js ; vrais sommets FERRO des objets rendus.",
+    "variantes": "RETRO.z substitue uniquement dans le texte charge en VM ; aucun fichier source modifie.",
+    "convergence": "120 images a 1/60 s, secousses=0, pose plate ; meme protocole que cockpit-visibilite.",
+    "perimetre": "Projection des boitiers dans les 30 poses portrait et de la jante neutre en 16:9. Pas de nouvelle campagne de geometrie, de benchmark ou de verification des occultations."
+  },
+  "empreintes_au_recu": {
+    "src/jeu.js": "f3888a459bb82f049839889ccf9415016be2ca316404629033a4780e78085c7a",
+    "src/voiture.js": "13a96a4d8b596f70fe085829f68ec41b4202443151430716cd9e44f97bdd9508"
+  },
+  "unite_reglage": "degres verticaux pour le cadre de reference 16:9",
+  "compatibilite": "Valeurs memorisees numeriquement preservees ; leur projection historique change avec la nouvelle semantique verticale.",
+  "cadre_natif_16_9": {
+    "taille": [
+      960,
+      540
+    ],
+    "reglage_champ": 70,
+    "vitesse_m_s": 0,
+    "camera": {
+      "position": [
+        -0.062,
+        0.79,
+        0
+      ],
+      "yaw_radians": 1.5707963267948966,
+      "pitch_radians": 0,
+      "roll_radians": 0,
+      "fov_vertical_degres": 70
+    },
+    "objet": "H.jante.objet",
+    "jante_px": {
+      "min": [
+        357.47996839936735,
+        337.60582569022705
+      ],
+      "max": [
+        602.5200316006327,
+        598.5334559896426
+      ]
+    },
+    "largeur_px": 245.04006320126533,
+    "fraction_largeur": 0.25525006583465143,
+    "pourcentage_largeur": 25.525006583465142,
+    "bas_jante_hors_cadre_px": 58.5334559896426,
+    "a_80_m_s": {
+      "fov_vertical_degres": 73.29411764705883,
+      "pourcentage_largeur": 24.02449957287648,
+      "ouverture_vitesse": "augmentation existante conservee"
+    }
+  },
+  "portrait_cas_defaillant": {
+    "taille": [
+      540,
+      960
+    ],
+    "tactile": true,
+    "reglage_manuel_champ": 60,
+    "vitesse_m_s": 80,
+    "volant": -1,
+    "alat": 26,
+    "along": -22,
+    "camera": {
+      "position": [
+        -0.042000016630574386,
+        0.7840000049891723,
+        -0.015999986695540494
+      ],
+      "yaw_radians": 1.5008601585324854,
+      "pitch_radians": -0.01199999002165537,
+      "roll_radians": 0.013999988358597932,
+      "fov_vertical_degres": 110
+    },
+    "garde_minimale_test_px": 2.99,
+    "retro_z_0_375": {
+      "boitier_1_x_px": [
+        434.85879496905,
+        537.6835159589103
+      ],
+      "boitier_1_y_px": [
+        553.2923950465936,
+        595.1278201256229
+      ],
+      "marge_droite_px": 2.316484041089666,
+      "deficit_face_au_seuil_px": 0.673515958910334,
+      "minimum_30_poses_portrait_px": 2.316483954498665,
+      "poses_sous_seuil_sur_30": 2
+    },
+    "retro_z_0_370": {
+      "boitier_1_x_px": [
+        432.4260408080274,
+        534.9967952879621
+      ],
+      "boitier_1_y_px": [
+        553.2219003504254,
+        595.0301822857015
+      ],
+      "marge_droite_px": 5.0032047120379275,
+      "minimum_30_poses_portrait_px": 4.752555590583256,
+      "poses_sous_seuil_sur_30": 0,
+      "pose_marge_minimale": {
+        "volant": -1,
+        "vitesse_m_s": 80,
+        "along": 22,
+        "alat": 0,
+        "fov_vertical_degres": 105.71822767933904
+      }
+    }
+  },
+  "decision_recommandee": "RETRO.z = .370 : recentrage symetrique de 5 mm par cote, plus petit pas rond propose ; plafond 110 degres et seuil 2.99 px inchanges.",
+  "comparaison_reference": {
+    "image": "reference/cockpit-035-neutral.png",
+    "dimensions": [
+      1440,
+      900
+    ],
+    "aspect": "16:10",
+    "lecture_visuelle_approximative": "Jante seule autour de 21 % de largeur, ensemble jante et mains autour de 26 % ; pas une mesure de segmentation exacte.",
+    "capture_module": "module-final-vertical-70/candidat/cockpit.png",
+    "dimensions_capture": [
+      960,
+      640
+    ],
+    "limite": "Cette capture est en 3:2 ; son ordre de grandeur 27 % ne constitue pas une mesure 16:9. La comparaison ne prouve pas une egalite stricte avec la reference."
+  },
+  "suite_visibilite_complete": "A rejouer par le parent apres application de z=.370 ; ce recu ne remplace pas son resultat.",
+  "fichiers_source_modifies_par_revue": [],
+  "charge_cpu": "Terminee ; aucune mesure ni variante en cours."
+}

@@ -1,0 +1,11 @@
+instruments : 216 rayons, 0 masqués par un cadran
+✔ oracle : un cadran devant le segment le masque, un cadran derrière ne le masque pas (0.798233ms)
+✔ les six faces des cadrans ne masquent aucun segment allumé de vitesse ou rapport (153.713409ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 159.53943

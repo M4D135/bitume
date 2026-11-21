@@ -9,15 +9,15 @@ let controles = 0;
 const verifier = (nom, fn) => { fn(); controles++; console.log('ok ' + nom); };
 const contexte = (extra = {}) => ({ qualite: 'high', actif: true, pluie: 0, neige: 0, abri: true,
   intensite: 1, vitesse: 0, largeur: 1280, hauteur: 720, cameraYaw: 0, cameraPitch: 0, cameraRoll: 0, ...extra });
-function creer(points = [[.25, .20]], extra = {}) {
+function creer(points = [[.25, .20]], extra = {}, neige = false) {
   const e = V.creerSimulation({ graine: 7 });
   for (let i = 0; i < points.length; i++) {
-    const p = e.gouttes[i], [x, y] = points[i];
+    const p = (neige ? e.neige : e.gouttes)[i], [x, y] = points[i];
     Object.assign(p, { vivant: true, x, y, px: x, py: y, age: 1, pa: 1, duree: 300,
       taille: 6, pr: 6, vitesse: 1, phase: 0, frequence: 0, glisse: 1, poids: 1, pp: 1, ...extra });
     p.traceX.fill(x); p.traceY.fill(y);
   }
-  e.stats.gouttes = points.length;
+  e.stats[neige ? 'neige' : 'gouttes'] = points.length;
   return e;
 }
 function avancer(e, c, duree = 1, hz = 60) {
@@ -99,12 +99,10 @@ verifier('le vent latéral change de signe sur l’écran quand le vent ou le re
   }
 });
 
-verifier('cap, regard arrière et marche arrière gardent une divergence sans aspiration artificielle', () => {
+verifier('le cap ne change pas l’écoulement de face ; dos au vent et en recul la gravité reste sans expansion forcée', () => {
   const contextes = [
     { cameraYaw: 0, vitesseX: 0, vitesseY: 0, vitesseZ: -80 },
-    { cameraYaw: Math.PI / 2, vitesseX: 80, vitesseY: 0, vitesseZ: 0 },
-    { cameraYaw: Math.PI, vitesseX: 0, vitesseY: 0, vitesseZ: -80 },
-    { cameraYaw: 0, vitesse: -80 }
+    { cameraYaw: Math.PI / 2, vitesseX: 80, vitesseY: 0, vitesseZ: 0 }
   ];
   let reference;
   for (const c of contextes) {
@@ -112,6 +110,56 @@ verifier('cap, regard arrière et marche arrière gardent une divergence sans as
     assert(e.flux.expansion > 0);
     const positions = e.gouttes.slice(0, 4).flatMap(p => [p.x, p.y]);
     if (reference) positions.forEach((v, i) => proche(v, reference[i])); else reference = positions;
+  }
+  const calme = avancer(creer(quadrants), contexte(), .5);
+  for (const c of [{ cameraYaw: Math.PI, vitesseX: 0, vitesseY: 0, vitesseZ: -80 }, { vitesse: -80 }]) {
+    const e = avancer(creer(quadrants), contexte(c), .5);
+    assert.equal(e.flux.expansion, 0);
+    quadrants.forEach(([x, y], i) => {
+      proche(e.gouttes[i].x, x); proche(e.gouttes[i].y, calme.gouttes[i].y);
+      assert(e.gouttes[i].y > y, 'la gravité continue dos au vent');
+    });
+  }
+});
+
+verifier('à vitesse identique, pluie et neige déjà déposées sont calmes à l’arrière et gardent le vent latéral', () => {
+  const mouvement = { vitesse: 80, vitesseX: 0, vitesseY: 0, vitesseZ: -80 };
+  for (const neige of [false, true]) {
+    const initial = neige ? { age: 10, pa: 10, duree: 40 } : {};
+    const avant = avancer(creer(quadrants, initial, neige), contexte(mouvement), .5);
+    const arriere = avancer(creer(quadrants, initial, neige), contexte({ ...mouvement, cameraYaw: Math.PI }), .5);
+    const liste = e => neige ? e.neige : e.gouttes;
+    quadrants.forEach(([x, y], i) => {
+      const face = liste(avant)[i], dos = liste(arriere)[i];
+      assert(face.vivant && dos.vivant, 'mêmes dépôts suivis, sans disparition qui masque leur déplacement');
+      const rapide = Math.hypot(face.x - x, face.y - y), lent = Math.hypot(dos.x - x, dos.y - y);
+      assert(rapide > .04 && lent < rapide * .2, 'réduction nette du déplacement à l’arrière');
+      proche(dos.x, x); assert(dos.y > y, 'résidu mobile sous la gravité');
+    });
+    for (const ventX of [-12, 12]) {
+      const e = avancer(creer([[.5, .45]], initial, neige), contexte({ ...mouvement, cameraYaw: Math.PI, ventX }), .5);
+      assert((liste(e)[0].x - .5) * ventX < 0, 'vent réel projeté dans le repère arrière');
+      assert.equal(e.flux.expansion, 0, 'pas de divergence forcée pour un flux qui quitte la face');
+    }
+  }
+});
+
+verifier('tourner progressivement le regard conserve les dépôts et leur trajet puis laisse un résidu calme', () => {
+  for (const neige of [false, true]) {
+    const e = creer([[.5, .3]], neige ? { age: 10, pa: 10, duree: 40 } : {}, neige);
+    const p = (neige ? e.neige : e.gouttes)[0], traceX = p.traceX, traceY = p.traceY;
+    const mouvement = { vitesse: 80, vitesseX: 0, vitesseY: 0, vitesseZ: -80 };
+    for (let i = 0; i <= 60; i++) {
+      const c = contexte({ ...mouvement, cameraYaw: Math.PI * i / 60 }), x = p.x, y = p.y;
+      V.avancerSimulation(e, 0, c); proche(p.x, x); proche(p.y, y);
+      avancer(e, c, 1 / 60);
+      assert(p.vivant && Math.hypot(p.x - x, p.y - y) < .015, 'pas de saut au changement d’orientation');
+      assert.strictEqual(p.traceX, traceX); assert.strictEqual(p.traceY, traceY);
+    }
+    const x = p.x, y = p.y;
+    avancer(e, contexte({ ...mouvement, cameraYaw: Math.PI }), .3);
+    proche(p.x, x); assert(p.y > y, 'écoulement résiduel après le demi-tour');
+    assert.equal(e.sequence, 0, 'aucun nouveau dépôt ne remplace ceux que le test suit');
   }
 });
 

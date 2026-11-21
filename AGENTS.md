@@ -399,3 +399,10 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
   Étude `docs/reprise/REFERENCE-RACE-2026-11-21.md` ; idées originales à adapter, aucun code/asset importé.
 - Poursuivre par petits lots, garder les états et refus explicites. PR 43, préparation des miroirs,
   météo/son/FOV et travail décor sont conservés. Ce jalon ne modifie ni p15 ni FERRO et ne déploie rien.
+
+## Décision de David — 21 novembre 2026, version d'essai puis continuation
+
+- « push main je veux test puis continue le projet » : publier le poste corrigé sur GitHub main
+  après sa qualification, puis poursuivre la voiture 126 CK. Ne pas attendre un nouveau « go ».
+- Le premier lot .77 reprend le volant, les cadrans, les glaces, le FOV et les effets embarqués.
+  La fidélité de toute la carrosserie reste un chantier distinct ; l'essai du joueur reste à recevoir.

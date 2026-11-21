@@ -1,0 +1,53 @@
+{
+  "statut": "corrige_tests_cibles_reussis",
+  "base": "ccb1cb1c5ef0efff1f51c064bab2816c99f23d6b",
+  "fichiers": {
+    "src/vitre.js": "7596a3e045ea5c8143a238b49c028f633a4725c53e7c38f6c06616e3d87f0922",
+    "verifications/vitre-flux.test.mjs": "5b63b081f36505a6bb97e2663dd622a1bd6fa9da2dec0e393de0176e2eeca79d",
+    "verifications/visiere-optique.test.mjs": "b48bb52f2643d119b21763baf742b924e0bbc977a11f2358300766954335db0a",
+    "verifications/vitre-integration.test.mjs": "2ea797252b93ae0310b6f30f645b9e520b7a7a6a876067637d071e59c55f8e89"
+  },
+  "cause": "Incidence absolue et charge calculée sur la norme totale : regarder derrière conservait la même expansion que regarder devant.",
+  "correction": "Composante normale entrante et tangente projetée sur la face observée ; pas de normale sortante transformée en pression. Gravité et dérive tangentielle conservées ; nouveaux dépôts basés sur la vitesse incidente.",
+  "tests": [
+    {
+      "suite": "vitre-flux",
+      "code": 0,
+      "log": "/workspace/scratch/ea118b42480b/qa-regard-arriere-0276/vitre-flux.log"
+    },
+    {
+      "suite": "visiere-optique",
+      "code": 0,
+      "log": "/workspace/scratch/ea118b42480b/qa-regard-arriere-0276/visiere-optique.log"
+    },
+    {
+      "suite": "vitre-integration",
+      "code": 0,
+      "log": "/workspace/scratch/ea118b42480b/qa-regard-arriere-0276/vitre-integration.log"
+    },
+    {
+      "suite": "vitre-meteo",
+      "code": 0,
+      "log": "/workspace/scratch/ea118b42480b/qa-regard-arriere-0276/vitre-meteo.log"
+    },
+    {
+      "suite": "vitre-impacts",
+      "code": 0,
+      "log": "/workspace/scratch/ea118b42480b/qa-regard-arriere-0276/vitre-impacts.log"
+    },
+    {
+      "suite": "vitre-cadence",
+      "code": 0,
+      "log": "/workspace/scratch/ea118b42480b/qa-regard-arriere-0276/vitre-cadence.log"
+    },
+    {
+      "suite": "vitre",
+      "code": 0,
+      "log": "/workspace/scratch/ea118b42480b/qa-regard-arriere-0276/vitre.log"
+    }
+  ],
+  "controles_reussis": 103,
+  "runtime_hors_vitre_modifie_par_agent": false,
+  "build_lance": false,
+  "qualification_pixels": "non effectuee par cet audit"
+}

@@ -1,0 +1,117 @@
+{
+  "format": "bitume-geometrie-candidat-2",
+  "statut": "qualification_locale_source_terminee_ci_webgl_publication_en_attente",
+  "base_publiee": "ccb1cb1c5ef0efff1f51c064bab2816c99f23d6b",
+  "fichiers_sha256": {
+    "src/voiture.js": "13a96a4d8b596f70fe085829f68ec41b4202443151430716cd9e44f97bdd9508",
+    "src/cockpit-matieres.js": "48c926302b0bd8c0046f529e10d7472b2816064581c996c111ed6364d62f1a5e",
+    "verifications/voiture.test.mjs": "c006ed0b26d5c73eda0fa224fb6ae3870dae0cc470827d8a21d42144a6ae4106",
+    "verifications/cockpit-matieres.test.mjs": "1cec9c13f614502bcf483344b90e1370ff60d07768979ff9b30a5ad2cc719a57",
+    "verifications/cockpit-mecanique.test.mjs": "92571c4a68d7f518436b07b3d1732380a7573c272ee1187a7e30371d8d394e77",
+    "src/jeu.js": "f3888a459bb82f049839889ccf9415016be2ca316404629033a4780e78085c7a",
+    "verifications/cockpit-visibilite.test.mjs": "f181ac4d1b77e9f80e4b1ff9505f0eeae1b4733a0218c45e34ca9f91057d9bb5"
+  },
+  "parametres": {
+    "volant_monde": [
+      0.33,
+      0.595,
+      0
+    ],
+    "inclinaison_volant_rad": 0.12,
+    "diametre_jante_inchange": true,
+    "planche_monde": [
+      0.48,
+      0.617,
+      0
+    ],
+    "retros": [
+      0.66,
+      0.59,
+      0.37
+    ],
+    "os_bras_m": [
+      0.21,
+      0.23
+    ],
+    "yeux_neutres_m": [
+      -0.062,
+      0.79,
+      0
+    ],
+    "cadrage_reference": {
+      "format": "16:9",
+      "champ_vertical_degres": 70,
+      "pitch_neutre_radians": 0,
+      "vitesse_m_s": 0,
+      "unite": "champ vertical ; adaptation existante du format et de la vitesse conservee"
+    }
+  },
+  "compatibilite_champ": "Valeurs manuelles memorisees numeriquement identiques ; leur interpretation devient verticale et leur projection change par rapport au calcul horizontal historique.",
+  "etapes": {
+    "preparation_geometrie": {
+      "cadrage": "Preparation initiale H70 / pitch -8 degres, avant la decision finale V70 / pitch neutre. Les suites de modele independantes de la camera ont ete executees pendant les ajustements.",
+      "retros_z_m": 0.375,
+      "recu_original": "initial/GEOMETRIE-INITIAL-H70.json",
+      "limite": "Ces logs ne prouvent pas le cadrage final, et ne sont pas presentes comme une campagne CI du HTML construit.",
+      "preuves": {
+        "initial/voiture-qualification.log": "75c059c1fce17f2c03c9a2512bc88890b7d957c7e1053898b9274607202f3ac6",
+        "initial/habitacle-monde-qualification.log": "754161b0609b53be971bc18243ccbbcc3ce75faf6a0726ffb547d4efd9d29c4b",
+        "initial/cockpit-matieres-qualification.log": "853ecf74f0d4d03efbb88e4e59a0c195a428026af620b6250e93598662a2fbaf",
+        "initial/pilote-commun-final.log": "6733603451c86438fb66d75e6470f0c45dbbd79f5b0901e7c7412db18c0f7ad2",
+        "initial/pilote-exterieur-final.log": "9dc81250f99eff8288e9e5fd8b5e97fe58c2e79e497ff0906b29ee50af0094ae",
+        "initial/pilote-gestes-extremes-final.log": "255031e0d603c71c38538ba1b059a8acc45877adfb8667e1cdb949717d6a9a0c",
+        "initial/cockpit-mecanique-qualification.log": "1b6e046c03d0a8a46eae82101acb33bbbd7cd2655226136c734f7f297a5342c5",
+        "initial/pilote-habitacle-trajet-final2.log": "14ef4029bfd52a0ac2ce8d8fba28c87e133da0f33c35bb8aa4dd0605065acbad",
+        "initial/cockpit-visibilite-candidat4.log": "61fc5531126e89c7711cc4f057c953d1aae22ff571de017d9ab68595da78f1b4",
+        "initial/cockpit-mecanique-0275-negatif.log": "b2620eebfe64f3522974b585f96ffbe540b46d34cd07504d2628d81c61b8d933"
+      },
+      "temoin_0275": {
+        "suite": "cockpit-mecanique",
+        "controles": 4,
+        "echecs_attendus": 4,
+        "log": "initial/cockpit-mecanique-0275-negatif.log"
+      }
+    },
+    "cadrage_final": {
+      "cadrage": "V70 / pitch 0 / RETRO.z .370",
+      "log": "cadrage-final-vertical-70.log",
+      "log_sha256": "0bdc61ca21178c68f8dbc3a1c9d6046f7459e2150785e0884ec75565987b3f86",
+      "suite": "cockpit-visibilite",
+      "controles": 7,
+      "reussis": 7,
+      "echecs": 0,
+      "rayons_chaussees": 324,
+      "rayons_occultes": 0,
+      "cadres": 120,
+      "recouvrements_ou_gardes_insuffisantes": 0,
+      "largeur_jante_16_9_arret_pourcent": 25.525006583465142,
+      "bas_jante_hors_cadre_px": 58.5334559896426,
+      "projection_independante": {
+        "recu": "REVUE-PROJECTION-VERTICALE-70.json",
+        "sha256": "0a641201950a9613c6e8a147d9fa67a187e29cc51e254eba398ca29f18ad1b50",
+        "poses_portrait": 30,
+        "poses_sous_seuil": 0,
+        "marge_minimale_px": 4.752555590583256,
+        "note": "Le recu independant precede le rejeu complet ; son attente de la suite est satisfaite par le log final 7/7 conserve ici."
+      }
+    }
+  },
+  "conservation": [
+    "yeux, assise et épaules",
+    "mêmes objets et triangles monde dans les deux vues",
+    "seuils de pénétration, distances de garde et rayons de chaussée inchangés",
+    "tailles de la jante et des gants inchangées"
+  ],
+  "limites": [
+    "Cotes de cockpit calibrées depuis des photos ; aucun plan métrique complet Ferrari disponible.",
+    "Le rendu logiciel est une vue de contrôle géométrique, pas une capture du HTML final.",
+    "La reference Unreal 0.35 est en 16:10, le controle logiciel en 3:2 ; aucune identite stricte de cadrage nest etablie.",
+    "La mesure 25.525 % provient de vrais sommets projetes dans le cadre 960x540 au repos, pas dune segmentation approximative de la capture logicielle."
+  ],
+  "portes_restantes": {
+    "ci_complete_du_candidat_construit": "en_attente",
+    "captures_webgl_du_html_exact_et_inspection": "en_attente",
+    "publication_github": "en_attente",
+    "deploiement_site": "non_demande"
+  }
+}

@@ -217,6 +217,24 @@ verifier('perles et film : gravité à l’arrêt, transport vers les quatre bor
     }
   }
 });
+verifier('le flux commun calme aussi les couches optiques de pluie et neige dos au vent',()=>{
+  for(const meteo of [{pluie:1,neige:0},{pluie:0,neige:1}]){
+    const c=contexte({...meteo,largeur:1280,hauteur:720,vitesse:80,vitesseX:0,vitesseY:0,vitesseZ:-80});
+    const avant=O.creerEtat({graine:4}),arriere=O.creerEtat({graine:4});
+    avancer(avant,{...c,cameraYaw:0},.9,120);avancer(arriere,{...c,cameraYaw:Math.PI},.9,120);
+    assert((meteo.neige?arriere.neige:arriere.eau)>0,'précipitation toujours présente');
+    for(const couche of (meteo.neige?[5]:[0,1,2,3,4])){
+      const i=couche*8,a=avant.transportUniformes,b=arriere.transportUniformes;
+      assert.equal(a[i+3],1);assert.equal(b[i+3],1);
+      for(const [x,y] of [[.2,.2],[.8,.8]]){
+        const dxAvant=x*a[i]+a[i+1]-x,dxArriere=x*b[i]+b[i+1]-x;
+        assert(Math.abs(dxAvant)>.03,'transport de face conservé');
+        assert(Math.abs(dxArriere)<1e-6,'aucune expansion de vitesse sur la face arrière');
+        assert(y*b[i]+b[i+2]>y,'gravité résiduelle sans figer la couche');
+      }
+    }
+  }
+});
 verifier('changements de flux : positions continues, histoire conservée et projection cohérente',()=>{
   const e=O.creerEtat(),c=contexte({largeur:1280,hauteur:720,vitesseX:0,vitesseY:0,vitesseZ:-80,cameraYaw:0});
   avancer(e,c,.8,120);const avant=[...e.transportUniformes],temoin=O.creerEtat();avancer(temoin,c,.8,120);

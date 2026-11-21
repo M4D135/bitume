@@ -1,0 +1,16 @@
+ok à l’arrêt sans vent, les quatre quadrants descendent dans les deux vues
+ok de 0 à 300 km/h l’écartement croît ; à grande vitesse les gouttes du haut remontent
+ok l’air évacue les dépôts par les bords, sans les faire disparaître par vieillissement
+ok le trajet conserve les positions précédentes derrière chaque goutte qui s’écarte
+ok quand la voiture s’arrête sous abri, le résidu descend sans nouvel impact ni saut
+ok le vent latéral change de signe sur l’écran quand le vent ou le regard s’inverse
+ok le cap ne change pas l’écoulement de face ; dos au vent et en recul la gravité reste sans expansion forcée
+ok à vitesse identique, pluie et neige déjà déposées sont calmes à l’arrière et gardent le vent latéral
+ok tourner progressivement le regard conserve les dépôts et leur trajet puis laisse un résidu calme
+ok le déplacement latéral et les vents de face ou arrière utilisent la vitesse relative réelle
+ok le roulis projette la gravité et une vue verticale ne garde pas de chute écran artificielle
+ok les écrans paysage, partagés et portrait préservent la direction dans leur rapport de taille
+ok l’adhérence et la fusion changent la mobilité sans imposer une direction opposée au flux
+ok les changements de vitesse, regard et vent donnent les mêmes trajectoires de 30 à 144 Hz
+ok le flux réutilise la sortie et borne les entrées invalides sans écrire dans le contexte
+vitre flux : 15 contrôles passés

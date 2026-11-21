@@ -1,0 +1,22 @@
+[
+  {
+    "suite": "cockpit-mecanique",
+    "exit_code": 0
+  },
+  {
+    "suite": "cockpit-visibilite",
+    "exit_code": 0
+  },
+  {
+    "suite": "retroviseurs-reflexion",
+    "exit_code": 0
+  },
+  {
+    "suite": "integration-parallele",
+    "exit_code": 0
+  },
+  {
+    "suite": "voiture-identite",
+    "exit_code": 0
+  }
+]
