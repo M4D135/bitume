@@ -13,25 +13,30 @@ remplacé. Garder la vraie descente italienne par la SS21, environ 32 km, à l�
 réelle. Ne pas conserver les 64,5 km de l’idée initiale ni raccourcir artificiellement
 les virages. Fiche détaillée : [Col de Larche → Vinadio](COL-DE-LARCHE-VINADIO-2026-11-21.md).
 
-Le runtime publié sur `main` au départ de ce jalon est **0.2.77 / p15 / FERRO
-0.3.15**, commit `11e7e55f087484e1099963d42b04309b6bc6220c`. Les sources de la
-refonte et les fonctions nouvelles sont sauvegardées sur
-`codex/bitume-0280-implantation-126ck-20261121`. Leur présence sur une branche ne
-vaut ni qualification globale, ni mise en ligne du jeu. Le numéro de cette branche
-ne désigne pas une version construite ; le dernier HTML de préparation est encore
-la base .78 et doit être reconstruit après les derniers raccords.
+**Point réconcilié après Gemini :** le runtime publié sur `main` est **0.2.79 /
+p15 / FERRO 0.3.15**, commit `d4081241ad40dced72fd4e77c97a4775ed0398ad`, après
+fusion des sources `f86e58f`. Le HTML `77d774fd99484f7d` est cohérent avec les
+sources ; sa CI réussit 190 suites Node et 8 tests Python. La voiture, les
+poignets R4b corrigés, les six vues et les compteurs sont intégrés.
+[Reçu vérifié](rapports/MAINS-REALISME-2026-11-21/BASE-0279.json).
+
+David demande ensuite de poursuivre les personnages, surtout les mains plus
+réalistes, en repartant des avancées Gemini. Le [lot mains M1–M4](MAINS-REALISME-2026-11-21.md)
+prend priorité ; la géographie Larche/Vinadio et le reste du programme sont
+conservés. La livraison du code ne prouve pas la mise à jour du site.
 
 ## Ordre de travail
 
 | Priorité | Lot | Résultat attendu | État à ce jalon |
 |---|---|---|---|
-| 1 | R1–R3 — voiture complète | Proportions, coque, arrière, ailes, habitacle et siège communs à toutes les vues | Sources remaniées ; qualification visuelle globale à terminer |
-| 2 | R4 — pilote et prise du volant | Posture assise dans la voiture, poignets naturels, mains en contact pendant les gestes | Posture intégrée ; candidat poignets `fc01552` séparé, allocation et contact à corriger avant réception ; contrôle extérieur prioritaire |
-| 3 | V — six vues de conduite | Cockpit, arceau, nez, aileron avant, poursuites proche et éloignée | Sources intégrées ; contrôles ciblés réussis, réception WebGL à terminer |
-| 4 | T — compteurs du titre | Visites et visiteurs uniques réellement partagés entre navigateurs | Module préparé, 28 contrôles dédiés réussis ; capture et service à qualifier |
-| 5 | R5/V5/T4 — réception commune | Build exact, images WebGL, commandes, duo, réseau, performances | À faire avant publication du runtime sur main |
-| 6 | L0–L1 — sources Larche/Vinadio | Tracé routier, terrain, provenance, mesures et inconnus | Sources primaires identifiées ; données détaillées à acquérir |
-| 7 | L2–L6 — nouveau parcours | Descente réelle du col jusqu’à Vinadio, arrivée et chrono adaptés | Planifié ; aucun nouveau trajet jouable à ce jalon |
+| Actif | M1–M3 — réalisme des mains | Doigts sans contraction, volumes affinés et transitions plus progressives | Correction et comparaison .79/candidat en cours ; vue extérieure prioritaire |
+| Ensuite | M4 — personnages/manches | Raccords de manchette, avant-bras, coudes et silhouette | Prévu après réception des mains |
+| Acquis | R1–R3 — voiture complète | Proportions, coque, arrière, ailes, habitacle et siège communs | Intégré en .79 ; fidélité finale à apprécier sur les images et à l’essai |
+| Acquis | R4 — pilote et poignets | Posture assise, IK et continuité avant-bras/paume | R4b corrigé et intégré en .79 ; anciennes réserves allocation/contact closes |
+| Acquis | V — six vues | Cockpit, arceau, nez, aileron avant, deux poursuites | Intégré en .79 ; commandes et pose commune contrôlées |
+| À activer | T — compteurs | Visites et visiteurs uniques globaux | Code livré .79 ; mise en service réelle à vérifier lors du déploiement |
+| Conservé | L0–L1 — sources Larche/Vinadio | Tracé routier, terrain, provenance et mesures | Sources identifiées ; données détaillées à acquérir |
+| Conservé | L2–L6 — nouveau parcours | Descente réelle avec arrivée et chrono adaptés | Planifié ; aucun nouveau trajet jouable |
 
 Les lots peuvent être préparés dans des branches distinctes. Les modifications de
 `jeu.js`, du catalogue, des builds et du suivi sont intégrées séquentiellement par
@@ -45,12 +50,13 @@ du siège et du volant par rapport aux essieux avant d’ajuster le corps.
 
 ### R4b — corriger la tenue du volant, d’abord depuis l’extérieur
 
-**Préparation actuelle :** `fc0155259d063685dac5116d9102cbf2fcb22423`, branche
-`codex/bitume-126ck-poignets-20261121`, non intégrée au checkpoint `12050e2`.
-Le [checkpoint commun](rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md)
-conserve les deux défauts mesurés : allocation du chemin cockpit et contact
-avant-bras/pommeau lorsqu’un rapport interrompt le geste. Corriger ces défauts,
-relancer les gestes extrêmes sur le résultat, puis recevoir les images WebGL.
+**Livré en .79 :** la correction `9b15210` de R4b a été intégrée par `f86e58f`,
+puis fusionnée sur `main` dans `d408124`. Allocation cockpit et contact
+avant-bras/pommeau ont été corrigés sans relever les seuils. La fin du
+[checkpoint commun](rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md)
+décrit cette réception et les images WebGL2. Les défauts du candidat `fc01552`
+sont de l’historique, pas l’état actuel. La suite M1–M4 améliore désormais les
+doigts, leurs transitions et la silhouette des membres.
 
 1. Observer le profil, les deux trois-quarts et la vue d’arceau : alignement
    avant-bras–poignet–paume, orientation des pouces, jointures et manchettes.
@@ -125,9 +131,9 @@ plusieurs visiteurs. Aucun suivi par IP n’est nécessaire pour ce lot. Les com
 commencent à l’activation ; aucun historique n’est inventé. Ce mécanisme ne prétend
 pas éliminer tous les robots ou visiteurs malveillants.
 
-Les 28 contrôles dédiés (16 serveur, 12 navigateur) ont été relancés avec succès
-après intégration locale. Restent la capture du titre, le raccord HTTP dans
-l’environnement de qualification et la vérification de mise en service effective.
+Les 28 contrôles dédiés (16 serveur, 12 navigateur) sont présents dans la CI .79
+réussie. Le reçu Gemini mentionne le titre hors ligne avec `—`. Le raccord HTTP
+et la mise en service effective doivent être vérifiés lors de la livraison du service.
 
 ## L — col de Larche → Vinadio
 
@@ -156,5 +162,6 @@ au raccord du sommet et aux montagnes visibles côté France.
 5. Reprendre les lots Larche/Vinadio depuis L0, avec le périmètre corrigé de
    sommet à Vinadio. Ne pas repartir de l’ancien départ de Barcelonnette.
 
-Aucun déploiement du site n’est réalisé dans ce jalon. Les prochaines actions
-peuvent continuer depuis le dépôt sans rechercher l’historique de la conversation.
+L’audit du dépôt ne vérifie pas la version actuellement servie par le site. Les
+prochaines actions repartent du point actif ci-dessus, sans réappliquer les lots
+déjà intégrés ni effacer les préparations et preuves historiques.

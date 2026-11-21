@@ -1,140 +1,74 @@
 {
   "date": "2026-11-21",
   "etat_courant": {
-    "version_courante": "0.2.77",
-    "version_publiee_verifiee": "0.2.77",
+    "version_courante": "0.2.79",
+    "version_publiee_verifiee": "0.2.79",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "checkpoint_126ck_visites_cameras_route_larche_vinadio_planifiee",
-    "lot": "reception_commune_126ck_pilote_cameras_compteurs",
-    "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md",
-    "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "044",
-    "prochaine_action": "Finir la réception poignets/caméras/compteurs, reconstruire puis qualifier le vrai jeu assemblé. En parallèle documentaire : L0 du sommet du col de Larche à Vinadio, sans départ de Barcelonnette.",
-    "dernier_lot_clos": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
-    "fiche_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
+    "circuits": 9,
+    "commit_fusion": "d4081241ad40dced72fd4e77c97a4775ed0398ad",
+    "tete_qualifiee": "d4081241ad40dced72fd4e77c97a4775ed0398ad",
+    "statut": "base_Gemini_0279_verifiee_nouveau_lot_mains_en_cours",
+    "lot": "mains_realisme",
+    "fiche": "docs/reprise/MAINS-REALISME-2026-11-21.md",
     "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md",
-    "entree_journal": "044",
-    "dernieres_demandes": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md",
-    "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
-    "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md",
-    "contrats_integration": "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
-    "inventaire_branches": "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
-    "runtime_modifie_par_coordination": true,
-    "dernier_lot_coordination_clos": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
-    "runtime_modifie_par_coordination_portee": "Préparations de sources : implantation complète 126 CK, pilote/mains, six caméras et compteurs du titre. Main conserve le runtime .77 dans le jalon documentaire; HTML .78 de base à reconstruire.",
-    "preuve_t3": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
-    "reserve_lisibilite_cockpit": "Voiture complète non encore qualifiée dans le vrai jeu assemblé. Géométrie unique, occultation naturelle du volant acceptée, vue extérieure prioritaire pour les poignets.",
-    "alerte_budget_decor": {
-      "statut": "ouvert",
-      "run": 44803588903,
-      "suite": "decor.test.mjs",
-      "mesure_ms_affichee": 172,
-      "seuil_strict_ms": 150,
-      "cause": "non déterminée",
-      "ci_pr_meme_arbre": "suite réussie, durées individuelles non enregistrées",
-      "mesures_suivantes": [
-        {
-          "version": "0.2.70",
-          "ms": 152
-        },
-        {
-          "version": "0.2.71",
-          "run": 44825452386,
-          "ms": 168,
-          "arbre_identique_push_vert": true
-        },
-        {
-          "version": "0.2.72",
-          "run": 44831750422,
-          "ms": 155,
-          "arbre_identique_pr_vert": true
-        }
-      ],
-      "diagnostic_local_0275": {
-        "statut": "ouvert",
-        "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/diagnostic-decor/DIAGNOSTIC.json",
-        "mesures_locales_ms": [
-          151.87,
-          138.2,
-          141.13,
-          84.43,
-          85.68
-        ],
-        "seuil_strict_ms": 150,
-        "echecs_sur_5": 1,
-        "gain_prouve": false,
-        "optimisation_appliquee": false,
-        "proprietaire_suivant": "04"
-      }
-    },
-    "commit_fusion": "11e7e55f087484e1099963d42b04309b6bc6220c",
-    "tete_qualifiee": "f596ac442e99f754c9b0d420f8c21a644a86da3e",
-    "pr_publiee": 54,
-    "branche_candidate": "codex/bitume-0280-implantation-126ck-20261121",
+    "dernieres_demandes": "docs/reprise/MAINS-REALISME-2026-11-21.md",
+    "dernier_lot_clos": "docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json",
+    "prochaine_action": "Corriger la contraction des doigts, les volumes des gants et les transitions puis comparer les vrais rendus .79/candidat. Continuer ensuite les personnages et Larche/Vinadio.",
+    "branche_candidate": "codex/bitume-mains-realisme-20261121",
     "version_candidate": null,
-    "branche_pr": null,
-    "preuve_candidat_0272": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0272/BUILD-0272.json",
-    "preuve_candidat_0273": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/BUILD-0273.json",
-    "preuve_candidat_0274": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0274/BUILD-0274.json",
-    "preuve_reception_0273": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/RECEPTION-0273.json",
-    "preuve_candidat_0275": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0275/BUILD-0275.json",
-    "fiche_cockpit_pluie": "docs/reprise/COCKPIT-PLUIE-2026-11-20.md",
-    "preuve_publication_0275": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
-    "statut_candidat_0275": "publie_sur_main",
-    "candidat_126ck_construit": false,
-    "version_html_base_candidate": "0.2.78",
-    "fiche_checkpoint": "docs/reprise/rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md",
-    "fiche_nouveau_parcours": "docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md"
+    "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
+    "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md"
   },
   "publication": {
-    "version": "0.2.77",
-    "pr": 54,
-    "url": "https://github.com/M4D135/bitume/pull/54",
-    "tete_qualifiee": "f596ac442e99f754c9b0d420f8c21a644a86da3e",
-    "commit_fusion": "11e7e55f087484e1099963d42b04309b6bc6220c",
-    "statut": "publie_sur_main_avec_reserve_budget_decor",
-    "verification_publication": "PR 54 et commit de main relus ; sauvegardes des sources et des poignets verifiees par leur arbre et leur reference, voir le recu du 21 novembre.",
-    "preuves_qualification": [
-      "docs/reprise/rapports/POSTE-126CK-0277/ci/push/14700170862/RECEPTION.json",
-      "docs/reprise/rapports/POSTE-126CK-0277/ci/pull_request/14699846418/RECEPTION.json"
-    ],
-    "site_deploye": false
+    "version": "0.2.79",
+    "commit_fusion": "d4081241ad40dced72fd4e77c97a4775ed0398ad",
+    "commit_sources": "f86e58ff4114e5db83c4384b4a31fc3801fb353a",
+    "statut": "publie_sur_main",
+    "url": "https://github.com/M4D135/bitume/commit/d4081241ad40dced72fd4e77c97a4775ed0398ad",
+    "recu": "docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json",
+    "site_deploiement_verifie": false
   },
   "qualification": {
-    "version": "0.2.77",
-    "tete_qualifiee": "f596ac442e99f754c9b0d420f8c21a644a86da3e",
-    "arbre_candidat": "1018c6083eca028eb4a8867b2f60d66faccb909b",
-    "build_octets": 14513844,
-    "build_sha256": "09aa278d0ced47fd88728d33c59a13fda1a808571df117072ad6d7af251be564",
-    "recu_build": "docs/reprise/rapports/POSTE-126CK-0277/BUILD-0277.json",
-    "ci_push": {
-      "run": 44884329345,
-      "suites_node": 182,
+    "version": "0.2.79",
+    "tete_qualifiee": "d4081241ad40dced72fd4e77c97a4775ed0398ad",
+    "build_octets": 14554537,
+    "build_sha256": "77d774fd99484f7ddc2a6bbafe801c9dd2ea8f670af0c51ce1377a7e4a429aa8",
+    "ci": {
+      "run": 44903497167,
+      "job": 136844123358,
+      "conclusion": "success",
+      "suites_node": 190,
       "suites_echec": 0,
       "tests_python": 8,
-      "sources_fichiers": 4213,
-      "sources_et_modes_identiques": true,
-      "qualification_recue": true,
-      "recu": "docs/reprise/rapports/POSTE-126CK-0277/ci/push/14700170862/RECEPTION.json"
+      "reconstruction_identique": true
     },
-    "ci_pr": {
-      "run": 44884333041,
-      "suites_node": 182,
-      "suites_echec": 0,
-      "tests_python": 8,
-      "sources_fichiers": 4213,
-      "sources_et_modes_identiques": true,
-      "qualification_recue": true,
-      "recu": "docs/reprise/rapports/POSTE-126CK-0277/ci/pull_request/14699846418/RECEPTION.json"
-    },
-    "recu_profil": "docs/reprise/rapports/POSTE-126CK-0277/RECEPTION-PROFIL.json",
-    "provenance": "Reçus .77 déjà produits et relus, recopiés sans modification ; aucune nouvelle campagne exécutée pour cette correction documentaire.",
-    "portee": "Ces preuves portent uniquement sur le poste .77 ; elles ne qualifient ni les sources de refonte 12050e2 ni le lot poignets fc01552.",
-    "reserve_decor": "Seuil strict <150 ms conservé ; les réussites .77 ne lèvent pas la réserve historique sans mesure comparative.",
-    "fidelite_126ck_complete_validee": false,
+    "recu": "docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json",
+    "capture_Gemini": "docs/reprise/rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md",
+    "captures_base_reinspectees_dans_cette_reprise": false,
     "essai_utilisateur_valide": false,
-    "limites": "Captures logicielles de poses prescrites ; FPS matériels, manettes, écoute humaine et réseau réel non qualifiés."
+    "limites": "La CI .79 et le reçu Gemini ne valident pas le réalisme final demandé. FPS matériels, manettes physiques et réseau réel non qualifiés."
+  },
+  "acquis_0279": {
+    "voiture": "126 CK et implantation commune à toutes les caméras",
+    "pilote": "posture assise, IK 27/29 cm, poignets R4b et dégagement manche/pommeau corrigés",
+    "vues": [
+      "cockpit",
+      "arceau",
+      "nez",
+      "aileron-avant",
+      "poursuite-proche",
+      "poursuite"
+    ],
+    "compteurs": {
+      "libelles": [
+        "Visites",
+        "Visiteurs uniques"
+      ],
+      "statut": "code client/serveur intégré ; activation réelle à vérifier lors du déploiement",
+      "identite": "UUID navigateur haché côté serveur, sans IP",
+      "session_minutes": 30
+    }
   },
   "reserves": {
     "construction_ms": {
@@ -150,7 +84,6 @@
     "fps_materiels_qualifies": false,
     "manettes_physiques_qualifiees": false,
     "reseau_entre_machines_qualifie": false,
-    "site_deploye": false,
     "spark_disponible": false,
     "projections_poursuite": "Renforcées et contrôlées en 0.2.66 à 235/300 km/h ; pluie extérieure vue depuis un abri encore à corriger.",
     "lissage_S8_facultatif": {
@@ -164,7 +97,7 @@
     "composition_demo": "Bandeau parfois superposé au geste ou à un animal ; neige claire à grain discret.",
     "cimes": "Socle publié ; relief très facetté et sept lieux complets, lac/cascade encore à poursuivre.",
     "demos": "Bandeaux sur certains sujets ; neige Haut-Col claire et grain discret.",
-    "habitacle_pilote": "Formes .75/.76 refusées. Objectif actuel : modèle126CK RenderBlade et galerie complète ; correctif non livré.",
+    "habitacle_pilote": "126 CK et R4b livrés en .79 ; réalisme des doigts, transitions et manches à améliorer. Fidélité finale soumise à inspection du joueur.",
     "gouttes_vitesse": "Transport vitesse/caméra E0–E3 qualifié et publié en 0.2.68 ; limites restantes dans PUBLICATION-0268.json : pas toutes les poses/vitesses, micro0 et gravité des fines non qualifiées séparément.",
     "budget_decor_0269": {
       "statut": "ouvert",
@@ -196,15 +129,20 @@
       "statut": "qualifiee_sur_cas_requis",
       "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
       "limite": "Captures de poses prescrites, pas un essai matériel de conduite."
-    }
+    },
+    "site_deploiement_verifie": false,
+    "ancienne_allocation_R4b": "Résolue en .79 ; ne pas rouvrir sans reproduction.",
+    "ancien_contact_manche_pommeau_R4b": "Résolu en .79 ; conserver les contrôles de contact."
   },
   "suite": {
-    "lot": "budget_construction_decor_0269",
-    "statut": "reserve_ouverte_optimisation_non_appliquee",
-    "fiche": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/diagnostic-decor/DIAGNOSTIC.json",
-    "proprietaire": "04",
-    "prochaine_action": "Transmettre au propriétaire 04 la piste de stockage fixe des indices des nappes Route (19 323 couples temporaires), puis qualifier identité géométrique et mesures alternées avant toute intégration. Aucun code de cette optimisation appliqué.",
-    "gain_prouve": false
+    "lot": "mains_realisme",
+    "statut": "in_progress",
+    "fiche": "docs/reprise/MAINS-REALISME-2026-11-21.md",
+    "apres": [
+      "personnages et manches",
+      "Larche/Vinadio L0–L2"
+    ],
+    "acquis_R4b_a_preserver": true
   },
   "catalogue": {
     "jouables": 9,
@@ -220,1067 +158,49 @@
     "regle": "Conserver les sept circuits historiques, Baïkal, toutes les demandes et les lots transversaux.",
     "route_des_cimes": "id route-des-cimes, index 8, graine 181 ; neuvième circuit déjà publié en 0.2.66."
   },
-  "recus_historiques": {
-    "monaco_mesures_14A": "docs/references/monaco-2026/PUBLICATION-MESURES-20261120.json",
-    "bitume_0260": "docs/reprise/rapports/REALISME-2026-11-19/PUBLICATION-0260.json",
-    "bitume_0259": "docs/reprise/rapports/COCKPIT-PILOTES-2026-11-19/PUBLICATION-0259.json",
-    "bitume_0257": "docs/reprise/rapports/DEMOS-CINEMA-2026-11-19/PUBLICATION-0257.json",
-    "monaco_revue_14A": "docs/references/monaco-2026/PUBLICATION-REVUE-20261120.json",
-    "monaco_cartographie_14A": "docs/references/monaco-2026/qualification-revue-cartographie.json",
-    "bitume_0262": "docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/PUBLICATION-0262.json",
-    "bitume_0269": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
+  "parcours_larche_vinadio": {
+    "nom": "Col de Larche → Vinadio",
+    "depart": "sommet routier du col de Larche / Colle della Maddalena",
+    "arrivee": "Vinadio",
+    "route": "SS21",
+    "sens": "descente vers Italie",
+    "distance_indicative_km": 32.2,
+    "distance_mesuree": null,
+    "echelle": 1,
+    "topologie": "ouverte",
+    "depart_barcelonnette_remplace": true,
+    "statut": "planifie_sources_identifiees_non_acquises",
+    "fiche": "docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md"
   },
-  "regle": "Un sous-lot par discussion, intégration sérialisée des fichiers partagés ; préserver preuves et préparations ; aucun push forcé.",
-  "qualification_monaco_revue": {
-    "controles_cibles": 35,
-    "reussis": 35,
-    "echoues": 0,
-    "nouveaux_controles": 9,
-    "ecarts_plus_1m": 32,
-    "points_tunnel": 33,
-    "points_union_ecarts_tunnel": 45,
-    "points_revue_avec_pentes": 49,
-    "groupes_ecarts": 7,
-    "troncons_tunnel": 2,
-    "transitions_osm": 4,
-    "alertes_pente_terrain": 17,
-    "sonde_bdtopo_objets": 7,
-    "observations_chaussee_qualifiees": 0,
-    "recu": "docs/references/monaco-2026/qualification-revue.json",
-    "publication": "publie_sur_main",
-    "pr": 26,
-    "ci_suites_reussies": 144,
-    "ci_suites_echouees": 0,
-    "ci_run": 44706854811,
-    "commit_fusion": "ed32c88e0878e57cd5e64476360047d2354f4816"
-  },
-  "publication_monaco_revue": {
-    "status": "merged",
-    "pr": 26,
-    "url": "https://github.com/M4D135/bitume/pull/26",
-    "head": "4fba4b0cea7dad3254822fbda25c217708526607",
-    "candidateTree": "c155250cf75370a1e42aed69a3e677a83c637c6e",
-    "mergeCommit": "ed32c88e0878e57cd5e64476360047d2354f4816",
-    "mergeTreeMatchesCandidate": true,
-    "ciRun": 44706854811,
-    "ciJob": 136188503585,
-    "ciTestFilesPassed": 144,
-    "ciTestFilesFailed": 0,
-    "ciLogSha256": "025ec9020be071010879524c1a70295b08f7b98e15dd8503b5d7faf3f8b32c53",
-    "gameVersion": "0.2.61",
-    "physics": "p14",
-    "engine": "FERRO 0.3.15",
-    "htmlBytes": 14265416,
-    "htmlSha256": "c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d",
-    "artifactArchiveIndependentlyDownloaded": false,
-    "verification": "Arbre distant et arbre de fusion identiques au candidat ; CI et journal observes. Le workflow reconstruit et refuse tout changement de version, taille ou HTML.",
-    "documentationClosure": "Documents uniquement ; aucune reconstruction ni nouvelle campagne locale."
-  },
-  "qualification_monaco_cartographie": {
-    "controles_cibles_reussis": 8,
-    "controles_cibles_echoues": 0,
-    "ci_suites_reussies": 145,
-    "ci_suites_echouees": 0,
-    "ci_run": 44708889823,
-    "sources_archive_verifiees": 3327,
-    "sources_contenus_et_modes_identiques": true,
-    "ecarts_plus_1m": 32,
-    "groupes_ecarts": 7,
-    "aretes_pente_terrain": 17,
-    "troncons_tunnel": 2,
-    "portails_candidats": 4,
-    "portails_mesures": 0,
-    "observations_chaussee_qualifiees": 0,
-    "periodes_dalles_distinctes_des_dates_individuelles": true,
-    "svg_inspecte": true,
-    "recu": "docs/references/monaco-2026/qualification-revue-cartographie.json"
-  },
-  "publication_monaco_cartographie": {
-    "status": "merged",
-    "pr": 29,
-    "url": "https://github.com/M4D135/bitume/pull/29",
-    "head": "b48685ec513c06b1911953868aca6a5413adc040",
-    "candidateTree": "87ce69c34f38dd1e2ee7a18c55e6d49f197d3149",
-    "mergeCommit": "d0dbd8544be30ab44aaff399ae55761150074636",
-    "mergeTreeMatchesCandidate": true,
-    "ciRun": 44708889823,
-    "ciJob": 136195244925,
-    "artifactId": 14617272112,
-    "artifactSha256": "b7ddcf231b7cc901dec9a8cfdff282daac6f1058f2302dafb6b34edd14eb31dd",
-    "sourceFilesVerified": 3327,
-    "buildSha256": "c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d",
-    "foundationPr26And28Preserved": true,
-    "redundantPr27Closed": true,
-    "documentationClosure": "Documents uniquement ; aucune nouvelle campagne locale ni construction."
-  },
-  "qualification_aspiration": {
-    "fiche": "docs/reprise/ASPIRATION-SILLAGE-2026-11-20.md",
-    "recu": "docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/QUALIFICATION.json",
-    "mesures": "docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/comparaison.json",
-    "p14GainSuiveurM": 0,
-    "p15GainSuiveurA235KmhApres6sM": 5.32421875,
-    "p15GainVitesseA235KmhApres6sKmh": 6.693804953712629,
-    "physiqueModifiee": true,
-    "ferroConserve": true,
-    "status": "publie_sur_main",
-    "recu_publication": "docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/PUBLICATION-0262.json",
-    "ci_suites_reussies": 148,
-    "ci_suites_echouees": 0,
-    "png_verifies": 41,
-    "degagement_natif": "docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/degagement-physx.json"
-  },
-  "suite_correctifs_demo": {
-    "statut": "socle_publie_0266_reserves_a_poursuivre",
-    "priorites": [
-      "Pluie extérieure vue depuis un abri",
-      "Bandeaux sur les sujets de démonstration",
-      "Neige claire et relief facetté"
-    ],
-    "regle": "Reprendre depuis la 0.2.66 qualifiée ; préserver le prototype pluie sauvegardé et les reçus de la PR #37."
-  },
-  "publication_haut_col_meteo_0261": {
-    "pr": 24,
-    "branche": "fix/haut-col-meteo-0261-20261120",
-    "tete": "a57aabe5a8be7d5d1877447555f899dc7cfb2ba9",
-    "arbre": "def0835e416192dd74a854db025b7d53890f6924",
-    "commit_fusion": "934132724de6eb368122868ce63feb341b7f9c73",
-    "recu_final": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/PUBLICATION-0261.json",
-    "statut": "publie_sur_main"
-  },
-  "qualification_haut_col_meteo_0261": {
-    "build_octets": 14265416,
-    "build_sha256": "c53c92d83b3c911817c85a1ddaae97284b7085fb70455b95e98edaf98c6ccf6d",
-    "runtime_inchange_par_correctifs_qualification": true,
-    "conduite_p14_et_moteur_inchanges": true,
-    "campagne_precedente": "143/143 suites ; 31 PNG, dix scènes candidates et cinq références inspectées.",
-    "qualification_finale_run": 44690920229,
-    "qualification_finale_resultat": "143/143 ; archive et 3 309 sources vérifiées, contenus et modes identiques.",
-    "visuel_final_run": 44690920192,
-    "visuel_final_resultat": "success ; 15 passages, dix scènes candidates, cinq références, 31 PNG vérifiés et inspectés.",
-    "artefacts_finaux_verifies": "Qualification, vues, neige et pluie finale vérifiés ; tête, arbre et build concordants.",
-    "captures_finales_inspectees": "31/31 PNG ; poses figées et rendu logiciel, sans qualification des FPS matériels.",
-    "recu_candidat": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/QUALIFICATION.json",
-    "recu_premier_passage": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/CI-PR24-INITIAL.json",
-    "recu_deuxieme_passage": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/CI-PR24-DEUXIEME.json",
-    "pluie_relance_job": 136150737900,
-    "recu_publication": "docs/reprise/rapports/HAUT-COL-METEO-2026-11-20/PUBLICATION-0261.json",
-    "historique_timeout_pluie": "Première tentative arrêtée à 35 min ; quatre passages et huit PNG complets. Relance réussie, historique conservé dans le reçu."
-  },
-  "reconciliation_programme": {
-    "date": "2026-11-20",
-    "fiche": "docs/reprise/BRANCHES-ET-LOTS-2026-11-20.md",
-    "programme": "docs/reprise/CONTINUATION-AUTONOME-2026-11-19.md",
-    "statut": "branches_historiques_et_livraisons_partielles_distinguees",
-    "base_conduite": "p15 ; ne pas réappliquer directement les jets p9 du lot 17",
-    "huitieme_circuit": "Baïkal reste le huitième ; Route-des-Cimes est le neuvième, socle publié en 0.2.66.",
-    "references_historiques": "Notices conservées ; objets et prototypes anciens non retrouvés dans les dépôts inspectés, sans conclusion de perte sur le poste d’origine.",
-    "reseau": "Aucune IP à fournir ; ancienne note sur la visibilité des IP auprès des relais expliquée. Préparation et essais à poursuivre, salon conservé avant qualification du remplacement.",
-    "priorite": "Reprendre pluie extérieure et composition après la 0.2.66 ; préserver les autres lots, le prototype sauvegardé et les reçus distincts de la PR #37."
+  "travaux_paralleles_a_preserver": {
+    "pluie_abris": "PR 43 ouverte, non intégrée",
+    "decor": "Réserve construction <150 ms et préparations conservées",
+    "sources_circuits": "Monaco/Marseille conservés; nouveaux parcours pas annoncés jouables",
+    "programme": "docs/reprise/FILE-TRAVAIL.json"
   },
   "execution_autonome": {
     "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
     "file": "docs/reprise/FILE-TRAVAIL.json",
-    "references": "docs/references/objectifs-utilisateur-2026-11-20/README.md",
-    "priorite_utilisateur": "Publication GitHub des modèles, objectifs et feuille de route avant la suite",
-    "lot_actif": "budget_construction_decor_0269",
-    "statut": "diagnostic_preparation_transmission_04",
-    "recu_references": "docs/reprise/rapports/REFERENCES-OBJECTIFS-2026-11-20/PUBLICATION.json",
-    "recu_publication": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
-    "prochaine_action": "Transmettre au propriétaire 04 la piste de stockage fixe des indices des nappes Route (19 323 couples temporaires), puis qualifier identité géométrique et mesures alternées avant toute intégration. Aucun code de cette optimisation appliqué."
+    "priorite_utilisateur": "Après audit du main avancé avec Gemini : personnages et mains plus réalistes.",
+    "lot_actif": "mains_realisme",
+    "statut": "en_cours",
+    "recu_publication": "docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json"
   },
-  "candidat_0263": {
-    "version": "0.2.63",
-    "build_octets": 14316546,
-    "build_sha256": "05d5ed2af9dc800491b2afe9ff5928641a463b15e2ccdd0420660696e4c946ee",
-    "build_reproduit_identique": true,
-    "recu": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/QUALIFICATION-0263.json"
-  },
-  "candidat_0264": {
-    "version": "0.2.64",
-    "build_octets": 14317789,
-    "build_sha256": "98848efea4b0969805008ba37cba7cab67b11434a9d960173ba77b157fcf8ef7",
-    "build_reproduit_identique": true,
-    "recu": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/QUALIFICATION-0264.json"
-  },
-  "preparation_couverts_cimes": {
-    "statut": "socle_publie_sur_main",
-    "fiche": "docs/reprise/COUVERTS-CIMES-INTEGRATION-2026-11-20.md",
-    "base_candidate": "80aa1e2913a93b54daf68bd1c3dc6abb520dc69b",
-    "pr_base": 37,
-    "circuits_sources": 9,
-    "circuits_livres": 9,
-    "build_sources_suivantes_effectue": true,
-    "blocages_constates": [],
-    "preuves_roulage": "docs/reprise/rapports/ROUTE-DES-CIMES-2026-11-20/QUALIFICATION-DOUZE-PORTAILS.json",
-    "captures_prevues": 24,
-    "captures_inspectees": 24
-  },
-  "revue_integree_0264": {
-    "pr": 37,
-    "tete": "80aa1e2913a93b54daf68bd1c3dc6abb520dc69b",
-    "ci_run": 44734044312,
-    "suites_reussies": 151,
-    "suites_total": 152,
-    "echec": "allocation pilote extérieur : 17,2228 octets/pose ; seuil 4 conservé",
-    "images": "poing trop ouvert, projections poursuite insuffisantes ; contrôle aérien incorrect",
-    "corrections_sources_publiees": "9cc701a7cd866bf7100780b0b6cd4bd80e6e661b",
-    "statut": "non_qualifie_nouveau_candidat_requis"
-  },
-  "candidat_0265": {
-    "version": "0.2.65",
-    "build_octets": 14370567,
-    "build_sha256": "58c735189996628eefeec8f7efda13fa76a070c18a1695533e1ac1a3a1302f5f",
-    "build_reproduit_identique": true,
-    "recu": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/CANDIDAT-0265.json"
-  },
-  "qualification_0265_initiale": {
-    "pr": 38,
-    "head": "4cbbe874e5aacedc5aba41ac8090eb6d997ffb2a",
-    "run": 44736979469,
-    "suites_reussies": 155,
-    "suites_echecs": 4,
-    "recu": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/CI-0265-INITIAL.json",
-    "images_inspectees": 94
-  },
-  "candidat_0266": {
-    "version": "0.2.66",
-    "build_octets": 14370823,
-    "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
-    "build_reproduit_identique": true,
-    "recu": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/CANDIDAT-0266.json"
-  },
-  "publication_0266": {
-    "pr": 38,
-    "tete": "1c1ac0c9e190368a02101263ddceb6be0b77240d",
-    "arbre": "1f05e9b399e4584b814c4050bad9f5652261b097",
-    "recu": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/PUBLICATION-0266.json",
-    "statut": "publie_sur_main",
-    "demos_png_inspectes": 48,
-    "qualification_suites": "159/159",
-    "images_retenues": 113,
-    "outils_tete": "40774189dc3a68242a3908f72e09f2676519ccbf",
-    "qualification_finale_run": 44747519912,
-    "commit_fusion": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8"
-  },
-  "consolidation": {
-    "base_main": "fd92eec1058f61e6191cc5ce090f5fbbd366e8e9",
-    "statut": "publiee_verifiee",
-    "manifeste": "docs/reprise/preparations/MANIFESTE.json",
-    "references": 50,
-    "tetes_non_contenues": 15,
-    "patches_reappliques_exacts": 10,
-    "reconciliation_pr37": "docs/reprise/rapports/DEMOS-PILOTES-METEO-2026-11-20/RECONCILIATION-PR37-0266.json",
-    "validation_pr37": {
-      "suites_ciblees": "8/8",
-      "rapports": "16/16",
-      "empreintes_png": "48/48"
-    },
-    "runtime_inchange": true,
-    "branches_supprimees": false,
-    "commit_main": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
-    "arbre_main": "4e9d600ebd8b5d60ae533941e87a21e16cc1e952",
-    "commit": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
-    "arbre": "4e9d600ebd8b5d60ae533941e87a21e16cc1e952",
-    "recu": "docs/reprise/rapports/CONSOLIDATION-2026-11-20/PUBLICATION.json",
-    "pr37_fusionnee": true,
-    "parents_historiques_directs": 15,
-    "branche_travail": "main",
-    "branches_historiques_conservees": true
-  },
-  "plan_correctifs_visuels": {
-    "index": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
-    "habitacle_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
-    "eau_vitesse": "docs/reprise/EAU-VITESSE-2026-11-20.md",
-    "statut": "plan_publie_code_a_corriger",
-    "exigences": [
-      "habitacle_unique_monde",
-      "assise_commune_plus_basse",
-      "bras_hors_buste",
-      "gouttes_ecartees_par_vitesse"
-    ],
-    "ordre": [
-      "E0_E1_E2_E3",
-      "H0_B0",
-      "H1",
-      "B1_B2_B3",
-      "H2_B4",
-      "B5"
-    ],
-    "consolidation_publiee_avant_plan": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
-    "premiere_publication": "72f92e2c761dc0ead696033e6be06cb9df891695"
-  },
-  "candidat_eau": {
-    "base_integration": "092a00b685219ad1e74d24f24a69182e5a0a5562",
-    "fiche": "docs/reprise/EAU-VITESSE-2026-11-20.md",
-    "recu": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json",
-    "version": "0.2.68",
-    "statut": "publie_sur_main",
-    "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
-    "campagne_generale_terminee": true,
-    "captures_jeu_inspectees": true,
-    "pr": 39,
-    "checkpoint_0267": "a8a2369d4be573195bff0f96ca53e6a7def77d6c",
-    "tete_qualifiee": "3daefb7c9d7decaf77beb94219abcf16d907bb38",
-    "commit_fusion": "4a04c090535f0c11d3db9900284c31e244a0c79c"
-  },
-  "publication_eau_0268": {
-    "pr": 39,
-    "url": "https://github.com/M4D135/bitume/pull/39",
-    "tete": "3daefb7c9d7decaf77beb94219abcf16d907bb38",
-    "commitMergeMain": "4a04c090535f0c11d3db9900284c31e244a0c79c",
-    "tree": "b84d8553d1a53de3258a56e2036b8b16669723f5",
-    "arbreIdentiqueAuCommitCITest": "4343db0e812b81c22ac79dd801d6f5328405c33d",
-    "mainReluApresFusion": true
-  },
-  "qualification_eau_0268": {
-    "html": {
-      "sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
-      "octets": 14383155
-    },
-    "qualification": {
-      "run": 44761148529,
-      "suitesNode": 160,
-      "echecsNode": 0,
-      "testsPython": 8,
-      "echecsPython": 0,
-      "reconstructionIdentique": true
-    },
-    "trajectoires": {
-      "controlesCPU": 112,
-      "controlesIntegration": 18,
-      "intervallesPngIndependants": 24,
-      "mesuresHorsCentre": 2076,
-      "historiqueRejeteConserve": true
-    },
-    "captures": {
-      "pngInspectes": 122,
-      "candidat": 98,
-      "reference0262": 24,
-      "demo": {
-        "run": 44761148653,
-        "png": 48,
-        "rapports": 16
-      },
-      "meteo": {
-        "run": 44761148719,
-        "png": 41,
-        "rapports": 20
-      },
-      "couverts": {
-        "run": 44761148534,
-        "png": 24,
-        "rapports": 6,
-        "tentativeFinale": 2
-      },
-      "complementPortraitDuo": {
-        "run": 44762219230,
-        "png": 9,
-        "rapports": 3,
-        "commitOutils": "073b70dd3f7e942a44d073b471b41599d5d6f8c8",
-        "htmlIdentique": true
-      }
-    },
-    "recu": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json"
-  },
-  "publication_eau": {
-    "pr": 39,
-    "version": "0.2.68",
-    "tete_qualifiee": "3daefb7c9d7decaf77beb94219abcf16d907bb38",
-    "arbre_qualifie": "b84d8553d1a53de3258a56e2036b8b16669723f5",
-    "commit_fusion": "4a04c090535f0c11d3db9900284c31e244a0c79c",
-    "recu": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json",
-    "suites_node": 160,
-    "tests_python": 8,
-    "png_inspectes": 122,
-    "statut": "publie_sur_main"
-  },
-  "repartition_parallele": {
-    "date": "2026-11-20",
-    "statut": "0275_publiee_et_recue_reserve_decor_ouverte",
-    "index": "docs/reprise/PARALLELE-2026-11-20/README.md",
-    "registre": "docs/reprise/PARALLELE-2026-11-20/REPARTITION.json",
-    "base_main_verifiee": "b1e5e98b9029f6254b86dcfb49780883315a9418",
-    "coordinateur": "00",
-    "premier_groupe": [
-      "01",
-      "02",
-      "03",
-      "04"
-    ],
-    "suite_sources_circuits": "05",
-    "runtime_modifie": true,
-    "preparations": "docs/reprise/PARALLELE-2026-11-20/REPRISES-EXISTANTES.md",
-    "regle": "Un sous-lot par discussion, perimetres distincts, une integration qualifiee a la fois.",
-    "preparations_portables": "docs/reprise/PARALLELE-2026-11-20/preparations/MANIFESTE.json",
-    "reapplications_individuelles_verifiees": 4,
-    "preparations_runtime_qualifiees": false,
-    "releve_00": {
-      "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
-      "tree": "409499e1631489b667f34bf83e37682cd18657ae",
-      "date_utc": "2026-11-20 17:10:00 UTC",
-      "branches": 55,
-      "pr_ouvertes": 0,
-      "date_relecture_utc": "2026-11-20 17:15:12 UTC",
-      "tetes_historiques_ancetres_main": 52,
-      "checkpoints": [
-        "01",
-        "02",
-        "03"
-      ]
-    },
-    "contrats": "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
-    "inventaire": "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
-    "lots_prets_observes": [],
-    "lots_runtime_prets_observes": [],
-    "etat_02_importe_exact": true,
-    "livraison_documentaire_retenue": {
-      "discussion": "02",
-      "lot": "P0",
-      "head": "0e42588fa03a10cf12444af81193dbc7458e601e",
-      "tree": "a0c7aec10114f6530b3ffd53e745edf0f7028503",
-      "fichiers": 3,
-      "runtime_modifie": false
-    },
-    "publication_00": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
-    "runtime_candidat_modifie": true,
-    "releve_candidat_00": {
-      "commit": "5d59cae6630c49ae62c47303100d61dd63daea56",
-      "tree": "2d019e71d09ea31be7588cde0f401606cbf934af",
-      "pr": 51,
-      "statut": "publie_sur_main",
-      "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
-    },
-    "etats_proprietaires_importes_sans_reecriture": [
-      "01",
-      "03",
-      "04"
-    ],
-    "releve_00_portee": "Inventaire initial historique ; les livraisons et le candidat courants sont décrits ci-dessus.",
-    "etats_non_livres_inchanges_au_releve_initial": [
-      "01",
-      "03",
-      "04",
-      "05"
-    ],
-    "prochaine_action": "Transmettre au propriétaire 04 la piste de stockage fixe des indices des nappes Route (19 323 couples temporaires), puis qualifier identité géométrique et mesures alternées avant toute intégration. Aucun code de cette optimisation appliqué.",
-    "preparations_statut": "patches_historiques_conserves_livraisons_01_03_04S1_publiees_0269",
-    "releve_main": "b1e5e98b9029f6254b86dcfb49780883315a9418",
-    "releve_utc": "2026-11-21T01:12:16.475124+00:00",
-    "lots_prets_observes_historique": [
-      "01_pilote_Troll",
-      "03_menu",
-      "04_S1_saisons"
-    ],
-    "lots_runtime_publies": [
-      "01_pilote_Troll",
-      "03_menu",
-      "04_S1_saisons_sans_M1",
-      "00D_cockpit_pluie_HUD_0275"
-    ],
-    "tete_qualifiee_00": "5d59cae6630c49ae62c47303100d61dd63daea56",
-    "commit_fusion_00": "b1e5e98b9029f6254b86dcfb49780883315a9418",
-    "publication_00_portee": "Runtime 0.2.75 publié et reçu sur main ; réserve CPU décor ouverte, PR 43 et états propriétaires conservés.",
-    "checkpoints_observes_portee": "Inventaire initial historique conservé ; publication courante décrite par le reçu 0.2.75.",
-    "releve_candidat_00_historique_0269": {
-      "commit": "7999de565e2c643f7723462caf7683b570c75e8b",
-      "tree": "31059af44e77aac5b733c9e4b29e9b9efe25ee57",
-      "pr": 42,
-      "releve_utc": "2026-11-20 19:20:31 UTC"
+  "recus_historiques": {
+    "etat_complet_avant_reconciliation": "docs/reprise/archives/ETAT-AVANT-MAINS-2026-11-21.json",
+    "base_archive": "d4081241ad40dced72fd4e77c97a4775ed0398ad",
+    "checkpoint_126ck": "docs/reprise/rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md",
+    "poignets_R4b": "docs/reprise/rapports/MODELE-126CK-2026-11-21/POIGNETS-R4B.md",
+    "anciens_recus": {
+      "monaco_mesures_14A": "docs/references/monaco-2026/PUBLICATION-MESURES-20261120.json",
+      "bitume_0260": "docs/reprise/rapports/REALISME-2026-11-19/PUBLICATION-0260.json",
+      "bitume_0259": "docs/reprise/rapports/COCKPIT-PILOTES-2026-11-19/PUBLICATION-0259.json",
+      "bitume_0257": "docs/reprise/rapports/DEMOS-CINEMA-2026-11-19/PUBLICATION-0257.json",
+      "monaco_revue_14A": "docs/references/monaco-2026/PUBLICATION-REVUE-20261120.json",
+      "monaco_cartographie_14A": "docs/references/monaco-2026/qualification-revue-cartographie.json",
+      "bitume_0262": "docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/PUBLICATION-0262.json",
+      "bitume_0269": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
     }
   },
-  "historique_alias_avant_coordination_00": {
-    "date": "2026-11-20",
-    "motif": "Préserver les anciens alias 0.2.66 et la réserve pré-E0–E3, puis rétablir les alias courants depuis le reçu publié 0.2.68.",
-    "publication_0266": {
-      "pr": 38,
-      "branche": "feat/bitume-couverts-final-20261120-ec92",
-      "tete": "5b83dddd47283ed406bd27555324c5df56172f5d",
-      "arbre": "d370309f6f3b98e6105425117d8b11d0d518872a",
-      "tete_qualifiee": "40774189dc3a68242a3908f72e09f2676519ccbf",
-      "commit_fusion": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8",
-      "recu_final": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/PUBLICATION-0266.json",
-      "statut": "publie_sur_main"
-    },
-    "qualification_0266": {
-      "build_octets": 14370823,
-      "build_sha256": "18b15fd06d758cc5cb760a6ad90697a860d0b7a03b819c92a2891033e95adf3b",
-      "campagne_finale_run": 44747519912,
-      "campagne_finale_resultat": "159/159 suites, zéro échec",
-      "sources_archive_verifiees": 3405,
-      "sources_contenus_et_modes_identiques": true,
-      "arbre_fusion_identique_au_candidat": true,
-      "images_retenues_inspectees": 113,
-      "images_references_comprises": 24,
-      "images_aeriennes_refusees_conservees": 2,
-      "groupes_visuels_retenus": 20,
-      "recu_publication": "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/PUBLICATION-0266.json"
-    },
-    "gouttes_vitesse_avant_0268": "Transport partiellement descendant renforcé par vitesse ; pas de flux relatif projeté caméra pour les dépôts. Direction et couches à corriger/qualifier selon E0-E3.",
-    "publication_eau_png_avant_complement": 113,
-    "catalogue_jouables_avant_cimes": 8
-  },
-  "coordination_00_sources_05": {
-    "base_main": "d230d8c6995e44d63b0a072fa3d6362d04a8e5ce",
-    "lot": "05A_05B_05C",
-    "head": "fa290886089a650981c688ebaac893159912a62b",
-    "tete_code": "d6386526e877c1e590c8a4d10f22cd2fd86c8e76",
-    "fichiers_importes": 33,
-    "ci": {
-      "run": 44783388788,
-      "conclusion": "success",
-      "head": "d6386526e877c1e590c8a4d10f22cd2fd86c8e76"
-    },
-    "tests_cibles": [
-      "monaco-voirie",
-      "marseille-metadonnees",
-      "marseille-voirie"
-    ],
-    "runtime_modifie": false,
-    "version": "0.2.68",
-    "physique": "p15",
-    "ferro": "0.3.15",
-    "nouveaux_circuits_jouables": false,
-    "regle": "Les trois fichiers de cloture apres le SHA qualifie sont documentaires ; sources et outils qualifies conserves exactement."
-  },
-  "candidat_assemble_0269": {
-    "statut": "publie",
-    "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
-    "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
-    "publication": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
-    "reserves": {
-      "visibilite_cockpit": "Le volant occulte une partie centrale de la chaussée en caméra réelle du siège, surtout en paysage. Les tests de projection ne mesurent pas cette occultation ; suivi ouvert.",
-      "budget_decor": {
-        "statut": "ouvert",
-        "run": 44803588903,
-        "suite": "decor.test.mjs",
-        "mesure_ms_affichee": 172,
-        "seuil_strict_ms": 150,
-        "cause": "non déterminée",
-        "ci_pr_meme_arbre": "suite réussie, durées individuelles non enregistrées"
-      },
-      "lod": "Les quatre images LOD extérieures attestent une silhouette de 25–30 pixels ; les détails des bras ne sont pas inspectables.",
-      "reseau": "Préférences Troll négociées, événements geste/son distants non synchronisés et limitation affichée avant course.",
-      "materiel": "FPS Xbox/Intel, manettes physiques, écoute humaine et réseau entre machines non qualifiés."
-    }
-  },
-  "historique_avant_publication_0269": {
-    "publication": {
-      "version": "0.2.68",
-      "pr": 39,
-      "branche": "feat/bitume-eau-0267-20261120",
-      "tete": "3daefb7c9d7decaf77beb94219abcf16d907bb38",
-      "arbre": "b84d8553d1a53de3258a56e2036b8b16669723f5",
-      "tete_qualifiee": "3daefb7c9d7decaf77beb94219abcf16d907bb38",
-      "commit_fusion": "4a04c090535f0c11d3db9900284c31e244a0c79c",
-      "recu_final": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json",
-      "statut": "publie_sur_main"
-    },
-    "qualification": {
-      "version": "0.2.68",
-      "build_octets": 14383155,
-      "build_sha256": "60184ddf5226543ca3f912cc9415927989f14e4e20de3556767ced801e988aa2",
-      "campagne_finale_run": 44761148529,
-      "campagne_finale_resultat": "160/160 suites Node et 8 tests Python réussis",
-      "sources_archive_verifiees": 3485,
-      "sources_contenus_et_modes_identiques": true,
-      "arbre_fusion_identique_au_candidat": true,
-      "images_retenues_inspectees": 122,
-      "images_references_comprises": 24,
-      "recu_publication": "docs/reprise/rapports/EAU-VITESSE-2026-11-20/PUBLICATION-0268.json",
-      "qualification_deja_close_non_relancee_par_00": true
-    },
-    "champs_candidat": {
-      "version_candidate": "0.2.69",
-      "commit_candidat": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
-      "pr_candidate": 42,
-      "runtime_candidat_modifie": true
-    },
-    "reserve_habitacle_pilote": "Deux représentations/transformations d’habitacle encore présentes ; assise à abaisser ; contrôle bras/buste absent. Diagnostic mesuré/correction à réaliser selon le plan.",
-    "execution_autonome": {
-      "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
-      "file": "docs/reprise/FILE-TRAVAIL.json",
-      "references": "docs/references/objectifs-utilisateur-2026-11-20/README.md",
-      "priorite_utilisateur": "Publication GitHub des modèles, objectifs et feuille de route avant la suite",
-      "lot_actif": "00C_qualification_assemblage_01_03_04S1",
-      "statut": "candidat_0269_sur_branche_main_0268_conserve",
-      "recu_references": "docs/reprise/rapports/REFERENCES-OBJECTIFS-2026-11-20/PUBLICATION.json"
-    }
-  },
-  "publication_0269": {
-    "schema": 1,
-    "statut": "publie_sur_main_avec_reserves_explicites",
-    "version": "0.2.69",
-    "physique": "p15",
-    "ferro": "0.3.15",
-    "circuits": 9,
-    "pr": 42,
-    "url": "https://github.com/M4D135/bitume/pull/42",
-    "branche": "codex/bitume-0269-publication-20261120",
-    "base_main": "fee69c521eccc0e64cc29f762a6d2244b5ade759",
-    "tete_qualifiee": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
-    "arbre_qualifie": "18b147cb15a5900a1257686b211ddb7c9769b29d",
-    "commit_fusion": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
-    "arbre_main_recu": "18b147cb15a5900a1257686b211ddb7c9769b29d",
-    "main_relu_apres_fusion": true,
-    "arbre_main_identique_au_candidat": true,
-    "date_fusion_utc": "2026-11-20T19:52:30Z",
-    "html": {
-      "octets": 14472625,
-      "sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
-      "git_blob": "9a5ebcb0a6914c40df65a6b606c7fe1cb44949e7",
-      "empreinte_sources": "e3429776d1ab5b75d79203defbf61abb9290f6ce4494f5627122f971ebe5900e",
-      "reconstruction_identique_deux_fois": true
-    },
-    "ci_pr": {
-      "schema": 1,
-      "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
-      "ci_checkout": "40e8c62184134a1080f185846a97a8f50270d598",
-      "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
-      "archive_sha256": "72627b9ef4eb4b45b4dc9bdd646842d3d7c789b301d01a758776acc03818f65a",
-      "sources_fichiers": 3777,
-      "sources_octets": 138871550,
-      "sources_et_modes_identiques": true,
-      "html_octets": 14472625,
-      "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
-      "suites_node": 176,
-      "suites_echec": 0,
-      "tests_python": 8,
-      "troll_tests": 9,
-      "troll_oracles_negatifs": 6,
-      "troll_ignores": 0,
-      "run": 44803603591,
-      "job": 136521697469,
-      "conclusion": "success",
-      "artifact_id": 14662647273
-    },
-    "ci_push": {
-      "run": 44803588903,
-      "job": 136521651250,
-      "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
-      "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
-      "conclusion": "failure",
-      "suites_reussies": 175,
-      "suites_echec": 1,
-      "tests_python": "non_executés_apres_echec_node",
-      "suite": "verifications/decor.test.mjs",
-      "mesure": "Val-Brûlé : construction du décor",
-      "mesure_ms": 172,
-      "seuil_ms": 150,
-      "condition": "strictement moins de 150 ms",
-      "cause_ecart": "non_isolée ; aucune cause matérielle ou de charge mesurée",
-      "comparaison": "La même suite passe dans la CI PR 44803603591 sur le même arbre exact.",
-      "statut_alerte": "ouverte",
-      "seuil_modifie": false,
-      "relance_pour_obtenir_vert": false,
-      "artifact_id": 14663042199,
-      "artifact_octets": 80816769,
-      "artifact_sha256": "830f376acc558f15b71bc26ad6c6ee6e2996b29708bd62f7bda8136dc151ee34",
-      "log_sha256": "9d7b69c225d260c5eafd60ae77c2b988eff689dae20db3c0a8f3ad860c6663e9",
-      "profil": "low_historique_sans_options",
-      "mesure_ms_arrondie": true,
-      "chauffe_ou_repetitions": false,
-      "portee": "Un appel synchrone D.construire(c), hors création du circuit et chargement des modules ; aucun rendu WebGL/GPU/FPS ni préparation complète de séance.",
-      "comparaison_pr": "Les trois constructions Val-Brûlé, Port-Sable et Haut-Col satisfont chacune ms < 150 ; durées individuelles non enregistrées."
-    },
-    "tous_les_runs_verts": false,
-    "decision_publication": "Fusion normale autorisée par GitHub après réussite de la CI PR sur l’arbre exact et vérification indépendante de tous les fichiers de son archive ; le résultat final du contrôle push parallèle est arrivé après la fusion et son dépassement de budget reste ouvert. Aucun seuil changé, aucune relance pour effacer ce résultat.",
-    "images": {
-      "ci": 44801007532,
-      "commit_images": "7999de565e2c643f7723462caf7683b570c75e8b",
-      "html_identique": true,
-      "groupes": 8,
-      "png_inspectes": 49,
-      "parcours_menu": 19,
-      "recu": "docs/reprise/PARALLELE-2026-11-20/preuves/00-assemblage-0269/RECEPTION.json"
-    },
-    "troll": {
-      "ci": 44795943660,
-      "html_identique": true,
-      "png_inspectes": 26,
-      "poses": 5080,
-      "recu": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
-      "relance": false
-    },
-    "correction_bancs": {
-      "fichiers_tests_et_fixture": 8,
-      "suites_corrigees": 7,
-      "controles_cibles_reussis": 90,
-      "runtime_modifie": false,
-      "preuve": "docs/reprise/PARALLELE-2026-11-20/preuves/00-assemblage-0269/ci-initiale/correction-bancs.json"
-    },
-    "branches_sources": {
-      "01": "224bae15d65f1b0c52866a1faf6b880e6a6ca0b3",
-      "03": "e54b3cc5d48d7e9ff73e97677665cc3bf00f12f3",
-      "04_S1": "6cbfa7e48d8b77ab1f7f7fe252bf4e2e693cacba",
-      "M1_exclu": true,
-      "parents_conserves": true,
-      "pr_40_41_fusionnees": true
-    },
-    "ferro_verrou_et_34_copies_identiques": true,
-    "reserves": {
-      "visibilite_cockpit": "Le volant occulte une partie centrale de la chaussée en caméra réelle du siège, surtout en paysage. Les tests de projection ne mesurent pas cette occultation ; suivi ouvert.",
-      "budget_decor": {
-        "statut": "ouvert",
-        "run": 44803588903,
-        "suite": "decor.test.mjs",
-        "mesure_ms_affichee": 172,
-        "seuil_strict_ms": 150,
-        "cause": "non déterminée",
-        "ci_pr_meme_arbre": "suite réussie, durées individuelles non enregistrées"
-      },
-      "lod": "Les quatre images LOD extérieures attestent une silhouette de 25–30 pixels ; les détails des bras ne sont pas inspectables.",
-      "reseau": "Préférences Troll négociées, événements geste/son distants non synchronisés et limitation affichée avant course.",
-      "materiel": "FPS Xbox/Intel, manettes physiques, écoute humaine et réseau entre machines non qualifiés."
-    },
-    "cloture_documentaire": {
-      "base_main": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
-      "runtime_inchange": true,
-      "nouvelle_campagne_declenchee": false,
-      "commit": "voir le commit qui ajoute ce reçu"
-    },
-    "site_deploye": false,
-    "push_force": false,
-    "date_commit_fusion_utc": "2026-11-20T19:52:29Z"
-  },
-  "suite_portee": "Réception 126 CK/pilote, six vues de conduite et compteurs du titre ; sources du parcours réel sommet du col de Larche→Vinadio. Programme antérieur conservé.",
-  "qualification_cockpit_pluie_0270": {
-    "commit_outils": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
-    "tree": "5ca64577b6044672a61feda146c405e18e6294c6",
-    "html_sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
-    "html_octets": 14502704,
-    "ci_complete": {
-      "run": 44818836125,
-      "statut": "success",
-      "suites_node": 179,
-      "echecs": 0,
-      "tests_python": 8,
-      "sources_verifiees": 3852,
-      "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/ci-finale-0270/RECEPTION-CI.json"
-    },
-    "statut_visuel": "bloque",
-    "recu_cockpit": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/REVUE-COCKPIT-0270.json",
-    "impact": "cinq PNG inspectés, même goutte et cinq instants conformes",
-    "troll_poursuite": "11 PNG sur 13 ; maintien après délai et relâchement absents",
-    "meteo_historique": "Six jobs réussis, un annulé ; passage legere absent",
-    "fusion_autorisee_par_qualification": false,
-    "reserves_decor_ms": [
-      172,
-      152
-    ]
-  },
-  "candidat_cockpit_pluie_0271": {
-    "branche": "codex/bitume-0271-hud-20261120",
-    "base": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
-    "html_sha256": "0e4cdb72ecceb434c086a6bdc365346cfac1900871b95afadd96932cb3fd8ce3",
-    "html_octets": 14507449,
-    "sources_sha256": "fd4eefe258dc634ab197a6690a77c15a254aa676320078a433430814e3c2200f",
-    "recu_local": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0271/VALIDATION-LOCALE.json",
-    "qualification_visuelle": "en_attente",
-    "fusionnee": false
-  },
-  "historique_alias_avant_publication_0275": {
-    "publication": {
-      "version": "0.2.69",
-      "pr": 42,
-      "branche": "codex/bitume-0269-publication-20261120",
-      "tete_qualifiee": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
-      "arbre": "18b147cb15a5900a1257686b211ddb7c9769b29d",
-      "commit_fusion": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
-      "recu_final": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
-      "statut": "publie_sur_main_avec_reserves_explicites"
-    },
-    "qualification": {
-      "version": "0.2.69",
-      "build_octets": 14472625,
-      "build_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
-      "ci_pr": {
-        "schema": 1,
-        "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
-        "ci_checkout": "40e8c62184134a1080f185846a97a8f50270d598",
-        "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
-        "archive_sha256": "72627b9ef4eb4b45b4dc9bdd646842d3d7c789b301d01a758776acc03818f65a",
-        "sources_fichiers": 3777,
-        "sources_octets": 138871550,
-        "sources_et_modes_identiques": true,
-        "html_octets": 14472625,
-        "html_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
-        "suites_node": 176,
-        "suites_echec": 0,
-        "tests_python": 8,
-        "troll_tests": 9,
-        "troll_oracles_negatifs": 6,
-        "troll_ignores": 0,
-        "run": 44803603591,
-        "job": 136521697469,
-        "conclusion": "success",
-        "artifact_id": 14662647273
-      },
-      "ci_push": {
-        "run": 44803588903,
-        "job": 136521651250,
-        "commit": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
-        "tree": "18b147cb15a5900a1257686b211ddb7c9769b29d",
-        "conclusion": "failure",
-        "suites_reussies": 175,
-        "suites_echec": 1,
-        "tests_python": "non_executés_apres_echec_node",
-        "suite": "verifications/decor.test.mjs",
-        "mesure": "Val-Brûlé : construction du décor",
-        "mesure_ms": 172,
-        "seuil_ms": 150,
-        "condition": "strictement moins de 150 ms",
-        "cause_ecart": "non_isolée ; aucune cause matérielle ou de charge mesurée",
-        "comparaison": "La même suite passe dans la CI PR 44803603591 sur le même arbre exact.",
-        "statut_alerte": "ouverte",
-        "seuil_modifie": false,
-        "relance_pour_obtenir_vert": false,
-        "artifact_id": 14663042199,
-        "artifact_octets": 80816769,
-        "artifact_sha256": "830f376acc558f15b71bc26ad6c6ee6e2996b29708bd62f7bda8136dc151ee34",
-        "log_sha256": "9d7b69c225d260c5eafd60ae77c2b988eff689dae20db3c0a8f3ad860c6663e9",
-        "profil": "low_historique_sans_options",
-        "mesure_ms_arrondie": true,
-        "chauffe_ou_repetitions": false,
-        "portee": "Un appel synchrone D.construire(c), hors création du circuit et chargement des modules ; aucun rendu WebGL/GPU/FPS ni préparation complète de séance.",
-        "comparaison_pr": "Les trois constructions Val-Brûlé, Port-Sable et Haut-Col satisfont chacune ms < 150 ; durées individuelles non enregistrées."
-      },
-      "images_assemblees_inspectees": 49,
-      "troll_png_reutilises": 26,
-      "recu_publication": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
-      "tous_les_runs_verts": false
-    },
-    "suite": {
-      "lot": "14A_Monaco_sources_et_mesures",
-      "statut": "revue_effectuee_acquisition_chaussee_candidate",
-      "fiche_plan": "docs/reprise/12-PLAN-MAITRE-RUSSIE-MONACO-PNEUS.md",
-      "prochaine_action": "Acquerir les objets BD TOPO des secteurs Mirabeau Bas, passages couverts et Tabac ; confirmer niveau, datum, dates, incertitudes et limites de course.",
-      "references": "docs/references/monaco-2026/README.md",
-      "points_boucle_osm": 415,
-      "observations_terrain": 830,
-      "observations_chaussee_eligibles": 0,
-      "longueur_osm_m": 3323.61,
-      "ecart_fia_m": -13.39,
-      "altitudes_chaussee_largeurs_devers": "inconnus ; valeurs null conservées",
-      "readyForRuntime": false,
-      "lot_14A_complet": false,
-      "regles": "Ne pas refaire les acquisitions closes ; ne pas confondre terrain et chaussée ; ne pas corriger la longueur par une mise à l’échelle.",
-      "revue": "docs/references/monaco-2026/revue-mesures.md",
-      "source_candidate": "docs/references/monaco-2026/PISTE-BDTOPO.md",
-      "carte_et_profils": "docs/references/monaco-2026/revue-chaussee.svg",
-      "provenance_temporelle": "Périodes des dalles conservées ; dates individuelles des cellules MNT inconnues."
-    },
-    "execution_autonome": {
-      "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
-      "file": "docs/reprise/FILE-TRAVAIL.json",
-      "references": "docs/references/objectifs-utilisateur-2026-11-20/README.md",
-      "priorite_utilisateur": "Publication GitHub des modèles, objectifs et feuille de route avant la suite",
-      "lot_actif": "00C_publication_0269_close_avec_reserves",
-      "statut": "publie_sur_main_avec_reserves_explicites",
-      "recu_references": "docs/reprise/rapports/REFERENCES-OBJECTIFS-2026-11-20/PUBLICATION.json",
-      "recu_publication": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
-    }
-  },
-  "objectif_voiture_126ck": {
-    "source": "https://www.renderhub.com/renderblade/ferrari-f1-126-ck-1980",
-    "auteur": "RenderBlade",
-    "remplace_reference_visuelle": "312 T5",
-    "fiche": "docs/reprise/OBJECTIF-126CK-2026-11-21.md",
-    "galerie": "docs/references/ferrari-126ck-renderblade-2026-11-21/README.md",
-    "manifeste": "docs/references/ferrari-126ck-renderblade-2026-11-21/MANIFEST.json",
-    "images_detaillees": 40,
-    "couverture": 1,
-    "images_detaillees_dimensions": [
-      1920,
-      1920
-    ],
-    "total_octets": 9270341,
-    "modele_runtime_corrige": false,
-    "fov_demande": 70,
-    "fov_unite_candidate": "verticale",
-    "statut": "references_publiees_sur_main",
-    "paires_rendu_filaire_verifiees": 20,
-    "publication": "docs/references/ferrari-126ck-renderblade-2026-11-21/PUBLICATION.json",
-    "pr": 53,
-    "commit_publication": "eb10c539749a1d0a978ba3b2a78c128e368db194"
-  },
-  "candidat_poste_0276": {
-    "pr": 52,
-    "branche": "codex/bitume-0276-cockpit-312t5-20261121",
-    "commit": "02afea62e9241704bd1ec0a679fe268e0f6db08f",
-    "statut": "bloque_refus_utilisateur_et_ci",
-    "formes_refusees": [
-      "volant",
-      "moyeu",
-      "branches",
-      "instrumentation"
-    ],
-    "reflets": "miroirs trop dirigés vers sol et pneu après abaissement",
-    "ci_push": 44879380158,
-    "ci_pr": 44879383728,
-    "conclusion_ci": "failure",
-    "diagnostic_suites": {
-      "push": {
-        "reussies": 178,
-        "echecs": [
-          "integration-parallele",
-          "decor"
-        ],
-        "decor_ms": 154
-      },
-      "pr": {
-        "reussies": 179,
-        "echecs": [
-          "integration-parallele"
-        ]
-      },
-      "total": 180,
-      "integration": "assertion textuelle exigeant INCLINAISON_COCKPIT = -Math.PI /18",
-      "tests_python": "sautés après échecs Node",
-      "archives_exactes_fichiers": 4124
-    },
-    "fusionne": false,
-    "recu": "docs/reprise/rapports/POSTE-CONDUITE-2026-11-21/reception-0276/RECEPTION-PARTIELLE-BLOQUEE-0276.json",
-    "pr_fermee_sans_fusion": true
-  },
-  "inspiration_race": {
-    "url": "https://github.com/satyam-fp/race",
-    "commit": "4a2a65f146aa0e70547c191c77a2490511db44a8",
-    "fiche": "docs/reprise/REFERENCE-RACE-2026-11-21.md",
-    "pistes": 8,
-    "runtime_modifie": false
-  },
-  "preparation_miroirs": {
-    "base": "02afea62e9241704bd1ec0a679fe268e0f6db08f",
-    "chemin": "docs/reprise/preparations/miroirs-0277/README.md",
-    "statut": "patch_conserve_non_integre_non_construit",
-    "reflets_webgl_qualifies": false,
-    "ancrages_126ck_a_requalifier": true
-  },
-  "demande_publication_0277": {
-    "demande": "push main je veux test puis continue le projet",
-    "fiche": "docs/reprise/POSTE-126CK-0277.md",
-    "statut": "publie_sur_main",
-    "site_deploye": false,
-    "pr": 54,
-    "commit_fusion": "11e7e55f087484e1099963d42b04309b6bc6220c"
-  },
-  "jalon_2026_11_21_suite": {
-    "nature": "sauvegarde_sources_sur_branche_et_publication_feuille_de_route",
-    "runtime_main_base": "11e7e55f087484e1099963d42b04309b6bc6220c",
-    "runtime_main_version": "0.2.77",
-    "deploiement_site": false,
-    "branche_sources": "codex/bitume-0280-implantation-126ck-20261121",
-    "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md",
-    "checkpoint": "docs/reprise/rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md",
-    "compteurs": {
-      "libelles": [
-        "Visites",
-        "Visiteurs uniques"
-      ],
-      "ecran": "titre",
-      "identite": "UUID navigateur persistant ; hash serveur, sans IP",
-      "visite": "session après 30 minutes inactives",
-      "controles_dedies_reussis": 28,
-      "activation_en_ligne": false,
-      "fiche": "docs/reprise/VISITES-TITRE-2026-11-21.md"
-    },
-    "mains": {
-      "priorite": "prise naturelle surtout en vue extérieure",
-      "statut": "candidat R4b isolé non intégré ; allocation et contact à corriger avant réception générale",
-      "branche": "codex/bitume-126ck-poignets-20261121",
-      "commit": "fc0155259d063685dac5116d9102cbf2fcb22423",
-      "integre_au_checkpoint_12050e2": false,
-      "rapport_sur_branche": "docs/reprise/rapports/MODELE-126CK-2026-11-21/POIGNETS-R4B.md",
-      "reserves": [
-        "voiture-permanents : chemin cockpit, 16,936 octets/appel et 2 GC mineurs sur 150 000 appels ; seuil inchangé.",
-        "pilote-habitacle : un rapport interrompt le geste ; contact avant-bras-1-1/pommeau, majeur gauche, volant neutre, retour 0/120 ; seuil inchangé.",
-        "Gestes extrêmes à relancer après les derniers raccords des doigts/pouce ; aucune image WebGL ni qualification générale du candidat intégré."
-      ],
-      "commit_distant": "d487e7f501d124df214ba8b7a5a6edcf7b544ff3"
-    },
-    "vues": [
-      "cockpit",
-      "arceau",
-      "nez",
-      "aileron-avant",
-      "poursuite-proche",
-      "poursuite"
-    ],
-    "parcours": {
-      "nom": "Col de Larche → Vinadio",
-      "depart": "sommet routier du col de Larche / Colle della Maddalena",
-      "arrivee": "Vinadio",
-      "route": "SS21",
-      "sens": "descente vers Italie",
-      "distance_indicative_km": 32.2,
-      "distance_mesuree": null,
-      "echelle": 1,
-      "topologie": "ouverte",
-      "depart_barcelonnette_remplace": true,
-      "statut": "planifie_sources_identifiees_non_acquises",
-      "fiche": "docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md"
-    },
-    "sauvegarde_github": {
-      "statut": "sources_et_poignets_sauvegardes_arbres_verifies",
-      "sources_commit": "39c80f5c2d47bfadd2c9362e8b70b0c5d6a20f46",
-      "poignets_commit": "d487e7f501d124df214ba8b7a5a6edcf7b544ff3",
-      "recu": "docs/reprise/rapports/MODELE-126CK-2026-11-21/SAUVEGARDE-2026-11-21.json"
-    }
-  },
-  "historique_alias_avant_publication_0277": {
-    "publication": {
-      "version": "0.2.75",
-      "pr": 51,
-      "branche": "codex/bitume-0275-fps-cockpit-20261121",
-      "tete_qualifiee": "5d59cae6630c49ae62c47303100d61dd63daea56",
-      "arbre": "2d019e71d09ea31be7588cde0f401606cbf934af",
-      "commit_fusion": "b1e5e98b9029f6254b86dcfb49780883315a9418",
-      "recu_final": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
-      "statut": "publie_sur_main_avec_reserve_budget_decor",
-      "main_recu_identique_au_candidat": true,
-      "site_deploye": false
-    },
-    "qualification": {
-      "version": "0.2.75",
-      "build_octets": 14511184,
-      "build_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
-      "ci_push": {
-        "run": 44845571993,
-        "conclusion": "success",
-        "suites_node": 179,
-        "suites_echec": 0,
-        "tests_python": 8,
-        "sources_fichiers": 3988,
-        "sources_et_modes_identiques": true
-      },
-      "ci_pr": {
-        "run": 44845586813,
-        "conclusion": "success",
-        "suites_node": 179,
-        "suites_echec": 0,
-        "tests_python": 8,
-        "sources_fichiers": 3988,
-        "sources_et_modes_identiques": true
-      },
-      "images_exactes": 10,
-      "groupes_visuels": 5,
-      "run_hud": 44845571914,
-      "braquages_stabilises": [
-        -0.35,
-        0.35
-      ],
-      "pas_par_pose_stabilisee": 120,
-      "badge_fps_visible_et_degage": true,
-      "recu_publication": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
-      "limites": "Captures logicielles de poses prescrites ; aucun FPS matériel ni essai de conduite réel qualifié par ces images.",
-      "tous_les_runs_verts": true,
-      "images_assemblees_inspectees": 10
-    },
-    "demande_publication_0277": {
-      "demande": "push main je veux test puis continue le projet",
-      "fiche": "docs/reprise/POSTE-126CK-0277.md",
-      "statut": "preparation",
-      "site_deploye": false
-    }
-  }
+  "regle": "Les alias ci-dessus décrivent la base effectivement publiée. Les états .75/.77 et réserves R4b historiques sont archivés; ne pas les réappliquer à main. Une preuve appartient à son commit et à son HTML exact."
 }

@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "date": "2026-11-21",
-  "base": "b1e5e98b9029f6254b86dcfb49780883315a9418",
+  "base": "d4081241ad40dced72fd4e77c97a4775ed0398ad",
   "runtime_livre": {
-    "version": "0.2.75",
+    "version": "0.2.79",
     "physique": "p15",
     "moteur": "FERRO 0.3.15",
     "circuits": 9,
-    "commit_fusion": "b1e5e98b9029f6254b86dcfb49780883315a9418",
-    "html_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
-    "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
+    "commit_fusion": "d4081241ad40dced72fd4e77c97a4775ed0398ad",
+    "html_sha256": "77d774fd99484f7ddc2a6bbafe801c9dd2ea8f670af0c51ce1377a7e4a429aa8",
+    "recu": "docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json"
   },
   "destinations_prevues": 17,
-  "lot_actif": "habitacle_pilote_commun",
+  "lot_actif": "mains_realisme",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [
@@ -40,13 +40,13 @@
     {
       "id": "habitacle_pilote_commun",
       "objectif": "Même habitacle monde entre vues, assise plus basse et bras dégagés du buste",
-      "etat": "in_progress",
-      "phase": "poste_0277_pour_essai",
+      "etat": "published",
+      "phase": "126ck_R4b_integres_0279",
       "dependances": [
         "references"
       ],
       "fiche": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
-      "prochain_sous_lot": "publication_poste_0277_puis_carrosserie_126ck",
+      "prochain_sous_lot": "mains_realisme",
       "cloture": "Identité géométrique monde sans homothétie par vue ; assise commune mesurée ; dégagements bras/buste/coque et contacts ; gestes et LOD ; images exactes et coût qualifiés",
       "preuves": [
         "docs/reprise/preparations/habitacle-commun-2026-11-20/CHECKPOINT.json",
@@ -55,11 +55,12 @@
         "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
         "docs/reprise/PARALLELE-2026-11-20/rapports/00-ASSEMBLAGE-0269.json",
         "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
-        "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
+        "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
+        "docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json"
       ],
-      "acquis": "Géométrie commune et T3 conservés ; cockpit/rétros/pluie/HUD reçus et publiés en 0.2.75, dont dix PNG exacts et les deux braquages maintenus.",
-      "reste": "Fidélité du modèle complet 126 CK, finition des commandes, appréciation du joueur et limites matérielles.",
-      "reserve_lisibilite_cockpit": "Refus .75/.76 conservés ; première reprise .77 à qualifier en images.",
+      "acquis": "126 CK, implantation commune et R4b corrigés publiés .79 ; six caméras et compteurs intégrés.",
+      "reste": "Réalisme des doigts et des manches, appréciation du joueur et limites matérielles.",
+      "reserve_lisibilite_cockpit": "Occultation naturelle acceptée ; conserver géométrie commune et seuils de pénétration.",
       "limite_images_lod": "Quatre PNG LOD extérieurs : coque d’environ 25–30 pixels, silhouette validée ; détails des bras non lisibles dans ces images.",
       "suivi_lisibilite_cockpit": {
         "statut": "clos_sur_cas_qualifies_0275",
@@ -93,9 +94,9 @@
         "main_recu_identique_au_candidat": true,
         "site_deploye": false
       },
-      "statut": "in_progress",
-      "fiche_active": "docs/reprise/POSTE-126CK-0277.md",
-      "reserve": "Les cockpits .75 et .76 sont refusés ; reprise depuis la référence 126 CK."
+      "statut": "published",
+      "fiche_active": "docs/reprise/MAINS-REALISME-2026-11-21.md",
+      "reserve": "Réalisme des personnages à poursuivre après la réception mécanique .79."
     },
     {
       "id": "eau_vitesse",
@@ -594,10 +595,65 @@
       "references": "docs/references/ferrari-126ck-renderblade-2026-11-21/README.md",
       "images": 41,
       "runtime_modifie": false,
-      "suite": "Reprendre le cockpit puis la voiture depuis les vues rendues et filaires.",
+      "suite": "Modèle construit et livré .79 ; finitions personnages/mains et appréciation de fidélité à poursuivre.",
       "publication": "docs/references/ferrari-126ck-renderblade-2026-11-21/PUBLICATION.json",
       "pr": 53,
       "commit": "eb10c539749a1d0a978ba3b2a78c128e368db194"
+    },
+    {
+      "id": "mains_realisme",
+      "objectif": "Doigts sans contraction artificielle, volumes des gants et transitions plus naturels",
+      "etat": "in_progress",
+      "phase": "diagnostic_0279_et_implementation",
+      "dependances": [
+        "habitacle_pilote_commun"
+      ],
+      "fiche": "docs/reprise/MAINS-REALISME-2026-11-21.md",
+      "preuves": [
+        "docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json"
+      ],
+      "cloture": "Vrais maillages, contacts et 3 LOD ; capture avant/après même phase ; allocations et budgets conservés"
+    },
+    {
+      "id": "personnages_manches",
+      "objectif": "Affiner manches, coudes, épaules et silhouette du personnage commun",
+      "etat": "planned",
+      "dependances": [
+        "mains_realisme"
+      ],
+      "fiche": "docs/reprise/MAINS-REALISME-2026-11-21.md"
+    },
+    {
+      "id": "larche_vinadio",
+      "objectif": "Sommet du col de Larche → Vinadio par SS21, terrain et tracé réels, arrivée définitive",
+      "etat": "planned",
+      "phase": "L0_sources_identifiees_non_acquises",
+      "fiche": "docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md",
+      "echelle": 1,
+      "topologie": "ouverte",
+      "depart_barcelonnette_remplace": true
+    },
+    {
+      "id": "six_vues_course",
+      "objectif": "Six vues F1 du modèle commun et commandes J1/J2 indépendantes",
+      "etat": "published",
+      "version": "0.2.79",
+      "fiche": "docs/reprise/CAMERAS-F1-2026-11-21.md",
+      "preuves": [
+        "docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json"
+      ]
+    },
+    {
+      "id": "compteurs_titre",
+      "objectif": "Visites et visiteurs uniques globaux persistants sur le titre",
+      "etat": "published",
+      "phase": "code_0279_activation_service_a_verifier",
+      "version": "0.2.79",
+      "fiche": "docs/reprise/VISITES-TITRE-2026-11-21.md",
+      "preuves": [
+        "docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json"
+      ],
+      "activation_effective_verifiee": false
     }
   ],
   "lots_livres_a_preserver": [
@@ -621,6 +677,11 @@
       "lot": "00D_cockpit_pluie_HUD_0275",
       "version": "0.2.75",
       "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
+    },
+    {
+      "lot": "126CK_R4b_six_vues_compteurs",
+      "version": "0.2.79",
+      "recu": "docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json"
     }
   ],
   "limites_transversales": [
@@ -631,7 +692,9 @@
   ],
   "plan_correctifs_visuels": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
   "ordre_courant": [
-    "habitacle_pilote_commun",
+    "mains_realisme",
+    "personnages_manches",
+    "larche_vinadio",
     "budget_construction_decor_0269",
     "menu_arcade_profils_modestes"
   ],
@@ -684,7 +747,7 @@
     "contrats": "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
     "inventaire": "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
     "lots_prets_observes": [],
-    "prochaine_action": "Transmettre au propriétaire 04 la piste de stockage fixe des indices des nappes Route (19 323 couples temporaires), puis qualifier identité géométrique et mesures alternées avant toute intégration. Aucun code de cette optimisation appliqué.",
+    "prochaine_action": "Lot mains_realisme depuis main avancé avec Gemini ; autres préparations conservées.",
     "integration": "Premier petit lot indépendant prêt ; ne pas attendre la fin des autres chantiers.",
     "lots_runtime_prets_observes": [],
     "checkpoints_observes": [
@@ -702,8 +765,8 @@
       "runtime_modifie": false
     },
     "publication_00": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
-    "dernier_jalon_publie_00": "publication_0275",
-    "publication_00_portee": "Runtime 0.2.75 publié et reçu sur main ; réserve CPU décor ouverte, PR 43 et états propriétaires conservés.",
+    "dernier_jalon_publie_00": "publication_0279",
+    "publication_00_portee": "126 CK / R4b / six vues / compteurs publiés .79 ; inventaires précédents conservés comme historiques.",
     "checkpoints_observes_portee": "Inventaire initial historique conservé ; publication courante décrite par le reçu 0.2.75.",
     "lots_prets_observes_historique": [
       "01_pilote_Troll",
@@ -723,7 +786,8 @@
       "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-ASSEMBLAGE-0269.json"
     },
     "tete_qualifiee_00": "5d59cae6630c49ae62c47303100d61dd63daea56",
-    "commit_fusion_00": "b1e5e98b9029f6254b86dcfb49780883315a9418"
+    "commit_fusion_00": "b1e5e98b9029f6254b86dcfb49780883315a9418",
+    "publication_courante": "docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json"
   },
   "reception_sources_05": {
     "head": "fa290886089a650981c688ebaac893159912a62b",
@@ -732,15 +796,11 @@
   },
   "base_initiale": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_candidat": {
-    "statut": "preparation_0277",
-    "version": "0.2.77",
-    "base_runtime_main": "0.2.75",
-    "preparations_conservees": [
-      "PR52 / 02afea62 : météo, son, FOV et modèle refusé",
-      "docs/reprise/preparations/miroirs-0277/README.md"
-    ],
-    "branche": "codex/bitume-0277-publication-20261121",
-    "fiche": "docs/reprise/POSTE-126CK-0277.md"
+    "statut": "mains_realisme_en_cours",
+    "version": null,
+    "base_runtime_main": "0.2.79",
+    "branche": "codex/bitume-mains-realisme-20261121",
+    "fiche": "docs/reprise/MAINS-REALISME-2026-11-21.md"
   },
   "demandes_video_survol_2026_11_20": {
     "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
@@ -779,7 +839,8 @@
       "pluie/neige calmes dos au vent",
       "klaxons réalistes",
       "inspiration satyam-fp/race"
-    ]
+    ],
+    "suite_personnages_mains": "docs/reprise/MAINS-REALISME-2026-11-21.md"
   },
   "inspiration_race": {
     "fiche": "docs/reprise/REFERENCE-RACE-2026-11-21.md",
@@ -805,5 +866,25 @@
     "commit": "5d59cae6630c49ae62c47303100d61dd63daea56",
     "commit_fusion": "b1e5e98b9029f6254b86dcfb49780883315a9418",
     "recu_publication": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
+  },
+  "runtime_livre_0275_historique": {
+    "version": "0.2.75",
+    "physique": "p15",
+    "moteur": "FERRO 0.3.15",
+    "circuits": 9,
+    "commit_fusion": "b1e5e98b9029f6254b86dcfb49780883315a9418",
+    "html_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
+    "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
+  },
+  "runtime_candidat_precedent_historique": {
+    "statut": "preparation_0277",
+    "version": "0.2.77",
+    "base_runtime_main": "0.2.75",
+    "preparations_conservees": [
+      "PR52 / 02afea62 : météo, son, FOV et modèle refusé",
+      "docs/reprise/preparations/miroirs-0277/README.md"
+    ],
+    "branche": "codex/bitume-0277-publication-20261121",
+    "fiche": "docs/reprise/POSTE-126CK-0277.md"
   }
 }

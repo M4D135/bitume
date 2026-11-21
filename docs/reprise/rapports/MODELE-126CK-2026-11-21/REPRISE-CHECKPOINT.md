@@ -1,5 +1,11 @@
 # Checkpoint 126 CK, visites et caméras — 21 novembre 2026
 
+**État courant après Gemini : .79 publiée sur main (`d408124`), R4b corrigé et
+intégré ; CI 190 suites Node + 8 tests Python réussis.** Les sections initiales
+ci-dessous conservent le checkpoint historique .77/.78. Elles sont remplacées
+par la section « Réception locale 21/11 » pour l’état du code livré.
+[Audit ultérieur et priorité mains](../MAINS-REALISME-2026-11-21/BASE-0279.json).
+
 ## Ce qui est sauvegardé et ce qui est livré
 
 Sources préparées sur **`codex/bitume-0280-implantation-126ck-20261121`**.

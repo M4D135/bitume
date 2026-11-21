@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "date_utc": "2026-11-21T13:38:30.273004+00:00",
+  "nature": "audit_de_la_base_Gemini_sur_main",
+  "repository": "M4D135/bitume",
+  "branch": "main",
+  "commit": "d4081241ad40dced72fd4e77c97a4775ed0398ad",
+  "tree": "8d83494065c544512b8de6cfb157971211081aa0",
+  "implementation_commit": "f86e58ff4114e5db83c4384b4a31fc3801fb353a",
+  "version": "0.2.79",
+  "physique": "p15",
+  "ferro": "0.3.15",
+  "html": {
+    "bytes": 14554537,
+    "sha256": "77d774fd99484f7ddc2a6bbafe801c9dd2ea8f670af0c51ce1377a7e4a429aa8",
+    "verified_against_SIZE_and_git_checkout": true
+  },
+  "ci": {
+    "run": 44903497167,
+    "job": 136844123358,
+    "url": "https://github.com/M4D135/bitume/actions/runs/44903497167",
+    "conclusion": "success",
+    "completed_at_utc": "2026-11-21T12:34:30Z",
+    "node_suites_passed": 190,
+    "node_suites_failed": 0,
+    "python_tests_passed": 8,
+    "reconstruction_identical": true,
+    "log": "qualification-main-0279.log",
+    "log_sha256": "8224ac66b362d738d8bf72ddb2c2f54e4681f911617f1eb3d5e9669916b004fc"
+  },
+  "integrated": [
+    "126 CK et implantation commune",
+    "poignets R4b corrigés",
+    "six caméras de conduite",
+    "compteurs Visites / Visiteurs uniques"
+  ],
+  "old_R4b_reserves": "Résolues sur .79 ; ne pas réouvrir les défauts allocation et manche/pommeau sans nouvelle reproduction.",
+  "visuals": {
+    "Gemini_report": "docs/reprise/rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md#réception-locale-2111-poignets-r4b--assemblage-0280--captures-webgl2",
+    "report_claims": "13 passages modèle, 4 gros plans poignets, 6 vues et titre hors ligne",
+    "independently_reinspected_during_audit": false,
+    "local_attempt": "Chrome bloqué par socket() Operation not permitted avant toute image; aucun résultat visuel local inventé.",
+    "hardware_FPS_qualified": false
+  },
+  "stale_tracking_at_audit": [
+    "ETAT.json aliases .77",
+    "FILE-TRAVAIL.json runtime .75",
+    "FEUILLE-DE-ROUTE-2026-11-21.md réserves poignets déjà levées",
+    "REPRISE-CHECKPOINT.md et POIGNETS-R4B.md premiers paragraphes historiques supersédés par leur section finale"
+  ],
+  "site_deployment_verified": false,
+  "pending": [
+    "réalisme des doigts et transitions",
+    "finition des personnages/manches",
+    "activation réelle compteurs à vérifier lors de livraison du service",
+    "Larche sommet→Vinadio L0–L6",
+    "PR43 pluie depuis abris",
+    "réserve construction décor <150ms"
+  ]
+}

@@ -1,5 +1,11 @@
 # R4b — continuité des poignets au volant
 
+**R4b est maintenant corrigé et intégré à la .79 de main (`d408124`).** Les deux
+réserves initiales plus bas sont historiques : lire leur résolution en fin de
+document et la réception du [checkpoint commun](REPRISE-CHECKPOINT.md).
+La nouvelle demande de réalisme des doigts est un lot distinct,
+[M1–M4](../../MAINS-REALISME-2026-11-21.md).
+
 Demande du 21 novembre 2026 : corriger la tenue des mains, surtout visible en vue extérieure. Lot isolé depuis `75b1cf4`, branche `codex/bitume-126ck-poignets-20261121`.
 
 ## Diagnostic et changement

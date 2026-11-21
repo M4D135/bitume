@@ -437,3 +437,14 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
   `docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md`.
 - Sauvegarder les préparations avec leur état exact. Les sources non encore qualifiées restent
   sur branche ; la publication du plan ne signifie ni validation visuelle ni déploiement du site.
+
+## Décision de David — 21 novembre 2026, reprise après Gemini et personnages
+
+- Refaire le point sur le dépôt avant de continuer : les avancées Gemini sont sur **main**.
+  Base auditée `d408124` / .79, pas les anciennes copies .77 ; conserver 126 CK, R4b,
+  les six caméras et les compteurs intégrés.
+- Travailler les modèles de personnages, surtout des **mains plus réalistes**. La suite
+  prioritaire est `docs/reprise/MAINS-REALISME-2026-11-21.md` : doigts, volumes et
+  transitions, puis membres/manches ; la vue extérieure reste déterminante.
+- Les anciennes réserves R4b ont été corrigées. Les états historiques restent archivés ;
+  `REPRISE.md` et les alias actifs d’`ETAT.json` décrivent la réception courante.
