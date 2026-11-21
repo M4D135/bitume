@@ -1,0 +1,704 @@
+{
+  "schema": 1,
+  "scene": "Circuit 47, mêmes trois couverts et solides PhysX que le banc dédié",
+  "sources": [
+    {
+      "nom": "parent",
+      "sha256": "04b68ea246a72aae23a301634616e5710ec65520fb0fb4527461d1a8eaeada6e"
+    },
+    {
+      "nom": "prototype",
+      "sha256": "652f362680e3b6a5d8e9f72b4a85ee465bf185905b8779ceaac3f5acc7559696"
+    },
+    {
+      "nom": "candidat",
+      "sha256": "e96267b45927e002fcfdfed096866012de9b042054cb948a26fe357b22434504"
+    }
+  ],
+  "imagesParSerie": 120,
+  "series": 5,
+  "chauffeImagesParVarianteEtScene": 120,
+  "node": "v24.22.3",
+  "plateforme": "linux",
+  "architecture": "x64",
+  "comparaison": [
+    {
+      "scenario": "dehors",
+      "qualite": "high",
+      "mesures": [
+        {
+          "nom": "parent",
+          "cpuMs": {
+            "p50": 0.0163950000001023,
+            "p95": 0.06325399999991532,
+            "p99": 0.11474999999995816,
+            "pire": 0.28640600000017,
+            "medianeSerie": 2.2224449999998797
+          },
+          "rayonsParSerie": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rayonsMaxParImage": 0,
+          "spatiauxMaxParImage": 0,
+          "traitsMin": 179,
+          "traitsMax": 200,
+          "dessin": {
+            "traits": 22798,
+            "effacements": 119,
+            "fnv1a32CoordonneesFloat64": "c1caebf8"
+          }
+        },
+        {
+          "nom": "prototype",
+          "cpuMs": {
+            "p50": 0.021140999999943233,
+            "p95": 0.33838300000002164,
+            "p99": 0.393786000000091,
+            "pire": 1.4506569999998646,
+            "medianeSerie": 2.677151999999978
+          },
+          "rayonsParSerie": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rayonsMaxParImage": 0,
+          "spatiauxMaxParImage": 0,
+          "traitsMin": 179,
+          "traitsMax": 200,
+          "dessin": {
+            "traits": 22798,
+            "effacements": 119,
+            "fnv1a32CoordonneesFloat64": "c1caebf8"
+          }
+        },
+        {
+          "nom": "candidat",
+          "cpuMs": {
+            "p50": 0.03901799999994182,
+            "p95": 0.3651230000000396,
+            "p99": 0.4201550000000225,
+            "pire": 0.6961759999999231,
+            "medianeSerie": 4.344440000000077
+          },
+          "rayonsParSerie": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rayonsMaxParImage": 0,
+          "spatiauxMaxParImage": 0,
+          "traitsMin": 179,
+          "traitsMax": 200,
+          "dessin": {
+            "traits": 22798,
+            "effacements": 119,
+            "fnv1a32CoordonneesFloat64": "c1caebf8"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "fond-tunnel",
+      "qualite": "high",
+      "mesures": [
+        {
+          "nom": "parent",
+          "cpuMs": {
+            "p50": 0.01633399999991525,
+            "p95": 0.029193999999733933,
+            "p99": 0.0723969999999099,
+            "pire": 0.15645299999982853,
+            "medianeSerie": 2.1860509999999067
+          },
+          "rayonsParSerie": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rayonsMaxParImage": 0,
+          "spatiauxMaxParImage": 0,
+          "traitsMin": 174,
+          "traitsMax": 197,
+          "dessin": {
+            "traits": 22266,
+            "effacements": 119,
+            "fnv1a32CoordonneesFloat64": "108e385b"
+          }
+        },
+        {
+          "nom": "prototype",
+          "cpuMs": {
+            "p50": 0.8676609999999982,
+            "p95": 1.1803050000000894,
+            "p99": 2.416078000000198,
+            "pire": 4.5726910000003045,
+            "medianeSerie": 108.50739000000021
+          },
+          "rayonsParSerie": [
+            17116,
+            17116,
+            17116,
+            17116,
+            17116
+          ],
+          "rayonsMaxParImage": 158,
+          "spatiauxMaxParImage": 197,
+          "traitsMin": 0,
+          "traitsMax": 0,
+          "dessin": {
+            "traits": 0,
+            "effacements": 0,
+            "fnv1a32CoordonneesFloat64": "811c9dc5"
+          }
+        },
+        {
+          "nom": "candidat",
+          "cpuMs": {
+            "p50": 0.775222999999869,
+            "p95": 1.0547280000000683,
+            "p99": 1.283538000000135,
+            "pire": 2.8399120000003677,
+            "medianeSerie": 95.45355299999983
+          },
+          "rayonsParSerie": [
+            17119,
+            17119,
+            17119,
+            17119,
+            17119
+          ],
+          "rayonsMaxParImage": 158,
+          "spatiauxMaxParImage": 197,
+          "traitsMin": 0,
+          "traitsMax": 0,
+          "dessin": {
+            "traits": 0,
+            "effacements": 0,
+            "fnv1a32CoordonneesFloat64": "811c9dc5"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "portail",
+      "qualite": "high",
+      "mesures": [
+        {
+          "nom": "parent",
+          "cpuMs": {
+            "p50": 0.0162239999999656,
+            "p95": 0.022643999999672815,
+            "p99": 0.054020000000036816,
+            "pire": 0.23149400000011155,
+            "medianeSerie": 2.0805430000000342
+          },
+          "rayonsParSerie": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rayonsMaxParImage": 0,
+          "spatiauxMaxParImage": 0,
+          "traitsMin": 162,
+          "traitsMax": 199,
+          "dessin": {
+            "traits": 21802,
+            "effacements": 119,
+            "fnv1a32CoordonneesFloat64": "5cee7c09"
+          }
+        },
+        {
+          "nom": "prototype",
+          "cpuMs": {
+            "p50": 1.6195269999998345,
+            "p95": 1.966773999999532,
+            "p99": 3.087318999999752,
+            "pire": 12.635932999999568,
+            "medianeSerie": 196.27166699999998
+          },
+          "rayonsParSerie": [
+            53255,
+            53255,
+            53255,
+            53255,
+            53255
+          ],
+          "rayonsMaxParImage": 495,
+          "spatiauxMaxParImage": 199,
+          "traitsMin": 86,
+          "traitsMax": 116,
+          "dessin": {
+            "traits": 12325,
+            "effacements": 119,
+            "fnv1a32CoordonneesFloat64": "d8f2e15b"
+          }
+        },
+        {
+          "nom": "candidat",
+          "cpuMs": {
+            "p50": 1.629591999999775,
+            "p95": 1.9026380000000245,
+            "p99": 2.0695769999997538,
+            "pire": 4.025063000000046,
+            "medianeSerie": 197.5898070000003
+          },
+          "rayonsParSerie": [
+            59237,
+            59237,
+            59237,
+            59237,
+            59237
+          ],
+          "rayonsMaxParImage": 546,
+          "spatiauxMaxParImage": 199,
+          "traitsMin": 86,
+          "traitsMax": 116,
+          "dessin": {
+            "traits": 12325,
+            "effacements": 119,
+            "fnv1a32CoordonneesFloat64": "d8f2e15b"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "galerie-ouverte",
+      "qualite": "high",
+      "mesures": [
+        {
+          "nom": "parent",
+          "cpuMs": {
+            "p50": 0.014541999999892141,
+            "p95": 0.019980000000032305,
+            "p99": 0.03531199999997625,
+            "pire": 0.07641399999920395,
+            "medianeSerie": 1.8318349999999555
+          },
+          "rayonsParSerie": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rayonsMaxParImage": 0,
+          "spatiauxMaxParImage": 0,
+          "traitsMin": 169,
+          "traitsMax": 190,
+          "dessin": {
+            "traits": 21300,
+            "effacements": 119,
+            "fnv1a32CoordonneesFloat64": "f87a26b8"
+          }
+        },
+        {
+          "nom": "prototype",
+          "cpuMs": {
+            "p50": 1.6639850000001388,
+            "p95": 1.9355189999996583,
+            "p99": 2.8216370000000097,
+            "pire": 4.514444000000367,
+            "medianeSerie": 203.94672600000013
+          },
+          "rayonsParSerie": [
+            56543,
+            56543,
+            56543,
+            56543,
+            56543
+          ],
+          "rayonsMaxParImage": 555,
+          "spatiauxMaxParImage": 190,
+          "traitsMin": 62,
+          "traitsMax": 98,
+          "dessin": {
+            "traits": 9568,
+            "effacements": 119,
+            "fnv1a32CoordonneesFloat64": "1c433365"
+          }
+        },
+        {
+          "nom": "candidat",
+          "cpuMs": {
+            "p50": 1.5636750000003303,
+            "p95": 1.8390349999999671,
+            "p99": 2.952390999999807,
+            "pire": 4.470980000000054,
+            "medianeSerie": 195.35387600000013
+          },
+          "rayonsParSerie": [
+            56544,
+            56544,
+            56544,
+            56544,
+            56544
+          ],
+          "rayonsMaxParImage": 555,
+          "spatiauxMaxParImage": 190,
+          "traitsMin": 62,
+          "traitsMax": 98,
+          "dessin": {
+            "traits": 9568,
+            "effacements": 119,
+            "fnv1a32CoordonneesFloat64": "1c433365"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "galerie-mur",
+      "qualite": "high",
+      "mesures": [
+        {
+          "nom": "parent",
+          "cpuMs": {
+            "p50": 0.015723000000434695,
+            "p95": 0.01730600000155391,
+            "p99": 0.03602300000056857,
+            "pire": 0.0411019999992277,
+            "medianeSerie": 1.9438809999992372
+          },
+          "rayonsParSerie": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rayonsMaxParImage": 0,
+          "spatiauxMaxParImage": 0,
+          "traitsMin": 185,
+          "traitsMax": 203,
+          "dessin": {
+            "traits": 23254,
+            "effacements": 119,
+            "fnv1a32CoordonneesFloat64": "f1b39667"
+          }
+        },
+        {
+          "nom": "prototype",
+          "cpuMs": {
+            "p50": 0.9376140000003943,
+            "p95": 1.0380530000002182,
+            "p99": 1.2006359999995766,
+            "pire": 1.4293450000004668,
+            "medianeSerie": 113.37837199999922
+          },
+          "rayonsParSerie": [
+            22216,
+            22216,
+            22216,
+            22216,
+            22216
+          ],
+          "rayonsMaxParImage": 196,
+          "spatiauxMaxParImage": 203,
+          "traitsMin": 0,
+          "traitsMax": 0,
+          "dessin": {
+            "traits": 0,
+            "effacements": 0,
+            "fnv1a32CoordonneesFloat64": "811c9dc5"
+          }
+        },
+        {
+          "nom": "candidat",
+          "cpuMs": {
+            "p50": 0.8715659999998024,
+            "p95": 0.9778949999999895,
+            "p99": 1.1385540000010224,
+            "pire": 1.3330729999997857,
+            "medianeSerie": 106.6537900000003
+          },
+          "rayonsParSerie": [
+            22219,
+            22219,
+            22219,
+            22219,
+            22219
+          ],
+          "rayonsMaxParImage": 196,
+          "spatiauxMaxParImage": 203,
+          "traitsMin": 0,
+          "traitsMax": 0,
+          "dessin": {
+            "traits": 0,
+            "effacements": 0,
+            "fnv1a32CoordonneesFloat64": "811c9dc5"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "galerie-ouverte-low",
+      "qualite": "low",
+      "mesures": [
+        {
+          "nom": "parent",
+          "cpuMs": {
+            "p50": 0.007061000000248896,
+            "p95": 0.008032000001549022,
+            "p99": 0.02035999999861815,
+            "pire": 0.0434449999993376,
+            "medianeSerie": 0.8982059999998455
+          },
+          "rayonsParSerie": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rayonsMaxParImage": 0,
+          "spatiauxMaxParImage": 0,
+          "traitsMin": 79,
+          "traitsMax": 90,
+          "dessin": {
+            "traits": 10042,
+            "effacements": 119,
+            "fnv1a32CoordonneesFloat64": "fb1296f4"
+          }
+        },
+        {
+          "nom": "prototype",
+          "cpuMs": {
+            "p50": 0.7715870000010909,
+            "p95": 0.8890420000006998,
+            "p99": 1.1294299999990471,
+            "pire": 2.7773610000003828,
+            "medianeSerie": 95.48363300000165
+          },
+          "rayonsParSerie": [
+            27211,
+            27211,
+            27211,
+            27211,
+            27211
+          ],
+          "rayonsMaxParImage": 271,
+          "spatiauxMaxParImage": 90,
+          "traitsMin": 29,
+          "traitsMax": 50,
+          "dessin": {
+            "traits": 4637,
+            "effacements": 119,
+            "fnv1a32CoordonneesFloat64": "d4e96f39"
+          }
+        },
+        {
+          "nom": "candidat",
+          "cpuMs": {
+            "p50": 0.7345319999985804,
+            "p95": 0.8452070000003005,
+            "p99": 0.9628420000008191,
+            "pire": 1.177029999998922,
+            "medianeSerie": 88.98476800000026
+          },
+          "rayonsParSerie": [
+            27211,
+            27211,
+            27211,
+            27211,
+            27211
+          ],
+          "rayonsMaxParImage": 271,
+          "spatiauxMaxParImage": 90,
+          "traitsMin": 29,
+          "traitsMax": 50,
+          "dessin": {
+            "traits": 4637,
+            "effacements": 119,
+            "fnv1a32CoordonneesFloat64": "d4e96f39"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "galerie-flou-300",
+      "qualite": "high",
+      "mesures": [
+        {
+          "nom": "parent",
+          "cpuMs": {
+            "p50": 0.02192300000024261,
+            "p95": 0.03258800000003248,
+            "p99": 0.06543699999929231,
+            "pire": 0.23914499999955297,
+            "medianeSerie": 2.8825770000003104
+          },
+          "rayonsParSerie": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rayonsMaxParImage": 0,
+          "spatiauxMaxParImage": 0,
+          "traitsMin": 166,
+          "traitsMax": 206,
+          "dessin": {
+            "traits": 22102,
+            "effacements": 119,
+            "fnv1a32CoordonneesFloat64": "5c099f1b"
+          }
+        },
+        {
+          "nom": "prototype",
+          "cpuMs": {
+            "p50": 1.625516999998581,
+            "p95": 2.6547579999987647,
+            "p99": 3.7419749999990017,
+            "pire": 23.8951530000013,
+            "medianeSerie": 202.73008100000152
+          },
+          "rayonsParSerie": [
+            54373,
+            54373,
+            54373,
+            54373,
+            54373
+          ],
+          "rayonsMaxParImage": 568,
+          "spatiauxMaxParImage": 206,
+          "traitsMin": 61,
+          "traitsMax": 98,
+          "dessin": {
+            "traits": 9451,
+            "effacements": 119,
+            "fnv1a32CoordonneesFloat64": "63c928f0"
+          }
+        },
+        {
+          "nom": "candidat",
+          "cpuMs": {
+            "p50": 1.5411820000008447,
+            "p95": 1.89438699999846,
+            "p99": 2.1968069999984436,
+            "pire": 4.275071999998545,
+            "medianeSerie": 182.17474000000038
+          },
+          "rayonsParSerie": [
+            54648,
+            54648,
+            54648,
+            54648,
+            54648
+          ],
+          "rayonsMaxParImage": 572,
+          "spatiauxMaxParImage": 206,
+          "traitsMin": 65,
+          "traitsMax": 102,
+          "dessin": {
+            "traits": 9693,
+            "effacements": 119,
+            "fnv1a32CoordonneesFloat64": "f66b024f"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "portail-sec",
+      "qualite": "high",
+      "mesures": [
+        {
+          "nom": "parent",
+          "cpuMs": {
+            "p50": 0.00021100000049045775,
+            "p95": 0.0002300000014656689,
+            "p99": 0.0005610000007436611,
+            "pire": 0.011916999999812106,
+            "medianeSerie": 0.037645999998858315
+          },
+          "rayonsParSerie": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rayonsMaxParImage": 0,
+          "spatiauxMaxParImage": 0,
+          "traitsMin": 0,
+          "traitsMax": 0,
+          "dessin": {
+            "traits": 0,
+            "effacements": 0,
+            "fnv1a32CoordonneesFloat64": "811c9dc5"
+          }
+        },
+        {
+          "nom": "prototype",
+          "cpuMs": {
+            "p50": 0.00023999999939405825,
+            "p95": 0.00025099999947997276,
+            "p99": 0.00042100000064237975,
+            "pire": 0.0008219999999710126,
+            "medianeSerie": 0.038577000001168926
+          },
+          "rayonsParSerie": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rayonsMaxParImage": 0,
+          "spatiauxMaxParImage": 0,
+          "traitsMin": 0,
+          "traitsMax": 0,
+          "dessin": {
+            "traits": 0,
+            "effacements": 0,
+            "fnv1a32CoordonneesFloat64": "811c9dc5"
+          }
+        },
+        {
+          "nom": "candidat",
+          "cpuMs": {
+            "p50": 0.000240999999732594,
+            "p95": 0.0003209999995306134,
+            "p99": 0.0007010000008449424,
+            "pire": 0.04275299999972049,
+            "medianeSerie": 0.039920000001075095
+          },
+          "rayonsParSerie": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rayonsMaxParImage": 0,
+          "spatiauxMaxParImage": 0,
+          "traitsMin": 0,
+          "traitsMax": 0,
+          "dessin": {
+            "traits": 0,
+            "effacements": 0,
+            "fnv1a32CoordonneesFloat64": "811c9dc5"
+          }
+        }
+      ]
+    }
+  ],
+  "limites": [
+    "CPU du module dans Node et vrai PhysX WASM ; Canvas instrumenté sans raster ni WebGL.",
+    "Parent sans masque spatial : référence de coût de la pluie brute ; sous abri sa sortie ne satisfait pas la nouvelle fonction.",
+    "Allocations non mesurées ; aucune déduction à partir de la mémoire retenue après GC.",
+    "Aucun FPS Xbox/Intel ni gain matériel annoncé."
+  ]
+}

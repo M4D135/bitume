@@ -85,11 +85,97 @@
   const SANS_OPTIONS = Object.freeze({});
   // Couleur constante : l'opacité de chaque lot passe par globalAlpha, sans chaîne rgba à réanalyser.
   const COULEUR = 'rgb(190,210,225)';
+  const BOITES_COUVERTS = new WeakMap(), VIDE = Object.freeze([]), HAUT = Object.freeze([0, 1, 0]);
+  const RAYON_TOIT = Object.freeze({ mask: 2, staticOnly: true }), RAYON_VUE = Object.freeze({ mask: 3, staticOnly: true });
+  const GENRE_TOIT = /^(voute-(tunnel|galerie)|portail-tunnel)$/;
+  const HIT_CAMERA = {};
+  // Ces boîtes servent uniquement à éviter les requêtes loin des ouvrages. Elles ne décident
+  // jamais qu'une paroi est opaque : cette décision vient des primitives visibles installées dans PhysX.
+  function boitesCouverts(c) {
+    if (!B.couverts || !c || !B.couverts.liste(c).length) return VIDE;
+    const prepare = B.couverts.preparer(c), ancien = BOITES_COUVERTS.get(c);
+    if (ancien?.prepare === prepare) return ancien.boites;
+    const boites = prepare.blocs.map(({ t, axe }) => {
+      const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
+      let devers = 0;
+      for (let k = 0; k < axe.length; k += 5) {
+        for (let j = 0; j < 3; j++) { min[j] = Math.min(min[j], axe[k + j]); max[j] = Math.max(max[j], axe[k + j]); }
+        devers = Math.max(devers, Math.abs(Math.sin(axe[k + 4])) * t.mur);
+      }
+      const marge = t.mur + 3; min[0] -= marge; max[0] += marge; min[2] -= marge; max[2] += marge;
+      min[1] -= .12 + devers; max[1] += t.hauteur + 2 + devers;
+      return { min, max, logique: true };
+    });
+    // Les façades des tunnels sont plus larges et hautes que la voûte.
+    // Enveloppes des primitives de decor.js (portails : côtés M+7,3 ±7,
+    // sommet H+4,5 ±3,5 et côtés 7,5 ±7,75). Elles ne masquent rien :
+    // elles garantissent seulement que le vrai raycast ne sera pas sauté.
+    const q = {};
+    for (let i = 0; i < prepare.blocs.length; i++) {
+      const { t, axe } = prepare.blocs[i];
+      if (B.couverts.type(t) !== 'tunnel') continue;
+      for (let bout = 0; bout < 2; bout++) {
+        B.circuit.echantillon(c, axe[bout ? axe.length - 2 : 3], q);
+        const ca = Math.abs(Math.cos(q.cap)), sa = Math.abs(Math.sin(q.cap));
+        const lateral = t.mur + 14.3, longitudinal = 2.01;
+        const ex = ca * longitudinal + sa * lateral, ez = sa * longitudinal + ca * lateral;
+        boites.push({ min: [q.x - ex, q.y - .26, q.z - ez],
+          max: [q.x + ex, q.y + Math.max(t.hauteur + 8, 15.25) + .01, q.z + ez] });
+      }
+    }
+    BOITES_COUVERTS.set(c, { prepare, boites }); return boites;
+  }
+  function contient(p, b) {
+    return p[0] >= b.min[0] && p[0] <= b.max[0] && p[1] >= b.min[1] && p[1] <= b.max[1] && p[2] >= b.min[2] && p[2] <= b.max[2];
+  }
+  function sousCouvert(c, p, boites) {
+    // Un rayon peut partir d'un abri et finir loin dehors. Dans ce cas il n'est
+    // pas nécessaire de parcourir tout l'axe des ouvrages pour sa destination.
+    for (let i = 0; i < boites.length; i++) if (boites[i].logique && contient(p, boites[i])) return B.couverts.abri(c, p);
+    return false;
+  }
+  function presDuCouvert(cam, point, queue, boites) {
+    // Rejet conservateur du faisceau entier. Deux seuls rayons de bord peuvent
+    // manquer un coin de boîte alors qu'il coupe le milieu du trait affiché.
+    const minX = Math.min(cam[0], point[0], queue[0]), maxX = Math.max(cam[0], point[0], queue[0]);
+    const minY = Math.min(cam[1], point[1], queue[1]), maxY = Math.max(cam[1], point[1], queue[1]);
+    const minZ = Math.min(cam[2], point[2], queue[2]), maxZ = Math.max(cam[2], point[2], queue[2]);
+    for (let i = 0; i < boites.length; i++) {
+      const b = boites[i];
+      if (maxX >= b.min[0] && minX <= b.max[0] && maxY >= b.min[1] && minY <= b.max[1] && maxZ >= b.min[2] && minZ <= b.max[2]) return true;
+    }
+    return false;
+  }
+  function sousToitReel(p, physique, boites, hit, stats) {
+    if (!physique?.world?.raycast || !physique.solids?.acteurs) return false;
+    let distance = 0;
+    for (let i = 0; i < boites.length; i++) if (contient(p, boites[i])) distance = Math.max(distance, boites[i].max[1] - p[1]);
+    if (!(distance > .01)) return false;
+    if (stats) stats.rayons++;
+    physique.world.raycast(p, HAUT, distance, RAYON_TOIT, hit);
+    const genre = hit.hit && physique.solids.acteurs.get(hit.body)?.genre;
+    return !!genre && GENRE_TOIT.test(genre);
+  }
+  // L'abri logique reste la référence de l'intérieur. La sonde complète seulement les débords
+  // réellement dessinés (linteaux et rives du toit) ; géométrie et éclairage anciens sont conservés.
+  function abriCouverts(c, p, physique) {
+    return !!B.couverts?.abri(c, p) || sousToitReel(p, physique, boitesCouverts(c), HIT_CAMERA);
+  }
   function creerPluie(canvas) {
     const ctx = canvas && canvas.getContext('2d');
     const graines = new Float64Array(N * 4), segments = new Float32Array(N * 4);
     const lots = new Uint8Array(N);
-    const stats = { candidats: 0, visibles: 0, traits: 0, lots: 0, lectures: 0, pixels: 0, propre: true, masquee: false };
+    const stats = { candidats: 0, visibles: 0, traits: 0, lots: 0, lectures: 0, pixels: 0, propre: true, masquee: false,
+      spatiaux: 0, abrites: 0, occultes: 0, rayons: 0 };
+    const point = [0, 0, 0], queue = [0, 0, 0], milieu = [0, 0, 0], direction = [0, 0, 0], hit = {};
+    function occulte(a, b, physique) {
+      if (!physique?.world?.raycast) return false;
+      for (let k = 0; k < 3; k++) direction[k] = b[k] - a[k];
+      const distance = Math.hypot(direction[0], direction[1], direction[2]);
+      if (!(distance > 0)) return false;
+      stats.rayons++; physique.world.raycast(a, direction, distance, RAYON_VUE, hit);
+      return hit.hit;
+    }
     for (let i = 0; i < N; i++) {
       graines[i * 4] = hasard(i * 4 + 1) * LARGEUR;
       graines[i * 4 + 1] = hasard(i * 4 + 2) * HAUTEUR;
@@ -129,7 +215,7 @@
     montrer(false); // toile neuve, vide : rien à composer avant la première goutte
     function dessiner(m, cam, dt, options) {
       const o = options || SANS_OPTIONS;
-      stats.candidats = stats.visibles = stats.traits = stats.lots = 0;
+      stats.candidats = stats.visibles = stats.traits = stats.lots = stats.spatiaux = stats.abrites = stats.occultes = stats.rayons = 0;
       if (!ctx || !cam) return stats;
       const pluie = clamp(m.pluie || 0, 0, 1), sec = pluie < .025;
       mesurer(o, sec);
@@ -160,6 +246,7 @@
       const deriveX = 1.8 * t + .9 / .61 * (1 - Math.cos(t * .61)) + .5 / 1.47 * (1 - Math.cos(t * 1.47));
       const deriveZ = .55 * t + .35 / .43 * Math.sin(t * .43);
       const cible = Math.round((BUDGETS[o.palier] || N) * pluie);
+      const boites = boitesCouverts(o.circuit);
       stats.candidats = cible;
       for (let i = 0; i < cible; i++) {
         const k = i * 4, chute = graines[k + 3];
@@ -185,7 +272,32 @@
         let dx = w * .5 + (tx * rx + ty * ry + tz * rz) * focale / dp - ex;
         let dy = h * .5 - (tx * ux + ty * uy + tz * uz) * focale / dp - ey;
         const longueur = Math.hypot(dx, dy), maximum = Math.min(18, h * .025);
-        if (longueur > maximum) { dx *= maximum / longueur; dy *= maximum / longueur; }
+        const fractionEcran = longueur > maximum ? maximum / longueur : 1;
+        if (fractionEcran < 1) { dx *= fractionEcran; dy *= fractionEcran; }
+        // Ne requêter que des traits déjà projetés dans le cadre et dont le rayon rencontre un
+        // couvert. Aucun quota aléatoire : tous ces traits ont la même protection, même en Légère.
+        // Deux extrémités sèches et trois lignes de vue protègent aussi le flou près d'un pilier.
+        if (boites.length) {
+          // La limite en pixels raccourcit le trait. Sa fraction dans le monde n'est pas
+          // linéaire en perspective : sonder la queue entière manquerait un portail situé
+          // au milieu de la seule portion réellement dessinée, surtout à grande vitesse.
+          const fractionMonde = fractionEcran * profondeur / (dp * (1 - fractionEcran) + fractionEcran * profondeur);
+          const profondeurQueue = profondeur + (dp - profondeur) * fractionMonde;
+          point[0] = pos[0] + x; point[1] = pos[1] + y; point[2] = pos[2] + z;
+          queue[0] = point[0] + (tx - x) * fractionMonde;
+          queue[1] = point[1] + (ty - y) * fractionMonde;
+          queue[2] = point[2] + (tz - z) * fractionMonde;
+          if (presDuCouvert(pos, point, queue, boites)) {
+            stats.spatiaux++;
+            if (sousCouvert(o.circuit, point, boites) || sousCouvert(o.circuit, queue, boites)) { stats.abrites++; continue; }
+            // Une paroi coupe le trait avant toute sonde verticale ou supplémentaire.
+            if (occulte(pos, point, o.physique)) { stats.occultes++; continue; }
+            if (sousToitReel(point, o.physique, boites, hit, stats) || sousToitReel(queue, o.physique, boites, hit, stats)) { stats.abrites++; continue; }
+            const fractionMilieu = profondeur / (profondeur + profondeurQueue);
+            for (let k = 0; k < 3; k++) milieu[k] = point[k] + (queue[k] - point[k]) * fractionMilieu;
+            if (occulte(pos, queue, o.physique) || occulte(pos, milieu, o.physique)) { stats.occultes++; continue; }
+          }
+        }
         const j = stats.visibles++, o4 = j * 4;
         segments[o4] = ex; segments[o4 + 1] = ey; segments[o4 + 2] = ex + dx; segments[o4 + 3] = ey + dy;
         lots[j] = profondeur < 8 ? 0 : profondeur < 17 ? 1 : 2;
@@ -242,5 +354,5 @@
     if (mode === 'variable') return { t: 0, phase: 'clair', tp: 0, pluie: 0, nuage: .12, eclair: 0, prochainEclair: 0, mouille: 0, ventX: 1.8, ventZ: .9, fixe: false };
     return null;
   }
-  B.meteo = { avancer, ambiance, creerPluie, initial, pour, depuisReel, GOUTTES: BUDGETS, MAX_PIXELS };
+  B.meteo = { avancer, ambiance, creerPluie, abriCouverts, initial, pour, depuisReel, GOUTTES: BUDGETS, MAX_PIXELS };
 })(globalThis.BITUME = globalThis.BITUME || {});

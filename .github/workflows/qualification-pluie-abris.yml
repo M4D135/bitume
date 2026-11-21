@@ -1,0 +1,105 @@
+name: Pluie exterieure depuis les abris
+
+on:
+  push:
+    branches: ['codex/bitume-p06-pluie-abris-*']
+    paths:
+      - 'src/meteo.js'
+      - 'tools/captures-pluie-abris.mjs'
+      - 'tools/mesurer-pluie-abris.mjs'
+      - 'verifications/meteo-couverts-physx.test.mjs'
+      - 'verifications/meteo-couverts-traits.test.mjs'
+      - 'verifications/captures-pluie-abris.test.mjs'
+      - 'docs/reprise/PARALLELE-2026-11-20/raccordements/06-jeu.patch'
+      - '.github/workflows/qualification-pluie-abris.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pluie-abris-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qualifier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - groupe: tunnels
+            cas: haut-col-portail,haut-col-fond,haut-col-linteau
+          - groupe: galerie
+            cas: cimes-galerie-ouverte,cimes-galerie-fermee,cimes-pilier
+          - groupe: profils
+            cas: cimes-galerie-legere,cimes-galerie-portrait
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Checkout temporaire du meme commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: qualification/candidat
+          persist-credentials: false
+      - name: Raccorder et reconstruire deux fois sans toucher au build livre
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rev-parse HEAD > qualification/OUTILS-COMMIT.txt
+          git rev-parse 'HEAD^{tree}' > qualification/OUTILS-TREE.txt
+          node --version > qualification/ENVIRONNEMENT.txt
+          google-chrome --version >> qualification/ENVIRONNEMENT.txt
+          sha256sum docs/reprise/PARALLELE-2026-11-20/raccordements/06-jeu.patch > qualification/RACCORD-SHA256.txt
+          cd qualification/candidat
+          git apply --check "$GITHUB_WORKSPACE/docs/reprise/PARALLELE-2026-11-20/raccordements/06-jeu.patch"
+          git apply "$GITHUB_WORKSPACE/docs/reprise/PARALLELE-2026-11-20/raccordements/06-jeu.patch"
+          python3 construire.py > ../construction-1.log 2>&1
+          sha256sum dist/bitume.html VERSION.json SIZE.json > ../RECONSTRUCTION-SHA256.txt
+          python3 construire.py > ../construction-2.log 2>&1
+          sha256sum --check ../RECONSTRUCTION-SHA256.txt
+          sha256sum src/meteo.js src/jeu.js construire.py FERRO.lock.json > ../SOURCES-CANDIDAT-SHA256.txt
+          cp VERSION.json ../CANDIDAT-VERSION.json
+          git -C "$GITHUB_WORKSPACE" diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+      - name: Verifier le vrai masque PhysX et les gardes raster
+        shell: bash
+        run: |
+          set -euo pipefail
+          node verifications/captures-pluie-abris.test.mjs > qualification/test-captures.log 2>&1
+          cd qualification/candidat
+          BITUME_PLUIE_RAPPORT="$GITHUB_WORKSPACE/qualification/masque-physx.json" node verifications/meteo-couverts-physx.test.mjs src/jeu.js > ../test-physx.log 2>&1
+          if [ "${{ matrix.groupe }}" = tunnels ]; then
+            BITUME_PLUIE_TRAITS_RAPPORT="$GITHUB_WORKSPACE/qualification/traits-physx.json" node verifications/meteo-couverts-traits.test.mjs > ../test-traits.log 2>&1
+          fi
+      - name: Capturer le compositing pluie et ses temoins
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout --signal=TERM --kill-after=30s 22m node tools/captures-pluie-abris.mjs \
+            --url "file://$GITHUB_WORKSPACE/qualification/candidat/dist/bitume.html" \
+            --sortie qualification/images --chrome /usr/bin/google-chrome --cas "${{ matrix.cas }}" \
+            > qualification/captures.log 2>&1
+          cd qualification/candidat
+          sha256sum --check ../RECONSTRUCTION-SHA256.txt
+          sha256sum --check ../SOURCES-CANDIDAT-SHA256.txt
+          git -C "$GITHUB_WORKSPACE" diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+      - name: Conserver les preuves y compris les echecs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-pluie-abris-${{ matrix.groupe }}-${{ github.sha }}
+          path: |
+            qualification/*.txt
+            qualification/*.json
+            qualification/*.log
+            qualification/images/
+          if-no-files-found: error
+          retention-days: 14
