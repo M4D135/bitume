@@ -124,21 +124,37 @@ verifier('faune : profil boréal propre, habitats réels et trajectoires hors pi
   finally { Math.random = ancien; }
   assert.equal(etat.theme, 'baikal'); assert.deepEqual(A.BIOMES.baikal, ['cerf', 'sanglier', 'aigle', 'oie']);
   assert.equal(etat.absentes.length, 0, JSON.stringify(etat.absentes));
+  // La population dort sans vue utile. Observer tout le tracé pour conserver ici
+  // les 90 secondes de locomotion et de fuite, y compris les habitats hors écran joueur.
+  const centreX = (Math.min(...c.x) + Math.max(...c.x)) / 2, centreZ = (Math.min(...c.z) + Math.max(...c.z)) / 2;
+  A.selectionnerVues(etat, [{ qualite: 'ultra', camera: { pos: [centreX, 2500, centreZ], yaw: 0, pitch: -Math.PI / 2, fov: 150 },
+    aspect: 2, hauteur: 720, portee: 12000 }]);
+  const positionsInitiales = etat.cour.slice();
   const voit = Array.from({ length: 12 }, () => ({ x: 0, y: 0, z: 0 }));
-  let marge = Infinity;
+  let marge = Infinity, margeBord = Infinity;
   for (let k = 0; k <= 120 * 90; k++) {
     for (let j = 0; j < voit.length; j++) { const i = Math.floor(((k / 120 * 55 + j * 40) % c.longueur) / c.pas) % c.n; voit[j].x = c.x[i]; voit[j].z = c.z[i]; }
     A.pas(etat, k / 120, voit);
     if (k % 120) continue;
     for (let i = 0; i < etat.nAnimaux; i++) {
-      const x = etat.cour[i * 17], z = etat.cour[i * 17 + 1], d = axe(x, z); marge = Math.min(marge, d);
-      assert.ok(d >= 34, 'animal hors de la route et de son dégagement');
+      const x = etat.cour[i * 17], z = etat.cour[i * 17 + 1];
+      let d = Infinity, limite = 0;
+      for (let j = 0; j < c.n; j++) {
+        const distance = Math.hypot(x - c.x[j], z - c.z[j]);
+        if (distance < d) { d = distance; limite = Math.max(c.limiteG[j], c.limiteD[j]); }
+      }
+      marge = Math.min(marge, d); margeBord = Math.min(margeBord, d - limite);
+      // La demande du 21/11 remplace les 34 m uniformes par une garde depuis le bord réel.
+      assert.ok(d >= limite + 4, 'animal hors de la route et de son dégagement réel, avec garde de 4 m');
       assert.ok(A.solExact(etat.G.T, x, z) > ete.niveauEau);
     }
   }
+  assert.equal(A.stats(etat).activite.groupesActifs, etat.groupes.length);
+  assert.notDeepEqual(etat.cour, positionsInitiales, 'le contrôle de trajectoire doit réellement simuler la population');
+  assert.ok(A.stats(etat).activite.pasGroupes > 0);
   const hiverAnimaux = A.creer(c, hiver, { saison: 'hiver' });
   assert.ok(hiverAnimaux.absentes.some(e => e.cle === 'oie' && e.raison === 'saison'));
-  mesures.faune = { especes: etat.especes, animaux: etat.nAnimaux, margeMinimum: marge };
+  mesures.faune = { especes: etat.especes, animaux: etat.nAnimaux, margeMinimum: marge, margeMinimumBord: margeBord };
 });
 
 console.log(JSON.stringify({ controles, mesures }));

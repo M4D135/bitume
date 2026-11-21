@@ -38,9 +38,10 @@
       ],
       "cloture": "Distances aux bords mesurées, animaux visibles depuis la route, aucune simulation détaillée des groupes invisibles, réveil stable ; J1/J2, rétros et Faune désactivée contrôlés.",
       "preuves": [
-        "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json"
+        "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json",
+        "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json"
       ],
-      "reste": "CI complète et réception visuelle avant publication du runtime"
+      "reste": "Push après déblocage de publication, CI distante et réception visuelle .87 ; transition opaque/FX à examiner."
     },
     {
       "id": "demos_route_lieux",
@@ -54,9 +55,10 @@
       ],
       "cloture": "Aucun plan herbe/faune/flore ni autre sujet autonome ; séquences cadrées et sans traversée sur les neuf circuits, futurs parcours couverts à leur intégration jouable.",
       "preuves": [
-        "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json"
+        "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json",
+        "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json"
       ],
-      "reste": "CI complète et réception visuelle avant publication du runtime"
+      "reste": "Push après déblocage de publication, CI distante et réception visuelle .87 ; transition opaque/FX à examiner."
     },
     {
       "id": "demarrage_mobile_passif",
@@ -851,12 +853,13 @@
   },
   "base_initiale": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_candidat": {
-    "statut": "xbox_edge_en_reception",
-    "version": "0.2.83",
-    "base_runtime_main": "0.2.80",
-    "branche": "codex/bitume-xbox-edge-20261121",
-    "fiche": "docs/reprise/XBOX-EDGE-COMMANDES-2026-11-21.md",
-    "suite": "PR #56 mains, à rebaser et renuméroter après publication console"
+    "statut": "qualifie_localement_publication_bloquee",
+    "version": "0.2.87",
+    "base_runtime_main": "0.2.85",
+    "branche": "codex/bitume-faune-demos-validation-20261121",
+    "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
+    "recu": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0287.json",
+    "reception_locale": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json"
   },
   "demandes_video_survol_2026_11_20": {
     "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",

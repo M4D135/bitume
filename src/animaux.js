@@ -946,7 +946,7 @@
   const kv = (o, a, b, c) => { o[0] = a; o[1] = b; o[2] = c; return o; }, k1 = a => { A1[0] = a; return A1; };
   function objetVide() {
     return { shape: 'box', forme: null, p: [0, 0, 0], s: [0, 0, 0], r: [0, 0, 0], color: [0, 0, 0], mat: 18, emissive: 0,
-      surface: 'object', outdoor: true, overlay: false, windResponsive: false, fx: false, alpha: 1, animal: '' };
+      surface: 'object', outdoor: true, overlay: false, windResponsive: false, fx: false, fxPriority: undefined, alpha: 1, animal: '' };
   }
   const POIL = 18, CORNE = 17;
   const ALLURES = [
@@ -1554,7 +1554,7 @@
     const objets = [], fx = [];
     for (let i = 0; i < BUDGETS.ultra.objets; i++) objets.push(objetVide());
     for (let i = 0; i < 4; i++) { const o = objetVide(); o.fx = true; o.alpha = 0; o.mat = 7; o.shape = 'sphere'; fx.push(o); }
-    return { champs: new Float64Array(3 * NB_CHAMP), objets, fx, px: new Float32Array(entites), dist: new Float32Array(entites), lod: new Uint8Array(entites), top: new Int32Array(BUDGETS.ultra.moyens + 1),
+    return { champs: new Float64Array(3 * NB_CHAMP), objets, fx, px: new Float32Array(entites), dist: new Float32Array(entites), opacites: new Float32Array(entites), lod: new Uint8Array(entites), top: new Int32Array(BUDGETS.ultra.moyens + 1),
       stats: { qualite: 'off', animaux: 0, proches: 0, moyens: 0, lointains: 0, objets: 0, horsChamp: 0, minuscules: 0, coupes: 0, triangles: 0 } };
   }
 
@@ -2062,7 +2062,7 @@
     const nuit = contexte.nuit || 0, pluie = contexte.pluie || 0, loinSeuls = bud.lointainsSeuls;
     const alpha = paireEtats(etat, temps), A = PAIRE[0], Bc = PAIRE[1];
     IMG[0] = alpha; IMG[1] = temps; IMG[2] = nuit; IMG[3] = ex; IMG[4] = ez; IMG[5] = pluie;
-    const T = etat.G.T, nA = etat.nAnimaux, N = etat.nEntites, px = V.px, dist = V.dist, lod = V.lod;
+    const T = etat.G.T, nA = etat.nAnimaux, N = etat.nEntites, px = V.px, dist = V.dist, opacites = V.opacites, lod = V.lod;
     for (let i = 0; i < N; i++) {
       lod[i] = 0;
       let x, y, z, taille;
@@ -2080,17 +2080,22 @@
         if (!f || !volantVisible(f) || !positionVolantSimple(etat, f, i - nA - f.premier, temps, PS)) continue;
         x = PS.x; y = PS.y; z = PS.z; taille = (f.famille === 'marin' ? f.md.longueur * .3 : f.md.envergure * .5) * PS.echelle;
       }
-      let p = 0, d = Infinity, principal = false;
+      let p = 0, d = Infinity, principal = false, opacite = 0;
       const rayon = taille * 1.5 + (i < nA ? 1 : 12);
       for (let v = 0; v < nombreChamps; v++) {
         const o = v * NB_CHAMP;
         if (!dansChamp(V.champs, o, x, y + taille * .5, z, rayon)) continue;
         const dx = x - V.champs[o], dy = y - V.champs[o + 1], dz = z - V.champs[o + 2], dv = Math.sqrt(dx * dx + dy * dy + dz * dz) + 1e-6;
+        // Fondu sur les 20 % finaux de chaque portée, avant le rejet spatial. L'union
+        // garde l'opacité de la vue la plus utile, notamment lorsqu'une glace voit encore
+        // l'animal proche. Aucun historique ni objet temporaire par animal et par image.
+        const portee = V.champs[o + 14], fondu = clamp((portee - dv) / (portee * .2), 0, 1);
+        opacite = Math.max(opacite, fondu * fondu * (3 - 2 * fondu));
         p = Math.max(p, taille * V.champs[o + 15] / dv); d = Math.min(d, dv); if (v === 0) principal = true;
       }
-      if (!Number.isFinite(d)) { S.horsChamp++; continue; }
+      if (!Number.isFinite(d) || opacite <= .004) { S.horsChamp++; continue; }
       if (p < bud.seuilMin) { S.minuscules++; continue; }
-      px[i] = p; dist[i] = d;
+      px[i] = p; dist[i] = d; opacites[i] = opacite;
       lod[i] = loinSeuls ? 1 : p >= bud.seuilProche && principal ? 3 : p >= bud.seuilMoyen ? 2 : 1;
     }
     if (loinSeuls) garder(V, N, 1, 0, bud.individus);
@@ -2103,6 +2108,7 @@
       while (L > 1 && k + MAX_PIECES[L] > maxObj) L--;
       if (k + 1 > maxObj) { S.coupes++; continue; }
       let n = 0;
+      const opacite = opacites[i];
       if (i < nA) {
         const an = etat.animaux[i], grp = etat.groupes[an.g];
         poseSol(etat, A, Bc, i, PS);
@@ -2113,11 +2119,19 @@
         if (f.famille === 'marin') {
           const fxo = !loinSeuls && kfx < V.fx.length ? V.fx[kfx] : null; // Légère : la silhouette seule, sans souffle
           n = poserBaleine(PS, f.e, f.md, L, r, k, f.e.couleurs[0], fxo);
+          if (fxo) fxo.alpha *= opacite;
           if (fxo && fxo.alpha > .003) { sortie.push(fxo); kfx++; }
         } else n = poserOiseau(PS, f.e, f.md, L, r, k, f.e.couleurs[0]);
       }
       etat.visibilite.stats.posesPreparees++;
-      for (let j = k; j < k + n; j++) { sortie.push(r[j]); S.triangles += r[j].forme.triangles; }
+      for (let j = k; j < k + n; j++) {
+        const o = r[j];
+        // FERRO ignore alpha dans la passe opaque. Pendant le fondu seulement, la passe
+        // FX reçoit la vraie silhouette (sans adoucissement de volume/fumée) ; au retour
+        // proche, restaurer aussi fx pour ne pas laisser un objet du pool translucide.
+        o.alpha = opacite; o.fx = opacite < 1; o.fxPriority = o.fx ? 'hazard' : undefined;
+        sortie.push(o); S.triangles += o.forme.triangles;
+      }
       k += n; S.animaux++;
       if (L === 3) S.proches++; else if (L === 2) S.moyens++; else S.lointains++;
     }

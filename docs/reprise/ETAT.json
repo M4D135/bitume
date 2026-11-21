@@ -8,15 +8,15 @@
     "circuits": 9,
     "commit_fusion": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
     "tete_qualifiee": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
-    "statut": "candidat_faune_demos_en_qualification",
+    "statut": "qualification_locale_reussie_attente_publication_et_images",
     "lot": "faune_proche_demos_circuits",
     "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
     "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md",
     "dernieres_demandes": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
     "dernier_lot_clos": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
-    "prochaine_action": "Recevoir CI complète et captures des neuf circuits, corriger les défauts puis publier le runtime qualifié.",
-    "branche_candidate": "codex/bitume-faune-demos-20261121",
-    "version_candidate": "0.2.86",
+    "prochaine_action": "Obtenir le déblocage de publication du candidat .87, pousser la branche de réception, puis recevoir CI et images exactes avant main.",
+    "branche_candidate": "codex/bitume-faune-demos-validation-20261121",
+    "version_candidate": "0.2.87",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md"
   },
@@ -302,16 +302,28 @@
     ],
     "runtime_modifie": true,
     "preuves_runtime": [
-      "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json"
+      "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json",
+      "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json"
     ],
     "larche": "À ajouter aux démos lors de son intégration jouable ; sommet → Vinadio, sans rebouclage."
   },
   "candidat_faune_demos_0286": {
-    "statut": "en_qualification",
+    "statut": "remplace_par_0287_fondu",
     "branche": "codex/bitume-faune-demos-20261121",
     "version": "0.2.86",
     "recu": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json",
     "build_sha256": "ffb52b30b7e8a7fa72470719dd7131a9ab5f85795b9612a05fd9398e1d3b1300",
     "site_deploye": false
+  },
+  "candidat_faune_demos_0287": {
+    "statut": "qualifie_localement_publication_bloquee",
+    "branche": "codex/bitume-faune-demos-validation-20261121",
+    "version": "0.2.87",
+    "recu": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0287.json",
+    "build_sha256": "d11860da1224be393a24f7d6873f466ad5448b0984e6569887c135c02e6ff9ff",
+    "site_deploye": false,
+    "reception_locale": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json",
+    "suites_node": 203,
+    "tests_python": 8
   }
 }

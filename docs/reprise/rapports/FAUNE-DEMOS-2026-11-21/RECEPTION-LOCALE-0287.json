@@ -1,0 +1,188 @@
+{
+  "format": "bitume-reception-locale-0287-1",
+  "date": "2026-11-21",
+  "version": "0.2.87",
+  "statut": "qualification_locale_reussie_publication_bloquee",
+  "commit_runtime": "5e8903395f87ba3d231cb422fab3e12add9efa9d",
+  "branche_locale": "codex/bitume-faune-demos-validation-20261121",
+  "build": {
+    "sha256": "d11860da1224be393a24f7d6873f466ad5448b0984e6569887c135c02e6ff9ff",
+    "octets": 14656772,
+    "reconstruction_identique": true,
+    "runtime_modifie_par_cette_reception": false
+  },
+  "qualification_locale": {
+    "format": "bitume-qualification-locale-1",
+    "date_utc": "2026-11-21T21:25:21.010267+00:00",
+    "version": "0.2.87",
+    "head_avant_corrections_bancs": "5e8903395f87ba3d231cb422fab3e12add9efa9d",
+    "html_sha256": "d11860da1224be393a24f7d6873f466ad5448b0984e6569887c135c02e6ff9ff",
+    "node": "v24.22.3",
+    "total_suites": 203,
+    "suites_reussies": 203,
+    "suites_echec": 0,
+    "echecs": [],
+    "premier_passage": {
+      "suites_reussies": 193,
+      "suites_echec": 10,
+      "resume": "RESUME.json"
+    },
+    "reprises_fixture": [
+      {
+        "nom": "integration-parallele.test.mjs",
+        "code": 0,
+        "reussi": true,
+        "secondes": 9.516,
+        "cause_initiale": "Fixtures suivies absentes du checkout partiel, restaurées depuis les blobs exacts du commit",
+        "journal_initial": "integration-parallele.test.log",
+        "journal_reprise": "integration-parallele.test.reprise-fixtures.log"
+      },
+      {
+        "nom": "larche-vinadio-sources.test.mjs",
+        "code": 0,
+        "reussi": true,
+        "secondes": 0.669,
+        "cause_initiale": "Fixtures suivies absentes du checkout partiel, restaurées depuis les blobs exacts du commit",
+        "journal_initial": "larche-vinadio-sources.test.log",
+        "journal_reprise": "larche-vinadio-sources.test.reprise-fixtures.log"
+      },
+      {
+        "nom": "marseille-metadonnees.test.mjs",
+        "code": 0,
+        "reussi": true,
+        "secondes": 0.215,
+        "cause_initiale": "Fixtures suivies absentes du checkout partiel, restaurées depuis les blobs exacts du commit",
+        "journal_initial": "marseille-metadonnees.test.log",
+        "journal_reprise": "marseille-metadonnees.test.reprise-fixtures.log"
+      },
+      {
+        "nom": "marseille-sources.test.mjs",
+        "code": 0,
+        "reussi": true,
+        "secondes": 0.415,
+        "cause_initiale": "Fixtures suivies absentes du checkout partiel, restaurées depuis les blobs exacts du commit",
+        "journal_initial": "marseille-sources.test.log",
+        "journal_reprise": "marseille-sources.test.reprise-fixtures.log"
+      },
+      {
+        "nom": "marseille-voirie.test.mjs",
+        "code": 0,
+        "reussi": true,
+        "secondes": 1.387,
+        "cause_initiale": "Fixtures suivies absentes du checkout partiel, restaurées depuis les blobs exacts du commit",
+        "journal_initial": "marseille-voirie.test.log",
+        "journal_reprise": "marseille-voirie.test.reprise-fixtures.log"
+      },
+      {
+        "nom": "monaco-altimetrie.test.mjs",
+        "code": 0,
+        "reussi": true,
+        "secondes": 1.571,
+        "cause_initiale": "Fixtures suivies absentes du checkout partiel, restaurées depuis les blobs exacts du commit",
+        "journal_initial": "monaco-altimetrie.test.log",
+        "journal_reprise": "monaco-altimetrie.test.reprise-fixtures.log"
+      },
+      {
+        "nom": "monaco-revue-cartographie.test.mjs",
+        "code": 0,
+        "reussi": true,
+        "secondes": 3.437,
+        "cause_initiale": "Fixtures suivies absentes du checkout partiel, restaurées depuis les blobs exacts du commit",
+        "journal_initial": "monaco-revue-cartographie.test.log",
+        "journal_reprise": "monaco-revue-cartographie.test.reprise-fixtures.log"
+      },
+      {
+        "nom": "monaco-revue.test.mjs",
+        "code": 0,
+        "reussi": true,
+        "secondes": 1.776,
+        "cause_initiale": "Fixtures suivies absentes du checkout partiel, restaurées depuis les blobs exacts du commit",
+        "journal_initial": "monaco-revue.test.log",
+        "journal_reprise": "monaco-revue.test.reprise-fixtures.log"
+      },
+      {
+        "nom": "monaco-sources.test.mjs",
+        "code": 0,
+        "reussi": true,
+        "secondes": 0.215,
+        "cause_initiale": "Fixtures suivies absentes du checkout partiel, restaurées depuis les blobs exacts du commit",
+        "journal_initial": "monaco-sources.test.log",
+        "journal_reprise": "monaco-sources.test.reprise-fixtures.log"
+      },
+      {
+        "nom": "monaco-voirie.test.mjs",
+        "code": 0,
+        "reussi": true,
+        "secondes": 2.44,
+        "cause_initiale": "Fixtures suivies absentes du checkout partiel, restaurées depuis les blobs exacts du commit",
+        "journal_initial": "monaco-voirie.test.log",
+        "journal_reprise": "monaco-voirie.test.reprise-fixtures.log"
+      }
+    ],
+    "python": {
+      "total": 8,
+      "passes": 8,
+      "echecs": 0,
+      "code": 0,
+      "journal": "visiere-png-python.log"
+    },
+    "tests_modifies_sha256": {
+      "verifications/baikal-decor.test.mjs": "eb87df61fd1ea4bc1db0aaa1b704f019c266a4fadeebeea2e01a11b5bfa681e0",
+      "verifications/physique-cycle-seances.test.mjs": "7d0cacf4d2ed11c6ede0371a0a79d0f2662375042c818a88dadaf0025c4c0cfb"
+    },
+    "duree_secondes": 1146.31,
+    "limites": [
+      "Qualification locale des suites Node et Python; ce reçu ne constitue pas une réception WebGL ni une mesure de FPS matériel.",
+      "Les 10 premiers échecs de fixtures sont conservés; seules ces suites ont été relancées après restauration des fichiers suivis."
+    ]
+  },
+  "bancs_corriges": {
+    "baikal": "Vue explicite sur tous les groupes pendant 90 s ; contrôle du dégagement réel + 4 m, en remplacement des 34 m uniformes. Mouvement, espèces, terrain et saisons restent vérifiés.",
+    "cycle_physx": "Extraction de creerChampsFaune ; les quatre scénarios et les assertions de libération/restauration restent inchangés."
+  },
+  "fixtures": {
+    "fichiers_restaures": 82,
+    "archive_source_commit": "815158c03e039420749cc0cd249da892c0455899",
+    "chaque_blob_compare_au_commit_runtime": true,
+    "contenu_modifie": false
+  },
+  "revue_independante": {
+    "bancs": "favorable",
+    "assertions_desactivees": false,
+    "seuils_performance_modifies": false,
+    "runtime": "Aucun blocage fonctionnel identifié sur simulation, J1/J2, rétroviseurs et réutilisation des objets."
+  },
+  "reception_webgl": {
+    "statut": "indisponible_dans_environnement_local",
+    "images_0287": 0,
+    "cause": "Chromium échoue avant le jeu : process_singleton_posix, socket() failed, Operation not permitted.",
+    "captures_0286_ne_qualifient_pas_0287": true
+  },
+  "reserve_visuelle_fondu": {
+    "statut": "a_examiner_dans_le_rendu_reel",
+    "constat_source": "Au premier alpha < 1, la passe opaque devient FX. Le shader FX ajoute son grain, plafonne alpha à 0.94 et change l’éclairage. Un saut résiduel reste possible ; son importance visuelle n’est pas établie.",
+    "frontiere_metres": {
+      "low": 144,
+      "high": 288
+    },
+    "controle_requis": "Même animal naturel, pose et temps identiques, images à 0.799 puis 0.801 de la portée, jour et nuit ; conserver aussi les captures proches low/high/off.",
+    "moteur_local_modifie": false
+  },
+  "reserve_flux": "Le budget FX déclaré est accru au chargement ; cette réserve logique ne prouve pas une absence ultérieure d’allocation GPU.",
+  "publication": {
+    "depot": "M4D135/bitume",
+    "visibilite": "public",
+    "branche_cible": "codex/bitume-faune-demos-validation-20261121",
+    "statut": "refusee_par_revue_automatique_autorisation",
+    "tentatives_refusees": 2,
+    "code_0287_publie": false,
+    "motif": "La revue automatique ne reconnaît pas d’autorisation explicite de publication de ce candidat vers cette destination dans le tour courant.",
+    "accord_explicite_requis_avant_nouvelle_tentative": true
+  },
+  "prochaine_action": "Après accord de publication, pousser la branche ; le message du commit déclenche les captures faune proche, les démos et la CI. Recevoir le commit exact, inspecter le fondu, puis intégrer sur main après validation.",
+  "limites": [
+    "Aucun FPS Xbox/iOS ou essai de manette physique mesuré.",
+    "Aucune réception WebGL du build 0.2.87 achevée.",
+    "Aucune publication sur main ni déploiement du site dans cette réception."
+  ]
+}

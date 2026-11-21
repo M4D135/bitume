@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-for (const f of ['carene', 'route-des-cimes', 'circuit', 'ecologie', 'saisons', 'botanique', 'vegetation', 'decor', 'ambiance', 'animaux']) require('../src/' + f + '.js');
+for (const f of ['moteur/renderer', 'carene', 'route-des-cimes', 'circuit', 'ecologie', 'saisons', 'botanique', 'vegetation', 'decor', 'ambiance', 'animaux']) require('../src/' + f + '.js');
 const B = globalThis.BITUME, A = B.animaux, NP = 17;
+// Node n'a pas window : enregistrer les mêmes formes par l'API publique utilisée au chargement navigateur.
+for (const forme of A.FORMES.values()) globalThis.FRender.forme(forme.nom, forme.tri);
 let controles = 0;
 const verifier = (nom, f) => { f(); controles++; console.log('ok ' + nom); };
 const c = B.circuit.creer(11, { theme: 'foret', longueur: 4200 });
@@ -104,6 +106,70 @@ verifier('Légère garde les animaux proches dans les budgets', () => {
   assert(sortie.length > 0 && sortie.length <= A.BUDGETS.low.objets);
   assert(sortie.every(o => /loin/.test(o.shape)));
   ctx.qualite = 'off'; sortie.length = 0; A.dessiner(etat, 0, ctx, sortie); assert.equal(sortie.length, 0);
+});
+
+function animalIsole() {
+  const etat = creer(), pose = A.poseAnimal(etat, 0, 0);
+  // Un vrai cerf, avec ses tableaux et son maillage de production, sans les autres
+  // espèces qui brouilleraient le comptage autour de la frontière de portée.
+  etat.nAnimaux = etat.nEntites = 1;
+  const contexte = (distance, qualite, vue = 0) => ({ vue, qualite, camera: {
+    pos: [pose.x + distance, pose.y + 1, pose.z], yaw: -Math.PI / 2, pitch: 0, fov: 70,
+  }, aspect: 16 / 9, hauteur: 720 });
+  return { etat, contexte };
+}
+
+verifier('portées low/high : la silhouette disparaît progressivement dans la vraie passe FX FERRO', () => {
+  for (const [qualite, portee] of [['low', 180], ['high', 360]]) {
+    const { etat, contexte } = animalIsole(), sortie = [], V = etat.vues[0];
+    const opacites = V.opacites, objets = V.objets, taille = objets.length, pack = globalThis.FRender.shared.effectsPacker();
+    let precedente = 1, silhouette;
+    for (const fraction of [.7, .85, .9, .95, .99]) {
+      sortie.length = 0; A.dessiner(etat, 0, contexte(portee * fraction, qualite), sortie);
+      assert.equal(sortie.length, 1, qualite + ' : silhouette encore présente dans le fondu');
+      const o = sortie[0]; silhouette ||= o;
+      assert.strictEqual(o, silhouette, 'même objet réutilisé pendant toute l’approche');
+      assert(o.alpha <= precedente && o.alpha > 0);
+      if (fraction === .7) { assert.equal(o.alpha, 1); assert.equal(o.fx, false); }
+      else {
+        assert(o.alpha < precedente, 'opacité strictement décroissante'); assert.equal(o.fx, true);
+        const lot = pack(sortie, null, contexte(portee * fraction, qualite).camera.pos);
+        assert.equal(lot.length, 16, 'la forme animale entre dans la passe transparente');
+        assert.equal(lot.groups[0].name, o.shape, 'le fondu conserve le maillage animal');
+        assert.equal(lot.values[3], 16, 'silhouette entière, sans masque de fumée au bord');
+        assert.equal(lot.values[15], o.alpha, 'alpha transmis au GPU par le vrai packer');
+      }
+      precedente = o.alpha;
+    }
+    assert(precedente < .01, 'silhouette quasi invisible avant la limite');
+    const poses = A.stats(etat).activite.posesPreparees;
+    for (const distance of [portee, portee + 3, portee + 5]) {
+      sortie.length = 0; A.dessiner(etat, 0, contexte(distance, qualite), sortie); assert.equal(sortie.length, 0);
+    }
+    assert.equal(A.stats(etat).activite.posesPreparees, poses, 'aucune pose après extinction');
+    sortie.length = 0; A.dessiner(etat, 0, contexte(portee * .7, qualite), sortie);
+    assert.strictEqual(sortie[0], silhouette); assert.equal(silhouette.alpha, 1); assert.equal(silhouette.fx, false);
+    assert.equal(silhouette.fxPriority, undefined, 'la réutilisation restaure le rendu opaque');
+    assert.strictEqual(V.opacites, opacites); assert.strictEqual(V.objets, objets); assert.equal(objets.length, taille);
+  }
+});
+
+verifier('fondu : une glace utile garde l’animal et les pools J1/J2 restent indépendants', () => {
+  const { etat, contexte } = animalIsole(), principale = contexte(380, 'high'), miroir = contexte(162, 'low');
+  principale.vuesSecondaires = [miroir];
+  const j1 = [], j2 = [];
+  A.dessiner(etat, 0, principale, j1);
+  assert.equal(j1.length, 1); assert(j1[0].alpha > .49 && j1[0].alpha < .51, 'portée de la glace low respectée');
+  const alphaJ1 = j1[0].alpha;
+  A.dessiner(etat, 0, contexte(40, 'high', 1), j2);
+  assert(j2.length > 0 && j2.every(o => o.alpha === 1 && !o.fx));
+  assert(!j2.includes(j1[0])); assert.equal(j1[0].alpha, alphaJ1, 'J2 ne change pas l’opacité de J1');
+  miroir.camera.pos[0] -= 40; j1.length = 0; A.dessiner(etat, 0, principale, j1);
+  assert(j1.length > 0 && j1.every(o => o.alpha === 1 && !o.fx), 'le champ proche prime sur le champ lointain');
+  miroir.qualite = 'off'; j1.length = 0;
+  const poses = A.stats(etat).activite.posesPreparees;
+  A.dessiner(etat, 0, principale, j1); assert.equal(j1.length, 0);
+  assert.equal(A.stats(etat).activite.posesPreparees, poses, 'une glace coupée ne prépare plus de pose');
 });
 
 verifier('même séquence de vues : simulation déterministe à 30/60/120 images par seconde', () => {

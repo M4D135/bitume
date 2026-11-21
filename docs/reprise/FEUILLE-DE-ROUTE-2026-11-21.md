@@ -9,7 +9,7 @@ nature et de silhouettes animales lointaines sont remplacés par ce périmètre.
 Base observée sur `main` : **0.2.85 / `0e7273c`**, avec neuf circuits
 et leurs nouveaux lieux. [Fiche détaillée et progression](FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md) :
 F1 placement, F2 sommeil hors champ, D1 sélection des plans, D2 recomposition des neuf
-circuits, puis réception et publication. **F1/F2 et D1/D2 préparés en 0.2.86 ; réception CI/visuelle en cours.**
+circuits, puis réception et publication. **F1/F2 et D1/D2 préparés ; les 81 images des circuits .86 sont reçues. Candidat .87 avec fondu de portée en qualification.**
 Larche → Vinadio sera couvert dès son intégration jouable ; les autres chantiers sont conservés.
 
 Les points .79/.80 ci-dessous décrivent les jalons antérieurs ; ils ne remplacent

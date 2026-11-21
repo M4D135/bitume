@@ -1,10 +1,21 @@
 # BITUME — faune proche et démos des circuits
 
-Date : 21 novembre 2026. **État : F1/F2 et D1/D2 préparés dans le candidat 0.2.86 ; réception en cours.**
+Date : 21 novembre 2026. **État : F1/F2 et D1/D2 préparés ; candidat 0.2.87 en réception.**
 Base observée sur `main` : **0.2.85**, commit `0e7273c0361996b9c217e6f1051a9ef9a54b18c7`.
-Demandes publiées dans `7fb5dcc`. Leur implémentation est maintenant construite en 0.2.86,
-avec contrôles ciblés reçus ; CI complète et images restent à recevoir avant livraison.
-[Preuve du candidat](rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json).
+Demandes publiées dans `7fb5dcc`, implémentation initiale dans `815158c` / 0.2.86.
+Les 81 captures des neuf circuits ont été inspectées : route, tracé et lieux cadrés,
+sans caméra dans le terrain ni sujet de nature autonome. La revue a détecté une coupure
+brusque des animaux à la portée. **0.2.87 ajoute un fondu réel avant cette limite**, avec
+réserve du flux transparent dès le chargement. CI complète et images de ce nouveau
+build restent à recevoir avant livraison. Les deux bancs hérités de .86 sont repris
+dans la branche locale `codex/bitume-faune-demos-validation-20261121` : Baïkal vérifie
+le dégagement réel et une population effectivement animée ; le cycle PhysX charge
+la dépendance des champs de vue. Le runtime et son empreinte .87 sont conservés.
+Le push de .87 est bloqué par le contrôle automatique d’autorisation ; le navigateur
+local ne peut pas ouvrir ses sockets. Aucune capture .87 ni CI distante réussie
+n’est annoncée à partir de cette réception locale.
+[Preuve du candidat](rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0287.json).
+[Réception locale .87](rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json) : **203/203 suites Node et 8/8 contrôles Python** reçus, sans seuil assoupli. Les dix premiers échecs de fixtures absentes restent consignés ; leurs reprises réussissent après restauration des 82 fichiers exacts. La transition opaque/FX à 144 m en Légère et 288 m en Fine reste à examiner dans le rendu réel de jour et de nuit.
 
 ## Demandes de David et priorité
 
@@ -77,20 +88,20 @@ servent de base ; le besoin porte sur placement, activité et coût.
 
 ### Couverture des circuits
 
-Les points ci-dessous proviennent des marqueurs .85 ; leurs séquences sont préparées
-et contrôlées numériquement. La réception visuelle reste à faire pour chaque circuit.
+Les points ci-dessous proviennent des marqueurs .85. Les 81 images .86 ont été reçues ;
+la réception du build .87 reste à faire pour chaque circuit.
 
 | Circuit | Point d’intérêt proposé depuis les lieux existants | Réception |
 |---|---|---|
-| Val-Brûlé | Viaduc des Chênes | Captures à recevoir |
-| Port-Sable | Grand Phare du Cap | Captures à recevoir |
-| Haut-Col | Galerie Paravalanche et route en montagne | Captures à recevoir |
-| Lande-Noire | Pont-Arche Noir | Captures à recevoir |
-| Roche-Fauve | Nécropole des Pyramides | Captures à recevoir |
-| Brume-de-Jade | Grand Portail Torii Vermillon | Captures à recevoir |
-| Cap-Séquoia | Grand Pont Suspendu Vermillon | Captures à recevoir |
-| Baïkal | Chapelle aux Bulbes Dorés | Captures à recevoir |
-| Route-des-Cimes | Arche du Col des Cimes | Captures à recevoir |
+| Val-Brûlé | Viaduc des Chênes | .86 reçue ; .87 à recevoir |
+| Port-Sable | Grand Phare du Cap | .86 reçue ; .87 à recevoir |
+| Haut-Col | Galerie Paravalanche et route en montagne | .86 reçue ; .87 à recevoir |
+| Lande-Noire | Pont-Arche Noir | .86 reçue ; .87 à recevoir |
+| Roche-Fauve | Nécropole des Pyramides | .86 reçue ; .87 à recevoir |
+| Brume-de-Jade | Grand Portail Torii Vermillon | .86 reçue ; .87 à recevoir |
+| Cap-Séquoia | Grand Pont Suspendu Vermillon | .86 reçue ; .87 à recevoir |
+| Baïkal | Chapelle aux Bulbes Dorés | .86 reçue ; .87 à recevoir |
+| Route-des-Cimes | Arche du Col des Cimes | .86 reçue ; .87 à recevoir |
 
 **Extension prévue :** ajouter la démo du **sommet du col de Larche → Vinadio**
 lorsque le parcours entre réellement au catalogue. Respecter le sens de descente,
