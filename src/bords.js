@@ -344,7 +344,8 @@
         } else if (d.type === 'rochers' && ra() < .6) {
           // blocs à demi enterrés, de la couleur de la roche du lieu, un peu plus ou un peu moins clairs
           const dd = cote * (w + 2.6 + ra() * 3.6), t = 1.2 + ra() * 1.6, p = pointPlan(f, dd, hauteur(f, dd, w) - .3), a = ra() * 6.28, e = .85 + ra() * .3;
-          const roc = { shape: 'bevel', collision: 'roche', p: [p[0], p[1] + t * .3, p[2]], s: [t * 1.5, t, t * 1.15], r: [0, a, 0], mat: 9, color: roche.map(v => Math.min(1, v * e)) };
+          const formeRoc = outils.organique && B.lieux ? B.lieux.rocherPour(c.theme, (c.graine || 1) ^ Math.imul(i, 73856093)) : 'bevel';
+          const roc = { shape: formeRoc, collision: 'roche', p: [p[0], p[1] + t * .3, p[2]], s: [t * 1.5, t, t * 1.15], r: [0, a, 0], mat: 9, color: roche.map(v => Math.min(1, v * e)) };
           objets.push(roc); loin.push(roc);
         } else if (d.type === 'fosse') {
           // fossé d'eau juste au-delà de la limite (w + 2,5) : on ne creuse pas le terrain ; une eau sombre affleure le

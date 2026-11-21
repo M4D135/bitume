@@ -5,6 +5,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virag
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.baikal) require('./baikal.js');
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.batiments) require('./batiments.js');
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimesDecor) require('./route-des-cimes-decor.js');
+if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux) require('./lieux.js');
 (function (B) {
   'use strict';
 
@@ -169,21 +170,34 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
       indices[curseurs[k]++] = i;
     }
     // Plus proche échantillon et hauteur pondérée (inverse de la distance à la puissance 8 : continue, et exacte sur l'axe).
-    function interroger(x, z, rayon) {
+    // sansHauteur=true évite le calcul 1/(d²+1)^4 dans les 50 000 tests de placement d'arbres/rochers qui n'utilisent que i et d.
+    function interroger(x, z, rayon, sansHauteur = false) {
       const cx = Math.floor(x / T), cz = Math.floor(z / T), r = Math.ceil(rayon / T);
-      let meilleur = -1, d2min = Infinity, somme = 0, poids = 0;
-      // Les cases hors des bornes sont vides. Garder exactement l’ordre a/b/i
-      // conserve la somme pondérée et les départages, donc la géométrie produite.
       const amin = Math.max(cx - r, x0), amax = Math.min(cx + r, x1);
       const bmin = Math.max(cz - r, z0), bmax = Math.min(cz + r, z1);
-      for (let a = amin; a <= amax && bmin <= bmax; a++) {
+      if (amin > amax || bmin > bmax) return { i: -1, d: Infinity, y: 0 };
+      let meilleur = -1, d2min = Infinity, somme = 0, poids = 0;
+      const cxArr = c.x, czArr = c.z, cyArr = c.y;
+      // Les cases hors des bornes sont vides. Garder exactement l’ordre a/b/i
+      // conserve la somme pondérée et les départages, donc la géométrie produite.
+      if (sansHauteur) {
+        for (let a = amin; a <= amax; a++) {
+          const ligne = (a - x0) * nz, fin = debuts[ligne + bmax - z0 + 1];
+          for (let k = debuts[ligne + bmin - z0]; k < fin; k++) {
+            const i = indices[k], dx = cxArr[i] - x, dz = czArr[i] - z, d2 = dx * dx + dz * dz;
+            if (d2 < d2min) { d2min = d2; meilleur = i; }
+          }
+        }
+        return { i: meilleur, d: Math.sqrt(d2min), y: 0 };
+      }
+      for (let a = amin; a <= amax; a++) {
         const ligne = (a - x0) * nz, fin = debuts[ligne + bmax - z0 + 1];
         for (let k = debuts[ligne + bmin - z0]; k < fin; k++) {
           const i = indices[k];
-          const dx = c.x[i] - x, dz = c.z[i] - z, d2 = dx * dx + dz * dz;
+          const dx = cxArr[i] - x, dz = czArr[i] - z, d2 = dx * dx + dz * dz;
           if (d2 < d2min) { d2min = d2; meilleur = i; }
-          const q = d2 + 1, w = 1 / (q * q * q * q);
-          somme += w * c.y[i]; poids += w;
+          const q = d2 + 1, q2 = q * q, w = 1 / (q2 * q2);
+          somme += w * cyArr[i]; poids += w;
         }
       }
       return { i: meilleur, d: Math.sqrt(d2min), y: poids > 0 ? somme / poids : 0 };
@@ -198,6 +212,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
   function sommet(n, p, no, mat, col) {
     // Les sommets ne sont relus qu'une fois la nappe finie : leur stockage Float32 est déjà celui
     // de la sortie. Les bornes gardent les Number d'origine, sans arrondi intermédiaire.
+    if (n.ns + 13 > n.s.length) { const x = new Float32Array(Math.max(n.s.length * 2, n.ns + 13)); x.set(n.s); n.s = x; }
     const k = n.ns, s = n.s; n.ns += 13;
     s[k] = p[0]; s[k + 1] = p[1]; s[k + 2] = p[2];
     s[k + 3] = no[0]; s[k + 4] = no[1]; s[k + 5] = no[2];
@@ -313,7 +328,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
   }
 
   // Terrain : grille autour du circuit, raccordée à la chaussée par une pondération continue des hauteurs de l'axe.
-  function nappesTerrain(c, th, interroger, g, ecologie = null) {
+  function nappesTerrain(c, th, interroger, g, ecologie = null, organique = false) {
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
     for (let i = 0; i < c.n; i++) { x0 = Math.min(x0, c.x[i]); x1 = Math.max(x1, c.x[i]); z0 = Math.min(z0, c.z[i]); z1 = Math.max(z1, c.z[i]); }
     const marge = th.marge, pasT = 24;
@@ -404,42 +419,91 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
     }
     const liste = [], TUILE = 14, habitat = {};
     const couleur = (h, d, ny, x, z) => {
-      const tache = fbm(x / 140, z / 140, g + 3, 3);
-      let col = melange(th.herbe, th.terre, lisse(.45, .8, tache) * .7), mat = 8;
-      if (th.volcanique) {
-        col = melange(th.terre, th.roche, tache);
-        if (ny < .78) mat = 9;
-        else if (!ecologie) col = melange(col, th.herbe, lisse(.48, .72, tache));
+      // En mode organique : déformation douce de domaine (domain warping) pour casser toute régularité
+      // de grille et fondre les transitions sol/roche/sable/neige sans cassure triangulaire ni bande carrée.
+      let wx = x, wz = z;
+      if (organique) {
+        wx = x + (fbm(x / 185, z / 185, g + 613, 2) - .5) * 76;
+        wz = z + (fbm(x / 185 + 9.3, z / 185 - 4.7, g + 617, 2) - .5) * 76;
       }
-      if (th.eau !== undefined && h < th.eau + 2.2) { col = th.sable; }
+      const tache = fbm(wx / 140, wz / 140, g + 3, 3);
+      const tacheFine = organique ? fbm(wx / 52, wz / 52, g + 631, 2) : .5;
+      let col = melange(th.herbe, th.terre, lisse(.45, .8, tache) * .7), mat = 8;
+      if (organique && !th.aride && !th.volcanique) {
+        col = melange(col, th.herbeClaire || th.herbe, (tacheFine - .5) * .36 + .18);
+      }
+      if (th.volcanique) {
+        col = melange(th.terre, th.roche, organique ? lisse(.22, .82, tache * .72 + tacheFine * .28) : tache);
+        if (ny < .78) mat = 9;
+        else if (!ecologie) col = melange(col, th.herbe, lisse(.46, .76, tache * .78 + tacheFine * .22));
+      }
+      if (th.eau !== undefined) {
+        if (organique) {
+          const plage = 1 - lisse(th.eau + .8, th.eau + 4.4 + (tacheFine - .5) * 2.2, h);
+          if (plage > 0) col = melange(col, th.sable, plage);
+        } else if (h < th.eau + 2.2) { col = th.sable; }
+      }
       if (th.montagnes) {
-        if (ny < .8 || h > 120) { col = melange(th.roche, th.roche.map(v => v * .8), tache); mat = 9; }
-        if (h > 250 + 40 * tache && ny > .6) { col = th.neige; mat = 3; }
+        if (organique) {
+          const pRoche = Math.max(1 - lisse(.70, .88, ny), lisse(95, 148 + (tacheFine - .5) * 32, h));
+          if (pRoche > 0) col = melange(col, melange(th.roche, th.roche.map(v => v * .78), tache * .7 + tacheFine * .3), pRoche);
+          if (pRoche > .55) mat = 9;
+          const pNeige = lisse(232 + 44 * tache, 278 + 44 * tache, h) * lisse(.52, .72, ny);
+          if (pNeige > 0) col = melange(col, th.neige, pNeige);
+          if (pNeige > .65) mat = 3;
+        } else {
+          if (ny < .8 || h > 120) { col = melange(th.roche, th.roche.map(v => v * .8), tache); mat = 9; }
+          if (h > 250 + 40 * tache && ny > .6) { col = th.neige; mat = 3; }
+        }
+      } else if (organique) {
+        const pPente = 1 - lisse(.62, .80, ny);
+        if (pPente > 0) col = melange(col, th.terre, pPente);
       } else if (ny < .7) { col = th.terre; }
       if (th.aride) {
-        const strate = .5 + .5 * Math.sin(h * .43 + bruit(x / 370, z / 370, g + 63) * 2.4);
+        const strate = .5 + .5 * Math.sin(h * .43 + bruit(wx / 370, wz / 370, g + 63) * 2.4);
         const gres = melange(th.roche, th.terre, .24 + .66 * strate);
-        col = melange(gres, th.sable, lisse(.54, .93, ny) * (.40 + .48 * tache));
+        const ondes = organique ? .88 + .22 * tacheFine : 1;
+        col = melange(gres, th.sable, lisse(.54, .93, ny) * (.40 + .48 * tache)).map(v => Math.min(1, v * ondes));
         mat = ny < .82 ? 9 : 8;
       }
       if (th.karstique) {
         // Calcaire clair sur les parois, terrasses jade au fond ; les motifs restent dans les couleurs du sol.
-        const bandes = .5 + .5 * Math.sin(h * .84 + bruit(x / 310, z / 310, g + 171) * 2.8);
+        const bandes = .5 + .5 * Math.sin(h * .84 + bruit(wx / 310, wz / 310, g + 171) * 2.8);
         col = melange(th.herbe, th.herbeClaire, .16 + .64 * bandes);
-        if (ny < .74) {
+        if (organique) {
+          const pParoi = 1 - lisse(.66, .84, ny);
+          if (pParoi > 0) {
+            const fissures = fbm(wx / 65, wz / 65, g + 179, 3);
+            col = melange(col, melange(th.roche, [.28, .36, .31], .20 + .48 * fissures), pParoi);
+            if (pParoi > .55) mat = 9;
+          }
+        } else if (ny < .74) {
           const fissures = fbm(x / 65, z / 65, g + 179, 3);
           col = melange(th.roche, [.28, .36, .31], .20 + .48 * fissures); mat = 9;
         }
       }
       if (th.pacifique) {
-        const strates = .5 + .5 * Math.sin(h * .35 + bruit(x / 230, z / 230, g + 241) * 2.6);
-        if (ny < .84 || h < th.eau + 5) {
-          col = melange(th.roche, [.22, .24, .23], .18 + .55 * strates); mat = 9;
-        } else col = melange(th.herbe, th.herbeClaire, .30 + .56 * tache);
+        const strates = .5 + .5 * Math.sin(h * .35 + bruit(wx / 230, wz / 230, g + 241) * 2.6);
+        const colRoche = melange(th.roche, [.22, .24, .23], .18 + .55 * strates);
+        const colHerbe = melange(th.herbe, th.herbeClaire, .30 + .56 * tache);
+        if (organique) {
+          const pFalaise = Math.max(1 - lisse(.74, .90, ny), 1 - lisse(th.eau + 2, th.eau + 8, h));
+          col = melange(colHerbe, colRoche, pFalaise);
+          if (pFalaise > .55) mat = 9;
+        } else if (ny < .84 || h < th.eau + 5) {
+          col = colRoche; mat = 9;
+        } else col = colHerbe;
       }
       if (paysageBaikal) {
         const rive = B.baikal.riveRocheuse(paysageBaikal, x, z);
-        if ((rive > .15 && d > 55) || ny < .80) {
+        if (organique) {
+          const pRive = Math.max(lisse(.08, .28, rive) * lisse(42, 68, d), 1 - lisse(.72, .88, ny));
+          if (pRive > 0) {
+            const strates = .5 + .5 * Math.sin(h * .56 + bruit(wx / 200, wz / 200, g + 449));
+            col = melange(col, melange(th.roche, [.24, .31, .30], .12 + .42 * strates), pRive);
+            if (pRive > .55) mat = 9;
+          }
+        } else if ((rive > .15 && d > 55) || ny < .80) {
           const strates = .5 + .5 * Math.sin(h * .56 + bruit(x / 200, z / 200, g + 449));
           col = melange(th.roche, [.24, .31, .30], .12 + .42 * strates); mat = 9;
         }
@@ -450,7 +514,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
       return [mat, col];
     };
     for (let tj = 0; tj < nz - 1; tj += TUILE) for (let ti = 0; ti < nx - 1; ti += TUILE) {
-      const nap = nappe((Math.min(nx - 1, ti + TUILE) - ti + 1) * (Math.min(nz - 1, tj + TUILE) - tj + 1)), id = new Map();
+      const nap = nappe((Math.min(nx - 1, ti + TUILE) - ti + 1) * (Math.min(nz - 1, tj + TUILE) - tj + 1)), id = new Map(), idMat = organique ? new Map() : null;
       const prendre = (i, j) => {
         const cle = j * nx + i; if (id.has(cle)) return id.get(cle);
         const x = x0 + i * pasT, z = z0 + j * pasT, h = H[cle];
@@ -460,11 +524,33 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
         const [mat, col] = couleur(h, D[cle], no[1], x, z);
         const k = sommet(nap, [x, h, z], no, mat, col); id.set(cle, k); return k;
       };
+      // En mode organique : un même triangle n'interpole jamais deux indices de matière (évite que
+      // 23=roche ↔ 25=sol passe par 24=métal peint au milieu des triangles sur les pentes).
+      const avecMat = (v, m) => {
+        const off = v * 13;
+        if (nap.s[off + 9] === m) return v;
+        const cle = v * 32 + m;
+        let k = idMat.get(cle);
+        if (k === undefined) {
+          k = sommet(nap, [nap.s[off], nap.s[off + 1], nap.s[off + 2]],
+            [nap.s[off + 3], nap.s[off + 4], nap.s[off + 5]], m,
+            [nap.s[off + 10], nap.s[off + 11], nap.s[off + 12]]);
+          idMat.set(cle, k);
+        }
+        return k;
+      };
+      const emettre = (v0, v1, v2) => {
+        if (!organique) { nap.i.push(v0, v1, v2); return; }
+        const m0 = nap.s[v0 * 13 + 9], m1 = nap.s[v1 * 13 + 9], m2 = nap.s[v2 * 13 + 9];
+        if (m0 === m1 && m1 === m2) { nap.i.push(v0, v1, v2); return; }
+        const m = m0 === m1 || m0 === m2 ? m0 : m1 === m2 ? m1 : m0;
+        nap.i.push(avecMat(v0, m), avecMat(v1, m), avecMat(v2, m));
+      };
       for (let j = tj; j < Math.min(nz - 1, tj + TUILE); j++) for (let i = ti; i < Math.min(nx - 1, ti + TUILE); i++) {
         // Une case entièrement sous la chaussée ou ses accotements reste invisible : on la saute.
         if (D[j * nx + i] < 18 && D[j * nx + i + 1] < 18 && D[(j + 1) * nx + i] < 18 && D[(j + 1) * nx + i + 1] < 18) continue;
         const a = prendre(i, j), b = prendre(i + 1, j), cc = prendre(i + 1, j + 1), d = prendre(i, j + 1);
-        nap.i.push(a, cc, b, a, d, cc);
+        emettre(a, cc, b); emettre(a, d, cc);
       }
       if (nap.i.length) {
         const fini = finir(nap), herbeTriangles = [];
@@ -1058,6 +1144,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
   function construire(c, options = {}) {
     const th = Object.assign({}, THEMES[c.theme] || THEMES.foret), g = (c.graine * 7919 + 13) >>> 0, r = alea(g);
     const qualite = normaliserQualite(options.qualite);
+    const organique = options.organique === true && !!B.lieux;
     const ecologie = B.ecologie ? B.ecologie.creer(c.graine, c.theme) : null;
     const saison = B.saisons ? B.saisons.profil(options.saison, c.theme) : null;
     if (c.theme === 'foret' && options.matieres !== false) th.matieres = MATIERES_PILOTES;
@@ -1074,8 +1161,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
     // Le repli false sert à relire l'oracle visuel historique, sans changer les empreintes de référence.
     const reperes = options.reperesVirages !== false && B.virages ? preparerReperes(c) : null;
     let tunnelLampes = null;   // positions des lampes du tunnel : le jeu en fait des lumières près de la caméra
-    const nappes = nappesRoute(c, th, lim, qualite !== 'low', qualite === 'low' ? null : ecologie, saison, reperes);
-    const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie);
+    const nappes = nappesRoute(c, th, lim, qualite !== 'low' || options.organique === true, qualite === 'low' ? null : ecologie, saison, reperes);
+    const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie, options.organique === true);
     const maisonsBaikal = terrain.paysageBaikal ? B.baikal.habitations(c, terrain, interroger, terrain.paysageBaikal) : null;
     // Hasard architectural séparé ; le repli sert seulement à relire l'oracle historique du décor.
     const architecture = options.batiments !== false && B.batiments ? { maisons: [], stands: [] } : null;
@@ -1105,7 +1192,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
       let l = groupes.get(cle); if (!l) groupes.set(cle, l = { objets: [], loin: [], lointain: i < 0 }); return l;
     };
     const ajouter = (objets, loin, x, z) => {
-      const q = interroger(x, z, 300), proche = q.i >= 0 && q.d < 330, l = lotDe(x, z, proche ? q.i : -1);
+      const q = interroger(x, z, 300, true), proche = q.i >= 0 && q.d < 330, l = lotDe(x, z, proche ? q.i : -1);
       for (const o of objets) l.objets.push(o);
       for (const o of loin) l.loin.push(o);
     };
@@ -1260,9 +1347,13 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
         const f = cadreOuvrage(c, i), y = hauteurRoute(f, 0, w), objets = [], h = k => hache(i, k, g + 101);
         if (i >= iD + 3 && i <= iF - 3) {
           const haut = Hc - .5 + 3 * h(1) - (H + .7);
-          objets.push({ shape: 'bevel', p: pointPlan(f, (h(2) - .5) * 4, y + H + .7 + haut / 2), s: [12 + 4 * h(3), haut, 2 * M + 8], r: angles(...base(f.t, [0, 1, 0])), mat: 9, color: ROCHES[((Math.floor(i) % 3) + 3) % 3] });
+          const formeCrete = organique ? B.lieux.rocherPour(c.theme, (g ^ Math.imul(i | 0, 73856093)) >>> 0) : 'bevel';
+          objets.push({ shape: formeCrete, p: pointPlan(f, (h(2) - .5) * 4, y + H + .7 + haut / 2), s: [12 + 4 * h(3), haut, 2 * M + 8], r: angles(...base(f.t, [0, 1, 0])), mat: 9, color: ROCHES[((Math.floor(i) % 3) + 3) % 3] });
           // un piton par-dessus, de travers, pour casser la ligne de crête
-          if (h(4) > .45) objets.push({ shape: 'octa', p: pointPlan(f, (h(5) - .5) * 16, y + Hc + 1.5 + 2 * h(6)), s: [9 + 6 * h(7), 5 + 6 * h(8), 8 + 6 * h(9)], r: [h(11) * .5, h(12) * 6.3, h(13) * .5], mat: 9, color: ROCHES[((Math.floor(i + 1) % 3) + 3) % 3] });
+          if (h(4) > .45) {
+            const formePiton = organique ? B.lieux.rocherPour(c.theme, (g ^ Math.imul(i | 0, 19349663)) >>> 0) : 'octa';
+            objets.push({ shape: formePiton, p: pointPlan(f, (h(5) - .5) * 16, y + Hc + 1.5 + 2 * h(6)), s: [9 + 6 * h(7), 5 + 6 * h(8), 8 + 6 * h(9)], r: [h(11) * .5, h(12) * 6.3, h(13) * .5], mat: 9, color: ROCHES[((Math.floor(i + 1) % 3) + 3) % 3] });
+          }
         }
         for (const cote of [-1, 1]) {
           let lat = M + .6;
@@ -1276,7 +1367,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
             const lacet = k ? (h(30 + k) - .5) * .7 : 0, penche = k ? (h(40 + k) - .5) * .3 : 0;
             const av = [Math.cos(f.a + lacet), 0, Math.sin(f.a + lacet)], dessus = [f.r[0] * penche * cote, 1, f.r[2] * penche * cote];
             const pointu = k >= 2 && h(60 + k) > .5;   // dehors, des blocs pointus pour une silhouette de rocher
-            objets.push({ shape: pointu ? 'octa' : 'bevel', p: pointPlan(f, cote * centre, y - 2 + (haut + 2) / 2 + (pointu ? haut * .2 : 0)), s: [11 + 5 * h(50 + k), (haut + 2) * (pointu ? 1.5 : 1), large * (pointu ? 1.3 : 1)], r: angles(...base(av, dessus)), mat: 9, color: ROCHES[((Math.floor(i + k + (cote > 0)) % 3) + 3) % 3] });
+            const formeFlanc = organique ? B.lieux.rocherPour(c.theme, (g ^ Math.imul((i | 0) * 13 + k * 7 + (cote > 0 ? 1 : 0), 83492791)) >>> 0) : (pointu ? 'octa' : 'bevel');
+            objets.push({ shape: formeFlanc, p: pointPlan(f, cote * centre, y - 2 + (haut + 2) / 2 + (pointu ? haut * .2 : 0)), s: [11 + 5 * h(50 + k), (haut + 2) * (pointu ? 1.5 : 1), large * (pointu ? 1.3 : 1)], r: angles(...base(av, dessus)), mat: 9, color: ROCHES[((Math.floor(i + k + (cote > 0)) % 3) + 3) % 3] });
           }
         }
         if (objets.length) {
@@ -1289,10 +1381,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
         const f = cadreOuvrage(c, i), y = hauteurRoute(f, 0, w), rot = capRot(f.a), objets = [];
         const devant = (d, h) => { const p = pointPlan(f, d, y + h); return [p[0] + f.t[0] * sens * 1.75, p[1], p[2] + f.t[2] * sens * 1.75]; };
         for (const cote of [-1, 1]) {
-          objets.push({ shape: 'bevel', p: pointPlan(f, cote * (M + 7.3), y + 7.5), s: [3, 15.5, 14], r: rot, mat: 9, color: ROCHE });
+          objets.push({ shape: organique ? B.lieux.rocherPour(c.theme, (g ^ (sens > 0 ? 17 : 31) ^ (cote > 0 ? 5 : 11)) >>> 0) : 'bevel', p: pointPlan(f, cote * (M + 7.3), y + 7.5), s: [organique ? 7.5 : 3, 15.5, 14], r: rot, mat: 9, color: ROCHE });
           objets.push({ shape: 'box', p: devant(cote * (M + .4), H / 2 - .05), s: [.5, H + .1, .8], r: rot, mat: 3, color: BETON });
         }
-        objets.push({ shape: 'bevel', p: pointPlan(f, 0, y + H + 4.5), s: [3, 7, 2 * M + 28], r: rot, mat: 9, color: ROCHE2 });
+        objets.push({ shape: organique ? B.lieux.rocherPour(c.theme, (g ^ (sens > 0 ? 53 : 71)) >>> 0) : 'bevel', p: pointPlan(f, 0, y + H + 4.5), s: [organique ? 7.5 : 3, 7, 2 * M + 28], r: rot, mat: 9, color: ROCHE2 });
         objets.push({ shape: 'box', p: devant(0, H + .8), s: [.5, 1.6, 2 * M + 2.4], r: rot, mat: 3, color: BETON });
         for (const o of objets) marquerSolide(o, 'portail-tunnel');
         ajouter(objets, objets.slice(), f.x, f.z);
@@ -1489,7 +1581,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
           const t = hache(i * 3 + essai, cote + 5, g + 57), d = 40 + t * 150;
           const glisse = (hache(i, cote + essai + 7, g + 71) - .5) * 12;
           const p = pointPlan(f, cote * d, 0), jx = p[0] + f.t[0] * glisse, jz = p[2] + f.t[2] * glisse;
-          const q = interroger(jx, jz, 120);
+          const q = interroger(jx, jz, 120, true);
           const dist = q.i < 0 ? 999 : q.d;
           if (dist < 30 || (q.i >= 0 && dist < 48 && sousTunnel(q.i))) continue;
           if (q.i >= 0 && Math.abs(B.circuit.ecart(c, 0, q.i * c.pas)) < 320 && dist < 90) continue;
@@ -1507,7 +1599,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
     const [bx0, bz0, bx1, bz1] = terrain.bornes, PAS_A = 11;
     for (let z = bz0 + 40; z < bz1 - 40 && nombre < MAX; z += PAS_A) for (let x = bx0 + 40; x < bx1 - 40 && nombre < MAX; x += PAS_A) {
       const jx = x + (hache(x, z, g) - .5) * PAS_A * .9, jz = z + (hache(z, x, g + 1) - .5) * PAS_A * .9;
-      const q = interroger(jx, jz, 120);
+      const q = interroger(jx, jz, 120, true);
       const dist = q.i < 0 ? 999 : q.d;
       if (dist < 30 || dist > 460 || (q.i >= 0 && dist < 48 && sousTunnel(q.i))) continue;
       const tache = fbm(jx / 210, jz / 210, g + 21, 3);
@@ -1575,7 +1667,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
           bas = Math.min(bas, terrain.sol(x + dx * Math.cos(a) + dz * Math.sin(a), z - dx * Math.sin(a) + dz * Math.cos(a)) - .4);
         }
         if (bas + h < th.eau + .6) continue;
-        const objets = [{ shape: 'bevel', collision: 'roche', p: [x, bas + h * .5, z], s: [largeur, h, profondeur], r: [0, a, 0], mat: 9, color: varier(th.roche, rocheR, .35) }];
+        const formePac = organique ? B.lieux.rocherPour('pacifique', (g ^ Math.imul(k + 1, 997)) >>> 0) : 'bevel';
+        const objets = [{ shape: formePac, collision: 'roche', p: [x, bas + h * .5, z], s: [largeur, h, profondeur], r: [0, a, 0], mat: 9, color: varier(th.roche, rocheR, .35) }];
         ajouter(objets, objets, x, z);
       }
     }
@@ -1614,7 +1707,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
       const x = bx0 + r() * (bx1 - bx0), z = bz0 + r() * (bz1 - bz0), q = interroger(x, z, 200);
       if (q.i >= 0 && q.d < 34) continue;
       const y = terrain.sol(x, z), t = 2 + r() * 7;
-      ajouter([{ shape: r() < .5 ? 'octa' : 'sphere', p: [x, y + t * .2, z], s: [t * (1 + r()), t, t * (1 + r())], r: [r(), r() * 6, r()], mat: 9, color: th.roche }], [], x, z);
+      const fM = r() < .5 ? 'octa' : 'sphere';
+      const shapeM = organique ? B.lieux.rocherPour('montagne', (g ^ Math.imul(k + 1, 1319)) >>> 0) : fM;
+      ajouter([{ shape: shapeM, p: [x, y + t * .2, z], s: [t * (1 + r()), t, t * (1 + r())], r: [r(), r() * 6, r()], mat: 9, color: th.roche }], [], x, z);
     }
     // Basalte en poches irrégulières : silhouettes conservées au loin, une seule construction par circuit.
     if (th.volcanique) {
@@ -1628,15 +1723,23 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
           // Vérifier aussi l'autre côté d'une épingle et les stands, pas seulement le décalage du candidat.
           if (q.i >= 0 && (q.d < 35 + largeur || (Math.abs(B.circuit.ecart(c, 0, q.i * c.pas)) < 330 && q.d < 100))) continue;
           const y = terrain.sol(x, z), a = rocheR() * Math.PI, couleur = varier(th.roche, rocheR, .5), mousse = .38 + rocheR() * .4;
-          objets.push({ shape: 'box', collision: 'roche', p: [x, y + hauteur * .44, z], s: [largeur, hauteur, largeur * .78], r: [0, a, 0], mat: 9, color: couleur });
-          // Un sommet bas, moussu ou enneigé, laisse les flancs de basalte noirs même en hiver.
-          objets.push({ shape: 'box', p: [x, y + hauteur * .94 + .035, z], s: [largeur, .07, largeur * .78], r: [0, a, 0], mat: saison && saison.neige ? 3 : 8,
-            color: saison && saison.neige ? [.90, .93, .96] : melange(couleur, th.herbe, mousse) });
+          if (organique) {
+            const formeV = B.lieux.rocherPour('islande', (g ^ Math.imul(k * 7 + j + 1, 2654435761)) >>> 0);
+            const lOrg = largeur * 1.35, hOrg = hauteur * .82;
+            objets.push({ shape: formeV, collision: 'roche', p: [x, y + hOrg * .38, z], s: [lOrg, hOrg, lOrg * .86], r: [0, a, 0], mat: 9, color: couleur });
+            objets.push({ shape: 'bitume-lieu-rocher-volcan', p: [x, y + hOrg * .68, z], s: [lOrg * .82, hOrg * .32, lOrg * .72], r: [0, a + .4, 0], mat: saison && saison.neige ? 3 : 8,
+              color: saison && saison.neige ? [.90, .93, .96] : melange(couleur, th.herbe, mousse) });
+          } else {
+            objets.push({ shape: 'box', collision: 'roche', p: [x, y + hauteur * .44, z], s: [largeur, hauteur, largeur * .78], r: [0, a, 0], mat: 9, color: couleur });
+            // Un sommet bas, moussu ou enneigé, laisse les flancs de basalte noirs même en hiver.
+            objets.push({ shape: 'box', p: [x, y + hauteur * .94 + .035, z], s: [largeur, .07, largeur * .78], r: [0, a, 0], mat: saison && saison.neige ? 3 : 8,
+              color: saison && saison.neige ? [.90, .93, .96] : melange(couleur, th.herbe, mousse) });
+          }
         }
         if (objets.length) ajouter(objets, objets, p[0], p[2]);
       }
     }
-    // Grès érodé en poches, avec des bancs de roche superposés plutôt que des colonnes volcaniques.
+    // Grès érodé en poches : en mode organique, pyramides du désert et galets/dunes arrondis (zéro bloc carré).
     if (th.aride) {
       const rocheR = alea(g ^ 0xa5139d6b);
       for (let k = 0; k < 64; k++) {
@@ -1653,13 +1756,26 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
           for (const dx of [-largeur / 2, largeur / 2]) for (const dz of [-profondeur / 2, profondeur / 2]) {
             bas = Math.min(bas, terrain.sol(x + dx * Math.cos(a) + dz * Math.sin(a), z - dx * Math.sin(a) + dz * Math.cos(a)) - .25);
           }
-          for (let etage = 0; etage < niveaux; etage++) {
-            const taille = 1 - etage * .16, couleur = melange(th.roche, etage % 2 ? th.sable : th.terre, .38 + rocheR() * .25);
-            objets.push({ shape: 'box', collision: 'roche', p: [x, bas + h * (etage + .5), z], s: [largeur * taille, h, profondeur * taille], r: [0, a, 0], mat: 9, color: couleur });
+          if (organique) {
+            const gr = (g ^ Math.imul(k * 11 + j + 1, 1597334677)) >>> 0;
+            const estPyramide = (k % 3 === 0) && j === 0;
+            const couleur = melange(th.roche, estPyramide ? th.sable : th.terre, .42 + rocheR() * .25);
+            if (estPyramide) {
+              const bPyr = largeur * 1.55, hPyr = bPyr * .68;
+              objets.push({ shape: B.lieux.pyramidePour(gr), collision: 'roche', p: [x, bas + hPyr * .5 - .3, z], s: [bPyr, hPyr, bPyr], r: [0, a, 0], mat: 9, color: melange(th.sable, th.roche, .28) });
+            } else {
+              const hOrg = h * niveaux * .78, formeD = B.lieux.rocherPour('desert', gr);
+              objets.push({ shape: formeD, collision: 'roche', p: [x, bas + hOrg * .46, z], s: [largeur * 1.15, hOrg, profondeur * 1.15], r: [0, a, 0], mat: 9, color: couleur });
+            }
+          } else {
+            for (let etage = 0; etage < niveaux; etage++) {
+              const taille = 1 - etage * .16, couleur = melange(th.roche, etage % 2 ? th.sable : th.terre, .38 + rocheR() * .25);
+              objets.push({ shape: 'box', collision: 'roche', p: [x, bas + h * (etage + .5), z], s: [largeur * taille, h, profondeur * taille], r: [0, a, 0], mat: 9, color: couleur });
+            }
+            const sommet = 1 - (niveaux - 1) * .16;
+            objets.push({ shape: 'box', p: [x, bas + h * niveaux + .035, z], s: [largeur * sommet, .07, profondeur * sommet], r: [0, a, 0], mat: saison && saison.neige ? 3 : 9,
+              color: saison && saison.neige ? [.90, .93, .96] : th.sable });
           }
-          const sommet = 1 - (niveaux - 1) * .16;
-          objets.push({ shape: 'box', p: [x, bas + h * niveaux + .035, z], s: [largeur * sommet, .07, profondeur * sommet], r: [0, a, 0], mat: saison && saison.neige ? 3 : 9,
-            color: saison && saison.neige ? [.90, .93, .96] : th.sable });
         }
         if (objets.length) ajouter(objets, objets, p[0], p[2]);
       }
@@ -1682,8 +1798,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
             bas = Math.min(bas, terrain.sol(x + dx * Math.cos(a) + dz * Math.sin(a), z - dx * Math.sin(a) + dz * Math.cos(a)) - .6);
           }
           // Pieds enfouis sous toute leur emprise ; la boîte de collision englobe aussi le sommet végétalisé.
-          objets.push({ shape: 'bevel', collision: 'roche', p: [x, bas + h * .5, z], s: [largeur, h, profondeur], r: [0, a, 0], mat: 9, color: couleur });
-          objets.push({ shape: 'bevel', p: [x + largeur * .05, bas + h * .87, z], s: [largeur * .72, h * .24, profondeur * .69], r: [0, a, 0], mat: saison && saison.neige ? 3 : 8,
+          const formeK = organique ? 'bitume-lieu-rocher-calcaire' : 'bevel';
+          const formeCap = organique ? 'bitume-lieu-galet-b' : 'bevel';
+          objets.push({ shape: formeK, collision: 'roche', p: [x, bas + h * .5, z], s: [largeur * (organique ? 1.25 : 1), h, profondeur * (organique ? 1.25 : 1)], r: [0, a, 0], mat: 9, color: couleur });
+          objets.push({ shape: formeCap, p: [x + largeur * .05, bas + h * .87, z], s: [largeur * .72, h * .24, profondeur * .69], r: [0, a, 0], mat: saison && saison.neige ? 3 : 8,
             color: saison && saison.neige ? [.90, .93, .96] : th.herbe });
         }
         if (objets.length) ajouter(objets, objets, p[0], p[2]);
@@ -1709,7 +1827,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
 
     // Bords de route (lot 22F) : posés après tout le reste, dans des lots à eux (clé préfixée « b ») ajoutés à la fin :
     // les lots et les solides historiques gardent leur contenu, leur ordre et leurs identifiants.
-    if (planBords) B.bords.poser(c, planBords, { limites: lim, qualite,
+    if (planBords) B.bords.poser(c, planBords, { limites: lim, qualite, organique,
       saisonArbre: (objets, loin, x, z, essence) => saisonArbre(objets, loin, x, z, essence, terrain.sol(x, z)),
       ajouter: (objets, loin, x, z) => {
       const q = interroger(x, z, 300), proche = q.i >= 0 && q.d < 330;
@@ -1727,6 +1845,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
     });
 
     const lieuxCimes = B.cimesDecor && B.cimesDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter });
+    const lieuxEmblematiques = organique ? B.lieux.poser(c, { terrain, limites: lim, interroger, qualite, saison, ajouter, th }) : null;
 
     // Finition des lots : sphère englobante et portée.
     const lots = [];
@@ -1745,7 +1864,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
       for (const o of l.objets) { const s = o.s || [1, 1, 1]; rayon = Math.max(rayon, Math.hypot(o.p[0] - mx, o.p[1] - my, o.p[2] - mz) + Math.hypot(s[0], s[1], s[2]) / 2); }
       // Aucune portée propre : un lot se dessine jusqu'au plan lointain de la caméra, la brume fait la limite (un massif
       // qui surgit à 1 900 m se voit). La bascule vers la version allégée se fait là où un tronc tient en un pixel.
-      lots.push({ objets: l.objets, loin: l.loin, centre: [mx, my, mz], rayon, portee: Infinity, bascule: l.bascule || (l.lointain ? 900 : 520) });
+      const basculeDefaut = qualite === 'low' && options.organique === true
+        ? (l.lointain ? 480 : 280) : (l.lointain ? 900 : 520);
+      lots.push({ objets: l.objets, loin: l.loin, centre: [mx, my, mz], rayon, portee: Infinity, bascule: l.bascule || basculeDefaut });
     }
     // Collision et image partagent les mêmes primitives ; aucune consommation du hasard supplémentaire.
     // Les troncs gardent le prisme à 16 côtés et la rotation du cylindre WebGL, indépendants de la qualité.
@@ -1836,12 +1957,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.cimes
     Object.defineProperty(decor, 'qualite', { value: qualite, enumerable: false });
     // Les gradins pour public.js : non énumérables eux aussi, hors des empreintes du décor.
     if (gradins) Object.defineProperty(decor, 'gradins', { value: gradins, enumerable: false });
+    if (lieuxEmblematiques) Object.defineProperty(decor, 'lieux', { value: lieuxEmblematiques, enumerable: false });
     if (options.solsProceduraux === true) {
-      // L'herbier et les palettes saisonnières lisent d'abord le sol historique. FERRO 25 reconnaît aussi
-      // la neige blanche : elle garde son pigment et son grain minéral, sans brins ni joints de béton.
-      // La roche utilise la recette 23. Seules les nappes changent de matière, après la préparation ;
-      // le béton des bâtiments, les positions, couleurs et surfaces PhysX restent intacts.
-      ouvrirHerbier();
+      // L'herbier lit uniquement herbeTriangles, positions et couleurs (jamais l'indice matière sommets[k + 9]).
+      // Ne pas le construire de force ici économise 150–190 ms et des dizaines de Mo sur Légère (Xbox Edge,
+      // mobile, petites configs) et sur les biomes sans tapis d'herbe (désert, Islande, Asie, Pacifique).
       for (const n of decor.nappes) if (n.surfaceType === 'accotement' || n.surfaceType === 'terrain') {
         const terrain = n.surfaceType === 'terrain';
         for (let k = 9; k < n.sommets.length; k += 13) {

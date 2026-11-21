@@ -217,6 +217,7 @@
       vegetationQualite,
       saison,
       solsProceduraux: true,
+      organique: true,
       public: decorEnrichi && !!B.public,
     });
     decor.atmosphere = B.graphismes.atmosphere(decor.atmosphere);
@@ -245,7 +246,7 @@
   // chaque séance. Le moment de la journée suit la séance ; à l'horloge réelle, la nuit du départ vaut pour la course
   // (elle change trop lentement pour qu'une course le voie).
   function animauxDe(sc, nature) {
-    if (!B.animaux) return null;
+    if (!B.animaux || reglages.faune === 'off') return null;
     const reelle = nature.horlogeReelle && B.conditionsCourse && B.conditionsCourse.nuitReelle;
     const options = { saison: sc.saison, moment: nature.moment,
       nuit: reelle ? B.conditionsCourse.nuitReelle(nature.dateDepart != null ? nature.dateDepart : Date.now(), nature.horlogeReelle) : undefined };
@@ -1077,7 +1078,7 @@
     const t = S.prec; S.prec = S.cour; S.cour = t; remplirPoses(S.cour, co);
     // les betes lisent les voitures à chaque pas ; leur cerveau n'avance qu'aux instants k × 0,1 s de l'horloge de
     // course, sans tirer sur le hasard de la course
-    if (S.animaux) B.animaux.pas(S.animaux, co.horloge, S.cour);
+    if (S.animaux && reglages.faune !== 'off') B.animaux.pas(S.animaux, co.horloge, S.cour);
     synchroniserReplacement(S, ev);
     const tFx = S.banc ? performance.now() : 0;
     B.traces.pas(S.fx, co, S.cour, S.suivie || 0, DT, ev);
@@ -2583,9 +2584,10 @@
   // règle d'avant (complet jusqu'au seuil du champ, simple au-delà). Sous 1 080 pixels de toile (petit écran, écran
   // partagé, résolution réduite du profil), le seuil du modèle complet se rapproche au prorata ; entre les deux, le
   // modèle moyen tant que la voiture couvre une trentaine de pixels.
-  function detailVoiture(d2, tanDemi, hauteur) {
+  function detailVoiture(d2, tanDemi, hauteur, palier) {
     if (B.voiture.detailPour(d2, tanDemi, 0) === 'simple') return 'simple';
-    return B.voiture.detailPour(d2, tanDemi, hauteur, Math.min(1, hauteur / 1080));
+    const facteur = Math.min(1, hauteur / 1080) * (palier === 'low' ? .62 : 1);
+    return B.voiture.detailPour(d2, tanDemi, hauteur, facteur);
   }
   // Rivaux derrière la voiture k, dans son repère, du plus proche au plus lointain : la glace peinte du cockpit les
   // montre. Insertion stable : même ordre que le tri d'avant, sans tableau ni fermeture neufs.
@@ -2841,7 +2843,8 @@
     // quelques silhouettes lointaines là où le profil coupe les oiseaux et les insectes. Les glaces ne montrent que
     // ce que la vue principale a posé : on garde derrière la caméra ce qu'elles reflètent. Contexte de vue créé par
     // prechargerSeance.
-    if (S.animaux) {
+    if (!S.animaux && reglages.faune !== 'off' && S.nature && B.animaux) S.animaux = animauxDe(scene, S.nature);
+    if (S.animaux && reglages.faune !== 'off') {
       const contexte = S.animauxVue || (S.animauxVue = creationTardive('contexteAnimaux', { vue: S === session ? 0 : 1, qualite: 'off', camera: null, hauteur: 720, aspect: 16 / 9, arriere: false, nuit: 0, pluie: 0 }));
       contexte.qualite = B.animaux.qualite(reglages.faune, P.palier); contexte.camera = cam;
       contexte.hauteur = canvas.height; contexte.aspect = canvas.width / Math.max(1, canvas.height);
@@ -2916,7 +2919,7 @@
       // Derrière le plan de la caméra, une voiture ne se voit que par son ombre : modèle moyen au plus, même
       // silhouette. Les glaces la reposent à leur propre niveau, plafonné par la règle de la vue.
       const o = optionsPose(k);
-      o.plafond = detailVoiture(d2, tanDemi, hauteur);
+      o.plafond = detailVoiture(d2, tanDemi, hauteur, k === suivie.id ? null : P.palier);
       o.rouesDetail = rouesDetail;
       o.detail = o.plafond === 'complet' && dx * avX + dz * avZ < -DERRIERE_CAMERA ? 'moyen' : o.plafond;
       o.roues = co.voitures[k].degats && co.voitures[k].degats.roues; o.casse = !!(co.voitures[k].degats && co.voitures[k].degats.casse);
@@ -4992,7 +4995,9 @@
       // L'interface garde sa définition CSS ; seule la scène Xbox est bornée
       // à 720p, y compris sur TV 4K et après redimensionnement. FSurface applique
       // ce budget avant l'allocation des cibles WebGL, sans retouche de FERRO.
-      if (B.autoconfig.recommander(capacitesDeclarees()).xbox) Object.assign(optionsRendu, { resolution: 'native', maxPixels: 1280 * 720, renderScale: 1 });
+      const recoMateriel = B.autoconfig.recommander(capacitesDeclarees());
+      if (recoMateriel.xbox) Object.assign(optionsRendu, { resolution: 'native', maxPixels: 1280 * 720, renderScale: 1 });
+      else if (!recoMateriel.mobile && recoMateriel.selection === 'low') Object.assign(optionsRendu, { resolution: 'native', maxPixels: 1600 * 900, renderScale: 1 });
       if (pageCachee()) await pageVisible();
       preferenceGraphique();
       rendu = window.FRender.create(canvas, optionsRendu);

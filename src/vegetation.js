@@ -469,7 +469,7 @@
           const cos = u.reduce((s, x, j) => s + x * v[j], 0) / (Math.hypot(...u) * Math.hypot(...v));
           if (cos < angle) { angle = cos; permutation = k; }
         }
-        const proche = source.type === 'accotement' || d < 100, maille = proche ? (qualite === 'ultra' ? 16 : 24) : 64;
+        const proche = source.type === 'accotement' || d < 100, maille = proche ? (qualite === 'ultra' ? 16 : qualite === 'medium' ? 48 : 24) : (qualite === 'medium' ? 96 : 64);
         const gx = Math.floor(centre[0] / maille), gz = Math.floor(centre[2] / maille), groupe = (proche ? 'p' : 'l') + gx + ',' + gz;
         // Une seule variante dans un lot : le nombre de dessins ne double pas pour varier les motifs.
         const variante = tapis.variantes === 1 || hash(gx, gz, 701) < .5 ? 'a' : 'b';

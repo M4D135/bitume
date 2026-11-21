@@ -53,6 +53,7 @@ MODULES = [
     'bords.js',
     'baikal.js',  # décor boréal préparé avant la construction des nappes
     'batiments.js',  # façades, garages et repères de la voie de service, préparés une fois
+    'lieux.js',  # rochers organiques, pyramides du désert et lieux emblématiques des neuf circuits
     'decor.js',
     'solides-physx.js',
     'physique.js',
