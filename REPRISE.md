@@ -1,27 +1,27 @@
 # BITUME — reprise courte
 
-## Lot actif : poste .77 pour essai sur main
+## Lot actif : voiture complète 126 CK, puis pilote
 
-David demande : « push main je veux test puis continue le projet ».
-Lire la [fiche .77](docs/reprise/POSTE-126CK-0277.md) et `etat_courant` dans
-`docs/reprise/ETAT.json`. Candidat en préparation, main livre encore **0.2.75 / p15 /
-FERRO 0.3.15** avant la publication vérifiée.
+David exige la fidélité au modèle complet : construire la voiture, changer seulement
+la caméra entre les vues, puis installer le pilote dans le vrai habitacle.
+Une occultation naturelle par le volant est acceptée ; ne pas déformer le modèle
+pour les anciens contrôles de cadrage.
 
-Volant noir à branches pleines et moyeu rond depuis la photo réelle, instrumentation
-reprise depuis la galerie 126 CK ; miroirs, FOV 70° vertical par défaut, pluie/neige
-calmes dos au vent et trois timbres de klaxons réunis dans le candidat. Les cockpits
-.75 et .76 restent refusés. L'essai du joueur n'est pas anticipé par les tests.
+Lire [la feuille de route active](docs/reprise/MODELE-COMPLET-126CK-2026-11-21.md)
+et `etat_courant` dans `docs/reprise/ETAT.json`.
+Base préparée **0.2.78 / p15 / FERRO 0.3.15**, commit `0abc00c` : poste .77 et
+premier nez/pontons réunis. Main livre .77 pour essai, PR 54 fusionnée au commit `11e7e55`.
+La refonte travaille dans `codex/bitume-0279-modele-126ck-20261121`.
 
-## Référence et suite
+## Références et ordre
 
-[40 vues détaillées + couverture](docs/references/ferrari-126ck-renderblade-2026-11-21/GALERIE.md)
-publiées sur main par PR 53 ; la 126 CK remplace la 312 T5 comme cible visuelle.
-La carrosserie complète continue sur `codex/bitume-0278-carrosserie-126ck-20261121`.
-[Objectif et limites](docs/reprise/OBJECTIF-126CK-2026-11-21.md).
+[41 images RenderBlade](docs/references/ferrari-126ck-renderblade-2026-11-21/README.md)
+déjà sur main ; [photos réelles](docs/references/ferrari-126ck-reel-2026-11-21/README.md)
+réunies avec leur provenance. Sauvegarder le tout et le plan avant développement.
+Puis coque/nez/pontons, arrière/plateau/arceau/mécanique, ailes, habitacle vide,
+pilote et posture, enfin images du vrai jeu et publication qualifiée.
+Les modèles .75/.76 restent refusés ; tests réussis ne valent pas fidélité approuvée.
 
-[Huit pistes tirées de race](docs/reprise/REFERENCE-RACE-2026-11-21.md), PR 43, M1
-et sources Monaco/Marseille préservées. Décor isolé en pause, réserve stricte <150 ms
-ouverte, aucun gain CPU prouvé. FPS matériels, manettes, écoute humaine et réseau réel
-non qualifiés. Aucun déploiement.
-
-[FILE-TRAVAIL](docs/reprise/FILE-TRAVAIL.json) · [Journal](docs/reprise/JOURNAL-AUTONOME-2026-11-20.md), entrée **041**.
+Préserver décor, PR 43, sources Monaco/Marseille et les autres préparations.
+Réserve construction décor <150 ms ouverte ; aucun gain FPS matériel annoncé.
+Aucun déploiement du site.

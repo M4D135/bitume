@@ -406,3 +406,13 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
   après sa qualification, puis poursuivre la voiture 126 CK. Ne pas attendre un nouveau « go ».
 - Le premier lot .77 reprend le volant, les cadrans, les glaces, le FOV et les effets embarqués.
   La fidélité de toute la carrosserie reste un chantier distinct ; l'essai du joueur reste à recevoir.
+
+## Décision de David — 21 novembre 2026, voiture complète avant le pilote
+
+- Reconstruire d'abord la voiture complète fidèle aux références 126 CK, puis y installer le pilote
+  en adaptant son corps et sa posture. Les changements de vue ne changent jamais le modèle.
+- Sauvegarder toutes les références réunies et la feuille de route sur GitHub avant les modifications.
+  Suivi : `docs/reprise/MODELE-COMPLET-126CK-2026-11-21.md`.
+- Une occultation naturelle par le volant est acceptée. Cela remplace les anciennes exigences de
+  dégagement qui imposaient de modifier les proportions pour rendre tous les cadrans visibles.
+  Conserver les contrôles de vraies pénétrations, pièces flottantes et incohérences entre vues.
