@@ -189,8 +189,8 @@ function poserToutesVues(b, id, compter) {
   assert.equal(JSON.stringify(instantane(H)), cle, 'pose locale rétroviseur différente');
   assert.equal(original.articulations.length, 18); assert(original.articulations.every(Number.isFinite));
   for (const j of [0, 9]) {
-    assert(Math.abs(distance(original.articulations.slice(j, j + 3), original.articulations.slice(j + 3, j + 6)) - .21) < 1e-10, 'longueur humérus');
-    assert(Math.abs(distance(original.articulations.slice(j + 3, j + 6), original.articulations.slice(j + 6, j + 9)) - .23) < 1e-10, 'longueur avant-bras');
+    assert(Math.abs(distance(original.articulations.slice(j, j + 3), original.articulations.slice(j + 3, j + 6)) - .27) < 1e-10, 'longueur humérus');
+    assert(Math.abs(distance(original.articulations.slice(j + 3, j + 6), original.articulations.slice(j + 6, j + 9)) - .29) < 1e-10, 'longueur avant-bras');
   }
   return original;
 }

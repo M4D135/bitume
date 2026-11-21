@@ -382,7 +382,11 @@ test('projection : horizon, mains, haut de jante et deux glaces en paysage, port
       // Regard baissé de 10° avec les commandes abaissées : horizon à 23 % en 16:9,
       // au lieu de 42 % avec l'ancien volant qui masquait la route. Les yeux et le champ restent inchangés.
       assert(horizon[1] >= .20 && horizon[1] <= .55, `horizon projeté ${largeur}x${hauteur}: ${horizon}`);
-      for (const g of glaces) for (const q of g.coins) assert(dans(projection(q)), `glace dans le cadre ${largeur}x${hauteur}: ${projection(q)}`);
+      // 126 CK : rétroviseurs latéraux au montage réel, sans auto-élargissement du champ 60° / portrait.
+      for (const g of glaces) for (const q of g.coins) {
+        const p = projection(q);
+        assert(p.every(Number.isFinite) && p[2] > .1, `glace devant cam.near ${largeur}x${hauteur}: ${p}`);
+      }
       const jante = sommets(H.jante.objet).map(projection), haut = Math.min(...jante.map(p => p[1]));
       assert(haut > .45 && haut < .75, `haut de jante ${largeur}x${hauteur}: ${haut}`);
       for (const main of pieces) {

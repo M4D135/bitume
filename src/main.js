@@ -66,7 +66,8 @@
     for (const doigt of DOIGTS) {
       const psi = doigt.s / JANTE.R, jointure = AUTOUR(psi, JOINTURES.theta, JOINTURES.d), r = doigt.r;
       const rayons = EFFILE.map(f => r * f);
-      const pts = [additionner(jointure, multiplier(a, .024)), jointure, ...doigt.tour.map((t, i) => AUTOUR(psi, JOINTURES.theta + (t * deg - JOINTURES.theta) * serrage, JANTE.r + rayons[i + 2] + JEU))];
+      const base = additionner(jointure, multiplier(a, .040)), racine = additionner(base, multiplier(bz, -doigt.s * .35));
+      const pts = [base, jointure, ...doigt.tour.map((t, i) => AUTOUR(psi, JOINTURES.theta + (t * deg - JOINTURES.theta) * serrage, JANTE.r + rayons[i + 2] + JEU))];
       if (geste) {
         // Les jointures et le poignet restent identiques à la prise. Seules les phalanges changent : le majeur
         // se dresse seul, le salut déploie quatre doigts légèrement écartés, le poing les replie dans la paume.
@@ -85,7 +86,10 @@
         }
       }
       gant.push(...C.tube(pts, rayons, { cotes: 10, pas: 4, bouts: true }));
-      pointsDoigts.push(pts); jointures.push(jointure);
+      // Les racines convergent dans la paume. Leur raccord est séparé de la
+      // courbe de prise pour conserver exactement la tangente autour du tube.
+      gant.push(...C.tube([racine, base], r, { cotes: 10, pas: 1, bouts: true }));
+      pointsDoigts.push([racine, ...pts.slice(1)]); jointures.push(jointure);
     }
 
     // --- Dos de la main : carène bombée, large aux jointures, effilée vers le poignet ---
@@ -96,7 +100,7 @@
       { x: .060, y0: -.0185, y1: .0120, l: .0405, n: 2.5 },
       { x: .086, y0: -.0150, y1: .0105, l: .0325, n: 2.3 }
     ];
-    gant.push(...C.transformer(C.carene(SECTIONS, { cotes: 22, pas: 4, bouts: true }), m, K));
+    const dos = C.transformer(C.carene(SECTIONS, { cotes: 22, pas: 4, bouts: true }), m, K);
 
     // --- Pouce : de l'éminence, côté index et paume, jusque sur la face de la jante tournée vers le pilote ---
     const eminence = POUCE.eminence.map(([x, y, z]) => additionner(additionner(W, multiplier(a, -x)), additionner(multiplier(bz, y), multiplier(Y, -z))));
@@ -130,7 +134,9 @@
     const sangle = C.transformer(C.carene([rond(-.002, .0292), rond(.012, .0292)], { cotes: 18, pas: 1 }), m, W);
 
     const points = { doigts: pointsDoigts, pouce, jointures, poignet: W, axe: a, dos: Y };
-    return { gant, paume, garde, poignet, sangle, points };
+    // Les doigts de prise restent sur le tube ; le dos et la manchette peuvent
+    // suivre le poignet sans entraîner ces contacts dans le plan du volant.
+    return { gant: gant.concat(dos), prise: gant, dos, paume, garde, poignet, sangle, points };
   }
 
   // --- Outils vectoriels ---
