@@ -1,0 +1,2 @@
+fef44509c362a14d5c9d445bd3a0cfbcee27cbc567e8f2e6b73420f0559f54d7  tools/controle-visuel.mjs
+6cd2f9af3b5d4bf327cce2b43ef1f928551860b4a2d8dae82e8ae9605d107848  tools/qualification/demarrage-mobile.mjs

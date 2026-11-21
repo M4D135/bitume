@@ -1,0 +1,21 @@
+✔ décodage des PNG RGB et RGBA avec les cinq filtres (2.302124ms)
+✔ captures tronquées ou formats inconnus refusés (0.562442ms)
+✔ les mesures portent sur la zone demandée, sans le reste de la page (0.665577ms)
+✔ alertes d’image noire, identique et de blocs fugitifs (1.522434ms)
+✔ comparaison avant/après : différences conservées, dérive des paramètres refusée (1.108598ms)
+✔ changement de GPU, de trajectoire ou disparition de J2 invalide la comparaison (0.747802ms)
+✔ les réglages effectifs et PhysX doivent correspondre, seul le décor peut varier (0.243379ms)
+✔ les paramètres de capture fixent taille, graine, qualité et budget de pas (1.200186ms)
+✔ l’horloge de capture contrôle chaque rAF sans falsifier performance.now (1.34107ms)
+✔ le démarrage asynchrone finit sa vitrine avant d’autoriser la référence (0.906663ms)
+✔ un renderer créé sans démarrage terminé n’est jamais qualifié prêt (6.873722ms)
+✔ le crochet avant navigation est une fonction avant tout lancement de navigateur (0.520959ms)
+✔ les compteurs mobiles voient les appels natifs sans remplacer résultat, arguments ni exception (0.757797ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22.334611

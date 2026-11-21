@@ -33,7 +33,16 @@ bancs de rendu. Elle couvre premier lancement iPhone/iPad/Android, nouvelle
 version, ancien cache, choix manuels, bouton Image, orientation, visibilité,
 arrivée au titre et erreur PhysX explicite.
 
-Build reconstruit deux fois à l’identique. Réception WebGL et CI du commit exact
-en cours ; leurs reçus seront ajoutés avant clôture. Aucun essai sur téléphone
-physique ni gain FPS matériel annoncé. Le site servi doit être vérifié après
-déploiement ; la présence sur GitHub ne constitue pas ce déploiement.
+Build reconstruit deux fois à l’identique. Le commit exact `6526493` est publié
+sur `main` : **192 suites Node et 8 tests Python réussis** dans le workflow
+[44922327402](https://github.com/M4D135/bitume/actions/runs/44922327402).
+Le workflow [44922327560](https://github.com/M4D135/bitume/actions/runs/44922327560)
+reçoit le vrai démarrage WebGL2/PhysX sur un profil iPhone vierge, puis la course
+et le clic sur le bouton Image : **zéro appel à `autoconfig.executer` et à
+`sceneBench.creer`**, profil Légère persisté et une seule recommandation passive
+par demande. Les deux PNG ont été inspectés ; aucune erreur navigateur.
+
+[Reçu et limites](rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json).
+Chrome émule les caractéristiques iPhone : aucun essai Safari/iOS physique ni
+gain FPS matériel annoncé. Le site servi doit être vérifié après déploiement ;
+la présence sur GitHub ne constitue pas ce déploiement.

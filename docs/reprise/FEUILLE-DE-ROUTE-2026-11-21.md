@@ -13,12 +13,17 @@ remplacé. Garder la vraie descente italienne par la SS21, environ 32 km, à l�
 réelle. Ne pas conserver les 64,5 km de l’idée initiale ni raccourcir artificiellement
 les virages. Fiche détaillée : [Col de Larche → Vinadio](COL-DE-LARCHE-VINADIO-2026-11-21.md).
 
-**Point réconcilié après Gemini :** le runtime publié sur `main` est **0.2.79 /
+**Point réconcilié après Gemini :** la base géométrique est **0.2.79 /
 p15 / FERRO 0.3.15**, commit `d4081241ad40dced72fd4e77c97a4775ed0398ad`, après
 fusion des sources `f86e58f`. Le HTML `77d774fd99484f7d` est cohérent avec les
 sources ; sa CI réussit 190 suites Node et 8 tests Python. La voiture, les
 poignets R4b corrigés, les six vues et les compteurs sont intégrés.
 [Reçu vérifié](rapports/MAINS-REALISME-2026-11-21/BASE-0279.json).
+
+**Runtime courant : 0.2.80**, commit `6526493`, publié sur `main` avec détection
+passive au démarrage et dans Image. 192 suites Node, 8 tests Python et parcours
+WebGL2 mobile réussis ; les mains restent celles de .79.
+[Reçu](rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json).
 
 David demande ensuite de poursuivre les personnages, surtout les mains plus
 réalistes, en repartant des avancées Gemini. Le [lot mains M1–M4](MAINS-REALISME-2026-11-21.md)
@@ -29,6 +34,7 @@ conservés. La livraison du code ne prouve pas la mise à jour du site.
 
 | Priorité | Lot | Résultat attendu | État à ce jalon |
 |---|---|---|---|
+| Acquis | Démarrage téléphone | Détection passive sans banc de charge | Publié .80 ; parcours iPhone émulé reçu, Safari/iOS physique non essayé |
 | Actif | M1–M3 — réalisme des mains | Doigts sans contraction, volumes affinés et transitions plus progressives | Correction et comparaison .79/candidat en cours ; vue extérieure prioritaire |
 | Ensuite | M4 — personnages/manches | Raccords de manchette, avant-bras, coudes et silhouette | Prévu après réception des mains |
 | Acquis | R1–R3 — voiture complète | Proportions, coque, arrière, ailes, habitacle et siège communs | Intégré en .79 ; fidélité finale à apprécier sur les images et à l’essai |

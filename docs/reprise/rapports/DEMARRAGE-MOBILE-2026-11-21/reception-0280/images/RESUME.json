@@ -1,0 +1,260 @@
+{
+  "format": "bitume-demarrage-mobile-1",
+  "commit": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+  "htmlSha256": "20185cd2341e2aefb7a5167a35c1f4d68a50eedf1d9fabaa8491c329fa87410a",
+  "demarrage": {
+    "pret": true,
+    "ecran": "titre",
+    "type": "vitrine",
+    "etape": null,
+    "preparation": false
+  },
+  "premierLancement": {
+    "stockageInitial": [],
+    "appels": {
+      "benchmark": 0,
+      "sceneBench": 0,
+      "passive": 1
+    },
+    "surveilles": {
+      "benchmark": true,
+      "sceneBench": true,
+      "passive": true
+    },
+    "cache": {
+      "revision": 4,
+      "methode": "capacites-declarees",
+      "statut": "ok",
+      "empreinte": "1ps7nyi",
+      "selection": "low",
+      "reglages": {
+        "qualite": "low",
+        "anticrenelage": "off",
+        "ombres": "off",
+        "vegetation": "off",
+        "faune": "off",
+        "retro": "non"
+      },
+      "appareil": {
+        "selection": "low",
+        "mobile": true,
+        "coeurs": 4,
+        "memoire": 16,
+        "logiciel": true,
+        "integre": false,
+        "incomplet": false
+      },
+      "mesures": [],
+      "date": 1700002178176,
+      "performancesMesurees": false,
+      "appliques": {
+        "qualite": "low",
+        "anticrenelage": "off",
+        "ombres": "off",
+        "vegetation": "off",
+        "faune": "off",
+        "retro": "non"
+      },
+      "gardes": []
+    },
+    "reglagesEnregistres": {
+      "vue": "cockpit",
+      "vue2": "poursuite",
+      "partage": "haut-bas",
+      "boite": "auto",
+      "aide": 0.35,
+      "qualite": "low",
+      "cadence": "auto",
+      "general": 0.8,
+      "moteur": 0.9,
+      "effets": 0.9,
+      "tours": 3,
+      "difficulte": 1,
+      "circuit": 0,
+      "champ": 70,
+      "retro": "non",
+      "pneus": "slicks",
+      "tableau": "reduit",
+      "carte": "oui",
+      "cartePosition": "droite",
+      "carteTaille": "normale",
+      "demo": "non",
+      "vibrations": "oui",
+      "vibrationForce": 0.5,
+      "meteo": "aleatoire",
+      "anticrenelage": "off",
+      "ombres": "off",
+      "vegetation": "off",
+      "faune": "off",
+      "moment": "jour",
+      "saison": "ete",
+      "saisonMode": "manuel",
+      "momentMode": "manuel",
+      "annoncesVirages": "non",
+      "gouttes": 1,
+      "forcePluie": "forte",
+      "secousses": 1,
+      "pneusPilotes": [
+        "slicks",
+        "slicks"
+      ],
+      "pneusAutoPilotes": [
+        true,
+        true
+      ],
+      "trollPilotes": [
+        {
+          "geste": "majeur",
+          "klaxon": "classique"
+        },
+        {
+          "geste": "majeur",
+          "klaxon": "classique"
+        }
+      ],
+      "meteoMode": "aleatoire",
+      "champRevu": true
+    },
+    "qualiteEffective": "low",
+    "ecran": "course",
+    "type": "course",
+    "phase": "course",
+    "appareil": {
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
+      "platform": "iPhone",
+      "touch": 5,
+      "taille": [
+        390,
+        844
+      ],
+      "dpr": 1
+    },
+    "webgl2": true
+  },
+  "apresRedetection": {
+    "stockageInitial": [],
+    "appels": {
+      "benchmark": 0,
+      "sceneBench": 0,
+      "passive": 2
+    },
+    "surveilles": {
+      "benchmark": true,
+      "sceneBench": true,
+      "passive": true
+    },
+    "cache": {
+      "revision": 4,
+      "methode": "capacites-declarees",
+      "statut": "ok",
+      "empreinte": "1ps7nyi",
+      "selection": "low",
+      "reglages": {
+        "qualite": "low",
+        "anticrenelage": "off",
+        "ombres": "off",
+        "vegetation": "off",
+        "faune": "off",
+        "retro": "non"
+      },
+      "appareil": {
+        "selection": "low",
+        "mobile": true,
+        "coeurs": 4,
+        "memoire": 16,
+        "logiciel": true,
+        "integre": false,
+        "incomplet": false
+      },
+      "mesures": [],
+      "date": 1700002178176,
+      "performancesMesurees": false,
+      "appliques": {
+        "qualite": "low",
+        "anticrenelage": "off",
+        "ombres": "off",
+        "vegetation": "off",
+        "faune": "off",
+        "retro": "non"
+      },
+      "gardes": []
+    },
+    "reglagesEnregistres": {
+      "vue": "poursuite",
+      "vue2": "cockpit",
+      "partage": "haut-bas",
+      "boite": "auto",
+      "aide": 0.35,
+      "qualite": "low",
+      "cadence": "auto",
+      "general": 0.8,
+      "moteur": 0.9,
+      "effets": 0.9,
+      "tours": 3,
+      "difficulte": 1,
+      "circuit": 0,
+      "champ": 70,
+      "retro": "non",
+      "pneus": "slicks",
+      "tableau": "reduit",
+      "carte": "oui",
+      "cartePosition": "droite",
+      "carteTaille": "normale",
+      "demo": "non",
+      "vibrations": "non",
+      "vibrationForce": 0.5,
+      "meteo": "soleil",
+      "anticrenelage": "off",
+      "ombres": "off",
+      "vegetation": "off",
+      "faune": "off",
+      "moment": "jour",
+      "saison": "ete",
+      "saisonMode": "manuel",
+      "momentMode": "manuel",
+      "annoncesVirages": "non",
+      "gouttes": 1,
+      "forcePluie": "forte",
+      "secousses": 0,
+      "pneusPilotes": [
+        "slicks",
+        "slicks"
+      ],
+      "pneusAutoPilotes": [
+        true,
+        true
+      ],
+      "trollPilotes": [
+        {
+          "geste": "majeur",
+          "klaxon": "classique"
+        },
+        {
+          "geste": "majeur",
+          "klaxon": "classique"
+        }
+      ],
+      "meteoMode": "manuel",
+      "champRevu": true
+    },
+    "qualiteEffective": "low",
+    "ecran": "course",
+    "type": "course",
+    "phase": "course",
+    "appareil": {
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
+      "platform": "iPhone",
+      "touch": 5,
+      "taille": [
+        390,
+        844
+      ],
+      "dpr": 1
+    },
+    "webgl2": true
+  },
+  "png": 2,
+  "erreurs": 0,
+  "fpsMaterielsQualifies": false,
+  "navigateurMobileMaterielQualifie": false
+}
