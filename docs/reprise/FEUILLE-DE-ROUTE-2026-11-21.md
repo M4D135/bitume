@@ -1,11 +1,26 @@
 # BITUME — feuille de route du 21 novembre 2026
 
+## Nouvelle priorité — faune proche et démos des circuits
+
+**Demande du 21 novembre, après la 0.2.85 :** Faune près de la route, sans simulation détaillée hors champ ; démos des circuits actuels centrées sur route, tracé et point d’intérêt.
+Aucun plan consacré à l’herbe, aux animaux ou à la flore. Les anciens choix de démo
+nature et de silhouettes animales lointaines sont remplacés par ce périmètre.
+
+Base observée sur `main` : **0.2.85 / `0e7273c`**, avec neuf circuits
+et leurs nouveaux lieux. [Fiche détaillée et progression](FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md) :
+F1 placement, F2 sommeil hors champ, D1 sélection des plans, D2 recomposition des neuf
+circuits, puis réception et publication. **Tous ces nouveaux lots restent à faire.**
+Larche → Vinadio sera couvert dès son intégration jouable ; les autres chantiers sont conservés.
+
+Les points .79/.80 ci-dessous décrivent les jalons antérieurs ; ils ne remplacent
+pas cette nouvelle base de reprise.
+
 ## Demandes retenues et point de reprise
 
 Ce document rassemble les demandes de cette session et leur ordre de réalisation.
 Il complète le [programme autonome](CONTINUATION-AUTONOME-2026-11-19.md), sans en
-supprimer les autres travaux. Le chantier immédiat reste la voiture 126 CK et son
-pilote ; les acquisitions géographiques peuvent avancer séparément.
+supprimer les autres travaux. À ce jalon antérieur, le chantier immédiat était la voiture 126 CK et son
+pilote ; la nouvelle priorité faune/démos est précisée en tête.
 
 **Dernière correction de David : le nouveau parcours commence au sommet du col
 de Larche et se termine à Vinadio.** Le départ initial de Barcelonnette est
@@ -20,7 +35,7 @@ sources ; sa CI réussit 190 suites Node et 8 tests Python. La voiture, les
 poignets R4b corrigés, les six vues et les compteurs sont intégrés.
 [Reçu vérifié](rapports/MAINS-REALISME-2026-11-21/BASE-0279.json).
 
-**Runtime courant : 0.2.80**, commit `6526493`, publié sur `main` avec détection
+**Jalon historique : 0.2.80**, commit `6526493`, publié sur `main` avec détection
 passive au démarrage et dans Image. 192 suites Node, 8 tests Python et parcours
 WebGL2 mobile réussis ; les mains restent celles de .79.
 [Reçu](rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json).
@@ -30,7 +45,7 @@ réalistes, en repartant des avancées Gemini. Le [lot mains M1–M4](MAINS-REAL
 prend priorité ; la géographie Larche/Vinadio et le reste du programme sont
 conservés. La livraison du code ne prouve pas la mise à jour du site.
 
-## Ordre de travail
+## Ordre de travail au jalon .80 (historique)
 
 | Priorité | Lot | Résultat attendu | État à ce jalon |
 |---|---|---|---|
@@ -165,8 +180,9 @@ au raccord du sommet et aux montagnes visibles côté France.
 4. Qualifier les scènes du vrai jeu, corriger les défauts observés, puis publier
    le runtime qualifié sur `main`. La demande de pousser la feuille de route
    n’autorise pas à présenter les préparations comme des fonctions déjà en ligne.
-5. Reprendre les lots Larche/Vinadio depuis L0, avec le périmètre corrigé de
-   sommet à Vinadio. Ne pas repartir de l’ancien départ de Barcelonnette.
+5. Reprendre Larche/Vinadio à partir de l’état effectivement intégré sur main
+   (L2 dans la base .85 ; L3/L4 ensuite), avec le périmètre sommet → Vinadio.
+   Ne pas repartir de l’ancien départ de Barcelonnette.
 
 L’audit du dépôt ne vérifie pas la version actuellement servie par le site. Les
 prochaines actions repartent du point actif ci-dessus, sans réappliquer les lots

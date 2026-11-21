@@ -12,9 +12,9 @@
     "lot": "optimisation_animaux_lieux_organiques_larche_l2",
     "fiche": "docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md",
     "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md",
-    "dernieres_demandes": "docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md",
+    "dernieres_demandes": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
     "dernier_lot_clos": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
-    "prochaine_action": "Publier 0.2.85 sur main et bitume.estrasse.fr, vérifier la CI Linux et préparer les lots L3/L4 Col de Larche -> Vinadio.",
+    "prochaine_action": "Réaliser F1/F2 faune proche et sommeil hors champ, puis D1/D2 démos route/circuit/point d’intérêt ; qualifier avant publication du runtime. Conserver les essais Xbox physiques et Larche L3/L4.",
     "branche_candidate": "main",
     "version_candidate": "0.2.85",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
@@ -153,7 +153,8 @@
       "personnages et manches",
       "Larche/Vinadio L0–L2"
     ],
-    "acquis_R4b_a_preserver": true
+    "acquis_R4b_a_preserver": true,
+    "prochaine_priorite": "faune_proche_champ puis demos_route_lieux"
   },
   "catalogue": {
     "jouables": 9,
@@ -192,10 +193,12 @@
   "execution_autonome": {
     "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
     "file": "docs/reprise/FILE-TRAVAIL.json",
-    "priorite_utilisateur": "Xbox Edge lent, manette/pointeur en conflit, accélération et affectations indisponibles.",
+    "priorite_utilisateur": "Faune près de la route, sans simulation détaillée hors champ ; démos des circuits actuels centrées sur route, tracé et point d’intérêt.",
     "lot_actif": "xbox_edge_commandes",
     "statut": "en_cours",
-    "recu_publication": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json"
+    "recu_publication": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
+    "prochain_lot": "faune_proche_champ",
+    "dernieres_demandes": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md"
   },
   "recus_historiques": {
     "etat_complet_avant_reconciliation": "docs/reprise/archives/ETAT-AVANT-MAINS-2026-11-21.json",
@@ -281,5 +284,24 @@
     "preuves_preparation": "docs/reprise/rapports/MAINS-REALISME-2026-11-21/RECEPTION-MAINS-MEMOIRE.md",
     "reception_visuelle": "en_cours",
     "site_deploye": false
+  },
+  "faune_proche_demos_circuits_2026_11_21": {
+    "date": "2026-11-21",
+    "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
+    "statut": "planned",
+    "base_main": "0e7273c0361996b9c217e6f1051a9ef9a54b18c7",
+    "version_base": "0.2.85",
+    "circuits_actuels": 9,
+    "objectif": "Faune près de la route, sans simulation détaillée hors champ ; démos des circuits actuels centrées sur route, tracé et point d’intérêt.",
+    "lots": [
+      "F1",
+      "F2",
+      "D1",
+      "D2",
+      "Q"
+    ],
+    "runtime_modifie": false,
+    "preuves_runtime": [],
+    "larche": "À ajouter aux démos lors de son intégration jouable ; sommet → Vinadio, sans rebouclage."
   }
 }

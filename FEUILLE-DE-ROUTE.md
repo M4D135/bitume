@@ -1,5 +1,11 @@
 # BITUME — feuille de route
 
+> **Priorité ajoutée le 21 novembre 2026, base 0.2.85 :** animaux proches de la route,
+> sans simulation détaillée hors champ ; démos des circuits actuels centrées uniquement
+> sur la route, le circuit et son point d’intérêt. Aucun plan herbe/faune/flore.
+> [Demandes et progression](docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md) — **à réaliser**.
+> Cette consigne remplace les anciens plans de nature et la faune exclusivement lointaine.
+
 > **Référence voiture actualisée le 21 novembre 2026 :** David choisit désormais la
 > galerie RenderBlade de la **126 CK** comme objectif visuel, en remplacement de la
 > 312 T5 mentionnée dans l'historique ci-dessous. [Objectif et état du chantier](docs/reprise/OBJECTIF-126CK-2026-11-21.md)

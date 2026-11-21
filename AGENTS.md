@@ -467,3 +467,20 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
 - Le mode Auto doit privilégier la manette, avec réglages de boutons et axes par joueur et parcours praticable sans clavier. Le navigateur garde le contrôle de sa bascule pointeur/manette ; afficher une aide exacte.
 - Profil console prudent sans benchmark, budget de pixels borné et options personnelles conservées. Ne pas annoncer de FPS Xbox sans essai sur console.
 - Fiche : `docs/reprise/XBOX-EDGE-COMMANDES-2026-11-21.md`.
+
+## Décisions de David — 21 novembre 2026, faune proche et démos centrées sur le circuit
+
+- Les animaux doivent être proches du circuit et visibles depuis la route ; pas de
+  population lointaine inutile ni de simulation détaillée hors des vues utiles.
+  Placer hors chaussée selon les vrais bords et le terrain ; l’ancien minimum uniforme
+  de 34 m et les silhouettes exclusivement lointaines en Légère ne sont plus la cible.
+- Sélection avant simulation/pose, sommeil hors champ, réveil sans rattrapage massif ;
+  prendre en compte J1/J2 et les rétroviseurs réellement actifs. Préserver Faune désactivée.
+- Refaire les démos pour les neuf circuits actuels et les nouveaux lieux de .85 :
+  **route, circuit et point d’intérêt uniquement**. Aucun plan consacré à l’herbe,
+  à la faune/flore ou à un sujet autonome sans rapport avec le circuit.
+- Cette décision remplace les plans de nature demandés le 19 novembre. La nature peut
+  rester dans le fond d’un plan de route ; elle n’est plus un sujet de démonstration.
+- Prévoir Larche → Vinadio quand le parcours sera jouable, sans rebouclage à l’arrivée.
+- Pousser les demandes et leur progression sur Git. Fiche :
+  `docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md`. État initial : planifié, pas encore réalisé.

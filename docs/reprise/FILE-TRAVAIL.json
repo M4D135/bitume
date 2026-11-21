@@ -27,6 +27,32 @@
   "regle": "Une preuve appartient à une version exacte. Sauvegarder les checkpoints ; intégrer les candidats qualifiés ; poursuivre sans redemander un go.",
   "lots": [
     {
+      "id": "faune_proche_champ",
+      "objectif": "Animaux proches de la route ; sommeil hors des vues utiles",
+      "etat": "planned",
+      "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
+      "base_observee": "0e7273c0361996b9c217e6f1051a9ef9a54b18c7",
+      "phases": [
+        "F1",
+        "F2"
+      ],
+      "cloture": "Distances aux bords mesurées, animaux visibles depuis la route, aucune simulation détaillée des groupes invisibles, réveil stable ; J1/J2, rétros et Faune désactivée contrôlés.",
+      "preuves": []
+    },
+    {
+      "id": "demos_route_lieux",
+      "objectif": "Refaire les démos des neuf circuits : route, tracé et point d’intérêt uniquement",
+      "etat": "planned",
+      "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
+      "base_observee": "0e7273c0361996b9c217e6f1051a9ef9a54b18c7",
+      "phases": [
+        "D1",
+        "D2"
+      ],
+      "cloture": "Aucun plan herbe/faune/flore ni autre sujet autonome ; séquences cadrées et sans traversée sur les neuf circuits, futurs parcours couverts à leur intégration jouable.",
+      "preuves": []
+    },
+    {
       "id": "demarrage_mobile_passif",
       "objectif": "Démarrer sur téléphone sans scène ni rafale de benchmark",
       "etat": "published",
@@ -141,7 +167,8 @@
         "pr": 38,
         "commit_fusion": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8"
       },
-      "reste": "Pilote commun et Troll publiés en 0.2.69 ; visibilité centrale du cockpit et bandeaux masquant certains gestes ou animaux restent ouverts."
+      "reste": "Pilote commun et Troll publiés en 0.2.69 ; visibilité centrale du cockpit et bandeaux masquant certains gestes ou animaux restent ouverts.",
+      "cadrage_remplace_par": "demos_route_lieux : fin des plans flore/faune ; conserver les preuves historiques."
     },
     {
       "id": "meteo",
@@ -702,6 +729,8 @@
   ],
   "plan_correctifs_visuels": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
   "ordre_courant": [
+    "faune_proche_champ",
+    "demos_route_lieux",
     "xbox_edge_commandes",
     "mains_realisme",
     "personnages_manches",
@@ -711,17 +740,24 @@
   ],
   "priorite_utilisateur_2026_11_20": "Réduire les coûts intrinsèques du moteur pour configurations modestes ; menu arcade ; saisons cohérentes ; emotes humaines choisies avant course et IA aléatoires.",
   "dernieres_demandes": {
-    "date": "2026-11-20",
-    "fiche": "docs/reprise/DEMANDES-ARCADE-PERFORMANCE-TROLL-2026-11-20.md",
-    "etat": "en_cours",
-    "troll": {
-      "humains": "geste et klaxon choisis avant course par joueur",
-      "ia": "geste et klaxon aléatoires, notamment après dépassement",
-      "activation": "un seul bouton Troll, son et mouvement simultanés",
-      "statut": "assemble_T3_local_qualifie_publication_commune_en_attente",
-      "preuve": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
-      "limite_reseau": "Préférences négociées ; événements geste/son distants non synchronisés, information avant course."
-    }
+    "date": "2026-11-21",
+    "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
+    "statut": "planned",
+    "base_main": "0e7273c0361996b9c217e6f1051a9ef9a54b18c7",
+    "version_base": "0.2.85",
+    "circuits_actuels": 9,
+    "objectif": "Faune près de la route, sans simulation détaillée hors champ ; démos des circuits actuels centrées sur route, tracé et point d’intérêt.",
+    "lots": [
+      "F1",
+      "F2",
+      "D1",
+      "D2",
+      "Q"
+    ],
+    "runtime_modifie": false,
+    "preuves_runtime": [],
+    "larche": "À ajouter aux démos lors de son intégration jouable ; sommet → Vinadio, sans rebouclage.",
+    "etat": "planned"
   },
   "demandes_moteur_2026_11_20": {
     "fiche": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
@@ -853,7 +889,8 @@
       "inspiration satyam-fp/race"
     ],
     "suite_personnages_mains": "docs/reprise/MAINS-REALISME-2026-11-21.md",
-    "priorite_courante": "Xbox Edge : commandes manette, accélération, pointeur et charge graphique."
+    "priorite_courante": "Faune près de la route, sans simulation détaillée hors champ ; démos des circuits actuels centrées sur route, tracé et point d’intérêt.",
+    "faune_demos": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md"
   },
   "inspiration_race": {
     "fiche": "docs/reprise/REFERENCE-RACE-2026-11-21.md",
@@ -899,5 +936,18 @@
     ],
     "branche": "codex/bitume-0277-publication-20261121",
     "fiche": "docs/reprise/POSTE-126CK-0277.md"
+  },
+  "dernieres_demandes_2026_11_20": {
+    "date": "2026-11-20",
+    "fiche": "docs/reprise/DEMANDES-ARCADE-PERFORMANCE-TROLL-2026-11-20.md",
+    "etat": "en_cours",
+    "troll": {
+      "humains": "geste et klaxon choisis avant course par joueur",
+      "ia": "geste et klaxon aléatoires, notamment après dépassement",
+      "activation": "un seul bouton Troll, son et mouvement simultanés",
+      "statut": "assemble_T3_local_qualifie_publication_commune_en_attente",
+      "preuve": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
+      "limite_reseau": "Préférences négociées ; événements geste/son distants non synchronisés, information avant course."
+    }
   }
 }

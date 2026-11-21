@@ -17,7 +17,17 @@ Base unifiée sur `main` (incluant 0.2.84 : Xbox Edge `.83`, mains articulées P
 4. **Col de Larche → Vinadio — Lot L2 (`src/circuit.js`, `src/conduite.js`, `src/course.js`, `verifications/parcours-ouvert.test.mjs`)** :
    - Moteur de parcours ouvert (`topologie: 'ouvert'`, `ouvert: true`, `depart`, `arrivee`, `zoneDeceleration`) sans rebouclage modulo ; charge et valide le relevé réel SS21 `trace-l1.json` (32,8 km), 8/8 tests réussis, 9 circuits fermés inchangés au bit près. [Fiche](docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md).
 
+## Demandes ajoutées au suivi — à réaliser
+
+[Faune proche et démos des circuits](docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md), demande de David du 21 novembre :
+animaux près de la route, sans simulation détaillée hors champ ; nouvelles démos des
+neuf circuits centrées uniquement sur la route, le tracé et leur point d’intérêt.
+Supprimer les plans herbe/faune/flore. Lots F1/F2 et D1/D2 **planifiés**, puis qualification.
+Cette consigne remplace les anciens plans de nature. Larche → Vinadio sera couvert
+à son entrée dans le catalogue jouable. Base observée : `0e7273c` / .85.
+
 ## Prochaine étape
 
+- **Priorité demandée : faune proche et démos des circuits**, suivant F1/F2 puis D1/D2 ; réception avant publication du runtime.
 - **Col de Larche → Vinadio — Lots L3/L4** : intégrer le tracé/relief réel 32,2 km + ouvrages (tunnels/paravalanches/ponts) dans un circuit jouable au catalogue (`larche`) sans déplacer les 9 circuits existants.
 - Vérification sur Xbox Series / Edge physique et CI Linux (les 3 suites d'empreintes `libm` ARM64/x86_64 sont contrôlées identiques bit-à-bit à `HEAD` localement et attendues 100 % vertes sur Linux CI).
