@@ -1,0 +1,200 @@
+{
+  "schema": 1,
+  "date_utc": "2026-11-20T20:43:45.409Z",
+  "environnement": {
+    "node": "v24.22.3",
+    "plateforme": "linux",
+    "architecture": "x64",
+    "cpu": "AMD EPYC 9V45 96-Core Processor"
+  },
+  "protocole": {
+    "voitures": 12,
+    "perles_par_voiture": 192,
+    "pas_s": 0.016666666666666666,
+    "vitesse_m_s": 35,
+    "chauffe_images_par_etat": 60,
+    "series_alternees": 5,
+    "images_par_serie": 180,
+    "portee": "mettreAJour des douze carrosseries uniquement, aucun rendu, aucune physique, aucune mesure FPS Xbox/Intel ; charge hôte non isolée"
+  },
+  "sources_communes": {
+    "src/voiture.js": "e7d86029411af2a745ac01303b3d3ddfe142194f487dc63de6afa369eb6ece03",
+    "src/moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8"
+  },
+  "resultats": [
+    {
+      "nom": "avant",
+      "source_sha256": "d34c46bc796db90961576b5996bd7c8378393daf0e289e1cb7ad8b365976ab4a",
+      "preparation_ms": 1839.252465,
+      "series": [
+        {
+          "meteo": "sec",
+          "serie": 0,
+          "images": 180,
+          "p50_ms": 1.358143999999811,
+          "p95_ms": 1.4982019999997647,
+          "maximum_ms": 6.03802800000085
+        },
+        {
+          "meteo": "sec",
+          "serie": 1,
+          "images": 180,
+          "p50_ms": 1.3570529999997234,
+          "p95_ms": 1.5602239999998346,
+          "maximum_ms": 2.1443209999997634
+        },
+        {
+          "meteo": "sec",
+          "serie": 2,
+          "images": 180,
+          "p50_ms": 1.378153999999995,
+          "p95_ms": 2.2847289999999703,
+          "maximum_ms": 4.109857000000375
+        },
+        {
+          "meteo": "sec",
+          "serie": 3,
+          "images": 180,
+          "p50_ms": 1.4300609999991138,
+          "p95_ms": 1.7354439999999158,
+          "maximum_ms": 2.9764610000001994
+        },
+        {
+          "meteo": "sec",
+          "serie": 4,
+          "images": 180,
+          "p50_ms": 1.436561000000438,
+          "p95_ms": 1.702635999999984,
+          "maximum_ms": 1.8045079999992595
+        },
+        {
+          "meteo": "pluie",
+          "serie": 0,
+          "images": 180,
+          "p50_ms": 1.8884710000002087,
+          "p95_ms": 2.527649999999994,
+          "maximum_ms": 3.294858000000204
+        },
+        {
+          "meteo": "pluie",
+          "serie": 1,
+          "images": 180,
+          "p50_ms": 1.9290519999995013,
+          "p95_ms": 2.798231000000669,
+          "maximum_ms": 5.45817100000022
+        },
+        {
+          "meteo": "pluie",
+          "serie": 2,
+          "images": 180,
+          "p50_ms": 1.9103950000007899,
+          "p95_ms": 2.9798510000000533,
+          "maximum_ms": 3.6812210000007326
+        },
+        {
+          "meteo": "pluie",
+          "serie": 3,
+          "images": 180,
+          "p50_ms": 2.010033000000476,
+          "p95_ms": 3.4573600000003353,
+          "maximum_ms": 4.940920999999435
+        },
+        {
+          "meteo": "pluie",
+          "serie": 4,
+          "images": 180,
+          "p50_ms": 1.8934489999992365,
+          "p95_ms": 3.2492810000003374,
+          "maximum_ms": 4.60331000000042
+        }
+      ]
+    },
+    {
+      "nom": "apres",
+      "source_sha256": "f1edaf1a7c18992a6d70d0398c98c0739480389b318ae4a9b4443af01b9291fc",
+      "preparation_ms": 1721.0862770000003,
+      "series": [
+        {
+          "meteo": "sec",
+          "serie": 0,
+          "images": 180,
+          "p50_ms": 0.012098000000150932,
+          "p95_ms": 0.014151000000310887,
+          "maximum_ms": 0.02913300000000163
+        },
+        {
+          "meteo": "sec",
+          "serie": 1,
+          "images": 180,
+          "p50_ms": 0.010815999999977066,
+          "p95_ms": 0.012438999999176303,
+          "maximum_ms": 0.07239800000024843
+        },
+        {
+          "meteo": "sec",
+          "serie": 2,
+          "images": 180,
+          "p50_ms": 0.010766000000330678,
+          "p95_ms": 0.010995999999977357,
+          "maximum_ms": 0.09227600000031089
+        },
+        {
+          "meteo": "sec",
+          "serie": 3,
+          "images": 180,
+          "p50_ms": 0.010766000000330678,
+          "p95_ms": 0.01154800000040268,
+          "maximum_ms": 0.05618400000003021
+        },
+        {
+          "meteo": "sec",
+          "serie": 4,
+          "images": 180,
+          "p50_ms": 0.010886000000027707,
+          "p95_ms": 0.013530000000173459,
+          "maximum_ms": 0.06429599999955826
+        },
+        {
+          "meteo": "pluie",
+          "serie": 0,
+          "images": 180,
+          "p50_ms": 2.0366009999997914,
+          "p95_ms": 3.231013999999959,
+          "maximum_ms": 4.7726900000006935
+        },
+        {
+          "meteo": "pluie",
+          "serie": 1,
+          "images": 180,
+          "p50_ms": 1.891606999999567,
+          "p95_ms": 2.214113999998517,
+          "maximum_ms": 3.6150440000001254
+        },
+        {
+          "meteo": "pluie",
+          "serie": 2,
+          "images": 180,
+          "p50_ms": 1.9999380000008387,
+          "p95_ms": 2.7509009999994305,
+          "maximum_ms": 5.9093790000006265
+        },
+        {
+          "meteo": "pluie",
+          "serie": 3,
+          "images": 180,
+          "p50_ms": 1.8865289999994275,
+          "p95_ms": 3.166768000000957,
+          "maximum_ms": 6.975939999998445
+        },
+        {
+          "meteo": "pluie",
+          "serie": 4,
+          "images": 180,
+          "p50_ms": 1.8954720000001544,
+          "p95_ms": 2.974333000000115,
+          "maximum_ms": 5.949748000000909
+        }
+      ]
+    }
+  ]
+}

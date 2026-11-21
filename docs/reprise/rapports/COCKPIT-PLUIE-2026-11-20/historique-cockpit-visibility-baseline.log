@@ -1,0 +1,101 @@
+visibilité — sources voiture.js:b37269498b6a97ee27be729e3c9ea793e7108e02f5850b6d84b4ec5c5a69afe9 jeu.js:b3da80a5b4197b18e8aadefcbeb2510b92d35dfd09e18d6352c3cb3103fbc7ee
+volant=-1 haut jante=0.813760 casquette=0.788751 yeux=0.79
+chaussée : 324 rayons, 324 occultés
+glaces : 24 cadres, 544 recouvrements ou marges < 2 px
+✔ oracles : triangle masquant réel et chevauchement des polygones sont détectés (0.77495ms)
+✔ yeux, assise et épaules conservés ; volant et casquette communs aux deux vues (188.963598ms)
+✖ jante et casquette sous les yeux, volant de taille physique conservée (1.989972ms)
+✖ chaussée à 10/20/40/80 m : aucun triangle opaque sur les 324 rayons du corridor central (4068.018897ms)
+✖ glaces physiques et images projetées séparées des mains, du volant et du tableau dans les vrais cadres (1047.100103ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 2
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5311.623032
+
+✖ failing tests:
+
+test at verifications/cockpit-visibilite.test.mjs:147:1
+✖ jante et casquette sous les yeux, volant de taille physique conservée (1.989972ms)
+  AssertionError [ERR_ASSERTION]: jante doit rester au moins 3 cm sous les yeux : 0.8137595195824335
+      at TestContext.<anonymous> (file:///workspace/scratch/07bf38fd4f2c/bitume-cockpit-fix/verifications/cockpit-visibilite.test.mjs:156:7)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at verifications/cockpit-visibilite.test.mjs:160:1
+✖ chaussée à 10/20/40/80 m : aucun triangle opaque sur les 324 rayons du corridor central (4068.018897ms)
+  AssertionError [ERR_ASSERTION]: volant=-1 œil=0.038 cible=10/-1 : bitume-casquette
+  volant=-1 œil=0.038 cible=10/-0.75 : bitume-casquette
+  volant=-1 œil=0.038 cible=10/-0.5 : bitume-casquette
+  volant=-1 œil=0.038 cible=10/-0.25 : bitume-casquette
+  volant=-1 œil=0.038 cible=10/0 : bitume-casquette
+  volant=-1 œil=0.038 cible=10/0.25 : bitume-casquette
+  volant=-1 œil=0.038 cible=10/0.5 : bitume-casquette
+  volant=-1 œil=0.038 cible=10/0.75 : bitume-casquette
+  volant=-1 œil=0.038 cible=10/1 : bitume-casquette
+  volant=-1 œil=0.038 cible=20/-1 : bitume-casquette
+  volant=-1 œil=0.038 cible=20/-0.75 : bitume-casquette
+  volant=-1 œil=0.038 cible=20/-0.5 : bitume-casquette
+  
+  324 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/07bf38fd4f2c/bitume-cockpit-fix/verifications/cockpit-visibilite.test.mjs:180:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 324,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at verifications/cockpit-visibilite.test.mjs:183:1
+✖ glaces physiques et images projetées séparées des mains, du volant et du tableau dans les vrais cadres (1047.100103ms)
+  AssertionError [ERR_ASSERTION]: 960×540, v=0.0, volant=-1, glace=0/volume, bitume-planche
+  960×540, v=0.0, volant=-1, glace=0/volume, cylinder
+  960×540, v=0.0, volant=-1, glace=0/volume, sphere
+  960×540, v=0.0, volant=-1, glace=0/volume, box
+  960×540, v=0.0, volant=-1, glace=0/volume, bitume-jante
+  960×540, v=0.0, volant=-1, glace=0/image, bitume-planche
+  960×540, v=0.0, volant=-1, glace=0/image, cylinder
+  960×540, v=0.0, volant=-1, glace=0/image, sphere
+  960×540, v=0.0, volant=-1, glace=0/image, box
+  960×540, v=0.0, volant=-1, glace=0/image, bitume-jante
+  960×540, v=0.0, volant=-1, glace=1/volume, bitume-planche
+  960×540, v=0.0, volant=-1, glace=1/volume, box
+  
+  544 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/07bf38fd4f2c/bitume-cockpit-fix/verifications/cockpit-visibilite.test.mjs:203:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 544,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

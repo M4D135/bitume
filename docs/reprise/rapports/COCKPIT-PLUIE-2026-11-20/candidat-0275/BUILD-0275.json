@@ -1,0 +1,35 @@
+{
+  "version": "0.2.75",
+  "base_commit": "1813c5440a9b8da34990f4e38c6c51a1d7bb1700",
+  "branche": "codex/bitume-0275-fps-cockpit-20261121",
+  "html": {
+    "raw": 14511184,
+    "sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225"
+  },
+  "source_fingerprint": "6a96af2cfc77a1614e5355657ce39749f278e7580b29ccf355df00069de795dc",
+  "reconstruction_deux_fois_identique": true,
+  "physique": "p15",
+  "ferro": {
+    "version": "0.3.15",
+    "modules_conformes": 34
+  },
+  "sources_runtime_modifiees_depuis_0274": [
+    "src/style.css"
+  ],
+  "changement": "Badge FPS remonté sous le classement dans le cockpit paysage de hauteur locale 400–600 px et ratio 6/5–2. Texte, dimensions et marge gauche conservés.",
+  "controle_geometrique_preparatoire": "8 poses ; zéro recouvrement ; marge minimale 56,002 px avec les commandes et 19 px avec le classement. Prédiction, pas capture du nouveau HTML.",
+  "controles_locaux": {
+    "options_image": 11,
+    "hud": 13,
+    "captures_habitacle": 31,
+    "cockpit_visibilite": 6,
+    "total": 61
+  },
+  "revue_independante": "Aucune régression certaine ni seuil affaibli. FPS exigé présent dans les deux poses stabilisées.",
+  "portes": [
+    "CI complète du commit exact et archive rapprochée",
+    "10 PNG du nouveau HTML, annonces activées et badge FPS visible aux deux virages maintenus"
+  ],
+  "reference_negative_0274": "../reception-0274/RECEPTION-0274.json",
+  "site_deploye": false
+}

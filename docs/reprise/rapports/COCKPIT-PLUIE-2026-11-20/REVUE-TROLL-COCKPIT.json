@@ -1,0 +1,2522 @@
+{
+  "format": "bitume-revue-troll-cockpit-v1",
+  "dateUTC": "2026-11-20T21:14:32.102343+00:00",
+  "artefact": "14670416340",
+  "identite": {
+    "version": "0.2.70",
+    "htmlSha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+    "htmlOctets": 14502704,
+    "sourceCommit": "c3d49089e68a46dc2163067afbdea7db81364fed",
+    "outilsCommit": "c3d49089e68a46dc2163067afbdea7db81364fed",
+    "tree": "934910167ee8eb27ce5dbde851612c7665fb6b35",
+    "sourceModificationsDeclarees": [
+      "?? qualification/"
+    ],
+    "preuve": "HTML-SHA256.txt, TREE.txt, OUTILS-COMMIT.txt, raccord-assemble.json et les rapports de capture concordent."
+  },
+  "methode": {
+    "inspectionVisuelle": "Les treize PNG cockpit originaux ont été ouverts avec view_image et examinés séparément, sans image reconstruite. Les phases ont été rapprochées de leurs observations J1/J2 et des INSTANTS_TROLL du banc.",
+    "integrite": "SHA256 et taille de chaque PNG recalculés et comparés aux empreintes déclarées dans images/rapport.json.",
+    "actions": "Écriture de ce seul reçu ; aucun code modifié, aucune nouvelle campagne ni exécution de tests."
+  },
+  "portee": {
+    "scene": "duo-cockpit",
+    "imagesAttendues": 13,
+    "imagesPresentes": 13,
+    "imagesExaminees": 13,
+    "imagesAuxEmpreintesConformes": 13,
+    "resolution": [
+      1280,
+      960
+    ],
+    "partage": "haut-bas",
+    "joueur1": "moitié haute, voiture rouge, poing de la main gauche et klaxon ancien",
+    "joueur2": "moitié basse, voiture blanche, salut de la main droite et klaxon mariage",
+    "premierInstantRelatif": 0,
+    "dernierInstantRelatif": 2.85,
+    "acceptationParOutil": true,
+    "inspectionCockpitComplete": true,
+    "duoPoursuite": {
+      "statut": "partiel_non_clos",
+      "imagesPresentes": 11,
+      "imagesAttendues": 13,
+      "imagesInspecteesPourCeRecu": 0,
+      "compteesDansCloture": false,
+      "rapportDetaillePresent": false,
+      "imagesManquantes": [
+        "0011.png",
+        "0012.png"
+      ],
+      "motif": "Campagne interrompue par timeout de 18 minutes selon orchestration CI ; seules onze images poursuite sont présentes. Aucune qualification de cette vue n’est prononcée dans ce reçu."
+    },
+    "campagneComplete": false,
+    "precisionRapportAgrege": "Le rapport agrégé mentionne deux demandes mais un seul passage terminé. Son echecs=0 ne prouve pas la fin de la campagne interrompue."
+  },
+  "conclusion": {
+    "statut": "inspection_cockpit_terminee_sans_blocage_franc_observe",
+    "blocageFrancObserve": false,
+    "entreePlateauRetour": "Les départs successifs, les mains opposées conservées au volant, le retour de J1 puis de J2 et le repos final sont visibles. Les mains gestuelles sortent du champ au plateau ; la forme entière du poing/salut en hauteur n’est pas qualifiée par le cockpit.",
+    "maintienRelachement": "Les deux joueurs restent au repos pendant le maintien après délai et après relâchement. Les compteurs confirment deux répétitions et un relâchement par joueur, sans nouvelle émission de klaxon.",
+    "retroviseurs": "Les quatre glaces rendent des voitures, la route et le décor dans les treize images ; aucun rectangle noir ni dos de miroir à la place de la face observé.",
+    "audio": "Les raccordements logiciels son/geste et les deux créations de sources WebAudio sont documentés ; aucun son n’a été écouté.",
+    "validationGlobaleTroll": false,
+    "validationGlobaleRelease": false
+  },
+  "raccordAssemble": {
+    "fichier": "/workspace/scratch/d61843ca5396/qa/14670416340/raccord-assemble.json",
+    "sha256": "35c3c7761e56e4a7cdcd3dac79bde762616b6750db865a3facf56d69bb657db7",
+    "poses": 5080,
+    "echecs": 0,
+    "statut": "raccord-logique-et-geometrique-conforme-visuel-ouvert",
+    "qualificationWebGL": false,
+    "ecouteAudio": false,
+    "controles": [
+      {
+        "nom": "J1-J2-temporalite-et-poses",
+        "statut": "ok",
+        "preuve": {
+          "locaux": [
+            0,
+            1
+          ],
+          "choix": [
+            {
+              "geste": "salut",
+              "klaxon": "ancien"
+            },
+            {
+              "geste": "poing",
+              "klaxon": "mariage"
+            }
+          ],
+          "pas": 253,
+          "poses": 2540,
+          "amplitudesPoignets": [
+            0.30348712380254833,
+            0.3057826940812309
+          ],
+          "sources": [
+            {
+              "debut": 10.008333333333333,
+              "fin": 10.573354166666666,
+              "echantillons": 26881
+            },
+            {
+              "debut": 10.008333333333333,
+              "fin": 10.973333333333334,
+              "echantillons": 46080
+            }
+          ]
+        }
+      },
+      {
+        "nom": "ID-locaux-non-contigus",
+        "statut": "ok",
+        "preuve": {
+          "locaux": [
+            3,
+            7
+          ],
+          "choix": [
+            {
+              "geste": "salut",
+              "klaxon": "ancien"
+            },
+            {
+              "geste": "poing",
+              "klaxon": "mariage"
+            }
+          ],
+          "pas": 253,
+          "poses": 2540,
+          "amplitudesPoignets": [
+            0.30348712380254833,
+            0.3057826940812309
+          ],
+          "sources": [
+            {
+              "debut": 10.008333333333333,
+              "fin": 10.573354166666666,
+              "echantillons": 26881
+            },
+            {
+              "debut": 10.008333333333333,
+              "fin": 10.973333333333334,
+              "echantillons": 46080
+            }
+          ]
+        }
+      },
+      {
+        "nom": "clavier-repetition-delai-independance",
+        "statut": "ok",
+        "preuve": {
+          "locaux": [
+            3,
+            7
+          ],
+          "touches": [
+            "KeyT",
+            "KeyY"
+          ],
+          "sources": 3,
+          "repetitionIgnoree": true,
+          "delaiRespecte": true,
+          "joueursIndependants": true
+        }
+      },
+      {
+        "nom": "rapport-differe-depart-commun",
+        "statut": "ok",
+        "preuve": {
+          "demande": 10.1,
+          "departCommun": 10.47,
+          "sources": 1,
+          "sonAvantGeste": false
+        }
+      }
+    ],
+    "configurationDistincte": "Le banc logique utilise salut/ancien pour le premier local et poing/mariage pour le second, avec ID 0/1 puis 3/7. La capture cockpit utilise poing/ancien pour J1 et salut/mariage pour J2 ; ces configurations ne sont pas confondues.",
+    "limites": [
+      "Modules et raccords extraits du HTML identifié, sans exécution de la page complète.",
+      "Événements DOM, état de course, horloge et API Web Audio simulés ; aucun appui matériel ni audio entendu.",
+      "Vraies géométries et poses procédurales, sans rasterisation, shaders, inspection WebGL ni contrôle visuel du naturel.",
+      "Aucun essai PhysX, réseau entre machines, allocation en navigateur ou performance matérielle.",
+      "Cette preuve complète les captures du candidat ; elle ne clôt pas la validation visuelle du jeu assemblé."
+    ]
+  },
+  "son": {
+    "bancLogique": "API WebAudio simulée dans raccord-assemble ; déclenchement commun et indépendance vérifiés par ce banc, aucun périphérique ni écoute.",
+    "captureNavigateur": "WebAudio réel déclaré actif ; compteur joues passe de 0 à 1 au départ J1 puis à 2 au départ J2, et reste à 2 jusqu’au relâchement ; ignores reste à 0.",
+    "premierEvenement": {
+      "image": "0001.png",
+      "joueur": "J1",
+      "geste": "poing",
+      "klaxon": "ancien",
+      "departGesteEtEvenementMemeInstant": true
+    },
+    "secondEvenement": {
+      "image": "0003.png",
+      "joueur": "J2",
+      "geste": "salut",
+      "klaxon": "mariage",
+      "departGesteEtEvenementMemeInstant": true
+    },
+    "aucuneEcouteEffectuee": true,
+    "peripheriqueAudioQualifie": false,
+    "qualiteSonoreQualifiee": false,
+    "reserve": "Le compteur de sources et les événements ne prouvent ni le son entendu, ni son timbre, ni sa synchronisation perceptive. Le compteur de sources actives vaut zéro lors des captures ; l’émission passée est attestée seulement par joues et les événements."
+  },
+  "rapports": {
+    "detail": "/workspace/scratch/d61843ca5396/qa/14670416340/images/duo-cockpit/rapport.json",
+    "detailSha256": "3eb73a2e04de9d429ac8c6682b5f95f1ec10ee32502a9e10b35473883504b79a",
+    "erreurs": [],
+    "avertissements": [],
+    "alertesBrutes": [
+      {
+        "image": 2,
+        "vue": "scene",
+        "type": "blocs-fugitifs",
+        "blocs": [
+          {
+            "x": 2,
+            "y": 7,
+            "ecart": 0.1814
+          }
+        ]
+      },
+      {
+        "image": 7,
+        "vue": "scene",
+        "type": "blocs-fugitifs",
+        "blocs": [
+          {
+            "x": 2,
+            "y": 7,
+            "ecart": 0.1814
+          }
+        ]
+      },
+      {
+        "image": 9,
+        "vue": "scene2",
+        "type": "blocs-fugitifs",
+        "blocs": [
+          {
+            "x": 10,
+            "y": 5,
+            "ecart": -0.2009
+          }
+        ]
+      }
+    ],
+    "initialisation": {
+      "entree": "BITUME_JEU.reference",
+      "mode": "duo",
+      "locaux": [
+        0,
+        1
+      ],
+      "choix": [
+        {
+          "geste": "poing",
+          "klaxon": "ancien"
+        },
+        {
+          "geste": "salut",
+          "klaxon": "mariage"
+        }
+      ],
+      "entreeClavier": "CDP Input.dispatchKeyEvent, événements isTrusted observés",
+      "simulationConduite": false,
+      "modulesRemplaces": false,
+      "cameraImposee": false,
+      "audio": {
+        "actif": true,
+        "voix": 1,
+        "joueurs": 1,
+        "rivaux": 0,
+        "fondus": 0,
+        "budget": 5,
+        "musique": false,
+        "echappement": {
+          "voix": 6,
+          "actives": 0,
+          "budget": 6,
+          "parImage": 6,
+          "joues": 0,
+          "ignores": 0
+        },
+        "klaxons": {
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 0,
+          "ignores": 0
+        }
+      }
+    },
+    "environnement": {
+      "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "resolution": [
+        1280,
+        960,
+        1
+      ],
+      "version": "V0.2.70",
+      "backend": "webgl2",
+      "gpuModeste": true,
+      "webgl2": true,
+      "physx": {
+        "disponible": true,
+        "ready": true,
+        "version": "5.12.0",
+        "erreur": null
+      }
+    }
+  },
+  "revueAlertes": [
+    {
+      "image": "0002.png",
+      "vue": "scene",
+      "bloc": [
+        2,
+        7
+      ],
+      "qualification": "mouvement_attendu_du_geste",
+      "observation": "La main gauche rouge quitte le volant et occupe le bloc inférieur gauche ; cette transition est visible et correspond à j1-montee."
+    },
+    {
+      "image": "0007.png",
+      "vue": "scene",
+      "bloc": [
+        2,
+        7
+      ],
+      "qualification": "mouvement_attendu_du_geste",
+      "observation": "La même main rouge réapparaît dans le bloc inférieur gauche pendant retour-j1."
+    },
+    {
+      "image": "0009.png",
+      "vue": "scene2",
+      "bloc": [
+        10,
+        5
+      ],
+      "qualification": "mouvement_attendu_du_geste",
+      "observation": "La main grise de J2 revient par le bord droit et masque temporairement le bloc ; aucune perte de rendu de la scène observée."
+    }
+  ],
+  "reserves": [
+    "Au plateau les mains gestuelles sont hors du champ cockpit ; cette vue ne clôt pas l’examen de la silhouette entière du poing/salut. La vue poursuite reste à terminer.",
+    "Les mains levées traversent les bords du cadre et peuvent être recouvertes par le HUD. Cette coupe de cadrage ne démontre pas une rupture de géométrie.",
+    "Le bas du volant et les attaches des bras sont coupés par les limites de chaque demi-écran ; seules les parties exposées sont inspectées.",
+    "Voitures immobiles, rAF commandé, rendu logiciel SwiftShader : ni conduite, ni fluidité perceptive, ni performance GPU matérielle ne sont qualifiées.",
+    "Aucune écoute audio, vérification de haut-parleur/casque, manette physique ou synchronisation réseau entre machines.",
+    "Le rendu constant des miroirs dans une scène immobile ne suffit pas à valider leur parallaxe en conduite.",
+    "La séquence poursuite partielle n’a pas été inspectée dans ce reçu et reste explicitement non close."
+  ],
+  "images": [
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14670416340/images/duo-cockpit/0000.png",
+      "cheminRelatifQa": "14670416340/images/duo-cockpit/0000.png",
+      "sha256": "dd758e1347ebcae3ddcf1a5bee4ccb0692847af4c16d0348fc94abd75ecc62be",
+      "octets": 1057647,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteDeclareeConforme": true,
+      "phase": "repos",
+      "tempsRelatif": 0,
+      "tempsCapture": 0.25,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "observationVisuelle": "J1 et J2 ont chacun leurs deux mains sur le volant. Les quatre surfaces réfléchissantes affichent route, voitures et décor arrière. Aucun écran noir.",
+      "blocageFrancObserve": false,
+      "mesuresRapport": {
+        "vues": {
+          "scene": {
+            "rectangle": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0,
+            "luminance": 0.38401484061828217
+          },
+          "scene2": {
+            "rectangle": {
+              "x": 0,
+              "y": 480,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0.004166666666666667,
+            "luminance": 0.4117885152252449
+          },
+          "glace-g": {
+            "rectangle": {
+              "x": 257,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5047276220684349
+          },
+          "glace-d": {
+            "rectangle": {
+              "x": 887,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5037893865180078
+          },
+          "glace-g2": {
+            "rectangle": {
+              "x": 257,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5570025386389953
+          },
+          "glace-d2": {
+            "rectangle": {
+              "x": 887,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5554729318211069
+          }
+        },
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 0,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 0,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 0,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 0,
+          "pilote": -1,
+          "geste": null,
+          "klaxon": "classique",
+          "instant": 0,
+          "cote": -1
+        },
+        "audioEvenement": {
+          "klaxon": "classique",
+          "gain": 0,
+          "pan": 0
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14670416340/images/duo-cockpit/0001.png",
+      "cheminRelatifQa": "14670416340/images/duo-cockpit/0001.png",
+      "sha256": "c2119b823748ea7b867f1af59ead280ed0b9b39673780331d12ed241cf3243ef",
+      "octets": 1057690,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteDeclareeConforme": true,
+      "phase": "j1-debut",
+      "tempsRelatif": 0.05,
+      "tempsCapture": 0.3,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "observationVisuelle": "J1 conserve sa pose de repos à l’instant de départ de l’événement, avant la montée du bras. J2 reste au volant ; aucune contamination visuelle entre les joueurs.",
+      "blocageFrancObserve": false,
+      "mesuresRapport": {
+        "vues": {
+          "scene": {
+            "rectangle": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0,
+            "luminance": 0.38401683393808705
+          },
+          "scene2": {
+            "rectangle": {
+              "x": 0,
+              "y": 480,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0.004166666666666667,
+            "luminance": 0.4117873378687327
+          },
+          "glace-g": {
+            "rectangle": {
+              "x": 257,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5046667634243238
+          },
+          "glace-d": {
+            "rectangle": {
+              "x": 887,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5038180064077937
+          },
+          "glace-g2": {
+            "rectangle": {
+              "x": 257,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5570296479559238
+          },
+          "glace-d2": {
+            "rectangle": {
+              "x": 887,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5554316630783155
+          }
+        },
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 1,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 0,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 1,
+          "pilote": 0,
+          "geste": "poing",
+          "klaxon": "ancien",
+          "instant": 6.291666666666665,
+          "cote": -1
+        },
+        "audioEvenement": {
+          "klaxon": "ancien",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": "poing",
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14670416340/images/duo-cockpit/0002.png",
+      "cheminRelatifQa": "14670416340/images/duo-cockpit/0002.png",
+      "sha256": "8272ae107bf034c40bb4b8cacdf2f5b48b2b51105e3f196dcc45486ecd159700",
+      "octets": 1055134,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteDeclareeConforme": true,
+      "phase": "j1-montee",
+      "tempsRelatif": 0.15,
+      "tempsCapture": 0.4,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "observationVisuelle": "La main gauche rouge de J1 se détache du volant vers le bord gauche ; sa main droite reste à la commande. J2 conserve ses deux mains au volant. Le changement dans le bloc inférieur gauche correspond à cette main en mouvement.",
+      "blocageFrancObserve": false,
+      "mesuresRapport": {
+        "vues": {
+          "scene": {
+            "rectangle": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0,
+            "luminance": 0.38357892723109716
+          },
+          "scene2": {
+            "rectangle": {
+              "x": 0,
+              "y": 480,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0.004166666666666667,
+            "luminance": 0.4117720429098452
+          },
+          "glace-g": {
+            "rectangle": {
+              "x": 257,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5046790471613479
+          },
+          "glace-d": {
+            "rectangle": {
+              "x": 887,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5037922340125613
+          },
+          "glace-g2": {
+            "rectangle": {
+              "x": 257,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5570751407151197
+          },
+          "glace-d2": {
+            "rectangle": {
+              "x": 887,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5553812733564132
+          }
+        },
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 1,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 0,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 1,
+          "pilote": 0,
+          "geste": "poing",
+          "klaxon": "ancien",
+          "instant": 6.291666666666665,
+          "cote": -1
+        },
+        "audioEvenement": {
+          "klaxon": "ancien",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": "poing",
+              "gestePhase": 0.07142857142857117,
+              "gesteCote": -1,
+              "gesteIntensite": 0.3761574074074053,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "addab402"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14670416340/images/duo-cockpit/0003.png",
+      "cheminRelatifQa": "14670416340/images/duo-cockpit/0003.png",
+      "sha256": "7ddb077f191390e8272912894a759e3bc135c299601372651d1a2d1c9c67a622",
+      "octets": 1046174,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteDeclareeConforme": true,
+      "phase": "j2-debut",
+      "tempsRelatif": 0.2,
+      "tempsCapture": 0.45,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "observationVisuelle": "Le bras de J1 monte et sa main rouge apparaît partiellement au bord supérieur gauche, derrière le HUD. J2 est encore dans sa pose initiale à son instant de départ ; les reflets des quatre miroirs restent présents.",
+      "blocageFrancObserve": false,
+      "mesuresRapport": {
+        "vues": {
+          "scene": {
+            "rectangle": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0,
+            "luminance": 0.3783482935313735
+          },
+          "scene2": {
+            "rectangle": {
+              "x": 0,
+              "y": 480,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0.004166666666666667,
+            "luminance": 0.4117682942055552
+          },
+          "glace-g": {
+            "rectangle": {
+              "x": 257,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5046706029732152
+          },
+          "glace-d": {
+            "rectangle": {
+              "x": 887,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5037832577213909
+          },
+          "glace-g2": {
+            "rectangle": {
+              "x": 257,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5570608787645871
+          },
+          "glace-d2": {
+            "rectangle": {
+              "x": 887,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5554105638856969
+          }
+        },
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 2,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 1,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 2,
+          "pilote": 1,
+          "geste": "salut",
+          "klaxon": "mariage",
+          "instant": 6.441666666666665,
+          "cote": 1
+        },
+        "audioEvenement": {
+          "klaxon": "mariage",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": "poing",
+              "gestePhase": 0.10714285714285676,
+              "gesteCote": -1,
+              "gesteIntensite": 0.6835937499999969,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "44dee8d6"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": "salut",
+              "gestePhase": 0,
+              "gesteCote": 1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14670416340/images/duo-cockpit/0004.png",
+      "cheminRelatifQa": "14670416340/images/duo-cockpit/0004.png",
+      "sha256": "4d92df82d1f7d1225b3b0ca26c695ce170b3619d0cc488ece44b6db12643d354",
+      "octets": 1037807,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteDeclareeConforme": true,
+      "phase": "montees",
+      "tempsRelatif": 0.35,
+      "tempsCapture": 0.6,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "observationVisuelle": "La main gestuelle de J1 est sortie latéralement du champ. La main droite de J2 monte au bord droit, partiellement coupée ; sa main gauche reste au volant. Pas de rupture franche visible dans les portions de manches exposées.",
+      "blocageFrancObserve": false,
+      "mesuresRapport": {
+        "vues": {
+          "scene": {
+            "rectangle": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0,
+            "luminance": 0.3793323697875174
+          },
+          "scene2": {
+            "rectangle": {
+              "x": 0,
+              "y": 480,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0.004166666666666667,
+            "luminance": 0.406009675288387
+          },
+          "glace-g": {
+            "rectangle": {
+              "x": 257,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.504702016275791
+          },
+          "glace-d": {
+            "rectangle": {
+              "x": 887,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5037488167371545
+          },
+          "glace-g2": {
+            "rectangle": {
+              "x": 257,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5571176171985235
+          },
+          "glace-d2": {
+            "rectangle": {
+              "x": 887,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5553418997821472
+          }
+        },
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 2,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 1,
+            "repetitions": 0,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 2,
+          "pilote": 1,
+          "geste": "salut",
+          "klaxon": "mariage",
+          "instant": 6.441666666666665,
+          "cote": 1
+        },
+        "audioEvenement": {
+          "klaxon": "mariage",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": "poing",
+              "gestePhase": 0.21428571428571352,
+              "gesteCote": -1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "58d4cd08"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": "salut",
+              "gestePhase": 0.08333333333333304,
+              "gesteCote": 1,
+              "gesteIntensite": 0.6835937499999969,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "3e0f8427"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14670416340/images/duo-cockpit/0005.png",
+      "cheminRelatifQa": "14670416340/images/duo-cockpit/0005.png",
+      "sha256": "3bd413e6ab8cef8221bdbf05e469d92de062ef4ee2f091359be9b6950a461bce",
+      "octets": 1038089,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteDeclareeConforme": true,
+      "phase": "plateau",
+      "tempsRelatif": 0.6,
+      "tempsCapture": 0.85,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "observationVisuelle": "Les mains gestuelles de J1 et J2 sont hors champ au plateau. La main droite de J1 et la main gauche de J2 restent sur leurs volants respectifs. La route centrale et les quatre rétros restent visibles.",
+      "blocageFrancObserve": false,
+      "mesuresRapport": {
+        "vues": {
+          "scene": {
+            "rectangle": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0,
+            "luminance": 0.3799299827649545
+          },
+          "scene2": {
+            "rectangle": {
+              "x": 0,
+              "y": 480,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0.004166666666666667,
+            "luminance": 0.40839811608320215
+          },
+          "glace-g": {
+            "rectangle": {
+              "x": 257,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5048036330898369
+          },
+          "glace-d": {
+            "rectangle": {
+              "x": 887,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.503811271946689
+          },
+          "glace-g2": {
+            "rectangle": {
+              "x": 257,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5569495777265255
+          },
+          "glace-d2": {
+            "rectangle": {
+              "x": 887,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5554357467640774
+          }
+        },
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 2,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 2,
+          "pilote": 1,
+          "geste": "salut",
+          "klaxon": "mariage",
+          "instant": 6.441666666666665,
+          "cote": 1
+        },
+        "audioEvenement": {
+          "klaxon": "mariage",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": "poing",
+              "gestePhase": 0.39285714285714146,
+              "gesteCote": -1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "1ed38a69"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": "salut",
+              "gestePhase": 0.22222222222222143,
+              "gesteCote": 1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "962ba7ae"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14670416340/images/duo-cockpit/0006.png",
+      "cheminRelatifQa": "14670416340/images/duo-cockpit/0006.png",
+      "sha256": "1c4a6bfe89fa4e2306a19ac3718d14fe41dac534df04631fe8b3eb8bc06bb66b",
+      "octets": 1037922,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteDeclareeConforme": true,
+      "phase": "plateau-fin",
+      "tempsRelatif": 1.05,
+      "tempsCapture": 1.3,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "observationVisuelle": "Même maintien des mains opposées sur les commandes et mains gestuelles hors champ. Aucun nouveau geste visible ni écran noir ; les miroirs restent rendus.",
+      "blocageFrancObserve": false,
+      "mesuresRapport": {
+        "vues": {
+          "scene": {
+            "rectangle": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0,
+            "luminance": 0.37989245322039805
+          },
+          "scene2": {
+            "rectangle": {
+              "x": 0,
+              "y": 480,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0.004166666666666667,
+            "luminance": 0.4093463993961571
+          },
+          "glace-g": {
+            "rectangle": {
+              "x": 257,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5047091923619113
+          },
+          "glace-d": {
+            "rectangle": {
+              "x": 887,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5038665200563903
+          },
+          "glace-g2": {
+            "rectangle": {
+              "x": 257,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5571493453799929
+          },
+          "glace-d2": {
+            "rectangle": {
+              "x": 887,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5553906279636153
+          }
+        },
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 2,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 2,
+          "pilote": 1,
+          "geste": "salut",
+          "klaxon": "mariage",
+          "instant": 6.441666666666665,
+          "cote": 1
+        },
+        "audioEvenement": {
+          "klaxon": "mariage",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": "poing",
+              "gestePhase": 0.7142857142857117,
+              "gesteCote": -1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "9ed47860"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": "salut",
+              "gestePhase": 0.47222222222222054,
+              "gesteCote": 1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "7815a021"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14670416340/images/duo-cockpit/0007.png",
+      "cheminRelatifQa": "14670416340/images/duo-cockpit/0007.png",
+      "sha256": "ac48da06becebffccecf3c3cab6d165e01f260c005af2b316eeaf51c6d515f7f",
+      "octets": 1046726,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteDeclareeConforme": true,
+      "phase": "retour-j1",
+      "tempsRelatif": 1.3,
+      "tempsCapture": 1.55,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "observationVisuelle": "La main gauche rouge de J1 réapparaît en bas à gauche pendant son retour, avec une position comparable à la montée. J2 garde son geste hors champ et sa main gauche sur le volant.",
+      "blocageFrancObserve": false,
+      "mesuresRapport": {
+        "vues": {
+          "scene": {
+            "rectangle": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0,
+            "luminance": 0.3837918143392184
+          },
+          "scene2": {
+            "rectangle": {
+              "x": 0,
+              "y": 480,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0.004166666666666667,
+            "luminance": 0.408493223300881
+          },
+          "glace-g": {
+            "rectangle": {
+              "x": 257,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5047279292579772
+          },
+          "glace-d": {
+            "rectangle": {
+              "x": 887,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5037785673458942
+          },
+          "glace-g2": {
+            "rectangle": {
+              "x": 257,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5570371885172468
+          },
+          "glace-d2": {
+            "rectangle": {
+              "x": 887,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.555243310777918
+          }
+        },
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 2,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 2,
+          "pilote": 1,
+          "geste": "salut",
+          "klaxon": "mariage",
+          "instant": 6.441666666666665,
+          "cote": 1
+        },
+        "audioEvenement": {
+          "klaxon": "mariage",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": "poing",
+              "gestePhase": 0.8928571428571398,
+              "gesteCote": -1,
+              "gesteIntensite": 0.376157407407425,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "a2831ddb"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": "salut",
+              "gestePhase": 0.6111111111111089,
+              "gesteCote": 1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "7fa8c5f9"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14670416340/images/duo-cockpit/0008.png",
+      "cheminRelatifQa": "14670416340/images/duo-cockpit/0008.png",
+      "sha256": "3c947237975bac843f483c1d1b9ef6ed5570f37c2d9a706726eb861f7c28d346",
+      "octets": 1047413,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteDeclareeConforme": true,
+      "phase": "j1-termine",
+      "tempsRelatif": 1.55,
+      "tempsCapture": 1.8,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "observationVisuelle": "Les deux mains de J1 sont revenues à la prise initiale ; J2 garde encore sa main droite hors du champ. L’indépendance des fins de geste est visible.",
+      "blocageFrancObserve": false,
+      "mesuresRapport": {
+        "vues": {
+          "scene": {
+            "rectangle": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0,
+            "luminance": 0.3842738617069602
+          },
+          "scene2": {
+            "rectangle": {
+              "x": 0,
+              "y": 480,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0.004166666666666667,
+            "luminance": 0.4096592468622354
+          },
+          "glace-g": {
+            "rectangle": {
+              "x": 257,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5047260771498134
+          },
+          "glace-d": {
+            "rectangle": {
+              "x": 887,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5038438464693079
+          },
+          "glace-g2": {
+            "rectangle": {
+              "x": 257,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5569582882224886
+          },
+          "glace-d2": {
+            "rectangle": {
+              "x": 887,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5555358777393428
+          }
+        },
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 2,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 2,
+          "pilote": 1,
+          "geste": "salut",
+          "klaxon": "mariage",
+          "instant": 6.441666666666665,
+          "cote": 1
+        },
+        "audioEvenement": {
+          "klaxon": "mariage",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": "salut",
+              "gestePhase": 0.7499999999999973,
+              "gesteCote": 1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "bcbdfeb2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14670416340/images/duo-cockpit/0009.png",
+      "cheminRelatifQa": "14670416340/images/duo-cockpit/0009.png",
+      "sha256": "447d62493bab022b55a90f5cc7541c88ea30cbf4fb4605072a7fec53f900c19b",
+      "octets": 1066831,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteDeclareeConforme": true,
+      "phase": "retour-j2",
+      "tempsRelatif": 1.8,
+      "tempsCapture": 2.05,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "observationVisuelle": "La main droite grise de J2 revient par le bord droit, doigts/manche visibles en gros plan et partiellement coupés. J1 conserve ses deux mains au volant. Le bloc fugitif droit correspond à cette main, pas à une extinction de la scène.",
+      "blocageFrancObserve": false,
+      "mesuresRapport": {
+        "vues": {
+          "scene": {
+            "rectangle": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0,
+            "luminance": 0.3843007642575127
+          },
+          "scene2": {
+            "rectangle": {
+              "x": 0,
+              "y": 480,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0.004166666666666667,
+            "luminance": 0.39856126493436195
+          },
+          "glace-g": {
+            "rectangle": {
+              "x": 257,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5046571757016528
+          },
+          "glace-d": {
+            "rectangle": {
+              "x": 887,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5038191176470601
+          },
+          "glace-g2": {
+            "rectangle": {
+              "x": 257,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5569987310009076
+          },
+          "glace-d2": {
+            "rectangle": {
+              "x": 887,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5554226862745215
+          }
+        },
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 2,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 2,
+          "pilote": 1,
+          "geste": "salut",
+          "klaxon": "mariage",
+          "instant": 6.441666666666665,
+          "cote": 1
+        },
+        "audioEvenement": {
+          "klaxon": "mariage",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": "salut",
+              "gestePhase": 0.8888888888888867,
+              "gesteCote": 1,
+              "gesteIntensite": 0.582990397805229,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "7468de72"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14670416340/images/duo-cockpit/0010.png",
+      "cheminRelatifQa": "14670416340/images/duo-cockpit/0010.png",
+      "sha256": "b235d4531e8719b8993dd1bb5a505a157362f85e5fff28f84e2776987e1b4454",
+      "octets": 1056865,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteDeclareeConforme": true,
+      "phase": "repos-final",
+      "tempsRelatif": 2.15,
+      "tempsCapture": 2.4,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "observationVisuelle": "Les deux joueurs ont retrouvé leurs deux mains au volant. Silhouettes visibles et commandes reviennent à la composition initiale ; quatre miroirs toujours rendus.",
+      "blocageFrancObserve": false,
+      "mesuresRapport": {
+        "vues": {
+          "scene": {
+            "rectangle": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0,
+            "luminance": 0.3843987882375322
+          },
+          "scene2": {
+            "rectangle": {
+              "x": 0,
+              "y": 480,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0.004166666666666667,
+            "luminance": 0.4120567297282672
+          },
+          "glace-g": {
+            "rectangle": {
+              "x": 257,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5046707996924256
+          },
+          "glace-d": {
+            "rectangle": {
+              "x": 887,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5038029207996942
+          },
+          "glace-g2": {
+            "rectangle": {
+              "x": 257,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5570667465077637
+          },
+          "glace-d2": {
+            "rectangle": {
+              "x": 887,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5553353555043047
+          }
+        },
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 2,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 1,
+            "repetitions": 1,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 2,
+          "pilote": 1,
+          "geste": "salut",
+          "klaxon": "mariage",
+          "instant": 6.441666666666665,
+          "cote": 1
+        },
+        "audioEvenement": {
+          "klaxon": "mariage",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": 1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14670416340/images/duo-cockpit/0011.png",
+      "cheminRelatifQa": "14670416340/images/duo-cockpit/0011.png",
+      "sha256": "d27c7a8d6c9c10eae8b954daf7831ca444cd95bf26df896c2fb6dd8873ad634c",
+      "octets": 1056828,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteDeclareeConforme": true,
+      "phase": "maintien-apres-delai",
+      "tempsRelatif": 2.8,
+      "tempsCapture": 3.04999999999999,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "observationVisuelle": "Malgré le maintien/répétition de touches déclaré dans le rapport, les deux joueurs restent au repos, deux mains sur chaque volant. Aucun redémarrage du geste visible.",
+      "blocageFrancObserve": false,
+      "mesuresRapport": {
+        "vues": {
+          "scene": {
+            "rectangle": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0,
+            "luminance": 0.38438244355946377
+          },
+          "scene2": {
+            "rectangle": {
+              "x": 0,
+              "y": 480,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0.004166666666666667,
+            "luminance": 0.41206450317083204
+          },
+          "glace-g": {
+            "rectangle": {
+              "x": 257,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5047293408945269
+          },
+          "glace-d": {
+            "rectangle": {
+              "x": 887,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5038268824810989
+          },
+          "glace-g2": {
+            "rectangle": {
+              "x": 257,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5570560199923207
+          },
+          "glace-d2": {
+            "rectangle": {
+              "x": 887,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5554654035627439
+          }
+        },
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 2,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 2,
+            "relachements": 0,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 1,
+            "repetitions": 2,
+            "relachements": 0,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 2,
+          "pilote": 1,
+          "geste": "salut",
+          "klaxon": "mariage",
+          "instant": 6.441666666666665,
+          "cote": 1
+        },
+        "audioEvenement": {
+          "klaxon": "mariage",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": 1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14670416340/images/duo-cockpit/0012.png",
+      "cheminRelatifQa": "14670416340/images/duo-cockpit/0012.png",
+      "sha256": "76a7ee0c626020cc9c412cad8c093da138f2d51c35c2d77785ef570610c75df7",
+      "octets": 1056686,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "empreinteDeclareeConforme": true,
+      "phase": "relachement",
+      "tempsRelatif": 2.85,
+      "tempsCapture": 3.09999999999999,
+      "ouverteAvecViewImage": true,
+      "inspectee": true,
+      "observationVisuelle": "Après relâchement des deux touches, les deux poses restent au repos, sans nouveau geste ; route, cockpit et quatre rétros toujours rendus.",
+      "blocageFrancObserve": false,
+      "mesuresRapport": {
+        "vues": {
+          "scene": {
+            "rectangle": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0,
+            "luminance": 0.3843580918999438
+          },
+          "scene2": {
+            "rectangle": {
+              "x": 0,
+              "y": 480,
+              "width": 1280,
+              "height": 480
+            },
+            "noir": 0.004166666666666667,
+            "luminance": 0.4120498386194087
+          },
+          "glace-g": {
+            "rectangle": {
+              "x": 257,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5046972927079322
+          },
+          "glace-d": {
+            "rectangle": {
+              "x": 887,
+              "y": 96,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5038213185954138
+          },
+          "glace-g2": {
+            "rectangle": {
+              "x": 257,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5570113880558861
+          },
+          "glace-d2": {
+            "rectangle": {
+              "x": 887,
+              "y": 576,
+              "width": 136,
+              "height": 45
+            },
+            "noir": 0,
+            "luminance": 0.5554452705369847
+          }
+        },
+        "glErreur": 0,
+        "glPerdu": false,
+        "audio": {
+          "actif": true,
+          "voix": 5,
+          "actives": 0,
+          "budget": 5,
+          "dureeMax": 0.96,
+          "joues": 2,
+          "ignores": 0
+        },
+        "entrees": [
+          {
+            "appuis": 1,
+            "repetitions": 2,
+            "relachements": 1,
+            "nonFiables": 0
+          },
+          {
+            "appuis": 1,
+            "repetitions": 2,
+            "relachements": 1,
+            "nonFiables": 0
+          }
+        ],
+        "evenement": {
+          "sequence": 2,
+          "pilote": 1,
+          "geste": "salut",
+          "klaxon": "mariage",
+          "instant": 6.441666666666665,
+          "cote": 1
+        },
+        "audioEvenement": {
+          "klaxon": "mariage",
+          "gain": 1,
+          "pan": 1.2246467991473532e-16
+        },
+        "joueurs": [
+          {
+            "local": 0,
+            "id": 0,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          },
+          {
+            "local": 1,
+            "id": 1,
+            "expression": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": 1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "mains": [
+              {
+                "pieces": 5,
+                "empreinteLocale": "dc303b42"
+              },
+              {
+                "pieces": 5,
+                "empreinteLocale": "b4ce6521"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "format": "bitume-revue-carrosserie-v1",
+  "date": "2026-11-20T21:15:12.000409+00:00",
+  "run": 44816364036,
+  "artifact": 14668489501,
+  "archive_sha256": "35f2a16b203a5a4f85fac0ffe740e78f4a3e28e305aa23f03e85e4ca802558b0",
+  "html_sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+  "html_octets": 14502704,
+  "images_inspectees_individuellement": 4,
+  "resultat": "accepte_dans_ce_perimetre",
+  "constats": [
+    "Deux états humides et deux secs inspectés. Caméra, poses et durées identiques ; lentille inactive.",
+    "Les petits points clairs/bleutés changent de position sur les panneaux humides ; les panneaux secs n’en présentent pas.",
+    "Aucun écran noir, trou de géométrie ou erreur WebGL observé. Les petites perles restent discrètes à cette distance."
+  ],
+  "limites": [
+    "Vue rapprochée de surfaces à vitesse nulle, rendu SwiftShader high ; aucun FPS matériel ni essai de conduite qualifié.",
+    "Les pixels de pluie ambiante et les reflets du décor changent aussi ; la différence complète des PNG ne mesure pas exclusivement les perles.",
+    "Le trajet 3D précis de chaque perle et le passage entre pièces ne se déduisent pas de ces quatre images."
+  ],
+  "images": [
+    {
+      "scenario": "carrosserie-pluie",
+      "fichier": "images/apres/carrosserie-pluie/0000.png",
+      "sha256": "bb5a53f2bd0df6e5455b71e015481ff95364e6074c01262cbda3181704e31f65",
+      "octets": 283248,
+      "source": "0798984659d718e133b353aa81ebcbbc35ad93b9",
+      "html_sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+      "carrosserie": {
+        "humide": 0.9811422881743392,
+        "pluie": 1,
+        "actives": 189,
+        "age": 7.941666666666655,
+        "revisions": 81,
+        "dernierInstant": 7.941666666666655,
+        "pool": 192,
+        "dessineesSujet": 189,
+        "dessineesTotal": 189
+      },
+      "lentille_active": false,
+      "gl_erreur": 0,
+      "gl_perdu": false,
+      "inspection": "Surface peinte, reflets, petites perles changeantes et pluie visibles ; pas de voile de lentille."
+    },
+    {
+      "scenario": "carrosserie-pluie",
+      "fichier": "images/apres/carrosserie-pluie/0001.png",
+      "sha256": "b1a0ed5386d6145c118e7cfa4ba73d7c07819cd380b590cdcbb35e2cd31a3423",
+      "octets": 282958,
+      "source": "0798984659d718e133b353aa81ebcbbc35ad93b9",
+      "html_sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+      "carrosserie": {
+        "humide": 0.9820619896326764,
+        "pluie": 1,
+        "actives": 189,
+        "age": 8.041666666666655,
+        "revisions": 82,
+        "dernierInstant": 8.041666666666655,
+        "pool": 192,
+        "dessineesSujet": 189,
+        "dessineesTotal": 189
+      },
+      "lentille_active": false,
+      "gl_erreur": 0,
+      "gl_perdu": false,
+      "inspection": "Surface peinte, reflets, petites perles changeantes et pluie visibles ; pas de voile de lentille."
+    },
+    {
+      "scenario": "carrosserie-sec",
+      "fichier": "images/apres/carrosserie-sec/0000.png",
+      "sha256": "730b78999a42c3ad79ed4ffa0db921c38ec0105c78cdd9e325a7a6633d45a59c",
+      "octets": 307480,
+      "source": "0798984659d718e133b353aa81ebcbbc35ad93b9",
+      "html_sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+      "carrosserie": {
+        "humide": 0,
+        "pluie": 0,
+        "actives": 0,
+        "age": 7.941666666666655,
+        "revisions": 81,
+        "dernierInstant": 7.941666666666655,
+        "pool": 192,
+        "dessineesSujet": 0,
+        "dessineesTotal": 0
+      },
+      "lentille_active": false,
+      "gl_erreur": 0,
+      "gl_perdu": false,
+      "inspection": "Surface peinte continue et exempte de perles ; cadrage et géométrie conservés."
+    },
+    {
+      "scenario": "carrosserie-sec",
+      "fichier": "images/apres/carrosserie-sec/0001.png",
+      "sha256": "c597e067af007da0580c3e52435f818943a8cb0cc1d058d9166b5ef85fa9e3d2",
+      "octets": 307445,
+      "source": "0798984659d718e133b353aa81ebcbbc35ad93b9",
+      "html_sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+      "carrosserie": {
+        "humide": 0,
+        "pluie": 0,
+        "actives": 0,
+        "age": 8.041666666666655,
+        "revisions": 82,
+        "dernierInstant": 8.041666666666655,
+        "pool": 192,
+        "dessineesSujet": 0,
+        "dessineesTotal": 0
+      },
+      "lentille_active": false,
+      "gl_erreur": 0,
+      "gl_perdu": false,
+      "inspection": "Surface peinte continue et exempte de perles ; cadrage et géométrie conservés."
+    }
+  ]
+}

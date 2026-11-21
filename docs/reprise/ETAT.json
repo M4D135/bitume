@@ -5,16 +5,16 @@
     "version_publiee_verifiee": "0.2.69",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "publie_sur_main_avec_reserves_explicites",
-    "lot": "00C_publication_0269_close_avec_reserves",
-    "fiche": "docs/reprise/PARALLELE-2026-11-20/00-INTEGRATION.md",
+    "statut": "candidat_0275_en_qualification_badge_FPS",
+    "lot": "00D_cockpit_pluie",
+    "fiche": "docs/reprise/COCKPIT-PLUIE-2026-11-20.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "033",
-    "prochaine_action": "Traiter la lisibilité centrale du cockpit et caractériser le budget décor (172 ms affichés ; seuil strict < 150 ms), puis intégrer une prochaine livraison qualifiée.",
+    "derniere_entree": "038",
+    "prochaine_action": "Recevoir CI et dix PNG exacts 0.2.75, dont les deux virages maintenus avec FPS visible ; conserver le défaut .74.",
     "dernier_lot_clos": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
     "fiche_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
     "index": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
-    "entree_journal": "033",
+    "entree_journal": "038",
     "dernieres_demandes": "docs/reprise/DEMANDES-ARCADE-PERFORMANCE-TROLL-2026-11-20.md",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md",
@@ -24,7 +24,7 @@
     "dernier_lot_coordination_clos": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
     "runtime_modifie_par_coordination_portee": "0.2.69 publié sur main et contenu reçu vérifié.",
     "preuve_t3": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
-    "reserve_lisibilite_cockpit": "Cockpit 960×540 et 540×960, caméra réelle du siège : le volant occulte une partie centrale de la chaussée. Lisibilité non certifiée, suivi ouvert ; aucune nouvelle régression d’assemblage établie. Géométrie commune et T3 restent acquis.",
+    "reserve_lisibilite_cockpit": "0.2.74 : classement/régime dégagés, badge FPS sur gant gauche à +0,35 ; 0.2.75 en qualification.",
     "alerte_budget_decor": {
       "statut": "ouvert",
       "run": 44803588903,
@@ -32,11 +32,37 @@
       "mesure_ms_affichee": 172,
       "seuil_strict_ms": 150,
       "cause": "non déterminée",
-      "ci_pr_meme_arbre": "suite réussie, durées individuelles non enregistrées"
+      "ci_pr_meme_arbre": "suite réussie, durées individuelles non enregistrées",
+      "mesures_suivantes": [
+        {
+          "version": "0.2.70",
+          "ms": 152
+        },
+        {
+          "version": "0.2.71",
+          "run": 44825452386,
+          "ms": 168,
+          "arbre_identique_push_vert": true
+        },
+        {
+          "version": "0.2.72",
+          "run": 44831750422,
+          "ms": 155,
+          "arbre_identique_pr_vert": true
+        }
+      ]
     },
     "commit_fusion": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
     "tete_qualifiee": "7a8a53ed27a91fdfecc0acfe3d10a9d27a27d2c9",
-    "pr_publiee": 42
+    "pr_publiee": 42,
+    "branche_candidate": "codex/bitume-0275-fps-cockpit-20261121",
+    "version_candidate": "0.2.75",
+    "branche_pr": "codex/bitume-0275-fps-cockpit-20261121",
+    "preuve_candidat_0272": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0272/BUILD-0272.json",
+    "preuve_candidat_0273": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/BUILD-0273.json",
+    "preuve_candidat_0274": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0274/BUILD-0274.json",
+    "preuve_reception_0273": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/RECEPTION-0273.json",
+    "preuve_candidat_0275": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0275/BUILD-0275.json"
   },
   "publication": {
     "version": "0.2.69",
@@ -895,5 +921,40 @@
     "push_force": false,
     "date_commit_fusion_utc": "2026-11-20T19:52:29Z"
   },
-  "suite_portee": "Suivi distinct des sources Monaco, conservé ; la prochaine action de coordination figure dans etat_courant."
+  "suite_portee": "Suivi distinct des sources Monaco, conservé ; la prochaine action de coordination figure dans etat_courant.",
+  "qualification_cockpit_pluie_0270": {
+    "commit_outils": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+    "tree": "5ca64577b6044672a61feda146c405e18e6294c6",
+    "html_sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+    "html_octets": 14502704,
+    "ci_complete": {
+      "run": 44818836125,
+      "statut": "success",
+      "suites_node": 179,
+      "echecs": 0,
+      "tests_python": 8,
+      "sources_verifiees": 3852,
+      "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/ci-finale-0270/RECEPTION-CI.json"
+    },
+    "statut_visuel": "bloque",
+    "recu_cockpit": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/REVUE-COCKPIT-0270.json",
+    "impact": "cinq PNG inspectés, même goutte et cinq instants conformes",
+    "troll_poursuite": "11 PNG sur 13 ; maintien après délai et relâchement absents",
+    "meteo_historique": "Six jobs réussis, un annulé ; passage legere absent",
+    "fusion_autorisee_par_qualification": false,
+    "reserves_decor_ms": [
+      172,
+      152
+    ]
+  },
+  "candidat_cockpit_pluie_0271": {
+    "branche": "codex/bitume-0271-hud-20261120",
+    "base": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+    "html_sha256": "0e4cdb72ecceb434c086a6bdc365346cfac1900871b95afadd96932cb3fd8ce3",
+    "html_octets": 14507449,
+    "sources_sha256": "fd4eefe258dc634ab197a6690a77c15a254aa676320078a433430814e3c2200f",
+    "recu_local": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0271/VALIDATION-LOCALE.json",
+    "qualification_visuelle": "en_attente",
+    "fusionnee": false
+  }
 }

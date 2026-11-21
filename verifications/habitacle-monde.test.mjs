@@ -112,6 +112,27 @@ test('commandes, instruments et rétros : mêmes objets métriques et sommets mo
   console.log(`habitacle commun : 27 poses, ${mesures} sommets comparés dans le monde`);
 });
 
+test('les quatre coins de chaque image rétro coïncident avec la face réelle tournée vers le pilote', () => {
+  const mod = modele();
+  for (const attitude of [[0, 0, 0], [.4, .09, -.06], [-1.3, .24, -.19]]) {
+    const ev = pose(); [ev.cap, ev.tangage, ev.roulis] = attitude;
+    V.cockpit(mod, ev, [], { ...ev.pilote, glaceVive: true });
+    const glaces = V.glacesCockpit(ev), H = mod.objetsRendu.habitacle;
+    for (let i = 0; i < glaces.length; i++) {
+      const glace = glaces[i], objet = H.glaces[i].vive.objet;
+      const sommetsMonde = sommets(objet.shape).map(p => monde(objet, p));
+      const profondeur = p => p.reduce((s, x, k) => s + (x - glace.centre[k]) * glace.normale[k], 0);
+      const devant = Math.max(...sommetsMonde.map(profondeur));
+      const face = sommetsMonde.filter(p => devant - profondeur(p) < 1e-9);
+      const verifierCoin = coin => assert.ok(face.some(p => Math.hypot(...p.map((x, k) => x - coin[k])) < 1e-9),
+        'coin de projection sur la face physique visible');
+      for (const coin of glace.coins) verifierCoin(coin);
+      // Ancienne erreur de signe : 7 mm derrière la face visible. Le contrôle doit la refuser.
+      assert.throws(() => verifierCoin(glace.coins[0].map((x, k) => x - .007 * glace.normale[k])));
+    }
+  }
+});
+
 test('coque commune, buste commun et propre tête seule masquée depuis les yeux', () => {
   const mod = modele(), ev = pose(), exterieur = [], dedans = [];
   V.poser(mod, ev, exterieur); V.cockpit(mod, ev, dedans, { ...ev.pilote, glaceVive: true });

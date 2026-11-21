@@ -1,0 +1,38 @@
+{
+  "format": "bitume-validation-locale-0271-v1",
+  "version": "0.2.71",
+  "html_sha256": "0e4cdb72ecceb434c086a6bdc365346cfac1900871b95afadd96932cb3fd8ce3",
+  "html_octets": 14507449,
+  "reconstruction_identique": true,
+  "ferro": {
+    "version": "0.3.15",
+    "copies_verifiees": 34
+  },
+  "controles": {
+    "captures_habitacle": 19,
+    "captures_troll": 8,
+    "hud_pneus_virages": 13,
+    "options_image": 11,
+    "troll_assemble": 9
+  },
+  "portee": "Contrôles locaux et raccords du HTML construit ; qualification DOM et PNG du navigateur CI encore attendue.",
+  "images_candidat_0271_inspectees": 0,
+  "criteres_assouplis": false,
+  "sources_runtime_modifiees": [
+    "src/index.html",
+    "src/jeu.js",
+    "src/style.css"
+  ],
+  "empreintes": {
+    "0271-captures-habitacle.log": "3fa2e6df2330e5893e141b201361dfb734beb5099cc92b7dd82bbe40f0a7a969",
+    "0271-captures-troll.log": "19781aca780a747985fd1ff8aea639de923d7b7ec80b8b00dae388abbc8bf20e",
+    "0271-hud-pneus.log": "486a33fd368946d72f5d16001314e86dd507609f799839adc4577f68af31fa63",
+    "0271-options-image.log": "6862512aaaa3bf07ac29dbe8dfbbe06bcdf5835ae08c8ca8fe8682720c54b561",
+    "0271-troll-assemble.log": "ef2eb22918009889ab0b75948d706d629cbb443e2e2b65d7ee8d3c82db9dd822",
+    "BUILD-0271.json": "f04c50e7b0510490a6222903504b23e8776cc2adfbe0945eddd1d404fa1f5df9",
+    "build-0271-1.log": "06793d90f38735442e4209daf2817228fea6ae5a4c7a99cc83513dcadf5d4932",
+    "build-0271-2.log": "06793d90f38735442e4209daf2817228fea6ae5a4c7a99cc83513dcadf5d4932",
+    "cockpit-reference-hud-apres.log": "3e412e699798d013d7753f113d7da8c58c58f13212e3e54ab5831144bce8e415",
+    "cockpit-reference-hud-avant.log": "adacba21ac0e6f9dedf6284bc7cf2683b023c9d4726af90616e6978d5bed504d"
+  }
+}

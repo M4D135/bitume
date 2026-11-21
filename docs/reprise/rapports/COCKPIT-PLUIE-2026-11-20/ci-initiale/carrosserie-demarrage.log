@@ -1,0 +1,40 @@
+apres/carrosserie-pluie : 0 images, 3 erreurs
+{
+  "format": "bitume-captures-meteo-v1",
+  "date": "2026-11-20T20:48:27.066Z",
+  "source": "/home/runner/work/bitume/bitume/tools/captures-meteo.mjs",
+  "limites": [
+    "Raster logiciel SwiftShader; aucun FPS matériel qualifié.",
+    "Scènes disposées et figées pour comparer les effets; aucun essai de conduite.",
+    "Rendu et effets du HTML désigné, sans injection de leur implémentation."
+  ],
+  "passages": [
+    {
+      "variante": "apres",
+      "scenario": "carrosserie-pluie",
+      "dossier": "apres/carrosserie-pluie",
+      "images": 0,
+      "build": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "empreintes": [],
+      "erreurs": [
+        "Error: Port DevTools introuvable : [2446:2471:1120/204836.749259:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")",
+        "Nombre de captures incomplet",
+        "Raster logiciel non identifié"
+      ]
+    }
+  ],
+  "echecs": 2,
+  "contrasteCarrosserie": {
+    "cas": [
+      "carrosserie-pluie",
+      "carrosserie-sec"
+    ],
+    "erreurs": [
+      "Paire carrosserie humide/sec incomplète"
+    ],
+    "limite": "Même caméra physique et durée, lentille inactive. Le mouillage modifie aussi le décor ; inspection des surfaces peintes requise."
+  }
+}

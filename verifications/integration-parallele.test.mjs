@@ -68,7 +68,7 @@ test('assemblage réel : un raccord unique avant J2/J1 et instruments communs', 
   const j2 = source.indexOf('rendreVue(S.vueJ2', debutImage);
   assert(actualiser < consommation && consommation < j2);
   assert(!extraire('provoquer').includes('son'));
-  assert(source.includes('INCLINAISON_COCKPIT = -Math.PI / 60'));
+  assert(source.includes('INCLINAISON_COCKPIT = -Math.PI / 18'));
   assert(source.includes('pilote.regime = etatPilote.regime; pilote.kmh = B.conduite.kmh(etatPilote);'));
   assert.equal(sha(readFileSync(path.join(racine, 'src/jeu.js'))), partageAvant);
 });
@@ -186,7 +186,7 @@ test('menu assemblé : persistance J1/J2, retour, démo automatique, arrêt cach
 
 // Les vrais gestionnaires de réception/départ ; seules les liaisons et le chargement sont remplacés.
 const require = createRequire(import.meta.url);
-for (const nom of ['circuit', 'conduite', 'meteo', 'ambiance', 'saisons', 'graphismes', 'pneus-reseau']) require('../src/' + nom + '.js');
+for (const nom of ['circuit', 'conduite', 'meteo', 'ambiance', 'saisons', 'conditions-course', 'graphismes', 'pneus-reseau']) require('../src/' + nom + '.js');
 const BN = globalThis.BITUME;
 const debutReseau = source.indexOf('  const EL = '), finReseau = source.indexOf('  function envoyerEtats(', debutReseau);
 const creerReseau = new Function('B', `
@@ -365,7 +365,9 @@ test('caméra du jeu : mêmes yeux dans le monde, indépendants du format et du 
   }
 });
 
-test('cadrage réel : piste, mains, haut de jante et deux glaces en paysage, portrait et partage', () => {
+// Présence dans le cadre seulement. L'occultation de la chaussée et le recouvrement
+// des rétros sont contrôlés sur les triangles réels dans cockpit-visibilite.test.mjs.
+test('projection : horizon, mains, haut de jante et deux glaces en paysage, portrait et partage', () => {
   const sortie = [];
   V.cockpit(mod, ev, sortie, { ...ev.pilote, glaceVive: true });
   const H = mod.objetsRendu.habitacle, glaces = V.glacesCockpit(ev), pieces = H.mains.map(m => m.pieces[0]);
@@ -376,10 +378,12 @@ test('cadrage réel : piste, mains, haut de jante et deux glaces en paysage, por
       const camera = fabrique(B, { clientWidth: largeur, clientHeight: hauteur }, { champ: 60, secousses: 0 }, tactile);
       const cam = camera({}, { x: 0, y: 0, z: 0, cap: 0, tangage: 0, roulis: 0 }, { ...et, v: vitesse }, 0, 1 / 60);
       const projection = q => projeter(q, cam, largeur / hauteur), horizon = projection([1000, cam.pos[1], 0]);
-      assert(horizon[1] >= .3 && horizon[1] <= .55, `route visible ${largeur}x${hauteur}: ${horizon}`);
+      // Regard baissé de 10° avec les commandes abaissées : horizon à 23 % en 16:9,
+      // au lieu de 42 % avec l'ancien volant qui masquait la route. Les yeux et le champ restent inchangés.
+      assert(horizon[1] >= .20 && horizon[1] <= .55, `horizon projeté ${largeur}x${hauteur}: ${horizon}`);
       for (const g of glaces) for (const q of g.coins) assert(dans(projection(q)), `glace dans le cadre ${largeur}x${hauteur}: ${projection(q)}`);
       const jante = sommets(H.jante.objet).map(projection), haut = Math.min(...jante.map(p => p[1]));
-      assert(haut > .25 && haut < .85, `haut de jante ${largeur}x${hauteur}: ${haut}`);
+      assert(haut > .45 && haut < .75, `haut de jante ${largeur}x${hauteur}: ${haut}`);
       for (const main of pieces) {
         const points = sommets(main.objet).map(projection), visibles = points.filter(dans).length / points.length;
         assert(visibles >= .72, `gant visible ${largeur}x${hauteur}: ${visibles}`);

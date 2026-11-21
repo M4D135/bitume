@@ -1,0 +1,2305 @@
+{
+  "format": "bitume-reception-hud-0274-v1",
+  "date_utc": "2026-11-21T00:19:08.855Z",
+  "commit": "1813c5440a9b8da34990f4e38c6c51a1d7bb1700",
+  "tree": "ae42fbb546af0c25dd1fb07bab27a8abf00fdd5a",
+  "html_sha256": "761bccd8953eef06332dd5929c9826216c589dfdbede77324809d69201783db9",
+  "html_octets": 14511004,
+  "groupes_inspectes": 4,
+  "images_originales_inspectees": 8,
+  "resultats": [
+    {
+      "artifact_id": 14680807559,
+      "run_id": 44840693094,
+      "scenario": "cockpit-duo-compact",
+      "archive_sha256": "7df2480a885f13404a4169feca5c7bc8c87806f0193d964996970120ac59b849",
+      "digest_github_verifie": true,
+      "rapport": "14680807559/images/apres/cockpit-duo-compact/rapport.json",
+      "rapport_sha256": "fc269263c3d39d365e64b578ae224364357d923eddbdc50db43464af6650b636",
+      "identite_exacte_verifiee": true,
+      "verifierHabitacle": [],
+      "images": [
+        {
+          "fichier": "14680807559/images/apres/cockpit-duo-compact/0000.png",
+          "sha256": "01321065b7e0becf5f770cd83a158831a55b46261916465d4ab3e3fcb225af41",
+          "octets": 459841,
+          "dimensions": [
+            960,
+            540
+          ],
+          "pose": 0,
+          "instant": "neutre",
+          "reglages": {
+            "carte": "oui",
+            "cartePosition": "droite",
+            "carteTaille": "normale",
+            "tableau": "reduit",
+            "annoncesVirages": "ecran"
+          },
+          "vues": [
+            {
+              "joueur": 1,
+              "vitesse": 0,
+              "volant": 0,
+              "viewport": {
+                "x": 0,
+                "y": 0,
+                "width": 960,
+                "height": 270
+              },
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                },
+                {
+                  "id": "glace-d",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "superpositions_hud": [],
+              "rectangles": [
+                {
+                  "id": "hud:LI:17",
+                  "element": "hud:element-31",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 101.8800048828125,
+                  "width": 138.24000549316406,
+                  "height": 13.319999694824219
+                },
+                {
+                  "id": "hud:LI:18",
+                  "element": "hud:element-34",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 115.92000579833984,
+                  "width": 138.24000549316406,
+                  "height": 13.319999694824219
+                },
+                {
+                  "id": "hud:LI:19",
+                  "element": "hud:element-35",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 129.9600067138672,
+                  "width": 138.24000549316406,
+                  "height": 13.319992065429688
+                },
+                {
+                  "id": "hud:LI:21",
+                  "element": "hud:element-37",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 147.60000610351562,
+                  "width": 138.24000549316406,
+                  "height": 13.32000732421875
+                },
+                {
+                  "id": "hud:joueur:22",
+                  "element": "hud:element-38",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 161.63999938964844,
+                  "width": 138.24000549316406,
+                  "height": 13.32000732421875
+                },
+                {
+                  "id": "hud:LI:23",
+                  "element": "hud:element-39",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 175.6800079345703,
+                  "width": 138.24000549316406,
+                  "height": 13.319992065429688
+                },
+                {
+                  "id": "hud:carte:24",
+                  "element": "hud:element-40",
+                  "ancetres": [
+                    "hud:element-41",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 829.5975341796875,
+                  "y": 90.07875061035156,
+                  "width": 115.20001220703125,
+                  "height": 115.20001220703125
+                },
+                {
+                  "id": "hud:h-fps:25",
+                  "element": "hud:element-42",
+                  "ancetres": [
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 8.640000343322754,
+                  "y": 244.8000030517578,
+                  "width": 58.061256408691406,
+                  "height": 16.560012817382812
+                }
+              ],
+              "erreurs": []
+            },
+            {
+              "joueur": 2,
+              "vitesse": 0,
+              "volant": 0,
+              "viewport": {
+                "x": 0,
+                "y": 270,
+                "width": 960,
+                "height": 270
+              },
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g2",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                },
+                {
+                  "id": "glace-d2",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "superpositions_hud": [],
+              "rectangles": [
+                {
+                  "id": "hud2:LI:17",
+                  "element": "hud2:element-31",
+                  "ancetres": [
+                    "hud2:element-32",
+                    "hud2:element-33",
+                    "hud2:element-4",
+                    "hud2:element-5",
+                    "hud2:element-6",
+                    "hud2:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 371.8800048828125,
+                  "width": 138.24000549316406,
+                  "height": 13.32000732421875
+                },
+                {
+                  "id": "hud2:LI:18",
+                  "element": "hud2:element-34",
+                  "ancetres": [
+                    "hud2:element-32",
+                    "hud2:element-33",
+                    "hud2:element-4",
+                    "hud2:element-5",
+                    "hud2:element-6",
+                    "hud2:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 385.9200134277344,
+                  "width": 138.24000549316406,
+                  "height": 13.319976806640625
+                },
+                {
+                  "id": "hud2:LI:19",
+                  "element": "hud2:element-35",
+                  "ancetres": [
+                    "hud2:element-32",
+                    "hud2:element-33",
+                    "hud2:element-4",
+                    "hud2:element-5",
+                    "hud2:element-6",
+                    "hud2:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 399.96002197265625,
+                  "width": 138.24000549316406,
+                  "height": 13.319976806640625
+                },
+                {
+                  "id": "hud2:LI:21",
+                  "element": "hud2:element-37",
+                  "ancetres": [
+                    "hud2:element-32",
+                    "hud2:element-33",
+                    "hud2:element-4",
+                    "hud2:element-5",
+                    "hud2:element-6",
+                    "hud2:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 417.6000061035156,
+                  "width": 138.24000549316406,
+                  "height": 13.32000732421875
+                },
+                {
+                  "id": "hud2:joueur:22",
+                  "element": "hud2:element-38",
+                  "ancetres": [
+                    "hud2:element-32",
+                    "hud2:element-33",
+                    "hud2:element-4",
+                    "hud2:element-5",
+                    "hud2:element-6",
+                    "hud2:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 431.6400146484375,
+                  "width": 138.24000549316406,
+                  "height": 13.32000732421875
+                },
+                {
+                  "id": "hud2:LI:23",
+                  "element": "hud2:element-39",
+                  "ancetres": [
+                    "hud2:element-32",
+                    "hud2:element-33",
+                    "hud2:element-4",
+                    "hud2:element-5",
+                    "hud2:element-6",
+                    "hud2:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 445.67999267578125,
+                  "width": 138.24000549316406,
+                  "height": 13.32000732421875
+                },
+                {
+                  "id": "hud2:carte:24",
+                  "element": "hud2:element-40",
+                  "ancetres": [
+                    "hud2:element-41",
+                    "hud2:element-4",
+                    "hud2:element-5",
+                    "hud2:element-6",
+                    "hud2:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 829.5975341796875,
+                  "y": 360.0787353515625,
+                  "width": 115.20001220703125,
+                  "height": 115.20001220703125
+                }
+              ],
+              "erreurs": []
+            }
+          ],
+          "inspection": {
+            "images_originales_vues": true,
+            "outil": "view_image",
+            "constat": "Deux vues 960×270 : classement, santé, carte et rétros visibles ; aucune superposition sur mains/rétros. Annonce absente au neutre."
+          }
+        },
+        {
+          "fichier": "14680807559/images/apres/cockpit-duo-compact/0001.png",
+          "sha256": "a50cee14d4685e63f2328697f2461d6cc0f51de384ad182c3385956c34404cea",
+          "octets": 451675,
+          "dimensions": [
+            960,
+            540
+          ],
+          "pose": 1,
+          "instant": "vitesse-braquage",
+          "reglages": {
+            "carte": "oui",
+            "cartePosition": "droite",
+            "carteTaille": "normale",
+            "tableau": "reduit",
+            "annoncesVirages": "ecran"
+          },
+          "vues": [
+            {
+              "joueur": 1,
+              "vitesse": 80,
+              "volant": 0.65,
+              "viewport": {
+                "x": 0,
+                "y": 0,
+                "width": 960,
+                "height": 270
+              },
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                },
+                {
+                  "id": "glace-d",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "superpositions_hud": [],
+              "rectangles": [
+                {
+                  "id": "hud:h-virage:17",
+                  "element": "hud:element-31",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 65.20500183105469,
+                  "width": 138.24000549316406,
+                  "height": 32.355003356933594
+                },
+                {
+                  "id": "hud:LI:18",
+                  "element": "hud:element-33",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 101.8800048828125,
+                  "width": 138.24000549316406,
+                  "height": 13.319999694824219
+                },
+                {
+                  "id": "hud:LI:19",
+                  "element": "hud:element-35",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 115.92000579833984,
+                  "width": 138.24000549316406,
+                  "height": 13.319999694824219
+                },
+                {
+                  "id": "hud:LI:20",
+                  "element": "hud:element-36",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 129.9600067138672,
+                  "width": 138.24000549316406,
+                  "height": 13.319992065429688
+                },
+                {
+                  "id": "hud:LI:22",
+                  "element": "hud:element-38",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 147.60000610351562,
+                  "width": 138.24000549316406,
+                  "height": 13.32000732421875
+                },
+                {
+                  "id": "hud:joueur:23",
+                  "element": "hud:element-39",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 161.63999938964844,
+                  "width": 138.24000549316406,
+                  "height": 13.32000732421875
+                },
+                {
+                  "id": "hud:LI:24",
+                  "element": "hud:element-40",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 175.6800079345703,
+                  "width": 138.24000549316406,
+                  "height": 13.319992065429688
+                },
+                {
+                  "id": "hud:carte:25",
+                  "element": "hud:element-41",
+                  "ancetres": [
+                    "hud:element-42",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 829.5975341796875,
+                  "y": 90.07875061035156,
+                  "width": 115.20001220703125,
+                  "height": 115.20001220703125
+                },
+                {
+                  "id": "hud:h-fps:26",
+                  "element": "hud:element-43",
+                  "ancetres": [
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 8.640000343322754,
+                  "y": 244.8000030517578,
+                  "width": 58.061256408691406,
+                  "height": 16.560012817382812
+                }
+              ],
+              "erreurs": []
+            },
+            {
+              "joueur": 2,
+              "vitesse": 80,
+              "volant": -0.65,
+              "viewport": {
+                "x": 0,
+                "y": 270,
+                "width": 960,
+                "height": 270
+              },
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g2",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                },
+                {
+                  "id": "glace-d2",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "superpositions_hud": [],
+              "rectangles": [
+                {
+                  "id": "hud2:h-virage:17",
+                  "element": "hud2:element-31",
+                  "ancetres": [
+                    "hud2:element-32",
+                    "hud2:element-4",
+                    "hud2:element-5",
+                    "hud2:element-6",
+                    "hud2:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 335.20501708984375,
+                  "width": 138.24000549316406,
+                  "height": 32.35498046875
+                },
+                {
+                  "id": "hud2:LI:18",
+                  "element": "hud2:element-33",
+                  "ancetres": [
+                    "hud2:element-34",
+                    "hud2:element-32",
+                    "hud2:element-4",
+                    "hud2:element-5",
+                    "hud2:element-6",
+                    "hud2:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 371.8800048828125,
+                  "width": 138.24000549316406,
+                  "height": 13.32000732421875
+                },
+                {
+                  "id": "hud2:LI:19",
+                  "element": "hud2:element-35",
+                  "ancetres": [
+                    "hud2:element-34",
+                    "hud2:element-32",
+                    "hud2:element-4",
+                    "hud2:element-5",
+                    "hud2:element-6",
+                    "hud2:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 385.9200134277344,
+                  "width": 138.24000549316406,
+                  "height": 13.319976806640625
+                },
+                {
+                  "id": "hud2:LI:20",
+                  "element": "hud2:element-36",
+                  "ancetres": [
+                    "hud2:element-34",
+                    "hud2:element-32",
+                    "hud2:element-4",
+                    "hud2:element-5",
+                    "hud2:element-6",
+                    "hud2:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 399.96002197265625,
+                  "width": 138.24000549316406,
+                  "height": 13.319976806640625
+                },
+                {
+                  "id": "hud2:LI:22",
+                  "element": "hud2:element-38",
+                  "ancetres": [
+                    "hud2:element-34",
+                    "hud2:element-32",
+                    "hud2:element-4",
+                    "hud2:element-5",
+                    "hud2:element-6",
+                    "hud2:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 417.6000061035156,
+                  "width": 138.24000549316406,
+                  "height": 13.32000732421875
+                },
+                {
+                  "id": "hud2:joueur:23",
+                  "element": "hud2:element-39",
+                  "ancetres": [
+                    "hud2:element-34",
+                    "hud2:element-32",
+                    "hud2:element-4",
+                    "hud2:element-5",
+                    "hud2:element-6",
+                    "hud2:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 431.6400146484375,
+                  "width": 138.24000549316406,
+                  "height": 13.32000732421875
+                },
+                {
+                  "id": "hud2:LI:24",
+                  "element": "hud2:element-40",
+                  "ancetres": [
+                    "hud2:element-34",
+                    "hud2:element-32",
+                    "hud2:element-4",
+                    "hud2:element-5",
+                    "hud2:element-6",
+                    "hud2:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 15.198750495910645,
+                  "y": 445.67999267578125,
+                  "width": 138.24000549316406,
+                  "height": 13.32000732421875
+                },
+                {
+                  "id": "hud2:carte:25",
+                  "element": "hud2:element-41",
+                  "ancetres": [
+                    "hud2:element-42",
+                    "hud2:element-4",
+                    "hud2:element-5",
+                    "hud2:element-6",
+                    "hud2:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 829.5975341796875,
+                  "y": 360.0787353515625,
+                  "width": 115.20001220703125,
+                  "height": 115.20001220703125
+                }
+              ],
+              "erreurs": []
+            }
+          ],
+          "inspection": {
+            "images_originales_vues": true,
+            "outil": "view_image",
+            "constat": "Annonces actives J1 60 m et J2 140 m, sous les compteurs et au-dessus des classements. Les gants braqués ne recouvrent aucun panneau HUD ; cartes et rétros visibles."
+          }
+        }
+      ]
+    },
+    {
+      "artifact_id": 14681241406,
+      "run_id": 44840693094,
+      "scenario": "cockpit-carte-gauche",
+      "archive_sha256": "87fbc86027ba2346d0f7916ad8967fffe4c546881f48e40e828ecbf8bbea272d",
+      "digest_github_verifie": true,
+      "rapport": "14681241406/images/apres/cockpit-carte-gauche/rapport.json",
+      "rapport_sha256": "bc22e46c85a59a3bb249f38d782947e4c0507e22f48eb8e9ee256b3ed689c993",
+      "identite_exacte_verifiee": true,
+      "verifierHabitacle": [],
+      "images": [
+        {
+          "fichier": "14681241406/images/apres/cockpit-carte-gauche/0000.png",
+          "sha256": "69b7a960d571e1496f4064211dc0eeec217c9f56dc936a8dd31db11f4efcc37c",
+          "octets": 418392,
+          "dimensions": [
+            960,
+            540
+          ],
+          "pose": 0,
+          "instant": "neutre",
+          "reglages": {
+            "carte": "oui",
+            "cartePosition": "gauche",
+            "carteTaille": "grande",
+            "tableau": "complet",
+            "annoncesVirages": "ecran"
+          },
+          "vues": [
+            {
+              "joueur": 1,
+              "vitesse": 0,
+              "volant": 0,
+              "viewport": {
+                "x": 0,
+                "y": 0,
+                "width": 960,
+                "height": 540
+              },
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                },
+                {
+                  "id": "glace-d",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "superpositions_hud": [],
+              "rectangles": [
+                {
+                  "id": "hud:LI:17",
+                  "element": "hud:element-31",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 789.5625,
+                  "y": 221,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:18",
+                  "element": "hud:element-34",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 789.5625,
+                  "y": 239.5,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:19",
+                  "element": "hud:element-35",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 789.5625,
+                  "y": 258,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:21",
+                  "element": "hud:element-37",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 789.5625,
+                  "y": 280.5,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:joueur:22",
+                  "element": "hud:element-38",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 789.5625,
+                  "y": 299,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:23",
+                  "element": "hud:element-39",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 789.5625,
+                  "y": 317.5,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:carte:24",
+                  "element": "hud:element-40",
+                  "ancetres": [
+                    "hud:element-41",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 262.078125,
+                  "y": 8,
+                  "width": 134.390625,
+                  "height": 134.390625
+                },
+                {
+                  "id": "hud:vitesse:25",
+                  "element": "hud:element-42",
+                  "ancetres": [
+                    "hud:element-43",
+                    "hud:element-44",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 903.5625,
+                  "y": 438.046875,
+                  "width": 35.328125,
+                  "height": 46.84375
+                },
+                {
+                  "id": "hud:h-regime:26",
+                  "element": "hud:element-45",
+                  "ancetres": [
+                    "hud:element-43",
+                    "hud:element-44",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 879.171875,
+                  "y": 490.890625,
+                  "width": 59.71875,
+                  "height": 28
+                },
+                {
+                  "id": "hud:h-fps:27",
+                  "element": "hud:element-46",
+                  "ancetres": [
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 12,
+                  "y": 505,
+                  "width": 80.640625,
+                  "height": 23
+                }
+              ],
+              "erreurs": []
+            }
+          ],
+          "inspection": {
+            "images_originales_vues": true,
+            "outil": "view_image",
+            "constat": "Grande carte gauche, classement droit compacté verticalement, vitesse et régime présents. Mains et rétros dégagés. Les noms longs conservent leurs ellipses existantes."
+          }
+        },
+        {
+          "fichier": "14681241406/images/apres/cockpit-carte-gauche/0001.png",
+          "sha256": "61223839c33dbfe6a571ef8fdcf311f2a8498d93e5bc7d98d2e0bacd28c73a85",
+          "octets": 427579,
+          "dimensions": [
+            960,
+            540
+          ],
+          "pose": 1,
+          "instant": "vitesse-braquage",
+          "reglages": {
+            "carte": "oui",
+            "cartePosition": "gauche",
+            "carteTaille": "grande",
+            "tableau": "complet",
+            "annoncesVirages": "ecran"
+          },
+          "vues": [
+            {
+              "joueur": 1,
+              "vitesse": 80,
+              "volant": 0.65,
+              "viewport": {
+                "x": 0,
+                "y": 0,
+                "width": 960,
+                "height": 540
+              },
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                },
+                {
+                  "id": "glace-d",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "superpositions_hud": [],
+              "rectangles": [
+                {
+                  "id": "hud:h-virage:17",
+                  "element": "hud:element-31",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 746.890625,
+                  "y": 176.0625,
+                  "width": 192,
+                  "height": 44.9375
+                },
+                {
+                  "id": "hud:LI:18",
+                  "element": "hud:element-33",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 789.5625,
+                  "y": 221,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:19",
+                  "element": "hud:element-35",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 789.5625,
+                  "y": 239.5,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:20",
+                  "element": "hud:element-36",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 789.5625,
+                  "y": 258,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:22",
+                  "element": "hud:element-38",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 789.5625,
+                  "y": 280.5,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:joueur:23",
+                  "element": "hud:element-39",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 789.5625,
+                  "y": 299,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:24",
+                  "element": "hud:element-40",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 789.5625,
+                  "y": 317.5,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:carte:25",
+                  "element": "hud:element-41",
+                  "ancetres": [
+                    "hud:element-42",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 262.078125,
+                  "y": 8,
+                  "width": 134.390625,
+                  "height": 134.390625
+                },
+                {
+                  "id": "hud:vitesse:26",
+                  "element": "hud:element-43",
+                  "ancetres": [
+                    "hud:element-44",
+                    "hud:element-45",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 862.921875,
+                  "y": 438.046875,
+                  "width": 75.96875,
+                  "height": 46.84375
+                },
+                {
+                  "id": "hud:h-regime:27",
+                  "element": "hud:element-46",
+                  "ancetres": [
+                    "hud:element-44",
+                    "hud:element-45",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 879.171875,
+                  "y": 490.890625,
+                  "width": 59.71875,
+                  "height": 28
+                },
+                {
+                  "id": "hud:h-fps:28",
+                  "element": "hud:element-47",
+                  "ancetres": [
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 12,
+                  "y": 505,
+                  "width": 80.640625,
+                  "height": 23
+                }
+              ],
+              "erreurs": []
+            }
+          ],
+          "inspection": {
+            "images_originales_vues": true,
+            "outil": "view_image",
+            "constat": "Annonce 60 m visible au-dessus du classement droit ; gant haut à gauche et régime au bord droit dégagés. Les six lignes, la carte et les compteurs restent visibles."
+          }
+        }
+      ]
+    },
+    {
+      "artifact_id": 14681695452,
+      "run_id": 44840693094,
+      "scenario": "cockpit-compact",
+      "archive_sha256": "64c44f6043c2400cd0927c01654ecb011288df3ce93e61f4451390b62e23f79d",
+      "digest_github_verifie": true,
+      "rapport": "14681695452/images/apres/cockpit-compact/rapport.json",
+      "rapport_sha256": "26bea66cb7a9bad48ae3621076c24ffc93b5ea0d92d01f917555ce7579a6da6a",
+      "identite_exacte_verifiee": true,
+      "verifierHabitacle": [],
+      "images": [
+        {
+          "fichier": "14681695452/images/apres/cockpit-compact/0000.png",
+          "sha256": "163bcbf3abb81cb8b39e6e15219b5c466f4949701726517b4d484a1f6e63c346",
+          "octets": 412161,
+          "dimensions": [
+            960,
+            540
+          ],
+          "pose": 0,
+          "instant": "neutre",
+          "reglages": {
+            "carte": "oui",
+            "cartePosition": "droite",
+            "carteTaille": "normale",
+            "tableau": "reduit",
+            "annoncesVirages": "ecran"
+          },
+          "vues": [
+            {
+              "joueur": 1,
+              "vitesse": 0,
+              "volant": 0,
+              "viewport": {
+                "x": 0,
+                "y": 0,
+                "width": 960,
+                "height": 540
+              },
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                },
+                {
+                  "id": "glace-d",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "superpositions_hud": [],
+              "rectangles": [
+                {
+                  "id": "hud:LI:17",
+                  "element": "hud:element-31",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 221,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:18",
+                  "element": "hud:element-34",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 239.5,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:19",
+                  "element": "hud:element-35",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 258,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:21",
+                  "element": "hud:element-37",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 280.5,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:joueur:22",
+                  "element": "hud:element-38",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 299,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:23",
+                  "element": "hud:element-39",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 317.5,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:carte:24",
+                  "element": "hud:element-40",
+                  "ancetres": [
+                    "hud:element-41",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 590.40625,
+                  "y": 8,
+                  "width": 107.515625,
+                  "height": 107.515625
+                },
+                {
+                  "id": "hud:h-fps:25",
+                  "element": "hud:element-42",
+                  "ancetres": [
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 12,
+                  "y": 505,
+                  "width": 80.640625,
+                  "height": 23
+                }
+              ],
+              "erreurs": []
+            }
+          ],
+          "inspection": {
+            "images_originales_vues": true,
+            "outil": "view_image",
+            "constat": "Carte droite et classement gauche visibles. Mode Planche seule respecté : aucun compteur vitesse/régime ajouté. Deux mains et deux rétros dégagés."
+          }
+        },
+        {
+          "fichier": "14681695452/images/apres/cockpit-compact/0001.png",
+          "sha256": "d8282ddcbcc94f814f465489017f106ebeb17704a6c07b4424e9fa065757fdc2",
+          "octets": 421756,
+          "dimensions": [
+            960,
+            540
+          ],
+          "pose": 1,
+          "instant": "vitesse-braquage",
+          "reglages": {
+            "carte": "oui",
+            "cartePosition": "droite",
+            "carteTaille": "normale",
+            "tableau": "reduit",
+            "annoncesVirages": "ecran"
+          },
+          "vues": [
+            {
+              "joueur": 1,
+              "vitesse": 80,
+              "volant": 0.65,
+              "viewport": {
+                "x": 0,
+                "y": 0,
+                "width": 960,
+                "height": 540
+              },
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                },
+                {
+                  "id": "glace-d",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "superpositions_hud": [],
+              "rectangles": [
+                {
+                  "id": "hud:h-virage:17",
+                  "element": "hud:element-31",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 176.0625,
+                  "width": 192,
+                  "height": 44.9375
+                },
+                {
+                  "id": "hud:LI:18",
+                  "element": "hud:element-33",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 221,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:19",
+                  "element": "hud:element-35",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 239.5,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:20",
+                  "element": "hud:element-36",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 258,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:22",
+                  "element": "hud:element-38",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 280.5,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:joueur:23",
+                  "element": "hud:element-39",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 299,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:24",
+                  "element": "hud:element-40",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 317.5,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:carte:25",
+                  "element": "hud:element-41",
+                  "ancetres": [
+                    "hud:element-42",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 590.40625,
+                  "y": 8,
+                  "width": 107.515625,
+                  "height": 107.515625
+                },
+                {
+                  "id": "hud:h-fps:26",
+                  "element": "hud:element-43",
+                  "ancetres": [
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 12,
+                  "y": 505,
+                  "width": 80.640625,
+                  "height": 23
+                }
+              ],
+              "erreurs": []
+            }
+          ],
+          "inspection": {
+            "images_originales_vues": true,
+            "outil": "view_image",
+            "constat": "Annonce 60 m active sous le rétro gauche, six lignes du classement immédiatement dessous, aucune superposition sur le gant braqué. Carte et informations supérieures visibles."
+          }
+        }
+      ]
+    },
+    {
+      "artifact_id": 14681488062,
+      "run_id": 44840693094,
+      "scenario": "cockpit-carte-droite-stabilise",
+      "archive_sha256": "3f98bd0e468e8cae9799cfc059c521b0c86b29ad765a1f46f4857b0139a6375b",
+      "digest_github_verifie": true,
+      "rapport": "14681488062/images/apres/cockpit-carte-droite-stabilise/rapport.json",
+      "rapport_sha256": "6e01c10946adc631172b49b8c8eafafdd62681c5f03995d973fa73d8cf4ffeda",
+      "identite_exacte_verifiee": true,
+      "verifierHabitacle": [
+        "J1 : HUD superposé à la commande : gant-0"
+      ],
+      "images": [
+        {
+          "fichier": "14681488062/images/apres/cockpit-carte-droite-stabilise/0000.png",
+          "sha256": "4b24fc2c642fe7f1c0929051398f35aae729f85ecc21e3b9abcc0694590981b7",
+          "octets": 418170,
+          "dimensions": [
+            960,
+            540
+          ],
+          "pose": 0,
+          "instant": "neutre",
+          "reglages": {
+            "carte": "oui",
+            "cartePosition": "droite",
+            "carteTaille": "grande",
+            "tableau": "complet",
+            "annoncesVirages": "ecran"
+          },
+          "vues": [
+            {
+              "joueur": 1,
+              "vitesse": 0,
+              "volant": 0,
+              "viewport": {
+                "x": 0,
+                "y": 0,
+                "width": 960,
+                "height": 540
+              },
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                },
+                {
+                  "id": "glace-d",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "superpositions_hud": [],
+              "rectangles": [
+                {
+                  "id": "hud:LI:17",
+                  "element": "hud:element-31",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 221,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:18",
+                  "element": "hud:element-34",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 239.5,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:19",
+                  "element": "hud:element-35",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 258,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:21",
+                  "element": "hud:element-37",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 280.5,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:joueur:22",
+                  "element": "hud:element-38",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 299,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:23",
+                  "element": "hud:element-39",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-33",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 317.5,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:carte:24",
+                  "element": "hud:element-40",
+                  "ancetres": [
+                    "hud:element-41",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 563.53125,
+                  "y": 8,
+                  "width": 134.390625,
+                  "height": 134.390625
+                },
+                {
+                  "id": "hud:vitesse:25",
+                  "element": "hud:element-42",
+                  "ancetres": [
+                    "hud:element-43",
+                    "hud:element-44",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 903.5625,
+                  "y": 438.046875,
+                  "width": 35.328125,
+                  "height": 46.84375
+                },
+                {
+                  "id": "hud:h-regime:26",
+                  "element": "hud:element-45",
+                  "ancetres": [
+                    "hud:element-43",
+                    "hud:element-44",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 879.171875,
+                  "y": 490.890625,
+                  "width": 59.71875,
+                  "height": 28
+                },
+                {
+                  "id": "hud:h-fps:27",
+                  "element": "hud:element-46",
+                  "ancetres": [
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 12,
+                  "y": 505,
+                  "width": 80.640625,
+                  "height": 23
+                }
+              ],
+              "erreurs": []
+            }
+          ],
+          "inspection": {
+            "images_originales_vues": true,
+            "outil": "view_image",
+            "constat": "Neutre stabilisé : grande carte droite, six lignes du classement gauche, vitesse/régime et badge FPS présents. Deux rétros et les gants dégagés. Aucune annonce à l’arrêt."
+          }
+        },
+        {
+          "fichier": "14681488062/images/apres/cockpit-carte-droite-stabilise/0001.png",
+          "sha256": "00a5aab0ec93d0e38a277d8a5fe7997c0ef8308fc38ed2003e07ec4522f02f0a",
+          "octets": 422086,
+          "dimensions": [
+            960,
+            540
+          ],
+          "pose": 1,
+          "instant": "vitesse-braquage",
+          "reglages": {
+            "carte": "oui",
+            "cartePosition": "droite",
+            "carteTaille": "grande",
+            "tableau": "complet",
+            "annoncesVirages": "ecran"
+          },
+          "vues": [
+            {
+              "joueur": 1,
+              "vitesse": 80,
+              "volant": 0.35,
+              "viewport": {
+                "x": 0,
+                "y": 0,
+                "width": 960,
+                "height": 540
+              },
+              "route": {
+                "cadree": 1,
+                "occultee": 0,
+                "centreOcculte": 0
+              },
+              "glaces": [
+                {
+                  "id": "glace-g",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                },
+                {
+                  "id": "glace-d",
+                  "valide": true,
+                  "cadree": true,
+                  "hudRecouvrementPx2": 0
+                }
+              ],
+              "commandes": [
+                {
+                  "role": "volant",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                },
+                {
+                  "role": "gant-0",
+                  "recouvrementPx2": 75.61783016125264,
+                  "recouvrements": [
+                    {
+                      "id": "hud:h-fps:28",
+                      "airePx2": 75.61783016125264
+                    }
+                  ]
+                },
+                {
+                  "role": "gant-1",
+                  "recouvrementPx2": 0,
+                  "recouvrements": []
+                }
+              ],
+              "superpositions_hud": [],
+              "rectangles": [
+                {
+                  "id": "hud:h-virage:17",
+                  "element": "hud:element-31",
+                  "ancetres": [
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 176.0625,
+                  "width": 192,
+                  "height": 44.9375
+                },
+                {
+                  "id": "hud:LI:18",
+                  "element": "hud:element-33",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 221,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:19",
+                  "element": "hud:element-35",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 239.5,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:20",
+                  "element": "hud:element-36",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 258,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:22",
+                  "element": "hud:element-38",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 280.5,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:joueur:23",
+                  "element": "hud:element-39",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 299,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:LI:24",
+                  "element": "hud:element-40",
+                  "ancetres": [
+                    "hud:element-34",
+                    "hud:element-32",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 21.109375,
+                  "y": 317.5,
+                  "width": 149.328125,
+                  "height": 18.5
+                },
+                {
+                  "id": "hud:carte:25",
+                  "element": "hud:element-41",
+                  "ancetres": [
+                    "hud:element-42",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 563.53125,
+                  "y": 8,
+                  "width": 134.390625,
+                  "height": 134.390625
+                },
+                {
+                  "id": "hud:vitesse:26",
+                  "element": "hud:element-43",
+                  "ancetres": [
+                    "hud:element-44",
+                    "hud:element-45",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 862.921875,
+                  "y": 438.046875,
+                  "width": 75.96875,
+                  "height": 46.84375
+                },
+                {
+                  "id": "hud:h-regime:27",
+                  "element": "hud:element-46",
+                  "ancetres": [
+                    "hud:element-44",
+                    "hud:element-45",
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 879.171875,
+                  "y": 490.890625,
+                  "width": 59.71875,
+                  "height": 28
+                },
+                {
+                  "id": "hud:h-fps:28",
+                  "element": "hud:element-47",
+                  "ancetres": [
+                    "hud:element-4",
+                    "hud:element-5",
+                    "hud:element-6",
+                    "hud:element-7"
+                  ],
+                  "compteur": null,
+                  "x": 12,
+                  "y": 505,
+                  "width": 80.640625,
+                  "height": 23
+                }
+              ],
+              "erreurs": [
+                "HUD superposé à la commande : gant-0"
+              ]
+            }
+          ],
+          "inspection": {
+            "images_originales_vues": true,
+            "outil": "view_image",
+            "constat": "Braquage +0,35 après 120 pas : l’annonce 60 m, le classement, la carte, le régime et les deux rétros restent dégagés. Le bord droit du badge FPS noir recouvre la base du gant gauche près de son poignet, au coin inférieur gauche. Défaut visible cohérent avec 75,6178301613 px² mesurés, supérieur au seuil de 1 px². Cette version ne doit pas être fusionnée."
+          }
+        }
+      ]
+    }
+  ],
+  "limites": [
+    "Rendu logiciel SwiftShader : aucune conclusion FPS matériel.",
+    "Deux poses par cas : pas de preuve de fluidité ni de toutes les phases du braquage.",
+    "L’échec Chrome du cas carte-gauche-stabilise reste conservé séparément ; ce reçu ne le clôt pas."
+  ],
+  "statut": "bloque_badge_fps_sur_gant_gauche"
+}

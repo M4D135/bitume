@@ -1,0 +1,2159 @@
+{
+  "format": "bitume-revue-demos-pilote-pluie-v1",
+  "dateUTC": "2026-11-20T21:06:15.655587+00:00",
+  "run": "44814645794",
+  "identite": {
+    "version": "0.2.70",
+    "buildSha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+    "buildOctets": 14502704,
+    "commitCandidat": "c3d49089e68a46dc2163067afbdea7db81364fed",
+    "commitCaptureMergeTechnique": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+    "tree": "934910167ee8eb27ce5dbde851612c7665fb6b35",
+    "verification": "COMMIT.txt, TREE.txt et SHA256SUMS.txt des cinq artefacts, build/source/environnement des huit rapports ; SHA256 du HTML local recalculé ; arbre de c3d4908 lu avec git show.",
+    "traceNonSuivieDeclareeDansRapports": [
+      "?? qualification/"
+    ]
+  },
+  "methode": {
+    "inspectionVisuelle": "Les 24 PNG originaux ont été ouverts avec view_image et examinés séparément, sans montage ni image reconstruite.",
+    "lectureRapports": "Cinq rapports agrégés et huit rapports détaillés lus ; identité et erreurs vérifiées sur chaque scène.",
+    "sha256": "Empreintes des 24 PNG calculées directement depuis leurs octets ; SHA256SUMS.txt ne contient que les HTML, pas de manifeste de PNG à comparer.",
+    "actions": "Écriture de ce seul reçu ; aucune modification de code, aucune nouvelle campagne ni exécution de tests."
+  },
+  "conclusion": {
+    "imagesAttendues": 24,
+    "imagesExaminees": 24,
+    "scenesExaminees": 8,
+    "blocageFrancObserve": false,
+    "statut": "aucun_blocage_franc_observe_dans_ce_perimetre",
+    "synthese": "Les gestes et les deux braquages sont lisibles, sans rupture franche des parties visibles des bras/commandes. La pluie est visible sur les lentilles cockpit/poursuite et absente de la lentille aérienne. Aucun écran noir ni erreur rapportée. Les masques du HUD et les angles de vue limitent la qualification des rétroviseurs, des attaches et de la visibilité routière.",
+    "validationGlobaleRelease": false
+  },
+  "limitesCommunes": [
+    "Vraie démo et vrai réalisateur sur poses prescrites ; aucun essai de conduite.",
+    "Rendu logiciel SwiftShader, rAF commandé : le compteur 10 FPS des images n’est pas une mesure de performance matérielle.",
+    "Images 960 × 540, trois instants par scène, pas de 0,1 s ; elles ne couvrent pas toutes les transitions ni tous les angles.",
+    "L’absence de défaut franc visible ne prouve pas l’absence de collision 3D dans les parties masquées.",
+    "Ce reçu complète les autres contrôles du candidat ; il ne prononce pas seul la validation de la release."
+  ],
+  "artefacts": [
+    {
+      "id": "14667819325",
+      "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+      "tree": "934910167ee8eb27ce5dbde851612c7665fb6b35",
+      "echecsRapportAgrege": 0,
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14667819325/visuel-demo/rapport.json"
+    },
+    {
+      "id": "14668223871",
+      "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+      "tree": "934910167ee8eb27ce5dbde851612c7665fb6b35",
+      "echecsRapportAgrege": 0,
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14668223871/visuel-demo/rapport.json"
+    },
+    {
+      "id": "14670405192",
+      "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+      "tree": "934910167ee8eb27ce5dbde851612c7665fb6b35",
+      "echecsRapportAgrege": 0,
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14670405192/visuel-demo/rapport.json"
+    },
+    {
+      "id": "14669740262",
+      "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+      "tree": "934910167ee8eb27ce5dbde851612c7665fb6b35",
+      "echecsRapportAgrege": 0,
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14669740262/visuel-demo/rapport.json"
+    },
+    {
+      "id": "14669162479",
+      "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+      "tree": "934910167ee8eb27ce5dbde851612c7665fb6b35",
+      "echecsRapportAgrege": 0,
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14669162479/visuel-demo/rapport.json"
+    }
+  ],
+  "scenes": [
+    {
+      "scene": "volant-droite",
+      "artefact": "14667819325",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14667819325/visuel-demo/apres/volant-droite/rapport.json",
+      "rapportSha256": "6b2098e9b54d012f0ceaeecf2b5b71ca881b489f2389762dd84b5b6b65bc6b4e",
+      "build": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "source": {
+        "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "versionRapport": "V0.2.70",
+      "initialisation": {
+        "entree": "BITUME_JEU.demo",
+        "type": "demo",
+        "cameraImposee": false,
+        "planDemande": "pilote",
+        "saison": "ete",
+        "graineExpression": null,
+        "posesDisposees": true,
+        "simulationConduite": false,
+        "sillage": null,
+        "description": "Vraie démo et vrai réalisateur ; poses prescrites, horloge/effets rendus, aucun essai de conduite ou de FPS."
+      },
+      "observationsVisuelles": [
+        "Plan latéral proche du pilote : volant tourné à droite, gant rouge et avant-bras visibles au contact de la commande ; aucun membre visiblement détaché.",
+        "Casque et arceau restent distincts ; aucune traversée franche de la coque par les parties visibles du bras ou des commandes.",
+        "Les trois images conservent une composition stable et une scène rendue, sans noir ni erreur visible."
+      ],
+      "reserves": [
+        "La coque masque les attaches basses et une partie des commandes ; cette vue ne qualifie pas toute la cinématique des bras.",
+        "Les rétroviseurs sont vus surtout de dos ou de tranche ; leur face réfléchissante ne peut pas être validée par cette série."
+      ],
+      "blocageFrancObserve": false,
+      "erreursRapport": [],
+      "avertissementsRapport": [],
+      "alertesRapport": [],
+      "images": [
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14667819325/visuel-demo/apres/volant-droite/0000.png",
+          "cheminRelatifQa": "14667819325/visuel-demo/apres/volant-droite/0000.png",
+          "sha256": "4a0d5a5023659e55ef91d91a6908abb27558ba064154ca14bf96d947df658f26",
+          "octets": 384080,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "Volant braqué et main visibles dans la cuve à 12,500 s ; silhouette sans rupture franche.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 0.5,
+          "horlogeJeu": 12.499999999999998,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.47275848702820167,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "pilote",
+            "volant": 0.7,
+            "pilote": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": false,
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 30,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false
+            },
+            "vitreVisible": false,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 3,
+              "dessins": 3,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "impactsEmis": 0,
+              "surfaceExpulsee": 0
+            },
+            "sillage": null
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14667819325/visuel-demo/apres/volant-droite/0001.png",
+          "cheminRelatifQa": "14667819325/visuel-demo/apres/volant-droite/0001.png",
+          "sha256": "13b8e777d44d4b22a9548120036241beace8f56181fdb73239e1fae8b9543d0c",
+          "octets": 384390,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "Même prise et même position des commandes à 12,600 s ; aucun nouveau conflit visible.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 0.6,
+          "horlogeJeu": 12.599999999999998,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.47276526176646205,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "pilote",
+            "volant": 0.7,
+            "pilote": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": false,
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 30,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false
+            },
+            "vitreVisible": false,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 3,
+              "dessins": 3,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "impactsEmis": 0,
+              "surfaceExpulsee": 0
+            },
+            "sillage": null
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14667819325/visuel-demo/apres/volant-droite/0002.png",
+          "cheminRelatifQa": "14667819325/visuel-demo/apres/volant-droite/0002.png",
+          "sha256": "0384225ec4bb48c2612ec231118dd26d0d8543f53aa77650ee318ef4780e9711",
+          "octets": 384312,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "Même prise à 12,700 s ; aucune traversée visible de la coque dans les parties exposées.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 0.7,
+          "horlogeJeu": 12.699999999999998,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.47277863901773187,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "pilote",
+            "volant": 0.7,
+            "pilote": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": false,
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 30,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false
+            },
+            "vitreVisible": false,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 3,
+              "dessins": 3,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "impactsEmis": 0,
+              "surfaceExpulsee": 0
+            },
+            "sillage": null
+          }
+        }
+      ]
+    },
+    {
+      "scene": "volant-gauche",
+      "artefact": "14667819325",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14667819325/visuel-demo/apres/volant-gauche/rapport.json",
+      "rapportSha256": "f57452ee5d29e54d74f3d5dbf4c3146a65380a83127bfaa9b9bbe49e37fa42eb",
+      "build": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "source": {
+        "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "versionRapport": "V0.2.70",
+      "initialisation": {
+        "entree": "BITUME_JEU.demo",
+        "type": "demo",
+        "cameraImposee": false,
+        "planDemande": "pilote",
+        "saison": "ete",
+        "graineExpression": null,
+        "posesDisposees": true,
+        "simulationConduite": false,
+        "sillage": null,
+        "description": "Vraie démo et vrai réalisateur ; poses prescrites, horloge/effets rendus, aucun essai de conduite ou de FPS."
+      },
+      "observationsVisuelles": [
+        "Plan latéral proche du pilote : orientation du volant et de la main visiblement différente du braquage à droite.",
+        "Gant/avant-bras et commande visibles restent raccordés ; le pilote reste contenu dans la cuve, casque devant l’arceau.",
+        "Les trois images sont rendues normalement, sans noir ni défaut franc de raccord."
+      ],
+      "reserves": [
+        "Les attaches basses, une partie des bras et les commandes sont occultées par le flanc de carrosserie.",
+        "La face des rétroviseurs n’est pas assez exposée pour la qualifier."
+      ],
+      "blocageFrancObserve": false,
+      "erreursRapport": [],
+      "avertissementsRapport": [],
+      "alertesRapport": [],
+      "images": [
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14667819325/visuel-demo/apres/volant-gauche/0000.png",
+          "cheminRelatifQa": "14667819325/visuel-demo/apres/volant-gauche/0000.png",
+          "sha256": "412fb344397e839207133e28be9f2167170005cd4b344a431cfaf77d0be29ff9",
+          "octets": 384096,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "Braquage opposé à la série droite ; prise visible cohérente à 12,500 s.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 0.5,
+          "horlogeJeu": 12.499999999999998,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.4728145030533704,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "pilote",
+            "volant": -0.7,
+            "pilote": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": false,
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 30,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false
+            },
+            "vitreVisible": false,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 3,
+              "dessins": 3,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "impactsEmis": 0,
+              "surfaceExpulsee": 0
+            },
+            "sillage": null
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14667819325/visuel-demo/apres/volant-gauche/0001.png",
+          "cheminRelatifQa": "14667819325/visuel-demo/apres/volant-gauche/0001.png",
+          "sha256": "1aa6de241ac646b24e309a8d0886317f8915efcf48433b917816c554c9c32a7d",
+          "octets": 384502,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "Prise conservée à 12,600 s ; pas de membre détaché ni d’intersection franche visible.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 0.6,
+          "horlogeJeu": 12.599999999999998,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.4728184317071453,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "pilote",
+            "volant": -0.7,
+            "pilote": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": false,
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 30,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false
+            },
+            "vitreVisible": false,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 3,
+              "dessins": 3,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "impactsEmis": 0,
+              "surfaceExpulsee": 0
+            },
+            "sillage": null
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14667819325/visuel-demo/apres/volant-gauche/0002.png",
+          "cheminRelatifQa": "14667819325/visuel-demo/apres/volant-gauche/0002.png",
+          "sha256": "fd1cdfc189a0ed0d1e8c8638b71d097c86dec511532b6439edb595fb5535f9bb",
+          "octets": 384368,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "Pose conservée à 12,700 s ; aucune apparition hors coque dans les parties visibles.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 0.7,
+          "horlogeJeu": 12.699999999999998,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.47283232272475656,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "pilote",
+            "volant": -0.7,
+            "pilote": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": false,
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 30,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false
+            },
+            "vitreVisible": false,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 3,
+              "dessins": 3,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "impactsEmis": 0,
+              "surfaceExpulsee": 0
+            },
+            "sillage": null
+          }
+        }
+      ]
+    },
+    {
+      "scene": "geste-majeur",
+      "artefact": "14668223871",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14668223871/visuel-demo/apres/geste-majeur/rapport.json",
+      "rapportSha256": "d6dff5fa166fd662821c55d9dcfe7c93e1fa55871ebacdcf43c3cfb0c0296cb4",
+      "build": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "source": {
+        "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "versionRapport": "V0.2.70",
+      "initialisation": {
+        "entree": "BITUME_JEU.demo",
+        "type": "demo",
+        "cameraImposee": false,
+        "planDemande": "pilote",
+        "saison": "ete",
+        "graineExpression": 1,
+        "posesDisposees": true,
+        "simulationConduite": false,
+        "sillage": null,
+        "description": "Vraie démo et vrai réalisateur ; poses prescrites, horloge/effets rendus, aucun essai de conduite ou de FPS."
+      },
+      "observationsVisuelles": [
+        "Le majeur levé est lisible : un doigt dépasse le poing rouge devant le casque.",
+        "Le bras levé présente un raccord continu du coude au gant ; l’autre commande/main visible reste près du volant.",
+        "Le pilote et son ombre restent cohérents dans la cuve sur les trois images ; aucun défaut franc observé."
+      ],
+      "reserves": [
+        "Le bras levé se superpose au casque en projection ; ces images ne mesurent pas leur distance 3D.",
+        "Attaches basses et faces de rétroviseurs partiellement ou totalement masquées par le cadrage."
+      ],
+      "blocageFrancObserve": false,
+      "erreursRapport": [],
+      "avertissementsRapport": [],
+      "alertesRapport": [],
+      "images": [
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14668223871/visuel-demo/apres/geste-majeur/0000.png",
+          "cheminRelatifQa": "14668223871/visuel-demo/apres/geste-majeur/0000.png",
+          "sha256": "53ff8166ce812d560b02da94737aaa19f0c096e25d3aa7039dd6c53fdd936205",
+          "octets": 385884,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "Doigt levé distinct et bras continu à la phase 0,303 ; volant visible sous la main opposée.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 0.5,
+          "horlogeJeu": 12.499999999999998,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.4714463137348381,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "pilote",
+            "volant": 0,
+            "pilote": {
+              "regard": 0,
+              "geste": "majeur",
+              "gestePhase": 0.303030303030302,
+              "gesteCote": -1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": false,
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 30,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false
+            },
+            "vitreVisible": false,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 3,
+              "dessins": 3,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "impactsEmis": 0,
+              "surfaceExpulsee": 0
+            },
+            "sillage": null
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14668223871/visuel-demo/apres/geste-majeur/0001.png",
+          "cheminRelatifQa": "14668223871/visuel-demo/apres/geste-majeur/0001.png",
+          "sha256": "eb8771bf983e521da286fa2a63c35c50d479acd86505e03889009fa74acf364f",
+          "octets": 386350,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "Même geste lisible à la phase 0,364 ; aucun nouveau conflit apparent avec casque/coque.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 0.6,
+          "horlogeJeu": 12.599999999999998,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.47145133800559563,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "pilote",
+            "volant": 0,
+            "pilote": {
+              "regard": 0,
+              "geste": "majeur",
+              "gestePhase": 0.36363636363636237,
+              "gesteCote": -1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": false,
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 30,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false
+            },
+            "vitreVisible": false,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 3,
+              "dessins": 3,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "impactsEmis": 0,
+              "surfaceExpulsee": 0
+            },
+            "sillage": null
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14668223871/visuel-demo/apres/geste-majeur/0002.png",
+          "cheminRelatifQa": "14668223871/visuel-demo/apres/geste-majeur/0002.png",
+          "sha256": "688c3cd3c72e0abe43e5aeb7a16362efee18f39a7a943344f1617bce8deada4f",
+          "octets": 386200,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "Même geste lisible à la phase 0,424 ; ombre du bras et silhouette conservées.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 0.7,
+          "horlogeJeu": 12.699999999999998,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.4714661525223597,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "pilote",
+            "volant": 0,
+            "pilote": {
+              "regard": 0,
+              "geste": "majeur",
+              "gestePhase": 0.42424242424242276,
+              "gesteCote": -1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": false,
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 30,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false
+            },
+            "vitreVisible": false,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 3,
+              "dessins": 3,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "impactsEmis": 0,
+              "surfaceExpulsee": 0
+            },
+            "sillage": null
+          }
+        }
+      ]
+    },
+    {
+      "scene": "geste-poing",
+      "artefact": "14668223871",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14668223871/visuel-demo/apres/geste-poing/rapport.json",
+      "rapportSha256": "1bbd8605f2a7db65c330f779f76d3de0db8afba504b88a381de9bc7f5556bcbd",
+      "build": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "source": {
+        "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "versionRapport": "V0.2.70",
+      "initialisation": {
+        "entree": "BITUME_JEU.demo",
+        "type": "demo",
+        "cameraImposee": false,
+        "planDemande": "pilote",
+        "saison": "ete",
+        "graineExpression": 2,
+        "posesDisposees": true,
+        "simulationConduite": false,
+        "sillage": null,
+        "description": "Vraie démo et vrai réalisateur ; poses prescrites, horloge/effets rendus, aucun essai de conduite ou de FPS."
+      },
+      "observationsVisuelles": [
+        "Poing fermé rouge nettement distinct du majeur et du salut, levé devant le casque.",
+        "Avant-bras et coude forment un ensemble continu ; aucune rupture ou traversée franche de la coque visible.",
+        "Volant et autre main restent visibles dans la cuve ; les trois images sont stables et normalement rendues."
+      ],
+      "reserves": [
+        "Le recouvrement visuel poing/casque ne constitue pas une mesure d’absence de collision 3D.",
+        "Le flanc masque les attaches basses ; les faces de rétroviseurs ne sont pas qualifiables ici."
+      ],
+      "blocageFrancObserve": false,
+      "erreursRapport": [],
+      "avertissementsRapport": [],
+      "alertesRapport": [],
+      "images": [
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14668223871/visuel-demo/apres/geste-poing/0000.png",
+          "cheminRelatifQa": "14668223871/visuel-demo/apres/geste-poing/0000.png",
+          "sha256": "9186f0065bf7b621244e6d059d122c3ff3c6ab53a78a4e536246fa76103e174f",
+          "octets": 385424,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "Poing fermé lisible à la phase 0,357, avec manche raccordée.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 0.5,
+          "horlogeJeu": 12.499999999999998,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.4716004719395684,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "pilote",
+            "volant": 0,
+            "pilote": {
+              "regard": 0,
+              "geste": "poing",
+              "gestePhase": 0.3571428571428559,
+              "gesteCote": -1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": false,
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 30,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false
+            },
+            "vitreVisible": false,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 3,
+              "dessins": 3,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "impactsEmis": 0,
+              "surfaceExpulsee": 0
+            },
+            "sillage": null
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14668223871/visuel-demo/apres/geste-poing/0001.png",
+          "cheminRelatifQa": "14668223871/visuel-demo/apres/geste-poing/0001.png",
+          "sha256": "09c0f9c5bc774449b7d7c9f5ef65babdd54ef8185b19b5f7cf608baada0ce630",
+          "octets": 385856,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "Poing fermé à la phase 0,429 ; légère évolution de la pose, sans défaut franc visible.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 0.6,
+          "horlogeJeu": 12.599999999999998,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.4716058023392913,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "pilote",
+            "volant": 0,
+            "pilote": {
+              "regard": 0,
+              "geste": "poing",
+              "gestePhase": 0.42857142857142705,
+              "gesteCote": -1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": false,
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 30,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false
+            },
+            "vitreVisible": false,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 3,
+              "dessins": 3,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "impactsEmis": 0,
+              "surfaceExpulsee": 0
+            },
+            "sillage": null
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14668223871/visuel-demo/apres/geste-poing/0002.png",
+          "cheminRelatifQa": "14668223871/visuel-demo/apres/geste-poing/0002.png",
+          "sha256": "f15e72c40484a0162e5b378ffad6ebdbd343304560dcf75820b77a76ebff6e5a",
+          "octets": 385658,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "Poing fermé à la phase 0,500 ; commande opposée et cuve restent cohérentes.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 0.7,
+          "horlogeJeu": 12.699999999999998,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.47165640102302525,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "pilote",
+            "volant": 0,
+            "pilote": {
+              "regard": 0,
+              "geste": "poing",
+              "gestePhase": 0.4999999999999983,
+              "gesteCote": -1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": false,
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 30,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false
+            },
+            "vitreVisible": false,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 3,
+              "dessins": 3,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "impactsEmis": 0,
+              "surfaceExpulsee": 0
+            },
+            "sillage": null
+          }
+        }
+      ]
+    },
+    {
+      "scene": "geste-salut-realisateur",
+      "artefact": "14668223871",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14668223871/visuel-demo/apres/geste-salut-realisateur/rapport.json",
+      "rapportSha256": "d528bb79bf1146666b2027fa91936c53f804cb970af6ee4e809319ee0c17633d",
+      "build": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "source": {
+        "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "versionRapport": "V0.2.70",
+      "initialisation": {
+        "entree": "BITUME_JEU.demo",
+        "type": "demo",
+        "cameraImposee": false,
+        "planDemande": "tele",
+        "saison": "ete",
+        "graineExpression": 3,
+        "posesDisposees": true,
+        "simulationConduite": false,
+        "sillage": null,
+        "description": "Vraie démo et vrai réalisateur ; poses prescrites, horloge/effets rendus, aucun essai de conduite ou de FPS."
+      },
+      "observationsVisuelles": [
+        "Main ouverte et cinq doigts distincts visibles devant le casque ; silhouette différente du poing et du majeur.",
+        "Le réalisateur cadre effectivement le pilote ; les rapports déclarent un plan pilote de motif expression après demande de plan télé.",
+        "Bras raccordé et ombre cohérente ; aucun écran noir ni traversée franche visible sur les trois images."
+      ],
+      "reserves": [
+        "Attaches basses et faces des rétroviseurs masquées ; cette série ne mesure pas le dégagement routier en cockpit.",
+        "La superposition main/casque en projection ne prouve pas une distance 3D."
+      ],
+      "blocageFrancObserve": false,
+      "erreursRapport": [],
+      "avertissementsRapport": [],
+      "alertesRapport": [],
+      "images": [
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14668223871/visuel-demo/apres/geste-salut-realisateur/0000.png",
+          "cheminRelatifQa": "14668223871/visuel-demo/apres/geste-salut-realisateur/0000.png",
+          "sha256": "ffa846e0116f8a3c67ee8f7883eddea574b2d2f03d9d1856425ccf31f4920e27",
+          "octets": 385823,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "Salut lisible à la phase 0,278 ; cinq doigts et manche visibles.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 0.5,
+          "horlogeJeu": 12.499999999999998,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.47184278063749974,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "pilote",
+            "volant": 0,
+            "pilote": {
+              "regard": 0,
+              "geste": "salut",
+              "gestePhase": 0.2777777777777768,
+              "gesteCote": -1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": false,
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 30,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false
+            },
+            "vitreVisible": false,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 3,
+              "dessins": 3,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "impactsEmis": 0,
+              "surfaceExpulsee": 0
+            },
+            "sillage": null
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14668223871/visuel-demo/apres/geste-salut-realisateur/0001.png",
+          "cheminRelatifQa": "14668223871/visuel-demo/apres/geste-salut-realisateur/0001.png",
+          "sha256": "0055e9346a4d8c98b3bb9380c86e095fb4236f19f6ae7654da76114ce571317c",
+          "octets": 385732,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "Salut conservé à la phase 0,333 ; léger déplacement du cadrage sans obstruction du geste.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 0.6,
+          "horlogeJeu": 12.599999999999998,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.4721019455007386,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "pilote",
+            "volant": 0,
+            "pilote": {
+              "regard": 0,
+              "geste": "salut",
+              "gestePhase": 0.33333333333333215,
+              "gesteCote": -1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": false,
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 30,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false
+            },
+            "vitreVisible": false,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 3,
+              "dessins": 3,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "impactsEmis": 0,
+              "surfaceExpulsee": 0
+            },
+            "sillage": null
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14668223871/visuel-demo/apres/geste-salut-realisateur/0002.png",
+          "cheminRelatifQa": "14668223871/visuel-demo/apres/geste-salut-realisateur/0002.png",
+          "sha256": "2f9d007b069094af023b795e466e9120a323c0a0c0ce3798705f6c44e3317072",
+          "octets": 385599,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "Salut conservé à la phase 0,389 ; main, coude et silhouette demeurent raccordés.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 0.7,
+          "horlogeJeu": 12.699999999999998,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.47235719870363746,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "pilote",
+            "volant": 0,
+            "pilote": {
+              "regard": 0,
+              "geste": "salut",
+              "gestePhase": 0.3888888888888875,
+              "gesteCote": -1,
+              "gesteIntensite": 1,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": false,
+              "pluie": 0,
+              "neige": 0,
+              "vitesse": 30,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false
+            },
+            "vitreVisible": false,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 3,
+              "dessins": 3,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "impactsEmis": 0,
+              "surfaceExpulsee": 0
+            },
+            "sillage": null
+          }
+        }
+      ]
+    },
+    {
+      "scene": "pluie-cockpit",
+      "artefact": "14670405192",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14670405192/visuel-demo/apres/pluie-cockpit/rapport.json",
+      "rapportSha256": "ba749db154c0012b0fda8cb050c38a25f1cb18228aa1e862df1b1f6b6fdb4f19",
+      "build": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "source": {
+        "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "versionRapport": "V0.2.70",
+      "initialisation": {
+        "entree": "BITUME_JEU.demo",
+        "type": "demo",
+        "cameraImposee": false,
+        "planDemande": "cockpit",
+        "saison": "ete",
+        "graineExpression": null,
+        "posesDisposees": true,
+        "simulationConduite": false,
+        "sillage": {
+          "rival": 1,
+          "decalageAbscisseM": 18,
+          "nombreRivauxProches": 1
+        },
+        "description": "Vraie démo et vrai réalisateur ; poses prescrites, horloge/effets rendus, aucun essai de conduite ou de FPS."
+      },
+      "observationsVisuelles": [
+        "Gouttes de tailles variées et voile d’embruns visibles sur l’optique ; leur disposition évolue entre les trois images.",
+        "Deux mains rouges sont présentes sur les côtés du volant. La planche, les indicateurs et les deux faces de rétroviseurs sont visibles, avec un décor reflété dans les zones découvertes.",
+        "Pas d’écran noir ni de rupture franche des bras/commandes dans les parties visibles.",
+        "Les rapports confirment une optique active, 24/22/24 gouttes natives, 89/89/91 impacts cumulés et 1073/1085/1097 étapes ; cela corrobore l’activité optique, sans constituer une nouvelle qualification d’impact individuel."
+      ],
+      "reserves": [
+        "Le bandeau DÉMO occupe l’axe de la route et la pluie réduit la lisibilité : ce sous-groupe ne suffit pas à certifier le dégagement de la chaussée.",
+        "Classement et minicarte recouvrent partiellement les rétroviseurs ; seules leurs portions exposées sont inspectables.",
+        "La partie basse du volant et des mains est coupée par le bord inférieur de l’image.",
+        "Trois images espacées de 0,1 s ne qualifient pas à elles seules l’écoulement à toutes vitesses, l’éjection ni un impact arceau précisément synchronisé."
+      ],
+      "blocageFrancObserve": false,
+      "erreursRapport": [],
+      "avertissementsRapport": [],
+      "alertesRapport": [],
+      "images": [
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14670405192/visuel-demo/apres/pluie-cockpit/0000.png",
+          "cheminRelatifQa": "14670405192/visuel-demo/apres/pluie-cockpit/0000.png",
+          "sha256": "4b8594ad7a0fd85bd688cc49e021426fa6af23ef19fcc59bd7e89c78d2509462",
+          "octets": 493414,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "À 21,100 s : nombreuses gouttes et embruns, deux mains au volant, deux miroirs partiellement exposés ; aucune image noire.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 9.1,
+          "horlogeJeu": 21.10000000000006,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.3882694702477485,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "cockpit",
+            "volant": 0,
+            "pilote": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": true,
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 65.27777777777777,
+              "cockpit": true,
+              "intensite": 1,
+              "embruns": 0.8656307143666307,
+              "pause": false
+            },
+            "vitreVisible": true,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 94,
+              "dessins": 94,
+              "etapes": 1073,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 1.8969607548910592,
+              "accumulationNeige": 0,
+              "embruns": 0.8656307143666291,
+              "gouttes": 24,
+              "neige": 0,
+              "fusionsEau": 14,
+              "expulses": 51,
+              "depotsEau": 89,
+              "depotsEmbruns": 79,
+              "impactsEmis": 89,
+              "surfaceExpulsee": 2250.8966509233646
+            },
+            "sillage": {
+              "rival": 1,
+              "sources": [
+                {
+                  "id": 1,
+                  "exposition": 0.8605631901573365
+                }
+              ],
+              "casque": 0.8605631901573365,
+              "lentille": 0.8656307143666307
+            }
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14670405192/visuel-demo/apres/pluie-cockpit/0001.png",
+          "cheminRelatifQa": "14670405192/visuel-demo/apres/pluie-cockpit/0001.png",
+          "sha256": "488593e7b7a7f136567bcf6ff5bf6fc57652796755bd5cc80c078b672b055402",
+          "octets": 493055,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "À 21,200 s : disposition locale de l’eau modifiée ; commandes visibles toujours raccordées ; mêmes masques de HUD.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 9.2,
+          "horlogeJeu": 21.20000000000006,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.3892605703597243,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "cockpit",
+            "volant": 0,
+            "pilote": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": true,
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 65.27777777777777,
+              "cockpit": true,
+              "intensite": 1,
+              "embruns": 0.8656307143666307,
+              "pause": false
+            },
+            "vitreVisible": true,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 95,
+              "dessins": 95,
+              "etapes": 1085,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 1.8971718885261877,
+              "accumulationNeige": 0,
+              "embruns": 0.8656307143666291,
+              "gouttes": 22,
+              "neige": 0,
+              "fusionsEau": 14,
+              "expulses": 53,
+              "depotsEau": 89,
+              "depotsEmbruns": 79,
+              "impactsEmis": 89,
+              "surfaceExpulsee": 2273.4323713970443
+            },
+            "sillage": {
+              "rival": 1,
+              "sources": [
+                {
+                  "id": 1,
+                  "exposition": 0.8605631901573365
+                }
+              ],
+              "casque": 0.8605631901573365,
+              "lentille": 0.8656307143666307
+            }
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14670405192/visuel-demo/apres/pluie-cockpit/0002.png",
+          "cheminRelatifQa": "14670405192/visuel-demo/apres/pluie-cockpit/0002.png",
+          "sha256": "0b735fe854330a7ed06956e5cecd9b94b87a58087d94b6751ac3c84e45429a86",
+          "octets": 490075,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "À 21,300 s : eau encore active et position des grosses gouttes évoluée ; mains et planche conservées sans défaut franc visible.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 9.3,
+          "horlogeJeu": 21.30000000000006,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.3889699710980297,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "cockpit",
+            "volant": 0,
+            "pilote": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": true,
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 65.27777777777777,
+              "cockpit": true,
+              "intensite": 1,
+              "embruns": 0.8656307143666307,
+              "pause": false
+            },
+            "vitreVisible": true,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 96,
+              "dessins": 96,
+              "etapes": 1097,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 1.8973683548968197,
+              "accumulationNeige": 0,
+              "embruns": 0.8656307143666291,
+              "gouttes": 24,
+              "neige": 0,
+              "fusionsEau": 14,
+              "expulses": 53,
+              "depotsEau": 91,
+              "depotsEmbruns": 79,
+              "impactsEmis": 91,
+              "surfaceExpulsee": 2273.4323713970443
+            },
+            "sillage": {
+              "rival": 1,
+              "sources": [
+                {
+                  "id": 1,
+                  "exposition": 0.8605631901573365
+                }
+              ],
+              "casque": 0.8605631901573365,
+              "lentille": 0.8656307143666307
+            }
+          }
+        }
+      ]
+    },
+    {
+      "scene": "pluie-aerien",
+      "artefact": "14669740262",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14669740262/visuel-demo/apres/pluie-aerien/rapport.json",
+      "rapportSha256": "7c13d26abdac1232a8f663175393d678270db1cf83c63c457724c430bf4498b8",
+      "build": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "source": {
+        "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "versionRapport": "V0.2.70",
+      "initialisation": {
+        "entree": "BITUME_JEU.demo",
+        "type": "demo",
+        "cameraImposee": false,
+        "planDemande": "helico",
+        "saison": "ete",
+        "graineExpression": null,
+        "posesDisposees": true,
+        "simulationConduite": false,
+        "sillage": null,
+        "description": "Vraie démo et vrai réalisateur ; poses prescrites, horloge/effets rendus, aucun essai de conduite ou de FPS."
+      },
+      "observationsVisuelles": [
+        "La voiture reste lisible sur la chaussée mouillée avec pluie fine dans le monde et panache autour de sa trajectoire.",
+        "Aucune grosse goutte collée à l’écran ni couche de lentille n’apparaît sur les trois vues aériennes.",
+        "Les rapports déclarent optique inactive, zéro eau, zéro goutte, zéro impact et zéro étape optique, cohérents avec les images.",
+        "Aucune image noire ni erreur de rendu franche observée."
+      ],
+      "reserves": [
+        "La distance ne permet pas de juger les bras, commandes, faces de rétroviseurs ni gouttes sur la carrosserie.",
+        "La chaussée présente de larges plages réfléchissantes ; cette inspection confirme leur présence, sans qualifier leur réalisme physique."
+      ],
+      "blocageFrancObserve": false,
+      "erreursRapport": [],
+      "avertissementsRapport": [],
+      "alertesRapport": [],
+      "images": [
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14669740262/visuel-demo/apres/pluie-aerien/0000.png",
+          "cheminRelatifQa": "14669740262/visuel-demo/apres/pluie-aerien/0000.png",
+          "sha256": "4d168224aa1b7dac7f6b1f31058264695befe59a30adc754ba6096993f94a63b",
+          "octets": 276157,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "À 21,100 s : pluie fine, route mouillée et voiture lisible ; lentille visuellement libre de gouttes.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 9.1,
+          "horlogeJeu": 21.10000000000006,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.37230545647435515,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "helico",
+            "volant": 0,
+            "pilote": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": false,
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 65.27777777777777,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false
+            },
+            "vitreVisible": false,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 3,
+              "dessins": 3,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "impactsEmis": 0,
+              "surfaceExpulsee": 0
+            },
+            "sillage": null
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14669740262/visuel-demo/apres/pluie-aerien/0001.png",
+          "cheminRelatifQa": "14669740262/visuel-demo/apres/pluie-aerien/0001.png",
+          "sha256": "06b7aab3c5cb4c749fc5ec94bc1053c3270892d55ce96c7cb2275594ac0070fb",
+          "octets": 276300,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "À 21,200 s : traînées de pluie et panache évolués ; aucune couche d’eau d’écran.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 9.2,
+          "horlogeJeu": 21.20000000000006,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.3722879308131963,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "helico",
+            "volant": 0,
+            "pilote": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": false,
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 65.27777777777777,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false
+            },
+            "vitreVisible": false,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 3,
+              "dessins": 3,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "impactsEmis": 0,
+              "surfaceExpulsee": 0
+            },
+            "sillage": null
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14669740262/visuel-demo/apres/pluie-aerien/0002.png",
+          "cheminRelatifQa": "14669740262/visuel-demo/apres/pluie-aerien/0002.png",
+          "sha256": "6f2ac38807291df054ec4fc440005c2d7463788dbd7378d3688953001b36abf1",
+          "octets": 276520,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "À 21,300 s : même séparation entre météo du monde et lentille sèche ; voiture toujours lisible.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 9.3,
+          "horlogeJeu": 21.30000000000006,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.37232570779969665,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "helico",
+            "volant": 0,
+            "pilote": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": false,
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 65.27777777777777,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0,
+              "pause": false
+            },
+            "vitreVisible": false,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 3,
+              "dessins": 3,
+              "etapes": 0,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 0,
+              "accumulationNeige": 0,
+              "embruns": 0,
+              "gouttes": 0,
+              "neige": 0,
+              "fusionsEau": 0,
+              "expulses": 0,
+              "depotsEau": 0,
+              "depotsEmbruns": 0,
+              "impactsEmis": 0,
+              "surfaceExpulsee": 0
+            },
+            "sillage": null
+          }
+        }
+      ]
+    },
+    {
+      "scene": "pluie-poursuite-sillage",
+      "artefact": "14669162479",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14669162479/visuel-demo/apres/pluie-poursuite-sillage/rapport.json",
+      "rapportSha256": "453825eb30b42a9423c80aa68d5047c3186e737485f3085874bc8536877eb0e8",
+      "build": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "source": {
+        "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "versionRapport": "V0.2.70",
+      "initialisation": {
+        "entree": "BITUME_JEU.demo",
+        "type": "demo",
+        "cameraImposee": false,
+        "planDemande": "poursuite",
+        "saison": "ete",
+        "graineExpression": null,
+        "posesDisposees": true,
+        "simulationConduite": false,
+        "sillage": {
+          "rival": 1,
+          "decalageAbscisseM": 18,
+          "nombreRivauxProches": 1
+        },
+        "description": "Vraie démo et vrai réalisateur ; poses prescrites, horloge/effets rendus, aucun essai de conduite ou de FPS."
+      },
+      "observationsVisuelles": [
+        "Voiture suivie au centre de la chaussée, rival visible devant, embruns entre les voitures et gouttes sur la lentille.",
+        "Le motif de l’eau évolue sur les trois images ; bords de route et voiture restent repérables sous la pluie.",
+        "Les rapports confirment une lentille active, un rival source d’exposition, 24/23/24 gouttes natives et 78/78/79 impacts cumulés.",
+        "Aucun écran noir, disparition de voiture ou défaut franc de composition observé."
+      ],
+      "reserves": [
+        "À cette distance et depuis l’arrière, bras, commandes et faces de rétroviseurs ne sont pas qualifiables.",
+        "La forte eau optique masque des détails ; trois images sur 0,2 s ne valident ni toute la dynamique d’écoulement ni la conduite à 235 km/h."
+      ],
+      "blocageFrancObserve": false,
+      "erreursRapport": [],
+      "avertissementsRapport": [],
+      "alertesRapport": [],
+      "images": [
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14669162479/visuel-demo/apres/pluie-poursuite-sillage/0000.png",
+          "cheminRelatifQa": "14669162479/visuel-demo/apres/pluie-poursuite-sillage/0000.png",
+          "sha256": "e69d83cd35bc39f2728bd13f0028850d9528eaa51a33d08287bad45e977efae5",
+          "octets": 390871,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "À 21,100 s : rival, voiture suivie, embruns et gouttes optiques présents ; route identifiable.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 9.1,
+          "horlogeJeu": 21.10000000000006,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.39913843758625434,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "poursuite",
+            "volant": 0,
+            "pilote": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": true,
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 65.27777777777777,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0.6631411450393534,
+              "pause": false
+            },
+            "vitreVisible": true,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 94,
+              "dessins": 94,
+              "etapes": 1073,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 1.6537740753239951,
+              "accumulationNeige": 0,
+              "embruns": 0.6631411450393517,
+              "gouttes": 24,
+              "neige": 0,
+              "fusionsEau": 5,
+              "expulses": 49,
+              "depotsEau": 78,
+              "depotsEmbruns": 70,
+              "impactsEmis": 78,
+              "surfaceExpulsee": 2137.0946121304155
+            },
+            "sillage": {
+              "rival": 1,
+              "sources": [
+                {
+                  "id": 1,
+                  "exposition": 0.8605631901573365
+                }
+              ],
+              "casque": 0.8605631901573365,
+              "lentille": 0.6631411450393534
+            }
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14669162479/visuel-demo/apres/pluie-poursuite-sillage/0001.png",
+          "cheminRelatifQa": "14669162479/visuel-demo/apres/pluie-poursuite-sillage/0001.png",
+          "sha256": "413fea5b9999c28909a3ea612c01b8eeb7d3563c8d5e1c63b34bf87a6618a1f6",
+          "octets": 389108,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "À 21,200 s : changement de disposition de l’eau ; véhicule et rival restent identifiables.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 9.2,
+          "horlogeJeu": 21.20000000000006,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.39908002624515015,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "poursuite",
+            "volant": 0,
+            "pilote": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": true,
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 65.27777777777777,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0.6631411450393534,
+              "pause": false
+            },
+            "vitreVisible": true,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 95,
+              "dessins": 95,
+              "etapes": 1085,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 1.6539581420377132,
+              "accumulationNeige": 0,
+              "embruns": 0.6631411450393517,
+              "gouttes": 23,
+              "neige": 0,
+              "fusionsEau": 5,
+              "expulses": 50,
+              "depotsEau": 78,
+              "depotsEmbruns": 70,
+              "impactsEmis": 78,
+              "surfaceExpulsee": 2156.459777440038
+            },
+            "sillage": {
+              "rival": 1,
+              "sources": [
+                {
+                  "id": 1,
+                  "exposition": 0.8605631901573365
+                }
+              ],
+              "casque": 0.8605631901573365,
+              "lentille": 0.6631411450393534
+            }
+          }
+        },
+        {
+          "fichier": "/workspace/scratch/d61843ca5396/qa/14669162479/visuel-demo/apres/pluie-poursuite-sillage/0002.png",
+          "cheminRelatifQa": "14669162479/visuel-demo/apres/pluie-poursuite-sillage/0002.png",
+          "sha256": "0a0348662cd0fa0da0ce380faebdf9cad2f6000d139f7d4cb227ae2dff2ead31",
+          "octets": 385234,
+          "dimensions": [
+            960,
+            540
+          ],
+          "ouverteAvecViewImage": true,
+          "inspectee": true,
+          "observationVisuelle": "À 21,300 s : gouttes encore déplacées et sillage conservé ; aucune disparition ou image noire.",
+          "blocageFrancObserve": false,
+          "tempsCapture": 9.3,
+          "horlogeJeu": 21.30000000000006,
+          "mesuresRapport": {
+            "noir": 0,
+            "luminance": 0.39914061851242877,
+            "glErreur": 0,
+            "glPerdu": false,
+            "vue": "poursuite",
+            "volant": 0,
+            "pilote": {
+              "regard": 0,
+              "geste": null,
+              "gestePhase": 0,
+              "gesteCote": -1,
+              "gesteIntensite": 0,
+              "passageVisuel": null
+            },
+            "vitrage": {
+              "actif": true,
+              "pluie": 1,
+              "neige": 0,
+              "vitesse": 65.27777777777777,
+              "cockpit": false,
+              "intensite": 1,
+              "embruns": 0.6631411450393534,
+              "pause": false
+            },
+            "vitreVisible": true,
+            "vitreJ1": {
+              "backend": "webgl2",
+              "pret": true,
+              "perdu": false,
+              "erreur": null,
+              "copiesScene": 96,
+              "dessins": 96,
+              "etapes": 1097,
+              "pixels": 518400,
+              "pixelsSource": 518400,
+              "largeur": 960,
+              "hauteur": 540,
+              "dpr": 1,
+              "eau": 1.6541294218017177,
+              "accumulationNeige": 0,
+              "embruns": 0.6631411450393517,
+              "gouttes": 24,
+              "neige": 0,
+              "fusionsEau": 5,
+              "expulses": 50,
+              "depotsEau": 79,
+              "depotsEmbruns": 71,
+              "impactsEmis": 79,
+              "surfaceExpulsee": 2156.459777440038
+            },
+            "sillage": {
+              "rival": 1,
+              "sources": [
+                {
+                  "id": 1,
+                  "exposition": 0.8605631901573365
+                }
+              ],
+              "casque": 0.8605631901573365,
+              "lentille": 0.6631411450393534
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

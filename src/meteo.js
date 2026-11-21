@@ -44,12 +44,14 @@
     while (reste > 1e-12) {
       const p = Math.max(0, PHASES.indexOf(m.phase));
       const pas = fixe ? reste : Math.min(reste, Math.max(0, DUREES[p] - m.tp));
+      // La force manuelle reste constante toute la course ; le cycle variable garde ses cibles.
+      const ciblePluie = fixe && Number.isFinite(m.pluieFixe) ? clamp(m.pluieFixe, 0, 1) : PLUIE[p];
       const k = -Math.expm1(-pas / 2.5), anciennePluie = m.pluie;
-      m.pluie += (PLUIE[p] - m.pluie) * k;
+      m.pluie += (ciblePluie - m.pluie) * k;
       m.nuage += (NUAGES[p] - m.nuage) * k;
       // Intégrale de la pluie pendant le pas (pas une somme dépendant du nombre d'images).
-      const eau = m.precipitationsNeige === true ? 0 : PLUIE[p] * pas + (anciennePluie - PLUIE[p]) * 2.5 * k;
-      const sechage = m.precipitationsNeige !== true && PLUIE[p] > 0 ? .004 : .012;
+      const eau = m.precipitationsNeige === true ? 0 : ciblePluie * pas + (anciennePluie - ciblePluie) * 2.5 * k;
+      const sechage = m.precipitationsNeige !== true && ciblePluie > 0 ? .004 : .012;
       m.mouille = clamp(m.mouille + eau * .039 - pas * sechage, 0, 1);
       m.t += pas; m.tp += pas; reste -= pas;
       m.eclair = Math.max(0, m.eclair - pas * 6);

@@ -14,9 +14,13 @@ concurrency:
 
 jobs:
   troll:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[qualif-troll]')
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[qualif-troll]') || contains(github.event.head_commit.message, '[qualif-troll-poursuite]')
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        cas: ${{ contains(github.event.head_commit.message, '[qualif-troll-poursuite]') && fromJSON('["duo-poursuite"]') || fromJSON('["duo-cockpit","duo-poursuite"]') }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -24,27 +28,25 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Checkout temporaire de la base source epinglee
-        uses: actions/checkout@v4
-        with:
-          ref: d99d55cba227b0a70b6ceca0688f48324d8a7d69
-          path: qualification/candidat
-          persist-credentials: false
-      - name: Reconstituer deux fois le HTML exact de 00 sans modifier les sources de 01
+      - name: Reconstruire deux fois le HTML du candidat exact
         shell: bash
         run: |
           set -euo pipefail
+          mkdir -p qualification
           git rev-parse HEAD > qualification/OUTILS-COMMIT.txt
+          git rev-parse 'HEAD^{tree}' > qualification/TREE.txt
           node --version > qualification/ENVIRONNEMENT.txt
           google-chrome --version >> qualification/ENVIRONNEMENT.txt
-          python3 tools/qualification/preparer-troll-assemble.py \
-            --checkout qualification/candidat --sortie qualification/reconstruction.json \
-            > qualification/reconstruction.log 2>&1
+          python3 construire.py > qualification/reconstruction-1.log 2>&1
+          sha256sum dist/bitume.html > qualification/HTML-SHA256.txt
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+          python3 construire.py > qualification/reconstruction-2.log 2>&1
+          sha256sum --check qualification/HTML-SHA256.txt
           git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
       - name: Verifier les controles contre les faux positifs
         shell: bash
         env:
-          BITUME_HTML: ${{ github.workspace }}/qualification/candidat/dist/bitume.html
+          BITUME_HTML: ${{ github.workspace }}/dist/bitume.html
         run: |
           set -euo pipefail
           node verifications/troll-assemble.test.mjs > qualification/test-raccord.log 2>&1
@@ -54,23 +56,25 @@ jobs:
         run: |
           set -euo pipefail
           node tools/qualification/troll-assemble.mjs \
-            --html qualification/candidat/dist/bitume.html \
+            --html dist/bitume.html \
             --sortie qualification/raccord-assemble.json \
             > qualification/raccord-assemble.log 2>&1
       - name: Capturer J1 et J2 pendant toute leur animation
         shell: bash
+        env:
+          CAS_TROLL: ${{ matrix.cas }}
         run: |
           set -euo pipefail
           timeout --signal=TERM --kill-after=30s 18m node tools/captures-troll.mjs \
-            --url "file://$GITHUB_WORKSPACE/qualification/candidat/dist/bitume.html" \
-            --sortie qualification/images --chrome /usr/bin/google-chrome \
+            --url "file://$GITHUB_WORKSPACE/dist/bitume.html" \
+            --sortie qualification/images --chrome /usr/bin/google-chrome --cas "$CAS_TROLL" \
             > qualification/captures.log 2>&1
           git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
       - name: Conserver uniquement les preuves et images de qualification
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: bitume-troll-${{ github.sha }}
+          name: bitume-troll-${{ matrix.cas }}-${{ github.sha }}
           path: |
             qualification/*.txt
             qualification/*.json

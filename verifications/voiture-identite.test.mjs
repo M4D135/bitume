@@ -8,6 +8,10 @@
 // assise abaissée, cavité réelle et géométrie commune aux vues, avec les quatre roues posées en cockpit.
 // Les cotes/maillages de roue et leurs poses extérieures restent identiques à main fee69c5 ; les groupes
 // fantôme et glaces conservent leurs empreintes d'objets. Les tolérances et contrôles d'entrelacement sont inchangés.
+// Référence renouvelée pour le correctif cockpit 0.2.70 : volant/tableau abaissés, montage et face des rétros
+// corrigés, levier et trajectoires des bras adaptés. 84/134 groupes changent dans chaque configuration ;
+// leurs nombres d'objets et d'appels restent identiques, ainsi que toutes les empreintes de roues.
+// Seuls les maillages retro-boitier et console-levier-pilote changent. Voir le rapport COCKPIT-PLUIE/IDENTITE.
 //   node verifications/voiture-identite.test.mjs                  vérifier
 //   BITUME_FIGER=1 node verifications/voiture-identite.test.mjs   réécrire l'empreinte : seulement pour un changement
 //                                                                 d'image voulu, à dire dans le commit

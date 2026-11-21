@@ -1,0 +1,9 @@
+{
+  "candidate_commit": "1813c5440a9b8da34990f4e38c6c51a1d7bb1700",
+  "candidate_tree": "ae42fbb546af0c25dd1fb07bab27a8abf00fdd5a",
+  "reconstructions_identiques": 2,
+  "git_diff_runtime_vide": true,
+  "html_sha256": "761bccd8953eef06332dd5929c9826216c589dfdbede77324809d69201783db9",
+  "html_octets": 14511004,
+  "ferro_modules_conformes": 34
+}

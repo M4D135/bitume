@@ -192,7 +192,7 @@ test('invité en ligne : aucun appel de résolution, préférences saison/moment
 test('conditionsCommunes filtre lieu/IP/coordonnées et détache les observations et horaires', () => {
   const f = fixture(), k = snapshot(); k.horlogeReelle.latitude = 48.9; k.horlogeReelle.jours[0].ip = '203.0.113.10'; k.mReelle.longitude = 2.4;
   const commun = f.conditionsCommunes(k), texte = JSON.stringify(commun);
-  assert.deepEqual(Object.keys(commun).sort(), ['horlogeReelle', 'mReelle', 'meteo', 'moment', 'saison']);
+  assert.deepEqual(Object.keys(commun).sort(), ['forcePluie', 'horlogeReelle', 'mReelle', 'meteo', 'moment', 'saison']);
   for (const mot of ['Lieu privé', '203.0.113.10', 'latitude', 'longitude', 'meta', 'ip']) assert(!texte.includes(mot));
   k.mReelle.pluie = 0; k.horlogeReelle.jours[0].lever = 0;
   assert.equal(commun.mReelle.pluie, .4); assert.notEqual(commun.horlogeReelle.jours[0].lever, 0);
@@ -207,8 +207,64 @@ test('départ réseau : hôte et invité reçoivent mêmes saison, météo, sole
   assert.equal(packet.cfg.dateDepart, NOW + 4000); assert.equal(packet.cfg.T0, 4000); assert(!JSON.stringify(packet).includes('Lieu privé'));
   i.surMessageEnLigne(packet, 0); h.avancer(30); i.avancer(30);
   const host = h.departs.find(d => d.cfg && d.cfg.role === 'hote').cfg, invite = i.departs.find(d => d.cfg && d.cfg.role === 'invite').cfg;
-  for (const key of ['saison', 'moment', 'meteo', 'mReelle', 'horlogeReelle', 'dateDepart', 'T0']) assert.deepEqual(invite[key], host[key], key);
+  for (const key of ['saison', 'moment', 'meteo', 'forcePluie', 'mReelle', 'horlogeReelle', 'dateDepart', 'T0']) assert.deepEqual(invite[key], host[key], key);
   assert.equal(i.reglages.saison, 'ete'); assert.equal(i.reglages.moment, 'jour'); assert.equal(i.resolutions.length, 0);
+});
+
+test('quatre forces manuelles restent stables pendant la course et mouillent progressivement la chaussée', () => {
+  const f = fixture(), eaux = [];
+  for (const [forcePluie, valeur, nom] of [['fine', .2, 'fine'], ['moderee', .45, 'modérée'], ['forte', .75, 'forte'], ['tres_forte', 1, 'très forte']]) {
+    const k = { saison: 'ete', moment: 'jour', meteo: 'pluie', forcePluie, mReelle: null, i: 0 };
+    const S = { meteo: f.meteoPourConditions(k, 0, 10) };
+    assert.equal(S.meteo.pluie, valeur); assert.equal(S.meteo.pluieFixe, valeur);
+    assert.equal(f.nomMeteoCourse(k), 'pluie ' + nom);
+    for (let n = 0; n < 200; n++) production.meteo.avancer(S, .1);
+    assert.equal(S.meteo.pluie, valeur, forcePluie + ' ne revient pas vers 0,75');
+    eaux.push(S.meteo.mouille);
+    const neige = { meteo: f.meteoPourConditions({ ...k, saison: 'hiver' }, 0, 10) };
+    for (let n = 0; n < 200; n++) production.meteo.avancer(neige, .1);
+    assert.equal(neige.meteo.pluie, valeur); assert.equal(neige.meteo.mouille, 0);
+  }
+  assert(eaux[0] > 0 && eaux.every((v, i) => !i || v > eaux[i - 1]), 'plus de pluie apporte plus d’eau');
+  assert.equal(f.meteoPourConditions({ saison: 'ete', meteo: 'pluie' }, 0, 1).pluie, .75, 'ancien réglage compatible');
+  for (const forcePluie of ['fine', 'tres_forte']) {
+    const S = { meteo: f.meteoPourConditions(snapshot({ saison: 'ete', forcePluie, mReelle: { reel: true, pluie: .4, neige: false } }), 0, 1) };
+    for (let n = 0; n < 100; n++) production.meteo.avancer(S, .1);
+    assert.equal(S.meteo.pluie, .4, 'la météo réelle conserve son observation');
+    assert.equal(S.meteo.pluieFixe, undefined);
+  }
+});
+
+test('changer de force renouvelle la préparation ; commande visible seulement pour les précipitations manuelles', async () => {
+  const f = fixture(); Object.assign(f.reglages, { meteo: 'pluie', forcePluie: 'fine' });
+  const premier = f.actualiserConditions();
+  f.resolutions[0].resolve(snapshot({ saison: 'ete', forcePluie: 'fine', mReelle: null })); await premier;
+  assert.equal(f.$('p-force-pluie').hidden, false); assert.equal(f.$('p-force-pluie-titre').textContent, 'Intensité de la pluie');
+  f.reglages.forcePluie = 'tres_forte';
+  const second = f.actualiserConditions(); assert.equal(f.resolutions.length, 2);
+  f.resolutions[1].resolve(snapshot({ saison: 'hiver', forcePluie: 'tres_forte', mReelle: null })); await second;
+  assert.equal(f.conditionsDuDepart().forcePluie, 'tres_forte');
+  assert.equal(f.$('p-force-pluie-titre').textContent, 'Intensité de la neige');
+  for (const mode of ['reel', 'aleatoire']) {
+    f.reglages.meteoMode = mode; const pending = f.actualiserConditions();
+    f.resolutions.at(-1).resolve(snapshot()); await pending;
+    assert.equal(f.$('p-force-pluie').hidden, true, mode);
+  }
+});
+
+test('départ réseau conserve chaque force de pluie chez hôte et invité sans modifier les préférences invité', () => {
+  for (const [forcePluie, valeur] of [['fine', .2], ['moderee', .45], ['forte', .75], ['tres_forte', 1]]) {
+    const h = fixture(), i = fixture(); h.connecter('hote'); i.connecter('invite');
+    i.reglages.forcePluie = 'moderee';
+    h.EL.course = { ...snapshot({ saison: 'ete', mReelle: null, horlogeReelle: null, forcePluie }), i: 0, tours: 3, difficulte: 1 };
+    h.departEnLigne(); const packet = h.messages.find(x => x.m.t === 'depart').m;
+    i.surMessageEnLigne(packet, 0); h.avancer(30); i.avancer(30);
+    const host = h.departs.find(d => d.cfg?.role === 'hote').cfg, invite = i.departs.find(d => d.cfg?.role === 'invite').cfg;
+    assert.equal(host.forcePluie, forcePluie); assert.equal(invite.forcePluie, forcePluie);
+    assert.equal(h.meteoPourConditions(host, 0, host.graine).pluie, valeur);
+    assert.equal(i.meteoPourConditions(invite, 0, invite.graine).pluie, valeur);
+    assert.equal(i.reglages.forcePluie, 'moderee'); assert.equal(i.resolutions.length, 0);
+  }
 });
 
 test('neige observée est libellée neige hors côte, pluie à Port-Sable, indépendamment de la saison manuelle', () => {

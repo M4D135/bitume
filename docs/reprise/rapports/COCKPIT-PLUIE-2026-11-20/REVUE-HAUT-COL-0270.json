@@ -1,0 +1,4127 @@
+{
+  "format": "bitume-revue-hautcol-initiale-v1",
+  "date_utc": "2026-11-20T21:38:23.944919+00:00",
+  "provisoire": false,
+  "run_id": 44814645865,
+  "run_url": "https://github.com/M4D135/bitume/actions/runs/44814645865",
+  "head_sha": "c3d49089e68a46dc2163067afbdea7db81364fed",
+  "commit_capture": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+  "candidat": {
+    "version": "0.2.70",
+    "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+    "octets": 14502704,
+    "sha256_html_local": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+    "correspond_html_local": true,
+    "html_inclus_dans_zip": false
+  },
+  "reference": {
+    "version": "0.2.62",
+    "commit_html": "f41614e1f3887a79ebbd633df3fde754534f202e",
+    "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+    "octets": 14268457,
+    "hash_concordant_recus_et_rapports": true,
+    "octets_html_reference_recalcules_localement": false,
+    "html_inclus_dans_zip": false
+  },
+  "jobs": [
+    {
+      "id": 136559703431,
+      "name": "images (pluie-grille, pluie-grille)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44814645865,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Preparer la reference 0.2.62 et le build candidat",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et controler les scenes en raster logiciel",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Conserver les images et diagnostics meme en cas d'echec",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    },
+    {
+      "id": 136559703794,
+      "name": "images (pluie-tunnel, tunnel)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44814645865,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Preparer la reference 0.2.62 et le build candidat",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et controler les scenes en raster logiciel",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Conserver les images et diagnostics meme en cas d'echec",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    },
+    {
+      "id": 136559703818,
+      "name": "images (pluie-spray, pluie-spray235)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44814645865,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Preparer la reference 0.2.62 et le build candidat",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et controler les scenes en raster logiciel",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Conserver les images et diagnostics meme en cas d'echec",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    },
+    {
+      "id": 136559703828,
+      "name": "images (sillage-cockpit, sillage300,sillage300-sec)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44814645865,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Preparer la reference 0.2.62 et le build candidat",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et controler les scenes en raster logiciel",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Conserver les images et diagnostics meme en cas d'echec",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    },
+    {
+      "id": 136559703895,
+      "name": "images (neige, neige45,pause-reprise,legere)",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "run_id": 44814645865,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Preparer la reference 0.2.62 et le build candidat",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et controler les scenes en raster logiciel",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "number": 5
+        },
+        {
+          "name": "Conserver les images et diagnostics meme en cas d'echec",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    },
+    {
+      "id": 136559703918,
+      "name": "images (sillage-vues, sillage300-poursuite,sillage300-helico)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44814645865,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Preparer la reference 0.2.62 et le build candidat",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et controler les scenes en raster logiciel",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Conserver les images et diagnostics meme en cas d'echec",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    },
+    {
+      "id": 136559704156,
+      "name": "images (vues, duo,sec,faune-haut-col-ete,faune-haut-col-hiver)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44814645865,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Preparer la reference 0.2.62 et le build candidat",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Capturer et controler les scenes en raster logiciel",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Conserver les images et diagnostics meme en cas d'echec",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 14672500887,
+      "nom": "bitume-images-neige-4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+      "zip": "/workspace/scratch/d61843ca5396/qa/14672500887/artifact.zip",
+      "zip_sha256": "e1dcedf7e215217769d5e384f799c28acacc00e8f132aeb243fc6cfc03159927",
+      "zip_digest_github": "sha256:e1dcedf7e215217769d5e384f799c28acacc00e8f132aeb243fc6cfc03159927",
+      "zip_sha256_conforme": true,
+      "head_sha_api": "c3d49089e68a46dc2163067afbdea7db81364fed",
+      "recu_ci": {
+        "COMMIT.txt": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "SHA256SUMS.txt": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344  dist/bitume.html\n439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297  qualification/reference-0262.html",
+        "ENVIRONNEMENT.txt": "Google Chrome 157.0.8103.78 \nv24.22.3"
+      },
+      "rapport_global": "/workspace/scratch/d61843ca5396/qa/14672500887/visuel-meteo/rapport.json",
+      "echecs_automatiques": 0,
+      "passages": [
+        {
+          "scenario": "neige45",
+          "variante": "apres",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14672500887/visuel-meteo/apres/neige45/rapport.json",
+          "build": {
+            "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+            "octets": 14502704
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.70",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 0,
+            "qualite": "high",
+            "mode": "solo",
+            "vue": "cockpit",
+            "vue2": "cockpit",
+            "meteo": "pluie",
+            "moment": "jour",
+            "saison": "hiver",
+            "partage": "haut-bas",
+            "retro": "oui",
+            "depart": 280,
+            "vitesse": 12.5,
+            "images": 2,
+            "pas": 0.1,
+            "chauffe": 120,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14672500887/visuel-meteo/apres/neige45/0000.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "17f2f5e2abd61f0f7080bb11029aad5ae4eae4169259d5791865d87f007df7a2",
+              "octets": 444257,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Candidat 0.2.70 : neige et givre périphérique présents, cockpit rapproché et incliné. Le classement traverse la glace gauche, la carte traverse la glace droite et le bandeau de virage masque le centre de la route ; même réserve HUD que les témoins secs.",
+              "reserve_hud": true,
+              "temps_capture": 12.1,
+              "temps_meteo": 11.941666666666642,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.2240093912004,
+                  0.79,
+                  -324.69018442122126
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 36.247981578499974
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 1,
+                "vitesse": 12.5,
+                "vitesseX": -2.868203382648137,
+                "vitesseY": 0,
+                "vitesseZ": -12.166487141149897,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": true,
+                "mouille": 0.8567000000000026
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14672500887/visuel-meteo/apres/neige45/0001.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "8f69123f21b968f252d9de38e21b644cd5d28d1db21d69f81757a1aa87ae2fcd",
+              "octets": 444799,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Deuxième instant candidat : neige déplacée sans perte de rendu ; mêmes emprises du classement, de la carte et du bandeau sur les glaces et l’horizon.",
+              "reserve_hud": true,
+              "temps_capture": 12.2,
+              "temps_meteo": 12.041666666666641,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.2240093912004,
+                  0.79,
+                  -324.69018442122126
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 36.247981578499974
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 1,
+                "vitesse": 12.5,
+                "vitesseX": -2.868203382648137,
+                "vitesseY": 0,
+                "vitesseZ": -12.166487141149897,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": true,
+                "mouille": 0.8555000000000026
+              }
+            }
+          ]
+        },
+        {
+          "scenario": "pause-reprise",
+          "variante": "apres",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14672500887/visuel-meteo/apres/pause-reprise/rapport.json",
+          "build": {
+            "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+            "octets": 14502704
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.70",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 0,
+            "qualite": "high",
+            "mode": "solo",
+            "vue": "cockpit",
+            "vue2": "cockpit",
+            "meteo": "pluie",
+            "moment": "jour",
+            "saison": "ete",
+            "partage": "haut-bas",
+            "retro": "oui",
+            "depart": 280,
+            "vitesse": 25,
+            "images": 3,
+            "pas": 0.1,
+            "chauffe": 90,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [
+            {
+              "image": 1,
+              "vue": "scene",
+              "type": "identique",
+              "valeur": 0
+            },
+            {
+              "image": 1,
+              "vue": "glace-g",
+              "type": "identique",
+              "valeur": 0
+            },
+            {
+              "image": 1,
+              "vue": "glace-d",
+              "type": "identique",
+              "valeur": 0
+            }
+          ],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14672500887/visuel-meteo/apres/pause-reprise/0000.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "afb7f1a5ccea7c03a835ff096547eacc34d47574dd3c84b6130c6a763013616a",
+              "octets": 246428,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Pause affichée sur la scène de pluie assombrie et floutée ; menu Reprendre, options et choix des pneus lisibles. Le fond de course est volontairement figé.",
+              "reserve_hud": true,
+              "temps_capture": 9.1,
+              "temps_meteo": 8.841666666666653,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.2240093912004,
+                  0.79,
+                  -324.69018442122126
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 36.512565385642304
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 25,
+                "vitesseX": -5.736406765296274,
+                "vitesseY": 0,
+                "vitesseZ": -24.332974282299794,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": false,
+                "mouille": 1
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14672500887/visuel-meteo/apres/pause-reprise/0001.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "afb7f1a5ccea7c03a835ff096547eacc34d47574dd3c84b6130c6a763013616a",
+              "octets": 246428,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Deuxième instant de pause visuellement identique au premier, cohérent avec l’arrêt demandé ; les trois alertes d’identicité scène/glaces ne montrent pas seules un défaut.",
+              "reserve_hud": true,
+              "temps_capture": 9.2,
+              "temps_meteo": 8.841666666666653,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.2240093912004,
+                  0.79,
+                  -324.69018442122126
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 36.512565385642304
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 25,
+                "vitesseX": -5.736406765296274,
+                "vitesseY": 0,
+                "vitesseZ": -24.332974282299794,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": false,
+                "mouille": 1
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14672500887/visuel-meteo/apres/pause-reprise/0002.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "8f75b8d9541867064719735cdaa3a2f378fa3f2e7d803bb03696c4b43a91d3d1",
+              "octets": 450168,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Reprise : menu retiré, scène nette et gouttes visibles, vitesse 90 km/h ; absence de perte WebGL visible. Le classement, la carte et le bandeau gardent la réserve de masquage HUD.",
+              "reserve_hud": true,
+              "temps_capture": 9.3,
+              "temps_meteo": 8.941666666666652,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.2240093912004,
+                  0.79,
+                  -324.69018442122126
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 36.512565385642304
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 25,
+                "vitesseX": -5.736406765296274,
+                "vitesseY": 0,
+                "vitesseZ": -24.332974282299794,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": false,
+                "mouille": 1
+              }
+            }
+          ]
+        },
+        {
+          "scenario": "neige45",
+          "variante": "avant",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14672500887/visuel-meteo/avant/neige45/rapport.json",
+          "build": {
+            "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+            "octets": 14268457
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.62",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 0,
+            "qualite": "high",
+            "mode": "solo",
+            "vue": "cockpit",
+            "vue2": "cockpit",
+            "meteo": "pluie",
+            "moment": "jour",
+            "saison": "hiver",
+            "partage": "haut-bas",
+            "retro": "oui",
+            "depart": 280,
+            "vitesse": 12.5,
+            "images": 2,
+            "pas": 0.1,
+            "chauffe": 120,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14672500887/visuel-meteo/avant/neige45/0000.png",
+              "variante": "reference-0.2.62",
+              "sha256": "36ca0210895dfd4ccd8611f6faead9f3d5ef5c7727b3dc02228b60655f9bfcf8",
+              "octets": 418725,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Référence 0.2.62 : flocons visibles et givre périphérique ; route grise enneigée, voitures devant et deux glaces restent visibles au cadrage ancien.",
+              "reserve_hud": false,
+              "temps_capture": 12.1,
+              "temps_meteo": 11.941666666666642,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.1693987987949,
+                  0.74,
+                  -324.4585345060538
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": 0,
+                "roll": 0,
+                "fov": 36.247981578499974
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 1,
+                "vitesse": 12.5,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": true,
+                "mouille": 0.8567000000000026
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14672500887/visuel-meteo/avant/neige45/0001.png",
+              "variante": "reference-0.2.62",
+              "sha256": "abb6330c323ba02263532a862c7e44a611268c395d149e7cd9ac8a18e9274591",
+              "octets": 419092,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Deuxième instant de référence : positions stables, flocons déplacés ; route et voitures visibles, givre contenu au pourtour.",
+              "reserve_hud": false,
+              "temps_capture": 12.2,
+              "temps_meteo": 12.041666666666641,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.1693987987949,
+                  0.74,
+                  -324.4585345060538
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": 0,
+                "roll": 0,
+                "fov": 36.247981578499974
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 1,
+                "vitesse": 12.5,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": true,
+                "mouille": 0.8555000000000026
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 14671606739,
+      "nom": "bitume-images-sillage-vues-4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+      "zip": "/workspace/scratch/d61843ca5396/qa/14671606739/artifact.zip",
+      "zip_sha256": "db6ef34ba756b3ff27836aa3602af2e6ae49d2f03f2cee62c479b934634f27f1",
+      "zip_digest_github": "sha256:db6ef34ba756b3ff27836aa3602af2e6ae49d2f03f2cee62c479b934634f27f1",
+      "zip_sha256_conforme": true,
+      "head_sha_api": "c3d49089e68a46dc2163067afbdea7db81364fed",
+      "recu_ci": {
+        "COMMIT.txt": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "SHA256SUMS.txt": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344  dist/bitume.html\n439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297  qualification/reference-0262.html",
+        "ENVIRONNEMENT.txt": "Google Chrome 157.0.8103.78 \nv24.22.3"
+      },
+      "rapport_global": "/workspace/scratch/d61843ca5396/qa/14671606739/visuel-meteo/rapport.json",
+      "echecs_automatiques": 0,
+      "passages": [
+        {
+          "scenario": "sillage300-helico",
+          "variante": "apres",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14671606739/visuel-meteo/apres/sillage300-helico/rapport.json",
+          "build": {
+            "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+            "octets": 14502704
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.70",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 0,
+            "qualite": "high",
+            "mode": "solo",
+            "vue": "helico",
+            "vue2": "cockpit",
+            "meteo": "pluie",
+            "moment": "jour",
+            "saison": "ete",
+            "partage": "haut-bas",
+            "retro": "non",
+            "depart": 280,
+            "vitesse": 83.33333333333333,
+            "images": 2,
+            "pas": 0.1,
+            "chauffe": 60,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14671606739/visuel-meteo/apres/sillage300-helico/0000.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "d800ad3bff16c75fc4b86cded70eea1d78c96bfebf0fb1702b5da83a24bcebd6",
+              "octets": 271713,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Vue aérienne : voiture sujet et peloton distincts, route et accotements présents, aucune lentille couvrante visible.",
+              "reserve_hud": false,
+              "temps_capture": 6.1,
+              "temps_meteo": 5.941666666666662,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -749.3545475616229,
+                  21,
+                  -295.55096105868165
+                ],
+                "yaw": -0.23151901171721403,
+                "pitch": -0.4735975293936116,
+                "roll": 0,
+                "fov": 38
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 83.33333333333333,
+                "vitesseX": -19.121355884320913,
+                "vitesseY": 0,
+                "vitesseZ": -81.10991427433264,
+                "cameraYaw": -0.23151901171721403,
+                "cameraPitch": -0.4735975293936116,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": false,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": false
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": false,
+                "mouille": 1
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14671606739/visuel-meteo/apres/sillage300-helico/0001.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "5d56d7331dd75a7d138f2b3cab70b950180aeaf36f7b7ffd677cff23701e2d04",
+              "octets": 271880,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Deuxième instant aérien : mêmes positions de course prescrites, route et voitures présentes ; aucun résultat de conduite déduit.",
+              "reserve_hud": false,
+              "temps_capture": 6.2,
+              "temps_meteo": 6.041666666666662,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -749.3545475616229,
+                  21,
+                  -295.55096105868165
+                ],
+                "yaw": -0.23151901171721403,
+                "pitch": -0.4735975293936116,
+                "roll": 0,
+                "fov": 38
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 83.33333333333333,
+                "vitesseX": -19.121355884320913,
+                "vitesseY": 0,
+                "vitesseZ": -81.10991427433264,
+                "cameraYaw": -0.23151901171721403,
+                "cameraPitch": -0.4735975293936116,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": false,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": false
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": false,
+                "mouille": 1
+              }
+            }
+          ]
+        },
+        {
+          "scenario": "sillage300-poursuite",
+          "variante": "apres",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14671606739/visuel-meteo/apres/sillage300-poursuite/rapport.json",
+          "build": {
+            "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+            "octets": 14502704
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.70",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 0,
+            "qualite": "high",
+            "mode": "solo",
+            "vue": "poursuite",
+            "vue2": "cockpit",
+            "meteo": "pluie",
+            "moment": "jour",
+            "saison": "ete",
+            "partage": "haut-bas",
+            "retro": "non",
+            "depart": 280,
+            "vitesse": 83.33333333333333,
+            "images": 2,
+            "pas": 0.1,
+            "chauffe": 60,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14671606739/visuel-meteo/apres/sillage300-poursuite/0000.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "4e94e5134ceba5d9307b8a8b8d2dfdfe39d56c024ce150151bb704ffe37e064e",
+              "octets": 416471,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Vue poursuite : voiture rouge sujet et rival bleu devant visibles, gouttes et sillage présents ; le bandeau reste au-dessus des voitures.",
+              "reserve_hud": false,
+              "temps_capture": 6.1,
+              "temps_meteo": 5.941666666666662,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -754.5402592774507,
+                  2.45,
+                  -317.5479698098806
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.12,
+                "roll": 0,
+                "fov": 71.84313725490196
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 0,
+                "vitesse": 83.33333333333333,
+                "vitesseX": -19.121355884320913,
+                "vitesseY": 0,
+                "vitesseZ": -81.10991427433264,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.12,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": false,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0.8109796362435087,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 0,
+                "neige": false,
+                "mouille": 0.9287000000000013
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14671606739/visuel-meteo/apres/sillage300-poursuite/0001.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "5ef8ee68f553a7204cb83d23d3a88ad52ef08057f597d8a2f7bc56c1df2c3c09",
+              "octets": 414060,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Deuxième instant : voiture sujet, route et rival maintenus, eau en évolution ; pas de rupture de scène visible.",
+              "reserve_hud": false,
+              "temps_capture": 6.2,
+              "temps_meteo": 6.041666666666662,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -754.5402592774507,
+                  2.45,
+                  -317.5479698098806
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.12,
+                "roll": 0,
+                "fov": 71.84313725490196
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 0,
+                "vitesse": 83.33333333333333,
+                "vitesseX": -19.121355884320913,
+                "vitesseY": 0,
+                "vitesseZ": -81.10991427433264,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.12,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": false,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0.8104328126701141,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 0,
+                "neige": false,
+                "mouille": 0.9275000000000013
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 14671236713,
+      "nom": "bitume-images-sillage-cockpit-4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+      "zip": "/workspace/scratch/d61843ca5396/qa/14671236713/artifact.zip",
+      "zip_sha256": "716d09dc491982ed936606224378df555e2f84964ae2738d04830ee599040388",
+      "zip_digest_github": "sha256:716d09dc491982ed936606224378df555e2f84964ae2738d04830ee599040388",
+      "zip_sha256_conforme": true,
+      "head_sha_api": "c3d49089e68a46dc2163067afbdea7db81364fed",
+      "recu_ci": {
+        "COMMIT.txt": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "SHA256SUMS.txt": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344  dist/bitume.html\n439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297  qualification/reference-0262.html",
+        "ENVIRONNEMENT.txt": "Google Chrome 157.0.8103.78 \nv24.22.3"
+      },
+      "rapport_global": "/workspace/scratch/d61843ca5396/qa/14671236713/visuel-meteo/rapport.json",
+      "echecs_automatiques": 0,
+      "passages": [
+        {
+          "scenario": "sillage300",
+          "variante": "apres",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14671236713/visuel-meteo/apres/sillage300/rapport.json",
+          "build": {
+            "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+            "octets": 14502704
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.70",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 0,
+            "qualite": "high",
+            "mode": "solo",
+            "vue": "cockpit",
+            "vue2": "cockpit",
+            "meteo": "pluie",
+            "moment": "jour",
+            "saison": "ete",
+            "partage": "haut-bas",
+            "retro": "oui",
+            "depart": 280,
+            "vitesse": 83.33333333333333,
+            "images": 2,
+            "pas": 0.1,
+            "chauffe": 60,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14671236713/visuel-meteo/apres/sillage300/0000.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "bcca3f3ed64e56bd995b18b1497fe5f64a6e63b05e4d6263ae15a2f9a3e8e325",
+              "octets": 514125,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Candidat humide : rival largement dans l’emprise du bandeau ; voile d’embruns supplémentaire sur route et tableau, gouttes de sillage présentes.",
+              "reserve_hud": true,
+              "temps_capture": 6.1,
+              "temps_meteo": 5.941666666666662,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.2240093912004,
+                  0.79,
+                  -324.69018442122126
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 37.74728981897321
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 0,
+                "vitesse": 83.33333333333333,
+                "vitesseX": -19.121355884320913,
+                "vitesseY": 0,
+                "vitesseZ": -81.10991427433264,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0.9378565903586691,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 0,
+                "neige": false,
+                "mouille": 0.9287000000000013
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14671236713/visuel-meteo/apres/sillage300/0001.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "48f3fa7919617f66702be73f2aedea94fa7c562befcc6bdecece5c79dd6ccc79",
+              "octets": 510203,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Deuxième instant humide : même occultation du rival et effet de voile ; comparaison avec le témoin sec disponible au même cadrage.",
+              "reserve_hud": true,
+              "temps_capture": 6.2,
+              "temps_meteo": 6.041666666666662,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.2240093912004,
+                  0.79,
+                  -324.69018442122126
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 37.74728981897321
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 0,
+                "vitesse": 83.33333333333333,
+                "vitesseX": -19.121355884320913,
+                "vitesseY": 0,
+                "vitesseZ": -81.10991427433264,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0.9376301962827831,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 0,
+                "neige": false,
+                "mouille": 0.9275000000000013
+              }
+            }
+          ]
+        },
+        {
+          "scenario": "sillage300-sec",
+          "variante": "apres",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14671236713/visuel-meteo/apres/sillage300-sec/rapport.json",
+          "build": {
+            "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+            "octets": 14502704
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.70",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 0,
+            "qualite": "high",
+            "mode": "solo",
+            "vue": "cockpit",
+            "vue2": "cockpit",
+            "meteo": "sec",
+            "moment": "jour",
+            "saison": "ete",
+            "partage": "haut-bas",
+            "retro": "oui",
+            "depart": 280,
+            "vitesse": 83.33333333333333,
+            "images": 2,
+            "pas": 0.1,
+            "chauffe": 60,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14671236713/visuel-meteo/apres/sillage300-sec/0000.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "6faaae2e03c44b94bc7e5562c826566a153164a1df173371aa80062ae38d6588",
+              "octets": 386956,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Témoin sec au même cadrage et aux mêmes positions que sillage300 : absence de gouttes et d’embruns ; rival encore largement recouvert par le bandeau de virage.",
+              "reserve_hud": true,
+              "temps_capture": 6.1,
+              "temps_meteo": 5.941666666666662,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.2240093912004,
+                  0.79,
+                  -324.69018442122126
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 37.74728981897321
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 0,
+                "vitesse": 83.33333333333333,
+                "vitesseX": -19.121355884320913,
+                "vitesseY": 0,
+                "vitesseZ": -81.10991427433264,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 0,
+                "neige": false,
+                "mouille": 0
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14671236713/visuel-meteo/apres/sillage300-sec/0001.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "60cec2d10a5aa0f27fbfdad3646ae2a6b8fd4b5f1546a2cb135b2e5816e3e9f4",
+              "octets": 386967,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Deuxième instant sec : le masque local du rival subsiste sans pluie, mouillage ni embruns ; défaut de lisibilité du HUD distinct du voile humide.",
+              "reserve_hud": true,
+              "temps_capture": 6.2,
+              "temps_meteo": 6.041666666666662,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.2240093912004,
+                  0.79,
+                  -324.69018442122126
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 37.74728981897321
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 0,
+                "vitesse": 83.33333333333333,
+                "vitesseX": -19.121355884320913,
+                "vitesseY": 0,
+                "vitesseZ": -81.10991427433264,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 0,
+                "neige": false,
+                "mouille": 0
+              }
+            }
+          ]
+        },
+        {
+          "scenario": "sillage300",
+          "variante": "avant",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14671236713/visuel-meteo/avant/sillage300/rapport.json",
+          "build": {
+            "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+            "octets": 14268457
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.62",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 0,
+            "qualite": "high",
+            "mode": "solo",
+            "vue": "cockpit",
+            "vue2": "cockpit",
+            "meteo": "pluie",
+            "moment": "jour",
+            "saison": "ete",
+            "partage": "haut-bas",
+            "retro": "oui",
+            "depart": 280,
+            "vitesse": 83.33333333333333,
+            "images": 2,
+            "pas": 0.1,
+            "chauffe": 60,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14671236713/visuel-meteo/avant/sillage300/0000.png",
+              "variante": "reference-0.2.62",
+              "sha256": "57ab0b0dad2c34e64155ad3426d9b3553270663a46c4a37e92d28e8f217ea300",
+              "octets": 451965,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Référence 0.2.62 : rival bleu nettement visible sous le bandeau, lentille humide malgré l’absence de pluie ambiante.",
+              "reserve_hud": false,
+              "temps_capture": 6.1,
+              "temps_meteo": 5.941666666666662,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.1693987987949,
+                  0.74,
+                  -324.4585345060538
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": 0,
+                "roll": 0,
+                "fov": 37.74728981897321
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 0,
+                "vitesse": 83.33333333333333,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0.9003763827414775,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 0,
+                "neige": false,
+                "mouille": 0.9287000000000013
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14671236713/visuel-meteo/avant/sillage300/0001.png",
+              "variante": "reference-0.2.62",
+              "sha256": "401e4e7752c119caf842e8f63728fb947d1e50026749b9d71dd99e2de7c95454",
+              "octets": 451707,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Référence 0.2.62 : deuxième instant, rival distinct sous le bandeau et gouttes évoluées.",
+              "reserve_hud": false,
+              "temps_capture": 6.2,
+              "temps_meteo": 6.041666666666662,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.1693987987949,
+                  0.74,
+                  -324.4585345060538
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": 0,
+                "roll": 0,
+                "fov": 37.74728981897321
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 0,
+                "vitesse": 83.33333333333333,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0.9000790506824294,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 0,
+                "neige": false,
+                "mouille": 0.9275000000000013
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 14670621031,
+      "nom": "bitume-images-vues-4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+      "zip": "/workspace/scratch/d61843ca5396/qa/14670621031/artifact.zip",
+      "zip_sha256": "ac1f819eab960b8ecfb3d6b5ec44e5e49f39a6d80f6a3b2305107e5f1333e334",
+      "zip_digest_github": "sha256:ac1f819eab960b8ecfb3d6b5ec44e5e49f39a6d80f6a3b2305107e5f1333e334",
+      "zip_sha256_conforme": true,
+      "head_sha_api": "c3d49089e68a46dc2163067afbdea7db81364fed",
+      "recu_ci": {
+        "COMMIT.txt": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "SHA256SUMS.txt": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344  dist/bitume.html\n439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297  qualification/reference-0262.html",
+        "ENVIRONNEMENT.txt": "Google Chrome 157.0.8103.78 \nv24.22.3"
+      },
+      "rapport_global": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/rapport.json",
+      "echecs_automatiques": 0,
+      "passages": [
+        {
+          "scenario": "duo",
+          "variante": "apres",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/apres/duo/rapport.json",
+          "build": {
+            "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+            "octets": 14502704
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.70",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 0,
+            "qualite": "high",
+            "mode": "duo",
+            "vue": "cockpit",
+            "vue2": "cockpit",
+            "meteo": "pluie",
+            "moment": "jour",
+            "saison": "ete",
+            "partage": "haut-bas",
+            "retro": "oui",
+            "depart": 280,
+            "vitesse": 45,
+            "images": 2,
+            "pas": 0.1,
+            "chauffe": 60,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/apres/duo/0000.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "b350c2d5fe74b239cde3b3a237dbaa2e84c1f722d830c31c3eac2b293554cfba",
+              "octets": 533890,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Deux cockpits et deux HUD distincts ; J1 voit la route avec peu d’eau, J2 présente un voile et davantage de gouttes. Bandeau de J1 visible au centre.",
+              "reserve_hud": false,
+              "temps_capture": 6.1,
+              "temps_meteo": 5.941666666666662,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.2240093912004,
+                  0.79,
+                  -324.69018442122126
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 36.935899477070045
+              },
+              "camera2": {
+                "pos": [
+                  -753.0212166099927,
+                  0.79,
+                  -311.1044194004887
+                ],
+                "yaw": -0.23151901171724143,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 36.247981578499974
+              },
+              "j1": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 45,
+                "vitesseX": -10.325532177533294,
+                "vitesseY": 0,
+                "vitesseZ": -43.79935370813963,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0.032625033806254256,
+                "pause": false,
+                "actif": true
+              },
+              "j2": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 12.5,
+                "vitesseX": -2.868203382648475,
+                "vitesseY": 0,
+                "vitesseZ": -12.166487141149817,
+                "cameraYaw": -0.23151901171724143,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0.8196792403307118,
+                "pause": false,
+                "actif": true
+              },
+              "precipitation": {
+                "pluie": 1,
+                "neige": false,
+                "mouille": 1
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/apres/duo/0001.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "d1d2e5bd9abc2417998e1d7a076a676d095f76f0082e6c16daaf87699d913506",
+              "octets": 536007,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Deuxième instant : deux vues maintenues, eau différente par joueur, volants et mains présents.",
+              "reserve_hud": false,
+              "temps_capture": 6.2,
+              "temps_meteo": 6.041666666666662,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.2240093912004,
+                  0.79,
+                  -324.69018442122126
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 36.935899477070045
+              },
+              "camera2": {
+                "pos": [
+                  -753.0212166099927,
+                  0.79,
+                  -311.1044194004887
+                ],
+                "yaw": -0.23151901171724143,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 36.247981578499974
+              },
+              "j1": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 45,
+                "vitesseX": -10.325532177533294,
+                "vitesseY": 0,
+                "vitesseZ": -43.79935370813963,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0.032625033806254256,
+                "pause": false,
+                "actif": true
+              },
+              "j2": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 12.5,
+                "vitesseX": -2.868203382648475,
+                "vitesseY": 0,
+                "vitesseZ": -12.166487141149817,
+                "cameraYaw": -0.23151901171724143,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0.8196792403307118,
+                "pause": false,
+                "actif": true
+              },
+              "precipitation": {
+                "pluie": 1,
+                "neige": false,
+                "mouille": 1
+              }
+            }
+          ]
+        },
+        {
+          "scenario": "faune-haut-col-ete",
+          "variante": "apres",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/apres/faune-haut-col-ete/rapport.json",
+          "build": {
+            "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+            "octets": 14502704
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.70",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 2,
+            "qualite": "high",
+            "mode": "solo",
+            "vue": "cockpit",
+            "vue2": "cockpit",
+            "meteo": "sec",
+            "moment": "jour",
+            "saison": "ete",
+            "partage": "haut-bas",
+            "retro": "non",
+            "depart": 280,
+            "vitesse": 0,
+            "images": 2,
+            "pas": 0.1,
+            "chauffe": 4,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/apres/faune-haut-col-ete/0000.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "edcec1358ed7f2cc23acd72bcacd3a7762371eab44b2f954491ce131cf3abe83",
+              "octets": 277497,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Candidat : groupe plus proche, silhouettes et pieds apparents sur pente claire ; contact au sol plausible visuellement, sans validation dynamique.",
+              "reserve_hud": false,
+              "temps_capture": 0.5,
+              "temps_meteo": 0.4083333333333333,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -908.4149614110077,
+                  354.6545418667536,
+                  -367.83811028178184
+                ],
+                "yaw": -2.3877023204119534,
+                "pitch": -0.08782394078984455,
+                "roll": 0,
+                "fov": 34
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 0,
+                "vitesse": 0,
+                "vitesseX": 0,
+                "vitesseY": 0,
+                "vitesseZ": 0,
+                "cameraYaw": -2.3877023204119534,
+                "cameraPitch": -0.08782394078984455,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 0,
+                "neige": false,
+                "mouille": 0
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/apres/faune-haut-col-ete/0001.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "4714093a7cf8b3e5cdc8555fe5f041a0abfd02a7cc8f8acb18dc9659d6f3c546",
+              "octets": 277490,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Deuxième instant : groupe entier maintenu dans le cadre, ombres et pente visibles ; pas de disparition de silhouette.",
+              "reserve_hud": false,
+              "temps_capture": 0.6,
+              "temps_meteo": 0.5083333333333333,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -908.4149614110077,
+                  354.6545418667536,
+                  -367.83811028178184
+                ],
+                "yaw": -2.3877023204119534,
+                "pitch": -0.08782394078984455,
+                "roll": 0,
+                "fov": 34
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 0,
+                "vitesse": 0,
+                "vitesseX": 0,
+                "vitesseY": 0,
+                "vitesseZ": 0,
+                "cameraYaw": -2.3877023204119534,
+                "cameraPitch": -0.08782394078984455,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 0,
+                "neige": false,
+                "mouille": 0
+              }
+            }
+          ]
+        },
+        {
+          "scenario": "faune-haut-col-hiver",
+          "variante": "apres",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/apres/faune-haut-col-hiver/rapport.json",
+          "build": {
+            "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+            "octets": 14502704
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.70",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 2,
+            "qualite": "high",
+            "mode": "solo",
+            "vue": "cockpit",
+            "vue2": "cockpit",
+            "meteo": "sec",
+            "moment": "jour",
+            "saison": "hiver",
+            "partage": "haut-bas",
+            "retro": "non",
+            "depart": 280,
+            "vitesse": 0,
+            "images": 2,
+            "pas": 0.1,
+            "chauffe": 4,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/apres/faune-haut-col-hiver/0000.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "1636f62f19b93e93e22fa3be4544582da5ba05fdfa24ce79354dee3c556270ec",
+              "octets": 274514,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Candidat : animaux debout et couchés plus proches, cornes distinctes, pente enneigée et ombres visibles.",
+              "reserve_hud": false,
+              "temps_capture": 0.5,
+              "temps_meteo": 0.4083333333333333,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -908.2253452186668,
+                  354.737746339949,
+                  -368.16998736009737
+                ],
+                "yaw": -2.3877023204119525,
+                "pitch": -0.08782394078984505,
+                "roll": 0,
+                "fov": 34
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 0,
+                "vitesse": 0,
+                "vitesseX": 0,
+                "vitesseY": 0,
+                "vitesseZ": 0,
+                "cameraYaw": -2.3877023204119525,
+                "cameraPitch": -0.08782394078984505,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 0,
+                "neige": false,
+                "mouille": 0
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/apres/faune-haut-col-hiver/0001.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "4ee34ebd0bb1f55cdf879a56b172821edf9d5867ceb17d1c34edcd56f2051776",
+              "octets": 274529,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Deuxième instant : mêmes silhouettes et contacts apparents au sol ; aucune preuve de locomotion déduite de ces poses figées.",
+              "reserve_hud": false,
+              "temps_capture": 0.6,
+              "temps_meteo": 0.5083333333333333,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -908.2253452186668,
+                  354.737746339949,
+                  -368.16998736009737
+                ],
+                "yaw": -2.3877023204119525,
+                "pitch": -0.08782394078984505,
+                "roll": 0,
+                "fov": 34
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 0,
+                "vitesse": 0,
+                "vitesseX": 0,
+                "vitesseY": 0,
+                "vitesseZ": 0,
+                "cameraYaw": -2.3877023204119525,
+                "cameraPitch": -0.08782394078984505,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 0,
+                "neige": false,
+                "mouille": 0
+              }
+            }
+          ]
+        },
+        {
+          "scenario": "sec",
+          "variante": "apres",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/apres/sec/rapport.json",
+          "build": {
+            "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+            "octets": 14502704
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.70",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 0,
+            "qualite": "high",
+            "mode": "solo",
+            "vue": "cockpit",
+            "vue2": "cockpit",
+            "meteo": "sec",
+            "moment": "jour",
+            "saison": "ete",
+            "partage": "haut-bas",
+            "retro": "oui",
+            "depart": 280,
+            "vitesse": 0,
+            "images": 2,
+            "pas": 0.1,
+            "chauffe": 4,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/apres/sec/0000.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "691b2fc0620bcee78c2817aa2cc03448f3436537a07cf15bb647d48116a48a42",
+              "octets": 414647,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Témoin sec : aucune goutte sur l’image, route et rivaux visibles, cockpit, roues, miroirs et instruments présents.",
+              "reserve_hud": false,
+              "temps_capture": 0.5,
+              "temps_meteo": 0.4083333333333333,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.2240093912004,
+                  0.79,
+                  -324.69018442122126
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 35.98339777135764
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 0,
+                "vitesse": 0,
+                "vitesseX": 0,
+                "vitesseY": 0,
+                "vitesseZ": 0,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 0,
+                "neige": false,
+                "mouille": 0
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/apres/sec/0001.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "6bba3b3db27cf772bd649d3c57d1085869a86f4724cd22b5c99c45441ddbb5bd",
+              "octets": 414508,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Deuxième instant sec : scène maintenue et lentille dégagée ; aucun masque d’eau résiduelle visible.",
+              "reserve_hud": false,
+              "temps_capture": 0.6,
+              "temps_meteo": 0.5083333333333333,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.2240093912004,
+                  0.79,
+                  -324.69018442122126
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 35.98339777135764
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 0,
+                "vitesse": 0,
+                "vitesseX": 0,
+                "vitesseY": 0,
+                "vitesseZ": 0,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 0,
+                "neige": false,
+                "mouille": 0
+              }
+            }
+          ]
+        },
+        {
+          "scenario": "faune-haut-col-ete",
+          "variante": "avant",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/avant/faune-haut-col-ete/rapport.json",
+          "build": {
+            "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+            "octets": 14268457
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.62",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 2,
+            "qualite": "high",
+            "mode": "solo",
+            "vue": "cockpit",
+            "vue2": "cockpit",
+            "meteo": "sec",
+            "moment": "jour",
+            "saison": "ete",
+            "partage": "haut-bas",
+            "retro": "non",
+            "depart": 280,
+            "vitesse": 0,
+            "images": 2,
+            "pas": 0.1,
+            "chauffe": 4,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/avant/faune-haut-col-ete/0000.png",
+              "variante": "reference-0.2.62",
+              "sha256": "29973f9a81c134d2b8f1f0ce8c4ac33ed31b53dfff49deef139a8f17e7410eac",
+              "octets": 549644,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Référence 0.2.62 : groupe d’animaux petit dans l’image, silhouettes visibles sur pente claire ; pose fixe.",
+              "reserve_hud": false,
+              "temps_capture": 0.5,
+              "temps_meteo": 0.4083333333333333,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -897.6497101602218,
+                  357.5035141612349,
+                  -379.3040500067016
+                ],
+                "yaw": -2.387702320411953,
+                "pitch": -0.13800602365751968,
+                "roll": 0,
+                "fov": 34
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 0,
+                "vitesse": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 0,
+                "neige": false,
+                "mouille": 0
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/avant/faune-haut-col-ete/0001.png",
+              "variante": "reference-0.2.62",
+              "sha256": "01d70f301661e4e48f62e7fa65d2a3d06ce45fef1685a3ef980c70023cf76a0f",
+              "octets": 549635,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Référence 0.2.62 : groupe et pente inchangés à ce deuxième instant ; aucun écran vide.",
+              "reserve_hud": false,
+              "temps_capture": 0.6,
+              "temps_meteo": 0.5083333333333333,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -897.6497101602218,
+                  357.5035141612349,
+                  -379.3040500067016
+                ],
+                "yaw": -2.387702320411953,
+                "pitch": -0.13800602365751968,
+                "roll": 0,
+                "fov": 34
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 0,
+                "vitesse": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 0,
+                "neige": false,
+                "mouille": 0
+              }
+            }
+          ]
+        },
+        {
+          "scenario": "faune-haut-col-hiver",
+          "variante": "avant",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/avant/faune-haut-col-hiver/rapport.json",
+          "build": {
+            "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+            "octets": 14268457
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.62",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 2,
+            "qualite": "high",
+            "mode": "solo",
+            "vue": "cockpit",
+            "vue2": "cockpit",
+            "meteo": "sec",
+            "moment": "jour",
+            "saison": "hiver",
+            "partage": "haut-bas",
+            "retro": "non",
+            "depart": 280,
+            "vitesse": 0,
+            "images": 2,
+            "pas": 0.1,
+            "chauffe": 4,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/avant/faune-haut-col-hiver/0000.png",
+              "variante": "reference-0.2.62",
+              "sha256": "ddfe1a2f8f047dde8e5d16c3cd4a458481e370f1f5059c90b976ac9f467f74b4",
+              "octets": 552228,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Référence 0.2.62 : animaux debout et couchés visibles, petits dans l’image, sur pente enneigée.",
+              "reserve_hud": false,
+              "temps_capture": 0.5,
+              "temps_meteo": 0.4083333333333333,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -897.594816496741,
+                  357.569388141843,
+                  -379.4924357386925
+                ],
+                "yaw": -2.387702320411953,
+                "pitch": -0.13800602365751968,
+                "roll": 0,
+                "fov": 34
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 0,
+                "vitesse": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 0,
+                "neige": false,
+                "mouille": 0
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14670621031/visuel-meteo/avant/faune-haut-col-hiver/0001.png",
+              "variante": "reference-0.2.62",
+              "sha256": "933e636cd41fdd0f7c9b06dd30637c54bf8a95981f6c10517010de6074562ca7",
+              "octets": 552246,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Référence 0.2.62 : deuxième instant stable ; pente et groupe visibles.",
+              "reserve_hud": false,
+              "temps_capture": 0.6,
+              "temps_meteo": 0.5083333333333333,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -897.594816496741,
+                  357.569388141843,
+                  -379.4924357386925
+                ],
+                "yaw": -2.387702320411953,
+                "pitch": -0.13800602365751968,
+                "roll": 0,
+                "fov": 34
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 0,
+                "neige": 0,
+                "vitesse": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 0,
+                "neige": false,
+                "mouille": 0
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 14670132000,
+      "nom": "bitume-images-pluie-grille-4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+      "zip": "/workspace/scratch/d61843ca5396/qa/14670132000/artifact.zip",
+      "zip_sha256": "129d9939e1b232b2a5432535fb966ecda439c3afdda311c8750fdbbac823bc3a",
+      "zip_digest_github": "sha256:129d9939e1b232b2a5432535fb966ecda439c3afdda311c8750fdbbac823bc3a",
+      "zip_sha256_conforme": true,
+      "head_sha_api": "c3d49089e68a46dc2163067afbdea7db81364fed",
+      "recu_ci": {
+        "COMMIT.txt": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "SHA256SUMS.txt": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344  dist/bitume.html\n439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297  qualification/reference-0262.html",
+        "ENVIRONNEMENT.txt": "Google Chrome 157.0.8103.78 \nv24.22.3"
+      },
+      "rapport_global": "/workspace/scratch/d61843ca5396/qa/14670132000/visuel-meteo/rapport.json",
+      "echecs_automatiques": 0,
+      "passages": [
+        {
+          "scenario": "pluie-grille",
+          "variante": "apres",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14670132000/visuel-meteo/apres/pluie-grille/rapport.json",
+          "build": {
+            "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+            "octets": 14502704
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.70",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 0,
+            "qualite": "high",
+            "mode": "solo",
+            "vue": "cockpit",
+            "vue2": "cockpit",
+            "meteo": "pluie",
+            "moment": "jour",
+            "saison": "ete",
+            "partage": "haut-bas",
+            "retro": "oui",
+            "depart": 280,
+            "vitesse": 0,
+            "images": 2,
+            "pas": 0.1,
+            "chauffe": 90,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14670132000/visuel-meteo/apres/pluie-grille/0000.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "6bedd158b1b58cd382019fab7198eb1b28f011bd966bb3fe2c26103b4e3b7cb7",
+              "octets": 495808,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Candidat : cockpit plus proche, miroirs en haut ; route et rivaux visibles dans la bande supérieure, nombreuses gouttes.",
+              "reserve_hud": false,
+              "temps_capture": 9.1,
+              "temps_meteo": 8.941666666666652,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.2240093912004,
+                  0.79,
+                  -324.69018442122126
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 35.98339777135764
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 0,
+                "vitesseX": 0,
+                "vitesseY": 0,
+                "vitesseZ": 0,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": false,
+                "mouille": 1
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14670132000/visuel-meteo/apres/pluie-grille/0001.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "67bde6f30419e02ccce58745974d70a6cfb1ff7b7fb27fefce49e7362806fe0a",
+              "octets": 496945,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Candidat : deuxième instant à pose fixe ; route et rivaux toujours visibles, changements de gouttes et d’instruments.",
+              "reserve_hud": false,
+              "temps_capture": 9.2,
+              "temps_meteo": 9.041666666666652,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.2240093912004,
+                  0.79,
+                  -324.69018442122126
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 35.98339777135764
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 0,
+                "vitesseX": 0,
+                "vitesseY": 0,
+                "vitesseZ": 0,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": false,
+                "mouille": 1
+              }
+            }
+          ]
+        },
+        {
+          "scenario": "pluie-grille",
+          "variante": "avant",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14670132000/visuel-meteo/avant/pluie-grille/rapport.json",
+          "build": {
+            "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+            "octets": 14268457
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.62",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 0,
+            "qualite": "high",
+            "mode": "solo",
+            "vue": "cockpit",
+            "vue2": "cockpit",
+            "meteo": "pluie",
+            "moment": "jour",
+            "saison": "ete",
+            "partage": "haut-bas",
+            "retro": "oui",
+            "depart": 280,
+            "vitesse": 0,
+            "images": 2,
+            "pas": 0.1,
+            "chauffe": 90,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14670132000/visuel-meteo/avant/pluie-grille/0000.png",
+              "variante": "reference-0.2.62",
+              "sha256": "e04157d423de31e6930ef702a2ab0e620293d5a421e88d01f9018cd3c09b0414",
+              "octets": 375462,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Référence 0.2.62 : cockpit large dans la largeur, petit volant en bas ; rivaux visibles au centre sous l’horizon, gouttes séparées.",
+              "reserve_hud": false,
+              "temps_capture": 9.1,
+              "temps_meteo": 8.941666666666652,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.1693987987949,
+                  0.74,
+                  -324.4585345060538
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": 0,
+                "roll": 0,
+                "fov": 35.98339777135764
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": false,
+                "mouille": 1
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14670132000/visuel-meteo/avant/pluie-grille/0001.png",
+              "variante": "reference-0.2.62",
+              "sha256": "649f5059f376284bade78f448cdfa1fe9e81860d12c01741ffe9cfc4b5fb1ffb",
+              "octets": 375330,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Référence 0.2.62 : deuxième instant à pose fixe, mêmes rivaux visibles et gouttes évoluées ; aucun écran vide.",
+              "reserve_hud": false,
+              "temps_capture": 9.2,
+              "temps_meteo": 9.041666666666652,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.1693987987949,
+                  0.74,
+                  -324.4585345060538
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": 0,
+                "roll": 0,
+                "fov": 35.98339777135764
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": false,
+                "mouille": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 14669657546,
+      "nom": "bitume-images-pluie-tunnel-4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+      "zip": "/workspace/scratch/d61843ca5396/qa/14669657546/artifact.zip",
+      "zip_sha256": "9ad8e286336e61ddc5eadffff9190f75532098ad308dfede8df1105ba53f1347",
+      "zip_digest_github": "sha256:9ad8e286336e61ddc5eadffff9190f75532098ad308dfede8df1105ba53f1347",
+      "zip_sha256_conforme": true,
+      "head_sha_api": "c3d49089e68a46dc2163067afbdea7db81364fed",
+      "recu_ci": {
+        "COMMIT.txt": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "SHA256SUMS.txt": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344  dist/bitume.html\n439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297  qualification/reference-0262.html",
+        "ENVIRONNEMENT.txt": "Google Chrome 157.0.8103.78 \nv24.22.3"
+      },
+      "rapport_global": "/workspace/scratch/d61843ca5396/qa/14669657546/visuel-meteo/rapport.json",
+      "echecs_automatiques": 0,
+      "passages": [
+        {
+          "scenario": "tunnel",
+          "variante": "apres",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14669657546/visuel-meteo/apres/tunnel/rapport.json",
+          "build": {
+            "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+            "octets": 14502704
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.70",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 2,
+            "qualite": "high",
+            "mode": "solo",
+            "vue": "cockpit",
+            "vue2": "cockpit",
+            "meteo": "pluie",
+            "moment": "jour",
+            "saison": "ete",
+            "partage": "haut-bas",
+            "retro": "oui",
+            "depart": 280,
+            "vitesse": 35,
+            "images": 2,
+            "pas": 0.1,
+            "chauffe": 90,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14669657546/visuel-meteo/apres/tunnel/0000.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "eb738253a10f3cc11133077af4ac1ae07e841db71d752eef36fcdf3b0de0bd57",
+              "octets": 436427,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Tunnel présent et éclairé ; voiture bleue très proche devant, cockpit et rétroviseurs rendus ; gouttes résiduelles sous abri.",
+              "reserve_hud": false,
+              "temps_capture": 9.1,
+              "temps_meteo": 8.941666666666652,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -452.87264477496745,
+                  2.1826035551695995,
+                  594.7066605309765
+                ],
+                "yaw": 2.0266502865249514,
+                "pitch": -0.16092515899323728,
+                "roll": 4.587527602752171e-16,
+                "fov": 36.72423243135618
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 35,
+                "vitesseX": 31.421962579177993,
+                "vitesseY": 0.5602958509785173,
+                "vitesseZ": 15.406048689787852,
+                "cameraYaw": 2.0266502865249514,
+                "cameraPitch": -0.16092515899323728,
+                "cameraRoll": 4.587527602752171e-16,
+                "abri": true,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": false,
+                "mouille": 1
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14669657546/visuel-meteo/apres/tunnel/0001.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "304b3b0d810b707a2c301c26fb1b64cd14eac78ccb7216fb5e1c0ff998f6b73c",
+              "octets": 435386,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Deuxième instant : tunnel et voiture précédente présents, gouttes résiduelles en évolution ; aucune image noire.",
+              "reserve_hud": false,
+              "temps_capture": 9.2,
+              "temps_meteo": 9.041666666666652,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -452.87264477496745,
+                  2.1826035551695995,
+                  594.7066605309765
+                ],
+                "yaw": 2.0266502865249514,
+                "pitch": -0.16092515899323728,
+                "roll": 4.587527602752171e-16,
+                "fov": 36.72423243135618
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 35,
+                "vitesseX": 31.421962579177993,
+                "vitesseY": 0.5602958509785173,
+                "vitesseZ": 15.406048689787852,
+                "cameraYaw": 2.0266502865249514,
+                "cameraPitch": -0.16092515899323728,
+                "cameraRoll": 4.587527602752171e-16,
+                "abri": true,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": false,
+                "mouille": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 14669078117,
+      "nom": "bitume-images-pluie-spray-4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+      "zip": "/workspace/scratch/d61843ca5396/qa/14669078117/artifact.zip",
+      "zip_sha256": "5c01c078f47b668720bcdf3b2e548e5d9517b59ea576500483083a1793ce6953",
+      "zip_digest_github": "sha256:5c01c078f47b668720bcdf3b2e548e5d9517b59ea576500483083a1793ce6953",
+      "zip_sha256_conforme": true,
+      "head_sha_api": "c3d49089e68a46dc2163067afbdea7db81364fed",
+      "recu_ci": {
+        "COMMIT.txt": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+        "SHA256SUMS.txt": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344  dist/bitume.html\n439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297  qualification/reference-0262.html",
+        "ENVIRONNEMENT.txt": "Google Chrome 157.0.8103.78 \nv24.22.3"
+      },
+      "rapport_global": "/workspace/scratch/d61843ca5396/qa/14669078117/visuel-meteo/rapport.json",
+      "echecs_automatiques": 0,
+      "passages": [
+        {
+          "scenario": "pluie-spray235",
+          "variante": "apres",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14669078117/visuel-meteo/apres/pluie-spray235/rapport.json",
+          "build": {
+            "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+            "octets": 14502704
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.70",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 0,
+            "qualite": "high",
+            "mode": "solo",
+            "vue": "cockpit",
+            "vue2": "cockpit",
+            "meteo": "pluie",
+            "moment": "jour",
+            "saison": "ete",
+            "partage": "haut-bas",
+            "retro": "oui",
+            "depart": 280,
+            "vitesse": 65.27777777777777,
+            "images": 2,
+            "pas": 0.1,
+            "chauffe": 90,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14669078117/visuel-meteo/apres/pluie-spray235/0000.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "62718a204d6369a348842e3e6669353fee142db6dddb9ca39ed86653d85e8136",
+              "octets": 503146,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Candidat : bandeau sombre au centre-haut recouvrant la zone du rival ; voile translucide d’embruns sur la route et les instruments. Cadrage différent de la référence.",
+              "reserve_hud": true,
+              "temps_capture": 9.1,
+              "temps_meteo": 8.941666666666652,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.2240093912004,
+                  0.79,
+                  -324.69018442122126
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 37.365113208656496
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 65.27777777777777,
+                "vitesseX": -14.978395442718048,
+                "vitesseY": 0,
+                "vitesseZ": -63.5360995148939,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0.9105182579511987,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": false,
+                "mouille": 1
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14669078117/visuel-meteo/apres/pluie-spray235/0001.png",
+              "variante": "candidat-0.2.70",
+              "sha256": "2b6d30bdc37a1116584e849d79050b64964629104b00dc730c05f2d976bf325b",
+              "octets": 500946,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Candidat : même occultation locale par le bandeau et voile d’embruns étendu ; la comparaison interversion ne sépare pas leurs contributions.",
+              "reserve_hud": true,
+              "temps_capture": 9.2,
+              "temps_meteo": 9.041666666666652,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.2240093912004,
+                  0.79,
+                  -324.69018442122126
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": -0.17453292519943295,
+                "roll": 0,
+                "fov": 37.365113208656496
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 65.27777777777777,
+                "vitesseX": -14.978395442718048,
+                "vitesseY": 0,
+                "vitesseZ": -63.5360995148939,
+                "cameraYaw": -0.23151901171721367,
+                "cameraPitch": -0.17453292519943295,
+                "cameraRoll": 0,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0.9105182579511987,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": false,
+                "mouille": 1
+              }
+            }
+          ]
+        },
+        {
+          "scenario": "pluie-spray235",
+          "variante": "avant",
+          "rapport": "/workspace/scratch/d61843ca5396/qa/14669078117/visuel-meteo/avant/pluie-spray235/rapport.json",
+          "build": {
+            "sha256": "439bea3969ab4651fbebb87d8403f5a54968917ca6bdecede40e7d9140403297",
+            "octets": 14268457
+          },
+          "source": {
+            "commit": "4bb44d01f3d8330fe15cf31dae65ba874cbce3b9",
+            "modifications": [
+              "?? qualification/"
+            ]
+          },
+          "environnement": {
+            "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+            "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "resolution": [
+              960,
+              540,
+              1
+            ],
+            "version": "V0.2.62",
+            "backend": "webgl2",
+            "gpuModeste": true,
+            "webgl2": true,
+            "physx": {
+              "disponible": true,
+              "ready": true,
+              "version": "5.12.0",
+              "erreur": null
+            }
+          },
+          "parametres": {
+            "graine": 17017,
+            "circuit": 0,
+            "qualite": "high",
+            "mode": "solo",
+            "vue": "cockpit",
+            "vue2": "cockpit",
+            "meteo": "pluie",
+            "moment": "jour",
+            "saison": "ete",
+            "partage": "haut-bas",
+            "retro": "oui",
+            "depart": 280,
+            "vitesse": 65.27777777777777,
+            "images": 2,
+            "pas": 0.1,
+            "chauffe": 90,
+            "taille": [
+              960,
+              540
+            ],
+            "angle": "swiftshader"
+          },
+          "erreurs": [],
+          "erreurs_qualification": [],
+          "alertes": [],
+          "avertissements": [],
+          "images": [
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14669078117/visuel-meteo/avant/pluie-spray235/0000.png",
+              "variante": "reference-0.2.62",
+              "sha256": "1ee249cbdb601522947c2231ac2b9634feed9b674d25014c1b058a80685359fe",
+              "octets": 440374,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Référence 0.2.62 : voiture bleue devant distincte sous le bandeau de virage ; pluie et embruns présents.",
+              "reserve_hud": false,
+              "temps_capture": 9.1,
+              "temps_meteo": 8.941666666666652,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.1693987987949,
+                  0.74,
+                  -324.4585345060538
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": 0,
+                "roll": 0,
+                "fov": 37.3651132086565
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 65.27777777777777,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0.8621807248547035,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": false,
+                "mouille": 1
+              }
+            },
+            {
+              "fichier": "/workspace/scratch/d61843ca5396/qa/14669078117/visuel-meteo/avant/pluie-spray235/0001.png",
+              "variante": "reference-0.2.62",
+              "sha256": "807d1b0cfbc37cf7bab221be58dfefb3c5c02af532ad29cf9794a5330eb198ab",
+              "octets": 439596,
+              "empreinte_rapport_conforme": true,
+              "inspecte_individuellement": true,
+              "constat_visuel": "Référence 0.2.62 : voiture bleue toujours distincte sous le bandeau ; pose fixe et gouttes en évolution.",
+              "reserve_hud": false,
+              "temps_capture": 9.2,
+              "temps_meteo": 9.041666666666652,
+              "gl_erreur": 0,
+              "gl_perdu": false,
+              "camera": {
+                "pos": [
+                  -756.1693987987949,
+                  0.74,
+                  -324.4585345060538
+                ],
+                "yaw": -0.23151901171721367,
+                "pitch": 0,
+                "roll": 0,
+                "fov": 37.3651132086565
+              },
+              "camera2": null,
+              "j1": {
+                "pluie": 1,
+                "neige": 0,
+                "vitesse": 65.27777777777777,
+                "abri": false,
+                "cockpit": true,
+                "qualite": "high",
+                "intensite": 1,
+                "embruns": 0.8621807248547035,
+                "pause": false,
+                "actif": true
+              },
+              "j2": null,
+              "precipitation": {
+                "pluie": 1,
+                "neige": false,
+                "mouille": 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "erreurs": [
+    {
+      "job": 136559703895,
+      "conclusion": "cancelled",
+      "nom": "images (neige, neige45,pause-reprise,legere)"
+    }
+  ],
+  "reserves_visuelles": [
+    {
+      "id": "hud-virage-rival",
+      "nature": "défaut de lisibilité local observé",
+      "statut": "à traiter et qualifier séparément ; aucune modification réalisée ici",
+      "constat": "Le bandeau sombre « Droite serrée 60 m » recouvre largement le rival avec le cadrage cockpit du candidat. Le témoin sec confirme que ce masquage local subsiste sans embruns.",
+      "preuves_principales": [
+        "/workspace/scratch/d61843ca5396/qa/14671236713/visuel-meteo/apres/sillage300-sec/0000.png",
+        "/workspace/scratch/d61843ca5396/qa/14671236713/visuel-meteo/apres/sillage300-sec/0001.png"
+      ],
+      "preuves_humides": [
+        "/workspace/scratch/d61843ca5396/qa/14669078117/visuel-meteo/apres/pluie-spray235/0000.png",
+        "/workspace/scratch/d61843ca5396/qa/14669078117/visuel-meteo/apres/pluie-spray235/0001.png"
+      ],
+      "comparaison_reference": [
+        "/workspace/scratch/d61843ca5396/qa/14669078117/visuel-meteo/avant/pluie-spray235/0000.png",
+        "/workspace/scratch/d61843ca5396/qa/14669078117/visuel-meteo/avant/pluie-spray235/0001.png"
+      ],
+      "separation_des_effets": "Bandeau sombre : emprise locale centre-haut. Embruns : voile translucide plus étendu sur route et tableau. Changement de caméra : déplacement de la projection du rival vers le bandeau. Pas de capture avec bandeau désactivé réalisée."
+    }
+  ],
+  "limites": [
+    "Campagne historique du candidat c3 ; la nouvelle CI 3d9825d4 n’a pas été examinée ici.",
+    "ZIP recalculés et comparés aux digests GitHub ; chaque PNG comparé à son empreinte de rapport.",
+    "HTML candidat identifié par les reçus CI et rapports, et comparé au SHA256 du HTML local. Les HTML ne sont pas joints aux ZIP. Pour la référence 0.2.62, seule la concordance SHA256 entre reçus et rapports a été contrôlée ; ses octets ne sont pas présents localement.",
+    "Scènes prescrites, poses figées et vitesses destinées aux effets ; aucun essai de conduite.",
+    "Raster logiciel SwiftShader ; l’affichage 10 FPS ne qualifie pas les performances matérielles.",
+    "Avant et après désignent des HTML différents et parfois des caméras différentes ; une différence visuelle ne suffit pas à attribuer une cause unique.",
+    "Ces images historiques ne remplacent pas les poses et mesures de la qualification cockpit dédiée.",
+    "La campagne météo reste incomplète : le dernier job est annulé, le passage legere n’a produit aucune image ni rapport. Les 7 images neige/pause disponibles ont été inspectées individuellement."
+  ],
+  "comparaison_spray235": {
+    "parametres_banc_identiques": true,
+    "resolution_avant": [
+      960,
+      540,
+      1
+    ],
+    "resolution_apres": [
+      960,
+      540,
+      1
+    ],
+    "pairs": [
+      {
+        "image": "0000.png",
+        "temps_capture_identique": true,
+        "temps_capture": 9.1,
+        "temps_meteo_identique": true,
+        "temps_meteo": 8.941666666666652,
+        "variables_identiques": {
+          "pluie": 1,
+          "neige": 0,
+          "vitesse": 65.27777777777777,
+          "abri": false,
+          "cockpit": true,
+          "qualite": "high",
+          "intensite": 1,
+          "pause": false,
+          "actif": true
+        },
+        "precipitation_identique": true,
+        "camera_avant": {
+          "pos": [
+            -756.1693987987949,
+            0.74,
+            -324.4585345060538
+          ],
+          "yaw": -0.23151901171721367,
+          "pitch": 0,
+          "roll": 0,
+          "fov": 37.3651132086565
+        },
+        "camera_apres": {
+          "pos": [
+            -756.2240093912004,
+            0.79,
+            -324.69018442122126
+          ],
+          "yaw": -0.23151901171721367,
+          "pitch": -0.17453292519943295,
+          "roll": 0,
+          "fov": 37.365113208656496
+        },
+        "embruns_avant": 0.8621807248547035,
+        "embruns_apres": 0.9105182579511987,
+        "zones_miroirs_avant": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 161.57188415527344,
+            "y": 332.81640625,
+            "width": 143.7882537841797,
+            "height": 44.11993408203125
+          },
+          "glace-d": {
+            "x": 654.6640014648438,
+            "y": 332.8287048339844,
+            "width": 143.77587890625,
+            "height": 44.080322265625
+          }
+        },
+        "zones_miroirs_apres": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 66.9869613647461,
+            "y": 114.63545989990234,
+            "width": 146.01666259765625,
+            "height": 48.241554260253906
+          },
+          "glace-d": {
+            "x": 747.021484375,
+            "y": 114.62931060791016,
+            "width": 145.99505615234375,
+            "height": 48.24054718017578
+          }
+        }
+      },
+      {
+        "image": "0001.png",
+        "temps_capture_identique": true,
+        "temps_capture": 9.2,
+        "temps_meteo_identique": true,
+        "temps_meteo": 9.041666666666652,
+        "variables_identiques": {
+          "pluie": 1,
+          "neige": 0,
+          "vitesse": 65.27777777777777,
+          "abri": false,
+          "cockpit": true,
+          "qualite": "high",
+          "intensite": 1,
+          "pause": false,
+          "actif": true
+        },
+        "precipitation_identique": true,
+        "camera_avant": {
+          "pos": [
+            -756.1693987987949,
+            0.74,
+            -324.4585345060538
+          ],
+          "yaw": -0.23151901171721367,
+          "pitch": 0,
+          "roll": 0,
+          "fov": 37.3651132086565
+        },
+        "camera_apres": {
+          "pos": [
+            -756.2240093912004,
+            0.79,
+            -324.69018442122126
+          ],
+          "yaw": -0.23151901171721367,
+          "pitch": -0.17453292519943295,
+          "roll": 0,
+          "fov": 37.365113208656496
+        },
+        "embruns_avant": 0.8621807248547035,
+        "embruns_apres": 0.9105182579511987,
+        "zones_miroirs_avant": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 161.57188415527344,
+            "y": 332.81640625,
+            "width": 143.7882537841797,
+            "height": 44.11993408203125
+          },
+          "glace-d": {
+            "x": 654.6640014648438,
+            "y": 332.8287048339844,
+            "width": 143.77587890625,
+            "height": 44.080322265625
+          }
+        },
+        "zones_miroirs_apres": {
+          "scene": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "glace-g": {
+            "x": 66.9869613647461,
+            "y": 114.63545989990234,
+            "width": 146.01666259765625,
+            "height": 48.241554260253906
+          },
+          "glace-d": {
+            "x": 747.021484375,
+            "y": 114.62931060791016,
+            "width": 145.99505615234375,
+            "height": 48.24054718017578
+          }
+        }
+      }
+    ],
+    "limite": "Pluie, vitesse, temps, résolution et intensité sont identiques ; pose de caméra/pitch et intensité native des embruns diffèrent. L’ancien et le nouveau cadrage ne permettent pas d’attribuer tout le masquage au bandeau seul."
+  },
+  "temoin_sec_sillage300": {
+    "caméra_exactement_identique": true,
+    "positions_exactement_identiques": true,
+    "temps_capture_identiques": true,
+    "camera": {
+      "pos": [
+        -756.2240093912004,
+        0.79,
+        -324.69018442122126
+      ],
+      "yaw": -0.23151901171721367,
+      "pitch": -0.17453292519943295,
+      "roll": 0,
+      "fov": 37.74728981897321
+    },
+    "positions": [
+      {
+        "id": 0,
+        "s": 280,
+        "d": 0,
+        "v": 83.33333333333333
+      },
+      {
+        "id": 1,
+        "s": 298,
+        "d": 0,
+        "v": 83.33333333333333
+      },
+      {
+        "id": 2,
+        "s": 328,
+        "d": -2.6,
+        "v": 83.33333333333333
+      },
+      {
+        "id": 3,
+        "s": 337,
+        "d": 2.6,
+        "v": 83.33333333333333
+      },
+      {
+        "id": 4,
+        "s": 346,
+        "d": -2.6,
+        "v": 83.33333333333333
+      },
+      {
+        "id": 5,
+        "s": 355,
+        "d": 2.6,
+        "v": 83.33333333333333
+      },
+      {
+        "id": 6,
+        "s": 364,
+        "d": -2.6,
+        "v": 83.33333333333333
+      },
+      {
+        "id": 7,
+        "s": 373,
+        "d": 2.6,
+        "v": 83.33333333333333
+      },
+      {
+        "id": 8,
+        "s": 382,
+        "d": -2.6,
+        "v": 83.33333333333333
+      },
+      {
+        "id": 9,
+        "s": 391,
+        "d": 2.6,
+        "v": 83.33333333333333
+      },
+      {
+        "id": 10,
+        "s": 400,
+        "d": -2.6,
+        "v": 83.33333333333333
+      },
+      {
+        "id": 11,
+        "s": 409,
+        "d": 2.6,
+        "v": 83.33333333333333
+      }
+    ],
+    "temps_capture": [
+      6.1,
+      6.2
+    ],
+    "embruns_humide": 0.9378565903586691,
+    "embruns_sec": 0,
+    "pluie_sec": 0,
+    "mouille_sec": 0,
+    "intensite_identique": true,
+    "constat": "Sans eau ni embruns, le rival placé 18 m devant reste largement dans l’emprise du bandeau. Le voile humide est un effet supplémentaire, distinct du masquage local par le HUD."
+  },
+  "bilan": {
+    "jobs_reussis": 6,
+    "jobs_total": 7,
+    "jobs_en_attente": [],
+    "zip_verifies": 7,
+    "png_candidat_inspectes": 27,
+    "png_reference_inspectes": 12,
+    "png_non_inspectes": 0,
+    "erreurs_signalees": 1,
+    "alertes_image": 3,
+    "reserves_visuelles": 1
+  },
+  "conclusion": "Revue finale des artefacts historiques disponibles : 6 jobs réussis et 1 annulé, 39 PNG inspectés individuellement. Campagne météo incomplète (legere absent) et réserve HUD confirmée ; aucune validation globale du cockpit déduite.",
+  "campagne_complete": false,
+  "passages_absents": [
+    {
+      "scenario": "legere",
+      "variante": "apres",
+      "png_attendus": 2,
+      "png_disponibles": 0,
+      "motif": "Job interrompu avant la publication du passage."
+    }
+  ],
+  "interruption": {
+    "job": 136559703895,
+    "conclusion": "cancelled",
+    "journal": "/workspace/scratch/d61843ca5396/qa/14672500887/job.log",
+    "capture_debut_utc": "2026-11-20T20:58:22.268Z",
+    "reference_neige_terminee_utc": "2026-11-20T21:08:36Z",
+    "candidat_neige_termine_utc": "2026-11-20T21:21:42Z",
+    "pause_reprise_terminee_utc": "2026-11-20T21:32:21Z",
+    "annulation_utc": "2026-11-20T21:33:22.719Z",
+    "message": "The operation was canceled.",
+    "limite_workflow_minutes": 35,
+    "interpretation": "Interruption au voisinage de la limite de 35 minutes ; le journal ne détaille pas davantage la cause de l’annulation. Le rapport global échecs:0 ne couvre que les passages terminés et ne qualifie pas legere."
+  }
+}

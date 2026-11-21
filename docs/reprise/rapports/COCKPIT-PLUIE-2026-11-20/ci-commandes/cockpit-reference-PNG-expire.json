@@ -1,0 +1,130 @@
+{
+  "format": "bitume-controle-visuel",
+  "formatVersion": 1,
+  "date": "2026-11-20T21:00:22.168Z",
+  "url": "file:///home/runner/work/bitume/bitume/qualification/avant-0269.html",
+  "scenario": "piste",
+  "variante": "enrichi",
+  "parametres": {
+    "graine": 17017,
+    "circuit": 0,
+    "qualite": "high",
+    "mode": "solo",
+    "vue": "cockpit",
+    "vue2": "cockpit",
+    "meteo": "sec",
+    "moment": "jour",
+    "saison": "ete",
+    "partage": "haut-bas",
+    "retro": "oui",
+    "depart": 280,
+    "vitesse": 35,
+    "images": 2,
+    "pas": 0.016666666666666666,
+    "chauffe": 24,
+    "taille": [
+      1440,
+      900
+    ],
+    "angle": "swiftshader"
+  },
+  "horloge": {
+    "mode": "raf-commande",
+    "departMs": 1000,
+    "pasMs": 16.666666666666668,
+    "performancesQualifiees": false
+  },
+  "source": {
+    "commit": "0798984659d718e133b353aa81ebcbbc35ad93b9",
+    "modifications": [
+      "?? qualification/"
+    ]
+  },
+  "build": {
+    "sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+    "octets": 14472625
+  },
+  "environnement": {
+    "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+    "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "resolution": [
+      1440,
+      900,
+      1
+    ],
+    "version": "V0.2.69",
+    "backend": "webgl2",
+    "gpuModeste": true,
+    "webgl2": true,
+    "physx": {
+      "disponible": true,
+      "ready": true,
+      "version": "5.12.0",
+      "erreur": null
+    }
+  },
+  "referenceJeu": {
+    "graine": 17017,
+    "circuit": 0,
+    "circuitId": "val-brule",
+    "graineCircuit": 11,
+    "mode": "solo",
+    "qualite": "high",
+    "anticrenelage": "profil",
+    "ombres": "profil",
+    "vegetation": "profil",
+    "faune": "profil",
+    "moment": "jour",
+    "saison": "ete",
+    "difficulte": 1,
+    "tours": 3,
+    "pilote": true,
+    "vue": "cockpit",
+    "vue2": "cockpit",
+    "partage": "haut-bas",
+    "retro": "oui",
+    "meteo": "soleil",
+    "mouille": 0,
+    "depart": 280,
+    "vitesse": 35,
+    "decor": "enrichi",
+    "tunnel": null
+  },
+  "images": [],
+  "alertes": [],
+  "erreurs": [],
+  "avertissements": [],
+  "limites": [
+    "Temps rAF commandé, aucune conclusion FPS/temps image réel à partir de cette séquence.",
+    "Les alertes visuelles sont des candidats à examiner, pas des défauts prouvés.",
+    "Le son, les manettes physiques et une partie WebRTC entre machines ne sont pas qualifiés.",
+    "Les zones rectangulaires suivent les toiles visibles ; les éléments de HUD superposés peuvent masquer un défaut local.",
+    "Deux images : aucun contrôle de variation fugitive sur trois images.",
+    "Rendu logiciel : aucune performance de GPU réel n’est qualifiée."
+  ],
+  "demarrage": {
+    "pret": true,
+    "ecran": "titre",
+    "type": "vitrine",
+    "etape": null,
+    "preparation": false
+  },
+  "initialisation": {
+    "entree": "BITUME_JEU.reference",
+    "type": "course",
+    "sujet": 0,
+    "posesPrescrites": true,
+    "cameraPrescrite": false,
+    "graineExpression": null,
+    "simulationConduite": false,
+    "description": "Vrai modèle et vrai renderer ; caméra d’inspection via API pour les vues extérieures, caméra réelle du siège en cockpit.",
+    "observation": {
+      "methode": "copie passive des triangles opaques transmis au draw original",
+      "joueurs": [
+        0
+      ]
+    }
+  },
+  "fatal": "Error: DevTools expiré : Page.captureScreenshot\n    at Timeout._onTimeout (file:///home/runner/work/bitume/bitume/tools/controle-visuel.mjs:175:88)\n    at listOnTimeout (node:internal/timers:685:17)\n    at process.processTimers (node:internal/timers:618:7)"
+}

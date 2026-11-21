@@ -1,0 +1,29 @@
+{
+  "version": "0.2.74",
+  "commit": "1813c5440a9b8da34990f4e38c6c51a1d7bb1700",
+  "tree": "ae42fbb546af0c25dd1fb07bab27a8abf00fdd5a",
+  "pr": 50,
+  "statut": "bloque_defaut_visuel_FPS",
+  "ci": {
+    "push": "ci/push/RECEPTION.json",
+    "pull_request": "ci/pull_request/RECEPTION.json",
+    "suites_node_par_ci": 179,
+    "tests_python_par_ci": 8,
+    "fichiers_modes_identiques": 3935
+  },
+  "hud": "hud/RECEPTION-HUD-0274.json",
+  "images_inspectees": 8,
+  "defaut": {
+    "cas": "cockpit-carte-droite-stabilise",
+    "volant": 0.35,
+    "pas": 120,
+    "badge": "h-fps",
+    "commande": "gant-0",
+    "recouvrement_px2": 75.6178301613,
+    "seuil_max_px2": 1,
+    "artefact": 14681488062
+  },
+  "incident_gauche": "INCIDENT-CHROME-0274.json",
+  "fusion_autorisee": false,
+  "suite": "0.2.75 : remonter le badge sans le masquer, recevoir les PNG du nouvel HTML."
+}

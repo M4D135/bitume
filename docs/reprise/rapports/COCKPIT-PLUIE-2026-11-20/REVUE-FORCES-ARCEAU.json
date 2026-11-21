@@ -1,0 +1,1153 @@
+{
+  "schema": "bitume-revue-visuelle-v1",
+  "date_utc": "2026-11-20T21:01:19.883582+00:00",
+  "relecteur": "review_candidate",
+  "version": "0.2.70",
+  "run_id": "44814580966",
+  "artifact_id": "14668683448",
+  "perimetre": "Revue visuelle des 4 forces pluie arceau, 2 duo cockpit/arceau et 2 témoins arceau secs déjà produits ; aucune exécution supplémentaire.",
+  "statut": "accepte_dans_le_perimetre_des_vues_observees",
+  "blocages": [],
+  "identite": {
+    "commit": "c3d49089e68a46dc2163067afbdea7db81364fed",
+    "tree": "934910167ee8eb27ce5dbde851612c7665fb6b35",
+    "html_sha256_attendu": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+    "html_sha256_manifeste": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+    "html_octets": 14502704,
+    "attestation": "Identité HTML cohérente entre HTML-SHA256.txt, SHA256SUMS.txt et tous les rapports de capture. Les PNG ont été rehachés localement ; l’HTML n’est pas inclus dans ce dossier d’artefact.",
+    "tous_rapports_build_conformes": true,
+    "rapport_agrege_sha256": "c9af3c49f8f3d221629f04c2bef3410eb7fcdb0094772dc92d720cf503ab8f4c"
+  },
+  "synthese_controles": {
+    "png_inspectes": 8,
+    "empreintes_png_conformes": true,
+    "tous_controles_repris_conformes": true,
+    "echecs_rapport_agrege": 0,
+    "erreurs_alertes_avertissements": 0
+  },
+  "constats": [
+    "La pluie et les dépôts sont visibles dans les quatre captures arceau. Les forces effectives observées sont 0,20, 0,45, 0,75 et 1,00.",
+    "Les deux moitiés du duo sont rendues ; J1 cockpit à 120 km/h et J2 arceau à 45 km/h ont des états et motifs d’eau distincts. Graines natives 0 et 2, volumes et apports d’embruns distincts.",
+    "Les rétros cockpit J1 sont visibles, alimentés, à l’intérieur de la demi-vue et dégagés des mains. Le volant et le tableau de bord occupent une forte part du bas de la vue ; la route au-dessus reste lisible sur les poses fournies.",
+    "Les deux témoins secs ne montrent pas de gouttes ; leurs diagnostics confirment zéro dépôt, zéro impact, zéro goutte dessinée et la visière masquée.",
+    "Aucune région noire ni perte GL observée ; aucun défaut visible de roues, casque, arceau ou HUD sur les huit images."
+  ],
+  "restrictions": [
+    "La série des quatre forces conserve son historique d’eau : les horloges de lentille progressent de 1,93 à 8,23 secondes. Ces images ne comparent pas la densité à âge égal et ne quantifient pas isolément l’effet de la force.",
+    "Profil high uniquement, WebGL2 sous Chrome/SwiftShader avec gpuModeste=true. Ni les autres profils ni les performances sur GPU réel ne sont qualifiés ; 10 FPS dans le HUD provient de la cadence de capture de 100 ms.",
+    "Scènes et poses figées : cette revue ne qualifie ni conduite, relief, changements de regard, gestes, braquages, transitions de caméra, manettes, audio ou réseau.",
+    "Deux images duo et deux images sèches ne suffisent pas à exclure toutes les anomalies fugitives ; pas de séquence vidéo.",
+    "La chronologie complète naissance/couronne/perle n’est pas couverte par ce lot. Les premières forces ont des impacts émis mais aucun impact actif à leur instant de capture ; le lot impact dédié doit fournir cette preuve.",
+    "Les petits rétros de la vue arceau n’ont pas de textures arrière actives dans ces scénarios retro=non. Seuls les rétros cockpit J1 actifs du duo sont examinés pour leur lisibilité.",
+    "Les paramètres génériques de démarrage affichent meteo=sec ; la pluie est ensuite fixée par le scénario. Les contextes et précipitations effectifs vérifiés sont bien humides pour les six PNG de pluie.",
+    "Cette revue ne qualifie pas les gros plans carrosserie ni le job carrosserie distinct qui a été relancé après un échec antérieur au démarrage Chrome."
+  ],
+  "scenarios": [
+    {
+      "scenario": "pluie-forces-arceau",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14668683448/images/apres/pluie-forces-arceau/rapport.json",
+      "rapport_sha256": "4f918e8b541f9fda89cdbe6c2cb5b6e466c5f292b726731e9dcf295d202239a0",
+      "parametres": {
+        "graine": 17017,
+        "circuit": 0,
+        "qualite": "high",
+        "mode": "solo",
+        "vue": "aileron",
+        "vue2": "cockpit",
+        "meteo": "sec",
+        "moment": "jour",
+        "saison": "ete",
+        "partage": "haut-bas",
+        "retro": "non",
+        "depart": 280,
+        "vitesse": 33.333333333333336,
+        "images": 4,
+        "pas": 0.1,
+        "chauffe": 20,
+        "taille": [
+          960,
+          540
+        ],
+        "angle": "swiftshader"
+      },
+      "build": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "source": {
+        "commit": "c3d49089e68a46dc2163067afbdea7db81364fed",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "environnement": {
+        "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "resolution": [
+          960,
+          540,
+          1
+        ],
+        "version": "V0.2.70",
+        "backend": "webgl2",
+        "gpuModeste": true,
+        "webgl2": true,
+        "physx": {
+          "disponible": true,
+          "ready": true,
+          "version": "5.12.0",
+          "erreur": null
+        }
+      },
+      "erreurs": [],
+      "alertes": [],
+      "avertissements": [],
+      "images": [
+        {
+          "fichier": "0000.png",
+          "force": 0.2,
+          "temps_lentilles": {
+            "j1": 1.933333333333336
+          }
+        },
+        {
+          "fichier": "0001.png",
+          "force": 0.45,
+          "temps_lentilles": {
+            "j1": 4.033333333333329
+          }
+        },
+        {
+          "fichier": "0002.png",
+          "force": 0.75,
+          "temps_lentilles": {
+            "j1": 6.133333333333321
+          }
+        },
+        {
+          "fichier": "0003.png",
+          "force": 1,
+          "temps_lentilles": {
+            "j1": 8.233333333333315
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "pluie-duo-cockpit-arceau",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14668683448/images/apres/pluie-duo-cockpit-arceau/rapport.json",
+      "rapport_sha256": "e199b65fa96264f8e7d2d5fbe317f1af81e7e6526bb94abe45343b4b2132c135",
+      "parametres": {
+        "graine": 17017,
+        "circuit": 0,
+        "qualite": "high",
+        "mode": "duo",
+        "vue": "cockpit",
+        "vue2": "aileron",
+        "meteo": "sec",
+        "moment": "jour",
+        "saison": "ete",
+        "partage": "haut-bas",
+        "retro": "oui",
+        "depart": 280,
+        "vitesse": 33.333333333333336,
+        "images": 2,
+        "pas": 0.1,
+        "chauffe": 60,
+        "taille": [
+          960,
+          540
+        ],
+        "angle": "swiftshader"
+      },
+      "build": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "source": {
+        "commit": "c3d49089e68a46dc2163067afbdea7db81364fed",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "environnement": {
+        "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "resolution": [
+          960,
+          540,
+          1
+        ],
+        "version": "V0.2.70",
+        "backend": "webgl2",
+        "gpuModeste": true,
+        "webgl2": true,
+        "physx": {
+          "disponible": true,
+          "ready": true,
+          "version": "5.12.0",
+          "erreur": null
+        }
+      },
+      "erreurs": [],
+      "alertes": [],
+      "avertissements": [],
+      "images": [
+        {
+          "fichier": "0000.png",
+          "force": 0.75,
+          "temps_lentilles": {
+            "j2": 5.933333333333322,
+            "j1": 5.933333333333322
+          }
+        },
+        {
+          "fichier": "0001.png",
+          "force": 0.75,
+          "temps_lentilles": {
+            "j2": 6.033333333333322,
+            "j1": 6.033333333333322
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "pluie-arceau-sec",
+      "rapport": "/workspace/scratch/d61843ca5396/qa/14668683448/images/apres/pluie-arceau-sec/rapport.json",
+      "rapport_sha256": "1b542a47c65ea666fdc2eb162cc19f781c06e4c31bf5815c3fc003b6d6328ad7",
+      "parametres": {
+        "graine": 17017,
+        "circuit": 0,
+        "qualite": "high",
+        "mode": "solo",
+        "vue": "aileron",
+        "vue2": "cockpit",
+        "meteo": "sec",
+        "moment": "jour",
+        "saison": "ete",
+        "partage": "haut-bas",
+        "retro": "non",
+        "depart": 280,
+        "vitesse": 33.333333333333336,
+        "images": 2,
+        "pas": 0.1,
+        "chauffe": 4,
+        "taille": [
+          960,
+          540
+        ],
+        "angle": "swiftshader"
+      },
+      "build": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "source": {
+        "commit": "c3d49089e68a46dc2163067afbdea7db81364fed",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "environnement": {
+        "navigateur": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "resolution": [
+          960,
+          540,
+          1
+        ],
+        "version": "V0.2.70",
+        "backend": "webgl2",
+        "gpuModeste": true,
+        "webgl2": true,
+        "physx": {
+          "disponible": true,
+          "ready": true,
+          "version": "5.12.0",
+          "erreur": null
+        }
+      },
+      "erreurs": [],
+      "alertes": [],
+      "avertissements": [],
+      "images": [
+        {
+          "fichier": "0000.png",
+          "force": 0,
+          "temps_lentilles": {
+            "j1": 0.39999999999999997
+          }
+        },
+        {
+          "fichier": "0001.png",
+          "force": 0,
+          "temps_lentilles": {
+            "j1": 0.49999999999999994
+          }
+        }
+      ]
+    }
+  ],
+  "images": [
+    {
+      "scenario": "pluie-forces-arceau",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14668683448/images/apres/pluie-forces-arceau/0000.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256": "622234704dd5e9939235a5eec2d29e7e9af3f7c2400143d67c40fb21b6a7c06f",
+      "sha256_attendu": "622234704dd5e9939235a5eec2d29e7e9af3f7c2400143d67c40fb21b6a7c06f",
+      "octets": 391848,
+      "temps_capture_s": 2.1,
+      "observation_visuelle": "Force 0,20 : gouttes et voile humide visibles, piste centrale et concurrents lisibles ; casque, arceau et roues rendent correctement.",
+      "controles": {
+        "png_sha256_et_octets_conformes": true,
+        "gl_sans_erreur_ni_perte": true,
+        "poses_conservees": true,
+        "reference_conservee": true,
+        "force_effective_conforme": true,
+        "lentilles_source_native_et_pool_attendus": true,
+        "regions_rapportees_sans_noir": true,
+        "pluie_native_presente": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.49333726342887335,
+          "noir": 0
+        }
+      },
+      "precipitation": {
+        "pluie": 0.2,
+        "neige": false,
+        "mouille": 1
+      },
+      "visieres_visibles": {
+        "j1": true,
+        "j2": false
+      },
+      "lentilles": {
+        "j1": {
+          "graine": 0,
+          "emis": 1,
+          "impactsDessines": 0,
+          "forceMax": 0,
+          "sourceCourante": true,
+          "pool": 112,
+          "uniformes": 128,
+          "gouttesDessinees": 1,
+          "temps": 1.933333333333336
+        }
+      },
+      "contextes": {
+        "j1": {
+          "pluie": 0.2,
+          "neige": 0,
+          "vitesse": 33.333333333333336,
+          "vitesseX": -7.6485423537283665,
+          "vitesseY": 0,
+          "vitesseZ": -32.443965709733064,
+          "cameraYaw": -0.23151901171721367,
+          "cameraPitch": -0.12,
+          "cameraRoll": 0,
+          "abri": false,
+          "cockpit": false,
+          "qualite": "high",
+          "intensite": 1,
+          "embruns": 0.006948863093834801,
+          "pause": false,
+          "actif": true
+        }
+      },
+      "stats_optiques": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "eau": 0.1468673121348121,
+          "embruns": 0.006945919395655803,
+          "gouttes": 1,
+          "fusionsEau": 0,
+          "depotsEau": 1,
+          "impactsEmis": 1
+        }
+      }
+    },
+    {
+      "scenario": "pluie-forces-arceau",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14668683448/images/apres/pluie-forces-arceau/0001.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256": "f246be22cce21768e2fe2ceb3869e06fea8bcdbdddcf45f41353fa980a831aa2",
+      "sha256_attendu": "f246be22cce21768e2fe2ceb3869e06fea8bcdbdddcf45f41353fa980a831aa2",
+      "octets": 391893,
+      "temps_capture_s": 4.2,
+      "observation_visuelle": "Force 0,45 : gouttes et traces visibles ; route, concurrent et HUD lisibles, aucun aplat noir.",
+      "controles": {
+        "png_sha256_et_octets_conformes": true,
+        "gl_sans_erreur_ni_perte": true,
+        "poses_conservees": true,
+        "reference_conservee": true,
+        "force_effective_conforme": true,
+        "lentilles_source_native_et_pool_attendus": true,
+        "regions_rapportees_sans_noir": true,
+        "pluie_native_presente": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.4811951775008589,
+          "noir": 0
+        }
+      },
+      "precipitation": {
+        "pluie": 0.45,
+        "neige": false,
+        "mouille": 1
+      },
+      "visieres_visibles": {
+        "j1": true,
+        "j2": false
+      },
+      "lentilles": {
+        "j1": {
+          "graine": 0,
+          "emis": 4,
+          "impactsDessines": 0,
+          "forceMax": 0,
+          "sourceCourante": true,
+          "pool": 112,
+          "uniformes": 128,
+          "gouttesDessinees": 4,
+          "temps": 4.033333333333329
+        }
+      },
+      "contextes": {
+        "j1": {
+          "pluie": 0.45,
+          "neige": 0,
+          "vitesse": 33.333333333333336,
+          "vitesseX": -7.6485423537283665,
+          "vitesseY": 0,
+          "vitesseZ": -32.443965709733064,
+          "cameraYaw": -0.23151901171721367,
+          "cameraPitch": -0.12,
+          "cameraRoll": 0,
+          "abri": false,
+          "cockpit": false,
+          "qualite": "high",
+          "intensite": 1,
+          "embruns": 0.006948863093834801,
+          "pause": false,
+          "actif": true
+        }
+      },
+      "stats_optiques": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "eau": 0.36213936801030505,
+          "embruns": 0.006948862431893268,
+          "gouttes": 4,
+          "fusionsEau": 0,
+          "depotsEau": 4,
+          "impactsEmis": 4
+        }
+      }
+    },
+    {
+      "scenario": "pluie-forces-arceau",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14668683448/images/apres/pluie-forces-arceau/0002.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256": "90fc91d56bf19416572784d960f077f7c8b9319e931e1f8bf747088c17517a87",
+      "sha256_attendu": "90fc91d56bf19416572784d960f077f7c8b9319e931e1f8bf747088c17517a87",
+      "octets": 382146,
+      "temps_capture_s": 6.3,
+      "observation_visuelle": "Force 0,75 : nombreuses perles visibles dans le champ ; l’horizon et le centre de la route restent discernables.",
+      "controles": {
+        "png_sha256_et_octets_conformes": true,
+        "gl_sans_erreur_ni_perte": true,
+        "poses_conservees": true,
+        "reference_conservee": true,
+        "force_effective_conforme": true,
+        "lentilles_source_native_et_pool_attendus": true,
+        "regions_rapportees_sans_noir": true,
+        "pluie_native_presente": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.44292132768249415,
+          "noir": 0
+        }
+      },
+      "precipitation": {
+        "pluie": 0.75,
+        "neige": false,
+        "mouille": 1
+      },
+      "visieres_visibles": {
+        "j1": true,
+        "j2": false
+      },
+      "lentilles": {
+        "j1": {
+          "graine": 0,
+          "emis": 9,
+          "impactsDessines": 0,
+          "forceMax": 0,
+          "sourceCourante": true,
+          "pool": 112,
+          "uniformes": 128,
+          "gouttesDessinees": 6,
+          "temps": 6.133333333333321
+        }
+      },
+      "contextes": {
+        "j1": {
+          "pluie": 0.75,
+          "neige": 0,
+          "vitesse": 33.333333333333336,
+          "vitesseX": -7.6485423537283665,
+          "vitesseY": 0,
+          "vitesseZ": -32.443965709733064,
+          "cameraYaw": -0.23151901171721367,
+          "cameraPitch": -0.12,
+          "cameraRoll": 0,
+          "abri": false,
+          "cockpit": false,
+          "qualite": "high",
+          "intensite": 1,
+          "embruns": 0.006948863093834801,
+          "pause": false,
+          "actif": true
+        }
+      },
+      "stats_optiques": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "eau": 0.622839325779595,
+          "embruns": 0.006948863093685953,
+          "gouttes": 6,
+          "fusionsEau": 0,
+          "depotsEau": 9,
+          "impactsEmis": 9
+        }
+      }
+    },
+    {
+      "scenario": "pluie-forces-arceau",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14668683448/images/apres/pluie-forces-arceau/0003.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256": "62197f3a11a6d9c08c852f982f9b030074152233404d7db9f198f8dfded5a704",
+      "sha256_attendu": "62197f3a11a6d9c08c852f982f9b030074152233404d7db9f198f8dfded5a704",
+      "octets": 387736,
+      "temps_capture_s": 8.4,
+      "observation_visuelle": "Force 1,00 : perles de tailles variées et pluie visibles ; voile plus chargé dans cette séquence historique, sans écran noir ni disparition de la route.",
+      "controles": {
+        "png_sha256_et_octets_conformes": true,
+        "gl_sans_erreur_ni_perte": true,
+        "poses_conservees": true,
+        "reference_conservee": true,
+        "force_effective_conforme": true,
+        "lentilles_source_native_et_pool_attendus": true,
+        "regions_rapportees_sans_noir": true,
+        "pluie_native_presente": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.4183741310595326,
+          "noir": 0
+        }
+      },
+      "precipitation": {
+        "pluie": 1,
+        "neige": false,
+        "mouille": 1
+      },
+      "visieres_visibles": {
+        "j1": true,
+        "j2": false
+      },
+      "lentilles": {
+        "j1": {
+          "graine": 0,
+          "emis": 16,
+          "impactsDessines": 1,
+          "forceMax": 0.6468958258628845,
+          "sourceCourante": true,
+          "pool": 112,
+          "uniformes": 128,
+          "gouttesDessinees": 13,
+          "temps": 8.233333333333315
+        }
+      },
+      "contextes": {
+        "j1": {
+          "pluie": 1,
+          "neige": 0,
+          "vitesse": 33.333333333333336,
+          "vitesseX": -7.6485423537283665,
+          "vitesseY": 0,
+          "vitesseZ": -32.443965709733064,
+          "cameraYaw": -0.23151901171721367,
+          "cameraPitch": -0.12,
+          "cameraRoll": 0,
+          "abri": false,
+          "cockpit": false,
+          "qualite": "high",
+          "intensite": 1,
+          "embruns": 0.006948863093834801,
+          "pause": false,
+          "actif": true
+        }
+      },
+      "stats_optiques": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "eau": 0.8580148379435047,
+          "embruns": 0.006948863093834766,
+          "gouttes": 13,
+          "fusionsEau": 0,
+          "depotsEau": 16,
+          "impactsEmis": 16
+        }
+      }
+    },
+    {
+      "scenario": "pluie-duo-cockpit-arceau",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14668683448/images/apres/pluie-duo-cockpit-arceau/0000.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256": "74a556c920e3b54d4de3204ea63953e0ae8d6ba4ca59c706be62d381f1623b40",
+      "sha256_attendu": "74a556c920e3b54d4de3204ea63953e0ae8d6ba4ca59c706be62d381f1623b40",
+      "octets": 493677,
+      "temps_capture_s": 6.1,
+      "observation_visuelle": "J1 cockpit en haut, J2 arceau en bas : eau visible dans chaque vue avec motifs distincts. Les deux rétros J1 contiennent une scène arrière et restent au-dessus des mains. La bande de route J1 est étroite mais visible au-dessus du tableau de bord ; J2 garde route et concurrent visibles.",
+      "controles": {
+        "png_sha256_et_octets_conformes": true,
+        "gl_sans_erreur_ni_perte": true,
+        "poses_conservees": true,
+        "reference_conservee": true,
+        "force_effective_conforme": true,
+        "lentilles_source_native_et_pool_attendus": true,
+        "regions_rapportees_sans_noir": true,
+        "pluie_native_presente": true,
+        "deux_contextes_distincts": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 270
+          },
+          "luminance": 0.3735960713991242,
+          "noir": 0
+        },
+        "scene2": {
+          "rectangle": {
+            "x": 0,
+            "y": 270,
+            "width": 960,
+            "height": 270
+          },
+          "luminance": 0.4608661390491551,
+          "noir": 0
+        },
+        "glace-g": {
+          "rectangle": {
+            "x": 269,
+            "y": 55,
+            "width": 75,
+            "height": 25
+          },
+          "luminance": 0.4350558381176467,
+          "noir": 0
+        },
+        "glace-d": {
+          "rectangle": {
+            "x": 616,
+            "y": 55,
+            "width": 75,
+            "height": 25
+          },
+          "luminance": 0.4125250045490194,
+          "noir": 0
+        }
+      },
+      "precipitation": {
+        "pluie": 0.75,
+        "neige": false,
+        "mouille": 1
+      },
+      "visieres_visibles": {
+        "j1": true,
+        "j2": true
+      },
+      "lentilles": {
+        "j2": {
+          "graine": 2,
+          "emis": 30,
+          "impactsDessines": 0,
+          "forceMax": 0,
+          "sourceCourante": true,
+          "pool": 112,
+          "uniformes": 128,
+          "gouttesDessinees": 24,
+          "temps": 5.933333333333322
+        },
+        "j1": {
+          "graine": 0,
+          "emis": 22,
+          "impactsDessines": 1,
+          "forceMax": 0.4521228075027466,
+          "sourceCourante": true,
+          "pool": 112,
+          "uniformes": 128,
+          "gouttesDessinees": 17,
+          "temps": 5.933333333333322
+        }
+      },
+      "contextes": {
+        "j1": {
+          "pluie": 0.75,
+          "neige": 0,
+          "vitesse": 33.333333333333336,
+          "vitesseX": -7.6485423537283665,
+          "vitesseY": 0,
+          "vitesseZ": -32.443965709733064,
+          "cameraYaw": -0.23151901171721367,
+          "cameraPitch": -0.17453292519943295,
+          "cameraRoll": 0,
+          "abri": false,
+          "cockpit": true,
+          "qualite": "high",
+          "intensite": 1,
+          "embruns": 0,
+          "pause": false,
+          "actif": true
+        },
+        "j2": {
+          "pluie": 0.75,
+          "neige": 0,
+          "vitesse": 12.5,
+          "vitesseX": -2.868203382648475,
+          "vitesseY": 0,
+          "vitesseZ": -12.166487141149817,
+          "cameraYaw": -0.23151901171724143,
+          "cameraPitch": -0.12,
+          "cameraRoll": 0,
+          "abri": false,
+          "cockpit": false,
+          "qualite": "high",
+          "intensite": 1,
+          "embruns": 0.5977315675416124,
+          "pause": false,
+          "actif": true
+        }
+      },
+      "stats_optiques": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "eau": 0.6743843829414959,
+          "embruns": 0,
+          "gouttes": 17,
+          "fusionsEau": 0,
+          "depotsEau": 22,
+          "impactsEmis": 22
+        },
+        "j2": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "eau": 1.8736462872825586,
+          "embruns": 0.5977315675131171,
+          "gouttes": 24,
+          "fusionsEau": 3,
+          "depotsEau": 30,
+          "impactsEmis": 30
+        }
+      }
+    },
+    {
+      "scenario": "pluie-duo-cockpit-arceau",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14668683448/images/apres/pluie-duo-cockpit-arceau/0001.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256": "f46384f01692f91efddc89c208114485ff82cb2a8e0a11419af315664fd63085",
+      "sha256_attendu": "f46384f01692f91efddc89c208114485ff82cb2a8e0a11419af315664fd63085",
+      "octets": 493619,
+      "temps_capture_s": 6.2,
+      "observation_visuelle": "Deuxième image : évolution des gouttes visible sans duplication manifeste entre vues. Les rétros J1 restent dégagés, HUD et identités J1/J2 distincts ; aucun cadre noir. Le volant et le tableau de bord occupent toujours une forte part de la demi-vue J1, sans couper l’horizon sur cette pose.",
+      "controles": {
+        "png_sha256_et_octets_conformes": true,
+        "gl_sans_erreur_ni_perte": true,
+        "poses_conservees": true,
+        "reference_conservee": true,
+        "force_effective_conforme": true,
+        "lentilles_source_native_et_pool_attendus": true,
+        "regions_rapportees_sans_noir": true,
+        "pluie_native_presente": true,
+        "deux_contextes_distincts": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 270
+          },
+          "luminance": 0.3756016804313648,
+          "noir": 0
+        },
+        "scene2": {
+          "rectangle": {
+            "x": 0,
+            "y": 270,
+            "width": 960,
+            "height": 270
+          },
+          "luminance": 0.4608932200374289,
+          "noir": 0
+        },
+        "glace-g": {
+          "rectangle": {
+            "x": 269,
+            "y": 55,
+            "width": 75,
+            "height": 25
+          },
+          "luminance": 0.43236541239215726,
+          "noir": 0
+        },
+        "glace-d": {
+          "rectangle": {
+            "x": 616,
+            "y": 55,
+            "width": 75,
+            "height": 25
+          },
+          "luminance": 0.4134582768104572,
+          "noir": 0
+        }
+      },
+      "precipitation": {
+        "pluie": 0.75,
+        "neige": false,
+        "mouille": 1
+      },
+      "visieres_visibles": {
+        "j1": true,
+        "j2": true
+      },
+      "lentilles": {
+        "j2": {
+          "graine": 2,
+          "emis": 30,
+          "impactsDessines": 0,
+          "forceMax": 0,
+          "sourceCourante": true,
+          "pool": 112,
+          "uniformes": 128,
+          "gouttesDessinees": 24,
+          "temps": 6.033333333333322
+        },
+        "j1": {
+          "graine": 0,
+          "emis": 22,
+          "impactsDessines": 1,
+          "forceMax": 0.1038132905960083,
+          "sourceCourante": true,
+          "pool": 112,
+          "uniformes": 128,
+          "gouttesDessinees": 17,
+          "temps": 6.033333333333322
+        }
+      },
+      "contextes": {
+        "j1": {
+          "pluie": 0.75,
+          "neige": 0,
+          "vitesse": 33.333333333333336,
+          "vitesseX": -7.6485423537283665,
+          "vitesseY": 0,
+          "vitesseZ": -32.443965709733064,
+          "cameraYaw": -0.23151901171721367,
+          "cameraPitch": -0.17453292519943295,
+          "cameraRoll": 0,
+          "abri": false,
+          "cockpit": true,
+          "qualite": "high",
+          "intensite": 1,
+          "embruns": 0,
+          "pause": false,
+          "actif": true
+        },
+        "j2": {
+          "pluie": 0.75,
+          "neige": 0,
+          "vitesse": 12.5,
+          "vitesseX": -2.868203382648475,
+          "vitesseY": 0,
+          "vitesseZ": -12.166487141149817,
+          "cameraYaw": -0.23151901171724143,
+          "cameraPitch": -0.12,
+          "cameraRoll": 0,
+          "abri": false,
+          "cockpit": false,
+          "qualite": "high",
+          "intensite": 1,
+          "embruns": 0.5977315675416124,
+          "pause": false,
+          "actif": true
+        }
+      },
+      "stats_optiques": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "eau": 0.675043334369882,
+          "embruns": 0,
+          "gouttes": 17,
+          "fusionsEau": 0,
+          "depotsEau": 22,
+          "impactsEmis": 22
+        },
+        "j2": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "eau": 1.875477056097088,
+          "embruns": 0.5977315675225116,
+          "gouttes": 24,
+          "fusionsEau": 3,
+          "depotsEau": 30,
+          "impactsEmis": 30
+        }
+      }
+    },
+    {
+      "scenario": "pluie-arceau-sec",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14668683448/images/apres/pluie-arceau-sec/0000.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256": "7f6486576c4b58157ec415eb8abb939d6fc445b64f5b455dc545e413418fd120",
+      "sha256_attendu": "7f6486576c4b58157ec415eb8abb939d6fc445b64f5b455dc545e413418fd120",
+      "octets": 363725,
+      "temps_capture_s": 0.5,
+      "observation_visuelle": "Témoin sec net : aucune goutte ni voile d’eau visible ; route, roues, casque et arceau complets ; aucun cadre noir.",
+      "controles": {
+        "png_sha256_et_octets_conformes": true,
+        "gl_sans_erreur_ni_perte": true,
+        "poses_conservees": true,
+        "reference_conservee": true,
+        "force_effective_conforme": true,
+        "lentilles_source_native_et_pool_attendus": true,
+        "regions_rapportees_sans_noir": true,
+        "temoin_sec_sans_eau": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.5310591644282995,
+          "noir": 0
+        }
+      },
+      "precipitation": {
+        "pluie": 0,
+        "neige": false,
+        "mouille": 0
+      },
+      "visieres_visibles": {
+        "j1": false,
+        "j2": false
+      },
+      "lentilles": {
+        "j1": {
+          "graine": 0,
+          "emis": 0,
+          "impactsDessines": 0,
+          "forceMax": 0,
+          "sourceCourante": true,
+          "pool": 112,
+          "uniformes": 128,
+          "gouttesDessinees": 0,
+          "temps": 0.39999999999999997
+        }
+      },
+      "contextes": {
+        "j1": {
+          "pluie": 0,
+          "neige": 0,
+          "vitesse": 33.333333333333336,
+          "vitesseX": -7.6485423537283665,
+          "vitesseY": 0,
+          "vitesseZ": -32.443965709733064,
+          "cameraYaw": -0.23151901171721367,
+          "cameraPitch": -0.12,
+          "cameraRoll": 0,
+          "abri": false,
+          "cockpit": false,
+          "qualite": "high",
+          "intensite": 1,
+          "embruns": 0,
+          "pause": false,
+          "actif": true
+        }
+      },
+      "stats_optiques": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "eau": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "fusionsEau": 0,
+          "depotsEau": 0,
+          "impactsEmis": 0
+        }
+      }
+    },
+    {
+      "scenario": "pluie-arceau-sec",
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14668683448/images/apres/pluie-arceau-sec/0001.png",
+      "inspectee_avec_view_image": true,
+      "statut": "acceptee_dans_le_perimetre_observe",
+      "sha256": "f8600f53938bf7479ec826d7f02bfe421a74b1cf12befeb5e988aa56eae0d3b0",
+      "sha256_attendu": "f8600f53938bf7479ec826d7f02bfe421a74b1cf12befeb5e988aa56eae0d3b0",
+      "octets": 363832,
+      "temps_capture_s": 0.6,
+      "observation_visuelle": "Deuxième témoin sec : aucune eau parasite, scène et HUD stables, route dégagée.",
+      "controles": {
+        "png_sha256_et_octets_conformes": true,
+        "gl_sans_erreur_ni_perte": true,
+        "poses_conservees": true,
+        "reference_conservee": true,
+        "force_effective_conforme": true,
+        "lentilles_source_native_et_pool_attendus": true,
+        "regions_rapportees_sans_noir": true,
+        "temoin_sec_sans_eau": true
+      },
+      "regions": {
+        "scene": {
+          "rectangle": {
+            "x": 0,
+            "y": 0,
+            "width": 960,
+            "height": 540
+          },
+          "luminance": 0.531061569964184,
+          "noir": 0
+        }
+      },
+      "precipitation": {
+        "pluie": 0,
+        "neige": false,
+        "mouille": 0
+      },
+      "visieres_visibles": {
+        "j1": false,
+        "j2": false
+      },
+      "lentilles": {
+        "j1": {
+          "graine": 0,
+          "emis": 0,
+          "impactsDessines": 0,
+          "forceMax": 0,
+          "sourceCourante": true,
+          "pool": 112,
+          "uniformes": 128,
+          "gouttesDessinees": 0,
+          "temps": 0.49999999999999994
+        }
+      },
+      "contextes": {
+        "j1": {
+          "pluie": 0,
+          "neige": 0,
+          "vitesse": 33.333333333333336,
+          "vitesseX": -7.6485423537283665,
+          "vitesseY": 0,
+          "vitesseZ": -32.443965709733064,
+          "cameraYaw": -0.23151901171721367,
+          "cameraPitch": -0.12,
+          "cameraRoll": 0,
+          "abri": false,
+          "cockpit": false,
+          "qualite": "high",
+          "intensite": 1,
+          "embruns": 0,
+          "pause": false,
+          "actif": true
+        }
+      },
+      "stats_optiques": {
+        "j1": {
+          "backend": "webgl2",
+          "pret": true,
+          "perdu": false,
+          "erreur": null,
+          "eau": 0,
+          "embruns": 0,
+          "gouttes": 0,
+          "fusionsEau": 0,
+          "depotsEau": 0,
+          "impactsEmis": 0
+        }
+      }
+    }
+  ],
+  "operations": "Lecture des artefacts et inspection des huit PNG avec view_image ; unique écriture de ce reçu JSON, aucune modification de source, aucun test, aucune capture ni push."
+}

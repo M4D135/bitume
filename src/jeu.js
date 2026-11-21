@@ -50,7 +50,7 @@
     for (const [cle, valeur] of [...stockEnAttente]) ecrireStock(cle, typeof valeur === 'function' ? valeur() : valeur);
   }
   const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 60, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
-    anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'ecran', gouttes: 1,
+    anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'non', gouttes: 1, forcePluie: 'forte',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglagesEnregistres = lireStock('bitume.reglages', {});
   const reglages = Object.assign({}, DEFAUT, reglagesEnregistres);
@@ -65,6 +65,7 @@
   reglages.saisonMode = B.conditionsCourse.normaliserMode(reglages.saisonMode);
   reglages.momentMode = B.conditionsCourse.normaliserMode(reglages.momentMode);
   reglages.meteoMode = B.conditionsCourse.normaliserMode(reglages.meteoMode || (reglages.meteo === 'aleatoire' ? 'aleatoire' : 'manuel'));
+  reglages.forcePluie = B.conditionsCourse.normaliserForcePluie(reglages.forcePluie);
   // Champ du cockpit : 69° n'a été le défaut que l'après-midi du 16/11, et David le trouve trop large (« fov moins
   // prononcé »). Une valeur restée à 69 revient une seule fois au défaut ; tout autre choix du pilote est gardé.
   if (!reglages.champRevu) { if (+reglages.champ === 69) reglages.champ = DEFAUT.champ; reglages.champRevu = true; }
@@ -310,7 +311,7 @@
       fx: B.traces.creer(course.voitures.length, graineCourse, course.physique.world),
       // flammes et détonations d'échappement (lot 20) : hasard propre, tiré de la graine de la course
       ech: B.echappement ? B.echappement.creer(course.voitures.length, graineCourse) : null,
-      meteo: meteoInit, conditions,
+      meteo: meteoInit, conditions, eauCarrosserieTemps: 0, eauCarrosseriePoint: new Float64Array(3),
       nature: { ambiance: B.ambiance.creer(sc.decor.atmosphere, i === 2), moment: B.ambiance.normaliser(conditions.moment),
         horlogeReelle: horlogePartagee(conditions.horlogeReelle), dateDepart: enl && Number.isFinite(enl.dateDepart) ? enl.dateDepart : null,
         saison: sc.decor.saison || B.saisons.profil(sc.saison, CATALOGUE[i].theme), revisionRendu: -1, faune: null, effetsSaison: null, aurores: null },
@@ -320,6 +321,8 @@
     };
     // Toutes les montes sont préparées sous le voile : un service ne construit rien en pleine course.
     for (const modele of S.modeles) B.voiture.preparerPneusService(modele);
+    if (B.eauCarrosserie) for (let k = 0; k < S.modeles.length; k++)
+      B.eauCarrosserie.preparer(S.modeles[k], (enl ? enl.graine : graineCourse) + k * 739);
     // bâtis avec la scène (une fois par décor), repris ici de leurs places de départ : sous le voile de la préparation
     S.animaux = animauxDe(sc, S.nature);
     if (demo) S.cinema = B.cinema.preparer(c, sc.decor, S.animaux, course.physique.world);
@@ -670,6 +673,25 @@
 
   // Météo et pluie projetée : les secondes viennent du rendu, zéro pendant une pause.
   function majMeteo(S, dt) { return B.meteo.avancer(S, dt); }
+  // L'eau appartient à chaque voiture, pas à la caméra. Un seul pas avant J2/J1 et les rétros.
+  function majEauCarrosserie(S, poses, dt, meteo) {
+    if (!B.eauCarrosserie) return;
+    if (dt > 0 && Number.isFinite(dt)) S.eauCarrosserieTemps += dt;
+    const point = S.eauCarrosseriePoint;
+    for (let k = 0; k < S.modeles.length; k++) {
+      const p = poses[k], etat = S.modeles[k].eauCarrosserie;
+      if (!etat || !p) continue;
+      point[0] = p.x; point[1] = p.y + .65; point[2] = p.z;
+      B.eauCarrosserie.mettreAJour(etat, dt, meteo, S.course.voitures[k].etat.v,
+        sousLaVoute(S.course.c, point), S.eauCarrosserieTemps, p);
+    }
+  }
+  function poserEauCarrosserie(S, k, ev, sortie, detail, overlay, matrice, distance2, tanDemi, hauteur, palierVue) {
+    const E = B.eauCarrosserie, etat = S.modeles[k].eauCarrosserie;
+    if (!E || !etat) return;
+    const lod = E.detailPour(distance2, tanDemi, hauteur, detail, palierVue);
+    E.ajouter(sortie, ev, etat, lod, overlay, matrice);
+  }
   let pluieVue = null, pluieVue2 = null, vitreVue = null, vitreVue2 = null;
   const METEO_ABRI = { pluie: 0, nuage: 0, eclair: 0, mouille: 0, ventX: 0, ventZ: 0, t: 0 };
   const ambiancePublic = () => ({ pluie: 0, neige: 0, mouille: 0, feux: 0, vert: false, termine: false });
@@ -719,7 +741,8 @@
         }
       }
       contexte.pause = ecran === 'pause' || (ecran === 'reglages' && retourReglages === 'pause');
-      contexte.actif = (ecran === 'course' || ecran === 'demo' || contexte.pause) && (vue === 'cockpit' || vue === 'poursuite');
+      // Les lentilles embarquées reçoivent aussi les impacts : arceau, ponton et aileron arrière.
+      contexte.actif = (ecran === 'course' || ecran === 'demo' || contexte.pause) && (vue === 'cockpit' || vue === 'poursuite' || vue === 'aileron' || vue === 'roue' || vue === 'arriere');
       contexte.intensite = reglages.gouttes; contexte.cockpit = vue === 'cockpit'; contexte.abri = abri;
       contexte.dpr = window.devicePixelRatio || 1;
       // rendreVue vient de dessiner cette caméra : en duo, la source contient encore J2 avant la copie scene2,
@@ -1230,17 +1253,19 @@
   const NOMS_MOMENT = { jour: 'jour', crepuscule: 'crépuscule', nuit: 'nuit', cycle: 'cycle jour / nuit' };
   const NOMS_SAISON = { printemps: 'printemps', ete: 'été', automne: 'automne', hiver: 'hiver' };
   function cleConditions() {
-    return [reglages.saisonMode, reglages.saison, reglages.momentMode, reglages.moment, reglages.meteoMode, reglages.meteo].join('|');
+    return [reglages.saisonMode, reglages.saison, reglages.momentMode, reglages.moment, reglages.meteoMode, reglages.meteo, reglages.forcePluie].join('|');
   }
   function conditionsDuDepart() {
     if (conditionsPreparation && conditionsPreparationCle === cleConditions()) return conditionsPreparation;
     return { saison: B.saisons.normaliser(reglages.saison), moment: B.ambiance.normaliser(reglages.moment),
-      meteo: reglages.meteo || 'aleatoire', mReelle: null, horlogeReelle: null };
+      meteo: reglages.meteo || 'aleatoire', forcePluie: B.conditionsCourse.normaliserForcePluie(reglages.forcePluie), mReelle: null, horlogeReelle: null };
   }
   // Même initialisation au conseil, au départ et chez les invités : les flocons ne sont pas
   // de l'eau liquide, et le paysage hivernal fournit une couverture de chaussée explicite.
   function meteoPourConditions(k, i, graine) {
     const m = B.meteo.depuisReel(k.mReelle) || B.meteo.pour(k.meteo) || B.meteo.initial(graine);
+    // Le mode réel garde la mesure reçue. L'ancien choix Pluie conserve ses 0,75 par défaut.
+    if (!k.mReelle && k.meteo === 'pluie') m.pluie = m.pluieFixe = B.conditionsCourse.FORCES_PLUIE[B.conditionsCourse.normaliserForcePluie(k.forcePluie)];
     return B.chaussee.preparer(m, B.saisons.profil(k.saison, CATALOGUE[i].theme));
   }
   function surfaceAnnoncee(k) {
@@ -1264,10 +1289,12 @@
   function conditionsCommunes(k) {
     return { saison: B.saisons.normaliser(k.saison), moment: B.ambiance.normaliser(k.moment),
       meteo: ['soleil', 'pluie', 'variable', 'aleatoire'].includes(k.meteo) ? k.meteo : 'soleil',
+      forcePluie: B.conditionsCourse.normaliserForcePluie(k.forcePluie),
       mReelle: B.meteo.depuisReel(k.mReelle), horlogeReelle: horlogePartagee(k.horlogeReelle) };
   }
   function nomMeteoCourse(k) {
-    const nom = NOMS_METEO[k.meteo] || (k.eau > .25 ? 'pluie, tirée au sort' : 'sec, tirée au sort');
+    const force = { fine: 'fine', moderee: 'modérée', forte: 'forte', tres_forte: 'très forte' }[B.conditionsCourse.normaliserForcePluie(k.forcePluie)];
+    const nom = k.meteo === 'pluie' ? 'pluie ' + force : NOMS_METEO[k.meteo] || (k.eau > .25 ? 'pluie, tirée au sort' : 'sec, tirée au sort');
     const profil = B.saisons.profil(k.saison, CATALOGUE[k.i].theme);
     const neige = CATALOGUE[k.i].theme !== 'cote' && (k.mReelle ? k.mReelle.neige : profil.neige);
     if (k.mReelle) return (k.mReelle.pluie > .02 ? neige ? 'neige' : k.mReelle.phase === 'orage' ? 'orage' : 'pluie'
@@ -1774,8 +1801,10 @@
   // d'abord la diagonale de référence. L'habitacle étant désormais métrique et commun, il ne peut plus rapprocher
   // ses glaces pour un téléphone : la projection s'ouvre seulement assez pour contenir les deux vrais montages.
   // La discrète ouverture de vitesse demeure ; la position des yeux et la géométrie ne dépendent pas de l'écran.
-  const INCLINAISON_COCKPIT = -Math.PI / 60;
-  function champCockpit(aspect, v) {
+  // Le regard accompagne les commandes métriques abaissées : les yeux restent ceux du pilote,
+  // et le champ mémorisé est conservé. La géométrie commune dégage elle-même la chaussée.
+  const INCLINAISON_COCKPIT = -Math.PI / 18;
+  function champCockpit(aspect, v, cam, glaces, M) {
     const t = Math.tan(clamp(+reglages.champ || 60, 60, 105) * Math.PI / 360);
     const tv = aspect < 16 / 9 ? Math.hypot(t, t / (16 / 9)) / Math.hypot(1, Math.max(.3, aspect)) : t / (16 / 9);
     const portraitTelephone = estTactile && canvas.clientWidth <= 600 && aspect < 1;
@@ -1787,7 +1816,35 @@
       tangente = Math.max(tangente, largeur / profondeur / Math.max(.3, aspect));
     }
     const vertical = 2 * Math.atan(tangente) * 180 / Math.PI;
-    return clamp(vertical * (1 + (portraitTelephone ? .04 : .05) * clamp(v / 85, 0, 1)), 10, 110);
+    const base = clamp(vertical * (1 + (portraitTelephone ? .04 : .05) * clamp(v / 85, 0, 1)), 10, 110);
+    if (!cam || !glaces) return base;
+    // La direction du regard et les déplacements de tête changent la projection : le montage nominal
+    // seul ne suffit pas en virage. Projeter les coins réels et l'enveloppe des boîtiers dans ce regard,
+    // avec 3 px de garde, sans déplacer les rétros ni réécrire la préférence de champ du joueur.
+    tangente = Math.tan(base * Math.PI / 360);
+    const cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw), cp = Math.cos(cam.pitch), sp = Math.sin(cam.pitch);
+    const cr = Math.cos(cam.roll), sr = Math.sin(cam.roll), boite = B.voiture.FORMES['retro-boitier'];
+    const gardeX = Math.max(.5, 1 - 6 / Math.max(1, canvas.clientWidth));
+    const gardeY = Math.max(.5, 1 - 6 / Math.max(1, canvas.clientHeight));
+    for (let g = 0; g < glaces.length; g++) for (let j = 0; j < 12; j++) {
+      const glace = glaces[g]; let x, y, z;
+      if (j < 4) {
+        const q = glace.coins[j]; x = q[0] - cam.pos[0]; y = q[1] - cam.pos[1]; z = q[2] - cam.pos[2];
+      } else {
+        // Boîte de la vraie forme procédurale, orientée selon le même montage que sa glace.
+        const n = j - 4, bx = boite.centre[0] + boite.taille[0] * (n & 1 ? .5 : -.5);
+        const by = boite.centre[1] + boite.taille[1] * (n & 2 ? .5 : -.5);
+        const bz = boite.centre[2] + boite.taille[2] * (n & 4 ? .5 : -.5);
+        x = glace.centre[0] - glace.normale[0] * bx + M[1][0] * by + glace.droite[0] * bz - cam.pos[0];
+        y = glace.centre[1] - glace.normale[1] * bx + M[1][1] * by + glace.droite[1] * bz - cam.pos[1];
+        z = glace.centre[2] - glace.normale[2] * bx + M[1][2] * by + glace.droite[2] * bz - cam.pos[2];
+      }
+      const profondeur = x * sy * cp + y * sp - z * cy * cp;
+      const droite = x * cy + z * sy, haut = -x * sy * sp + y * cp + z * cy * sp;
+      tangente = Math.max(tangente, Math.abs(droite * cr + haut * sr) / (profondeur * aspect * gardeX),
+        Math.abs(haut * cr - droite * sr) / (profondeur * gardeY));
+    }
+    return clamp(2 * Math.atan(tangente) * 180 / Math.PI, 10, 110);
   }
   // La tête du pilote vit : elle part vers l'extérieur du virage et vers l'avant au freinage (2 cm au plus), le regard
   // va vers la corde (4° au plus), et le casque tremble à haute vitesse, sur les vibreurs et dans l'herbe.
@@ -1799,11 +1856,19 @@
     const OE = B.voiture.OEIL, M = B.voiture.attitude(p.cap, p.tangage, p.roulis);
     const o = B.voiture.mul(M, [OE[0] - T.lon * .02, OE[1] - Math.max(0, -T.lon) * .006, OE[2] - T.lat * .016]);
     const vib = (et.surface === 'vibreur' ? .006 : et.surface === 'herbe' ? .004 * Math.min(1, et.v / 20) : 0) + .0011 * Math.pow(clamp(et.v / 85, 0, 1), 2);
-    return {
+    const cam = {
       pos: [p.x + o[0], p.y + o[1] + Math.sin(t * 73) * vib * reglages.secousses, p.z + o[2]], yaw: p.cap + Math.PI / 2 + T.regard * .07,
       pitch: p.tangage * .85 + INCLINAISON_COCKPIT + Math.min(0, T.lon) * .012, roll: -p.roulis * .85 + T.lat * .014,
-      fov: champCockpit(canvas.clientWidth / Math.max(1, canvas.clientHeight), et.v), near: .1, far: PORTEE_VUE
+      fov: 60, near: .1, far: PORTEE_VUE
     };
+    // La seconde vue hérite de S : elle doit posséder ses buffers, même si J1 a déjà rendu son cockpit.
+    const C = Object.prototype.hasOwnProperty.call(S, 'cadrageCockpit') ? S.cadrageCockpit
+      : (S.cadrageCockpit = { pose: { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0 }, glaces: null });
+    C.pose.p[0] = p.x; C.pose.p[1] = p.y; C.pose.p[2] = p.z;
+    C.pose.cap = p.cap; C.pose.tangage = p.tangage; C.pose.roulis = p.roulis;
+    C.glaces = B.voiture.glacesCockpit(C.pose, C.glaces);
+    cam.fov = champCockpit(canvas.clientWidth / Math.max(1, canvas.clientHeight), et.v, cam, C.glaces, M);
+    return cam;
   }
   // Écran partagé : la poursuite garde la diagonale du cadre 16:9 dans une moitié plus large ou plus étroite
   function champAdapte(f) {
@@ -1894,12 +1959,12 @@
   const VUES_DEHORS = new Set(['tele', 'helico', 'orbite', 'travelling', 'sol', 'panorama', 'flore', 'faune', 'pilote', 'peloton']);
   const DANS_LA_ROCHE = new Set(['helico', 'orbite', 'travelling', 'pilote', 'peloton']);   // sous le tunnel, ces caméras seraient dans la montagne
   const CAMERAS_DEMO = new Set(['roue', 'aileron', 'arriere', 'travelling', 'orbite']);
-  function cameraDemo(S, p, plan) {
+  function cameraDemo(S, p, plan, vue = plan && plan.vue) {
     const M = B.voiture.attitude(p.cap, p.tangage, p.roulis), pt = o => { const q = B.voiture.mul(M, o); return [p.x + q[0], p.y + q[1], p.z + q[2]]; };
     const vise = (pos, cible, fov) => { const dx = cible[0] - pos[0], dy = cible[1] - pos[1], dz = cible[2] - pos[2], d = Math.hypot(dx, dy, dz) || 1;
       return { pos, yaw: Math.atan2(dx, -dz), pitch: Math.asin(clamp(dy / d, -1, 1)), roll: 0, fov, near: .1, far: PORTEE_VUE }; };
-    const cote = plan.cote || 1, age = S.tRendu - plan.debut;   // temps rendu : la grue et l'orbite glissent sans sauts
-    switch (plan.vue) {
+    const cote = plan && plan.cote || 1, age = S.tRendu - (plan ? plan.debut : 0);   // temps rendu, même hors réalisateur
+    switch (vue) {
       case 'roue':        // au ras du ponton, la roue avant au premier plan et la piste qui file
         return { pos: pt([-.05, .40, cote * 1.13]), yaw: p.cap + Math.PI / 2 - cote * .07, pitch: -.025 + p.tangage * .85, roll: -p.roulis * .85, fov: 66, near: .05, far: PORTEE_VUE };
       case 'aileron':     // au-dessus de l'arceau, comme les caméras de télévision : casque et nez devant
@@ -2397,7 +2462,9 @@
       o.detail = plusLeger(OPTIONS_POSE[k].plafond, detailVoiture(ex * ex + ez * ez, tanDemi, hauteur));
       o.rouesDetail = detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(POSES_RENDU[k], camR.pos), tanDemi, hauteur, detailsRoues[k]);
       o.roues = v.degats && v.degats.roues; o.casse = !!(v.degats && v.degats.casse);
-      B.voiture.poser(S.modeles[k], POSES_RENDU[k], objets, o);
+      const attitude = B.voiture.poser(S.modeles[k], POSES_RENDU[k], objets, o);
+      poserEauCarrosserie(S, k, POSES_RENDU[k], objets, o.casse ? 'epave' : o.detail, false, attitude,
+        ex * ex + ez * ez, tanDemi, hauteur, profilDe(S).palier);
     }
     for (let k = S.iVoitures1, n = S.iEffets0; k < n; k++) if (devantGlace(sortie[k], axe, ox, oy, oz)) objets.push(sortie[k]);
     B.traces.dessiner(S.fx, objets, camR.pos, S.hEffets, axe, 0);
@@ -2551,6 +2618,7 @@
       for (let r = 0; r < 4; r++) reb[r] = a * (Math.sin(s0 + r * 1.9) * .6 + Math.sin(s0 * 2.3 + r * .7 + t * 3) * .4);
     }
     const meteo = majMeteo(S, dtImage);
+    majEauCarrosserie(S, poses, dtImage, meteo);
     S.ambianceImage = B.meteo.ambiance(meteo, S.ambianceImage || creationTardive('ambiance', {}));
     if (S.nature) {
       const nature = S.nature;
@@ -2633,7 +2701,7 @@
     } else if (vue === 'tele') cam = cameraTele(S, suivie, ps);
     else if (vue === 'helico') cam = cameraHelico(S, ps, dtImage);
     else if (vue === 'sol') cam = cameraSol(S, suivie, ps);
-    else if (CAMERAS_DEMO.has(vue)) cam = cameraDemo(S, ps, S.planVu);
+    else if (CAMERAS_DEMO.has(vue)) cam = cameraDemo(S, ps, S.planVu, vue);
     else cam = vue === 'cockpit' ? cameraCockpit(S, ps, suivie.etat, S.tRendu, dtImage) : cameraPoursuite(S, ps, suivie.etat, dtImage);
     if (S.type === 'demo') {
       const aspect = canvas.clientWidth / Math.max(1, canvas.clientHeight);
@@ -2781,7 +2849,9 @@
         // les rivaux de la glace peinte ne servent que sans image réelle des glaces
         etc.derriere = glaceVive ? AUCUN_SUIVEUR : suiveurs(co, poses, k, p);
         etc.ciel = atm.skyBottom; etc.brume = atm.fog; etc.glaceVive = glaceVive;
-        B.voiture.cockpit(S.modeles[k], ev, sortie, etc);
+        const attitude = B.voiture.cockpit(S.modeles[k], ev, sortie, etc);
+        poserEauCarrosserie(S, k, ev, sortie, etc.casse ? 'epave' : 'complet', true, attitude,
+          d2, tanDemi, hauteur, P.palier);
         ombreFin = sortie.length;
         continue;
       }
@@ -2792,7 +2862,9 @@
       o.rouesDetail = rouesDetail;
       o.detail = o.plafond === 'complet' && dx * avX + dz * avZ < -DERRIERE_CAMERA ? 'moyen' : o.plafond;
       o.roues = co.voitures[k].degats && co.voitures[k].degats.roues; o.casse = !!(co.voitures[k].degats && co.voitures[k].degats.casse);
-      B.voiture.poser(S.modeles[k], ev, sortie, o);
+      const attitude = B.voiture.poser(S.modeles[k], ev, sortie, o);
+      poserEauCarrosserie(S, k, ev, sortie, o.casse ? 'epave' : o.detail, false, attitude,
+        d2, tanDemi, hauteur, P.palier);
       if (k === suivie.id) ombreFin = sortie.length;
     }
     S.iVoitures1 = sortie.length;
@@ -2866,6 +2938,8 @@
     majGlaces(S, vue, cam, ps, sortie, S.ambianceImage, suivie, dtImage);
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
     S.camera = cam; S.vue = vue; S.suivie = suivie.id;
+    const affichage = S.type === 'duo' && S !== session ? hud2 : $('hud');
+    if (affichage.dataset.vue !== vue) affichage.dataset.vue = vue;
     // En cockpit, la planche donne vitesse, rapport et régime : le tableau réduit retire plan et compteurs, qui
     // couvriraient les pneus avant.
     const reduit = vue === 'cockpit' && reglages.tableau === 'reduit' ? 'oui' : 'non';
@@ -3346,6 +3420,9 @@
     }
     const profil = B.saisons.profil(k.saison, CATALOGUE[reglages.circuit].theme);
     $('p-type-precipitations').textContent = profil.neige ? 'Neige' : 'Pluie';
+    $('p-force-pluie').hidden = reglages.meteoMode !== 'manuel' || reglages.meteo !== 'pluie';
+    $('p-force-pluie-titre').textContent = profil.neige ? 'Intensité de la neige' : 'Intensité de la pluie';
+    for (const r of document.querySelectorAll('input[name="forcePluie"]')) r.checked = r.value === reglages.forcePluie;
     $('p-saison-note').textContent = (reglages.saisonMode === 'manuel' ? '' : NOMS_SAISON[k.saison] + ' · ')
       + (profil.neige ? 'Paysage enneigé. Les précipitations manuelles tombent en flocons.' : k.saison === 'hiver' ? 'Hiver doux à Port-Sable, sans neige.' : 'La saison transforme le paysage.');
     $('p-moment-note').textContent = reglages.momentMode === 'reel' ? 'L’éclairage suit l’heure réelle, à vitesse normale.'
@@ -3385,7 +3462,7 @@
       if (numero !== conditionsNumero || erreur.name === 'AbortError') return null;
       // Défaut imprévu : le pilote peut toujours partir avec ses choix manuels visibles.
       conditionsPreparation = { saison: B.saisons.normaliser(choix.saison), moment: B.ambiance.normaliser(choix.moment),
-        meteo: ['soleil', 'pluie', 'variable'].includes(choix.meteo) ? choix.meteo : 'soleil', mReelle: null, horlogeReelle: null,
+        meteo: ['soleil', 'pluie', 'variable'].includes(choix.meteo) ? choix.meteo : 'soleil', forcePluie: B.conditionsCourse.normaliserForcePluie(choix.forcePluie), mReelle: null, horlogeReelle: null,
         meta: { statut: 'repli', message: 'Détection indisponible : conditions manuelles affichées.' } };
       preselectionnerPneus();
       return conditionsPreparation;
@@ -3530,6 +3607,7 @@
     }
     if (t.name === 'tours' || t.name === 'difficulte') { reglages[t.name] = +t.value; sauverReglages(); }
     if (t.name === 'meteo') { reglages.meteo = t.value; sauverReglages(); preselectionnerPneus(); }
+    if (t.name === 'forcePluie') { reglages.forcePluie = B.conditionsCourse.normaliserForcePluie(t.value); sauverReglages(); preselectionnerPneus(); }
     if (['pneus', 'pneus2', 'pneusIci', 'pneusPret', 'pneusPret2'].includes(t.name) && choisirPneusPilote(t.name.endsWith('2') ? 1 : 0, t.value)) {
       retirerPret(); sauverReglages(); envoyerPneus(); majChoixPneus();
     }
@@ -3537,7 +3615,7 @@
     if (/^pneusStand[01]$/.test(t.name)) choisirPneusStands(+t.name.slice(-1), t.value);
     if (t.name === 'boitePret' && ['auto', 'manuelle'].includes(t.value)) { reglages.boite = t.value; sauverReglages(); }
     if (t.name === 'vuePret' && ['cockpit', 'poursuite'].includes(t.value)) { reglages.vue = t.value; sauverReglages(); }
-    if (['meteo', 'momentDepart', 'saisonDepart', 'saisonMode', 'momentMode', 'meteoMode'].includes(t.name) && ecran === 'preparation') actualiserConditions();
+    if (['meteo', 'forcePluie', 'momentDepart', 'saisonDepart', 'saisonMode', 'momentMode', 'meteoMode'].includes(t.name) && ecran === 'preparation') actualiserConditions();
     if (EL.role === 'hote' && lienActif() && ['tours', 'difficulte'].includes(t.name)) annoncerCourse();
     if (t.name === 'joueursIci') { reglages.joueursLocaux = t.value === '2' ? 2 : 1; sauverReglages(); }
     if (t.name === 'partage') { reglages.partage = t.value === 'cote' ? 'cote' : 'haut-bas'; sauverReglages(); }
@@ -4946,12 +5024,13 @@
     const mode = options.mode || 'solo', qualite = options.qualite || 'high';
     const i = options.circuit ?? 0, graine = options.graine ?? 17017;
     const meteo = ['sec', 'clair'].includes(options.meteo) ? 'soleil' : (options.meteo || 'soleil');
+    const forcePluie = B.conditionsCourse.normaliserForcePluie(options.forcePluie);
     const vue = options.vue || 'cockpit', vue2 = options.vue2 || 'cockpit';
     const partage = options.partage || 'haut-bas', glaces = options.retro || 'oui';
     const difficulte = options.difficulte ?? 1, tours = options.tours ?? 3;
     const pilote = options.pilote ?? true;
     const vitesse = options.vitesse ?? 75, mouille = options.mouille ?? (meteo === 'pluie' ? .75 : 0);
-    const vues = ['cockpit', 'poursuite', 'tele', 'helico'];
+    const vues = ['cockpit', 'poursuite', 'tele', 'helico', 'aileron', 'roue', 'arriere'];
     if (!['solo', 'duo'].includes(mode) || !B.graphismes.QUALITES.includes(qualite)) throw new Error('mode ou qualité de référence inconnu');
     if (!Number.isInteger(i) || i < 0 || i >= CATALOGUE.length || !Number.isInteger(graine) || graine < 0 || graine > 0xffffffff) throw new Error('circuit ou graine invalide');
     if (!Number.isInteger(difficulte) || difficulte < 0 || difficulte > 2 || !Number.isInteger(tours) || tours < 1 || tours > 99) throw new Error('difficulté ou nombre de tours invalide');
@@ -4964,13 +5043,13 @@
     const depart = options.depart === 'tunnel' ? c.tunnel.debut - 40 : (options.depart ?? 800);
     if (!Number.isFinite(depart)) throw new Error('abscisse de départ invalide');
     restaurerReference();
-    const cles = ['vue', 'vue2', 'partage', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'moment', 'saison', 'retro', 'meteo', 'saisonMode', 'momentMode', 'meteoMode', 'pneus', 'pneusPilotes', 'pneusAutoPilotes', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
+    const cles = ['vue', 'vue2', 'partage', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'moment', 'saison', 'retro', 'meteo', 'forcePluie', 'saisonMode', 'momentMode', 'meteoMode', 'pneus', 'pneusPilotes', 'pneusAutoPilotes', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
     const avant = Object.fromEntries(cles.map(k => [k, reglages[k]])), decorAvant = decorEnrichi;
-    Object.assign(reglages, { vue, vue2, partage, qualite, difficulte, tours, retro: glaces, meteo, saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', secousses: 0, vibrations: 'non', champ: 60 });
+    Object.assign(reglages, { vue, vue2, partage, qualite, difficulte, tours, retro: glaces, meteo, forcePluie, saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', secousses: 0, vibrations: 'non', champ: 60 });
     Object.assign(reglages, B.graphismes.normaliserOptions(options));
     reglages.moment = B.ambiance.normaliser(options.moment ?? 'jour');
     reglages.saison = B.saisons.normaliser(options.saison ?? 'ete');
-    reglages.pneus = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoPourConditions({ meteo, saison: reglages.saison }, i, graine)));
+    reglages.pneus = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoPourConditions({ meteo, forcePluie, saison: reglages.saison }, i, graine)));
     reglages.pneusPilotes = [reglages.pneus, reglages.pneus]; reglages.pneusAutoPilotes = [true, true];
     decorEnrichi = options.decor !== 'reference';
     graineCourse = graine - 1;
@@ -5002,7 +5081,7 @@
     // glaces remises à leur état de départ sans réallouer : rien ne naît dans la première image de la référence
     for (const G of [retro.j1, retro.j2]) if (G) { G.cote = 0; remettreLampes(G); }
     S.reference = { graine, circuit: i, circuitId: CATALOGUE[i].id, graineCircuit: CATALOGUE[i].graine,
-      mode, qualite, ...B.graphismes.normaliserOptions(reglages), moment: reglages.moment, saison: reglages.saison, difficulte, tours, pilote, vue, vue2, partage, retro: glaces, meteo, mouille, depart: ramener(depart, c.longueur), vitesse,
+      mode, qualite, ...B.graphismes.normaliserOptions(reglages), moment: reglages.moment, saison: reglages.saison, difficulte, tours, pilote, vue, vue2, partage, retro: glaces, meteo, forcePluie, mouille, depart: ramener(depart, c.longueur), vitesse,
       decor: decorEnrichi ? 'enrichi' : 'reference', tunnel: c.tunnel ? { debut: c.tunnel.debut, fin: c.tunnel.fin } : null };
     $('chargement').classList.add('fini'); aller('course'); appliquerPalier();
     B.mesures.reinitialiser();

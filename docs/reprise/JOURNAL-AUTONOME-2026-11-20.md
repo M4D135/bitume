@@ -592,3 +592,116 @@ Les documents de clôture conservent ces réserves sans changer le runtime publi
 Aucun déploiement du site.
 
 Reçu : `docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json`.
+
+## 034 — Réception 0.2.70, défaut HUD et préparation 0.2.71
+
+La CI complète `44818836125` réussit sur `3d9825d4` : 179 suites JavaScript,
+huit tests Python. L’archive des 3 852 fichiers reconstruit exactement l’arbre
+`5ca64577b6044672a61feda146c405e18e6294c6` ; HTML 0.2.70 inchangé, SHA256
+`b0f1b5d9…`, 14 502 704 octets. Les quatre bancs réparés importent leurs vrais
+modules sans alléger les assertions. Les alertes décor 172/152 ms sont conservées.
+
+Les PNG cockpit montrent un défaut distinct de la géométrie : classement sur
+glace gauche, carte sur glace droite et annonce sur route centrale en duo haut/bas.
+Le grand format Mac est incomplet après la référence, arrêté par la limite globale
+de 18 minutes. La poursuite Troll s’arrête à 11/13 PNG. Les cinq instants d’impact
+sont reçus et inspectés ; la campagne météo historique reste privée du cas `legere`.
+Les autres images disponibles sont consignées individuellement dans les reçus.
+
+La fusion de PR44 reste bloquée. Le correctif HUD suivant conserve les yeux,
+le siège, le modèle commun, les roues, p15 et FERRO. La carte reste en haut et
+garde ses préférences. Le banc contrôle désormais les masques visibles du HUD
+contre les vraies glaces, commandes et points de chaussée, sans changer ses seuils.
+Deux cas compacts avec rival à 18 m complètent les neuf scènes candidat ; la
+référence a son propre job. Les pas Troll sont séparés entre commandes DevTools,
+en conservant instants, événements, borne et délai. Nouvelles preuves à recevoir
+après construction 0.2.71 ; aucun déploiement du site ni intégration de PR43.
+
+Construction du correctif : 0.2.71, 14 507 449 octets, SHA256 `0e4cdb72…`,
+deux reconstructions identiques et 60 contrôles ciblés réussis. La référence
+négative exige désormais un recouvrement HUD/glace réel aux deux poses ; les
+données manquantes font échouer candidat et référence. Branche de validation
+prévue : `codex/bitume-0271-hud-20261120`. Les PNG de ce nouvel HTML restent attendus.
+
+## 035 — Gardes de présence, deux masques compacts et candidat 0.2.72
+
+La réception 0.2.71 confirme la CI push verte (179 suites Node, huit tests Python,
+3 901 fichiers/modes conformes), mais deux chevauchements réels en 960 × 540 :
+classement sur gant gauche en braquage et régime complet sur main droite au
+neutre. Dix PNG inspectés attestent carte haute et annonce à vitesse élevée.
+Le profil n’a aucune image après expiration DevTools ; autres jobs encore en
+cours au reçu intermédiaire. PR47 reste bloquée par les images, sans relance
+pour effacer les échecs.
+
+Le garde ee3bb57 est repris. La correction CSS suivante limite le classement
+avec la hauteur locale et réserve une colonne aux compteurs complets. L’annonce
+garde sa largeur ; le mode réduit est protégé en solo et par joueur en duo.
+Les témoins des compteurs sélectionnés sont également requis par l’oracle.
+25 contrôles de capture, 13 HUD et 11 options passent ; les 34 copies FERRO
+sont conformes. Deux builds 0.2.72 identiques : 14 509 186 octets, SHA256
+391db2defe23308f88500fdd138d3b8573596d1ca0f53e058ef5c66c0c510a90.
+La nouvelle CI et les images exactes restent requises avant fusion.
+PR43, réserves de performance et six demandes vidéo/survol conservées.
+
+Réserve tardive 0.2.71 : la CI PR `44825452386` termine à **178/179** suites,
+Val-Brûlé **168 ms** pour un seuil strict de **150 ms**. Son archive de
+3 901 fichiers/modes est identique à la CI push verte ; les huit tests Python
+sont sautés en PR après cet échec. Résultat conservé, sans changer le seuil.
+
+## 036 — Candidat 0.2.73, petit duo et annonces désactivées par défaut
+
+Le reçu 0.2.72 conserve les deux archives CI identiques (PR 179/179, push
+178/179 avec Val-Brûlé 155 ms/150) et les masques constatés chez J1/J2.
+Le CSS réduit les espaces et marges du petit partage haut/bas, élargit les noms
+sans réduire les textes. Le défaut des annonces passe à Non dans le runtime
+et l'interface ; les trois préférences déjà enregistrées restent conservées.
+Deux reconstructions identiques et verrou FERRO conforme. L'outil active
+explicitement les annonces pour les captures ; aucune disparition ne peut
+valider leur placement. Le virage stabilisé précédent est incomplet, non reçu
+comme preuve. CI et PNG 0.2.73 sont requis avant fusion ; PR43 et réserves
+historiques restent séparées. Aucun déploiement du site.
+
+## 037 — Réception 0.2.73 et candidat 0.2.74 en braquages stabilisés
+
+Le petit duo corrigé garde les noms lisibles et dégage annonces, compteurs et
+glaces. Les deux CI complètes .73 réussissent (179 suites Node et huit tests
+Python chacune) ; leurs 3 927 fichiers et modes correspondent exactement à
+l'arbre f0ce14c0. Les 43 PNG pluie/Troll ont été reçus et inspectés.
+
+Le complément stabilisé est cette fois complet : 120 pas pour chaque pose,
+deux PNG, mais le gant droit est recouvert à −0,35 par le régime (1 366,34 px²)
+et deux lignes du classement (704,56 px²). La PR 49 reste bloquée et son échec
+est conservé. Le profil .73 a expiré dans Page.captureScreenshot avant tout PNG ;
+ce n'est pas une preuve de défaut géométrique. La preuve profil .72 utilise le
+même modèle et les mêmes modules FERRO.
+
+Le CSS .74 conserve polices et largeurs, retire les espacements verticaux du
+classement et remonte son bas de 42 px tout en gardant le haut de l'annonce.
+La seule barre de régime est bornée à 12 cqh. Portée : cockpit non tactile,
+ratio de 6/5 à 2 et hauteur locale de 400 à 600 px. Les autres formats conservent
+leur disposition. Les vrais triangles et caméras reproduisent l'échec .73 ; le
+calcul des nouveaux rectangles donne zéro recouvrement sur six poses, sans
+remplacer la réception navigateur attendue. Un miroir stabilisé +0,35 est ajouté.
+
+0.2.74 construite deux fois à l'identique, 60 contrôles ciblés réussis et 34 copies
+FERRO conformes. CI exacte et dix nouveaux PNG requis avant fusion. Aucun seuil
+ni pas de simulation retiré, défaut Non et choix mémorisés conservés. Réserves
+décor historiques inchangées ; aucun déploiement du site.
+
+## 038 — 21 novembre : badge FPS, candidat 0.2.75
+
+Les deux CI de la 0.2.74 passent 179 suites Node et huit tests Python ; les deux
+archives de 3 935 fichiers/modes sont exactes. Huit PNG inspectés : petit duo et
+compacts conformes, mais badge FPS sur gant gauche à +0,35 (75,6178301613 px²,
+seuil 1). Le cas gauche échoue avant rendu au démarrage de Chrome ; incident
+conservé. PR 50 reste bloquée ; aucune relance pour effacer un défaut visuel.
+
+0.2.75 : seul le placement vertical du badge change dans le bloc cockpit paysage
+400–600 px, ratio 6/5–2. Il reste sous le classement, visible et à taille inchangée.
+La garde de présence FPS refuse disparition, taille nulle, sortie et duplication
+aux deux instants des deux cas stabilisés. Les 120 pas et tous les seuils restent.
+61 contrôles ciblés ; deux builds identiques, HTML SHA256
+a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225.
+Revue indépendante favorable ; marge préparatoire de 56,002 px aux commandes et
+19 px au classement sur huit poses. CI et dix nouveaux PNG requis avant fusion.
+Aucun déploiement ; p15, FERRO 0.3.15, PR 43 et travaux parallèles préservés.

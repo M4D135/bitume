@@ -33,6 +33,20 @@ await verifier('normalisation et modes manuels : aucune requête, aucun tirage, 
   for (const x of [null, {}, 'reellement', '']) assert.equal(C.normaliserMode(x), 'manuel');
 });
 
+await verifier('forces de pluie : quatre choix persistants, défaut compatible et aucune résolution réseau', async () => {
+  const C = charger();
+  for (const [forcePluie, valeur] of [['fine', .2], ['moderee', .45], ['forte', .75], ['tres_forte', 1]]) {
+    assert.equal(C.FORCES_PLUIE[forcePluie], valeur);
+    const prefs = Object.freeze({ meteo: 'pluie', forcePluie });
+    const k = await C.resoudre(prefs, { fetch() { throw Error('réseau interdit'); }, hasard() { throw Error('tirage interdit'); } });
+    assert.equal(k.forcePluie, forcePluie); assert.equal(k.meteo, 'pluie');
+  }
+  for (const forcePluie of [undefined, null, {}, 'torrentielle', '__proto__', .2]) {
+    assert.equal(C.normaliserForcePluie(forcePluie), 'forte');
+    assert.equal((await C.resoudre({ meteo: 'pluie', forcePluie })).forcePluie, 'forte');
+  }
+});
+
 await verifier('aléatoire : un tirage par champ au départ, aucune résolution récurrente ou réseau', async () => {
   const C = charger(), valeurs = [.6, .4, .99]; let n = 0;
   const result = await C.resoudre({ saisonMode: 'aleatoire', momentMode: 'aleatoire', meteoMode: 'aleatoire' }, {

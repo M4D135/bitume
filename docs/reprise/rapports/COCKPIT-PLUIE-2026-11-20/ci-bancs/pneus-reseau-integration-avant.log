@@ -1,0 +1,37 @@
+✔ 12F3 : transport indépendant des pneus pour 2+2 (4.88713ms)
+✔ 12F3 : transport indépendant des pneus pour 2+1 (0.81596ms)
+✔ 12F3 : transport indépendant des pneus pour 1+2 (0.627911ms)
+✔ 12F3 : envoi depuis la boucle réseau limité à deux états pneus par seconde (0.59345ms)
+✔ 12F3 : le vrai callback cinématique conserve l’expéditeur et respecte les autorités de voitures (0.697004ms)
+✔ 12F3 : service réel du second pilote invité envoyé immédiatement, ancien état et doublon sans effet (2.188597ms)
+✔ 12F3 : état périodique hors ordre et usurpation d’expéditeur ne changent pas les pneus (0.581853ms)
+✔ 12F3 : deux invités n’échangent des pneus que par un relais authentique de l’hôte (0.709052ms)
+✖ 12F3 : chargement terminé après un service récupère le snapshot hôte et ses archives validées (1.420937ms)
+✔ 12F3 : interpolation visuelle des roues distante sans seconde usure ni modification du pneu physique (0.866245ms)
+✔ 12F3 : changement de séance refuse un paquet de la course précédente même à graine identique (0.449957ms)
+✔ 12F3 : reprise par l’hôte conserve le dernier état reçu et se propage sans événement de départ chez le témoin (0.878754ms)
+✔ 12F3 : perte de l’hôte conserve les pneus reçus puis ferme l’application des anciens messages (1.513856ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 12
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 21.941029
+
+✖ failing tests:
+
+test at verifications/pneus-reseau-integration.test.mjs:201:1
+✖ 12F3 : chargement terminé après un service récupère le snapshot hôte et ses archives validées (1.420937ms)
+  TypeError: Cannot read properties of undefined (reading 'normaliserForcePluie')
+      at conditionsDuDepart (eval at <anonymous> (file:///workspace/scratch/d61843ca5396/bitume/verifications/pneus-reseau-integration.test.mjs:27:19), <anonymous>:103:76)
+      at annoncerCourse (eval at <anonymous> (file:///workspace/scratch/d61843ca5396/bitume/verifications/pneus-reseau-integration.test.mjs:27:19), <anonymous>:148:43)
+      at eval (eval at <anonymous> (file:///workspace/scratch/d61843ca5396/bitume/verifications/pneus-reseau-integration.test.mjs:27:19), <anonymous>:357:9)
+      at Object.emit (eval at <anonymous> (file:///workspace/scratch/d61843ca5396/bitume/verifications/pneus-reseau-integration.test.mjs:27:19), <anonymous>:736:94)
+      at TestContext.<anonymous> (file:///workspace/scratch/d61843ca5396/bitume/verifications/pneus-reseau-integration.test.mjs:220:44)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)

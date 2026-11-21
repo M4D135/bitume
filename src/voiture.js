@@ -293,9 +293,9 @@
   // rétroviseurs : boîtier profilé, glace vers l'arrière (x = 0,53), sur une patte fine fixée au flanc du carénage
   forme('retros', deuxCotes(C.carene([{ x: .61, y0: .560, y1: .575, l: .02, n: 2, z: .47 }, { x: .57, y0: .540, y1: .592, l: .072, n: 3, z: .47 }, { x: .53, y0: .538, y1: .594, l: .078, n: 4, z: .47 }], { cotes: 16, pas: 3 })
     .concat(C.tube([[.565, .53, .27], [.565, .55, .40]], .009, { cotes: 6 }))));
-  // Montage unique des rétroviseurs dans les deux vues. L'ancrage proche de la planche permet
-  // de voir les deux glaces depuis les yeux sans modifier leur géométrie pour le cadrage.
-  const RETRO = { x: .64, y: .64, z: .29, l: .165, h: .05, angle: .12 };
+  // Montage unique des rétroviseurs dans les deux vues. Les glaces sont devant et au-dessus des mains,
+  // écartées du volant dans le monde ; leurs images suivent ces mêmes boîtiers sans déplacement CSS ajouté.
+  const RETRO = { x: .80, y: .78, z: .36, l: .145, h: .05, angle: .12 };
   // repère d'une glace (k = −1 à gauche, 1 à droite) : centre, normale vers le pilote, droite de la glace, rotation
   function cadreGlace(k) {
     const a = k * RETRO.angle, w = [-Math.sin(a), 0, Math.cos(a)];
@@ -306,7 +306,8 @@
   // précédent, réécrit en place (aucun tableau neuf par image) ; sans lui, un résultat neuf. Les coins dans le repère
   // de la voiture ne dépendent que de RETRO : calculés une fois.
   const GLACES = [-1, 1].map(k => {
-    const g = cadreGlace(k), coin = (dz, dy) => g.c.map((v, i) => v + g.w[i] * dz + (i === 1 ? dy : 0) - g.n[i] * .0035), l = RETRO.l / 2, h = RETRO.h / 2;
+    // Face tournée vers le pilote du fond de glace : centre à +2 mm, demi-épaisseur de 1,5 mm.
+    const g = cadreGlace(k), coin = (dz, dy) => g.c.map((v, i) => v + g.w[i] * dz + (i === 1 ? dy : 0) + g.n[i] * .0035), l = RETRO.l / 2, h = RETRO.h / 2;
     return { k, coins: [coin(-l, h), coin(l, h), coin(l, -h), coin(-l, -h)], c: g.c, n: g.n, w: g.w };
   });
   function tourne(o, M, v) { o[0] = M[0] * v[0] + M[3] * v[1] + M[6] * v[2]; o[1] = M[1] * v[0] + M[4] * v[1] + M[7] * v[2]; o[2] = M[2] * v[0] + M[5] * v[1] + M[8] * v[2]; return o; }
@@ -1206,15 +1207,16 @@
   const OEIL = [-.062, .790, 0];
   // Échelle de construction commune des commandes. Les coordonnées de leur dessin sont converties une fois
   // en mètres, autour de l'ancrage du volant dans la cellule. Les deux vues posent ces mêmes coordonnées.
-  const K = .9, VOLANT_MONDE = [.25, .70, 0];
+  const K = .9, VOLANT_MONDE = [.30, .62, 0];
   // Géométrie de construction de la jante, avant conversion commune en mètres. Le haut vient vers le pilote ;
   // mains à 9 h et 3 h sur les branches, avec l'axe de prise perpendiculaire à la jante.
   // Le cadrage depuis le siège se règle dans jeu.js, jamais en déformant ces pièces.
   const VOLANT = { centre: [.88, -.244, 0], rayon: .125, inclinaison: -.436, course: 1.6, prise: Math.PI / 2 };
   const ORIGINE_HABITACLE = VOLANT_MONDE.map((v, i) => v - K * VOLANT.centre[i]);
-  // Planche : face au pilote, inclinée de 25° vers l'arrière. Son assise baisse de 65 mm avec le siège ;
-  // le haut de la casquette reste sous les yeux, sans changer le volant ni la géométrie selon la vue.
-  const PLANCHE = [.986, -.163 - .065 / K, 0], PENTE_PLANCHE = .436;
+  // La planche a son propre ancrage métrique : avancer/abaisser la direction ne doit ni la rapprocher des yeux
+  // ni l'entraîner sous l'écran. Les trois vues utilisent la même conversion dans le repère de construction.
+  const PLANCHE_MONDE = [.45, .665, 0], PENTE_PLANCHE = .436;
+  const PLANCHE = PLANCHE_MONDE.map((v, i) => (v - ORIGINE_HABITACLE[i]) / K);
   const COUDE = [.50, -.68, .19];              // repli statique pour les anciennes poses sans état pilote
   const LEVIER = [.818, -.27, .262];           // pommeau du levier de vitesses, à droite du volant, au point mort
   const REGIME_LAMPE = 12000;                  // la lampe de la casquette s'allume : il est temps de monter un rapport
@@ -1443,8 +1445,11 @@
     for (const k of [-1, 1]) {
       const g = cadreGlace(k), { c, n: nr, w, m } = g;
       const vers = (dx, dy, dz) => plus(c, [nr, -dx], [[0, 1, 0], dy], [w, dz]);
-      // La patte rejoint le flanc réel, sous la peau des trois LOD ; son ancien pied à z .29 restait en l'air.
-      const attache = vers(.06, -GH * .45, -k * .03), pied = [c[0] + .07, .50, k * .22], axe = pied.map((v, i) => v - attache[i]);
+      // Le pied entre dans le vrai flanc, à une abscisse déduite du montage. L'enfoncement reçoit la patte
+      // sous les peaux des trois LOD, au lieu de conserver une largeur fixe qui flotterait près du nez.
+      const attache = vers(.06, -GH * .45, -k * .03), pied = C.pointSection(C.profil(S_GOUTTE)(c[0] - .06), 0);
+      pied[2] *= k * .80;
+      const axe = pied.map((v, i) => v - attache[i]);
       const G = { k, c, n: nr, w, suiveurs: [],
         boitier: dans(fb.nom, plus(c, [m[0], fb.centre[0]], [m[1], fb.centre[1]], [m[2], fb.centre[2]]), fb.taille, PEINTURE, c1, m),
         patte: dans('cylinder', attache.map((v, i) => (v + pied[i]) / 2), [.018, Math.hypot(axe[0], axe[1], axe[2]), .018], PEINTURE, c1, selonAxe(axe)),
@@ -1472,9 +1477,10 @@
   // Traduction de la géométrie source vers l'assise physique commune, une seule fois à la construction.
   // La pose statique, la pose animée, le cockpit et les LOD utilisent ensuite les mêmes ancrages métriques.
   function originePilote(o, tete) { return [o[0] + PILOTE_RECUL + (tete ? PILOTE_TETE_RECUL : 0), o[1] + PILOTE_BAISSE, o[2]]; }
-  // Le levier commun avance de 20 mm avec la nouvelle assise, pour dégager l'avant-bras droit au volant.
+  // Le levier commun est sous la jante et en avant du trajet de l'avant-bras droit : les rapports pairs
+  // ne ramènent pas le pommeau sous la manche quand la main retrouve le volant abaissé.
   // La cible de la main suit ce même ancrage physique ; le gant garde sa forme et sa prise.
-  const PILOTE_LEVIER = [.20, .57, .16];
+  const PILOTE_LEVIER = [.25, .49, .16];
   const PILOTE_LEVIER_DECALAGE = PILOTE_LEVIER.map((v, i) => v - ORIGINE_HABITACLE[i] - K * LEVIER[i]);
   // La tige descend du pommeau au pivot près du siège et au vrai fond de cuve.
   const PILOTE_PIED_LEVIER = [PILOTE_LEVIER[0], .30, PILOTE_LEVIER[2] + .0108];
@@ -1635,8 +1641,11 @@
     const rayonCercle = Math.sqrt(Math.max(0, haut * haut - avance * avance));
     const projectionZ = Math.sqrt(Math.max(0, 1 - uz * uz));
     if (rayonCercle > 1e-9 && projectionZ > 1e-9) {
-      // Marge angulaire à l'extrême latéral : elle évite la dérivée infinie d'une tangence du cercle.
-      const cos = Math.max(-.995, Math.min(.995, (z - A[j + 2] - uz * avance) / (rayonCercle * projectionZ)));
+      // Approche douce de l'extrême latéral : la dérivée reste continue au raccord et la tangence
+      // est évitée. Le coude suit toujours le cercle des deux os, sans saut quand la cible sature.
+      const cibleCos = (z - A[j + 2] - uz * avance) / (rayonCercle * projectionZ), moduleCos = Math.abs(cibleCos);
+      const excesCos = Math.max(0, moduleCos - .85);
+      const cos = moduleCos <= .85 ? cibleCos : (cibleCos < 0 ? -1 : 1) * (.85 + .10 * excesCos / (.10 + excesCos));
       const sin = Math.sqrt(Math.max(0, 1 - cos * cos)), signe = ux >= 0 ? 1 : -1;
       const px = (-ux * uz * cos + uy * sin * signe) / projectionZ;
       const py = (-uy * uz * cos - ux * sin * signe) / projectionZ, pz = projectionZ * cos;
@@ -1896,9 +1905,12 @@
       }
       if (cle[6] && k === cle[7] && cle[8] > 0) {
         const intensite = cle[8], mouvement = portionGeste(intensite, .42, 1), dehors = portionGeste(intensite, .06, .26), recul = portionGeste(intensite, .20, .44);
+        const releve = portionGeste(intensite, .36, .54);
         ecart = portionGeste(intensite, 0, .16);
-        gx += EX[0] * .020 * dehors + (WN[0] * .060 + WU[0] * .045) * recul;
-        gy += EX[1] * .020 * dehors + (WN[1] * .060 + WU[1] * .045) * recul;
+        // Depuis la jante abaissée et avancée, dégager le poignet vers le haut et vers le pilote
+        // avant le geste latéral ; la manche franchit le jonc avec la même portée physique des os.
+        gx += EX[0] * .020 * dehors + (WN[0] * .060 + WU[0] * .045) * recul - .050 / K * releve;
+        gy += EX[1] * .020 * dehors + (WN[1] * .060 + WU[1] * .045) * recul + .080 / K * releve;
         gz += EX[2] * .020 * dehors + (WN[2] * .060 + WU[2] * .045) * recul;
         const poignet = main.pieces[3].ferme.c;
         let wx = gx + F[0] * poignet[0] + F[3] * poignet[1] + F[6] * poignet[2];
@@ -1913,7 +1925,10 @@
         const cibleY = (.820 + (cle[6] === 2 ? .008 * onde : 0) - ORIGINE_HABITACLE[1]) / K;
         const cibleZ = (k * (.240 + (cle[6] === 3 ? .010 * onde : 0)) - ORIGINE_HABITACLE[2]) / K;
         const contour = 4 * mouvement * (1 - mouvement);
-        wx += (cibleX - wx) * mouvement - .015 / .9 * contour;
+        // Au braquage, la main basse passe derrière celle restée sur le haut de la jante.
+        // Le détour cesse avant la pose haute, pour conserver la garde devant le casque.
+        const croisement = Math.max(0, k * phi / VOLANT.course) * (1 - portionGeste(mouvement, .45, .65));
+        wx += (cibleX - wx) * mouvement - (.015 + .040 * croisement) / K * contour;
         wy += (cibleY - wy) * mouvement;
         wz += (cibleZ - wz) * mouvement;
         // Annuler le braquage avant de redresser la main : matrices orthonormales et poignet fixe sous les doigts.

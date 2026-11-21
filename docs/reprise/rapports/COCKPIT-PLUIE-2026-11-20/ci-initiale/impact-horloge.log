@@ -1,0 +1,37 @@
+capture 1/5
+apres/pluie-impact-arceau : 1 images, 3 erreurs
+{
+  "format": "bitume-captures-meteo-v1",
+  "date": "2026-11-20T20:48:06.458Z",
+  "source": "/home/runner/work/bitume/bitume/tools/captures-meteo.mjs",
+  "limites": [
+    "Raster logiciel SwiftShader; aucun FPS matériel qualifié.",
+    "Scènes disposées et figées pour comparer les effets; aucun essai de conduite.",
+    "Rendu et effets du HTML désigné, sans injection de leur implémentation."
+  ],
+  "passages": [
+    {
+      "variante": "apres",
+      "scenario": "pluie-impact-arceau",
+      "dossier": "apres/pluie-impact-arceau",
+      "images": 1,
+      "build": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "empreintes": [
+        {
+          "fichier": "0000.png",
+          "octets": 392805,
+          "sha256": "4ed8d90f48e7a3afc2269a12cafd41347242c7da15ad4d962a756829f89bfce3"
+        }
+      ],
+      "erreurs": [
+        "Error: Error: Instant de l’impact non atteint",
+        "Nombre de captures incomplet",
+        "Chronologie de naissance de la goutte incomplète"
+      ]
+    }
+  ],
+  "echecs": 1
+}

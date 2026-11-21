@@ -1,0 +1,18 @@
+ok préparation et course choisissent neige même en hiver ensoleillé
+ok Port-Sable garde une chaussée sans neige et conseille les trois montes liquides
+ok un invité emploie eau, saison et circuit de l’hôte
+ok une observation de flocons ne prétend pas mesurer une couverture au sol
+<anonymous_script>:18
+    if (!k.mReelle && k.meteo === 'pluie') m.pluie = m.pluieFixe = B.conditionsCourse.FORCES_PLUIE[B.conditionsCourse.normaliserForcePluie(k.forcePluie)];
+                                                                                      ^
+
+TypeError: Cannot read properties of undefined (reading 'FORCES_PLUIE')
+    at Object.meteoPourConditions (eval at <anonymous> (file:///workspace/scratch/d61843ca5396/bitume/verifications/chaussee-preparation.test.mjs:19:14), <anonymous>:18:87)
+    at file:///workspace/scratch/d61843ca5396/bitume/verifications/chaussee-preparation.test.mjs:67:29
+    at verifier (file:///workspace/scratch/d61843ca5396/bitume/verifications/chaussee-preparation.test.mjs:27:32)
+    at file:///workspace/scratch/d61843ca5396/bitume/verifications/chaussee-preparation.test.mjs:63:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.22.3

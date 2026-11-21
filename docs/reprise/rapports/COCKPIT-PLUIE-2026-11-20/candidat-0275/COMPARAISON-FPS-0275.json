@@ -1,0 +1,1537 @@
+{
+  "methode": "Projection des triangles des poses reçues, élimination faces arrière et coupe near identiques à l’oracle ; distances minimales euclidiennes en pixels aux polygones visibles. Comparaison bottom 30% / 30% + 10px. Prédiction, pas une capture DOM.",
+  "sourcesGeometrieVerifiees": 13,
+  "dimensionsFPS": [
+    {
+      "x": 12,
+      "width": 80.640625,
+      "height": 23
+    }
+  ],
+  "limites": [
+    "Huit poses 960×540 ; autres hauteurs non capturées.",
+    "La gauche stabilisée utilise les rectangles .73 et la correction .74 prédite.",
+    "Le déplacement est limité au bloc conteneur ratio6/5–2 et hauteur400–600 ; duo compact270px inchangé.",
+    "Les distances concernent les commandes, glaces et HUD observés ; aucun essai de FPS matériel."
+  ],
+  "resume": [
+    {
+      "bottom": "30%",
+      "poses": 8,
+      "erreurs": [],
+      "margeCommandesMinPx": 56.00158242465121,
+      "margeGlacesMinPx": 190.57817786492996,
+      "margeAutresHudMinPx": 19,
+      "margeVerticaleClassementMinPx": 19
+    },
+    {
+      "bottom": "calc(30% + 10px)",
+      "poses": 8,
+      "erreurs": [],
+      "margeCommandesMinPx": 57.917330031694036,
+      "margeGlacesMinPx": 180.57817786492996,
+      "margeAutresHudMinPx": 9,
+      "margeVerticaleClassementMinPx": 9
+    }
+  ],
+  "poses": [
+    {
+      "group": "droite-0274",
+      "image": 0,
+      "source": "/workspace/scratch/d237669f7e4b/qa-0274/hud/14681488062/images/apres/cockpit-carte-droite-stabilise/rapport.json",
+      "rapportSha256": "6e01c10946adc631172b49b8c8eafafdd62681c5f03995d973fa73d8cf4ffeda",
+      "sourceMode": "géométrie/DOM .74 reçus",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "volant": 0,
+      "trianglesReproduits": {
+        "volant": 742,
+        "gant-0": 2454,
+        "gant-1": 2454
+      },
+      "baselineCommandes": [
+        {
+          "role": "volant",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        },
+        {
+          "role": "gant-0",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        },
+        {
+          "role": "gant-1",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        }
+      ],
+      "fpsAvant": {
+        "id": "hud:h-fps:27",
+        "element": "hud:element-46",
+        "ancetres": [
+          "hud:element-4",
+          "hud:element-5",
+          "hud:element-6",
+          "hud:element-7"
+        ],
+        "compteur": null,
+        "x": 12,
+        "y": 505,
+        "width": 80.640625,
+        "height": 23
+      },
+      "essais": [
+        {
+          "bottom": "30%",
+          "fps": {
+            "id": "hud:h-fps:27",
+            "element": "hud:element-46",
+            "ancetres": [
+              "hud:element-4",
+              "hud:element-5",
+              "hud:element-6",
+              "hud:element-7"
+            ],
+            "compteur": null,
+            "x": 12,
+            "y": 355,
+            "width": 80.640625,
+            "height": 23
+          },
+          "classementFinY": 336,
+          "margeVerticaleClassementPx": 19,
+          "commandes": [
+            {
+              "role": "volant",
+              "ecartMinimalPx": 128.38564142938242,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-0",
+              "ecartMinimalPx": 75.25844532534195,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-1",
+              "ecartMinimalPx": 577.7500531952031,
+              "recouvrementsFPS": []
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "ecartMinimalPx": 196.53740644600887,
+              "recouvrementsFPS": []
+            },
+            {
+              "id": "glace-d",
+              "ecartMinimalPx": 694.0011165787597,
+              "recouvrementsFPS": []
+            }
+          ],
+          "hudProche": [
+            {
+              "id": "hud:LI:23",
+              "ecartMinimalPx": 19
+            },
+            {
+              "id": "hud:joueur:22",
+              "ecartMinimalPx": 37.5
+            },
+            {
+              "id": "hud:LI:21",
+              "ecartMinimalPx": 56
+            }
+          ],
+          "erreurs": [],
+          "recouvrementsHud": [],
+          "route": []
+        },
+        {
+          "bottom": "calc(30% + 10px)",
+          "fps": {
+            "id": "hud:h-fps:27",
+            "element": "hud:element-46",
+            "ancetres": [
+              "hud:element-4",
+              "hud:element-5",
+              "hud:element-6",
+              "hud:element-7"
+            ],
+            "compteur": null,
+            "x": 12,
+            "y": 345,
+            "width": 80.640625,
+            "height": 23
+          },
+          "classementFinY": 336,
+          "margeVerticaleClassementPx": 9,
+          "commandes": [
+            {
+              "role": "volant",
+              "ecartMinimalPx": 132.12437936381468,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-0",
+              "ecartMinimalPx": 82.12955062028166,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-1",
+              "ecartMinimalPx": 578.9851149778799,
+              "recouvrementsFPS": []
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "ecartMinimalPx": 186.53740644600887,
+              "recouvrementsFPS": []
+            },
+            {
+              "id": "glace-d",
+              "ecartMinimalPx": 691.2255880484465,
+              "recouvrementsFPS": []
+            }
+          ],
+          "hudProche": [
+            {
+              "id": "hud:LI:23",
+              "ecartMinimalPx": 9
+            },
+            {
+              "id": "hud:joueur:22",
+              "ecartMinimalPx": 27.5
+            },
+            {
+              "id": "hud:LI:21",
+              "ecartMinimalPx": 46
+            }
+          ],
+          "erreurs": [],
+          "recouvrementsHud": [],
+          "route": []
+        }
+      ]
+    },
+    {
+      "group": "droite-0274",
+      "image": 1,
+      "source": "/workspace/scratch/d237669f7e4b/qa-0274/hud/14681488062/images/apres/cockpit-carte-droite-stabilise/rapport.json",
+      "rapportSha256": "6e01c10946adc631172b49b8c8eafafdd62681c5f03995d973fa73d8cf4ffeda",
+      "sourceMode": "géométrie/DOM .74 reçus",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "volant": 0.35,
+      "trianglesReproduits": {
+        "volant": 766,
+        "gant-0": 2417,
+        "gant-1": 2532
+      },
+      "baselineCommandes": [
+        {
+          "role": "volant",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        },
+        {
+          "role": "gant-0",
+          "recouvrementPx2": 75.61783016125264,
+          "recouvrements": [
+            {
+              "id": "hud:h-fps:28",
+              "airePx2": 75.61783016125264
+            }
+          ]
+        },
+        {
+          "role": "gant-1",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        }
+      ],
+      "fpsAvant": {
+        "id": "hud:h-fps:28",
+        "element": "hud:element-47",
+        "ancetres": [
+          "hud:element-4",
+          "hud:element-5",
+          "hud:element-6",
+          "hud:element-7"
+        ],
+        "compteur": null,
+        "x": 12,
+        "y": 505,
+        "width": 80.640625,
+        "height": 23
+      },
+      "essais": [
+        {
+          "bottom": "30%",
+          "fps": {
+            "id": "hud:h-fps:28",
+            "element": "hud:element-47",
+            "ancetres": [
+              "hud:element-4",
+              "hud:element-5",
+              "hud:element-6",
+              "hud:element-7"
+            ],
+            "compteur": null,
+            "x": 12,
+            "y": 355,
+            "width": 80.640625,
+            "height": 23
+          },
+          "classementFinY": 336,
+          "margeVerticaleClassementPx": 19,
+          "commandes": [
+            {
+              "role": "volant",
+              "ecartMinimalPx": 119.65246590877076,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-0",
+              "ecartMinimalPx": 56.00158242465121,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-1",
+              "ecartMinimalPx": 513.0478233440967,
+              "recouvrementsFPS": []
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "ecartMinimalPx": 190.74320404105976,
+              "recouvrementsFPS": []
+            },
+            {
+              "id": "glace-d",
+              "ecartMinimalPx": 659.0601357879253,
+              "recouvrementsFPS": []
+            }
+          ],
+          "hudProche": [
+            {
+              "id": "hud:LI:24",
+              "ecartMinimalPx": 19
+            },
+            {
+              "id": "hud:joueur:23",
+              "ecartMinimalPx": 37.5
+            },
+            {
+              "id": "hud:LI:22",
+              "ecartMinimalPx": 56
+            }
+          ],
+          "erreurs": [],
+          "recouvrementsHud": [],
+          "route": []
+        },
+        {
+          "bottom": "calc(30% + 10px)",
+          "fps": {
+            "id": "hud:h-fps:28",
+            "element": "hud:element-47",
+            "ancetres": [
+              "hud:element-4",
+              "hud:element-5",
+              "hud:element-6",
+              "hud:element-7"
+            ],
+            "compteur": null,
+            "x": 12,
+            "y": 345,
+            "width": 80.640625,
+            "height": 23
+          },
+          "classementFinY": 336,
+          "margeVerticaleClassementPx": 9,
+          "commandes": [
+            {
+              "role": "volant",
+              "ecartMinimalPx": 122.71811565493603,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-0",
+              "ecartMinimalPx": 57.917330031694036,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-1",
+              "ecartMinimalPx": 516.3528112416105,
+              "recouvrementsFPS": []
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "ecartMinimalPx": 180.74320404105976,
+              "recouvrementsFPS": []
+            },
+            {
+              "id": "glace-d",
+              "ecartMinimalPx": 656.2150492211368,
+              "recouvrementsFPS": []
+            }
+          ],
+          "hudProche": [
+            {
+              "id": "hud:LI:24",
+              "ecartMinimalPx": 9
+            },
+            {
+              "id": "hud:joueur:23",
+              "ecartMinimalPx": 27.5
+            },
+            {
+              "id": "hud:LI:22",
+              "ecartMinimalPx": 46
+            }
+          ],
+          "erreurs": [],
+          "recouvrementsHud": [],
+          "route": []
+        }
+      ]
+    },
+    {
+      "group": "gauche-0274",
+      "image": 0,
+      "source": "/workspace/scratch/d237669f7e4b/qa-0274/hud/14681241406/images/apres/cockpit-carte-gauche/rapport.json",
+      "rapportSha256": "bc22e46c85a59a3bb249f38d782947e4c0507e22f48eb8e9ee256b3ed689c993",
+      "sourceMode": "géométrie/DOM .74 reçus",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "volant": 0,
+      "trianglesReproduits": {
+        "volant": 742,
+        "gant-0": 2454,
+        "gant-1": 2454
+      },
+      "baselineCommandes": [
+        {
+          "role": "volant",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        },
+        {
+          "role": "gant-0",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        },
+        {
+          "role": "gant-1",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        }
+      ],
+      "fpsAvant": {
+        "id": "hud:h-fps:27",
+        "element": "hud:element-46",
+        "ancetres": [
+          "hud:element-4",
+          "hud:element-5",
+          "hud:element-6",
+          "hud:element-7"
+        ],
+        "compteur": null,
+        "x": 12,
+        "y": 505,
+        "width": 80.640625,
+        "height": 23
+      },
+      "essais": [
+        {
+          "bottom": "30%",
+          "fps": {
+            "id": "hud:h-fps:27",
+            "element": "hud:element-46",
+            "ancetres": [
+              "hud:element-4",
+              "hud:element-5",
+              "hud:element-6",
+              "hud:element-7"
+            ],
+            "compteur": null,
+            "x": 12,
+            "y": 355,
+            "width": 80.640625,
+            "height": 23
+          },
+          "classementFinY": 336,
+          "margeVerticaleClassementPx": 19,
+          "commandes": [
+            {
+              "role": "volant",
+              "ecartMinimalPx": 128.38564142938242,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-0",
+              "ecartMinimalPx": 75.25844532534195,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-1",
+              "ecartMinimalPx": 577.7500531952031,
+              "recouvrementsFPS": []
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "ecartMinimalPx": 196.53740644600887,
+              "recouvrementsFPS": []
+            },
+            {
+              "id": "glace-d",
+              "ecartMinimalPx": 694.0011165787597,
+              "recouvrementsFPS": []
+            }
+          ],
+          "hudProche": [
+            {
+              "id": "hud:etiquette:15",
+              "ecartMinimalPx": 266.890625
+            },
+            {
+              "id": "hud:carte:24",
+              "ecartMinimalPx": 271.86727045405934
+            },
+            {
+              "id": "hud:etiquette:13",
+              "ecartMinimalPx": 289.890625
+            }
+          ],
+          "erreurs": [],
+          "recouvrementsHud": [],
+          "route": []
+        },
+        {
+          "bottom": "calc(30% + 10px)",
+          "fps": {
+            "id": "hud:h-fps:27",
+            "element": "hud:element-46",
+            "ancetres": [
+              "hud:element-4",
+              "hud:element-5",
+              "hud:element-6",
+              "hud:element-7"
+            ],
+            "compteur": null,
+            "x": 12,
+            "y": 345,
+            "width": 80.640625,
+            "height": 23
+          },
+          "classementFinY": 336,
+          "margeVerticaleClassementPx": 9,
+          "commandes": [
+            {
+              "role": "volant",
+              "ecartMinimalPx": 132.12437936381468,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-0",
+              "ecartMinimalPx": 82.12955062028166,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-1",
+              "ecartMinimalPx": 578.9851149778799,
+              "recouvrementsFPS": []
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "ecartMinimalPx": 186.53740644600887,
+              "recouvrementsFPS": []
+            },
+            {
+              "id": "glace-d",
+              "ecartMinimalPx": 691.2255880484465,
+              "recouvrementsFPS": []
+            }
+          ],
+          "hudProche": [
+            {
+              "id": "hud:etiquette:15",
+              "ecartMinimalPx": 256.890625
+            },
+            {
+              "id": "hud:carte:24",
+              "ecartMinimalPx": 264.12047486732376
+            },
+            {
+              "id": "hud:etiquette:13",
+              "ecartMinimalPx": 279.890625
+            }
+          ],
+          "erreurs": [],
+          "recouvrementsHud": [],
+          "route": []
+        }
+      ]
+    },
+    {
+      "group": "gauche-0274",
+      "image": 1,
+      "source": "/workspace/scratch/d237669f7e4b/qa-0274/hud/14681241406/images/apres/cockpit-carte-gauche/rapport.json",
+      "rapportSha256": "bc22e46c85a59a3bb249f38d782947e4c0507e22f48eb8e9ee256b3ed689c993",
+      "sourceMode": "géométrie/DOM .74 reçus",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "volant": 0.65,
+      "trianglesReproduits": {
+        "volant": 758,
+        "gant-0": 2418,
+        "gant-1": 2546
+      },
+      "baselineCommandes": [
+        {
+          "role": "volant",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        },
+        {
+          "role": "gant-0",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        },
+        {
+          "role": "gant-1",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        }
+      ],
+      "fpsAvant": {
+        "id": "hud:h-fps:28",
+        "element": "hud:element-47",
+        "ancetres": [
+          "hud:element-4",
+          "hud:element-5",
+          "hud:element-6",
+          "hud:element-7"
+        ],
+        "compteur": null,
+        "x": 12,
+        "y": 505,
+        "width": 80.640625,
+        "height": 23
+      },
+      "essais": [
+        {
+          "bottom": "30%",
+          "fps": {
+            "id": "hud:h-fps:28",
+            "element": "hud:element-47",
+            "ancetres": [
+              "hud:element-4",
+              "hud:element-5",
+              "hud:element-6",
+              "hud:element-7"
+            ],
+            "compteur": null,
+            "x": 12,
+            "y": 355,
+            "width": 80.640625,
+            "height": 23
+          },
+          "classementFinY": 336,
+          "margeVerticaleClassementPx": 19,
+          "commandes": [
+            {
+              "role": "volant",
+              "ecartMinimalPx": 111.51145594110464,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-0",
+              "ecartMinimalPx": 96.79371391436425,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-1",
+              "ecartMinimalPx": 447.78536876018234,
+              "recouvrementsFPS": []
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "ecartMinimalPx": 190.57817786492996,
+              "recouvrementsFPS": []
+            },
+            {
+              "id": "glace-d",
+              "ecartMinimalPx": 650.5471734723798,
+              "recouvrementsFPS": []
+            }
+          ],
+          "hudProche": [
+            {
+              "id": "hud:etiquette:15",
+              "ecartMinimalPx": 266.890625
+            },
+            {
+              "id": "hud:carte:25",
+              "ecartMinimalPx": 271.86727045405934
+            },
+            {
+              "id": "hud:etiquette:13",
+              "ecartMinimalPx": 289.890625
+            }
+          ],
+          "erreurs": [],
+          "recouvrementsHud": [],
+          "route": []
+        },
+        {
+          "bottom": "calc(30% + 10px)",
+          "fps": {
+            "id": "hud:h-fps:28",
+            "element": "hud:element-47",
+            "ancetres": [
+              "hud:element-4",
+              "hud:element-5",
+              "hud:element-6",
+              "hud:element-7"
+            ],
+            "compteur": null,
+            "x": 12,
+            "y": 345,
+            "width": 80.640625,
+            "height": 23
+          },
+          "classementFinY": 336,
+          "margeVerticaleClassementPx": 9,
+          "commandes": [
+            {
+              "role": "volant",
+              "ecartMinimalPx": 115.33646808984606,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-0",
+              "ecartMinimalPx": 97.49610516929252,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-1",
+              "ecartMinimalPx": 452.1687375594178,
+              "recouvrementsFPS": []
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "ecartMinimalPx": 180.57817786492996,
+              "recouvrementsFPS": []
+            },
+            {
+              "id": "glace-d",
+              "ecartMinimalPx": 647.663631332019,
+              "recouvrementsFPS": []
+            }
+          ],
+          "hudProche": [
+            {
+              "id": "hud:etiquette:15",
+              "ecartMinimalPx": 256.890625
+            },
+            {
+              "id": "hud:carte:25",
+              "ecartMinimalPx": 264.12047486732376
+            },
+            {
+              "id": "hud:etiquette:13",
+              "ecartMinimalPx": 279.890625
+            }
+          ],
+          "erreurs": [],
+          "recouvrementsHud": [],
+          "route": []
+        }
+      ]
+    },
+    {
+      "group": "compact-0274",
+      "image": 0,
+      "source": "/workspace/scratch/d237669f7e4b/qa-0274/hud/14681695452/images/apres/cockpit-compact/rapport.json",
+      "rapportSha256": "26bea66cb7a9bad48ae3621076c24ffc93b5ea0d92d01f917555ce7579a6da6a",
+      "sourceMode": "géométrie/DOM .74 reçus",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "volant": 0,
+      "trianglesReproduits": {
+        "volant": 742,
+        "gant-0": 2454,
+        "gant-1": 2454
+      },
+      "baselineCommandes": [
+        {
+          "role": "volant",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        },
+        {
+          "role": "gant-0",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        },
+        {
+          "role": "gant-1",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        }
+      ],
+      "fpsAvant": {
+        "id": "hud:h-fps:25",
+        "element": "hud:element-42",
+        "ancetres": [
+          "hud:element-4",
+          "hud:element-5",
+          "hud:element-6",
+          "hud:element-7"
+        ],
+        "compteur": null,
+        "x": 12,
+        "y": 505,
+        "width": 80.640625,
+        "height": 23
+      },
+      "essais": [
+        {
+          "bottom": "30%",
+          "fps": {
+            "id": "hud:h-fps:25",
+            "element": "hud:element-42",
+            "ancetres": [
+              "hud:element-4",
+              "hud:element-5",
+              "hud:element-6",
+              "hud:element-7"
+            ],
+            "compteur": null,
+            "x": 12,
+            "y": 355,
+            "width": 80.640625,
+            "height": 23
+          },
+          "classementFinY": 336,
+          "margeVerticaleClassementPx": 19,
+          "commandes": [
+            {
+              "role": "volant",
+              "ecartMinimalPx": 128.38564142938242,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-0",
+              "ecartMinimalPx": 75.25844532534195,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-1",
+              "ecartMinimalPx": 577.7500531952031,
+              "recouvrementsFPS": []
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "ecartMinimalPx": 196.53740644600887,
+              "recouvrementsFPS": []
+            },
+            {
+              "id": "glace-d",
+              "ecartMinimalPx": 694.0011165787597,
+              "recouvrementsFPS": []
+            }
+          ],
+          "hudProche": [
+            {
+              "id": "hud:LI:23",
+              "ecartMinimalPx": 19
+            },
+            {
+              "id": "hud:joueur:22",
+              "ecartMinimalPx": 37.5
+            },
+            {
+              "id": "hud:LI:21",
+              "ecartMinimalPx": 56
+            }
+          ],
+          "erreurs": [],
+          "recouvrementsHud": [],
+          "route": []
+        },
+        {
+          "bottom": "calc(30% + 10px)",
+          "fps": {
+            "id": "hud:h-fps:25",
+            "element": "hud:element-42",
+            "ancetres": [
+              "hud:element-4",
+              "hud:element-5",
+              "hud:element-6",
+              "hud:element-7"
+            ],
+            "compteur": null,
+            "x": 12,
+            "y": 345,
+            "width": 80.640625,
+            "height": 23
+          },
+          "classementFinY": 336,
+          "margeVerticaleClassementPx": 9,
+          "commandes": [
+            {
+              "role": "volant",
+              "ecartMinimalPx": 132.12437936381468,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-0",
+              "ecartMinimalPx": 82.12955062028166,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-1",
+              "ecartMinimalPx": 578.9851149778799,
+              "recouvrementsFPS": []
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "ecartMinimalPx": 186.53740644600887,
+              "recouvrementsFPS": []
+            },
+            {
+              "id": "glace-d",
+              "ecartMinimalPx": 691.2255880484465,
+              "recouvrementsFPS": []
+            }
+          ],
+          "hudProche": [
+            {
+              "id": "hud:LI:23",
+              "ecartMinimalPx": 9
+            },
+            {
+              "id": "hud:joueur:22",
+              "ecartMinimalPx": 27.5
+            },
+            {
+              "id": "hud:LI:21",
+              "ecartMinimalPx": 46
+            }
+          ],
+          "erreurs": [],
+          "recouvrementsHud": [],
+          "route": []
+        }
+      ]
+    },
+    {
+      "group": "compact-0274",
+      "image": 1,
+      "source": "/workspace/scratch/d237669f7e4b/qa-0274/hud/14681695452/images/apres/cockpit-compact/rapport.json",
+      "rapportSha256": "26bea66cb7a9bad48ae3621076c24ffc93b5ea0d92d01f917555ce7579a6da6a",
+      "sourceMode": "géométrie/DOM .74 reçus",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "volant": 0.65,
+      "trianglesReproduits": {
+        "volant": 758,
+        "gant-0": 2418,
+        "gant-1": 2546
+      },
+      "baselineCommandes": [
+        {
+          "role": "volant",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        },
+        {
+          "role": "gant-0",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        },
+        {
+          "role": "gant-1",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        }
+      ],
+      "fpsAvant": {
+        "id": "hud:h-fps:26",
+        "element": "hud:element-43",
+        "ancetres": [
+          "hud:element-4",
+          "hud:element-5",
+          "hud:element-6",
+          "hud:element-7"
+        ],
+        "compteur": null,
+        "x": 12,
+        "y": 505,
+        "width": 80.640625,
+        "height": 23
+      },
+      "essais": [
+        {
+          "bottom": "30%",
+          "fps": {
+            "id": "hud:h-fps:26",
+            "element": "hud:element-43",
+            "ancetres": [
+              "hud:element-4",
+              "hud:element-5",
+              "hud:element-6",
+              "hud:element-7"
+            ],
+            "compteur": null,
+            "x": 12,
+            "y": 355,
+            "width": 80.640625,
+            "height": 23
+          },
+          "classementFinY": 336,
+          "margeVerticaleClassementPx": 19,
+          "commandes": [
+            {
+              "role": "volant",
+              "ecartMinimalPx": 111.51145594110464,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-0",
+              "ecartMinimalPx": 96.79371391436425,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-1",
+              "ecartMinimalPx": 447.78536876018234,
+              "recouvrementsFPS": []
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "ecartMinimalPx": 190.57817786492996,
+              "recouvrementsFPS": []
+            },
+            {
+              "id": "glace-d",
+              "ecartMinimalPx": 650.5471734723798,
+              "recouvrementsFPS": []
+            }
+          ],
+          "hudProche": [
+            {
+              "id": "hud:LI:24",
+              "ecartMinimalPx": 19
+            },
+            {
+              "id": "hud:joueur:23",
+              "ecartMinimalPx": 37.5
+            },
+            {
+              "id": "hud:LI:22",
+              "ecartMinimalPx": 56
+            }
+          ],
+          "erreurs": [],
+          "recouvrementsHud": [],
+          "route": []
+        },
+        {
+          "bottom": "calc(30% + 10px)",
+          "fps": {
+            "id": "hud:h-fps:26",
+            "element": "hud:element-43",
+            "ancetres": [
+              "hud:element-4",
+              "hud:element-5",
+              "hud:element-6",
+              "hud:element-7"
+            ],
+            "compteur": null,
+            "x": 12,
+            "y": 345,
+            "width": 80.640625,
+            "height": 23
+          },
+          "classementFinY": 336,
+          "margeVerticaleClassementPx": 9,
+          "commandes": [
+            {
+              "role": "volant",
+              "ecartMinimalPx": 115.33646808984606,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-0",
+              "ecartMinimalPx": 97.49610516929252,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-1",
+              "ecartMinimalPx": 452.1687375594178,
+              "recouvrementsFPS": []
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "ecartMinimalPx": 180.57817786492996,
+              "recouvrementsFPS": []
+            },
+            {
+              "id": "glace-d",
+              "ecartMinimalPx": 647.663631332019,
+              "recouvrementsFPS": []
+            }
+          ],
+          "hudProche": [
+            {
+              "id": "hud:LI:24",
+              "ecartMinimalPx": 9
+            },
+            {
+              "id": "hud:joueur:23",
+              "ecartMinimalPx": 27.5
+            },
+            {
+              "id": "hud:LI:22",
+              "ecartMinimalPx": 46
+            }
+          ],
+          "erreurs": [],
+          "recouvrementsHud": [],
+          "route": []
+        }
+      ]
+    },
+    {
+      "group": "gauche-stabilise-0273",
+      "image": 0,
+      "source": "/workspace/scratch/015b3cacea48/preuves-0273-hud/carte-gauche-stabilise/rapport.json",
+      "rapportSha256": "47f351ff0a19c631defa08f0930b7916e64e1f33375cde7b9de0d5e37ddb9463",
+      "sourceMode": "géométrie/DOM .73 avec correction classement/régime .74 prédite",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "volant": 0,
+      "trianglesReproduits": {
+        "volant": 742,
+        "gant-0": 2454,
+        "gant-1": 2454
+      },
+      "baselineCommandes": [
+        {
+          "role": "volant",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        },
+        {
+          "role": "gant-0",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        },
+        {
+          "role": "gant-1",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        }
+      ],
+      "fpsAvant": {
+        "id": "hud:h-fps:27",
+        "element": "hud:element-46",
+        "ancetres": [
+          "hud:element-4",
+          "hud:element-5",
+          "hud:element-6",
+          "hud:element-7"
+        ],
+        "compteur": null,
+        "x": 12,
+        "y": 505,
+        "width": 80.640625,
+        "height": 23
+      },
+      "essais": [
+        {
+          "bottom": "30%",
+          "fps": {
+            "id": "hud:h-fps:27",
+            "element": "hud:element-46",
+            "ancetres": [
+              "hud:element-4",
+              "hud:element-5",
+              "hud:element-6",
+              "hud:element-7"
+            ],
+            "compteur": null,
+            "x": 12,
+            "y": 355,
+            "width": 80.640625,
+            "height": 23
+          },
+          "classementFinY": 336,
+          "margeVerticaleClassementPx": 19,
+          "commandes": [
+            {
+              "role": "volant",
+              "ecartMinimalPx": 128.38564142938242,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-0",
+              "ecartMinimalPx": 75.25844532534195,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-1",
+              "ecartMinimalPx": 577.7500531952031,
+              "recouvrementsFPS": []
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "ecartMinimalPx": 196.53740644600887,
+              "recouvrementsFPS": []
+            },
+            {
+              "id": "glace-d",
+              "ecartMinimalPx": 694.0011165787597,
+              "recouvrementsFPS": []
+            }
+          ],
+          "hudProche": [
+            {
+              "id": "hud:etiquette:15",
+              "ecartMinimalPx": 266.890625
+            },
+            {
+              "id": "hud:carte:24",
+              "ecartMinimalPx": 271.86727045405934
+            },
+            {
+              "id": "hud:etiquette:13",
+              "ecartMinimalPx": 289.890625
+            }
+          ],
+          "erreurs": [],
+          "recouvrementsHud": [],
+          "route": []
+        },
+        {
+          "bottom": "calc(30% + 10px)",
+          "fps": {
+            "id": "hud:h-fps:27",
+            "element": "hud:element-46",
+            "ancetres": [
+              "hud:element-4",
+              "hud:element-5",
+              "hud:element-6",
+              "hud:element-7"
+            ],
+            "compteur": null,
+            "x": 12,
+            "y": 345,
+            "width": 80.640625,
+            "height": 23
+          },
+          "classementFinY": 336,
+          "margeVerticaleClassementPx": 9,
+          "commandes": [
+            {
+              "role": "volant",
+              "ecartMinimalPx": 132.12437936381468,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-0",
+              "ecartMinimalPx": 82.12955062028166,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-1",
+              "ecartMinimalPx": 578.9851149778799,
+              "recouvrementsFPS": []
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "ecartMinimalPx": 186.53740644600887,
+              "recouvrementsFPS": []
+            },
+            {
+              "id": "glace-d",
+              "ecartMinimalPx": 691.2255880484465,
+              "recouvrementsFPS": []
+            }
+          ],
+          "hudProche": [
+            {
+              "id": "hud:etiquette:15",
+              "ecartMinimalPx": 256.890625
+            },
+            {
+              "id": "hud:carte:24",
+              "ecartMinimalPx": 264.12047486732376
+            },
+            {
+              "id": "hud:etiquette:13",
+              "ecartMinimalPx": 279.890625
+            }
+          ],
+          "erreurs": [],
+          "recouvrementsHud": [],
+          "route": []
+        }
+      ]
+    },
+    {
+      "group": "gauche-stabilise-0273",
+      "image": 1,
+      "source": "/workspace/scratch/015b3cacea48/preuves-0273-hud/carte-gauche-stabilise/rapport.json",
+      "rapportSha256": "47f351ff0a19c631defa08f0930b7916e64e1f33375cde7b9de0d5e37ddb9463",
+      "sourceMode": "géométrie/DOM .73 avec correction classement/régime .74 prédite",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "volant": -0.35,
+      "trianglesReproduits": {
+        "volant": 766,
+        "gant-0": 2532,
+        "gant-1": 2417
+      },
+      "baselineCommandes": [
+        {
+          "role": "volant",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        },
+        {
+          "role": "gant-0",
+          "recouvrementPx2": 0,
+          "recouvrements": []
+        },
+        {
+          "role": "gant-1",
+          "recouvrementPx2": 2070.903272733907,
+          "recouvrements": [
+            {
+              "id": "hud:joueur:23",
+              "airePx2": 43.57500796345994
+            },
+            {
+              "id": "hud:LI:24",
+              "airePx2": 660.9866636849474
+            },
+            {
+              "id": "hud:h-regime:27",
+              "airePx2": 1366.3416010854999
+            }
+          ]
+        }
+      ],
+      "fpsAvant": {
+        "id": "hud:h-fps:28",
+        "element": "hud:element-47",
+        "ancetres": [
+          "hud:element-4",
+          "hud:element-5",
+          "hud:element-6",
+          "hud:element-7"
+        ],
+        "compteur": null,
+        "x": 12,
+        "y": 505,
+        "width": 80.640625,
+        "height": 23
+      },
+      "essais": [
+        {
+          "bottom": "30%",
+          "fps": {
+            "id": "hud:h-fps:28",
+            "element": "hud:element-47",
+            "ancetres": [
+              "hud:element-4",
+              "hud:element-5",
+              "hud:element-6",
+              "hud:element-7"
+            ],
+            "compteur": null,
+            "x": 12,
+            "y": 355,
+            "width": 80.640625,
+            "height": 23
+          },
+          "classementFinY": 336,
+          "margeVerticaleClassementPx": 19,
+          "commandes": [
+            {
+              "role": "volant",
+              "ecartMinimalPx": 157.27783721281943,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-0",
+              "ecartMinimalPx": 199.23673451713202,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-1",
+              "ecartMinimalPx": 530.1352739637894,
+              "recouvrementsFPS": []
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "ecartMinimalPx": 191.68673490950053,
+              "recouvrementsFPS": []
+            },
+            {
+              "id": "glace-d",
+              "ecartMinimalPx": 700.4762613550723,
+              "recouvrementsFPS": []
+            }
+          ],
+          "hudProche": [
+            {
+              "id": "hud:etiquette:15",
+              "ecartMinimalPx": 266.890625
+            },
+            {
+              "id": "hud:carte:25",
+              "ecartMinimalPx": 271.86727045405934
+            },
+            {
+              "id": "hud:etiquette:13",
+              "ecartMinimalPx": 289.890625
+            }
+          ],
+          "erreurs": [],
+          "recouvrementsHud": [],
+          "route": []
+        },
+        {
+          "bottom": "calc(30% + 10px)",
+          "fps": {
+            "id": "hud:h-fps:28",
+            "element": "hud:element-47",
+            "ancetres": [
+              "hud:element-4",
+              "hud:element-5",
+              "hud:element-6",
+              "hud:element-7"
+            ],
+            "compteur": null,
+            "x": 12,
+            "y": 345,
+            "width": 80.640625,
+            "height": 23
+          },
+          "classementFinY": 336,
+          "margeVerticaleClassementPx": 9,
+          "commandes": [
+            {
+              "role": "volant",
+              "ecartMinimalPx": 160.1738168191167,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-0",
+              "ecartMinimalPx": 206.6422673013943,
+              "recouvrementsFPS": []
+            },
+            {
+              "role": "gant-1",
+              "ecartMinimalPx": 530.3660466796782,
+              "recouvrementsFPS": []
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "ecartMinimalPx": 181.69273739771896,
+              "recouvrementsFPS": []
+            },
+            {
+              "id": "glace-d",
+              "ecartMinimalPx": 697.8075870713589,
+              "recouvrementsFPS": []
+            }
+          ],
+          "hudProche": [
+            {
+              "id": "hud:etiquette:15",
+              "ecartMinimalPx": 256.890625
+            },
+            {
+              "id": "hud:carte:25",
+              "ecartMinimalPx": 264.12047486732376
+            },
+            {
+              "id": "hud:etiquette:13",
+              "ecartMinimalPx": 279.890625
+            }
+          ],
+          "erreurs": [],
+          "recouvrementsHud": [],
+          "route": []
+        }
+      ]
+    }
+  ]
+}

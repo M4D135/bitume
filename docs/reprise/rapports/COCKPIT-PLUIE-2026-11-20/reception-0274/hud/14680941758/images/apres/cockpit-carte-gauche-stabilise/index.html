@@ -1,0 +1,50 @@
+<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>BITUME — contrôle visuel</title><style>
+  :root{color-scheme:dark light;font:15px system-ui;background:#14181d;color:#e8edf4}body{margin:24px auto;max-width:1600px;padding:0 16px}h1{font-size:26px}p{line-height:1.6}a{color:#a6d1ff}.grille{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}figure{margin:0;background:#202832;border-radius:10px;overflow:hidden}img{display:block;width:100%;height:auto}figcaption{padding:10px}figcaption span{display:block;color:#ffc579}code{overflow-wrap:anywhere}pre{white-space:pre-wrap;max-height:20em;overflow:auto;background:#202832;padding:16px} @media(prefers-color-scheme:light){:root{background:#f2f4f7;color:#18222b}figure,pre{background:white}a{color:#175998}figcaption span{color:#915500}}</style>
+  <h1>BITUME — piste · enrichi</h1><p>0 captures · 0 alertes à examiner · <a href="rapport.json">Rapport complet</a></p>
+  <p>Horloge de simulation commandée : ces images ne mesurent pas les performances. Une ombre, un mouvement rapide ou un éclair légitime peut déclencher une alerte. Cliquer une image pour l’examiner en taille réelle.</p>
+  <p>Version N/D · GPU N/D<br>Build : <code>761bccd8953eef06332dd5929c9826216c589dfdbede77324809d69201783db9</code></p>
+  
+  <pre>Error: Port DevTools introuvable : [2572:2635:1121/000010.225192:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are &quot;tcp&quot; and on UNIX &quot;unix&quot;)
+[2572:2635:1121/000010.542404:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are &quot;tcp&quot; and on UNIX &quot;unix&quot;)
+[2572:2635:1121/000011.425912:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are &quot;tcp&quot; and on UNIX &quot;unix&quot;)
+[2572:2639:1121/000012.547573:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are &quot;tcp&quot; and on UNIX &quot;unix&quot;)
+[2572:2639:1121/000012.547683:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are &quot;tcp&quot; and on UNIX &quot;unix&quot;)
+[2572:2639:1121/000012.547703:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are &quot;tcp&quot; and on UNIX &quot;unix&quot;)
+[2572:2635:1121/000014.572392:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are &quot;tcp&quot; and on UNIX &quot;unix&quot;)
+[2572:2635:1121/000017.381874:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are &quot;tcp&quot; and on UNIX &quot;unix&quot;)
+
+    at capturer (file:///home/runner/work/bitume/bitume/tools/controle-visuel.mjs:195:22)
+    at async campagneHabitacle (file:///home/runner/work/bitume/bitume/tools/captures-habitacle.mjs:360:22)
+    at async file:///home/runner/work/bitume/bitume/tools/captures-habitacle.mjs:377:19</pre><div class="grille"></div><details><summary>Paramètres et environnement</summary><pre>{
+  &quot;parametres&quot;: {
+    &quot;graine&quot;: 17017,
+    &quot;circuit&quot;: 0,
+    &quot;qualite&quot;: &quot;high&quot;,
+    &quot;mode&quot;: &quot;solo&quot;,
+    &quot;vue&quot;: &quot;cockpit&quot;,
+    &quot;vue2&quot;: &quot;cockpit&quot;,
+    &quot;meteo&quot;: &quot;sec&quot;,
+    &quot;moment&quot;: &quot;jour&quot;,
+    &quot;saison&quot;: &quot;ete&quot;,
+    &quot;partage&quot;: &quot;haut-bas&quot;,
+    &quot;retro&quot;: &quot;oui&quot;,
+    &quot;depart&quot;: 280,
+    &quot;vitesse&quot;: 35,
+    &quot;images&quot;: 2,
+    &quot;pas&quot;: 0.016666666666666666,
+    &quot;chauffe&quot;: 24,
+    &quot;taille&quot;: [
+      960,
+      540
+    ],
+    &quot;angle&quot;: &quot;swiftshader&quot;
+  },
+  &quot;environnement&quot;: {},
+  &quot;limites&quot;: [
+    &quot;Temps rAF commandé, aucune conclusion FPS/temps image réel à partir de cette séquence.&quot;,
+    &quot;Les alertes visuelles sont des candidats à examiner, pas des défauts prouvés.&quot;,
+    &quot;Le son, les manettes physiques et une partie WebRTC entre machines ne sont pas qualifiés.&quot;,
+    &quot;Les zones rectangulaires suivent les toiles visibles ; les éléments de HUD superposés peuvent masquer un défaut local.&quot;,
+    &quot;Deux images : aucun contrôle de variation fugitive sur trois images.&quot;
+  ]
+}</pre></details></html>

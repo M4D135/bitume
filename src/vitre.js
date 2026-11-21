@@ -48,6 +48,7 @@
     for (let i = 0; i < nombre; i++) p[i] = { vivant: false, fusion: false, x: 0, y: 0, age: 0, duree: 0,
       taille: 0, vitesse: 0, phase: 0, frequence: 0, glisse: 0, poids: 0, fondu: false, cos: 1, sin: 0,
       px: 0, py: 0, pa: 0, pp: 0, pr: 0, fonte: 0, traceAge: 0,
+      impactAge: 0, impactAvant: 0, impactDuree: 0, impactForce: 0, impactRayon: 0,
       traceX: new Float64Array(6), traceY: new Float64Array(6) };
     return p;
   }
@@ -73,9 +74,10 @@
       creditEau: 0, creditNeige: 0, largeur: canvas ? canvas.clientWidth || canvas.width || 1 : 1280,
       hauteur: canvas ? canvas.clientHeight || canvas.height || 1 : 720, dpr: 1, dprPalier: null, propre: true, libere: false,
       flux: { air: 0, vitesseAir: 0, expansion: 0, deriveX: 0, deriveY: 0, graviteX: 0, graviteY: 1, centreX: .5, centreY: .45 },
-      opacite: 1, stats: { backend: 'canvas2d', pret: !!contexte, gouttes: 0, neige: 0, dessins: 0, etapes: 0, largeur: 0, hauteur: 0, dpr: 1, pixels: 0, fraction: 0,
+      opacite: 1, impactsActifs: false, impactTampon: new Float32Array(4),
+      stats: { backend: 'canvas2d', pret: !!contexte, gouttes: 0, neige: 0, dessins: 0, etapes: 0, largeur: 0, hauteur: 0, dpr: 1, pixels: 0, fraction: 0,
         fusionsEau: 0, fusionsNeige: 0, fonte: 0, expulses: 0, seches: 0, surfaceExpulsee: 0,
-        depotsEau: 0, depotsEmbruns: 0, eauEvacuee: 0, paires: 0 } };
+        depotsEau: 0, depotsEmbruns: 0, impactsEmis: 0, eauEvacuee: 0, paires: 0 } };
     montrer(e, false); // toile neuve, vide
     return e;
   }
@@ -92,6 +94,7 @@
     for (let i = 0; i < e.gouttes.length; i++) e.gouttes[i].vivant = e.gouttes[i].fusion = false;
     for (let i = 0; i < e.neige.length; i++) e.neige[i].vivant = e.neige[i].fusion = false;
     e.stats.gouttes = e.stats.neige = 0; e.accumulateur = e.creditEau = e.creditNeige = 0;
+    e.impactsActifs = false; e.impactTampon.fill(0);
     e.dprPalier = null; // nouvelle séance : le prochain appel actif reprend la définition du palier courant
   }
   function liberer(e) {
@@ -117,7 +120,7 @@
     e.largeur = largeur; e.hauteur = hauteur; e.dpr = dpr;
     e.stats.largeur = w; e.stats.hauteur = h; e.stats.dpr = dpr; e.stats.pixels = w * h;
   }
-  function deposer(e, neige, limite, x, y, taille, echelle = 1) {
+  function deposer(e, neige, limite, x, y, taille, echelle = 1, impact = 0) {
     const liste = neige ? e.neige : e.gouttes;
     let p = null;
     for (let i = 0; i < limite; i++) if (!liste[i].vivant) { p = liste[i]; break; }
@@ -133,7 +136,23 @@
     p.frequence = .27 + hache(seed + 43) * .65; p.glisse = hache(seed + 47) > .68 ? 1 : .04;
     p.poids = 0; p.fondu = false; p.cos = Math.cos(p.phase); p.sin = Math.sin(p.phase);
     p.px = p.x; p.py = p.y; p.pa = 0; p.pp = 0; p.pr = p.taille; p.fonte = 0; p.traceAge = 0;
+    // L'arrivée se tasse en 180–280 ms, puis seule la perle transportée demeure.
+    // Horloge distincte : une fusion ou la fonte ne doit jamais rejouer une éclaboussure.
+    p.impactAge = p.impactAvant = 0; p.impactDuree = .18 + hache(seed + 53) * .10;
+    p.impactForce = neige ? 0 : impact * (.8 + .2 * hache(seed + 59));
+    // Même une perle fine éclate sur quelques pixels CSS avant de se rassembler.
+    // Le plafond reste local ; une grande goutte ne peut pas blanchir toute la vue.
+    p.impactRayon = Math.min(14, (p.taille + 2.5) * (.9 + .35 * Math.min(1, p.impactForce)));
+    if (p.impactForce > 0) e.stats.impactsEmis++;
     p.traceX.fill(p.x); p.traceY.fill(p.y); return true;
+  }
+  const impactsExposes = c => !c.abri && !(Number(c.neige) > 0) && (Number(c.pluie) > 0 || Number(c.embruns) > 0);
+  // Même enveloppe interpolée pour le Canvas et WebGL. Le tampon appartient à la vue.
+  function lireImpact(p, k, sortie, offset = 0, actif = true) {
+    const phase = p.impactDuree > 0 ? clamp(melange(p.impactAvant, p.impactAge, k) / p.impactDuree, 0, 1) : 1;
+    const force = actif && (p.vivant || p.fusion) ? p.impactForce * Math.min(1, phase / .16) * Math.pow(1 - phase, 1.4) * (p.vivant ? 1 : 1 - k) : 0;
+    sortie[offset] = phase; sortie[offset + 1] = force; sortie[offset + 2] = p.phase; sortie[offset + 3] = p.impactRayon;
+    return force;
   }
   // Six points d'une coulure réelle, gardés dans le pool. L'histoire suit le vent et les fusions ; elle ne
   // dépend pas du nombre d'images dessinées. Les gouttes immobiles ne se voient pas affublées d'un trait vertical.
@@ -195,7 +214,8 @@
       const gerbe = Math.floor(e.temps * 4) + e.graine * 739;
       const x = enSpray ? .12 + hache(gerbe * 37 + 91) * .76 + (hache(e.sequence * 43 + 7) - .5) * .075 : undefined;
       const y = enSpray ? .10 + hache(gerbe * 53 + 83) * .78 + (hache(e.sequence * 47 + 3) - .5) * .075 : undefined;
-      if (deposer(e, false, budget.gouttes, x, y, undefined, budget.echelleEau || 1)) {
+      const forceImpact = (.25 + .75 * Math.max(eau, spray)) * Math.min(1.35, intensite);
+      if (deposer(e, false, budget.gouttes, x, y, undefined, budget.echelleEau || 1, forceImpact)) {
         e.stats.depotsEau++; if (enSpray) e.stats.depotsEmbruns++;
       }
       e.creditEau--;
@@ -205,6 +225,8 @@
     for (let i = 0; i < e.gouttes.length; i++) {
       const p = e.gouttes[i]; p.fusion = false; if (!p.vivant) continue;
       p.px = p.x; p.py = p.y; p.pa = p.age; p.pp = p.poids; p.pr = p.taille;
+      p.impactAvant = p.impactAge; p.impactAge += PAS;
+      if (!eau && !spray) p.impactForce = 0;
       garderTrajet(p);
       // La vitesse déplace l'eau jusqu'au bord ; elle ne simule plus son évacuation en accélérant son âge.
       p.age += PAS * (eau > .05 || spray > .05 ? 1 : 1.55);
@@ -254,6 +276,7 @@
     const intensite = c.intensite == null || !Number.isFinite(Number(c.intensite)) ? 1 : clamp(Number(c.intensite), 0, 2);
     if (c.actif === false || c.retro || c.qualite === 'off' || !intensite) { effacer(e); return e.stats; }
     budget = budget || BUDGETS[c.qualite] || BUDGETS.high;
+    e.impactsActifs = impactsExposes(c);
     e.largeur = Math.max(1, Number(c.largeur) || e.largeur); e.hauteur = Math.max(1, Number(c.hauteur) || e.hauteur);
     const pluie = clamp(Number(c.pluie) || 0, 0, 1), neige = clamp(Number(c.neige) || 0, 0, 1);
     const vitesse = clamp(Math.abs(Number(c.vitesse) || 0), 0, 120);
@@ -272,10 +295,28 @@
     for (let i = 0; i < e.gouttes.length; i++) {
       const p = e.gouttes[i]; if (!p.vivant && !p.fusion) continue;
       const age = melange(p.pa, p.age, k), a = clamp(Math.min(1, age / .24, (p.duree - age) / 1.5) * melange(p.pp, p.poids, k) * e.opacite, 0, 1);
-      if (a <= .005) continue;
       const x = melange(p.px, p.x, k) * w, y = melange(p.py, p.y, k) * h;
       const r = Math.sqrt(melange(p.pr * p.pr, p.vivant ? p.taille * p.taille : 0, k));
       if (r < .05) continue;
+      const impact = e.impactTampon;
+      if (lireImpact(p, k, impact, 0, e.impactsActifs) > .005) {
+        const phase = impact[0], rayon = impact[3] * (.65 + 1.7 * phase), aplati = .60 + .25 * phase;
+        ctx.globalAlpha = Math.min(.95, impact[1] * e.opacite);
+        // Couronne brisée et trois micro-éclaboussures, locales et orientées par la graine
+        // de la goutte. Aucun aplat ni reprise d'une grille écran.
+        ctx.strokeStyle = 'rgba(17,44,59,0.50)'; ctx.lineWidth = Math.max(.8, rayon * .12);
+        ctx.beginPath(); ctx.ellipse(x, y, rayon, rayon * aplati, p.phase, .1, 5.4); ctx.stroke();
+        ctx.strokeStyle = 'rgba(219,242,252,0.75)'; ctx.lineWidth = Math.max(.65, rayon * .075);
+        ctx.beginPath(); ctx.ellipse(x - .35, y - .45, rayon, rayon * aplati, p.phase, 3.1, 5.8); ctx.stroke();
+        ctx.fillStyle = 'rgba(209,237,249,0.55)'; ctx.beginPath();
+        for (let j = 0; j < 3; j++) {
+          const angle = p.phase + j * TAU / 3 + .23 * Math.sin(p.phase + j), distance = rayon * (1.15 + phase * .45);
+          const petit = Math.max(.45, impact[3] * (.13 + .035 * j) * (1 - phase));
+          ctx.ellipse(x + Math.cos(angle) * distance, y + Math.sin(angle) * distance * aplati, petit, petit * .72, angle, 0, TAU);
+        }
+        ctx.fill();
+      }
+      if (a <= .005) continue;
       ctx.globalAlpha = a;
       const dx = x - p.traceX[5] * w, dy = y - p.traceY[5] * h;
       if (dx * dx + dy * dy > r * r) {
@@ -335,6 +376,7 @@
     const intensite = Number.isFinite(Number(c.intensite)) && c.intensite != null ? clamp(Number(c.intensite), 0, 2) : 1;
     if (!e.contexte || c.actif === false || c.retro === true || !intensite || budget === BUDGETS.off) { effacer(e); return e.stats; }
     if (c.pause === true) return e.stats;
+    e.impactsActifs = impactsExposes(c);
     calculerFlux(c, e.flux);
     e.opacite = Math.min(1.25, intensite) * (c.cockpit === false ? .55 : 1);
     suivrePalier(e, budget);
@@ -374,5 +416,5 @@
     ctx.globalAlpha = 1; e.propre = false; montrer(e, true);
     return true;
   }
-  B.vitre = { creer, creerSimulation, avancerSimulation, calculerFlux, mettreAJour, prechauffer, effacer, liberer, BUDGETS, MAX_PIXELS, FREQUENCE: 30 };
+  B.vitre = { creer, creerSimulation, avancerSimulation, calculerFlux, lireImpact, mettreAJour, prechauffer, effacer, liberer, BUDGETS, MAX_PIXELS, FREQUENCE: 30 };
 })(globalThis.BITUME = globalThis.BITUME || {});

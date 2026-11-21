@@ -1,0 +1,957 @@
+{
+  "format": "bitume-portee-reutilisation-preuves-v1",
+  "etabli_utc": "2026-11-20T23:57:57.489623+00:00",
+  "version_source": "0.2.73",
+  "commit_source": "f7f4ed54f9f79b2e8d560e6d0402f80949233641",
+  "version_cible": "0.2.74",
+  "cible": "1813c5440a9b8da34990f4e38c6c51a1d7bb1700 ; tree ae42fbb546af0c25dd1fb07bab27a8abf00fdd5a",
+  "sha256_style_css_candidat": "9990b5be65025d8da11f9f491125f771ca72e337bcbee575ce2a4d47806702d4",
+  "diff_source": "DIFF-CSS-0273-0274.patch",
+  "fichiers_src_modifies": [
+    "src/style.css"
+  ],
+  "sources_comparees": [
+    {
+      "fichier": "src/ambiance.js",
+      "sha256_0273": "4939c0c765a8cb074d92400df1cafb3737cebd61eeab1628df557f9bca3e08d2",
+      "sha256_candidat_0274": "4939c0c765a8cb074d92400df1cafb3737cebd61eeab1628df557f9bca3e08d2",
+      "identique": true
+    },
+    {
+      "fichier": "src/animaux.js",
+      "sha256_0273": "82655fa4498aa0136a2d57d532187f4fa9ede6c9490bfdcfe60c97559367929b",
+      "sha256_candidat_0274": "82655fa4498aa0136a2d57d532187f4fa9ede6c9490bfdcfe60c97559367929b",
+      "identique": true
+    },
+    {
+      "fichier": "src/aurores.js",
+      "sha256_0273": "c95ec52c29cba28da80f3df36ccb07c5831b55dd3c4e392f87a928b3366423fd",
+      "sha256_candidat_0274": "c95ec52c29cba28da80f3df36ccb07c5831b55dd3c4e392f87a928b3366423fd",
+      "identique": true
+    },
+    {
+      "fichier": "src/autoconfig.js",
+      "sha256_0273": "4df3dda4f0cd17947a528a77b2e5c1491299d6833f7f5abeaef528eda0353c1e",
+      "sha256_candidat_0274": "4df3dda4f0cd17947a528a77b2e5c1491299d6833f7f5abeaef528eda0353c1e",
+      "identique": true
+    },
+    {
+      "fichier": "src/baikal.js",
+      "sha256_0273": "0c691f2dbf5056897dd0341a7cb5593de8ea04e22803a232f153a06a3d05fdb6",
+      "sha256_candidat_0274": "0c691f2dbf5056897dd0341a7cb5593de8ea04e22803a232f153a06a3d05fdb6",
+      "identique": true
+    },
+    {
+      "fichier": "src/batiments.js",
+      "sha256_0273": "67fd03ce58096e60aee06f31160ec849bf950fb6d500c8731a62a1bb08938025",
+      "sha256_candidat_0274": "67fd03ce58096e60aee06f31160ec849bf950fb6d500c8731a62a1bb08938025",
+      "identique": true
+    },
+    {
+      "fichier": "src/bords.js",
+      "sha256_0273": "6f3a8f8c651fbd9d54cd1830bda81e5c848c7d40b515d09ecfdecfad9ba563c0",
+      "sha256_candidat_0274": "6f3a8f8c651fbd9d54cd1830bda81e5c848c7d40b515d09ecfdecfad9ba563c0",
+      "identique": true
+    },
+    {
+      "fichier": "src/botanique.js",
+      "sha256_0273": "7b7fdb36e771e0356bcff031a487c2acf0c87758668bb385d9d7addd6465fb11",
+      "sha256_candidat_0274": "7b7fdb36e771e0356bcff031a487c2acf0c87758668bb385d9d7addd6465fb11",
+      "identique": true
+    },
+    {
+      "fichier": "src/cadence.js",
+      "sha256_0273": "1bd23b22411d89688774ee473242e3febcc98eec796bc0484bd5198196b24b9e",
+      "sha256_candidat_0274": "1bd23b22411d89688774ee473242e3febcc98eec796bc0484bd5198196b24b9e",
+      "identique": true
+    },
+    {
+      "fichier": "src/carene.js",
+      "sha256_0273": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+      "sha256_candidat_0274": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+      "identique": true
+    },
+    {
+      "fichier": "src/chaussee.js",
+      "sha256_0273": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+      "sha256_candidat_0274": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+      "identique": true
+    },
+    {
+      "fichier": "src/cinema.js",
+      "sha256_0273": "ecd8cbcd6f32dbc048ef72e4e1fb7f57fd47688238432621b738c7d636086aa4",
+      "sha256_candidat_0274": "ecd8cbcd6f32dbc048ef72e4e1fb7f57fd47688238432621b738c7d636086aa4",
+      "identique": true
+    },
+    {
+      "fichier": "src/circuit.js",
+      "sha256_0273": "c78abe7215a25048a3e09b11989c332ed14c8844d3cd2eb7cd670d21aefc007c",
+      "sha256_candidat_0274": "c78abe7215a25048a3e09b11989c332ed14c8844d3cd2eb7cd670d21aefc007c",
+      "identique": true
+    },
+    {
+      "fichier": "src/cockpit-matieres.js",
+      "sha256_0273": "b88094a12d76c75b0213c82e1e5450373ca3fb5e210905d42937a794c08b1b1e",
+      "sha256_candidat_0274": "b88094a12d76c75b0213c82e1e5450373ca3fb5e210905d42937a794c08b1b1e",
+      "identique": true
+    },
+    {
+      "fichier": "src/conditions-course.js",
+      "sha256_0273": "a2130a0bd45320e6025dbb73022e0bd0bf2dd7354aaf6979473043d07366846c",
+      "sha256_candidat_0274": "a2130a0bd45320e6025dbb73022e0bd0bf2dd7354aaf6979473043d07366846c",
+      "identique": true
+    },
+    {
+      "fichier": "src/conduite.js",
+      "sha256_0273": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+      "sha256_candidat_0274": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+      "identique": true
+    },
+    {
+      "fichier": "src/contacts.js",
+      "sha256_0273": "d6e583db729c91df8de21621c05b3b24835e6dc996e9dd4df7cb0464b27e1b7a",
+      "sha256_candidat_0274": "d6e583db729c91df8de21621c05b3b24835e6dc996e9dd4df7cb0464b27e1b7a",
+      "identique": true
+    },
+    {
+      "fichier": "src/course.js",
+      "sha256_0273": "bec39581653d200ca03679c62195bb3bb4087eb666112685ef7687d2a8e247fb",
+      "sha256_candidat_0274": "bec39581653d200ca03679c62195bb3bb4087eb666112685ef7687d2a8e247fb",
+      "identique": true
+    },
+    {
+      "fichier": "src/couverts.js",
+      "sha256_0273": "338c7e518a0d8cb199db30736ed9fc267756b80b4c6b1b5db643b1b62c266d74",
+      "sha256_candidat_0274": "338c7e518a0d8cb199db30736ed9fc267756b80b4c6b1b5db643b1b62c266d74",
+      "identique": true
+    },
+    {
+      "fichier": "src/decor.js",
+      "sha256_0273": "1e7a0a690747280fc8fef9f7447a16fd57b968114a551b3cfe98e554a2e13198",
+      "sha256_candidat_0274": "1e7a0a690747280fc8fef9f7447a16fd57b968114a551b3cfe98e554a2e13198",
+      "identique": true
+    },
+    {
+      "fichier": "src/degats.js",
+      "sha256_0273": "8778908cee6410ad18bfc7bebfbccfe7b3d84c00bfd4c2c5eadc305ed7440247",
+      "sha256_candidat_0274": "8778908cee6410ad18bfc7bebfbccfe7b3d84c00bfd4c2c5eadc305ed7440247",
+      "identique": true
+    },
+    {
+      "fichier": "src/eau-carrosserie.js",
+      "sha256_0273": "f1edaf1a7c18992a6d70d0398c98c0739480389b318ae4a9b4443af01b9291fc",
+      "sha256_candidat_0274": "f1edaf1a7c18992a6d70d0398c98c0739480389b318ae4a9b4443af01b9291fc",
+      "identique": true
+    },
+    {
+      "fichier": "src/echappement.js",
+      "sha256_0273": "1a0017a4778570f3800566c243fc5efff3a93d5d9ce9107c0ddb364b6faf6777",
+      "sha256_candidat_0274": "1a0017a4778570f3800566c243fc5efff3a93d5d9ce9107c0ddb364b6faf6777",
+      "identique": true
+    },
+    {
+      "fichier": "src/ecologie.js",
+      "sha256_0273": "02e6ac06d118767e7020953dfe41542853892774ee649626f6110feb06d6d010",
+      "sha256_candidat_0274": "02e6ac06d118767e7020953dfe41542853892774ee649626f6110feb06d6d010",
+      "identique": true
+    },
+    {
+      "fichier": "src/effets-saison.js",
+      "sha256_0273": "5be7932579ec09b7ed068ab99ceb59a0d351e295c61683bf098563169c655f39",
+      "sha256_candidat_0274": "5be7932579ec09b7ed068ab99ceb59a0d351e295c61683bf098563169c655f39",
+      "identique": true
+    },
+    {
+      "fichier": "src/expressions-pilote.js",
+      "sha256_0273": "70cf191dd6d5379c70e01ae9f8500000b0ed54a1f0e24b2eed32994c8b7c16c7",
+      "sha256_candidat_0274": "70cf191dd6d5379c70e01ae9f8500000b0ed54a1f0e24b2eed32994c8b7c16c7",
+      "identique": true
+    },
+    {
+      "fichier": "src/faune.js",
+      "sha256_0273": "5d86d7c444480da4dc78942e017c2c9332e6a36bb098498790a95ad3cbd0df9d",
+      "sha256_candidat_0274": "5d86d7c444480da4dc78942e017c2c9332e6a36bb098498790a95ad3cbd0df9d",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/audio.js",
+      "sha256_0273": "af0a6173d3c1db12e16c9a570d8aad86788f1dfde06508077cbee402d046f2a0",
+      "sha256_candidat_0274": "af0a6173d3c1db12e16c9a570d8aad86788f1dfde06508077cbee402d046f2a0",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/backends.js",
+      "sha256_0273": "769e607b8349aa47bae32a8ef9f4747267119de49e7b057c874294049da9ccea",
+      "sha256_candidat_0274": "769e607b8349aa47bae32a8ef9f4747267119de49e7b057c874294049da9ccea",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/brain.js",
+      "sha256_0273": "598175891738fbdef6788d2d5e0eee89e279a472837a49e4966ca19e0de7bcf9",
+      "sha256_candidat_0274": "598175891738fbdef6788d2d5e0eee89e279a472837a49e4966ca19e0de7bcf9",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/crowd-webgpu.js",
+      "sha256_0273": "bc2719bdbef13f74789bde0caad5d24fea70f44ac52148085a27d448ada9e9f8",
+      "sha256_candidat_0274": "bc2719bdbef13f74789bde0caad5d24fea70f44ac52148085a27d448ada9e9f8",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/crowd.js",
+      "sha256_0273": "ee00aa7b358a71a1e8c93ab2779d0edc3d80828f4c4ad32d41900177221ceac9",
+      "sha256_candidat_0274": "ee00aa7b358a71a1e8c93ab2779d0edc3d80828f4c4ad32d41900177221ceac9",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/demo.js",
+      "sha256_0273": "1169679cfa96463222f6343a6f4f3feeadfc7b90cd65d8f1b7ece6e9e0600575",
+      "sha256_candidat_0274": "1169679cfa96463222f6343a6f4f3feeadfc7b90cd65d8f1b7ece6e9e0600575",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/destruction.js",
+      "sha256_0273": "c18d53831b23e55d798d02e698fd7eb670a28dd998de51a5bcd5195fe733eeea",
+      "sha256_candidat_0274": "c18d53831b23e55d798d02e698fd7eb670a28dd998de51a5bcd5195fe733eeea",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/effects.js",
+      "sha256_0273": "e873e7def347fb205594351fc9f0fd8e08fdb42ced36254ec68f071790bb3b42",
+      "sha256_candidat_0274": "e873e7def347fb205594351fc9f0fd8e08fdb42ced36254ec68f071790bb3b42",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/engine.js",
+      "sha256_0273": "2742e470aecbd0f0a890c403d72da633012498592bdd9563c9a967b40468f9a6",
+      "sha256_candidat_0274": "2742e470aecbd0f0a890c403d72da633012498592bdd9563c9a967b40468f9a6",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/fmath.js",
+      "sha256_0273": "bb001302bd2d57239c86183615c921563cf21f0490d67eef42586d1fc3457c9f",
+      "sha256_candidat_0274": "bb001302bd2d57239c86183615c921563cf21f0490d67eef42586d1fc3457c9f",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/gpu-profile.js",
+      "sha256_0273": "513e7cb0523a50f62edb427f2ed563ec98d9bc771a70f357fce8409157faa9c4",
+      "sha256_candidat_0274": "513e7cb0523a50f62edb427f2ed563ec98d9bc771a70f357fce8409157faa9c4",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/imuse.js",
+      "sha256_0273": "8aa71cb0cdc9a5d0d1a42dab965563bd810d26151745ceb1ad603ab1c0851e16",
+      "sha256_candidat_0274": "8aa71cb0cdc9a5d0d1a42dab965563bd810d26151745ceb1ad603ab1c0851e16",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/input.js",
+      "sha256_0273": "2a7bfcf27c4dede79708882a604fa3264d32615fe3cf513deae807c07e109e68",
+      "sha256_candidat_0274": "2a7bfcf27c4dede79708882a604fa3264d32615fe3cf513deae807c07e109e68",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/jobs.js",
+      "sha256_0273": "c027761f5d29d62ef542e444c95a17c551fececc1cbeb492668c2d35d7b13aa7",
+      "sha256_candidat_0274": "c027761f5d29d62ef542e444c95a17c551fececc1cbeb492668c2d35d7b13aa7",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/loop.js",
+      "sha256_0273": "f6777ad3141ed9b9dae6b860aded5aa625433c87f3068077a5204324a7c42e2f",
+      "sha256_candidat_0274": "f6777ad3141ed9b9dae6b860aded5aa625433c87f3068077a5204324a7c42e2f",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/materials.js",
+      "sha256_0273": "fd1789bd21ec43d4cd028d3ebffdb490e5bfe53d8b73fa0f7bdbd44ce7d2a954",
+      "sha256_candidat_0274": "fd1789bd21ec43d4cd028d3ebffdb490e5bfe53d8b73fa0f7bdbd44ce7d2a954",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/motion.js",
+      "sha256_0273": "3ea6ff872208b6c133a3f732d51d0706fc36a2d042725c7e6c59fba42ab4df4b",
+      "sha256_candidat_0274": "3ea6ff872208b6c133a3f732d51d0706fc36a2d042725c7e6c59fba42ab4df4b",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/music.js",
+      "sha256_0273": "e59d6d2ed84bb70bf108f54d8d1f8510a02533f36e1d0741ac1d144c8830ea20",
+      "sha256_candidat_0274": "e59d6d2ed84bb70bf108f54d8d1f8510a02533f36e1d0741ac1d144c8830ea20",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/navigation.js",
+      "sha256_0273": "addfdb9bb3a30cc7a8fe747ca919c72a99d8bc8f79a44162757d6ac8113d0cb6",
+      "sha256_candidat_0274": "addfdb9bb3a30cc7a8fe747ca919c72a99d8bc8f79a44162757d6ac8113d0cb6",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/passages.js",
+      "sha256_0273": "16fbe21b2dbd0bc0abf16a2e2c6346940f8703fc9513a9906ab1a38303dacdaa",
+      "sha256_candidat_0274": "16fbe21b2dbd0bc0abf16a2e2c6346940f8703fc9513a9906ab1a38303dacdaa",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/physics-geometry.js",
+      "sha256_0273": "fc73172463262947ced24017cc03ef73a00c113e2a850fab3460bd3c30fcd242",
+      "sha256_candidat_0274": "fc73172463262947ced24017cc03ef73a00c113e2a850fab3460bd3c30fcd242",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/physics.js",
+      "sha256_0273": "9a6e3dbd9115b13f6f5daf9d2843f6ffa219f0b2d4c53d2106ac9dec769f175a",
+      "sha256_candidat_0274": "9a6e3dbd9115b13f6f5daf9d2843f6ffa219f0b2d4c53d2106ac9dec769f175a",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/physx-runtime.js",
+      "sha256_0273": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+      "sha256_candidat_0274": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/physx.js",
+      "sha256_0273": "b273c4ddbf5bd6871ac55bec727274184cbc627a7e1d5a30ca3a95fd3b525638",
+      "sha256_candidat_0274": "b273c4ddbf5bd6871ac55bec727274184cbc627a7e1d5a30ca3a95fd3b525638",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/recipes.js",
+      "sha256_0273": "4f1d43f7209a1d398a966a4bb2ddd8f1b8b47bb40328d51257328b6dec8c71cc",
+      "sha256_candidat_0274": "4f1d43f7209a1d398a966a4bb2ddd8f1b8b47bb40328d51257328b6dec8c71cc",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/reflections.js",
+      "sha256_0273": "51467e58cfaabfe6d9f5c7a5ccdf73afd35e33159bddae4778dd5a0bdd43ffbf",
+      "sha256_candidat_0274": "51467e58cfaabfe6d9f5c7a5ccdf73afd35e33159bddae4778dd5a0bdd43ffbf",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/schedule.js",
+      "sha256_0273": "48a8b7cf0bba9a54ef6cff896110a654195b05606392c2d74ef3a3691edf9d12",
+      "sha256_candidat_0274": "48a8b7cf0bba9a54ef6cff896110a654195b05606392c2d74ef3a3691edf9d12",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/skies.js",
+      "sha256_0273": "bd4b38002c8c800a5f7551a73712c721909ed22ae145d15fbf7f853ff30eddea",
+      "sha256_candidat_0274": "bd4b38002c8c800a5f7551a73712c721909ed22ae145d15fbf7f853ff30eddea",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/surface.js",
+      "sha256_0273": "46915edee28daa0408ea1c18abd664babef76e2e6bce52c2990a431f90cee77e",
+      "sha256_candidat_0274": "46915edee28daa0408ea1c18abd664babef76e2e6bce52c2990a431f90cee77e",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/vehicle-dynamics.js",
+      "sha256_0273": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+      "sha256_candidat_0274": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/webgpu-renderer.js",
+      "sha256_0273": "d629b0453b99275420c12a067e53f9b224f366b961186d95e7d6aa732803f1dd",
+      "sha256_candidat_0274": "d629b0453b99275420c12a067e53f9b224f366b961186d95e7d6aa732803f1dd",
+      "identique": true
+    },
+    {
+      "fichier": "src/ferro/webgpu-shaders.js",
+      "sha256_0273": "e2bbd9acc7aa6b5eee46bf82efb6ce3fb920b6300a6d435ae7769b044d376cc7",
+      "sha256_candidat_0274": "e2bbd9acc7aa6b5eee46bf82efb6ce3fb920b6300a6d435ae7769b044d376cc7",
+      "identique": true
+    },
+    {
+      "fichier": "src/graphismes.js",
+      "sha256_0273": "b70c5922c70889eb3d9ca5f5d6e9a6620663f8cd2262697148e5b731d0aa7070",
+      "sha256_candidat_0274": "b70c5922c70889eb3d9ca5f5d6e9a6620663f8cd2262697148e5b731d0aa7070",
+      "identique": true
+    },
+    {
+      "fichier": "src/humain-corps.js",
+      "sha256_0273": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+      "sha256_candidat_0274": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+      "identique": true
+    },
+    {
+      "fichier": "src/humain-donnees.js",
+      "sha256_0273": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+      "sha256_candidat_0274": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+      "identique": true
+    },
+    {
+      "fichier": "src/index.html",
+      "sha256_0273": "fe91d66f8cdd1e7055651e948e768904f1c8a4a7088fc476fab10c4506420066",
+      "sha256_candidat_0274": "fe91d66f8cdd1e7055651e948e768904f1c8a4a7088fc476fab10c4506420066",
+      "identique": true
+    },
+    {
+      "fichier": "src/jeu.js",
+      "sha256_0273": "9aac6ce12713d46e24613846f440f893c5163d0a6b3b030a50c28613c4c99d48",
+      "sha256_candidat_0274": "9aac6ce12713d46e24613846f440f893c5163d0a6b3b030a50c28613c4c99d48",
+      "identique": true
+    },
+    {
+      "fichier": "src/main.js",
+      "sha256_0273": "a9d0e01bad528131a2a52a55dde6c1c4c28ac1f1c540819a102a95666627e7b6",
+      "sha256_candidat_0274": "a9d0e01bad528131a2a52a55dde6c1c4c28ac1f1c540819a102a95666627e7b6",
+      "identique": true
+    },
+    {
+      "fichier": "src/menu-arcade.js",
+      "sha256_0273": "abb085c28510e1c1a34bf1acb2e95abc164eeb08bdce7e767da10ec7de09a2c4",
+      "sha256_candidat_0274": "abb085c28510e1c1a34bf1acb2e95abc164eeb08bdce7e767da10ec7de09a2c4",
+      "identique": true
+    },
+    {
+      "fichier": "src/mesures.js",
+      "sha256_0273": "a583e1745b2967884982a4a74875603573a8cadab04b5bb9db20b15c0d5302d1",
+      "sha256_candidat_0274": "a583e1745b2967884982a4a74875603573a8cadab04b5bb9db20b15c0d5302d1",
+      "identique": true
+    },
+    {
+      "fichier": "src/meteo.js",
+      "sha256_0273": "3d15f7272939243a905f0b87e8c19d270e41694c6835c906e46c2f0644004ad8",
+      "sha256_candidat_0274": "3d15f7272939243a905f0b87e8c19d270e41694c6835c906e46c2f0644004ad8",
+      "identique": true
+    },
+    {
+      "fichier": "src/moteur/PROVENANCE.md",
+      "sha256_0273": "6012b1fed00c542ec7d528cfdb58d6ed0e6de056ec16568ea91f5a4cbc426e76",
+      "sha256_candidat_0274": "6012b1fed00c542ec7d528cfdb58d6ed0e6de056ec16568ea91f5a4cbc426e76",
+      "identique": true
+    },
+    {
+      "fichier": "src/moteur/renderer.js",
+      "sha256_0273": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+      "sha256_candidat_0274": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+      "identique": true
+    },
+    {
+      "fichier": "src/navigation-menu.js",
+      "sha256_0273": "2ed146ba961295b3d9ec39a099f74596cc6fab2470351bd75c4b7bd2b895c419",
+      "sha256_candidat_0274": "2ed146ba961295b3d9ec39a099f74596cc6fab2470351bd75c4b7bd2b895c419",
+      "identique": true
+    },
+    {
+      "fichier": "src/obstacles.js",
+      "sha256_0273": "02626c61720ba5aa6bc1f06ee103725efed1a0c52f243b3ba2443f6f6cbf914e",
+      "sha256_candidat_0274": "02626c61720ba5aa6bc1f06ee103725efed1a0c52f243b3ba2443f6f6cbf914e",
+      "identique": true
+    },
+    {
+      "fichier": "src/ombres.js",
+      "sha256_0273": "dcd0abb58a2d5f576a2ee96f36bceb6abc5f0c0671321fa22b97de6786bcc350",
+      "sha256_candidat_0274": "dcd0abb58a2d5f576a2ee96f36bceb6abc5f0c0671321fa22b97de6786bcc350",
+      "identique": true
+    },
+    {
+      "fichier": "src/physique.js",
+      "sha256_0273": "2dc2dede6b8f8e3a863a09c754bed30baf2cdf38af0dc6b71e9d839eb153a089",
+      "sha256_candidat_0274": "2dc2dede6b8f8e3a863a09c754bed30baf2cdf38af0dc6b71e9d839eb153a089",
+      "identique": true
+    },
+    {
+      "fichier": "src/pneus-reseau.js",
+      "sha256_0273": "7a4ec53a40049e3f868d8fbf7d32b6582edd949959c6b5dd6d2aecec2ea2a1c7",
+      "sha256_candidat_0274": "7a4ec53a40049e3f868d8fbf7d32b6582edd949959c6b5dd6d2aecec2ea2a1c7",
+      "identique": true
+    },
+    {
+      "fichier": "src/pneus.js",
+      "sha256_0273": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+      "sha256_candidat_0274": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+      "identique": true
+    },
+    {
+      "fichier": "src/public.js",
+      "sha256_0273": "766eb9ef0514bf2586c684c25dcf04208acb3ad234816378e2d5c1396b216224",
+      "sha256_candidat_0274": "766eb9ef0514bf2586c684c25dcf04208acb3ad234816378e2d5c1396b216224",
+      "identique": true
+    },
+    {
+      "fichier": "src/qualite.js",
+      "sha256_0273": "68c6852c8f86be8dbdd5f2d0f01b0f9dcd7e4f7df4806044f7a91bedf4dfc9df",
+      "sha256_candidat_0274": "68c6852c8f86be8dbdd5f2d0f01b0f9dcd7e4f7df4806044f7a91bedf4dfc9df",
+      "identique": true
+    },
+    {
+      "fichier": "src/realisateur.js",
+      "sha256_0273": "5ba65de26ca3e666dbc5655b49007d9e65fd18f02bb90f85b67c23bfd8c9fce0",
+      "sha256_candidat_0274": "5ba65de26ca3e666dbc5655b49007d9e65fd18f02bb90f85b67c23bfd8c9fce0",
+      "identique": true
+    },
+    {
+      "fichier": "src/reseau.js",
+      "sha256_0273": "4fd5451e05a9a906bde39059e5cb14a67d9e6fce15459ee320b2ed383fa95067",
+      "sha256_candidat_0274": "4fd5451e05a9a906bde39059e5cb14a67d9e6fce15459ee320b2ed383fa95067",
+      "identique": true
+    },
+    {
+      "fichier": "src/route-des-cimes-decor.js",
+      "sha256_0273": "ece6e0fd7547afd0b5aaf9ea2ba08f448221fc1e351f8083c59fcb3f1340b919",
+      "sha256_candidat_0274": "ece6e0fd7547afd0b5aaf9ea2ba08f448221fc1e351f8083c59fcb3f1340b919",
+      "identique": true
+    },
+    {
+      "fichier": "src/route-des-cimes.js",
+      "sha256_0273": "a83165c51644fde40545ea84d10748a56a2ddf4caed0b8372cf119ad7c4a4efa",
+      "sha256_candidat_0274": "a83165c51644fde40545ea84d10748a56a2ddf4caed0b8372cf119ad7c4a4efa",
+      "identique": true
+    },
+    {
+      "fichier": "src/saisons.js",
+      "sha256_0273": "428f502714e87543bc60c812ef35a1c7688e42d40a76a4fcd0ca9d51bdee70a9",
+      "sha256_candidat_0274": "428f502714e87543bc60c812ef35a1c7688e42d40a76a4fcd0ca9d51bdee70a9",
+      "identique": true
+    },
+    {
+      "fichier": "src/scene-bench.js",
+      "sha256_0273": "dffe4e6666d5aa4d8f696087b25ec91efa8730049f1176db87c2551cc729ea83",
+      "sha256_candidat_0274": "dffe4e6666d5aa4d8f696087b25ec91efa8730049f1176db87c2551cc729ea83",
+      "identique": true
+    },
+    {
+      "fichier": "src/sillage.js",
+      "sha256_0273": "4aaa82cd1f99d1e2d776cb32e1d4d7a2f82b36f11e340c3ec0f662fa270bb503",
+      "sha256_candidat_0274": "4aaa82cd1f99d1e2d776cb32e1d4d7a2f82b36f11e340c3ec0f662fa270bb503",
+      "identique": true
+    },
+    {
+      "fichier": "src/solides-physx.js",
+      "sha256_0273": "27475ef6f49c43431d02f7694fd46e42dd0cf89982d5479b6557a77910f2343b",
+      "sha256_candidat_0274": "27475ef6f49c43431d02f7694fd46e42dd0cf89982d5479b6557a77910f2343b",
+      "identique": true
+    },
+    {
+      "fichier": "src/son.js",
+      "sha256_0273": "17a0e9fe59462a1cbe8db94c923b5441621b87a3b11b81e7696492dd4a4e2971",
+      "sha256_candidat_0274": "17a0e9fe59462a1cbe8db94c923b5441621b87a3b11b81e7696492dd4a4e2971",
+      "identique": true
+    },
+    {
+      "fichier": "src/strategie-stands.js",
+      "sha256_0273": "c0b8326627e0225bf8197719472062b181038346eb3d1b3ca4b6ef320d0dee50",
+      "sha256_candidat_0274": "c0b8326627e0225bf8197719472062b181038346eb3d1b3ca4b6ef320d0dee50",
+      "identique": true
+    },
+    {
+      "fichier": "src/style.css",
+      "sha256_0273": "8d51ffe9a2a2a44c1629a10ea28921c448cb6ad2cfc5f0e4a93ea279d8b2150f",
+      "sha256_candidat_0274": "9990b5be65025d8da11f9f491125f771ca72e337bcbee575ce2a4d47806702d4",
+      "identique": false
+    },
+    {
+      "fichier": "src/traces.js",
+      "sha256_0273": "6067262906e93f72dc9342f7fceb13dbc9c48e6ae34f1c0778dc1df8fcf94eab",
+      "sha256_candidat_0274": "6067262906e93f72dc9342f7fceb13dbc9c48e6ae34f1c0778dc1df8fcf94eab",
+      "identique": true
+    },
+    {
+      "fichier": "src/usure-pneus.js",
+      "sha256_0273": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+      "sha256_candidat_0274": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+      "identique": true
+    },
+    {
+      "fichier": "src/vegetation.js",
+      "sha256_0273": "09ecfd4bf397d38939a2536191ba8f5c2f3acd238c7455e4b2bfae3c8fd8d642",
+      "sha256_candidat_0274": "09ecfd4bf397d38939a2536191ba8f5c2f3acd238c7455e4b2bfae3c8fd8d642",
+      "identique": true
+    },
+    {
+      "fichier": "src/vibrations.js",
+      "sha256_0273": "f6e7c8f6bced670040b837b971a02292e37a968e97ca6f2dd671cb4cb26df77e",
+      "sha256_candidat_0274": "f6e7c8f6bced670040b837b971a02292e37a968e97ca6f2dd671cb4cb26df77e",
+      "identique": true
+    },
+    {
+      "fichier": "src/virages.js",
+      "sha256_0273": "3dc70fac36c1ec4fd4ecbbb510d70800de13a7f80a54af7fd99ecb25156f55b1",
+      "sha256_candidat_0274": "3dc70fac36c1ec4fd4ecbbb510d70800de13a7f80a54af7fd99ecb25156f55b1",
+      "identique": true
+    },
+    {
+      "fichier": "src/visiere-optique.js",
+      "sha256_0273": "0e42ae8d18e900cda0336362e442d00c2c462e31f74876a31f4c55be5a27ac4d",
+      "sha256_candidat_0274": "0e42ae8d18e900cda0336362e442d00c2c462e31f74876a31f4c55be5a27ac4d",
+      "identique": true
+    },
+    {
+      "fichier": "src/vitre.js",
+      "sha256_0273": "9292ce3db76995360e50156990688ab9c1fcb6e1700321f9c27d30a29b20797b",
+      "sha256_candidat_0274": "9292ce3db76995360e50156990688ab9c1fcb6e1700321f9c27d30a29b20797b",
+      "identique": true
+    },
+    {
+      "fichier": "src/voiture.js",
+      "sha256_0273": "e7d86029411af2a745ac01303b3d3ddfe142194f487dc63de6afa369eb6ece03",
+      "sha256_candidat_0274": "e7d86029411af2a745ac01303b3d3ddfe142194f487dc63de6afa369eb6ece03",
+      "identique": true
+    }
+  ],
+  "regle_nouvelle": {
+    "conteneur": "affichage-course, porté par #hud ou #hud2",
+    "ratio_min": 1.2,
+    "ratio_max": 2,
+    "hauteur_min_px": 400,
+    "hauteur_max_px": 600,
+    "vue": "cockpit",
+    "tactile": false,
+    "modifications": [
+      "hud-rivaux.bottom = calc(30% + 42px)",
+      "hud-rivaux.gap = 0",
+      "classement.gap = 0",
+      "classement li.padding-block = 0",
+      "regime.width = min(100%,12cqh)",
+      "regime.justify-self = end"
+    ]
+  },
+  "methode_dimensions": "Dimensions de fenêtre et vues lues dans les rapports originaux. Conteneurs calculés depuis le CSS inchangé : #hud/#hud2 sont des size containers ; haut-bas emploie width=100%/.72, height=50%/.72, scale(.72). Le contenu retire deux marges clamp(12px,2.2vw,28px), avec safe-area desktop nul. Calcul théorique, pas nouvelle mesure navigateur ; arrondis sous-pixel sans incidence sur les exclusions de ratio.",
+  "scenarios": [
+    {
+      "scenario": "apres/carrosserie-pluie",
+      "rapport": "carrosserie/images/apres/carrosserie-pluie/rapport.json",
+      "images": 2,
+      "fenetre_px": [
+        960,
+        540
+      ],
+      "mode": "solo",
+      "partage": null,
+      "joueurs": [
+        {
+          "joueur": 1,
+          "vue": "helico",
+          "viewport_visible_px": [
+            960,
+            540
+          ],
+          "rapport_viewport": 1.7777777777777777,
+          "scale_hud": 1,
+          "conteneur_css_contenu_calcule_px": [
+            917.76,
+            497.76
+          ],
+          "rapport_conteneur_calcule": 1.84378,
+          "dans_nouveau_bloc_css": false,
+          "raisons_exclusion": [
+            "vue hors sélecteur [data-vue=\"cockpit\"]"
+          ]
+        }
+      ],
+      "nouvelle_capture_hud_requise_pour_ce_bloc": false
+    },
+    {
+      "scenario": "apres/carrosserie-sec",
+      "rapport": "carrosserie/images/apres/carrosserie-sec/rapport.json",
+      "images": 2,
+      "fenetre_px": [
+        960,
+        540
+      ],
+      "mode": "solo",
+      "partage": null,
+      "joueurs": [
+        {
+          "joueur": 1,
+          "vue": "helico",
+          "viewport_visible_px": [
+            960,
+            540
+          ],
+          "rapport_viewport": 1.7777777777777777,
+          "scale_hud": 1,
+          "conteneur_css_contenu_calcule_px": [
+            917.76,
+            497.76
+          ],
+          "rapport_conteneur_calcule": 1.84378,
+          "dans_nouveau_bloc_css": false,
+          "raisons_exclusion": [
+            "vue hors sélecteur [data-vue=\"cockpit\"]"
+          ]
+        }
+      ],
+      "nouvelle_capture_hud_requise_pour_ce_bloc": false
+    },
+    {
+      "scenario": "apres/pluie-impact-arceau",
+      "rapport": "impact/images/apres/pluie-impact-arceau/rapport.json",
+      "images": 5,
+      "fenetre_px": [
+        960,
+        540
+      ],
+      "mode": "solo",
+      "partage": null,
+      "joueurs": [
+        {
+          "joueur": 1,
+          "vue": "aileron",
+          "viewport_visible_px": [
+            960,
+            540
+          ],
+          "rapport_viewport": 1.7777777777777777,
+          "scale_hud": 1,
+          "conteneur_css_contenu_calcule_px": [
+            917.76,
+            497.76
+          ],
+          "rapport_conteneur_calcule": 1.84378,
+          "dans_nouveau_bloc_css": false,
+          "raisons_exclusion": [
+            "vue hors sélecteur [data-vue=\"cockpit\"]"
+          ]
+        }
+      ],
+      "nouvelle_capture_hud_requise_pour_ce_bloc": false
+    },
+    {
+      "scenario": "apres/pluie-arceau-sec",
+      "rapport": "forces-vues/images/apres/pluie-arceau-sec/rapport.json",
+      "images": 2,
+      "fenetre_px": [
+        960,
+        540
+      ],
+      "mode": "solo",
+      "partage": null,
+      "joueurs": [
+        {
+          "joueur": 1,
+          "vue": "aileron",
+          "viewport_visible_px": [
+            960,
+            540
+          ],
+          "rapport_viewport": 1.7777777777777777,
+          "scale_hud": 1,
+          "conteneur_css_contenu_calcule_px": [
+            917.76,
+            497.76
+          ],
+          "rapport_conteneur_calcule": 1.84378,
+          "dans_nouveau_bloc_css": false,
+          "raisons_exclusion": [
+            "vue hors sélecteur [data-vue=\"cockpit\"]"
+          ]
+        }
+      ],
+      "nouvelle_capture_hud_requise_pour_ce_bloc": false
+    },
+    {
+      "scenario": "apres/pluie-duo-cockpit-arceau",
+      "rapport": "forces-vues/images/apres/pluie-duo-cockpit-arceau/rapport.json",
+      "images": 2,
+      "fenetre_px": [
+        960,
+        540
+      ],
+      "mode": "duo",
+      "partage": "haut-bas",
+      "joueurs": [
+        {
+          "joueur": 1,
+          "vue": "cockpit",
+          "viewport_visible_px": [
+            960,
+            270.0
+          ],
+          "rapport_viewport": 3.5555555555555554,
+          "scale_hud": 0.72,
+          "conteneur_css_contenu_calcule_px": [
+            1291.093,
+            332.76
+          ],
+          "rapport_conteneur_calcule": 3.879954,
+          "dans_nouveau_bloc_css": false,
+          "raisons_exclusion": [
+            "rapport largeur/hauteur du conteneur supérieur à 2/1",
+            "hauteur du conteneur inférieure à 400 px"
+          ]
+        },
+        {
+          "joueur": 2,
+          "vue": "aileron",
+          "viewport_visible_px": [
+            960,
+            270.0
+          ],
+          "rapport_viewport": 3.5555555555555554,
+          "scale_hud": 0.72,
+          "conteneur_css_contenu_calcule_px": [
+            1291.093,
+            332.76
+          ],
+          "rapport_conteneur_calcule": 3.879954,
+          "dans_nouveau_bloc_css": false,
+          "raisons_exclusion": [
+            "vue hors sélecteur [data-vue=\"cockpit\"]",
+            "rapport largeur/hauteur du conteneur supérieur à 2/1",
+            "hauteur du conteneur inférieure à 400 px"
+          ]
+        }
+      ],
+      "nouvelle_capture_hud_requise_pour_ce_bloc": false
+    },
+    {
+      "scenario": "apres/pluie-forces-arceau",
+      "rapport": "forces-vues/images/apres/pluie-forces-arceau/rapport.json",
+      "images": 4,
+      "fenetre_px": [
+        960,
+        540
+      ],
+      "mode": "solo",
+      "partage": null,
+      "joueurs": [
+        {
+          "joueur": 1,
+          "vue": "aileron",
+          "viewport_visible_px": [
+            960,
+            540
+          ],
+          "rapport_viewport": 1.7777777777777777,
+          "scale_hud": 1,
+          "conteneur_css_contenu_calcule_px": [
+            917.76,
+            497.76
+          ],
+          "rapport_conteneur_calcule": 1.84378,
+          "dans_nouveau_bloc_css": false,
+          "raisons_exclusion": [
+            "vue hors sélecteur [data-vue=\"cockpit\"]"
+          ]
+        }
+      ],
+      "nouvelle_capture_hud_requise_pour_ce_bloc": false
+    },
+    {
+      "scenario": "duo-cockpit",
+      "rapport": "troll-cockpit/images/duo-cockpit/rapport.json",
+      "images": 13,
+      "fenetre_px": [
+        1280,
+        960
+      ],
+      "mode": "duo",
+      "partage": "haut-bas",
+      "joueurs": [
+        {
+          "joueur": 1,
+          "vue": "cockpit",
+          "viewport_visible_px": [
+            1280,
+            480.0
+          ],
+          "rapport_viewport": 2.6666666666666665,
+          "scale_hud": 0.72,
+          "conteneur_css_contenu_calcule_px": [
+            1721.778,
+            610.667
+          ],
+          "rapport_conteneur_calcule": 2.819505,
+          "dans_nouveau_bloc_css": false,
+          "raisons_exclusion": [
+            "rapport largeur/hauteur du conteneur supérieur à 2/1",
+            "hauteur du conteneur supérieure à 600 px"
+          ]
+        },
+        {
+          "joueur": 2,
+          "vue": "cockpit",
+          "viewport_visible_px": [
+            1280,
+            480.0
+          ],
+          "rapport_viewport": 2.6666666666666665,
+          "scale_hud": 0.72,
+          "conteneur_css_contenu_calcule_px": [
+            1721.778,
+            610.667
+          ],
+          "rapport_conteneur_calcule": 2.819505,
+          "dans_nouveau_bloc_css": false,
+          "raisons_exclusion": [
+            "rapport largeur/hauteur du conteneur supérieur à 2/1",
+            "hauteur du conteneur supérieure à 600 px"
+          ]
+        }
+      ],
+      "nouvelle_capture_hud_requise_pour_ce_bloc": false
+    },
+    {
+      "scenario": "duo-poursuite",
+      "rapport": "troll-poursuite/images/duo-poursuite/rapport.json",
+      "images": 13,
+      "fenetre_px": [
+        1280,
+        960
+      ],
+      "mode": "duo",
+      "partage": "haut-bas",
+      "joueurs": [
+        {
+          "joueur": 1,
+          "vue": "poursuite",
+          "viewport_visible_px": [
+            1280,
+            480.0
+          ],
+          "rapport_viewport": 2.6666666666666665,
+          "scale_hud": 0.72,
+          "conteneur_css_contenu_calcule_px": [
+            1721.778,
+            610.667
+          ],
+          "rapport_conteneur_calcule": 2.819505,
+          "dans_nouveau_bloc_css": false,
+          "raisons_exclusion": [
+            "vue hors sélecteur [data-vue=\"cockpit\"]",
+            "rapport largeur/hauteur du conteneur supérieur à 2/1",
+            "hauteur du conteneur supérieure à 600 px"
+          ]
+        },
+        {
+          "joueur": 2,
+          "vue": "poursuite",
+          "viewport_visible_px": [
+            1280,
+            480.0
+          ],
+          "rapport_viewport": 2.6666666666666665,
+          "scale_hud": 0.72,
+          "conteneur_css_contenu_calcule_px": [
+            1721.778,
+            610.667
+          ],
+          "rapport_conteneur_calcule": 2.819505,
+          "dans_nouveau_bloc_css": false,
+          "raisons_exclusion": [
+            "vue hors sélecteur [data-vue=\"cockpit\"]",
+            "rapport largeur/hauteur du conteneur supérieur à 2/1",
+            "hauteur du conteneur supérieure à 600 px"
+          ]
+        }
+      ],
+      "nouvelle_capture_hud_requise_pour_ce_bloc": false
+    }
+  ],
+  "nombre_png": 43,
+  "scenes_dans_bloc_css": 0,
+  "conclusion": "Aucune des 43 captures pluie/Troll ne correspond au nouveau bloc CSS. Les preuves fonctionnelles pluie/Troll restent des preuves de la 0.2.73 exacte et sont réutilisables pour les modules inchangés de la 0.2.74. Elles ne constituent pas une exécution ni une réception visuelle du nouvel HTML 0.2.74.",
+  "reception_hud_0274": "Des captures de la 0.2.74 avec annonce active doivent couvrir les vues cockpit non tactiles dont chaque conteneur correspond au bloc (ratio 6/5 à 2/1 et hauteur de contenu 400 à 600 px). Ces cas appartiennent au lot HUD, distinct des 43 captures présentes.",
+  "limites_reconduites": [
+    "Captures WebGL2 avec SwiftShader ; temps de rendu commandé, aucune qualification FPS matériel.",
+    "Positions fixées : aucun essai de conduite, de manette physique ou de réseau entre machines.",
+    "Troll : événements et sources WebAudio contrôlés, aucun son écouté humainement.",
+    "Troll : doigts et naturel complet non qualifiés quand le geste quitte le champ cockpit ou occupe trop peu de pixels en poursuite."
+  ]
+}

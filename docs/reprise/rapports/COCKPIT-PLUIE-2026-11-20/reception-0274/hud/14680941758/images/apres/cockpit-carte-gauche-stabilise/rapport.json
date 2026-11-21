@@ -1,0 +1,61 @@
+{
+  "format": "bitume-controle-visuel",
+  "formatVersion": 1,
+  "date": "2026-11-20T23:59:58.491Z",
+  "url": "file:///home/runner/work/bitume/bitume/dist/bitume.html",
+  "scenario": "piste",
+  "variante": "enrichi",
+  "parametres": {
+    "graine": 17017,
+    "circuit": 0,
+    "qualite": "high",
+    "mode": "solo",
+    "vue": "cockpit",
+    "vue2": "cockpit",
+    "meteo": "sec",
+    "moment": "jour",
+    "saison": "ete",
+    "partage": "haut-bas",
+    "retro": "oui",
+    "depart": 280,
+    "vitesse": 35,
+    "images": 2,
+    "pas": 0.016666666666666666,
+    "chauffe": 24,
+    "taille": [
+      960,
+      540
+    ],
+    "angle": "swiftshader"
+  },
+  "horloge": {
+    "mode": "raf-commande",
+    "departMs": 1000,
+    "pasMs": 16.666666666666668,
+    "performancesQualifiees": false
+  },
+  "source": {
+    "commit": "1813c5440a9b8da34990f4e38c6c51a1d7bb1700",
+    "modifications": [
+      "?? qualification/"
+    ]
+  },
+  "build": {
+    "sha256": "761bccd8953eef06332dd5929c9826216c589dfdbede77324809d69201783db9",
+    "octets": 14511004
+  },
+  "environnement": {},
+  "referenceJeu": null,
+  "images": [],
+  "alertes": [],
+  "erreurs": [],
+  "avertissements": [],
+  "limites": [
+    "Temps rAF commandé, aucune conclusion FPS/temps image réel à partir de cette séquence.",
+    "Les alertes visuelles sont des candidats à examiner, pas des défauts prouvés.",
+    "Le son, les manettes physiques et une partie WebRTC entre machines ne sont pas qualifiés.",
+    "Les zones rectangulaires suivent les toiles visibles ; les éléments de HUD superposés peuvent masquer un défaut local.",
+    "Deux images : aucun contrôle de variation fugitive sur trois images."
+  ],
+  "fatal": "Error: Port DevTools introuvable : [2572:2635:1121/000010.225192:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2572:2635:1121/000010.542404:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2572:2635:1121/000011.425912:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2572:2639:1121/000012.547573:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2572:2639:1121/000012.547683:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2572:2639:1121/000012.547703:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2572:2635:1121/000014.572392:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2572:2635:1121/000017.381874:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n\n    at capturer (file:///home/runner/work/bitume/bitume/tools/controle-visuel.mjs:195:22)\n    at async campagneHabitacle (file:///home/runner/work/bitume/bitume/tools/captures-habitacle.mjs:360:22)\n    at async file:///home/runner/work/bitume/bitume/tools/captures-habitacle.mjs:377:19"
+}

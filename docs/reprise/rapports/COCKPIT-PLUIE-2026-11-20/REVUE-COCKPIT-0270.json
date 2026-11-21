@@ -1,0 +1,1879 @@
+{
+  "schema": "bitume-revue-cockpit-v1",
+  "date_utc": "2026-11-20T21:38:36.513151+00:00",
+  "relecteur": "review_candidate",
+  "nature": "Revue visuelle des PNG réellement ouverts individuellement, lecture des rapports et contrôle des empreintes.",
+  "run": 44818836168,
+  "run_url": "https://github.com/M4D135/bitume/actions/runs/44818836168",
+  "commit_outils": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+  "tree": "5ca64577b6044672a61feda146c405e18e6294c6",
+  "html_candidat_sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+  "html_candidat_octets": 14502704,
+  "html_reference_sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+  "html_reference_octets": 14472625,
+  "commit_reference_produit": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
+  "statut": "bloque_HUD_et_couverture_Mac_incomplete",
+  "reception_des_artefacts_complete": true,
+  "qualification_complete": false,
+  "png_attendus": 14,
+  "png_recus_et_inspectes": 12,
+  "png_candidat": 10,
+  "png_reference": 2,
+  "jobs": [
+    {
+      "id": 136574107270,
+      "name": "cockpit (profil, cockpit-profil)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136574107754,
+      "name": "cockpit (paysage, cockpit-paysage)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136574107812,
+      "name": "cockpit (mac-reference, cockpit-mac)",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 136574107866,
+      "name": "cockpit (trois-quarts, cockpit-trois-quarts)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136574107870,
+      "name": "cockpit (duo-cote, cockpit-duo-cote)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136574108148,
+      "name": "cockpit (duo-haut-bas, cockpit-duo-haut-bas)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136574108188,
+      "name": "cockpit (vertical, cockpit-vertical)",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "blocages": [
+    {
+      "id": "HUD-glaces-paysage",
+      "scenario": "cockpit-paysage",
+      "images": [
+        "0000.png",
+        "0001.png"
+      ],
+      "constat": "Le classement recouvre la majeure partie du reflet gauche ; la mini-carte traverse le reflet droit. L’oracle géométrique original ignore ces superpositions."
+    },
+    {
+      "id": "HUD-route-duo-haut-bas",
+      "scenario": "cockpit-duo-haut-bas",
+      "images": [
+        "0001.png"
+      ],
+      "constat": "Les annonces opaques des deux joueurs couvrent la chaussée centrale à35/55m dans les pixels. L’oracle géométrique original indique zéro occultation car il ignore le HUD.",
+      "points_centraux_dans_bandeau": {
+        "J1": [
+          [
+            696.7006600629999,
+            123.83716750965803
+          ],
+          [
+            696.6674269426704,
+            118.35812645918428
+          ]
+        ],
+        "J2": [
+          [
+            743.2993399369693,
+            573.837167509658
+          ],
+          [
+            743.3325730572983,
+            568.3581264591843
+          ]
+        ]
+      },
+      "bandeaux_estimes_visuellement_px": {
+        "J1": [
+          627,
+          93,
+          813,
+          127
+        ],
+        "J2": [
+          622,
+          543,
+          818,
+          578
+        ]
+      }
+    },
+    {
+      "id": "Mac-apres-incomplet",
+      "scenario": "cockpit-mac",
+      "images_manquantes": [
+        "apres/0000.png",
+        "apres/0001.png"
+      ],
+      "constat": "Timeout externe de18minutes, exit124. Deux poses de référence complètes ; après commence puis dernière phase annoncée chauffe-14/24 de l’image0. Aucune erreur Runtime.evaluate ni erreur graphique démontrée.",
+      "log_workflow": [
+        "2026-11-20T21:16:40.2251192Z HEAD is now at 89aa132 Merge pull request #42: BITUME 0.2.69",
+        "2026-11-20T21:16:40.3907572Z \u001b[36;1mtimeout --signal=TERM --kill-after=30s 18m node tools/captures-habitacle.mjs \\\u001b[0m",
+        "2026-11-20T21:34:40.4480673Z ##[error]Process completed with exit code 124."
+      ]
+    }
+  ],
+  "reference_negative_confirmee": true,
+  "reserves": [
+    "Le bandeau paysage à288km/h occupe le centre de l’horizon ; la chaussée proche reste visible.",
+    "La publicité de passerelle visible dans le ciel de J2 côte à côte est un élément de décor identifié par projection, pas une corruption de copie démontrée.",
+    "Poses prescrites sous SwiftShader et temps rAF commandé : aucune qualification de conduite, de transitions temporelles complètes ou de performance matérielle.",
+    "L’identité HTML est établie par les empreintes de reconstruction et des rapports, ainsi que le SHA strict vérifié en CI pour la référence ; les ZIP n’incluent pas les HTML complets.",
+    "Le champ source.commit des rapports avant désigne les outils de qualification ; l’identité produit avant est le HTML .69 et son checkout89aa132, pas le runtime candidat."
+  ],
+  "artefacts": [
+    {
+      "id": 14671112305,
+      "nom": "bitume-cockpit-vertical-3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+      "scenario": "cockpit-vertical",
+      "variante": "apres",
+      "zip_sha256": "9e1d62b4bcf8c061006f853329d03f8f7cd992e68e2814fa89c0dc4e1f9f7c54",
+      "zip_octets": 798710,
+      "digest_github": "sha256:9e1d62b4bcf8c061006f853329d03f8f7cd992e68e2814fa89c0dc4e1f9f7c54",
+      "zip_sha_conforme": true,
+      "zip_CRC_verifie": true,
+      "commit_outils": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+      "tree": "5ca64577b6044672a61feda146c405e18e6294c6",
+      "html_manifest": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+      "source_rapport": {
+        "commit": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "build_capture": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "version_capture": "V0.2.70",
+      "verdict_visuel": "acceptable_dans_le_cadre",
+      "notes": [
+        "Deux PNG ouverts individuellement. Chaussée visible entre les glaces et au-dessus du tableau de bord aux deux poses.",
+        "Volant, gants, bras et deux reflets lisibles ; pas de cadre noir.",
+        "À 288 km/h, le bandeau de virage est dans le ciel, bien au-dessus de la chaussée ; ce format ne reproduit pas le masquage constaté à 960×540."
+      ],
+      "echecs_automatiques_du_rapport": 0,
+      "constats_lisibilite_automatiques": [],
+      "rapport_sha256": "cdb6b8cdf30a0776e66316921870f0d7243c05de48d2704390d40c8d58cef196",
+      "captures_log_sha256": "7b6b9590eb9cb4a87b58065864af07d5b6abdb2702f5103de8b288c89dde1835",
+      "tests_outil_13_sur_13": true,
+      "phases": [
+        {
+          "image": 0,
+          "chauffes_terminees": 24,
+          "fin": [
+            {
+              "image": 0,
+              "phase": "armer-observation",
+              "etat": "terminee"
+            },
+            {
+              "image": 0,
+              "phase": "frame-et-PNG",
+              "etat": "recus"
+            },
+            {
+              "image": 0,
+              "phase": "observation",
+              "etat": "terminee"
+            }
+          ]
+        },
+        {
+          "image": 1,
+          "chauffes_terminees": 24,
+          "fin": [
+            {
+              "image": 1,
+              "phase": "armer-observation",
+              "etat": "terminee"
+            },
+            {
+              "image": 1,
+              "phase": "frame-et-PNG",
+              "etat": "recus"
+            },
+            {
+              "image": 1,
+              "phase": "observation",
+              "etat": "terminee"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 14671736649,
+      "nom": "bitume-cockpit-paysage-3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+      "scenario": "cockpit-paysage",
+      "variante": "apres",
+      "zip_sha256": "1aa78b4b62cd47709fffa39883a68ad4276a0ee929e49868088d996cbb126b4f",
+      "zip_octets": 1307040,
+      "digest_github": "sha256:1aa78b4b62cd47709fffa39883a68ad4276a0ee929e49868088d996cbb126b4f",
+      "zip_sha_conforme": true,
+      "zip_CRC_verifie": true,
+      "commit_outils": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+      "tree": "5ca64577b6044672a61feda146c405e18e6294c6",
+      "html_manifest": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+      "source_rapport": {
+        "commit": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "build_capture": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "version_capture": "V0.2.70",
+      "verdict_visuel": "bloque_lisibilite_HUD",
+      "notes": [
+        "Deux PNG ouverts individuellement. Chaussée proche visible aux deux poses, commandes et gants lisibles ; pas de cadre noir.",
+        "Le classement HUD recouvre la majeure partie du reflet gauche aux deux poses ; la mini-carte traverse le reflet droit. Les contrôles de recouvrement géométrique ignorent ces éléments du HUD.",
+        "À 288 km/h le bandeau opaque de virage occupe le centre de l'horizon et touche la chaussée lointaine, tandis que la bande proche reste dégagée ; le masquage n'est pas aussi étendu que dans le témoin météo 960×540."
+      ],
+      "echecs_automatiques_du_rapport": 0,
+      "constats_lisibilite_automatiques": [],
+      "rapport_sha256": "4bf04acc936b49126c5745940acf6e5aa582104dc2f8983b1703c67231b8b047",
+      "captures_log_sha256": "f12fb90531180b29979e3aa290cd21f4835c43409586169024a92e6e1154328c",
+      "tests_outil_13_sur_13": true,
+      "phases": [
+        {
+          "image": 0,
+          "chauffes_terminees": 24,
+          "fin": [
+            {
+              "image": 0,
+              "phase": "armer-observation",
+              "etat": "terminee"
+            },
+            {
+              "image": 0,
+              "phase": "frame-et-PNG",
+              "etat": "recus"
+            },
+            {
+              "image": 0,
+              "phase": "observation",
+              "etat": "terminee"
+            }
+          ]
+        },
+        {
+          "image": 1,
+          "chauffes_terminees": 24,
+          "fin": [
+            {
+              "image": 1,
+              "phase": "armer-observation",
+              "etat": "terminee"
+            },
+            {
+              "image": 1,
+              "phase": "frame-et-PNG",
+              "etat": "recus"
+            },
+            {
+              "image": 1,
+              "phase": "observation",
+              "etat": "terminee"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 14671478234,
+      "nom": "bitume-cockpit-duo-cote-3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+      "scenario": "cockpit-duo-cote",
+      "variante": "apres",
+      "zip_sha256": "de62eba30f0231e34b713e1814c7192ffba815cf056254b87403eaf54fe4d7ee",
+      "zip_octets": 1911980,
+      "digest_github": "sha256:de62eba30f0231e34b713e1814c7192ffba815cf056254b87403eaf54fe4d7ee",
+      "zip_sha_conforme": true,
+      "zip_CRC_verifie": true,
+      "commit_outils": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+      "tree": "5ca64577b6044672a61feda146c405e18e6294c6",
+      "html_manifest": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+      "source_rapport": {
+        "commit": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "build_capture": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "version_capture": "V0.2.70",
+      "verdict_visuel": "acceptable_avec_decor_identifie",
+      "notes": [
+        "Deux PNG ouverts individuellement. Chaussées proches visibles, quatre glaces sans superposition HUD, volants et gants lisibles.",
+        "Les deux joueurs sont distincts : positions8/9, carrosseries rouge/blanche, manches claires/bleues, braquages opposés et annonces60/140m.",
+        "Le ruban violet bordé de vert/gris dans le ciel de J2 est la publicité d'une passerelle native, identifiée par le diagnostic géométrique qa/diagnostic-ruban-j2.json lu : panneau30×1,6m à y8,2m, projection y58,320–115,724 correspondant au PNG neutre. Aucune corruption ni régression de copie J2 démontrée ; composition chargée conservée en réserve.",
+        "Pas de cadre noir global ; le décor surplombant ne masque pas la chaussée ni les commandes."
+      ],
+      "echecs_automatiques_du_rapport": 0,
+      "constats_lisibilite_automatiques": [],
+      "rapport_sha256": "dfc2cba1171558ee612602ed16c20cbdf89a330fef72e403771285baf215af0e",
+      "captures_log_sha256": "bd9f9aab8b3fb3ecb3043d6e69b13b6bd4d7bc385d96c47e4b65476b0938bbea",
+      "tests_outil_13_sur_13": true,
+      "phases": [
+        {
+          "image": 0,
+          "chauffes_terminees": 24,
+          "fin": [
+            {
+              "image": 0,
+              "phase": "armer-observation",
+              "etat": "terminee"
+            },
+            {
+              "image": 0,
+              "phase": "frame-et-PNG",
+              "etat": "recus"
+            },
+            {
+              "image": 0,
+              "phase": "observation",
+              "etat": "terminee"
+            }
+          ]
+        },
+        {
+          "image": 1,
+          "chauffes_terminees": 24,
+          "fin": [
+            {
+              "image": 1,
+              "phase": "armer-observation",
+              "etat": "terminee"
+            },
+            {
+              "image": 1,
+              "phase": "frame-et-PNG",
+              "etat": "recus"
+            },
+            {
+              "image": 1,
+              "phase": "observation",
+              "etat": "terminee"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 14670902168,
+      "nom": "bitume-cockpit-profil-3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+      "scenario": "cockpit-profil",
+      "variante": "apres",
+      "zip_sha256": "b946299e033ce92817e011a3c9eb65ec6e3286940ce6fffca36deeed53654a7a",
+      "zip_octets": 550317,
+      "digest_github": "sha256:b946299e033ce92817e011a3c9eb65ec6e3286940ce6fffca36deeed53654a7a",
+      "zip_sha_conforme": true,
+      "zip_CRC_verifie": true,
+      "commit_outils": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+      "tree": "5ca64577b6044672a61feda146c405e18e6294c6",
+      "html_manifest": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+      "source_rapport": {
+        "commit": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "build_capture": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "version_capture": "V0.2.70",
+      "verdict_visuel": "acceptable_inspection_exterieure",
+      "notes": [
+        "PNG de profil ouvert individuellement. Casque sous l'arceau, assise basse, bras et mains rejoignant le volant ; aucune intersection ou disparition grossière visible.",
+        "Caméra d'inspection rapprochée : carrosserie et roues partiellement hors cadre par composition. Pas de cadre noir. Cette image ne démontre pas à elle seule tous les dégagements géométriques."
+      ],
+      "echecs_automatiques_du_rapport": 0,
+      "constats_lisibilite_automatiques": [],
+      "rapport_sha256": "bb2ebc0a0ce740ed62ba687871106c69912c3b4506c22e96d78e498d74cb4dd6",
+      "captures_log_sha256": "e2634287bcf1bd5af8cbe868061ae5405f6475ea0f2cb4cc6b0c755f37d0bff2",
+      "tests_outil_13_sur_13": true,
+      "phases": [
+        {
+          "image": 0,
+          "chauffes_terminees": 0,
+          "fin": [
+            {
+              "image": 0,
+              "phase": "observation",
+              "etat": "terminee"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 14671727989,
+      "nom": "bitume-cockpit-trois-quarts-3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+      "scenario": "cockpit-trois-quarts",
+      "variante": "apres",
+      "zip_sha256": "c91a8d9e9a18dd0e34138fa7c13f8811146c6646cfc81ecd0b3164619dae8d1e",
+      "zip_octets": 587815,
+      "digest_github": "sha256:c91a8d9e9a18dd0e34138fa7c13f8811146c6646cfc81ecd0b3164619dae8d1e",
+      "zip_sha_conforme": true,
+      "zip_CRC_verifie": true,
+      "commit_outils": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+      "tree": "5ca64577b6044672a61feda146c405e18e6294c6",
+      "html_manifest": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+      "source_rapport": {
+        "commit": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "build_capture": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "version_capture": "V0.2.70",
+      "verdict_visuel": "acceptable_inspection_exterieure",
+      "notes": [
+        "PNG de trois-quarts ouvert individuellement. Torse et bras en place dans le cockpit, mains au volant, console et instruments visibles ; silhouette sous l'arceau cohérente.",
+        "HUD d'annonce posé sur le haut de la scène d'inspection, mais gestes et commandes restent visibles. Caméra rapprochée et roues partiellement hors cadre ; pas de cadre noir."
+      ],
+      "echecs_automatiques_du_rapport": 0,
+      "constats_lisibilite_automatiques": [],
+      "rapport_sha256": "521cce8efea89a5c7f5303671d2a8af64ddb5d5dfd05b93b1fefdf16a1e0e50f",
+      "captures_log_sha256": "ca399517481f2149907162f50e0a6aa0d9d85c19cd8d1c490b690f2ac0cd9d81",
+      "tests_outil_13_sur_13": true,
+      "phases": [
+        {
+          "image": 0,
+          "chauffes_terminees": 0,
+          "fin": [
+            {
+              "image": 0,
+              "phase": "observation",
+              "etat": "terminee"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 14671817756,
+      "nom": "bitume-cockpit-duo-haut-bas-3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+      "scenario": "cockpit-duo-haut-bas",
+      "variante": "apres",
+      "zip_sha256": "f6e1f7817d301f8933b604b3166e1ae7b4b1beac1300bbdad4927d3b22d36ca4",
+      "zip_octets": 1902048,
+      "digest_github": "sha256:f6e1f7817d301f8933b604b3166e1ae7b4b1beac1300bbdad4927d3b22d36ca4",
+      "zip_sha_conforme": true,
+      "zip_CRC_verifie": true,
+      "commit_outils": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+      "tree": "5ca64577b6044672a61feda146c405e18e6294c6",
+      "html_manifest": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+      "source_rapport": {
+        "commit": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "build_capture": {
+        "sha256": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+        "octets": 14502704
+      },
+      "version_capture": "V0.2.70",
+      "verdict_visuel": "bloque_route_HUD",
+      "notes": [
+        "Deux PNG ouverts individuellement. Les quatre glaces sont lisibles, les commandes et les sujets distincts ; pas de cadre noir hors séparateur de2px attendu.",
+        "Au neutre la chaussée est dégagée. En braquage à288km/h, chaque annonce opaque recouvre la partie centrale de la chaussée lointaine.",
+        "Correspondance avec les points du rapport à35/55m : J1(696,701;123,837)/(696,667;118,358), dans le bandeau observé environ x627–813,y93–127 ; J2(743,299;573,837)/(743,333;568,358), dans le bandeau environ x622–818,y543–578. L'oracle géométrique original indique pourtant zéro occultation, car il ignore le HUD."
+      ],
+      "echecs_automatiques_du_rapport": 0,
+      "constats_lisibilite_automatiques": [],
+      "rapport_sha256": "3bb28f95842cf4dfc68066ca37778f2a914d0698b089f30a8788bf2f2943636f",
+      "captures_log_sha256": "cb9f22a38326fbf89e8478c87cad7e296aaeca8ec62fced8453b4e86ba8f9672",
+      "tests_outil_13_sur_13": true,
+      "phases": [
+        {
+          "image": 0,
+          "chauffes_terminees": 24,
+          "fin": [
+            {
+              "image": 0,
+              "phase": "armer-observation",
+              "etat": "terminee"
+            },
+            {
+              "image": 0,
+              "phase": "frame-et-PNG",
+              "etat": "recus"
+            },
+            {
+              "image": 0,
+              "phase": "observation",
+              "etat": "terminee"
+            }
+          ]
+        },
+        {
+          "image": 1,
+          "chauffes_terminees": 24,
+          "fin": [
+            {
+              "image": 1,
+              "phase": "armer-observation",
+              "etat": "terminee"
+            },
+            {
+              "image": 1,
+              "phase": "frame-et-PNG",
+              "etat": "recus"
+            },
+            {
+              "image": 1,
+              "phase": "observation",
+              "etat": "terminee"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 14672640726,
+      "nom": "bitume-cockpit-mac-reference-3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+      "scenario": "cockpit-mac",
+      "variante": "avant",
+      "zip_sha256": "12322753f3cc7b281783d4ab9e730510d7b50bd64fad8b5093a1f899e20fd021",
+      "zip_octets": 1697221,
+      "digest_github": "sha256:12322753f3cc7b281783d4ab9e730510d7b50bd64fad8b5093a1f899e20fd021",
+      "zip_sha_conforme": true,
+      "zip_CRC_verifie": true,
+      "commit_outils": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+      "tree": "5ca64577b6044672a61feda146c405e18e6294c6",
+      "html_manifest": "b0f1b5d905f02fd3e5fe142e7580a6ad6b564273c5cb57993e5a650fed2ad344",
+      "source_rapport": {
+        "commit": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
+        "modifications": [
+          "?? qualification/"
+        ]
+      },
+      "build_capture": {
+        "sha256": "bd1e5c2eeb45638dac825c9c49f5ae52f6136cbb1785f4bca76adce771d86a10",
+        "octets": 14472625
+      },
+      "version_capture": "V0.2.69",
+      "verdict_visuel": "reference_negative_confirmee_apres_absent",
+      "notes": [
+        "Deux PNG avant V0.2.69 ouverts individuellement. Volant trop haut et massif sur la ligne de visée, route centrale masquée aux deux poses ; glaces basses superposées au volant et aux gants, reflétant la voiture.",
+        "Les critères de référence sont effectivement négatifs : route20/20 occultée, centre4/4, glaces≈20–21,6% de largeur et recouvrement massif, avec GL0 et noir0.",
+        "Aucun PNG après Mac : arrêt externe à18minutes, exit124. Les deux poses avant sont complètes ; après a démarré, dernière phase annoncée chauffe-14/24 de l'image0. Aucun nouveau timeout Runtime.evaluate ni erreur graphique démontré par ce log."
+      ],
+      "echecs_automatiques_du_rapport": 0,
+      "constats_lisibilite_automatiques": [
+        "Glace trop large : glace-g",
+        "Glace superposée au volant/gant : glace-g",
+        "Glace trop large : glace-d",
+        "Glace superposée au volant/gant : glace-d",
+        "Chaussée utile occultée par le cockpit",
+        "Glace trop large : glace-g",
+        "Glace superposée au volant/gant : glace-g",
+        "Glace trop large : glace-d",
+        "Glace superposée au volant/gant : glace-d",
+        "Chaussée utile occultée par le cockpit"
+      ],
+      "rapport_sha256": "c8ea71cd5478ed95204b1c7e69f048a2b94649e00cd16b67bd984a7b08a78796",
+      "captures_log_sha256": "bf2d270f986df6571d3a30126be0c2c594163db481bacff9503d8cf14d50e657",
+      "tests_outil_13_sur_13": true,
+      "phases": [
+        {
+          "image": 0,
+          "chauffes_terminees": 24,
+          "fin": [
+            {
+              "image": 0,
+              "phase": "armer-observation",
+              "etat": "terminee"
+            },
+            {
+              "image": 0,
+              "phase": "frame-et-PNG",
+              "etat": "recus"
+            },
+            {
+              "image": 0,
+              "phase": "observation",
+              "etat": "terminee"
+            }
+          ]
+        },
+        {
+          "image": 1,
+          "chauffes_terminees": 24,
+          "fin": [
+            {
+              "image": 1,
+              "phase": "armer-observation",
+              "etat": "terminee"
+            },
+            {
+              "image": 1,
+              "phase": "frame-et-PNG",
+              "etat": "recus"
+            },
+            {
+              "image": 1,
+              "phase": "observation",
+              "etat": "terminee"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "images_inspectees": [
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671112305/images/apres/cockpit-vertical/0000.png",
+      "ouvert_individuellement": true,
+      "sha256": "e2bd7526ced0a77908f5f23854365300d2dd80cd82ea83f4238553c254de0634",
+      "sha256_rapport": "e2bd7526ced0a77908f5f23854365300d2dd80cd82ea83f4238553c254de0634",
+      "empreinte_conforme": true,
+      "scenario": "cockpit-vertical",
+      "variante": "apres",
+      "instant": "neutre",
+      "glErreur": 0,
+      "glPerdu": false,
+      "obstructionStatique": false,
+      "noir": {
+        "scene": 0,
+        "glace-g": 0,
+        "glace-d": 0
+      },
+      "lisibilite": [
+        {
+          "joueur": 1,
+          "sujet": 0,
+          "vitesse": 0,
+          "volant": 0,
+          "erreurs": [],
+          "route": {
+            "cadree": 1,
+            "occultee": 0,
+            "centreOcculte": 0
+          },
+          "centres_route": [
+            {
+              "distance": 12,
+              "ecran": [
+                269.9999999999877,
+                425.7423400034127,
+                11.978898699310493
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 20,
+              "ecran": [
+                269.99999999998676,
+                412.850645273183,
+                19.8338287260062
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 35,
+              "ecran": [
+                269.99999999998806,
+                404.472815310689,
+                34.56182252606061
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 55,
+              "ecran": [
+                269.9999999999879,
+                400.3850648090241,
+                54.19914759279977
+              ],
+              "occultee": false
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.16672399086424494,
+              "erreurDomPx": 0.020573748968136227,
+              "recouvrementPx2": 0
+            },
+            {
+              "id": "glace-d",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.16669880890532973,
+              "erreurDomPx": 0.020409024745371356,
+              "recouvrementPx2": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671112305/images/apres/cockpit-vertical/0001.png",
+      "ouvert_individuellement": true,
+      "sha256": "154e29b183829f7d543a899742a29ede620caeee03cf02e8cac107116ed28793",
+      "sha256_rapport": "154e29b183829f7d543a899742a29ede620caeee03cf02e8cac107116ed28793",
+      "empreinte_conforme": true,
+      "scenario": "cockpit-vertical",
+      "variante": "apres",
+      "instant": "vitesse-braquage",
+      "glErreur": 0,
+      "glPerdu": false,
+      "obstructionStatique": false,
+      "noir": {
+        "scene": 0,
+        "glace-g": 0,
+        "glace-d": 0
+      },
+      "lisibilite": [
+        {
+          "joueur": 1,
+          "sujet": 0,
+          "vitesse": 80,
+          "volant": 0.65,
+          "erreurs": [],
+          "route": {
+            "cadree": 1,
+            "occultee": 0,
+            "centreOcculte": 0
+          },
+          "centres_route": [
+            {
+              "distance": 12,
+              "ecran": [
+                254.103457067504,
+                430.05922468755773,
+                11.971680251286761
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 20,
+              "ecran": [
+                254.03141471166427,
+                418.18182584255624,
+                19.821822788763757
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 35,
+              "ecran": [
+                253.98459686968351,
+                410.46311404021225,
+                34.54084004653309
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 55,
+              "ecran": [
+                253.9617532260098,
+                406.6969536499112,
+                54.16619639022548
+              ],
+              "occultee": false
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.1586269109912464,
+              "erreurDomPx": 0.05127036012542939,
+              "recouvrementPx2": 0
+            },
+            {
+              "id": "glace-d",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.1488997062931399,
+              "erreurDomPx": 0.08005962582091523,
+              "recouvrementPx2": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671736649/images/apres/cockpit-paysage/0000.png",
+      "ouvert_individuellement": true,
+      "sha256": "111870c33c8b466c39ff95f2736cfa5354b95d30c262f3f82d7e444eff846186",
+      "sha256_rapport": "111870c33c8b466c39ff95f2736cfa5354b95d30c262f3f82d7e444eff846186",
+      "empreinte_conforme": true,
+      "scenario": "cockpit-paysage",
+      "variante": "apres",
+      "instant": "neutre",
+      "glErreur": 0,
+      "glPerdu": false,
+      "obstructionStatique": false,
+      "noir": {
+        "scene": 0,
+        "glace-g": 0,
+        "glace-d": 0
+      },
+      "lisibilite": [
+        {
+          "joueur": 1,
+          "sujet": 0,
+          "vitesse": 0,
+          "volant": 0,
+          "erreurs": [],
+          "route": {
+            "cadree": 1,
+            "occultee": 0,
+            "centreOcculte": 0
+          },
+          "centres_route": [
+            {
+              "distance": 12,
+              "ecran": [
+                639.9999999999723,
+                237.83306968761215,
+                11.978898699310493
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 20,
+              "ecran": [
+                639.9999999999702,
+                208.80603881647585,
+                19.8338287260062
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 35,
+              "ecran": [
+                639.9999999999732,
+                189.94245772467391,
+                34.56182252606061
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 55,
+              "ecran": [
+                639.9999999999727,
+                180.73844983523054,
+                54.19914759279977
+              ],
+              "occultee": false
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.15836934519666226,
+              "erreurDomPx": 0.011351264382154017,
+              "recouvrementPx2": 0
+            },
+            {
+              "id": "glace-d",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.1583457068006325,
+              "erreurDomPx": 0.034318037113776845,
+              "recouvrementPx2": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671736649/images/apres/cockpit-paysage/0001.png",
+      "ouvert_individuellement": true,
+      "sha256": "abdc1aba34bddc2f6ba8ce36b7ef3d80a2fd6fa707d705acee1019d5c5425d77",
+      "sha256_rapport": "abdc1aba34bddc2f6ba8ce36b7ef3d80a2fd6fa707d705acee1019d5c5425d77",
+      "empreinte_conforme": true,
+      "scenario": "cockpit-paysage",
+      "variante": "apres",
+      "instant": "vitesse-braquage",
+      "glErreur": 0,
+      "glPerdu": false,
+      "obstructionStatique": false,
+      "noir": {
+        "scene": 0,
+        "glace-g": 0,
+        "glace-d": 0
+      },
+      "lisibilite": [
+        {
+          "joueur": 1,
+          "sujet": 0,
+          "vitesse": 80,
+          "volant": 0.65,
+          "erreurs": [],
+          "route": {
+            "cadree": 1,
+            "occultee": 0,
+            "centreOcculte": 0
+          },
+          "centres_route": [
+            {
+              "distance": 12,
+              "ecran": [
+                602.9977261671318,
+                243.75320021567848,
+                11.971680251286761
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 20,
+              "ecran": [
+                602.8300336701111,
+                216.10626047845273,
+                19.821822788763757
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 35,
+              "ecran": [
+                602.7210561007998,
+                198.13946801545285,
+                34.54084004653309
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 55,
+              "ecran": [
+                602.6678831082727,
+                189.37300233469486,
+                54.16619639022548
+              ],
+              "occultee": false
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.15577231806878364,
+              "erreurDomPx": 0.023735315222256945,
+              "recouvrementPx2": 0
+            },
+            {
+              "id": "glace-d",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.14621772949938494,
+              "erreurDomPx": 0.1372066793713956,
+              "recouvrementPx2": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671478234/images/apres/cockpit-duo-cote/0000.png",
+      "ouvert_individuellement": true,
+      "sha256": "ba45667223bf545b57fb4061c42e2efb78d33581057eb79cd30199bfa37d0fc2",
+      "sha256_rapport": "ba45667223bf545b57fb4061c42e2efb78d33581057eb79cd30199bfa37d0fc2",
+      "empreinte_conforme": true,
+      "scenario": "cockpit-duo-cote",
+      "variante": "apres",
+      "instant": "neutre",
+      "glErreur": 0,
+      "glPerdu": false,
+      "obstructionStatique": false,
+      "noir": {
+        "scene": 0,
+        "scene2": 0.002777777777777778,
+        "glace-g": 0,
+        "glace-d": 0,
+        "glace-g2": 0,
+        "glace-d2": 0
+      },
+      "lisibilite": [
+        {
+          "joueur": 1,
+          "sujet": 0,
+          "vitesse": 0,
+          "volant": 0,
+          "erreurs": [],
+          "route": {
+            "cadree": 1,
+            "occultee": 0,
+            "centreOcculte": 0
+          },
+          "centres_route": [
+            {
+              "distance": 12,
+              "ecran": [
+                359.9999999999835,
+                377.4532411281586,
+                11.978898699310493
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 20,
+              "ecran": [
+                359.9999999999823,
+                360.2160313203234,
+                19.8338287260062
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 35,
+              "ecran": [
+                359.999999999984,
+                349.0142137300224,
+                34.56182252606061
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 55,
+              "ecran": [
+                359.9999999999838,
+                343.54856980082997,
+                54.19914759279977
+              ],
+              "occultee": false
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.16719254383234344,
+              "erreurDomPx": 0.018149684806798745,
+              "recouvrementPx2": 0
+            },
+            {
+              "id": "glace-d",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.16716690161073713,
+              "erreurDomPx": 0.023940190589326785,
+              "recouvrementPx2": 0
+            }
+          ]
+        },
+        {
+          "joueur": 2,
+          "sujet": 1,
+          "vitesse": 0,
+          "volant": 0,
+          "erreurs": [],
+          "route": {
+            "cadree": 1,
+            "occultee": 0,
+            "centreOcculte": 0
+          },
+          "centres_route": [
+            {
+              "distance": 12,
+              "ecran": [
+                1079.9999999999848,
+                377.4532411281549,
+                11.978898699310493
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 20,
+              "ecran": [
+                1079.9999999999873,
+                360.21603132031873,
+                19.83382872600617
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 35,
+              "ecran": [
+                1079.9999999999852,
+                349.0142137300171,
+                34.56182252606061
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 55,
+              "ecran": [
+                1079.999999999985,
+                343.54856980082445,
+                54.19914759279976
+              ],
+              "occultee": false
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g2",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.16719254383234336,
+              "erreurDomPx": 0.018149684812575284,
+              "recouvrementPx2": 0
+            },
+            {
+              "id": "glace-d2",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.1671669016107368,
+              "erreurDomPx": 0.02394019065679093,
+              "recouvrementPx2": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671478234/images/apres/cockpit-duo-cote/0001.png",
+      "ouvert_individuellement": true,
+      "sha256": "c90fe9a442835cd0626c6e43e45ad4515f1006eddca21419e7e2943e8bcd0375",
+      "sha256_rapport": "c90fe9a442835cd0626c6e43e45ad4515f1006eddca21419e7e2943e8bcd0375",
+      "empreinte_conforme": true,
+      "scenario": "cockpit-duo-cote",
+      "variante": "apres",
+      "instant": "vitesse-braquage",
+      "glErreur": 0,
+      "glPerdu": false,
+      "obstructionStatique": false,
+      "noir": {
+        "scene": 0,
+        "scene2": 0.002777777777777778,
+        "glace-g": 0,
+        "glace-d": 0,
+        "glace-g2": 0,
+        "glace-d2": 0
+      },
+      "lisibilite": [
+        {
+          "joueur": 1,
+          "sujet": 0,
+          "vitesse": 80,
+          "volant": 0.65,
+          "erreurs": [],
+          "route": {
+            "cadree": 1,
+            "occultee": 0,
+            "centreOcculte": 0
+          },
+          "centres_route": [
+            {
+              "distance": 12,
+              "ecran": [
+                338.7450718093593,
+                383.22525548111656,
+                11.971680251286761
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 20,
+              "ecran": [
+                338.64874551334884,
+                367.3442390479123,
+                19.821822788763757
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 35,
+              "ecran": [
+                338.5861463763184,
+                357.02371427848607,
+                34.54084004653309
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 55,
+              "ecran": [
+                338.55560262803556,
+                351.9880616217914,
+                54.16619639022548
+              ],
+              "occultee": false
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.159072524465835,
+              "erreurDomPx": 0.043777292467068185,
+              "recouvrementPx2": 0
+            },
+            {
+              "id": "glace-d",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.1493181556422196,
+              "erreurDomPx": 0.08934752041311513,
+              "recouvrementPx2": 0
+            }
+          ]
+        },
+        {
+          "joueur": 2,
+          "sujet": 1,
+          "vitesse": 80,
+          "volant": -0.65,
+          "erreurs": [],
+          "route": {
+            "cadree": 1,
+            "occultee": 0,
+            "centreOcculte": 0
+          },
+          "centres_route": [
+            {
+              "distance": 12,
+              "ecran": [
+                1101.2549281906183,
+                383.2252554810949,
+                11.971680251286779
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 20,
+              "ecran": [
+                1101.3512544866298,
+                367.34423904788565,
+                19.821822788763765
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 35,
+              "ecran": [
+                1101.41385362366,
+                357.02371427845605,
+                34.54084004653314
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 55,
+              "ecran": [
+                1101.4443973719426,
+                351.9880616217598,
+                54.16619639022557
+              ],
+              "occultee": false
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g2",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.14940758850259672,
+              "erreurDomPx": 0.03185317409452872,
+              "recouvrementPx2": 0
+            },
+            {
+              "id": "glace-d2",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.15918660779488883,
+              "erreurDomPx": 0.10332871354246996,
+              "recouvrementPx2": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14670902168/images/apres/cockpit-profil/0000.png",
+      "ouvert_individuellement": true,
+      "sha256": "4fc89a916d689ebad10d8277b10c07b515b6dbb113752c230f5d220498246811",
+      "sha256_rapport": "4fc89a916d689ebad10d8277b10c07b515b6dbb113752c230f5d220498246811",
+      "empreinte_conforme": true,
+      "scenario": "cockpit-profil",
+      "variante": "apres",
+      "instant": null,
+      "glErreur": 0,
+      "glPerdu": false,
+      "obstructionStatique": false,
+      "noir": {
+        "scene": 0
+      },
+      "lisibilite": []
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671727989/images/apres/cockpit-trois-quarts/0000.png",
+      "ouvert_individuellement": true,
+      "sha256": "21fdea1195fa9a61b162e77c904969e542e1fe7a0436029f7b482c34c5f34603",
+      "sha256_rapport": "21fdea1195fa9a61b162e77c904969e542e1fe7a0436029f7b482c34c5f34603",
+      "empreinte_conforme": true,
+      "scenario": "cockpit-trois-quarts",
+      "variante": "apres",
+      "instant": null,
+      "glErreur": 0,
+      "glPerdu": false,
+      "obstructionStatique": false,
+      "noir": {
+        "scene": 0
+      },
+      "lisibilite": []
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671817756/images/apres/cockpit-duo-haut-bas/0000.png",
+      "ouvert_individuellement": true,
+      "sha256": "7023689be1fc65bb8951e5b73446341731a0d53d2354172750e089b951518d66",
+      "sha256_rapport": "7023689be1fc65bb8951e5b73446341731a0d53d2354172750e089b951518d66",
+      "empreinte_conforme": true,
+      "scenario": "cockpit-duo-haut-bas",
+      "variante": "apres",
+      "instant": "neutre",
+      "glErreur": 0,
+      "glPerdu": false,
+      "obstructionStatique": false,
+      "noir": {
+        "scene": 0,
+        "scene2": 0.0044444444444444444,
+        "glace-g": 0,
+        "glace-d": 0,
+        "glace-g2": 0,
+        "glace-d2": 0
+      },
+      "lisibilite": [
+        {
+          "joueur": 1,
+          "sujet": 0,
+          "vitesse": 0,
+          "volant": 0,
+          "erreurs": [],
+          "route": {
+            "cadree": 1,
+            "occultee": 0,
+            "centreOcculte": 0
+          },
+          "centres_route": [
+            {
+              "distance": 12,
+              "ecran": [
+                719.9999999999826,
+                148.64566855475758,
+                11.978898699310493
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 20,
+              "ecran": [
+                719.9999999999814,
+                130.5037742602974,
+                19.8338287260062
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 35,
+              "ecran": [
+                719.9999999999832,
+                118.7140360779212,
+                34.56182252606061
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 55,
+              "ecran": [
+                719.999999999983,
+                112.96153114701909,
+                54.19914759279977
+              ],
+              "occultee": false
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.0879706860061156,
+              "erreurDomPx": 0.02019882638441142,
+              "recouvrementPx2": 0
+            },
+            {
+              "id": "glace-d",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.08796218798974755,
+              "erreurDomPx": 0.029754580927480994,
+              "recouvrementPx2": 0
+            }
+          ]
+        },
+        {
+          "joueur": 2,
+          "sujet": 1,
+          "vitesse": 0,
+          "volant": 0,
+          "erreurs": [],
+          "route": {
+            "cadree": 1,
+            "occultee": 0,
+            "centreOcculte": 0
+          },
+          "centres_route": [
+            {
+              "distance": 12,
+              "ecran": [
+                719.999999999984,
+                598.6456685547575,
+                11.978898699310493
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 20,
+              "ecran": [
+                719.9999999999865,
+                580.5037742602974,
+                19.83382872600617
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 35,
+              "ecran": [
+                719.9999999999845,
+                568.7140360779212,
+                34.56182252606061
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 55,
+              "ecran": [
+                719.9999999999842,
+                562.9615311470191,
+                54.19914759279976
+              ],
+              "occultee": false
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g2",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.0879706860061156,
+              "erreurDomPx": 0.020198826382870582,
+              "recouvrementPx2": 0
+            },
+            {
+              "id": "glace-d2",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.08796218798974755,
+              "erreurDomPx": 0.029754581018943703,
+              "recouvrementPx2": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14671817756/images/apres/cockpit-duo-haut-bas/0001.png",
+      "ouvert_individuellement": true,
+      "sha256": "abd45984b337912895d65c4194e8cdfe34995b096975522bf657ad002a7dadfa",
+      "sha256_rapport": "abd45984b337912895d65c4194e8cdfe34995b096975522bf657ad002a7dadfa",
+      "empreinte_conforme": true,
+      "scenario": "cockpit-duo-haut-bas",
+      "variante": "apres",
+      "instant": "vitesse-braquage",
+      "glErreur": 0,
+      "glPerdu": false,
+      "obstructionStatique": false,
+      "noir": {
+        "scene": 0,
+        "scene2": 0.0044444444444444444,
+        "glace-g": 0,
+        "glace-d": 0,
+        "glace-g2": 0,
+        "glace-d2": 0
+      },
+      "lisibilite": [
+        {
+          "joueur": 1,
+          "sujet": 0,
+          "vitesse": 80,
+          "volant": 0.65,
+          "erreurs": [],
+          "route": {
+            "cadree": 1,
+            "occultee": 0,
+            "centreOcculte": 0
+          },
+          "centres_route": [
+            {
+              "distance": 12,
+              "ecran": [
+                696.8735788544573,
+                152.34575013479903,
+                11.971680251286761
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 20,
+              "ecran": [
+                696.7687710438195,
+                135.06641279903295,
+                19.821822788763757
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 35,
+              "ecran": [
+                696.7006600629999,
+                123.83716750965803,
+                34.54084004653309
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 55,
+              "ecran": [
+                696.6674269426704,
+                118.35812645918428,
+                54.16619639022548
+              ],
+              "occultee": false
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.08657466623300157,
+              "erreurDomPx": 0.047541820166534125,
+              "recouvrementPx2": 0
+            },
+            {
+              "id": "glace-d",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.08120166432380892,
+              "erreurDomPx": 0.12268163593608312,
+              "recouvrementPx2": 0
+            }
+          ]
+        },
+        {
+          "joueur": 2,
+          "sujet": 1,
+          "vitesse": 80,
+          "volant": -0.65,
+          "erreurs": [],
+          "route": {
+            "cadree": 1,
+            "occultee": 0,
+            "centreOcculte": 0
+          },
+          "centres_route": [
+            {
+              "distance": 12,
+              "ecran": [
+                743.1264211455109,
+                602.345750134799,
+                11.971680251286779
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 20,
+              "ecran": [
+                743.23122895615,
+                585.066412799033,
+                19.821822788763765
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 35,
+              "ecran": [
+                743.2993399369693,
+                573.837167509658,
+                34.54084004653314
+              ],
+              "occultee": false
+            },
+            {
+              "distance": 55,
+              "ecran": [
+                743.3325730572983,
+                568.3581264591843,
+                54.16619639022557
+              ],
+              "occultee": false
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g2",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.08125707360245456,
+              "erreurDomPx": 0.0390772353048212,
+              "recouvrementPx2": 0
+            },
+            {
+              "id": "glace-d2",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.08663585307861495,
+              "erreurDomPx": 0.14900986038843514,
+              "recouvrementPx2": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14672640726/images/avant/cockpit-mac/0000.png",
+      "ouvert_individuellement": true,
+      "sha256": "4b361ecb485203e1724e6e944a2aa5f01cc6b86b7d57e696aab428d10ad39a93",
+      "sha256_rapport": "4b361ecb485203e1724e6e944a2aa5f01cc6b86b7d57e696aab428d10ad39a93",
+      "empreinte_conforme": true,
+      "scenario": "cockpit-mac",
+      "variante": "avant",
+      "instant": "neutre",
+      "glErreur": 0,
+      "glPerdu": false,
+      "obstructionStatique": false,
+      "noir": {
+        "scene": 0,
+        "glace-g": 0,
+        "glace-d": 0
+      },
+      "lisibilite": [
+        {
+          "joueur": 1,
+          "sujet": 0,
+          "vitesse": 0,
+          "volant": 0,
+          "erreurs": [
+            "Glace trop large : glace-g",
+            "Glace superposée au volant/gant : glace-g",
+            "Glace trop large : glace-d",
+            "Glace superposée au volant/gant : glace-d",
+            "Chaussée utile occultée par le cockpit"
+          ],
+          "route": {
+            "cadree": 1,
+            "occultee": 1,
+            "centreOcculte": 1
+          },
+          "centres_route": [
+            {
+              "distance": 12,
+              "ecran": [
+                719.9999999999682,
+                465.9047998620088,
+                12.050498090424234
+              ],
+              "occultee": true
+            },
+            {
+              "distance": 20,
+              "ecran": [
+                719.9999999999658,
+                432.8439920686407,
+                20.015672099357555
+              ],
+              "occultee": true
+            },
+            {
+              "distance": 35,
+              "ecran": [
+                719.9999999999693,
+                411.47087269188506,
+                34.95037336610749
+              ],
+              "occultee": true
+            },
+            {
+              "distance": 55,
+              "ecran": [
+                719.9999999999688,
+                401.0741889639871,
+                54.863308388440686
+              ],
+              "occultee": true
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.21612854747895893,
+              "erreurDomPx": 0.04224056234931935,
+              "recouvrementPx2": 56570.32766707907
+            },
+            {
+              "id": "glace-d",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.2160390921573379,
+              "erreurDomPx": 0.14147732663353277,
+              "recouvrementPx2": 56567.77907656273
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fichier": "/workspace/scratch/d61843ca5396/qa/14672640726/images/avant/cockpit-mac/0001.png",
+      "ouvert_individuellement": true,
+      "sha256": "d49a990f070d8626872168793792031e261140084403f06a8a850acd99f9e6dc",
+      "sha256_rapport": "d49a990f070d8626872168793792031e261140084403f06a8a850acd99f9e6dc",
+      "empreinte_conforme": true,
+      "scenario": "cockpit-mac",
+      "variante": "avant",
+      "instant": "vitesse-braquage",
+      "glErreur": 0,
+      "glPerdu": false,
+      "obstructionStatique": false,
+      "noir": {
+        "scene": 0,
+        "glace-g": 0,
+        "glace-d": 0
+      },
+      "lisibilite": [
+        {
+          "joueur": 1,
+          "sujet": 0,
+          "vitesse": 80,
+          "volant": 0.65,
+          "erreurs": [
+            "Glace trop large : glace-g",
+            "Glace superposée au volant/gant : glace-g",
+            "Glace trop large : glace-d",
+            "Glace superposée au volant/gant : glace-d",
+            "Chaussée utile occultée par le cockpit"
+          ],
+          "route": {
+            "cadree": 1,
+            "occultee": 1,
+            "centreOcculte": 1
+          },
+          "centres_route": [
+            {
+              "distance": 12,
+              "ecran": [
+                677.4924301839369,
+                465.1792599566028,
+                12.04317833144636
+              ],
+              "occultee": true
+            },
+            {
+              "distance": 20,
+              "ecran": [
+                677.4348969112688,
+                433.7073877351374,
+                20.003497658725827
+              ],
+              "occultee": true
+            },
+            {
+              "distance": 35,
+              "ecran": [
+                677.3977028058822,
+                413.36145436509565,
+                34.92909639737479
+              ],
+              "occultee": true
+            },
+            {
+              "distance": 55,
+              "ecran": [
+                677.3796101892185,
+                403.46442446578124,
+                54.82989471557335
+              ],
+              "occultee": true
+            }
+          ],
+          "glaces": [
+            {
+              "id": "glace-g",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.2119659130519574,
+              "erreurDomPx": 0.027172849630479983,
+              "recouvrementPx2": 33630.288216876725
+            },
+            {
+              "id": "glace-d",
+              "valide": true,
+              "cadree": true,
+              "largeur": 0.19992528605271406,
+              "erreurDomPx": 0.1706202066974058,
+              "recouvrementPx2": 8306.614037334162
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "modifications_durant_la_revue": {
+    "sources_runtime": false,
+    "campagnes_relancees": false,
+    "commits_ou_push": false,
+    "note": "Un correctif séparé de l’oracle HUD et ses tests a été autorisé en parallèle ; il ne change pas les preuves de ce run3d."
+  },
+  "toutes_empreintes_conformes": true,
+  "diagnostic_decor_J2": {
+    "fichier": "/workspace/scratch/d61843ca5396/qa/diagnostic-ruban-j2.json",
+    "sha256": "ecf3dbf8284448b3f6bff67b95fb61a60f891aa8243c4fe2b07ca7de55ecc492",
+    "lu": true,
+    "conclusion": "Les bornes projetées du panneau de passerelle natif correspondent au ruban violet du PNG neutre ; la lecture ne démontre pas de corruption J2."
+  },
+  "notes_noir": "Les seules fractions noires non nulles concernent scene2 :2/450 en haut-bas et2/720 en côte à côte, compatibles avec le séparateur décoratif de2px visible dans les PNG."
+}

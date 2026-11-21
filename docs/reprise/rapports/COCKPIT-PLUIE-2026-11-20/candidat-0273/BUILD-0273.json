@@ -1,0 +1,60 @@
+{
+  "version": "0.2.73",
+  "base_commit": "0c147c472f5444301bf5a2fcdd16a6861fd1bf1a",
+  "branche": "codex/bitume-0273-reprise-20261121",
+  "html": {
+    "raw": 14510109,
+    "gzip": 3467516,
+    "sha256": "09c386ac0fdaccd7f6417839536a73c32217ce3ed2f91263907f443168394910"
+  },
+  "source_fingerprint": "d8ea390226898dc00fdc3ca374f5b48f1d1ad673d568c65cc59160bc0915bb41",
+  "reconstruction_deux_fois_identique": true,
+  "ferro": {
+    "version": "0.3.15",
+    "modules_conformes": 34
+  },
+  "sources_runtime_modifiees": [
+    "src/index.html",
+    "src/jeu.js",
+    "src/style.css"
+  ],
+  "objectif": [
+    "Noms du classement plus larges dans le petit partage haut/bas sans réduire la taille des textes.",
+    "Moins de hauteur du classement et des marges santé pour dégager annonce, compteurs et glace.",
+    "Annonces désactivées au premier lancement, choix enregistrés conservés."
+  ],
+  "revue": "Aucun défaut certain identifié dans la revue indépendante ; CSS composé à confirmer par PNG exacts.",
+  "environnement_local": "Chromium termine au démarrage : socket() failed Operation not permitted. Captures réalisées par GitHub Actions.",
+  "portes": [
+    "CI complète sur commit exact et archive rapprochée",
+    "Captures cockpit dont duo compact J1/J2 avec annonces activées",
+    "Virage maintenu avec tableau complet et grande carte gauche",
+    "Réception pluie/Troll du candidat"
+  ],
+  "physique": "p15",
+  "site_deploye": false,
+  "provenance": {
+    "source_dossier": "/workspace/scratch/fce07c69da1d/bitume",
+    "source_branche": "codex/bitume-0273-hud-final-20261121",
+    "css_regime_preparation_distincte": "Non intégré, nécessité à confirmer sur la pose stabilisée."
+  },
+  "reserves": [
+    "Coût construction décor : dépassements historiques 172, 152, 168 et 155 ms pour seuil strict 150 ms conservés.",
+    "Aucun gain FPS matériel Xbox/Intel, aucune manette physique ni écoute humaine qualifiés."
+  ],
+  "controles_locaux": {
+    "options_image": 11,
+    "hud": 13,
+    "habitacle_captures": 30,
+    "meteo_captures": 18,
+    "virages": 43,
+    "total": 115
+  },
+  "outils_capture": {
+    "annonces": "Écran explicitement activé, trace au départ et aux images, gardes de présence J1/J2 conservées",
+    "complement": "4 cas indépendants, max-parallel 4",
+    "delai_stabilise": "30 min de capture / 40 min job au lieu de 18/25, seul cas concerné après exit124 historique",
+    "seuils_et_120_pas_inchanges": true,
+    "provenance_delai": "Préparation indépendante 07fd4748e4e099d7ae6d5480545bb79ce673523e de /workspace/scratch/14f00f1e87e8/bitume"
+  }
+}

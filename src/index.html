@@ -36,19 +36,21 @@
       </div>
     </div>
 
-    <ol id="classement" class="classement" aria-label="Classement"></ol>
+    <div class="hud-rivaux">
+      <div id="h-virage" class="annonce-virage" data-sens="droite" data-difficulte="1" hidden>
+        <svg class="virage-fleche" viewBox="0 0 40 40" aria-hidden="true"><path class="virage-courbe" d="M7 33V20c0-6 4-10 10-10h16m-7-7 7 7-7 7"></path><path class="virage-epingle" d="M8 34V14a10 10 0 0 1 20 0v18m-6-6 6 6 6-6"></path></svg>
+        <b id="h-virage-nom" class="virage-nom"></b>
+        <span id="h-virage-distance" class="virage-distance"></span>
+      </div>
+      <ol id="classement" class="classement" aria-label="Classement"></ol>
+    </div>
     <div id="message" class="message" role="status" aria-live="polite"></div>
     <div id="sous-message" class="sous-message"></div>
 
-    <div id="h-virage" class="annonce-virage" data-sens="droite" data-difficulte="1" hidden>
-      <svg class="virage-fleche" viewBox="0 0 40 40" aria-hidden="true"><path class="virage-courbe" d="M7 33V20c0-6 4-10 10-10h16m-7-7 7 7-7 7"></path><path class="virage-epingle" d="M8 34V14a10 10 0 0 1 20 0v18m-6-6 6 6 6-6"></path></svg>
-      <b id="h-virage-nom" class="virage-nom"></b>
-      <span id="h-virage-distance" class="virage-distance"></span>
-    </div>
     <span id="h-virage-annonce" class="texte-accessible" role="status" aria-live="polite" aria-atomic="true"></span>
 
+    <div id="zone-carte"><canvas id="carte" class="carte" width="220" height="220" aria-label="Plan du circuit"></canvas></div>
     <div class="hud-bas">
-      <div id="zone-carte"><canvas id="carte" class="carte" width="220" height="220" aria-label="Plan du circuit"></canvas></div>
       <div class="tableau">
         <div id="jauge-derive" class="jauge-derive" data-niveau="0" hidden>
           <span class="etiquette">Dérive</span>
@@ -283,6 +285,13 @@
         <label><input type="radio" name="meteo" value="pluie"><span id="p-type-precipitations">Pluie</span></label>
         <label><input type="radio" name="meteo" value="variable"><span>Variable</span></label>
         </div>
+        <div id="p-force-pluie" class="valeurs-condition" role="group" aria-labelledby="p-force-pluie-titre" hidden>
+          <p id="p-force-pluie-titre">Intensité de la pluie</p>
+          <label><input type="radio" name="forcePluie" value="fine"><span>Fine</span></label>
+          <label><input type="radio" name="forcePluie" value="moderee"><span>Modérée</span></label>
+          <label><input type="radio" name="forcePluie" value="forte"><span>Forte</span></label>
+          <label><input type="radio" name="forcePluie" value="tres_forte"><span>Très forte</span></label>
+        </div>
       </fieldset>
         </div>
         <div class="conditions-retour">
@@ -335,7 +344,7 @@
       </fieldset>
       <fieldset id="o-pilotage">
         <legend>Pilotage</legend>
-        <p class="note-graphismes">Vue, boîte de vitesses et commandes de chaque pilote.</p>
+        <p class="note-graphismes">Vue, boîte de vitesses, annonces des virages et commandes.</p>
         <button type="button" class="discret" id="p-reglages-pilote">Régler le pilotage</button>
       </fieldset>
     </div>
@@ -469,10 +478,10 @@
       </fieldset>
       <fieldset>
         <legend>Annonces des virages</legend>
-        <label><input type="radio" name="annoncesVirages" value="non"><span>Non</span></label>
-        <label><input type="radio" name="annoncesVirages" value="ecran" checked><span>Écran</span></label>
+        <label><input type="radio" name="annoncesVirages" value="non" checked><span>Non</span></label>
+        <label><input type="radio" name="annoncesVirages" value="ecran"><span>Écran</span></label>
         <label><input type="radio" name="annoncesVirages" value="voix"><span>Écran et voix</span></label>
-        <p class="aide-reglage">Direction, difficulté et distance avant le virage. La voix utilise une voix française installée sur l’appareil ; à deux, elle guide le joueur 1. Sans voix disponible, l’annonce reste à l’écran.</p>
+        <p class="aide-reglage">Désactivées par défaut. Direction, difficulté et distance avant le virage. La voix utilise une voix française installée sur l’appareil ; à deux, elle guide le joueur 1. Sans voix disponible, l’annonce reste à l’écran.</p>
       </fieldset>
       <fieldset>
         <legend>Carte du circuit</legend>

@@ -154,5 +154,47 @@
   "publication_00": {
     "commit": "a8a6435c529fe326e9f26124f25ba0911d3b70fb",
     "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-20261120.json"
+  },
+  "correctif_urgence_cockpit_pluie": {
+    "date": "2026-11-20",
+    "demande": "Corriger le cockpit et les rétros intérieurs/extérieurs, pluie en vue arceau, intensités et impacts, gouttes sur véhicules.",
+    "base_main": "96f720e788698401a72d41a9e0befa18c88c2e7b",
+    "coordinateur": "00",
+    "transferts_temporaires": [
+      {
+        "de": "01",
+        "vers": "00 avec agent géométrie",
+        "fichiers": [
+          "src/voiture.js"
+        ],
+        "objet": "Géométrie commune cockpit, portée des bras, rétros et contacts Troll."
+      },
+      {
+        "de": "03",
+        "vers": "00",
+        "fichiers": [
+          "src/index.html",
+          "src/style.css"
+        ],
+        "objet": "Choix des quatre forces de précipitations."
+      },
+      {
+        "de": "06",
+        "vers": "00",
+        "fichiers": [
+          "src/meteo.js"
+        ],
+        "objet": "Cible de pluie fixe configurable seulement ; raccord abris de PR 43 conservé pour intégration séparée."
+      }
+    ],
+    "modules_additionnels": [
+      "src/eau-carrosserie.js"
+    ],
+    "contraintes": [
+      "p15 et FERRO verrouillé conservés",
+      "Aucun déploiement Sites",
+      "Pas de changement des autres branches",
+      "Captures du HTML exact et défaut de visibilité bloquant avant publication"
+    ]
   }
 }

@@ -1,0 +1,21 @@
+✔ 12F3 : transport indépendant des pneus pour 2+2 (7.166736ms)
+✔ 12F3 : transport indépendant des pneus pour 2+1 (1.24475ms)
+✔ 12F3 : transport indépendant des pneus pour 1+2 (1.053177ms)
+✔ 12F3 : envoi depuis la boucle réseau limité à deux états pneus par seconde (0.952381ms)
+✔ 12F3 : le vrai callback cinématique conserve l’expéditeur et respecte les autorités de voitures (1.037989ms)
+✔ 12F3 : service réel du second pilote invité envoyé immédiatement, ancien état et doublon sans effet (3.313316ms)
+✔ 12F3 : état périodique hors ordre et usurpation d’expéditeur ne changent pas les pneus (1.028161ms)
+✔ 12F3 : deux invités n’échangent des pneus que par un relais authentique de l’hôte (1.041434ms)
+✔ 12F3 : chargement terminé après un service récupère le snapshot hôte et ses archives validées (3.028261ms)
+✔ 12F3 : interpolation visuelle des roues distante sans seconde usure ni modification du pneu physique (2.889704ms)
+✔ 12F3 : changement de séance refuse un paquet de la course précédente même à graine identique (0.753429ms)
+✔ 12F3 : reprise par l’hôte conserve le dernier état reçu et se propage sans événement de départ chez le témoin (1.467654ms)
+✔ 12F3 : perte de l’hôte conserve les pneus reçus puis ferme l’application des anciens messages (1.378468ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 37.170526

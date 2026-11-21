@@ -39,6 +39,7 @@
   uniform int uNbGouttes;
   uniform vec4 uGouttes[32]; // centre en pixels, rayon, opacité ; vraies rencontres du modèle partagé
   uniform vec4 uTrajets[32]; // milieu et fin de la coulure, historique réel des positions
+  uniform vec4 uImpacts[32]; // phase brève, force, orientation, rayon d'arrivée ; même pool que les perles
   float h21(vec2 p) {
     vec3 q = fract(vec3(p.xyx) * vec3(.1031,.1030,.0973));
     q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z);
@@ -124,12 +125,29 @@
   vec4 nappe(vec2 p,float densite) {
     return nappeGeneration(p,densite,8)+nappeGeneration(p,densite,9);
   }
+  vec4 impactGoutte(vec2 delta,vec4 impact) {
+    if(impact.y<.005)return vec4(0);
+    float phase=impact.x,rayon=impact.w*(.65+1.7*phase),angle=impact.z;
+    vec2 axe=vec2(cos(angle),sin(angle)),travers=vec2(-axe.y,axe.x);
+    vec2 local=vec2(dot(delta,axe),dot(delta,travers)/(.60+.25*phase));
+    float a=atan(local.y,local.x),distance=length(local);
+    float irregulier=1.0+.10*sin(a*3.0+angle)+.055*sin(a*7.0-angle);
+    float largeur=max(.7,rayon*.10),bord=abs(distance-rayon*irregulier);
+    float couronne=(1.0-smoothstep(largeur*.5,largeur+1.0,bord))*(.62+.38*sin(a*3.0+angle)*sin(a*3.0+angle));
+    float eclats=(1.0-smoothstep(.55,1.5+impact.w*.08,abs(distance-rayon*(1.15+phase*.45))))
+      *pow(max(0.0,cos(a*3.0-angle)),18.0)*(1.0-phase);
+    float centre=(1.0-smoothstep(rayon*.25,rayon*.8,distance))*(1.0-phase)*.18;
+    float eau=max(couronne*.83,max(eclats*.72,centre))*impact.y;
+    vec2 normale=delta/max(length(delta),.1)*(couronne*.52+eclats*.35)*impact.y;
+    return vec4(normale,eau,(couronne*.22+eclats*.35+centre)*impact.y);
+  }
   vec4 gouttesMobiles(vec2 p) {
     vec4 total=vec4(0);
     for(int i=0;i<32;i++) {
       if(i>=uNbGouttes) break;
-      vec4 g=uGouttes[i],tr=uTrajets[i]; float rayon=g.z;
-      vec2 bas=min(g.xy,min(tr.xy,tr.zw))-rayon*2.3,haut=max(g.xy,max(tr.xy,tr.zw))+rayon*2.3;
+      vec4 g=uGouttes[i],tr=uTrajets[i],impact=uImpacts[i]; float rayon=g.z;
+      float emprise=max(rayon*2.3,impact.y>.005?impact.w*(.65+1.7*impact.x)*1.75+2.0:0.0);
+      vec2 bas=min(g.xy,min(tr.xy,tr.zw))-emprise,haut=max(g.xy,max(tr.xy,tr.zw))+emprise;
       // Les calculs de lentille et de courbe sont locaux ; le reste de l'écran ne parcourt que les emprises.
       if(any(lessThan(p,bas))||any(greaterThan(p,haut))) continue;
       vec2 trajet=g.xy-tr.xy,direction=length(trajet)>.03?normalize(trajet):directionFlux(g.xy,1.0,rayon);
@@ -156,6 +174,7 @@
         normale+=ecart/max(length(ecart),.1)*trace*.35;
       }
       total+=vec4(normale,max(m,trace),max(m*(.5+.5*creux),trace*.45));
+      total+=impactGoutte(delta,impact);
     }
     return total;
   }
@@ -304,7 +323,7 @@
     const e={ temps: 0, accumulateur: 0, eau: 0, neige: 0, embruns: 0, film: 0,
       precedent: new Float64Array(4), uniformes: new Float32Array(12), etapes: 0,
       depots: B.vitre.creerSimulation(options), gouttesUniformes: new Float32Array(MAX_GOUTTES_MOBILES * 4),
-      trajetsUniformes: new Float32Array(MAX_GOUTTES_MOBILES * 4), nbGouttes: 0,
+      trajetsUniformes: new Float32Array(MAX_GOUTTES_MOBILES * 4), impactsUniformes: new Float32Array(MAX_GOUTTES_MOBILES * 4), nbGouttes: 0,
       couches:COUCHES.map(()=>({active:0,fondu:0,transition:false,sequence:0,generations:[nouvelleGeneration(),nouvelleGeneration()]})),
       transportUniformes:new Float32Array(48),histoireUniformes:new Float32Array(48),phaseUniformes:new Float32Array(12),
       transportPrecedent:new Float64Array(48),histoirePrecedente:new Float64Array(48),fluxUniformes:new Float32Array(8),
@@ -312,12 +331,13 @@
     reinitialiserTransport(e);return e;
   }
   function preparerDepots(e) {
-    const d=e.depots,k=clamp(d.accumulateur*30,0,1),w=d.largeur,h=d.hauteur,g=e.gouttesUniformes,tr=e.trajetsUniformes;
+    const d=e.depots,k=clamp(d.accumulateur*30,0,1),w=d.largeur,h=d.hauteur,g=e.gouttesUniformes,tr=e.trajetsUniformes,imp=e.impactsUniformes;
     let n=0;
     for(let i=0;i<MAX_GOUTTES_MOBILES;i++) {
       const p=d.gouttes[i];if(!p.vivant&&!p.fusion)continue;
       const age=p.pa*(1-k)+p.age*k,poids=p.pp*(1-k)+p.poids*k;
-      const alpha=clamp(Math.min(1,age/.24,(p.duree-age)/1.5)*poids,0,1);if(alpha<.005)continue;
+      const alpha=clamp(Math.min(1,age/.24,(p.duree-age)/1.5)*poids,0,1);
+      const force=B.vitre.lireImpact(p,k,imp,n*4,d.impactsActifs);if(Math.max(alpha,force)<.005)continue;
       const j=n++*4;
       g[j]=(p.px*(1-k)+p.x*k)*w;g[j+1]=(1-p.py*(1-k)-p.y*k)*h;
       g[j+2]=Math.sqrt(p.pr*p.pr*(1-k)+(p.vivant?p.taille*p.taille:0)*k);g[j+3]=alpha;
@@ -325,7 +345,7 @@
     }
     // Une sortie par un bord réduit réellement le nombre actif. Ne pas garder d'anciens
     // uniformes dans la fin du tampon : leur contenu ne doit pas dépendre de la cadence.
-    g.fill(0,n*4);tr.fill(0,n*4);e.nbGouttes=n;
+    g.fill(0,n*4);tr.fill(0,n*4);imp.fill(0,n*4);e.nbGouttes=n;
   }
   function avancerEtat(e, dt, c) {
     if (c.pause || !Number.isFinite(dt) || dt <= 0) return;
@@ -388,7 +408,7 @@
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
     gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([0,0,0,255]));
-    e.lieux={}; for(const nom of ['uScene','uMeteo','uMouvement','uVue','uTexel','uQualite','uAvecScene','uNbGouttes','uGouttes','uTrajets','uFlux','uGravite','uTransport','uHistoire','uPhase']) e.lieux[nom]=gl.getUniformLocation(programme,nom);
+    e.lieux={}; for(const nom of ['uScene','uMeteo','uMouvement','uVue','uTexel','uQualite','uAvecScene','uNbGouttes','uGouttes','uTrajets','uImpacts','uFlux','uGravite','uTransport','uHistoire','uPhase']) e.lieux[nom]=gl.getUniformLocation(programme,nom);
     gl.disable(gl.DEPTH_TEST); gl.disable(gl.BLEND); gl.clearColor(0,0,0,0);
     e.pret=true; e.perdu=false; e.stats.pret=true; e.stats.perdu=false;e.stats.erreur=null;
   }
@@ -402,7 +422,7 @@
       masquee:false,propre:true,perdu:false,libere:false,pret:false,dprPalier:null,largeur:1,hauteur:1,dpr:1,
       stats:{backend:'webgl2',pret:false,perdu:false,erreur:null,copiesScene:0,dessins:0,etapes:0,pixels:0,pixelsSource:0,
         largeur:0,hauteur:0,dpr:1,eau:0,accumulationNeige:0,embruns:0,gouttes:0,neige:0,
-        fusionsEau:0,expulses:0,depotsEau:0,depotsEmbruns:0,surfaceExpulsee:0}};
+        fusionsEau:0,expulses:0,depotsEau:0,depotsEmbruns:0,impactsEmis:0,surfaceExpulsee:0}};
     e.uMeteo=e.simulation.uniformes.subarray(0,4);e.uMouvement=e.simulation.uniformes.subarray(4,8);e.uVue=e.simulation.uniformes.subarray(8,12);
     e.uFlux=e.simulation.fluxUniformes.subarray(0,4);e.uGravite=e.simulation.fluxUniformes.subarray(4,8);
     e.perte=event=>{event.preventDefault(); e.perdu=true; e.pret=false; e.stats.perdu=true; e.stats.pret=false; montrer(e,false);};
@@ -445,6 +465,7 @@
     gl.uniform2f(e.lieux.uTexel,1/e.source.width,1/e.source.height);gl.uniform1i(e.lieux.uQualite,niveau);gl.uniform1i(e.lieux.uAvecScene,avecScene);
     gl.uniform1i(e.lieux.uNbGouttes,e.simulation.nbGouttes);
     gl.uniform4fv(e.lieux.uGouttes,e.simulation.gouttesUniformes);gl.uniform4fv(e.lieux.uTrajets,e.simulation.trajetsUniformes);
+    gl.uniform4fv(e.lieux.uImpacts,e.simulation.impactsUniformes);
     gl.uniform4fv(e.lieux.uFlux,e.uFlux);gl.uniform4fv(e.lieux.uGravite,e.uGravite);
     gl.uniform4fv(e.lieux.uTransport,e.simulation.transportUniformes);gl.uniform4fv(e.lieux.uHistoire,e.simulation.histoireUniformes);
     gl.uniform4fv(e.lieux.uPhase,e.simulation.phaseUniformes);
@@ -454,7 +475,7 @@
     if(!e || e.libere)return;
     if(!e.propre && e.pret && !e.perdu){e.gl.clear(e.gl.COLOR_BUFFER_BIT);e.propre=true;}
     const s=e.simulation;s.eau=s.neige=s.embruns=s.film=s.accumulateur=0;s.precedent.fill(0);s.uniformes.fill(0);
-    B.vitre.effacer(s.depots);s.nbGouttes=0;s.gouttesUniformes.fill(0);s.trajetsUniformes.fill(0);
+    B.vitre.effacer(s.depots);s.nbGouttes=0;s.gouttesUniformes.fill(0);s.trajetsUniformes.fill(0);s.impactsUniformes.fill(0);
     reinitialiserTransport(s);
     e.stats.eau=e.stats.accumulationNeige=e.stats.embruns=e.stats.gouttes=0;e.dprPalier=null;montrer(e,false);
   }
@@ -471,6 +492,7 @@
     e.stats.eau=s.eau;e.stats.accumulationNeige=s.neige;e.stats.embruns=s.embruns;e.stats.etapes=s.etapes;
     e.stats.gouttes=s.depots.stats.gouttes;e.stats.fusionsEau=s.depots.stats.fusionsEau;e.stats.expulses=s.depots.stats.expulses;
     e.stats.depotsEau=s.depots.stats.depotsEau;e.stats.depotsEmbruns=s.depots.stats.depotsEmbruns;e.stats.surfaceExpulsee=s.depots.stats.surfaceExpulsee;
+    e.stats.impactsEmis=s.depots.stats.impactsEmis;
     if(Math.max(s.eau,s.neige,s.embruns,s.film)<.001&&!s.nbGouttes){if(!e.propre){e.gl.clear(e.gl.COLOR_BUFFER_BIT);e.propre=true;}montrer(e,false);return e.stats;}
     dessiner(e,c,niveau,false);return e.stats;
   }

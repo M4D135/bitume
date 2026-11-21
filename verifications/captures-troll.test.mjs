@@ -1,6 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { CHOIX_TROLL, INSTANTS_TROLL, SCENARIOS_TROLL, optionsTroll, optionsScenarioTroll, verifierTroll } from '../tools/captures-troll.mjs';
+import vm from 'node:vm';
+import { horlogeCapture } from '../tools/controle-visuel.mjs';
+import { CHOIX_TROLL, INSTANTS_TROLL, SCENARIOS_TROLL, optionsTroll, optionsScenarioTroll, verifierTroll, avantImageTroll } from '../tools/captures-troll.mjs';
 
 const base = ['--url', 'file:///tmp/bitume.html', '--sortie', '/tmp/troll'];
 test('la campagne exige un HTML identifié, deux vraies vues duo et tous les instants', () => {
@@ -100,4 +102,81 @@ test('la seconde vue, les quatre rétros et le vrai WebGL font partie de la preu
   ]) {
     const r = rapport(s); modifier(r); assert(verifierTroll(r, s).length, modifier.toString());
   }
+});
+
+function bancHorlogeTroll() {
+  const contexte = vm.createContext({});
+  contexte.window = contexte;
+  vm.runInContext(horlogeCapture(17017), contexte);
+  vm.runInContext(`
+    globalThis.BITUME_JEU = { session: { tRendu: 0 } };
+    globalThis.__TROLL_CAPTURE = { origine: 6, index: 10 };
+    let raf;
+    function rendre(ms) { BITUME_JEU.session.tRendu = ms / 1000; raf = requestAnimationFrame(rendre); }
+    raf = requestAnimationFrame(rendre);
+    const avancer = __BITUME_CAPTURE.avancer;
+    globalThis.pasNatifs = 0;
+    __BITUME_CAPTURE.avancer = ms => { pasNatifs++; return avancer(ms); };
+    __BITUME_CAPTURE.avancer(7150);
+    pasNatifs = 0;
+  `, contexte);
+  const commandes = [], entrees = [], rapport = {};
+  return {
+    contexte, commandes, entrees, rapport,
+    async evaluer(expression) {
+      const avant = contexte.pasNatifs;
+      try { return vm.runInContext(expression, contexte); }
+      finally { commandes.push({ pas: contexte.pasNatifs - avant, temps: contexte.BITUME_JEU.session.tRendu }); }
+    },
+    async envoyer(method, params) { entrees.push({ method, params, temps: contexte.BITUME_JEU.session.tRendu }); },
+    avancerCapture() { return this.evaluer('__BITUME_CAPTURE.avancer(50)'); }
+  };
+}
+
+test('le vrai pilote avance la vraie horloge entre deux instants sans regrouper les rendus', async () => {
+  const b = bancHorlogeTroll();
+  await avantImageTroll({ ...b, i: 11 });
+  assert(Math.abs(b.contexte.BITUME_JEU.session.tRendu - 8.75) < 1e-9);
+  await b.avancerCapture();
+  await avantImageTroll({ ...b, i: 12 });
+  await b.avancerCapture();
+  assert(Math.abs(b.contexte.BITUME_JEU.session.tRendu - 8.85) < 1e-9);
+  assert.equal(b.contexte.__TROLL_CAPTURE.index, 12);
+  assert(b.commandes.every(c => c.pas <= 1), 'Chaque commande DevTools doit exécuter zéro ou un pas natif');
+  assert.equal(b.contexte.pasNatifs, 14);
+  assert.deepEqual(b.entrees.map(e => [e.method, e.params.type, e.params.code, e.params.autoRepeat]), [
+    ['Input.dispatchKeyEvent', 'keyDown', 'KeyG', true],
+    ['Input.dispatchKeyEvent', 'keyDown', 'NumpadDecimal', true],
+    ['Input.dispatchKeyEvent', 'keyUp', 'KeyG', false],
+    ['Input.dispatchKeyEvent', 'keyUp', 'NumpadDecimal', false]
+  ]);
+  for (const [i, e] of b.entrees.entries()) assert(Math.abs(e.temps - (i < 2 ? 8.75 : 8.8)) < 1e-9);
+  assert.deepEqual(b.rapport.progressionTroll.map(t => [t.instant, t.pasDemandes, t.pasTermines, t.phase]), [
+    ['maintien-apres-delai', 12, 12, 'attente-capture'], ['relachement', 0, 0, 'attente-capture']
+  ]);
+});
+
+test('une interruption du pilote interrompt les pas et empêche les événements suivants', async () => {
+  const b = bancHorlogeTroll(), interruption = new Error('DevTools interrompu');
+  let appels = 0;
+  await assert.rejects(avantImageTroll({ ...b, i: 11, evaluer: expression => {
+    if (++appels === 4) return Promise.reject(interruption);
+    return b.evaluer(expression);
+  } }), e => e === interruption);
+  assert.equal(appels, 4);
+  assert.equal(b.contexte.pasNatifs, 2);
+  assert.deepEqual(b.entrees, []);
+  const trace = b.rapport.progressionTroll[0];
+  assert.equal(trace.phase, 'avance-horloge');
+  assert.equal(trace.pasDemandes, 3); assert.equal(trace.pasTermines, 2);
+  assert.match(trace.erreur, /DevTools interrompu/);
+});
+
+test('une horloge de rendu arrêtée conserve la borne de quatre-vingts pas', async () => {
+  const b = bancHorlogeTroll();
+  vm.runInContext('cancelAnimationFrame(raf)', b.contexte);
+  await assert.rejects(avantImageTroll({ ...b, i: 11 }), /Horloge de rendu non atteinte/);
+  assert.equal(b.contexte.pasNatifs, 80);
+  assert(b.commandes.every(c => c.pas <= 1));
+  assert.deepEqual(b.entrees, []);
 });

@@ -1,0 +1,56 @@
+{
+  "version": "0.2.72",
+  "source_commit": "6e84c4dd1aeeb602f2348840710f36758c6cf47a",
+  "html_sha256": "391db2defe23308f88500fdd138d3b8573596d1ca0f53e058ef5c66c0c510a90",
+  "ci": [
+    {
+      "kind": "push",
+      "run": 44831750422,
+      "artifact": 14677980839,
+      "github_archive_sha256": "6b1b4646a0a89fb732a4e9c68eeec63d9f23a636c74d9825c907f621704e7d95",
+      "archive_sha256_verified_again": true,
+      "resume": "Suites reussies : 178\nSuites en echec : 1",
+      "decor": "FAIL Val-Brûlé : décor construit en moins de 150 ms: 155 ms",
+      "python": null,
+      "html_sha256": "391db2defe23308f88500fdd138d3b8573596d1ca0f53e058ef5c66c0c510a90",
+      "files": 3915,
+      "identical_content_and_modes": true
+    },
+    {
+      "kind": "pull_request",
+      "run": 44831784044,
+      "artifact": 14677852595,
+      "github_archive_sha256": "81b2a199d2eefe582daf1e20549bd6ce1195bfe545b22f95415563fc6e57e374",
+      "archive_sha256_verified_again": true,
+      "resume": "Suites reussies : 179\nSuites en echec : 0",
+      "decor": "forêt : 18 vérifications passées",
+      "python": "........\n----------------------------------------------------------------------\nRan 8 tests in 1.045s\n\nOK",
+      "html_sha256": "391db2defe23308f88500fdd138d3b8573596d1ca0f53e058ef5c66c0c510a90",
+      "files": 3915,
+      "identical_content_and_modes": true
+    }
+  ],
+  "duo_compact": {
+    "run": 44833135460,
+    "artifact": 14676733134,
+    "images": 2,
+    "constats": [
+      [
+        "HUD superposé à la glace : glace-g",
+        "HUD superposé à la glace : glace-g2",
+        "Éléments HUD superposés : hud:h-virage:17 / c-position (hud:grand:1)",
+        "Éléments HUD superposés : hud:h-virage:17 / c-tour (hud:grand:3)",
+        "HUD superposé à la glace : glace-g",
+        "Éléments HUD superposés : hud2:h-virage:17 / c-position (hud2:grand:1)",
+        "Éléments HUD superposés : hud2:h-virage:17 / c-tour (hud2:grand:3)",
+        "HUD superposé à la glace : glace-g2"
+      ]
+    ]
+  },
+  "stabilise": {
+    "run": 44833135460,
+    "artifact": 14678755671,
+    "statut": "incomplet, une seule image neutre ; timeout avant la pose stabilisée"
+  },
+  "decision": "Ne pas fusionner 0.2.72 ; annonce/position-tour et santé/glace restent bloquants en duo compact."
+}
