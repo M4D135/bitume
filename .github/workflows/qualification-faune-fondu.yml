@@ -1,0 +1,61 @@
+name: Transition de distance de la faune
+
+on:
+  push:
+    branches: ['codex/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: faune-fondu-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fondu:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[capture-faune-fondu]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        cas: [low-jour, high-jour, low-nuit, high-nuit]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Identifier et reconstruire le candidat exact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qualification-fondu
+          git rev-parse HEAD > qualification-fondu/COMMIT.txt
+          git rev-parse 'HEAD^{tree}' > qualification-fondu/TREE.txt
+          node --version > qualification-fondu/ENVIRONNEMENT.txt
+          google-chrome --version >> qualification-fondu/ENVIRONNEMENT.txt
+          python3 construire.py > qualification-fondu/reconstruction.log 2>&1
+          sha256sum dist/bitume.html > qualification-fondu/HTML-SHA256.txt
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+          node --check tools/qualification/faune-fondu.mjs
+          sha256sum tools/controle-visuel.mjs tools/qualification/faune-fondu.mjs > qualification-fondu/OUTILS-SHA256.txt
+      - name: Capturer la transition opaque et transparente de jour et de nuit
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout --signal=TERM --kill-after=20s 11m node tools/qualification/faune-fondu.mjs \
+            --url "file://$GITHUB_WORKSPACE/dist/bitume.html" --sortie qualification-fondu/images \
+            --cas "${{ matrix.cas }}" --chrome /usr/bin/google-chrome > qualification-fondu/captures.log 2>&1
+          sha256sum --check qualification-fondu/HTML-SHA256.txt
+          sha256sum --check qualification-fondu/OUTILS-SHA256.txt
+      - name: Conserver rapports et images meme en cas de refus
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-faune-fondu-${{ matrix.cas }}-${{ github.sha }}
+          path: qualification-fondu/
+          if-no-files-found: error
+          retention-days: 14

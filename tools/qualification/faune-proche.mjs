@@ -51,6 +51,10 @@ export function preparerFaune(s) {
   if (!ancre) throw new Error('Ancre témoin nécessaire pour Faune désactivée');
   const reference = J.reference({ ...initial.reference, depart: ancre.depart, vitesse: 0, pilote: false,
     qualite: s.qualite, faune: s.faune, vue: 'poursuite', retro: 'non' });
+  // reference() place les états de conduite ; les corps PhysX existent déjà sur
+  // la grille. Demander leur replacement natif une seule fois, avant la chauffe,
+  // pour que la première lecture physique ne ramène pas la séance sur la grille.
+  for (const v of J.session.course.voitures) v.etat.repositionnements = (v.etat.repositionnements || 0) + 1;
   globalThis.__BITUME_REFERENCE = J.session;
   const F = globalThis.__FAUNE_PROCHE = { ancre, cas: s.id, pas: 0, dessins: 0, objetsCible: 0, horloges: null, actifs: null };
   const pas = A.pas, dessiner = A.dessiner;
@@ -83,7 +87,14 @@ export function observerFaune() {
   const droite = d[0] * cy + d[2] * sy, haut = -d[0] * sy * sp + d[1] * cp + d[2] * cy * sp;
   const profondeur = d[0] * sy * cp + d[1] * sp - d[2] * cy * cp, tan = Math.tan(cam.fov * Math.PI / 360);
   const x = droite / (profondeur * tan * innerWidth / innerHeight), y = haut / (profondeur * tan);
+  const joueur = S.course.joueur.etat, c = S.course.c, route = BITUME.circuit.echantillon(c, joueur.s);
+  const corps = S.course.physique.world.readPose(joueur._physx.id);
+  const placement = { demande: F.ancre.depart, reel: joueur.s,
+    ecartAbscisse: Math.abs(BITUME.circuit.ecart(c, F.ancre.depart, joueur.s)),
+    ecartCorpsEtat: Math.hypot(corps[0] - (route.x - Math.sin(route.cap) * joueur.d),
+      corps[2] - (route.z + Math.cos(route.cap) * joueur.d)) };
   return { type: S.type, ecran: J.ecran, vue: S.vue, cameraImposee: J.camera !== null,
+    placement,
     faune: J.reglages.faune, populationPresente: !!E, stats, appels: { pas: F.pas, dessins: F.dessins }, objetsCible: F.objetsCible,
     endormisComparables, horlogesEndormiesStables, cible: { espece: F.ancre.espece, animal: F.ancre.animal, position: cible,
       projection: { x, y, profondeur, pixelX: (x + 1) * innerWidth / 2, pixelY: (1 - y) * innerHeight / 2 } },
@@ -102,6 +113,8 @@ export function verifierFaune(r, s) {
     const q = im.observation;
     if (!q) { erreurs.push('Observation absente'); continue; }
     if (q.type !== 'course' || q.ecran !== 'course' || q.vue !== 'poursuite' || q.cameraImposee || q.faune !== s.faune) erreurs.push('Vue ou réglage réel incorrect');
+    if (!q.placement || !Number.isFinite(q.placement.ecartAbscisse) || !Number.isFinite(q.placement.ecartCorpsEtat)
+      || q.placement.ecartAbscisse > 2 || q.placement.ecartCorpsEtat > .5) erreurs.push('Placement réel PhysX différent du départ demandé');
     if (q.glErreur || q.glPerdu) erreurs.push('Erreur WebGL');
     if (im.vues?.scene?.noir > .97 && im.vues.scene.luminance < .025) erreurs.push('Vue noire');
     if (s.faune === 'off') {

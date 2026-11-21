@@ -11,9 +11,12 @@ build restent à recevoir avant livraison. Les deux bancs hérités de .86 sont 
 dans la branche locale `codex/bitume-faune-demos-validation-20261121` : Baïkal vérifie
 le dégagement réel et une population effectivement animée ; le cycle PhysX charge
 la dépendance des champs de vue. Le runtime et son empreinte .87 sont conservés.
-Le push de .87 est bloqué par le contrôle automatique d’autorisation ; le navigateur
-local ne peut pas ouvrir ses sockets. Aucune capture .87 ni CI distante réussie
-n’est annoncée à partir de cette réception locale.
+Le candidat autorisé est publié sous `dbda6a7`, arbre identique à `4200e03`.
+La CI et les démos exactes sont en réception. Le premier banc faune proche a refusé
+son propre placement : états de conduite déplacés, corps PhysX restés sur la grille.
+Le complément demande le replacement natif avant chauffe et vérifie la pose réelle.
+Les images de la transition opaque/FX restent requises avant main.
+[Réception distante .87](rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-DISTANTE-0287.json).
 [Preuve du candidat](rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0287.json).
 [Réception locale .87](rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json) : **203/203 suites Node et 8/8 contrôles Python** reçus, sans seuil assoupli. Les dix premiers échecs de fixtures absentes restent consignés ; leurs reprises réussissent après restauration des 82 fichiers exacts. La transition opaque/FX à 144 m en Légère et 288 m en Fine reste à examiner dans le rendu réel de jour et de nuit.
 

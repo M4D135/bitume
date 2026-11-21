@@ -1,45 +1,35 @@
 # BITUME — reprise courte
 
-## Candidat 0.2.87 — faune proche et démos des circuits
+## Réception de la 0.2.87 — faune proche et démos
 
-Base `main` : `7fb5dcc` / 0.2.85. Physique p15 et FERRO 0.3.15 conservés.
-Branche locale de réception : `codex/bitume-faune-demos-validation-20261121`.
-Source du runtime : `5e89033`, conservée à l’identique.
+Base main : `7fb5dcc` / .85. Physique p15 et FERRO 0.3.15 conservés.
+Le candidat autorisé `4200e03` est publié sur GitHub sous `dbda6a7` :
+**même arbre exact** `49fffaac9612fc407eff02c3b608ce93b7d57b99`.
+HTML .87 : `d11860da1224be393a24f7d6873f466ad5448b0984e6569887c135c02e6ff9ff`.
 
-- **F1/F2 préparés** : habitats proches des bords, animaux proches visibles en Légère,
-  sommeil hors des champs utiles, horloge locale sans rattrapage au réveil.
-- **J1/J2 et rétros** : six champs persistants, mêmes caméras réfléchies que le rendu ;
-  les glaces désactivées ne réactivent plus largement les animaux derrière la voiture.
-- **D1/D2 préparés** : démos route/course, tracé et lieux réels des neuf circuits ;
-  plans herbe/faune/flore et gros plans détachés du circuit retirés.
-- **Préparation cinéma** : réutilisation des formes procédurales, catalogue des
-  primitives construit au plus une fois par décor ; gardes de caméra maintenues.
+- Faune proche de la route, sommeil hors des vues utiles, J1/J2 et rétros actifs.
+- Démonstrations des neuf circuits centrées sur route, tracé et lieu.
+- Fondu de portée ajouté en .87 ; aucun changement de conduite ni de moteur.
+- Qualification locale : 203/203 suites Node et 8/8 contrôles Python.
+- CI distante `44952214196` en cours. Démonstrations `44952214169` :
+  81 images des neuf circuits inspectées, sans refus ; sécurité reçue, météo en cours.
 
-Les 81 images des neuf circuits de .86 sont reçues : route/tracé/lieu cadrés aux
-trois instants, sans refus visuel. La revue a détecté une coupure à la portée des
-animaux. **.87 ajoute le fondu réel FERRO et son budget FX déclaré au chargement.**
+La première capture de proximité a correctement refusé high/low : le banc
+plaçait les états de conduite près d’un habitat mais laissait les corps PhysX
+sur la grille. La branche complémentaire corrige uniquement cet outillage,
+demande le replacement natif avant chauffe et contrôle le placement réel.
+Le témoin Faune désactivée réussit. Ne pas recevoir les images high/low initiales.
 
-Build .87 reconstruit à l’identique. Les deux bancs encore refusés dans la CI .86
-sont corrigés : Baïkal contrôle le vrai dégagement et anime les groupes observés
-pendant 90 s ; le cycle PhysX charge le raccord des champs de faune. La qualification
-locale complète réussit : **203/203 suites Node et 8/8 contrôles Python**. Aucun changement du jeu ni du numéro de version.
+Branche complémentaire : `codex/bitume-faune-demos-reception-0287-20261121`.
+Elle ajoute le contrôle visuel du passage opaque/FX, low/high, jour/nuit,
+et conserve le HTML .87 à l’identique. Réception de ces pixels avant main.
 
-**Publication .87 encore bloquée par le contrôle automatique d’autorisation.**
-Le dépôt public cible est `M4D135/bitume`, branche indiquée ci-dessus ; aucun push
-de .87 n’a abouti. Le navigateur local échoue avant WebGL (`socket: EPERM`).
-Les captures .86 ne qualifient donc toujours pas le rendu .87. Recevoir les images
-proches low/high/off, les neuf démos et la transition opaque/FX de distance avant
-intégration. Aucun FPS matériel annoncé.
-
-[Fiche et progression](docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md)
-· [Candidat exact](docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0287.json)
-· [Réception locale](docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json)
-· [État précédent .85](docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/BASE-0285.md).
+[Reçu distant](docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-DISTANTE-0287.json)
+· [Fiche](docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md)
 
 ## Suite
 
-1. Publier la branche de réception après déblocage de l’autorisation ; le commit
-   de réception déclenche les deux workflows de captures et la CI complète.
-2. Recevoir les résultats du commit exact, inspecter le fondu puis intégrer sur main.
-3. Conserver les essais matériels Xbox/iOS et les autres lots ouverts.
-4. Larche → Vinadio : poursuivre L3/L4, puis ajouter sa démo lors de l’entrée au catalogue.
+1. Recevoir CI, neuf démos, faune proche corrigée et transition de distance.
+2. Corriger tout refus réel, puis intégrer le candidat qualifié sur main.
+3. Conserver essais matériels Xbox/iOS et autres lots ; aucun FPS matériel annoncé.
+4. Larche → Vinadio : L3/L4 puis sa démo lors de l’entrée au catalogue.

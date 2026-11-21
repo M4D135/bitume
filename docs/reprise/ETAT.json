@@ -8,14 +8,14 @@
     "circuits": 9,
     "commit_fusion": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
     "tete_qualifiee": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
-    "statut": "qualification_locale_reussie_attente_publication_et_images",
+    "statut": "candidat_publie_reception_en_cours",
     "lot": "faune_proche_demos_circuits",
     "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
     "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md",
     "dernieres_demandes": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
     "dernier_lot_clos": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
-    "prochaine_action": "Obtenir le déblocage de publication du candidat .87, pousser la branche de réception, puis recevoir CI et images exactes avant main.",
-    "branche_candidate": "codex/bitume-faune-demos-validation-20261121",
+    "prochaine_action": "Recevoir CI et démos dbda6a7, puis faune proche corrigée et transition opaque/FX avant main.",
+    "branche_candidate": "codex/bitume-faune-demos-reception-0287-20261121",
     "version_candidate": "0.2.87",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md"
@@ -316,7 +316,7 @@
     "site_deploye": false
   },
   "candidat_faune_demos_0287": {
-    "statut": "qualifie_localement_publication_bloquee",
+    "statut": "publie_sur_branche_reception_en_cours",
     "branche": "codex/bitume-faune-demos-validation-20261121",
     "version": "0.2.87",
     "recu": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0287.json",
@@ -324,6 +324,10 @@
     "site_deploye": false,
     "reception_locale": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json",
     "suites_node": 203,
-    "tests_python": 8
+    "tests_python": 8,
+    "commit_publie": "dbda6a72f7600f0232bda739ff316491efa83786",
+    "arbre_publie": "49fffaac9612fc407eff02c3b608ce93b7d57b99",
+    "branche_reception": "codex/bitume-faune-demos-reception-0287-20261121",
+    "reception_distante": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-DISTANTE-0287.json"
   }
 }

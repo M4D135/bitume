@@ -1,0 +1,51 @@
+{
+  "date": "2026-11-21",
+  "version": "0.2.87",
+  "statut": "reception_en_cours",
+  "publication": {
+    "commit_local_autorise": "4200e036c8fd339b26adcc3040ec038ca23b3e11",
+    "commit_github": "dbda6a72f7600f0232bda739ff316491efa83786",
+    "arbre_identique": "49fffaac9612fc407eff02c3b608ce93b7d57b99",
+    "branche": "codex/bitume-faune-demos-validation-20261121",
+    "url": "https://github.com/M4D135/bitume/commit/dbda6a72f7600f0232bda739ff316491efa83786",
+    "autorisation": "Autorisation explicite retrouvée et publication confirmée par lecture GitHub et git ls-remote."
+  },
+  "html_sha256": "d11860da1224be393a24f7d6873f466ad5448b0984e6569887c135c02e6ff9ff",
+  "ci": {
+    "run": 44952214196,
+    "statut": "en_cours"
+  },
+  "demos": {
+    "run": 44952214169,
+    "statut": "en_cours",
+    "circuits": 9,
+    "png_circuits": 81,
+    "circuits_inspectes": true,
+    "refus_visuels_circuits": 0,
+    "png_securite": 6,
+    "meteo": "en_cours"
+  },
+  "faune_proche_initiale": {
+    "run": 44952214251,
+    "job": 136992414339,
+    "artifact": 14725649761,
+    "conclusion": "failure",
+    "images": 9,
+    "cas_off": "reussi",
+    "cas_low_high": "refuses",
+    "cause": "Le banc modifiait le départ dans les états de conduite via reference(), mais les corps PhysX conservaient la grille. Le premier pas rétablissait les voitures sur la grille, loin des animaux ; les assertions ont correctement refusé ces images.",
+    "correction": "Demander une fois le replacement natif des 12 voitures avant chauffe ; vérifier ensuite écart de départ <=2m et cohérence corps/état <=0.5m. Aucun changement de jeu."
+  },
+  "complement": {
+    "branche": "codex/bitume-faune-demos-reception-0287-20261121",
+    "runtime_modifie": false,
+    "faune_proche": "placement corrigé, réception à exécuter",
+    "fondu": "caméra de diagnostic, low/high, jour/nuit, entrée FX, extinction et retour opaque ; réception pixels requise"
+  },
+  "limites": [
+    "Pas de validation matérielle Xbox/iOS ni de FPS annoncé.",
+    "Les captures de proximité ne qualifient pas la transition opaque/FX.",
+    "Les contrôles multi-vues J1/J2 et miroirs sont numériques ; pas de nouvelle réception visuelle du split ou des rétros.",
+    "Chrome local refuse la création de socket (EPERM) avant WebGL ; captures réalisées dans GitHub Actions."
+  ]
+}
