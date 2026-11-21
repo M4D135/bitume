@@ -73,7 +73,7 @@ test('les gestes lèvent un vrai gant au-dessus du jonc, avec les doigts lisible
   assert.ok(hauteurs.salut > hauteurs.poing + .035, 'silhouette du salut reconnaissable');
 });
 
-test('poses partagées, os de 21/23 cm et retour exact au volant pour les deux côtés', () => {
+test('poses partagées, os de 27/29 cm et retour exact au volant pour les deux côtés', () => {
   const modele = creer(), ev = pose(), nombreFormes = Object.keys(V.FORMES).length;
   let poses = 0;
   for (const volant of [-1, -.5, 0, .5, 1]) for (const geste of ['majeur', 'poing', 'salut']) for (const gesteCote of [-1, 1]) {
@@ -84,8 +84,8 @@ test('poses partagées, os de 21/23 cm et retour exact au volant pour les deux c
       const A = H.articulations, reference = instantane(H);
       assert.deepEqual(Array.from(A.slice(autre, autre + 9)), brasAutre, 'l’autre main garde sa prise');
       for (const j of [0, 9]) {
-        assert.ok(Math.abs(distance(point(A, j), point(A, j + 3)) - .21) < 1e-12, 'humérus constant');
-        assert.ok(Math.abs(distance(point(A, j + 3), point(A, j + 6)) - .23) < 1e-12, 'avant-bras constant');
+        assert.ok(Math.abs(distance(point(A, j), point(A, j + 3)) - .27) < 1e-12, 'humérus constant');
+        assert.ok(Math.abs(distance(point(A, j + 3), point(A, j + 6)) - .29) < 1e-12, 'avant-bras constant');
         assert.ok(A[j + 4] < Math.max(A[j + 1], A[j + 7]), 'coude replié sous épaule/poignet, sans inversion');
       }
       for (const detail of ['complet', 'moyen', 'simple']) { V.poser(modele, ev, [], { detail }); assert.equal(instantane(H), reference); }

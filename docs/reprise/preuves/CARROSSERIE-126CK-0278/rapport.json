@@ -1,0 +1,1129 @@
+{
+  "format": "bitume-carrosserie-module-1",
+  "reference": "2aaa67f",
+  "variantes": {
+    "reference": {
+      "empreintes": {
+        "src/moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+        "src/carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+        "src/main.js": "a9d0e01bad528131a2a52a55dde6c1c4c28ac1f1c540819a102a95666627e7b6",
+        "src/humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+        "src/humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+        "src/ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+        "src/pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+        "src/usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+        "src/chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+        "src/conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+        "src/cockpit-matieres.js": "48c926302b0bd8c0046f529e10d7472b2816064581c996c111ed6364d62f1a5e",
+        "src/voiture.js": "13a96a4d8b596f70fe085829f68ec41b4202443151430716cd9e44f97bdd9508"
+      },
+      "images": [
+        {
+          "id": "trois-quarts",
+          "camera": {
+            "pos": [
+              4.7,
+              3,
+              -4.2
+            ],
+            "yaw": -2.3000737074911686,
+            "pitch": -0.3844295847101201,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": false,
+          "pose": {
+            "volant": 0,
+            "rapportAvant": 2,
+            "rapport": 3,
+            "passage": 1,
+            "regime": 9000,
+            "kmh": 150,
+            "v": 35,
+            "t": 12,
+            "alat": 0,
+            "along": 0,
+            "regard": 0,
+            "geste": null,
+            "gesteIntensite": 0,
+            "gesteCote": -1,
+            "gestePhase": 0.43,
+            "ciel": [
+              0.68,
+              0.72,
+              0.75
+            ],
+            "brume": [
+              0.68,
+              0.72,
+              0.75
+            ]
+          },
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "articulations": [
+            -0.09,
+            0.6,
+            -0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            -0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            -0.12475201730642223,
+            -0.09,
+            0.6,
+            0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            0.12475201730642223
+          ],
+          "objets": 241,
+          "resolution": [
+            960,
+            640
+          ],
+          "statistiques": {
+            "triangles": 37353,
+            "instances": 242,
+            "backend": "canvas2d"
+          },
+          "erreursGL": [],
+          "fichier": "reference/trois-quarts.png",
+          "sha256": "e5a209bcd623629559f9b16770d9debafdb5e243bf1e31d98a25acd9de841b17",
+          "octets": 246296
+        },
+        {
+          "id": "profil",
+          "camera": {
+            "pos": [
+              0,
+              1.5,
+              -6.8
+            ],
+            "yaw": 3.141592653589793,
+            "pitch": -0.16037544397595074,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": false,
+          "pose": {
+            "volant": 0,
+            "rapportAvant": 2,
+            "rapport": 3,
+            "passage": 1,
+            "regime": 9000,
+            "kmh": 150,
+            "v": 35,
+            "t": 12,
+            "alat": 0,
+            "along": 0,
+            "regard": 0,
+            "geste": null,
+            "gesteIntensite": 0,
+            "gesteCote": -1,
+            "gestePhase": 0.43,
+            "ciel": [
+              0.68,
+              0.72,
+              0.75
+            ],
+            "brume": [
+              0.68,
+              0.72,
+              0.75
+            ]
+          },
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "articulations": [
+            -0.09,
+            0.6,
+            -0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            -0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            -0.12475201730642223,
+            -0.09,
+            0.6,
+            0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            0.12475201730642223
+          ],
+          "objets": 241,
+          "resolution": [
+            960,
+            640
+          ],
+          "statistiques": {
+            "triangles": 36743,
+            "instances": 242,
+            "backend": "canvas2d"
+          },
+          "erreursGL": [],
+          "fichier": "reference/profil.png",
+          "sha256": "8dc426146afac9c8f1bc78110810ca9b5100f8c63444cdfed4a7673ea90f96d2",
+          "octets": 178916
+        },
+        {
+          "id": "dessus",
+          "camera": {
+            "pos": [
+              -0.001,
+              7.5,
+              0
+            ],
+            "yaw": 1.5707963267948966,
+            "pitch": -1.5706629934623535,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": false,
+          "pose": {
+            "volant": 0,
+            "rapportAvant": 2,
+            "rapport": 3,
+            "passage": 1,
+            "regime": 9000,
+            "kmh": 150,
+            "v": 35,
+            "t": 12,
+            "alat": 0,
+            "along": 0,
+            "regard": 0,
+            "geste": null,
+            "gesteIntensite": 0,
+            "gesteCote": -1,
+            "gestePhase": 0.43,
+            "ciel": [
+              0.68,
+              0.72,
+              0.75
+            ],
+            "brume": [
+              0.68,
+              0.72,
+              0.75
+            ]
+          },
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "articulations": [
+            -0.09,
+            0.6,
+            -0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            -0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            -0.12475201730642223,
+            -0.09,
+            0.6,
+            0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            0.12475201730642223
+          ],
+          "objets": 241,
+          "resolution": [
+            960,
+            640
+          ],
+          "statistiques": {
+            "triangles": 37157,
+            "instances": 242,
+            "backend": "canvas2d"
+          },
+          "erreursGL": [],
+          "fichier": "reference/dessus.png",
+          "sha256": "f3240ecc413636edf23d0c48b7a8a7de75f85e8e94d878c2de72a95e0bc3a5a8",
+          "octets": 181644
+        },
+        {
+          "id": "avant",
+          "camera": {
+            "pos": [
+              5.3,
+              1.8,
+              0
+            ],
+            "yaw": -1.5707963267948966,
+            "pitch": -0.29332804977876703,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": false,
+          "pose": {
+            "volant": 0,
+            "rapportAvant": 2,
+            "rapport": 3,
+            "passage": 1,
+            "regime": 9000,
+            "kmh": 150,
+            "v": 35,
+            "t": 12,
+            "alat": 0,
+            "along": 0,
+            "regard": 0,
+            "geste": null,
+            "gesteIntensite": 0,
+            "gesteCote": -1,
+            "gestePhase": 0.43,
+            "ciel": [
+              0.68,
+              0.72,
+              0.75
+            ],
+            "brume": [
+              0.68,
+              0.72,
+              0.75
+            ]
+          },
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "articulations": [
+            -0.09,
+            0.6,
+            -0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            -0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            -0.12475201730642223,
+            -0.09,
+            0.6,
+            0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            0.12475201730642223
+          ],
+          "objets": 241,
+          "resolution": [
+            960,
+            640
+          ],
+          "statistiques": {
+            "triangles": 37268,
+            "instances": 242,
+            "backend": "canvas2d"
+          },
+          "erreursGL": [],
+          "fichier": "reference/avant.png",
+          "sha256": "54eddca1ee29c95149b96a985d612059667d0b479f47b119f29b442932e4f418",
+          "octets": 209860
+        },
+        {
+          "id": "lod-moyen",
+          "camera": {
+            "pos": [
+              4.7,
+              3,
+              -4.2
+            ],
+            "yaw": -2.3000737074911686,
+            "pitch": -0.3844295847101201,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "moyen",
+          "cockpit": false,
+          "pose": {
+            "volant": 0,
+            "rapportAvant": 2,
+            "rapport": 3,
+            "passage": 1,
+            "regime": 9000,
+            "kmh": 150,
+            "v": 35,
+            "t": 12,
+            "alat": 0,
+            "along": 0,
+            "regard": 0,
+            "geste": null,
+            "gesteIntensite": 0,
+            "gesteCote": -1,
+            "gestePhase": 0.43,
+            "ciel": [
+              0.68,
+              0.72,
+              0.75
+            ],
+            "brume": [
+              0.68,
+              0.72,
+              0.75
+            ]
+          },
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "articulations": [
+            -0.09,
+            0.6,
+            -0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            -0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            -0.12475201730642223,
+            -0.09,
+            0.6,
+            0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            0.12475201730642223
+          ],
+          "objets": 87,
+          "resolution": [
+            960,
+            640
+          ],
+          "statistiques": {
+            "triangles": 13717,
+            "instances": 88,
+            "backend": "canvas2d"
+          },
+          "erreursGL": [],
+          "fichier": "reference/lod-moyen.png",
+          "sha256": "9075e4d658eb3a98181c095edb4bfe756f7baeae780833a8876d137b78c28077",
+          "octets": 220729
+        },
+        {
+          "id": "lod-simple",
+          "camera": {
+            "pos": [
+              4.7,
+              3,
+              -4.2
+            ],
+            "yaw": -2.3000737074911686,
+            "pitch": -0.3844295847101201,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "simple",
+          "cockpit": false,
+          "pose": {
+            "volant": 0,
+            "rapportAvant": 2,
+            "rapport": 3,
+            "passage": 1,
+            "regime": 9000,
+            "kmh": 150,
+            "v": 35,
+            "t": 12,
+            "alat": 0,
+            "along": 0,
+            "regard": 0,
+            "geste": null,
+            "gesteIntensite": 0,
+            "gesteCote": -1,
+            "gestePhase": 0.43,
+            "ciel": [
+              0.68,
+              0.72,
+              0.75
+            ],
+            "brume": [
+              0.68,
+              0.72,
+              0.75
+            ]
+          },
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "articulations": [
+            -0.09,
+            0.6,
+            -0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            -0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            -0.12475201730642223,
+            -0.09,
+            0.6,
+            0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            0.12475201730642223
+          ],
+          "objets": 66,
+          "resolution": [
+            960,
+            640
+          ],
+          "statistiques": {
+            "triangles": 3848,
+            "instances": 67,
+            "backend": "canvas2d"
+          },
+          "erreursGL": [],
+          "fichier": "reference/lod-simple.png",
+          "sha256": "2bbedc746966993992301a3107492291c1853d098707868cab3d28bba17d1812",
+          "octets": 185041
+        }
+      ],
+      "environnement": {
+        "navigateur": "Node v24.22.3 / @napi-rs/canvas",
+        "webgl": null,
+        "gpu": null,
+        "backend": "canvas2d"
+      }
+    },
+    "candidat": {
+      "empreintes": {
+        "src/moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+        "src/carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+        "src/main.js": "a9d0e01bad528131a2a52a55dde6c1c4c28ac1f1c540819a102a95666627e7b6",
+        "src/humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+        "src/humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+        "src/ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+        "src/pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+        "src/usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+        "src/chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+        "src/conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+        "src/cockpit-matieres.js": "48c926302b0bd8c0046f529e10d7472b2816064581c996c111ed6364d62f1a5e",
+        "src/voiture.js": "289766f96b97d8755580394d0f3fa50317b20bb8b8d87058877834cbbf215cd5"
+      },
+      "images": [
+        {
+          "id": "trois-quarts",
+          "camera": {
+            "pos": [
+              4.7,
+              3,
+              -4.2
+            ],
+            "yaw": -2.3000737074911686,
+            "pitch": -0.3844295847101201,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": false,
+          "pose": {
+            "volant": 0,
+            "rapportAvant": 2,
+            "rapport": 3,
+            "passage": 1,
+            "regime": 9000,
+            "kmh": 150,
+            "v": 35,
+            "t": 12,
+            "alat": 0,
+            "along": 0,
+            "regard": 0,
+            "geste": null,
+            "gesteIntensite": 0,
+            "gesteCote": -1,
+            "gestePhase": 0.43,
+            "ciel": [
+              0.68,
+              0.72,
+              0.75
+            ],
+            "brume": [
+              0.68,
+              0.72,
+              0.75
+            ]
+          },
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "articulations": [
+            -0.09,
+            0.6,
+            -0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            -0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            -0.12475201730642223,
+            -0.09,
+            0.6,
+            0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            0.12475201730642223
+          ],
+          "objets": 243,
+          "resolution": [
+            960,
+            640
+          ],
+          "statistiques": {
+            "triangles": 37699,
+            "instances": 244,
+            "backend": "canvas2d"
+          },
+          "erreursGL": [],
+          "fichier": "candidat/trois-quarts.png",
+          "sha256": "68c18b45bee6d209091a5d5b5de003d1b2579c1e41e3203b8a5dd5c42b7e3899",
+          "octets": 244115
+        },
+        {
+          "id": "profil",
+          "camera": {
+            "pos": [
+              0,
+              1.5,
+              -6.8
+            ],
+            "yaw": 3.141592653589793,
+            "pitch": -0.16037544397595074,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": false,
+          "pose": {
+            "volant": 0,
+            "rapportAvant": 2,
+            "rapport": 3,
+            "passage": 1,
+            "regime": 9000,
+            "kmh": 150,
+            "v": 35,
+            "t": 12,
+            "alat": 0,
+            "along": 0,
+            "regard": 0,
+            "geste": null,
+            "gesteIntensite": 0,
+            "gesteCote": -1,
+            "gestePhase": 0.43,
+            "ciel": [
+              0.68,
+              0.72,
+              0.75
+            ],
+            "brume": [
+              0.68,
+              0.72,
+              0.75
+            ]
+          },
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "articulations": [
+            -0.09,
+            0.6,
+            -0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            -0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            -0.12475201730642223,
+            -0.09,
+            0.6,
+            0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            0.12475201730642223
+          ],
+          "objets": 243,
+          "resolution": [
+            960,
+            640
+          ],
+          "statistiques": {
+            "triangles": 36995,
+            "instances": 244,
+            "backend": "canvas2d"
+          },
+          "erreursGL": [],
+          "fichier": "candidat/profil.png",
+          "sha256": "150b01fb7e61ee2a2653871a70dcf9e4026d846fa78ef0fb07067c49a7d3c5d0",
+          "octets": 177073
+        },
+        {
+          "id": "dessus",
+          "camera": {
+            "pos": [
+              -0.001,
+              7.5,
+              0
+            ],
+            "yaw": 1.5707963267948966,
+            "pitch": -1.5706629934623535,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": false,
+          "pose": {
+            "volant": 0,
+            "rapportAvant": 2,
+            "rapport": 3,
+            "passage": 1,
+            "regime": 9000,
+            "kmh": 150,
+            "v": 35,
+            "t": 12,
+            "alat": 0,
+            "along": 0,
+            "regard": 0,
+            "geste": null,
+            "gesteIntensite": 0,
+            "gesteCote": -1,
+            "gestePhase": 0.43,
+            "ciel": [
+              0.68,
+              0.72,
+              0.75
+            ],
+            "brume": [
+              0.68,
+              0.72,
+              0.75
+            ]
+          },
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "articulations": [
+            -0.09,
+            0.6,
+            -0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            -0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            -0.12475201730642223,
+            -0.09,
+            0.6,
+            0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            0.12475201730642223
+          ],
+          "objets": 243,
+          "resolution": [
+            960,
+            640
+          ],
+          "statistiques": {
+            "triangles": 37437,
+            "instances": 244,
+            "backend": "canvas2d"
+          },
+          "erreursGL": [],
+          "fichier": "candidat/dessus.png",
+          "sha256": "4f9cc6b55cc508a7ac422e93fa19d412a6c1d52b677fdda61281aa4a0955ebd7",
+          "octets": 176706
+        },
+        {
+          "id": "avant",
+          "camera": {
+            "pos": [
+              5.3,
+              1.8,
+              0
+            ],
+            "yaw": -1.5707963267948966,
+            "pitch": -0.29332804977876703,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "complet",
+          "cockpit": false,
+          "pose": {
+            "volant": 0,
+            "rapportAvant": 2,
+            "rapport": 3,
+            "passage": 1,
+            "regime": 9000,
+            "kmh": 150,
+            "v": 35,
+            "t": 12,
+            "alat": 0,
+            "along": 0,
+            "regard": 0,
+            "geste": null,
+            "gesteIntensite": 0,
+            "gesteCote": -1,
+            "gestePhase": 0.43,
+            "ciel": [
+              0.68,
+              0.72,
+              0.75
+            ],
+            "brume": [
+              0.68,
+              0.72,
+              0.75
+            ]
+          },
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "articulations": [
+            -0.09,
+            0.6,
+            -0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            -0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            -0.12475201730642223,
+            -0.09,
+            0.6,
+            0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            0.12475201730642223
+          ],
+          "objets": 243,
+          "resolution": [
+            960,
+            640
+          ],
+          "statistiques": {
+            "triangles": 37606,
+            "instances": 244,
+            "backend": "canvas2d"
+          },
+          "erreursGL": [],
+          "fichier": "candidat/avant.png",
+          "sha256": "227ee7c8a342f2549e2ea596ba79c7ca75e7a7e599aea63448a8196b8830b7ce",
+          "octets": 208984
+        },
+        {
+          "id": "lod-moyen",
+          "camera": {
+            "pos": [
+              4.7,
+              3,
+              -4.2
+            ],
+            "yaw": -2.3000737074911686,
+            "pitch": -0.3844295847101201,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "moyen",
+          "cockpit": false,
+          "pose": {
+            "volant": 0,
+            "rapportAvant": 2,
+            "rapport": 3,
+            "passage": 1,
+            "regime": 9000,
+            "kmh": 150,
+            "v": 35,
+            "t": 12,
+            "alat": 0,
+            "along": 0,
+            "regard": 0,
+            "geste": null,
+            "gesteIntensite": 0,
+            "gesteCote": -1,
+            "gestePhase": 0.43,
+            "ciel": [
+              0.68,
+              0.72,
+              0.75
+            ],
+            "brume": [
+              0.68,
+              0.72,
+              0.75
+            ]
+          },
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "articulations": [
+            -0.09,
+            0.6,
+            -0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            -0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            -0.12475201730642223,
+            -0.09,
+            0.6,
+            0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            0.12475201730642223
+          ],
+          "objets": 88,
+          "resolution": [
+            960,
+            640
+          ],
+          "statistiques": {
+            "triangles": 13931,
+            "instances": 89,
+            "backend": "canvas2d"
+          },
+          "erreursGL": [],
+          "fichier": "candidat/lod-moyen.png",
+          "sha256": "cd02426da51d97c5d0071f3e0c790eeafe0cb271a98ff11dbeacf1e8fd3705c9",
+          "octets": 219938
+        },
+        {
+          "id": "lod-simple",
+          "camera": {
+            "pos": [
+              4.7,
+              3,
+              -4.2
+            ],
+            "yaw": -2.3000737074911686,
+            "pitch": -0.3844295847101201,
+            "roll": 0,
+            "fov": 40,
+            "near": 0.045,
+            "far": 180
+          },
+          "detailPrescrit": "simple",
+          "cockpit": false,
+          "pose": {
+            "volant": 0,
+            "rapportAvant": 2,
+            "rapport": 3,
+            "passage": 1,
+            "regime": 9000,
+            "kmh": 150,
+            "v": 35,
+            "t": 12,
+            "alat": 0,
+            "along": 0,
+            "regard": 0,
+            "geste": null,
+            "gesteIntensite": 0,
+            "gesteCote": -1,
+            "gestePhase": 0.43,
+            "ciel": [
+              0.68,
+              0.72,
+              0.75
+            ],
+            "brume": [
+              0.68,
+              0.72,
+              0.75
+            ]
+          },
+          "oeil": [
+            -0.062,
+            0.79,
+            0
+          ],
+          "assise": [
+            -0.1,
+            0.277,
+            0
+          ],
+          "articulations": [
+            -0.09,
+            0.6,
+            -0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            -0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            -0.12475201730642223,
+            -0.09,
+            0.6,
+            0.16,
+            0.07411024917065347,
+            0.4724546115410438,
+            0.19,
+            0.2507199602438402,
+            0.6045595346478837,
+            0.12475201730642223
+          ],
+          "objets": 67,
+          "resolution": [
+            960,
+            640
+          ],
+          "statistiques": {
+            "triangles": 3937,
+            "instances": 68,
+            "backend": "canvas2d"
+          },
+          "erreursGL": [],
+          "fichier": "candidat/lod-simple.png",
+          "sha256": "74cb4683b855ca27fc10afe85023e3470c857959ac8f1faa74bff19eda3bad7b",
+          "octets": 187508
+        }
+      ],
+      "environnement": {
+        "navigateur": "Node v24.22.3 / @napi-rs/canvas",
+        "webgl": null,
+        "gpu": null,
+        "backend": "canvas2d"
+      }
+    }
+  },
+  "limites": [
+    "Fallback Canvas2D de FERRO ; ne qualifie ni WebGL2, ni shaders, ni reflets.",
+    "Module isolé et poses prescrites ; aucun jeu.js, HUD, seuil de LOD ou FPS matériel qualifié.",
+    "Cotes et train roulant historiques conservés ; proportions visuelles, pas relevé constructeur.",
+    "Le poste de la base reste visible dans ces témoins ; ce lot ne modifie aucune pièce du poste."
+  ],
+  "outil": "007e537669f295eee8b2d0390cadc3da64a4930c6fb7a047f5cf260b9af2d9ac"
+}

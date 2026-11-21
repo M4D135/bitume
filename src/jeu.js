@@ -1797,56 +1797,17 @@
   $('pr-reglages').addEventListener('click', () => { retirerPret(); retourReglages = 'prets'; aller('reglages'); });
 
   // ---------------------------------------------------------------- caméras
-  // Champ du cockpit : réglage vertical, comme FERRO, en 16:9, sans réécrire la valeur mémorisée. Le cadre étroit garde
-  // d'abord la diagonale de référence. L'habitacle étant désormais métrique et commun, il ne peut plus rapprocher
-  // ses glaces pour un téléphone : la projection s'ouvre seulement assez pour contenir les deux vrais montages.
-  // La discrète ouverture de vitesse demeure ; la position des yeux et la géométrie ne dépendent pas de l'écran.
-  // À 70° verticaux, le regard horizontal retrouve le volant bas de la référence sans
-  // rapetisser la voiture : les vrais yeux et les pièces métriques restent communs aux vues.
+  // Champ vertical choisi par le joueur. La projection dépend du format d'écran et
+  // de la vitesse ; elle ne se déforme plus pour faire rentrer les vrais rétroviseurs.
+  // Sur un cadre étroit, les pièces hors champ restent à leur place dans la voiture.
   const INCLINAISON_COCKPIT = 0;
   function champCockpit(aspect, v, cam, glaces, M) {
     const t = Math.tan(clamp(+reglages.champ || 70, 60, 105) * Math.PI / 360) * (16 / 9);
     const tv = aspect < 16 / 9 ? Math.hypot(t, t / (16 / 9)) / Math.hypot(1, Math.max(.3, aspect)) : t / (16 / 9);
     const portraitTelephone = estTactile && canvas.clientWidth <= 600 && aspect < 1;
-    let tangente = tv * (portraitTelephone ? .82 : 1);
-    if (aspect < 16 / 9) {
-      const miroir = B.voiture.RETRO, oeil = B.voiture.OEIL;
-      const profondeur = Math.max(.1, miroir.x - oeil[0] - miroir.l * .5 * Math.abs(Math.sin(miroir.angle)));
-      const largeur = miroir.z + miroir.l * .5 + .01;
-      tangente = Math.max(tangente, largeur / profondeur / Math.max(.3, aspect));
-    }
+    const tangente = tv * (portraitTelephone ? .82 : 1);
     const vertical = 2 * Math.atan(tangente) * 180 / Math.PI;
-    const base = clamp(vertical * (1 + (portraitTelephone ? .04 : .05) * clamp(v / 85, 0, 1)), 10, 110);
-    if (!cam || !glaces) return base;
-    // La direction du regard et les déplacements de tête changent la projection : le montage nominal
-    // seul ne suffit pas en virage. Projeter les coins réels et l'enveloppe des boîtiers dans ce regard,
-    // avec 3 px de garde, sans déplacer les rétros ni réécrire la préférence de champ du joueur.
-    tangente = Math.tan(base * Math.PI / 360);
-    const cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw), cp = Math.cos(cam.pitch), sp = Math.sin(cam.pitch);
-    const cr = Math.cos(cam.roll), sr = Math.sin(cam.roll), boite = B.voiture.FORMES['retro-boitier'];
-    const gardeX = Math.max(.5, 1 - 6 / Math.max(1, canvas.clientWidth));
-    const gardeY = Math.max(.5, 1 - 6 / Math.max(1, canvas.clientHeight));
-    for (let g = 0; g < glaces.length; g++) for (let j = 0; j < 12; j++) {
-      const glace = glaces[g]; let x, y, z;
-      if (j < 4) {
-        const q = glace.coins[j]; x = q[0] - cam.pos[0]; y = q[1] - cam.pos[1]; z = q[2] - cam.pos[2];
-      } else {
-        // Boîte de la vraie forme procédurale, orientée selon le même montage que sa glace.
-        const n = j - 4, bx = boite.centre[0] + boite.taille[0] * (n & 1 ? .5 : -.5);
-        const by = boite.centre[1] + boite.taille[1] * (n & 2 ? .5 : -.5);
-        const bz = boite.centre[2] + boite.taille[2] * (n & 4 ? .5 : -.5);
-        // Le haut de la glace est normale × droite, pas la verticale de la caisse : le boîtier est incliné.
-        const gn = glace.normale, gd = glace.droite;
-        x = glace.centre[0] - gn[0] * bx + (gn[1] * gd[2] - gn[2] * gd[1]) * by + gd[0] * bz - cam.pos[0];
-        y = glace.centre[1] - gn[1] * bx + (gn[2] * gd[0] - gn[0] * gd[2]) * by + gd[1] * bz - cam.pos[1];
-        z = glace.centre[2] - gn[2] * bx + (gn[0] * gd[1] - gn[1] * gd[0]) * by + gd[2] * bz - cam.pos[2];
-      }
-      const profondeur = x * sy * cp + y * sp - z * cy * cp;
-      const droite = x * cy + z * sy, haut = -x * sy * sp + y * cp + z * cy * sp;
-      tangente = Math.max(tangente, Math.abs(droite * cr + haut * sr) / (profondeur * aspect * gardeX),
-        Math.abs(haut * cr - droite * sr) / (profondeur * gardeY));
-    }
-    return clamp(2 * Math.atan(tangente) * 180 / Math.PI, 10, 110);
+    return clamp(vertical * (1 + (portraitTelephone ? .04 : .05) * clamp(v / 85, 0, 1)), 10, 110);
   }
   // La tête du pilote vit : elle part vers l'extérieur du virage et vers l'avant au freinage (2 cm au plus), le regard
   // va vers la corde (4° au plus), et le casque tremble à haute vitesse, sur les vibreurs et dans l'herbe.

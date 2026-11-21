@@ -5,13 +5,24 @@ import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {preparerBanc} from '../tools/qualification/pilote-thorax.mjs';
-import {trianglesObjet,surface,mesurerContacts,raccordEpaule,bornes,distanceSurface} from '../tools/qualification/pilote-surfaces.mjs';
+import {trianglesObjet,surface,mesurerContacts,raccordEpaule,bornes,distanceSurface,interieur} from '../tools/qualification/pilote-surfaces.mjs';
 
 const {V,maillages,modele,empreintes}=preparerBanc();
 empreintes['verifications/pilote-thorax.test.mjs']=createHash('sha256').update(fs.readFileSync(fileURLToPath(import.meta.url))).digest('hex');
 const ev={p:[0,0,0],cap:0,tangage:0,roulis:0,braquage:0,roule:0,v:20,pilote:{volant:0,rapportAvant:2,rapport:3,passage:1}};
 const temoins={format:'bitume-temoins-thorax-reel-1',empreintes,lod:{},negatifs:{}};
 let complet;
+function echantillons(triangles){
+ const points=new Map();
+ for(const t of triangles)for(const p of [...t,[0,1,2].map(k=>(t[0][k]+t[1][k]+t[2][k])/3)])
+  points.set(p.map(x=>Math.round(x*1e8)).join(','),p);
+ return [...points.values()];
+}
+function penetrationSiege(triangles,thorax){
+ // Un coussin peut toucher la peau. Les sommets et centres de faces ne doivent
+ // pas être à l'intérieur du thorax fermé au-delà de la précision géométrique.
+ return echantillons(triangles).find(p=>interieur(p,thorax)&&distanceSurface(p,thorax)>1e-8)||null;
+}
 test('le thorax rendu reste fermé et ses deux épaules raccordées dans les trois LOD',()=>{
  let reference;
  for(const [detail,indice] of [['complet',0],['moyen',6],['simple',2]]){
@@ -42,6 +53,35 @@ test('une vraie manche déplacée entièrement dans le thorax est refusée sans 
  assert(!c.croisement);assert(c.entierementContenu);assert(c.horsAttache);assert(c.interieurHorsAttache);
  temoins.negatifs.mancheEnfouie={refuse:true,role:p.role,forme:p.objet.shape,taille:Array.from(p.objet.s),positionAvant:Array.from(p.objet.p),positionInjectee:centre,
   croisement:c.croisement,entierementContenu:c.entierementContenu,interieurHorsAttache:c.interieurHorsAttache};
+});
+test('le dossier suit le dos rendu et aucun élément du siège ne pénètre le thorax',()=>{
+ for(const detail of ['complet','moyen','simple']){
+  const sortie=[];V.poser(modele,ev,sortie,{detail});
+  const thorax=surface(trianglesObjet(sortie.find(o=>/^bitume-pilote-buste(?:-|$)/.test(o.shape)),maillages,V),{fermee:true});
+  const b=bornes(thorax.triangles),siege={pieces:[],jeuxDosM:[]};
+  for(const nom of ['assise-pilote','siege-supports','siege-dossier','siege-stries','siege-coutures']){
+   const objet=sortie.find(o=>o.shape==='bitume-'+nom);
+   if(!objet){assert(!['assise-pilote','siege-supports','siege-dossier'].includes(nom),'siège porteur présent : '+detail+'/'+nom);continue;}
+   const tris=trianglesObjet(objet,maillages,V),point=penetrationSiege(tris,thorax);
+   assert(!point,'siège dans le thorax : '+JSON.stringify({detail,nom,point}));
+   siege.pieces.push(nom);
+   if(nom==='siege-dossier'){
+    const points=echantillons(tris);
+    for(const fraction of [.25,.55,.80]){
+     const y=b.lo[1]+fraction*(b.hi[1]-b.lo[1]),bande=points.filter(p=>Math.abs(p[1]-y)<.035&&Math.abs(p[2])<.04);
+     assert(bande.length,'dossier rendu continu devant le dos : '+detail+'/'+fraction);
+     const jeu=Math.min(...bande.map(p=>distanceSurface(p,thorax)));siege.jeuxDosM.push(jeu);
+     assert(jeu<.01,'dossier proche de la peau dans trois bandes de hauteur : '+JSON.stringify({detail,fraction,jeu}));
+    }
+    if(detail==='complet'){
+     const avance=tris.map(t=>t.map(p=>[p[0]+.05,p[1],p[2]])),pointInjecte=penetrationSiege(avance,thorax);
+     assert(pointInjecte,'le vrai dossier avancé de cinq centimètres doit être refusé');
+     temoins.negatifs.dossierEnfoui={refuse:true,translation:[.05,0,0],pointInterieur:pointInjecte};
+    }
+   }
+  }
+  temoins.lod[detail].siege=siege;
+ }
 });
 test('le vrai thorax déplacé hors de portée est refusé par le raccord géométrique',()=>{
  const translation=[2,0,0],loin=surface(complet.thorax.triangles.map(t=>t.map(p=>p.map((x,k)=>x+translation[k]))),{fermee:true});

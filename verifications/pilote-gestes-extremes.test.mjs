@@ -32,7 +32,7 @@ test('poing/salut extrêmes : thorax, coque, tête et autre bras dégagés aux t
     assert.equal(resultat.raccordsEpaule.controles, scenes.length * 2, detail + ' : deux raccords par pose');
     assert.equal(resultat.raccordsEpaule.absents, 0, detail + ' : épaules réellement reliées');
     assert.equal(resultat.raccordsEpaule.rotulesHorsAttache, 0, detail + ' : attache locale de 35 mm');
-    assert.ok(resultat.osErreurMax < 1e-8, detail + ' : os constants de 21 et 23 cm');
+    assert.ok(resultat.osErreurMax < 1e-8, detail + ' : os constants de 27 et 29 cm');
   }
   assert.equal(rapport.statut, 'conforme_sur_echantillon');
   console.log('gestes extrêmes : 60 poses de surfaces, trois LOD, aucun contact hors attache');
@@ -55,8 +55,8 @@ test('le pire intervalle de coude reste continu quand le pas d’intensité est 
         V.poser(modele, ev, []);
         const a = modele.objetsRendu.pilote.articulations;
         for (const j of [0, 9]) {
-          assert.ok(Math.abs(distance(a, j, j + 3) - .21) < 1e-10, 'humérus constant');
-          assert.ok(Math.abs(distance(a, j + 3, j + 6) - .23) < 1e-10, 'avant-bras constant');
+          assert.ok(Math.abs(distance(a, j, j + 3) - .27) < 1e-10, 'humérus constant');
+          assert.ok(Math.abs(distance(a, j + 3, j + 6) - .29) < 1e-10, 'avant-bras constant');
           if (precedent) maximum = Math.max(maximum,
             Math.hypot(a[j + 3] - precedent[j + 3], a[j + 4] - precedent[j + 4], a[j + 5] - precedent[j + 5]));
         }
