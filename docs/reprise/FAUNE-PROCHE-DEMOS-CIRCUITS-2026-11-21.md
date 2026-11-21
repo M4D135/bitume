@@ -1,8 +1,10 @@
 # BITUME — faune proche et démos des circuits
 
-Date : 21 novembre 2026. **État : demandes enregistrées, réalisation à faire.**
+Date : 21 novembre 2026. **État : F1/F2 et D1/D2 préparés dans le candidat 0.2.86 ; réception en cours.**
 Base observée sur `main` : **0.2.85**, commit `0e7273c0361996b9c217e6f1051a9ef9a54b18c7`.
-Ce jalon publie le suivi ; il ne constitue pas une nouvelle version du jeu.
+Demandes publiées dans `7fb5dcc`. Leur implémentation est maintenant construite en 0.2.86,
+avec contrôles ciblés reçus ; CI complète et images restent à recevoir avant livraison.
+[Preuve du candidat](rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json).
 
 ## Demandes de David et priorité
 
@@ -75,20 +77,20 @@ servent de base ; le besoin porte sur placement, activité et coût.
 
 ### Couverture des circuits
 
-Les points ci-dessous sont des cibles de cadrage à qualifier depuis les marqueurs .85,
-pas des séquences déjà réalisées. Chaque ligne comprend aussi la route et le tracé.
+Les points ci-dessous proviennent des marqueurs .85 ; leurs séquences sont préparées
+et contrôlées numériquement. La réception visuelle reste à faire pour chaque circuit.
 
 | Circuit | Point d’intérêt proposé depuis les lieux existants | Réception |
 |---|---|---|
-| Val-Brûlé | Viaduc des Chênes | À faire |
-| Port-Sable | Grand Phare du Cap | À faire |
-| Haut-Col | Galerie Paravalanche et route en montagne | À faire |
-| Lande-Noire | Pont-Arche Noir | À faire |
-| Roche-Fauve | Nécropole des Pyramides | À faire |
-| Brume-de-Jade | Grand Portail Torii Vermillon | À faire |
-| Cap-Séquoia | Grand Pont Suspendu Vermillon | À faire |
-| Baïkal | Chapelle aux Bulbes Dorés | À faire |
-| Route-des-Cimes | Arche du Col des Cimes | À faire |
+| Val-Brûlé | Viaduc des Chênes | Captures à recevoir |
+| Port-Sable | Grand Phare du Cap | Captures à recevoir |
+| Haut-Col | Galerie Paravalanche et route en montagne | Captures à recevoir |
+| Lande-Noire | Pont-Arche Noir | Captures à recevoir |
+| Roche-Fauve | Nécropole des Pyramides | Captures à recevoir |
+| Brume-de-Jade | Grand Portail Torii Vermillon | Captures à recevoir |
+| Cap-Séquoia | Grand Pont Suspendu Vermillon | Captures à recevoir |
+| Baïkal | Chapelle aux Bulbes Dorés | Captures à recevoir |
+| Route-des-Cimes | Arche du Col des Cimes | Captures à recevoir |
 
 **Extension prévue :** ajouter la démo du **sommet du col de Larche → Vinadio**
 lorsque le parcours entre réellement au catalogue. Respecter le sens de descente,
@@ -101,11 +103,11 @@ Réutiliser les métadonnées de `src/lieux.js` et `src/decor.js`.
 
 | Lot | Travail | État | Preuve attendue |
 |---|---|---|---|
-| F1 | Replacer la population aux abords proches | Planifié | Distances au bord de route, captures depuis les vues de conduite |
-| F2 | Endormir les groupes hors des vues utiles | Planifié | Compteurs de groupes simulés/poses préparées nuls pour les groupes invisibles ; réveil stable |
-| D1 | Remplacer le choix et la préparation des plans | Planifié | Aucun plan flore/faune ou autre sujet autonome dans un cycle complet |
-| D2 | Recomposer les neuf circuits et leurs lieux | Planifié | Séquences et captures identifiées par circuit, début/milieu/fin de plan et transitions |
-| Q | Qualifier puis publier le runtime | Planifié | Build reproductible, contrôles ciblés, réception visuelle et mesures avant/après |
+| F1 | Replacer la population aux abords proches | Préparé, contrôles numériques reçus | Distances au bord de route, captures depuis les vues de conduite |
+| F2 | Endormir les groupes hors des vues utiles | Préparé, contrôles numériques reçus | Compteurs de groupes simulés/poses préparées nuls pour les groupes invisibles ; réveil stable |
+| D1 | Remplacer le choix et la préparation des plans | Préparé, contrôles numériques reçus | Aucun plan flore/faune ou autre sujet autonome dans un cycle complet |
+| D2 | Recomposer les neuf circuits et leurs lieux | Préparé, contrôles numériques reçus | Séquences et captures identifiées par circuit, début/milieu/fin de plan et transitions |
+| Q | Qualifier puis publier le runtime | En cours | Build reproductible, contrôles ciblés, réception visuelle et mesures avant/après |
 
 Comparer à scène et qualité identiques : groupes créés/actifs, animaux dessinés,
 coûts CPU, allocations et temps d’image. Vérifier champ avant/arrière, changement de vue,

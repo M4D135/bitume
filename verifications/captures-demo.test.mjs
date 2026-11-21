@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { runInNewContext } from 'node:vm';
-import { optionsDemo, optionsScenario, SCENARIOS, verifierRapport, preparerEtat, observerEtat } from '../tools/captures-demo.mjs';
+import { optionsDemo, optionsScenario, SCENARIOS, CIRCUITS_DEMO, verifierRapport, preparerEtat, observerEtat } from '../tools/captures-demo.mjs';
 
 const base = ['--url', 'file:///tmp/bitume.html', '--sortie', '/tmp/qualification'];
 function rapport(s) {
@@ -12,15 +12,17 @@ function rapport(s) {
     plan: { vue: s.attendu, motif: s.realisation ? 'expression' : s.refus ? 'cadre' : 'course', sujet: 0 },
     camera: { pos: [0, 2, 0], yaw: 0, pitch: -.1, fov: 34, secours: false }, obstruction: { hit: false },
     saison: s.saison, glErreur: 0, glPerdu: false,
-    faune: s.faune ? { y: 1, sol: 1, fractionHauteur: .16 } : null,
+    sujetCadre: s.cadrage ? { type: s.cadrage, label: 'Lieu ou route réel', source: s.cadrage === 'lieu' ? 'decor.lieux.marqueurs' : 'circuit',
+      marqueurPresent: s.cadrage === 'lieu', projection: { x: .1, y: -.2, profondeur: 80 } } : null,
+    gardeSol: 8, agePlan: s.instants?.[0],
     volants: s.pilote ? [{ p: [0, 1, 0], r: [0, 0, .4] }] : [], volant: s.volant || 0,
     pilote: s.geste ? { geste: s.geste, gesteIntensite: 1 } : null,
     sillage: s.spray ? { rival: 1, sources: [{ id: 1, exposition: .76 }], casque: .76, lentille } : null,
     vitrage: { actif: !s.aerien, pluie: s.pluie ? 1 : 0, neige: 0, embruns: lentille }, vitreVisible: !s.aerien,
     vitres: { j1: { backend: 'webgl2', pret: true, erreur: null, erreurs: 0, perdu: false, eau: s.aerien ? 0 : 20, embruns: lentille,
       gouttes: s.aerien ? 0 : 20, neige: 0, accumulationNeige: 0, depotsEmbruns: s.aerien ? 0 : 600, expulses: 250 } } };
-  return { initialisation: { entree: 'BITUME_JEU.demo', cameraImposee: false }, environnement: { gpu: 'ANGLE SwiftShader' }, erreurs: [], avertissements: [],
-    images: Array.from({ length: s.images }, () => ({ observation: structuredClone(o), vues: { scene: { noir: .02, luminance: .4 } } })) };
+  return { initialisation: { entree: 'BITUME_JEU.demo', cameraImposee: false }, environnement: { gpu: 'ANGLE SwiftShader', physx: { ready: true } }, erreurs: [], avertissements: [],
+    images: Array.from({ length: s.images }, (_, i) => ({ observation: { ...structuredClone(o), agePlan: s.instants?.[i] }, vues: { scene: { noir: .02, luminance: .4 } } })) };
 }
 function rejette(s, changer, attendu) {
   const r = rapport(s); changer(r, r.images[0].observation);
@@ -28,9 +30,9 @@ function rejette(s, changer, attendu) {
 }
 
 test('les scénarios CI couvrent chaque plan déclaré avec des options bornées', () => {
-  const o = optionsDemo(base); assert.equal(o.cas.length, 12);
-  assert.deepEqual(optionsDemo([...base, '--cas', 'tele-montagne,faune-hiver']).cas, ['tele-montagne', 'faune-hiver']);
-  for (const suite of [['--cas','inconnu'], ['--cas','faune-ete,faune-ete'], ['--taille','9000,1'], ['--url','file:///autre'], ['--inconnu','oui'], ['--chrome']])
+  const o = optionsDemo(base); assert.equal(o.cas.length, 32);
+  assert.deepEqual(optionsDemo([...base, '--cas', 'tele-montagne,lieu-haut-col']).cas, ['tele-montagne', 'lieu-haut-col']);
+  for (const suite of [['--cas','inconnu'], ['--cas','lieu-haut-col,lieu-haut-col'], ['--taille','9000,1'], ['--url','file:///autre'], ['--inconnu','oui'], ['--chrome']])
     assert.throws(() => optionsDemo([...base, ...suite]));
   assert.throws(() => optionsDemo(['--url','javascript:alert(1)','--sortie','/tmp/images']));
   const workflow = readFileSync(new URL('../.github/workflows/visuel-demo.yml', import.meta.url), 'utf8');
@@ -57,25 +59,60 @@ test('une caméra imposée, une fausse séance ou une visée masquée ne qualifi
   rejette(s, (_, o) => { o.plan.motif = 'course'; }, 'explicitement');
 });
 
-test('la taille à l’écran, les appuis et la saison des bouquetins sont contrôlés', () => {
-  const s = SCENARIOS.find(s => s.id === 'faune-hiver');
-  for (const f of [.06, .3, NaN]) rejette(s, (_, o) => { o.faune.fractionHauteur = f; }, 'illisible');
-  rejette(s, (_, o) => { o.faune.y += .5; }, 'appui');
-  rejette(s, (_, o) => { o.camera.pitch = -.65; }, 'illisible');
-  rejette(s, (_, o) => { o.saison = 'ete'; }, 'Saison');
-  const ancien = rapport(s); ancien.images[0].observation.faune.fractionHauteur = .06;
-  assert.deepEqual(verifierRapport(ancien, s, false), [], 'la référence conserve le défaut sans être présentée comme corrigée');
+test('les neuf circuits ont route, tracé et lieu, sans sujet de nature autonome', () => {
+  for (const [circuit, id] of CIRCUITS_DEMO.entries()) {
+    const cas = SCENARIOS.filter(s => s.cadrage && s.circuit === circuit);
+    assert.deepEqual(cas.map(s => s.id), ['route-' + id, 'trace-' + id, 'lieu-' + id]);
+    assert.deepEqual(cas.map(s => s.vue), ['peloton', 'panorama', 'lieu']);
+    for (const s of cas) assert.deepEqual(s.instants, [.4, 4, 7.6]);
+  }
+  assert(SCENARIOS.every(s => !['flore', 'faune', 'pilote', 'roue', 'orbite'].includes(s.vue)));
 });
 
-test('le volant extérieur et les trois gestes doivent être rendus par le bon plan', () => {
-  for (const s of SCENARIOS.filter(s => s.pilote)) rejette(s, (_, o) => { o.volants = []; }, 'Volant');
-  for (const s of SCENARIOS.filter(s => s.geste)) {
-    rejette(s, (_, o) => { o.pilote.geste = null; }, 'Geste');
-    rejette(s, (_, o) => { o.pilote.gesteIntensite = 0; }, 'Geste');
+test('le vrai lieu, la projection, le terrain et les trois instants sont exigés', () => {
+  const lieu = SCENARIOS.find(s => s.cadrage === 'lieu'), route = SCENARIOS.find(s => s.cadrage === 'route');
+  for (const s of [lieu, route]) {
+    for (const cle of ['x', 'y']) for (const valeur of [-1.1, 1.1, NaN, undefined])
+      rejette(s, (_, o) => { o.sujetCadre.projection[cle] = valeur; }, 'hors cadre');
+    for (const profondeur of [-1, 0, NaN]) rejette(s, (_, o) => { o.sujetCadre.projection.profondeur = profondeur; }, 'hors cadre');
+    rejette(s, (_, o) => { o.sujetCadre = null; }, 'hors cadre');
+    rejette(s, (_, o) => { o.sujetCadre.type = 'faune'; }, 'hors cadre');
+    for (const valeur of [-2, 0, NaN, undefined]) rejette(s, (_, o) => { o.gardeSol = valeur; }, 'terrain');
+    rejette(s, r => { r.environnement.physx.ready = false; }, 'PhysX');
+    rejette(s, (_, o) => { o.agePlan = 1; }, 'Instant');
+    rejette(s, r => { r.images[1].observation.agePlan = s.instants[0]; }, 'Instant');
+    rejette(s, (_, o) => { o.vue = o.plan.vue = 'flore'; }, 'attendu');
   }
-  const s = SCENARIOS.find(s => s.realisation);
-  rejette(s, (_, o) => { o.plan.motif = 'course'; }, 'réalisateur');
-  rejette(SCENARIOS.find(s => s.volant < 0), (_, o) => { o.volant = 0; }, 'Braquage');
+  rejette(lieu, (_, o) => { o.sujetCadre.source = 'proxy'; }, 'Lieu réel');
+  rejette(lieu, (_, o) => { o.sujetCadre.marqueurPresent = false; }, 'Lieu réel');
+  rejette(lieu, (_, o) => { o.sujetCadre.label = ''; }, 'Lieu réel');
+  rejette(lieu, (_, o) => { o.saison = 'hiver'; }, 'Saison');
+});
+
+test('l’observation projette le vrai marqueur et mesure le terrain indépendamment du réalisateur', () => {
+  const marqueur = { nom: 'Pont du circuit', x: 4, y: 10, z: -20 };
+  const S = { type: 'demo', vue: 'lieu', suivie: 0, cour: [{ x: 4, y: 9.35, z: -20 }],
+    camera: { pos: [0, 10, 0], cible: [4, 10, -20], yaw: 0, pitch: 0, fov: 90 },
+    animaux: { G: { T: {} } }, cinema: { decor: { lieux: { marqueurs: [marqueur] } } },
+    course: { horloge: .4, physique: { world: { raycast: () => ({ hit: false }) } } } };
+  const F = { scenario: SCENARIOS.find(s => s.cadrage === 'lieu'), sujet: 0,
+    ancre: { marqueur, cible: [4, 10, -20], label: marqueur.nom }, planInitial: { debut: 0 } };
+  const contexte = { BITUME: { cinema: { valider() {} }, animaux: { solExact: () => 2 } },
+    BITUME_JEU: { session: S, ecran: 'demo', camera: null, scene: { saison: 'ete' },
+      rendu: { gl: { getError: () => 0, isContextLost: () => false } } },
+    __DEMO_FIXTURE: F, innerWidth: 960, innerHeight: 540,
+    document: { getElementById: () => null }, getComputedStyle: () => ({}) };
+  const observer = () => runInNewContext(`(${observerEtat.toString()})()`, contexte);
+  const o = observer();
+  assert.equal(o.sujetCadre.marqueurPresent, true);
+  assert.equal(o.sujetCadre.projection.profondeur, 20);
+  assert(Math.abs(o.sujetCadre.projection.x - .1125) < 1e-12);
+  assert.equal(o.sujetCadre.projection.y, 0);
+  assert.equal(o.gardeSol, 8);
+  F.ancre.cible[2] = 20;
+  assert(observer().sujetCadre.projection.profondeur < 0, 'un sujet derrière la caméra ne peut passer pour visible');
+  S.cinema.decor.lieux.marqueurs = [];
+  assert.equal(observer().sujetCadre.marqueurPresent, false, 'un marqueur absent du vrai décor est refusé');
 });
 
 test('pluie en sillage et vue aérienne sans overlay sont des preuves distinctes', () => {

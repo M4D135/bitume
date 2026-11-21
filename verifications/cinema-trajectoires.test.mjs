@@ -76,22 +76,6 @@ for (const id of ['haut-col', 'val-brule', 'baikal']) {
           assert(sure, 'repli indisponible pour ' + vue); independant(world, sure, sure.cible);
         }
       });
-      verifier('Haut-Col : les huit postes bouquetins restent lisibles pendant tout le plan', () => {
-        const ancres = cin.ancres.faune.filter(a => a.label === 'Bouquetin des Alpes');
-        assert.equal(ancres.length, 4);
-        for (const a of ancres) for (const cote of [-1, 1]) {
-          const plan = { vue: 'faune', ancre: a, sujet: 0, debut: 0, fin: 5.6, cote }, poses = [pose(c, 200)];
-          let poste;
-          for (let j = 0; j <= 168; j++) {
-            const t = j / 30, cam = C.camera(cin, plan, poses, {}, t); assert(cam, a.indice + '/' + cote + '/' + t);
-            if (poste) assert.deepEqual(cam.pos, poste); else poste = cam.pos;
-            assert(C.valider(cin, cam, cam.cible, plan, t)); independant(world, cam, cam.cible);
-            const p = B.animaux.poseAnimal(animaux, a.indice, t), fraction = a.taille * p.echelle / (2 * distance(cam.pos, cam.cible) * Math.tan(cam.fov * Math.PI / 360));
-            assert(fraction >= .12 && fraction <= .20, 'animal trop petit ou coupé : ' + fraction);
-            assert(cam.pitch > -.4, 'plongée excessive : ' + cam.pitch); images++;
-          }
-        }
-      });
       verifier('un rocher dessiné hors PhysX bloque aussi le cadre sans changer les collisions', () => {
         let cas = null;
         for (const o of cin.visuels) {
@@ -109,7 +93,7 @@ for (const id of ['haut-col', 'val-brule', 'baikal']) {
     }
     verifier(id + ' : plans conventionnels complets, durée de six secondes et replis sans retour au poste masqué', () => {
       const bilan = { circuit: id, images: 0, refus: 0, replis: 0, acceptes: {} };
-      for (const initiale of ['tele', 'helico', 'travelling', 'orbite', 'sol', 'poursuite', 'roue', 'aileron', 'arriere']) {
+      for (const initiale of ['tele', 'helico', 'sol', 'poursuite', 'aileron', 'arriere']) {
         for (const [n, depart] of [100, c.longueur * .31, c.longueur * .69].entries()) {
           const S = { course: { c }, camCap: null, tRendu: 0, tele: { poste: null, alea: () => .5 },
             planVu: { vue: initiale, debut: 0, fin: 6, sujet: 0, cote: n % 2 ? -1 : 1, angle: .7 } };
@@ -138,7 +122,7 @@ for (const id of ['haut-col', 'val-brule', 'baikal']) {
           }
         }
       }
-      assert(bilan.acceptes.tele > 0 && bilan.acceptes.orbite > 0 && bilan.acceptes.sol > 0, 'plans désactivés globalement');
+      assert(bilan.acceptes.tele > 0 && bilan.acceptes.aileron > 0 && bilan.acceptes.sol > 0, 'plans désactivés globalement');
       assert.equal(world._bodies.size, acteurs); assert.deepEqual(Array.from(animaux.cour), avant); rapports.push(bilan);
     });
   } finally { B.solidesPhysX.liberer(montage); world.dispose(); }
@@ -194,7 +178,7 @@ try {
     }
     const native = { voitures: [{ id: 0, etat: { v: 0, _physx: { velocity: [60, 0, 0] } } }] };
     assert.deepEqual(C.souffle(cin, cam, plan, [{ ...p, cap: 2 }], native, 0, 1), a, 'vitesse native ignorée');
-    assert.equal(C.souffle(cin, cam, { ...plan, vue: 'faune' }, poses, co, 0, 1), cam, 'le souffle détourne un plan nature');
+    assert.equal(C.souffle(cin, cam, { ...plan, vue: 'lieu' }, poses, co, 0, 1), cam, 'le souffle détourne un plan de lieu');
   });
 } finally { world.dispose(); }
 assert.equal(X.status().worlds, 0);

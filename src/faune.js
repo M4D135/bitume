@@ -60,19 +60,18 @@
     }
     const axe = c.n > 0 && c.x && c.z;
     if (axe) {
-      // Les centres sont tirés dans l'espace du monde, sans rubans parallèles, paires
-      // gauche/droite ou stations régulières le long de la route. Le champ écologique
-      // conserve ses clairières vides et ses foyers fleuris, y compris végétation Off.
-      let x0 = Infinity, z0 = Infinity, x1 = -Infinity, z1 = -Infinity;
-      for (let i = 0; i < c.n; i++) { x0 = Math.min(x0, c.x[i]); x1 = Math.max(x1, c.x[i]); z0 = Math.min(z0, c.z[i]); z1 = Math.max(z1, c.z[i]); }
-      // Le bord du domaine reste au-delà du fondu, même pour une vue de bord de piste.
-      const marge = PORTEE + 48; x0 -= marge; z0 -= marge; x1 += marge; z1 += marge;
-      const pas = Math.max(13, Math.sqrt((x1 - x0) * (z1 - z0) / 12000));
-      for (let iz = Math.floor(z0 / pas); iz <= Math.ceil(z1 / pas); iz++) {
-        for (let ix = Math.floor(x0 / pas); ix <= Math.ceil(x1 / pas); ix++) {
-          const seed = melanger(graine ^ Math.imul(ix, 83492791) ^ Math.imul(iz, 2654435761));
+      // Petites poches dans les 36 m utiles après le vrai bord de chaussée. La graine
+      // et l'écologie décident de leur présence ; aucun balayage des prairies lointaines.
+      const pas = Math.max(1, Math.round(18 / (c.pas || c.longueur / c.n || 2)));
+      for (let i = 0; i < c.n; i += pas) {
+        for (let j = 0; j < 3; j++) {
+          const seed = melanger(graine ^ Math.imul(i + 1, 83492791) ^ Math.imul(j + 1, 2654435761));
           if (hasard(seed + 3) < .22) continue;
-          proposer((ix + .07 + hasard(seed + 7) * .86) * pas, (iz + .07 + hasard(seed + 11) * .86) * pas, .35);
+          const k = Math.min(c.n - 1, i + Math.floor(hasard(seed + 5) * pas)), cote = hasard(seed + 7) < .5 ? -1 : 1;
+          const cap = c.cap ? c.cap[k] : Math.atan2(c.z[Math.min(k + 1, c.n - 1)] - c.z[k], c.x[Math.min(k + 1, c.n - 1)] - c.x[k]);
+          const bord = cote > 0 ? (c.largeurD ? c.largeurD[k] : c.largeur / 2 || 5) : (c.largeurG ? c.largeurG[k] : c.largeur / 2 || 5);
+          const d = bord + 5 + hasard(seed + 11) * 31;
+          proposer(c.x[k] - Math.sin(cap) * cote * d, c.z[k] + Math.cos(cap) * cote * d, .35);
         }
         if (pause()) yield;
       }
@@ -169,11 +168,11 @@
   function vue(nombreHabitats) {
     // La table des identités reste à −1 hors des entrées posées par la dernière affectation (ecrits) :
     // seules celles-là sont effacées à la suivante.
-    return { dernierTemps: null, selectionTemps: -Infinity, x: Infinity, z: Infinity, nombre: 0, generation: 0, epoque: 0,
+    return { champs: new Float64Array(3 * 16), nombreChamps: 0, champsModifies: false, dernierTemps: null, selectionTemps: -Infinity, x: Infinity, z: Infinity, nombre: 0, generation: 0, epoque: 0,
       indices: new Int32Array(ANCRES).fill(-1), distances: new Float64Array(ANCRES), proprietaires: new Int32Array(nombreHabitats * 8).fill(-1),
       ecrits: new Int32Array(MAX_EMPLACEMENTS), nEcrits: 0,
       abeilles: pool('abeille', 32, 5), insectes: pool('insecte', 16, 3), lucioles: pool('luciole', MAX_EMPLACEMENTS, 2),
-      stats: { abeilles: 0, insectes: 0, lucioles: 0, objets: 0, habitats: 0, requetes: 0 } };
+      stats: { abeilles: 0, insectes: 0, lucioles: 0, objets: 0, habitats: 0, requetes: 0, horsChamp: 0 } };
   }
   // creer(c, decor) seul prépare puis crée ; creer(c, decor, preparation) reprend les habitats
   // d'une préparation de la même scène et ne crée que l'état de la séance (pools des deux vues, lissages communs).
@@ -181,6 +180,35 @@
     const p = preparationDe(preparation, c, decor) ? preparation : preparer(c, decor);
     return { habitats: p.habitats, index: p.index, montagne: p.montagne, activite: p.activite, preparation: p,
       vues: [vue(p.habitats.length), vue(p.habitats.length)], temps: null, nuit: 0, pluie: 0 };
+  }
+  function renseignerChamp(v, contexte, offset) {
+    const cam = contexte && contexte.camera;
+    if (!cam || !cam.pos || contexte.qualite === 'off' || !Number.isFinite(cam.pos[0] + cam.pos[1] + cam.pos[2])) return false;
+    const t = v.champs, yaw = cam.yaw || 0, pitch = cam.pitch || 0, roll = cam.roll || 0;
+    const sy = Math.sin(yaw), cy = Math.cos(yaw), sp = Math.sin(pitch), cp = Math.cos(pitch), sr = Math.sin(roll), cr = Math.cos(roll);
+    const tv = Math.tan(clamp(cam.fov || 60, 5, 150) * Math.PI / 360), aspect = contexte.aspect > 0 ? contexte.aspect : 16 / 9;
+    if (Math.abs(t[offset + 3] - sy * cp) > .025 || Math.abs(t[offset + 4] - sp) > .025 || Math.abs(t[offset + 5] + cy * cp) > .025 || Math.abs(t[offset + 12] - tv * aspect) > .025) v.champsModifies = true;
+    t[offset] = cam.pos[0]; t[offset + 1] = cam.pos[1]; t[offset + 2] = cam.pos[2];
+    t[offset + 3] = sy * cp; t[offset + 4] = sp; t[offset + 5] = -cy * cp;
+    t[offset + 6] = cy * cr - sy * sp * sr; t[offset + 7] = cp * sr; t[offset + 8] = sy * cr + cy * sp * sr;
+    t[offset + 9] = -cy * sr - sy * sp * cr; t[offset + 10] = cp * cr; t[offset + 11] = -sy * sr + cy * sp * cr;
+    t[offset + 12] = tv * aspect; t[offset + 13] = tv;
+    return true;
+  }
+  function habitatVisible(v, h) {
+    // Les bancs sans caméra gardent leur exploration omnidirectionnelle explicite.
+    if (!v.nombreChamps) return true;
+    const t = v.champs, rayon = 4;
+    for (let j = 0; j < v.nombreChamps; j++) {
+      const o = j * 16, dx = h.x - t[o], dy = h.y + 1.4 - t[o + 1], dz = h.z - t[o + 2];
+      const d = dx * t[o + 3] + dy * t[o + 4] + dz * t[o + 5];
+      if (d < -rayon || d > PORTEE + rayon) continue;
+      const x = dx * t[o + 6] + dy * t[o + 7] + dz * t[o + 8], th = t[o + 12];
+      if (Math.abs(x) > d * th + rayon * Math.sqrt(1 + th * th)) continue;
+      const y = dx * t[o + 9] + dy * t[o + 10] + dz * t[o + 11], tv = t[o + 13];
+      if (Math.abs(y) <= d * tv + rayon * Math.sqrt(1 + tv * tv)) return true;
+    }
+    return false;
   }
   function selectionner(etat, v, x, z, temps) {
     const g = etat.index, indices = v.indices, distances = v.distances;
@@ -192,7 +220,7 @@
         const cellule = g.cases[iz * g.colonnes + ix]; if (!cellule) continue;
         for (let m = 0; m < cellule.length; m++) {
           const id = cellule[m], h = etat.habitats[id], dx = h.x - x, dz = h.z - z, d = dx * dx + dz * dz;
-          if (d >= PORTEE * PORTEE || d >= distances[ANCRES - 1]) continue;
+          if (d >= PORTEE * PORTEE || d >= distances[ANCRES - 1] || !habitatVisible(v, h)) continue;
           let k = ANCRES - 1;
           while (k > 0 && (d < distances[k - 1] || d === distances[k - 1] && id < indices[k - 1])) {
             distances[k] = distances[k - 1]; indices[k] = indices[k - 1]; k--;
@@ -267,7 +295,7 @@
     for (let i = 0; i < n; i++) {
       const cle = p.disponibles[i], ancien = proprietaires[cle];
       if (ancien >= 0) {
-        slots[ancien].cible = cle; slots[ancien].demande = Math.min(1, nombre - i);
+        slots[ancien].cible = cle; slots[ancien].demande = Math.min(1, nombre - i); p.limite = Math.max(p.limite, ancien + 1);
         if (i === n - 1) p.partiel = ancien;
       } else nouveaux++;
     }
@@ -315,6 +343,7 @@
       }
       let cible = s.cle === s.cible && s.cle >= 0 ? s.demande : 0;
       let h = s.cle >= 0 ? etat.habitats[Math.floor(s.cle / 8)] : null;
+      if (h && !habitatVisible(v, h)) { s.poids = 0; v.stats.horsChamp++; continue; }
       if (h) cible *= 1 - lisse(p.debutFondu, p.portee, Math.hypot(h.x - x, h.z - z));
       s.poids += (cible - s.poids) * melange;
       if (s.cible >= 0 || s.poids > .008) limite = i + 1;
@@ -373,7 +402,7 @@
     const c = contexte || {}, qualite = Object.prototype.hasOwnProperty.call(BUDGETS, c.qualite) ? c.qualite : 'medium';
     const v = etat.vues[c.vue === 1 ? 1 : 0], stats = v.stats;
     const activite = etat.activite === 0 ? 0 : Number.isFinite(c.activite) ? clamp(c.activite, 0, 1) : etat.activite;
-    stats.abeilles = stats.insectes = stats.lucioles = stats.objets = 0; stats.habitats = 0;
+    stats.abeilles = stats.insectes = stats.lucioles = stats.objets = stats.horsChamp = 0; stats.habitats = 0;
     temps = Number.isFinite(temps) ? temps : 0;
     if (qualite === 'off' || !etat.habitats.length || activite === 0 && !v.abeilles.limite && !v.insectes.limite && !v.lucioles.limite) {
       if (v.dernierTemps !== null) v.epoque++;
@@ -381,7 +410,12 @@
       v.abeilles.demande = v.insectes.demande = v.lucioles.demande = -1;
       return stats;
     }
-    const pose = c.pose || c.position || c.camera && c.camera.pos;
+    const avantChamps = v.nombreChamps; v.nombreChamps = 0; v.champsModifies = false;
+    if (renseignerChamp(v, c, 0)) v.nombreChamps++;
+    if (c.vuesSecondaires) for (let i = 0; i < Math.min(2, c.vuesSecondaires.length); i++)
+      if (renseignerChamp(v, c.vuesSecondaires[i], v.nombreChamps * 16)) v.nombreChamps++;
+    if (avantChamps !== v.nombreChamps) v.champsModifies = true;
+    const pose = c.camera && c.camera.pos || c.pose || c.position;
     const px = pose ? (Number.isFinite(pose.x) ? pose.x : pose[0]) : 0;
     const pz = pose ? (Number.isFinite(pose.z) ? pose.z : pose[2]) : 0;
     if (!Number.isFinite(px) || !Number.isFinite(pz)) return stats;
@@ -398,7 +432,7 @@
     etat.temps = temps;
     // Les habitats sont immuables : à l'arrêt, garder la sélection. Les distances et
     // fondus restent évalués chaque image ; un déplacement de 6 m renouvelle les foyers.
-    const change = v.selectionTemps === -Infinity || (px - v.x) ** 2 + (pz - v.z) ** 2 > 36;
+    const change = v.selectionTemps === -Infinity || v.champsModifies || (px - v.x) ** 2 + (pz - v.z) ** 2 > 36 || v.nombreChamps > 0 && temps - v.selectionTemps > .15;
     if (change) selectionner(etat, v, px, pz, temps);
     stats.habitats = v.nombre;
     const budget = BUDGETS[qualite], jour = activite * (1 - lisse(.15, .65, etat.nuit)) * (1 - etat.pluie * .65);

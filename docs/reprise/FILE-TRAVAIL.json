@@ -12,7 +12,7 @@
     "recu": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json"
   },
   "destinations_prevues": 17,
-  "lot_actif": "xbox_edge_commandes",
+  "lot_actif": "faune_proche_champ",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [
@@ -29,7 +29,7 @@
     {
       "id": "faune_proche_champ",
       "objectif": "Animaux proches de la route ; sommeil hors des vues utiles",
-      "etat": "planned",
+      "etat": "prepared",
       "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
       "base_observee": "0e7273c0361996b9c217e6f1051a9ef9a54b18c7",
       "phases": [
@@ -37,12 +37,15 @@
         "F2"
       ],
       "cloture": "Distances aux bords mesurées, animaux visibles depuis la route, aucune simulation détaillée des groupes invisibles, réveil stable ; J1/J2, rétros et Faune désactivée contrôlés.",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json"
+      ],
+      "reste": "CI complète et réception visuelle avant publication du runtime"
     },
     {
       "id": "demos_route_lieux",
       "objectif": "Refaire les démos des neuf circuits : route, tracé et point d’intérêt uniquement",
-      "etat": "planned",
+      "etat": "prepared",
       "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
       "base_observee": "0e7273c0361996b9c217e6f1051a9ef9a54b18c7",
       "phases": [
@@ -50,7 +53,10 @@
         "D2"
       ],
       "cloture": "Aucun plan herbe/faune/flore ni autre sujet autonome ; séquences cadrées et sans traversée sur les neuf circuits, futurs parcours couverts à leur intégration jouable.",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json"
+      ],
+      "reste": "CI complète et réception visuelle avant publication du runtime"
     },
     {
       "id": "demarrage_mobile_passif",
@@ -742,7 +748,7 @@
   "dernieres_demandes": {
     "date": "2026-11-21",
     "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
-    "statut": "planned",
+    "statut": "prepared",
     "base_main": "0e7273c0361996b9c217e6f1051a9ef9a54b18c7",
     "version_base": "0.2.85",
     "circuits_actuels": 9,
@@ -754,10 +760,12 @@
       "D2",
       "Q"
     ],
-    "runtime_modifie": false,
-    "preuves_runtime": [],
+    "runtime_modifie": true,
+    "preuves_runtime": [
+      "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json"
+    ],
     "larche": "À ajouter aux démos lors de son intégration jouable ; sommet → Vinadio, sans rebouclage.",
-    "etat": "planned"
+    "etat": "prepared"
   },
   "demandes_moteur_2026_11_20": {
     "fiche": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",

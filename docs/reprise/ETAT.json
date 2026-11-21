@@ -8,15 +8,15 @@
     "circuits": 9,
     "commit_fusion": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
     "tete_qualifiee": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
-    "statut": "candidat_0285_pret_publication",
-    "lot": "optimisation_animaux_lieux_organiques_larche_l2",
-    "fiche": "docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md",
+    "statut": "candidat_faune_demos_en_qualification",
+    "lot": "faune_proche_demos_circuits",
+    "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
     "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md",
     "dernieres_demandes": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
     "dernier_lot_clos": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
-    "prochaine_action": "Réaliser F1/F2 faune proche et sommeil hors champ, puis D1/D2 démos route/circuit/point d’intérêt ; qualifier avant publication du runtime. Conserver les essais Xbox physiques et Larche L3/L4.",
-    "branche_candidate": "main",
-    "version_candidate": "0.2.85",
+    "prochaine_action": "Recevoir CI complète et captures des neuf circuits, corriger les défauts puis publier le runtime qualifié.",
+    "branche_candidate": "codex/bitume-faune-demos-20261121",
+    "version_candidate": "0.2.86",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md"
   },
@@ -194,10 +194,10 @@
     "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
     "file": "docs/reprise/FILE-TRAVAIL.json",
     "priorite_utilisateur": "Faune près de la route, sans simulation détaillée hors champ ; démos des circuits actuels centrées sur route, tracé et point d’intérêt.",
-    "lot_actif": "xbox_edge_commandes",
-    "statut": "en_cours",
+    "lot_actif": "faune_proche_champ",
+    "statut": "qualification_en_cours",
     "recu_publication": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
-    "prochain_lot": "faune_proche_champ",
+    "prochain_lot": "demos_route_lieux",
     "dernieres_demandes": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md"
   },
   "recus_historiques": {
@@ -288,7 +288,7 @@
   "faune_proche_demos_circuits_2026_11_21": {
     "date": "2026-11-21",
     "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
-    "statut": "planned",
+    "statut": "prepared",
     "base_main": "0e7273c0361996b9c217e6f1051a9ef9a54b18c7",
     "version_base": "0.2.85",
     "circuits_actuels": 9,
@@ -300,8 +300,18 @@
       "D2",
       "Q"
     ],
-    "runtime_modifie": false,
-    "preuves_runtime": [],
+    "runtime_modifie": true,
+    "preuves_runtime": [
+      "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json"
+    ],
     "larche": "À ajouter aux démos lors de son intégration jouable ; sommet → Vinadio, sans rebouclage."
+  },
+  "candidat_faune_demos_0286": {
+    "statut": "en_qualification",
+    "branche": "codex/bitume-faune-demos-20261121",
+    "version": "0.2.86",
+    "recu": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json",
+    "build_sha256": "ffb52b30b7e8a7fa72470719dd7131a9ab5f85795b9612a05fd9398e1d3b1300",
+    "site_deploye": false
   }
 }

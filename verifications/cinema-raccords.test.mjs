@@ -12,6 +12,8 @@ const regardFin = source.indexOf('  const RAYON_REGARD', regardDebut);
 assert(regardDebut >= 0 && regardFin > regardDebut, 'garde de regard arrière introuvable');
 // Le stick est réellement maintenu dans le contexte : la garde de production doit laisser la démo intacte.
 const regard = `const ecran = 'course', commande = () => 'manette';
+// Sélection de faune hors périmètre : ce banc contrôle uniquement le raccord caméra.
+const preparerChampsFaune = () => {};
 const canvas = { clientWidth: 1280, clientHeight: 720 };
 const pad = { manette: { connected: true, axes: [0, 0, 0, 1] } }, pad2 = pad;
 const cameraRegardArriere = () => { throw new Error('regard arrière activé pendant une démo'); };
@@ -74,7 +76,7 @@ verifier('le paysage garde sa trajectoire ; le masquage crée une coupe puis res
   assert.equal(c.vue, 'poursuite'); assert.equal(S.planVu.n, n + 1, 'un arbre qui se démasque ne fait pas revenir la caméra');
 });
 
-for (const [vue, tunnel] of [['pilote', true], ['peloton', false]]) {
+for (const [vue, tunnel] of [['helico', true], ['peloton', false]]) {
   verifier(`${vue} : le repli du sprint suit la tête jusqu'au drapeau`, () => {
     const { c, co, cinema, poses, S, rendre, collision } = seance('montagne', 47);
     const tete = co.voitures[co.classement[0]];

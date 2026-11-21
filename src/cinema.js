@@ -2,8 +2,8 @@
    Lecture seule : ni voiture, ni animal, ni horloge, ni tirage de simulation ne sont modifiés. */
 (function (B) {
   'use strict';
-  const VUES = Object.freeze(['panorama', 'flore', 'faune', 'pilote', 'peloton']);
-  const NATURE = new Set(['panorama', 'flore', 'faune']), CACHE = new WeakMap();
+  const VUES = Object.freeze(['panorama', 'lieu', 'peloton']);
+  const NATURE = new Set(['panorama', 'lieu']), CACHE = new WeakMap();
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const lisse = u => { u = clamp(u, 0, 1); return u * u * (3 - 2 * u); };
   const BAS = Object.freeze([0, -1, 0]), PAS_TRAJET = 24;
@@ -13,16 +13,25 @@
     // Ces rochers sont dessinés mais ne participent pas à la conduite. La caméra lit leurs triangles,
     // sans ajouter de corps au monde PhysX ni transformer les houppiers en murs opaques.
     const resultat = [], vus = new Set();
+    let primitives = null;
     for (const lot of (decor.lotsHerbier || []).concat(decor.lots || [])) for (const o of lot.objets || []) {
       if (vus.has(o)) continue; vus.add(o);
-      if (o.collision || o.solidePhysX || Math.floor(o.mat) !== 9 || !['sphere', 'octa'].includes(o.shape) || !fini(o.p) || !fini(o.s)) continue;
+      if (o.collision || o.solidePhysX || Math.floor(o.mat) !== 9 || !(['sphere', 'octa'].includes(o.shape) || String(o.shape).startsWith('bitume-lieu-')) || !fini(o.p) || !fini(o.s)) continue;
       if (!GEOMETRIES.has(o.shape)) {
-        const g = globalThis.FRender?.shared?.geometry(), plage = g?.ranges[o.shape], triangles = [];
-        if (plage) for (let k = 0; k < plage.count; k++) {
-          const v = g.indices[plage.offset / 4 + k] * 6;
-          triangles.push(g.vertices[v], g.vertices[v + 1], g.vertices[v + 2]);
+        const triangles = [], libres = globalThis.FRender?.shared?.shapes?.get(o.shape) || B.lieux?.FORMES?.[o.shape];
+        if (libres) {
+          // Les formes procédurales exposent déjà leurs triangles. Ne pas reconstruire tout
+          // le catalogue de géométrie pour chaque rocher, notamment pendant le chargement Cimes.
+          for (const t of libres) for (let j = 0; j < 3; j++) triangles.push(...t[j]);
+        } else {
+          primitives ||= globalThis.FRender?.shared?.geometry();
+          const plage = primitives?.ranges[o.shape];
+          if (plage) for (let k = 0; k < plage.count; k++) {
+            const v = primitives.indices[plage.offset / 4 + k] * 6;
+            triangles.push(primitives.vertices[v], primitives.vertices[v + 1], primitives.vertices[v + 2]);
+          }
         }
-        if (triangles.length) GEOMETRIES.set(o.shape, new Float32Array(triangles));
+        GEOMETRIES.set(o.shape, triangles.length ? new Float32Array(triangles) : null);
       }
       const r = o.r || [0, 0, 0], rayon = Math.hypot(...o.s) / 2;
       resultat.push({ p: o.p, s: o.s, rayon, triangles: GEOMETRIES.get(o.shape),
@@ -86,7 +95,7 @@
   }
   function statiques(c, decor) {
     const cached = CACHE.get(decor); if (cached) return cached;
-    const panorama = [], flore = [], candidats = [], cellules = new Set();
+    const panorama = [], lieu = [];
     let maxY = -Infinity, minY = Infinity;
     for (const n of decor.nappes || []) for (let k = 1; k < n.sommets.length; k += 13) {
       maxY = Math.max(maxY, n.sommets[k]); minY = Math.min(minY, n.sommets[k]);
@@ -103,69 +112,34 @@
       }
       if (meilleur) panorama.push(meilleur);
     }
-    // Les objets sont ceux des lots de dessin, pas une densité théorique du biome.
-    const vus = new Set();
-    for (const lot of (decor.lotsHerbier || []).concat(decor.lots || [])) for (const o of lot.objets || []) {
-      if (vus.has(o)) continue; vus.add(o);
-      const forme = String(o.shape || ''), arbre = o.collision === 'tronc';
-      if (!arbre && !/fleur|fougere|fougère|taillis/.test(forme)) continue;
-      if (!fini(o.p) || !fini(o.s)) continue;
-      const taille = Math.max(.2, o.s[1]), priorite = /fleur/.test(forme) ? 4 : /fougere|fougère/.test(forme) ? 3 : arbre ? 1 : 2;
-      candidats.push({ o, arbre, taille, priorite });
+    // Lieux réellement posés dans ce décor (et pas seulement un nom associé au biome).
+    // Le marqueur surplombe l'ouvrage ; une visée à cet endroit montre sa silhouette sans partir
+    // de l'intérieur d'une paroi. Le recul garde aussi son contexte routier dans le cadre.
+    for (const marqueur of decor.lieux?.marqueurs || []) {
+      if (![marqueur.x, marqueur.y, marqueur.z].every(Number.isFinite)) continue;
+      const s = plusProche(c, marqueur.x, marqueur.z), q = B.circuit.echantillon(c, s);
+      const ecart = Math.hypot(marqueur.x - q.x, marqueur.z - q.z);
+      lieu.push({ type: 'lieu', marqueur, s, cap: q.cap, cible: [marqueur.x, marqueur.y + 1.5, marqueur.z],
+        route: [q.x, q.y + 1, q.z], rayon: clamp(85 + ecart * .9, 85, 230),
+        hauteur: clamp(28 + Math.max(0, marqueur.y - q.y) * .18, 28, 55), label: marqueur.nom });
     }
-    candidats.sort((a, b) => b.priorite - a.priorite || b.taille - a.taille);
-    for (const v of candidats) {
-      const { o, arbre, taille } = v, cle = Math.floor(o.p[0] / 120) + ':' + Math.floor(o.p[2] / 120);
-      if (cellules.has(cle)) continue;
-      const s = plusProche(c, o.p[0], o.p[2]); if (B.circuit.dansCouvert(c, s, 80)) continue;
-      cellules.add(cle);
-      flore.push({ type: 'flore', s, cap: B.circuit.echantillon(c, s).cap, cible: [o.p[0], o.p[1] + taille * (arbre ? .22 : .15), o.p[2]],
-        rayon: arbre ? Math.max(20, taille * 1.6) : Math.max(5.5, taille * 4), hauteur: arbre ? Math.max(5, taille * .45) : 1.8,
-        margeSujet: arbre ? Math.max(o.s[0], o.s[2]) * .7 : .15, objet: o,
-        label: /fleur/.test(String(o.shape)) ? 'Fleurs des abords' : arbre ? 'Sous les arbres' : 'Végétation des abords' });
-      if (flore.length === 12) break;
-    }
-    const data = { panorama, flore, maxY, minY, visuels: rochersVisuels(decor) }; CACHE.set(decor, data); return data;
+    const data = { panorama, lieu, maxY, minY, visuels: rochersVisuels(decor) }; CACHE.set(decor, data); return data;
   }
   function preparer(c, decor, animaux, monde) {
-    const base = statiques(c, decor), faune = [];
-    if (animaux && B.animaux) {
-      for (const g of animaux.groupes) if (g.n > 0) faune.push({ type: 'faune', famille: 'sol', indice: g.debut, groupe: g,
-        s: plusProche(c, g.hx, g.hz), cap: B.circuit.echantillon(c, plusProche(c, g.hx, g.hz)).cap,
-        rayon: Math.max(22, g.hr * 1.8), hauteur: 4, label: g.e.nom, taille: g.md.rig?.hauteur || g.md.hauteur || 1 });
-      // Les planeurs et côtiers ont une pose analytique sans mutation ; les migrateurs ont un cache de passage.
-      for (const g of animaux.volants) if (g.n > 0 && (g.famille === 'plane' || g.famille === 'cotier'))
-        faune.push({ type: 'faune', famille: 'vol', indice: 0, groupe: g, s: plusProche(c, g.cx, g.cz), cap: .7,
-          rayon: 28, hauteur: 3, label: g.e.nom, taille: g.md.envergure || 2 });
-    }
-    const C = { c, decor, animaux, monde, ancres: { panorama: base.panorama, flore: base.flore, faune }, maxY: base.maxY, minY: base.minY,
-      options: { faune: 'off', nuit: 0, pluie: 0 }, animal: {}, poseVue: { x: 0, y: 0, z: 0 },
-      rayon: [0, 0, 0], origine: [0, 0, 0], cible: [0, 0, 0], position: [0, 0, 0], appui: [0, 0, 0], hit: {}, solHit: {}, requetes: 0,
-      trajets: new WeakMap(), plans: new WeakMap(), cadres: new WeakMap(), bras: new WeakMap(), visuels: base.visuels, dernierCadre: null };
-    // Les panoramas et les travellings de végétation sont contrôlés pour tout le plan pendant le chargement.
-    // Aucun tronc qui entre ou sort d'un rayon ne change ensuite la distance de prise de vue.
-    for (const a of base.panorama.concat(base.flore)) C.trajets.set(a, [preparerTrajet(C, a, -1), preparerTrajet(C, a, 1)]);
+    // L'argument historique animaux est ignoré : aucune population ni pose animale ne prépare un plan.
+    const base = statiques(c, decor);
+    const C = { c, decor, monde, ancres: { panorama: base.panorama, lieu: base.lieu }, maxY: base.maxY, minY: base.minY,
+      options: {}, poseVue: { x: 0, y: 0, z: 0 },
+      rayon: [0, 0, 0], origine: [0, 0, 0], cible: [0, 0, 0], position: [0, 0, 0], hit: {}, solHit: {}, requetes: 0,
+      trajets: new WeakMap(), cadres: new WeakMap(), bras: new WeakMap(), visuels: base.visuels, dernierCadre: null };
+    // Les deux côtés de chaque plan sont contrôlés sur toute leur trajectoire au chargement.
+    // Le relief ne repousse jamais la caméra en cours de prise ; une perte de visibilité fait couper.
+    for (const a of base.panorama.concat(base.lieu)) C.trajets.set(a, [preparerTrajet(C, a, -1), preparerTrajet(C, a, 1)]);
     return C;
   }
   function regler(C, options) { if (C) Object.assign(C.options, options); return C; }
-  function animal(C, a, t, out) {
-    const A = B.animaux, q = C.options.faune;
-    // Légère réserve des silhouettes lointaines : aucun gros plan ne force leur détail ou leur présence.
-    if (!A || !C.animaux || (q !== 'medium' && q !== 'high' && q !== 'ultra')) return false;
-    if (a.famille === 'sol') {
-      const p = A.poseAnimal(C.animaux, a.indice, t, C.animal);
-      if (!p || p.enfoui > .43) return false;
-      out[0] = p.x; out[1] = p.y + a.taille * p.echelle * .52; out[2] = p.z;
-    } else {
-      const g = a.groupe, nuit = C.options.nuit || 0, pluie = C.options.pluie || 0;
-      if (g.famille === 'plane' && (nuit >= .6 || pluie >= .55) || g.famille === 'cotier' && (nuit >= .7 || g.e.cle === 'pelican' && nuit >= .5)) return false;
-      if (!A.poseVolant(C.animaux, g, a.indice, t, C.animal)) return false;
-      out[0] = C.animal.x; out[1] = C.animal.y; out[2] = C.animal.z;
-    }
-    return out.every(Number.isFinite);
-  }
   function disponible(C, a, t) {
-    return !!C && !!a && (a.type === 'faune' ? animal(C, a, t, C.cible) : !!C.trajets.get(a)?.some(Boolean));
+    return !!C && !!a && NATURE.has(a.type) && !!C.trajets.get(a)?.some(Boolean);
   }
   function choisir(C, type, numero, t) {
     const liste = C?.ancres[type]; if (!liste?.length) return null;
@@ -179,7 +153,7 @@
       const h = C.monde.raycast(from, BAS, top - C.minY + 100, { mask: 1, staticOnly: true }, C.solHit);
       if (h.hit) return h.y;
     }
-    const h = C.animaux && B.animaux ? B.animaux.solExact(C.animaux.G.T, x, z) : C.decor.sol?.(x, z);
+    const h = C.decor.sol?.(x, z);
     return Number.isFinite(h) ? h : y - 1;
   }
   // Contrôle seulement : un obstacle provoque une vraie coupe du montage, jamais un déplacement instantané
@@ -191,21 +165,6 @@
   function segmentLibre(C, pos, cible, margeSujet) {
     const d = Math.hypot(...pos.map((v, j) => v - cible[j]));
     return d >= Math.max(.7, margeSujet + .4) && impact(C, cible, pos, margeSujet, .25) === Infinity;
-  }
-  function appuiVisible(C, a, pos) {
-    // Voir le corps au-dessus d'une crête ne suffit pas : le pli de terrain peut cacher les pattes et
-    // faire paraître la bête suspendue. Garder visible un petit morceau du vrai sol sous ses appuis.
-    // Les oiseaux momentanément en vol n'ont naturellement pas d'appui à montrer.
-    if (a.famille !== 'sol' || C.animal.vol || !C.animaux) return true;
-    const p = C.animal, cible = C.appui, T = C.animaux.G.T;
-    const r = Math.max(.25, Math.min(.7, a.taille * p.echelle * .4));
-    for (let k = 0; k < 5; k++) {
-      const dx = k === 1 ? r : k === 2 ? -r : 0, dz = k === 3 ? r : k === 4 ? -r : 0;
-      cible[0] = p.x + dx; cible[2] = p.z + dz;
-      cible[1] = B.animaux.solExact(T, cible[0], cible[2]) + .08;
-      if (!segmentLibre(C, pos, cible, .02)) return false;
-    }
-    return true;
   }
   function placer(a, trajet, u, out) {
     const angle = trajet.angle + trajet.cote * (u - .5) * .22, r = a.rayon * (1.08 - .16 * u);
@@ -223,36 +182,13 @@
         placer(a, trajet, k / PAS_TRAJET, p);
         elevation = Math.max(elevation, sol(C, p[0], p[2], p[1]) + .6 - p[1]);
       }
-      if (elevation > (a.type === 'panorama' ? 80 : 5)) continue;
+      if (elevation > 80) continue;
       trajet.elevation = elevation;
       let valide = true;
       for (let k = 0; k <= PAS_TRAJET; k++) if (!libre(C, placer(a, trajet, k / PAS_TRAJET, p), a.cible, marge)) { valide = false; break; }
       if (valide) return trajet;
     }
     return null;
-  }
-  function posteAnimal(C, a, cible, cote) {
-    // Un poste fixe suit du regard l'animal vivant : le panoramique reste fluide et la caméra ne traverse
-    // pas le décor en poursuivant un oiseau ou une bête en fuite. Sa disparition termine le plan.
-    const p = [0, 0, 0], terrestre = a.famille === 'sol';
-    const taille = a.taille * (terrestre ? C.animal.echelle : 1), ouverture = 2 * Math.tan(34 * Math.PI / 360);
-    // La taille de l'habitat n'est pas celle du sujet. Viser environ 16 % de l'image garde du paysage
-    // tout en rendant l'animal lisible ; on compare les postes, pas seulement le premier rayon libre.
-    const rayon = terrestre ? clamp(taille / (ouverture * .16), 4.8, 32) : a.rayon;
-    const hauteur = terrestre ? clamp(taille * .9, 1.1, 2.8) : a.hauteur;
-    let meilleur = null, score = Infinity;
-    for (const facteur of terrestre ? [1, 1.18, .82] : [1]) for (const offset of [0, Math.PI / 4, -Math.PI / 4, Math.PI / 2, -Math.PI / 2, 3 * Math.PI / 4, -3 * Math.PI / 4, Math.PI]) {
-      const angle = a.cap + cote * 1.05 + offset;
-      p[0] = cible[0] - Math.cos(angle) * rayon * facteur; p[2] = cible[2] - Math.sin(angle) * rayon * facteur;
-      p[1] = Math.max(cible[1] + hauteur, sol(C, p[0], p[2], cible[1] + hauteur) + .7);
-      const d = Math.hypot(...p.map((v, j) => v - cible[j])), fraction = taille / (d * ouverture);
-      const plongee = Math.atan2(p[1] - cible[1], Math.hypot(p[0] - cible[0], p[2] - cible[2]));
-      if (terrestre && (fraction < .10 || fraction > .25 || plongee > .6)) continue;
-      if (!libre(C, p, cible) || !appuiVisible(C, a, p)) continue;
-      const valeur = Math.abs(fraction - .16) * 5 + Math.abs(plongee) * .7 + Math.abs(offset) * .002;
-      if (valeur < score) { score = valeur; meilleur = p.slice(); }
-    }
-    return meilleur;
   }
   function viser(pos, cible, fov, nature = false) {
     const dx = cible[0] - pos[0], dy = cible[1] - pos[1], dz = cible[2] - pos[2], d = Math.hypot(dx, dy, dz) || 1;
@@ -358,31 +294,12 @@
     let fov = 42, marge = .15;
     if (NATURE.has(plan.vue)) {
       if (!disponible(C, ancre, t)) return null;
-      if (ancre.type !== 'faune') for (let j = 0; j < 3; j++) cible[j] = ancre.cible[j];
-      if (ancre.type === 'faune') {
-        if (!C.plans.has(plan)) C.plans.set(plan, posteAnimal(C, ancre, cible, cote));
-        const poste = C.plans.get(plan); if (!poste) return null;
-        for (let j = 0; j < 3; j++) pos[j] = poste[j];
-        const distance = Math.hypot(pos[0] - cible[0], pos[1] - cible[1], pos[2] - cible[2]);
-        if (distance < 4) return null;
-        if (ancre.famille === 'sol') {
-          const fraction = ancre.taille * C.animal.echelle / (distance * 2 * Math.tan(34 * Math.PI / 360));
-          if (fraction < .10 || fraction > .28) return null;
-        }
-      } else {
-        const trajets = C.trajets.get(ancre), trajet = trajets?.[cote < 0 ? 0 : 1] || trajets?.find(Boolean);
-        if (!trajet) return null;
-        placer(ancre, trajet, u, pos);
-      }
-      fov = plan.vue === 'panorama' ? 48 - 3 * u : plan.vue === 'flore' ? 42 : 34;
+      for (let j = 0; j < 3; j++) cible[j] = ancre.cible[j];
+      const trajets = C.trajets.get(ancre), trajet = trajets?.[cote < 0 ? 0 : 1] || trajets?.find(Boolean);
+      if (!trajet) return null;
+      placer(ancre, trajet, u, pos);
+      fov = plan.vue === 'panorama' ? 48 - 3 * u : 52 - 2 * u;
       marge = ancre.margeSujet || .15;
-    } else if (plan.vue === 'pilote') {
-      const M = B.voiture?.attitude(p.cap, p.tangage || 0, p.roulis || 0);
-      const pt = (x, y, z, out) => {
-        if (M) { const v = B.voiture.mul(M, [x, y, z]); out[0] = p.x + v[0]; out[1] = p.y + v[1]; out[2] = p.z + v[2]; }
-        else { out[0] = p.x + Math.cos(p.cap) * x - Math.sin(p.cap) * z; out[1] = p.y + y; out[2] = p.z + Math.sin(p.cap) * x + Math.cos(p.cap) * z; }
-      };
-      pt(.8 - u * .35, 1.12, cote * 1.75, pos); pt(.12, .76, 0, cible); fov = 50;
     } else {
       // Le vrai groupe autour du sujet, avec un cadrage large adapté à son étendue, jamais des voitures déplacées.
       let n = 0, x = 0, y = 0, z = 0, rayon = 9;
@@ -395,7 +312,7 @@
       pos[0] = cible[0] - Math.cos(a) * recul; pos[2] = cible[2] - Math.sin(a) * recul; pos[1] = cible[1] + Math.max(22, rayon * .8);
       fov = 52;
     }
-    if (!libre(C, pos, cible, marge) || ancre?.type === 'faune' && !appuiVisible(C, ancre, pos)) return null;
+    if (!libre(C, pos, cible, marge)) return null;
     const cam = viser(pos, cible, fov, NATURE.has(plan.vue));
     C.poseVue.x = cam.pos[0]; C.poseVue.y = cam.pos[1]; C.poseVue.z = cam.pos[2];
     return cam;

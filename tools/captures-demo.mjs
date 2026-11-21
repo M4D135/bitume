@@ -6,21 +6,23 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { capturer, optionsCapture } from './controle-visuel.mjs';
 
+export const CIRCUITS_DEMO = Object.freeze([
+  'val-brule', 'port-sable', 'haut-col', 'lande-noire', 'roche-fauve',
+  'brume-de-jade', 'cap-sequoia', 'baikal', 'route-des-cimes'
+]);
 export const SCENARIOS = Object.freeze([
-  { id: 'faune-ete', circuit: 2, vue: 'faune', attendu: 'faune', faune: true, saison: 'ete' },
-  { id: 'faune-hiver', circuit: 2, vue: 'faune', attendu: 'faune', faune: true, saison: 'hiver' },
+  ...CIRCUITS_DEMO.flatMap((id, circuit) => [
+    { id: 'route-' + id, circuit, vue: 'peloton', attendu: 'peloton', cadrage: 'route', instants: [.4, 4, 7.6] },
+    { id: 'trace-' + id, circuit, vue: 'panorama', attendu: 'panorama', cadrage: 'route', ancre: 'panorama', instants: [.4, 4, 7.6] },
+    { id: 'lieu-' + id, circuit, vue: 'lieu', attendu: 'lieu', cadrage: 'lieu', ancre: 'lieu', instants: [.4, 4, 7.6] }
+  ]),
   { id: 'tele-montagne', circuit: 2, depart: 1685, vue: 'tele', attendu: 'poursuite', vitesse: 40, refus: true },
   { id: 'helico-montagne', circuit: 2, depart: 2070, vue: 'helico', attendu: 'poursuite', vitesse: 40, refus: true },
-  { id: 'volant-gauche', vue: 'pilote', attendu: 'pilote', volant: -.7, pilote: true },
-  { id: 'volant-droite', vue: 'pilote', attendu: 'pilote', volant: .7, pilote: true },
-  { id: 'geste-majeur', vue: 'pilote', attendu: 'pilote', geste: 'majeur', pilote: true },
-  { id: 'geste-poing', vue: 'pilote', attendu: 'pilote', geste: 'poing', pilote: true },
-  { id: 'geste-salut-realisateur', vue: 'tele', attendu: 'pilote', geste: 'salut', pilote: true, realisation: true },
   { id: 'pluie-cockpit', vue: 'cockpit', attendu: 'cockpit', pluie: true, spray: true, chauffe: 90, vitesse: 235 / 3.6 },
   { id: 'pluie-poursuite-sillage', vue: 'poursuite', attendu: 'poursuite', pluie: true, spray: true, chauffe: 90, vitesse: 235 / 3.6 },
   { id: 'pluie-aerien', circuit: 7, vue: 'helico', attendu: 'helico', pluie: true, aerien: true, chauffe: 90, vitesse: 235 / 3.6 }
 ].map(s => Object.freeze({ circuit: 0, depart: 280, vitesse: 30, saison: 'ete', chauffe: 4, images: 3, ...s })));
-const AVANT = new Set(['faune-ete', 'faune-hiver', 'tele-montagne', 'helico-montagne']);
+const AVANT = new Set(['tele-montagne', 'helico-montagne']);
 
 export function optionsDemo(argv) {
   const o = {};
@@ -46,6 +48,7 @@ export function optionsDemo(argv) {
 export function preparerEtat(s) {
   const J = BITUME_JEU, B = BITUME, ancienne = J.session, reference = { ...ancienne.reference };
   ancienne.reglagesReference = { ...J.reglages }; ancienne.decorAvantReference = J.scene.enrichi;
+  J.reglages.faune = 'high';
   J.demo(s.circuit);
   const S = J.session, co = S.course, c = co.c;
   if (S.type !== 'demo' || !S.real || !S.cinema || J.camera !== null) throw new Error('La vraie démo sans caméra imposée est requise');
@@ -76,32 +79,21 @@ export function preparerEtat(s) {
     for (const liste of [S.prec, S.cour]) Object.assign(liste[v.id], pose);
   }
   B.cinema.regler(S.cinema, { faune: 'high', nuit: 0, pluie: s.pluie ? 1 : 0 });
-  const ancre = s.faune ? S.cinema.ancres.faune.find(a => a.label === 'Bouquetin des Alpes') : null;
-  if (s.faune && !ancre) throw new Error('Ancre bouquetin absente');
-  const plan = { vue: s.vue, sujet, debut: co.horloge - (s.realisation ? 1 : 0), fin: co.horloge + 30,
-    motif: 'course', n: ++S.real.n, cote: -1, angle: 0, ...(ancre ? { ancre, nature: true, label: ancre.label } : {}) };
+  const ancre = s.ancre ? B.cinema.choisir(S.cinema, s.ancre, 0, co.horloge) : null;
+  if (s.ancre && !ancre) throw new Error('Ancre de circuit absente : ' + s.ancre);
+  const plan = { vue: s.vue, sujet, debut: co.horloge, fin: co.horloge + (s.instants ? 8 : 30),
+    motif: 'course', n: ++S.real.n, cote: -1, angle: 0,
+    ...(ancre ? { ancre, nature: true, label: ancre.label } : {}) };
   S.real.plan = plan; S.real.vert = 0; S.real.ordre = co.classement.slice(); S.planVu = null; S.tele.alea = () => .5;
-  let graineExpression = null;
-  if (s.geste) {
-    if (!B.expressionsPilote) throw new Error('Expressions du pilote absentes');
-    for (let graine = 1; graine <= 128; graine++) {
-      const E = B.expressionsPilote.creer(co.voitures.length, graine), t = co.horloge - 1 / 120;
-      B.expressionsPilote.actualiser(E, co, S.cour, t - .01, true);
-      B.expressionsPilote.demander(E, sujet, true); B.expressionsPilote.demander(E, sujet, false);
-      B.expressionsPilote.actualiser(E, co, S.cour, t, true);
-      if (B.expressionsPilote.lire(E, sujet).geste === s.geste) { S.expressions = E; graineExpression = graine; break; }
-    }
-    if (graineExpression === null) throw new Error('Graine du geste non trouvée');
-  }
   const avancer = __BITUME_CAPTURE.avancer;
   __BITUME_CAPTURE.avancer = ms => {
     co.horloge += ms / 1000; co.temps = co.horloge;
     if (s.pluie && s.vitesse > 14) for (let i = 0; i < 3; i++) B.traces.pas(S.fx, co, S.cour, sujet, 1 / 30, null);
     return avancer(ms);
   };
-  globalThis.__DEMO_FIXTURE = { scenario: s, sujet, rival, ancre, planInitial: plan, graineExpression };
+  globalThis.__DEMO_FIXTURE = { scenario: s, sujet, rival, ancre, planInitial: plan };
   return { entree: 'BITUME_JEU.demo', type: S.type, cameraImposee: J.camera !== null, planDemande: s.vue,
-    saison: J.scene.saison, graineExpression, posesDisposees: true, simulationConduite: false,
+    saison: J.scene.saison, ancre: ancre ? { type: ancre.type, label: ancre.label } : null, posesDisposees: true, simulationConduite: false,
     sillage: s.spray ? { rival, decalageAbscisseM: 18, nombreRivauxProches: 1 } : null,
     description: 'Vraie démo et vrai réalisateur ; poses prescrites, horloge/effets rendus, aucun essai de conduite ou de FPS.' };
 }
@@ -109,20 +101,31 @@ export function preparerEtat(s) {
 export function observerEtat() {
   const J = BITUME_JEU, B = BITUME, S = J.session, F = __DEMO_FIXTURE, cam = S.camera, gl = J.rendu.gl, p = S.cour[S.suivie];
   const cible = cam?.cible || (p && [p.x, p.y + .65, p.z]);
-  let obstruction = null, faune = null;
+  let obstruction = null;
   if (cam && cible) {
     const dir = cible.map((v, i) => v - cam.pos[i]), d = Math.hypot(...dir);
     const h = d > .2 ? S.course.physique.world.raycast(cam.pos, dir, d - .17, { mask: 3, staticOnly: true }) : { hit: false };
     obstruction = { hit: h.hit, distance: h.hit ? h.distance : null };
   }
-  if (F.ancre && cam) {
-    const a = B.animaux.poseAnimal(S.animaux, F.ancre.indice, S.tRendu), sol = B.animaux.solExact(S.animaux.G.T, a.x, a.z);
-    const d = Math.hypot(...cam.pos.map((v, i) => v - cam.cible[i])), taille = F.ancre.taille * a.echelle;
-    faune = { indice: F.ancre.indice, y: a.y, sol, distance: d, taille, fractionHauteur: taille / (2 * d * Math.tan(cam.fov * Math.PI / 360)) };
+  const q = S.cour[F.sujet];
+  let sujetCadre = null, gardeSol = null;
+  if (F.scenario.cadrage && cam) {
+    const ancre = F.ancre, cibleSujet = ancre ? (F.scenario.cadrage === 'lieu' ? ancre.cible : ancre.route || ancre.cible) : [q.x, q.y + .65, q.z];
+    const delta = cibleSujet.map((v, i) => v - cam.pos[i]);
+    const sy = Math.sin(cam.yaw), cy = Math.cos(cam.yaw), sp = Math.sin(cam.pitch), cp = Math.cos(cam.pitch);
+    const sr = Math.sin(cam.roll || 0), cr = Math.cos(cam.roll || 0), tan = Math.tan(cam.fov * Math.PI / 360);
+    const droite = delta[0] * cy + delta[2] * sy;
+    const haut = -delta[0] * sy * sp + delta[1] * cp + delta[2] * cy * sp;
+    const profondeur = delta[0] * sy * cp + delta[1] * sp - delta[2] * cy * cp;
+    sujetCadre = { type: F.scenario.cadrage, label: ancre?.label || 'Route et peloton',
+      source: ancre?.marqueur ? 'decor.lieux.marqueurs' : 'circuit',
+      marqueurPresent: !!ancre?.marqueur && S.cinema.decor.lieux.marqueurs.includes(ancre.marqueur),
+      cible: Array.from(cibleSujet), projection: { profondeur,
+        x: (droite * cr + haut * sr) / (profondeur * tan * (innerWidth / innerHeight)),
+        y: (haut * cr - droite * sr) / (profondeur * tan) } };
+    if (S.animaux?.G?.T && B.animaux?.solExact)
+      gardeSol = cam.pos[1] - B.animaux.solExact(S.animaux.G.T, cam.pos[0], cam.pos[2]);
   }
-  const pilote = S.expressions && B.expressionsPilote ? { ...B.expressionsPilote.lire(S.expressions, F.sujet) } : null;
-  const q = S.cour[F.sujet], volants = S.sortie.filter(o => o.shape === B.voiture.FORMES.jante.nom && !o.overlay && Math.hypot(o.p[0] - q.x, o.p[1] - q.y, o.p[2] - q.z) < 2.5)
-    .map(o => ({ p: Array.from(o.p), r: Array.from(o.r), s: Array.from(o.s) }));
   let sillage = null;
   if (F.scenario.spray && B.sillage && cam) {
     const casque = [q.x, q.y + .95, q.z], eau = Math.max(S.meteo.mouille || 0, S.meteo.pluie || 0);
@@ -136,7 +139,9 @@ export function observerEtat() {
   return { type: S.type, ecran: J.ecran, cameraImposee: J.camera !== null, gardeDisponible: typeof B.cinema.valider === 'function',
     vue: S.vue, plan: S.planVu ? { vue: S.planVu.vue, sujet: S.planVu.sujet, motif: S.planVu.motif, n: S.planVu.n, cote: S.planVu.cote } : null,
     camera: cam ? { pos: cam.pos, cible, yaw: cam.yaw, pitch: cam.pitch, roll: cam.roll, fov: cam.fov, near: cam.near, secours: !!cam.secours } : null,
-    obstruction, faune, pilote, volant: S.course.voitures[F.sujet].etat.volant, volants, sillage,
+    obstruction, sujetCadre, gardeSol, sillage,
+    agePlan: S.course.horloge - (F.planInitial?.debut ?? 0),
+    activiteFaune: B.animaux?.stats && S.animaux ? B.animaux.stats(S.animaux).activite : null,
     vitrage, vitres: J.vitres, vitreVisible: !!vitre && !vitre.hidden && style.display !== 'none' && style.visibility !== 'hidden',
     saison: J.scene.saison, temps: S.tRendu, glErreur: gl.getError(), glPerdu: gl.isContextLost() };
 }
@@ -149,7 +154,7 @@ export function verifierRapport(r, s, candidat = true) {
   if (r.images.length !== s.images) erreurs.push('Nombre de captures incomplet');
   if (!/swiftshader|llvmpipe|software/i.test(r.environnement.gpu || '')) erreurs.push('Raster logiciel non identifié');
   if (r.initialisation?.entree !== 'BITUME_JEU.demo' || r.initialisation.cameraImposee !== false) erreurs.push('Séance de démo réelle non prouvée');
-  for (const im of r.images) {
+  for (const [indice, im] of r.images.entries()) {
     const o = im.observation;
     if (!o) { erreurs.push('Observation absente'); continue; }
     if (o.type !== 'demo' || o.ecran !== 'demo' || o.cameraImposee !== false) erreurs.push('Raccord démo contourné');
@@ -161,11 +166,18 @@ export function verifierRapport(r, s, candidat = true) {
     if (o.gardeDisponible !== true || o.vue !== s.attendu || o.plan?.vue !== s.attendu || o.camera?.secours) erreurs.push('Plan attendu absent ou repli non qualifié');
     if (o.obstruction?.hit !== false) erreurs.push('Visée finale masquée');
     if (s.refus && o.plan?.motif !== 'cadre') erreurs.push('Le plan dangereux n’a pas été explicitement coupé');
-    if (s.faune && (!o.faune || ![o.faune.y, o.faune.sol, o.faune.fractionHauteur].every(Number.isFinite) || Math.abs(o.faune.y - o.faune.sol) > .08 || o.faune.fractionHauteur < .12 || o.faune.fractionHauteur > .20 || o.camera?.pitch < -.4)) erreurs.push('Faune hors appui ou cadrage illisible');
-    if (s.pilote && !o.volants?.length) erreurs.push('Volant extérieur absent des objets rendus');
-    if (s.volant !== undefined && o.volant !== s.volant) erreurs.push('Braquage demandé absent');
-    if (s.geste && (o.pilote?.geste !== s.geste || !(o.pilote.gesteIntensite > .6))) erreurs.push('Geste réel absent ou déjà terminé');
-    if (s.realisation && o.plan?.motif !== 'expression') erreurs.push('Le réalisateur n’a pas cadré le geste');
+    if (s.cadrage) {
+      if (r.environnement.physx?.ready !== true) erreurs.push('PhysX réel absent de la réception');
+      const c = o.sujetCadre, p = c?.projection;
+      if (c?.type !== s.cadrage || !p || ![p.profondeur, p.x, p.y].every(Number.isFinite) ||
+          !(p.profondeur > 0) || Math.abs(p.x) > .98 || Math.abs(p.y) > .98)
+        erreurs.push('Sujet route/lieu hors cadre ou non prouvé');
+      if (s.cadrage === 'lieu' && (c?.source !== 'decor.lieux.marqueurs' || c?.marqueurPresent !== true || !c?.label))
+        erreurs.push('Lieu réel du circuit non prouvé');
+      if (!Number.isFinite(o.gardeSol) || o.gardeSol < .1) erreurs.push('Caméra sous le terrain ou appui non mesuré');
+      if (!Number.isFinite(o.agePlan) || Math.abs(s.instants[indice] - o.agePlan) >= .02)
+        erreurs.push('Instant de trajectoire non prouvé');
+    }
     if (s.pluie) {
       const v = o.vitres?.j1;
       if (!v || v.backend !== 'webgl2' || v.pret !== true || v.erreur || v.perdu || v.erreurs?.length || typeof v.erreurs === 'number' && v.erreurs > 0) erreurs.push('Diagnostic optique absent ou en erreur');
@@ -202,7 +214,7 @@ export function optionsScenario(s, url, sortie, o) {
 }
 export async function campagne(o) {
   mkdirSync(o.sortie, { recursive: true });
-  const resultat = { format: 'bitume-captures-demo-v1', date: new Date().toISOString(), source: fileURLToPath(import.meta.url),
+  const resultat = { format: 'bitume-captures-demo-v2', date: new Date().toISOString(), source: fileURLToPath(import.meta.url),
     limites: ['Raster logiciel : aucun FPS matériel qualifié.', 'Vraies caméras et réalisation du jeu, sur poses prescrites : aucun essai de conduite.',
       'Les captures nécessitent un examen visuel ; les contrôles numériques ne qualifient pas seuls la composition.'], passages: [], echecs: 0 };
   for (const [variante, url] of [...(o.avant ? [['avant', o.avant]] : []), ['apres', o.url]]) for (const id of o.cas) {
@@ -210,6 +222,11 @@ export async function campagne(o) {
     const s = SCENARIOS.find(s => s.id === id), sortie = path.join(o.sortie, variante, id), p = optionsScenario(s, url, sortie, o);
     p.ecrans = ['demo']; p.initialiser = ({ evaluer }) => evaluer(`(${preparerEtat.toString()})(${JSON.stringify(s)})`);
     p.observer = ({ evaluer }) => evaluer(`(${observerEtat.toString()})()`);
+    if (s.instants) p.avantImage = ({ evaluer, i }) => evaluer(`(() => {
+      const S = BITUME_JEU.session, F = __DEMO_FIXTURE;
+      S.course.horloge = S.course.temps = F.planInitial.debut + ${s.instants[i]} - .1;
+      return true;
+    })()`);
     const r = await capturer(p), erreurs = verifierRapport(r, s, variante === 'apres');
     resultat.passages.push({ variante, scenario: id, dossier: path.relative(o.sortie, sortie), images: r.images.length, erreurs });
     resultat.echecs += erreurs.length ? 1 : 0;
