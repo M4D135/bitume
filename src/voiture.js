@@ -126,8 +126,31 @@
   // Volumes lisses bâtis une fois au chargement (src/carene.js) et enregistrés comme formes libres du moteur. Une pièce
   // de carène porte le centre et la taille de sa forme (repère de la voiture) ; sa couleur est celle de la livrée.
   const C = B.carene, FORMES = {};
+  // Les variantes de doigts répètent leurs sommets entre triangles voisins.
+  // Partager seulement les triplets strictement identiques réduit le stockage
+  // JavaScript sans changer un triangle, une normale ni le tampon FERRO.
+  // Le hachage porte sur les bits Float64 ; même une collision de hachage
+  // exige ensuite l'égalité exacte, zéros signés compris. Aucun arrondi.
+  function partagerCoordonneesMain(triangles) {
+    const uniques = new Map(), nombres = new Float64Array(3), mots = new Uint32Array(nombres.buffer);
+    for (const triangle of triangles) for (let i = 0; i < 6; i++) {
+      const p = triangle[i]; nombres.set(p);
+      let cle = 2166136261;
+      for (let k = 0; k < 6; k++) cle = Math.imul(cle ^ mots[k], 16777619);
+      const candidats = uniques.get(cle);
+      let existant;
+      if (candidats) for (const q of candidats)
+        if (Object.is(p[0], q[0]) && Object.is(p[1], q[1]) && Object.is(p[2], q[2])) { existant = q; break; }
+      if (existant) triangle[i] = existant;
+      else {
+        Object.freeze(p);
+        if (candidats) candidats.push(p); else uniques.set(cle, [p]);
+      }
+    }
+  }
   function forme(nom, triangles) {
     const n = C.normaliser(triangles), f = { nom: 'bitume-' + nom, centre: n.centre, taille: n.taille, triangles: n.triangles.length, tri: n.triangles };
+    if (nom.startsWith('main-')) partagerCoordonneesMain(n.triangles);
     const R = globalThis.window && globalThis.window.FRender;
     if (R && R.forme) R.forme(f.nom, n.triangles);
     return (FORMES[nom] = f);
@@ -1543,21 +1566,29 @@
   const MAIN = B.main.construire(), MAIN_OUVERT = B.main.construire(true);
   for (const [cote, t] of [['d', x => x], ['g', C.miroir]]) for (const piece of ['gant', 'paume', 'garde', 'poignet', 'sangle', 'dos']) forme('main-' + piece + '-' + cote, t(MAIN[piece === 'gant' ? 'prise' : piece]));
   forme('main-gant-d-ouvert', MAIN_OUVERT.prise);                  // cockpit-3 : doigts ouverts pendant le trajet au pommeau
-  // Quatre prises intermédiaires, préparées une fois : les doigts se délient avant que le poignet recule.
-  const PRISES_MAIN = ['main-gant-d'];
-  for (let n = 1; n < 5; n++) { const nom = 'main-gant-d-prise-' + n; forme(nom, B.main.construire(n / 5).prise); PRISES_MAIN.push(nom); }
-  PRISES_MAIN.push('main-gant-d-ouvert');
-  // Variantes préparées une fois : les deux mains savent quitter la jante, puis déplier des doigts lisibles.
-  const PRISES_GAUCHE = ['main-gant-g'], GESTES_MAIN = { majeur: { d: [], g: [] }, poing: { d: [], g: [] }, salut: { d: [], g: [] } };
-  for (let n = 1; n <= 5; n++) { const nom = 'main-gant-g-prise-' + n; forme(nom, C.miroir(B.main.construire(n / 5).prise)); PRISES_GAUCHE.push(nom); }
-  for (const geste of ['majeur', 'poing', 'salut']) for (let n = 0; n <= 5; n++) {
-    const gant = B.main.construire(1, { geste, progression: n / 5 }).prise;
+  // Treize états préparés, avec moins de subdivisions longitudinales hors prise :
+  // transitions plus fines sans calcul de maillage ni allocation en course.
+  const ETAPES_MAIN = 12, PRISES_MAIN = ['main-gant-d'], PRISES_GAUCHE = ['main-gant-g'];
+  for (let n = 1; n <= ETAPES_MAIN; n++) {
+    const gant = n === ETAPES_MAIN ? MAIN_OUVERT.prise : B.main.construire(n / ETAPES_MAIN).prise;
+    const droite = n === ETAPES_MAIN ? 'main-gant-d-ouvert' : 'main-gant-d-prise-' + n, gauche = 'main-gant-g-prise-' + n;
+    if (n < ETAPES_MAIN) forme(droite, gant);
+    forme(gauche, C.miroir(gant)); PRISES_MAIN.push(droite); PRISES_GAUCHE.push(gauche);
+  }
+  // Les trois gestes partent exactement de la main ouverte. Partager ce même
+  // maillage conserve leurs treize états et évite six copies CPU/GPU inutiles.
+  const GESTES_MAIN = {};
+  for (const geste of ['majeur', 'poing', 'salut']) GESTES_MAIN[geste] = {
+    d: [PRISES_MAIN[ETAPES_MAIN]], g: [PRISES_GAUCHE[ETAPES_MAIN]]
+  };
+  for (const geste of ['majeur', 'poing', 'salut']) for (let n = 1; n <= ETAPES_MAIN; n++) {
+    const gant = B.main.construire(1, { geste, progression: n / ETAPES_MAIN }).prise;
     for (const cote of ['d', 'g']) {
       const nom = 'main-geste-' + geste + '-' + cote + '-' + n;
       forme(nom, cote === 'd' ? gant : C.miroir(gant)); GESTES_MAIN[geste][cote].push(nom);
     }
   }
-  const FORMES_EXPRESSIONS = [...PRISES_MAIN, ...PRISES_GAUCHE, ...Object.values(GESTES_MAIN).flatMap(g => [...g.d, ...g.g])];
+  const FORMES_EXPRESSIONS = [...new Set([...PRISES_MAIN, ...PRISES_GAUCHE, ...Object.values(GESTES_MAIN).flatMap(g => [...g.d, ...g.g])])];
   // Appel sous le voile : les sommets sont déjà dans le buffer GPU global, mais chaque packer d'instances
   // prépare aussi ici ses groupes de formes (vue extérieure et overlay), avant le premier geste en démo.
   function preparerExpressions(sortie, p) {
@@ -2170,12 +2201,19 @@
         // pendant le trajet ; la main s'écarte d'abord vers le dehors et vers le pilote avant de tourner, et le
         // gant passe en variante doigts ouverts dès qu'il ne touche plus le tube (ecart à fond)
         ecart = H.piloteReel ? ouverture : Math.min(t, 1 - t) / .02; ecart = ecart < 0 ? 0 : ecart > 1 ? 1 : ecart;
-        const mouvement = H.piloteReel ? retrait : ecart, dehors = H.piloteReel ? radial : ecart, degagement = H.piloteReel ? .020 : .016, reculPrise = H.piloteReel ? .045 : .016;
-        gx = gx + EX[0] * degagement * dehors + WN[0] * reculPrise * mouvement; gy = gy + EX[1] * degagement * dehors + WN[1] * reculPrise * mouvement; gz = gz + EX[2] * degagement * dehors + WN[2] * reculPrise * mouvement;
+        const mouvement = H.piloteReel ? retrait : ecart, dehors = H.piloteReel ? radial : ecart, degagement = H.piloteReel ? .025 : .016, reculPrise = H.piloteReel ? .080 : .016;
+        // Le recul supplémentaire contourne aussi le pommeau par le haut :
+        // garder sa hauteur initiale ferait passer la manchette sur la boule.
+        const leveePrise = H.piloteReel ? .032 : 0;
+        gx = gx + EX[0] * degagement * dehors + (WN[0] * reculPrise + WU[0] * leveePrise) * mouvement;
+        gy = gy + EX[1] * degagement * dehors + (WN[1] * reculPrise + WU[1] * leveePrise) * mouvement;
+        gz = gz + EX[2] * degagement * dehors + (WN[2] * reculPrise + WU[2] * leveePrise) * mouvement;
         // Point de contrôle surélevé du Bézier : la main contourne le pommeau avant de s'y poser.
         // Le cadrage isolé garde sa courbe historique ; le pilote commun porte cette courbe au poignet.
         // Quand la prise droite est sous le moyeu, contourner la jante par l'arrière au retour du levier.
-        const reculTrajet = H.piloteReel ? .060 * Math.max(0, sp) : 0, hauteurTrajet = H.piloteReel ? .23 : .15;
+        // Les doigts ouverts gardent leur longueur : dans le braquage qui place
+        // la main droite en bas, leur retour contourne la jante côté pilote.
+        const reculTrajet = H.piloteReel ? .125 * Math.max(0, sp) : 0, hauteurTrajet = H.piloteReel ? .23 : .15;
         // Courbe du poignet, puis pose du gant autour de ce poignet. La courbe de l'ancien cadrage portait
         // le point de prise : le pivot du gant emportait alors la manchette au travers du pommeau.
         const poignet = main.pieces[3].ferme.c;
@@ -2198,8 +2236,10 @@
         // cockpit-4 : le repère de départ porte déjà −phi ; sans le +phi, la paume restait tournée du braquage au
         // pommeau (91,5° du bas volant à fond)
         // La main se dégage avant de pivoter et retrouve l'angle de la jante avant de s'en rapprocher.
-        let a = H.piloteReel ? (t - .24) / (.42 - .24) : t / .10; a = a < 0 ? 0 : a > 1 ? 1 : a;
-        let b = H.piloteReel ? (t - .66) / (.79 - .66) : (t - .86) / (1 - .86); b = b < 0 ? 0 : b > 1 ? 1 : b;
+        // Le pivot attend que les doigts de longueur conservée aient dépassé
+        // la jante ; au retour il s'achève avant leur rapprochement du volant.
+        let a = H.piloteReel ? (t - .28) / (.44 - .28) : t / .10; a = a < 0 ? 0 : a > 1 ? 1 : a;
+        let b = H.piloteReel ? (t - .64) / (.76 - .64) : (t - .86) / (1 - .86); b = b < 0 ? 0 : b > 1 ? 1 : b;
         ANGLE[0] = a * a * (3 - 2 * a) * (1 - b * b * (3 - 2 * b)) * (Math.PI / 2 + phi);
         tournerColonnes(F, WN, ANGLE);
         if (H.piloteReel) {
@@ -2214,9 +2254,9 @@
         ecart = portionGeste(intensite, 0, .16);
         // Depuis la jante abaissée et avancée, dégager le poignet vers le haut et vers le pilote
         // avant le geste latéral ; la manche franchit le jonc avec la même portée physique des os.
-        gx += EX[0] * .020 * dehors + (WN[0] * .060 + WU[0] * .045) * recul - .050 / K * releve;
-        gy += EX[1] * .020 * dehors + (WN[1] * .060 + WU[1] * .045) * recul + .080 / K * releve;
-        gz += EX[2] * .020 * dehors + (WN[2] * .060 + WU[2] * .045) * recul;
+        gx += EX[0] * .020 * dehors + (WN[0] * .105 + WU[0] * .045) * recul - .050 / K * releve;
+        gy += EX[1] * .020 * dehors + (WN[1] * .105 + WU[1] * .045) * recul + .080 / K * releve;
+        gz += EX[2] * .020 * dehors + (WN[2] * .105 + WU[2] * .045) * recul;
         const poignet = main.pieces[3].ferme.c;
         let wx = gx + F[0] * poignet[0] + F[3] * poignet[1] + F[6] * poignet[2];
         let wy = gy + F[1] * poignet[0] + F[4] * poignet[1] + F[7] * poignet[2];
@@ -2244,7 +2284,7 @@
         gx = wx - F[0] * poignet[0] - F[3] * poignet[1] - F[6] * poignet[2];
         gy = wy - F[1] * poignet[0] - F[4] * poignet[1] - F[7] * poignet[2];
         gz = wz - F[2] * poignet[0] - F[5] * poignet[1] - F[8] * poignet[2];
-        if (intensite >= .48) doigtsGeste = Math.min(5, Math.floor(portionGeste(intensite, .48, 1) * 5 + 1e-8));
+        if (intensite >= .48) doigtsGeste = Math.min(ETAPES_MAIN, Math.floor(portionGeste(intensite, .48, 1) * ETAPES_MAIN + 1e-8));
       }
       // Le contact des doigts ne tourne pas avec le poignet. L'IK vise d'abord
       // les jointures avec la longueur avant-bras + paume, puis aligne la paume
@@ -2302,7 +2342,7 @@
       for (let q = 0; q < main.pieces.length; q++) {
         const e = main.pieces[q]; if (e.raccordPouce) continue;
         const fo = doigtsGeste >= 0 && e.gestes ? e.gestes[cle[6]][doigtsGeste]
-          : H.piloteReel && e.prises ? e.prises[Math.min(5, Math.floor(ecart * 5 + 1e-8))] : ecart >= .25 ? e.ouvert : e.ferme, c = fo.c, o = e.objet, p = e.o;
+          : H.piloteReel && e.prises ? e.prises[Math.min(ETAPES_MAIN, Math.floor(ecart * ETAPES_MAIN + 1e-8))] : ecart >= .25 ? e.ouvert : e.ferme, c = fo.c, o = e.objet, p = e.o;
         const P = e.rep === main.repPaume ? GP : null, M = e.rep.m;
         p[0] = (((P ? P[0] : gx) + M[0] * c[0]) + M[3] * c[1]) + M[6] * c[2]; p[1] = (((P ? P[1] : gy) + M[1] * c[0]) + M[4] * c[1]) + M[7] * c[2]; p[2] = (((P ? P[2] : gz) + M[2] * c[0]) + M[5] * c[1]) + M[8] * c[2]; versVoiture(p);
         if (o.shape !== fo.nom) { o.shape = fo.nom; o.s = fo.s; }

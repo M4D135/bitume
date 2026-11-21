@@ -15,8 +15,8 @@
     "dernieres_demandes": "docs/reprise/MAINS-REALISME-2026-11-21.md",
     "dernier_lot_clos": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
     "prochaine_action": "Recevoir les nouvelles mains en images et réduire leur coût mémoire avant intégration ; préserver le démarrage sans banc de .80.",
-    "branche_candidate": "codex/bitume-mains-realisme-20261121",
-    "version_candidate": null,
+    "branche_candidate": "codex/bitume-mains-0281-20261121",
+    "version_candidate": "0.2.81",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md"
   },
@@ -228,5 +228,18 @@
     "ci_python": 8,
     "reception_webgl": true,
     "png_inspectes": 2
+  },
+  "mains_0281": {
+    "statut": "candidat_en_reception",
+    "version": "0.2.81",
+    "branche": "codex/bitume-mains-0281-20261121",
+    "base": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+    "html_sha256": "eeccabb95b3baa9f0901197aa28edfd84d84794a8a0568c7ce8c17c3615cd949",
+    "reconstruction_identique": true,
+    "fichiers_tests_cibles": 10,
+    "revue_independante": "aucun_blocage",
+    "preuves_preparation": "docs/reprise/rapports/MAINS-REALISME-2026-11-21/RECEPTION-MAINS-MEMOIRE.md",
+    "reception_visuelle": "en_cours",
+    "site_deploye": false
   }
 }

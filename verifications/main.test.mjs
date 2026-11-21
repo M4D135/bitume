@@ -62,13 +62,22 @@ verifier('aucune pièce dans la branche de 3 h', () => {
   }
 });
 
-verifier('quatre doigts serrés, enroulés autour du tube par la planche, chaque point au contact (jeu de 1 mm au plus)', () => {
+verifier('quatre doigts serrés sur la jante ; majeur et annulaire prolongent la prise sur le dos de branche', () => {
   assert.equal(M.points.doigts.length, 4);
   M.points.doigts.forEach((pts, i) => {
     const d = H.DOIGTS[i], autour = pts.slice(2);
     autour.forEach((p, j) => {
-      const jeu = tore(p) - d.r * H.EFFILE[j + 2];
-      assert.ok(jeu >= 0 && jeu < .001, `${d.nom}, point ${j} : jeu ${(jeu * 1000).toFixed(1)} mm`);
+      const rayon = d.r * H.EFFILE[j + 2];
+      if (j < d.tour.length) {
+        const jeu = tore(p) - rayon;
+        assert.ok(jeu >= 0 && jeu < .001, `${d.nom}, contact jante ${j} : jeu ${(jeu * 1000).toFixed(1)} mm`);
+      } else {
+        // Une vraie phalange peut se poser sur la branche plutôt que disparaître
+        // à son bord. Les contrôles de toutes les surfaces restent inchangés.
+        const jeu = BR.dos - p[0] - rayon;
+        assert.ok(jeu >= 0 && jeu < .006, `${d.nom}, dos de branche ${j} : jeu ${(jeu * 1000).toFixed(1)} mm`);
+        if (j === autour.length - 1) assert.ok(jeu < .003, `${d.nom} : bout au contact du dos de branche`);
+      }
     });
     // rayon qui s'affine de la base au bout, sans renflement aux articulations
     for (let j = 1; j < H.EFFILE.length; j++) assert.ok(H.EFFILE[j] <= H.EFFILE[j - 1]);

@@ -1,0 +1,510 @@
+{
+  "format": "bitume-mains-partage-memoire-1",
+  "baseMobile": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+  "comparaisonBasesSourcesIdentiques": true,
+  "sourcesModifieesParPartage": [
+    "src/voiture.js"
+  ],
+  "referencesCoordonneesMains": 1211760,
+  "tableauxCoordonneesMainsUniques": 208732,
+  "limites": [
+    "Mesures Node de préparation CPU et buffers typés, pas de FPS ou de GPU matériel.",
+    "Campagnes non simultanées ; des essais indépendants tournaient sur le même hôte. Les temps et le RSS ne prouvent pas une accélération ni un plafond mémoire sur téléphone.",
+    "Le partage conserve tous les triangles, les normales et les treize états. Les buffers typés restent supérieurs de 4 533 312 octets à la base .79/mobile.",
+    "Les captures du vrai jeu restent à effectuer avant réception visuelle."
+  ],
+  "avantPartage": {
+    "format": "bitume-budget-mains-1",
+    "node": "v24.22.3",
+    "plateforme": "linux",
+    "architecture": "x64",
+    "repetitions": 3,
+    "methode": "Processus Node isolés alternés référence/candidat ; GC avant chargement et après préparation du vrai répertoire geometry(false), du modèle et des variantes. Même rig rendu une fois.",
+    "limites": [
+      "Mesures CPU et tampons typés uniquement ; aucun contexte GPU ni FPS matériel.",
+      "Les temps et le RSS dépendent de la machine ; les nombres de formes, triangles et octets des tampons sont déterministes.",
+      "Le temps inclut la lecture des fichiers de travail ou des blobs Git de référence."
+    ],
+    "resultats": [
+      {
+        "repetition": 1,
+        "reference": "d4081241ad40dced72fd4e77c97a4775ed0398ad",
+        "sources": {
+          "moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+          "carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+          "main.js": "66069c908c245faa4f392fe85ae522e6834bfbe137932460b091a580558009ce",
+          "humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+          "humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+          "ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+          "pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+          "usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+          "chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+          "conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+          "cockpit-matieres.js": "a68c5c0aba3226164c21c8b9171a874aaa0ec31bb44e5ffe24ba0c34bdf4193d",
+          "voiture.js": "be7c8a0c72617564b2818060703058c8fca87d29a4ddfabcf5b7f61e55726481"
+        },
+        "formes": 48,
+        "entreesPrechauffage": 96,
+        "trianglesMains": 143232,
+        "tamponsGeometrie": {
+          "sommets": 28344528,
+          "indices": 4724088
+        },
+        "preparationMs": 4627.769435,
+        "memoireDeltaOctets": {
+          "heapUsed": 173660096,
+          "arrayBuffers": 33103312,
+          "rss": 421015552
+        },
+        "objetsRendus": 240,
+        "maillagesEnregistres": 270
+      },
+      {
+        "repetition": 1,
+        "reference": "travail",
+        "sources": {
+          "moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+          "carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+          "main.js": "dff57eb8f57e199132b93315be0e9d3db77636cd8d2236952c6c32fe4e28845c",
+          "humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+          "humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+          "ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+          "pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+          "usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+          "chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+          "conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+          "cockpit-matieres.js": "a68c5c0aba3226164c21c8b9171a874aaa0ec31bb44e5ffe24ba0c34bdf4193d",
+          "voiture.js": "c7cc6b6b125fbc3216fb320d111f6f1843ea09a5373133a4b1c69f3ee5d16a1f"
+        },
+        "formes": 98,
+        "entreesPrechauffage": 196,
+        "trianglesMains": 197200,
+        "tamponsGeometrie": {
+          "sommets": 32230224,
+          "indices": 5371704
+        },
+        "preparationMs": 6073.781512,
+        "memoireDeltaOctets": {
+          "heapUsed": 203327856,
+          "arrayBuffers": 37636624,
+          "rss": 487919616
+        },
+        "objetsRendus": 240,
+        "maillagesEnregistres": 320
+      },
+      {
+        "repetition": 2,
+        "reference": "d4081241ad40dced72fd4e77c97a4775ed0398ad",
+        "sources": {
+          "moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+          "carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+          "main.js": "66069c908c245faa4f392fe85ae522e6834bfbe137932460b091a580558009ce",
+          "humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+          "humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+          "ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+          "pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+          "usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+          "chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+          "conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+          "cockpit-matieres.js": "a68c5c0aba3226164c21c8b9171a874aaa0ec31bb44e5ffe24ba0c34bdf4193d",
+          "voiture.js": "be7c8a0c72617564b2818060703058c8fca87d29a4ddfabcf5b7f61e55726481"
+        },
+        "formes": 48,
+        "entreesPrechauffage": 96,
+        "trianglesMains": 143232,
+        "tamponsGeometrie": {
+          "sommets": 28344528,
+          "indices": 4724088
+        },
+        "preparationMs": 4679.39905,
+        "memoireDeltaOctets": {
+          "heapUsed": 173912272,
+          "arrayBuffers": 33103312,
+          "rss": 394231808
+        },
+        "objetsRendus": 240,
+        "maillagesEnregistres": 270
+      },
+      {
+        "repetition": 2,
+        "reference": "travail",
+        "sources": {
+          "moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+          "carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+          "main.js": "dff57eb8f57e199132b93315be0e9d3db77636cd8d2236952c6c32fe4e28845c",
+          "humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+          "humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+          "ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+          "pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+          "usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+          "chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+          "conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+          "cockpit-matieres.js": "a68c5c0aba3226164c21c8b9171a874aaa0ec31bb44e5ffe24ba0c34bdf4193d",
+          "voiture.js": "c7cc6b6b125fbc3216fb320d111f6f1843ea09a5373133a4b1c69f3ee5d16a1f"
+        },
+        "formes": 98,
+        "entreesPrechauffage": 196,
+        "trianglesMains": 197200,
+        "tamponsGeometrie": {
+          "sommets": 32230224,
+          "indices": 5371704
+        },
+        "preparationMs": 5400.053709,
+        "memoireDeltaOctets": {
+          "heapUsed": 203335824,
+          "arrayBuffers": 37636624,
+          "rss": 450174976
+        },
+        "objetsRendus": 240,
+        "maillagesEnregistres": 320
+      },
+      {
+        "repetition": 3,
+        "reference": "d4081241ad40dced72fd4e77c97a4775ed0398ad",
+        "sources": {
+          "moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+          "carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+          "main.js": "66069c908c245faa4f392fe85ae522e6834bfbe137932460b091a580558009ce",
+          "humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+          "humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+          "ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+          "pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+          "usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+          "chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+          "conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+          "cockpit-matieres.js": "a68c5c0aba3226164c21c8b9171a874aaa0ec31bb44e5ffe24ba0c34bdf4193d",
+          "voiture.js": "be7c8a0c72617564b2818060703058c8fca87d29a4ddfabcf5b7f61e55726481"
+        },
+        "formes": 48,
+        "entreesPrechauffage": 96,
+        "trianglesMains": 143232,
+        "tamponsGeometrie": {
+          "sommets": 28344528,
+          "indices": 4724088
+        },
+        "preparationMs": 4477.620156,
+        "memoireDeltaOctets": {
+          "heapUsed": 173882904,
+          "arrayBuffers": 33103312,
+          "rss": 452231168
+        },
+        "objetsRendus": 240,
+        "maillagesEnregistres": 270
+      },
+      {
+        "repetition": 3,
+        "reference": "travail",
+        "sources": {
+          "moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+          "carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+          "main.js": "dff57eb8f57e199132b93315be0e9d3db77636cd8d2236952c6c32fe4e28845c",
+          "humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+          "humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+          "ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+          "pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+          "usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+          "chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+          "conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+          "cockpit-matieres.js": "a68c5c0aba3226164c21c8b9171a874aaa0ec31bb44e5ffe24ba0c34bdf4193d",
+          "voiture.js": "c7cc6b6b125fbc3216fb320d111f6f1843ea09a5373133a4b1c69f3ee5d16a1f"
+        },
+        "formes": 98,
+        "entreesPrechauffage": 196,
+        "trianglesMains": 197200,
+        "tamponsGeometrie": {
+          "sommets": 32230224,
+          "indices": 5371704
+        },
+        "preparationMs": 6104.408322,
+        "memoireDeltaOctets": {
+          "heapUsed": 203200176,
+          "arrayBuffers": 37636624,
+          "rss": 584523776
+        },
+        "objetsRendus": 240,
+        "maillagesEnregistres": 320
+      }
+    ],
+    "synthese": [
+      {
+        "reference": "d4081241ad40dced72fd4e77c97a4775ed0398ad",
+        "formes": 48,
+        "entreesPrechauffage": 96,
+        "trianglesMains": 143232,
+        "tamponsGeometrie": {
+          "sommets": 28344528,
+          "indices": 4724088
+        },
+        "preparationMedianeMs": 4627.769435,
+        "memoireMedianeOctets": {
+          "heapUsed": 173882904,
+          "arrayBuffers": 33103312,
+          "rss": 421015552
+        }
+      },
+      {
+        "reference": "travail",
+        "formes": 98,
+        "entreesPrechauffage": 196,
+        "trianglesMains": 197200,
+        "tamponsGeometrie": {
+          "sommets": 32230224,
+          "indices": 5371704
+        },
+        "preparationMedianeMs": 6073.781512,
+        "memoireMedianeOctets": {
+          "heapUsed": 203327856,
+          "arrayBuffers": 37636624,
+          "rss": 487919616
+        }
+      }
+    ]
+  },
+  "apresPartage": {
+    "format": "bitume-budget-mains-1",
+    "node": "v24.22.3",
+    "plateforme": "linux",
+    "architecture": "x64",
+    "repetitions": 3,
+    "methode": "Processus Node isolés alternés référence/candidat ; GC avant chargement et après préparation du vrai répertoire geometry(false), du modèle et des variantes. Même rig rendu une fois.",
+    "limites": [
+      "Mesures CPU et tampons typés uniquement ; aucun contexte GPU ni FPS matériel.",
+      "Les temps et le RSS dépendent de la machine ; les nombres de formes, triangles et octets des tampons sont déterministes.",
+      "Le temps inclut la lecture des fichiers de travail ou des blobs Git de référence."
+    ],
+    "resultats": [
+      {
+        "repetition": 1,
+        "reference": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+        "sources": {
+          "moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+          "carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+          "main.js": "66069c908c245faa4f392fe85ae522e6834bfbe137932460b091a580558009ce",
+          "humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+          "humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+          "ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+          "pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+          "usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+          "chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+          "conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+          "cockpit-matieres.js": "a68c5c0aba3226164c21c8b9171a874aaa0ec31bb44e5ffe24ba0c34bdf4193d",
+          "voiture.js": "be7c8a0c72617564b2818060703058c8fca87d29a4ddfabcf5b7f61e55726481"
+        },
+        "formes": 48,
+        "entreesPrechauffage": 96,
+        "trianglesMains": 143232,
+        "tamponsGeometrie": {
+          "sommets": 28344528,
+          "indices": 4724088
+        },
+        "preparationMs": 5527.021694999999,
+        "memoireDeltaOctets": {
+          "heapUsed": 173879744,
+          "arrayBuffers": 33103312,
+          "rss": 450441216
+        },
+        "objetsRendus": 240,
+        "maillagesEnregistres": 270
+      },
+      {
+        "repetition": 1,
+        "reference": "travail",
+        "sources": {
+          "moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+          "carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+          "main.js": "dff57eb8f57e199132b93315be0e9d3db77636cd8d2236952c6c32fe4e28845c",
+          "humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+          "humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+          "ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+          "pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+          "usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+          "chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+          "conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+          "cockpit-matieres.js": "a68c5c0aba3226164c21c8b9171a874aaa0ec31bb44e5ffe24ba0c34bdf4193d",
+          "voiture.js": "68d938455e2387dcd5f11903b6f36add0a52e7355aac4df6c74ce66a5e620064"
+        },
+        "formes": 98,
+        "entreesPrechauffage": 196,
+        "trianglesMains": 197200,
+        "tamponsGeometrie": {
+          "sommets": 32230224,
+          "indices": 5371704
+        },
+        "preparationMs": 7882.254981,
+        "memoireDeltaOctets": {
+          "heapUsed": 141148400,
+          "arrayBuffers": 37636624,
+          "rss": 441348096
+        },
+        "objetsRendus": 240,
+        "maillagesEnregistres": 320
+      },
+      {
+        "repetition": 2,
+        "reference": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+        "sources": {
+          "moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+          "carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+          "main.js": "66069c908c245faa4f392fe85ae522e6834bfbe137932460b091a580558009ce",
+          "humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+          "humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+          "ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+          "pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+          "usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+          "chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+          "conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+          "cockpit-matieres.js": "a68c5c0aba3226164c21c8b9171a874aaa0ec31bb44e5ffe24ba0c34bdf4193d",
+          "voiture.js": "be7c8a0c72617564b2818060703058c8fca87d29a4ddfabcf5b7f61e55726481"
+        },
+        "formes": 48,
+        "entreesPrechauffage": 96,
+        "trianglesMains": 143232,
+        "tamponsGeometrie": {
+          "sommets": 28344528,
+          "indices": 4724088
+        },
+        "preparationMs": 5327.27883,
+        "memoireDeltaOctets": {
+          "heapUsed": 173884544,
+          "arrayBuffers": 33103312,
+          "rss": 413347840
+        },
+        "objetsRendus": 240,
+        "maillagesEnregistres": 270
+      },
+      {
+        "repetition": 2,
+        "reference": "travail",
+        "sources": {
+          "moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+          "carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+          "main.js": "dff57eb8f57e199132b93315be0e9d3db77636cd8d2236952c6c32fe4e28845c",
+          "humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+          "humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+          "ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+          "pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+          "usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+          "chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+          "conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+          "cockpit-matieres.js": "a68c5c0aba3226164c21c8b9171a874aaa0ec31bb44e5ffe24ba0c34bdf4193d",
+          "voiture.js": "68d938455e2387dcd5f11903b6f36add0a52e7355aac4df6c74ce66a5e620064"
+        },
+        "formes": 98,
+        "entreesPrechauffage": 196,
+        "trianglesMains": 197200,
+        "tamponsGeometrie": {
+          "sommets": 32230224,
+          "indices": 5371704
+        },
+        "preparationMs": 8522.206125,
+        "memoireDeltaOctets": {
+          "heapUsed": 141142552,
+          "arrayBuffers": 37636624,
+          "rss": 402116608
+        },
+        "objetsRendus": 240,
+        "maillagesEnregistres": 320
+      },
+      {
+        "repetition": 3,
+        "reference": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+        "sources": {
+          "moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+          "carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+          "main.js": "66069c908c245faa4f392fe85ae522e6834bfbe137932460b091a580558009ce",
+          "humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+          "humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+          "ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+          "pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+          "usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+          "chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+          "conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+          "cockpit-matieres.js": "a68c5c0aba3226164c21c8b9171a874aaa0ec31bb44e5ffe24ba0c34bdf4193d",
+          "voiture.js": "be7c8a0c72617564b2818060703058c8fca87d29a4ddfabcf5b7f61e55726481"
+        },
+        "formes": 48,
+        "entreesPrechauffage": 96,
+        "trianglesMains": 143232,
+        "tamponsGeometrie": {
+          "sommets": 28344528,
+          "indices": 4724088
+        },
+        "preparationMs": 5420.730171,
+        "memoireDeltaOctets": {
+          "heapUsed": 173909696,
+          "arrayBuffers": 33103312,
+          "rss": 401321984
+        },
+        "objetsRendus": 240,
+        "maillagesEnregistres": 270
+      },
+      {
+        "repetition": 3,
+        "reference": "travail",
+        "sources": {
+          "moteur/renderer.js": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+          "carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+          "main.js": "dff57eb8f57e199132b93315be0e9d3db77636cd8d2236952c6c32fe4e28845c",
+          "humain-donnees.js": "4477d881c01414c6b89c3d838210172f5b643bca200e869c31e301f4a6a9720e",
+          "humain-corps.js": "7eeccbe7ed7746b51921696045808dfe20f4025c7117fdec8f10951a4615d1ad",
+          "ferro/vehicle-dynamics.js": "cd67cf8a8d15250e72a69cf883eeb2793a3f67bc272924b3fd7662ce5f553d8c",
+          "pneus.js": "786122fe750ae00277d0d5409fc7c45f0dd4a68d13b34a3173d3aad61100b1a9",
+          "usure-pneus.js": "c5c8e3d1128f012294f6d666be2dbb47220432c0660feb33de48f89d5bccf76c",
+          "chaussee.js": "be9b63fa4128e6a47bfe99cf9faa2c3345c3c5d56bb23cc70f2046b8ecb4aa70",
+          "conduite.js": "81bfdf48ee436a59217fc15d2ccbde5835148890409f572b4f603fb7a8052ac6",
+          "cockpit-matieres.js": "a68c5c0aba3226164c21c8b9171a874aaa0ec31bb44e5ffe24ba0c34bdf4193d",
+          "voiture.js": "68d938455e2387dcd5f11903b6f36add0a52e7355aac4df6c74ce66a5e620064"
+        },
+        "formes": 98,
+        "entreesPrechauffage": 196,
+        "trianglesMains": 197200,
+        "tamponsGeometrie": {
+          "sommets": 32230224,
+          "indices": 5371704
+        },
+        "preparationMs": 7456.575307,
+        "memoireDeltaOctets": {
+          "heapUsed": 141131280,
+          "arrayBuffers": 37636624,
+          "rss": 466038784
+        },
+        "objetsRendus": 240,
+        "maillagesEnregistres": 320
+      }
+    ],
+    "synthese": [
+      {
+        "reference": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+        "formes": 48,
+        "entreesPrechauffage": 96,
+        "trianglesMains": 143232,
+        "tamponsGeometrie": {
+          "sommets": 28344528,
+          "indices": 4724088
+        },
+        "preparationMedianeMs": 5420.730171,
+        "memoireMedianeOctets": {
+          "heapUsed": 173884544,
+          "arrayBuffers": 33103312,
+          "rss": 413347840
+        }
+      },
+      {
+        "reference": "travail",
+        "formes": 98,
+        "entreesPrechauffage": 196,
+        "trianglesMains": 197200,
+        "tamponsGeometrie": {
+          "sommets": 32230224,
+          "indices": 5371704
+        },
+        "preparationMedianeMs": 7882.254981,
+        "memoireMedianeOctets": {
+          "heapUsed": 141142552,
+          "arrayBuffers": 37636624,
+          "rss": 441348096
+        }
+      }
+    ]
+  }
+}
