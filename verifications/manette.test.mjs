@@ -7,6 +7,7 @@ import assert from 'node:assert/strict';
 const root=process.argv[3]||resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const source=readFileSync(process.argv[2]||join(root,'src/jeu.js'),'utf8');
 const {B,CD,DT,circuit,commande}=await import(pathToFileURL(join(root,'verifications/phase2/outils.mjs')).href);
+await import(pathToFileURL(join(root,'src/commandes-manette.js')).href);
 function extract(name){const a=source.indexOf(`  function ${name}(`);assert(a>=0,name);let b=source.indexOf('{',a),n=1;for(b++;n&&b<source.length;b++){if(source[b]==='{')n++;else if(source[b]==='}')n--;}assert.equal(n,0);return source.slice(a,b);}
 const declarations=source.slice(source.indexOf('  const touches ='),source.indexOf('  // conduite par position physique'));
 const factory=new Function('navigator','B','session',`const reglages={boite:'auto',aide:.35};let ecran='course',dernierGeste=0;const compteurVisites=null;const actions=[];const enCourse=()=>ecran==='course';const activerSon=()=>{};const sortirDemo=()=>{ecran='titre'};const changerVue=()=>actions.push('vue');const basculerPause=()=>{actions.push('pause');ecran=ecran==='course'?'pause':'course'};const naviguerManette=()=>{};${declarations}\n${extract('lireManette')}\n${extract('commandesJoueur')}\nreturn {poll:lireManette,command:commandesJoueur,touches,doigt,pad,actions,setScreen:v=>ecran=v,setSession:v=>session=v};`);

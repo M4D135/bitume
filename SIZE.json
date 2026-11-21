@@ -1,9 +1,10 @@
 {
-  "version": "0.2.80",
-  "raw": 14549596,
-  "gzip": 3478044,
-  "sha256": "20185cd2341e2aefb7a5167a35c1f4d68a50eedf1d9fabaa8491c329fa87410a",
+  "version": "0.2.81",
+  "raw": 14570533,
+  "gzip": 3484436,
+  "sha256": "53945452b79fdf63c587e5d993f8cd4e8990a9409dd9a750d5405768f64de844",
   "sources": {
+    "ferro/surface.js": 3419,
     "moteur/renderer.js": 313289,
     "ferro/engine.js": 2025,
     "ferro/physx-runtime.js": 12063280,
@@ -66,13 +67,14 @@
     "conditions-course.js": 18160,
     "navigation-menu.js": 19510,
     "menu-arcade.js": 19410,
-    "autoconfig.js": 34713,
+    "autoconfig.js": 35401,
+    "commandes-manette.js": 6433,
     "scene-bench.js": 23081,
     "vibrations.js": 13482,
     "ombres.js": 12015,
     "visites.js": 6566,
-    "jeu.js": 357703,
-    "index.html": 68244,
-    "style.css": 85476
+    "jeu.js": 366915,
+    "index.html": 68783,
+    "style.css": 86020
   }
 }

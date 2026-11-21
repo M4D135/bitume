@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { chargerPhysX } from './helpers/physx-runtime.mjs';
 const require = createRequire(import.meta.url);
-for (const f of ['circuit', 'carene', 'main', 'ferro/vehicle-dynamics', 'pneus', 'usure-pneus', 'conduite', 'voiture']) require('../src/' + f + '.js');
+for (const f of ['circuit', 'carene', 'main', 'ferro/vehicle-dynamics', 'pneus', 'usure-pneus', 'conduite', 'voiture', 'commandes-manette']) require('../src/' + f + '.js');
 const B = globalThis.BITUME;
 // Ici on vérifie les commandes, pas les obstacles de la réalisation (cinema-trajectoires.test.mjs).
 // La démo garde donc son cadre de poursuite, sans activer le regard arrière du joueur.

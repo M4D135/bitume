@@ -673,13 +673,22 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 
 /* Commandes des joueurs : appareil et touches (réglages), choix rapide à la préparation d'une course à deux */
 #jeu[data-souris="oui"] { cursor: none; }
+#jeu[data-manette="oui"] { cursor: none; }
 .commandes-joueurs { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px 30px; }
 .joueur-commandes h3 { margin: 0 0 10px; font: italic 800 24px/1 var(--f-titre); text-transform: uppercase; }
 .choix-commande { margin-bottom: 12px; }
-.table-touches { border-collapse: collapse; width: 100%; max-width: 440px; }
+.table-touches { border-collapse: collapse; width: 100%; max-width: 620px; }
 .table-touches th { padding: 4px 12px 4px 0; text-align: left; font: 600 12px/1.2 var(--f-texte); letter-spacing: .08em; text-transform: uppercase; color: var(--papier-2); white-space: nowrap; }
 .table-touches td { padding: 3px 4px; }
-.touche { width: 100%; min-width: 92px; padding: 7px 10px 6px; font: 700 15px/1 var(--f-titre); letter-spacing: .04em; color: var(--papier); background: rgba(22, 24, 28, .85); border: 1px solid var(--trait-fort); border-radius: var(--rayon); cursor: pointer; }
+.touche { width: 100%; min-width: 64px; min-height: 40px; padding: 7px 8px 6px; font: 700 15px/1 var(--f-titre); letter-spacing: .04em; color: var(--papier); background: rgba(22, 24, 28, .85); border: 1px solid var(--trait-fort); border-radius: var(--rayon); cursor: pointer; }
+.touche-manette { color: #c7edb9; border-color: #536b50; }
+.etat-manette { color: var(--papier-2); font-size: 14px; line-height: 1.5; min-height: 1.5em; }
+.actions-commandes { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 12px; }
+@media (max-width: 480px) {
+  .table-touches th { padding-right: 4px; font-size: 10px; letter-spacing: 0; white-space: normal; }
+  .table-touches td { padding: 3px 2px; }
+  .touche { min-width: 48px; padding-inline: 4px; font-size: 12px; }
+}
 .touche:hover, .touche:focus-visible { border-color: var(--papier-2); outline: none; }
 .touche.attente { color: var(--encre); background: var(--ambre); border-color: var(--ambre); }
 .note-commandes { grid-column: 1 / -1; margin: 0; max-width: 90ch; color: var(--papier-2); font-size: 14px; }
@@ -1031,7 +1040,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre arcade-titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.80">V0.2.80</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.81">V0.2.81</b>
     </div>
     <a class="signature" href="https://bitume.estrasse.fr/" download="BITUME.html" title="Télécharger BITUME"><img class="signature-avatar" src="data:image/jpeg;base64,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" alt="" />m4d135</a>
     <p class="arcade-surtitre">Choisissez votre mode</p>
@@ -1304,9 +1313,9 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       <fieldset id="o-commandes" hidden>
         <legend>Commandes</legend>
         <div class="ligne-commande"><b>Joueur 1</b><label><input type="radio" name="cmd0" value="auto"><span>Auto</span></label><label><input type="radio" name="cmd0" value="manette"><span>Manette</span></label><label><input type="radio" name="cmd0" value="clavier"><span>Clavier</span></label><label><input type="radio" name="cmd0" value="souris"><span>Souris</span></label></div>
-        <div class="ligne-commande"><b>Joueur 2</b><label><input type="radio" name="cmd1" value="auto"><span>Auto</span></label><label><input type="radio" name="cmd1" value="manette"><span>Manette</span></label><label><input type="radio" name="cmd1" value="clavier"><span>Clavier</span></label><label><input type="radio" name="cmd1" value="souris"><span>Souris</span></label></div>
+        <div class="ligne-commande" id="p-commandes-j2"><b>Joueur 2</b><label><input type="radio" name="cmd1" value="auto"><span>Auto</span></label><label><input type="radio" name="cmd1" value="manette"><span>Manette</span></label><label><input type="radio" name="cmd1" value="clavier"><span>Clavier</span></label><label><input type="radio" name="cmd1" value="souris"><span>Souris</span></label></div>
         <p id="p-manettes" class="note-pneus"></p>
-        <button type="button" class="discret" id="p-touches">Régler les touches</button>
+        <button type="button" class="discret" id="p-touches">Configurer les commandes</button>
       </fieldset>
       <fieldset id="o-partage" hidden>
         <legend>Écran</legend>
@@ -1370,6 +1379,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
         <button type="button" class="discret" id="r-detecter">Appliquer le profil conseillé</button>
         <p class="note-graphismes">Choisit un profil prudent à partir des capacités déclarées de l’appareil, sans test de charge. Ce bouton remplace vos choix graphiques actuels.</p>
         <p class="note-graphismes" id="r-detection-etat" role="status">Profil conseillé sans test de charge.</p>
+        <p class="note-graphismes aide-xbox" hidden>Xbox : scène 3D limitée à 720p pour alléger le rendu sur téléviseur. Menus et textes restent à la résolution de l’écran.</p>
       </fieldset>
       <fieldset>
         <legend>Qualité générale</legend>
@@ -1509,6 +1519,8 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
         </div>
       </div>
       <div id="r-commandes-panel" class="panneau-menu" role="tabpanel" data-menu-panel aria-labelledby="onglet-r-commandes-panel" hidden>
+      <p id="r-manette-etat" class="etat-manette" role="status" aria-live="polite">Appuyez sur un bouton de la manette pour la détecter.</p>
+      <p class="note-commandes aide-xbox" hidden>Xbox / Edge : maintenez Menu ≡ pour basculer du pointeur aux commandes de jeu. A valide, B revient, LB / RB changent d’onglet.</p>
       <fieldset>
         <legend>Manette</legend>
         <label><input type="checkbox" id="v-vibrations"><span>Vibrations (moteur, route, chocs)</span></label>
@@ -1594,6 +1606,51 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
     <p class="sm-aide">Croix ou stick : choisir · A : saisir · B : annuler</p>
   </dialog>
 </main>
+<script>
+// ---- ferro/surface.js ----
+/* FERRO — physical canvas sizing and passive frame budget observations. */
+(function(G){'use strict';
+function create(canvas,{environment:w=G,limit=16384,maxPixels=8847360,scale=1}={}){
+  let device=[1,1],requested=scale,observer=null,started=false;
+  const stats={device,buffer:[canvas.width||1,canvas.height||1],scale:1,capped:null,changes:0};
+  const bounded=v=>Number.isFinite(v)?Math.max(.5,Math.min(1,v)):1;
+  requested=bounded(requested);limit=Number.isFinite(limit)&&limit>0?limit:16384;maxPixels=Number.isFinite(maxPixels)&&maxPixels>0?maxPixels:8847360;
+  function measure(){
+    const dpr=Math.max(.1,Number(w.devicePixelRatio)||1),r=canvas.getBoundingClientRect?.();
+    device[0]=Math.max(1,r?Math.round(r.right*dpr)-Math.round(r.left*dpr):Math.round((canvas.clientWidth||w.innerWidth||800)*dpr));
+    device[1]=Math.max(1,r?Math.round(r.bottom*dpr)-Math.round(r.top*dpr):Math.round((canvas.clientHeight||w.innerHeight||600)*dpr));
+    return device;
+  }
+  function size(){
+    let factor=requested,capped=null;
+    const safety=Math.sqrt(maxPixels/(device[0]*device[1]));if(factor>safety){factor=safety;capped='safety';}
+    const hardware=Math.min(limit/device[0],limit/device[1]);if(factor>hardware){factor=hardware;capped='gpu';}
+    stats.scale=factor;stats.capped=capped;
+    return {width:Math.max(1,Math.floor(device[0]*factor+.000001)),height:Math.max(1,Math.floor(device[1]*factor+.000001)),ratio:factor*(w.devicePixelRatio||1)};
+  }
+  function record(width,height){if(started&&(stats.buffer[0]!==width||stats.buffer[1]!==height))stats.changes++;started=true;stats.buffer[0]=width;stats.buffer[1]=height;}
+  measure();
+  if(w.ResizeObserver)try{observer=new w.ResizeObserver(entries=>{const e=entries.find(e=>e.target===canvas)||entries[0],box=e?.devicePixelContentBoxSize,b=box?.[0]||box;
+    if(b&&Number.isFinite(b.inlineSize)&&Number.isFinite(b.blockSize)&&b.inlineSize>0&&b.blockSize>0){device[0]=Math.round(b.inlineSize);device[1]=Math.round(b.blockSize);}else measure();
+  });try{observer.observe(canvas,{box:'device-pixel-content-box'});}catch{observer.observe(canvas);}}catch{observer=null;}
+  return {stats,measure,size,record,setScale(value){requested=bounded(value);},dispose(){observer?.disconnect();}};
+}
+function budget({target=60,onBudget}={}){
+  const samples=new Float64Array(240),sorted=new Float64Array(240),log=[],stats={target,p50:0,p95:0,over:0,sustained:false};let count=0,at=0,ticks=0,elapsed=0,lastCall=-Infinity,announced=false;
+  function update(ms){
+    if(!Number.isFinite(ms)||ms<=0||ms>=500)return stats;
+    elapsed+=ms;samples[at]=ms;at=(at+1)%240;count=Math.min(240,count+1);if(++ticks%60)return stats;
+    sorted.fill(Infinity);sorted.set(samples.subarray(0,count));sorted.sort();stats.p50=sorted[Math.floor((count-1)*.5)];stats.p95=sorted[Math.floor((count-1)*.95)];
+    let over=0;for(let i=0;i<count;i++)if(samples[i]>1000/stats.target*1.5)over++;stats.over=over/count;stats.sustained=count===240&&stats.over>.2;
+    if(!stats.sustained)announced=false;
+    if(stats.sustained&&!announced&&elapsed-lastCall>=5000){announced=true;lastCall=elapsed;const entry={...stats,timeMs:elapsed};log.push(entry);if(log.length>32)log.shift();onBudget?.(entry);}
+    return stats;
+  }
+  return {stats,log,update,setTarget(value){if(Number.isFinite(value)&&value>0)stats.target=value;}};
+}
+G.FSurface={create,budget};
+})(typeof window!=='undefined'?window:globalThis);
+</script>
 <script>
 // ---- moteur/renderer.js ----
 /* BITUME : backend WebGL2 FERRO repris du snapshot EMPRISE du 16/11/2026.
@@ -82209,8 +82266,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
   // d'un pixel mettait le fil principal, le processus graphique et la carte en série : Légère choisie sur un Apple M5
   // qui tient Moyenne à 60 images par seconde). Révision 3 : rafales d'images en vol, simulation comprise. Révision 4 :
   // fil principal mesuré une image par rappel, comme en course ; palier proche de la limite mesuré deux ou trois fois,
-  // refus de peu provisoire.
-  const REVISION = 4, CLE = 'bitume.detection.v1', METHODE = 'rafales';
+  // refus de peu provisoire. Révision 5 : Xbox déclarée par le navigateur,
+  // recommandation prudente sans mesure ; les anciens choix explicites restent conservés.
+  const REVISION = 5, CLE = 'bitume.detection.v1', METHODE = 'rafales';
   const METHODE_PASSIVE = 'capacites-declarees';
   const CLES = Object.freeze(['qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'retro']);
   // Noms courts des options, pour dire dans l'onglet Image lesquelles le joueur a gardées.
@@ -82336,6 +82394,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
   // Le nom de la puce ne permet pas de promettre un débit d'images.
   function recommander(capacites = {}) {
     const ua = String(capacites.userAgent || ''), plate = String(capacites.platform || '');
+    const plateUa = String(capacites.userAgentData && capacites.userAgentData.platform || '');
+    // Le navigateur de la console dispose de ses propres ressources : le nom
+    // AMD et le nombre de cœurs ne prouvent pas le budget disponible à Edge.
+    // Seule une déclaration de plate-forme identifie la console. Une manette
+    // Xbox branchée sur un ordinateur ne doit jamais changer son profil.
+    const xbox = /\bxbox\b/i.test(ua) || /\bxbox\b/i.test(plate) || /\bxbox\b/i.test(plateUa);
     const touches = Number.isFinite(capacites.maxTouchPoints) ? Math.max(0, capacites.maxTouchPoints) : 0;
     const mobile = capacites.mobile === true || /android|iphone|ipad|ipod|mobile/i.test(ua)
       || (/mac/i.test(plate) && touches > 1)
@@ -82346,8 +82410,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     const logiciel = /swiftshader|llvmpipe|software|microsoft basic/i.test(gpu);
     const integre = /intel|uhd|iris|hd graphics|mali|adreno|powervr|radeon\(tm\) graphics|vega [0-9]+ graphics/i.test(gpu);
     const incomplet = !coeurs && !memoire;
-    const selection = mobile || logiciel || integre || incomplet || (coeurs && coeurs <= 4) || (memoire && memoire <= 4) ? 'low' : 'medium';
-    return { selection, mobile, coeurs, memoire, logiciel, integre, incomplet };
+    const selection = xbox || mobile || logiciel || integre || incomplet || (coeurs && coeurs <= 4) || (memoire && memoire <= 4) ? 'low' : 'medium';
+    return { selection, mobile, console: xbox ? 'xbox' : null, xbox, coeurs, memoire, logiciel, integre, incomplet };
   }
   function passive(capacites, cle) {
     const appareil = recommander(capacites);
@@ -82656,6 +82720,140 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     LIMITE_PROCESSEUR, GRIS_BAS, GRIS_HAUT, SERIES_MAX, PART_GLACES, EXTREME, ESPOIR, ESPOIR_VITE, SONDE_MS, COURSE_SIMULATION, TENTATIVES,
     DUREE_MAX, DELAI, PREPARATION_MAX, profils, empreinte, reglages, cacheValide, tentatives, reference, referenceProbable, fusionner, marquer,
     bilanRafales, zone, combiner, limiteProfil, choisir, peutEssayerExtreme, executer };
+})(globalThis.BITUME = globalThis.BITUME || {});
+</script>
+<script>
+// ---- commandes-manette.js ----
+// BITUME : affectations propres à chaque joueur. La lecture réutilise sa sortie ;
+// les objets de configuration et de capture ne sont préparés que dans les menus.
+(function (B) {
+  'use strict';
+  const ACTIONS = Object.freeze(['gaz', 'frein', 'gauche', 'droite', 'derive', 'haut', 'bas', 'vue', 'troll']);
+  const DEFAUT = {
+    gaz: [{ type: 'bouton', index: 7 }], frein: [{ type: 'bouton', index: 6 }],
+    gauche: [{ type: 'axe', index: 0, sens: -1, origine: 0 }],
+    droite: [{ type: 'axe', index: 0, sens: 1, origine: 0 }],
+    derive: [{ type: 'bouton', index: 0 }, { type: 'bouton', index: 2 }],
+    haut: [{ type: 'bouton', index: 5 }], bas: [{ type: 'bouton', index: 4 }],
+    vue: [{ type: 'bouton', index: 3 }], troll: [{ type: 'bouton', index: 10 }]
+  };
+  for (const a of ACTIONS) { for (const l of DEFAUT[a]) Object.freeze(l); Object.freeze(DEFAUT[a]); }
+  Object.freeze(DEFAUT);
+  const limite = x => Number.isFinite(x) ? Math.max(0, Math.min(1, x)) : 0;
+  const reserve = i => i === 1 || i === 9 || i === 16; // B : retour ; Menu : pause ; Xbox : système.
+
+  function liaison(v) {
+    if (!v || !Number.isInteger(v.index) || v.index < 0) return null;
+    if (v.type === 'bouton' && v.index < 64 && !reserve(v.index)) return { type: 'bouton', index: v.index };
+    if (v.type !== 'axe' || v.index >= 16 || (v.sens !== -1 && v.sens !== 1)) return null;
+    const origine = v.origine == null ? 0 : v.origine;
+    if (![0, -1, 1].includes(origine) || origine === v.sens) return null;
+    return { type: 'axe', index: v.index, sens: v.sens, origine };
+  }
+  const identique = (a, b) => a.type === b.type && a.index === b.index &&
+    (a.type === 'bouton' || a.sens === b.sens && a.origine === b.origine);
+
+  function normaliser(source) {
+    const m = {};
+    for (const a of ACTIONS) {
+      const v = source && Object.prototype.hasOwnProperty.call(source, a) ? source[a] : null;
+      const liste = Array.isArray(v) ? v : v && typeof v === 'object' ? [v] : DEFAUT[a];
+      const sorties = [];
+      for (let i = 0; i < Math.min(2, liste.length); i++) {
+        const l = liaison(liste[i]);
+        if (l && !sorties.some(p => identique(l, p))) sorties.push(l);
+      }
+      // Une liste vide est une désaffectation volontaire ; une donnée invalide garde le défaut.
+      m[a] = sorties.length || !liste.length ? sorties : DEFAUT[a].map(l => ({ ...l }));
+    }
+    return m;
+  }
+
+  function affecter(source, action, entree) {
+    const m = normaliser(source), l = liaison(entree);
+    if (!ACTIONS.includes(action) || !l) return m;
+    for (const a of ACTIONS) m[a] = m[a].filter(p => !identique(p, l));
+    m[action] = [l];
+    return m;
+  }
+
+  function bouton(p, i) {
+    const b = p && p.buttons && p.buttons[i];
+    if (typeof b === 'number') return limite(b);
+    if (!b) return 0;
+    if (Number.isFinite(b.value) && b.value > 0) return limite(b.value);
+    return b.pressed ? 1 : 0;
+  }
+  function valeur(p, l) {
+    if (l.type === 'bouton') return bouton(p, l.index);
+    const v = p && p.axes && p.axes[l.index];
+    if (!Number.isFinite(v)) return 0;
+    const brut = limite((v - l.origine) * l.sens / (1 - l.origine * l.sens));
+    return brut <= .06 ? 0 : (brut - .06) / .94;
+  }
+  function lire(p, m, sortie) {
+    m = m || DEFAUT; sortie = sortie || {};
+    for (let i = 0; i < ACTIONS.length; i++) {
+      const a = ACTIONS[i], ls = m[a] || DEFAUT[a];
+      let v = 0;
+      if (p && p.connected !== false) for (let k = 0; k < ls.length; k++) v = Math.max(v, valeur(p, ls[k]));
+      sortie[a] = v;
+    }
+    const volant = sortie.droite - sortie.gauche;
+    sortie.volant = Math.sign(volant) * Math.pow(Math.abs(volant), 1.22);
+    return sortie;
+  }
+
+  function nom(l) {
+    if (!l) return '—';
+    if (Array.isArray(l)) return l.length ? l.map(nom).join(' / ') : '—';
+    if (l.type === 'axe') return 'Axe ' + (l.index + 1) + (l.sens < 0 ? ' −' : ' +');
+    return ['A', 'B', 'X', 'Y', 'LB', 'RB', 'LT', 'RT', 'View', 'Menu', 'L3', 'R3', 'Croix ↑', 'Croix ↓', 'Croix ←', 'Croix →', 'Xbox'][l.index] || 'Bouton ' + (l.index + 1);
+  }
+
+  function preparerCapture(c, p) {
+    c.index = p.index; c.id = p.id || ''; c.pret = false; c._neutres = 0; c._presente = true;
+    c.origines = [];
+    for (let i = 0; i < Math.min(16, (p.axes || []).length); i++) {
+      const v = p.axes[i];
+      // Les axes standard sont centrés. Hors mapping standard, les gâchettes
+      // séparées peuvent reposer à -1 ou +1 ; le centre observé fixe leur sens.
+      c.origines[i] = p.mapping !== 'standard' && i >= 2 && Number.isFinite(v) && Math.abs(v) > .85 ? Math.sign(v) : 0;
+    }
+  }
+  function creerCapture(p) {
+    const c = { pret: false, annule: false, liaison: null, raison: '', index: -1, id: '', origines: [], _presente: false, _neutres: 0 };
+    if (p && p.connected !== false) preparerCapture(c, p);
+    return c;
+  }
+  function avancerCapture(c, p) {
+    if (!c || c.annule) return null;
+    if (c.liaison) return c.liaison;
+    if (!p || p.connected === false) { c.pret = false; c._presente = false; c.raison = 'deconnectee'; return null; }
+    if (!c._presente || c.index !== p.index || c.id !== (p.id || '')) preparerCapture(c, p);
+    c.raison = '';
+    if (!c.pret) {
+      let neutre = true;
+      for (let i = 0; i < Math.min(64, (p.buttons || []).length); i++) if (bouton(p, i) > .25) neutre = false;
+      for (let i = 0; i < c.origines.length; i++) if (Number.isFinite(p.axes[i]) && Math.abs(p.axes[i] - c.origines[i]) > .25) neutre = false;
+      c._neutres = neutre ? c._neutres + 1 : 0;
+      c.pret = c._neutres >= 2;
+      return null;
+    }
+    if (bouton(p, 1) > .5 || bouton(p, 9) > .5) { c.annule = true; c.raison = 'annulee'; return null; }
+    for (let i = 0; i < Math.min(64, (p.buttons || []).length); i++) {
+      if (!reserve(i) && bouton(p, i) > .55) { c.liaison = { type: 'bouton', index: i }; return c.liaison; }
+    }
+    for (let i = 0; i < c.origines.length; i++) {
+      const v = p.axes[i], origine = c.origines[i], delta = v - origine;
+      if (!Number.isFinite(v) || Math.abs(delta) < .6) continue;
+      const sens = Math.sign(delta);
+      if (origine !== sens) { c.liaison = { type: 'axe', index: i, sens, origine }; return c.liaison; }
+    }
+    return null;
+  }
+
+  B.commandesManette = Object.freeze({ ACTIONS, DEFAUT, normaliser, affecter, lire, nom, creerCapture, avancerCapture });
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -83929,8 +84127,11 @@ FERRO.initPhysics().then(function(){
   // ---------------------------------------------------------------- commandes
   const touches = new Set();
   const impulsions = { haut: false, bas: false };
-  const pad = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, actif: false, manette: null, deriveEtat: null };
-  const pad2 = { precedent: [], volant: 0, gaz: 0, frein: 0, derive: false, manette: null, deriveEtat: null };   // manette du joueur 2 (écran partagé)
+  const pad = { precedent: [], actions: {}, entrees: {}, volant: 0, gaz: 0, frein: 0, derive: false, actif: false, manette: null, deriveEtat: null };
+  const pad2 = { precedent: [], actions: {}, entrees: {}, volant: 0, gaz: 0, frein: 0, derive: false, manette: null, deriveEtat: null };   // manette du joueur 2 (écran partagé)
+  const consoleXbox = B.autoconfig?.recommander(navigator).xbox === true;
+  const configurationsManettes = [0, 1].map(n => B.commandesManette.normaliser(reglages.manettes?.[n]));
+  let captureManette = null, dernierSignalManette = -Infinity;
   let nbManettes = 0, manettes = [];
   const impulsions2 = { haut: false, bas: false };
   // Commandes de chaque joueur (David, 16/11 : « choix manette, clavier ou souris, et gérer les touches de chacun » ;
@@ -83945,7 +84146,12 @@ FERRO.initPhysics().then(function(){
   const toucheDe = (n, action) => (reglages.touches && reglages.touches[n] && reglages.touches[n][action]) || TOUCHES_DEFAUT[n][action];
   const appuieSur = (n, action) => toucheDe(n, action).some(c => touches.has(c));
   // la souris va au joueur qui l'a choisie ; en Auto, au joueur seul, ou au joueur 2 dans une course à deux
-  const sourisPour = (n, duo = !!session && session.type === 'duo') => { const c = commande(n); return c === 'souris' || (c === 'auto' && (duo ? n === 1 && commande(0) !== 'souris' : n === 0)); };
+  const sourisPour = (n, duo = !!session && session.type === 'duo') => {
+    const c = commande(n), p = n === 0 ? pad : pad2;
+    // Le pointeur d'Edge Xbox n'est pas un volant. Sur ordinateur, une manette
+    // affectée reste prioritaire même quand ses sticks reviennent au neutre.
+    return c === 'souris' || (c === 'auto' && !consoleXbox && !p.manette && (duo ? n === 1 && commande(0) !== 'souris' : n === 0));
+  };
   const souris = { active: false, x: 0, largeur: 1, gaz: false, frein: false, derive: false };
   const volantSouris = () => { const x = (souris.x - souris.largeur / 2) / (souris.largeur * .3); return Math.abs(x) < .03 ? 0 : Math.max(-1, Math.min(1, x)); };
   // manettes de la course à deux selon le choix de chacun : deux pour deux ; une seule va au joueur 2, sauf si le joueur
@@ -83958,6 +84164,11 @@ FERRO.initPhysics().then(function(){
   const doigt = { volant: 0, gaz: false, frein: false, derive: false, id: null, x0: 0 };
   let analogique = false;
   let relacherTactile = () => {};
+  function memoriserActionsManette(P, n, p) {
+    B.commandesManette.lire(p, configurationsManettes[n], P.entrees);
+    for (const action of ACTIONS) P.actions[action] = P.entrees[action] > .5;
+    if (p) for (let i = 0; i < p.buttons.length; i++) P.precedent[i] = !!(p.buttons[i]?.pressed || p.buttons[i]?.value > .5);
+  }
 
   // Les choix du menu sont copiés au départ, par place locale et non par identifiant de voiture.
   // Le raccord 03 peut fournir choixTrollLocaux ; les réglages directs restent un repli autonome.
@@ -84022,6 +84233,7 @@ FERRO.initPhysics().then(function(){
   const boutonsSouris = e => { souris.gaz = !!(e.buttons & 1); souris.frein = !!(e.buttons & 2); souris.derive = !!(e.buttons & 28); };
   addEventListener('pointerdown', e => {
     if (e.pointerType !== 'mouse' || !enCourse()) return;
+    if (e.target?.closest?.('button, input, select, a, [role="button"]')) return;
     if (!sourisPour(0) && !(session && session.type === 'duo' && sourisPour(1))) return;
     souris.active = true; souris.x = e.clientX; souris.largeur = innerWidth || 1; boutonsSouris(e); activerSon();
   });
@@ -84050,6 +84262,19 @@ FERRO.initPhysics().then(function(){
   // Gestes : ils remettent à zéro l'attente de la démo sur l'écran titre ; pendant la démo, le premier ramène au
   // titre et ne compte pas comme un clic sur le menu qui revient.
   let dernierGeste = performance.now(), avalerJusque = 0;
+  // Edge Xbox peut émettre des clics depuis son pointeur. Une entrée manette
+  // récente garde le focus et évite une double validation. Les clics du menu
+  // à la manette sont programmatiques ; la souris reste disponible au repos.
+  function filtrerPointeurConsole(e) {
+    if (!consoleXbox || !e.isTrusted || e.pointerType && e.pointerType !== 'mouse' || e.type === 'click' && !e.detail) return;
+    let signal = performance.now() - dernierSignalManette < 450;
+    if (!signal) try {
+      const liste = navigator.getGamepads?.() || [];
+      for (const p of liste) if (p?.connected && (p.buttons.some(b => b?.pressed || b?.value > .25) || Math.abs(p.axes[0] || 0) > .25 || Math.abs(p.axes[1] || 0) > .25)) { signal = true; break; }
+    } catch (_) { /* le pointeur reste utilisable si l'API est indisponible */ }
+    if (signal) { e.preventDefault(); e.stopImmediatePropagation(); }
+  }
+  for (const type of ['pointerdown', 'pointerup', 'click']) addEventListener(type, filtrerPointeurConsole, { capture: true });
   addEventListener('pointerdown', e => {
     dernierGeste = performance.now();
     if (ecran === 'demo') { activerSon(); e.preventDefault(); e.stopPropagation(); sortirDemo(); }
@@ -84069,9 +84294,18 @@ FERRO.initPhysics().then(function(){
     nbManettes = connectees.length; manettes = connectees;
     const duoJeu = !!session && session.type === 'duo';
     const [p1, p2] = duoJeu ? assigner(connectees) : [connectees[0] || null, null];
+    if (captureManette) {
+      pad.manette = p1; pad2.manette = p2;
+      lireCaptureManette(connectees);
+      memoriserActionsManette(pad, 0, p1); memoriserActionsManette(pad2, 1, p2);
+      pad.gaz = pad.frein = pad.volant = pad2.gaz = pad2.frein = pad2.volant = 0;
+      pad.derive = pad2.derive = pad.actif = false;
+      return;
+    }
     if (duoJeu || pad2.manette) lireManette2(p2);
     const p = p1;
     const change = (ancienne?.index ?? -1) !== (p?.index ?? -1) || ancienne?.id !== p?.id;
+    pad.manette = p;
     if (change) {
       // Une manette perdue ne relâche pas une dérive chargée en déclenchant un turbo involontaire.
       // Seul l'état auquel ses commandes ont été appliquées compte ; une nouvelle séance reste intacte.
@@ -84095,18 +84329,18 @@ FERRO.initPhysics().then(function(){
         // démo : un bouton ou un manche ramène au titre ; le bouton reste « déjà appuyé » pour ne rien valider au retour
         if (ecran === 'demo') { for (let i = 0; i < p.buttons.length; i++) pad.precedent[i] = appuye(i); if (geste) { activerSon(); sortirDemo(); } return; }
       }
-      // zone morte de 0,06 puis exposant 1,22 : vif au centre sans à-coup, point d'accroche trouvé plus tôt, plein
-      // volant au bout de la course (16/11 : « précision »)
-      const ax = p.axes[0] || 0, morte = .06, x = Math.abs(ax) < morte ? 0 : Math.sign(ax) * (Math.abs(ax) - morte) / (1 - morte);
-      pad.volant = Math.sign(x) * Math.pow(Math.abs(x), 1.22);
-      pad.gaz = b(7); pad.frein = b(6); pad.derive = appuye(0) || appuye(2);
+      const entrees = B.commandesManette.lire(p, configurationsManettes[0], pad.entrees);
+      if (change) for (const action of ACTIONS) pad.actions[action] = entrees[action] > .5;
+      const nouvelleAction = action => entrees[action] > .5 && !pad.actions[action];
+      pad.volant = entrees.volant; pad.gaz = entrees.gaz; pad.frein = entrees.frein; pad.derive = entrees.derive > .5;
+      if (p.buttons.some(x => x?.pressed || x?.value > .25) || p.axes.some(x => Math.abs(x) > .25)) dernierSignalManette = performance.now();
       if (Math.abs(pad.volant) > .1 || pad.gaz > .1 || pad.frein > .1) compteurVisites?.activite();
       const accepte = commande(0) === 'auto' || commande(0) === 'manette';
       if (enCourse() && ecran === ecranLecture && accepte) {
-        if (nouveau(5)) impulsions.haut = true;
-        if (nouveau(4)) impulsions.bas = true;
-        if (nouveau(3)) changerVue();
-        if (nouveau(10)) provoquer(0);
+        if (nouvelleAction('haut')) impulsions.haut = true;
+        if (nouvelleAction('bas')) impulsions.bas = true;
+        if (nouvelleAction('vue')) changerVue();
+        if (nouvelleAction('troll')) provoquer(0);
       }
       // Si J2 vient de changer d'écran, consommer aussi les fronts de J1 sans agir une seconde fois.
       if (ecran === ecranLecture) {
@@ -84118,6 +84352,7 @@ FERRO.initPhysics().then(function(){
         } else if (!enCourse()) naviguerManette(nouveau);
       }
       for (let i = 0; i < p.buttons.length; i++) pad.precedent[i] = appuye(i);
+      for (const action of ACTIONS) pad.actions[action] = entrees[action] > .5;
       if (accepte && (Math.abs(pad.volant) > .05 || pad.gaz > .05 || pad.frein > .05)) { pad.actif = true; analogique = true; activerSon(); }
       return;
     }
@@ -84297,7 +84532,7 @@ FERRO.initPhysics().then(function(){
   const suivisManettesMenu = new Map();
   function lireAutresManettesMenu(consommer = false) {
     const menus = ['titre', 'preparation', 'reglages', 'enligne', 'prets', 'pause', 'resultats'];
-    if (document.hidden || !menus.includes(ecran)) { suivisManettesMenu.clear(); return; }
+    if (document.hidden || !menus.includes(ecran) || captureManette) { suivisManettesMenu.clear(); return; }
     const presentes = new Set();
     for (const p of manettes) {
       if (p === pad.manette || p === pad2.manette) continue;
@@ -84321,6 +84556,7 @@ FERRO.initPhysics().then(function(){
   function lireManette2(p) {
     const ancienne = pad2.manette, etatDerive = pad2.deriveEtat;
     const change = (ancienne?.index ?? -1) !== (p?.index ?? -1) || ancienne?.id !== p?.id;
+    pad2.manette = p;
     if (change) {
       // En ligne, le deuxième pilote local peut conduire une autre voiture que la n° 1. Ne toucher qu'à la
       // dérive réellement commandée par cette manette, sauf si son clavier ou sa souris la maintient encore.
@@ -84336,15 +84572,17 @@ FERRO.initPhysics().then(function(){
     if (!p) { pad2.precedent.length = 0; return; }
     const b = i => p.buttons[i] ? (p.buttons[i].value || (p.buttons[i].pressed ? 1 : 0)) : 0, appuye = i => b(i) > .5, nouveau = i => appuye(i) && !pad2.precedent[i];
     if (change) for (let i = 0; i < p.buttons.length; i++) pad2.precedent[i] = appuye(i);
-    const ax = p.axes[0] || 0, morte = .06, x = Math.abs(ax) < morte ? 0 : Math.sign(ax) * (Math.abs(ax) - morte) / (1 - morte);
-    pad2.volant = Math.sign(x) * Math.pow(Math.abs(x), 1.22);
-    pad2.gaz = b(7); pad2.frein = b(6); pad2.derive = appuye(0) || appuye(2);
+    const entrees = B.commandesManette.lire(p, configurationsManettes[1], pad2.entrees);
+    if (change) for (const action of ACTIONS) pad2.actions[action] = entrees[action] > .5;
+    const nouvelleAction = action => entrees[action] > .5 && !pad2.actions[action];
+    pad2.volant = entrees.volant; pad2.gaz = entrees.gaz; pad2.frein = entrees.frein; pad2.derive = entrees.derive > .5;
+    if (p.buttons.some(x => x?.pressed || x?.value > .25) || p.axes.some(x => Math.abs(x) > .25)) dernierSignalManette = performance.now();
     if (Math.abs(pad2.volant) > .1 || pad2.gaz > .1 || pad2.frein > .1) compteurVisites?.activite();
     if (ecran === 'course') {
-      if (nouveau(5)) impulsions2.haut = true;
-      if (nouveau(4)) impulsions2.bas = true;
-      if (nouveau(3)) changerVue2();
-      if ((commande(1) === 'auto' || commande(1) === 'manette') && nouveau(10)) provoquer(1);
+      if (nouvelleAction('haut')) impulsions2.haut = true;
+      if (nouvelleAction('bas')) impulsions2.bas = true;
+      if (nouvelleAction('vue')) changerVue2();
+      if ((commande(1) === 'auto' || commande(1) === 'manette') && nouvelleAction('troll')) provoquer(1);
     }
     if (nouveau(9)) {
       activerSon();
@@ -84353,6 +84591,7 @@ FERRO.initPhysics().then(function(){
     }
     else if (!enCourse()) naviguerManette(nouveau, p);
     for (let i = 0; i < p.buttons.length; i++) pad2.precedent[i] = appuye(i);
+    for (const action of ACTIONS) pad2.actions[action] = entrees[action] > .5;
     if (Math.abs(pad2.volant) > .05 || pad2.gaz > .05 || pad2.frein > .05) activerSon();
   }
   function commandesJoueur2() {
@@ -84416,7 +84655,10 @@ FERRO.initPhysics().then(function(){
   // commandes tactiles : volant en glissant le pouce à gauche, pédales et dérive à droite
   const estTactile = navigator.maxTouchPoints > 0 && typeof matchMedia === 'function' && (matchMedia('(pointer: coarse)').matches || matchMedia('(hover: none)').matches);
   if (estTactile) document.body.classList.add('tactile');
-  if (/Xbox/i.test(navigator.userAgent || '')) $('aide-console').hidden = false;
+  if (consoleXbox) {
+    $('aide-console').hidden = false;
+    for (const aide of document.querySelectorAll('.aide-xbox')) aide.hidden = false;
+  }
   function tactile(visible) { $('tactile').hidden = !(visible && estTactile); if (!visible) relacherTactile(); }
   (function () {
     const zone = $('t-volant'), bouton = zone.querySelector('.bouton-volant');
@@ -84726,7 +84968,7 @@ FERRO.initPhysics().then(function(){
     numeroSeance: 0, seanceAcceptee: null, dernierDepart: -Infinity };
   const VERSION_CHOIX_PNEUS = 2, VERSION_PNEUS_RESEAU = 1;
   // Empreinte des sources du build, incluant catalogue, générateur, limites et collisions : même piste, même jeu.
-  const REVISION_PISTES = '38a158f4d99fa570afe400f8c4f02cdd65d5cd34c13e892fc851cb86d25a6a63';
+  const REVISION_PISTES = 'a2469cf37172a2796eafb9a2c01e74f5e7f87e267a0c2d3103e3903b9fb9397c';
   function contratPiste(i) {
     return Number.isInteger(i) && CATALOGUE[i] ? { id: CATALOGUE[i].id, revision: REVISION_PISTES } : null;
   }
@@ -87008,7 +87250,9 @@ FERRO.initPhysics().then(function(){
 
   function remplirPreparation() {
     $('p-titre').textContent = modePrepa === 'chrono' ? 'Chrono' : modePrepa === 'enligne' ? 'Course en ligne' : modePrepa === 'duo' ? 'Course à deux' : 'Course';
-    $('o-partage').hidden = $('o-commandes').hidden = modePrepa !== 'duo';
+    $('o-partage').hidden = modePrepa !== 'duo';
+    $('o-commandes').hidden = false;
+    $('p-commandes-j2').hidden = modePrepa !== 'duo';
     $('o-vue-2').hidden = !(modePrepa === 'duo' || modePrepa === 'enligne' && joueursIci() === 2);
     $('p-vue').value = reglages.vue; $('p-vue-2').value = reglages.vue2;
     for (const n of [0, 1]) for (const r of document.querySelectorAll('input[name="cmd' + n + '"]')) r.checked = commande(n) === r.value;
@@ -87221,14 +87465,20 @@ FERRO.initPhysics().then(function(){
     m = /^Numpad(.+)$/.exec(code); if (m) return ({ Add: '+', Subtract: '−', Multiply: '×', Divide: '÷', Decimal: ',' }[m[1]] || m[1]) + ' (pavé)';
     return code;
   }
-  // tableau des commandes des deux joueurs dans les réglages : appareil, puis deux touches par action
+  // Affectations clavier et manette séparées. Le focus survit à la reconstruction
+  // du tableau : A ouvre une capture, le bouton encore tenu ne la remplit pas.
   function majCommandes() {
     const zone = $('r-commandes'); if (!zone) return;
+    const actif = document.activeElement;
+    const focus = zone.contains(actif) ? actif.matches('input') ? 'input[name="' + actif.name + '"][value="' + actif.value + '"]'
+      : actif.dataset.padAction ? '[data-pad-action="' + actif.dataset.padAction + '"][data-n="' + actif.dataset.n + '"]'
+      : actif.dataset.action ? '[data-action="' + actif.dataset.action + '"][data-n="' + actif.dataset.n + '"][data-place="' + actif.dataset.place + '"]'
+      : actif.id ? '#' + actif.id : null : null;
     let html = '';
     for (const n of [0, 1]) {
       html += '<div class="joueur-commandes"><h3>Joueur ' + (n + 1) + '</h3><fieldset class="choix-commande"><legend>Commande</legend>';
       for (const c of Object.keys(NOMS_COMMANDES)) html += '<label><input type="radio" name="rcmd' + n + '" value="' + c + '"' + (commande(n) === c ? ' checked' : '') + '><span>' + NOMS_COMMANDES[c] + '</span></label>';
-      html += '</fieldset><table class="table-touches"><tbody>';
+      html += '</fieldset><p class="etat-manette" id="r-manette-joueur-' + n + '-status"></p><table class="table-touches"><thead><tr><th>Action</th><th colspan="2">Clavier</th><th>Manette</th></tr></thead><tbody>';
       for (const a of ACTIONS) {
         const l = toucheDe(n, a);
         html += '<tr><th scope="row">' + NOMS_ACTIONS[a] + '</th>';
@@ -87236,20 +87486,82 @@ FERRO.initPhysics().then(function(){
           const attend = captureTouche && captureTouche.n === n && captureTouche.action === a && captureTouche.place === k;
           html += '<td><button type="button" class="touche' + (attend ? ' attente' : '') + '" data-n="' + n + '" data-action="' + a + '" data-place="' + k + '">' + (attend ? 'Touche ?' : nomTouche(l[k])) + '</button></td>';
         }
+        const attendPad = captureManette && captureManette.n === n && captureManette.action === a;
+        html += '<td><button type="button" class="touche touche-manette' + (attendPad ? ' attente' : '') + '" data-n="' + n + '" data-pad-action="' + a + '" aria-label="Manette joueur ' + (n + 1) + ' : ' + NOMS_ACTIONS[a] + '">' +
+          (attendPad ? 'Relâchez…' : B.commandesManette.nom(configurationsManettes[n][a])) + '</button></td>';
         html += '</tr>';
       }
       html += '</tbody></table></div>';
     }
-    zone.innerHTML = html + '<p class="note-commandes">Cliquez une touche puis appuyez sur la nouvelle (Échap annule). Souris : pointeur à gauche ou à droite pour tourner, bouton gauche pour accélérer, droit pour freiner, molette pour les rapports. Manette : gâchettes, stick gauche, A pour la dérive, RB et LB pour les rapports, Y pour parcourir les six vues, clic du stick gauche (L3) pour Troll, stick droit maintenu vers le bas pour regarder derrière dans les six vues, Start pour la pause. Pause : Échap ou P · son : M.</p>'
-      + '<button type="button" class="discret" id="r-touches-defaut">Touches par défaut</button>';
+    zone.innerHTML = html + '<p class="note-commandes">Manette : choisissez une action avec A, relâchez les commandes, puis pressez un bouton ou déplacez un stick. B ou Menu annule. Menu reste réservé à la pause ; stick droit maintenu vers le bas pour regarder derrière dans les six vues. Les affectations sont propres à chaque joueur.</p>'
+      + '<p class="note-commandes">Clavier : choisissez une touche puis pressez la nouvelle ; Échap annule. Souris : choisissez explicitement « Souris » pour conduire avec le pointeur lorsqu’une manette est branchée. Pause : Échap ou P · son : M.</p>'
+      + '<div class="actions-commandes"><button type="button" class="discret" id="r-touches-defaut">Clavier par défaut</button><button type="button" class="discret" id="r-pad-defaut">Manettes par défaut</button><button type="button" class="discret" id="r-pad-annuler"' + (captureManette || captureTouche ? '' : ' hidden') + '>Annuler l’affectation</button></div>';
+    if (focus) { const suivant = zone.querySelector(focus); if (suivant && !suivant.hidden) suivant.focus({ preventScroll: true }); }
+    majEtatManettes(true);
   }
   $('r-commandes').addEventListener('click', e => {
     const b = e.target.closest('button.touche');
-    if (b) { captureTouche = { n: +b.dataset.n, action: b.dataset.action, place: +b.dataset.place }; majCommandes(); return; }
+    if (b && b.dataset.padAction) {
+      const n = +b.dataset.n, p = manetteConfiguration(n) || manettes[n] || (manettes.length === 1 ? manettes[0] : null);
+      captureTouche = null;
+      captureManette = { n, action: b.dataset.padAction, index: p?.index ?? null, suivi: B.commandesManette.creerCapture(p) };
+      majCommandes(); return;
+    }
+    if (b) { captureManette = null; captureTouche = { n: +b.dataset.n, action: b.dataset.action, place: +b.dataset.place }; majCommandes(); return; }
+    if (e.target.id === 'r-pad-annuler') { captureManette = captureTouche = null; majCommandes(); }
+    if (e.target.id === 'r-pad-defaut') {
+      captureManette = captureTouche = null;
+      for (const n of [0, 1]) configurationsManettes[n] = B.commandesManette.normaliser();
+      reglages.manettes = configurationsManettes.slice(); sauverReglages(); majCommandes();
+    }
     if (e.target.id === 'r-touches-defaut') { reglages.touches = [{}, {}]; captureTouche = null; sauverReglages(); majCommandes(); }
   });
+  function manetteConfiguration(n, liste = manettes) {
+    // Le choix à deux reste identique à la course. Hors duo, le joueur 1 garde
+    // la première manette ; le second peut configurer la suivante sans clavier.
+    return session?.type === 'duo' || ecran === 'reglages' && retourReglages === 'preparation' && modePrepa === 'duo'
+      ? assigner(liste)[n] : liste[n] || null;
+  }
+  function lireCaptureManette(liste) {
+    const q = captureManette;
+    if (!q) return;
+    if (ecran !== 'reglages' || $('r-commandes-panel').hidden) { captureManette = null; return; }
+    const p = liste.find(p => p.index === q.index) || manetteConfiguration(q.n, liste) || (liste.length === 1 ? liste[0] : null);
+    const liaison = B.commandesManette.avancerCapture(q.suivi, p);
+    if (liaison) {
+      configurationsManettes[q.n] = B.commandesManette.affecter(configurationsManettes[q.n], q.action, liaison);
+      reglages.manettes = configurationsManettes.slice();
+      reglages.commandes = [commande(0), commande(1)]; reglages.commandes[q.n] = 'manette';
+      captureManette = null; souris.active = false; sauverReglages(); majCommandes();
+    } else if (q.suivi.annule) { captureManette = null; majCommandes(); }
+    else {
+      const bouton = $('r-commandes').querySelector('[data-pad-action="' + q.action + '"][data-n="' + q.n + '"]');
+      if (bouton) texte(bouton, q.suivi.pret ? 'Actionnez…' : 'Relâchez…');
+    }
+  }
+  let prochaineMajManette = 0;
+  function majEtatManettes(force = false) {
+    if (!force && (ecran !== 'reglages' || performance.now() < prochaineMajManette)) return;
+    prochaineMajManette = performance.now() + 150;
+    const etat = $('r-manette-etat');
+    if (etat) texte(etat, captureManette ? 'Joueur ' + (captureManette.n + 1) + ' · ' + NOMS_ACTIONS[captureManette.action] + ' : ' +
+      (captureManette.suivi.raison === 'deconnectee' ? 'manette non reçue. Rebranchez-la ou activez les commandes de jeu dans Edge.' : captureManette.suivi.pret ? 'actionnez la commande souhaitée. B annule.' : 'relâchez tous les boutons et les sticks.') :
+      nbManettes ? nbManettes + ' manette' + (nbManettes > 1 ? 's reçues' : ' reçue') + ' · testez les pédales et le stick ci-dessous.' :
+      consoleXbox ? 'Manette non reçue. Maintenez Menu ≡ pour passer aux commandes de jeu dans Edge, puis appuyez sur A.' : 'Appuyez sur un bouton de la manette pour la détecter.');
+    for (const n of [0, 1]) {
+      const el = $('r-manette-joueur-' + n + '-status'); if (!el) continue;
+      const p = manetteConfiguration(n), entree = n ? pad2.entrees : pad.entrees;
+      B.commandesManette.lire(p, configurationsManettes[n], entree);
+      texte(el, p ? 'Gaz ' + Math.round(entree.gaz * 100) + ' % · frein ' + Math.round(entree.frein * 100) + ' % · volant ' + Math.round(entree.volant * 100) + ' %' : 'Aucune manette affectée');
+    }
+  }
   // la touche suivante prend la place choisie ; elle quitte toute autre action, des deux joueurs
   addEventListener('keydown', e => {
+    if (captureManette) {
+      e.preventDefault(); e.stopImmediatePropagation();
+      if (e.code === 'Escape') { captureManette = null; majCommandes(); }
+      return;
+    }
     if (!captureTouche) return;
     e.preventDefault(); e.stopImmediatePropagation();
     const q = captureTouche; captureTouche = null;
@@ -87265,7 +87577,7 @@ FERRO.initPhysics().then(function(){
     majCommandes();
   }, { capture: true });
   function remplirReglages() {
-    captureTouche = null; majCommandes();
+    captureTouche = captureManette = null; majCommandes();
     majDetectionGraphique();
     for (const nom of ['vue', 'vue2', 'boite', 'qualite', 'cadence', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'aide', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille', 'annoncesVirages']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
     $('v-carte').checked = reglages.carte !== 'non';
@@ -87279,6 +87591,7 @@ FERRO.initPhysics().then(function(){
   }
   function retour() {
     if (prepa.voile) return;   // sous le voile, rien ne se quitte : la préparation finit ou s'annule seule
+    captureTouche = captureManette = null;
     if (ecran === 'reglages') { aller(retourReglages || 'titre'); if (ecran === 'pause' && session && session.type !== 'vitrine') rechaufferEnPause(session); }
     else if (ecran === 'preparation' && menuArcade.retour()) return;
     else if (ecran === 'preparation' && modePrepa === 'enligne') aller('enligne');
@@ -87494,7 +87807,7 @@ FERRO.initPhysics().then(function(){
     try { if (navigator.getGamepads) liste = navigator.getGamepads() || []; } catch (e) { return; }
     for (const p of [pad, pad2]) {
       const m = p.manette, q = m && liste[m.index];
-      if (q && q.connected) for (let i = 0; i < q.buttons.length; i++) { const b = q.buttons[i]; p.precedent[i] = !!b && (b.value || (b.pressed ? 1 : 0)) > .5; }
+      if (q && q.connected) memoriserActionsManette(p, p === pad ? 0 : 1, q);
     }
   }
 
@@ -88097,13 +88410,16 @@ FERRO.initPhysics().then(function(){
     if (prepa.voile && !prepa.attente) { tPrec = 0; B.cadence.oublier(cadence); if (ecran === 'demo') lireManette(); else tenirManettes(); return; }
     // Commandes et menus à chaque rappel, même sans image : les pas de l'image suivante lisent l'état le plus frais.
     // Les messages demandés depuis le rappel précédent s'affichent ici, une fois (voir message).
-    const avantEntrees = ecran;
+    const avantEntrees = ecran, captureAvant = !!captureManette;
     lireManette();
-    lireAutresManettesMenu(ecran !== avantEntrees);
+    lireAutresManettesMenu(ecran !== avantEntrees || captureAvant);
+    majEtatManettes();
     majAttente();
     appliquerMessages();
     const sourisVue = souris.active && enCourse() ? 'oui' : 'non';
     if (jeu.dataset.souris !== sourisVue) jeu.dataset.souris = sourisVue;
+    const modeManette = consoleXbox && nbManettes && performance.now() - dernierSignalManette < 1200 ? 'oui' : 'non';
+    if (jeu.dataset.manette !== modeManette) jeu.dataset.manette = modeManette;
     // deux manettes branchées : « À deux » le signale, et Start sur la seconde, au titre, ouvre la course à deux
     if (ecran === 'titre') {
       $('t-manettes').hidden = nbManettes < 2;
@@ -88112,7 +88428,7 @@ FERRO.initPhysics().then(function(){
       pad2.start = start2;
     }
     // préparation d'une course à deux : qui joue avec quoi, selon les choix et les manettes branchées
-    if (ecran === 'preparation' && modePrepa === 'duo') texte($('p-manettes'), [0, 1].map(n => 'Joueur ' + (n + 1) + ' : ' + entreeDe(n)).join(' · ') + '.');
+    if (ecran === 'preparation') texte($('p-manettes'), (modePrepa === 'duo' ? [0, 1] : [0]).map(n => 'Joueur ' + (n + 1) + ' : ' + entreeDe(n)).join(' · ') + '.');
     menuArcade.image(t, ecran === 'preparation', gpuModeste || reglages.qualite === 'low');
     // Aucune simulation ni image de course derrière les écrans opaques ; les entrées et le compte à rebours restent actifs.
     if (menuOpaque()) { tPrec = 0; B.cadence.oublier(cadence); return; }
@@ -88239,7 +88555,7 @@ FERRO.initPhysics().then(function(){
   function capacitesDeclarees() {
     let pointeurGrossier = false;
     try { pointeurGrossier = matchMedia('(pointer: coarse)').matches; } catch (_) { /* indication facultative */ }
-    return { userAgent: navigator.userAgent, platform: navigator.platform,
+    return { userAgent: navigator.userAgent, platform: navigator.platform, userAgentData: navigator.userAgentData,
       mobile: navigator.userAgentData && navigator.userAgentData.mobile,
       maxTouchPoints: navigator.maxTouchPoints, hardwareConcurrency: navigator.hardwareConcurrency,
       deviceMemory: navigator.deviceMemory, pointeurGrossier,
@@ -88385,6 +88701,10 @@ FERRO.initPhysics().then(function(){
       // ombres photo (src/ombres.js) : tuile de 512² ; à 1024², des dents rampent sous la casquette de la planche.
       // Bloc PCSS compilé seulement si la pénombre variable sert (B.ombres.reglages.pcssFine) : shader plus court sinon.
       const optionsRendu = { msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512, pcss: !!(B.ombres && B.ombres.reglages.pcssFine) } };
+      // L'interface garde sa définition CSS ; seule la scène Xbox est bornée
+      // à 720p, y compris sur TV 4K et après redimensionnement. FSurface applique
+      // ce budget avant l'allocation des cibles WebGL, sans retouche de FERRO.
+      if (B.autoconfig.recommander(capacitesDeclarees()).xbox) Object.assign(optionsRendu, { resolution: 'native', maxPixels: 1280 * 720, renderScale: 1 });
       if (pageCachee()) await pageVisible();
       preferenceGraphique();
       rendu = window.FRender.create(canvas, optionsRendu);

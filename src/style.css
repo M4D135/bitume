@@ -661,13 +661,22 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 
 /* Commandes des joueurs : appareil et touches (réglages), choix rapide à la préparation d'une course à deux */
 #jeu[data-souris="oui"] { cursor: none; }
+#jeu[data-manette="oui"] { cursor: none; }
 .commandes-joueurs { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px 30px; }
 .joueur-commandes h3 { margin: 0 0 10px; font: italic 800 24px/1 var(--f-titre); text-transform: uppercase; }
 .choix-commande { margin-bottom: 12px; }
-.table-touches { border-collapse: collapse; width: 100%; max-width: 440px; }
+.table-touches { border-collapse: collapse; width: 100%; max-width: 620px; }
 .table-touches th { padding: 4px 12px 4px 0; text-align: left; font: 600 12px/1.2 var(--f-texte); letter-spacing: .08em; text-transform: uppercase; color: var(--papier-2); white-space: nowrap; }
 .table-touches td { padding: 3px 4px; }
-.touche { width: 100%; min-width: 92px; padding: 7px 10px 6px; font: 700 15px/1 var(--f-titre); letter-spacing: .04em; color: var(--papier); background: rgba(22, 24, 28, .85); border: 1px solid var(--trait-fort); border-radius: var(--rayon); cursor: pointer; }
+.touche { width: 100%; min-width: 64px; min-height: 40px; padding: 7px 8px 6px; font: 700 15px/1 var(--f-titre); letter-spacing: .04em; color: var(--papier); background: rgba(22, 24, 28, .85); border: 1px solid var(--trait-fort); border-radius: var(--rayon); cursor: pointer; }
+.touche-manette { color: #c7edb9; border-color: #536b50; }
+.etat-manette { color: var(--papier-2); font-size: 14px; line-height: 1.5; min-height: 1.5em; }
+.actions-commandes { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 12px; }
+@media (max-width: 480px) {
+  .table-touches th { padding-right: 4px; font-size: 10px; letter-spacing: 0; white-space: normal; }
+  .table-touches td { padding: 3px 2px; }
+  .touche { min-width: 48px; padding-inline: 4px; font-size: 12px; }
+}
 .touche:hover, .touche:focus-visible { border-color: var(--papier-2); outline: none; }
 .touche.attente { color: var(--encre); background: var(--ambre); border-color: var(--ambre); }
 .note-commandes { grid-column: 1 / -1; margin: 0; max-width: 90ch; color: var(--papier-2); font-size: 14px; }
