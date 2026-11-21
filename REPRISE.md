@@ -1,27 +1,32 @@
 # BITUME — reprise courte
 
-## Lot actif : voiture complète 126 CK, puis pilote
+## Point d’entrée : feuille de route du 21 novembre
 
-David exige la fidélité au modèle complet : construire la voiture, changer seulement
-la caméra entre les vues, puis installer le pilote dans le vrai habitacle.
-Une occultation naturelle par le volant est acceptée ; ne pas déformer le modèle
-pour les anciens contrôles de cadrage.
+Lire [la feuille de route réunie](docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md),
+puis la fiche du petit lot à reprendre. Les demandes de cette session sont toutes
+consignées : voiture 126 CK, mains/poignets naturels surtout en extérieur,
+six vues de conduite, compteurs **Visites / Visiteurs uniques** sur le titre.
 
-Lire [la feuille de route active](docs/reprise/MODELE-COMPLET-126CK-2026-11-21.md)
-et `etat_courant` dans `docs/reprise/ETAT.json`.
-Base préparée **0.2.78 / p15 / FERRO 0.3.15**, commit `0abc00c` : poste .77 et
-premier nez/pontons réunis. Main livre .77 pour essai, PR 54 fusionnée au commit `11e7e55`.
-La refonte travaille dans `codex/bitume-0279-modele-126ck-20261121`.
+**Nouveau trajet : sommet du col de Larche → Vinadio, par la SS21, environ 32 km.**
+La dernière précision de David remplace le départ initial de Barcelonnette.
+Vrai tracé et vrai relief, échelle 1:1, parcours ouvert avec arrivée.
+[Fiche sources et lots L0–L6](docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md).
 
-## Références et ordre
+## Publication et préparations
 
-[41 images RenderBlade](docs/references/ferrari-126ck-renderblade-2026-11-21/README.md)
-déjà sur main ; [photos réelles](docs/references/ferrari-126ck-reel-2026-11-21/README.md)
-réunies avec leur provenance. Sauvegarder le tout et le plan avant développement.
-Puis coque/nez/pontons, arrière/plateau/arceau/mécanique, ailes, habitacle vide,
-pilote et posture, enfin images du vrai jeu et publication qualifiée.
-Les modèles .75/.76 restent refusés ; tests réussis ne valent pas fidélité approuvée.
+Runtime de départ publié sur main : **0.2.77 / p15 / FERRO 0.3.15**, PR 54,
+commit `11e7e55f087484e1099963d42b04309b6bc6220c`. Le présent jalon publie le suivi
+sur main ; les sources de la refonte sont sur
+**`codex/bitume-0280-implantation-126ck-20261121`**, sans qualification globale.
+[État exact et prochains contrôles](docs/reprise/rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md).
+Le HTML de préparation .78 précède ces derniers raccords ; reconstruire avant essai.
 
-Préserver décor, PR 43, sources Monaco/Marseille et les autres préparations.
-Réserve construction décor <150 ms ouverte ; aucun gain FPS matériel annoncé.
-Aucun déploiement du site.
+La voiture et son implantation par rapport aux essieux précèdent le pilote.
+Une seule géométrie monde dans toutes les vues ; occultation naturelle du volant
+acceptée. Les modèles .75/.76 restent refusés ; des tests verts ne valent pas
+validation visuelle de la 126 CK. [Plan R0–R5](docs/reprise/MODELE-COMPLET-126CK-2026-11-21.md).
+
+Prochaine action : finir la réception des mains/caméras/compteurs et la qualification
+du candidat assemblé ; l’acquisition L0 Larche/Vinadio peut avancer séparément.
+Préserver décor, PR 43, Monaco/Marseille et le programme antérieur.
+Réserve construction décor <150 ms ouverte. Aucun déploiement du site dans ce jalon.

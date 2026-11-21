@@ -1,0 +1,66 @@
+[
+  {
+    "suite": "voiture",
+    "code": 0,
+    "fin": [
+      "ok  trajet au pommeau : les doigts ne traversent ni la jante ni la branche de 3 h (cockpit-3)",
+      "33 vérifications réussies"
+    ]
+  },
+  {
+    "suite": "carene",
+    "code": 0,
+    "fin": [
+      "ok  tube hors plan : chaque sommet à r ± 1 % de l'axe lissé (garde carene-5)",
+      "carène : 14 vérifications passées"
+    ]
+  },
+  {
+    "suite": "pilote-commun",
+    "code": 0,
+    "fin": [
+      "ℹ todo 0",
+      "ℹ duration_ms 6308.36484"
+    ]
+  },
+  {
+    "suite": "pilote-exterieur",
+    "code": 0,
+    "fin": [
+      "ℹ todo 0",
+      "ℹ duration_ms 23833.285668"
+    ]
+  },
+  {
+    "suite": "pilote-habitacle",
+    "code": 0,
+    "fin": [
+      "ℹ todo 0",
+      "ℹ duration_ms 60811.012992"
+    ]
+  },
+  {
+    "suite": "eau-carrosserie-integration",
+    "code": 0,
+    "fin": [
+      "ℹ todo 0",
+      "ℹ duration_ms 2461.573863"
+    ]
+  },
+  {
+    "suite": "pneus-pilotes",
+    "code": 0,
+    "fin": [
+      "ok la migration ne lit ni préférence ni entrée de tableau héritée",
+      "6 contrôles préférences des pneus par pilote réussis"
+    ]
+  },
+  {
+    "suite": "carrosserie-126ck",
+    "code": 0,
+    "tests": 4,
+    "reussis": 4,
+    "echoues": 0,
+    "journal": "carrosserie-126ck.log"
+  }
+]

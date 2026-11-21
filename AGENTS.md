@@ -416,3 +416,24 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
 - Une occultation naturelle par le volant est acceptée. Cela remplace les anciennes exigences de
   dégagement qui imposaient de modifier les proportions pour rendre tous les cadrans visibles.
   Conserver les contrôles de vraies pénétrations, pièces flottantes et incohérences entre vues.
+
+## Décisions de David — 21 novembre 2026, compteurs, mains, vues et Larche/Vinadio
+
+- Afficher **Visites** et **Visiteurs uniques** sur l’écran titre. Compteurs globaux persistants,
+  visites de session dédupliquées et visiteurs reconnus par identifiant navigateur aléatoire.
+  L’IP n’est pas nécessaire ; un navigateur reconnu n’est pas une personne identifiée.
+- Améliorer la tenue du volant : poignets moins cassés, paumes, pouces, doigts et manchettes
+  cohérents. La **vue extérieure** est la référence principale pour juger la correction.
+- Ajouter les vues classiques : cockpit, arceau/T-cam, nez, aileron avant, poursuite proche
+  et éloignée ; choix avant course, cycle manette/clavier et indépendance J1/J2. Une seule
+  voiture et un seul pilote dans le monde ; les vues changent uniquement la caméra.
+- Nouveau trajet réel : la demande initiale Barcelonnette → col de Larche → Vinadio est
+  **remplacée** par « fais plus court mais arrive à Vinadio », puis « prends du haut du col ».
+  Partir du **sommet du col de Larche / Colle della Maddalena** et descendre la **SS21 jusqu’à
+  Vinadio**, environ 32 km à mesurer précisément. Garder vrais tracé et reliefs à l’échelle 1:1 ;
+  ne pas comprimer la route et ne pas conserver la montée française.
+- Ajouter toutes ces demandes en détail à la feuille de route et la pousser sur GitHub pour
+  la suite. Point d’entrée : `docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md` ; fiche géographique :
+  `docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md`.
+- Sauvegarder les préparations avec leur état exact. Les sources non encore qualifiées restent
+  sur branche ; la publication du plan ne signifie ni validation visuelle ni déploiement du site.

@@ -96,8 +96,9 @@ export function qualifier({scenes=scenesCourtes(),details=['complet','moyen','si
    // Le bas du thorax peut toucher son assise ; toutes les autres peaux restent des obstacles.
    tester('thorax-coque','thorax',torse.triangles,torse.arbre,fixes.filter(o=>!/assise|siege/.test(o.nom)));
    for(const o of tetes)tester('tete-coque',o.nom,o.s.triangles,o.s.arbre,fixes);
+   // Reconstruction 126 CK : humérus 27 cm, avant-bras 29 cm ; tolérance et oracle inchangés.
    for(let h=0;h<2;h++){const j=h*9,d=(a,b)=>Math.hypot(A[j+a]-A[j+b],A[j+a+1]-A[j+b+1],A[j+a+2]-A[j+b+2]);
-    resultat.osErreurMax=Math.max(resultat.osErreurMax,Math.abs(d(0,3)-.21),Math.abs(d(3,6)-.23));resultat.porteeMax=Math.max(resultat.porteeMax,d(0,6));}
+    resultat.osErreurMax=Math.max(resultat.osErreurMax,Math.abs(d(0,3)-.27),Math.abs(d(3,6)-.29));resultat.porteeMax=Math.max(resultat.porteeMax,d(0,6));}
    resultat.poses++;if(touche)resultat.posesAvecContact++;
    if(progression&&resultat.poses%25===0)console.error(JSON.stringify({detail,progression:resultat.poses,total:scenes.length,posesAvecContact:resultat.posesAvecContact}));
   }

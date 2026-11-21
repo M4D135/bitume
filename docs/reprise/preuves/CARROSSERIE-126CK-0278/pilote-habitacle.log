@@ -1,0 +1,26 @@
+gestes : 618 poses, surfaces Float32 des mains/bras et obstacles réellement affichés
+transition geste/rapport : 810 poses, coudes et poignets, saut initial=0.0000010166492833141305 m, pas maximal 120/240 Hz=0.11322770974727497/0.06306721879261579 m
+mains/jante : 380 poses, surfaces Float32 de chaque gant/paume/garde/manchette/sangle
+cockpit : 840 poses, commandes/gants/bras sans traversée de la coque ni du support (ancrage de tige exclu)
+cockpit : jeu longitudinal jante/buste minimal = 0.274705 m
+cockpit : 150 poses joueur/rival, trois coques réellement affichées, braquages extrêmes et attitude composée
+✔ volant fixé : moyeu, arbre, palier, planche et cuve sont réellement reliés dans les trois LOD (162.051419ms)
+✔ rétroviseurs communs : chaque patte relie son boîtier à la carrosserie dans les trois LOD (50.183686ms)
+✔ assise basse : appui du thorax, coussin, traverses et fond de cuve forment une liaison réelle (30.725769ms)
+✔ gestes : surfaces des mains et bras sans traversée de la coque, du casque ni de la direction (16012.434226ms)
+✔ un rapport interrompt le geste sans téléporter les poignets ni traverser le cockpit (20954.449513ms)
+✔ le contrôleur distingue traversée, séparation et simple proximité (0.539964ms)
+✔ les surfaces de tous les éléments des mains se dégagent de la jante pendant le passage (11469.353964ms)
+✔ la tige du levier ne traverse plus le carénage à son pied (72.125856ms)
+✔ volant, levier, gants et bras restent séparés des triangles du cockpit pendant les passages (7055.591957ms)
+✔ la jante laisse au moins huit centimètres devant le buste rendu (12.835756ms)
+✔ joueur et rival, LOD et attitude de caisse conservent les dégagements des commandes (4859.510315ms)
+✔ le levier est fixé dans une console jointe à la cuve, seul son pied est serti (119.894136ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 60811.012992

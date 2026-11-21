@@ -49,11 +49,14 @@
     vidangePrevue = false;
     for (const [cle, valeur] of [...stockEnAttente]) ecrireStock(cle, typeof valeur === 'function' ? valeur() : valeur);
   }
+  // Identifiants persistés : « poursuite » conserve son cadre historique à 7,4 m.
+  const VUES_COURSE = Object.freeze(['cockpit', 'arceau', 'nez', 'aileron-avant', 'poursuite-proche', 'poursuite']);
   const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 70, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
     anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'non', gouttes: 1, forcePluie: 'forte',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglagesEnregistres = lireStock('bitume.reglages', {});
   const reglages = Object.assign({}, DEFAUT, reglagesEnregistres);
+  for (const cle of ['vue', 'vue2']) if (!VUES_COURSE.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
   Object.assign(reglages, initialiserChoixPneus(reglagesEnregistres));
   reglages.trollPilotes = B.menuArcade.normaliserTroll(reglagesEnregistres);
   reglages.qualite = B.graphismes.normaliser(reglages.qualite);
@@ -572,6 +575,7 @@
       const ax = p.axes[0] || 0, morte = .06, x = Math.abs(ax) < morte ? 0 : Math.sign(ax) * (Math.abs(ax) - morte) / (1 - morte);
       pad.volant = Math.sign(x) * Math.pow(Math.abs(x), 1.22);
       pad.gaz = b(7); pad.frein = b(6); pad.derive = appuye(0) || appuye(2);
+      if (Math.abs(pad.volant) > .1 || pad.gaz > .1 || pad.frein > .1) compteurVisites?.activite();
       const accepte = commande(0) === 'auto' || commande(0) === 'manette';
       if (enCourse() && ecran === ecranLecture && accepte) {
         if (nouveau(5)) impulsions.haut = true;
@@ -741,8 +745,8 @@
         }
       }
       contexte.pause = ecran === 'pause' || (ecran === 'reglages' && retourReglages === 'pause');
-      // Les lentilles embarquées reçoivent aussi les impacts : arceau, ponton et aileron arrière.
-      contexte.actif = (ecran === 'course' || ecran === 'demo' || contexte.pause) && (vue === 'cockpit' || vue === 'poursuite' || vue === 'aileron' || vue === 'roue' || vue === 'arriere');
+      // Toutes les vues de conduite gardent leur lentille et leur vrai axe avant/arrière.
+      contexte.actif = (ecran === 'course' || ecran === 'demo' || contexte.pause) && (VUES_COURSE.includes(vue) || vue === 'aileron' || vue === 'roue' || vue === 'arriere');
       contexte.intensite = reglages.gouttes; contexte.cockpit = vue === 'cockpit'; contexte.abri = abri;
       contexte.dpr = window.devicePixelRatio || 1;
       // rendreVue vient de dessiner cette caméra : en duo, la source contient encore J2 avant la copie scene2,
@@ -810,6 +814,7 @@
     const ax = p.axes[0] || 0, morte = .06, x = Math.abs(ax) < morte ? 0 : Math.sign(ax) * (Math.abs(ax) - morte) / (1 - morte);
     pad2.volant = Math.sign(x) * Math.pow(Math.abs(x), 1.22);
     pad2.gaz = b(7); pad2.frein = b(6); pad2.derive = appuye(0) || appuye(2);
+    if (Math.abs(pad2.volant) > .1 || pad2.gaz > .1 || pad2.frein > .1) compteurVisites?.activite();
     if (ecran === 'course') {
       if (nouveau(5)) impulsions2.haut = true;
       if (nouveau(4)) impulsions2.bas = true;
@@ -946,12 +951,18 @@
     return morceaux.join(' ou ') || 'rien';
   }
   function changerVue2() {
-    reglages.vue2 = reglages.vue2 === 'cockpit' ? 'poursuite' : 'cockpit';
-    sauverReglages(); if (session && session.vueJ2) session.vueJ2.camCap = null;
+    reglerVue(1, VUES_COURSE[(VUES_COURSE.indexOf(reglages.vue2) + 1) % VUES_COURSE.length]);
   }
   function changerVue() {
-    reglages.vue = reglages.vue === 'cockpit' ? 'poursuite' : 'cockpit';
-    sauverReglages(); if (session) session.camCap = null;
+    reglerVue(0, VUES_COURSE[(VUES_COURSE.indexOf(reglages.vue) + 1) % VUES_COURSE.length]);
+  }
+  function reglerVue(n, vue) {
+    if (!VUES_COURSE.includes(vue)) return false;
+    reglages[n ? 'vue2' : 'vue'] = vue;
+    const S = n ? session && session.vueJ2 : session;
+    if (S) { S.camCap = null; S.regardArriere = false; }
+    sauverReglages();
+    return true;
   }
 
   // ---------------------------------------------------------------- son
@@ -1337,7 +1348,8 @@
     texte($('pr-course'), CATALOGUE[k.i].nom + ' · ' + k.tours + ' tours · ' + NOMS_SAISON[B.saisons.normaliser(k.saison)] + ' · ' + NOMS_MOMENT[B.ambiance.normaliser(k.moment)] + ' · météo : ' + meteo);
     texte($('pr-pneus-conseil'), 'Conseillés pour cette chaussée : ' + NOMS_PNEUS[B.conduite.pneusConseilles(surfaceAnnoncee(k))].toLowerCase() + '.');
     majChoixPneus();
-    for (const [nom, val] of [['boitePret', reglages.boite], ['vuePret', reglages.vue]]) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = r.value === val;
+    for (const [nom, val] of [['boitePret', reglages.boite], ['vuePret', reglages.vue], ['vuePret2', reglages.vue2]]) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = r.value === val;
+    $('pr-vue-2').hidden = joueursIci() < 2;
     let html = '', n = 0, m = 0;
     for (const x of [...R.membres].sort((a, b) => a.id - b.id)) {
       const pret = C.prets.has(x.id) && (x.id === R.id || R.pretAvec(x.id));
@@ -1797,56 +1809,17 @@
   $('pr-reglages').addEventListener('click', () => { retirerPret(); retourReglages = 'prets'; aller('reglages'); });
 
   // ---------------------------------------------------------------- caméras
-  // Champ du cockpit : réglage vertical, comme FERRO, en 16:9, sans réécrire la valeur mémorisée. Le cadre étroit garde
-  // d'abord la diagonale de référence. L'habitacle étant désormais métrique et commun, il ne peut plus rapprocher
-  // ses glaces pour un téléphone : la projection s'ouvre seulement assez pour contenir les deux vrais montages.
-  // La discrète ouverture de vitesse demeure ; la position des yeux et la géométrie ne dépendent pas de l'écran.
-  // À 70° verticaux, le regard horizontal retrouve le volant bas de la référence sans
-  // rapetisser la voiture : les vrais yeux et les pièces métriques restent communs aux vues.
+  // Champ vertical choisi par le joueur. La projection dépend du format d'écran et
+  // de la vitesse ; elle ne se déforme plus pour faire rentrer les vrais rétroviseurs.
+  // Sur un cadre étroit, les pièces hors champ restent à leur place dans la voiture.
   const INCLINAISON_COCKPIT = 0;
   function champCockpit(aspect, v, cam, glaces, M) {
     const t = Math.tan(clamp(+reglages.champ || 70, 60, 105) * Math.PI / 360) * (16 / 9);
     const tv = aspect < 16 / 9 ? Math.hypot(t, t / (16 / 9)) / Math.hypot(1, Math.max(.3, aspect)) : t / (16 / 9);
     const portraitTelephone = estTactile && canvas.clientWidth <= 600 && aspect < 1;
-    let tangente = tv * (portraitTelephone ? .82 : 1);
-    if (aspect < 16 / 9) {
-      const miroir = B.voiture.RETRO, oeil = B.voiture.OEIL;
-      const profondeur = Math.max(.1, miroir.x - oeil[0] - miroir.l * .5 * Math.abs(Math.sin(miroir.angle)));
-      const largeur = miroir.z + miroir.l * .5 + .01;
-      tangente = Math.max(tangente, largeur / profondeur / Math.max(.3, aspect));
-    }
+    const tangente = tv * (portraitTelephone ? .82 : 1);
     const vertical = 2 * Math.atan(tangente) * 180 / Math.PI;
-    const base = clamp(vertical * (1 + (portraitTelephone ? .04 : .05) * clamp(v / 85, 0, 1)), 10, 110);
-    if (!cam || !glaces) return base;
-    // La direction du regard et les déplacements de tête changent la projection : le montage nominal
-    // seul ne suffit pas en virage. Projeter les coins réels et l'enveloppe des boîtiers dans ce regard,
-    // avec 3 px de garde, sans déplacer les rétros ni réécrire la préférence de champ du joueur.
-    tangente = Math.tan(base * Math.PI / 360);
-    const cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw), cp = Math.cos(cam.pitch), sp = Math.sin(cam.pitch);
-    const cr = Math.cos(cam.roll), sr = Math.sin(cam.roll), boite = B.voiture.FORMES['retro-boitier'];
-    const gardeX = Math.max(.5, 1 - 6 / Math.max(1, canvas.clientWidth));
-    const gardeY = Math.max(.5, 1 - 6 / Math.max(1, canvas.clientHeight));
-    for (let g = 0; g < glaces.length; g++) for (let j = 0; j < 12; j++) {
-      const glace = glaces[g]; let x, y, z;
-      if (j < 4) {
-        const q = glace.coins[j]; x = q[0] - cam.pos[0]; y = q[1] - cam.pos[1]; z = q[2] - cam.pos[2];
-      } else {
-        // Boîte de la vraie forme procédurale, orientée selon le même montage que sa glace.
-        const n = j - 4, bx = boite.centre[0] + boite.taille[0] * (n & 1 ? .5 : -.5);
-        const by = boite.centre[1] + boite.taille[1] * (n & 2 ? .5 : -.5);
-        const bz = boite.centre[2] + boite.taille[2] * (n & 4 ? .5 : -.5);
-        // Le haut de la glace est normale × droite, pas la verticale de la caisse : le boîtier est incliné.
-        const gn = glace.normale, gd = glace.droite;
-        x = glace.centre[0] - gn[0] * bx + (gn[1] * gd[2] - gn[2] * gd[1]) * by + gd[0] * bz - cam.pos[0];
-        y = glace.centre[1] - gn[1] * bx + (gn[2] * gd[0] - gn[0] * gd[2]) * by + gd[1] * bz - cam.pos[1];
-        z = glace.centre[2] - gn[2] * bx + (gn[0] * gd[1] - gn[1] * gd[0]) * by + gd[2] * bz - cam.pos[2];
-      }
-      const profondeur = x * sy * cp + y * sp - z * cy * cp;
-      const droite = x * cy + z * sy, haut = -x * sy * sp + y * cp + z * cy * sp;
-      tangente = Math.max(tangente, Math.abs(droite * cr + haut * sr) / (profondeur * aspect * gardeX),
-        Math.abs(haut * cr - droite * sr) / (profondeur * gardeY));
-    }
-    return clamp(2 * Math.atan(tangente) * 180 / Math.PI, 10, 110);
+    return clamp(vertical * (1 + (portraitTelephone ? .04 : .05) * clamp(v / 85, 0, 1)), 10, 110);
   }
   // La tête du pilote vit : elle part vers l'extérieur du virage et vers l'avant au freinage (2 cm au plus), le regard
   // va vers la corde (4° au plus), et le casque tremble à haute vitesse, sur les vibreurs et dans l'herbe.
@@ -1879,13 +1852,27 @@
     const t = Math.tan(f * Math.PI / 360);
     return 2 * Math.atan(Math.hypot(t, t * 16 / 9) / Math.hypot(1, a)) * 180 / Math.PI;
   }
-  function cameraPoursuite(S, p, et, dt) {
+  // Supports de caméra dans le repère de l'unique voiture 126 CK : x vers le nez.
+  // L'arceau culmine à 1,05 m ; les deux supports avant sont devant l'essieu x = 1,35.
+  const ANCRAGES_CAMERAS = Object.freeze({
+    arceau: Object.freeze({ p: Object.freeze([.20, 1.18, 0]), inclinaison: -.14, champ: 66 }),
+    nez: Object.freeze({ p: Object.freeze([1.78, .48, 0]), inclinaison: -.025, champ: 70 }),
+    'aileron-avant': Object.freeze({ p: Object.freeze([1.98, .26, .56]), inclinaison: 0, champ: 72 })
+  });
+  function cameraEmbarquee(p, et, vue) {
+    const A = ANCRAGES_CAMERAS[vue], M = B.voiture.attitude(p.cap, p.tangage, p.roulis), q = B.voiture.mul(M, A.p);
+    return { pos: [p.x + q[0], p.y + q[1], p.z + q[2]], yaw: p.cap + Math.PI / 2,
+      pitch: p.tangage + A.inclinaison, roll: -p.roulis,
+      fov: champAdapte(A.champ + 4 * clamp(et.v / 85, 0, 1)), near: .04, far: PORTEE_VUE };
+  }
+  function cameraPoursuite(S, p, et, dt, vue = 'poursuite') {
     if (S.camCap === null) S.camCap = p.cap;
     S.camCap += angle(p.cap - S.camCap) * (1 - Math.exp(-dt * 5.5));
-    const dist = 7.4, cx = p.x - Math.cos(S.camCap) * dist, cz = p.z - Math.sin(S.camCap) * dist;
+    const proche = vue === 'poursuite-proche', dist = proche ? 4.65 : 7.4, hauteur = proche ? 1.65 : 2.45;
+    const cx = p.x - Math.cos(S.camCap) * dist, cz = p.z - Math.sin(S.camCap) * dist;
     const sol = scene.decor.sol ? scene.decor.sol(cx, cz) : p.y;
-    const y = Math.max(p.y + 2.45, (isFinite(sol) ? sol : p.y) + 1.4);
-    return { pos: [cx, y, cz], yaw: S.camCap + Math.PI / 2, pitch: -.12 - (y - p.y - 2.45) * .06, roll: 0, fov: champAdapte(64 + 8 * clamp(et.v / 85, 0, 1)), near: .1, far: PORTEE_VUE };
+    const y = Math.max(p.y + hauteur, (isFinite(sol) ? sol : p.y) + (proche ? 1 : 1.4));
+    return { pos: [cx, y, cz], yaw: S.camCap + Math.PI / 2, pitch: -.12 - (y - p.y - hauteur) * .06, roll: 0, fov: champAdapte((proche ? 60 : 64) + 8 * clamp(et.v / 85, 0, 1)), near: .1, far: PORTEE_VUE };
   }
   // Stick droit maintenu vers le bas (axe 3 du Gamepad standard). L'hystérésis évite les bascules près du seuil ;
   // aucun réglage de vue ni état de conduite n'est modifié. Chaque moitié d'écran garde son propre maintien.
@@ -1894,19 +1881,32 @@
     const manette = n === 0 ? pad.manette : n === 1 ? pad2.manette : null, axe = manette?.axes?.[3];
     const id = n === 1 ? session?.locaux?.[1] : session?.course?.joueur?.id;
     const autorise = n >= 0 && ecran === 'course' && (S.type === 'course' || S.type === 'chrono' || S.type === 'duo') &&
-      !S.banc && !S.reference && vue === 'poursuite' && suivie.id === id &&
+      !S.banc && !S.reference && VUES_COURSE.includes(vue) && suivie.id === id &&
       (choix === 'auto' || choix === 'manette') && manette?.connected && Number.isFinite(axe);
     S.regardArriere = !!autorise && axe >= (S.regardArriere ? .35 : .55);
     return S.regardArriere;
   }
   const RAYON_REGARD = { origine: [0, 0, 0], direction: [0, 0, 0], hit: {} };
-  function cameraRegardArriere(S, p, cam) {
-    // La poursuite normale a déjà entretenu son cap : relâcher le stick la retrouve dès l'image suivante,
-    // sans lui faire rattraper un demi-tour. Le point rendu (incluant suspension et saut PhysX) reste la référence.
+  function cameraRegardArriere(S, p, cam, vue = 'poursuite') {
+    // La caméra normale est calculée avant le regard arrière : les filtres continuent,
+    // sans demi-tour à rattraper au relâchement, ni modification du choix mémorisé.
+    if (vue !== 'poursuite' && vue !== 'poursuite-proche') {
+      const A = ANCRAGES_CAMERAS[vue];
+      if (vue === 'nez' || vue === 'aileron-avant') {
+        // Les lentilles basses ont leur pendant au-delà de l'aileron arrière, pour voir
+        // le poursuivant sans traverser la coque. Le modèle reste entier à sa vraie place.
+        const q = B.voiture.mul(B.voiture.attitude(p.cap, p.tangage, p.roulis), [-2.34, A.p[1], A.p[2]]);
+        cam.pos[0] = p.x + q[0]; cam.pos[1] = p.y + q[1]; cam.pos[2] = p.z + q[2];
+      }
+      cam.yaw += Math.PI; cam.pitch = A ? -p.tangage + A.inclinaison : -cam.pitch;
+      cam.roll = -(cam.roll || 0); cam.regardArriere = true;
+      return cam;
+    }
     const cap = S.camCap ?? p.cap, ca = Math.cos(cap), sa = Math.sin(cap), pos = cam.pos;
-    pos[0] = p.x + ca * 7.4; pos[2] = p.z + sa * 7.4;
+    const proche = vue === 'poursuite-proche', dist = proche ? 4.65 : 7.4, hauteur = proche ? 1.65 : 2.45;
+    pos[0] = p.x + ca * dist; pos[2] = p.z + sa * dist;
     const sol = scene.decor.sol ? scene.decor.sol(pos[0], pos[2]) : p.y;
-    pos[1] = Math.max(p.y + 2.45, (Number.isFinite(sol) ? sol : p.y) + 1.4);
+    pos[1] = Math.max(p.y + hauteur, (Number.isFinite(sol) ? sol : p.y) + (proche ? 1 : 1.4));
     const monde = S.course.physique?.world;
     if (monde?.raycast) {
       const origine = RAYON_REGARD.origine, direction = RAYON_REGARD.direction;
@@ -2260,7 +2260,7 @@
   function retroVoulu(S, vue, P) {
     const r = reglages.retro === 'auto' ? (estTactile ? 'non' : 'oui') : reglages.retro;
     // Le profil décide : image des glaces refusée d'office au palier bas et aux paliers Auto les plus serrés.
-    return r === 'oui' && vue === 'cockpit' && S.type !== 'vitrine' && !retro.echec && !cameraEssai && (P || profilDe(S)).effets.retroImages;
+    return r === 'oui' && (vue === 'cockpit' || vue === 'arceau') && !S.regardArriere && S.type !== 'vitrine' && !retro.echec && !cameraEssai && (P || profilDe(S)).effets.retroImages;
   }
   // Le second moteur, sa copie du décor et les toiles des quatre glaces naissent au chargement, jamais dans le
   // chemin d'une image : tant que la copie n'est pas prête, la glace reste peinte (fond dessiné du cockpit).
@@ -2704,7 +2704,8 @@
     else if (vue === 'helico') cam = cameraHelico(S, ps, dtImage);
     else if (vue === 'sol') cam = cameraSol(S, suivie, ps);
     else if (CAMERAS_DEMO.has(vue)) cam = cameraDemo(S, ps, S.planVu, vue);
-    else cam = vue === 'cockpit' ? cameraCockpit(S, ps, suivie.etat, S.tRendu, dtImage) : cameraPoursuite(S, ps, suivie.etat, dtImage);
+    else if (ANCRAGES_CAMERAS[vue]) cam = cameraEmbarquee(ps, suivie.etat, vue);
+    else cam = vue === 'cockpit' ? cameraCockpit(S, ps, suivie.etat, S.tRendu, dtImage) : cameraPoursuite(S, ps, suivie.etat, dtImage, vue);
     if (S.type === 'demo') {
       const aspect = canvas.clientWidth / Math.max(1, canvas.clientHeight);
       // Toutes les vues passent par le même contrôle, y compris les anciens plans télé, sol et orbite.
@@ -2749,7 +2750,7 @@
       }
     }
     const exterieur = VUES_DEHORS.has(vue);
-    if (regardArriereVoulu(S, suivie, vue)) cam = cameraRegardArriere(S, ps, cam);
+    if (regardArriereVoulu(S, suivie, vue)) cam = cameraRegardArriere(S, ps, cam, vue);
     if (cameraEssai) cam = Object.assign({ roll: 0, near: .1, far: PORTEE_VUE, fov: 40 }, cameraEssai(pj, cam));
     if (S.secousse > 0 && !cam.sujetNature) {
       const pitchSur = cam.pitch, yawSur = cam.yaw;
@@ -2960,7 +2961,7 @@
     sortie.id = voiture.id; sortie.regime = et.regime; sortie.gaz = et.gaz; sortie.rapport = et.rapport;
     sortie.v = Math.abs(et.v); sortie.glisse = et.glisse; sortie.surface = et.surface;
     sortie.aspiration = Number.isFinite(et.aspiration) ? clamp(et.aspiration, 0, 1) : 0;
-    sortie.ventActif = (ecran === 'course' || ecran === 'demo') && (S.vue === 'cockpit' || S.vue === 'poursuite');
+    sortie.ventActif = (ecran === 'course' || ecran === 'demo') && VUES_COURSE.includes(S.vue);
     sortie.turbo = et.turbo.reste > 0; sortie.vue = S.vue === 'cockpit' ? 'cockpit' : 'poursuite';
     sortie.muet = exterieur; sortie.tunnel = !exterieur && sousLaVoute(S.course.c, cam.pos, true);
   }
@@ -3275,6 +3276,7 @@
 
   // ---------------------------------------------------------------- écrans
   let ecran = 'chargement';
+  const compteurVisites = B.visites?.creer();
   const ECRANS = ['titre', 'enligne', 'prets', 'preparation', 'reglages', 'pause', 'resultats'];
   let modePrepa = 'course', retourReglages = 'titre';
   const enCourse = () => ecran === 'course';
@@ -3336,6 +3338,7 @@
     $('demo').hidden = nom !== 'demo';
     $('jeu').dataset.ecran = nom;
     ecran = nom;
+    compteurVisites?.titre(nom === 'titre');
     if (nom === 'titre') dernierGeste = performance.now();
     // Les menus opaques ne préparent pas une course invisible. La scène change au vrai départ.
     // en ligne, la pause n'arrête pas la course : pas de « Recommencer »
@@ -3481,6 +3484,8 @@
   function remplirPreparation() {
     $('p-titre').textContent = modePrepa === 'chrono' ? 'Chrono' : modePrepa === 'enligne' ? 'Course en ligne' : modePrepa === 'duo' ? 'Course à deux' : 'Course';
     $('o-partage').hidden = $('o-commandes').hidden = modePrepa !== 'duo';
+    $('o-vue-2').hidden = !(modePrepa === 'duo' || modePrepa === 'enligne' && joueursIci() === 2);
+    $('p-vue').value = reglages.vue; $('p-vue-2').value = reglages.vue2;
     for (const n of [0, 1]) for (const r of document.querySelectorAll('input[name="cmd' + n + '"]')) r.checked = commande(n) === r.value;
     for (const r of document.querySelectorAll('input[name="partage"]')) r.checked = (reglages.partage === 'cote' ? 'cote' : 'haut-bas') === r.value;
     $('o-tours').hidden = $('o-difficulte').hidden = modePrepa === 'chrono';
@@ -3613,10 +3618,10 @@
     if (['pneus', 'pneus2', 'pneusIci', 'pneusPret', 'pneusPret2'].includes(t.name) && choisirPneusPilote(t.name.endsWith('2') ? 1 : 0, t.value)) {
       retirerPret(); sauverReglages(); envoyerPneus(); majChoixPneus();
     }
-    if (['boitePret', 'vuePret', 'boite', 'vue'].includes(t.name)) retirerPret();
+    if (['boitePret', 'vuePret', 'vuePret2', 'vueDepart', 'vueDepart2', 'boite', 'vue', 'vue2'].includes(t.name)) retirerPret();
     if (/^pneusStand[01]$/.test(t.name)) choisirPneusStands(+t.name.slice(-1), t.value);
     if (t.name === 'boitePret' && ['auto', 'manuelle'].includes(t.value)) { reglages.boite = t.value; sauverReglages(); }
-    if (t.name === 'vuePret' && ['cockpit', 'poursuite'].includes(t.value)) { reglages.vue = t.value; sauverReglages(); }
+    if (['vue', 'vue2', 'vuePret', 'vuePret2', 'vueDepart', 'vueDepart2'].includes(t.name)) reglerVue(t.name.endsWith('2') ? 1 : 0, t.value);
     if (['meteo', 'forcePluie', 'momentDepart', 'saisonDepart', 'saisonMode', 'momentMode', 'meteoMode'].includes(t.name) && ecran === 'preparation') actualiserConditions();
     if (EL.role === 'hote' && lienActif() && ['tours', 'difficulte'].includes(t.name)) annoncerCourse();
     if (t.name === 'joueursIci') { reglages.joueursLocaux = t.value === '2' ? 2 : 1; sauverReglages(); }
@@ -3626,7 +3631,7 @@
       reglages.commandes = [commande(0), commande(1)]; reglages.commandes[n] = t.value; souris.active = false; sauverReglages();
       if (t.name[0] === 'r') majCommandes(); else for (const r of document.querySelectorAll('input[name="rcmd' + n + '"]')) r.checked = r.value === t.value;
     }
-    if (['vue', 'boite', 'qualite', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille'].includes(t.name)) {
+    if (['boite', 'qualite', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille'].includes(t.name)) {
       reglages[t.name] = t.value; sauverReglages(); appliquerCarte();
       if (t.name === 'qualite') {
         B.qualite.avancer(palier, 0, { actif: false });
@@ -3710,7 +3715,7 @@
       }
       html += '</tbody></table></div>';
     }
-    zone.innerHTML = html + '<p class="note-commandes">Cliquez une touche puis appuyez sur la nouvelle (Échap annule). Souris : pointeur à gauche ou à droite pour tourner, bouton gauche pour accélérer, droit pour freiner, molette pour les rapports. Manette : gâchettes, stick gauche, A pour la dérive, RB et LB pour les rapports, Y pour la vue, clic du stick gauche (L3) pour Troll, stick droit maintenu vers le bas pour regarder derrière en vue Poursuite, Start pour la pause. Pause : Échap ou P · son : M.</p>'
+    zone.innerHTML = html + '<p class="note-commandes">Cliquez une touche puis appuyez sur la nouvelle (Échap annule). Souris : pointeur à gauche ou à droite pour tourner, bouton gauche pour accélérer, droit pour freiner, molette pour les rapports. Manette : gâchettes, stick gauche, A pour la dérive, RB et LB pour les rapports, Y pour parcourir les six vues, clic du stick gauche (L3) pour Troll, stick droit maintenu vers le bas pour regarder derrière dans les six vues, Start pour la pause. Pause : Échap ou P · son : M.</p>'
       + '<button type="button" class="discret" id="r-touches-defaut">Touches par défaut</button>';
   }
   $('r-commandes').addEventListener('click', e => {
@@ -3737,7 +3742,7 @@
   function remplirReglages() {
     captureTouche = null; majCommandes();
     majDetectionGraphique();
-    for (const nom of ['vue', 'boite', 'qualite', 'cadence', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'aide', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille', 'annoncesVirages']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
+    for (const nom of ['vue', 'vue2', 'boite', 'qualite', 'cadence', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'aide', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille', 'annoncesVirages']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
     $('v-carte').checked = reglages.carte !== 'non';
     $('v-champ').value = reglages.champ; $('v-champ-valeur').textContent = reglages.champ + '°';
     $('v-secousses').value = reglages.secousses; $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %';
@@ -4205,7 +4210,7 @@
   // Vraies images à dt = 0 dans chaque vue que la séance peut montrer : le code des caméras, des glaces, de la pluie,
   // de la nature et du dessin est compilé avant le départ. L'état des vues est figé avant et rendu après : la séance
   // repart exactement de son état de lancement (caméras lissées, poste de télévision et son générateur, réalisateur).
-  const CLES_VUE = ['tete', 'camCap', 'sol', 'camera', 'vue', 'suivie', 'lumiere', 'secousse', 'eclair', 'refletsEcran', 'planVu', 'j2Image', 'tele', 'real'];
+  const CLES_VUE = ['tete', 'camCap', 'regardArriere', 'sol', 'camera', 'vue', 'suivie', 'lumiere', 'secousse', 'eclair', 'refletsEcran', 'planVu', 'j2Image', 'tele', 'real'];
   function figerVues(S) {
     const gel = [];
     for (const V of S.vueJ2 ? [S, S.vueJ2] : [S]) for (const cle of CLES_VUE) {
@@ -4239,7 +4244,7 @@
     const vue = async (V, voiture, nom, fois = 1) => { for (let k = 0; k < fois; k++) { rendreVue(V, voiture, nom, 0, meteo); n++; } await souffler(); };
     if (S.type === 'duo' && S.vueJ2) {
       const j2 = co.voitures[S.locaux[1]], t2 = $('scene2');
-      for (const nom of ['cockpit', 'poursuite']) for (let k = 0; k < (nom === 'cockpit' ? cockpit : 1); k++) {
+      for (const nom of VUES_COURSE) for (let k = 0; k < (nom === 'cockpit' || nom === 'arceau' ? cockpit : 1); k++) {
         rendreVue(S.vueJ2, j2, nom, 0, meteo);
         if (t2._ctx) { if (t2.width !== canvas.width || t2.height !== canvas.height) { t2.width = canvas.width; t2.height = canvas.height; } t2._ctx.drawImage(canvas, 0, 0); }
         rendreVue(S, j, nom, 0, meteo); n += 2;
@@ -4253,8 +4258,9 @@
         await vue(S, j, nom, nom === 'cockpit' ? cockpit : 1);
       }
     } else {
-      // cockpit et ses deux glaces, poursuite, et la vue de télévision qui suit l'arrivée
-      await vue(S, j, 'cockpit', cockpit); await vue(S, j, 'poursuite'); await vue(S, j, 'tele');
+      // Les six cadres jouables et leurs glaces, puis la télévision qui suit l'arrivée.
+      for (const nom of VUES_COURSE) await vue(S, j, nom, nom === 'cockpit' || nom === 'arceau' ? cockpit : 1);
+      await vue(S, j, 'tele');
     }
     return { n, lent: false };
   }
@@ -5032,7 +5038,7 @@
     const difficulte = options.difficulte ?? 1, tours = options.tours ?? 3;
     const pilote = options.pilote ?? true;
     const vitesse = options.vitesse ?? 75, mouille = options.mouille ?? (meteo === 'pluie' ? .75 : 0);
-    const vues = ['cockpit', 'poursuite', 'tele', 'helico', 'aileron', 'roue', 'arriere'];
+    const vues = VUES_COURSE.concat(['tele', 'helico', 'aileron', 'roue', 'arriere']);
     if (!['solo', 'duo'].includes(mode) || !B.graphismes.QUALITES.includes(qualite)) throw new Error('mode ou qualité de référence inconnu');
     if (!Number.isInteger(i) || i < 0 || i >= CATALOGUE.length || !Number.isInteger(graine) || graine < 0 || graine > 0xffffffff) throw new Error('circuit ou graine invalide');
     if (!Number.isInteger(difficulte) || difficulte < 0 || difficulte > 2 || !Number.isInteger(tours) || tours < 1 || tours > 99) throw new Error('difficulté ou nombre de tours invalide');

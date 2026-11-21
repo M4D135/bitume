@@ -1,0 +1,13 @@
+109120 échantillons sommet/centre : marge minimale exigée 15 mm
+✔ deux prises réellement ouvertes avec fond en retrait, proche et lointain (17.859467ms)
+✔ les pontons conservent leur lèvre et leur dessus autour des ouvertures (2.02333ms)
+✔ le nez et les pontons restent hors du volume balayé des pneus avant (80.986483ms)
+✔ les trois détails rendent la même entrée, grilles détaillées seulement près (10.357836ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 169.006322

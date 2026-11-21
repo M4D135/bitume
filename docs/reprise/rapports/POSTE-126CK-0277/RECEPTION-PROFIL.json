@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "date_utc": "2026-11-21T08:48:13.095498+00:00",
+  "reviewer": "etat_github_qa",
+  "run_id": 44884329332,
+  "artifact_id": 14700211633,
+  "obsolete_failed_artifact_id": 14699500905,
+  "archive_sha256": "a05ca2588a7a82620b33ae6c15204ce63af50f2331ac83166197aca6bc94451c",
+  "archive_digest_github_identique": true,
+  "commit": "f596ac442e99f754c9b0d420f8c21a644a86da3e",
+  "tree": "1018c6083eca028eb4a8867b2f60d66faccb909b",
+  "html_sha256": "09aa278d0ced47fd88728d33c59a13fda1a808571df117072ad6d7af251be564",
+  "html_octets": 14513844,
+  "png_sha256": "ba07476d92ee067a444426370137548d4960cba5dd142b747705962f6e36874e",
+  "png_chemin": "images/apres/cockpit-profil/0000.png",
+  "dimensions": [
+    1280,
+    720
+  ],
+  "preuves_exactes": true,
+  "echecs_campagne": 0,
+  "erreurs_capture": [],
+  "revue_visuelle": {
+    "statut": "inspecte_pose_unique_sans_nouveau_blocage_technique",
+    "observations": [
+      "Le volant est placé devant le pilote, presque vertical et proche des cadrans ; une main sur chaque côté de la prise.",
+      "Les épaules sont basses dans la cuve ; le casque et l’arceau restent nettement au-dessus du rebord, sans intersection manifeste sur ce profil seul.",
+      "Le rétroviseur proche est fixé sur le flanc ; aucun reflet miroir qualifié depuis ce point de vue extérieur.",
+      "La carrosserie, les pontons et le capot arrière restent les anciennes formes : cette image confirme que la voiture complète reste à reconstruire.",
+      "La vue est prescrite pour inspection, avec HUD du jeu. Aucun défaut de capture ni nouveau blocage visuel manifeste du poste sur cette pose."
+    ],
+    "fidelite_126ck_complete_validee": false,
+    "essai_utilisateur_valide": false,
+    "limites": [
+      "Une pose de profil seulement ; pas toutes les animations ni les contacts internes.",
+      "Raster logiciel, pas FPS matériels.",
+      "Les masques naturels des cadrans par le volant sont acceptés par la décision utilisateur du 21 novembre."
+    ]
+  }
+}

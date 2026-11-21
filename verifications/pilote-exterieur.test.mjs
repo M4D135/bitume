@@ -103,15 +103,15 @@ test('le volant entraîne les deux mains et le regard suit la direction', () => 
   assert.ok(rig.tete[2] < 0, 'avant du casque vers la gauche');
 });
 
-test('630 poses : segments de 21/23 cm, coudes repliés dans la cuve et matrices finies', () => {
+test('630 poses : segments de 27/29 cm, coudes repliés dans la cuve et matrices finies', () => {
   const mod = modele(), ev = pose();
   for (const volant of [-1, -.5, 0, .5, 1]) for (let rapport = 1; rapport <= 6; rapport++) for (let f = 0; f <= 20; f++) {
     Object.assign(ev.pilote, { volant, rapport, rapportAvant: rapport - 1, passage: f / 20 });
     const sortie = dessiner(mod, ev), A = mod.objetsRendu.pilote.articulations;
     for (let h = 0; h < 2; h++) {
       const j = h * 9;
-      proche(distance(point(A, j), point(A, j + 3)), .21);
-      proche(distance(point(A, j + 3), point(A, j + 6)), .23);
+      proche(distance(point(A, j), point(A, j + 3)), .27);
+      proche(distance(point(A, j + 3), point(A, j + 6)), .29);
       assert.ok(A[j + 4] - .0375 > fondCuve && A[j + 4] + .0375 < bordCuve &&
         A[j + 4] < Math.max(A[j + 1], A[j + 7]) && Math.abs(A[j + 5]) + .0375 < demiLargeurCuve,
         'coude replié sous le haut de la chaîne et dans la vraie profondeur de cuve : ' + JSON.stringify({ volant, rapport, phase: f / 20, joints: Array.from(A.slice(j, j + 9)), fondCuve, bordCuve, demiLargeurCuve }));

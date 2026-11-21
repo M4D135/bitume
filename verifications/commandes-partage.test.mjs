@@ -23,6 +23,7 @@ const declarations = source.slice(source.indexOf('  const touches ='), source.in
 const ecouteurs = source.slice(source.indexOf('  // conduite par position physique'), source.indexOf('  let pauseAuto = true'));
 const fabrique = new Function('navigator', 'B', 'session', 'reglages', `
   let ecran = 'course', dernierGeste = 0;
+  const compteurVisites = null; // Le compteur du titre est hors du contexte isolé de commandes.
   const actions = [], enCourse = () => ecran === 'course', activerSon = () => {};
   const changerVue = () => actions.push('vue1'), changerVue2 = () => actions.push('vue2');
   const basculerPause = () => { actions.push('pause'); ecran = ecran === 'course' ? 'pause' : 'course'; };

@@ -1,5 +1,9 @@
 # 126 CK — voiture complète, puis pilote
 
+**Suivi élargi de cette session :** [feuille de route du 21 novembre](FEUILLE-DE-ROUTE-2026-11-21.md),
+avec les poignets, six vues, compteurs du titre et nouveau trajet sommet du col de
+Larche → Vinadio. [État de la préparation à reprendre](rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md).
+
 ## Demande de David et ordre de travail
 
 21 novembre 2026 : reconstruire fidèlement **la voiture complète**, particulièrement
@@ -68,14 +72,22 @@ les gants et les sangles portées : commandes, coque, siège et saute-vent reste
 
 ## Répartition de ce jalon
 
-Coordination et coque/habitacle dans `codex/bitume-0279-modele-126ck-20261121` ;
+Coordination et coque/habitacle dans `codex/bitume-0280-implantation-126ck-20261121` ;
 arrière/ailes préparés dans un arbre isolé puis raccordés séquentiellement.
 Ne pas modifier les travaux décor, moteur, circuits ou les autres préparations.
 Les sauvegardes GitHub sont autorisées. Aucun déploiement sur le site dans ce lot.
 
-## État au démarrage
+## État de la préparation au 21 novembre
 
-R0 en publication ; R1–R5 à réaliser. Les modèles .75/.76 restent refusés.
-L'arrière de la base .78 est encore celui de la 312 T5 : absence de plateau et de
-renforts, capot plein, mécanique héritée. Ce constat doit disparaître dans les
-images du candidat, pas seulement dans le texte du suivi.
+R0 reçu sur GitHub au commit `20d7770b8eb76087cb134e842ef7b426c2437bbd` de la
+branche : photographies réelles et feuille de route sauvegardées avant refonte.
+R1–R3 et la posture R4 sont remaniés dans les sources : implantation du cockpit
+avancée par rapport aux essieux, siège/cuve, pontons réellement ajourés, plateau,
+arceau, capot ouvert, mécanique et ailes. Les commandes restent dans l’habitacle
+vide ; l’absence du pilote ne sélectionne plus une autre coque.
+
+La prise du volant en extérieur, les six caméras et les compteurs font l’objet
+des lots supplémentaires. R5 reste ouvert : les images WebGL du candidat assemblé,
+les contrôles transversaux et la reconstruction finale doivent encore être reçus.
+Les images Canvas locales servent aux formes ; aucune fidélité complète n’est
+annoncée approuvée. Les modèles .75/.76 restent refusés.

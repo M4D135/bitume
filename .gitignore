@@ -3,3 +3,4 @@ dist/artefact.html
 node_modules/
 docs/analyse/
 __pycache__/
+donnees/visites.json*

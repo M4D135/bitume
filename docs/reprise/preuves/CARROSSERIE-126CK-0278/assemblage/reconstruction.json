@@ -1,0 +1,11 @@
+{
+  "version": "0.2.78",
+  "identique": true,
+  "fichiers": {
+    "VERSION.json": "4ca7ca0b2b16c08e1b0ab4911bd6863778ba9a4a7d9df735c6b3a74ce956159d",
+    "SIZE.json": "67646925500e3ba20311c9d1e3417c3c713600138699430fe0775088f482a198",
+    "dist/bitume.html": "0319f220105e10cc1b629514519128512f9ab6d9d9beca7eaa45d8d587e4a760",
+    "dist/artefact.html": "96a1ff124f5ba0deb8e250a4997c04f9f979817927f3bf51c95d20ef20a9629c"
+  },
+  "ferroConforme": true
+}

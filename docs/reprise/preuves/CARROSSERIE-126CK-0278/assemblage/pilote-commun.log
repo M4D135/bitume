@@ -1,0 +1,14 @@
+mains et commandes : 1380 poses du mode réellement utilisé par le jeu
+trajets articulés : 10010 poses, pas maximal poignet/coude 3.425/2.629 mm par phase 0,001
+✔ 490 poses : mêmes gants, commandes et manches dans les deux vues et les trois LOD (922.238258ms)
+✔ le contrôle du pommeau détecte aussi une face ou une arête dont les sommets sont dehors (0.335105ms)
+✔ mode réel : sommets dégagés de la jante et surfaces dégagées du pommeau pendant le passage (2377.479316ms)
+✔ le poignet suit un trajet continu et les doigts utilisent seulement leurs prises préparées (2321.551294ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6577.277176
