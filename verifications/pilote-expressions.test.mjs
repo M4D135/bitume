@@ -26,7 +26,7 @@ function sommets(o) {
 
 test('le préchauffage expose chaque prise et geste des deux mains aux packers objet et overlay', () => {
   const sortie = [], avant = Object.keys(V.FORMES).length;
-  assert.equal(V.preparerExpressions(sortie, [1, 2, 3]), 96);
+  assert.equal(V.preparerExpressions(sortie, [1, 2, 3]), 196);
   for (const [nom, f] of Object.entries(V.FORMES)) if (/^main-geste-|^main-gant-[dg](?:$|-prise-|-ouvert$)/.test(nom))
     for (const overlay of [false, true]) assert.ok(sortie.some(o => o.shape === f.nom && o.overlay === overlay), nom + '/' + overlay);
   assert.equal(Object.keys(V.FORMES).length, avant, 'aucune forme enregistrée pendant la chauffe');
@@ -37,7 +37,10 @@ test('les trois gestes ont des doigts distincts ; majeur dressé seul et quatre 
     const main = M.construire(1, { geste, progression: 1 });
     const longueurs = main.points.doigts.map(p => -p.at(-1).reduce((s, x, k) => s + (x - p[1][k]) * M.AXE[k], 0));
     if (geste === 'majeur') {
-      assert.ok(longueurs[1] > .08, 'majeur réellement déployé');
+      const reference = M.construire().points.doigts[1];
+      const longueurReference = reference.slice(2).reduce((s, p, i) => s + distance(p, reference[i + 1]), 0);
+      assert.ok(longueurs[1] > .080, 'majeur déployé de longueur cohérente');
+      assert.ok(longueurs[1] > longueurReference * .95, 'majeur réellement déployé sans allongement');
       assert.ok(longueurs.every((l, i) => i === 1 || l < .005), 'trois doigts repliés');
     } else if (geste === 'salut') assert.ok(longueurs.every(l => l > .055), 'quatre doigts ouverts');
     else assert.ok(longueurs.every(l => l < .005), 'quatre bouts revenus dans la paume');

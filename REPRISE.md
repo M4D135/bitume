@@ -1,58 +1,21 @@
 # BITUME — reprise courte
 
-## Priorité : Xbox Edge, candidat 0.2.83
+## Intégration 0.2.84 : Xbox Edge (.83) + mains articulées (PR #56) + Larche L0/L1
 
-Manette prioritaire sur le pointeur, affectations boutons/axes par joueur,
-configuration accessible en solo et profil console prudent. Scène 3D plafonnée
-à 720p en 16:9 ; aucun banc automatique. La réception .81 a révélé deux bancs
-à raccorder, un délai de capture trop court et des colonnes de commandes
-chevauchantes. La .82 corrige aussi le statut solo et l’annulation avec stick
-décalé. La .83 supprime le conflit entre une affectation du stick droit et
-le regard arrière implicite. Nouvelle CI et parcours navigateur en réception.
-[Fiche du correctif](docs/reprise/XBOX-EDGE-COMMANDES-2026-11-21.md).
+Base unifiée sur `main` réunissant :
+- **Xbox Edge et commandes manette (.83)** : manette prioritaire sur le pointeur, affectations boutons/axes par joueur, configuration accessible en solo, profil console prudent sans banc, plafond 1280×720 via `ferro/surface.js`, et correctif de conflit stick droit / regard arrière. [Fiche](docs/reprise/XBOX-EDGE-COMMANDES-2026-11-21.md).
+- **Mains réalistes articulées (PR #56)** : doigts aux longueurs conservées, proportions corrigées, treize états et coordonnées immuables partagées. [Préparation](docs/reprise/rapports/MAINS-REALISME-2026-11-21/RECEPTION-MAINS-MEMOIRE.md).
+- **Col de Larche → Vinadio (lots L0 + L1)** : sources réelles figées (OSM SS21, DTM 5 m Regione Piemonte, IGN RGE ALTI frontière) et tracé reconstruit 32,249 km + zone décélération 567 m. [Fiche](docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md).
 
-La PR #56 des mains reste sauvegardée séparément ; son candidat historique .81
-devra être rebasé et renuméroté après ce correctif. La prise au pommeau attend
-encore une image où la main est visible.
+## Lots actifs demandés par David (21 novembre 2026)
 
-## Publié : démarrage téléphone sans banc
+1. **Optimisation petites configurations et Xbox Edge** : réduire le temps de construction décor (<150 ms), le nombre de lots/triangles/objets en `low`/`medium`/console et la charge GPU/CPU.
+2. **Modélisation 3D des animaux (`src/animaux.js`)** : grandement améliorer l'anatomie et la silhouette des quadrupèdes, oiseaux et baleine avec vérification WebGL2 avant/après.
+3. **Décors organiques + marqueurs et lieux emblématiques par circuit** : supprimer les textures de sol carrées/triangulaires et formes géométriques brutes (sols arrondis/aléatoires naturels, pyramides dans le désert à la place de blocs carrés), et doter chaque circuit d'un marqueur typique et d'un lieu emblématique (bâtiment, pont, tunnel, route atypique).
+4. **Col de Larche → Vinadio (lot L2)** : moteur de parcours ouvert (`topologie: 'ouvert'`) sans modifier le comportement bit-à-bit des 9 circuits fermés.
 
-**0.2.80 / p15 / FERRO 0.3.15** publiée sur `main`, commit **`6526493`** :
-détection passive, sans scène de mesure ni rafale GPU. **192 suites Node et
-8 tests Python passent**. Le vrai démarrage et le bouton Image sont contrôlés
-dans Chrome avec profil iPhone : zéro appel au banc, deux PNG inspectés.
-[Reçu](docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json).
-Safari/iOS physique et déploiement du site restent non vérifiés.
-Les mains de .79 sont conservées ; les nouvelles poses attendent leur réception
-visuelle et la réduction de leur coût mémoire avant intégration.
+## Publication et acquis précédents
 
-## Point d’entrée : personnages et mains après Gemini
-
-Lire [le lot mains](docs/reprise/MAINS-REALISME-2026-11-21.md), puis
-`docs/reprise/ETAT.json`. La dernière demande reprend les avancées Gemini sur
-`main` et donne priorité aux personnages, surtout aux mains plus réalistes.
-
-**Nouveau trajet : sommet du col de Larche → Vinadio, par la SS21, environ 32 km.**
-La dernière précision de David remplace le départ initial de Barcelonnette.
-Vrai tracé et vrai relief, échelle 1:1, parcours ouvert avec arrivée.
-[Fiche sources et lots L0–L6](docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md).
-
-## Publication et préparations
-
-Base géométrique Gemini : **0.2.79 / p15 / FERRO 0.3.15**, commit **`d408124`**,
-126 CK, poignets R4b corrigés, six caméras et compteurs du titre intégrés.
-HTML `77d774fd99484f7d` ; **190 suites Node et 8 tests Python réussis** dans la CI
-du commit exact. [Reçu](docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json).
-Les anciennes réserves R4b sont levées ; les alias .75/.77 ont été archivés.
-
-La voiture et son implantation par rapport aux essieux précèdent le pilote.
-Une seule géométrie monde dans toutes les vues ; occultation naturelle du volant
-acceptée. [Plan R0–R5](docs/reprise/MODELE-COMPLET-126CK-2026-11-21.md).
-
-Après le correctif Xbox : **M1–M3, doigts et transitions**, sur
-`codex/bitume-mains-0281-20261121` ; conserver le rig R4b et qualifier les
-surfaces et captures comparées .79/candidat. Puis M4 personnages/manches et
-**L0–L2 Larche → Vinadio**. [Programme complet](docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md).
-Préserver décor, PR 43, Monaco/Marseille et les 9 circuits existants.
-Réserve construction décor <150 ms ouverte. Activation réelle des compteurs et
-version servie sur le site non vérifiées par cet audit du dépôt.
+- **0.2.80 / p15 / FERRO 0.3.15** (`6526493`) : démarrage téléphone sans banc, **192 suites Node et 8 tests Python réussis** en CI. [Reçu](docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json).
+- **0.2.79 / p15 / FERRO 0.3.15** (`d408124`) : 126 CK, poignets R4b corrigés, six caméras et compteurs du titre intégrés, déployé sur `https://bitume.estrasse.fr/`. [Reçu](docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json).
+- Préserver décor, PR 43, Monaco/Marseille et les 9 circuits existants.
