@@ -158,6 +158,19 @@ test('jante et casquette sous les yeux, volant de taille physique conservée', (
   }
 });
 
+test('70° verticaux en 16:9 : la jante occupe entre un cinquième et trois dixièmes de la largeur', () => {
+  const largeur = 960, hauteur = 540, p = pose(0);
+  const produire = camera(B, { clientWidth: largeur, clientHeight: hauteur }, { champ: 70, secousses: 0 }, false);
+  const cam = produire({}, { x: 0, y: 0, z: 0, cap: 0, tangage: 0, roulis: 0 },
+    { v: 0, alat: 0, along: 0, volant: 0, surface: 'route' }, 0, 1 / 60);
+  assert(Math.abs(cam.fov - 70) < 1e-9, 'le champ transmis à FERRO est vertical');
+  const points = p.lire(p.H.jante.objet).t.flat().map(q => projeter(q, cam, largeur, hauteur));
+  assert(points.every(q => q.every(Number.isFinite) && q[2] > cam.near));
+  const fraction = (Math.max(...points.map(q => q[0])) - Math.min(...points.map(q => q[0]))) / largeur;
+  console.log(`cadrage 16:9 : champ vertical=${cam.fov}°, largeur jante=${(fraction * 100).toFixed(3)} %`);
+  assert(fraction >= .20 && fraction <= .30, 'proportion apparente de la vraie jante : ' + fraction);
+});
+
 test('chaussée à 10/20/40/80 m : aucun triangle opaque sur les 324 rayons du corridor central', () => {
   const obstacles = [], minimum = new Map(); let rayons = 0;
   // Corridor de 2 m, comparable à la largeur de la voiture ; route horizontale au

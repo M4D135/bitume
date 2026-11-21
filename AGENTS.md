@@ -379,3 +379,12 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
 - La visibilité cockpit est bloquante : abaisser volant/tableau dans la géométrie commune, poser les rétros sur leur vraie face et vérifier route/commandes en intérieur et extérieur. Le regard doit garder les commandes visibles, y compris pendant le braquage et en écran partagé.
 - La pluie doit atteindre la caméra derrière l’arceau. Proposer plusieurs forces/abondances, rendre les impacts à l’écran avant leur écoulement et ajouter de l’eau sur les véhicules.
 - Les correctifs reprennent les préparations isolées dans `docs/reprise/COCKPIT-PLUIE-2026-11-20.md` ; préserver la branche d’abris PR 43 et les autres chantiers.
+
+## Décisions de David — 21 novembre 2026, reprise du poste de conduite
+
+- La vue cockpit 0.2.75 est refusée : trop proche du volant, colonne orientée vers le ciel, supports de rétroviseurs trop hauts. Les captures et tests de dégagement précédents ne valent pas approbation esthétique ou mécanique.
+- Reprendre les proportions et l’implantation de la vraie 312 T5 (1980), avec le cadrage bas et la route dégagée des références d’origine. Conserver une géométrie commune intérieur/extérieur ; vérifier aussi les profils et les fixations réelles.
+- Champ du cockpit **70° par défaut**, en conservant les valeurs manuelles déjà mémorisées. Cette valeur remplace le défaut historique de 60°. Le candidat exprime explicitement le champ vertical FERRO pour retrouver la taille apparente du volant de la référence ; l’ancienne conversion horizontale donnait un cadrage beaucoup plus serré.
+- En regard arrière, dos au vent, pluie et neige sur la vue doivent être beaucoup plus calmes : atténuer l’effet de vitesse selon l’orientation, conserver gravité et mouvement résiduel. Ne pas accélérer les dépôts comme face au vent.
+- Reprendre le timbre des trois klaxons, jugés irréalistes, avec synthèse procédurale et extraits écoutables. Conserver les choix et le déclenchement commun avec le geste Troll.
+- Le lot d’allocations décor est en pause. Les sorties partielles ne constituent pas une qualification complète. Fiche active : `docs/reprise/COCKPIT-312T5-2026-11-21.md`.

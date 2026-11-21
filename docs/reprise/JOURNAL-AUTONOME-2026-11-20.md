@@ -735,3 +735,25 @@ Aucun code de cette optimisation appliqué. [Diagnostic](rapports/COCKPIT-PLUIE-
 Clôture documentaire uniquement : p15, FERRO 0.3.15, neuf circuits, « Planche seule »,
 annonces Non au premier lancement et préférences enregistrées préservés.
 PR43, états propriétaires 01–05, M1 et programme restant conservés. Aucun déploiement.
+
+
+## 040 — 21 novembre : reprise du poste, candidat 0.2.76
+
+Le cockpit .75 est explicitement refusé. Volant redressé, colonne vers l’avant et le bas,
+planche sombre en arche, rétros latéraux bas et pattes courtes, dégagement des mains
+au levier. Géométrie unique, yeux/assise/épaules et taille du volant conservés.
+Le champ par défaut devient 70° verticaux en 16:9 ; la valeur numérique enregistrée
+reste, son ancienne interprétation horizontale change. Jante mesurée à 25,525 %
+de la largeur au repos, regard horizontal. Les cotes internes restent estimées sur photos.
+
+Le flux météo signé calme les dépôts dos au vent en gardant gravité et vent tangent.
+Trois nouveaux timbres de klaxon, WAV issus des vrais tampons de jeu fournis pour écoute ;
+aucune écoute humaine certifiée. Les anciennes durées, choix et raccord Troll restent.
+
+Sept contrôles de visibilité, 324 rayons dégagés, 120 cadres sans recouvrement ;
+quatre contrôles mécaniques refusent la .75. Empreinte de poses renouvelée explicitement
+pour cette modification, sans relâcher les seuils. Deux builds identiques de la .76.
+[Reçu du candidat](rapports/POSTE-CONDUITE-2026-11-21/BUILD-0276.json).
+CI et captures WebGL exactes en attente, aucune fusion ni déploiement à ce stade.
+Décor isolé en pause après 82/117 cas, aucun gain CPU prouvé ; p15, FERRO, PR43
+et les autres préparations conservés.

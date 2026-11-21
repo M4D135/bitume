@@ -260,7 +260,8 @@ verifier('les deux manches restent présentes : aucune suppression de géométri
 });
 
 verifier('lampe de régime : allumée au-dessus de 12 000 tr/min, sauf au dernier rapport', () => {
-  const lampe = extra => bord(extra).find(m => m.shape === 'sphere' && m.mat === 5 && Math.abs(m.s[0] - .024 * V.K) < 1e-9);
+  const lampe = extra => { const sortie = bord(extra), objet = mod.objetsRendu.habitacle.lampe.objet;
+    assert.ok(sortie.includes(objet), 'la vraie lampe est présente dans le rendu'); return objet; };
   assert.ok(!(lampe({ regime: 11000 }).emissive > 0), 'éteinte à 11 000');
   assert.ok(lampe({ regime: 12400 }).emissive >= 3, 'allumée à 12 400');
   assert.ok(!(lampe({ regime: 12400, rapport: 6 }).emissive > 0), 'éteinte en 6e');

@@ -1,30 +1,30 @@
 {
   "date": "2026-11-21",
   "etat_courant": {
-    "version_courante": "0.2.75",
+    "version_courante": "0.2.76",
     "version_publiee_verifiee": "0.2.75",
     "physique": "p15",
     "moteur": "FERRO 0.3.15 canonique",
-    "statut": "publie_0275_reserve_budget_decor_ouverte",
-    "lot": "budget_construction_decor_0269",
-    "fiche": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/diagnostic-decor/DIAGNOSTIC.json",
+    "statut": "0276_construit_localement_ci_et_captures_en_attente",
+    "lot": "poste_conduite_312t5",
+    "fiche": "docs/reprise/COCKPIT-312T5-2026-11-21.md",
     "suivi_actif": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
-    "derniere_entree": "039",
-    "prochaine_action": "Transmettre au propriétaire 04 la piste de stockage fixe des indices des nappes Route (19 323 couples temporaires), puis qualifier identité géométrique et mesures alternées avant toute intégration. Aucun code de cette optimisation appliqué.",
+    "derniere_entree": "040",
+    "prochaine_action": "Publier le candidat .76 puis recevoir les CI et inspecter les captures WebGL paysage/profil/trois-quarts avant fusion.",
     "dernier_lot_clos": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
     "fiche_pilote": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
     "index": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
-    "entree_journal": "039",
-    "dernieres_demandes": "docs/reprise/DEMANDES-ARCADE-PERFORMANCE-TROLL-2026-11-20.md",
+    "entree_journal": "040",
+    "dernieres_demandes": "docs/reprise/COCKPIT-312T5-2026-11-21.md",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md",
     "contrats_integration": "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
     "inventaire_branches": "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
     "runtime_modifie_par_coordination": true,
     "dernier_lot_coordination_clos": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
-    "runtime_modifie_par_coordination_portee": "0.2.75 publiée sur main et contenu reçu identique au candidat ; clôture documentaire sans changement runtime.",
+    "runtime_modifie_par_coordination_portee": "Candidat .76 local : poste 312 T5, FOV 70 vertical, pluie arrière calmée et klaxons ; dernière publication main .75 refusée sur le cockpit.",
     "preuve_t3": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
-    "reserve_lisibilite_cockpit": "Blocage HUD clos sur les cinq groupes exacts 0.2.75 ; captures logicielles de poses prescrites, sans généralisation à tous les formats.",
+    "reserve_lisibilite_cockpit": "Réouverte : refus utilisateur de la géométrie .75, captures précédentes insuffisantes pour valider implantation et cadrage.",
     "alerte_budget_decor": {
       "statut": "ouvert",
       "run": 44803588903,
@@ -71,9 +71,9 @@
     "commit_fusion": "b1e5e98b9029f6254b86dcfb49780883315a9418",
     "tete_qualifiee": "5d59cae6630c49ae62c47303100d61dd63daea56",
     "pr_publiee": 51,
-    "branche_candidate": "codex/bitume-0275-fps-cockpit-20261121",
-    "version_candidate": "0.2.75",
-    "branche_pr": "codex/bitume-0275-fps-cockpit-20261121",
+    "branche_candidate": "codex/bitume-0276-cockpit-312t5-20261121",
+    "version_candidate": "0.2.76",
+    "branche_pr": "codex/bitume-0276-cockpit-312t5-20261121",
     "preuve_candidat_0272": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0272/BUILD-0272.json",
     "preuve_candidat_0273": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0273/BUILD-0273.json",
     "preuve_candidat_0274": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0274/BUILD-0274.json",
@@ -159,7 +159,7 @@
     "composition_demo": "Bandeau parfois superposé au geste ou à un animal ; neige claire à grain discret.",
     "cimes": "Socle publié ; relief très facetté et sept lieux complets, lac/cascade encore à poursuivre.",
     "demos": "Bandeaux sur certains sujets ; neige Haut-Col claire et grain discret.",
-    "habitacle_pilote": "Habitacle commun et Troll conservés ; correctifs cockpit/rétros/pluie/HUD publiés en 0.2.75. Dix PNG de cinq groupes exacts conformes ; les images LOD lointaines ne permettent toujours pas une inspection fine des bras.",
+    "habitacle_pilote": "Cockpit .75 refusé par l’utilisateur le 21 novembre ; implantation et cadrage corrigés localement en .76, revue WebGL en attente.",
     "gouttes_vitesse": "Transport vitesse/caméra E0–E3 qualifié et publié en 0.2.68 ; limites restantes dans PUBLICATION-0268.json : pas toutes les poses/vitesses, micro0 et gravité des fines non qualifiées séparément.",
     "budget_decor_0269": {
       "statut": "ouvert",
@@ -937,7 +937,7 @@
     "push_force": false,
     "date_commit_fusion_utc": "2026-11-20T19:52:29Z"
   },
-  "suite_portee": "Sources Monaco/Marseille et anciens états conservés ; prochaine action de coordination : transmission du diagnostic décor au propriétaire 04.",
+  "suite_portee": "Priorité poste 312 T5, 70° verticaux, météo arrière et klaxons ; décor en pause, sources Monaco/Marseille et autres travaux conservés.",
   "qualification_cockpit_pluie_0270": {
     "commit_outils": "3d9825d4ee6f13525a4b8c0d780e5f127c9a9b4a",
     "tree": "5ca64577b6044672a61feda146c405e18e6294c6",
@@ -1074,5 +1074,23 @@
       "recu_references": "docs/reprise/rapports/REFERENCES-OBJECTIFS-2026-11-20/PUBLICATION.json",
       "recu_publication": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
     }
+  },
+  "candidat_poste_conduite_0276": {
+    "statut": "construit_localement",
+    "base": "ccb1cb1c5ef0efff1f51c064bab2816c99f23d6b",
+    "fiche": "docs/reprise/COCKPIT-312T5-2026-11-21.md",
+    "fov_defaut": 70,
+    "regard_arriere": "dos au vent : réduire effet vitesse, conserver gravité/résiduel",
+    "klaxons": "trois timbres procéduraux et WAV écoutables",
+    "publication": false,
+    "branche": "codex/bitume-0276-cockpit-312t5-20261121",
+    "fov_unite": "vertical en 16:9",
+    "html": {
+      "chemin": "dist/bitume.html",
+      "octets": 14514541,
+      "sha256": "b1548922357e0db72f96d56ff32bf3c977a5029e477164613b475b6c13b7721d",
+      "git_blob": "6598bddd6b0ccc8090fd29493653300ed7d90056"
+    },
+    "recu": "docs/reprise/rapports/POSTE-CONDUITE-2026-11-21/BUILD-0276.json"
   }
 }

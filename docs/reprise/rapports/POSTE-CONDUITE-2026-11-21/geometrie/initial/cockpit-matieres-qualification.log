@@ -1,0 +1,12 @@
+✔ formes et dimensions inchangées, y compris gants, jante et instruments (8138.952938ms)
+✔ cuir, tissu, métal brossé et peinture restent distincts dans les objets rendus (5.036984ms)
+✔ toutes les poses et enveloppes sont identiques avant/après, cockpit et trois LOD (242.325191ms)
+✔ le repli sans moteur garde les mêmes maillages et ne crée rien pendant une pose (3176.711545ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11570.380589

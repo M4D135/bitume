@@ -1,0 +1,18 @@
+habitacle commun : 27 poses, 1797444 sommets comparés dans le monde
+yeux mesurés sur le visage : -0.062000, 0.790000, 0.000000
+✔ le contrôle monde refuse une translation ou une homothétie cachée entre vues (1.889039ms)
+✔ les instruments relus dans plusieurs vues rendent exactement les valeurs d’un modèle neuf (87.891483ms)
+✔ commandes, instruments et rétros : mêmes objets métriques et sommets monde dans les deux vues (4159.624387ms)
+✔ les quatre coins de chaque image rétro coïncident avec la face réelle tournée vers le pilote (5.608362ms)
+✔ coque commune, buste commun et propre tête seule masquée depuis les yeux (4.035923ms)
+✔ caméra indépendante et buffers de rendu séparés, y compris instruments et bascule en plein geste (5.947905ms)
+✔ les yeux déclarés viennent du visage réellement placé et regardent à travers la visière (22.449945ms)
+✔ la cuve ouverte offre une profondeur réelle sans ancien couvercle ni fond de carrosserie à travers le bassin (18.881928ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4313.440946

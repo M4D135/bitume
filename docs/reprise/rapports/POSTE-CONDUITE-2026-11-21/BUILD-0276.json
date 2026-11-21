@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "statut": "construit_localement_ci_et_images_webgl_en_attente",
+  "version": "0.2.76",
+  "base": "ccb1cb1c5ef0efff1f51c064bab2816c99f23d6b",
+  "branche": "codex/bitume-0276-cockpit-312t5-20261121",
+  "physique": "p15",
+  "moteur": "FERRO 0.3.15",
+  "modules_verrouilles": 34,
+  "html": {
+    "chemin": "dist/bitume.html",
+    "octets": 14514541,
+    "sha256": "b1548922357e0db72f96d56ff32bf3c977a5029e477164613b475b6c13b7721d",
+    "git_blob": "6598bddd6b0ccc8090fd29493653300ed7d90056"
+  },
+  "reconstruction_identique": true,
+  "fov": {
+    "defaut": 70,
+    "unite": "vertical en 16:9",
+    "pitch_neutre": 0,
+    "valeurs_memorisees_conservees": true,
+    "ancienne_projection_conservee": false,
+    "jante_pourcentage_largeur_16_9_repos": 25.525
+  },
+  "sources_sha256": {
+    "src/voiture.js": "13a96a4d8b596f70fe085829f68ec41b4202443151430716cd9e44f97bdd9508",
+    "src/jeu.js": "f3888a459bb82f049839889ccf9415016be2ca316404629033a4780e78085c7a",
+    "src/vitre.js": "7596a3e045ea5c8143a238b49c028f633a4725c53e7c38f6c06616e3d87f0922",
+    "src/son.js": "ed5a117edfb8876b4a6d52f1fc4858ef689e1b6b5988d7754574fb7b3c9bbe7b",
+    "src/index.html": "acb6aedffc3b8dab8ae2462e1d1c32313b3380cd7c87ce0e1fad89e8a588d9a1",
+    "src/cockpit-matieres.js": "48c926302b0bd8c0046f529e10d7472b2816064581c996c111ed6364d62f1a5e"
+  },
+  "qualification_locale": {
+    "visibilite": 7,
+    "rayons_chausee_degages": 324,
+    "cadres_retros_sans_recouvrement": 120,
+    "mecanique": 4,
+    "options_image": 12,
+    "outil_captures": 31,
+    "identite": 6,
+    "flux_meteo": 103,
+    "son_et_aspiration": 36
+  },
+  "suites_node_attendues": 180,
+  "ecoute_humaine": false,
+  "site_deploye": false,
+  "reserve_cpu_decor": "ouverte, optimisation isolée en pause"
+}

@@ -1,0 +1,56 @@
+{
+  "statut": "geometrie_figee_pour_construction",
+  "fichiers_sha256": {
+    "src/voiture.js": "1eb44bf84dfe2b8faf80dbc25252da0cc474c995b811d26079eef63dba01e053",
+    "src/cockpit-matieres.js": "48c926302b0bd8c0046f529e10d7472b2816064581c996c111ed6364d62f1a5e",
+    "verifications/voiture.test.mjs": "c006ed0b26d5c73eda0fa224fb6ae3870dae0cc470827d8a21d42144a6ae4106",
+    "verifications/cockpit-matieres.test.mjs": "1cec9c13f614502bcf483344b90e1370ff60d07768979ff9b30a5ad2cc719a57",
+    "verifications/cockpit-mecanique.test.mjs": "92571c4a68d7f518436b07b3d1732380a7573c272ee1187a7e30371d8d394e77"
+  },
+  "preuves_locales": {
+    "voiture-qualification.log": "75c059c1fce17f2c03c9a2512bc88890b7d957c7e1053898b9274607202f3ac6",
+    "habitacle-monde-qualification.log": "754161b0609b53be971bc18243ccbbcc3ce75faf6a0726ffb547d4efd9d29c4b",
+    "cockpit-matieres-qualification.log": "853ecf74f0d4d03efbb88e4e59a0c195a428026af620b6250e93598662a2fbaf",
+    "pilote-commun-final.log": "6733603451c86438fb66d75e6470f0c45dbbd79f5b0901e7c7412db18c0f7ad2",
+    "pilote-exterieur-final.log": "9dc81250f99eff8288e9e5fd8b5e97fe58c2e79e497ff0906b29ee50af0094ae",
+    "pilote-gestes-extremes-final.log": "255031e0d603c71c38538ba1b059a8acc45877adfb8667e1cdb949717d6a9a0c",
+    "cockpit-mecanique-qualification.log": "1b6e046c03d0a8a46eae82101acb33bbbd7cd2655226136c734f7f297a5342c5",
+    "pilote-habitacle-trajet-final2.log": "14ef4029bfd52a0ac2ce8d8fba28c87e133da0f33c35bb8aa4dd0605065acbad",
+    "cockpit-visibilite-candidat4.log": "61fc5531126e89c7711cc4f057c953d1aae22ff571de017d9ab68595da78f1b4",
+    "cockpit-mecanique-0275-negatif.log": "b2620eebfe64f3522974b585f96ffbe540b46d34cd07504d2628d81c61b8d933"
+  },
+  "parametres": {
+    "volant_monde": [
+      0.33,
+      0.595,
+      0
+    ],
+    "inclinaison_volant_rad": 0.12,
+    "diametre_jante_inchange": true,
+    "planche_monde": [
+      0.48,
+      0.617,
+      0
+    ],
+    "retros": [
+      0.66,
+      0.59,
+      0.375
+    ],
+    "os_bras_m": [
+      0.21,
+      0.23
+    ]
+  },
+  "qualification": "Suites ciblées exécutées pendant les ajustements. Dernier ajustement IK vérifié par 630 poses extérieures et 60 poses de surfaces extrêmes. CI du candidat construit et inspection WebGL requises pour qualification finale.",
+  "conservation": [
+    "yeux, assise et épaules",
+    "mêmes objets et triangles monde dans les deux vues",
+    "seuils de pénétration, distances de garde et rayons de chaussée inchangés",
+    "tailles de la jante et des gants inchangées"
+  ],
+  "limites": [
+    "Cotes de cockpit calibrées depuis des photos ; aucun plan métrique complet Ferrari disponible.",
+    "Le rendu logiciel est une vue de contrôle géométrique, pas une capture du HTML final."
+  ]
+}

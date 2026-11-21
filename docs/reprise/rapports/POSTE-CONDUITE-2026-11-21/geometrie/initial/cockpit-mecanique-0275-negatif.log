@@ -1,0 +1,84 @@
+✖ colonne descendante vers l’avant, face du volant orientée vers les yeux (1.349364ms)
+✖ volant de taille physique conservée et éloigné des yeux (4.367583ms)
+✖ tableau sombre en arche, compte-tours au-dessus des deux petits cadrans (3.49667ms)
+✖ boîtiers bas, pattes courtes et presque horizontales (1.904771ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17.384392
+
+✖ failing tests:
+
+test at verifications/cockpit-mecanique.test.mjs:34:1
+✖ colonne descendante vers l’avant, face du volant orientée vers les yeux (1.349364ms)
+  AssertionError [ERR_ASSERTION]: la normale du vrai volant regarde le pilote et le haut ; l’ancien signe pointait vers le bas
+      at TestContext.<anonymous> (file:///workspace/scratch/ea118b42480b/bitume-cockpit/verifications/cockpit-mecanique.test.mjs:36:3)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at verifications/cockpit-mecanique.test.mjs:44:1
+✖ volant de taille physique conservée et éloigné des yeux (4.367583ms)
+  AssertionError [ERR_ASSERTION]: au moins 39 cm devant les yeux, sans avancer au-delà de la portée humaine
+      at TestContext.<anonymous> (file:///workspace/scratch/ea118b42480b/bitume-cockpit/verifications/cockpit-mecanique.test.mjs:47:3)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at verifications/cockpit-mecanique.test.mjs:51:1
+✖ tableau sombre en arche, compte-tours au-dessus des deux petits cadrans (3.49667ms)
+  AssertionError [ERR_ASSERTION]: arche réelle dans le maillage : centre au moins 4 cm plus haut que les côtés
+      at TestContext.<anonymous> (file:///workspace/scratch/ea118b42480b/bitume-cockpit/verifications/cockpit-mecanique.test.mjs:56:3)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at verifications/cockpit-mecanique.test.mjs:63:1
+✖ boîtiers bas, pattes courtes et presque horizontales (1.904771ms)
+  AssertionError [ERR_ASSERTION]: boîtier au flanc de la coque, bien sous les yeux
+      at TestContext.<anonymous> (file:///workspace/scratch/ea118b42480b/bitume-cockpit/verifications/cockpit-mecanique.test.mjs:66:5)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

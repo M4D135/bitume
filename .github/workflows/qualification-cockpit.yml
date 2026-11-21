@@ -22,10 +22,14 @@ jobs:
       max-parallel: 3
       matrix:
         include:
-          - groupe: mac
-            cas: cockpit-mac
           - groupe: paysage
             cas: cockpit-paysage
+          - groupe: profil
+            cas: cockpit-profil
+          - groupe: trois-quarts
+            cas: cockpit-trois-quarts
+          - groupe: mac
+            cas: cockpit-mac
           - groupe: compact
             cas: cockpit-compact
           - groupe: carte-gauche
@@ -36,10 +40,12 @@ jobs:
             cas: cockpit-duo-haut-bas
           - groupe: duo-cote
             cas: cockpit-duo-cote
-          - groupe: profil
-            cas: cockpit-profil
-          - groupe: trois-quarts
-            cas: cockpit-trois-quarts
+          - groupe: carte-gauche-stabilise
+            cas: cockpit-carte-gauche-stabilise
+          - groupe: carte-droite-stabilise
+            cas: cockpit-carte-droite-stabilise
+          - groupe: duo-compact
+            cas: cockpit-duo-compact
           - groupe: reference-0270
             cas: cockpit-paysage
     steps:

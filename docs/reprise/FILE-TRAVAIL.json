@@ -12,7 +12,7 @@
     "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
   },
   "destinations_prevues": 17,
-  "lot_actif": "budget_construction_decor_0269",
+  "lot_actif": "poste_conduite_312t5",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [
@@ -39,13 +39,13 @@
     {
       "id": "habitacle_pilote_commun",
       "objectif": "Même habitacle monde entre vues, assise plus basse et bras dégagés du buste",
-      "etat": "published",
-      "phase": "pilote_Troll_cockpit_HUD_publies_0275",
+      "etat": "in_progress",
+      "phase": "0275_refuse_reprise_cockpit_312t5",
       "dependances": [
         "references"
       ],
       "fiche": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
-      "prochain_sous_lot": "clos_pour_le_correctif_cockpit_HUD_0275",
+      "prochain_sous_lot": "Qualifier implantation réelle, cadrage et vues extérieures du candidat .76",
       "cloture": "Identité géométrique monde sans homothétie par vue ; assise commune mesurée ; dégagements bras/buste/coque et contacts ; gestes et LOD ; images exactes et coût qualifiés",
       "preuves": [
         "docs/reprise/preparations/habitacle-commun-2026-11-20/CHECKPOINT.json",
@@ -58,7 +58,7 @@
       ],
       "acquis": "Géométrie commune et T3 conservés ; cockpit/rétros/pluie/HUD reçus et publiés en 0.2.75, dont dix PNG exacts et les deux braquages maintenus.",
       "reste": "Limites LOD et matérielles conservées ; enrichissements de matières et autres travaux dans leurs lots distincts.",
-      "reserve_lisibilite_cockpit": "Blocage corrigé sur les cinq groupes exacts 0.2.75 ; pas de qualification universelle de tous les formats.",
+      "reserve_lisibilite_cockpit": "Réouverte : refus utilisateur de la géométrie .75, captures précédentes insuffisantes pour valider implantation et cadrage.",
       "limite_images_lod": "Quatre PNG LOD extérieurs : coque d’environ 25–30 pixels, silhouette validée ; détails des bras non lisibles dans ces images.",
       "suivi_lisibilite_cockpit": {
         "statut": "clos_sur_cas_qualifies_0275",
@@ -91,18 +91,19 @@
         "statut": "publie_sur_main_avec_reserve_budget_decor",
         "main_recu_identique_au_candidat": true,
         "site_deploye": false
-      }
+      },
+      "demande_2026_11_21": "docs/reprise/COCKPIT-312T5-2026-11-21.md"
     },
     {
       "id": "eau_vitesse",
       "objectif": "Écarter et évacuer les gouttes selon vitesse, flux et orientation caméra",
-      "etat": "published",
-      "phase": "E0_E3_qualifies_0268",
+      "etat": "in_progress",
+      "phase": "reprise_flux_dos_au_vent_0276",
       "dependances": [
         "references"
       ],
       "fiche": "docs/reprise/EAU-VITESSE-2026-11-20.md",
-      "prochain_sous_lot": "clos",
+      "prochain_sous_lot": "Qualifier atténuation arrière pluie et neige, gravité conservée",
       "cloture": "Trajectoires signées et couches optiques cohérentes en cockpit/poursuite ; gravité lente et souffle rapide ; pause/J1J2/abris/aérien préservés ; séquences visuelles et coût qualifiés",
       "preuves": [
         "docs/reprise/rapports/EAU-VITESSE-2026-11-20/RECUPERATION-0267.json",
@@ -467,13 +468,13 @@
       "id": "budget_construction_decor_0269",
       "objectif": "Caractériser le dépassement observé du budget CPU de construction du décor",
       "etat": "in_progress",
-      "phase": "diagnostic_0275_reserve_ouverte_piste_non_appliquee",
+      "phase": "en_pause_priorite_poste_conduite",
       "preuves": [
         "docs/reprise/PARALLELE-2026-11-20/preuves/00-assemblage-0269/ci-finale/ALERTE-BUDGET-DECOR.json",
         "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
         "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/diagnostic-decor/DIAGNOSTIC.json"
       ],
-      "prochain_sous_lot": "Transmettre au propriétaire 04 la piste de stockage fixe des indices des nappes Route (19 323 couples temporaires), puis qualifier identité géométrique et mesures alternées avant toute intégration. Aucun code de cette optimisation appliqué.",
+      "prochain_sous_lot": "Reprendre la comparaison partielle 82/117 puis corriger le banc CommonJS avant toute mesure ou intégration",
       "cloture": "Identité géométrique et mesures alternées qualifiées avant intégration ; seuil strict <150 ms conservé, aucun gain matériel déduit de ce seul test.",
       "proprietaire": "04",
       "diagnostic_0275": {
@@ -609,6 +610,7 @@
   ],
   "plan_correctifs_visuels": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
   "ordre_courant": [
+    "poste_conduite_312t5",
     "budget_construction_decor_0269",
     "menu_arcade_profils_modestes"
   ],
@@ -709,24 +711,21 @@
   },
   "base_initiale": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_candidat": {
-    "version": "0.2.75",
-    "branche": "codex/bitume-0275-fps-cockpit-20261121",
+    "version": "0.2.76",
+    "branche": "codex/bitume-0276-cockpit-312t5-20261121",
+    "base": "ccb1cb1c5ef0efff1f51c064bab2816c99f23d6b",
     "physique": "p15",
     "moteur": "FERRO 0.3.15",
     "circuits": 9,
-    "html_sha256": "a19ec4e8ee7f5c9c672cf27ac780c14ab3ebec126d2b80939c025e602594e225",
-    "statut": "publie_sur_main",
-    "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0275/BUILD-0275.json",
-    "portes_restantes": [],
-    "reserve_decor": "Ouverte : 172/152/168/155 ms historiques ; diagnostic local 151,87/138,20/141,13/84,43/85,68 ms, un échec au seuil strict <150 ms ; aucun gain prouvé.",
-    "candidat_precedent_bloque": {
-      "version": "0.2.74",
-      "pr": 50,
-      "constat": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0274/RECEPTION-0274.json"
-    },
-    "commit": "5d59cae6630c49ae62c47303100d61dd63daea56",
-    "commit_fusion": "b1e5e98b9029f6254b86dcfb49780883315a9418",
-    "recu_publication": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json"
+    "html_sha256": "b1548922357e0db72f96d56ff32bf3c977a5029e477164613b475b6c13b7721d",
+    "statut": "construit_localement",
+    "recu": "docs/reprise/rapports/POSTE-CONDUITE-2026-11-21/BUILD-0276.json",
+    "portes_restantes": [
+      "CI complète et archive exacte",
+      "images WebGL inspectées",
+      "fusion qualifiée"
+    ],
+    "site_deploye": false
   },
   "demandes_video_survol_2026_11_20": {
     "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
@@ -750,5 +749,10 @@
     "circuits": 9,
     "commit_fusion": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
     "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
+  },
+  "priorite_utilisateur_2026_11_21": {
+    "fiche": "docs/reprise/COCKPIT-312T5-2026-11-21.md",
+    "demande": "cockpit 312 T5, FOV 70, météo calme dos au vent et klaxons réalistes",
+    "decor": "en pause, comparaison partielle 82/117, aucun gain CPU prouvé"
   }
 }
