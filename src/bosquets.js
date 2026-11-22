@@ -134,12 +134,12 @@
     const x=Math.floor(p[0]*100), z=Math.floor(p[2]*100);
     const variante=Math.floor(bruit(x,z,t*4294967296)*VARIANTES);
     const shape=site.forme+'-'+variante+(loin?'-loin':'');
-    const angle=bruit(x,z,117)*2*Math.PI;
+    const angle=bruit(x,z,site.graine+117)*2*Math.PI;
     const cos=Math.cos(angle), sin=Math.sin(angle);
     const [axeX,axeY,axeZ]=axes;
     const tourneX=axeX.map((v,i)=>v*cos+axeZ[i]*sin);
     const tourneZ=axeZ.map((v,i)=>v*cos-axeX[i]*sin);
-    const echelle=.84+.16*bruit(x,z,163);
+    const echelle=.84+.16*bruit(x,z,site.graine+163);
     const largeurLocale=largeur*echelle;
     const profondeur=largeurLocale*(.78+.22*t);
     return {shape,p,r:B.decor.angles(tourneX,axeY,tourneZ),s:[largeurLocale,h,profondeur],color,mat:11};
@@ -217,7 +217,7 @@
       const espece=especes[id] || especes[theme];
       if (!espece) return null;
       const [genre,hauteur,couleur]=espece;
-      const palette={ genre,couleur,forme:'bosquet-'+(genre==='lande'?'rond':genre),
+      const palette={ genre,couleur,graine:c.graine | 0,forme:'bosquet-'+(genre==='lande'?'rond':genre),
         saison:theme===c.theme || !saison ? saison : B.saisons.profil(saison.id,theme) };
       return {genre,hauteur,palette,indice:palettes.push(palette)-1,
         ecologie:theme===c.theme ? ecologie : B.ecologie?.creer(c.graine,theme)};
