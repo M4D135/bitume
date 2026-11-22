@@ -1,9 +1,8 @@
 (function (B) {
   'use strict';
   // Sources aérodynamiques communes à toutes les vues ; aucun parcours de plantes.
-  // L'état se prépare au lancement de la séance (preparer) plutôt qu'à sa première image : la liste des sources y
-  // prend sa taille et chaque source sa forme définitive (coordonnées et rayons tenus en nombres à virgule), de sorte
-  // que la mise à jour de chaque image n'alloue rien, la première comprise, une fois le code optimisé par le moteur.
+  // Au lancement de la séance, preparer dimensionne la liste et réinitialise les sources de la réserve.
+  // La mise à jour par image réutilise ces sources et leurs vecteurs.
   const MAX_SOURCES = 16;
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   function creer(capacite = MAX_SOURCES) {
@@ -13,10 +12,10 @@
     }));
     return { reserve, sources: [], actifs: 0 };
   }
-  // Une valeur à virgule écrite puis effacée fait passer tableau et champ à leur représentation en nombres à virgule :
-  // la première vraie mise à jour n'a plus à convertir (une conversion alloue la nouvelle représentation).
   function former(source) {
-    for (const t of [source.p, source.velocity]) for (let k = 0; k < 3; k++) { t[k] = .5; t[k] = 0; }
+    source.p[0] = source.p[1] = source.p[2] = 0;
+    source.velocity[0] = source.velocity[1] = source.velocity[2] = 0;
+    // Les valeurs fractionnaires préparent la représentation numérique des champs scalaires.
     source.radius = 6.5; source.radius = 6; source.wake = 10.5; source.wake = 10;
   }
   // Prépare pour n voitures l'état donné (ou un neuf s'il n'y en a pas) et le rend : sources de la réserve en place
