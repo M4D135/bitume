@@ -160,7 +160,7 @@
       function ajouter(mode, moteurs) {
         const route = { mode, moteurs, jouee: false };
         function nonSupporte() {
-          if (O.routes === routes && routes[O.route] === route) { route.jouee = false; O.route++; }
+          if (O.routes === routes && routes[O.route] === route) O.route++;
         }
         route.resultat = r => { if (r === 'not-supported') nonSupporte(); };
         route.echec = e => { if (e && (e.name === 'NotSupportedError' || e.name === 'TypeError')) nonSupporte(); };
@@ -177,12 +177,13 @@
     return true;
   }
   function envoyer(O, s, t) {
-    const route = O.routes[O.route];
-    if (!route || t - O.instant < INTERVALLE) return;
+    if (t - O.instant < INTERVALLE) return;
     if (!(s.faible || s.fort || s.gachetteG || s.gachetteD)) {
       if (O.active) { arreter(O); O.instant = t; }
       return;
     }
+    const route = O.routes[O.route];
+    if (!route) return;
     O.instant = t; O.active = true; route.jouee = true;
     const gachettes = route.mode === 'trigger-rumble', o = gachettes ? O.gachettes : O.double;
     o.strongMagnitude = s.fort;
