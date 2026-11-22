@@ -106,8 +106,21 @@
       !estJouable(type) || !Number.isInteger(revisionAttendue) || revisionAttendue < 0 || revisionAttendue >= SERVICE_MAX ||
       etat.servicePneus !== revisionAttendue || !identite || typeof identite !== 'object' ||
       !identiteValide(identite.seance) || !identiteValide(identite.voiture) ||
-      !Array.isArray(etat.etatPneus) || etat.etatPneus.length !== 4 ||
-      !etat.etatPneus.every(r => r && typeof r === 'object' && !Array.isArray(r))) return false;
+      !Array.isArray(etat.etatPneus) || etat.etatPneus.length !== ROUES.length) return false;
+    const nombreBorne = (roue, champ, maximum) => {
+      const valeur = roue[champ];
+      return possede(roue, champ) && Number.isFinite(valeur) && valeur >= 0 && valeur <= maximum;
+    };
+    for (const { indice } of ROUES) {
+      if (!possede(etat.etatPneus, indice)) return false;
+      const roue = etat.etatPneus[indice];
+      if (roue === null || roue === undefined) continue;
+      if (typeof roue !== 'object' || Array.isArray(roue) ||
+        !nombreBorne(roue, 'usure', 1) || !nombreBorne(roue, 'salete', 1) ||
+        !nombreBorne(roue, 'grainage', 1) || !nombreBorne(roue, 'distance', DISTANCE_MAX) ||
+        !nombreBorne(roue, 'sollicitation', SOLLICITATION_MAX) ||
+        !nombreBorne(roue, 'graine', SERVICE_MAX) || !Number.isInteger(roue.graine)) return false;
+    }
     const suivant = etatNeuf(type, identite, revisionAttendue + 1);
     Object.assign(etat, suivant);
     return true;
