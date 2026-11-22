@@ -75,9 +75,15 @@ verifier('neuf circuits en mode organique : pyramides au désert, zéro rocher c
         assert(o.shape.startsWith('bitume-lieu-'), spec.id + ' : rocher géométrique résiduel (' + o.shape + ')');
         rochersOrganiques++;
       }
-      if (o.shape === 'bitume-lieu-pyramide' || o.shape === 'bitume-lieu-pyramide-degres') pyramides++;
+      if (o.shape === 'bitume-lieu-pyramide' || o.shape === 'bitume-lieu-pyramide-degres') {
+        assert.equal(o.solidePhysX?.genre, 'pyramide', 'seuls les monuments de la nécropole ont une forme de pyramide');
+        pyramides++;
+      }
     }
-    if (spec.theme === 'desert') assert(pyramides >= 10, 'désert : trop peu de pyramides (' + pyramides + ')');
+    if (spec.theme === 'desert') {
+      assert(decor.lieux.marqueurs.some(m => m.type === 'pyramides'));
+      assert.equal(pyramides, 3, 'les trois monuments de la nécropole du témoin Roche-Fauve');
+    }
     if (spec.theme === 'islande' || spec.theme === 'desert' || spec.theme === 'asie') {
       assert(rochersOrganiques > 15, spec.id + ' : rochers organiques attendus (' + rochersOrganiques + ')');
     } else if (spec.theme === 'pacifique') {

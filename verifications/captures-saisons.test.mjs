@@ -3,11 +3,12 @@ import { test } from 'node:test';
 import { createRequire } from 'node:module';
 import { optionsSaisons, scenariosSaisons, optionsScenarioSaisons, verifierSaisons, preparerSaisons, foretLibreSaisons } from '../tools/captures-saisons.mjs';
 
-test('couverture des neuf circuits et quatre saisons, plus été/hiver sur la roche alpine', () => {
+test('couverture des onze circuits du menu et quatre saisons, plus été/hiver sur la roche alpine', () => {
   const o = optionsSaisons(['--url', 'file:///tmp/bitume.html', '--sortie', '/tmp/saisons']);
-  const scenes = scenariosSaisons(o); assert.equal(scenes.length, 38);
-  for (let i = 0; i < 9; i++) assert.deepEqual(scenes.filter(s => s.circuit === i && !s.alpin).map(s => s.saison), ['printemps', 'ete', 'automne', 'hiver']);
-  assert.deepEqual(scenes.filter(s => s.alpin).map(s => s.saison), ['ete', 'hiver']);
+  const scenes = scenariosSaisons(o); assert.equal(scenes.length, 46);
+  for (let i = 0; i < 11; i++) assert.deepEqual(scenes.filter(s => s.circuit === i && !s.alpin).map(s => s.saison), ['printemps', 'ete', 'automne', 'hiver']);
+  assert.deepEqual(scenes.filter(s => s.alpin).map(s => [s.id, s.saison]), [['route-des-cimes', 'ete'], ['route-des-cimes', 'hiver']]);
+  assert(scenes.every(s => Number.isFinite(s.depart)));
   for (const s of scenes) {
     const p = optionsScenarioSaisons(s, o, '/tmp/' + s.nom);
     assert.equal(p.images, 2); assert.equal(p.referenceJeu.circuit, s.circuit); assert.equal(p.referenceJeu.saison, s.saison);
@@ -18,7 +19,7 @@ test('job ciblé par circuit/palier et options ambiguës refusées', () => {
   const a = ['--url', 'file:///tmp/bitume.html', '--sortie', '/tmp/saisons'];
   const o = optionsSaisons([...a, '--circuits', '8', '--saisons', 'ete,hiver', '--qualite', 'low', '--alpin', 'non']);
   assert.equal(scenariosSaisons(o).length, 2);
-  for (const extra of [['--circuits', '8,8'], ['--circuits', '9'], ['--saisons', 'hiver,foo'], ['--alpin', 'peut-etre'], ['--qualite', 'fake']]) assert.throws(() => optionsSaisons([...a, ...extra]));
+  for (const extra of [['--circuits', '8,8'], ['--circuits', '11'], ['--saisons', 'hiver,foo'], ['--alpin', 'peut-etre'], ['--qualite', 'fake']]) assert.throws(() => optionsSaisons([...a, ...extra]));
 });
 test('le vérificateur refuse une caméra remplacée, les couronnes hivernales et une preuve absente', () => {
   const s = { id: 'route-des-cimes', saison: 'hiver' }, camera = { pos: [1, 2, 3], yaw: .3, pitch: .1, fov: 54 };
@@ -43,7 +44,8 @@ test('Cimes : le cadrage réel masqué est refusé, un caduc dégagé reste iden
   const X = await chargerPhysX(), sauvegarde = { BITUME_JEU: globalThis.BITUME_JEU, __SAISONS_CAPTURE: globalThis.__SAISONS_CAPTURE };
   try {
     for (const qualite of ['low', 'high']) {
-      const c = creerCircuitSaisons(CATALOGUE_SAISONS[8]);
+      const index = CATALOGUE_SAISONS.findIndex(k => k.id === 'route-des-cimes');
+      const c = creerCircuitSaisons(CATALOGUE_SAISONS[index]);
       const ete = B.decor.construire(c, { qualite, vegetation: false, saison: 'ete' });
       // Les 2 600 candidats par défaut sont ceux du jeu capturé, pas une petite forêt de test.
       const arbres = ete.lotsHerbier.flatMap(l => l.objets).filter(o => o.collision === 'tronc' && o.essenceArbre);
@@ -62,7 +64,7 @@ test('Cimes : le cadrage réel masqué est refusé, un caduc dégagé reste iden
           const d = saison === 'ete' ? ete : B.decor.construire(c, { qualite, vegetation: false, saison });
           globalThis.BITUME_JEU = { CATALOGUE: CATALOGUE_SAISONS, reglages: {}, scene: { decor: d },
             session: { reference: true, course: { c, physique: { world } } } };
-          const r = preparerSaisons({ id: 'route-des-cimes', circuit: 8, saison, depart: 1400, alpin: false });
+          const r = preparerSaisons({ id: 'route-des-cimes', circuit: index, saison, depart: 1400, alpin: false });
           assert.equal(r.arbre.essence, 'feuillu');
           assert.equal(r.controleForet, 'enveloppes-troncs-9-rayons');
           assert.equal(globalThis.__SAISONS_CAPTURE.verifierForet(r.camera.pos), true, 'neuf visées PhysX réelles et enveloppes libres');
@@ -75,7 +77,7 @@ test('Cimes : le cadrage réel masqué est refusé, un caduc dégagé reste iden
           if (reference) assert.equal(empreinte, reference, 'caméra strictement identique entre les quatre saisons');
           else reference = empreinte;
         }
-        const alpin = preparerSaisons({ id: 'route-des-cimes', circuit: 8, saison: 'hiver', depart: 4750, alpin: true });
+        const alpin = preparerSaisons({ id: 'route-des-cimes', circuit: index, saison: 'hiver', depart: 4750, alpin: true });
         assert.equal(alpin.controleForet, null); assert.equal(alpin.arbre, null, 'fallback alpin préservé');
       } finally { if (montage) B.solidesPhysX.liberer(montage); world.dispose(); }
     }

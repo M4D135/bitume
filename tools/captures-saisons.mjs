@@ -6,10 +6,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { capturer, optionsCapture } from './controle-visuel.mjs';
 
-export const CIRCUITS_SAISONS = Object.freeze([
-  ['val-brule', 1100], ['port-sable', 1450], ['haut-col', 1800], ['lande-noire', 1700],
-  ['roche-fauve', 1900], ['brume-de-jade', 2000], ['cap-sequoia', 1500], ['baikal', 2000], ['route-des-cimes', 1400]
-].map(([id, depart], circuit) => Object.freeze({ id, depart, circuit })));
+import { catalogueJeu } from './qualification/circuit-catalogue.mjs';
+
+const DEPARTS = { 'val-brule': 1100, marseille: 1450, corail: 1450, 'cap-sequoia': 1500,
+  fjord: 1800, 'route-des-cimes': 1400, larche: 4750, 'lande-noire': 1700, sierra: 1900, 'brume-de-jade': 2000, baikal: 2000 };
+export const CIRCUITS_SAISONS = Object.freeze(catalogueJeu.map(({ id }, circuit) => Object.freeze({ id, depart: DEPARTS[id], circuit })));
 export const SAISONS = Object.freeze(['printemps', 'ete', 'automne', 'hiver']);
 export function optionsSaisons(argv) {
   const o = {};
@@ -31,8 +32,9 @@ export function optionsSaisons(argv) {
 }
 export function scenariosSaisons(o) {
   const scenes = o.circuits.flatMap(i => o.saisons.map(saison => ({ ...CIRCUITS_SAISONS[i], saison, alpin: false })));
-  if (o.alpin === 'oui' && o.circuits.includes(8)) for (const saison of ['ete', 'hiver']) if (o.saisons.includes(saison))
-    scenes.push({ ...CIRCUITS_SAISONS[8], depart: 4750, saison, alpin: true });
+  const cimes = CIRCUITS_SAISONS.find(s => s.id === 'route-des-cimes');
+  if (o.alpin === 'oui' && o.circuits.includes(cimes.circuit)) for (const saison of ['ete', 'hiver']) if (o.saisons.includes(saison))
+    scenes.push({ ...cimes, depart: 4750, saison, alpin: true });
   return scenes.map(s => ({ ...s, nom: s.id + (s.alpin ? '-alpin' : '') + '-' + s.saison }));
 }
 export function optionsScenarioSaisons(s, o, sortie) {
@@ -158,7 +160,7 @@ export async function campagneSaisons(o) {
   const r = { format: 'bitume-captures-saisons-v1', passages: [], echecs: 0,
     limites: ['Images d’inspection du vrai jeu, à relire visuellement ; les comptes et images ne prouvent pas les performances matérielles.',
       'Deux images par saison, mêmes positions et caméra ; ciel de jour et météo sèche pour comparer les palettes.',
-      'La comparaison physique/géométrique et les budgets appartiennent au contrôle Node des neuf circuits.'] };
+      'La comparaison physique/géométrique et les budgets appartiennent au contrôle Node des circuits du menu.'] };
   const cameras = new Map();
   for (const s of scenariosSaisons(o)) {
     const sortie = path.join(o.sortie, s.nom), p = optionsScenarioSaisons(s, o, sortie);

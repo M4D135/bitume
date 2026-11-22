@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 // Inventaire des vrais lots/nappes, sans navigateur ni modification des sources du jeu.
 import fs from 'node:fs';
-import { creerCircuitCatalogue } from './circuit-catalogue.mjs';
+import { catalogueJeu, creerCircuitCatalogue } from './circuit-catalogue.mjs';
 import path from 'node:path';
-import vm from 'node:vm';
 import { createRequire } from 'node:module';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
@@ -14,10 +13,7 @@ for (const nom of MODULES_SAISONS) require(path.join(racine, 'src', nom + '.js')
 export const B = globalThis.BITUME;
 for (const [nom, triangles] of Object.entries(B.lieux.FORMES)) globalThis.FRender.forme(nom, triangles);
 export const sha = v => createHash('sha256').update(typeof v === 'string' ? v : JSON.stringify(v)).digest('hex');
-const jeu = fs.readFileSync(path.join(racine, 'src/jeu.js'), 'utf8');
-const catalogue = jeu.match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/);
-if (!catalogue) throw new Error('Catalogue réel introuvable');
-export const CATALOGUE_SAISONS = JSON.parse(JSON.stringify(vm.runInNewContext('(' + catalogue[1] + ')')));
+export const CATALOGUE_SAISONS = catalogueJeu;
 export function creerCircuitSaisons(definition) {
   return creerCircuitCatalogue(B, definition);
 }
