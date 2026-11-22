@@ -160,7 +160,14 @@
       if (e.repositionnement) lacher(fx, e.id);
     }
     fx.acc += dt;
-    if (fx.acc < PAS * .999) return;
+    if (fx.acc < PAS * .999) {
+      // Un arrêt entre deux mises à jour des traces coupe la bande avant la reprise.
+      const V = co.voitures;
+      for (let k = 0; k < V.length; k++) {
+        if (V[k].etat.v === 0) lacher(fx, k, false);
+      }
+      return;
+    }
     fx.acc = Math.max(0, fx.acc - PAS);
     vieillir(fx, PAS);
     const V = co.voitures, L = co.c.longueur, ref = V[suivie] ? V[suivie].etat.s : 0, choc = B.conduite.PARAMS.chocDuree;
