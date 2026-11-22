@@ -1,0 +1,128 @@
+name: Preparer le compilateur de shaders FERRO
+
+on:
+  push:
+    branches: ['codex/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: preparer-compilateur-ferro-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compiler:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[build-ferro-compiler]')
+    runs-on: ubuntu-22.04
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: bash
+    env:
+      CARGO_TERM_COLOR: never
+      FERRO_COMPILER_TARGET: x86_64-unknown-linux-musl
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Preparer les journaux
+        run: mkdir -p build/ferro-compiler-logs build/ferro-compiler-smoke
+      - name: Preparer Rust stable et musl
+        id: dependencies
+        run: |
+          {
+            rustup toolchain install stable --profile minimal --target "$FERRO_COMPILER_TARGET"
+            rustup default stable
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends musl-tools binutils
+            rustc --version
+            cargo --version
+          } 2>&1 | tee build/ferro-compiler-logs/dependencies.log
+      - name: Construire le compilateur avec les dependances verrouillees
+        id: build
+        run: |
+          cargo build --release --locked \
+            --manifest-path tools/ferro-webgpu-compiler/Cargo.toml \
+            --target "$FERRO_COMPILER_TARGET" \
+            --target-dir build/ferro-webgpu-compiler-target \
+            2>&1 | tee build/ferro-compiler-logs/build.log
+      - name: Verifier le binaire autonome et les conversions GLSL et WGSL
+        id: smoke
+        run: |
+          python3 - <<'PY' 2>&1 | tee build/ferro-compiler-logs/smoke.log
+          import os, pathlib, subprocess
+          binary = pathlib.Path('build/ferro-webgpu-compiler-target')/os.environ['FERRO_COMPILER_TARGET']/'release/ferro-webgpu-compiler'
+          headers = subprocess.check_output(['readelf', '-l', str(binary)], text=True)
+          dynamic = subprocess.check_output(['readelf', '-d', str(binary)], text=True)
+          assert 'INTERP' not in headers, 'Le binaire exige un interpreteur ELF'
+          assert '(NEEDED)' not in dynamic, 'Le binaire exige une bibliotheque dynamique'
+          print(subprocess.check_output(['file', str(binary)], text=True).strip())
+          work = pathlib.Path('build/ferro-compiler-smoke')
+          shaders = {
+              'vert': '#version 450 core\nlayout(location=0) in vec3 position;\nvoid main(){gl_Position=vec4(position,1.);}\n',
+              'frag': '#version 450 core\nlayout(location=0) out vec4 color;\nvoid main(){color=vec4(.25,.5,.75,1.);}\n',
+          }
+          for stage, source in shaders.items():
+              incoming, converted, checked = work/('probe.'+stage), work/(stage+'.wgsl'), work/(stage+'.validated.wgsl')
+              incoming.write_text(source)
+              subprocess.run([str(binary), stage, str(incoming), str(converted)], check=True)
+              subprocess.run([str(binary), 'wgsl', str(converted), str(checked)], check=True)
+              assert converted.stat().st_size > 0 and checked.stat().st_size > 0
+              assert ('@vertex' if stage == 'vert' else '@fragment') in checked.read_text()
+              print(stage, 'GLSL converti puis WGSL valide')
+          PY
+      - name: Verifier que les sources de l'outil sont intactes
+        id: unchanged
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: |
+          git diff --exit-code -- tools/ferro-webgpu-compiler 2>&1 | tee build/ferro-compiler-logs/source-integrity.log
+      - name: Rassembler le binaire, les sources et les empreintes
+        if: always()
+        env:
+          DEPENDENCIES_OUTCOME: ${{ steps.dependencies.outcome }}
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          SMOKE_OUTCOME: ${{ steps.smoke.outcome }}
+          UNCHANGED_OUTCOME: ${{ steps.unchanged.outcome }}
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, shutil, tarfile
+          target = pathlib.Path('build/ferro-compiler-artifact')
+          target.mkdir(parents=True, exist_ok=True)
+          selections = ['tools/ferro-webgpu-compiler', 'build/ferro-compiler-logs', 'build/ferro-compiler-smoke']
+          for relative in selections:
+              source, dest = pathlib.Path(relative), target/relative
+              if source.exists():
+                  dest.parent.mkdir(parents=True, exist_ok=True)
+                  shutil.copytree(source, dest, dirs_exist_ok=True)
+          binary = pathlib.Path('build/ferro-webgpu-compiler-target')/os.environ['FERRO_COMPILER_TARGET']/'release/ferro-webgpu-compiler'
+          if binary.is_file():
+              dest = target/'bin/ferro-webgpu-compiler'
+              dest.parent.mkdir(parents=True, exist_ok=True)
+              shutil.copy2(binary, dest)
+              dest.chmod(0o755)
+              archive = target/('ferro-webgpu-compiler-'+os.environ['FERRO_COMPILER_TARGET']+'.tar.gz')
+              with tarfile.open(archive, 'w:gz') as bundle:
+                  bundle.add(dest, arcname='ferro-webgpu-compiler')
+          outcomes = {name.lower(): os.environ[name+'_OUTCOME'] for name in ['DEPENDENCIES', 'BUILD', 'SMOKE', 'UNCHANGED']}
+          manifest = {'commit': os.environ['GITHUB_SHA'], 'ref': os.environ['GITHUB_REF'],
+                      'run': os.environ['GITHUB_RUN_ID'], 'attempt': os.environ['GITHUB_RUN_ATTEMPT'],
+                      'target': os.environ['FERRO_COMPILER_TARGET'], 'naga': '30.0.1',
+                      'qualified': binary.is_file() and all(value == 'success' for value in outcomes.values()),
+                      'outcomes': outcomes,
+                      'scope': 'Generic development compiler and minimal GLSL/WGSL probes; no engine sources or game shaders.'}
+          (target/'manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
+          hashes = {str(p.relative_to(target)): hashlib.sha256(p.read_bytes()).hexdigest()
+                    for p in sorted(target.rglob('*')) if p.is_file()}
+          (target/'SHA256SUMS.json').write_text(json.dumps(hashes, indent=2)+'\n')
+          print(json.dumps(manifest, indent=2))
+          PY
+      - name: Conserver le compilateur et les journaux meme en echec
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ferro-webgpu-compiler-${{ github.sha }}
+          path: build/ferro-compiler-artifact/
+          if-no-files-found: error
+          retention-days: 30
