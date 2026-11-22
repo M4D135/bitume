@@ -224,7 +224,7 @@ defaut.preparer('high', B.autoconfig.profils.high, { glaces: 'differees' });
 assert.equal(defaut.activerGlaces().glacesTemporaires, true);
 assert.equal(cree.length, 1); assert.equal(cree[0].toile.className, 'retro-rendu'); assert.equal(cree[0].toile.parent, jeu);
 assert.equal(cree[0].toile.attributs['aria-hidden'], 'true');
-assert.deepEqual(cree[0].options, { msaa: 0, shadowMapScale: 1, reflections: false, sea: false, overlayLighting: 'world' });
+assert.deepEqual(cree[0].options, { indexRegisteredShapes: true, msaa: 0, shadowMapScale: 1, reflections: false, sea: false, overlayLighting: 'world' });
 assert.deepEqual(cree[0].options, B.sceneBench.OPTIONS_GLACES);
 // mêmes options et même densité que le moteur des rétroviseurs de la course : un changement de l'un sans l'autre se voit
 const jeuSource = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');

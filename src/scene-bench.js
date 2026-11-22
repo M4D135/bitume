@@ -14,7 +14,7 @@
   const DEPART = 800;
   // Moteur des rétroviseurs, mêmes options que celui de la course (src/jeu.js, majGlaces) : sans moteur prêté par le
   // jeu (premier lancement, avant toute course), le parcours en crée un, le temps de la mesure.
-  const OPTIONS_GLACES = Object.freeze({ msaa: 0, shadowMapScale: 1, reflections: false, sea: false, overlayLighting: 'world' });
+  const OPTIONS_GLACES = Object.freeze({ indexRegisteredShapes: true, msaa: 0, shadowMapScale: 1, reflections: false, sea: false, overlayLighting: 'world' });
   function moteurGlacesTemporaire() {
     const doc = globalThis.document, F = globalThis.FRender;
     if (!doc || !doc.createElement || !F || typeof F.create !== 'function') return null;
