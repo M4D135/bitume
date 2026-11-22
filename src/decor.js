@@ -1282,6 +1282,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     };
 
     // Glissières à double lisse sur poteaux, posées à la limite de chaque côté.
+    const railsVirages=[], sensVirage=new Int8Array(c.n);
+    for (const v of B.virages?.planifier(c) || []) {
+      const debut=Math.round(v.debut/c.pas), fin=Math.ceil((v.debut+v.longueur)/c.pas-1e-8);
+      for (let j=debut;j<fin;j++) sensVirage[j%c.n]=v.sens;
+    }
     const PAS_G = c.ouvert ? 2 : 4, sousTunnel = i => B.circuit.dansTunnel && B.circuit.dansTunnel(c, i * c.pas, 6);
     const finG = c.ouvert ? c.n - PAS_G : c.n;
     for (let i = 0; i < finG; i += PAS_G) {
@@ -1315,6 +1320,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         // lot 22F : le parapet d'un vide, le muret ou les balises d'un fossé remplacent la glissière ; le hasard du décor
         // est déjà tiré et le lot est créé au même moment, l'ordre des lots ne change pas
         if (planBords && B.bords.sansGlissiere(c, i, cote)) { objets.splice(0, 2); loin.splice(0, 1); }
+        else {
+          const sens=sensVirage[i] || (Math.abs(f0.k)>1/350 ? Math.sign(f0.k) : 0);
+          if (cote===-sens) railsVirages.push({rail:objets[0],haut:ay,s:f0.s,cote,longueur:long});
+        }
         ajouter(objets, loin, milieu[0], milieu[2]);
       }
     }
@@ -1999,7 +2008,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const atmosphere = saison ? B.saisons.atmosphere(saison, atmosphereBase) : atmosphereBase;
     // enceinte : portion de la ligne droite bordée de tribunes et de stands (abscisses comptées depuis la ligne) ; une
     // caméra de bord de piste s'y place devant eux, pas derrière la glissière où elle serait dans les gradins.
-    const decor = { nappes: nappes.concat(terrain.liste), lots: lotsDessin, atmosphere, portique, obstacles, sol: terrain.sol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
+    const decor = { nappes: nappes.concat(terrain.liste), lots: lotsDessin, railsVirages, atmosphere, portique, obstacles, sol: terrain.sol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
       arbres: positionsArbres,
       enceinte: { debut: avant - 10, fin: apres + 50 } };
     Object.defineProperty(decor, 'maillageSol', { value: terrain.maillageSol });

@@ -2,50 +2,41 @@
 (function (B) {
   'use strict';
   const LED_COUNT = 12, MAILLE = 128, PORTEE = 355;
-  const LARGEUR = 2.45, HAUTEUR = 1.40, EPAISSEUR = .12;
-  const COLONNES = 19, LIGNES = 11;
-  const FORME = 'bitume-ruban-chevron', GRILLE = 'bitume-ruban-grille';
-  const LED = 'bitume-balise-led', BOITIER = 'bitume-balise-boitier';
-  const modulo = (x, longueur) => ((x % longueur) + longueur) % longueur;
+  const HAUTEUR = .09, GARDE = .01, EPAISSEUR = .045;
+  const FLECHES = 6, PAS_MOTIF = 16, LIGNES = 5, PHASES = 8;
   const cleCase = (x, z) => x * 65536 + z;
+  const formesRuban = [[],[]];
 
-  // Le métal et la lumière se partagent la face avant bord à bord. Aucun polygone
-  // lumineux au dos, aucun empilement de surfaces coplanaires, même dans une glace.
-  function formeBalise(matrice) {
-    const metal = [], lumiere = [], avant = [0,0,1];
+  // Chaque tronçon possède six chevrons. Le défilement recommence sur le tronçon
+  // suivant. Au moins cinq chevrons entiers subsistent même à cheval sur le raccord.
+  function formeRuban(phase, grille) {
+    const metal=[], lumiere=[], avant=[0,0,1];
     function quad(lot,a,b,c,d,n) { lot.push([a,b,c,n,n,n],[a,c,d,n,n,n]); }
-    function bande(lot, y0, y1, x0, x1, X0 = x0, X1 = x1, n = avant) {
-      quad(lot,[x0,y0,.5],[x1,y0,.5],[X1,y1,.5],[X0,y1,.5],n);
+    function rectangle(lot,x0,x1,y0,y1) {
+      quad(lot,[x0,y0,.5],[x1,y0,.5],[x1,y1,.5],[x0,y1,.5],avant);
     }
-    const a=[-.5,-.5,-.5], b=[.5,-.5,-.5], c=[.5,.5,-.5], d=[-.5,.5,-.5];
-    const contour = [a,b,c,d], normales = [[0,-1,0],[1,0,0],[0,1,0],[-1,0,0]];
-    quad(metal,d,c,b,a,[0,0,-1]);
-    for (let i=0; i<4; i++) {
+    const contour=[[-.5,-.5,-.5],[.5,-.5,-.5],[.5,.5,-.5],[-.5,.5,-.5]];
+    const normales=[[0,-1,0],[1,0,0],[0,1,0],[-1,0,0]];
+    quad(metal,contour[3],contour[2],contour[1],contour[0],[0,0,-1]);
+    for (let i=0;i<4;i++) {
       const p=contour[i], q=contour[(i+1)%4];
       quad(metal,p,q,[q[0],q[1],.5],[p[0],p[1],.5],normales[i]);
     }
-    const pointe = y => .38 - 1.22*Math.abs(y);
-    if (matrice) {
-      const eteinte=[0,.24,.971];
-      for (let j=0; j<LIGNES; j++) {
-        const bas=j/LIGNES-.5, haut=(j+1)/LIGNES-.5, y=(bas+haut)/2;
-        const y0=bas+.15/LIGNES, y1=haut-.15/LIGNES;
-        bande(metal,bas,y0,-.5,.5); bande(metal,y1,haut,-.5,.5);
-        for (let i=0; i<COLONNES; i++) {
-          const g=i/COLONNES-.5, d=(i+1)/COLONNES-.5, x=(g+d)/2;
-          const x0=g+.13/COLONNES, x1=d-.13/COLONNES;
-          const active=Math.abs(y)<.41 && x<=pointe(y) && x>=pointe(y)-.28;
-          bande(metal,y0,y1,g,x0); bande(metal,y0,y1,x1,d);
-          bande(active?lumiere:metal,y0,y1,x0,x1,x0,x1,active?avant:eteinte);
+    const colonnes=FLECHES*PAS_MOTIF, x=i=>i/colonnes-.5;
+    rectangle(metal,-.5,.5,-.5,-.43); rectangle(metal,-.5,.5,.43,.5);
+    for (let j=0;j<LIGNES;j++) {
+      const pointe=7-Math.abs(j-2), bas=-.43+.86*j/LIGNES, haut=-.43+.86*(j+1)/LIGNES;
+      const allumee=i=>{const col=(i+PAS_MOTIF-phase*2)%PAS_MOTIF;return col>=pointe-1 && col<=pointe;};
+      const y0=bas+(grille ? .012 : 0), y1=haut-(grille ? .012 : 0);
+      if (grille) { rectangle(metal,-.5,.5,bas,y0); rectangle(metal,-.5,.5,y1,haut); }
+      for (let i=0;i<colonnes;) {
+        const premier=i, actif=allumee(i);
+        do { i++; } while (i<colonnes && allumee(i)===actif);
+        if (!actif || !grille) { rectangle(actif?lumiere:metal,x(premier),x(i),y0,y1); continue; }
+        for (let k=premier;k<i;k++) {
+          rectangle(metal,x(k),x(k+.12),y0,y1); rectangle(lumiere,x(k+.12),x(k+.88),y0,y1);
+          rectangle(metal,x(k+.88),x(k+1),y0,y1);
         }
-      }
-    } else {
-      bande(metal,-.5,-.41,-.5,.5); bande(metal,.41,.5,-.5,.5);
-      for (const [bas,haut] of [[-.41,0],[0,.41]]) {
-        const b=pointe(bas), h=pointe(haut);
-        bande(metal,bas,haut,-.5,b-.28,-.5,h-.28);
-        bande(lumiere,bas,haut,b-.28,b,h-.28,h);
-        bande(metal,bas,haut,b,.5,h,.5);
       }
     }
     return {metal,lumiere};
@@ -73,45 +64,27 @@
   }
   const renderer = globalThis.FRender || globalThis.window?.FRender;
   if (renderer?.forme) {
-    const proche=formeBalise(true), loin=formeBalise(false);
-    renderer.forme(GRILLE,proche.metal); renderer.forme(LED,proche.lumiere);
-    renderer.forme(BOITIER,loin.metal); renderer.forme(FORME,loin.lumiere);
+    for (let grille=0;grille<=1;grille++) for (let phase=0;phase<PHASES;phase++) {
+      const forme=formeRuban(phase,grille), nom='bitume-rail-'+grille+'-'+phase;
+      renderer.forme(nom,forme.metal); renderer.forme(nom+'-led',forme.lumiere);
+      formesRuban[grille].push([nom,nom+'-led']);
+    }
     for (const [lettre, lignes] of Object.entries(glyphes)) {
       nomsGlyphes[lettre] = 'bitume-portique-' + lettre;
       renderer.forme(nomsGlyphes[lettre], formeLettre(lignes));
     }
   }
 
-  function placerBalise(c, decor, limites, s, sens, rang) {
-    const q=B.circuit.echantillon(c,s), i=Math.min(c.n-1,Math.floor(s/c.pas));
-    const j=c.ouvert?Math.min(c.n-1,i+1):(i+1)%c.n, f=s/c.pas-i;
-    const ext=-sens, bords=ext<0?limites?.G:limites?.D;
-    const largeur=B.circuit.largeurA(c,s,ext), rail=bords?bords[i]+(bords[j]-bords[i])*f:largeur+3;
-    // En tunnel la paroi guide déjà le pilote. Pas de panneau transversal dans le gabarit.
-    if (B.couverts?.segment(c,s)) return null;
-    const lat=ext*(Math.max(rail,largeur)+LARGEUR/2+.55);
-    const x=q.x-Math.sin(q.cap)*lat, z=q.z+Math.cos(q.cap)*lat;
-    const amont=B.circuit.echantillon(c,c.ouvert?Math.max(0,s-28):modulo(s-28,c.longueur));
-    const dx=amont.x-x, dz=amont.z-z, d=Math.hypot(dx,dz);
-    if (d<.01) return null;
-    const nx=dx/d, nz=dz/d;
-    const rotation=B.decor.angles([sens*nz,0,-sens*nx],[0,sens,0],[nx,0,nz]);
-    const route=q.y-Math.sin(q.devers||0)*ext*largeur;
-    const poteaux=[-.68,.68].map(ecart=>{
-      const px=x+nz*ecart-nx*.095, pz=z-nx*ecart-nz*.095;
-      const sol=decor?.sol?.(px,pz);
-      return {x:px,z:pz,sol:Number.isFinite(sol)?sol:route};
-    });
-    const bas=Math.max(route+1.12,...poteaux.map(p=>p.sol+.72));
-    const fond=objet(BOITIER,17,[.14,.16,.17]), fleche=objet(FORME,16,[1,.68,.14]);
-    fond.p=fleche.p=[x,bas+HAUTEUR/2,z]; fond.s=fleche.s=[LARGEUR,HAUTEUR,EPAISSEUR];
-    fond.r=fleche.r=rotation;
-    const supports=poteaux.map(p=>{
-      const o=objet('box',17,[.42,.45,.46]), haut=bas+HAUTEUR*.78;
-      o.p=[p.x,(haut+p.sol)/2,p.z]; o.s=[.064,haut-p.sol,.064]; o.r=[0,Math.atan2(nx,nz),0];
-      return o;
-    });
-    return {s,x,z,lat,rang,fond,fleche,supports};
+  function bandeauSurRail(troncon) {
+    const {rail,haut,s,cote,longueur}=troncon;
+    // Le contrôle des dix centimètres est vertical, y compris sur une glissière en pente.
+    const h=HAUTEUR*haut[1], offset=(rail.s[1]+h)/2;
+    const pos=rail.p.map((p,i)=>p+haut[i]*offset+(i===1?GARDE:0));
+    const taille=[longueur,h,EPAISSEUR], r=rail.r;
+    const rotation=cote<0?r:[r[0]+Math.PI,r[1],r[2]];
+    const fond=objet('box',17,[.10,.12,.13]), fleche=objet('box',16,[1,.68,.14]);
+    fond.p=fleche.p=pos; fond.s=fleche.s=taille; fond.r=fleche.r=rotation;
+    return {s,x:pos[0],z:pos[2],fond,fleche};
   }
 
   function objet(shape, mat, couleur) {
@@ -122,27 +95,14 @@
     const cases=new Map(), panneaux=[], bandeaux=[], objets=[];
     const etat={cases,panneaux,chevrons:panneaux,bandeaux,portique:bandeaux,objets};
     if (!circuit?.n) return etat;
-    const limites=B.decor?.limites(circuit);
-    for (const v of B.virages?.planifier(circuit) || []) {
-      // Un repère au point de corde, deux ou trois autour d'un coude marqué.
-      // L'espacement reste en mètres, y compris si le virage coupe la ligne de départ.
-      const sommet=modulo(v.sommet-v.debut,circuit.longueur);
-      const positions=[sommet];
-      if (v.difficulte>=2 && sommet>=22) positions.unshift(sommet-17);
-      if (v.difficulte===3 && v.longueur-sommet>=22) positions.push(sommet+17);
-      for (let k=0;k<positions.length;k++) {
-        const s=modulo(v.debut+positions[k],circuit.longueur);
-        const p=placerBalise(circuit,decor,limites,s,v.sens,k);
-        if (!p) continue;
-        panneaux.push(p); objets.push(p.fond,p.fleche,...p.supports);
-        for (let cx=Math.floor((p.x-PORTEE)/MAILLE);cx<=Math.floor((p.x+PORTEE)/MAILLE);cx++)
-          for (let cz=Math.floor((p.z-PORTEE)/MAILLE);cz<=Math.floor((p.z+PORTEE)/MAILLE);cz++) {
-            const cle=cleCase(cx,cz);
-            let cellule=cases.get(cle);
-            if (!cellule) { cellule=[];cases.set(cle,cellule); }
-            cellule.push(p);
-          }
-      }
+    // Stocker un tronçon dans une seule case ; parcourir les cases de la caméra en course.
+    for (const rail of decor?.railsVirages || []) {
+      const p=bandeauSurRail(rail);
+      panneaux.push(p); objets.push(p.fond,p.fleche);
+      const cle=cleCase(Math.floor(p.x/MAILLE),Math.floor(p.z/MAILLE));
+      let cellule=cases.get(cle);
+      if (!cellule) { cellule=[];cases.set(cle,cellule); }
+      cellule.push(p);
     }
     const portiquesS = [0];
     if (circuit.ouvert && Number.isFinite(circuit.arrivee) && circuit.arrivee > 100) {
@@ -202,21 +162,20 @@
 
   function dessinerBalises(etat, temps, contexte, camera, sortie) {
     if (!sortie || !camera) return;
-    const proches=etat.cases.get(cleCase(Math.floor(camera[0]/MAILLE),Math.floor(camera[2]/MAILLE)));
-    if (!proches) return;
-    const bas=contexte?.qualite==='low', portee=bas?265:PORTEE, distanceLED=bas?25:38;
-    const pluie=contexte?.pluie||0, nuit=contexte?.nuit||0;
-    for (const p of proches) {
-      const d2=(p.x-camera[0])**2+(p.z-camera[2])**2;
-      if (d2>portee*portee) continue;
-      const matrice=d2<distanceLED**2;
-      p.fond.shape=matrice?GRILLE:BOITIER;
-      p.fleche.shape=matrice?LED:FORME;
-      // Une pulsation douce se transmet d'une balise à la suivante. La flèche reste fixe et lisible.
-      const onde=contexte?.mouvementReduit ? .5 : .5+.5*Math.cos(temps*3.2-p.rang*1.1);
-      p.fleche.emissive=.69+.13*pluie-.10*nuit+(.13+.18*Math.max(pluie,nuit))*onde;
-      sortie.push(...p.supports,p.fond,p.fleche);
-    }
+    const bas=contexte?.qualite==='low', portee=bas?265:PORTEE;
+    const phase=contexte?.mouvementReduit?0:Math.floor(temps*9)%PHASES;
+    const eclat=.86+.18*(contexte?.pluie||0)-.12*(contexte?.nuit||0);
+    for (let x=Math.floor((camera[0]-portee)/MAILLE);x<=Math.floor((camera[0]+portee)/MAILLE);x++)
+      for (let z=Math.floor((camera[2]-portee)/MAILLE);z<=Math.floor((camera[2]+portee)/MAILLE);z++) {
+        const proches=etat.cases.get(cleCase(x,z)); if (!proches) continue;
+        for (const p of proches) {
+          const d2=(p.x-camera[0])**2+(p.z-camera[2])**2;
+          if (d2>portee**2) continue;
+          const noms=formesRuban[d2<12**2?1:0][phase]; if (!noms) continue;
+          p.fond.shape=noms[0]; p.fleche.shape=noms[1]; p.fleche.emissive=eclat;
+          sortie.push(p.fond,p.fleche);
+        }
+      }
   }
 
   const MESSAGES_TOUR = Array.from({length: 100}, (_, i) => 'TOUR ' + i);
