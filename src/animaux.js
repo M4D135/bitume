@@ -11,7 +11,7 @@
 (function (B) {
   'use strict';
   const TAU = Math.PI * 2, PAS = .1, MAX_VUES = 2, MAX_VOITURES = 32, D_MIN = 8, CASE = 4, DEMI_CASE = 2.9;
-  const BANDES_ABORDS = Object.freeze({ foret: 38, cote: 50, montagne: 42, islande: 42, desert: 42, asie: 38, pacifique: 42, baikal: 42 });
+  const BANDES_ABORDS = Object.freeze({ foret: 38, cote: 50, montagne: 42, islande: 42, desert: 42, asie: 38, pacifique: 42, baikal: 42, fjord: 42, sierra: 42, corail: 45, marseille: 40 });
   const GARDE_BORD = 4, PORTEE_VUES = 360, MAX_CHAMPS = 6;
   const QUALITES = Object.freeze(['off', 'low', 'medium', 'high', 'ultra']);
   const BUDGETS = Object.freeze({
@@ -880,7 +880,18 @@
       couleurs: [{ corps: C(.30, .32, .34), marbre: C(.52, .54, .56), caudale: C(.26, .28, .3) }] },
     urubu: { nom: 'Urubu à tête rouge', modele: 'rapace', famille: 'plane', echelle: 1.5, couleurs: [{ corps: C(.13, .11, .1), ailes: C(.11, .09, .08), bec: C(.62, .2, .16) }], groupes: [2, 2], effectif: [1, 2], altitude: [40, 120], rayon: [35, 70] },
   };
+  // Les goélands fréquentent aussi les quais et les plages, où ils se posent en bande.
+  ESPECES.goelandPose = {
+    nom: 'Goéland posé', modele: 'goeland', famille: 'echassier', couleurs: ESPECES.goeland.couleurs,
+    taille: [.9, 1.1], groupes: [2, 4], effectif: [3, 6], habitat: {
+      d: [14, 40], ny: [.83, 1], eau: [-1e9, .15], arbres: [0, 8], rayon: 6, espace: 120, etroit: true },
+    vitesses: [.5, 1, 10], alerte: 60, fuite: 35, vol: 8, unePatte: .06,
+  };
   const BIOMES = Object.freeze({
+    marseille: Object.freeze(['goelandPose', 'goeland']),
+    corail: Object.freeze(['goelandPose', 'aigrette', 'pelican']),
+    fjord: Object.freeze(['cerf', 'mouton', 'aigle']),
+    sierra: Object.freeze(['wapiti', 'urubu']),
     foret: Object.freeze(['cerf', 'sanglier', 'buse']),
     cote: Object.freeze(['camarguais', 'flamant', 'goeland']),
     montagne: Object.freeze(['bouquetin', 'marmotte', 'aigle']),
@@ -1153,36 +1164,17 @@
   }
 
   // ================================================================ relief exact et grille d'habitat
-  // Le sol rendu est le maillage de decor.js : nœuds tous les 24 m depuis le coin du tracé moins la marge du thème,
-  // chaque case coupée en deux triangles par la diagonale (i, j)–(i + 1, j + 1). On relit les hauteurs des nœuds une
-  // fois (decor.sol y est exact) et l'on interpole dans le bon triangle : un sabot touche le sol rendu, pas une
-  // moyenne bilinéaire qui flotte ou s'enfonce de quelques décimètres dans les pentes.
-  function relief(c, decor) {
-    const th = decor.theme || {}, marge = Number.isFinite(th.marge) ? th.marge : 760, pas = 24;
-    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
-    for (let i = 0; i < c.n; i++) { const x = c.x[i], z = c.z[i]; if (x < x0) x0 = x; if (x > x1) x1 = x; if (z < z0) z0 = z; if (z > z1) z1 = z; }
-    x0 -= marge; z0 -= marge; x1 += marge; z1 += marge;
-    const nx = Math.ceil((x1 - x0) / pas) + 1, nz = Math.ceil((z1 - z0) / pas) + 1, H = new Float32Array(nx * nz);
-    for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) H[j * nx + i] = decor.sol(x0 + i * pas, z0 + j * pas);
-    return { x0, z0, nx, nz, pas, H };
-  }
+  // La pose interroge le triangle du décor qui porte l'animal. Chaque circuit fournit
+  // son propre pas et sa diagonale (terrains organiques, tuiles urbaines et cols réels).
   function solExact(T, x, z) {
-    const fi = (x - T.x0) / T.pas, fj = (z - T.z0) / T.pas, nx = T.nx;
-    let i = Math.floor(fi), j = Math.floor(fj);
-    if (i < 0) i = 0; else if (i > nx - 2) i = nx - 2;
-    if (j < 0) j = 0; else if (j > T.nz - 2) j = T.nz - 2;
-    let u = fi - i, v = fj - j; u = u < 0 ? 0 : u > 1 ? 1 : u; v = v < 0 ? 0 : v > 1 ? 1 : v;
-    const H = T.H, k = j * nx + i, h00 = H[k], h10 = H[k + 1], h01 = H[k + nx], h11 = H[k + nx + 1];
-    return u >= v ? h00 + (h10 - h00) * u + (h11 - h10) * v : h00 + (h11 - h01) * u + (h01 - h00) * v;
-  }
-  function normaleY(T, x, z) {
-    const fi = (x - T.x0) / T.pas, fj = (z - T.z0) / T.pas, nx = T.nx;
-    let i = Math.floor(fi), j = Math.floor(fj);
-    if (i < 0) i = 0; else if (i > nx - 2) i = nx - 2;
-    if (j < 0) j = 0; else if (j > T.nz - 2) j = T.nz - 2;
-    const H = T.H, k = j * nx + i, h00 = H[k], h10 = H[k + 1], h01 = H[k + nx], h11 = H[k + nx + 1];
-    const gx = (fi - i >= fj - j ? h10 - h00 : h11 - h01) / T.pas, gz = (fi - i >= fj - j ? h11 - h10 : h01 - h00) / T.pas;
-    return 1 / Math.sqrt(1 + gx * gx + gz * gz);
+    if (!T.H) return T.sol(x, z);
+    const fi = (x - T.x0) / T.pas, fj = (z - T.z0) / T.pas;
+    const i = clamp(Math.floor(fi), 0, T.nx - 2), j = clamp(Math.floor(fj), 0, T.nz - 2);
+    const u = clamp(fi - i, 0, 1), v = clamp(fj - j, 0, 1), k = j * T.nx + i;
+    const a = T.H[k], b = T.H[k + 1], d = T.H[k + T.nx], e = T.H[k + T.nx + 1];
+    if (T.alterne && ((i + j) & 1)) return u + v <= 1
+      ? a + (b - a) * u + (d - a) * v : e + (d - e) * (1 - u) + (b - e) * (1 - v);
+    return u >= v ? a + (b - a) * u + (e - b) * v : a + (e - d) * u + (d - a) * v;
   }
 
   // Grille de 4 m autour du tracé (jusqu'à 180 m de l'axe), calculée une fois au départ : distance à l'axe (exacte
@@ -1192,19 +1184,36 @@
   const PORTEE_HABITAT = 180, R_EXACT = 96, MARGE_OBST = .7, OBST = 1, ENCEINTE = 2, TUNNEL = 4, DEGAGEMENT = 8, R_ENCEINTE = 140, R_TUNNEL = 70;
   const FORMES_DECOR = new Set(['box', 'cylinder', 'bevel', 'octa', 'sphere', 'wedge', 'ring']);
   function grille(c, decor) {
-    const T = relief(c, decor);
+    const T = decor.maillageSol || { sol: decor.solRendu || decor.sol };
     let ax0 = Infinity, ax1 = -Infinity, az0 = Infinity, az1 = -Infinity;
     for (let i = 0; i < c.n; i++) { const x = c.x[i], z = c.z[i]; if (x < ax0) ax0 = x; if (x > ax1) ax1 = x; if (z < az0) az0 = z; if (z > az1) az1 = z; }
     const x0 = ax0 - PORTEE_HABITAT, z0 = az0 - PORTEE_HABITAT;
-    const nx = Math.ceil((ax1 - ax0 + 2 * PORTEE_HABITAT) / CASE), nz = Math.ceil((az1 - az0 + 2 * PORTEE_HABITAT) / CASE), N = nx * nz;
+    const nx = Math.ceil((ax1 - ax0 + 2 * PORTEE_HABITAT) / CASE), nz = Math.ceil((az1 - az0 + 2 * PORTEE_HABITAT) / CASE), premier = new Int32Array(nz).fill(nx), fin = new Int32Array(nz);
+    // Chaque ligne ne garde que le corridor utile. Sur une longue vallée en diagonale,
+    // les cases de montagne très éloignées n'occupent plus un rectangle de plusieurs centaines de Mo.
+    const rayonCases = Math.ceil(PORTEE_HABITAT / CASE) + 1;
+    for (let s = 0; s < c.n; s++) {
+      const i = Math.floor((c.x[s] - x0) / CASE), j = Math.floor((c.z[s] - z0) / CASE);
+      const gauche = Math.max(0, i - rayonCases), droite = Math.min(nx, i + rayonCases + 1);
+      for (let l = Math.max(0, j - rayonCases); l < Math.min(nz, j + rayonCases + 1); l++) {
+        if (gauche < premier[l]) premier[l] = gauche;
+        if (droite > fin[l]) fin[l] = droite;
+      }
+    }
+    const lignes = new Int32Array(nz);
+    let N = 0;
+    for (let j = 0; j < nz; j++) {
+      lignes[j] = N - premier[j];
+      N += Math.max(0, fin[j] - premier[j]);
+    }
     const d = new Float32Array(N).fill(1e10), bords = new Float32Array(N).fill(c.largeur / 2 || 5), h = new Float32Array(N), ny = new Uint8Array(N), arbres = new Uint8Array(N), drap = new Uint8Array(N);
-    const G = { x0, z0, nx, nz, N, d, bords, h, ny, arbres, drap, T, eau: Number.isFinite(decor.niveauEau) ? decor.niveauEau : -1e5 };
+    const G = { x0, z0, nx, nz, N, premier, fin, lignes, d, bords, h, ny, arbres, drap, T, eau: Number.isFinite(decor.niveauEau) ? decor.niveauEau : -1e5 };
     // Distance exacte aux échantillons de l'axe, tous les 2 m, jusqu'à 96 m ; bord du côté correspondant.
     const r = Math.ceil(R_EXACT / CASE), R2 = R_EXACT * R_EXACT;
     for (let s = 0; s < c.n; s++) {
       const px = c.x[s], pz = c.z[s], ci = Math.floor((px - x0) / CASE), cj = Math.floor((pz - z0) / CASE), sa = Math.sin(c.cap[s]), ca = Math.cos(c.cap[s]);
       for (let j = Math.max(0, cj - r), jn = Math.min(nz - 1, cj + r); j <= jn; j++) {
-        const dz = z0 + (j + .5) * CASE - pz, dz2 = dz * dz, ligne = j * nx;
+        const dz = z0 + (j + .5) * CASE - pz, dz2 = dz * dz, ligne = lignes[j];
         for (let i = Math.max(0, ci - r), in_ = Math.min(nx - 1, ci + r); i <= in_; i++) {
           const dx = x0 + (i + .5) * CASE - px, dd = dx * dx + dz2;
           if (dd < R2 && dd < d[ligne + i]) {
@@ -1222,36 +1231,40 @@
       const lim = Math.max(c.limiteG ? c.limiteG[s] : c.largeur / 2 || 5, c.limiteD ? c.limiteD[s] : c.largeur / 2 || 5) + GARDE_BORD + DEMI_CASE;
       if (lim <= D_MIN + DEMI_CASE) continue;
       const px = c.x[s], pz = c.z[s], ci = Math.floor((px - x0) / CASE), cj = Math.floor((pz - z0) / CASE), rr = Math.ceil(lim / CASE);
-      for (let j = Math.max(0, cj - rr); j <= Math.min(nz - 1, cj + rr); j++) for (let i = Math.max(0, ci - rr); i <= Math.min(nx - 1, ci + rr); i++) {
+      for (let j = Math.max(0, cj - rr); j <= Math.min(nz - 1, cj + rr); j++) for (let i = Math.max(premier[j], ci - rr); i <= Math.min(fin[j] - 1, ci + rr); i++) {
         const dx = x0 + (i + .5) * CASE - px, dz = z0 + (j + .5) * CASE - pz;
-        if (dx * dx + dz * dz < lim * lim) drap[j * nx + i] |= DEGAGEMENT;
+        if (dx * dx + dz * dz < lim * lim) drap[lignes[j] + i] |= DEGAGEMENT;
       }
     }
     // au-delà : chanfrein en deux passes (erreur de quelques pour cent, sans effet sur les distances exactes)
     const W1 = CASE, W2 = CASE * Math.SQRT2;
-    for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
-      const k = j * nx + i; let v = d[k];
-      if (i > 0 && d[k - 1] + W1 < v) v = d[k - 1] + W1;
-      if (j > 0) {
-        if (d[k - nx] + W1 < v) v = d[k - nx] + W1;
-        if (i > 0 && d[k - nx - 1] + W2 < v) v = d[k - nx - 1] + W2;
-        if (i < nx - 1 && d[k - nx + 1] + W2 < v) v = d[k - nx + 1] + W2;
+    for (const sens of [1, -1]) {
+      for (let j = sens === 1 ? 0 : nz - 1; j >= 0 && j < nz; j += sens) {
+        const jm = j - sens, voisin = jm >= 0 && jm < nz;
+        const debut = sens === 1 ? premier[j] : fin[j] - 1;
+        for (let i = debut; i >= premier[j] && i < fin[j]; i += sens) {
+          const k = lignes[j] + i;
+          let v = d[k];
+          if (i !== debut) v = Math.min(v, d[k - sens] + W1);
+          if (voisin) {
+            const km = lignes[jm] + i;
+            if (i >= premier[jm] && i < fin[jm]) v = Math.min(v, d[km] + W1);
+            if (i - 1 >= premier[jm] && i - 1 < fin[jm]) v = Math.min(v, d[km - 1] + W2);
+            if (i + 1 >= premier[jm] && i + 1 < fin[jm]) v = Math.min(v, d[km + 1] + W2);
+          }
+          d[k] = v;
+        }
       }
-      d[k] = v;
     }
-    for (let j = nz - 1; j >= 0; j--) for (let i = nx - 1; i >= 0; i--) {
-      const k = j * nx + i; let v = d[k];
-      if (i < nx - 1 && d[k + 1] + W1 < v) v = d[k + 1] + W1;
-      if (j < nz - 1) {
-        if (d[k + nx] + W1 < v) v = d[k + nx] + W1;
-        if (i < nx - 1 && d[k + nx + 1] + W2 < v) v = d[k + nx + 1] + W2;
-        if (i > 0 && d[k + nx - 1] + W2 < v) v = d[k + nx - 1] + W2;
-      }
-      d[k] = v;
+    for (let j = 0; j < nz; j++) for (let i = premier[j]; i < fin[j]; i++) {
+      const k = lignes[j] + i;
+      if (d[k] <= PORTEE_HABITAT) h[k] = solExact(T, x0 + (i + .5) * CASE, z0 + (j + .5) * CASE);
     }
-    for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
-      const k = j * nx + i, x = x0 + (i + .5) * CASE, z = z0 + (j + .5) * CASE;
-      if (d[k] <= PORTEE_HABITAT) { h[k] = solExact(T, x, z); ny[k] = Math.round(normaleY(T, x, z) * 255); }
+    // Pente à partir du sol échantillonné, sans nouveau sondage par case.
+    for (let j = 0; j + 1 < nz; j++) for (let i = Math.max(premier[j], premier[j + 1]); i < Math.min(fin[j] - 1, fin[j + 1]); i++) {
+      const k = lignes[j] + i, voisin = lignes[j + 1] + i;
+      if (Math.max(d[k], d[k + 1], d[voisin]) > PORTEE_HABITAT) continue;
+      ny[k] = Math.round(255 / Math.hypot(1, (h[k + 1] - h[k]) / CASE, (h[voisin] - h[k]) / CASE));
     }
     // obstacles posés au sol : boîtes tournées (bâtiments, gradins, murets, glissières), cylindres (troncs, piliers),
     // blocs (roches) ; ni les houppiers, ni les toits en hauteur, ni les marquages à plat
@@ -1259,11 +1272,11 @@
       const i0 = Math.max(0, Math.floor((cx - rayon - x0) / CASE)), i1 = Math.min(nx - 1, Math.floor((cx + rayon - x0) / CASE));
       const j0 = Math.max(0, Math.floor((cz - rayon - z0) / CASE)), j1 = Math.min(nz - 1, Math.floor((cz + rayon - z0) / CASE));
       const ca = Math.cos(angleY), sa = Math.sin(angleY);
-      for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) {
+      for (let j = j0; j <= j1; j++) for (let i = Math.max(i0, premier[j]); i <= Math.min(i1, fin[j] - 1); i++) {
         const dx = x0 + (i + .5) * CASE - cx, dz = z0 + (j + .5) * CASE - cz;
         if (ex < 0) { if (dx * dx + dz * dz > rayon * rayon) continue; }
         else if (Math.abs(dx * ca - dz * sa) > ex || Math.abs(dx * sa + dz * ca) > ez) continue;
-        drap[j * nx + i] |= OBST;
+        drap[lignes[j] + i] |= OBST;
       }
     };
     const m = MARGE_OBST + CASE * .5;
@@ -1280,19 +1293,19 @@
     const ra = Math.ceil(24 / CASE);
     for (const t of decor.arbres || []) {
       const ci = Math.floor((t[0] - x0) / CASE), cj = Math.floor((t[1] - z0) / CASE);
-      for (let j = Math.max(0, cj - ra); j <= Math.min(nz - 1, cj + ra); j++) for (let i = Math.max(0, ci - ra); i <= Math.min(nx - 1, ci + ra); i++) {
+      for (let j = Math.max(0, cj - ra); j <= Math.min(nz - 1, cj + ra); j++) for (let i = Math.max(premier[j], ci - ra); i <= Math.min(fin[j] - 1, ci + ra); i++) {
         if ((i - ci) * (i - ci) + (j - cj) * (j - cj) > ra * ra) continue;
-        const k = j * nx + i; if (arbres[k] < 255) arbres[k]++;
+        const k = lignes[j] + i; if (arbres[k] < 255) arbres[k]++;
       }
     }
     // zones interdites : enceinte des stands et des tribunes, abords et dessus du tunnel
     const L = c.longueur || c.n * (c.pas || 2), pasC = c.pas || L / c.n;
     const disque = (s, rayon, bit) => {
-      const i = ((Math.round(s / pasC) % c.n) + c.n) % c.n, cx = c.x[i], cz = c.z[i], rr = Math.ceil(rayon / CASE);
+      const i = c.ouvert ? clamp(Math.round(s / pasC), 0, c.n - 1) : ((Math.round(s / pasC) % c.n) + c.n) % c.n, cx = c.x[i], cz = c.z[i], rr = Math.ceil(rayon / CASE);
       const ci = Math.floor((cx - x0) / CASE), cj = Math.floor((cz - z0) / CASE);
       for (let j = Math.max(0, cj - rr); j <= Math.min(nz - 1, cj + rr); j++) for (let ii = Math.max(0, ci - rr); ii <= Math.min(nx - 1, ci + rr); ii++) {
         const dx = x0 + (ii + .5) * CASE - cx, dz = z0 + (j + .5) * CASE - cz;
-        if (dx * dx + dz * dz <= rayon * rayon) drap[j * nx + ii] |= bit;
+        if (dx * dx + dz * dz <= rayon * rayon) drap[lignes[j] + ii] |= bit;
       }
     };
     const enc = decor.enceinte || { debut: -160, fin: 310 };
@@ -1305,7 +1318,7 @@
   }
   function cellule(G, x, z) {
     const i = Math.floor((x - G.x0) / CASE), j = Math.floor((z - G.z0) / CASE);
-    return i < 0 || j < 0 || i >= G.nx || j >= G.nz ? -1 : j * G.nx + i;
+    return j < 0 || j >= G.nz || i < G.premier[j] || i >= G.fin[j] ? -1 : G.lignes[j] + i;
   }
   // Case praticable pour un habitat : hors obstacles et zones interdites, au-delà du vrai bord en tout point de la
   // case, pente et profondeur d'eau dans les bornes de l'espèce ; « strict » ajoute la densité d'arbres (choix du
@@ -1364,11 +1377,11 @@
     const d0 = e.famille === 'echassier' ? Math.max(hab.d[0], D_MIN + 10 + hab.rayon) : hab.d[0];
     return [d0, Math.max(d0 + 25, Math.min(hab.d[1], e.fuite * 1.45))];
   }
-  function choisirDomaine(etat, e, cle, rnd, hab, bande) {
+  function choisirDomaine(etat, e, cle, rnd, hab, bande, debut, fin) {
     const c = etat.c, G = etat.G;
     for (let essai = 0; essai < 700; essai++) {
       const relache = essai >= 450, hb = relache ? hab.relache : hab, serre = bande && essai < 300, b = serre ? bande : hab.d;
-      const i = Math.floor(rnd() * c.n), cote = rnd() < .5 ? -1 : 1;
+      const i = Math.floor(debut + rnd() * (fin - debut)), cote = rnd() < .5 ? -1 : 1;
       const bord = cote > 0 ? (c.largeurD ? c.largeurD[i] : c.largeur / 2 || 5) : (c.largeurG ? c.largeurG[i] : c.largeur / 2 || 5);
       const dist = bord + mix(b[0], b[1], Math.pow(rnd(), 1.6));
       const x = c.x[i] - Math.sin(c.cap[i]) * cote * dist, z = c.z[i] + Math.cos(c.cap[i]) * cote * dist, k = cellule(G, x, z);
@@ -1378,7 +1391,17 @@
       if (bons < (hab.etroit ? 5 : 9)) continue; // les échassiers suivent une bande de rivage étroite
       let loin = true;
       for (const g of etat.groupes) { const dd = Math.hypot(g.hx - x, g.hz - z); if (dd < (g.cle === cle ? hab.espace : g.hr + hab.rayon + 25)) { loin = false; break; } }
-      if (loin) return { x, z, d: G.d[k], hab: hb };
+      if (!loin) continue;
+      // Préférer un pré ou un talus que le pilote voit depuis son approche.
+      const derriere = i - Math.round(65 / c.pas);
+      const j = c.ouvert ? Math.max(0, derriere) : (derriere + c.n) % c.n;
+      const hauteur = G.h[k] + .55, oeil = c.y[j] + 1.25;
+      let visible = true;
+      for (let p = 1; p < 8; p++) {
+        const u = p / 8;
+        if (solExact(G.T, mix(c.x[j], x, u), mix(c.z[j], z, u)) > mix(oeil, hauteur, u)) { visible = false; break; }
+      }
+      if (visible) return { x, z, d: G.d[k], hab: hb, s: i * c.pas };
     }
     return null;
   }
@@ -1461,26 +1484,38 @@
   }
   function creer(c, decor, options = {}) {
     const t0 = (globalThis.performance && performance.now) ? performance.now() : 0;
-    const theme = BIOMES[c.theme] ? c.theme : 'foret', saison = (B.saisons && B.saisons.normaliser) ? B.saisons.normaliser(options.saison) : (options.saison || 'ete');
+    const theme = c.id === 'marseille' ? 'marseille' : BIOMES[c.theme] ? c.theme : 'foret', saison = (B.saisons && B.saisons.normaliser) ? B.saisons.normaliser(options.saison) : (options.saison || 'ete');
     const graine = ((options.graine === undefined ? (c.graine || 1) : options.graine) ^ hacher('animaux:' + theme)) >>> 0, rnd = generateur(graine);
     const etat = { c, theme, saison, moment: options.moment || 'jour', nuitFixe: options.nuit,
       G: grille(c, decor), groupes: [], volants: [], animaux: [], especes: [], absentes: [], k: 0, depart: true };
     const G = etat.G;
+    const debutCourse = c.ouvert ? c.depart || 0 : 0;
+    const finCourse = c.ouvert ? c.arrivee ?? c.longueur : c.longueur;
+    const longueur = finCourse - debutCourse;
+    const terrestres = BIOMES[theme].filter(cle => AU_SOL.has(ESPECES[cle].famille)
+      && (!ESPECES[cle].saisons || ESPECES[cle].saisons.includes(saison)));
+    // Un habitat par secteur de 155 m en moyenne, lorsqu'une espèce peut y vivre.
+    // Les espèces alternent pour éviter qu'un troupeau unique peuple tout un versant.
+    const rotations = Math.max(1, Math.round(longueur / (155 * Math.max(1, terrestres.length))));
     for (const cle of BIOMES[theme]) {
       const e = ESPECES[cle]; e.cle = cle;
       if (e.saisons && !e.saisons.includes(saison)) { etat.absentes.push({ cle, raison: 'saison' }); continue; }
-      const md = MODELES[e.modele], nG = Math.min(2, e.groupes[0] + Math.floor(rnd() * (e.groupes[1] - e.groupes[0] + 1)));
+      const md = MODELES[e.modele];
       if (AU_SOL.has(e.famille)) {
         const marge = Math.max(2, (md.rig ? md.rig.longueur * .5 : md.envergure ? md.envergure * .35 : 1) * (e.echelle || 1));
         const hab = Object.assign({}, e.habitat, { bande: BANDES_ABORDS[theme], marge,
           d: [GARDE_BORD + marge + DEMI_CASE + 4, BANDES_ABORDS[theme] - 6], rayon: Math.min(6, e.habitat.rayon), espace: Math.min(180, e.habitat.espace) });
         hab.relache = relacher(hab);
         let places = 0;
-        for (let g = 0; g < nG; g++) {
-          const dom = choisirDomaine(etat, e, cle, rnd, hab, g === 0 ? bandeDe(e, hab) : null);
+        const pasSecteur = longueur / (rotations * terrestres.length);
+        for (let g = 0; g < rotations; g++) {
+          const secteur = g * terrestres.length + terrestres.indexOf(cle);
+          const debut = Math.min(c.n - 1, Math.floor((debutCourse + secteur * pasSecteur) / c.pas));
+          const fin = Math.min(c.n, Math.ceil((debutCourse + (secteur + 1) * pasSecteur) / c.pas));
+          const dom = choisirDomaine(etat, e, cle, rnd, hab, g === 0 ? bandeDe(e, hab) : null, debut, fin);
           if (!dom) continue;
           const n = Math.min(6, e.effectif[0] + Math.floor(rnd() * (e.effectif[1] - e.effectif[0] + 1)));
-          const grp = { e, cle, md, famille: e.famille, hx: dom.x, hz: dom.z, hr: hab.rayon, dAxe: dom.d, hab: dom.hab, rx: dom.x, rz: dom.z, refuge: false, debut: 0, n, index: etat.groupes.length,
+          const grp = { e, cle, md, famille: e.famille, hx: dom.x, hz: dom.z, s: dom.s, hr: hab.rayon, dAxe: dom.d, hab: dom.hab, rx: dom.x, rz: dom.z, refuge: false, debut: 0, n, index: etat.groupes.length,
             espacement: (e.famille === 'echassier' || e.famille === 'coureur' ? .9 : md.rig.longueur * .75) * (e.echelle || 1) };
           const ref = chercherRefuge(etat, grp);
           if (ref) { grp.rx = ref[0]; grp.rz = ref[1]; grp.refuge = true; }
@@ -1490,7 +1525,8 @@
         etat.especes.push({ cle, groupes: places });
         if (!places) etat.absentes.push({ cle, raison: 'habitat' });
       } else {
-        const v = placerVolants(etat, e, cle, md, nG, rnd);
+        const nombre = e.famille === 'migrateur' || e.famille === 'marin' ? 2 : Math.max(2, Math.round(longueur / 650));
+        const v = placerVolants(etat, e, cle, md, nombre, rnd, debutCourse, finCourse);
         etat.especes.push({ cle, groupes: v });
         if (!v) etat.absentes.push({ cle, raison: 'habitat' });
       }
@@ -1540,6 +1576,8 @@
     // vues : réserves d'objets et tampons de tri, allouées une fois pour le palier le plus riche
     const entites = total + etat.volants.reduce((s, v) => s + v.n, 0);
     etat.nEntites = entites;
+    etat.volParOiseau = new Uint16Array(entites - total);
+    etat.volants.forEach((f, index) => etat.volParOiseau.fill(index, f.premier, f.premier + f.n));
     etat.vues = [];
     for (let v = 0; v < MAX_VUES; v++) etat.vues.push(creerVue(entites));
     etat.visibilite = { nombre: 0, champs: new Float64Array(MAX_CHAMPS * NB_CHAMP),
@@ -1554,20 +1592,22 @@
     const objets = [], fx = [];
     for (let i = 0; i < BUDGETS.ultra.objets; i++) objets.push(objetVide());
     for (let i = 0; i < 4; i++) { const o = objetVide(); o.fx = true; o.alpha = 0; o.mat = 7; o.shape = 'sphere'; fx.push(o); }
-    return { champs: new Float64Array(3 * NB_CHAMP), objets, fx, px: new Float32Array(entites), dist: new Float32Array(entites), opacites: new Float32Array(entites), lod: new Uint8Array(entites), top: new Int32Array(BUDGETS.ultra.moyens + 1),
+    return { champs: new Float64Array(3 * NB_CHAMP), objets, fx, px: new Float32Array(entites), dist: new Float32Array(entites), opacites: new Float32Array(entites), lod: new Uint8Array(entites), top: new Int32Array(BUDGETS.ultra.individus + 1),
       stats: { qualite: 'off', animaux: 0, proches: 0, moyens: 0, lointains: 0, objets: 0, horsChamp: 0, minuscules: 0, coupes: 0, triangles: 0 } };
   }
 
   // Volants : trajectoires fermées, fonctions du seul temps (planeurs en thermique, côtiers en boucle au-dessus de
   // l'eau, oies en V qui traversent le ciel, baleines qui sondent au large).
-  function placerVolants(etat, e, cle, md, nG, rnd) {
+  function placerVolants(etat, e, cle, md, nG, rnd, debutCourse, finCourse) {
     const c = etat.c, G = etat.G;
     let places = 0;
     for (let g = 0; g < nG; g++) {
+      const secteur = (finCourse - debutCourse) / nG;
+      const point = () => Math.min(c.n - 1, Math.floor((debutCourse + (g + rnd()) * secteur) / c.pas));
       const n = Math.min(6, e.effectif[0] + Math.floor(rnd() * (e.effectif[1] - e.effectif[0] + 1)));
       const f = { e, cle, md, famille: e.famille, n, phase: rnd() * 1000, sens: rnd() < .5 ? -1 : 1, oiseaux: [] };
       if (e.famille === 'plane') {
-        const i = Math.floor(rnd() * c.n), cote = rnd() < .5 ? -1 : 1, d = 22 + rnd() * 32;
+        const i = point(), cote = rnd() < .5 ? -1 : 1, d = 22 + rnd() * 32;
         f.cx = c.x[i] - Math.sin(c.cap[i]) * cote * d; f.cz = c.z[i] + Math.cos(c.cap[i]) * cote * d;
         f.ax = 8 + rnd() * 14; f.az = 8 + rnd() * 14; f.wx = TAU / (220 + rnd() * 160); f.wz = TAU / (260 + rnd() * 160);
         f.h = e.altitude[0] + rnd() * (e.altitude[1] - e.altitude[0]); f.r = 16 + rnd() * 16; f.v = 9 + rnd() * 3;
@@ -1576,7 +1616,7 @@
         const marin = e.famille === 'marin';
         let trouve = null;
         for (let essai = 0; essai < 900 && !trouve; essai++) {
-          const i = Math.floor(rnd() * c.n), cote = rnd() < .5 ? -1 : 1, d = marin ? 55 + rnd() * 65 : 24 + rnd() * 48;
+          const i = point(), cote = rnd() < .5 ? -1 : 1, d = marin ? 55 + rnd() * 65 : 24 + rnd() * 48;
           const x = c.x[i] - Math.sin(c.cap[i]) * cote * d, z = c.z[i] + Math.cos(c.cap[i]) * cote * d, k = cellule(G, x, z);
           if (k < 0 || G.eau - G.h[k] < (marin ? 12 : .6)) continue;
           const A = marin ? 22 + rnd() * 16 : 14 + rnd() * 14, Bm = marin ? 12 + rnd() * 8 : 7 + rnd() * 7, psi = c.cap[i];
@@ -2004,8 +2044,7 @@
     return ps;
   }
   function volantDe(etat, j) { // entité j (comptée après les bêtes au sol) → groupe volant
-    for (let v = 0; v < etat.volants.length; v++) { const f = etat.volants[v]; if (j < f.premier + f.n) return f; }
-    return null;
+    return etat.volants[etat.volParOiseau[j]];
   }
   // Position analytique sommaire : aucune articulation ni interrogation du maillage.
   // Les cellules préchargées suffisent au rejet, la pose précise ne sera faite qu'après sélection.

@@ -237,7 +237,7 @@
     const decorProfil = PROFILS[ancre];
     const vegetationQualite = options.vegetation === 'profil' ? (decorProfil.decor.vegetation ? ancre : 'off') : options.vegetation;
     const detailPrairie = options.vegetation === 'profil' ? p.palier : vegetationQualite;
-    const faune = options.faune === 'profil' ? (p.palier === 'low' ? 'off' : p.palier) : options.faune;
+    const faune = options.faune === 'profil' ? p.palier : options.faune;
     const glaces = effets.retroImages ? p.secondaires.retroviseurs.glaces : 0;
     const hz = effets.retroImages ? p.secondaires.retroviseurs.hz : 0;
 

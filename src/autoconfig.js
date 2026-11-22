@@ -8,15 +8,15 @@
   // qui tient Moyenne à 60 images par seconde). Révision 3 : rafales d'images en vol, simulation comprise. Révision 4 :
   // fil principal mesuré une image par rappel, comme en course ; palier proche de la limite mesuré deux ou trois fois,
   // refus de peu provisoire. Révision 5 : Xbox déclarée par le navigateur,
-  // recommandation prudente sans mesure ; les anciens choix explicites restent conservés.
-  const REVISION = 5, CLE = 'bitume.detection.v1', METHODE = 'rafales';
+  // recommandation prudente sans mesure. Révision 6 : silhouettes proches sur le profil léger.
+  const REVISION = 6, CLE = 'bitume.detection.v1', METHODE = 'rafales';
   const METHODE_PASSIVE = 'capacites-declarees';
   const CLES = Object.freeze(['qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'retro']);
   // Noms courts des options, pour dire dans l'onglet Image lesquelles le joueur a gardées.
   const NOMS = Object.freeze({ qualite: 'qualité', anticrenelage: 'anticrénelage', ombres: 'ombres', vegetation: 'végétation',
     faune: 'faune', retro: 'rétroviseurs' });
   const profils = {
-    low: { nom: 'Légère', qualite: 'low', anticrenelage: 'off', ombres: 'off', vegetation: 'off', faune: 'off', retro: 'non' },
+    low: { nom: 'Légère', qualite: 'low', anticrenelage: 'off', ombres: 'off', vegetation: 'off', faune: 'low', retro: 'non' },
     medium: { nom: 'Moyenne', qualite: 'medium', anticrenelage: 'msaa4', ombres: 'medium', vegetation: 'medium', faune: 'medium', retro: 'auto' },
     high: { nom: 'Fine', qualite: 'high', anticrenelage: 'msaa4', ombres: 'high', vegetation: 'high', faune: 'high', retro: 'auto' },
     extreme: { nom: 'Fine · végétation extrême', qualite: 'high', anticrenelage: 'msaa4', ombres: 'high', vegetation: 'ultra', faune: 'ultra', retro: 'auto' },

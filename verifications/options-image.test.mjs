@@ -144,7 +144,7 @@ verifier('cadence : valeur normalisée au chargement, choix du menu sauvegardé 
 
 verifier('faune et moment avant départ : préférences indépendantes persistées', () => {
   const j=jeu({qualite:'low'}), sc=j.scene;
-  assert.equal(j.reglages.moment,'jour');assert.equal(j.profil.faune,'off');
+  assert.equal(j.reglages.moment,'jour');assert.equal(j.profil.faune,'low');
   j.choisir('faune','ultra');j.choisir('momentDepart','nuit');
   assert.equal(j.radios.get('momentDepart').find(r=>r.checked).value,'nuit');
   assert.equal(j.profil.faune,'ultra');assert.strictEqual(j.scene,sc,'aucune reconstruction du terrain');
@@ -152,6 +152,7 @@ verifier('faune et moment avant départ : préférences indépendantes persisté
   assert.equal(recharge.reglages.faune,'ultra');assert.equal(recharge.reglages.moment,'nuit');
   j.choisir('momentDepart','inconnu');assert.equal(j.reglages.moment,'jour');
   j.choisir('faune','off');assert.equal(j.profil.faune,'off');
+  assert.equal(JSON.parse(j.stockage['bitume.reglages']).fauneCoupeeManuellement, true);
 });
 verifier('saison choisie avant départ : sauvegarde et cache du décor distincts', () => {
   const j = jeu({ saison: 'ete' }), avant = j.scene;

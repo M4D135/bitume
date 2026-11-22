@@ -186,7 +186,7 @@ await verifier('les réglages ne touchent ni au moment de la course ni aux comma
   const original = { moment: 'nuit', meteo: 'pluie', pneus: 'pluie', aide: .2, qualite: 'high', vegetation: 'ultra', faune: 'ultra' };
   Object.assign(original, A.reglages('low'));
   assert.equal(original.moment, 'nuit'); assert.equal(original.meteo, 'pluie'); assert.equal(original.aide, .2);
-  assert.equal(original.vegetation, 'off'); assert.equal(original.faune, 'off');
+  assert.equal(original.vegetation, 'off'); assert.equal(original.faune, 'low');
 });
 
 // ------------------------------------------------------------------ mesure (A)

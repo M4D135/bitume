@@ -4121,6 +4121,7 @@
     if (t.name === 'cadence') { reglages.cadence = B.cadence.regler(cadence, t.value); sauverReglages(); }
     if (Object.prototype.hasOwnProperty.call(B.graphismes.OPTIONS, t.name)) {
       reglages[t.name] = B.graphismes.normaliserOptions({ [t.name]: t.value })[t.name];
+      if (t.name === 'faune') reglages.fauneCoupeeManuellement = reglages.faune === 'off';
       sauverReglages();
       // AA et ombres sont lus au prochain rendu, sans recréer le contexte. La végétation suit la prochaine
       // séance : aucun rebâtiment du terrain ni changement d'obstacles au milieu d'une course.
@@ -5343,7 +5344,9 @@
     // Sans trace de la recommandation précédente, seuls les réglages d'usine sont automatiques.
     const usine = Object.fromEntries(B.autoconfig.CLES.map(k => [k, DEFAUT[k]]));
     const ref = B.autoconfig.reference(precedent) || usine;
+    if (!toutAppliquer && reglages.fauneCoupeeManuellement === true && reglages.faune === 'off') ref.faune = 'profil';
     const f = B.autoconfig.fusionner(reglages, ref, choisis, !!toutAppliquer);
+    if (toutAppliquer) reglages.fauneCoupeeManuellement = false;
     Object.assign(reglages, f.valeurs);
     resultat.appliques = f.reference; resultat.gardes = f.gardes;
     // Recommandation prudente ; aucun essai de rendu n'a été lancé.

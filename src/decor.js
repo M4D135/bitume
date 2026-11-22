@@ -646,7 +646,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       const h00 = H[j * nx + i], h10 = H[j * nx + i + 1], h01 = H[(j + 1) * nx + i], h11 = H[(j + 1) * nx + i + 1];
       return h00 * (1 - u) * (1 - v) + h10 * u * (1 - v) + h01 * (1 - u) * v + h11 * u * v;
     };
-    return { liste: eau ? liste.concat([eau]) : liste, sol, bornes: [x0, z0, x1, z1], niveauEau: th.eau, paysageBaikal };
+    return { liste: eau ? liste.concat([eau]) : liste, sol, maillageSol: { x0, z0, nx, nz, pas: pasT, alterne: organique, H }, bornes: [x0, z0, x1, z1], niveauEau: th.eau, paysageBaikal };
   }
 
   // Surface réellement disponible pour les plantes et la petite faune. Les polygones sont découpés
@@ -1973,7 +1973,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const atmosphere = saison ? B.saisons.atmosphere(saison, atmosphereBase) : atmosphereBase;
     // enceinte : portion de la ligne droite bordée de tribunes et de stands (abscisses comptées depuis la ligne) ; une
     // caméra de bord de piste s'y place devant eux, pas derrière la glissière où elle serait dans les gradins.
-    const decor = { nappes: nappes.concat(terrain.liste), lots: lotsDessin, atmosphere, portique, obstacles, sol: terrain.sol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
+    const decor = { nappes: nappes.concat(terrain.liste), lots: lotsDessin, atmosphere, portique, obstacles, sol: terrain.sol, solRendu: terrain.solRendu, maillageSol: terrain.maillageSol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
       arbres: positionsArbres,
       enceinte: { debut: avant - 10, fin: apres + 50 } };
     if (architecture) Object.defineProperty(decor, 'architecture', { value: architecture });

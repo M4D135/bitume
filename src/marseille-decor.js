@@ -248,7 +248,7 @@
     const gr = _buildGrilleRoute(c);
     const liste = [];
 
-    const tuilesActives = new Map();
+    const tuilesActives = new Map(), solParTuile = new Map();
     const activer = (nx, nz) => {
       const cle = nx + ',' + nz;
       if (!tuilesActives.has(cle)) tuilesActives.set(cle, [nx, nz]);
@@ -359,6 +359,8 @@
       };
       Object.defineProperty(nappeObj, 'herbeTriangles', { enumerable: false, value: herbeTri });
       Object.defineProperty(nappeObj, 'surfaceType', { enumerable: false, value: 'terrain' });
+      if (!solParTuile.has(nx)) solParTuile.set(nx, new Map());
+      solParTuile.get(nx).set(nz, sommets);
       liste.push(nappeObj);
     }
 
@@ -414,9 +416,21 @@
 
     function sol(x, z) { return _H(x, z, gr, c); }
 
+    function solRendu(x, z) {
+      const tx = Math.floor(x / TILE), tz = Math.floor(z / TILE);
+      const ligne = solParTuile.get(tx), sommets = ligne && ligne.get(tz);
+      if (!sommets) return sol(x, z);
+      const gx = (x - tx * TILE) / G, gz = (z - tz * TILE) / G;
+      const i = Math.floor(gx), j = Math.floor(gz), u = gx - i, v = gz - j;
+      const a = (j * N_SIDE + i) * FLOATS_VERT + 1, b = a + FLOATS_VERT, d = a + N_SIDE * FLOATS_VERT, e = d + FLOATS_VERT;
+      if ((i + j) & 1) return u >= v ? sommets[a] + (sommets[b] - sommets[a]) * u + (sommets[e] - sommets[b]) * v
+        : sommets[a] + (sommets[e] - sommets[d]) * u + (sommets[d] - sommets[a]) * v;
+      return u + v <= 1 ? sommets[a] + (sommets[b] - sommets[a]) * u + (sommets[d] - sommets[a]) * v
+        : sommets[e] + (sommets[d] - sommets[e]) * (1 - u) + (sommets[b] - sommets[e]) * (1 - v);
+    }
     return {
       liste,
-      sol,
+      sol, solRendu,
       bornes: [bxMin, bzMin, bxMax, bzMax],
       niveauEau: NIVEAU_MER,
       paysageBaikal: null

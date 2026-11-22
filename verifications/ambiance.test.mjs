@@ -56,8 +56,8 @@ verifier('tampons partagés entre vues et actualisation de lumière bornée', ()
 });
 
 verifier('petit profil sans faune, maximum manuel conservé et prairie adaptée à Auto', () => {
-  assert.equal(G.melange('low',0).faune,'off');
-  assert.equal(G.melange('auto',4).faune,'off');
+  assert.equal(G.melange('low',0).faune,'low');
+  assert.equal(G.melange('auto',4).faune,'low');
   for(let n=0;n<=4;n++) {
     const p=G.melange('auto',n,{options:{vegetation:'ultra',faune:'ultra'}});
     assert.equal(p.faune,'ultra');assert.strictEqual(p.groundCover,G.PRAIRIE.ultra);

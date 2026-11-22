@@ -186,6 +186,17 @@ test('Xbox : l’ancien profil passif automatique est revu une fois, les choix m
   assert.equal(h.appels.some(a => /banc|scene-test/.test(a)), false);
 });
 
+test('Xbox légère : réactiver les animaux du profil, respecter la désactivation du joueur', async () => {
+  const valeurs = { ...A.reglages('low'), faune: 'off' };
+  const ancienne = { ...trace('low', '0.2.90'), revision: A.REVISION - 1, appliques: valeurs };
+  for (const manuel of [false, true]) {
+    const h = orchestration(B, { demarrage: true, navigator: xbox, stock: { [A.CLE]: ancienne },
+      reglages: { ...valeurs, fauneCoupeeManuellement: manuel } });
+    await h.demarrer();
+    assert.equal(h.reglages.faune, manuel ? 'off' : 'low');
+  }
+});
+
 test('migration d’un ancien résultat de rafales : aucun nouveau test, profil automatique abaissé sur téléphone', async () => {
   for (const extra of [{}, { provisoire: true, tentatives: 1 }, { cadenceBridee: true, tentatives: 1 }]) {
     const ancienne = { ...trace('extreme', '0.2.79'), ...extra };
