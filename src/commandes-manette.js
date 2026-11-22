@@ -91,8 +91,11 @@
     return b.pressed ? 1 : 0;
   }
   const annulation = p => (bouton(p, 8) > .5 ? 1 : 0) | (bouton(p, 9) > .5 ? 2 : 0);
-  function valeur(p, l) {
-    if (l.type === 'bouton') return bouton(p, l.index);
+  function valeur(p, l, action) {
+    if (l.type === 'bouton') {
+      const brut = bouton(p, l.index);
+      return (action === 'gaz' || action === 'frein') && brut <= .06 ? 0 : brut;
+    }
     const v = p && p.axes && p.axes[l.index];
     if (!Number.isFinite(v)) return 0;
     const brut = limite((v - l.origine) * l.sens / (1 - l.origine * l.sens));
@@ -103,7 +106,7 @@
     for (let i = 0; i < ACTIONS.length; i++) {
       const a = ACTIONS[i], ls = m[a] || DEFAUT[a];
       let v = 0;
-      if (p && p.connected !== false) for (let k = 0; k < ls.length; k++) v = Math.max(v, valeur(p, ls[k]));
+      if (p && p.connected !== false) for (let k = 0; k < ls.length; k++) v = Math.max(v, valeur(p, ls[k], a));
       sortie[a] = v;
     }
     const volant = sortie.droite - sortie.gauche;
