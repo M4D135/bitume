@@ -329,20 +329,27 @@
           const tronc = { shape: 'cylinder', collision: 'tronc', p: [p[0], p[1] + h * .42, p[2]], s: [h * .045, h * .84, h * .045], r: [0, 0, 0], mat: 10, color: [.30, .22, .15], detail: 1 };
           objets.push(tronc, { shape: 'cylinder', p: [p[0], p[1] + 1.1, p[2]], s: [h * .047, .45, h * .047], mat: 16, color: [.95, .95, .92] });
           loin.push(tronc);
+          // Variation du houppier commune aux deux niveaux de détail.
+          const varier = alea((c.graine >>> 0) ^ Math.imul(i, 0x9e3779b1) ^ Math.imul(cote, 0x85ebca6b));
+          const rotation = [0, varier() * 2 * Math.PI, 0];
+          const echelleX = .85 + varier() * .3, echelleZ = .85 + varier() * .3;
           if (B.botanique && fine && resineux) {
             // Moyenne et Fine : la couronne procédurale et l'écorce des résineux du décor (decor.js, habiller), pour que
             // l'allée ressemble à la forêt qui l'entoure ; le tronc garde sa taille, donc le même solide. Les feuillus
             // gardent leur houppier simple : le modèle botanique y dessine son propre tronc à côté du nôtre
             const e = 'conifere', v = c.theme === 'pacifique' ? [.11, .22, .1] : [.10, .24, .11];
             tronc.mat = B.botanique.matiere('ecorce');
-            objets.push({ shape: B.botanique.nomForme(e, false, outils.qualite), p: [p[0], p[1] + h * .5, p[2]], s: [h, h, h], r: [0, 0, 0], mat: B.botanique.matiere('feuillage'), color: v });
-            loin.push({ shape: B.botanique.nomForme(e, true, outils.qualite), p: [p[0], p[1] + h * .5, p[2]], s: [h, h, h], r: [0, 0, 0], mat: B.botanique.matiere('feuillage'), color: v });
+            objets.push({ shape: B.botanique.nomForme(e, false, outils.qualite), p: [p[0], p[1] + h * .5, p[2]], s: [h * echelleX, h, h * echelleZ], r: rotation, mat: B.botanique.matiere('feuillage'), color: v });
+            loin.push({ shape: B.botanique.nomForme(e, true, outils.qualite), p: [p[0], p[1] + h * .5, p[2]], s: [h * echelleX, h, h * echelleZ], r: rotation, mat: B.botanique.matiere('feuillage'), color: v });
           } else if (resineux) {
             const vert = c.theme === 'pacifique' ? [.11, .22, .1] : [.10, .24, .11];
-            for (let e = 0; e < 3; e++) objets.push({ shape: 'foliage', p: [p[0], p[1] + h * (.38 + e * .22), p[2]], s: [h * (.42 - e * .1), h * .34, h * (.42 - e * .1)], mat: 11, color: vert.map(q => q * (1 - e * .06)) });
-            loin.push({ shape: 'foliage', p: [p[0], p[1] + h * .56, p[2]], s: [h * .4, h * .8, h * .4], mat: 11, color: vert });
+            for (let e = 0; e < 3; e++) {
+              const largeur = h * (.42 - e * .1);
+              objets.push({ shape: 'foliage', p: [p[0], p[1] + h * (.38 + e * .22), p[2]], s: [largeur * echelleX, h * .34, largeur * echelleZ], r: rotation, mat: 11, color: vert.map(q => q * (1 - e * .06)) });
+            }
+            loin.push({ shape: 'foliage', p: [p[0], p[1] + h * .56, p[2]], s: [h * .4 * echelleX, h * .8, h * .4 * echelleZ], r: rotation, mat: 11, color: vert });
           } else {
-            const houppe = { shape: 'foliage', p: [p[0], p[1] + h * .8, p[2]], s: [h * .68, h * .4, h * .68], mat: 11, color: [.16, .3, .11] };
+            const houppe = { shape: 'foliage', p: [p[0], p[1] + h * .8, p[2]], s: [h * .68 * echelleX, h * .4, h * .68 * echelleZ], r: rotation, mat: 11, color: [.16, .3, .11] };
             objets.push(houppe); loin.push(houppe);
           }
           // Même phénologie que la forêt, y compris pour les allées proches de la route.
