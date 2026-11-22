@@ -73,13 +73,22 @@
       "Le photoréalisme de tout le catalogue et le portage complet demeurent en développement."
     ],
     "github_actions": {
-      "url": "https://github.com/M4D135/bitume/actions/runs/45038134289",
-      "commit": "a2a1a1acd31f10b1951446a8fd302be62aec98f6",
-      "conclusion": "cancelled",
-      "suites_executees": 189,
-      "suites_reussies": 188,
-      "limite_minutes": 20,
-      "depassement_mesure": "Route-des-Cimes : 164,5 ms de préparation sur cette VM pour un seuil strict de 150 ms."
+      "conclusion": "success",
+      "commit": "0c52c435bebb7ae1eaf99d37235cb2c0bc508362",
+      "version": "0.2.107",
+      "url": "https://github.com/M4D135/bitume/actions/runs/45040217066",
+      "suites_node": 225,
+      "tests_python": 8,
+      "suites_en_echec": 0,
+      "sha256_html": "908493dbb042870989d906bc2dc4c8c65eae1d5242cd361c5d4376324a630327",
+      "artefact": 14761109613,
+      "lots": [
+        57,
+        56,
+        56,
+        56
+      ],
+      "reconstruction_git_identique": true
     }
   },
   "acquis_0279": {

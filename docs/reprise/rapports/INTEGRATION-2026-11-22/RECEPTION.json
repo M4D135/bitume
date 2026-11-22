@@ -256,6 +256,26 @@
   "fin_course_manettes": "vibrations-resultats.json",
   "integrite_cache": "panorama-integrite.json",
   "qualification_github": {
+    "conclusion": "success",
+    "commit": "0c52c435bebb7ae1eaf99d37235cb2c0bc508362",
+    "version": "0.2.107",
+    "url": "https://github.com/M4D135/bitume/actions/runs/45040217066",
+    "suites_node": 225,
+    "tests_python": 8,
+    "suites_en_echec": 0,
+    "sha256_html": "908493dbb042870989d906bc2dc4c8c65eae1d5242cd361c5d4376324a630327",
+    "artefact": 14761109613,
+    "lots": [
+      57,
+      56,
+      56,
+      56
+    ],
+    "reconstruction_git_identique": true
+  },
+  "cadence_larche": "cadence-larche.json",
+  "rayons_materiels": "docs/reprise/rapports/N0-MAC-20261122/rayons-larche.json",
+  "premiere_qualification_ubuntu_0107": {
     "url": "https://github.com/M4D135/bitume/actions/runs/45038134289",
     "commit": "a2a1a1acd31f10b1951446a8fd302be62aec98f6",
     "conclusion": "cancelled",
@@ -263,7 +283,5 @@
     "suites_reussies": 188,
     "limite_minutes": 20,
     "depassement_mesure": "Route-des-Cimes : 164,5 ms de préparation sur cette VM pour un seuil strict de 150 ms."
-  },
-  "cadence_larche": "cadence-larche.json",
-  "rayons_materiels": "docs/reprise/rapports/N0-MAC-20261122/rayons-larche.json"
+  }
 }
