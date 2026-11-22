@@ -16,6 +16,8 @@
   // à défaut, avec la portée). Ce score est continu quand les voitures se doublent : une voiture n'entre jamais dans
   // la liste ni n'en sort d'un coup, et un échange de places dans la liste ne change aucune force.
   const ECART = 6;
+  // Part de la variation appliquée par préparation et seuil de fin du fondu.
+  const LISSAGE_CONTACT = .15, FORCE_MIN = 1e-3;
   // Caisse de la 312 T5 vue par l'occlusion : ellipsoïde de 4,2 × 0,68 × 1,26 m, centre 10 cm en arrière du milieu
   // des essieux et 38 cm au-dessus du sol (fond plat à 4 cm). Roues : celles de src/voiture.js.
   const CAISSE_X = -.10, CAISSE_Y = .38, DEMI_LONGUEUR = 2.10, DEMI_HAUTEUR = .34, DEMI_LARGEUR = .63;
@@ -50,6 +52,7 @@
       proche: { centre: [0, 0, 0], etendue: TUILE, debut: 0, fin: 0, axe: [1, 0, 0] },
       ombreProche: null, penombre: null,
       score: new Float64Array(16), pris: new Uint8Array(16), rang: new Int32Array(PLACES + 1), axes: new Float64Array(6),
+      forces: new Float32Array(16),
       journal: { niveau: new Int8Array(JOURNAL), ombres: new Uint8Array(JOURNAL), t: new Float64Array(JOURNAL), tete: 0, compte: 0, cle: null },
       carte: null,
     };
@@ -89,7 +92,13 @@
     const ombres = !!(P && P.effets && P.effets.ombres);
     const places = P && P.palier === 'low' ? (reglages.contactLegere ? PLACES_LEGERE : 0) : PLACES;
     const R = B.voiture && B.voiture.ROUES && B.voiture.ROUES.length === 4 ? B.voiture.ROUES : ROUES_312;
-    if (O.score.length < n) { O.score = new Float64Array(n * 2); O.pris = new Uint8Array(n * 2); } // plus de voitures : une fois
+    if (O.score.length < n) {
+      O.score = new Float64Array(n * 2); O.pris = new Uint8Array(n * 2);
+      const forces = new Float32Array(n * 2);
+      forces.set(O.forces); O.forces = forces;
+    }
+    const forces = O.forces;
+    forces.fill(0, n);
     const sc = O.score, pris = O.pris, rang = O.rang, A = O.axes, b = O.contacts.boites;
     const ex = cam.pos[0], ey = cam.pos[1], ez = cam.pos[2], vx = Math.sin(cam.yaw || 0), vz = -Math.cos(cam.yaw || 0);
     for (let k = 0; k < n; k++) {
@@ -109,13 +118,28 @@
     }
     let nombre = 0;
     const dehors = m > places ? sc[rang[places]] : PORTEE;
-    for (let i = 0; i < m && i < places; i++) {
-      const k = rang[i], s = sc[k], force = (1 - lisse(PLEINE, PORTEE, s)) * borne01((dehors - s) / ECART);
-      if (!(force > 0)) continue;
-      ecrire(b, nombre * FLOTTANTS, poses[k], axes(A, poses[k]), R); b[nombre * FLOTTANTS + 3] = force; nombre++;
+    const retenues = Math.min(m, places);
+    // Les contacts déjà visibles gardent leur place pendant le fondu de sortie.
+    // Les nouveaux prennent ensuite les places libres dans l’ordre du classement.
+    for (let i = 0; i < n + retenues && nombre < PLACES; i++) {
+      const dejaVisible = i < n;
+      const k = dejaVisible ? i : rang[i - n];
+      if (dejaVisible ? forces[k] === 0 : pris[k] === 0) continue;
+      pris[k] = 0;
+      const s = sc[k];
+      if (!Number.isFinite(s)) { forces[k] = 0; continue; }
+      const cible = (1 - lisse(PLEINE, PORTEE, s)) * borne01((dehors - s) / ECART);
+      const force = forces[k] + (cible - forces[k]) * LISSAGE_CONTACT;
+      forces[k] = force >= FORCE_MIN ? force : 0;
+      if (forces[k] === 0) continue;
+      const p = poses[k], o = nombre * FLOTTANTS;
+      ecrire(b, o, p, axes(A, p), R); b[o + 3] = forces[k]; nombre++;
     }
     const c = O.contacts, r = ombres ? AVEC_OMBRES : SANS_OMBRES;
-    c.nombre = nombre; c.ambiance = r[0]; c.soleil = r[1]; c.exposant = r[2]; c.marge = r[3];
+    const alpha = c.ambiance === 0 ? 1 : LISSAGE_CONTACT;
+    c.soleil += (r[1] - c.soleil) * alpha;
+    c.exposant += (r[2] - c.exposant) * alpha;
+    c.nombre = nombre; c.ambiance = r[0]; c.marge = r[3];
 
     const ps = ombres && suivie >= 0 && fin > debut ? poses[suivie] : null;
     if (ps && Number.isFinite(ps.x)) {
