@@ -1,6 +1,6 @@
 # BITUME — feuille de route des modifications et essais
 
-**22 novembre 2026.** Les demandes viennent des Markdown de GitHub et des 47 entrées du registre. Cette mise à jour compare la version jouable **0.2.107** à la .90 (`ac6a74a`). Les rapports précisent la version de chaque essai. Les parcours complets de Larche, les coûts GPU et les essais sur appareils physiques sont suivis séparément. [Build 0.2.107][v103] · [Réception du 22 novembre][reception103] · [Version de départ][base] · [Demandes récentes][retours] · [Registre des lots][file] · [Programme autonome][autonome]
+**22 novembre 2026.** Les demandes viennent des Markdown de GitHub et des 47 entrées du registre. Cette mise à jour compare la version jouable **0.2.108** à la .90 (`ac6a74a`). Les rapports précisent la version de chaque essai. Les parcours complets de Larche, les coûts GPU et les essais sur appareils physiques sont suivis séparément. [Build 0.2.108][v103] · [Réception du 22 novembre][reception103] · [Version de départ][base] · [Demandes récentes][retours] · [Registre des lots][file] · [Programme autonome][autonome]
 
 ## Demandes du 22 novembre et ordre de réception
 
@@ -37,7 +37,7 @@
 | Relief et lieux 22A–F | Route-des-Cimes est jouable avec Lacets, Mur, gorge, pont et couverts. Baïkal 13A/B, Brume-de-Jade, Cap-Séquoia et d’autres biomes ont reçu des lieux distinctifs. Le moteur sait représenter plusieurs couverts. | Qualifier les nouveaux dévers, crêtes, compressions, bombement et raccords de chaussée avec la voiture et les rivaux. Compléter les identités de lieu, vrais vides, corniches, ponts, mobilier de course d’époque et passages couverts là où le plan le demande. Même niveau pour géométrie, collision, ombre, pluie, caméra et rétros. Haut-Col a son dossier historique rampes/corniche/deuxième tunnel, mais sort du menu resserré. [Lieux et ouvrages][lieux] · [Haut-Col][haut] |
 | Destinations 16A–F et fusion des biomes | Les six originales étaient intégrées en .86. La décision .89 a resserré le menu à dix identités, puis Marseille en a porté le nombre à onze. | Peaufiner Fjord-d’Argent, Sierra-Cuivrée et Baie-du-Corail dans le menu. Conserver les travaux Carpates, Écosse et Andes ainsi que Port-Sable, Haut-Col et Roche-Fauve, retirés de la sélection. La cible historique de 16 puis 17 ne justifie pas de réintroduire seule les doublons. Protéger les anciennes sauvegardes quand un identifiant ou un indice disparaît. [Catalogue .90][catalogue] · [Décision de fusion][retours] |
 
-**Les onze circuits sélectionnables en 0.2.107.** Val-Brûlé, Marseille, Baie-du-Corail, Cap-Séquoia, Fjord-d’Argent, Route-des-Cimes, Col de Larche → Vinadio, Lande-Noire, Sierra-Cuivrée, Brume-de-Jade et Baïkal. [Source du menu][catalogue]
+**Les onze circuits sélectionnables en 0.2.108.** Val-Brûlé, Marseille, Baie-du-Corail, Cap-Séquoia, Fjord-d’Argent, Route-des-Cimes, Col de Larche → Vinadio, Lande-Noire, Sierra-Cuivrée, Brume-de-Jade et Baïkal. [Source du menu][catalogue]
 
 ## 3. Conduite, voitures, pilotes et présentation de course
 
@@ -142,9 +142,15 @@ L’étude initiale envisage également Xbox et PS5 natives. Leur étude dépend
 
 - **Rayons matériels sur la SS21.** La sonde native Metal emploie 135 triangles de la chaussée du pont au km 14,273. Six rayons vérifient le contact, le passage par le vide et les ombres bornées à la distance de la lumière. Les 144 comparaisons CPU/GPU concordent. La médiane de 19,6 µs mesure une commande de six rayons sur cette micro-scène. Le jeu web continue d’utiliser ses reflets en espace écran. [Mesures natives][rayonsm5]
 
+- **Préparation des décors en 0.2.108.** Les tuiles réutilisent leurs indices de sommets, les arbres leur liste de pièces et le bruit du relief évite une exponentiation par échantillon. Sur 25 paires de processus frais avec Node 24.22.3, la préparation médiane du cas Route-des-Cimes passe de 46,14 à 40,14 ms (−13 %). Les médianes baissent sur les quatre cas. Sur le tracé historique Haut-Col, le p95 augmente de 39,02 à 41,41 ms. Sur les onze scènes du catalogue en hiver, les 4 140 nappes et 216 917 éléments du décor vérifiés gardent les mêmes empreintes. [Protocole, mesures et réserves][prepaterrain]
+
+- **Course sous la pluie sur la version livrée.** Les douze voitures ont parcouru les 32,25 km de Larche et franchi la ligne sur la version livrée, avec la même graine. Le jeu a effectué 54 remises en piste sur l’ensemble du peloton. Le banc d’essai n’en a demandé aucune. Castagnet a passé le pont du km 11,43 sans remise en piste et termine en 16 min 30,575 s. [Classement complet][pluie108]
+- **Fluidité de la 0.2.108.** Les trois parcours en cockpit avec rétroviseurs sur le Mac M5 donnent 60,0 i/s au sec et 52,3 i/s sous la pluie. Les p95 médians par météo sont de 16,7 et 33,4 ms. Les deux versions sont mesurées à la même définition et avec les mêmes réglages. [Cadence de la livraison][cadence108] · [Comparaison des deux versions][cadences]
+- **Qualification finale.** Sur macOS et Ubuntu, les 225 suites Node et les huit tests Python passent. Les quatre lots Ubuntu ont testé le même HTML que la reconstruction finale. [Qualification GitHub](https://github.com/M4D135/bitume/actions/runs/45041044267)
+
 ## Index des 47 demandes du registre
 
-Les 47 lignes suivent le registre dans son ordre. L’état ci-dessous tient compte de la version 0.2.107, des réceptions précédentes et des décisions qui ont réduit le catalogue. La section indiquée précise les suites et les critères de réception. [Registre source][file]
+Les 47 lignes suivent le registre dans son ordre. L’état ci-dessous tient compte de la version 0.2.108, des réceptions précédentes et des décisions qui ont réduit le catalogue. La section indiquée précise les suites et les critères de réception. [Registre source][file]
 
 | Demande enregistrée | Section | État au 22 novembre et suite |
 |---|---:|---|
@@ -253,7 +259,7 @@ Les 47 lignes suivent le registre dans son ordre. L’état ci-dessous tient com
 [rubans]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/INTEGRATION-2026-11-22/rubans.json
 [vibrations]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/INTEGRATION-2026-11-22/vibrations.json
 [optim]: https://github.com/M4D135/bitume/blob/main/docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md
-[v103]: https://github.com/M4D135/bitume/blob/a2a1a1acd31f10b1951446a8fd302be62aec98f6/VERSION.json
+[v103]: https://github.com/M4D135/bitume/blob/45d0db90e9ea5da81da55b6b166abb77777c6db1/VERSION.json
 [reception103]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json
 [parcours]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/INTEGRATION-2026-11-22/parcours-larche.json
 [cachepan]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/INTEGRATION-2026-11-22/panorama-cache.json
@@ -283,3 +289,9 @@ Les 47 lignes suivent le registre dans son ordre. L’état ci-dessous tient com
 [cadence107]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/INTEGRATION-2026-11-22/cadence-larche.json
 
 [rayonsm5]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/N0-MAC-20261122/rayons-larche.json
+
+[prepaterrain]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/INTEGRATION-2026-11-22/terrain-0.2.108/recu.json
+
+[pluie108]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/INTEGRATION-2026-11-22/larche-pluie-0.2.108.json
+[cadence108]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/INTEGRATION-2026-11-22/cadence-larche-0.2.108.json
+[cadences]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/INTEGRATION-2026-11-22/comparaison-cadence-0107-0108.json

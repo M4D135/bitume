@@ -3,12 +3,12 @@
   "date": "2026-11-22",
   "base": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
   "runtime_livre": {
-    "version": "0.2.107",
+    "version": "0.2.108",
     "physique": "p16",
     "moteur": "FERRO 0.3.16",
     "circuits": 11,
-    "commit_sources": "a2a1a1acd31f10b1951446a8fd302be62aec98f6",
-    "html_sha256": "908493dbb042870989d906bc2dc4c8c65eae1d5242cd361c5d4376324a630327",
+    "commit_sources": "45d0db90e9ea5da81da55b6b166abb77777c6db1",
+    "html_sha256": "0a0a62ce85ac9428c55cbff13718f6ec14b0a380edb4fc0e93c81ca84b549d61",
     "recu": "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
   },
   "destinations_prevues": 17,

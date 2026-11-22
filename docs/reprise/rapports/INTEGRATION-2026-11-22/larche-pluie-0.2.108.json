@@ -1,0 +1,114 @@
+{
+  "version": "V0.2.108",
+  "commit": "45d0db9",
+  "htmlSha256": "0a0a62ce85ac9428c55cbff13718f6ec14b0a380edb4fc0e93c81ca84b549d61",
+  "circuit": "Col de Larche → Vinadio",
+  "physique": "PhysX 5.12.0",
+  "pasHz": 120,
+  "graine": 23731,
+  "meteo": {
+    "phase": "pluie",
+    "intensite": 0.75,
+    "fixe": true,
+    "chausseeMouilleeArrivee": 1
+  },
+  "distanceEntreLignesMetres": 32249.33,
+  "departJoueurSurGrilleMetres": 42.0,
+  "qualification": "Pilotage automatique de production, départ sur grille, horloge accélérée avec les mêmes pas du reçu de référence. Classement lu sur l’écran des résultats.",
+  "pilotes": 12,
+  "arrives": 12,
+  "replacementsDemandesParLeBanc": 0,
+  "replacementsDuJeu": 54,
+  "castagnet": {
+    "rang": 12,
+    "nom": "R. Castagnet",
+    "tempsSec": 990.575,
+    "replacements": 2,
+    "chrono": "16:30,575",
+    "premierReleveApresLePontSec": 497.008,
+    "positionReleveeMetres": 11443.35,
+    "tempsRéférenceSec": 990.575,
+    "replacementsSurLePont": 0,
+    "positionsReplacementsMetres": [
+      14519.54,
+      19714.3
+    ]
+  },
+  "classement": [
+    {
+      "rang": 1,
+      "nom": "S. Ferrandi",
+      "tempsSec": 831.364,
+      "replacements": 5
+    },
+    {
+      "rang": 2,
+      "nom": "J. Vanmeer",
+      "tempsSec": 872.863,
+      "replacements": 5
+    },
+    {
+      "rang": 3,
+      "nom": "L. Brasquet",
+      "tempsSec": 896.035,
+      "replacements": 2
+    },
+    {
+      "rang": 4,
+      "nom": "T. Okafor",
+      "tempsSec": 913.358,
+      "replacements": 7
+    },
+    {
+      "rang": 5,
+      "nom": "A. Kowalczyk",
+      "tempsSec": 926.429,
+      "replacements": 5
+    },
+    {
+      "rang": 6,
+      "nom": "H. Delacour",
+      "tempsSec": 938.926,
+      "replacements": 2
+    },
+    {
+      "rang": 7,
+      "nom": "P. Morvan",
+      "tempsSec": 949.558,
+      "replacements": 6
+    },
+    {
+      "rang": 8,
+      "nom": "K. Lindgren",
+      "tempsSec": 961.833,
+      "replacements": 4
+    },
+    {
+      "rang": 9,
+      "nom": "E. Varenne",
+      "tempsSec": 976.811,
+      "replacements": 7
+    },
+    {
+      "rang": 10,
+      "nom": "Vous",
+      "tempsSec": 978.361,
+      "replacements": 4
+    },
+    {
+      "rang": 11,
+      "nom": "M. Duvernet",
+      "tempsSec": 980.408,
+      "replacements": 5
+    },
+    {
+      "rang": 12,
+      "nom": "R. Castagnet",
+      "tempsSec": 990.575,
+      "replacements": 2,
+      "chrono": "16:30,575"
+    }
+  ],
+  "erreursChrome": 0,
+  "douzeTempsEtOrdreIdentiquesAuRecuDeReference": true
+}

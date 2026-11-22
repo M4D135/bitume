@@ -1,0 +1,108 @@
+{
+  "version": "V0.2.108",
+  "erreurs": [],
+  "images": [
+    {
+      "voitures": [
+        {
+          "v": 26.316140923928224,
+          "rpm": 9767.686256068015,
+          "rapport": 2,
+          "contact": 4
+        },
+        {
+          "v": 26.33473561213644,
+          "rpm": 9770.896820658794,
+          "rapport": 2,
+          "contact": 4
+        }
+      ],
+      "sorties": [
+        {
+          "n": 9,
+          "modes": [
+            "trigger-rumble"
+          ],
+          "picFort": 0.13701729103813018,
+          "picFaible": 0.32
+        },
+        {
+          "n": 9,
+          "modes": [
+            "dual-rumble"
+          ],
+          "picFort": 0.1370188620476612,
+          "picFaible": 0.32
+        }
+      ]
+    },
+    {
+      "voitures": [
+        {
+          "v": 29.292865495932404,
+          "rpm": 10341.995077641395,
+          "rapport": 2,
+          "contact": 4
+        },
+        {
+          "v": 29.331366090407364,
+          "rpm": 10350.101680278809,
+          "rapport": 2,
+          "contact": 4
+        }
+      ],
+      "sorties": [
+        {
+          "n": 17,
+          "modes": [
+            "trigger-rumble"
+          ],
+          "picFort": 0.13701729103813018,
+          "picFaible": 0.32
+        },
+        {
+          "n": 17,
+          "modes": [
+            "dual-rumble"
+          ],
+          "picFort": 0.1370188620476612,
+          "picFaible": 0.32
+        }
+      ]
+    },
+    {
+      "voitures": [
+        {
+          "v": 32.28009997505279,
+          "rpm": 11001.777500233446,
+          "rapport": 2,
+          "contact": 4
+        },
+        {
+          "v": 32.31768144839886,
+          "rpm": 11009.667469862377,
+          "rapport": 2,
+          "contact": 4
+        }
+      ],
+      "sorties": [
+        {
+          "n": 25,
+          "modes": [
+            "trigger-rumble"
+          ],
+          "picFort": 0.13701729103813018,
+          "picFaible": 0.32
+        },
+        {
+          "n": 25,
+          "modes": [
+            "dual-rumble"
+          ],
+          "picFort": 0.1370188620476612,
+          "picFaible": 0.32
+        }
+      ]
+    }
+  ]
+}

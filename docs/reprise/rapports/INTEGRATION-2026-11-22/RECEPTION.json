@@ -1,9 +1,9 @@
 {
-  "version": "0.2.107",
-  "commit_sources": "a2a1a1acd31f10b1951446a8fd302be62aec98f6",
-  "html_sha256": "908493dbb042870989d906bc2dc4c8c65eae1d5242cd361c5d4376324a630327",
-  "octets": 15213039,
-  "gzip": 3722440,
+  "version": "0.2.108",
+  "commit_sources": "45d0db90e9ea5da81da55b6b166abb77777c6db1",
+  "html_sha256": "0a0a62ce85ac9428c55cbff13718f6ec14b0a380edb4fc0e93c81ca84b549d61",
+  "octets": 15213447,
+  "gzip": 3722628,
   "reconstruction_identique": true,
   "qualif_locale": {
     "suites_node": 225,
@@ -11,32 +11,7 @@
     "suites_en_echec": 0,
     "tests_python": 8,
     "statut": "terminee",
-    "recontroles": [
-      {
-        "suite": "course.test",
-        "message_premier_passage": "AssertionError [ERR_ASSERTION]: 60s de course en moins de 1.5s, duree=1635ms",
-        "essais_isoles": [
-          {
-            "code": 0,
-            "mesures": [
-              "Mesure : 60s de course en moins de 1.5s, duree=191ms"
-            ]
-          },
-          {
-            "code": 0,
-            "mesures": [
-              "Mesure : 60s de course en moins de 1.5s, duree=193ms"
-            ]
-          },
-          {
-            "code": 0,
-            "mesures": [
-              "Mesure : 60s de course en moins de 1.5s, duree=187ms"
-            ]
-          }
-        ]
-      }
-    ]
+    "recontroles": []
   },
   "code_source": [
     "git log --all -- dist/bitume.html",
@@ -84,8 +59,8 @@
     }
   ],
   "captures_pluie": [
-    "larche-arret-0.2.107.png",
-    "larche-288-kmh-0.2.107.png"
+    "larche-arret-0.2.108.png",
+    "larche-288-kmh-0.2.108.png"
   ],
   "route_larche": {
     "sondes": 82040,
@@ -98,7 +73,7 @@
   "num_courses": 3,
   "parcours": "parcours-larche.json",
   "chevrons": "rubans.json",
-  "reception_manettes": "vibrations-en-course.json",
+  "reception_manettes": "vibrations-en-course-0.2.108.json",
   "vibrations": "vibrations.json",
   "cache": "panorama-cache.json",
   "performance": "perf-led.json",
@@ -257,14 +232,14 @@
   "integrite_cache": "panorama-integrite.json",
   "qualification_github": {
     "conclusion": "success",
-    "commit": "0c52c435bebb7ae1eaf99d37235cb2c0bc508362",
-    "version": "0.2.107",
-    "url": "https://github.com/M4D135/bitume/actions/runs/45040217066",
+    "commit": "45d0db90e9ea5da81da55b6b166abb77777c6db1",
+    "version": "0.2.108",
+    "url": "https://github.com/M4D135/bitume/actions/runs/45041044267",
     "suites_node": 225,
     "tests_python": 8,
     "suites_en_echec": 0,
-    "sha256_html": "908493dbb042870989d906bc2dc4c8c65eae1d5242cd361c5d4376324a630327",
-    "artefact": 14761109613,
+    "sha256_html": "0a0a62ce85ac9428c55cbff13718f6ec14b0a380edb4fc0e93c81ca84b549d61",
+    "artefact": 14761972308,
     "lots": [
       57,
       56,
@@ -273,7 +248,7 @@
     ],
     "reconstruction_git_identique": true
   },
-  "cadence_larche": "cadence-larche.json",
+  "cadence_larche": "cadence-larche-0.2.108.json",
   "rayons_materiels": "docs/reprise/rapports/N0-MAC-20261122/rayons-larche.json",
   "premiere_qualification_ubuntu_0107": {
     "url": "https://github.com/M4D135/bitume/actions/runs/45038134289",
@@ -283,5 +258,10 @@
     "suites_reussies": 188,
     "limite_minutes": 20,
     "depassement_mesure": "Route-des-Cimes : 164,5 ms de préparation sur cette VM pour un seuil strict de 150 ms."
-  }
+  },
+  "reception_anterieure": "reception-0.2.107.json",
+  "preuves_0107_conservees": "Les mesures GPU en conduite et la sonde Metal portent sur le HTML .107. La mise à jour .108 porte sur le temps de préparation des nappes du décor.",
+  "preparation_terrain": "terrain-0.2.108/recu.json",
+  "comparaison_cadence": "comparaison-cadence-0107-0108.json",
+  "parcours_pluie_final": "larche-pluie-0.2.108.json"
 }

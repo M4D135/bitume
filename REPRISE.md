@@ -1,6 +1,6 @@
 # BITUME — reprise courte
 
-## Livraison intégrée du 22 novembre — 0.2.107
+## Livraison intégrée du 22 novembre — 0.2.108
 
 Le jeu web propose onze circuits sur FERRO 0.3.16 et le contrat de conduite p16. La pluie utilise une seule couche en conduite. La route de Larche a été parcourue intégralement en chrono et en course par le pilote automatique PhysX, y compris sous la pluie. Les chevrons à grille LED suivent les courbes et le HUD de course est plus discret. Les essais de vibrations différencient rapport, impact, vibreur, roulement et régime moteur. La réception tactile sur les trois familles de manettes reste ouverte.
 

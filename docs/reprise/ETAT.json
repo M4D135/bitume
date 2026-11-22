@@ -1,8 +1,8 @@
 {
   "date": "2026-11-22",
   "etat_courant": {
-    "version_courante": "0.2.107",
-    "version_publiee_verifiee": "0.2.107",
+    "version_courante": "0.2.108",
+    "version_publiee_verifiee": "0.2.108",
     "physique": "p16",
     "moteur": "FERRO 0.3.16 canonique",
     "circuits": 11,
@@ -14,55 +14,30 @@
     "dernier_lot_clos": "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json",
     "prochaine_action": "Réception physique des manettes, temps par image sous la pluie et réalisation des lots par plateforme.",
     "branche_candidate": "main",
-    "version_candidate": "0.2.107",
+    "version_candidate": "0.2.108",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md"
   },
   "publication": {
-    "version": "0.2.107",
-    "commit_sources": "a2a1a1acd31f10b1951446a8fd302be62aec98f6",
+    "version": "0.2.108",
+    "commit_sources": "45d0db90e9ea5da81da55b6b166abb77777c6db1",
     "statut": "publie_sur_main",
-    "url": "https://github.com/M4D135/bitume/commit/a2a1a1acd31f10b1951446a8fd302be62aec98f6",
+    "url": "https://github.com/M4D135/bitume/commit/45d0db90e9ea5da81da55b6b166abb77777c6db1",
     "recu": "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json",
     "site_deploiement_verifie": false
   },
   "qualification": {
-    "version": "0.2.107",
-    "tete_qualifiee": "a2a1a1acd31f10b1951446a8fd302be62aec98f6",
-    "build_octets": 15213039,
-    "build_sha256": "908493dbb042870989d906bc2dc4c8c65eae1d5242cd361c5d4376324a630327",
+    "version": "0.2.108",
+    "tete_qualifiee": "45d0db90e9ea5da81da55b6b166abb77777c6db1",
+    "build_octets": 15213447,
+    "build_sha256": "0a0a62ce85ac9428c55cbff13718f6ec14b0a380edb4fc0e93c81ca84b549d61",
     "locale": {
       "suites_node": 225,
       "suites_prevues": 225,
       "suites_en_echec": 0,
       "tests_python": 8,
       "statut": "terminee",
-      "recontroles": [
-        {
-          "suite": "course.test",
-          "message_premier_passage": "AssertionError [ERR_ASSERTION]: 60s de course en moins de 1.5s, duree=1635ms",
-          "essais_isoles": [
-            {
-              "code": 0,
-              "mesures": [
-                "Mesure : 60s de course en moins de 1.5s, duree=191ms"
-              ]
-            },
-            {
-              "code": 0,
-              "mesures": [
-                "Mesure : 60s de course en moins de 1.5s, duree=193ms"
-              ]
-            },
-            {
-              "code": 0,
-              "mesures": [
-                "Mesure : 60s de course en moins de 1.5s, duree=187ms"
-              ]
-            }
-          ]
-        }
-      ]
+      "recontroles": []
     },
     "reconstruction_identique": true,
     "recu": "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json",
@@ -74,14 +49,14 @@
     ],
     "github_actions": {
       "conclusion": "success",
-      "commit": "0c52c435bebb7ae1eaf99d37235cb2c0bc508362",
-      "version": "0.2.107",
-      "url": "https://github.com/M4D135/bitume/actions/runs/45040217066",
+      "commit": "45d0db90e9ea5da81da55b6b166abb77777c6db1",
+      "version": "0.2.108",
+      "url": "https://github.com/M4D135/bitume/actions/runs/45041044267",
       "suites_node": 225,
       "tests_python": 8,
       "suites_en_echec": 0,
-      "sha256_html": "908493dbb042870989d906bc2dc4c8c65eae1d5242cd361c5d4376324a630327",
-      "artefact": 14761109613,
+      "sha256_html": "0a0a62ce85ac9428c55cbff13718f6ec14b0a380edb4fc0e93c81ca84b549d61",
+      "artefact": 14761972308,
       "lots": [
         57,
         56,
@@ -232,7 +207,8 @@
     "statut": "parcouru_en_chrono_course_pluie_et_duo",
     "fiche": "docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md",
     "recu": "docs/reprise/rapports/INTEGRATION-2026-11-22/parcours-larche.json",
-    "duo": "docs/reprise/rapports/INTEGRATION-2026-11-22/duo-larche.json"
+    "duo": "docs/reprise/rapports/INTEGRATION-2026-11-22/duo-larche.json",
+    "derniere_course_pluvieuse": "docs/reprise/rapports/INTEGRATION-2026-11-22/larche-pluie-0.2.108.json"
   },
   "travaux_paralleles_a_preserver": {
     "pluie_abris": "PR #43 fusionnée, outils et correctifs repris sur main.",
