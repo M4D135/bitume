@@ -931,10 +931,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     return { lire, relier, empreinte, noyau: noyauJS, finir };
   })();
   // Comptes de l'herbier (lot 28C, lus par verifications/herbier-saisons.test.mjs) : découpes calculées, découpes reprises.
-  const COMPTES_HERBIER = { decoupes: 0, reprises: 0 };
+  const COMPTES_HERBIER = { decoupes: 0, reprises: 0, wasm: 0 };
   // ancien : l'herbier gardé pour la même clé, d'une autre saison. Sa découpe est reprise si la géométrie lue a la même
   // empreinte ; seules les couleurs, relues dans les nappes de cette saison, changent alors.
-  function creerHerbier(c, nappes, lots, lim, enceinte, niveauEau, ancien) {
+  function creerHerbier(c, nappes, lots, lim, enceinte, niveauEau, ancien, wasm) {
     const D = HERBIER.lire(c, nappes, lots, lim, enceinte, niveauEau), empreinte = HERBIER.empreinte(D);
     const reprise = !!ancien && ancien.empreinte === empreinte;
     let decoupe;
@@ -947,7 +947,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         for (let j = 0; j < 3; j++) { decoupe[o++] = p[j][0]; decoupe[o++] = p[j][1]; decoupe[o++] = p[j][2]; }
         decoupe[o++] = T[k].aire;
       }
-    } else decoupe = HERBIER.noyau(HERBIER.relier(D));
+    } else {
+      HERBIER.relier(D);
+      decoupe = wasm && B.herbierWasm?.decouper(D);
+      if (decoupe) COMPTES_HERBIER.wasm++;
+      else decoupe = HERBIER.noyau(D);
+    }
     COMPTES_HERBIER[reprise ? 'reprises' : 'decoupes']++;
     const herbier = HERBIER.finir(D, decoupe), sourcesTriangles = new Int32Array(herbier.triangles.length);
     for (let k = 0; k < sourcesTriangles.length; k++) sourcesTriangles[k] = decoupe[11 * k];
@@ -2016,7 +2021,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       if (!herbier) {
         // Lot 28C : une autre saison ne change que les couleurs du sol ; l'herbier gardé prête sa découpe quand la
         // géométrie lue est la même (creerHerbier compare les empreintes), sinon tout se refait.
-        herbier = creerHerbier(c, decor.nappes, lots, lim, decor.enceinte, terrain.niveauEau, entree && entree.herbier);
+        herbier = creerHerbier(c, decor.nappes, lots, lim, decor.enceinte, terrain.niveauEau, entree && entree.herbier, options.herbierWasm !== false);
         // Garder une seule palette par clé évite d'accumuler quatre grands caches de sol par circuit.
         cache.set(cle, { saison: couleurSaison, herbier });
       }

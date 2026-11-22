@@ -8,6 +8,7 @@
   dist/artefact.html  le même contenu sans l'enveloppe <html>, pour une publication en artefact (non versionné) ;
   SIZE.json           tailles brute et compressée, empreinte, taille de chaque source.
 """
+import base64
 import gzip
 import hashlib
 import json
@@ -62,6 +63,7 @@ MODULES = [
     'baikal.js',  # décor boréal préparé avant la construction des nappes
     'batiments.js',  # façades, garages et repères de la voie de service, préparés une fois
     'lieux.js',  # rochers organiques, pyramides du désert et lieux emblématiques des neuf circuits
+    'herbier-wasm.js',
     'decor.js',
     'solides-physx.js',
     'physique.js',
@@ -167,6 +169,10 @@ def main():
     gabarit = (SRC / 'index.html').read_text(encoding='utf-8')
     style = (SRC / 'style.css').read_text(encoding='utf-8')
     sources = {nom: (SRC / nom).read_text(encoding='utf-8') for nom in MODULES}
+    if sources['herbier-wasm.js'].count('__BITUME_HERBIER_WASM__') != 1:
+        raise SystemExit('Point d’insertion du noyau de découpe introuvable ou ambigu')
+    noyau = base64.b64encode((SRC / 'herbier/noyau.wasm').read_bytes()).decode('ascii')
+    sources['herbier-wasm.js'] = sources['herbier-wasm.js'].replace('__BITUME_HERBIER_WASM__', noyau)
     for nom, code in sources.items():
         bas = code.lower()
         if '</script' in bas or '<!--' in bas:

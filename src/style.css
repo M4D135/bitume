@@ -350,6 +350,7 @@ body.tactile .case .barre-sante { height: 4px; margin-top: 3px; }
 .message.vert { color: var(--vert); }
 @keyframes message { 0% { opacity: 0; transform: scale(1.18); } 10% { opacity: 1; transform: scale(1); } 75% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
 .sous-message { position: absolute; left: 0; right: 0; top: calc(30% + clamp(44px, 8vw, 96px)); text-align: center; font: 700 clamp(16px, 2.2vw, 24px)/1.2 var(--f-titre); letter-spacing: .06em; text-transform: uppercase; color: var(--papier-2); text-shadow: 0 2px 12px rgba(0, 0, 0, .6); opacity: 0; }
+.sous-message.aide-retour { opacity: 1; }
 .sous-message.visible { animation: message 2.2s ease-out forwards; }
 .annonce-virage { position: absolute; top: calc(var(--hud-top) + 100px); left: 50%; transform: translateX(-50%); display: grid; grid-template-columns: 23px minmax(0,1fr) auto; align-items: center; gap: 6px; max-width: calc(100% - 32px); padding: 5px 9px 5px 6px; color: #fffaf0; text-shadow: var(--texte-course); border-left: 2px solid var(--ambre); }
 .virage-fleche { width: 23px; height: 23px; fill: none; stroke: var(--ambre); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }

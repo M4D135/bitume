@@ -27,6 +27,60 @@ function toile(support=true){
     ownerDocument:{createElement:()=>({width:1,height:1,getContext:()=>ctx})}};
   return{canvas,appels,listeners};
 }
+verifier('tuiles : trente-deux dépôts, traces et bords suivent chaque toile',()=>{
+  const ta=toile(),tb=toile(),a=V.creer(ta.canvas),b=V.creer(tb.canvas);
+  for(const [t,e] of [[ta,a],[tb,b]]){
+    e.gl.uniform4uiv=(nom,v)=>{t.appels.uniformes[nom]=Array.from(v);};
+  }
+  const contexteVue=contexte({qualite:'ultra',pluie:0,largeur:960,hauteur:540});
+  const d=a.simulation.depots;
+  for(let i=0;i<32;i++){
+    const p=d.gouttes[i],x=i===31 ? .85 : .49,y=.5;
+    Object.assign(p,{vivant:true,x,y,px:x,py:y,taille:2,pr:2,age:1,pa:1,duree:30,
+      poids:1,pp:1,glisse:.04,vitesse:0,phase:0,frequence:.5});
+    p.traceX.fill(x);p.traceY.fill(y);
+    if(i===31){p.traceX[5]=.70;p.traceY[5]=.32;}
+  }
+  d.stats.gouttes=32;
+  V.mettreAJour(a,.001,contexteVue);const u=ta.appels.uniformes;
+  assert.equal(u.uAvecTuiles,true);assert.equal(u.uNbGouttes,32);
+  assert.equal(u.uTuilesGouttes.length,144);
+  assert.equal(u.uTuilesGouttes[4*16+7],0x7fffffff,'toutes les gouttes superposées');
+  assert.equal(u.uTuilesGouttes[4*16+13],0x80000000,'bit de poids fort au centre');
+  assert.equal(u.uTuilesGouttes[6*16+11],0x80000000,'extrémité de la traînée dans une autre tuile');
+  V.mettreAJour(b,.02,{...contexteVue,largeur:360,hauteur:640,pluie:1});
+  assert.equal(tb.appels.uniformes.uTuilesGouttes.reduce((a,b)=>a|b,0),0);
+  assert.equal(a.tuilesGouttes[4*16+13],0x80000000);
+  for(const p of d.gouttes){p.vivant=false;p.fusion=false;}d.stats.gouttes=0;
+  V.mettreAJour(a,.02,{...contexteVue,pluie:1});
+  assert(a.tuilesGouttes.every(v=>v===0));
+  const tc=toile(),c=V.creer(tc.canvas);
+  V.mettreAJour(c,.02,{...contexteVue,pluie:1});
+  assert.equal(tc.appels.uniformes.uAvecTuiles,false,'chemin linéaire sans chargement de masques');
+});
+verifier('réduction GPU bornée, retour à la taille native et repli 2D si le tampon est incomplet',()=>{
+  const t=toile(),e=V.creer(t.canvas),gl=e.gl;
+  let blits=0,attaches=0,effaces=0,complet=true;
+  Object.assign(gl,{READ_FRAMEBUFFER:20,DRAW_FRAMEBUFFER:21,FRAMEBUFFER:22,FRAMEBUFFER_COMPLETE:23,
+    COLOR_ATTACHMENT0:24,createFramebuffer:()=>({}),bindFramebuffer(){},deleteFramebuffer(){effaces++;},
+    framebufferTexture2D(){attaches++;},checkFramebufferStatus:()=>complet?23:0,
+    blitFramebuffer(){blits++;}});
+  const scene={getContext(){},width:1920,height:1080};
+  const c=contexte({largeur:1920,hauteur:1080,sourceScene:scene});
+  V.mettreAJour(e,.12,c);
+  assert.equal(blits,1);assert.equal(attaches,2);assert.equal(t.appels.copies,0);
+  assert.equal(e.stats.reductionsGPU,1);
+  V.mettreAJour(e,.12,c);assert.equal(blits,2);assert.equal(attaches,2);
+  scene.width=1280;scene.height=720;
+  V.mettreAJour(e,.12,{...c,largeur:1280,hauteur:720});assert.equal(e.stats.copiesDirectes,1);
+  scene.width=1920;scene.height=1080;
+  V.mettreAJour(e,.12,c);assert.equal(blits,3);assert.equal(attaches,4);
+  scene.width=7680;scene.height=2160;
+  V.mettreAJour(e,.12,c);assert.equal(blits,3);assert.equal(t.appels.copies,1);
+  scene.width=1920;scene.height=1080;complet=false;
+  V.mettreAJour(e,.12,c);assert.equal(blits,3);assert.equal(t.appels.copies,2);assert.equal(e.stats.erreur,null);
+  V.liberer(e);assert.equal(effaces,2);
+});
 verifier('état et uniformes identiques aux cadences 30/47/60/120/144 Hz',()=>{
   let ref;
   for(const hz of [30,47,60,120,144]){

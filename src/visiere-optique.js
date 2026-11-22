@@ -37,6 +37,8 @@
   uniform int uQualite;
   uniform bool uAvecScene;
   uniform int uNbGouttes;
+  uniform highp uvec4 uTuilesGouttes[36];   // 16 × 9 tuiles, un bit par goutte mobile
+  uniform bool uAvecTuiles;
   uniform vec4 uGouttes[32]; // centre en pixels, rayon, opacité ; vraies rencontres du modèle partagé
   uniform vec4 uTrajets[32]; // milieu et fin de la coulure, historique réel des positions
   uniform vec4 uImpacts[32]; // phase brève, force, orientation, rayon d'arrivée ; même pool que les perles
@@ -155,8 +157,18 @@
     float wMob=clamp(uMouvement.w,0.0,1.0);
     // À haute vitesse : centre dégagé, traînées fines filant vers les bords extérieurs
     float centreClear=mix(1.0,smoothstep(0.08,0.44,centreDist),wMob*0.80);
-    for(int i=0;i<32;i++) {
-      if(i>=uNbGouttes) break;
+    ivec2 tuile=clamp(ivec2(p/uVue.xy*vec2(16.0,9.0)),ivec2(0),ivec2(15,8));
+    int caseTuile=tuile.y*16+tuile.x;
+    highp uint masque=uTuilesGouttes[caseTuile/4][caseTuile%4];
+    for(int rang=0;rang<32;rang++) {
+      int i=rang;
+      if(uAvecTuiles) {
+        if(masque==0u)break;
+        // La mantisse est nulle : l'exposant de cette puissance de deux donne l'indice exact.
+        highp uint bit=masque & (0u-masque);
+        i=int(floatBitsToUint(float(bit))>>23u)-127;
+        masque&=masque-1u;
+      } else if(i>=uNbGouttes) break;
       vec4 g=uGouttes[i],tr=uTrajets[i],impact=uImpacts[i]; float rayon=g.z;
       float emprise=max(rayon*(2.3+wMob*6.5),impact.y>.005?impact.w*(.65+1.7*impact.x)*1.75+2.0:0.0);
       vec2 bas=min(g.xy,min(tr.xy,tr.zw))-emprise,haut=max(g.xy,max(tr.xy,tr.zw))+emprise;
@@ -426,12 +438,13 @@
     if(!gl.getProgramParameter(programme,gl.LINK_STATUS)) {
       const message=gl.getProgramInfoLog(programme); gl.deleteProgram(programme); throw new Error(message);
     }
+    e.reduction=null;
     e.programme=programme; e.vao=gl.createVertexArray(); e.texture=gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D,e.texture);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
     gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([0,0,0,255]));
-    e.lieux={}; for(const nom of ['uScene','uMeteo','uMouvement','uVue','uTexel','uQualite','uAvecScene','uNbGouttes','uGouttes','uTrajets','uImpacts','uFlux','uGravite','uTransport','uHistoire','uPhase']) e.lieux[nom]=gl.getUniformLocation(programme,nom);
+    e.lieux={}; for(const nom of ['uScene','uMeteo','uMouvement','uVue','uTexel','uQualite','uAvecScene','uNbGouttes','uGouttes','uTrajets','uImpacts','uFlux','uGravite','uAvecTuiles','uTuilesGouttes','uTransport','uHistoire','uPhase']) e.lieux[nom]=gl.getUniformLocation(programme,nom);
     gl.disable(gl.DEPTH_TEST); gl.disable(gl.BLEND); gl.clearColor(0,0,0,0);
     e.pret=true; e.perdu=false; e.stats.pret=true; e.stats.perdu=false;e.stats.erreur=null;
   }
@@ -441,9 +454,9 @@
     let gl; try { gl=canvas.getContext('webgl2',{alpha:true,premultipliedAlpha:false,antialias:false,depth:false,stencil:false,preserveDrawingBuffer:false}); } catch (_) { return null; }
     if(!gl) return null;
     const copie=canvas.ownerDocument.createElement('canvas'); copie.width=1; copie.height=1;
-    const e={canvas,gl,contexte:gl,simulation:creerEtat(options),source:copie,sourceContexte:copie.getContext('2d',{alpha:false}),
+    const e={canvas,gl,contexte:gl,tuilesGouttes:new Uint32Array(16*9),simulation:creerEtat(options),source:copie,sourceContexte:copie.getContext('2d',{alpha:false}),
       masquee:false,propre:true,perdu:false,libere:false,pret:false,dprPalier:null,largeur:1,hauteur:1,dpr:1,
-      stats:{backend:'webgl2',pret:false,perdu:false,erreur:null,copiesScene:0,copiesDirectes:0,dessins:0,etapes:0,pixels:0,pixelsSource:0,
+      stats:{backend:'webgl2',pret:false,perdu:false,erreur:null,copiesScene:0,copiesDirectes:0,reductionsGPU:0,dessins:0,etapes:0,pixels:0,pixelsSource:0,
         largeur:0,hauteur:0,dpr:1,eau:0,accumulationNeige:0,embruns:0,gouttes:0,neige:0,
         fusionsEau:0,expulses:0,depotsEau:0,depotsEmbruns:0,impactsEmis:0,surfaceExpulsee:0}};
     e.uMeteo=e.simulation.uniformes.subarray(0,4);e.uMouvement=e.simulation.uniformes.subarray(4,8);e.uVue=e.simulation.uniformes.subarray(8,12);
@@ -469,6 +482,57 @@
     if(e.source.width!==sw || e.source.height!==sh){e.source.width=sw;e.source.height=sh;}
     e.stats.pixelsSource=sw*sh;
   }
+  // Réduction d'une scène opaque dans le contexte de sa propre visière.
+  // La texture composée conserve exactement les dimensions de la source bornée.
+  function reduireScene(e,scene) {
+    const gl=e.gl, w=e.source.width, h=e.source.height;
+    // Au-delà de 4 Mpx, éviter la texture tampon pleine taille : Canvas2D copie au budget borné.
+    if(typeof gl.blitFramebuffer!=='function' || scene.width*scene.height > 4*MAX_SOURCE_PIXELS)return false;
+    let r=e.reduction;
+    if(!r){
+      r=e.reduction={texture:gl.createTexture(),lecture:gl.createFramebuffer(),ecriture:gl.createFramebuffer(),w:0,h:0,sw:0,sh:0};
+      if(!r.texture || !r.lecture || !r.ecriture){r.invalide=true;return false;}
+      gl.bindTexture(gl.TEXTURE_2D,r.texture);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+    }
+    if(r.invalide)return false;
+    try{
+      gl.bindTexture(gl.TEXTURE_2D,r.texture);
+      gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,scene);
+      gl.bindFramebuffer(gl.READ_FRAMEBUFFER,r.lecture);gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,r.ecriture);
+      if(r.sw!==scene.width || r.sh!==scene.height || r.w!==w || r.h!==h){
+        gl.framebufferTexture2D(gl.READ_FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,r.texture,0);
+        gl.bindTexture(gl.TEXTURE_2D,e.texture);
+        gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
+        gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,e.texture,0);
+        if(gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE || gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE){r.invalide=true;return false;}
+        r.w=w;r.h=h;r.sw=scene.width;r.sh=scene.height;
+      }
+      gl.blitFramebuffer(0,0,scene.width,scene.height,0,0,w,h,gl.COLOR_BUFFER_BIT,gl.LINEAR);
+      return true;
+    } catch(_){r.invalide=true;return false;}
+    finally{gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.bindTexture(gl.TEXTURE_2D,e.texture);}
+  }
+  // Une liste de 32 bits par tuile ; le dernier bit représente aussi une vraie goutte.
+  // Les indices actifs sont lus dans leur ordre d'origine pour maintenir l'addition du shader.
+  function preparerTuiles(e) {
+    const s=e.simulation, cases=e.tuilesGouttes, gx=s.gouttesUniformes, tr=s.trajetsUniformes, impacts=s.impactsUniformes;
+    const tuilesParPixelX=16/e.largeur, tuilesParPixelY=9/e.hauteur, vitesse=clamp(s.uniformes[7],0,1);
+    cases.fill(0);
+    for(let i=0;i<s.nbGouttes;i++) {
+      const o=i*4, halo=impacts[o+1]>.005 ? impacts[o+3]*(.65+1.7*impacts[o])*1.75+2 : 0;
+      // Même emprise que le shader, élargie d'un pixel à ses limites d'arrondi.
+      const m=1+Math.max(gx[o+2]*(2.3+vitesse*6.5),halo);
+      const x0=Math.max(0,Math.floor((Math.min(gx[o],tr[o],tr[o+2])-m)*tuilesParPixelX));
+      const x1=Math.min(15,Math.floor((Math.max(gx[o],tr[o],tr[o+2])+m)*tuilesParPixelX));
+      const y0=Math.max(0,Math.floor((Math.min(gx[o+1],tr[o+1],tr[o+3])-m)*tuilesParPixelY));
+      const y1=Math.min(8,Math.floor((Math.max(gx[o+1],tr[o+1],tr[o+3])+m)*tuilesParPixelY));
+      for(let y=y0;y<=y1;y++) {
+        for(let x=x0;x<=x1;x++)cases[y*16+x]|=1<<i;
+      }
+    }
+  }
   function dessiner(e,c,niveau,chauffe) {
     const gl=e.gl,u=e.simulation.uniformes;
     gl.viewport(0,0,e.canvas.width,e.canvas.height); gl.useProgram(e.programme); gl.bindVertexArray(e.vao);
@@ -483,10 +547,15 @@
         if(typeof scene.getContext==='function' && scene.width===e.source.width && scene.height===e.source.height) {
           try {
             gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,scene);
+            if(e.reduction)e.reduction.w=0;
             e.stats.copiesDirectes++;avecScene=true;
           } catch (_) { /* Le passage 2D peut accepter une source refusée en copie directe. */ }
         }
+        if(!avecScene && (scene.width!==e.source.width || scene.height!==e.source.height) && typeof scene.getContext==='function') {
+          avecScene=reduireScene(e,scene);if(avecScene)e.stats.reductionsGPU++;
+        }
         if(!avecScene) {
+          if(e.reduction)e.reduction.w=0;
           e.sourceContexte.drawImage(scene,0,0,e.source.width,e.source.height);
           gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,e.source);
         }
@@ -497,6 +566,12 @@
     gl.uniform1i(e.lieux.uScene,0);gl.uniform4fv(e.lieux.uMeteo,e.uMeteo);
     gl.uniform4fv(e.lieux.uMouvement,e.uMouvement);gl.uniform4fv(e.lieux.uVue,e.uVue);
     gl.uniform2f(e.lieux.uTexel,1/e.source.width,1/e.source.height);gl.uniform1i(e.lieux.uQualite,niveau);gl.uniform1i(e.lieux.uAvecScene,avecScene);
+    const avecTuiles=typeof gl.uniform4uiv==='function';
+    gl.uniform1i(e.lieux.uAvecTuiles,avecTuiles);
+    if(avecTuiles) {
+      preparerTuiles(e);
+      gl.uniform4uiv(e.lieux.uTuilesGouttes,e.tuilesGouttes);
+    }
     gl.uniform1i(e.lieux.uNbGouttes,e.simulation.nbGouttes);
     gl.uniform4fv(e.lieux.uGouttes,e.simulation.gouttesUniformes);gl.uniform4fv(e.lieux.uTrajets,e.simulation.trajetsUniformes);
     gl.uniform4fv(e.lieux.uImpacts,e.simulation.impactsUniformes);
@@ -540,7 +615,9 @@
   function liberer(e) {
     if(!e || e.libere)return;effacer(e);
     e.canvas.removeEventListener('webglcontextlost',e.perte); e.canvas.removeEventListener('webglcontextrestored',e.restauration);
-    if(!e.perdu){e.gl.deleteTexture(e.texture);e.gl.deleteVertexArray(e.vao);e.gl.deleteProgram(e.programme);}
+    if(!e.perdu){
+      if(e.reduction){e.gl.deleteTexture(e.reduction.texture);e.gl.deleteFramebuffer(e.reduction.lecture);e.gl.deleteFramebuffer(e.reduction.ecriture);}
+      e.gl.deleteTexture(e.texture);e.gl.deleteVertexArray(e.vao);e.gl.deleteProgram(e.programme);}
     e.libere=true;e.canvas=null;e.contexte=null;e.source=null;e.sourceContexte=null;e.gl=null;
   }
   B.visiereOptique={creer,creerEtat,avancerEtat,mettreAJour,prechauffer,effacer,liberer,MAX_PIXELS,MAX_SOURCE_PIXELS,MAX_GOUTTES_MOBILES,QUALITES,COUCHES};

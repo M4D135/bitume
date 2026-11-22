@@ -246,13 +246,14 @@
     const options = [v.ancre, decorEnrichi, v.veut.matieres, v.vegetationQualite].join('/');
     return 'panorama-v1:' + B.cache.cleDecor(k.id, k.graine, options, v.saison, version);
   }
-  function installer(i, saisonDemandee, panorama) {
+  function installer(i, saisonDemandee, panorama, herbierWasm) {
     // Le décor est bâti sur un palier « ancre » (voir « profils graphiques du menu ») : la même piste ne se
     // reconstruit pas à chaque fluctuation du gouverneur, seulement quand l'ancre ou l'enrichissement change.
     const v = voeuDecor(saisonDemandee), { ancre, veut, vegetationQualite, saison } = v;
     if (sceneEnPlace(i, saisonDemandee, v)) return scene;
     const c = circuit(i), decor = B.decor.construire(c, {
       cachePanorama: panorama && panorama.cle === clePanorama(i, v) ? panorama : null,
+      herbierWasm,
       qualite: ancre,
       matieres: decorEnrichi && veut.matieres,
       vegetation: decorEnrichi && veut.vegetation,
@@ -382,7 +383,7 @@
     // en ligne, une machine qui porte deux pilotes joue en écran partagé, comme une course à deux
     if (enl && enl.locaux.length === 2) type = 'duo';
     const conditions = enl || conditionsChoisies || conditionsDuDepart();
-    const sc = installer(i, B.saisons.normaliser(conditions.saison)), c = sc.c, demo = type === 'demo', auto = demo || type === 'vitrine', duo = type === 'duo';
+    const sc = installer(i, B.saisons.normaliser(conditions.saison), null, type !== 'vitrine'), c = sc.c, demo = type === 'demo', auto = demo || type === 'vitrine', duo = type === 'duo';
     // ombre lointaine du circuit (src/ombres.js) : une passe par décor, aucune sans ombres du soleil possibles
     B.ombres.carte(rendu, gpuModeste || !B.ombres.ombresPossibles(reglages.qualite, { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages }), sc.decor.lots);
     // enl : course en ligne (même graine, mêmes réglages des deux côtés ; voir « jeu en ligne »)
@@ -1275,6 +1276,11 @@
     }
   }
 
+  function annoncerRecuperation(e, qui) {
+    if (e.type === 'retour' && e.repositionnement) message('Replacé', '', true, qui);
+    else if (e.type === 'roue' || e.type === 'casse' || e.type === 'tonneau') message('Retour en piste', 'ambre', true, qui);
+  }
+
   function traiter(S, ev) {
     const co = S.course, j = co.joueur, V2 = S.vueJ2;
     if (V2) for (const e of ev) {
@@ -1317,13 +1323,17 @@
           sousMessage('Drapeau à damier · ' + chrono(j.tempsFinal));
           break;
         default:
-          if (e.id !== j.id) break;
+          if (e.id !== j.id) {
+            if (V2 && e.id === S.locaux[1]) annoncerRecuperation(e, 1);
+            break;
+          }
+          annoncerRecuperation(e, 0);
           if (son) son.evenement(e.type, e, S.raclement);
           if (e.type === 'choc') { S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .07); if (e.force > 18) S.eclair = Math.min(.9, (e.force - 18) * .07); }
           else if (e.type === 'reception') S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, (e.force || 0) - 2) * .12);
-          else if (e.type === 'tonneau' || e.type === 'casse') { S.secousse = 1; S.eclair = .7; message('Retour en piste', 'ambre', true); }
-          else if (e.type === 'roue') { message('Retour en piste', 'ambre', true); S.eclair = .5; }
-          else if (e.type === 'retour' && e.repositionnement) { S.secousse = 0; S.eclair = 0; S.bloque = 0; S.contresens = 0; message('Replacé', '', true); }
+          else if (e.type === 'tonneau' || e.type === 'casse') { S.secousse = 1; S.eclair = .7; }
+          else if (e.type === 'roue') S.eclair = .5;
+          else if (e.type === 'retour' && e.repositionnement) { S.secousse = 0; S.eclair = 0; S.bloque = 0; S.contresens = 0; }
           else if (e.type === 'turbo') message(e.parfait ? 'Turbo parfait' : 'Turbo', e.parfait ? 'ambre' : '', true);
           else if (e.type === 'deriveAnnulee') S.derniereJauge = co.horloge;
       }
@@ -1387,7 +1397,10 @@
     if (co.phase === 'course' && !j.fini) {
       const arriere = Math.cos(et.psi) < -.2 && et.v > 2;
       S.contresens = arriere ? S.contresens + DT : Math.max(0, S.contresens - DT * 2);
-      if (S.contresens > 1.2 && !S.avertiContresens) { message('Contresens', 'rouge', true); S.avertiContresens = true; }
+      if (S.contresens > 1.2 && !S.avertiContresens) {
+        if (!et.stands && !et.recuperation && !j.abandon) message('Contresens', 'rouge', true, 0);
+        S.avertiContresens = true;
+      }
       if (S.contresens < .2) S.avertiContresens = false;
       const coince = !et.recuperation && et.rapport >= 0 && et.v >= 0 && ((et.v < 1.5 && et.gaz > .5) || (Math.cos(et.psi) < -.5 && et.v < 3));
       S.bloque = coince ? S.bloque + DT : 0;
@@ -3538,6 +3551,47 @@
   // demi-image à 120 Hz tient le rythme quand l'intervalle tombe pile sur la période (à 60 Hz : les chiffres une
   // image sur deux, le plan une sur quatre, jamais la même).
   const PERIODE_CHIFFRES = 1 / 30 - 1 / 240, PERIODE_PLAN = 1 / 15 - 1 / 240;
+  function aideRetour(S) {
+    // Les compteurs de conduite décident déjà du retour. Un arrêt choisi n'appelle aucune aide.
+    const cause = S.horsPiste >= .8 ? 'Hors piste' : S.bloque >= .8 ? 'Bloqué' : '';
+    if (!cause || ecran !== 'course' || S.course.phase !== 'course' || S.type === 'demo' || S.type === 'vitrine') return '';
+    const j = S.course.joueur, et = j.etat;
+    if (j.fini || j.abandon || et.stands || et.recuperation ||
+        !(et.gaz > .5 && et.frein < .1 && et.rapport >= 0 && et.v >= 0 && et.v < 1.5)) return '';
+    const c = commande(0), m = pad.manette;
+    let suite = 'retour automatique';
+    if (S.type !== 'duo') {
+      if (doigt.gaz) suite = 'Pause → Se replacer';
+      else if (c === 'manette' || (c === 'auto' && pad.gaz > .5)) {
+        if (m?.buttons?.[9]) {
+          let bouton = 'Bouton 10';
+          if (m.mapping === 'standard') {
+            if (/054c|playstation|dualshock|dualsense|sony/i.test(m.id)) bouton = 'Options';
+            else if (/057e|nintendo|switch/i.test(m.id)) bouton = '+';
+            else if (/045e|xbox|xinput/i.test(m.id)) bouton = 'Menu';
+          }
+          suite = bouton + ' → Se replacer';
+        }
+      } else if (c === 'clavier' || (c === 'auto' && !(souris.active && souris.gaz))) {
+        const conflit = ACTIONS.some(a => toucheDe(0, a).some(code => code === 'KeyR' || nomTouche(code) === 'R'));
+        suite = conflit ? 'Échap → Se replacer' : 'R pour se replacer';
+      }
+    }
+    return cause + ' · ' + suite;
+  }
+
+  // Partage la ligne secondaire existante. Un message de tour qui la reprend reste maître de son texte.
+  function afficherAideRetour(aide) {
+    const el = H['sous-message'];
+    if (aide === (el._aideRetour || '')) return;
+    el._aideRetour = aide;
+    if (aide && !messagesEnAttente.has(el)) {
+      el.textContent = aide; el.className = 'sous-message aide-retour';
+    } else if (!aide && el.classList.contains('aide-retour')) {
+      el.textContent = ''; el.className = 'sous-message';
+    }
+  }
+
   function majHud(S, x = HUD1, jForce = null) {
     // en démo, l'affichage est celui de la voiture filmée ; à deux, chaque affichage a sa voiture (x : ses éléments)
     const H = x.h, segments = x.segments, lampes = x.lampes, etiquetteDerive = x.etiquette, barre = x.barre;
@@ -3546,6 +3600,7 @@
     // nouvelle séance : tout s'écrit dès sa première image
     if (x.seance !== S) { x.seance = S; x.tChiffres = x.tPlan = -Infinity; }
     majAnnonceVirage(S, x, j);
+    if (x === HUD1) afficherAideRetour(aideRetour(S));
     if (demo && S.planVu) texte($('demo-plan'), CATALOGUE[S.i].nom + ' · ' + LIBELLES_PLAN[S.planVu.vue] + ' · ' + (S.planVu.nature ? S.planVu.label : j.nom));
     texte(H['h-pos'], chronoMode ? '–' : String(j.position)); texte(H['h-sur'], chronoMode ? '' : '/' + nb);
     if (!chronoMode && !demo && S.positionPrec && j.position < S.positionPrec && co.phase === 'course') eclat(H['c-position']);
@@ -3788,7 +3843,7 @@
     if ((ecran === 'course' || ecran === 'demo') !== (nom === 'course' || nom === 'demo'))
       B.qualite.avancer(palier, 0, { actif: false });
     if (son && nom !== 'demo') son.evenement('clic');
-    if (nom !== 'course') arreterManettes();
+    if (nom !== 'course') { arreterManettes(); afficherAideRetour(''); }
     // pause, résultats, menus : les écritures différées de la course (records, fantôme, réglages) partent ici
     if (nom !== 'course') viderStock();
     for (const e of ECRANS) $(e).hidden = e !== nom;
@@ -5059,7 +5114,7 @@
       // 2. décor, s'il change (le seul travail synchrone indivisible : B.decor.construire)
       await etape('decor', aBatir);
       if (aBatir) {
-        installer(i, saison, panorama);
+        installer(i, saison, panorama, type !== 'vitrine');
         if (panorama?.choisi) R.cachePanorama = panorama.rapport;
       }
       // 3. moteur des rétroviseurs : sa copie du décor et les toiles des quatre glaces
