@@ -65,7 +65,8 @@
     if (!d.basculeMax || !(hauteur > 0 && largeur > 0)) return;
     const tan = Math.tan((cam.fov || 75) * Math.PI / 360), horizontal = tan * largeur / hauteur;
     const facteur = TAN_60 / tan * hauteur / 1080;
-    const portee = d.basculeMax * facteur + d.rayonMax;
+    const porteeBascule = d.basculeMax * facteur;
+    const portee = porteeBascule + d.rayonMax;
     // Au téléobjectif ou sur une très grande toile, la bascule normale suffit.
     // La requête parcourt au plus 17 × 17 cases, indépendamment de la longueur du circuit.
     if (portee > 8 * CASE) return;
@@ -91,6 +92,9 @@
         // central protégé. Les cas tangents restent soumis au calcul de chaque lot.
         if (devant+total < 0 || cote-devant*horizontal > total*normaleChamp ||
             cote-devant*centre < -b.centres*normale) continue;
+        // Même le lot le plus proche est hors de portée au-delà de cette borne.
+        const limiteVolume = porteeBascule + total;
+        if (x * x + y * y + z * z > limiteVolume * limiteVolume) continue;
       }
       for (const lot of lots) {
         const p = lot.centre, r = lot.rayon, dx = p[0] - oeil[0], dy = p[1] - oeil[1], dz = p[2] - oeil[2];
