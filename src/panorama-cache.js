@@ -33,6 +33,7 @@
       const sommets = new Float32Array(bloc, pos, ns); pos += ns * 4;
       const indices = new Uint32Array(bloc, pos, ni); pos += ni * 4;
       for (const index of indices) if (index >= ns / 13) return null;
+      for (let k = 0; k < ns; k++) if (!Number.isFinite(sommets[k])) return null;
       const nappe = { centre, rayon, sommets, indices };
       Object.defineProperty(nappe, 'surfaceType', { value: 'panorama' });
       nappes.push(nappe);

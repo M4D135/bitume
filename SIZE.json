@@ -1,8 +1,8 @@
 {
-  "version": "0.2.168",
-  "raw": 16720661,
-  "gzip": 4641491,
-  "sha256": "40e8f7b795b243ec8f067527ae28975dcf328009785fe16388b2abb2f6642fa3",
+  "version": "0.2.169",
+  "raw": 16720743,
+  "gzip": 4641508,
+  "sha256": "455735b87e8dfdfad0ee688f27fe93f74d4ef689972646f0bc5889c15e7a311c",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
@@ -64,7 +64,7 @@
     "championnat.js": 7193,
     "records.js": 6826,
     "cache.js": 9694,
-    "panorama-cache.js": 4404,
+    "panorama-cache.js": 4486,
     "effets-saison.js": 17692,
     "aurores.js": 7592,
     "carene.js": 16443,
