@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-for (const file of ['conduite', 'meteo', 'ambiance', 'saisons', 'conditions-course', 'navigation-menu', 'menu-arcade']) require('../src/' + file + '.js');
+for (const file of ['conduite', 'meteo', 'ambiance', 'saisons', 'conditions-course', 'championnat', 'navigation-menu', 'menu-arcade']) require('../src/' + file + '.js');
 const production = globalThis.BITUME, source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const NOW = Date.UTC(2026, 10, 18, 12);
 function extrait(debut, fin, apres = 0) {

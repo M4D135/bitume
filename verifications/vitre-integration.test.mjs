@@ -31,7 +31,7 @@ const executer = new Function('B', 'prefs', `
   const document = Object.assign(new EventTarget(), { querySelectorAll: () => [] }), window = { devicePixelRatio: 1 };
   const majCommandes = () => {}, majDetectionGraphique = () => {}, appliquerVolumes = () => {}, appliquerCarte = () => {}, secouerManette = () => {}, pad2 = {};
   const CATALOGUE = [{ theme: 'foret' }, { theme: 'cote' }];
-  const VUES_DEHORS = new Set(['tele', 'helico', 'orbite', 'travelling', 'sol', 'panorama', 'flore', 'faune', 'pilote', 'peloton']);
+  const VUES_DEHORS = new Set(['tele', 'helico', 'orbite', 'travelling', 'sol', 'panorama', 'lieu', 'peloton']);
   const creationTardive = (nom, valeur) => valeur, sousLaVoute = (c, pos) => !!pos.abri, calmerVibrations = () => {};
   B = { ...B, meteo: { ...B.meteo, creerPluie: () => ({ dessiner() {} }) } };
   ${bloc('  function initialiserChoixPneus(', '  function choixPneusLocaux(')}
@@ -261,7 +261,7 @@ verifier('les projections à 300 km/h suivent le panache humide, avec des vitres
 });
 verifier('les plans aériens et distants n’ont aucun dépôt ; toutes les vues embarquées les rétablissent', () => {
   const j = jeu(), S = seance(); j.initialiser(S);
-  for (const vue of ['helico', 'panorama', 'tele', 'faune', 'pilote', 'orbite', 'sol', 'travelling', 'flore', 'peloton']) {
+  for (const vue of ['helico', 'panorama', 'tele', 'lieu', 'orbite', 'sol', 'travelling', 'peloton']) {
     avancer(j, S, 2, 'cockpit'); assert(j.vues()[0].stats.gouttes > 0);
     j.dessiner(S, vue, 0); assert(j.vues()[0].masquee && j.vues()[0].propre, vue);
   }

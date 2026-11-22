@@ -1973,9 +1973,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const atmosphere = saison ? B.saisons.atmosphere(saison, atmosphereBase) : atmosphereBase;
     // enceinte : portion de la ligne droite bordée de tribunes et de stands (abscisses comptées depuis la ligne) ; une
     // caméra de bord de piste s'y place devant eux, pas derrière la glissière où elle serait dans les gradins.
-    const decor = { nappes: nappes.concat(terrain.liste), lots: lotsDessin, atmosphere, portique, obstacles, sol: terrain.sol, solRendu: terrain.solRendu, maillageSol: terrain.maillageSol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
+    const decor = { nappes: nappes.concat(terrain.liste), lots: lotsDessin, atmosphere, portique, obstacles, sol: terrain.sol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
       arbres: positionsArbres,
       enceinte: { debut: avant - 10, fin: apres + 50 } };
+    Object.defineProperty(decor, 'maillageSol', { value: terrain.maillageSol });
     if (architecture) Object.defineProperty(decor, 'architecture', { value: architecture });
     if (lieuxCimes) decor.cimes = lieuxCimes;
     if (terrain.paysageBaikal) Object.defineProperty(decor, 'baikal', { value: Object.freeze({

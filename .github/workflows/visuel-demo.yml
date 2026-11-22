@@ -45,22 +45,26 @@ jobs:
         include:
           - groupe: val-brule
             cas: route-val-brule,trace-val-brule,lieu-val-brule
-          - groupe: port-sable
-            cas: route-port-sable,trace-port-sable,lieu-port-sable
-          - groupe: haut-col
-            cas: route-haut-col,trace-haut-col,lieu-haut-col
-          - groupe: lande-noire
-            cas: route-lande-noire,trace-lande-noire,lieu-lande-noire
-          - groupe: roche-fauve
-            cas: route-roche-fauve,trace-roche-fauve,lieu-roche-fauve
-          - groupe: brume-de-jade
-            cas: route-brume-de-jade,trace-brume-de-jade,lieu-brume-de-jade
+          - groupe: marseille
+            cas: route-marseille,trace-marseille,lieu-marseille
+          - groupe: corail
+            cas: route-corail,trace-corail,lieu-corail
           - groupe: cap-sequoia
             cas: route-cap-sequoia,trace-cap-sequoia,lieu-cap-sequoia
-          - groupe: baikal
-            cas: route-baikal,trace-baikal,lieu-baikal
+          - groupe: fjord
+            cas: route-fjord,trace-fjord,lieu-fjord
           - groupe: route-des-cimes
             cas: route-route-des-cimes,trace-route-des-cimes,lieu-route-des-cimes
+          - groupe: larche
+            cas: route-larche,trace-larche,lieu-larche
+          - groupe: lande-noire
+            cas: route-lande-noire,trace-lande-noire,lieu-lande-noire
+          - groupe: sierra
+            cas: route-sierra,trace-sierra,lieu-sierra
+          - groupe: brume-de-jade
+            cas: route-brume-de-jade,trace-brume-de-jade,lieu-brume-de-jade
+          - groupe: baikal
+            cas: route-baikal,trace-baikal,lieu-baikal
           - groupe: securite
             cas: tele-montagne,helico-montagne
           - groupe: meteo

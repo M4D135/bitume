@@ -12,7 +12,7 @@
     "recu": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json"
   },
   "destinations_prevues": 17,
-  "lot_actif": "xbox_edge_commandes",
+  "lot_actif": "qualification_finale",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [
@@ -29,7 +29,7 @@
     {
       "id": "faune_proche_champ",
       "objectif": "Animaux proches de la route ; sommeil hors des vues utiles",
-      "etat": "planned",
+      "etat": "qualified",
       "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
       "base_observee": "0e7273c0361996b9c217e6f1051a9ef9a54b18c7",
       "phases": [
@@ -37,12 +37,17 @@
         "F2"
       ],
       "cloture": "Distances aux bords mesurées, animaux visibles depuis la route, aucune simulation détaillée des groupes invisibles, réveil stable ; J1/J2, rétros et Faune désactivée contrôlés.",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json",
+        "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json",
+        "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md"
+      ],
+      "reste": "Comparer les budgets sur Xbox et sur GPU intégré."
     },
     {
       "id": "demos_route_lieux",
       "objectif": "Refaire les démos des neuf circuits : route, tracé et point d’intérêt uniquement",
-      "etat": "planned",
+      "etat": "qualified",
       "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
       "base_observee": "0e7273c0361996b9c217e6f1051a9ef9a54b18c7",
       "phases": [
@@ -50,7 +55,12 @@
         "D2"
       ],
       "cloture": "Aucun plan herbe/faune/flore ni autre sujet autonome ; séquences cadrées et sans traversée sur les neuf circuits, futurs parcours couverts à leur intégration jouable.",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json",
+        "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json",
+        "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md"
+      ],
+      "reste": "Poursuivre la revue visuelle des séquences complètes et des caméras sous météo variée."
     },
     {
       "id": "demarrage_mobile_passif",
@@ -434,12 +444,15 @@
     {
       "id": "championnat",
       "objectif": "Championnat de plusieurs courses",
-      "etat": "planned",
+      "etat": "qualified",
       "dependances": [
         "records"
       ],
       "cloture": "Progression, classement, sauvegarde et reprise cohérents",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md"
+      ],
+      "reste": "Recevoir une coupe entière conduite, sur matériel et à deux manettes si le mode est étendu au duo."
     },
     {
       "id": "qualification_finale",
@@ -742,7 +755,7 @@
   "dernieres_demandes": {
     "date": "2026-11-21",
     "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
-    "statut": "planned",
+    "statut": "prepared",
     "base_main": "0e7273c0361996b9c217e6f1051a9ef9a54b18c7",
     "version_base": "0.2.85",
     "circuits_actuels": 9,
@@ -754,10 +767,12 @@
       "D2",
       "Q"
     ],
-    "runtime_modifie": false,
-    "preuves_runtime": [],
+    "runtime_modifie": true,
+    "preuves_runtime": [
+      "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json"
+    ],
     "larche": "À ajouter aux démos lors de son intégration jouable ; sommet → Vinadio, sans rebouclage.",
-    "etat": "planned"
+    "etat": "prepared"
   },
   "demandes_moteur_2026_11_20": {
     "fiche": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
@@ -843,12 +858,13 @@
   },
   "base_initiale": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_candidat": {
-    "statut": "xbox_edge_en_reception",
-    "version": "0.2.83",
-    "base_runtime_main": "0.2.80",
-    "branche": "codex/bitume-xbox-edge-20261121",
-    "fiche": "docs/reprise/XBOX-EDGE-COMMANDES-2026-11-21.md",
-    "suite": "PR #56 mains, à rebaser et renuméroter après publication console"
+    "statut": "qualifie_localement_publication_bloquee",
+    "version": "0.2.87",
+    "base_runtime_main": "0.2.85",
+    "branche": "codex/bitume-faune-demos-validation-20261121",
+    "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
+    "recu": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0287.json",
+    "reception_locale": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json"
   },
   "demandes_video_survol_2026_11_20": {
     "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",

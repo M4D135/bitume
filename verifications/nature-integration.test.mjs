@@ -48,7 +48,7 @@ verifier('lumière commune aux deux joueurs et rétroviseurs sans rebâtir le mo
 });
 
 verifier('faune inactive sans construction ; habitats partagés et pools propres aux vues',()=>{
-  ctx.S=session;ctx.P=Grap.melange('low',0);
+  ctx.S=session;ctx.P=Grap.melange('low',0,{options:{faune:'off'}});
   vm.runInNewContext(faune,ctx);assert.equal(crees,0);assert.equal(dessins.length,0);
   ctx.P=Grap.melange('high',0,{options:{faune:'ultra'}});
   vm.runInNewContext(faune,ctx);

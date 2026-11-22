@@ -1,15 +1,15 @@
 // Décision du 21 novembre : routes et lieux existants ; les anciens plans flore/faune sont remplacés.
-// Le vrai décor .85 et les rayons PhysX contrôlent les neuf circuits, sans consulter les animaux.
+// Le décor du jeu et les rayons PhysX contrôlent les circuits du menu, sans consulter les animaux.
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync, writeFileSync } from 'node:fs';
 import vm from 'node:vm';
 import { chargerPhysX } from './helpers/physx-runtime.mjs';
 const require = createRequire(import.meta.url);
-for (const f of ['moteur/renderer','circuit','couverts','route-des-cimes','route-des-cimes-decor','larche-vinadio-data','larche-vinadio','larche-vinadio-decor','destinations','conduite','carene','botanique','ecologie','saisons','vegetation','bords','baikal','batiments','lieux','decor','obstacles','solides-physx','course','cinema','realisateur']) require('../src/'+f+'.js');
+for (const f of ['moteur/renderer','circuit','couverts','route-des-cimes','route-des-cimes-decor','larche-vinadio-data','larche-vinadio','larche-vinadio-decor','marseille','marseille-decor','destinations','conduite','carene','botanique','ecologie','saisons','vegetation','bords','baikal','batiments','lieux','decor','obstacles','solides-physx','course','cinema','realisateur']) require('../src/'+f+'.js');
 const B = globalThis.BITUME, X = await chargerPhysX(), Cine = B.cinema, R = B.realisateur;
 const catalogue = vm.runInNewContext(readFileSync(new URL('../src/jeu.js',import.meta.url),'utf8').match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1], { B });
-const circuitsAttendus = ['val-brule','port-sable','haut-col','lande-noire','roche-fauve','brume-de-jade','cap-sequoia','baikal','route-des-cimes','larche','fjord','carpates','ecosse','sierra','corail','andes'];
+const circuitsAttendus = ['val-brule', 'marseille', 'corail', 'cap-sequoia', 'fjord', 'route-des-cimes', 'larche', 'lande-noire', 'sierra', 'brume-de-jade', 'baikal'];
 let controles=0;
 const rapports=[];
 function verifier(nom,f) { f(); controles++; console.log('ok  '+nom); }
@@ -19,7 +19,8 @@ const signatures = new Set();
 const animauxInterdits = new Proxy({}, {get(){throw new Error('une démo prépare encore un sujet animal');}});
 try {
 for(const k of catalogue) {
- const c=k.id==='larche'&&B.larche?B.larche.creer(k.graine):B.circuit.creer(k.graine,{id:k.id,theme:k.theme,longueur:k.longueur,nom:k.nom,partition:k.partition,ouvert:k.ouvert});
+ const c = k.id === 'larche' ? B.larche.creer(k.graine) : k.id === 'marseille' ? B.marseille.creer(k.graine)
+  : B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition });
  if(!c.ouvert)B.bords.limites(c,B.bords.planifier(c));
  const decor=B.decor.construire(c,{qualite:'high',vegetationQualite:'high',saison:'ete',organique:true,solsProceduraux:true});c.obstacles=B.obstacles.creer(decor.obstacles);
  const world=X.createWorld({fixedStep:1/120,maxSubSteps:1}), montage=B.solidesPhysX.installer(world,c,decor);
@@ -69,7 +70,7 @@ for(const k of catalogue) {
     assert(Cine.choisir(C,'lieu',0,0));
    }
   });
-  if(k.id===catalogue[0].id){
+  if(k.id===catalogue[0].id || c.ouvert){
    verifier('lieu au départ, tracé, sprint et drapeau gardent des plans explicites',()=>{
     const r=R.creer(777);co.horloge=0;co.phase='grille';
     let p=R.tenir(r,co,C);assert.equal(p.motif,'decouverte');assert.equal(p.vue,'lieu');assert.equal(p.label,decor.lieux.marqueurs[0].nom);
@@ -79,16 +80,17 @@ for(const k of catalogue) {
     p=R.tenir(r,co,C);assert(p.nature);assert.equal(p.vue,'lieu');const ancien=p, n=r.n;
     p=R.replier(r,co);assert.notEqual(p,ancien);assert.equal(p.n,n+1);assert.equal(p.vue,'tele');assert.equal(p.motif,'cadre');
     co.horloge=60;r.plansCourse=3;p.fin=0;p=R.tenir(r,co,C);assert.equal(p.vue,'panorama','le tracé doit alterner avec le lieu');
-    co.voitures[co.classement[0]].progression=co.toursTotal*c.longueur-200;p=R.tenir(r,co,C);assert.equal(p.motif,'sprint');assert(!p.nature);
+    const ligne = c.ouvert ? c.arrivee - (c.depart || 0) : co.toursTotal*c.longueur;
+    co.voitures[co.classement[0]].progression=ligne-200;p=R.tenir(r,co,C);assert.equal(p.motif,'sprint');assert(!p.nature);
     co.drapeau=61;co.horloge=61;co.voitures[0].fini=true;co.voitures[0].tempsFinal=61;p=R.tenir(r,co,C);assert.equal(p.motif,'arrivee');
    });
   }
   rapports.push(rapport);console.log(JSON.stringify(rapport));
  } finally {B.solidesPhysX.liberer(montage);world.dispose();}
 }
-verifier('neuf circuits actuels, lieux distincts et aucun monde natif conservé',()=>{
+verifier('circuits actuels du menu, lieux distincts et aucun monde natif conservé',()=>{
  assert.deepEqual(rapports.map(r=>r.circuit),circuitsAttendus);
- assert.equal(catalogue[8].partition,'route-des-cimes');
+ assert.equal(catalogue.find(k => k.id === 'route-des-cimes').partition,'route-des-cimes');
  assert.equal(signatures.size,circuitsAttendus.length,'des lieux génériques remplacent les vrais marqueurs');
  assert.equal(X.status().worlds,0);
 });

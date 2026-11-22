@@ -156,7 +156,8 @@
     if (!p) { R.ordre = co.classement.slice(); return suivant(R, co); }
     // Les 300 derniers mètres de la tête : on finit avec elle, de près, et le plan tient jusqu'au drapeau.
     const tete = V[co.classement[0]];
-    if (!R.sprint && (co.c.ouvert ? co.c.longueur : co.toursTotal * co.c.longueur) - tete.progression < SPRINT) {
+    const ligneArrivee = co.c.ouvert ? (co.c.arrivee ?? co.c.longueur) - (co.c.depart || 0) : co.toursTotal * co.c.longueur;
+    if (!R.sprint && ligneArrivee - tete.progression < SPRINT) {
       R.sprint = true;
       if (p.sujet !== tete.id || p.nature) return couper(R, co, p.vue === 'poursuite' ? 'cockpit' : 'poursuite', tete.id, 1e9, 'sprint');
       p.fin = 1e9;

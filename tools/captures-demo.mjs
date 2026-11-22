@@ -7,8 +7,8 @@ import { fileURLToPath } from 'node:url';
 import { capturer, optionsCapture } from './controle-visuel.mjs';
 
 export const CIRCUITS_DEMO = Object.freeze([
-  'val-brule', 'port-sable', 'haut-col', 'lande-noire', 'roche-fauve',
-  'brume-de-jade', 'cap-sequoia', 'baikal', 'route-des-cimes'
+  'val-brule', 'marseille', 'corail', 'cap-sequoia', 'fjord', 'route-des-cimes',
+  'larche', 'lande-noire', 'sierra', 'brume-de-jade', 'baikal'
 ]);
 export const SCENARIOS = Object.freeze([
   ...CIRCUITS_DEMO.flatMap((id, circuit) => [
@@ -16,8 +16,8 @@ export const SCENARIOS = Object.freeze([
     { id: 'trace-' + id, circuit, vue: 'panorama', attendu: 'panorama', cadrage: 'route', ancre: 'panorama', instants: [.4, 4, 7.6] },
     { id: 'lieu-' + id, circuit, vue: 'lieu', attendu: 'lieu', cadrage: 'lieu', ancre: 'lieu', instants: [.4, 4, 7.6] }
   ]),
-  { id: 'tele-montagne', circuit: 2, depart: 1685, vue: 'tele', attendu: 'poursuite', vitesse: 40, refus: true },
-  { id: 'helico-montagne', circuit: 2, depart: 2070, vue: 'helico', attendu: 'poursuite', vitesse: 40, refus: true },
+  { id: 'tele-montagne', circuit: CIRCUITS_DEMO.indexOf('route-des-cimes'), depart: 4220, vue: 'tele', attendu: 'poursuite', vitesse: 40, refus: true },
+  { id: 'helico-montagne', circuit: CIRCUITS_DEMO.indexOf('route-des-cimes'), depart: 4600, vue: 'helico', attendu: 'poursuite', vitesse: 40, refus: true },
   { id: 'pluie-cockpit', vue: 'cockpit', attendu: 'cockpit', pluie: true, spray: true, chauffe: 90, vitesse: 235 / 3.6 },
   { id: 'pluie-poursuite-sillage', vue: 'poursuite', attendu: 'poursuite', pluie: true, spray: true, chauffe: 90, vitesse: 235 / 3.6 },
   { id: 'pluie-aerien', circuit: 7, vue: 'helico', attendu: 'helico', pluie: true, aerien: true, chauffe: 90, vitesse: 235 / 3.6 }

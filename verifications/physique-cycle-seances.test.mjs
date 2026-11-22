@@ -17,7 +17,7 @@ function fonction(nom) {
   assert.ok(debut >= 0 && fin > debut, 'fonction du jeu absente : ' + nom);
   return source.slice(debut, fin + 4);
 }
-const fonctions = ['lancer', 'graine32', 'remplirPoses'].map(fonction).join('\n');
+const fonctions = ['lancer', 'graine32', 'remplirPoses', 'creerChampsFaune'].map(fonction).join('\n');
 const k = catalogue[0], c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition });
 B.bords.limites(c, B.bords.planifier(c));
 const decor = B.decor.construire(c, { qualite: 'low', vegetation: false, saison: 'ete', solsProceduraux: true });

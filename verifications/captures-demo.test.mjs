@@ -30,9 +30,9 @@ function rejette(s, changer, attendu) {
 }
 
 test('les scénarios CI couvrent chaque plan déclaré avec des options bornées', () => {
-  const o = optionsDemo(base); assert.equal(o.cas.length, 32);
-  assert.deepEqual(optionsDemo([...base, '--cas', 'tele-montagne,lieu-haut-col']).cas, ['tele-montagne', 'lieu-haut-col']);
-  for (const suite of [['--cas','inconnu'], ['--cas','lieu-haut-col,lieu-haut-col'], ['--taille','9000,1'], ['--url','file:///autre'], ['--inconnu','oui'], ['--chrome']])
+  const o = optionsDemo(base); assert.equal(o.cas.length, 38);
+  assert.deepEqual(optionsDemo([...base, '--cas', 'tele-montagne,lieu-larche']).cas, ['tele-montagne', 'lieu-larche']);
+  for (const suite of [['--cas','inconnu'], ['--cas','lieu-larche,lieu-larche'], ['--taille','9000,1'], ['--url','file:///autre'], ['--inconnu','oui'], ['--chrome']])
     assert.throws(() => optionsDemo([...base, ...suite]));
   assert.throws(() => optionsDemo(['--url','javascript:alert(1)','--sortie','/tmp/images']));
   const workflow = readFileSync(new URL('../.github/workflows/visuel-demo.yml', import.meta.url), 'utf8');
@@ -59,7 +59,10 @@ test('une caméra imposée, une fausse séance ou une visée masquée ne qualifi
   rejette(s, (_, o) => { o.plan.motif = 'course'; }, 'explicitement');
 });
 
-test('les neuf circuits ont route, tracé et lieu, sans sujet de nature autonome', () => {
+test('les circuits du menu ont route, tracé et lieu, sans sujet de nature autonome', () => {
+  const jeu = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
+  const catalogue = jeu.match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1];
+  assert.deepEqual([...catalogue.matchAll(/\bid: '([^']+)'/g)].map(m => m[1]), [...CIRCUITS_DEMO]);
   for (const [circuit, id] of CIRCUITS_DEMO.entries()) {
     const cas = SCENARIOS.filter(s => s.cadrage && s.circuit === circuit);
     assert.deepEqual(cas.map(s => s.id), ['route-' + id, 'trace-' + id, 'lieu-' + id]);

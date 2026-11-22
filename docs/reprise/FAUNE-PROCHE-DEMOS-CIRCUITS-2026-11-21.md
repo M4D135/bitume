@@ -1,8 +1,36 @@
 # BITUME — faune proche et démos des circuits
 
-Date : 21 novembre 2026. **État : demandes enregistrées, réalisation à faire.**
+Date : 22 novembre 2026. **État : candidat 0.2.88 / FERRO 0.3.16 en réception.**
+
+La .87 a terminé ses 203 suites Node, 8 tests Python, démos et proximité corrigée,
+mais reste **refusée visuellement** : le début de fondu FX perd le modelé du cerf.
+La .88 conserve les corps dans le rendu opaque avec couverture `opacity`, la matière,
+l'éclairage et la profondeur canoniques FERRO. La réserve FX des corps est supprimée ;
+les souffles gardent leur alpha et sont réinitialisés au retour silhouette.
+Build reproductible, 34 modules identiques et cinq suites ciblées réussies ;
+**CI complète et pixels du candidat exact restent à recevoir**.
+[Reçu .88](rapports/FAUNE-DEMOS-2026-11-21/reception-0288/CANDIDAT-0288.json).
+
+### Historique .85–.87 (états conservés)
+
 Base observée sur `main` : **0.2.85**, commit `0e7273c0361996b9c217e6f1051a9ef9a54b18c7`.
-Ce jalon publie le suivi ; il ne constitue pas une nouvelle version du jeu.
+Demandes publiées dans `7fb5dcc`, implémentation initiale dans `815158c` / 0.2.86.
+Les 81 captures des neuf circuits ont été inspectées : route, tracé et lieux cadrés,
+sans caméra dans le terrain ni sujet de nature autonome. La revue a détecté une coupure
+brusque des animaux à la portée. **0.2.87 ajoute un fondu réel avant cette limite**, avec
+réserve du flux transparent dès le chargement. CI complète et images de ce nouveau
+build restent à recevoir avant livraison. Les deux bancs hérités de .86 sont repris
+dans la branche locale `codex/bitume-faune-demos-validation-20261121` : Baïkal vérifie
+le dégagement réel et une population effectivement animée ; le cycle PhysX charge
+la dépendance des champs de vue. Le runtime et son empreinte .87 sont conservés.
+Le candidat autorisé est publié sous `dbda6a7`, arbre identique à `4200e03`.
+La CI et les démos exactes sont en réception. Le premier banc faune proche a refusé
+son propre placement : états de conduite déplacés, corps PhysX restés sur la grille.
+Le complément demande le replacement natif avant chauffe et vérifie la pose réelle.
+Les images de la transition opaque/FX restent requises avant main.
+[Réception distante .87](rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-DISTANTE-0287.json).
+[Preuve du candidat](rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0287.json).
+[Réception locale .87](rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json) : **203/203 suites Node et 8/8 contrôles Python** reçus, sans seuil assoupli. Les dix premiers échecs de fixtures absentes restent consignés ; leurs reprises réussissent après restauration des 82 fichiers exacts. La transition opaque/FX à 144 m en Légère et 288 m en Fine reste à examiner dans le rendu réel de jour et de nuit.
 
 ## Demandes de David et priorité
 
@@ -75,20 +103,20 @@ servent de base ; le besoin porte sur placement, activité et coût.
 
 ### Couverture des circuits
 
-Les points ci-dessous sont des cibles de cadrage à qualifier depuis les marqueurs .85,
-pas des séquences déjà réalisées. Chaque ligne comprend aussi la route et le tracé.
+Les points ci-dessous proviennent des marqueurs .85. Les 81 images .86 ont été reçues ;
+la réception du build .87 reste à faire pour chaque circuit.
 
 | Circuit | Point d’intérêt proposé depuis les lieux existants | Réception |
 |---|---|---|
-| Val-Brûlé | Viaduc des Chênes | À faire |
-| Port-Sable | Grand Phare du Cap | À faire |
-| Haut-Col | Galerie Paravalanche et route en montagne | À faire |
-| Lande-Noire | Pont-Arche Noir | À faire |
-| Roche-Fauve | Nécropole des Pyramides | À faire |
-| Brume-de-Jade | Grand Portail Torii Vermillon | À faire |
-| Cap-Séquoia | Grand Pont Suspendu Vermillon | À faire |
-| Baïkal | Chapelle aux Bulbes Dorés | À faire |
-| Route-des-Cimes | Arche du Col des Cimes | À faire |
+| Val-Brûlé | Viaduc des Chênes | .86 reçue ; .87 à recevoir |
+| Port-Sable | Grand Phare du Cap | .86 reçue ; .87 à recevoir |
+| Haut-Col | Galerie Paravalanche et route en montagne | .86 reçue ; .87 à recevoir |
+| Lande-Noire | Pont-Arche Noir | .86 reçue ; .87 à recevoir |
+| Roche-Fauve | Nécropole des Pyramides | .86 reçue ; .87 à recevoir |
+| Brume-de-Jade | Grand Portail Torii Vermillon | .86 reçue ; .87 à recevoir |
+| Cap-Séquoia | Grand Pont Suspendu Vermillon | .86 reçue ; .87 à recevoir |
+| Baïkal | Chapelle aux Bulbes Dorés | .86 reçue ; .87 à recevoir |
+| Route-des-Cimes | Arche du Col des Cimes | .86 reçue ; .87 à recevoir |
 
 **Extension prévue :** ajouter la démo du **sommet du col de Larche → Vinadio**
 lorsque le parcours entre réellement au catalogue. Respecter le sens de descente,
@@ -101,11 +129,11 @@ Réutiliser les métadonnées de `src/lieux.js` et `src/decor.js`.
 
 | Lot | Travail | État | Preuve attendue |
 |---|---|---|---|
-| F1 | Replacer la population aux abords proches | Planifié | Distances au bord de route, captures depuis les vues de conduite |
-| F2 | Endormir les groupes hors des vues utiles | Planifié | Compteurs de groupes simulés/poses préparées nuls pour les groupes invisibles ; réveil stable |
-| D1 | Remplacer le choix et la préparation des plans | Planifié | Aucun plan flore/faune ou autre sujet autonome dans un cycle complet |
-| D2 | Recomposer les neuf circuits et leurs lieux | Planifié | Séquences et captures identifiées par circuit, début/milieu/fin de plan et transitions |
-| Q | Qualifier puis publier le runtime | Planifié | Build reproductible, contrôles ciblés, réception visuelle et mesures avant/après |
+| F1 | Replacer la population aux abords proches | Préparé, contrôles numériques reçus | Distances au bord de route, captures depuis les vues de conduite |
+| F2 | Endormir les groupes hors des vues utiles | Préparé, contrôles numériques reçus | Compteurs de groupes simulés/poses préparées nuls pour les groupes invisibles ; réveil stable |
+| D1 | Remplacer le choix et la préparation des plans | Préparé, contrôles numériques reçus | Aucun plan flore/faune ou autre sujet autonome dans un cycle complet |
+| D2 | Recomposer les neuf circuits et leurs lieux | Préparé, contrôles numériques reçus | Séquences et captures identifiées par circuit, début/milieu/fin de plan et transitions |
+| Q | Qualifier puis publier le runtime | En cours | Build reproductible, contrôles ciblés, réception visuelle et mesures avant/après |
 
 Comparer à scène et qualité identiques : groupes créés/actifs, animaux dessinés,
 coûts CPU, allocations et temps d’image. Vérifier champ avant/arrière, changement de vue,

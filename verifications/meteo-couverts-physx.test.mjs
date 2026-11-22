@@ -3,11 +3,7 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { createHash } from 'node:crypto';
-import { readFileSync, writeFileSync, mkdtempSync, mkdirSync, rmSync, existsSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { execFileSync } from 'node:child_process';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { chargerPhysX } from './helpers/physx-runtime.mjs';
 const req = createRequire(import.meta.url);
 for (const f of ['circuit', 'couverts', 'carene', 'decor', 'solides-physx', 'meteo', 'vitre']) req('../src/' + f + '.js');
@@ -28,38 +24,13 @@ const rapport = { schema: 1, controles: 0, rayonsNatifs: 0, scenarios: [],
   limite: 'Temps CPU JavaScript et requêtes WASM, Canvas instrumenté sans raster ; aucun FPS matériel déduit.' };
 
 function jeuRaccorde() {
-  if (process.argv[2]) {
-    const source = readFileSync(process.argv[2], 'utf8');
-    rapport.raccord = { sourceSha256: createHash('sha256').update(source).digest('hex'), portee: 'Copie raccordée fournie explicitement au banc.' };
-    return source;
-  }
-  const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
-  const patch = fileURLToPath(new URL('../docs/reprise/PARALLELE-2026-11-20/raccordements/06-jeu.patch', import.meta.url));
-  if (!existsSync(patch)) {
-    assert.match(source, /B\.meteo\.abriCouverts\(S\.course\.c, cam\.pos, S\.course\.physique\)/);
-    assert.match(source, /physique: S\.course\.physique/);
-    rapport.raccord = { sourceSha256: createHash('sha256').update(source).digest('hex'),
-      portee: 'jeu.js intégré sur main (sans fichier patch de branche parallèle).' };
-    return source;
-  }
-  const temporaire = mkdtempSync(join(tmpdir(), 'bitume-pluie-raccord-'));
-  try {
-    mkdirSync(join(temporaire, 'src'));
-    writeFileSync(join(temporaire, 'src/jeu.js'), source);
-    let dejaRaccorde = false;
-    try { execFileSync('git', ['apply', '--check', patch], { cwd: temporaire, stdio: 'pipe' }); }
-    catch {
-      // Après intégration par 00, le vrai fichier satisfait déjà le même raccord.
-      // Vérifier exactement le patch inverse, sans l'appliquer, évite une double reprise.
-      execFileSync('git', ['apply', '--reverse', '--check', patch], { cwd: temporaire, stdio: 'pipe' });
-      dejaRaccorde = true;
-    }
-    if (!dejaRaccorde) execFileSync('git', ['apply', patch], { cwd: temporaire, stdio: 'pipe' });
-    rapport.raccord = { sourceSha256: createHash('sha256').update(source).digest('hex'),
-      patchSha256: createHash('sha256').update(readFileSync(patch)).digest('hex'),
-      portee: dejaRaccorde ? 'jeu.js déjà raccordé, patch inverse vérifié sans modification.' : 'Copie temporaire de jeu.js raccordée, fichier partagé inchangé.' };
-    return readFileSync(join(temporaire, 'src/jeu.js'), 'utf8');
-  } finally { rmSync(temporaire, { recursive: true, force: true }); }
+  const origine = process.argv[2] || new URL('../src/jeu.js', import.meta.url);
+  const source = readFileSync(origine, 'utf8');
+  rapport.raccord = {
+    sourceSha256: createHash('sha256').update(source).digest('hex'),
+    portee: 'Source du jeu soumise au banc.'
+  };
+  return source;
 }
 
 function toile() {

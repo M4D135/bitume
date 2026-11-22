@@ -1,0 +1,55 @@
+{
+  "date": "2026-11-22",
+  "version": "0.2.88",
+  "physique": "p15",
+  "statut": "construit_reception_distante_requise",
+  "base": "5eefd96719f27cae19ff2b7cd1379f3144984a82",
+  "main_observe": "7fb5dcca58b6da5e7a2ca7aaea1192f86c5005af",
+  "branche": "codex/bitume-faune-fondu-0288-20261122",
+  "ferro": {
+    "version": "0.3.16",
+    "commit": "eda17f82cfb33feda52cf4e3f730b4ab87ffc410",
+    "modules_identiques": 34,
+    "tests_locaux": 4,
+    "comparaisons_egl": 120,
+    "opacites_egl": 28,
+    "suite_canonique_recu_verifie": {
+      "reussis": 217,
+      "echecs": 0,
+      "todo_historique": 1
+    },
+    "emprise_recu_verifie": "5 suites réussies et 2 échecs historiques identiques, aucun nouvel échec ; pas de nouvelle exécution dans cette reprise."
+  },
+  "build": {
+    "sha256": "aa0b075f4712a5c7d2b5cd0f036afe72f3f2fbb0d98908efb237620788129a53",
+    "octets": 14658790,
+    "reconstruction_identique": true,
+    "empreinte_sources": "8e37c66ae0ea5cd77d2fea8a5f857a14ba5a3ef3c0af39405395905ab39d574b"
+  },
+  "controles_cibles": {
+    "suites_reussies": 5,
+    "echecs": 0,
+    "recu": "RACCORD-FONDU-0288.json"
+  },
+  "changements": [
+    "Corps animaux : opacity dans la passe opaque FERRO, sans changement de matière ni de modelé au début du fondu.",
+    "Réserve FX des corps supprimée ; souffles conservés et alpha remis à zéro au retour silhouette.",
+    "Banc fondus : opacity observée et corps FX refusés ; témoins et retour identique conservés."
+  ],
+  "refus_0287": {
+    "html_sha256": "d11860da1224be393a24f7d6873f466ad5448b0984e6569887c135c02e6ff9ff",
+    "artifact_high_jour": 14726059175,
+    "observation": "Avant .799 puis début .801 (opacité 0.9999252557754517) : perte de modelé et assombrissement confirmés sur les PNG historiques. Le succès structurel du workflow ne recevait pas visuellement cette transition."
+  },
+  "reception_a_faire": [
+    "Qualification distante complète du commit exact.",
+    "48 images fondu low/high jour/nuit, extinction et retour.",
+    "9 images proximité high/low/off.",
+    "81 images des neuf démos + 6 sécurité + 9 météo."
+  ],
+  "limites": [
+    "Chrome local arrêté avant WebGL : socket EPERM ; captures via GitHub Actions.",
+    "EGL logiciel ; aucune mesure FPS Xbox/iOS ni validation matérielle WebGPU.",
+    "La préparation .88 antérieure était hors de cet environnement ; ce candidat est reconstruit depuis les sources GitHub exactes."
+  ]
+}

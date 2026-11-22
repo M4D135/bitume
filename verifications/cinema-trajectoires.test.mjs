@@ -7,7 +7,7 @@ import vm from 'node:vm';
 import { chargerPhysX } from './helpers/physx-runtime.mjs';
 const require = createRequire(import.meta.url);
 require('../src/moteur/renderer.js');
-for (const f of ['circuit','conduite','carene','ecologie','saisons','botanique','vegetation','bords','decor','obstacles','solides-physx','ambiance','animaux','cinema']) require('../src/' + f + '.js');
+for (const f of ['couverts','baikal','circuit','conduite','carene','ecologie','saisons','botanique','vegetation','bords','decor','obstacles','solides-physx','ambiance','animaux','cinema']) require('../src/' + f + '.js');
 const B = globalThis.BITUME, C = B.cinema, X = await chargerPhysX();
 const jeu = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const voiture = readFileSync(new URL('../src/voiture.js', import.meta.url), 'utf8');
@@ -55,7 +55,8 @@ function construite(F, S, p, v, vue) {
   return F.cameraDemo(S, p, S.planVu);
 }
 for (const id of ['haut-col', 'val-brule', 'baikal']) {
-  const k = catalogue.find(k => k.id === id), c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur });
+  // Graine historique du défaut de caméra avant le tunnel. Les deux autres témoins restent au menu.
+  const k = id === 'haut-col' ? { graine: 47, theme: 'montagne', longueur: 5200 } : catalogue.find(k => k.id === id), c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur });
   B.bords.limites(c, B.bords.planifier(c));
   const decor = B.decor.construire(c, { qualite: 'high', vegetationQualite: 'high', saison: 'ete' });
   c.obstacles = B.obstacles.creer(decor.obstacles);

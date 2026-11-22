@@ -1,0 +1,57 @@
+name: Faune proche en conduite
+
+on:
+  push:
+    branches: ['codex/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: faune-proche-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  faune:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[capture-faune-proche]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Identifier et reconstruire le candidat exact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qualification-faune
+          git rev-parse HEAD > qualification-faune/COMMIT.txt
+          git rev-parse 'HEAD^{tree}' > qualification-faune/TREE.txt
+          node --version > qualification-faune/ENVIRONNEMENT.txt
+          google-chrome --version >> qualification-faune/ENVIRONNEMENT.txt
+          python3 construire.py > qualification-faune/reconstruction.log 2>&1
+          sha256sum dist/bitume.html > qualification-faune/HTML-SHA256.txt
+          git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
+          node --check tools/qualification/faune-proche.mjs
+          sha256sum tools/controle-visuel.mjs tools/qualification/faune-proche.mjs > qualification-faune/OUTILS-SHA256.txt
+      - name: Capturer les animaux depuis la route
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout --signal=TERM --kill-after=20s 14m node tools/qualification/faune-proche.mjs \
+            --url "file://$GITHUB_WORKSPACE/dist/bitume.html" --sortie qualification-faune/images \
+            --chrome /usr/bin/google-chrome > qualification-faune/captures.log 2>&1
+          sha256sum --check qualification-faune/HTML-SHA256.txt
+          sha256sum --check qualification-faune/OUTILS-SHA256.txt
+      - name: Conserver rapports et images meme en cas d'echec
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitume-faune-proche-${{ github.sha }}
+          path: qualification-faune/
+          if-no-files-found: error
+          retention-days: 14

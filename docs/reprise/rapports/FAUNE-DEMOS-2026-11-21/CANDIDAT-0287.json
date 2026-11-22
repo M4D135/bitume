@@ -1,0 +1,48 @@
+{
+  "version": "0.2.87",
+  "statut": "qualifie_localement_reception_visuelle_en_attente",
+  "base": "815158c03e039420749cc0cd249da892c0455899",
+  "branche": "codex/bitume-faune-demos-validation-20261121",
+  "physique": "p15",
+  "moteur": "FERRO 0.3.15",
+  "build": {
+    "sha256": "d11860da1224be393a24f7d6873f466ad5448b0984e6569887c135c02e6ff9ff",
+    "octets": 14656772,
+    "reconstruction_identique": true
+  },
+  "correction": "Fondu sur les 20 % finaux de portée, réellement transmis à la passe transparente FERRO ; restitution opaque au retour proche, champs J1/J2/rétros indépendants et budget du flux FX réservé au chargement.",
+  "raison": "La réception .86 montrait une silhouette opaque à 183/363 m puis coupée à 185/365 m. Le rejet spatial précédait tout fondu.",
+  "sources_sha256": {
+    "src/animaux.js": "771f4cd2cbcdc8978b6f6483bbe96c826a2b685e466b853334d97ae268e854dd",
+    "src/jeu.js": "f3c4ee386c8403cf2d6ab84b74ac4e237b5c092037fb32e977653708785e3b23"
+  },
+  "controles_cibles": {
+    "animaux_proximite_visibilite": 11,
+    "animaux": 13,
+    "nature_preparation": 4,
+    "faune_vues_jeu": "reussi",
+    "nature_integration": "reussi",
+    "retroviseurs_reflexion": "reussi"
+  },
+  "reference_0286": {
+    "commit": "815158c03e039420749cc0cd249da892c0455899",
+    "html_sha256": "ffb52b30b7e8a7fa72470719dd7131a9ab5f85795b9612a05fd9398e1d3b1300",
+    "png_circuits_inspectes": 81,
+    "png_securite_inspectes": 6,
+    "blocage_cadrage": false,
+    "ne_qualifie_pas_ce_build": true
+  },
+  "reception_navigateur": {
+    "statut": "en_attente_github_navigateur_local_indisponible",
+    "demos": "Neuf circuits, plans route/tracé/lieu et gardes de caméra",
+    "faune": "Images depuis la route, qualités low/high et Faune désactivée, sans déplacement artificiel des animaux",
+    "fondu": "Comparer les frontières opaque/FX à 0.799 et 0.801 de la portée, jour/nuit ; réserve visuelle consignée dans le reçu local."
+  },
+  "limites": [
+    "Aucun FPS matériel Xbox/iOS mesuré",
+    "Capture sur poses prescrites, pas un essai de conduite matériel",
+    "Aucun déploiement site"
+  ],
+  "branche_preparation": "codex/bitume-faune-demos-reception-20261121",
+  "reception_locale": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json"
+}

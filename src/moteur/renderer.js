@@ -79,6 +79,19 @@
     if(grain>=vGroundCoverage)discard;
   }`;
 
+  // Optional opaque coverage is anchored to the mesh, not the screen or time.
+  // Colour and shadow depth discard exactly the same local surface cells; the
+  // surviving fragments retain the ordinary material, lighting and depth path.
+  const OPAQUE_OPACITY_FRAGMENT=`
+  flat in float vOpacity;
+  void opaqueOpacityDiscard(){
+    if(vOpacity>=1.)return;
+    if(vOpacity<=0.)discard;
+    vec3 cell=floor(vLocal*max(vDimensions,vec3(.001))*64.);
+    float grain=fract(52.9829189*fract(dot(cell.xz,vec2(.06711056,.00583715))+cell.y*.0137));
+    if(grain>=vOpacity)discard;
+  }`;
+
   // Local wind is an opt-in instance flag, independent of material and surface
   // mapping. Track emitters, never blades: 32 bounded CPU records, four GPU
   // sources, and stable arrays reused by every colour/depth/camera pass.
@@ -228,8 +241,13 @@
   flat out float vOutdoor;
   flat out float vObject;
   flat out vec4 vColor;
+  flat out float vOpacity;
   out float vGroundCoverage;
   void main() {
+    // 0/1 retain the historical no-colour/colour markers, including all FX
+    // alpha values in [0,1]. Opaque opacity uses disjoint ranges without a
+    // larger instance stride: [2,3) with a tint, [-2,-1] without one.
+    vOpacity=iColor.w>1.?clamp(iColor.w-2.,0.,1.):iColor.w<0.?clamp(-iColor.w-1.,0.,1.):1.;
     bool groundCover=mod(floor(iRotation.w*.0625),2.)>.5;
     vGroundCoverage=1.;
     if(groundCover&&uGroundCoverDensity.w>.5){
@@ -304,7 +322,7 @@
     vSurface=vObject>.5?localPosition:vWorld;
     vLocal=aPosition;vFaceNormal=aNormal;vDimensions=abs(iScale.xyz);
     vSurfaceNormal=vObject>.5?normalize(localNormal):vNormal;
-    vColor=iColor;
+    vColor=vec4(iColor.rgb,iColor.w>1.?1.:iColor.w<0.?0.:iColor.w);
     gl_Position=uViewProjection*vec4(vWorld,1.);
   }`;
 
@@ -324,6 +342,7 @@
   flat in float vObject;
   flat in vec4 vColor;
   ${GROUND_COVER_FRAGMENT}
+  ${OPAQUE_OPACITY_FRAGMENT}
   uniform vec3 uEye;
   uniform vec4 uWeather;uniform vec2 uCloudOffset;
   uniform highp sampler2DArray uPbrAlbedo;uniform highp sampler2DArray uPbrNormal;uniform highp sampler2DArray uPbrRough;uniform float uPbrReady;
@@ -1019,6 +1038,9 @@
     float wave=exp(-abs(length((screen-.5)*vec2(uResolution.x/uResolution.y,1.))-waveRadius)*85.)*uEffects.w;
     color+=vec3(.03,.27,.23)*wave;
     float reflection=(vOverlay>.5||emission>.5)?0.:clamp((1.-roughness)*(.13+metalness*.6)+puddle*.30,0.,.75);
+    // Keep derivative-based surface normals and filtering identical for every
+    // surviving fragment. Coverage rejects only after the opaque shading work.
+    opaqueOpacityDiscard();
     fragColor=vec4(color,reflection);
   }`;
 
@@ -1091,9 +1113,10 @@
 
   const DEPTH_FRAG=`#version 300 es
   precision highp float;
-  flat in float vMaterial;in vec3 vWorld;
+  flat in float vMaterial;in vec3 vWorld;in vec3 vLocal;flat in vec3 vDimensions;
   ${GROUND_COVER_FRAGMENT}
-  void main() {groundCoverDiscard();if(vMaterial>12.1&&vMaterial<12.4)discard;}`;
+  ${OPAQUE_OPACITY_FRAGMENT}
+  void main() {groundCoverDiscard();opaqueOpacityDiscard();if(vMaterial>12.1&&vMaterial<12.4)discard;}`;
   const POST_VERT=`#version 300 es
   precision highp float;
   out vec2 vUV;
@@ -1646,6 +1669,8 @@
     return (mesh.overlay?1:0)+(outdoorMesh(mesh,environment)?2:0)+(object?4:0)+(mesh.windResponsive===true?8:0)+(mesh.groundCover===true?16:0);
   }
   function instanceDataW(mesh){return mesh.groundCover===true?(Number.isFinite(mesh.groundShear)?mesh.groundShear:0):(mesh.emissive||0);}
+  function opaqueOpacity(mesh){return Number.isFinite(mesh.opacity)?Math.max(0,Math.min(1,mesh.opacity)):1;}
+  function opaqueColorMarker(mesh){const opacity=opaqueOpacity(mesh);return opacity===1?(mesh.color?1:0):mesh.color?2+opacity:-1-opacity;}
   function pack(meshes,environment,objects=false) {
     const grouped=names.map(()=>[]);
     for(const mesh of meshes||[]) {
@@ -1659,7 +1684,7 @@
       if(list.length) groups.push({name:names[i],offset:offset*4,count:list.length});
       for(const mesh of list) {
         const p=mesh.p||[0,0,0],s=mesh.s||[1,1,1],r=mesh.r||[0,0,0],c=mesh.color||[0,0,0];
-        values[offset]=p[0];values[offset+1]=p[1];values[offset+2]=p[2];values[offset+3]=mesh.mat||0;values[offset+4]=s[0];values[offset+5]=s[1];values[offset+6]=s[2];values[offset+7]=instanceDataW(mesh);values[offset+8]=r[0];values[offset+9]=r[1];values[offset+10]=r[2];values[offset+11]=surfaceFlags(mesh,environment,objects);values[offset+12]=c[0];values[offset+13]=c[1];values[offset+14]=c[2];values[offset+15]=mesh.color?1:0;
+        values[offset]=p[0];values[offset+1]=p[1];values[offset+2]=p[2];values[offset+3]=mesh.mat||0;values[offset+4]=s[0];values[offset+5]=s[1];values[offset+6]=s[2];values[offset+7]=instanceDataW(mesh);values[offset+8]=r[0];values[offset+9]=r[1];values[offset+10]=r[2];values[offset+11]=surfaceFlags(mesh,environment,objects);values[offset+12]=c[0];values[offset+13]=c[1];values[offset+14]=c[2];values[offset+15]=opaqueColorMarker(mesh);
         offset+=16;
       }
     }
@@ -1682,7 +1707,7 @@
       let offset=0;for(let i=0;i<names.length;i++){next[i]=offset;if(counts[i]){const group=records[i]||(records[i]={name:names[i],offset:0,count:0});group.offset=offset*4;group.count=counts[i];groups.push(group);offset+=counts[i]*16;}}
       for(const mesh of meshes||[]){const i=shapeIndices.get(mesh.shape||'box');if(i===undefined)continue;const at=next[i];next[i]+=16;
         const p=mesh.p||zero,s=mesh.s||one,r=mesh.r||zero,c=mesh.color||zero;
-        out[at]=p[0];out[at+1]=p[1];out[at+2]=p[2];out[at+3]=mesh.mat||0;out[at+4]=s[0];out[at+5]=s[1];out[at+6]=s[2];out[at+7]=instanceDataW(mesh);out[at+8]=r[0];out[at+9]=r[1];out[at+10]=r[2];out[at+11]=surfaceFlags(mesh,environment,objects);out[at+12]=c[0];out[at+13]=c[1];out[at+14]=c[2];out[at+15]=mesh.color?1:0;
+        out[at]=p[0];out[at+1]=p[1];out[at+2]=p[2];out[at+3]=mesh.mat||0;out[at+4]=s[0];out[at+5]=s[1];out[at+6]=s[2];out[at+7]=instanceDataW(mesh);out[at+8]=r[0];out[at+9]=r[1];out[at+10]=r[2];out[at+11]=surfaceFlags(mesh,environment,objects);out[at+12]=c[0];out[at+13]=c[1];out[at+14]=c[2];out[at+15]=opaqueColorMarker(mesh);
       }return batch;
     };
   }
@@ -1697,7 +1722,7 @@
     const batch={groups,storage,length:0,nearTotal:0,get values(){if(active.buffer!==storage.buffer||active.length!==required)active=storage.subarray(0,required);return active;}};
     const write=(mesh,environment)=>{const i=shapeIndices.get(mesh.shape||'box');if(i===undefined)return;const at=next[i],out=storage;next[i]+=16;
       const p=mesh.p||zero,s=mesh.s||one,r=mesh.r||zero,c=mesh.color||zero;
-      out[at]=p[0];out[at+1]=p[1];out[at+2]=p[2];out[at+3]=mesh.mat||0;out[at+4]=s[0];out[at+5]=s[1];out[at+6]=s[2];out[at+7]=instanceDataW(mesh);out[at+8]=r[0];out[at+9]=r[1];out[at+10]=r[2];out[at+11]=surfaceFlags(mesh,environment,true);out[at+12]=c[0];out[at+13]=c[1];out[at+14]=c[2];out[at+15]=mesh.color?1:0;};
+      out[at]=p[0];out[at+1]=p[1];out[at+2]=p[2];out[at+3]=mesh.mat||0;out[at+4]=s[0];out[at+5]=s[1];out[at+6]=s[2];out[at+7]=instanceDataW(mesh);out[at+8]=r[0];out[at+9]=r[1];out[at+10]=r[2];out[at+11]=surfaceFlags(mesh,environment,true);out[at+12]=c[0];out[at+13]=c[1];out[at+14]=c[2];out[at+15]=opaqueColorMarker(mesh);};
     return (meshes,near,environment)=>{
       if(counts.length<names.length){counts=new Uint32Array(names.length);nears=new Uint32Array(names.length);next=new Uint32Array(names.length);}
       else{counts.fill(0);nears.fill(0);}
@@ -1803,7 +1828,7 @@
       }
     };
   }
-  function meshState(mesh,env){return [...(mesh.p||[0,0,0]),...(mesh.s||[1,1,1]),...(mesh.r||[0,0,0]),...(mesh.color||[0,0,0]),mesh.mat||0,instanceDataW(mesh),mesh.color?1:0,surfaceFlags(mesh,env),mesh.detail||0,mesh.shape||'box',mesh.ground,mesh.terrain,mesh.region];}
+  function meshState(mesh,env){return [...(mesh.p||[0,0,0]),...(mesh.s||[1,1,1]),...(mesh.r||[0,0,0]),...(mesh.color||[0,0,0]),mesh.mat||0,instanceDataW(mesh),opaqueColorMarker(mesh),surfaceFlags(mesh,env),mesh.detail||0,mesh.shape||'box',mesh.ground,mesh.terrain,mesh.region];}
   function metadata(mesh){
     const scale=mesh.s||[1,1,1],height=Math.abs(scale[1]),localHeight=Math.min(height,2);
     const windMargin=mesh.windResponsive===true?2.3*localHeight:0,shear=mesh.groundCover===true&&Number.isFinite(mesh.groundShear)?Math.abs(mesh.groundShear):0;
@@ -1915,7 +1940,7 @@
         for(let i=q.start;i<q.start+q.deleteCount;i++){const e=index.entries[i];removed.push(e);dirty.add(e.indexBucket);byMesh.delete(e.mesh);}
         const items=[];for(const mesh of q.items){
           const e=metadata(mesh),p=e.p,s=mesh.s||[1,1,1],r=mesh.r||[0,0,0],c=mesh.color||[0,0,0];
-          e.sourceState=null;e.row=new Float32Array([p[0],p[1],p[2],mesh.mat||0,s[0],s[1],s[2],instanceDataW(mesh),r[0],r[1],r[2],surfaceFlags(mesh,env),c[0],c[1],c[2],mesh.color?1:0]);
+          e.sourceState=null;e.row=new Float32Array([p[0],p[1],p[2],mesh.mat||0,s[0],s[1],s[2],instanceDataW(mesh),r[0],r[1],r[2],surfaceFlags(mesh,env),c[0],c[1],c[2],opaqueColorMarker(mesh)]);
           let bucket;if(e.radius>32)bucket=large[e.detail];else{const key=Math.floor(p[0]/8)+','+Math.floor(p[2]/8),map=levels[e.detail];bucket=map.get(key);if(!bucket){bucket={entries:[],epoch:0,count:0,next:null,level:e.detail,key};map.set(key,bucket);}maxRadius[e.detail]=Math.max(maxRadius[e.detail],e.radius);}
           e.indexBucket=bucket;e.indexPX=p[0];e.indexPZ=p[2];e.indexRadius=e.radius;e.indexDetail=e.detail;dirty.add(bucket);let group=insertions.get(bucket);if(!group){group=[];insertions.set(bucket,group);}group.push(e);byMesh.set(mesh,e);items.push(e);added.push(e);
         }entrySplices.push({start:q.start,deleteCount:q.deleteCount,items});
@@ -1950,7 +1975,7 @@
         else{
           if(!priorDuplicates&&prior?.indexEpoch===priorEpoch)considerRemoval(prior);
           const p=e.p,s=mesh.s||[1,1,1],r=mesh.r||[0,0,0],c=mesh.color||[0,0,0];
-          e.sourceState=revisionedMeshes?null:meshState(mesh,env);e.row=new Float32Array([p[0],p[1],p[2],mesh.mat||0,s[0],s[1],s[2],instanceDataW(mesh),r[0],r[1],r[2],surfaceFlags(mesh,env),c[0],c[1],c[2],mesh.color?1:0]);
+          e.sourceState=revisionedMeshes?null:meshState(mesh,env);e.row=new Float32Array([p[0],p[1],p[2],mesh.mat||0,s[0],s[1],s[2],instanceDataW(mesh),r[0],r[1],r[2],surfaceFlags(mesh,env),c[0],c[1],c[2],opaqueColorMarker(mesh)]);
           byMesh.set(mesh,e);
           if(priorEpoch)added.push(e);
         }
@@ -2159,7 +2184,7 @@
           const nearby=lights.map(light=>({light,d:(light.p[0]-center[0])**2+(light.p[1]-center[1])**2+(light.p[2]-center[2])**2})).sort((a,b)=>a.d-b.d).slice(0,4);
           for(const {light,d} of nearby){const vector=subtract(light.p,center),power=(light.power===undefined?1:light.power)*.24/(1+d*.26)*(Math.max(0,dot(n,vector)/(Math.sqrt(d)||.001))+.035),c=light.color||[1,1,1];for(let k=0;k<3;k++)fixedLight[k]+=power*c[k];fixedLampParts.push(light,power);}
         }
-        return {points,indices,n,center,plane,grain,lines,color,emission,mat,ground,fixedLight,fixedLampParts,outdoor,region:mesh.region,overlay:!!mesh.overlay,fx:!!mesh.fx,fxFire:!!mesh.fxFire,fxHazard:mesh.fxPriority==='hazard',alpha:mesh.fx?Math.min(1,Math.max(0,mesh.alpha||0)):1};
+        return {points,indices,n,center,plane,grain,lines,color,emission,mat,ground,fixedLight,fixedLampParts,outdoor,region:mesh.region,overlay:!!mesh.overlay,fx:!!mesh.fx,fxFire:!!mesh.fxFire,fxHazard:mesh.fxPriority==='hazard',opacity:opaqueOpacity(mesh),alpha:mesh.fx?Math.min(1,Math.max(0,mesh.alpha||0)):1};
       });
       return {p,radius:metadata(mesh).radius,faces,vertices,sway:mat===11,s,mesh,environmentRevision};
     }
@@ -2243,7 +2268,7 @@
         return !(center[2]+r<near||center[2]-r>far||Math.abs(center[0])>center[2]*horizontal+r*(1+horizontal)||Math.abs(center[1])>center[2]*tan+r*(1+tan));
       }
       function collect(object){
-        if(!inView(object.p,object.radius))return;
+        if(!inView(object.p,object.radius)||(!object.mesh.fx&&opaqueOpacity(object.mesh)===0))return;
         // Lighting changes invalidate only cached illumination, never geometry.
         // Reuse the original lamp coefficients and update lazily for visible faces.
         if(object.environmentRevision!==environmentRevision){
@@ -2320,7 +2345,7 @@
             const weight=Math.max(0,Math.min(1,(py-object.p[1])/Math.max(.01,object.s[1])+.5)),px=x+Math.sin(phase)*bend*weight,pz=z+Math.cos(phase*.73)*bend*.6*weight;
             vertices.push([px,py,pz]);
           }
-          casters.push({outdoor,vertices,heightLimit:m.actorScale>1?44:16});
+          casters.push({outdoor,vertices,opacity:opaqueOpacity(m),heightLimit:m.actorScale>1?44:16});
         }
         for(const receiver of receivers.values()){
           const {n,plane,outdoor}=receiver,sun=environment&&environment.sunDirection,lamp=outdoor?null:nearest.find(light=>dot(n,light.p)-plane>1.2),sunHeight=sun?dot(n,sun):0;
@@ -2341,7 +2366,7 @@
             vertices.sort((a,b)=>a[0]-b[0]||a[2]-b[2]);const hull=[];
             for(const v of vertices){while(hull.length>1&&cross(hull[hull.length-2],hull[hull.length-1],v)<=0)hull.pop();hull.push(v);}
             const lower=hull.length;for(let i=vertices.length-2;i>=0;i--){const v=vertices[i];while(hull.length>lower&&cross(hull[hull.length-2],hull[hull.length-1],v)<=0)hull.pop();hull.push(v);}hull.pop();
-            const polygon=projectPolygon(hull);if(polygon.length>2){const bounds=screenBounds(polygon);if(overlap(bounds,receiver.bounds))receiver.shadows.push({polygon,bounds});}
+            const polygon=projectPolygon(hull);if(polygon.length>2){const bounds=screenBounds(polygon);if(overlap(bounds,receiver.bounds))receiver.shadows.push({polygon,bounds,opacity:caster.opacity});}
           }
         }
       }
@@ -2437,11 +2462,11 @@
         list.sort((a,b)=>a.face.ground&&b.face.ground&&dot(a.face.n,b.face.n)>.99999&&Math.abs(a.face.plane-b.face.plane)<.05?a.face.plane-b.face.plane:b.depth-a.depth);
         for(const item of list){
           const {face,screen,depth}=item,masked=!face.overlay&&maskGround(item);ctx.beginPath();polygonPath(screen);
-          if(face.fx){const v=subtract(eye,face.center);ctx.globalAlpha=face.alpha*(face.fxHazard?1:Math.pow(Math.max(0,dot(face.n,v)/(Math.hypot(...v)||1)),.65));}
+          if(face.fx){const v=subtract(eye,face.center);ctx.globalAlpha=face.alpha*(face.fxHazard?1:Math.pow(Math.max(0,dot(face.n,v)/(Math.hypot(...v)||1)),.65));}else ctx.globalAlpha=face.opacity;
           ctx.fillStyle=shade(face);ctx.fill();if(face.fx)ctx.globalAlpha=1;stats.drawCalls++;stats.triangles+=screen.length-2;
           if(item.receiver&&item.receiver.shadows.length){
             ctx.save();ctx.clip();ctx.fillStyle=face.outdoor?'rgba(5,18,23,.27)':'rgba(0,7,11,.24)';
-            for(const {polygon,bounds} of item.receiver.shadows)if(overlap(bounds,item.bounds)){ctx.beginPath();polygonPath(polygon);ctx.fill();}ctx.restore();
+            for(const {polygon,bounds,opacity} of item.receiver.shadows)if(overlap(bounds,item.bounds)){ctx.globalAlpha=face.opacity*opacity;ctx.beginPath();polygonPath(polygon);ctx.fill();}ctx.restore();
           }
           // The seams are projected from positions on the actual face, not screen-space stripes.
           // Do not outline individual mesh faces: that reveals triangulation instead of material detail.
@@ -2449,7 +2474,7 @@
             ctx.beginPath();for(const segment of face.lines)line(segment[0],segment[1]);ctx.strokeStyle=face.ground?'rgba(2,7,10,.22)':'rgba(2,7,10,.32)';ctx.lineWidth=face.ground?.65:1.0;ctx.stroke();
             if(!face.ground&&quality!=='low'&&depth<10){ctx.strokeStyle='rgba(128,180,176,.14)';ctx.lineWidth=.35;ctx.stroke();}
           }
-          if(masked)ctx.restore();
+          ctx.globalAlpha=1;if(masked)ctx.restore();
         }
       }
       paint(grounds);paint(faces);paint(overlays);
@@ -2461,6 +2486,7 @@
       }
     }
     function shadowCaster(m){
+      if(opaqueOpacity(m)===0)return false;
       const s=m.s||[1,1,1],mat=m.mat||0,limit=m.actorPart&&m.actorScale>1?44:10;
       // RADE / BITUME : les carènes libres et le coin projettent des ombres.
       if(FORMES_LIBRES.has(m.shape)||m.shape==='wedge')return !m.fx&&Math.max(s[0],s[2])>.45&&s[1]>.2;
@@ -4130,7 +4156,7 @@
   const shared={bitumeWeather,localWindState,vegetationFrame,groundCoverRank,groundCoverGeometry,groundCoverPlan,prepareGroundCover,lotViewState,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,lotDetailDistance,materialFamily,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
   function mesh(shape,p,s,mat,r=[0,0,0],emissive=0){
     return {shape,p,s,mat,r,emissive,color:undefined,surface:undefined,overlay:false,fx:false,
-      alpha:undefined,additive:undefined,outdoor:undefined,actorPart:undefined,actorLod:0,
+      alpha:undefined,opacity:1,additive:undefined,outdoor:undefined,actorPart:undefined,actorLod:0,
       actorScale:undefined,structural:false,debrisId:undefined,sourceId:undefined,material:undefined,
       effectPart:'',fxFire:false,fxSmoke:false,fxSpark:false,fxPriority:undefined,ground:undefined,
       innerRatio:undefined,region:undefined,windResponsive:false,groundCover:false,groundShear:0};

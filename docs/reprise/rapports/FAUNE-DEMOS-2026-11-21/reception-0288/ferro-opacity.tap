@@ -1,0 +1,12 @@
+✔ opaque opacity keeps the 16-float layout, tint, material, emission and default bytes (2.26072ms)
+✔ dynamic, shadow-split and static packers agree and reused pools restore opaque markers (2.173399ms)
+✔ opaque coverage never changes the translucent FX alpha contract (0.589955ms)
+✔ generated WebGPU world, depth and FX describe the exact production GLSL (8.140956ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 156.829345

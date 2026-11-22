@@ -1,0 +1,237 @@
+{
+  "date": "2026-11-21",
+  "base": "7fb5dcca58b6da5e7a2ca7aaea1192f86c5005af",
+  "statut": "candidat_en_qualification",
+  "build": {
+    "version": "0.2.86",
+    "octets": 14655554,
+    "sha256": "ffb52b30b7e8a7fa72470719dd7131a9ab5f85795b9612a05fd9398e1d3b1300",
+    "reconstruction_identique": true
+  },
+  "moteur": "FERRO 0.3.15, 34 modules conformes",
+  "physique": "p15",
+  "circuits": 9,
+  "sources": {
+    "src/animaux.js": "c960f8d99ea5e017623aa3bd8016bd9fb14e5cb73d1e50d053ddac01851dfefc",
+    "src/faune.js": "ae7545ac4bca73e2cf17f0fddbc6d70b215acefc836a9c3e6b0fbe9a721cb0bf",
+    "src/cinema.js": "28c7bd7b3d3787f269e4477b2ed8c0a43ce2a9cead82d068aa991048632da0d5",
+    "src/realisateur.js": "ba67151cd17ee5701f65d99e91f5b20de83f9c8f31c581ada18f611d7d620627",
+    "src/jeu.js": "3b88ce73a59b52b54f5c4a2fd9813121b699900d9fe1511446aa3ae00d0fa208"
+  },
+  "qualification_locale": {
+    "cinema": {
+      "base": "7fb5dcca58b6da5e7a2ca7aaea1192f86c5005af",
+      "sources_sha256": {
+        "src/cinema.js": "28c7bd7b3d3787f269e4477b2ed8c0a43ce2a9cead82d068aa991048632da0d5",
+        "src/realisateur.js": "ba67151cd17ee5701f65d99e91f5b20de83f9c8f31c581ada18f611d7d620627",
+        "verifications/cinema.test.mjs": "ed85aa1121e2d746ed8c66a5300cbba65bf753f00116d78412f27fc9f1990625",
+        "verifications/cinema-raccords.test.mjs": "526234594e3b52d4ab8c0e1a48778de50770c9458a571f15f719b3a72f2e3515",
+        "verifications/cinema-trajectoires.test.mjs": "73446145d3712a362e4de09af405e240004d9474e2b3a9e7b2c82c143c111e7a",
+        "verifications/cinema-lieux-sol.test.mjs": "bed5d28c99cdfdc301b18194e15d33ad9663cb41ec489f2843e1ac15ed2577af",
+        "verifications/realisateur.test.mjs": "7f2611fb5a0137f74d2ec150822358fef8a513ffb5531d76adeff78715ac9f76"
+      },
+      "circuits": [
+        {
+          "circuit": "val-brule",
+          "preparationMs": 40.63272099999995,
+          "panoramas": 8,
+          "lieux": [
+            "Viaduc des Chênes",
+            "Tour de l’Horloge"
+          ],
+          "photos": 4820,
+          "pasMax": 0.22455022444568531
+        },
+        {
+          "circuit": "port-sable",
+          "preparationMs": 27.316310000000158,
+          "panoramas": 8,
+          "lieux": [
+            "Grand Phare du Cap",
+            "Port aux Voiliers",
+            "Arche Calcaire de la Côte"
+          ],
+          "photos": 5302,
+          "pasMax": 0.39302011009225113
+        },
+        {
+          "circuit": "haut-col",
+          "preparationMs": 38.3120829999998,
+          "panoramas": 8,
+          "lieux": [
+            "Galerie Paravalanche",
+            "Téléphérique des Aiguilles"
+          ],
+          "photos": 4820,
+          "pasMax": 0.18674678872679662
+        },
+        {
+          "circuit": "lande-noire",
+          "preparationMs": 14.943564000000151,
+          "panoramas": 8,
+          "lieux": [
+            "Pont-Arche Noir de la Faille",
+            "Kirkja Nordique",
+            "Lagon Géothermal"
+          ],
+          "photos": 5302,
+          "pasMax": 0.2328559666607519
+        },
+        {
+          "circuit": "roche-fauve",
+          "preparationMs": 13.017958000000363,
+          "panoramas": 8,
+          "lieux": [
+            "Nécropole des Pyramides",
+            "Grande Arche Naturelle en Grès",
+            "Oasis du Désert"
+          ],
+          "photos": 5302,
+          "pasMax": 0.2521704239007419
+        },
+        {
+          "circuit": "brume-de-jade",
+          "preparationMs": 15.216945000000123,
+          "panoramas": 8,
+          "lieux": [
+            "Grand Portail Torii Vermillon",
+            "Pagode des Brumes"
+          ],
+          "photos": 4820,
+          "pasMax": 0.227628074643677
+        },
+        {
+          "circuit": "cap-sequoia",
+          "preparationMs": 13.918979000000036,
+          "panoramas": 8,
+          "lieux": [
+            "Grand Pont Suspendu Vermillon",
+            "Arche du Séquoia Géant"
+          ],
+          "photos": 4820,
+          "pasMax": 0.18674678872680203
+        },
+        {
+          "circuit": "baikal",
+          "preparationMs": 21.01298300000053,
+          "panoramas": 8,
+          "lieux": [
+            "Chapelle Sibérienne aux Bulbes Dorés",
+            "Portique Sibérien en Rondins"
+          ],
+          "photos": 4820,
+          "pasMax": 0.2211641981001344
+        },
+        {
+          "circuit": "route-des-cimes",
+          "preparationMs": 25.062637000000905,
+          "panoramas": 8,
+          "lieux": [
+            "Arche du Col des Cimes",
+            "Belvédère Panoramique des Cimes"
+          ],
+          "photos": 4820,
+          "pasMax": 0.22125129801926854
+        }
+      ],
+      "tests": {
+        "cinema": 20,
+        "realisateur": 10,
+        "lieux_sol": 4,
+        "raccords": 6,
+        "trajectoires": 10
+      },
+      "cadres_statiques": 44826,
+      "cadres_course": 9774,
+      "rayons_independants_ete_hiver": 488,
+      "limites": [
+        "Contrôles numériques Node et PhysX, pas des captures navigateur ni des FPS matériels."
+      ]
+    },
+    "raccord_faune_vues": 4,
+    "retroviseurs_reflexion": "reussi",
+    "nature_integration": "reussi",
+    "vitre_integration": "reussi",
+    "nature_preparation": "reussi",
+    "faune": {
+      "controles": 41,
+      "suites": {
+        "animaux": 13,
+        "animaux_proximite_visibilite": 9,
+        "faune": 15,
+        "faune_visibilite": 4
+      },
+      "duree_terrain_s": 240,
+      "biomes_historiques": 7,
+      "reveil_apres_s": 100000,
+      "animaux_terrestres_7_circuits": {
+        "avant": 195,
+        "apres": 114
+      },
+      "groupes_7_circuits": {
+        "avant": 38,
+        "apres": 26
+      },
+      "modeles_conserves": {
+        "formes": 204,
+        "triangles": 54084
+      },
+      "allocations_mesurees_octets_image": {
+        "dessin": 33,
+        "cerveau_et_dessin": 670
+      },
+      "distances_centres_au_bord_m": {
+        "val-brule": [
+          23.5,
+          27.1
+        ],
+        "port-sable": [
+          33.9,
+          41.3
+        ],
+        "haut-col": [
+          24.8,
+          34.3
+        ],
+        "lande-noire": [
+          21.8,
+          35.5
+        ],
+        "roche-fauve": [
+          25,
+          35.9
+        ],
+        "brume-de-jade": [
+          25.8,
+          33.1
+        ],
+        "cap-sequoia": [
+          25.9,
+          32.6
+        ],
+        "baikal": [
+          23.1,
+          37
+        ],
+        "route-des-cimes": [
+          29.4,
+          37.2
+        ]
+      }
+    }
+  },
+  "reception_navigateur": {
+    "statut": "a_recevoir",
+    "limite_locale": "Chromium refuse socket() avant ouverture ; captures prévues sur GitHub Actions",
+    "scenarios": 32,
+    "groupes_ci": 11,
+    "images_attendues": 96
+  },
+  "limites": [
+    "Pas de mesure FPS Xbox/iOS sur matériel physique",
+    "Sélection de simulation depuis les derniers champs réellement affichés ; dessin filtré sur les champs courants",
+    "Larche/Vinadio ajouté aux démos après son intégration jouable",
+    "Culling par champ et portée ; pas d’occlusion géométrique fine des animaux",
+    "Espèces sans habitat proche admissible déclarées absentes, notamment certains oiseaux aquatiques et la baleine ; aucune création au large pour les remplacer"
+  ]
+}
