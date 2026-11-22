@@ -8,9 +8,13 @@
    */
 
   function _angle(a) {
-    while (a > Math.PI) a -= 2 * Math.PI;
-    while (a < -Math.PI) a += 2 * Math.PI;
-    return a;
+    if (!Number.isFinite(a)) return 0;
+    if (a >= -Math.PI && a <= Math.PI) return a;
+    const tour = 2 * Math.PI;
+    const reste = a % tour;
+    if (reste > Math.PI) return reste - tour;
+    if (reste < -Math.PI) return reste + tour;
+    return reste;
   }
 
   function creer() {
@@ -42,7 +46,7 @@
     const de = etat.de;
     const p = camCourante.pos;
     de.pos[0] = p[0]; de.pos[1] = p[1]; de.pos[2] = p[2];
-    de.yaw = camCourante.yaw || 0;
+    de.yaw = _angle(camCourante.yaw);
     de.pitch = camCourante.pitch || 0;
     de.roll = camCourante.roll || 0;
     de.fov = camCourante.fov || 64;

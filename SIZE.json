@@ -1,8 +1,8 @@
 {
-  "version": "0.2.186",
-  "raw": 16723351,
-  "gzip": 4642145,
-  "sha256": "ce8ed8cdeb127dd6c20288d4c3e6ddde84cd5886b99b8defc8888da9d007cfb0",
+  "version": "0.2.187",
+  "raw": 16723512,
+  "gzip": 4642176,
+  "sha256": "75a8a876e7a9be22f76d8bd7ee97278cd05a7a0bf84deae57920cc5207ce66ed",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
@@ -60,7 +60,7 @@
     "mouvements-stand-data.js": 3740,
     "mouvements-stand.js": 1766,
     "equipe-stands.js": 32843,
-    "camera-transition.js": 4372,
+    "camera-transition.js": 4533,
     "championnat.js": 7193,
     "records.js": 6826,
     "cache.js": 9694,
