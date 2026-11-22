@@ -178,7 +178,9 @@
   function initialiser(zone) {
     if (!zone || !zone.addEventListener) return false;
     const saisie = SAISIES.get(zone.ownerDocument);
-    if (saisie && zone !== saisie.dialogue && !zone.contains(saisie.cible)) fermerSaisie(zone.ownerDocument, false);
+    if (saisie && zone !== saisie.dialogue && !zone.contains(saisie.cible)) {
+      fermerSaisie(zone.ownerDocument, zone === saisie.zone && !zone.ownerDocument.hidden);
+    }
     // À chaque entrée d'écran, attendre le retour au neutre d'un manche tenu pendant la conduite.
     if (ETATS.has(zone)) { ETATS.get(zone).pads.clear(); return true; }
     ETATS.set(zone, { pads: new Map() });
@@ -255,7 +257,24 @@
     if (!s) return false;
     SAISIES.delete(doc);
     if (s.dialogue.open) s.dialogue.close();
-    if (rendreFocus && visible(s.cible)) focaliser(s.cible);
+    if (!rendreFocus) return true;
+
+    function restaurer(el) {
+      if (!el.isConnected || el.ownerDocument !== doc || !visible(el)) return false;
+      try { focaliser(el); } catch (_) { /* Vérifier le focus avant de poursuivre le repli. */ }
+      return doc.activeElement === el;
+    }
+
+    if (restaurer(s.cible)) return true;
+    const essayes = new Set([s.cible]);
+    for (const conteneur of [s.panneau, s.zone]) {
+      if (!conteneur || !conteneur.isConnected) continue;
+      for (const el of conteneur.querySelectorAll(COMMANDES)) {
+        if (essayes.has(el) || !(el.tabIndex >= 0)) continue;
+        essayes.add(el);
+        if (restaurer(el)) return true;
+      }
+    }
     return true;
   }
 
@@ -287,7 +306,8 @@
     if (!['nom', 'code'].includes(cible.dataset.menuSaisie) || cible.readOnly) return false;
     const doc = cible.ownerDocument, $ = id => doc.getElementById(id), dialogue = $('saisie-manette');
     if (!dialogue || typeof dialogue.showModal !== 'function') return false;
-    const s = { cible, zone, dialogue, code: cible.dataset.menuSaisie === 'code',
+    const s = { cible, zone, dialogue, panneau: cible.closest('[data-menu-panel]'),
+      code: cible.dataset.menuSaisie === 'code',
       contenu: $('sm-contenu'), limite: $('sm-limite'), maj: $('sm-maj'), lettres: [], lignes: [] };
     const maximum = Number.parseInt(cible.getAttribute('maxlength'), 10);
     s.maximum = Number.isFinite(maximum) && maximum > 0 ? Math.min(64, maximum) : s.code ? 4 : 16;
@@ -410,7 +430,8 @@
   function naviguer(zone, nouveau, options = {}) {
     const saisie = zone && SAISIES.get(zone.ownerDocument);
     if (saisie) {
-      if (saisie.zone !== zone || !visible(saisie.cible) || zone.ownerDocument.hidden) fermerSaisie(zone.ownerDocument, false);
+      if (saisie.zone !== zone || zone.ownerDocument.hidden) fermerSaisie(zone.ownerDocument, false);
+      else if (!saisie.cible.isConnected || !visible(saisie.cible)) fermerSaisie(zone.ownerDocument);
       else zone = saisie.dialogue;
     }
     if (!zone || zone.hidden || zone.closest(MASQUE) || zone.ownerDocument.hidden) return false;
