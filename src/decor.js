@@ -142,7 +142,15 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         if (k > 1e-6) d = Math.min(d, .62 / k - 2);       // virage à droite : l'intérieur est à droite
         else if (k < -1e-6) g = Math.min(g, .62 / -k - 2);
       }
-      G[i] = Math.max(c.largeur / 2 + 3.2, g); D[i] = Math.max(c.largeur / 2 + 3.2, d);
+      if (c.ouvert) {
+        const k = c.courbure[i] || 0;
+        const capMax = Math.abs(k) > 0.005 ? 0.68 / Math.abs(k) : 1e4;
+        if (k > 0) d = Math.min(d, capMax); else if (k < 0) g = Math.min(g, capMax);
+        G[i] = Math.max(c.largeur / 2 + 1.8, Math.min(g, c.largeur / 2 + 4.5));
+        D[i] = Math.max(c.largeur / 2 + 1.8, Math.min(d, c.largeur / 2 + 4.5));
+      } else {
+        G[i] = Math.max(c.largeur / 2 + 3.2, g); D[i] = Math.max(c.largeur / 2 + 3.2, d);
+      }
     }
     return { G, D };
   }
@@ -338,7 +346,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     }
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
     for (let i = 0; i < c.n; i++) { x0 = Math.min(x0, c.x[i]); x1 = Math.max(x1, c.x[i]); z0 = Math.min(z0, c.z[i]); z1 = Math.max(z1, c.z[i]); }
-    const marge = th.marge, pasT = 24;
+    const marge = th.marge, pasT = organique ? 18 : 24;
     x0 -= marge; z0 -= marge; x1 += marge; z1 += marge;
     const nx = Math.ceil((x1 - x0) / pasT) + 1, nz = Math.ceil((z1 - z0) / pasT) + 1;
     const H = new Float32Array(nx * nz), D = new Float32Array(nx * nz);
@@ -463,11 +471,15 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       // de grille et fondre les transitions sol/roche/sable/neige sans cassure triangulaire ni bande carrée.
       let wx = x, wz = z;
       if (organique) {
-        wx = x + (fbm(x / 185, z / 185, g + 613, 2) - .5) * 76;
-        wz = z + (fbm(x / 185 + 9.3, z / 185 - 4.7, g + 617, 2) - .5) * 76;
+        const w1x = (fbm(x / 190, z / 190, g + 613, 3) - .5) * 92;
+        const w1z = (fbm(x / 190 + 9.3, z / 190 - 4.7, g + 617, 3) - .5) * 92;
+        const w2x = (fbm((x + w1x) / 62, (z + w1z) / 62, g + 641, 2) - .5) * 26;
+        const w2z = (fbm((x + w1x) / 62 - 5.1, (z + w1z) / 62 + 7.4, g + 647, 2) - .5) * 26;
+        wx = x + w1x + w2x;
+        wz = z + w1z + w2z;
       }
-      const tache = fbm(wx / 140, wz / 140, g + 3, 3);
-      const tacheFine = organique ? fbm(wx / 52, wz / 52, g + 631, 2) : .5;
+      const tache = fbm(wx / (organique ? 145 : 140), wz / (organique ? 145 : 140), g + 3, 3);
+      const tacheFine = organique ? (fbm(wx / 56, wz / 56, g + 631, 3) * .65 + fbm(wx / 23 + 4.1, wz / 23 - 2.7, g + 653, 2) * .35) : .5;
       let col = melange(th.herbe, th.terre, lisse(.45, .8, tache) * .7), mat = 8;
       if (organique && !th.aride && !th.volcanique) {
         col = melange(col, th.herbeClaire || th.herbe, (tacheFine - .5) * .36 + .18);
@@ -590,7 +602,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         // Une case entièrement sous la chaussée ou ses accotements reste invisible : on la saute.
         if (D[j * nx + i] < 18 && D[j * nx + i + 1] < 18 && D[(j + 1) * nx + i] < 18 && D[(j + 1) * nx + i + 1] < 18) continue;
         const a = prendre(i, j), b = prendre(i + 1, j), cc = prendre(i + 1, j + 1), d = prendre(i, j + 1);
-        emettre(a, cc, b); emettre(a, d, cc);
+        if (organique && ((i + j) & 1)) { emettre(a, d, b); emettre(b, d, cc); }
+        else { emettre(a, cc, b); emettre(a, d, cc); }
       }
       if (nap.i.length) {
         const fini = finir(nap), herbeTriangles = [];
@@ -1455,9 +1468,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         for (let b = 0; b < barres; b++) objets.push({ shape: 'box', p: [p[0] - f.t[0] * .05, p[1] + .85 + b * .38, p[2] - f.t[2] * .05], s: [.03, .18, 1.0], r: rot, mat: 16, color: [.07, .07, .08] });
         ajouter(objets, [objets[0]], p[0], p[2]);
       }
-      // murs de pneus à l'extérieur, devant la glissière
+      // murs de pneus à l'extérieur, devant la glissière (sur route de col ouverte, jamais dans la zone de roulement)
       for (let j = -8; j <= 14; j += 2) {
-        const f = cadre(c, v.i + j), L = (ext < 0 ? lim.G : lim.D)[f.i] - .8, yb = hauteurRoute(f, ext * w, w) - .02 * (L - w);
+        const f = cadre(c, v.i + j), limExt = (ext < 0 ? lim.G : lim.D)[f.i], L = limExt - .8;
+        if (c.ouvert && L < w + 2.4) continue;
+        const yb = hauteurRoute(f, ext * w, w) - .02 * (L - w);
         const objets = [];
         for (let e = 0; e < 3; e++) {
           const p = pointPlan(f, ext * (L - .1), yb + .14 + e * .27);
@@ -1890,7 +1905,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const lieuxCimes = B.cimesDecor && B.cimesDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter });
     const lieuxLarche = B.larcheDecor && B.larcheDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter });
     const lieuxDest = B.destinations && B.destinations.poser(c, { terrain, limites: lim, interroger, qualite, saison, ajouter, th });
-    const lieuxEmblematiques = organique ? B.lieux.poser(c, { terrain, limites: lim, interroger, qualite, saison, ajouter, th }) : null;
+    let lieuxEmblematiques = organique ? B.lieux.poser(c, { terrain, limites: lim, interroger, qualite, saison, ajouter, th }) : null;
+    if (lieuxLarche && lieuxLarche.marqueurs && lieuxLarche.marqueurs.length) {
+      lieuxEmblematiques = Object.assign({}, lieuxEmblematiques || {}, { marqueurs: lieuxLarche.marqueurs });
+    } else if (lieuxDest && lieuxDest.marqueurs && lieuxDest.marqueurs.length) {
+      lieuxEmblematiques = Object.assign({}, lieuxEmblematiques || {}, { marqueurs: lieuxDest.marqueurs });
+    }
 
     // Finition des lots : sphère englobante et portée.
     const lots = [];
@@ -2005,13 +2025,13 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     if (lieuxEmblematiques) Object.defineProperty(decor, 'lieux', { value: lieuxEmblematiques, enumerable: false });
     if (options.solsProceduraux === true) {
       // L'herbier lit uniquement herbeTriangles, positions et couleurs (jamais l'indice matière sommets[k + 9]).
-      // Ne pas le construire de force ici économise 150–190 ms et des dizaines de Mo sur Légère (Xbox Edge,
-      // mobile, petites configs) et sur les biomes sans tapis d'herbe (désert, Islande, Asie, Pacifique).
+      // En mode organique : unifier tous les sommets terrain sur mat = 25 (recipe 5 : herbe, terre, roche, sable et
+      // neige fondus par pixel depuis la couleur sommet) supprime 100 % des dents de scie triangulaires 23 ↔ 25.
       for (const n of decor.nappes) if (n.surfaceType === 'accotement' || n.surfaceType === 'terrain') {
         const terrain = n.surfaceType === 'terrain';
         for (let k = 9; k < n.sommets.length; k += 13) {
           if (n.sommets[k] === 8 || terrain && n.sommets[k] === 3) n.sommets[k] = 25;
-          else if (terrain && n.sommets[k] === 9) n.sommets[k] = 23;
+          else if (terrain && n.sommets[k] === 9) n.sommets[k] = organique ? 25 : 23;
         }
       }
     }

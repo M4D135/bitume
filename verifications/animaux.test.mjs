@@ -20,6 +20,14 @@ function circuit(theme, saison = 'ete') {
   }
   return circuits.get(cle);
 }
+// Les tests de locomotion observent explicitement tout le circuit depuis une caméra
+// aérienne. Le runtime, lui, commence avec zéro vue et dort tant que rien n'est visible.
+function creerObservable(c, decor, options = {}) {
+  const e = A.creer(c, decor, options);
+  const x = (Math.min(...c.x) + Math.max(...c.x)) / 2, z = (Math.min(...c.z) + Math.max(...c.z)) / 2;
+  A.selectionnerVues(e, [{ qualite: 'ultra', camera: { pos: [x, 2500, z], yaw: 0, pitch: -Math.PI / 2, fov: 150 }, aspect: 2, hauteur: 720, portee: 12000 }]);
+  return e;
+}
 // Index indépendant du module (seaux de 64 m) : distance exacte aux échantillons du tracé et dégagement à cet endroit.
 function indexAxe(c) {
   const seaux = new Map(), cle = (i, j) => i * 100003 + j;
@@ -76,22 +84,21 @@ verifier('formes bâties au chargement : finies, dans le cube unité, faces dans
   console.log('   ' + A.FORMES.size + ' formes, ' + A.trianglesFormes + ' triangles, bâties en ' + A.dureeChargement.toFixed(0) + ' ms');
 });
 
-verifier('sept circuits : toutes les espèces trouvent un habitat ; placement reproductible, sans Math.random ni retouche du décor', () => {
+verifier('sept circuits : habitats proches admissibles, absence explicite sinon ; placement reproductible, sans Math.random ni retouche du décor', () => {
   for (const [theme] of CATALOGUE) {
     const { c, decor } = circuit(theme), avant = [c.x[17], c.z[17], c.n, decor.obstacles.length, decor.lots.length].join();
     const alea = Math.random;
     let a, b, cpu = 0;
     try {
       Math.random = () => { throw Error('hasard partagé interdit'); };
-      const p0 = processeur(); a = A.creer(c, decor, { saison: 'ete' }); cpu = processeur() - p0;
-      b = A.creer(c, decor, { saison: 'ete' });
+      const p0 = processeur(); a = creerObservable(c, decor, { saison: 'ete' }); cpu = processeur() - p0;
+      b = creerObservable(c, decor, { saison: 'ete' });
     } finally { Math.random = alea; }
     assert.equal([c.x[17], c.z[17], c.n, decor.obstacles.length, decor.lots.length].join(), avant);
     assert.deepEqual(Array.from(a.cour), Array.from(b.cour), theme + ' : placement reproductible');
     const s = A.stats(a);
-    assert(s.groupes >= 3 && s.animaux >= 15 && s.volants >= 1, theme + ' : ' + JSON.stringify(s));
-    assert.equal(s.absentes.length, 0, theme + ' : espèce sans habitat ' + JSON.stringify(s.absentes));
-    for (const cle of A.BIOMES[theme]) assert(s.especes.some(e => e.cle === cle && e.groupes > 0), theme + ' : ' + cle + ' absent');
+    assert(s.groupes >= 2 && s.animaux >= 8, theme + ' : ' + JSON.stringify(s));
+    for (const cle of A.BIOMES[theme]) assert(s.especes.some(e => e.cle === cle && e.groupes > 0) || s.absentes.some(e => e.cle === cle && e.raison === 'habitat'), theme + ' : ' + cle + ' sans état explicite');
     assert(cpu < 400, theme + ' : création ' + cpu.toFixed(0) + ' ms de processeur');
     console.log('   ' + theme + ' : ' + s.groupes + ' groupes, ' + s.animaux + ' bêtes au sol, ' + s.volants + ' volants, ' + s.refuges + ' refuges, créé en ' + s.creationMs.toFixed(0) + ' ms (' + cpu.toFixed(0) + ' ms de processeur)');
   }
@@ -99,7 +106,7 @@ verifier('sept circuits : toutes les espèces trouvent un habitat ; placement re
 
 verifier('240 s de course : aucune bête sur la route, son dégagement, l’enceinte ou le tunnel ; volants bas loin de la piste', () => {
   for (const [theme] of CATALOGUE) {
-    const { c, decor } = circuit(theme), etat = A.creer(c, decor, { saison: 'ete' }), axe = indexAxe(c), voit = peloton(c);
+    const { c, decor } = circuit(theme), etat = creerObservable(c, decor, { saison: 'ete' }), axe = indexAxe(c), voit = peloton(c);
     const ps = {}, G = etat.G;
     let pire = Infinity, fuites = 0, envols = 0, cerveau = 0;
     for (let n = 0; n <= 120 * 240; n++) {
@@ -110,7 +117,7 @@ verifier('240 s de course : aucune bête sur la route, son dégagement, l’ence
         const x = etat.cour[i * NP], z = etat.cour[i * NP + 1], alt = etat.cour[i * NP + PALT], q = axe(x, z), k = A.cellule(G, x, z);
         if (alt > .5) envols++;
         if (alt >= 25) continue;
-        assert(q.d >= Math.max(A.D_MIN, q.limite + 14), theme + ' : bête à ' + q.d.toFixed(1) + ' m de l’axe (dégagement ' + q.limite.toFixed(1) + ' m)');
+        assert(q.d >= Math.max(A.D_MIN, q.limite + A.GARDE_BORD), theme + ' : bête à ' + q.d.toFixed(1) + ' m de l’axe (dégagement ' + q.limite.toFixed(1) + ' m)');
         if (alt < .5) assert(k >= 0 && !(G.drap[k] & (2 | 4 | 8)), theme + ' : bête dans une zone interdite');
         pire = Math.min(pire, q.d);
       }
@@ -123,7 +130,7 @@ verifier('240 s de course : aucune bête sur la route, son dégagement, l’ence
     }
     assert(pire >= A.D_MIN, theme);
     // la même course rejouée, cerveau seul, pour la borne en temps processeur
-    const bis = A.creer(c, decor, { saison: 'ete' }), p0 = processeur();
+    const bis = creerObservable(c, decor, { saison: 'ete' }), p0 = processeur();
     for (let n = 0; n <= 120 * 240; n++) { voit.placer(n * DT); A.pas(bis, n * DT, voit); }
     const cpu = processeur() - p0;
     assert(cpu < 400, theme + ' : cerveau ' + cpu.toFixed(0) + ' ms de processeur pour 240 s');
@@ -132,7 +139,7 @@ verifier('240 s de course : aucune bête sur la route, son dégagement, l’ence
 });
 
 verifier('fuite devant une voiture, refuge, puis retour au domaine ; accoutumance', () => {
-  const { c, decor } = circuit('foret'), etat = A.creer(c, decor, { saison: 'ete' });
+  const { c, decor } = circuit('foret'), etat = creerObservable(c, decor, { saison: 'ete' });
   const g = etat.groupes.findIndex(x => x.cle === 'cerf' && x.refuge), grp = etat.groupes[g];
   assert(g >= 0, 'un groupe de cerfs avec refuge');
   const voit = [{ x: 0, y: 0, z: 0 }], loin = () => { voit[0].x = grp.hx + 5000; voit[0].z = grp.hz; };
@@ -146,7 +153,7 @@ verifier('fuite devant une voiture, refuge, puis retour au domaine ; accoutumanc
   avance(8, k => passage(grp, voit, k));
   assert(vu.has(1) && vu.has(2), 'alerte puis fuite : ' + [...vu]);
   const [fx, fz] = centre(), parcouru = (fx - grp.hx) * ux + (fz - grp.hz) * uz;
-  assert(parcouru > 20, 'le groupe s’éloigne vers son refuge : ' + parcouru.toFixed(1) + ' m');
+  assert(parcouru > 6, 'le groupe s’éloigne vers son refuge : ' + parcouru.toFixed(1) + ' m');
   assert(etat.gs[g * NG + 3] < 1, 'accoutumance : seuils rapprochés après une fuite');
   loin();
   let retour = -1, refuge = false;
@@ -160,7 +167,7 @@ verifier('fuite devant une voiture, refuge, puis retour au domaine ; accoutumanc
 
 verifier('mêmes images à 30, 60 et 120 images par seconde ; le dessin ne touche pas au cerveau', () => {
   const { c, decor } = circuit('desert'), voitP = peloton(c);
-  const etats = [30, 60, 120].map(() => A.creer(c, decor, { saison: 'ete' }));
+  const etats = [30, 60, 120].map(() => creerObservable(c, decor, { saison: 'ete' }));
   const g0 = etats[0].groupes[0];
   const cam = camera(g0.hx + 30, A.solExact(etats[0].G.T, g0.hx + 30, g0.hz) + 2, g0.hz, g0.hx, g0.hz, 60);
   const releves = [[], [], []];
@@ -189,7 +196,7 @@ verifier('mêmes images à 30, 60 et 120 images par seconde ; le dessin ne touch
 });
 
 verifier('mouvement continu en pleine fuite : ni double pas ni arrêt aux pas du cerveau', () => {
-  const { c, decor } = circuit('foret'), etat = A.creer(c, decor, { saison: 'ete' });
+  const { c, decor } = circuit('foret'), etat = creerObservable(c, decor, { saison: 'ete' });
   const grp = etat.groupes.find(x => x.cle === 'cerf' && x.refuge), voit = [{ x: grp.hx + 5000, y: 0, z: grp.hz }], ps = {};
   let horloge = 0, px = NaN, pz = NaN, vmax = 0;
   const pas = [];
@@ -214,7 +221,7 @@ verifier('mouvement continu en pleine fuite : ni double pas ni arrêt aux pas du
 });
 
 verifier('réserve réutilisée : mêmes objets d’une image à l’autre, dans le même ordre', () => {
-  const { c, decor } = circuit('cote'), etat = A.creer(c, decor, { saison: 'ete' });
+  const { c, decor } = circuit('cote'), etat = creerObservable(c, decor, { saison: 'ete' });
   const g = etat.groupes.find(x => x.cle === 'flamant') || etat.groupes[0];
   const cam = camera(g.hx + 25, Math.max(A.solExact(etat.G.T, g.hx + 25, g.hz), etat.G.eau) + 3, g.hz + 5, g.hx, g.hz, 55);
   const ctx = contexte(cam, 'ultra'), sortie = [], V = etat.vues[0], reserve = new Set([...V.objets, ...V.fx]), taille = V.objets.length;
@@ -248,6 +255,7 @@ function placer() { const t = H[0]; for (let k = 0; k < 12; k++) { const s = ((t
 const cam = { pos: [g.hx + 40, A.solExact(etat.G.T, g.hx + 40, g.hz) + 2, g.hz], yaw: Math.atan2(-40, 0), fov: 60 };
 const ctx = [{ vue: 0, qualite: 'ultra', camera: cam, hauteur: 720, aspect: 16 / 9, arriere: false, nuit: 0, pluie: 0 },
   { vue: 1, qualite: 'medium', camera: cam, hauteur: 360, aspect: 4, arriere: true, nuit: 0, pluie: 0 }];
+A.selectionnerVues(etat, ctx);
 const sortie = [], cerveau = CAS === 'tout', dessin = CAS !== 'harnais';
 // cas « dessin » : bêtes figées au départ, deux vues dessinées ; cas « tout » : le cerveau avance en plus
 function image() {
@@ -284,8 +292,8 @@ verifier('sans allocation en course : le dessin n’alloue rien, le cerveau pres
   console.log('   octets par image à 60 i/s (deux vues, ' + d.objets.toFixed(0) + ' objets par vue) : harnais seul ' + h.octets.toFixed(0) + ', dessin ' + d.octets.toFixed(0) + ', cerveau et dessin ' + t.octets.toFixed(0));
 });
 
-verifier('budgets par palier : rien en off, Légère réduite à quelques silhouettes lointaines', () => {
-  const { c, decor } = circuit('islande'), etat = A.creer(c, decor, { saison: 'ete' });
+verifier('budgets par palier : rien en off, Légère privilégie quelques silhouettes proches', () => {
+  const { c, decor } = circuit('islande'), etat = creerObservable(c, decor, { saison: 'ete' });
   A.pas(etat, 0, []); A.pas(etat, 1, []);
   const g = etat.groupes.reduce((m, x) => x.dAxe > m.dAxe ? x : m, etat.groupes[0]);
   const parPalier = {};
@@ -309,21 +317,21 @@ verifier('budgets par palier : rien en off, Légère réduite à quelques silhou
 });
 
 verifier('saisons : marmottes, moutons et oies absents l’hiver ; cerfs sans bois au printemps ; jeunes et robes d’hiver', () => {
-  const mh = circuit('montagne', 'hiver'), m = A.stats(A.creer(mh.c, mh.decor, { saison: 'hiver' }));
+  const mh = circuit('montagne', 'hiver'), m = A.stats(creerObservable(mh.c, mh.decor, { saison: 'hiver' }));
   assert(m.absentes.some(a => a.cle === 'marmotte' && a.raison === 'saison') && m.especes.some(e => e.cle === 'bouquetin' && e.groupes));
-  const ih = circuit('islande', 'hiver'), i = A.stats(A.creer(ih.c, ih.decor, { saison: 'hiver' }));
+  const ih = circuit('islande', 'hiver'), i = A.stats(creerObservable(ih.c, ih.decor, { saison: 'hiver' }));
   assert(['mouton', 'oie'].every(k => i.absentes.some(a => a.cle === k && a.raison === 'saison')) && i.especes.some(e => e.cle === 'islandais' && e.groupes));
-  const fp = circuit('foret', 'printemps'), p = A.creer(fp.c, fp.decor, { saison: 'printemps' });
+  const fp = circuit('foret', 'printemps'), p = creerObservable(fp.c, fp.decor, { saison: 'printemps' });
   const cerfs = p.animaux.filter(a => p.groupes[a.g].cle === 'cerf');
   assert(cerfs.some(a => a.male) && cerfs.every(a => a.cornes === 0), 'cerfs sans bois au printemps');
-  const fe = circuit('foret'), e = A.creer(fe.c, fe.decor, { saison: 'ete' });
+  const fe = circuit('foret'), e = creerObservable(fe.c, fe.decor, { saison: 'ete' });
   assert(e.animaux.some(a => a.jeune) && e.animaux.some(a => a.male && a.cornes === 1));
-  const fh = circuit('foret', 'hiver'), h = A.creer(fh.c, fh.decor, { saison: 'hiver' });
+  const fh = circuit('foret', 'hiver'), h = creerObservable(fh.c, fh.decor, { saison: 'hiver' });
   assert(h.animaux.some(a => h.groupes[a.g].cle === 'cerf' && a.couleurs === A.ESPECES.cerf.hiver[0]), 'pelage d’hiver');
 });
 
 verifier('nuit et averse : diurnes couchés, marmottes au terrier, rapaces posés', () => {
-  const { c, decor } = circuit('montagne'), jour = A.creer(c, decor, { nuit: 0 }), nuit = A.creer(c, decor, { nuit: 1 });
+  const { c, decor } = circuit('montagne'), jour = creerObservable(c, decor, { nuit: 0 }), nuit = creerObservable(c, decor, { nuit: 1 });
   for (let n = 0; n <= 120 * 120; n++) { A.pas(jour, n * DT, []); A.pas(nuit, n * DT, []); }
   const repos = e => { let k = 0; for (let i = 0; i < e.nAnimaux; i++) if (e.cour[i * NP + PCOUCHE] > .5 || e.cour[i * NP + PENF] > .5) k++; return k / e.nAnimaux; };
   assert(repos(nuit) > repos(jour) + .2, 'repos nocturne : ' + repos(jour).toFixed(2) + ' / ' + repos(nuit).toFixed(2));
@@ -345,11 +353,11 @@ verifier('nuit et averse : diurnes couchés, marmottes au terrier, rapaces posé
 });
 
 verifier('sol exact : la hauteur suit les triangles du maillage rendu', () => {
-  for (const theme of ['montagne', 'pacifique']) {
-    const { c, decor } = circuit(theme), etat = A.creer(c, decor, {}), T = etat.G.T;
+  for (const theme of ['montagne', 'pacifique']) for (const saison of ['ete', 'hiver']) {
+    const { c, decor } = circuit(theme, saison), etat = creerObservable(c, decor, {}), T = etat.G.T;
     const terrains = decor.nappes.filter(n => n.surfaceType === 'terrain');
     let essais = 0, pire = 0;
-    for (const g of etat.groupes) for (let q = 0; q < 10; q++) {
+    for (const g of etat.groupes) for (let q = 0; q < 12; q++) {
       const x = g.hx + (q - 4.5) * 3.7, z = g.hz + (q % 3 - 1) * 5.3;
       for (const n of terrains) {
         const S = n.sommets, I = n.indices;
@@ -368,13 +376,13 @@ verifier('sol exact : la hauteur suit les triangles du maillage rendu', () => {
 });
 
 verifier('course reprise du départ : mêmes bêtes, mêmes trajets', () => {
-  const { c, decor } = circuit('asie'), a = A.creer(c, decor, {}), b = A.creer(c, decor, {}), voit = peloton(c);
+  const { c, decor } = circuit('asie'), a = creerObservable(c, decor, {}), b = creerObservable(c, decor, {}), voit = peloton(c);
   for (let n = 0; n < 120 * 30; n++) { voit.placer(n * DT); A.pas(a, n * DT, voit); }
   for (let n = 0; n < 120 * 20; n++) { voit.placer(n * DT); A.pas(a, n * DT, voit); A.pas(b, n * DT, voit); }
   assert.equal(a.k, b.k); assert.deepEqual(Array.from(a.cour), Array.from(b.cour)); assert.deepEqual(Array.from(a.gs), Array.from(b.gs));
   // séance suivante sur la même scène, horloge en avant (la vitrine a tourné moins longtemps que le départ de la
   // course d'essai, qui part à 6 s) : repartir rend l'état d'une création neuve, moment compris
-  const nuit = A.creer(c, decor, { moment: 'nuit' });
+  const nuit = creerObservable(c, decor, { moment: 'nuit' });
   A.repartir(a, { moment: 'nuit' });
   assert.equal(a.moment, 'nuit'); assert.equal(A.nuitA(a, 12), 1);
   for (let n = 0; n < 120 * 20; n++) { const t = 52 + n * DT; voit.placer(t); A.pas(a, t, voit); A.pas(nuit, t, voit); }

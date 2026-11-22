@@ -111,33 +111,72 @@
   function branche(sortie, depart, dir, long, chute, N, rBas, rHaut, F, coiffes) {
     return tronc(sortie, courbe(depart, dir, long, chute), N, rBas, rHaut, F, coiffes);
   }
-  // Double cône d'un amas. Chaque face est émise deux fois, vers l'intérieur puis vers l'extérieur ; exterieur
-  // ne garde que la seconde, la seule qu'on voie d'un volume fermé (mêmes sommets, même normale, même ordre).
+  // Touffe de feuillage organique bombée et irrégulière (remplace le double cône cartoon).
+  // haut et bas sont strictement identiques en proche et en loin (même cime, même emprise, loin < proche).
   function amas(sortie, c, r, F, exterieur = false) {
-    const anneau = Array.from({ length: F }, (_, j) => {
-      const angle = j * PI2 / F;
-      return [c[0] + r * Math.cos(angle), c[1], c[2] + r * Math.sin(angle)];
-    });
-    const haut = [c[0], c[1] + r * 1.15, c[2]], bas = [c[0], c[1] - r * .3, c[2]];
-    for (let j = 0; j < F; j++) {
-      const k = (j + 1) % F;
-      if (exterieur) {
+    const haut = [c[0], c[1] + r * .88, c[2]];
+    const bas = [c[0], c[1] - r * .30, c[2]];
+    const onde = a => .82 + .12 * Math.sin(3 * a + c[0] * 17.3) + .06 * Math.cos(5 * a + c[2] * 13.7);
+    if (exterieur) {
+      const anneau = Array.from({ length: F }, (_, j) => {
+        const a = j * PI2 / F, rr = r * .88 * onde(a);
+        return [c[0] + rr * Math.cos(a), c[1] + r * .10, c[2] + rr * Math.sin(a)];
+      });
+      for (let j = 0; j < F; j++) {
+        const k = (j + 1) % F;
         triangle(sortie, haut, anneau[k], anneau[j]);
         triangle(sortie, bas, anneau[j], anneau[k]);
-      } else {
-        triangle(sortie, haut, anneau[j], anneau[k], true);
-        triangle(sortie, bas, anneau[k], anneau[j], true);
       }
+      return;
+    }
+    const seg = Math.max(F, 8);
+    const anneauBas = Array.from({ length: seg }, (_, j) => {
+      const a = j * PI2 / seg, rr = r * onde(a);
+      return [c[0] + rr * Math.cos(a), c[1] - r * .14 + r * .04 * Math.sin(2 * a + c[2] * 9), c[2] + rr * Math.sin(a)];
+    });
+    const anneauHaut = Array.from({ length: seg }, (_, j) => {
+      const a = (j + .35) * PI2 / seg, rr = r * .66 * onde(a);
+      return [c[0] + rr * Math.cos(a), c[1] + r * .48 + r * .04 * Math.cos(3 * a + c[0] * 11), c[2] + rr * Math.sin(a)];
+    });
+    for (let j = 0; j < seg; j++) {
+      const k = (j + 1) % seg;
+      triangle(sortie, anneauBas[j], anneauHaut[k], anneauHaut[j]);
+      triangle(sortie, anneauBas[j], anneauBas[k], anneauHaut[k]);
+      triangle(sortie, haut, anneauHaut[k], anneauHaut[j]);
+      triangle(sortie, bas, anneauBas[j], anneauBas[k]);
     }
   }
-  function plateau(sortie, c, r, F, giration) {
-    const anneau = Array.from({ length: F }, (_, j) => {
-      const angle = giration + j * PI2 / F;
-      return [c[0] + r * Math.cos(angle), c[1] + (j % 2 ? .06 : -.06) * r, c[2] + r * Math.sin(angle)];
+  // Couronne de pin parasol volumétrique organique (épaisseur douce, contour ondulé, pas un disque plat).
+  function plateau(sortie, c, r, F, giration, exterieur = false) {
+    const haut = [c[0], c[1] + r * .28, c[2]];
+    const bas = [c[0], c[1] - r * .10, c[2]];
+    const onde = a => .88 + .14 * Math.sin(3 * a + c[0] * 7.1) + .07 * Math.cos(5 * a + c[2] * 11.3);
+    if (exterieur) {
+      const anneau = Array.from({ length: F }, (_, j) => {
+        const a = giration + j * PI2 / F, rr = r * .88 * onde(a);
+        return [c[0] + rr * Math.cos(a), c[1] + r * .05, c[2] + rr * Math.sin(a)];
+      });
+      for (let j = 0; j < F; j++) {
+        const k = (j + 1) % F;
+        triangle(sortie, haut, anneau[k], anneau[j]);
+        triangle(sortie, bas, anneau[j], anneau[k]);
+      }
+      return;
+    }
+    const anneauBas = Array.from({ length: F }, (_, j) => {
+      const a = giration + j * PI2 / F, rr = r * onde(a);
+      return [c[0] + rr * Math.cos(a), c[1] - r * .05 + (j % 2 ? .03 : -.03) * r, c[2] + rr * Math.sin(a)];
+    });
+    const anneauHaut = Array.from({ length: F }, (_, j) => {
+      const a = giration + (j + .3) * PI2 / F, rr = r * .72 * onde(a);
+      return [c[0] + rr * Math.cos(a), c[1] + r * .17 + (j % 2 ? .02 : -.02) * r, c[2] + rr * Math.sin(a)];
     });
     for (let j = 0; j < F; j++) {
       const k = (j + 1) % F;
-      triangle(sortie, c, anneau[j], anneau[k], true);
+      triangle(sortie, anneauBas[j], anneauHaut[k], anneauHaut[j]);
+      triangle(sortie, anneauBas[j], anneauBas[k], anneauHaut[k]);
+      triangle(sortie, haut, anneauHaut[k], anneauHaut[j]);
+      triangle(sortie, bas, anneauBas[j], anneauBas[k]);
     }
   }
 
@@ -201,7 +240,7 @@
           })),
         };
       });
-      p.amas = Array.from({ length: b.amas }, () => ({ r: .05 + r() * .03 }));
+      p.amas = Array.from({ length: b.amas }, () => ({ r: .085 + r() * .045 }));
     }
     PLANS.set(cle, p);
     return p;
@@ -246,8 +285,12 @@
     const pointes = [];
     for (const v of p.verticilles) {
       const depart = P(v.t);
-      for (const br of v.branches)
-        pointes.push(branche(tri, depart, direction(v.azim + br.azim, br.inclinaison), br.long, br.chute, N, .016, .005, 4));
+      for (const br of v.branches) {
+        const bout = branche(tri, depart, direction(v.azim + br.azim, br.inclinaison), br.long, br.chute, N, .016, .005, 4);
+        pointes.push(bout);
+        const rBough = (.11 - .065 * v.t) * (.85 + .3 * Math.sin(v.azim + br.azim));
+        plateau(tri, bout, rBough, 7, v.azim + br.azim, false);
+      }
     }
     const n = pointes.length;
     for (let k = 0; k < p.amas.length; k++) {
@@ -301,10 +344,10 @@
       const depart = P(e.t);
       for (const br of e.branches) {
         const bout = branche(tri, depart, direction(e.azim + br.azim, br.inclinaison), br.long, br.chute, 1, .02, .008, F, SANS_COIFFE);
-        plateau(tri, bout, br.plateau.r, R, br.plateau.giration);
+        plateau(tri, bout, br.plateau.r, R, br.plateau.giration, true);
       }
     }
-    plateau(tri, P(1), p.sommet.r, R, p.sommet.giration);
+    plateau(tri, P(1), p.sommet.r, R, p.sommet.giration, true);
   }
   function coniferLoin(tri, p) {
     const P = t => [p.pente[0] * t * t, p.hauteur * t, p.pente[1] * t * t], F = SILHOUETTE.facesBranche;
@@ -312,8 +355,12 @@
     const pointes = [];
     for (const v of p.verticilles) {
       const depart = P(v.t);
-      for (const br of v.branches)
-        pointes.push(branche(tri, depart, direction(v.azim + br.azim, br.inclinaison), br.long, br.chute, 1, .016, .005, F, SANS_COIFFE));
+      for (const br of v.branches) {
+        const bout = branche(tri, depart, direction(v.azim + br.azim, br.inclinaison), br.long, br.chute, 1, .016, .005, F, SANS_COIFFE);
+        pointes.push(bout);
+        const rBough = (.11 - .065 * v.t) * (.85 + .3 * Math.sin(v.azim + br.azim));
+        plateau(tri, bout, rBough, 6, v.azim + br.azim, true);
+      }
     }
     const n = pointes.length;
     for (let k = 0; k < p.amas.length; k++) {

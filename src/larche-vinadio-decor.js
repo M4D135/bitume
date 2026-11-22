@@ -70,48 +70,59 @@ function precalcLisse(c) {
   const n = c.n, pas = c.pas, halfW = Math.round(220 / pas);
   const preSin = new Float64Array(n + 1), preCos = new Float64Array(n + 1);
   const preY = new Float64Array(n + 1), preC = new Float64Array(n + 1);
+  const preG15 = new Float64Array(n + 1), preD15 = new Float64Array(n + 1);
+  const preG40 = new Float64Array(n + 1), preD40 = new Float64Array(n + 1);
   for (let i = 0; i < n; i++) {
     preSin[i + 1] = preSin[i] + Math.sin(c.cap[i]);
     preCos[i + 1] = preCos[i] + Math.cos(c.cap[i]);
     preY[i + 1] = preY[i] + c.y[i];
     preC[i + 1] = preC[i] + Math.abs(c.courbure[i]);
+    preG15[i + 1] = preG15[i] + clamp(c.coupeTerrain.g15[i], -6, 6);
+    preD15[i + 1] = preD15[i] + clamp(c.coupeTerrain.d15[i], -6, 6);
+    preG40[i + 1] = preG40[i] + clamp(c.coupeTerrain.g40[i], -14, 16);
+    preD40[i + 1] = preD40[i] + clamp(c.coupeTerrain.d40[i], -14, 16);
   }
   const capLisse = new Float64Array(n), yLisse = new Float64Array(n), courbLisse = new Float64Array(n);
+  const g15L = new Float32Array(n), d15L = new Float32Array(n), g40L = new Float32Array(n), d40L = new Float32Array(n);
   for (let i = 0; i < n; i++) {
     const lo = Math.max(0, i - halfW), hi = Math.min(n - 1, i + halfW), cnt = hi - lo + 1;
     capLisse[i] = Math.atan2(preSin[hi + 1] - preSin[lo], preCos[hi + 1] - preCos[lo]);
     yLisse[i] = (preY[hi + 1] - preY[lo]) / cnt;
     courbLisse[i] = (preC[hi + 1] - preC[lo]) / cnt;
+    g15L[i] = (preG15[hi + 1] - preG15[lo]) / cnt;
+    d15L[i] = (preD15[hi + 1] - preD15[lo]) / cnt;
+    g40L[i] = (preG40[hi + 1] - preG40[lo]) / cnt;
+    d40L[i] = (preD40[hi + 1] - preD40[lo]) / cnt;
   }
-  return { capLisse, yLisse, courbLisse };
+  return { capLisse, yLisse, courbLisse, g15L, d15L, g40L, d40L };
 }
 
-function hauteurCorridor(c, idx, d, x, z, yLisseVal, tBout) {
+function hauteurCorridor(c, idx, d, x, z, lisse, tBout) {
   const yRoute = c.y[idx];
   const devers = (c.devers && c.devers[idx]) || 0;
-  const g15 = d < 0 ? c.coupeTerrain.g15[idx] : c.coupeTerrain.d15[idx];
-  const g40 = d < 0 ? c.coupeTerrain.g40[idx] : c.coupeTerrain.d40[idx];
+  const g15 = d < 0 ? lisse.g15L[idx] : lisse.d15L[idx];
+  const g40 = d < 0 ? lisse.g40L[idx] : lisse.d40L[idx];
   const absD = Math.abs(d);
   const graine = c.graine || 210;
 
   if (absD <= 16) {
     const yBord = yRoute - d * Math.sin(devers) - 0.14 * smoothstep(6, 16, absD);
     const tG = smoothstep(9, 16, absD);
-    return yBord + clamp(g15, -4, 4) * 0.25 * tG;
+    return yBord + clamp(g15, -3.5, 3.5) * 0.22 * tG;
   }
-  const y16 = yRoute - Math.sign(d) * 16 * Math.sin(devers) - 0.14 + clamp(g15, -4, 4) * 0.25;
-  const y42 = yRoute + clamp(g40, -14, 18) * 0.72;
+  const y16 = yRoute - Math.sign(d) * 16 * Math.sin(devers) - 0.14 + clamp(g15, -3.5, 3.5) * 0.22;
+  const y42 = yRoute + clamp(g40, -10, 12) * 0.58;
   if (absD <= 42) {
     const t = smoothstep(16, 42, absD);
-    const undul = fbm(x * 0.55 + graine, z * 0.55 - graine, 2, graine) * 0.9 * t;
+    const undul = fbm(x * 0.5 + graine, z * 0.5 - graine, 2, graine) * 0.8 * t;
     return lerp(y16, y42, t) + undul;
   }
   const excess = absD - 42;
-  const penteRaw = clamp((g40 - g15) / 25, -0.45, 0.55);
-  const penteAmortie = penteRaw * Math.tanh(excess / 85);
-  const reliefExt = clamp(penteAmortie * excess * 0.52, -62, 92);
-  const crete = fbm(x * 0.24 + graine * 2, z * 0.24 - graine * 2, 3, graine + 7) * 14 * smoothstep(42, 160, absD);
-  const yBase = lerp(y42, yLisseVal, smoothstep(42, 160, absD) * 0.55);
+  const penteRaw = clamp((g40 - g15) / 30, -0.32, 0.36);
+  const penteAmortie = penteRaw * Math.tanh(excess / 95);
+  const reliefExt = clamp(penteAmortie * excess * 0.42, -44, 58);
+  const crete = fbm(x * 0.20 + graine * 2, z * 0.20 - graine * 2, 3, graine + 7) * 12 * smoothstep(42, 165, absD);
+  const yBase = lerp(y42, lisse.yLisse[idx], smoothstep(42, 165, absD) * 0.62);
   return yBase + (reliefExt + crete) * tBout;
 }
 
@@ -119,7 +130,8 @@ function terrain(c, th, interroger, g, ecologie, organique) {
   if (!c || c.id !== 'larche') return null;
   const graine = c.graine || 210;
   const n = c.n, altBase = c.altitudeBaseM || 880;
-  const { capLisse, yLisse, courbLisse } = precalcLisse(c);
+  const lisse = precalcLisse(c);
+  const { capLisse, yLisse, courbLisse } = lisse;
   const nCoupes = Math.ceil(c.longueur / PAS_L) + 1;
   const nNappes = Math.ceil((nCoupes - 1) / (NAPPES_SIZE - 1));
   const liste = [];
@@ -149,7 +161,6 @@ function terrain(c, th, interroger, g, ecologie, organique) {
       const txLoc = -Math.sin(capLoc), tzLoc = Math.cos(capLoc);
       const txL = -Math.sin(capL), tzL = Math.cos(capL);
       const cL = courbLisse[idx];
-      const yL = yLisse[idx];
       const tBout = smoothstep(0, 260, s) * smoothstep(0, 260, c.longueur - s);
 
       for (let j = 0; j < N_LAT; j++) {
@@ -158,26 +169,26 @@ function terrain(c, th, interroger, g, ecologie, organique) {
         let tx = lerp(txLoc, txL, tNorm), tz = lerp(tzLoc, tzL, tNorm);
         const tl = Math.hypot(tx, tz) || 1;
         tx /= tl; tz /= tl;
-        const dMax = absD <= 24 ? absD : Math.min(absD, 0.58 / (cL + 0.0022));
+        const dMax = absD <= 24 ? absD : Math.min(absD, 0.56 / (cL + 0.0024));
         const dEff = Math.sign(dRaw) * Math.max(Math.min(absD, 24), dMax);
         const px = rx + tx * dEff;
         const pz = rz + tz * dEff;
-        let py = hauteurCorridor(c, idx, dEff, px, pz, yL, tBout);
+        let py = hauteurCorridor(c, idx, dEff, px, pz, lisse, tBout);
 
         // Ne jamais traverser une autre branche d'épingle
-        if (absD >= 36 && interroger) {
+        if (absD >= 30 && interroger) {
           const q = interroger(px, pz, 85, true);
           if (q && q.i >= 0 && q.d < 34) {
-            py = Math.min(py, c.y[q.i] - 1.4);
+            py = Math.min(py, c.y[q.i] - 1.8);
           }
         }
 
         const eps = 3;
-        const hL = hauteurCorridor(c, idx, dEff - eps, px - tx * eps, pz - tz * eps, yL, tBout);
-        const hR = hauteurCorridor(c, idx, dEff + eps, px + tx * eps, pz + tz * eps, yL, tBout);
+        const hL = hauteurCorridor(c, idx, dEff - eps, px - tx * eps, pz - tz * eps, lisse, tBout);
+        const hR = hauteurCorridor(c, idx, dEff + eps, px + tx * eps, pz + tz * eps, lisse, tBout);
         const idxF = Math.min(idx + 2, n - 1), idxB = Math.max(idx - 2, 0);
-        const hF = hauteurCorridor(c, idxF, dEff, px, pz, yLisse[idxF], tBout);
-        const hB = hauteurCorridor(c, idxB, dEff, px, pz, yLisse[idxB], tBout);
+        const hF = hauteurCorridor(c, idxF, dEff, px, pz, lisse, tBout);
+        const hB = hauteurCorridor(c, idxB, dEff, px, pz, lisse, tBout);
         const dhLat = (hR - hL) / (2 * eps);
         const dhLon = (hF - hB) / Math.max(1, (idxF - idxB) * c.pas);
         const cosC = Math.cos(capLoc), sinC = Math.sin(capLoc);
@@ -187,18 +198,24 @@ function terrain(c, th, interroger, g, ecologie, organique) {
         const nl = Math.hypot(nx, ny, nz) || 1;
         nx /= nl; ny /= nl; nz /= nl;
 
+        // Coloration 100 % organique continue (domain warp 2 échelles, zéro bande/facette géométrique)
         const altReal = py + altBase;
-        const tache = 0.5 + 0.5 * fbm(px * 0.035, pz * 0.035, 2, graine + 19);
-        let mat;
-        if (altReal > 2160 + 40 * tache && ny > 0.62) mat = 3; // névés hauts uniquement
-        else if (altReal > 2050 + 35 * tache || ny < 0.77) mat = 9; // roche alpine
-        else mat = 8; // alpages et forêts vertes
-
-        let r, gr, b;
-        if (mat === 3) { r = 0.90; gr = 0.92; b = 0.95; }
-        else if (mat === 9) { r = 0.44 + 0.08 * tache; gr = 0.41 + 0.07 * tache; b = 0.37 + 0.06 * tache; }
-        else if (altReal > 1450) { r = 0.25 + 0.08 * tache; gr = 0.40 + 0.09 * tache; b = 0.17 + 0.04 * tache; }
-        else { r = 0.21 + 0.07 * tache; gr = 0.41 + 0.08 * tache; b = 0.16 + 0.04 * tache; }
+        const wx = px + fbm(px * 0.018, pz * 0.018, 2, graine + 31) * 48;
+        const wz = pz + fbm(px * 0.018 + 7.3, pz * 0.018 - 5.1, 2, graine + 37) * 48;
+        const n1 = 0.5 + 0.5 * fbm(wx * 0.025, wz * 0.025, 3, graine + 19);
+        const n2 = 0.5 + 0.5 * fbm(wx * 0.075, wz * 0.075, 2, graine + 43);
+        const pAlt = smoothstep(1250, 2020, altReal);
+        const pRoche = Math.max(1 - smoothstep(0.66, 0.88, ny), smoothstep(1900 + 60 * n1, 2120 + 60 * n1, altReal) * 0.75);
+        const pNeve = smoothstep(2140 + 45 * n1, 2240 + 45 * n1, altReal) * smoothstep(0.58, 0.78, ny);
+        let r = lerp(0.20, 0.29, pAlt) + (n1 - 0.5) * 0.07 + (n2 - 0.5) * 0.04;
+        let gr = lerp(0.37, 0.39, pAlt) + (n1 - 0.5) * 0.07 + (n2 - 0.5) * 0.04;
+        let b = lerp(0.14, 0.19, pAlt) + (n1 - 0.5) * 0.04;
+        const rRoc = 0.43 + (n1 - 0.5) * 0.08 + (n2 - 0.5) * 0.05;
+        const gRoc = 0.41 + (n1 - 0.5) * 0.07 + (n2 - 0.5) * 0.04;
+        const bRoc = 0.37 + (n1 - 0.5) * 0.06;
+        r = lerp(r, rRoc, pRoche); gr = lerp(gr, gRoc, pRoche); b = lerp(b, bRoc, pRoche);
+        r = lerp(r, 0.90, pNeve); gr = lerp(gr, 0.92, pNeve); b = lerp(b, 0.95, pNeve);
+        const mat = 8; // unifié sur 25 par solsProceduraux : zéro coupure 23↔24↔25
 
         const off = vi * FLOATS_VERT;
         sommets[off] = px;
@@ -211,9 +228,9 @@ function terrain(c, th, interroger, g, ecologie, organique) {
         sommets[off + 7] = kGlobal / nCoupes;
         sommets[off + 8] = 0;
         sommets[off + 9] = mat;
-        sommets[off + 10] = r;
-        sommets[off + 11] = gr;
-        sommets[off + 12] = b;
+        sommets[off + 10] = clamp(r, 0.04, 0.96);
+        sommets[off + 11] = clamp(gr, 0.04, 0.96);
+        sommets[off + 12] = clamp(b, 0.04, 0.96);
         vi++;
 
         if (px < xMin) xMin = px; if (px > xMax) xMax = px;
@@ -224,7 +241,7 @@ function terrain(c, th, interroger, g, ecologie, organique) {
       }
     }
 
-    // Indices quads (sauter -9 <-> +9 sous la chaussée), enroulement +Y
+    // Indices quads avec diagonales alternées (enroulement +Y strict, sauter -9 <-> +9 sous la chaussée)
     ii = 0;
     const herbeTri = [];
     for (let k = 0; k < nK - 1; k++) {
@@ -234,10 +251,16 @@ function terrain(c, th, interroger, g, ecologie, organique) {
         const v10 = (k + 1) * N_LAT + j;
         const v01 = k * N_LAT + j + 1;
         const v11 = (k + 1) * N_LAT + j + 1;
-        indices[ii++] = v00; indices[ii++] = v01; indices[ii++] = v10;
-        indices[ii++] = v10; indices[ii++] = v01; indices[ii++] = v11;
-        if (sommets[v00 * FLOATS_VERT + 9] === 8 && sommets[v01 * FLOATS_VERT + 9] === 8 && sommets[v10 * FLOATS_VERT + 9] === 8) herbeTri.push(ii - 6);
-        if (sommets[v10 * FLOATS_VERT + 9] === 8 && sommets[v01 * FLOATS_VERT + 9] === 8 && sommets[v11 * FLOATS_VERT + 9] === 8) herbeTri.push(ii - 3);
+        if ((k + j) & 1) {
+          indices[ii++] = v00; indices[ii++] = v01; indices[ii++] = v11;
+          indices[ii++] = v00; indices[ii++] = v11; indices[ii++] = v10;
+        } else {
+          indices[ii++] = v00; indices[ii++] = v01; indices[ii++] = v10;
+          indices[ii++] = v10; indices[ii++] = v01; indices[ii++] = v11;
+        }
+        if (sommets[v00 * FLOATS_VERT + 4] >= 0.72 && sommets[v01 * FLOATS_VERT + 4] >= 0.72) {
+          herbeTri.push(ii - 6, ii - 3);
+        }
       }
     }
 
@@ -317,7 +340,7 @@ function terrain(c, th, interroger, g, ecologie, organique) {
     const d = (x - rx) * tx + (z - rz) * tz;
     const s = idx * c.pas;
     const tBout = smoothstep(0, 260, s) * smoothstep(0, 260, c.longueur - s);
-    return hauteurCorridor(c, idx, d, x, z, yLisse[idx], tBout);
+    return hauteurCorridor(c, idx, d, x, z, lisse, tBout);
   }
 
   return {
@@ -494,8 +517,8 @@ function poser(c, outils) {
       const w = 5 + hache(m + 200, v.s | 0) * 3;
       const h = 4 + hache(m + 300, v.s | 0) * 2;
       const d = 4 + hache(m + 400, v.s | 0) * 2;
-      const maison = { forme: 'box', taille: [w, h, d], pos: [mx, my + h / 2, mz], angles: [0, -pos.cap + (hache(m, 7) - 0.5) * 0.3, 0], mat: 'pierre', couleur: [0.62, 0.58, 0.50] };
-      const toit = { forme: 'bevel', taille: [w + 0.6, 2.2, d + 0.6], pos: [mx, my + h + 1.1, mz], angles: [0, -pos.cap + (hache(m, 7) - 0.5) * 0.3, 0], mat: 'ardoise', couleur: [0.3, 0.28, 0.30] };
+      const maison = { forme: 'box', taille: [w, h + 2.4, d], pos: [mx, my + h / 2 - 1.2, mz], angles: [0, -pos.cap + (hache(m, 7) - 0.5) * 0.3, 0], mat: 'pierre', couleur: [0.62, 0.58, 0.50] };
+      const toit = { forme: 'bevel', taille: [w + 0.6, 2.2, d + 0.6], pos: [mx, my + h + 0.9, mz], angles: [0, -pos.cap + (hache(m, 7) - 0.5) * 0.3, 0], mat: 'ardoise', couleur: [0.3, 0.28, 0.30] };
       add(objets, true, mx, mz, maison);
       add(objets, true, mx, mz, toit);
       if (B.decor && B.decor.marquerSolide) B.decor.marquerSolide(maison, 'box', 2);
@@ -582,7 +605,13 @@ function poser(c, outils) {
     }
   }
 
-  return objets;
+  const posCol = getPos(320), posViaduc = getPos(Math.min(18200, c.longueur * 0.52)), posFort = getPos(Math.min(32250, c.longueur - 400));
+  const marqueurs = [
+    { nom: 'Col de Larche · Lac de la Maddalena', x: posCol.x, y: posCol.y + 8, z: posCol.z, rayon: 110, hauteur: 44 },
+    { nom: 'Vallée de la Stura · Pietraporzio', x: posViaduc.x, y: posViaduc.y + 8, z: posViaduc.z, rayon: 115, hauteur: 48 },
+    { nom: 'Fort Albertino de Vinadio', x: posFort.x - Math.sin(posFort.cap) * 35, y: posFort.y + 10, z: posFort.z + Math.cos(posFort.cap) * 35, rayon: 105, hauteur: 42 }
+  ];
+  return { objets, marqueurs };
 }
 
 B.larcheDecor = { terrain, couperAccotement, poser };

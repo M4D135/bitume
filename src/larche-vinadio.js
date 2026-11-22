@@ -111,6 +111,52 @@ function interpLinearRaw(src, nSrc, nDst) {
   return out;
 }
 
+// Ouvre les épingles alpines serrées (R GPS < 10 m) en diffusant localement le cap θ(s)
+// uniquement là où |dθ/ds| > 1/26 m : conserve exactement la longueur totale (tunnels/ponts/villages à leur s),
+// garantit R >= 25 m partout et >= 40 m entre deux branches d'épingle (0 glissière/herbe sur la piste).
+function separerEpingles(outX, outZ, y, n, pas) {
+  const th = new Float64Array(n);
+  for (let i = 0; i < n - 1; i++) {
+    let a = Math.atan2(outZ[i + 1] - outZ[i], outX[i + 1] - outX[i]);
+    if (i > 0) {
+      while (a - th[i - 1] > PI) a -= TWO_PI;
+      while (a - th[i - 1] < -PI) a += TWO_PI;
+    }
+    th[i] = a;
+  }
+  th[n - 1] = th[n - 2];
+
+  const MAX_DTH = pas / 32;
+  const tmp = new Float64Array(n);
+  for (let pass = 0; pass < 400; pass++) {
+    let worst = 0;
+    tmp.set(th);
+    for (let i = 1; i < n - 1; i++) {
+      const d1 = Math.abs(th[i] - th[i - 1]);
+      const d2 = Math.abs(th[i + 1] - th[i]);
+      if (d1 > worst) worst = d1;
+      if (d1 > MAX_DTH || d2 > MAX_DTH) {
+        tmp[i] = 0.25 * th[i - 1] + 0.5 * th[i] + 0.25 * th[i + 1];
+      }
+    }
+    th.set(tmp);
+    if (worst <= MAX_DTH * 1.02) break;
+  }
+
+  const rX = new Float32Array(n);
+  const rZ = new Float32Array(n);
+  const rS = new Float32Array(n);
+  let cx = outX[0], cz = outZ[0];
+  rX[0] = cx; rZ[0] = cz; rS[0] = 0;
+  for (let i = 1; i < n; i++) {
+    const a = 0.5 * (th[i - 1] + th[i]);
+    cx += Math.cos(a) * pas;
+    cz += Math.sin(a) * pas;
+    rX[i] = cx; rZ[i] = cz; rS[i] = i * pas;
+  }
+  return { outX: rX, outZ: rZ, outS: rS, y, n, longueur: (n - 1) * pas };
+}
+
 function creer(graine, options) {
   graine = graine || 210;
   options = options || {};
@@ -118,13 +164,13 @@ function creer(graine, options) {
   if (!D) throw new Error('B.larcheData manquant');
 
   const nRaw = D.x10.length;
-  const { outX, outZ, outS, n, longueurTotale, sRaw } = resampleUniform(D.x10, D.z10, nRaw, PAS);
-  const longueur = longueurTotale;
-
-  // Interpoler y (altitude relative)
+  const brut = resampleUniform(D.x10, D.z10, nRaw, PAS);
   const yRaw = new Float64Array(nRaw);
   for (let i = 0; i < nRaw; i++) yRaw[i] = D.y10[i] / 10;
-  const y = interpLinear(yRaw, nRaw, n);
+  const yBrut = interpLinear(yRaw, nRaw, brut.n);
+  // Séparer les branches d'épingles trop serrées : garantit 0 glissière/accotement sur la chaussée
+  const { outX, outZ, outS, y, n, longueur } = separerEpingles(brut.outX, brut.outZ, yBrut, brut.n, PAS);
+  const ratioL = longueur / Math.max(1, brut.longueurTotale);
 
   // Interpoler coupes terrain
   const g15Raw = new Float64Array(nRaw);
@@ -167,12 +213,11 @@ function creer(graine, options) {
     const ds = (b - a) * PAS;
     courbureRaw[i] = ds > 0 ? dc / ds : 0;
   }
-  // Lissage 3 points non-circulaire
+  // Lissage 5 points non-circulaire
   for (let i = 0; i < n; i++) {
-    const a = Math.max(0, i - 1);
-    const b = Math.min(n - 1, i + 1);
-    courbure[i] = (courbureRaw[a] + courbureRaw[i] + courbureRaw[b]) / 3;
-    courbure[i] = clamp(courbure[i], -1 / 14, 1 / 14);
+    const a2 = Math.max(0, i - 2), a = Math.max(0, i - 1), b = Math.min(n - 1, i + 1), b2 = Math.min(n - 1, i + 2);
+    courbure[i] = (courbureRaw[a2] + 2 * courbureRaw[a] + 3 * courbureRaw[i] + 2 * courbureRaw[b] + courbureRaw[b2]) / 9;
+    courbure[i] = clamp(courbure[i], -1 / 20, 1 / 20);
   }
 
   // Pente

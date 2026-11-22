@@ -446,17 +446,6 @@
       t.slice(0, 3).every(p => { const s = profil(p[0]); return p[1] >= (s.y0 + s.y1) / 2 - 1e-10; }));
   }
   forme('bulle', sauteVent(S_BULLE));
-  {
-    // Fin cadre carbone profilé soulignant la courbe du saute-vent (visible en cockpit et extérieur).
-    const arc = [], b = S_BULLE[S_BULLE.length - 1], ym = (b.y0 + b.y1) / 2, ry = (b.y1 - b.y0) / 2;
-    for (let i = 0; i <= 20; i++) {
-      const a = Math.PI * i / 20, ca = Math.cos(a), sa = Math.sin(a);
-      const y = ym + ry * Math.sign(sa) * Math.abs(sa) ** (2 / b.n);
-      const z = b.l * Math.sign(ca) * Math.abs(ca) ** (2 / b.n);
-      if (y >= .66) arc.push([b.x - .002, y + .001, z]);
-    }
-    forme('bulle-cadre', C.tube(arc, .0055, { cotes: 8, pas: 2 }));
-  }
   // Une seule verrière : retirer le pilote ou changer de caméra ne change jamais sa peau.
   Object.defineProperty(FORMES, 'bulle-pilote', { value: FORMES.bulle });
   {
@@ -1019,7 +1008,6 @@
     L('goutte-dedans', MAT, c1.map(v => v * .22));
     L('jonc', MAT, NOIR);
     L('bulle', METAL_MAT, [.30, .50, .86], { fx: true, alpha: .3 });
-    L('bulle-cadre', MAT, CARBONE);
     Moy(L('fond-plat', MAT, CARBONE));
     Moy(L('moteur', PEINTURE, c1, AR()));
     Moy(L('moteur-dedans', MAT, [.08, .075, .07], AR()));

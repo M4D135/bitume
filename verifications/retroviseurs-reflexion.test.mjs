@@ -22,7 +22,9 @@ const css = fs.readFileSync(path.join(root, 'src/style.css'), 'utf8').match(/\.r
 assert(css, 'taille de la vraie toile des rétroviseurs');
 const l = +css[1].match(/\bwidth:\s*([\d.]+)px/)[1], h = +css[1].match(/\bheight:\s*([\d.]+)px/)[1];
 const start = source.indexOf('  function peindreGlace('), end = source.indexOf('\n  }', start);
+const refletStart = source.indexOf('  function cameraReflet('), refletEnd = source.indexOf('\n  }', refletStart);
 assert(start >= 0 && end > start, 'fonction réelle de rendu du reflet');
+assert(refletStart >= 0 && refletEnd > refletStart, 'caméra réfléchie commune au rendu et à la faune');
 const captures = [];
 const paint = new Function('B', 'captures', `
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
@@ -31,6 +33,7 @@ const paint = new Function('B', 'captures', `
   const retro = { rendu: { draw: cam => captures.push(JSON.parse(JSON.stringify(cam))) } };
   const publicVisible = false, horlogeReelle = 0, dureeImage = 16.667;
   const listeGlace = () => [], lampesTunnel = () => [];
+  ${source.slice(refletStart, refletEnd + 4)}
   ${source.slice(start, end + 4)}
   return peindreGlace;
 `)(B, captures);

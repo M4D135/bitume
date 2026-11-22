@@ -71,19 +71,23 @@
   reglages.momentMode = B.conditionsCourse.normaliserMode(reglages.momentMode);
   reglages.meteoMode = B.conditionsCourse.normaliserMode(reglages.meteoMode || (reglages.meteo === 'aleatoire' ? 'aleatoire' : 'manuel'));
   reglages.forcePluie = B.conditionsCourse.normaliserForcePluie(reglages.forcePluie);
-  // Champ du cockpit : 69° n'a été le défaut que l'après-midi du 16/11, et David le trouve trop large (« fov moins
-  // prononcé »). Une valeur restée à 69 revient une seule fois au défaut ; tout autre choix du pilote est gardé.
-  if (!reglages.champRevu) { if (+reglages.champ === 69) reglages.champ = DEFAUT.champ; reglages.champRevu = true; }
+  // Champ du cockpit : défaut 70° (décision David 22/11). Une ancienne valeur 69° ou 80° revient une fois à 70°.
+  if (!reglages.champRevu || reglages.champRevu < 2) {
+    if (+reglages.champ === 69 || +reglages.champ === 80) reglages.champ = DEFAUT.champ;
+    reglages.champRevu = 2;
+  }
   reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
   reglages.gouttes = reglages.gouttes != null && Number.isFinite(+reglages.gouttes) ? clamp(+reglages.gouttes, 0, 2) : DEFAUT.gouttes;
   // Quatre coins disponibles pour la carte ; par défaut en bas à gauche (décision David 21/11).
-  if (!reglages.cartePositionVersion || reglages.cartePositionVersion < 2) {
-    if (reglages.cartePosition === 'gauche') reglages.cartePosition = 'haut-gauche';
-    else if (reglages.cartePosition === 'droite') reglages.cartePosition = 'bas-gauche';
-    reglages.cartePositionVersion = 2;
+  if (!reglages.cartePositionVersion || reglages.cartePositionVersion < 3) {
+    if (reglages.cartePosition === 'gauche' || reglages.cartePosition === 'droite'
+      || (reglages.cartePositionVersion === 2 && reglages.cartePosition === 'haut-gauche')) {
+      reglages.cartePosition = 'bas-gauche';
+    }
+    reglages.cartePositionVersion = 3;
   } else {
-    if (reglages.cartePosition === 'gauche') reglages.cartePosition = 'haut-gauche';
-    else if (reglages.cartePosition === 'droite') reglages.cartePosition = 'haut-droite';
+    if (reglages.cartePosition === 'gauche') reglages.cartePosition = 'bas-gauche';
+    else if (reglages.cartePosition === 'droite') reglages.cartePosition = 'bas-droite';
   }
   for (const [cle, valeurs] of Object.entries({ carte: ['oui', 'non'], cartePosition: ['bas-gauche', 'bas-droite', 'haut-gauche', 'haut-droite'], carteTaille: ['petite', 'normale', 'grande'], annoncesVirages: ['non', 'ecran', 'voix'] }))
     if (!valeurs.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
@@ -267,6 +271,71 @@
     scene = { index: i, enrichi: decorEnrichi, palier: ancre, vegetationQualite, saison, c, decor, fond, plan: p, ombre, public: pub, vuePublic };
     return scene;
   }
+  // Six champs préalloués : vue principale et deux glaces par joueur. Les caméras de rendu
+  // sont réutilisées ailleurs ; copier leurs nombres évite qu'une autre vue déplace ce champ.
+  function creerChampsFaune() {
+    const champs = [];
+    for (let i = 0; i < 6; i++) champs.push({ camera: { pos: [0, 0, 0], yaw: 0, pitch: 0, roll: 0, fov: 70 },
+      qualite: 'off', aspect: 16 / 9, hauteur: 720, valide: false });
+    return champs;
+  }
+  function copierChampFaune(champ, cam, aspect, hauteur, qualite) {
+    const c = champ.camera;
+    c.pos[0] = cam.pos[0]; c.pos[1] = cam.pos[1]; c.pos[2] = cam.pos[2];
+    c.yaw = cam.yaw; c.pitch = cam.pitch || 0; c.roll = cam.roll || 0; c.fov = cam.fov;
+    champ.aspect = aspect; champ.hauteur = hauteur; champ.qualite = qualite; champ.valide = true;
+  }
+  // Rejet conservateur du petit disque qui enveloppe la glace réelle, dans le repère caméra.
+  function glaceVisibleFaune(g, cam, aspect) {
+    const dx = g.centre[0] - cam.pos[0], dy = g.centre[1] - cam.pos[1], dz = g.centre[2] - cam.pos[2];
+    const cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw), cp = Math.cos(cam.pitch || 0), sp = Math.sin(cam.pitch || 0);
+    const cr = Math.cos(cam.roll || 0), sr = Math.sin(cam.roll || 0);
+    const x = dx * cy + dz * sy, y = -dx * sy * sp + dy * cp + dz * cy * sp;
+    const z = dx * sy * cp + dy * sp - dz * cy * cp;
+    let rayon2 = 0;
+    for (let i = 0; i < g.coins.length; i++) {
+      const p = g.coins[i], ex = p[0] - g.centre[0], ey = p[1] - g.centre[1], ez = p[2] - g.centre[2];
+      rayon2 = Math.max(rayon2, ex * ex + ey * ey + ez * ez);
+    }
+    const rayon = Math.sqrt(rayon2), tan = Math.tan(cam.fov * Math.PI / 360);
+    return z + rayon > .01 && Math.abs(x * cr + y * sr) <= z * tan * aspect + rayon * (1 + tan * aspect)
+      && Math.abs(y * cr - x * sr) <= z * tan + rayon * (1 + tan);
+  }
+  function preparerChampsFaune(S, vue, cam, ps, P) {
+    const champs = S.champsFaune;
+    if (!champs) return;
+    const premier = S === session ? 0 : 3;
+    for (let i = premier; i < premier + 3; i++) champs[i].qualite = 'off';
+    if (reglages.faune === 'off' || !B.animaux) return;
+    const qualite = B.animaux.qualite(reglages.faune, P.palier), aspect = canvas.width / Math.max(1, canvas.height);
+    copierChampFaune(champs[premier], cam, aspect, canvas.height, qualite);
+    if (!glacesVives(S, vue) || !(P.secondaires.retroviseurs.hz > 0) || !(retro.l > 0 && retro.h > 0)) return;
+    const ev = POSE_GLACES, J = ETATS_GLACES[premier ? 1 : 0];
+    ev.p[0] = ps.x; ev.p[1] = ps.y; ev.p[2] = ps.z; ev.cap = ps.cap; ev.tangage = ps.tangage; ev.roulis = ps.roulis;
+    const glaces = B.voiture.glacesCockpit(ev, J.glaces), hauteur = $('retro-rendu').height;
+    for (let i = 0; i < 2; i++) {
+      if (!glaceVisibleFaune(glaces[i], cam, aspect)) continue;
+      const champ = champs[premier + 1 + i];
+      cameraReflet(glaces[i], cam, ps, retro.l, retro.h, champ.camera);
+      champ.qualite = qualite; champ.aspect = retro.l / retro.h; champ.hauteur = hauteur; champ.valide = true;
+    }
+  }
+  function selectionnerChampsFaune(S) {
+    if (!S.animaux || !B.animaux || !B.animaux.selectionnerVues) return;
+    const champs = S.champsFaune;
+    if (!champs) return;
+    // Les derniers champs affichés servent aux pas de l'image suivante. Une glace désactivée
+    // ou un joueur absent sont retirés immédiatement, même si leur ancienne image est gardée.
+    for (let j = 0; j < 2; j++) {
+      const V = j ? (S.type === 'duo' ? S.vueJ2 : null) : S;
+      const q = V && reglages.faune !== 'off' ? B.animaux.qualite(reglages.faune, profilDe(V).palier) : 'off';
+      const premier = j * 3;
+      champs[premier].qualite = champs[premier].valide ? q : 'off';
+      const glaces = q !== 'off' && V && glacesVives(V, V.vue);
+      for (let i = 1; i < 3; i++) if (!glaces) champs[premier + i].qualite = 'off';
+    }
+    B.animaux.selectionnerVues(S.animaux, champs, 6);
+  }
   // Animaux des abords (src/animaux.js) : bâtis une fois par scène, comme le décor qu'ils habitent (12 à 90 ms mesurés
   // dans la page, une saccade si chaque course de la démo les recréait), puis repris de leurs places de départ à
   // chaque séance. Le moment de la journée suit la séance ; à l'horloge réelle, la nuit du départ vaut pour la course
@@ -346,9 +415,11 @@
         horlogeReelle: horlogePartagee(conditions.horlogeReelle), dateDepart: enl && Number.isFinite(enl.dateDepart) ? enl.dateDepart : null,
         saison: sc.decor.saison || B.saisons.profil(sc.saison, CATALOGUE[i].theme), revisionRendu: -1, faune: null, effetsSaison: null, aurores: null },
       fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null, animaux: null, animauxVue: null,
+      champsFaune: creerChampsFaune(), fauneSecondaires: null,
       // créations tardives : objets nés dans le chemin d'une image au lieu de la préparation (doit rester à zéro)
       tardives: { n: 0, sousVoile: 0, noms: {} },
     };
+    S.fauneSecondaires = [S.champsFaune[1], S.champsFaune[2]];
     // Toutes les montes sont préparées sous le voile : un service ne construit rien en pleine course.
     for (const modele of S.modeles) B.voiture.preparerPneusService(modele);
     if (B.eauCarrosserie) for (let k = 0; k < S.modeles.length; k++)
@@ -374,7 +445,8 @@
       distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
       detailsRoues: new Int8Array(course.voitures.length).fill(-1),
       detailsRouesGlaces: [new Int8Array(course.voitures.length).fill(-1), new Int8Array(course.voitures.length).fill(-1)],
-      suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null, fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null, animauxVue: null });
+      suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null, fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null, animauxVue: null,
+      fauneSecondaires: [S.champsFaune[4], S.champsFaune[5]] });
     S.locaux = course.voitures.filter(v => v.joueur).map(v => v.id);   // voitures conduites ici (une, ou deux à l'écran partagé)
     if (joue && S.expressions) configurerTrollLocaux(S);
     if (joue) {
@@ -842,7 +914,7 @@
     const zone = $(ecran); if (!zone || zone.hidden) return;
     B.navigationMenu.naviguer(zone, nouveau, { pad: manette, temps: performance.now(), activer: activerSon,
       retour: () => ecran === 'pause' ? basculerPause() : retour(),
-      demarrer: ecran === 'preparation' ? () => { const b = $('b-suivant').hidden ? $('b-depart') : $('b-suivant'); if (b && !b.disabled) b.click(); } : null,
+      demarrer: ecran === 'preparation' ? () => { const b = $('b-depart'); if (b && !b.disabled) b.click(); } : null,
       valider: el => ecran === 'preparation' && menuArcade.valider(el) });
   }
 
@@ -2089,7 +2161,7 @@
 
   // Caméras de la démo (David, 16/11 : « des démos plus impressionnantes, avec de l'action, des vues différentes »).
   // Portées par la voiture filmée (son attitude) ou posées autour d'elle ; le plan dit de quel côté (milieu de piste).
-  const VUES_DEHORS = new Set(['tele', 'helico', 'orbite', 'travelling', 'sol', 'panorama', 'flore', 'faune', 'pilote', 'peloton']);
+  const VUES_DEHORS = new Set(['tele', 'helico', 'orbite', 'travelling', 'sol', 'panorama', 'lieu', 'peloton']);
   const DANS_LA_ROCHE = new Set(['helico', 'orbite', 'travelling', 'pilote', 'peloton']);   // sous le tunnel, ces caméras seraient dans la montagne
   const CAMERAS_DEMO = new Set(['roue', 'aileron', 'arriere', 'travelling', 'orbite']);
   function cameraDemo(S, p, plan, vue = plan && plan.vue) {
@@ -2547,19 +2619,23 @@
     for (let i = 0; i < 16; i++) if (w[i] !== v[i]) { w[i] = v[i]; diff = true; }
     return diff;
   }
-  // Une glace : la caméra est à la glace et regarde dans la direction réfléchie du regard.
-  function peindreGlace(S, G, i, g, cam, ps, sortie, ambiance, suivie, P, source, l, h, dtGlace) {
-    const toiles = G.toiles;
+  // Même caméra réfléchie pour le rendu de la glace et la sélection de sa faune.
+  function cameraReflet(g, cam, ps, l, h, camR) {
     // Comme un vrai rétroviseur réglé par le pilote, le regard est ouvert de 9° vers l'extérieur et passe un peu
     // au-dessus de la caisse : la roue arrière et le ponton n'occupent que le bord intérieur de la glace.
     const d00 = g.centre[0] - cam.pos[0], d01 = g.centre[1] - cam.pos[1], d02 = g.centre[2] - cam.pos[2], dn = Math.hypot(d00, d01, d02) || 1;
     const dv0 = d00 / dn, dv1 = d01 / dn, dv2 = d02 / dn, n = g.normale;
     const pn = dv0 * n[0] + dv1 * n[1] + dv2 * n[2], rf0 = dv0 - 2 * pn * n[0], rf1 = dv1 - 2 * pn * n[1], rf2 = dv2 - 2 * pn * n[2];
     const ouvre = g.k * .16, co = Math.cos(ouvre), so = Math.sin(ouvre), rx = rf0 * co - rf2 * so, rz = rf0 * so + rf2 * co;
-    const camR = CAM_GLACE;
     camR.pos[0] = g.centre[0]; camR.pos[1] = g.centre[1] + .1; camR.pos[2] = g.centre[2];
     camR.yaw = Math.atan2(rx, -rz); camR.pitch = Math.asin(clamp(rf1, -1, 1)) + .06; camR.roll = ps.roulis * .85;
     camR.fov = 2 * Math.atan(Math.tan(16 * Math.PI / 180) * h / l) * 180 / Math.PI; camR.near = .3; camR.far = PORTEE_VUE;
+    return camR;
+  }
+  // Une glace : la caméra est à la glace et regarde dans la direction réfléchie du regard.
+  function peindreGlace(S, G, i, g, cam, ps, sortie, ambiance, suivie, P, source, l, h, dtGlace) {
+    const toiles = G.toiles;
+    const camR = cameraReflet(g, cam, ps, l, h, CAM_GLACE);
     const sun = camR.sun;
     sun.center[0] = ps.x; sun.center[1] = ps.y; sun.center[2] = ps.z; sun.extent = scene.ombre.extent; sun.depth = scene.ombre.depth;
     const objets = listeGlace(S, camR, sortie, suivie, source.height, i);
@@ -2907,6 +2983,7 @@
     // chaque draw un index spatial vide (clés de grille et tableaux temporaires). Image identique.
     cam.allStatic = true;
 
+    preparerChampsFaune(S, vue, cam, ps, P);
     // Habitats partagés ; pools propres aux deux vues. Le temps absolu garde les mêmes vols dans les miroirs.
     if (S.nature && B.faune && P.faune !== 'off' && (!S.nature.saison || S.nature.saison.faune > 0)) {
       const nature = S.nature;
@@ -2914,10 +2991,11 @@
       const contexte = S.fauneVue || (S.fauneVue = creationTardive('contexteFaune', { qualite: P.faune, nuit: 0, pluie: 0, pose: ps, vue: S === session ? 0 : 1 }));
       contexte.qualite = P.faune; contexte.nuit = nature.ambiance.nuit; contexte.pluie = meteo.pluie || 0; contexte.pose = cam.sujetNature ? S.cinema.poseVue : ps;
       contexte.activite = nature.saison ? nature.saison.faune : 1;
+      contexte.camera = cam; contexte.aspect = canvas.width / Math.max(1, canvas.height); contexte.vuesSecondaires = S.fauneSecondaires;
       B.faune.dessiner(nature.faune, horlogeReelle, contexte, sortie);
     }
-    // Hélicoptère TV & drones métal de tournage (au-dessus du peloton, skippés en palier low)
-    if (B.aeriens && P.palier !== 'low' && S.type !== 'vitrine') {
+    // Hélicoptère TV & drones métal de tournage (au-dessus du peloton sur tous les paliers, low inclus)
+    if (B.aeriens && S.type !== 'vitrine') {
       const ae = S.aeriens || (S.aeriens = creationTardive('aeriens', B.aeriens.creer(c, { qualite: P.palier })));
       const ctxAe = S.aeriensVue || (S.aeriensVue = creationTardive('contexteAeriens', { qualite: P.palier, cible: [0, 0, 0], cibleCap: 0, cibleVitesse: 0, sCible: 0, nuit: 0, sol: null }));
       ctxAe.qualite = P.palier; ctxAe.cible[0] = ps.x; ctxAe.cible[1] = ps.y; ctxAe.cible[2] = ps.z;
@@ -2939,16 +3017,14 @@
       B.signalisationCourse.mettreAJour(sig, S.tRendu, ctxSig, sortie);
     }
     // Animaux des abords : poses du cerveau interpolées à l'instant affiché des voitures (même horloge de course,
-    // mêmes images à 30, 60 ou 120 images/s). Le réglage brut de la faune passe tel quel : en « profil », Légère garde
-    // quelques silhouettes lointaines là où le profil coupe les oiseaux et les insectes. Les glaces ne montrent que
-    // ce que la vue principale a posé : on garde derrière la caméra ce qu'elles reflètent. Contexte de vue créé par
-    // prechargerSeance.
+    // mêmes images à 30, 60 ou 120 images/s). Quelques animaux proches en Légère ; aucune pose
+    // hors de la vue principale et des champs réfléchis réellement actifs. Contextes préchargés.
     if (!S.animaux && reglages.faune !== 'off' && S.nature && B.animaux) S.animaux = animauxDe(scene, S.nature);
     if (S.animaux && reglages.faune !== 'off') {
-      const contexte = S.animauxVue || (S.animauxVue = creationTardive('contexteAnimaux', { vue: S === session ? 0 : 1, qualite: 'off', camera: null, hauteur: 720, aspect: 16 / 9, arriere: false, nuit: 0, pluie: 0 }));
+      const contexte = S.animauxVue || (S.animauxVue = creationTardive('contexteAnimaux', { vue: S === session ? 0 : 1, qualite: 'off', camera: null, hauteur: 720, aspect: 16 / 9, vuesSecondaires: S.fauneSecondaires, nuit: 0, pluie: 0 }));
       contexte.qualite = B.animaux.qualite(reglages.faune, P.palier); contexte.camera = cam;
       contexte.hauteur = canvas.height; contexte.aspect = canvas.width / Math.max(1, canvas.height);
-      contexte.arriere = retroVoulu(S, vue, P);
+      contexte.vuesSecondaires = S.fauneSecondaires;
       contexte.nuit = S.nature ? S.nature.ambiance.nuit : 0; contexte.pluie = meteo.pluie || 0;
       B.animaux.dessiner(S.animaux, S.tRendu, contexte, sortie);
     }
@@ -3310,7 +3386,7 @@
 
   const LIBELLES_PLAN = { tele: 'bord de piste', cockpit: 'caméra embarquée', poursuite: 'poursuite', helico: 'hélicoptère',
     roue: 'caméra de roue', aileron: 'au-dessus de l’arceau', arriere: 'caméra arrière', travelling: 'travelling', orbite: 'autour de la voiture', sol: 'au ras de la piste',
-    panorama: 'grand panorama', flore: 'végétation', faune: 'faune', pilote: 'auprès du pilote', peloton: 'dans le peloton' };
+    panorama: 'tracé du circuit', lieu: 'lieu emblématique', peloton: 'dans le peloton' };
   // Cadences de l'affichage : chrono, écart, vitesse et régime changent à chaque image mais ne se lisent pas au-delà
   // de 30 Hz ; le plan se redessine à 15 Hz, décalé des chiffres, et jamais quand il est masqué. Position, tour,
   // santé, dérive et feux restent à chaque image : ils ne s'écrivent que lorsqu'ils changent. La marge d'une
@@ -4258,13 +4334,13 @@
       const N = S.nature, sa = N && N.saison;
       if (N && B.faune && (!sa || sa.faune > 0)) {
         if (!N.faune) N.faune = B.faune.creer(c, scene.decor);
-        for (const V of vues) if (!V.fauneVue) V.fauneVue = { qualite: 'off', nuit: 0, pluie: 0, pose: null, vue: V === S ? 0 : 1 };
+        for (const V of vues) if (!V.fauneVue) V.fauneVue = { qualite: 'off', nuit: 0, pluie: 0, pose: null, camera: null, aspect: 16 / 9, vuesSecondaires: V.fauneSecondaires, vue: V === S ? 0 : 1 };
       }
       // public des tribunes : ambiance de chaque vue (l'animation lit la pluie, les feux et le drapeau)
       if (scene && scene.vuePublic) for (const V of vues) if (!Object.prototype.hasOwnProperty.call(V, 'ambiancePublic') || !V.ambiancePublic) V.ambiancePublic = ambiancePublic();
       // animaux des abords : un contexte de vue par joueur (l'état vient de lancer, avec la scène)
       if (S.animaux) for (const V of vues) if (!Object.prototype.hasOwnProperty.call(V, 'animauxVue') || !V.animauxVue)
-        V.animauxVue = { vue: V === S ? 0 : 1, qualite: 'off', camera: null, hauteur: 720, aspect: 16 / 9, arriere: false, nuit: 0, pluie: 0 };
+        V.animauxVue = { vue: V === S ? 0 : 1, qualite: 'off', camera: null, hauteur: 720, aspect: 16 / 9, vuesSecondaires: V.fauneSecondaires, nuit: 0, pluie: 0 };
       if (N && B.effetsSaison && sa && (N.effetsSaison || sa.feuilles || sa.neige || (S.meteo && S.meteo.neige))) {
         if (!N.effetsSaison) N.effetsSaison = B.effetsSaison.creer(c, scene.decor);
         for (const V of vues) if (!V.saisonVue) V.saisonVue = { qualite: 'low', nuit: 0, pluie: 0, neige: 0, ventX: 0, ventZ: 0, pose: null, vue: V === S ? 0 : 1, abri: false };
@@ -4397,7 +4473,9 @@
     for (const o of liste) { if (o.fx) effects++; else if (o.overlay) overlay++; else dynamic++; }
     const betes = B.animaux && S.animaux ? B.animaux.BUDGETS[reglages.faune === 'ultra' ? 'ultra' : 'high'].objets : 0;
     const flammes = B.echappement && S.ech ? S.course.voitures.length * B.echappement.OBJETS_PAR_VOITURE : 0;
-    return { dynamic: 2 * dynamic + betes, overlay: 2 * overlay, effects: 2 * effects + flammes + 8 };
+    // Les animaux passent brièvement en transparence à la limite de portée : réserver
+    // aussi ce flux pendant le chargement, avant le premier fondu en conduite.
+    return { dynamic: 2 * dynamic + betes, overlay: 2 * overlay, effects: 2 * effects + betes + flammes + 8 };
   }
   async function chaufferRendu(S, suite, synchrone, alpha = 0) {
     const t0 = performance.now(), E = etatChauffe(), voisins = machineLente(), r = { variantes: 0, retro: 0, prewarm: false, voisins, ms: 0 };
@@ -4861,6 +4939,7 @@
     tPrec = t; horlogeReelle += dtReel; dureeImage = lerp(dureeImage, dtReel * 1000, .1);
     appliquerResolutionDifferee(S);
     const tSim = B.mesures.actif ? performance.now() : 0;
+    selectionnerChampsFaune(S);
     let alpha;
     if (tourne && S.enLigne) {
       // en ligne : la simulation suit l'horloge commune, pas à pas, depuis l'instant T0 du départ

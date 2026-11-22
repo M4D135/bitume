@@ -328,6 +328,21 @@
     }
     const sens = d === 12 || d === 14 ? -1 : 1;
     if (i < 0) { focaliser(el); return true; }
+    const grille = gs[i].type === 'choix' && gs[i].cle ? Number.parseInt(gs[i].cle.dataset.menuCols || '0', 10) : 0;
+    if (grille > 1) {
+      const idx = gs[i].elements.indexOf(el), n = gs[i].elements.length;
+      if (d === 14 || d === 15) {
+        const cible = gs[i].elements[(idx + (d === 15 ? 1 : -1) + n) % n];
+        focaliser(cible); if (cible !== el) cible.click(); return true;
+      }
+      if (d === 12 || d === 13) {
+        const next = idx + (d === 13 ? grille : -grille);
+        if (next >= 0 && next < n) {
+          const cible = gs[i].elements[next];
+          focaliser(cible); if (cible !== el) cible.click(); return true;
+        }
+      }
+    }
     const vertical = gs[i].type === 'choix' && gs[i].cle && gs[i].cle.dataset.menuAxis === 'vertical';
     if ((vertical ? d === 12 || d === 13 : d === 14 || d === 15) && ajuster(zone, el, gs[i], sens)) { focaliser(zone.ownerDocument.activeElement); return true; }
     focaliser(selection(gs[(i + sens + gs.length) % gs.length]));

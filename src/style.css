@@ -990,29 +990,40 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   .reglages .actions-commandes { margin-top: 3px; gap: 8px; }
   .reglages .actions-commandes .discret { min-height: 27px; padding: 4px 10px; font-size: 12px; }
   .reglages .aide-manette { margin-top: 5px; }
-  /* Préparation : zéro défilement en 720p/1080p ; les 16 circuits tiennent en 2 colonnes compactes. */
-  .arcade-preparation { --marge: clamp(8px, 1.1vh, 14px); }
-  .arcade-preparation .menu-entete { display: grid; grid-template-columns: minmax(220px, .72fr) minmax(0, 1.6fr); align-items: center; gap: 10px; padding-bottom: 6px; }
+  /* Menu Préparation type Arcade plein écran (720p / 1080p / 16:10, zéro vide, zéro défilement, 100 % manette). */
+  .arcade-preparation { --marge: clamp(10px, 1.3vh, 18px); }
+  .arcade-preparation .menu-entete { display: grid; grid-template-columns: minmax(220px, .68fr) minmax(0, 1.65fr); align-items: center; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--trait); }
   .arcade-preparation .entete { margin-bottom: 0; gap: 10px; }
-  .arcade-preparation .entete h2 { font-size: clamp(22px, 2.4vw, 32px); }
+  .arcade-preparation .entete h2 { font-size: clamp(22px, 2.5vw, 34px); }
   .arcade-preparation .onglets-menu { gap: 6px; }
-  .arcade-preparation .onglets-menu button { min-height: 36px; padding: 6px 10px; font-size: 13px; }
-  .arcade-preparation .panneaux-menu { padding: 8px 4px 4px; overflow-y: hidden; }
-  .arcade-preparation .apercu-entete { padding: 8px 14px 0; }
-  .arcade-preparation .apercu-entete h3 { font-size: clamp(20px, 2.2vw, 28px); }
-  .arcade-preparation #p-trace-3d { height: clamp(160px, 25vh, 250px); margin: 4px 0 0; }
-  .arcade-preparation .apercu-legende { padding: 2px 14px 4px; }
-  .arcade-preparation .chiffres-circuit { margin: 4px 0 0; padding: 7px 14px; }
-  .arcade-preparation .chiffres-circuit dd { margin: 3px 0 0; font-size: 11px; }
-  .arcade-preparation .chiffres-circuit b { font-size: 19px; }
-  .arcade-preparation .catalogue-circuits > .arcade-surtitre { margin-bottom: 4px; font-size: 10px; }
-  .arcade-preparation .circuits { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; max-height: none; overflow-y: hidden; padding: 2px; }
-  .arcade-preparation .carte-circuit { min-height: 35px; padding: 3px 6px; grid-template-columns: 16px minmax(0, 1fr) auto; column-gap: 5px; row-gap: 1px; }
-  .arcade-preparation .carte-circuit .nom { font-size: 13px; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .arcade-preparation .carte-circuit .fiche { font-size: 8.5px; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .arcade-preparation .carte-circuit .circuit-distance { font-size: 10px; }
-  .arcade-preparation #p-piste > .options { margin-top: 6px; }
-  .arcade-preparation #p-piste > .options label span { min-height: 30px; padding: 5px 10px; font-size: 12px; }
-  .arcade-preparation .depart-fixe { padding-top: 6px; }
-  .arcade-preparation .aide-manette { margin-top: 4px; }
+  .arcade-preparation .onglets-menu button { min-height: 36px; padding: 6px 12px; font-size: 13px; }
+  .arcade-preparation .panneaux-menu { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; padding: 10px 4px 6px; overflow-y: hidden; }
+  .arcade-preparation #p-piste:not([hidden]) { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; gap: 10px; }
+  .arcade-preparation .selection-circuit { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; gap: 10px; }
+  /* Vitrine héroïque 3D en haut (occupe tout l'espace vertical disponible) */
+  .arcade-preparation .apercu-circuit { flex: 1 1 0; min-height: 148px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(300px, 1fr); grid-template-rows: auto 1fr auto; grid-template-areas: "trace titre" "trace chiffres" "legende chiffres"; align-items: stretch; background: linear-gradient(135deg, rgba(16, 22, 29, .92), rgba(24, 32, 42, .82)); border: 1px solid var(--trait-fort); border-top: 3px solid var(--rouge); border-radius: 4px; overflow: hidden; }
+  .arcade-preparation .apercu-entete { grid-area: titre; padding: 12px 20px 6px; border-left: 1px solid var(--trait); }
+  .arcade-preparation .apercu-entete h3 { font-size: clamp(24px, 2.8vw, 38px); line-height: 1; }
+  .arcade-preparation #p-trace-3d { grid-area: trace; width: 100%; height: 100%; min-height: 120px; margin: 0; }
+  .arcade-preparation .apercu-legende { grid-area: legende; padding: 4px 16px 8px; display: flex; align-items: center; justify-content: space-between; }
+  .arcade-preparation .chiffres-circuit { grid-area: chiffres; align-self: center; margin: 0; padding: 10px 20px 12px; border-top: 1px solid var(--trait); border-left: 1px solid var(--trait); gap: 10px; }
+  .arcade-preparation .chiffres-circuit dd { margin: 4px 0 0; font-size: 12px; }
+  .arcade-preparation .chiffres-circuit b { font-size: clamp(20px, 2.3vw, 30px); }
+  /* Grille Arcade 4×4 pleine largeur en bas : 16 destinations visibles d'un coup, zéro troncature */
+  .arcade-preparation .catalogue-circuits { flex: 0 0 auto; overflow: visible; }
+  .arcade-preparation .catalogue-circuits > .arcade-surtitre { margin-bottom: 5px; font-size: 10.5px; letter-spacing: .16em; }
+  .arcade-preparation .circuits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); flex: 0 0 auto; min-height: 0; max-height: none; overflow: visible; gap: 6px; padding: 2px; }
+  .arcade-preparation .carte-circuit { min-height: clamp(40px, 5.6vh, 56px); padding: 5px 9px; grid-template-columns: 20px minmax(0, 1fr) auto; column-gap: 7px; row-gap: 1px; background: rgba(18, 24, 31, .88); border: 1px solid #2b3844; border-top: 2px solid #3c4d5d; border-radius: 3px; transition: transform .1s ease, border-color .1s ease, background .1s ease; }
+  .arcade-preparation .carte-circuit:hover, .arcade-preparation .carte-circuit:focus-visible { border-color: var(--ambre); border-top-color: var(--ambre); background: rgba(34, 42, 52, .96); box-shadow: 0 0 0 2px rgba(240, 167, 88, .45); transform: translateY(-1px); }
+  .arcade-preparation .carte-circuit[aria-checked="true"] { border-color: #f0a758; border-top: 3px solid #e24b37; background: linear-gradient(135deg, rgba(124, 34, 22, .85), rgba(44, 18, 16, .92)); box-shadow: 0 4px 16px rgba(226, 75, 55, .28); }
+  .arcade-preparation .carte-circuit .nom { font-size: clamp(13px, 1.15vw, 17px); line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .arcade-preparation .carte-circuit .fiche { font-size: 9.5px; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: .82; }
+  .arcade-preparation .carte-circuit .circuit-distance { font-size: 11px; font-weight: 700; color: #f0d7a8; }
+  /* Barre rapide Tours / Rivaux compacte */
+  .arcade-preparation #p-piste > .options { flex: 0 0 auto; margin-top: 0; display: flex; flex-wrap: nowrap; align-items: center; gap: 14px; }
+  .arcade-preparation #p-piste > .options fieldset { padding: 5px 10px 6px; margin: 0; }
+  .arcade-preparation #p-piste > .options label span { min-height: 28px; padding: 4px 11px; font-size: 12.5px; }
+  .arcade-preparation .depart-fixe { padding-top: 8px; gap: 10px; }
+  .arcade-preparation #b-depart { min-width: 190px; }
+  .arcade-preparation .aide-manette { margin-top: 5px; }
 }

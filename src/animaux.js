@@ -1,7 +1,7 @@
 /* BITUME — animaux des sept circuits (lot 26, David, 18/11 : « fais aussi des animaux PNJ pour décorer, ils font leur
    vie, bougent etc ; selon le biome animaux différents pour marquer l endroit, identité etc »).
    Les bêtes sont bâties en code au chargement (fuseaux lissés en super-ellipses, tubes le long de courbes, formes libres
-   du moteur), posées loin de la route et de son dégagement, et vivent : elles broutent, marchent, se couchent, lèvent la
+   du moteur), posées dans une bande proche des bords réels de la route, hors de son dégagement, et vivent : elles broutent, marchent, se couchent, lèvent la
    tête, se figent puis fuient quand le peloton approche, et reviennent ensuite. Les oiseaux planent, longent la côte ou
    traversent le ciel ; la baleine souffle au large.
    Coût tenu : tout est préparé au chargement (formes) et au départ (habitats). Au dessin, aucun objet n'est créé : les
@@ -10,11 +10,13 @@
    60 ou 120 images par seconde. Le détail suit la taille à l'écran ; au loin, une silhouette d'une seule pièce. */
 (function (B) {
   'use strict';
-  const TAU = Math.PI * 2, PAS = .1, MAX_VUES = 2, MAX_VOITURES = 32, D_MIN = 34, CASE = 4, DEMI_CASE = 2.9;
+  const TAU = Math.PI * 2, PAS = .1, MAX_VUES = 2, MAX_VOITURES = 32, D_MIN = 8, CASE = 4, DEMI_CASE = 2.9;
+  const BANDES_ABORDS = Object.freeze({ foret: 38, cote: 50, montagne: 42, islande: 42, desert: 42, asie: 38, pacifique: 42, baikal: 42 });
+  const GARDE_BORD = 4, PORTEE_VUES = 360, MAX_CHAMPS = 6;
   const QUALITES = Object.freeze(['off', 'low', 'medium', 'high', 'ultra']);
   const BUDGETS = Object.freeze({
     off: Object.freeze({ individus: 0, proches: 0, moyens: 0, objets: 0, seuilProche: Infinity, seuilMoyen: Infinity, seuilMin: Infinity, lointainsSeuls: false }),
-    low: Object.freeze({ individus: 14, proches: 0, moyens: 0, objets: 32, seuilProche: Infinity, seuilMoyen: Infinity, seuilMin: .9, lointainsSeuls: true }),
+    low: Object.freeze({ individus: 10, proches: 0, moyens: 0, objets: 10, seuilProche: Infinity, seuilMoyen: Infinity, seuilMin: .9, lointainsSeuls: true }),
     medium: Object.freeze({ individus: 400, proches: 5, moyens: 36, objets: 700, seuilProche: 48, seuilMoyen: 9, seuilMin: .8, lointainsSeuls: false }),
     high: Object.freeze({ individus: 400, proches: 14, moyens: 90, objets: 1400, seuilProche: 30, seuilMoyen: 6, seuilMin: .7, lointainsSeuls: false }),
     ultra: Object.freeze({ individus: 400, proches: 28, moyens: 170, objets: 2400, seuilProche: 22, seuilMoyen: 4.5, seuilMin: .6, lointainsSeuls: false }),
@@ -944,7 +946,7 @@
   const kv = (o, a, b, c) => { o[0] = a; o[1] = b; o[2] = c; return o; }, k1 = a => { A1[0] = a; return A1; };
   function objetVide() {
     return { shape: 'box', forme: null, p: [0, 0, 0], s: [0, 0, 0], r: [0, 0, 0], color: [0, 0, 0], mat: 18, emissive: 0,
-      surface: 'object', outdoor: true, overlay: false, windResponsive: false, fx: false, alpha: 1, animal: '' };
+      surface: 'object', outdoor: true, overlay: false, windResponsive: false, fx: false, fxPriority: undefined, alpha: 1, animal: '' };
   }
   const POIL = 18, CORNE = 17;
   const ALLURES = [
@@ -1183,11 +1185,11 @@
     return 1 / Math.sqrt(1 + gx * gx + gz * gz);
   }
 
-  // Grille de 4 m autour du tracé (jusqu'à 440 m de l'axe), calculée une fois au départ : distance à l'axe (exacte
-  // jusqu'à 64 m, propagée au-delà par chanfrein), relief, pente, densité d'arbres, obstacles du décor (troncs, roches,
+  // Grille de 4 m autour du tracé (jusqu'à 180 m de l'axe), calculée une fois au départ : distance à l'axe (exacte
+  // jusqu'à 96 m, propagée au-delà par chanfrein), relief, pente, densité d'arbres, obstacles du décor (troncs, roches,
   // bâtiments, gradins) et deux zones interdites : l'enceinte des stands et les abords du tunnel. Une bête n'avance
   // que de case praticable en case praticable : elle ne peut pas atteindre la route ni son dégagement.
-  const PORTEE_HABITAT = 440, R_EXACT = 64, MARGE_OBST = .7, OBST = 1, ENCEINTE = 2, TUNNEL = 4, DEGAGEMENT = 8, R_ENCEINTE = 140, R_TUNNEL = 70;
+  const PORTEE_HABITAT = 180, R_EXACT = 96, MARGE_OBST = .7, OBST = 1, ENCEINTE = 2, TUNNEL = 4, DEGAGEMENT = 8, R_ENCEINTE = 140, R_TUNNEL = 70;
   const FORMES_DECOR = new Set(['box', 'cylinder', 'bevel', 'octa', 'sphere', 'wedge', 'ring']);
   function grille(c, decor) {
     const T = relief(c, decor);
@@ -1195,25 +1197,29 @@
     for (let i = 0; i < c.n; i++) { const x = c.x[i], z = c.z[i]; if (x < ax0) ax0 = x; if (x > ax1) ax1 = x; if (z < az0) az0 = z; if (z > az1) az1 = z; }
     const x0 = ax0 - PORTEE_HABITAT, z0 = az0 - PORTEE_HABITAT;
     const nx = Math.ceil((ax1 - ax0 + 2 * PORTEE_HABITAT) / CASE), nz = Math.ceil((az1 - az0 + 2 * PORTEE_HABITAT) / CASE), N = nx * nz;
-    const d = new Float32Array(N).fill(1e10), h = new Float32Array(N), ny = new Uint8Array(N), arbres = new Uint8Array(N), drap = new Uint8Array(N);
-    const G = { x0, z0, nx, nz, N, d, h, ny, arbres, drap, T, eau: Number.isFinite(decor.niveauEau) ? decor.niveauEau : -1e5 };
-    // distance exacte (au carré) aux échantillons de l'axe, tous les 2 m, jusqu'à 64 m
+    const d = new Float32Array(N).fill(1e10), bords = new Float32Array(N).fill(c.largeur / 2 || 5), h = new Float32Array(N), ny = new Uint8Array(N), arbres = new Uint8Array(N), drap = new Uint8Array(N);
+    const G = { x0, z0, nx, nz, N, d, bords, h, ny, arbres, drap, T, eau: Number.isFinite(decor.niveauEau) ? decor.niveauEau : -1e5 };
+    // Distance exacte aux échantillons de l'axe, tous les 2 m, jusqu'à 96 m ; bord du côté correspondant.
     const r = Math.ceil(R_EXACT / CASE), R2 = R_EXACT * R_EXACT;
     for (let s = 0; s < c.n; s++) {
-      const px = c.x[s], pz = c.z[s], ci = Math.floor((px - x0) / CASE), cj = Math.floor((pz - z0) / CASE);
+      const px = c.x[s], pz = c.z[s], ci = Math.floor((px - x0) / CASE), cj = Math.floor((pz - z0) / CASE), sa = Math.sin(c.cap[s]), ca = Math.cos(c.cap[s]);
       for (let j = Math.max(0, cj - r), jn = Math.min(nz - 1, cj + r); j <= jn; j++) {
         const dz = z0 + (j + .5) * CASE - pz, dz2 = dz * dz, ligne = j * nx;
         for (let i = Math.max(0, ci - r), in_ = Math.min(nx - 1, ci + r); i <= in_; i++) {
           const dx = x0 + (i + .5) * CASE - px, dd = dx * dx + dz2;
-          if (dd < R2 && dd < d[ligne + i]) d[ligne + i] = dd;
+          if (dd < R2 && dd < d[ligne + i]) {
+            d[ligne + i] = dd;
+            const droite = -sa * dx + ca * dz >= 0;
+            bords[ligne + i] = droite ? (c.largeurD ? c.largeurD[s] : c.largeur / 2 || 5) : (c.largeurG ? c.largeurG[s] : c.largeur / 2 || 5);
+          }
         }
       }
     }
     for (let k = 0; k < N; k++) d[k] = d[k] < R2 ? Math.sqrt(d[k]) : 1e5;
-    // Dégagement : les sept circuits le bornent à 20 m de l'axe, 14 m sous les 34 m de garde ; un dégagement plus large
-    // (bac à graviers d'un futur tracé) garde la même marge de 14 m au-delà de sa limite.
+    // Garde au-delà des limites réelles de conduite, sans distance arbitraire de 34 m à l'axe.
+    // Le rayon de chaque animal ajoute sa propre marge dans praticable().
     for (let s = 0; s < c.n; s++) {
-      const lim = Math.min(R_EXACT, Math.max(c.limiteG ? c.limiteG[s] : 0, c.limiteD ? c.limiteD[s] : 0) + 14 + DEMI_CASE);
+      const lim = Math.max(c.limiteG ? c.limiteG[s] : c.largeur / 2 || 5, c.limiteD ? c.limiteD[s] : c.largeur / 2 || 5) + GARDE_BORD + DEMI_CASE;
       if (lim <= D_MIN + DEMI_CASE) continue;
       const px = c.x[s], pz = c.z[s], ci = Math.floor((px - x0) / CASE), cj = Math.floor((pz - z0) / CASE), rr = Math.ceil(lim / CASE);
       for (let j = Math.max(0, cj - rr); j <= Math.min(nz - 1, cj + rr); j++) for (let i = Math.max(0, ci - rr); i <= Math.min(nx - 1, ci + rr); i++) {
@@ -1245,7 +1251,7 @@
     }
     for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
       const k = j * nx + i, x = x0 + (i + .5) * CASE, z = z0 + (j + .5) * CASE;
-      h[k] = solExact(T, x, z); ny[k] = Math.round(normaleY(T, x, z) * 255);
+      if (d[k] <= PORTEE_HABITAT) { h[k] = solExact(T, x, z); ny[k] = Math.round(normaleY(T, x, z) * 255); }
     }
     // obstacles posés au sol : boîtes tournées (bâtiments, gradins, murets, glissières), cylindres (troncs, piliers),
     // blocs (roches) ; ni les houppiers, ni les toits en hauteur, ni les marquages à plat
@@ -1262,7 +1268,7 @@
     };
     const m = MARGE_OBST + CASE * .5;
     for (const lot of decor.lots || []) for (const o of lot.objets || []) {
-      if (!o || !FORMES_DECOR.has(o.shape) || o.mat === 11 || o.groundCover || !o.s || !o.p) continue;
+      if (!o || !(FORMES_DECOR.has(o.shape) || o.collision === 'roche' || typeof o.shape === 'string' && o.shape.startsWith('bitume-lieu-')) || o.mat === 11 || o.groundCover || !o.s || !o.p) continue;
       const sx = o.s[0], sz = o.s[2]; if (Math.max(sx, sz) < .35) continue;
       if (o.p[0] < x0 - 20 || o.p[2] < z0 - 20 || o.p[0] > x0 + nx * CASE + 20 || o.p[2] > z0 + nz * CASE + 20) continue;
       const sol = solExact(T, o.p[0], o.p[2]);
@@ -1301,11 +1307,12 @@
     const i = Math.floor((x - G.x0) / CASE), j = Math.floor((z - G.z0) / CASE);
     return i < 0 || j < 0 || i >= G.nx || j >= G.nz ? -1 : j * G.nx + i;
   }
-  // Case praticable pour un habitat : hors obstacles et zones interdites, à plus de 34 m de l'axe en tout point de la
+  // Case praticable pour un habitat : hors obstacles et zones interdites, au-delà du vrai bord en tout point de la
   // case, pente et profondeur d'eau dans les bornes de l'espèce ; « strict » ajoute la densité d'arbres (choix du
   // domaine seulement : une bête traverse une clairière pour fuir).
   function praticable(G, hab, k, strict) {
-    if (k < 0 || G.drap[k] || G.d[k] < D_MIN + DEMI_CASE) return false;
+    if (k < 0 || G.drap[k] || G.d[k] < Math.max(D_MIN, G.bords[k] + GARDE_BORD + (hab.marge || 2)) + DEMI_CASE) return false;
+    if (hab.bande && G.d[k] - G.bords[k] > hab.bande - DEMI_CASE) return false;
     const n = G.ny[k] * (1 / 255);
     if (n < hab.ny[0] || n > hab.ny[1]) return false;
     const p = G.eau - G.h[k];
@@ -1361,9 +1368,11 @@
     const c = etat.c, G = etat.G;
     for (let essai = 0; essai < 700; essai++) {
       const relache = essai >= 450, hb = relache ? hab.relache : hab, serre = bande && essai < 300, b = serre ? bande : hab.d;
-      const i = Math.floor(rnd() * c.n), cote = rnd() < .5 ? -1 : 1, dist = mix(b[0], b[1], Math.pow(rnd(), 1.9)); // plutôt près : on les voit
+      const i = Math.floor(rnd() * c.n), cote = rnd() < .5 ? -1 : 1;
+      const bord = cote > 0 ? (c.largeurD ? c.largeurD[i] : c.largeur / 2 || 5) : (c.largeurG ? c.largeurG[i] : c.largeur / 2 || 5);
+      const dist = bord + mix(b[0], b[1], Math.pow(rnd(), 1.6));
       const x = c.x[i] - Math.sin(c.cap[i]) * cote * dist, z = c.z[i] + Math.cos(c.cap[i]) * cote * dist, k = cellule(G, x, z);
-      if (k < 0 || G.d[k] < b[0] || G.d[k] > b[1] + (serre ? 10 : 30) || !praticable(G, hb, k, !relache)) continue;
+      if (k < 0 || G.d[k] - G.bords[k] < b[0] || G.d[k] - G.bords[k] > b[1] || !praticable(G, hb, k, !relache)) continue;
       let bons = 0;
       for (let q = 0; q < 12; q++) { const a = q / 12 * TAU, rr = hab.rayon * (q & 1 ? .45 : .85); if (praticable(G, hb, cellule(G, x + Math.cos(a) * rr, z + Math.sin(a) * rr), false)) bons++; }
       if (bons < (hab.etroit ? 5 : 9)) continue; // les échassiers suivent une bande de rivage étroite
@@ -1382,9 +1391,9 @@
     let best = -1e9, bx = 0, bz = 0;
     for (let q = 0; q < 24; q++) {
       const a = q / 24 * TAU, ca = Math.cos(a), sa = Math.sin(a);
-      for (const r of [55, 85, 120, 165]) {
+      for (const r of [16, 24, 36, 48]) {
         const x = g.hx + ca * r, z = g.hz + sa * r, k = cellule(G, x, z);
-        if (!praticable(G, hab, k, false) || G.d[k] < d0 + 25) continue;
+        if (!praticable(G, hab, k, false) || G.d[k] < d0 + 7) continue;
         let ok = true;
         // en vol, le groupe s'étale de part et d'autre de la ligne : la garde à l'axe compte sa largeur
         for (let s = 4; s < r && ok; s += 3) { const kk = cellule(G, g.hx + ca * s, g.hz + sa * s); ok = vole ? kk >= 0 && G.d[kk] >= D_MIN + 6 + g.hr && !(G.drap[kk] & (ENCEINTE | TUNNEL | DEGAGEMENT)) : praticable(G, hab, kk, false); }
@@ -1411,6 +1420,45 @@
     return p;
   }
 
+  // Six champs au maximum : deux joueurs et leurs deux glaces. Copie numérique stable,
+  // jamais de conservation d'une caméra temporaire qui sera réutilisée par le moteur.
+  const NB_CHAMP = 16;
+  function ecrireChamp(table, offset, contexte) {
+    const cam = contexte && contexte.camera;
+    if (!cam || !cam.pos || contexte.qualite === 'off' || !Number.isFinite(cam.pos[0] + cam.pos[1] + cam.pos[2])) return false;
+    const yaw = Number(cam.yaw) || 0, pitch = Number(cam.pitch) || 0, roll = Number(cam.roll) || 0;
+    const sy = Math.sin(yaw), cy = Math.cos(yaw), sp = Math.sin(pitch), cp = Math.cos(pitch), sr = Math.sin(roll), cr = Math.cos(roll);
+    table[offset] = cam.pos[0]; table[offset + 1] = cam.pos[1]; table[offset + 2] = cam.pos[2];
+    table[offset + 3] = sy * cp; table[offset + 4] = sp; table[offset + 5] = -cy * cp;
+    table[offset + 6] = cy * cr - sy * sp * sr; table[offset + 7] = cp * sr; table[offset + 8] = sy * cr + cy * sp * sr;
+    table[offset + 9] = -cy * sr - sy * sp * cr; table[offset + 10] = cp * cr; table[offset + 11] = -sy * sr + cy * sp * cr;
+    const tv = Math.tan(clamp(Number(cam.fov) || 60, 5, 150) * Math.PI / 360), aspect = contexte.aspect > 0 ? contexte.aspect : 16 / 9;
+    table[offset + 12] = tv * aspect; table[offset + 13] = tv;
+    table[offset + 14] = contexte.portee > 0 ? Math.min(12000, contexte.portee) : contexte.qualite === 'low' ? 180 : PORTEE_VUES;
+    table[offset + 15] = contexte.hauteur > 0 ? contexte.hauteur * .5 / tv : 360 / tv;
+    return true;
+  }
+  function dansChamp(table, offset, x, y, z, rayon) {
+    const dx = x - table[offset], dy = y - table[offset + 1], dz = z - table[offset + 2];
+    const profondeur = dx * table[offset + 3] + dy * table[offset + 4] + dz * table[offset + 5];
+    if (profondeur < -rayon || profondeur > table[offset + 14] + rayon) return false;
+    const horizontal = dx * table[offset + 6] + dy * table[offset + 7] + dz * table[offset + 8], th = table[offset + 12];
+    if (Math.abs(horizontal) > profondeur * th + rayon * Math.sqrt(1 + th * th)) return false;
+    const vertical = dx * table[offset + 9] + dy * table[offset + 10] + dz * table[offset + 11], tv = table[offset + 13];
+    return Math.abs(vertical) <= profondeur * tv + rayon * Math.sqrt(1 + tv * tv);
+  }
+  function dansChamps(table, nombre, x, y, z, rayon) {
+    for (let i = 0; i < nombre; i++) if (dansChamp(table, i * NB_CHAMP, x, y, z, rayon)) return true;
+    return false;
+  }
+  function selectionnerVues(etat, vues, nombre = vues ? vues.length : 0) {
+    if (!etat) return 0;
+    const v = etat.visibilite; v.nombre = 0;
+    for (let i = 0, n = Math.min(MAX_CHAMPS, nombre); i < n; i++)
+      if (ecrireChamp(v.champs, v.nombre * NB_CHAMP, vues[i])) v.nombre++;
+    v.stats.vues = v.nombre;
+    return v.nombre;
+  }
   function creer(c, decor, options = {}) {
     const t0 = (globalThis.performance && performance.now) ? performance.now() : 0;
     const theme = BIOMES[c.theme] ? c.theme : 'foret', saison = (B.saisons && B.saisons.normaliser) ? B.saisons.normaliser(options.saison) : (options.saison || 'ete');
@@ -1421,14 +1469,17 @@
     for (const cle of BIOMES[theme]) {
       const e = ESPECES[cle]; e.cle = cle;
       if (e.saisons && !e.saisons.includes(saison)) { etat.absentes.push({ cle, raison: 'saison' }); continue; }
-      const md = MODELES[e.modele], nG = e.groupes[0] + Math.floor(rnd() * (e.groupes[1] - e.groupes[0] + 1));
+      const md = MODELES[e.modele], nG = Math.min(2, e.groupes[0] + Math.floor(rnd() * (e.groupes[1] - e.groupes[0] + 1)));
       if (AU_SOL.has(e.famille)) {
-        const hab = Object.assign({}, e.habitat); hab.relache = relacher(hab);
+        const marge = Math.max(2, (md.rig ? md.rig.longueur * .5 : md.envergure ? md.envergure * .35 : 1) * (e.echelle || 1));
+        const hab = Object.assign({}, e.habitat, { bande: BANDES_ABORDS[theme], marge,
+          d: [GARDE_BORD + marge + DEMI_CASE + 4, BANDES_ABORDS[theme] - 6], rayon: Math.min(6, e.habitat.rayon), espace: Math.min(180, e.habitat.espace) });
+        hab.relache = relacher(hab);
         let places = 0;
         for (let g = 0; g < nG; g++) {
           const dom = choisirDomaine(etat, e, cle, rnd, hab, g === 0 ? bandeDe(e, hab) : null);
           if (!dom) continue;
-          const n = e.effectif[0] + Math.floor(rnd() * (e.effectif[1] - e.effectif[0] + 1));
+          const n = Math.min(6, e.effectif[0] + Math.floor(rnd() * (e.effectif[1] - e.effectif[0] + 1)));
           const grp = { e, cle, md, famille: e.famille, hx: dom.x, hz: dom.z, hr: hab.rayon, dAxe: dom.d, hab: dom.hab, rx: dom.x, rz: dom.z, refuge: false, debut: 0, n, index: etat.groupes.length,
             espacement: (e.famille === 'echassier' || e.famille === 'coureur' ? .9 : md.rig.longueur * .75) * (e.echelle || 1) };
           const ref = chercherRefuge(etat, grp);
@@ -1491,6 +1542,10 @@
     etat.nEntites = entites;
     etat.vues = [];
     for (let v = 0; v < MAX_VUES; v++) etat.vues.push(creerVue(entites));
+    etat.visibilite = { nombre: 0, champs: new Float64Array(MAX_CHAMPS * NB_CHAMP),
+      actifs: new Uint8Array(etat.groupes.length), horloges: new Float64Array(etat.groupes.length),
+      reveil: new Float64Array(etat.groupes.length).fill(-Infinity),
+      stats: { vues: 0, groupesActifs: 0, groupesEndormis: etat.groupes.length, pasGroupes: 0, reveils: 0, posesPreparees: 0 } };
     etat.voit = new Float64Array(MAX_VOITURES * 3).fill(-1); etat.vitesseVoit = new Float64Array(MAX_VOITURES); etat.nVoit = 0;
     etat.dureeCreation = ((globalThis.performance && performance.now) ? performance.now() : 0) - t0;
     return etat;
@@ -1499,7 +1554,7 @@
     const objets = [], fx = [];
     for (let i = 0; i < BUDGETS.ultra.objets; i++) objets.push(objetVide());
     for (let i = 0; i < 4; i++) { const o = objetVide(); o.fx = true; o.alpha = 0; o.mat = 7; o.shape = 'sphere'; fx.push(o); }
-    return { objets, fx, px: new Float32Array(entites), dist: new Float32Array(entites), lod: new Uint8Array(entites), top: new Int32Array(BUDGETS.ultra.moyens + 1),
+    return { champs: new Float64Array(3 * NB_CHAMP), objets, fx, px: new Float32Array(entites), dist: new Float32Array(entites), opacites: new Float32Array(entites), lod: new Uint8Array(entites), top: new Int32Array(BUDGETS.ultra.moyens + 1),
       stats: { qualite: 'off', animaux: 0, proches: 0, moyens: 0, lointains: 0, objets: 0, horsChamp: 0, minuscules: 0, coupes: 0, triangles: 0 } };
   }
 
@@ -1509,27 +1564,27 @@
     const c = etat.c, G = etat.G;
     let places = 0;
     for (let g = 0; g < nG; g++) {
-      const n = e.effectif[0] + Math.floor(rnd() * (e.effectif[1] - e.effectif[0] + 1));
+      const n = Math.min(6, e.effectif[0] + Math.floor(rnd() * (e.effectif[1] - e.effectif[0] + 1)));
       const f = { e, cle, md, famille: e.famille, n, phase: rnd() * 1000, sens: rnd() < .5 ? -1 : 1, oiseaux: [] };
       if (e.famille === 'plane') {
-        const i = Math.floor(rnd() * c.n), cote = rnd() < .5 ? -1 : 1, d = 60 + rnd() * 160;
+        const i = Math.floor(rnd() * c.n), cote = rnd() < .5 ? -1 : 1, d = 22 + rnd() * 32;
         f.cx = c.x[i] - Math.sin(c.cap[i]) * cote * d; f.cz = c.z[i] + Math.cos(c.cap[i]) * cote * d;
-        f.ax = 60 + rnd() * 90; f.az = 60 + rnd() * 90; f.wx = TAU / (220 + rnd() * 160); f.wz = TAU / (260 + rnd() * 160);
-        f.h = e.altitude[0] + rnd() * (e.altitude[1] - e.altitude[0]); f.r = e.rayon[0] + rnd() * (e.rayon[1] - e.rayon[0]); f.v = 9 + rnd() * 3;
+        f.ax = 8 + rnd() * 14; f.az = 8 + rnd() * 14; f.wx = TAU / (220 + rnd() * 160); f.wz = TAU / (260 + rnd() * 160);
+        f.h = e.altitude[0] + rnd() * (e.altitude[1] - e.altitude[0]); f.r = 16 + rnd() * 16; f.v = 9 + rnd() * 3;
         for (let k = 0; k < n; k++) f.oiseaux.push({ r: f.r * (.75 + .5 * rnd()), th: rnd() * TAU, dh: (rnd() - .5) * 20, ech: .94 + .12 * rnd(), flap: rnd() * 100 });
       } else if (e.famille === 'cotier' || e.famille === 'marin') {
         const marin = e.famille === 'marin';
         let trouve = null;
         for (let essai = 0; essai < 900 && !trouve; essai++) {
-          const i = Math.floor(rnd() * c.n), cote = rnd() < .5 ? -1 : 1, d = marin ? 160 + rnd() * 260 : 70 + rnd() * 200;
+          const i = Math.floor(rnd() * c.n), cote = rnd() < .5 ? -1 : 1, d = marin ? 55 + rnd() * 65 : 24 + rnd() * 48;
           const x = c.x[i] - Math.sin(c.cap[i]) * cote * d, z = c.z[i] + Math.cos(c.cap[i]) * cote * d, k = cellule(G, x, z);
           if (k < 0 || G.eau - G.h[k] < (marin ? 12 : .6)) continue;
-          const A = marin ? 70 + rnd() * 50 : 45 + rnd() * (e.cle === 'pelican' ? 80 : 40), Bm = marin ? 30 + rnd() * 20 : 18 + rnd() * 16, psi = c.cap[i];
+          const A = marin ? 22 + rnd() * 16 : 14 + rnd() * 14, Bm = marin ? 12 + rnd() * 8 : 7 + rnd() * 7, psi = c.cap[i];
           let ok = true;
           for (let q = 0; q < 16 && ok; q++) {
             const a = q / 16 * TAU, px = x + A * Math.cos(a) * Math.cos(psi) - Bm * Math.sin(a) * Math.sin(psi), pz = z + A * Math.cos(a) * Math.sin(psi) + Bm * Math.sin(a) * Math.cos(psi);
             const kk = cellule(G, px, pz);
-            ok = kk >= 0 && G.d[kk] >= (marin ? 120 : 40) && (!marin || G.eau - G.h[kk] > 8);
+            ok = kk >= 0 && G.d[kk] >= (marin ? 24 : 18) && (!marin || G.eau - G.h[kk] > 8);
           }
           if (ok) trouve = { x, z, A, B: Bm, psi };
         }
@@ -1556,6 +1611,8 @@
   function remettre(etat) {
     const I = etat.initial;
     etat.cour.set(I.cour); etat.prec.set(I.cour); etat.prec2.set(I.cour); etat.cer.set(I.cer); etat.gs.set(I.gs); etat.graines.set(I.graines);
+    const v = etat.visibilite;
+    if (v) { v.actifs.fill(0); v.horloges.fill(0); v.reveil.fill(-Infinity); v.stats.groupesActifs = v.stats.pasGroupes = v.stats.reveils = v.stats.posesPreparees = 0; v.stats.groupesEndormis = etat.groupes.length; }
   }
   // Nouvelle séance sur la même scène : jeu.js garde l'état avec le décor (la création coûte 12 à 90 ms dans la page,
   // une saccade entre deux courses de la démo). Les bêtes reprennent leurs places de départ et le moment suit la
@@ -1574,6 +1631,9 @@
       lireVoitures(etat, voitures, false);
       return;
     }
+    if (!etat.visibilite.nombre && temps >= (etat.k + 1) * PAS) {
+      etat.k = Math.floor(temps / PAS + 1e-7); tick(etat, etat.k * PAS, voitures); return;
+    }
     let n = 0;
     while (temps >= (etat.k + 1) * PAS - 1e-7 && n < 60) { etat.k++; tick(etat, etat.k * PAS, voitures); n++; }
     if (n === 60) { etat.k = Math.floor(temps / PAS + 1e-7); etat.prec.set(etat.cour); etat.prec2.set(etat.cour); }
@@ -1590,11 +1650,28 @@
     etat.nVoit = nv;
   }
   function tick(etat, T, voitures) {
-    etat.prec2.set(etat.prec); etat.prec.set(etat.cour);
+    const v = etat.visibilite, S = v.stats, G = etat.G;
+    S.groupesActifs = 0;
     lireVoitures(etat, voitures, true);
-    // instant et nuit du pas passés par tampon typé (voir KS) : ni emboîtage par bête ni par groupe
-    TK[0] = T; TK[1] = nuitA(etat, T);
-    for (let g = 0; g < etat.groupes.length; g++) tickGroupe(etat, etat.groupes[g], g);
+    TK[1] = nuitA(etat, T);
+    for (let g = 0; g < etat.groupes.length; g++) {
+      const grp = etat.groupes[g], o = g * NG, x = etat.gs[o + GCX], z = etat.gs[o + GCZ], k = cellule(G, x, z);
+      const y = k >= 0 ? G.h[k] : 0, rayon = grp.hr + 3;
+      const actif = v.nombre && dansChamps(v.champs, v.nombre, x, y + 2, z, rayon);
+      const debut = grp.debut * NP, fin = (grp.debut + grp.n) * NP;
+      if (!actif) {
+        // Un seul raccord à l'endormissement ; rien à simuler, ni terrain à sonder ensuite.
+        if (v.actifs[g]) for (let j = debut; j < fin; j++) etat.prec2[j] = etat.prec[j] = etat.cour[j];
+        v.actifs[g] = 0; continue;
+      }
+      S.groupesActifs++;
+      if (!v.actifs[g]) { v.reveil[g] = T; S.reveils++; }
+      v.actifs[g] = 1;
+      for (let j = debut; j < fin; j++) { etat.prec2[j] = etat.prec[j]; etat.prec[j] = etat.cour[j]; }
+      // L'horloge locale ne rattrape jamais les secondes passées hors champ.
+      TK[0] = (v.horloges[g] += PAS); tickGroupe(etat, grp, g); S.pasGroupes++;
+    }
+    S.groupesEndormis = etat.groupes.length - S.groupesActifs;
   }
 
   const TK = new Float64Array(2);
@@ -1731,8 +1808,14 @@
       cap = angle(cap + clamp(err, -1.2 * PAS, 1.2 * PAS));
       const vH = d < 3 && alt < .4 ? 0 : clamp(d * .45, 1.5, e.vol);
       v += clamp(vH - v, -3 * PAS, 4 * PAS); if (v < 0) v = 0;
-      x += Math.cos(cap) * v * PAS; z += Math.sin(cap) * v * PAS;
-      const altV = d > 24 ? 11 : 0;
+      const nx = x + Math.cos(cap) * v * PAS, nz = z + Math.sin(cap) * v * PAS, solCible = cellule(G, nx, nz);
+      // L'envol près de la piste reste du même côté. La courbe de braquage peut
+      // déborder la ligne du refuge : elle doit elle aussi respecter le dégagement.
+      if (solCible >= 0 && !(G.drap[solCible] & (ENCEINTE | TUNNEL | DEGAGEMENT)) &&
+          G.d[solCible] >= G.bords[solCible] + GARDE_BORD + grp.hab.marge + DEMI_CASE &&
+          G.d[solCible] - G.bords[solCible] <= grp.hab.bande - DEMI_CASE) { x = nx; z = nz; }
+      else v = 0;
+      const altV = d > 12 ? 11 : 0;
       alt += clamp(altV - alt, -1.7 * PAS, 2.4 * PAS); if (alt < 0) alt = 0;
       P[b + PBAT] += PAS * 2.6;
       P[b + PBATA] = alt < 3 && altV > alt ? .95 : altV > alt + .5 ? .85 : altV < alt - .5 ? (alt < 2 ? .7 : .2) : .55;
@@ -1869,7 +1952,7 @@
   const MAX_PIECES = [0, 1, 8, 18];
   const QUALITE_DE = Object.freeze({ off: 'off', low: 'low', medium: 'medium', high: 'high', ultra: 'ultra' });
   // Réglage du menu (faune : profil, off, low…) et palier graphique courant → palier des animaux. « Profil » suit le
-  // palier : Légère (low) ne garde que quelques silhouettes lointaines.
+  // palier : Légère (low) garde quelques animaux proches sous forme simplifiée.
   function qualite(reglage, palier) {
     if (reglage === 'off') return 'off';
     if (reglage === 'profil' || !QUALITE_DE[reglage]) return QUALITE_DE[palier] || 'medium';
@@ -1924,6 +2007,29 @@
     for (let v = 0; v < etat.volants.length; v++) { const f = etat.volants[v]; if (j < f.premier + f.n) return f; }
     return null;
   }
+  // Position analytique sommaire : aucune articulation ni interrogation du maillage.
+  // Les cellules préchargées suffisent au rejet, la pose précise ne sera faite qu'après sélection.
+  function positionVolantSimple(etat, f, k, temps, ps) {
+    const o = f.oiseaux[k], tt = temps + f.phase, G = etat.G;
+    if (f.famille === 'plane') {
+      const cx = f.cx + f.ax * Math.sin(f.wx * tt), cz = f.cz + f.az * Math.sin(f.wz * tt + 1.3), a = o.th + f.sens * f.v / o.r * tt;
+      ps.x = cx + o.r * Math.cos(a); ps.z = cz + o.r * Math.sin(a);
+    } else if (f.famille === 'cotier' || f.famille === 'marin') {
+      if (f.famille === 'marin' && (tt % f.periode) / f.periode >= .24) return false;
+      const a = o.th + f.sens * f.v / Math.sqrt((f.A * f.A + f.B * f.B) / 2) * tt, ca = Math.cos(a), sa = Math.sin(a), cp = Math.cos(f.psi), sp = Math.sin(f.psi);
+      ps.x = f.cx + f.A * ca * cp - f.B * sa * sp; ps.z = f.cz + f.A * ca * sp + f.B * sa * cp;
+    } else {
+      const passe = Math.floor(tt / f.periode), dist = f.v * (tt - passe * f.periode) - f.D;
+      if (dist > f.D) return false;
+      const a = hasard(f.graine + passe * 131) * TAU, ca = Math.cos(a), sa = Math.sin(a), decal = (hasard(f.graine + passe * 131 + 7) - .5) * f.D * .6;
+      const back = -o.rang * 4.6, lat = o.cote * o.rang * 3.4;
+      ps.x = f.cx + ca * dist - sa * decal + ca * back - sa * lat; ps.z = f.cz + sa * dist + ca * decal + sa * back + ca * lat;
+    }
+    const celluleSol = cellule(G, ps.x, ps.z), sol = celluleSol >= 0 ? G.h[celluleSol] : 0;
+    ps.y = f.famille === 'marin' ? G.eau : Math.max(G.eau, sol) + f.h;
+    ps.echelle = o.ech * (f.e.echelle || 1);
+    return true;
+  }
   // Garde au niveau `cible` les `budget` bêtes les plus grandes à l'écran ; les autres descendent d'un niveau.
   function garder(V, n, cible, nouveau, budget) {
     const px = V.px, lod = V.lod, top = V.top;
@@ -1939,8 +2045,8 @@
     }
   }
   // Une image d'une vue : taille à l'écran de chaque bête (px de haut), champ de vision, budgets du palier, puis poses
-  // dans la réserve de la vue. contexte : { vue, qualite, camera: { pos, yaw, fov }, hauteur (px), aspect, arriere
-  // (rétroviseurs : garder ce qui est derrière, à moins de 160 m), nuit, pluie }. temps : horloge de course interpolée.
+  // dans la réserve de la vue. vuesSecondaires contient les champs exacts des glaces réellement actives.
+  // Le booléen historique arriere ne réactive plus la moitié arrière du monde.
   function dessiner(etat, temps, contexte, sortie) {
     if (!etat || !contexte || !sortie) return 0;
     const V = etat.vues[(contexte.vue | 0) % MAX_VUES], S = V.stats, q = QUALITE_DE[contexte.qualite] || 'off', bud = BUDGETS[q];
@@ -1949,11 +2055,14 @@
     const cam = contexte.camera, ex = cam.pos[0], ey = cam.pos[1], ez = cam.pos[2];
     const fov = clamp(Number.isFinite(cam.fov) ? cam.fov : 60, 5, 150) * Math.PI / 180, tanV = Math.tan(fov / 2);
     const hpx = contexte.hauteur > 0 ? contexte.hauteur : 720, aspect = contexte.aspect > 0 ? contexte.aspect : 16 / 9, focal = hpx * .5 / tanV;
-    const yaw = cam.yaw || 0, fx = Math.sin(yaw), fz = -Math.cos(yaw), cosDemi = Math.cos(Math.min(Math.PI * .97, Math.atan(tanV * aspect) + .12));
-    const arriere = !!contexte.arriere, nuit = contexte.nuit || 0, pluie = contexte.pluie || 0, loinSeuls = bud.lointainsSeuls;
+    let nombreChamps = ecrireChamp(V.champs, 0, contexte) ? 1 : 0;
+    const secondaires = contexte.vuesSecondaires;
+    if (secondaires) for (let i = 0; i < Math.min(2, secondaires.length); i++)
+      if (ecrireChamp(V.champs, nombreChamps * NB_CHAMP, secondaires[i])) nombreChamps++;
+    const nuit = contexte.nuit || 0, pluie = contexte.pluie || 0, loinSeuls = bud.lointainsSeuls;
     const alpha = paireEtats(etat, temps), A = PAIRE[0], Bc = PAIRE[1];
     IMG[0] = alpha; IMG[1] = temps; IMG[2] = nuit; IMG[3] = ex; IMG[4] = ez; IMG[5] = pluie;
-    const T = etat.G.T, nA = etat.nAnimaux, N = etat.nEntites, px = V.px, dist = V.dist, lod = V.lod;
+    const T = etat.G.T, nA = etat.nAnimaux, N = etat.nEntites, px = V.px, dist = V.dist, opacites = V.opacites, lod = V.lod;
     for (let i = 0; i < N; i++) {
       lod[i] = 0;
       let x, y, z, taille;
@@ -1961,24 +2070,33 @@
         const b = i * NP;
         if (Bc[b + PENF] > .97 && A[b + PENF] > .97) continue; // au terrier
         const an = etat.animaux[i], grp = etat.groupes[an.g];
-        if (loinSeuls && grp.dAxe < 150) continue;
+        // En Légère aussi, les proches sont prioritaires.
         x = A[b + PX] + (Bc[b + PX] - A[b + PX]) * alpha; z = A[b + PZ] + (Bc[b + PZ] - A[b + PZ]) * alpha;
         const alt = A[b + PALT] + (Bc[b + PALT] - A[b + PALT]) * alpha;
-        y = solExact(T, x, z) + alt;
+        const celluleSol = cellule(etat.G, x, z); y = (celluleSol >= 0 ? etat.G.h[celluleSol] : 0) + alt;
         taille = (grp.md.rig ? grp.md.rig.hauteur : alt > .3 ? grp.md.envergure * .5 : grp.md.hauteur) * an.echelle;
       } else {
         const f = volantDe(etat, i - nA);
-        if (!f || !volantVisible(f) || !poseVolantT(etat, f, i - nA - f.premier, PS)) continue;
+        if (!f || !volantVisible(f) || !positionVolantSimple(etat, f, i - nA - f.premier, temps, PS)) continue;
         x = PS.x; y = PS.y; z = PS.z; taille = (f.famille === 'marin' ? f.md.longueur * .3 : f.md.envergure * .5) * PS.echelle;
       }
-      const dx = x - ex, dy = y - ey, dz = z - ez, dh = Math.sqrt(dx * dx + dz * dz) + 1e-6, d = Math.sqrt(dh * dh + dy * dy);
-      const p = taille * focal / d;
+      let p = 0, d = Infinity, principal = false, opacite = 0;
+      const rayon = taille * 1.5 + (i < nA ? 1 : 12);
+      for (let v = 0; v < nombreChamps; v++) {
+        const o = v * NB_CHAMP;
+        if (!dansChamp(V.champs, o, x, y + taille * .5, z, rayon)) continue;
+        const dx = x - V.champs[o], dy = y - V.champs[o + 1], dz = z - V.champs[o + 2], dv = Math.sqrt(dx * dx + dy * dy + dz * dz) + 1e-6;
+        // Fondu sur les 20 % finaux de chaque portée, avant le rejet spatial. L'union
+        // garde l'opacité de la vue la plus utile, notamment lorsqu'une glace voit encore
+        // l'animal proche. Aucun historique ni objet temporaire par animal et par image.
+        const portee = V.champs[o + 14], fondu = clamp((portee - dv) / (portee * .2), 0, 1);
+        opacite = Math.max(opacite, fondu * fondu * (3 - 2 * fondu));
+        p = Math.max(p, taille * V.champs[o + 15] / dv); d = Math.min(d, dv); if (v === 0) principal = true;
+      }
+      if (!Number.isFinite(d) || opacite <= .004) { S.horsChamp++; continue; }
       if (p < bud.seuilMin) { S.minuscules++; continue; }
-      let derriere = false;
-      if (dh > 6 && (dx * fx + dz * fz) / dh < cosDemi - Math.min(.5, taille * 1.5 / dh)) { if (!arriere || d > 160) { S.horsChamp++; continue; } derriere = true; }
-      if (loinSeuls && d < 120) continue;
-      px[i] = p; dist[i] = d;
-      lod[i] = loinSeuls ? 1 : p >= bud.seuilProche && !derriere ? 3 : p >= bud.seuilMoyen ? 2 : 1;
+      px[i] = p; dist[i] = d; opacites[i] = opacite;
+      lod[i] = loinSeuls ? 1 : p >= bud.seuilProche && principal ? 3 : p >= bud.seuilMoyen ? 2 : 1;
     }
     if (loinSeuls) garder(V, N, 1, 0, bud.individus);
     else { garder(V, N, 3, 2, bud.proches); garder(V, N, 2, 1, bud.moyens); garder(V, N, 1, 0, bud.individus); }
@@ -1990,6 +2108,7 @@
       while (L > 1 && k + MAX_PIECES[L] > maxObj) L--;
       if (k + 1 > maxObj) { S.coupes++; continue; }
       let n = 0;
+      const opacite = opacites[i];
       if (i < nA) {
         const an = etat.animaux[i], grp = etat.groupes[an.g];
         poseSol(etat, A, Bc, i, PS);
@@ -2000,10 +2119,19 @@
         if (f.famille === 'marin') {
           const fxo = !loinSeuls && kfx < V.fx.length ? V.fx[kfx] : null; // Légère : la silhouette seule, sans souffle
           n = poserBaleine(PS, f.e, f.md, L, r, k, f.e.couleurs[0], fxo);
+          if (fxo) fxo.alpha *= opacite;
           if (fxo && fxo.alpha > .003) { sortie.push(fxo); kfx++; }
         } else n = poserOiseau(PS, f.e, f.md, L, r, k, f.e.couleurs[0]);
       }
-      for (let j = k; j < k + n; j++) { sortie.push(r[j]); S.triangles += r[j].forme.triangles; }
+      etat.visibilite.stats.posesPreparees++;
+      for (let j = k; j < k + n; j++) {
+        const o = r[j];
+        // FERRO ignore alpha dans la passe opaque. Pendant le fondu seulement, la passe
+        // FX reçoit la vraie silhouette (sans adoucissement de volume/fumée) ; au retour
+        // proche, restaurer aussi fx pour ne pas laisser un objet du pool translucide.
+        o.alpha = opacite; o.fx = opacite < 1; o.fxPriority = o.fx ? 'hazard' : undefined;
+        sortie.push(o); S.triangles += o.forme.triangles;
+      }
       k += n; S.animaux++;
       if (L === 3) S.proches++; else if (L === 2) S.moyens++; else S.lointains++;
     }
@@ -2056,10 +2184,10 @@
     return { theme: etat.theme, saison: etat.saison, especes: etat.especes.slice(), absentes: etat.absentes.slice(), groupes: etat.groupes.length,
       animaux: etat.nAnimaux, volants: etat.nEntites - etat.nAnimaux, refuges: etat.groupes.filter(g => g.refuge).length,
       etats: Object.fromEntries(NOMS_ETATS.map((n, k) => [n, etats[k]])), creationMs: etat.dureeCreation, vue: Object.assign({}, etat.vues[vue % MAX_VUES].stats),
-      formes: FORMES.size, trianglesFormes, chargementMs: dureeChargement, cases: etat.G.N };
+      activite: Object.assign({}, etat.visibilite.stats), formes: FORMES.size, trianglesFormes, chargementMs: dureeChargement, cases: etat.G.N };
   }
 
   B.animaux = { PAS, MAX_VUES, D_MIN, QUALITES, BUDGETS, ESPECES, BIOMES, MODELES, FORMES, NOMS_ETATS, PIECES_MAX: MAX_PIECES,
-    creer, repartir, pas, dessiner, qualite, stats, planche, solExact, praticable, cellule, nuitA, poseVolant, poseAnimal,
+    BANDES_ABORDS, GARDE_BORD, PORTEE_VUES, MAX_CHAMPS, selectionnerVues, creer, repartir, pas, dessiner, qualite, stats, planche, solExact, praticable, cellule, nuitA, poseVolant, poseAnimal,
     get trianglesFormes() { return trianglesFormes; }, dureeChargement };
 })(globalThis.BITUME = globalThis.BITUME || {});

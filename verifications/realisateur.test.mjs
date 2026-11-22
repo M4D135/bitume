@@ -103,14 +103,14 @@ verifier('même course et même graine : mêmes plans ; autre graine : autre fil
   assert.notEqual(resume(filmer(4242, 8, 2)), resume(film));
 });
 
-verifier('un vrai dépassement avec geste démo appelle le gros plan du bon côté, sans recoupes', () => {
+verifier('un geste réel reste animé sans détourner la démo vers un gros plan pilote', () => {
   const c = B.circuit.creer(29, { theme: 'cote', longueur: 3600 });
   const co = B.course.creer(c, { rivaux: 1, tours: 3, graine: 1 });
   co.phase = 'course'; co.horloge = 10;
   const real = R.creer(7), E = B.expressionsPilote.creer(co.voitures.length, 1);
   R.replier(real, co, 'tele', 0);
   const poses = co.voitures.map((v, id) => ({ x: 0, y: 0, z: id * 3, cap: 0 }));
-  let planExpression = null;
+  const planRoute = real.plan;
   for (let k = 0; k <= 105; k++) {
     const t = k / 60; co.horloge = 10 + t;
     for (let id = 0; id < co.voitures.length; id++) {
@@ -119,14 +119,26 @@ verifier('un vrai dépassement avec geste démo appelle le gros plan du bon côt
     }
     B.expressionsPilote.actualiser(E, co, poses, co.horloge, true);
     const p = R.tenir(real, co, {}, E);
-    if (p.motif === 'expression') {
-      assert.equal(p.vue, 'pilote'); assert.equal(p.sujet, 0); assert.equal(p.cote, 1);
-      if (planExpression) assert.strictEqual(p, planExpression); else planExpression = p;
-    }
+    assert.notEqual(p.vue, 'pilote'); assert.notEqual(p.motif, 'expression');
+    assert.strictEqual(p, planRoute, 'le geste interrompt le plan de route');
   }
-  assert(planExpression, 'le geste auto doit être cadré pendant sa durée');
   assert.equal(E.pilotes[0].gestesDemo, 1);
   real.sprint = true;
-  assert.strictEqual(R.tenir(real, co, {}, E), planExpression, 'le sprint garde la priorité');
+  assert.strictEqual(R.tenir(real, co, {}, E), planRoute, 'le sprint garde la priorité');
+});
+verifier('aucun catalogue ni repli ne propose un sujet autonome hors du circuit', () => {
+  const interdits = ['flore', 'faune', 'pilote', 'roue', 'orbite', 'travelling'];
+  for (const vue of interdits) {
+    assert(!R.VUES.includes(vue)); assert(!R.VUES_CINEMA.includes(vue));
+    const c = B.circuit.creer(11, {theme:'foret',longueur:4200}), co = B.course.creer(c,{rivaux:1,tours:2});
+    assert.equal(R.replier(R.creer(1),co,vue,0).vue,'tele');
+  }
+});
+verifier('un parcours ouvert déclenche le sprint avant son unique arrivée', () => {
+  const c = B.circuit.creer(11, {theme:'foret',longueur:4200}), co = B.course.creer(c,{rivaux:1,tours:3});
+  c.ouvert = true; co.phase='course'; co.horloge=50;
+  const r=R.creer(1); R.replier(r,co,'tele',co.classement[0]);
+  co.voitures[co.classement[0]].progression=c.longueur-200;
+  R.tenir(r,co); assert(r.sprint,'le sprint attend encore un deuxième tour inexistant');
 });
 console.log(`${compte} vérifications réussies`);

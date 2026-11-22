@@ -116,15 +116,15 @@ verifier('installer enregistre les dix-huit arbres et le tronc lointain, et refu
 // empreintes des coordonnées arrondies au millionième, pour qu'un écart d'un bit d'une plateforme à l'autre ne
 // compte pas. La bascule ne doit rien changer à ce qu'on voit de près : ces neuf formes ne bougent pas.
 const PROCHES_HISTORIQUES = {
-  'feuillu-low': [486, 'eb6b30437e989dde7db262fb73d2d462f9dd6be50dd39ecb0b97d01cf9ecefde'],
-  'feuillu-medium': [1074, '122ccddce364805913ccd8504b24191c2c3b3d31e2e24b38f4330a6813493a83'],
-  'feuillu-high': [2022, '584fb66c465b95bf4845d29055cc9d50f3688a2842340a7f4eeb40cd8ed631f5'],
-  'pin-low': [538, 'abc69feca96e4d7c11a8da5ee485c189afa375385d9761a1e79fe3bb46c6f4b2'],
-  'pin-medium': [1182, '63a9a8f4889113b94cb5e88b1a86b4c797889b2ced082ea17d66115a426cab85'],
-  'pin-high': [2218, '370a33f6ac8b12d7e8d317d4799331f3587709072e4a3d40c3a1c51c359570a6'],
-  'conifere-low': [750, 'cca2b787fffaf17c5df5be993bc83dbcd2b89d992dc7bc69395816fefca4f8ab'],
-  'conifere-medium': [1854, '13b07179148a2162032a03ed5f506cd8bba3b89783ec35afea959d7f468b7cd1'],
-  'conifere-high': [3702, '4d590962b36cf50f0c1ea9f92e40450cc7143d4af8573acb8ac4f1f025ba92b6'],
+  'feuillu-low': [534, 'a622314d103e3a82443249a8043f545659bd47c5570f7ccba333df45308abab2'],
+  'feuillu-medium': [1146, 'd07b792b3c6e860d95a3c1151242eec83e01ab018dc954ca4a4ffd2968260c6d'],
+  'feuillu-high': [2118, '39a994cf73892c08889b41fc46340ac17afaa1a8b0d263e23ea6f21d0b740cc8'],
+  'pin-low': [698, 'bb7617ad7cb498b825ea3d9634e32541104668338076b7fd108bcd38f4089ccb'],
+  'pin-medium': [1454, 'bc6e2f5fbf04d3b0633d482aba6b5cca443b01a066b6b0deb337c73b3735d338'],
+  'pin-high': [2634, 'db0c8dc262d9df4edc02fcb0bce2f474f96d0fcf5b30c390e35297c0d1ff808e'],
+  'conifere-low': [1238, 'efe857c5f8ad17b950b6f71ebc8968ffd7940467eb75232592807e643603c630'],
+  'conifere-medium': [2766, 'f7e5773ecddb00569b5a792626c54ed684b1292d809242b3b9027b247f4ac40b'],
+  'conifere-high': [5158, 'c343595ee8b3e78844143cd632b49a6b8dea36ce54921ff77b83385bad51323e'],
 };
 const arrondi = tri => tri.map(t => t.map(p => p.map(v => Math.round(v * 1e6) / 1e6)));
 verifier('formes proches figées (triangles et empreintes arrondies)', () => {
@@ -152,24 +152,13 @@ verifier('silhouette lointaine tenue dans la boîte de la forme proche', () => {
     assert.equal(l.max[1], p.max[1], `${e} ${q} cime`);
   }
 });
-verifier('silhouette lointaine : amas et plateaux de la forme proche repris à l\'identique', () => {
-  for (const e of A.ESSENCES) for (const q of ['low', 'medium', 'high']) {
-    const proche = new Set(A.forme(e, false, q).map(t => JSON.stringify(t))), o = A.organes(e, q);
-    const communs = A.forme(e, true, q).filter(t => proche.has(JSON.stringify(t))).length;
-    // Feuillu et conifère : douze faces extérieures par amas (six en haut, six en bas). Pin : plateaux à huit
-    // rayons sur leurs deux faces, un par branche et un au sommet.
-    const attendu = e === 'pin' ? (o.branches + 1) * 2 * A.SILHOUETTE.rayonsPlateau : o.amas * 12;
-    assert.ok(communs >= attendu, `${e} ${q} : ${communs} faces reprises sur ${attendu} attendues`);
-  }
-});
-verifier('silhouette lointaine : seules les faces des plateaux du pin sont émises des deux côtés', () => {
+verifier('silhouette lointaine : volume organique fermé sans faces doubles redondantes', () => {
   const cle = (a, b, c) => JSON.stringify([a, b, c]);
   for (const e of A.ESSENCES) for (const q of ['low', 'medium', 'high']) {
     const loin = A.forme(e, true, q), faces = new Set(loin.map(t => cle(t[0], t[1], t[2])));
-    // Une face double est la même face dans les deux sens (a, c, b) : un amas fermé n'en a pas besoin.
+    // Couronnes volumétriques fermées (feuillu, pin parasol bombé, conifère) : aucune face double redondante.
     const doubles = loin.filter(t => faces.has(cle(t[0], t[2], t[1]))).length / 2;
-    const attendu = e === 'pin' ? (A.organes(e, q).branches + 1) * A.SILHOUETTE.rayonsPlateau : 0;
-    assert.equal(doubles, attendu, `${e} ${q} : faces doubles`);
+    assert.equal(doubles, 0, `${e} ${q} : faces doubles`);
   }
 });
 verifier('silhouette lointaine au moins 2,5 fois plus légère que la forme proche en Moyenne et en Fine', () => {
@@ -179,10 +168,8 @@ verifier('silhouette lointaine au moins 2,5 fois plus légère que la forme proc
   }
   assert.ok(Object.isFrozen(A.SILHOUETTE) && Object.isFrozen(A.SILHOUETTE.fut));
 });
-// Silhouette figée : les mesures et les captures du rapport fluidite-2026-11-18/arbres valent pour ces formes. Des
-// branches à trois faces s'allument en blanc à la bascule, des plateaux à six rayons changent de bord : les deux
-// tests précédents lisent SILHOUETTE et ne le verraient pas. Toute retouche voulue refait les captures.
-const LOINTAINES_MESUREES = { feuillu: [144, 212, 296], pin: [286, 454, 670], conifere: [218, 378, 582] };
+// Silhouette figée pour les modèles organiques 0.2.88 : quatre faces par branche, huit rayons par couronne de pin.
+const LOINTAINES_MESUREES = { feuillu: [144, 212, 296], pin: [286, 454, 670], conifere: [410, 738, 1158] };
 verifier('silhouette lointaine figée : quatre faces par branche, huit rayons par plateau, triangles mesurés', () => {
   assert.deepEqual(JSON.parse(JSON.stringify(A.SILHOUETTE)), { fut: { feuillu: 2, pin: 4, conifere: 2 }, facesBranche: 4, rayonsPlateau: 8 });
   for (const e of A.ESSENCES) ['low', 'medium', 'high'].forEach((q, i) =>

@@ -121,7 +121,10 @@
     const rocheShape = B.lieux ? 'bitume-lieu-rocher-alpin' : 'octa';
     const galetShape = B.lieux ? 'bitume-lieu-galet-a' : 'octa';
     const isLow = qualite === 'low';
-    const compte = { theme: c.theme, objets: 0 };
+    const compte = { theme: c.theme, objets: 0, marqueurs: [] };
+    function marquer(nom, x, y, z, rayon = 105, hauteur = 42) {
+      compte.marqueurs.push({ nom, x, y, z, rayon, hauteur });
+    }
 
     function push(objs, loin, x, z) {
       ajouter(objs, loin, x, z);
@@ -156,6 +159,7 @@
         }
       }
       push(objs, loin, f.x, f.z);
+      marquer('Grand Pont du Fjord-d’Argent', f.x, f.y + 12, f.z, 115, 48);
       const siteC = trouverSite(c, outils, c.longueur * 0.65, 55, 110);
       const casc = [
         { shape: 'cylinder', p: [siteC.x, siteC.y + 24, siteC.z], s: [7, 52, 3], r: [.15, -siteC.cap, 0], mat: 12, color: [.80, .92, .98], emissive: .2 },
@@ -180,6 +184,7 @@
         objs.push(m); loin.push(m);
       }
       push(objs, loin, site.x, site.z);
+      marquer('Citadelle des Carpates', site.x, site.y + 18, site.z, 110, 46);
     } else if (c.theme === 'ecosse') {
       // Château des Highlands en pierre grise + cercle de menhirs organiques
       const site = trouverSite(c, outils, c.longueur * 0.38, 45, 90);
@@ -196,6 +201,7 @@
       }
       push(objs, loin, site.x, site.z);
       push(menhirs, menhirs.slice(0, 4), siteM.x, siteM.z);
+      marquer('Château des Highlands', site.x, site.y + 14, site.z, 105, 42);
     } else if (c.theme === 'sierra') {
       // Grande Arche de Grès Naturelle au-dessus d'une droite + mesas organiques
       const f = trouverLigneDroite(c, c.longueur * 0.45);
@@ -210,6 +216,7 @@
         objs.push(bloc); if (i % 2 === 0) loin.push(bloc);
       }
       push(objs, loin, f.x, f.z);
+      marquer('Grande Arche de la Sierra', f.x, f.y + 12, f.z, 105, 42);
     } else if (c.theme === 'corail') {
       // Grand Phare Blanc & Rouge sur îlot du lagon + voiliers blancs
       const site = trouverSite(c, outils, c.longueur * 0.35, 55, 110);
@@ -223,6 +230,7 @@
       objs.push(ilot, f1, f2, f3, lanterne, coupole);
       loin.push(ilot, f1, f2, f3, lanterne);
       push(objs, loin, site.x, site.z);
+      marquer('Phare de la Baie-du-Corail', site.x, site.y + 18, site.z, 110, 44);
     } else if (c.theme === 'andes') {
       // Observatoire Astronomique d'Altitude (3 coupoles blanches brillantes)
       const site = trouverSite(c, outils, c.longueur * 0.50, 50, 105);
@@ -235,6 +243,7 @@
         objs.push(socle, dome, fente); loin.push(socle, dome);
       }
       push(objs, loin, site.x, site.z);
+      marquer('Observatoire des Andes', site.x, site.y + 12, site.z, 110, 46);
     }
 
     return compte;

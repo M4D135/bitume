@@ -61,7 +61,7 @@ try {
     console.log('ok 6 destinations originales (fjord, carpates, ecosse, sierra, corail, andes)');
   }
 
-  // 3. Aériens (hélicoptère + drones) : low=0, medium=1 drone, high=2 drones, toutes formes valides
+  // 3. Aériens (hélicoptère + drones) : actifs dès low (hélico + 1 drone) et complets en high (hélico + 2 drones)
   {
     const c = B.circuit.creer(11, { theme: 'plaine', longueur: 3600 });
     const ae = B.aeriens.creer(c, { qualite: 'high' });
@@ -72,12 +72,12 @@ try {
     const outLow = [], outHigh = [];
     const ctx = { qualite: 'low', cible: [c.x[0], c.y[0], c.z[0]], cibleCap: 0, cibleVitesse: 50, sCible: 0, nuit: 0, sol: () => 0 };
     B.aeriens.dessiner(ae, 5, ctx, outLow);
-    assert.equal(outLow.length, 0, 'low coupe les aériens');
+    assert.ok(outLow.length >= 14, `low attend hélico + 1 drone, reçu ${outLow.length}`);
     ctx.qualite = 'high';
     B.aeriens.dessiner(ae, 5, ctx, outHigh);
-    assert.ok(outHigh.length >= 14, `high attend hélico + drones, reçu ${outHigh.length}`);
+    assert.ok(outHigh.length >= 20, `high attend hélico + 2 drones, reçu ${outHigh.length}`);
     assert.ok(outHigh.every(o => typeof o.emissive === 'number' && o.p.every(Number.isFinite)));
-    console.log(`ok aériens (${Object.keys(B.aeriens.FORMES).length} formes, ${outHigh.length} objets en high, 0 en low)`);
+    console.log(`ok aériens (${Object.keys(B.aeriens.FORMES).length} formes, ${outHigh.length} objets en high, ${outLow.length} en low)`);
   }
 
   // 4. Signalisation course (chevrons animés + bandeaux LED)

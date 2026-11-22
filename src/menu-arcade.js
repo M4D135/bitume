@@ -212,8 +212,8 @@
       zone.dataset.etape = String(etape);
       $('p-etape').textContent = '0' + (etape + 1) + ' / 04';
       $('b-precedent').textContent = etape ? 'Précédent' : 'Menu';
-      $('b-suivant').hidden = etape === 3; $('b-depart').hidden = etape !== 3;
-      $('b-suivant').textContent = ['Conditions →', 'Pilotes →', 'Prêt à partir →'][etape] || 'Continuer';
+      $('b-suivant').hidden = etape === 3; $('b-depart').hidden = false;
+      $('b-suivant').textContent = ['Conditions →', 'Pilotes →', 'Récapitulatif →'][etape] || 'Continuer';
       if (etape !== 0) apercu.suspendre();
       if (options.actualiser) options.actualiser(etape);
     }
@@ -260,15 +260,22 @@
       const liste = Array.from($('circuits').querySelectorAll('[role="radio"]')).filter(disponible), i = liste.indexOf(carte);
       if (i < 0) return;
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
-        e.preventDefault(); const sens = e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 1;
-        const j = e.key === 'Home' ? 0 : e.key === 'End' ? liste.length - 1 : (i + sens + liste.length) % liste.length;
+        e.preventDefault();
+        const cols = Number.parseInt($('circuits').dataset.menuCols || '1', 10) || 1;
+        let j = i;
+        if (e.key === 'Home') j = 0;
+        else if (e.key === 'End') j = liste.length - 1;
+        else if (e.key === 'ArrowLeft') j = (i - 1 + liste.length) % liste.length;
+        else if (e.key === 'ArrowRight') j = (i + 1) % liste.length;
+        else if (e.key === 'ArrowUp') j = (i - cols + liste.length) % liste.length;
+        else if (e.key === 'ArrowDown') j = (i + cols) % liste.length;
         liste[j].click(); liste[j].focus({ preventScroll: true }); liste[j].scrollIntoView({ block: 'nearest', behavior: 'auto' });
-      } else if (e.key === 'Enter' && carte.getAttribute('aria-checked') === 'true') { e.preventDefault(); if (!e.repeat) avancer(1); }
+      } else if (e.key === 'Enter' && carte.getAttribute('aria-checked') === 'true') { e.preventDefault(); if (!e.repeat) { const dep = $('b-depart'); if (dep && !dep.disabled) dep.click(); else avancer(1); } }
     });
     const api = Object.freeze({
       ouvrir, actualiser,
       retour() { if (detruit || !etape) return false; avancer(-1); return true; },
-      valider(el) { if (!detruit && etape === 0 && disponible(el) && zone.contains(el) && el.closest('#circuits') && el.getAttribute('aria-checked') === 'true') { avancer(1); return true; } return false; },
+      valider(el) { if (!detruit && etape === 0 && disponible(el) && zone.contains(el) && el.closest('#circuits') && el.getAttribute('aria-checked') === 'true') { const dep = $('b-depart'); if (dep && !dep.disabled) { dep.click(); return true; } avancer(1); return true; } return false; },
       trace(c, fiche, catalogue, index, total) {
         if (detruit) return;
         apercu.choisir(c); $('p-trace-3d').setAttribute('aria-label', 'Tracé en trois dimensions de ' + catalogue.nom + ', avec son relief réel');

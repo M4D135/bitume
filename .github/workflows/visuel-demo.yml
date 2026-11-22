@@ -1,9 +1,14 @@
-name: Images demos et passages
+name: Images demos des circuits
 
 on:
+  push:
+    branches: ['codex/**']
   pull_request:
     paths:
       - 'src/cinema.js'
+      - 'src/animaux.js'
+      - 'src/faune.js'
+      - 'src/lieux.js'
       - 'src/realisateur.js'
       - 'src/expressions-pilote.js'
       - 'src/main.js'
@@ -15,6 +20,8 @@ on:
       - 'src/visiere-optique.js'
       - 'src/cockpit-matieres.js'
       - 'tools/captures-demo.mjs'
+      - 'tools/qualification/faune-demos.mjs'
+      - 'verifications/captures-demo.test.mjs'
       - 'tools/controle-visuel.mjs'
       - '.github/workflows/visuel-demo.yml'
   workflow_dispatch:
@@ -28,6 +35,7 @@ concurrency:
 
 jobs:
   images:
+    if: github.event_name != 'push' || contains(github.event.head_commit.message, '[capture-faune-demos]')
     runs-on: ubuntu-latest
     timeout-minutes: 35
     strategy:
@@ -35,25 +43,33 @@ jobs:
       max-parallel: 3
       matrix:
         include:
-          - groupe: nature
-            cas: faune-ete,faune-hiver
+          - groupe: val-brule
+            cas: route-val-brule,trace-val-brule,lieu-val-brule
+          - groupe: port-sable
+            cas: route-port-sable,trace-port-sable,lieu-port-sable
+          - groupe: haut-col
+            cas: route-haut-col,trace-haut-col,lieu-haut-col
+          - groupe: lande-noire
+            cas: route-lande-noire,trace-lande-noire,lieu-lande-noire
+          - groupe: roche-fauve
+            cas: route-roche-fauve,trace-roche-fauve,lieu-roche-fauve
+          - groupe: brume-de-jade
+            cas: route-brume-de-jade,trace-brume-de-jade,lieu-brume-de-jade
+          - groupe: cap-sequoia
+            cas: route-cap-sequoia,trace-cap-sequoia,lieu-cap-sequoia
+          - groupe: baikal
+            cas: route-baikal,trace-baikal,lieu-baikal
+          - groupe: route-des-cimes
+            cas: route-route-des-cimes,trace-route-des-cimes,lieu-route-des-cimes
           - groupe: securite
             cas: tele-montagne,helico-montagne
-          - groupe: volant
-            cas: volant-gauche,volant-droite
-          - groupe: gestes
-            cas: geste-majeur,geste-poing,geste-salut-realisateur
-          - groupe: pluie-cockpit
-            cas: pluie-cockpit
-          - groupe: pluie-poursuite
-            cas: pluie-poursuite-sillage
-          - groupe: pluie-aerien
-            cas: pluie-aerien
+          - groupe: meteo
+            cas: pluie-cockpit,pluie-poursuite-sillage,pluie-aerien
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-          fetch-depth: 0
+          fetch-depth: 1
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -61,18 +77,17 @@ jobs:
         shell: bash
         run: |
           mkdir -p qualification
-          git show f41614e1f3887a79ebbd633df3fde754534f202e:dist/bitume.html > qualification/reference-0262.html
           python3 construire.py > qualification/build.log
           git diff --exit-code -- VERSION.json SIZE.json dist/bitume.html
           git rev-parse HEAD > qualification/COMMIT.txt
           git rev-parse 'HEAD^{tree}' > qualification/TREE.txt
-          sha256sum dist/bitume.html qualification/reference-0262.html > qualification/SHA256SUMS.txt
+          sha256sum dist/bitume.html > qualification/SHA256SUMS.txt
           google-chrome --version > qualification/ENVIRONNEMENT.txt
           node --version >> qualification/ENVIRONNEMENT.txt
       - name: Capturer le montage reel en raster logiciel
         shell: bash
         run: |
-          node tools/captures-demo.mjs --url "file://$GITHUB_WORKSPACE/dist/bitume.html" --avant "file://$GITHUB_WORKSPACE/qualification/reference-0262.html" --sortie qualification/visuel-demo --chrome /usr/bin/google-chrome --cas "${{ matrix.cas }}"
+          node tools/qualification/faune-demos.mjs --url "file://$GITHUB_WORKSPACE/dist/bitume.html" --sortie qualification/visuel-demo --chrome /usr/bin/google-chrome --cas "${{ matrix.cas }}"
       - name: Conserver images et diagnostics meme en cas de refus
         if: always()
         uses: actions/upload-artifact@v4
