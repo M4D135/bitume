@@ -8,7 +8,7 @@ import vm from 'node:vm';
 import { chargerPhysX } from './helpers/physx-runtime.mjs';
 const require = createRequire(import.meta.url);
 for (const f of ['circuit', 'route-des-cimes', 'conduite', 'degats', 'contacts', 'obstacles', 'course', 'solides-physx', 'physique',
-  'carene', 'humain-donnees', 'humain-corps', 'main', 'voiture', 'traces', 'botanique', 'ecologie', 'saisons', 'vegetation', 'bords', 'decor', 'ambiance', 'meteo']) require('../src/' + f + '.js');
+  'carene', 'humain-donnees', 'humain-corps', 'main', 'voiture', 'traces', 'botanique', 'ecologie', 'saisons', 'vegetation', 'bords', 'decor', 'ambiance', 'meteo', 'son']) require('../src/' + f + '.js');
 const B = globalThis.BITUME, X = globalThis.FPhysX = await chargerPhysX();
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8'), rapports = [];
 const catalogue = vm.runInNewContext(source.match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1]);
