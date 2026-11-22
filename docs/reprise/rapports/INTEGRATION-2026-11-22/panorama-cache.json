@@ -1,0 +1,117 @@
+{
+  "essais": [
+    {
+      "mode": "vierge",
+      "ecran": "course",
+      "constructions": 1,
+      "nappes": 396,
+      "empreinte": 1531368437,
+      "panorama": {
+        "source": "calcul",
+        "lectureMs": 28.09999999962747,
+        "constructionMs": 189.60000000149012,
+        "octets": 2109188,
+        "ecriture": true
+      },
+      "decorMs": 4727.3,
+      "totalMs": 13024.9
+    },
+    {
+      "mode": "reouverture",
+      "ecran": "course",
+      "constructions": 0,
+      "nappes": 396,
+      "empreinte": 1531368437,
+      "panorama": {
+        "source": "indexeddb",
+        "lectureMs": 46,
+        "constructionMs": null,
+        "octets": 2109188,
+        "ecriture": false
+      },
+      "decorMs": 7140.3,
+      "totalMs": 17667.4
+    },
+    {
+      "mode": "corrompu",
+      "ecran": "course",
+      "constructions": 1,
+      "nappes": 396,
+      "empreinte": 1531368437,
+      "panorama": {
+        "source": "calcul",
+        "lectureMs": 24.5,
+        "constructionMs": 344.59999999962747,
+        "octets": 2109188,
+        "ecriture": true
+      },
+      "decorMs": 7818.5,
+      "totalMs": 15725.3
+    },
+    {
+      "mode": "refus",
+      "ecran": "course",
+      "constructions": 1,
+      "nappes": 396,
+      "empreinte": 1531368437,
+      "panorama": null,
+      "decorMs": 8127,
+      "totalMs": 16716.9
+    },
+    {
+      "mode": "lecture-suspendue",
+      "ecran": "course",
+      "constructions": 1,
+      "nappes": 396,
+      "empreinte": 1531368437,
+      "panorama": {
+        "source": "calcul",
+        "lectureMs": null,
+        "constructionMs": 192,
+        "octets": 0,
+        "ecriture": false
+      },
+      "decorMs": 6584.8,
+      "totalMs": 12993.8
+    }
+  ],
+  "build": {
+    "sha256": "908493dbb042870989d906bc2dc4c8c65eae1d5242cd361c5d4376324a630327",
+    "octets": 15213039
+  },
+  "erreurs": [],
+  "comparaison_initiale": [
+    {
+      "mode": "vierge",
+      "ecran": "course",
+      "constructions": 1,
+      "nappes": 396,
+      "empreinte": 283003719,
+      "panorama": {
+        "source": "calcul",
+        "lectureMs": 18.90000000037253,
+        "constructionMs": 156.90000000037253,
+        "octets": 2109188,
+        "ecriture": true
+      },
+      "decorMs": 1702.7,
+      "totalMs": 3241.9
+    },
+    {
+      "mode": "reouverture",
+      "ecran": "course",
+      "constructions": 0,
+      "nappes": 396,
+      "empreinte": 283003719,
+      "panorama": {
+        "source": "indexeddb",
+        "lectureMs": 18.699999999254942,
+        "constructionMs": null,
+        "octets": 2109188,
+        "ecriture": null
+      },
+      "decorMs": 1548.5,
+      "totalMs": 3043.4
+    }
+  ]
+}

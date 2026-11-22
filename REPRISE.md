@@ -1,5 +1,13 @@
 # BITUME — reprise courte
 
+## Livraison intégrée du 22 novembre — 0.2.107
+
+Le jeu web propose onze circuits sur FERRO 0.3.16 et le contrat de conduite p16. La pluie utilise une seule couche en conduite. La route de Larche a été parcourue intégralement en chrono et en course par le pilote automatique PhysX, y compris sous la pluie. Les chevrons à grille LED suivent les courbes et le HUD de course est plus discret. Les essais de vibrations différencient rapport, impact, vibreur, roulement et régime moteur. La réception tactile sur les trois familles de manettes reste ouverte.
+
+La feuille de route réunit les 47 lots et les demandes du 22 novembre. Elle couvre aussi les crêtes topographiques de Larche, le cache du panorama, la faune, les mesures GPU et le portage C++. Une seule branche demeure sur GitHub, `main`.
+
+[Feuille de route et travail restant](docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md) · [Données de réception](docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json) · [Essais natifs sur Mac M5](docs/reprise/N0-MAC-2026-11-22.md)
+
 ## 0.2.91 — Pluie en conduite et chaussée de Larche
 
 Sur Larche–Vinadio, à 29,4 km de l’arrivée, le terrain recouvrait les deux voies. Les mailles sont maintenant dégagées sous les triangles de chaussée et les vibreurs, dévers compris. Les appuis du décor suivent le terrain dessiné. Les 572 pénétrations relevées en 0.2.90 disparaissent sur les 82 040 points sondés de la spéciale. Le contrôle complémentaire de 50 962 triangles routiers donne une garde minimale mesurée de 13,5 cm.
@@ -10,9 +18,9 @@ En conduite, la lentille traite les impacts et leur déplacement avec le vent re
 
 [Plan de migration native](docs/reprise/PLAN-NATIF-CPP-MACOS-LINUX-WINDOWS-2026-11-22.md) : FERRO et BITUME en C++, première édition
 macOS, puis Linux, puis Windows. Le lot demandé est **documentaire uniquement** :
-implémentation non commencée, aucune qualification native acquise. Le plan fixe les lots,
+ce cadrage précédait les premières sondes natives de la livraison ci-dessus. Le plan fixe les lots,
 la fidélité à p15, les mesures matérielles et les critères de passage entre plateformes.
-Prochain lot natif proposé : N0, après instruction d’exécution. Le suivi web ci-dessous est conservé.
+La réception matérielle N0 en cours est détaillée dans la fiche Mac M5. Le suivi web ci-dessous est conservé.
 
 ## 0.2.88 livré (22 novembre 2026) — Retours jeu réel, Faune proche & Démos refaites (16 circuits), Menu Arcade, Col de Larche fluide, Hélico TV bas & Arbres réalistes
 

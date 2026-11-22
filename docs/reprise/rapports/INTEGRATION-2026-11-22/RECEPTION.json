@@ -1,0 +1,269 @@
+{
+  "version": "0.2.107",
+  "commit_sources": "a2a1a1acd31f10b1951446a8fd302be62aec98f6",
+  "html_sha256": "908493dbb042870989d906bc2dc4c8c65eae1d5242cd361c5d4376324a630327",
+  "octets": 15213039,
+  "gzip": 3722440,
+  "reconstruction_identique": true,
+  "qualif_locale": {
+    "suites_node": 225,
+    "suites_prevues": 225,
+    "suites_en_echec": 0,
+    "tests_python": 8,
+    "statut": "terminee",
+    "recontroles": [
+      {
+        "suite": "course.test",
+        "message_premier_passage": "AssertionError [ERR_ASSERTION]: 60s de course en moins de 1.5s, duree=1635ms",
+        "essais_isoles": [
+          {
+            "code": 0,
+            "mesures": [
+              "Mesure : 60s de course en moins de 1.5s, duree=191ms"
+            ]
+          },
+          {
+            "code": 0,
+            "mesures": [
+              "Mesure : 60s de course en moins de 1.5s, duree=193ms"
+            ]
+          },
+          {
+            "code": 0,
+            "mesures": [
+              "Mesure : 60s de course en moins de 1.5s, duree=187ms"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "code_source": [
+    "git log --all -- dist/bitume.html",
+    "python3 construire.py"
+  ],
+  "physique": "p16",
+  "ferro": "0.3.16",
+  "circuits": 11,
+  "pluie_en_conduite": [
+    {
+      "vue": "poursuite",
+      "s": 2868,
+      "d": 0,
+      "x": 1808.515625,
+      "y": 1063.2977294921875,
+      "z": 1938.9205322265625,
+      "restant": 29381.33,
+      "hud": "29,4",
+      "kmh": 0,
+      "abri": false,
+      "traits": 0,
+      "candidats": 0,
+      "eau": 0.9034912183291454,
+      "gouttes": 3,
+      "visiere": "visible",
+      "meteo": "hidden"
+    },
+    {
+      "vue": "cockpit",
+      "s": 2868,
+      "d": 0,
+      "x": 1808.515625,
+      "y": 1063.2977294921875,
+      "z": 1938.9205322265625,
+      "restant": 29381.33,
+      "hud": "29,4",
+      "kmh": 288,
+      "abri": false,
+      "traits": 0,
+      "candidats": 0,
+      "eau": 0.5657448867612866,
+      "gouttes": 15,
+      "visiere": "visible",
+      "meteo": "hidden"
+    }
+  ],
+  "captures_pluie": [
+    "larche-arret-0.2.107.png",
+    "larche-288-kmh-0.2.107.png"
+  ],
+  "route_larche": {
+    "sondes": 82040,
+    "penetrations_avant": 572,
+    "penetrations_apres": 0,
+    "triangles": 50962,
+    "garde_route_min_m": 0.135,
+    "ponts": 16
+  },
+  "num_courses": 3,
+  "parcours": "parcours-larche.json",
+  "chevrons": "rubans.json",
+  "reception_manettes": "vibrations-en-course.json",
+  "vibrations": "vibrations.json",
+  "cache": "panorama-cache.json",
+  "performance": "perf-led.json",
+  "relief": "relief-larche.jpg",
+  "integration": {
+    "branches_github_initiales": 88,
+    "branches_github_retirees": 87,
+    "branches_locales_retirees": 36,
+    "branches_clone_historique_retirees": 1,
+    "branches_github": [
+      "main"
+    ],
+    "pull_requests_fusionnees": [
+      43,
+      58
+    ]
+  },
+  "limites": [
+    "Essais du retour haptique avec actionneurs simulés. Toucher de chaque manette à évaluer en main.",
+    "Le gain de temps GPU des LED varie selon la pose. Les autres GPU et la cadence cible restent à qualifier.",
+    "Le photoréalisme de tout le catalogue et le portage complet demeurent en développement."
+  ],
+  "conduite_ia": "castagnet-bilan.json",
+  "championnat": "coupe-conduite.json",
+  "resultats": "resultats-navigation.json",
+  "raccords": "panorama-raccords.json",
+  "duo": "duo-larche.json",
+  "couverture_vegetale": "worldcover.json",
+  "allocations_faune": "allocations-faune.json",
+  "pluie_cinq_conditions": {
+    "arret": {
+      "vue": "poursuite",
+      "s": 2868,
+      "d": 0,
+      "x": 1808.515625,
+      "y": 1063.2977294921875,
+      "z": 1938.9205322265625,
+      "restant": 29381.33,
+      "hud": "29,4",
+      "kmh": 0,
+      "abri": false,
+      "traits": 0,
+      "candidats": 0,
+      "eau": 0.9034912183291454,
+      "gouttes": 3,
+      "visiere": "visible",
+      "meteo": "hidden"
+    },
+    "rapide": {
+      "vue": "cockpit",
+      "s": 2868,
+      "d": 0,
+      "x": 1808.515625,
+      "y": 1063.2977294921875,
+      "z": 1938.9205322265625,
+      "restant": 29381.33,
+      "hud": "29,4",
+      "kmh": 288,
+      "abri": false,
+      "traits": 0,
+      "candidats": 0,
+      "eau": 0.5657448867612866,
+      "gouttes": 15,
+      "visiere": "visible",
+      "meteo": "hidden"
+    },
+    "off": {
+      "vue": "poursuite",
+      "s": 2868,
+      "d": 0,
+      "x": 1808.515625,
+      "y": 1063.2977294921875,
+      "z": 1938.9205322265625,
+      "restant": 29381.33,
+      "hud": "29,4",
+      "kmh": 0,
+      "abri": false,
+      "traits": 178,
+      "candidats": 840,
+      "eau": 0,
+      "gouttes": 0,
+      "visiere": "hidden",
+      "meteo": "visible"
+    },
+    "portail-interieur": {
+      "vue": "cockpit",
+      "s": 14352,
+      "d": 0,
+      "x": 8019.46142578125,
+      "y": 740.4238891601562,
+      "z": 7734.1923828125,
+      "restant": 17897.33,
+      "hud": "17,9",
+      "kmh": 0,
+      "abri": true,
+      "traits": 0,
+      "candidats": 840,
+      "eau": 0,
+      "gouttes": 0,
+      "visiere": "hidden",
+      "meteo": "hidden"
+    },
+    "portail-exterieur": {
+      "vue": "cockpit",
+      "s": 14321,
+      "d": 0,
+      "x": 7988.5941162109375,
+      "y": 742.5976715087891,
+      "z": 7731.3543701171875,
+      "restant": 17928.33,
+      "hud": "17,9",
+      "kmh": 0,
+      "abri": false,
+      "traits": 0,
+      "candidats": 0,
+      "eau": 0.9034912183291454,
+      "gouttes": 5,
+      "visiere": "visible",
+      "meteo": "hidden"
+    }
+  },
+  "cache_sous_charge": {
+    "essai": "Deux autres courses Chrome/PhysX parcouraient des championnats et la suite Node tournait en parallèle.",
+    "ouverture": "La lecture IndexedDB a abouti après le choix du générateur. Le jeu a atteint la course avec 396 nappes identiques et sans erreur navigateur.",
+    "mesure": {
+      "mode": "reouverture",
+      "ecran": "course",
+      "constructions": 1,
+      "nappes": 396,
+      "empreinte": 1531368437,
+      "panorama": {
+        "source": "calcul",
+        "lectureMs": 3605.5,
+        "constructionMs": 118.90000000037253,
+        "octets": 2109188,
+        "ecriture": null
+      },
+      "decorMs": 3562.2,
+      "totalMs": 7158.6
+    }
+  },
+  "championnats": {
+    "coupes": 3,
+    "manches": 24,
+    "engages": 288,
+    "arrivees": 288,
+    "classements_apres_rechargement": true,
+    "preuves": [
+      "coupe-conduite.json",
+      "coupe-monde.json",
+      "coupe-integrale.json"
+    ]
+  },
+  "arret_manettes": "vibrations-pause.json",
+  "fin_course_manettes": "vibrations-resultats.json",
+  "integrite_cache": "panorama-integrite.json",
+  "qualification_github": {
+    "url": "https://github.com/M4D135/bitume/actions/runs/45038134289",
+    "commit": "a2a1a1acd31f10b1951446a8fd302be62aec98f6",
+    "conclusion": "cancelled",
+    "suites_executees": 189,
+    "suites_reussies": 188,
+    "limite_minutes": 20,
+    "depassement_mesure": "Route-des-Cimes : 164,5 ms de préparation sur cette VM pour un seuil strict de 150 ms."
+  },
+  "cadence_larche": "cadence-larche.json",
+  "rayons_materiels": "docs/reprise/rapports/N0-MAC-20261122/rayons-larche.json"
+}

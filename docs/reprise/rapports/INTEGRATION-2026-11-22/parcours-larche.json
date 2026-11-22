@@ -1,0 +1,319 @@
+{
+  "conditions": "Chrome et PhysX, pilote automatique et horloge de simulation commandée de la grille à la ligne",
+  "courses": [
+    {
+      "essai": "chrono",
+      "html_sha256": "fe929b79dd073115d38b6b7fe7c442b20ede838414afa5d0b6b53712d7855c97",
+      "mode": "chrono",
+      "meteo": "soleil",
+      "classement": null,
+      "observation": {
+        "phase": "arrivee",
+        "tours": 1,
+        "position": 1,
+        "meilleur": null,
+        "termine": true,
+        "physique": true,
+        "s": 32321.534896984253,
+        "temps": 854.5749999993872,
+        "fin": true,
+        "chrono": 851.5603301295259,
+        "abandon": false,
+        "surface": "piste",
+        "v": 2.7329984443481554,
+        "n": 1,
+        "arrivee": 32249.33,
+        "classement": [
+          0
+        ]
+      },
+      "erreurs": []
+    },
+    {
+      "essai": "course",
+      "html_sha256": "fe929b79dd073115d38b6b7fe7c442b20ede838414afa5d0b6b53712d7855c97",
+      "mode": "course",
+      "meteo": "soleil",
+      "classement": null,
+      "observation": {
+        "phase": "arrivee",
+        "tours": 1,
+        "position": 4,
+        "meilleur": null,
+        "termine": false,
+        "physique": true,
+        "s": 32309.556355444845,
+        "temps": 885.5416666660257,
+        "fin": true,
+        "chrono": 879.8967756187282,
+        "abandon": false,
+        "surface": "piste",
+        "v": 2.10195455864133e-05,
+        "n": 12,
+        "arrivee": 32249.33,
+        "classement": [
+          1,
+          8,
+          10,
+          0,
+          3,
+          9,
+          6,
+          4,
+          5,
+          2,
+          7,
+          11
+        ]
+      },
+      "erreurs": []
+    },
+    {
+      "essai": "pluie",
+      "html_sha256": "fe929b79dd073115d38b6b7fe7c442b20ede838414afa5d0b6b53712d7855c97",
+      "mode": "course",
+      "meteo": "pluie",
+      "classement": {
+        "ecran": "resultats",
+        "titre": "Arrivée · 8e",
+        "sousTitre": "Col de Larche → Vinadio · 1 tours · rivaux normaux",
+        "lignes": [
+          [
+            "1",
+            "14",
+            "T. Okafor",
+            "1",
+            "14:07,005",
+            "–"
+          ],
+          [
+            "2",
+            "17",
+            "J. Vanmeer",
+            "1",
+            "+20,924",
+            "–"
+          ],
+          [
+            "3",
+            "19",
+            "S. Ferrandi",
+            "1",
+            "+27,580",
+            "–"
+          ],
+          [
+            "4",
+            "8",
+            "L. Brasquet",
+            "1",
+            "+37,240",
+            "–"
+          ],
+          [
+            "5",
+            "28",
+            "A. Kowalczyk",
+            "1",
+            "+84,526",
+            "–"
+          ],
+          [
+            "6",
+            "26",
+            "M. Duvernet",
+            "1",
+            "+94,704",
+            "–"
+          ],
+          [
+            "7",
+            "11",
+            "H. Delacour",
+            "1",
+            "+99,938",
+            "–"
+          ],
+          [
+            "8",
+            "1",
+            "Vous",
+            "1",
+            "+106,101",
+            "–"
+          ],
+          [
+            "9",
+            "7",
+            "P. Morvan",
+            "1",
+            "+159,282",
+            "–"
+          ],
+          [
+            "10",
+            "5",
+            "E. Varenne",
+            "1",
+            "+162,401",
+            "–"
+          ],
+          [
+            "11",
+            "22",
+            "K. Lindgren",
+            "1",
+            "+204,581",
+            "–"
+          ],
+          [
+            "12",
+            "3",
+            "R. Castagnet",
+            "0",
+            "en piste",
+            "–"
+          ]
+        ],
+        "finisseurs": 11,
+        "position": 8,
+        "ids": [
+          6,
+          7,
+          8,
+          4,
+          11,
+          10,
+          5,
+          0,
+          3,
+          2,
+          9,
+          1
+        ],
+        "voitures": [
+          {
+            "id": 6,
+            "fin": true,
+            "abandon": false,
+            "temps": 847.0047532614332,
+            "s": 32316.766397365514
+          },
+          {
+            "id": 7,
+            "fin": true,
+            "abandon": false,
+            "temps": 867.9284774992136,
+            "s": 32314.28309964409
+          },
+          {
+            "id": 8,
+            "fin": true,
+            "abandon": false,
+            "temps": 874.5849589406408,
+            "s": 32312.702382547723
+          },
+          {
+            "id": 4,
+            "fin": true,
+            "abandon": false,
+            "temps": 884.2450787264645,
+            "s": 32308.635614805637
+          },
+          {
+            "id": 11,
+            "fin": true,
+            "abandon": false,
+            "temps": 931.531095362105,
+            "s": 32304.59508095261
+          },
+          {
+            "id": 10,
+            "fin": true,
+            "abandon": false,
+            "temps": 941.7082886344276,
+            "s": 32300.493765290055
+          },
+          {
+            "id": 5,
+            "fin": true,
+            "abandon": false,
+            "temps": 946.9432199927314,
+            "s": 32310.309962395928
+          },
+          {
+            "id": 0,
+            "fin": true,
+            "abandon": false,
+            "temps": 953.1057486071592,
+            "s": 32306.683141560046
+          },
+          {
+            "id": 3,
+            "fin": true,
+            "abandon": false,
+            "temps": 1006.2864376380049,
+            "s": 32296.401750557066
+          },
+          {
+            "id": 2,
+            "fin": true,
+            "abandon": false,
+            "temps": 1009.4057976315014,
+            "s": 32302.672933034155
+          },
+          {
+            "id": 9,
+            "fin": true,
+            "abandon": false,
+            "temps": 1051.5857074921973,
+            "s": 32292.4217885201
+          },
+          {
+            "id": 1,
+            "fin": false,
+            "abandon": false,
+            "temps": null,
+            "s": 11429.772717851258
+          }
+        ]
+      },
+      "observation": {
+        "phase": "arrivee",
+        "tours": 1,
+        "position": 8,
+        "meilleur": null,
+        "termine": true,
+        "physique": true,
+        "s": 32305.60632023058,
+        "temps": 961.1083333326236,
+        "fin": true,
+        "chrono": 953.1057486071592,
+        "abandon": false,
+        "surface": "piste",
+        "v": 0.0011678005377461253,
+        "n": 12,
+        "arrivee": 32249.33,
+        "classement": [
+          6,
+          7,
+          8,
+          4,
+          11,
+          10,
+          5,
+          0,
+          3,
+          2,
+          9,
+          1
+        ],
+        "phaseMeteo": "pluie",
+        "pluie": 0.75,
+        "mouille": 1,
+        "finisseurs": 8
+      },
+      "erreurs": []
+    }
+  ]
+}

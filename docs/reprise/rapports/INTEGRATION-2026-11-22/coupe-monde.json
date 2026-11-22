@@ -1,0 +1,227 @@
+{
+  "titre": "Tour du Monde",
+  "version": "0.2.106",
+  "sha256HTML": "238a07ad88d1df9c8c7ca816dbb961b7d17643f66a4bb64ec352cf13a4164e36",
+  "debutUTC": "2026-11-22T15:12:02.950Z",
+  "finUTC": "2026-11-22T15:19:22.793Z",
+  "tempsReelSecondes": 439.843,
+  "conditions": "Été, jour, sec, 12 voitures, mode course ; commandes IA et monde PhysX du jeu. Tous les départs et classements passent par les boutons des menus. La simulation avance à 120 Hz dans Chrome WebGL2.",
+  "heureInitialeGraine": 1795358309888,
+  "chrome": "Chrome/157.0.8103.80",
+  "manches": [
+    {
+      "numero": 1,
+      "lieu": "Val-Brûlé",
+      "debutUTC": "2026-11-22T15:12:08.926Z",
+      "finUTC": "2026-11-22T15:12:34.357Z",
+      "graine": 25470,
+      "physx": true,
+      "departs": 12,
+      "arrives": 12,
+      "abandon": [],
+      "nonArrives": [],
+      "joueur": {
+        "rang": 1,
+        "points": 26,
+        "chronoSecondes": 264.575127008783,
+        "cumul": 26
+      }
+    },
+    {
+      "numero": 2,
+      "lieu": "Marseille · Vieux-Port → Corniche",
+      "debutUTC": "2026-11-22T15:12:34.358Z",
+      "finUTC": "2026-11-22T15:12:51.783Z",
+      "graine": 25471,
+      "physx": true,
+      "departs": 12,
+      "arrives": 12,
+      "abandon": [],
+      "nonArrives": [],
+      "joueur": {
+        "rang": 2,
+        "points": 18,
+        "chronoSecondes": 122.03572764037223,
+        "cumul": 44
+      }
+    },
+    {
+      "numero": 3,
+      "lieu": "Baie-du-Corail",
+      "debutUTC": "2026-11-22T15:12:51.784Z",
+      "finUTC": "2026-11-22T15:13:23.997Z",
+      "graine": 25472,
+      "physx": true,
+      "departs": 12,
+      "arrives": 12,
+      "abandon": [],
+      "nonArrives": [],
+      "joueur": {
+        "rang": 4,
+        "points": 13,
+        "chronoSecondes": 277.9670440401865,
+        "cumul": 57
+      }
+    },
+    {
+      "numero": 4,
+      "lieu": "Cap-Séquoia",
+      "debutUTC": "2026-11-22T15:13:23.998Z",
+      "finUTC": "2026-11-22T15:13:57.508Z",
+      "graine": 25473,
+      "physx": true,
+      "departs": 12,
+      "arrives": 12,
+      "abandon": [],
+      "nonArrives": [],
+      "joueur": {
+        "rang": 1,
+        "points": 26,
+        "chronoSecondes": 321.5912971340215,
+        "cumul": 83
+      }
+    },
+    {
+      "numero": 5,
+      "lieu": "Fjord-d’Argent",
+      "debutUTC": "2026-11-22T15:13:57.509Z",
+      "finUTC": "2026-11-22T15:14:27.352Z",
+      "graine": 25474,
+      "physx": true,
+      "departs": 12,
+      "arrives": 12,
+      "abandon": [],
+      "nonArrives": [],
+      "joueur": {
+        "rang": 4,
+        "points": 12,
+        "chronoSecondes": 309.29849389493864,
+        "cumul": 95
+      }
+    },
+    {
+      "numero": 6,
+      "lieu": "Route-des-Cimes",
+      "debutUTC": "2026-11-22T15:14:27.353Z",
+      "finUTC": "2026-11-22T15:16:41.354Z",
+      "graine": 25475,
+      "physx": true,
+      "departs": 12,
+      "arrives": 12,
+      "abandon": [],
+      "nonArrives": [],
+      "joueur": {
+        "rang": 1,
+        "points": 26,
+        "chronoSecondes": 547.9456817638686,
+        "cumul": 121
+      }
+    },
+    {
+      "numero": 7,
+      "lieu": "Sierra-Cuivrée",
+      "debutUTC": "2026-11-22T15:16:41.358Z",
+      "finUTC": "2026-11-22T15:17:50.549Z",
+      "graine": 25476,
+      "physx": true,
+      "departs": 12,
+      "arrives": 12,
+      "abandon": [],
+      "nonArrives": [],
+      "joueur": {
+        "rang": 1,
+        "points": 26,
+        "chronoSecondes": 282.92230069454405,
+        "cumul": 147
+      }
+    },
+    {
+      "numero": 8,
+      "lieu": "Brume-de-Jade",
+      "debutUTC": "2026-11-22T15:17:50.553Z",
+      "finUTC": "2026-11-22T15:19:08.018Z",
+      "graine": 25477,
+      "physx": true,
+      "departs": 12,
+      "arrives": 12,
+      "abandon": [],
+      "nonArrives": [],
+      "joueur": {
+        "rang": 1,
+        "points": 26,
+        "chronoSecondes": 316.8643392382007,
+        "cumul": 173
+      }
+    }
+  ],
+  "bilan": {
+    "departs": 96,
+    "arrivees": 96,
+    "abandons": 0,
+    "tempsJoueurCumuleS": 2443.200011414915,
+    "classement": [
+      [
+        "1",
+        "Vous",
+        "173"
+      ],
+      [
+        "2",
+        "L. Brasquet",
+        "112"
+      ],
+      [
+        "3",
+        "J. Vanmeer",
+        "74"
+      ],
+      [
+        "4",
+        "K. Lindgren",
+        "74"
+      ],
+      [
+        "5",
+        "A. Kowalczyk",
+        "60"
+      ],
+      [
+        "6",
+        "R. Castagnet",
+        "60"
+      ],
+      [
+        "7",
+        "M. Duvernet",
+        "58"
+      ],
+      [
+        "8",
+        "H. Delacour",
+        "53"
+      ],
+      [
+        "9",
+        "S. Ferrandi",
+        "51"
+      ],
+      [
+        "10",
+        "T. Okafor",
+        "41"
+      ],
+      [
+        "11",
+        "P. Morvan",
+        "34"
+      ],
+      [
+        "12",
+        "E. Varenne",
+        "26"
+      ]
+    ]
+  },
+  "sauvegardeVerifiee": true,
+  "erreurs": []
+}

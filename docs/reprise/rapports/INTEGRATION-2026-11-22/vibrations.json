@@ -1,0 +1,222 @@
+{
+  "avant": {
+    "grain": {
+      "leger": {
+        "max": 0.073,
+        "moyenne": 0.072,
+        "rythmeHz": 0.5
+      },
+      "lourd": {
+        "max": 0,
+        "moyenne": 0,
+        "rythmeHz": 0
+      }
+    },
+    "moteurBas": {
+      "leger": {
+        "max": 0,
+        "moyenne": 0,
+        "rythmeHz": 0
+      },
+      "lourd": {
+        "max": 0,
+        "moyenne": 0,
+        "rythmeHz": 0
+      }
+    },
+    "moteurMoyen": {
+      "leger": {
+        "max": 0,
+        "moyenne": 0,
+        "rythmeHz": 0
+      },
+      "lourd": {
+        "max": 0.178,
+        "moyenne": 0.177,
+        "rythmeHz": 0.5
+      }
+    },
+    "moteurHaut": {
+      "leger": {
+        "max": 0.173,
+        "moyenne": 0.172,
+        "rythmeHz": 0.5
+      },
+      "lourd": {
+        "max": 0.397,
+        "moyenne": 0.395,
+        "rythmeHz": 0.5
+      }
+    },
+    "bordure": {
+      "leger": {
+        "max": 0.574,
+        "moyenne": 0.469,
+        "rythmeHz": 11.5
+      },
+      "lourd": {
+        "max": 0.645,
+        "moyenne": 0.52,
+        "rythmeHz": 11.5
+      }
+    },
+    "rapport": {
+      "leger": {
+        "max": 0.569,
+        "moyenne": 0.029,
+        "rythmeHz": 0.5
+      },
+      "lourd": {
+        "max": 0.676,
+        "moyenne": 0.041,
+        "rythmeHz": 0.5
+      }
+    },
+    "collision": {
+      "leger": {
+        "max": 0,
+        "moyenne": 0,
+        "rythmeHz": 0
+      },
+      "lourd": {
+        "max": 0.755,
+        "moyenne": 0.07,
+        "rythmeHz": 0.5
+      }
+    },
+    "acceleration": {
+      "leger": {
+        "max": 0.429,
+        "moyenne": 0.426,
+        "rythmeHz": 0.5
+      },
+      "lourd": {
+        "max": 0.672,
+        "moyenne": 0.668,
+        "rythmeHz": 0.5
+      }
+    },
+    "tous": {
+      "leger": {
+        "max": 1,
+        "moyenne": 0.994,
+        "rythmeHz": 0.5
+      },
+      "lourd": {
+        "max": 0.999,
+        "moyenne": 0.984,
+        "rythmeHz": 13.5
+      }
+    }
+  },
+  "apres": {
+    "grain": {
+      "leger": {
+        "max": 0.055,
+        "moyenne": 0.033,
+        "rythmeHz": 12
+      },
+      "lourd": {
+        "max": 0,
+        "moyenne": 0,
+        "rythmeHz": 0
+      }
+    },
+    "moteurBas": {
+      "leger": {
+        "max": 0,
+        "moyenne": 0,
+        "rythmeHz": 0
+      },
+      "lourd": {
+        "max": 0.063,
+        "moyenne": 0.052,
+        "rythmeHz": 4.5
+      }
+    },
+    "moteurMoyen": {
+      "leger": {
+        "max": 0.038,
+        "moyenne": 0.022,
+        "rythmeHz": 7
+      },
+      "lourd": {
+        "max": 0.105,
+        "moyenne": 0.087,
+        "rythmeHz": 7
+      }
+    },
+    "moteurHaut": {
+      "leger": {
+        "max": 0.085,
+        "moyenne": 0.058,
+        "rythmeHz": 9.5
+      },
+      "lourd": {
+        "max": 0.137,
+        "moyenne": 0.113,
+        "rythmeHz": 9.5
+      }
+    },
+    "bordure": {
+      "leger": {
+        "max": 0.185,
+        "moyenne": 0.111,
+        "rythmeHz": 12
+      },
+      "lourd": {
+        "max": 0.284,
+        "moyenne": 0.171,
+        "rythmeHz": 12
+      }
+    },
+    "rapport": {
+      "leger": {
+        "max": 0.32,
+        "moyenne": 0.01,
+        "rythmeHz": 0
+      },
+      "lourd": {
+        "max": 0.055,
+        "moyenne": 0.002,
+        "rythmeHz": 0
+      }
+    },
+    "collision": {
+      "leger": {
+        "max": 0,
+        "moyenne": 0,
+        "rythmeHz": 0
+      },
+      "lourd": {
+        "max": 0.61,
+        "moyenne": 0.033,
+        "rythmeHz": 0
+      }
+    },
+    "acceleration": {
+      "leger": {
+        "max": 0.069,
+        "moyenne": 0.05,
+        "rythmeHz": 12
+      },
+      "lourd": {
+        "max": 0.134,
+        "moyenne": 0.111,
+        "rythmeHz": 8.5
+      }
+    },
+    "tous": {
+      "leger": {
+        "max": 0.184,
+        "moyenne": 0.105,
+        "rythmeHz": 13.5
+      },
+      "lourd": {
+        "max": 0.61,
+        "moyenne": 0.187,
+        "rythmeHz": 13
+      }
+    }
+  }
+}

@@ -1,0 +1,264 @@
+{
+  "coupe": "Grand Championnat Intégral",
+  "version": "0.2.106",
+  "htmlSha256": "238a07ad88d1df9c8c7ca816dbb961b7d17643f66a4bb64ec352cf13a4164e36",
+  "navigateur": "Chrome/157.0.8103.80",
+  "protocole": "Pilote automatique, douze voitures dans le monde PhysX, pas de 1/120 s et départs depuis les menus. Onze manches en conditions sèches. Classement et reprise par les menus dans un profil Chrome vierge.",
+  "courses": [
+    {
+      "manche": 1,
+      "circuit": "Val-Brûlé",
+      "graine": 25470,
+      "tours": 3,
+      "longueurMetres": 4222,
+      "physx": true,
+      "finisseurs": 12,
+      "abandons": [],
+      "horsDelai": [],
+      "joueur": {
+        "rang": 1,
+        "points": 26,
+        "arrive": true,
+        "tempsSecondes": 264.575
+      }
+    },
+    {
+      "manche": 2,
+      "circuit": "Marseille · Vieux-Port → Corniche",
+      "graine": 25471,
+      "tours": 1,
+      "longueurMetres": 5992,
+      "physx": true,
+      "finisseurs": 12,
+      "abandons": [],
+      "horsDelai": [],
+      "joueur": {
+        "rang": 2,
+        "points": 18,
+        "arrive": true,
+        "tempsSecondes": 122.036
+      }
+    },
+    {
+      "manche": 3,
+      "circuit": "Baie-du-Corail",
+      "graine": 25472,
+      "tours": 3,
+      "longueurMetres": 4520,
+      "physx": true,
+      "finisseurs": 12,
+      "abandons": [],
+      "horsDelai": [],
+      "joueur": {
+        "rang": 4,
+        "points": 13,
+        "arrive": true,
+        "tempsSecondes": 277.967
+      }
+    },
+    {
+      "manche": 4,
+      "circuit": "Cap-Séquoia",
+      "graine": 25473,
+      "tours": 3,
+      "longueurMetres": 5234,
+      "physx": true,
+      "finisseurs": 12,
+      "abandons": [],
+      "horsDelai": [],
+      "joueur": {
+        "rang": 1,
+        "points": 26,
+        "arrive": true,
+        "tempsSecondes": 321.591
+      }
+    },
+    {
+      "manche": 5,
+      "circuit": "Fjord-d’Argent",
+      "graine": 25474,
+      "tours": 3,
+      "longueurMetres": 5118,
+      "physx": true,
+      "finisseurs": 12,
+      "abandons": [],
+      "horsDelai": [],
+      "joueur": {
+        "rang": 4,
+        "points": 12,
+        "arrive": true,
+        "tempsSecondes": 309.298
+      }
+    },
+    {
+      "manche": 6,
+      "circuit": "Route-des-Cimes",
+      "graine": 25475,
+      "tours": 3,
+      "longueurMetres": 9697.53,
+      "physx": true,
+      "finisseurs": 12,
+      "abandons": [],
+      "horsDelai": [],
+      "joueur": {
+        "rang": 1,
+        "points": 26,
+        "arrive": true,
+        "tempsSecondes": 547.946
+      }
+    },
+    {
+      "manche": 7,
+      "circuit": "Col de Larche → Vinadio",
+      "graine": 25476,
+      "tours": 1,
+      "longueurMetres": 32816,
+      "physx": true,
+      "finisseurs": 12,
+      "abandons": [],
+      "horsDelai": [],
+      "joueur": {
+        "rang": 9,
+        "points": 2,
+        "arrive": true,
+        "tempsSecondes": 907.51
+      }
+    },
+    {
+      "manche": 8,
+      "circuit": "Lande-Noire",
+      "graine": 25477,
+      "tours": 3,
+      "longueurMetres": 4616,
+      "physx": true,
+      "finisseurs": 12,
+      "abandons": [],
+      "horsDelai": [],
+      "joueur": {
+        "rang": 1,
+        "points": 26,
+        "arrive": true,
+        "tempsSecondes": 278.791
+      }
+    },
+    {
+      "manche": 9,
+      "circuit": "Sierra-Cuivrée",
+      "graine": 25478,
+      "tours": 3,
+      "longueurMetres": 5020,
+      "physx": true,
+      "finisseurs": 12,
+      "abandons": [],
+      "horsDelai": [],
+      "joueur": {
+        "rang": 5,
+        "points": 11,
+        "arrive": true,
+        "tempsSecondes": 288.494
+      }
+    },
+    {
+      "manche": 10,
+      "circuit": "Brume-de-Jade",
+      "graine": 25479,
+      "tours": 3,
+      "longueurMetres": 5018,
+      "physx": true,
+      "finisseurs": 12,
+      "abandons": [],
+      "horsDelai": [],
+      "joueur": {
+        "rang": 1,
+        "points": 26,
+        "arrive": true,
+        "tempsSecondes": 315.425
+      }
+    },
+    {
+      "manche": 11,
+      "circuit": "Baïkal",
+      "graine": 25480,
+      "tours": 3,
+      "longueurMetres": 5424,
+      "physx": true,
+      "finisseurs": 12,
+      "abandons": [],
+      "horsDelai": [],
+      "joueur": {
+        "rang": 1,
+        "points": 26,
+        "arrive": true,
+        "tempsSecondes": 314.354
+      }
+    }
+  ],
+  "manchesEnregistrees": 11,
+  "mancheTerminee": true,
+  "classement": [
+    {
+      "rang": 1,
+      "nom": "Vous",
+      "points": 212
+    },
+    {
+      "rang": 2,
+      "nom": "L. Brasquet",
+      "points": 130
+    },
+    {
+      "rang": 3,
+      "nom": "K. Lindgren",
+      "points": 117
+    },
+    {
+      "rang": 4,
+      "nom": "J. Vanmeer",
+      "points": 114
+    },
+    {
+      "rang": 5,
+      "nom": "H. Delacour",
+      "points": 101
+    },
+    {
+      "rang": 6,
+      "nom": "A. Kowalczyk",
+      "points": 82
+    },
+    {
+      "rang": 7,
+      "nom": "R. Castagnet",
+      "points": 82
+    },
+    {
+      "rang": 8,
+      "nom": "S. Ferrandi",
+      "points": 80
+    },
+    {
+      "rang": 9,
+      "nom": "T. Okafor",
+      "points": 64
+    },
+    {
+      "rang": 10,
+      "nom": "M. Duvernet",
+      "points": 58
+    },
+    {
+      "rang": 11,
+      "nom": "P. Morvan",
+      "points": 41
+    },
+    {
+      "rang": 12,
+      "nom": "E. Varenne",
+      "points": 40
+    }
+  ],
+  "statutApresRechargement": "Coupe terminée",
+  "classementIdentiqueApresRechargement": true,
+  "sommesDesPoints": true,
+  "erreursChrome": 0
+}

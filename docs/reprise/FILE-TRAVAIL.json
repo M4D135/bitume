@@ -1,18 +1,18 @@
 {
   "schema": 1,
-  "date": "2026-11-21",
+  "date": "2026-11-22",
   "base": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
   "runtime_livre": {
-    "version": "0.2.80",
-    "physique": "p15",
-    "moteur": "FERRO 0.3.15",
-    "circuits": 9,
-    "commit_fusion": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
-    "html_sha256": "20185cd2341e2aefb7a5167a35c1f4d68a50eedf1d9fabaa8491c329fa87410a",
-    "recu": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json"
+    "version": "0.2.107",
+    "physique": "p16",
+    "moteur": "FERRO 0.3.16",
+    "circuits": 11,
+    "commit_sources": "a2a1a1acd31f10b1951446a8fd302be62aec98f6",
+    "html_sha256": "908493dbb042870989d906bc2dc4c8c65eae1d5242cd361c5d4376324a630327",
+    "recu": "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
   },
   "destinations_prevues": 17,
-  "lot_actif": "qualification_finale",
+  "lot_actif": "qualification_materielle_et_rendu",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [
@@ -279,33 +279,42 @@
     {
       "id": "marseille_sources",
       "objectif": "Marseille 15A–B : corridor et relief",
-      "etat": "planned",
+      "etat": "in_progress",
       "dependances": [
         "references"
       ],
       "cloture": "Résoudre bbox/provenance, densifier chaussée et tabliers",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
+      ],
+      "reste": "Fonds et altimétrie documentés. Vérifier les ruptures et le profil aux ouvrages."
     },
     {
       "id": "marseille_course",
       "objectif": "Marseille 15C–F : route, ville, collisions et IA",
-      "etat": "planned",
+      "etat": "in_progress",
       "dependances": [
         "marseille_sources",
         "couverts"
       ],
       "cloture": "Course complète sur relief cohérent, niveaux superposés",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
+      ],
+      "reste": "Spéciale jouable. Terminer sa réception topographique et en course."
     },
     {
       "id": "fjord",
       "objectif": "16A Fjord-d’Argent",
-      "etat": "planned",
+      "etat": "in_progress",
       "dependances": [
         "couverts"
       ],
       "cloture": "Destination originale et course/biome qualifiés",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
+      ],
+      "reste": "Circuit sélectionnable. Finitions et qualification matérielle."
     },
     {
       "id": "carpates",
@@ -330,22 +339,28 @@
     {
       "id": "sierra",
       "objectif": "16D Sierra-Cuivrée",
-      "etat": "planned",
+      "etat": "in_progress",
       "dependances": [
         "couverts"
       ],
       "cloture": "Destination originale et course/biome qualifiés",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
+      ],
+      "reste": "Circuit sélectionnable. Finitions et qualification matérielle."
     },
     {
       "id": "corail",
       "objectif": "16E Baie-du-Corail",
-      "etat": "planned",
+      "etat": "in_progress",
       "dependances": [
         "couverts"
       ],
       "cloture": "Destination originale et course/biome qualifiés",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
+      ],
+      "reste": "Circuit sélectionnable. Finitions et qualification matérielle."
     },
     {
       "id": "andes",
@@ -360,65 +375,83 @@
     {
       "id": "conduite",
       "objectif": "17 : puissance, ABS, glisse et aides depuis p15",
-      "etat": "planned",
+      "etat": "in_progress",
       "dependances": [
         "references"
       ],
       "cloture": "521 ch calibrés, niveaux ABS, physique versionnée et contrôles",
-      "preuves": [],
-      "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md"
+      "preuves": [
+        "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
+      ],
+      "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md",
+      "reste": "Contrat p16, replays et migration conservés. Comparer les signatures haptiques sur les trois manettes."
     },
     {
       "id": "rendu",
       "objectif": "21 : sols, ombres, eau, reflets, nuit, Photo et grain",
-      "etat": "planned",
+      "etat": "in_progress",
       "dependances": [
         "demos_pilotes"
       ],
       "cloture": "Défauts reproduits puis corrigés ; moteur via FERRO canonique",
-      "preuves": [],
-      "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md"
+      "preuves": [
+        "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
+      ],
+      "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md",
+      "reste": "Relief du Piémont utilisé à Larche. Reprendre matériaux, éclairage et rendu des objets proches."
     },
     {
       "id": "matieres",
       "objectif": "23/25 : freins, chaleur, salissures et matières",
-      "etat": "planned",
+      "etat": "in_progress",
       "dependances": [
         "demos_pilotes"
       ],
       "cloture": "Silhouette, ancrages et cockpit préservés ; effets mesurés",
-      "preuves": [],
-      "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md"
+      "preuves": [
+        "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
+      ],
+      "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md",
+      "reste": "Bordures des pistes et couleurs du terrain affinées. Étendre la qualification selon matériaux et conditions."
     },
     {
       "id": "reseau",
       "objectif": "27 : invitations sans serveur dédié à administrer",
-      "etat": "planned",
+      "etat": "in_progress",
       "dependances": [
         "references"
       ],
       "cloture": "Signalisation, repli et réseaux distincts ; salon conservé jusque-là",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
+      ],
+      "reste": "Vérification p16 en place. Jouer et mesurer un duel WAN."
     },
     {
       "id": "chargement",
       "objectif": "28B/28D : précréation et installation progressive",
-      "etat": "planned",
+      "etat": "in_progress",
       "dependances": [
         "references"
       ],
       "cloture": "Mesures de tâches et budget de chargement, repli compatible",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
+      ],
+      "reste": "Séparer les coûts du premier chargement, de la relecture du cache et des transitions sur toutes les pistes."
     },
     {
       "id": "cache",
       "objectif": "28E : IndexedDB versionné et intègre",
-      "etat": "planned",
+      "etat": "in_progress",
       "dependances": [
         "chargement"
       ],
       "cloture": "Invalidation, quota, erreurs, régénération et gain mesuré",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
+      ],
+      "reste": "Panorama Larche mis en cache et reçu après rechargement. Poursuivre les autres décors selon leur coût."
     },
     {
       "id": "calcul_conditionnel",
@@ -434,25 +467,29 @@
     {
       "id": "records",
       "objectif": "Records par circuit, mode, boîte et modèle",
-      "etat": "planned",
+      "etat": "in_progress",
       "dependances": [
         "references"
       ],
       "cloture": "Migration non destructive et isolation des essais",
-      "preuves": []
+      "preuves": [
+        "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
+      ],
+      "reste": "p15 archivé, espaces de records p16 et fantômes séparés. Réception physique en course à poursuivre."
     },
     {
       "id": "championnat",
       "objectif": "Championnat de plusieurs courses",
-      "etat": "qualified",
+      "etat": "published",
       "dependances": [
         "records"
       ],
       "cloture": "Progression, classement, sauvegarde et reprise cohérents",
       "preuves": [
-        "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md"
+        "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
+        "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
-      "reste": "Recevoir une coupe entière conduite, sur matériel et à deux manettes si le mode est étendu au duo."
+      "reste": "Poursuivre la qualification des coupes et des résultats sur les appareils cibles."
     },
     {
       "id": "qualification_finale",
@@ -584,7 +621,7 @@
     {
       "id": "panneaux_virages_animes",
       "objectif": "Panneaux directionnels clignotants et lisibles avant freinage et le long des courbes",
-      "etat": "planned",
+      "etat": "published",
       "dependances": [
         "references"
       ],
@@ -593,7 +630,11 @@
       "origine": "Demande explicite David, vidéo Rozz Games puis hélicoptères/drones METAL, 20 novembre 2026",
       "proprietaire_propose": "04 avec raccords 00",
       "cloture": "Sens/difficulté réels, distances, phase commune, lisibilité permanente et coût borné",
-      "runtime_livre": false
+      "runtime_livre": false,
+      "reste": "Grille, animation et couverture des 222 courbes reçues. Tester sur Xbox Edge et GPU intégré.",
+      "preuves": [
+        "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
+      ]
     },
     {
       "id": "bandeaux_led_course",
@@ -676,12 +717,16 @@
     {
       "id": "larche_vinadio",
       "objectif": "Sommet du col de Larche → Vinadio par SS21, terrain et tracé réels, arrivée définitive",
-      "etat": "planned",
+      "etat": "in_progress",
       "phase": "L0_sources_identifiees_non_acquises",
       "fiche": "docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md",
       "echelle": 1,
       "topologie": "ouverte",
-      "depart_barcelonnette_remplace": true
+      "depart_barcelonnette_remplace": true,
+      "reste": "Parcours complet au chrono et en course, y compris sous pluie. Vérifier sur manettes physiques et contrôler la fidélité des épingles.",
+      "preuves": [
+        "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
+      ]
     },
     {
       "id": "six_vues_course",
@@ -965,5 +1010,22 @@
       "preuve": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
       "limite_reseau": "Préférences négociées ; événements geste/son distants non synchronisés, information avant course."
     }
-  }
+  },
+  "runtime_livre_0280_historique": {
+    "version": "0.2.80",
+    "physique": "p15",
+    "moteur": "FERRO 0.3.15",
+    "circuits": 9,
+    "commit_fusion": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+    "html_sha256": "20185cd2341e2aefb7a5167a35c1f4d68a50eedf1d9fabaa8491c329fa87410a",
+    "recu": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json"
+  },
+  "feuille_courante": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
+  "ordre_22_novembre": [
+    "Réception tactile Switch, Xbox et PS5",
+    "Stabilité du temps par image sous la pluie sur machines cibles",
+    "Matériaux proches, éclairage, reflets et végétation",
+    "Consolidation géographique Monaco et Marseille",
+    "Réseau et portage macOS, puis Linux, puis Windows"
+  ]
 }

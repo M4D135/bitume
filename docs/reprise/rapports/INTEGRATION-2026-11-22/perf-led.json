@@ -1,0 +1,991 @@
+{
+  "format": "bitume-mesures-fluidite-grille-v1",
+  "materiel": {
+    "machine": "Mac17,4, Apple M5, 10 CPU logiques, sur batterie",
+    "navigateur": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+    "webGL": "WebGL 2, ANGLE Metal natif",
+    "taille": [
+      1280,
+      720
+    ]
+  },
+  "htmlSha256": {
+    "temoin0299": "f57261ceb41fa287986af1d0b8c49e4b2a105a90a97bf11ee1a9fd63766ba844",
+    "intermediaire0102": "e9904c40a58c0748c4a6e75d2b142699bdcadc4c28c8a893c2c500f0e42be344",
+    "raccordCretes": "e8be74d59b3bc70d8d487a0920dd1cfbde9a3be88d24bbf8be2c9f429fe0a060",
+    "publie0102": "fe929b79dd073115d38b6b7fe7c442b20ede838414afa5d0b6b53712d7855c97",
+    "prototypeGrille68": "84c0b0bc1dafab1447a60c478a1f0a20f45c20f556dc260d9a086907091e47c8"
+  },
+  "bancReel": {
+    "parametres": {
+      "circuit": "Larche",
+      "departM": 2770,
+      "vitesseInitialeMS": 20,
+      "profil": "high",
+      "camera": "cockpit",
+      "retroviseurs": true,
+      "graine": 17017,
+      "piloteAuto": true,
+      "chauffeS": 4,
+      "mesureS": 12,
+      "chronometreGPU": false,
+      "cadence": "écran",
+      "pluie": "forte"
+    },
+    "ordre": "Ancien/final croisé entre sec et pluie, trois répétitions par version et météo. Contre-épreuve sèche du raccord des crêtes une fois.",
+    "series": {
+      "ancien-sec": [
+        {
+          "images": 721,
+          "secondes": 12.02,
+          "p50Ms": 16.7,
+          "p95Ms": 16.7,
+          "maxMs": 16.8,
+          "fpsMoyen": 59.98,
+          "cpuBoucleP95Ms": 10,
+          "premierIntervalleDeSeanceMs": 3166.5,
+          "positionFinaleM": 2870.131
+        },
+        {
+          "images": 665,
+          "secondes": 12.02,
+          "p50Ms": 16.7,
+          "p95Ms": 33.3,
+          "maxMs": 33.4,
+          "fpsMoyen": 55.32,
+          "cpuBoucleP95Ms": 13.299999998882413,
+          "premierIntervalleDeSeanceMs": 3549.8,
+          "positionFinaleM": 2870.1
+        },
+        {
+          "images": 665,
+          "secondes": 12.02,
+          "p50Ms": 16.7,
+          "p95Ms": 33.3,
+          "maxMs": 33.4,
+          "fpsMoyen": 55.32,
+          "cpuBoucleP95Ms": 14,
+          "premierIntervalleDeSeanceMs": 3699.9,
+          "positionFinaleM": 2870.096
+        }
+      ],
+      "ancien-pluie": [
+        {
+          "images": 502,
+          "secondes": 12.02,
+          "p50Ms": 16.7,
+          "p95Ms": 33.4,
+          "maxMs": 33.5,
+          "fpsMoyen": 41.76,
+          "cpuBoucleP95Ms": 18.699999999254942,
+          "premierIntervalleDeSeanceMs": 3216.5,
+          "positionFinaleM": 2976.888
+        },
+        {
+          "images": 478,
+          "secondes": 12.03,
+          "p50Ms": 33.2,
+          "p95Ms": 33.4,
+          "maxMs": 50,
+          "fpsMoyen": 39.73,
+          "cpuBoucleP95Ms": 21.5,
+          "premierIntervalleDeSeanceMs": 3566.5,
+          "positionFinaleM": 2975.319
+        },
+        {
+          "images": 517,
+          "secondes": 12.03,
+          "p50Ms": 16.7,
+          "p95Ms": 33.4,
+          "maxMs": 33.4,
+          "fpsMoyen": 42.98,
+          "cpuBoucleP95Ms": 14.700000001117587,
+          "premierIntervalleDeSeanceMs": 3683.2,
+          "positionFinaleM": 2974.428
+        }
+      ],
+      "final-sec": [
+        {
+          "images": 709,
+          "secondes": 12.02,
+          "p50Ms": 16.7,
+          "p95Ms": 16.8,
+          "maxMs": 33.4,
+          "fpsMoyen": 58.99,
+          "cpuBoucleP95Ms": 14,
+          "premierIntervalleDeSeanceMs": 3166.5,
+          "positionFinaleM": 2870.131
+        },
+        {
+          "images": 658,
+          "secondes": 12.02,
+          "p50Ms": 16.7,
+          "p95Ms": 33.3,
+          "maxMs": 33.5,
+          "fpsMoyen": 54.74,
+          "cpuBoucleP95Ms": 13.300000000745058,
+          "premierIntervalleDeSeanceMs": 3583.2,
+          "positionFinaleM": 2870.095
+        },
+        {
+          "images": 619,
+          "secondes": 12.02,
+          "p50Ms": 16.7,
+          "p95Ms": 33.4,
+          "maxMs": 33.4,
+          "fpsMoyen": 51.5,
+          "cpuBoucleP95Ms": 19,
+          "premierIntervalleDeSeanceMs": 3816.5,
+          "positionFinaleM": 2870.071
+        }
+      ],
+      "final-pluie": [
+        {
+          "images": 488,
+          "secondes": 12.02,
+          "p50Ms": 16.7,
+          "p95Ms": 33.4,
+          "maxMs": 50.1,
+          "fpsMoyen": 40.6,
+          "cpuBoucleP95Ms": 17.90000000037253,
+          "premierIntervalleDeSeanceMs": 3183.2,
+          "positionFinaleM": 2977.138
+        },
+        {
+          "images": 401,
+          "secondes": 12.03,
+          "p50Ms": 33.3,
+          "p95Ms": 49.9,
+          "maxMs": 4449.8,
+          "fpsMoyen": 33.33,
+          "cpuBoucleP95Ms": 28,
+          "premierIntervalleDeSeanceMs": 4449.8,
+          "positionFinaleM": 2965.245
+        },
+        {
+          "images": 432,
+          "secondes": 12.02,
+          "p50Ms": 33.3,
+          "p95Ms": 33.4,
+          "maxMs": 4033.1,
+          "fpsMoyen": 35.94,
+          "cpuBoucleP95Ms": 22.700000001117587,
+          "premierIntervalleDeSeanceMs": 4033.1,
+          "positionFinaleM": 2970.756
+        }
+      ],
+      "cretes-sec": [
+        {
+          "images": 688,
+          "secondes": 12.02,
+          "p50Ms": 16.7,
+          "p95Ms": 16.8,
+          "maxMs": 33.4,
+          "fpsMoyen": 57.24,
+          "cpuBoucleP95Ms": 12.699999999254942,
+          "premierIntervalleDeSeanceMs": 3516.4,
+          "positionFinaleM": 2870.1
+        }
+      ]
+    }
+  },
+  "chronoGpu": {
+    "gpu-ancien-pluie": {
+      "preparationSynchroneMs": 2981.8,
+      "deuxiemeRafDepuisDemandeMs": 3049.2,
+      "gpuMs": {
+        "n": 21,
+        "mediane": 19.927,
+        "p95": 24.268
+      },
+      "renduPrincipalP50Ms": 19.9,
+      "renduPrincipalP95Ms": 30.1,
+      "cadence": "auto",
+      "notes": "Temps GPU du rendu principal, moyenne des trois dernières lectures complètes du moteur par observation, sondée toutes les 400 ms. Mesure prise séparément, rétroviseurs exclus du compteur principal."
+    },
+    "gpu-ancien-sec": {
+      "preparationSynchroneMs": 3129.7,
+      "deuxiemeRafDepuisDemandeMs": 3200.3,
+      "gpuMs": {
+        "n": 21,
+        "mediane": 21.939,
+        "p95": 29.151
+      },
+      "renduPrincipalP50Ms": 17.2,
+      "renduPrincipalP95Ms": 28.1,
+      "cadence": "auto",
+      "notes": "Temps GPU du rendu principal, moyenne des trois dernières lectures complètes du moteur par observation, sondée toutes les 400 ms. Mesure prise séparément, rétroviseurs exclus du compteur principal."
+    },
+    "gpu-cretes-sec": {
+      "preparationSynchroneMs": 2661.2,
+      "deuxiemeRafDepuisDemandeMs": 2756.6,
+      "gpuMs": {
+        "n": 21,
+        "mediane": 24.629,
+        "p95": 34.834
+      },
+      "renduPrincipalP50Ms": 17.1,
+      "renduPrincipalP95Ms": 23.2,
+      "cadence": "auto",
+      "notes": "Temps GPU du rendu principal, moyenne des trois dernières lectures complètes du moteur par observation, sondée toutes les 400 ms. Mesure prise séparément, rétroviseurs exclus du compteur principal."
+    },
+    "gpu-final-pluie": {
+      "preparationSynchroneMs": 4317.7,
+      "deuxiemeRafDepuisDemandeMs": 4405.9,
+      "gpuMs": {
+        "n": 21,
+        "mediane": 19.549,
+        "p95": 30.703
+      },
+      "renduPrincipalP50Ms": 21.5,
+      "renduPrincipalP95Ms": 36.7,
+      "cadence": "auto",
+      "notes": "Temps GPU du rendu principal, moyenne des trois dernières lectures complètes du moteur par observation, sondée toutes les 400 ms. Mesure prise séparément, rétroviseurs exclus du compteur principal."
+    },
+    "gpu-final-sec": {
+      "preparationSynchroneMs": 4468.6,
+      "deuxiemeRafDepuisDemandeMs": 4563,
+      "gpuMs": {
+        "n": 21,
+        "mediane": 29.81,
+        "p95": 32.516
+      },
+      "renduPrincipalP50Ms": 18.6,
+      "renduPrincipalP95Ms": 27.2,
+      "cadence": "auto",
+      "notes": "Temps GPU du rendu principal, moyenne des trois dernières lectures complètes du moteur par observation, sondée toutes les 400 ms. Mesure prise séparément, rétroviseurs exclus du compteur principal."
+    }
+  },
+  "ablationRoulante": {
+    "complet": [
+      {
+        "images": 469,
+        "secondes": 8.02,
+        "p50Ms": 16.7,
+        "p95Ms": 16.8,
+        "maxMs": 33.4,
+        "fpsMoyen": 58.48,
+        "cpuBoucleP95Ms": 5.199999999254942,
+        "premierIntervalleDeSeanceMs": 2283.2,
+        "positionFinaleM": 2967.735
+      },
+      {
+        "images": 274,
+        "secondes": 8.02,
+        "p50Ms": 33.3,
+        "p95Ms": 50,
+        "maxMs": 50.1,
+        "fpsMoyen": 34.16,
+        "cpuBoucleP95Ms": 21.59999999962747,
+        "premierIntervalleDeSeanceMs": 5233.1,
+        "positionFinaleM": 2927.658
+      }
+    ],
+    "silhouette": [
+      {
+        "images": 429,
+        "secondes": 8.02,
+        "p50Ms": 16.7,
+        "p95Ms": 33.3,
+        "maxMs": 33.4,
+        "fpsMoyen": 53.49,
+        "cpuBoucleP95Ms": 9.5,
+        "premierIntervalleDeSeanceMs": 2366.6,
+        "positionFinaleM": 2966.569
+      },
+      {
+        "images": 230,
+        "secondes": 8.03,
+        "p50Ms": 33.3,
+        "p95Ms": 50,
+        "maxMs": 6316.4,
+        "fpsMoyen": 28.64,
+        "cpuBoucleP95Ms": 43.29999999888241,
+        "premierIntervalleDeSeanceMs": 6316.4,
+        "positionFinaleM": 2909.883
+      }
+    ],
+    "panorama": [
+      {
+        "images": 395,
+        "secondes": 8.02,
+        "p50Ms": 16.7,
+        "p95Ms": 33.4,
+        "maxMs": 33.5,
+        "fpsMoyen": 49.25,
+        "cpuBoucleP95Ms": 15.5,
+        "premierIntervalleDeSeanceMs": 2183.3,
+        "positionFinaleM": 2968.434
+      },
+      {
+        "images": 272,
+        "secondes": 8.02,
+        "p50Ms": 33.3,
+        "p95Ms": 50,
+        "maxMs": 50.1,
+        "fpsMoyen": 33.92,
+        "cpuBoucleP95Ms": 32.30000000074506,
+        "premierIntervalleDeSeanceMs": 4583.2,
+        "positionFinaleM": 2936
+      }
+    ],
+    "rubans": [
+      {
+        "images": 309,
+        "secondes": 8.03,
+        "p50Ms": 33.3,
+        "p95Ms": 33.4,
+        "maxMs": 50,
+        "fpsMoyen": 38.48,
+        "cpuBoucleP95Ms": 27,
+        "premierIntervalleDeSeanceMs": 2383.2,
+        "positionFinaleM": 2966.308
+      },
+      {
+        "images": 288,
+        "secondes": 8.02,
+        "p50Ms": 33.3,
+        "p95Ms": 33.4,
+        "maxMs": 50.1,
+        "fpsMoyen": 35.91,
+        "cpuBoucleP95Ms": 29.800000000745058,
+        "premierIntervalleDeSeanceMs": 4299.9,
+        "positionFinaleM": 2939.764
+      }
+    ],
+    "hud": [
+      {
+        "images": 294,
+        "secondes": 8.03,
+        "p50Ms": 33.3,
+        "p95Ms": 33.4,
+        "maxMs": 50,
+        "fpsMoyen": 36.61,
+        "cpuBoucleP95Ms": 24.09999999962747,
+        "premierIntervalleDeSeanceMs": 3666.4,
+        "positionFinaleM": 2948.318
+      },
+      {
+        "images": 348,
+        "secondes": 8.03,
+        "p50Ms": 16.7,
+        "p95Ms": 33.4,
+        "maxMs": 50.1,
+        "fpsMoyen": 43.34,
+        "cpuBoucleP95Ms": 21.09999999962747,
+        "premierIntervalleDeSeanceMs": 2449.9,
+        "positionFinaleM": 2965.518
+      }
+    ]
+  },
+  "gpuMemePose": {
+    "2868": {
+      "complet": {
+        "gpuMs": {
+          "n": 27,
+          "mediane": 8.261,
+          "p95": 8.541
+        },
+        "trianglesMedians": 3027325,
+        "cpuSoumissionMedianeMs": 1.1
+      },
+      "grille": {
+        "gpuMs": {
+          "n": 27,
+          "mediane": 8.158,
+          "p95": 10.216
+        },
+        "trianglesMedians": 3007969,
+        "cpuSoumissionMedianeMs": 1.1
+      },
+      "silhouette": {
+        "gpuMs": {
+          "n": 27,
+          "mediane": 9.423,
+          "p95": 9.988
+        },
+        "trianglesMedians": 2997205,
+        "cpuSoumissionMedianeMs": 1.4
+      },
+      "sans": {
+        "gpuMs": {
+          "n": 27,
+          "mediane": 9.323,
+          "p95": 9.503
+        },
+        "trianglesMedians": 2986037,
+        "cpuSoumissionMedianeMs": 1.4
+      }
+    },
+    "2920": {
+      "complet": {
+        "gpuMs": {
+          "n": 27,
+          "mediane": 8.533,
+          "p95": 9.335
+        },
+        "trianglesMedians": 2742792,
+        "cpuSoumissionMedianeMs": 1.6
+      },
+      "grille": {
+        "gpuMs": {
+          "n": 27,
+          "mediane": 9.719,
+          "p95": 12.884
+        },
+        "trianglesMedians": 2724144,
+        "cpuSoumissionMedianeMs": 1.5
+      },
+      "silhouette": {
+        "gpuMs": {
+          "n": 27,
+          "mediane": 8.519,
+          "p95": 9.829
+        },
+        "trianglesMedians": 2713768,
+        "cpuSoumissionMedianeMs": 1.4
+      },
+      "sans": {
+        "gpuMs": {
+          "n": 27,
+          "mediane": 8.388,
+          "p95": 10.008
+        },
+        "trianglesMedians": 2702536,
+        "cpuSoumissionMedianeMs": 1.2
+      }
+    }
+  },
+  "comparaisonPixels": {
+    "pixels-jour": [
+      {
+        "s": 2798,
+        "temps": 5.991666666666666,
+        "grilles": 24,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 16616,
+        "nettes": 8229,
+        "fortes": 373,
+        "maximum": 75,
+        "moyenne": 0.17795464409722223,
+        "bruit": 0
+      },
+      {
+        "s": 2816,
+        "temps": 5.991666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 8474,
+        "nettes": 2982,
+        "fortes": 250,
+        "maximum": 51,
+        "moyenne": 0.08494900173611111,
+        "bruit": 0
+      },
+      {
+        "s": 2860,
+        "temps": 5.991666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 11707,
+        "nettes": 5931,
+        "fortes": 262,
+        "maximum": 55,
+        "moyenne": 0.1362575954861111,
+        "bruit": 0
+      },
+      {
+        "s": 2868,
+        "temps": 5.991666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 14430,
+        "nettes": 4415,
+        "fortes": 260,
+        "maximum": 54,
+        "moyenne": 0.14021918402777778,
+        "bruit": 0
+      },
+      {
+        "s": 2898,
+        "temps": 5.991666666666666,
+        "grilles": 29,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 4808,
+        "nettes": 955,
+        "fortes": 87,
+        "maximum": 46,
+        "moyenne": 0.04529079861111111,
+        "bruit": 0
+      },
+      {
+        "s": 2904,
+        "temps": 5.991666666666666,
+        "grilles": 29,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 6413,
+        "nettes": 1366,
+        "fortes": 203,
+        "maximum": 57,
+        "moyenne": 0.06254557291666667,
+        "bruit": 0
+      },
+      {
+        "s": 2920,
+        "temps": 5.991666666666666,
+        "grilles": 26,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 14591,
+        "nettes": 6853,
+        "fortes": 254,
+        "maximum": 61,
+        "moyenne": 0.16063802083333334,
+        "bruit": 0
+      },
+      {
+        "s": 2948,
+        "temps": 5.991666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 26706,
+        "nettes": 14637,
+        "fortes": 373,
+        "maximum": 57,
+        "moyenne": 0.28557942708333334,
+        "bruit": 0
+      },
+      {
+        "s": 2996,
+        "temps": 5.991666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 7616,
+        "nettes": 2362,
+        "fortes": 146,
+        "maximum": 52,
+        "moyenne": 0.07246636284722222,
+        "bruit": 0
+      }
+    ],
+    "pixels-nuit-parcours": [
+      {
+        "s": 2798,
+        "temps": 5.991666666666666,
+        "grilles": 24,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 4567,
+        "nettes": 1037,
+        "fortes": 138,
+        "maximum": 38,
+        "moyenne": 0.052852647569444446,
+        "bruit": 0
+      },
+      {
+        "s": 2816,
+        "temps": 5.991666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 416,
+        "nettes": 351,
+        "fortes": 21,
+        "maximum": 25,
+        "moyenne": 0.017827690972222223,
+        "bruit": 0
+      },
+      {
+        "s": 2860,
+        "temps": 5.991666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 2445,
+        "nettes": 339,
+        "fortes": 16,
+        "maximum": 46,
+        "moyenne": 0.03314127604166667,
+        "bruit": 0
+      },
+      {
+        "s": 2868,
+        "temps": 5.991666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 4113,
+        "nettes": 405,
+        "fortes": 16,
+        "maximum": 28,
+        "moyenne": 0.04998480902777778,
+        "bruit": 0
+      },
+      {
+        "s": 2898,
+        "temps": 5.991666666666666,
+        "grilles": 29,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 502,
+        "nettes": 120,
+        "fortes": 0,
+        "maximum": 17,
+        "moyenne": 0.01353515625,
+        "bruit": 0
+      },
+      {
+        "s": 2904,
+        "temps": 5.991666666666666,
+        "grilles": 29,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 720,
+        "nettes": 221,
+        "fortes": 3,
+        "maximum": 26,
+        "moyenne": 0.01803493923611111,
+        "bruit": 0
+      },
+      {
+        "s": 2920,
+        "temps": 5.991666666666666,
+        "grilles": 26,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 1849,
+        "nettes": 348,
+        "fortes": 8,
+        "maximum": 31,
+        "moyenne": 0.03390625,
+        "bruit": 0
+      },
+      {
+        "s": 2948,
+        "temps": 5.991666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 5056,
+        "nettes": 699,
+        "fortes": 87,
+        "maximum": 30,
+        "moyenne": 0.0672482638888889,
+        "bruit": 0
+      },
+      {
+        "s": 2996,
+        "temps": 5.991666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 989,
+        "nettes": 280,
+        "fortes": 15,
+        "maximum": 25,
+        "moyenne": 0.01983181423611111,
+        "bruit": 0
+      }
+    ],
+    "pixels-jour-inspection": [
+      {
+        "s": 2868,
+        "temps": 5.991666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 18407,
+        "nettes": 5870,
+        "fortes": 611,
+        "maximum": 65,
+        "moyenne": 0.22303385416666666,
+        "bruit": 0
+      },
+      {
+        "s": 2868,
+        "temps": 6.0536666666666665,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 18089,
+        "nettes": 5913,
+        "fortes": 610,
+        "maximum": 66,
+        "moyenne": 0.225087890625,
+        "bruit": 0
+      },
+      {
+        "s": 2868,
+        "temps": 6.115666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 17789,
+        "nettes": 5888,
+        "fortes": 630,
+        "maximum": 66,
+        "moyenne": 0.22676866319444444,
+        "bruit": 0
+      },
+      {
+        "s": 2868,
+        "temps": 6.177666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 17080,
+        "nettes": 5862,
+        "fortes": 655,
+        "maximum": 66,
+        "moyenne": 0.22572157118055555,
+        "bruit": 0
+      },
+      {
+        "s": 2868,
+        "temps": 6.2396666666666665,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 16564,
+        "nettes": 5703,
+        "fortes": 721,
+        "maximum": 66,
+        "moyenne": 0.2208767361111111,
+        "bruit": 0
+      },
+      {
+        "s": 2868,
+        "temps": 6.301666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 16545,
+        "nettes": 5628,
+        "fortes": 731,
+        "maximum": 66,
+        "moyenne": 0.217548828125,
+        "bruit": 0
+      },
+      {
+        "s": 2868,
+        "temps": 6.363666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 16101,
+        "nettes": 5681,
+        "fortes": 704,
+        "maximum": 66,
+        "moyenne": 0.21212999131944443,
+        "bruit": 0
+      },
+      {
+        "s": 2868,
+        "temps": 6.425666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 16204,
+        "nettes": 5612,
+        "fortes": 671,
+        "maximum": 66,
+        "moyenne": 0.21099500868055557,
+        "bruit": 0
+      },
+      {
+        "s": 2868,
+        "temps": 6.487666666666667,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 16847,
+        "nettes": 5621,
+        "fortes": 604,
+        "maximum": 66,
+        "moyenne": 0.20943250868055555,
+        "bruit": 0
+      },
+      {
+        "s": 2868,
+        "temps": 6.549666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 17563,
+        "nettes": 5640,
+        "fortes": 584,
+        "maximum": 65,
+        "moyenne": 0.2142697482638889,
+        "bruit": 0
+      },
+      {
+        "s": 2868,
+        "temps": 6.611666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 18286,
+        "nettes": 5846,
+        "fortes": 607,
+        "maximum": 65,
+        "moyenne": 0.22235894097222222,
+        "bruit": 0
+      },
+      {
+        "s": 2868,
+        "temps": 6.673666666666667,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 18066,
+        "nettes": 5901,
+        "fortes": 601,
+        "maximum": 66,
+        "moyenne": 0.22493815104166667,
+        "bruit": 0
+      },
+      {
+        "s": 2868,
+        "temps": 6.735666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 17707,
+        "nettes": 5910,
+        "fortes": 625,
+        "maximum": 66,
+        "moyenne": 0.22581488715277778,
+        "bruit": 0
+      },
+      {
+        "s": 2868,
+        "temps": 6.797666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 17060,
+        "nettes": 5877,
+        "fortes": 661,
+        "maximum": 66,
+        "moyenne": 0.22480251736111112,
+        "bruit": 0
+      },
+      {
+        "s": 2868,
+        "temps": 6.859666666666667,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 16629,
+        "nettes": 5718,
+        "fortes": 726,
+        "maximum": 66,
+        "moyenne": 0.21994140625,
+        "bruit": 0
+      },
+      {
+        "s": 2868,
+        "temps": 6.921666666666666,
+        "grilles": 27,
+        "largeur": 1280,
+        "hauteur": 720,
+        "faibles": 16559,
+        "nettes": 5638,
+        "fortes": 730,
+        "maximum": 66,
+        "moyenne": 0.21691297743055554,
+        "bruit": 0
+      }
+    ]
+  },
+  "comparaisonDistance": {
+    "pixels-jour": {
+      "s": 2868,
+      "centresDevantDans35m": 6,
+      "masques": 0,
+      "modeleParDistance": [
+        {
+          "distance": 58.21,
+          "forme": "bitume-ruban-led-12",
+          "centrePixel": [
+            1148.0,
+            326.3
+          ]
+        },
+        {
+          "distance": 64.74,
+          "forme": "bitume-ruban-chevron",
+          "centrePixel": [
+            1094.7,
+            326.0
+          ]
+        },
+        {
+          "distance": 69.97,
+          "forme": "bitume-ruban-chevron",
+          "centrePixel": [
+            1048.0,
+            326.5
+          ]
+        },
+        {
+          "distance": 74.79,
+          "forme": "bitume-ruban-chevron",
+          "centrePixel": [
+            1002.0,
+            327.1
+          ]
+        },
+        {
+          "distance": 79.15,
+          "forme": "bitume-ruban-chevron",
+          "centrePixel": [
+            957.7,
+            327.4
+          ]
+        },
+        {
+          "distance": 83.03,
+          "forme": "bitume-ruban-chevron",
+          "centrePixel": [
+            915.4,
+            327.4
+          ]
+        }
+      ]
+    },
+    "pixels-nuit-parcours": {
+      "s": 2920,
+      "centresDevantDans35m": 5,
+      "masques": 0,
+      "modeleParDistance": [
+        {
+          "distance": 57.43,
+          "forme": "bitume-ruban-led-12",
+          "centrePixel": [
+            52.2,
+            376.1
+          ]
+        }
+      ]
+    }
+  },
+  "methodeAblation": "Même HTML publié et parcours mouillé sur 8 secondes après 6 secondes de chauffe, ordre complet–silhouette–panorama–rubans–hud puis inverse. Silhouette substitue le LOD lointain, panorama retire la nappe lointaine, rubans retire tous les rubans et hud restaure la feuille de style .99.",
+  "methodePaire": "Position physique et caméra fixes. Douze blocs alternés de 12 images, les deux premières et la dernière de chaque bloc exclues. Requêtes TIME_ELAPSED_EXT/WebGL2 autour du véritable rendu principal, trois blocs par état, aucune requête manquante.",
+  "conclusions": [
+    "Dans les trois paires sous pluie, la .102 intermédiaire rend 1 321 images contre 1 497 pour .99 (−11,8 %). Au sec, elle rend 1 986 images contre 2 051 (−3,2 %).",
+    "Le test roulant des ablations donne des résultats contradictoires. Le jeu complet rend 469 puis 274 images. La suppression des rubans en donne 309 puis 288. Aucune cause isolée ne reproduit à elle seule une amélioration stable. D’autres travaux CPU ont tourné en parallèle sur le Mac.",
+    "Le prototype de fond à 68 triangles conserve les 209 emplacements des diodes et réduit les triangles du rendu principal de 19 356 à s=2868 et de 18 648 à s=2920. Aucun gain de temps GPU universel ne se dégage.",
+    "La comparaison de pixels isole le fond de dalle. Deux dessins d’origine successifs donnent zéro pixel de bruit à un écart de 8/255. La lumière active et la silhouette lointaine emploient les mêmes formes.",
+    "Les séries et conditions décrites portent sur ce Mac et ces poses. Le temps de préparation de séance et le temps par image sont mesurés séparément."
+  ]
+}

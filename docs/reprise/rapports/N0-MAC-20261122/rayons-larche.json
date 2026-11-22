@@ -1,0 +1,165 @@
+{
+  "scene": {
+    "circuit": "larche",
+    "graine": 210,
+    "abscisseM": 14273.05,
+    "triangles": 135,
+    "sha256": "f57239788eba5c019145cef92ecb26ad259bd47f740531c55dece2f85d4fd3f0"
+  },
+  "machine": {
+    "gpu": "Apple M5",
+    "architecture": "arm64",
+    "macOS": "27.2.1",
+    "buildMacOS": "26B131",
+    "xcode": [
+      "Xcode 27.2",
+      "Build version 27B52"
+    ],
+    "sdk": "27.2",
+    "metal": "Apple metal version 32023.922 (metalfe-32023.922.4)",
+    "compilateur": "Apple clang version 21.0.0 (clang-2100.4.1.1)",
+    "node": "v24.18.0"
+  },
+  "supportsRaytracing": true,
+  "validationAPI": true,
+  "octetsStructure": 12864,
+  "octetsScratchConstruction": 1152,
+  "sha256Sources": {
+    "rayons-larche.metal": "28710dbcbb1fd5798e4bc245e8ac3a52965d41c92349b97027d12aababe0d051",
+    "rayons-larche.mm": "ac35dd1f0b44a6886f8f86a1fe1cf73b63d9e9c7ac2dcce0fe3ebec616957e5e",
+    "extraire-rayons-larche.cjs": "5193f8a5fc1a6abc659bdb6bc4658f6122af3698a61643dace4acb7d7bf670e1",
+    "rayons-larche-mac.sh": "0d2a9f4debb97f6e1a8bd32e0a84bcf27cd55c171d9df1f03a839e54cdb97b0e"
+  },
+  "sha256BinairesLocaux": {
+    "rayons": "099c48b032bc7221ac3d5f306818fc95aa70e021a9399b143450a858d3f713c8",
+    "rayons.metallib": "6550b7db6a6ea5b2bb135a2de1bca6864e6b7b2ea2219275a575750493fac4ca"
+  },
+  "controlesParPasse": [
+    {
+      "distanceCPU_M": 8,
+      "distanceGPU_M": 8,
+      "ecartAbsoluM": 6.900577886881365e-10,
+      "ombre": false,
+      "primitive": 68,
+      "rayon": "chaussée",
+      "touche": true
+    },
+    {
+      "distanceCPU_M": 4.5,
+      "distanceGPU_M": 4.499999523162842,
+      "ecartAbsoluM": 2.953196371890954e-07,
+      "ombre": false,
+      "primitive": 68,
+      "rayon": "chaussée en biais",
+      "touche": true
+    },
+    {
+      "distanceCPU_M": null,
+      "distanceGPU_M": null,
+      "ecartAbsoluM": null,
+      "ombre": false,
+      "primitive": null,
+      "rayon": "hors chaussée",
+      "touche": false
+    },
+    {
+      "distanceCPU_M": 2,
+      "distanceGPU_M": 2,
+      "ecartAbsoluM": 6.900582327773463e-10,
+      "ombre": true,
+      "primitive": 68,
+      "rayon": "lumière derrière le tablier",
+      "touche": true
+    },
+    {
+      "distanceCPU_M": null,
+      "distanceGPU_M": null,
+      "ecartAbsoluM": null,
+      "ombre": true,
+      "primitive": null,
+      "rayon": "lumière à côté du tablier",
+      "touche": false
+    },
+    {
+      "distanceCPU_M": null,
+      "distanceGPU_M": null,
+      "ecartAbsoluM": null,
+      "ombre": true,
+      "primitive": null,
+      "rayon": "lumière avant le tablier",
+      "touche": false
+    }
+  ],
+  "processus": [
+    {
+      "numero": 1,
+      "constructionGPUus": 247.583,
+      "quatrePassesGPUus": [
+        16,
+        55.0,
+        20.5,
+        21.375
+      ]
+    },
+    {
+      "numero": 2,
+      "constructionGPUus": 387.375,
+      "quatrePassesGPUus": [
+        27,
+        17.25,
+        17.25,
+        17.292
+      ]
+    },
+    {
+      "numero": 3,
+      "constructionGPUus": 440.083,
+      "quatrePassesGPUus": [
+        26.625,
+        24.25,
+        24.208,
+        24.125
+      ]
+    }
+  ],
+  "chronometrage": "GPUStartTime → GPUEndTime du command buffer en microsecondes. Chaque passe groupe six rayons. Les temps incluent le coût fixe du command buffer.",
+  "secondeConstruction": {
+    "sha256BinairesLocaux": {
+      "rayons": "099c48b032bc7221ac3d5f306818fc95aa70e021a9399b143450a858d3f713c8",
+      "rayons.metallib": "6550b7db6a6ea5b2bb135a2de1bca6864e6b7b2ea2219275a575750493fac4ca"
+    },
+    "processus": [
+      {
+        "numero": 1,
+        "constructionGPUus": 351.458,
+        "quatrePassesGPUus": [
+          19.25,
+          19.0,
+          18.833,
+          21.583
+        ]
+      },
+      {
+        "numero": 2,
+        "constructionGPUus": 311.5,
+        "quatrePassesGPUus": [
+          23.5,
+          19.0,
+          92.5,
+          17
+        ]
+      },
+      {
+        "numero": 3,
+        "constructionGPUus": 1484.708,
+        "quatrePassesGPUus": [
+          20.0,
+          17.167,
+          17.167,
+          17.125
+        ]
+      }
+    ]
+  },
+  "referenceJeu": "a2a1a1acd31f10b1951446a8fd302be62aec98f6"
+}

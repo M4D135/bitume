@@ -1,0 +1,200 @@
+{
+  "node": "24.18.0",
+  "v8": "13.6.233.17-node.50",
+  "cas": "Même domaine Islande, 12 voitures, 20000 images de chauffe et 3000 mesurées (deux vues).",
+  "mesures": [
+    {
+      "cas": "tout",
+      "name": "normal1",
+      "flags": [
+        "--expose-gc"
+      ],
+      "ms": 1042,
+      "status": 0,
+      "octets": 611.8986666666667,
+      "objets": 60
+    },
+    {
+      "cas": "tout",
+      "name": "normal2",
+      "flags": [
+        "--expose-gc"
+      ],
+      "ms": 1036,
+      "status": 0,
+      "octets": 611.8986666666667,
+      "objets": 60
+    },
+    {
+      "cas": "tout",
+      "name": "sync1",
+      "flags": [
+        "--expose-gc",
+        "--no-concurrent-recompilation"
+      ],
+      "ms": 1313,
+      "status": 0,
+      "octets": 3520.5706666666665,
+      "objets": 60
+    },
+    {
+      "cas": "tout",
+      "name": "sync2",
+      "flags": [
+        "--expose-gc",
+        "--no-concurrent-recompilation"
+      ],
+      "ms": 1273,
+      "status": 0,
+      "octets": 3520.5706666666665,
+      "objets": 60
+    },
+    {
+      "cas": "tout",
+      "name": "sync3",
+      "flags": [
+        "--expose-gc",
+        "--no-concurrent-recompilation",
+        "--trace-opt",
+        "--trace-deopt"
+      ],
+      "ms": 1583,
+      "status": 0,
+      "octets": 3520.5706666666665,
+      "objets": 60
+    },
+    {
+      "cas": "tout",
+      "name": "retard40",
+      "flags": [
+        "--expose-gc",
+        "--trace-opt",
+        "--trace-deopt",
+        "--concurrent-recompilation-delay=40"
+      ],
+      "ms": 1836,
+      "status": 0,
+      "octets": 446.768,
+      "objets": 60
+    },
+    {
+      "cas": "tout",
+      "name": "coucheSync",
+      "flags": [
+        "--expose-gc",
+        "--no-concurrent-recompilation"
+      ],
+      "ms": 1294,
+      "status": 0,
+      "octets": 611.8986666666667,
+      "objets": 60
+    },
+    {
+      "cas": "tout",
+      "name": "deboutSync",
+      "flags": [
+        "--expose-gc",
+        "--no-concurrent-recompilation"
+      ],
+      "ms": 1273,
+      "status": 0,
+      "octets": 3520.5706666666665,
+      "objets": 60
+    },
+    {
+      "cas": "tout",
+      "name": "finaleS1",
+      "flags": [
+        "--expose-gc",
+        "--no-concurrent-recompilation"
+      ],
+      "ms": 767,
+      "status": 0,
+      "octets": 611.8986666666667,
+      "objets": 60
+    },
+    {
+      "cas": "tout",
+      "name": "finaleS2",
+      "flags": [
+        "--expose-gc",
+        "--no-concurrent-recompilation"
+      ],
+      "ms": 767,
+      "status": 0,
+      "octets": 611.8986666666667,
+      "objets": 60
+    },
+    {
+      "cas": "tout",
+      "name": "finaleN1",
+      "flags": [
+        "--expose-gc"
+      ],
+      "ms": 611,
+      "status": 0,
+      "octets": 611.8986666666667,
+      "objets": 60
+    },
+    {
+      "cas": "tout",
+      "name": "finaleN2",
+      "flags": [
+        "--expose-gc"
+      ],
+      "ms": 622,
+      "status": 0,
+      "octets": 611.8986666666667,
+      "objets": 60
+    },
+    {
+      "cas": "harnais",
+      "name": "finaleHarnais",
+      "flags": [
+        "--expose-gc",
+        "--no-concurrent-recompilation"
+      ],
+      "ms": 358,
+      "status": 0,
+      "octets": 384.93333333333334,
+      "objets": 0
+    },
+    {
+      "cas": "dessin",
+      "name": "finaleDessin",
+      "flags": [
+        "--expose-gc",
+        "--no-concurrent-recompilation"
+      ],
+      "ms": 731,
+      "status": 0,
+      "octets": 416.93333333333334,
+      "objets": 60
+    }
+  ],
+  "echantillonnage": {
+    "seuilOctets": 512,
+    "processusSynchrone": {
+      "poserQuadrupede": 2261,
+      "mixDansPose": 683
+    },
+    "processusNormal": {
+      "poserQuadrupede": 0,
+      "mixDansPose": 0
+    },
+    "note": "Octets estimés par image via HeapProfiler. Les deux postes sont distincts et les allocations de poidsAllures sont comptées séparément."
+  },
+  "empreintes": {
+    "temoin-matrices": {
+      "course": 360000,
+      "planches": 12768,
+      "empreinte": "177c523b518f0c43ddb48555d2d1eb7c121825dd6d56562b23ad95e2a076ef2e"
+    },
+    "correction-matrices": {
+      "course": 360000,
+      "planches": 12768,
+      "empreinte": "177c523b518f0c43ddb48555d2d1eb7c121825dd6d56562b23ad95e2a076ef2e"
+    }
+  },
+  "suite": "13 contrôles animaux"
+}

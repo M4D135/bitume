@@ -1,0 +1,358 @@
+{
+  "version": "V0.2.104",
+  "sha256": "d9067cb3a0d4205afa39ad40e93f9de8f5b1fa72f9489d72aa730a2168cb8318",
+  "chrono": {
+    "conditions": {
+      "retour": [
+        "retour"
+      ],
+      "tourValide": false,
+      "s": 32247.33034836143,
+      "ligne": 32249.33,
+      "r": {
+        "phase": "arrivee",
+        "tours": 1,
+        "position": 1,
+        "meilleur": null,
+        "termine": true
+      }
+    },
+    "affichage": {
+      "ecran": "resultats",
+      "mode": "chrono",
+      "joueurFini": true,
+      "abandon": false,
+      "meilleur": null,
+      "temps": 101.29885854359463,
+      "tempsTours": [
+        101.29885854359463
+      ],
+      "termine": true,
+      "physique": true,
+      "titre": "Arrivée de la spéciale",
+      "sousTitre": "Col de Larche → Vinadio · temps 1:41,299 · hors record",
+      "lignes": [
+        {
+          "joueur": false,
+          "cellules": [
+            "1",
+            "1:41,299",
+            "–"
+          ]
+        }
+      ]
+    }
+  },
+  "course": {
+    "conditions": {
+      "sJ": 41.99556708052842,
+      "sPremier": 32247.33034836143,
+      "ligne": 32249.33,
+      "temps": 94.70000000002318,
+      "drapeau": 42.0863319760846,
+      "n": 12,
+      "resultat": {
+        "phase": "course",
+        "tours": 0,
+        "position": 11,
+        "meilleur": null,
+        "termine": true
+      }
+    },
+    "provisoire": {
+      "ecran": "resultats",
+      "mode": "course",
+      "joueurFini": false,
+      "abandon": false,
+      "meilleur": null,
+      "temps": null,
+      "tempsTours": [],
+      "termine": true,
+      "physique": true,
+      "titre": "Ligne non franchie · 11e",
+      "sousTitre": "Col de Larche → Vinadio · 1 tour · rivaux normaux",
+      "lignes": [
+        {
+          "joueur": false,
+          "cellules": [
+            "1",
+            "3",
+            "R. Castagnet",
+            "1",
+            "0:42,086",
+            "0:42,086"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "2",
+            "5",
+            "E. Varenne",
+            "0",
+            "en piste",
+            "–"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "3",
+            "28",
+            "A. Kowalczyk",
+            "0",
+            "en piste",
+            "–"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "4",
+            "8",
+            "L. Brasquet",
+            "0",
+            "en piste",
+            "–"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "5",
+            "26",
+            "M. Duvernet",
+            "0",
+            "en piste",
+            "–"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "6",
+            "7",
+            "P. Morvan",
+            "0",
+            "en piste",
+            "–"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "7",
+            "11",
+            "H. Delacour",
+            "0",
+            "en piste",
+            "–"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "8",
+            "17",
+            "J. Vanmeer",
+            "0",
+            "en piste",
+            "–"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "9",
+            "14",
+            "T. Okafor",
+            "0",
+            "en piste",
+            "–"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "10",
+            "22",
+            "K. Lindgren",
+            "0",
+            "en piste",
+            "–"
+          ]
+        },
+        {
+          "joueur": true,
+          "cellules": [
+            "11",
+            "1",
+            "Vous",
+            "0",
+            "en piste",
+            "–"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "12",
+            "19",
+            "S. Ferrandi",
+            "0",
+            "en piste",
+            "–"
+          ]
+        }
+      ]
+    },
+    "definitif": {
+      "ecran": "resultats",
+      "mode": "course",
+      "joueurFini": false,
+      "abandon": false,
+      "meilleur": null,
+      "temps": null,
+      "tempsTours": [],
+      "termine": true,
+      "physique": true,
+      "titre": "Ligne non franchie · 11e",
+      "sousTitre": "Col de Larche → Vinadio · 1 tour · rivaux normaux",
+      "lignes": [
+        {
+          "joueur": false,
+          "cellules": [
+            "1",
+            "3",
+            "R. Castagnet",
+            "1",
+            "0:42,086",
+            "0:42,086"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "2",
+            "5",
+            "E. Varenne",
+            "0",
+            "Non arrivé",
+            "–"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "3",
+            "28",
+            "A. Kowalczyk",
+            "0",
+            "Non arrivé",
+            "–"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "4",
+            "8",
+            "L. Brasquet",
+            "0",
+            "Non arrivé",
+            "–"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "5",
+            "26",
+            "M. Duvernet",
+            "0",
+            "Non arrivé",
+            "–"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "6",
+            "7",
+            "P. Morvan",
+            "0",
+            "Non arrivé",
+            "–"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "7",
+            "11",
+            "H. Delacour",
+            "0",
+            "Non arrivé",
+            "–"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "8",
+            "17",
+            "J. Vanmeer",
+            "0",
+            "Non arrivé",
+            "–"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "9",
+            "14",
+            "T. Okafor",
+            "0",
+            "Non arrivé",
+            "–"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "10",
+            "22",
+            "K. Lindgren",
+            "0",
+            "Non arrivé",
+            "–"
+          ]
+        },
+        {
+          "joueur": true,
+          "cellules": [
+            "11",
+            "1",
+            "Vous",
+            "0",
+            "Non arrivé",
+            "–"
+          ]
+        },
+        {
+          "joueur": false,
+          "cellules": [
+            "12",
+            "19",
+            "S. Ferrandi",
+            "0",
+            "Non arrivé",
+            "–"
+          ]
+        }
+      ]
+    }
+  },
+  "erreursChrome": []
+}

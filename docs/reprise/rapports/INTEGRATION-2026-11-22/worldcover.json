@@ -1,0 +1,103 @@
+{
+  "produit": "ESA WorldCover 10 m 2021 v200",
+  "doi": "https://doi.org/10.5281/zenodo.7254221",
+  "licence": "https://creativecommons.org/licenses/by/4.0/",
+  "attribution": "© ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium",
+  "tuileSha256": "a96ec5d86f42920bdd29ac8b6214388c2df1e3229b9efb8c283bcd44480c8c20",
+  "pasM": 200,
+  "cellules": [
+    130,
+    90
+  ],
+  "proportionsU8Moyennes": {
+    "foret": 0.2784662,
+    "prairie": 0.5870059,
+    "solNuOuPeuVegetalise": 0.1211691
+  },
+  "geometrie": {
+    "avant": {
+      "nappes": 396,
+      "sommets": 29823,
+      "triangles": 45212,
+      "indicesXYZNormalesEtMatiere": "96cd93687b136a9ba3440003e4339a7a75f98020fb287655ecc4c461c464943d",
+      "deltaCouleurParArete": {
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      }
+    },
+    "nouveau": {
+      "nappes": 396,
+      "sommets": 29823,
+      "triangles": 45212,
+      "indicesXYZNormalesEtMatiere": "96cd93687b136a9ba3440003e4339a7a75f98020fb287655ecc4c461c464943d",
+      "deltaCouleurParArete": {
+        "p95": 0.01789577305316925,
+        "p99": 0.02443680167198181,
+        "max": 0.045848533511161804
+      }
+    }
+  },
+  "rendu": [
+    {
+      "s": 2868,
+      "meteo": "sec",
+      "saison": "ete",
+      "images": 2,
+      "sha256DerniereAvant": "7f74c5d98684a560b0ff0837779d30a2f845bbeca58755f3e482915e0b81fd37",
+      "sha256DerniereApres": "25b826af9cb507c7a33c14d23f530d7f6c1efb5ebd35debb20186fce5c16b585"
+    },
+    {
+      "s": 4588,
+      "meteo": "sec",
+      "saison": "ete",
+      "images": 2,
+      "sha256DerniereAvant": "e95d0077fdfb5f6a72afe2cba583e13843712bdaed6af98f76050de07b9566f6",
+      "sha256DerniereApres": "b7a7000daf544730998dbbf54fe2a9b8824cb27aaaa9ecfdf7f622cbac055ee0"
+    },
+    {
+      "s": 16500,
+      "meteo": "sec",
+      "saison": "ete",
+      "images": 2,
+      "sha256DerniereAvant": "489937196634273662eaa1ea4c52c350aa8b9ecb24ad8234a0989fad4ecd111e",
+      "sha256DerniereApres": "2165635f5359bd32c07f5ae7d3437c4a56e0fb490f4afd6e02392a081fb3d649"
+    },
+    {
+      "s": 16500,
+      "meteo": "pluie",
+      "saison": "ete",
+      "images": 2,
+      "sha256DerniereAvant": "e47bfa91566fa20edaa533107e6947771db0e26f9c73a56d9df81538b5cd3440",
+      "sha256DerniereApres": "d189666cd941c8db74ae03e5115d4f07146dae0bd04d33dbb429a1b1ad29bccb"
+    },
+    {
+      "s": 2868,
+      "meteo": "sec",
+      "saison": "hiver",
+      "images": 2,
+      "sha256DerniereAvant": "62bd845ae88a7092dc60b18211ef7249a64904a2e23e2fc263a6508effd4f7a2",
+      "sha256DerniereApres": "2629e0da5df49605fe501702f42163c83e8c38a5d1bd85c3045ec55758bfffa0"
+    }
+  ],
+  "captures": "Chrome 157, WebGL2/SwiftShader, seed 17017, 1120×630, deux images par course à horloge contrôlée.",
+  "controlePigmentSeul": {
+    "departM": 4588,
+    "brumeFixe": 0.00022,
+    "pigmentUniformeRGB": [
+      0.176485,
+      0.200587,
+      0.130958
+    ],
+    "fenetrePixelsXYXY": [
+      185,
+      90,
+      1100,
+      245
+    ],
+    "minimumMaximumDifferenceRGB": 6,
+    "partPixelsAuSeuil": 0.37644,
+    "p95DifferenceRGB": 14.0,
+    "limite": "Couleur constante par triangle dans FERRO. De légères facettes restent discernables sous le col à la taille native ; pas de test FPS avec cette horloge."
+  }
+}

@@ -1,0 +1,571 @@
+{
+  "version": "V0.2.107",
+  "sha256HTML": "908493dbb042870989d906bc2dc4c8c65eae1d5242cd361c5d4376324a630327",
+  "navigateur": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+  "physique": {
+    "disponible": true,
+    "ready": true,
+    "version": "5.12.0",
+    "erreur": null
+  },
+  "mode": "duo local, deux actionneurs simulés. Bouton Start de J1 puis clic sur Reprendre. Pause automatique désactivée pour distinguer la perte de visibilité.",
+  "fatal": null,
+  "erreurs": [],
+  "observations": [
+    {
+      "etape": "conduite",
+      "ecran": "course",
+      "visibilite": "visible",
+      "tempsSimule": 6.291666666666681,
+      "rpm": [
+        9791.156062794898,
+        9794.91203645712
+      ],
+      "signaux": [
+        {
+          "actionneur": "trigger-rumble",
+          "commandes": [
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.07284163090845008,
+              "strongMagnitude": 0.13156264514783514,
+              "leftTrigger": 0,
+              "rightTrigger": 0.20793060312241976
+            },
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.0795388117967362,
+              "strongMagnitude": 0.13701729103813018,
+              "leftTrigger": 0,
+              "rightTrigger": 0.2250161450207811
+            },
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.03496267717133726,
+              "strongMagnitude": 0.0971953948389542,
+              "leftTrigger": 0,
+              "rightTrigger": 0
+            },
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.32,
+              "strongMagnitude": 0.055,
+              "leftTrigger": 0,
+              "rightTrigger": 0.19
+            },
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.2291124260355009,
+              "strongMagnitude": 0.04653846153846133,
+              "leftTrigger": 0,
+              "rightTrigger": 0.13603550295857866
+            },
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.03555555555555425,
+              "strongMagnitude": 0.07523907626494998,
+              "leftTrigger": 0,
+              "rightTrigger": 0.021111111111110338
+            },
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.03615736432460803,
+              "strongMagnitude": 0.08160703331047202,
+              "leftTrigger": 0,
+              "rightTrigger": 0
+            },
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.04083761473510667,
+              "strongMagnitude": 0.10667708856241576,
+              "leftTrigger": 0,
+              "rightTrigger": 0
+            },
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.054361653547645446,
+              "strongMagnitude": 0.1234440997931541,
+              "leftTrigger": 0,
+              "rightTrigger": 0
+            }
+          ],
+          "compteVibrations": 9,
+          "compteArrets": 0
+        },
+        {
+          "actionneur": "dual-rumble",
+          "commandes": [
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.07485501712407111,
+              "strongMagnitude": 0.13156264514783514
+            },
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.0810058122074812,
+              "strongMagnitude": 0.1370188620476612
+            },
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.03496640219505524,
+              "strongMagnitude": 0.09719889343976158
+            },
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.32,
+              "strongMagnitude": 0.055
+            },
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.2291124260355009,
+              "strongMagnitude": 0.04653846153846133
+            },
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.03555555555555425,
+              "strongMagnitude": 0.07523814265144238
+            },
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.036208697877777245,
+              "strongMagnitude": 0.08162869924998525
+            },
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.04089706161049907,
+              "strongMagnitude": 0.10673934444627081
+            },
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.05440240650204401,
+              "strongMagnitude": 0.1234708634468315
+            }
+          ],
+          "compteVibrations": 9,
+          "compteArrets": 0
+        }
+      ]
+    },
+    {
+      "etape": "pause-bouton-Start-J1",
+      "ecran": "pause",
+      "visibilite": "visible",
+      "tempsSimule": 6.291666666666681,
+      "rpm": [
+        9791.156062794898,
+        9794.91203645712
+      ],
+      "signaux": [
+        {
+          "actionneur": "trigger-rumble",
+          "commandes": [
+            {
+              "type": "reset"
+            }
+          ],
+          "compteVibrations": 0,
+          "compteArrets": 1
+        },
+        {
+          "actionneur": "dual-rumble",
+          "commandes": [
+            {
+              "type": "reset"
+            }
+          ],
+          "compteVibrations": 0,
+          "compteArrets": 1
+        }
+      ]
+    },
+    {
+      "etape": "pause-dix-images",
+      "ecran": "pause",
+      "visibilite": "visible",
+      "tempsSimule": 6.291666666666681,
+      "rpm": [
+        9791.156062794898,
+        9794.91203645712
+      ],
+      "signaux": [
+        {
+          "actionneur": "trigger-rumble",
+          "commandes": [],
+          "compteVibrations": 0,
+          "compteArrets": 0
+        },
+        {
+          "actionneur": "dual-rumble",
+          "commandes": [],
+          "compteVibrations": 0,
+          "compteArrets": 0
+        }
+      ]
+    },
+    {
+      "etape": "clic-reprendre-avant-pas",
+      "ecran": "course",
+      "visibilite": "visible",
+      "tempsSimule": 6.291666666666681,
+      "rpm": [
+        9791.156062794898,
+        9794.91203645712
+      ],
+      "signaux": [
+        {
+          "actionneur": "trigger-rumble",
+          "commandes": [],
+          "compteVibrations": 0,
+          "compteArrets": 0
+        },
+        {
+          "actionneur": "dual-rumble",
+          "commandes": [],
+          "compteVibrations": 0,
+          "compteArrets": 0
+        }
+      ]
+    },
+    {
+      "etape": "reprise-apres-pas",
+      "ecran": "course",
+      "visibilite": "visible",
+      "tempsSimule": 6.458333333333356,
+      "rpm": [
+        10061.883539412634,
+        10068.335085560317
+      ],
+      "signaux": [
+        {
+          "actionneur": "trigger-rumble",
+          "commandes": [
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.050313390396405436,
+              "strongMagnitude": 0.11821188056781061,
+              "leftTrigger": 0,
+              "rightTrigger": 0
+            },
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.05021200626201683,
+              "strongMagnitude": 0.11781143303491531,
+              "leftTrigger": 0,
+              "rightTrigger": 0
+            },
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.025149594461633427,
+              "strongMagnitude": 0.08709178941423494,
+              "leftTrigger": 0,
+              "rightTrigger": 0
+            },
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.02839703687565019,
+              "strongMagnitude": 0.09097438644921928,
+              "leftTrigger": 0,
+              "rightTrigger": 0
+            },
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.055313605787060606,
+              "strongMagnitude": 0.12294173025715108,
+              "leftTrigger": 0,
+              "rightTrigger": 0
+            }
+          ],
+          "compteVibrations": 5,
+          "compteArrets": 0
+        },
+        {
+          "actionneur": "dual-rumble",
+          "commandes": [
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.05036989307140607,
+              "strongMagnitude": 0.1182579633368486
+            },
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.050257059791173835,
+              "strongMagnitude": 0.11784043602243126
+            },
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.025160391537584235,
+              "strongMagnitude": 0.08710295123203735
+            },
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.02847883286253359,
+              "strongMagnitude": 0.09106717330164446
+            },
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.0554385934281148,
+              "strongMagnitude": 0.12305200543018008
+            }
+          ],
+          "compteVibrations": 5,
+          "compteArrets": 0
+        }
+      ]
+    },
+    {
+      "etape": "onglet-masque",
+      "ecran": "course",
+      "visibilite": "hidden",
+      "tempsSimule": 6.458333333333356,
+      "rpm": [
+        10061.883539412634,
+        10068.335085560317
+      ],
+      "signaux": [
+        {
+          "actionneur": "trigger-rumble",
+          "commandes": [
+            {
+              "type": "reset"
+            }
+          ],
+          "compteVibrations": 0,
+          "compteArrets": 1
+        },
+        {
+          "actionneur": "dual-rumble",
+          "commandes": [
+            {
+              "type": "reset"
+            }
+          ],
+          "compteVibrations": 0,
+          "compteArrets": 1
+        }
+      ]
+    },
+    {
+      "etape": "onglet-masque-neuf-images",
+      "ecran": "course",
+      "visibilite": "hidden",
+      "tempsSimule": 6.60000000000003,
+      "rpm": [
+        10326.28283068588,
+        10334.328833283973
+      ],
+      "signaux": [
+        {
+          "actionneur": "trigger-rumble",
+          "commandes": [],
+          "compteVibrations": 0,
+          "compteArrets": 0
+        },
+        {
+          "actionneur": "dual-rumble",
+          "commandes": [],
+          "compteVibrations": 0,
+          "compteArrets": 0
+        }
+      ]
+    },
+    {
+      "etape": "onglet-revenu-avant-pas",
+      "ecran": "course",
+      "visibilite": "visible",
+      "tempsSimule": 6.60000000000003,
+      "rpm": [
+        10326.28283068588,
+        10334.328833283973
+      ],
+      "signaux": [
+        {
+          "actionneur": "trigger-rumble",
+          "commandes": [],
+          "compteVibrations": 0,
+          "compteArrets": 0
+        },
+        {
+          "actionneur": "dual-rumble",
+          "commandes": [],
+          "compteVibrations": 0,
+          "compteArrets": 0
+        }
+      ]
+    },
+    {
+      "etape": "onglet-revenu-apres-pas",
+      "ecran": "course",
+      "visibilite": "visible",
+      "tempsSimule": 6.7416666666667036,
+      "rpm": [
+        10595.017463130895,
+        10603.364714353782
+      ],
+      "signaux": [
+        {
+          "actionneur": "trigger-rumble",
+          "commandes": [
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.05126243880942069,
+              "strongMagnitude": 0.11658793305483717,
+              "leftTrigger": 0,
+              "rightTrigger": 0
+            },
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.06105250167682806,
+              "strongMagnitude": 0.1272754717906297,
+              "leftTrigger": 0,
+              "rightTrigger": 0
+            },
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.031617300265977914,
+              "strongMagnitude": 0.0942434172831715,
+              "leftTrigger": 0,
+              "rightTrigger": 0
+            },
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.030882948174415385,
+              "strongMagnitude": 0.09338551063622086,
+              "leftTrigger": 0,
+              "rightTrigger": 0
+            },
+            {
+              "type": "trigger-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.06315978167596699,
+              "strongMagnitude": 0.12846440758253297,
+              "leftTrigger": 0,
+              "rightTrigger": 0
+            }
+          ],
+          "compteVibrations": 5,
+          "compteArrets": 0
+        },
+        {
+          "actionneur": "dual-rumble",
+          "commandes": [
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.05136689687874885,
+              "strongMagnitude": 0.11666935873905132
+            },
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.06115331587701582,
+              "strongMagnitude": 0.12733787146616204
+            },
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.03162928230467257,
+              "strongMagnitude": 0.09424959363918241
+            },
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.031011698905209602,
+              "strongMagnitude": 0.09352138832173496
+            },
+            {
+              "type": "dual-rumble",
+              "startDelay": 0,
+              "duration": 100,
+              "weakMagnitude": 0.06334982057216736,
+              "strongMagnitude": 0.12862184139131033
+            }
+          ],
+          "compteVibrations": 5,
+          "compteArrets": 0
+        }
+      ]
+    }
+  ],
+  "visibilite": [
+    {
+      "etat": "hidden",
+      "authentique": true,
+      "ecran": "course"
+    },
+    {
+      "etat": "visible",
+      "authentique": true,
+      "ecran": "course"
+    }
+  ],
+  "ongletDistinctMasque": true
+}

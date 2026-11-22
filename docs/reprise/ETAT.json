@@ -1,60 +1,85 @@
 {
   "date": "2026-11-22",
   "etat_courant": {
-    "version_courante": "0.2.91",
-    "version_publiee_verifiee": "0.2.90",
-    "physique": "p15",
-    "moteur": "FERRO 0.3.15 canonique",
+    "version_courante": "0.2.107",
+    "version_publiee_verifiee": "0.2.107",
+    "physique": "p16",
+    "moteur": "FERRO 0.3.16 canonique",
     "circuits": 11,
-    "statut": "0291_qualifie_localement",
-    "lot": "pluie_camera_et_chaussee_larche",
-    "fiche": "docs/reprise/PLAN-0289-RETOURS-2026-11-22.md",
-    "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md",
-    "dernieres_demandes": "docs/reprise/PLAN-0289-RETOURS-2026-11-22.md",
-    "dernier_lot_clos": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
-    "prochaine_action": "Faune visible au bord des routes et intégration des branches qualifiées.",
+    "statut": "integre_sur_main",
+    "lot": "integration_essais_en_course",
+    "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
+    "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
+    "dernieres_demandes": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
+    "dernier_lot_clos": "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json",
+    "prochaine_action": "Réception physique des manettes, temps par image sous la pluie et réalisation des lots par plateforme.",
     "branche_candidate": "main",
-    "version_candidate": "0.2.91",
+    "version_candidate": "0.2.107",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md"
   },
   "publication": {
-    "version": "0.2.80",
-    "commit_fusion": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
-    "commit_sources": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+    "version": "0.2.107",
+    "commit_sources": "a2a1a1acd31f10b1951446a8fd302be62aec98f6",
     "statut": "publie_sur_main",
-    "url": "https://github.com/M4D135/bitume/commit/6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
-    "recu": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
+    "url": "https://github.com/M4D135/bitume/commit/a2a1a1acd31f10b1951446a8fd302be62aec98f6",
+    "recu": "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json",
     "site_deploiement_verifie": false
   },
   "qualification": {
-    "version": "0.2.80",
-    "tete_qualifiee": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
-    "build_octets": 14549596,
-    "build_sha256": "20185cd2341e2aefb7a5167a35c1f4d68a50eedf1d9fabaa8491c329fa87410a",
-    "ci": {
-      "run": 44922327402,
-      "job": 136900842905,
-      "conclusion": "success",
-      "suites_node": 192,
-      "suites_echec": 0,
+    "version": "0.2.107",
+    "tete_qualifiee": "a2a1a1acd31f10b1951446a8fd302be62aec98f6",
+    "build_octets": 15213039,
+    "build_sha256": "908493dbb042870989d906bc2dc4c8c65eae1d5242cd361c5d4376324a630327",
+    "locale": {
+      "suites_node": 225,
+      "suites_prevues": 225,
+      "suites_en_echec": 0,
       "tests_python": 8,
-      "reconstruction_identique": true
+      "statut": "terminee",
+      "recontroles": [
+        {
+          "suite": "course.test",
+          "message_premier_passage": "AssertionError [ERR_ASSERTION]: 60s de course en moins de 1.5s, duree=1635ms",
+          "essais_isoles": [
+            {
+              "code": 0,
+              "mesures": [
+                "Mesure : 60s de course en moins de 1.5s, duree=191ms"
+              ]
+            },
+            {
+              "code": 0,
+              "mesures": [
+                "Mesure : 60s de course en moins de 1.5s, duree=193ms"
+              ]
+            },
+            {
+              "code": 0,
+              "mesures": [
+                "Mesure : 60s de course en moins de 1.5s, duree=187ms"
+              ]
+            }
+          ]
+        }
+      ]
     },
-    "recu": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
-    "capture_Gemini": "docs/reprise/rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md",
-    "captures_base_reinspectees_dans_cette_reprise": false,
+    "reconstruction_identique": true,
+    "recu": "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json",
     "essai_utilisateur_valide": false,
-    "limites": "La CI .79 et le reçu Gemini ne valident pas le réalisme final demandé. FPS matériels, manettes physiques et réseau réel non qualifiés.",
-    "demarrage_mobile": {
-      "run": 44922327560,
-      "conclusion": "success",
-      "png_inspectes": 2,
-      "appel_banc": 0,
-      "appel_scene_banc": 0,
-      "profil": "low",
-      "navigateur": "Chrome + caractéristiques iPhone émulées",
-      "telephone_physique": false
+    "limites": [
+      "Essais du retour haptique avec actionneurs simulés. Toucher de chaque manette à évaluer en main.",
+      "Le gain de temps GPU des LED varie selon la pose. Les autres GPU et la cadence cible restent à qualifier.",
+      "Le photoréalisme de tout le catalogue et le portage complet demeurent en développement."
+    ],
+    "github_actions": {
+      "url": "https://github.com/M4D135/bitume/actions/runs/45038134289",
+      "commit": "a2a1a1acd31f10b1951446a8fd302be62aec98f6",
+      "conclusion": "cancelled",
+      "suites_executees": 189,
+      "suites_reussies": 188,
+      "limite_minutes": 20,
+      "depassement_mesure": "Route-des-Cimes : 164,5 ms de préparation sur cette VM pour un seuil strict de 150 ms."
     }
   },
   "acquis_0279": {
@@ -88,12 +113,12 @@
       "seuil": 150
     },
     "terrain": "Lignes diagonales sur les pentes claires présentes avant/après, à diagnostiquer dans le lot rendu ; toute correction du moteur passe par FERRO canonique.",
-    "captures": "États disposés à poses figées, raster logiciel SwiftShader ; pas une validation de course complète.",
+    "captures": "Chrome WebGL2/Metal pour les essais visuels sur Mac M5. Les parcours complets utilisent le pilote automatique PhysX. Les appareils visés sont précisés dans les rapports.",
     "fps_materiels_qualifies": false,
     "manettes_physiques_qualifiees": false,
     "reseau_entre_machines_qualifie": false,
     "spark_disponible": false,
-    "projections_poursuite": "Renforcées et contrôlées en 0.2.66 à 235/300 km/h ; pluie extérieure vue depuis un abri encore à corriger.",
+    "projections_poursuite": "Pluie de lentille et précipitations du monde alternées en conduite. Réception à 0 et 288 km/h sur Larche dans le rapport courant.",
     "lissage_S8_facultatif": {
       "obligatoire": false,
       "pire_deg_s2": 1031,
@@ -101,12 +126,12 @@
       "criteres_obligatoires_reussis": 46,
       "criteres_obligatoires_total": 46
     },
-    "pluie_exterieure_depuis_abri": "Champ de pluie monde encore coupé depuis un abri ; prototype spatial local identifié, non intégré et coût à qualifier.",
+    "pluie_exterieure_depuis_abri": "Entrée et sortie du portail et séchage de la visière reçus. Les projections et rétroviseurs restent à qualifier sur les autres ouvrages.",
     "composition_demo": "Bandeau parfois superposé au geste ou à un animal ; neige claire à grain discret.",
     "cimes": "Socle publié ; relief très facetté et sept lieux complets, lac/cascade encore à poursuivre.",
     "demos": "Bandeaux sur certains sujets ; neige Haut-Col claire et grain discret.",
     "habitacle_pilote": "126 CK et R4b livrés en .79 ; réalisme des doigts, transitions et manches à améliorer. Fidélité finale soumise à inspection du joueur.",
-    "gouttes_vitesse": "Transport vitesse/caméra E0–E3 qualifié et publié en 0.2.68 ; limites restantes dans PUBLICATION-0268.json : pas toutes les poses/vitesses, micro0 et gravité des fines non qualifiées séparément.",
+    "gouttes_vitesse": "Une seule population visible, entraînée par la gravité et le flux d’air. Reçue à 0 et 288 km/h sur Larche.",
     "budget_decor_0269": {
       "statut": "ouvert",
       "run": 44803588903,
@@ -143,21 +168,20 @@
     "ancien_contact_manche_pommeau_R4b": "Résolu en .79 ; conserver les contrôles de contact."
   },
   "suite": {
-    "lot": "xbox_edge_commandes",
+    "lot": "continuation_47_lots",
     "statut": "in_progress",
-    "fiche": "docs/reprise/XBOX-EDGE-COMMANDES-2026-11-21.md",
+    "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
     "apres": [
-      "PR 56 mains : vue pommeau et intégration renumérotée",
-      "personnages et manches",
-      "Larche/Vinadio L0–L2"
+      "Matériaux et végétation des onze circuits",
+      "Altimétrie de Monaco et réception de Marseille",
+      "Réseau et portage natif selon la feuille de route"
     ],
     "acquis_R4b_a_preserver": true,
-    "prochaine_priorite": "faune_proche_champ puis demos_route_lieux"
+    "prochaine_priorite": "Réception physique des manettes, temps par image sous la pluie et réalisation des lots par plateforme."
   },
   "catalogue": {
-    "jouables": 9,
-    "destinations_prevues": 17,
-    "baikal": "id baikal, index 7, graine 179 ; 13B conservé.",
+    "jouables": 11,
+    "baikal": "id baikal, index 10 dans ce catalogue.",
     "ajouts_demandes": [
       "Grand circuit de montagne distinct de Haut-Col",
       "Monaco ultra fidèle",
@@ -165,8 +189,23 @@
     ],
     "propositions_conservees": 6,
     "programme_complet": "docs/reprise/CONTINUATION-AUTONOME-2026-11-19.md",
-    "regle": "Conserver les sept circuits historiques, Baïkal, toutes les demandes et les lots transversaux.",
-    "route_des_cimes": "id route-des-cimes, index 8, graine 181 ; neuvième circuit déjà publié en 0.2.66."
+    "regle": "Menu resserré à onze identités selon la décision .89 et l’intégration de Marseille en .90.",
+    "route_des_cimes": "id route-des-cimes, index 5 dans ce catalogue.",
+    "ids": [
+      "val-brule",
+      "marseille",
+      "corail",
+      "cap-sequoia",
+      "fjord",
+      "route-des-cimes",
+      "larche",
+      "lande-noire",
+      "sierra",
+      "brume-de-jade",
+      "baikal"
+    ],
+    "destinations_prevues_historiquement": 17,
+    "decision_courante": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md"
   },
   "parcours_larche_vinadio": {
     "nom": "Col de Larche → Vinadio",
@@ -175,28 +214,32 @@
     "route": "SS21",
     "sens": "descente vers Italie",
     "distance_indicative_km": 32.2,
-    "distance_mesuree": null,
+    "distance_mesuree": {
+      "abscisse_ligne_arrivee_m": 32249.33
+    },
     "echelle": 1,
     "topologie": "ouverte",
     "depart_barcelonnette_remplace": true,
-    "statut": "planifie_sources_identifiees_non_acquises",
-    "fiche": "docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md"
+    "statut": "parcouru_en_chrono_course_pluie_et_duo",
+    "fiche": "docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md",
+    "recu": "docs/reprise/rapports/INTEGRATION-2026-11-22/parcours-larche.json",
+    "duo": "docs/reprise/rapports/INTEGRATION-2026-11-22/duo-larche.json"
   },
   "travaux_paralleles_a_preserver": {
-    "pluie_abris": "PR 43 ouverte, non intégrée",
+    "pluie_abris": "PR #43 fusionnée, outils et correctifs repris sur main.",
     "decor": "Réserve construction <150 ms et préparations conservées",
-    "sources_circuits": "Monaco/Marseille conservés; nouveaux parcours pas annoncés jouables",
+    "sources_circuits": "Marseille et Larche sont jouables. Monaco attend la résolution des incertitudes de chaussée.",
     "programme": "docs/reprise/FILE-TRAVAIL.json"
   },
   "execution_autonome": {
     "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
     "file": "docs/reprise/FILE-TRAVAIL.json",
-    "priorite_utilisateur": "Faune près de la route, sans simulation détaillée hors champ ; démos des circuits actuels centrées sur route, tracé et point d’intérêt.",
-    "lot_actif": "xbox_edge_commandes",
+    "priorite_utilisateur": "Vibrations distinctes, fluidité et rendu réaliste, qualification des onze circuits.",
+    "lot_actif": "qualification_materielle_et_rendu",
     "statut": "en_cours",
-    "recu_publication": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
-    "prochain_lot": "faune_proche_champ",
-    "dernieres_demandes": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md"
+    "recu_publication": "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json",
+    "prochain_lot": "manettes_et_fluidite",
+    "dernieres_demandes": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md"
   },
   "recus_historiques": {
     "etat_complet_avant_reconciliation": "docs/reprise/archives/ETAT-AVANT-MAINS-2026-11-21.json",
@@ -212,6 +255,125 @@
       "monaco_cartographie_14A": "docs/references/monaco-2026/qualification-revue-cartographie.json",
       "bitume_0262": "docs/reprise/rapports/ASPIRATION-SILLAGE-2026-11-20/PUBLICATION-0262.json",
       "bitume_0269": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
+    },
+    "publication_0280": {
+      "version": "0.2.80",
+      "commit_fusion": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+      "commit_sources": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+      "statut": "publie_sur_main",
+      "url": "https://github.com/M4D135/bitume/commit/6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+      "recu": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
+      "site_deploiement_verifie": false
+    },
+    "qualification_0280": {
+      "version": "0.2.80",
+      "tete_qualifiee": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+      "build_octets": 14549596,
+      "build_sha256": "20185cd2341e2aefb7a5167a35c1f4d68a50eedf1d9fabaa8491c329fa87410a",
+      "ci": {
+        "run": 44922327402,
+        "job": 136900842905,
+        "conclusion": "success",
+        "suites_node": 192,
+        "suites_echec": 0,
+        "tests_python": 8,
+        "reconstruction_identique": true
+      },
+      "recu": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
+      "capture_Gemini": "docs/reprise/rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md",
+      "captures_base_reinspectees_dans_cette_reprise": false,
+      "essai_utilisateur_valide": false,
+      "limites": "La CI .79 et le reçu Gemini ne valident pas le réalisme final demandé. FPS matériels, manettes physiques et réseau réel non qualifiés.",
+      "demarrage_mobile": {
+        "run": 44922327560,
+        "conclusion": "success",
+        "png_inspectes": 2,
+        "appel_banc": 0,
+        "appel_scene_banc": 0,
+        "profil": "low",
+        "navigateur": "Chrome + caractéristiques iPhone émulées",
+        "telephone_physique": false
+      }
+    },
+    "reserves_avant_0106": {
+      "construction_ms": {
+        "val_brule": 188,
+        "haut_col": [
+          154,
+          167
+        ],
+        "seuil": 150
+      },
+      "terrain": "Lignes diagonales sur les pentes claires présentes avant/après, à diagnostiquer dans le lot rendu ; toute correction du moteur passe par FERRO canonique.",
+      "captures": "États disposés à poses figées, raster logiciel SwiftShader ; pas une validation de course complète.",
+      "fps_materiels_qualifies": false,
+      "manettes_physiques_qualifiees": false,
+      "reseau_entre_machines_qualifie": false,
+      "spark_disponible": false,
+      "projections_poursuite": "Renforcées et contrôlées en 0.2.66 à 235/300 km/h ; pluie extérieure vue depuis un abri encore à corriger.",
+      "lissage_S8_facultatif": {
+        "obligatoire": false,
+        "pire_deg_s2": 1031,
+        "cible_deg_s2": 300,
+        "criteres_obligatoires_reussis": 46,
+        "criteres_obligatoires_total": 46
+      },
+      "pluie_exterieure_depuis_abri": "Champ de pluie monde encore coupé depuis un abri ; prototype spatial local identifié, non intégré et coût à qualifier.",
+      "composition_demo": "Bandeau parfois superposé au geste ou à un animal ; neige claire à grain discret.",
+      "cimes": "Socle publié ; relief très facetté et sept lieux complets, lac/cascade encore à poursuivre.",
+      "demos": "Bandeaux sur certains sujets ; neige Haut-Col claire et grain discret.",
+      "habitacle_pilote": "126 CK et R4b livrés en .79 ; réalisme des doigts, transitions et manches à améliorer. Fidélité finale soumise à inspection du joueur.",
+      "gouttes_vitesse": "Transport vitesse/caméra E0–E3 qualifié et publié en 0.2.68 ; limites restantes dans PUBLICATION-0268.json : pas toutes les poses/vitesses, micro0 et gravité des fines non qualifiées séparément.",
+      "budget_decor_0269": {
+        "statut": "ouvert",
+        "run": 44803588903,
+        "suite": "decor.test.mjs",
+        "mesure_ms_affichee": 172,
+        "seuil_strict_ms": 150,
+        "cause": "non déterminée",
+        "ci_pr_meme_arbre": "suite réussie, durées individuelles non enregistrées",
+        "diagnostic_local_0275": {
+          "statut": "ouvert",
+          "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/diagnostic-decor/DIAGNOSTIC.json",
+          "mesures_locales_ms": [
+            151.87,
+            138.2,
+            141.13,
+            84.43,
+            85.68
+          ],
+          "seuil_strict_ms": 150,
+          "echecs_sur_5": 1,
+          "gain_prouve": false,
+          "optimisation_appliquee": false,
+          "proprietaire_suivant": "04"
+        }
+      },
+      "historique_lisibilite_cockpit_0269": "Le volant occulte une partie centrale de la chaussée en caméra réelle du siège, surtout en paysage. Les tests de projection ne mesurent pas cette occultation ; suivi ouvert.",
+      "lisibilite_cockpit_0275": {
+        "statut": "qualifiee_sur_cas_requis",
+        "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
+        "limite": "Captures de poses prescrites, pas un essai matériel de conduite."
+      },
+      "site_deploiement_verifie": false,
+      "ancienne_allocation_R4b": "Résolue en .79 ; ne pas rouvrir sans reproduction.",
+      "ancien_contact_manche_pommeau_R4b": "Résolu en .79 ; conserver les contrôles de contact."
+    },
+    "travaux_paralleles_avant_0106": {
+      "pluie_abris": "PR 43 ouverte, non intégrée",
+      "decor": "Réserve construction <150 ms et préparations conservées",
+      "sources_circuits": "Monaco/Marseille conservés; nouveaux parcours pas annoncés jouables",
+      "programme": "docs/reprise/FILE-TRAVAIL.json"
+    },
+    "execution_avant_0106": {
+      "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
+      "file": "docs/reprise/FILE-TRAVAIL.json",
+      "priorite_utilisateur": "Faune près de la route, sans simulation détaillée hors champ ; démos des circuits actuels centrées sur route, tracé et point d’intérêt.",
+      "lot_actif": "xbox_edge_commandes",
+      "statut": "en_cours",
+      "recu_publication": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
+      "prochain_lot": "faune_proche_champ",
+      "dernieres_demandes": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md"
     }
   },
   "regle": "Les alias ci-dessus décrivent la base effectivement publiée. Les états .75/.77 et réserves R4b historiques sont archivés; ne pas les réappliquer à main. Une preuve appartient à son commit et à son HTML exact.",
@@ -304,8 +466,7 @@
   },
   "portage_natif_cpp": {
     "date": "2026-11-22",
-    "statut": "planifie_non_commence",
-    "demande": "Plan et publication GitHub uniquement ; C++ natif, macOS puis Linux puis Windows.",
+    "statut": "N0_partiellement_qualifie_sur_Mac_M5",
     "fiche": "docs/reprise/PLAN-NATIF-CPP-MACOS-LINUX-WINDOWS-2026-11-22.md",
     "langage": "C++",
     "plateformes_ordre": [
@@ -316,9 +477,8 @@
     "moteur_canonique": "M4D135/FERRO",
     "base_bitume": "73ce09ffc820501a14a9330e2cd6be9807985fe3",
     "reference_physique": "p15",
-    "implementation_commencee": false,
-    "implementation_autorisee_par_ce_lot": false,
-    "prochaine_etape_proposee": "N0 — référence et décisions techniques, après instruction d’exécution.",
+    "implementation_commencee": true,
+    "prochaine_etape_proposee": "Fixer les budgets matériels et qualifier les ombres et les rétroviseurs avant la première application de course native.",
     "jalons": [
       "N0",
       "N1",
@@ -332,7 +492,13 @@
       "W1",
       "W2"
     ],
-    "qualification_materielle_native": false,
-    "runtime_modifie": false
+    "qualification_materielle_native": "Metal direct, SDL3 GPU et PhysX CPU macOS arm64",
+    "runtime_modifie": false,
+    "reference_physique_courante": "p16",
+    "qualification": "docs/reprise/N0-MAC-2026-11-22.md",
+    "demande_initiale": "Plan et publication GitHub uniquement ; C++ natif, macOS puis Linux puis Windows.",
+    "autorisation_du_plan_initial": false,
+    "stade": "Sondes natives exécutées. Application de course à porter.",
+    "rayons_metal": "docs/reprise/rapports/N0-MAC-20261122/rayons-larche.json"
   }
 }

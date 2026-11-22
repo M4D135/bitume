@@ -1,0 +1,158 @@
+{
+  "circuit": "Col de Larche – Vinadio",
+  "ligneArriveeMetres": 32249.33,
+  "protocole": "Chrome, PhysX 5.12.0, soleil, départ sur grille. Deux joueurs locaux pilotés par l’IA de production dans un monde commun, dix adversaires. Course automatique hors record.",
+  "avant": {
+    "version": "V0.2.104",
+    "htmlSha256": "d9067cb3a0d4205afa39ad40e93f9de8f5b1fa72f9489d72aa730a2168cb8318",
+    "graine": 23731,
+    "finisseurs": 11,
+    "abandon": 0,
+    "joueurs": [
+      {
+        "id": 0,
+        "nom": "Joueur 1",
+        "position": 2,
+        "arrive": true,
+        "tempsSecondes": 886.862,
+        "positionFinaleMetres": 32321.81
+      },
+      {
+        "id": 1,
+        "nom": "Joueur 2",
+        "position": 7,
+        "arrive": true,
+        "tempsSecondes": 942.423,
+        "positionFinaleMetres": 32301.63
+      }
+    ],
+    "dernierInscrit": {
+      "id": 11,
+      "nom": "M. Duvernet",
+      "position": 12,
+      "arrive": false,
+      "tempsSecondes": null,
+      "positionFinaleMetres": 32304.66
+    },
+    "classement": [
+      6,
+      0,
+      5,
+      3,
+      10,
+      4,
+      1,
+      9,
+      8,
+      2,
+      7,
+      11
+    ],
+    "commandesAppliquees": [
+      114847,
+      114847
+    ],
+    "pasAvecCommandesDistinctes": 112074,
+    "ecranPartage": [
+      "poursuite",
+      "cockpit"
+    ],
+    "erreursChrome": 0,
+    "sondePhysX": {
+      "htmlSha256": "d9067cb3a0d4205afa39ad40e93f9de8f5b1fa72f9489d72aa730a2168cb8318",
+      "indicesPilotes": 11,
+      "indicesPaires": 121,
+      "passagesComptes": [
+        {
+          "id": 0,
+          "secondes": 101.572607,
+          "replacements": 0
+        },
+        {
+          "id": 1,
+          "secondes": 102.021792,
+          "replacements": 1
+        }
+      ]
+    }
+  },
+  "apres": {
+    "version": "V0.2.106",
+    "htmlSha256": "493ef488269a06901363bd1c2529ec48f62afe24ffb4a1504858743352ac006d",
+    "graine": 23731,
+    "finisseurs": 12,
+    "abandon": 0,
+    "joueurs": [
+      {
+        "id": 0,
+        "nom": "Joueur 1",
+        "position": 2,
+        "arrive": true,
+        "tempsSecondes": 886.862,
+        "positionFinaleMetres": 32321.15
+      },
+      {
+        "id": 1,
+        "nom": "Joueur 2",
+        "position": 7,
+        "arrive": true,
+        "tempsSecondes": 942.423,
+        "positionFinaleMetres": 32301.63
+      }
+    ],
+    "dernierInscrit": {
+      "id": 11,
+      "nom": "M. Duvernet",
+      "position": 8,
+      "arrive": true,
+      "tempsSecondes": 942.545,
+      "positionFinaleMetres": 32304.18
+    },
+    "classement": [
+      6,
+      0,
+      5,
+      3,
+      10,
+      4,
+      1,
+      11,
+      9,
+      8,
+      2,
+      7
+    ],
+    "commandesAppliquees": [
+      114847,
+      114847
+    ],
+    "pasAvecCommandesDistinctes": 112074,
+    "ecranPartage": [
+      "poursuite",
+      "cockpit"
+    ],
+    "erreursChrome": 0,
+    "sondePhysX": {
+      "htmlSha256": "493ef488269a06901363bd1c2529ec48f62afe24ffb4a1504858743352ac006d",
+      "indicesPilotes": 12,
+      "indicesPaires": 144,
+      "passagesComptes": [
+        {
+          "id": 11,
+          "secondes": 101.090242,
+          "replacements": 0
+        },
+        {
+          "id": 0,
+          "secondes": 101.610174,
+          "replacements": 0
+        },
+        {
+          "id": 1,
+          "secondes": 102.122576,
+          "replacements": 1
+        }
+      ]
+    }
+  }
+}

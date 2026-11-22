@@ -1,0 +1,160 @@
+{
+  "avant": {
+    "version": "V0.2.106",
+    "sha256HTML": "238a07ad88d1df9c8c7ca816dbb961b7d17643f66a4bb64ec352cf13a4164e36",
+    "limite": "Fin réseau placée par la sonde sur une course duo locale, sans pair WebRTC. Le code de rendu, le menu des résultats, le pilote et les appels de vibration proviennent du HTML du jeu.",
+    "fatal": null,
+    "erreurs": [],
+    "observation": {
+      "avant": "course",
+      "ecranAtteint": "resultats",
+      "ecranFinal": "resultats",
+      "horlogeAvant": 6.608333333333364,
+      "horlogeApres": 6.608333333333364,
+      "signauxPremieresImages": [
+        [
+          {
+            "type": "reset"
+          },
+          {
+            "type": "trigger-rumble",
+            "startDelay": 0,
+            "duration": 100,
+            "weakMagnitude": 0.0579711489527928,
+            "strongMagnitude": 0.1241782220668131,
+            "leftTrigger": 0,
+            "rightTrigger": 0
+          }
+        ],
+        [
+          {
+            "type": "reset"
+          },
+          {
+            "type": "dual-rumble",
+            "startDelay": 0,
+            "duration": 100,
+            "weakMagnitude": 0.0580912875088966,
+            "strongMagnitude": 0.1242676762943822
+          }
+        ]
+      ],
+      "signauxDixImagesSuivantes": [
+        [
+          {
+            "type": "trigger-rumble",
+            "startDelay": 0,
+            "duration": 100,
+            "weakMagnitude": 0.05459241123979342,
+            "strongMagnitude": 0.12035549084288856,
+            "leftTrigger": 0,
+            "rightTrigger": 0
+          },
+          {
+            "type": "trigger-rumble",
+            "startDelay": 0,
+            "duration": 100,
+            "weakMagnitude": 0.02568430995373048,
+            "strongMagnitude": 0.08764863082666496,
+            "leftTrigger": 0,
+            "rightTrigger": 0
+          },
+          {
+            "type": "trigger-rumble",
+            "startDelay": 0,
+            "duration": 100,
+            "weakMagnitude": 0.03564534862186982,
+            "strongMagnitude": 0.09891863068279852,
+            "leftTrigger": 0,
+            "rightTrigger": 0
+          },
+          {
+            "type": "trigger-rumble",
+            "startDelay": 0,
+            "duration": 100,
+            "weakMagnitude": 0.06228534680110261,
+            "strongMagnitude": 0.1290593404671762,
+            "leftTrigger": 0,
+            "rightTrigger": 0
+          },
+          {
+            "type": "trigger-rumble",
+            "startDelay": 0,
+            "duration": 100,
+            "weakMagnitude": 0.04625844847221031,
+            "strongMagnitude": 0.11092637784364864,
+            "leftTrigger": 0,
+            "rightTrigger": 0
+          }
+        ],
+        [
+          {
+            "type": "dual-rumble",
+            "startDelay": 0,
+            "duration": 100,
+            "weakMagnitude": 0.054664113515897034,
+            "strongMagnitude": 0.1203950939670807
+          },
+          {
+            "type": "dual-rumble",
+            "startDelay": 0,
+            "duration": 100,
+            "weakMagnitude": 0.025701414088293545,
+            "strongMagnitude": 0.08766829393201254
+          },
+          {
+            "type": "dual-rumble",
+            "startDelay": 0,
+            "duration": 100,
+            "weakMagnitude": 0.03580103774577289,
+            "strongMagnitude": 0.09908050240705385
+          },
+          {
+            "type": "dual-rumble",
+            "startDelay": 0,
+            "duration": 100,
+            "weakMagnitude": 0.062436977865143746,
+            "strongMagnitude": 0.129178148802607
+          },
+          {
+            "type": "dual-rumble",
+            "startDelay": 0,
+            "duration": 100,
+            "weakMagnitude": 0.046200945197970605,
+            "strongMagnitude": 0.110832020680482
+          }
+        ]
+      ]
+    }
+  },
+  "apres": {
+    "version": "V0.2.107",
+    "sha256HTML": "908493dbb042870989d906bc2dc4c8c65eae1d5242cd361c5d4376324a630327",
+    "limite": "Fin réseau placée par la sonde sur une course duo locale, sans pair WebRTC. Le code de rendu, le menu des résultats, le pilote et les appels de vibration proviennent du HTML du jeu.",
+    "fatal": null,
+    "erreurs": [],
+    "observation": {
+      "avant": "course",
+      "ecranAtteint": "resultats",
+      "ecranFinal": "resultats",
+      "horlogeAvant": 6.608333333333364,
+      "horlogeApres": 6.608333333333364,
+      "signauxPremieresImages": [
+        [
+          {
+            "type": "reset"
+          }
+        ],
+        [
+          {
+            "type": "reset"
+          }
+        ]
+      ],
+      "signauxDixImagesSuivantes": [
+        [],
+        []
+      ]
+    }
+  }
+}

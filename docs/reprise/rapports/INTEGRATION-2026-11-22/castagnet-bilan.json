@@ -1,0 +1,351 @@
+{
+  "circuit": "Col de Larche → Vinadio",
+  "mode": "course",
+  "physique": "PhysX 5.12.0, 120 Hz",
+  "graineSessionEtDebris": 23731,
+  "graineCircuit": 210,
+  "meteo": {
+    "phase": "pluie",
+    "intensite": 0.75,
+    "mouilleAuPont": 1
+  },
+  "joueurs": 12,
+  "pont": {
+    "debut": 11411,
+    "fin": 11439.4
+  },
+  "distanceArrivee": 32249.33,
+  "temoin": {
+    "hash": "fe929b79dd073115d38b6b7fe7c442b20ede838414afa5d0b6b53712d7855c97",
+    "debutIncidentSec": 471,
+    "immobilisationQuasiCompleteSec": 514,
+    "stableAuCentimetreDesSec": 528,
+    "dernierReleveSec": 1201.0,
+    "dureeStableObserveeSec": 673.0,
+    "positionFinale": {
+      "id": 1,
+      "fin": false,
+      "abandon": false,
+      "temps": null,
+      "s": 11429.772717851258
+    },
+    "etatAuRepos": {
+      "s": 11429.772518312064,
+      "d": 4.876816706724718,
+      "v": 0.0007666488494018879,
+      "angle": 0.4673288034598655,
+      "groundCount": 4,
+      "gaz": 0.49993768326096233,
+      "frein": 0,
+      "bloque": 0,
+      "essais": 2,
+      "degagement": 0
+    },
+    "finisseurs": 11,
+    "classementDesDouze": [
+      [
+        "1",
+        "14",
+        "T. Okafor",
+        "1",
+        "14:07,005",
+        "–"
+      ],
+      [
+        "2",
+        "17",
+        "J. Vanmeer",
+        "1",
+        "+20,924",
+        "–"
+      ],
+      [
+        "3",
+        "19",
+        "S. Ferrandi",
+        "1",
+        "+27,580",
+        "–"
+      ],
+      [
+        "4",
+        "8",
+        "L. Brasquet",
+        "1",
+        "+37,240",
+        "–"
+      ],
+      [
+        "5",
+        "28",
+        "A. Kowalczyk",
+        "1",
+        "+84,526",
+        "–"
+      ],
+      [
+        "6",
+        "26",
+        "M. Duvernet",
+        "1",
+        "+94,704",
+        "–"
+      ],
+      [
+        "7",
+        "11",
+        "H. Delacour",
+        "1",
+        "+99,938",
+        "–"
+      ],
+      [
+        "8",
+        "1",
+        "Vous",
+        "1",
+        "+106,101",
+        "–"
+      ],
+      [
+        "9",
+        "7",
+        "P. Morvan",
+        "1",
+        "+159,282",
+        "–"
+      ],
+      [
+        "10",
+        "5",
+        "E. Varenne",
+        "1",
+        "+162,401",
+        "–"
+      ],
+      [
+        "11",
+        "22",
+        "K. Lindgren",
+        "1",
+        "+204,581",
+        "–"
+      ],
+      [
+        "12",
+        "3",
+        "R. Castagnet",
+        "0",
+        "en piste",
+        "–"
+      ]
+    ],
+    "erreursChrome": [],
+    "obstacle": "parapet droit"
+  },
+  "corrige": {
+    "hash": "9273fc663375399845cbba5f1698f8682ea4886cef3b701b3235799ab045b59b",
+    "finisseurs": 12,
+    "pilote": {
+      "id": 1,
+      "fin": true,
+      "abandon": false,
+      "temps": 990.5753246046435,
+      "s": 32249.68100782401
+    },
+    "classementDesDouze": [
+      [
+        "1",
+        "19",
+        "S. Ferrandi",
+        "1",
+        "13:51,364",
+        "–"
+      ],
+      [
+        "2",
+        "17",
+        "J. Vanmeer",
+        "1",
+        "+41,500",
+        "–"
+      ],
+      [
+        "3",
+        "8",
+        "L. Brasquet",
+        "1",
+        "+64,671",
+        "–"
+      ],
+      [
+        "4",
+        "14",
+        "T. Okafor",
+        "1",
+        "+81,994",
+        "–"
+      ],
+      [
+        "5",
+        "28",
+        "A. Kowalczyk",
+        "1",
+        "+95,065",
+        "–"
+      ],
+      [
+        "6",
+        "11",
+        "H. Delacour",
+        "1",
+        "+107,562",
+        "–"
+      ],
+      [
+        "7",
+        "7",
+        "P. Morvan",
+        "1",
+        "+118,194",
+        "–"
+      ],
+      [
+        "8",
+        "22",
+        "K. Lindgren",
+        "1",
+        "+130,469",
+        "–"
+      ],
+      [
+        "9",
+        "5",
+        "E. Varenne",
+        "1",
+        "+145,447",
+        "–"
+      ],
+      [
+        "10",
+        "1",
+        "Vous",
+        "1",
+        "+146,997",
+        "–"
+      ],
+      [
+        "11",
+        "26",
+        "M. Duvernet",
+        "1",
+        "+149,044",
+        "–"
+      ],
+      [
+        "12",
+        "3",
+        "R. Castagnet",
+        "1",
+        "+159,211",
+        "–"
+      ]
+    ],
+    "erreursChrome": []
+  },
+  "posesAuPont": {
+    "total": 72,
+    "figeesAuMoins45SecondesAvant": 7,
+    "figeesAuMoins45SecondesApres": 0,
+    "reprises": [
+      {
+        "depart": [
+          11400,
+          -5.7,
+          -0.65,
+          4
+        ],
+        "positionAvant": 11412.003,
+        "positionApres": 11570.152,
+        "secondesPour170m": 36.4,
+        "replacements": 1
+      },
+      {
+        "depart": [
+          11400,
+          -5.7,
+          -1.35,
+          4
+        ],
+        "positionAvant": 11411.166,
+        "positionApres": 11570.291,
+        "secondesPour170m": 18.0,
+        "replacements": 0
+      },
+      {
+        "depart": [
+          11400,
+          5.7,
+          0,
+          4
+        ],
+        "positionAvant": 11410.404,
+        "positionApres": 11570.195,
+        "secondesPour170m": 23.2,
+        "replacements": 0
+      },
+      {
+        "depart": [
+          11429.77,
+          4.8,
+          0.65,
+          4
+        ],
+        "positionAvant": 11429.889,
+        "positionApres": 11599.812,
+        "secondesPour170m": 11.3,
+        "replacements": 0
+      },
+      {
+        "depart": [
+          11429.77,
+          4.8,
+          1.35,
+          4
+        ],
+        "positionAvant": 11429.783,
+        "positionApres": 11599.791,
+        "secondesPour170m": 40.7,
+        "replacements": 1
+      },
+      {
+        "depart": [
+          11429.77,
+          5.7,
+          0.65,
+          4
+        ],
+        "positionAvant": 11429.475,
+        "positionApres": 11600.018,
+        "secondesPour170m": 40.7,
+        "replacements": 1
+      },
+      {
+        "depart": [
+          11429.77,
+          5.7,
+          1.35,
+          4
+        ],
+        "positionAvant": 11429.678,
+        "positionApres": 11599.917,
+        "secondesPour170m": 40.6,
+        "replacements": 1
+      }
+    ]
+  },
+  "patch": {
+    "nom": "castagnet-reprise.patch",
+    "sha256": "67b464c8a2aa7c7361a37ed33b2e37858872ceba0de51f435fe6630e2a1a78d2"
+  }
+}

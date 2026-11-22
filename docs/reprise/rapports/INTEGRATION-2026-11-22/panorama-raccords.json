@@ -1,0 +1,62 @@
+[
+  {
+    "mode": "ancien",
+    "ms": 466.16391599999986,
+    "nappes": 396,
+    "sha256": "49525ba3bfafd8753b9ee72734371a0c27f14c9a6ca4fc23833fb9dd6db8c567"
+  },
+  {
+    "mode": "candidat",
+    "ms": 177.16325000000006,
+    "nappes": 396,
+    "sha256": "49525ba3bfafd8753b9ee72734371a0c27f14c9a6ca4fc23833fb9dd6db8c567"
+  },
+  {
+    "mode": "candidat",
+    "ms": 395.561334,
+    "nappes": 396,
+    "sha256": "49525ba3bfafd8753b9ee72734371a0c27f14c9a6ca4fc23833fb9dd6db8c567"
+  },
+  {
+    "mode": "ancien",
+    "ms": 547.7550410000001,
+    "nappes": 396,
+    "sha256": "49525ba3bfafd8753b9ee72734371a0c27f14c9a6ca4fc23833fb9dd6db8c567"
+  },
+  {
+    "mode": "ancien",
+    "ms": 563.0440840000001,
+    "nappes": 396,
+    "sha256": "49525ba3bfafd8753b9ee72734371a0c27f14c9a6ca4fc23833fb9dd6db8c567"
+  },
+  {
+    "mode": "candidat",
+    "ms": 166.17024999999967,
+    "nappes": 396,
+    "sha256": "49525ba3bfafd8753b9ee72734371a0c27f14c9a6ca4fc23833fb9dd6db8c567"
+  },
+  {
+    "mode": "candidat",
+    "ms": 183.31166699999994,
+    "nappes": 396,
+    "sha256": "49525ba3bfafd8753b9ee72734371a0c27f14c9a6ca4fc23833fb9dd6db8c567"
+  },
+  {
+    "mode": "ancien",
+    "ms": 494.3463750000001,
+    "nappes": 396,
+    "sha256": "49525ba3bfafd8753b9ee72734371a0c27f14c9a6ca4fc23833fb9dd6db8c567"
+  },
+  {
+    "mode": "candidat",
+    "ms": 358.62158299999965,
+    "nappes": 396,
+    "sha256": "49525ba3bfafd8753b9ee72734371a0c27f14c9a6ca4fc23833fb9dd6db8c567"
+  },
+  {
+    "mode": "ancien",
+    "ms": 690.4158749999997,
+    "nappes": 396,
+    "sha256": "49525ba3bfafd8753b9ee72734371a0c27f14c9a6ca4fc23833fb9dd6db8c567"
+  }
+]
