@@ -15,8 +15,8 @@ const sources = {}, communs = {};
 function lire(nom) {
   return execFileSync('git',['show',commit+':'+nom],{cwd:racine,maxBuffer:32*1024*1024});
 }
-for (const nom of [...jeu.map(n => 'src/'+n+'.js'), ...banc.map(n => 'verifications/'+n)]) sources[nom] = lire(nom).toString('utf8');
-for (const nom of ['src/ferro/physx.js','src/ferro/physx-runtime.js','src/ferro/vehicle-dynamics.js','src/moteur/renderer.js'])
+for (const nom of [...jeu.map(n => 'src/'+n+'.js'), ...banc.map(n => 'verifications/'+n), 'src/moteur/renderer.js']) sources[nom] = lire(nom).toString('utf8');
+for (const nom of ['src/ferro/physx.js','src/ferro/physx-runtime.js','src/ferro/vehicle-dynamics.js'])
   communs[nom] = createHash('sha256').update(lire(nom)).digest('hex');
 const contenu = Buffer.from(JSON.stringify({commit,sources,communs}));
 writeFileSync(new URL('../../verifications/fixtures/replay-physx-c38a28c.json.gz', import.meta.url),gzipSync(contenu,{level:9}));

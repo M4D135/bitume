@@ -1,5 +1,5 @@
 // Le calcul de référence et le jeu utilisent la même plateforme, avec des sources complètes indépendantes.
-// Les quatre fichiers FERRO communs sont volumineux et déjà fournis par la distribution verrouillée.
+// Les trois fichiers PhysX communs sont volumineux et déjà fournis par la distribution verrouillée.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -10,7 +10,7 @@ import { gunzipSync } from 'node:zlib';
 const sha = v => createHash('sha256').update(v).digest('hex');
 export function rejouerPhysiqueDeReference() {
   const contenu = gunzipSync(readFileSync(new URL('../fixtures/replay-physx-c38a28c.json.gz', import.meta.url)));
-  assert.equal(sha(contenu), '90bfe6228f817f24c28a096f308900950dc0ac38b9d52c60c289a0e33f563fe7');
+  assert.equal(sha(contenu), '6e3aaa184f6900f37b873a99acc7c59b9294e9e6878bac86267a2674d100c6fa');
   const reference = JSON.parse(contenu);
   const dossier = mkdtempSync(path.join(tmpdir(), 'bitume-replay-'));
   try {
