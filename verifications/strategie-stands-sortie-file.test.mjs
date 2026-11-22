@@ -1,4 +1,5 @@
 // 12F4 : quitter physiquement une file bloquée, sans service, contact ni replacement.
+import { definitionHistorique } from './helpers/catalogue-historique.mjs';
 import assert from 'node:assert/strict';
 import { test as nodeTest, after } from 'node:test';
 import { createRequire } from 'node:module';
@@ -49,7 +50,7 @@ const NEUTRE = {gaz: 0, frein: 1, volant: 0, derive: false, haut: false, bas: fa
 const circuits = new Map();
 function circuit(id) {
   if (!circuits.has(id)) {
-    const k = CATALOGUE.find(k => k.id === id); assert.ok(k);
+    const k = definitionHistorique(CATALOGUE, id);
     const c = B.circuit.creer(k.graine, {theme: k.theme, longueur: k.longueur, nom: k.nom});
     B.bords.limites(c, B.bords.planifier(c));
     const decor = B.decor.construire(c, {qualite: 'high', matieres: true, vegetation: true, vegetationQualite: 'high', saison: 'ete'});
