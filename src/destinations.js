@@ -293,18 +293,20 @@
       const gres = [.56, .25, .14];
       const arche = B.lieux.poserArcheRoute(repere, limites, terrain, 'bitume-lieu-arche-naturelle', 21, 9.2, 23, gres);
       const objets = arche.objets;
+      if (!objets.length) return compte;
       // Éboulis indépendants sur les deux berges. Chaque pierre conserve son propre appui.
       for (let i = 0; i < 4; i++) {
         const cote = i % 2 ? 1 : -1, lat = cote * (arche.span / 2 + 3 + i * .8);
         const ds = i < 2 ? 3.5 : -5;
         const x = arche.cx + repere.r[0]*lat + repere.t[0]*ds, z = arche.cz + repere.r[2]*lat + repere.t[2]*ds;
         const hauteur = 1.45 + .22 * i;
-        objets.push({ shape: galetShape, p: [x, terrain.sol(x,z) + hauteur * .55, z],
+        const pierre={ shape: galetShape, p: [x, 0, z],
           s: [2.4 + i*.27, hauteur, 1.9 + .32*i], r: [.06*i, i*1.7, -.08], mat: 23, color: gres,
-          mobilePhysX: { genre: 'éboulis', masse: 4400 + 850*i } });
+          mobilePhysX: { genre: 'éboulis', masse: 4400 + 850*i } };
+        if (B.lieux.appuyerEboulis(arche.solSite,pierre,repere.r,cote)) objets.push(pierre);
       }
       push(objets, objets, arche.cx, arche.cz);
-      marquer('Grande Arche de la Sierra', f.x, f.y + 12, f.z, 105, 42);
+      marquer('Grande Arche de la Sierra', arche.cx, arche.ySommet-9, arche.cz, 105, 42);
     } else if (theme === 'corail') {
       // Grand Phare Blanc & Rouge sur îlot du lagon + voiliers blancs
       const site = terrain.lagon?.rive || trouverSite(c, outils, 0.35, 55, 110);

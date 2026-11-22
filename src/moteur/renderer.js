@@ -170,7 +170,7 @@
       if(node.entries){for(const entry of node.entries)mark(entry);return;}
       visit(node.left,accept);visit(node.right,accept);
     }
-    function candidates(accept,axes,h,v,far,radii){
+    function candidates(accept,axes,h,v,far,radii,castersOnly=false){
       if(!tree)return records;
       // Colour, mirror and orthographic sun passes each supply their own volume.
       // Ground cover density and LOD still use the camera of this view, including off-screen casters.
@@ -185,7 +185,7 @@
         let flags=bits[word];
         while(flags){
           const bit=31-Math.clz32(flags&-flags),entry=records[word*32+bit];
-          resolve(entry);selected.push(entry);
+          if(!castersOnly||entry.lot.ombre!==false){resolve(entry);selected.push(entry);}
           flags=(flags&(flags-1))>>>0;
         }
         bits[word]=0;
@@ -1733,18 +1733,27 @@
   // Opaque cockpit geometry can be outside the colour view and still cast a shadow.
   // Read the actual registered vertices, including off-centre shapes and edits by updateShape.
   function rigidOverlayView(source){
-    const bounds=new Map(),shown=[],hidden=[];
-    function halfExtents(name){
+    const bounds=new Map(),pending=new Map(),shown=[],hidden=[];
+    function halfExtents(name,budget){
       let bound=bounds.get(name);
       if(bound)return bound;
       const range=source.ranges[name];
       if(!range)return null;
-      const first=range.offset/4,end=first+range.count;
-      let x=0,y=0,z=0;
-      for(let i=first;i<end;i++){
+      const end=range.offset/4+range.count,part=pending.get(name);
+      const first=part?part.next:range.offset/4,stop=budget?Math.min(end,first+budget.vertices):end;
+      if(budget&&stop===first&&stop<end)return null;
+      let x=part?part.x:0,y=part?part.y:0,z=part?part.z:0;
+      for(let i=first;i<stop;i++){
         const at=source.indices[i]*6,v=source.vertices;
         x=Math.max(x,Math.abs(v[at]));y=Math.max(y,Math.abs(v[at+1]));z=Math.max(z,Math.abs(v[at+2]));
       }
+      if(budget)budget.vertices-=stop-first;
+      if(stop<end){
+        const next=part||{};next.next=stop;next.x=x;next.y=y;next.z=z;
+        if(!part)pending.set(name,next);
+        return null;
+      }
+      if(part)pending.delete(name);
       bound=[x,y,z];bounds.set(name,bound);return bound;
     }
     function select(meshes,eye,axes,h,v,radii,warming){
@@ -1769,7 +1778,7 @@
       shown.length=count;hidden.length=rejected;
       return shown;
     }
-    return {select,hidden,halfExtents,invalidate:name=>bounds.delete(name)};
+    return {select,hidden,halfExtents,invalidate(name){bounds.delete(name);pending.delete(name);}};
   }
 
   // Reuse only bit-identical primitive vertices. Keep expanded vertex storage,
@@ -2915,11 +2924,8 @@
   uniform vec4 uOmbreLoinReglages;${pcss?`
   uniform highp sampler2DShadow uOmbreComparee;`:''}
   uniform vec4 uPenombre;
-  // Occlusion d'un ellipsoïde (centre à -d du point, axes ax/ay/az, demi-axes r) vue d'un point de normale n : dans
-  // l'espace où l'ellipsoïde devient la sphère unité, cos(θ)·(1/l)² (Quilez), bornée à 1 au contact.
-  float photoEllipsoide(vec3 d,vec3 n,vec3 ax,vec3 ay,vec3 az,vec3 r){
-    vec3 q=vec3(dot(d,ax),dot(d,ay),dot(d,az))/r;
-    vec3 m=normalize(vec3(dot(n,ax),dot(n,ay),dot(n,az))*r);
+  // Dans l'espace de la sphère unité, q est le point relatif au centre et m la normale transformée.
+  float photoEllipsoideQ(vec3 q,vec3 m){
     float l2=dot(q,q),l=sqrt(l2);
     return clamp(max(dot(m,-q),0.)/(max(l2,1.)*max(l,.0001)),0.,1.);
   }
@@ -2938,12 +2944,21 @@
       if(d2>=portee*portee||c0.w<=0.)continue;
       vec4 c2=uContact[i*6+2],c3=uContact[i*6+3],c4=uContact[i*6+4],c5=uContact[i*6+5];
       vec3 ax=c1.xyz,ay=c2.xyz,az=cross(ax,ay);
-      float reste=1.-photoEllipsoide(d,n,ax,ay,az,vec3(c1.w,c2.w,c3.x));
-      vec3 sol=d+ay*c3.y;
-      for(int k=0;k<4;k++){
-        vec4 w=k<2?c4:c5;float cote=k==0||k==2?-1.:1.;
-        vec3 dw=sol-ax*(k<2?c3.z:c3.w)-az*(cote*w.y)-ay*w.x;
-        reste*=1.-photoEllipsoide(dw,n,ax,ay,az,w.xxz);
+      vec3 pointLocal=vec3(dot(d,ax),dot(d,ay),dot(d,az));
+      vec3 normaleLocale=vec3(dot(n,ax),dot(n,ay),dot(n,az));
+      vec3 caisse=vec3(c1.w,c2.w,c3.x);
+      float reste=1.-photoEllipsoideQ(pointLocal/caisse,normalize(normaleLocale*caisse));
+      // az est perpendiculaire aux deux axes fournis, qui peuvent avoir des longueurs et un angle quelconques.
+      float xy=dot(ax,ay),zz=dot(az,az);
+      vec2 axeAvant=vec2(dot(ax,ax),xy),axeHaut=vec2(xy,dot(ay,ay));
+      for(int essieu=0;essieu<2;essieu++){
+        vec4 roue=essieu==0?c4:c5;
+        float recul=essieu==0?c3.z:c3.w;
+        vec2 centre=(pointLocal.xy-recul*axeAvant+(c3.y-roue.x)*axeHaut)/roue.x;
+        vec3 normalePneu=normalize(normaleLocale*roue.xxz);
+        float voie=roue.y*zz;
+        reste*=1.-photoEllipsoideQ(vec3(centre,(pointLocal.z+voie)/roue.z),normalePneu);
+        reste*=1.-photoEllipsoideQ(vec3(centre,(pointLocal.z-voie)/roue.z),normalePneu);
       }
       libre*=1.-(1.-reste)*c0.w*(1.-smoothstep(portee*.7,portee,sqrt(d2)));
     }
@@ -3574,6 +3589,10 @@
     // Les programmes de profondeur et de couleur utilisent le même layout explicite 0..5.
     // Les objets mobiles et le VAO de travail restent indépendants de ce cache par contexte.
     let cacheLignesLots=false,dispositions=new WeakMap(),curseurDisposition=0,budgetDispositions=0;
+    // CPU-only index of the immutable packed rows, private to this WebGL context and LOD.
+    // Cold or invalidated pages remain drawable while their bounds are computed over successive views.
+    let sunLotPlans=new WeakMap();
+    const sunPageSize=8,sunIndexBudget={rows:0,vertices:0},sunLotSelection={groups:[]},sunLotRecords=[],sunPlaneAbs=new Float64Array(12);
     const casesDisposition=[],casesLibres=[],MAX_DISPOSITIONS=768;
     const etatDispositions={residentes:0,reutilisations:0,replis:0};
     stats.lotVertexArrays=etatDispositions;
@@ -3631,6 +3650,7 @@
       pointeursLot(offset);etatDispositions.replis++;return true;
     }
     function viderLot(l){
+      sunLotPlans.delete(l.paquet);sunLotPlans.delete(l.paquetLoin);
       oublierDispositions(l.tampon);oublierDispositions(l.tamponLoin);
       if(l.tampon)gl.deleteBuffer(l.tampon);
       if(l.tamponLoin)gl.deleteBuffer(l.tamponLoin);
@@ -3687,7 +3707,7 @@
     }
     function setLots(liste,options){
       for(const l of lots)viderLot(l);
-      groundPlans=new WeakMap();lots=[];indicesLots=[];ambianceLots=environment;
+      groundPlans=new WeakMap();sunLotPlans=new WeakMap();lots=[];indicesLots=[];ambianceLots=environment;
       if(liste)for(let i=0;i<liste.length;i++){
         if(!liste[i]?.objets)continue;
         indicesLots[i]=lots.length;lots.push(liste[i]);
@@ -3696,13 +3716,86 @@
       dernierUsage=lotsProgressifs?new Float64Array(lots.length):null;curseurLots=0;
       lotView.reset(lots,options?.staticBounds===true);chargerLots();stats.lots=lots.length;
     }
+    function sunLotPlan(batch){
+      let plan=sunLotPlans.get(batch);
+      if(!plan){
+        if(sunIndexBudget.rows<sunPageSize||sunIndexBudget.vertices<=0)return null;
+        const starts=new Uint32Array(batch.groups.length+1);
+        for(let i=0;i<batch.groups.length;i++)starts[i+1]=starts[i]+Math.ceil(batch.groups[i].count/sunPageSize);
+        plan={starts,boxes:new Float64Array(starts[batch.groups.length]*6),ready:0,group:0};
+        sunLotPlans.set(batch,plan);
+      }
+      const {starts,boxes}=plan,rows=batch.values;
+      while(plan.group<batch.groups.length&&sunIndexBudget.rows>=sunPageSize){
+        const g=plan.group,group=batch.groups[g],page=plan.ready;
+        const half=rigidShapes.halfExtents(group.name,sunIndexBudget);
+        if(!half)break; // A complex registered shape may span several frames.
+        const first=(page-starts[g])*sunPageSize,count=Math.min(sunPageSize,group.count-first);
+        let xmin=Infinity,ymin=Infinity,zmin=Infinity,xmax=-Infinity,ymax=-Infinity,zmax=-Infinity,unbounded=false;
+        for(let i=0,at=group.offset/4+first*16;i<count;i++,at+=16){
+          const x=rows[at],y=rows[at+1],z=rows[at+2],material=rows[at+3];
+          // Sheared cover, local wind and water can move independently of the rigid instance.
+          if((rows[at+11]&24)||(material>11.5&&material<12.5)){unbounded=true;break;}
+          const sx=half[0]*rows[at+4],sy=half[1]*rows[at+5],sz=half[2]*rows[at+6];
+          // The depth vertex program caps wind at 2. Foliage bends by (.5+y)*wind*.055
+          // in X and at most .6 of that in Z. Material 27 adds at most .66 m and .414 m.
+          const wind=material>10.5&&material<11.5 ? .14*(half[1]+.5) : material>26.5&&material<27.5 ? .80 : 0;
+          const r=Math.sqrt(sx*sx+sy*sy+sz*sz)*1.00001+wind+.003+.000002*(1+Math.abs(x)+Math.abs(y)+Math.abs(z));
+          if(!Number.isFinite(r+x+y+z)){unbounded=true;break;}
+          xmin=Math.min(xmin,x-r);xmax=Math.max(xmax,x+r);ymin=Math.min(ymin,y-r);ymax=Math.max(ymax,y+r);zmin=Math.min(zmin,z-r);zmax=Math.max(zmax,z+r);
+        }
+        const k=page*6;
+        if(unbounded)boxes[k+3]=Infinity;
+        else{
+          boxes[k]=(xmin+xmax)*.5;boxes[k+1]=(ymin+ymax)*.5;boxes[k+2]=(zmin+zmax)*.5;
+          boxes[k+3]=(xmax-xmin)*.5;boxes[k+4]=(ymax-ymin)*.5;boxes[k+5]=(zmax-zmin)*.5;
+        }
+        sunIndexBudget.rows-=count;plan.ready++;
+        if(plan.ready===starts[g+1])plan.group++;
+      }
+      return plan;
+    }
+    function outsideSunPage(plan,page){
+      if(page>=plan.ready)return false;
+      const b=plan.boxes,k=page*6,x=b[k],y=b[k+1],z=b[k+2],rx=b[k+3],ry=b[k+4],rz=b[k+5],m=shadowMatrix;
+      if(rx===Infinity)return false;
+      for(let j=0;j<3;j++){
+        const a=m[j],c=m[j+4],d=m[j+8];
+        if(Math.abs(a*x+c*y+d*z+m[j+12])>1.000002+sunPlaneAbs[j]*rx+sunPlaneAbs[j+4]*ry+sunPlaneAbs[j+8]*rz)return true;
+      }
+      return false;
+    }
+    function selectSunLot(batch){
+      const plan=sunLotPlan(batch),out=sunLotSelection.groups;
+      if(!plan?.ready)return batch;
+      let written=0;
+      for(let g=0;g<batch.groups.length;g++){
+        const group=batch.groups[g],base=plan.starts[g],last=plan.starts[g+1];
+        let first=base,end=last;
+        while(first<end&&outsideSunPage(plan,first))first++;
+        while(end-first>1&&outsideSunPage(plan,end-1))end--;
+        const skip=Math.min(group.count,(first-base)*sunPageSize),count=Math.min(group.count,(end-base)*sunPageSize)-skip;
+        stats.sunLotInstancesCulled+=group.count-count;
+        if(!count)continue;
+        if(count===group.count){out[written++]=group;continue;}
+        const rec=sunLotRecords[written]||(sunLotRecords[written]={name:'',count:0,offset:0});
+        rec.name=group.name;rec.count=count;rec.offset=group.offset+skip*64;out[written++]=rec;
+      }
+      out.length=written;return sunLotSelection;
+    }
     function dessinerLots(eye,axes,horizontal,vertical,far,accepte,radii){
       let dessines=0;
-      for(const entry of lotView.candidates(accepte,axes,horizontal,vertical,far,radii)){const l=entry.lot;
+      for(const entry of lotView.candidates(accepte,axes,horizontal,vertical,far,radii,!!accepte&&cullSun)){const l=entry.lot;
         if(l.detailProcheSeul&&!entry.near)continue;
         if(entry.cover&&entry.distance>entry.range)continue;
         // lot.ombre === false : le lot ne projette pas d'ombre du soleil (herbe courte, marquages au sol).
-        if(accepte){if(l.ombre===false||!accepte(entry.bounds))continue;}
+        let clipped=false;
+        if(accepte){
+          if(l.ombre===false)continue;
+          const classify=cullSun&&cacheLignesLots&&!entry.cover,classification=accepte(entry.bounds,classify);
+          if(!classification)continue;
+          clipped=classify&&classification===1;
+        }
         else{if(entry.distance>Math.min(far,entry.range))continue;if(!visible(entry.bounds,eye,axes,horizontal,vertical,far,radii))continue;}
         if(lotsProgressifs)chargerLot(entry.index,!entry.near);
         if(!l.tampon&&!l.tamponLoin)continue;
@@ -3712,7 +3805,8 @@
           if(plan.count){renderGroundCover(plan,l.tampon,l.tamponLoin,!!accepte);dessines++;}continue;
         }
         const proche=!l.paquetLoin||entry.near;
-        renderBatch(proche?l.paquet:l.paquetLoin,proche?l.tampon:l.tamponLoin,false,!!accepte,cacheLignesLots);dessines++;
+        const batch=proche?l.paquet:l.paquetLoin;
+        renderBatch(clipped?selectSunLot(batch):batch,proche?l.tampon:l.tamponLoin,false,!!accepte,cacheLignesLots);dessines++;
       }
       if(cacheLignesLots)gl.bindVertexArray(vao);
       stats.lotDistanceTests=lotView.distanceTests;
@@ -3757,7 +3851,7 @@
       const restored=primitiveIndex.restore(name), start=source.indices[range.offset/INDEX_OCTETS]*6;
       if(restored&&!stats.contextLost){gl.bindVertexArray(vao);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);}
       groundIndex.invalidate(name,restored,stats.contextLost?null:uploadShapeIndices);
-      source.vertices.set(vertices,start);rigidShapes?.invalidate(name);
+      source.vertices.set(vertices,start);rigidShapes?.invalidate(name);sunLotPlans=new WeakMap();
       if(!stats.contextLost){gl.bindBuffer(gl.ARRAY_BUFFER,vbo);gl.bufferSubData(gl.ARRAY_BUFFER,start*4,vertices);}
     }
     function uploadShapeIndices(offset,indices){
@@ -4000,14 +4094,20 @@
       const near=1,far=area?area.depth:115;shadowProjection.fill(0);shadowProjection[0]=shadowProjection[5]=1/extent;shadowProjection[10]=-2/(far-near);shadowProjection[14]=-(far+near)/(far-near);shadowProjection[15]=1;
       if(photo){photoSunRange=far-near;photoSunTexel=texel;}
       multiply(shadowProjection,shadowView,shadowMatrix);shadowMatrices.set(shadowMatrix,16);
+      if(cullSun&&cacheLignesLots)for(let i=0;i<12;i++)sunPlaneAbs[i]=Math.abs(shadowMatrix[i]);
       gl.bindFramebuffer(gl.FRAMEBUFFER,shadowTarget.framebuffer);
       if(full)gl.viewport(0,0,tile,tile);else gl.viewport(shadowTarget.size,0,shadowTarget.size,shadowTarget.size);
       gl.useProgram(depthProgram);gl.bindVertexArray(vao);gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.enable(gl.POLYGON_OFFSET_FILL);gl.polygonOffset(1.1,2);
       gl.uniformMatrix4fv(depthMatrix,false,shadowMatrix);gl.uniform2f(depthWind,weather.wind,time);
       bindLocalWind(depthLocalWind);
-      const inside=e=>{
-        const x=e.p[0]-p[0],y=e.p[1]-p[1],d=e.p[2]-p[2],z=x*fw[0]+y*fw[1]+d*fw[2];
-        return Math.abs(x*r[0]+y*r[1]+d*r[2])<extent+e.radius&&Math.abs(x*u[0]+y*u[1]+d*u[2])<extent+e.radius&&z+e.radius>near&&z-e.radius<far;
+      const inside=(e,classify)=>{
+        const x=e.p[0]-p[0],y=e.p[1]-p[1],d=e.p[2]-p[2],radius=e.radius,limit=extent+radius;
+        const hor=Math.abs(x*r[0]+y*r[1]+d*r[2]);if(!(hor<limit))return false;
+        const vert=Math.abs(x*u[0]+y*u[1]+d*u[2]);if(!(vert<limit))return false;
+        const z=x*fw[0]+y*fw[1]+d*fw[2];if(!(z+radius>near&&z-radius<far))return false;
+        if(classify!==true)return true;
+        // An entirely contained lot takes the original draw path without looking at its pages.
+        return hor+radius<=extent&&vert+radius<=extent&&z-radius>=near&&z+radius<=far?2:1;
       };
       // Index vide (BITUME) : ni requête, ni filtre, ni tableau de projeteurs.
       const casters=camera.chunked||!worldIndex.entries.length?EMPTY_ENTRIES:camera.allStatic?worldIndex.entries:worldIndex.query(center,[extent+24,26,0]).filter(inside);
@@ -4164,6 +4264,7 @@
       const fov=Math.max(FOV_MIN,Math.min(110,camera.fov||75))*Math.PI/180,f=1/Math.tan(fov*.5),near=camera.near||.045,far=camera.far||180;
       vegetation.update(fx,eye,1/f,canvas.height);stats.windStrength=vegetationState.strength;stats.groundCover=vegetationState.enabled;
       budgetDispositions=12;etatDispositions.reutilisations=etatDispositions.replis=0;
+      sunIndexBudget.rows=512;sunIndexBudget.vertices=4096;stats.sunLotInstancesCulled=0;
       lotView.prepare(lots,eye,1/f,canvas.height,vegetationState);libererLotsInactifs();stats.lotDistanceTests=lotView.distanceTests;stats.lotInstanceTests=0;
       projection.fill(0);projection[0]=f/(canvas.width/canvas.height);projection[5]=f;projection[10]=(far+near)/(near-far);projection[11]=-1;projection[14]=2*far*near/(near-far);
       multiply(projection,view,vp);

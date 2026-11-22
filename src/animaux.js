@@ -1465,7 +1465,7 @@
 
   // Six champs au maximum : deux joueurs et leurs deux glaces. Copie numérique stable,
   // jamais de conservation d'une caméra temporaire qui sera réutilisée par le moteur.
-  const NB_CHAMP = 16;
+  const NB_CHAMP = 18;
   function ecrireChamp(table, offset, contexte) {
     const cam = contexte && contexte.camera;
     if (!cam || !cam.pos || contexte.qualite === 'off' || !Number.isFinite(cam.pos[0] + cam.pos[1] + cam.pos[2])) return false;
@@ -1479,6 +1479,8 @@
     table[offset + 12] = tv * aspect; table[offset + 13] = tv;
     table[offset + 14] = contexte.portee > 0 ? Math.min(12000, contexte.portee) : contexte.qualite === 'low' ? 180 : PORTEE_VUES;
     table[offset + 15] = contexte.hauteur > 0 ? contexte.hauteur * .5 / tv : 360 / tv;
+    table[offset + 16] = Math.sqrt(1 + table[offset + 12] * table[offset + 12]);
+    table[offset + 17] = Math.sqrt(1 + tv * tv);
     return true;
   }
   function dansChamp(table, offset, x, y, z, rayon) {
@@ -1486,13 +1488,34 @@
     const profondeur = dx * table[offset + 3] + dy * table[offset + 4] + dz * table[offset + 5];
     if (profondeur < -rayon || profondeur > table[offset + 14] + rayon) return false;
     const horizontal = dx * table[offset + 6] + dy * table[offset + 7] + dz * table[offset + 8], th = table[offset + 12];
-    if (Math.abs(horizontal) > profondeur * th + rayon * Math.sqrt(1 + th * th)) return false;
+    if (Math.abs(horizontal) > profondeur * th + rayon * table[offset + 16]) return false;
     const vertical = dx * table[offset + 9] + dy * table[offset + 10] + dz * table[offset + 11], tv = table[offset + 13];
-    return Math.abs(vertical) <= profondeur * tv + rayon * Math.sqrt(1 + tv * tv);
+    return Math.abs(vertical) <= profondeur * tv + rayon * table[offset + 17];
   }
   function dansChamps(table, nombre, x, y, z, rayon) {
     for (let i = 0; i < nombre; i++) if (dansChamp(table, i * NB_CHAMP, x, y, z, rayon)) return true;
     return false;
+  }
+  // Le fondu d'un individu est nul dès que sa distance à l'œil atteint la portée.
+  // En XZ le carré englobe cette sphère, quels que soient focale, altitude et roulis.
+  // Rejeter seulement si *toutes* les vues sont hors de portée : un rétro peut garder
+  // l'animal tandis que sa taille et son niveau sont encore déterminés par le cockpit.
+  function domaineProche(d, champs, n) {
+    for (let k = 0; k < n; k++) {
+      const o = k * NB_CHAMP, x = champs[o], z = champs[o+2], r = champs[o+14] + 1e-6;
+      if (x + r >= d.minX && x - r <= d.maxX && z + r >= d.minZ && z - r <= d.maxZ) return true;
+    }
+    return false;
+  }
+  function bornerRepos(etat, g) {
+    const p = etat.cour, d = g.repos || (g.repos = {});
+    d.minX = d.minZ = Infinity; d.maxX = d.maxZ = -Infinity; d.dehors = 0;
+    for (let i=g.debut; i<g.debut+g.n; i++) {
+      const j = i * NP, x = p[j+PX], z = p[j+PZ];
+      d.minX = Math.min(d.minX,x); d.maxX = Math.max(d.maxX,x);
+      d.minZ = Math.min(d.minZ,z); d.maxZ = Math.max(d.maxZ,z);
+      if (p[j+PENF] <= .97) d.dehors++;
+    }
   }
   function selectionnerVues(etat, vues, nombre = vues ? vues.length : 0) {
     if (!etat) return 0;
@@ -1601,6 +1624,7 @@
       }
     }
     etat.prec.set(etat.cour); etat.prec2 = etat.cour.slice();
+    for (const g of etat.groupes) bornerRepos(etat, g);
     // état de départ gardé : une course reprise du début retrouve les mêmes bêtes aux mêmes places
     etat.initial = { cour: etat.cour.slice(), cer: etat.cer.slice(), gs: etat.gs.slice(), graines: etat.graines.slice() };
     // vues : réserves d'objets et tampons de tri, allouées une fois pour le palier le plus riche
@@ -1622,7 +1646,7 @@
     const objets = [], fx = [];
     for (let i = 0; i < BUDGETS.ultra.objets; i++) objets.push(objetVide());
     for (let i = 0; i < 4; i++) { const o = objetVide(); o.fx = true; o.alpha = 0; o.mat = 7; o.shape = 'sphere'; fx.push(o); }
-    return { champs: new Float64Array(3 * NB_CHAMP), objets, fx, px: new Float32Array(entites), dist: new Float32Array(entites), opacites: new Float32Array(entites), lod: new Uint8Array(entites), top: new Int32Array(BUDGETS.ultra.individus + 1),
+    return { champs: new Float64Array(3 * NB_CHAMP), objets, fx, px: new Float32Array(entites), dist: new Float32Array(entites), opacites: new Float32Array(entites), lod: new Uint8Array(entites), candidats: new Int32Array(entites), nCandidats: 0, top: new Int32Array(BUDGETS.ultra.individus + 1),
       stats: { qualite: 'off', animaux: 0, proches: 0, moyens: 0, lointains: 0, objets: 0, horsChamp: 0, minuscules: 0, coupes: 0, triangles: 0 } };
   }
 
@@ -1675,6 +1699,13 @@
         Object.assign(f, { cx: (x0 + x1) / 2, cz: (z0 + z1) / 2, D: Math.hypot(x1 - x0, z1 - z0) * .5 + 500, v: 14, periode: 170 + rnd() * 60, h: e.altitude[0] + rnd() * (e.altitude[1] - e.altitude[0]), graine: Math.floor(rnd() * 1e9), passe: -1, ang: .5, decal: .5 });
         for (let k = 0; k < n; k++) f.oiseaux.push({ rang: Math.ceil(k / 2), cote: k === 0 ? 0 : k & 1 ? 1 : -1, ech: .94 + .12 * rnd(), flap: rnd() * .3 });
       }
+      if (f.famille !== 'migrateur') {
+        // Le centre d'une ascendance oscille dans [−ax,ax] × [−az,az]. Pour une
+        // ellipse côtière tournée, son grand demi-axe borne toute l'orbite.
+        const cercle = f.famille === 'plane' ? Math.max(...f.oiseaux.map(o => o.r)) : Math.max(f.A,f.B);
+        const rx = cercle + (f.ax || 0), rz = cercle + (f.az || 0);
+        f.domaineVol = {minX:f.cx-rx, maxX:f.cx+rx, minZ:f.cz-rz, maxZ:f.cz+rz};
+      }
       f.premier = etat.volants.reduce((s, v) => s + v.n, 0);
       etat.volants.push(f); places++;
     }
@@ -1688,6 +1719,7 @@
   function remettre(etat) {
     const I = etat.initial;
     etat.cour.set(I.cour); etat.prec.set(I.cour); etat.prec2.set(I.cour); etat.cer.set(I.cer); etat.gs.set(I.gs); etat.graines.set(I.graines);
+    for (const g of etat.groupes) bornerRepos(etat, g);
     const v = etat.visibilite;
     if (v) { v.actifs.fill(0); v.horloges.fill(0); v.reveil.fill(-Infinity); v.stats.groupesActifs = v.stats.pasGroupes = v.stats.reveils = v.stats.posesPreparees = 0; v.stats.groupesEndormis = etat.groupes.length; }
   }
@@ -1738,7 +1770,10 @@
       const debut = grp.debut * NP, fin = (grp.debut + grp.n) * NP;
       if (!actif) {
         // Un seul raccord à l'endormissement ; rien à simuler, ni terrain à sonder ensuite.
-        if (v.actifs[g]) for (let j = debut; j < fin; j++) etat.prec2[j] = etat.prec[j] = etat.cour[j];
+        if (v.actifs[g]) {
+          for (let j = debut; j < fin; j++) etat.prec2[j] = etat.prec[j] = etat.cour[j];
+          bornerRepos(etat, grp);
+        }
         v.actifs[g] = 0; continue;
       }
       S.groupesActifs++;
@@ -2111,7 +2146,8 @@
   function garder(V, n, cible, nouveau, budget) {
     const px = V.px, lod = V.lod, top = V.top;
     let m = 0;
-    for (let i = 0; i < n; i++) {
+    for (let k = 0; k < n; k++) {
+      const i = V.candidats[k];
       if (lod[i] !== cible) continue;
       if (budget <= 0) { lod[i] = nouveau; continue; }
       if (m < budget) { let j = m++; while (j > 0 && px[top[j - 1]] < px[i]) { top[j] = top[j - 1]; j--; } top[j] = i; continue; }
@@ -2139,9 +2175,29 @@
     const nuit = contexte.nuit || 0, pluie = contexte.pluie || 0, loinSeuls = bud.lointainsSeuls;
     const alpha = paireEtats(etat, temps), A = PAIRE[0], Bc = PAIRE[1];
     IMG[0] = alpha; IMG[1] = temps; IMG[2] = nuit; IMG[3] = ex; IMG[4] = ez; IMG[5] = pluie;
-    const T = etat.G.T, nA = etat.nAnimaux, N = etat.nEntites, px = V.px, dist = V.dist, opacites = V.opacites, lod = V.lod;
+    const nA = etat.nAnimaux, N = etat.nEntites, px = V.px, dist = V.dist, opacites = V.opacites, lod = V.lod;
+    const candidats = V.candidats;
+    for (let k = 0; k < V.nCandidats; k++) lod[candidats[k]] = 0;
+    let nCandidats = 0, finGroupe = 0;
     for (let i = 0; i < N; i++) {
-      lod[i] = 0;
+      if (i === finGroupe) {
+        if (i < nA) {
+          const g = etat.groupes[etat.animaux[i].g];
+          finGroupe = Math.min(nA, g.debut + g.n);
+          if (!etat.visibilite.actifs[g.index] && finGroupe === g.debut + g.n && !domaineProche(g.repos, V.champs, nombreChamps)) {
+            S.horsChamp += g.repos.dehors; i = finGroupe - 1; continue;
+          }
+        } else {
+          const f = volantDe(etat, i - nA);
+          finGroupe = f ? Math.min(N, nA + f.premier + f.n) : i + 1;
+          if (!f || !volantVisible(f) || (f.famille === 'marin' && ((temps + f.phase) % f.periode) / f.periode >= .24)) {
+            i = finGroupe - 1; continue;
+          }
+          if (f.domaineVol && !domaineProche(f.domaineVol, V.champs, nombreChamps)) {
+            S.horsChamp += finGroupe - i; i = finGroupe - 1; continue;
+          }
+        }
+      }
       let x, y, z, taille;
       if (i < nA) {
         const b = i * NP;
@@ -2154,7 +2210,7 @@
         taille = (grp.md.rig ? grp.md.rig.hauteur : alt > .3 ? grp.md.envergure * .5 : grp.md.hauteur) * an.echelle;
       } else {
         const f = volantDe(etat, i - nA);
-        if (!f || !volantVisible(f) || !positionVolantSimple(etat, f, i - nA - f.premier, temps, PS)) continue;
+        if (!f || !positionVolantSimple(etat, f, i - nA - f.premier, temps, PS)) continue;
         x = PS.x; y = PS.y; z = PS.z; taille = (f.famille === 'marin' ? f.md.longueur * .3 : f.md.envergure * .5) * PS.echelle;
       }
       let p = 0, d = Infinity, principal = false, opacite = 0;
@@ -2173,13 +2229,16 @@
       if (!Number.isFinite(d) || opacite <= .004) { S.horsChamp++; continue; }
       if (p < bud.seuilMin) { S.minuscules++; continue; }
       px[i] = p; dist[i] = d; opacites[i] = opacite;
+      candidats[nCandidats++] = i;
       lod[i] = loinSeuls ? 1 : p >= bud.seuilProche && principal ? 3 : p >= bud.seuilMoyen ? 2 : 1;
     }
-    if (loinSeuls) garder(V, N, 1, 0, bud.individus);
-    else { garder(V, N, 3, 2, bud.proches); garder(V, N, 2, 1, bud.moyens); garder(V, N, 1, 0, bud.individus); }
+    V.nCandidats = nCandidats;
+    if (loinSeuls) garder(V, nCandidats, 1, 0, bud.individus);
+    else { garder(V, nCandidats, 3, 2, bud.proches); garder(V, nCandidats, 2, 1, bud.moyens); garder(V, nCandidats, 1, 0, bud.individus); }
     const r = V.objets, maxObj = Math.min(bud.objets, r.length);
     let k = 0, kfx = 0;
-    for (let i = 0; i < N; i++) {
+    for (let j = 0; j < nCandidats; j++) {
+      const i = candidats[j];
       let L = lod[i];
       if (!L) continue;
       while (L > 1 && k + MAX_PIECES[L] > maxObj) L--;

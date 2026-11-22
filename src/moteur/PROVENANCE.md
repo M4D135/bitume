@@ -112,3 +112,7 @@ Les 34 modules et leur verrou viennent de l’installateur canonique. Les shader
 ## FERRO 0.3.24 — 22 novembre 2026
 
 Les 34 modules et leur verrou viennent de l’installateur canonique. Les nappes rigides occupent 40 octets par sommet. Le moteur partage le classement des objets dynamiques entre les passes et réduit les calculs des ombres du cockpit. [Commit du moteur](https://github.com/M4D135/FERRO/commit/f9195273ceed7e0a01ed8dc221aa3cfdc554b03e)
+
+## FERRO 0.3.25 — 22 novembre 2026
+
+Les 34 modules et leur verrou viennent de l’installateur canonique. La passe solaire WebGL2 utilise les bornes des groupes du décor et le shader de contact partage la normale des deux pneus de chaque essieu. [Commit du moteur](https://github.com/M4D135/FERRO/commit/5702caa5f3968a33bbe86b7a758c6c18cac4d3be)

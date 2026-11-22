@@ -2289,6 +2289,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const lieuxLarche = B.larcheDecor && B.larcheDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter,
       decorProgressif: options.decorProgressif, basculeDetail: qualite === 'low' && organique ? 280 : 520 });
     const lieuxMarseille = B.marseilleDecor && B.marseilleDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter });
+    terrain.nappesRoute = nappes;
     const outilsLieux = { terrain, limites: lim, interroger, qualite, saison, ajouter, th, pontFjord };
     // Les repères prennent leur abscisse dans leur paysage d'origine. Le contrôle
     // physique consulte toujours le circuit entier, y compris le bras d'en face.

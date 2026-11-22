@@ -2717,7 +2717,7 @@
   // chaque toile, calculée à chaque image et écrite en fin d'image seulement si elle a changé (poserGlaces).
   const nouvelleGlace = () => ({ k: 0, coins: [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]], centre: [0, 0, 0], normale: [0, 0, 0], droite: [0, 0, 0] });
   const nouvellePoseCss = () => ({ v: new Float64Array(16), w: new Float64Array(16), ok: false, chaine: '', ecrite: null, visible: null });
-  const ETATS_GLACES = [0, 1].map(() => ({ vu: false, seance: null, dette: 0, ecoule: [0, 0], glaces: [nouvelleGlace(), nouvelleGlace()],
+  const ETATS_GLACES = [0, 1].map(() => ({ vu: false, seance: null, dette: 0, masque: 0, geometrie: null, ecoule: [0, 0], glaces: [nouvelleGlace(), nouvelleGlace()],
     poses: [nouvellePoseCss(), nouvellePoseCss()], toiles: null, aPoser: false }));
   // Caméra des glaces et objets de sa liste, réutilisés d'une glace à l'autre (le moteur relit tout à chaque draw)
   const CAM_GLACE = { pos: [0, 0, 0], yaw: 0, pitch: 0, roll: 0, fov: 34, near: .3, far: 6000, allStatic: true, sun: { center: [0, 0, 0], extent: 0, depth: 0 } };
@@ -2879,15 +2879,14 @@
       }
     }
   }
-  function majGlaces(S, vue, cam, ps, sortie, ambiance, suivie, dtImage, glaces) {
+  function planifierGlaces(S, cam, ps, dtImage, glaces, voir, P) {
     // à deux, le joueur 2 a ses deux glaces, posées sur sa moitié
     const G = glacesDe(S !== session ? 'j2' : 'j1');
     const toiles = G.toiles, J = ETATS_GLACES[S !== session ? 1 : 0];
-    const voir = glacesVives(S, vue);
     for (const t of toiles) if (t.hidden === voir) t.hidden = !voir;
     // nouvelle séance (course, référence) : les glaces repartent comme à leur premier affichage
     if (!voir || J.seance !== session) { J.vu = false; J.seance = session; }
-    if (!voir) return;
+    if (!voir) return null;
     const source = $('retro-rendu');
     // le moteur, sa copie du décor et les toiles sont prêts (glacesVives) : seule la densité de l'écran peut avoir
     // changé depuis la préparation
@@ -2928,8 +2927,8 @@
     // deux au plus par image ; le même coût par seconde à 30, 60, 120 ou 144 Hz. À l'image la plus proche de
     // l'échéance (demi-image de tolérance) ; une dette bornée à deux glaces : après un accroc, les deux glaces sont
     // repeintes, sans rafale de rattrapage. La première image où les glaces se montrent, les deux sont peintes.
-    const P = profilDe(S), hz = P.secondaires.retroviseurs.hz;
-    if (!(hz > 0)) return;
+    const hz = P.secondaires.retroviseurs.hz;
+    if (!(hz > 0)) return null;
     const intervalle = 1 / (2 * hz), dt = Math.max(0, dtImage || 0);
     if (!J.vu) { J.vu = true; J.dette = 2 * intervalle; J.ecoule[0] = J.ecoule[1] = 0; }
     else J.dette = Math.min(J.dette + dt, 2 * intervalle);
@@ -2939,12 +2938,21 @@
       const i = G.cote; G.cote = 1 - G.cote;
       if (J.poses[i].ok) aRepeindre |= 1 << i;
     }
-    // Une glace qui revient dans le champ reçoit une image fraîche dès cette vue.
-    // Les deux côtés conservent leurs créneaux ; rien à préparer ou copier hors écran.
-    for (let i = 0; i < 2; i++) {
-      if (!(aRepeindre & (1 << i))) continue;
-      const dtGlace = J.ecoule[i]; J.ecoule[i] = 0;
-      peindreGlace(S, G, i, glaces[i], cam, ps, sortie, ambiance, suivie, P, source, l, h, dtGlace, i === 0 && aRepeindre === 3);
+    if (!aRepeindre) return null;
+    J.masque = aRepeindre;
+    J.geometrie = glaces;
+    return J;
+  }
+
+  function peindreGlacesPlanifiees(S, plan, cam, ps, sortie, ambiance, suivie, P) {
+    if (!plan) return;
+    const G = glacesDe(S !== session ? 'j2' : 'j1'), source = $('retro-rendu');
+    for (let i=0; i<2; i++) {
+      if (!(plan.masque & (1 << i))) continue;
+      const dtGlace = plan.ecoule[i];
+      plan.ecoule[i] = 0;
+      peindreGlace(S, G, i, plan.geometrie[i], cam, ps, sortie, ambiance, suivie, P, source,
+        retro.l, retro.h, dtGlace, i === 0 && plan.masque === 3);
     }
   }
   // quelque valeur de la matrice a-t-elle changé depuis la dernière chaîne ? (mémorise les valeurs)
@@ -3532,7 +3540,15 @@
     // réfléchi et la projection CSS lisent les mêmes coins, même pendant une transition de caméra.
     const glacesCockpit = vue === 'cockpit' && S.cadrageCockpit?.glaces;
     const glacesMonde = preparerChampsFaune(S, vue, cam, ps, P, champsActeurs, avecGlaces, glacesCockpit) || glacesCockpit;
-    const toutesVues = avecGlaces ? champsActeurs?.visible : acteurVisible;
+    // La simulation de la faune conserve les deux champs. Pour le dessin de cette image,
+    // seuls les rétros à repeindre ont besoin du décor animé, des voitures et des embruns.
+    const planGlaces = planifierGlaces(S, cam, ps, dtImage, glacesMonde, avecGlaces, P);
+    if (champsActeurs) {
+      const actifs = planGlaces ? planGlaces.masque : 0;
+      champsActeurs.indetermine = !!(actifs & ~champsActeurs.masque);
+      champsActeurs.masque &= actifs;
+    }
+    const toutesVues = planGlaces ? champsActeurs?.visible : acteurVisible;
     // Habitats partagés ; pools propres aux deux vues. Le temps absolu garde les mêmes vols dans les miroirs.
     if (S.nature && B.faune && P.faune !== 'off' && (!saisonLocale || saisonLocale.faune > 0 || S.fauneVue)) {
       const nature = S.nature;
@@ -3627,7 +3643,7 @@
     // toile suit l'écran et la résolution du profil ; le seuil suit le champ (un téléobjectif garde le modèle complet
     // bien plus loin).
     const tanDemi = Math.tan(clamp(cam.fov, 10, 110) * Math.PI / 360), hauteur = canvas.height;
-    const geometrieGlaces = avecGlaces && S.geometrieGlaces;
+    const geometrieGlaces = planGlaces && S.geometrieGlaces;
     if (geometrieGlaces) {
       geometrieGlaces.pieces.length = 0;
       for (const prise of geometrieGlaces.voitures) prise.cle = -1;
@@ -3774,7 +3790,7 @@
       B.mesures.vue(S === session ? 'principale' : 'joueur2', rendu, { lampes: lampes ? lampes.length : 0, ombres: avecOmbres(P) });
     }
     dessinerMeteo(S, dtImage, cam, vue, P, suivie);
-    majGlaces(S, vue, cam, ps, sortie, S.ambianceImage, suivie, dtImage, glacesMonde);
+    peindreGlacesPlanifiees(S, planGlaces, cam, ps, sortie, S.ambianceImage, suivie, P);
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
     S.camera = cam; S.vue = vue; S.suivie = suivie.id;
     const affichage = S.type === 'duo' && S !== session ? hud2 : $('hud');

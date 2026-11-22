@@ -201,7 +201,8 @@
   }
 
   // ================================================================ PARTIE 1 : FORMES PROCÉDURALES
-  const FORMES = {}, sectionsArche = [];
+  const FORMES = {};
+  let maillageArche, piedsArche;
   function enregistrer(nom, tris) {
     const R = globalThis.window && globalThis.window.FRender;
     if (R && R.forme) R.forme(nom, tris);
@@ -375,14 +376,18 @@
       rads.push([epais * 1.15, epais * .88]);
     }
     const deform = (k, j, a) => 1 + .16 * Math.sin(k * 1.3 + a * 2) + .09 * Math.cos(k * 2.1 - a * 3);
-    const facesParSection = 20; // deux triangles entre deux anneaux pour chacune des dix faces
     const triangles = normaliserBoite(tubeFerme(pts, rads, 10, [1, 0, 0], deform));
-    for (let k = 0; k < K; k++) {
-      const points = new Map();
-      for (const face of triangles.slice(k * facesParSection, (k + 1) * facesParSection))
-        for (let coin = 0; coin < 3; coin++) points.set(face[coin].join(','), face[coin]);
-      sectionsArche.push(Array.from(points.values()));
+    // tubeFerme termine par les deux disques de dix triangles sous les pieds.
+    const points = new Map(), pieds = new Set(), indices = [];
+    for (let i=0; i<triangles.length; i++) for (const p of triangles[i].slice(0,3)) {
+      const cle = p.join(',');
+      if (!points.has(cle)) points.set(cle, { p, index: points.size });
+      const sommet = points.get(cle);
+      indices.push(sommet.index);
+      if (i>=triangles.length-20) pieds.add(sommet.p);
     }
+    maillageArche = { vertices: Float32Array.from([...points.values()].flatMap(v => v.p)), indices: Uint32Array.from(indices) };
+    piedsArche = [...pieds];
     return triangles;
   })());
 
@@ -580,28 +585,147 @@
   function deposer(ajouter, objets, loin, x, z) {
     if (objets.length) ajouter(objets, loin.length ? loin : objets.slice(), x, z);
   }
+
+  // Ne garder que les triangles du sol et de l'accotement autour de l'arche. Le relief
+  // bilinéaire utilisé pour le paysage peut passer au-dessus ou au-dessous de ces faces.
+  function solSousArche(terrain, cx, cz, rayon) {
+    const faces = [];
+    for (const n of [...(terrain.liste || []), ...(terrain.nappesRoute || [])]) {
+      if (n.surfaceType !== 'terrain' && n.surfaceType !== 'accotement') continue;
+      if (Math.abs(n.centre[0]-cx)>n.rayon+rayon || Math.abs(n.centre[2]-cz)>n.rayon+rayon) continue;
+      const v=n.sommets, indices=n.indices;
+      for (let k=0; k<indices.length; k+=3) {
+        const a=13*indices[k], b=13*indices[k+1], c=13*indices[k+2];
+        const x=v[a], y=v[a+1], z=v[a+2], ux=v[b]-x, uz=v[b+2]-z, vx=v[c]-x, vz=v[c+2]-z;
+        const x0=Math.min(x,v[b],v[c]), x1=Math.max(x,v[b],v[c]);
+        const z0=Math.min(z,v[b+2],v[c+2]), z1=Math.max(z,v[b+2],v[c+2]);
+        if (x1<cx-rayon || x0>cx+rayon || z1<cz-rayon || z0>cz+rayon) continue;
+        const det=ux*vz-uz*vx;
+        if (Math.abs(det)<1e-8 || (v[a+9]===12 && v[b+9]===12 && v[c+9]===12)) continue;
+        const uy=v[b+1]-y, vy=v[c+1]-y;
+        faces.push({ x0,x1,z0,z1,x,y,z, ux,uz,vx,vz, det, dx:(uy*vz-vy*uz)/det, dz:(ux*vy-vx*uy)/det });
+      }
+    }
+    return faces;
+  }
+  function dansFace(f,x,z) {
+    const u=((x-f.x)*f.vz-(z-f.z)*f.vx)/f.det, v=(f.ux*(z-f.z)-f.uz*(x-f.x))/f.det;
+    return u>=-1e-7 && v>=-1e-7 && u+v<=1.0000001;
+  }
+  function altitudeFace(f,x,z) { return f.y+(x-f.x)*f.dx+(z-f.z)*f.dz; }
+  function altitudeSite(faces,x,z) {
+    let h=-Infinity;
+    for (const f of faces) if (x>=f.x0 && x<=f.x1 && z>=f.z0 && z<=f.z1 && dansFace(f,x,z))
+      h=Math.max(h,altitudeFace(f,x,z));
+    return h;
+  }
+  // Sur une cassure il faut borner le plan à son triangle. La coupe verticale du
+  // convexe sur une arête est l'enveloppe des intersections de ses cordes. Son
+  // maximum sur le segment est soit un sommet, soit une de ses deux extrémités.
+  function appuiArete(points, axe, suivant, appui) {
+    const gauche=[], droite=[], coupe=[];
+    for (const p of points) {
+      if (p[axe]<0) gauche.push(p);
+      else if (p[axe]>0) droite.push(p);
+      else coupe.push([p[suivant],p[3]]);
+    }
+    for (const a of gauche) for (const b of droite) {
+      const t=a[axe]/(a[axe]-b[axe]);
+      coupe.push([a[suivant]+t*(b[suivant]-a[suivant]),a[3]+t*(b[3]-a[3])]);
+    }
+    coupe.sort((a,b)=>a[0]-b[0] || b[1]-a[1]);
+    const enveloppe=[];
+    for (const p of coupe) {
+      if (enveloppe.length && enveloppe[enveloppe.length-1][0]===p[0]) continue;
+      while (enveloppe.length>=2) {
+        const a=enveloppe[enveloppe.length-2], b=enveloppe[enveloppe.length-1];
+        if ((b[0]-a[0])*(p[1]-b[1]) < (b[1]-a[1])*(p[0]-b[0])) break;
+        enveloppe.pop();
+      }
+      enveloppe.push(p);
+    }
+    for (let i=0; i<enveloppe.length; i++) {
+      const b=enveloppe[i], a=enveloppe[i-1];
+      if (b[0]>=0 && b[0]<=1) appui=Math.max(appui,b[1]);
+      if (a) for (const t of [0,1]) if (a[0]<t && b[0]>t)
+        appui=Math.max(appui,a[1]+(b[1]-a[1])*(t-a[0])/(b[0]-a[0]));
+    }
+    return appui;
+  }
+  function appuiSurFace(f,x,z,sommets,appui) {
+    const points=[], maxi=[-Infinity,-Infinity,-Infinity], mini=[Infinity,Infinity,Infinity];
+    let borne=-Infinity;
+    for (const p of sommets) {
+      const xx=x+p[0]-f.x, zz=z+p[2]-f.z, h=f.y+f.dx*xx+f.dz*zz-p[1];
+      const u=(xx*f.vz-zz*f.vx)/f.det, v=(f.ux*zz-f.uz*xx)/f.det, w=1-u-v;
+      const b=[u,v,w,h];
+      points.push(b);
+      borne=Math.max(borne,h);
+      if (Math.min(u,v,w)>=-1e-8) appui=Math.max(appui,h);
+      for (let k=0;k<3;k++) { mini[k]=Math.min(mini[k],b[k]); maxi[k]=Math.max(maxi[k],b[k]); }
+    }
+    if (borne<=appui+1e-7 || Math.min(...maxi)<0) return appui;
+    for (let k=0;k<3;k++) if (mini[k]<0 && maxi[k]>=0) appui=appuiArete(points,k,(k+1)%3,appui);
+    return appui;
+  }
+  function appuyerEboulis(faces, pierre, axe, cote) {
+    const points=new Map(), co=pierre.r.map(Math.cos), si=pierre.r.map(Math.sin);
+    for (const face of FORMES[pierre.shape]) for (let i=0; i<3; i++) {
+      const p=face[i], cle=p.join(',');
+      if (points.has(cle)) continue;
+      const x=p[0]*pierre.s[0], y=p[1]*pierre.s[1], z=p[2]*pierre.s[2];
+      // Même repère local que FERRO et le quaternion PhysX : Rz · Ry · Rx.
+      const y1=co[0]*y-si[0]*z, z1=si[0]*y+co[0]*z, x2=co[1]*x+si[1]*z1;
+      points.set(cle,[co[2]*x2-si[2]*y1,si[2]*x2+co[2]*y1,-si[1]*x+co[1]*z1]);
+    }
+    const sommets=[...points.values()], rayon=Math.hypot(...pierre.s)/2;
+    for (let recul=0; recul<=16; recul+=1) {
+      const x=pierre.p[0]+cote*recul*axe[0], z=pierre.p[2]+cote*recul*axe[2];
+      let appui=-Infinity;
+      for (const f of faces) {
+        if (f.x1<x-rayon || f.x0>x+rayon || f.z1<z-rayon || f.z0>z+rayon) continue;
+        appui=appuiSurFace(f,x,z,sommets,appui);
+      }
+      if (Number.isFinite(appui)) {
+        pierre.p=[x,appui+.006,z];
+        return true;
+      }
+    }
+    return false;
+  }
   function poserArcheRoute(f, lim, terrain, shape, haut, epais, mat, color, pilierMat, pilierColor) {
     const limG = (lim.G[f.i] || 13) + 3.2, limD = (lim.D[f.i] || 13) + 3.2;
-    const dec = (limD - limG) * .5, span = limG + limD + 6.5;
+    const dec = (limD - limG) * .5;
+    let span = limG + limD + 6.5;
     const cx = f.x + f.r[0] * dec, cz = f.z + f.r[2] * dec;
     const rot = [0, -f.a, 0];
     const ySol = Math.min(f.y, terrain.sol(f.x - f.r[0] * limG, f.z - f.r[2] * limG), terrain.sol(f.x + f.r[0] * limD, f.z + f.r[2] * limD));
-    const hTot = Math.max(haut, (f.y - ySol) + 12.5);
-    const ySommet = ySol + hTot - 1.2;
+    let hTot = Math.max(haut, (f.y - ySol) + 12.5);
+    let ySommet = ySol + hTot - 1.2;
     const objets = [obj(shape, [cx, ySol + hTot * .5 - .6, cz], [epais, hTot, span], rot, mat, color)];
+    let solSite;
     if (shape === 'bitume-lieu-arche-naturelle') {
-      const arche = objets[0], ca = Math.cos(f.a), sa = Math.sin(f.a);
-      // Relever les appuis sous les deux vrais pieds de la voûte, y compris sur un versant incliné.
-      let basLibre = -Infinity;
-      for (const section of [sectionsArche[0], sectionsArche[sectionsArche.length-1]]) {
-        for (const sommet of section) {
-          const dx = sommet[0] * epais, dz = sommet[2] * span;
-          const sol = terrain.sol(cx + ca*dx - sa*dz, cz + sa*dx + ca*dz);
-          basLibre = Math.max(basLibre, sol - sommet[1] * hTot);
+      const arche = objets[0], ca=Math.cos(f.a), sa=Math.sin(f.a);
+      solSite=solSousArche(terrain,cx,cz,span/2+65);
+      // Garder le faîte à sa cote de dégagement et prolonger les deux pieds
+      // dans la roche mère, même si les deux rives ont des altitudes différentes.
+      ySommet=Math.max(f.y+haut,ySommet+.6);
+      const limite=span+64, maillagePresent=Array.isArray(terrain.liste);
+      for (;span<=limite;span+=4) {
+        let hauteur=hTot, complet=true;
+        for (const pied of piedsArche) {
+          const dx=pied[0]*epais, dz=pied[2]*span, x=cx+ca*dx-sa*dz, z=cz+sa*dx+ca*dz;
+          const sol=maillagePresent?altitudeSite(solSite,x,z):terrain.sol(x,z);
+          if (!Number.isFinite(sol)) { complet=false; break; }
+          hauteur=Math.max(hauteur,(ySommet-sol+.85)/(.5-pied[1]));
         }
+        if (complet) { hTot=hauteur; break; }
       }
-      arche.p[1] = basLibre + .04;
-      arche.mobilePhysX = { genre: 'arche-rocheuse', masse: epais * hTot * span * 340, sections: sectionsArche };
+      if (span>limite) return { objets: [], cx, cz, span, hTot, ySommet, solSite };
+      arche.s[1]=hTot;
+      arche.s[2]=span;
+      arche.p[1]=ySommet-hTot*.5;
+      B.decor.marquerSolide(arche,'arche-rocheuse',2,null,maillageArche);
     }
     if (pilierMat !== undefined) {
       for (const [sgn, limC] of [[-1, limG], [1, limD]]) {
@@ -615,7 +739,7 @@
         objets.push(solide(obj('bitume-lieu-galet-a', [ax, ay + ah * .5, az], [epais * 2.2, ah, 11.5], rot, 9, pilierColor), 'culée-lieu'));
       }
     }
-    return { objets, cx, cz, span, hTot, ySommet };
+    return { objets, cx, cz, span, hTot, ySommet, solSite };
   }
 
   function poser(c, outils) {
@@ -707,9 +831,9 @@
       }
       const fa = choisirPassage(c, secteur, .50, .012);
       if (fa) {
-        const { objets, cx, cz, hTot } = poserArcheRoute(fa, lim, terrain, 'bitume-lieu-arche-naturelle', 17, 6.5, 9, [.64, .58, .48]);
+        const { objets, cx, cz, ySommet } = poserArcheRoute(fa, lim, terrain, 'bitume-lieu-arche-naturelle', 17, 6.5, 9, [.64, .58, .48]);
         deposer(ajouter, objets, objets.slice(), cx, cz);
-        marqueurs.push({ nom: 'Arche Calcaire de la Côte', type: 'arche', x: cx, y: fa.y + hTot, z: cz });
+        if (objets.length) marqueurs.push({ nom: 'Arche Calcaire de la Côte', type: 'arche', x: cx, y: ySommet, z: cz });
       }
       return { marqueurs };
     }
@@ -821,9 +945,9 @@
       }
       const fa = choisirPassage(c, secteur, .50, .012);
       if (fa) {
-        const { objets, cx, cz, hTot } = poserArcheRoute(fa, lim, terrain, 'bitume-lieu-arche-naturelle', 18, 7.5, 9, [.64, .34, .18]);
+        const { objets, cx, cz, ySommet } = poserArcheRoute(fa, lim, terrain, 'bitume-lieu-arche-naturelle', 18, 7.5, 9, [.64, .34, .18]);
         deposer(ajouter, objets, objets.slice(), cx, cz);
-        marqueurs.push({ nom: 'Grande Arche Naturelle en Grès', type: 'arche', x: cx, y: fa.y + hTot, z: cz });
+        if (objets.length) marqueurs.push({ nom: 'Grande Arche Naturelle en Grès', type: 'arche', x: cx, y: ySommet, z: cz });
       }
       const siteO = choisirSite(c, secteur, terrain, interroger, lim, .76, -1, 46, 115, 22);
       if (siteO) {
@@ -925,9 +1049,9 @@
       }
       const fs = choisirPassage(c, secteur, .66, .012);
       if (fs) {
-        const { objets, cx, cz, hTot } = poserArcheRoute(fs, lim, terrain, 'bitume-lieu-arche-naturelle', 17, 6.2, 10, [.38, .19, .10]);
+        const { objets, cx, cz, ySommet } = poserArcheRoute(fs, lim, terrain, 'bitume-lieu-arche-naturelle', 17, 6.2, 10, [.38, .19, .10]);
         deposer(ajouter, objets, objets.slice(), cx, cz);
-        marqueurs.push({ nom: 'Arche du Séquoia Géant', type: 'arche', x: cx, y: fs.y + hTot, z: cz });
+        if (objets.length) marqueurs.push({ nom: 'Arche du Séquoia Géant', type: 'arche', x: cx, y: ySommet, z: cz });
       }
       return { marqueurs };
     }
@@ -988,5 +1112,5 @@
     objets.push(obj('bitume-lieu-voile', [x, eau + 6.8, z], [1.4, 9.5, 5.6], [0, voile, 0], 16, [.97, .96, .93]));
   }
 
-  B.lieux = { FORMES, poserArcheRoute, rocherPour, pyramidePour, poser, ajouterVoilier };
+  B.lieux = { FORMES, poserArcheRoute, appuyerEboulis, rocherPour, pyramidePour, poser, ajouterVoilier };
 })(globalThis.BITUME = globalThis.BITUME || {});

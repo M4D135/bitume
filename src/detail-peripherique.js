@@ -18,6 +18,18 @@
       rayonMax = Math.max(rayonMax, lot.rayon); basculeMax = Math.max(basculeMax, lot.bascule);
       touches.push(null); seuils.push(0);
     }
+    // Dans les cases denses, borner les centres en 3D une fois. Le rayon propre
+    // de chaque lot reste distinct du rayon qui contient tous les centres.
+    for (const colonne of colonnes.values()) for (const lots of colonne.values()) {
+      if (lots.length < 3) continue;
+      let x0=Infinity, y0=Infinity, z0=Infinity, x1=-Infinity, y1=-Infinity, z1=-Infinity, rayon=0;
+      for (const lot of lots) {
+        const [x,y,z] = lot.centre;
+        x0=Math.min(x0,x); x1=Math.max(x1,x); y0=Math.min(y0,y); y1=Math.max(y1,y); z0=Math.min(z0,z); z1=Math.max(z1,z);
+        rayon=Math.max(rayon,lot.rayon);
+      }
+      lots.volume = {x:(x0+x1)/2,y:(y0+y1)/2,z:(z0+z1)/2,centres:Math.hypot(x1-x0,y1-y0,z1-z0)/2+1e-6,rayon};
+    }
     // Fenêtres de cases des deux vues. La voiture peut rouler de nombreuses images avant
     // qu'un bord de fenêtre franchisse 128 m ; l'angle et les seuils restent évalués à chaque vue.
     const fenetre = () => ({ i0: NaN, i1: NaN, j0: NaN, j1: NaN, cases: [] });
@@ -71,10 +83,20 @@
     const i0 = Math.floor((oeil[0] - portee) / CASE), iFin = Math.floor((oeil[0] + portee) / CASE);
     const j0 = Math.floor((oeil[2] - portee) / CASE), jFin = Math.floor((oeil[2] + portee) / CASE);
     for (const lots of casesProches(d, i0, iFin, j0, jFin)) {
+      const b = lots.volume;
+      if (b) {
+        const x=b.x-oeil[0], y=b.y-oeil[1], z=b.z-oeil[2];
+        const devant=x*ax+y*ay+z*az, cote=Math.abs(x*rx+y*ry+z*rz), total=b.centres+b.rayon;
+        // Tout le volume est derrière, au-delà d'un bord ou entièrement dans le cône
+        // central protégé. Les cas tangents restent soumis au calcul de chaque lot.
+        if (devant+total < 0 || cote-devant*horizontal > total*normaleChamp ||
+            cote-devant*centre < -b.centres*normale) continue;
+      }
       for (const lot of lots) {
         const p = lot.centre, r = lot.rayon, dx = p[0] - oeil[0], dy = p[1] - oeil[1], dz = p[2] - oeil[2];
         const distance2 = dx * dx + dy * dy + dz * dz, limite = lot.bascule * facteur + r;
-        if (distance2 >= limite * limite || distance2 <= (35 + r) ** 2) continue;
+        if (distance2 >= limite * limite || distance2 <= (35 + r) ** 2 ||
+            distance2 < (lot.bascule * (1 - .34) * facteur + r) ** 2) continue;
         const devant = dx * ax + dy * ay + dz * az, lateral = Math.abs(dx * rx + dy * ry + dz * rz);
         if (devant + r <= 0 || lateral <= devant * centre + r * normale ||
             lateral > devant * horizontal + r * normaleChamp) continue;

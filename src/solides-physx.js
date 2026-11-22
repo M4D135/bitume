@@ -43,8 +43,9 @@
     if (Array.from(o.s).some(v => v <= 0)) throw new RangeError('PhysX : taille positive requise');
     const pose = { pos: Array.from(o.p), quaternion: quaternion(o.r) };
     if (o.shape === 'box') return { ...pose, half: Array.from(o.s, v => v / 2) };
-    if (typeof o.shape === 'string' && o.shape.startsWith('bitume-lieu-')) return { ...pose, half: Array.from(o.s, v => v * .44) };
-    const g = o.solidePhysX?.maillage || primitives().get(o.shape);
+    const maillage = o.solidePhysX?.maillage;
+    if (!maillage && typeof o.shape === 'string' && o.shape.startsWith('bitume-lieu-')) return { ...pose, half: Array.from(o.s, v => v * .44) };
+    const g = maillage || primitives().get(o.shape);
     if (!g) throw new TypeError('PhysX : forme solide non prise en charge (' + o.shape + ')');
     const vertices = new Float32Array(g.vertices.length);
     for (let k = 0; k < vertices.length; k++) vertices[k] = g.vertices[k] * o.s[k % 3];

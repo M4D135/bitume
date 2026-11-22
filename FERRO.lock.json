@@ -1,6 +1,6 @@
 {
   "format": "ferro-lock",
-  "version": "0.3.24",
+  "version": "0.3.25",
   "reference": "M4D135/FERRO:src/ferro",
   "game": "bitume",
   "modules": [
@@ -12,7 +12,7 @@
     {
       "id": "render",
       "path": "src/moteur/renderer.js",
-      "sha256": "ddcc482b8cefd176e0ee0cae9e52bc623fd4e286e5eaffda1ae3a0fc91cd23a9"
+      "sha256": "eaa4652b686a33b2499d6631a1002ac117c81cf07cba715b2982a1b81857257f"
     },
     {
       "id": "webgpu-shaders",
@@ -172,7 +172,7 @@
     {
       "id": "host",
       "path": "src/ferro/engine.js",
-      "sha256": "4c502e7130570067faf5e1209ad04a5b72702a0b9e47092b0644ff842bd7df51"
+      "sha256": "f923971c2622fbe262e9705b026fb7efda60a630d3fe1a544cf8444a935e75b5"
     }
   ]
 }
