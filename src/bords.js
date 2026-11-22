@@ -329,8 +329,8 @@
           const tronc = { shape: 'cylinder', collision: 'tronc', p: [p[0], p[1] + h * .42, p[2]], s: [h * .045, h * .84, h * .045], r: [0, 0, 0], mat: 10, color: [.30, .22, .15], detail: 1 };
           objets.push(tronc, { shape: 'cylinder', p: [p[0], p[1] + 1.1, p[2]], s: [h * .047, .45, h * .047], mat: 16, color: [.95, .95, .92] });
           loin.push(tronc);
-          // Variation du houppier commune aux deux niveaux de détail.
-          const varier = alea((c.graine >>> 0) ^ Math.imul(i, 0x9e3779b1) ^ Math.imul(cote, 0x85ebca6b));
+          // Variation du houppier commune aux deux niveaux de détail, indépendante des tirages de pose.
+          const varier = alea(graineBords(c) ^ Math.imul(i, 0x9e3779b1) ^ Math.imul(cote, 0x85ebca6b));
           const rotation = [0, varier() * 2 * Math.PI, 0];
           const echelleX = .85 + varier() * .3, echelleZ = .85 + varier() * .3;
           if (B.botanique && fine && resineux) {
