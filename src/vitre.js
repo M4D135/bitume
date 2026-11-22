@@ -73,14 +73,20 @@
   }
   // Même dépôt mobile pour la réfraction WebGL et le repli Canvas ; aucun contexte ni pixel requis ici.
   const BANDES_FUSION = 24, MOTS_FUSION = Math.ceil(BUDGETS.ultra.gouttes / 32);
-  // Neuf perles fines par arrivée d'eau dans le repli 2D. Elles ont chacune leur position,
-  // leur rayon et leur durée ; seules les grosses gouttes entrent dans le calcul des fusions.
+  // Neuf perles fines par arrivée d'eau dans le repli 2D.
   const FINES_PAR_ARRIVEE = 9, PAS_FINE = 7; // x, y, x précédent, y précédent, âge, durée, rayon CSS
+  const GRILLE_FINES = 32, MAX_RAYON_FINE = 1.9;
+  const celluleFine = x => clamp(Math.floor(x * GRILLE_FINES), 0, GRILLE_FINES - 1);
   function creerSimulation(options, canvas = null, contexte = null) {
     const e = { canvas, contexte, gouttes: pool(112), neige: pool(36), accumulateur: 0, temps: 0, sequence: 0, masquee: false,
       graine: options && Number.isInteger(options.graine) ? options.graine | 0 : 0,
       bandesFusion: new Uint32Array(BANDES_FUSION * MOTS_FUSION), motFusion: new Uint32Array(MOTS_FUSION),
-      fines: contexte ? { points: new Float32Array(BUDGETS.ultra.gouttes * FINES_PAR_ARRIVEE * PAS_FINE), fin: 0, prochain: 0, sequence: 0 } : null,
+      fines: contexte ? {
+        points: new Float32Array(BUDGETS.ultra.gouttes * FINES_PAR_ARRIVEE * PAS_FINE),
+        cellules: new Int16Array(GRILLE_FINES * GRILLE_FINES),
+        suivants: new Int16Array(BUDGETS.ultra.gouttes * FINES_PAR_ARRIVEE),
+        fin: 0, prochain: 0, sequence: 0
+      } : null,
       creditEau: 0, creditNeige: 0, largeur: canvas ? canvas.clientWidth || canvas.width || 1 : 1280,
       hauteur: canvas ? canvas.clientHeight || canvas.height || 1 : 720, dpr: 1, dprPalier: null, propre: true, libere: false,
       flux: { air: 0, vitesseAir: 0, vitesseIncidente: 0, expansion: 0, deriveX: 0, deriveY: 0, graviteX: 0, graviteY: 1, centreX: .5, centreY: .45 },
@@ -268,7 +274,46 @@
         if (neige) e.stats.fusionsNeige++; else e.stats.fusionsEau++;
       }
     }
+    if (!neige && e.stats.microgouttes) absorberFines(e, liste, limite);
     return nombre;
+  }
+  function absorberFines(e, liste, limite) {
+    const { points, cellules, suivants, fin } = e.fines;
+    const w = e.largeur, h = e.hauteur;
+    cellules.fill(-1);
+    for (let j = 0; j < fin; j++) {
+      const i = j * PAS_FINE;
+      if (points[i + 5] <= 0) continue;
+      const cellule = celluleFine(points[i + 1]) * GRILLE_FINES + celluleFine(points[i]);
+      suivants[j] = cellules[cellule]; cellules[cellule] = j;
+    }
+    for (let j = 0; j < limite; j++) {
+      const p = liste[j]; if (!p.vivant) continue;
+      const rayon = .45 * p.taille, portee = rayon + MAX_RAYON_FINE;
+      const x0 = celluleFine(p.x - portee / w), x1 = celluleFine(p.x + portee / w);
+      const y0 = celluleFine(p.y - portee / h), y1 = celluleFine(p.y + portee / h);
+      let aire = 0;
+      for (let y = y0; y <= y1; y++) {
+        for (let x = x0; x <= x1; x++) {
+          for (let n = cellules[y * GRILLE_FINES + x]; n >= 0; n = suivants[n]) {
+            const i = n * PAS_FINE, duree = points[i + 5], age = points[i + 4];
+            if (duree <= 0) continue;
+            const r = points[i + 6] * clamp(Math.min(age * 5, (duree - age) * 1.5), 0, 1);
+            const dx = (p.x - points[i]) * w, dy = (p.y - points[i + 1]) * h;
+            if (dx * dx + dy * dy > (rayon + r) ** 2) continue;
+            // La durée négative garde le ménisque dessinable pendant le pas de fusion.
+            points[i + 5] = -duree;
+            aire += (r / .45) ** 2;
+            e.stats.microgouttes--;
+          }
+        }
+      }
+      if (aire > 0) {
+        const masse = p.taille * p.taille + aire;
+        p.taille = Math.min(MAX_RAYON_EAU, Math.sqrt(masse));
+        e.stats.eauEvacuee += Math.max(0, masse - MAX_RAYON_EAU * MAX_RAYON_EAU);
+      }
+    }
   }
   function avancer(e, c, budget, pluie, neige, intensite) {
     e.temps += PAS; e.stats.etapes++;
@@ -346,7 +391,7 @@
       else restes++;
     }
     e.stats.paires = 0;
-    if (gouttes >= 2) gouttes -= fusionner(e, e.gouttes, budget.gouttes, false);
+    if (gouttes >= 2 || (gouttes && e.stats.microgouttes)) gouttes -= fusionner(e, e.gouttes, budget.gouttes, false);
     if (restes >= 2) restes -= fusionner(e, e.neige, budget.neige, true);
     e.stats.gouttes = gouttes; e.stats.neige = restes;
   }
@@ -371,7 +416,7 @@
     viderPixels(e); ctx.setTransform(e.dpr, 0, 0, e.dpr, 0, 0);
     // Quelques traits et contours : ni lecture de pixels, ni réfraction plein écran.
     ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    if (e.stats.microgouttes) {
+    if (e.fines?.fin) {
       const f = e.fines, points = f.points;
       // Deux traits groupés pour tous les ménisques fins de cette vue, quel que soit le palier.
       ctx.globalAlpha = Math.min(1, e.opacite);
@@ -382,7 +427,8 @@
           const i = j * PAS_FINE, duree = points[i + 5];
           if (!duree) continue;
           const age = Math.max(0, points[i + 4] - (1 - k) * PAS);
-          const r = points[i + 6] * clamp(Math.min(age * 5, (duree - age) * 1.5), 0, 1);
+          const r = points[i + 6] * clamp(Math.min(age * 5, (Math.abs(duree) - age) * 1.5), 0, 1)
+            * (duree < 0 ? Math.sqrt(1 - k) : 1);
           if (r < .15) continue;
           const x = melange(points[i + 2], points[i], k) * w, y = melange(points[i + 3], points[i + 1], k) * h;
           const d = bord ? -r : r;
