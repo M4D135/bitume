@@ -70,13 +70,15 @@
     if (!cache?.choisi) return;
     const nappes = cache.nappes;
     cache.nappes = null;
-    if (cache.rapport.source === 'indexeddb') return;
+    if (cache.present === true) {
+      cache.rapport.ecriture = false;
+      return;
+    }
     const ecrire = async () => {
       try {
         // Une ouverture encore bloquée après la première image sera retentée lors
         // d'une autre visite. Ne pas retenir le panorama dans une promesse suspendue.
-        if (cache.present === null) { cache.rapport.ecriture = false; return; }
-        if (cache.present) return;
+        if (cache.present !== false) { cache.rapport.ecriture = false; return; }
         const bloc = encoder(nappes);
         cache.rapport.octets = bloc.byteLength;
         cache.rapport.ecriture = await B.cache.ecrire(cache.cle, bloc);

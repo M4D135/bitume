@@ -773,7 +773,7 @@
   const VIB_EVENEMENTS = 64;
   const VIB_ATTERRISSAGE = Object.freeze({ type: 'atterrissage', force: 0 });
   function etatVibrations() {
-    return { V: B.vibrations.creer(), sortie: B.vibrations.creerSortie(), actif: false, evenements: [], entree: {} };
+    return { V: B.vibrations.creer(), sortie: B.vibrations.creerSortie(), actif: false, pasRecu: false, evenements: [], entree: {} };
   }
   const vibrations = [etatVibrations(), etatVibrations()];
   let vibreImage = false;
@@ -781,11 +781,17 @@
     B.vibrations.arreter(vibrations[n].sortie);
     calmerVibrations(n);
   }
-  function arreterManettes() { arreterVibrations(0); arreterVibrations(1); }
+  function arreterManettes() { vibreImage = false; arreterVibrations(0); arreterVibrations(1); }
+  function synchroniserVibrations(n) {
+    const J = vibrations[n];
+    if (B.vibrations.affecter(J.sortie, (n ? pad2 : pad).manette)) calmerVibrations(n);
+    return J;
+  }
   // Événements d'un pas qui touchent la voiture id, gardés pour l'image : la réception d'un saut devient l'atterrissage
   // du module. Le tableau est vidé à chaque image rendue ; la borne ne sert qu'aux pas sans image (outils).
-  function retenirVibrations(J, ev, id) {
-    const liste = J.evenements;
+  function retenirVibrations(n, ev, id) {
+    const J = synchroniserVibrations(n), liste = J.evenements;
+    J.pasRecu = true;
     for (let i = 0; i < ev.length && liste.length < VIB_EVENEMENTS; i++) {
       const e = ev[i], type = e.type;
       if (type === 'contact' ? e.a !== id && e.b !== id : e.id !== id) continue;
@@ -798,16 +804,17 @@
     const J = vibrations[n];
     J.evenements.length = 0;
     if (J.actif) J.V = B.vibrations.creer();
-    J.actif = false;
+    J.actif = false; J.pasRecu = false;
   }
   function majVibrations(S, dt, t) {
+    // Le réseau peut rendre des images du classement ou de la pause sans avancer la simulation.
+    if (!vibreImage || !manetteVibre(false)) { arreterManettes(); return; }
     const co = S.course, PR = B.conduite.PARAMS;
     for (let n = 0; n < 2; n++) {
-      const J = vibrations[n], P = n ? pad2 : pad;
-      if (B.vibrations.affecter(J.sortie, P.manette) && J.actif) calmerVibrations(n);
+      const J = synchroniserVibrations(n);
       const mode = commande(n), force = clamp(reglages.vibrationForce != null ? +reglages.vibrationForce : .5, 0, 1);
       const v = n === 0 ? co.joueur : S.type === 'duo' ? co.voitures[S.locaux[1]] : null;
-      if (!vibreImage || !v || !force || (mode !== 'auto' && mode !== 'manette') || !J.sortie.routes[J.sortie.route]) {
+      if (!J.pasRecu || !v || !force || (mode !== 'auto' && mode !== 'manette') || !J.sortie.routes[J.sortie.route]) {
         arreterVibrations(n); continue;
       }
       const et = v.etat, ph = et._physx, e = J.entree;
@@ -1187,7 +1194,7 @@
   // La manette ne vibre que sur l'écran de course, quand un joueur tient le volant (David, 18/11 : « je ne veux pas
   // de vibration dans la manette pendant les menus »). La vitrine des menus et la démo font rouler la voiture « du
   // joueur » à l'ordinateur : sans ce garde-fou, son moteur grondait dans les mains devant l'écran titre.
-  function manetteVibre(auto) { return !auto && reglages.vibrations === 'oui' && ecran === 'course'; }
+  function manetteVibre(auto) { return !auto && reglages.vibrations === 'oui' && ecran === 'course' && !document.hidden; }
 
   function pasSimulation(S, pilote) {
     if (B.meteo) B.meteo.actuel = S.meteo;
@@ -1204,8 +1211,8 @@
     const vibre = manetteVibre(auto);
     vibreImage = vibre;
     if (vibre) {
-      retenirVibrations(vibrations[0], ev, co.joueur.id);
-      if (S.type === 'duo') retenirVibrations(vibrations[1], ev, S.locaux[1]);
+      retenirVibrations(0, ev, co.joueur.id);
+      if (S.type === 'duo') retenirVibrations(1, ev, S.locaux[1]);
     }
     for (const v of co.voitures) {
       v.roule = (v.roule || 0) + v.etat.v * DT; // distance roulée : fait tourner les roues

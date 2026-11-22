@@ -12,7 +12,8 @@
   function checksum(donnees) {
     let h = 0x811c9dc5;
     if (donnees instanceof ArrayBuffer) {
-      for (const octet of new Uint8Array(donnees)) h = Math.imul(h ^ octet, 0x01000193);
+      const octets = new Uint8Array(donnees);
+      for (let i = 0; i < octets.length; i++) h = Math.imul(h ^ octets[i], 0x01000193);
       return h >>> 0;
     }
     const str = typeof donnees === 'string' ? donnees : JSON.stringify(donnees);

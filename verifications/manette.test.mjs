@@ -35,7 +35,7 @@ test('charge non commandée par le pad et turbo déjà lancé préservés',()=>{
 test('API getGamepads refusée neutralise les commandes sans interrompre la boucle',()=>{const {api,navigator}=fresh();navigator.pads=[gamepad(0,{2:1,6:.75,7:1},.8)];api.poll();api.command();navigator.getGamepads=()=>{throw new DOMException('Gamepad forbidden','SecurityError')};assert.doesNotThrow(()=>api.poll());neutral(api.command());assert.equal(api.pad.manette,null)});
 test('API refusée annule la dérive chargée sans turbo fantôme',()=>{const {api,navigator,etat}=held();navigator.getGamepads=()=>{throw new DOMException('Gamepad forbidden','SecurityError')};assert.doesNotThrow(()=>api.poll());const ev=CD.pas(etat,api.command(),c,DT);assert(!ev.some(e=>e.type==='turbo'));assert.equal(etat.derive.actif,false)});
 // Vibration : seulement sur l'écran de course et quand un joueur conduit (David, 18/11 : aucune vibration dans les menus).
-const vibre=(ecran,auto,vibrations='oui')=>new Function('reglages','ecran',extract('manetteVibre')+';return manetteVibre('+auto+');')({vibrations},ecran);
+const vibre=(ecran,auto,vibrations='oui',hidden=false)=>new Function('reglages','ecran','document',extract('manetteVibre')+';return manetteVibre('+auto+');')({vibrations},ecran,{hidden});
 test('vibration : un joueur en course la reçoit',()=>assert.equal(vibre('course',false),true));
 for(const ecran of ['titre','preparation','reglages','pause','resultats','demo','enligne','prets'])test('vibration : aucune sur l’écran '+ecran,()=>assert.equal(vibre(ecran,false),false));
 test('vibration : aucune quand l’ordinateur conduit (vitrine des menus, démo, outils)',()=>assert.equal(vibre('course',true),false));
@@ -44,25 +44,27 @@ test('vibration : la vitrine et la démo passent par le garde-fou',()=>{assert.m
 // Vibrations par image : le vrai bloc de jeu.js et le vrai module src/vibrations.js, une manette simulée. Le pas
 // retient les événements derrière le garde-fou ; l'image rendue calcule une fois et reprogramme au plus ~30 fois/s.
 test('vibration : les pas retiennent derrière le garde-fou, chaque image rendue calcule',()=>{
-  assert.match(extract('pasSimulation'),/const vibre = manetteVibre\(auto\);\n    vibreImage = vibre;\n    if \(vibre\) \{\n      retenirVibrations\(vibrations\[0\], ev, co\.joueur\.id\);/);
+  assert.match(extract('pasSimulation'),/const vibre = manetteVibre\(auto\);\n    vibreImage = vibre;\n    if \(vibre\) \{\n      retenirVibrations\(0, ev, co\.joueur\.id\);/);
   assert.match(extract('image'),/if \(tourne\) majVibrations\(S, dtReel, t\);/);
   assert.equal(source.includes('vibrationManette('),false,'ancien calcul par pas retiré');
 });
 createRequire(import.meta.url)(join(root,'src/vibrations.js'));
 const blocVibrations=source.slice(source.indexOf('  // Vibrations de manette (David, 14/11'),source.indexOf('  // Météo et pluie projetée'));
-const fabriqueVibrations=new Function('B','clamp','pad','pad2','reglages','performance','commande',blocVibrations+'\nreturn { vibrations, arreterManettes, retenirVibrations, calmerVibrations, majVibrations, set vibreImage(v) { vibreImage = v; } };');
+const fabriqueVibrations=new Function('B','clamp','pad','pad2','reglages','performance','commande','manetteVibre',blocVibrations+'\nreturn { vibrations, arreterManettes, retenirVibrations, calmerVibrations, majVibrations, set vibreImage(v) { vibreImage = v; } };');
 const actionneur=(effets=['dual-rumble'])=>{const appels=[];return {appels,vibrationActuator:{effects:effets,playEffect(type,o){appels.push({type,...o});return Promise.resolve('complete');}}};};
 function seanceVibrante({duo=false,effets,commandes=['auto','auto']}={}){
   const pad={manette:actionneur(effets)},pad2={manette:duo?actionneur(effets):null},maintenant={t:0};
   const etats=[CD.creer(100,0),CD.creer(120,0)];for(const e of etats)Object.assign(e,{v:40,regime:9000,gaz:1});
   const voitures=etats.map((etat,id)=>({id,etat}));
   const S={type:duo?'duo':'course',locaux:duo?[0,1]:[0],course:{joueur:voitures[0],voitures}};
-  const api=fabriqueVibrations(B,(x,a,b)=>Math.max(a,Math.min(b,x)),pad,pad2,{vibrationForce:.5},{now:()=>maintenant.t},n=>commandes[n]);
+  const vue={ecran:'course',hidden:false};
+  const api=fabriqueVibrations(B,(x,a,b)=>Math.max(a,Math.min(b,x)),pad,pad2,{vibrationForce:.5},{now:()=>maintenant.t},n=>commandes[n],auto=>vibre(vue.ecran,auto,'oui',vue.hidden));
   api.vibreImage=true;
-  return {api,pad,pad2,S,etats,maintenant};
+  for(const n of S.locaux) api.retenirVibrations(n,[],n);
+  return {api,pad,pad2,S,etats,maintenant,vue};
 }
 // n images à hz images par seconde ; ev(i) : événements retenus avant l'image i
-function rouler(f,hz,secondes,ev){const dt=1/hz;for(let i=0;i<Math.round(secondes*hz);i++){if(ev)for(const [n,e,id] of ev(i)||[])f.api.retenirVibrations(f.api.vibrations[n],e,id);f.maintenant.t=i*1000/hz;f.api.majVibrations(f.S,dt,f.maintenant.t);}}
+function rouler(f,hz,secondes,ev){const dt=1/hz;for(let i=0;i<Math.round(secondes*hz);i++){if(ev)for(const [n,e,id] of ev(i)||[])f.api.retenirVibrations(n,e,id);f.maintenant.t=i*1000/hz;f.api.majVibrations(f.S,dt,f.maintenant.t);}}
 for(const hz of [30,60,120,144])test('vibration : '+hz+' images par seconde, au plus une commande toutes les 31 ms',()=>{
   const f=seanceVibrante();rouler(f,hz,2);const a=f.pad.manette.appels;
   assert.ok(a.length>=50&&a.length<=61,a.length+' commandes en 2 s');
@@ -83,10 +85,10 @@ test('vibration : hors garde-fou, un seul arrêt puis plus rien',()=>{
 });
 test('vibration : événements de sa voiture seulement, réception devenue atterrissage, tableau borné',()=>{
   const f=seanceVibrante(),J=f.api.vibrations[0];
-  f.api.retenirVibrations(J,[{type:'choc',id:0,force:20},{type:'choc',id:1,force:20},{type:'contact',a:3,b:0,force:9},{type:'contact',a:1,b:2,force:9},
+  f.api.retenirVibrations(0,[{type:'choc',id:0,force:20},{type:'choc',id:1,force:20},{type:'contact',a:3,b:0,force:9},{type:'contact',a:1,b:2,force:9},
     {type:'rapport',id:0},{type:'reception',id:0,corr:.9},{type:'tour',id:0},{type:'retour',id:0,repositionnement:true}],0);
   assert.deepEqual(J.evenements.map(e=>e.type),['choc','contact','rapport','atterrissage']);
-  for(let k=0;k<40;k++)f.api.retenirVibrations(J,[{type:'choc',id:0,force:5},{type:'choc',id:0,force:6}],0);
+  for(let k=0;k<40;k++)f.api.retenirVibrations(0,[{type:'choc',id:0,force:5},{type:'choc',id:0,force:6}],0);
   assert.equal(J.evenements.length,64);
   f.api.majVibrations(f.S,1/60,0);assert.equal(J.evenements.length,0,'vidé à chaque image');
 });
@@ -121,14 +123,37 @@ test('vibration : une manette débranchée est arrêtée, une autre ne reprend p
   const ancienne=f.pad.manette; f.pad.manette=null; f.api.majVibrations(f.S,1/60,8);
   assert.equal(ancienne.appels.at(-1).strongMagnitude,0);
   f.pad.manette=actionneur(); f.api.majVibrations(f.S,1/60,16);
-  assert.ok(f.pad.manette.appels[0].strongMagnitude<.16);
+  assert.equal(f.pad.manette.appels.length,0,'pas de commande héritée sur la nouvelle manette');
+  f.api.retenirVibrations(0,[],0); f.api.majVibrations(f.S,1/60,45);
+  assert.ok(f.pad.manette.appels[0].strongMagnitude>0 && f.pad.manette.appels[0].strongMagnitude<.16);
   assert.equal(f.api.vibrations[0].V.envFort,0);
 });
 test('vibration : pause et retour immédiat en course ne rejouent ni choc ni rapport',()=>{
   const f=seanceVibrante(); rouler(f,60,1/60,i=>[[0,[{type:'choc',id:0,force:30},{type:'rapport',id:0}],0]]);
   f.api.arreterManettes(); f.api.arreterManettes(); const arrets=f.pad.manette.appels.filter(x=>x.duration===0);
   assert.equal(arrets.length,1); f.api.majVibrations(f.S,1/60,12);
-  const x=f.pad.manette.appels.at(-1); assert.ok(x.strongMagnitude<.16&&x.weakMagnitude<.11);
+  assert.equal(f.pad.manette.appels.at(-1).duration,0,'silence tant que la course ne fournit aucun nouveau pas');
+  f.api.vibreImage=true; f.api.retenirVibrations(0,[],0); f.api.majVibrations(f.S,1/60,40);
+  const x=f.pad.manette.appels.at(-1); assert.ok(x.strongMagnitude>0 && x.strongMagnitude<.16 && x.weakMagnitude<.11);
+});
+test('vibration : la simulation réseau en pause, les résultats et le document masqué restent silencieux',()=>{
+  for (const [ecran,hidden] of [['pause',false],['resultats',false],['course',true]]) {
+    const f=seanceVibrante({duo:true}); rouler(f,60,1/60);
+    Object.assign(f.vue,{ecran,hidden});
+    // Même si aucun changement d'écran n'a réinitialisé la sortie, l'envoi relit sa visibilité.
+    f.api.majVibrations(f.S,1/144,8); f.api.arreterManettes();
+    const sorties=[f.pad.manette.appels,f.pad2.manette.appels], comptes=sorties.map(a=>a.length);
+    f.api.majVibrations(f.S,1/144,12); // image réseau entre deux pas, ou course déjà terminée
+    f.api.vibreImage=vibre(ecran,false,'oui',hidden); // un pas réseau arrive pour les autres joueurs
+    f.api.majVibrations(f.S,1/60,50);
+    assert.deepEqual(sorties.map(a=>a.length),comptes);
+    assert.ok(sorties.every(a=>a.at(-1).duration===0));
+    Object.assign(f.vue,{ecran:'course',hidden:false});
+    f.api.majVibrations(f.S,1/144,90);
+    assert.deepEqual(sorties.map(a=>a.length),comptes);
+    f.api.vibreImage=true; f.api.retenirVibrations(0,[],0); f.api.retenirVibrations(1,[],1);
+    f.api.majVibrations(f.S,1/60,130); assert.ok(sorties.every(a=>a.at(-1).strongMagnitude>0));
+  }
 });
 test('vibration : le joueur au clavier reste silencieux quand le second utilise une manette',()=>{
   const f=seanceVibrante({duo:true,commandes:['clavier','manette']});

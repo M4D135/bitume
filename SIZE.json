@@ -1,8 +1,8 @@
 {
-  "version": "0.2.106",
-  "raw": 15212633,
-  "gzip": 3722338,
-  "sha256": "238a07ad88d1df9c8c7ca816dbb961b7d17643f66a4bb64ec352cf13a4164e36",
+  "version": "0.2.107",
+  "raw": 15213039,
+  "gzip": 3722440,
+  "sha256": "908493dbb042870989d906bc2dc4c8c65eae1d5242cd361c5d4376324a630327",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 315148,
@@ -51,8 +51,8 @@
     "camera-transition.js": 4372,
     "championnat.js": 5497,
     "records.js": 6521,
-    "cache.js": 9649,
-    "panorama-cache.js": 4400,
+    "cache.js": 9694,
+    "panorama-cache.js": 4404,
     "effets-saison.js": 17336,
     "aurores.js": 7324,
     "carene.js": 16443,
@@ -90,7 +90,7 @@
     "vibrations.js": 9461,
     "ombres.js": 12015,
     "visites.js": 6566,
-    "jeu.js": 394863,
+    "jeu.js": 395220,
     "index.html": 71680,
     "style.css": 101810
   }

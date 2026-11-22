@@ -32,6 +32,31 @@ test('une valeur corrompue est retirée et une lecture tardive ne change pas les
     new Uint8Array(bloc)[64]^=1;assert.equal(await B.cache.lire('été'),null);assert.equal(mem.has('été'),false);
   }finally{B.cache._setMemoryStore(null);}
 });
+test('une entrée valide tardive solde l’écriture sans remplacer le bloc ni attendre au repos', async t => {
+  const bloc = C.encoder([exemple]), direct = [exemple], planifies = [];
+  let finirLecture;
+  t.mock.method(B.cache, 'lire', () => new Promise(ok => { finirLecture = ok; }));
+  t.mock.method(B.cache, 'ecrire', () => assert.fail('réécriture d’une entrée valide'));
+  const idleAvant = globalThis.requestIdleCallback;
+  globalThis.requestIdleCallback = fn => planifies.push(fn);
+  t.after(() => {
+    if (idleAvant === undefined) delete globalThis.requestIdleCallback;
+    else globalThis.requestIdleCallback = idleAvant;
+  });
+  for (const avantRepos of [true, false]) {
+    const cache = C.ouvrir('été');
+    assert.equal(C.obtenir(cache, () => direct), direct);
+    if (!avantRepos) C.conserver(cache);
+    finirLecture(bloc); await cache.lecture;
+    if (avantRepos) C.conserver(cache);
+    assert.equal(planifies.length, avantRepos ? 0 : 1);
+    if (planifies.length) await planifies.shift()();
+    assert.equal(cache.nappes, null);
+    assert.equal(cache.rapport.source, 'calcul');
+    assert.equal(cache.rapport.ecriture, false);
+  }
+});
+
 test('le préchauffage différencie les options réellement demandées et la version du jeu',()=>{
   const code=readFileSync(new URL('../src/jeu.js',import.meta.url),'utf8');
   const cle=new Function('CATALOGUE','decorEnrichi','B','document','i','v',code.match(/  function clePanorama\(i, v\) \{[\s\S]*?\n  \}/)[0]+';return clePanorama(i,v)');
