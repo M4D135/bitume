@@ -1338,10 +1338,57 @@
   function etatRendu(mod) {
     let e = mod.objetsRendu;
     if (e === undefined) {
-      e = { M3: [trois(), trois(), trois()], tables: new Array(16).fill(null), retro: [null, null, null, null], habitacle: null, pilote: null };
+      e = { M3: [trois(), trois(), trois()], tables: new Array(16).fill(null), retro: [null, null, null, null], habitacle: null, pilote: null,
+        pose: { matrice: new Float64Array(9), epoque: 0, cap: 0, tangage: 0, roulis: 0,
+          px: 0, py: 0, pz: 0, suspension: false, courses: new Float64Array(4), moyeux: [], pieces: new WeakMap(),
+          centresLOD: new Float64Array(12), epoqueLOD: -1, orientation: 0, rotationsRoues: [], rotationsFixes: [],
+          braquage: NaN, braquages: new Float64Array(2) },
+        pneus: { cle: new Float64Array(16).fill(NaN), couleurs: new Float64Array(4 * 15), actifs: new Uint8Array(4) } };
       Object.defineProperty(mod, 'objetsRendu', { value: e });   // ni énuméré, ni copié, ni sérialisé avec le modèle
     }
     return e;
+  }
+  // La caisse et les suspensions ont la même pose pour toutes les caméras. Les valeurs sont
+  // relues car la simulation réutilise ses tableaux et un appelant peut reposer le même modèle ailleurs.
+  function actualiserPose(p, ev) {
+    const cap = ev.cap, tangage = ev.tangage || 0, roulis = ev.roulis || 0;
+    const rotation = !p.epoque || !Object.is(cap, p.cap) || !Object.is(tangage, p.tangage) || !Object.is(roulis, p.roulis);
+    if (rotation) {
+      p.cap = cap; p.tangage = tangage; p.roulis = roulis;
+      attitudeDans(p.matrice, ev);
+      p.orientation++;
+    }
+    const x = ev.p[0], y = ev.p[1], z = ev.p[2], suspension = !!ev.rebond;
+    let change = rotation || !Object.is(x, p.px) || !Object.is(y, p.py) || !Object.is(z, p.pz) || suspension !== p.suspension;
+    p.px = x; p.py = y; p.pz = z; p.suspension = suspension;
+    for (let i = 0; i < p.courses.length; i++) {
+      const h = suspension ? ev.rebond[i] || 0 : 0;
+      if (!Object.is(p.courses[i], h)) { p.courses[i] = h; change = true; }
+    }
+    if (change) p.epoque++;
+    return p.matrice;
+  }
+  // La projection d'une origine rigide est commune aux tables du modèle. La jante, le pneu,
+  // le moyeu et la sculpture utilisent aussi le même axe. Une pièce décalée (disque, valve)
+  // reprend seulement l'origine tournée : son décalage doit être ajouté AVANT la suspension.
+  function ancrePiece(p, pc, o, roue) {
+    const w = ROUES[roue], auMoyeu = w && Object.is(o[0], w.x) && Object.is(o[1], w.r) && Object.is(o[2], w.z);
+    let a = auMoyeu ? p.moyeux[roue] : p.pieces.get(pc);
+    if (!a || a.roue !== roue || !Object.is(a.x, o[0]) || !Object.is(a.y, o[1]) || !Object.is(a.z, o[2])) {
+      a = { x: o[0], y: o[1], z: o[2], roue, epoque: -1, a: 0, b: 0, c: 0, X: 0, Y: 0, Z: 0 };
+      if (auMoyeu) p.moyeux[roue] = a; else p.pieces.set(pc, a);
+    }
+    return a;
+  }
+  function placerAncre(p, a) {
+    const M = p.matrice, x = a.x, y = a.y, z = a.z;
+    let dx = M[0] * x + M[3] * y + M[6] * z, dy = M[1] * x + M[4] * y + M[7] * z, dz = M[2] * x + M[5] * y + M[8] * z;
+    a.a = dx; a.b = dy; a.c = dz;
+    if (p.suspension && a.roue >= 0) {
+      const h = p.courses[a.roue];
+      dx += M[3] * h; dy += M[4] * h; dz += M[5] * h;
+    }
+    a.X = p.px + dx; a.Y = p.py + dy; a.Z = p.pz + dz; a.epoque = p.epoque;
   }
   // Attitude rendue par poser et cockpit, en tableaux imbriqués comme attitude() : une par voiture, réécrite à chaque
   // pose de cette voiture.
@@ -1355,9 +1402,10 @@
   // les pièces fixes de même repère la leur : chaque rotation est calculée une fois par pose, aux mêmes opérations que
   // pour une pièce seule. Les données de lecture seule sont rangées à plat (o, d : trois nombres par pièce) : un
   // tableau typé par table plutôt qu'un par pièce, quelques dizaines de Kio de moins par voiture.
-  function compiler(liste, overlay, cockpit) {
+  function compiler(liste, overlay, cockpit, e) {
     const t = { liste, longueur: liste.length, n: 0, nez: [], profilNez: 0, originesNez: null, objets: [], formesRoues: [], formesUsees: [], usureRoue: [], profondeur: [], detailRoueMax: [],
-      pneusCourants: new Float64Array(4 * 15), pneusActifs: new Uint8Array(4), o: null, roue: null, groupe: [], fixe: [], decale: null, d: null, portee: null,
+      pose: e.pose, ancres: [], pneusCourants: e.pneus.couleurs, pneusActifs: e.pneus.actifs, clePneus: e.pneus.cle,
+      o: null, roue: null, groupe: [], fixe: [], decale: null, d: null, portee: null,
       lent: null, vite: null, tete: null, buste: null, bulle: -1, dessusLoin: -1, cockpit, rotTete: trois(), rotM: trois(), fixes: [], groupes: [], faitG: null, faitF: null };
     const o = [], roues = [], decale = [], d = [], portee = [], lent = [], vite = [], tete = [], buste = [];
     for (const pc of liste) {
@@ -1375,15 +1423,24 @@
       if (roue >= 0) {
         const m = aplatir(pc.m), w = ROUES[roue];
         groupe = t.groupes.find(g => g.roue === roue && Object.is(g.tourne, pc.tourne) && memes(g.m, m)) || null;
-        if (!groupe) t.groupes.push(groupe = { n: t.groupes.length, roue, avant: w.avant, rayon: w.r, tourne: pc.tourne, m, R: new Float64Array(9), r: trois() });
+        if (!groupe) {
+          let commun = e.pose.rotationsRoues.find(g => g.roue === roue && Object.is(g.tourne, pc.tourne) && memes(g.m, m));
+          if (!commun) e.pose.rotationsRoues.push(commun = { roue, tourne: pc.tourne, m, orientation: -1, roule: 0, braquage: 0, R: new Float64Array(9), r: trois() });
+          t.groupes.push(groupe = { n: t.groupes.length, roue, avant: w.avant, rayon: w.r, tourne: pc.tourne, m, commun, R: commun.R, r: trois() });
+        }
         objet.r = groupe.r;
       } else if (pc.m) {
         const m = aplatir(pc.m);
         fixe = t.fixes.find(x => memes(x.m, m)) || null;
-        if (!fixe) t.fixes.push(fixe = { n: t.fixes.length, m, r: trois() });
+        if (!fixe) {
+          let commun = e.pose.rotationsFixes.find(f => memes(f.m, m));
+          if (!commun) e.pose.rotationsFixes.push(commun = { m, orientation: -1, r: trois() });
+          t.fixes.push(fixe = { n: t.fixes.length, m, commun, r: trois() });
+        }
         objet.r = fixe.r;
       }
       const dc = roue >= 0 && pc.decale ? Float64Array.from(pc.decale) : null, oc = Float64Array.from(pc.o);
+      t.ancres.push(formesNez || pc.numeroNez || pc.tetePilote ? null : ancrePiece(e.pose, pc, oc, roue));
       t.objets.push(objet); t.formesRoues.push(pc.formesRoues || null); t.detailRoueMax.push(pc.detailRoueMax === undefined ? 3 : pc.detailRoueMax);
       t.formesUsees.push(pc.formesUsees || null); t.usureRoue.push(pc.usureRoue || 0); t.profondeur.push(pc.profondeur || 0);
       t.groupe.push(groupe); t.fixe.push(fixe);
@@ -1405,14 +1462,14 @@
   function tableDe(e, mod, li, variante) {
     const liste = mod[NOMS_LISTES[li]] || mod.corps, k = li * 4 + variante;
     let t = e.tables[k];
-    if (t === null || t.liste !== liste || t.longueur !== liste.length) t = e.tables[k] = compiler(liste, (variante & 1) !== 0, (variante & 2) !== 0);
+    if (t === null || t.liste !== liste || t.longueur !== liste.length) t = e.tables[k] = compiler(liste, (variante & 1) !== 0, (variante & 2) !== 0, e);
     return t;
   }
   // Table du rétroviseur : les pièces de la vue extérieure, avec leurs propres objets et rotations
   function tableRetro(e, mod, li) {
     const liste = mod[NOMS_LISTES[li]] || mod.corps;
     let t = e.retro[li];
-    if (t === null || t.liste !== liste || t.longueur !== liste.length) t = e.retro[li] = partager(compiler(liste, false, false), tableDe(e, mod, li, 0));
+    if (t === null || t.liste !== liste || t.longueur !== liste.length) t = e.retro[li] = partager(compiler(liste, false, false, e), tableDe(e, mod, li, 0));
     return t;
   }
   // Deux tables compilées de la même liste dans la même variante ont les mêmes données de lecture seule (places
@@ -1424,27 +1481,40 @@
     for (let k = 0; k < t.fixes.length; k++) t.fixes[k].m = source.fixes[k].m;
     return t;
   }
-  const BRAQ = new Float64Array(2), T_E = new Float64Array(9), T_F = new Float64Array(9), T_G = new Float64Array(9), T_H = new Float64Array(9), ANG_ROUE = new Float64Array(2);
-  function braquagesDans(ev) { // braquages(ev.braquage || 0), rangés dans BRAQ
-    const d = ev.braquage || 0;
-    if (Math.abs(d) < 1e-5) { BRAQ[0] = d; BRAQ[1] = d; return; }
+  const T_E = new Float64Array(9), T_F = new Float64Array(9), T_G = new Float64Array(9), T_H = new Float64Array(9), ANG_ROUE = new Float64Array(2);
+  function braquagesDans(d, angles) {
+    if (Math.abs(d) < 1e-5) { angles[0] = d; angles[1] = d; return; }
     const R = EMPATTEMENT / Math.tan(Math.abs(d));
     const interieur = Math.atan(EMPATTEMENT / (R - DEMI_VOIE_AV)), exterieur = Math.atan(EMPATTEMENT / (R + DEMI_VOIE_AV));
-    if (d > 0) { BRAQ[0] = exterieur; BRAQ[1] = interieur; } else { BRAQ[0] = -interieur; BRAQ[1] = -exterieur; }
+    if (d > 0) { angles[0] = exterieur; angles[1] = interieur; } else { angles[0] = -interieur; angles[1] = -exterieur; }
   }
-  // Rotation d'un groupe de pièces de roue : braquage d'Ackermann à l'avant (BRAQ), rotation propre −distance/rayon
-  function tournerRoue(g, M, ev) {
-    let m = g.m;
-    if (g.tourne !== undefined) { ANG_ROUE[0] = g.tourne - (ev.roule || 0) / g.rayon; m = produitDans(T_E, m, eulerDe(T_F, ANG_ROUE, 0, 1)); }
-    if (g.avant) { ANG_ROUE[1] = -BRAQ[g.roue]; m = produitDans(T_G, eulerDe(T_H, ANG_ROUE, 1, 1), m); }
-    anglesDans(g.r, produitDans(g.R, M, m));
+  // Les objets des variantes gardent leurs propres angles publiés. Le produit matriciel et
+  // sa décomposition, communs aux variantes, dépendent seulement des entrées de rotation.
+  function tournerRoue(g, pose, ev) {
+    const commun = g.commun, roule = g.tourne !== undefined ? ev.roule || 0 : 0, d = g.avant ? ev.braquage || 0 : 0;
+    if (commun.orientation !== pose.orientation || !Object.is(roule, commun.roule) || !Object.is(d, commun.braquage)) {
+      let m = g.m;
+      if (g.tourne !== undefined) { ANG_ROUE[0] = g.tourne - roule / g.rayon; m = produitDans(T_E, m, eulerDe(T_F, ANG_ROUE, 0, 1)); }
+      if (g.avant) {
+        if (!Object.is(d, pose.braquage)) { braquagesDans(d, pose.braquages); pose.braquage = d; }
+        ANG_ROUE[1] = -pose.braquages[g.roue]; m = produitDans(T_G, eulerDe(T_H, ANG_ROUE, 1, 1), m);
+      }
+      anglesDans(commun.r, produitDans(commun.R, pose.matrice, m));
+      commun.orientation = pose.orientation; commun.roule = roule; commun.braquage = d;
+    }
+    g.r[0] = commun.r[0]; g.r[1] = commun.r[1]; g.r[2] = commun.r[2];
+  }
+  function tournerFixe(f, pose) {
+    const commun = f.commun;
+    if (commun.orientation !== pose.orientation) { anglesProduit(commun.r, pose.matrice, f.m); commun.orientation = pose.orientation; }
+    f.r[0] = commun.r[0]; f.r[1] = commun.r[1]; f.r[2] = commun.r[2];
   }
   // Filtre des rétroviseurs de jeu.js (majGlaces) : près de l'essieu arrière (x) et hors de la caisse (z), dans le
   // repère du cap. Une pièce de roue décalée s'écarte de l'axe de sa roue d'au plus la longueur de son décalage, et
   // le rebond l'en écarte d'au plus |h| : loin du filtre de plus que cela (et d'une marge pour les arrondis), elle n'y
   // entre pas, sans qu'il faille calculer la rotation de sa roue.
   const X_ARRIERE = ROUES[2].x, MARGE_RETRO = 1e-6, LOIN_RETRO = 1e8;
-  // Couleurs persistantes par table/caméra. La graine ne sert qu'à la matière : aucun hasard de simulation,
+  // Couleurs persistantes par modèle. La graine ne sert qu'à la matière : aucun hasard de simulation,
   // aucune réinitialisation d'usure en changeant de vue. Les données reçues restent en lecture seule.
   function preparerPneus(t, etats) {
     const valeurs = t.pneusCourants;
@@ -1454,6 +1524,9 @@
       const s = e && Number.isFinite(e.salete) ? Math.max(0, Math.min(1, e.salete)) : 0;
       const g = e && Number.isFinite(e.grainage) ? Math.max(0, Math.min(1, e.grainage)) : 0;
       const graine = e && Number.isFinite(e.graine) ? e.graine >>> 0 : i + 1;
+      const cle = t.clePneus, k = i * 4;
+      if (cle[k] === u && cle[k + 1] === s && cle[k + 2] === g && cle[k + 3] === graine) continue;
+      cle[k] = u; cle[k + 1] = s; cle[k + 2] = g; cle[k + 3] = graine;
       let h = Math.imul(graine ^ graine >>> 16, 0x45d9f3b); h = (h ^ h >>> 16) >>> 0;
       const a = .7 + (h & 255) / 425, b = .7 + (h >>> 8 & 255) / 425, c = .7 + (h >>> 16 & 255) / 425;
       t.pneusActifs[i] = u > 0 || s > 0 || g > 0 ? 1 : 0; valeurs[j] = u;
@@ -1470,7 +1543,7 @@
   // Pose d'une table : rotations partagées, puis place de chaque pièce. retro : seules les pièces qui passent le
   // filtre des rétroviseurs sont rendues, et seules leurs rotations sont calculées.
   function poserTable(t, M, ev, sortie, roues, retro, detailRoues = 0, tete = null, sansPilote = false) {
-    const px = ev.p[0], py = ev.p[1], pz = ev.p[2], v = ev.v || 0, rebond = ev.rebond, fixes = t.fixes, groupes = t.groupes;
+    const px = ev.p[0], py = ev.p[1], pz = ev.p[2], v = ev.v || 0, rebond = ev.rebond;
     if (t.feuStop) {
       t.feuStop.color = ev.feuStop ? STOP_ALLUME : STOP_ETEINT;
       t.feuStop.emissive = ev.feuStop ? 4.5 : 0;
@@ -1480,11 +1553,7 @@
     preparerPneus(t, ev.etatPneus);
     anglesDans(t.rotM, M);
     if (tete) anglesProduit(t.rotTete, M, tete);
-    if (groupes.length > 0) braquagesDans(ev);
-    if (!retro) {
-      for (let i = 0; i < fixes.length; i++) anglesProduit(fixes[i].r, M, fixes[i].m);
-      for (let i = 0; i < groupes.length; i++) if (!(roues && roues[groupes[i].roue])) tournerRoue(groupes[i], M, ev);
-    } else { t.faitG.fill(0); t.faitF.fill(0); }
+    t.faitG.fill(0); t.faitF.fill(0);
     const ca = retro ? Math.cos(ev.cap) : 0, sa = retro ? Math.sin(ev.cap) : 0;
     const borne = retro && Math.abs(px) < LOIN_RETRO && Math.abs(pz) < LOIN_RETRO;   // arrondis de px + a − px négligeables
     for (let i = 0; i < t.n; i++) {
@@ -1498,41 +1567,49 @@
       // Chantier 3 : une roue détachée (degats.roues[i]) n'est plus dessinée
       if (roue >= 0 && roues && roues[roue]) continue;
       const k = 3 * i;
-      let x = origines[k], y = origines[k + 1], z = origines[k + 2];
-      if (t.tete[i]) {
-        t.objets[i].r = tete ? t.rotTete : t.fixe[i] ? t.fixe[i].r : t.rotM;
-        if (tete) {
-          const dx = x - PILOTE_COU[0], dy = y - PILOTE_COU[1], dz = z - PILOTE_COU[2];
-          x = PILOTE_COU[0] + tete[0] * dx + tete[3] * dy + tete[6] * dz;
-          y = PILOTE_COU[1] + tete[1] * dx + tete[4] * dy + tete[7] * dz;
-          z = PILOTE_COU[2] + tete[2] * dx + tete[5] * dy + tete[8] * dz;
+      const ancre = t.ancres[i];
+      let a, b, c, X, Y, Z;
+      if (ancre) {
+        if (ancre.epoque !== t.pose.epoque) placerAncre(t.pose, ancre);
+        X = ancre.X; Y = ancre.Y; Z = ancre.Z;
+      } else {
+        let x = origines[k], y = origines[k + 1], z = origines[k + 2];
+        if (t.tete[i]) {
+          t.objets[i].r = tete ? t.rotTete : t.fixe[i] ? t.fixe[i].r : t.rotM;
+          if (tete) {
+            const dx = x - PILOTE_COU[0], dy = y - PILOTE_COU[1], dz = z - PILOTE_COU[2];
+            x = PILOTE_COU[0] + tete[0] * dx + tete[3] * dy + tete[6] * dz;
+            y = PILOTE_COU[1] + tete[1] * dx + tete[4] * dy + tete[7] * dz;
+            z = PILOTE_COU[2] + tete[2] * dx + tete[5] * dy + tete[8] * dz;
+          }
         }
+        a = M[0] * x + M[3] * y + M[6] * z; b = M[1] * x + M[4] * y + M[7] * z; c = M[2] * x + M[5] * y + M[8] * z;
       }
-      let a = M[0] * x + M[3] * y + M[6] * z, b = M[1] * x + M[4] * y + M[7] * z, c = M[2] * x + M[5] * y + M[8] * z;
-      if (roue >= 0) {
+      if (!ancre || t.decale[i]) {
         // `decale` place la pièce hors de l'axe, dans le repère de la roue ; `rebond` (m, par roue) : course de
         // suspension sur les bosses, purement visuelle
         if (t.decale[i] === 1) {
+          if (ancre) { a = ancre.a; b = ancre.b; c = ancre.c; }
           const g = t.groupe[i];
-          if (retro && t.faitG[g.n] === 0) {
+          if (t.faitG[g.n] === 0) {
             if (borne) {
               const marge = t.portee[i] + (rebond ? Math.abs(rebond[roue] || 0) : 0) + MARGE_RETRO, xc = a * ca + c * sa, zc = c * ca - a * sa;
               if (Math.abs(xc - X_ARRIERE) >= .5 + marge || Math.abs(zc) <= .55 - marge) continue;
             }
-            tournerRoue(g, M, ev); t.faitG[g.n] = 1;
+            tournerRoue(g, t.pose, ev); t.faitG[g.n] = 1;
           }
           const R = g.R, dx = t.d[k], dy = t.d[k + 1], dz = t.d[k + 2];
           a = a + (R[0] * dx + R[3] * dy + R[6] * dz); b = b + (R[1] * dx + R[4] * dy + R[7] * dz); c = c + (R[2] * dx + R[5] * dy + R[8] * dz);
         }
-        if (rebond) { const h = rebond[roue] || 0; a = a + M[3] * h; b = b + M[4] * h; c = c + M[5] * h; }
+        if (roue >= 0 && rebond) { const h = rebond[roue] || 0; a = a + M[3] * h; b = b + M[4] * h; c = c + M[5] * h; }
+        X = px + a; Y = py + b; Z = pz + c;
       }
-      const X = px + a, Y = py + b, Z = pz + c;
       if (retro) {
         const dx = X - px, dz = Z - pz, xc = dx * ca + dz * sa, zc = dz * ca - dx * sa;
         if (!(Math.abs(xc - X_ARRIERE) < .5 && Math.abs(zc) > .55)) continue;
-        if (roue >= 0) { const g = t.groupe[i]; if (t.faitG[g.n] === 0) { tournerRoue(g, M, ev); t.faitG[g.n] = 1; } }
-        else { const f = t.fixe[i]; if (f !== null && t.faitF[f.n] === 0) { anglesProduit(f.r, M, f.m); t.faitF[f.n] = 1; } }
       }
+      if (roue >= 0) { const g = t.groupe[i]; if (t.faitG[g.n] === 0) { tournerRoue(g, t.pose, ev); t.faitG[g.n] = 1; } }
+      else { const f = t.fixe[i]; if (f !== null && t.faitF[f.n] === 0) { tournerFixe(f, t.pose); t.faitF[f.n] = 1; } }
       const objet = t.objets[i], p = objet.p;
       const variantes = t.formesRoues[i];
       if (variantes) {
@@ -1562,7 +1639,7 @@
     const detail = o.detail !== undefined ? o.detail : o.simple ? 'simple' : 'complet';
     const li = o.casse ? EPAVE : detail === 'simple' ? SIMPLES : detail === 'moyen' ? MOYENS : CORPS;
     const t = tableDe(e, mod, li, (o.overlay ? 1 : 0) + (o.cockpit ? 2 : 0));
-    const M = attitudeDans(MS, ev);
+    const M = actualiserPose(e.pose, ev);
     const detailRoues = o.rouesDetail === undefined ? li === SIMPLES ? 3 : li === MOYENS ? 2 : 0 : Math.max(0, Math.min(3, o.rouesDetail | 0));
     const pilote = !o.cockpit && !o.casse ? e.pilote : null;
     if (pilote) preparerPiloteExterieur(pilote, ev.pilote || POSTE_NEUTRE);
@@ -1577,7 +1654,7 @@
   // options = { roues, casse }, comme pour poser.
   function poserRetro(mod, ev, sortie, options) {
     const o = options || SANS_OPTIONS, e = etatRendu(mod), t = tableRetro(e, mod, o.casse ? EPAVE : CORPS);
-    const M = attitudeDans(MS, ev);
+    const M = actualiserPose(e.pose, ev);
     const pilote = !o.casse ? e.pilote : null;
     if (pilote) preparerPiloteExterieur(pilote, ev.pilote || POSTE_NEUTRE);
     poserTable(t, M, ev, sortie, o.roues, true, o.rouesDetail === undefined ? 0 : Math.max(0, Math.min(3, o.rouesDetail | 0)), pilote ? pilote.tete : null, !!mod.sansPilote);
@@ -1612,16 +1689,31 @@
   }
   // Distance minorée à la roue la plus proche, dans les trois dimensions. Le cap, la pente, le roulis et
   // la suspension déplacent les centres ; retrancher le rayon maximal garde du détail sur le bord proche du pneu.
-  // Tableau de calcul partagé seulement pendant cet appel : aucune allocation dans les six vues possibles.
-  const M_DISTANCE_ROUES = new Float64Array(9);
-  function distanceRoues2(ev, camera) {
-    const M = attitudeDans(M_DISTANCE_ROUES, ev), p = ev.p, rebond = ev.rebond;
-    let distance2 = Infinity;
+  // Le LOD ajoute la course au rayon avant la rotation. Garder ses centres propres, communs aux
+  // caméras pour cette pose ; seule la distance à leur œil varie, y compris au seuil d'hystérésis.
+  const M_DISTANCE_ROUES = new Float64Array(9), CENTRES_DISTANCE_ROUES = new Float64Array(12);
+  function placerCentresLOD(centres, M, ev) {
+    const p = ev.p, rebond = ev.rebond;
     for (let i = 0; i < ROUES.length; i++) {
-      const w = ROUES[i], y = w.r + (rebond ? rebond[i] || 0 : 0);
-      const x = p[0] + M[0] * w.x + M[3] * y + M[6] * w.z - camera[0];
-      const h = p[1] + M[1] * w.x + M[4] * y + M[7] * w.z - camera[1];
-      const z = p[2] + M[2] * w.x + M[5] * y + M[8] * w.z - camera[2];
+      const w = ROUES[i], y = w.r + (rebond ? rebond[i] || 0 : 0), k = i * 3;
+      centres[k] = p[0] + M[0] * w.x + M[3] * y + M[6] * w.z;
+      centres[k + 1] = p[1] + M[1] * w.x + M[4] * y + M[7] * w.z;
+      centres[k + 2] = p[2] + M[2] * w.x + M[5] * y + M[8] * w.z;
+    }
+  }
+  function distanceRoues2(ev, camera, mod) {
+    let centres = CENTRES_DISTANCE_ROUES;
+    if (mod) {
+      const pose = etatRendu(mod).pose, M = actualiserPose(pose, ev);
+      centres = pose.centresLOD;
+      if (pose.epoqueLOD !== pose.epoque) {
+        placerCentresLOD(centres, M, ev);
+        pose.epoqueLOD = pose.epoque;
+      }
+    } else placerCentresLOD(centres, attitudeDans(M_DISTANCE_ROUES, ev), ev);
+    let distance2 = Infinity;
+    for (let k = 0; k < centres.length; k += 3) {
+      const x = centres[k] - camera[0], h = centres[k + 1] - camera[1], z = centres[k + 2] - camera[2];
       distance2 = Math.min(distance2, x * x + h * h + z * z);
     }
     const distance = Math.max(.1, Math.sqrt(distance2) - ROUES[2].r);
@@ -1724,7 +1816,7 @@
   //          derriere ([{ x, z, couleur }] : rivaux dans le repère de la voiture, du plus proche au plus loin),
   //          ciel, brume (couleurs du jour, pour les glaces des rétroviseurs) }
   function cockpit(mod, ev, sortie, etat) {
-    const e = etatRendu(mod), M = attitudeDans(MS, ev);
+    const e = etatRendu(mod), M = actualiserPose(e.pose, ev);
     if (ev.pilote) preparerPiloteExterieur(e.pilote, ev.pilote);
     poserTable(tableDe(e, mod, etat.casse ? EPAVE : CORPS, 3), M, ev, sortie, etat.roues, false,
       etat.rouesDetail === undefined ? 0 : Math.max(0, Math.min(3, etat.rouesDetail | 0)), ev.pilote ? e.pilote.tete : null, !!mod.sansPilote);

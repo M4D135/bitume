@@ -2699,7 +2699,15 @@
     tailleGlaces(source);   // taille de régime posée ici : la première image en cockpit ne réalloue rien
     for (const cle of ['j1', 'j2']) {
       const G = glacesDe(cle);
-      if (!G.ctx.length) G.toiles.forEach((t, i) => { t.width = source.width; t.height = source.height; t.style.width = source.clientWidth + 'px'; t.style.height = source.clientHeight + 'px'; G.ctx[i] = t.getContext('2d'); });
+      if (!G.ctx.length) {
+        G.opaque = retro.rendu.stats.backend === 'webgl2'; // FERRO ouvre cette surface avec alpha:false
+        G.toiles.forEach((t, i) => {
+          t.width = source.width; t.height = source.height;
+          t.style.width = source.clientWidth + 'px'; t.style.height = source.clientHeight + 'px';
+          G.ctx[i] = t.getContext('2d', { alpha: !G.opaque });
+          if (G.opaque) G.ctx[i].globalCompositeOperation = 'copy';
+        });
+      }
       if (LT && LT.length) for (const k of ['lampes0', 'lampes1']) if (!G[k] || G[k].rev !== scene.index || G[k].lampes !== LT) G[k] = nouvelEtatLampes(scene.index, LT);
     }
     return true;
@@ -2831,6 +2839,7 @@
   // Les carènes normalisées par BITUME tiennent dans leur cube unité. Une sphère
   // autour de chaque pièce est conservative quelle que soit sa rotation en suspension.
   const FORMES_GLACE = new Set(Object.values(B.voiture.FORMES).map(f => f.nom));
+  const FORMES_EFFETS_GLACE = new Set(['box', 'sphere', 'cylinder', ...Array.from(B.echappement?.FORMES || [], f => f.nom)]);
   const BORNE_GLACE = {p:null,radius:0};
   function nouveauChampGlace() {
     return { axes: { right: [0,0,0], up: [0,0,0], forward: [0,0,0] }, camera: null,
@@ -2892,12 +2901,16 @@
     ev.cap=p.cap; ev.tangage=p.tangage; ev.roulis=p.roulis; ev.rebond=p.rebond;
     return B.voiture.detailRouesPour(B.voiture.distanceRoues2(ev,oeil),tanDemi,hauteur,precedent);
   }
-  function ecarterPiecesHorsGlace(objets, camR, champ) {
+  // Les effets du circuit (embruns, fumée, traces, flammes) emploient des maillages normalisés
+  // sans déplacement de sommets. Les FX de modules externes conservent leurs propres bornes.
+  function ecarterPiecesHorsGlace(objets, camR, champ, debutEffets=0, finEffets=0) {
     if (!champ) return;
     let n=0;
     for (let k=0;k<objets.length;k++) {
       const o=objets[k];
-      if (!o.fx && !o.overlay && FORMES_GLACE.has(o.shape)) {
+      const effet = k >= debutEffets && k < finEffets;
+      if (effet ? FORMES_EFFETS_GLACE.has(o.shape) || FORMES_GLACE.has(o.shape)
+        : !o.fx && !o.overlay && FORMES_GLACE.has(o.shape)) {
         const s=o.s;
         BORNE_GLACE.p=o.p;
         BORNE_GLACE.radius=.867*Math.max(Math.abs(s[0]),Math.abs(s[1]),Math.abs(s[2]))+.04;
@@ -2918,7 +2931,7 @@
     sun.center[0] = ps.x; sun.center[1] = ps.y; sun.center[2] = ps.z; sun.extent = scene.ombre.extent; sun.depth = scene.ombre.depth;
     const champ = prepare || champGlace(camR, source.width, source.height);
     const objets = listeGlace(S, camR, sortie, suivie, source.height, i, champ, P.palier, secondeGlace);
-    ecarterPiecesHorsGlace(objets, camR, champ);
+    ecarterPiecesHorsGlace(objets, camR, champ, retro.debutEffets, G.opaque ? retro.finEffets : 0);
     retro.foulePublic = publicVisible && retro.vuePublic ? retro.vuePublic.fx : null;
     if (S.nature && (retro.ambianceSource !== S.nature.ambiance || retro.ambianceRevision !== S.nature.ambiance.revision)) {
       if (retro.rendu.setEnvironment) retro.rendu.setEnvironment(S.nature.ambiance.atmosphere);
@@ -2927,7 +2940,10 @@
     retro.rendu.draw(camR, objets, { time: horlogeReelle, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, lights: lampesTunnel(G, i ? 'lampes1' : 'lampes0', scene.decor.tunnelLampes, camR, dtGlace, scene.index), foule: retro.foulePublic });
     if (B.mesures.actif) B.mesures.vue('retro', retro.rendu);
     const ctx = G.ctx[i];
-    if (toiles[i].width !== source.width || toiles[i].height !== source.height) { toiles[i].width = source.width; toiles[i].height = source.height; }
+    if (toiles[i].width !== source.width || toiles[i].height !== source.height) {
+      toiles[i].width = source.width; toiles[i].height = source.height;
+      if (G.opaque) ctx.globalCompositeOperation = 'copy';
+    }
     ctx.drawImage(source, 0, 0);
   }
   // Entre le dessin d'une vue et ses deux reflets, les poses monde et les dégâts sont figés.
@@ -2959,8 +2975,8 @@
   // fantôme et feux : ce qui n'est pas derrière la glace (devantGlace). Voitures : reposées au niveau de détail de
   // leur taille dans la toile de la glace, jamais plus lourd que la règle de la vue (plafond, avant le passage au
   // modèle moyen derrière la caméra), aucune à plus de 8 m derrière la glace ; la voiture suivie n'y montre que sa
-  // roue arrière (voiture.js, poserRetro). Effets : leur propre appel, au même instant que la vue, sans coupure à
-  // distance. Même ordre qu'avant : décor, voitures, fantôme et feux, effets, roue arrière. Les objets de la vue sont
+  // roue arrière (voiture.js, poserRetro). Les effets monde reprennent leur pose principale au même instant,
+  // puis la glace choisit ses bandes et conserve les particules qui peuvent entrer dans son champ. Même ordre qu'avant : décor, voitures, fantôme et feux, effets, roue arrière. Les objets de la vue sont
   // réécrits : elle est déjà dessinée.
   function listeGlace(S, camR, sortie, suivie, hauteur, cote, champ, palierVue, secondeGlace) {
     const objets = retro.objets; objets.length = 0;
@@ -2984,7 +3000,7 @@
         }
       }
       const pose = POSES_RENDU[k], v = co.voitures[k];
-      const niveauRoues = detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(pose, camR.pos), tanDemi, hauteur, detailsRoues[k]);
+      const niveauRoues = detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(pose, camR.pos, S.modeles[k]), tanDemi, hauteur, detailsRoues[k]);
       const o = optionsGlace(k);
       o.rouesDetail = niveauRoues;
       o.detail = plusLeger(OPTIONS_POSE[k].plafond, detailVoiture(ex * ex + ez * ez, tanDemi, hauteur));
@@ -2994,12 +3010,21 @@
         ex * ex + ez * ez, tanDemi, hauteur, palierVue);
     }
     for (let k = S.iVoitures1, n = S.iEffets0; k < n; k++) if (devantGlace(sortie[k], axe, ox, oy, oz)) objets.push(sortie[k]);
-    B.traces.dessiner(S.fx, objets, camR.pos, S.hEffets, axe, 0);
-    // flammes d'échappement des autres voitures, au même instant que la vue (la voiture suivie n'y montre que sa roue)
-    if (S.ech) B.echappement.dessiner(S.ech, objets, poses, S.tRendu, suivie.id);
+    const debutEffets = objets.length, partage = S.geometrieGlaces;
+    if (partage) B.traces.dessinerReflet(partage.traces, objets, camR.pos, axe);
+    else B.traces.dessiner(S.fx, objets, camR.pos, S.hEffets, axe, 0);
+    if (S.ech) {
+      if (partage) {
+        const f = partage.flammes;
+        for (let k=f.debut; k<f.debutPilote; k++) objets.push(sortie[k]);
+        for (let k=f.finPilote; k<f.fin; k++) objets.push(sortie[k]);
+        S.ech.dessines = (f.fin-f.debut) - (f.finPilote-f.debutPilote);
+      } else B.echappement.dessiner(S.ech, objets, poses, S.tRendu, suivie.id);
+    }
+    retro.debutEffets = debutEffets; retro.finEffets = objets.length;
     const R = OPTIONS_RETRO;
     R.roues = suivie.degats && suivie.degats.roues; R.casse = !!(suivie.etat.degats && suivie.etat.degats.casse);
-    R.rouesDetail = detailsRoues[suivie.id] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(POSES_RENDU[suivie.id], camR.pos), tanDemi, hauteur, detailsRoues[suivie.id]);
+    R.rouesDetail = detailsRoues[suivie.id] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(POSES_RENDU[suivie.id], camR.pos, S.modeles[suivie.id]), tanDemi, hauteur, detailsRoues[suivie.id]);
     poserVoitureGlace(S, suivie.id, POSES_RENDU[suivie.id], objets, R, true, secondeGlace);
     return objets;
   }
@@ -3479,7 +3504,7 @@
       pilote.regime = etatPilote.regime; pilote.kmh = B.conduite.kmh(etatPilote);
       if (S.expressions) B.expressionsPilote.lire(S.expressions, k, pilote);
       // Hystérésis propre à cette vue : ni la seconde moitié d'écran ni les deux miroirs ne la réécrivent.
-      const rouesDetail = S.detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(ev, cam.pos), tanDemi, hauteur, S.detailsRoues[k]);
+      const rouesDetail = S.detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(ev, cam.pos, S.modeles[k]), tanDemi, hauteur, S.detailsRoues[k]);
       if (k === suivie.id) ombreDebut = sortie.length;
       if (k === suivie.id && vue === 'cockpit') {
         const et = suivie.etat, atm = S.nature ? S.nature.ambiance.atmosphere : scene.decor.atmosphere, glaceVive = avecGlaces;
@@ -3545,9 +3570,13 @@
     // (B.traces.extrapolation) : fx.acc seul figeait les effets entre deux pas et les mettait un pas devant elles.
     S.iEffets0 = sortie.length; S.hEffets = B.traces.extrapolation(S.fx, S.retardImage);
     const tFx = (S.banc || B.mesures.actif) ? performance.now() : 0;
-    B.traces.dessiner(S.fx, sortie, cam.pos, S.hEffets, axeCamera(cam, AXE_VUE), 0);
-    // flammes d'échappement (lot 20), à l'instant rendu des voitures ; en cockpit, pas celles de la voiture suivie
-    if (S.ech) B.echappement.dessiner(S.ech, sortie, poses, S.tRendu, vue === 'cockpit' ? suivie.id : -1);
+    B.traces.dessiner(S.fx, sortie, cam.pos, S.hEffets, axeCamera(cam, AXE_VUE), 0, geometrieGlaces && geometrieGlaces.traces, glacesMonde);
+    // Les rétros réutilisent ces mêmes flammes, sauf celles de la voiture qui porte le miroir.
+    if (S.ech) {
+      const plage = geometrieGlaces && geometrieGlaces.flammes;
+      if (plage) plage.pilote = suivie.id;
+      B.echappement.dessiner(S.ech, sortie, poses, S.tRendu, vue === 'cockpit' ? suivie.id : -1, plage);
+    }
     if (tFx) { const dFx = performance.now() - tFx; if (S.banc) S.banc.effets += dFx; if (B.mesures.actif) B.mesures.section('effets', dFx); }
     // uEffects.z colore tout l'écran : la rougeur suit seulement l'éclair du choc, jamais les dégâts persistants.
     const eclair = S.eclair || 0;
@@ -5029,7 +5058,9 @@
       if (S.type !== 'vitrine') {
         glacesDe('j1'); if (duo) glacesDe('j2');
         if (glacesPossibles(S) && preparerGlaces() && !S.geometrieGlaces) {
-          S.geometrieGlaces = { pieces: [], voitures: Array.from({ length: n },
+          S.geometrieGlaces = { pieces: [], traces: B.traces.creerReflet(),
+            flammes: { pilote: -1, debut: 0, fin: 0, debutPilote: 0, finPilote: 0 },
+            voitures: Array.from({ length: n },
             () => ({ cle: -1, liste: null, debut: 0, fin: 0, attitude: null })) };
         }
       }
@@ -5878,7 +5909,7 @@
     try {
       // ombres photo (src/ombres.js) : tuile de 512² ; à 1024², des dents rampent sous la casquette de la planche.
       // Bloc PCSS compilé seulement si la pénombre variable sert (B.ombres.reglages.pcssFine) : shader plus court sinon.
-      const optionsRendu = { indexRegisteredShapes: true, msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512, pcss: !!(B.ombres && B.ombres.reglages.pcssFine) } };
+      const optionsRendu = { indexRegisteredShapes: true, cullRigidOverlay: true, msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512, pcss: !!(B.ombres && B.ombres.reglages.pcssFine) } };
       // L'interface garde sa définition CSS ; seule la scène Xbox est bornée
       // à 720p, y compris sur TV 4K et après redimensionnement. FSurface applique
       // ce budget avant l'allocation des cibles WebGL, sans retouche de FERRO.

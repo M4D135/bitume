@@ -657,12 +657,28 @@
     return fx ? fx.acc - (Number.isFinite(retard) ? retard : 0) : 0;
   }
 
+  function creerReflet() {
+    return { objets: new Array(EMBRUNS + DEBRIS + BANDES + FUMEES + ETINCELLES),
+      debutBandes: 0, finBandes: 0, nombre: 0 };
+  }
+  // Les objets déjà extrapolés restent valables jusqu'au prochain pas ou dessin de la vue principale.
+  // Seules la distance des bandes et la coupe arrière dépendent du rétroviseur.
+  function dessinerReflet(reflet, sortie, oeil, axe) {
+    const ox=oeil[0], oy=oeil[1], oz=oeil[2], ax=axe[0], ay=axe[1], az=axe[2];
+    for (let i=0; i<reflet.nombre; i++) {
+      const o=reflet.objets[i], p=o.p, dx=p[0]-ox, dz=p[2]-oz;
+      if (i>=reflet.debutBandes && i<reflet.finBandes && dx*dx+dz*dz>VUE*VUE) continue;
+      if (dx*ax+(p[1]-oy)*ay+dz*az>=-MARGE_ARRIERE) sortie.push(o);
+    }
+  }
   // Pousse dans `sortie` les effets visibles depuis `oeil`. h : temps de course écoulé depuis la dernière mise à jour
   // des effets jusqu'à l'instant dessiné (fx.acc par défaut ; continu avec B.traces.extrapolation) ; un effet né
   // après cet instant n'est pas encore là. axe (facultatif) : direction du regard, vecteur unité ; un effet plus loin
   // derrière le plan de la caméra que `arriere` mètres (0 par défaut ; une soixantaine quand les rétroviseurs
   // reprennent la liste) n'est pas émis. Sans axe, rien n'est écarté. Aucune allocation.
-  function dessiner(fx, sortie, oeil, temps, axe, arriere) {
+  function dessiner(fx, sortie, oeil, temps, axe, arriere, reflet, glaces) {
+    const candidats=reflet && reflet.objets;
+    let nombre=0;
     // `+temps` : les deux branches restent des nombres à virgule ; mêlé tel quel au paramètre (qui peut manquer),
     // fx.acc serait mis en boîte à chaque image
     const h = Number.isFinite(temps) ? +temps : fx.acc;
@@ -676,7 +692,10 @@
       const o = f.objet, p = o.p, t = (f.age + h) / f.vie, k = f.taille * (1 + 2.6 * t);
       p[0] = f.x + f.vx * h; p[1] = f.y + f.vy * h; p[2] = f.z + f.vz * h; o.s[0] = o.s[1] = o.s[2] = k;
       o.alpha = f.a0 * (1 - t) * Math.min(1, t * 6);
-      if (o.alpha > .004 && (!tri || (p[0] - ox) * ax + (p[1] - oy) * ay + (p[2] - oz) * az >= limite)) sortie.push(o);
+      if (o.alpha > .004) {
+        if (candidats) candidats[nombre++] = o;
+        if (!tri || (p[0] - ox) * ax + (p[1] - oy) * ay + (p[2] - oz) * az >= limite) sortie.push(o);
+      }
     }
     const D = fx.debris;
     for (let i = 0; i < D.length; i++) {
@@ -699,18 +718,36 @@
         if (!d.ecrite) { Q[0] = d.qx; Q[1] = d.qy; Q[2] = d.qz; Q[3] = d.qw; anglesQuaternion(r); d.ecrite = true; }
       } else { const w = d.corps ? 0 : d.spin * h; r[0] = d.rx + w; r[1] = d.ry; r[2] = d.rz + w * .7; }
       o.alpha = Math.min(1, Math.max(0, (VIE_DEBRIS - d.age - h) / 2));
-      if (o.alpha > .004 && (!tri || (p[0] - ox) * ax + (p[1] - oy) * ay + (p[2] - oz) * az >= limite)) sortie.push(o);
+      if (o.alpha > .004) {
+        if (candidats) candidats[nombre++] = o;
+        if (!tri || (p[0] - ox) * ax + (p[1] - oy) * ay + (p[2] - oz) * az >= limite) sortie.push(o);
+      }
     }
     // bandes : immobiles une fois posées (leur boîte se calcule à la pose), seule leur pâleur suit le temps
+    if (reflet) reflet.debutBandes = nombre;
+    // Un rejet commun aux deux disques de 190 m épargne les anciennes traces laissées loin derrière.
+    let xmin=-Infinity, xmax=Infinity, zmin=-Infinity, zmax=Infinity;
+    if (candidats && glaces) {
+      const g=glaces[0].centre, d=glaces[1].centre;
+      const marge = VUE + .01;
+      xmin=Math.min(g[0],d[0])-marge; xmax=Math.max(g[0],d[0])+marge;
+      zmin=Math.min(g[2],d[2])-marge; zmax=Math.max(g[2],d[2])+marge;
+    }
     const vue2 = VUE * VUE, BD = fx.bandes;
     for (let i = 0; i < BD.length; i++) {
       const b = BD[i];
       if (!b.actif) continue;
       const o = b.objet, p = o.p, dx = p[0] - ox, dz = p[2] - oz;
-      if (dx * dx + dz * dz > vue2 || (tri && dx * ax + (p[1] - oy) * ay + dz * az < limite)) continue;
+      const dansVue = dx * dx + dz * dz <= vue2 && (!tri || dx * ax + (p[1] - oy) * ay + dz * az >= limite);
+      const dansReflets = candidats && p[0]>=xmin && p[0]<=xmax && p[2]>=zmin && p[2]<=zmax;
+      if (!dansVue && !dansReflets) continue;
       o.alpha = b.a0 * Math.min(1, 1.6 * (1 - (b.age + h) / VIE_TRACE));
-      if (o.alpha > .004) sortie.push(o);
+      if (o.alpha > .004) {
+        if (dansReflets) candidats[nombre++] = o;
+        if (dansVue) sortie.push(o);
+      }
     }
+    if (reflet) reflet.finBandes = nombre;
     const F = fx.fumees;
     for (let i = 0; i < F.length; i++) {
       const f = F[i];
@@ -719,7 +756,10 @@
       p[0] = f.x + f.vx * h; p[1] = f.y + f.vy * h; p[2] = f.z + f.vz * h;
       o.s[0] = d; o.s[1] = d * .8; o.s[2] = d;
       o.alpha = f.a0 * Math.pow(1 - t, 1.6) * Math.min(1, t * 8);
-      if (o.alpha > .004 && (!tri || (p[0] - ox) * ax + (p[1] - oy) * ay + (p[2] - oz) * az >= limite)) sortie.push(o);
+      if (o.alpha > .004) {
+        if (candidats) candidats[nombre++] = o;
+        if (!tri || (p[0] - ox) * ax + (p[1] - oy) * ay + (p[2] - oz) * az >= limite) sortie.push(o);
+      }
     }
     const ET = fx.etincelles;
     for (let i = 0; i < ET.length; i++) {
@@ -730,8 +770,12 @@
       o.s[0] = Math.max(.06, Math.min(.5, v * .02)); o.s[1] = .028; o.s[2] = .028;
       // une étincelle née après l'instant dessiné (h négatif, juste après une mise à jour) n'est pas encore là
       o.alpha = age < 0 ? 0 : Math.max(0, 1 - age / e.vie);
-      if (o.alpha > .004 && (!tri || (p[0] - ox) * ax + (p[1] - oy) * ay + (p[2] - oz) * az >= limite)) sortie.push(o);
+      if (o.alpha > .004) {
+        if (candidats) candidats[nombre++] = o;
+        if (!tri || (p[0] - ox) * ax + (p[1] - oy) * ay + (p[2] - oz) * az >= limite) sortie.push(o);
+      }
     }
+    if (reflet) reflet.nombre = nombre;
   }
 
   // Effets vivants, pour les essais et le banc ; `sortie` (facultatif) est rempli et rendu, sans objet neuf.
@@ -749,5 +793,5 @@
     return c;
   }
 
-  B.traces = { creer, pas, dessiner, extrapolation, compter, liberer, prechauffer, mondePage, BANDES, FUMEES, ETINCELLES, VIE_TRACE, PAS, DEBRIS, VIE_DEBRIS, PIECES_PAR_VOITURE };
+  B.traces = { creer, pas, dessiner, creerReflet, dessinerReflet, extrapolation, compter, liberer, prechauffer, mondePage, BANDES, FUMEES, ETINCELLES, VIE_TRACE, PAS, DEBRIS, VIE_DEBRIS, PIECES_PAR_VOITURE };
 })(globalThis.BITUME = globalThis.BITUME || {});

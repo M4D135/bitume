@@ -20,6 +20,26 @@
     vec2 p = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2);
     uv = p; gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0);
   }`;
+  const LARGEUR_FILM = 24, HAUTEUR_BANDE_FILM = 20;
+  const HACHAGE = `  float h21(vec2 p) {
+    vec3 q = fract(vec3(p.xyx) * vec3(.1031,.1030,.0973));
+    q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z);
+  }
+`;
+  // Un texel contient les quatre hachages de la cellule avec leurs bits float32 originaux.
+  // Le shader de composition conserve le calcul des coordonnées et l’interpolation du bruit.
+  const FRAGMENT_CACHE_FILM = `#version 300 es
+  precision highp float;
+  precision highp int;
+  uniform ivec2 uOriginesFilm[3];
+  layout(location=0) out highp uvec4 coins;
+  ${HACHAGE}
+  void main() {
+    ivec2 c=ivec2(gl_FragCoord.xy);
+    int bande=c.y/${HAUTEUR_BANDE_FILM};
+    vec2 i=vec2(uOriginesFilm[bande]+ivec2(c.x,c.y%${HAUTEUR_BANDE_FILM}));
+    coins=floatBitsToUint(vec4(h21(i),h21(i+vec2(1,0)),h21(i+vec2(0,1)),h21(i+1.0)));
+  }`;
   const FRAGMENT = `#version 300 es
   precision highp float;
   in vec2 uv;
@@ -42,14 +62,27 @@
   uniform vec4 uGouttes[32]; // centre en pixels, rayon, opacité ; vraies rencontres du modèle partagé
   uniform vec4 uTrajets[32]; // milieu et fin de la coulure, historique réel des positions
   uniform vec4 uImpacts[32]; // phase brève, force, orientation, rayon d'arrivée ; même pool que les perles
-  float h21(vec2 p) {
-    vec3 q = fract(vec3(p.xyx) * vec3(.1031,.1030,.0973));
-    q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z);
-  }
+  ${HACHAGE}
+  #ifdef CACHE_FILM
+  uniform highp usampler2D uCacheFilm;
+  uniform highp ivec2 uOriginesFilm[3];
+  #endif
   vec2 h22(vec2 p) { return vec2(h21(p), h21(p + vec2(41.7,93.4))); }
   float bruit(vec2 p) {
     vec2 i = floor(p), f = fract(p); f = f*f*(3.0-2.0*f);
     return mix(mix(h21(i),h21(i+vec2(1,0)),f.x),mix(h21(i+vec2(0,1)),h21(i+1.0),f.x),f.y);
+  }
+  float bruitFilm(vec2 p, int bande) {
+    #ifdef CACHE_FILM
+    vec2 i=floor(p), cellule=i-vec2(uOriginesFilm[bande]);
+    if(all(greaterThanEqual(cellule,vec2(0))) && all(lessThan(cellule,vec2(${LARGEUR_FILM},${HAUTEUR_BANDE_FILM})))) {
+      highp ivec2 caseFilm=ivec2(cellule)+ivec2(0,bande*${HAUTEUR_BANDE_FILM});
+      vec4 coins=uintBitsToFloat(texelFetch(uCacheFilm,caseFilm,0));
+      vec2 f=fract(p); f=f*f*(3.0-2.0*f);
+      return mix(mix(coins.x,coins.y,f.x),mix(coins.z,coins.w,f.x),f.y);
+    }
+    #endif
+    return bruit(p);
   }
   float bords(float r, float largeur) { return 1.0 - smoothstep(1.0-largeur,1.0+largeur,r); }
   vec2 positionTransportee(vec2 p, vec4 tr) {
@@ -71,14 +104,11 @@
   // Les centres traversent donc les frontières et les bords sans remise à zéro par cellule.
   vec4 perlesGeneration(vec2 p, float cellule, float taille, float densite, float couche, float mobilite, int indice) {
     vec4 tr=uTransport[indice];
-    if(tr.w<.0001)return vec4(0);
+    if(tr.w<.0001 || densite==0.0)return vec4(0);
     float graine=uVue.z+uPhase[indice/4][indice%4],t=uMouvement.x,air=uMouvement.y;
     vec2 q=positionSource(p,tr)/cellule;
     vec2 id = floor(q), local = fract(q) - .5;
     vec2 alea = h22(id + couche*17.3 + graine);
-    float vie = fract(t * (.033 + alea.x*.022) + alea.y);
-    float apparition = smoothstep(0.0,.09,vie) * (1.0-smoothstep(.84,1.0,vie));
-    float presence = (1.0-smoothstep(densite-.08,densite+.025,h21(id+73.1+couche+graine))) * clamp(densite*8.0,0.0,1.0)*tr.w;
     vec2 centre = (alea-.5)*.48;
     vec2 sourceCentre=(id+.5+centre)*cellule,centreEcran=positionTransportee(sourceCentre,tr);
     vec2 ancienCentre=positionTransportee(sourceCentre,uHistoire[indice]),trajet=centreEcran-ancienCentre;
@@ -98,15 +128,27 @@
     float r = length(n)*asymetrie;
     // Anticrénelage dans l'espace des pixels réellement rendus
     float aa = clamp(fwidth(r)*.72,.018,.58);
+    // La dérivée du contour est déjà évaluée pour tous les fragments, voisins des cellules compris.
+    // Le corps finit à 1+aa (au plus 1,58). Le méandre de la trace dévie d’au plus 0,10 rayon.
+    float arriere=-d.y;
+    bool tracePossible=arriere>rayon*.4 && arriere<.46 && abs(d.x)<=rxCell*.76+rayon*.11;
+    if(r>1.59 && !tracePossible)return vec4(0);
+    float vie = fract(t * (.033 + alea.x*.022) + alea.y);
+    float apparition = smoothstep(0.0,.09,vie) * (1.0-smoothstep(.84,1.0,vie));
+    float presence = (1.0-smoothstep(densite-.08,densite+.025,h21(id+73.1+couche+graine))) * clamp(densite*8.0,0.0,1.0)*tr.w;
+    if(presence==0.0 || apparition==0.0)return vec4(0);
     // Dégagement progressif du centre de l'écran à haute vitesse : les traînées filent vers la périphérie !
     vec2 uvC = vec2(centreEcran.x/uVue.x, 1.0-centreEcran.y/uVue.y) - uGravite.zw;
     float dCentre = length(uvC * vec2(1.45, 1.15));
     float clairCentre = mix(1.0, smoothstep(0.06, 0.46, dCentre), wVit * 0.82);
     float masque = bords(r,aa) * presence * apparition * clairCentre * mix(1.0, 0.65, wVit);
-    float longueur=min(.46, rayon*1.5+min(.24,length(trajet)/cellule)+rayon*wVit*(2.8+6.5*mobilite)),arriere=-d.y;
-    float tx=d.x-sin(arriere*25.0+alea.x*12.0)*rayon*.10*(1.0-wVit*.6);
-    float trace=(1.0-smoothstep(rxCell*.22,rxCell*.75,abs(tx)))*smoothstep(rayon*.4,rayon*1.2,arriere);
-    trace*=(1.0-smoothstep(longueur*.65,longueur,arriere))*(mobilite+wVit*.35)*presence*apparition*clairCentre*smoothstep(.06,1.2,length(trajet)+wVit*1.4);
+    float tx=0.0,trace=0.0;
+    if(tracePossible) {
+      float longueur=min(.46, rayon*1.5+min(.24,length(trajet)/cellule)+rayon*wVit*(2.8+6.5*mobilite));
+      tx=d.x-sin(arriere*25.0+alea.x*12.0)*rayon*.10*(1.0-wVit*.6);
+      trace=(1.0-smoothstep(rxCell*.22,rxCell*.75,abs(tx)))*smoothstep(rayon*.4,rayon*1.2,arriere);
+      trace*=(1.0-smoothstep(longueur*.65,longueur,arriere))*(mobilite+wVit*.35)*presence*apparition*clairCentre*smoothstep(.06,1.2,length(trajet)+wVit*1.4);
+    }
     float creux = sqrt(max(0.0,1.0-min(r*r,1.0)));
     vec2 nn=clamp(n,vec2(-1),vec2(1));
     vec2 normale=(travers*nn.x+direction*nn.y)*masque*(.20+.80*creux);
@@ -224,8 +266,8 @@
     // Brouillard d'eau local dans l'axe : il monte puis retombe dans le modèle, pas d'aplat blanc instantané.
     float turbulent=.5;
     if (embruns>.001 || (uAvecScene && film>.001)) {
-      turbulent=bruit(uv*vec2(9.0,7.0)+vec2(uMouvement.x*.38,-uMouvement.x*.54));
-      turbulent=.67*turbulent+.33*bruit(uv*vec2(21.0,17.0)-uMouvement.x*.27);
+      turbulent=bruitFilm(uv*vec2(9.0,7.0)+vec2(uMouvement.x*.38,-uMouvement.x*.54),0);
+      turbulent=.67*turbulent+.33*bruitFilm(uv*vec2(21.0,17.0)-uMouvement.x*.27,1);
     }
     vec2 centre=uv-vec2(.5,.57);
     float panache=exp(-dot(centre*vec2(1.8,1.45),centre*vec2(1.8,1.45))*2.1);
@@ -254,7 +296,7 @@
     vec3 image=vec3(.61,.69,.73);
     if (uAvecScene) {
       vec2 deviation=normale*vec2(3.0,3.6)/uVue.xy;
-      deviation += (vec2(turbulent,bruit(uv*13.0+uMouvement.x*.2))-.5)*film*.002;
+      if(film!=0.0) deviation += (vec2(turbulent,bruitFilm(uv*13.0+uMouvement.x*.2,2))-.5)*film*.002;
       image=scene(uv+deviation,clamp(relief*.22+voile*.88+blanc*.72,0.0,1.0));
       float ombre=smoothstep(.01,.24,dot(normale,normalize(vec2(.35,-.94))));
       float reflet=pow(smoothstep(.02,.33,dot(-normale,normalize(vec2(.35,-.94)))),2.0);
@@ -412,13 +454,64 @@
     }
     return s;
   }
-  function initialiser(e) {
-    const gl=e.gl, vs=shader(gl,gl.VERTEX_SHADER,VERTEX), fs=shader(gl,gl.FRAGMENT_SHADER,FRAGMENT);
-    const programme=gl.createProgram(); gl.attachShader(programme,vs); gl.attachShader(programme,fs); gl.linkProgram(programme);
-    gl.deleteShader(vs); gl.deleteShader(fs);
+  function lierProgramme(gl,vs,fragment) {
+    const fs=shader(gl,gl.FRAGMENT_SHADER,fragment), programme=gl.createProgram();
+    gl.attachShader(programme,vs);gl.attachShader(programme,fs);gl.linkProgram(programme);gl.deleteShader(fs);
     if(!gl.getProgramParameter(programme,gl.LINK_STATUS)) {
-      const message=gl.getProgramInfoLog(programme); gl.deleteProgram(programme); throw new Error(message);
+      const message=gl.getProgramInfoLog(programme);gl.deleteProgram(programme);throw new Error(message);
     }
+    return programme;
+  }
+  function libererCacheFilm(gl,cache) {
+    if(!cache)return;
+    if(cache.cible)gl.deleteFramebuffer(cache.cible);
+    if(cache.texture)gl.deleteTexture(cache.texture);
+    if(cache.programme)gl.deleteProgram(cache.programme);
+  }
+  function creerCacheFilm(gl,vs) {
+    if(typeof gl.texStorage2D!=='function' || typeof gl.uniform2iv!=='function' || !gl.RGBA32UI)return null;
+    const cache={texture:null,cible:null,programme:null,origines:new Int32Array(6),valide:false};
+    try {
+      cache.texture=gl.createTexture();cache.cible=gl.createFramebuffer();
+      if(!cache.texture || !cache.cible)throw new Error('Cache de bruit indisponible');
+      gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,cache.texture);
+      gl.texStorage2D(gl.TEXTURE_2D,1,gl.RGBA32UI,LARGEUR_FILM,3*HAUTEUR_BANDE_FILM);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
+      gl.bindFramebuffer(gl.FRAMEBUFFER,cache.cible);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,cache.texture,0);
+      if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw new Error('Cible entière indisponible');
+      cache.programme=lierProgramme(gl,vs,FRAGMENT_CACHE_FILM);
+      cache.uniforme=gl.getUniformLocation(cache.programme,'uOriginesFilm[0]');
+      return cache;
+    } catch(_) {
+      libererCacheFilm(gl,cache);return null;
+    } finally {gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.activeTexture(gl.TEXTURE0);}
+  }
+  function actualiserCacheFilm(e) {
+    const cache=e.cacheFilm,temps=e.simulation.uniformes[4],origines=cache.origines;
+    // Une cellule de garde pour les arrondis aux frontières. La composition sait aussi hacher hors cache.
+    const x=Math.floor(temps*.38)-1,y=Math.floor(-temps*.54)-1;
+    const deux=Math.floor(-temps*.27)-1,trois=Math.floor(temps*.2)-1;
+    if(cache.valide && origines[0]===x && origines[1]===y && origines[2]===deux && origines[4]===trois)return;
+    origines[0]=x;origines[1]=y;origines[2]=origines[3]=deux;origines[4]=origines[5]=trois;
+    const gl=e.gl;
+    gl.bindFramebuffer(gl.FRAMEBUFFER,cache.cible);gl.useProgram(cache.programme);gl.bindVertexArray(e.vao);
+    gl.viewport(0,0,LARGEUR_FILM,3*HAUTEUR_BANDE_FILM);
+    gl.uniform2iv(cache.uniforme,origines);gl.drawArrays(gl.TRIANGLES,0,3);
+    gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.useProgram(e.programme);
+    gl.uniform2iv(e.lieux.uOriginesFilm,origines);cache.valide=true;
+  }
+  function initialiser(e) {
+    const gl=e.gl, vs=shader(gl,gl.VERTEX_SHADER,VERTEX);
+    let programme;
+    try {
+      e.cacheFilm=creerCacheFilm(gl,vs);
+      if(e.cacheFilm) {
+        try {programme=lierProgramme(gl,vs,FRAGMENT.replace('#version 300 es','#version 300 es\n#define CACHE_FILM'));}
+        catch(_) {libererCacheFilm(gl,e.cacheFilm);e.cacheFilm=null;}
+      }
+      if(!programme)programme=lierProgramme(gl,vs,FRAGMENT);
+    } finally {gl.deleteShader(vs);}
     e.reduction=null; e.reductionRefusee=null;
     e.stockageScene={largeur:1,hauteur:1};
     e.sousImage={directe:null,reduction:null,secours:null};
@@ -430,6 +523,10 @@
     e.lieux={}; for(const nom of ['uScene','uMeteo','uMouvement','uVue','uTexel','uQualite','uAvecScene','uNbGouttes','uGouttes','uTrajets','uImpacts','uFlux','uGravite','uAvecTuiles','uTuilesGouttes','uTransport','uHistoire','uPhase']) e.lieux[nom]=gl.getUniformLocation(programme,nom);
     // Ce programme et l'orientation des transferts appartiennent au seul contexte de cette visière.
     gl.useProgram(programme);gl.uniform1i(e.lieux.uScene,0);
+    if(e.cacheFilm) {
+      gl.uniform1i(gl.getUniformLocation(programme,'uCacheFilm'),1);
+      e.lieux.uOriginesFilm=gl.getUniformLocation(programme,'uOriginesFilm[0]');
+    }
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
     e.uniformesVue={w:0,h:0,niveau:-1,scene:null,tuiles:null};
     gl.disable(gl.DEPTH_TEST); gl.disable(gl.BLEND); gl.clearColor(0,0,0,0);
@@ -547,9 +644,9 @@
     const tuilesParPixelX=16/e.largeur, tuilesParPixelY=9/e.hauteur, vitesse=clamp(s.uniformes[7],0,1);
     cases.fill(0);
     for(let i=0;i<s.nbGouttes;i++) {
-      const o=i*4, halo=impacts[o+1]>.005 ? impacts[o+3]*(.65+1.7*impacts[o])*1.75+2 : 0;
+      const o=i*4, halo=impacts[o+1]>.005 ? impacts[o+3]*.45*(.65+1.7*impacts[o])*1.75+2 : 0;
       // Même emprise que le shader, élargie d'un pixel à ses limites d'arrondi.
-      const m=1+Math.max(gx[o+2]*(2.3+vitesse*6.5),halo);
+      const m=1+Math.max(gx[o+2]*.45*(2.3+vitesse*6.5),halo);
       const x0=Math.max(0,Math.floor((Math.min(gx[o],tr[o],tr[o+2])-m)*tuilesParPixelX));
       const x1=Math.min(15,Math.floor((Math.max(gx[o],tr[o],tr[o+2])+m)*tuilesParPixelX));
       const y0=Math.max(0,Math.floor((Math.min(gx[o+1],tr[o+1],tr[o+3])-m)*tuilesParPixelY));
@@ -561,6 +658,7 @@
   }
   function dessiner(e,c,niveau,chauffe) {
     const gl=e.gl,u=e.simulation.uniformes;
+    if(e.cacheFilm && (chauffe || u[2]>.001 || niveau>0 && u[3]!==0))actualiserCacheFilm(e);
     gl.viewport(0,0,e.canvas.width,e.canvas.height); gl.useProgram(e.programme); gl.bindVertexArray(e.vao);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D,e.texture);
     let avecScene=false;
@@ -648,9 +746,10 @@
     e.canvas.removeEventListener('webglcontextlost',e.perte); e.canvas.removeEventListener('webglcontextrestored',e.restauration);
     libererReduction(e);
     if(!e.perdu){
+      libererCacheFilm(e.gl,e.cacheFilm);
       e.gl.deleteTexture(e.texture);e.gl.deleteVertexArray(e.vao);e.gl.deleteProgram(e.programme);}
     e.libere=true;e.canvas=null;e.contexte=null;e.source=null;e.sourceContexte=null;e.gl=null;
-    e.texture=e.vao=e.programme=e.lieux=null;
+    e.texture=e.vao=e.programme=e.lieux=e.cacheFilm=null;
   }
   B.visiereOptique={creer,creerEtat,avancerEtat,mettreAJour,prechauffer,effacer,liberer,MAX_PIXELS,MAX_SOURCE_PIXELS,MAX_GOUTTES_MOBILES,QUALITES,COUCHES};
 })(globalThis.BITUME=globalThis.BITUME||{});

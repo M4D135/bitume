@@ -1,4 +1,4 @@
-# FERRO — référence commune 0.3.18
+# FERRO — référence commune 0.3.23
 
 Décision de David du 16 novembre 2026 : entièrement procédural, aucun plafond de taille du code ni du build. Moteur prioritaire, atelier secondaire.
 
@@ -97,3 +97,7 @@ Les huit circuits utilisent les lots progressifs et les pigments interpolés du 
 ## Version 0.3.22 — terrain, décor instancié et reflets
 
 Les huit circuits déclarent les bornes fixes de leurs nappes au moteur. La vue principale et chaque rétroviseur peuvent écarter des secteurs entiers à partir de ces bornes. WebGL2 garde la configuration des lots de décor en mémoire et réutilise la même image pour les reflets et le halo quand la caméra dessine une vue sans habitacle superposé. [FERRO 0.3.22](https://github.com/M4D135/FERRO/commit/aae3fa19cf1c7fe0f8cb65dbd2e3c2e4ecba7a39)
+
+## Version 0.3.23 — cockpit et reflets
+
+Les deux vues principales de BITUME activent `cullRigidOverlay`. Les pièces rigides hors champ restent disponibles pour l’ombre proche. Les reflets de la chaussée peuvent ignorer les zones entièrement couvertes par l’habitacle à partir de la couleur finale. [FERRO 0.3.23](https://github.com/M4D135/FERRO/commit/0db8e73f2f0c66db85c4cc18198bcfba68310190)

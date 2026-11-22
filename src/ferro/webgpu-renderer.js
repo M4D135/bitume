@@ -37,6 +37,7 @@ async function create(canvas,options={}){
  const view=new Float32Array(16),projection=new Float32Array(16),vp=new Float32Array(16),overlayProjection=new Float32Array(16),overlayVP=new Float32Array(16),shadowMatrices=new Float32Array(48),shadowViewMatrix=new Float32Array(16),shadowProjection=new Float32Array(16),shadowMatrix=new Float32Array(16);
  const lightPositions=new Float32Array(36),lightColors=new Float32Array(36),lightRanges=new Float32Array(12),lightDirections=new Float32Array(36),lightCones=new Float32Array(24);
  const staticCaches=Array.from({length:5},()=>({entries:[],batch:S.pack([]),buffer:null,capacity:0})),dynamicSlot={},overlaySlot={},fxSlot={},overlayFxSlot={},crowdSlot={},pdrSlots=[];
+ const overlayView=options.cullRigidOverlay?S.rigidOverlayView(source):null;
  const packDynamic=S.instancePacker(),packOverlay=S.instancePacker(),packFx=S.effectsPacker(),packOverlayFx=S.effectsPacker();
  const localWind=S.localWindState(),windFrame=localWind.frame,lotView=S.lotViewState(),colourRadii={horizontal:0,vertical:0},terrainView=S.terrainViewState(),vegetation=S.vegetationFrame(),vegetationState=vegetation.frame;
  const ordinary=[],overlay=[],particles=[],overlayParticles=[];
@@ -116,7 +117,7 @@ async function create(canvas,options={}){
   if(!range||vertices.length!==range.count*6)throw Error('Shape vertex count changed: '+name);
   const restored=primitiveIndexing?.restore(name);
   groundIndex.invalidate(name,restored,stats.primitiveIndexing&&!stats.contextLost?uploadShapeIndices:null);
-  const start=source.indices[range.offset/4]*6;source.vertices.set(vertices,start);
+  const start=source.indices[range.offset/4]*6;source.vertices.set(vertices,start);overlayView?.invalidate(name);
   if(!stats.contextLost)device.queue.writeBuffer(vbo,start*4,vertices);
  }
  // Diagnostic A/B on the same poses, uniforms and GPU resources. A primitive
@@ -350,7 +351,9 @@ async function create(canvas,options={}){
   selected.forEach(({light},i)=>{if(light.dir){lightDirections.set(light.dir,i*3);lightCones.set(light.cone||[.75,.94],i*2);}lightPositions.set(light.p,i*3);lightRanges[i]=light.range||0;const color=light.color||[1,1,1],power=(light.power===undefined?1:light.power)*(blackout?.get(light)??1);lightColors.set(color.map(c=>c*power),i*3);});
   ordinary.length=overlay.length=particles.length=overlayParticles.length=0;for(const mesh of dynamic||[])(mesh.overlay?(mesh.fx?overlayParticles:overlay):mesh.fx?particles:ordinary).push(mesh);
   if(warm)for(const mesh of warm.extra)(mesh.overlay?(mesh.fx?overlayParticles:overlay):mesh.fx?particles:ordinary).push(mesh);
-  const dynamicBatch=packDynamic(ordinary,environment,true),torchPosition=eye.map((v,i)=>v+right[i]*.16-up[i]*.08),sunOnly=!!fx.sunOnly,hasOverlay=overlay.length>0||overlayParticles.length>0;
+  const colourOverlay=overlayView?overlayView.select(overlay,eye,axes,horizontal,1/f,colourRadii,warm):overlay;
+  stats.overlayCulled=overlay.length-colourOverlay.length;
+  const dynamicBatch=packDynamic(ordinary,environment,true),torchPosition=eye.map((v,i)=>v+right[i]*.16-up[i]*.08),sunOnly=!!fx.sunOnly,hasOverlay=colourOverlay.length>0||overlayParticles.length>0;
   stats.drawCalls=stats.triangles=stats.instances=stats.uploadBytes=stats.uniformUploadBytes=stats.fxInstances=0;stats.bloom=quality!=='low'&&fx.bloom!==false;stats.shadows=quality!=='low'&&fx.shadows!==false;stats.shadowMode=environment?'sun-atlas':'atlas';stats.shadowMaps=stats.shadows?(sunOnly?0:shadowLights.length+(fx.torch!==false?1:0))+(environment?1:0):0;
   ensureSlot(dynamicSlot,dynamicBatch);const crowd=fx.instances?.groups?.length?fx.instances:null;stats.crowdInstances=crowd?crowd.values.length/16:0;if(crowd)ensureSlot(crowdSlot,crowd);
   const pdrLots=[];stats.pdrLotInstances=0;if(Array.isArray(fx.lots))for(let i=0;i<fx.lots.length;i++){const lot=fx.lots[i];if(!lot?.values||!lot?.groups?.length)continue;const slot=pdrSlots[i]||(pdrSlots[i]={lot:null,version:NaN});ensureSlot(slot,lot,slot.lot!==lot||slot.version!==lot.version);slot.lot=lot;slot.version=lot.version;pdrLots.push(slot);stats.pdrLotInstances+=lot.values.length/16;}
@@ -363,7 +366,7 @@ async function create(canvas,options={}){
   if(voile&&!voile.textureView)voile.textureView=voile.texture.createView();
   const worldTextures={uPbrAlbedo:pbr[0],uPbrNormal:pbr[1],uPbrRough:pbr[2],uShadowMap:stats.shadows?shadowTarget:whiteDepth,uVoile:voile?{view:voile.textureView}:white};
   const worldValues={uOverlayMode:options.overlayLighting==='world'?1:0,uSeaMode:options.sea===false?0:1,uPhoto:fx.photo||0,uSeaOrigin:fx.sea?.origin||[0,0,0,0],uSeaMotion:fx.sea?.motion||[0,0,-1.25,0],uViewProjection:vp,uEye:eye,uForward:forward,uCloudOffset:fx.cloudOffset||weather.cloudOffset,uWindTime:[weather.wind,t],uLocalWindCount:windFrame.count,uLocalWindPosition:windFrame.positions,uLocalWindMotion:windFrame.motions,uSunDirection:environment?.sunDirection||[.4,.8,.3],uSunColor:weather.sunColor,uAmbient:weather.ambient,uFogColor:weather.fog,uEnvironment:[environment?1:0,weather.fogDensity],uNightHour:[environment?.night||0,environment?.hour??14],uSkyTop:weather.skyTop,uSkyBottom:weather.skyBottom,uWeather:weather.values,uLightDirection:lightDirections,uLightCone:lightCones,uLightPosition:lightPositions,uLightColor:lightColors,uLightRange:lightRanges,uLightCount:selected.length,uResolution:[canvas.width,canvas.height],uEffects:[t,fx.flash||0,fx.damage||0,Math.max(0,Math.min(1,fx.pulse||0))],uShadowMatrix:shadowMatrices,uShadowSettings:[stats.shadows&&!sunOnly?shadowLights.length:0,1/(shadowTarget.size*2),stats.shadows&&!sunOnly&&fx.torch!==false?1:0,stats.shadows&&environment?(sunOnly?2:1):0],uTorchPosition:fx.torch===false?[0,-1e5,0]:torchPosition,uVoileZone:voile?[voile.origine[0],voile.origine[1],1/Math.max(.001,voile.taille[0]),1/Math.max(.001,voile.taille[1])]:[0,0,0,0],uVoileForce:voile?Math.min(1,voile.force):0,uPbrReady:layers.length?1:0,uVignette:config.vignette};
-  stats.reflections=config.reflections&&stats.bloom&&fx.reflections!==false&&fx.reflections!=='off';stats.reflectionSteps=stats.reflections?48:0;
+  stats.reflections=config.reflections&&stats.bloom&&fx.reflections!==false&&fx.reflections!=='off';stats.reflectionSteps=stats.reflections?96:0;
   const mainUniforms=bind('world','main',worldValues,worldTextures);
   // Only SSR needs the world colour before the cockpit. Otherwise both passes share one attachment.
   const keepWorld=hasOverlay&&stats.reflections,sceneBeforeOverlay=keepWorld?targets.pre:targets.scene;
@@ -385,12 +388,26 @@ async function create(canvas,options={}){
    const overlayPass=begin({label:'FERRO close weapon',colorAttachments:[{view:targets.msaa?targets.msaa.view:targets.scene.view,...(targets.msaa?{resolveTarget:targets.scene.view}:{}),loadOp:'load',storeOp:targets.msaa?'discard':'store'}],depthStencilAttachment:{view:targets.overlayDepth.view,depthLoadOp:'clear',depthClearValue:1,depthStoreOp:'discard'}});
    const overlayNear=Math.min(near,Math.max(.005,Number(camera.overlayNear)||near));let clip=vp;if(overlayNear!==near){overlayProjection.set(projection);overlayProjection[10]=(far+overlayNear)/(overlayNear-far);overlayProjection[14]=2*far*overlayNear/(overlayNear-far);S.multiply(overlayProjection,view,overlayVP);clip=overlayVP;}
    if(blackout)selected.forEach(({light},i)=>{const c=light.color||[1,1,1],power=light.power===undefined?1:light.power;lightColors.set(c.map(v=>v*power),i*3);});
-   if(overlay.length){const batch=packOverlay(overlay,environment,true);ensureSlot(overlaySlot,batch);overlayPass.setPipeline(pipeline('world',{overlay:true}));overlayPass.setBindGroup(0,bind('world','overlay',{...worldValues,uViewProjection:clip},worldTextures));renderBatch(overlayPass,batch,overlaySlot);}
+   if(colourOverlay.length){const batch=packOverlay(colourOverlay,environment,true);ensureSlot(overlaySlot,batch);overlayPass.setPipeline(pipeline('world',{overlay:true}));overlayPass.setBindGroup(0,bind('world','overlay',{...worldValues,uViewProjection:clip},worldTextures));renderBatch(overlayPass,batch,overlaySlot);}
    if(overlayParticles.length)renderEffects(overlayPass,overlayParticles,eye,t,clip,true);overlayPass.end();
   }
-  if(stats.reflections){const reflectionPass=begin({label:'FERRO screen space reflections',colorAttachments:[{view:targets.reflection.view,loadOp:'clear',clearValue:[0,0,0,0],storeOp:'store'}]});reflectionPass.setPipeline(pipeline('ssr',{samples:1}));reflectionPass.setBindGroup(0,bind('ssr','main',{uProjection:[1/projection[0],1/projection[5],projection[10],projection[14]],uPixel:[1/canvas.width,1/canvas.height]},{uColor:sceneBeforeOverlay,uDepth:targets.resolvedDepth||targets.depth}));reflectionPass.draw(3);reflectionPass.end();stats.drawCalls++;}
   const output=context.getCurrentTexture().createView();
-  if(stats.bloom){for(let stage=0;stage<3;stage++){const target=stage===0?targets.a.view:stage===1?targets.b.view:output,postPass=begin({label:'FERRO bloom '+stage,colorAttachments:[{view:target,loadOp:'clear',clearValue:[0,0,0,1],storeOp:'store'}]},stage===2);postPass.setPipeline(pipeline('post',{samples:1,target:stage===2?canvasFormat:format}));postPass.setBindGroup(0,bind('post',stage,{uReflections:stats.reflections?1:0,uPass:stage,uTexel:stage===0?[1/canvas.width,1/canvas.height]:[1/targets.a.width,1/targets.a.height],uBloomThreshold:config.bloom},{uScene:targets.scene,uBloom:stage===1?targets.a:targets.b,uReflection:stats.reflections?targets.reflection:white}));postPass.draw(3);postPass.end();stats.drawCalls++;}}
+  if(stats.bloom){
+   for(let stage=0;stage<3;stage++){
+    if(stage===1&&stats.reflections){
+     const reflectionPass=begin({label:'FERRO screen space reflections',colorAttachments:[{view:targets.reflection.view,loadOp:'clear',clearValue:[0,0,0,0],storeOp:'store'}]});
+     reflectionPass.setPipeline(pipeline('ssr',{samples:1}));
+     const mask=hasOverlay&&canvas.width%4===0&&canvas.height%4===0;
+     reflectionPass.setBindGroup(0,bind('ssr','main',{uProjection:[1/projection[0],1/projection[5],projection[10],projection[14]],uPixel:[1/canvas.width,1/canvas.height],uReceiverMask:mask?1:0},{uColor:sceneBeforeOverlay,uDepth:targets.resolvedDepth||targets.depth,uReceiverTiles:targets.a}));
+     reflectionPass.draw(3);reflectionPass.end();stats.drawCalls++;
+    }
+    const target=stage===0?targets.a.view:stage===1?targets.b.view:output;
+    const postPass=begin({label:'FERRO bloom '+stage,colorAttachments:[{view:target,loadOp:'clear',clearValue:[0,0,0,1],storeOp:'store'}]},stage===2);
+    postPass.setPipeline(pipeline('post',{samples:1,target:stage===2?canvasFormat:format}));
+    postPass.setBindGroup(0,bind('post',stage,{uReflections:stats.reflections?1:0,uPass:stage,uTexel:stage===0?[1/canvas.width,1/canvas.height]:[1/targets.a.width,1/targets.a.height],uBloomThreshold:config.bloom},{uScene:targets.scene,uBloom:stage===1?targets.a:targets.b,uReflection:stats.reflections?targets.reflection:white}));
+    postPass.draw(3);postPass.end();stats.drawCalls++;
+   }
+  }
   else{const copyPass=begin({label:'FERRO present',colorAttachments:[{view:output,loadOp:'clear',clearValue:[0,0,0,1],storeOp:'store'}]},true);copyPass.setPipeline(copyPipeline(canvasFormat));copyPass.setBindGroup(0,copyBind(targets.scene.view));copyPass.draw(3);copyPass.end();stats.drawCalls++;}
   finishTiming(encoder,timed);device.queue.submit([encoder.finish()]);readTiming(timed);evictIdleLots();stats.gpuBuffers=buffers.size;stats.gpuTextures=textures.size;stats.pipelineCount=pipelines.size;stats.uniformSlots=bindings.size;
  }

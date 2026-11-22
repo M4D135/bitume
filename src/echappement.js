@@ -356,7 +356,8 @@
   // interpolées). poses : position et attitude de chaque voiture { x, y, z, cap, tangage, roulis } ; exclure : voiture
   // à ne pas dessiner (celle du pilote en vue cockpit : l'arrière de sa caisse ne l'est pas non plus). Aucune distance
   // n'entre en compte : la flamme est la même de près et de loin. Rend le nombre d'objets poussés.
-  function dessiner(E, sortie, poses, t, exclure = -1) {
+  function dessiner(E, sortie, poses, t, exclure = -1, reflet) {
+    if (reflet) reflet.debut = reflet.fin = reflet.debutPilote = reflet.finPilote = sortie?.length || 0;
     if (!E || E.libere || !sortie || !poses) return 0;
     let total = 0;
     for (let k = 0, n = Math.min(E.n, poses.length); k < n; k++) {
@@ -364,8 +365,11 @@
       const p = poses[k];
       if (!p) continue;
       attitudeDans(p.cap || 0, p.tangage || 0, p.roulis || 0, M);
+      const debut = sortie.length;
       for (let o = 0; o < NS; o++) total += flammeSortie(E, k, o, p, t, E.vitesse[k], sortie);
+      if (reflet && k === reflet.pilote) { reflet.debutPilote = debut; reflet.finPilote = sortie.length; }
     }
+    if (reflet) reflet.fin = sortie.length;
     E.dessines = total;
     return total;
   }

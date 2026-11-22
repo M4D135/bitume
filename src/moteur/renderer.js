@@ -1352,6 +1352,7 @@
   const SSR_FRAG=`#version 300 es
   precision highp float;
   in vec2 vUV;uniform sampler2D uColor;uniform highp sampler2D uDepth;
+  uniform sampler2D uReceiverTiles;uniform int uReceiverMask;
   uniform vec4 uProjection;uniform vec2 uPixel;out vec4 fragColor;
   float distanceZ(float depth){return uProjection.w/(depth*2.-1.+uProjection.z);}
   // Depth needs highp even when float already is highp: a low precision sampler
@@ -1361,9 +1362,13 @@
   vec2 project(vec3 p){return .5+.5*p.xy/(-p.z*uProjection.xy);}
   vec3 rayPoint(vec3 a,vec3 b,float ka,float kb,float t){return mix(a,b,t)/mix(ka,kb,t);}
   void main(){
-    fragColor=vec4(0.);vec2 receiver=pixelCenter(vUV);vec4 original=texture(uColor,receiver);
+    fragColor=vec4(0.);
+    // The four filtered bits cover every final-scene pixel that can consume this half-size texel.
+    if(uReceiverMask!=0&&texture(uReceiverTiles,vUV).a<.01)return;
+    vec2 receiver=pixelCenter(vUV);vec4 original=texture(uColor,receiver);
+    if(original.a<.06)return;
     float depth=texture(uDepth,receiver).r,zp=distanceZ(depth);
-    if(original.a<.06||depth>=.999999||zp>200.||zp<.12)return;
+    if(depth>=.999999||zp>200.||zp<.12)return;
     vec3 p=vec3((receiver*2.-1.)*uProjection.xy*zp,-zp);
     // One-sided differences stay on the receiver at object silhouettes. Always
     // reconstruct at the depth texel centre, including this half-size pass.
@@ -1381,15 +1386,18 @@
     float pixels=max(abs(span.x)/uPixel.x,abs(span.y)/uPixel.y);if(pixels<1.)return;
     float previous=0.,oldT=0.,weight=0.,stride=clamp(2./(512.*uPixel.y),1.,4.);vec2 hit=vec2(0.);int candidates=0;
     // Perspective-correct traversal: 1--4 source pixels per step, scaled with
-    // image height, and at most 96 steps / three refinements (122 depth reads).
+    // image height, and at most 96 steps / three refinements of six steps.
     // Farther or unseen geometry keeps the existing analytic environment.
     for(int i=1;i<=96;i++){
       float atT=min(1.,float(i)*stride/pixels);vec2 uv=start+span*atT;
       float sampled=texture(uDepth,uv).r,sceneZ=distanceZ(sampled),delta=1./mix(ka,kb,atT)-sceneZ;
       if(sampled<.999999&&delta>0.&&previous<=0.){
-        candidates++;float lo=oldT,hi=atT;
-        for(int j=0;j<6;j++){float mid=(lo+hi)*.5;float d=1./mix(ka,kb,mid)-distanceZ(texture(uDepth,start+span*mid).r);if(d>0.)hi=mid;else lo=mid;}
-        hit=start+span*hi;vec3 point=rayPoint(a,z,ka,kb,hi);float hitDepth=texture(uDepth,hit).r;
+        candidates++;float lo=oldT,hi=atT,hitDepth=sampled;
+        for(int j=0;j<6;j++){
+          float mid=(lo+hi)*.5,midDepth=texture(uDepth,start+span*mid).r;
+          if(1./mix(ka,kb,mid)-distanceZ(midDepth)>0.){hi=mid;hitDepth=midDepth;}else lo=mid;
+        }
+        hit=start+span*hi;vec3 point=rayPoint(a,z,ka,kb,hi);
         float difference=-point.z-distanceZ(hitDepth),thickness=clamp(sceneZ*.004,.025,.20);
         // Crossing a silhouette is not itself an intersection. Revalidate the
         // refined hit against a small depth thickness, rather than metres.
@@ -1412,15 +1420,18 @@
   uniform vec2 uTexel;
   uniform int uPass;
   out vec4 fragColor;
-  vec3 bright(vec2 uv){
-    vec3 c=texture(uScene,uv).rgb;
-    return c*smoothstep(.56,.86,max(max(c.r,c.g),c.b));
+  vec4 bright(vec2 uv){
+    vec4 c=texture(uScene,uv);
+    return vec4(c.rgb*smoothstep(.56,.86,max(max(c.r,c.g),c.b)),c.a);
   }
   void main(){
     if(uPass==0){
-      vec3 c=bright(vUV+uTexel*vec2(-1,-1))+bright(vUV+uTexel*vec2(1,-1));
-      c+=bright(vUV+uTexel*vec2(-1,1))+bright(vUV+uTexel*vec2(1,1));
-      fragColor=vec4(c*.25,1.);return;
+      vec4 a=bright(vUV+uTexel*vec2(-1,-1)),b=bright(vUV+uTexel*vec2(1,-1));
+      vec4 c=bright(vUV+uTexel*vec2(-1,1)),d=bright(vUV+uTexel*vec2(1,1));
+      // At exact 4:1 reduction, a receiver passing .025 in the final pass contributes
+      // at least .025/4 to one bilinear tap. Keep even faintly reflective edges.
+      float occupied=step(.001,max(max(a.a,b.a),max(c.a,d.a)));
+      fragColor=vec4(((a.rgb+b.rgb)+(c.rgb+d.rgb))*.25,occupied);return;
     }
     vec2 axis=uPass==1?vec2(uTexel.x,0.):vec2(0.,uTexel.y);
     vec3 c=texture(uBloom,vUV).rgb*.227027;
@@ -1689,6 +1700,48 @@
     }
     // BITUME : index sur 32 bits (retouche 10, UNSIGNED_INT) — les formes libres dépassent 65 535 sommets
     return {vertices:new Float32Array(data),indices:new Uint32Array(indices),ranges};
+  }
+
+  // Opaque cockpit geometry can be outside the colour view and still cast a shadow.
+  // Read the actual registered vertices, including off-centre shapes and edits by updateShape.
+  function rigidOverlayView(source){
+    const bounds=new Map(),shown=[],hidden=[];
+    function halfExtents(name){
+      let bound=bounds.get(name);
+      if(bound)return bound;
+      const range=source.ranges[name];
+      if(!range)return null;
+      const first=range.offset/4,end=first+range.count;
+      let x=0,y=0,z=0;
+      for(let i=first;i<end;i++){
+        const at=source.indices[i]*6,v=source.vertices;
+        x=Math.max(x,Math.abs(v[at]));y=Math.max(y,Math.abs(v[at+1]));z=Math.max(z,Math.abs(v[at+2]));
+      }
+      bound=[x,y,z];bounds.set(name,bound);return bound;
+    }
+    function select(meshes,eye,axes,h,v,radii,warming){
+      const fw=axes.forward,right=axes.right,up=axes.up;
+      const pad=.002+.000002*(1+Math.abs(eye[0])+Math.abs(eye[1])+Math.abs(eye[2]));
+      let count=0,rejected=0;
+      for(const mesh of meshes){
+        // Water, grass and foliage can leave the rigid bounds in the vertex program.
+        const m=mesh.mat||0,b=halfExtents(mesh.shape||'box'),p=mesh.p,scale=mesh.s;
+        let outside=false;
+        if(!warming&&b&&p&&scale&&!mesh.groundCover&&!mesh.windResponsive&&!(m>10.5&&m<12.5)&&!(m>26.5&&m<27.5)){
+          const sx=b[0]*scale[0],sy=b[1]*scale[1],sz=b[2]*scale[2];
+          const dx=p[0]-eye[0],dy=p[1]-eye[1],dz=p[2]-eye[2],depth=dx*fw[0]+dy*fw[1]+dz*fw[2];
+          const radius=Math.sqrt(sx*sx+sy*sy+sz*sz)*1.00001+pad;
+          // The overlay can have a near plane as close as 5 mm. Only the side planes are needed.
+          outside=Math.abs(dx*right[0]+dy*right[1]+dz*right[2])>depth*h+radius*radii.horizontal||
+                  Math.abs(dx*up[0]+dy*up[1]+dz*up[2])>depth*v+radius*radii.vertical;
+        }
+        if(outside)hidden[rejected++]=mesh;
+        else shown[count++]=mesh;
+      }
+      shown.length=count;hidden.length=rejected;
+      return shown;
+    }
+    return {select,hidden,invalidate:name=>bounds.delete(name)};
   }
 
   // Reuse only bit-identical primitive vertices. Keep expanded vertex storage,
@@ -3052,6 +3105,8 @@
     let photoUniforms=null,photoSampler=null,photoDepth=null,photoTile=null,photoFar=null,photoFarRequest=null,photoSplit=false,photoOverlay=null;
     let photoSunRange=1,photoSunTexel=1,photoTileExtent=3.5;
     const photoTileMatrix=new Float32Array(16),photoFarMatrix=new Float32Array(16),photoMatrix=new Float32Array(16),photoProjection=new Float32Array(16);
+    const overlayView=options.cullRigidOverlay?rigidOverlayView(source):null;
+    const packSplitOverlay=photo&&overlayView?splitPacker():null;
     const packSplit=photo?splitPacker():null,nearOrdinary=[],photoWarmTile={centre:[0,0,0],etendue:3.5,debut:0,fin:0};
     const photoState={contacts:0,tuile:false,loin:false,penombre:'off',loinTaille:0};
     // Textures que photoBind a liées aux unités 8, 9 et 10 pour l'image en cours (reprises après fx.foule.couleur).
@@ -3263,9 +3318,7 @@
       }else if(kind==='sky')source=source.replace('fragColor=vec4(color*mix(.76,1.,vignette),0.);','fragColor=vec4(uCompose<.5?applyScreen(color,gl_FragCoord.xy/uScreenSize):color,0.);');
       else if(kind==='fsky')source=source.replace('fragColor=vec4(col,mix(1.,mask,uFskyPost.z));','fragColor=vec4(uCompose<.5?applyScreen(col,gl_FragCoord.xy/uScreenSize):col,mix(1.,mask,uFskyPost.z));');
       else if(kind==='fx')source=source.replace('fragColor=vec4(color,alpha);','fragColor=vec4(uCompose<.5?applyScreen(color,gl_FragCoord.xy/uScreenSize):color,alpha);');
-      else if(kind==='post')source=source.replace('vec3 c=texture(uScene,uv).rgb;','vec4 scene=texture(uScene,uv);vec3 c=scene.rgb;')
-        .replace('return c*smoothstep(.56,.86,max(max(c.r,c.g),c.b));','return c*smoothstep(.56,.86,max(max(c.r,c.g),c.b));')
-        .replace('void main(){','void main(){if(uPass==3){fragColor=vec4(applyScreen(texture(uScene,vUV).rgb,vUV),1.);return;}')
+      else if(kind==='post')source=source.replace('void main(){','void main(){if(uPass==3){fragColor=vec4(applyScreen(texture(uScene,vUV).rgb,vUV),1.);return;}')
         .replace('fragColor=vec4(c,1.);','fragColor=vec4(uPass==2?applyScreen(c,vUV):c,1.);');
       return source;
     }
@@ -3315,7 +3368,7 @@
         const linked=linkAll(pairs);fskyProgram=advanced?linked.shift():null;
         [ssrProgram,program,depthProgram,postProgram,skyProgram,fxProgram]=linked;
       }catch(error){fskyProgram=null;throw error;}
-      ssrUniforms={};for(const name of ['uColor','uDepth','uProjection','uPixel'])ssrUniforms[name]=gl.getUniformLocation(ssrProgram,name);
+      ssrUniforms={};for(const name of ['uColor','uDepth','uReceiverTiles','uReceiverMask','uProjection','uPixel'])ssrUniforms[name]=gl.getUniformLocation(ssrProgram,name);
       uniforms={};for(const name of ['uViewProjection','uWindTime','uWindStrength','uGroundCoverEye','uGroundCoverDensity','uGroundCoverRange','uLocalWindCount','uLocalWindPosition','uLocalWindMotion','uSeaOrigin','uSeaMotion','uEye','uForward','uLightPosition','uLightColor','uLightRange','uLightDirection','uLightCone','uWeather','uCloudOffset','uPbrAlbedo','uPbrNormal','uPbrRough','uPbrReady','uLightCount','uResolution','uEffects','uShadowMap','uShadowMatrix','uShadowSettings','uTorchPosition','uSunDirection','uSunColor','uAmbient','uFogColor','uSkyTop','uSkyBottom','uEnvironment','uNightHour','uPhoto','uOverlayMode','uSeaMode','uSceneProbe','uProbeReady','uProbeOrigin']) uniforms[name]=gl.getUniformLocation(program,name);
       postUniforms={};for(const name of ['uScene','uBloom','uReflection','uReflections','uTexel','uPass'])postUniforms[name]=gl.getUniformLocation(postProgram,name);
       skyUniforms={};for(const name of ['uSkyRight','uSkyUp','uSkyForward','uSkyTop','uSkyBottom','uSkyFog','uSunDirection','uSunColor','uSkyFov','uSkyMotion','uWeather','uCloudOffset','uSkyNight'])skyUniforms[name]=gl.getUniformLocation(skyProgram,name);
@@ -3648,7 +3701,7 @@
       const restored=primitiveIndex.restore(name), start=source.indices[range.offset/INDEX_OCTETS]*6;
       if(restored&&!stats.contextLost){gl.bindVertexArray(vao);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);}
       groundIndex.invalidate(name,restored,stats.contextLost?null:uploadShapeIndices);
-      source.vertices.set(vertices,start);
+      source.vertices.set(vertices,start);overlayView?.invalidate(name);
       if(!stats.contextLost){gl.bindBuffer(gl.ARRAY_BUFFER,vbo);gl.bufferSubData(gl.ARRAY_BUFFER,start*4,vertices);}
     }
     function uploadShapeIndices(offset,indices){
@@ -3728,7 +3781,7 @@
       }
     }
     // FERRO 0.3.11 (ombresPhoto) : part 1, les instances de chaque groupe hors de la tuile ; part 2, celles de la tuile.
-    function renderPart(batch,buffer,part){
+    function renderPart(batch,buffer,part,colour=false){
       if(!batch.groups.length)return;
       gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
       for(const group of batch.groups){
@@ -3737,7 +3790,7 @@
         for(let i=2;i<6;i++)gl.vertexAttribPointer(i,4,gl.FLOAT,false,64,start+(i-2)*16);
         const shape=source.ranges[group.name];
         gl.drawElementsInstanced(gl.TRIANGLES,shape.count,gl.UNSIGNED_INT,shape.offset,count);
-        stats.drawCalls++;stats.triangles+=shape.count/3*count;
+        stats.drawCalls++;stats.triangles+=shape.count/3*count;if(colour)stats.instances+=count;
       }
     }
     // Flux d'instances de chaque image (objets, effets, habitacle) : chaque envoi re-spécifie le stockage à sa taille
@@ -3902,12 +3955,14 @@
       gl.uniform2f(skyUniforms.uSkyFov,(probeSize?1:canvas.width/canvas.height)/f,1/f);gl.uniform4fv(skyUniforms.uWeather,sky.values);gl.uniform2f(skyUniforms.uSkyMotion,time,sky.wind);gl.uniform2fv(skyUniforms.uCloudOffset,cloudOffset);gl.drawArrays(gl.TRIANGLES,0,3);
       stats.drawCalls++;gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);
     }
-    function reflectionsPass(){
+    function reflectionsPass(useMask){
       gl.disable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);gl.bindVertexArray(postVao);gl.useProgram(ssrProgram);gl.bindFramebuffer(gl.FRAMEBUFFER,post.reflection.framebuffer);gl.viewport(0,0,post.reflection.width,post.reflection.height);
       gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,post.reflectSource.texture);gl.uniform1i(ssrUniforms.uColor,0);gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,post.reflectSource.depthTexture);gl.uniform1i(ssrUniforms.uDepth,1);
+      gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,useMask?post.a.texture:whiteTexture);
+      gl.uniform1i(ssrUniforms.uReceiverTiles,2);gl.uniform1i(ssrUniforms.uReceiverMask,useMask?1:0);
       gl.uniform4f(ssrUniforms.uProjection,1/projection[0],1/projection[5],projection[10],projection[14]);gl.uniform2f(ssrUniforms.uPixel,1/canvas.width,1/canvas.height);gl.drawArrays(gl.TRIANGLES,0,3);stats.drawCalls++;
     }
-    function postPass(sceneTexture){
+    function postPass(sceneTexture,hasOverlay){
       gl.disable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);gl.bindVertexArray(postVao);gl.useProgram(postProgram);bindScreen(postProgram);
       gl.uniform1i(postUniforms.uScene,0);gl.uniform1i(postUniforms.uBloom,1);gl.uniform1i(postUniforms.uReflection,3);gl.uniform1i(postUniforms.uReflections,stats.reflections?1:0);gl.activeTexture(gl.TEXTURE3);gl.bindTexture(gl.TEXTURE_2D,post.reflection?.texture||whiteTexture);
       if(composeScreen&&!stats.bloom){
@@ -3918,6 +3973,11 @@
       gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,post.b.texture);
       gl.bindFramebuffer(gl.FRAMEBUFFER,post.a.framebuffer);gl.viewport(0,0,post.a.width,post.a.height);
       gl.uniform1i(postUniforms.uPass,0);gl.uniform2f(postUniforms.uTexel,1/canvas.width,1/canvas.height);gl.drawArrays(gl.TRIANGLES,0,3);
+      if(stats.reflections){
+        reflectionsPass(hasOverlay&&canvas.width%4===0&&canvas.height%4===0);
+        gl.useProgram(postProgram);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,sceneTexture);
+        gl.activeTexture(gl.TEXTURE1);gl.viewport(0,0,post.b.width,post.b.height);
+      }
       gl.bindFramebuffer(gl.FRAMEBUFFER,post.b.framebuffer);gl.bindTexture(gl.TEXTURE_2D,post.a.texture);
       gl.uniform1i(postUniforms.uPass,1);gl.uniform2f(postUniforms.uTexel,1/post.a.width,1/post.a.height);gl.drawArrays(gl.TRIANGLES,0,3);
       gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,canvas.width,canvas.height);gl.bindTexture(gl.TEXTURE_2D,post.b.texture);
@@ -4049,6 +4109,8 @@
       // Préchauffage : quelques pièces témoins garantissent chaque passe (objets, effets translucides, habitacle).
       if(warm)for(const mesh of warm.extra)(mesh.overlay?(mesh.fx?overlayParticles:overlay):mesh.fx?particles:ordinary).push(mesh);
       // FERRO 0.3.11 (ombresPhoto) : sans l'option, tuile est null et rien ne change.
+      const colourOverlay=overlayView?overlayView.select(overlay,eye,axes,horizontal,vertical,colourRadii,warm):overlay;
+      stats.overlayCulled=overlay.length-colourOverlay.length;
       const tuile=photo?photoTuile(fx,dynamic,camera):null;photoSplit=!!tuile;photoOverlay=null;
       const dynamicBatch=tuile?packSplit(ordinary,nearOrdinary,environment):packDynamic(ordinary,environment,true);
       const torchPosition=eye.map((v,i)=>v+right[i]*.16-up[i]*.08);
@@ -4077,11 +4139,11 @@
         if(!sunOnly)shadowLights.forEach((light,i)=>{const fw=light.dir,axes=fw?{forward:fw,right:[-fw[2],0,fw[0]],up:[0,1,0]}:null;shadowPass(light,dynamicBatch,i,axes,t);});
         if(environment)sunShadowPass(eye,axes,dynamicBatch,t,camera,fx,crowd);
         if(!sunOnly&&fx.torch!==false)shadowPass({p:torchPosition},dynamicBatch,2,axes,t);
-        if(tuile)photoTilePass(tuile,dynamicBatch,overlay,t);
+        if(tuile)photoTilePass(tuile,dynamicBatch,colourOverlay,t);
       }
       prof?.end();
       stats.reflections=reflectionMode==='off'&&!!(stats.bloom&&post.reflectSource&&post.reflection&&fx.reflections!==false&&fx.reflections!=='off');stats.reflectionSteps=stats.reflections?96:0;
-      const avecOverlay=overlay.length>0||overlayParticles.length>0;
+      const avecOverlay=colourOverlay.length>0||overlayParticles.length>0;
       // Sans habitacle superposé, la couleur finale et l'entrée du SSR historique sont la même image.
       // Avec habitacle, conserver séparément le monde et sa profondeur avant le clear de l'overlay.
       const refletDirect=stats.reflections&&!avecOverlay;
@@ -4171,7 +4233,13 @@
         let overlayClip=vp;
         if(overlayNear!==near){overlayProjection.set(projection);overlayProjection[10]=(far+overlayNear)/(overlayNear-far);overlayProjection[14]=2*far*overlayNear/(overlayNear-far);multiply(overlayProjection,view,overlayVP);overlayClip=overlayVP;gl.uniformMatrix4fv(uniforms.uViewProjection,false,overlayClip);}
         if(blackout){for(let i=0;i<selected.length;i++){const light=selected[i].light,c=light.color||WHITE,power=light.power===undefined?1:light.power;lightColors[i*3]=c[0]*power;lightColors[i*3+1]=c[1]*power;lightColors[i*3+2]=c[2]*power;}gl.uniform3fv(uniforms.uLightColor,lightColors);}
-        gl.clear(gl.DEPTH_BUFFER_BIT);if(overlay.length){const cockpit=photoOverlay||packOverlay(overlay,environment,true);if(cockpit!==photoOverlay)streamUpload(overlayStream,cockpit);renderBatch(cockpit,overlayBuffer,false);}
+        gl.clear(gl.DEPTH_BUFFER_BIT);
+        if(colourOverlay.length){
+          const cockpit=photoOverlay||packOverlay(colourOverlay,environment,true);
+          if(!photoOverlay)streamUpload(overlayStream,cockpit);
+          if(cockpit.nearTotal)renderPart(cockpit,overlayBuffer,1,true);
+          else renderBatch(cockpit,overlayBuffer,false);
+        }
         if(overlayParticles.length)renderEffects(overlayParticles,eye,t,overlayClip);
         if(overlayClip!==vp)gl.uniformMatrix4fv(uniforms.uViewProjection,false,vp);
       }
@@ -4184,8 +4252,7 @@
         gl.bindFramebuffer(gl.FRAMEBUFFER,null);
       }
       prof?.begin('post');
-      if(stats.reflections)reflectionsPass();
-      if(stats.bloom||composeScreen)postPass(couleurFinale.texture);
+      if(stats.bloom||composeScreen)postPass(couleurFinale.texture,avecOverlay);
       else if(presenterEcran){
         // FScene a composé sa couleur dans post.scene. Elle arrive telle quelle sur le canvas.
         gl.bindFramebuffer(gl.READ_FRAMEBUFFER,cibleFinale);gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,null);
@@ -4289,7 +4356,11 @@
       const e=Number.isFinite(tuile.etendue)&&tuile.etendue>.5?tuile.etendue:3.5;photoTileExtent=e;
       const axe=tuile.axe&&Number.isFinite(tuile.axe[0])&&Number.isFinite(tuile.axe[1])&&Number.isFinite(tuile.axe[2])?tuile.axe:null;
       photoSunMatrix(photoTileMatrix,tuile.centre,e,photoTile.size,8,.5,16,axe,!axe);
-      if(overlayList.length){photoOverlay=packOverlay(overlayList,environment,true);streamUpload(overlayStream,photoOverlay);}
+      if(overlayView?.hidden.length){
+        // One upload: visible instances first within each shape. The complete batch casts its shadow.
+        photoOverlay=packSplitOverlay(overlayList,overlayView.hidden,environment);
+      }else if(overlayList.length)photoOverlay=packOverlay(overlayList,environment,true);
+      if(photoOverlay)streamUpload(overlayStream,photoOverlay);
       gl.bindFramebuffer(gl.FRAMEBUFFER,photoTile.framebuffer);gl.viewport(0,0,photoTile.size,photoTile.size);gl.clear(gl.DEPTH_BUFFER_BIT);
       gl.useProgram(depthProgram);gl.bindVertexArray(vao);gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.enable(gl.POLYGON_OFFSET_FILL);gl.polygonOffset(1.1,2);
       // Faces arrière seules : les pièces de la voiture sont des solides fermés ; la profondeur gardée est celle de leur
@@ -4622,7 +4693,7 @@
   }
   // Both GPU backends share the procedural shapes, instance layout and visibility
   // rules. No rendering calls or GPU state are shared between the APIs.
-  const shared={bitumeWeather,localWindState,vegetationFrame,groundCoverRank,groundCoverGeometry,groundCoverPlan,prepareGroundCover,lotViewState,terrainViewState,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,setFrustumRadii,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,lotDetailDistance,materialFamily,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
+  const shared={bitumeWeather,localWindState,vegetationFrame,groundCoverRank,groundCoverGeometry,groundCoverPlan,prepareGroundCover,lotViewState,terrainViewState,rigidOverlayView,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,setFrustumRadii,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,lotDetailDistance,materialFamily,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
   function mesh(shape,p,s,mat,r=[0,0,0],emissive=0){
     return {shape,p,s,mat,r,emissive,color:undefined,surface:undefined,overlay:false,fx:false,
       alpha:undefined,opacity:1,additive:undefined,outdoor:undefined,actorPart:undefined,actorLod:0,

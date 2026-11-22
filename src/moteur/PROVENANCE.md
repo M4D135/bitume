@@ -104,3 +104,7 @@ Le verrou de BITUME provient de [FERRO 0.3.21](https://github.com/M4D135/FERRO/c
 ## FERRO 0.3.22 — 22 novembre 2026
 
 Les 34 modules et leur verrou ont été installés depuis le dépôt canonique. Cet apport couvre l’index du terrain, le cache WebGL2 des lots instanciés et la gestion des images multisample. [FERRO 0.3.22](https://github.com/M4D135/FERRO/commit/aae3fa19cf1c7fe0f8cb65dbd2e3c2e4ecba7a39)
+
+## FERRO 0.3.23 — 22 novembre 2026
+
+Les 34 modules et leur verrou viennent de l’installateur canonique. Les shaders WebGPU des reflets et du halo sont générés à partir des sources GLSL du moteur. [Commit FERRO](https://github.com/M4D135/FERRO/commit/0db8e73f2f0c66db85c4cc18198bcfba68310190)
