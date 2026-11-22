@@ -51,6 +51,7 @@ node --test verifications/larche-vinadio-sources.test.mjs
 | `sources/osm-ss21-corridor.json` | Instantané Overpass OSM de la SS21, des lieux-dits et du lac (`© OpenStreetMap contributors`, **ODbL 1.0**) |
 | `sources/piemonte-dtm5-samples.json` | Échantillons LiDAR natifs 5 m sur les `1 051` nœuds + coupes `±15 m / ±40 m` + grille vallée `100 m` (`260 × 180`), issus de 10 bandes WCS `EPSG:32632` (**Regione Piemonte — ICE 2009–2011 DTM 5, CC BY 4.0**) |
 | `sources/piemonte-dtm5-metadata.xml` & `piemonte-dtm5-describecoverage.xml` | Fiche GeoNetwork `r_piemon:224de2ac-023e-441c-9ae0-ea493b217a8e` (19/02/2026) et `DescribeCoverage` WCS 1.0.0 |
+| `sources/worldcover-2021.json` | Occupation du sol ESA à 200 m sur l’emprise du MNT. Trois fractions U8 par cellule, grille de 130 × 90, attribution et licence incluses. |
 | `sources/ign-rge-alti-frontiere.json` | 25 sondages frontaliers IGN RGE ALTI (**IGN — Licence Ouverte 2.0**) |
 | `manifest.json` | Provenance complète, empreintes SHA-256 des sources figées et des 10 bandes WCS brutes, CRS et extrémités |
 | `inconnus.json` | Registre explicite des mesures absentes (`width`, dévers, radiers de tunnels, tabliers de ponts, ancienneté LiDAR 2009–2011) |
@@ -58,3 +59,11 @@ node --test verifications/larche-vinadio-sources.test.mjs
 | `plan-et-profil.svg` | Carte 2D UTM 32N et profil altimétrique de contrôle |
 
 ![Plan 2D UTM 32N et profil en long Col de Larche -> Vinadio](plan-et-profil.svg)
+
+## Couverture des versants lointains
+
+Zanaga et al. (2022), *ESA WorldCover 10 m 2021 v200*. © ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium. [Jeu de données](https://doi.org/10.5281/zenodo.7254221) · [Données et attribution](https://esa-worldcover.org/en/data-access) · [Licence CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+
+L’archive locale contient des moyennes de surface arrondies sur 255. Les classes 10, 30 et 60 décrivent respectivement les arbres, les prairies et les sols nus ou à végétation clairsemée. Les huit autres classes conservent leur part dans chaque cellule et reçoivent une couleur neutre. L’acquisition 2021 décrit l’occupation du sol. Les teintes d’été et d’hiver sont des choix de rendu. [Tuile catégorielle N42E006](https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N42E006_Map.tif)
+
+Depuis la racine du dépôt, `python3 tools/generer-larche-runtime.py` reproduit le module du jeu hors ligne à partir des archives. Le générateur filtre les proportions dans les deux axes avant leur interpolation aux sommets du MNT. Pour refaire aussi les mesures depuis la tuile originale, employer Python 3.11 ou ultérieur avec rasterio et NumPy puis exécuter `python3 tools/echantillonner-larche-worldcover.py <tuile.tif>`. L’outil vérifie le SHA-256 du GeoTIFF et agrège les indicatrices de classes par moyenne de surface en EPSG:32632. Le jeu lit les valeurs embarquées.

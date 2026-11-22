@@ -73,3 +73,37 @@ test('les bordures peintes utilisent le béton en détail enrichi et gardent le 
     assert(convertis>0,def.id);
   }
 });
+
+test('les proportions WorldCover utilisent la grille du MNT et changent uniquement le pigment du panorama', () => {
+  const d = B.larcheData.reliefVallee, c = d.couverture;
+  const src = JSON.parse(readFileSync(new URL('../docs/references/larche-vinadio-2026/sources/worldcover-2021.json', import.meta.url)));
+  assert.deepEqual(src.classes, [10,30,60]);
+  assert.deepEqual([c.nx*c.pas,c.nz*c.pas],[d.nx*d.pas,d.nz*d.pas]);
+  for (const axe of ['x0','z0']) assert.ok(Math.abs((c[axe]-c.pas/2)-(d[axe]-d.pas/2)) < .001);
+  const fractions = Buffer.from(c.fractionsU8,'base64');
+  assert.equal(fractions.length, 3*c.nx*c.nz);
+  const moyenne = [0,0,0], brute = Buffer.from(src.fractionsU8,'base64');
+  for (let k=0; k<fractions.length; k+=3) {
+    assert.ok(fractions[k]+fractions[k+1]+fractions[k+2] <= 257);
+    for (let j=0; j<3; j++) moyenne[j] += fractions[k+j]-brute[k+j];
+  }
+  for (const delta of moyenne) assert.ok(Math.abs(delta)/(c.nx*c.nz*255) < .001);
+  // Même petite grille de géométrie, deux classes extrêmes et deux saisons.
+  const grid = {...d, x0:0, z0:0, pas:100, nx:15, nz:15,
+    metresI16LE:Buffer.alloc(15*15*2).toString('base64')};
+  function echantillon(classe, neige) {
+    const valeurs = Buffer.alloc(12);
+    for (let i=classe;i<valeurs.length;i+=3) valeurs[i]=255;
+    const couverture={x0:0,z0:0,pas:800,nx:2,nz:2,fractionsU8:valeurs.toString('base64')};
+    return B.larcheRelief.construire({...grid,couverture},new Map(),256,32,{neige})[0];
+  }
+  const foret=echantillon(0,false), mineral=echantillon(2,false), hiver=echantillon(0,true);
+  assert.deepEqual(foret.indices,mineral.indices);
+  assert.deepEqual(foret.indices,hiver.indices);
+  for (let k=0;k<foret.sommets.length;k+=13) {
+    assert.deepEqual(foret.sommets.subarray(k,k+10),mineral.sommets.subarray(k,k+10));
+    assert.deepEqual(foret.sommets.subarray(k,k+10),hiver.sommets.subarray(k,k+10));
+    assert.ok(foret.sommets[k+10]<mineral.sommets[k+10] && foret.sommets[k+11]>foret.sommets[k+10]);
+    assert.ok(hiver.sommets[k+10]>foret.sommets[k+10]);
+  }
+});

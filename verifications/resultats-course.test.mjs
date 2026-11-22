@@ -12,7 +12,10 @@ function afficher({ mode = 'course', fini = false, abandon = false, termine = tr
   const course = { c: { ouvert: true }, mode, termine, joueur: pilote, voitures: [pilote], classement: [0], toursTotal: 1, difficulte: 1 };
   const noeuds = { 'res-sous': {}, 'res-titre': {}, 'res-lignes': {} };
   const contexte = { S: { i: 0, course }, final, CATALOGUE: [{ id: 'larche', nom: 'Larche' }], records: {},
-    $: id => noeuds[id], document: { querySelector: () => ({}) }, boutonsResultats() {}, aller() {}, finirClassement() {} };
+    $: id => noeuds[id], document: { querySelector(selecteur) {
+      assert.equal(selecteur, '#resultats .tableau-resultats thead tr', 'le tableau du championnat conserve ses trois colonnes');
+      return {};
+    } }, boutonsResultats() {}, aller() {}, finirClassement() {} };
   runInNewContext(chrono + '\n' + resultat + '\nmontrerResultats(S, final);', contexte);
   return [noeuds['res-titre'].textContent, noeuds['res-sous'].textContent, noeuds['res-lignes'].innerHTML];
 }

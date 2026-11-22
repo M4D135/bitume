@@ -1977,7 +1977,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       else obstacles.push(Object.assign(commun, { type: 'box', angle: -(o.r ? o.r[1] : 0), hx: o.s[0]/2, hz: o.s[2]/2 }));
     }
     const lotsDessin = casesArbres ? lotsImage(lots, casesArbres, objetsArbres) : lots;
-    const atmosphereBase = Object.assign({ outdoorZones: [{ x: 0, z: 0, w: 1e7, d: 1e7 }] }, th.atmosphere, estMarseille ? { fogDensity: .00046 } : null);
+    const atmosphereBase = Object.assign({ outdoorZones: [{ x: 0, z: 0, w: 1e7, d: 1e7 }] }, th.atmosphere, estMarseille ? { fogDensity: .00046 } : c.id === 'larche' ? { fogDensity: .00022 } : null);
     const atmosphere = saison ? B.saisons.atmosphere(saison, atmosphereBase) : atmosphereBase;
     // enceinte : portion de la ligne droite bordée de tribunes et de stands (abscisses comptées depuis la ligne) ; une
     // caméra de bord de piste s'y place devant eux, pas derrière la glissière où elle serait dans les gradins.

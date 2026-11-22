@@ -4396,7 +4396,7 @@
   function montrerResultats(S, classementFinal = false) {
     S.resultats = true;
     const co = S.course;
-    const j = co.joueur, corps = $('res-lignes'), entete = document.querySelector('.tableau-resultats thead tr');
+    const j = co.joueur, corps = $('res-lignes'), entete = document.querySelector('#resultats .tableau-resultats thead tr');
     const nomCircuit = CATALOGUE[S.i].nom;
     if (co.mode === 'chrono') {
       const speciale = co.c.ouvert && j.fini;

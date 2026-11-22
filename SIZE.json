@@ -1,8 +1,8 @@
 {
-  "version": "0.2.104",
-  "raw": 15163793,
-  "gzip": 3691257,
-  "sha256": "d9067cb3a0d4205afa39ad40e93f9de8f5b1fa72f9489d72aa730a2168cb8318",
+  "version": "0.2.105",
+  "raw": 15212482,
+  "gzip": 3722265,
+  "sha256": "1869573dfd1cce8e3c9bf4a9e7d7bb33127994ee42f8db3ad6095722a2e814c4",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 315148,
@@ -14,9 +14,9 @@
     "couverts.js": 12871,
     "route-des-cimes.js": 24290,
     "route-des-cimes-decor.js": 9831,
-    "larche-vinadio-data.js": 159301,
+    "larche-vinadio-data.js": 206385,
     "larche-vinadio.js": 13285,
-    "larche-relief.js": 6257,
+    "larche-relief.js": 7806,
     "larche-vinadio-decor.js": 46039,
     "marseille.js": 14511,
     "marseille-decor.js": 50206,
@@ -41,7 +41,7 @@
     "baikal.js": 7810,
     "batiments.js": 14306,
     "lieux.js": 53993,
-    "decor.js": 150038,
+    "decor.js": 150083,
     "solides-physx.js": 8906,
     "physique.js": 25355,
     "faune.js": 30594,
@@ -90,7 +90,7 @@
     "vibrations.js": 9461,
     "ombres.js": 12015,
     "visites.js": 6566,
-    "jeu.js": 394852,
+    "jeu.js": 394863,
     "index.html": 71680,
     "style.css": 101810
   }

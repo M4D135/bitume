@@ -21,6 +21,31 @@ DST = ROOT / 'src' / 'larche-vinadio-data.js'
 ALT_BASE = 880.0
 
 
+def couverture_versants(origin_e, origin_n):
+    """Filtrer les trois proportions séparément, sans masquer les classes minoritaires."""
+    grille = json.loads((SRC.parent / 'sources/worldcover-2021.json').read_text())
+    nx, nz, pas = grille['nx'], grille['nz'], grille['pas']
+    # Le renderer prend une couleur par triangle de 128 m. Un filtre binomial
+    # de rayon 4 cellules réduit les marches de teinte sans modifier le MNT.
+    poids = (1, 8, 28, 56, 70, 56, 28, 8, 1)
+    donnees = base64.b64decode(grille['fractionsU8'], validate=True)
+    if grille['crs'] != 'EPSG:32632' or grille['classes'] != [10, 30, 60] or len(donnees) != nx*nz*3:
+        raise ValueError('Grille de couverture de Larche incompatible')
+    for dx, dz in ((1, 0), (0, 1)):
+        sortie = bytearray(len(donnees))
+        for z in range(nz):
+            for x in range(nx):
+                indices = [3*(min(nz-1, max(0, z+dz*i))*nx+min(nx-1, max(0, x+dx*i))) for i in range(-4, 5)]
+                for canal in range(3):
+                    sortie[3*(z*nx+x)+canal] = (sum(w*donnees[k+canal] for w,k in zip(poids, indices))+128)//256
+        donnees = sortie
+    return {'pas': pas, 'nx': nx, 'nz': nz,
+            'x0': round(grille['originE']+pas/2-origin_e, 3),
+            'z0': round(origin_n-grille['originN']+pas/2, 3),
+            'attribution': grille['attribution'], 'licence': grille['licence'],
+            'fractionsU8': base64.b64encode(donnees).decode('ascii')}
+
+
 def main():
     tr = json.loads(SRC.read_text(encoding='utf-8'))
     pts = tr['points']
@@ -128,6 +153,7 @@ def main():
         'pas': pas, 'nx': grille['width'], 'nz': grille['height'],
         'x0': round(grille['originE'] + pas / 2 - origin_e, 3),
         'z0': round(origin_n - grille['originN'] + pas / 2, 3),
+        'couverture': couverture_versants(origin_e, origin_n),
         'metresI16LE': base64.b64encode(struct.pack(f'<{len(hauteurs)}h', *hauteurs)).decode('ascii'),
     }
 

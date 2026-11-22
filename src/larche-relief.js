@@ -21,9 +21,31 @@
     };
   }
 
+  function paletteVersants(d, hiver) {
+    if (!d) return () => hiver ? [.66,.6864,.693] : [.36,.3744,.378];
+    const donnees = Uint8Array.from(atob(d.fractionsU8), c => c.charCodeAt(0));
+    // Forêt, prairie, sol nu/peu végétalisé et fond des autres classes.
+    const palette = hiver ? [[.37,.405,.395],[.62,.65,.66],[.52,.535,.54],[.53,.56,.56]]
+      : [[.042,.080,.058],[.207,.235,.133],[.335,.310,.284],[.201,.209,.174]];
+    return function couleur(x, z) {
+      const fx = Math.max(0, Math.min(d.nx-1, (x-d.x0)/d.pas));
+      const fz = Math.max(0, Math.min(d.nz-1, (z-d.z0)/d.pas));
+      const ix = Math.min(d.nx-2, Math.floor(fx)), iz = Math.min(d.nz-2, Math.floor(fz));
+      const u = fx-ix, v = fz-iz, k = 3*(iz*d.nx+ix), ligne = 3*d.nx;
+      const rgb = palette[3].slice();
+      for (let c=0; c<3; c++) {
+        const p = ((1-v)*((1-u)*donnees[k+c]+u*donnees[k+3+c]) +
+          v*((1-u)*donnees[k+ligne+c]+u*donnees[k+ligne+3+c]))/255;
+        for (let j=0; j<3; j++) rgb[j] += p*(palette[c][j]-palette[3][j]);
+      }
+      return rgb;
+    };
+  }
+
   function construire(d, proches, cote, pas, saison) {
     const altitude = lireGrille(d), groupes = new Map(), sommetsBord = new Map();
     const nx = Math.round(cote / pas) + 1;
+    const couleur = paletteVersants(d.couverture, !!saison?.neige);
     // Le même sommet que le terrain proche ferme chaque jonction, à son altitude exacte.
     for (const [cle, v] of proches) {
       const [i, j] = cle.split(',').map(Number);
@@ -39,7 +61,22 @@
     }
     // La grille lointaine et les accotements jouables ont des résolutions et
     // des profils différents. Raccorder le MNT en pente douce au bord réel du jeu.
-    const raccords = new Map(), portee = 650;
+    const raccords = new Map(), voisinages = new Map(), portee = 650;
+    // Tous les sommets et normales dans une cellule consultent les mêmes tuiles
+    // proches. Garder l'ordre du balayage pour reproduire exactement le raccord.
+    function tuilesVoisines(ci, cj) {
+      const cle = ci + ',' + cj;
+      let liste = voisinages.get(cle);
+      if (liste) return liste;
+      liste = [];
+      const rayon = Math.ceil(portee / cote);
+      for (let j = cj-rayon; j <= cj+rayon; j++) for (let i = ci-rayon; i <= ci+rayon; i++) {
+        const v = proches.get(i+','+j);
+        if (v) liste.push({ x: i*cote, z: j*cote, v });
+      }
+      voisinages.set(cle, liste);
+      return liste;
+    }
     function hauteur(x, z) {
       const cle = x + ',' + z;
       if (raccords.has(cle)) return raccords.get(cle);
@@ -47,11 +84,10 @@
       if (!Number.isFinite(brut)) return brut;
       const ci = Math.floor(x/cote), cj = Math.floor(z/cote);
       let distance = portee, somme = 0, poids = 0;
-      for (let j = cj-3; j <= cj+3; j++) for (let i = ci-3; i <= ci+3; i++) {
-        const v = proches.get(i+','+j);
-        if (!v) continue;
-        const u = Math.max(0, Math.min(cote, x-i*cote)), w = Math.max(0, Math.min(cote, z-j*cote));
-        const dis = Math.hypot(i*cote+u-x, j*cote+w-z);
+      for (const tuile of tuilesVoisines(ci, cj)) {
+        const v = tuile.v;
+        const u = Math.max(0, Math.min(cote, x-tuile.x)), w = Math.max(0, Math.min(cote, z-tuile.z));
+        const dis = Math.hypot(tuile.x+u-x, tuile.z+w-z);
         if (dis >= portee) continue;
         const a = Math.min(nx-2, Math.floor(u/pas)), b = Math.min(nx-2, Math.floor(w/pas));
         const fx = u/pas-a, fz = w/pas-b, k = (b*nx+a)*13+1, ligne = nx*13;
@@ -80,10 +116,8 @@
       const normaleX = bord ? bord[3] : dx/norme;
       const normaleY = bord ? bord[4] : 2*p/norme;
       const normaleZ = bord ? bord[5] : dz/norme;
-      // FERRO interpole la normale mais applique une teinte plate par triangle.
-      // Une base minérale commune laisse la lumière dessiner les versants en continu.
-      const ton = saison?.neige ? .66 : .36;
-      g.s.push(x,h,z,normaleX,normaleY,normaleZ,0,0,0,23,ton,ton*1.04,ton*1.05);
+      const rgb = couleur(x, z);
+      g.s.push(x,h,z,normaleX,normaleY,normaleZ,0,0,0,23,rgb[0],rgb[1],rgb[2]);
       return id;
     }
     const iFin = Math.floor((d.x0 + (d.nx-1)*d.pas)/cote);
