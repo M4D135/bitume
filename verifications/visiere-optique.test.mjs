@@ -235,6 +235,17 @@ verifier('le flux commun calme aussi les couches optiques de pluie et neige dos 
     }
   }
 });
+verifier('perles et dépôts mobiles suivent le même flux incident, même si le compteur indique une autre vitesse',()=>{
+  const front=contexte({vitesse:85,vitesseX:0,vitesseY:0,vitesseZ:-80,cameraYaw:0});
+  for(const [c,pression] of [[front,true],[{...front,cameraYaw:Math.PI},false],[{...front,vitesseZ:0},false],
+    [{...front,vitesse:-5},true]]){
+    const e=O.creerEtat();O.avancerEtat(e,1/30,c);
+    const f=e.depots.flux;
+    assert(Math.abs(e.fluxUniformes[0]-f.expansion)<1e-6,'même divergence pour les motifs et les dépôts');
+    assert(Math.abs(e.fluxUniformes[1]-f.deriveX)<1e-6 && Math.abs(e.fluxUniformes[2]-f.deriveY)<1e-6);
+    assert.equal(e.uniformes[7]>.1,pression,'l’étirement suit la face exposée');
+  }
+});
 verifier('changements de flux : positions continues, histoire conservée et projection cohérente',()=>{
   const e=O.creerEtat(),c=contexte({largeur:1280,hauteur:720,vitesseX:0,vitesseY:0,vitesseZ:-80,cameraYaw:0});
   avancer(e,c,.8,120);const avant=[...e.transportUniformes],temoin=O.creerEtat();avancer(temoin,c,.8,120);

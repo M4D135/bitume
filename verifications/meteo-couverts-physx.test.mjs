@@ -156,13 +156,15 @@ try {
       const creationTardive = (nom, valeur) => valeur, sousLaVoute = (c, p) => B.couverts.abri(c, p);
       let ecran = 'course'; const retourReglages = 'course';
       ${source.slice(a, b)}
-      return { dessiner: (S, cam, palier = 'high', dt = 1/30) => dessinerMeteo(S, dt, cam, 'cockpit', { palier }),
+      return { reglages, dessiner: (S, cam, palier = 'high', dt = 1/30, vue = 'cockpit') => dessinerMeteo(S, dt, cam, vue, { palier }),
         pluie: (deux = false) => deux ? pluieVue2 : pluieVue, vitre: (deux = false) => deux ? vitreVue2 : vitreVue,
         pause: oui => { ecran = oui ? 'pause' : 'course'; } };
     `)(B, S, toile);
     const dehors = camera(0), portail = camera(t.debut + 3, Math.PI);
     for (let i = 0; i < 90; i++) { S.meteo.t += 1 / 30; executer.dessiner(S, dehors); }
     const vitre = executer.vitre(); assert.ok(vitre.stats.gouttes > 0);
+    assert.equal(S.pluieImage.traits, 0, 'la pluie sur la lentille remplace les traits extérieurs en conduite');
+    assert.equal(S.pluieImage.masquee, true);
     const sequence = vitre.sequence; executer.dessiner(S, portail);
     assert.equal(S.vitreContexte.abri, true);
     assert.ok(executer.pluie().stats.traits > 20, 'le jeu ne coupe plus globalement la pluie depuis le portail');
@@ -179,6 +181,23 @@ try {
     executer.pause(false); executer.dessiner(S, portail);
     for (let i = 0; i < 30 * 30; i++) B.vitre.mettreAJour(vitre, 1 / 30, S.vitreContexte);
     assert.equal(vitre.sequence, sequence); assert.equal(vitre.stats.gouttes, 0, 'séchage résiduel');
+
+    executer.dessiner(S, dehors, 'high', 1/30, 'tele');
+    assert.ok(S.pluieImage.traits > 0); assert.equal(vitre.masquee, true, 'la caméra TV utilise la pluie extérieure');
+    const statsJ2 = JSON.stringify(J2.pluieImage);
+    for (const vitesse of [0, 80]) {
+      v.etat.v = vitesse; executer.dessiner(S, dehors, 'high', 1/30, 'poursuite');
+      assert.equal(S.pluieImage.candidats, 0, 'une seule pluie en poursuite à ' + vitesse + ' m/s');
+      assert.ok(S.pluieImage.masquee && S.pluieImage.propre, 'les traits du plan précédent sont effacés');
+    }
+    assert.equal(JSON.stringify(J2.pluieImage), statsJ2, 'J2 garde sa pluie extérieure sous la galerie');
+    executer.reglages.gouttes = 0; executer.dessiner(S, dehors);
+    assert.ok(S.pluieImage.traits > 0 && vitre.masquee, 'pluie extérieure disponible sans gouttes sur la lentille');
+    executer.reglages.gouttes = 1;
+    B.vitre.liberer(vitre); executer.dessiner(S, dehors);
+    assert.ok(S.pluieImage.traits > 0, 'une toile de lentille indisponible laisse la pluie extérieure visible');
+    S.nature.saison.neige = true; executer.dessiner(S, dehors);
+    assert.equal(S.pluieImage.traits, 0, 'aucun trait liquide pendant une chute de neige');
   });
 } finally {
   rapport.controles = controles; rapport.rayonsNatifs = requetes;

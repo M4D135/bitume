@@ -1,5 +1,11 @@
 # BITUME — reprise courte
 
+## 0.2.91 — Pluie en conduite et chaussée de Larche
+
+Sur Larche–Vinadio, à 29,4 km de l’arrivée, le terrain recouvrait les deux voies. Les mailles sont maintenant dégagées sous les triangles de chaussée et les vibreurs, dévers compris. Les appuis du décor suivent le terrain dessiné. Les 572 pénétrations relevées en 0.2.90 disparaissent sur les 82 040 points sondés de la spéciale. Le contrôle complémentaire de 50 962 triangles routiers donne une garde minimale mesurée de 13,5 cm.
+
+En conduite, la lentille traite les impacts et leur déplacement avec le vent relatif. Les projections extérieures restent disponibles depuis les abris et les caméras TV ou quand les gouttes de lentille sont coupées. Vérifié dans Chrome WebGL2 en poursuite à 29,4 km de l’arrivée, à l’arrêt et en cockpit à 288 km/h. Les essais utilisent une horloge commandée.
+
 ## 0.2.88 livré (22 novembre 2026) — Retours jeu réel, Faune proche & Démos refaites (16 circuits), Menu Arcade, Col de Larche fluide, Hélico TV bas & Arbres réalistes
 
 Livraison complète construite avec délégation lourde sur le Spark local (`spark-local`), vérifiée en Node (21/21 suites vertes + simulation PhysX WASM 12 voitures sur Col de Larche) et par 12 captures réelles Chrome WebGL2 (`1280×720` et `1600×1000`, 0 erreur console, migration `0.2.85 → 0.2.88` validée) :

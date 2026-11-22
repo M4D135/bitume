@@ -266,7 +266,7 @@ function _H(x, z, gr, c) {
     }
   }
 
-  // Bandeau de sécurité large (<= 34 m pour grille G=32 m) : aucun triangle ne peut jamais couper l'asphalte !
+  // Profil de la prairie au voisinage de l’axe, avant le dégagement du maillage triangulé.
   if (absD <= 34) {
     const tBord = _smoothstep(12, 34, absD);
     const hBase = yRoute - 0.55 - tBord * 0.65;
@@ -309,6 +309,90 @@ function lire(c, tab, s) {
   return tab[i0] * (1 - t) + tab[i1] * t;
 }
 
+// Les deux plans des triangles d'une maille, exprimés depuis son coin (0,0).
+// La même diagonale sert au dégagement et aux lectures de sol du décor.
+function hauteurMaille(h00, h10, h01, h11, impaire, premier, u, v) {
+  if (impaire) return premier
+    ? h00 + u * (h10 - h00) + v * (h11 - h10)
+    : h00 + u * (h11 - h01) + v * (h01 - h00);
+  return premier
+    ? h00 + u * (h10 - h00) + v * (h01 - h00)
+    : h11 + (1 - u) * (h01 - h11) + (1 - v) * (h10 - h11);
+}
+
+// Intersection en plan d'un triangle de chaussée avec le demi-plan à gauche de l’arête orientée a → b.
+// L'altitude de chaussée est interpolée sur chaque nouveau sommet du polygone.
+function couperPolygone(points, a, b) {
+  const dx = b.x - a.x, dz = b.z - a.z, sortie = [];
+  let precedent = points[points.length - 1];
+  let avant = dx * (precedent.z - a.z) - dz * (precedent.x - a.x);
+  for (const p of points) {
+    const apres = dx * (p.z - a.z) - dz * (p.x - a.x);
+    if ((avant < 0) !== (apres < 0)) {
+      const t = avant / (avant - apres);
+      sortie.push({ x: lerp(precedent.x, p.x, t), y: lerp(precedent.y, p.y, t), z: lerp(precedent.z, p.z, t) });
+    }
+    if (apres >= 0) sortie.push(p);
+    precedent = p; avant = apres;
+  }
+  return sortie;
+}
+
+function degagerChaussee(c, pas, gr) {
+  const sommets = new Map(), demi = c.largeur / 2;
+  function sommet(i, j) {
+    const cle = i + ',' + j;
+    let v = sommets.get(cle);
+    if (!v) {
+      v = { x: i, z: j, h: _H(i * pas, j * pas, gr, c), retrait: 0 };
+      sommets.set(cle, v);
+    }
+    return v;
+  }
+  function section(i) {
+    const rx = -Math.sin(c.cap[i]), rz = Math.cos(c.cap[i]), sinD = Math.sin(c.devers[i]);
+    return [-demi - 1.2, -demi, -demi + .3, demi - .3, demi, demi + 1.2].map(d => ({
+      x: (c.x[i] + rx * d) / pas, z: (c.z[i] + rz * d) / pas,
+      y: c.y[i] - clamp(d, -demi, demi) * sinD - .015
+    }));
+  }
+  let debut = section(0);
+  for (let k = 1; k < c.n; k++) {
+    const fin = section(k), bords = debut.concat(fin);
+    const xs = bords.map(p => p.x), zs = bords.map(p => p.z);
+    const iMax = Math.floor(Math.max(...xs)), jMax = Math.floor(Math.max(...zs));
+    for (let j = Math.floor(Math.min(...zs)); j <= jMax; j++) {
+      for (let i = Math.floor(Math.min(...xs)); i <= iMax; i++) {
+        const a = sommet(i, j), b = sommet(i + 1, j), d = sommet(i, j + 1), e = sommet(i + 1, j + 1);
+        const impaire = (i + j) & 1;
+        let retrait = 0;
+        for (const premier of [true, false]) {
+          const hauteur = p => hauteurMaille(a.h, b.h, d.h, e.h, impaire, premier, p.x - i, p.z - j);
+          if (!bords.some(p => hauteur(p) - p.y + .12 > 0)) continue;
+          const triangle = impaire ? (premier ? [a, b, e] : [a, e, d]) : (premier ? [a, b, d] : [b, e, d]);
+          // Une différence de deux plans atteint son maximum à l'un des sommets
+          // de leur intersection. Cela conserve aussi les ravins au droit des ponts.
+          for (let l = 0; l < debut.length - 1; l++) {
+            for (let polygone of [[debut[l], debut[l + 1], fin[l + 1]], [debut[l], fin[l + 1], fin[l]]]) {
+              for (let t = 0; t < 3 && polygone.length; t++)
+                polygone = couperPolygone(polygone, triangle[t], triangle[(t + 1) % 3]);
+              for (const p of polygone) retrait = Math.max(retrait, hauteur(p) - p.y + .12);
+            }
+          }
+        }
+        // Un sommet commun prend le retrait maximal de ses mailles et de
+        // toutes les branches d'épingle qui y passent, indépendamment des tuiles.
+        if (retrait > 0) for (const point of [a, b, d, e]) point.retrait = Math.max(point.retrait, retrait);
+      }
+    }
+    debut = fin;
+  }
+  return (x, z) => {
+    const v = sommets.get(x / pas + ',' + z / pas);
+    return v ? v.h - v.retrait : _H(x, z, gr, c);
+  };
+}
+
 /* ──────────────────────────────────────────────
    FONCTION PRINCIPALE terrain()
    ────────────────────────────────────────────── */
@@ -321,7 +405,8 @@ function terrain(c, th, interroger, g, ecologie, organique) {
   const RANGE = 420;
 
   const gr = _buildGrilleRoute(c);
-  const liste = [];
+  const hauteurSommet = degagerChaussee(c, G, gr);
+  const maillages = new Map(), liste = [];
 
   let bxMin = Infinity, bxMax = -Infinity, bzMin = Infinity, bzMax = -Infinity;
   const tuilesActives = new Map();
@@ -360,7 +445,7 @@ function terrain(c, th, interroger, g, ecologie, organique) {
       for (let k = 0; k < N_LON; k++) {
         for (let j = 0; j < N_LAT; j++) {
           const wx = tileX0 + j * G, wz = tileZ0 + k * G;
-          hArr[k * N_LAT + j] = _H(wx, wz, gr, c);
+          hArr[k * N_LAT + j] = hauteurSommet(wx, wz);
         }
       }
 
@@ -375,10 +460,10 @@ function terrain(c, th, interroger, g, ecologie, organique) {
           if (wy < nyMin) nyMin = wy; if (wy > nyMax) nyMax = wy;
 
           // normale continue aux bords de tuiles
-          const hL = j > 0 ? hArr[idx - 1] : _H(wx - G, wz, gr, c);
-          const hR = j < N_LAT - 1 ? hArr[idx + 1] : _H(wx + G, wz, gr, c);
-          const hD = k > 0 ? hArr[idx - N_LAT] : _H(wx, wz - G, gr, c);
-          const hU = k < N_LON - 1 ? hArr[idx + N_LAT] : _H(wx, wz + G, gr, c);
+          const hL = j > 0 ? hArr[idx - 1] : hauteurSommet(wx - G, wz);
+          const hR = j < N_LAT - 1 ? hArr[idx + 1] : hauteurSommet(wx + G, wz);
+          const hD = k > 0 ? hArr[idx - N_LAT] : hauteurSommet(wx, wz - G);
+          const hU = k < N_LON - 1 ? hArr[idx + N_LAT] : hauteurSommet(wx, wz + G);
           let dnx = (hL - hR), dny = 2 * G, dnz = (hD - hU);
           const nl = Math.hypot(dnx, dny, dnz) || 1;
           dnx /= nl; dny /= nl; dnz /= nl;
@@ -427,6 +512,7 @@ function terrain(c, th, interroger, g, ecologie, organique) {
       Object.defineProperty(nappeObj, 'herbeTriangles', { enumerable: false, value: herbeTri });
       Object.defineProperty(nappeObj, 'surfaceType', { enumerable: false, value: 'terrain' });
       liste.push(nappeObj);
+      maillages.set(nx + ',' + nz, sommets);
     }
   }
 
@@ -523,9 +609,17 @@ function terrain(c, th, interroger, g, ecologie, organique) {
     }
   }
 
-  /* ── sol(x,z) exact et O(1) ── */
   function sol(x, z) {
-    return _H(x, z, gr, c);
+    const tx = Math.floor(x / TILE), tz = Math.floor(z / TILE);
+    const sommets = maillages.get(tx + ',' + tz);
+    if (!sommets) return _H(x, z, gr, c);
+    const gx = (x - tx * TILE) / G, gz = (z - tz * TILE) / G;
+    const i = Math.floor(gx), j = Math.floor(gz), u = gx - i, v = gz - j;
+    const ligne = TILE / G + 1, a = (j * ligne + i) * FLOATS_VERT + 1;
+    const b = a + FLOATS_VERT, d = a + ligne * FLOATS_VERT, e = d + FLOATS_VERT;
+    const impaire = (i + j) & 1;
+    return hauteurMaille(sommets[a], sommets[b], sommets[d], sommets[e],
+      impaire, impaire ? u >= v : u + v <= 1, u, v);
   }
 
   return {

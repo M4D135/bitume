@@ -26,7 +26,7 @@
   out vec4 couleur;
   uniform sampler2D uScene;
   uniform vec4 uMeteo;       // eau, neige accumulée, nuage de roues, film humide
-  uniform vec4 uMouvement;   // temps, charge d'air, charge vitesse, charge vitesse^2
+  uniform vec4 uMouvement;   // temps, charge d'air, incidence normalisée, pression frontale
   uniform vec4 uVue;         // largeur CSS, hauteur CSS, graine, atténuation extérieure
   uniform vec4 uFlux;        // expansion /s, dérive X/Y en hauteurs écran/s, charge d'air
   uniform vec4 uGravite;     // gravité écran, centre de divergence (repère CPU, y vers le bas)
@@ -62,11 +62,6 @@
     vec2 n=vec2(p.x/uVue.x,1.0-p.y/uVue.y),aspect=vec2(uVue.y/uVue.x,1.0);
     vec2 v=(uFlux.x*(n-uGravite.zw)+uFlux.yz*aspect)*(.3+.7*mobilite);
     v+=uGravite.xy*aspect*(mobilite*8.0*(rayon*.35+1.5)/720.0);
-    vec2 radNorm=n-uGravite.zw;
-    float rl=length(radNorm);
-    vec2 radDir=rl>.001 ? normalize(radNorm) : vec2(0,-1);
-    float radialStrength=uMouvement.w*(1.5+14.0*uMouvement.w)*(.25+.75*mobilite);
-    v+=radDir*radialStrength;
     v*=uVue.xy;v.y=-v.y;
     return length(v)>.0001 ? normalize(v) : vec2(0,-1);
   }
@@ -86,15 +81,6 @@
     vec2 sourceCentre=(id+.5+centre)*cellule,centreEcran=positionTransportee(sourceCentre,tr);
     vec2 ancienCentre=positionTransportee(sourceCentre,uHistoire[indice]),trajet=centreEcran-ancienCentre;
     vec2 direction=length(trajet)>.03 ? normalize(trajet) : directionFlux(centreEcran,mobilite,taille);
-    float radialMix=clamp(uMouvement.w*1.25,0.0,0.92);
-    if(radialMix>.001){
-      vec2 rn=vec2(centreEcran.x/uVue.x,1.0-centreEcran.y/uVue.y)-uGravite.zw;
-      float rl=length(rn);
-      if(rl>.001){
-        vec2 rp=vec2(rn.x*uVue.x,-rn.y*uVue.y);
-        direction=normalize(mix(direction,rp,radialMix));
-      }
-    }
     vec2 travers=vec2(-direction.y,direction.x),delta=(local-centre)*tr.x;
     vec2 d=vec2(dot(delta,travers),dot(delta,direction));
     float rayon = taille * (.48 + alea.x*alea.x*.94) / cellule;
@@ -177,15 +163,6 @@
       // Les calculs de lentille et de courbe sont locaux ; le reste de l'écran ne parcourt que les emprises.
       if(any(lessThan(p,bas))||any(greaterThan(p,haut))) continue;
       vec2 trajet=g.xy-tr.xy,direction=length(trajet)>.03?normalize(trajet):directionFlux(g.xy,1.0,rayon);
-      float radialMix=clamp(wMob*1.35,0.0,0.95);
-      if(radialMix>.001){
-        vec2 rn=vec2(g.x/uVue.x,1.0-g.y/uVue.y)-uGravite.zw;
-        float rl=length(rn);
-        if(rl>.001){
-          vec2 rp=vec2(rn.x*uVue.x,-rn.y*uVue.y);
-          direction=normalize(mix(direction,rp,radialMix));
-        }
-      }
       vec2 travers=vec2(-direction.y,direction.x),delta=p-g.xy;
       float rx=max(.9, rayon*mix(1.0, .32, wMob));
       float ry=max(1.2, rayon*(1.25+uMouvement.y*.55+wMob*5.8));
@@ -369,7 +346,6 @@
       couches:COUCHES.map(()=>({active:0,fondu:0,transition:false,sequence:0,generations:[nouvelleGeneration(),nouvelleGeneration()]})),
       transportUniformes:new Float32Array(48),histoireUniformes:new Float32Array(48),phaseUniformes:new Float32Array(12),
       transportPrecedent:new Float64Array(48),histoirePrecedente:new Float64Array(48),fluxUniformes:new Float32Array(8),
-      fluxTransport:{expansion:0,deriveX:0,deriveY:0,air:0,graviteX:0,graviteY:0,centreX:0,centreY:0},
       graine: options && Number.isInteger(options.graine) ? options.graine : 0 };
     reinitialiserTransport(e);return e;
   }
@@ -394,15 +370,9 @@
     if (c.pause || !Number.isFinite(dt) || dt <= 0) return;
     const intensite=clamp(nombre(c.intensite,1),0,2),flux=B.vitre.calculerFlux(c,e.depots.flux),air=nombre(flux.air,0);
     const niveau=QUALITES[c.qualite]??2;
-    const vitesseBrute=nombre(c.vitesse ?? c.speed ?? c.v, -1);
-    const vitesse=vitesseBrute>=0 ? clamp(vitesseBrute,0,95) : clamp(air,0,1)*95;
-    const charge=clamp(vitesse/95,0,1), charge2=charge*charge;
-    const ft=e.fluxTransport;
-    const expBase=nombre(flux.expansion,0);
-    ft.expansion=expBase>1e-6 ? Math.max(expBase,charge2*1.65) : expBase;
-    ft.deriveX=nombre(flux.deriveX,0); ft.deriveY=nombre(flux.deriveY,0); ft.air=air;
-    ft.graviteX=nombre(flux.graviteX,0); ft.graviteY=nombre(flux.graviteY,0);
-    ft.centreX=nombre(flux.centreX,0.5); ft.centreY=nombre(flux.centreY,0.44);
+    // L'étirement, les motifs de réfraction et les dépôts mobiles suivent le même
+    // air relatif. Un regard arrière ou un recul peut délester cette face en pleine vitesse.
+    const charge=clamp(flux.vitesseIncidente/95,0,1);
     const largeur=Math.max(1,nombre(c.largeur,e.depots.largeur)),hauteur=Math.max(1,nombre(c.hauteur,e.depots.hauteur)),aspect=hauteur/largeur;
     const neige=c.abri ? 0 : clamp(nombre(c.neige),0,1);
     const pluie=c.abri || neige>.001 ? 0 : clamp(nombre(c.pluie),0,1);
@@ -412,7 +382,7 @@
     const neigeCible=clamp(neige*intensite/(1+air*7),0,1.25);
     e.accumulateur+=Math.min(.25,dt);
     while (e.accumulateur+1e-10>=PAS) {
-      avancerTransport(e,ft,aspect);
+      avancerTransport(e,flux,aspect);
       e.precedent[0]=e.eau; e.precedent[1]=e.neige; e.precedent[2]=e.embruns; e.precedent[3]=e.film;
       const fonte=e.neige*.18+Math.max(0,e.neige-neigeCible)*(.03+air*.10);
       e.eau+=(eauCible+fonte-e.eau)*(1-Math.exp(-PAS*(eauCible>e.eau ? .72 : .22+air*1.8)));
@@ -430,11 +400,11 @@
     u[0]=e.precedent[0]*(1-k)+e.eau*k; u[1]=e.precedent[1]*(1-k)+e.neige*k;
     u[2]=e.precedent[2]*(1-k)+e.embruns*k; u[3]=e.precedent[3]*(1-k)+e.film*k;
     u[4]=Math.max(0,e.temps-PAS+e.accumulateur); u[5]=air;
-    u[6]=charge; u[7]=charge2;
+    u[6]=charge; u[7]=charge*charge;
     u[8]=largeur;u[9]=hauteur; u[10]=e.graine*37.31;
     u[11]=(c.cockpit===false ? .64 : 1)*Math.min(1,intensite);
-    const f=e.fluxUniformes;f[0]=ft.expansion;f[1]=ft.deriveX;f[2]=ft.deriveY;f[3]=ft.air;
-    f[4]=ft.graviteX;f[5]=ft.graviteY;f[6]=ft.centreX;f[7]=ft.centreY;
+    const f=e.fluxUniformes;f[0]=flux.expansion;f[1]=flux.deriveX;f[2]=flux.deriveY;f[3]=flux.air;
+    f[4]=flux.graviteX;f[5]=flux.graviteY;f[6]=flux.centreX;f[7]=flux.centreY;
     preparerTransport(e,k);
     B.vitre.avancerSimulation(e.depots,dt,c,DEPOTS[niveau]);preparerDepots(e);
   }

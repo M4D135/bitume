@@ -851,7 +851,7 @@
     E.ajouter(sortie, ev, etat, lod, overlay, matrice);
   }
   let pluieVue = null, pluieVue2 = null, vitreVue = null, vitreVue2 = null;
-  const METEO_ABRI = { pluie: 0, nuage: 0, eclair: 0, mouille: 0, ventX: 0, ventZ: 0, t: 0 };
+  const SANS_PLUIE_PROJETEE = { pluie: 0 };
   const ambiancePublic = () => ({ pluie: 0, neige: 0, mouille: 0, feux: 0, vert: false, termine: false });
   function precipitationsNeige(S) {
     if (!S.nature || CATALOGUE[S.i].theme === 'cote') return 0;
@@ -863,11 +863,8 @@
     const deux = S !== session;
     if (deux && !pluieVue2) pluieVue2 = creationTardive('pluie', B.meteo.creerPluie($('meteo2')));
     if (!deux && !pluieVue) pluieVue = creationTardive('pluie', B.meteo.creerPluie($('meteo')));
-    // La caméra décide des dépôts sur la visière. Le champ conserve la pluie extérieure
-    // visible par les portails et galeries ; chaque trait est masqué dans le monde.
     const abri = sousLaVoute(S.course.c, cam.pos) || B.meteo.abriCouverts(S.course.c, cam.pos, S.course.physique), neige = precipitationsNeige(S);
-    S.pluieImage = (deux ? pluieVue2 : pluieVue).dessiner(neige > 0 ? Object.assign(METEO_ABRI, { t: S.meteo.t }) : S.meteo, cam, dt,
-      { cockpit: vue === 'cockpit', dpr: window.devicePixelRatio || 1, palier: profil.palier, circuit: S.course.c, physique: S.course.physique });
+    let pluieSurLentille = false;
     if (B.vitre) {
       if (deux && !vitreVue2) vitreVue2 = creationTardive('vitre', B.vitre.creer($('vitre2'), { graine: 2 }));
       if (!deux && !vitreVue) vitreVue = creationTardive('vitre', B.vitre.creer($('vitre')));
@@ -909,8 +906,15 @@
       contexte.sourceScene = $('scene');
       contexte.embruns = !abri && neige === 0 && B.sillage && B.sillage.exposition
         ? B.sillage.exposition(session.sillage, cam.pos, Math.max(S.meteo.mouille || 0, S.meteo.pluie || 0), voiture.id) : 0;
-      B.vitre.mettreAJour(deux ? vitreVue2 : vitreVue, dt, contexte);
+      const vitre = deux ? vitreVue2 : vitreVue;
+      const etat = B.vitre.mettreAJour(vitre, dt, contexte);
+      pluieSurLentille = !abri && contexte.actif && contexte.intensite > 0 && profil.palier !== 'off' && etat?.pret && !vitre.libere;
     }
+    // En conduite la pluie atteint la lentille. Depuis une caméra abritée on voit
+    // la pluie au-delà du portail pendant que les dépôts existants sèchent.
+    const meteoProjetee = neige > 0 || pluieSurLentille ? SANS_PLUIE_PROJETEE : S.meteo;
+    S.pluieImage = (deux ? pluieVue2 : pluieVue).dessiner(meteoProjetee, cam, dt,
+      { cockpit: vue === 'cockpit', dpr: window.devicePixelRatio || 1, palier: profil.palier, circuit: S.course.c, physique: S.course.physique });
   }
 
   // menus à la manette : croix pour se déplacer (gauche, droite règlent un curseur), A valide, B revient
