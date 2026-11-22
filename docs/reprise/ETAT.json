@@ -1,66 +1,63 @@
 {
   "date": "2026-11-22",
   "etat_courant": {
-    "version_courante": "0.2.108",
-    "version_publiee_verifiee": "0.2.108",
+    "version_courante": "0.2.110",
+    "version_publiee_verifiee": "0.2.110",
     "physique": "p16",
     "moteur": "FERRO 0.3.16 canonique",
     "circuits": 11,
     "statut": "integre_sur_main",
-    "lot": "integration_essais_en_course",
+    "lot": "larche_rendu_et_course",
     "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
     "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
     "dernieres_demandes": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
-    "dernier_lot_clos": "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json",
-    "prochaine_action": "Réception physique des manettes, temps par image sous la pluie et réalisation des lots par plateforme.",
+    "dernier_lot_clos": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json",
+    "prochaine_action": "Rendu des versants et des bâtiments, fluidité à la résolution de chaque appareil et réception en main des manettes.",
     "branche_candidate": "main",
-    "version_candidate": "0.2.108",
+    "version_candidate": "0.2.110",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md"
   },
   "publication": {
-    "version": "0.2.108",
-    "commit_sources": "45d0db90e9ea5da81da55b6b166abb77777c6db1",
+    "version": "0.2.110",
+    "commit_sources": "e10cc3bf12698ce2aaf83c4c04057a0d4c0d7d5e",
     "statut": "publie_sur_main",
-    "url": "https://github.com/M4D135/bitume/commit/45d0db90e9ea5da81da55b6b166abb77777c6db1",
-    "recu": "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json",
+    "url": "https://github.com/M4D135/bitume/commit/e10cc3bf12698ce2aaf83c4c04057a0d4c0d7d5e",
+    "recu": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json",
     "site_deploiement_verifie": false
   },
   "qualification": {
-    "version": "0.2.108",
-    "tete_qualifiee": "45d0db90e9ea5da81da55b6b166abb77777c6db1",
-    "build_octets": 15213447,
-    "build_sha256": "0a0a62ce85ac9428c55cbff13718f6ec14b0a380edb4fc0e93c81ca84b549d61",
+    "version": "0.2.110",
+    "tete_qualifiee": "e10cc3bf12698ce2aaf83c4c04057a0d4c0d7d5e",
+    "build_octets": 15238343,
+    "build_sha256": "89cf623854ed3caa33a983f1f52b028f1835f30844e0c30fff9c7e1cc5fbaca1",
     "locale": {
-      "suites_node": 225,
-      "suites_prevues": 225,
-      "suites_en_echec": 0,
-      "tests_python": 8,
-      "statut": "terminee",
-      "recontroles": []
+      "statut": "essais_cibles_sur_Mac",
+      "perimetre": "Essais en jeu Chrome/PhysX, suites ciblées, assemblage en double. Les quatre lots complets Node et les contrôles Python figurent dans GitHub Actions."
     },
     "reconstruction_identique": true,
-    "recu": "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json",
+    "recu": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json",
     "essai_utilisateur_valide": false,
     "limites": [
-      "Essais du retour haptique avec actionneurs simulés. Toucher de chaque manette à évaluer en main.",
-      "Le gain de temps GPU des LED varie selon la pose. Les autres GPU et la cadence cible restent à qualifier.",
-      "Le photoréalisme de tout le catalogue et le portage complet demeurent en développement."
+      "Cadence mesurée sur le Mac M5 du test, dans les conditions de chaque relevé. Les autres appareils demandent une réception matérielle.",
+      "Ressenti des vibrations Switch, Xbox et PS5 à vérifier en main.",
+      "Les modèles proches, les façades et la lumière du catalogue demandent de nouveaux essais pour le photoréalisme.",
+      "La pigmentation continue des versants a été évaluée dans un prototype WebGL2 séparé."
     ],
     "github_actions": {
       "conclusion": "success",
-      "commit": "45d0db90e9ea5da81da55b6b166abb77777c6db1",
-      "version": "0.2.108",
-      "url": "https://github.com/M4D135/bitume/actions/runs/45041044267",
-      "suites_node": 225,
+      "commit": "e10cc3bf12698ce2aaf83c4c04057a0d4c0d7d5e",
+      "version": "0.2.110",
+      "url": "https://github.com/M4D135/bitume/actions/runs/45045468202",
+      "suites_node": 227,
       "tests_python": 8,
       "suites_en_echec": 0,
-      "sha256_html": "0a0a62ce85ac9428c55cbff13718f6ec14b0a380edb4fc0e93c81ca84b549d61",
-      "artefact": 14761972308,
+      "sha256_html": "89cf623854ed3caa33a983f1f52b028f1835f30844e0c30fff9c7e1cc5fbaca1",
+      "artefact": 14763373282,
       "lots": [
         57,
-        56,
-        56,
+        57,
+        57,
         56
       ],
       "reconstruction_git_identique": true
@@ -161,7 +158,7 @@
       "Réseau et portage natif selon la feuille de route"
     ],
     "acquis_R4b_a_preserver": true,
-    "prochaine_priorite": "Réception physique des manettes, temps par image sous la pluie et réalisation des lots par plateforme."
+    "prochaine_priorite": "Rendu des versants et des bâtiments, fluidité à la résolution de chaque appareil et réception en main des manettes."
   },
   "catalogue": {
     "jouables": 11,
@@ -222,8 +219,8 @@
     "priorite_utilisateur": "Vibrations distinctes, fluidité et rendu réaliste, qualification des onze circuits.",
     "lot_actif": "qualification_materielle_et_rendu",
     "statut": "en_cours",
-    "recu_publication": "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json",
-    "prochain_lot": "manettes_et_fluidite",
+    "recu_publication": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json",
+    "prochain_lot": "rendu_versants_et_appareils_cibles",
     "dernieres_demandes": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md"
   },
   "recus_historiques": {

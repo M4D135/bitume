@@ -1,0 +1,546 @@
+[
+  {
+    "secteur": "grille",
+    "sha": "c7d0af843d1475d4bfd6b0a954990c622018f19abe843f6b68ff2292b9957b17",
+    "fps": 59.97,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pireMs": 16.8,
+    "imagesLongues": 0,
+    "troisPlusLongues": [],
+    "images": 421,
+    "tMesure": 7.02,
+    "sDebut": 318.63,
+    "sFin": 580.63,
+    "vitesseMedianeKmH": 142.59,
+    "couverts": 0,
+    "echantillons": 19,
+    "SSR": true,
+    "gouttes": 23,
+    "transfertsDirects": 998,
+    "vues": {
+      "principale": {
+        "images": 997,
+        "drawCalls": 1036.3660982948848,
+        "triangles": 1683887.001003009,
+        "rendusParImage": 1,
+        "drawCallsParImage": 988.5958333333333,
+        "trianglesParImage": 1449614.4041666666
+      },
+      "joueur2": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0,
+        "rendusParImage": 0,
+        "drawCallsParImage": 0,
+        "trianglesParImage": 0
+      },
+      "retro": {
+        "images": 997,
+        "drawCalls": 145.74022066198594,
+        "triangles": 233901.50150451355,
+        "rendusParImage": 1,
+        "drawCallsParImage": 84.3625,
+        "trianglesParImage": 147887.775
+      }
+    }
+  },
+  {
+    "secteur": "bois",
+    "sha": "c7d0af843d1475d4bfd6b0a954990c622018f19abe843f6b68ff2292b9957b17",
+    "fps": 59.97,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pireMs": 16.8,
+    "imagesLongues": 0,
+    "troisPlusLongues": [],
+    "images": 421,
+    "tMesure": 7.02,
+    "sDebut": 4589.14,
+    "sFin": 4592,
+    "vitesseMedianeKmH": 0.25,
+    "couverts": 0,
+    "echantillons": 18,
+    "SSR": true,
+    "gouttes": 24,
+    "transfertsDirects": 1003,
+    "vues": {
+      "principale": {
+        "images": 1002,
+        "drawCalls": 1090.9690618762475,
+        "triangles": 2807126.474051896,
+        "rendusParImage": 1,
+        "drawCallsParImage": 1017.5291666666667,
+        "trianglesParImage": 2525153.216666667
+      },
+      "joueur2": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0,
+        "rendusParImage": 0,
+        "drawCallsParImage": 0,
+        "trianglesParImage": 0
+      },
+      "retro": {
+        "images": 1002,
+        "drawCalls": 379.90918163672654,
+        "triangles": 1042085.5748502994,
+        "rendusParImage": 1,
+        "drawCallsParImage": 351.575,
+        "trianglesParImage": 881976
+      }
+    }
+  },
+  {
+    "secteur": "bois-roulant",
+    "sha": "c7d0af843d1475d4bfd6b0a954990c622018f19abe843f6b68ff2292b9957b17",
+    "fps": 59.97,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pireMs": 16.8,
+    "imagesLongues": 0,
+    "troisPlusLongues": [],
+    "images": 421,
+    "tMesure": 7.02,
+    "sDebut": 6299.63,
+    "sFin": 6567.51,
+    "vitesseMedianeKmH": 135.56,
+    "couverts": 0,
+    "echantillons": 19,
+    "SSR": true,
+    "gouttes": 24,
+    "transfertsDirects": 1015,
+    "vues": {
+      "principale": {
+        "images": 1014,
+        "drawCalls": 1043.3422090729782,
+        "triangles": 2291350.853057199,
+        "rendusParImage": 1,
+        "drawCallsParImage": 1031.875,
+        "trianglesParImage": 2020856.9041666666
+      },
+      "joueur2": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0,
+        "rendusParImage": 0,
+        "drawCallsParImage": 0,
+        "trianglesParImage": 0
+      },
+      "retro": {
+        "images": 1014,
+        "drawCalls": 309.3688362919132,
+        "triangles": 862398.3333333334,
+        "rendusParImage": 1,
+        "drawCallsParImage": 394.80833333333334,
+        "trianglesParImage": 863948.575
+      }
+    }
+  },
+  {
+    "secteur": "pont",
+    "sha": "c7d0af843d1475d4bfd6b0a954990c622018f19abe843f6b68ff2292b9957b17",
+    "fps": 59.97,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pireMs": 16.8,
+    "imagesLongues": 0,
+    "troisPlusLongues": [],
+    "images": 421,
+    "tMesure": 7.02,
+    "sDebut": 11370.12,
+    "sFin": 11405.75,
+    "vitesseMedianeKmH": 14.93,
+    "couverts": 0,
+    "echantillons": 19,
+    "SSR": true,
+    "gouttes": 22,
+    "transfertsDirects": 997,
+    "vues": {
+      "principale": {
+        "images": 996,
+        "drawCalls": 984.9879518072289,
+        "triangles": 2640587.7108433736,
+        "rendusParImage": 1,
+        "drawCallsParImage": 1078.3416666666667,
+        "trianglesParImage": 2839447.725
+      },
+      "joueur2": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0,
+        "rendusParImage": 0,
+        "drawCallsParImage": 0,
+        "trianglesParImage": 0
+      },
+      "retro": {
+        "images": 996,
+        "drawCalls": 337.144578313253,
+        "triangles": 792147.6275100402,
+        "rendusParImage": 1,
+        "drawCallsParImage": 300.4458333333333,
+        "trianglesParImage": 859067.65
+      }
+    }
+  },
+  {
+    "secteur": "pont-mesure",
+    "sha": "c7d0af843d1475d4bfd6b0a954990c622018f19abe843f6b68ff2292b9957b17",
+    "fps": 59.97,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pireMs": 16.8,
+    "imagesLongues": 0,
+    "troisPlusLongues": [],
+    "images": 421,
+    "tMesure": 7.02,
+    "sDebut": 11387.89,
+    "sFin": 11548.22,
+    "vitesseMedianeKmH": 81.37,
+    "couverts": 0,
+    "echantillons": 19,
+    "SSR": true,
+    "gouttes": 23,
+    "transfertsDirects": 1010,
+    "vues": {
+      "principale": {
+        "images": 1009,
+        "drawCalls": 1003.8216055500495,
+        "triangles": 2496172.831516353,
+        "rendusParImage": 1,
+        "drawCallsParImage": 1024.7291666666667,
+        "trianglesParImage": 2272272.2958333334
+      },
+      "joueur2": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0,
+        "rendusParImage": 0,
+        "drawCallsParImage": 0,
+        "trianglesParImage": 0
+      },
+      "retro": {
+        "images": 1010,
+        "drawCalls": 435.4118811881188,
+        "triangles": 1010422.9326732673,
+        "rendusParImage": 1,
+        "drawCallsParImage": 474.6875,
+        "trianglesParImage": 1092784.3708333333
+      }
+    }
+  },
+  {
+    "secteur": "pont-traversee",
+    "sha": "c7d0af843d1475d4bfd6b0a954990c622018f19abe843f6b68ff2292b9957b17",
+    "fps": 59.97,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pireMs": 16.8,
+    "imagesLongues": 0,
+    "troisPlusLongues": [],
+    "images": 421,
+    "tMesure": 7.02,
+    "sDebut": 11497.97,
+    "sFin": 11766.63,
+    "vitesseMedianeKmH": 148.0,
+    "couverts": 0,
+    "echantillons": 19,
+    "SSR": true,
+    "gouttes": 24,
+    "transfertsDirects": 1009,
+    "vues": {
+      "principale": {
+        "images": 1008,
+        "drawCalls": 949.2916666666666,
+        "triangles": 2244330.3462301586,
+        "rendusParImage": 1,
+        "drawCallsParImage": 990.0125,
+        "trianglesParImage": 2018859.8291666666
+      },
+      "joueur2": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0,
+        "rendusParImage": 0,
+        "drawCallsParImage": 0,
+        "trianglesParImage": 0
+      },
+      "retro": {
+        "images": 1011,
+        "drawCalls": 502.96439169139467,
+        "triangles": 1192892.3353115728,
+        "rendusParImage": 1,
+        "drawCallsParImage": 537.8458333333333,
+        "trianglesParImage": 1269332.25
+      }
+    }
+  },
+  {
+    "secteur": "tunnel",
+    "sha": "c7d0af843d1475d4bfd6b0a954990c622018f19abe843f6b68ff2292b9957b17",
+    "fps": 59.97,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pireMs": 16.8,
+    "imagesLongues": 0,
+    "troisPlusLongues": [],
+    "images": 421,
+    "tMesure": 7.02,
+    "sDebut": 14682.9,
+    "sFin": 14901.36,
+    "vitesseMedianeKmH": 86.54,
+    "couverts": 18,
+    "echantillons": 18,
+    "SSR": true,
+    "gouttes": 0,
+    "transfertsDirects": 1,
+    "vues": {
+      "principale": {
+        "images": 1005,
+        "drawCalls": 992.2646766169154,
+        "triangles": 2596887.5970149254,
+        "rendusParImage": 1,
+        "drawCallsParImage": 966.5833333333334,
+        "trianglesParImage": 2357183.3375
+      },
+      "joueur2": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0,
+        "rendusParImage": 0,
+        "drawCallsParImage": 0,
+        "trianglesParImage": 0
+      },
+      "retro": {
+        "images": 1005,
+        "drawCalls": 369.65472636815923,
+        "triangles": 1098082.6845771144,
+        "rendusParImage": 1,
+        "drawCallsParImage": 438.1666666666667,
+        "trianglesParImage": 1082523.8083333333
+      }
+    }
+  },
+  {
+    "secteur": "village",
+    "sha": "c7d0af843d1475d4bfd6b0a954990c622018f19abe843f6b68ff2292b9957b17",
+    "fps": 59.12,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pireMs": 33.4,
+    "imagesLongues": 6,
+    "troisPlusLongues": [
+      {
+        "t": 16.018600000000745,
+        "ms": 33.39999999999782,
+        "s": 18448.671085787864,
+        "v": 20.030258892837182
+      },
+      {
+        "t": 16.218600000000745,
+        "ms": 33.39999999999782,
+        "s": 18452.704619352982,
+        "v": 20.052211729997385
+      },
+      {
+        "t": 15.818600000000744,
+        "ms": 33.29999999999927,
+        "s": 18444.613848005523,
+        "v": 20.158995952483114
+      }
+    ],
+    "images": 415,
+    "tMesure": 7.02,
+    "sDebut": 18236.87,
+    "sFin": 18463.05,
+    "vitesseMedianeKmH": 100.67,
+    "couverts": 0,
+    "echantillons": 18,
+    "SSR": true,
+    "gouttes": 24,
+    "transfertsDirects": 999,
+    "vues": {
+      "principale": {
+        "images": 998,
+        "drawCalls": 1063.618236472946,
+        "triangles": 2631919.0531062125,
+        "rendusParImage": 1,
+        "drawCallsParImage": 1088.1583333333333,
+        "trianglesParImage": 2735329.216666667
+      },
+      "joueur2": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0,
+        "rendusParImage": 0,
+        "drawCallsParImage": 0,
+        "trianglesParImage": 0
+      },
+      "retro": {
+        "images": 1004,
+        "drawCalls": 488.5747011952191,
+        "triangles": 1164331.893426295,
+        "rendusParImage": 1.025,
+        "drawCallsParImage": 536.375,
+        "trianglesParImage": 1212494.1875
+      }
+    }
+  },
+  {
+    "secteur": "village-reprise",
+    "sha": "c7d0af843d1475d4bfd6b0a954990c622018f19abe843f6b68ff2292b9957b17",
+    "fps": 59.97,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pireMs": 16.8,
+    "imagesLongues": 0,
+    "troisPlusLongues": [],
+    "images": 421,
+    "tMesure": 7.02,
+    "sDebut": 18238.21,
+    "sFin": 18463.53,
+    "vitesseMedianeKmH": 100.27,
+    "couverts": 0,
+    "echantillons": 18,
+    "SSR": true,
+    "gouttes": 24,
+    "transfertsDirects": 1006,
+    "vues": {
+      "principale": {
+        "images": 1005,
+        "drawCalls": 1065.8149253731344,
+        "triangles": 2634542.806965174,
+        "rendusParImage": 1,
+        "drawCallsParImage": 1092.2625,
+        "trianglesParImage": 2736566.658333333
+      },
+      "joueur2": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0,
+        "rendusParImage": 0,
+        "drawCallsParImage": 0,
+        "trianglesParImage": 0
+      },
+      "retro": {
+        "images": 1006,
+        "drawCalls": 490.65208747514913,
+        "triangles": 1166190.148111332,
+        "rendusParImage": 1,
+        "drawCallsParImage": 522.3333333333334,
+        "trianglesParImage": 1176238.4625
+      }
+    }
+  },
+  {
+    "secteur": "arrivee-reprise",
+    "sha": "c7d0af843d1475d4bfd6b0a954990c622018f19abe843f6b68ff2292b9957b17",
+    "fps": 59.97,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pireMs": 16.8,
+    "imagesLongues": 0,
+    "troisPlusLongues": [],
+    "images": 421,
+    "tMesure": 7.02,
+    "sDebut": 31683.64,
+    "sFin": 31764.47,
+    "vitesseMedianeKmH": 25.32,
+    "couverts": 0,
+    "echantillons": 18,
+    "SSR": true,
+    "gouttes": 24,
+    "transfertsDirects": 1004,
+    "vues": {
+      "principale": {
+        "images": 1003,
+        "drawCalls": 738.8115653040877,
+        "triangles": 2475819.074775673,
+        "rendusParImage": 1,
+        "drawCallsParImage": 667.5666666666667,
+        "trianglesParImage": 2012947.7541666667
+      },
+      "joueur2": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0,
+        "rendusParImage": 0,
+        "drawCallsParImage": 0,
+        "trianglesParImage": 0
+      },
+      "retro": {
+        "images": 1004,
+        "drawCalls": 463.44223107569724,
+        "triangles": 1287964.4581673306,
+        "rendusParImage": 1,
+        "drawCallsParImage": 492.49583333333334,
+        "trianglesParImage": 1200897.325
+      }
+    }
+  },
+  {
+    "secteur": "arrivee",
+    "sha": "c7d0af843d1475d4bfd6b0a954990c622018f19abe843f6b68ff2292b9957b17",
+    "fps": 59.26,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pireMs": 33.4,
+    "imagesLongues": 5,
+    "troisPlusLongues": [
+      {
+        "t": 9.7666,
+        "ms": 33.399999999999636,
+        "s": 31685.386648189713,
+        "v": 27.176902904423493
+      },
+      {
+        "t": 9.833200000000001,
+        "ms": 33.30000000000109,
+        "s": 31687.195556183957,
+        "v": 27.703452775299823
+      },
+      {
+        "t": 9.8832,
+        "ms": 33.30000000000109,
+        "s": 31688.572373465162,
+        "v": 28.099661480366517
+      }
+    ],
+    "images": 416,
+    "tMesure": 7.02,
+    "sDebut": 31683.93,
+    "sFin": 31764.75,
+    "vitesseMedianeKmH": 25.31,
+    "couverts": 0,
+    "echantillons": 18,
+    "SSR": true,
+    "gouttes": 24,
+    "transfertsDirects": 968,
+    "vues": {
+      "principale": {
+        "images": 967,
+        "drawCalls": 736.5532574974147,
+        "triangles": 2463279.5667011375,
+        "rendusParImage": 1,
+        "drawCallsParImage": 667.8791666666667,
+        "trianglesParImage": 2012803.3916666666
+      },
+      "joueur2": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0,
+        "rendusParImage": 0,
+        "drawCallsParImage": 0,
+        "trianglesParImage": 0
+      },
+      "retro": {
+        "images": 1005,
+        "drawCalls": 462.29353233830847,
+        "triangles": 1286491.1870646765,
+        "rendusParImage": 1,
+        "drawCallsParImage": 493.9125,
+        "trianglesParImage": 1201916.9416666667
+      }
+    }
+  }
+]

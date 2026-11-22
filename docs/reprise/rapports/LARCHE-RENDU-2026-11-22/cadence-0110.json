@@ -1,0 +1,410 @@
+{
+  "version": "0.2.110",
+  "build": "89cf623854ed3caa33a983f1f52b028f1835f30844e0c30fff9c7e1cc5fbaca1",
+  "mac": "Mac17,4",
+  "processeursLogiques": 10,
+  "macOS": "27.2.1",
+  "conditions": {
+    "circuit": "Col de Larche → Vinadio",
+    "grille": 12,
+    "graine": 17017,
+    "departMetres": 2770,
+    "vitesseInitialeMps": 20,
+    "qualite": "Fine (high)",
+    "vue": "cockpit",
+    "retroviseur": true,
+    "texture": "décor enrichi",
+    "mode": "solo, pilote automatique",
+    "resolution": [
+      1280,
+      720
+    ],
+    "chauffeS": 12,
+    "mesureS": 10,
+    "cadence": "écran, requestAnimationFrame natif",
+    "legendeThermique": "0 nominal, 1 fair, 2 serious, 3 critical ; aucune température de puce en °C n’est exposée ici."
+  },
+  "protocole": "Un profil Chrome headless neuf pour chaque essai. Fenêtre de 10 secondes après 12 secondes de chauffe, sans capture ni avance manuelle. Un passage sec suivi de trois passages pluvieux. Le compteur moyen est calculé avec images / durée réelle.",
+  "serie": [
+    {
+      "repetition": 1,
+      "meteo": "sec",
+      "avant": {
+        "utc": "2026-11-22T16:35:47.286+00:00",
+        "charge1m5m15m": [
+          2.81201171875,
+          2.6298828125,
+          3.04736328125
+        ],
+        "batterie": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=24445027)\t83%; charging; 0:55 remaining present: true",
+        "thermiqueMacOS": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+        "pressionThermiqueNSProcessInfo": 0
+      },
+      "apres": {
+        "utc": "2026-11-22T16:36:12.120+00:00",
+        "charge1m5m15m": [
+          3.0830078125,
+          2.70654296875,
+          3.0625
+        ],
+        "batterie": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=24445027)\t83%; charging; 0:53 remaining present: true",
+        "thermiqueMacOS": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+        "pressionThermiqueNSProcessInfo": 0
+      },
+      "dureeS": 10.02,
+      "images": 601,
+      "ips": 59.98,
+      "p50Ms": 16.7,
+      "p95Ms": 16.7,
+      "pireMs": 16.8,
+      "voitures": 12,
+      "solMouille": 0,
+      "retro": "oui",
+      "abscisseFinaleMetres": 3062.536187778205,
+      "tempsSimulationSChauffeIncluse": 19.883333333332416,
+      "vues": {
+        "principale": {
+          "images": 1194,
+          "drawCalls": 875.6884422110553,
+          "triangles": 2304056.0904522613,
+          "rendusParImage": 1,
+          "drawCallsParImage": 1030.0291666666667,
+          "trianglesParImage": 2234995.25
+        },
+        "joueur2": {
+          "images": 0,
+          "drawCalls": 0,
+          "triangles": 0,
+          "rendusParImage": 0,
+          "drawCallsParImage": 0,
+          "trianglesParImage": 0
+        },
+        "retro": {
+          "images": 1194,
+          "drawCalls": 237.8149078726968,
+          "triangles": 749592.7437185929,
+          "rendusParImage": 1,
+          "drawCallsParImage": 210.6375,
+          "trianglesParImage": 665104.6125
+        }
+      },
+      "cpuP50Ms": {
+        "boucle": 3.800000000745058,
+        "simulation": 1.199999999254942,
+        "rendu": 1.2000000029802322,
+        "effets": 0,
+        "hud": 0,
+        "son": 0
+      },
+      "cpuP95Ms": {
+        "boucle": 4.300000000745058,
+        "simulation": 1.4000000022351742,
+        "rendu": 1.5,
+        "effets": 0.09999999776482582,
+        "hud": 0.10000000149011612,
+        "son": 0
+      },
+      "porteeCompteurs": {
+        "intervalles": "Fenêtre chronométrée du banc après chauffe : p50/p95/pire dans banc, en millisecondes réelles.",
+        "cpu": "Fenêtre des 240 images les plus récentes, pouvant inclure la chauffe si moins de 240 images ont été rendues.",
+        "vues": "drawCalls/triangles : moyenne par rendu depuis le départ ; champs ParImage : fenêtre des 240 images récentes.",
+        "gpu": "Moyenne des trois derniers draws complets du moteur principal ; pas le total par image avec les rétroviseurs.",
+        "simulation": "simulationEcoulee inclut la chauffe ; vérifier le trajet final, la boucle bride les longs intervalles à 0,1 s."
+      },
+      "rapportBrut": "1-sec.json"
+    },
+    {
+      "repetition": 1,
+      "meteo": "pluie",
+      "avant": {
+        "utc": "2026-11-22T16:36:12.164+00:00",
+        "charge1m5m15m": [
+          3.0830078125,
+          2.70654296875,
+          3.0625
+        ],
+        "batterie": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=24445027)\t83%; charging; 0:53 remaining present: true",
+        "thermiqueMacOS": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+        "pressionThermiqueNSProcessInfo": 0
+      },
+      "apres": {
+        "utc": "2026-11-22T16:36:36.894+00:00",
+        "charge1m5m15m": [
+          2.490234375,
+          2.599609375,
+          3.01318359375
+        ],
+        "batterie": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=24445027)\t84%; charging; 0:53 remaining present: true",
+        "thermiqueMacOS": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+        "pressionThermiqueNSProcessInfo": 0
+      },
+      "dureeS": 10.02,
+      "images": 601,
+      "ips": 59.98,
+      "p50Ms": 16.7,
+      "p95Ms": 16.7,
+      "pireMs": 16.8,
+      "voitures": 12,
+      "solMouille": 0.75,
+      "retro": "oui",
+      "abscisseFinaleMetres": 3053.626109477809,
+      "tempsSimulationSChauffeIncluse": 19.849999999999085,
+      "vues": {
+        "principale": {
+          "images": 1191,
+          "drawCalls": 1003.2216624685138,
+          "triangles": 2582094.6288832915,
+          "rendusParImage": 1,
+          "drawCallsParImage": 1157.5041666666666,
+          "trianglesParImage": 2632583.025
+        },
+        "joueur2": {
+          "images": 0,
+          "drawCalls": 0,
+          "triangles": 0,
+          "rendusParImage": 0,
+          "drawCallsParImage": 0,
+          "trianglesParImage": 0
+        },
+        "retro": {
+          "images": 1192,
+          "drawCalls": 317.9270134228188,
+          "triangles": 840162.6401006711,
+          "rendusParImage": 1,
+          "drawCallsParImage": 259.6958333333333,
+          "trianglesParImage": 734281.9458333333
+        }
+      },
+      "cpuP50Ms": {
+        "boucle": 4,
+        "simulation": 1,
+        "rendu": 1.300000000745058,
+        "effets": 0,
+        "hud": 0,
+        "son": 0
+      },
+      "cpuP95Ms": {
+        "boucle": 4.5,
+        "simulation": 1.300000000745058,
+        "rendu": 1.5,
+        "effets": 0.10000000149011612,
+        "hud": 0.10000000149011612,
+        "son": 0
+      },
+      "porteeCompteurs": {
+        "intervalles": "Fenêtre chronométrée du banc après chauffe : p50/p95/pire dans banc, en millisecondes réelles.",
+        "cpu": "Fenêtre des 240 images les plus récentes, pouvant inclure la chauffe si moins de 240 images ont été rendues.",
+        "vues": "drawCalls/triangles : moyenne par rendu depuis le départ ; champs ParImage : fenêtre des 240 images récentes.",
+        "gpu": "Moyenne des trois derniers draws complets du moteur principal ; pas le total par image avec les rétroviseurs.",
+        "simulation": "simulationEcoulee inclut la chauffe ; vérifier le trajet final, la boucle bride les longs intervalles à 0,1 s."
+      },
+      "rapportBrut": "1-pluie.json"
+    },
+    {
+      "repetition": 2,
+      "meteo": "pluie",
+      "avant": {
+        "utc": "2026-11-22T16:36:36.937+00:00",
+        "charge1m5m15m": [
+          2.490234375,
+          2.599609375,
+          3.01318359375
+        ],
+        "batterie": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=24445027)\t84%; charging; 0:53 remaining present: true",
+        "thermiqueMacOS": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+        "pressionThermiqueNSProcessInfo": 0
+      },
+      "apres": {
+        "utc": "2026-11-22T16:37:01.752+00:00",
+        "charge1m5m15m": [
+          2.59716796875,
+          2.62744140625,
+          3.0107421875
+        ],
+        "batterie": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=24445027)\t84%; charging; 0:53 remaining present: true",
+        "thermiqueMacOS": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+        "pressionThermiqueNSProcessInfo": 0
+      },
+      "dureeS": 10.02,
+      "images": 601,
+      "ips": 59.98,
+      "p50Ms": 16.7,
+      "p95Ms": 16.8,
+      "pireMs": 16.8,
+      "voitures": 12,
+      "solMouille": 0.75,
+      "retro": "oui",
+      "abscisseFinaleMetres": 3052.729755326327,
+      "tempsSimulationSChauffeIncluse": 19.799999999999088,
+      "vues": {
+        "principale": {
+          "images": 1188,
+          "drawCalls": 1002.8501683501684,
+          "triangles": 2582184.837542088,
+          "rendusParImage": 1,
+          "drawCallsParImage": 1157.8,
+          "trianglesParImage": 2635681.879166667
+        },
+        "joueur2": {
+          "images": 0,
+          "drawCalls": 0,
+          "triangles": 0,
+          "rendusParImage": 0,
+          "drawCallsParImage": 0,
+          "trianglesParImage": 0
+        },
+        "retro": {
+          "images": 1189,
+          "drawCalls": 318.0302775441547,
+          "triangles": 840269.9142136249,
+          "rendusParImage": 1,
+          "drawCallsParImage": 259.85833333333335,
+          "trianglesParImage": 734610.3166666667
+        }
+      },
+      "cpuP50Ms": {
+        "boucle": 4.300000000745058,
+        "simulation": 1.0999999977648258,
+        "rendu": 1.5,
+        "effets": 0,
+        "hud": 0,
+        "son": 0
+      },
+      "cpuP95Ms": {
+        "boucle": 4.699999999254942,
+        "simulation": 1.2999999970197678,
+        "rendu": 1.6000000014901161,
+        "effets": 0.10000000149011612,
+        "hud": 0.10000000149011612,
+        "son": 0
+      },
+      "porteeCompteurs": {
+        "intervalles": "Fenêtre chronométrée du banc après chauffe : p50/p95/pire dans banc, en millisecondes réelles.",
+        "cpu": "Fenêtre des 240 images les plus récentes, pouvant inclure la chauffe si moins de 240 images ont été rendues.",
+        "vues": "drawCalls/triangles : moyenne par rendu depuis le départ ; champs ParImage : fenêtre des 240 images récentes.",
+        "gpu": "Moyenne des trois derniers draws complets du moteur principal ; pas le total par image avec les rétroviseurs.",
+        "simulation": "simulationEcoulee inclut la chauffe ; vérifier le trajet final, la boucle bride les longs intervalles à 0,1 s."
+      },
+      "rapportBrut": "2-pluie.json"
+    },
+    {
+      "repetition": 3,
+      "meteo": "pluie",
+      "avant": {
+        "utc": "2026-11-22T16:37:01.799+00:00",
+        "charge1m5m15m": [
+          2.59716796875,
+          2.62744140625,
+          3.0107421875
+        ],
+        "batterie": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=24445027)\t84%; charging; 0:53 remaining present: true",
+        "thermiqueMacOS": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+        "pressionThermiqueNSProcessInfo": 0
+      },
+      "apres": {
+        "utc": "2026-11-22T16:37:26.604+00:00",
+        "charge1m5m15m": [
+          2.86865234375,
+          2.68798828125,
+          3.02001953125
+        ],
+        "batterie": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=24445027)\t84%; charging; 0:53 remaining present: true",
+        "thermiqueMacOS": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+        "pressionThermiqueNSProcessInfo": 0
+      },
+      "dureeS": 10.02,
+      "images": 601,
+      "ips": 59.98,
+      "p50Ms": 16.7,
+      "p95Ms": 16.7,
+      "pireMs": 16.8,
+      "voitures": 12,
+      "solMouille": 0.75,
+      "retro": "oui",
+      "abscisseFinaleMetres": 3052.729755326327,
+      "tempsSimulationSChauffeIncluse": 19.799999999999088,
+      "vues": {
+        "principale": {
+          "images": 1187,
+          "drawCalls": 1002.798652064027,
+          "triangles": 2582066.094355518,
+          "rendusParImage": 1,
+          "drawCallsParImage": 1157.8,
+          "trianglesParImage": 2635681.879166667
+        },
+        "joueur2": {
+          "images": 0,
+          "drawCalls": 0,
+          "triangles": 0,
+          "rendusParImage": 0,
+          "drawCallsParImage": 0,
+          "trianglesParImage": 0
+        },
+        "retro": {
+          "images": 1189,
+          "drawCalls": 318.0277544154752,
+          "triangles": 840270.1354079058,
+          "rendusParImage": 1,
+          "drawCallsParImage": 259.85833333333335,
+          "trianglesParImage": 734610.3166666667
+        }
+      },
+      "cpuP50Ms": {
+        "boucle": 4.300000000745058,
+        "simulation": 1,
+        "rendu": 1.3999999985098839,
+        "effets": 0,
+        "hud": 0,
+        "son": 0
+      },
+      "cpuP95Ms": {
+        "boucle": 4.800000000745058,
+        "simulation": 1.3999999985098839,
+        "rendu": 1.6000000014901161,
+        "effets": 0.10000000149011612,
+        "hud": 0.10000000149011612,
+        "son": 0
+      },
+      "porteeCompteurs": {
+        "intervalles": "Fenêtre chronométrée du banc après chauffe : p50/p95/pire dans banc, en millisecondes réelles.",
+        "cpu": "Fenêtre des 240 images les plus récentes, pouvant inclure la chauffe si moins de 240 images ont été rendues.",
+        "vues": "drawCalls/triangles : moyenne par rendu depuis le départ ; champs ParImage : fenêtre des 240 images récentes.",
+        "gpu": "Moyenne des trois derniers draws complets du moteur principal ; pas le total par image avec les rétroviseurs.",
+        "simulation": "simulationEcoulee inclut la chauffe ; vérifier le trajet final, la boucle bride les longs intervalles à 0,1 s."
+      },
+      "rapportBrut": "3-pluie.json"
+    }
+  ],
+  "limites": [
+    "Un passage sec, trois passages pluvieux sur un Mac M5 ; l’affichage matériel du jeu sur une console ou un autre PC peut différer.",
+    "Les p50 et p95 sont ceux des intervalles requestAnimationFrame mesurés en course. Le débit plafonne à la fréquence de rafraîchissement.",
+    "Les conditions météo changent la glisse, le trafic et la position finale. Même départ et même graine pour chaque reprise.",
+    "La pression thermique est l’état publié par macOS. Les durées de chauffe et les temps de chargement ne sont pas inclus dans le débit."
+  ],
+  "navigateur": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+  "rendu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+  "synthese": {
+    "sec": {
+      "images": 601,
+      "tempsMesureS": 10.02,
+      "ipsMoyennePonderee": 59.98,
+      "ipsMinimumMaximum": [
+        59.98,
+        59.98
+      ],
+      "medianeDesTroisP50Ms": 16.7,
+      "medianeDesTroisP95Ms": 16.7
+    },
+    "pluie": {
+      "images": 1803,
+      "tempsMesureS": 30.06,
+      "ipsMoyennePonderee": 59.98,
+      "ipsMinimumMaximum": [
+        59.98,
+        59.98
+      ],
+      "medianeDesTroisP50Ms": 16.7,
+      "medianeDesTroisP95Ms": 16.7
+    }
+  }
+}

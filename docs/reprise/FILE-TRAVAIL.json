@@ -3,13 +3,13 @@
   "date": "2026-11-22",
   "base": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
   "runtime_livre": {
-    "version": "0.2.108",
+    "version": "0.2.110",
     "physique": "p16",
     "moteur": "FERRO 0.3.16",
     "circuits": 11,
-    "commit_sources": "45d0db90e9ea5da81da55b6b166abb77777c6db1",
-    "html_sha256": "0a0a62ce85ac9428c55cbff13718f6ec14b0a380edb4fc0e93c81ca84b549d61",
-    "recu": "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
+    "commit_sources": "e10cc3bf12698ce2aaf83c4c04057a0d4c0d7d5e",
+    "html_sha256": "89cf623854ed3caa33a983f1f52b028f1835f30844e0c30fff9c7e1cc5fbaca1",
+    "recu": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json"
   },
   "destinations_prevues": 17,
   "lot_actif": "qualification_materielle_et_rendu",
@@ -384,7 +384,11 @@
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
       "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md",
-      "reste": "Contrat p16, replays et migration conservés. Comparer les signatures haptiques sur les trois manettes."
+      "reste": "Contrat p16, replays et migration conservés. Comparer les signatures haptiques sur les trois manettes.",
+      "reception_22_novembre_rendu": {
+        "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/raclement-r6.json",
+        "resultat": "Pneus, impact, raclement et avaries en pause reliés aux états de conduite existants."
+      }
     },
     {
       "id": "rendu",
@@ -398,7 +402,11 @@
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
       "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md",
-      "reste": "Relief du Piémont utilisé à Larche. Reprendre matériaux, éclairage et rendu des objets proches."
+      "reste": "Relief du Piémont utilisé à Larche. Reprendre matériaux, éclairage et rendu des objets proches.",
+      "reception_22_novembre_rendu": {
+        "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/cadence-0110.json",
+        "resultat": "Cadence sous pluie et visière équivalente au pixel sur Mac M5."
+      }
     },
     {
       "id": "matieres",
@@ -412,7 +420,11 @@
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
       "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md",
-      "reste": "Bordures des pistes et couleurs du terrain affinées. Étendre la qualification selon matériaux et conditions."
+      "reste": "Bordures des pistes et couleurs du terrain affinées. Étendre la qualification selon matériaux et conditions.",
+      "reception_22_novembre_rendu": {
+        "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/Larche-asphalte-pluie.jpg",
+        "resultat": "Granulat et film d’eau de la SS21, géométrie et collisions conservées."
+      }
     },
     {
       "id": "reseau",
@@ -588,6 +600,10 @@
         "gain_prouve": false,
         "optimisation_appliquee": false,
         "proprietaire_suivant": "04"
+      },
+      "reception_22_novembre_rendu": {
+        "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/budget-decors.json",
+        "resultat": "Onze coûts CPU mesurés. Découpe d’herbe différée au Fjord."
       }
     },
     {
@@ -639,7 +655,7 @@
     {
       "id": "bandeaux_led_course",
       "objectif": "Bandeaux LED procéduraux affichant drapeaux, tours, secteurs, stands et météo",
-      "etat": "planned",
+      "etat": "in_progress",
       "dependances": [
         "references"
       ],
@@ -648,12 +664,16 @@
       "origine": "Demande explicite David, vidéo Rozz Games puis hélicoptères/drones METAL, 20 novembre 2026",
       "proprietaire_propose": "Nouveau module à attribuer ; raccords 00",
       "cloture": "Messages français conformes à la course, cohérence J1/J2, grille préchargée et mises à jour bornées",
-      "runtime_livre": false
+      "runtime_livre": false,
+      "reception_22_novembre_rendu": {
+        "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/Portique-en-course.png",
+        "resultat": "Portique à texte LED essayé en course. Essais de lecture nocturne sur écran physique ouverts."
+      }
     },
     {
       "id": "aeriens_helicopteres",
       "objectif": "Hélicoptères visibles de retransmission survolant le peloton, rotors et trajectoires animés",
-      "etat": "planned",
+      "etat": "in_progress",
       "dependances": [
         "references"
       ],
@@ -662,12 +682,16 @@
       "origine": "Demande explicite David, vidéo Rozz Games puis hélicoptères/drones METAL, 20 novembre 2026",
       "proprietaire_propose": "Nouveau module aérien à attribuer ; raccords 00, son 01, coûts 02",
       "cloture": "Survol terrain/structures, vues/rétros cohérents, pools/LOD, audio synthétique ; p15 conservée au premier lot",
-      "runtime_livre": false
+      "runtime_livre": false,
+      "reception_22_novembre_rendu": {
+        "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/survol-catalogue.json",
+        "resultat": "Plancher de survol qualifié sur 2 112 points des onze circuits."
+      }
     },
     {
       "id": "aeriens_drones_metal",
       "objectif": "Drones de tournage issus des modèles procéduraux de METAL",
-      "etat": "planned",
+      "etat": "in_progress",
       "dependances": [
         "references"
       ],
@@ -676,7 +700,11 @@
       "origine": "Demande explicite David, vidéo Rozz Games puis hélicoptères/drones METAL, 20 novembre 2026",
       "proprietaire_propose": "Même module aérien ; raccords 00, son 01, coûts 02",
       "cloture": "Provenance METAL, adaptation repère/hauteur, rotors, LOD et pools ; aucun système de combat importé",
-      "runtime_livre": false
+      "runtime_livre": false,
+      "reception_22_novembre_rendu": {
+        "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/survol-catalogue.json",
+        "resultat": "Plancher de survol commun, prise en compte des obstacles proches."
+      }
     },
     {
       "id": "reference_voiture_126ck",
@@ -726,7 +754,11 @@
       "reste": "Parcours complet au chrono et en course, y compris sous pluie. Vérifier sur manettes physiques et contrôler la fidélité des épingles.",
       "preuves": [
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
-      ]
+      ],
+      "reception_22_novembre_rendu": {
+        "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/menu-et-avaries-0110.json",
+        "resultat": "Cartes et menu à la distance entre lignes. Rendu des aiguilles, du film d’eau et de l’asphalte essayé."
+      }
     },
     {
       "id": "six_vues_course",
@@ -956,7 +988,8 @@
   "inspiration_race": {
     "fiche": "docs/reprise/REFERENCE-RACE-2026-11-21.md",
     "pistes": 8,
-    "etat": "etude_terminee_non_implementee"
+    "etat": "realisation_partielle",
+    "reception": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json"
   },
   "dernier_runtime_candidat_publie_historique": {
     "version": "0.2.75",

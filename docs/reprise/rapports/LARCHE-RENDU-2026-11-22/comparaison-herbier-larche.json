@@ -1,0 +1,85 @@
+{
+  "version": "0.2.110",
+  "circuit": "Col de Larche → Vinadio",
+  "protocole": "Noyau seul, données réelles de la première construction Fine, palier enrichi, été. Cinq passages alternés par méthode sur un même processus Node macOS M5. ramasse-miettes avant chaque appel hors mesure. Les copies mémoire du pont WASM sont chronométrées.",
+  "node": "v24.18.0",
+  "octetsWasm": 5961,
+  "compilationMs": 0.16,
+  "instanciationMs": 0.06,
+  "medianesMs": {
+    "js": 365.49,
+    "wasm": 136.49
+  },
+  "mesures": [
+    {
+      "tour": 1,
+      "type": "JavaScript",
+      "ms": 339.51,
+      "triangles": 252348,
+      "empreinte": "993851a2275ee47032e8af7328571fccd05378e943f319191be96de8099b279f"
+    },
+    {
+      "tour": 1,
+      "type": "WebAssembly",
+      "ms": 157.6,
+      "triangles": 252348,
+      "empreinte": "993851a2275ee47032e8af7328571fccd05378e943f319191be96de8099b279f"
+    },
+    {
+      "tour": 2,
+      "type": "WebAssembly",
+      "ms": 133,
+      "triangles": 252348,
+      "empreinte": "993851a2275ee47032e8af7328571fccd05378e943f319191be96de8099b279f"
+    },
+    {
+      "tour": 2,
+      "type": "JavaScript",
+      "ms": 366.75,
+      "triangles": 252348,
+      "empreinte": "993851a2275ee47032e8af7328571fccd05378e943f319191be96de8099b279f"
+    },
+    {
+      "tour": 3,
+      "type": "JavaScript",
+      "ms": 365.49,
+      "triangles": 252348,
+      "empreinte": "993851a2275ee47032e8af7328571fccd05378e943f319191be96de8099b279f"
+    },
+    {
+      "tour": 3,
+      "type": "WebAssembly",
+      "ms": 136.49,
+      "triangles": 252348,
+      "empreinte": "993851a2275ee47032e8af7328571fccd05378e943f319191be96de8099b279f"
+    },
+    {
+      "tour": 4,
+      "type": "WebAssembly",
+      "ms": 135.23,
+      "triangles": 252348,
+      "empreinte": "993851a2275ee47032e8af7328571fccd05378e943f319191be96de8099b279f"
+    },
+    {
+      "tour": 4,
+      "type": "JavaScript",
+      "ms": 370.7,
+      "triangles": 252348,
+      "empreinte": "993851a2275ee47032e8af7328571fccd05378e943f319191be96de8099b279f"
+    },
+    {
+      "tour": 5,
+      "type": "JavaScript",
+      "ms": 354.89,
+      "triangles": 252348,
+      "empreinte": "993851a2275ee47032e8af7328571fccd05378e943f319191be96de8099b279f"
+    },
+    {
+      "tour": 5,
+      "type": "WebAssembly",
+      "ms": 138.13,
+      "triangles": 252348,
+      "empreinte": "993851a2275ee47032e8af7328571fccd05378e943f319191be96de8099b279f"
+    }
+  ]
+}

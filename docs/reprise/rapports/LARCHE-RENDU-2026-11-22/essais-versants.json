@@ -1,0 +1,257 @@
+{
+  "verdict": "Conserver le rendu des versants livré en .110. L’essai de pigmentation reste à l’étude.",
+  "controleEnJeu": {
+    "source": "Chrome WebGL2 SwiftShader, scène de course, 960 × 540, sec, été, qualité haute, poursuite, même graine 17017 et même caméra pour chaque paire",
+    "stationsMetres": [
+      4588.934011149999,
+      16501.128756923485
+    ],
+    "versions": {
+      "référence .109": "c7d0af843d1475d4bfd6b0a954990c622018f19abe843f6b68ff2292b9957b17",
+      "pigment brut": "9e4f0d5f817552d27601fb374633b9eef74786623023bb9f7e769b2cc7fb1ba5",
+      "pigment filtré": "8c75c00742094848e9d36260698bbe34ae17d95cc6922a03da2438d309704c68",
+      "interpolation expérimentale": "27f40324a695c3813251cd76c8132839aa113854e2464736554ca791ac865f5d"
+    }
+  },
+  "lecture": {
+    "pigmentBrut": "Les fractions ESA WorldCover et la pente mesurée dessinent les étendues rocheuses. Le pigment par triangle imprime les grandes mailles du MNT dans le paysage.",
+    "pigmentFiltre": "Le filtrage CPU préalable sur la grille du MNT diminue le saut de pigment au 99e centile du panorama de 0,175 à 0,025. À 4,59 km les nuances des flancs éloignés sont amorties. À 16,50 km les faces restent évidentes sur le flanc proche à droite de la route.",
+    "interpolation": "Sur la même vue à 4,59 km les variations de teinte suivent le relief en continu. Pour utiliser cet essai une interpolation de pigment optative doit être qualifiée dans FERRO et répercutée dans ses hôtes et backends. Le prototype HTML isolé ne constitue pas cette qualification."
+  },
+  "controleMaillage": {
+    "indicePositionNormaleUVRecetteConstants": true,
+    "surfacesDeConduiteEtEauCouleursConstantes": true,
+    "hiverToutesCouleursConstantes": true,
+    "surfaces": {
+      "accotement": {
+        "sommets": 150138,
+        "triangles": 146912,
+        "nappes": 137
+      },
+      "terrain": {
+        "sommets": 62370,
+        "triangles": 98560,
+        "nappes": 770
+      },
+      "panorama": {
+        "sommets": 29823,
+        "triangles": 45212,
+        "nappes": 396
+      },
+      "eau": {
+        "sommets": 31,
+        "triangles": 30,
+        "nappes": 1
+      }
+    },
+    "testsDeNonRegression": 12
+  },
+  "sautsDePigmentEntreTriangles": [
+    {
+      "nom": "brut",
+      "surface": "terrain",
+      "aretes": 146584,
+      "p95": 0.04207724332809448,
+      "p99": 0.08781318366527557
+    },
+    {
+      "nom": "brut",
+      "surface": "panorama",
+      "aretes": 66253,
+      "p95": 0.11719396710395813,
+      "p99": 0.17480385303497314
+    },
+    {
+      "nom": "filtre",
+      "surface": "terrain",
+      "aretes": 146584,
+      "p95": 0.03879004716873169,
+      "p99": 0.08718833327293396
+    },
+    {
+      "nom": "filtre",
+      "surface": "panorama",
+      "aretes": 66253,
+      "p95": 0.01885351538658142,
+      "p99": 0.025038927793502808
+    }
+  ],
+  "relevesPixel": [
+    {
+      "stationMetres": 4588,
+      "essai": "pigment-brut",
+      "zones": [
+        {
+          "zone": [
+            200,
+            111,
+            372,
+            179
+          ],
+          "moyenneDeltaCanalMax255": 11.95,
+          "p90DeltaCanalMax255": 20.0,
+          "pixelsAuMoins3Sur255": 0.989,
+          "nouvellesAretesFortsSurBordsCalmes": 0.01274,
+          "p99GradientSurBordsCalmes": 7.0
+        },
+        {
+          "zone": [
+            730,
+            133,
+            936,
+            161
+          ],
+          "moyenneDeltaCanalMax255": 9.18,
+          "p90DeltaCanalMax255": 16.0,
+          "pixelsAuMoins3Sur255": 0.978,
+          "nouvellesAretesFortsSurBordsCalmes": 0.06171,
+          "p99GradientSurBordsCalmes": 10.54
+        }
+      ],
+      "empreinte": "9e4f0d5f817552d27601fb374633b9eef74786623023bb9f7e769b2cc7fb1ba5"
+    },
+    {
+      "stationMetres": 4588,
+      "essai": "pigment-filtre",
+      "zones": [
+        {
+          "zone": [
+            200,
+            111,
+            372,
+            179
+          ],
+          "moyenneDeltaCanalMax255": 10.14,
+          "p90DeltaCanalMax255": 12.0,
+          "pixelsAuMoins3Sur255": 0.997,
+          "nouvellesAretesFortsSurBordsCalmes": 9e-05,
+          "p99GradientSurBordsCalmes": 3.0
+        },
+        {
+          "zone": [
+            730,
+            133,
+            936,
+            161
+          ],
+          "moyenneDeltaCanalMax255": 9.72,
+          "p90DeltaCanalMax255": 13.0,
+          "pixelsAuMoins3Sur255": 1.0,
+          "nouvellesAretesFortsSurBordsCalmes": 0.0,
+          "p99GradientSurBordsCalmes": 3.0
+        }
+      ],
+      "empreinte": "8c75c00742094848e9d36260698bbe34ae17d95cc6922a03da2438d309704c68"
+    },
+    {
+      "stationMetres": 4588,
+      "essai": "prototype-interpolation",
+      "zones": [
+        {
+          "zone": [
+            200,
+            111,
+            372,
+            179
+          ],
+          "moyenneDeltaCanalMax255": 12.87,
+          "p90DeltaCanalMax255": 20.0,
+          "pixelsAuMoins3Sur255": 0.988,
+          "nouvellesAretesFortsSurBordsCalmes": 0.0,
+          "p99GradientSurBordsCalmes": 3.0
+        },
+        {
+          "zone": [
+            730,
+            133,
+            936,
+            161
+          ],
+          "moyenneDeltaCanalMax255": 9.27,
+          "p90DeltaCanalMax255": 15.0,
+          "pixelsAuMoins3Sur255": 0.981,
+          "nouvellesAretesFortsSurBordsCalmes": 0.0,
+          "p99GradientSurBordsCalmes": 2.0
+        }
+      ],
+      "empreinte": "27f40324a695c3813251cd76c8132839aa113854e2464736554ca791ac865f5d"
+    },
+    {
+      "stationMetres": 16500,
+      "essai": "pigment-brut",
+      "zones": [
+        {
+          "zone": [
+            208,
+            109,
+            346,
+            146
+          ],
+          "moyenneDeltaCanalMax255": 7.6,
+          "p90DeltaCanalMax255": 12.0,
+          "pixelsAuMoins3Sur255": 0.875,
+          "nouvellesAretesFortsSurBordsCalmes": 0.04844,
+          "p99GradientSurBordsCalmes": 8.0
+        },
+        {
+          "zone": [
+            742,
+            100,
+            909,
+            143
+          ],
+          "moyenneDeltaCanalMax255": 31.89,
+          "p90DeltaCanalMax255": 41.0,
+          "pixelsAuMoins3Sur255": 1.0,
+          "nouvellesAretesFortsSurBordsCalmes": 0.0,
+          "p99GradientSurBordsCalmes": 2.0
+        }
+      ],
+      "empreinte": "9e4f0d5f817552d27601fb374633b9eef74786623023bb9f7e769b2cc7fb1ba5"
+    },
+    {
+      "stationMetres": 16500,
+      "essai": "pigment-filtre",
+      "zones": [
+        {
+          "zone": [
+            208,
+            109,
+            346,
+            146
+          ],
+          "moyenneDeltaCanalMax255": 5.79,
+          "p90DeltaCanalMax255": 7.0,
+          "pixelsAuMoins3Sur255": 0.995,
+          "nouvellesAretesFortsSurBordsCalmes": 0.0,
+          "p99GradientSurBordsCalmes": 2.0
+        },
+        {
+          "zone": [
+            742,
+            100,
+            909,
+            143
+          ],
+          "moyenneDeltaCanalMax255": 31.68,
+          "p90DeltaCanalMax255": 41.0,
+          "pixelsAuMoins3Sur255": 1.0,
+          "nouvellesAretesFortsSurBordsCalmes": 0.0,
+          "p99GradientSurBordsCalmes": 2.0
+        }
+      ],
+      "empreinte": "8c75c00742094848e9d36260698bbe34ae17d95cc6922a03da2438d309704c68"
+    }
+  ],
+  "limites": "Admission visuelle à deux positions en été. Le prototype d’interpolation a été capturé à la première. Le banc de capture commande l’horloge et ne mesure pas les performances.",
+  "sondeWebGL2": {
+    "artefact": "versants-prototype-interpolation.html",
+    "portee": "Nappes estivales explicitement marquées de Larche. Les nappes hors neige dont le champ pigment est disponible portent ce marqueur.",
+    "recettes": {
+      "23.25": "Panorama de roche, famille FERRO 23, calcul de roche prévu conservé par arrondi.",
+      "25.25": "Terrain de sol organique, famille FERRO 25. La recette conserve ses mécanismes de sol et de végétation."
+    },
+    "transport": "Marquage dans le tampon temporaire GPU au chargement ; indices et données CPU conservés. Le vertex shader place iColor.rgb dans le varying vLocal, normalement des coordonnées locales. Le fragment shader lit vLocal comme teinte uniquement pour 23.25/25.25 ; il conserve vColor flat autrement. Aucun nouveau varying ni lecture de texture.",
+    "limites": "Essai sur WebGL2 uniquement, à pleine opacité. vLocal est utilisé pour le tramage commun de l’opacité, le béton, le métal, le bois, les plantes, les enveloppes architecturales et des passes de profondeur ; son détournement empêcherait une généralisation sûre. La route, les autres matériaux, saisons, circuits et WebGPU ne sont pas qualifiés comme nouvelle fonctionnalité. Pour FERRO il faudrait une option attribuée officiellement, un canal défini, des tests des passes et profils, puis qualification des applications hôtes."
+  }
+}

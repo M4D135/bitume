@@ -1,0 +1,67 @@
+{
+  "date": "2026-11-22",
+  "version": "0.2.110",
+  "commit_sources": "e10cc3bf12698ce2aaf83c4c04057a0d4c0d7d5e",
+  "branche": "main",
+  "build": {
+    "raw": 15238343,
+    "gzip": 3731133,
+    "sha256": "89cf623854ed3caa33a983f1f52b028f1835f30844e0c30fff9c7e1cc5fbaca1"
+  },
+  "assemblages_locaux_identiques": true,
+  "circuits": 11,
+  "moteur": "FERRO 0.3.16",
+  "physique": "p16",
+  "qualification_github": {
+    "conclusion": "success",
+    "commit": "e10cc3bf12698ce2aaf83c4c04057a0d4c0d7d5e",
+    "version": "0.2.110",
+    "url": "https://github.com/M4D135/bitume/actions/runs/45045468202",
+    "suites_node": 227,
+    "tests_python": 8,
+    "suites_en_echec": 0,
+    "sha256_html": "89cf623854ed3caa33a983f1f52b028f1835f30844e0c30fff9c7e1cc5fbaca1",
+    "artefact": 14763373282,
+    "lots": [
+      57,
+      57,
+      57,
+      56
+    ],
+    "reconstruction_git_identique": true
+  },
+  "preuves": [
+    "Glissiere-en-contact.wav",
+    "Larche-asphalte-pluie.jpg",
+    "Larche-coniferes-automne.jpg",
+    "Mur-en-contact.wav",
+    "Pneus-quatre-etats.wav",
+    "Portique-en-course.png",
+    "avaries-r7.json",
+    "budget-decors.json",
+    "cadence-0108-0109.json",
+    "cadence-0110-1080p.json",
+    "cadence-0110.json",
+    "comparaison-herbier-larche.json",
+    "coniferes-0109.json",
+    "diagnostic-optique.json",
+    "essais-versants.json",
+    "menu-et-avaries-0110.json",
+    "mire-visiere.json",
+    "pietraporzio-0110.json",
+    "pixels-cockpit.json",
+    "pneus-r5.json",
+    "qualification-0110.json",
+    "raclement-r6.json",
+    "secteurs-0109.json",
+    "survol-catalogue.json",
+    "versants-prototype.jpg"
+  ],
+  "limites": [
+    "Cadence mesurée sur le Mac M5 du test, dans les conditions de chaque relevé. Les autres appareils demandent une réception matérielle.",
+    "Ressenti des vibrations Switch, Xbox et PS5 à vérifier en main.",
+    "Les modèles proches, les façades et la lumière du catalogue demandent de nouveaux essais pour le photoréalisme.",
+    "La pigmentation continue des versants a été évaluée dans un prototype WebGL2 séparé."
+  ],
+  "deploiement_public": false
+}

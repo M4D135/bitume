@@ -1,5 +1,11 @@
 # BITUME — reprise courte
 
+## Larche sous la pluie et état de course, version 0.2.110
+
+Sur Mac M5 en cockpit 1 280 × 720, la visière réutilise directement l’image de FERRO. Les trois passages pluvieux de référence passent de 52,35 i/s en .108 à 59,98 i/s. En 1 920 × 1 080, le relevé initial donne 48,67 i/s sous la pluie. Les arbres et l’asphalte de Larche, les distances chronométrées, les sons de pneus et de glissières, la pause des deux pilotes, l’affichage du portique et le survol des obstacles ont reçu des essais distincts. La qualification GitHub de la .110 passe ses 227 suites Node et ses huit tests Python.
+
+[Feuille de route des 47 demandes](docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md) · [Mesures, écoute et comparaisons en course](docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json)
+
 ## Livraison intégrée du 22 novembre — 0.2.108
 
 Le jeu web propose onze circuits sur FERRO 0.3.16 et le contrat de conduite p16. La pluie utilise une seule couche en conduite. La route de Larche a été parcourue intégralement en chrono et en course par le pilote automatique PhysX, y compris sous la pluie. Les chevrons à grille LED suivent les courbes et le HUD de course est plus discret. Les essais de vibrations différencient rapport, impact, vibreur, roulement et régime moteur. La réception tactile sur les trois familles de manettes reste ouverte.

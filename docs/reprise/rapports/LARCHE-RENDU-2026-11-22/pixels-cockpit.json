@@ -1,0 +1,53 @@
+{
+  "environnement": {
+    "navigateur": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+    "rendu": "WebKit WebGL",
+    "nonMasque": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+    "webgl2": true,
+    "backend": "webgl2",
+    "chronometrageGpu": true,
+    "gpuModeste": false,
+    "resolution": [
+      1280,
+      720
+    ],
+    "fenetre": [
+      1280,
+      720,
+      1
+    ],
+    "visible": true,
+    "version": "V0.2.108",
+    "signature": true,
+    "liensSignature": 0
+  },
+  "build": {
+    "sha256": "f65ba41f322b4265954d92cc28d05a49d6077089f51bbbc9c6a7a95f2a936761",
+    "octets": 15214088
+  },
+  "refletsActifs": true,
+  "pixels": {
+    "s": 2868,
+    "vitesse": 15.586621474952556,
+    "simulation": 8.23333333333342,
+    "niveau": "1280x720, cockpit, Larche, pluie",
+    "fini": true,
+    "largeur": 1280,
+    "hauteur": 720,
+    "octets": 3686400,
+    "octetsDifferents": 0,
+    "erreurMax": 0,
+    "erreurMoyenne": 0,
+    "pixelsAlpha16": 491901,
+    "pixelsRouges": 72705,
+    "pixelsBleus": 263752,
+    "erreurWebGL": 0
+  },
+  "erreurs": [],
+  "avertissements": [
+    {
+      "type": "info",
+      "texte": "BITUME banc {\"qualite\":\"high\",\"duree\":6.02,\"images\":356,\"p50\":16.7,\"p95\":16.8,\"pire\":100,\"fenetre\":\"1280×720\",\"image\":\"1280×720\",\"circuit\":\"Col de Larche → Vinadio\",\"interrompu\":false,\"reference\":{\"graine\":17017,\"circuit\":6,\"circuitId\":\"larche\",\"graineCircuit\":210,\"mode\":\"solo\",\"qualite\":\"high\",\"anticrenelage\":\"profil\",\"ombres\":\"profil\",\"vegetation\":\"profil\",\"faune\":\"profil\",\"moment\":\"jour\",\"saiso"
+    }
+  ]
+}

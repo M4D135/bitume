@@ -1,0 +1,238 @@
+{
+  "version": "0.2.109",
+  "commit": "dea05e9",
+  "machine": "Apple M5, macOS ARM64, Node 24.22.3",
+  "protocole": {
+    "historique": "Les 4 fixtures de nappes-decor.test.mjs utilisent les seuls modules carene, circuit et decor plus leurs require transitifs, et des circuits procéduraux (dont la « Route-des-Cimes » sans ID catalogue). Le test officiel garde sa limite stricte de 150 ms pour chacun.",
+    "catalogue_base": "Script fourni budget-catalogue-109.mjs sans modification. Un processus neuf par carte et cinq constructions consecutives avec le même circuit. Les imports de qualification saisons et le module Larche engagent plus de décor que les quatre fixtures, mais l’absence d’options sélectionne low et la végétation n’est pas chargée.",
+    "fine": "Le même circuit authentique que dans le menu. Trois processus neufs par carte, deux appels au constructeur dans chaque processus, avec GC avant mesure. Options de installer() : Fine enrichie, matières et végétation hautes, saison été, sols procéduraux et organiques, public présent, graphismes de montagne et signalisation chargés. On isole le CPU de B.decor.construire. Le chargement du JS, la création du circuit, la préparation PhysX, les téléchargements, le GPU et la première image sont hors horloge.",
+    "cache": "Au second appel sur la même référence de circuit, des caches CPU tels que l’herbier peuvent être repris. A Larche la première génération fournit les vraies nappes de panorama, encodées puis décodées par B.panoramaCache, hors horloge ; aucune durée d’E/S IndexedDB n’est déduite. Dans le jeu un décor encore installé est directement réutilisé."
+  },
+  "cartes": [
+    {
+      "id": "val-brule",
+      "basePremiereMs": 50.81,
+      "baseMediane5Ms": 39.04,
+      "fineFroideMs": {
+        "min": 388.79,
+        "mediane": 392.32,
+        "max": 399.52
+      },
+      "fineReconstructionMs": {
+        "min": 218.41,
+        "mediane": 221.22,
+        "max": 227.65
+      },
+      "nappes": 180,
+      "objets": 59822,
+      "decoupesHerbier": 1
+    },
+    {
+      "id": "marseille",
+      "basePremiereMs": 131.47,
+      "baseMediane5Ms": 112.47,
+      "fineFroideMs": {
+        "min": 336.75,
+        "mediane": 341.38,
+        "max": 368.44
+      },
+      "fineReconstructionMs": {
+        "min": 203.23,
+        "mediane": 204.15,
+        "max": 205.71
+      },
+      "nappes": 367,
+      "objets": 28415,
+      "decoupesHerbier": 1
+    },
+    {
+      "id": "corail",
+      "basePremiereMs": 48.35,
+      "baseMediane5Ms": 35.25,
+      "fineFroideMs": {
+        "min": 85.16,
+        "mediane": 86.84,
+        "max": 88.17
+      },
+      "fineReconstructionMs": {
+        "min": 73.27,
+        "mediane": 76.42,
+        "max": 77.44
+      },
+      "nappes": 208,
+      "objets": 6400,
+      "decoupesHerbier": 0
+    },
+    {
+      "id": "cap-sequoia",
+      "basePremiereMs": 58.76,
+      "baseMediane5Ms": 48.05,
+      "fineFroideMs": {
+        "min": 115.17,
+        "mediane": 118.94,
+        "max": 119.45
+      },
+      "fineReconstructionMs": {
+        "min": 97.78,
+        "mediane": 101.06,
+        "max": 106.71
+      },
+      "nappes": 301,
+      "objets": 7451,
+      "decoupesHerbier": 0
+    },
+    {
+      "id": "fjord",
+      "basePremiereMs": 53.45,
+      "baseMediane5Ms": 42.65,
+      "fineFroideMs": {
+        "min": 272.63,
+        "mediane": 278.94,
+        "max": 284.34
+      },
+      "fineReconstructionMs": {
+        "min": 91.32,
+        "mediane": 96.2,
+        "max": 96.66
+      },
+      "nappes": 240,
+      "objets": 9304,
+      "decoupesHerbier": 1
+    },
+    {
+      "id": "route-des-cimes",
+      "basePremiereMs": 111.66,
+      "baseMediane5Ms": 95.4,
+      "fineFroideMs": {
+        "min": 526.5,
+        "mediane": 533.69,
+        "max": 548.43
+      },
+      "fineReconstructionMs": {
+        "min": 301.1,
+        "mediane": 313.5,
+        "max": 319.76
+      },
+      "nappes": 442,
+      "objets": 56331,
+      "decoupesHerbier": 1
+    },
+    {
+      "id": "larche",
+      "basePremiereMs": 429.79,
+      "baseMediane5Ms": 441.61,
+      "fineFroideMs": {
+        "min": 1287.45,
+        "mediane": 1326.03,
+        "max": 1351.56
+      },
+      "fineReconstructionMs": {
+        "min": 646.86,
+        "mediane": 651.23,
+        "max": 659.31
+      },
+      "nappes": 1304,
+      "objets": 103245,
+      "decoupesHerbier": 1,
+      "panoramaFroidMs": {
+        "min": 47.68,
+        "mediane": 47.83,
+        "max": 50.19
+      },
+      "decodagePanoramaEnMemoireMs": {
+        "min": 1.16,
+        "mediane": 2.39,
+        "max": 4.25
+      },
+      "taillePanoramaOctets": 2109188
+    },
+    {
+      "id": "lande-noire",
+      "basePremiereMs": 51.78,
+      "baseMediane5Ms": 42.11,
+      "fineFroideMs": {
+        "min": 96.97,
+        "mediane": 97.7,
+        "max": 99.97
+      },
+      "fineReconstructionMs": {
+        "min": 81.23,
+        "mediane": 81.9,
+        "max": 86.13
+      },
+      "nappes": 249,
+      "objets": 6871,
+      "decoupesHerbier": 0
+    },
+    {
+      "id": "sierra",
+      "basePremiereMs": 59.44,
+      "baseMediane5Ms": 49.34,
+      "fineFroideMs": {
+        "min": 112.95,
+        "mediane": 112.99,
+        "max": 117.26
+      },
+      "fineReconstructionMs": {
+        "min": 93.99,
+        "mediane": 94.23,
+        "max": 98.69
+      },
+      "nappes": 282,
+      "objets": 7042,
+      "decoupesHerbier": 0
+    },
+    {
+      "id": "brume-de-jade",
+      "basePremiereMs": 69.48,
+      "baseMediane5Ms": 61.5,
+      "fineFroideMs": {
+        "min": 128.38,
+        "mediane": 128.52,
+        "max": 132.5
+      },
+      "fineReconstructionMs": {
+        "min": 108.89,
+        "mediane": 110.12,
+        "max": 112.63
+      },
+      "nappes": 282,
+      "objets": 7211,
+      "decoupesHerbier": 0
+    },
+    {
+      "id": "baikal",
+      "basePremiereMs": 67.7,
+      "baseMediane5Ms": 57.74,
+      "fineFroideMs": {
+        "min": 504.69,
+        "mediane": 506.07,
+        "max": 515.07
+      },
+      "fineReconstructionMs": {
+        "min": 264.94,
+        "mediane": 271.69,
+        "max": 282.51
+      },
+      "nappes": 285,
+      "objets": 65280,
+      "decoupesHerbier": 1
+    }
+  ],
+  "correctionFjord": {
+    "avant": {
+      "min": 272.63,
+      "mediane": 278.94,
+      "max": 284.34
+    },
+    "apres": {
+      "min": 103.41,
+      "mediane": 103.93,
+      "max": 104.94
+    },
+    "scenesCatalogueIdentiques": true,
+    "herbierExpliciteIdentique": true,
+    "trianglesHerbierExplicite": 84623,
+    "shaHerbierExplicite": "721fbb22f538d1203180a2003fc392289358e06bb3775d4d9d4bbade4d8a9769"
+  }
+}

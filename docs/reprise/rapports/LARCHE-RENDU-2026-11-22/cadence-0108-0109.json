@@ -1,0 +1,332 @@
+{
+  "protocole": "Un profil Chrome headless neuf pour chaque essai. Fenêtre de 10 secondes après 12 secondes de chauffe, sans capture ni avance manuelle. Ordre sec/pluie répété trois fois. Le compteur moyen est calculé avec images / durée réelle.",
+  "conditions": {
+    "circuit": "Col de Larche → Vinadio",
+    "grille": 12,
+    "graine": 17017,
+    "departMetres": 2770,
+    "vitesseInitialeMps": 20,
+    "qualite": "Fine (high)",
+    "vue": "cockpit",
+    "retroviseur": true,
+    "texture": "décor enrichi",
+    "mode": "solo, pilote automatique",
+    "resolution": [
+      1280,
+      720
+    ],
+    "chauffeS": 12,
+    "mesureS": 10,
+    "cadence": "écran, requestAnimationFrame natif",
+    "legendeThermique": "0 nominal, 1 fair, 2 serious, 3 critical ; aucune température de puce en °C n’est exposée ici."
+  },
+  "machine": "Mac17,4",
+  "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+  "navigateur": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+  "series": {
+    "0.2.108": {
+      "sha256": "0a0a62ce85ac9428c55cbff13718f6ec14b0a380edb4fc0e93c81ca84b549d61",
+      "cadence": {
+        "sec": {
+          "images": 1803,
+          "secondes": 30.06,
+          "fpsPondere": 59.98,
+          "ips": {
+            "min": 59.98,
+            "p50": 59.98,
+            "max": 59.98
+          },
+          "p50Ms": {
+            "min": 16.7,
+            "p50": 16.7,
+            "max": 16.7
+          },
+          "p95Ms": {
+            "min": 16.7,
+            "p50": 16.7,
+            "max": 16.8
+          },
+          "pireMs": {
+            "min": 16.8,
+            "p50": 16.8,
+            "max": 16.8
+          },
+          "abscisseFinaleMetres": {
+            "min": 3057.736,
+            "p50": 3059.582,
+            "max": 3061.269
+          },
+          "cpuBoucleP50Ms": {
+            "min": 3.7,
+            "p50": 3.8,
+            "max": 3.9
+          },
+          "vues": {
+            "principale": {
+              "drawCallsParImage": {
+                "min": 1031.233,
+                "p50": 1032.925,
+                "max": 1035.05
+              },
+              "trianglesParImage": {
+                "min": 3979997.604,
+                "p50": 3983610.208,
+                "max": 3986973.892
+              },
+              "rendusParImage": {
+                "min": 1,
+                "p50": 1,
+                "max": 1
+              }
+            },
+            "retro": {
+              "drawCallsParImage": {
+                "min": 207.438,
+                "p50": 208.554,
+                "max": 209.675
+              },
+              "trianglesParImage": {
+                "min": 1023826.1,
+                "p50": 1029079.804,
+                "max": 1035521.258
+              },
+              "rendusParImage": {
+                "min": 1,
+                "p50": 1,
+                "max": 1
+              }
+            }
+          }
+        },
+        "pluie": {
+          "images": 1574,
+          "secondes": 30.07,
+          "fpsPondere": 52.345,
+          "ips": {
+            "min": 50.299,
+            "p50": 52.841,
+            "max": 53.892
+          },
+          "p50Ms": {
+            "min": 16.7,
+            "p50": 16.7,
+            "max": 16.7
+          },
+          "p95Ms": {
+            "min": 33.4,
+            "p50": 33.4,
+            "max": 33.4
+          },
+          "pireMs": {
+            "min": 33.4,
+            "p50": 33.5,
+            "max": 33.5
+          },
+          "abscisseFinaleMetres": {
+            "min": 3050.678,
+            "p50": 3051.117,
+            "max": 3052.434
+          },
+          "cpuBoucleP50Ms": {
+            "min": 4.6,
+            "p50": 4.6,
+            "max": 4.6
+          },
+          "vues": {
+            "principale": {
+              "drawCallsParImage": {
+                "min": 1160.133,
+                "p50": 1160.692,
+                "max": 1162.583
+              },
+              "trianglesParImage": {
+                "min": 4391900.654,
+                "p50": 4397122.646,
+                "max": 4397352.054
+              },
+              "rendusParImage": {
+                "min": 1,
+                "p50": 1,
+                "max": 1
+              }
+            },
+            "retro": {
+              "drawCallsParImage": {
+                "min": 290.492,
+                "p50": 291.354,
+                "max": 293.892
+              },
+              "trianglesParImage": {
+                "min": 1249805.271,
+                "p50": 1251492.587,
+                "max": 1267527.05
+              },
+              "rendusParImage": {
+                "min": 1.117,
+                "p50": 1.121,
+                "max": 1.129
+              }
+            }
+          }
+        }
+      }
+    },
+    "0.2.109": {
+      "sha256": "c7d0af843d1475d4bfd6b0a954990c622018f19abe843f6b68ff2292b9957b17",
+      "cadence": {
+        "sec": {
+          "images": 1803,
+          "secondes": 30.06,
+          "fpsPondere": 59.98,
+          "ips": {
+            "min": 59.98,
+            "p50": 59.98,
+            "max": 59.98
+          },
+          "p50Ms": {
+            "min": 16.7,
+            "p50": 16.7,
+            "max": 16.7
+          },
+          "p95Ms": {
+            "min": 16.7,
+            "p50": 16.7,
+            "max": 16.8
+          },
+          "pireMs": {
+            "min": 16.8,
+            "p50": 16.8,
+            "max": 16.8
+          },
+          "abscisseFinaleMetres": {
+            "min": 3057.736,
+            "p50": 3057.94,
+            "max": 3061.481
+          },
+          "cpuBoucleP50Ms": {
+            "min": 3.6,
+            "p50": 3.8,
+            "max": 3.9
+          },
+          "vues": {
+            "principale": {
+              "drawCallsParImage": {
+                "min": 1031.267,
+                "p50": 1034.696,
+                "max": 1035.1
+              },
+              "trianglesParImage": {
+                "min": 2233669.696,
+                "p50": 2233906.929,
+                "max": 2234975.871
+              },
+              "rendusParImage": {
+                "min": 1,
+                "p50": 1,
+                "max": 1
+              }
+            },
+            "retro": {
+              "drawCallsParImage": {
+                "min": 207.604,
+                "p50": 207.671,
+                "max": 209.921
+              },
+              "trianglesParImage": {
+                "min": 653812.183,
+                "p50": 654236.646,
+                "max": 662271.325
+              },
+              "rendusParImage": {
+                "min": 1,
+                "p50": 1,
+                "max": 1
+              }
+            }
+          }
+        },
+        "pluie": {
+          "images": 1803,
+          "secondes": 30.06,
+          "fpsPondere": 59.98,
+          "ips": {
+            "min": 59.98,
+            "p50": 59.98,
+            "max": 59.98
+          },
+          "p50Ms": {
+            "min": 16.7,
+            "p50": 16.7,
+            "max": 16.7
+          },
+          "p95Ms": {
+            "min": 16.7,
+            "p50": 16.7,
+            "max": 16.8
+          },
+          "pireMs": {
+            "min": 16.8,
+            "p50": 16.8,
+            "max": 16.8
+          },
+          "abscisseFinaleMetres": {
+            "min": 3050.241,
+            "p50": 3051.41,
+            "max": 3053.326
+          },
+          "cpuBoucleP50Ms": {
+            "min": 4.2,
+            "p50": 4.3,
+            "max": 4.4
+          },
+          "vues": {
+            "principale": {
+              "drawCallsParImage": {
+                "min": 1157.638,
+                "p50": 1158.158,
+                "max": 1158.412
+              },
+              "trianglesParImage": {
+                "min": 2633616.217,
+                "p50": 2638807.746,
+                "max": 2642452.237
+              },
+              "rendusParImage": {
+                "min": 1,
+                "p50": 1,
+                "max": 1
+              }
+            },
+            "retro": {
+              "drawCallsParImage": {
+                "min": 259.704,
+                "p50": 260.058,
+                "max": 260.225
+              },
+              "trianglesParImage": {
+                "min": 734176.821,
+                "p50": 734374.312,
+                "max": 734708.45
+              },
+              "rendusParImage": {
+                "min": 1,
+                "p50": 1,
+                "max": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "variationFPS": {
+    "sec": 0.0,
+    "pluie": 14.59
+  },
+  "limites": [
+    "Trois répétitions par météo sur un Mac M5 ; l’affichage matériel du jeu sur une console ou un autre PC peut différer.",
+    "Les p50 et p95 sont ceux des intervalles requestAnimationFrame mesurés en course. Le débit plafonne à la fréquence de rafraîchissement.",
+    "Les conditions météo changent la glisse, le trafic et la position finale. Même départ et même graine pour chaque reprise.",
+    "La pression thermique est l’état publié par macOS. Les durées de chauffe et les temps de chargement ne sont pas inclus dans le débit."
+  ]
+}

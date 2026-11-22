@@ -1,0 +1,137 @@
+{
+  "temoin": "c92eab501ead1fe1cce830333b7f2e307861b0a1",
+  "navigateur": "Chrome/157.0.8103.80",
+  "echantillonnageHz": 24000,
+  "source": "Conduite réelle du jeu à 120 Hz sur la ligne droite du banc. Raccord de jeu réel à 60 Hz. Essais de 1,2 s avec bruit à graine fixée. Moteur coupé par le bus Moteur, vent neutralisé dans le signal du banc, tous les autres bus et filtres du vrai mixeur sont conservés. Le spectre est mesuré de 0,25 à 1,2 s, jusqu’à 4,67 kHz, Hann 1024.",
+  "commandes": {
+    "roulage": {
+      "sha256Simulation": "6c4985e8165f8984348e7732a6585364bc9de772a7a20dabfdbe353ade154e3d",
+      "vitesseInitiale": 28,
+      "volant": 0,
+      "gaz": 0.2,
+      "frein": 0,
+      "chauffe": 0
+    },
+    "limite": {
+      "sha256Simulation": "1086066aacceb4a86e5e284cdb0ce67690f7e138b6b500e4f00a86209beaa0ef",
+      "vitesseInitiale": 28,
+      "volant": 0.95,
+      "gaz": 0,
+      "frein": 0,
+      "chauffe": 1.3
+    },
+    "patinage": {
+      "sha256Simulation": "3c1f5b0dcb2e1c7ff72ef553b28309dcd358acf68dafc2a0de3a50124d379a1b",
+      "vitesseInitiale": 8,
+      "volant": 0,
+      "gaz": 1,
+      "frein": 0,
+      "chauffe": 0
+    },
+    "blocage": {
+      "sha256Simulation": "c5de7a44ad1a6b138994d4a1ea7b4797083e9801543dfb9753b1c3d54e20a4f5",
+      "vitesseInitiale": 36,
+      "volant": 0,
+      "gaz": 0,
+      "frein": 1,
+      "chauffe": 0
+    },
+    "derive": {
+      "sha256Simulation": "9fcd6fa51d6d4c462d200fa94c579c6533236e1f58b63eb1b18e63e1c0ee355a",
+      "vitesseInitiale": 31,
+      "volant": 1,
+      "gaz": 0,
+      "frein": 0,
+      "chauffe": 2.4
+    }
+  },
+  "mesures": {
+    "avant": {
+      "sonSHA256": "4b02ddaf905ee55f4c2f1cb26805a3055746f40a0e3ca7e508abfbe5f1d45bc9",
+      "jeuSHA256": "bfce6779f37091a749e567e3840a9c7e5609b308eab137a04d7e281e80e572fc",
+      "cas": {
+        "roulage": {
+          "rms": 0,
+          "crete": 0,
+          "picHz": 0,
+          "medianeSpectraleHz": 0
+        },
+        "limite": {
+          "rms": 0.0010689843557314554,
+          "crete": 0.004343514330685139,
+          "picHz": 1757.8125,
+          "medianeSpectraleHz": 2039.0625
+        },
+        "patinage": {
+          "rms": 0.014823797783615483,
+          "crete": 0.06217249110341072,
+          "picHz": 1734.375,
+          "medianeSpectraleHz": 2015.625
+        },
+        "blocage": {
+          "rms": 0.044231477775485,
+          "crete": 0.17170174419879913,
+          "picHz": 1757.8125,
+          "medianeSpectraleHz": 2039.0625
+        },
+        "derive": {
+          "rms": 0.05854004484168005,
+          "crete": 0.22474034130573273,
+          "picHz": 1757.8125,
+          "medianeSpectraleHz": 2039.0625
+        }
+      },
+      "wavSHA256": "1cc1c0db1e91240daaa3c4d9ec5f009f39b2695b85a47a2ebed6c2323a40b262"
+    },
+    "apres": {
+      "sonSHA256": "b207cfdc51b8644a3d20461fa3d155d15576be9c905b164f8b243c67239659b6",
+      "jeuSHA256": "f375308ffc6b6fb6cd88b5268aa966d123ecb2ccb5b422bfcd6ee3fd1c062f76",
+      "cas": {
+        "roulage": {
+          "rms": 0,
+          "crete": 0,
+          "picHz": 0,
+          "medianeSpectraleHz": 0
+        },
+        "limite": {
+          "rms": 0.0057035952187519555,
+          "crete": 0.022015493363142014,
+          "picHz": 328.125,
+          "medianeSpectraleHz": 515.625
+        },
+        "patinage": {
+          "rms": 0.015152873886988126,
+          "crete": 0.05565176159143448,
+          "picHz": 726.5625,
+          "medianeSpectraleHz": 796.875
+        },
+        "blocage": {
+          "rms": 0.04744467048043291,
+          "crete": 0.20424850285053253,
+          "picHz": 3140.625,
+          "medianeSpectraleHz": 3164.0625
+        },
+        "derive": {
+          "rms": 0.050809856058928744,
+          "crete": 0.19240617752075195,
+          "picHz": 1664.0625,
+          "medianeSpectraleHz": 1687.5
+        },
+        "effetsNuls": {
+          "rms": 0,
+          "crete": 0,
+          "picHz": 0,
+          "medianeSpectraleHz": 0
+        },
+        "generalNul": {
+          "rms": 0,
+          "crete": 0,
+          "picHz": 0,
+          "medianeSpectraleHz": 0
+        }
+      },
+      "wavSHA256": "65d0c8d92bb9ec8cbe5f29c5bbcac26dd22bd937e9d5603a202bfb5ae16b2eae"
+    }
+  },
+  "ecoute": "Extraits successifs limite, patinage, blocage et dérive, avec 0,25 s entre deux. Même niveau de reproduction pour tous."
+}

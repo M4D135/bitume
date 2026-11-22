@@ -1,0 +1,94 @@
+[
+  {
+    "secteur": "pietraporzio-2",
+    "sha": "89cf623854ed3caa33a983f1f52b028f1835f30844e0c30fff9c7e1cc5fbaca1",
+    "fps": 59.97,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pireMs": 16.8,
+    "imagesLongues": 0,
+    "troisPlusLongues": [],
+    "images": 421,
+    "tMesure": 7.02,
+    "sDebut": 18239.85,
+    "sFin": 18464.16,
+    "vitesseMedianeKmH": 100.42,
+    "couverts": 0,
+    "echantillons": 18,
+    "SSR": true,
+    "gouttes": 24,
+    "transfertsDirects": 1006,
+    "vues": {
+      "principale": {
+        "images": 1005,
+        "drawCalls": 1065.987064676617,
+        "triangles": 2634615.35721393,
+        "rendusParImage": 1,
+        "drawCallsParImage": 1092.8583333333333,
+        "trianglesParImage": 2736148.308333333
+      },
+      "joueur2": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0,
+        "rendusParImage": 0,
+        "drawCallsParImage": 0,
+        "trianglesParImage": 0
+      },
+      "retro": {
+        "images": 1007,
+        "drawCalls": 490.54915590863953,
+        "triangles": 1165126.0854021846,
+        "rendusParImage": 1,
+        "drawCallsParImage": 521.0291666666667,
+        "trianglesParImage": 1172015.1666666667
+      }
+    }
+  },
+  {
+    "secteur": "pietraporzio-1",
+    "sha": "89cf623854ed3caa33a983f1f52b028f1835f30844e0c30fff9c7e1cc5fbaca1",
+    "fps": 59.97,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pireMs": 16.8,
+    "imagesLongues": 0,
+    "troisPlusLongues": [],
+    "images": 421,
+    "tMesure": 7.02,
+    "sDebut": 18240.7,
+    "sFin": 18464.64,
+    "vitesseMedianeKmH": 97.44,
+    "couverts": 0,
+    "echantillons": 19,
+    "SSR": true,
+    "gouttes": 24,
+    "transfertsDirects": 1007,
+    "vues": {
+      "principale": {
+        "images": 1006,
+        "drawCalls": 1064.089463220676,
+        "triangles": 2632721.088469185,
+        "rendusParImage": 1,
+        "drawCallsParImage": 1090.15,
+        "trianglesParImage": 2734054.3
+      },
+      "joueur2": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0,
+        "rendusParImage": 0,
+        "drawCallsParImage": 0,
+        "trianglesParImage": 0
+      },
+      "retro": {
+        "images": 1009,
+        "drawCalls": 488.3161546085233,
+        "triangles": 1163332.157581764,
+        "rendusParImage": 1,
+        "drawCallsParImage": 517.2333333333333,
+        "trianglesParImage": 1167218.7791666666
+      }
+    }
+  }
+]

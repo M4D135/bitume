@@ -1,0 +1,272 @@
+{
+  "navigateur": "Chrome/157.0.8103.80",
+  "sha256Son": "a4fd5f613160e08d27f0cba105f38c243923a455090ae24493643b69c4b1659d",
+  "sha256Jeu": "d93bc7e56dca3231d304d54d6ba3c12ac55c472ea154f488844719e761be28d0",
+  "materiaux": {
+    "glissiere": {
+      "trace": "c37cb5f1ec384c05ff29b458f8c62e0019624e19fbe1eeb94ffd79668633289c",
+      "pasEnContact": 139,
+      "premierPas": 36,
+      "dernierPas": 174,
+      "vitesseFinaleMS": 22.859965553790598
+    },
+    "mur-tunnel": {
+      "trace": "e6379dd0001d348b915e68c0b1f608ff3814010a50e83f7c95b42a1367b7db2b",
+      "pasEnContact": 139,
+      "premierPas": 36,
+      "dernierPas": 174,
+      "vitesseFinaleMS": 22.859965553790598
+    },
+    "tronc": {
+      "trace": "a627bbec433c491475dd07580ccc7562fa9533ae035aacdf07502b1d5264d120",
+      "pasEnContact": 0,
+      "premierPas": null,
+      "dernierPas": null,
+      "vitesseFinaleMS": 22.859965553790598
+    }
+  },
+  "mesures": {
+    "metal30": {
+      "coupsPhysX": 1,
+      "rmsGauche": 0.020968413059944124,
+      "rmsDroite": 0.020968413059944124,
+      "medianeGaucheHz": 2156.25,
+      "medianeDroiteHz": 2156.25,
+      "avantContact": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pendantCoupure": {
+        "rms": 0.019548388672103963,
+        "crete": 0.09539817273616791
+      },
+      "reprise": {
+        "rms": 0.018420462015987182,
+        "crete": 0.10581661760807037
+      },
+      "apresSeparation": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pcmSHA256": "da4de76057411ff82bd4f5f6cb5bab60c5e450006636ef6c4bd7f0b2b6274328"
+    },
+    "metal60": {
+      "coupsPhysX": 1,
+      "rmsGauche": 0.02081632741583568,
+      "rmsDroite": 0.02081632741583568,
+      "medianeGaucheHz": 2156.25,
+      "medianeDroiteHz": 2156.25,
+      "avantContact": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pendantCoupure": {
+        "rms": 0.01958670612162755,
+        "crete": 0.09707606583833694
+      },
+      "reprise": {
+        "rms": 0.01849630636116315,
+        "crete": 0.10275667905807495
+      },
+      "apresSeparation": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pcmSHA256": "6794d76d346e20bd985ed947a8d601ca877b6cd82c8728f9b7471b05e1767618"
+    },
+    "metal120": {
+      "coupsPhysX": 1,
+      "rmsGauche": 0.020946919989824946,
+      "rmsDroite": 0.020946919989824946,
+      "medianeGaucheHz": 2109.375,
+      "medianeDroiteHz": 2109.375,
+      "avantContact": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pendantCoupure": {
+        "rms": 0.019360192747601215,
+        "crete": 0.09738937765359879
+      },
+      "reprise": {
+        "rms": 0.01849497142772613,
+        "crete": 0.10407520085573196
+      },
+      "apresSeparation": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pcmSHA256": "d3d075997811a8343e1fcdc588454214cacd53f0d7b72f10b283a3e09acc428a"
+    },
+    "mur": {
+      "coupsPhysX": 1,
+      "rmsGauche": 0.020292130292041625,
+      "rmsDroite": 0.020292130292041625,
+      "medianeGaucheHz": 562.5,
+      "medianeDroiteHz": 562.5,
+      "avantContact": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pendantCoupure": {
+        "rms": 0.017711546374490236,
+        "crete": 0.0765390694141388
+      },
+      "reprise": {
+        "rms": 0.0204763344113216,
+        "crete": 0.13639262318611145
+      },
+      "apresSeparation": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pcmSHA256": "2dc493047ca151ca277b1e932ddb183016cac305f8affd8b470b09111989457a"
+    },
+    "tronc": {
+      "coupsPhysX": 1,
+      "rmsGauche": 0,
+      "rmsDroite": 0,
+      "medianeGaucheHz": 0,
+      "medianeDroiteHz": 0,
+      "avantContact": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pendantCoupure": {
+        "rms": 0,
+        "crete": 0
+      },
+      "reprise": {
+        "rms": 0,
+        "crete": 0
+      },
+      "apresSeparation": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pcmSHA256": "3d528ff4f984cc1ee5717fcfebb8f62589ae232ca7f3b8ce5141b51564e50a2b"
+    },
+    "doublons": {
+      "coupsPhysX": 1,
+      "rmsGauche": 0.02081632741583568,
+      "rmsDroite": 0.02081632741583568,
+      "medianeGaucheHz": 2156.25,
+      "medianeDroiteHz": 2156.25,
+      "avantContact": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pendantCoupure": {
+        "rms": 0.01958670612162755,
+        "crete": 0.09707606583833694
+      },
+      "reprise": {
+        "rms": 0.01849630636116315,
+        "crete": 0.10275667905807495
+      },
+      "apresSeparation": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pcmSHA256": "6794d76d346e20bd985ed947a8d601ca877b6cd82c8728f9b7471b05e1767618"
+    },
+    "pause": {
+      "coupsPhysX": 1,
+      "rmsGauche": 0.008884011834108908,
+      "rmsDroite": 0.008884011834108908,
+      "medianeGaucheHz": 2062.5,
+      "medianeDroiteHz": 2062.5,
+      "avantContact": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pendantCoupure": {
+        "rms": 0,
+        "crete": 0
+      },
+      "reprise": {
+        "rms": 0.01770529849130957,
+        "crete": 0.09846261143684387
+      },
+      "apresSeparation": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pcmSHA256": "4105525e77905f4a241bc7483a7b333c4a89b76d4834b97a7cf8fd3f1165c5f1"
+    },
+    "fin": {
+      "coupsPhysX": 1,
+      "rmsGauche": 0.0003288558589731924,
+      "rmsDroite": 0.0003288558589731924,
+      "medianeGaucheHz": 2250,
+      "medianeDroiteHz": 2250,
+      "avantContact": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pendantCoupure": {
+        "rms": 0,
+        "crete": 0
+      },
+      "reprise": {
+        "rms": 0,
+        "crete": 0
+      },
+      "apresSeparation": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pcmSHA256": "1346b0972828516855230bced9962c8a264fc68530fb6c1f9ae734a593070412"
+    },
+    "effetsNuls": {
+      "coupsPhysX": 1,
+      "rmsGauche": 0,
+      "rmsDroite": 0,
+      "medianeGaucheHz": 0,
+      "medianeDroiteHz": 0,
+      "avantContact": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pendantCoupure": {
+        "rms": 0,
+        "crete": 0
+      },
+      "reprise": {
+        "rms": 0,
+        "crete": 0
+      },
+      "apresSeparation": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pcmSHA256": "d8b443032200e143b1c49820b6d78c32d519553a3f63a38f48e8bc31da084f0a"
+    },
+    "duo": {
+      "coupsPhysX": 2,
+      "rmsGauche": 0.020747771626422738,
+      "rmsDroite": 0.02058116273871086,
+      "medianeGaucheHz": 1500,
+      "medianeDroiteHz": 796.875,
+      "avantContact": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pendantCoupure": {
+        "rms": 0.018902594398966646,
+        "crete": 0.09099172800779343
+      },
+      "reprise": {
+        "rms": 0.018830195325483155,
+        "crete": 0.11516117304563522
+      },
+      "apresSeparation": {
+        "rms": 0,
+        "crete": 0
+      },
+      "pcmSHA256": "1c0728a44c7bad9a3b9afd6afcc52a6e19ea803a30a0d09c89b7dba516798617"
+    }
+  },
+  "frequenceEchantillonnageHz": 24000,
+  "portee": "Contacts du vrai solveur PhysX sur une chaussée droite et un obstacle latéral de genre qualifié, même manœuvre. Premier wav = glissière, second = mur-tunnel. Sortie audio stéréo native OfflineAudioContext, WAV mono sans normalisation. Le moteur, le vent et les pneus sont isolés dans le banc. La pause de vérification va de 0,70 à 1,10 s. Le cas doublons injecte des notifications supplémentaires le long du même contact."
+}

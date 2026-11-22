@@ -1,0 +1,112 @@
+{
+  "circuit": "Col de Larche → Vinadio",
+  "baselineSha256": "0a0a62ce85ac9428c55cbff13718f6ec14b0a380edb4fc0e93c81ca84b549d61",
+  "candidatIsoleSha256": "bf3d80d7fbd2192a6096c2134f4a5bf37ae1228437ddc893782bce1f990e026f",
+  "profils": {
+    "low": {
+      "sapin": {
+        "arbres": 615,
+        "trianglesParCouronne": {
+          "procheAvant": 1238,
+          "procheApres": 666,
+          "loinAvant": 410,
+          "loinApres": 270
+        }
+      },
+      "meleze": {
+        "arbres": 226,
+        "trianglesParCouronne": {
+          "procheAvant": 698,
+          "procheApres": 618,
+          "loinAvant": 286,
+          "loinApres": 254
+        }
+      }
+    },
+    "medium": {
+      "sapin": {
+        "arbres": 4179,
+        "trianglesParCouronne": {
+          "procheAvant": 2766,
+          "procheApres": 666,
+          "loinAvant": 738,
+          "loinApres": 270
+        }
+      },
+      "meleze": {
+        "arbres": 1645,
+        "trianglesParCouronne": {
+          "procheAvant": 1454,
+          "procheApres": 618,
+          "loinAvant": 454,
+          "loinApres": 254
+        }
+      }
+    },
+    "high": {
+      "sapin": {
+        "arbres": 4179,
+        "trianglesParCouronne": {
+          "procheAvant": 5158,
+          "procheApres": 2553,
+          "loinAvant": 1158,
+          "loinApres": 270
+        }
+      },
+      "meleze": {
+        "arbres": 1645,
+        "trianglesParCouronne": {
+          "procheAvant": 2634,
+          "procheApres": 2361,
+          "loinAvant": 670,
+          "loinApres": 254
+        }
+      }
+    }
+  },
+  "vues": [
+    {
+      "nom": "cockpit-ete",
+      "station": 2868,
+      "qualite": "high",
+      "graine": 23731,
+      "saison": "ete",
+      "rendu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+      "resolution": [
+        960,
+        540
+      ],
+      "erreurs": 0,
+      "positionsJoueurIdentiques": true
+    },
+    {
+      "nom": "cockpit-automne",
+      "station": 4610,
+      "qualite": "high",
+      "graine": 23731,
+      "saison": "automne",
+      "rendu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+      "resolution": [
+        960,
+        540
+      ],
+      "erreurs": 0,
+      "positionsJoueurIdentiques": true
+    },
+    {
+      "nom": "bas-cote-automne",
+      "station": 4610,
+      "qualite": "high",
+      "graine": 23731,
+      "saison": "automne",
+      "rendu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+      "resolution": [
+        960,
+        540
+      ],
+      "erreurs": 0,
+      "positionsJoueurIdentiques": true
+    }
+  ],
+  "cout": "Comptes des triangles des maillages réellement instanciés. Les captures logicielles ne chronomètrent pas le GPU."
+}

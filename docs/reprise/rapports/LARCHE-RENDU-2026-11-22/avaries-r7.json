@@ -1,0 +1,154 @@
+{
+  "traces": [
+    {
+      "etape": "duo intact",
+      "ecran": "pause",
+      "pilotes": [
+        {
+          "visible": true,
+          "choixVerrouille": false,
+          "bilan": "Aucune avarie.",
+          "monte": "Montés : Slicks · prochain arrêt : Slicks."
+        },
+        {
+          "visible": true,
+          "choixVerrouille": false,
+          "bilan": "Aucune avarie.",
+          "monte": "Montés : Slicks · prochain arrêt : Slicks."
+        }
+      ],
+      "note": "À l’arrêt dans le garage, la voiture est réparée et les quatre pneus sont changés à la fin du service."
+    },
+    {
+      "etape": "perte de roue J2",
+      "ecran": "pause",
+      "pilotes": [
+        {
+          "visible": true,
+          "choixVerrouille": false,
+          "bilan": "Dégâts légers.",
+          "monte": "Montés : Slicks · prochain arrêt : Slicks."
+        },
+        {
+          "visible": true,
+          "choixVerrouille": false,
+          "bilan": "À réparer · adhérence réduite, carrosserie endommagée, roue arrière droite manquante. Remise en piste automatique en cours.",
+          "monte": "Montés : Slicks · prochain arrêt : Slicks."
+        }
+      ],
+      "note": "À l’arrêt dans le garage, la voiture est réparée et les quatre pneus sont changés à la fin du service."
+    },
+    {
+      "etape": "retour sur piste J2",
+      "ecran": "pause",
+      "pilotes": [
+        {
+          "visible": true,
+          "choixVerrouille": false,
+          "bilan": "Dégâts légers.",
+          "monte": "Montés : Slicks · prochain arrêt : Slicks."
+        },
+        {
+          "visible": true,
+          "choixVerrouille": false,
+          "bilan": "À réparer · adhérence réduite, carrosserie endommagée.",
+          "monte": "Montés : Slicks · prochain arrêt : Slicks."
+        }
+      ],
+      "note": "À l’arrêt dans le garage, la voiture est réparée et les quatre pneus sont changés à la fin du service."
+    },
+    {
+      "etape": "service commencé",
+      "ecran": "pause",
+      "pilotes": [
+        {
+          "visible": true,
+          "choixVerrouille": false,
+          "bilan": "Dégâts légers.",
+          "monte": "Montés : Slicks · prochain arrêt : Slicks."
+        },
+        {
+          "visible": true,
+          "choixVerrouille": true,
+          "bilan": "À réparer · adhérence réduite, carrosserie endommagée.",
+          "monte": "Service en cours : Slicks. Choix verrouillé jusqu’à sa fin."
+        }
+      ],
+      "note": "À l’arrêt dans le garage, la voiture est réparée et les quatre pneus sont changés à la fin du service."
+    },
+    {
+      "etape": "service interrompu",
+      "ecran": "pause",
+      "pilotes": [
+        {
+          "visible": true,
+          "choixVerrouille": false,
+          "bilan": "Dégâts légers.",
+          "monte": "Montés : Slicks · prochain arrêt : Slicks."
+        },
+        {
+          "visible": true,
+          "choixVerrouille": false,
+          "bilan": "À réparer · adhérence réduite, carrosserie endommagée.",
+          "monte": "Montés : Slicks · prochain arrêt : Slicks."
+        }
+      ],
+      "note": "À l’arrêt dans le garage, la voiture est réparée et les quatre pneus sont changés à la fin du service."
+    },
+    {
+      "etape": "service terminé",
+      "ecran": "pause",
+      "pilotes": [
+        {
+          "visible": true,
+          "choixVerrouille": false,
+          "bilan": "Dégâts légers.",
+          "monte": "Montés : Slicks · prochain arrêt : Slicks."
+        },
+        {
+          "visible": true,
+          "choixVerrouille": false,
+          "bilan": "Aucune avarie après le service.",
+          "monte": "Montés : Slicks · prochain arrêt : Slicks."
+        }
+      ],
+      "note": "À l’arrêt dans le garage, la voiture est réparée et les quatre pneus sont changés à la fin du service."
+    },
+    {
+      "etape": "solo sans garage",
+      "ecran": "pause",
+      "pilotes": [
+        {
+          "visible": true,
+          "choixVerrouille": true,
+          "bilan": "Dégâts légers.",
+          "monte": "Montés : Slicks."
+        },
+        {
+          "visible": false,
+          "choixVerrouille": false,
+          "bilan": "Aucune avarie après le service.",
+          "monte": "Montés : Slicks · prochain arrêt : Slicks."
+        }
+      ],
+      "note": "Ce parcours ne propose pas de réparation complète ni de changement de pneus."
+    }
+  ],
+  "evenements": [
+    "entree",
+    "service",
+    "annule",
+    "entree",
+    "service",
+    "repare"
+  ],
+  "disparuEnCourse": true,
+  "navigateur": "Google Chrome 157.0.8103.80",
+  "portee": "DOM/CSS du jeu, navigation réelle Pause/Reprendre et modules de conduite, dégâts, stands. Course synthétique à deux locaux pour l’invité 2+2, sans transport réseau. GPU et WebGL désactivés.",
+  "sources": {
+    "jeu.js": "c5e4c1b34b7fc0d4d22f78ac9f8f1a814c1e98d17701f6264033d8d5c2b8ac78",
+    "degats.js": "c8aa5fc598b287915745d521dd131418753d1c721d5f316b5edc1d43a43cd0de",
+    "index.html": "0e1dc0b48e9859ec27cb7defcc97cc4f59a40b6ab56cce40399b2024ae5ffd67",
+    "course.js": "541fb3724e2e883cb33d1c05ca1beba8c19ec3606c65aca424c3e6bd1da2b698"
+  }
+}

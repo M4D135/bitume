@@ -1,0 +1,82 @@
+{
+  "description": "64 positions de tête par circuit, 3 appareils, comparaison de la hauteur indexée avec un parcours exhaustif des emprises PhysX historiques. Identité à chaque lecture. Le banc n’est pas une mesure de FPS.",
+  "resultats": [
+    {
+      "circuit": "val-brule",
+      "obstacles": 2492,
+      "requetes": 192,
+      "proches": 101,
+      "hauteurSolMaxMetres": 33.54
+    },
+    {
+      "circuit": "marseille",
+      "obstacles": 42,
+      "requetes": 192,
+      "proches": 22,
+      "hauteurSolMaxMetres": 45.02
+    },
+    {
+      "circuit": "corail",
+      "obstacles": 1170,
+      "requetes": 192,
+      "proches": 101,
+      "hauteurSolMaxMetres": 31.74
+    },
+    {
+      "circuit": "cap-sequoia",
+      "obstacles": 1420,
+      "requetes": 192,
+      "proches": 49,
+      "hauteurSolMaxMetres": 31.63
+    },
+    {
+      "circuit": "fjord",
+      "obstacles": 1977,
+      "requetes": 192,
+      "proches": 77,
+      "hauteurSolMaxMetres": 31.64
+    },
+    {
+      "circuit": "route-des-cimes",
+      "obstacles": 2064,
+      "requetes": 192,
+      "proches": 49,
+      "hauteurSolMaxMetres": 150.99
+    },
+    {
+      "circuit": "larche",
+      "obstacles": 1955,
+      "requetes": 192,
+      "proches": 32,
+      "hauteurSolMaxMetres": 45.2
+    },
+    {
+      "circuit": "lande-noire",
+      "obstacles": 1517,
+      "requetes": 192,
+      "proches": 65,
+      "hauteurSolMaxMetres": 31.71
+    },
+    {
+      "circuit": "sierra",
+      "obstacles": 1273,
+      "requetes": 192,
+      "proches": 43,
+      "hauteurSolMaxMetres": 33.3
+    },
+    {
+      "circuit": "brume-de-jade",
+      "obstacles": 1342,
+      "requetes": 192,
+      "proches": 101,
+      "hauteurSolMaxMetres": 45.87
+    },
+    {
+      "circuit": "baikal",
+      "obstacles": 2158,
+      "requetes": 192,
+      "proches": 70,
+      "hauteurSolMaxMetres": 57.52
+    }
+  ]
+}

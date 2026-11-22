@@ -1,0 +1,116 @@
+{
+  "version": "V0.2.110",
+  "sha256HTML": "89cf623854ed3caa33a983f1f52b028f1835f30844e0c30fff9c7e1cc5fbaca1",
+  "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+  "navigateur": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+  "physx": {
+    "disponible": true,
+    "ready": true,
+    "version": "5.12.0",
+    "erreur": null
+  },
+  "stimulus": {
+    "stimulus": "Choc de test à 21 m/s appliqué par BITUME.conduite.subirChoc dans la séance de référence de Larche, roue arrière droite.",
+    "force": [
+      "adhérence réduite",
+      "carrosserie endommagée",
+      "roue arrière droite manquante"
+    ]
+  },
+  "etapes": [
+    {
+      "etape": "Larche intacte",
+      "ecran": "pause",
+      "parcours": "larche",
+      "garageDisponible": false,
+      "session": "course",
+      "circuit": 6,
+      "idLocal": 0,
+      "abscisse": 1050.0000037858772,
+      "avaries": [],
+      "sante": 1,
+      "texte": "Aucune avarie.",
+      "conditionService": "Ce parcours ne propose pas de réparation complète ni de changement de pneus.",
+      "choixVerrouille": true,
+      "pauseVisible": true,
+      "bilanVisible": true,
+      "j2Visible": false
+    },
+    {
+      "etape": "Larche endommagée en pause",
+      "ecran": "pause",
+      "parcours": "larche",
+      "garageDisponible": false,
+      "session": "course",
+      "circuit": 6,
+      "idLocal": 0,
+      "abscisse": 1050.0000037858772,
+      "avaries": [
+        "adhérence réduite",
+        "carrosserie endommagée",
+        "roue arrière droite manquante"
+      ],
+      "sante": 0.5574999999999999,
+      "texte": "À réparer · adhérence réduite, carrosserie endommagée, roue arrière droite manquante. Remise en piste automatique en cours.",
+      "conditionService": "Ce parcours ne propose pas de réparation complète ni de changement de pneus.",
+      "choixVerrouille": true,
+      "pauseVisible": true,
+      "bilanVisible": true,
+      "j2Visible": false
+    },
+    {
+      "etape": "Reprise en course",
+      "ecran": "course",
+      "parcours": "larche",
+      "garageDisponible": false,
+      "session": "course",
+      "circuit": 6,
+      "idLocal": 0,
+      "abscisse": 1050.0000037858772,
+      "avaries": [
+        "adhérence réduite",
+        "carrosserie endommagée",
+        "roue arrière droite manquante"
+      ],
+      "sante": 0.5574999999999999,
+      "texte": "À réparer · adhérence réduite, carrosserie endommagée, roue arrière droite manquante. Remise en piste automatique en cours.",
+      "conditionService": "Ce parcours ne propose pas de réparation complète ni de changement de pneus.",
+      "choixVerrouille": true,
+      "pauseVisible": false,
+      "bilanVisible": false,
+      "j2Visible": false
+    }
+  ],
+  "menus": [
+    {
+      "id": "larche",
+      "selectionne": "true",
+      "destination": "Col de Larche → Vinadio",
+      "carte": "32,25 km",
+      "fiche": "32,25 km",
+      "ficheVisible": true,
+      "carteVisible": true,
+      "onglet": "true",
+      "ecran": "preparation"
+    },
+    {
+      "id": "marseille",
+      "selectionne": "true",
+      "destination": "Marseille · Vieux-Port → Corniche",
+      "carte": "5,75 km",
+      "fiche": "5,75 km",
+      "ficheVisible": true,
+      "carteVisible": true,
+      "onglet": "true",
+      "ecran": "preparation"
+    }
+  ],
+  "captures": [
+    "0000.png",
+    "0001.png",
+    "chrono-larche.png",
+    "chrono-marseille.png"
+  ],
+  "fatal": null,
+  "erreurs": []
+}
