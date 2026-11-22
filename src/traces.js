@@ -262,13 +262,20 @@
     placer(b);
   }
 
-  // Boîte plate couchée de l'un à l'autre bout, au dévers de la voiture qui l'a posée
+  // Boîte plate couchée de l'un à l'autre bout, au dévers du contact ou de la voiture
   function placer(b) {
     const dx = b.x1 - b.x0, dy = b.y1 - b.y0, dz = b.z1 - b.z0, lh = Math.sqrt(dx * dx + dz * dz), o = b.objet;
+    const longueur = Math.sqrt(lh * lh + dy * dy);
     o.p[0] = (b.x0 + b.x1) / 2; o.p[1] = (b.y0 + b.y1) / 2; o.p[2] = (b.z0 + b.z1) / 2;
-    o.s[0] = Math.sqrt(lh * lh + dy * dy) + b.larg * .5; o.s[2] = b.larg;
+    o.s[0] = longueur + b.larg * .5; o.s[2] = b.larg;
     ANG[0] = Math.atan2(dz, dx); ANG[1] = Math.atan2(dy, lh); ANG[2] = b.roulis;
-    if (b.contact && lh > 1e-6) ANG[2] = Math.atan2((-b.nx * dz + b.nz * dx) / lh, b.ny * Math.sqrt(lh * lh + dy * dy) / lh);
+    if (b.contact && lh > 1e-6) {
+      // Composantes de la normale sur les axes locaux Z et Y avant roulis.
+      const normaleLaterale = (-b.nx * dz + b.nz * dx) / lh;
+      const normaleLongitudinale = (b.nx * dx + b.nz * dz) / lh;
+      const normaleHaute = (b.ny * lh - normaleLongitudinale * dy) / longueur;
+      ANG[2] = Math.atan2(normaleLaterale, normaleHaute);
+    }
     orienter(o.r);
   }
 
