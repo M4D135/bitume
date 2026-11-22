@@ -231,7 +231,7 @@ const integration = new Function('B', `
   const texte = (element, valeur) => { element.textContent = valeur; }, NOMS_PNEUS = B.pneus.NOMS_PNEUS;
   const session = { type: 'course' }, son = null, hud2 = $('hud2'), pad2 = {}, EL = { role: null };
   const aDeux = () => session.type === 'duo', arreterManettes = () => {}, tactile = () => {};
-  const appliquerVolumes = () => {}, remplirReglages = () => {}, sauverReglages = () => {}, appliquerCarte = () => {}, viderStock = () => {}, suspendreAnnoncesVirages = () => {};
+  const appliquerVolumes = () => {}, remplirReglages = () => {}, sauverReglages = () => {}, appliquerCarte = () => {}, viderStock = () => {}, suspendreAnnoncesVirages = () => {}, afficherAideRetour = () => {};
   // stockage local et empreinte de la détection : le palier appris est rangé par machine
   const stockage = {}, lireStock = (k, d) => stockage[k] ?? d, ecrireStock = (k, v) => { stockage[k] = JSON.parse(JSON.stringify(v)); };
   let empreinte = 'machine';
