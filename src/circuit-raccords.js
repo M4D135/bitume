@@ -6,8 +6,13 @@
 
   const littleEndian = new Uint8Array(new Uint16Array([1]).buffer)[0] === 1;
   function tableau(nom, texte, n) {
-    const flux = typeof Uint8Array.fromBase64 === 'function'
-      ? Uint8Array.fromBase64(texte) : Uint8Array.from(atob(texte), c => c.charCodeAt(0));
+    let flux;
+    try {
+      flux = typeof Uint8Array.fromBase64 === 'function'
+        ? Uint8Array.fromBase64(texte) : Uint8Array.from(atob(texte), c => c.charCodeAt(0));
+    } catch (cause) {
+      throw new Error('BITUME : décodage Base64 du raccord impossible (' + nom + ')', {cause});
+    }
     const taille = nom === 'vibreur' ? 1 : 8, plans = new Uint8Array(n*taille);
     let entree = 0, sortie = 0;
     while (entree < flux.length) {
@@ -21,7 +26,10 @@
       }
       sortie += longueur;
     }
-    if (sortie !== plans.length) throw new Error('BITUME : recette tronquée (' + nom + ')');
+    if (sortie !== plans.length) {
+      throw new Error('BITUME : taille décompressée du raccord incohérente (' + nom +
+        ', attendu ' + plans.length + ', obtenu ' + sortie + ' octets)');
+    }
     const octets = new Uint8Array(plans.length);
     for (let b=0; b<taille; b++) {
       let v = 0;
