@@ -131,10 +131,18 @@
     };
   }
   function instance(site, loin, p, largeur, h, axes, color, t) {
-    const profondeur=largeur*(.78+.22*t);
-    const variante=Math.floor(bruit(Math.floor(p[0]*100),Math.floor(p[2]*100),t*4294967296)*VARIANTES);
+    const x=Math.floor(p[0]*100), z=Math.floor(p[2]*100);
+    const variante=Math.floor(bruit(x,z,t*4294967296)*VARIANTES);
     const shape=site.forme+'-'+variante+(loin?'-loin':'');
-    return {shape,p,r:B.decor.angles(...axes),s:[largeur,h,profondeur],color,mat:11};
+    const angle=bruit(x,z,117)*2*Math.PI;
+    const cos=Math.cos(angle), sin=Math.sin(angle);
+    const [axeX,axeY,axeZ]=axes;
+    const tourneX=axeX.map((v,i)=>v*cos+axeZ[i]*sin);
+    const tourneZ=axeZ.map((v,i)=>v*cos-axeX[i]*sin);
+    const echelle=.84+.16*bruit(x,z,163);
+    const largeurLocale=largeur*echelle;
+    const profondeur=largeurLocale*(.78+.22*t);
+    return {shape,p,r:B.decor.angles(tourneX,axeY,tourneZ),s:[largeurLocale,h,profondeur],color,mat:11};
   }
   function ajouterInstance(lot, site, leger, x, z, t, p, largeur, h, axes, loinSeul = false) {
     const teinte=site.couleur.map(v=>v*(.83+.28*t));
@@ -165,7 +173,7 @@
   function nouveauGroupe(progressif, leger, palettes) {
     const lot={objets:[],loin:[],centre:[0,0,0],rayon:0,portee:Infinity,bascule:90,
       lodReferenceFov:60,lodReferenceHeight:1080,arbres:true,bosquets:true};
-    const groupe={lot,semis:progressif?[]:null};
+    const groupe={lot,semis:progressif?[]:null,largeurs:progressif?null:[]};
     if (progressif) {
       lot.detailLointain=!leger;
       // Une copie superficielle de ce descripteur garde ces deux tableaux et
@@ -283,7 +291,10 @@
         if (progressif) {
           groupe.semis.push(p[0],p[1],p[2],largeur,h,x,z,t,site.indice);
           for (const axe of axes) groupe.semis.push(axe[0],axe[1],axe[2]);
-        } else ajouterInstance(lot,site.palette,leger,x,z,t,p,largeur,h,axes);
+        } else {
+          ajouterInstance(lot,site.palette,leger,x,z,t,p,largeur,h,axes);
+          groupe.largeurs.push(largeur);
+        }
         for(let axe=0;axe<3;axe++) lot.centre[axe]+=p[axe];
         secteurs[secteur]++;
       }
@@ -300,8 +311,11 @@
         for (let k=0;k<g.length;k+=PAS_SEMIS)
           l.rayon=Math.max(l.rayon,Math.hypot(g[k]-l.centre[0],g[k+1]-l.centre[1],g[k+2]-l.centre[2])+Math.hypot(g[k+3],g[k+4],g[k+3])/2);
       } else {
-        // Garder l’enveloppe maximale employée par le semis progressif.
-        for (const o of l.objets) l.rayon=Math.max(l.rayon,Math.hypot(o.p[0]-l.centre[0],o.p[1]-l.centre[1],o.p[2]-l.centre[2])+Math.hypot(o.s[0],o.s[1],o.s[0])/2);
+        // Garder l’enveloppe du semis progressif avant la variation d’échelle.
+        for (let k=0;k<n;k++) {
+          const o=l.objets[k], largeur=groupe.largeurs[k];
+          l.rayon=Math.max(l.rayon,Math.hypot(o.p[0]-l.centre[0],o.p[1]-l.centre[1],o.p[2]-l.centre[2])+Math.hypot(largeur,o.s[1],largeur)/2);
+        }
       }
       resultat.push(l);
     }
