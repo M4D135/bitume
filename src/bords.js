@@ -187,7 +187,9 @@
       const { i0 } = bornes(c, d), i1 = bornes(c, d).i1 + 4, E = Math.ceil((LIMITE_BORD.vide + 20) / .35 / pas);
       for (let i = i0 - E; i <= i1 + E; i++) {
         const k = ((i % n) + n) % n, dehors = Math.max(i0 - i, i - i1, 0) * pas;
-        const v = Math.min(tab[k], cible + dehors * .35);
+        const route = d.cote > 0 && c.stands && k*pas >= c.stands.debut && k*pas <= c.stands.fin
+          ? B.circuit.bordStands(c,k*pas)+1.5 : 0;
+        const v = Math.max(route,Math.min(tab[k], cible + dehors * .35));
         if (v < tab[k]) { tab[k] = v; touches++; }
       }
     }
@@ -342,8 +344,18 @@
           // Les troncs solides et bandes de peinture restent présents et à leurs places historiques.
           if (outils.saisonArbre) outils.saisonArbre(objets, loin, p[0], p[2], resineux ? 'conifere' : 'feuillu');
         } else if (d.type === 'rochers' && ra() < .6) {
-          // blocs à demi enterrés, de la couleur de la roche du lieu, un peu plus ou un peu moins clairs
-          const dd = cote * (w + 2.6 + ra() * 3.6), t = 1.2 + ra() * 1.6, p = pointPlan(f, dd, hauteur(f, dd, w) - .3), a = ra() * 6.28, e = .85 + ra() * .3;
+          // Le centre du bloc tombe sur une rangée exacte de nappesRoute, entre 2,6 et 6,2 m
+          // du bitume. Sur un bord resserré, il peut déjà se trouver sur la jupe du remblai.
+          const dd = cote * (w + 2.6 + ra() * 3.6), t = 1.2 + ra() * 1.6, a = ra() * 6.28, e = .85 + ra() * .3;
+          const largeurHerbe = Lc + 4 - (w + 1.2), depuisBord = Math.abs(dd) - (w + 1.2);
+          const coteExterne = y - .02 * largeurHerbe;
+          let sol = y; // un ouvrage ou une zone de départ imposée conserve sa propre cote
+          if (!interdit(c, f.s, 0)) {
+            sol = depuisBord <= largeurHerbe
+              ? y - .015 + (coteExterne - (y - .015)) * depuisBord / largeurHerbe
+              : coteExterne - .65 * (depuisBord - largeurHerbe);
+          }
+          const p = pointPlan(f, dd, sol - .3);
           const formeRoc = outils.organique && B.lieux ? B.lieux.rocherPour(c.theme, (c.graine || 1) ^ Math.imul(i, 73856093)) : 'bevel';
           const roc = { shape: formeRoc, collision: 'roche', p: [p[0], p[1] + t * .3, p[2]], s: [t * 1.5, t, t * 1.15], r: [0, a, 0], mat: 9, color: roche.map(v => Math.min(1, v * e)) };
           objets.push(roc); loin.push(roc);

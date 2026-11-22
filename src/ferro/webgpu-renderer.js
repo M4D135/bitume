@@ -5,6 +5,8 @@ const ALIGN=256,align=n=>Math.ceil(n/ALIGN)*ALIGN;
 // Sélection vide partagée (index spatial vide) : figée, aucun appelant ne la remplit.
 const NONE=Object.freeze([]);
 const GEOMETRY=[{arrayStride:24,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'}]},{arrayStride:64,stepMode:'instance',attributes:[{shaderLocation:2,offset:0,format:'float32x4'},{shaderLocation:3,offset:16,format:'float32x4'},{shaderLocation:4,offset:32,format:'float32x4'},{shaderLocation:5,offset:48,format:'float32x4'}]}];
+const RIGID_TERRAIN=[{arrayStride:40,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'},{shaderLocation:2,offset:24,format:'float32x4'}]},
+ {arrayStride:48,stepMode:'instance',attributes:[{shaderLocation:3,offset:0,format:'float32x4'},{shaderLocation:4,offset:16,format:'float32x4'},{shaderLocation:5,offset:32,format:'float32x4'}]}];
 const FULLSCREEN=`struct V { @builtin(position) p:vec4f, @location(0) uv:vec2f }; @vertex fn vs(@builtin(vertex_index) i:u32)->V { let p=vec2f(f32((i<<1u)&2u),f32(i&2u)); var o:V;o.p=vec4f(p*2.-1.,0.,1.);o.uv=vec2f(p.x,1.-p.y);return o; }`;
 const COPY=FULLSCREEN+`@group(0) @binding(0) var t:texture_2d<f32>;@group(0) @binding(1) var s:sampler;@fragment fn fs(v:V)->@location(0) vec4f{return textureSample(t,s,v.uv);}`;
 const RESOLVE_DEPTH=`@group(0) @binding(0) var t:texture_depth_multisampled_2d;@vertex fn vs(@builtin(vertex_index) i:u32)->@builtin(position) vec4f{let p=vec2f(f32((i<<1u)&2u),f32(i&2u));return vec4f(p*2.-1.,0.,1.);}@fragment fn fs(@builtin(position) p:vec4f)->@builtin(frag_depth) f32{let q=vec2i(p.xy);return min(min(textureLoad(t,q,0),textureLoad(t,q,1)),min(textureLoad(t,q,2),textureLoad(t,q,3)));}`;
@@ -77,7 +79,7 @@ async function create(canvas,options={}){
  try{await Promise.all(['world','depth','sky','fx','post','ssr'].map(loadProgram));}catch(error){device.destroy();throw error;}
  function pipeline(name,{samples=gpu.samples,background=false,overlay=false,nappe=false,target=format}={}){
   const key=[name,samples,background,overlay,nappe,target].join(':');if(pipelines.has(key))return pipelines.get(key);const p=programs.get(name),mesh=name==='world'||name==='depth'||name==='fx',depth=name==='depth',blend=name==='fx'?{color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'}}:undefined;
-  const descriptor={label:'FERRO '+key,layout:p.pipelineLayout,vertex:{module:p.vertex,entryPoint:p.descriptor.vertexEntryPoint||'main',buffers:mesh?(nappe?[GEOMETRY[0],{...GEOMETRY[1],stepMode:'vertex'}]:GEOMETRY):[]},primitive:{topology:'triangle-list',frontFace:'ccw',cullMode:mesh?'back':'none'},multisample:{count:samples}};
+  const descriptor={label:'FERRO '+key,layout:p.pipelineLayout,vertex:{module:p.vertex,entryPoint:p.descriptor.vertexEntryPoint||'main',buffers:mesh?(nappe==='rigid'?RIGID_TERRAIN:nappe?[GEOMETRY[0],{...GEOMETRY[1],stepMode:'vertex'}]:GEOMETRY):[]},primitive:{topology:'triangle-list',frontFace:'ccw',cullMode:mesh?'back':'none'},multisample:{count:samples}};
   if(p.fragment)descriptor.fragment={module:p.fragment,entryPoint:p.descriptor.fragmentEntryPoint||'main',targets:depth?[]:[{format:target,...(blend?{blend}:{})}]};
   if(mesh||name==='sky')descriptor.depthStencil={format:depthFormat,depthWriteEnabled:mesh&&name!=='fx'&&!background,depthCompare:background||name==='sky'?'always':'less-equal',...(depth?{depthBias:2,depthBiasSlopeScale:1.1}:{})};
   const result=device.createRenderPipeline(descriptor);created(1);pipelines.set(key,result);return result;
@@ -123,23 +125,35 @@ async function create(canvas,options={}){
  // Diagnostic A/B on the same poses, uniforms and GPU resources. A primitive
  // changed by updateShape stays expanded even when indexing is re-enabled.
  function setPrimitiveIndexing(enabled){enabled=enabled===true;if(disposed||stats.contextLost||enabled===stats.primitiveIndexing)return stats.primitiveIndexing;const base=enabled?primitiveIndexing.indices:source.indices;device.queue.writeBuffer(ibo,0,registeredIndexing?groundIndex.select(base):base);stats.primitiveIndexing=enabled;return enabled;}
+ const terrainConstants=[];
+ function terrainConstant(tint){
+  if(!terrainConstants[tint])terrainConstants[tint]=buffer(new Float32Array([1,1,1,0,0,0,0,tint?98:66,0,0,0,1]),GPUBufferUsage.VERTEX,'FERRO terrain constants');
+  return terrainConstants[tint];
+ }
  function setNappes(list,options){
   for(const n of nappes){freeBuffer(n.vertex);freeBuffer(n.instance);freeBuffer(n.index);}
   nappes=[];let triangles=0;
   for(const n of list||[]){
    if(!n?.sommets||!n.indices?.length)continue;
-   const data=n.sommets,count=data.length/13,vertices=new Float32Array(count*6),instances=new Float32Array(count*16);
-   const tint=n.vertexTint==='smooth'?34:2;
-   for(let i=0;i<count;i++){
-    const src=i*13,vertex=i*6,row=i*16;
-    for(let k=0;k<6;k++)vertices[vertex+k]=data[src+k];
-    instances[row+3]=data[src+9];
-    instances[row+4]=instances[row+5]=instances[row+6]=1;
-    instances[row+11]=tint;
-    instances[row+12]=data[src+10];instances[row+13]=data[src+11];instances[row+14]=data[src+12];instances[row+15]=1;
+   const data=n.sommets,count=data.length/13,rigid=S.rigidTerrainVertices(data),smooth=n.vertexTint==='smooth';
+   const vertices=new Float32Array(count*(rigid?10:6));
+   let instance=null,constant=null;
+   if(rigid){
+    S.writeRigidTerrain(vertices,0,data);constant=terrainConstant(smooth?1:0);
+   }else{
+    const instances=new Float32Array(count*16);
+    for(let i=0;i<count;i++){
+     const src=i*13,vertex=i*6,row=i*16;
+     for(let k=0;k<6;k++)vertices[vertex+k]=data[src+k];
+     for(let k=0;k<4;k++)instances[row+k]=data[src+6+k];
+     instances[row+4]=instances[row+5]=instances[row+6]=1;
+     instances[row+11]=smooth?34:2;
+     instances[row+12]=data[src+10];instances[row+13]=data[src+11];instances[row+14]=data[src+12];instances[row+15]=1;
+    }
+    instance=buffer(instances,GPUBufferUsage.VERTEX,'FERRO terrain materials');
    }
    const index=n.indices instanceof Uint32Array?n.indices:new Uint32Array(n.indices);
-   nappes.push({...n,vertex:buffer(vertices,GPUBufferUsage.VERTEX,'FERRO terrain vertices'),instance:buffer(instances,GPUBufferUsage.VERTEX,'FERRO terrain materials'),index:buffer(index,GPUBufferUsage.INDEX,'FERRO terrain indices')});
+   nappes.push({...n,rigid,vertex:buffer(vertices,GPUBufferUsage.VERTEX,'FERRO terrain vertices'),constant,instance,index:buffer(index,GPUBufferUsage.INDEX,'FERRO terrain indices')});
    triangles+=index.length/3;
   }
   terrainView.reset(nappes,options?.staticBounds===true);stats.nappeTriangles=triangles;
@@ -289,10 +303,12 @@ async function create(canvas,options={}){
   const count=warm?nappes.length:terrainView.select(eye,axes,horizontal,vertical,far,radii);
   if(!count)return 0;
   if(warm)warm.nappes+=count;
-  pass.setPipeline(pipeline('world',{nappe:true}));pass.setBindGroup(0,uniforms);
+  let mode=null;
+  pass.setBindGroup(0,uniforms);
   for(let i=0;i<count;i++){
    const n=nappes[warm?i:terrainView.indices[i]];
-   pass.setVertexBuffer(0,n.vertex);pass.setVertexBuffer(1,n.instance);pass.setIndexBuffer(n.index,'uint32');
+   if(mode!==n.rigid){mode=n.rigid;pass.setPipeline(pipeline('world',{nappe:mode?'rigid':true}));}
+   pass.setVertexBuffer(0,n.vertex);pass.setVertexBuffer(1,n.constant||n.instance);pass.setIndexBuffer(n.index,'uint32');
    pass.drawIndexed(n.indices.length);stats.drawCalls++;stats.triangles+=n.indices.length/3;
   }
   pass.setPipeline(pipeline('world'));pass.setBindGroup(0,uniforms);return count;
@@ -472,7 +488,7 @@ async function create(canvas,options={}){
  function dispose(){if(disposed)return;disposed=true;profiling=false;localWind.reset();terrainView.reset();nappes=[];releaseLots();try{context.unconfigure();}catch{}for(const b of buffers)b.destroy();for(const t of textures)t.destroy();buffers.clear();textures.clear();timing?.query.destroy();bindings.clear();pipelines.clear();copyPipelines.clear();chunks.clear();programs.clear();device.destroy();}
  // Resolve expensive shader/pipeline compilation before the title screen or a
  // measured gameplay frame. Validation errors fail creation and permit fallback.
- for(const samples of config.msaa?[1,4]:[1]){pipeline('world',{samples});pipeline('world',{samples,background:true});pipeline('world',{samples,overlay:true});pipeline('world',{samples,nappe:true});pipeline('fx',{samples});pipeline('sky',{samples});}
+ for(const samples of config.msaa?[1,4]:[1]){pipeline('world',{samples});pipeline('world',{samples,background:true});pipeline('world',{samples,overlay:true});pipeline('world',{samples,nappe:true});pipeline('world',{samples,nappe:'rigid'});pipeline('fx',{samples});pipeline('sky',{samples});}
  pipeline('depth',{samples:1});pipeline('ssr',{samples:1});pipeline('post',{samples:1});pipeline('post',{samples:1,target:canvasFormat});copyPipeline(canvasFormat);
  resize();const validation=await device.popErrorScope();if(validation){dispose();throw Error('WebGPU initialization: '+validation.message);}
  return {setEnvironment(value){environment=S.environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setNappes,setLots,preparerLot,updateShape,gpu,prewarm,retain,resetStats,precalculerOmbre(){return null;},...(primitiveIndexing?{setPrimitiveIndexing}:{}),setProfiling,getProfiling(){return {available:stats.gpuTimingAvailable,enabled:profiling,samples:timingSamples.slice(),dropped:timingDropped};}};

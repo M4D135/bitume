@@ -143,6 +143,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
         prog = s;
       }
       v.etat = B.conduite.creer(sAbs, d);
+      v.etat.carburant = c.stands && !chrono ? STANDS.reservoir : null;
       Object.assign(v.etat, B.pneus.creerEtat('slicks', { seance: graine, voiture: v.id }));
       v.degats = B.degats ? B.degats.creer() : null; v.etat.degats = v.degats;
       v.progression = prog; v.position = k + 1;
@@ -645,28 +646,14 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     }
   }
 
-  // Stands (lots 4 et 12F). La voie est le long du bord droit de la ligne droite principale, sous le bâtiment que dessine
-  // decor.js (circuit.js, c.stands). Elle est prise sur la chaussée : on y entre en serrant à droite, sans trou dans
-  // la glissière. Règles tenues ici, nulle part ailleurs :
-  //  - on n'entre qu'à basse vitesse (S.vitesse + 4 m/s) ; à vitesse de course, la voie n'est pas un stand ;
-  //  - la voie bride à S.vitesse ; sortir de la voie avant le garage annule l'arrêt, sans réparation ;
-  //  - le service ne se rend qu'à l'arrêt dans le garage, pour la durée chiffrée d'après l'état constaté ;
-  //  - les quatre pneus, de la monte figée au début du service, sont remplacés ensemble à sa fin seulement ;
-  //    sortir du garage, être déplacé ou subir un accident avant la fin annule ce remplacement ;
-  //  - la réparation complète (B.degats.reparer) ne se fait QUE là : ni en roulant, ni par replacement
-  //    (conduite.js donne reparerUrgence au remplacement, qui laisse les avaries) ;
-  //  - entrer aux stands invalide le tour courant (même règle que le replacement) : le chrono et le fantôme n'y
-  //    gagnent rien, la voie ne raccourcit pas le tour puisqu'elle est sur la piste ;
-  //  - une voiture à l'arrêt au stand n'est jamais « coincée » au sens de l'IA (pas d'accident au bout de 15 s) ;
-  //  - les rivaux et reprises IA ne sont admis qu'avec une décision explicite de strategie-stands.js ; ils paient
-  //    le même trajet et le même service que le joueur, sans réparation gratuite ;
-  //  - en ligne, rien ici ne se décrète pour une voiture distante : son état vient de sa machine (reseau.js ne
-  //    transporte ni dégâts ni arrêt), un pair ne peut pas faire réparer la voiture d'un autre.
-  const STANDS = { marge: .8, entree: 4, arret: .35, frein: 18, mouvementService: .05 };
+  // Le box est en retrait de la voie de circulation. Le ravitaillement se mesure en litres
+  // et dépend du temps de branchement. Le train complet et les réparations sont validés au feu vert.
+  const STANDS = Object.freeze({ arret: .35, frein: 18, mouvementService: .12,
+    reservoir: 72, debit: 4, branchement: .27, debranchement: .72 });
   const COMMANDE_SERVICE = Object.freeze({ ...NEUTRE, frein: 1 });
   function limiterVoiePhysX(course, v, cmd) {
     const e = v.etat, S = course.c.stands;
-    if (!e._physx || !S || e.stands?.phase !== 'voie' || e.rapport === -1 || e.v < 0) return cmd;
+    if (!e._physx || !S || (e.stands?.phase !== 'voie' && e.stands?.phase !== 'sortie') || e.rapport === -1 || e.v < 0) return cmd;
     // Le limiteur travaille par la même motricité et les mêmes freins que le pilote. Écrire e.v après le
     // solveur ne ralentit pas l'acteur : sa vitesse réelle serait relue intacte au pas suivant.
     B.conduite.couperTurbo(e);
@@ -691,11 +678,25 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     return true;
   }
   function dansLaVoie(c, e, S) {
-    return Math.abs(ecart(c, e.s, (S.debut + S.fin) / 2)) <= (S.fin - S.debut) / 2 + STANDS.entree * 10 &&
-      Math.abs(e.d - S.d) <= S.demi + STANDS.marge;
+    const x = ecart(c, S.debut, e.s);
+    return x >= 0 && x <= S.fin - S.debut && e.d > c.largeur / 2 + 1 &&
+      e.d < B.circuit.bordStands(c, e.s) + .25;
   }
   function dansLeGarage(c, e, S) {
-    return Math.abs(ecart(c, e.s, (S.garage0 + S.garage1) / 2)) <= (S.garage1 - S.garage0) / 2;
+    return Math.abs(ecart(c, S.sBox, e.s)) <= 2.35 && Math.abs(e.d - S.dBox) <= 1.15 &&
+      Math.cos(e.psi || 0) > .95;
+  }
+  function boxOccupe(course, pilote) {
+    for (const autre of course.voitures) {
+      if (autre !== pilote && autre.etat.stands?.phase === 'service') return true;
+    }
+    return false;
+  }
+  function dureeArret(v) {
+    const litres = v.etat.carburant == null ? 0 : STANDS.reservoir - v.etat.carburant;
+    const tempsEssence = litres / (STANDS.debit * (STANDS.debranchement - STANDS.branchement));
+    // Les allers-retours des mécaniciens, le levage et les quatre écrous font partie du temps payé.
+    return Math.max(12 + B.degats.chiffrerService(v.degats) - 2.5, tempsEssence);
   }
   function serviceImmobile(c, e, S, st) {
     return !!S && dansLaVoie(c, e, S) && dansLeGarage(c, e, S) && Number.isFinite(e.v) && Math.abs(e.v) < STANDS.arret &&
@@ -715,8 +716,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     const humaine = (v.joueur || v.humain) && !v.reprise;
     const conduite = humaine || (B.strategieStands && B.strategieStands.autorise(course, v));
     if (!S || !conduite || v.distant || v.abandon || v.fini) {
-      if (e && e.stands) {
-        if (!v.distant && !humaine) annulerStand(v, ev); else e.stands = null;
+      if (e && e.stands && !v.distant) {
+        if (!humaine) annulerStand(v, ev); else e.stands = null;
       }
       return;
     }
@@ -726,9 +727,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       // on ne reprend pas un deuxième arrêt sans être sorti de la voie : sinon la voiture tournerait en boucle
       // « réparée, re-entrée » tant qu'elle traîne le long du garage
       if (e.standsSortie) { if (!dansLaVoie(course.c, e, S)) e.standsSortie = false; return; }
-      // Entrée délibérée : la voiture doit être DANS la voie (pas seulement à son bord) et lente. Une roue qui
-      // frôle le bord droit à vitesse de course ne déclenche rien, et une file lente à l'arrêt du départ non plus.
-      if (dansLaVoie(course.c, e, S) && Math.abs(e.d - S.d) <= S.demi - .3 && Math.abs(e.v) <= S.vitesse + STANDS.entree) {
+      // Le mur sépare désormais les deux chaussées. Un pilote trop rapide qui s'engage
+      // sur la bretelle entre aussi dans la voie et subit son vrai limiteur.
+      if (dansLaVoie(course.c, e, S)) {
         e.stands = { phase: 'voie', t: 0, repare: false };
         v.tourValide = false;
         ev.push({ type: 'stand', id: v.id, phase: 'entree' });
@@ -744,9 +745,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       if (!e._physx && e.v > S.vitesse) e.v = Math.max(S.vitesse, e.v - STANDS.frein * dt);
       // Une place peut être occupée depuis la décision IA du début de pas (entrée humaine ou contact).
       // Revérifier l'admission après les collisions ; une attente dans le garage ne vaut pas service autorisé.
-      if (dansLeGarage(course.c, e, S) && Math.abs(e.v) < STANDS.arret &&
-        (humaine || B.strategieStands.servicePossible(course, v))) {
-        st.phase = 'service'; st.t = 0; st.duree = B.degats.chiffrerService(v.degats);
+      if (dansLeGarage(course.c, e, S) && Math.abs(e.v) < STANDS.arret && !boxOccupe(course, v) &&
+        (humaine || B.strategieStands.servicePossible(course, v)) && (!course.admettreStand || course.admettreStand(v))) {
+        st.phase = 'service'; st.t = 0; st.duree = dureeArret(v);
+        st.pneusAvant = e.pneus; st.carburantAvant = e.carburant;
         st.pneus = B.pneus.estJouable(e.pneusProchainArret) ? e.pneusProchainArret : e.pneus;
         st.revisionPneus = e.servicePneus; st.sService = e.s; st.dService = e.d;
         if (!e._physx) { e.v = 0; e.omega = 0; }
@@ -757,6 +759,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       if (st.interrompu || !serviceImmobile(course.c, e, S, st)) { annulerStand(v, ev); return; }
       if (!e._physx) { e.v = 0; e.omega = 0; }
       e.gaz = 0; e.frein = 1;
+      if (st.carburantAvant != null) {
+        const branche = clamp(st.t / st.duree, STANDS.branchement, STANDS.debranchement) - STANDS.branchement;
+        e.carburant = Math.min(STANDS.reservoir, st.carburantAvant + branche * st.duree * STANDS.debit);
+      }
       if (st.t >= st.duree) {
         const monteAvant = e.pneus;
         if (!B.pneus.remplacerEtat(e, st.pneus, { seance: course.graine, voiture: v.id }, st.revisionPneus)) {
@@ -768,7 +774,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
         ev.push({ type: 'stand', id: v.id, phase: 'repare', pneus: e.pneus, servicePneus: e.servicePneus });
       }
     } else if (st.phase === 'sortie') {
-      if (e.v > S.vitesse || !dans) {
+      if (!e._physx && e.v > S.vitesse) e.v = Math.max(S.vitesse, e.v - STANDS.frein * dt);
+      if (!dans) {
         e.stands = null; e.standsSortie = true;
         ev.push({ type: 'stand', id: v.id, phase: 'sortie' });
       }
@@ -822,6 +829,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       }
       // les événements de la voiture vont droit dans ceux du pas ; une conduite de test qui rend son propre tableau
       // est recopiée comme avant
+      const e = v.etat;
+      if (e.carburant != null && !retenue && !v.fini && !v.abandon && !e.recuperation && !e.reparation && service?.phase !== 'service') {
+        const charge = clamp(e.gaz || 0, 0, 1);
+        e.carburant = Math.max(0, e.carburant - dt * (.0008 + Math.abs(e.v) * (.00024 + .00048 * charge)));
+        if (e.carburant === 0) {
+          const libre = v._commandeSansGaz || (v._commandeSansGaz = {});
+          cmd = Object.assign(libre, cmd, { gaz: 0, derive: false });
+          B.conduite.couperTurbo(e);
+        }
+      }
       cmd = limiterVoiePhysX(course, v, cmd);
       const debut = ev.length, rendus = B.conduite.pas(v.etat, cmd, c, dt, retenue, ev);
       if (rendus === ev) for (let k = debut; k < ev.length; k++) ev[k].id = v.id;

@@ -400,6 +400,16 @@
   flat out float vOpacity;
   out float vGroundCoverage;
   void main() {
+    // Rigid world terrain: position and normal are already in world space.
+    // The last four vertex floats are exactly the material ID and the RGB tint.
+    if(iRotation.w==66.||iRotation.w==98.){
+      bool smoothTint=iRotation.w==98.;
+      vWorld=aPosition;vSurface=aPosition;vLocal=aPosition;vNormal=normalize(aNormal);
+      vFaceNormal=aNormal;vDimensions=vec3(1.);vSurfaceNormal=smoothTint?iPosition.yzw:vNormal;
+      vAnchor=vec3(0.);vMaterial=iPosition.x;vEmission=0.;vOverlay=0.;vOutdoor=1.;vObject=0.;
+      vColor=vec4(iPosition.yzw,smoothTint?2.:1.);vOpacity=1.;vGroundCoverage=1.;
+      gl_Position=uViewProjection*vec4(vWorld,1.);return;
+    }
     // 0/1 retain the historical no-colour/colour markers, including all FX
     // alpha values in [0,1]. Opaque opacity uses disjoint ranges without a
     // larger instance stride: [2,3) with a tint, [-2,-1] without one.
@@ -1702,6 +1712,24 @@
     return {vertices:new Float32Array(data),indices:new Uint32Array(indices),ranges};
   }
 
+  // The host ABI stays at 13 floats. A single translated or wind/sea-driven vertex
+  // keeps the entire section on the ordinary path, including every triangle boundary.
+  function rigidTerrainVertices(vertices){
+    if(vertices.length%13)return false;
+    for(let i=0;i<vertices.length;i+=13){
+      if(vertices[i+6]!==0||vertices[i+7]!==0||vertices[i+8]!==0)return false;
+      const material=Math.fround(vertices[i+9]);
+      if((material>10.5&&material<12.5)||(material>26.5&&material<27.5))return false;
+    }
+    return true;
+  }
+  function writeRigidTerrain(target,at,source){
+    for(let i=0;i<source.length;i+=13){
+      for(let j=0;j<6;j++)target[at++]=source[i+j];
+      for(let j=9;j<13;j++)target[at++]=source[i+j];
+    }
+  }
+
   // Opaque cockpit geometry can be outside the colour view and still cast a shadow.
   // Read the actual registered vertices, including off-centre shapes and edits by updateShape.
   function rigidOverlayView(source){
@@ -1741,7 +1769,7 @@
       shown.length=count;hidden.length=rejected;
       return shown;
     }
-    return {select,hidden,invalidate:name=>bounds.delete(name)};
+    return {select,hidden,halfExtents,invalidate:name=>bounds.delete(name)};
   }
 
   // Reuse only bit-identical primitive vertices. Keep expanded vertex storage,
@@ -2881,6 +2909,7 @@
   uniform highp sampler2D uOmbreTuile;
   uniform mat4 uOmbreTuileMatrice;
   uniform vec4 uOmbreTuileReglages;
+  uniform vec4 uPhotoTileSphere;
   uniform highp sampler2DShadow uOmbreLoin;
   uniform mat4 uOmbreLoinMatrice;
   uniform vec4 uOmbreLoinReglages;${pcss?`
@@ -3017,14 +3046,18 @@
       }
     }
     float v=mix(loin,proche,poids);
-    if(uOmbreTuileReglages.x>.5){
-      vec3 t=(uOmbreTuileMatrice*vec4(vWorld+n*uOmbreTuileReglages.w,1.)).xyz*.5+.5;
-      if(t.z>0.&&t.z<1.&&min(t.x,t.y)>0.&&max(t.x,t.y)<1.){
-        // Tuile tracée par les faces arrière : une face éclairée est loin de la profondeur gardée, un biais constant
-        // suffit ; sans plan du récepteur, dont les dérivées s'affolent sur les petites pièces courbes de l'habitacle.
-        float vt=photoBspline(uOmbreTuile,t.xy,t.z-(.0005+.0012*(1.-nl)),vec2(0.),uOmbreTuileReglages.y);
-        float bord=min(min(t.x,t.y),min(1.-t.x,1.-t.y));
-        v*=mix(1.,vt,smoothstep(0.,uOmbreTuileReglages.z,bord));
+    if(uOmbreTuileReglages.x>.5 && v>0.){
+      vec3 receiver=vWorld+n*uOmbreTuileReglages.w;
+      vec3 deltaTile=receiver-uPhotoTileSphere.xyz;
+      if(uPhotoTileSphere.w<0. || dot(deltaTile,deltaTile)<=uPhotoTileSphere.w){
+        vec3 t=(uOmbreTuileMatrice*vec4(receiver,1.)).xyz*.5+.5;
+        if(t.z>0.&&t.z<1.&&min(t.x,t.y)>0.&&max(t.x,t.y)<1.){
+          // Tuile tracée par les faces arrière : une face éclairée est loin de la profondeur gardée, un biais constant
+          // suffit ; sans plan du récepteur, dont les dérivées s'affolent sur les petites pièces courbes de l'habitacle.
+          float vt=photoBspline(uOmbreTuile,t.xy,t.z-(.0005+.0012*(1.-nl)),vec2(0.),uOmbreTuileReglages.y);
+          float bord=min(min(t.x,t.y),min(1.-t.x,1.-t.y));
+          v*=mix(1.,vt,smoothstep(0.,uOmbreTuileReglages.z,bord));
+        }
       }
     }
     float plancher=uPenombre.x>.5?mix(.055,.45,smoothstep(.25,.9,clamp(uWeather.y,0.,1.))):.055;
@@ -3104,8 +3137,11 @@
     const photo=!!options.ombresPhoto,photoTileSize=photo&&options.ombresPhoto.tuile===512?512:photo?1024:0,photoPcssOn=photo&&options.ombresPhoto.pcss!==false;
     let photoUniforms=null,photoSampler=null,photoDepth=null,photoTile=null,photoFar=null,photoFarRequest=null,photoSplit=false,photoOverlay=null;
     let photoSunRange=1,photoSunTexel=1,photoTileExtent=3.5;
+    const photoTileSphere=new Float32Array(4);
     const photoTileMatrix=new Float32Array(16),photoFarMatrix=new Float32Array(16),photoMatrix=new Float32Array(16),photoProjection=new Float32Array(16);
-    const overlayView=options.cullRigidOverlay?rigidOverlayView(source):null;
+    const cullSun=options.cullRigidSunCasters===true;
+    const rigidShapes=cullSun||options.cullRigidOverlay?rigidOverlayView(source):null,overlayView=options.cullRigidOverlay?rigidShapes:null;
+    const sunCasters={groups:[]},sunCasterRecords=[];
     const packSplitOverlay=photo&&overlayView?splitPacker():null;
     const packSplit=photo?splitPacker():null,nearOrdinary=[],photoWarmTile={centre:[0,0,0],etendue:3.5,debut:0,fin:0};
     const photoState={contacts:0,tuile:false,loin:false,penombre:'off',loinTaille:0};
@@ -3137,7 +3173,7 @@
     // BITUME : nappes (chaussée, accotements, terrain : triangles continus, matière et couleur par sommet) et lots
     // de décor (instances statiques groupées par portion de circuit, chacune avec sa version lointaine allégée).
     let multiDrawNappes=null;
-    let nappes=[],nappeVao=null,nappeVbo=null,nappeIbo=null,lots=[],groundPlans=new WeakMap();
+    let nappes=[],nappesCompactes=new Uint8Array(0),nappeVao=null,nappeVaoCompact=null,nappeVbo=null,nappeIbo=null,lots=[],groundPlans=new WeakMap();
     const lotView=lotViewState(),colourRadii={horizontal:0,vertical:0};
     let viewCache=null,torchCache=null,sunCache=null,indexRevision=0,selectionGen=0,selectionRebuilt=false;
     const emptyGuard={revision:-1,origin:[0,0,0],forward:[0,0,0],horizontal:0,vertical:0,far:0,ranges:[0,0,0],margin:0,tilt:0,entries:EMPTY_ENTRIES};
@@ -3418,29 +3454,53 @@
     }
     initialize();
 
-    // BITUME : un sommet de nappe = position (3), normale (3), [0, 0, 0, matière] (4), couleur (3), soit 52 octets.
-    // Les attributs d'instance 3 et 4 restent constants (échelle 1, surface extérieure en coordonnées du monde).
+    // One vertex buffer with a 10-float section and a 13-float section. The index
+    // stream stays in submission order, including multi-draw and its contiguous fallback.
+    function vaoTerrain(compact,offset){
+      const terrain=gl.createVertexArray(),stride=compact?40:52;
+      gl.bindVertexArray(terrain);gl.bindBuffer(gl.ARRAY_BUFFER,nappeVbo);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,nappeIbo);
+      gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,stride,offset);
+      gl.enableVertexAttribArray(1);gl.vertexAttribPointer(1,3,gl.FLOAT,false,stride,offset+12);
+      gl.enableVertexAttribArray(2);gl.vertexAttribPointer(2,4,gl.FLOAT,false,stride,offset+24);
+      if(!compact){gl.enableVertexAttribArray(5);gl.vertexAttribPointer(5,3,gl.FLOAT,false,stride,offset+40);}
+      return terrain;
+    }
     function chargerNappes(){
-      if(nappeVbo)gl.deleteBuffer(nappeVbo);if(nappeIbo)gl.deleteBuffer(nappeIbo);if(nappeVao)gl.deleteVertexArray(nappeVao);
-      nappeVao=nappeVbo=nappeIbo=null;
+      if(nappeVbo)gl.deleteBuffer(nappeVbo);if(nappeIbo)gl.deleteBuffer(nappeIbo);
+      if(nappeVao)gl.deleteVertexArray(nappeVao);if(nappeVaoCompact)gl.deleteVertexArray(nappeVaoCompact);
+      nappeVao=nappeVaoCompact=nappeVbo=nappeIbo=null;
       if(!nappes.length||stats.contextLost||disposed)return;
-      let sommets=0,indices=0;for(const n of nappes){sommets+=n.sommets.length/13;indices+=n.indices.length;}
-      const donnees=new Float32Array(sommets*13),index=new Uint32Array(indices);
-      let vs=0,is=0;
-      for(const n of nappes){
-        donnees.set(n.sommets,vs*13);
-        for(let k=0;k<n.indices.length;k++)index[is+k]=n.indices[k]+vs;
-        n.debut=is*4;n.compte=n.indices.length;vs+=n.sommets.length/13;is+=n.indices.length;
+      nappesCompactes=new Uint8Array(nappes.length);
+      let compact=0,complet=0,indices=0;
+      for(let i=0;i<nappes.length;i++){
+        const n=nappes[i],count=n.sommets.length/13;
+        if(rigidTerrainVertices(n.sommets)){nappesCompactes[i]=1;compact+=count;}else complet+=count;
+        indices+=n.indices.length;
       }
-      nappeVao=gl.createVertexArray();gl.bindVertexArray(nappeVao);
+      const debutComplet=compact*10,donnees=new Float32Array(debutComplet+complet*13),index=new Uint32Array(indices);
+      let vc=0,vl=0,is=0;
+      for(let i=0;i<nappes.length;i++){
+        const n=nappes[i],count=n.sommets.length/13;
+        let base;
+        if(nappesCompactes[i]){base=vc;writeRigidTerrain(donnees,vc*10,n.sommets);vc+=count;}
+        else{base=vl;donnees.set(n.sommets,debutComplet+vl*13);vl+=count;}
+        for(let k=0;k<n.indices.length;k++)index[is+k]=n.indices[k]+base;
+        n.debut=is*4;n.compte=n.indices.length;is+=n.indices.length;
+      }
+      gl.bindVertexArray(null);
       nappeVbo=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,nappeVbo);gl.bufferData(gl.ARRAY_BUFFER,donnees,gl.STATIC_DRAW);
-      gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,52,0);
-      gl.enableVertexAttribArray(1);gl.vertexAttribPointer(1,3,gl.FLOAT,false,52,12);
-      gl.enableVertexAttribArray(2);gl.vertexAttribPointer(2,4,gl.FLOAT,false,52,24);gl.vertexAttribDivisor(2,0);
-      gl.disableVertexAttribArray(3);gl.disableVertexAttribArray(4);
-      gl.enableVertexAttribArray(5);gl.vertexAttribPointer(5,3,gl.FLOAT,false,52,40);gl.vertexAttribDivisor(5,0);
       nappeIbo=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,nappeIbo);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,index,gl.STATIC_DRAW);
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,null);
+      if(compact)nappeVaoCompact=vaoTerrain(true,0);
+      if(complet)nappeVao=vaoTerrain(false,debutComplet*4);
       gl.bindVertexArray(vao);stats.nappeTriangles=indices/3;
+    }
+    function flagsNappe(i){
+      return (nappesCompactes[i]?66:2)+(nappes[i].vertexTint==='smooth'?32:0);
+    }
+    function lierNappe(flags){
+      gl.bindVertexArray(flags>=66?nappeVaoCompact:nappeVao);
+      gl.vertexAttrib4f(3,1,1,1,0);gl.vertexAttrib4f(4,0,0,0,flags);
     }
     const terrainView=terrainViewState();
     const msaaAttachments=[gl.COLOR_ATTACHMENT0,gl.DEPTH_ATTACHMENT];
@@ -3462,17 +3522,14 @@
       }
     }
     function dessinerNappes(eye,axes,horizontal,vertical,far,radii){
-      if(!nappeVao)return;
+      if(!nappeIbo)return;
       const count=terrainView.select(eye,axes,horizontal,vertical,far,radii);
       if(!count)return;
-      gl.bindVertexArray(nappeVao);gl.vertexAttrib4f(3,1,1,1,0);gl.vertexAttrib4f(4,0,0,0,2);
-      let smoothTint=false, nombre=0;
+      let flags=0,nombre=0;
       for(let i=0;i<count;i++){
-        const n=nappes[terrainView.indices[i]];
-        const tint=n.vertexTint==='smooth';
-        if(tint!==smoothTint){
-          envoyerNappes(nombre);nombre=0;
-          gl.vertexAttrib4f(4,0,0,0,tint?34:2);smoothTint=tint;
+        const id=terrainView.indices[i],n=nappes[id],suivant=flagsNappe(id);
+        if(flags!==suivant){
+          envoyerNappes(nombre);nombre=0;lierNappe(suivant);flags=suivant;
         }
         stats.triangles+=n.compte/3;
         // L'extension prend des offsets signés 32 bits, drawElements accepte un GLintptr.
@@ -3492,23 +3549,22 @@
         }
       }
       envoyerNappes(nombre);
-      if(smoothTint)gl.vertexAttrib4f(4,0,0,0,2);
+      if(flags!==2)gl.vertexAttrib4f(4,0,0,0,2);
       gl.bindVertexArray(vao);
     }
     // Préchauffage : chaque nappe, sans test de champ. Les nappes ne projettent pas d'ombre (aucune passe d'ombre
     // ne les trace) : les tracer dans l'atlas ferait compiler une variante que le jeu n'utilise jamais. Une cible
     // déjà balayée (voir prechaufferLots) ne reçoit qu'une nappe, assez pour la variante d'état de cette image.
     function prechaufferNappes(){
-      if(!nappeVao)return;
+      if(!nappeIbo)return;
       const cle=warm.cible+' nappes',seule=warm.balayes.has(cle);warm.balayes.add(cle);
-      gl.bindVertexArray(nappeVao);gl.vertexAttrib4f(3,1,1,1,0);gl.vertexAttrib4f(4,0,0,0,2);
-      let smoothTint=false;
-      for(const n of nappes){
-        const tint=n.vertexTint==='smooth';
-        if(tint!==smoothTint){gl.vertexAttrib4f(4,0,0,0,tint?34:2);smoothTint=tint;}
+      let flags=0;
+      for(let i=0;i<nappes.length;i++){
+        const n=nappes[i],suivant=flagsNappe(i);
+        if(flags!==suivant){lierNappe(suivant);flags=suivant;}
         gl.drawElements(gl.TRIANGLES,n.compte,gl.UNSIGNED_INT,n.debut);stats.drawCalls++;stats.triangles+=n.compte/3;warm.nappes++;if(seule)break;
       }
-      if(smoothTint)gl.vertexAttrib4f(4,0,0,0,2);
+      if(flags!==2)gl.vertexAttrib4f(4,0,0,0,2);
       gl.bindVertexArray(vao);
     }
     // BITUME : les bornes vivent pendant toute la séance. Chaque contexte possède
@@ -3701,7 +3757,7 @@
       const restored=primitiveIndex.restore(name), start=source.indices[range.offset/INDEX_OCTETS]*6;
       if(restored&&!stats.contextLost){gl.bindVertexArray(vao);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);}
       groundIndex.invalidate(name,restored,stats.contextLost?null:uploadShapeIndices);
-      source.vertices.set(vertices,start);overlayView?.invalidate(name);
+      source.vertices.set(vertices,start);rigidShapes?.invalidate(name);
       if(!stats.contextLost){gl.bindBuffer(gl.ARRAY_BUFFER,vbo);gl.bufferSubData(gl.ARRAY_BUFFER,start*4,vertices);}
     }
     function uploadShapeIndices(offset,indices){
@@ -3892,6 +3948,44 @@
       if(!torchAxes&&!stable)lampCasters[slot]={light,p:p.slice(),entries:casters};
       renderStatic(casters,slot+1,true);renderBatch(dynamicBatch,dynamicBuffer,false,true);gl.disable(gl.POLYGON_OFFSET_FILL);
     }
+    // Clip only the ends of each instanced range. The colour buffer, instance order
+    // and offsets of the car's separate Photo tile stay intact, with at most one draw per shape.
+    function selectSunCasters(batch,matrix){
+      const rows=batch.storage,groups=sunCasters.groups;
+      const nx=Math.hypot(matrix[0],matrix[4],matrix[8]),ny=Math.hypot(matrix[1],matrix[5],matrix[9]),nz=Math.hypot(matrix[2],matrix[6],matrix[10]);
+      let written=0,culled=0,bounds=null,name;
+      function outside(at){
+        const x=rows[at],y=rows[at+1],z=rows[at+2];
+        const dx=Math.abs(matrix[0]*x+matrix[4]*y+matrix[8]*z+matrix[12])-1;
+        const dy=Math.abs(matrix[1]*x+matrix[5]*y+matrix[9]*z+matrix[13])-1;
+        const dz=Math.abs(matrix[2]*x+matrix[6]*y+matrix[10]*z+matrix[14])-1;
+        if(dx<=0&&dy<=0&&dz<=0)return false;
+        const material=rows[at+3],flags=rows[at+11];
+        if((flags&24)||(material>10.5&&material<12.5)||(material>26.5&&material<27.5))return false;
+        if(!bounds)bounds=rigidShapes.halfExtents(name);
+        if(!bounds)return false;
+        // The L1 radius encloses the scaled mesh under every rotation. Expand for float32
+        // world/clip arithmetic; use the actual matrix sent to the depth shader, including snapping.
+        const radius=(bounds[0]*Math.abs(rows[at+4])+bounds[1]*Math.abs(rows[at+5])+bounds[2]*Math.abs(rows[at+6]))*1.00001
+          +.002+.000002*(1+Math.abs(x)+Math.abs(y)+Math.abs(z));
+        return dx>nx*radius||dy>ny*radius||dz>nz*radius;
+      }
+      for(const group of batch.groups){
+        name=group.name;bounds=null;
+        const eligible=group.count-(group.near||0),start=group.offset/4;
+        let first=start,end=start+eligible*16;
+        while(first<end&&outside(first))first+=16;
+        // first survived the first loop. Do not query that instance a second time.
+        while(end-first>16&&outside(end-16))end-=16;
+        const count=(end-first)/16;culled+=eligible-count;
+        if(!count)continue;
+        if(count===group.count){groups[written++]=group;continue;}
+        const record=sunCasterRecords[written]||(sunCasterRecords[written]={name:'',count:0,offset:0});
+        record.name=name;record.count=count;record.offset=first*4;groups[written++]=record;
+      }
+      groups.length=written;stats.sunCastersCulled=culled;
+      return sunCasters;
+    }
     function sunShadowPass(eye,axes,dynamicBatch,time,camera={},fx={},crowd=null){
       const sun=environment.sunDirection,fw=sun.map(v=>-v),length=Math.hypot(fw[0],fw[2]);
       const r=length>.0001?[-fw[2]/length,0,fw[0]/length]:[1,0,0],u=[r[1]*fw[2]-r[2]*fw[1],r[2]*fw[0]-r[0]*fw[2],r[0]*fw[1]-r[1]*fw[0]];
@@ -3921,7 +4015,10 @@
       // BITUME : les lots dont la sphère touche le volume du soleil projettent leur ombre (version proche ou lointaine).
       const viewTangent=Math.tan(Math.max(FOV_MIN,Math.min(110,camera.fov||75))*Math.PI/360);
       if(warm){warm.cible='ombre';prechaufferLots(true);}else dessinerLots(eye,axes,0,viewTangent,0,inside);
-      if(photoSplit)renderPart(dynamicBatch,dynamicBuffer,1);else renderBatch(dynamicBatch,dynamicBuffer,false,true);if(crowd)renderBatch(crowd,crowdBuffer,false,true);gl.disable(gl.POLYGON_OFFSET_FILL);
+      if(cullSun&&!warm)renderBatch(selectSunCasters(dynamicBatch,shadowMatrix),dynamicBuffer,false,true);
+      else if(photoSplit)renderPart(dynamicBatch,dynamicBuffer,1);
+      else renderBatch(dynamicBatch,dynamicBuffer,false,true);
+      if(crowd)renderBatch(crowd,crowdBuffer,false,true);gl.disable(gl.POLYGON_OFFSET_FILL);
       // PDR (lots) : les lots du jeu (fx.lots) entrent dans la même vue du soleil, au même biais, rétabli pour eux.
       // PDR (foule) : la foule sur le GPU aussi (fx.foule.ombre) ; au retour, le moteur reprend son état GL.
       const pdrOmbre=fx.foule&&typeof fx.foule.ombre==='function';
@@ -4105,17 +4202,14 @@
       const blackout=horrorLights(fx.horror,lights);stats.blackoutLights=blackout?.size||0;
       lightPositions.fill(0);lightColors.fill(0);lightRanges.fill(0);lightDirections.fill(0);lightCones.fill(0);
       for(let i=0;i<selected.length;i++){const light=selected[i].light;if(light.dir){lightDirections.set(light.dir,i*3);lightCones.set(light.cone||DEFAULT_CONE,i*2);}lightPositions.set(light.p,i*3);lightRanges[i]=light.range||0;const c=light.color||WHITE,power=(light.power===undefined?1:light.power)*(blackout?.get(light)??1);lightColors[i*3]=c[0]*power;lightColors[i*3+1]=c[1]*power;lightColors[i*3+2]=c[2]*power;}
-      ordinary.length=overlay.length=particles.length=overlayParticles.length=0;for(const mesh of dynamic||[]) (mesh.overlay?(mesh.fx?overlayParticles:overlay):mesh.fx?particles:ordinary).push(mesh);
-      // Préchauffage : quelques pièces témoins garantissent chaque passe (objets, effets translucides, habitacle).
-      if(warm)for(const mesh of warm.extra)(mesh.overlay?(mesh.fx?overlayParticles:overlay):mesh.fx?particles:ordinary).push(mesh);
-      // FERRO 0.3.11 (ombresPhoto) : sans l'option, tuile est null et rien ne change.
+      const tuile=photo?photoTuile(fx,camera):null;photoSplit=!!tuile;photoOverlay=null;
+      partitionDynamic(dynamic,tuile);
       const colourOverlay=overlayView?overlayView.select(overlay,eye,axes,horizontal,vertical,colourRadii,warm):overlay;
       stats.overlayCulled=overlay.length-colourOverlay.length;
-      const tuile=photo?photoTuile(fx,dynamic,camera):null;photoSplit=!!tuile;photoOverlay=null;
       const dynamicBatch=tuile?packSplit(ordinary,nearOrdinary,environment):packDynamic(ordinary,environment,true);
       const torchPosition=eye.map((v,i)=>v+right[i]*.16-up[i]*.08);
       stats.drawCalls=0;stats.triangles=0;stats.instances=0;stats.bloom=!!post&&fx.bloom!==false;stats.shadows=!!shadowTarget&&shadowsEnabled(fx);stats.shadowMaps=stats.shadows?shadowLights.length+1+(environment?1:0):0;stats.shadowMode=environment?'sun-atlas':'atlas';
-      stats.uploadBytes=0;stats.fxInstances=0;
+      stats.uploadBytes=0;stats.fxInstances=0;stats.sunCastersCulled=0;
       // Animated instances are shared unchanged by every depth and colour pass.
       streamUpload(dynamicStream,dynamicBatch);
       const crowd=fx.instances&&fx.instances.groups&&fx.instances.groups.length?fx.instances:null,sunOnly=!!fx.sunOnly;
@@ -4281,7 +4375,7 @@
     }
     // Créé avec le contexte (et après sa restauration) : la course ne crée jamais ces objets.
     function photoInitialize(){
-      photoUniforms={};for(const name of ['uContact','uContactCount','uContactReglages','uContactSphere','uOmbreTuile','uOmbreTuileMatrice','uOmbreTuileReglages','uOmbreLoin','uOmbreLoinMatrice','uOmbreLoinReglages','uOmbreComparee','uPenombre'])photoUniforms[name]=gl.getUniformLocation(program,name);
+      photoUniforms={};for(const name of ['uContact','uContactCount','uContactReglages','uContactSphere','uOmbreTuile','uOmbreTuileMatrice','uOmbreTuileReglages','uPhotoTileSphere','uOmbreLoin','uOmbreLoinMatrice','uOmbreLoinReglages','uOmbreComparee','uPenombre'])photoUniforms[name]=gl.getUniformLocation(program,name);
       photoSampler=gl.createSampler();
       gl.samplerParameteri(photoSampler,gl.TEXTURE_COMPARE_MODE,gl.COMPARE_REF_TO_TEXTURE);gl.samplerParameteri(photoSampler,gl.TEXTURE_COMPARE_FUNC,gl.LEQUAL);
       gl.samplerParameteri(photoSampler,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.samplerParameteri(photoSampler,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
@@ -4336,19 +4430,36 @@
     }
     // Tuile de l'image : fx.ombreProche = { centre, etendue, debut, fin, axe } (debut et fin : indices de dynamic). Les
     // pièces ordinaires de cet intervalle passent dans nearOrdinary ; le préchauffage en prend une pièce témoin.
-    function photoTuile(fx,dynamic,camera){
+    function photoTuile(fx,camera){
       let o=fx.ombreProche;
       if(!o&&warm){const p=camera.pos||[0,1.6,0];photoWarmTile.centre[0]=p[0];photoWarmTile.centre[1]=p[1];photoWarmTile.centre[2]=p[2];o=photoWarmTile;}
       if(!o||!photoTile||!environment||!shadowTarget||!shadowsEnabled(fx))return null;
       const c=o.centre;if(!c||!Number.isFinite(c[0])||!Number.isFinite(c[1])||!Number.isFinite(c[2]))return null;
-      const list=dynamic||EMPTY_ENTRIES,debut=Math.max(0,Math.floor(o.debut)||0),fin=Math.min(list.length,Math.floor(o.fin)||0);
-      // Écriture par indice puis longueur : length=0 suivi de push rendrait le stockage des deux tableaux et en
-      // allouerait un neuf à chaque image (V8) ; ici, rien n'est alloué tant que leur taille ne croît pas.
-      let a=0,b=0;
-      for(let i=0;i<list.length;i++){const mesh=list[i];if(mesh.overlay||mesh.fx)continue;if(i>=debut&&i<fin)nearOrdinary[b++]=mesh;else ordinary[a++]=mesh;}
-      if(warm){let first=true;for(const mesh of warm.extra){if(mesh.overlay||mesh.fx)continue;if(first)nearOrdinary[b++]=mesh;else ordinary[a++]=mesh;first=false;}}
-      ordinary.length=a;nearOrdinary.length=b;
       return o;
+    }
+    // Scan the dynamic list once. The Photo interval is expressed in indices of the
+    // original list, including its translucent effects and cockpit meshes.
+    function partitionDynamic(dynamic,tile){
+      const list=Array.isArray(dynamic)?dynamic:dynamic?Array.from(dynamic):EMPTY_ENTRIES;
+      const begin=tile?Math.max(0,Math.floor(tile.debut)||0):0,end=tile?Math.floor(tile.fin)||0:0;
+      let nWorld=0,nNear=0,nOverlay=0,nFX=0,nOverlayFX=0;
+      for(let index=0;index<list.length;index++){
+        const mesh=list[index];
+        if(mesh.overlay){if(mesh.fx)overlayParticles[nOverlayFX++]=mesh;else overlay[nOverlay++]=mesh;}
+        else if(mesh.fx)particles[nFX++]=mesh;
+        else if(index<end&&index>=begin)nearOrdinary[nNear++]=mesh;
+        else ordinary[nWorld++]=mesh;
+      }
+      if(warm){
+        let tileExample=!!tile;
+        for(const mesh of warm.extra){
+          if(mesh.overlay){if(mesh.fx)overlayParticles[nOverlayFX++]=mesh;else overlay[nOverlay++]=mesh;}
+          else if(mesh.fx)particles[nFX++]=mesh;
+          else if(tileExample){nearOrdinary[nNear++]=mesh;tileExample=false;}
+          else ordinary[nWorld++]=mesh;
+        }
+      }
+      ordinary.length=nWorld;nearOrdinary.length=nNear;overlay.length=nOverlay;particles.length=nFX;overlayParticles.length=nOverlayFX;
     }
     // Profondeur de la voiture filmée : ses pièces ordinaires (part 2 du lot dynamique) et l'habitacle (overlay, empaqueté
     // ici une fois, repris par la passe de l'habitacle). Grille liée à la voiture quand l'axe est donné, sinon au monde.
@@ -4356,6 +4467,14 @@
       const e=Number.isFinite(tuile.etendue)&&tuile.etendue>.5?tuile.etendue:3.5;photoTileExtent=e;
       const axe=tuile.axe&&Number.isFinite(tuile.axe[0])&&Number.isFinite(tuile.axe[1])&&Number.isFinite(tuile.axe[2])?tuile.axe:null;
       photoSunMatrix(photoTileMatrix,tuile.centre,e,photoTile.size,8,.5,16,axe,!axe);
+      photoTileSphere[0]=tuile.centre[0]; photoTileSphere[1]=tuile.centre[1]; photoTileSphere[2]=tuile.centre[2];
+      // The tile spans [-7.5,8] about its tracking point in light depth. Include the
+      // optional half-texel snap on each transverse axis and float32 world-coordinate rounding.
+      const padded=e+e/photoTile.size, m=photoTileMatrix;
+      const slack=.02+4e-6*Math.max(Math.abs(tuile.centre[0]),Math.abs(tuile.centre[1]),Math.abs(tuile.centre[2]),e);
+      const radius=Math.sqrt(2*padded*padded+64)+slack;
+      photoTileSphere[3]=Math.hypot(m[0],m[4],m[8])*e>.999 && Math.hypot(m[1],m[5],m[9])*e>.999
+        ? radius*radius : -1;
       if(overlayView?.hidden.length){
         // One upload: visible instances first within each shape. The complete batch casts its shadow.
         photoOverlay=packSplitOverlay(overlayList,overlayView.hidden,environment);
@@ -4391,6 +4510,7 @@
       const tileOn=!!(tuile&&stats.shadows&&photoTile);
       gl.activeTexture(gl.TEXTURE9);gl.bindTexture(gl.TEXTURE_2D,photoLies[1]=tileOn?photoTile.texture:whiteTexture);
       gl.uniformMatrix4fv(u.uOmbreTuileMatrice,false,photoTileMatrix);
+      if(tileOn)gl.uniform4fv(u.uPhotoTileSphere,photoTileSphere);
       const tileTexel=photoTile?1/photoTile.size:1;
       gl.uniform4f(u.uOmbreTuileReglages,tileOn?1:0,tileTexel,.3/(2*photoTileExtent),photoTileExtent*2*tileTexel);
       const sun=environment&&environment.sunDirection,far=photoFar;
@@ -4467,7 +4587,7 @@
       gl.uniform1f(depthLocalWind.uWindStrength,0);gl.uniform1i(depthLocalWind.uLocalWindCount,0);depthLocalWind.localWindActive=true;
       // La carte globale ne demande que les silhouettes. Un seul tampon temporaire
       // suffit pour les lots froids, sans retenir leurs couleurs ni leurs LOD proches.
-      let silhouette=null;
+      let silhouette=null,packSilhouette=null;
       for(const l of lots){
         if(l.ombre===false||l.groundCover||l.detailProcheSeul)continue;
         let batch=l.paquetLoin||l.paquet,buffer=l.tamponLoin||l.tampon;
@@ -4475,10 +4595,11 @@
           if(!lotsProgressifs)continue;
           const source=l.objetsOmbreLointaine?.()||(l.loin?.length?l.loin:l.objets);
           if(!source?.length)continue;
-          batch=pack(source,environment);
+          if(!packSilhouette)packSilhouette=instancePacker();
+          batch=packSilhouette(source,environment);
           if(!silhouette)silhouette=gl.createBuffer();
           gl.bindBuffer(gl.ARRAY_BUFFER,silhouette);
-          gl.bufferData(gl.ARRAY_BUFFER,batch.values,gl.STREAM_DRAW);
+          if(batch.length)gl.bufferData(gl.ARRAY_BUFFER,batch.storage,gl.STREAM_DRAW,0,batch.length);
           buffer=silhouette;
         }
         renderBatch(batch,buffer,false,true);
@@ -4501,7 +4622,7 @@
     function restored(){if(!disposed){
       // BITUME : les anciens objets GL appartiennent au contexte perdu ; oublier leurs poignées avant recharge.
       dispositions=new WeakMap();casesDisposition.length=casesLibres.length=curseurDisposition=0;etatDispositions.residentes=0;
-      nappeVao=nappeVbo=nappeIbo=null;for(const l of lots)l.tampon=l.tamponLoin=null;
+      nappeVao=nappeVaoCompact=nappeVbo=nappeIbo=null;for(const l of lots)l.tampon=l.tamponLoin=null;
       chunks.clear();initialize();chargerNappes();chargerLots();rebuildChunks();
       if(photo&&photoFarRequest)precalculerOmbre(photoFarRequest);
     }}
@@ -4515,7 +4636,7 @@
       for(const cache of staticCaches.slice(1))gl.deleteBuffer(cache.buffer);
       // BITUME : tampons des nappes et des lots.
       terrainView.reset();nappes=[];
-      if(nappeVbo)gl.deleteBuffer(nappeVbo);if(nappeIbo)gl.deleteBuffer(nappeIbo);if(nappeVao)gl.deleteVertexArray(nappeVao);
+      if(nappeVbo)gl.deleteBuffer(nappeVbo);if(nappeIbo)gl.deleteBuffer(nappeIbo);if(nappeVao)gl.deleteVertexArray(nappeVao);if(nappeVaoCompact)gl.deleteVertexArray(nappeVaoCompact);
       for(const l of lots)viderLot(l);
       lots=[];indicesLots=[];dernierUsage=ambianceLots=null;
       // PDR (lots) : tampons des lots du jeu.
@@ -4693,7 +4814,7 @@
   }
   // Both GPU backends share the procedural shapes, instance layout and visibility
   // rules. No rendering calls or GPU state are shared between the APIs.
-  const shared={bitumeWeather,localWindState,vegetationFrame,groundCoverRank,groundCoverGeometry,groundCoverPlan,prepareGroundCover,lotViewState,terrainViewState,rigidOverlayView,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,setFrustumRadii,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,lotDetailDistance,materialFamily,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
+  const shared={bitumeWeather,localWindState,vegetationFrame,groundCoverRank,groundCoverGeometry,groundCoverPlan,prepareGroundCover,lotViewState,terrainViewState,rigidOverlayView,rigidTerrainVertices,writeRigidTerrain,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,setFrustumRadii,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,lotDetailDistance,materialFamily,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
   function mesh(shape,p,s,mat,r=[0,0,0],emissive=0){
     return {shape,p,s,mat,r,emissive,color:undefined,surface:undefined,overlay:false,fx:false,
       alpha:undefined,opacity:1,additive:undefined,outdoor:undefined,actorPart:undefined,actorLod:0,

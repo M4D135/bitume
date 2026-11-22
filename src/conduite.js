@@ -369,7 +369,8 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
     // Surface sous la voiture
     const demi = c.largeur / 2, ad = Math.abs(etat.d), cote = etat.d < 0 ? -1 : 1;
     let mu = P.muPiste, surf = 'piste';
-    if (ad > demi) {
+    const voieStand = etat.d > demi && c.stands && etat.d <= B.circuit.bordStands(c,etat.s);
+    if (ad > demi && !voieStand) {
       if (ad <= demi + P.largeurVibreur && B.circuit.vibreurA(c, etat.s, cote)) { mu = P.muVibreur; surf = 'vibreur'; }
       else { mu = P.muHerbe; surf = 'herbe'; }
     }
@@ -380,7 +381,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
     const dg = etat.degats;
     if (dg) mu *= dg.adher;
     const chaussee = B.chaussee.lire(c, etat.s, undefined, CHAUSSEE.rouler);
-    const enPiste = ad <= demi + P.largeurVibreur;
+    const enPiste = voieStand || ad <= demi + P.largeurVibreur;
 
     // Dérive au bouton
     piloterDerive(etat, cmd, k, frein, surf, enPiste, dt, ev);
@@ -632,11 +633,12 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
     const e = B.circuit.echantillon(c, etat.s, LU.attitude), kA = expTauFixe(TAU.attitude, P.attitudeTau, dt);
     // sol sous la voiture, même profil que le décor : dévers sur la piste, vibreur, accotement à 2 %
     const w = c.largeur / 2, ad = Math.abs(etat.d);
-    etat.vibreur=ad>w&&ad<=w+P.largeurVibreur&&B.circuit.vibreurA(c,etat.s,etat.d<0?-1:1);
-    etat.surface=ad<=w?'piste':etat.vibreur?'vibreur':'herbe';
+    const voieStand = etat.d>w && c.stands && etat.d<=B.circuit.bordStands(c,etat.s);
+    etat.vibreur=!voieStand&&ad>w&&ad<=w+P.largeurVibreur&&B.circuit.vibreurA(c,etat.s,etat.d<0?-1:1);
+    etat.surface=ad<=w||voieStand?'piste':etat.vibreur?'vibreur':'herbe';
     etat.y = e.y - clamp(etat.d, -w, w) * Math.sin(e.devers);
-    if (ad > w + P.largeurVibreur) etat.y -= 0.015 + 0.02 * (ad - w - P.largeurVibreur);
-    else if (ad > w) etat.y += (etat.vibreur ? 0.05 : -0.015) * (ad - w) / P.largeurVibreur;
+    if (!voieStand && ad > w + P.largeurVibreur) etat.y -= 0.015 + 0.02 * (ad - w - P.largeurVibreur);
+    else if (!voieStand && ad > w) etat.y += (etat.vibreur ? 0.05 : -0.015) * (ad - w) / P.largeurVibreur;
     // petit bond au départ d'une dérive
     if (etat.bondT > 0) {
       etat.bondT = Math.max(0, etat.bondT - dt);
@@ -816,7 +818,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
       // Le recul ne calcule pas les contacts dynamiques de rouler. Ne pas réemployer leurs anciennes charges
       // ou glisses : contacts statiques visuels explicites, surface relue sans muter la physique.
       const ad = Math.abs(etat.d), demi = c.largeur / 2;
-      const surface = ad <= demi ? 'piste' : ad <= demi + P.largeurVibreur && B.circuit.vibreurA(c, etat.s, etat.d < 0 ? -1 : 1) ? 'vibreur' : 'herbe';
+      const surface = ad <= demi || etat.d > 0 && c.stands && etat.d <= B.circuit.bordStands(c,etat.s) ? 'piste' : ad <= demi + P.largeurVibreur && B.circuit.vibreurA(c, etat.s, etat.d < 0 ? -1 : 1) ? 'vibreur' : 'herbe';
       const chaussee = B.chaussee.lire(c, etat.s, undefined, CHAUSSEE.recul);
       B.usurePneus.pas(etat, dt, distancePneus,
         chaussee.eau, chaussee.neige, 'recul', surface);

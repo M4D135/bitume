@@ -1326,6 +1326,7 @@
     };
     const enc = decor.enceinte || { debut: -160, fin: 310 };
     for (let s = enc.debut; s <= enc.fin; s += 8) disque((c.depart || 0) + s, R_ENCEINTE, ENCEINTE);
+    if (c.stands) for (let s=c.stands.debut; s<=c.stands.fin; s+=8) disque(s,Math.max(R_ENCEINTE,c.stands.dFond+10),ENCEINTE);
     for (const t of (B.couverts ? B.couverts.liste(c) : c.tunnel ? [c.tunnel] : [])) {
       const fin = t.debut + (B.couverts ? B.couverts.longueur(c, t) : t.fin - t.debut);
       for (let s = t.debut - 60; s <= fin + 60; s += 8) disque(s, R_TUNNEL, TUNNEL);

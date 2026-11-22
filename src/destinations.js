@@ -288,18 +288,22 @@
       // Grande Arche de Grès Naturelle au-dessus d'une droite HORS zone départ/stands
       const f = trouverLigneDroite(c, outils.secteur, 0.45);
       if (!f) return compte;
-      const rx = -Math.sin(f.cap), rz = Math.cos(f.cap), gres = [.56, .25, .14];
-      const objs = [], loin = [];
-      for (let i = 0; i <= 12; i++) {
-        const a = Math.PI * i / 12;
-        const asym = Math.sin(i * 2.7 + 0.5) * 1.1;
-        const lat = Math.cos(a) * 21.5 + asym * 0.4, h = Math.sin(a) * 17.5 + 4.8 + asym * 0.5;
-        const ax = f.x + rx * lat, az = f.z + rz * lat;
-        const bloc = { shape: (i % 2 === 0 ? rocheShape : galetShape), p: [ax, f.y + h, az], s: [9.2 + (i % 3) * 1.2, 6.0 + (i % 2) * 1.1, 8.2 + ((i + 1) % 3) * 0.9], r: [asym * 0.06, -f.cap + a * .2 + asym * 0.15, asym * 0.05], mat: 23, color: gres };
-        if (i === 0 || i === 12) D.marquerSolide(bloc, 'arche-sierra', 2);
-        objs.push(bloc); if (i % 2 === 0) loin.push(bloc);
+      if (!B.lieux) return compte;
+      const repere = D.cadre(c, Math.round(f.s / c.pas));
+      const gres = [.56, .25, .14];
+      const arche = B.lieux.poserArcheRoute(repere, limites, terrain, 'bitume-lieu-arche-naturelle', 21, 9.2, 23, gres);
+      const objets = arche.objets;
+      // Éboulis indépendants sur les deux berges. Chaque pierre conserve son propre appui.
+      for (let i = 0; i < 4; i++) {
+        const cote = i % 2 ? 1 : -1, lat = cote * (arche.span / 2 + 3 + i * .8);
+        const ds = i < 2 ? 3.5 : -5;
+        const x = arche.cx + repere.r[0]*lat + repere.t[0]*ds, z = arche.cz + repere.r[2]*lat + repere.t[2]*ds;
+        const hauteur = 1.45 + .22 * i;
+        objets.push({ shape: galetShape, p: [x, terrain.sol(x,z) + hauteur * .55, z],
+          s: [2.4 + i*.27, hauteur, 1.9 + .32*i], r: [.06*i, i*1.7, -.08], mat: 23, color: gres,
+          mobilePhysX: { genre: 'éboulis', masse: 4400 + 850*i } });
       }
-      push(objs, loin, f.x, f.z);
+      push(objets, objets, arche.cx, arche.cz);
       marquer('Grande Arche de la Sierra', f.x, f.y + 12, f.z, 105, 42);
     } else if (theme === 'corail') {
       // Grand Phare Blanc & Rouge sur îlot du lagon + voiliers blancs

@@ -2,7 +2,7 @@
 (function (B) {
   'use strict';
   const LED_COUNT = 12, MAILLE = 128, PORTEE = 355;
-  const HAUTEUR = .20, EPAISSEUR = .045;
+  const HAUTEUR_FLECHE = .60, PART_LUMINEUSE = .86, EPAISSEUR = .045;
   const CHEVRONS = 32, LIGNES = 7, PHASES = 8, COLONNES = CHEVRONS * PHASES;
   const cleCase = (x, z) => x * 65536 + z;
   const formesRuban = [[],[]];
@@ -55,7 +55,7 @@
     }
     for (let j=0;j<LIGNES;j++) {
       const pointe=6-Math.abs(j-3), bas=-.43+.86*j/LIGNES, haut=-.43+.86*(j+1)/LIGNES;
-      const y0=bas+.012, y1=haut-.012;
+      const y0=j===0 ? bas : bas+.012, y1=j===LIGNES-1 ? haut : haut-.012;
       rectangle(metal,-.5,.5,bas,y0); rectangle(metal,-.5,.5,y1,haut);
       let bord=0;
       for(let i=0;i<COLONNES;i++) {
@@ -105,8 +105,8 @@
 
   function bandeauSurRail(troncon) {
     const {rail,haut,s,cote,longueur}=troncon;
-    // Le contrôle des vingt centimètres est vertical, y compris sur une glissière en pente.
-    const h=HAUTEUR*haut[1], offset=(rail.s[1]+h)/2;
+    // La flèche occupe 86 % du caisson. Ses deux pointes sont séparées de 60 cm en hauteur monde.
+    const h=HAUTEUR_FLECHE/(PART_LUMINEUSE*haut[1]), offset=(rail.s[1]+h)/2;
     const pos=rail.p.map((p,i)=>p+haut[i]*offset);
     const taille=[longueur,h,EPAISSEUR], r=rail.r;
     const rotation=cote<0?r:[r[0]+Math.PI,r[1],r[2]];

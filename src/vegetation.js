@@ -354,6 +354,7 @@
     const stations = Math.max(1, Math.round(palier.stations * biome.stations));
     const pas = Math.max(1, Math.ceil(c.n / stations));
     function ajouter(i, d, famille, angle, taille, color, mat) {
+      if (c.stands && B.circuit.empriseStands(c, i*c.pas, d, Math.max(taille[0],taille[2])*.5+.5)) return false;
       // Chaque plante vérifie sa propre abscisse, pas seulement celle du début du massif : les décalages
       // internes d'une touffe ne doivent pas rentrer par le portail ou dans la zone des stands.
       if (qualite !== 'low' && interdit(i)) return false;

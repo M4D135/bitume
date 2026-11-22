@@ -18,7 +18,30 @@
       rayonMax = Math.max(rayonMax, lot.rayon); basculeMax = Math.max(basculeMax, lot.bascule);
       touches.push(null); seuils.push(0);
     }
-    return { colonnes, rayonMax, basculeMax, touches, seuils, n: 0, route: [{}, {}, {}, {}, {}] };
+    // Fenêtres de cases des deux vues. La voiture peut rouler de nombreuses images avant
+    // qu'un bord de fenêtre franchisse 128 m ; l'angle et les seuils restent évalués à chaque vue.
+    const fenetre = () => ({ i0: NaN, i1: NaN, j0: NaN, j1: NaN, cases: [] });
+    return { colonnes, rayonMax, basculeMax, touches, seuils, n: 0, route: [{}, {}, {}, {}, {}],
+      fenetres: [fenetre(), fenetre()], recente: 0 };
+  }
+  function casesProches(d, i0, i1, j0, j1) {
+    for (let k=0; k<d.fenetres.length; k++) {
+      const f=d.fenetres[k];
+      if (f.i0===i0 && f.i1===i1 && f.j0===j0 && f.j1===j1) { d.recente=k; return f.cases; }
+    }
+    d.recente=1-d.recente;
+    const f=d.fenetres[d.recente], cases=f.cases;
+    f.i0=i0; f.i1=i1; f.j0=j0; f.j1=j1;
+    let n=0;
+    for (let i=i0; i<=i1; i++) {
+      const colonne=d.colonnes.get(i);
+      if (!colonne) continue;
+      for (let j=j0; j<=j1; j++) {
+        const lots=colonne.get(j);
+        if (lots) cases[n++]=lots;
+      }
+    }
+    cases.length=n; return cases;
   }
   function surTrajectoire(x, z, a, b, marge) {
     const dx = b.x - a.x, dz = b.z - a.z, longueur2 = dx * dx + dz * dz;
@@ -42,35 +65,33 @@
     const avance = Math.max(35, Math.min(180, Math.abs(et.v) * (1.65 + .55 * (et.frein || 0))));
     const sens = et.v < 0 ? -1 : 1;
     const route = d.route;
-    for (let k = 0; k < route.length; k++)
-      B.circuit.echantillon(c, et.s + sens * avance * k / 4, route[k]);
+    let routePrete = false;
     // Une sphère qui touche le centre du champ ou le couloir du prochain virage garde son détail.
     const centre = .50 * horizontal, bord = .90 * horizontal, normale = Math.sqrt(1 + centre * centre), normaleChamp = Math.sqrt(1 + horizontal * horizontal);
     const i0 = Math.floor((oeil[0] - portee) / CASE), iFin = Math.floor((oeil[0] + portee) / CASE);
     const j0 = Math.floor((oeil[2] - portee) / CASE), jFin = Math.floor((oeil[2] + portee) / CASE);
-    for (let i = i0; i <= iFin; i++) {
-      const col = d.colonnes.get(i);
-      if (!col) continue;
-      for (let j = j0; j <= jFin; j++) {
-        const lots = col.get(j);
-        if (!lots) continue;
-        for (const lot of lots) {
-          const p = lot.centre, r = lot.rayon, dx = p[0] - oeil[0], dy = p[1] - oeil[1], dz = p[2] - oeil[2];
-          const distance2 = dx * dx + dy * dy + dz * dz, limite = lot.bascule * facteur + r;
-          if (distance2 >= limite * limite || distance2 <= (35 + r) ** 2) continue;
-          const devant = dx * ax + dy * ay + dz * az, lateral = Math.abs(dx * rx + dy * ry + dz * rz);
-          if (devant + r <= 0 || lateral <= devant * centre + r * normale ||
-              lateral > devant * horizontal + r * normaleChamp) continue;
-          const margeRoute = r + 12;
-          let surRoute = false;
-          for (let k = 1; k < route.length && !surRoute; k++)
-            surRoute = surTrajectoire(p[0], p[2], route[k - 1], route[k], margeRoute);
-          if (surRoute) continue;
-          const peripherie = Math.min(1, (lateral - devant * centre - r * normale) / Math.max(1, devant * (bord - centre)));
-          const seuil = lot.bascule * (1 - .34 * peripherie);
-          if (distance2 < (seuil * facteur + r) ** 2) continue;
-          d.touches[d.n] = lot; d.seuils[d.n++] = lot.bascule; lot.bascule = seuil;
+    for (const lots of casesProches(d, i0, iFin, j0, jFin)) {
+      for (const lot of lots) {
+        const p = lot.centre, r = lot.rayon, dx = p[0] - oeil[0], dy = p[1] - oeil[1], dz = p[2] - oeil[2];
+        const distance2 = dx * dx + dy * dy + dz * dz, limite = lot.bascule * facteur + r;
+        if (distance2 >= limite * limite || distance2 <= (35 + r) ** 2) continue;
+        const devant = dx * ax + dy * ay + dz * az, lateral = Math.abs(dx * rx + dy * ry + dz * rz);
+        if (devant + r <= 0 || lateral <= devant * centre + r * normale ||
+            lateral > devant * horizontal + r * normaleChamp) continue;
+        const peripherie = Math.min(1, (lateral - devant * centre - r * normale) / Math.max(1, devant * (bord - centre)));
+        const seuil = lot.bascule * (1 - .34 * peripherie);
+        if (distance2 < (seuil * facteur + r) ** 2) continue;
+        // Seuls les arbres qui changeraient vraiment de LOD ont besoin du tracé.
+        if (!routePrete) {
+          for (let k = 0; k < route.length; k++) B.circuit.echantillon(c, et.s + sens * avance * k / 4, route[k]);
+          routePrete = true;
         }
+        const margeRoute = r + 12;
+        let surRoute = false;
+        for (let k = 1; k < route.length && !surRoute; k++)
+          surRoute = surTrajectoire(p[0], p[2], route[k - 1], route[k], margeRoute);
+        if (surRoute) continue;
+        d.touches[d.n] = lot; d.seuils[d.n++] = lot.bascule; lot.bascule = seuil;
       }
     }
   }

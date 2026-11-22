@@ -108,3 +108,7 @@ Les 34 modules et leur verrou ont été installés depuis le dépôt canonique. 
 ## FERRO 0.3.23 — 22 novembre 2026
 
 Les 34 modules et leur verrou viennent de l’installateur canonique. Les shaders WebGPU des reflets et du halo sont générés à partir des sources GLSL du moteur. [Commit FERRO](https://github.com/M4D135/FERRO/commit/0db8e73f2f0c66db85c4cc18198bcfba68310190)
+
+## FERRO 0.3.24 — 22 novembre 2026
+
+Les 34 modules et leur verrou viennent de l’installateur canonique. Les nappes rigides occupent 40 octets par sommet. Le moteur partage le classement des objets dynamiques entre les passes et réduit les calculs des ombres du cockpit. [Commit du moteur](https://github.com/M4D135/FERRO/commit/f9195273ceed7e0a01ed8dc221aa3cfdc554b03e)

@@ -348,7 +348,9 @@ function degagerChaussee(c, pas, gr) {
   }
   function section(i) {
     const rx = -Math.sin(c.cap[i]), rz = Math.cos(c.cap[i]), sinD = Math.sin(c.devers[i]);
-    return [-demi - 1.2, -demi, -demi + .3, demi - .3, demi, demi + 1.2].map(d => ({
+    const s=i*c.pas, S=c.stands;
+    const bordStand = S && s>=S.garage0-3 && s<=S.garage1+3 ? S.dBox+10 : S ? B.circuit.bordStands(c,s) : demi;
+    return [-demi - 1.2, -demi, -demi + .3, demi - .3, demi, Math.max(demi+1.2,bordStand)].map(d => ({
       x: (c.x[i] + rx * d) / pas, z: (c.z[i] + rz * d) / pas,
       y: c.y[i] - clamp(d, -demi, demi) * sinD - .015
     }));

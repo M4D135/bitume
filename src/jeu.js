@@ -111,7 +111,7 @@
     }
   };
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
-  const PHYSIQUE = 'p17', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
+  const PHYSIQUE = 'p18', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const recordsLus = lireStock(CLE_RECORDS, {});
   // JSON.stringify ignore les clés nommées d'un tableau. Reprendre ses temps sous leurs
   // anciens identifiants avant que la première amélioration sur un raccord soit sauvegardée.
@@ -1341,14 +1341,20 @@
     }
     // en ligne : chacun annonce le temps officiel de sa voiture, l'hôte aussi ceux des rivaux ; un temps officiel reçu
     // remplace celui mesuré ici sur les états reçus (même classement au millième sur les deux machines)
-    if (S.enLigne && EL.R) for (const e of ev) {
-      if (e.type === 'stand' && e.phase === 'repare' && !co.voitures[e.id].distant) envoyerPneusReseau(S, true, 'pneus-service');
-      if (e.type === 'tour' && co.voitures[e.id].joueur) EL.R.envoyer({ t: 'tour', id: e.id, tour: e.tour, temps: e.temps });
-      else if (e.type === 'arrivee') {
-        const v = co.voitures[e.id];
-        if (v.joueur || (S.enLigne.role === 'hote' && (!v.humain || v.reprise))) EL.R.envoyer({ t: 'arrivee', id: v.id, temps: v.tempsFinal, tours: v.tours });
-        else if (v.tempsOfficiel != null) v.tempsFinal = v.tempsOfficiel;
+    if (S.enLigne && EL.R) {
+      let annonceStand;
+      for (const e of ev) {
+        if (e.type === 'stand' && !co.voitures[e.id].distant) {
+          if (e.phase === 'repare') annonceStand = 'pneus-service';
+          else annonceStand ??= 'pneus-etat';
+        } else if (e.type === 'tour' && co.voitures[e.id].joueur) EL.R.envoyer({ t: 'tour', id: e.id, tour: e.tour, temps: e.temps });
+        else if (e.type === 'arrivee') {
+          const v = co.voitures[e.id];
+          if (v.joueur || (S.enLigne.role === 'hote' && (!v.humain || v.reprise))) EL.R.envoyer({ t: 'arrivee', id: v.id, temps: v.tempsFinal, tours: v.tours });
+          else if (v.tempsOfficiel != null) v.tempsFinal = v.tempsOfficiel;
+        }
       }
+      if (annonceStand) envoyerPneusReseau(S, true, annonceStand);
     }
     for (const e of ev) {
       switch (e.type) {
@@ -1840,7 +1846,8 @@
       if (!locaux.length) { etatEnLigne('La course est partie sans cette machine : attendez la suivante.'); majCourseSalon(); return; }
       EL.seanceAcceptee = m.cfg.seance; EL.dernierDepart = m.cfg.T0;
       lancerEnLigne(Object.assign({}, m.cfg, conditionsCommunes(m.cfg), { humains, locaux, role: 'invite', troll: trollDepart(humains, m.cfg.troll) }));
-    } else if (m.t === 'pneus-etat' || m.t === 'pneus-service' || m.t === 'pneus-relais') recevoirPneusReseau(S, m, de);
+    } else if (m.t === 'box') recevoirBox(S, m, de);
+    else if (m.t === 'pneus-etat' || m.t === 'pneus-service' || m.t === 'pneus-relais') recevoirPneusReseau(S, m, de);
     else if (m.t === 'demande-pneus' && S && S.enLigne && EL.role === 'hote' &&
       m.version === VERSION_PNEUS_RESEAU && m.seance === S.enLigne.seance &&
       S.enLigne.humains.some(h => h.machine === de) && EL.R.pretAvec(de)) {
@@ -1905,7 +1912,10 @@
     etatEnLigne(raison === 'parti' ? 'L’hôte a quitté la partie.' : raison === 'local' ? '' : 'La liaison est coupée.');
     if (S && S.enLigne && !S.course.termine) {
       // la course continue : ce qui venait du réseau passe à l'IA de cette machine
-      for (const v of S.course.voitures) if (v.distant) { v.distant = false; v.joueur = false; v.reprise = true; }
+      S.course.admettreStand = null;
+      for (const v of S.course.voitures) if (v.distant) {
+        B.reseau.stands.reprendre(S.course, v); v.distant = false; v.joueur = false; v.reprise = true;
+      }
       S.enLigne = null; S.enLigneOrigine = false;   // la course finit comme une course seule
       if (raison !== 'local') { message('Liaison perdue', 'ambre'); sousMessage('Les autres pilotes sont remplacés par l’ordinateur'); }
       if (ecran === 'resultats' && S.course.drapeau !== null) finirClassement(S);
@@ -1926,7 +1936,7 @@
     const T0 = Math.max(R.horloge() + 4000, EL.dernierDepart + 1);
     const seance = Date.now().toString(36) + '-' + (++EL.numeroSeance) + '-' + graine;
     const cfg = { graine, i: k.i, tours: k.tours, difficulte: k.difficulte, ...conditionsCommunes(k), T0, dateDepart: Date.now() + 4000, humains,
-      seance, versionChoixPneus: VERSION_CHOIX_PNEUS, protocolePneus: VERSION_PNEUS_RESEAU, piste: contratPiste(k.i),
+      seance, versionChoixPneus: VERSION_CHOIX_PNEUS, protocolePneus: VERSION_PNEUS_RESEAU, arbitrageBox: 1, piste: contratPiste(k.i),
       pneus: humains.map(h => { const choix = h.machine === R.id ? choixPneusLocaux() : EL.pneusDe.get(h.machine); const p = choix && choix[h.local]; return B.pneus.estJouable(p) ? p : conseil; }) };
     cfg.troll = trollDepart(humains, { schema: 1, pilotes: humains.map(h => {
       const choix = h.machine === R.id ? reglages.trollPilotes : EL.trollDe.get(h.machine)?.pilotes;
@@ -1936,6 +1946,75 @@
     R.envoyer({ t: 'depart', cfg });
     lancerEnLigne(Object.assign({}, cfg, { locaux: humains.map((h, k) => h.machine === 0 ? k : -1).filter(k => k >= 0), role: 'hote' }));
   }
+  // Le box est commun aux machines. Seul l'hôte le réserve, après la même vérification
+  // d'arrêt que le pilote. Une libération est acquittée, y compris si le canal bascule
+  // vers le relais. Une ancienne réponse ne peut jamais ouvrir une nouvelle réservation.
+  function envoyerBox(S, action, id, numero, vers) {
+    EL.R.envoyer({t:'box', seance:S.enLigne.seance, action, id, numero}, vers);
+  }
+  function admettreStandReseau(S, v) {
+    const box = S.boxReseau, co = S.course;
+    if (EL.role === 'hote') return !box.reserve;
+    let demande = box.demandes.get(v.id);
+    if (!demande) {
+      demande = {numero:++box.numero, derniere:-Infinity, accord:false, libere:false};
+      box.demandes.set(v.id, demande);
+    }
+    if (demande.libere) return false;
+    if (!demande.accord && co.horloge - demande.derniere >= .75) {
+      demande.derniere = co.horloge; envoyerBox(S, 'demande', v.id, demande.numero, 0);
+    }
+    return demande.accord;
+  }
+  function suivreDemandesBox(S) {
+    const box = S.boxReseau;
+    if (!box || !box.demandes.size) return;
+    const co = S.course;
+    for (const [id, d] of box.demandes) {
+      const v = co.voitures[id], e = v.etat;
+      if (!d.libere) {
+        if (!v.fini && !v.abandon && !co.termine && (e.stands?.phase === 'service' ||
+          e.stands?.phase === 'voie' && Math.abs(e.v) < B.course.STANDS.arret && B.course.dansLeGarage(co.c, e, co.c.stands))) continue;
+        d.libere = true; d.derniere = -Infinity;
+      }
+      if (co.horloge - d.derniere >= .75) {
+        d.derniere = co.horloge; envoyerBox(S, 'libre', id, d.numero, 0);
+      }
+    }
+  }
+  function recevoirBox(S, m, de) {
+    const box = S?.boxReseau, co = S?.course, ctx = S?.pneusReseau;
+    if (!box || !S.enLigne || m.seance !== S.enLigne.seance || !Number.isInteger(m.id) ||
+        !Number.isSafeInteger(m.numero) || m.numero < 1) return;
+    const v = co.voitures[m.id];
+    if (!v) return;
+    if (EL.role === 'hote') {
+      if (!v.distant || de === 0 || ctx.autorites[m.id] !== de) return;
+      const r = box.reserve, meme = r && r.id === m.id && r.numero === m.numero;
+      if (m.action === 'libre') {
+        box.fermes[m.id] = Math.max(box.fermes[m.id], m.numero);
+        if (meme) box.reserve = null;
+        envoyerBox(S, 'acquitte', m.id, m.numero, de);
+      } else if (m.action === 'demande' && m.numero > box.fermes[m.id] && (!r || meme)) {
+        if (!meme) {
+          // La pose brute est celle de l'autorité, sans le lissage visuel du châssis.
+          const e = EL.recus.get(m.id)?.etat;
+          if (!e || co.termine || v.fini || v.abandon || v.etat.stands?.phase !== 'voie' ||
+              !Number.isFinite(e.v) || !Number.isFinite(e.psi) || Math.abs(e.v) >= B.course.STANDS.arret ||
+              !B.course.dansLeGarage(co.c, e, co.c.stands) ||
+              co.voitures.some(v => v.etat.stands?.phase === 'service')) return;
+          box.reserve = {id:m.id, numero:m.numero, machine:de};
+        }
+        envoyerBox(S, 'accord', m.id, m.numero, de);
+      }
+    } else if (de === 0 && !v.distant && ctx.autorites[m.id] === ctx.machine) {
+      const d = box.demandes.get(m.id);
+      if (m.action === 'accord') {
+        if (d?.numero === m.numero && !d.libere) d.accord = true;
+        else envoyerBox(S, 'libre', m.id, m.numero, 0);
+      } else if (m.action === 'acquitte' && d?.numero === m.numero && d.libere) box.demandes.delete(m.id);
+    }
+  }
   // Les pneus voyagent à faible fréquence sur le canal fiable. L'hôte valide les humains invités AVANT de
   // relayer leur état : à une déconnexion il possède ainsi tout remplacement déjà visible chez un autre pair.
   function initialiserPneusReseau(S, cfg) {
@@ -1944,6 +2023,10 @@
     const contexte = B.pneusReseau.creer({ seance: cfg.seance, machine: R.id, humains: cfg.humains, nombre: co.voitures.length });
     if (!contexte) return false;
     S.pneusReseau = contexte; S.pneusArchives = new Map();
+    if (cfg.arbitrageBox === 1 && co.c.stands) {
+      S.boxReseau = {numero:0, reserve:null, demandes:new Map(), fermes:new Array(co.voitures.length).fill(0)};
+      co.admettreStand = v => admettreStandReseau(S, v);
+    }
     S.pneusEnvoi = { dernier: -Infinity, messages: 0, octets: 0, services: 0 };
     S.pneusVisuels = co.voitures.map(v => v.etat.etatPneus.map(r => ({ ...r })));
     S.pneusServicesVus = co.voitures.map(v => v.etat.servicePneus);
@@ -1956,6 +2039,7 @@
     if (!force && co.horloge - S.pneusEnvoi.dernier < .5 - 1e-9) return false;
     const paquet = B.pneusReseau.encoder(contexte, co.voitures, type);
     if (!paquet) return false;
+    B.reseau.stands.joindre(paquet, co);
     R.envoyer(paquet, contexte.machine === 0 ? vers : 0);
     S.pneusEnvoi.dernier = co.horloge; S.pneusEnvoi.messages++;
     S.pneusEnvoi.octets += JSON.stringify(paquet).length;
@@ -1977,6 +2061,7 @@
       origine = m.origine; paquet = m.etat;
     } else if (contexte.machine !== 0 && de !== 0) return [];
     const recus = B.pneusReseau.recevoir(contexte, paquet, origine, S.course.voitures);
+    if (recus.length) B.reseau.stands.lire(paquet, S.course, recus);
     if (contexte.machine === 0 && origine !== 0 && recus.length) {
       const copie = JSON.parse(JSON.stringify(paquet));
       S.pneusArchives.set(origine, copie);
@@ -2010,8 +2095,10 @@
   function reprendrePneusReseau(S, machine) {
     if (!S || !S.pneusReseau || S.enLigne?.role !== 'hote') return [];
     const ids = B.pneusReseau.reprendre(S.pneusReseau, machine);
+    if (S.boxReseau?.reserve?.machine === machine) S.boxReseau.reserve = null;
     for (const id of ids) {
       const v = S.course.voitures[id];
+      B.reseau.stands.reprendre(S.course, v);
       v.distant = false; v.joueur = false; v.reprise = true;
       EL.recus.delete(id); EL.corr.delete(id);
     }
@@ -2036,11 +2123,13 @@
     if (S.enLigne.role === 'hote' && k % 2 === 0) for (const v of co.voitures) if (!v.humain || v.reprise) liste.push(v);
     R.envoyerEtat(B.reseau.emballer(S.enLigne.T0 + co.horloge * 1000, liste));
     envoyerPneusReseau(S);
+    suivreDemandesBox(S);
   }
   // Voiture distante : dernier état reçu, prolongé jusqu'à l'instant de ce pas. À l'arrivée d'un état, ce qu'on aurait
   // affiché à ce même pas avec l'ancien moins la nouvelle prédiction devient une correction qui se résorbe en 0,12 s :
   // ni saut, ni retard.
   function appliquerDistant(S, v, dt) {
+    B.reseau.stands.avancer(S.course, v.etat);
     const r = EL.recus.get(v.id);
     if (!r || !S.enLigne) return;
     const co = S.course, L = co.c.longueur, e = v.etat, tPas = S.enLigne.T0 + co.horloge * 1000, f = Math.exp(-dt / .12);
@@ -2480,10 +2569,17 @@
   function preparerTunnel(c) {
     return B.couverts.preparer(c).blocs.length > 0;
   }
+  const abriCamera = { geometrie: null, x: NaN, y: NaN, z: NaN, lecture: {} };
   // Altitude, parois et portails réels : une caméra au-dessus du toit reste dehors.
   // Le troisième argument distingue le tunnel fermé de la galerie qui reçoit le jour.
   function sousLaVoute(c, p, interieur = false) {
-    return interieur ? B.couverts.interieur(c, p) : B.couverts.abri(c, p);
+    if (!p || !B.couverts.liste(c).length) return false;
+    const geometrie = B.couverts.preparer(c), cache = abriCamera;
+    if (cache.geometrie !== geometrie || cache.x !== p[0] || cache.y !== p[1] || cache.z !== p[2]) {
+      B.couverts.position(c, p, cache.lecture);
+      cache.geometrie = geometrie; cache.x = p[0]; cache.y = p[1]; cache.z = p[2];
+    }
+    return interieur ? cache.lecture.interieur : cache.lecture.abri;
   }
 
   // Une lampe n'éclaire que ce qui est près d'elle : le moteur éteint toute lampe de portée 18 m au-delà de 18 m
@@ -2495,10 +2591,11 @@
   const LAMPE_PUISSANCE = 12, LAMPE_PORTEE = 18, LAMPE_RAYON = 20, LAMPE_PLAT = .5, LAMPE_MIN = .35, LAMPE_MAX = 8, LAMPE_LISSAGE = .08;
   const COULEUR_LAMPE = [1, .84, .58];
   const GROUPES_LAMPES = new WeakMap();
+  const CASE_LAMPES = 96;
   function groupesLampes(lampes) {
-    let groupes = GROUPES_LAMPES.get(lampes);
-    if (groupes) return groupes;
-    groupes = [];
+    const connu = GROUPES_LAMPES.get(lampes);
+    if (connu) return connu;
+    const groupes = [], colonnes = new Map(), grands = [];
     for (let debut = 0; debut < lampes.length; debut += 12) {
       const fin = Math.min(debut + 12, lampes.length);
       let x0 = Infinity, z0 = Infinity, x1 = -Infinity, z1 = -Infinity;
@@ -2507,15 +2604,35 @@
         x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]);
         z0 = Math.min(z0, p[2]); z1 = Math.max(z1, p[2]);
       }
-      groupes.push({ debut, fin, x0: x0 - LAMPE_RAYON, x1: x1 + LAMPE_RAYON,
-        z0: z0 - LAMPE_RAYON, z1: z1 + LAMPE_RAYON });
+      const id = groupes.length, g = { debut, fin, x0: x0 - LAMPE_RAYON, x1: x1 + LAMPE_RAYON,
+        z0: z0 - LAMPE_RAYON, z1: z1 + LAMPE_RAYON };
+      groupes.push(g);
+      const i0 = Math.floor(g.x0/CASE_LAMPES), i1 = Math.floor(g.x1/CASE_LAMPES);
+      const j0 = Math.floor(g.z0/CASE_LAMPES), j1 = Math.floor(g.z1/CASE_LAMPES);
+      // Un groupe peut chevaucher deux ouvrages très éloignés dans la liste des lampes.
+      if (!Number.isSafeInteger(i0) || !Number.isSafeInteger(i1) || !Number.isSafeInteger(j0) ||
+          !Number.isSafeInteger(j1) || (i1-i0+1)*(j1-j0+1)>64) { grands.push(id); continue; }
+      for (let i=i0; i<=i1; i++) {
+        let colonne=colonnes.get(i);
+        if (!colonne) colonnes.set(i,colonne=new Map());
+        for (let j=j0; j<=j1; j++) {
+          let caseLampes=colonne.get(j);
+          if (!caseLampes) colonne.set(j,caseLampes=[]);
+          caseLampes.push(id);
+        }
+      }
     }
-    GROUPES_LAMPES.set(lampes, groupes);
-    return groupes;
+    if (grands.length) for (const colonne of colonnes.values()) for (const ids of colonne.values()) {
+      for (const id of grands) ids.push(id);
+      ids.sort((a,b)=>a-b);
+    }
+    const index = { groupes, colonnes, grands };
+    GROUPES_LAMPES.set(lampes, index); return index;
   }
   function nouvelEtatLampes(rev, lampes) {
-    const n = lampes.length, groupes = groupesLampes(lampes);
-    const e = { rev, n, lampes, groupes, allumes: new Uint8Array(groupes.length), p: new Float64Array(n), hors: [], pool: [] };
+    const n = lampes.length, index = groupesLampes(lampes);
+    const e = { rev, n, lampes, index, celluleX: NaN, celluleZ: NaN, candidats: index.grands, actifs: [], suivants: [],
+      p: new Float64Array(n), hors: [], pool: [] };
     for (let k = 0; k < LAMPE_MAX; k++) e.pool.push({ p: null, power: 0, range: LAMPE_PORTEE, color: COULEUR_LAMPE });
     return e;
   }
@@ -2523,7 +2640,7 @@
   function remettreLampes(porteur) {
     for (const cle of ['lampesTunnel', 'lampes0', 'lampes1']) {
       const e = Object.prototype.hasOwnProperty.call(porteur, cle) && porteur[cle];
-      if (e && e.p) { e.p.fill(0); e.allumes.fill(0); }
+      if (e && e.p) { e.p.fill(0); e.actifs.length = e.suivants.length = 0; }
     }
   }
   // porteur/clé isolent l'état temporel de chaque caméra : la vue de J1, celle de J2 et chaque glace ont leur propre
@@ -2532,14 +2649,27 @@
     if (!LT || !LT.length) return null;
     let et = porteur[cle];
     if (!et || et.rev !== rev || et.lampes !== LT) et = porteur[cle] = creationTardive('lampes', nouvelEtatLampes(rev, LT));
-    const k = 1 - Math.exp(-Math.max(0, dtImage) / LAMPE_LISSAGE), r = LAMPE_RAYON, plat = r * (1 - LAMPE_PLAT);
     const cx = cam.pos[0], cy = cam.pos[1], cz = cam.pos[2], P = et.p;
-    let compte = 0;
-    for (let g = 0; g < et.groupes.length; g++) {
-      const groupe = et.groupes[g];
+    const ix = Math.floor(cx/CASE_LAMPES), iz = Math.floor(cz/CASE_LAMPES);
+    if (et.celluleX !== ix || et.celluleZ !== iz) {
+      et.celluleX = ix; et.celluleZ = iz;
+      et.candidats = et.index.colonnes.get(ix)?.get(iz) || et.index.grands;
+    }
+    const candidats = et.candidats, actifs = et.actifs, suivants = et.suivants;
+    if (!candidats.length && !actifs.length) return null;
+    const k = 1 - Math.exp(-Math.max(0, dtImage) / LAMPE_LISSAGE), r = LAMPE_RAYON, plat = r * (1 - LAMPE_PLAT);
+    let compte = 0, c = 0, a = 0, n = 0;
+    // Fusion en ordre historique : les égalités des huit lumières et leur extinction
+    // après un saut de caméra restent propres à chaque vue, rétroviseurs compris.
+    while (c < candidats.length || a < actifs.length) {
+      const g = Math.min(c < candidats.length ? candidats[c] : Infinity, a < actifs.length ? actifs[a] : Infinity);
+      const etaitActif = actifs[a] === g;
+      if (etaitActif) a++;
+      if (candidats[c] === g) c++;
+      const groupe = et.index.groupes[g];
       const proche = cx >= groupe.x0 && cx <= groupe.x1 && cz >= groupe.z0 && cz <= groupe.z1;
       // Après la sortie, le groupe reste actif jusqu'à l'extinction des dernières lampes.
-      if (!proche && !et.allumes[g]) continue;
+      if (!proche && !etaitActif) continue;
       let actif = 0;
       for (let i = groupe.debut; i < groupe.fin; i++) {
         let cible = 0;
@@ -2563,8 +2693,9 @@
           if (v > et.pool[min].power) { const o = et.pool[min]; o.p = LT[i]; o.power = v; }
         }
       }
-      et.allumes[g] = actif;
+      if (actif) suivants[n++] = g;
     }
+    suivants.length = n; et.actifs = suivants; et.suivants = actifs;
     if (!compte) return null;
     const hors = et.hors; hors.length = 0;
     for (let j = 0; j < compte; j++) hors.push(et.pool[j]);
@@ -3004,7 +3135,7 @@
       const o = optionsGlace(k);
       o.rouesDetail = niveauRoues;
       o.detail = plusLeger(OPTIONS_POSE[k].plafond, detailVoiture(ex * ex + ez * ez, tanDemi, hauteur));
-      o.roues = v.degats && v.degats.roues; o.casse = !!(v.degats && v.degats.casse);
+      o.roues = rouesRendues(v); o.casse = !!(v.degats && v.degats.casse);
       const attitude = poserVoitureGlace(S, k, pose, objets, o, false, secondeGlace);
       poserEauCarrosserie(S, k, pose, objets, o.casse ? 'epave' : o.detail, false, attitude,
         ex * ex + ez * ez, tanDemi, hauteur, palierVue);
@@ -3023,10 +3154,17 @@
     }
     retro.debutEffets = debutEffets; retro.finEffets = objets.length;
     const R = OPTIONS_RETRO;
-    R.roues = suivie.degats && suivie.degats.roues; R.casse = !!(suivie.etat.degats && suivie.etat.degats.casse);
+    R.roues = rouesRendues(suivie); R.casse = !!(suivie.etat.degats && suivie.etat.degats.casse);
     R.rouesDetail = detailsRoues[suivie.id] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(POSES_RENDU[suivie.id], camR.pos, S.modeles[suivie.id]), tanDemi, hauteur, detailsRoues[suivie.id]);
     poserVoitureGlace(S, suivie.id, POSES_RENDU[suivie.id], objets, R, true, secondeGlace);
     return objets;
+  }
+  function rouesRendues(v) {
+    const perdues = v.degats?.roues, st = v.etat.stands;
+    if (st?.phase !== 'service') return perdues;
+    const roues = v._rouesAuStand || (v._rouesAuStand = [false,false,false,false]);
+    B.equipeStands.rouesDeposees(st, roues, perdues);
+    return roues;
   }
   function optionsGlace(k) { return OPTIONS_GLACE[k] || (OPTIONS_GLACE[k] = nouvellesOptions()); }
 
@@ -3161,7 +3299,11 @@
     appliquerCarte();
     const co = S.course, j = co.joueur;
     const poses = tampons.poses;
-    for (let k = 0; k < co.voitures.length; k++) poses[k] = melange(S.prec[k], S.cour[k], alpha, poses[k] || creationTardive('poses', {}));
+    for (let k = 0; k < co.voitures.length; k++) {
+      const pose = poses[k] = melange(S.prec[k], S.cour[k], alpha, poses[k] || creationTardive('poses', {}));
+      const st = co.voitures[k].etat.stands;
+      if (st?.phase === 'service') pose.y += B.equipeStands.hauteurCric(st);
+    }
     // Temps rendu, une fois par image : les voitures sont dessinées entre leurs deux dernières poses, à l'instant
     // horloge − pas + alpha × pas. Fantôme, caméras de la démo, secousses du casque, aurores et effets le suivent :
     // pris au dernier pas, ils avançaient par sauts de 1/120 s (à 144 Hz, une image sur six sans pas les figeait) et
@@ -3194,6 +3336,7 @@
       const reb = p.rebond || (p.rebond = creationTardive('rebond', [0, 0, 0, 0])), t = horlogeReelle, s0 = p.roule * 1.7;
       for (let r = 0; r < 4; r++) reb[r] = a * (Math.sin(s0 + r * 1.9) * .6 + Math.sin(s0 * 2.3 + r * .7 + t * 3) * .4);
     }
+    if (co.physique?.solids.mobiles.length) B.solidesPhysX.lireMobiles(co.physique.solids);
     const meteo = majMeteo(S, dtImage);
     majEauCarrosserie(S, poses, dtImage, meteo);
     S.ambianceImage = B.meteo.ambiance(meteo, S.ambianceImage || creationTardive('ambiance', {}));
@@ -3428,11 +3571,19 @@
       ctxSig.visible = toutesVues;
       B.signalisationCourse.mettreAJour(sig, S.tRendu, ctxSig, sortie);
     }
-    // Équipe F1 des stands (12 mécaniciens, roues, essence, sucette STOP → GO ! & LEDs portiques)
+    if (co.physique) {
+      for (const mobile of co.physique.solids.mobiles) {
+        const point = mobile.objet.p;
+        if (!toutesVues || toutesVues(point[0],point[1],point[2],mobile.rayon)) sortie.push(mobile.objet);
+      }
+    } else {
+      for (const modele of scene.decor.mobilesPhysX || []) sortie.push(modele);
+    }
+    // Les poses du stand utilisent les mêmes véhicules interpolés que le cockpit et ses rétroviseurs.
     if (B.equipeStands && c.stands && S.type !== 'vitrine') {
       const eq = S.equipeStands || (S.equipeStands = creationTardive('equipeStands', B.equipeStands.creer(c, scene.decor)));
       const ctxEq = S.equipeStandsVue || (S.equipeStandsVue = creationTardive('contexteEquipeStands', { course: null, nuit: 0, cameraPos: null }));
-      ctxEq.course = co; ctxEq.nuit = S.nature?.ambiance?.nuit || 0; ctxEq.cameraPos = cam.pos;
+      ctxEq.course = co; ctxEq.nuit = S.nature?.ambiance?.nuit || 0; ctxEq.cameraPos = cam.pos; ctxEq.visible = toutesVues; ctxEq.poses = poses;
       B.equipeStands.animer(eq, S.tRendu, ctxEq, sortie);
     }
     // Animaux des abords : poses du cerveau interpolées à l'instant affiché des voitures (même horloge de course,
@@ -3492,7 +3643,9 @@
         S.detailsRoues[k] = detailRouesHorsChamp(p, cam.pos, tanDemi, hauteur, S.detailsRoues[k], rayon);
         continue;
       }
-      B.voiture.changerPneus(S.modeles[k], co.voitures[k].etat.pneus);
+      const etRoue = co.voitures[k].etat, serviceRoue = etRoue.stands;
+      const monteVisible = serviceRoue?.phase === 'service' && serviceRoue.t >= .625*serviceRoue.duree ? serviceRoue.pneus : etRoue.pneus;
+      B.voiture.changerPneus(S.modeles[k], monteVisible);
       const etatsPneus = co.voitures[k].distant && S.pneusVisuels ? S.pneusVisuels[k] : co.voitures[k].etat.etatPneus;
       const ev = poseRendu(k, p, RV[k], co.voitures[k].etat, etatsPneus);
       const pilote = ev.pilote, voiture = co.voitures[k], etatPilote = voiture.etat;
@@ -3511,7 +3664,7 @@
         const etc = ETAT_COCKPIT;
         etc.regime = et.regime; etc.volant = et.volant; etc.rapport = et.rapport; etc.kmh = B.conduite.kmh(et);
         etc.rouesDetail = rouesDetail;
-        etc.roues = co.voitures[k].degats && co.voitures[k].degats.roues; etc.casse = !!(et.degats && et.degats.casse);
+        etc.roues = rouesRendues(co.voitures[k]); etc.casse = !!(et.degats && et.degats.casse);
         etc.passage = pilote.passage; etc.rapportAvant = pilote.rapportAvant;
         etc.regard = pilote.regard; etc.geste = pilote.geste; etc.gestePhase = pilote.gestePhase;
         etc.gesteCote = pilote.gesteCote; etc.gesteIntensite = pilote.gesteIntensite;
@@ -3531,7 +3684,7 @@
       o.plafond = detailVoiture(d2, tanDemi, hauteur, k === suivie.id ? null : P.palier);
       o.rouesDetail = rouesDetail;
       o.detail = o.plafond === 'complet' && dx * avX + dz * avZ < -DERRIERE_CAMERA ? 'moyen' : o.plafond;
-      o.roues = co.voitures[k].degats && co.voitures[k].degats.roues; o.casse = !!(co.voitures[k].degats && co.voitures[k].degats.casse);
+      o.roues = rouesRendues(co.voitures[k]); o.casse = !!(co.voitures[k].degats && co.voitures[k].degats.casse);
       if (!visible) continue;
       const debut = sortie.length, attitude = B.voiture.poser(S.modeles[k], ev, sortie, o);
       // L'eau conserve son propre détail par caméra. La plage ne couvre que la voiture.
@@ -3743,7 +3896,7 @@
   $('hud').after(hud2);
   const H2 = {};
   for (const id of Object.keys(H)) H2[id] = hud2.querySelector('#' + id);
-  for (const id of ['h-pneus', 'c-pneus', 'h-pneus-usure', 'h-pneu-0', 'h-pneu-1', 'h-pneu-2', 'h-pneu-3', 'h-sante', 'h-sante-barre', 'c-sante']) { H[id] = $(id); H2[id] = hud2.querySelector('#' + id); }
+  for (const id of ['h-pneus', 'c-pneus', 'h-pneus-usure', 'h-pneu-0', 'h-pneu-1', 'h-pneu-2', 'h-pneu-3', 'h-sante', 'h-sante-barre', 'h-carburant', 'h-box', 'c-sante']) { H[id] = $(id); H2[id] = hud2.querySelector('#' + id); }
   const HUD1 = { h: H, segments, lampes, etiquette: etiquetteDerive, barre };
   const HUD2 = { h: H2, segments: Array.from(H2['jauge-derive'].querySelectorAll('i')), lampes: Array.from(H2.feux.querySelectorAll('i')),
     etiquette: H2['jauge-derive'].querySelector('.etiquette'), barre: H2['h-regime'].querySelector('.barre') };
@@ -3972,8 +4125,29 @@
     // Santé (lot 4) : la jauge vient du même état que les pénalités et la réparation (B.degats.sante), jamais d'un
     // compteur monté pour le seul affichage. Le stand y ajoute son fil : voie, service avec le temps restant, sortie.
     const av = et.degats, st = et.stands, s01 = B.degats.sante(av);
-    texte(H['h-sante'], st ? (st.phase === 'service' ? 'Stands · ' + Math.max(0, st.duree - st.t).toFixed(1) + ' s'
-      : st.repare ? 'GO ! Sortie stands' : 'Voie stands · 40 km/h') : s01 > .999 ? 'Neuve' : Math.round(s01 * 100) + ' %');
+    texte(H['h-sante'], s01 > .999 ? 'Neuve' : Math.round(s01 * 100) + ' %');
+    H['h-carburant'].hidden = et.carburant == null;
+    if (et.carburant != null) texte(H['h-carburant'], 'Essence ' + Math.ceil(et.carburant) + ' L');
+    const box = H['h-box'];
+    box.hidden = !st;
+    if (st) {
+      let consigne;
+      if (st.phase === 'service') {
+        const u = st.t / st.duree;
+        const geste = u < .22 ? 'Mise sur crics' : u < .625 ? 'Changement des roues'
+          : u < .72 && st.carburantAvant != null ? 'Ravitaillement' : u < .88 ? 'Fin du service' : 'Équipe en retrait';
+        consigne = geste + ' · ' + Math.max(0, st.duree - st.t).toFixed(1).replace('.', ',') + ' s';
+      } else if (st.phase === 'sortie') consigne = 'Feu vert · Suivez la voie de sortie';
+      else {
+        const stand = co.c.stands, distance = B.circuit.ecart(co.c, et.s, stand.sBox);
+        consigne = distance > 9 ? 'Box à droite · ' + Math.round(distance) + ' m'
+          : distance < -2.35 ? 'Box dépassé · Suivez la sortie'
+          : Math.abs(et.d - stand.dBox) > 1.15 ? 'Rangez-vous dans le box à droite'
+          : distance > 2.35 ? 'Avancez au repère' : 'Immobilisez la voiture';
+      }
+      texte(box, consigne);
+      attr(box, 'data-phase', st.phase);
+    }
     style(H['h-sante-barre'], '--f', s01.toFixed(2));
     attr(H['c-sante'], 'data-sante', s01 > .999 ? 'neuve' : s01 > .55 ? 'abimee' : 'grave');
     attr(H['c-sante'], 'data-phase', st ? st.phase : 'piste');
@@ -4454,7 +4628,7 @@
     const S = session, co = S && S.course;
     $('pneus-stands').hidden = !(co && S.type !== 'demo' && S.type !== 'vitrine');
     const garage = !!co?.c?.stands;
-    texte($('ps-note'), garage ? 'À l’arrêt dans le garage, la voiture est réparée et les quatre pneus sont changés à la fin du service.' :
+    texte($('ps-note'), garage ? 'Empruntez la bretelle, puis immobilisez la voiture au repère devant le garage. L’équipe change les quatre pneus, répare la voiture et fait le plein en course. Repartez au feu vert.' :
       'Ce parcours ne propose pas de réparation complète ni de changement de pneus.');
     for (let n = 0; n < 2; n++) {
       const id = S && S.locaux && S.locaux[n], v = co && co.voitures[id], zone = $('ps-pilote-' + n);
@@ -5783,12 +5957,16 @@
     if (contexteRenduPerdu) { restaurerDecorApresContexte = true; return; }
     const atm = session && session.nature ? session.nature.ambiance.atmosphere : scene.decor.atmosphere;
     rendu.setWorld([], [], atm); rendu.setNappes(scene.decor.nappes, { staticBounds: true }); rendu.setLots(scene.decor.lots, { staticBounds: true, progressif: !!scene.decor.fluxDecor });
+    scene.decor.fluxDecor?.reinitialiser();
     if (session && session.nature) session.nature.revisionRendu = -1;
     restaurerDecorApresContexte = false;
   }
   function contexteGraphiqueRetabli() {
     contexteRenduPerdu = false;
-    if (scene) scene.chauffe = null;   // nouveau contexte : programmes et cibles du moteur principal sont à refaire
+    if (scene) {
+      scene.chauffe = null;   // nouveau contexte : programmes et cibles du moteur principal sont à refaire
+      scene.decor.fluxDecor?.reinitialiser();
+    }
     if (session?.course?.physique && (!session.fx || session.fx.libere)) {
       // Le contexte GPU ne possède pas les voitures : seul le pool d'effets libéré est recréé.
       session.fx = B.traces.creer(session.course.voitures.length, session.fx?.graine?.[0] ?? graineCourse, session.course.physique.world);
@@ -5909,7 +6087,7 @@
     try {
       // ombres photo (src/ombres.js) : tuile de 512² ; à 1024², des dents rampent sous la casquette de la planche.
       // Bloc PCSS compilé seulement si la pénombre variable sert (B.ombres.reglages.pcssFine) : shader plus court sinon.
-      const optionsRendu = { indexRegisteredShapes: true, cullRigidOverlay: true, msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512, pcss: !!(B.ombres && B.ombres.reglages.pcssFine) } };
+      const optionsRendu = { indexRegisteredShapes: true, cullRigidOverlay: true, cullRigidSunCasters: true, msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512, pcss: !!(B.ombres && B.ombres.reglages.pcssFine) } };
       // L'interface garde sa définition CSS ; seule la scène Xbox est bornée
       // à 720p, y compris sur TV 4K et après redimensionnement. FSurface applique
       // ce budget avant l'allocation des cibles WebGL, sans retouche de FERRO.

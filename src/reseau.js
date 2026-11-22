@@ -137,6 +137,79 @@
     return r;
   }
 
+  // Extension facultative de l'instantané fiable des pneus. Chaque entrée suit la ligne
+  // de la même voiture, avec la même autorité et la même séquence. Hors des stands, seul
+  // le niveau de carburant en millilitres voyage à 2 Hz. Aucun ajout au flux cinématique.
+  const MONTE_STAND = ['slicks', 'inter', 'pluie', 'neige'];
+  const millilitres = x => x == null ? -1 : Math.round(x * 1000);
+  const litres = x => x < 0 ? null : x / 1000;
+  function joindreStands(paquet, co) {
+    if (!co.c.stands) return;
+    paquet.box = [Math.round(co.horloge * 1000)];
+    for (const [id] of paquet.voitures) {
+      const e = co.voitures[id].etat, st = e.stands, niveau = millilitres(e.carburant);
+      if (!st) { paquet.box.push(niveau); continue; }
+      const t = Math.round(st.t * 1000);
+      if (st.phase === 'voie') paquet.box.push([niveau, 1, t, MONTE_STAND.indexOf(e.pneusProchainArret)]);
+      else paquet.box.push([niveau, st.phase === 'service' ? 2 : 3, t, st.duree, st.sService, st.dService,
+        MONTE_STAND.indexOf(st.pneusAvant), MONTE_STAND.indexOf(st.pneus), millilitres(st.carburantAvant), st.revisionPneus]);
+    }
+  }
+  function avancerStand(co, e) {
+    const st = e.stands;
+    if (st?.origineDistante == null) return;
+    st.t = Math.max(0, co.horloge - st.origineDistante);
+    if (st.phase !== 'service') return;
+    st.t = Math.min(st.t, st.duree);
+    if (st.carburantAvant == null) return;
+    const p = B.course.STANDS, fraction = Math.max(0, Math.min(st.t/st.duree, p.debranchement) - p.branchement);
+    e.carburant = Math.max(st.carburantConfirme, Math.min(p.reservoir, st.carburantAvant + fraction * st.duree * p.debit));
+  }
+  function lireStands(paquet, co, recus) {
+    const box = paquet.box, S = co.c.stands;
+    if (!S || !Array.isArray(box) || box.length !== paquet.voitures.length + 1 ||
+        !Number.isSafeInteger(box[0]) || box[0] < 0) return;
+    const maximum = B.course.STANDS.reservoir * 1000;
+    const niveauValide = x => Number.isInteger(x) && x >= -1 && x <= maximum;
+    for (let i = 0; i < paquet.voitures.length; i++) {
+      const id = paquet.voitures[i][0];
+      if (!recus.includes(id)) continue; // autorité, séquence, service et pneus déjà vérifiés
+      const e = co.voitures[id].etat, a = box[i+1];
+      if (niveauValide(a)) { e.carburant = litres(a); e.stands = null; continue; }
+      if (!Array.isArray(a) || !niveauValide(a[0]) || !Number.isSafeInteger(a[2]) || a[2] < 0) continue;
+      const p = a[1], phase = p === 1 ? 'voie' : p === 2 ? 'service' : 'sortie';
+      if (p === 1) {
+        if (a.length !== 4 || !Number.isInteger(a[3]) || a[3] < -1 || a[3] >= MONTE_STAND.length) continue;
+      } else {
+        if ((p !== 2 && p !== 3) || a.length !== 10 || !Number.isFinite(a[3]) || a[3] <= 0 || a[3] > 120 ||
+            !Number.isFinite(a[4]) || a[4] < 0 || a[4] > co.c.longueur ||
+            !Number.isFinite(a[5]) || !B.course.dansLeGarage(co.c, {s:a[4], d:a[5]}, S) ||
+            !Number.isInteger(a[6]) || !MONTE_STAND[a[6]] || !Number.isInteger(a[7]) || !MONTE_STAND[a[7]] ||
+            MONTE_STAND[p === 2 ? a[6] : a[7]] !== e.pneus || !niveauValide(a[8]) ||
+            (a[0] < 0) !== (a[8] < 0) || a[9] !== e.servicePneus - (p === 3 ? 1 : 0)) continue;
+      }
+      const st = e.stands?.phase === phase ? e.stands : { phase };
+      st.repare = p === 3;
+      st.origineDistante = (box[0]-a[2]) / 1000;
+      e.carburant = litres(a[0]);
+      if (p === 1) e.pneusProchainArret = MONTE_STAND[a[3]] || null;
+      else {
+        st.duree = a[3]; st.sService = a[4]; st.dService = a[5]; st.pneusAvant = MONTE_STAND[a[6]];
+        st.pneus = MONTE_STAND[a[7]]; st.carburantAvant = litres(a[8]); st.revisionPneus = a[9];
+        st.carburantConfirme = e.carburant; e.pneusProchainArret = st.pneus;
+      }
+      e.stands = st; avancerStand(co, e);
+    }
+  }
+  function reprendreStand(co, v) {
+    const st = v.etat.stands, plan = v.ia?.stand;
+    if (!st || !plan) return;
+    avancerStand(co, v.etat); delete st.origineDistante;
+    plan.phase = st.phase; plan.debut = co.temps; plan.vuStand = true;
+    plan.pneus = st.pneus || v.etat.pneusProchainArret || v.etat.pneus;
+    plan.revision = st.revisionPneus ?? v.etat.servicePneus; plan.reussi = st.phase === 'sortie';
+  }
+
   // ---------------------------------------------------------------- liaison
   // Maillage : chaque machine a une liaison avec chacune des autres (trois au plus). La plus ancienne appelle la plus
   // récente ; une liaison directe qui n'aboutit pas en 7 s, ou qui se perd en course, passe par le salon. L'horloge
@@ -339,5 +412,6 @@
     return 'wss://bitume.estrasse.fr/salon';
   }
 
-  B.reseau = { creer, emballer, deballer, prolonger, adresseSalon, CHAMPS };
+  B.reseau = { creer, emballer, deballer, prolonger, adresseSalon, CHAMPS,
+    stands: { joindre: joindreStands, lire: lireStands, avancer: avancerStand, reprendre: reprendreStand } };
 })(globalThis.BITUME = globalThis.BITUME || {});

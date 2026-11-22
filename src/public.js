@@ -704,6 +704,7 @@
             if (grappe <= 0 || pris(s, cote)) continue;
             const f = D.cadre(c, Math.round(s / c.pas)), L = (cote < 0 ? limites.G : limites.D)[f.i];
             const d = cote * (L + .75 + k * .62 + dl * .2), lon = (dt - .5) * .2;
+            if (c.stands && B.circuit.empriseStands(c,s,d,1)) continue;
             const x = f.x + f.r[0] * d + f.t[0] * lon, z = f.z + f.r[2] * d + f.t[2] * lon;
             const y = sol ? sol(x, z) : D.hauteurRoute(f, cote * w, w);
             if (gene(objets, x, y, z, .32)) continue;
@@ -748,9 +749,10 @@
     }
     return {
       n, qualite: palier.nom, palier, saison, graine, cible, nSections, lignes, flottants, entiers, cpu, sections, gradins,
+      volumes: bornerPublic(cpu, n),
       candidats: { places: places.length, rails: rails.length }, compte,
       etat: { s1: new Float32Array(SECTIONS * 4), s2: new Float32Array(SECTIONS * 4), temps: 0, tPrec: -1, couverture: 0, mouille: 0,
-        fete: 0, departVu: false, arriveeVu: false, tDepart: -1e9, tArrivee: -1e9, presence: 1, version: 0 },
+        fete: 0, departVu: false, arriveeVu: false, tDepart: -1e9, tArrivee: -1e9, presence: 1, version: 0, seance: 0 },
     };
   }
 
@@ -774,7 +776,7 @@
   function reinitialiser(pub) {
     if (!pub) return;
     const E = pub.etat;
-    E.s1.fill(0); E.s2.fill(0); E.tPrec = -1; E.version = 0; E.fete = 0; E.departVu = E.arriveeVu = false; E.tDepart = E.tArrivee = -1e9;
+    E.seance++; E.s1.fill(0); E.s2.fill(0); E.tPrec = -1; E.version = 0; E.fete = 0; E.departVu = E.arriveeVu = false; E.tDepart = E.tArrivee = -1e9;
   }
   /**
    * Une image : temps (s, horloge visuelle), voitures (tableau d'objets { x, y, z }) et leur nombre, ambiance
@@ -838,11 +840,57 @@
   /** Indice d'un spectateur (16 bits) et son intervalle de trame [bas, haut) sur 8 bits chacun. */
   const coder = (i, bas, haut) => (i | (Math.round(bas * 255) << 16) | (Math.round(haut * 255) << 24)) >>> 0;
 
+  // L'indice des sièges suit les rangées. Un volume global puis une sphère par suite
+  // de 32 indices permettent d’écarter des gradins entiers sans permuter la liste GPU.
+  const PLACES_PAR_VOLUME = 32;
+  function bornerPublic(cpu, n) {
+    const volumes = new Float64Array((1 + Math.ceil(n / PLACES_PAR_VOLUME)) * 4);
+    function borner(o, debut, fin) {
+      let x0 = Infinity, y0 = Infinity, z0 = Infinity, x1 = -Infinity, y1 = -Infinity, z1 = -Infinity;
+      for (let i = debut; i < fin; i++) {
+        const j = i * 4, x = cpu[j], y = cpu[j + 1], z = cpu[j + 2];
+        x0 = Math.min(x0, x); y0 = Math.min(y0, y); z0 = Math.min(z0, z);
+        x1 = Math.max(x1, x); y1 = Math.max(y1, y); z1 = Math.max(z1, z);
+      }
+      volumes[o] = (x0 + x1) / 2; volumes[o + 1] = (y0 + y1) / 2; volumes[o + 2] = (z0 + z1) / 2;
+      volumes[o + 3] = Math.hypot(x1 - x0, y1 - y0, z1 - z0) / 2 + .001;
+    }
+    if (n) borner(0, 0, n);
+    for (let i = 0, o = 4; i < n; i += PLACES_PAR_VOLUME, o += 4) borner(o, i, Math.min(i + PLACES_PAR_VOLUME, n));
+    return volumes;
+  }
+
+  function horsChamp(volumes, o, oeil, avant, droite, haut, cadrage, normes) {
+    const x = volumes[o] - oeil[0], y = volumes[o + 1] - oeil[1], z = volumes[o + 2] - oeil[2], rayon = volumes[o + 3];
+    const profMax = x * avant[0] + y * avant[1] + z * avant[2] + rayon * normes[0];
+    if (profMax < -1.2) return true;
+    const p = Math.max(profMax, .05);
+    return Math.abs(x * droite[0] + y * droite[1] + z * droite[2]) > p * cadrage[0] + 1.4 + rayon * normes[1]
+      || Math.abs(x * haut[0] + y * haut[1] + z * haut[2]) > p * cadrage[1] + 1.6 + rayon * normes[2];
+  }
+
+  // Lorsque même le siège le plus proche est sous le premier seuil de fondu et que
+  // toute l’enceinte tient dans le cadre, la liste des silhouettes dépend uniquement de la présence.
+  function tribuneLointaine(volumes, oeil, avant, droite, haut, cadrage, normes, seuil) {
+    const x = volumes[0] - oeil[0], y = volumes[1] - oeil[1], z = volumes[2] - oeil[2], rayon = volumes[3];
+    const profMin = x * avant[0] + y * avant[1] + z * avant[2] - rayon * normes[0];
+    if (profMin <= .05 || Math.fround(1.7 * cadrage[2] / profMin) >= seuil) return false;
+    return Math.abs(x * droite[0] + y * droite[1] + z * droite[2]) + rayon * normes[1] < profMin * cadrage[0] + 1.4
+      && Math.abs(x * haut[0] + y * haut[1] + z * haut[2]) + rayon * normes[2] < profMin * cadrage[1] + 1.6;
+  }
+
+  function horsOmbre(volumes, o, centre, direction, norme, rayon) {
+    const x = volumes[o] - centre[0], y = volumes[o + 1] - centre[1], z = volumes[o + 2] - centre[2];
+    const le = (x * direction[0] + y * direction[1] + z * direction[2]) / norme;
+    const marge = rayon + volumes[o + 3];
+    return x * x + y * y + z * z - le * le > marge * marge;
+  }
+
   function creerListe(pub) {
     const n = pub.n, liste = new Uint32Array(Math.max(1, n * 2)), debut = new Int32Array(NIVEAUX), compte = new Int32Array(NIVEAUX);
     const tailles = new Float32Array(Math.max(1, n)), vus = new Int32Array(Math.max(1, n)), histo = new Int32Array(64), bandes = new Float64Array(4);
-    const resultat = { liste, debut, compte, total: 0, vus: 0, bandes, plafonne: 0 };
-    const cpu = pub.cpu;
+    const resultat = { liste, debut, compte, total: 0, vus: 0, bandes, plafonne: 0, presenceLointaine: null };
+    const cpu = pub.cpu, volumes = pub.volumes || bornerPublic(cpu, n), normes = new Float64Array(3);
     const ls = (a, b, x) => { if (!(b > a)) return x >= b ? 1 : 0; const t = x <= a ? 0 : x >= b ? 1 : (x - a) / (b - a); return t * t * (3 - 2 * t); };
     /**
      * Classe de taille (histogramme logarithmique en huitièmes d'octave, sans tri) au-dessus de laquelle restent au
@@ -872,22 +920,42 @@
       const r0 = droite[0], r1 = droite[1], r2 = droite[2], u0 = haut[0], u1 = haut[1], u2 = haut[2];
       let nv = 0;
       resultat.plafonne = 0;
-      for (let i = 0; i < n; i++) {
-        const o = i * 4;
-        if (cpu[o + 3] >= presence) continue;
-        const dx = cpu[o] - ex, dy = cpu[o + 1] - ey, dz = cpu[o + 2] - ez, prof = dx * f0 + dy * f1 + dz * f2;
-        if (prof < -1.2) continue;
-        const p = Math.max(prof, .05);
-        // marges : un corps debout, bras levés, parapluie ouvert
-        if (Math.abs(dx * r0 + dy * r1 + dz * r2) > p * tanH + 1.4 || Math.abs(dx * u0 + dy * u1 + dz * u2) > p * tanV + 1.6) continue;
-        vus[nv] = i; tailles[nv] = 1.7 * focale / p; nv++;
-      }
-      resultat.vus = nv;
+      normes[0] = Math.sqrt(f0*f0 + f1*f1 + f2*f2);
+      normes[1] = Math.sqrt(r0*r0 + r1*r1 + r2*r2);
+      normes[2] = Math.sqrt(u0*u0 + u1*u1 + u2*u2);
       // Bandes de fondu (pixels) dans un tableau de flottants : des variables mêlant entiers, Infinity et flottants
       // calculés seraient rangées en boîtes, donc allouées, à chaque image.
       const sans0 = reglage.niveauMin >= 1, sans1 = reglage.niveauMin >= 2;
       bandes[0] = sans0 ? Infinity : reglage.bande0[0]; bandes[1] = sans0 ? Infinity : reglage.bande0[1];
       bandes[2] = sans1 ? Infinity : reglage.bande1[0]; bandes[3] = sans1 ? Infinity : reglage.bande1[1];
+      if (tribuneLointaine(volumes, oeil, avant, droite, haut, cadrage, normes, Math.min(bandes[0], bandes[2]))) {
+        if (resultat.presenceLointaine !== presence) {
+          for (let i = 0; i < n; i++) if (cpu[i * 4 + 3] < presence) liste[nv++] = coder(i, 0, 1);
+          resultat.total = nv;
+        }
+        resultat.presenceLointaine = presence;
+        debut[0] = debut[1] = debut[2] = 0;
+        compte[0] = compte[1] = 0;
+        compte[2] = resultat.vus = resultat.total;
+        return resultat;
+      }
+      resultat.presenceLointaine = null;
+      const finVisible = horsChamp(volumes, 0, oeil, avant, droite, haut, cadrage, normes) ? 0 : n;
+      for (let debutBloc = 0, v = 4; debutBloc < finVisible; debutBloc += PLACES_PAR_VOLUME, v += 4) {
+        if (horsChamp(volumes, v, oeil, avant, droite, haut, cadrage, normes)) continue;
+        const finBloc = Math.min(debutBloc + PLACES_PAR_VOLUME, n);
+        for (let i = debutBloc; i < finBloc; i++) {
+          const o = i * 4;
+          if (cpu[o + 3] >= presence) continue;
+          const dx = cpu[o] - ex, dy = cpu[o + 1] - ey, dz = cpu[o + 2] - ez, prof = dx * f0 + dy * f1 + dz * f2;
+          if (prof < -1.2) continue;
+          const p = Math.max(prof, .05);
+          // marges : un corps debout, bras levés, parapluie ouvert
+          if (Math.abs(dx * r0 + dy * r1 + dz * r2) > p * tanH + 1.4 || Math.abs(dx * u0 + dy * u1 + dz * u2) > p * tanV + 1.6) continue;
+          vus[nv] = i; tailles[nv] = 1.7 * focale / p; nv++;
+        }
+      }
+      resultat.vus = nv;
       // Plafonds : au-delà, les plus petits passent au niveau suivant ; la bande de fondu suit le seuil relevé.
       if (bandes[0] < Infinity) { const c = classePlafond(nv, 0, reglage.plafond0); if (c > 0) { const k = Math.pow(2, c / 8); bandes[0] *= k; bandes[1] *= k; } }
       if (bandes[2] < Infinity) { const c = classePlafond(nv, 2, reglage.plafond1); if (c > 0) { const k = Math.pow(2, c / 8); bandes[2] *= k; bandes[3] *= k; } }
@@ -916,20 +984,26 @@
      * « proche » mètres de l'œil (si le palier l'admet), silhouettes au-delà ; sans trame.
      */
     function listerOmbre(centre, direction, oeil, cadrage) {
+      resultat.presenceLointaine = null;
       const etendue = cadrage[0], presence = cadrage[1], niveauMin = cadrage[2], proche = cadrage[3];
       // Math.hypot n'est pas incorporé par l'optimiseur : son résultat serait alloué à chaque appel
       const lx = direction[0], ly = direction[1], lz = direction[2], ll = Math.sqrt(lx * lx + ly * ly + lz * lz) || 1;
       const rayon = etendue * 1.45 + 2, r2 = rayon * rayon, ex = oeil[0], ey = oeil[1], ez = oeil[2], p2 = proche * proche;
       compte[0] = compte[1] = compte[2] = 0; let nv = 0;
-      for (let i = 0; i < n; i++) {
-        const o = i * 4;
-        if (cpu[o + 3] >= presence) continue;
-        const dx = cpu[o] - centre[0], dy = cpu[o + 1] - centre[1], dz = cpu[o + 2] - centre[2], le = (dx * lx + dy * ly + dz * lz) / ll;
-        if (dx * dx + dy * dy + dz * dz - le * le > r2) continue;
-        const ox = cpu[o] - ex, oy = cpu[o + 1] - ey, oz = cpu[o + 2] - ez;
-        const pres = niveauMin <= 1 && ox * ox + oy * oy + oz * oz < p2;
-        vus[nv++] = pres ? i : -1 - i;
-        compte[pres ? 1 : 2]++;
+      const finVisible = horsOmbre(volumes, 0, centre, direction, ll, rayon) ? 0 : n;
+      for (let debutBloc = 0, v = 4; debutBloc < finVisible; debutBloc += PLACES_PAR_VOLUME, v += 4) {
+        if (horsOmbre(volumes, v, centre, direction, ll, rayon)) continue;
+        const finBloc = Math.min(debutBloc + PLACES_PAR_VOLUME, n);
+        for (let i = debutBloc; i < finBloc; i++) {
+          const o = i * 4;
+          if (cpu[o + 3] >= presence) continue;
+          const dx = cpu[o] - centre[0], dy = cpu[o + 1] - centre[1], dz = cpu[o + 2] - centre[2], le = (dx * lx + dy * ly + dz * lz) / ll;
+          if (dx * dx + dy * dy + dz * dz - le * le > r2) continue;
+          const ox = cpu[o] - ex, oy = cpu[o + 1] - ey, oz = cpu[o + 2] - ez;
+          const pres = niveauMin <= 1 && ox * ox + oy * oy + oz * oz < p2;
+          vus[nv++] = pres ? i : -1 - i;
+          compte[pres ? 1 : 2]++;
+        }
       }
       debut[0] = 0; debut[1] = 0; debut[2] = compte[1];
       let k1 = 0, k2 = compte[1];
@@ -1004,12 +1078,12 @@
   void main(){
     uint idx=aSpectateur&65535u,lo8=(aSpectateur>>16)&255u,hi8=aSpectateur>>24;
     ivec2 t0=ivec2(int((idx*2u)&1023u),int((idx*2u)>>10)),t1=ivec2(t0.x+1,t0.y);
-    vec4 A=texelFetch(uPublicF,t0,0),Bf=texelFetch(uPublicF,t1,0);
-    uvec4 U0=texelFetch(uPublicU,t0,0),U1=texelFetch(uPublicU,t1,0);
+    if(hi8<=lo8){cacher();return;}
+    uvec4 U0=texelFetch(uPublicU,t0,0);
     uint os=aInfo.x,teinte=aInfo.y,partie=aInfo.z,mat=aInfo.w&31u;
     uint g=U0.x,masque=U0.y,traits=U0.z,section=min(U0.w&255u,${SECTIONS - 1}u);
     bool assis=(traits&3u)==0u;
-    if(((masque>>partie)&1u)==0u||hi8<=lo8){cacher();return;}
+    if(((masque>>partie)&1u)==0u){cacher();return;}
     float h1=float(g&255u)/255.,h2=float((g>>8)&255u)/255.,h3=float((g>>16)&255u)/255.,h4=float((g>>24)&255u)/255.;
     // ---- l'animation : excitation de la section, seuils propres au spectateur
     float t=uTemps.x;vec4 S=uSections[section],S2=uSections2[section];
@@ -1061,6 +1135,7 @@
     q.torse.x=mix(penche,.03,lev)+(assis?.5*sin(3.1415927*lever):0.)+.012*souffle+.06*agite*sin(t*om*.62+ph);
     q.torse.y=.022*sin(t*.43+ph)+.03*agite*sin(t*om*.31+ph);
     // regard : la voiture de la section, sinon des coups d'œil au hasard
+    vec4 A=texelFetch(uPublicF,t0,0),Bf=texelFetch(uPublicF,t1,0);
     vec3 ancre=A.xyz;float cap=A.w,cc=cos(cap),sc=sin(cap);
     vec3 X=vec3(cc,0.,-sc),Fv=vec3(sc,0.,cc);
     vec3 teteMonde=ancre+vec3(0.,mix(.62,1.62-Bf.y,lev),0.)+Fv*Bf.x*lev;
@@ -1114,6 +1189,7 @@
     vMonde=monde;vNormale=X*n.x+vec3(0.,n.y,0.)+Fv*n.z;vObjet=objet;
     vTrame=vec2(float(lo8),float(hi8))/255.;
     // couleur de la partie
+    uvec4 U1=texelFetch(uPublicU,t1,0);
     uint peau=(traits>>2)&7u,chev=(traits>>5)&7u,chau=(traits>>8)&3u;
     const vec3 PEAUX[8]=vec3[8](${vec3s(PEAUX)});
     const vec3 CHEVEUX[8]=vec3[8](${vec3s(CHEVEUX)});
@@ -1198,10 +1274,10 @@
     const temps = new Float32Array(4), cadrage = new Float64Array(4), cadrageOmbre = new Float64Array(4);
     let res = null, generation = -1, oeilConnu = false, imageOmbre = -1;
     function creerRessources() {
-      const r = {};
+      const r = { presenceLointaine: null };
       r.couleur = pdr.programme(VS, FS.replace('/*PDR*/', pdr.glsl));
       r.ombre = pdr.programme(VS.replace('precision highp int;', 'precision highp int;\n  #define OMBRE 1'), FS_OMBRE);
-      r.uC = {}; r.uO = {};
+      r.uC = { version: -1, seance: -1 }; r.uO = { version: -1, seance: -1 };
       for (const nom of ['uPublicF', 'uPublicU', 'uVP', 'uTemps', 'uSections', 'uSections2']) { r.uC[nom] = gl.getUniformLocation(r.couleur, nom); r.uO[nom] = gl.getUniformLocation(r.ombre, nom); }
       r.eclairer = pdr.lier(r.couleur);
       r.vao = gl.createVertexArray(); gl.bindVertexArray(r.vao);
@@ -1235,17 +1311,28 @@
     }
     function lier(u, vp) {
       const E = pub.etat;
-      temps[0] = E.temps; temps[1] = E.couverture; temps[2] = E.mouille; temps[3] = 0;
       gl.activeTexture(gl.TEXTURE8); gl.bindTexture(gl.TEXTURE_2D, res.texF);
       gl.activeTexture(gl.TEXTURE9); gl.bindTexture(gl.TEXTURE_2D, res.texU);
-      gl.uniform1i(u.uPublicF, 8); gl.uniform1i(u.uPublicU, 9);
-      gl.uniformMatrix4fv(u.uVP, false, vp); gl.uniform4fv(u.uTemps, temps);
-      gl.uniform4fv(u.uSections, E.s1); gl.uniform4fv(u.uSections2, E.s2);
+      if (u.version < 0) { gl.uniform1i(u.uPublicF, 8); gl.uniform1i(u.uPublicU, 9); }
+      gl.uniformMatrix4fv(u.uVP, false, vp);
+      // Chaque programme conserve ses uniformes entre les deux yeux ou tuiles d’ombre.
+      // La nouvelle séance et la recréation du programme invalident ce partage.
+      if (u.version !== E.version || u.seance !== E.seance) {
+        temps[0] = E.temps; temps[1] = E.couverture; temps[2] = E.mouille; temps[3] = 0;
+        gl.uniform4fv(u.uTemps, temps);
+        gl.uniform4fv(u.uSections, E.s1); gl.uniform4fv(u.uSections2, E.s2);
+        u.version = E.version; u.seance = E.seance;
+      }
     }
     function dessiner(ombre) {
       const L = liste.resultat, tampon = res.instances[ombre ? 1 : 0];
       gl.bindVertexArray(res.vao); gl.bindBuffer(gl.ARRAY_BUFFER, tampon);
-      gl.bufferSubData(gl.ARRAY_BUFFER, 0, L.liste, 0, L.total);
+      // L’ombre a son propre tampon. Si celui de couleur contient déjà exactement la
+      // suite des silhouettes de cette séance, les indices peuvent rester sur le GPU.
+      if (ombre || L.presenceLointaine === null || L.presenceLointaine !== res.presenceLointaine) {
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, L.liste, 0, L.total);
+        if (!ombre) res.presenceLointaine = L.presenceLointaine;
+      }
       let appels = 0, triangles = 0, instances = 0;
       for (let k = 0; k < NIVEAUX; k++) {
         const nombre = L.compte[k]; if (!nombre) continue;

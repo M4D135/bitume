@@ -26,8 +26,9 @@
         <div class="case" id="c-position"><span class="etiquette">Position</span><span class="grand"><b id="h-pos">–</b><small id="h-sur">/12</small></span></div>
         <div class="case" id="c-tour"><span class="etiquette">Tour</span><span class="grand"><b id="h-tour">–</b><small id="h-tours">/3</small></span></div>
         <div class="case pneus" id="c-pneus" data-pneus="slicks" role="group" aria-label="État des pneus"><span class="etiquette">Pneus</span><span class="nom-pneus"><i aria-hidden="true"></i><b id="h-pneus">Slicks</b></span><span class="usure-pneus" id="h-pneus-usure">Usure max. 0 %</span><span class="barres-pneus" aria-hidden="true"><i id="h-pneu-0"></i><i id="h-pneu-1"></i><i id="h-pneu-2"></i><i id="h-pneu-3"></i></span></div>
-        <div class="case sante" id="c-sante" data-sante="neuve" data-phase="piste"><span class="etiquette">Santé</span><span class="nom-pneus"><b id="h-sante">Neuve</b></span><span class="barre-sante" aria-hidden="true"><i id="h-sante-barre"></i></span></div>
+        <div class="case sante" id="c-sante" data-sante="neuve" data-phase="piste"><span class="etiquette">Santé</span><span class="nom-pneus"><b id="h-sante">Neuve</b></span><span class="usure-pneus" id="h-carburant" hidden></span><span class="barre-sante" aria-hidden="true"><i id="h-sante-barre"></i></span></div>
       </div>
+      <div id="h-box" class="guidage-box" hidden></div>
       <div id="feux" class="feux" aria-hidden="true" hidden><i></i><i></i><i></i><i></i><i></i></div>
       <div class="chronos">
         <div class="ligne-chrono"><span class="etiquette">Tour en cours</span><span class="temps" id="h-actuel">–</span></div>
@@ -425,6 +426,7 @@
       </fieldset>
     </div>
         <p id="p-troll-etat" class="note-pneus" role="status" aria-live="polite"></p>
+        <p class="note-conditions">Les gestes des mécaniciens proviennent de la <a href="https://mocap.cs.cmu.edu/" target="_blank" rel="noopener noreferrer">base de capture de mouvement de Carnegie Mellon</a>, financée par la NSF (EIA-0196217), à partir des <a href="https://huggingface.co/datasets/codepawl/cmu-mocap-glb" target="_blank" rel="noopener noreferrer">squelettes convertis par CodePawl</a>.</p>
       </div>
       <div id="p-bilan" class="panneau-menu bilan-arcade" role="tabpanel" data-menu-panel aria-labelledby="onglet-p-bilan" hidden>
         <p class="arcade-surtitre">La grille vous attend</p><h3>Prêt à prendre la piste ?</h3>

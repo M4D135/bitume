@@ -304,6 +304,9 @@ body.tactile .case .barres-pneus { height: 2px; margin-top: 2px; }
 .case.sante[data-sante="abimee"] .barre-sante i { background: #e8b23c; }
 .case.sante[data-sante="grave"] .barre-sante i { background: #d8452f; }
 .case.sante[data-phase="voie"] .etiquette, .case.sante[data-phase="sortie"] .etiquette { color: #7fd0ff; }
+.guidage-box { position: absolute; top: 21%; left: 50%; transform: translateX(-50%); max-width: 90%; padding: .38em .8em; background: #10171eef; color: #fff1d2; border-left: .23em solid #ffc14f; text-align: center; font: 700 clamp(16px,2.1vw,30px)/1.15 var(--f-titre); }
+.guidage-box[data-phase="sortie"] { border-color: #3dda94; }
+.guidage-box[hidden], .case .usure-pneus[hidden] { display: none; }
 .case.sante[data-phase="service"] .etiquette { color: #ffd166; }
 body.tactile .case .barre-sante { height: 4px; margin-top: 3px; }
 #jeu[data-ecran="demo"] #c-pneus { display: none; }

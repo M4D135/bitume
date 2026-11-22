@@ -278,6 +278,72 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     return v;
   }
 
+  // L’allée se sépare du bord droit, rejoint le box par une aire latérale puis revient sur la route.
+  const transitionStand = t => { t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2 * t); };
+  function axeStands(c, s) {
+    const S = c.stands, bord = c.largeur / 2 - 1.6;
+    if (!S) return bord;
+    const t = Math.min((s - S.debut) / (S.mur0 - S.debut), (S.fin - s) / (S.fin - S.mur1));
+    return bord + (S.d - bord) * transitionStand(t);
+  }
+  function bordStands(c, s) {
+    const w = c.largeur / 2, S = c.stands;
+    if (!S || s <= S.debut || s >= S.fin) return w;
+    const acces = transitionStand(Math.min((s-S.debut)/(S.mur0-S.debut), (S.fin-s)/(S.fin-S.mur1)));
+    const aire = transitionStand(Math.min((s-S.garage0+18)/18, (S.garage1+18-s)/18));
+    return w + acces * (S.d + S.demi + .8 - w + aire * (S.dFond - S.d - S.demi - .8));
+  }
+
+  // Réservation des plantations et objets. Les roues emploient uniquement bordStands.
+  function empriseStands(c,s,d,marge=0) {
+    const S=c.stands, w=c.largeur/2;
+    if (!S || s < S.debut-marge || s > S.fin+marge || d < w-.2-marge) return false;
+    const exterieur = s >= S.garage0-4-marge && s <= S.garage1+4+marge ? S.dBox+11 : bordStands(c,s);
+    return d <= exterieur+marge;
+  }
+
+  function halteEnLigne(c) {
+    const fin = c.arrivee || c.longueur, long = 208;
+    const ouvrages = [...(c.couverts || []), ...(c.ponts || [])];
+    let candidat = null, score = Infinity;
+    // Halte de course temporaire sur un plateau dégagé, à l'écart des ouvrages et des lieux identifiés.
+    for (let debut = Math.ceil(fin*.20/16)*16; debut + long < fin*.83; debut += 32) {
+      const bout = debut + long;
+      if (ouvrages.some(o => o.fin + 90 > debut && o.debut - 90 < bout)
+          || c.lieux?.some(o => { const marge = o.categorie === 'village' ? 550 : 180; return o.s > debut-marge && o.s < bout+marge; })) continue;
+      let courbe = 0, pente = 0;
+      for (let i = Math.floor(debut/c.pas); i <= Math.ceil(bout/c.pas); i++) {
+        courbe = Math.max(courbe, Math.abs(c.courbure[i]));
+        pente = Math.max(pente, Math.abs(c.pente[i]));
+      }
+      const cout = courbe*100 + pente + Math.abs((debut+long/2)/fin-.55)*.025;
+      if (courbe > 1/100 || pente > .10 || cout >= score) continue;
+      const i = Math.round((debut+long/2)/c.pas), x = c.x[i], z = c.z[i];
+      let libre = true;
+      for (let j = 0; j < c.n; j += Math.max(1, Math.floor(12/c.pas))) {
+        if (Math.abs(j-i)*c.pas > long/2+65 && Math.hypot(c.x[j]-x,c.z[j]-z) < long/2+45) { libre=false; break; }
+      }
+      if (libre) { score=cout; candidat={debut,fin:bout,garage0:debut+74,garage1:debut+126,vitesse:11}; }
+    }
+    return candidat;
+  }
+
+  function preparerStands(c) {
+    if (!c.stands && (c.ouvert && (c.id === 'larche' || c.id === 'marseille') || !c.ouvert && c.stands === null)) {
+      c.stands = halteEnLigne(c);
+    }
+    const S=c.stands, w=c.largeur/2;
+    if (!S || S.dBox !== undefined) return;
+    const raccord = Math.min(35,(S.fin-S.debut)*.2);
+    Object.assign(S,{ cote:1, d:w+3.8, demi:2.45, dMur:w+.45, mur0:S.debut+raccord, mur1:S.fin-raccord,
+      sBox:(S.garage0+S.garage1)/2, dBox:w+10.2, demiBox:2.65, dFond:w+16 });
+    // Les glissières physiques et visuelles longent désormais l'extérieur de l'aire et ses raccordements.
+    if (c.limiteD) for (let i=Math.max(0,Math.floor(S.debut/c.pas)-6); i<Math.min(c.n,Math.ceil(S.fin/c.pas)+7); i++) {
+      const s=i*c.pas;
+      c.limiteD[i]=Math.max(c.limiteD[i],bordStands(c,s)+1.5);
+    }
+  }
+
   // Préparation explicite des seules partitions qualifiées séparément. Les huit générateurs historiques
   // conservent leurs appels et leurs résultats ; aucune table de vitesses issue d'une ancienne étude n'est importée.
   function preparerParcours(c) {
@@ -286,6 +352,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
       for (let i = 0; i < c.n; i++) minL = Math.min(minL, c.largeurG[i] + c.largeurD[i]);
       c.largeur = Number.isFinite(minL) && minL > 0 ? minL : LARGEUR;
     }
+    preparerStands(c);
     if (!c.vibreur) c.vibreur = new Uint8Array(c.n);
     c.ligne = trajectoire(c.x, c.z, c.cap, c.n, c.largeur, !!c.ouvert);
     c.vitesse = vitesses(c.x, c.z, c.cap, c.ligne, c.n, c.pas, !!c.ouvert, c.ouvert ? c.arrivee : Infinity);
@@ -377,15 +444,13 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
           }
         }
       }
-      // Stands (lot 4) : une voie le long du bord droit de la ligne droite principale, sous le bâtiment des stands
-      // que dessine decor.js (même côté, même emprise). Elle est prise sur la chaussée elle-même : on y entre en
-      // serrant à droite, sans avoir à franchir une glissière. `garage` est la zone d'arrêt où le service se fait.
+      // Fenêtre de la voie de service sur la ligne droite principale.
       const av = Math.max(-300, debutDroite + 40), ap = Math.min(260, finDroite - 60);
       // La voie commence APRÈS la ligne : la grille est derrière, et une voiture qui rampe à l'arrêt du départ ne
       // doit pas se retrouver aux stands sans l'avoir voulu.
       const s0 = Math.max(av + 30, 30), g0 = s0 + 40, g1 = g0 + 48, s1 = ap - 20;
       const stands = (s1 - s0 > 140 && g1 + 20 < s1) ? {
-        cote: 1, d: LARGEUR / 2 - 1.6, demi: 1.6,        // voie de 3,2 m collée au bord droit
+        cote: 1,
         debut: s0, fin: s1, garage0: g0, garage1: g1,
         vitesse: 11,                                      // m/s : 40 km/h, au-delà le service n'est pas rendu
       } : null;
@@ -396,6 +461,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
         depart: 0, ligneDroite: { debut: debutDroite, fin: finDroite }, secteurs: [Math.round(L / 3 / PAS) * PAS, Math.round(2 * L / 3 / PAS) * PAS], tunnel, stands,
         essais: essai + 1
       };
+      preparerStands(c);
       if (options.differerTrajectoire !== true) return preparerParcours(c);
       // Une fusion extrait d'abord la géométrie des boucles sources et prépare ensuite son propre tracé.
       // Si un autre consommateur demande malgré tout ces tableaux, fournir leurs valeurs ordinaires.
@@ -682,5 +748,5 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     return pb;
   }
 
-  B.circuit = { creer, creerDepuisTrace, preparerParcours, ramener, echantillon, point, repere, ecart, vibreurA, limiteA, largeurA, valider, dansTunnel, dansCouvert, choisirTunnel, PAS, LARGEUR };
+  B.circuit = { creer, creerDepuisTrace, preparerParcours, preparerStands, axeStands, bordStands, empriseStands, ramener, echantillon, point, repere, ecart, vibreurA, limiteA, largeurA, valider, dansTunnel, dansCouvert, choisirTunnel, PAS, LARGEUR };
 })(globalThis.BITUME = globalThis.BITUME || {});

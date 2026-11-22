@@ -314,6 +314,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const bandes = [
       ['jupe', -1], ['herbe', -1], ['bord', -1], ['ligne', -1], ['asphalte', 0], ['ligne', 1], ['bord', 1], ['herbe', 1], ['jupe', 1]
     ];
+    if (c.stands) bandes.push(['voie-stands', 1]);
     if (pont) bandes.push(['intrados', 0]);
     const betonPont = [.38,.41,.42], basY = [0,-1,0];
     const hautY = [0, 1, 0];
@@ -344,7 +345,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       premA.fill(-1);
       for (let i = debut; i <= fin; i++) {
         const f = cadre(c, i), no = [Math.sin(f.devers) * f.r[0], Math.cos(f.devers), Math.sin(f.devers) * f.r[2]];
-        const limG = lim.G[f.i], limD = lim.D[f.i];
+        const limG = lim.G[f.i], limD = lim.D[f.i], bordStand = c.stands ? B.circuit.bordStands(c,f.s) : w;
         const surPont = pont && Math.abs(B.circuit.ecart(c,pont.f.s,f.s)) <= pont.demi;
         const segmentPont = pont && Math.abs(B.circuit.ecart(c,pont.f.s,f.s - c.pas/2)) <= pont.demi;
         const part=partPaysage(f);
@@ -352,7 +353,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         for (let b = 0; b < bandes.length; b++) {
           const type = bandes[b][0], cote = bandes[b][1];
           let d0, d1, y0, y1, mat = 8, col = null, n0 = no, n1 = no;
-          if (type === 'intrados') {
+          if (type === 'voie-stands') {
+            if (f.s < c.stands.debut-c.pas || f.s > c.stands.fin+c.pas) { premA[b] = -1; continue; }
+            d0 = w; d1 = bordStand; y0 = y1 = hauteurRoute(f,w,w); n0 = n1 = hautY;
+            mat = matAsphalte; col = asphalte(f.i);
+          } else if (type === 'intrados') {
             if (!surPont) { premA[b] = -1; continue; }
             d0 = -(limG + 3.3); d1 = limD + 3.3;
             y0 = hauteurRoute(f,-w,w) - .02*(-d0-w-1.2) - 1.15;
@@ -375,6 +380,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
             if (surPont && (type === 'herbe' || type === 'jupe')) {
               mat = MATIERES_PILOTES.beton; col = betonPont;
               if (type === 'jupe') { d1 = d0; y1 = y0 - 1.15; n0 = n1 = [bord*f.r[0],0,bord*f.r[2]]; }
+            }
+            // Le ruban latéral remplace l'accotement sous ses roues, sans dalle superposée.
+            if (cote > 0 && bordStand > w && (type === 'bord' || type === 'herbe')) {
+              d0 = Math.max(d0, bordStand);
+              if (d0 === bordStand) y0 = yBord;
+              if (d1 <= bordStand) { d1 = bordStand; y1 = yBord; }
             }
             if (cote < 0) { const t = d0; d0 = d1; d1 = t; const u = y0; y0 = y1; y1 = u; }
           }
@@ -399,7 +410,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
             if (!segmentPont && (type === 'herbe' || type === 'jupe')) herbeTriangles.push(nap.i.length, nap.i.length + 3);
             if (type === 'intrados') nap.i.push(pa,ib,pb,pa,ia,ib);
             else nap.i.push(pa, pb, ib, pa, ib, ia);
-            const surface = type === 'asphalte' || type === 'ligne' ? 1 : type === 'bord' && (vib & (cote < 0 ? 1 : 2)) ? 2 : segmentPont ? 1 : 3;
+            const surface = type === 'voie-stands' || type === 'asphalte' || type === 'ligne' ? 1 : type === 'bord' && (vib & (cote < 0 ? 1 : 2)) ? 2 : segmentPont ? 1 : 3;
             surfacesPhysX.push(surface, surface);
           }
           premA[b] = ia; premB[b] = ib;
@@ -854,7 +865,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         const tunnel = B.circuit.dansCouvert && B.circuit.dansCouvert(c, i * c.pas, 25);
         const paddock = s > enceinte.debut - 20 && s < enceinte.fin + 20;
         const gauche = tunnel ? Math.max(lim.G[i], lim.G[j]) + 32 : w + 1.24;
-        const droite = tunnel ? Math.max(lim.D[i], lim.D[j]) + 32 : paddock ? w + 28 : w + 1.24;
+        const empriseStand = c.stands ? Math.max(B.circuit.bordStands(c,i*c.pas),B.circuit.bordStands(c,j*c.pas)) : w;
+        const droite = tunnel ? Math.max(lim.D[i], lim.D[j]) + 32 : Math.max(paddock ? w + 28 : w + 1.24, empriseStand+.25);
         const p = (k, d) => [c.x[k] - Math.sin(c.cap[k]) * d, 0, c.z[k] + Math.cos(c.cap[k]) * d];
         masquer([p(i, -gauche), p(i, droite), p(j, droite), p(j, -gauche)]);
       }
@@ -1371,8 +1383,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const taille = 320, portee = 800, seuil = 64;
     const colonnes = new Map(), grands = [], candidats = [], dernieresVues = [];
     const distances = new Float64Array(lots.length), visites = new Uint32Array(lots.length);
-    const visitesVue = new Uint32Array(lots.length);
-    let passage = 0, numeroVue = 0, curseur = 0;
+    let passage = 0, curseur = 0;
     for (let i = 0; i < lots.length; i++) {
       const {centre, rayon} = lots[i];
       if (!centre || !Number.isFinite(rayon) || rayon > taille * 2) { grands.push(i); continue; }
@@ -1382,33 +1393,41 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         let colonne = colonnes.get(x);
         if (!colonne) colonnes.set(x, colonne = new Map());
         for (let z = z0; z <= z1; z++) {
-          let indices = colonne.get(z);
-          if (!indices) colonne.set(z, indices = []);
-          indices.push(i);
+          let caseFlux = colonne.get(z);
+          if (!caseFlux) colonne.set(z, caseFlux = { indices: [], passage: 0 });
+          caseFlux.indices.push(i);
         }
       }
     }
-    function retenir(i, vue) {
-      // Un lot peut occuper plusieurs cases. Sa distance est unique pour cette caméra,
-      // tandis que la file commune conserve le minimum entre les deux joueurs et leurs cibles.
-      if (visitesVue[i] === numeroVue) return;
-      visitesVue[i] = numeroVue;
+    function retenir(i, vues) {
+      if (visites[i] === passage) return;
+      visites[i] = passage;
       const lot = lots[i], p = lot.centre;
       if (!p) return;
-      const d = Math.max(0, Math.hypot(p[0]-vue[0], p[1]-vue[1], p[2]-vue[2]) - lot.rayon);
-      if (d > Math.min(portee, (lot.portee || Infinity) + seuil * 2) ||
-          (lot.detailProcheSeul && d > lot.bascule + seuil * 2)) return;
-      if (visites[i] !== passage) {
-        visites[i] = passage; distances[i] = d; candidats.push(i);
-      } else if (d < distances[i]) distances[i] = d;
+      const limite = Math.min(portee, (lot.portee || Infinity) + seuil * 2,
+        lot.detailProcheSeul ? lot.bascule + seuil * 2 : Infinity);
+      // L'œil, sa cible et le pilote partagent souvent la même case. Retenir la sphère
+      // la plus proche dans l'union des vues, y compris si J2 filme un autre village.
+      const rayon = lot.rayon, cote = limite + rayon;
+      let minimum2 = Infinity, mx = 0, my = 0, mz = 0;
+      for (let k = 0; k < vues.length; k++) {
+        const v = vues[k], dx = p[0]-v[0], dy = p[1]-v[1], dz = p[2]-v[2];
+        if (Math.abs(dx) > cote || Math.abs(dy) > cote || Math.abs(dz) > cote) continue;
+        const d2 = dx*dx + dy*dy + dz*dz;
+        if (d2 < minimum2) { minimum2 = d2; mx = dx; my = dy; mz = dz; }
+      }
+      if (minimum2 === Infinity) return;
+      const d = Math.max(0, Math.hypot(mx,my,mz) - rayon);
+      if (d > limite) return;
+      distances[i] = d; candidats.push(i);
     }
     function recadrer(vues) {
-      passage = (passage + 1) >>> 0;
-      if (!passage) { visites.fill(0); passage = 1; }
+      if (++passage > 0xffffffff) {
+        passage = 1; visites.fill(0);
+        for (const colonne of colonnes.values()) for (const cellule of colonne.values()) cellule.passage = 0;
+      }
       curseur = 0; candidats.length = 0;
       for (let v = 0; v < vues.length; v++) {
-        numeroVue = (numeroVue + 1) >>> 0;
-        if (!numeroVue) { visitesVue.fill(0); numeroVue = 1; }
         const p = vues[v], ancre = dernieresVues[v] || (dernieresVues[v] = [0,0,0]);
         ancre[0] = p[0]; ancre[1] = p[1]; ancre[2] = p[2];
         const z0 = Math.floor((p[2]-portee)/taille), z1 = Math.floor((p[2]+portee)/taille);
@@ -1416,16 +1435,19 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           const colonne = colonnes.get(x);
           if (!colonne) continue;
           for (let z = z0; z <= z1; z++) {
-            const indices = colonne.get(z);
-            if (indices) for (const i of indices) retenir(i,p);
+            const cellule = colonne.get(z);
+            if (!cellule || cellule.passage === passage) continue;
+            cellule.passage = passage;
+            for (const i of cellule.indices) retenir(i,vues);
           }
         }
-        for (const i of grands) retenir(i,p);
       }
+      for (const i of grands) retenir(i,vues);
       dernieresVues.length = vues.length;
       candidats.sort((a,b) => distances[a]-distances[b] || a-b);
     }
     return {
+      reinitialiser() { dernieresVues.length = candidats.length = curseur = 0; },
       approcher(vues, dt, preparer) {
         let bouge = vues.length !== dernieresVues.length;
         for (let i = 0; !bouge && i < vues.length; i++) {
@@ -1471,6 +1493,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
   }
 
   function construire(c, options = {}) {
+    if (c.stands && c.stands.dBox === undefined) B.circuit.preparerStands(c);
     const th = Object.assign({}, THEMES[c.theme] || (B.destinations && B.destinations.THEMES && B.destinations.THEMES[c.theme]) || THEMES.foret), g = (c.graine * 7919 + 13) >>> 0, r = alea(g);
     const qualite = normaliserQualite(options.qualite);
     const pierresProcedurales = c.theme === 'montagne' && qualite === 'high'
@@ -1527,16 +1550,34 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
     }
     terrain.raccorderPigments?.();
+    // Réserver aussi les emprises de décor qui débordent par-dessus l’aire de service.
+    const Sstand=c.stands, propresStands=new Set();
+    let xMinStand=Infinity,xMaxStand=-Infinity,zMinStand=Infinity,zMaxStand=-Infinity;
+    if (Sstand) for(let s=Sstand.debut;s<=Sstand.fin+c.pas;s+=c.pas) {
+      const f=cadre(c,Math.round(s/c.pas)), marge=Sstand.dBox+15;
+      xMinStand=Math.min(xMinStand,f.x-marge); xMaxStand=Math.max(xMaxStand,f.x+marge);
+      zMinStand=Math.min(zMinStand,f.z-marge); zMaxStand=Math.max(zMaxStand,f.z+marge);
+    }
+    function dansReserve(x,z,rayon) {
+      if (!Sstand || x+rayon<xMinStand || x-rayon>xMaxStand || z+rayon<zMinStand || z-rayon>zMaxStand) return false;
+      const i=interroger(x,z,Sstand.dFond+rayon+40,true).i;
+      if(i<0) return false;
+      const dx=x-c.x[i],dz=z-c.z[i], co=Math.cos(c.cap[i]),si=Math.sin(c.cap[i]);
+      return B.circuit.empriseStands(c,i*c.pas+dx*co+dz*si,-dx*si+dz*co,rayon);
+    }
     const groupes = new Map();   // lots par portion de 150 m, plus lots lointains
     const TRONCON = 150;
     const lotDe = (x, z, i) => {
       const cle = i >= 0 ? 'p' + Math.floor(i * c.pas / TRONCON) : 'l' + Math.floor(x / 420) + ',' + Math.floor(z / 420);
       let l = groupes.get(cle); if (!l) groupes.set(cle, l = { objets: [], loin: [], lointain: i < 0 }); return l;
     };
+    const mobilesPhysX = [];
     const ajouter = (objets, loin, x, z) => {
       const q = interroger(x, z, 300, true), proche = q.i >= 0 && q.d < 330, l = lotDe(x, z, proche ? q.i : -1);
-      for (const o of objets) l.objets.push(o);
-      for (const o of loin) l.loin.push(o);
+      for (const o of objets) {
+        if (o.mobilePhysX) mobilesPhysX.push(o); else l.objets.push(o);
+      }
+      for (const o of loin) if (!o.mobilePhysX) l.loin.push(o);
     };
 
     // Glissières à double lisse sur poteaux, posées à la limite de chaque côté.
@@ -1583,6 +1624,31 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           if (cote===-sens) railsVirages.push({rail:objets[0],haut:ay,s:f0.s,cote,longueur:long});
         }
         ajouter(objets, loin, milieu[0], milieu[2]);
+      }
+    }
+
+    if (c.stands) {
+      const S=c.stands, beton=[.77,.76,.70], dessus=[.90,.89,.83];
+      const position=(s,d,h)=>{
+        const f=cadreOuvrage(c,s/c.pas); return pointPlan(f,d,hauteurRoute(f,d,w)+h);
+      };
+      function section(s0,s1,d0,d1,largeur,haut,niveau,couleur,collision) {
+        const a=position(s0,d0,niveau),b=position(s1,d1,niveau),dx=b[0]-a[0],dy=b[1]-a[1],dz=b[2]-a[2];
+        const [ax,ay,az]=base([dx,dy,dz],[0,1,0]);
+        const o={shape:'box',p:[(a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2],
+          s:[Math.hypot(dx,dy,dz)+.015,haut,largeur],r:angles(ax,ay,az),mat:collision?MATIERES_PILOTES.beton:14.25,color:couleur};
+        if(collision) {
+          o.collision='muret';
+          o.empriseStand={angle:Math.atan2(dz,dx),ymin:Math.min(a[1],b[1])-haut/2,ymax:Math.max(a[1],b[1])+haut/2};
+        }
+        propresStands.add(o);
+        ajouter([o],[o],o.p[0],o.p[2]);
+      }
+      for(let s=S.mur0;s<S.mur1;s+=4) section(s,Math.min(s+4,S.mur1),S.dMur,S.dMur,.42,1.02,.51,beton,true);
+      // Ligne de rive sur les deux raccords, sans quilles ni obstacle dans la zone carrossable.
+      for(let s=S.debut;s<S.fin;s+=4) {
+        const t=Math.min(s+4,S.fin);
+        section(s,t,B.circuit.bordStands(c,s)-.14,B.circuit.bordStands(c,t)-.14,.18,.012,.014,dessus,false);
       }
     }
 
@@ -1844,6 +1910,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         const l = lotDe(f.x, f.z, f.i); l.objets.push(...objets); l.loin.push(...loin);
       }
       for (let s = avant + 40; s < apres - 20; s += 60) {
+        // Le bâtiment historique possède son propre mur de 90 m. Le garage équipé occupe seul ce tronçon.
+        if (c.stands && s+46 >= c.stands.debut-4 && s-46 <= c.stands.fin+4) continue;
         const f = cadre(c, Math.round(s / c.pas)), objets = [], loin = [];
         if (architecture) {
           const site = { x: f.x, z: f.z, sol: hauteurRoute(f, w, w) - .2, a: f.a, demiRoute: w, longueur: 60, graine: c.graine, s };
@@ -1932,6 +2000,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
     }
     function retenirArbre(objets, loin, x, z, essence = th.essence) {
+      if (dansReserve(x,z,5)) return;
       if (pontFjord) {
         const dx = x-pontFjord.f.x, dz = z-pontFjord.f.z;
         if (Math.abs(dx*pontFjord.tx+dz*pontFjord.tz) < pontFjord.demi+10 &&
@@ -2193,7 +2262,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         const batiment = B.batiments.maison(architecture.maisons[i], { detail: qualite !== 'low', neige: !!(saison && saison.neige) });
         groupes.set('architecture' + i, { objets: batiment.objets, loin: batiment.loin, bascule: 180 });
       }
-      const voie = B.batiments.voieService(c);
+      const voie = c.stands?.dBox === undefined ? B.batiments.voieService(c) : {objets:[]};
       if (voie.objets.length) groupes.set('architecture-voie', { objets: voie.objets, loin: voie.loin, bascule: 260 });
     }
 
@@ -2236,7 +2305,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     }
     const lieuxDest = poserParPaysage(B.destinations);
     if (organique && c.stands && B.equipeStands && B.equipeStands.construireDecors) {
-      B.equipeStands.construireDecors(c, terrain, ajouter);
+      B.equipeStands.construireDecors(c, terrain, (objets,loin,x,z)=>{
+        for (const o of objets) propresStands.add(o);
+        for (const o of loin) propresStands.add(o);
+        ajouter(objets,loin,x,z);
+      });
     }
     let lieuxEmblematiques = organique && !estMarseille ? poserParPaysage(B.lieux) : null;
     if (lieuxLarche && lieuxLarche.marqueurs && lieuxLarche.marqueurs.length) {
@@ -2247,6 +2320,23 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       lieuxEmblematiques = Object.assign({}, lieuxEmblematiques || {}, { marqueurs: portionsLieux ? [...(lieuxEmblematiques?.marqueurs || []), ...lieuxDest.marqueurs] : lieuxDest.marqueurs });
     }
 
+    if (Sstand) {
+      function libre(o) {
+        if (propresStands.has(o) || !o.p || !o.s) return true;
+        const rayon=Math.hypot(o.s[0],o.s[2])*.5+.2;
+        return !dansReserve(o.p[0],o.p[2],rayon);
+      }
+      function degager(liste) {
+        let n=0;
+        for (const objet of liste) if(libre(objet)) liste[n++]=objet;
+        liste.length=n;
+      }
+      for (const l of groupes.values()) { degager(l.objets); degager(l.loin); }
+      if (casesArbres) for (const [cle,l] of casesArbres) {
+        degager(l.objets); degager(l.loin);
+        if (!l.objets.length) casesArbres.delete(cle);
+      }
+    }
     // Finition des lots : sphère englobante et portée.
     const lots = [];
     for (const l of groupes.values()) {
@@ -2280,15 +2370,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     for (const lot of lots) for (const o of lot.objets) if (o.collision) {
       if(o.collision==='tronc'){obstacles.push({type:'prism',p:o.p.slice(),s:o.s.slice(),r:o.r.slice(),sides:16,genre:'tronc'});continue;}
       const commun = { x: o.p[0], z: o.p[2], ymin: o.p[1]-o.s[1]/2, ymax: o.p[1]+o.s[1]/2, genre: o.collision };
+      if (o.empriseStand) Object.assign(commun,{ymin:o.empriseStand.ymin,ymax:o.empriseStand.ymax});
       if (o.shape === 'cylinder') obstacles.push(Object.assign(commun, { type: 'circle', r: o.s[0]/2 }));
-      else obstacles.push(Object.assign(commun, { type: 'box', angle: -(o.r ? o.r[1] : 0), hx: o.s[0]/2, hz: o.s[2]/2 }));
+      else obstacles.push(Object.assign(commun, { type: 'box', angle: o.empriseStand?.angle ?? -(o.r ? o.r[1] : 0), hx: o.s[0]/2, hz: o.s[2]/2 }));
     }
     const lotsDessin = casesArbres ? lotsImage(lots, casesArbres, objetsArbres) : lots;
     const atmosphereBase = Object.assign({ outdoorZones: [{ x: 0, z: 0, w: 1e7, d: 1e7 }] }, th.atmosphere, estMarseille ? { fogDensity: .00046 } : c.id === 'larche' ? { fogDensity: .00022 } : null);
     const atmosphere = saison ? B.saisons.atmosphere(saison, atmosphereBase) : atmosphereBase;
     // enceinte : portion de la ligne droite bordée de tribunes et de stands (abscisses comptées depuis la ligne) ; une
     // caméra de bord de piste s'y place devant eux, pas derrière la glissière où elle serait dans les gradins.
-    const decor = { nappes: nappes.concat(terrain.liste), lots: lotsDessin, railsVirages, atmosphere, portique, obstacles, sol: terrain.sol, niveauEau: terrain.niveauEau, lagon: terrain.lagon, niveauEauA: terrain.niveauEauA, limites: lim, theme: th,
+    const decor = { mobilesPhysX, nappes: nappes.concat(terrain.liste), lots: lotsDessin, railsVirages, atmosphere, portique, obstacles, sol: terrain.sol, niveauEau: terrain.niveauEau, lagon: terrain.lagon, niveauEauA: terrain.niveauEauA, limites: lim, theme: th,
       arbres: positionsArbres,
       enceinte: { debut: avant - 10, fin: apres + 50 } };
     Object.defineProperty(decor, 'maillageSol', { value: terrain.maillageSol });

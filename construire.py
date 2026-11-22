@@ -77,6 +77,8 @@ MODULES = [
     'faune.js',
     'aeriens.js',
     'signalisation-course.js',
+    'mouvements-stand-data.js',
+    'mouvements-stand.js',
     'equipe-stands.js',
     'camera-transition.js',
     'championnat.js',

@@ -201,7 +201,7 @@
   }
 
   // ================================================================ PARTIE 1 : FORMES PROCÉDURALES
-  const FORMES = {};
+  const FORMES = {}, sectionsArche = [];
   function enregistrer(nom, tris) {
     const R = globalThis.window && globalThis.window.FRender;
     if (R && R.forme) R.forme(nom, tris);
@@ -375,7 +375,15 @@
       rads.push([epais * 1.15, epais * .88]);
     }
     const deform = (k, j, a) => 1 + .16 * Math.sin(k * 1.3 + a * 2) + .09 * Math.cos(k * 2.1 - a * 3);
-    return normaliserBoite(tubeFerme(pts, rads, 10, [1, 0, 0], deform));
+    const facesParSection = 20; // deux triangles entre deux anneaux pour chacune des dix faces
+    const triangles = normaliserBoite(tubeFerme(pts, rads, 10, [1, 0, 0], deform));
+    for (let k = 0; k < K; k++) {
+      const points = new Map();
+      for (const face of triangles.slice(k * facesParSection, (k + 1) * facesParSection))
+        for (let coin = 0; coin < 3; coin++) points.set(face[coin].join(','), face[coin]);
+      sectionsArche.push(Array.from(points.values()));
+    }
+    return triangles;
   })());
 
   // 12. Arche de pont architecturale (enjambe Z ∈ [−0,5 ; +0,5], courbe tendue régulière)
@@ -581,6 +589,20 @@
     const hTot = Math.max(haut, (f.y - ySol) + 12.5);
     const ySommet = ySol + hTot - 1.2;
     const objets = [obj(shape, [cx, ySol + hTot * .5 - .6, cz], [epais, hTot, span], rot, mat, color)];
+    if (shape === 'bitume-lieu-arche-naturelle') {
+      const arche = objets[0], ca = Math.cos(f.a), sa = Math.sin(f.a);
+      // Relever les appuis sous les deux vrais pieds de la voûte, y compris sur un versant incliné.
+      let basLibre = -Infinity;
+      for (const section of [sectionsArche[0], sectionsArche[sectionsArche.length-1]]) {
+        for (const sommet of section) {
+          const dx = sommet[0] * epais, dz = sommet[2] * span;
+          const sol = terrain.sol(cx + ca*dx - sa*dz, cz + sa*dx + ca*dz);
+          basLibre = Math.max(basLibre, sol - sommet[1] * hTot);
+        }
+      }
+      arche.p[1] = basLibre + .04;
+      arche.mobilePhysX = { genre: 'arche-rocheuse', masse: epais * hTot * span * 340, sections: sectionsArche };
+    }
     if (pilierMat !== undefined) {
       for (const [sgn, limC] of [[-1, limG], [1, limD]]) {
         const px = f.x + f.r[0] * sgn * (limC + 2.2), pz = f.z + f.r[2] * sgn * (limC + 2.2);
@@ -966,5 +988,5 @@
     objets.push(obj('bitume-lieu-voile', [x, eau + 6.8, z], [1.4, 9.5, 5.6], [0, voile, 0], 16, [.97, .96, .93]));
   }
 
-  B.lieux = { FORMES, rocherPour, pyramidePour, poser, ajouterVoilier };
+  B.lieux = { FORMES, poserArcheRoute, rocherPour, pyramidePour, poser, ajouterVoilier };
 })(globalThis.BITUME = globalThis.BITUME || {});

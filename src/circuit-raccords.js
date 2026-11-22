@@ -1,6 +1,7 @@
 // Géométrie, profils et ligne de course préparés hors ligne sur les six tronçons du catalogue.
 (function (B) {
   'use strict';
+  if (!B.circuit && typeof require === 'function') require('./circuit.js');
   if (!B.recettesRaccords && typeof require === 'function') require('./circuit-raccords-data.js');
 
   const littleEndian = new Uint8Array(new Uint16Array([1]).buffer)[0] === 1;
@@ -48,6 +49,7 @@
     for (const [nom,donnees] of Object.entries(recette.donnees)) c[nom] = tableau(nom,donnees,c.n);
     c.largeurG = new Float64Array(c.n).fill(c.largeur / 2);
     c.largeurD = new Float64Array(c.n).fill(c.largeur / 2);
+    B.circuit.preparerStands(c);
     return c;
   }
   B.raccords = {creer};

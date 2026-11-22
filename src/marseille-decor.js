@@ -130,6 +130,10 @@
       sousPont = uS * uD;
     }
 
+    // Une maille du relief fait 24 m : garder aussi ses sommets extérieurs sous le plateau du box.
+    if (c.stands && s >= c.stands.debut-48 && s <= c.stands.fin+48 && d > -34 && d < c.stands.dFond+36) {
+      return yRoute - 1.4 - 36*Math.abs(c.pente[q.idx] || 0);
+    }
     // Bandeau de sécurité chaussée (G = 24 m → absD <= 28 m toujours <= yRoute - 0.55 m !)
     if (absD <= 28) {
       const tB = _smoothstep(10, 28, absD);
@@ -457,7 +461,7 @@
 
     function degage(x, z, marge) {
       const q = _queryRoute(gr, x, z);
-      return q.absD >= w + (marge || 2.5);
+      return q.absD >= w + (marge || 2.5) && !B.circuit.empriseStands(c,q.s,q.d,marge || 2.5);
     }
 
     function solMin5(x, z, r) {

@@ -1,4 +1,4 @@
-# FERRO — référence commune 0.3.23
+# FERRO — référence commune 0.3.24
 
 Décision de David du 16 novembre 2026 : entièrement procédural, aucun plafond de taille du code ni du build. Moteur prioritaire, atelier secondaire.
 
@@ -101,3 +101,5 @@ Les huit circuits déclarent les bornes fixes de leurs nappes au moteur. La vue 
 ## Version 0.3.23 — cockpit et reflets
 
 Les deux vues principales de BITUME activent `cullRigidOverlay`. Les pièces rigides hors champ restent disponibles pour l’ombre proche. Les reflets de la chaussée peuvent ignorer les zones entièrement couvertes par l’habitacle à partir de la couleur finale. [FERRO 0.3.23](https://github.com/M4D135/FERRO/commit/0db8e73f2f0c66db85c4cc18198bcfba68310190)
+
+La version 0.3.24 compacte les sommets des nappes de terrain rigides à 40 octets sur WebGL2 et WebGPU. Le cockpit WebGL2 écarte les objets qui ne peuvent projeter d’ombre dans la carte solaire et les fragments hors du volume de sa tuile locale. [Commit du moteur](https://github.com/M4D135/FERRO/commit/f9195273ceed7e0a01ed8dc221aa3cfdc554b03e)

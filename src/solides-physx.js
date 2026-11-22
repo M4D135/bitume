@@ -50,6 +50,42 @@
     for (let k = 0; k < vertices.length; k++) vertices[k] = g.vertices[k] * o.s[k % 3];
     return { ...pose, vertices, indices: g.indices };
   }
+  function creerMobile(world, modele) {
+    const m = modele.mobilePhysX;
+    let sections = m.sections;
+    if (!sections) {
+      const points = new Map();
+      for (const face of B.lieux.FORMES[modele.shape])
+        for (let k=0; k<3; k++) points.set(face[k].join(','), face[k]);
+      sections = [Array.from(points.values())];
+    }
+    const formes = sections.map(section => {
+      const vertices = new Float32Array(section.length * 3);
+      section.forEach((v, k) => {
+        for (let j=0; j<3; j++) vertices[3*k+j] = v[j] * modele.s[j];
+      });
+      return { type: 'convex', vertices };
+    });
+    const pos = modele.p.slice(), rot = modele.r.slice(), q = quaternion(rot);
+    const id = world.addCompound(pos, formes, { type: 'dynamic', mass: m.masse, quaternion: q,
+      group: GROUPES.obstacles, mask: GROUPES.sol | GROUPES.obstacles | GROUPES.voitures | GROUPES.debris,
+      queryGroup: GROUPES.obstacles, friction: .85, restitution: .025, angularDamping: .35 });
+    return { id, pose: [...pos,...q], objet: { ...modele, p: pos, r: rot },
+      rayon: .5 * Math.hypot(...modele.s) };
+  }
+
+  // Les lots immuables du GPU ne contiennent aucun double du rocher à sa position de départ.
+  // Une séance et son rejeu possèdent chacun les instances de leur propre monde PhysX.
+  function lireMobiles(montage) {
+    for (const m of montage.mobiles) {
+      const pose = montage.world.readPose(m.id, m.pose), o = m.objet;
+      const x=pose[3], y=pose[4], z=pose[5], w=pose[6];
+      o.p[0]=pose[0]; o.p[1]=pose[1]; o.p[2]=pose[2];
+      o.r[0]=Math.atan2(2*(w*x+y*z),1-2*(x*x+y*y));
+      o.r[1]=Math.asin(Math.max(-1,Math.min(1,2*(w*y-z*x))));
+      o.r[2]=Math.atan2(2*(w*z+x*y),1-2*(y*y+z*z));
+    }
+  }
   function depuisObstacle(o) {
     if (o.type === 'prism') {
       if (o.sides !== 16) throw new TypeError('PhysX : prisme différent du cylindre FERRO');
@@ -84,11 +120,11 @@
   function installer(world, c, decor) {
     if (!world || typeof world.addTriangleMesh !== 'function' || typeof world.addBox !== 'function' || typeof world.remove !== 'function') throw new TypeError('PhysX : monde statique incomplet');
     if (!decor || !Array.isArray(decor.nappes)) throw new TypeError('PhysX : décor absent');
-    const montage = { world, ids: [], acteurs: new Map(), libere: false, statistiques: {
+    const montage = { world, ids: [], mobiles: [], acteurs: new Map(), libere: false, statistiques: {
       nappes: 0, obstaclesHistoriques: 0, complements: 0, trianglesSol: 0, trianglesObstacles: 0, trianglesEauIgnores: 0
     } };
     const ajouter = (g, info) => {
-      const groupe = info.groupe, options = { type: 'static', group: groupe, mask: GROUPES.voitures | GROUPES.debris, queryGroup: groupe,
+      const groupe = info.groupe, options = { type: 'static', group: groupe, mask: GROUPES.voitures | GROUPES.debris | (decor.mobilesPhysX?.length ? GROUPES.obstacles : 0), queryGroup: groupe,
         friction: groupe === GROUPES.sol ? .8 : .6, restitution: 0, quaternion: g.quaternion || [0, 0, 0, 1] };
       const id = g.half ? world.addBox(g.pos, g.half, options) : world.addTriangleMesh(g.vertices, g.indices, { ...options, pos: g.pos || [0, 0, 0] });
       montage.ids.push(id); montage.acteurs.set(id, info);
@@ -127,6 +163,11 @@
         ajouter(primitive(o), { genre: m.genre, groupe: m.groupe, surface: m.surface, source: 'primitive', index: i });
         montage.statistiques.complements++;
       }
+      for (const modele of decor.mobilesPhysX || []) {
+        const mobile = creerMobile(world, modele);
+        montage.ids.push(mobile.id); montage.mobiles.push(mobile);
+        montage.acteurs.set(mobile.id, {genre: modele.mobilePhysX.genre, groupe: GROUPES.obstacles, source: 'mobile'});
+      }
       return montage;
     } catch (erreur) {
       try { liberer(montage); } catch (nettoyage) { erreur.nettoyage = nettoyage; }
@@ -149,5 +190,5 @@
     montage.libere = montage.ids.length === 0;
     if (premiereErreur) throw premiereErreur;
   }
-  B.solidesPhysX = { installer, liberer, surface, GROUPES };
+  B.solidesPhysX = { installer, lireMobiles, liberer, surface, GROUPES };
 })(globalThis.BITUME = globalThis.BITUME || {});
