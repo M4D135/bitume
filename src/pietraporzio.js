@@ -1,7 +1,9 @@
-/* BITUME · empreintes régionales de Pietraporzio. Les pans et les ouvertures sont procéduraux. */
+/* BITUME · empreintes régionales des bourgs de la Stura. Les pans et les ouvertures sont procéduraux. */
 (function (B) {
   'use strict';
   if (!B.pietraporzioData && typeof require === 'function') require('./pietraporzio-data.js');
+
+  if (!B.argenteraBdtre && typeof require === 'function') require('./argentera-data.js');
 
   function face(triangles,a,b,c) {
     const u=b.map((v,i)=>v-a[i]), v=c.map((n,i)=>n-a[i]);
@@ -69,11 +71,42 @@
         for(const t of triangles) lot.push(t.slice(0,3).map(v=>[
           f.x+v[0]*largeur,bas+h*(v[1]+.5),f.z+v[2]*profondeur]));
       }
+      if (f.versRue) baiesSurRue(groupe,f,poly,rive);
       groupe.empreintes.push(...f.tri.map(t=>t.map(i=>[f.x+poly[i][0],0,f.z+poly[i][1]])));
     } else for(const [partie,triangles] of Object.entries(parties)) {
       modele.formes[partie]=enregistrer('pietraporzio-'+f.id+'-'+partie,triangles);
     }
     return modele;
+  }
+  // Baies interprétées sur la façade qui donne sur la SS21. Le gabarit
+  // du relevé fixe le contour du mur et le sommet du toit.
+  function baiesSurRue(groupe,f,poly,rive) {
+    if (!['abitativa','residenziale','residenziale e commerciale','commerciale'].includes(f.usage)) return;
+    let facade, meilleure=0;
+    for (let i=0; i<poly.length; i++) {
+      const a=poly[i], b=poly[(i+1)%poly.length], dx=b[0]-a[0], dz=b[1]-a[1], l=Math.hypot(dx,dz);
+      if (l<3.8) continue;
+      const nx=dz/l, nz=-dx/l, rx=f.versRue[0]-(a[0]+b[0])/2, rz=f.versRue[1]-(a[1]+b[1])/2;
+      const score=l*(nx*rx+nz*rz)/Math.max(1,Math.hypot(rx,rz));
+      if (score>meilleure) { meilleure=score; facade={a,ux:dx/l,uz:dz/l,nx,nz,l}; }
+    }
+    if (!facade) return;
+    const {a,ux,uz,nx,nz,l}=facade, colonnes=Math.max(1,Math.min(7,Math.floor(l/3.2)));
+    const etages=Math.max(1,Math.min(3,Math.floor((rive-f.solCm[1]/100)/2.7)));
+    function panneau(liste,d,y,largeur,haut,avance) {
+      const coin=(u,v)=>[f.x+a[0]+(d+u)*ux+avance*nx,y+v,f.z+a[1]+(d+u)*uz+avance*nz];
+      const p=coin(-largeur/2,0), q=coin(-largeur/2,haut), r=coin(largeur/2,haut), t=coin(largeur/2,0);
+      liste.push([p,q,r],[p,r,t]);
+    }
+    for (let i=0; i<colonnes; i++) for (let j=0; j<etages; j++) {
+      const d=(i+.5)*l/colonnes, y=rive-.46-1.10-2.8*j;
+      if (y<f.solCm[2]/100+.12) continue;
+      panneau(groupe.baies,d,y,.86,1.10,.055);
+      if (l/colonnes>=2.1) {
+        panneau(groupe.volets,d-.66,y,.34,1.10,.080);
+        panneau(groupe.volets,d+.66,y,.34,1.10,.080);
+      }
+    }
   }
   function enregistrer(nom,triangles) {
     globalThis.FRender?.forme?.(nom,triangles);
@@ -83,20 +116,23 @@
   const modeles=B.pietraporzioData.map(f=>construire(f));
   const emprises=modeles.slice(), ilots=[];
   const groupes=new Map();
-  for(const f of B.pietraporzioCouronne || []) {
-    const cle=Math.floor(f.s/100);
-    let g=groupes.get(cle);
-    if(!g)groupes.set(cle,g={facades:[],toits:[],empreintes:[]});
-    emprises.push(construire(f,g));
+  for(const [village,batiments] of [['Pietraporzio',B.pietraporzioCouronne],['Argentera',B.argenteraBdtre]]) {
+    for(const f of batiments || []) {
+      const cle=Math.floor(f.s/100);
+      let g=groupes.get(cle);
+      if(!g)groupes.set(cle,g={village,facades:[],toits:[],baies:[],volets:[],empreintes:[]});
+      emprises.push(construire(f,g));
+    }
   }
   for(const [cle,g] of groupes) {
     const min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];
-    for(const faces of [g.facades,g.toits]) for(const t of faces) for(const v of t) for(let k=0;k<3;k++) {
+    for(const faces of [g.facades,g.toits,g.baies,g.volets]) for(const t of faces) for(const v of t) for(let k=0;k<3;k++) {
       min[k]=Math.min(min[k],v[k]);max[k]=Math.max(max[k],v[k]);
     }
     const p=min.map((v,k)=>(v+max[k])/2),s=min.map((v,k)=>max[k]-v);
     const formes={};
-    for(const partie of ['facades','toits']) {
+    for(const partie of ['facades','toits','baies','volets']) {
+      if (!g[partie].length) continue;
       const triangles=[];
       for(const t of g[partie]) {
         const points=t.map(v=>v.map((q,k)=>(q-p[k])/s[k]));
@@ -104,7 +140,7 @@
       }
       formes[partie]=enregistrer('stura-ilot-'+cle+'-'+partie,triangles);
     }
-    ilots.push({p,s,formes,empreintes:g.empreintes});
+    ilots.push({village:g.village,p,s,formes,empreintes:g.empreintes});
   }
   // Les grands tableaux de points en coordonnées monde ne servent qu'à
   // produire les maillages locaux utilisés en commun par FERRO et PhysX.
@@ -186,17 +222,24 @@
       ajouter(proche,loin,f.x,f.z);
     }
   }
-  function poserCouronne(neige,ajouter) {
+  function poserCouronne(neige,ajouter,village='Pietraporzio',detail=true) {
     for(const g of ilots) {
-      const surfaces=[];
+      if (g.village!==village) continue;
+      const surfaces=[], loin=[];
       for(const [partie,forme] of Object.entries(g.formes)) {
-        const toit=partie==='toits', o={shape:forme.nom,p:g.p,s:g.s,architecture:'ilot-stura',partie,
-          mat:toit?(neige?25:24):22, color:toit?(neige?[.86,.89,.90]:[.34,.34,.33]):[.66,.63,.55],
-          trianglesMasque:toit?[]:g.empreintes};
-        B.decor?.marquerSolide?.(o,'bati-bdtre',2,null,forme.maillage);
+        const baie=partie==='baies', volet=partie==='volets', toit=partie==='toits';
+        if (volet && !detail) continue;
+        const o={shape:forme.nom,p:g.p,s:g.s,architecture:'ilot-stura',partie,
+          mat:baie?19.1:volet?10:toit?(neige?25:24):22,
+          color:baie?[.17,.23,.24]:volet?[.35,.39,.33]:toit?(neige?[.86,.89,.90]:[.34,.34,.33]):[.66,.63,.55],
+          trianglesMasque:partie==='facades'?g.empreintes:[]};
+        if (!baie && !volet) {
+          B.decor?.marquerSolide?.(o,'bati-bdtre',2,null,forme.maillage);
+          loin.push(o);
+        }
         surfaces.push(o);
       }
-      ajouter(surfaces,surfaces,g.p[0],g.p[2]);
+      ajouter(surfaces,surfaces.length===loin.length?surfaces:loin,g.p[0],g.p[2]);
     }
   }
   B.pietraporzio={poser,poserCouronne,recouvre};

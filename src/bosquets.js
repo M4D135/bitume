@@ -62,6 +62,7 @@
   }
 
   const MAILLE = 16, cle = (i,j) => (i+1048576)*2097152+j+1048576;
+  const MATIERES_PROTEGEES = new Set([9,12,13,22,23]);
   function zonesProtegees(lots,terrain) {
     const cases = new Set();
     function masquer(x0,z0,x1,z1) {
@@ -78,8 +79,7 @@
         continue;
       }
       if (o.collision==='tronc' || o.partieArbre) continue;
-      if (!o.collision && !o.solidePhysX && !o.masqueHerbier && !o.trianglesMasque &&
-        ![9,12,13,22,23].includes(mat)) continue;
+      if (!o.collision && !o.solidePhysX && !o.masqueHerbier && !MATIERES_PROTEGEES.has(mat)) continue;
       // Comprend aussi les auvents, les quartiers et objets d'eau sans solide.
       const [x,,z]=o.p, rayon=Math.hypot(...(o.s || [1,1,1]))/2+4;
       masquer(x-rayon,z-rayon,x+rayon,z+rayon);
@@ -111,7 +111,8 @@
   function foretStura() {
     const d=B.larcheData?.reliefVallee?.couverture;
     if (!d) return () => 0;
-    const fractions=Uint8Array.from(atob(d.fractionsU8),b=>b.charCodeAt(0));
+    const fractions=B.larcheRelief?.fractionsCouverture?.(d)
+      || Uint8Array.from(atob(d.fractionsU8),b=>b.charCodeAt(0));
     // Proportions mesurées ESA 2021 dans les coordonnées locales du terrain.
     return (x,z) => {
       const u=(x-d.x0)/d.pas,v=(z-d.z0)/d.pas,i=Math.floor(u),j=Math.floor(v);
@@ -139,7 +140,7 @@
     const quota=leger?2:qualite==='medium'?5:dense?14:9;
     const secteurs=new Uint8Array(Math.ceil(c.longueur/100)+1), groupes=new Map();
     const occupe=zonesProtegees(lots,terrain), foret=c.id==='larche'?foretStura():null;
-    const habitat={}, normal=[0,1,0];
+    const habitat={}, normal=[0,1,0], voisin={i:-1,d:Infinity};
     for (const n of terrain.liste) {
       const herbe=n.herbeTriangles;
       if(n.surfaceType!=='terrain' || !herbe?.length) continue;
@@ -151,7 +152,11 @@
         const x=(V[a]+V[b]+V[d])/3, y=(V[a+1]+V[b+1]+V[d+1])/3, z=(V[a+2]+V[b+2]+V[d+2])/3;
         const ix=Math.floor(x),iz=Math.floor(z),t=bruit(ix,iz,c.graine);
         if (Number.isFinite(terrain.niveauEau) && y<terrain.niveauEau+3) continue;
-        const q=interroger(x,z,240,true);
+        // À Larche la couverture forestière provient de la carte ESA, indépendamment
+        // de l'axe et de la pente. Ces refus n'ont besoin d'aucune recherche routière.
+        const couvert=foret ? foret(x,z) : 0;
+        if (foret && (!(couvert>.29) || t>couvert)) continue;
+        const q=interroger.dansRayon ? interroger.dansRayon(x,z,240,voisin) : interroger(x,z,240,true);
         if(q.i<0 || q.d<c.largeur/2+27 || q.d>240) continue;
         const s=q.i*c.pas, secteur=Math.floor(s/100);
         if(secteurs[secteur]>=quota || B.circuit.dansCouvert?.(c,s,24)) continue;
@@ -173,8 +178,11 @@
           // le flanc terrestre, derrière la première ligne bâtie de la Corniche.
           if(s<1250 || cote>-70 || y<8) continue;
         }
-        const richesse=foret?foret(x,z):site.ecologie?.echantillonner(x,z,habitat).boisement;
-        if (!(richesse>(foret ? .29 : .09)) || t>richesse*(genre==='lande' ? .56 : 1)) continue;
+        if (foret && genre==='lande' && t>couvert*.56) continue;
+        if (!foret) {
+          const richesse=site.ecologie?.echantillonner(x,z,habitat).boisement;
+          if (!(richesse>.09) || t>richesse*(genre==='lande' ? .56 : 1)) continue;
+        }
         const uy=V[b+1]-V[a+1],vy=V[d+1]-V[a+1];
         const dx=(uy*vz-vy*uz)/det,dz=(ux*vy-vx*uy)/det;
         if(Math.hypot(dx,dz)>(genre==='lande' ? .34 : .24)) continue;
@@ -193,7 +201,10 @@
         let lot=groupes.get(key);
         if(!lot) groupes.set(key,lot={objets:[],loin:[],centre:[0,0,0],rayon:0,portee:Infinity,bascule:90,
           lodReferenceFov:60,lodReferenceHeight:1080,arbres:true,bosquets:true});
-        lot.objets.push(o);lot.loin.push(leger?o:{...o,shape:forme+'-loin'});
+        lot.objets.push(o);
+        // En Légère, le modèle unique est déjà le lointain. FERRO utilise alors
+        // le tampon principal à toute distance et dans les deux passes d'ombre.
+        if (!leger) lot.loin.push({...o,shape:forme+'-loin'});
         for(let axe=0;axe<3;axe++) lot.centre[axe]+=p[axe];
         secteurs[secteur]++;
       }

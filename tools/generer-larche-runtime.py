@@ -147,6 +147,13 @@ def main():
     grille = dtm['valleyOverview100m']
     pas = grille['resM']
     hauteurs = [round(y - ALT_BASE) if y is not None else -32768 for y in grille['elevationsM']]
+    optique = json.loads((SRC.parent / 'sources/sentinel-mosaique-2021.json').read_text())
+    if (optique['crs'] != 'EPSG:32632' or
+        (optique['originE'], optique['originN'], optique['nx'], optique['nz'], optique['pas']) !=
+        (grille['originE'], grille['originN'], grille['width'], grille['height'], pas)):
+        raise ValueError('La mosaïque Sentinel doit partager exactement la grille du relief')
+    if len(base64.b64decode(optique['nuancesU8'], validate=True)) != 2 * len(hauteurs):
+        raise ValueError('Mosaïque Sentinel tronquée')
     relief = {
         'source': 'Regione Piemonte, RIPRESA AEREA ICE 2009–2011 — DTM 5, CC BY 4.0',
         'licence': 'https://creativecommons.org/licenses/by/4.0/',
@@ -154,6 +161,7 @@ def main():
         'x0': round(grille['originE'] + pas / 2 - origin_e, 3),
         'z0': round(origin_n - grille['originN'] + pas / 2, 3),
         'couverture': couverture_versants(origin_e, origin_n),
+        'nuancesU8': optique['nuancesU8'],
         'metresI16LE': base64.b64encode(struct.pack(f'<{len(hauteurs)}h', *hauteurs)).decode('ascii'),
     }
 

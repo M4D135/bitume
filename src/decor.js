@@ -220,6 +220,32 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
       return { i: meilleur, d: Math.sqrt(d2min), y: poids > 0 ? somme / poids : 0 };
     }
+    // Pour un placement qui rejette de toute façon les points hors d'un rayon.
+    // Les préfixes bornent chaque ligne du quadrillage au disque, puis au meilleur
+    // point déjà trouvé. Les cases et les égalités gardent l'ordre d'interroger.
+    interroger.dansRayon = (x, z, rayon, resultat) => {
+      const bord = rayon + 1e-7, cx=Math.floor(x/T), cz=Math.floor(z/T), cases=Math.ceil(rayon/T);
+      const debutX=Math.max(x0,cx-cases,Math.floor((x-bord)/T)), finX=Math.min(x1,cx+cases,Math.floor((x+bord)/T));
+      let meilleur = -1, distance2 = bord*bord;
+      for (let a=debutX; a<=finX; a++) {
+        const ligne=(a-x0)*nz;
+        if (debuts[ligne] === debuts[ligne+nz]) continue;
+        const ecartX=Math.max(0, a*T-x, x-(a+1)*T), reste=distance2-ecartX*ecartX;
+        if (reste<0) continue;
+        const marge=Math.sqrt(reste)+1e-7;
+        const debutZ=Math.max(z0,cz-cases,Math.floor((z-marge)/T)), finZ=Math.min(z1,cz+cases,Math.floor((z+marge)/T));
+        if (debutZ>finZ) continue;
+        const fin=debuts[ligne+finZ-z0+1];
+        for (let k=debuts[ligne+debutZ-z0]; k<fin; k++) {
+          const i=indices[k], dx=c.x[i]-x, dz=c.z[i]-z, d2=dx*dx+dz*dz;
+          if (d2<distance2) { meilleur=i; distance2=d2; }
+        }
+      }
+      const distance=Math.sqrt(distance2);
+      resultat.i = distance<=rayon ? meilleur : -1;
+      resultat.d = resultat.i<0 ? Infinity : distance;
+      return resultat;
+    };
     return interroger;
   }
 
@@ -1140,18 +1166,28 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
   const CASE_ARBRES = 60, BASCULE_ARBRES = 80, PIXELS_BASCULE = 150, ARBRES_EPARS = 3, CASE_EPARSE = 2 * CASE_ARBRES;
   const reculGeant = hauteur => hauteur * 1080 / (2 * Math.tan(Math.PI / 6) * PIXELS_BASCULE);
   const basculeCase = (hauteur, base = BASCULE_ARBRES) => Math.max(base, reculGeant(hauteur));
+  function sansObjetsArbres(objets, arbres) {
+    let i=0;
+    while (i<objets.length && !arbres.has(objets[i])) i++;
+    if (i===objets.length) return objets;
+    const gardes=objets.slice(0,i);
+    for (i++; i<objets.length; i++) if (!arbres.has(objets[i])) gardes.push(objets[i]);
+    return gardes;
+  }
   function lotsImage(lots, cases, objetsArbres) {
     // Le mobilier garde ses lots, leurs sphères et leurs bascules : seuls les arbres en sortent.
     const sortie = [];
     for (const l of lots) {
-      const objets = l.objets.filter(o => !objetsArbres.has(o)), loin = l.loin.filter(o => !objetsArbres.has(o));
-      if (objets.length === l.objets.length && loin.length === l.loin.length) sortie.push(l);
+      const objets = sansObjetsArbres(l.objets,objetsArbres), loin = sansObjetsArbres(l.loin,objetsArbres);
+      if (objets===l.objets && loin===l.loin) sortie.push(l);
       else if (objets.length) sortie.push(Object.assign({}, l, { objets, loin }));
     }
     // Cases denses telles quelles, cases éparses regroupées, dans l'ordre où leur premier arbre est apparu.
     const groupes = [], eparses = new Map();
     for (const [cle, c] of cases) {
-      if (c.objets.filter(o => o.collision === 'tronc').length >= ARBRES_EPARS) { groupes.push(c); continue; }
+      let troncs=0;
+      for (const o of c.objets) if (o.collision==='tronc' && ++troncs>=ARBRES_EPARS) break;
+      if (troncs>=ARBRES_EPARS) { groupes.push(c); continue; }
       const [i, j] = cle.split(',').map(Number), grande = Math.floor(i / 2) + ',' + Math.floor(j / 2);
       let e = eparses.get(grande);
       if (!e) { eparses.set(grande, e = { objets: [], loin: [] }); groupes.push(e); }
@@ -1163,7 +1199,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       for (const o of c.objets) for (let k = 0; k < 3; k++) { min[k] = Math.min(min[k], o.p[k]); max[k] = Math.max(max[k], o.p[k]); }
       const mx = (min[0] + max[0]) / 2, my = (min[1] + max[1]) / 2, mz = (min[2] + max[2]) / 2;
       let rayon = 0, hauteur = 0;
-      for (const o of c.objets.concat(c.loin)) rayon = Math.max(rayon, Math.hypot(o.p[0] - mx, o.p[1] - my, o.p[2] - mz) + Math.hypot(o.s[0], o.s[1], o.s[2]) / 2);
+      for (let modele=0; modele<2; modele++) for (const o of (modele ? c.loin : c.objets))
+        rayon = Math.max(rayon, Math.hypot(o.p[0] - mx, o.p[1] - my, o.p[2] - mz) + Math.hypot(o.s[0], o.s[1], o.s[2]) / 2);
       // Le tronc porte 84 % de la hauteur de son arbre (arbre(), géants compris).
       for (const o of c.objets) if (o.collision === 'tronc') hauteur = Math.max(hauteur, o.s[1] / .84);
       sortie.push({ objets: c.objets, loin: c.loin, centre: [mx, my, mz], rayon, portee: Infinity, bascule: basculeCase(hauteur),

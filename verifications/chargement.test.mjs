@@ -98,7 +98,7 @@ verifier('créations tardives : permises et comptées à part sous le voile, com
   assert.equal(fabriquer(P, null)('x', 5), 5, 'sans séance, rien n’est compté');
   // le compteur naît avec chaque séance et se lit dans le compte rendu et dans l'outil de la console
   assert.ok(source.includes('tardives: { n: 0, sousVoile: 0, noms: {} }'));
-  const outil = section('  window.BITUME_JEU = {', '  setTimeout(demarrer, 20);');
+  const outil = section('  const outilsJeu = {', '  function publierOutils()');
   assert.ok(/\bpreparer: \(o = \{\}\) =>/.test(outil) && /get chargement\(\)/.test(outil), 'BITUME_JEU.preparer et BITUME_JEU.chargement');
   assert.ok(/reference[,\s]/.test(outil) && /\bbanc[,\s]/.test(outil), 'reference() et banc() restent dans l’outil');
 });
@@ -119,7 +119,7 @@ verifier('tous les lancements passent par la préparation : plus de lancement di
   const preparer = section('  async function preparerSeance(', '  function lancerVitrine(');
   assert.ok(preparer.includes('if (glaces) preparerGlaces()'), 'première vraie séance : miroirs selon le profil');
   // la démo des outils reste synchrone, comme reference() : séance et scène en place au retour de BITUME_JEU.demo
-  const outil = section('  window.BITUME_JEU = {', '  setTimeout(demarrer, 20);');
+  const outil = section('  const outilsJeu = {', '  function publierOutils()');
   assert.ok(/\bdemo: i => demoDirecte\(/.test(outil), 'BITUME_JEU.demo passe par demoDirecte');
   const directe = section('  function demoDirecte(', '  function reference(');
   assert.ok(directe.includes("lancer('demo'") && directe.includes("aller('demo')") && !/await|preparerSeance|Promise/.test(directe), 'demoDirecte sans attente');

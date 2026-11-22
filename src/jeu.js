@@ -4111,7 +4111,7 @@
   // circuit d'après. Un clic, une touche ou un bouton de manette ramène à l'écran titre.
   const ATTENTE_DEMO = 5, APRES_DRAPEAU = 9;
   function majAttente() {
-    const z = $('titre-attente'), actif = ecran === 'titre' && reglages.demo !== 'non' && !!rendu && !prepa.enCours;
+    const z = $('titre-attente'), actif = ecran === 'titre' && reglages.demo !== 'non' && !!rendu && !prepa.enCours && !erreurPhysique;
     if (z.hidden === actif) z.hidden = !actif;
     if (!actif) return;
     if (document.hidden || contexteRenduPerdu) { dernierGeste = performance.now(); return; }
@@ -5174,7 +5174,7 @@
   }
 
   // ---------------------------------------------------------------- voile de chargement
-  const ETAPES = { voile: 'Mise en place', decor: 'Construction du décor', retro: 'Rétroviseurs', circuit: 'Tracé et tunnel',
+  const ETAPES = { voile: 'Mise en place', physique: 'Initialisation du moteur physique', decor: 'Construction du décor', retro: 'Rétroviseurs', circuit: 'Tracé et tunnel',
     seance: 'Grille de départ', creations: 'Effets de la séance', rendu: 'Chauffe de l’image', code: 'Chauffe de la course',
     zero: 'Remise à zéro', image: 'Première image' };
   const ORDRE_ETAPES = Object.keys(ETAPES);
@@ -5259,6 +5259,19 @@
   // Le point de passage de tous les lancements. o : ecran (écran montré dès le début), fondu (ms de fondu d'entrée,
   // l'ancienne séance continuant derrière), verifier (la préparation s'abandonne s'il devient faux), apres (après
   // l'écran de course), reste (ms avant un départ commun en ligne).
+  let initialisationPhysique = null, erreurPhysique = null;
+  function preparerPhysique() {
+    if (!initialisationPhysique) {
+      initialisationPhysique = Promise.resolve().then(() => window.FERRO.initPhysics()).then(() => {
+        if (!window.FPhysX?.isReady()) throw new Error('PhysX indisponible après initialisation');
+        return publierOutils();
+      }).catch(e => {
+        erreurPhysique = e instanceof Error ? e : new Error(String(e));
+        throw erreurPhysique;
+      });
+    }
+    return initialisationPhysique;
+  }
   const ANNULE = { annule: true };
   async function preparerSeance(type, i, enl, conditionsChoisies, o = {}) {
     if (!rendu) return null;
@@ -5327,6 +5340,10 @@
       if (son) son.suspendre();
       await suite();
       if (!leger) { const t1 = performance.now(); await suite(); if (!document.hidden) prepa.periode = clamp(performance.now() - t1, 4, 60); }
+      if (!window.FPhysX?.isReady()) {
+        await etape('physique', true);
+        try { await preparerPhysique(); } finally { controler(); }
+      }
       // 2. décor, s'il change (le seul travail synchrone indivisible : B.decor.construire)
       await etape('decor', aBatir);
       if (aBatir) {
@@ -5408,6 +5425,7 @@
       if (jeton === prepa.jeton) {
         if (S && session === S) { try { return terminer(); } catch (f) { console.error(f); abandonnerPreparation(); } }
         else abandonnerPreparation();
+        if (e === erreurPhysique) erreur('Le moteur physique n’a pas pu démarrer', 'Rechargez la page pour réessayer. ' + R.erreur);
       }
       prepa.dernier = R;
       return R;
@@ -5797,13 +5815,12 @@
       appliquerPalier();
       // qualité Auto : le palier appris sur cette machine, plutôt que de repayer les secondes lentes du premier départ
       if (restaurerPalier()) { B.graphismes.stabiliser(etatProfils, reglages.qualite, palier.n, horlogeProfils()); appliquerPalier(); }
-      // PhysX est initialisé avant la coque par construire.py ; la scène porte voitures et débris.
-      if (!window.FPhysX?.isReady()) throw new Error('Le moteur PhysX doit être prêt avant le jeu');
       son = B.son.creer();
       reglages.circuit = clamp(reglages.circuit | 0, 0, CATALOGUE.length - 1);
       // Le titre est un menu opaque. La première séance prépare son décor, sa physique et ses glaces.
       $('chargement').classList.add('fini');
       aller('titre');
+      ouvrirAccesOutils();
       requestAnimationFrame(image);
     } catch (e) {
       console.error(e);
@@ -5952,7 +5969,7 @@
       requestAnimationFrame(mesurer);
     });
   }
-  window.BITUME_JEU = { get session() { return session; }, get rendu() { return rendu; }, get ecran() { return ecran; }, reglages, CATALOGUE, avancer, banc, reference, detecterGraphismes,
+  const outilsJeu = { get session() { return session; }, get rendu() { return rendu; }, get ecran() { return ecran; }, reglages, CATALOGUE, avancer, banc, reference, detecterGraphismes,
     // ce que le banc et le contrôle visuel vérifient sans toucher au jeu : la scène installée et le profil résolu
     get menuArcade() { return menuArcade.stats(); },
     get scene() { return scene; }, get profil() { return profilDe(session); }, get ancre() { return etatProfils.decor; },
@@ -5985,5 +6002,19 @@
     // chronomètre GPU du volet, fermé par défaut (ses requêtes coûtent) ; cadence : période, diviseur, essais
     get chronoGPU() { return B.mesures.chronoGPU; }, set chronoGPU(v) { B.mesures.chrono(!!v, rendu); },
     get cadence() { return B.cadence.etat(cadence); } };
+  function publierOutils() {
+    Object.defineProperty(window, 'BITUME_JEU', { value: outilsJeu, configurable: true, enumerable: true, writable: true });
+    return outilsJeu;
+  }
+  function ouvrirAccesOutils() {
+    // Les clients historiques attendent l’objet puis appellent reference() ou demo() de façon synchrone.
+    // Consulter l’objet au titre déclenche PhysX. Le jeu lui-même y accède uniquement à travers ses fonctions internes.
+    B.jeuPret = preparerPhysique;
+    Object.defineProperty(window, 'BITUME_JEU', { configurable: true, enumerable: true, get() {
+      if (window.FPhysX?.isReady()) return publierOutils();
+      if (!initialisationPhysique) void preparerPhysique().catch(e => console.error('BITUME : initialisation de PhysX', e));
+      return undefined;
+    } });
+  }
   setTimeout(demarrer, 20);
 })(globalThis.BITUME = globalThis.BITUME || {});

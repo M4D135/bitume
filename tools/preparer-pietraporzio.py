@@ -9,9 +9,8 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 REFERENCE = ROOT / 'docs/references/larche-vinadio-2026'
-DEBUT, FIN = 17900, 18500
+SECTEURS = {'pietraporzio': (17900,18500,35), 'argentera': (6180,6920,0)}
 MARGE_RAIL = 1.20
-PREMIER_RANG = 35
 RAYON = 65
 
 
@@ -67,18 +66,19 @@ def trianguler(poly):
     return triangles
 
 
-def generer():
+def generer(village='pietraporzio'):
+    debut, fin, premier_rang = SECTEURS[village]
     ref = json.loads((REFERENCE / 'trace-l1.json').read_text())['points']
-    couches = json.loads((REFERENCE / 'sources/bdtre-pietraporzio.json').read_text())['couches']
+    couches = json.loads((REFERENCE / 'sources' / ('bdtre-'+village+'.json')).read_text())['couches']
     js = """require('./src/larche-vinadio.js');const c=BITUME.larche.creer(210),r=[];
-    for(let i=17300/c.pas;i<=19100/c.pas;i++)r.push([i*c.pas,c.x[i],c.z[i],c.limiteG[i],c.limiteD[i]]);
+    for(let i=Math.floor(Number(process.argv[1])/c.pas);i<=Math.ceil(Number(process.argv[2])/c.pas);i++)r.push([i*c.pas,c.x[i],c.z[i],c.limiteG[i],c.limiteD[i]]);
     console.log(JSON.stringify(r));"""
-    route = json.loads(subprocess.check_output(['node','-e',js],cwd=ROOT))
+    route = json.loads(subprocess.check_output(['node','-e',js,str(debut-600),str(fin+600)],cwd=ROOT))
     pts = [ligne[1:3] for ligne in route]
     origine = ref[0]['utm32nE'], ref[0]['utm32nN']
     residus = []
     for p in ref:
-        if DEBUT <= p['sPlanM'] <= FIN:
+        if debut <= p['sPlanM'] <= fin:
             k = (p['sPlanM']-route[0][0])/(route[1][0]-route[0][0])
             i, t = int(k), k % 1
             residus.append([pts[i][j] + t*(pts[i+1][j]-pts[i][j]) - p[v] for j,v in enumerate(['localX','localZ'])])
@@ -102,7 +102,7 @@ def generer():
         poly = [[p[0]-origine[0]+decalage[0],origine[1]-p[1]+decalage[1]] for p in rings[0][:-1]]
         centre = list(map(statistics.mean,zip(*poly)))
         k = min(range(len(pts)),key=lambda i:math.dist(pts[i],centre))
-        if not DEBUT <= route[k][0] <= FIN:
+        if not debut <= route[k][0] <= fin:
             continue
         # Un cercle englobant fournit une borne inférieure sûre pour tous les segments ignorés.
         rayon = max(math.dist(centre,p) for p in poly)
@@ -122,9 +122,12 @@ def generer():
             pts_cm.reverse()
         batiments.append(dict(id=f['uuid'],volume=vs[0]['uuid'],usage=f['edifc_uso'],h=int(vs[0]['un_vol_av']),
                               s=route[k][0],axe=round(d,3),x=x,z=z,cm=pts_cm,tri=trianguler(pts_cm)))
+        if village=='argentera':
+            # Direction de la rue pour les baies procédurales du premier rang.
+            batiments[-1]['versRue'] = [round(pts[k][0]-x,2), round(pts[k][1]-z,2)]
     # Les origines verticales des îlots appartiennent au sol dessiné, pas à une
     # cote altimétrique BDTRE. L'extraction géométrique ne crée ni vue ni course.
-    fond = [f for f in batiments if f['axe'] > PREMIER_RANG]
+    fond = [f for f in batiments if f['axe'] > premier_rang]
     if fond:
         extraire = """const {readFileSync}=require('node:fs');require('./src/larche-vinadio.js');
         BITUME.pietraporzio={};require('./src/larche-vinadio-decor.js');
@@ -151,22 +154,26 @@ def generer():
     for r in couches['el_str']['objets']:
         ligne = [(e-origine[0]+decalage[0],origine[1]-n+decalage[1]) for e,n in r['geometrie']['coordinates']]
         axe_regional.extend(zip(ligne,ligne[1:]))
-    ecarts = sorted(min(distance(p,a,b) for a,b in axe_regional) for q,p in zip(route,pts) if DEBUT<=q[0]<=FIN)
+    ecarts = sorted(min(distance(p,a,b) for a,b in axe_regional) for q,p in zip(route,pts) if debut<=q[0]<=fin)
     return sorted(batiments,key=lambda f:f['s']), len(residus), erreur, decalage, ecarts
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check',action='store_true')
+    parser.add_argument('--village',choices=SECTEURS,default='pietraporzio')
     args = parser.parse_args()
-    batiments,n,erreur,decalage,axe = generer()
+    batiments,n,erreur,decalage,axe = generer(args.village)
     texte = '/* Géométrie BDTRE de Regione Piemonte, CC BY 4.0. Généré par tools/preparer-pietraporzio.py. */\n'
     texte += '(globalThis.BITUME=globalThis.BITUME||{}).pietraporzioData=[\n'
     def lignes(fiches):
         return ',\n'.join(json.dumps(f,ensure_ascii=False,separators=(',',':')) for f in fiches)+'\n];\n'
     texte += lignes(f for f in batiments if 'solCm' not in f)
     texte += 'globalThis.BITUME.pietraporzioCouronne=\x5b\n' + lignes(f for f in batiments if 'solCm' in f)
-    sortie = ROOT/'src/pietraporzio-data.js'
+    if args.village=='argentera':
+        texte = '/* BDTRE Regione Piemonte, CC BY 4.0. Généré par tools/preparer-pietraporzio.py --village argentera. */\n'
+        texte += '(globalThis.BITUME=globalThis.BITUME||{}).argenteraBdtre=\x5b\n' + lignes(batiments)
+    sortie = ROOT/'src'/(args.village+'-data.js')
     if args.check and sortie.read_text()!=texte:
         raise SystemExit('Extrait différent du fichier embarqué')
     if not args.check:

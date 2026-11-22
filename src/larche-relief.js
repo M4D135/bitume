@@ -2,9 +2,24 @@
    (DTM ICE 2009–2011, CC BY 4.0), à l'extérieur des tuiles de conduite. */
 (function (B) {
   'use strict';
+  const occupationsDecodees = new WeakMap(), hauteursDecodees = new WeakMap();
+  function octetsBase64(texte) {
+    return typeof Uint8Array.fromBase64 === 'function' ? Uint8Array.fromBase64(texte)
+      : Uint8Array.from(atob(texte), c => c.charCodeAt(0));
+  }
+  function fractionsCouverture(d) {
+    if (!occupationsDecodees.has(d)) occupationsDecodees.set(d, octetsBase64(d.fractionsU8));
+    return occupationsDecodees.get(d);
+  }
+  function hauteursGrille(d) {
+    if (!hauteursDecodees.has(d)) {
+      const o = octetsBase64(d.metresI16LE);
+      hauteursDecodees.set(d, new DataView(o.buffer, o.byteOffset, o.byteLength));
+    }
+    return hauteursDecodees.get(d);
+  }
   function lireGrille(d) {
-    const octets = Uint8Array.from(atob(d.metresI16LE), c => c.charCodeAt(0));
-    const donnees = new DataView(octets.buffer);
+    const donnees = hauteursGrille(d);
     return function altitude(x, z) {
       const fx = (x - d.x0) / d.pas, fz = (z - d.z0) / d.pas;
       const i = Math.floor(fx), j = Math.floor(fz);
@@ -29,8 +44,9 @@
     if (!d?.couverture) return null;
     if (pigmentsEte.has(d)) return pigmentsEte.get(d);
     const esa = d.couverture;
-    const occupations = Uint8Array.from(atob(esa.fractionsU8), c => c.charCodeAt(0));
-    const altitudes = new DataView(Uint8Array.from(atob(d.metresI16LE), c => c.charCodeAt(0)).buffer);
+    const occupations = fractionsCouverture(esa);
+    const nuances = d.nuancesU8 ? octetsBase64(d.nuancesU8) : null;
+    const altitudes = hauteursGrille(d);
     const pigments = new Float32Array(d.nx*d.nz*4);
     const borne = t => Math.max(0, Math.min(1, t));
     const lisser = (a,b,t) => { const u=borne((t-a)/(b-a)); return u*u*(3-2*u); };
@@ -66,6 +82,16 @@
       pigments[k]=foret*.037*sousBois+pelouse*.22*prairie+pierre*rocheClaire*1.04+autre*.201;
       pigments[k+1]=foret*.086*sousBois+pelouse*(.285+.027*frais)*prairie+pierre*rocheClaire+autre*.209;
       pigments[k+2]=foret*.052*sousBois+pelouse*.108*prairie+pierre*rocheClaire*(.90+.035*escarpe)+autre*.174;
+      if (nuances) {
+        // Contraste local de réflectance et excès de vert mesurés en 2021.
+        // La neige saisonnière garde sa propre palette. Les ombres au sol viennent de FERRO.
+        const bin = 2*(j*d.nx+i);
+        const contraste = 1 + .26*(nuances[bin]-128)/125;
+        const vert = .07*(nuances[bin+1]-128)/125;
+        pigments[k] *= contraste*(1-vert*.68);
+        pigments[k+1] *= contraste*(1+vert);
+        pigments[k+2] *= contraste*(1-vert*.32);
+      }
       pigments[k+3]=1;
     }
     function lire(x,z,sortie) {
@@ -84,7 +110,7 @@
 
   function paletteVersants(d, hiver) {
     if (!d) return () => hiver ? [.66,.6864,.693] : [.36,.3744,.378];
-    const donnees = Uint8Array.from(atob(d.fractionsU8), c => c.charCodeAt(0));
+    const donnees = fractionsCouverture(d);
     // Forêt, prairie, sol nu/peu végétalisé et fond des autres classes.
     const palette = hiver ? [[.37,.405,.395],[.62,.65,.66],[.52,.535,.54],[.53,.56,.56]]
       : [[.042,.080,.058],[.207,.235,.133],[.335,.310,.284],[.201,.209,.174]];
@@ -236,5 +262,5 @@
     }
     return nappes;
   }
-  B.larcheRelief = { lireGrille, pigmentsRelief, construire, sommetsRaccord, raccorderPigments };
+  B.larcheRelief = { lireGrille, fractionsCouverture, pigmentsRelief, construire, sommetsRaccord, raccorderPigments };
 })(globalThis.BITUME = globalThis.BITUME || {});

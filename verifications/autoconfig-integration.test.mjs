@@ -79,7 +79,7 @@ const orchestration = new Function('base', 'scenario', `
   const lancer = type => { appels.push('lancer:' + type); session = { type, i: 0 }; };
   const aller = nom => { appels.push(nom); ecran = nom; jeu.dataset.ecran = nom; };
   const image = () => {}, requestAnimationFrame = () => appels.push('boucle');
-  const erreur = () => appels.push('erreur');
+  const erreur = () => appels.push('erreur'), ouvrirAccesOutils = () => appels.push('outils');
   const webgl2 = () => true;
   ${bloc('  function capacitesDeclarees()', '  async function demarrer()')}
   ${bloc('  async function demarrer()', "  // Outil d'essai")}
@@ -270,11 +270,11 @@ test('onglet caché : attend seulement la visibilité requise par le renderer, p
   assert.equal(h.ecran, 'titre'); assert.equal(h.appels.some(a => /banc|scene-test/.test(a)), false);
 });
 
-test('PhysX absent ou non prêt : erreur explicite et aucune séance démarrée', async () => {
+test('PhysX absent ou non prêt : le menu ouvre avant toute demande de physique', async () => {
   for (const physx of [null, false]) {
     const h = orchestration(B, { demarrage: true, navigator: iphone, physx }); await h.demarrer();
-    assert.deepEqual(h.erreurs, ['Le moteur PhysX doit être prêt avant le jeu']);
-    assert.ok(h.appels.includes('erreur')); assert.equal(h.appels.includes('titre'), false);
+    assert.deepEqual(h.erreurs, []); assert.equal(h.ecran, 'titre');
+    assert.ok(h.appels.includes('outils')); assert.equal(h.appels.includes('physx'), false);
     assert.equal(h.appels.some(a => a.startsWith('seance:')), false);
   }
 });

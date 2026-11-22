@@ -42,6 +42,7 @@ MODULES = [
     'larche-relief.js',
     'coniferes-alpins.js',
     'pietraporzio-data.js',
+    'argentera-data.js',
     'pietraporzio.js',
     'larche-vinadio-decor.js',
     'marseille.js',
@@ -197,7 +198,6 @@ def main():
     # Une limite ou un obstacle peut venir d'un autre module : l'empreinte complète évite une dépendance oubliée.
     revision_pistes = empreinte_sources()
     sources['jeu.js'] = sources['jeu.js'].replace('__REVISION_PISTES__', revision_pistes)
-    sources['jeu.js']='FERRO.initPhysics().then(function(){\n'+sources['jeu.js']+"\n}).catch(function(error){console.error('FERRO physics initialization failed',error);const notice=document.createElement('p');notice.setAttribute('role','alert');notice.textContent='Impossible de démarrer le jeu. Rechargez la page.';document.body.appendChild(notice);});"
     scripts = '\n'.join(f'<script>\n// ---- {nom} ----\n{sources[nom]}</script>' for nom in MODULES)
     fragment = gabarit.replace('/*STYLE*/', style.rstrip('\n')).replace('<!--MODULES-->', scripts)
     entete = ENTETE.match(fragment)

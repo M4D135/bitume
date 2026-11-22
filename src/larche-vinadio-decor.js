@@ -909,13 +909,13 @@ function poser(c, outils) {
   ];
   const nMaisons = isLow ? 2 : 5;
   for (const v of villages) {
-    if (v.nom === 'Pietraporzio') {
+    if (v.nom === 'Pietraporzio' || v.nom === 'Argentera') {
       const ajouterBati=(proche,loin,x,z)=>{
         objets.push(...proche);
         if (ajouter) ajouter(proche,loin,x,z);
       };
-      B.pietraporzio.poser(terr,getPos,!!saison?.neige,!isLow,ajouterBati);
-      B.pietraporzio.poserCouronne(!!saison?.neige,ajouterBati);
+      if (v.nom === 'Pietraporzio') B.pietraporzio.poser(terr,getPos,!!saison?.neige,!isLow,ajouterBati);
+      B.pietraporzio.poserCouronne(!!saison?.neige,ajouterBati,v.nom,!isLow);
       continue;
     }
     const pos = getPos(v.s);
@@ -1019,7 +1019,7 @@ function poser(c, outils) {
       const sx = taille * (0.75 + hache(r + 711, graine) * 0.65);
       const sy = taille * (0.45 + hache(r + 723, graine) * 0.55);
       const sz = taille * (0.70 + hache(r + 739, graine) * 0.68);
-      if (s >= 17800 && s <= 18600 && B.pietraporzio.recouvre(rx,rz,Math.hypot(sx,sz)/2)) continue;
+      if (((s >= 6100 && s <= 6800) || (s >= 17800 && s <= 18600)) && B.pietraporzio.recouvre(rx,rz,Math.hypot(sx,sz)/2)) continue;
       const rocher = {
         forme: rocheForme(graine ^ Math.imul(r + 13, 1597334677)),
         taille: [sx, sy, sz],
@@ -1063,7 +1063,7 @@ function poser(c, outils) {
         const essence = nu ? 'meleze-nu' : estMeleze ? 'meleze' : 'sapin';
         const taille = (estMeleze ? 9.5 : 12.0) + h2 * 8.5;
         const rL = taille * (estMeleze ? 0.85 : 0.68);
-        if (s >= 17800 && s <= 18600 && B.pietraporzio.recouvre(wx,wz,rL/2)) continue;
+        if (((s >= 6100 && s <= 6800) || (s >= 17800 && s <= 18600)) && B.pietraporzio.recouvre(wx,wz,rL/2)) continue;
         const ang = h1 * PI * 2;
         const bois = [0.24, 0.16, 0.10];
         const col = nu ? bois : estMeleze
