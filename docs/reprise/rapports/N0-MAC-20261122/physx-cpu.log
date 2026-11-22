@@ -1,0 +1,41 @@
+BITUME N0 — PhysX CPU macOS — 22 novembre 2026
+Machine : Apple M5, arm64. ProductName: macOS ProductVersion: 27.2.1 BuildVersion: 26B131.
+Xcode 27.2 Build version 27B52 ; SDK 27.2 ; Apple clang version 21.0.0 (clang-2100.4.1.1)
+Python 3.14.7 ; cmake version 3.31.6 ; Ninja 1.11.1.git.kitware.jobserver-1
+WebIDL v2.9.1 3b16794502e75c624b889a48c220a40ab0af6071 ; gitlink PhysX 9f355ca9246febc4da9dd1b012f0dc7dec6ce0bf.
+Archive GitHub vérifiée, sha256 cad47b3032244fbf096f0839d75df89092a2dc2e5507a25ad083b5f9120d479a
+Profil jni-mac/aarch64, Release, bibliothèques statiques CPU, compilées avec la cible macOS 12.0.
+Sonde C++20 construite et exercée sur le SDK et le système ci-dessus ; binaire Mach-O arm64.
+Une inclusion JNI CMake écartée pour les deux compilations. Aucune source C++ du SDK modifiée.
+Compilations 1 et 2 : 438/438 étapes chacune ; commandes, versions et empreintes des outils dans physx-mac.sh.
+SHA-256 du code de la sonde : 765c9d1edd9e4394fa6d74415c47c16aa7630201e63b57eb51d9899843a4a118
+SHA-256 de la recette : ad6c6e14dc0f0f182509bc46524c23c641c382c5ee9649ec22c9ac514243d47b
+Simulation CPU, deux threads de travail dans le dispatcher. Résultats identiques aux trois exécutions de chaque binaire.
+
+Compilation 1 — SHA-256 du binaire local 8531082cc02cbf27bf3949b49b3e1d6cbe9904c3f5973eb58078bcb09685ae81
+Passage 1
+pas=360 dt=1/120 y_apres_24=1.795625 premier_contact=70 points=1 normale_abs_y=1.000 y_final=0.350000 vy_final=0.000000
+rayon_face=0 distance=3.000000 normale_y=1.000 rayon_exterieur=manque
+sdk=5.12.0 arch=arm64 backend=CPU erreurs=0 allocations_restantes=0
+Passage 2
+pas=360 dt=1/120 y_apres_24=1.795625 premier_contact=70 points=1 normale_abs_y=1.000 y_final=0.350000 vy_final=0.000000
+rayon_face=0 distance=3.000000 normale_y=1.000 rayon_exterieur=manque
+sdk=5.12.0 arch=arm64 backend=CPU erreurs=0 allocations_restantes=0
+Passage 3
+pas=360 dt=1/120 y_apres_24=1.795625 premier_contact=70 points=1 normale_abs_y=1.000 y_final=0.350000 vy_final=0.000000
+rayon_face=0 distance=3.000000 normale_y=1.000 rayon_exterieur=manque
+sdk=5.12.0 arch=arm64 backend=CPU erreurs=0 allocations_restantes=0
+
+Compilation 2 — SHA-256 du binaire local 9ef9feb130183dfa054564e2804f3d15e84365d20e51a0cda42a50c9520bbaaf
+Passage 1
+pas=360 dt=1/120 y_apres_24=1.795625 premier_contact=70 points=1 normale_abs_y=1.000 y_final=0.350000 vy_final=0.000000
+rayon_face=0 distance=3.000000 normale_y=1.000 rayon_exterieur=manque
+sdk=5.12.0 arch=arm64 backend=CPU erreurs=0 allocations_restantes=0
+Passage 2
+pas=360 dt=1/120 y_apres_24=1.795625 premier_contact=70 points=1 normale_abs_y=1.000 y_final=0.350000 vy_final=0.000000
+rayon_face=0 distance=3.000000 normale_y=1.000 rayon_exterieur=manque
+sdk=5.12.0 arch=arm64 backend=CPU erreurs=0 allocations_restantes=0
+Passage 3
+pas=360 dt=1/120 y_apres_24=1.795625 premier_contact=70 points=1 normale_abs_y=1.000 y_final=0.350000 vy_final=0.000000
+rayon_face=0 distance=3.000000 normale_y=1.000 rayon_exterieur=manque
+sdk=5.12.0 arch=arm64 backend=CPU erreurs=0 allocations_restantes=0
