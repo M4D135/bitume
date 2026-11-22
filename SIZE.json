@@ -1,8 +1,8 @@
 {
-  "version": "0.2.124",
-  "raw": 16542610,
-  "gzip": 4581161,
-  "sha256": "264931384ece57f26706e6424885c4ae71519e922451458070eff10196bbdace",
+  "version": "0.2.125",
+  "raw": 16544790,
+  "gzip": 4581796,
+  "sha256": "936c049359f0c57192b0e824aa4722c66a6d79412c8337b2532c8b93a08cddf1",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 329159,
@@ -26,7 +26,7 @@
     "pietraporzio.js": 13551,
     "larche-vinadio-decor.js": 53761,
     "marseille.js": 14511,
-    "marseille-decor.js": 50206,
+    "marseille-decor.js": 50069,
     "destinations.js": 20671,
     "virages.js": 10885,
     "ferro/vehicle-dynamics.js": 3980,
@@ -94,13 +94,13 @@
     "navigation-menu.js": 20184,
     "menu-arcade.js": 29780,
     "autoconfig.js": 35407,
-    "commandes-manette.js": 6838,
+    "commandes-manette.js": 8376,
     "scene-bench.js": 23158,
     "vibrations.js": 9461,
     "ombres.js": 12015,
     "visites.js": 6566,
-    "jeu.js": 413941,
-    "index.html": 72677,
+    "jeu.js": 414653,
+    "index.html": 72744,
     "style.css": 108041
   }
 }

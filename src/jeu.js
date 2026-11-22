@@ -556,23 +556,18 @@
   const pad = { precedent: [], actions: {}, entrees: {}, volant: 0, gaz: 0, frein: 0, derive: false, actif: false, manette: null, deriveEtat: null };
   const pad2 = { precedent: [], actions: {}, entrees: {}, volant: 0, gaz: 0, frein: 0, derive: false, manette: null, deriveEtat: null };   // manette du joueur 2 (écran partagé)
   const consoleXbox = B.autoconfig?.recommander(navigator).xbox === true;
-  const configurationsManettes = [0, 1].map(n => {
-    const m = B.commandesManette.normaliser(reglages.manettes?.[n]);
-    // Migration douce (21/11) : emotes/troll passe sur A Xbox / B Switch (index 0) et dérive reste sur X (index 2).
-    if ((!reglages.manettesVersion || reglages.manettesVersion < 3) &&
-        m.troll.length === 1 && m.troll[0].type === 'bouton' && (m.troll[0].index === 10 || m.troll[0].index === 12)) {
-      m.troll = [{ type: 'bouton', index: 0 }];
-      m.derive = m.derive.filter(l => !(l.type === 'bouton' && l.index === 0));
-      if (!m.derive.length) m.derive = [{ type: 'bouton', index: 2 }];
+  const versionManettes = Number(reglages.manettesVersion) || 0;
+  const configurationsManettes = [0, 1].map(n => B.commandesManette.migrer(reglages.manettes?.[n], versionManettes, n));
+  if (versionManettes < B.commandesManette.VERSION) {
+    reglages.manettesVersion = B.commandesManette.VERSION;
+    if (Array.isArray(reglages.manettes)) {
+      reglages.manettes = configurationsManettes.slice();
+      ecrireStock('bitume.reglages', reglages);
     }
-    return m;
-  });
-  if (!reglages.manettesVersion || reglages.manettesVersion < 3) {
-    reglages.manettesVersion = 3;
-    if (Array.isArray(reglages.manettes)) { reglages.manettes = configurationsManettes.map(m => B.commandesManette.normaliser(m)); ecrireStock('bitume.reglages', reglages); }
   }
   let captureManette = null, dernierSignalManette = -Infinity;
   let nbManettes = 0, manettes = [];
+  let navigationManetteTraitee = false;
   const impulsions2 = { haut: false, bas: false };
   // Commandes de chaque joueur (David, 16/11 : « choix manette, clavier ou souris, et gérer les touches de chacun » ;
   // « clavier normal pour un et pavé numérique pour l'autre ») : appareil choisi (auto, manette, clavier, souris) et
@@ -608,6 +603,29 @@
     B.commandesManette.lire(p, configurationsManettes[n], P.entrees);
     for (const action of ACTIONS) P.actions[action] = P.entrees[action] > .5;
     if (p) for (let i = 0; i < p.buttons.length; i++) P.precedent[i] = !!(p.buttons[i]?.pressed || p.buttons[i]?.value > .5);
+  }
+
+  function boutonsAnnulationManette(p) {
+    const tenu = i => !!(p.buttons[i]?.pressed || p.buttons[i]?.value > .5);
+    return Number(tenu(8)) | (Number(tenu(9)) << 1);
+  }
+  // Les deux manettes peuvent annuler. Seule celle du joueur choisi fournit la nouvelle affectation.
+  function noterAnnulationManette(q, p) {
+    const ancien = q.autres.get(p.index), boutons = boutonsAnnulationManette(p);
+    if (!ancien || ancien.id !== p.id) { q.autres.set(p.index, { id: p.id, boutons }); return false; }
+    const front = boutons & ~ancien.boutons;
+    ancien.boutons = boutons;
+    return front !== 0;
+  }
+
+  // Un seul changement de menu par lecture, même si les deux pilotes appuient ensemble.
+  function routerManette(nouveau, p) {
+    if (navigationManetteTraitee) return;
+    if (enCourse() || ecran === 'pause') {
+      if (nouveau(9)) { navigationManetteTraitee = true; activerSon(); basculerPause(); return; }
+      if (enCourse()) return;
+    }
+    naviguerManette(nouveau, p);
   }
 
   // Les choix du menu sont copiés au départ, par place locale et non par identifiant de voiture.
@@ -735,6 +753,7 @@
   addEventListener('wheel', () => { dernierGeste = performance.now(); if (ecran === 'demo') sortirDemo(); }, { capture: true, passive: true });
 
   function lireManette() {
+    navigationManetteTraitee = false;
     let liste = [];
     try { if (navigator.getGamepads) liste = navigator.getGamepads() || []; } catch (e) { /* accès non autorisé : commandes neutres, le rendu continue */ }
     const ancienne = pad.manette, etatDerive = pad.deriveEtat, ecranLecture = ecran;
@@ -748,6 +767,7 @@
     if (captureManette) {
       pad.manette = p1; pad2.manette = p2;
       lireCaptureManette(connectees);
+      if (!captureManette) B.navigationMenu?.initialiser?.($('reglages'));
       memoriserActionsManette(pad, 0, p1); memoriserActionsManette(pad2, 1, p2);
       pad.gaz = pad.frein = pad.volant = pad2.gaz = pad2.frein = pad2.volant = 0;
       pad.derive = pad2.derive = pad.actif = false;
@@ -787,21 +807,14 @@
       if (p.buttons.some(x => x?.pressed || x?.value > .25) || p.axes.some(x => Math.abs(x) > .25)) dernierSignalManette = performance.now();
       if (Math.abs(pad.volant) > .1 || pad.gaz > .1 || pad.frein > .1) compteurVisites?.activite();
       const accepte = commande(0) === 'auto' || commande(0) === 'manette';
-      if (enCourse() && ecran === ecranLecture && accepte) {
+      if (enCourse() && ecran === ecranLecture && accepte && !nouveau(9)) {
         if (nouvelleAction('haut')) impulsions.haut = true;
         if (nouvelleAction('bas')) impulsions.bas = true;
         if (nouvelleAction('vue')) changerVue();
         if (nouvelleAction('troll')) provoquer(0);
       }
       // Si J2 vient de changer d'écran, consommer aussi les fronts de J1 sans agir une seconde fois.
-      if (ecran === ecranLecture) {
-        if (nouveau(9)) {
-          if (enCourse() || ecran === 'pause') basculerPause();
-          else if (ecran === 'titre') { modePrepa = 'course'; activerSon(); aller('preparation'); }
-          else if (ecran === 'preparation') naviguerManette(nouveau);
-          else naviguerManette(nouveau);
-        } else if (!enCourse()) naviguerManette(nouveau);
-      }
+      if (ecran === ecranLecture) routerManette(nouveau, p);
       for (let i = 0; i < p.buttons.length; i++) pad.precedent[i] = appuye(i);
       for (const action of ACTIONS) pad.actions[action] = entrees[action] > .5;
       if (accepte && (Math.abs(pad.volant) > .05 || pad.gaz > .05 || pad.frein > .05)) { pad.actif = true; analogique = true; activerSon(); }
@@ -965,22 +978,24 @@
       { cockpit: vue === 'cockpit', dpr: window.devicePixelRatio || 1, palier: profil.palier, circuit: S.course.c, physique: S.course.physique });
   }
 
-  // menus à la manette : croix pour se déplacer (gauche, droite règlent un curseur), A valide, B revient
+  // Dans les menus, A valide et Select/View revient. B reste une commande de conduite affectable.
   function naviguerManette(nouveau, manette = pad.manette) {
+    if (navigationManetteTraitee || captureManette || enCourse()) return;
     const zone = $(ecran); if (!zone || zone.hidden) return;
-    if (ecran === 'preparation' && manette && manette.buttons) {
-      const lt = !!(manette.buttons[6] && (manette.buttons[6].pressed || manette.buttons[6].value > .5));
-      const rt = !!(manette.buttons[7] && (manette.buttons[7].pressed || manette.buttons[7].value > .5));
-      const bc = $('p-categories');
-      if (bc && bc._decaler && !$('p-piste').hidden) {
-        if (lt && !bc._lt) bc._decaler(-1);
-        else if (rt && !bc._rt) bc._decaler(1);
-      }
-      if (bc) { bc._lt = lt; bc._rt = rt; }
+    if (captureTouche) {
+      if (nouveau(8) || nouveau(9)) { navigationManetteTraitee = true; retour(); }
+      return;
     }
-    B.navigationMenu.naviguer(zone, nouveau, { pad: manette, temps: performance.now(), activer: activerSon,
+    if (ecran === 'preparation' && !nouveau(8) && !nouveau(9) && (nouveau(6) || nouveau(7))) {
+      const categories = $('p-categories');
+      if (categories?._decaler && !$('p-piste').hidden) {
+        navigationManetteTraitee = true; categories._decaler(nouveau(6) ? -1 : 1); return;
+      }
+    }
+    navigationManetteTraitee = B.navigationMenu.naviguer(zone, nouveau, { pad: manette, temps: performance.now(), activer: activerSon,
       retour: () => ecran === 'pause' ? basculerPause() : retour(),
-      demarrer: ecran === 'preparation' ? () => { const b = $('b-depart'); if (b && !b.disabled) b.click(); } : null,
+      demarrer: ecran === 'titre' ? () => { modePrepa = manette === manettes[1] ? 'duo' : 'course'; aller('preparation'); }
+        : ecran === 'preparation' ? () => { const b = $('b-depart'); if (b && !b.disabled) b.click(); } : null,
       valider: el => ecran === 'preparation' && menuArcade.valider(el) });
   }
 
@@ -999,7 +1014,6 @@
       if (!suivi || suivi.id !== p.id) {
         suivi = { id: p.id, boutons: p.buttons.map((_, i) => appuye(i)) };
         suivisManettesMenu.set(p.index, suivi);
-        if (ecran === 'titre' && p === manettes[1]) pad2.start = appuye(9);
       }
       const nouveau = i => appuye(i) && !suivi.boutons[i];
       if (ecran === 'titre' && (p.buttons.some((_, i) => appuye(i)) || p.axes.some(a => Math.abs(a) > .5))) dernierGeste = performance.now();
@@ -1035,18 +1049,13 @@
     pad2.volant = entrees.volant; pad2.gaz = entrees.gaz; pad2.frein = entrees.frein; pad2.derive = entrees.derive > .5;
     if (p.buttons.some(x => x?.pressed || x?.value > .25) || p.axes.some(x => Math.abs(x) > .25)) dernierSignalManette = performance.now();
     if (Math.abs(pad2.volant) > .1 || pad2.gaz > .1 || pad2.frein > .1) compteurVisites?.activite();
-    if (ecran === 'course') {
+    if (ecran === 'course' && !nouveau(9)) {
       if (nouvelleAction('haut')) impulsions2.haut = true;
       if (nouvelleAction('bas')) impulsions2.bas = true;
       if (nouvelleAction('vue')) changerVue2();
       if ((commande(1) === 'auto' || commande(1) === 'manette') && nouvelleAction('troll')) provoquer(1);
     }
-    if (nouveau(9)) {
-      activerSon();
-      if (ecran === 'preparation') naviguerManette(nouveau, p);
-      else basculerPause();
-    }
-    else if (!enCourse()) naviguerManette(nouveau, p);
+    routerManette(nouveau, p);
     for (let i = 0; i < p.buttons.length; i++) pad2.precedent[i] = appuye(i);
     for (const action of ACTIONS) pad2.actions[action] = entrees[action] > .5;
     if (Math.abs(pad2.volant) > .05 || pad2.gaz > .05 || pad2.frein > .05) activerSon();
@@ -4563,7 +4572,7 @@
       }
       html += '</tbody></table></div>';
     }
-    zone.innerHTML = html + '<p class="note-commandes">Manette : choisissez une action avec A, relâchez les commandes, puis pressez un bouton ou déplacez un stick. B ou Menu annule. Menu reste réservé à la pause ; stick droit maintenu vers le bas pour regarder derrière dans les six vues, sauf si ce mouvement est affecté à une autre action. Les affectations sont propres à chaque joueur.</p>'
+    zone.innerHTML = html + '<p class="note-commandes">Manette : choisissez une action avec A, relâchez les commandes, puis pressez un bouton ou déplacez un stick. Select / View ou Menu / Start annule l’affectation. En course, Menu / Start met en pause. Maintenez le stick droit vers le bas pour regarder derrière dans les six vues, sauf si ce mouvement est affecté à une autre action. Les affectations sont propres à chaque joueur.</p>'
       + '<p class="note-commandes">Clavier : choisissez une touche puis pressez la nouvelle ; Échap annule. Souris : choisissez explicitement « Souris » pour conduire avec le pointeur lorsqu’une manette est branchée. Pause : Échap ou P · son : M.</p>'
       + '<div class="actions-commandes"><button type="button" class="discret" id="r-touches-defaut">Clavier par défaut</button><button type="button" class="discret" id="r-pad-defaut">Manettes par défaut</button><button type="button" class="discret" id="r-pad-annuler"' + (captureManette || captureTouche ? '' : ' hidden') + '>Annuler l’affectation</button></div>';
     if (focus) { const suivant = zone.querySelector(focus); if (suivant && !suivant.hidden) suivant.focus({ preventScroll: true }); }
@@ -4574,7 +4583,9 @@
     if (b && b.dataset.padAction) {
       const n = +b.dataset.n, p = manetteConfiguration(n) || manettes[n] || (manettes.length === 1 ? manettes[0] : null);
       captureTouche = null;
-      captureManette = { n, action: b.dataset.padAction, index: p?.index ?? null, suivi: B.commandesManette.creerCapture(p) };
+      captureManette = { n, action: b.dataset.padAction, index: p?.index ?? null, id: p?.id,
+        suivi: B.commandesManette.creerCapture(p), autres: new Map() };
+      for (const autre of manettes) if (autre !== p) noterAnnulationManette(captureManette, autre);
       majCommandes(); return;
     }
     if (b) { captureManette = null; captureTouche = { n: +b.dataset.n, action: b.dataset.action, place: +b.dataset.place }; majCommandes(); return; }
@@ -4596,7 +4607,14 @@
     const q = captureManette;
     if (!q) return;
     if (ecran !== 'reglages' || $('r-commandes-panel').hidden) { captureManette = null; return; }
-    const p = liste.find(p => p.index === q.index) || manetteConfiguration(q.n, liste) || (liste.length === 1 ? liste[0] : null);
+    // Au débranchement de J2, J1 ne peut pas affecter par erreur le profil de son voisin.
+    const p = q.index == null ? manetteConfiguration(q.n, liste) || (liste.length === 1 ? liste[0] : null)
+      : liste.find(p => p.index === q.index && p.id === q.id);
+    if (p && q.index == null) { q.index = p.index; q.id = p.id; }
+    for (const index of q.autres.keys()) if (!liste.some(m => m.index === index)) q.autres.delete(index);
+    for (const autre of liste) if (autre !== p && noterAnnulationManette(q, autre)) {
+      captureManette = null; majCommandes(); return;
+    }
     const liaison = B.commandesManette.avancerCapture(q.suivi, p);
     if (liaison) {
       configurationsManettes[q.n] = B.commandesManette.affecter(configurationsManettes[q.n], q.action, liaison);
@@ -4615,7 +4633,7 @@
     prochaineMajManette = performance.now() + 150;
     const etat = $('r-manette-etat');
     if (etat) texte(etat, captureManette ? 'Joueur ' + (captureManette.n + 1) + ' · ' + NOMS_ACTIONS[captureManette.action] + ' : ' +
-      (captureManette.suivi.raison === 'deconnectee' ? 'manette non reçue. Rebranchez-la ou activez les commandes de jeu dans Edge.' : captureManette.suivi.pret ? 'actionnez la commande souhaitée. B annule.' : 'relâchez tous les boutons et les sticks.') :
+      (captureManette.suivi.raison === 'deconnectee' ? 'manette non reçue. Rebranchez-la ou activez les commandes de jeu dans Edge.' : captureManette.suivi.pret ? 'actionnez la commande souhaitée. Select / View annule.' : 'relâchez tous les boutons et les sticks.') :
       nbManettes ? nbManettes + ' manette' + (nbManettes > 1 ? 's reçues' : ' reçue') + ' · testez les pédales et le stick ci-dessous.' :
       consoleXbox ? 'Manette non reçue. Maintenez Menu ≡ pour passer aux commandes de jeu dans Edge, puis appuyez sur A.' : 'Appuyez sur un bouton de la manette pour la détecter.');
     for (const n of [0, 1]) {
@@ -4661,7 +4679,7 @@
   }
   function retour() {
     if (prepa.voile) return;   // sous le voile, rien ne se quitte : la préparation finit ou s'annule seule
-    captureTouche = captureManette = null;
+    if (captureTouche || captureManette) { captureTouche = captureManette = null; majCommandes(); return; }
     if (ecran === 'reglages') { aller(retourReglages || 'titre'); if (ecran === 'pause' && session && session.type !== 'vitrine') rechaufferEnPause(session); }
     else if (ecran === 'preparation' && menuArcade.retour()) return;
     else if (ecran === 'preparation' && modePrepa === 'enligne') aller('enligne');
@@ -5539,12 +5557,7 @@
     const modeManette = consoleXbox && nbManettes && performance.now() - dernierSignalManette < 1200 ? 'oui' : 'non';
     if (jeu.dataset.manette !== modeManette) jeu.dataset.manette = modeManette;
     // deux manettes branchées : « À deux » le signale, et Start sur la seconde, au titre, ouvre la course à deux
-    if (ecran === 'titre') {
-      $('t-manettes').hidden = nbManettes < 2;
-      const start2 = nbManettes >= 2 && !!(manettes[1].buttons[9] && manettes[1].buttons[9].pressed);
-      if (start2 && !pad2.start) { modePrepa = 'duo'; activerSon(); aller('preparation'); }
-      pad2.start = start2;
-    }
+    if (ecran === 'titre') $('t-manettes').hidden = nbManettes < 2;
     // préparation d'une course à deux : qui joue avec quoi, selon les choix et les manettes branchées
     if (ecran === 'preparation') texte($('p-manettes'), (modePrepa === 'duo' ? [0, 1] : [0]).map(n => 'Joueur ' + (n + 1) + ' : ' + entreeDe(n, modePrepa === 'duo')).join(' · ') + '.');
     menuArcade.image(t, ecran === 'preparation', gpuModeste || reglages.qualite === 'low');

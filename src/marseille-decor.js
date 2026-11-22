@@ -204,36 +204,28 @@
   function _colorTerrain(x, z, y, ny, q, saison) {
     const { s, d } = q;
     const n1 = _fbm(x * 0.008 + 2.3, z * 0.008 - 4.1, 3);
-    // Sable doré près du niveau de la mer (plages & fonds peu profonds)
-    if (y < 2.6 && d > 10) {
-      const sT = _smoothstep(-1.5, 2.6, y);
-      return [0.78 + n1 * 0.10, 0.70 + n1 * 0.08, 0.48 + n1 * 0.06 - (1 - sT) * 0.08];
-    }
-    // Garrigue méditerranéenne : vert olive, pins, terre ocre-chaude
-    let r = 0.35 + n1 * 0.14;
-    let g = 0.41 + n1 * 0.11;
-    let b = 0.19 + n1 * 0.06;
-
-    // Versants calcaires blancs/crème typiques de Marseille & de la Bonne Mère
-    if (ny < 0.88 || y > 55 || d > 12) {
-      const calT = _clamp(
-        Math.max(_smoothstep(0.90, 0.62, ny), _smoothstep(48, 125, y) * 0.72, d > 14 ? 0.55 : 0),
-        0, 1
-      );
-      const cn = _fbm(x * 0.011 + 9.2, z * 0.011 + 5.7, 3);
-      const cr = 0.76 + cn * 0.14, cg = 0.73 + cn * 0.13, cb = 0.65 + cn * 0.11;
-      r = _lerp(r, cr, calT);
-      g = _lerp(g, cg, calT);
-      b = _lerp(b, cb, calT);
+    // La même plage de couleur relie la garrigue, le calcaire et le sable entre les sommets espacés de 24 m.
+    const derive = (n1 - .5) * 12;
+    const calcaire = Math.max(_smoothstep(.90, .62, ny),
+      .72 * _smoothstep(48, 125, y), .55 * _smoothstep(5, 28, d + derive));
+    let r = .35 + n1 * .14, g = .41 + n1 * .11, b = .19 + n1 * .06;
+    if (calcaire > 0) {
+      const cn = _fbm(x * .011 + 9.2, z * .011 + 5.7, 3);
+      r = _lerp(r, .76 + cn * .14, calcaire);
+      g = _lerp(g, .73 + cn * .13, calcaire);
+      b = _lerp(b, .65 + cn * .11, calcaire);
     }
 
-    // Parc Borély / pelouses côtières du Prado (s > 4950)
-    if (s > 4950 && y > 1.5 && d < 22) {
-      const pT = _smoothstep(4950, 5300, s);
-      r = _lerp(r, 0.24 + n1 * 0.08, pT * 0.6);
-      g = _lerp(g, 0.44 + n1 * 0.09, pT * 0.6);
-      b = _lerp(b, 0.18 + n1 * 0.05, pT * 0.6);
-    }
+    const parc = .60 * _smoothstep(4950, 5300, s) * _smoothstep(0, 4, y)
+      * (1 - _smoothstep(10, 34, d + derive));
+    r = _lerp(r, .24 + n1 * .08, parc);
+    g = _lerp(g, .44 + n1 * .09, parc);
+    b = _lerp(b, .18 + n1 * .05, parc);
+
+    const sable = (1 - _smoothstep(.6, 5.2, y + (n1 - .5))) * _smoothstep(3, 21, d + derive);
+    r = _lerp(r, .78 + n1 * .10, sable);
+    g = _lerp(g, .70 + n1 * .08, sable);
+    b = _lerp(b, .48 + n1 * .06 - (1 - _smoothstep(-1.5, 2.6, y)) * .08, sable);
 
     if (saison && saison.automne) { r *= 1.06; g *= 0.96; b *= 0.90; }
     return [r, g, b];

@@ -66,10 +66,13 @@ La version en ligne est la page figée d'un commit. Elle ne change qu'à la main
 | Accélérer, freiner | ↑ ↓, ou Z S (W S en QWERTY) | gâchettes droite et gauche |
 | Reculer (12 km/h maximum) | maintenir le frein à l’arrêt | maintenir LT à l’arrêt |
 | Tourner | ← →, ou Q D (A D en QWERTY) | stick gauche |
-| Dérive | Espace ou Maj, tenue dans un virage | A |
-| Rapports (boîte manuelle) | E monter, A descendre (Q en QWERTY) | RB, LB |
-| Vue, son, pause | C, M, Échap ou P | Y, —, Start |
-| Menus | Tab, Entrée, Échap | croix, A, B |
+| Dérive | Espace ou Maj, tenue dans un virage | LB |
+| Rapports (boîte manuelle) | E monter, A descendre (Q en QWERTY) | A pour monter, X pour descendre |
+| Troll / geste | G | B |
+| Vue, son, pause | C, M, Échap ou P | Y, —, Start / Menu |
+| Menus | Tab, Entrée, Échap | croix pour parcourir, A pour valider, Select / View pour revenir |
+
+Les deux joueurs partent de ce profil manette. Chacun peut modifier ses affectations dans **Réglages → Commandes**.
 
 Sur écran tactile : glisser le pouce à gauche pour braquer ; pédales et dérive à droite.
 Maintenir la pédale Frein à l’arrêt fait reculer ; Gaz arrête le recul avant de repartir en avant.
@@ -81,8 +84,8 @@ Sur téléphone en portrait, le champ du cockpit est resserré et son ouverture 
 
 Ouvrir `https://bitume.estrasse.fr/` dans Edge. Maintenir le bouton Menu permet de basculer entre les contrôles
 du navigateur et les contrôles de jeu ([aide Microsoft](https://www.microsoft.com/en-us/edge/learning-center/how-to-use-microsoft-edge-on-xbox)).
-En mode jeu : croix pour les menus, A pour valider, B pour revenir ; RT accélère, LT freine, le stick gauche
-braque, A ou X commande la dérive, Y change la vue et Menu met en pause. Si le son n'a pas démarré, un clic
+En mode jeu, la croix parcourt les menus, A valide et View revient en arrière. En course, B déclenche le geste
+et Menu met en pause. Si le son n'a pas démarré, un clic
 sur la page avec le pointeur du navigateur permet de l'activer avant de repasser aux contrôles de jeu.
 
 Le rendu demande WebGL2. L’écran titre a été confirmé sur une Xbox par David le 16/11/2026. Les parcours manette

@@ -3,18 +3,21 @@
 (function (B) {
   'use strict';
   const ACTIONS = Object.freeze(['gaz', 'frein', 'gauche', 'droite', 'derive', 'haut', 'bas', 'vue', 'troll']);
+  const VERSION = 4;
+  const boutons = (...indices) => indices.map(index => ({ type: 'bouton', index }));
   const DEFAUT = {
-    gaz: [{ type: 'bouton', index: 7 }], frein: [{ type: 'bouton', index: 6 }],
+    gaz: boutons(7), frein: boutons(6),
     gauche: [{ type: 'axe', index: 0, sens: -1, origine: 0 }],
     droite: [{ type: 'axe', index: 0, sens: 1, origine: 0 }],
-    derive: [{ type: 'bouton', index: 2 }],
-    haut: [{ type: 'bouton', index: 5 }], bas: [{ type: 'bouton', index: 4 }],
-    vue: [{ type: 'bouton', index: 3 }], troll: [{ type: 'bouton', index: 0 }]
+    derive: boutons(4), haut: boutons(0), bas: boutons(2), vue: boutons(3), troll: boutons(1)
   };
   for (const a of ACTIONS) { for (const l of DEFAUT[a]) Object.freeze(l); Object.freeze(DEFAUT[a]); }
   Object.freeze(DEFAUT);
+  const DEFAUT_V3 = { ...DEFAUT, derive: boutons(2), haut: boutons(5), bas: boutons(4), troll: boutons(0) };
+  const DEFAUT_V2 = { ...DEFAUT_V3, derive: boutons(0, 2), troll: boutons(10) };
+  const DEFAUT_J1_INCOMPLET = { ...DEFAUT, troll: [] };
   const limite = x => Number.isFinite(x) ? Math.max(0, Math.min(1, x)) : 0;
-  const reserve = i => i === 1 || i === 9 || i === 16; // B : retour ; Menu : pause ; Xbox : système.
+  const reserve = i => i === 8 || i === 9 || i === 16; // Select/View : retour ; Menu : pause ; Xbox : système.
 
   function liaison(v) {
     if (!v || !Number.isInteger(v.index) || v.index < 0) return null;
@@ -28,7 +31,7 @@
     (a.type === 'bouton' || a.sens === b.sens && a.origine === b.origine);
 
   function normaliser(source) {
-    const m = {};
+    const m = {}, aReaffecter = [];
     for (const a of ACTIONS) {
       const v = source && Object.prototype.hasOwnProperty.call(source, a) ? source[a] : null;
       const liste = Array.isArray(v) ? v : v && typeof v === 'object' ? [v] : DEFAUT[a];
@@ -37,10 +40,39 @@
         const l = liaison(liste[i]);
         if (l && !sorties.some(p => identique(l, p))) sorties.push(l);
       }
-      // Une liste vide est une désaffectation volontaire ; une donnée invalide garde le défaut.
-      m[a] = sorties.length || !liste.length ? sorties : DEFAUT[a].map(l => ({ ...l }));
+      // Select/View était affectable avant la version 4. Garder d'abord toutes les autres liaisons.
+      if (!sorties.length && liste.slice(0, 2).some(l => l?.type === 'bouton' && l.index === 8)) {
+        m[a] = []; aReaffecter.push(a);
+      } else {
+        // Une liste vide est une désaffectation volontaire ; une donnée invalide garde le défaut.
+        m[a] = sorties.length || !liste.length ? sorties : DEFAUT[a].map(l => ({ ...l }));
+      }
+    }
+    for (const a of aReaffecter) {
+      const propose = DEFAUT[a][0];
+      if (!ACTIONS.some(action => m[action].some(l => identique(l, propose)))) m[a].push({ ...propose });
     }
     return m;
+  }
+
+  function correspond(profil, modele) {
+    return ACTIONS.every(a => {
+      const liste = Array.isArray(profil[a]) ? profil[a] : [profil[a]];
+      return liste.length === modele[a].length && liste.every((v, i) => {
+        const l = liaison(v);
+        return l && identique(l, modele[a][i]);
+      });
+    });
+  }
+
+  function migrer(source, version, joueur) {
+    if (!source || version >= VERSION) return normaliser(source);
+    // Les sauvegardes partielles héritaient des commandes de leur époque.
+    const ancien = version >= 3 ? DEFAUT_V3 : DEFAUT_V2;
+    const profil = { ...ancien, ...source };
+    if (correspond(profil, DEFAUT_V3) || (ancien === DEFAUT_V2 && correspond(profil, DEFAUT_V2)) ||
+        (joueur === 0 && correspond(profil, DEFAUT_J1_INCOMPLET))) return normaliser();
+    return normaliser(profil);
   }
 
   function affecter(source, action, entree) {
@@ -58,7 +90,7 @@
     if (Number.isFinite(b.value) && b.value > 0) return limite(b.value);
     return b.pressed ? 1 : 0;
   }
-  const annulation = p => (bouton(p, 1) > .5 ? 1 : 0) | (bouton(p, 9) > .5 ? 2 : 0);
+  const annulation = p => (bouton(p, 8) > .5 ? 1 : 0) | (bouton(p, 9) > .5 ? 2 : 0);
   function valeur(p, l) {
     if (l.type === 'bouton') return bouton(p, l.index);
     const v = p && p.axes && p.axes[l.index];
@@ -109,7 +141,7 @@
     if (!c._presente || c.index !== p.index || c.id !== (p.id || '')) preparerCapture(c, p);
     c.raison = '';
     // Une dérive de stick ne doit jamais enfermer le joueur dans « Relâchez ».
-    // Seul un nouvel appui B/Menu annule ; ceux tenus à l'ouverture ou à la
+    // Seul un nouvel appui Select/Menu annule ; ceux tenus à l'ouverture ou à la
     // reconnexion sont consommés jusqu'à leur relâchement.
     const retour = annulation(p), nouvelAppui = retour & ~c._annulation;
     c._annulation = retour;
@@ -134,5 +166,5 @@
     return null;
   }
 
-  B.commandesManette = Object.freeze({ ACTIONS, DEFAUT, normaliser, affecter, lire, nom, creerCapture, avancerCapture });
+  B.commandesManette = Object.freeze({ ACTIONS, DEFAUT, VERSION, normaliser, migrer, affecter, lire, nom, creerCapture, avancerCapture });
 })(globalThis.BITUME = globalThis.BITUME || {});
