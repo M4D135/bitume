@@ -37,7 +37,7 @@ test('les bandeaux des onze circuits suivent exclusivement les glissières prés
   }
 });
 
-test('à chaque phase au moins cinq chevrons complets, un dos fermé et aucune diode au revers',()=>{
+test('à chaque phase au moins trois chevrons complets par groupe, un dos fermé et aucune diode au revers',()=>{
   const {vertices,indices,ranges}=globalThis.FRender.shared.geometry(false);
   for (let grille=0;grille<=1;grille++) for (let phase=0;phase<8;phase++) {
     const nom='bitume-rail-'+grille+'-'+phase, rects=[];
@@ -56,20 +56,23 @@ test('à chaque phase au moins cinq chevrons complets, un dos fermé et aucune d
       }
     }
     for (const [k,v] of Object.entries({avant:1,dos:1,chants:4})) assert(Math.abs(aire[k]-v)<1e-5,k);
-    let complets=0;
-    for (let t=-1;t<=6;t++) {
-      const pointe=(t*16+phase*2+7.5)/96-.5, pied=pointe-2/96;
-      if (pied-1/96<-.5 || pointe+.5/96>.5) continue;
-      for(const [x,y] of [[pointe,0],[pied,.34],[pied,-.34]])
-        assert(rects.some(([g,d,b,h])=>x>g && x<d && y>b && y<h),'pointe et branches allumées');
-      complets++;
+    for (let groupe=0;groupe<4;groupe++) {
+      let complets=0;
+      for (let k=-1;k<=4;k++) {
+        const col=k*8+phase+6.5;
+        if (col-4<0 || col+.5>32) continue;
+        const pointe=(groupe*128+48+col)/512-.5, pied=pointe-3/512;
+        for(const [x,y] of [[pointe,0],[pied,.37],[pied,-.37]])
+          assert(rects.some(([g,d,b,h])=>x>g && x<d && y>b && y<h),'pointe et branches allumées');
+        complets++;
+      }
+      assert(complets>=3);
     }
-    assert(complets>=5);
   }
 });
 
 test('le défilement change les LED, le boîtier reste fixe et la préférence de mouvement réduit est respectée',()=>{
-  const c=B.larche.creer(210), rail={p:[0,0,0],s:[8.25,.34,.07],r:[0,0,0]};
+  const c=creerCircuitSaisons(CATALOGUE_SAISONS.find(d=>d.id==='larche')), rail={p:[0,0,0],s:[8.25,.34,.07],r:[0,0,0]};
   const etat=B.signalisationCourse.creer(c,{railsVirages:[{rail,haut:[0,1,0],s:0,cote:-1,longueur:8}]}), p=etat.panneaux[0];
   const cam=[0,1,3], loin=[0,1,40], opt={pluie:1};
   assert(image(etat,0,cam,opt).includes(p.fleche));assert.equal(p.fleche.shape,'bitume-rail-1-0-led');

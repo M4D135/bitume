@@ -3,12 +3,12 @@
   'use strict';
   const LED_COUNT = 12, MAILLE = 128, PORTEE = 355;
   const HAUTEUR = .09, GARDE = .01, EPAISSEUR = .045;
-  const FLECHES = 6, PAS_MOTIF = 16, LIGNES = 5, PHASES = 8;
+  const GROUPES = 4, PAS_GROUPE = 128, LIGNES = 7, PHASES = 8;
   const cleCase = (x, z) => x * 65536 + z;
   const formesRuban = [[],[]];
 
-  // Chaque tronçon possède six chevrons. Le défilement recommence sur le tronçon
-  // suivant. Au moins cinq chevrons entiers subsistent même à cheval sur le raccord.
+  // Quatre fenêtres de 32 colonnes par tronçon. Les diodes ont une largeur voisine
+  // de leur hauteur ; trois chevrons entiers restent visibles dans chaque fenêtre.
   function formeRuban(phase, grille) {
     const metal=[], lumiere=[], avant=[0,0,1];
     function quad(lot,a,b,c,d,n) { lot.push([a,b,c,n,n,n],[a,c,d,n,n,n]); }
@@ -22,11 +22,16 @@
       const p=contour[i], q=contour[(i+1)%4];
       quad(metal,p,q,[q[0],q[1],.5],[p[0],p[1],.5],normales[i]);
     }
-    const colonnes=FLECHES*PAS_MOTIF, x=i=>i/colonnes-.5;
+    const colonnes=GROUPES*PAS_GROUPE, x=i=>i/colonnes-.5;
     rectangle(metal,-.5,.5,-.5,-.43); rectangle(metal,-.5,.5,.43,.5);
     for (let j=0;j<LIGNES;j++) {
-      const pointe=7-Math.abs(j-2), bas=-.43+.86*j/LIGNES, haut=-.43+.86*(j+1)/LIGNES;
-      const allumee=i=>{const col=(i+PAS_MOTIF-phase*2)%PAS_MOTIF;return col>=pointe-1 && col<=pointe;};
+      const pointe=6-Math.abs(j-3), bas=-.43+.86*j/LIGNES, haut=-.43+.86*(j+1)/LIGNES;
+      const allumee=i=>{
+        const position=i%PAS_GROUPE-48;
+        if (position<0 || position>=32) return false;
+        const col=(position+PHASES-phase)%PHASES;
+        return col>=pointe-1 && col<=pointe;
+      };
       const y0=bas+(grille ? .012 : 0), y1=haut-(grille ? .012 : 0);
       if (grille) { rectangle(metal,-.5,.5,bas,y0); rectangle(metal,-.5,.5,y1,haut); }
       for (let i=0;i<colonnes;) {

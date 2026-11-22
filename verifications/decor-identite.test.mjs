@@ -109,6 +109,9 @@ for (const reference of expected) {
   // Les empreintes restent celles des sources historiques ; vegetation.test.mjs et reperes-virages.test.mjs
   // contrôlent les ajouts actifs et les solides. Les nouveaux repères visuels ne font pas partie de cet oracle.
   // L'architecture détaillée est contrôlée dans batiments-stands.test.mjs ; aucune empreinte n'est remplacée.
-  assert.equal(digest(B.decor.construire(c, { matieres: false, vegetation: false, reperesVirages: false, batiments: false })), ref, `${environnement} : ${JSON.stringify(spec)}`);
+  const { railsVirages, ...decorHistorique } = B.decor.construire(c, { matieres: false, vegetation: false, reperesVirages: false, batiments: false });
+  // Cet index de la signalisation est vide en l'absence du module virages dans le témoin.
+  assert.deepEqual(railsVirages, []);
+  assert.equal(digest(decorHistorique), ref, `${environnement} : ${JSON.stringify(spec)}`);
 }
 console.log(`décor : 9 géométries de référence inchangées (${environnement})`);
