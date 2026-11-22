@@ -561,6 +561,7 @@
     // etat = { pause, joueur: { id, regime, gaz, rapport, v, glisse, deriveRelative, patinage, blocage, contactPneus, surface, eauRoulement, microRoulement, turbo, vue, muet, aspiration, ventActif },
     //          joueur2: même structure ou null, rivaux: [{ id, distance, angle, regime, gaz, vRel }] }
     // En duo les distances des rivaux viennent de la caméra humaine la plus proche (adaptateur du jeu).
+    let premierRivalId = -1;
     function mettreAJour(etat) {
       if (!pret || !etat) return;
       const t = ctx.currentTime, tc = .015, j = etat.joueur || {}, j2 = etat.joueur2 || null;
@@ -575,26 +576,52 @@
       reglerVent(vents[0], j, t, silence, j2 ? Math.SQRT1_2 : 1, j2 ? -.24 : 0);
       reglerVent(vents[1], j2, t, silence, Math.SQRT1_2, .24);
 
-      // rivaux : les trois plus proches, attribution stable, fondu de 0,1 s
+      // Les trois plus proches gardent leur voix tant qu’ils restent sélectionnés.
       selectionnerRivaux(etat.rivaux, proches, j.muet ? -1 : j.id, j2 && !j2.muet ? j2.id : -1);
+      const prochainPremierId = proches.length ? proches[0].id : -1;
+      const premierChange = prochainPremierId !== premierRivalId;
+      premierRivalId = prochainPremierId;
       for (const vx of voix) if (vx.id >= 0) {
         let garde = false;
         for (let i = 0; i < proches.length; i++) if (proches[i].id === vx.id) { garde = true; break; }
-        if (!garde) { vise(vx.sortie.gain, 0, t, .03); vx.id = -1; vx.libereA = t + .12; }
+        if (!garde) {
+          vx.sortie.gain.cancelScheduledValues(t);
+          vx.sortie.gain.setValueAtTime(0, t);
+          vx.id = -1;
+          vx.libereA = 0;
+        }
       }
       for (const r of proches) {
         let vx = null;
         for (let i = 0; i < voix.length; i++) if (voix[i].id === r.id) { vx = voix[i]; break; }
-        if (!vx) {
-          for (let i = 0; i < voix.length; i++) if (voix[i].id < 0 && t >= voix[i].libereA) { vx = voix[i]; break; }
-          if (!vx) continue;
+        const nouvelleVoix = !vx;
+        if (nouvelleVoix) {
+          for (let i = 0; i < voix.length; i++) if (voix[i].id < 0) { vx = voix[i]; break; }
           vx.id = r.id;
-          vx.o1.frequency.setValueAtTime(frequenceCycle(+r.regime || 0) * doppler(+r.vRel || 0), t);
         }
-        vise(vx.o1.frequency, frequenceCycle(+r.regime || 0) * doppler(+r.vRel || 0), t, tc);
-        vise(vx.pb.frequency, coupure(clamp(+r.gaz || 0, 0, 1), +r.regime || 0) * 0.75, t, tc);
-        vise(vx.pan.pan, panoramique(+r.angle || 0), t, 0.05);
-        vise(vx.sortie.gain, silence ? 0 : gainDistance(+r.distance || 0) * 0.5 * 0.42, t, 0.1 / 3);
+        const regime = +r.regime || 0;
+        const frequence = frequenceCycle(regime) * doppler(+r.vRel || 0);
+        const filtre = coupure(clamp(+r.gaz || 0, 0, 1), regime) * 0.75;
+        const pan = panoramique(+r.angle || 0);
+        const niveau = silence ? 0 : gainDistance(r.distance) * 0.5 * 0.42;
+        if (nouvelleVoix) {
+          vx.o1.frequency.cancelScheduledValues(t);
+          vx.pb.frequency.cancelScheduledValues(t);
+          vx.pan.pan.cancelScheduledValues(t);
+          vx.o1.frequency.setValueAtTime(frequence, t);
+          vx.pb.frequency.setValueAtTime(filtre, t);
+          vx.pan.pan.setValueAtTime(pan, t);
+        } else {
+          vise(vx.o1.frequency, frequence, t, tc);
+          vise(vx.pb.frequency, filtre, t, tc);
+          vise(vx.pan.pan, pan, t, 0.05);
+        }
+        if (nouvelleVoix || premierChange) {
+          vx.sortie.gain.cancelScheduledValues(t);
+          vx.sortie.gain.setValueAtTime(niveau, t);
+        } else {
+          vise(vx.sortie.gain, niveau, t, 0.1 / 3);
+        }
       }
 
       reglerRaclement(raclements[0], !muet && j.raclement, j2 ? Math.SQRT1_2 : 1, t);
