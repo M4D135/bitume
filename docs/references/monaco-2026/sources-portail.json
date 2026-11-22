@@ -1,0 +1,110 @@
+{
+  "format": "bitume-monaco-portail-sources-v1",
+  "sources": [
+    {
+      "id": "lidar",
+      "file": "sources/portail-20261122/lidar.json",
+      "sha256": "052c672b56774f12458a7046786ba10bc2f0c787004ec15b9ff795e5c76d33ed",
+      "bytes": 20701,
+      "url": "https://data.geopf.fr/altimetrie/1.0/calcul/alti/rest/elevation.json",
+      "method": "POST",
+      "httpStatus": 200,
+      "httpDate": "Sun, 22 Nov 2026 14:22:26 GMT",
+      "contentType": "application/json",
+      "request": {
+        "resource": "ign_lidar_hd_mnt_multi_wld",
+        "measures": "true",
+        "delimiter": "|",
+        "zonly": "false",
+        "indent": "false"
+      },
+      "pointOrder": "portail-45-v1"
+    },
+    {
+      "id": "rge",
+      "file": "sources/portail-20261122/rge.json",
+      "sha256": "bc4548f4e9f22908440d90f9a2c218a27d4dcc589ecbe13e3e5ef6d04f4d4e64",
+      "bytes": 83257,
+      "url": "https://data.geopf.fr/altimetrie/1.0/calcul/alti/rest/elevation.json",
+      "method": "POST",
+      "httpStatus": 200,
+      "httpDate": "Sun, 22 Nov 2026 14:22:27 GMT",
+      "contentType": "application/json",
+      "request": {
+        "resource": "ign_rge_alti_par_territoires",
+        "measures": "true",
+        "delimiter": "|",
+        "zonly": "false",
+        "indent": "false"
+      },
+      "pointOrder": "portail-45-v1"
+    },
+    {
+      "id": "ortho",
+      "file": "sources/portail-20261122/ortho.jpg",
+      "sha256": "0678fe03cf96dcf091d23baa3032de6826ea52e42d9ef6802c2dca27b5fc1f8c",
+      "bytes": 37810,
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&LAYERS=ORTHOIMAGERY.ORTHOPHOTOS&STYLES=&CRS=CRS%3A84&BBOX=7.42755%2C43.73744%2C7.42849%2C43.73795&WIDTH=600&HEIGHT=450&FORMAT=image%2Fjpeg",
+      "method": "GET",
+      "httpStatus": 200,
+      "httpDate": "Sun, 22 Nov 2026 14:22:27 GMT",
+      "contentType": "image/jpeg"
+    },
+    {
+      "id": "graphe",
+      "file": "sources/portail-20261122/graphe.geojson",
+      "sha256": "fe08f1dd475b2bd582cacfddfdf31edc31bca0c988f65ac7b208b82365f879d4",
+      "bytes": 862,
+      "url": "https://data.geopf.fr/wfs/ows?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ORTHOIMAGERY.ORTHOPHOTOS.GRAPHE-MOSAIQUAGE%3Agraphe_bdortho&OUTPUTFORMAT=application%2Fjson&SRSNAME=urn%3Aogc%3Adef%3Acrs%3AOGC%3A1.3%3ACRS84&BBOX=7.42755%2C43.73744%2C7.42849%2C43.73795%2Curn%3Aogc%3Adef%3Acrs%3AOGC%3A1.3%3ACRS84&PROPERTYNAME=dep%2Cpva%2Cres%2Cechelle%2Cdate_vol%2Cordre_debu%2Cordre_fin&COUNT=50",
+      "method": "GET",
+      "httpStatus": 200,
+      "httpDate": "Sun, 22 Nov 2026 14:22:27 GMT",
+      "contentType": "application/json;charset=UTF-8"
+    },
+    {
+      "id": "rn",
+      "file": "sources/portail-20261122/reperes.geojson",
+      "sha256": "2a89a47177576204880d5e30e5d4f02ff7c6f13dd4291ad641142b07dc1e1c61",
+      "bytes": 5286,
+      "url": "https://data.geopf.fr/wfs/ows?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=IGNF_GEODESIE%3Arn&OUTPUTFORMAT=application%2Fjson&SRSNAME=urn%3Aogc%3Adef%3Acrs%3AOGC%3A1.3%3ACRS84&BBOX=7.420%2C43.732%2C7.435%2C43.745%2Curn%3Aogc%3Adef%3Acrs%3AOGC%3A1.3%3ACRS84&COUNT=250",
+      "method": "GET",
+      "httpStatus": 200,
+      "httpDate": "Sun, 22 Nov 2026 14:22:27 GMT",
+      "contentType": "application/json;charset=UTF-8"
+    }
+  ],
+  "fichesDeNivellement": [
+    {
+      "id": 525299,
+      "url": "https://data.geopf.fr/annexes/geodesie/pt-nivf-525299.pdf",
+      "sha256": "6540231c7f678dd0499f9699a4f36816346e3b26fd7c1a96ac71c2b0462236cd",
+      "bytes": 85769
+    },
+    {
+      "id": 526864,
+      "url": "https://data.geopf.fr/annexes/geodesie/pt-nivf-526864.pdf",
+      "sha256": "8cadfbf8df37f254f24f466baaaa5bdc482fe58fad5818f4f7ac1adc3df7f2f6",
+      "bytes": 105232
+    },
+    {
+      "id": 526865,
+      "url": "https://data.geopf.fr/annexes/geodesie/pt-nivf-526865.pdf",
+      "sha256": "bc70e43220491d19ff35e0b4bacdf727abdea29689ce0a0864989bab5206c566",
+      "bytes": 88180
+    }
+  ],
+  "planDeMasse": {
+    "id": "PU-C2-CDN-Z2-I3-D2",
+    "url": "https://documents.gouv.mc/www/dpum/plans/condamine/PU-C2-CDN-Z2-I3-D2.pdf",
+    "sha256": "db1c9548ba284a4ad8d6d30a63b3982867be41ccceaa48dcd037030952ab9d8a"
+  },
+  "controleAccesCOPC": {
+    "url": "https://data.geopf.fr/telechargement/download/LiDARHD-NUALID/NUALHD_1-0__LAZ_LAMB93_SP_2025-06-20/LHD_FXX_1056_6304_PTS_LAMB93_IGN69.copc.laz",
+    "method": "GET",
+    "range": "bytes=0-4095",
+    "httpStatus": 403,
+    "httpDate": "Sun, 22 Nov 2026 14:24:55 GMT",
+    "checkedUtc": "2026-11-22T14:24:55.686551+00:00",
+    "cloudDownloaded": false
+  }
+}

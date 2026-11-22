@@ -1,0 +1,309 @@
+{
+  "format": "bitume-monaco-portail-v1",
+  "readyForRuntime": false,
+  "altitudeCourse2026M": null,
+  "distanceHorizontaleT0T1M": 2.765,
+  "deportsApproximatifsM": [
+    -5,
+    -2,
+    0,
+    2,
+    5
+  ],
+  "coupes": [
+    {
+      "id": "E2",
+      "crs84": [
+        7.42681225,
+        43.73740922
+      ],
+      "zVoirieM": 7.2,
+      "indicesReponses": [
+        0,
+        4
+      ],
+      "pixelOrthoDepuisBordHautGauche": null,
+      "mntLidarM": [
+        7.39,
+        7.32,
+        7.3,
+        7.25,
+        7.43
+      ],
+      "rgeAltiM": [
+        7.34,
+        7.25,
+        7.25,
+        7.17,
+        7.08
+      ]
+    },
+    {
+      "id": "E1",
+      "crs84": [
+        7.42733128,
+        43.7375305
+      ],
+      "zVoirieM": 8.9,
+      "indicesReponses": [
+        5,
+        9
+      ],
+      "pixelOrthoDepuisBordHautGauche": null,
+      "mntLidarM": [
+        7.68,
+        7.55,
+        7.55,
+        7.5,
+        7.46
+      ],
+      "rgeAltiM": [
+        7.63,
+        7.54,
+        7.52,
+        7.49,
+        7.44
+      ]
+    },
+    {
+      "id": "T0",
+      "crs84": [
+        7.42794325,
+        43.73774443
+      ],
+      "zVoirieM": 6.9,
+      "indicesReponses": [
+        10,
+        14
+      ],
+      "pixelOrthoDepuisBordHautGauche": [
+        251.01,
+        181.39
+      ],
+      "mntLidarM": [
+        7.56,
+        7.46,
+        7.46,
+        7.46,
+        7.36
+      ],
+      "rgeAltiM": [
+        7.52,
+        7.44,
+        7.41,
+        7.38,
+        7.4
+      ]
+    },
+    {
+      "id": "T1",
+      "crs84": [
+        7.42797052,
+        43.73775954
+      ],
+      "zVoirieM": 13.5,
+      "indicesReponses": [
+        15,
+        19
+      ],
+      "pixelOrthoDepuisBordHautGauche": [
+        268.42,
+        168.05
+      ],
+      "mntLidarM": [
+        13.5,
+        7.98,
+        8.19,
+        7.42,
+        7.39
+      ],
+      "rgeAltiM": [
+        7.38,
+        7.4,
+        7.38,
+        7.37,
+        7.41
+      ]
+    },
+    {
+      "id": "T2",
+      "crs84": [
+        7.42810535,
+        43.73779912
+      ],
+      "zVoirieM": 13.4,
+      "indicesReponses": [
+        20,
+        24
+      ],
+      "pixelOrthoDepuisBordHautGauche": [
+        354.48,
+        133.13
+      ],
+      "mntLidarM": [
+        13.17,
+        13.33,
+        13.37,
+        13.47,
+        13.45
+      ],
+      "rgeAltiM": [
+        14.75,
+        13.66,
+        13.39,
+        13.39,
+        13.34
+      ]
+    },
+    {
+      "id": "T3",
+      "crs84": [
+        7.42828329,
+        43.73786578
+      ],
+      "zVoirieM": 13.3,
+      "indicesReponses": [
+        25,
+        29
+      ],
+      "pixelOrthoDepuisBordHautGauche": [
+        468.06,
+        74.31
+      ],
+      "mntLidarM": [
+        11.87,
+        13.12,
+        13.85,
+        14.64,
+        15.89
+      ],
+      "rgeAltiM": [
+        33.18,
+        33.27,
+        33.33,
+        33.23,
+        33.26
+      ]
+    },
+    {
+      "id": "T4",
+      "crs84": [
+        7.42845765,
+        43.73793439
+      ],
+      "zVoirieM": 13.2,
+      "indicesReponses": [
+        30,
+        34
+      ],
+      "pixelOrthoDepuisBordHautGauche": [
+        579.35,
+        13.77
+      ],
+      "mntLidarM": [
+        13.87,
+        14.84,
+        15.45,
+        16.25,
+        17.3
+      ],
+      "rgeAltiM": [
+        30.47,
+        33.17,
+        33.19,
+        33.18,
+        33.14
+      ]
+    },
+    {
+      "id": "T5",
+      "crs84": [
+        7.42866467,
+        43.7380233
+      ],
+      "zVoirieM": 13.1,
+      "indicesReponses": [
+        35,
+        39
+      ],
+      "pixelOrthoDepuisBordHautGauche": null,
+      "mntLidarM": [
+        18.93,
+        19.61,
+        20.2,
+        20.71,
+        21.34
+      ],
+      "rgeAltiM": [
+        33.18,
+        33.14,
+        33.15,
+        33.14,
+        21.31
+      ]
+    },
+    {
+      "id": "T6",
+      "crs84": [
+        7.42884488,
+        43.73808716
+      ],
+      "zVoirieM": 13,
+      "indicesReponses": [
+        40,
+        44
+      ],
+      "pixelOrthoDepuisBordHautGauche": null,
+      "mntLidarM": [
+        17.58,
+        18.68,
+        19.5,
+        20.18,
+        21.39
+      ],
+      "rgeAltiM": [
+        33.34,
+        33.08,
+        33.09,
+        33.09,
+        26.14
+      ]
+    }
+  ],
+  "datesVolDansEmprise": [
+    "2023-06-26Z",
+    "2023-07-10Z"
+  ],
+  "reperesDeNivellementDistincts": [
+    {
+      "id": 525299,
+      "matricule": "IM - 35-I",
+      "altitudeDuRepereM": 7.5,
+      "crs84LocalisationIndicative": [
+        7.427254,
+        43.737525
+      ],
+      "distanceIndicativeAuRaccordM": 61
+    },
+    {
+      "id": 526864,
+      "matricule": "IM - 35a",
+      "altitudeDuRepereM": 8.186,
+      "crs84LocalisationIndicative": [
+        7.429305,
+        43.738013
+      ],
+      "distanceIndicativeAuRaccordM": 114
+    },
+    {
+      "id": 526865,
+      "matricule": "IM - 35b",
+      "altitudeDuRepereM": 7.917,
+      "crs84LocalisationIndicative": [
+        7.429305,
+        43.738013
+      ],
+      "distanceIndicativeAuRaccordM": 114
+    }
+  ]
+}
