@@ -294,7 +294,9 @@
         memory.set(id,true);
         if(force>.1 && (!seen||violent)) {
           ev.push({type:'choc',id:voiture.id,force,obstacle:o.genre,obstacleId:id});
-          for(const x of B.conduite.subirChoc(e,force)){x.id=voiture.id;ev.push(x);}
+          const ca=Math.cos(p.angle),sa=Math.sin(p.angle),long=-hit.nx*ca-hit.nz*sa,lat=hit.nx*sa-hit.nz*ca;
+          const zone=Math.abs(long)>=Math.abs(lat)?(long>=0?'avant':'arriere'):(lat>=0?'droite':'gauche');
+          for(const x of B.conduite.subirChoc(e,force,{zone,front:long>=0,cote:Math.sign(lat),oblique:lat})){x.id=voiture.id;ev.push(x);}
           e.choc=B.conduite.PARAMS.chocDuree;
         }
         if(force>.1) {

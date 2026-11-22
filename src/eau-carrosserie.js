@@ -216,11 +216,19 @@
     if (matrice) for (let c = 0; c < 3; c++) for (let r = 0; r < 3; r++) M[c * 3 + r] = matrice[c][r];
     else attitude(M, pose);
     const px = pose.p ? pose.p[0] : pose.x, py = pose.p ? pose.p[1] : pose.y, pz = pose.p ? pose.p[2] : pose.z;
+    const profilNez=pose.zonesDegats?B.voiture.profilImpact(pose.zonesDegats):0;
     const pas = MAX / limite, masque = lod === 'epave' || lod === 'epave-moyen' || lod === 'epave-leger' ? 4
       : lod === 'moyen' || lod === 'moyen-leger' ? 2 : 1;
     for (let i = 0; i < MAX; i += pas) {
       const g = e.gouttes[i]; if (!(g.force > 0) || !(g.face.masque & masque)) continue;
-      const n = g.face.normal, x = g.local[0] + n[0] * ECART, y = g.local[1] + n[1] * ECART, z = g.local[2] + n[2] * ECART, o = g.objet;
+      const n=g.face.normal,o=g.objet;
+      let x=g.local[0]+n[0]*ECART,y=g.local[1]+n[1]*ECART,z=g.local[2]+n[2]*ECART;
+      if(profilNez && x>.98) {
+        const point=e.pointNez || (e.pointNez=[0,0,0]);
+        point[0]=x;point[1]=y;point[2]=z;
+        B.voiture.pointSurNez(g.face.shape,profilNez,point);
+        x=point[0];y=point[1];z=point[2];
+      }
       o.p[0] = px + M[0] * x + M[3] * y + M[6] * z; o.p[1] = py + M[1] * x + M[4] * y + M[7] * z; o.p[2] = pz + M[2] * x + M[5] * y + M[8] * z;
       const m = g.repere;
       const a00 = M[0] * m[0] + M[3] * m[1] + M[6] * m[2], a01 = M[1] * m[0] + M[4] * m[1] + M[7] * m[2], a02 = M[2] * m[0] + M[5] * m[1] + M[8] * m[2];

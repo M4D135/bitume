@@ -19,8 +19,9 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.pneus)requir
   const P = PARAMS;
 
   // état des dégâts d'une voiture : adhérence et traînée multiplicatrices, roues manquantes, violence max reçue
+  const zonesNeuves = () => ({ avant: 0, arriere: 0, gauche: 0, droite: 0, pli: 0 });
   function creer() {
-    return { adher: 1, trainee: 1, chocs: 0, pire: 0, roues: [false, false, false, false], casse: false, teinte: 0, cote: 0, avant: true };
+    return { adher: 1, trainee: 1, chocs: 0, pire: 0, roues: [false, false, false, false], casse: false, teinte: 0, cote: 0, avant: true, zones: zonesNeuves() };
   }
 
   // un choc de `force` m/s ; `o` = { roue: index 0..3 ou absent, durete: 0..1 } pour orienter la casse
@@ -32,8 +33,18 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.pneus)requir
     d.adher = Math.max(P.adherMin, d.adher - P.adherPar * force);
     d.trainee = Math.min(P.traineeMax, d.trainee + P.traineePar * force);
     d.teinte = Math.min(1, (1 - d.adher) / (1 - P.adherMin));   // 0 = neuve, 1 = au plus bas de l'adhérence
-    if (o.cote) d.cote = o.cote > 0 ? 1 : -1;
+    if (Number.isFinite(o.cote)) d.cote = Math.sign(o.cote);
     if (o.front !== undefined) d.avant = !!o.front;
+    const zone = o.zone || (o.front !== undefined ? (o.front ? 'avant' : 'arriere') : null);
+    if (zone === 'avant' || zone === 'arriere' || zone === 'gauche' || zone === 'droite') {
+      const z = d.zones || (d.zones = zonesNeuves());
+      const charge = Math.min(.95, (force - 1) / 26);
+      z[zone] = Math.min(1, z[zone] + charge);
+      if (zone === 'avant') {
+        // La composante latérale du choc déplace le museau du côté opposé au point touché.
+        z.pli = Math.max(-1, Math.min(1, z.pli - charge * (o.oblique || 0)));
+      }
+    }
     const ev = [];
     // une roue part sur un choc violent et localisé (ou tiré au sort selon la violence) ; une seule par roue
     if (force >= P.chocRoue) {
@@ -61,13 +72,17 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.pneus)requir
     d.roues = [false, false, false, false];
     d.casse = false;
     d.adher = Math.max(P.urgenceAdher, d.adher);
+    if (d.zones) {
+      for (const zone of ['avant','arriere','gauche','droite']) d.zones[zone] = Math.min(.45,d.zones[zone]);
+      d.zones.pli = Math.max(-.45,Math.min(.45,d.zones.pli));
+    }
     d.teinte = Math.min(1, (1 - d.adher) / (1 - P.adherMin));   // la teinte suit l'adhérence qui reste, pas la violence reçue
     return d;
   }
 
   // Réparation complète : celle des stands (lot 4), jamais celle du remplacement sur la piste.
   function reparer(d) {
-    d.adher = 1; d.trainee = 1; d.chocs = 0; d.pire = 0; d.roues = [false, false, false, false]; d.casse = false; d.teinte = 0;
+    d.adher = 1; d.trainee = 1; d.chocs = 0; d.pire = 0; d.roues = [false, false, false, false]; d.casse = false; d.teinte = 0; d.avant = true; d.cote = 0; d.zones = zonesNeuves();
   }
 
   // Lues pour chaque voiture à chaque pas de simulation : une boucle simple, sans fonction de rappel ni tableau

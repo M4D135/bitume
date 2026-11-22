@@ -98,8 +98,8 @@ verifier('13A catalogue : Baïkal ajouté après les sept circuits conservés', 
   const indice = CATALOGUE.findIndex(k => k.id === CONTRAT.id);
   for (const [cle, valeur] of Object.entries(CONTRAT)) assert.equal(CATALOGUE[indice][cle], valeur, cle);
   assert.equal(CATALOGUE.filter(k => k.id === CONTRAT.id).length, 1);
-  assert.equal(sourceJeu.match(/\bPHYSIQUE\s*=\s*['"](p\d+)['"]/)?.[1], 'p16', 'les records suivent la conduite actuelle');
-  return { indice, circuitsHistoriques: 7, physique: 'p16', backendDuBanc: 'conduite-historique-sans-physx' };
+  assert.equal(sourceJeu.match(/\bPHYSIQUE\s*=\s*['"](p\d+)['"]/)?.[1], 'p17', 'les records suivent la conduite actuelle');
+  return { indice, circuitsHistoriques: 7, physique: 'p17', backendDuBanc: 'conduite-historique-sans-physx' };
 });
 
 verifier('13A les 84 tableaux numériques des sept anciens tracés restent identiques bit à bit', () => {

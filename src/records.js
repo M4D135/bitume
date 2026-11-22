@@ -6,7 +6,7 @@
    * L’ancien stockage enrichi reste lisible. Chaque nouvelle physique possède sa clé d’écriture.
    */
 
-  const VERSION_PHYSIQUE = 'p16';
+  const VERSION_PHYSIQUE = 'p17';
   const ARCHIVE_ENRICHIE = 'bitume.records.v2';
   const STORAGE_KEY = ARCHIVE_ENRICHIE + '.' + VERSION_PHYSIQUE;
 
@@ -153,7 +153,8 @@
     // Les tableaux p15 sans identifiants sont antérieurs au tri du catalogue et gardent leurs indices.
     const anciens = migrerAnciens(lire('bitume.records.p15'), null, 'p15', 1000);
     const courants = migrerAnciens(lire('bitume.records.' + VERSION_PHYSIQUE), catalogue, VERSION_PHYSIQUE, 1000);
-    return Object.assign(anciens, courants, lire(ARCHIVE_ENRICHIE), lire(STORAGE_KEY));
+    const p16 = migrerAnciens(lire('bitume.records.p16'), catalogue, 'p16', 1000);
+    return Object.assign(anciens, p16, courants, lire(ARCHIVE_ENRICHIE), lire(ARCHIVE_ENRICHIE+'.p16'), lire(STORAGE_KEY));
   }
 
   function courants(table) {

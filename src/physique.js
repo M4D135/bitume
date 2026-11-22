@@ -251,12 +251,16 @@
   // Contact pneu contre pneu (style Vroom / F1 roues découvertes) : l'engrenage des deux bandes de
   // roulement tournant en sens contraire soulève logiquement la roue avant (cabrage, roulis et saut
   // proportionnels à la vitesse), sans jamais se déclencher sur un simple frôlement de carrosserie.
-  function envolPneuContrePneu(p, key, A, C, magnitude, ev) {
+  function envolPneuContrePneu(p, key, A, C, magnitude, impact, ev) {
     if (!A || !C) return;
     if (p.temps - (p.envols.get(key) ?? -Infinity) < .65) return;
     const vA = Math.hypot(A.velocity[0], A.velocity[2]), vC = Math.hypot(C.velocity[0], C.velocity[2]);
     const vMax = Math.max(vA, vC);
     if (vMax < 16 || magnitude < 180) return;
+    const vitesseA=A.distant?A.velocity:A.beforeVelocity, vitesseC=C.distant?C.velocity:C.beforeVelocity;
+    const deltaX = vitesseA[0] - vitesseC[0], deltaZ = vitesseA[2] - vitesseC[2];
+    if (Math.hypot(deltaX,deltaZ) < 3) return;
+    const cx=impact.px/impact.poids,cz=impact.pz/impact.poids;
     const R = roues();
     let meilleur = null;
     for (let i = 0; i < 4; i++) {
@@ -268,10 +272,16 @@
         const dx = PB_ROUE[0] - PA_ROUE[0], dy = PB_ROUE[1] - PA_ROUE[1], dz = PB_ROUE[2] - PA_ROUE[2];
         const distXZ = Math.hypot(dx, dz), seuil = (rA.r + rC.r) * .95 + (rA.l + rC.l) * .35 + .14;
         if (distXZ > seuil || Math.abs(dy) > rA.r + rC.r + .12) continue;
+        // Le barycentre de contact doit être dans le voisinage des pneus concernés sur les deux châssis.
+        // Un contact au centre de la boîte de vitesses ne devient pas un engrenage par proximité latérale.
+        if(Math.hypot(cx-PA_ROUE[0],cz-PA_ROUE[2])>rA.r+rA.l*.5+.24 ||
+           Math.hypot(cx-PB_ROUE[0],cz-PB_ROUE[2])>rC.r+rC.l*.5+.24)continue;
+        const fermeture = (dx * deltaX + dz * deltaZ) / Math.max(.001, distXZ);
+        if (fermeture < 3) continue;
         // Priorité à l'engrenage roue avant sur roue arrière (vrai soulèvement open-wheel).
         const avantSurArriere = (i < 2 && j >= 2) ? 1 : (j < 2 && i >= 2) ? -1 : 0;
         const score = (avantSurArriere ? 2 : 1) / (distXZ + .05);
-        if (!meilleur || score > meilleur.score) meilleur = { i, j, avantSurArriere, distXZ, score };
+        if (!meilleur || score > meilleur.score) meilleur = { i, j, avantSurArriere, fermeture, score };
       }
     }
     if (!meilleur) return;
@@ -283,10 +293,11 @@
     const iRoue = grimpeA ? meilleur.i : meilleur.j, cote = Math.sign(R[iRoue].z) || 1;
     const u = clamp((vMax - 15) / 55, 0, 1);
     const estEngrenage = meilleur.avantSurArriere !== 0;
-    const vy = estEngrenage ? (3.2 + 6.2 * Math.pow(u, 1.12)) : (2.1 + 3.5 * u);
-    const cabrage = estEngrenage ? (1.5 + 2.7 * u) : (.7 + 1.0 * u);
-    const roulis = -cote * (estEngrenage ? (1.2 + 2.3 * u) : (1.0 + 1.7 * u));
-    const lacet = cote * (.55 + .95 * u);
+    const vy = Math.min(.48 * meilleur.fermeture, estEngrenage ? (3.2 + 6.2 * Math.pow(u, 1.12)) : (2.1 + 3.5 * u));
+    const prise=clamp((meilleur.fermeture-3)/10,0,1);
+    const cabrage = prise*(estEngrenage ? (1.5 + 2.7 * u) : (.7 + 1.0 * u));
+    const roulis = -cote * prise * (estEngrenage ? (1.2 + 2.3 * u) : (1.0 + 1.7 * u));
+    const lacet = cote * prise * (.55 + .95 * u);
     // Impulsion de vitesse verticale + léger freinage réaliste de l'accrochage.
     VEL_ENVOL[0] = L.velocity[0] * .93;
     VEL_ENVOL[1] = Math.max(L.velocity[1], 0) + vy;
@@ -308,6 +319,17 @@
     p.envols.set(key, p.temps);
     ev.push({ type: 'envol', id: L.v.id, cible: cible.v.id, force: vy, roue: iRoue });
   }
+  function zoneImpact(ph,imp) {
+    // Centre de pression de la grappe PhysX. Les deux voitures lisent le même point dans leurs propres axes.
+    const dx=imp.px/imp.poids-ph.pose[0], dy=imp.py/imp.poids-ph.pose[1], dz=imp.pz/imp.poids-ph.pose[2];
+    const x=dx*ph.forward[0]+dy*ph.forward[1]+dz*ph.forward[2], z=dx*ph.right[0]+dy*ph.right[1]+dz*ph.right[2];
+    const long=Math.abs(imp.nx*ph.forward[0]+imp.ny*ph.forward[1]+imp.nz*ph.forward[2]);
+    const lat=Math.abs(imp.nx*ph.right[0]+imp.ny*ph.right[1]+imp.nz*ph.right[2]);
+    const flanc=Math.abs(z)>.48 && (lat>long*1.35 || Math.abs(x)<.8);
+    const zone=flanc?(z<0?'gauche':'droite'):(x>=0?'avant':'arriere');
+    return {zone,front:x>=0,cote:Math.abs(z)>.08?Math.sign(z):0,oblique:Math.abs(z)>.10?clamp(z/.85,-1,1):0,
+      roue:Math.abs(z)>.47?(x>=0?0:2)+(z>0?1:0):undefined};
+  }
   function collisions(p, ev) {
     p.impacts.clear();
     const contacts = p.world.contacts;
@@ -316,17 +338,20 @@
       const c = contacts.points[i], A = p.byId.get(c.a), C = p.byId.get(c.b);
       if (!A && !C) continue;
       const key = c.a < c.b ? c.a + ':' + c.b : c.b + ':' + c.a;
-      let imp = p.impacts.get(key); if (!imp) { imp = { A, C, a: c.a, b: c.b, x: 0, y: 0, z: 0, ny: c.ny }; p.impacts.set(key, imp); }
+      let imp = p.impacts.get(key); if (!imp) { imp = { A, C, a: c.a, b: c.b, x: 0, y: 0, z: 0, px: 0, py: 0, pz: 0, poids: 0, nx: 0, ny: 0, nz: 0 }; p.impacts.set(key, imp); }
+      const poids=Math.hypot(c.ix,c.iy,c.iz);
+      imp.poids+=poids; imp.px+=c.x*poids; imp.py+=c.y*poids; imp.pz+=c.z*poids;
+      imp.nx+=c.nx*poids; imp.ny+=c.ny*poids; imp.nz+=c.nz*poids;
       imp.x += c.ix; imp.y += c.iy; imp.z += c.iz;
     }
     for (const [key, imp] of p.impacts) {
       const magnitude = Math.hypot(imp.x, imp.y, imp.z), old = p.collisions.get(key) ?? -Infinity;
-      if (imp.A && imp.C) envolPneuContrePneu(p, key, imp.A, imp.C, magnitude, ev);
+      if (imp.A && imp.C) envolPneuContrePneu(p, key, imp.A, imp.C, magnitude, imp, ev);
       for (const ph of [imp.A, imp.C]) {
         if (!ph || ph.distant) continue;
         const other = ph === imp.A ? imp.b : imp.a, solid = p.solids.acteurs.get(other);
         const force = magnitude / ph.mass;
-        if (solid?.groupe === SOL && Math.abs(imp.ny) > .65) continue;
+        if (solid?.groupe === SOL && Math.abs(imp.ny) > .65 * imp.poids) continue;
         if (solid) {
           const mem = p.co._obstacleMemo || (p.co._obstacleMemo = []), map = mem[ph.v.id] || (mem[ph.v.id] = new Map()); map.set(other, p.temps);
           ph.e.auRail = /lisse|gliss|mur|rail|parapet/.test(solid.genre || '');
@@ -335,7 +360,7 @@
         const car = ph === imp.A ? imp.C : imp.A;
         if (!car) ev.push({ type: 'choc', id: ph.v.id, force, obstacle: solid?.genre || 'debris', obstacleId: other });
         else if (ph === imp.A || imp.A?.distant) ev.push({ type: 'contact', a: ph.v.id, b: car.v.id, force });
-        for (const x of B.conduite.subirChoc(ph.e, force)) { x.id = ph.v.id; ev.push(x); }
+        for (const x of B.conduite.subirChoc(ph.e, force, zoneImpact(ph,imp))) { x.id = ph.v.id; ev.push(x); }
         if (ph.v.joueur) {
           const annule = B.conduite.annulerDerive(ph.e, true); if (annule) { annule.id = ph.v.id; ev.push(annule); }
           B.conduite.couperTurbo(ph.e);

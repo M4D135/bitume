@@ -738,6 +738,71 @@
     { cotes: 16, pas: 1, ouverture: OUVERTURE, interieur: true })));
   Object.defineProperty(FORMES, 'loin-dessus-pilote', { value: FORMES['loin-dessus'] });
   forme('loin-quille', creuserQuille(C.carene(S_QUILLE, { cotes: 8, pas: 1 })));
+  // Pli du nez en coordonnées de la caisse. La cloison à x=.98 et le train roulant gardent leur pose.
+  // Les petites variations de hauteur reproduisent un pli dans la peau, et le côté heurté soulève un bout d'aile.
+  const PROFILS_NEZ = [[.38,0],[.82,0],[.62,-1],[.62,1]];
+  function plierNez(p,n,force,cote,point=[]) {
+    const u=Math.max(0,Math.min(1.25,(p[0]-.98)/1.20)), du=u>0&&u<1.25?1/1.20:0;
+    const pli=Math.max(0,1-Math.abs(u-.49)/.27), dpli=pli>0?(u<.49?1:-1)/.27:0;
+    const u2=u*u, recule=.57*force;
+    const y=p[1]+force*(.11*pli*pli-.10*u2+cote*.12*p[2]*u),z=p[2]+cote*.29*force*u2;
+    point[0]=p[0]-recule*u2;point[1]=y;point[2]=z;
+    if(!n)return point;
+    // Inverse transposée du jacobien local : pas de facette de lumière à la jonction du morceau intact.
+    const xx=1-2*recule*u*du, yx=force*(.22*pli*dpli-.20*u+cote*.12*p[2])*du;
+    const zx=cote*.58*force*u*du, yz=cote*.12*force*u, nz=n[2]-yz*n[1];
+    return [point,[(n[0]-yx*n[1]-zx*nz)/xx,n[1],nz]];
+  }
+  const PIECES_NEZ = new Map();
+  for(const nom of ['quille','fleche','filet','aileron-avant','derives-avant','aileron-avant-simple','loin-caisse','loin-quille']){
+    const origine=FORMES[nom];
+    const variantes=PROFILS_NEZ.map(([force,cote],k)=>{
+      const triangles=origine.tri.map(tri=>{
+        const pts=[],normales=[];
+        for(let i=0;i<3;i++){
+          const p=tri[i].map((q,j)=>origine.centre[j]+q*origine.taille[j]);
+          const n=tri[i+3].map((q,j)=>q/origine.taille[j]);
+          const [point,normale]=plierNez(p,n,force,cote);
+          pts.push(point);normales.push(normale);
+        }
+        return pts.concat(normales);
+      });
+      const f=C.normaliser(triangles), shape=origine.nom+'-plie-'+k;
+      globalThis.window?.FRender?.forme?.(shape,f.triangles);
+      return {nom:shape,centre:f.centre,taille:f.taille};
+    });
+    PIECES_NEZ.set(origine.nom,variantes);
+  }
+  function profilImpact(z) {
+    if(!z || !(z.avant>=.12))return 0;
+    if(Math.abs(z.pli)>.13 && Math.abs(z.pli)>z.avant*.28)return z.pli<0?3:4;
+    return z.avant<.53?1:2;
+  }
+  function pointSurNez(shape,profil,point) {
+    if(profil && PIECES_NEZ.has(shape)){
+      const [force,cote]=PROFILS_NEZ[profil-1];
+      plierNez(point,null,force,cote,point);
+    }
+    return point;
+  }
+  function preparerNez(t,zones) {
+    const profil=profilImpact(zones);
+    if(profil===t.profilNez)return;
+    t.profilNez=profil;
+    if(profil && !t.originesNez)t.originesNez=t.o.slice();
+    for(const element of t.nez){
+      const {i,pc,formes}=element, o=t.objets[i];
+      if(!profil){o.shape=pc.shape;o.s=pc.s;continue;}
+      let centre;
+      if(formes) {
+        const f=formes[profil-1];o.shape=f.nom;o.s=f.taille;centre=f.centre;
+      } else {
+        const [force,cote]=PROFILS_NEZ[profil-1];
+        centre=plierNez(pc.o,null,force,cote);
+      }
+      t.originesNez.set(centre,i*3);
+    }
+  }
   // Roues : formes partagées, préparées avant le moteur. Aucun cylindre générique du décor n'est alourdi.
   // L'axe local y traverse la jante. Le profil est annulaire : aucune face en éventail ne bouche le moyeu.
   const SEGMENTS_ROUE = Object.freeze([96, 64, 32, 16]);
@@ -1077,7 +1142,7 @@
       const dessus = (sc, z) => { const c = Math.min(1, Math.abs(z - (sc.z || 0)) / sc.l) ** (sc.n / 2); return (sc.y0 + sc.y1) / 2 + (sc.y1 - sc.y0) / 2 * Math.sqrt(1 - c * c) ** (2 / sc.n); };
       const flanc = (sc, y) => { const h = (sc.y1 - sc.y0) / 2, t = Math.min(1, Math.abs(y - (sc.y0 + sc.y1) / 2) / h) ** (sc.n / 2); return sc.l * Math.sqrt(1 - t * t) ** (2 / sc.n); };
       const f = C.profil(S_FLECHE), xN = 1.62, s0 = f(xN + .1), s1 = f(xN - .1), ey = norme([-.2, s1.y1 - s0.y1, 0]);
-      chiffres([xN, f(xN).y1, 0], [0, 0, -1], ey, .18, c => [c[0], dessus(f(c[0]), c[2]) + .004, c[2]]);
+      chiffres([xN, f(xN).y1, 0], [0, 0, -1], ey, .18, c => [c[0], dessus(f(c[0]), c[2]) + .004, c[2]], { numeroNez:true });
       const p = C.profil(S_PONTONS);
       // voi-3 : numéro de flanc calé entre la bande basse (haut y 0,17) et le filet (bas y 0,357)
       for (const k of [-1, 1]) chiffres([-.62, .262, k * .72], [k, 0, 0], [0, 1, 0], .15, c => [c[0], c[1], k * (flanc(p(c[0]), c[1]) + .004)], AR());
@@ -1291,13 +1356,15 @@
   // pour une pièce seule. Les données de lecture seule sont rangées à plat (o, d : trois nombres par pièce) : un
   // tableau typé par table plutôt qu'un par pièce, quelques dizaines de Kio de moins par voiture.
   function compiler(liste, overlay, cockpit) {
-    const t = { liste, longueur: liste.length, n: 0, objets: [], formesRoues: [], formesUsees: [], usureRoue: [], profondeur: [], detailRoueMax: [],
+    const t = { liste, longueur: liste.length, n: 0, nez: [], profilNez: 0, originesNez: null, objets: [], formesRoues: [], formesUsees: [], usureRoue: [], profondeur: [], detailRoueMax: [],
       pneusCourants: new Float64Array(4 * 15), pneusActifs: new Uint8Array(4), o: null, roue: null, groupe: [], fixe: [], decale: null, d: null, portee: null,
       lent: null, vite: null, tete: null, buste: null, bulle: -1, dessusLoin: -1, cockpit, rotTete: trois(), rotM: trois(), fixes: [], groupes: [], faitG: null, faitF: null };
     const o = [], roues = [], decale = [], d = [], portee = [], lent = [], vite = [], tete = [], buste = [];
     for (const pc of liste) {
       if (cockpit && pc.tetePilote) continue;
       const objet = { shape: pc.shape, p: trois(), s: pc.s, r: t.rotM, mat: pc.mat, color: pc.color, surface: 'object' };
+      const formesNez=PIECES_NEZ.get(pc.shape);
+      if(formesNez || pc.numeroNez)t.nez.push({i:t.n,pc,formes:formesNez});
       if (pc.feuStop) t.feuStop = objet;
       if (pc.usureRoue) objet.color = pc.color.slice();
       if (pc.usureRoue === 5) objet.s = pc.s.slice();
@@ -1408,6 +1475,8 @@
       t.feuStop.color = ev.feuStop ? STOP_ALLUME : STOP_ETEINT;
       t.feuStop.emissive = ev.feuStop ? 4.5 : 0;
     }
+    preparerNez(t,ev.zonesDegats);
+    const origines=t.profilNez?t.originesNez:t.o;
     preparerPneus(t, ev.etatPneus);
     anglesDans(t.rotM, M);
     if (tete) anglesProduit(t.rotTete, M, tete);
@@ -1429,7 +1498,7 @@
       // Chantier 3 : une roue détachée (degats.roues[i]) n'est plus dessinée
       if (roue >= 0 && roues && roues[roue]) continue;
       const k = 3 * i;
-      let x = t.o[k], y = t.o[k + 1], z = t.o[k + 2];
+      let x = origines[k], y = origines[k + 1], z = origines[k + 2];
       if (t.tete[i]) {
         t.objets[i].r = tete ? t.rotTete : t.fixe[i] ? t.fixe[i].r : t.rotM;
         if (tete) {
@@ -2604,5 +2673,5 @@
     for (let i = 0; i < F.objets.length; i++) { monde(F.objets[i].p, M, F.o[i], P); sortie.push(F.objets[i]); }
   }
 
-  B.voiture = { modele, preparerPneusService, preparerExpressions, changerPneus, poser, poserRetro, cockpit, fantome, objetsFantome, detailPour, detailRouesPour, distanceRoues2, hypotDans, visible, attitude, angles, mul, mulM, euler, braquages, glacesCockpit, cadreGlace, RETRO, OEIL, POSTE_126CK, ORIGINE_HABITACLE, PILOTE_ASSISE, PILOTE_EPAULES, K, VOLANT, PLANCHE, PENTE_PLANCHE, COUDE, LEVIER, ROUES, EMPATTEMENT, FORMES, SEGMENTS_ROUE, ROUES_FORMES, JANTES_FORMES, ARRIERE_126CK };
+  B.voiture = { modele, profilImpact, pointSurNez, preparerPneusService, preparerExpressions, changerPneus, poser, poserRetro, cockpit, fantome, objetsFantome, detailPour, detailRouesPour, distanceRoues2, hypotDans, visible, attitude, angles, mul, mulM, euler, braquages, glacesCockpit, cadreGlace, RETRO, OEIL, POSTE_126CK, ORIGINE_HABITACLE, PILOTE_ASSISE, PILOTE_EPAULES, K, VOLANT, PLANCHE, PENTE_PLANCHE, COUDE, LEVIER, ROUES, EMPATTEMENT, FORMES, SEGMENTS_ROUE, ROUES_FORMES, JANTES_FORMES, ARRIERE_126CK };
 })(globalThis.BITUME = globalThis.BITUME || {});

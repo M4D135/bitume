@@ -2060,6 +2060,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     // vegetationQualite surcharge seulement les plantes : ni les arbres, ni leurs collisions, ni leurs matières.
     const vegetationQualite = ['off', 'low', 'medium', 'high', 'ultra'].includes(options.vegetationQualite)
       ? options.vegetationQualite : qualite;
+    // Les bosquets sont réservés au décor enrichi du jeu. Rassembler uniquement
+    // les emprises du mobilier, avant que les lots d'herbe ne soient ajoutés.
+    const bosquets = organique && options.vegetation === true && B.bosquets && vegetationQualite !== 'off'
+      ? B.bosquets.construire(c, terrain, lots, interroger, ecologie, saison, vegetationQualite) : [];
     if (B.vegetation && options.vegetation !== false && vegetationQualite !== 'off') {
       const v = B.vegetation.construire(c, { limites: lim, interroger, qualite: vegetationQualite,
         // Les biomes sans implantation sortent avant de demander la découpe des prairies.
@@ -2087,6 +2091,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         aireAccotements: v.aireAccotements, aireTerrain: v.aireTerrain,
         aireNue: v.aireNue, aireRiche: v.aireRiche, brinsRiches: v.brinsRiches };
     }
+    // Les solides PhysX et l'herbier conservent leurs listes ; aucune instance de
+    // bosquet n'entre dans les collisions, ni dans les masques de la prairie.
+    if (bosquets.length) decor.lots = decor.lots.concat(bosquets);
     // Le palier est une métadée de suivi, pas une donnée d'image : il reste non énumérable pour que les
     // empreintes historiques du décor (verifications/decor-identite.test.mjs) ne bougent pas d'un cran.
     Object.defineProperty(decor, 'qualite', { value: qualite, enumerable: false });

@@ -7,7 +7,7 @@ const jeu = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const { PHYSIQUE, CLE_RECORDS, CLE_FANTOME } = new Function(
   jeu.match(/  const PHYSIQUE = .*?;/)[0] + ' return { PHYSIQUE, CLE_RECORDS, CLE_FANTOME };')();
 
-test('une installation p15 retrouve son historique et réserve les nouveaux records et fantômes à p16', () => {
+test('une installation p15 retrouve son historique et réserve les nouveaux records et fantômes à p17', () => {
   const contexte = { circuitId: 'val-brule', sens: 'normal', mode: 'chrono', boite: 'auto' };
   const enrichi = { 'bitume:baikal:normal:course:manuelle:p15': { meilleurTourMs: 82500, meilleureCourseMs: null } };
   const mem = new Map([
@@ -18,7 +18,7 @@ test('une installation p15 retrouve son historique et réserve les nouveaux reco
   const stock = { getItem: k => mem.get(k) ?? null, setItem: (k, v) => mem.set(k, v) };
   const anciens = new Map(mem), catalogue = [{ id: 'val-brule' }];
   const table = records.lireTout(stock, catalogue);
-  assert.equal(PHYSIQUE, 'p16'); assert.equal(records.VERSION_PHYSIQUE, PHYSIQUE);
+  assert.equal(PHYSIQUE, 'p17'); assert.equal(records.VERSION_PHYSIQUE, PHYSIQUE);
   assert.equal(records.meilleur(table, { ...contexte, versionPhysique: 'p15' }).meilleurTourMs, 78260);
   assert.equal(records.meilleur(table, contexte), null);
   assert.equal(records.meilleurCircuit(table, 'val-brule'), null);

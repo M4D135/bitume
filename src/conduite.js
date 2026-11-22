@@ -334,8 +334,11 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
       const premier=!etat.auRail&&etat.choc<=0, body=etat.psi+etat.beta;
       etat.d=cdg*bord;
       if(normale>.1) {
-        if(premier || (B.degats&&normale>=B.degats.PARAMS.chocRoue))
-          for(const e of subirChoc(etat,normale))ev.push(e);
+        if(premier || (B.degats&&normale>=B.degats.PARAMS.chocRoue)) {
+          const long=cdg*Math.sin(body),lat=cdg*Math.cos(body);
+          const zone=Math.abs(long)>=Math.abs(lat)?(long>=0?'avant':'arriere'):(lat>=0?'droite':'gauche');
+          for(const e of subirChoc(etat,normale,{zone,front:long>=0,cote:Math.sign(lat),oblique:lat}))ev.push(e);
+        }
         if(!etat.recuperation) {
           // Une réponse normale dissipative fonctionne aussi en marche arrière ; la caisse ne pivote pas.
           const vx=vAvant*Math.cos(etat.psi),vz=vAvant*Math.sin(etat.psi)-cdg*normale*1.05;

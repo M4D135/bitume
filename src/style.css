@@ -1073,9 +1073,6 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   .arcade-preparation .aide-manette { margin-top: 5px; }
 }
 
-.arcade-modes .arcade-championnat, .arcade-modes .arcade-reglages {
-  grid-column: auto; width: max-content; min-height: 44px; padding: 6px 12px;
-}
 .championnat { background: var(--encre); }
 .championnat .choix { display: grid; gap: 12px; max-width: 46rem; }
 .championnat .actions { margin-top: 16px; }
@@ -1084,3 +1081,86 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 @media (max-width: 760px) {
   .arcade-modes .arcade-championnat, .arcade-modes .arcade-reglages { min-height: 36px; }
 }
+
+/* Le sélecteur de la borne. Les six destinations ont la même surface de commande. */
+#titre.arcade-titre {
+  --paddock: min(1240px, 100%);
+  justify-content: safe center; align-items: center; gap: clamp(10px, 1.8vh, 23px);
+  padding: clamp(25px, 5vh, 70px) clamp(18px, 5vw, 82px);
+  overflow: auto;
+  background: radial-gradient(ellipse at 82% 13%, #313444 0%, transparent 52%),
+    linear-gradient(118deg, #0b1118 17%, #18212a 64%, #131824);
+}
+#titre.arcade-titre::before {
+  opacity: .60;
+  background: linear-gradient(123deg, transparent 70%, #9f382e 70% 70.7%, transparent 70.7% 72%, #a67d46 72% 72.16%, transparent 72.16%);
+}
+#titre .marque { width: var(--paddock); --t-marque: clamp(74px, min(11vw, 15vh), 155px); margin: 0 0 clamp(14px, 2.8vh, 32px); }
+#titre .version-jeu { font-size: clamp(16px, 1.8vw, 23px); }
+#titre .arcade-modes { width: var(--paddock); max-width: none; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(10px, 1.1vw, 16px); }
+#titre .mode-arcade {
+  --accent: #ff6647; --fond: #482b29;
+  position: relative; isolation: isolate; overflow: hidden;
+  display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto 1fr; align-items: end;
+  gap: 14px 10px; min-height: clamp(116px, 17vh, 176px); padding: clamp(15px, 1.8vw, 26px);
+  border: 1px solid #53606a; border-block-start: 4px solid var(--accent); border-radius: 4px 14px 4px 4px;
+  background: linear-gradient(136deg, var(--fond) 0%, #1b2530 77%); color: #fff3da;
+  box-shadow: inset 0 1px 0 #ffffff28; text-align: left;
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+#titre [data-aller="championnat"] { --accent: #ffd35e; --fond: #51412b; }
+#titre [data-aller="chrono"] { --accent: #61d6f0; --fond: #20434e; }
+#titre [data-aller="duo"] { --accent: #c9abff; --fond: #393149; }
+#titre [data-aller="enligne"] { --accent: #6ae1ac; --fond: #244237; }
+#titre [data-aller="reglages"] { --accent: #a4bee4; --fond: #29394c; }
+#titre .mode-arcade::before {
+  content: ''; position: absolute; z-index: -1; inset: 0 0 0 49%; pointer-events: none; opacity: .13;
+  background: repeating-linear-gradient(118deg, transparent 0 12px, var(--accent) 12px 14px);
+  mask-image: linear-gradient(90deg, transparent, black);
+}
+#titre .mode-arcade:hover, #titre .mode-arcade:focus-visible {
+  border-color: var(--accent); outline: 3px solid var(--accent); outline-offset: 2px;
+  transform: translateY(-2px); box-shadow: 0 8px 18px #0006, inset 0 0 24px #ffffff12;
+}
+#titre .mode-libelle { grid-column: 1 / -1; grid-row: 2; font: italic 850 clamp(27px, 3.2vw, 49px)/.98 var(--f-titre); }
+#titre .mode-arcade small { font: 550 clamp(15px, 1.25vw, 19px)/1.25 var(--f-texte); color: #e4e6e9; margin: 8px 0 0; }
+#titre .mode-fleche { grid-area: 1 / 2; align-self: center; color: var(--accent); font: 700 29px/1 var(--f-texte); }
+#titre .mode-picto { position: relative; display: block; grid-area: 1 / 1; width: 35px; height: 28px; color: var(--accent); }
+#titre [data-aller="course"] i { transform: skewX(-12deg); border-left: 3px solid; background: repeating-conic-gradient(currentColor 0 25%, transparent 0 50%) 2px 0 / 12px 12px no-repeat; background-size: 12px 12px; background-repeat: repeat; clip-path: polygon(0 0,100% 0,98% 73%,9% 73%,9% 100%,0 100%); }
+#titre [data-aller="championnat"] i { background: currentColor; clip-path: polygon(0 9%,16% 9%,16% 0,83% 0,83% 9%,100% 9%,93% 39%,77% 49%,65% 64%,55% 69%,55% 82%,74% 89%,74% 100%,26% 100%,26% 89%,45% 82%,45% 69%,30% 58%,23% 49%,7% 39%,0 9%,8% 17%,14% 33%,22% 38%,17% 17%,7% 17%); }
+#titre [data-aller="chrono"] i { width: 25px; height: 25px; border: 3px solid; border-radius: 50%; margin: 2px 0 0 4px; }
+#titre [data-aller="chrono"] i::after { content: ''; position: absolute; left: 48%; bottom: 45%; width: 3px; height: 8px; background: currentColor; transform: rotate(35deg); transform-origin: bottom; }
+#titre [data-aller="duo"] i { border: 3px solid; border-radius: 4px; background: linear-gradient(90deg, transparent 46%, currentColor 46% 54%, transparent 54%); }
+#titre [data-aller="enligne"] i { width: 29px; height: 29px; border: 2px solid; border-radius: 50%; background: linear-gradient(transparent 46%, currentColor 46% 54%, transparent 54%); }
+#titre [data-aller="enligne"] i::after { content: ''; position: absolute; inset: -2px 5px; border: 2px solid; border-radius: 50%; }
+#titre [data-aller="reglages"] i { background: radial-gradient(circle at 30% 18%, currentColor 0 4px, transparent 4.5px), radial-gradient(circle at 75% 50%, currentColor 0 4px, transparent 4.5px), radial-gradient(circle at 42% 82%, currentColor 0 4px, transparent 4.5px), repeating-linear-gradient(transparent 0 4px, currentColor 4px 6px, transparent 6px 9px); }
+#titre .attente, #titre .pied-titre, #titre .compteur-visites { width: var(--paddock); max-width: none; margin: 0; font-size: clamp(15px, 1.25vw, 20px); color: #d3dae0; }
+#titre .attente i { max-width: 240px; }
+#titre .signature { position: relative; inset: auto; order: 4; width: var(--paddock); align-self: center; font-size: 17px; opacity: 1; }
+#titre .signature-avatar { width: 24px; height: 24px; }
+@media (max-width: 850px) {
+  #titre .arcade-modes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #titre .mode-arcade { min-height: 100px; gap: 8px; padding: 14px; }
+}
+@media (max-width: 480px) {
+  #titre.arcade-titre { padding: 24px 12px; align-items: stretch; }
+  #titre .arcade-modes { gap: 8px; }
+  #titre .mode-libelle { font-size: clamp(20px, 5.4vw, 26px); overflow-wrap: anywhere; }
+  #titre .mode-arcade { padding: 12px 9px; }
+  #titre .mode-arcade small { font-size: 15px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #titre .mode-arcade { transition: none; }
+  #titre .mode-arcade:hover, #titre .mode-arcade:focus-visible { transform: none; }
+}
+
+:is(#championnat, #preparation, #reglages, #prets, #enligne) .entete {
+  align-items: center; padding-bottom: 12px; border-bottom: 2px solid #49515b;
+}
+:is(#championnat, #preparation, #reglages, #prets, #enligne) .retour {
+  border-radius: 3px 11px 3px 3px; border-color: #70808d; min-width: 46px; min-height: 46px;
+}
+#championnat { background: radial-gradient(ellipse at 82% 10%, #443b2d, transparent 53%), #101820; }
+#ch-choix { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); max-width: 68rem; }
+#ch-choix button { padding: 22px 18px; border: 1px solid #75674e; border-top: 4px solid #ffd35e; border-radius: 4px 12px 4px 4px; background: linear-gradient(130deg,#453a29,#202a33); color: #fff3da; text-align: left; }
+#ch-choix button:focus-visible, #ch-choix button:hover { outline: 3px solid #ffd35e; outline-offset: 3px; }

@@ -24,12 +24,17 @@
   // No camera state is cached: colour, mirrors and shadows use the current view.
   function lotDetailDistance(lot,verticalTangent,viewportHeight){
     let distance=lot.bascule||240;
-    const fov=lot.lodReferenceFov,height=lot.lodReferenceHeight;
-    if(Number.isFinite(fov)&&fov>0&&fov<180&&Number.isFinite(verticalTangent)&&verticalTangent>0)
-      distance*=Math.tan(fov*Math.PI/360)/verticalTangent;
-    if(Number.isFinite(height)&&height>0&&Number.isFinite(viewportHeight)&&viewportHeight>0)
-      distance*=viewportHeight/height;
+    const lens=lotFovScale(lot.lodReferenceFov,verticalTangent),height=lotHeightScale(lot.lodReferenceHeight,viewportHeight);
+    if(lens!==undefined)distance*=lens;
+    if(height!==undefined)distance*=height;
     return distance;
+  }
+  function lotFovScale(fov,verticalTangent){
+    return Number.isFinite(fov)&&fov>0&&fov<180&&Number.isFinite(verticalTangent)&&verticalTangent>0
+      ? Math.tan(fov*Math.PI/360)/verticalTangent : undefined;
+  }
+  function lotHeightScale(height,viewportHeight){
+    return Number.isFinite(height)&&height>0&&Number.isFinite(viewportHeight)&&viewportHeight>0 ? viewportHeight/height : undefined;
   }
 
   // The colour and sun passes need the same camera-relative LOD. Prepare it
@@ -40,9 +45,15 @@
     return {records,get frame(){return frame;},reset(){records.length=0;source=null;},prepare(lots,eye,vertical,height,cover){
       frame++;
       if(source!==lots){records.length=0;for(const lot of lots)records.push({lot,bounds:{p:lot.centre,radius:lot.rayon},distance:0,near:true});source=lots;}
+      // A sequence of tree or grass lots usually shares its reference lens and viewport.
+      // Reset at each view and read both properties on each lot so edits and split views take effect immediately.
+      let lastFov,lastHeight,fovScale=1,heightScale=1;
       for(const entry of records){const l=entry.lot,dx=l.centre[0]-eye[0],dy=l.centre[1]-eye[1],dz=l.centre[2]-eye[2];entry.bounds.p=l.centre;entry.bounds.radius=l.rayon;entry.distance=Math.sqrt(dx*dx+dy*dy+dz*dz)-l.rayon;
         const active=l.groundCover===true&&cover?.enabled;entry.range=active&&cover.range[1]>0?cover.range[1]:(l.portee||Infinity);
-        entry.near=entry.distance<Math.max(lotDetailDistance(l,vertical,height),active?cover.density[1]:0);entry.cover=active;
+        const fov=l.lodReferenceFov,referenceHeight=l.lodReferenceHeight;
+        if(fov!==lastFov){fovScale=lotFovScale(fov,vertical)??1;lastFov=fov;}
+        if(referenceHeight!==lastHeight){heightScale=lotHeightScale(referenceHeight,height)??1;lastHeight=referenceHeight;}
+        entry.near=entry.distance<Math.max((l.bascule||240)*fovScale*heightScale,active?cover.density[1]:0);entry.cover=active;
       }
       return records;
     }};
@@ -2093,10 +2104,18 @@
     return reconcile(meshes,environment,options);
   }
   function changedSelection(index,origin,ranges){const d=index.delta;if(!d||d.full||d.changed.length)return true;for(const e of [...d.added,...d.removed]){const r=ranges[e.detail]+e.radius;if(Math.abs(e.p[0]-origin[0])<=r&&Math.abs(e.p[1]-origin[1])<=r&&Math.abs(e.p[2]-origin[2])<=r)return true;}return false;}
-  function visible(e,eye,axes,horizontal,vertical,far){
+  // Scale a sphere radius along the two sloping clipping planes. These factors
+  // depend only on the projection, so colour passes share them across all bounds.
+  function setFrustumRadii(out,horizontal,vertical){
+    out.horizontal=Math.sqrt(1+horizontal*horizontal);
+    out.vertical=Math.sqrt(1+vertical*vertical);
+  }
+  function visible(e,eye,axes,horizontal,vertical,far,radii){
     const x=e.p[0]-eye[0],y=e.p[1]-eye[1],d=e.p[2]-eye[2],f=axes.forward,right=axes.right,up=axes.up;
     const z=x*f[0]+y*f[1]+d*f[2],r=e.radius;
-    return z+r>.04&&z-r<far&&Math.abs(x*right[0]+y*right[1]+d*right[2])<=z*horizontal+r*Math.sqrt(1+horizontal*horizontal)&&Math.abs(x*up[0]+y*up[1]+d*up[2])<=z*vertical+r*Math.sqrt(1+vertical*vertical);
+    return z+r>.04&&z-r<far&&
+      Math.abs(x*right[0]+y*right[1]+d*right[2])<=z*horizontal+r*(radii?radii.horizontal:Math.sqrt(1+horizontal*horizontal))&&
+      Math.abs(x*up[0]+y*up[1]+d*up[2])<=z*vertical+r*(radii?radii.vertical:Math.sqrt(1+vertical*vertical));
   }
   function packIndexed(entries){
     const buckets=names.map(()=>[]);for(const e of entries){const i=shapeIndices.get(e.mesh.shape||'box');if(i!==undefined)buckets[i].push(e);}
@@ -2903,7 +2922,7 @@
     // BITUME : nappes (chaussée, accotements, terrain : triangles continus, matière et couleur par sommet) et lots
     // de décor (instances statiques groupées par portion de circuit, chacune avec sa version lointaine allégée).
     let nappes=[],nappeVao=null,nappeVbo=null,nappeIbo=null,lots=[],groundPlans=new WeakMap();
-    const lotView=lotViewState();
+    const lotView=lotViewState(),colourRadii={horizontal:0,vertical:0};
     let viewCache=null,torchCache=null,sunCache=null,indexRevision=0,selectionGen=0,selectionRebuilt=false;
     const emptyGuard={revision:-1,origin:[0,0,0],forward:[0,0,0],horizontal:0,vertical:0,far:0,ranges:[0,0,0],margin:0,tilt:0,entries:EMPTY_ENTRIES};
     // Les marges arrondies sont lues à la demande : plus de chaîne (toFixed) construite à chaque image,
@@ -3211,13 +3230,13 @@
     // Une sphère de test par nappe, relue à chaque vue : aucune allocation par nappe et par image.
     let nappeBounds=[];
     function setNappes(liste){nappes=(liste||[]).filter(n=>n&&n.sommets&&n.indices&&n.indices.length);nappeBounds=nappes.map(n=>({p:n.centre,radius:n.rayon}));chargerNappes();}
-    function dessinerNappes(eye,axes,horizontal,vertical,far){
+    function dessinerNappes(eye,axes,horizontal,vertical,far,radii){
       if(!nappeVao)return;
       gl.bindVertexArray(nappeVao);gl.vertexAttrib4f(3,1,1,1,0);gl.vertexAttrib4f(4,0,0,0,2);
       let smoothTint=false;
       for(let i=0;i<nappes.length;i++){
         const n=nappes[i],bounds=nappeBounds[i];bounds.p=n.centre;bounds.radius=n.rayon;
-        if(!visible(bounds,eye,axes,horizontal,vertical,far))continue;
+        if(!visible(bounds,eye,axes,horizontal,vertical,far,radii))continue;
         const tint=n.vertexTint==='smooth';
         if(tint!==smoothTint){gl.vertexAttrib4f(4,0,0,0,tint?34:2);smoothTint=tint;}
         gl.drawElements(gl.TRIANGLES,n.compte,gl.UNSIGNED_INT,n.debut);stats.drawCalls++;stats.triangles+=n.compte/3;
@@ -3252,14 +3271,14 @@
       }
     }
     function setLots(liste){for(const l of lots)for(const cle of ['tampon','tamponLoin'])if(l[cle])gl.deleteBuffer(l[cle]);lotView.reset();groundPlans=new WeakMap();lots=(liste||[]).filter(l=>l&&l.objets);chargerLots();stats.lots=lots.length;}
-    function dessinerLots(eye,axes,horizontal,vertical,far,accepte){
+    function dessinerLots(eye,axes,horizontal,vertical,far,accepte,radii){
       let dessines=0;
       for(const entry of lotView.records){const l=entry.lot;
         if(!l.tampon)continue;
         if(entry.cover&&entry.distance>entry.range)continue;
         // lot.ombre === false : le lot ne projette pas d'ombre du soleil (herbe courte, marquages au sol).
         if(accepte){if(l.ombre===false||!accepte(entry.bounds))continue;}
-        else{if(entry.distance>Math.min(far,entry.range))continue;if(!visible(entry.bounds,eye,axes,horizontal,vertical,far))continue;}
+        else{if(entry.distance>Math.min(far,entry.range))continue;if(!visible(entry.bounds,eye,axes,horizontal,vertical,far,radii))continue;}
         const plan=entry.cover&&groundPlans.get(l),fresh=plan&&plan.frame!==lotView.frame;
         if(plan&&prepareGroundCover(plan,entry,lotView.frame,vegetationState.eye,vegetationState)){
           if(fresh)stats.lotInstanceTests+=plan.tested;
@@ -3667,6 +3686,7 @@
       // PDR : vue de haut, tout le décor part au GPU en un seul lot stable : ni tri ni nouvel envoi quand la caméra bouge,
       // le découpage au champ se fait au clip. Sans camera.allStatic, le tri par portée de FERRO reste inchangé.
       const horizontal=canvas.width/canvas.height/f,vertical=1/f,empty=!worldIndex.entries.length;
+      setFrustumRadii(colourRadii,horizontal,vertical);
       if(!warm){cacheStats.viewFrames++;trackMotion(eye,axes.forward,t);stats.cache=cacheStats;}
       const margin=margins(Math.atan(Math.hypot(horizontal,vertical)),warm?warmMargin:guardMargin);
       let guard=null;
@@ -3683,7 +3703,7 @@
         // pour que les tableaux du jeu (restaurés ensuite dans le cache) ne soient jamais réécrits.
         const list=guard.entries;shown=warm?[]:staticCaches[0].entries===shownA?shownB:shownA;shown.length=0;
         for(let i=0;i<list.length;i++){const e=list[i],q=e.p,d=q.length===3?Math.hypot(q[0]-eye[0],q[1]-eye[1],q[2]-eye[2]):Math.hypot(...q.map((v,k)=>v-eye[k]));
-          if(d<=ranges[e.detail]+e.radius&&visible(e,eye,axes,horizontal,vertical,ranges[0]))shown.push(e);}
+          if(d<=ranges[e.detail]+e.radius&&visible(e,eye,axes,horizontal,vertical,ranges[0],colourRadii))shown.push(e);}
       }
       stats.staticSuperset=guard?.entries.length||shown.length;
       stats.staticVisible=shown.length;stats.staticCulled=world.length-shown.length;
@@ -3776,10 +3796,10 @@
       // only centimetres above it at kilometre distances. Local water retains depth/SSR.
       stats.backgroundWater=backgroundIndex.entries.length;stats.backgroundDrawCalls=0;
       if(backgroundIndex.entries.length){const before=stats.drawCalls;gl.depthMask(false);renderStatic(backgroundIndex.entries,4);gl.depthMask(true);stats.backgroundDrawCalls=stats.drawCalls-before;}
-      renderStatic(shown,0);if(camera.chunked)drawChunks(c=>visible(c,eye,axes,canvas.width/canvas.height/f,1/f,Math.min(far,c.range)));
+      renderStatic(shown,0);if(camera.chunked)drawChunks(c=>visible(c,eye,axes,horizontal,vertical,Math.min(far,c.range),colourRadii));
       // BITUME : chaussée et terrain, puis décor par lots, découpés au champ et à la portée de chaque lot.
       if(warm){warm.cible='couleur '+(msaa?'msaa'+msaa.samples:(stats.bloom||composeScreen)?'scene':'ecran');prechaufferNappes();stats.lotsVisibles=prechaufferLots(false);}
-      else{dessinerNappes(eye,axes,canvas.width/canvas.height/f,1/f,far);stats.lotsVisibles=dessinerLots(eye,axes,canvas.width/canvas.height/f,1/f,far);}
+      else{dessinerNappes(eye,axes,horizontal,vertical,far,colourRadii);stats.lotsVisibles=dessinerLots(eye,axes,horizontal,vertical,far,null,colourRadii);}
       renderBatch(dynamicBatch,dynamicBuffer,false);
       if(crowd)renderBatch(crowd,crowdBuffer,false);
       // PDR (lots) : les lots du jeu, dans la cible de la scène (MSAA), avant les effets translucides.
@@ -4233,7 +4253,7 @@
   }
   // Both GPU backends share the procedural shapes, instance layout and visibility
   // rules. No rendering calls or GPU state are shared between the APIs.
-  const shared={bitumeWeather,localWindState,vegetationFrame,groundCoverRank,groundCoverGeometry,groundCoverPlan,prepareGroundCover,lotViewState,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,lotDetailDistance,materialFamily,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
+  const shared={bitumeWeather,localWindState,vegetationFrame,groundCoverRank,groundCoverGeometry,groundCoverPlan,prepareGroundCover,lotViewState,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,setFrustumRadii,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,lotDetailDistance,materialFamily,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
   function mesh(shape,p,s,mat,r=[0,0,0],emissive=0){
     return {shape,p,s,mat,r,emissive,color:undefined,surface:undefined,overlay:false,fx:false,
       alpha:undefined,opacity:1,additive:undefined,outdoor:undefined,actorPart:undefined,actorLod:0,

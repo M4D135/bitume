@@ -183,15 +183,20 @@ function archivesAnterieures(physique) {
     'determinisme-p14.json': createHash('sha256').update(historique).digest('hex'),
     'determinisme-scenes-0260.json': createHash('sha256').update(scenes).digest('hex')
   };
-  if (physique === 'p16') {
+  if (physique === 'p16' || physique === 'p17') {
     const p15 = readFileSync(new URL('../fixtures/determinisme-p15.json', import.meta.url));
     archives['determinisme-p15.json'] = createHash('sha256').update(p15).digest('hex');
     assert.equal(archives['determinisme-p15.json'], '7f65117fb5d8fc531fa9bac69e0bcd6655847ae2ea68091cc721b1ea8bb4a4b4');
   }
+  if (physique === 'p17') {
+    const p16=readFileSync(new URL('../fixtures/determinisme-p16.json',import.meta.url));
+    archives['determinisme-p16.json']=createHash('sha256').update(p16).digest('hex');
+    assert.equal(archives['determinisme-p16.json'],'aadb4676e9e714f3ac2a451a76e17debc026e5483e2943802faba7a41c79af7c');
+  }
   return archives;
 }
 export async function controlerDeterminismePhysX({ Ecrivain, etatCourse, fixture, ecrire, fichier, physique }) {
-  assert.ok(['p14', 'p15', 'p16'].includes(physique), 'physique native non reconnue ; aucun repli historique');
+  assert.ok(['p14', 'p15', 'p16', 'p17'].includes(physique), 'physique native non reconnue ; aucun repli historique');
   assert.equal(basename(fixture), 'determinisme-' + physique + '.json', 'fixture incompatible avec la physique demandée');
   if (process.argv.includes('--physx-worker')) {
     console.log(MARQUEUR + JSON.stringify(await rejouer(Ecrivain, etatCourse, physique))); return;

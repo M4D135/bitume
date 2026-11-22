@@ -98,7 +98,7 @@
     if (!session || !session.reglagesReference) (ecran === 'course' ? differerStock : ecrireStock)('bitume.reglages', reglages);
   };
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
-  const PHYSIQUE = 'p16', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
+  const PHYSIQUE = 'p17', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const records = lireStock(CLE_RECORDS, {});
   const recordsEnrichis = (() => {
     try { return B.records ? B.records.lireTout(globalThis.localStorage, CATALOGUE) : null; }
@@ -2738,11 +2738,22 @@
   // autour de chaque pièce est conservative quelle que soit sa rotation en suspension.
   const FORMES_GLACE = new Set(Object.values(B.voiture.FORMES).map(f => f.nom));
   const BORNE_GLACE = {p:null,radius:0};
-  function ecarterPiecesHorsGlace(objets, camR, largeur, hauteur) {
-    const shared=window.FRender?.shared;
-    if (!shared?.visible || !shared.cameraAxes || !(hauteur>0 && largeur>0)) return;
-    const axes=shared.cameraAxes(camR), vertical=Math.tan(clamp(camR.fov,10,110)*Math.PI/360);
-    const horizontal=vertical*largeur/hauteur;
+  // Bornes communes aux voitures et à leurs pièces pour la caméra de cette glace.
+  const CHAMP_GLACE = { axes: null, horizontal: 0, vertical: 0, visible: null };
+  function champGlace(camR, largeur, hauteur) {
+    const shared = window.FRender?.shared;
+    if (!shared?.visible || !shared.cameraAxes || !(hauteur > 0 && largeur > 0)) return null;
+    CHAMP_GLACE.visible = shared.visible;
+    CHAMP_GLACE.axes = shared.cameraAxes(camR);
+    CHAMP_GLACE.vertical = Math.tan(clamp(camR.fov, 10, 110) * Math.PI / 360);
+    CHAMP_GLACE.horizontal = CHAMP_GLACE.vertical * largeur / hauteur;
+    return CHAMP_GLACE;
+  }
+  function visibleDansGlace(borne, camR, champ) {
+    return champ.visible(borne, camR.pos, champ.axes, champ.horizontal, champ.vertical, camR.far);
+  }
+  function ecarterPiecesHorsGlace(objets, camR, champ) {
+    if (!champ) return;
     let n=0;
     for (let k=0;k<objets.length;k++) {
       const o=objets[k];
@@ -2750,7 +2761,7 @@
         const s=o.s;
         BORNE_GLACE.p=o.p;
         BORNE_GLACE.radius=.867*Math.max(Math.abs(s[0]),Math.abs(s[1]),Math.abs(s[2]))+.04;
-        if (!shared.visible(BORNE_GLACE,camR.pos,axes,horizontal,vertical,camR.far)) continue;
+        if (!visibleDansGlace(BORNE_GLACE, camR, champ)) continue;
       }
       objets[n++]=o;
     }
@@ -2762,8 +2773,9 @@
     const camR = cameraReflet(g, cam, ps, l, h, CAM_GLACE);
     const sun = camR.sun;
     sun.center[0] = ps.x; sun.center[1] = ps.y; sun.center[2] = ps.z; sun.extent = scene.ombre.extent; sun.depth = scene.ombre.depth;
-    const objets = listeGlace(S, camR, sortie, suivie, source.height, i);
-    ecarterPiecesHorsGlace(objets,camR,source.width,source.height);
+    const champ = champGlace(camR, source.width, source.height);
+    const objets = listeGlace(S, camR, sortie, suivie, source.height, i, champ, P.palier);
+    ecarterPiecesHorsGlace(objets, camR, champ);
     retro.foulePublic = publicVisible && retro.vuePublic ? retro.vuePublic.fx : null;
     if (S.nature && (retro.ambianceSource !== S.nature.ambiance || retro.ambianceRevision !== S.nature.ambiance.revision)) {
       if (retro.rendu.setEnvironment) retro.rendu.setEnvironment(S.nature.ambiance.atmosphere);
@@ -2782,23 +2794,35 @@
   // roue arrière (voiture.js, poserRetro). Effets : leur propre appel, au même instant que la vue, sans coupure à
   // distance. Même ordre qu'avant : décor, voitures, fantôme et feux, effets, roue arrière. Les objets de la vue sont
   // réécrits : elle est déjà dessinée.
-  function listeGlace(S, camR, sortie, suivie, hauteur, cote = 0) {
+  function listeGlace(S, camR, sortie, suivie, hauteur, cote, champ, palierVue) {
     const objets = retro.objets; objets.length = 0;
     const axe = axeCamera(camR, AXE_GLACE), ox = camR.pos[0], oy = camR.pos[1], oz = camR.pos[2];
     for (let k = 0, n = S.iVoitures0; k < n; k++) if (devantGlace(sortie[k], axe, ox, oy, oz)) objets.push(sortie[k]);
-    const co = S.course, poses = tampons.poses, tanDemi = Math.tan(clamp(camR.fov, 10, 110) * Math.PI / 360);
+    const co = S.course, poses = tampons.poses;
+    const tanDemi = champ ? champ.vertical : Math.tan(clamp(camR.fov, 10, 110) * Math.PI / 360);
     const detailsRoues = S.detailsRouesGlaces[cote];
     for (let k = 0; k < co.voitures.length; k++) {
       if (k === suivie.id) continue;
       const p = poses[k], ex = p.x - ox, ez = p.z - oz;
       if (ex * axe[0] + (p.y - oy) * axe[1] + ez * axe[2] < -DERRIERE_CAMERA) continue;
-      const o = optionsGlace(k), v = co.voitures[k];
+      const pose = POSES_RENDU[k], v = co.voitures[k];
+      // Garder l'hystérésis propre à chaque roue et à chaque glace lors d'une entrée dans le champ.
+      const niveauRoues = detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(pose, camR.pos), tanDemi, hauteur, detailsRoues[k]);
+      if (champ) {
+        // La monoplace de 4,53 m, son pilote et les dépôts sur sa peau tiennent dans la
+        // marge de 8 m utilisée pour la coupe arrière. Le débattement des quatre roues s'y ajoute.
+        const rebond = pose.rebond;
+        BORNE_GLACE.p = pose.p;
+        BORNE_GLACE.radius = DERRIERE_CAMERA + (rebond ? Math.max(Math.abs(rebond[0] || 0), Math.abs(rebond[1] || 0), Math.abs(rebond[2] || 0), Math.abs(rebond[3] || 0)) : 0);
+        if (!visibleDansGlace(BORNE_GLACE, camR, champ)) continue;
+      }
+      const o = optionsGlace(k);
+      o.rouesDetail = niveauRoues;
       o.detail = plusLeger(OPTIONS_POSE[k].plafond, detailVoiture(ex * ex + ez * ez, tanDemi, hauteur));
-      o.rouesDetail = detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(POSES_RENDU[k], camR.pos), tanDemi, hauteur, detailsRoues[k]);
       o.roues = v.degats && v.degats.roues; o.casse = !!(v.degats && v.degats.casse);
-      const attitude = B.voiture.poser(S.modeles[k], POSES_RENDU[k], objets, o);
-      poserEauCarrosserie(S, k, POSES_RENDU[k], objets, o.casse ? 'epave' : o.detail, false, attitude,
-        ex * ex + ez * ez, tanDemi, hauteur, profilDe(S).palier);
+      const attitude = B.voiture.poser(S.modeles[k], pose, objets, o);
+      poserEauCarrosserie(S, k, pose, objets, o.casse ? 'epave' : o.detail, false, attitude,
+        ex * ex + ez * ez, tanDemi, hauteur, palierVue);
     }
     for (let k = S.iVoitures1, n = S.iEffets0; k < n; k++) if (devantGlace(sortie[k], axe, ox, oy, oz)) objets.push(sortie[k]);
     B.traces.dessiner(S.fx, objets, camR.pos, S.hEffets, axe, 0);
@@ -2826,7 +2850,7 @@
   // voiture.js lit la pose et les options sans les garder, le moteur relit le soleil et les feux à chaque draw. Une
   // vue (J2, puis J1, puis leurs glaces) finit de s'en servir avant que la suivante les réécrive. Seize voitures au
   // plus (onze rivaux, quatre humains) ; au-delà, les tableaux grandissent.
-  const nouvellePose = () => ({ p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0, roule: 0, rebond: null, v: 0, etatPneus: null,
+  const nouvellePose = () => ({ p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0, roule: 0, rebond: null, v: 0, etatPneus: null, zonesDegats: null,
     pilote: { volant: 0, rapport: 1, rapportAvant: 1, passage: 1, regime: 0, kmh: 0, alat: 0, along: 0, v: 0, t: 0,
       regard: 0, geste: null, gestePhase: 0, gesteCote: -1, gesteIntensite: 0, passageVisuel: null } });
   const nouvellesOptions = () => ({ detail: 'complet', roues: undefined, casse: false, plafond: 'complet', rouesDetail: 0 });
@@ -2844,6 +2868,7 @@
     const ev = POSES_RENDU[k] || (POSES_RENDU[k] = nouvellePose());
     ev.p[0] = p.x; ev.p[1] = p.y; ev.p[2] = p.z;
     ev.cap = p.cap; ev.tangage = p.tangage; ev.roulis = p.roulis; ev.braquage = p.braquage; ev.roule = roule; ev.rebond = p.rebond; ev.v = etat.v;
+    ev.zonesDegats = etat.degats?.zones || null;
     ev.feuStop = (etat.rapport < 0 ? etat.gaz : etat.frein) > .01;
     ev.etatPneus = etatPneus || null;
     return ev;

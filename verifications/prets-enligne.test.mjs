@@ -424,7 +424,7 @@ test('12F3 : annonce et départ portent le protocole de pneus et l’identité e
   for (const m of [annonce, cfg]) {
     assert.equal(m.versionChoixPneus, 2); assert.equal(m.protocolePneus, 1);
     assert.deepEqual(m.piste, a.contratPiste(m.i));
-    assert.equal(m.piste.physique, 'p16'); assert.equal(typeof m.piste.id, 'string'); assert.equal(typeof m.piste.revision, 'string');
+    assert.equal(m.piste.physique, 'p17'); assert.equal(typeof m.piste.id, 'string'); assert.equal(typeof m.piste.revision, 'string');
     assert.ok(m.piste.revision.length > 0);
   }
   assert.equal(typeof cfg.seance, 'string'); assert.ok(cfg.seance.length > 0);

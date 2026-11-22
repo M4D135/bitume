@@ -213,6 +213,17 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     return true;
   }
 
+  const CHAUSSEE_SECHE = Object.freeze({ eau: 0, neige: 0, abri: true });
+  const abrisCircuits = new WeakMap();
+  function abrisPourIA(c) {
+    let abris = abrisCircuits.get(c);
+    if (!abris) {
+      abris = Uint8Array.from({ length: c.n }, (_, i) => B.circuit.dansCouvert(c, i * c.pas) ? 1 : 0);
+      abrisCircuits.set(c, abris);
+    }
+    return abris;
+  }
+
   // `sortie`, facultatif : objet de commandes de l'appelant, rempli et rendu au lieu d'un neuf (la course en garde
   // un par voiture pour ses rivaux). Sans lui, chaque appel rend un objet neuf, comme toujours.
   function commandesIA(course, v, sortie) {
@@ -232,7 +243,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     if (course.mode === 'course' && course.phase === 'course' && course.temps < ia.reaction) { ia.bloque = 0; return NEUTRE; }
 
     let hab = ia.hab * (ia.forme || 1);
-    if (v.fini || (v.joueur && course.phase === 'arrivee')) hab *= 0.82;
+    if (v.fini) hab *= 1 - .18 * clamp((course.temps - v.tempsFinal) / 5, 0, 1);
     else if (course.mode === 'course' && course.difficulte < 2 && !v.joueur && !course.joueur.fini) {
       const ej = v.progression - course.joueur.progression, f = clamp((Math.abs(ej) - 250) / 500, 0, 1) * 0.02;
       hab += ej < 0 ? f : -f;
@@ -243,7 +254,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     hab *= Math.sqrt(adh);
 
     // Vitesse visée et freinage anticipé (jusqu'à 200 m devant).
-    const f = ramener(e.s, c.longueur) / P, i0 = Math.floor(f) % n, fr = f - Math.floor(f);
+    const f = ramener(e.s, c.longueur, c) / P, i0 = Math.floor(f) % n, fr = f - Math.floor(f);
     let dec = 0.8 * (14 + 0.15 * vit) * (recuperer ? .6 : 1) * adh;
     const v2 = vit * vit;
     const anticipe = .5 * vit;
@@ -253,17 +264,15 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     if (penteAv < -0.045) dec = Math.max(5, dec + 9.81 * (penteAv + 0.045) * 1.4);
 
     const vIci = lire(c, c.vitesse, e.s), kIci = lire(c, c.courbure, e.s), lIci = lire(c, c.ligne, e.s);
-    let cible = vIci * hab, besoin = 0, eauPrevue = -1, neigePrevue = -1, adhPrevue = adh;
+    let cible = vIci * hab, besoin = 0;
+    const dehors = B.chaussee.exposee(undefined, CHAUSSEE_ANTICIPEE);
+    const humide = dehors.eau !== 0 || dehors.neige !== 0;
+    const abris = humide && (c.couverts?.length || c.tunnel) ? abrisPourIA(c) : null;
+    const adhExposee = humide && chaussee.abri ? B.conduite.adherenceVoiture(e, dehors) : adh;
+    const adhSec = abris && !chaussee.abri ? B.conduite.adherenceVoiture(e, CHAUSSEE_SECHE) : adh;
     for (let q = 1, N = Math.ceil(200 / P); q <= N; q++) {
-      const index = (i0 + q) % n, dist = (q - fr) * P;
-      const surface = B.chaussee.lire(c, index * P, undefined, CHAUSSEE_ANTICIPEE);
-      let adhDevant = adh;
-      if (surface.eau !== chaussee.eau || surface.neige !== chaussee.neige) {
-        if (surface.eau !== eauPrevue || surface.neige !== neigePrevue) {
-          adhPrevue = B.conduite.adherenceVoiture(e, surface); eauPrevue = surface.eau; neigePrevue = surface.neige;
-        }
-        adhDevant = adhPrevue;
-      }
+      const index = c.ouvert ? Math.min(i0 + q, n - 1) : (i0 + q) % n, dist = (q - fr) * P;
+      const adhDevant = abris && abris[index] ? adhSec : adhExposee;
       const vc = c.vitesse[index] * habSansSurface * Math.sqrt(adhDevant);
       if (dist <= anticipe) { if (vc < cible) cible = vc; continue; }
       const b = (v2 - vc * vc) / (2 * (dist - anticipe));
@@ -274,7 +283,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     const regard = Math.max(70, v2 / 60 + 30);
     let kAv = 0;
     for (let q = 1, N = Math.ceil(Math.max(60, v2 / 20 + 30) / P); q <= N; q++) {
-      const k = c.courbure[(i0 + q) % n];
+      const k = c.courbure[c.ouvert ? Math.min(i0 + q, n - 1) : (i0 + q) % n];
       if (Math.abs(k) > 3e-3) { kAv = k; break; }
     }
     if (ia.cible >= 0 && kAv && ia.cote === Math.sign(kAv)) dec *= 1 + .06 * (ia.agressivite || 0);
@@ -420,8 +429,13 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       if (large > 2) cible = Math.min(cible, Math.max(3, vit * (1 - .03 * Math.min(large - 2, 3))));
     }
 
+    // L’IA garde la direction et l’évitement après le drapeau. Le ralentissement
+    // dépend de la place encore disponible devant chaque voiture dans la spéciale.
+    const resteDegagement = v.fini && c.ouvert ? (v.arretApresLigne ?? c.longueur) - e.s : Infinity;
+    if (resteDegagement !== Infinity) cible = Math.min(cible, Math.sqrt(8 * Math.max(0, resteDegagement - 1)));
     let gaz = 0, frein = 0;
-    if (besoin > 0.7 * dec) frein = clamp((besoin - 0.7 * dec) / (0.3 * dec), 0, 1);
+    if (resteDegagement < 2) frein = vit > 1 ? .65 : .35;
+    else if (besoin > 0.7 * dec) frein = clamp((besoin - 0.7 * dec) / (0.3 * dec), 0, 1);
     else if (vit > cible + 2) frein = clamp((vit - cible - 2) / 4, 0, 1);
     else gaz = vit < cible - 1 ? 1 : clamp((cible - vit + 1) / 2, 0, 1);
 
@@ -532,6 +546,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       if (meilleur) v.meilleur = temps;
       ev.push({ type: 'tour', id: v.id, tour: 1, temps, meilleur, valide });
       v.fini = true; v.tempsFinal = tPassage; course.finisseurs++;
+      // Le premier va au fond du dégagement. Chacun laisse une longueur de caisse au suivant.
+      const zone = course.c.longueur - (course.c.arrivee ?? course.c.longueur);
+      const marge = Math.min(7, zone / (2 * course.voitures.length + 2));
+      v.arretApresLigne = course.c.longueur - marge * course.finisseurs;
       if (course.drapeau === null) course.drapeau = tPassage;
       ev.push({ type: 'arrivee', id: v.id, position: course.finisseurs });
       if (v.joueur) course.phase = 'arrivee';
@@ -794,7 +812,6 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       let cmd;
       if (!v.joueur || v.fini) {
         cmd = commandesIA(course, v, cmdsIA[i] || (cmdsIA[i] = {}));
-        if (c.ouvert && v.fini) { cmd.gaz = 0; cmd.frein = v.etat.v > 2 ? .72 : .25; cmd.derive = false; }
       }
       else cmd = (Array.isArray(cmdJoueur) ? cmdJoueur[v.id] : cmdJoueur) || NEUTRE;   // écran partagé : une commande par voiture
       const service = v.etat.stands;
@@ -860,8 +877,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       let humains = 0, enPiste = false, arrivee = j.fini ? j.tempsFinal : -Infinity;
       for (let i = 0; i < V.length; i++) { const v = V[i]; if (v.humain) { humains++; if (!v.fini && !v.abandon) enPiste = true; else if (v.fini) arrivee = Math.max(arrivee, v.tempsFinal); } }
       const attendre = humains > 0 && enPiste && course.temps - course.drapeau < 2 * delai;
-      if (!attendre && ((arrivee > -Infinity && course.temps - arrivee >= 8) || course.temps - course.drapeau >= delai ||
-          tousArrives(V))) course.termine = true;
+      if (!attendre && ((arrivee > -Infinity && course.temps - arrivee >= 8) || course.temps - course.drapeau >= delai)) course.termine = true;
     }
     return ev;
   }

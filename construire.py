@@ -60,6 +60,7 @@ MODULES = [
     'ecologie.js',
     'saisons.js',
     'vegetation.js',
+    'bosquets.js',
     # bords de route du lot 22F (publicités en séries, bords dangereux) : lu par decor.js et jeu.js s'il est présent
     'bords.js',
     'baikal.js',  # décor boréal préparé avant la construction des nappes

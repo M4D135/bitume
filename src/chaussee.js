@@ -18,19 +18,25 @@
 
   // Lecture sans mutation ni évolution temporelle ; passer une sortie propre à l'appelant évite
   // toute allocation au pas de simulation. Les limites de tunnel restent celles du circuit.
-  function lire(c, s, meteo, sortie) {
+  function exposee(meteo, sortie) {
     const m = objet(meteo === undefined ? B.meteo && B.meteo.actuel : meteo);
     const out = sortie && typeof sortie === 'object' ? sortie : {};
-    const abri = !!(c && Number.isFinite(s) && B.circuit && typeof B.circuit.dansCouvert === 'function'
-      && B.circuit.dansCouvert(c, s));
     const flocons = typeof m.precipitationsNeige === 'boolean' ? m.precipitationsNeige : m.reel === true && m.neige === true;
     // .6 conserve la pondération historique de l'eau résiduelle. Une chute de neige n'est
     // pas une pluie liquide ; de l'eau déjà présente peut néanmoins coexister avec la neige.
-    out.eau = abri ? 0 : Math.max(flocons ? 0 : borner(m.pluie), .6 * borner(m.mouille));
-    out.neige = abri ? 0 : borner(m.neigeSol);
-    out.abri = abri;
+    out.eau = Math.max(flocons ? 0 : borner(m.pluie), .6 * borner(m.mouille));
+    out.neige = borner(m.neigeSol);
+    out.abri = false;
     return out;
   }
 
-  B.chaussee = { preparer, lire };
+  function lire(c, s, meteo, sortie) {
+    const out = exposee(meteo, sortie);
+    if (c && Number.isFinite(s) && B.circuit?.dansCouvert?.(c, s)) {
+      out.abri = true; out.eau = 0; out.neige = 0;
+    }
+    return out;
+  }
+
+  B.chaussee = { preparer, lire, exposee };
 })(globalThis.BITUME = globalThis.BITUME || {});
