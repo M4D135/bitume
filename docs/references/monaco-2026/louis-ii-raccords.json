@@ -174,9 +174,9 @@
       "sourceGradeSegmentsToReview": [
         {
           "segmentIndex": 0,
-          "horizontalLengthM": 2.764876914796689,
+          "horizontalLengthM": 2.764877,
           "sourceDeltaZM": 6.6,
-          "sourceGrade": 2.387086370709316,
+          "sourceGrade": 2.387086,
           "cause": "unknown",
           "reason": "abrupt_source_grade",
           "isQualifiedRoadGrade": false

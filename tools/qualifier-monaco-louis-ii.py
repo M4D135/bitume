@@ -86,7 +86,13 @@ def qualifier(directory):
             'osmEdges': aretes, 'minimumLowerBoundMarginM': min(a['lowerBoundMarginM'] for a in aretes),
             'marginDefinition': 'dXY to neighbouring axis minus dXY to Louis II, along the OSM polyline',
             'axes': [{'cleabs': axe['cleabs'], 'endpointsInSourceOrder': [raccords(axe, i, axes) for i in (0, -1)],
-                      'sourceGradeSegmentsToReview': axe['sourceGradeSegmentsToReview']}
+                      # La projection ECEF dépend de libm. Publier les grandeurs
+                      # dérivées avec une précision explicite, après le tri des
+                      # segments. Les coordonnées et Z acquis restent intacts.
+                      'sourceGradeSegmentsToReview': [
+                          {**s, 'horizontalLengthM': round(s['horizontalLengthM'], 6),
+                           'sourceGrade': round(s['sourceGrade'], 6)}
+                          for s in axe['sourceGradeSegmentsToReview']]}
                      for axe in (principale, autre)],
             'uniqueRoadObjects': len(axes), 'readyForRuntime': False,
             'roadSurfaceSurveyDate': None, 'roadAltitudeDatum': None, 'measuredRacePortals': None}

@@ -33,6 +33,8 @@ test('les raccords Louis-II et le saut intérieur restent localisés dans l’or
   }
   const [saut] = tunnel.sourceGradeSegmentsToReview;
   assert.equal(saut.segmentIndex, 0);
+  assert.equal(saut.horizontalLengthM, 2.764877);
+  assert.equal(saut.sourceGrade, 2.387086);
   assert.ok(Math.abs(saut.sourceDeltaZM - 6.6) < 1e-10);
   assert.equal(saut.cause, 'unknown');
   assert.equal(saut.isQualifiedRoadGrade, false);
