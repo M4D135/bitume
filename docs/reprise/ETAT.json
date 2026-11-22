@@ -1,10 +1,10 @@
 {
   "date": "2026-11-22",
   "etat_courant": {
-    "version_courante": "0.2.125",
-    "version_publiee_verifiee": "0.2.125",
+    "version_courante": "0.2.126",
+    "version_publiee_verifiee": "0.2.126",
     "physique": "p17",
-    "moteur": "FERRO 0.3.21 canonique",
+    "moteur": "FERRO 0.3.22 canonique",
     "circuits": 8,
     "statut": "integre_sur_main",
     "lot": "catalogue_rendu_course",
@@ -14,29 +14,29 @@
     "dernier_lot_clos": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json",
     "prochaine_action": "Cadence de 60 images 3D/s sur chaque kilomètre de Larche en 1080p Fine sous la pluie, deux glaces et douze voitures",
     "branche_candidate": "main",
-    "version_candidate": "0.2.125",
+    "version_candidate": "0.2.126",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md"
   },
   "publication": {
-    "version": "0.2.125",
-    "commit_sources": "247dcbe541c56c5ce7df9d58e8571224a068f6f4",
+    "version": "0.2.126",
+    "commit_sources": "c6431a04d5f70b54ea95288a8d00bfd3d31b5af5",
     "statut": "publie_sur_main",
-    "url": "https://github.com/M4D135/bitume/commit/247dcbe541c56c5ce7df9d58e8571224a068f6f4",
-    "recu": "https://github.com/M4D135/bitume/blob/247dcbe541c56c5ce7df9d58e8571224a068f6f4/SIZE.json",
+    "url": "https://github.com/M4D135/bitume/commit/c6431a04d5f70b54ea95288a8d00bfd3d31b5af5",
+    "recu": "https://github.com/M4D135/bitume/blob/c6431a04d5f70b54ea95288a8d00bfd3d31b5af5/SIZE.json",
     "site_deploiement_verifie": true
   },
   "qualification": {
-    "version": "0.2.125",
+    "version": "0.2.126",
     "tete_qualifiee": null,
-    "build_octets": 16544790,
-    "build_sha256": "936c049359f0c57192b0e824aa4722c66a6d79412c8337b2532c8b93a08cddf1",
+    "build_octets": 16561017,
+    "build_sha256": "ae0f7414e9174769ee7f9106d66235284f98a71661721ab5db495266d9fe65cf",
     "locale": {
       "statut": "nouvelle_reception_suspendue"
     },
     "github_actions": {
       "conclusion": null,
-      "commit": "247dcbe541c56c5ce7df9d58e8571224a068f6f4",
+      "commit": "c6431a04d5f70b54ea95288a8d00bfd3d31b5af5",
       "statut": "suspendu_a_la_demande_du_joueur"
     },
     "recu": null,
@@ -202,7 +202,7 @@
     "priorite_utilisateur": "Optimisation générale et 60 images 3D/s en 1080p Fine sous la pluie sur toute la descente de Larche.",
     "lot_actif": "catalogue_rendu_course",
     "statut": "en_cours",
-    "recu_publication": "https://github.com/M4D135/bitume/blob/247dcbe541c56c5ce7df9d58e8571224a068f6f4/SIZE.json",
+    "recu_publication": "https://github.com/M4D135/bitume/blob/c6431a04d5f70b54ea95288a8d00bfd3d31b5af5/SIZE.json",
     "prochain_lot": "receptions_sur_demande",
     "dernieres_demandes": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md"
   },
@@ -460,6 +460,36 @@
           "reconstruction_identique": null,
           "essai_utilisateur_valide": null
         }
+      },
+      "247dcbe541c56c5ce7df9d58e8571224a068f6f4": {
+        "publication": {
+          "version": "0.2.125",
+          "commit_sources": "247dcbe541c56c5ce7df9d58e8571224a068f6f4",
+          "statut": "publie_sur_main",
+          "url": "https://github.com/M4D135/bitume/commit/247dcbe541c56c5ce7df9d58e8571224a068f6f4",
+          "recu": "https://github.com/M4D135/bitume/blob/247dcbe541c56c5ce7df9d58e8571224a068f6f4/SIZE.json",
+          "site_deploiement_verifie": true
+        },
+        "qualification": {
+          "version": "0.2.125",
+          "tete_qualifiee": null,
+          "build_octets": 16544790,
+          "build_sha256": "936c049359f0c57192b0e824aa4722c66a6d79412c8337b2532c8b93a08cddf1",
+          "locale": {
+            "statut": "nouvelle_reception_suspendue"
+          },
+          "github_actions": {
+            "conclusion": null,
+            "commit": "247dcbe541c56c5ce7df9d58e8571224a068f6f4",
+            "statut": "suspendu_a_la_demande_du_joueur"
+          },
+          "recu": null,
+          "limites": [
+            "Essais suspendus à la demande du joueur. Les mesures d’une autre version restent identifiées séparément."
+          ],
+          "reconstruction_identique": null,
+          "essai_utilisateur_valide": null
+        }
       }
     }
   },
@@ -590,12 +620,12 @@
   },
   "suivi_du_runtime": {
     "date": "2026-11-22",
-    "revision_runtime": "247dcbe541c56c5ce7df9d58e8571224a068f6f4",
-    "version": "0.2.125",
+    "revision_runtime": "c6431a04d5f70b54ea95288a8d00bfd3d31b5af5",
+    "version": "0.2.126",
     "physique": "p17",
-    "moteur": "FERRO 0.3.21",
-    "sha256_html": "936c049359f0c57192b0e824aa4722c66a6d79412c8337b2532c8b93a08cddf1",
-    "octets_html": 16544790,
+    "moteur": "FERRO 0.3.22",
+    "sha256_html": "ae0f7414e9174769ee7f9106d66235284f98a71661721ab5db495266d9fe65cf",
+    "octets_html": 16561017,
     "circuits": [
       {
         "id": "forets-du-pacifique",
@@ -641,6 +671,16 @@
       "Matériaux 19/21/23/25, conduite 17, pneus, pilotes, faune 26 et réception des périphériques physiques",
       "Deux joueurs et réseau 27, cache et calcul 28, puis étapes du moteur C++ sur Mac, Linux et Windows"
     ],
-    "site_deploiement_verifie": true
+    "site_deploiement_verifie": true,
+    "optimisations_0126": [
+      "Les gouttes de carrosserie partagent les calculs de projection et d’orientation de leur triangle. La visière réutilise le flux d’air des dépôts, et les voitures hors de portée des embruns sont écartées avant leur projection.",
+      "WebGL réutilise les VAO des lots de décor pour conserver la configuration de leurs attributs entre dessins.",
+      "WebGL et WebGPU interrogent un index spatial pour sélectionner les nappes statiques de chaussée et de terrain.",
+      "WebGL2 partage la couleur entre reflets et halo sur les vues sans superposition. WebGPU évite une résolution intermédiaire lorsque l’habitacle est la seule passe suivante et que les reflets sont éteints.",
+      "La visière met à jour la texture de la scène à dimensions constantes. En 1080p Fine, la réduction optique conserve le même filtre et la même résolution.",
+      "La préparation du décor mesure une seule fois par point de vue la distance d’un lot qui occupe plusieurs cases.",
+      "Les vues compatibles réutilisent la pose calculée de la voiture."
+    ],
+    "reception_cadence_0126": "La cadence de la .126 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer."
   }
 }

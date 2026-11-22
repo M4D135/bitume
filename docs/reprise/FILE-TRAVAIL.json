@@ -3,13 +3,13 @@
   "date": "2026-11-22",
   "base": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
   "runtime_livre": {
-    "version": "0.2.125",
-    "moteur": "FERRO 0.3.21",
+    "version": "0.2.126",
+    "moteur": "FERRO 0.3.22",
     "physique": "p17",
-    "commit_sources": "247dcbe541c56c5ce7df9d58e8571224a068f6f4",
-    "html_sha256": "936c049359f0c57192b0e824aa4722c66a6d79412c8337b2532c8b93a08cddf1",
+    "commit_sources": "c6431a04d5f70b54ea95288a8d00bfd3d31b5af5",
+    "html_sha256": "ae0f7414e9174769ee7f9106d66235284f98a71661721ab5db495266d9fe65cf",
     "circuits": 8,
-    "recu": "https://github.com/M4D135/bitume/blob/247dcbe541c56c5ce7df9d58e8571224a068f6f4/SIZE.json"
+    "recu": "https://github.com/M4D135/bitume/blob/c6431a04d5f70b54ea95288a8d00bfd3d31b5af5/SIZE.json"
   },
   "destinations_prevues": 17,
   "lot_actif": "catalogue_rendu_course",
@@ -936,10 +936,10 @@
   "base_initiale": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_candidat": {
     "statut": "integre_sur_main",
-    "version": "0.2.125",
+    "version": "0.2.126",
     "branche": "main",
     "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
-    "recu": "https://github.com/M4D135/bitume/blob/247dcbe541c56c5ce7df9d58e8571224a068f6f4/SIZE.json"
+    "recu": "https://github.com/M4D135/bitume/blob/c6431a04d5f70b54ea95288a8d00bfd3d31b5af5/SIZE.json"
   },
   "demandes_video_survol_2026_11_20": {
     "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
@@ -1088,6 +1088,15 @@
       "html_sha256": "264931384ece57f26706e6424885c4ae71519e922451458070eff10196bbdace",
       "circuits": 8,
       "recu": "https://github.com/M4D135/bitume/blob/2a6dcd9843b2ce101d0f8ce6989f395c125ea3ed/SIZE.json"
+    },
+    "247dcbe541c56c5ce7df9d58e8571224a068f6f4": {
+      "version": "0.2.125",
+      "moteur": "FERRO 0.3.21",
+      "physique": "p17",
+      "commit_sources": "247dcbe541c56c5ce7df9d58e8571224a068f6f4",
+      "html_sha256": "936c049359f0c57192b0e824aa4722c66a6d79412c8337b2532c8b93a08cddf1",
+      "circuits": 8,
+      "recu": "https://github.com/M4D135/bitume/blob/247dcbe541c56c5ce7df9d58e8571224a068f6f4/SIZE.json"
     }
   },
   "candidats_precedents": {
@@ -1113,16 +1122,23 @@
       "branche": "main",
       "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
       "recu": "https://github.com/M4D135/bitume/blob/2a6dcd9843b2ce101d0f8ce6989f395c125ea3ed/SIZE.json"
+    },
+    "0.2.125": {
+      "statut": "integre_sur_main",
+      "version": "0.2.125",
+      "branche": "main",
+      "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
+      "recu": "https://github.com/M4D135/bitume/blob/247dcbe541c56c5ce7df9d58e8571224a068f6f4/SIZE.json"
     }
   },
   "suivi_du_runtime": {
     "date": "2026-11-22",
-    "revision_runtime": "247dcbe541c56c5ce7df9d58e8571224a068f6f4",
-    "version": "0.2.125",
+    "revision_runtime": "c6431a04d5f70b54ea95288a8d00bfd3d31b5af5",
+    "version": "0.2.126",
     "physique": "p17",
-    "moteur": "FERRO 0.3.21",
-    "sha256_html": "936c049359f0c57192b0e824aa4722c66a6d79412c8337b2532c8b93a08cddf1",
-    "octets_html": 16544790,
+    "moteur": "FERRO 0.3.22",
+    "sha256_html": "ae0f7414e9174769ee7f9106d66235284f98a71661721ab5db495266d9fe65cf",
+    "octets_html": 16561017,
     "circuits": [
       {
         "id": "forets-du-pacifique",
@@ -1168,6 +1184,16 @@
       "Matériaux 19/21/23/25, conduite 17, pneus, pilotes, faune 26 et réception des périphériques physiques",
       "Deux joueurs et réseau 27, cache et calcul 28, puis étapes du moteur C++ sur Mac, Linux et Windows"
     ],
-    "site_deploiement_verifie": true
+    "site_deploiement_verifie": true,
+    "optimisations_0126": [
+      "Les gouttes de carrosserie partagent les calculs de projection et d’orientation de leur triangle. La visière réutilise le flux d’air des dépôts, et les voitures hors de portée des embruns sont écartées avant leur projection.",
+      "WebGL réutilise les VAO des lots de décor pour conserver la configuration de leurs attributs entre dessins.",
+      "WebGL et WebGPU interrogent un index spatial pour sélectionner les nappes statiques de chaussée et de terrain.",
+      "WebGL2 partage la couleur entre reflets et halo sur les vues sans superposition. WebGPU évite une résolution intermédiaire lorsque l’habitacle est la seule passe suivante et que les reflets sont éteints.",
+      "La visière met à jour la texture de la scène à dimensions constantes. En 1080p Fine, la réduction optique conserve le même filtre et la même résolution.",
+      "La préparation du décor mesure une seule fois par point de vue la distance d’un lot qui occupe plusieurs cases.",
+      "Les vues compatibles réutilisent la pose calculée de la voiture."
+    ],
+    "reception_cadence_0126": "La cadence de la .126 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer."
   }
 }

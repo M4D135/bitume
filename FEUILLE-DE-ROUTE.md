@@ -5,6 +5,8 @@
 
 Les décisions sur les huit circuits, les trois tracés mixtes, le rendu et les réceptions en course figurent en tête de la [feuille détaillée](docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md). Les programmes historiques suivent ci-dessous.
 
+La .126 regroupe les calculs des gouttes par triangle de carrosserie et permet aux vues compatibles de réutiliser la pose de la voiture. Elle réutilise les VAO des lots WebGL, indexe les nappes statiques dans les deux moteurs de rendu et évite les résolutions multisample inutilisées. La cadence de la .126 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer. [Sources de la .126](https://github.com/M4D135/bitume/commit/c6431a04d5f70b54ea95288a8d00bfd3d31b5af5)
+
 <!-- bitume-reprise-actuelle-fin -->
 
 > **Priorité ajoutée le 21 novembre 2026, base 0.2.85 :** animaux proches de la route,

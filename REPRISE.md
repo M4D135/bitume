@@ -3,9 +3,11 @@
 <!-- bitume-reprise-actuelle-debut -->
 ## Par où reprendre
 
-**Runtime 0.2.125, FERRO 0.3.21, physique p17.** Le catalogue compte huit circuits, dont trois boucles à deux habitats. Les réceptions restantes concernent les démos, la visibilité des LED, les contacts, l’arrivée, le décor progressif sous la pluie à Pietraporzio et les nouvelles surfaces des huit circuits. Le relevé M5 .113 complet a donné 55,54 images 3D/s. Les interruptions ultérieures sont détaillées dans la feuille. La fiche des huit circuits donne la distance avant le départ. Dans la .125, les deux joueurs commencent avec le même profil. RT accélère, LT freine, le stick gauche dirige et LB fait dériver. A monte un rapport, X le descend, Y change la vue et B déclenche le geste. Select / View revient au menu précédent ou annule une affectation. Start / Menu met la course en pause. Le décor progressif et les sols à pigments interpolés emploient FERRO 0.3.21.
+**Runtime 0.2.126, FERRO 0.3.22, physique p17.** Le catalogue compte huit circuits, dont trois boucles à deux habitats. Les réceptions restantes concernent les démos, la visibilité des LED, les contacts, l’arrivée, le décor progressif sous la pluie à Pietraporzio et les nouvelles surfaces des huit circuits. Le relevé M5 .113 complet a donné 55,54 images 3D/s. Les interruptions ultérieures sont détaillées dans la feuille. La fiche des huit circuits donne la distance avant le départ. Dans la .125, les deux joueurs commencent avec le même profil. RT accélère, LT freine, le stick gauche dirige et LB fait dériver. A monte un rapport, X le descend, Y change la vue et B déclenche le geste. Select / View revient au menu précédent ou annule une affectation. Start / Menu met la course en pause. Le décor progressif et les sols à pigments interpolés emploient FERRO 0.3.22.
 
-[Feuille de route des 47 demandes et suites actuelles](docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md) · [Sources du jeu](https://github.com/M4D135/bitume/commit/247dcbe541c56c5ce7df9d58e8571224a068f6f4)
+[Feuille de route des 47 demandes et suites actuelles](docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md) · [Sources du jeu](https://github.com/M4D135/bitume/commit/c6431a04d5f70b54ea95288a8d00bfd3d31b5af5)
+
+La .126 regroupe les calculs des gouttes par triangle de carrosserie et permet aux vues compatibles de réutiliser la pose de la voiture. Elle réutilise les VAO des lots WebGL, indexe les nappes statiques dans les deux moteurs de rendu et évite les résolutions multisample inutilisées. La cadence de la .126 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer. [Sources de la .126](https://github.com/M4D135/bitume/commit/c6431a04d5f70b54ea95288a8d00bfd3d31b5af5)
 
 <!-- bitume-reprise-actuelle-fin -->
 
