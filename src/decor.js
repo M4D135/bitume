@@ -36,10 +36,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
   function fbm(x, z, g, octaves = 4) {
     let somme = 0, amp = .5, freq = 1;
     for (let o = 0; o < octaves; o++) { somme += amp * bruit(x * freq, z * freq, g + o * 31); amp *= .5; freq *= 2.03; }
-    return somme / (1 - Math.pow(.5, octaves));
+    // Après la dernière octave, 2 * amp vaut exactement 0.5 ** octaves.
+    return somme / (1 - 2 * amp);
   }
   const lisse = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
-  const melange = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
+  const melange = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
   const varier = (c, r, ampleur) => c.map(v => Math.max(0, v * (1 + (r() - .5) * ampleur)));
 
   // Orientation d'une primitive : axes locaux x (avant), y (haut), z (droite) donnés dans le monde,
@@ -575,16 +576,22 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
       return [mat, col];
     };
+    // Les indices sont locaux à une tuile régulière ; zéro signale un sommet encore absent.
+    const coteTuile = TUILE + 1, indicesTuile = new Uint16Array(coteTuile * coteTuile);
     for (let tj = 0; tj < nz - 1; tj += TUILE) for (let ti = 0; ti < nx - 1; ti += TUILE) {
-      const nap = nappe((Math.min(nx - 1, ti + TUILE) - ti + 1) * (Math.min(nz - 1, tj + TUILE) - tj + 1)), id = new Map(), idMat = organique ? new Map() : null;
+      const finI = Math.min(nx - 1, ti + TUILE), finJ = Math.min(nz - 1, tj + TUILE);
+      const nap = nappe((finI - ti + 1) * (finJ - tj + 1)), idMat = organique ? new Map() : null;
+      indicesTuile.fill(0);
       const prendre = (i, j) => {
-        const cle = j * nx + i; if (id.has(cle)) return id.get(cle);
+        const local = (j - tj) * coteTuile + i - ti, deja = indicesTuile[local];
+        if (deja) return deja - 1;
+        const cle = j * nx + i;
         const x = x0 + i * pasT, z = z0 + j * pasT, h = H[cle];
         const hx = H[j * nx + Math.min(nx - 1, i + 1)] - H[j * nx + Math.max(0, i - 1)];
         const hz = H[Math.min(nz - 1, j + 1) * nx + i] - H[Math.max(0, j - 1) * nx + i];
         const no = [-hx / (2 * pasT), 1, -hz / (2 * pasT)], l = Math.hypot(no[0], no[1], no[2]); no[0] /= l; no[1] /= l; no[2] /= l;
         const [mat, col] = couleur(h, D[cle], no[1], x, z);
-        const k = sommet(nap, [x, h, z], no, mat, col); id.set(cle, k); return k;
+        const k = sommet(nap, [x, h, z], no, mat, col); indicesTuile[local] = k + 1; return k;
       };
       // En mode organique : un même triangle n'interpole jamais deux indices de matière (évite que
       // 23=roche ↔ 25=sol passe par 24=métal peint au milieu des triangles sur les pentes).
@@ -608,7 +615,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         const m = m0 === m1 || m0 === m2 ? m0 : m1 === m2 ? m1 : m0;
         nap.i.push(avecMat(v0, m), avecMat(v1, m), avecMat(v2, m));
       };
-      for (let j = tj; j < Math.min(nz - 1, tj + TUILE); j++) for (let i = ti; i < Math.min(nx - 1, ti + TUILE); i++) {
+      for (let j = tj; j < finJ; j++) for (let i = ti; i < finI; i++) {
         // Une case entièrement sous la chaussée ou ses accotements reste invisible : on la saute.
         if (D[j * nx + i] < 18 && D[j * nx + i + 1] < 18 && D[(j + 1) * nx + i] < 18 && D[(j + 1) * nx + i + 1] < 18) continue;
         const a = prendre(i, j), b = prendre(i + 1, j), cc = prendre(i + 1, j + 1), d = prendre(i, j + 1);
@@ -1629,18 +1636,20 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         const detailNu = objets.some(o => o.collision !== 'tronc' && o.shape.startsWith('arbre-')) ? qualite : 'low';
         habiller(objets, loin, essence, detailNu, h, pied.r[0], pied.color, true);
       }
+      const parties = new Set(objets.concat(loin));
       if (saison) {
-        for (const o of new Set(objets.concat(loin))) if (!nu && couronneArbre(o) && o.color) {
+        for (const o of parties) if (!nu && couronneArbre(o) && o.color) {
           o.color = B.saisons.teinte(saison, essence === 'feuillu' ? 'feuillage-caduque' : 'feuillage-persistant', o.color, o.p[0], o.p[2], ecologie ? habitatArbre : null);
         }
         if (saison.feuilles && essence === 'feuillu') {
           sourcesFeuilles.push({ x, y: sol + h * .78, z, rayon: h * .36, sol: solSource ?? sol });
         }
       }
-      for (const o of new Set(objets.concat(loin))) if (o.collision === 'tronc' || couronneArbre(o)) Object.defineProperties(o, {
-        essenceArbre: { value: essence }, partieArbre: { value: o.collision === 'tronc' ? 'tronc' : nu ? 'branches' : 'feuillage' }
-      });
-      if (th.baikal) for (const o of new Set(objets.concat(loin))) if (o.essenceArbre) {
+      for (const o of parties) if (o.collision === 'tronc' || couronneArbre(o)) {
+        Object.defineProperty(o, 'essenceArbre', { value: essence });
+        Object.defineProperty(o, 'partieArbre', { value: o.collision === 'tronc' ? 'tronc' : nu ? 'branches' : 'feuillage' });
+      }
+      if (th.baikal) for (const o of parties) if (o.essenceArbre) {
         Object.defineProperty(o, 'essenceBaikal', { value: essence });
         if (o.collision === 'tronc' && essence === 'feuillu') o.color = [.70, .72, .65];
       }
