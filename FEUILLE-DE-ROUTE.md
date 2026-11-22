@@ -5,7 +5,7 @@
 
 Les décisions sur les huit circuits, les trois tracés mixtes, le rendu et les réceptions en course figurent en tête de la [feuille détaillée](docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md). Les programmes historiques suivent ci-dessous.
 
-La .126 regroupe les calculs des gouttes par triangle de carrosserie et permet aux vues compatibles de réutiliser la pose de la voiture. Elle réutilise les VAO des lots WebGL, indexe les nappes statiques dans les deux moteurs de rendu et évite les résolutions multisample inutilisées. La cadence de la .126 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer. [Sources de la .126](https://github.com/M4D135/bitume/commit/c6431a04d5f70b54ea95288a8d00bfd3d31b5af5)
+La .127 mutualise la préparation des roues et des effets des rétroviseurs. La visière précalcule le bruit du film d’eau. FERRO 0.3.23 écarte les pièces rigides du cockpit hors champ et les reflets masqués dans les formats compatibles. La cadence de la .127 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer. [Sources de la .127](https://github.com/M4D135/bitume/commit/6febf9fb2b8493101b54b37c8314fd2510443991)
 
 <!-- bitume-reprise-actuelle-fin -->
 

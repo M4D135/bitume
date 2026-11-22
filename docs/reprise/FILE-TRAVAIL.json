@@ -3,13 +3,13 @@
   "date": "2026-11-22",
   "base": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
   "runtime_livre": {
-    "version": "0.2.126",
-    "moteur": "FERRO 0.3.22",
+    "version": "0.2.127",
+    "moteur": "FERRO 0.3.23",
     "physique": "p17",
-    "commit_sources": "c6431a04d5f70b54ea95288a8d00bfd3d31b5af5",
-    "html_sha256": "ae0f7414e9174769ee7f9106d66235284f98a71661721ab5db495266d9fe65cf",
+    "commit_sources": "6febf9fb2b8493101b54b37c8314fd2510443991",
+    "html_sha256": "4fd027375aa50a1a37d74ea6627c33a699c9af698ea7d348637f7f051c3081e9",
     "circuits": 8,
-    "recu": "https://github.com/M4D135/bitume/blob/c6431a04d5f70b54ea95288a8d00bfd3d31b5af5/SIZE.json"
+    "recu": "https://github.com/M4D135/bitume/blob/6febf9fb2b8493101b54b37c8314fd2510443991/SIZE.json"
   },
   "destinations_prevues": 17,
   "lot_actif": "catalogue_rendu_course",
@@ -936,10 +936,10 @@
   "base_initiale": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_candidat": {
     "statut": "integre_sur_main",
-    "version": "0.2.126",
+    "version": "0.2.127",
     "branche": "main",
     "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
-    "recu": "https://github.com/M4D135/bitume/blob/c6431a04d5f70b54ea95288a8d00bfd3d31b5af5/SIZE.json"
+    "recu": "https://github.com/M4D135/bitume/blob/6febf9fb2b8493101b54b37c8314fd2510443991/SIZE.json"
   },
   "demandes_video_survol_2026_11_20": {
     "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
@@ -1097,6 +1097,15 @@
       "html_sha256": "936c049359f0c57192b0e824aa4722c66a6d79412c8337b2532c8b93a08cddf1",
       "circuits": 8,
       "recu": "https://github.com/M4D135/bitume/blob/247dcbe541c56c5ce7df9d58e8571224a068f6f4/SIZE.json"
+    },
+    "c6431a04d5f70b54ea95288a8d00bfd3d31b5af5": {
+      "version": "0.2.126",
+      "moteur": "FERRO 0.3.22",
+      "physique": "p17",
+      "commit_sources": "c6431a04d5f70b54ea95288a8d00bfd3d31b5af5",
+      "html_sha256": "ae0f7414e9174769ee7f9106d66235284f98a71661721ab5db495266d9fe65cf",
+      "circuits": 8,
+      "recu": "https://github.com/M4D135/bitume/blob/c6431a04d5f70b54ea95288a8d00bfd3d31b5af5/SIZE.json"
     }
   },
   "candidats_precedents": {
@@ -1129,16 +1138,23 @@
       "branche": "main",
       "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
       "recu": "https://github.com/M4D135/bitume/blob/247dcbe541c56c5ce7df9d58e8571224a068f6f4/SIZE.json"
+    },
+    "0.2.126": {
+      "statut": "integre_sur_main",
+      "version": "0.2.126",
+      "branche": "main",
+      "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
+      "recu": "https://github.com/M4D135/bitume/blob/c6431a04d5f70b54ea95288a8d00bfd3d31b5af5/SIZE.json"
     }
   },
   "suivi_du_runtime": {
     "date": "2026-11-22",
-    "revision_runtime": "c6431a04d5f70b54ea95288a8d00bfd3d31b5af5",
-    "version": "0.2.126",
+    "revision_runtime": "6febf9fb2b8493101b54b37c8314fd2510443991",
+    "version": "0.2.127",
     "physique": "p17",
-    "moteur": "FERRO 0.3.22",
-    "sha256_html": "ae0f7414e9174769ee7f9106d66235284f98a71661721ab5db495266d9fe65cf",
-    "octets_html": 16561017,
+    "moteur": "FERRO 0.3.23",
+    "sha256_html": "4fd027375aa50a1a37d74ea6627c33a699c9af698ea7d348637f7f051c3081e9",
+    "octets_html": 16579057,
     "circuits": [
       {
         "id": "forets-du-pacifique",
@@ -1194,6 +1210,14 @@
       "La préparation du décor mesure une seule fois par point de vue la distance d’un lot qui occupe plusieurs cases.",
       "Les vues compatibles réutilisent la pose calculée de la voiture."
     ],
-    "reception_cadence_0126": "La cadence de la .126 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer."
+    "reception_cadence_0126": "La cadence de la .126 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer.",
+    "optimisations_0127": [
+      "La caisse, les points d’ancrage, les rotations des roues et les centres utilisés pour leurs niveaux de détail sont réutilisés entre vues compatibles. Chaque caméra conserve sa propre décision de détail.",
+      "La vue principale prépare les traces et les flammes d’échappement réutilisées par les deux rétroviseurs. Chaque glace garde son champ et sa limite de portée.",
+      "La visière WebGL2 précalcule les quatre valeurs de bruit d’une cellule du film d’eau dans une texture entière. Le calcul direct reste disponible en repli.",
+      "WebGL2 et WebGPU écartent du dessin couleur les pièces rigides du cockpit entièrement hors champ. Le rendu des ombres conserve les pièces susceptibles d’en projeter.",
+      "Pour les images dont les deux dimensions sont divisibles par quatre, dont le 1920 × 1080, la prépasse du halo repère les zones pouvant recevoir un reflet. Avec le cockpit superposé, les reflets en espace écran évitent les groupes masqués. Le raffinement réutilise la profondeur déjà lue sur tous les formats."
+    ],
+    "reception_cadence_0127": "La cadence de la .127 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer."
   }
 }
