@@ -25,6 +25,7 @@ const noms = ['contratPiste', 'choixPneusLocaux', 'pneusAutomatiques', 'applique
 const ajouts = noms.filter(n => !reseau.includes('  function ' + n + '(')).map(fonction).join('\n');
 const catalogue = source.match(/  const CATALOGUE = \[[\s\S]*?\n  \];/)[0];
 const assembler = new Function('B', `
+  ${source.match(/  const PHYSIQUE = .*?;/)[0]}
   let session = null, ecran = 'course', modePrepa = 'course', retourReglages = 'titre', graineCourse = 900;
   let conditionsPreparation = null, conditionsPreparationCle = '', maintenant = 0, numero = 0;
   const timers = new Map(), messages = [], elements = new Map(), callbacks = new Map();

@@ -29,6 +29,7 @@ const changementFin = source.indexOf('\n  });', changementDebut) + 6;
 assert.ok(changementDebut >= 0 && changementFin > changementDebut);
 const catalogueDeclaration = source.match(/  const CATALOGUE = \[[\s\S]*?\n  \];/)[0];
 const creer = new Function('B', `
+  ${source.match(/  const PHYSIQUE = .*?;/)[0]}
   let session = null, ecran = 'enligne', modePrepa = 'course', retourReglages = 'titre', graineCourse = 100, maintenant = 0, numero = 0;
   let conditionsPreparation = null, conditionsPreparationCle = '';
   const temps = new Map(), messages = [], departs = [], elements = new Map(), sauvegardes = [], ecouteurs = new Map();
@@ -423,7 +424,7 @@ test('12F3 : annonce et départ portent le protocole de pneus et l’identité e
   for (const m of [annonce, cfg]) {
     assert.equal(m.versionChoixPneus, 2); assert.equal(m.protocolePneus, 1);
     assert.deepEqual(m.piste, a.contratPiste(m.i));
-    assert.equal(typeof m.piste.id, 'string'); assert.equal(typeof m.piste.revision, 'string');
+    assert.equal(m.piste.physique, 'p16'); assert.equal(typeof m.piste.id, 'string'); assert.equal(typeof m.piste.revision, 'string');
     assert.ok(m.piste.revision.length > 0);
   }
   assert.equal(typeof cfg.seance, 'string'); assert.ok(cfg.seance.length > 0);
@@ -434,7 +435,7 @@ test('12F3 : mauvaise révision de piste, circuit déplacé et ancien protocole 
   for (const patch of [
     {protocolePneus: undefined}, {protocolePneus: 0}, {protocolePneus: 2},
     {piste: undefined}, {piste: null}, {piste: {...cfg.piste, id: 'circuit-absent'}},
-    {piste: {...cfg.piste, revision: 'ancienne-revision'}}, {i: cfg.i + 1},
+    {piste: {...cfg.piste, physique: 'p15'}}, {piste: {...cfg.piste, physique: undefined}}, {piste: {...cfg.piste, revision: 'ancienne-revision'}}, {i: cfg.i + 1},
     {seance: undefined}, {seance: ''}
   ]) {
     const b = creer(B); b.connecter('invite');
@@ -442,7 +443,7 @@ test('12F3 : mauvaise révision de piste, circuit déplacé et ancien protocole 
     b.avancer(5000); assert.equal(b.departs.length, 0, JSON.stringify(patch));
     assert.match(b.$('l-etat').textContent, /version|pneu|circuit|séance|seance|incompatib/i);
   }
-  for (const patch of [{protocolePneus: 0}, {piste: {...cfg.piste, revision: 'ancienne-revision'}}]) {
+  for (const patch of [{protocolePneus: 0}, {piste: {...cfg.piste, physique: 'p15'}}, {piste: {...cfg.piste, physique: undefined}}, {piste: {...cfg.piste, revision: 'ancienne-revision'}}]) {
     const b = creer(B); b.connecter('invite');
     b.surMessageEnLigne({t: 'confirmer', course: {...cfg, ...patch}}, 0);
     assert.equal(b.EL.confirmation, null); assert.equal(b.departs.length, 0);

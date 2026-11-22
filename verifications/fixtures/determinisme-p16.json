@@ -1,0 +1,705 @@
+{
+  "format": "bitume-determinisme-physx-1",
+  "physique": "p16",
+  "node": "v24.18.0",
+  "moteur": {
+    "backend": "PhysX",
+    "version": "5.12.0"
+  },
+  "sources": {
+    "circuit.js": "062bc9b8699841f23787786cb3546ce213b657fa9ec5c4a9b3c8d552c0613345",
+    "route-des-cimes.js": "a83165c51644fde40545ea84d10748a56a2ddf4caed0b8372cf119ad7c4a4efa",
+    "conduite.js": "3f5a4741efa0452ae9ba3b0a2e62369969521d98eed188ff8cedba7eb3ea4359",
+    "degats.js": "8778908cee6410ad18bfc7bebfbccfe7b3d84c00bfd4c2c5eadc305ed7440247",
+    "contacts.js": "d6e583db729c91df8de21621c05b3b24835e6dc996e9dd4df7cb0464b27e1b7a",
+    "obstacles.js": "02626c61720ba5aa6bc1f06ee103725efed1a0c52f243b3ba2443f6f6cbf914e",
+    "botanique.js": "d3ec90f17c30d9fb155203e5daa1fdb6dfb0a821d7b2fd7090814fad1f4cc5e2",
+    "ecologie.js": "02e6ac06d118767e7020953dfe41542853892774ee649626f6110feb06d6d010",
+    "saisons.js": "428f502714e87543bc60c812ef35a1c7688e42d40a76a4fcd0ca9d51bdee70a9",
+    "vegetation.js": "e2a702fd4072c7f55a49f78e31522e8c0a6b2100564f02c8741b280c4b77df84",
+    "bords.js": "b715d6ec06bfc93d6b47c589106e40e32fd16afb726ee4bf7ffc41e3f88e614b",
+    "carene.js": "8d0a044069ccb0eb2dec76c5f203ff1b4335a70f34b6d0aa971861cd2262eda7",
+    "decor.js": "c5d66d0548093599d9f373079130acce63ae099732323560ff13ddf41b72ea15",
+    "meteo.js": "b2a739b586a0cba0ffd585dfb47a99cf10005661cccb834c1733438b0855e19c",
+    "strategie-stands.js": "c0b8326627e0225bf8197719472062b181038346eb3d1b3ca4b6ef320d0dee50",
+    "course.js": "601f71caa024f4e7adfa8e57401265796b12fba29ec4410a6a67ad253ac3568b",
+    "solides-physx.js": "dfa2b3ed10ce28d93131df1f087d9d715df4dfd8821f4b55eabfe1b03689c9df",
+    "physique.js": "27bffd3371230ce4fd1809e0ebbfee707105548658f19b6040c20c779a26fc3c",
+    "baikal.js": "0c691f2dbf5056897dd0341a7cb5593de8ea04e22803a232f153a06a3d05fdb6",
+    "batiments.js": "67fd03ce58096e60aee06f31160ec849bf950fb6d500c8731a62a1bb08938025",
+    "jeu.js": "26771df789f80c07e83a3daf27837904f0c22f1cf6672602569b3892686c02b1",
+    "moteur/renderer.js": "eef34e287a5467b3ae967b0eed07c2bc14bd6788c602e11f07d1ebefafed2ac9",
+    "ferro/physx.js": "b273c4ddbf5bd6871ac55bec727274184cbc627a7e1d5a30ca3a95fd3b525638",
+    "ferro/physx-runtime.js": "0234e97848df3e50d296d6e099d9340abf7f857beaa275276eb9c8c2974c7010"
+  },
+  "cas": {
+    "val-brule-sec-12": {
+      "secondes": 18,
+      "configuration": {
+        "nom": "val-brule-sec-12",
+        "circuit": "val-brule",
+        "graine": 1401,
+        "saison": "ete",
+        "pneus": "slicks",
+        "secondes": 18,
+        "meteo": {
+          "pluie": 0,
+          "mouille": 0,
+          "neigeSol": 0,
+          "fixe": true,
+          "precipitationsNeige": false
+        }
+      },
+      "scene": {
+        "statistiques": {
+          "nappes": 117,
+          "obstaclesHistoriques": 2492,
+          "complements": 2648,
+          "trianglesSol": 66702,
+          "trianglesObstacles": 118208,
+          "trianglesEauIgnores": 0
+        },
+        "empreinte": "d431942b92c8b0df3a66cf944bfa0c48aaa9a21f24063b5b3eff218473cfd5e0"
+      },
+      "resume": {
+        "phase": "course",
+        "horloge": 17.99999999999962,
+        "temps": 11.708333333333309,
+        "voitures": 12,
+        "pasPhysX": 2160,
+        "vitesseMax": 59.17201209871403,
+        "deplacements": [
+          431.6496484520469,
+          390.2438989530214,
+          402.31869836474476,
+          434.986547691132,
+          431.36514683593896,
+          414.29913654980385,
+          412.49719435893604,
+          446.98135551023466,
+          396.67872878413885,
+          443.6784564864925,
+          418.3166877968163,
+          385.5980727727031
+        ],
+        "contactsNatifs": 1070,
+        "evenements": {
+          "contact": 8,
+          "envol": 1,
+          "feu": 5,
+          "rapport": 61,
+          "rupteur": 720,
+          "vert": 1
+        },
+        "replacements": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "pneus": [
+          "slicks",
+          "slicks",
+          "slicks",
+          "slicks",
+          "slicks",
+          "slicks",
+          "slicks",
+          "slicks",
+          "slicks",
+          "slicks",
+          "slicks",
+          "slicks"
+        ]
+      },
+      "empreintes": [
+        "e736bb51a241fed0d98b0421b414399497395874ef558d018829b42b4361151f",
+        "93ab61caae1aae48edc864e81a3a596f657e4778294924f987f2bd2b61b17da0",
+        "da9da53a37cb9bd2e0e31aa707e3e199a4707a689dcb574a1fa65e48c78bc278",
+        "79bb85c82c16100619b277a2a8074dec1dde38f9039e4bff0cb4ee985e20b5d7",
+        "ad548f7f7334740bebdf4903d926f1e8403612e4b7945a64ea02122ad2b2ddba",
+        "9417511ef81477c3c125236afe2bfa043caa80a91168aff9759cd1baab541e52",
+        "dccd25a59cec997a077b18c0ff6e42e2b6ec4d8e049632ce478fce064f7b3062",
+        "701e8681fa4b451d3576e8f0b89282125a8c4e4d1e067503ccd588d0224ec04b",
+        "b507f0fd79fb8f31b178bfc8a6a8f49059919dee7fa8edceb251fe7e0a205185",
+        "fdac8b85fc809ce55901e91e4c9babdf04529637556cd40f24329dfb160da0e0",
+        "7ba01281e5054e302f9830c2dc77636d777d67fccf7118e43c8b5e8ac734c6d7",
+        "e404ff94b3d3c0a5f505db663219db75b0fd10f1afcdb3483a86161de526a708",
+        "ab39ac773bb72eaaac9d2100dba786a276695f0fa9f0d8a902e501ff3cac75a8",
+        "dfb092ce9cc6263582d7e38d1bdbe2776e6976d03e8c35bc79d3b87d72e49ef9",
+        "ba12f6f40bb8d3bbefdb84a0682d3e30de2e2fb786eb880509344ec722a8e8ef",
+        "9fa57d1149e934b3156045e393e1e65281de77d1669b842dd66b354758e23d48",
+        "1b3764daf3fbf4b9dfad77efaa8aadf762b23b9b5d17b90ec3cc31f44f91067a",
+        "321ed3c255ccef988b967ca213843845ac4ffaaa3dceece849c58a8a836421cd"
+      ],
+      "couches": [
+        {
+          "etat": "63d8bbc45052c28169cdf1259a57ad6ab25f70d564b813522412e45a11e2e21a",
+          "natif": "71b132d2210216b93e94c93aab03f10a4065116da36e2b7fe7f326ee0b41af05",
+          "evenements": "1d90eeaea9b11d6845a35aac0680bd2d605f309cec5289937d1446fb4f0d9651",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "31f2b3cb4e6db78af3f6af6e8165b16355c4030b620c012b51105240efeaee68",
+          "natif": "a5a319b5d65ff675f789799cff2bd10a9bf4659188df6c5a0a14e2e8fabe039d",
+          "evenements": "72dbcc165a535d50aeba408bc818c80f93568f9f9bca14d512936c5a5d4c8706",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "f04a59f582ca92ca694160bb2a47a448240e9958a170f1e93a17fc1e6be64343",
+          "natif": "b580f0a0a7a44c04783d1178a4be9fe2479c97271b0a0ccb77e74c8cbf073052",
+          "evenements": "4c33b392ca2286f6ac912acab1f4afd1c39c395a1ff27f44292c213c4cacc80d",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "74487f56f681fedab589e11c1e659ce2e0715a86f4b04d19b42bcfdf199d8fa5",
+          "natif": "a57be15124454e64bb0dba6e8742b2b00abfda50af35041f00455d159a5cc9f5",
+          "evenements": "16d0e3e327d21879cdddf445464338317cf0de936374f993687c4e042ab61635",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "21f8efd4df44e292c5195d34414bc1dd90f4edf898120e4c3984b2e7caa97b71",
+          "natif": "4173b5ee96216374bd0d3c834352228c99b2cf54c22738180652b1dbcf78ca02",
+          "evenements": "62a6fc4d4b9741cc91dfb23de7a222076e715db65f9607ef0200e99623cd0c9c",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "382cbbda745a694eb06ecfdd2e8b3e1fb2aee32bad8f06a3e74b8ee8b88ff3a6",
+          "natif": "e9c5e8801b084fa8b219ac5f2e58550657a2682cce1f48f88c32bdb43fce532b",
+          "evenements": "0a5e56fd49e24223cfd083a9d3f1306e1c27d9d4fdbfba0c7849f074d268a7a5",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "2e6b12a9d13e93fb22896760f27eece6841da793390c38c78599a79886c66e8d",
+          "natif": "404baf12158c844415ba5be5a1b16b7a24d6aae5fdd9a2af1a2e4041e064992e",
+          "evenements": "7825859687a0218cc1c1cf797292b862b8adc3895af977a787387f2898369fa1",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "ecc95f43a3a55284c2940eb3fd48ae7675a2e5597caf204102014d7fc85f47e4",
+          "natif": "4607308373eaece15f8e38fe50f11d59ea964653e46ed09ffb6e68a2c5a57df7",
+          "evenements": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "c1a80c2c35b7d00a8668800af367f6fdba6ed759721f1ec184d216eca393dd61",
+          "natif": "b02c95393a9141ec2b325c0113f3adf6c3963a6a53cf80419a9281fa9ac5e5f6",
+          "evenements": "cb2d9722b93cc9f9e05cc77e7149fffb3af97e28647065d7a73c2b488ac219db",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "a092f5b5093157fbe1ebedee1b56838902c0e39f6f646b3186e23218c3e4dec6",
+          "natif": "7231320a3ebffd67919790f43e1634b6f19a4b76e3c972e010e9582a4ae1f7ac",
+          "evenements": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "9bf5cea470a76ed80037dc7b4ad433be67003ca05f1ca65c059eb020ee998880",
+          "natif": "8fd6aa4fed037235639cc4dbbea35ed508239c373d1f745a2741c12c0236a743",
+          "evenements": "c9e7d52b9c13a3a95b0ef95f6560d2380ccba8cd19365a9f5cee3590266d4c3c",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "e7cb8e002bb221b5f5f3b6a8f7c136d9b83a5592fde2a36dca901ed07885d549",
+          "natif": "86363653ac6db7694d7d343767bec41f16ca72cb3dd840906663acecbf30dca6",
+          "evenements": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "a2885ae67c647fc6ca097aca1066567363d42216357bcdf1fd27c0813c8ea2e5",
+          "natif": "81004b96c218cd29fd035d1847ba38d88720b5e11878c642aa210a294f76a4a0",
+          "evenements": "c78b0a23c5ec670b4cda6b56cff82c1a6efd7917f5de0e2471133146558a4d12",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "56cced0f71da08f469bffd5fa057679a7287f69974043e1ff75df3388ca9a55f",
+          "natif": "beff3e53c683b16ea6328eb55070fe53bd402f813196b4aae6b90f4d74d978be",
+          "evenements": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "5b1830f10de4f6940ec89aa402b123deab8567b9e05a83bbd8fa20744a5783f4",
+          "natif": "0d4e9bc8842fefa65f54df49dc0dd2650b55881f7df91db12e3f024fd10a319f",
+          "evenements": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "58a9fc1fcdb545cf1eed67b3820dd6687a1401c13026a132d06f3f180a2c4a82",
+          "natif": "7193b592c053b07dad0eed0b444a8228da4c90a2153d0adba0781c626af22e45",
+          "evenements": "4b126dfe2157f3daea5e1f0a178f37aaa632761e399f3ec93a01e8ade880c7bb",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "14736790dea87cc9140e78bdd8156b4ea73bc26e7f8cfa53de0ff6de7f4b8976",
+          "natif": "fe94eb6f986d2055b60ac80020546ea92a705f575df43c23b5c3a468c92082a8",
+          "evenements": "a68c4da055b3ee71b4902e320711e671e6a6c223d5d6e976256b9a045d31d589",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "7bb347ea2516132c47cb9e8934990310e5b7dd8f15e7fc5ab02d9da9224a6409",
+          "natif": "58473d2cfe9055918fd0ce6fb70dbe8f8ebbf2790b1826c30cad2cb5bdce8470",
+          "evenements": "6babde1d7a5e5477c6575291a107ac56f30477017ceface8d14027ccb857c6d9",
+          "contacts": "40667844bbd4b310586d56ce1cf4f889da6c2de975fffbcec8657368c0a2fa2e"
+        }
+      ]
+    },
+    "port-sable-pluie-12": {
+      "secondes": 18,
+      "configuration": {
+        "nom": "port-sable-pluie-12",
+        "circuit": "port-sable",
+        "graine": 1402,
+        "saison": "automne",
+        "pneus": "pluie",
+        "secondes": 18,
+        "meteo": {
+          "pluie": 1,
+          "mouille": 1,
+          "neigeSol": 0,
+          "fixe": true,
+          "precipitationsNeige": false
+        }
+      },
+      "scene": {
+        "statistiques": {
+          "nappes": 103,
+          "obstaclesHistoriques": 1718,
+          "complements": 2285,
+          "trianglesSol": 59522,
+          "trianglesObstacles": 70184,
+          "trianglesEauIgnores": 2
+        },
+        "empreinte": "3389569b0f7002c1b9ecb5c3d07f0c94fb94f626302f7ad6de999ceac4bfcf9e"
+      },
+      "resume": {
+        "phase": "course",
+        "horloge": 17.99999999999962,
+        "temps": 11.766666666666639,
+        "voitures": 12,
+        "pasPhysX": 2160,
+        "vitesseMax": 58.968613615473096,
+        "deplacements": [
+          435.5687371740081,
+          416.61503323405265,
+          422.338109315549,
+          432.1024543547983,
+          430.881412785211,
+          420.9536783480295,
+          436.36945061219643,
+          441.57334949796746,
+          406.5958325370479,
+          411.21550359327296,
+          439.1432417646885,
+          404.54078155069425
+        ],
+        "contactsNatifs": 93,
+        "evenements": {
+          "feu": 5,
+          "rapport": 48,
+          "rupteur": 708,
+          "vert": 1
+        },
+        "replacements": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "pneus": [
+          "pluie",
+          "pluie",
+          "pluie",
+          "pluie",
+          "pluie",
+          "pluie",
+          "pluie",
+          "pluie",
+          "pluie",
+          "pluie",
+          "pluie",
+          "pluie"
+        ]
+      },
+      "empreintes": [
+        "b1dd9c2b35a675621253bb08ea26b638b58ecf5a90f6ab09bec728a434e16904",
+        "3ee6aae12b9adb33e9bc31bc2fa2a1fe120a7a4ffd6276e93434e4e36fd5784e",
+        "944082bcac2218fc8fdbd0c7b803f2b66bc555d9008ba7625f5be949173de0d7",
+        "299d14080300e00c6456efcf717c8436adb2225dcf77cc60b94d7dba47cd6816",
+        "84466999bf082b441d03441a8bc04649ce575761669f2137a1c290262b7bf28f",
+        "7440540bda2f47e19c4a816ce4d57b3a1c97bebfb3bc8b77b54de34849051544",
+        "e03d5d62abd5c637fc3d774e693738e83ab130b80c2cfba4155727ff327c6fcb",
+        "c3165a8daa0bbbf4a86a7919b780a62d3008f843bc4bb32da8731b5fe51019f1",
+        "8cac5e93a1fa95746d54c1d51af0879f4adc59271a399754e742c8b23b927eb5",
+        "adf51a81224e8b37f2cc0d78fde845dc000c68041f8175ddbd0a6fe4012be3fc",
+        "88f1edba9fbc3b2aea691b11f3432f2944f7e7ff388320785a4c49472b734fb4",
+        "e95a31a9e2a0b294d25ed9ba37d0d2fe4f2aade53eee59302f84d39d38a9367f",
+        "3aa50223e26c38fb86563bdf3b8b0aabb36e89348e17724b441c3c728ad37849",
+        "46cc5c0d8af8f7dcbad0f459691bcf49e4fabee9f1b8c85e95ddff5b245f0f85",
+        "889d7255aba3e35fec1391c3ec1dc903467260e3a1b5283c2fc542ea5e2b091a",
+        "9ba4b2610a454e887cfcda8da53d3c0c73642ab0ebd92e646a741f2e5f11570e",
+        "71e6f3fe1a6c1bf310d4ccd312739bf9b67524530245e3cc9d9a99e52b79d9e6",
+        "27f307dfb5640038a5ac96d06c7b8869e044a9db3d767a51f29b8439fa24ab6b"
+      ],
+      "couches": [
+        {
+          "etat": "6ef3f7cbefe2666db0ebf3fc5a7920e012542cfc2d34d2bfbdbe609fed41950a",
+          "natif": "032cc8a68fe34a2785962b25ddf5818c8f707896022f4328c77f101fbf80d262",
+          "evenements": "1d90eeaea9b11d6845a35aac0680bd2d605f309cec5289937d1446fb4f0d9651",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "447751df09808a5d5216bfc365646a270b56b1ab1480ea1cb5dbc4fb089561c3",
+          "natif": "ddb654e00dc65ac804b168616809be12926fd823a0f105204b4dc897a421a03b",
+          "evenements": "72dbcc165a535d50aeba408bc818c80f93568f9f9bca14d512936c5a5d4c8706",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "cbe6ba5421a8196efedf4199cd38a3c37bcf1fc0bfaf84c8016f2804fea39d0c",
+          "natif": "56364d40e497fed4b2634d951f1fbc6381ca3bc0f397820c74a205987c69b688",
+          "evenements": "4c33b392ca2286f6ac912acab1f4afd1c39c395a1ff27f44292c213c4cacc80d",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "f95f99427079a95550afb5e3ce05a79d75b8358fb22fe6e5aaceb31a72b987ad",
+          "natif": "dfc5a4691ebda216c7180591814f59a33bd3f258c2a538d85c435cf27663ecb4",
+          "evenements": "16d0e3e327d21879cdddf445464338317cf0de936374f993687c4e042ab61635",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "a43e2ef6a9180544cfbf75f7cf8f7e63d90ee2bb3d6e32f5817a5a28c4c1252e",
+          "natif": "75dc92faf7035e88b67dbcbcd34f50d99ccbfb1a20587b759e80d1849d9b11fc",
+          "evenements": "62a6fc4d4b9741cc91dfb23de7a222076e715db65f9607ef0200e99623cd0c9c",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "610575abb4429673eb0977517497b47ecc50d4082721c35ca1d94849fd69bafd",
+          "natif": "42745f2994a208c7f1d3f3d524a5607e1ed6ffb9e3d5534d237ebfff25f82d8e",
+          "evenements": "0a5e56fd49e24223cfd083a9d3f1306e1c27d9d4fdbfba0c7849f074d268a7a5",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "031a1786d773f4c8ba6dc64fe898705846074e2feff8aadce8b13e4c2164cee1",
+          "natif": "da97d593e1bc7252d5cca368f399a816fc82e493ae1e9da7a42e688d6904cea7",
+          "evenements": "c4fea4b27c0f2ba7c68824cd8e64d4230826c9800d135defea5db67006ccfa74",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "937c51f8a994c2cce60be1ef518b0566c88679d289cec95c03437cf9cafe4a1e",
+          "natif": "83f44efa06c3c982def903b06b4f2bd76a9f7672d8dc967b13cd7db787681092",
+          "evenements": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "047ad3256a2c705b4b4b6d9b85dc881cede6ea616f008f3e63dcab087ce5ce92",
+          "natif": "28138c857bdb1f2eddedf9e8c61c0bf8bbc3524a48c6a97f9d7d49cbc6fab113",
+          "evenements": "0920a19d16fe7f8ee9f7c64f2bee2ae7745cebe8972ec9d17c76a5a60cfcaeb8",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "78ce2e75555c045fd05a7926034d6f3e67c1c5f7421ca066149791dc398ae610",
+          "natif": "0ed15c530038b79c33502bb70d52d272722af95e91b5ce518cc3b94b415a7e6e",
+          "evenements": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "76f8c6f390dd8232283208e2a7c6586e586d5bddd6aa61d59ff8798f492cae88",
+          "natif": "00fe585663154e1b91dd986ed2e8f1fa869628ae1dac5becdcbbc4388a49ea00",
+          "evenements": "a1be8951c780a054fc158c446bffb4081b24da7af62eeda1714db46356b3da54",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "0368a7efcfd111f6b388130446f5b1ef00a060d089d85f0f510f4f898833fcf2",
+          "natif": "2b54890eb42df3e34160019dfb9665d505b3d137576eecb81b029b8f02d46676",
+          "evenements": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "02b6cb723632fabd4a2549a646f6e36241c4a0f901dcfb38e5167885ef6323a2",
+          "natif": "7f6df3e7bbecd97f2a21767d369b85b3715bf55801d8af7832f7d9414dc71e07",
+          "evenements": "8a3d71b848afdd81a9972ae3953281e75160841be1fe21a0f0747b6e5f98ea34",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "76b61a77c46bd09d1a43164f9a4539bc0ee56b92b7814b185ee4416e160f45f1",
+          "natif": "4971e5e52fca4e87c75c56c63d8a9b95581fedb5fd4d2bd57c2ebea5a58dcf40",
+          "evenements": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "1aa52de1f97a369f8448cea7b7b10fd5dce5cf88ba6ffbfaecf7a03650f33994",
+          "natif": "d22061e208d063599f96d75be8a5ad1912a6fba6b2e85b93db361482dabbcf0d",
+          "evenements": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "179e1a4edbd52fee94bd8330cba3ca2457adccb689cc6e676a371bd256e9f53a",
+          "natif": "5257b772dc3943866eac71545cd027cd5a589b556bec5a694cf912f7a6f7d789",
+          "evenements": "955e819f1e5a6bcdcd3a7383de3b94d8ca4ba2b03323d974090fb54ff9ae1b1b",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "67f4168a598830e09243946547af133f008ee21a4fb1724e21a832a134c47864",
+          "natif": "e9b6a7a2655895c167d8f421c899b932d2fad20b47926c5ac058380bfc302593",
+          "evenements": "2973c0d4903b285b6719cf17afe1598ef99ef5e9108a98e37c8fafb19d71e555",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "9f64a54c0a84f65a76ec51e4409d66b35df2521621b72e8620ec3ce97093cd7c",
+          "natif": "88a3e80d32c75927d7cddddd6feb2cbb69c132d3bf0dde0a2f52ff19fae6fb0c",
+          "evenements": "b16fa707b6f0ef93545ef2bb0e23dd6001d0b362c158000b13030b7f6fc2f62a",
+          "contacts": "1ab15e88a741035b0ee089da214f70013a71aa096c54d5a156967a87c0c10058"
+        }
+      ]
+    },
+    "baikal-neige-12": {
+      "secondes": 18,
+      "configuration": {
+        "nom": "baikal-neige-12",
+        "circuit": "baikal",
+        "graine": 1403,
+        "saison": "hiver",
+        "pneus": "neige",
+        "secondes": 18,
+        "meteo": {
+          "pluie": 0.8,
+          "mouille": 0,
+          "neigeSol": 0.8,
+          "precipitationsNeige": true,
+          "fixe": true
+        }
+      },
+      "scene": {
+        "statistiques": {
+          "nappes": 189,
+          "obstaclesHistoriques": 2176,
+          "complements": 3331,
+          "trianglesSol": 98374,
+          "trianglesObstacles": 82072,
+          "trianglesEauIgnores": 2
+        },
+        "empreinte": "526d568be7f2ce9db2558360c2167cdf70cf6e81a65297b8a5603208dc165087"
+      },
+      "resume": {
+        "phase": "course",
+        "horloge": 17.99999999999962,
+        "temps": 11.758333333333306,
+        "voitures": 12,
+        "pasPhysX": 2160,
+        "vitesseMax": 63.49177780069833,
+        "deplacements": [
+          360.83101911566337,
+          295.7413857793745,
+          207.70112887986116,
+          459.7338555734421,
+          460.1478676564433,
+          465.0628985450767,
+          448.58255982961526,
+          462.4555669325675,
+          452.7591496033469,
+          327.7088678994424,
+          367.89881292470847,
+          374.808324819696
+        ],
+        "contactsNatifs": 205,
+        "evenements": {
+          "contact": 2,
+          "envol": 1,
+          "feu": 5,
+          "rapport": 52,
+          "retour": 1,
+          "rupteur": 708,
+          "vert": 1
+        },
+        "replacements": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "pneus": [
+          "neige",
+          "neige",
+          "neige",
+          "neige",
+          "neige",
+          "neige",
+          "neige",
+          "neige",
+          "neige",
+          "neige",
+          "neige",
+          "neige"
+        ]
+      },
+      "empreintes": [
+        "37ba1d3863299b7bd4c738c6570cb8b0d6725551cc22b0f434ea12f3da86f231",
+        "f81fb89b6b49bb3e83aace8bd8799bc53cdec5fc58c7ceccefa7a5128b8339e4",
+        "abde6414561986447869e6b3b24c3e1000058175a5bfa310d8587c16f4f14df0",
+        "477e7dc48082a953e899125650e979272b0f359faf70ec34bb8c5118fc9873e0",
+        "82fc75fd7ad4c58cf710a3694ea54da5c7a93e1522865072933f9fb5d615f247",
+        "ac34c6b7b18d43bd2a7e3945aee6886956267fdce69e1402ef19f5e8154ab9bb",
+        "8ef38df439cf4921987f5d54109c1664d954fef89eb81000022d55cc365e1394",
+        "52234102ef6f875ee2251d056541e08657ec306fdefb3d5f92563ef55a6fb6b6",
+        "f91db4d4c2d9cc415ed5daa2784eed561731c15ab05e81dd4cacfbbd0f27a425",
+        "ad0147ca2f80d1ebf99701a6054146d198b2a2b8bb087b927a12fb671ab3b9e3",
+        "dd9ed6e97007b88dac2002751f2bab427c6ef23db64717d458978e0f981bf728",
+        "acb39592b5a70c947c995b75021aeaaf77a78da596cbd50657d692618241351e",
+        "6f11b7641b82c8dbd3cf4a3543650ab61639483cfde7c9939a9d425dd01c81c9",
+        "1c770568b4a7a6598345e8200ea37f97259e0801a453c36fdd80e6dcb0c82f54",
+        "02ff7c81254c42971eda7bd27db6b1b6860dcd92f1a595b6db996b5e1ace2e7f",
+        "e23b9aa2d3085999ab5a6d3b8b0d212349045dfcc30fa9eb96568cd2311a3140",
+        "576e777890ba703a7a775dbb4fa102c7867f30b4c314b59da70bae86efe51151",
+        "7d63678e21b3d1f3fdc1342cad8b51271d85f41a1ed883b931639bdb3a0ca321"
+      ],
+      "couches": [
+        {
+          "etat": "35ea8c540f45ef5e19ee2cdd3e9d116b77b6b18702da759bc54efac35f6f4cb2",
+          "natif": "8b21df3b1a69a7049fc1f2e6496baf22a4fd6285aace3dccf002c5f1dca2533f",
+          "evenements": "1d90eeaea9b11d6845a35aac0680bd2d605f309cec5289937d1446fb4f0d9651",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "53141a105d75118a8e80210e9e22d252b0c17ac7d3bd87c4a31482e72749c227",
+          "natif": "b176e44962c2c2d8d2099243e8802b6b0218426be2a5b37edca9a1ab2ac1f9e4",
+          "evenements": "72dbcc165a535d50aeba408bc818c80f93568f9f9bca14d512936c5a5d4c8706",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "b75b03e56edc4a6420e88e1b09802d45a6f8ef906a9d6fa7b10441bed5b6744d",
+          "natif": "eacd39aeae8c82dbb4b910336a31f578d8b54fd660ccb1cb02ec4c549714206a",
+          "evenements": "4c33b392ca2286f6ac912acab1f4afd1c39c395a1ff27f44292c213c4cacc80d",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "8c2aba288e9afa1ca9197637e57e3c7d10ec8372e3a57fbee524d0c7f7444986",
+          "natif": "49d3c292d50441d970572bed461e24269576912a76c0cdae349c1669a6509d48",
+          "evenements": "16d0e3e327d21879cdddf445464338317cf0de936374f993687c4e042ab61635",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "f52a49dbeec5d367f7d81b027afa7d2011c792befec79b244365cf17242c0881",
+          "natif": "996c35b8019d0212f68cd7c8fbab13389df34517f9a0cf2631c7ff3c2e437977",
+          "evenements": "62a6fc4d4b9741cc91dfb23de7a222076e715db65f9607ef0200e99623cd0c9c",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "8e93fd573dd11d3f4a58a3332dcd43608c24a89a4b9389b1e9dbc377be3202a4",
+          "natif": "f9a48c28836f493b0d01c3981ad569960e5cc94e1f2d21436ee68d757027b645",
+          "evenements": "0a5e56fd49e24223cfd083a9d3f1306e1c27d9d4fdbfba0c7849f074d268a7a5",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "dbd5acf8d125ede851e485f3ac4a36aa11d56511c411eabe722a485e223ce8e7",
+          "natif": "19feedac7af38961812bf9a08aa90ccf0aa6e1481dcd950dd0e120b7154e7486",
+          "evenements": "6eacc73025b82049b1665ae7650f315b3ad85c995615501a7a986add928914db",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "99f70e2d9e306a84c444f2ed444a5966f36300e0e061b95584c133942f72088d",
+          "natif": "e1c9e77eb175fef0f41924ef41b7ec3895e008e070effc08c1fadbcf580b487a",
+          "evenements": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "e3b4832c2b3dbc5070ec84de2811af34c753037b9b2965cd34ec1be2754527a9",
+          "natif": "62bff106bd4019cb615c7fe5d3ffb2330c99b568a2abe46a0aae49593112d87a",
+          "evenements": "a25605ea0c5cfd68413ae6ce4a84ec9ede9115ddc33454549c5ece774cd9cb91",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "fe51d2daaac4e34f46c474aa745fd81970cbf0e9052132ef9cb03e805da728fa",
+          "natif": "c1d7d9d1c7e1beb2b639ab77f3cd6ffcc3f730551a2ae604f48225a8a59f0cd9",
+          "evenements": "09ac50a0115dfdb5052112507b91b8da65fede1978de1011a3a8916520e830ba",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "9bb1a4c86b01432c3e81ebd544cb3d2e0f955223f4c388cc209b90d93ebe8d4d",
+          "natif": "5bdbd14236ec5f78cb1a153c667fdc3f3fd3d16fe40618db37a43368681cc049",
+          "evenements": "62857d58f2000e756a679207b7a9beece8a91b1b3831e26292f6ad142bf64357",
+          "contacts": "9004ca8e128ab348a9e42c719ecffd2bcedcdc15bef90761484b5552f2a685f2"
+        },
+        {
+          "etat": "0b47bb60e6786c01759c2fb23074bb57615140f3b47e170932cd231e1d580594",
+          "natif": "0d96a0b5eac98e1c0cdfe816de39766a31edbb4951c38784df8cddf1fe25df38",
+          "evenements": "398094d90bc5f5c383259df9471d16fd1395affdf354e7575e223eac48bad0ce",
+          "contacts": "ed95ddcfb6bfff56bc3e9a949c74a68bd6ab51d5f66da3f106dbefdc6453aa7e"
+        },
+        {
+          "etat": "955c3a4a796a4a0c0d3872e054669b5b5e00f65995155d105e868c47e8cab692",
+          "natif": "4368e3ac3421a9cbcec52b08a7d166f99406d0fa3e4962a21f1c3b9b181cc15e",
+          "evenements": "8418fef5554fd1e8e50451a2b2381632ba13f547720247fda9faa14dabd0a4d4",
+          "contacts": "3ce3b612401f3492511451dd0620cfee811fc1df18cae6f8aad7c6c66aa5f892"
+        },
+        {
+          "etat": "d9a812dd4372aac89f0d3f4bcd08c714ca8c19df138014c193aa7e8d063da703",
+          "natif": "946ac2119fbc1b350c1e78b477cf50f53493fc7d37f5df0bb3b6473b70b02ded",
+          "evenements": "c54321d671d55eaa9ca516746d6440aa8665321ba8a339af9d7f1aa3444cd5eb",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "f760ca768ae2d29dd5521a27c959715072e9e4898b11376d43c8f8a619821ee1",
+          "natif": "e2f8a7d017f73fe3e039e00c9ea91bcc653cb847fa9706755ee0f408a7a62a5e",
+          "evenements": "6dc5845efdcaa934ce0644278267bbdcb3f82e7dd1eff87f1d8632f801f88d52",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "a840b2ad56d3f3648c473d636ffd39e736abd309d46f64533f8254c78ad9c0b1",
+          "natif": "8c0fb76131d41095ebd88451b7be293daae6aaf34d4b964b29a5e9ef0a7b5b9f",
+          "evenements": "f49fa4980de63690b6d1f236be87df2974e3c65b8e0bbf40f4d5e91ff6458281",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "7d65f4cdecfecc835fa4e2d984d92c7321e2981eaff5f4d2c97c829e949a020c",
+          "natif": "cb81cf1e3ab0d5c3e69f1f4a235006797d7ecbbcc2367db883dc1b940991efee",
+          "evenements": "050c661921acc5f6fbf0a134e42516c58a7fb751ddbbc66f678dab56d77aea6f",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        },
+        {
+          "etat": "1b5fd409ff3b31f414c807b25712e0e2e0186ceb2c677d1f0125ac2e60554ad1",
+          "natif": "60c148dd2dad916ce2bd1adc89779ad3769d48dec5cbca9c932ac96ed81f36ef",
+          "evenements": "31eb39d0761566020a5b6716bc7cbec0f275ac0e69e09a77f48909d03cd8a3de",
+          "contacts": "d027a5a2b49d155492fd5a8e698c1a859b8b399a5607c38f902a96dc1b012008"
+        }
+      ]
+    }
+  },
+  "creation": {
+    "processusIndependants": 2,
+    "empreintesIdentiques": 54,
+    "relectureApresEcriture": true
+  },
+  "temoin": "c38a28c34921447e9025b55457587ac92476c795",
+  "plateforme": "darwin",
+  "architecture": "arm64",
+  "v8": "13.6.233.17-node.50",
+  "archivesConservees": {
+    "determinisme-p14.json": "d8dfa60fc2d237c8dbc2b3d23689f2d81fe1562e1b14b30eda608fcd4f46d655",
+    "determinisme-scenes-0260.json": "0d1b02464feac1c4bfe8c4ef2357bc72ee1f2e1f27142f6dcb57c78d06ca2069",
+    "determinisme-p15.json": "7f65117fb5d8fc531fa9bac69e0bcd6655847ae2ea68091cc721b1ea8bb4a4b4"
+  },
+  "explication": "WASM PhysX réel, 120 Hz, décor et statiques de production. SHA-256 chaque seconde : états de course, poses/quaternions, vitesses linéaires et angulaires natives, suspensions, événements et contacts ordonnés. Float64LE sans arrondi ; aucun pointeur ou identifiant natif. Scène et simulation complètes ; archives des physiques précédentes conservées séparément."
+}

@@ -21,6 +21,7 @@ const demarrer = extrait('  function demarrerSeance(', '  function basculerPause
 const departBouton = extrait("  $('b-depart').addEventListener", '  function demarrerSeance(');
 const etatConditions = extrait('  let conditionsPreparation = ', '  function lancer(');
 const fabriquer = new Function('B', 'options', `
+  ${source.match(/  const PHYSIQUE = .*?;/)[0]}
   let session = null, ecran = 'preparation', modePrepa = 'course', retourReglages = 'titre', graineCourse = 100;
   let maintenant = 0, serial = 0, dernierGeste = 0;
   const Date = { now: () => (options.epoque || ${NOW}) + maintenant };

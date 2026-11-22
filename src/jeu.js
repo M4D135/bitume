@@ -97,10 +97,10 @@
     if (!session || !session.reglagesReference) (ecran === 'course' ? differerStock : ecrireStock)('bitume.reglages', reglages);
   };
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
-  const PHYSIQUE = 'p15', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
+  const PHYSIQUE = 'p16', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const records = lireStock(CLE_RECORDS, {});
   const recordsEnrichis = (() => {
-    try { return B.records ? Object.assign(B.records.migrerAnciens(records, CATALOGUE), B.records.lireTout(globalThis.localStorage, CATALOGUE)) : null; }
+    try { return B.records ? B.records.lireTout(globalThis.localStorage, CATALOGUE) : null; }
     catch (e) { return null; }
   })();
   // temps et longueur du fantôme gardé, par circuit : lus une fois, puis tenus à jour à chaque écriture (finTour
@@ -1327,7 +1327,7 @@
         circuitId: id, sens: 'normal', mode: co.mode,
         boite: reglages.boite === 'manuelle' ? 'manuelle' : 'auto', versionPhysique: PHYSIQUE
       }, { tourMs: Math.round(e.temps * 1000) });
-      differerStock('bitume.records.v2', recordsEnrichis);
+      differerStock(B.records.STORAGE_KEY, () => B.records.courants(recordsEnrichis));
     }
     if (e.valide === false) texte += ' · hors classement chrono';
     const qui = co.duo ? 0 : undefined;
@@ -1405,12 +1405,12 @@
   // Empreinte des sources du build, incluant catalogue, générateur, limites et collisions : même piste, même jeu.
   const REVISION_PISTES = '__REVISION_PISTES__';
   function contratPiste(i) {
-    return Number.isInteger(i) && CATALOGUE[i] ? { id: CATALOGUE[i].id, revision: REVISION_PISTES } : null;
+    return Number.isInteger(i) && CATALOGUE[i] ? { id: CATALOGUE[i].id, revision: REVISION_PISTES, physique: PHYSIQUE } : null;
   }
   function compatiblePneusReseau(k) {
     const piste = k && contratPiste(k.i);
     return !!(piste && k.versionChoixPneus === VERSION_CHOIX_PNEUS && k.protocolePneus === VERSION_PNEUS_RESEAU &&
-      k.piste && k.piste.id === piste.id && k.piste.revision === piste.revision);
+      k.piste && k.piste.id === piste.id && k.piste.revision === piste.revision && k.piste.physique === piste.physique);
   }
   function identiteSeanceValide(s) { return typeof s === 'string' && s.length > 0 && s.length <= 128; }
   const nomPilote = () => (reglages.nom || '').trim().slice(0, 16) || 'Pilote';

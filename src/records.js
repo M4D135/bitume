@@ -3,11 +3,12 @@
 
   /**
    * B.records — Records enrichis par circuit, sens, mode, boîte et version physique + migration.
-   * Stockage sous clé 'bitume.records.v2'.
+   * L’ancien stockage enrichi reste lisible. Chaque nouvelle physique possède sa clé d’écriture.
    */
 
-  const VERSION_PHYSIQUE = 'p15';
-  const STORAGE_KEY = 'bitume.records.v2';
+  const VERSION_PHYSIQUE = 'p16';
+  const ARCHIVE_ENRICHIE = 'bitume.records.v2';
+  const STORAGE_KEY = ARCHIVE_ENRICHIE + '.' + VERSION_PHYSIQUE;
 
   /* ─── CLÉ ─── */
   function cle(ctx) {
@@ -20,7 +21,7 @@
   }
 
   /* ─── MIGRATION ─── */
-  function migrerAnciens(anciens, catalogue) {
+  function migrerAnciens(anciens, catalogue, versionPhysique = VERSION_PHYSIQUE, facteurTemps = 1) {
     if (!anciens) return {};
     const table = {};
 
@@ -44,9 +45,9 @@
       const ctx = {
         circuitId: id,
         sens: 'normal',
-        mode: 'course',
+        mode: typeof ancien.mode === 'string' ? ancien.mode : 'course',
         boite: 'auto',
-        versionPhysique: VERSION_PHYSIQUE
+        versionPhysique
       };
       const k = cle(ctx);
       const entree = {
@@ -57,10 +58,10 @@
       };
 
       if (typeof ancien.tour === 'number' && ancien.tour > 0 && isFinite(ancien.tour)) {
-        entree.meilleurTourMs = ancien.tour;
+        entree.meilleurTourMs = Math.round(ancien.tour * facteurTemps);
       }
       if (typeof ancien.course === 'number' && ancien.course > 0 && isFinite(ancien.course)) {
-        entree.meilleureCourseMs = ancien.course;
+        entree.meilleureCourseMs = Math.round(ancien.course * facteurTemps);
       }
       if (ancien.date) entree.date = ancien.date;
 
@@ -116,14 +117,14 @@
     return table[k] || null;
   }
 
-  function meilleurCircuit(table, circuitId) {
+  function meilleurCircuit(table, circuitId, versionPhysique = VERSION_PHYSIQUE) {
     if (!table || !circuitId) return null;
     // Cherche toutes les entrées pour ce circuitId
     let best = null;
     const prefix = 'bitume:' + circuitId + ':';
     const keys = Object.keys(table);
     for (let i = 0; i < keys.length; i++) {
-      if (keys[i].indexOf(prefix) !== 0) continue;
+      if (!keys[i].startsWith(prefix) || !keys[i].endsWith(':' + versionPhysique)) continue;
       const e = table[keys[i]];
       if (!e) continue;
       if (!best) {
@@ -142,28 +143,27 @@
 
   /* ─── LIRE / SAUVER ─── */
   function lireTout(storage, catalogue) {
-    let table = {};
-    try {
-      let raw = null;
-      if (storage && typeof storage.getItem === 'function') {
-        raw = storage.getItem(STORAGE_KEY);
-      }
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed && typeof parsed === 'object') {
-          table = parsed;
-        }
-      }
-    } catch (e) {
-      // localStorage indisponible ou JSON corrompu → table vide
+    function lire(cle) {
+      try {
+        const valeur = JSON.parse(storage.getItem(cle));
+        return valeur && typeof valeur === 'object' ? valeur : {};
+      } catch (_) { return {}; }
     }
-    return table;
+    // Les clés de finTour contiennent des secondes. Les anciennes archives enrichies sont déjà en ms.
+    // Les tableaux p15 sans identifiants sont antérieurs au tri du catalogue et gardent leurs indices.
+    const anciens = migrerAnciens(lire('bitume.records.p15'), null, 'p15', 1000);
+    const courants = migrerAnciens(lire('bitume.records.' + VERSION_PHYSIQUE), catalogue, VERSION_PHYSIQUE, 1000);
+    return Object.assign(anciens, courants, lire(ARCHIVE_ENRICHIE), lire(STORAGE_KEY));
+  }
+
+  function courants(table) {
+    return Object.fromEntries(Object.entries(table).filter(([cle]) => cle.endsWith(':' + VERSION_PHYSIQUE)));
   }
 
   function sauverTout(table, storage) {
     try {
       if (storage && typeof storage.setItem === 'function') {
-        storage.setItem(STORAGE_KEY, JSON.stringify(table));
+        storage.setItem(STORAGE_KEY, JSON.stringify(courants(table)));
       }
     } catch (e) {
       // Quota dépassé ou Node sans localStorage → silencieux
@@ -172,7 +172,7 @@
 
   /* ─── EXPORT ─── */
   B.records = {
-    VERSION_PHYSIQUE,
+    VERSION_PHYSIQUE, STORAGE_KEY, courants,
     cle,
     lireTout,
     sauverTout,

@@ -88,16 +88,16 @@ verifier('la pluie reste liquide et le séchage conserve son fonctionnement', ()
   assert.ok(neige.meteo.mouille > 0 && neige.meteo.mouille < .6, 'eau résiduelle distincte de neige');
 });
 
-verifier('quatre montes et conseil indépendants par pilote, records et fantômes isolés en p15', () => {
+verifier('quatre montes et conseil indépendants par pilote, records et fantômes isolés en p16', () => {
   for (const name of ['pneus', 'pneus2', 'pneusPret', 'pneusPret2']) {
     const valeurs = [...html.matchAll(new RegExp('name="' + name + '" value="([^"]+)"', 'g'))].map(m => m[1]);
     assert.deepEqual(valeurs, ['auto', ...B.pneus.TYPES_JOUABLES]);
   }
   const declaration = source.match(/  const PHYSIQUE = .*?;/)[0];
   const cles = new Function(declaration + 'return { PHYSIQUE, CLE_RECORDS, CLE_FANTOME };')();
-  assert.equal(cles.PHYSIQUE, 'p15');
-  assert.equal(cles.CLE_RECORDS, 'bitume.records.p15');
-  assert.equal(cles.CLE_FANTOME, 'bitume.fantome.p15.');
+  assert.equal(cles.PHYSIQUE, 'p16');
+  assert.equal(cles.CLE_RECORDS, 'bitume.records.p16');
+  assert.equal(cles.CLE_FANTOME, 'bitume.fantome.p16.');
 });
 
 verifier('les flocons seuls ne déclenchent ni ambiance de pluie ni reflets d’eau', () => {

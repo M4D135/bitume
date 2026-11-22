@@ -1,6 +1,7 @@
 import { definitionHistorique } from './catalogue-historique.mjs';
 // Référentiels natifs p14/p15 : chaque replay s'exécute dans un processus neuf et charge le vrai WASM embarqué.
 // Les corps, masses, suspensions et triangles viennent exclusivement des modules de production.
+import { rejouerPhysiqueDeReference } from './replay-physx-p16.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -173,24 +174,30 @@ async function rejouer(Ecrivain, etatCourse, physique) {
   return { physique, node: process.version, moteur: { backend: 'PhysX', version: X.status().version },
     sources: empreintesSources, cas };
 }
-function archivesP14() {
+function archivesAnterieures(physique) {
   const historique = readFileSync(new URL('../fixtures/determinisme-p14.json', import.meta.url));
   const scenes = readFileSync(new URL('../fixtures/determinisme-scenes-0260.json', import.meta.url));
   // Ce validateur reste strictement p14 et vérifie l'empreinte historique déjà publiée.
   validerScenesPhysX(JSON.parse(historique), JSON.parse(scenes), historique);
-  return {
+  const archives = {
     'determinisme-p14.json': createHash('sha256').update(historique).digest('hex'),
     'determinisme-scenes-0260.json': createHash('sha256').update(scenes).digest('hex')
   };
+  if (physique === 'p16') {
+    const p15 = readFileSync(new URL('../fixtures/determinisme-p15.json', import.meta.url));
+    archives['determinisme-p15.json'] = createHash('sha256').update(p15).digest('hex');
+    assert.equal(archives['determinisme-p15.json'], '7f65117fb5d8fc531fa9bac69e0bcd6655847ae2ea68091cc721b1ea8bb4a4b4');
+  }
+  return archives;
 }
 export async function controlerDeterminismePhysX({ Ecrivain, etatCourse, fixture, ecrire, fichier, physique }) {
-  assert.ok(['p14', 'p15'].includes(physique), 'physique native non reconnue ; aucun repli historique');
+  assert.ok(['p14', 'p15', 'p16'].includes(physique), 'physique native non reconnue ; aucun repli historique');
   assert.equal(basename(fixture), 'determinisme-' + physique + '.json', 'fixture incompatible avec la physique demandée');
   if (process.argv.includes('--physx-worker')) {
     console.log(MARQUEUR + JSON.stringify(await rejouer(Ecrivain, etatCourse, physique))); return;
   }
   if (ecrire && existsSync(fixture)) throw new Error('La fixture ' + physique + ' existe déjà ; aucune réécriture implicite du référentiel');
-  const archives = archivesP14();
+  const archives = archivesAnterieures(physique);
   const lancer = () => {
     const sortie = execFileSync(process.execPath, [fichier, '--physx-worker'], { encoding: 'utf8',
       maxBuffer: 16 * 1024 * 1024, timeout: 300000 });
@@ -201,6 +208,11 @@ export async function controlerDeterminismePhysX({ Ecrivain, etatCourse, fixture
     return resultat;
   };
   const a = lancer();
+  if (physique === 'p16') {
+    const temoin = rejouerPhysiqueDeReference();
+    comparer(temoin, a, 'Témoin indépendant c38a28c sur '+process.platform+'/'+process.arch);
+    console.log('ok  c38a28c et conduite p16 : 54 empreintes identiques sur '+process.platform+'/'+process.arch);
+  }
   if (ecrire) {
     console.log('ok  premier replay PhysX indépendant : 3 courses, 54 secondes, 12 voitures chacune');
     const b = lancer(); comparer(a, b, 'Deux processus indépendants');
@@ -208,9 +220,10 @@ export async function controlerDeterminismePhysX({ Ecrivain, etatCourse, fixture
     assert.equal(a.node, b.node);
     const reference = { format: 'bitume-determinisme-physx-1', ...a,
       creation: { processusIndependants: 2, empreintesIdentiques: 54, relectureApresEcriture: true },
+      ...(physique === 'p16' ? {temoin: 'c38a28c34921447e9025b55457587ac92476c795', plateforme: process.platform, architecture: process.arch, v8: process.versions.v8} : {}),
       archivesConservees: archives,
       explication: 'WASM PhysX réel, 120 Hz, décor et statiques de production. SHA-256 chaque seconde : états de course, poses/quaternions, vitesses linéaires et angulaires natives, suspensions, événements et contacts ordonnés. Float64LE sans arrondi ; aucun pointeur ou identifiant natif. Scène et simulation complètes ; archives des physiques précédentes conservées séparément.' };
-    assert.deepEqual(archivesP14(), archives, 'les archives p14 ont changé pendant la création');
+    assert.deepEqual(archivesAnterieures(physique), archives, 'les archives p14 ont changé pendant la création');
     writeFileSync(fixture, JSON.stringify(reference, null, 2) + '\n', { flag: 'wx' });
     const relue = JSON.parse(readFileSync(fixture, 'utf8'));
     assert.deepEqual(relue, reference); comparer(relue, b, 'Relecture de la fixture écrite');
@@ -222,9 +235,10 @@ export async function controlerDeterminismePhysX({ Ecrivain, etatCourse, fixture
   // les 54 états/contacts natifs, événements, configurations et bilans restent ceux de la fixture p14 intacte.
   const scenes = physique === 'p14' ? validerScenesPhysX(reference,
     JSON.parse(readFileSync(new URL('../fixtures/determinisme-scenes-0260.json', import.meta.url), 'utf8')), contenuHistorique) : null;
-  if (physique === 'p15') assert.deepEqual(reference.archivesConservees, archives, 'provenance des archives p14 différente');
-  comparer(reference, a, 'Référentiel ' + physique, scenes);
-  assert.deepEqual(archivesP14(), archives, 'les archives p14 ont changé pendant la vérification');
+  if (physique !== 'p14') assert.deepEqual(reference.archivesConservees, archives, 'provenance des archives p14 différente');
+  const machineOrigine = reference.plateforme === process.platform && reference.architecture === process.arch && reference.v8 === process.versions.v8;
+  if (physique !== 'p16' || machineOrigine) comparer(reference, a, 'Référentiel ' + physique, scenes);
+  assert.deepEqual(archivesAnterieures(physique), archives, 'les archives p14 ont changé pendant la vérification');
   for (const [nom, r] of Object.entries(a.cas)) console.log(`ok  ${nom} : ${r.empreintes.length} empreintes exactes, 12 corps dynamiques, ${r.scene.statistiques.trianglesSol} triangles de sol`);
   console.log(physique === 'p14'
     ? 'ok  scènes 0.2.60 : géométrie et statistiques exactes pour les trois cas ; provenance Baïkal/bâtiments incluse'

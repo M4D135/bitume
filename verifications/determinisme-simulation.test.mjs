@@ -33,7 +33,7 @@ import path from 'node:path';
 const ici = path.dirname(fileURLToPath(import.meta.url));
 const PHYSIQUE = readFileSync(path.join(ici, '..', 'src', 'jeu.js'), 'utf8').match(/\bPHYSIQUE\s*=\s*['"](p\d+)['"]/)?.[1];
 if (!PHYSIQUE) throw new Error('PHYSIQUE introuvable dans src/jeu.js : aucune fixture choisie implicitement');
-const PHYSIQUES_NATIVES = new Set(['p14', 'p15']);
+const PHYSIQUES_NATIVES = new Set(['p14', 'p15', 'p16']);
 const PHYSIQUES_HISTORIQUES = new Set(['p9', 'p10', 'p11', 'p12', 'p13']);
 if (!PHYSIQUES_NATIVES.has(PHYSIQUE) && !PHYSIQUES_HISTORIQUES.has(PHYSIQUE))
   throw new Error('Physique non qualifiée : ' + PHYSIQUE + ' ; aucun repli implicite vers le banc historique');
