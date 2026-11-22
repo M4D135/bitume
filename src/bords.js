@@ -286,7 +286,11 @@
       const milieu = pointPlan(f, (LD - LG) / 2, y + 8.2), long = LG + LD;
       objets.push({ shape: 'box', p: milieu, s: [long, 1.8, .5], r: rot, mat: 0, color: [.30, .31, .33] });
       for (const o of objets) marquer(o, 'passerelle-publicite');
-      for (const sens of [-1, 1]) face(objets, loin, pa.marque, [milieu[0] - az[0] * sens * .3, milieu[1], milieu[2] - az[2] * sens * .3], ax, ay, az, Math.min(long - 2, 30), 1.6, sens);
+      for (const sens of [-1, 1]) {
+        const axeFace = ax.map(v => v * sens), normaleFace = az.map(v => v * sens);
+        const centre = [milieu[0] - normaleFace[0] * .3, milieu[1], milieu[2] - normaleFace[2] * .3];
+        face(objets, loin, pa.marque, centre, axeFace, ay, normaleFace, Math.min(long - 2, 30), 1.6, 1);
+      }
       loin.push(objets[2]);
       ajouter(objets, loin, milieu); stats.passerelles++;
     }
