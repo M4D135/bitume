@@ -43,8 +43,8 @@
       const poche = bruit(px / 63, pz / 63, 173), fin = bruit(rx / 15, rz / 15, 211);
       const prairie = ouverture * lisse(.35, .65, poche * .83 + fin * .17);
       // Une plage entière vaut zéro : les clairières n'allouent ni brins ni habitats d'insectes.
-      e.herbe = lisse(.20, .92, prairie);
-      e.boisement = ouverture * lisse(.38, .65,
+      e.herbe = lisse(.18, .94, prairie);
+      e.boisement = ouverture * lisse(.36, .67,
         .74 * bruit((px - 419) / 109, (pz + 227) / 109, 251) + .26 * bruit(rx / 39, rz / 39, 281));
       e.fleurs = e.herbe * lisse(.40, .68, bruit((px + 179) / 34, (pz - 311) / 34, 307)) * (1 - e.boisement * .40);
       e.insectes = e.herbe * (.16 + .84 * lisse(.35, .68, poche * .6 + fin * .4)) * (.65 + .35 * e.fleurs);
