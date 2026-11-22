@@ -18,7 +18,8 @@
   // x, z, hauteur et rayon dans l'enveloppe normalisée, identique pour les deux LOD.
   const sujets = [[-.27,-.14,.72,.125],[.01,-.25,.84,.12],[.26,-.04,.62,.135],
     [-.15,.20,.96,.145],[.13,.22,.74,.13]];
-  function forme(espece, loin) {
+  const VARIANTES = 16;
+  function forme(espece, loin, variante) {
     const triangles = [], pans = loin ? 4 : 6;
     function face(a,b,c) {
       const ux=b[0]-a[0],uy=b[1]-a[1],uz=b[2]-a[2];
@@ -27,10 +28,14 @@
       const l=Math.hypot(...n), normale=n.map(v=>v/l);
       triangles.push([a,b,c,normale,normale,normale]);
     }
-    for (const [x,z,h,rayon] of sujets) {
+    for (let sujet=0; sujet<sujets.length; sujet++) {
+      const [x,z,hauteur,rayonBase]=sujets[sujet];
+      const orientation=bruit(variante,sujet,17)*2*Math.PI;
+      const echelle=.84+.16*bruit(variante,sujet,63);
+      const h=hauteur*echelle, rayon=rayonBase*echelle;
       const col = espece === 'sapin' ? .24 : .42;
       const anneau = (y,r) => Array.from({length:pans}, (_,i) => {
-        const a = i * 2 * Math.PI / pans + x * 4;
+        const a = i * 2 * Math.PI / pans + orientation;
         return [x+r*Math.cos(a), h*y-.5, z+r*Math.sin(a)];
       });
       const base = anneau(0,rayon*.22), large = anneau(col,rayon);
@@ -49,17 +54,19 @@
         sommet=anneau(.71,rayon*(espece==='sapin' ? .48 : .86));
         flanc(large,sommet);
       }
-      const pointe=[x+rayon*.07,h-.5,z-rayon*.12];
+      const cos=Math.cos(orientation), sin=Math.sin(orientation);
+      const pointe=[x+rayon*(.07*cos+.12*sin),h-.5,z+rayon*(.07*sin-.12*cos)];
       for (let i=0;i<pans;i++) face(sommet[i],pointe,sommet[(i+1)%pans]);
     }
     return triangles;
   }
-  // La silhouette de la lande utilise le houppier rond, aplati par la taille
-  // de l'instance. Les quatre formes communes sont inscrites au chargement du
-  // module, avant la création des moteurs de la course et des rétroviseurs.
+  // La lande utilise les variantes rondes, aplaties par la taille de l'instance.
+  // Les formes sont disponibles au chargement pour la course et les rétroviseurs.
   const rendu = globalThis.FRender;
-  if (rendu?.forme) for (const e of ['sapin','rond']) for (const loin of [false,true]) {
-    rendu.forme('bosquet-'+e+(loin?'-loin':''),forme(e,loin));
+  if (rendu?.forme) for (const e of ['sapin','rond']) {
+    for (let variante=0; variante<VARIANTES; variante++) for (const loin of [false,true]) {
+      rendu.forme('bosquet-'+e+'-'+variante+(loin?'-loin':''),forme(e,loin,variante));
+    }
   }
 
   const MAILLE = 16, cle = (i,j) => (i+1048576)*2097152+j+1048576;
@@ -125,7 +132,9 @@
   }
   function instance(site, loin, p, largeur, h, axes, color, t) {
     const profondeur=largeur*(.78+.22*t);
-    return {shape:loin?site.forme+'-loin':site.forme,p,r:B.decor.angles(...axes),s:[largeur,h,profondeur],color,mat:11};
+    const variante=Math.floor(bruit(Math.floor(p[0]*100),Math.floor(p[2]*100),t*4294967296)*VARIANTES);
+    const shape=site.forme+'-'+variante+(loin?'-loin':'');
+    return {shape,p,r:B.decor.angles(...axes),s:[largeur,h,profondeur],color,mat:11};
   }
   function ajouterInstance(lot, site, leger, x, z, t, p, largeur, h, axes, loinSeul = false) {
     const teinte=site.couleur.map(v=>v*(.83+.28*t));
@@ -134,7 +143,7 @@
     if (loinSeul) { lot.loin.push(o); return; }
     lot.objets.push(o);
     // En Légère, le modèle unique est déjà le lointain.
-    if (!leger) lot.loin.push({...o,shape:site.forme+'-loin'});
+    if (!leger) lot.loin.push({...o,shape:o.shape+'-loin'});
   }
 
   // Une graine conserve le centre exact et les bases numériques. Le terrain,
