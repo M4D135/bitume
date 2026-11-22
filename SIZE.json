@@ -1,8 +1,8 @@
 {
-  "version": "0.2.190",
-  "raw": 16723706,
-  "gzip": 4642203,
-  "sha256": "fedbf5c0e953d8e2d15b3f02d4f64e5277b1924d2cbbd4835f6b62a980f93922",
+  "version": "0.2.191",
+  "raw": 16723763,
+  "gzip": 4642220,
+  "sha256": "b94ffd85cac84aef8a3137855a34b8e8f7553e20f6a4cbea9e5f3e73d97e80ca",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
@@ -46,7 +46,7 @@
     "vegetation.js": 38910,
     "bosquets.js": 16756,
     "bords.js": 32120,
-    "baikal.js": 7791,
+    "baikal.js": 7848,
     "batiments.js": 14306,
     "lieux.js": 61601,
     "herbier-wasm.js": 11016,
