@@ -1,80 +1,50 @@
 {
   "date": "2026-11-22",
   "etat_courant": {
-    "version_courante": "0.2.111",
-    "version_publiee_verifiee": "0.2.111",
-    "physique": "p16",
-    "moteur": "FERRO 0.3.16 canonique",
-    "circuits": 11,
+    "version_courante": "0.2.123",
+    "version_publiee_verifiee": "0.2.123",
+    "physique": "p17",
+    "moteur": "FERRO 0.3.20 canonique",
+    "circuits": 8,
     "statut": "integre_sur_main",
-    "lot": "larche_rendu_et_course",
+    "lot": "catalogue_rendu_course",
     "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
     "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
     "dernieres_demandes": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
     "dernier_lot_clos": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json",
-    "prochaine_action": "Rendu des versants et des bâtiments, fluidité à la résolution de chaque appareil et réception en main des manettes.",
+    "prochaine_action": "Cadence de 60 images 3D/s sur chaque kilomètre de Larche en 1080p Fine sous la pluie, deux glaces et douze voitures",
     "branche_candidate": "main",
-    "version_candidate": "0.2.111",
+    "version_candidate": "0.2.123",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md"
   },
   "publication": {
-    "version": "0.2.111",
-    "commit_sources": "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
+    "version": "0.2.123",
+    "commit_sources": "f5e0e864c25881587f146c2f4776002ae13bfe8b",
     "statut": "publie_sur_main",
-    "url": "https://github.com/M4D135/bitume/commit/2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
-    "recu": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json",
-    "site_deploiement_verifie": false
+    "url": "https://github.com/M4D135/bitume/commit/f5e0e864c25881587f146c2f4776002ae13bfe8b",
+    "recu": "https://github.com/M4D135/bitume/blob/f5e0e864c25881587f146c2f4776002ae13bfe8b/SIZE.json",
+    "site_deploiement_verifie": true
   },
   "qualification": {
-    "version": "0.2.111",
-    "tete_qualifiee": "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
-    "build_octets": 15256987,
-    "build_sha256": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59",
+    "version": "0.2.123",
+    "tete_qualifiee": null,
+    "build_octets": 16521016,
+    "build_sha256": "d8b1f75687b03ef83866366efd4c1afe9298753eba87e95b19dc732599ebbea8",
     "locale": {
-      "suites_node": 229,
-      "suites_en_echec": 0,
-      "tests_python": 8,
-      "lots": [
-        58,
-        57,
-        57,
-        57
-      ],
-      "recontroles": [
-        "manette.test.mjs",
-        "pneus-reseau-integration.test.mjs"
-      ],
-      "statut": "terminee",
-      "rapport": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/qualification-macos-0111.json"
+      "statut": "nouvelle_reception_suspendue"
     },
-    "reconstruction_identique": true,
-    "recu": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json",
-    "essai_utilisateur_valide": false,
-    "limites": [
-      "Cadence mesurée sur le Mac M5 du test, dans les conditions de chaque relevé. Les autres appareils demandent une réception matérielle.",
-      "Ressenti des vibrations Switch, Xbox et PS5 à vérifier en main.",
-      "Les modèles proches, les façades et la lumière du catalogue demandent de nouveaux essais pour le photoréalisme.",
-      "La pigmentation continue des versants a été évaluée dans un prototype WebGL2 séparé."
-    ],
     "github_actions": {
-      "conclusion": "success",
-      "commit": "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
-      "version": "0.2.111",
-      "url": "https://github.com/M4D135/bitume/actions/runs/45047690074",
-      "suites_node": 229,
-      "tests_python": 8,
-      "suites_en_echec": 0,
-      "sha256_html": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59",
-      "artefact": 14763803831,
-      "lots": [
-        58,
-        57,
-        57,
-        57
-      ],
-      "reconstruction_git_identique": true
-    }
+      "conclusion": null,
+      "commit": "f5e0e864c25881587f146c2f4776002ae13bfe8b",
+      "statut": "suspendu_a_la_demande_du_joueur"
+    },
+    "recu": null,
+    "limites": [
+      "Essais suspendus à la demande du joueur. Les mesures d’une autre version restent identifiées séparément."
+    ],
+    "reconstruction_identique": null,
+    "essai_utilisateur_valide": null
   },
   "acquis_0279": {
     "voiture": "126 CK et implantation commune à toutes les caméras",
@@ -166,16 +136,19 @@
     "statut": "in_progress",
     "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
     "apres": [
-      "Matériaux et végétation des onze circuits",
-      "Altimétrie de Monaco et réception de Marseille",
-      "Réseau et portage natif selon la feuille de route"
+      "Visibilité des voitures, LED et ombres, BVH FERRO, primitives à la demande, appels WebGL2 groupés, rétroviseurs hors écran et budget des bosquets",
+      "Huit circuits, trois tracés à deux habitats et huit démonstrations de la course, du tracé et des lieux",
+      "Arrivée et dégagement de la meute, contacts pneu contre pneu, nez déformé et données de la physique p17",
+      "Altimétrie Monaco 14A, relief de Marseille, lieux et bâtiments de la haute Stura",
+      "Matériaux 19/21/23/25, conduite 17, pneus, pilotes, faune 26 et réception des périphériques physiques",
+      "Deux joueurs et réseau 27, cache et calcul 28, puis étapes du moteur C++ sur Mac, Linux et Windows"
     ],
     "acquis_R4b_a_preserver": true,
-    "prochaine_priorite": "Rendu des versants et des bâtiments, fluidité à la résolution de chaque appareil et réception en main des manettes."
+    "prochaine_priorite": "Cadence de 60 images 3D/s sur chaque kilomètre de Larche en 1080p Fine sous la pluie, deux glaces et douze voitures"
   },
   "catalogue": {
-    "jouables": 11,
-    "baikal": "id baikal, index 10 dans ce catalogue.",
+    "jouables": 8,
+    "baikal": "Identifiant baikal, index 7 dans ce catalogue.",
     "ajouts_demandes": [
       "Grand circuit de montagne distinct de Haut-Col",
       "Monaco ultra fidèle",
@@ -186,16 +159,13 @@
     "regle": "Menu resserré à onze identités selon la décision .89 et l’intégration de Marseille en .90.",
     "route_des_cimes": "id route-des-cimes, index 5 dans ce catalogue.",
     "ids": [
-      "val-brule",
+      "forets-du-pacifique",
       "marseille",
-      "corail",
-      "cap-sequoia",
-      "fjord",
+      "karst-et-lagon",
+      "sierra",
+      "nord-atlantique",
       "route-des-cimes",
       "larche",
-      "lande-noire",
-      "sierra",
-      "brume-de-jade",
       "baikal"
     ],
     "destinations_prevues_historiquement": 17,
@@ -229,11 +199,11 @@
   "execution_autonome": {
     "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
     "file": "docs/reprise/FILE-TRAVAIL.json",
-    "priorite_utilisateur": "Vibrations distinctes, fluidité et rendu réaliste, qualification des onze circuits.",
-    "lot_actif": "qualification_materielle_et_rendu",
+    "priorite_utilisateur": "Optimisation générale et 60 images 3D/s en 1080p Fine sous la pluie sur toute la descente de Larche.",
+    "lot_actif": "catalogue_rendu_course",
     "statut": "en_cours",
-    "recu_publication": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json",
-    "prochain_lot": "rendu_versants_et_appareils_cibles",
+    "recu_publication": "https://github.com/M4D135/bitume/blob/f5e0e864c25881587f146c2f4776002ae13bfe8b/SIZE.json",
+    "prochain_lot": "receptions_sur_demande",
     "dernieres_demandes": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md"
   },
   "recus_historiques": {
@@ -369,6 +339,68 @@
       "recu_publication": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
       "prochain_lot": "faune_proche_champ",
       "dernieres_demandes": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md"
+    },
+    "publications_et_qualifications": {
+      "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff": {
+        "publication": {
+          "version": "0.2.111",
+          "commit_sources": "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
+          "statut": "publie_sur_main",
+          "url": "https://github.com/M4D135/bitume/commit/2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
+          "recu": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json",
+          "site_deploiement_verifie": false
+        },
+        "qualification": {
+          "version": "0.2.111",
+          "tete_qualifiee": "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
+          "build_octets": 15256987,
+          "build_sha256": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59",
+          "locale": {
+            "suites_node": 229,
+            "suites_en_echec": 0,
+            "tests_python": 8,
+            "lots": [
+              58,
+              57,
+              57,
+              57
+            ],
+            "recontroles": [
+              "manette.test.mjs",
+              "pneus-reseau-integration.test.mjs"
+            ],
+            "statut": "terminee",
+            "rapport": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/qualification-macos-0111.json"
+          },
+          "reconstruction_identique": true,
+          "recu": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json",
+          "essai_utilisateur_valide": false,
+          "limites": [
+            "Cadence mesurée sur le Mac M5 du test, dans les conditions de chaque relevé. Les autres appareils demandent une réception matérielle.",
+            "Ressenti des vibrations Switch, Xbox et PS5 à vérifier en main.",
+            "Les modèles proches, les façades et la lumière du catalogue demandent de nouveaux essais pour le photoréalisme.",
+            "La pigmentation continue des versants a été évaluée dans un prototype WebGL2 séparé."
+          ],
+          "github_actions": {
+            "conclusion": "success",
+            "commit": "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
+            "version": "0.2.111",
+            "url": "https://github.com/M4D135/bitume/actions/runs/45047690074",
+            "suites_node": 229,
+            "tests_python": 8,
+            "suites_en_echec": 0,
+            "sha256_html": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59",
+            "artefact": 14763803831,
+            "lots": [
+              58,
+              57,
+              57,
+              57
+            ],
+            "reconstruction_git_identique": true
+          }
+        }
+      }
     }
   },
   "regle": "Les alias ci-dessus décrivent la base effectivement publiée. Les états .75/.77 et réserves R4b historiques sont archivés; ne pas les réappliquer à main. Une preuve appartient à son commit et à son HTML exact.",
@@ -495,5 +527,60 @@
     "autorisation_du_plan_initial": false,
     "stade": "Sondes natives exécutées. Application de course à porter.",
     "rayons_metal": "docs/reprise/rapports/N0-MAC-20261122/rayons-larche.json"
+  },
+  "suivi_du_runtime": {
+    "date": "2026-11-22",
+    "revision_runtime": "f5e0e864c25881587f146c2f4776002ae13bfe8b",
+    "version": "0.2.123",
+    "physique": "p17",
+    "moteur": "FERRO 0.3.20",
+    "sha256_html": "d8b1f75687b03ef83866366efd4c1afe9298753eba87e95b19dc732599ebbea8",
+    "octets_html": 16521016,
+    "circuits": [
+      {
+        "id": "forets-du-pacifique",
+        "nom": "Forêts du Pacifique"
+      },
+      {
+        "id": "marseille",
+        "nom": "Marseille · Vieux-Port → Corniche"
+      },
+      {
+        "id": "karst-et-lagon",
+        "nom": "Karst et Lagon"
+      },
+      {
+        "id": "sierra",
+        "nom": "Sierra-Cuivrée"
+      },
+      {
+        "id": "nord-atlantique",
+        "nom": "Nord Atlantique"
+      },
+      {
+        "id": "route-des-cimes",
+        "nom": "Route-des-Cimes"
+      },
+      {
+        "id": "larche",
+        "nom": "Col de Larche → Vinadio"
+      },
+      {
+        "id": "baikal",
+        "nom": "Baïkal"
+      }
+    ],
+    "feuille": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
+    "etat_des_receptions": "Essais suspendus à la demande du joueur. Les mesures d’une autre version restent identifiées séparément.",
+    "ordre_de_suite": [
+      "Cadence de 60 images 3D/s sur chaque kilomètre de Larche en 1080p Fine sous la pluie, deux glaces et douze voitures",
+      "Visibilité des voitures, LED et ombres, BVH FERRO, primitives à la demande, appels WebGL2 groupés, rétroviseurs hors écran et budget des bosquets",
+      "Huit circuits, trois tracés à deux habitats et huit démonstrations de la course, du tracé et des lieux",
+      "Arrivée et dégagement de la meute, contacts pneu contre pneu, nez déformé et données de la physique p17",
+      "Altimétrie Monaco 14A, relief de Marseille, lieux et bâtiments de la haute Stura",
+      "Matériaux 19/21/23/25, conduite 17, pneus, pilotes, faune 26 et réception des périphériques physiques",
+      "Deux joueurs et réseau 27, cache et calcul 28, puis étapes du moteur C++ sur Mac, Linux et Windows"
+    ],
+    "site_deploiement_verifie": true
   }
 }

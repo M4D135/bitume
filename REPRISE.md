@@ -1,5 +1,14 @@
 # BITUME — reprise courte
 
+<!-- bitume-reprise-actuelle-debut -->
+## Par où reprendre
+
+**Runtime 0.2.123, FERRO 0.3.20, physique p17.** Le catalogue compte huit circuits, dont trois boucles à deux habitats. Les réceptions restantes concernent les démos, la visibilité des LED, les contacts, l’arrivée et la fluidité de Larche. Le relevé M5 .113 complet a donné 55,54 images 3D/s. Les interruptions ultérieures sont détaillées dans la feuille.
+
+[Feuille de route des 47 demandes et suites actuelles](docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md) · [Sources du jeu](https://github.com/M4D135/bitume/commit/f5e0e864c25881587f146c2f4776002ae13bfe8b)
+
+<!-- bitume-reprise-actuelle-fin -->
+
 ## Larche en 1080p et préparation du paysage, version 0.2.111
 
 Sur Mac M5 en Fine, au virage du km 2,868, la paire en régime thermique nominal passe de 55,34 à 60,00 i/s sous la pluie. En régime thermique élevé, la même comparaison donne 45,65 et 48,33 i/s. La nouvelle version atteint 59,98 i/s en pluie 720p. À Pietraporzio à chaud en pluie 1080p, elle donne 39,18 i/s. La feuille de route conserve les durées des images et les conditions de chaque passage.

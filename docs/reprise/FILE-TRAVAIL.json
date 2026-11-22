@@ -3,16 +3,16 @@
   "date": "2026-11-22",
   "base": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
   "runtime_livre": {
-    "version": "0.2.111",
-    "physique": "p16",
-    "moteur": "FERRO 0.3.16",
-    "circuits": 11,
-    "commit_sources": "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
-    "html_sha256": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59",
-    "recu": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json"
+    "version": "0.2.123",
+    "moteur": "FERRO 0.3.20",
+    "physique": "p17",
+    "commit_sources": "f5e0e864c25881587f146c2f4776002ae13bfe8b",
+    "html_sha256": "d8b1f75687b03ef83866366efd4c1afe9298753eba87e95b19dc732599ebbea8",
+    "circuits": 8,
+    "recu": "https://github.com/M4D135/bitume/blob/f5e0e864c25881587f146c2f4776002ae13bfe8b/SIZE.json"
   },
   "destinations_prevues": 17,
-  "lot_actif": "qualification_materielle_et_rendu",
+  "lot_actif": "catalogue_rendu_course",
   "journal": "docs/reprise/JOURNAL-AUTONOME-2026-11-20.md",
   "objectifs": "docs/reprise/OBJECTIFS-EXECUTION-2026-11-20.md",
   "statuts": [
@@ -935,13 +935,11 @@
   },
   "base_initiale": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_candidat": {
-    "statut": "qualifie_localement_publication_bloquee",
-    "version": "0.2.87",
-    "base_runtime_main": "0.2.85",
-    "branche": "codex/bitume-faune-demos-validation-20261121",
-    "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
-    "recu": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0287.json",
-    "reception_locale": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json"
+    "statut": "integre_sur_main",
+    "version": "0.2.123",
+    "branche": "main",
+    "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
+    "recu": "https://github.com/M4D135/bitume/blob/f5e0e864c25881587f146c2f4776002ae13bfe8b/SIZE.json"
   },
   "demandes_video_survol_2026_11_20": {
     "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
@@ -1055,10 +1053,89 @@
   },
   "feuille_courante": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
   "ordre_22_novembre": [
-    "Réception tactile Switch, Xbox et PS5",
-    "Stabilité du temps par image sous la pluie sur machines cibles",
-    "Matériaux proches, éclairage, reflets et végétation",
-    "Consolidation géographique Monaco et Marseille",
-    "Réseau et portage macOS, puis Linux, puis Windows"
-  ]
+    "Cadence de 60 images 3D/s sur chaque kilomètre de Larche en 1080p Fine sous la pluie, deux glaces et douze voitures",
+    "Visibilité des voitures, LED et ombres, BVH FERRO, primitives à la demande, appels WebGL2 groupés, rétroviseurs hors écran et budget des bosquets",
+    "Huit circuits, trois tracés à deux habitats et huit démonstrations de la course, du tracé et des lieux",
+    "Arrivée et dégagement de la meute, contacts pneu contre pneu, nez déformé et données de la physique p17",
+    "Altimétrie Monaco 14A, relief de Marseille, lieux et bâtiments de la haute Stura",
+    "Matériaux 19/21/23/25, conduite 17, pneus, pilotes, faune 26 et réception des périphériques physiques",
+    "Deux joueurs et réseau 27, cache et calcul 28, puis étapes du moteur C++ sur Mac, Linux et Windows"
+  ],
+  "runtimes_precedents": {
+    "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff": {
+      "version": "0.2.111",
+      "physique": "p16",
+      "moteur": "FERRO 0.3.16",
+      "circuits": 11,
+      "commit_sources": "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
+      "html_sha256": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59",
+      "recu": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json"
+    }
+  },
+  "candidats_precedents": {
+    "0.2.87": {
+      "statut": "qualifie_localement_publication_bloquee",
+      "version": "0.2.87",
+      "base_runtime_main": "0.2.85",
+      "branche": "codex/bitume-faune-demos-validation-20261121",
+      "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
+      "recu": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0287.json",
+      "reception_locale": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json"
+    }
+  },
+  "suivi_du_runtime": {
+    "date": "2026-11-22",
+    "revision_runtime": "f5e0e864c25881587f146c2f4776002ae13bfe8b",
+    "version": "0.2.123",
+    "physique": "p17",
+    "moteur": "FERRO 0.3.20",
+    "sha256_html": "d8b1f75687b03ef83866366efd4c1afe9298753eba87e95b19dc732599ebbea8",
+    "octets_html": 16521016,
+    "circuits": [
+      {
+        "id": "forets-du-pacifique",
+        "nom": "Forêts du Pacifique"
+      },
+      {
+        "id": "marseille",
+        "nom": "Marseille · Vieux-Port → Corniche"
+      },
+      {
+        "id": "karst-et-lagon",
+        "nom": "Karst et Lagon"
+      },
+      {
+        "id": "sierra",
+        "nom": "Sierra-Cuivrée"
+      },
+      {
+        "id": "nord-atlantique",
+        "nom": "Nord Atlantique"
+      },
+      {
+        "id": "route-des-cimes",
+        "nom": "Route-des-Cimes"
+      },
+      {
+        "id": "larche",
+        "nom": "Col de Larche → Vinadio"
+      },
+      {
+        "id": "baikal",
+        "nom": "Baïkal"
+      }
+    ],
+    "feuille": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
+    "etat_des_receptions": "Essais suspendus à la demande du joueur. Les mesures d’une autre version restent identifiées séparément.",
+    "ordre_de_suite": [
+      "Cadence de 60 images 3D/s sur chaque kilomètre de Larche en 1080p Fine sous la pluie, deux glaces et douze voitures",
+      "Visibilité des voitures, LED et ombres, BVH FERRO, primitives à la demande, appels WebGL2 groupés, rétroviseurs hors écran et budget des bosquets",
+      "Huit circuits, trois tracés à deux habitats et huit démonstrations de la course, du tracé et des lieux",
+      "Arrivée et dégagement de la meute, contacts pneu contre pneu, nez déformé et données de la physique p17",
+      "Altimétrie Monaco 14A, relief de Marseille, lieux et bâtiments de la haute Stura",
+      "Matériaux 19/21/23/25, conduite 17, pneus, pilotes, faune 26 et réception des périphériques physiques",
+      "Deux joueurs et réseau 27, cache et calcul 28, puis étapes du moteur C++ sur Mac, Linux et Windows"
+    ],
+    "site_deploiement_verifie": true
+  }
 }

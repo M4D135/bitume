@@ -1,5 +1,12 @@
 # BITUME — feuille de route
 
+<!-- bitume-reprise-actuelle-debut -->
+## Priorités du 22 novembre 2026
+
+Les décisions sur les huit circuits, les trois tracés mixtes, le rendu et les réceptions en course figurent en tête de la [feuille détaillée](docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md). Les programmes historiques suivent ci-dessous.
+
+<!-- bitume-reprise-actuelle-fin -->
+
 > **Priorité ajoutée le 21 novembre 2026, base 0.2.85 :** animaux proches de la route,
 > sans simulation détaillée hors champ ; démos des circuits actuels centrées uniquement
 > sur la route, le circuit et son point d’intérêt. Aucun plan herbe/faune/flore.
