@@ -98,6 +98,7 @@ const charger = new Function('B', 'dom', `
   const clamp = (v,a,b) => Math.max(a,Math.min(b,v)), lerp = (a,b,t) => a+(b-a)*t;
   const reglages = { carte:'non', boite:'auto', annoncesVirages:'non', general:.8, effets:.9 }, imageCadence = null, dureeImage = 16;
   let ecran = 'course', sonActif = true, muet = false;
+  const bilans = []; function majPneusStands() { bilans.push(horlogeReelle); }
   const paroles = [], annulations = [], voixVirages = { dire: (...args) => paroles.push(args), annuler: () => annulations.push(true) };
   const chrono = t => t == null ? '–' : String(t), ecartTexte = t => String(t), nomCourt = v => v.nom;
   let horlogeReelle = 0, session = null;
@@ -108,7 +109,7 @@ const charger = new Function('B', 'dom', `
     return S;
   }
   return { HUD1, HUD2, hud2, majPneusHUD, majHud, majAnnonceVirage, suspendreAnnoncesVirages,
-    initialiser, reglages, paroles, annulations, document,
+    initialiser, reglages, paroles, annulations, document, bilans,
     ecran:n => { ecran=n; }, muet:b => { muet=b; }, horloge:t => { horlogeReelle=t; } };
 `);
 function harnais() { const arbre = dom(); return { ...charger(B, arbre), arbre }; }
@@ -178,6 +179,19 @@ verifier('majHud partagé : chaque pilote garde ses pneus, sans fuite ni mutatio
   assert.equal(lecture(h.HUD2).type, 'neige'); assert.equal(lecture(h.HUD2).usure, 'Usure max. 87 %');
   assert.equal(lu1.type, 'inter'); assert.equal(lu1.usure, 'Usure max. 45 %');
   assert.deepEqual(co.voitures.map(v => JSON.stringify(v.etat)), avant);
+});
+
+verifier('pause réseau : un bilan partagé actualisé quatre fois par seconde tant que la course continue', () => {
+  const h = harnais(), co = course({ noms:['Un','Deux'], locaux:[0,1], enLigne:true });
+  const S = seance(co); S.enLigne = { role:'hote' };
+  const S2 = Object.create(S);
+  for (const [ecran,t] of [['course',0],['pause',.25],['pause',.35],['pause',.5],['course',.75]]) {
+    h.ecran(ecran); h.horloge(t); co.horloge = t;
+    h.majHud(S); h.majHud(S2,h.HUD2,co.voitures[1]);
+  }
+  assert.deepEqual(h.bilans,[.25,.5]);
+  S.enLigne = null; h.ecran('pause'); h.horloge(1); co.horloge = 1; h.majHud(S);
+  assert.deepEqual(h.bilans,[.25,.5], 'la séance locale est figée');
 });
 
 verifier('remplacement réel : monte et quatre jauges actualisées, révision de service jamais changée par le HUD', () => {

@@ -204,13 +204,54 @@
   const MELODIE_PAS = (() => { const t = new Array(128).fill(null); let k = 0; for (const [n, d] of THEME.melodie) { if (n) t[k] = [n, d]; k += d; } return t; })();
   const hz = n => 440 * Math.pow(2, (n - 69) / 12);
 
+  // Genres attribués aux acteurs par le décor. Un autre solide, le terrain ou une voiture
+  // conservent leur choc ordinaire ; ils n'alimentent pas le raclement de bord de piste.
+  function matiereRaclement(genre) {
+    switch (genre) {
+      case 'glissiere': case 'poteau-glissiere': return 'metal';
+      case 'muret': case 'parapet': case 'mur-tunnel': case 'mur-galerie': return 'mur';
+      default: return '';
+    }
+  }
+  function creerRaclement(ecoute = 0) {
+    return { ecoute, acteur: null, debut: 0, dernier: -Infinity, duree: 0, matiere: '', paroi: '', nx: 0, nz: 0, vitesse: 0, coupJoue: false };
+  }
+  // Lecture des points natifs du dernier pas. La vitesse tangentielle du centre de la voiture est mesurée
+  // dans le plan horizontal de la paroi. Aucun rayon, impulsion ou écriture dans la simulation.
+  function suivreRaclement(r, ph, temps) {
+    r.matiere = ''; r.vitesse = 0; r.duree = 0;
+    if (r.acteur !== ph) { r.acteur = ph; r.dernier = -Infinity; }
+    if (!ph || ph.distant || ph.v.fini || ph.v.abandon || ph.e.recuperation) { r.dernier = -Infinity; return; }
+    if (!ph.course.co._obstacleMemo?.[ph.v.id]?.size) return;
+    const contacts = ph.world.contacts, solides = ph.course.solids.acteurs;
+    let nx = 0, nz = 0;
+    for (let i = 0; i < contacts.count; i++) {
+      const c = contacts.points[i], autre = c.a === ph.id ? c.b : c.b === ph.id ? c.a : 0;
+      if (!autre || Math.abs(c.ny) > .65) continue;
+      if (c.separation > .002 && !c.ix && !c.iy && !c.iz) continue; // point prédictif encore séparé
+      const matiere = matiereRaclement(solides.get(autre)?.genre);
+      if (!matiere) continue;
+      const norme = Math.hypot(c.nx, c.nz);
+      const vitesse = Math.abs(ph.velocity[0] * c.nz - ph.velocity[2] * c.nx) / norme;
+      if (!r.matiere || vitesse > r.vitesse) { r.matiere = matiere; r.vitesse = vitesse; nx = c.nx / norme; nz = c.nz / norme; }
+    }
+    if (!r.matiere) return;
+    // Un joint entre deux sections ne répète pas le coup initial. Un pas sans contact coupe
+    // immédiatement la cible sonore, même pendant cette brève tolérance entre deux épisodes.
+    if (temps - r.dernier > .05 || temps < r.dernier || r.paroi !== r.matiere || Math.abs(nx * r.nx + nz * r.nz) < .75) {
+      r.debut = temps; r.coupJoue = false;
+    }
+    r.paroi = r.matiere; r.nx = nx; r.nz = nz; r.dernier = temps; r.duree = temps - r.debut;
+  }
+
   function creer() {
     let ctx = null, pret = false, enPause = false, coupFin = 0;
     let musiqueOn = false, minuteur = null, pas = 0, prochain = 0, busMus = null, echo = null;
     const vols = { general: 1, moteur: 1, effets: 1 };
     let maitre = null, busMot = null, busEff = null, bruit = null, m = null, m2 = null, vib = null, herbe = null, fouleNoeud = null;
     let deuxJoueurs = false, joueur2LibereA = 0;
-    const voix = [], proches = [], vents = [], pneus = [];
+    const voix = [], proches = [], vents = [], pneus = [], raclements = [];
+    let grain = null;
     // échappement : voix préparées, tampons, lecture de la file de src/echappement.js
     const voixEch = [], tamponsEch = {};
     let echFile = null, echLu = 0, echVu = -1, echJoues = 0, echIgnores = 0;
@@ -330,6 +371,40 @@
       vise(p.gl.gain, poids * lateral, t, .03); vise(p.gx.gain, poids * longitudinal, t, .03);
     }
 
+    function voixRaclement(numero) {
+      const sr = ctx.sampleRate, n = Math.round(sr * .7);
+      if (!grain) {
+        grain = ctx.createBuffer(1, n, sr);
+        const pcm = grain.getChannelData(0), blanc = bruit.getChannelData(0), chute = Math.exp(-1 / (sr * .0028));
+        let reste = 0, attaque = 0;
+        for (let i = 0; i < n; i++) {
+          if (--reste <= 0) { reste = Math.round(sr * (.009 + .005 * blanc[n + i])); attaque = .65 + .35 * blanc[n - i]; }
+          pcm[i] = blanc[i] * (.11 + attaque) * Math.min(1, i / (sr * .003), (n - 1 - i) / (sr * .003));
+          attaque *= chute;
+        }
+      }
+      const s = ctx.createBufferSource(), filtreMur = filtre('lowpass', 900, .75), g = gain(0);
+      s.buffer = grain; s.loop = true; s.connect(filtreMur).connect(g).connect(vents[numero].pan);
+      s.start(ctx.currentTime, numero ? .31 : 0);
+      return { s, f: filtreMur, g, actif: false };
+    }
+    function reglerRaclement(voix, r, poids, t) {
+      const allure = r && r.duree >= .05 && r.matiere ? clamp((r.vitesse - 1.5) / 28, 0, 1) : 0;
+      if (!allure) {
+        if (voix.actif) vise(voix.g.gain, 0, t, .018);
+        voix.actif = false; return;
+      }
+      voix.actif = true;
+      const metal = r.matiere === 'metal';
+      vise(voix.f.frequency, metal ? 1950 + 1300 * allure : 530 + 420 * allure, t, .035);
+      vise(voix.f.Q, metal ? 2.6 : .75, t, .035);
+      vise(voix.s.playbackRate, .72 + .65 * allure, t, .045);
+      vise(voix.g.gain, poids * allure * (metal ? .26 : .5), t, .035);
+    }
+    function couperRaclements() {
+      if (pret) for (const v of raclements) reglerRaclement(v, null, 0, ctx.currentTime);
+    }
+
     function init() {
       const t = ctx.currentTime;
       const lim = ctx.createDynamicsCompressor();
@@ -385,7 +460,7 @@
         fouleNoeud = { master, gA, gHP };
       }
       vents.push(vent(0), vent(1));
-      pneus.push(bruitPneus(0));
+      pneus.push(bruitPneus(0)); raclements.push(voixRaclement(0));
       { // échappement : tampons et voix préparés ici, avant le départ (rien n'est construit en course)
         const sr = ctx.sampleRate, synth = synthEchappement(sr);
         for (const genre of GENRES_ECH) tamponsEch[genre] = synth[genre].map(d => {
@@ -474,7 +549,7 @@
       const silence = enPause || !!etat.pause, muet = silence || !!j.muet;
       // Le second graphe est créé une seule fois, après le premier geste audio et seulement si J2 existe. Les
       // séances suivantes réutilisent ce graphe ; sa distance à J1 ne peut jamais le sortir du budget.
-      if (j2 && !m2) { m2 = moteur(); pneus.push(bruitPneus(1)); }
+      if (j2 && !m2) { m2 = moteur(); pneus.push(bruitPneus(1)); raclements.push(voixRaclement(1)); }
       if (!j2 && deuxJoueurs) { vise(m2.sortie.gain, 0, t, .03); vise(m2.echoG.gain, 0, t, .03); joueur2LibereA = t + .12; }
       deuxJoueurs = !!j2;
       reglerMoteur(m, j, t, silence, j2 ? Math.SQRT1_2 : 1, j2 ? -.24 : 0);
@@ -504,6 +579,8 @@
         vise(vx.sortie.gain, silence ? 0 : gainDistance(+r.distance || 0) * 0.5 * 0.42, t, 0.1 / 3);
       }
 
+      reglerRaclement(raclements[0], !muet && j.raclement, j2 ? Math.SQRT1_2 : 1, t);
+      if (raclements[1]) reglerRaclement(raclements[1], !silence && j2 && !j2.muet && j2.raclement, Math.SQRT1_2, t);
       reglerPneus(pneus[0], j, t, silence, j2 ? Math.SQRT1_2 : 1);
       if (pneus[1]) reglerPneus(pneus[1], j2, t, silence, Math.SQRT1_2);
       vise(vib.g.gain, !muet && j.surface === 'vibreur' ? 0.22 : 0, t, 0.02);
@@ -549,17 +626,17 @@
       o.connect(g).connect(busEff);
       ponctuelle(o, [g], t, 0.004);
     }
-    function choc(t, force) {
+    function choc(t, force, sortie = busEff) {
       const duree = lerp(0.08, 0.22, force);
       const s = ctx.createBufferSource(); s.buffer = bruit;
       const pb = filtre('lowpass', 900, 0.7), g = gain(0);
       g.gain.setValueAtTime(0.55 * force + 0.05, t); g.gain.exponentialRampToValueAtTime(0.001, t + duree);
-      s.connect(pb).connect(g).connect(busEff);
+      s.connect(pb).connect(g).connect(sortie);
       ponctuelle(s, [pb, g], t, duree);
       const o = osc('sine', 70), og = gain(0);
       o.frequency.setValueAtTime(70, t); o.frequency.exponentialRampToValueAtTime(40, t + duree);
       og.gain.setValueAtTime(0.6 * force + 0.05, t); og.gain.exponentialRampToValueAtTime(0.001, t + duree);
-      o.connect(og).connect(busEff);
+      o.connect(og).connect(sortie);
       ponctuelle(o, [og], t, duree);
     }
     function souffle(t, niveau, parfait) {
@@ -666,7 +743,7 @@
       return true;
     }
 
-    function evenement(nom, p) {
+    function evenement(nom, p, raclement) {
       if (!pret) return;
       p = p || {};
       const t = ctx.currentTime;
@@ -677,7 +754,14 @@
         case 'troll': return klaxon(p.klaxon, p);
         case 'rapport': coupureMoteur(t); if (!echappe) detonation(t, p.haut ? 0.7 : 0.5); break;
         case 'rupteur': coupureMoteur(t); if (!echappe) detonation(t, 0.8); break;
-        case 'choc': choc(t, clamp((p.force ?? 8) / 12, 0.2, 1)); break;           // vitesse perdue, m/s
+        case 'choc':
+          if (raclement?.matiere && raclement.matiere === matiereRaclement(p.obstacle)) {
+            if (raclement.coupJoue) break;
+            raclement.coupJoue = true;
+          }
+          if (!enPause && (typeof document === 'undefined' || !document.hidden))
+            choc(t, clamp((p.force ?? 8) / 12, .2, 1), vents[raclement?.ecoute]?.pan);
+          break;
         case 'contact': choc(t, clamp((p.force ?? 3) / 8, 0.15, 1) * 0.8); break;    // vitesse de rapprochement, m/s
         case 'reception': choc(t, clamp(0.3 + (p.force ?? 1) / 8, 0.2, 0.7)); break;  // la caisse retombe de son saut
         case 'roue': choc(t, 0.8); ton(t, 170, 0.32, 0.3, 'sawtooth'); break;         // une roue se détache
@@ -780,6 +864,7 @@
       const t = ctx.currentTime;
       for (const g of [m.sortie.gain, m.echoG.gain, vib.g.gain, herbe.g.gain]) vise(g, 0, t, 0.03);
       for (const p of pneus) eteindrePneus(p, t);
+      couperRaclements();
       if (fouleNoeud) vise(fouleNoeud.master.gain, 0, t, 0.05);
       if (m2) { vise(m2.sortie.gain, 0, t, .03); vise(m2.echoG.gain, 0, t, .03); }
       for (const v of vents) { vise(v.aiguG.gain, 0, t, .03); vise(v.graveG.gain, 0, t, .03); }
@@ -809,10 +894,10 @@
         klaxons: { voix: pret ? voixKlaxon.length : 0, actives: klaxonsActifs, budget: KLAXON_VOIX, dureeMax: DUREES_KLAXON.mariage, joues: klaxonsJoues, ignores: klaxonsIgnores } };
     }
 
-    return { demarrer, regler, mettreAJour, evenement, echappement, klaxon, musique, foule, suspendre, reprendre, stats };
+    return { demarrer, regler, mettreAJour, couperRaclements, evenement, echappement, klaxon, musique, foule, suspendre, reprendre, stats };
   }
 
-  B.son = { creer, frequenceAllumage, frequenceCycle, spectreMoteur, coupure, gainDistance, doppler, panoramique, selectionnerRivaux, MAX_RIVAUX, THEME,
+  B.son = { creer, creerRaclement, suivreRaclement, matiereRaclement, frequenceAllumage, frequenceCycle, spectreMoteur, coupure, gainDistance, doppler, panoramique, selectionnerRivaux, MAX_RIVAUX, THEME,
     synthEchappement, NIVEAU_ECH, ECH_VOIX, ECH_PAR_IMAGE, ECH_LATENCE,
     KLAXONS, DUREES_KLAXON, KLAXON_VOIX, NIVEAU_KLAXON, normaliserKlaxon, synthKlaxons };
 })(globalThis.BITUME = globalThis.BITUME || {});

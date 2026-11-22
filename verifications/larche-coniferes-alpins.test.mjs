@@ -38,6 +38,12 @@ test('formes instanciables fermées, normales et budget dans chaque niveau', () 
   }
 });
 
+test('le mélèze dénudé reste au plus au budget feuillé à tous les niveaux', () => {
+  for (const detail of ['proche', 'leger', 'loin']) {
+    assert.ok(enregistrees.get(A.nom('meleze-nu',detail)).length <= enregistrees.get(A.nom('meleze',detail)).length);
+  }
+});
+
 test('la pose garde les mêmes arbres et les mêmes appuis de l’été à l’hiver', () => {
   const c = B.larche.creer(210);
   const terrain = { sol: (x,z) => 380+x*.025-z*.035 };

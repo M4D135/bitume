@@ -13,12 +13,12 @@
   // Catalogue épuré (11 identités vraiment uniques : 10 circuits signature + Marseille Vieux-Port → Corniche).
   const CATALOGUE = [
     { id: 'val-brule', nom: 'Val-Brûlé', lieu: 'Forêt tempérée', theme: 'foret', graine: 11, longueur: 4200 },
-    { id: 'marseille', nom: 'Marseille · Vieux-Port → Corniche', lieu: 'Méditerranée · Vieux-Port, Vallon des Auffes & David', theme: 'cote', graine: 313, longueur: 5992, ouvert: true },
+    { id: 'marseille', nom: 'Marseille · Vieux-Port → Corniche', lieu: 'Méditerranée · Vieux-Port, Vallon des Auffes & David', theme: 'cote', graine: 313, longueur: 5992, distanceCourse: 5752, ouvert: true },
     { id: 'corail', nom: 'Baie-du-Corail', lieu: 'Lagon turquoise · atoll et phare blanc', theme: 'corail', graine: 283, longueur: 4500 },
     { id: 'cap-sequoia', nom: 'Cap-Séquoia', lieu: 'États-Unis · falaises du Pacifique', theme: 'pacifique', graine: 157, longueur: 5200 },
     { id: 'fjord', nom: 'Fjord-d’Argent', lieu: 'Norvège · fjord de granit et cascade', theme: 'fjord', graine: 223, longueur: 5100 },
     { id: 'route-des-cimes', nom: 'Route-des-Cimes', lieu: 'Grand col alpin · cirque de l’Aiglière', theme: 'montagne', graine: 181, longueur: 9697.52858032384, partition: 'route-des-cimes' },
-    { id: 'larche', nom: 'Col de Larche → Vinadio', lieu: 'Alpes · descente réelle SS21 (32,8 km)', theme: 'montagne', graine: 210, longueur: 32816.81, ouvert: true },
+    { id: 'larche', nom: 'Col de Larche → Vinadio', lieu: 'Alpes · descente de la SS21', theme: 'montagne', graine: 210, longueur: 32816.81, distanceCourse: 32249.33, ouvert: true },
     { id: 'lande-noire', nom: 'Lande-Noire', lieu: 'Islande · plateau volcanique', theme: 'islande', graine: 83, longueur: 4600 },
     { id: 'sierra', nom: 'Sierra-Cuivrée', lieu: 'Canyons ocre · arche et viaduc rouge', theme: 'sierra', graine: 271, longueur: 5000 },
     { id: 'brume-de-jade', nom: 'Brume-de-Jade', lieu: 'Asie · pics calcaires et terrasses', theme: 'asie', graine: 131, longueur: 5000 },
@@ -163,6 +163,7 @@
     return n;
   }
   function fiche(c) {
+    c = B.menuArcade.parcoursChronometre(c);
     const droite = c.ligneDroite ? c.ligneDroite.fin - c.ligneDroite.debut : 0;
     return { km: (c.longueur / 1000).toFixed(2).replace('.', ','), virages: nombreVirages(c), droite: Math.round(droite) };
   }
@@ -188,7 +189,7 @@
     ctx.beginPath(); ctx.moveTo(x - Math.sin(a) * l, y + Math.cos(a) * l); ctx.lineTo(x + Math.sin(a) * l, y - Math.cos(a) * l);
     ctx.lineWidth = Math.max(2, epaisseur * .55); ctx.strokeStyle = c.ouvert ? '#2ecc71' : '#e0301e'; ctx.stroke();
     if (c.ouvert && Number.isFinite(c.arrivee)) {
-      const iArr = Math.max(0, Math.min(c.n - 1, Math.round(c.arrivee / c.pas)));
+      const iArr = c.n - 1;
       const [ax, ay] = p.vers(c.x[iArr], c.z[iArr]), aa = c.cap[iArr];
       ctx.beginPath(); ctx.moveTo(ax - Math.sin(aa) * l, ay + Math.cos(aa) * l); ctx.lineTo(ax + Math.sin(aa) * l, ay - Math.cos(aa) * l);
       ctx.lineWidth = Math.max(2, epaisseur * .55); ctx.strokeStyle = '#e0301e'; ctx.stroke();
@@ -274,8 +275,9 @@
     if (pub) try { vuePublic = B.public.vue(rendu, pub); } catch (e) { console.warn('BITUME : public indisponible', e); }
     // plan du circuit pour l'affichage de course, dessiné une fois
     const fond = document.createElement('canvas'); fond.width = fond.height = 220;
-    const p = plan(c, 220, 220, 16), ctx = fond.getContext('2d');
-    dessinerTrace(ctx, c, p, 9, 'rgba(10,12,15,.9)'); dessinerTrace(ctx, c, p, 4.5, '#d9d2c3');
+    const trace = B.menuArcade.parcoursChronometre(c);
+    const p = plan(trace, 220, 220, 16), ctx = fond.getContext('2d');
+    dessinerTrace(ctx, trace, p, 9, 'rgba(10,12,15,.9)'); dessinerTrace(ctx, trace, p, 4.5, '#d9d2c3');
     // profondeur du volume d'ombre : un point du sol au bord du carré est décalé de OMBRE × cotangente de la hauteur du soleil
     const sol = decor.atmosphere.sunDirection, sinus = sol[1] / Math.hypot(sol[0], sol[1], sol[2]);
     const ombre = { extent: OMBRE, depth: 2 * (OMBRE * Math.sqrt(Math.max(0, 1 - sinus * sinus)) / Math.max(.25, sinus) + 30) };
@@ -417,6 +419,7 @@
       real: demo ? B.realisateur.creer(graineCourse) : null, cinema: null, planVu: null, suivie: 0, enchaine: false,
       expressions: B.expressionsPilote ? B.expressionsPilote.creer(course.voitures.length, graineCourse, { ia: joue }) : null,
       trollEvenement: { sequence: 0, pilote: -1, geste: null, klaxon: 'classique', instant: 0, cote: -1 },
+      raclement: B.son.creerRaclement(),
       trollAudio: { klaxon: 'classique', gain: 0, pan: 0 },
       fx: B.traces.creer(course.voitures.length, graineCourse, course.physique.world),
       // flammes et détonations d'échappement (lot 20) : hasard propre, tiré de la graine de la course
@@ -452,7 +455,7 @@
     }
     // Écran partagé (David, 16/11 : « multi en écran splitté local, deux manettes, l'un sur l'autre ou côte à côte ») :
     // la vue du joueur 2 a son propre état de caméra, d'éclair et d'affichage, le reste vient de la séance.
-    if (duo) S.vueJ2 = Object.assign(Object.create(S), { camCap: null, regardArriere: false, tete: null, secousse: 0, eclair: 0, lumiere: 1, sol: null, tele: { poste: null, alea: graine32(31 + i) },
+    if (duo) S.vueJ2 = Object.assign(Object.create(S), { raclement: B.son.creerRaclement(1), camCap: null, regardArriere: false, tete: null, secousse: 0, eclair: 0, lumiere: 1, sol: null, tele: { poste: null, alea: graine32(31 + i) },
       distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
       detailsRoues: new Int8Array(course.voitures.length).fill(-1),
       detailsRouesGlaces: [new Int8Array(course.voitures.length).fill(-1), new Int8Array(course.voitures.length).fill(-1)],
@@ -656,6 +659,7 @@
     oublierIntervalle();
     if (document.hidden) { arreterManettes(); relacherTactile(); viderStock(); suspendreAnnoncesVirages(); }   // un onglet masqué peut être tué sans autre avis
     if (pauseAuto && document.hidden && enCourse()) basculerPause(true);
+    if (document.hidden && son) son.couperRaclements();
     if (son) son.musique(!document.hidden && ecran === 'titre'); // onglet caché : le minuteur du thème serait bridé
   });
   addEventListener('gamepaddisconnected', ev => {
@@ -1205,6 +1209,12 @@
     else cmd = auto ? B.course.commandesIA(co, co.joueur) : commandesJoueur();
     const ev = B.course.pas(co, cmd, DT);
     if (S.enLigne) actualiserPneusDistants(S, DT);
+    // Le réseau avance aussi sous la pause. Garder la lecture à jour évite un raclement périmé à la reprise.
+    if (son && sonActif && S.type !== 'vitrine') {
+      const v = S.type === 'demo' ? co.voitures[S.suivie] : co.joueur;
+      B.son.suivreRaclement(S.raclement, v?.etat._physx, co.horloge);
+      if (S.vueJ2) B.son.suivreRaclement(S.vueJ2.raclement, co.voitures[S.locaux[1]].etat._physx, co.horloge);
+    }
     // vibration manette : le pilote la sent passer dans ses mains — le moteur selon les tours, la route, les
     // vibreurs, l'herbe, le patinage, la glisse et les chocs ; la main reste calme si le réglage est à « non ».
     // Les événements du pas sont retenus pour l'image (majVibrations), à deux pour chaque joueur et sa voiture.
@@ -1259,7 +1269,7 @@
           break;
         default:
           if (!dePres || e.id !== sujet) break;
-          if (son) son.evenement(e.type, e);
+          if (son) son.evenement(e.type, e, S.raclement);
           if (e.type === 'choc') S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .07);
       }
     }
@@ -1271,7 +1281,9 @@
       const id2 = S.locaux[1];
       if (e.type === 'contact' && (e.a === id2 || e.b === id2)) V2.secousse = Math.min(1, V2.secousse + Math.max(0, e.force - 2) * .07);
       else if (e.id !== id2) continue;
-      else if (e.type === 'choc') { V2.secousse = Math.min(1, V2.secousse + Math.max(0, e.force - 2) * .07); if (e.force > 18) V2.eclair = Math.min(.9, (e.force - 18) * .07); }
+      else if (e.type === 'choc') {
+        if (son && B.son.matiereRaclement(e.obstacle)) son.evenement('choc', e, V2.raclement);
+        V2.secousse = Math.min(1, V2.secousse + Math.max(0, e.force - 2) * .07); if (e.force > 18) V2.eclair = Math.min(.9, (e.force - 18) * .07); }
       else if (e.type === 'tonneau' || e.type === 'casse') { V2.secousse = 1; V2.eclair = .7; }
     }
     // en ligne : chacun annonce le temps officiel de sa voiture, l'hôte aussi ceux des rivaux ; un temps officiel reçu
@@ -1306,7 +1318,7 @@
           break;
         default:
           if (e.id !== j.id) break;
-          if (son) son.evenement(e.type, e);
+          if (son) son.evenement(e.type, e, S.raclement);
           if (e.type === 'choc') { S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .07); if (e.force > 18) S.eclair = Math.min(.9, (e.force - 18) * .07); }
           else if (e.type === 'reception') S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, (e.force || 0) - 2) * .12);
           else if (e.type === 'tonneau' || e.type === 'casse') { S.secousse = 1; S.eclair = .7; message('Retour en piste', 'ambre', true); }
@@ -3294,6 +3306,8 @@
     const PR = B.conduite.PARAMS;
     sortie.deriveRelative = Math.max(Math.abs(et.deriveAv) / PR.alphaAv, Math.abs(et.deriveAr) / PR.alphaAr);
     sortie.blocage = et.blocage; sortie.patinage = et.patinage;
+    sortie.raclement = S.raclement && (ecran === 'course' || ecran === 'demo') && !voiture.fini && !voiture.abandon && !et.recuperation &&
+      S.raclement.acteur === et._physx ? S.raclement : null;
     const auSol = et._physx ? et._physx.groundCount > 0 : !et.saut?.actif && !(et.bond > .03);
     sortie.contactPneus = auSol && et.rapport > 0 && !et.recuperation && et.stands?.phase !== 'service';
     sortie.aspiration = Number.isFinite(et.aspiration) ? clamp(et.aspiration, 0, 1) : 0;
@@ -3338,7 +3352,7 @@
       if (ec) { ec.distance[k] = r.distance; ec.angle[k] = r.angle; }
       sonRivaux.push(r);
     }
-    etatSon.pause = ecran === 'pause';
+    etatSon.pause = document.hidden || ecran === 'pause';
     decrireMoteur(etatSon.joueur, S, co.voitures[ks], cam);
     etatSon.joueur2 = cam2 ? sonJoueur2 : null;
     if (cam2) decrireMoteur(sonJoueur2, S2, co.voitures[k2], cam2);
@@ -3600,6 +3614,8 @@
     // derrière lui), sur les lignes faites une fois ; la coupure suit la troisième ligne quand les rangs sautent
     if (!chronoMode && (!S.prochainClassement || co.horloge >= S.prochainClassement)) {
       S.prochainClassement = co.horloge + .25;
+      // En ligne la course continue sous la pause, y compris le service de l’autre pilote local.
+      if (ecran === 'pause' && S.enLigne && x === HUD1) majPneusStands();
       const lignes = x.lignes, lance = co.phase === 'course' || co.phase === 'arrivee';
       let n = 0, prec = -1, saut = false;
       for (let r = 0; r < nb && n < 6; r++) {
@@ -3951,7 +3967,7 @@
         b.style.setProperty('--biome', BIOME_COULEURS[clefTheme] || '#39ff8e');
         b.style.animationDelay = (i * 18) + 'ms';
         b.innerHTML = '<span class="circuit-rang">' + String(i + 1).padStart(2, '0') + '</span><span class="nom">' + k.nom + '</span>' +
-          '<span class="fiche">' + k.lieu + '</span><span class="circuit-distance">' + (k.longueur / 1000).toFixed(1).replace('.', ',') + ' km</span>';
+          '<span class="fiche">' + k.lieu + '</span><span class="circuit-distance">' + ((k.distanceCourse ?? k.longueur) / 1000).toFixed(k.ouvert ? 2 : 1).replace('.', ',') + ' km</span>';
         b.addEventListener('click', () => { reglages.circuit = i; sauverReglages(); majPreparation(); if (son) son.evenement('clic'); if (EL.role === 'hote' && lienActif()) annoncerCourse(); });
         zone.appendChild(b);
       });
@@ -4046,16 +4062,31 @@
   function majPneusStands() {
     const S = session, co = S && S.course;
     $('pneus-stands').hidden = !(co && S.type !== 'demo' && S.type !== 'vitrine');
-    texte($('ps-note'), 'Choisissez la monte de chaque pilote. Les quatre pneus seront changés à la fin du service au garage.');
+    const garage = !!co?.c?.stands;
+    texte($('ps-note'), garage ? 'À l’arrêt dans le garage, la voiture est réparée et les quatre pneus sont changés à la fin du service.' :
+      'Ce parcours ne propose pas de réparation complète ni de changement de pneus.');
     for (let n = 0; n < 2; n++) {
       const id = S && S.locaux && S.locaux[n], v = co && co.voitures[id], zone = $('ps-pilote-' + n);
       zone.hidden = !v; if (!v) continue;
       const et = v.etat, st = et.stands, service = st && st.phase === 'service';
       const type = B.pneus.estJouable(et.pneusProchainArret) ? et.pneusProchainArret : et.pneus;
-      zone.disabled = !!(service || v.distant || v.reprise || v.fini || v.abandon || co.termine);
+      const prochainArret = garage && !v.distant && !v.reprise && !v.fini && !v.abandon && !co.termine;
+      zone.disabled = !!service || !prochainArret;
+      const pieces = B.degats.avaries(et.degats, true);
+      let bilan = 'État des avaries indisponible.';
+      if (et.degats) {
+        if (pieces.length) bilan = 'À réparer · ' + pieces.join(', ') + '.';
+        else if (B.degats.sante(et.degats) < 1) bilan = 'Dégâts légers.';
+        else bilan = st?.repare ? 'Aucune avarie après le service.' : 'Aucune avarie.';
+        if (et.recuperation) bilan += ' Remise en piste automatique en cours.';
+      }
+      texte($('ps-avaries-' + n), bilan);
       for (const r of document.querySelectorAll('input[name="pneusStand' + n + '"]')) r.checked = r.value === (service ? st.pneus : type);
-      texte($('ps-etat-' + n), service ? 'Service en cours : ' + NOMS_PNEUS[st.pneus] + '. Choix verrouillé jusqu’à sa fin.' :
-        'Montés : ' + NOMS_PNEUS[et.pneus] + ' · prochain arrêt : ' + NOMS_PNEUS[type] + '.');
+      let monte = 'Montés : ' + NOMS_PNEUS[et.pneus];
+      if (service) monte = 'Service en cours : ' + NOMS_PNEUS[st.pneus] + '. Choix verrouillé jusqu’à sa fin.';
+      else if (prochainArret) monte += ' · prochain arrêt : ' + NOMS_PNEUS[type] + '.';
+      else monte += garage ? '. Service indisponible pour ce pilote.' : '.';
+      texte($('ps-etat-' + n), monte);
     }
   }
   function preselectionnerPneus() {

@@ -184,6 +184,40 @@ verifier('pneus : quatre signatures, adhérence silencieuse et deux auditeurs in
   } finally { delete globalThis.window; }
 });
 
+verifier('raclements indépendants, un seul coup au joint, extinction à la séparation et en pause', function () {
+  const fa = fauxAudio(); globalThis.window = { AudioContext: fa.Ctx };
+  try {
+    const s = B.son.creer(); s.demarrer();
+    const r = { duree:.4, matiere:'metal', vitesse:21, coupJoue:false }, r2 = { ...r, matiere:'mur' };
+    const j = { raclement:r, id:0 }, j2 = { raclement:r2, id:1 };
+    const e = { joueur:j, joueur2:j2 };
+    s.mettreAJour(e);
+    const voix = fa.sources.filter(v => v.loop && v.playbackRate.cibles.length);
+    assert.equal(voix.length,2);
+    const [a,b] = voix, cible = p => p.cibles.at(-1)?.v ?? p.value;
+    const gain = v => cible(v.suite.suite.gain);
+    assert(gain(a) > 0 && gain(b) > 0);
+    assert(cible(a.suite.frequency) > 2 * cible(b.suite.frequency));
+    assert(cible(a.suite.suite.suite.pan) < 0 && cible(b.suite.suite.suite.pan) > 0);
+    const avant = fa.sources.length;
+    for (let i = 0; i < 6; i++) s.evenement('choc',{force:2,obstacle:'glissiere',obstacleId:15+i},r);
+    assert.equal(fa.sources.length,avant+1, 'un seul impact sonore le long des sections jointives');
+    s.evenement('choc',{force:2,obstacle:'tronc'},r);
+    assert.equal(fa.sources.length,avant+2, 'un impact avec un autre objet conserve son son');
+    const noeuds = fa.compte().noeuds;
+    for (let i = 0; i < 180; i++) s.mettreAJour(e);
+    assert.equal(fa.compte().noeuds,noeuds);
+    r.duree = .01; s.mettreAJour(e); assert.equal(gain(a),0, 'contact très bref'); assert(gain(b)>0);
+    r.duree=.4; r.vitesse=0; s.mettreAJour(e); assert.equal(gain(a),0,'appui immobile');
+    r.vitesse=21; j.muet=true; s.mettreAJour(e); assert.equal(gain(a),0);
+    j.muet=false; s.mettreAJour(e); assert(gain(a)>0);
+    s.suspendre();s.mettreAJour(e);assert.equal(gain(a)+gain(b),0);
+    s.reprendre();s.mettreAJour(e);assert(gain(a)>0 && gain(b)>0);
+    s.couperRaclements();assert.equal(gain(a)+gain(b),0,'onglet masqué');
+    j.raclement=null; e.joueur2=null; s.mettreAJour(e);assert.equal(gain(a)+gain(b),0,'sortie de contact et du duo');
+  } finally { delete globalThis.window; }
+});
+
 verifier('attribution stable puis fondu complet avant de réutiliser une voix rivale', function () {
   const fa = fauxAudio(); globalThis.window = { AudioContext: fa.Ctx };
   try {

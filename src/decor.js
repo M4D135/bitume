@@ -2041,7 +2041,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       ? options.vegetationQualite : qualite;
     if (B.vegetation && options.vegetation !== false && vegetationQualite !== 'off') {
       const v = B.vegetation.construire(c, { limites: lim, interroger, qualite: vegetationQualite,
-        surfaces: vegetationQualite === 'low' || th.volcanique || th.aride || th.karstique || th.pacifique ? null : ouvrirHerbier(), ecologie });
+        // Les biomes sans implantation sortent avant de demander la découpe des prairies.
+        get surfaces() { return vegetationQualite === 'low' || th.volcanique || th.aride || th.karstique || th.pacifique ? null : ouvrirHerbier(); },
+        ecologie });
       if (saison) {
         const habitat = {};
         for (const lot of v.lots) for (let i = 0; i < lot.objets.length; i++) {

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { chargerPhysX } from './helpers/physx-runtime.mjs';
 const require = createRequire(import.meta.url);
-for (const f of ['circuit', 'conduite', 'degats', 'contacts', 'obstacles', 'course', 'solides-physx', 'physique', 'carene', 'main', 'voiture', 'traces']) require('../src/' + f + '.js');
+for (const f of ['circuit', 'conduite', 'degats', 'contacts', 'obstacles', 'course', 'solides-physx', 'physique', 'son', 'carene', 'main', 'voiture', 'traces']) require('../src/' + f + '.js');
 const B = globalThis.BITUME, X = globalThis.FPhysX = await chargerPhysX(), DT = 1 / 120;
 const NEUTRE = { gaz: 0, frein: 0, volant: 0, aide: 0, guidage: 0, boite: 'auto' }, FREIN = { ...NEUTRE, frein: 1 };
 let n = 0;
@@ -110,6 +110,28 @@ test('une barrière de 8 cm arrête le châssis à haute vitesse sans traversée
     assert(max < 149.8, 'barrière traversée ' + max); assert(chocs > 0, 'aucun contact remonté');
     assert.equal(s.e.repositionnements, 0); assert(s.e.v < 15, 'vitesse non résolue');
   } finally { B.physique.liberer(s.co); }
+});
+test('les parois signalent une glissade réelle puis la séparation, le bois conserve son seul choc', () => {
+  for (const [genre, matiere] of [['glissiere','metal'], ['mur-tunnel','mur'], ['tronc','']]) {
+    const s = fixture({ obstacles:[{ type:'box', x:200, z:1.55, ymin:0, ymax:1, angle:0, hx:110, hz:.05, genre }] });
+    try {
+      avancer(s,.8,FREIN); s.e.immunite = 10; s.p.world.setVelocity(s.ph.id,[25,0,2.4]);
+      const r = B.son.creerRaclement(); let chocs = 0, pasEnContact = 0, duree = 0;
+      const observer = ev => {
+        chocs += ev.filter(x => x.type === 'choc' && x.obstacle === genre).length;
+        B.son.suivreRaclement(r,s.ph,s.co.horloge);
+        if (!r.matiere) return;
+        assert.equal(r.matiere,matiere); assert(r.vitesse > 14 && r.vitesse < 29);
+        pasEnContact++; duree = Math.max(duree,r.duree);
+      };
+      avancer(s,1.3,{ ...NEUTRE,gaz:.4,volant:.27 },observer);
+      avancer(s,1.1,{ ...NEUTRE,gaz:.4,volant:-1 },observer);
+      assert(chocs > 0, 'le solveur a réellement heurté le solide');
+      if (matiere) assert(pasEnContact > 100 && duree > .8, 'plus de 0,8 s de glissade confirmée');
+      else assert.equal(pasEnContact,0);
+      assert.equal(r.vitesse,0); assert.equal(r.matiere,''); assert(s.e.v > 10, 'voiture dégagée encore en mouvement');
+    } finally { B.physique.liberer(s.co); }
+  }
 });
 test('deux voitures échangent leur quantité de mouvement avec leur masse réelle', () => {
   const s = fixture({ voitures: 2, masses: { 0: 600, 1: 1200 } });

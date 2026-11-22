@@ -89,7 +89,14 @@
     const bas = n.map(dir=>a.map((x,m)=>x+r0*dir[m])), haut = n.map(dir=>b.map((x,m)=>x+r1*dir[m]));
     for (let k=0;k<faces;k++) {
       const l=(k+1)%faces;
-      tri.push([bas[k],bas[l],haut[k],n[k],n[l],n[k]], [haut[k],bas[l],haut[l],n[k],n[l],n[l]]);
+      if (r1 === 0) {
+        // La pointe éloignée d’un rameau nu fait moins d’un pixel. Chaque
+        // face atteint son extrémité exacte, sans second anneau ni face cachée.
+        const pointe = unite(n[k].map((x,m)=>x+n[l][m]));
+        tri.push([bas[k],bas[l],b,n[k],n[l],pointe]);
+      } else {
+        tri.push([bas[k],bas[l],haut[k],n[k],n[l],n[k]], [haut[k],bas[l],haut[l],n[k],n[l],n[l]]);
+      }
     }
   }
 
@@ -119,7 +126,7 @@
           return [along*longueur*u-across*tangente, y+pente*u - .26*longueur*u*(1-u)+h, across*longueur*u+along*tangente];
         };
         if (nu) {
-          bois(tri, point(0,0,0), point(1,0,.019), .0045*(1-t)+.001, .0007, 3);
+          bois(tri, point(0,0,0), point(1,0,.019), .0045*(1-t)+.001, loin ? 0 : .0007, 3);
           if (detail === 'proche') for (const signe of [-1,1]) {
             bois(tri, point(.48,0,.008), point(.83,signe*largeur,-chute*.55), .0021, .0004, 3);
           }

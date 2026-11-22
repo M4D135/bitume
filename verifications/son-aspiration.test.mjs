@@ -192,6 +192,19 @@ verifier('le vrai raccord du jeu transmet l’aspiration du pilote suivi et auto
     const ancien = et[k]; et[k] = v; assert.equal(mesurer(), false, k); et[k] = ancien;
   }
   et._physx = { groundCount: 1 }; assert(mesurer(), 'une roue posée suffit');
+  const S = {vue:'cockpit',course:{c:{}},raclement:{acteur:et._physx,matiere:'metal',vitesse:20,duree:.4}};
+  const transmettre = (ecran = 'course') => {
+    description(globalThis.BITUME,ecran,new Set(),()=>false,(x,a,b)=>Math.max(a,Math.min(x,b)))(
+      resultat,S,v,{pos:[0,1,0]});
+    return resultat.raclement;
+  };
+  assert.equal(transmettre(),S.raclement);
+  for (const n of ['pause','resultats','reglages','titre']) assert.equal(transmettre(n),null);
+  v.fini=true; assert.equal(transmettre(),null); v.fini=false;
+  v.abandon=true; assert.equal(transmettre(),null); v.abandon=false;
+  et.recuperation={}; assert.equal(transmettre(),null); et.recuperation=null;
+  S.raclement.acteur={}; assert.equal(transmettre('demo'),null, 'une coupe caméra ne récupère pas le choc de l’ancienne voiture');
+
 
 }));
 

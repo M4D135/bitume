@@ -17,23 +17,23 @@ verifier('le catalogue entier conserve ses vrais XYZ, son départ et une seule �
   assert.equal(catalogue.length, 11);
   for (const k of catalogue) {
     const c = B.circuit.creer(k.graine, k), avant = [Array.from(c.x), Array.from(c.y), Array.from(c.z)];
-    const t = A.preparerTrace(c);
+    const t = A.preparerTrace(c), axeCourse = A.parcoursChronometre(c);
     assert.ok(t.n <= A.MAX_POINTS && t.n >= 12, k.id);
     assert.equal(t.indices[0], 0, `${k.id} : départ`);
     assert.equal(new Set(t.indices).size, t.n, `${k.id} : échantillons distincts`);
     for (let i = 0; i < t.n; i++) {
       const j = t.indices[i];
-      proche(t.points[i * 3] * t.diametre + t.centre[0], c.x[j]);
-      proche(t.points[i * 3 + 1] * t.diametre + t.centre[1], c.y[j]);
-      proche(t.points[i * 3 + 2] * t.diametre + t.centre[2], c.z[j]);
+      proche(t.points[i * 3] * t.diametre + t.centre[0], axeCourse.x[j]);
+      proche(t.points[i * 3 + 1] * t.diametre + t.centre[1], axeCourse.y[j]);
+      proche(t.points[i * 3 + 2] * t.diametre + t.centre[2], axeCourse.z[j]);
     }
-    proche(t.altitudeMin, Math.min(...c.y)); proche(t.altitudeMax, Math.max(...c.y));
-    proche(t.relief * t.diametre, t.altitudeMax - t.altitudeMin); assert.equal(t.longueur, c.longueur);
+    proche(t.altitudeMin, Math.min(...axeCourse.y)); proche(t.altitudeMax, Math.max(...axeCourse.y));
+    proche(t.relief * t.diametre, t.altitudeMax - t.altitudeMin); assert.equal(t.longueur, c.ouvert ? c.arrivee - c.depart : c.longueur);
     assert.deepEqual([Array.from(c.x), Array.from(c.y), Array.from(c.z)], avant, 'source intacte');
   }
 });
 
-verifier('neuf circuits et 144 rotations : cadrage complet paysage/portrait, relief sans exagération', () => {
+verifier('onze circuits et 144 rotations : cadrage complet paysage/portrait, relief sans exagération', () => {
   for (const k of catalogue) {
     const t = A.preparerTrace(B.circuit.creer(k.graine, k)), tampon = new Float64Array(t.n * 3);
     for (const [largeur, hauteur] of [[720, 400], [280, 180], [960, 540], [640, 160], [340, 370], [1280, 720]]) {
@@ -246,4 +246,22 @@ verifier('changement d’étape : défilement central remis au début, réglage 
   } finally { menu.detruire(); if (ancien) B.navigationMenu = ancien; else delete B.navigationMenu; }
 });
 
-console.log(`${controles} contrôles du menu arcade réussis ; neuf circuits, 144 rotations et six formats.`);
+verifier('Larche et Marseille : les cartes et leurs distances s’arrêtent sur la ligne de course', () => {
+  for (const k of catalogue.filter(k => k.ouvert)) {
+    const c = (k.id === 'larche' ? B.larche : B.marseille).creer(k.graine);
+    const trace = A.parcoursChronometre(c);
+    assert.equal(A.parcoursChronometre(c), trace);
+    assert.equal(k.distanceCourse, c.arrivee - c.depart);
+    assert.equal(trace.longueur, k.distanceCourse);
+    const ligne = B.circuit.echantillon(c, c.arrivee), p = A.preparerTrace(c);
+    assert.equal(p.courbures[0], 0);
+    assert.equal(p.courbures.at(-1), 0);
+    for (const [i, axe] of ['x','y','z'].entries()) {
+      proche(trace[axe].at(-1), ligne[axe], 1e-6);
+      proche(p.points[(p.n - 1)*3+i]*p.diametre + p.centre[i], ligne[axe], 1e-6);
+    }
+    assert(c.longueur > trace.longueur + 200, 'la simulation garde sa zone de décélération');
+  }
+});
+
+console.log(`${controles} contrôles du menu arcade réussis ; onze circuits, 144 rotations et six formats.`);

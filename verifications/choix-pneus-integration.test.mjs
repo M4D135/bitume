@@ -223,3 +223,41 @@ test('12F3 : choix de monte en ligne autorisé pour chaque pilote local sans cha
   assert.deepEqual(selection(a, 'pneusStand0'), ['slicks']); assert.deepEqual(selection(a, 'pneusStand1'), ['pluie']);
   assert.equal(a.sauvegardes.length, 0, 'choix propre à la séance, sans réécriture des préférences de départ');
 });
+
+test('pause duo : avaries constatées, remise en piste et vraie fin de service au garage', () => {
+  const a = creer(), co = course({humains: {noms: ['H1','H2','I1','I2'], locaux: [2,3], hote: false, enLigne: true}});
+  co.temps = co.horloge = 20;
+  const v = co.voitures[3], et = v.etat, g = co.c.stands, dt = 1 / 120, evenements = [];
+  a.seance({type: 'duo', course: co, locaux: [2,3]}); a.ecran('pause');
+  const bilan = n => { a.majPneusStands(); return a.$('ps-avaries-' + n).textContent; };
+  assert.equal(bilan(0), 'Aucune avarie.'); assert.equal(bilan(1), 'Aucune avarie.');
+  B.degats.choc(co.voitures[2].degats, 2); assert.equal(bilan(0), 'Dégâts légers.');
+  B.conduite.subirChoc(et, 21, {roue: 3}); const avant = structuredClone(v.degats);
+  assert.match(bilan(1), /adhérence réduite, carrosserie endommagée, roue arrière droite manquante/);
+  assert.match(bilan(1), /Remise en piste automatique en cours/);
+  assert.deepEqual(v.degats, avant, 'consulter le bilan ne répare rien');
+  B.conduite.replacer(et, co.c);
+  assert.match(bilan(1), /adhérence réduite, carrosserie endommagée/);
+  assert.doesNotMatch(bilan(1), /roue|Remise en piste/);
+  Object.assign(et, {s:(g.garage0 + g.garage1)/2, d:g.d, v:0});
+  B.course.stands(co,v,dt,evenements); B.course.stands(co,v,dt,evenements);
+  assert.equal(et.stands.phase, 'service'); assert.match(bilan(1), /carrosserie endommagée/);
+  et.d = 0; B.course.stands(co,v,dt,evenements); assert.equal(et.stands, null);
+  assert.match(bilan(1), /carrosserie endommagée/, 'sortir avant la fin laisse les avaries');
+  et.d = g.d; B.course.stands(co,v,dt,evenements); B.course.stands(co,v,dt,evenements);
+  for (let i=0; i<600 && et.stands.phase === 'service'; i++) B.course.stands(co,v,dt,evenements);
+  assert.equal(et.stands.phase, 'sortie'); assert.equal(bilan(1), 'Aucune avarie après le service.');
+  assert.equal(bilan(0), 'Dégâts légers.', 'le garage ne répare que le pilote qui s’y arrête');
+  v.fini = true; a.majPneusStands();
+  assert.equal(a.$('ps-pilote-1').disabled, true); assert.match(a.$('ps-etat-1').textContent, /Service indisponible/);
+});
+
+test('parcours sans garage et casse franche : étendue réelle des dégâts, aucune promesse de service', () => {
+  const a = creer(), co = course(); co.c = {...co.c, stands:null};
+  a.seance({type:'course', course:co, locaux:[0]}); a.ecran('pause');
+  B.conduite.subirChoc(co.joueur.etat, 31, {roue:0}); a.majPneusStands();
+  assert.match(a.$('ps-avaries-0').textContent, /quatre roues manquantes, caisse à redresser/);
+  assert.match(a.$('ps-note').textContent, /ne propose pas de réparation complète/);
+  assert.equal(a.$('ps-pilote-0').disabled, true); assert.equal(a.$('ps-pilote-1').hidden, true);
+  assert.doesNotMatch(a.$('ps-etat-0').textContent, /prochain arrêt/);
+});

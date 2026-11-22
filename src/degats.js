@@ -88,12 +88,13 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.pneus)requir
     return Math.max(0, Math.min(1, 1 - (.4 * gA + .2 * gT + .3 * gR + .1 * gC)));
   }
   // Ce qui est abîmé, en français, pour l'affichage et pour le devis du service.
-  function avaries(d) {
+  function avaries(d, detail = false) {
     if (!d) return [];
     const a = [];
-    if (d.adher < .995) a.push('adhérence');
-    if (d.trainee > 1.005) a.push('carrosserie');
-    for (let i = 0; i < 4; i++) if (d.roues[i]) a.push(NOMS_ROUES[i]);
+    if (d.adher < .995) a.push(detail ? 'adhérence réduite' : 'adhérence');
+    if (d.trainee > 1.005) a.push(detail ? 'carrosserie endommagée' : 'carrosserie');
+    if (detail && rouesPerdues(d) === 4) a.push('quatre roues manquantes');
+    else for (let i = 0; i < 4; i++) if (d.roues[i]) a.push(detail ? NOMS_ROUES[i] + ' manquante' : NOMS_ROUES[i]);
     if (d.casse) a.push("caisse à redresser");
     return a;
   }

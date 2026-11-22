@@ -621,8 +621,8 @@
       <button type="button" class="discret" id="b-abandon">Quitter la séance</button>
     </nav>
     <div id="pneus-stands" class="service-pneus" hidden>
-      <h3>Au prochain arrêt</h3>
-      <p id="ps-note" class="note-pneus">Choisissez la monte de chaque pilote. Les quatre pneus seront changés à la fin du service au garage.</p>
+      <h3>État et service</h3>
+      <p id="ps-note" class="note-pneus">À l’arrêt dans le garage, la voiture est réparée et les quatre pneus sont changés à la fin du service.</p>
       <div class="options">
         <fieldset id="ps-pilote-0">
           <legend>Joueur 1</legend>
@@ -630,6 +630,7 @@
           <label><input type="radio" name="pneusStand0" value="inter"><span>Intermédiaires</span></label>
           <label><input type="radio" name="pneusStand0" value="pluie"><span>Pluie</span></label>
           <label><input type="radio" name="pneusStand0" value="neige"><span>Neige</span></label>
+          <p id="ps-avaries-0" class="note-pneus" role="status"></p>
           <p id="ps-etat-0" class="note-pneus" role="status" aria-live="polite"></p>
         </fieldset>
         <fieldset id="ps-pilote-1" hidden>
@@ -638,6 +639,7 @@
           <label><input type="radio" name="pneusStand1" value="inter"><span>Intermédiaires</span></label>
           <label><input type="radio" name="pneusStand1" value="pluie"><span>Pluie</span></label>
           <label><input type="radio" name="pneusStand1" value="neige"><span>Neige</span></label>
+          <p id="ps-avaries-1" class="note-pneus" role="status"></p>
           <p id="ps-etat-1" class="note-pneus" role="status" aria-live="polite"></p>
         </fieldset>
       </div>

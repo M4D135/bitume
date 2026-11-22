@@ -39,8 +39,38 @@
     }));
   }
 
+  // Le jeu garde la zone de décélération dans son circuit. Les cartes s'arrêtent aux
+  // coordonnées exactes du drapeau, même si la ligne tombe entre deux échantillons.
+  const parcoursDessines = new WeakMap();
+  function parcoursChronometre(c) {
+    if (!c?.ouvert || !Number.isFinite(c.arrivee) || !(c.pas > 0) || !(c.arrivee > (c.depart || 0))) return c;
+    let trace = parcoursDessines.get(c);
+    if (trace) return trace;
+    const debut = Math.max(0, (c.depart || 0) / c.pas), fin = Math.min(c.n - 1, c.arrivee / c.pas);
+    if (fin <= debut) return c;
+    const premier = Math.floor(debut) + 1, dernier = Math.ceil(fin) - 1, n = dernier - premier + 3;
+    trace = { n, ouvert: true, depart: 0, arrivee: c.arrivee - (c.depart || 0), longueur: c.arrivee - (c.depart || 0),
+      theme: c.theme, ligneDroite: c.ligneDroite };
+    for (const nom of ['x','y','z','cap','courbure']) {
+      const valeurs = c[nom];
+      if (!valeurs) continue;
+      const t = new Float64Array(n);
+      for (let j = premier; j <= dernier; j++) t[j - premier + 1] = valeurs[j];
+      for (const [k, f] of [[0,debut],[n-1,fin]]) {
+        const i = Math.floor(f), j = Math.min(c.n - 1, i + 1);
+        let ecart = valeurs[j] - valeurs[i];
+        if (nom === 'cap') ecart -= 2 * Math.PI * Math.round(ecart / (2 * Math.PI));
+        t[k] = valeurs[i] + (f - i) * ecart;
+      }
+      trace[nom] = t;
+    }
+    parcoursDessines.set(c, trace);
+    return trace;
+  }
+
   function preparerTrace(c, maximum = MAX_POINTS) {
     if (!c || !Number.isInteger(c.n) || c.n < 3 || !c.x || !c.z || c.x.length < c.n || c.z.length < c.n || (c.y && c.y.length < c.n)) throw new TypeError('Tracé de circuit incomplet');
+    c = parcoursChronometre(c);
     const n = Math.min(c.n, borner(Math.floor(maximum) || MAX_POINTS, 12, MAX_POINTS));
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity, y0 = Infinity, y1 = -Infinity;
     for (let i = 0; i < c.n; i++) {
@@ -55,13 +85,13 @@
     const diametre = rayon * 2, points = new Float64Array(n * 3), indices = new Uint32Array(n);
     const courbures = new Float64Array(n);
     for (let i = 0; i < n; i++) {
-      const j = Math.floor(i * c.n / n); indices[i] = j;
+      const j = c.ouvert ? Math.round(i * (c.n - 1) / (n - 1)) : Math.floor(i * c.n / n); indices[i] = j;
       points[i * 3] = (c.x[j] - cx) / diametre;
       points[i * 3 + 1] = ((c.y ? c.y[j] : 0) - y0) / diametre;
       points[i * 3 + 2] = (c.z[j] - cz) / diametre;
     }
     // Courbure locale (déterministe, pas de Math.random)
-    for (let i = 0; i < n; i++) {
+    for (let i = c.ouvert ? 1 : 0; i < (c.ouvert ? n - 1 : n); i++) {
       const p = (i - 1 + n) % n, s = (i + 1) % n;
       const dx1 = points[i*3]-points[p*3], dz1 = points[i*3+2]-points[p*3+2];
       const dx2 = points[s*3]-points[i*3], dz2 = points[s*3+2]-points[i*3+2];
@@ -462,5 +492,5 @@
     return api;
   }
 
-  B.menuArcade = Object.freeze({ ETAPES, MAX_POINTS, preparerTrace, cadrer, projeter, projeterTrace, creerApercu, installer, normaliserTroll });
+  B.menuArcade = Object.freeze({ ETAPES, MAX_POINTS, parcoursChronometre, preparerTrace, cadrer, projeter, projeterTrace, creerApercu, installer, normaliserTroll });
 })(globalThis.BITUME = globalThis.BITUME || {});
