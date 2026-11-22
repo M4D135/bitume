@@ -108,8 +108,9 @@
       }
     }
   }
-  function enregistrer(nom,triangles) {
+  function enregistrer(nom,triangles,solide=true) {
     globalThis.FRender?.forme?.(nom,triangles);
+    if (!solide) return {nom};
     const vertices=new Float32Array(triangles.flatMap(t=>t.slice(0,3).flat()));
     return {nom,maillage:{vertices,indices:Uint32Array.from({length:vertices.length/3},(_,i)=>i)}};
   }
@@ -138,7 +139,7 @@
         const points=t.map(v=>v.map((q,k)=>(q-p[k])/s[k]));
         face(triangles,...points);
       }
-      formes[partie]=enregistrer('stura-ilot-'+cle+'-'+partie,triangles);
+      formes[partie]=enregistrer('stura-ilot-'+cle+'-'+partie,triangles,partie==='facades'||partie==='toits');
     }
     ilots.push({village:g.village,p,s,formes,empreintes:g.empreintes});
   }
@@ -161,9 +162,9 @@
     }
     return false;
   }
-  function poser(terrain,position,neige,detail,ajouter) {
+  function poser(terrain,position,neige,detail,ajouter,reporter) {
     for(const {f,poly,largeur,profondeur,formes,montee} of modeles) {
-      const proche=[], loin=[], route=position(f.s);
+      const loin=[], route=position(f.s);
       const sol=(x,z)=>terrain?terrain.sol(f.x+x,f.z+z):route.y;
       const hauteurs=poly.map(p=>sol(...p)).sort((a,b)=>a-b);
       const seuil=(hauteurs[Math.floor((hauteurs.length-1)/2)]+hauteurs[Math.floor(hauteurs.length/2)])*.5;
@@ -172,8 +173,7 @@
       const enduit=f.usage==='municipio'?[.75,.65,.51]:f.h>7?[.68,.64,.56]:[.63,.65,.58];
       const bois=[.29,.24,.18], vitre=[.16,.22,.24];
       function objet(partie,shape,p,s,mat,color,angle=0) {
-        const o={shape,p,s,r:[0,angle,0],mat,color,architecture:'pietraporzio-bdtre',batiment:f.id,partie};
-        proche.push(o);return o;
+        return {shape,p,s,r:[0,angle,0],mat,color,architecture:'pietraporzio-bdtre',batiment:f.id,partie};
       }
       for(const [partie,forme] of Object.entries(formes)) {
         const mur=partie==='mur', couverture=partie==='toit';
@@ -184,62 +184,78 @@
         if(mur)o.trianglesMasque=f.tri.map(t=>t.map(i=>[f.x+poly[i][0],0,f.z+poly[i][1]]));
         loin.push(o);
       }
-      const facades=[];
-      for(let i=0;i<poly.length;i++) {
-        const a=poly[i], b=poly[(i+1)%poly.length], dx=b[0]-a[0], dz=b[1]-a[1], l=Math.hypot(dx,dz);
-        if(l<3.5)continue;
-        const nx=dz/l, nz=-dx/l, x=route.x-f.x-(a[0]+b[0])*.5, z=route.z-f.z-(a[1]+b[1])*.5;
-        const rue=(nx*x+nz*z)/Math.hypot(x,z), amont=-nx*Math.cos(route.cap)-nz*Math.sin(route.cap);
-        facades.push({a,dx,dz,l,nx,nz,rue,amont});
-      }
-      // Depuis la route, le pignon d'approche se lit avant la façade latérale.
-      const principale=facades.sort((a,b)=>b.rue*b.l-a.rue*a.l)[0];
-      const approche=facades.filter(b=>b!==principale && b.amont>.30 && b.nx*principale.nx+b.nz*principale.nz<.80)
-        .sort((a,b)=>b.amont*b.l-a.amont*a.l)[0];
-      for(const [index,bord] of [principale,approche].filter(Boolean).entries()) {
-        const {a,dx,dz,l,nx,nz}=bord, yaw=Math.atan2(nx,nz);
-        const applique=(partie,shape,u,y,saillie,s,mat,couleur)=>objet(partie,shape,
-          [f.x+a[0]+u*dx+nx*saillie,y,f.z+a[1]+u*dz+nz*saillie],s,mat,couleur,yaw);
-        const colonnes=Math.max(2,Math.min(detail?5:3,Math.floor(l/3)));
-        const etages=Math.max(1,Math.min(3,Math.round((rive-seuil)/3)));
-        for(let col=0;col<colonnes;col++){
-          const u=(col+.5)/colonnes, solLocal=sol(a[0]+u*dx,a[1]+u*dz);
-          for(let et=0;et<etages;et++){
-            if(!et && !index && col===0) {
-              if(solLocal+2.10<rive)applique('porte','box',u,solLocal+1.04,.045,[1.12,2.08,.09],10,bois);
-              continue;
-            }
-            const y=rive-1.10-3.0*(etages-et-1);
-            if(y-.62<solLocal+.12)continue;
-            applique('vitrage','box',u,y,.035,[1.04,1.22,.07],19.1,vitre);
-            if(detail)applique('menuiserie','stura-cadre',u,y,.09,[1.11,1.30,.10],10,bois);
-            if(detail && (f.usage==='abitativa'||f.usage==='residenziale') && l/colonnes>=2.15){
-              for(const cote of [-1,1])applique('volet','box',u+cote*.73/l,y,.065,[.31,1.16,.09],10,[.36,.40,.34]);
+      function preparerOuvertures() {
+        const ouvertures=[];
+        const facades=[];
+        for(let i=0;i<poly.length;i++) {
+          const a=poly[i], b=poly[(i+1)%poly.length], dx=b[0]-a[0], dz=b[1]-a[1], l=Math.hypot(dx,dz);
+          if(l<3.5)continue;
+          const nx=dz/l, nz=-dx/l, x=route.x-f.x-(a[0]+b[0])*.5, z=route.z-f.z-(a[1]+b[1])*.5;
+          const rue=(nx*x+nz*z)/Math.hypot(x,z), amont=-nx*Math.cos(route.cap)-nz*Math.sin(route.cap);
+          facades.push({a,dx,dz,l,nx,nz,rue,amont});
+        }
+        // Depuis la route, le pignon d'approche se lit avant la façade latérale.
+        const principale=facades.sort((a,b)=>b.rue*b.l-a.rue*a.l)[0];
+        const approche=facades.filter(b=>b!==principale && b.amont>.30 && b.nx*principale.nx+b.nz*principale.nz<.80)
+          .sort((a,b)=>b.amont*b.l-a.amont*a.l)[0];
+        for(const [index,bord] of [principale,approche].filter(Boolean).entries()) {
+          const {a,dx,dz,l,nx,nz}=bord, yaw=Math.atan2(nx,nz);
+          const applique=(partie,shape,u,y,saillie,s,mat,couleur)=>ouvertures.push(objet(partie,shape,
+            [f.x+a[0]+u*dx+nx*saillie,y,f.z+a[1]+u*dz+nz*saillie],s,mat,couleur,yaw));
+          const colonnes=Math.max(2,Math.min(detail?5:3,Math.floor(l/3)));
+          const etages=Math.max(1,Math.min(3,Math.round((rive-seuil)/3)));
+          for(let col=0;col<colonnes;col++){
+            const u=(col+.5)/colonnes, solLocal=sol(a[0]+u*dx,a[1]+u*dz);
+            for(let et=0;et<etages;et++){
+              if(!et && !index && col===0) {
+                if(solLocal+2.10<rive)applique('porte','box',u,solLocal+1.04,.045,[1.12,2.08,.09],10,bois);
+                continue;
+              }
+              const y=rive-1.10-3.0*(etages-et-1);
+              if(y-.62<solLocal+.12)continue;
+              applique('vitrage','box',u,y,.035,[1.04,1.22,.07],19.1,vitre);
+              if(detail)applique('menuiserie','stura-cadre',u,y,.09,[1.11,1.30,.10],10,bois);
+              if(detail && (f.usage==='abitativa'||f.usage==='residenziale') && l/colonnes>=2.15){
+                for(const cote of [-1,1])applique('volet','box',u+cote*.73/l,y,.065,[.31,1.16,.09],10,[.36,.40,.34]);
+              }
             }
           }
         }
+        return ouvertures;
       }
-      ajouter(proche,loin,f.x,f.z);
+      if (reporter) {
+        ajouter(loin,loin,f.x,f.z);
+        const sommet=seuil+f.h, hauteur=sommet-base;
+        // Englobe le pignon, les cadres et la saillie des volets, y compris les poses en biais.
+        const centre=[f.x,base+hauteur/2,f.z], rayon=Math.hypot(largeur+4,hauteur+4,profondeur+4)/2;
+        reporter(centre,rayon,preparerOuvertures);
+      } else {
+        ajouter([...loin,...preparerOuvertures()],loin,f.x,f.z);
+      }
     }
   }
-  function poserCouronne(neige,ajouter,village='Pietraporzio',detail=true) {
+  function poserCouronne(neige,ajouter,village='Pietraporzio',detail=true,reporter) {
     for(const g of ilots) {
       if (g.village!==village) continue;
-      const surfaces=[], loin=[];
-      for(const [partie,forme] of Object.entries(g.formes)) {
+      function surface(partie) {
         const baie=partie==='baies', volet=partie==='volets', toit=partie==='toits';
-        if (volet && !detail) continue;
-        const o={shape:forme.nom,p:g.p,s:g.s,architecture:'ilot-stura',partie,
+        return {shape:g.formes[partie].nom,p:g.p,s:g.s,architecture:'ilot-stura',partie,
           mat:baie?19.1:volet?10:toit?(neige?25:24):22,
           color:baie?[.17,.23,.24]:volet?[.35,.39,.33]:toit?(neige?[.86,.89,.90]:[.34,.34,.33]):[.66,.63,.55],
           trianglesMasque:partie==='facades'?g.empreintes:[]};
-        if (!baie && !volet) {
-          B.decor?.marquerSolide?.(o,'bati-bdtre',2,null,forme.maillage);
-          loin.push(o);
-        }
-        surfaces.push(o);
       }
-      ajouter(surfaces,surfaces.length===loin.length?surfaces:loin,g.p[0],g.p[2]);
+      const loin=['facades','toits'].map(partie=>{
+        const o=surface(partie);
+        B.decor?.marquerSolide?.(o,'bati-bdtre',2,null,g.formes[partie].maillage);
+        return o;
+      });
+      const parties=['baies','volets'].filter(p=>g.formes[p] && (detail || p!=='volets'));
+      if (reporter && parties.length) {
+        ajouter(loin,loin,g.p[0],g.p[2]);
+        reporter(g.p,Math.hypot(...g.s)/2,()=>parties.map(surface));
+      } else {
+        ajouter(parties.length ? [...loin,...parties.map(surface)] : loin,loin,g.p[0],g.p[2]);
+      }
     }
   }
   B.pietraporzio={poser,poserCouronne,recouvre};

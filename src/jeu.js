@@ -260,7 +260,7 @@
   function clePanorama(i, v) {
     const k = CATALOGUE[i], version = document.querySelector('.version-jeu')?.textContent;
     if (k.id !== 'larche' || !version) return null;
-    const options = [v.ancre, decorEnrichi, v.veut.matieres, v.vegetationQualite].join('/');
+    const options = [v.ancre, decorEnrichi, v.veut.matieres, v.vegetationQualite, 'flux-1'].join('/');
     return 'panorama-v1:' + B.cache.cleDecor(k.id, k.graine, options, v.saison, version);
   }
   function installer(i, saisonDemandee, panorama, herbierWasm) {
@@ -269,6 +269,7 @@
     const v = voeuDecor(saisonDemandee), { ancre, veut, vegetationQualite, saison } = v;
     if (sceneEnPlace(i, saisonDemandee, v)) return scene;
     const c = circuit(i), decor = B.decor.construire(c, {
+      decorProgressif: true,
       cachePanorama: panorama && panorama.cle === clePanorama(i, v) ? panorama : null,
       herbierWasm,
       qualite: ancre,
@@ -284,7 +285,7 @@
     if (B.obstacles) c.obstacles = B.obstacles.creer(decor.obstacles);
     rendu.setWorld([], [], decor.atmosphere);
     rendu.setNappes(decor.nappes);
-    rendu.setLots(decor.lots, { staticBounds: true });
+    rendu.setLots(decor.lots, { staticBounds: true, progressif: !!decor.fluxDecor });
     // Le public (public.js) : de vrais spectateurs à la place des boîtes des gradins, dessinés par le point d'accroche
     // « foule » du moteur. Bâti au palier ancre, comme le décor ; la vue de l'ancienne scène rend ses tampons.
     if (scene && scene.vuePublic) scene.vuePublic.liberer();
@@ -2672,7 +2673,7 @@
     const d = scene.decor;
     retro.rendu.setWorld([], [], d.atmosphere);
     retro.rendu.setNappes(d.nappes.map(n => Object.assign({}, n)));
-    retro.rendu.setLots(d.lots.map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null })), { staticBounds: true });
+    retro.rendu.setLots(d.lots.map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null })), { staticBounds: true, progressif: !!d.fluxDecor });
     // le public dans les glaces : son propre contexte WebGL, sans le niveau proche ni les ombres (glace sans ombre)
     if (retro.vuePublic) retro.vuePublic.liberer();
     retro.vuePublic = null;
@@ -3070,6 +3071,28 @@
     }
   }
 
+  // Les deux cadrages sont connus avant le premier draw. Un plan de lieu peut viser loin du pilote.
+  const cadresDecor = [{ cam: null, pose: null, suivie: null, vue: '' }, { cam: null, pose: null, suivie: null, vue: '' }];
+  const pilotesDecor = [[0, 0, 0], [0, 0, 0]], vuesDecor = [];
+  function preparerLotDecor(index, loinSeul) { return rendu?.preparerLot?.(index, loinSeul); }
+  function approcherDecor(S, cadre1, cadre2, dt) {
+    const flux = scene.decor.fluxDecor;
+    if (!flux || dt <= 0 || prepa.enCours || contexteRenduPerdu || document.hidden || S.type === 'vitrine' ||
+        (ecran !== 'course' && ecran !== 'demo')) return;
+    let n = 0;
+    for (let k = 0; k < (cadre2 ? 2 : 1); k++) {
+      const cadre = k ? cadre2 : cadre1, camera = cadre.cam || (k ? S.vueJ2.camera : S.camera);
+      if (camera) {
+        vuesDecor[n++] = camera.pos;
+        if (camera.cible) vuesDecor[n++] = camera.cible;
+      }
+      const pose = cadre.pose, p = pilotesDecor[k];
+      if (pose) { p[0] = pose.x; p[1] = pose.y; p[2] = pose.z; vuesDecor[n++] = p; }
+    }
+    vuesDecor.length = n;
+    if (n) flux.approcher(vuesDecor, dt, preparerLotDecor);
+  }
+
   function rendreImage(S, alpha, dtImage) {
     appliquerCarte();
     const co = S.course, j = co.joueur;
@@ -3138,14 +3161,23 @@
       // et aux images arrêtées (pause, quatre par seconde, sans temps qui passe) où un réglage peut avoir changé.
       const hzJ2 = P.secondaires.partage.hz;
       S.dtJ2 = (S.dtJ2 || 0) + dtImage;
-      if (hzJ2 >= 55 || !S.j2Rendue || dtImage === 0 || S.dtJ2 + dtImage / 2 >= 1 / hzJ2) {
-        const dtJ2 = S.dtJ2; S.dtJ2 = 0; S.j2Rendue = true;
-        rendreVue(S.vueJ2, co.voitures[S.locaux[1]], reglages.vue2, dtJ2, meteo);
+      const dtJ2 = S.dtJ2, refaireJ2 = hzJ2 >= 55 || !S.j2Rendue || dtImage === 0 || dtJ2 + dtImage / 2 >= 1 / hzJ2;
+      const cadre1 = cadresDecor[0], cadre2 = cadresDecor[1];
+      if (refaireJ2) {
+        S.dtJ2 = 0; S.j2Rendue = true;
+        rendreVue(S.vueJ2, co.voitures[S.locaux[1]], reglages.vue2, dtJ2, meteo, cadre2);
+      } else {
+        cadre2.cam = S.vueJ2.camera; cadre2.pose = poses[S.locaux[1]];
+      }
+      rendreVue(S, j, reglages.vue, dtImage, meteo, cadre1);
+      approcherDecor(S, cadre1, cadre2, dtImage);
+      if (refaireJ2 && cadre2.cam) {
+        dessinerVue(S.vueJ2, cadre2.suivie, cadre2.vue, dtJ2, meteo, cadre2.cam, cadre2.pose);
         const t2 = $('scene2'), ctx2 = t2._ctx || (t2._ctx = creationTardive('toileJ2', t2.getContext('2d')));
         if (t2.width !== canvas.width || t2.height !== canvas.height) { t2.width = canvas.width; t2.height = canvas.height; }
         ctx2.drawImage(canvas, 0, 0);
       }
-      const camJ1 = rendreVue(S, j, reglages.vue, dtImage, meteo);
+      const camJ1 = cadre1.cam && dessinerVue(S, cadre1.suivie, cadre1.vue, dtImage, meteo, cadre1.cam, cadre1.pose);
       poserGlaces();
       return camJ1;
     }
@@ -3159,16 +3191,18 @@
       if (S.planVu !== pl) { S.planVu = pl; S.camCap = null; S.tete = null; S.tele.poste = null; S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0; }
       vue = pl.vue; suivie = co.voitures[pl.sujet];
     } else if (j.fini && S.finA !== null && co.horloge - S.finA > 2.5) vue = 'tele';
-    const camVue = rendreVue(S, suivie, vue, dtImage, meteo);
+    const cadre = cadresDecor[0];
+    rendreVue(S, suivie, vue, dtImage, meteo, cadre);
+    approcherDecor(S, cadre, null, dtImage);
+    const camVue = cadre.cam && dessinerVue(S, cadre.suivie, cadre.vue, dtImage, meteo, cadre.cam, cadre.pose);
     poserGlaces();
     return camVue;
   }
   // Une vue : caméra, objets, effets et rendu, pour la voiture suivie. S est l'état de la vue (la séance, ou celui du
   // joueur 2 à deux, qui hérite de la séance).
-  function rendreVue(S, suivie, vue, dtImage, meteo) {
-    const co = S.course, c = co.c, sortie = S.sortie, poses = tampons.poses, pj = poses[0], RV = S.rouleVu;
-    const P = profilDe(S); // menu + gouverneur + capacités du moteur, décidé une fois par image
-    sortie.length = 0;
+  function rendreVue(S, suivie, vue, dtImage, meteo, cadre) {
+    const co = S.course, poses = tampons.poses, pj = poses[0];
+    if (cadre) { cadre.cam = null; cadre.pose = poses[suivie.id]; }
     let cam;
     if (DANS_LA_ROCHE.has(vue) && B.circuit.dansCouvert(co.c, suivie.etat.s, 8)) {
       if (S.type === 'demo') {
@@ -3241,7 +3275,6 @@
         }
       }
     }
-    const exterieur = VUES_DEHORS.has(vue);
     if (regardArriereVoulu(S, suivie, vue)) cam = cameraRegardArriere(S, ps, cam, vue);
     if (cameraEssai) cam = Object.assign({ roll: 0, near: .1, far: PORTEE_VUE, fov: 40 }, cameraEssai(pj, cam));
     if (S.secousse > 0 && !cam.sujetNature) {
@@ -3254,6 +3287,16 @@
       S.secousse = Math.max(0, S.secousse - dtImage * 2.6);
     }
     if (S.type === 'demo' && !S.secoursCamera) cam = B.cinema.souffle(S.cinema, cam, S.planVu, poses, co, S.tRendu, reglages.secousses, canvas.clientWidth / Math.max(1, canvas.clientHeight));
+    if (cadre) {
+      cadre.cam = cam; cadre.pose = ps; cadre.suivie = suivie; cadre.vue = vue;
+      return cam;
+    }
+    return dessinerVue(S, suivie, vue, dtImage, meteo, cam, ps);
+  }
+  function dessinerVue(S, suivie, vue, dtImage, meteo, cam, ps) {
+    const co = S.course, c = co.c, sortie = S.sortie, poses = tampons.poses, pj = poses[0], RV = S.rouleVu;
+    const P = profilDe(S), exterieur = VUES_DEHORS.has(vue);
+    sortie.length = 0;
     // axe horizontal du regard, en deux nombres (plus de tableau neuf par image)
     const avX = Math.sin(cam.yaw), avZ = -Math.cos(cam.yaw);
     // ombres du soleil autour de ce que l'on regarde : devant le pilote (jusqu'à 176 m), ou autour de la voiture filmée.
@@ -4223,6 +4266,14 @@
     const zone = $('circuits');
     const BIOME_COULEURS = { foret: '#39ff8e', cote: '#00d4ff', marseille: '#00c8ff', montagne: '#8ee8ff', larche: '#5cd6ff', islande: '#ff6b35', desert: '#ffb84d', asie: '#ff66b2', pacifique: '#2dd4bf', baikal: '#60a5fa', fjord: '#38bdf8', carpates: '#a3e635', ecosse: '#34d399', sierra: '#fb923c', corail: '#22d3ee', andes: '#c084fc' };
     const CATS = { tous: null, 'forets-cotes': ['forets-du-pacifique', 'marseille', 'karst-et-lagon'], montagnes: ['route-des-cimes', 'larche'], sauvages: ['sierra', 'nord-atlantique', 'baikal'] };
+    const barreCat = $('p-categories');
+    function afficherCategorie(cat) {
+      const ids = CATS[cat];
+      for (const b of zone.children) {
+        b.hidden = !!ids && !ids.includes(b.dataset.id);
+      }
+      for (const btn of barreCat.querySelectorAll('.cat-btn')) btn.setAttribute('aria-selected', String(btn.dataset.cat === cat));
+    }
     if (!zone.childElementCount) {
       CATALOGUE.forEach((k, i) => {
         const b = document.createElement('button');
@@ -4231,35 +4282,32 @@
         b.style.setProperty('--biome', BIOME_COULEURS[clefTheme] || '#39ff8e');
         b.style.animationDelay = (i * 18) + 'ms';
         b.innerHTML = '<span class="circuit-rang">' + String(i + 1).padStart(2, '0') + '</span><span class="nom">' + k.nom + '</span>' +
-          '<span class="fiche">' + k.lieu + '</span><span class="circuit-distance" hidden></span>';
+          '<span class="fiche">' + k.lieu + '</span>';
         b.addEventListener('click', () => { reglages.circuit = i; sauverReglages(); majPreparation(); if (son) son.evenement('clic'); if (EL.role === 'hote' && lienActif()) annoncerCourse(); });
         zone.appendChild(b);
       });
-      const barreCat = $('p-categories');
       if (barreCat && !barreCat.dataset.lie) {
         barreCat.dataset.lie = '1';
         const CAT_ORDRE = Object.keys(CATS);
-        let catActive = 'tous';
         const filtrerCat = cat => {
           if (!Object.prototype.hasOwnProperty.call(CATS, cat)) return;
-          catActive = cat;
-          const ids = CATS[cat];
-          let visibles = 0;
-          for (const b of zone.children) {
-            const ok = !ids || ids.includes(b.dataset.id);
-            b.hidden = !ok;
-            if (ok) { b.style.animation = 'none'; void b.offsetWidth; b.style.animation = ''; visibles++; }
-          }
-          zone.dataset.menuCols = visibles > 8 ? '4' : visibles > 4 ? '3' : '2';
-          for (const btn of barreCat.querySelectorAll('.cat-btn')) btn.setAttribute('aria-selected', String(btn.dataset.cat === cat));
-          const sel = zone.querySelector('.carte-circuit[aria-checked="true"]:not([hidden])') || zone.querySelector('.carte-circuit:not([hidden])');
-          if (sel) { reglages.circuit = +sel.dataset.index; sauverReglages(); majPreparation(); }
-          if (son) son.evenement('clic');
+          const focusDansGrille = zone.contains(document.activeElement);
+          afficherCategorie(cat);
+          if (zone.children[reglages.circuit].hidden) {
+            const premiere = zone.querySelector('.carte-circuit:not([hidden])');
+            premiere.click();
+            if (focusDansGrille) premiere.focus();
+          } else if (son) son.evenement('clic');
         };
         barreCat.addEventListener('click', ev => { const btn = ev.target.closest('.cat-btn'); if (btn) filtrerCat(btn.dataset.cat); });
-        barreCat._decaler = sens => filtrerCat(CAT_ORDRE[(CAT_ORDRE.indexOf(catActive) + sens + CAT_ORDRE.length) % CAT_ORDRE.length]);
+        barreCat._decaler = sens => {
+          const active = barreCat.querySelector('[aria-selected="true"]').dataset.cat;
+          filtrerCat(CAT_ORDRE[(CAT_ORDRE.indexOf(active) + sens + CAT_ORDRE.length) % CAT_ORDRE.length]);
+        };
       }
     }
+    // Une course rejointe en ligne peut avoir changé la sélection depuis la dernière visite du menu.
+    if (barreCat && zone.children[reglages.circuit].hidden) afficherCategorie('tous');
     for (const nom of ['tours', 'difficulte']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
     for (const r of document.querySelectorAll('input[name="meteo"]')) r.checked = String(reglages.meteo || 'aleatoire') === r.value;
     majPreparation();
@@ -4367,12 +4415,8 @@
     afficherConditions();
     const c = circuit(reglages.circuit), fC = fiche(c), metaC = CATALOGUE[reglages.circuit];
     for (const b of $('circuits').children) {
-      const i = +b.dataset.index, actif = i === reglages.circuit;
+      const actif = +b.dataset.index === reglages.circuit;
       b.setAttribute('aria-checked', String(actif)); b.tabIndex = actif ? 0 : -1;
-      const trace = circuits[i], distance = trace ? B.menuArcade.parcoursChronometre(trace).longueur : CATALOGUE[i].distanceCourse;
-      const etiquette = b.querySelector('.circuit-distance');
-      etiquette.hidden = !Number.isFinite(distance);
-      if (!etiquette.hidden) texte(etiquette, (distance / 1000).toFixed(2).replace('.', ',') + ' km');
     }
     menuArcade.trace(c, fC, metaC, reglages.circuit, CATALOGUE.length);
     // Jauges arcade animées (Vitesse, Technique, Relief)
@@ -5650,7 +5694,7 @@
     scene.chauffe = null;   // le banc a remplacé le monde du moteur : la chauffe de cette scène est à refaire
     if (contexteRenduPerdu) { restaurerDecorApresContexte = true; return; }
     const atm = session && session.nature ? session.nature.ambiance.atmosphere : scene.decor.atmosphere;
-    rendu.setWorld([], [], atm); rendu.setNappes(scene.decor.nappes); rendu.setLots(scene.decor.lots, { staticBounds: true });
+    rendu.setWorld([], [], atm); rendu.setNappes(scene.decor.nappes); rendu.setLots(scene.decor.lots, { staticBounds: true, progressif: !!scene.decor.fluxDecor });
     if (session && session.nature) session.nature.revisionRendu = -1;
     restaurerDecorApresContexte = false;
   }

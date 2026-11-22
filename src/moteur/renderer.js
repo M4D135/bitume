@@ -606,7 +606,12 @@
     vec3 tintRGB=smoothTerrainTint?vSurfaceNormal:vColor.rgb;
     vec3 geometricNormal=normalize(vNormal), n=geometricNormal;
     vec3 an=abs(smoothTerrainTint?geometricNormal:normalize(vSurfaceNormal));
-    vec2 uv=an.y>.65?vSurface.xz:(an.x>an.z?vSurface.zy:vSurface.xy);
+    // Smooth landscape and track pigments use one world projection across adjoining slopes.
+    // Fractional variants are opt-in for ground nappes only. Existing materials keep their PBR layers.
+    bool lightSoil=smoothTerrainTint&&vMaterial==8.125;
+    bool roadGrain=smoothTerrainTint&&vMaterial==14.125,roadPaint=smoothTerrainTint&&vMaterial==14.25;
+    bool terrainUV=smoothTerrainTint&&(lightSoil||roadGrain||roadPaint||vMaterial==25.125||vMaterial==21.125);
+    vec2 uv=terrainUV?vWorld.xz:(an.y>.65?vSurface.xz:(an.x>an.z?vSurface.zy:vSurface.xy));
     float recipe=vMaterial>20.5&&vMaterial<29.5?floor(vMaterial+.5)-20.:0.;
     float m=recipe==1.?14.:recipe==2.?3.:recipe==3.?9.:recipe==4.?16.:recipe==5.?8.:recipe==6.?10.:recipe==7.?11.:recipe==8.?7.:recipe==9.?18.:vMaterial, emission=vEmission;
     vec3 base=vec3(.105,.135,.15),windowGlow=vec3(0.);
@@ -827,9 +832,14 @@
       roughness=.86;
       metalness=0.;
     } else if(m<8.5) {
-      float soil=noise(uv*.6)*.6+noise(uv*3.7)*.4;
-      base=mix(vec3(.13,.105,.057),vec3(.16,.24,.075),smoothstep(.3,.7,soil));
-      base*=.75+grain*.5;roughness=.95;metalness=0.;
+      if(lightSoil){
+        // Neutral, filtered grain preserves the host's vegetation, mineral and snow colours.
+        base=tintRGB*(.96+.11*(broad-.5)+.095*(grain-.35));roughness=.94;metalness=0.;
+      }else{
+        float soil=noise(uv*.6)*.6+noise(uv*3.7)*.4;
+        base=mix(vec3(.13,.105,.057),vec3(.16,.24,.075),smoothstep(.3,.7,soil));
+        base*=.75+grain*.5;roughness=.95;metalness=0.;
+      }
     } else if(m<9.5) {
       float strata=.5+.5*sin(vWorld.y*4.+noise(uv*.9)*8.);
       base=mix(vec3(.23,.24,.22),vec3(.42,.40,.33),broad)*(.8+strata*.17+grain*.15);
@@ -921,14 +931,19 @@
 
       }
     } else if(m<14.5) {
-      // PDR : asphalte, granulat fin, reprises et fissures.
-      vec3 teinte=vColor.w>.5?tintRGB:vec3(.2,.2,.21);
-      float granulat=mix(.5,noise(uv*95.),fineDetail);
-      float reprise=smoothstep(.55,.75,noise(uv*.18+3.));
-      float fissure=(1.-smoothstep(0.,.035,abs(noise(uv*.9)-.5)))*step(.55,noise(uv*.23+9.))*fineDetail;
-      base=teinte*(.82+granulat*.22+broad*.12)*(1.-reprise*.12)*(1.-fissure*.35);
-      roughness=.9;metalness=0.;
-      urbanHeight=granulat*.006-fissure*.01;
+      if(roadGrain||roadPaint){
+        float aggregate=mix(.5,noise(uv*67.),fineDetail);
+        base=tintRGB*(.97+.08*(aggregate-.5)+.045*(broad-.5));
+        roughness=roadPaint?.80:.91;metalness=0.;urbanHeight=(aggregate-.5)*.002;
+      }else{
+        // PDR : asphalte, granulat fin, reprises et fissures.
+        vec3 teinte=vColor.w>.5?tintRGB:vec3(.2,.2,.21);
+        float granulat=mix(.5,noise(uv*95.),fineDetail);
+        float reprise=smoothstep(.55,.75,noise(uv*.18+3.));
+        float fissure=(1.-smoothstep(0.,.035,abs(noise(uv*.9)-.5)))*step(.55,noise(uv*.23+9.))*fineDetail;
+        base=teinte*(.82+granulat*.22+broad*.12)*(1.-reprise*.12)*(1.-fissure*.35);
+        roughness=.9;metalness=0.;urbanHeight=granulat*.006-fissure*.01;
+      }
     } else if(m<15.5) {
       // PDR : dallage de pierre, appareil à joints décalés.
       vec3 teinte=vColor.w>.5?tintRGB:vec3(.7,.67,.6);
@@ -957,7 +972,7 @@
       roughness=.13;metalness=.35;
       windowGlow=mix(vec3(1.,.58,.25),vec3(.92,.87,.66),step(.78,home))*night*occupied*1.7;
     }
-    if(recipe<.5&&vColor.w>.5&&m<12.5&&!(m>11.5&&vAnchor.y<0.)){
+    if(recipe<.5&&!lightSoil&&vColor.w>.5&&m<12.5&&!(m>11.5&&vAnchor.y<0.)){
       vec3 tint=tintRGB*(.88+grain*.2)*(1.-panel*.12)*(m<3.5?.65:1.);
       base=m>7.5?base*.35+tint*.65:tint;
     }
@@ -989,7 +1004,7 @@
       if(m>12.5&&m<15.5)n=reliefNormal(n,urbanHeight*fineDetail);
     }
     if(m>2.5&&m<3.5)pbrWeight=1.;
-    if(m>13.5&&m<14.5){pbrWeight=1.;pbrLayer=0.;}
+    if(m>13.5&&m<14.5&&!roadGrain&&!roadPaint){pbrWeight=1.;pbrLayer=0.;}
     if(recipe<.5&&uPbrReady>.5&&pbrWeight>0.){
       vec2 texUV=uv/(pbrLayer<.5?3.:2.);vec3 coord=vec3(texUV,pbrLayer);
       vec3 albedo=texture(uPbrAlbedo,coord).rgb;
@@ -3378,29 +3393,84 @@
       if(smoothTint)gl.vertexAttrib4f(4,0,0,0,2);
       gl.bindVertexArray(vao);
     }
+    // BITUME : les bornes vivent pendant toute la séance. Chaque contexte possède
+    // ses propres tampons, créés à l'approche ou dès la première passe qui en a besoin.
+    let lotsProgressifs=false,dernierUsage=null,curseurLots=0,indicesLots=[],ambianceLots=null;
+    function viderLot(l){
+      if(l.tampon)gl.deleteBuffer(l.tampon);
+      if(l.tamponLoin)gl.deleteBuffer(l.tamponLoin);
+      l.tampon=l.tamponLoin=l.paquet=l.paquetLoin=null;
+      groundPlans.delete(l);
+    }
+    function tamponInstances(batch){
+      const buffer=gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
+      gl.bufferData(gl.ARRAY_BUFFER,batch.values,gl.STATIC_DRAW);
+      return buffer;
+    }
+    function chargerLot(index,loinSeul=false){
+      const l=lots[index];
+      if(!l||stats.contextLost||disposed)return false;
+      if(dernierUsage)dernierUsage[index]=lotView.frame;
+      if(loinSeul&&!l.groundCover&&(l.loin?.length||l.detailLointain)){
+        if(l.tamponLoin)return false;
+        const loin=l.preparerLoin?.()||l.loin;
+        if(loin.length){
+          l.paquetLoin=pack(loin,ambianceLots);
+          l.tamponLoin=tamponInstances(l.paquetLoin);
+          return true;
+        }
+      }
+      if(l.tampon)return false;
+      const detail=l.preparerDetail?.(),sourceLot=detail?.objets?detail:l;
+      l.paquet=pack(sourceLot.objets,ambianceLots);
+      l.tampon=tamponInstances(l.paquet);
+      if(!l.tamponLoin&&sourceLot.loin?.length){
+        l.paquetLoin=pack(sourceLot.loin,ambianceLots);
+        l.tamponLoin=tamponInstances(l.paquetLoin);
+      }
+      groundPlans.set(l,groundCoverPlan(l,l.paquet,l.paquetLoin,groundIndex));
+      return true;
+    }
+    function preparerLot(index,loinSeul=false){
+      return Number.isInteger(index)&&indicesLots[index]!==undefined&&chargerLot(indicesLots[index],loinSeul);
+    }
+    function libererLotsInactifs(){
+      if(!lotsProgressifs||warm)return;
+      const compte=Math.min(12,lots.length);
+      for(let j=0;j<compte;j++){
+        const i=curseurLots++;
+        if(curseurLots===lots.length)curseurLots=0;
+        if((lots[i].tampon||lots[i].tamponLoin)&&lotView.frame-dernierUsage[i]>300)viderLot(lots[i]);
+      }
+    }
     function chargerLots(){
-      for(const l of lots){
-        for(const cle of ['tampon','tamponLoin'])if(l[cle]){gl.deleteBuffer(l[cle]);l[cle]=null;}
-        if(stats.contextLost||disposed)continue;
-        l.paquet=pack(l.objets,environment);l.tampon=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,l.tampon);gl.bufferData(gl.ARRAY_BUFFER,l.paquet.values,gl.STATIC_DRAW);
-        if(l.loin&&l.loin.length){l.paquetLoin=pack(l.loin,environment);l.tamponLoin=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,l.tamponLoin);gl.bufferData(gl.ARRAY_BUFFER,l.paquetLoin.values,gl.STATIC_DRAW);}
-        else l.paquetLoin=null;
-        groundPlans.set(l,groundCoverPlan(l,l.paquet,l.paquetLoin,groundIndex));
+      for(let i=0;i<lots.length;i++){
+        viderLot(lots[i]);
+        if(!lotsProgressifs)chargerLot(i);
       }
     }
     function setLots(liste,options){
-      for(const l of lots)for(const cle of ['tampon','tamponLoin'])if(l[cle])gl.deleteBuffer(l[cle]);
-      groundPlans=new WeakMap();lots=(liste||[]).filter(l=>l&&l.objets);
+      for(const l of lots)viderLot(l);
+      groundPlans=new WeakMap();lots=[];indicesLots=[];ambianceLots=environment;
+      if(liste)for(let i=0;i<liste.length;i++){
+        if(!liste[i]?.objets)continue;
+        indicesLots[i]=lots.length;lots.push(liste[i]);
+      }
+      lotsProgressifs=options?.progressif===true;
+      dernierUsage=lotsProgressifs?new Float64Array(lots.length):null;curseurLots=0;
       lotView.reset(lots,options?.staticBounds===true);chargerLots();stats.lots=lots.length;
     }
     function dessinerLots(eye,axes,horizontal,vertical,far,accepte,radii){
       let dessines=0;
       for(const entry of lotView.candidates(accepte,axes,horizontal,vertical,far,radii)){const l=entry.lot;
-        if(!l.tampon)continue;
+        if(l.detailProcheSeul&&!entry.near)continue;
         if(entry.cover&&entry.distance>entry.range)continue;
         // lot.ombre === false : le lot ne projette pas d'ombre du soleil (herbe courte, marquages au sol).
         if(accepte){if(l.ombre===false||!accepte(entry.bounds))continue;}
         else{if(entry.distance>Math.min(far,entry.range))continue;if(!visible(entry.bounds,eye,axes,horizontal,vertical,far,radii))continue;}
+        if(lotsProgressifs)chargerLot(entry.index,!entry.near);
+        if(!l.tampon&&!l.tamponLoin)continue;
         const plan=entry.cover&&groundPlans.get(l),fresh=plan&&plan.frame!==lotView.frame;
         if(plan&&prepareGroundCover(plan,entry,lotView.frame,vegetationState.eye,vegetationState)){
           if(fresh)stats.lotInstanceTests+=plan.tested;
@@ -3801,7 +3871,7 @@
         -(right[0]*eye[0]+right[1]*eye[1]+right[2]*eye[2]),-(up[0]*eye[0]+up[1]*eye[1]+up[2]*eye[2]),forward[0]*eye[0]+forward[1]*eye[1]+forward[2]*eye[2],1]);
       const fov=Math.max(FOV_MIN,Math.min(110,camera.fov||75))*Math.PI/180,f=1/Math.tan(fov*.5),near=camera.near||.045,far=camera.far||180;
       vegetation.update(fx,eye,1/f,canvas.height);stats.windStrength=vegetationState.strength;stats.groundCover=vegetationState.enabled;
-      lotView.prepare(lots,eye,1/f,canvas.height,vegetationState);stats.lotDistanceTests=lotView.distanceTests;stats.lotInstanceTests=0;
+      lotView.prepare(lots,eye,1/f,canvas.height,vegetationState);libererLotsInactifs();stats.lotDistanceTests=lotView.distanceTests;stats.lotInstanceTests=0;
       projection.fill(0);projection[0]=f/(canvas.width/canvas.height);projection[5]=f;projection[10]=(far+near)/(near-far);projection[11]=-1;projection[14]=2*far*near/(near-far);
       multiply(projection,view,vp);
       if(camera.chunked&&!chunks.size)rebuildChunks();
@@ -4133,7 +4203,7 @@
       let a0=Infinity,a1=-Infinity,b0=Infinity,b1=-Infinity,d0=Infinity,d1=-Infinity;
       for(const l of lots){
         const c=l.centre,r=Math.max(0,Number(l.rayon)||0);
-        if(l.ombre===false||l.groundCover||!c||!Number.isFinite(c[0])||!Number.isFinite(c[1])||!Number.isFinite(c[2]))continue;
+        if(l.ombre===false||l.groundCover||l.detailProcheSeul||!c||!Number.isFinite(c[0])||!Number.isFinite(c[1])||!Number.isFinite(c[2]))continue;
         const a=rx*c[0]+rz*c[2],b=ux*c[0]+uy*c[1]+uz*c[2],d=fx*c[0]+fy*c[1]+fz*c[2];
         a0=Math.min(a0,a-r);a1=Math.max(a1,a+r);b0=Math.min(b0,b-r);b1=Math.max(b1,b+r);d0=Math.min(d0,d-r);d1=Math.max(d1,d+r);
       }
@@ -4169,11 +4239,26 @@
       gl.useProgram(depthProgram);gl.bindVertexArray(vao);gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.enable(gl.POLYGON_OFFSET_FILL);gl.polygonOffset(1.1,2);
       gl.uniformMatrix4fv(depthMatrix,false,photoFarMatrix);gl.uniform2f(depthWind,0,0);
       gl.uniform1f(depthLocalWind.uWindStrength,0);gl.uniform1i(depthLocalWind.uLocalWindCount,0);depthLocalWind.localWindActive=true;
+      // La carte globale ne demande que les silhouettes. Un seul tampon temporaire
+      // suffit pour les lots froids, sans retenir leurs couleurs ni leurs LOD proches.
+      let silhouette=null;
       for(const l of lots){
-        if(l.ombre===false||l.groundCover||!l.tampon)continue;
-        const loin=!!(l.paquetLoin&&l.tamponLoin),batch=loin?l.paquetLoin:l.paquet;
-        renderBatch(batch,loin?l.tamponLoin:l.tampon,false,true);for(const g of batch.groups)instances+=g.count;
+        if(l.ombre===false||l.groundCover||l.detailProcheSeul)continue;
+        let batch=l.paquetLoin||l.paquet,buffer=l.tamponLoin||l.tampon;
+        if(!buffer){
+          if(!lotsProgressifs)continue;
+          const source=l.objetsOmbreLointaine?.()||(l.loin?.length?l.loin:l.objets);
+          if(!source?.length)continue;
+          batch=pack(source,environment);
+          if(!silhouette)silhouette=gl.createBuffer();
+          gl.bindBuffer(gl.ARRAY_BUFFER,silhouette);
+          gl.bufferData(gl.ARRAY_BUFFER,batch.values,gl.STREAM_DRAW);
+          buffer=silhouette;
+        }
+        renderBatch(batch,buffer,false,true);
+        for(const g of batch.groups)instances+=g.count;
       }
+      if(silhouette)gl.deleteBuffer(silhouette);
       if(worldIndex.entries.length){
         const batch=pack(worldIndex.entries.map(entry=>entry.mesh),environment),buffer=gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,batch.values,gl.STATIC_DRAW);renderBatch(batch,buffer,false,true);gl.deleteBuffer(buffer);
@@ -4203,7 +4288,8 @@
       for(const cache of staticCaches.slice(1))gl.deleteBuffer(cache.buffer);
       // BITUME : tampons des nappes et des lots.
       if(nappeVbo)gl.deleteBuffer(nappeVbo);if(nappeIbo)gl.deleteBuffer(nappeIbo);if(nappeVao)gl.deleteVertexArray(nappeVao);
-      for(const l of lots)for(const cle of ['tampon','tamponLoin'])if(l[cle])gl.deleteBuffer(l[cle]);
+      for(const l of lots)viderLot(l);
+      lots=[];indicesLots=[];dernierUsage=ambianceLots=null;
       // PDR (lots) : tampons des lots du jeu.
       for(const slot of pdrSlots)if(slot)gl.deleteBuffer(slot.buffer);pdrSlots=[];pdrLots.length=0;
       freePost();deleteTarget(shadowTarget);if(photo)photoDispose();gl.deleteTexture(whiteTexture);for(const tex of pbrTextures)gl.deleteTexture(tex);pbrTextures=[];
@@ -4372,7 +4458,7 @@
           gl.uniform3fv(u.uPdrLumiereDirection,l.directions);gl.uniform2fv(u.uPdrLumiereCone,l.cones);gl.uniform1fv(u.uPdrLumierePortee,l.portees);gl.uniform1i(u.uPdrLumieres,l.nombre);
         };
       }};
-    return {setEnvironment(value){environment=environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setNappes,setLots,updateShape,gl,pdr,calibrate,profile,prewarm,retain,resetStats,precalculerOmbre,setRenderScale:value=>surface?.setScale(value),setBudgetTarget:value=>watch?.setTarget(value)};
+    return {setEnvironment(value){environment=environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setNappes,setLots,preparerLot,updateShape,gl,pdr,calibrate,profile,prewarm,retain,resetStats,precalculerOmbre,setRenderScale:value=>surface?.setScale(value),setBudgetTarget:value=>watch?.setTarget(value)};
   }
   // Both GPU backends share the procedural shapes, instance layout and visibility
   // rules. No rendering calls or GPU state are shared between the APIs.

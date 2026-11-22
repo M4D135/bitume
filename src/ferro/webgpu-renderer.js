@@ -123,8 +123,98 @@ async function create(canvas,options={}){
  // changed by updateShape stays expanded even when indexing is re-enabled.
  function setPrimitiveIndexing(enabled){enabled=enabled===true;if(disposed||stats.contextLost||enabled===stats.primitiveIndexing)return stats.primitiveIndexing;const base=enabled?primitiveIndexing.indices:source.indices;device.queue.writeBuffer(ibo,0,registeredIndexing?groundIndex.select(base):base);stats.primitiveIndexing=enabled;return enabled;}
  function setNappes(list){for(const n of nappes){freeBuffer(n.vertex);freeBuffer(n.instance);freeBuffer(n.index);}nappes=[];for(const n of list||[]){if(!n.sommets||!n.indices?.length)continue;const count=n.sommets.length/13,vertices=new Float32Array(count*6),instances=new Float32Array(count*16);for(let i=0;i<count;i++){vertices.set(n.sommets.subarray? n.sommets.subarray(i*13,i*13+6):n.sommets.slice(i*13,i*13+6),i*6);instances.set([0,0,0,n.sommets[i*13+9],1,1,1,0,0,0,0,n.vertexTint==='smooth'?34:2,n.sommets[i*13+10],n.sommets[i*13+11],n.sommets[i*13+12],1],i*16);}nappes.push({...n,vertex:buffer(vertices,GPUBufferUsage.VERTEX,'FERRO terrain vertices'),instance:buffer(instances,GPUBufferUsage.VERTEX,'FERRO terrain materials'),index:buffer(new Uint32Array(n.indices),GPUBufferUsage.INDEX,'FERRO terrain indices')});}stats.nappeTriangles=nappes.reduce((sum,n)=>sum+n.indices.length/3,0);}
- function setLots(list,options){for(const l of lots){freeBuffer(l.near?.buffer);freeBuffer(l.far?.buffer);}lots=(list||[]).filter(l=>l?.objets||l?.paquet?.values).map(l=>{const near=l.objets?S.pack(l.objets,environment):l.paquet,far=l.loin?.length?S.pack(l.loin,environment):l.paquetLoin;return {...l,near:ensureSlot({},near),far:far?ensureSlot({},far):null,groundPlan:S.groundCoverPlan(l,near,far,groundIndex)};});lotView.reset(lots,options?.staticBounds===true);stats.lots=lots.length;}
- function renderLots(pass,eye,axes,h,v,far,accept,radii){let count=0;for(const entry of lotView.candidates(accept,axes,h,v,far,radii)){const l=entry.lot;if(entry.cover&&entry.distance>entry.range)continue;if(accept?l.ombre===false||!accept(entry.bounds):entry.distance>Math.min(far,entry.range)||!S.visible(entry.bounds,eye,axes,h,v,far,radii))continue;const plan=entry.cover&&l.groundPlan,fresh=plan&&plan.frame!==lotView.frame;if(plan&&S.prepareGroundCover(plan,entry,lotView.frame,vegetationState.eye,vegetationState)){if(fresh)stats.lotInstanceTests+=plan.tested;if(plan.count){renderGroundCover(pass,plan,l.near,l.far,!!accept);count++;}continue;}const slot=!l.far||entry.near?l.near:l.far;renderBatch(pass,slot.batch,slot,!!accept);count++;}stats.lotDistanceTests=lotView.distanceTests;return count;}
+ // The spatial index uses the source bounds. Buffers, plans and their lifetime belong to this device.
+ let lotSlots=[],lotInputSlots=[],progressiveLots=false,lotCursor=0,lotEnvironment=null;
+ function releaseLot(slot){
+  freeBuffer(slot.near?.buffer);
+  freeBuffer(slot.far?.buffer);
+  slot.near=slot.far=slot.groundPlan=null;
+  slot.ready=false;
+ }
+ function releaseLots(){
+  for(const slot of lotSlots)releaseLot(slot);
+  lots=[];lotSlots=[];lotInputSlots=[];lotCursor=0;lotEnvironment=null;
+  lotView.reset();
+ }
+ function uploadLot(slot,farOnly=false){
+  if(slot.ready||disposed||stats.contextLost)return false;
+  const source=slot.source;
+  if(farOnly&&!source.groundCover&&(source.loin?.length||source.detailLointain)){
+   if(slot.far)return false;
+   const objects=source.preparerLoin?.()||source.loin;
+   if(objects.length){
+    const far=S.pack(objects,lotEnvironment);
+    slot.far=ensureSlot({},far);
+    return true;
+   }
+  }
+  const detail=source.preparerDetail?.(),lot=detail?.objets?detail:source;
+  let near=lot.paquet;
+  if(lot.objets)near=!progressiveLots||lot.objets.length?S.pack(lot.objets,lotEnvironment):null;
+  const far=slot.far?.batch||(lot.loin?.length?S.pack(lot.loin,lotEnvironment):lot.paquetLoin);
+  try{
+   if(near&&(!progressiveLots||near.values.byteLength)){slot.near={};ensureSlot(slot.near,near);}
+   if(!slot.far&&far&&(!progressiveLots||far.values.byteLength)){slot.far={};ensureSlot(slot.far,far);}
+   slot.groundPlan=S.groundCoverPlan(source,near,far,groundIndex);
+  }catch(error){
+   releaseLot(slot);
+   throw error;
+  }
+  slot.ready=true;slot.used=lotView.frame;
+  return !!(slot.near||slot.far);
+ }
+ function preparerLot(index,farOnly=false){
+  if(!Number.isInteger(index)||index<0||disposed||stats.contextLost)return false;
+  const slot=lotInputSlots[index];
+  if(!slot)return false;
+  slot.used=lotView.frame;
+  return uploadLot(slot,farOnly);
+ }
+ function setLots(list,options){
+  if(disposed)return;
+  releaseLots();
+  progressiveLots=options?.progressif===true;
+  lotEnvironment=environment;
+  const input=list||[];
+  for(let i=0;i<input.length;i++){
+   const l=input[i];
+   if(!l?.objets&&!l?.paquet?.values&&typeof l?.preparerDetail!=='function')continue;
+   const slot={source:l,ready:false,near:null,far:null,groundPlan:null,used:0};
+   // The eager view keeps its original snapshot of descriptor properties.
+   lots.push(progressiveLots?l:{...l});lotSlots.push(slot);lotInputSlots[i]=slot;
+   if(!progressiveLots)uploadLot(slot);
+  }
+  lotView.reset(lots,options?.staticBounds===true);stats.lots=lots.length;
+ }
+ function evictIdleLots(){
+  if(!progressiveLots||warm)return;
+  const count=Math.min(12,lotSlots.length),now=lotView.frame;
+  for(let i=0;i<count;i++){
+   const slot=lotSlots[lotCursor++];
+   if(lotCursor===lotSlots.length)lotCursor=0;
+   if((slot.near||slot.far)&&now-slot.used>300)releaseLot(slot);
+  }
+ }
+ function renderLots(pass,eye,axes,h,v,far,accept,radii){
+  let count=0;
+  for(const entry of lotView.candidates(accept,axes,h,v,far,radii)){
+   const l=entry.lot;
+   if(entry.cover&&entry.distance>entry.range)continue;
+   if(accept?l.ombre===false||!accept(entry.bounds):entry.distance>Math.min(far,entry.range)||!S.visible(entry.bounds,eye,axes,h,v,far,radii))continue;
+   if(l.detailProcheSeul&&!entry.near)continue;
+   const slot=lotSlots[entry.index];
+   if(!slot.ready)uploadLot(slot,!entry.near);
+   const plan=entry.cover&&slot.groundPlan,fresh=plan&&plan.frame!==lotView.frame;
+   if(plan&&S.prepareGroundCover(plan,entry,lotView.frame,vegetationState.eye,vegetationState)){
+    if(fresh)stats.lotInstanceTests+=plan.tested;
+    if(plan.count){renderGroundCover(pass,plan,slot.near,slot.far,!!accept);slot.used=lotView.frame;count++;}
+    continue;
+   }
+   const model=!slot.far||entry.near?slot.near:slot.far;
+   if(model){renderBatch(pass,model.batch,model,!!accept);slot.used=lotView.frame;count++;}
+  }
+  stats.lotDistanceTests=lotView.distanceTests;return count;
+ }
  function freeTargets(){if(targets){for(const t of Object.values(targets))if(t?.texture)freeTexture(t);targets=null;}for(const entry of bindings.values()){entry.group=null;entry.textureKey='';}}
  function resize(next){if(next!==undefined&&next!==quality){quality=next;governor.reset();autoScale=1;}const pixelRatio=G.devicePixelRatio||1;let ratio=typeof quality==='number'?quality:quality==='low'?.8:quality==='high'?Math.min(pixelRatio,2):Math.min(pixelRatio,1.5);const cssWidth=canvas.clientWidth||G.innerWidth||800,cssHeight=canvas.clientHeight||G.innerHeight||600;ratio=Math.max(.5,Math.min(2,ratio));if(quality==='auto')ratio=Math.min(ratio,Math.sqrt(1800000/(cssWidth*cssHeight)))*autoScale;const width=Math.max(1,Math.round(cssWidth*ratio)),height=Math.max(1,Math.round(cssHeight*ratio));if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}stats.renderScale=autoScale;stats.pixelRatio=ratio;stats.width=width;stats.height=height;
   const samples=config.msaa&&runtimeMsaa&&quality!=='low'?4:1,key=width+'x'+height+':'+quality+':'+samples;if(key!==targetKey){targetKey=key;freeTargets();gpu.samples=samples;context.configure({device,format:canvasFormat,alphaMode:'opaque'});targets={scene:texture(width,height),pre:texture(width,height),depth:texture(width,height,depthFormat,samples),overlayDepth:texture(width,height,depthFormat,samples),resolvedDepth:samples>1?texture(width,height,depthFormat):null,msaa:samples>1?texture(width,height,format,samples):null,a:texture(Math.max(1,Math.ceil(width/4)),Math.max(1,Math.ceil(height/4))),b:texture(Math.max(1,Math.ceil(width/4)),Math.max(1,Math.ceil(height/4))),reflection:texture(Math.ceil(width/2),Math.ceil(height/2))};targets.depthResolveBind=samples>1?device.createBindGroup({layout:depthResolvePipeline.getBindGroupLayout(0),entries:[{binding:0,resource:targets.depth.view}]}):null;}
@@ -185,8 +275,9 @@ async function create(canvas,options={}){
  // des prairies une fois par passe. En passe d'ombre, les lots « ombre: false » restent exclus, comme en jeu.
  function renderLotsWarm(pass,shadow){
   let count=0;const seen=new Set();
-  for(const l of lots){
-   if(shadow&&l.ombre===false)continue;
+  for(const l of lotSlots){
+   // Prewarming exercises resident buffers and never materializes an unseen lot.
+   if(!l.ready||shadow&&l.source.ombre===false)continue;
    if(l.near){renderBatch(pass,l.near.batch,l.near,shadow);count++;}
    if(l.far){renderBatch(pass,l.far.batch,l.far,shadow);count++;}
    const plan=l.groundPlan;if(!plan||!plan.valid||!l.near)continue;
@@ -273,7 +364,7 @@ async function create(canvas,options={}){
   const output=context.getCurrentTexture().createView();
   if(stats.bloom){for(let stage=0;stage<3;stage++){const target=stage===0?targets.a.view:stage===1?targets.b.view:output,postPass=begin({label:'FERRO bloom '+stage,colorAttachments:[{view:target,loadOp:'clear',clearValue:[0,0,0,1],storeOp:'store'}]},stage===2);postPass.setPipeline(pipeline('post',{samples:1,target:stage===2?canvasFormat:format}));postPass.setBindGroup(0,bind('post',stage,{uReflections:stats.reflections?1:0,uPass:stage,uTexel:stage===0?[1/canvas.width,1/canvas.height]:[1/targets.a.width,1/targets.a.height],uBloomThreshold:config.bloom},{uScene:targets.scene,uBloom:stage===1?targets.a:targets.b,uReflection:stats.reflections?targets.reflection:white}));postPass.draw(3);postPass.end();stats.drawCalls++;}}
   else{const copyPass=begin({label:'FERRO present',colorAttachments:[{view:output,loadOp:'clear',clearValue:[0,0,0,1],storeOp:'store'}]},true);copyPass.setPipeline(copyPipeline(canvasFormat));copyPass.setBindGroup(0,copyBind(targets.scene.view));copyPass.draw(3);copyPass.end();stats.drawCalls++;}
-  finishTiming(encoder,timed);device.queue.submit([encoder.finish()]);readTiming(timed);stats.gpuBuffers=buffers.size;stats.gpuTextures=textures.size;stats.pipelineCount=pipelines.size;stats.uniformSlots=bindings.size;
+  finishTiming(encoder,timed);device.queue.submit([encoder.finish()]);readTiming(timed);evictIdleLots();stats.gpuBuffers=buffers.size;stats.gpuTextures=textures.size;stats.pipelineCount=pipelines.size;stats.uniformSlots=bindings.size;
  }
  function draw(camera,dynamic,fx){counting=true;try{render(camera,dynamic,fx);}finally{counting=false;}}
  // Préchauffage, mêmes signatures que WebGL 2. Les pipelines sont déjà compilés à la création ; les cibles naissent
@@ -333,13 +424,13 @@ async function create(canvas,options={}){
  // WebGPU ne libère aucune cible à l'inactivité : retain ne fait que mémoriser l'état demandé.
  function retain(value){if(value===undefined)return retained;retained=!!value;return retained;}
  function resetStats(){stats.creations=0;return stats;}
- function dispose(){if(disposed)return;disposed=true;profiling=false;localWind.reset();lotView.reset();try{context.unconfigure();}catch{}for(const b of buffers)b.destroy();for(const t of textures)t.destroy();buffers.clear();textures.clear();timing?.query.destroy();bindings.clear();pipelines.clear();copyPipelines.clear();chunks.clear();programs.clear();device.destroy();}
+ function dispose(){if(disposed)return;disposed=true;profiling=false;localWind.reset();releaseLots();try{context.unconfigure();}catch{}for(const b of buffers)b.destroy();for(const t of textures)t.destroy();buffers.clear();textures.clear();timing?.query.destroy();bindings.clear();pipelines.clear();copyPipelines.clear();chunks.clear();programs.clear();device.destroy();}
  // Resolve expensive shader/pipeline compilation before the title screen or a
  // measured gameplay frame. Validation errors fail creation and permit fallback.
  for(const samples of config.msaa?[1,4]:[1]){pipeline('world',{samples});pipeline('world',{samples,background:true});pipeline('world',{samples,overlay:true});pipeline('world',{samples,nappe:true});pipeline('fx',{samples});pipeline('sky',{samples});}
  pipeline('depth',{samples:1});pipeline('ssr',{samples:1});pipeline('post',{samples:1});pipeline('post',{samples:1,target:canvasFormat});copyPipeline(canvasFormat);
  resize();const validation=await device.popErrorScope();if(validation){dispose();throw Error('WebGPU initialization: '+validation.message);}
- return {setEnvironment(value){environment=S.environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setNappes,setLots,updateShape,gpu,prewarm,retain,resetStats,precalculerOmbre(){return null;},...(primitiveIndexing?{setPrimitiveIndexing}:{}),setProfiling,getProfiling(){return {available:stats.gpuTimingAvailable,enabled:profiling,samples:timingSamples.slice(),dropped:timingDropped};}};
+ return {setEnvironment(value){environment=S.environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setNappes,setLots,preparerLot,updateShape,gpu,prewarm,retain,resetStats,precalculerOmbre(){return null;},...(primitiveIndexing?{setPrimitiveIndexing}:{}),setProfiling,getProfiling(){return {available:stats.gpuTimingAvailable,enabled:profiling,samples:timingSamples.slice(),dropped:timingDropped};}};
  }catch(error){initializeCleanup();throw error;}
 }
 G.FRenderWebGPU={create,writeUniforms};

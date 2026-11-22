@@ -89,3 +89,7 @@ Le terrain de la Stura interpole la couleur aux sommets des versants relevés. L
 ## Version 0.3.18 — réutilisation des sommets
 
 La scène et les rétroviseurs activent `indexRegisteredShapes`. Deux sommets d’une forme enregistrée partagent un index lorsque leurs six composantes flottantes, position et normale, ont exactement les mêmes bits. Le moteur conserve l’ordre et le nombre des triangles. Le pilote de WebGPU et WebGL2 prend aussi en charge le remplacement d’une forme et la restauration du contexte. [Commit canonique](https://github.com/M4D135/FERRO/commit/39e8e19f90efcfb791f17054e47c7aa798df9fb7)
+
+## Version 0.3.21 — chargement à l’approche et surfaces naturelles
+
+Les huit circuits utilisent les lots progressifs et les pigments interpolés du moteur. Chaque contexte graphique peut charger et libérer ses propres tampons. Le jeu prépare les lots voisins des caméras et des voitures. Les premiers plans de Pietraporzio et d’Argentera peuvent construire les détails de façade à la demande. [FERRO 0.3.21](https://github.com/M4D135/FERRO/commit/ba7d14cbfc1bed01a1f6ac4d5a764524edd42762)

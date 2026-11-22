@@ -96,3 +96,7 @@ et lointain (`camera.near`, `camera.far`), la lampe torche éteinte (`fx.torch =
 ## FERRO commun 0.3.0 — 16 novembre 2026
 
 Migration vers le renderer de référence EMPRISE/src/ferro/renderer.js, identique dans les quatre jeux et contrôlé par FERRO.lock.json. Les apports BITUME et PDR sont conservés dans le moteur commun ; le jeu fournit ses réglages et son style. Aucun plafond de taille (décision explicite de David). Voir FERRO-REFERENCE.md.
+
+## FERRO 0.3.21 — 22 novembre 2026
+
+Le verrou de BITUME provient de [FERRO 0.3.21](https://github.com/M4D135/FERRO/commit/ba7d14cbfc1bed01a1f6ac4d5a764524edd42762). Le runtime WebGL2 et les modules WebGPU sont installés avec l’installateur canonique. Les règles de préparation des circuits et la géométrie des décors restent dans le jeu.

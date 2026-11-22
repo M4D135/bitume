@@ -1,6 +1,6 @@
 {
   "format": "ferro-lock",
-  "version": "0.3.20",
+  "version": "0.3.21",
   "reference": "M4D135/FERRO:src/ferro",
   "game": "bitume",
   "modules": [
@@ -12,17 +12,17 @@
     {
       "id": "render",
       "path": "src/moteur/renderer.js",
-      "sha256": "2ed55e42c869393728b8a434d1c8d0b0e1fcd8823c5bef461051596e2b5698f8"
+      "sha256": "24d4bcd180031a1226a2b8dfed342c228496618d13200abb55def87442a42bd5"
     },
     {
       "id": "webgpu-shaders",
       "path": "src/ferro/webgpu-shaders.js",
-      "sha256": "5b7ed9d8fff692abdcabe2ba9139202e391326752fad598fd78e297bd1b50de1"
+      "sha256": "77d8666a14f56efeea0a8f2a2fb92303de6e622ea90c338e37a2cdb3d204f26c"
     },
     {
       "id": "webgpu",
       "path": "src/ferro/webgpu-renderer.js",
-      "sha256": "d0e10488fd68b2ab1c4e7d907b25a916967591294a0d12b5c64235d04d7af7ac"
+      "sha256": "b792200cec3ac1efbaecd609299b6943862966476a7484923a3a29aba73c4f18"
     },
     {
       "id": "backends",
@@ -172,7 +172,7 @@
     {
       "id": "host",
       "path": "src/ferro/engine.js",
-      "sha256": "e2870acc2b48d3924b6be717cb9211670848ede91ea8c691418e20f543314e4f"
+      "sha256": "f9c21513ab502102978ded4ed2c35f260cb23e2d8456e803b1304d78c0827908"
     }
   ]
 }

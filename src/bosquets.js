@@ -55,7 +55,8 @@
     return triangles;
   }
   // La silhouette de la lande utilise le houppier rond, aplati par la taille
-  // de l'instance. Quatre maillages au total pour les onze circuits.
+  // de l'instance. Les quatre formes communes sont inscrites au chargement du
+  // module, avant la création des moteurs de la course et des rétroviseurs.
   const rendu = globalThis.FRender;
   if (rendu?.forme) for (const e of ['sapin','rond']) for (const loin of [false,true]) {
     rendu.forme('bosquet-'+e+(loin?'-loin':''),forme(e,loin));
@@ -122,15 +123,86 @@
         b*((1-a)*fractions[k+ligne]+a*fractions[k+ligne+3]))/255;
     };
   }
-  function construire(c, terrain, lots, interroger, ecologie, saison, qualite) {
+  function instance(site, loin, p, largeur, h, axes, color) {
+    return {shape:loin?site.forme+'-loin':site.forme,p,r:B.decor.angles(...axes),s:[largeur,h,largeur],color,mat:11};
+  }
+  function ajouterInstance(lot, site, leger, x, z, t, p, largeur, h, axes, loinSeul = false) {
+    const teinte=site.couleur.map(v=>v*(.83+.28*t));
+    const color=site.saison ? B.saisons.teinte(site.saison,site.genre==='lande'?'herbe':'feuillage-persistant',teinte,x,z) : teinte;
+    const o=instance(site,leger||loinSeul,p,largeur,h,axes,color);
+    if (loinSeul) { lot.loin.push(o); return; }
+    lot.objets.push(o);
+    // En Légère, le modèle unique est déjà le lointain.
+    if (!leger) lot.loin.push({...o,shape:site.forme+'-loin'});
+  }
+
+  // Une graine conserve le centre exact et les bases numériques. Le terrain,
+  // les triangles et l'index d'axe ne sont pas retenus par la préparation d'une case.
+  // Centre XYZ, largeur, hauteur, site XZ, nuance, indice de palette, puis les trois axes XYZ.
+  const PAS_SEMIS = 18;
+  function lireSemis(semis, palettes, leger, lot, ombres, loinSeul = false) {
+    const axes=[[0,0,0],[0,0,0],[0,0,0]];
+    for (let k=0; k<semis.length; k+=PAS_SEMIS) {
+      for (let j=0; j<3; j++) {
+        const a=k+9+j*3;
+        axes[j][0]=semis[a]; axes[j][1]=semis[a+1]; axes[j][2]=semis[a+2];
+      }
+      const p=[semis[k],semis[k+1],semis[k+2]], site=palettes[semis[k+8]];
+      if (ombres) ombres.push(instance(site,true,p,semis[k+3],semis[k+4],axes,site.couleur));
+      else ajouterInstance(lot,site,leger,semis[k+5],semis[k+6],semis[k+7],p,semis[k+3],semis[k+4],axes,loinSeul);
+    }
+  }
+  function nouveauGroupe(progressif, leger, palettes) {
+    const lot={objets:[],loin:[],centre:[0,0,0],rayon:0,portee:Infinity,bascule:90,
+      lodReferenceFov:60,lodReferenceHeight:1080,arbres:true,bosquets:true};
+    const groupe={lot,semis:progressif?[]:null};
+    if (progressif) {
+      lot.detailLointain=!leger;
+      // Une copie superficielle de ce descripteur garde ces deux tableaux et
+      // la même préparation. Chaque contexte reste propriétaire de son tampon GPU.
+      lot.preparerLoin = () => {
+        if (!leger && groupe.semis) {
+          try { lireSemis(groupe.semis,palettes,false,lot,null,true); }
+          catch (e) { lot.loin.length=0; throw e; }
+          groupe.semis=null;
+        }
+        return lot.loin;
+      };
+      lot.preparerDetail = () => {
+        if (lot.objets.length) return lot;
+        if (lot.loin.length) {
+          // Les deux LOD partagent le même semis, la même pose et la même palette.
+          for (const o of lot.loin) lot.objets.push({...o,shape:o.shape.slice(0,-'-loin'.length)});
+        } else if (groupe.semis) {
+          try { lireSemis(groupe.semis,palettes,leger,lot,null); }
+          catch (e) { lot.objets.length=lot.loin.length=0; throw e; }
+          groupe.semis=null;
+        }
+        return lot;
+      };
+      // La carte d'ombre en photo n'utilise que la silhouette opaque lointaine.
+      // Aucune rotation ni palette complète n'est conservée après cette passe.
+      lot.objetsOmbreLointaine = () => {
+        if (lot.loin.length || !groupe.semis) return leger ? lot.objets : lot.loin;
+        const ombres=[];
+        lireSemis(groupe.semis,palettes,leger,null,ombres);
+        return ombres;
+      };
+    }
+    return groupe;
+  }
+
+  function construire(c, terrain, lots, interroger, ecologie, saison, qualite, options) {
     if (qualite==='off') return [];
+    const progressif=options?.progressif===true, palettes=[];
     function milieu(id,theme) {
       const espece=especes[id] || especes[theme];
       if (!espece) return null;
       const [genre,hauteur,couleur]=espece;
-      return { genre,hauteur,couleur,forme:'bosquet-'+(genre==='lande'?'rond':genre),
-        ecologie:theme===c.theme ? ecologie : B.ecologie?.creer(c.graine,theme),
+      const palette={ genre,couleur,forme:'bosquet-'+(genre==='lande'?'rond':genre),
         saison:theme===c.theme || !saison ? saison : B.saisons.profil(saison.id,theme) };
+      return {genre,hauteur,palette,indice:palettes.push(palette)-1,
+        ecologie:theme===c.theme ? ecologie : B.ecologie?.creer(c.graine,theme)};
     }
     const principal=milieu(c.id,c.theme);
     const troncons=(c.tronconsThemes || []).map(t=>({debut:t.debut,fin:t.fin,milieu:milieu(t.id,t.theme)}));
@@ -165,7 +237,7 @@
         const section=troncons.length && troncons.find(t=>t.debut<=t.fin ? s>=t.debut && s<t.fin : s>=t.debut || s<t.fin);
         const site=section ? section.milieu : principal;
         if(!site) continue;
-        const {genre,hauteur,couleur,forme}=site;
+        const {genre,hauteur}=site;
         // Le disque de tous les houppiers tient dans le triangle de terrain.
         const ux=V[b]-V[a], uz=V[b+2]-V[a+2], vx=V[d]-V[a], vz=V[d+2]-V[a+2];
         const det=ux*vz-uz*vx;
@@ -194,26 +266,35 @@
         normal[0]=-dx; normal[2]=-dz;
         const axes=B.decor.base([cos,dx*cos+dz*sin,sin],normal);
         const p=[x+axes[1][0]*h*.5,y+axes[1][1]*h*.5-.08,z+axes[1][2]*h*.5];
-        const rot=B.decor.angles(...axes), teinte=couleur.map(v=>v*(.83+.28*t));
-        const color=site.saison?B.saisons.teinte(site.saison,genre==='lande'?'herbe':'feuillage-persistant',teinte,x,z):teinte;
-        const s3=[largeur,h,largeur], o={shape:leger?forme+'-loin':forme,p,r:rot,s:s3,color,mat:11};
         const i=Math.floor(x/100), j=Math.floor(z/100), key=cle(i,j);
-        let lot=groupes.get(key);
-        if(!lot) groupes.set(key,lot={objets:[],loin:[],centre:[0,0,0],rayon:0,portee:Infinity,bascule:90,
-          lodReferenceFov:60,lodReferenceHeight:1080,arbres:true,bosquets:true});
-        lot.objets.push(o);
-        // En Légère, le modèle unique est déjà le lointain. FERRO utilise alors
-        // le tampon principal à toute distance et dans les deux passes d'ombre.
-        if (!leger) lot.loin.push({...o,shape:forme+'-loin'});
+        let groupe=groupes.get(key);
+        if(!groupe) groupes.set(key,groupe=nouveauGroupe(progressif,leger,palettes));
+        const lot=groupe.lot;
+        if (progressif) {
+          groupe.semis.push(p[0],p[1],p[2],largeur,h,x,z,t,site.indice);
+          for (const axe of axes) groupe.semis.push(axe[0],axe[1],axe[2]);
+        } else ajouterInstance(lot,site.palette,leger,x,z,t,p,largeur,h,axes);
         for(let axe=0;axe<3;axe++) lot.centre[axe]+=p[axe];
         secteurs[secteur]++;
       }
     }
-    for(const l of groupes.values()) {
-      for(let k=0;k<3;k++) l.centre[k]/=l.objets.length;
-      for(const o of l.objets) l.rayon=Math.max(l.rayon,Math.hypot(o.p[0]-l.centre[0],o.p[1]-l.centre[1],o.p[2]-l.centre[2])+Math.hypot(...o.s)/2);
+    const resultat=[];
+    for (const groupe of groupes.values()) {
+      const l=groupe.lot;
+      // Même moyenne et même sphère dans le même ordre : la distance de bascule
+      // reste exacte même si la première vue à atteindre le lot est une glace.
+      const n=progressif ? groupe.semis.length/PAS_SEMIS : l.objets.length;
+      for (let k=0;k<3;k++) l.centre[k]/=n;
+      if (progressif) {
+        const g=groupe.semis=Float64Array.from(groupe.semis);
+        for (let k=0;k<g.length;k+=PAS_SEMIS)
+          l.rayon=Math.max(l.rayon,Math.hypot(g[k]-l.centre[0],g[k+1]-l.centre[1],g[k+2]-l.centre[2])+Math.hypot(g[k+3],g[k+4],g[k+3])/2);
+      } else {
+        for (const o of l.objets) l.rayon=Math.max(l.rayon,Math.hypot(o.p[0]-l.centre[0],o.p[1]-l.centre[1],o.p[2]-l.centre[2])+Math.hypot(...o.s)/2);
+      }
+      resultat.push(l);
     }
-    return Array.from(groupes.values());
+    return resultat;
   }
   B.bosquets={construire};
 })(globalThis.BITUME=globalThis.BITUME||{});

@@ -117,19 +117,96 @@
     return true;
   }
 
-  function trouverLigneDroite(c, secteur, fraction) {
+  function trouverLigneDroite(c, secteur, fraction, demiPortee = 0) {
     let bestS = -1, bestK = Infinity;
+    const secteurs = secteur && B.saisons?.secteurs?.(c);
     for (let k = 0; k < 36; k++) {
       const s = secteur ? secteur.position(fraction, k * 115) : (c.longueur * fraction + k * 115) % c.longueur;
       if (!horsZoneDepart(c, s)) continue;
       if (B.circuit.dansCouvert && B.circuit.dansCouvert(c, s, 45)) continue;
-      const idx = Math.floor(s / c.pas) % c.n;
-      const ak = Math.abs(c.courbure[idx]);
+      let ak = 0, libre = true;
+      for (let d = -demiPortee; d <= demiPortee; d += 8) {
+        const pos = (s + d + c.longueur) % c.longueur;
+        if (demiPortee && (!horsZoneDepart(c, pos) || B.circuit.dansCouvert?.(c, pos, 12) ||
+            (secteurs && secteurs.a(pos).theme !== secteur.theme))) { libre = false; break; }
+        ak = Math.max(ak, Math.abs(c.courbure[Math.floor(pos / c.pas) % c.n]));
+      }
+      if (!libre) continue;
       if (ak < bestK) { bestK = ak; bestS = s; }
     }
-    if (bestS < 0 && secteur) return null;
+    if (bestS < 0 && (secteur || demiPortee)) return null;
     if (bestS < 0) bestS = Math.max(400, Math.min(c.longueur - 400, c.longueur * 0.45));
-    return B.circuit.echantillon(c, bestS);
+    return { ...B.circuit.echantillon(c, bestS), s: bestS };
+  }
+
+  function planPontFjord(c, secteur) {
+    if ((secteur?.theme || c.theme) !== 'fjord') return null;
+    const demi = 48, f = trouverLigneDroite(c, secteur, .32, demi);
+    if (!f) return null;
+    return { f, demi, tx: Math.cos(f.cap), tz: Math.sin(f.cap) };
+  }
+
+  function poidsGorge(a, b, d) {
+    const t = Math.max(0, Math.min(1, (b - d) / (b - a)));
+    return t * t * (3 - 2*t);
+  }
+  function reliefPontFjord(c, p, x, z, q, h) {
+    const dx = x - p.f.x, dz = z - p.f.z;
+    const travers = -dx * p.tz + dz * p.tx, long = dx * p.tx + dz * p.tz;
+    if (Math.abs(long) >= p.demi + 12 || Math.abs(travers) >= 145) return h;
+    const autreRoute = q.i >= 0 && Math.abs(B.circuit.ecart(c, p.f.s, q.i*c.pas)) > p.demi + 26;
+    const libre = autreRoute ? 1 - poidsGorge(22, 53, q.d) : 1;
+    const gorge = poidsGorge(15, p.demi+12, Math.abs(long)) * poidsGorge(84, 145, Math.abs(travers)) * libre;
+    return h + (Math.min(h, p.f.y - 24) - h) * gorge;
+  }
+
+  function construirePontFjord(c, pont, terrain, lim, low) {
+    const objets = [], loin = [], f = pont.f, w = c.largeur / 2;
+    const beton = [.59,.63,.66], acier = [.74,.78,.80];
+    const ajouter = (o, distant = true) => { objets.push(o); if (distant) loin.push(o); };
+    function rive(ds, cote, retrait) {
+      const s = (f.s + ds + c.longueur) % c.longueur, p = B.circuit.echantillon(c, s);
+      const n = Math.floor(s/c.pas), t = s/c.pas - n, l = cote < 0 ? lim.G : lim.D;
+      const d = l[n%c.n] + (l[(n+1)%c.n] - l[n%c.n])*t + retrait;
+      const y = p.y - cote*w*Math.sin(p.devers) - .02*(d-w-1.2);
+      return [p.x - Math.sin(p.cap)*cote*d, y, p.z + Math.cos(p.cap)*cote*d];
+    }
+    function poutre(a, b, hauteur, largeur, mat, couleur, distant, solide) {
+      const v = [b[0]-a[0], b[1]-a[1], b[2]-a[2]];
+      const p = [(a[0]+b[0])/2, (a[1]+b[1])/2, (a[2]+b[2])/2];
+      // FERRO aligne ici l’axe X local sur la corde 3D entre les deux attaches.
+      const o = { shape:'box', p, s:[Math.hypot(...v), hauteur, largeur], r:B.decor.angles(...B.decor.base(v,[0,1,0])), mat, color:couleur };
+      if (solide) B.decor.marquerSolide(o, solide, 2);
+      ajouter(o, distant);
+    }
+    const tetes = [];
+    for (const cote of [-1,1]) {
+      const [x,y,z] = rive(0,cote,1.9);
+      const bas = Math.min(terrain.sol(x,z), terrain.sol(x-2,z), terrain.sol(x+2,z), terrain.sol(x,z-2), terrain.sol(x,z+2)) - 2;
+      const haut = Math.max(y + 33, bas + 34), r = [0,-f.cap,0];
+      const pil = { shape:'box', p:[x,(bas+haut)/2,z], s:[3.2,haut-bas,2.4], r, mat:9, color:beton };
+      B.decor.marquerSolide(pil,'pylone-fjord',2); ajouter(pil);
+      const semelle = { shape:'box', p:[x,bas+1.5,z], s:[5.6,3,4.6], r, mat:9, color:[.41,.44,.47] };
+      B.decor.marquerSolide(semelle,'fondation-fjord',2); ajouter(semelle);
+      tetes.push([x,haut-7,z]);
+      for (const ds of (low ? [-40,-20,20,40] : [-40,-29,-18,18,29,40])) {
+        const assise = rive(ds,cote,1.6), ancre = [assise[0],assise[1]+.55,assise[2]];
+        const distant = Math.abs(ds) >= 29 || low;
+        ajouter({ shape:'box', p:[ancre[0],assise[1]+.27,ancre[2]], s:[1.15,.62,.9], r, mat:9, color:beton }, distant);
+        poutre([x,haut-1-Math.max(0,40-Math.abs(ds))*.12,z],ancre,.17,.17,0,acier,distant);
+      }
+    }
+    poutre(tetes[0],tetes[1],1.3,1.8,9,beton,true);
+    // Chaque culée soutient l’extrémité du tablier suivant son dévers et entre dans les deux talus.
+    for (const ds of [-pont.demi+1, pont.demi-1]) {
+      const g = rive(ds,-1,3.3), d = rive(ds,1,3.3);
+      const haut = Math.min(g[1],d[1]) - 1.15;
+      const sol = Math.min(terrain.sol(g[0],g[2]),terrain.sol(d[0],d[2]),terrain.sol((g[0]+d[0])/2,(g[2]+d[2])/2));
+      const bas = Math.min(haut-1.6, sol-1.2), y = (haut+bas)/2;
+      poutre([g[0],y,g[2]],[d[0],y,d[2]],haut-bas,2.4,9,beton,true,'culee-fjord');
+      poutre([g[0],g[1]-1.42,g[2]],[d[0],d[1]-1.42,d[2]],.7,2.4,9,beton,true,'appui-fjord');
+    }
+    return { objets, loin };
   }
 
   function poser(c, outils) {
@@ -152,33 +229,10 @@
 
     if (theme === 'fjord') {
       // Grand Pont Haubané au-dessus d'une portion droite + 2 cascades de granit
-      const f = trouverLigneDroite(c, outils.secteur, 0.32);
-      if (!f) return compte;
-      const rx = -Math.sin(f.cap), rz = Math.cos(f.cap);
-      const span = (c.largeur || 12) + 14;
-      const objs = [], loin = [];
-      for (const side of [-1, 1]) {
-        const px = f.x + rx * side * (span / 2), pz = f.z + rz * side * (span / 2);
-        const py = terrain.sol(px, pz);
-        const h = Math.max(36, f.y - py + 34);
-        const pil = { shape: 'cylinder', p: [px, py + h / 2, pz], s: [2.4, h, 2.4], r: [0, 0, 0], mat: 9, color: [.78, .80, .84] };
-        D.marquerSolide(pil, 'pylone-fjord', 2);
-        objs.push(pil); loin.push(pil);
-      }
-      const traverse = { shape: 'box', p: [f.x, f.y + 18, f.z], s: [2.2, 1.4, span + 2], r: [0, -f.cap, 0], mat: 0, color: [.72, .75, .80] };
-      objs.push(traverse); loin.push(traverse);
-      if (!isLow) {
-        for (const side of [-1, 1]) {
-          for (const dx of [-26, -16, -8, 8, 16, 26]) {
-            const p0 = [f.x + rx * side * (span / 2), f.y + 32, f.z + rz * side * (span / 2)];
-            const p1 = [f.x + Math.cos(f.cap) * dx + rx * side * (span / 2), f.y + 2, f.z + Math.sin(f.cap) * dx + rz * side * (span / 2)];
-            const dir = [p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]];
-            const rot = D.angles(...D.base(dir, [0, 1, 0]));
-            objs.push({ shape: 'cylinder', p: [(p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2, (p0[2] + p1[2]) / 2], s: [.18, Math.hypot(...dir), .18], r: rot, mat: 0, color: [.82, .84, .88] });
-          }
-        }
-      }
-      push(objs, loin, f.x, f.z);
+      const pont = outils.pontFjord === undefined ? planPontFjord(c, outils.secteur) : outils.pontFjord;
+      if (!pont) return compte;
+      const f = pont.f, piles = construirePontFjord(c, pont, terrain, limites, isLow);
+      push(piles.objets, piles.loin, f.x, f.z);
       marquer('Grand Pont du Fjord-d’Argent', f.x, f.y + 12, f.z, 115, 48);
       const siteC = trouverSite(c, outils, 0.65, 55, 110);
       if (!siteC) return compte;
@@ -294,6 +348,6 @@
     return compte;
   }
 
-  B.destinations = { CATALOGUE, THEMES, poser, FORMES };
+  B.destinations = { CATALOGUE, THEMES, poser, FORMES, planPontFjord, reliefPontFjord };
 })(globalThis.BITUME = globalThis.BITUME || {});
 if (typeof module !== 'undefined' && module.exports) module.exports = globalThis.BITUME.destinations;

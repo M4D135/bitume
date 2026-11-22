@@ -120,17 +120,20 @@
     portiquePotence(S.debut + 2, [0.08, 0.90, 0.28], true);
     portiquePotence(S.fin - 2, [0.06, 0.78, 0.98], false);
 
+    // La recette diélectrique 21 garde le pigment des lignes et prend le même film d'eau
+    // que l'enrobé. Sur ces boîtes, la texture photographique du matériau 14 effaçait le marquage.
+    const matPeinture = 21;
     // 3. Ligne blanche continue séparant piste et voie des stands + chevrons d'entrée jaunes peints au sol
     for (let s = S.debut - 10; s <= S.fin + 14; s += 8) {
       const f = echantillonner(c, s + 4);
       const pL = pointVoie(f, dBordG, 0.015, w);
-      push({ shape: 'box', p: pL, s: [7.9, 0.024, 0.24], r: [0, -f.cap, 0], mat: 14, color: [0.95, 0.95, 0.93] }, false, pL[0], pL[2]);
+      push({ shape: 'box', p: pL, s: [7.9, 0.024, 0.24], r: [0, -f.cap, 0], mat: matPeinture, color: [0.95, 0.95, 0.93] }, false, pL[0], pL[2]);
     }
     for (let s = S.debut + 6; s < S.debut + 28; s += 5.5) {
       const f = echantillonner(c, s);
       const pC = pointVoie(f, dVoie, 0.014, w);
-      push({ shape: 'box', p: pC, s: [0.32, 0.022, 1.45], r: [0, -f.cap + 0.55, 0], mat: 14, color: [0.94, 0.88, 0.16] }, false, pC[0], pC[2]);
-      push({ shape: 'box', p: pC, s: [0.32, 0.022, 1.45], r: [0, -f.cap - 0.55, 0], mat: 14, color: [0.94, 0.88, 0.16] }, false, pC[0], pC[2]);
+      push({ shape: 'box', p: pC, s: [0.32, 0.022, 1.45], r: [0, -f.cap + 0.55, 0], mat: matPeinture, color: [0.94, 0.88, 0.16] }, false, pC[0], pC[2]);
+      push({ shape: 'box', p: pC, s: [0.32, 0.022, 1.45], r: [0, -f.cap - 0.55, 0], mat: matPeinture, color: [0.94, 0.88, 0.16] }, false, pC[0], pC[2]);
     }
 
     // 4. Box F1 peint au sol + Potence pneumatique + Tour de ravitaillement essence + Piles de pneus + Mur de télémétrie
@@ -139,13 +142,15 @@
       const rotB = [0, -fB.cap, 0];
       // Marquage jaune & rouge du Pit Box au sol (4 équerres + barre d'arrêt rouge)
       for (const sd of [-2.8, 2.8]) {
-        const fM = echantillonner(c, sBox + sd);
-        const pM = pointVoie(fM, dVoie, 0.016, w);
-        push({ shape: 'box', p: pM, s: [0.34, 0.024, 2.7], r: [0, -fM.cap, 0], mat: 14, color: sd > 0 ? [0.94, 0.12, 0.08] : [0.98, 0.82, 0.08] }, false, pM[0], pM[2]);
+        const pM = pointVoie(fB, dVoie, 0.016, w);
+        pM[0] += fB.tx * sd; pM[2] += fB.tz * sd;
+        push({ shape: 'box', p: pM, s: [0.34, 0.024, 2.7], r: rotB, mat: matPeinture, color: sd > 0 ? [0.94, 0.12, 0.08] : [0.98, 0.82, 0.08] }, false, pM[0], pM[2]);
       }
+      // Les côtés se terminent aux faces intérieures des barres à ±2,8 m :
+      // les couleurs se touchent sans superposer deux faces horizontales aux coins.
       for (const lat of [-1.25, 1.25]) {
         const pS = pointVoie(fB, dVoie + lat, 0.016, w);
-        push({ shape: 'box', p: pS, s: [5.7, 0.024, 0.26], r: rotB, mat: 14, color: [0.98, 0.82, 0.08] }, false, pS[0], pS[2]);
+        push({ shape: 'box', p: pS, s: [2 * 2.8 - 0.34, 0.024, 0.26], r: rotB, mat: matPeinture, color: [0.98, 0.82, 0.08] }, false, pS[0], pS[2]);
       }
       // Potence pneumatique F1 en porte-à-faux (ancrée sur l'aire technique d = w + 2.3 m)
       const dPot = w + 2.35;
@@ -221,7 +226,7 @@
             p: pV,
             s: [1.22, 0.09, 0.56],
             r: [0, -f.cap, 0],
-            mat: 14,
+            mat: matPeinture,
             color: rouge ? [0.90, 0.10, 0.08] : [0.96, 0.96, 0.94]
           }, false, pV[0], pV[2]);
           // Quilles souples F1 orange fluo + bague blanche réfléchissante (visuelles sans bloquer une roue)
@@ -238,7 +243,7 @@
         const dA = dVoie + Math.sin((k / 4) * PI * 2) * 0.55;
         const f = echantillonner(c, sA);
         const pA = pointVoie(f, dA, 0.015, w);
-        push({ shape: 'box', p: pA, s: [1.9, 0.022, 0.24], r: [0, -f.cap, 0], mat: 14, color: [0.96, 0.96, 0.94] }, false, pA[0], pA[2]);
+        push({ shape: 'box', p: pA, s: [1.9, 0.022, 0.24], r: [0, -f.cap, 0], mat: matPeinture, color: [0.96, 0.96, 0.94] }, false, pA[0], pA[2]);
       }
     }
 

@@ -736,6 +736,23 @@ function poser(c, outils) {
   const graine = c.graine || 210;
   const objets = [];
   const isLow = qualite === 'low';
+  const lotsDetail=[];
+  const reporterDetail=outils.decorProgressif===true ? (centre,rayon,fabriquer)=>{
+    // Les lots de collision et les masques de terrain reçoivent déjà tous les murs et les toits.
+    // Les deux moteurs de rendu peuvent demander le même paquet depuis deux vues différentes.
+    const lot={centre,rayon,portee:Infinity,bascule:outils.basculeDetail ?? (isLow?280:520),
+      objets:[],loin:[],detailProcheSeul:true,
+      preparerDetail() {
+        if (fabriquer) {
+          const ouvertures=fabriquer();
+          lot.objets.push(...ouvertures);
+          fabriquer=null;
+        }
+        return lot;
+      }};
+    lotsDetail.push(lot);
+  } : null;
+
 
   const MAT_MAP = { pierre: 23, roche: 23, beton: 22, lauze: 23, ardoise: 23, bois: 26, herbe: 25, feuille: 27, metal: 0, acier: 0, eau: 12, neige: 25, enduit: 13.2 };
   const rocheForme = gr => (B.lieux && B.lieux.rocherPour ? B.lieux.rocherPour('montagne', gr >>> 0) : 'octa');
@@ -914,8 +931,8 @@ function poser(c, outils) {
         objets.push(...proche);
         if (ajouter) ajouter(proche,loin,x,z);
       };
-      if (v.nom === 'Pietraporzio') B.pietraporzio.poser(terr,getPos,!!saison?.neige,!isLow,ajouterBati);
-      B.pietraporzio.poserCouronne(!!saison?.neige,ajouterBati,v.nom,!isLow);
+      if (v.nom === 'Pietraporzio') B.pietraporzio.poser(terr,getPos,!!saison?.neige,!isLow,ajouterBati,reporterDetail);
+      B.pietraporzio.poserCouronne(!!saison?.neige,ajouterBati,v.nom,!isLow,reporterDetail);
       continue;
     }
     const pos = getPos(v.s);
@@ -1089,7 +1106,7 @@ function poser(c, outils) {
     { nom: 'Vallée de la Stura · Pietraporzio', ...pointBourg, rayon: 115, hauteur: 48 },
     { nom: 'Fort Albertino de Vinadio', x: posFort.x - Math.sin(posFort.cap) * 35, y: posFort.y + 10, z: posFort.z + Math.cos(posFort.cap) * 35, rayon: 105, hauteur: 42 }
   ];
-  return { objets, marqueurs };
+  return { objets, marqueurs, lotsDetail };
 }
 
 B.larcheDecor = { terrain, couperAccotement, poser };

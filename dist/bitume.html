@@ -796,11 +796,10 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 .catalogue-circuits { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
 .catalogue-circuits > .arcade-surtitre { flex: none; margin-bottom: 10px; }
 .arcade-preparation .circuits { display: flex; flex-direction: column; flex: 1 1 0; gap: 7px; min-height: 200px; max-height: 515px; overflow-y: auto; scrollbar-width: thin; padding: 3px 8px 3px 3px; overscroll-behavior: contain; }
-.arcade-preparation .carte-circuit { display: grid; grid-template-columns: 26px minmax(0,1fr) auto; grid-template-rows: auto auto; column-gap: 9px; row-gap: 3px; flex: none; min-height: 67px; padding: 11px 10px; border: 1px solid #38444f; border-left: 3px solid #38444f; background: #19232c; border-radius: 2px; }
+.arcade-preparation .carte-circuit { display: grid; grid-template-columns: 26px minmax(0,1fr); grid-template-rows: auto auto; column-gap: 9px; row-gap: 3px; flex: none; min-height: 67px; padding: 11px 10px; border: 1px solid #38444f; border-left: 3px solid #38444f; background: #19232c; border-radius: 2px; }
 .arcade-preparation .carte-circuit .circuit-rang { grid-row: 1 / 3; align-self: center; font-size: 11px; font-variant-numeric: tabular-nums; color: #8296a6; }
 .arcade-preparation .carte-circuit .nom { grid-column: 2; font-size: 22px; line-height: 1; white-space: normal; }
 .arcade-preparation .carte-circuit .fiche { grid-column: 2; font-size: 10px; line-height: 1.4; color: #99acba; }
-.arcade-preparation .carte-circuit .circuit-distance { grid-column: 3; grid-row: 1 / 3; align-self: center; color: #c3cdd4; font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .arcade-preparation .carte-circuit[aria-checked="true"] { border-color: #eab261; border-left-width: 3px; background: #3b2d24; }
 .arcade-preparation .carte-circuit:hover, .arcade-preparation .carte-circuit:focus-visible { transform: none; outline: 2px solid #eab261; outline-offset: 1px; }
 .arcade-preparation #p-piste > .options { margin-top: 15px; gap: 12px; }
@@ -830,7 +829,6 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 @media (max-width: 850px) {
   .selection-circuit { grid-template-columns: minmax(0,1.3fr) minmax(210px,1fr); gap: 12px; }
   .arcade-preparation .carte-circuit { grid-template-columns: 21px minmax(0,1fr); }
-  .arcade-preparation .carte-circuit .circuit-distance { grid-column: 2; grid-row: auto; font-size: 11px; }
   .arcade-preparation .carte-circuit .nom { font-size: 20px; }
   .apercu-entete { padding: 16px 16px 0; }
   .chiffres-circuit { padding: 13px 16px; }
@@ -1058,7 +1056,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   .cat-raccourci { display: inline-flex; align-items: center; gap: 3px; opacity: .85; }
   .touch-manette { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 19px; padding: 0 4px; border-radius: 4px; font: 800 9.5px/1 var(--f-texte); color: #fff; background: #143252; border: 1px solid #3c82c4; }
   .arcade-preparation .circuits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); flex: 0 0 auto; min-height: 0; max-height: none; overflow: visible; gap: 5px; padding: 2px; }
-  .arcade-preparation .carte-circuit { position: relative; min-height: clamp(38px, 5.2vh, 52px); padding: 4px 8px 4px 12px; grid-template-columns: 20px minmax(0, 1fr) auto; column-gap: 7px; row-gap: 1px; background: linear-gradient(135deg, rgba(16, 24, 34, .92), rgba(10, 15, 22, .94)); border: 1px solid #263646; border-radius: 5px; transition: transform .14s ease, border-color .16s ease, box-shadow .18s ease, background .16s ease; animation: carteEntree .28s ease both; }
+  .arcade-preparation .carte-circuit { position: relative; min-height: clamp(38px, 5.2vh, 52px); padding: 4px 8px 4px 12px; grid-template-columns: 20px minmax(0, 1fr); column-gap: 7px; row-gap: 1px; background: linear-gradient(135deg, rgba(16, 24, 34, .92), rgba(10, 15, 22, .94)); border: 1px solid #263646; border-radius: 5px; transition: transform .14s ease, border-color .16s ease, box-shadow .18s ease, background .16s ease; animation: carteEntree .28s ease both; }
   @keyframes carteEntree { from { opacity: 0; transform: translateY(6px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
   .arcade-preparation .carte-circuit::before { content: ''; position: absolute; left: 0; top: 5px; bottom: 5px; width: 4px; border-radius: 2px; background: var(--biome, #39ff8e); box-shadow: 0 0 8px var(--biome, #39ff8e); }
   .arcade-preparation .carte-circuit[hidden] { display: none !important; }
@@ -1075,7 +1073,6 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   .arcade-preparation .carte-circuit[aria-checked="true"] { border-color: #f0a758; border-top: 3px solid #e24b37; background: linear-gradient(135deg, rgba(124, 34, 22, .85), rgba(44, 18, 16, .92)); box-shadow: 0 4px 16px rgba(226, 75, 55, .28); }
   .arcade-preparation .carte-circuit .nom { font-size: clamp(13px, 1.15vw, 17px); line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .arcade-preparation .carte-circuit .fiche { font-size: 9.5px; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: .82; }
-  .arcade-preparation .carte-circuit .circuit-distance { font-size: 11px; font-weight: 700; color: #f0d7a8; }
   /* Barre rapide Tours / Rivaux compacte */
   .arcade-preparation #p-piste > .options { flex: 0 0 auto; margin-top: 0; display: flex; flex-wrap: nowrap; align-items: center; gap: 14px; }
   .arcade-preparation #p-piste > .options fieldset { padding: 5px 10px 6px; margin: 0; }
@@ -1109,7 +1106,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 }
 #titre .marque { width: var(--paddock); --t-marque: clamp(74px, min(11vw, 15vh), 155px); margin: 0 0 clamp(14px, 2.8vh, 32px); }
 #titre .version-jeu { font-size: clamp(16px, 1.8vw, 23px); }
-#titre .arcade-modes { width: var(--paddock); max-width: none; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(10px, 1.1vw, 16px); }
+#titre .arcade-modes { width: var(--paddock); max-width: none; align-items: stretch; grid-auto-rows: 1fr; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(10px, 1.1vw, 16px); }
 #titre .mode-arcade {
   --accent: #ff6647; --fond: #482b29;
   position: relative; isolation: isolate; overflow: hidden;
@@ -1263,12 +1260,12 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre arcade-titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.123">V0.2.123</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.124">V0.2.124</b>
     </div>
     <a class="signature" href="https://bitume.estrasse.fr/" download="BITUME.html" title="Télécharger BITUME"><img class="signature-avatar" src="data:image/jpeg;base64,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" alt="" />m4d135</a>
     <nav class="choix arcade-modes" aria-label="Menu principal">
       <button type="button" class="gros mode-arcade" data-aller="course"><i class="mode-picto" aria-hidden="true"></i><span class="mode-libelle">Course<small>Vous et onze rivaux</small></span><span class="mode-fleche" aria-hidden="true">↗</span></button>
-      <button type="button" class="gros mode-arcade" data-aller="championnat"><i class="mode-picto" aria-hidden="true"></i><span class="mode-libelle">Championnat<small>Enchaînez les manches et marquez des points</small></span><span class="mode-fleche" aria-hidden="true">↗</span></button>
+      <button type="button" class="gros mode-arcade" data-aller="championnat"><i class="mode-picto" aria-hidden="true"></i><span class="mode-libelle">Championnat<small>Cumulez les points</small></span><span class="mode-fleche" aria-hidden="true">↗</span></button>
       <button type="button" class="gros mode-arcade" data-aller="chrono"><i class="mode-picto" aria-hidden="true"></i><span class="mode-libelle">Chrono<small>Battez votre fantôme</small></span><span class="mode-fleche" aria-hidden="true">↗</span></button>
       <button type="button" class="gros mode-arcade" data-aller="duo" id="b-duo"><i class="mode-picto" aria-hidden="true"></i><span class="mode-libelle">À deux<small>Deux pilotes en écran partagé</small><small id="t-manettes" class="detecte" hidden>2 manettes</small></span><span class="mode-fleche" aria-hidden="true">↗</span></button>
       <button type="button" class="gros mode-arcade" data-aller="enligne"><i class="mode-picto" aria-hidden="true"></i><span class="mode-libelle">En ligne<small>Rejoignez les autres pilotes</small></span><span class="mode-fleche" aria-hidden="true">↗</span></button>
@@ -2515,7 +2512,12 @@ G.FSurface={create,budget};
     vec3 tintRGB=smoothTerrainTint?vSurfaceNormal:vColor.rgb;
     vec3 geometricNormal=normalize(vNormal), n=geometricNormal;
     vec3 an=abs(smoothTerrainTint?geometricNormal:normalize(vSurfaceNormal));
-    vec2 uv=an.y>.65?vSurface.xz:(an.x>an.z?vSurface.zy:vSurface.xy);
+    // Smooth landscape and track pigments use one world projection across adjoining slopes.
+    // Fractional variants are opt-in for ground nappes only. Existing materials keep their PBR layers.
+    bool lightSoil=smoothTerrainTint&&vMaterial==8.125;
+    bool roadGrain=smoothTerrainTint&&vMaterial==14.125,roadPaint=smoothTerrainTint&&vMaterial==14.25;
+    bool terrainUV=smoothTerrainTint&&(lightSoil||roadGrain||roadPaint||vMaterial==25.125||vMaterial==21.125);
+    vec2 uv=terrainUV?vWorld.xz:(an.y>.65?vSurface.xz:(an.x>an.z?vSurface.zy:vSurface.xy));
     float recipe=vMaterial>20.5&&vMaterial<29.5?floor(vMaterial+.5)-20.:0.;
     float m=recipe==1.?14.:recipe==2.?3.:recipe==3.?9.:recipe==4.?16.:recipe==5.?8.:recipe==6.?10.:recipe==7.?11.:recipe==8.?7.:recipe==9.?18.:vMaterial, emission=vEmission;
     vec3 base=vec3(.105,.135,.15),windowGlow=vec3(0.);
@@ -2736,9 +2738,14 @@ G.FSurface={create,budget};
       roughness=.86;
       metalness=0.;
     } else if(m<8.5) {
-      float soil=noise(uv*.6)*.6+noise(uv*3.7)*.4;
-      base=mix(vec3(.13,.105,.057),vec3(.16,.24,.075),smoothstep(.3,.7,soil));
-      base*=.75+grain*.5;roughness=.95;metalness=0.;
+      if(lightSoil){
+        // Neutral, filtered grain preserves the host's vegetation, mineral and snow colours.
+        base=tintRGB*(.96+.11*(broad-.5)+.095*(grain-.35));roughness=.94;metalness=0.;
+      }else{
+        float soil=noise(uv*.6)*.6+noise(uv*3.7)*.4;
+        base=mix(vec3(.13,.105,.057),vec3(.16,.24,.075),smoothstep(.3,.7,soil));
+        base*=.75+grain*.5;roughness=.95;metalness=0.;
+      }
     } else if(m<9.5) {
       float strata=.5+.5*sin(vWorld.y*4.+noise(uv*.9)*8.);
       base=mix(vec3(.23,.24,.22),vec3(.42,.40,.33),broad)*(.8+strata*.17+grain*.15);
@@ -2830,14 +2837,19 @@ G.FSurface={create,budget};
 
       }
     } else if(m<14.5) {
-      // PDR : asphalte, granulat fin, reprises et fissures.
-      vec3 teinte=vColor.w>.5?tintRGB:vec3(.2,.2,.21);
-      float granulat=mix(.5,noise(uv*95.),fineDetail);
-      float reprise=smoothstep(.55,.75,noise(uv*.18+3.));
-      float fissure=(1.-smoothstep(0.,.035,abs(noise(uv*.9)-.5)))*step(.55,noise(uv*.23+9.))*fineDetail;
-      base=teinte*(.82+granulat*.22+broad*.12)*(1.-reprise*.12)*(1.-fissure*.35);
-      roughness=.9;metalness=0.;
-      urbanHeight=granulat*.006-fissure*.01;
+      if(roadGrain||roadPaint){
+        float aggregate=mix(.5,noise(uv*67.),fineDetail);
+        base=tintRGB*(.97+.08*(aggregate-.5)+.045*(broad-.5));
+        roughness=roadPaint?.80:.91;metalness=0.;urbanHeight=(aggregate-.5)*.002;
+      }else{
+        // PDR : asphalte, granulat fin, reprises et fissures.
+        vec3 teinte=vColor.w>.5?tintRGB:vec3(.2,.2,.21);
+        float granulat=mix(.5,noise(uv*95.),fineDetail);
+        float reprise=smoothstep(.55,.75,noise(uv*.18+3.));
+        float fissure=(1.-smoothstep(0.,.035,abs(noise(uv*.9)-.5)))*step(.55,noise(uv*.23+9.))*fineDetail;
+        base=teinte*(.82+granulat*.22+broad*.12)*(1.-reprise*.12)*(1.-fissure*.35);
+        roughness=.9;metalness=0.;urbanHeight=granulat*.006-fissure*.01;
+      }
     } else if(m<15.5) {
       // PDR : dallage de pierre, appareil à joints décalés.
       vec3 teinte=vColor.w>.5?tintRGB:vec3(.7,.67,.6);
@@ -2866,7 +2878,7 @@ G.FSurface={create,budget};
       roughness=.13;metalness=.35;
       windowGlow=mix(vec3(1.,.58,.25),vec3(.92,.87,.66),step(.78,home))*night*occupied*1.7;
     }
-    if(recipe<.5&&vColor.w>.5&&m<12.5&&!(m>11.5&&vAnchor.y<0.)){
+    if(recipe<.5&&!lightSoil&&vColor.w>.5&&m<12.5&&!(m>11.5&&vAnchor.y<0.)){
       vec3 tint=tintRGB*(.88+grain*.2)*(1.-panel*.12)*(m<3.5?.65:1.);
       base=m>7.5?base*.35+tint*.65:tint;
     }
@@ -2898,7 +2910,7 @@ G.FSurface={create,budget};
       if(m>12.5&&m<15.5)n=reliefNormal(n,urbanHeight*fineDetail);
     }
     if(m>2.5&&m<3.5)pbrWeight=1.;
-    if(m>13.5&&m<14.5){pbrWeight=1.;pbrLayer=0.;}
+    if(m>13.5&&m<14.5&&!roadGrain&&!roadPaint){pbrWeight=1.;pbrLayer=0.;}
     if(recipe<.5&&uPbrReady>.5&&pbrWeight>0.){
       vec2 texUV=uv/(pbrLayer<.5?3.:2.);vec3 coord=vec3(texUV,pbrLayer);
       vec3 albedo=texture(uPbrAlbedo,coord).rgb;
@@ -5287,29 +5299,84 @@ G.FSurface={create,budget};
       if(smoothTint)gl.vertexAttrib4f(4,0,0,0,2);
       gl.bindVertexArray(vao);
     }
+    // BITUME : les bornes vivent pendant toute la séance. Chaque contexte possède
+    // ses propres tampons, créés à l'approche ou dès la première passe qui en a besoin.
+    let lotsProgressifs=false,dernierUsage=null,curseurLots=0,indicesLots=[],ambianceLots=null;
+    function viderLot(l){
+      if(l.tampon)gl.deleteBuffer(l.tampon);
+      if(l.tamponLoin)gl.deleteBuffer(l.tamponLoin);
+      l.tampon=l.tamponLoin=l.paquet=l.paquetLoin=null;
+      groundPlans.delete(l);
+    }
+    function tamponInstances(batch){
+      const buffer=gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
+      gl.bufferData(gl.ARRAY_BUFFER,batch.values,gl.STATIC_DRAW);
+      return buffer;
+    }
+    function chargerLot(index,loinSeul=false){
+      const l=lots[index];
+      if(!l||stats.contextLost||disposed)return false;
+      if(dernierUsage)dernierUsage[index]=lotView.frame;
+      if(loinSeul&&!l.groundCover&&(l.loin?.length||l.detailLointain)){
+        if(l.tamponLoin)return false;
+        const loin=l.preparerLoin?.()||l.loin;
+        if(loin.length){
+          l.paquetLoin=pack(loin,ambianceLots);
+          l.tamponLoin=tamponInstances(l.paquetLoin);
+          return true;
+        }
+      }
+      if(l.tampon)return false;
+      const detail=l.preparerDetail?.(),sourceLot=detail?.objets?detail:l;
+      l.paquet=pack(sourceLot.objets,ambianceLots);
+      l.tampon=tamponInstances(l.paquet);
+      if(!l.tamponLoin&&sourceLot.loin?.length){
+        l.paquetLoin=pack(sourceLot.loin,ambianceLots);
+        l.tamponLoin=tamponInstances(l.paquetLoin);
+      }
+      groundPlans.set(l,groundCoverPlan(l,l.paquet,l.paquetLoin,groundIndex));
+      return true;
+    }
+    function preparerLot(index,loinSeul=false){
+      return Number.isInteger(index)&&indicesLots[index]!==undefined&&chargerLot(indicesLots[index],loinSeul);
+    }
+    function libererLotsInactifs(){
+      if(!lotsProgressifs||warm)return;
+      const compte=Math.min(12,lots.length);
+      for(let j=0;j<compte;j++){
+        const i=curseurLots++;
+        if(curseurLots===lots.length)curseurLots=0;
+        if((lots[i].tampon||lots[i].tamponLoin)&&lotView.frame-dernierUsage[i]>300)viderLot(lots[i]);
+      }
+    }
     function chargerLots(){
-      for(const l of lots){
-        for(const cle of ['tampon','tamponLoin'])if(l[cle]){gl.deleteBuffer(l[cle]);l[cle]=null;}
-        if(stats.contextLost||disposed)continue;
-        l.paquet=pack(l.objets,environment);l.tampon=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,l.tampon);gl.bufferData(gl.ARRAY_BUFFER,l.paquet.values,gl.STATIC_DRAW);
-        if(l.loin&&l.loin.length){l.paquetLoin=pack(l.loin,environment);l.tamponLoin=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,l.tamponLoin);gl.bufferData(gl.ARRAY_BUFFER,l.paquetLoin.values,gl.STATIC_DRAW);}
-        else l.paquetLoin=null;
-        groundPlans.set(l,groundCoverPlan(l,l.paquet,l.paquetLoin,groundIndex));
+      for(let i=0;i<lots.length;i++){
+        viderLot(lots[i]);
+        if(!lotsProgressifs)chargerLot(i);
       }
     }
     function setLots(liste,options){
-      for(const l of lots)for(const cle of ['tampon','tamponLoin'])if(l[cle])gl.deleteBuffer(l[cle]);
-      groundPlans=new WeakMap();lots=(liste||[]).filter(l=>l&&l.objets);
+      for(const l of lots)viderLot(l);
+      groundPlans=new WeakMap();lots=[];indicesLots=[];ambianceLots=environment;
+      if(liste)for(let i=0;i<liste.length;i++){
+        if(!liste[i]?.objets)continue;
+        indicesLots[i]=lots.length;lots.push(liste[i]);
+      }
+      lotsProgressifs=options?.progressif===true;
+      dernierUsage=lotsProgressifs?new Float64Array(lots.length):null;curseurLots=0;
       lotView.reset(lots,options?.staticBounds===true);chargerLots();stats.lots=lots.length;
     }
     function dessinerLots(eye,axes,horizontal,vertical,far,accepte,radii){
       let dessines=0;
       for(const entry of lotView.candidates(accepte,axes,horizontal,vertical,far,radii)){const l=entry.lot;
-        if(!l.tampon)continue;
+        if(l.detailProcheSeul&&!entry.near)continue;
         if(entry.cover&&entry.distance>entry.range)continue;
         // lot.ombre === false : le lot ne projette pas d'ombre du soleil (herbe courte, marquages au sol).
         if(accepte){if(l.ombre===false||!accepte(entry.bounds))continue;}
         else{if(entry.distance>Math.min(far,entry.range))continue;if(!visible(entry.bounds,eye,axes,horizontal,vertical,far,radii))continue;}
+        if(lotsProgressifs)chargerLot(entry.index,!entry.near);
+        if(!l.tampon&&!l.tamponLoin)continue;
         const plan=entry.cover&&groundPlans.get(l),fresh=plan&&plan.frame!==lotView.frame;
         if(plan&&prepareGroundCover(plan,entry,lotView.frame,vegetationState.eye,vegetationState)){
           if(fresh)stats.lotInstanceTests+=plan.tested;
@@ -5710,7 +5777,7 @@ G.FSurface={create,budget};
         -(right[0]*eye[0]+right[1]*eye[1]+right[2]*eye[2]),-(up[0]*eye[0]+up[1]*eye[1]+up[2]*eye[2]),forward[0]*eye[0]+forward[1]*eye[1]+forward[2]*eye[2],1]);
       const fov=Math.max(FOV_MIN,Math.min(110,camera.fov||75))*Math.PI/180,f=1/Math.tan(fov*.5),near=camera.near||.045,far=camera.far||180;
       vegetation.update(fx,eye,1/f,canvas.height);stats.windStrength=vegetationState.strength;stats.groundCover=vegetationState.enabled;
-      lotView.prepare(lots,eye,1/f,canvas.height,vegetationState);stats.lotDistanceTests=lotView.distanceTests;stats.lotInstanceTests=0;
+      lotView.prepare(lots,eye,1/f,canvas.height,vegetationState);libererLotsInactifs();stats.lotDistanceTests=lotView.distanceTests;stats.lotInstanceTests=0;
       projection.fill(0);projection[0]=f/(canvas.width/canvas.height);projection[5]=f;projection[10]=(far+near)/(near-far);projection[11]=-1;projection[14]=2*far*near/(near-far);
       multiply(projection,view,vp);
       if(camera.chunked&&!chunks.size)rebuildChunks();
@@ -6042,7 +6109,7 @@ G.FSurface={create,budget};
       let a0=Infinity,a1=-Infinity,b0=Infinity,b1=-Infinity,d0=Infinity,d1=-Infinity;
       for(const l of lots){
         const c=l.centre,r=Math.max(0,Number(l.rayon)||0);
-        if(l.ombre===false||l.groundCover||!c||!Number.isFinite(c[0])||!Number.isFinite(c[1])||!Number.isFinite(c[2]))continue;
+        if(l.ombre===false||l.groundCover||l.detailProcheSeul||!c||!Number.isFinite(c[0])||!Number.isFinite(c[1])||!Number.isFinite(c[2]))continue;
         const a=rx*c[0]+rz*c[2],b=ux*c[0]+uy*c[1]+uz*c[2],d=fx*c[0]+fy*c[1]+fz*c[2];
         a0=Math.min(a0,a-r);a1=Math.max(a1,a+r);b0=Math.min(b0,b-r);b1=Math.max(b1,b+r);d0=Math.min(d0,d-r);d1=Math.max(d1,d+r);
       }
@@ -6078,11 +6145,26 @@ G.FSurface={create,budget};
       gl.useProgram(depthProgram);gl.bindVertexArray(vao);gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.enable(gl.POLYGON_OFFSET_FILL);gl.polygonOffset(1.1,2);
       gl.uniformMatrix4fv(depthMatrix,false,photoFarMatrix);gl.uniform2f(depthWind,0,0);
       gl.uniform1f(depthLocalWind.uWindStrength,0);gl.uniform1i(depthLocalWind.uLocalWindCount,0);depthLocalWind.localWindActive=true;
+      // La carte globale ne demande que les silhouettes. Un seul tampon temporaire
+      // suffit pour les lots froids, sans retenir leurs couleurs ni leurs LOD proches.
+      let silhouette=null;
       for(const l of lots){
-        if(l.ombre===false||l.groundCover||!l.tampon)continue;
-        const loin=!!(l.paquetLoin&&l.tamponLoin),batch=loin?l.paquetLoin:l.paquet;
-        renderBatch(batch,loin?l.tamponLoin:l.tampon,false,true);for(const g of batch.groups)instances+=g.count;
+        if(l.ombre===false||l.groundCover||l.detailProcheSeul)continue;
+        let batch=l.paquetLoin||l.paquet,buffer=l.tamponLoin||l.tampon;
+        if(!buffer){
+          if(!lotsProgressifs)continue;
+          const source=l.objetsOmbreLointaine?.()||(l.loin?.length?l.loin:l.objets);
+          if(!source?.length)continue;
+          batch=pack(source,environment);
+          if(!silhouette)silhouette=gl.createBuffer();
+          gl.bindBuffer(gl.ARRAY_BUFFER,silhouette);
+          gl.bufferData(gl.ARRAY_BUFFER,batch.values,gl.STREAM_DRAW);
+          buffer=silhouette;
+        }
+        renderBatch(batch,buffer,false,true);
+        for(const g of batch.groups)instances+=g.count;
       }
+      if(silhouette)gl.deleteBuffer(silhouette);
       if(worldIndex.entries.length){
         const batch=pack(worldIndex.entries.map(entry=>entry.mesh),environment),buffer=gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,batch.values,gl.STATIC_DRAW);renderBatch(batch,buffer,false,true);gl.deleteBuffer(buffer);
@@ -6112,7 +6194,8 @@ G.FSurface={create,budget};
       for(const cache of staticCaches.slice(1))gl.deleteBuffer(cache.buffer);
       // BITUME : tampons des nappes et des lots.
       if(nappeVbo)gl.deleteBuffer(nappeVbo);if(nappeIbo)gl.deleteBuffer(nappeIbo);if(nappeVao)gl.deleteVertexArray(nappeVao);
-      for(const l of lots)for(const cle of ['tampon','tamponLoin'])if(l[cle])gl.deleteBuffer(l[cle]);
+      for(const l of lots)viderLot(l);
+      lots=[];indicesLots=[];dernierUsage=ambianceLots=null;
       // PDR (lots) : tampons des lots du jeu.
       for(const slot of pdrSlots)if(slot)gl.deleteBuffer(slot.buffer);pdrSlots=[];pdrLots.length=0;
       freePost();deleteTarget(shadowTarget);if(photo)photoDispose();gl.deleteTexture(whiteTexture);for(const tex of pbrTextures)gl.deleteTexture(tex);pbrTextures=[];
@@ -6281,7 +6364,7 @@ G.FSurface={create,budget};
           gl.uniform3fv(u.uPdrLumiereDirection,l.directions);gl.uniform2fv(u.uPdrLumiereCone,l.cones);gl.uniform1fv(u.uPdrLumierePortee,l.portees);gl.uniform1i(u.uPdrLumieres,l.nombre);
         };
       }};
-    return {setEnvironment(value){environment=environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setNappes,setLots,updateShape,gl,pdr,calibrate,profile,prewarm,retain,resetStats,precalculerOmbre,setRenderScale:value=>surface?.setScale(value),setBudgetTarget:value=>watch?.setTarget(value)};
+    return {setEnvironment(value){environment=environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setNappes,setLots,preparerLot,updateShape,gl,pdr,calibrate,profile,prewarm,retain,resetStats,precalculerOmbre,setRenderScale:value=>surface?.setScale(value),setBudgetTarget:value=>watch?.setTarget(value)};
   }
   // Both GPU backends share the procedural shapes, instance layout and visibility
   // rules. No rendering calls or GPU state are shared between the APIs.
@@ -6459,7 +6542,7 @@ G.FSurface={create,budget};
 (function(G){'use strict';
  const names={passages:'FPassages',tacticalNetwork:'FBrain',loop:'FLoop',scheduler:'FSchedule',jobs:'FJobs',demo:'FDemo',surface:'FSurface',gpuProfile:'FGPUProfile',skies:'FSky',reflections:'FSceneReflections',render:'FRender',backends:'FRenderBackends',physics:'FPhysics',physx:'FPhysX',physicsGeometry:'FPhysicsGeometry',geometry:'FGeometry',vehicleDynamics:'FVehicleDynamics',navigation:'FNavigation',crowd:'FCrowd',crowdWebGPU:'FCrowdWebGPU',materials:'FMaterials',destruction:'FDestruction',input:'FInput',audio:'FAudio',motion:'FMotion',effects:'FEffects',recipes:'FRecipes',math:'FMath',music:'FMusic',musicTransitions:'FImuse'};
  function requireModule(name){const module=G[names[name]];if(!module)throw new Error('FERRO : module '+name+' non chargé.');return module;}
- const api={version:'0.3.20',apiVersion:1,
+ const api={version:'0.3.21',apiVersion:1,
   capabilities(){return Object.fromEntries(Object.entries(names).map(([name,key])=>[name,!!G[key]]));},
   require:requireModule,
   async createRenderer(canvas,options={}){const materials=options.materials||requireModule('materials').create();if(!materials.layers.length)await materials.load();return requireModule('backends').create(canvas,{...options,materials});},
@@ -62527,8 +62610,9 @@ globalThis.BITUME.pietraporzioCouronne=[
       }
     }
   }
-  function enregistrer(nom,triangles) {
+  function enregistrer(nom,triangles,solide=true) {
     globalThis.FRender?.forme?.(nom,triangles);
+    if (!solide) return {nom};
     const vertices=new Float32Array(triangles.flatMap(t=>t.slice(0,3).flat()));
     return {nom,maillage:{vertices,indices:Uint32Array.from({length:vertices.length/3},(_,i)=>i)}};
   }
@@ -62557,7 +62641,7 @@ globalThis.BITUME.pietraporzioCouronne=[
         const points=t.map(v=>v.map((q,k)=>(q-p[k])/s[k]));
         face(triangles,...points);
       }
-      formes[partie]=enregistrer('stura-ilot-'+cle+'-'+partie,triangles);
+      formes[partie]=enregistrer('stura-ilot-'+cle+'-'+partie,triangles,partie==='facades'||partie==='toits');
     }
     ilots.push({village:g.village,p,s,formes,empreintes:g.empreintes});
   }
@@ -62580,9 +62664,9 @@ globalThis.BITUME.pietraporzioCouronne=[
     }
     return false;
   }
-  function poser(terrain,position,neige,detail,ajouter) {
+  function poser(terrain,position,neige,detail,ajouter,reporter) {
     for(const {f,poly,largeur,profondeur,formes,montee} of modeles) {
-      const proche=[], loin=[], route=position(f.s);
+      const loin=[], route=position(f.s);
       const sol=(x,z)=>terrain?terrain.sol(f.x+x,f.z+z):route.y;
       const hauteurs=poly.map(p=>sol(...p)).sort((a,b)=>a-b);
       const seuil=(hauteurs[Math.floor((hauteurs.length-1)/2)]+hauteurs[Math.floor(hauteurs.length/2)])*.5;
@@ -62591,8 +62675,7 @@ globalThis.BITUME.pietraporzioCouronne=[
       const enduit=f.usage==='municipio'?[.75,.65,.51]:f.h>7?[.68,.64,.56]:[.63,.65,.58];
       const bois=[.29,.24,.18], vitre=[.16,.22,.24];
       function objet(partie,shape,p,s,mat,color,angle=0) {
-        const o={shape,p,s,r:[0,angle,0],mat,color,architecture:'pietraporzio-bdtre',batiment:f.id,partie};
-        proche.push(o);return o;
+        return {shape,p,s,r:[0,angle,0],mat,color,architecture:'pietraporzio-bdtre',batiment:f.id,partie};
       }
       for(const [partie,forme] of Object.entries(formes)) {
         const mur=partie==='mur', couverture=partie==='toit';
@@ -62603,62 +62686,78 @@ globalThis.BITUME.pietraporzioCouronne=[
         if(mur)o.trianglesMasque=f.tri.map(t=>t.map(i=>[f.x+poly[i][0],0,f.z+poly[i][1]]));
         loin.push(o);
       }
-      const facades=[];
-      for(let i=0;i<poly.length;i++) {
-        const a=poly[i], b=poly[(i+1)%poly.length], dx=b[0]-a[0], dz=b[1]-a[1], l=Math.hypot(dx,dz);
-        if(l<3.5)continue;
-        const nx=dz/l, nz=-dx/l, x=route.x-f.x-(a[0]+b[0])*.5, z=route.z-f.z-(a[1]+b[1])*.5;
-        const rue=(nx*x+nz*z)/Math.hypot(x,z), amont=-nx*Math.cos(route.cap)-nz*Math.sin(route.cap);
-        facades.push({a,dx,dz,l,nx,nz,rue,amont});
-      }
-      // Depuis la route, le pignon d'approche se lit avant la façade latérale.
-      const principale=facades.sort((a,b)=>b.rue*b.l-a.rue*a.l)[0];
-      const approche=facades.filter(b=>b!==principale && b.amont>.30 && b.nx*principale.nx+b.nz*principale.nz<.80)
-        .sort((a,b)=>b.amont*b.l-a.amont*a.l)[0];
-      for(const [index,bord] of [principale,approche].filter(Boolean).entries()) {
-        const {a,dx,dz,l,nx,nz}=bord, yaw=Math.atan2(nx,nz);
-        const applique=(partie,shape,u,y,saillie,s,mat,couleur)=>objet(partie,shape,
-          [f.x+a[0]+u*dx+nx*saillie,y,f.z+a[1]+u*dz+nz*saillie],s,mat,couleur,yaw);
-        const colonnes=Math.max(2,Math.min(detail?5:3,Math.floor(l/3)));
-        const etages=Math.max(1,Math.min(3,Math.round((rive-seuil)/3)));
-        for(let col=0;col<colonnes;col++){
-          const u=(col+.5)/colonnes, solLocal=sol(a[0]+u*dx,a[1]+u*dz);
-          for(let et=0;et<etages;et++){
-            if(!et && !index && col===0) {
-              if(solLocal+2.10<rive)applique('porte','box',u,solLocal+1.04,.045,[1.12,2.08,.09],10,bois);
-              continue;
-            }
-            const y=rive-1.10-3.0*(etages-et-1);
-            if(y-.62<solLocal+.12)continue;
-            applique('vitrage','box',u,y,.035,[1.04,1.22,.07],19.1,vitre);
-            if(detail)applique('menuiserie','stura-cadre',u,y,.09,[1.11,1.30,.10],10,bois);
-            if(detail && (f.usage==='abitativa'||f.usage==='residenziale') && l/colonnes>=2.15){
-              for(const cote of [-1,1])applique('volet','box',u+cote*.73/l,y,.065,[.31,1.16,.09],10,[.36,.40,.34]);
+      function preparerOuvertures() {
+        const ouvertures=[];
+        const facades=[];
+        for(let i=0;i<poly.length;i++) {
+          const a=poly[i], b=poly[(i+1)%poly.length], dx=b[0]-a[0], dz=b[1]-a[1], l=Math.hypot(dx,dz);
+          if(l<3.5)continue;
+          const nx=dz/l, nz=-dx/l, x=route.x-f.x-(a[0]+b[0])*.5, z=route.z-f.z-(a[1]+b[1])*.5;
+          const rue=(nx*x+nz*z)/Math.hypot(x,z), amont=-nx*Math.cos(route.cap)-nz*Math.sin(route.cap);
+          facades.push({a,dx,dz,l,nx,nz,rue,amont});
+        }
+        // Depuis la route, le pignon d'approche se lit avant la façade latérale.
+        const principale=facades.sort((a,b)=>b.rue*b.l-a.rue*a.l)[0];
+        const approche=facades.filter(b=>b!==principale && b.amont>.30 && b.nx*principale.nx+b.nz*principale.nz<.80)
+          .sort((a,b)=>b.amont*b.l-a.amont*a.l)[0];
+        for(const [index,bord] of [principale,approche].filter(Boolean).entries()) {
+          const {a,dx,dz,l,nx,nz}=bord, yaw=Math.atan2(nx,nz);
+          const applique=(partie,shape,u,y,saillie,s,mat,couleur)=>ouvertures.push(objet(partie,shape,
+            [f.x+a[0]+u*dx+nx*saillie,y,f.z+a[1]+u*dz+nz*saillie],s,mat,couleur,yaw));
+          const colonnes=Math.max(2,Math.min(detail?5:3,Math.floor(l/3)));
+          const etages=Math.max(1,Math.min(3,Math.round((rive-seuil)/3)));
+          for(let col=0;col<colonnes;col++){
+            const u=(col+.5)/colonnes, solLocal=sol(a[0]+u*dx,a[1]+u*dz);
+            for(let et=0;et<etages;et++){
+              if(!et && !index && col===0) {
+                if(solLocal+2.10<rive)applique('porte','box',u,solLocal+1.04,.045,[1.12,2.08,.09],10,bois);
+                continue;
+              }
+              const y=rive-1.10-3.0*(etages-et-1);
+              if(y-.62<solLocal+.12)continue;
+              applique('vitrage','box',u,y,.035,[1.04,1.22,.07],19.1,vitre);
+              if(detail)applique('menuiserie','stura-cadre',u,y,.09,[1.11,1.30,.10],10,bois);
+              if(detail && (f.usage==='abitativa'||f.usage==='residenziale') && l/colonnes>=2.15){
+                for(const cote of [-1,1])applique('volet','box',u+cote*.73/l,y,.065,[.31,1.16,.09],10,[.36,.40,.34]);
+              }
             }
           }
         }
+        return ouvertures;
       }
-      ajouter(proche,loin,f.x,f.z);
+      if (reporter) {
+        ajouter(loin,loin,f.x,f.z);
+        const sommet=seuil+f.h, hauteur=sommet-base;
+        // Englobe le pignon, les cadres et la saillie des volets, y compris les poses en biais.
+        const centre=[f.x,base+hauteur/2,f.z], rayon=Math.hypot(largeur+4,hauteur+4,profondeur+4)/2;
+        reporter(centre,rayon,preparerOuvertures);
+      } else {
+        ajouter([...loin,...preparerOuvertures()],loin,f.x,f.z);
+      }
     }
   }
-  function poserCouronne(neige,ajouter,village='Pietraporzio',detail=true) {
+  function poserCouronne(neige,ajouter,village='Pietraporzio',detail=true,reporter) {
     for(const g of ilots) {
       if (g.village!==village) continue;
-      const surfaces=[], loin=[];
-      for(const [partie,forme] of Object.entries(g.formes)) {
+      function surface(partie) {
         const baie=partie==='baies', volet=partie==='volets', toit=partie==='toits';
-        if (volet && !detail) continue;
-        const o={shape:forme.nom,p:g.p,s:g.s,architecture:'ilot-stura',partie,
+        return {shape:g.formes[partie].nom,p:g.p,s:g.s,architecture:'ilot-stura',partie,
           mat:baie?19.1:volet?10:toit?(neige?25:24):22,
           color:baie?[.17,.23,.24]:volet?[.35,.39,.33]:toit?(neige?[.86,.89,.90]:[.34,.34,.33]):[.66,.63,.55],
           trianglesMasque:partie==='facades'?g.empreintes:[]};
-        if (!baie && !volet) {
-          B.decor?.marquerSolide?.(o,'bati-bdtre',2,null,forme.maillage);
-          loin.push(o);
-        }
-        surfaces.push(o);
       }
-      ajouter(surfaces,surfaces.length===loin.length?surfaces:loin,g.p[0],g.p[2]);
+      const loin=['facades','toits'].map(partie=>{
+        const o=surface(partie);
+        B.decor?.marquerSolide?.(o,'bati-bdtre',2,null,g.formes[partie].maillage);
+        return o;
+      });
+      const parties=['baies','volets'].filter(p=>g.formes[p] && (detail || p!=='volets'));
+      if (reporter && parties.length) {
+        ajouter(loin,loin,g.p[0],g.p[2]);
+        reporter(g.p,Math.hypot(...g.s)/2,()=>parties.map(surface));
+      } else {
+        ajouter(parties.length ? [...loin,...parties.map(surface)] : loin,loin,g.p[0],g.p[2]);
+      }
     }
   }
   B.pietraporzio={poser,poserCouronne,recouvre};
@@ -63404,6 +63503,23 @@ function poser(c, outils) {
   const graine = c.graine || 210;
   const objets = [];
   const isLow = qualite === 'low';
+  const lotsDetail=[];
+  const reporterDetail=outils.decorProgressif===true ? (centre,rayon,fabriquer)=>{
+    // Les lots de collision et les masques de terrain reçoivent déjà tous les murs et les toits.
+    // Les deux moteurs de rendu peuvent demander le même paquet depuis deux vues différentes.
+    const lot={centre,rayon,portee:Infinity,bascule:outils.basculeDetail ?? (isLow?280:520),
+      objets:[],loin:[],detailProcheSeul:true,
+      preparerDetail() {
+        if (fabriquer) {
+          const ouvertures=fabriquer();
+          lot.objets.push(...ouvertures);
+          fabriquer=null;
+        }
+        return lot;
+      }};
+    lotsDetail.push(lot);
+  } : null;
+
 
   const MAT_MAP = { pierre: 23, roche: 23, beton: 22, lauze: 23, ardoise: 23, bois: 26, herbe: 25, feuille: 27, metal: 0, acier: 0, eau: 12, neige: 25, enduit: 13.2 };
   const rocheForme = gr => (B.lieux && B.lieux.rocherPour ? B.lieux.rocherPour('montagne', gr >>> 0) : 'octa');
@@ -63582,8 +63698,8 @@ function poser(c, outils) {
         objets.push(...proche);
         if (ajouter) ajouter(proche,loin,x,z);
       };
-      if (v.nom === 'Pietraporzio') B.pietraporzio.poser(terr,getPos,!!saison?.neige,!isLow,ajouterBati);
-      B.pietraporzio.poserCouronne(!!saison?.neige,ajouterBati,v.nom,!isLow);
+      if (v.nom === 'Pietraporzio') B.pietraporzio.poser(terr,getPos,!!saison?.neige,!isLow,ajouterBati,reporterDetail);
+      B.pietraporzio.poserCouronne(!!saison?.neige,ajouterBati,v.nom,!isLow,reporterDetail);
       continue;
     }
     const pos = getPos(v.s);
@@ -63757,7 +63873,7 @@ function poser(c, outils) {
     { nom: 'Vallée de la Stura · Pietraporzio', ...pointBourg, rayon: 115, hauteur: 48 },
     { nom: 'Fort Albertino de Vinadio', x: posFort.x - Math.sin(posFort.cap) * 35, y: posFort.y + 10, z: posFort.z + Math.cos(posFort.cap) * 35, rayon: 105, hauteur: 42 }
   ];
-  return { objets, marqueurs };
+  return { objets, marqueurs, lotsDetail };
 }
 
 B.larcheDecor = { terrain, couperAccotement, poser };
@@ -65223,19 +65339,96 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     return true;
   }
 
-  function trouverLigneDroite(c, secteur, fraction) {
+  function trouverLigneDroite(c, secteur, fraction, demiPortee = 0) {
     let bestS = -1, bestK = Infinity;
+    const secteurs = secteur && B.saisons?.secteurs?.(c);
     for (let k = 0; k < 36; k++) {
       const s = secteur ? secteur.position(fraction, k * 115) : (c.longueur * fraction + k * 115) % c.longueur;
       if (!horsZoneDepart(c, s)) continue;
       if (B.circuit.dansCouvert && B.circuit.dansCouvert(c, s, 45)) continue;
-      const idx = Math.floor(s / c.pas) % c.n;
-      const ak = Math.abs(c.courbure[idx]);
+      let ak = 0, libre = true;
+      for (let d = -demiPortee; d <= demiPortee; d += 8) {
+        const pos = (s + d + c.longueur) % c.longueur;
+        if (demiPortee && (!horsZoneDepart(c, pos) || B.circuit.dansCouvert?.(c, pos, 12) ||
+            (secteurs && secteurs.a(pos).theme !== secteur.theme))) { libre = false; break; }
+        ak = Math.max(ak, Math.abs(c.courbure[Math.floor(pos / c.pas) % c.n]));
+      }
+      if (!libre) continue;
       if (ak < bestK) { bestK = ak; bestS = s; }
     }
-    if (bestS < 0 && secteur) return null;
+    if (bestS < 0 && (secteur || demiPortee)) return null;
     if (bestS < 0) bestS = Math.max(400, Math.min(c.longueur - 400, c.longueur * 0.45));
-    return B.circuit.echantillon(c, bestS);
+    return { ...B.circuit.echantillon(c, bestS), s: bestS };
+  }
+
+  function planPontFjord(c, secteur) {
+    if ((secteur?.theme || c.theme) !== 'fjord') return null;
+    const demi = 48, f = trouverLigneDroite(c, secteur, .32, demi);
+    if (!f) return null;
+    return { f, demi, tx: Math.cos(f.cap), tz: Math.sin(f.cap) };
+  }
+
+  function poidsGorge(a, b, d) {
+    const t = Math.max(0, Math.min(1, (b - d) / (b - a)));
+    return t * t * (3 - 2*t);
+  }
+  function reliefPontFjord(c, p, x, z, q, h) {
+    const dx = x - p.f.x, dz = z - p.f.z;
+    const travers = -dx * p.tz + dz * p.tx, long = dx * p.tx + dz * p.tz;
+    if (Math.abs(long) >= p.demi + 12 || Math.abs(travers) >= 145) return h;
+    const autreRoute = q.i >= 0 && Math.abs(B.circuit.ecart(c, p.f.s, q.i*c.pas)) > p.demi + 26;
+    const libre = autreRoute ? 1 - poidsGorge(22, 53, q.d) : 1;
+    const gorge = poidsGorge(15, p.demi+12, Math.abs(long)) * poidsGorge(84, 145, Math.abs(travers)) * libre;
+    return h + (Math.min(h, p.f.y - 24) - h) * gorge;
+  }
+
+  function construirePontFjord(c, pont, terrain, lim, low) {
+    const objets = [], loin = [], f = pont.f, w = c.largeur / 2;
+    const beton = [.59,.63,.66], acier = [.74,.78,.80];
+    const ajouter = (o, distant = true) => { objets.push(o); if (distant) loin.push(o); };
+    function rive(ds, cote, retrait) {
+      const s = (f.s + ds + c.longueur) % c.longueur, p = B.circuit.echantillon(c, s);
+      const n = Math.floor(s/c.pas), t = s/c.pas - n, l = cote < 0 ? lim.G : lim.D;
+      const d = l[n%c.n] + (l[(n+1)%c.n] - l[n%c.n])*t + retrait;
+      const y = p.y - cote*w*Math.sin(p.devers) - .02*(d-w-1.2);
+      return [p.x - Math.sin(p.cap)*cote*d, y, p.z + Math.cos(p.cap)*cote*d];
+    }
+    function poutre(a, b, hauteur, largeur, mat, couleur, distant, solide) {
+      const v = [b[0]-a[0], b[1]-a[1], b[2]-a[2]];
+      const p = [(a[0]+b[0])/2, (a[1]+b[1])/2, (a[2]+b[2])/2];
+      // FERRO aligne ici l’axe X local sur la corde 3D entre les deux attaches.
+      const o = { shape:'box', p, s:[Math.hypot(...v), hauteur, largeur], r:B.decor.angles(...B.decor.base(v,[0,1,0])), mat, color:couleur };
+      if (solide) B.decor.marquerSolide(o, solide, 2);
+      ajouter(o, distant);
+    }
+    const tetes = [];
+    for (const cote of [-1,1]) {
+      const [x,y,z] = rive(0,cote,1.9);
+      const bas = Math.min(terrain.sol(x,z), terrain.sol(x-2,z), terrain.sol(x+2,z), terrain.sol(x,z-2), terrain.sol(x,z+2)) - 2;
+      const haut = Math.max(y + 33, bas + 34), r = [0,-f.cap,0];
+      const pil = { shape:'box', p:[x,(bas+haut)/2,z], s:[3.2,haut-bas,2.4], r, mat:9, color:beton };
+      B.decor.marquerSolide(pil,'pylone-fjord',2); ajouter(pil);
+      const semelle = { shape:'box', p:[x,bas+1.5,z], s:[5.6,3,4.6], r, mat:9, color:[.41,.44,.47] };
+      B.decor.marquerSolide(semelle,'fondation-fjord',2); ajouter(semelle);
+      tetes.push([x,haut-7,z]);
+      for (const ds of (low ? [-40,-20,20,40] : [-40,-29,-18,18,29,40])) {
+        const assise = rive(ds,cote,1.6), ancre = [assise[0],assise[1]+.55,assise[2]];
+        const distant = Math.abs(ds) >= 29 || low;
+        ajouter({ shape:'box', p:[ancre[0],assise[1]+.27,ancre[2]], s:[1.15,.62,.9], r, mat:9, color:beton }, distant);
+        poutre([x,haut-1-Math.max(0,40-Math.abs(ds))*.12,z],ancre,.17,.17,0,acier,distant);
+      }
+    }
+    poutre(tetes[0],tetes[1],1.3,1.8,9,beton,true);
+    // Chaque culée soutient l’extrémité du tablier suivant son dévers et entre dans les deux talus.
+    for (const ds of [-pont.demi+1, pont.demi-1]) {
+      const g = rive(ds,-1,3.3), d = rive(ds,1,3.3);
+      const haut = Math.min(g[1],d[1]) - 1.15;
+      const sol = Math.min(terrain.sol(g[0],g[2]),terrain.sol(d[0],d[2]),terrain.sol((g[0]+d[0])/2,(g[2]+d[2])/2));
+      const bas = Math.min(haut-1.6, sol-1.2), y = (haut+bas)/2;
+      poutre([g[0],y,g[2]],[d[0],y,d[2]],haut-bas,2.4,9,beton,true,'culee-fjord');
+      poutre([g[0],g[1]-1.42,g[2]],[d[0],d[1]-1.42,d[2]],.7,2.4,9,beton,true,'appui-fjord');
+    }
+    return { objets, loin };
   }
 
   function poser(c, outils) {
@@ -65258,33 +65451,10 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
     if (theme === 'fjord') {
       // Grand Pont Haubané au-dessus d'une portion droite + 2 cascades de granit
-      const f = trouverLigneDroite(c, outils.secteur, 0.32);
-      if (!f) return compte;
-      const rx = -Math.sin(f.cap), rz = Math.cos(f.cap);
-      const span = (c.largeur || 12) + 14;
-      const objs = [], loin = [];
-      for (const side of [-1, 1]) {
-        const px = f.x + rx * side * (span / 2), pz = f.z + rz * side * (span / 2);
-        const py = terrain.sol(px, pz);
-        const h = Math.max(36, f.y - py + 34);
-        const pil = { shape: 'cylinder', p: [px, py + h / 2, pz], s: [2.4, h, 2.4], r: [0, 0, 0], mat: 9, color: [.78, .80, .84] };
-        D.marquerSolide(pil, 'pylone-fjord', 2);
-        objs.push(pil); loin.push(pil);
-      }
-      const traverse = { shape: 'box', p: [f.x, f.y + 18, f.z], s: [2.2, 1.4, span + 2], r: [0, -f.cap, 0], mat: 0, color: [.72, .75, .80] };
-      objs.push(traverse); loin.push(traverse);
-      if (!isLow) {
-        for (const side of [-1, 1]) {
-          for (const dx of [-26, -16, -8, 8, 16, 26]) {
-            const p0 = [f.x + rx * side * (span / 2), f.y + 32, f.z + rz * side * (span / 2)];
-            const p1 = [f.x + Math.cos(f.cap) * dx + rx * side * (span / 2), f.y + 2, f.z + Math.sin(f.cap) * dx + rz * side * (span / 2)];
-            const dir = [p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]];
-            const rot = D.angles(...D.base(dir, [0, 1, 0]));
-            objs.push({ shape: 'cylinder', p: [(p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2, (p0[2] + p1[2]) / 2], s: [.18, Math.hypot(...dir), .18], r: rot, mat: 0, color: [.82, .84, .88] });
-          }
-        }
-      }
-      push(objs, loin, f.x, f.z);
+      const pont = outils.pontFjord === undefined ? planPontFjord(c, outils.secteur) : outils.pontFjord;
+      if (!pont) return compte;
+      const f = pont.f, piles = construirePontFjord(c, pont, terrain, limites, isLow);
+      push(piles.objets, piles.loin, f.x, f.z);
       marquer('Grand Pont du Fjord-d’Argent', f.x, f.y + 12, f.z, 115, 48);
       const siteC = trouverSite(c, outils, 0.65, 55, 110);
       if (!siteC) return compte;
@@ -65400,7 +65570,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     return compte;
   }
 
-  B.destinations = { CATALOGUE, THEMES, poser, FORMES };
+  B.destinations = { CATALOGUE, THEMES, poser, FORMES, planPontFjord, reliefPontFjord };
 })(globalThis.BITUME = globalThis.BITUME || {});
 if (typeof module !== 'undefined' && module.exports) module.exports = globalThis.BITUME.destinations;
 </script>
@@ -70824,7 +70994,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     return triangles;
   }
   // La silhouette de la lande utilise le houppier rond, aplati par la taille
-  // de l'instance. Quatre maillages au total pour les onze circuits.
+  // de l'instance. Les quatre formes communes sont inscrites au chargement du
+  // module, avant la création des moteurs de la course et des rétroviseurs.
   const rendu = globalThis.FRender;
   if (rendu?.forme) for (const e of ['sapin','rond']) for (const loin of [false,true]) {
     rendu.forme('bosquet-'+e+(loin?'-loin':''),forme(e,loin));
@@ -70891,15 +71062,86 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
         b*((1-a)*fractions[k+ligne]+a*fractions[k+ligne+3]))/255;
     };
   }
-  function construire(c, terrain, lots, interroger, ecologie, saison, qualite) {
+  function instance(site, loin, p, largeur, h, axes, color) {
+    return {shape:loin?site.forme+'-loin':site.forme,p,r:B.decor.angles(...axes),s:[largeur,h,largeur],color,mat:11};
+  }
+  function ajouterInstance(lot, site, leger, x, z, t, p, largeur, h, axes, loinSeul = false) {
+    const teinte=site.couleur.map(v=>v*(.83+.28*t));
+    const color=site.saison ? B.saisons.teinte(site.saison,site.genre==='lande'?'herbe':'feuillage-persistant',teinte,x,z) : teinte;
+    const o=instance(site,leger||loinSeul,p,largeur,h,axes,color);
+    if (loinSeul) { lot.loin.push(o); return; }
+    lot.objets.push(o);
+    // En Légère, le modèle unique est déjà le lointain.
+    if (!leger) lot.loin.push({...o,shape:site.forme+'-loin'});
+  }
+
+  // Une graine conserve le centre exact et les bases numériques. Le terrain,
+  // les triangles et l'index d'axe ne sont pas retenus par la préparation d'une case.
+  // Centre XYZ, largeur, hauteur, site XZ, nuance, indice de palette, puis les trois axes XYZ.
+  const PAS_SEMIS = 18;
+  function lireSemis(semis, palettes, leger, lot, ombres, loinSeul = false) {
+    const axes=[[0,0,0],[0,0,0],[0,0,0]];
+    for (let k=0; k<semis.length; k+=PAS_SEMIS) {
+      for (let j=0; j<3; j++) {
+        const a=k+9+j*3;
+        axes[j][0]=semis[a]; axes[j][1]=semis[a+1]; axes[j][2]=semis[a+2];
+      }
+      const p=[semis[k],semis[k+1],semis[k+2]], site=palettes[semis[k+8]];
+      if (ombres) ombres.push(instance(site,true,p,semis[k+3],semis[k+4],axes,site.couleur));
+      else ajouterInstance(lot,site,leger,semis[k+5],semis[k+6],semis[k+7],p,semis[k+3],semis[k+4],axes,loinSeul);
+    }
+  }
+  function nouveauGroupe(progressif, leger, palettes) {
+    const lot={objets:[],loin:[],centre:[0,0,0],rayon:0,portee:Infinity,bascule:90,
+      lodReferenceFov:60,lodReferenceHeight:1080,arbres:true,bosquets:true};
+    const groupe={lot,semis:progressif?[]:null};
+    if (progressif) {
+      lot.detailLointain=!leger;
+      // Une copie superficielle de ce descripteur garde ces deux tableaux et
+      // la même préparation. Chaque contexte reste propriétaire de son tampon GPU.
+      lot.preparerLoin = () => {
+        if (!leger && groupe.semis) {
+          try { lireSemis(groupe.semis,palettes,false,lot,null,true); }
+          catch (e) { lot.loin.length=0; throw e; }
+          groupe.semis=null;
+        }
+        return lot.loin;
+      };
+      lot.preparerDetail = () => {
+        if (lot.objets.length) return lot;
+        if (lot.loin.length) {
+          // Les deux LOD partagent le même semis, la même pose et la même palette.
+          for (const o of lot.loin) lot.objets.push({...o,shape:o.shape.slice(0,-'-loin'.length)});
+        } else if (groupe.semis) {
+          try { lireSemis(groupe.semis,palettes,leger,lot,null); }
+          catch (e) { lot.objets.length=lot.loin.length=0; throw e; }
+          groupe.semis=null;
+        }
+        return lot;
+      };
+      // La carte d'ombre en photo n'utilise que la silhouette opaque lointaine.
+      // Aucune rotation ni palette complète n'est conservée après cette passe.
+      lot.objetsOmbreLointaine = () => {
+        if (lot.loin.length || !groupe.semis) return leger ? lot.objets : lot.loin;
+        const ombres=[];
+        lireSemis(groupe.semis,palettes,leger,null,ombres);
+        return ombres;
+      };
+    }
+    return groupe;
+  }
+
+  function construire(c, terrain, lots, interroger, ecologie, saison, qualite, options) {
     if (qualite==='off') return [];
+    const progressif=options?.progressif===true, palettes=[];
     function milieu(id,theme) {
       const espece=especes[id] || especes[theme];
       if (!espece) return null;
       const [genre,hauteur,couleur]=espece;
-      return { genre,hauteur,couleur,forme:'bosquet-'+(genre==='lande'?'rond':genre),
-        ecologie:theme===c.theme ? ecologie : B.ecologie?.creer(c.graine,theme),
+      const palette={ genre,couleur,forme:'bosquet-'+(genre==='lande'?'rond':genre),
         saison:theme===c.theme || !saison ? saison : B.saisons.profil(saison.id,theme) };
+      return {genre,hauteur,palette,indice:palettes.push(palette)-1,
+        ecologie:theme===c.theme ? ecologie : B.ecologie?.creer(c.graine,theme)};
     }
     const principal=milieu(c.id,c.theme);
     const troncons=(c.tronconsThemes || []).map(t=>({debut:t.debut,fin:t.fin,milieu:milieu(t.id,t.theme)}));
@@ -70934,7 +71176,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
         const section=troncons.length && troncons.find(t=>t.debut<=t.fin ? s>=t.debut && s<t.fin : s>=t.debut || s<t.fin);
         const site=section ? section.milieu : principal;
         if(!site) continue;
-        const {genre,hauteur,couleur,forme}=site;
+        const {genre,hauteur}=site;
         // Le disque de tous les houppiers tient dans le triangle de terrain.
         const ux=V[b]-V[a], uz=V[b+2]-V[a+2], vx=V[d]-V[a], vz=V[d+2]-V[a+2];
         const det=ux*vz-uz*vx;
@@ -70963,26 +71205,35 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
         normal[0]=-dx; normal[2]=-dz;
         const axes=B.decor.base([cos,dx*cos+dz*sin,sin],normal);
         const p=[x+axes[1][0]*h*.5,y+axes[1][1]*h*.5-.08,z+axes[1][2]*h*.5];
-        const rot=B.decor.angles(...axes), teinte=couleur.map(v=>v*(.83+.28*t));
-        const color=site.saison?B.saisons.teinte(site.saison,genre==='lande'?'herbe':'feuillage-persistant',teinte,x,z):teinte;
-        const s3=[largeur,h,largeur], o={shape:leger?forme+'-loin':forme,p,r:rot,s:s3,color,mat:11};
         const i=Math.floor(x/100), j=Math.floor(z/100), key=cle(i,j);
-        let lot=groupes.get(key);
-        if(!lot) groupes.set(key,lot={objets:[],loin:[],centre:[0,0,0],rayon:0,portee:Infinity,bascule:90,
-          lodReferenceFov:60,lodReferenceHeight:1080,arbres:true,bosquets:true});
-        lot.objets.push(o);
-        // En Légère, le modèle unique est déjà le lointain. FERRO utilise alors
-        // le tampon principal à toute distance et dans les deux passes d'ombre.
-        if (!leger) lot.loin.push({...o,shape:forme+'-loin'});
+        let groupe=groupes.get(key);
+        if(!groupe) groupes.set(key,groupe=nouveauGroupe(progressif,leger,palettes));
+        const lot=groupe.lot;
+        if (progressif) {
+          groupe.semis.push(p[0],p[1],p[2],largeur,h,x,z,t,site.indice);
+          for (const axe of axes) groupe.semis.push(axe[0],axe[1],axe[2]);
+        } else ajouterInstance(lot,site.palette,leger,x,z,t,p,largeur,h,axes);
         for(let axe=0;axe<3;axe++) lot.centre[axe]+=p[axe];
         secteurs[secteur]++;
       }
     }
-    for(const l of groupes.values()) {
-      for(let k=0;k<3;k++) l.centre[k]/=l.objets.length;
-      for(const o of l.objets) l.rayon=Math.max(l.rayon,Math.hypot(o.p[0]-l.centre[0],o.p[1]-l.centre[1],o.p[2]-l.centre[2])+Math.hypot(...o.s)/2);
+    const resultat=[];
+    for (const groupe of groupes.values()) {
+      const l=groupe.lot;
+      // Même moyenne et même sphère dans le même ordre : la distance de bascule
+      // reste exacte même si la première vue à atteindre le lot est une glace.
+      const n=progressif ? groupe.semis.length/PAS_SEMIS : l.objets.length;
+      for (let k=0;k<3;k++) l.centre[k]/=n;
+      if (progressif) {
+        const g=groupe.semis=Float64Array.from(groupe.semis);
+        for (let k=0;k<g.length;k+=PAS_SEMIS)
+          l.rayon=Math.max(l.rayon,Math.hypot(g[k]-l.centre[0],g[k+1]-l.centre[1],g[k+2]-l.centre[2])+Math.hypot(g[k+3],g[k+4],g[k+3])/2);
+      } else {
+        for (const o of l.objets) l.rayon=Math.max(l.rayon,Math.hypot(o.p[0]-l.centre[0],o.p[1]-l.centre[1],o.p[2]-l.centre[2])+Math.hypot(...o.s)/2);
+      }
+      resultat.push(l);
     }
-    return Array.from(groupes.values());
+    return resultat;
   }
   B.bosquets={construire};
 })(globalThis.BITUME=globalThis.BITUME||{});
@@ -73184,9 +73435,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     return resultat;
   }
 
-  function nappesRoute(c, th, lim, naturel = false, ecologie = null, saison = null, reperes = null, vibreursBeton = false) {
+  function nappesRoute(c, th, lim, ecologie = null, saison = null, reperes = null, pont = null) {
     const w = c.largeur / 2, n = c.n, LIGNES = 60, liste = [];
-    const matAsphalte = th.asphalte ?? th.matieres?.asphalte ?? 14;
+    const matAsphalte = th.asphalte===MATIERES_PILOTES.asphalte ? 21.125 : th.asphalte;
     const habitat = {};
     const meteoRoute = B.chaussee ? B.chaussee.preparer({}, saison) : null, surfaceRoute = {};
     const neigeRoute = [.84, .87, .90];
@@ -73205,7 +73456,28 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const bandes = [
       ['jupe', -1], ['herbe', -1], ['bord', -1], ['ligne', -1], ['asphalte', 0], ['ligne', 1], ['bord', 1], ['herbe', 1], ['jupe', 1]
     ];
-    const hautY = [0, 1, 0], colJupe = (th.volcanique ? th.terre : th.herbe).map(v => v * .86);
+    if (pont) bandes.push(['intrados', 0]);
+    const betonPont = [.38,.41,.42], basY = [0,-1,0];
+    const hautY = [0, 1, 0];
+    const secteurs=B.saisons?.secteurs?.(c);
+    const secondaire=secteurs?.plages.find(p=>p.theme!==c.theme);
+    const paletteB=secondaire && (THEMES[secondaire.theme] || B.destinations?.THEMES[secondaire.theme]);
+    const frontieres=paletteB ? secteurs.plages.filter((p,i,l)=>l[(i+l.length-1)%l.length].theme!==p.theme).map(p=>p.debut) : [];
+    function partPaysage(f) {
+      if (!paletteB) return 0;
+      let distance=Infinity;
+      for (const borne of frontieres) { const ds=Math.abs(f.s-borne); distance=Math.min(distance,ds,c.longueur-ds); }
+      return lisse(-95,95,(secteurs.plages[secteurs.indices[f.i]].theme===secondaire.theme?1:-1)*distance);
+    }
+    function teinteBord(x,z,part) {
+      const t=fbm((.82*x+.57*z)/91,(.82*z-.57*x)/91,c.graine+391,2);
+      const e=ecologie?.echantillonner(x,z,habitat);
+      function teinter(p) {
+        const col=p.aride?melange(p.terre,p.sable,t):p.volcanique?melange(p.terre,p.herbe,lisse(.34,.78,t)):melange(p.herbe,p.herbeClaire,.19+.56*t);
+        return e?couleurPrairie(p,col,e):col;
+      }
+      return part===0?teinter(th):part===1?teinter(paletteB):melange(teinter(th),teinter(paletteB),part);
+    }
     const premA = new Int32Array(bandes.length), premB = new Int32Array(bandes.length);
     const limiteBoucle = c.ouvert ? n - 1 : n;
     for (let debut = 0; debut < limiteBoucle; debut += LIGNES) {
@@ -73215,45 +73487,61 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       for (let i = debut; i <= fin; i++) {
         const f = cadre(c, i), no = [Math.sin(f.devers) * f.r[0], Math.cos(f.devers), Math.sin(f.devers) * f.r[2]];
         const limG = lim.G[f.i], limD = lim.D[f.i];
+        const surPont = pont && Math.abs(B.circuit.ecart(c,pont.f.s,f.s)) <= pont.demi;
+        const segmentPont = pont && Math.abs(B.circuit.ecart(c,pont.f.s,f.s - c.pas/2)) <= pont.demi;
+        const part=partPaysage(f);
         const vib = c.vibreur[f.i], tranche = Math.floor(f.i * c.pas / 4) % 2;
-        const tonte = th.aride ? melange(th.terre, th.sable, fbm(f.x / 95, f.z / 95, c.graine + 391, 3))
-          : th.volcanique ? melange(th.terre, th.herbe, lisse(.46, .73, fbm(f.x / 65, f.z / 65, c.graine + 391, 3)))
-          : naturel ? melange(th.herbe, th.herbeClaire, .2 + .65 * fbm(f.x / 65, f.z / 65, c.graine + 391, 3))
-          : Math.floor(f.i * c.pas / 20) % 2 ? th.herbe : th.herbeClaire;
         for (let b = 0; b < bandes.length; b++) {
           const type = bandes[b][0], cote = bandes[b][1];
-          let d0, d1, y0, y1, mat = 8, col = tonte, n0 = no, n1 = no;
-          if (type === 'asphalte') { d0 = -w + .3; d1 = w - .3; y0 = hauteurRoute(f, d0, w); y1 = hauteurRoute(f, d1, w); mat = matAsphalte; col = asphalte(f.i); }
+          let d0, d1, y0, y1, mat = 8, col = null, n0 = no, n1 = no;
+          if (type === 'intrados') {
+            if (!surPont) { premA[b] = -1; continue; }
+            d0 = -(limG + 3.3); d1 = limD + 3.3;
+            y0 = hauteurRoute(f,-w,w) - .02*(-d0-w-1.2) - 1.15;
+            y1 = hauteurRoute(f,w,w) - .02*(d1-w-1.2) - 1.15;
+            mat = MATIERES_PILOTES.beton; col = betonPont; n0 = n1 = basY;
+          } else if (type === 'asphalte') { d0 = -w + .3; d1 = w - .3; y0 = hauteurRoute(f, d0, w); y1 = hauteurRoute(f, d1, w); mat = matAsphalte; col = asphalte(f.i); }
           else {
             const bord = cote < 0 ? -1 : 1, limite = cote < 0 ? limG : limD, yBord = hauteurRoute(f, bord * w, w);
-            const ext = limite + 4;
-            if (type === 'ligne') { d0 = bord * (w - .3); d1 = bord * w; y0 = hauteurRoute(f, d0, w); y1 = yBord; mat = 14; col = blanc; }
+            const ext = limite + (surPont ? 3.3 : 4);
+            if (type === 'ligne') { d0 = bord * (w - .3); d1 = bord * w; y0 = hauteurRoute(f, d0, w); y1 = yBord; mat = 14.25; col = blanc; }
             else if (type === 'bord') {
               d0 = bord * w; d1 = bord * (w + 1.2); y0 = yBord;
               const avec = cote < 0 ? (vib & 1) : (vib & 2);
               y1 = yBord + (avec ? .05 : -.015);
               if (avec) {
-                mat = vibreursBeton ? MATIERES_PILOTES.beton : 14; col = reperes && reperes.vibreurs[f.i] ? (tranche ? rougeVirage : blancVirage) : (tranche ? rouge : blancBordure);
-              } else { mat = 8; col = tonte; }
-            } else if (type === 'herbe') { d0 = bord * (w + 1.2); d1 = bord * ext; y0 = yBord - .015; y1 = yBord - .02 * (ext - w - 1.2); col = tonte; n0 = n1 = hautY; }
-            else { d0 = bord * ext; d1 = bord * (ext + 4); y0 = yBord - .02 * (ext - w - 1.2); y1 = y0 - 2.6; col = colJupe; n0 = n1 = hautY; }
+                mat = 14.25; col = reperes && reperes.vibreurs[f.i] ? (tranche ? rougeVirage : blancVirage) : (tranche ? rouge : blancBordure);
+              } else if (surPont) { mat = MATIERES_PILOTES.beton; col = betonPont; } else { mat = 8; }
+            } else if (type === 'herbe') { d0 = bord * (w + 1.2); d1 = bord * ext; y0 = yBord - .015; y1 = yBord - .02 * (ext - w - 1.2); n0 = n1 = hautY; }
+            else { d0 = bord * ext; d1 = bord * (ext + 4); y0 = yBord - .02 * (ext - w - 1.2); y1 = y0 - 2.6; n0 = n1 = hautY; }
+            if (surPont && (type === 'herbe' || type === 'jupe')) {
+              mat = MATIERES_PILOTES.beton; col = betonPont;
+              if (type === 'jupe') { d1 = d0; y1 = y0 - 1.15; n0 = n1 = [bord*f.r[0],0,bord*f.r[2]]; }
+            }
             if (cote < 0) { const t = d0; d0 = d1; d1 = t; const u = y0; y0 = y1; y1 = u; }
           }
           const p0 = pointPlan(f, d0, y0), p1 = pointPlan(f, d1, y1);
-          let col0 = col, col1 = col;
-          if (ecologie && (type === 'herbe' || type === 'jupe')) {
-            col0 = couleurPrairie(th, col, ecologie.echantillonner(p0[0], p0[2], habitat));
-            col1 = couleurPrairie(th, col, ecologie.echantillonner(p1[0], p1[2], habitat));
-          }
+          const col0=col || teinteBord(p0[0],p0[2],part), col1=col || teinteBord(p1[0],p1[2],part);
           const ia = sommet(nap, p0, n0, mat, col0), ib = sommet(nap, p1, n1, mat, col1);
-          const pa = premA[b];
+          let pa = premA[b];
           if (pa >= 0 && !(B.cimesDecor && B.cimesDecor.couperAccotement(c, f.s - c.pas / 2, type))
             && !(B.larcheDecor && B.larcheDecor.couperAccotement(c, f.s - c.pas / 2, type))
             && !(B.marseilleDecor && B.marseilleDecor.couperAccotement(c, f.s - c.pas / 2, type))) {
-            const pb = premB[b];
-            if (type === 'herbe' || type === 'jupe') herbeTriangles.push(nap.i.length, nap.i.length + 3);
-            nap.i.push(pa, pb, ib, pa, ib, ia);
-            const surface = type === 'asphalte' || type === 'ligne' ? 1 : type === 'bord' && (vib & (cote < 0 ? 1 : 2)) ? 2 : 3;
+            let pb = premB[b];
+            // La rangée est partagée entre sections, mais une bordure peinte s'arrête au joint.
+            // Reprendre les deux mêmes positions avec les attributs de la section suivante évite
+            // que le rouge se diffuse dans le blanc ou l'herbe, quel que soit le sommet provoquant.
+            if (type==='bord' && (nap.s[pa*13+9]!==mat || col && nap.s[pa*13+10]!==Math.fround(col[0]))) {
+              const reprendre=v=>{
+                const k=v*13, p=Array.from(nap.s.subarray(k,k+3)), n=Array.from(nap.s.subarray(k+3,k+6));
+                return sommet(nap,p,n,mat,col || teinteBord(p[0],p[2],part));
+              };
+              pa=reprendre(pa); pb=reprendre(pb);
+            }
+            if (!segmentPont && (type === 'herbe' || type === 'jupe')) herbeTriangles.push(nap.i.length, nap.i.length + 3);
+            if (type === 'intrados') nap.i.push(pa,ib,pb,pa,ia,ib);
+            else nap.i.push(pa, pb, ib, pa, ib, ia);
+            const surface = type === 'asphalte' || type === 'ligne' ? 1 : type === 'bord' && (vib & (cote < 0 ? 1 : 2)) ? 2 : segmentPont ? 1 : 3;
             surfacesPhysX.push(surface, surface);
           }
           premA[b] = ia; premB[b] = ib;
@@ -73267,7 +73555,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
   }
 
   // Terrain : grille autour du circuit, raccordée à la chaussée par une pondération continue des hauteurs de l'axe.
-  function nappesTerrain(c, th, interroger, g, ecologie = null, organique = false, saison = null, cachePanorama = null) {
+  function nappesTerrain(c, th, interroger, g, ecologie = null, organique = false, saison = null, cachePanorama = null, pont = null) {
     if (B.larcheDecor) {
       const corridor = B.larcheDecor.terrain(c, th, interroger, { saison, cachePanorama }, ecologie, organique);
       if (corridor) return corridor;
@@ -73286,6 +73574,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const secondaire = secteurs?.plages.find(p => p.theme !== c.theme);
     const paletteB = secondaire && (THEMES[secondaire.theme] || B.destinations?.THEMES[secondaire.theme]);
     const poidsAxe = paletteB ? new Uint8Array(c.n) : null, poidsSol = paletteB ? new Uint8Array(nx*nz) : null;
+    const poidsPigments = paletteB ? new Uint8Array(nx*nz) : null;
     const centres = paletteB ? [[0,0,0],[0,0,0]] : null;
     if (paletteB) {
       const bornes = secteurs.plages.filter((p,i,liste) => liste[(i+liste.length-1)%liste.length].theme !== p.theme).map(p => p.debut);
@@ -73412,14 +73701,13 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
       if (B.cimesDecor) h = B.cimesDecor.relief(c, x, z, q, h);
       if (poidsSol) {
-        if (indiceAxe >= 0) poidsSol[cellule] = poidsAxe[indiceAxe];
-        else {
-          // Le terrain simple n'a pas d'axe voisin pour ses marges éloignées.
-          // Prolonger la couleur selon les deux centres déjà calculés, sans requête spatiale.
-          const da = Math.hypot(x-centres[0][0],z-centres[0][1]), db = Math.hypot(x-centres[1][0],z-centres[1][1]);
-          poidsSol[cellule] = Math.round(255*lisse(-180,180,da-db));
-        }
+        const da=Math.hypot(x-centres[0][0],z-centres[0][1]), db=Math.hypot(x-centres[1][0],z-centres[1][1]);
+        const paysage=lisse(-280,280,da-db)*255, rive=indiceAxe>=0?poidsAxe[indiceAxe]:paysage;
+        poidsPigments[cellule]=Math.round(rive+(paysage-rive)*lisse(22,195,d));
+        // Le contour de l'eau et les habitats dépendent du poids historique, distinct du pigment.
+        poidsSol[cellule]=indiceAxe>=0 ? poidsAxe[indiceAxe] : Math.round(255*lisse(-180,180,da-db));
       }
+      if (pont) h = B.destinations.reliefPontFjord(c, pont, x, z, q, h);
       return { h, d };
     };
     for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
@@ -73428,110 +73716,91 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const lagon = secondaire?.theme === 'corail' && poidsSol
       ? B.lagon.construire(c, secteurs, interroger, { x0,z0,nx,nz,pas:pasT,H,D,poidsSol,alterne:organique }, { nappe,sommet,finir }) : null;
     const liste = [], TUILE = 14, habitat = {};
-    const couleur = (h, d, ny, x, z, th) => {
-      // En mode organique : déformation douce de domaine (domain warping) pour casser toute régularité
-      // de grille et fondre les transitions sol/roche/sable/neige sans cassure triangulaire ni bande carrée.
-      let wx = x, wz = z;
-      if (organique) {
-        const w1x = (fbm(x / 190, z / 190, g + 613, 3) - .5) * 92;
-        const w1z = (fbm(x / 190 + 9.3, z / 190 - 4.7, g + 617, 3) - .5) * 92;
-        const w2x = (fbm((x + w1x) / 62, (z + w1z) / 62, g + 641, 2) - .5) * 26;
-        const w2z = (fbm((x + w1x) / 62 - 5.1, (z + w1z) / 62 + 7.4, g + 647, 2) - .5) * 26;
-        wx = x + w1x + w2x;
-        wz = z + w1z + w2z;
-      }
-      const tache = fbm(wx / (organique ? 145 : 140), wz / (organique ? 145 : 140), g + 3, 3);
-      const tacheFine = organique ? (fbm(wx / 56, wz / 56, g + 631, 3) * .65 + fbm(wx / 23 + 4.1, wz / 23 - 2.7, g + 653, 2) * .35) : .5;
-      let col = melange(th.herbe, th.terre, lisse(.45, .8, tache) * .7), mat = 8;
-      if (organique && !th.aride && !th.volcanique) {
-        col = melange(col, th.herbeClaire || th.herbe, (tacheFine - .5) * .36 + .18);
-      }
-      if (th.volcanique) {
-        col = melange(th.terre, th.roche, organique ? lisse(.22, .82, tache * .72 + tacheFine * .28) : tache);
-        if (ny < .78) mat = 9;
-        else if (!ecologie) col = melange(col, th.herbe, lisse(.46, .76, tache * .78 + tacheFine * .22));
-      }
-      if (th.eau !== undefined) {
-        if (organique) {
-          const plage = 1 - lisse(th.eau + .8, th.eau + 4.4 + (tacheFine - .5) * 2.2, h);
-          if (plage > 0) col = melange(col, th.sable, plage);
-        } else if (h < th.eau + 2.2) { col = th.sable; }
-      }
+    // Les masques de plantation utilisent les seuils historiques, indépendamment du pigment affiché.
+    // Les deux anciens bruits d'altitude ne sont utiles que près des seuils de roche ou de neige.
+    function classeHabitat(th,h,d,ny,x,z) {
+      let mat=th.volcanique && ny<.78 ? 9 : 8;
       if (th.montagnes) {
+        let tache=.5, tacheFine=.5;
+        if ((h>=95 && h<=164 && organique) || (h>232 && h<322)) {
+          let wx=x, wz=z;
+          if (organique) {
+            const dx=(fbm(x/190,z/190,g+613,3)-.5)*92;
+            const dz=(fbm(x/190+9.3,z/190-4.7,g+617,3)-.5)*92;
+            wx=x+dx+(fbm((x+dx)/62,(z+dz)/62,g+641,2)-.5)*26;
+            wz=z+dz+(fbm((x+dx)/62-5.1,(z+dz)/62+7.4,g+647,2)-.5)*26;
+            if (h<=164) tacheFine=fbm(wx/56,wz/56,g+631,3)*.65+fbm(wx/23+4.1,wz/23-2.7,g+653,2)*.35;
+          }
+          if (h>232) tache=fbm(wx/(organique?145:140),wz/(organique?145:140),g+3,3);
+        }
         if (organique) {
-          const pRoche = Math.max(1 - lisse(.70, .88, ny), lisse(95, 148 + (tacheFine - .5) * 32, h));
-          if (pRoche > 0) col = melange(col, melange(th.roche, th.roche.map(v => v * .78), tache * .7 + tacheFine * .3), pRoche);
-          if (pRoche > .55) mat = 9;
-          const pNeige = lisse(232 + 44 * tache, 278 + 44 * tache, h) * lisse(.52, .72, ny);
-          if (pNeige > 0) col = melange(col, th.neige, pNeige);
-          if (pNeige > .65) mat = 3;
+          if (Math.max(1-lisse(.70,.88,ny),lisse(95,148+(tacheFine-.5)*32,h))>.55) mat=9;
+          if (lisse(232+44*tache,278+44*tache,h)*lisse(.52,.72,ny)>.65) mat=3;
         } else {
-          if (ny < .8 || h > 120) { col = melange(th.roche, th.roche.map(v => v * .8), tache); mat = 9; }
-          if (h > 250 + 40 * tache && ny > .6) { col = th.neige; mat = 3; }
-        }
-      } else if (organique) {
-        const pPente = 1 - lisse(.62, .80, ny);
-        if (pPente > 0) col = melange(col, th.terre, pPente);
-      } else if (ny < .7) { col = th.terre; }
-      if (th.aride) {
-        const strate = .5 + .5 * Math.sin(h * .43 + bruit(wx / 370, wz / 370, g + 63) * 2.4);
-        const gres = melange(th.roche, th.terre, .24 + .66 * strate);
-        const ondes = organique ? .88 + .22 * tacheFine : 1;
-        col = melange(gres, th.sable, lisse(.54, .93, ny) * (.40 + .48 * tache)).map(v => Math.min(1, v * ondes));
-        mat = ny < .82 ? 9 : 8;
-      }
-      if (th.karstique) {
-        // Calcaire clair sur les parois, terrasses jade au fond ; les motifs restent dans les couleurs du sol.
-        const bandes = .5 + .5 * Math.sin(h * .84 + bruit(wx / 310, wz / 310, g + 171) * 2.8);
-        col = melange(th.herbe, th.herbeClaire, .16 + .64 * bandes);
-        if (organique) {
-          const pParoi = 1 - lisse(.66, .84, ny);
-          if (pParoi > 0) {
-            const fissures = fbm(wx / 65, wz / 65, g + 179, 3);
-            col = melange(col, melange(th.roche, [.28, .36, .31], .20 + .48 * fissures), pParoi);
-            if (pParoi > .55) mat = 9;
-          }
-        } else if (ny < .74) {
-          const fissures = fbm(x / 65, z / 65, g + 179, 3);
-          col = melange(th.roche, [.28, .36, .31], .20 + .48 * fissures); mat = 9;
+          if (ny<.8 || h>120) mat=9;
+          if (h>250+40*tache && ny>.6) mat=3;
         }
       }
-      if (th.pacifique) {
-        const strates = .5 + .5 * Math.sin(h * .35 + bruit(wx / 230, wz / 230, g + 241) * 2.6);
-        const colRoche = melange(th.roche, [.22, .24, .23], .18 + .55 * strates);
-        const colHerbe = melange(th.herbe, th.herbeClaire, .30 + .56 * tache);
-        if (organique) {
-          const pFalaise = Math.max(1 - lisse(.74, .90, ny), 1 - lisse(th.eau + 2, th.eau + 8, h));
-          col = melange(colHerbe, colRoche, pFalaise);
-          if (pFalaise > .55) mat = 9;
-        } else if (ny < .84 || h < th.eau + 5) {
-          col = colRoche; mat = 9;
-        } else col = colHerbe;
-      }
+      if (th.aride) mat=ny<.82?9:8;
+      if (th.karstique && (organique ? 1-lisse(.66,.84,ny)>.55 : ny<.74)) mat=9;
+      if (th.pacifique && (organique ? Math.max(1-lisse(.74,.90,ny),1-lisse(th.eau+2,th.eau+8,h))>.55 : ny<.84 || h<th.eau+5)) mat=9;
       if (paysageBaikal) {
-        const rive = B.baikal.riveRocheuse(paysageBaikal, x, z);
-        if (organique) {
-          const pRive = Math.max(lisse(.08, .28, rive) * lisse(42, 68, d), 1 - lisse(.72, .88, ny));
-          if (pRive > 0) {
-            const strates = .5 + .5 * Math.sin(h * .56 + bruit(wx / 200, wz / 200, g + 449));
-            col = melange(col, melange(th.roche, [.24, .31, .30], .12 + .42 * strates), pRive);
-            if (pRive > .55) mat = 9;
-          }
-        } else if ((rive > .15 && d > 55) || ny < .80) {
-          const strates = .5 + .5 * Math.sin(h * .56 + bruit(x / 200, z / 200, g + 449));
-          col = melange(th.roche, [.24, .31, .30], .12 + .42 * strates); mat = 9;
+        const rive=B.baikal.riveRocheuse(paysageBaikal,x,z);
+        if (organique ? Math.max(lisse(.08,.28,rive)*lisse(42,68,d),1-lisse(.72,.88,ny))>.55 : (rive>.15 && d>55) || ny<.80) mat=9;
+      }
+      return mat;
+    }
+    const couleur = (h, d, ny, x, z, th) => {
+      // Champs métriques indépendants des tuiles. Le palier simple utilise les mêmes transitions
+      // avec moins d'octaves. L'identifiant de sol reste disponible pour la découpe des plantes.
+      const wx=x+64*(bruit(x/234,z/234,g+613)-.5), wz=z+57*(bruit(x/203+4.3,z/203,g+617)-.5);
+      const domaine=fbm(wx/164,wz/164,g+3,organique?3:2);
+      const detail=bruit((.83*wx+.55*wz)/77,(-.55*wx+.83*wz)/77,g+631);
+      const chaud=.72*domaine+.28*detail, rugosite=.08*(detail-.5);
+      let col=melange(th.herbe,th.terre,.63*lisse(.33,.85,domaine)), roche=0, neige=0, sable=0;
+      if (th.aride) {
+        const strate=.5+.5*Math.sin(h*.16+bruit(wx/245,wz/245,g+63)*3.2);
+        col=melange(melange(th.roche,th.terre,.23+.56*strate),th.sable,lisse(.51,.94,ny+rugosite)*(.42+.46*chaud));
+        roche=1-lisse(.69,.91,ny+rugosite);
+      } else {
+        col=melange(col,th.herbeClaire,.10+.17*detail);
+        if (th.volcanique) {
+          roche=1-lisse(.67,.87,ny+rugosite);
+          col=melange(melange(th.terre,th.roche,.32+.43*chaud),th.herbe,.69*lisse(.36,.79,chaud)*(1-roche));
         }
+        if (th.montagnes) {
+          roche=Math.max(1-lisse(.65,.91,ny+rugosite),lisse(83,165+(detail-.5)*35,h));
+          neige=lisse(220+50*domaine,295+50*domaine,h)*lisse(.47,.79,ny);
+        }
+        if (th.karstique) {
+          roche=1-lisse(.60,.88,ny+rugosite);
+          col=melange(th.herbe,th.herbeClaire,.18+.56*chaud);
+        }
+        if (th.pacifique) {
+          roche=Math.max(1-lisse(.67,.92,ny+rugosite),1-lisse(th.eau+2,th.eau+10,h));
+          col=melange(th.herbe,th.herbeClaire,.25+.54*chaud);
+        }
+        if (paysageBaikal) {
+          const rive=B.baikal.riveRocheuse(paysageBaikal,x,z);
+          roche=Math.max(roche,lisse(.07,.32,rive)*lisse(40,74,d),1-lisse(.66,.91,ny+rugosite));
+        }
+        if (th.eau!==undefined && !th.pacifique) sable=1-lisse(th.eau+.6,th.eau+5+(detail-.5)*2,h);
+        if (ecologie) {
+          const prairie=couleurPrairie(th,col,ecologie.echantillonner(x,z,habitat));
+          col=melange(col,prairie,lisse(.57,.84,ny)*(1-roche)*(1-sable));
+        }
+        if (roche>0) col=melange(col,th.roche.map(v=>v*(.83+.24*chaud)),roche);
+        if (sable>0) col=melange(col,th.sable,sable);
+        if (neige>0) col=melange(col,th.neige,neige);
       }
-      if (ecologie && mat === 8 && ny >= .7 && (th.eau === undefined || h >= th.eau + 2.2)) {
-        col = couleurPrairie(th, col, ecologie.echantillonner(x, z, habitat));
-      }
-      return [mat, col];
+      const saisonSol=saison?.neige ? lisse(.33,.69,ny)*(1-sable) : (1-roche)*(1-neige)*(1-sable)*lisse(.56,.82,ny);
+      return [col,saisonSol];
     };
     // Les indices sont locaux à une tuile régulière ; zéro signale un sommet encore absent.
     const coteTuile = TUILE + 1, indicesTuile = new Uint16Array(coteTuile * coteTuile);
     for (let tj = 0; tj < nz - 1; tj += TUILE) for (let ti = 0; ti < nx - 1; ti += TUILE) {
       const finI = Math.min(nx - 1, ti + TUILE), finJ = Math.min(nz - 1, tj + TUILE);
-      const nap = nappe((finI - ti + 1) * (finJ - tj + 1)), idMat = organique ? new Map() : null;
+      const nap = nappe((finI - ti + 1) * (finJ - tj + 1)), idMat = organique ? new Map() : null, coefficientsSaison=saison ? [] : null;
       indicesTuile.fill(0);
       const prendre = (i, j) => {
         const local = (j - tj) * coteTuile + i - ti, deja = indicesTuile[local];
@@ -73541,18 +73810,21 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         const hx = H[j * nx + Math.min(nx - 1, i + 1)] - H[j * nx + Math.max(0, i - 1)];
         const hz = H[Math.min(nz - 1, j + 1) * nx + i] - H[Math.max(0, j - 1) * nx + i];
         const no = [-hx / (2 * pasT), 1, -hz / (2 * pasT)], l = Math.hypot(no[0], no[1], no[2]); no[0] /= l; no[1] /= l; no[2] /= l;
-        const part = poidsSol ? poidsSol[cle] / 255 : 0;
-        let [mat, col] = couleur(h, D[cle], no[1], x, z, part === 1 ? paletteB : th);
+        const mat=classeHabitat(poidsSol && poidsSol[cle]>=128 ? paletteB : th,h,D[cle],no[1],x,z);
+        const part = poidsPigments ? poidsPigments[cle] / 255 : 0;
+        let [col, coefficient] = couleur(h, D[cle], no[1], x, z, part === 1 ? paletteB : th);
         if (part > 0 && part < 1) {
-          const [autreMat, autreCol] = couleur(h, D[cle], no[1], x, z, paletteB);
+          const [autreCol, autreCoefficient] = couleur(h, D[cle], no[1], x, z, paletteB);
           col = melange(col, autreCol, part);
-          if (part >= .5) mat = autreMat;
+          coefficient += (autreCoefficient-coefficient)*part;
         }
         if (lagon) {
           const sable=lagon.sable(i,j);
-          if (sable>0) col=melange(col,paletteB.sable,sable);
+          if (sable>0) { col=melange(col,paletteB.sable,sable); coefficient*=1-sable; }
         }
-        const k = sommet(nap, [x, h, z], no, mat, col); indicesTuile[local] = k + 1; return k;
+        const k = sommet(nap, [x, h, z], no, mat, col);
+        if (coefficientsSaison) coefficientsSaison[k]=Math.round(255*coefficient);
+        indicesTuile[local] = k + 1; return k;
       };
       // En mode organique : un même triangle n'interpole jamais deux indices de matière (évite que
       // 23=roche ↔ 25=sol passe par 24=métal peint au milieu des triangles sur les pentes).
@@ -73565,6 +73837,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           k = sommet(nap, [nap.s[off], nap.s[off + 1], nap.s[off + 2]],
             [nap.s[off + 3], nap.s[off + 4], nap.s[off + 5]], m,
             [nap.s[off + 10], nap.s[off + 11], nap.s[off + 12]]);
+          if (coefficientsSaison) coefficientsSaison[k]=coefficientsSaison[v];
           idMat.set(cle, k);
         }
         return k;
@@ -73578,7 +73851,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       };
       for (let j = tj; j < finJ; j++) for (let i = ti; i < finI; i++) {
         // Une case entièrement sous la chaussée ou ses accotements reste invisible : on la saute.
-        if (D[j * nx + i] < 18 && D[j * nx + i + 1] < 18 && D[(j + 1) * nx + i] < 18 && D[(j + 1) * nx + i + 1] < 18) continue;
+        if (D[j * nx + i] < 18 && D[j * nx + i + 1] < 18 && D[(j + 1) * nx + i] < 18 && D[(j + 1) * nx + i + 1] < 18) {
+          if (!pont) continue;
+          // Le fond du ravin reste visible sous le tablier, y compris derrière les piles.
+          const dx = x0 + (i+.5)*pasT - pont.f.x, dz = z0 + (j+.5)*pasT - pont.f.z;
+          if (Math.abs(dx*pont.tx+dz*pont.tz) > pont.demi+pasT || Math.abs(dz*pont.tx-dx*pont.tz) > 85) continue;
+        }
         const a = prendre(i, j), b = prendre(i + 1, j), cc = prendre(i + 1, j + 1), d = prendre(i, j + 1);
         if (organique && ((i + j) & 1)) { emettre(a, d, b); emettre(b, d, cc); }
         else { emettre(a, cc, b); emettre(a, d, cc); }
@@ -73599,6 +73877,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           if (herbe) herbeTriangles.push(k);
         }
         Object.defineProperties(fini, { herbeTriangles: { value: herbeTriangles }, surfaceType: { value: 'terrain' } });
+        if (coefficientsSaison) Object.defineProperty(fini,'coefficientsSaison',{value:Uint8Array.from(coefficientsSaison),configurable:true});
         liste.push(fini);
       }
     }
@@ -73617,7 +73896,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       const fi = (x - x0) / pasT, fj = (z - z0) / pasT, i = Math.max(0, Math.min(nx - 2, Math.floor(fi))), j = Math.max(0, Math.min(nz - 2, Math.floor(fj)));
       const u = Math.max(0, Math.min(1, fi - i)), v = Math.max(0, Math.min(1, fj - j));
       const h00 = H[j * nx + i], h10 = H[j * nx + i + 1], h01 = H[(j + 1) * nx + i], h11 = H[(j + 1) * nx + i + 1];
-      if (lagon?.contientCellule(i,j)) {
+      const dxPont = pont && x-pont.f.x, dzPont = pont && z-pont.f.z;
+      const dansGorge = pont && Math.abs(dxPont*pont.tx+dzPont*pont.tz) <= pont.demi+pasT &&
+        Math.abs(dzPont*pont.tx-dxPont*pont.tz) <= 145+pasT;
+      if (dansGorge || lagon?.contientCellule(i,j)) {
         if (organique && ((i+j)&1)) return u+v<=1 ? h00+(h10-h00)*u+(h01-h00)*v
           : h11+(h01-h11)*(1-u)+(h10-h11)*(1-v);
         return u>=v ? h00+(h10-h00)*u+(h11-h10)*v : h00+(h11-h01)*u+(h01-h00)*v;
@@ -73625,11 +73907,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       return h00 * (1 - u) * (1 - v) + h10 * u * (1 - v) + h01 * (1 - u) * v + h11 * u * v;
     };
     // Réutiliser la grille de hauteur pour le sol, les arbres et les lots de végétation.
-    const partSecondaire = poidsSol && ((x,z) => {
+    const partSecondaire = poidsPigments && ((x,z) => {
       const fi=(x-x0)/pasT, fj=(z-z0)/pasT;
       const i=Math.max(0,Math.min(nx-2,Math.floor(fi))), j=Math.max(0,Math.min(nz-2,Math.floor(fj))), k=j*nx+i;
       const u=Math.max(0,Math.min(1,fi-i)), v=Math.max(0,Math.min(1,fj-j));
-      return ((poidsSol[k]*(1-u)+poidsSol[k+1]*u)*(1-v)+(poidsSol[k+nx]*(1-u)+poidsSol[k+nx+1]*u)*v)/255;
+      return ((poidsPigments[k]*(1-u)+poidsPigments[k+1]*u)*(1-v)+(poidsPigments[k+nx]*(1-u)+poidsPigments[k+nx+1]*u)*v)/255;
     });
     return { liste: eau ? liste.concat([eau]) : liste, sol, lagon, niveauEauA: lagon?.niveauEauA, partSecondaire, saisonSecondaire: secondaire && saison && secondaire.profils[saison.id], maillageSol: { x0, z0, nx, nz, pas: pasT, alterne: organique, H }, bornes: [x0, z0, x1, z1], niveauEau: th.eau, paysageBaikal };
   }
@@ -74225,7 +74507,102 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     }
   }
 
+  // Les secteurs ne contiennent que des indices. La géométrie du premier plan,
+  // des deux joueurs et des plans éloignés de la démo peut arriver dans tout ordre.
+  function creerFluxDecor(lots) {
+    const taille = 320, portee = 800, seuil = 64;
+    const colonnes = new Map(), grands = [], candidats = [], dernieresVues = [];
+    const distances = new Float64Array(lots.length), visites = new Uint32Array(lots.length);
+    let passage = 0, curseur = 0;
+    for (let i = 0; i < lots.length; i++) {
+      const {centre, rayon} = lots[i];
+      if (!centre || !Number.isFinite(rayon) || rayon > taille * 2) { grands.push(i); continue; }
+      const x0 = Math.floor((centre[0] - rayon) / taille), x1 = Math.floor((centre[0] + rayon) / taille);
+      const z0 = Math.floor((centre[2] - rayon) / taille), z1 = Math.floor((centre[2] + rayon) / taille);
+      for (let x = x0; x <= x1; x++) {
+        let colonne = colonnes.get(x);
+        if (!colonne) colonnes.set(x, colonne = new Map());
+        for (let z = z0; z <= z1; z++) {
+          let indices = colonne.get(z);
+          if (!indices) colonne.set(z, indices = []);
+          indices.push(i);
+        }
+      }
+    }
+    function retenir(i, vue) {
+      const lot = lots[i], p = lot.centre;
+      if (!p) return;
+      const d = Math.max(0, Math.hypot(p[0]-vue[0], p[1]-vue[1], p[2]-vue[2]) - lot.rayon);
+      if (d > Math.min(portee, (lot.portee || Infinity) + seuil * 2) ||
+          (lot.detailProcheSeul && d > lot.bascule + seuil * 2)) return;
+      if (visites[i] !== passage) {
+        visites[i] = passage; distances[i] = d; candidats.push(i);
+      } else if (d < distances[i]) distances[i] = d;
+    }
+    function recadrer(vues) {
+      passage++; curseur = 0; candidats.length = 0;
+      for (let v = 0; v < vues.length; v++) {
+        const p = vues[v], ancre = dernieresVues[v] || (dernieresVues[v] = [0,0,0]);
+        ancre[0] = p[0]; ancre[1] = p[1]; ancre[2] = p[2];
+        const z0 = Math.floor((p[2]-portee)/taille), z1 = Math.floor((p[2]+portee)/taille);
+        for (let x = Math.floor((p[0]-portee)/taille); x <= Math.floor((p[0]+portee)/taille); x++) {
+          const colonne = colonnes.get(x);
+          if (!colonne) continue;
+          for (let z = z0; z <= z1; z++) {
+            const indices = colonne.get(z);
+            if (indices) for (const i of indices) retenir(i,p);
+          }
+        }
+        for (const i of grands) retenir(i,p);
+      }
+      dernieresVues.length = vues.length;
+      candidats.sort((a,b) => distances[a]-distances[b] || a-b);
+    }
+    return {
+      approcher(vues, dt, preparer) {
+        let bouge = vues.length !== dernieresVues.length;
+        for (let i = 0; !bouge && i < vues.length; i++) {
+          const p = vues[i], q = dernieresVues[i];
+          bouge = (p[0]-q[0])**2 + (p[1]-q[1])**2 + (p[2]-q[2])**2 >= seuil**2;
+        }
+        if (bouge) recadrer(vues);
+        if (curseur >= candidats.length) return;
+        // Plafond souple entre deux lots : un lot visible manquant est toujours servi
+        // au dessin, y compris après un changement instantané de caméra.
+        const fin = performance.now() + (dt > 1/55 ? .32 : 1.15);
+        let charges = 0;
+        do {
+          const i = candidats[curseur++];
+          const lot = lots[i], loinSeul = distances[i] > (lot.bascule || 240) + seuil * 2;
+          if (preparer ? preparer(i, loinSeul) : lot.preparerDetail?.()) charges++;
+        } while (curseur < candidats.length && charges < 3 && performance.now() < fin);
+      }
+    };
+  }
+
   const HERBIERS = new WeakMap();
+  function secteursDesLieux(c) {
+    const paysages = B.saisons?.secteurs?.(c)?.plages;
+    const portionsLieux = paysages?.map(p => ({ theme: p.theme, debut: p.debut, fin: p.fin }));
+    if (portionsLieux?.length > 1 && portionsLieux[0].theme === portionsLieux.at(-1).theme) {
+      // La première boucle peut traverser la ligne de départ.
+      portionsLieux[0].debut = portionsLieux.pop().debut - c.longueur;
+    }
+    if (!portionsLieux) return null;
+    const secteurs = [];
+    for (const p of portionsLieux) {
+      const premier = Math.ceil(p.debut / c.pas), n = Math.ceil(p.fin / c.pas) - premier;
+      if (n <= 0) continue;
+      const modulo = (v, periode) => ((v % periode) + periode) % periode;
+      const origine = c.tronconsThemes.find(t => t.theme === p.theme);
+      const secteur = { theme: p.theme, graine: origine?.graine ?? c.graine, n,
+        indice: (fraction, delta) => modulo(premier + modulo(Math.floor(fraction * n) + delta, n), c.n),
+        position: (fraction, delta) => modulo(p.debut + modulo(fraction * (p.fin-p.debut) + delta, p.fin-p.debut), c.longueur) };
+      secteurs.push(secteur);
+    }
+    return secteurs;
+  }
+
   function construire(c, options = {}) {
     const th = Object.assign({}, THEMES[c.theme] || (B.destinations && B.destinations.THEMES && B.destinations.THEMES[c.theme]) || THEMES.foret), g = (c.graine * 7919 + 13) >>> 0, r = alea(g);
     const qualite = normaliserQualite(options.qualite);
@@ -74235,8 +74612,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const ecologie = B.ecologie ? B.ecologie.creer(c.graine, c.theme) : null;
     const saison = B.saisons ? B.saisons.profil(options.saison, c.theme) : null;
     if (c.theme === 'foret' && options.matieres !== false) th.matieres = MATIERES_PILOTES;
-    // La SS21 utilise le granulat filtré et le film d'eau diélectrique du bitume FERRO.
-    if (c.id === 'larche' && qualite === 'high' && options.matieres === true) th.asphalte = MATIERES_PILOTES.asphalte;
+    // Les deux enrobés conservent le pigment du circuit et le film d'eau ; le palier léger omet le relief fin.
+    th.asphalte = qualite!=='low' && options.matieres!==false ? MATIERES_PILOTES.asphalte : 14.125;
     // l'eau ne noie jamais la piste : le niveau descend sous le point le plus bas de l'axe (le virage de
     // Port-Sable plongeait à −5,8 sous le niveau −4 du thème cote, David 14/11)
     if (th.eau !== undefined) {
@@ -74245,13 +74622,15 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       th.eau = Math.min(th.eau, yMin - 2.5);
     }
     const w = c.largeur / 2, lim = limites(c), interroger = indexAxe(c);
+    const portionsLieux = secteursDesLieux(c), secteurFjord = portionsLieux?.find(p => p.theme === 'fjord');
+    const pontFjord = (!portionsLieux || secteurFjord) && B.destinations?.planPontFjord?.(c, secteurFjord);
     // bords de route (lot 22F) : plan tiré avec la graine propre de bords.js, jamais avec le hasard du décor
     const planBords = B.bords ? B.bords.planifier(c) : null;
     // Le repli false sert à relire l'oracle visuel historique, sans changer les empreintes de référence.
     const reperes = options.reperesVirages !== false && B.virages ? preparerReperes(c) : null;
     let tunnelLampes = null;   // positions des lampes du tunnel : le jeu en fait des lumières près de la caméra
-    const nappes = nappesRoute(c, th, lim, qualite !== 'low' || options.organique === true, qualite === 'low' ? null : ecologie, saison, reperes, organique && options.matieres !== false);
-    const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie, options.organique === true, saison, options.cachePanorama);
+    const nappes = nappesRoute(c, th, lim, qualite === 'low' ? null : ecologie, saison, reperes, pontFjord);
+    const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie, options.organique === true, saison, options.cachePanorama, pontFjord);
     const maisonsBaikal = terrain.paysageBaikal ? B.baikal.habitations(c, terrain, interroger, terrain.paysageBaikal) : null;
     // Hasard architectural séparé ; le repli sert seulement à relire l'oracle historique du décor.
     const architecture = options.batiments !== false && B.batiments ? { maisons: [], stands: [] } : null;
@@ -74259,14 +74638,13 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       const habitat = {}, couleur = [0, 0, 0], teinte = [0, 0, 0], autreTeinte = [0, 0, 0];
       for (const n of nappes.concat(terrain.liste)) {
         if (n.surfaceType === 'panorama') continue;
-        const visites = new Uint8Array(n.sommets.length / 13);
-        for (const triangle of n.herbeTriangles || []) for (let j = 0; j < 3; j++) visites[n.indices[triangle + j]] = 1;
-        // Le bord sans vibreur est aussi herbeux, mais reste exclu de la plantation des brins.
-        if (n.surfaceType === 'accotement') for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 9] === 8) visites[v] = 1;
-        if ((th.montagnes || th.volcanique || th.aride || th.karstique || th.pacifique || th.baikal) && saison.neige && n.surfaceType === 'terrain') {
-          for (let v = 0; v < visites.length; v++) if (n.sommets[v * 13 + 4] > .45 && (!(th.pacifique || th.baikal) || n.sommets[v * 13 + 1] > th.eau + 1)) visites[v] = 1;
-        }
-        for (let v = 0; v < visites.length; v++) if (visites[v]) {
+        if (n.surfaceType!=='accotement' && n.surfaceType!=='terrain') continue;
+        for (let v=0; v<n.sommets.length/13; v++) {
+          const j=v*13;
+          const partSaison=n.coefficientsSaison ? n.coefficientsSaison[v]/255
+            : n.surfaceType==='accotement' ? Number(n.sommets[j+9]===8)
+            : lisse(.47,.82,n.sommets[j+4])*(n.surfaceType==='terrain' && th.eau!==undefined ? lisse(th.eau+.7,th.eau+4,n.sommets[j+1]) : 1);
+          if (!partSaison) continue;
           const k = v * 13, x = n.sommets[k], z = n.sommets[k + 2];
           if (ecologie) ecologie.echantillonner(x, z, habitat);
           for (let a = 0; a < 3; a++) couleur[a] = n.sommets[k + 10 + a];
@@ -74276,8 +74654,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
             B.saisons.teinte(terrain.saisonSecondaire, 'sol', couleur, x, z, ecologie ? habitat : null, autreTeinte);
             for (let a=0; a<3; a++) teinte[a] += (autreTeinte[a]-teinte[a])*part;
           }
-          for (let a = 0; a < 3; a++) n.sommets[k + 10 + a] = teinte[a];
+          for (let a = 0; a < 3; a++) n.sommets[k + 10 + a] = couleur[a]+(teinte[a]-couleur[a])*partSaison;
         }
+        if (n.coefficientsSaison) delete n.coefficientsSaison;
       }
     }
     terrain.raccorderPigments?.();
@@ -74559,13 +74938,13 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     for (let k = 0; k < 12; k++) for (let rg = 0; rg < 2; rg++) {
       const d = -w + .3 + (k + .5) * (2 * w - .6) / 12, s = (rg - .5) * 1.1;
       const p = [f0.x + f0.r[0] * d + f0.t[0] * s, hauteurRoute(f0, d, w) + .012, f0.z + f0.r[2] * d + f0.t[2] * s];
-      objetsDepart.push({ shape: 'box', p, s: [1.1, .024, (2 * w - .6) / 12], r: rot0, mat: 14, color: (k + rg) % 2 ? [.07, .07, .075] : [.9, .9, .88] });
+      objetsDepart.push({ shape: 'box', p, s: [1.1, .024, (2 * w - .6) / 12], r: rot0, mat: MATIERES_PILOTES.asphalte, color: (k + rg) % 2 ? [.07, .07, .075] : [.9, .9, .88] });
     }
     for (let k = 0; k < 12; k++) {
       const f = cadre(c, Math.round((-10 - 8 * k) / c.pas)), d = k % 2 ? 2.4 : -2.4, rot = capRot(f.a);
       const p = [f.x + f.r[0] * d, hauteurRoute(f, d, w) + .012, f.z + f.r[2] * d];
-      objetsDepart.push({ shape: 'box', p: [p[0] + f.t[0] * 2.4, p[1], p[2] + f.t[2] * 2.4], s: [.22, .024, 2.2], r: rot, mat: 14, color: [.88, .88, .85] });
-      objetsDepart.push({ shape: 'box', p: [p[0] + f.t[0] * 1.6, p[1], p[2] + f.t[2] * 1.6 + 0], s: [1.6, .024, .16], r: rot, mat: 14, color: [.88, .88, .85] });
+      objetsDepart.push({ shape: 'box', p: [p[0] + f.t[0] * 2.4, p[1], p[2] + f.t[2] * 2.4], s: [.22, .024, 2.2], r: rot, mat: MATIERES_PILOTES.asphalte, color: [.88, .88, .85] });
+      objetsDepart.push({ shape: 'box', p: [p[0] + f.t[0] * 1.6, p[1], p[2] + f.t[2] * 1.6 + 0], s: [1.6, .024, .16], r: rot, mat: MATIERES_PILOTES.asphalte, color: [.88, .88, .85] });
     }
     // portique des feux, au-dessus de la ligne
     const yP = hauteurRoute(f0, 0, w), portique = { feux: [], cap: f0.a };
@@ -74686,6 +75065,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
     }
     function retenirArbre(objets, loin, x, z, essence = th.essence) {
+      if (pontFjord) {
+        const dx = x-pontFjord.f.x, dz = z-pontFjord.f.z;
+        if (Math.abs(dx*pontFjord.tx+dz*pontFjord.tz) < pontFjord.demi+10 &&
+            Math.abs(dz*pontFjord.tx-dx*pontFjord.tz) < c.limite+14) return;
+      }
       if (terrain.lagon && Number.isFinite(terrain.niveauEauA(x,z))) return;
       if (maisonsBaikal && maisonsBaikal.some(m => Math.hypot(m.x - x, m.z - z) < 18)) return;
       const richesse = ecologie ? ecologie.echantillonner(x, z, habitatArbre).boisement : 1;
@@ -74966,30 +75350,18 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     });
 
     const lieuxCimes = B.cimesDecor && B.cimesDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter });
-    const lieuxLarche = B.larcheDecor && B.larcheDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter });
+    const lieuxLarche = B.larcheDecor && B.larcheDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter,
+      decorProgressif: options.decorProgressif, basculeDetail: qualite === 'low' && organique ? 280 : 520 });
     const lieuxMarseille = B.marseilleDecor && B.marseilleDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter });
-    const outilsLieux = { terrain, limites: lim, interroger, qualite, saison, ajouter, th };
+    const outilsLieux = { terrain, limites: lim, interroger, qualite, saison, ajouter, th, pontFjord };
     // Les repères prennent leur abscisse dans leur paysage d'origine. Le contrôle
     // physique consulte toujours le circuit entier, y compris le bras d'en face.
-    const paysages = B.saisons?.secteurs?.(c)?.plages;
-    const portionsLieux = paysages?.map(p => ({ theme: p.theme, debut: p.debut, fin: p.fin }));
-    if (portionsLieux?.length > 1 && portionsLieux[0].theme === portionsLieux.at(-1).theme) {
-      // La première boucle peut traverser la ligne de départ.
-      portionsLieux[0].debut = portionsLieux.pop().debut - c.longueur;
-    }
     function poserParPaysage(module) {
       if (!module) return null;
       if (!portionsLieux) return module.poser(c, outilsLieux);
       const marqueurs = [];
-      for (const p of portionsLieux) {
-        const premier = Math.ceil(p.debut / c.pas), n = Math.ceil(p.fin / c.pas) - premier;
-        if (n <= 0) continue;
-        const modulo = (v, periode) => ((v % periode) + periode) % periode;
-        const origine = c.tronconsThemes.find(t => t.theme === p.theme);
-        const secteur = { theme: p.theme, graine: origine?.graine ?? c.graine, n,
-          indice: (fraction, delta) => modulo(premier + modulo(Math.floor(fraction * n) + delta, n), c.n),
-          position: (fraction, delta) => modulo(p.debut + modulo(fraction * (p.fin-p.debut) + delta, p.fin-p.debut), c.longueur) };
-        const local = saison ? B.saisons.profil(saison.id, p.theme) : null;
+      for (const secteur of portionsLieux) {
+        const local = saison ? B.saisons.profil(saison.id, secteur.theme) : null;
         const lieux = module.poser(c, { ...outilsLieux, secteur, saison: local });
         if (lieux?.marqueurs) marqueurs.push(...lieux.marqueurs);
       }
@@ -75098,7 +75470,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     // Les bosquets sont réservés au décor enrichi du jeu. Rassembler uniquement
     // les emprises du mobilier, avant que les lots d'herbe ne soient ajoutés.
     const bosquets = organique && options.vegetation === true && B.bosquets && vegetationQualite !== 'off'
-      ? B.bosquets.construire(c, terrain, lots, interroger, ecologie, saison, vegetationQualite) : [];
+      ? B.bosquets.construire(c, terrain, lots, interroger, ecologie, saison, vegetationQualite, { progressif: options.decorProgressif === true }) : [];
     if (B.vegetation && options.vegetation !== false && vegetationQualite !== 'off') {
       const v = B.vegetation.construire(c, { limites: lim, interroger, qualite: vegetationQualite,
         // Les biomes sans implantation sortent avant de demander la découpe des prairies.
@@ -75132,22 +75504,23 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     // Les solides PhysX et l'herbier conservent leurs listes ; aucune instance de
     // bosquet n'entre dans les collisions, ni dans les masques de la prairie.
     if (bosquets.length) decor.lots = decor.lots.concat(bosquets);
+    if (lieuxLarche?.lotsDetail?.length) decor.lots = decor.lots.concat(lieuxLarche.lotsDetail);
+    if (options.decorProgressif) Object.defineProperty(decor, 'fluxDecor', { value: creerFluxDecor(decor.lots) });
     // Le palier est une métadée de suivi, pas une donnée d'image : il reste non énumérable pour que les
     // empreintes historiques du décor (verifications/decor-identite.test.mjs) ne bougent pas d'un cran.
     Object.defineProperty(decor, 'qualite', { value: qualite, enumerable: false });
     // Les gradins pour public.js : non énumérables eux aussi, hors des empreintes du décor.
     if (gradins) Object.defineProperty(decor, 'gradins', { value: gradins, enumerable: false });
     if (lieuxEmblematiques) Object.defineProperty(decor, 'lieux', { value: lieuxEmblematiques, enumerable: false });
-    if (options.solsProceduraux === true) {
-      // L'herbier lit uniquement herbeTriangles, positions et couleurs (jamais l'indice matière sommets[k + 9]).
-      // En mode organique : unifier tous les sommets terrain sur mat = 25 (recipe 5 : herbe, terre, roche, sable et
-      // neige fondus par pixel depuis la couleur sommet) supprime 100 % des dents de scie triangulaires 23 ↔ 25.
-      for (const n of decor.nappes) if (n.surfaceType === 'accotement' || n.surfaceType === 'terrain') {
-        const terrain = n.surfaceType === 'terrain';
-        for (let k = 9; k < n.sommets.length; k += 13) {
-          if (n.sommets[k] === 8 || terrain && n.sommets[k] === 3) n.sommets[k] = 25;
-          else if (terrain && n.sommets[k] === 9) n.sommets[k] = organique ? 25 : 23;
-        }
+    // L'indice des cellules végétalisables est déjà acquis par l'herbier. Le rendu peut
+    // donc employer une seule matière continue pour terre, roche, sable et neige.
+    const matSol=options.solsProceduraux===true ? 25.125 : 8.125;
+    for (const n of decor.nappes) {
+      if (n.surfaceType!=='accotement' && n.surfaceType!=='terrain' && n.surfaceType!=='panorama') continue;
+      n.vertexTint='smooth';
+      for(let k=9;k<n.sommets.length;k+=13) {
+        const m=n.sommets[k];
+        if (m===8 || m===8.125 || m===25.125 || n.surfaceType!=='accotement' && (m===3 || m===9 || m===23 || m===25)) n.sommets[k]=matSol;
       }
     }
     return decor;
@@ -77082,17 +77455,20 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     portiquePotence(S.debut + 2, [0.08, 0.90, 0.28], true);
     portiquePotence(S.fin - 2, [0.06, 0.78, 0.98], false);
 
+    // La recette diélectrique 21 garde le pigment des lignes et prend le même film d'eau
+    // que l'enrobé. Sur ces boîtes, la texture photographique du matériau 14 effaçait le marquage.
+    const matPeinture = 21;
     // 3. Ligne blanche continue séparant piste et voie des stands + chevrons d'entrée jaunes peints au sol
     for (let s = S.debut - 10; s <= S.fin + 14; s += 8) {
       const f = echantillonner(c, s + 4);
       const pL = pointVoie(f, dBordG, 0.015, w);
-      push({ shape: 'box', p: pL, s: [7.9, 0.024, 0.24], r: [0, -f.cap, 0], mat: 14, color: [0.95, 0.95, 0.93] }, false, pL[0], pL[2]);
+      push({ shape: 'box', p: pL, s: [7.9, 0.024, 0.24], r: [0, -f.cap, 0], mat: matPeinture, color: [0.95, 0.95, 0.93] }, false, pL[0], pL[2]);
     }
     for (let s = S.debut + 6; s < S.debut + 28; s += 5.5) {
       const f = echantillonner(c, s);
       const pC = pointVoie(f, dVoie, 0.014, w);
-      push({ shape: 'box', p: pC, s: [0.32, 0.022, 1.45], r: [0, -f.cap + 0.55, 0], mat: 14, color: [0.94, 0.88, 0.16] }, false, pC[0], pC[2]);
-      push({ shape: 'box', p: pC, s: [0.32, 0.022, 1.45], r: [0, -f.cap - 0.55, 0], mat: 14, color: [0.94, 0.88, 0.16] }, false, pC[0], pC[2]);
+      push({ shape: 'box', p: pC, s: [0.32, 0.022, 1.45], r: [0, -f.cap + 0.55, 0], mat: matPeinture, color: [0.94, 0.88, 0.16] }, false, pC[0], pC[2]);
+      push({ shape: 'box', p: pC, s: [0.32, 0.022, 1.45], r: [0, -f.cap - 0.55, 0], mat: matPeinture, color: [0.94, 0.88, 0.16] }, false, pC[0], pC[2]);
     }
 
     // 4. Box F1 peint au sol + Potence pneumatique + Tour de ravitaillement essence + Piles de pneus + Mur de télémétrie
@@ -77101,13 +77477,15 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       const rotB = [0, -fB.cap, 0];
       // Marquage jaune & rouge du Pit Box au sol (4 équerres + barre d'arrêt rouge)
       for (const sd of [-2.8, 2.8]) {
-        const fM = echantillonner(c, sBox + sd);
-        const pM = pointVoie(fM, dVoie, 0.016, w);
-        push({ shape: 'box', p: pM, s: [0.34, 0.024, 2.7], r: [0, -fM.cap, 0], mat: 14, color: sd > 0 ? [0.94, 0.12, 0.08] : [0.98, 0.82, 0.08] }, false, pM[0], pM[2]);
+        const pM = pointVoie(fB, dVoie, 0.016, w);
+        pM[0] += fB.tx * sd; pM[2] += fB.tz * sd;
+        push({ shape: 'box', p: pM, s: [0.34, 0.024, 2.7], r: rotB, mat: matPeinture, color: sd > 0 ? [0.94, 0.12, 0.08] : [0.98, 0.82, 0.08] }, false, pM[0], pM[2]);
       }
+      // Les côtés se terminent aux faces intérieures des barres à ±2,8 m :
+      // les couleurs se touchent sans superposer deux faces horizontales aux coins.
       for (const lat of [-1.25, 1.25]) {
         const pS = pointVoie(fB, dVoie + lat, 0.016, w);
-        push({ shape: 'box', p: pS, s: [5.7, 0.024, 0.26], r: rotB, mat: 14, color: [0.98, 0.82, 0.08] }, false, pS[0], pS[2]);
+        push({ shape: 'box', p: pS, s: [2 * 2.8 - 0.34, 0.024, 0.26], r: rotB, mat: matPeinture, color: [0.98, 0.82, 0.08] }, false, pS[0], pS[2]);
       }
       // Potence pneumatique F1 en porte-à-faux (ancrée sur l'aire technique d = w + 2.3 m)
       const dPot = w + 2.35;
@@ -77183,7 +77561,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             p: pV,
             s: [1.22, 0.09, 0.56],
             r: [0, -f.cap, 0],
-            mat: 14,
+            mat: matPeinture,
             color: rouge ? [0.90, 0.10, 0.08] : [0.96, 0.96, 0.94]
           }, false, pV[0], pV[2]);
           // Quilles souples F1 orange fluo + bague blanche réfléchissante (visuelles sans bloquer une roue)
@@ -77200,7 +77578,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         const dA = dVoie + Math.sin((k / 4) * PI * 2) * 0.55;
         const f = echantillonner(c, sA);
         const pA = pointVoie(f, dA, 0.015, w);
-        push({ shape: 'box', p: pA, s: [1.9, 0.022, 0.24], r: [0, -f.cap, 0], mat: 14, color: [0.96, 0.96, 0.94] }, false, pA[0], pA[2]);
+        push({ shape: 'box', p: pA, s: [1.9, 0.022, 0.24], r: [0, -f.cap, 0], mat: matPeinture, color: [0.96, 0.96, 0.94] }, false, pA[0], pA[2]);
       }
     }
 
@@ -91640,7 +92018,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     const colonnes = new Map(), touches = [], seuils = [];
     let rayonMax = 0, basculeMax = 0;
     for (const lot of lots) {
-      if (lot.arbres !== true || !lot.loin?.length || !(lot.bascule > 0) ||
+      if (lot.arbres !== true || !(lot.loin?.length || lot.detailLointain) || !(lot.bascule > 0) ||
           lot.lodReferenceFov !== 60 || lot.lodReferenceHeight !== 1080) continue;
       const i = Math.floor(lot.centre[0] / CASE), j = Math.floor(lot.centre[2] / CASE);
       let colonne = colonnes.get(i);
@@ -92817,7 +93195,17 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     }
     rotation();
     ecouter($('p-rotation'), 'click', () => { apercu.pause(!apercu.enPause); rotation(); });
-    ecouter($('circuits'), 'keydown', e => {
+    const grille = $('circuits');
+    function alignerNavigationGrille() {
+      if (!grille.getClientRects().length) return;
+      const style = doc.defaultView.getComputedStyle(grille);
+      const colonnes = style.display === 'grid' ? style.gridTemplateColumns.trim().split(/\s+/).length : 1;
+      grille.dataset.menuCols = String(colonnes);
+      grille.dataset.menuAxis = colonnes === 1 ? 'vertical' : 'horizontal';
+    }
+    ecouter(grille, 'focusin', alignerNavigationGrille);
+    ecouter(doc.defaultView, 'resize', () => { if (grille.contains(doc.activeElement)) alignerNavigationGrille(); });
+    ecouter(grille, 'keydown', e => {
       const carte = e.target.closest('[role="radio"]'); if (!carte || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || !disponible(carte)) return;
       const liste = Array.from($('circuits').querySelectorAll('[role="radio"]')).filter(disponible), i = liste.indexOf(carte);
       if (i < 0) return;
@@ -92829,8 +93217,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
         else if (e.key === 'End') j = liste.length - 1;
         else if (e.key === 'ArrowLeft') j = (i - 1 + liste.length) % liste.length;
         else if (e.key === 'ArrowRight') j = (i + 1) % liste.length;
-        else if (e.key === 'ArrowUp') j = (i - cols + liste.length) % liste.length;
-        else if (e.key === 'ArrowDown') j = (i + cols) % liste.length;
+        else if (e.key === 'ArrowUp') {
+          const colonne = i % cols;
+          j = i >= cols ? i - cols : colonne + Math.floor((liste.length - 1 - colonne) / cols) * cols;
+        } else if (e.key === 'ArrowDown') j = i + cols < liste.length ? i + cols : i % cols;
         liste[j].click(); liste[j].focus({ preventScroll: true }); liste[j].scrollIntoView({ block: 'nearest', behavior: 'auto' });
       } else if (e.key === 'Enter' && carte.getAttribute('aria-checked') === 'true') {
         e.preventDefault(); if (!e.repeat) { const dep = $('b-depart'); if (dep && !dep.disabled) dep.click(); else avancer(1); }
@@ -94519,7 +94909,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
   function clePanorama(i, v) {
     const k = CATALOGUE[i], version = document.querySelector('.version-jeu')?.textContent;
     if (k.id !== 'larche' || !version) return null;
-    const options = [v.ancre, decorEnrichi, v.veut.matieres, v.vegetationQualite].join('/');
+    const options = [v.ancre, decorEnrichi, v.veut.matieres, v.vegetationQualite, 'flux-1'].join('/');
     return 'panorama-v1:' + B.cache.cleDecor(k.id, k.graine, options, v.saison, version);
   }
   function installer(i, saisonDemandee, panorama, herbierWasm) {
@@ -94528,6 +94918,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     const v = voeuDecor(saisonDemandee), { ancre, veut, vegetationQualite, saison } = v;
     if (sceneEnPlace(i, saisonDemandee, v)) return scene;
     const c = circuit(i), decor = B.decor.construire(c, {
+      decorProgressif: true,
       cachePanorama: panorama && panorama.cle === clePanorama(i, v) ? panorama : null,
       herbierWasm,
       qualite: ancre,
@@ -94543,7 +94934,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     if (B.obstacles) c.obstacles = B.obstacles.creer(decor.obstacles);
     rendu.setWorld([], [], decor.atmosphere);
     rendu.setNappes(decor.nappes);
-    rendu.setLots(decor.lots, { staticBounds: true });
+    rendu.setLots(decor.lots, { staticBounds: true, progressif: !!decor.fluxDecor });
     // Le public (public.js) : de vrais spectateurs à la place des boîtes des gradins, dessinés par le point d'accroche
     // « foule » du moteur. Bâti au palier ancre, comme le décor ; la vue de l'ancienne scène rend ses tampons.
     if (scene && scene.vuePublic) scene.vuePublic.liberer();
@@ -95729,7 +96120,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     numeroSeance: 0, seanceAcceptee: null, dernierDepart: -Infinity };
   const VERSION_CHOIX_PNEUS = 2, VERSION_PNEUS_RESEAU = 1;
   // Empreinte des sources du build, incluant catalogue, générateur, limites et collisions : même piste, même jeu.
-  const REVISION_PISTES = '1095843636407b671305e28a5b1ee285ec60d37deb52f464a9a4c27732753742';
+  const REVISION_PISTES = '820bb91675bcf37be2d11ef27612126ce823c3c7c556f02b352c810347333f5d';
   function contratPiste(i) {
     return Number.isInteger(i) && CATALOGUE[i] ? { id: CATALOGUE[i].id, revision: REVISION_PISTES, physique: PHYSIQUE } : null;
   }
@@ -96931,7 +97322,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     const d = scene.decor;
     retro.rendu.setWorld([], [], d.atmosphere);
     retro.rendu.setNappes(d.nappes.map(n => Object.assign({}, n)));
-    retro.rendu.setLots(d.lots.map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null })), { staticBounds: true });
+    retro.rendu.setLots(d.lots.map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null })), { staticBounds: true, progressif: !!d.fluxDecor });
     // le public dans les glaces : son propre contexte WebGL, sans le niveau proche ni les ombres (glace sans ombre)
     if (retro.vuePublic) retro.vuePublic.liberer();
     retro.vuePublic = null;
@@ -97329,6 +97720,28 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     }
   }
 
+  // Les deux cadrages sont connus avant le premier draw. Un plan de lieu peut viser loin du pilote.
+  const cadresDecor = [{ cam: null, pose: null, suivie: null, vue: '' }, { cam: null, pose: null, suivie: null, vue: '' }];
+  const pilotesDecor = [[0, 0, 0], [0, 0, 0]], vuesDecor = [];
+  function preparerLotDecor(index, loinSeul) { return rendu?.preparerLot?.(index, loinSeul); }
+  function approcherDecor(S, cadre1, cadre2, dt) {
+    const flux = scene.decor.fluxDecor;
+    if (!flux || dt <= 0 || prepa.enCours || contexteRenduPerdu || document.hidden || S.type === 'vitrine' ||
+        (ecran !== 'course' && ecran !== 'demo')) return;
+    let n = 0;
+    for (let k = 0; k < (cadre2 ? 2 : 1); k++) {
+      const cadre = k ? cadre2 : cadre1, camera = cadre.cam || (k ? S.vueJ2.camera : S.camera);
+      if (camera) {
+        vuesDecor[n++] = camera.pos;
+        if (camera.cible) vuesDecor[n++] = camera.cible;
+      }
+      const pose = cadre.pose, p = pilotesDecor[k];
+      if (pose) { p[0] = pose.x; p[1] = pose.y; p[2] = pose.z; vuesDecor[n++] = p; }
+    }
+    vuesDecor.length = n;
+    if (n) flux.approcher(vuesDecor, dt, preparerLotDecor);
+  }
+
   function rendreImage(S, alpha, dtImage) {
     appliquerCarte();
     const co = S.course, j = co.joueur;
@@ -97397,14 +97810,23 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
       // et aux images arrêtées (pause, quatre par seconde, sans temps qui passe) où un réglage peut avoir changé.
       const hzJ2 = P.secondaires.partage.hz;
       S.dtJ2 = (S.dtJ2 || 0) + dtImage;
-      if (hzJ2 >= 55 || !S.j2Rendue || dtImage === 0 || S.dtJ2 + dtImage / 2 >= 1 / hzJ2) {
-        const dtJ2 = S.dtJ2; S.dtJ2 = 0; S.j2Rendue = true;
-        rendreVue(S.vueJ2, co.voitures[S.locaux[1]], reglages.vue2, dtJ2, meteo);
+      const dtJ2 = S.dtJ2, refaireJ2 = hzJ2 >= 55 || !S.j2Rendue || dtImage === 0 || dtJ2 + dtImage / 2 >= 1 / hzJ2;
+      const cadre1 = cadresDecor[0], cadre2 = cadresDecor[1];
+      if (refaireJ2) {
+        S.dtJ2 = 0; S.j2Rendue = true;
+        rendreVue(S.vueJ2, co.voitures[S.locaux[1]], reglages.vue2, dtJ2, meteo, cadre2);
+      } else {
+        cadre2.cam = S.vueJ2.camera; cadre2.pose = poses[S.locaux[1]];
+      }
+      rendreVue(S, j, reglages.vue, dtImage, meteo, cadre1);
+      approcherDecor(S, cadre1, cadre2, dtImage);
+      if (refaireJ2 && cadre2.cam) {
+        dessinerVue(S.vueJ2, cadre2.suivie, cadre2.vue, dtJ2, meteo, cadre2.cam, cadre2.pose);
         const t2 = $('scene2'), ctx2 = t2._ctx || (t2._ctx = creationTardive('toileJ2', t2.getContext('2d')));
         if (t2.width !== canvas.width || t2.height !== canvas.height) { t2.width = canvas.width; t2.height = canvas.height; }
         ctx2.drawImage(canvas, 0, 0);
       }
-      const camJ1 = rendreVue(S, j, reglages.vue, dtImage, meteo);
+      const camJ1 = cadre1.cam && dessinerVue(S, cadre1.suivie, cadre1.vue, dtImage, meteo, cadre1.cam, cadre1.pose);
       poserGlaces();
       return camJ1;
     }
@@ -97418,16 +97840,18 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
       if (S.planVu !== pl) { S.planVu = pl; S.camCap = null; S.tete = null; S.tele.poste = null; S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0; }
       vue = pl.vue; suivie = co.voitures[pl.sujet];
     } else if (j.fini && S.finA !== null && co.horloge - S.finA > 2.5) vue = 'tele';
-    const camVue = rendreVue(S, suivie, vue, dtImage, meteo);
+    const cadre = cadresDecor[0];
+    rendreVue(S, suivie, vue, dtImage, meteo, cadre);
+    approcherDecor(S, cadre, null, dtImage);
+    const camVue = cadre.cam && dessinerVue(S, cadre.suivie, cadre.vue, dtImage, meteo, cadre.cam, cadre.pose);
     poserGlaces();
     return camVue;
   }
   // Une vue : caméra, objets, effets et rendu, pour la voiture suivie. S est l'état de la vue (la séance, ou celui du
   // joueur 2 à deux, qui hérite de la séance).
-  function rendreVue(S, suivie, vue, dtImage, meteo) {
-    const co = S.course, c = co.c, sortie = S.sortie, poses = tampons.poses, pj = poses[0], RV = S.rouleVu;
-    const P = profilDe(S); // menu + gouverneur + capacités du moteur, décidé une fois par image
-    sortie.length = 0;
+  function rendreVue(S, suivie, vue, dtImage, meteo, cadre) {
+    const co = S.course, poses = tampons.poses, pj = poses[0];
+    if (cadre) { cadre.cam = null; cadre.pose = poses[suivie.id]; }
     let cam;
     if (DANS_LA_ROCHE.has(vue) && B.circuit.dansCouvert(co.c, suivie.etat.s, 8)) {
       if (S.type === 'demo') {
@@ -97500,7 +97924,6 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
         }
       }
     }
-    const exterieur = VUES_DEHORS.has(vue);
     if (regardArriereVoulu(S, suivie, vue)) cam = cameraRegardArriere(S, ps, cam, vue);
     if (cameraEssai) cam = Object.assign({ roll: 0, near: .1, far: PORTEE_VUE, fov: 40 }, cameraEssai(pj, cam));
     if (S.secousse > 0 && !cam.sujetNature) {
@@ -97513,6 +97936,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
       S.secousse = Math.max(0, S.secousse - dtImage * 2.6);
     }
     if (S.type === 'demo' && !S.secoursCamera) cam = B.cinema.souffle(S.cinema, cam, S.planVu, poses, co, S.tRendu, reglages.secousses, canvas.clientWidth / Math.max(1, canvas.clientHeight));
+    if (cadre) {
+      cadre.cam = cam; cadre.pose = ps; cadre.suivie = suivie; cadre.vue = vue;
+      return cam;
+    }
+    return dessinerVue(S, suivie, vue, dtImage, meteo, cam, ps);
+  }
+  function dessinerVue(S, suivie, vue, dtImage, meteo, cam, ps) {
+    const co = S.course, c = co.c, sortie = S.sortie, poses = tampons.poses, pj = poses[0], RV = S.rouleVu;
+    const P = profilDe(S), exterieur = VUES_DEHORS.has(vue);
+    sortie.length = 0;
     // axe horizontal du regard, en deux nombres (plus de tableau neuf par image)
     const avX = Math.sin(cam.yaw), avZ = -Math.cos(cam.yaw);
     // ombres du soleil autour de ce que l'on regarde : devant le pilote (jusqu'à 176 m), ou autour de la voiture filmée.
@@ -98482,6 +98915,14 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     const zone = $('circuits');
     const BIOME_COULEURS = { foret: '#39ff8e', cote: '#00d4ff', marseille: '#00c8ff', montagne: '#8ee8ff', larche: '#5cd6ff', islande: '#ff6b35', desert: '#ffb84d', asie: '#ff66b2', pacifique: '#2dd4bf', baikal: '#60a5fa', fjord: '#38bdf8', carpates: '#a3e635', ecosse: '#34d399', sierra: '#fb923c', corail: '#22d3ee', andes: '#c084fc' };
     const CATS = { tous: null, 'forets-cotes': ['forets-du-pacifique', 'marseille', 'karst-et-lagon'], montagnes: ['route-des-cimes', 'larche'], sauvages: ['sierra', 'nord-atlantique', 'baikal'] };
+    const barreCat = $('p-categories');
+    function afficherCategorie(cat) {
+      const ids = CATS[cat];
+      for (const b of zone.children) {
+        b.hidden = !!ids && !ids.includes(b.dataset.id);
+      }
+      for (const btn of barreCat.querySelectorAll('.cat-btn')) btn.setAttribute('aria-selected', String(btn.dataset.cat === cat));
+    }
     if (!zone.childElementCount) {
       CATALOGUE.forEach((k, i) => {
         const b = document.createElement('button');
@@ -98490,35 +98931,32 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
         b.style.setProperty('--biome', BIOME_COULEURS[clefTheme] || '#39ff8e');
         b.style.animationDelay = (i * 18) + 'ms';
         b.innerHTML = '<span class="circuit-rang">' + String(i + 1).padStart(2, '0') + '</span><span class="nom">' + k.nom + '</span>' +
-          '<span class="fiche">' + k.lieu + '</span><span class="circuit-distance" hidden></span>';
+          '<span class="fiche">' + k.lieu + '</span>';
         b.addEventListener('click', () => { reglages.circuit = i; sauverReglages(); majPreparation(); if (son) son.evenement('clic'); if (EL.role === 'hote' && lienActif()) annoncerCourse(); });
         zone.appendChild(b);
       });
-      const barreCat = $('p-categories');
       if (barreCat && !barreCat.dataset.lie) {
         barreCat.dataset.lie = '1';
         const CAT_ORDRE = Object.keys(CATS);
-        let catActive = 'tous';
         const filtrerCat = cat => {
           if (!Object.prototype.hasOwnProperty.call(CATS, cat)) return;
-          catActive = cat;
-          const ids = CATS[cat];
-          let visibles = 0;
-          for (const b of zone.children) {
-            const ok = !ids || ids.includes(b.dataset.id);
-            b.hidden = !ok;
-            if (ok) { b.style.animation = 'none'; void b.offsetWidth; b.style.animation = ''; visibles++; }
-          }
-          zone.dataset.menuCols = visibles > 8 ? '4' : visibles > 4 ? '3' : '2';
-          for (const btn of barreCat.querySelectorAll('.cat-btn')) btn.setAttribute('aria-selected', String(btn.dataset.cat === cat));
-          const sel = zone.querySelector('.carte-circuit[aria-checked="true"]:not([hidden])') || zone.querySelector('.carte-circuit:not([hidden])');
-          if (sel) { reglages.circuit = +sel.dataset.index; sauverReglages(); majPreparation(); }
-          if (son) son.evenement('clic');
+          const focusDansGrille = zone.contains(document.activeElement);
+          afficherCategorie(cat);
+          if (zone.children[reglages.circuit].hidden) {
+            const premiere = zone.querySelector('.carte-circuit:not([hidden])');
+            premiere.click();
+            if (focusDansGrille) premiere.focus();
+          } else if (son) son.evenement('clic');
         };
         barreCat.addEventListener('click', ev => { const btn = ev.target.closest('.cat-btn'); if (btn) filtrerCat(btn.dataset.cat); });
-        barreCat._decaler = sens => filtrerCat(CAT_ORDRE[(CAT_ORDRE.indexOf(catActive) + sens + CAT_ORDRE.length) % CAT_ORDRE.length]);
+        barreCat._decaler = sens => {
+          const active = barreCat.querySelector('[aria-selected="true"]').dataset.cat;
+          filtrerCat(CAT_ORDRE[(CAT_ORDRE.indexOf(active) + sens + CAT_ORDRE.length) % CAT_ORDRE.length]);
+        };
       }
     }
+    // Une course rejointe en ligne peut avoir changé la sélection depuis la dernière visite du menu.
+    if (barreCat && zone.children[reglages.circuit].hidden) afficherCategorie('tous');
     for (const nom of ['tours', 'difficulte']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
     for (const r of document.querySelectorAll('input[name="meteo"]')) r.checked = String(reglages.meteo || 'aleatoire') === r.value;
     majPreparation();
@@ -98626,12 +99064,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     afficherConditions();
     const c = circuit(reglages.circuit), fC = fiche(c), metaC = CATALOGUE[reglages.circuit];
     for (const b of $('circuits').children) {
-      const i = +b.dataset.index, actif = i === reglages.circuit;
+      const actif = +b.dataset.index === reglages.circuit;
       b.setAttribute('aria-checked', String(actif)); b.tabIndex = actif ? 0 : -1;
-      const trace = circuits[i], distance = trace ? B.menuArcade.parcoursChronometre(trace).longueur : CATALOGUE[i].distanceCourse;
-      const etiquette = b.querySelector('.circuit-distance');
-      etiquette.hidden = !Number.isFinite(distance);
-      if (!etiquette.hidden) texte(etiquette, (distance / 1000).toFixed(2).replace('.', ',') + ' km');
     }
     menuArcade.trace(c, fC, metaC, reglages.circuit, CATALOGUE.length);
     // Jauges arcade animées (Vitesse, Technique, Relief)
@@ -99909,7 +100343,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     scene.chauffe = null;   // le banc a remplacé le monde du moteur : la chauffe de cette scène est à refaire
     if (contexteRenduPerdu) { restaurerDecorApresContexte = true; return; }
     const atm = session && session.nature ? session.nature.ambiance.atmosphere : scene.decor.atmosphere;
-    rendu.setWorld([], [], atm); rendu.setNappes(scene.decor.nappes); rendu.setLots(scene.decor.lots, { staticBounds: true });
+    rendu.setWorld([], [], atm); rendu.setNappes(scene.decor.nappes); rendu.setLots(scene.decor.lots, { staticBounds: true, progressif: !!scene.decor.fluxDecor });
     if (session && session.nature) session.nature.revisionRendu = -1;
     restaurerDecorApresContexte = false;
   }

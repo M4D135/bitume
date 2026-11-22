@@ -7,7 +7,7 @@
     const colonnes = new Map(), touches = [], seuils = [];
     let rayonMax = 0, basculeMax = 0;
     for (const lot of lots) {
-      if (lot.arbres !== true || !lot.loin?.length || !(lot.bascule > 0) ||
+      if (lot.arbres !== true || !(lot.loin?.length || lot.detailLointain) || !(lot.bascule > 0) ||
           lot.lodReferenceFov !== 60 || lot.lodReferenceHeight !== 1080) continue;
       const i = Math.floor(lot.centre[0] / CASE), j = Math.floor(lot.centre[2] / CASE);
       let colonne = colonnes.get(i);

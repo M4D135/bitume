@@ -444,7 +444,17 @@
     }
     rotation();
     ecouter($('p-rotation'), 'click', () => { apercu.pause(!apercu.enPause); rotation(); });
-    ecouter($('circuits'), 'keydown', e => {
+    const grille = $('circuits');
+    function alignerNavigationGrille() {
+      if (!grille.getClientRects().length) return;
+      const style = doc.defaultView.getComputedStyle(grille);
+      const colonnes = style.display === 'grid' ? style.gridTemplateColumns.trim().split(/\s+/).length : 1;
+      grille.dataset.menuCols = String(colonnes);
+      grille.dataset.menuAxis = colonnes === 1 ? 'vertical' : 'horizontal';
+    }
+    ecouter(grille, 'focusin', alignerNavigationGrille);
+    ecouter(doc.defaultView, 'resize', () => { if (grille.contains(doc.activeElement)) alignerNavigationGrille(); });
+    ecouter(grille, 'keydown', e => {
       const carte = e.target.closest('[role="radio"]'); if (!carte || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || !disponible(carte)) return;
       const liste = Array.from($('circuits').querySelectorAll('[role="radio"]')).filter(disponible), i = liste.indexOf(carte);
       if (i < 0) return;
@@ -456,8 +466,10 @@
         else if (e.key === 'End') j = liste.length - 1;
         else if (e.key === 'ArrowLeft') j = (i - 1 + liste.length) % liste.length;
         else if (e.key === 'ArrowRight') j = (i + 1) % liste.length;
-        else if (e.key === 'ArrowUp') j = (i - cols + liste.length) % liste.length;
-        else if (e.key === 'ArrowDown') j = (i + cols) % liste.length;
+        else if (e.key === 'ArrowUp') {
+          const colonne = i % cols;
+          j = i >= cols ? i - cols : colonne + Math.floor((liste.length - 1 - colonne) / cols) * cols;
+        } else if (e.key === 'ArrowDown') j = i + cols < liste.length ? i + cols : i % cols;
         liste[j].click(); liste[j].focus({ preventScroll: true }); liste[j].scrollIntoView({ block: 'nearest', behavior: 'auto' });
       } else if (e.key === 'Enter' && carte.getAttribute('aria-checked') === 'true') {
         e.preventDefault(); if (!e.repeat) { const dep = $('b-depart'); if (dep && !dep.disabled) dep.click(); else avancer(1); }
