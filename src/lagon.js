@@ -109,21 +109,36 @@
       for (let j=j0; j<=j1; j++) for (let i=i0; i<=i1; i++) H[j*nx+i]=ancien[masque(i,j)];
       return null;
     }
+    const voisinsCardinaux = [[-1,0],[1,0],[0,-1],[0,1]];
+    const voisinsDiagonaux = [[-1,-1],[1,1]];
+    const voisinsAlternes = [[-1,-1],[1,1],[-1,1],[1,-1]];
+    function voisinsDuSommet(i,j) {
+      if (!alterne) return voisinsCardinaux.concat(voisinsDiagonaux);
+      return ((i+j)&1) ? voisinsCardinaux : voisinsCardinaux.concat(voisinsAlternes);
+    }
     // Pour le phare, prendre un sommet émergé directement voisin d'un triangle humide.
     // Un relief bas au-delà de la baie ne peut pas recevoir le repère ni sa faune littorale.
     for (let j=j0+1; j<j1; j++) for (let i=i0+1; i<i1; i++) {
       const k=masque(i,j), y=H[j*nx+i], haut=y-site.niveau;
       if (haut<.25 || haut>6 || signe[k]>0 || D[j*nx+i]<garde+8) continue;
-      if (Math.max(signe[k-1],signe[k+1],signe[k-largeur],signe[k+largeur])<=0) continue;
-      const x=x0+i*pas, z=z0+j*pas, score=D[j*nx+i]+Math.abs(haut-1.6)*8;
+      let distanceRive = Infinity, denivele = 0;
+      for (const [di,dj] of voisinsDuSommet(i,j)) {
+        const longueur = di && dj ? Math.SQRT2 : 1;
+        const signeVoisin = signe[masque(i+di,j+dj)];
+        if (signeVoisin>0)
+          distanceRive = Math.min(distanceRive,pas*longueur*(-signe[k])/(signeVoisin-signe[k]));
+        denivele = Math.max(denivele,Math.abs(H[(j+dj)*nx+i+di]-y)/longueur);
+      }
+      if (!Number.isFinite(distanceRive)) continue;
+      const x=x0+i*pas, z=z0+j*pas, score=distanceRive+denivele+Math.abs(haut-1.6)*8;
       if (score<scoreRive) { scoreRive=score; rive={x,y,z,cap:site.cap}; }
     }
     function niveauHabitatA(x,z) {
       if (Number.isFinite(niveauEauA(x,z))) return site.niveau;
       const i=Math.round((x-x0)/pas), j=Math.round((z-z0)/pas);
       if (i<=i0 || i>=i1 || j<=j0 || j>=j1) return NaN;
-      const k=masque(i,j);
-      return Math.max(signe[k-1],signe[k+1],signe[k-largeur],signe[k+largeur])>0 ? site.niveau : NaN;
+      return voisinsDuSommet(i,j).some(([di,dj]) => signe[masque(i+di,j+dj)]>0)
+        ? site.niveau : NaN;
     }
     const eau=outils.finir(nappe);
     Object.defineProperty(eau,'surfaceType',{value:'eau'});
