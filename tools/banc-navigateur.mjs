@@ -15,11 +15,12 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { controlerJeu, controlerStand } from './smoke-jeu.mjs';
+import { controlerCachePanorama } from './controle-cache-panorama.mjs';
 
 const args = {};
 for (let i = 2; i < process.argv.length; i += 2) args[process.argv[i].replace(/^--/, '')] = process.argv[i + 1];
 const url = args.url;
-if (!url) { console.error('usage : banc-navigateur.mjs --url <page> [--mode banc|course|crash|stand|smoke] [--duree 20] [--qualite high] [--circuit 0] [--graine 17017] [--meteo sec|pluie] [--partie solo|duo] [--decor reference|enrichi] [--chauffe 1] [--taille 1390,1295] [--overlay oui] [--capture fichier.png] [--chrome binaire] [--attendre 20000] [--detection oui] [--angle native|swiftshader]'); process.exit(2); }
+if (!url) { console.error('usage : banc-navigateur.mjs --url <page> [--mode banc|course|crash|stand|smoke|cache-panorama] [--duree 20] [--qualite high] [--circuit 0] [--graine 17017] [--meteo sec|pluie] [--partie solo|duo] [--decor reference|enrichi] [--chauffe 1] [--taille 1390,1295] [--overlay oui] [--capture fichier.png] [--chrome binaire] [--attendre 20000] [--detection oui] [--angle native|swiftshader]'); process.exit(2); }
 const mode = args.mode || 'banc';
 const duree = Number(args.duree ?? 20), qualite = args.qualite || 'high', circuit = Number(args.circuit ?? 0);
 const chauffe = Number(args.chauffe ?? 1), attendre = Number(args.attendre ?? 20000);
@@ -197,6 +198,8 @@ try {
     await dormir(2500);
     rapport.apresSeance = await evaluer(`(() => { const S = BITUME_JEU.session;
       return { mondeCourant: !!(S && S.fx && S.fx.monde), mondes: window.FPhysX ? window.FPhysX.status().worlds : null }; })()`);
+  } else if (mode === 'cache-panorama') {
+    rapport.cachePanorama = await controlerCachePanorama(evaluer, envoyer, attendre);
   } else if (mode === 'stand') {
     Object.assign(rapport, await controlerStand(evaluer, images, referenceJeu));
     rapport.limites.push('Stand contrôlé par avancement explicite au pas fixe : aucun FPS de ce parcours ne qualifie le temps réel.');

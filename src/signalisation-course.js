@@ -35,20 +35,32 @@
       if (z > 0) triangles.push([a,b,c,n,n,n],[a,c,d,n,n,n]);
       else triangles.push([c,b,a,n,n,n],[d,c,a,n,n,n]);
     }
-    for (const cote of [-1,1]) {
-      const normale = [0,0,cote];
-      if (!allumee) face(0,0,1.025,1,cote*.40,normale);
-      // Le ruban possède un dos opaque ; seules les LED tournées vers la voie sont visibles.
-      if (cote < 0) continue;
-      for (let j=0; j<LIGNES; j++) for (let i=0; i<COLONNES; i++) {
-        const x=(i+.5)/COLONNES-.5, y=(j+.5)/LIGNES-.5;
-        // La pointe et les deux bras d'un chevron à l'intérieur de la grille entière.
-        const pointe=.47-1.10*Math.abs(y);
-        const colonne = modulo(i-phase, COLONNES);
-        const motif = (colonne+.5)/COLONNES-.5;
-        if (allumee && (Math.abs(y)>.46 || motif>pointe || motif<pointe-.37)) continue;
-        face(x,y,.76/COLONNES,.75/LIGNES,cote*.49,allumee ? normale : [0,.83,cote*.56]);
+    if (!allumee) {
+      // La face avant porte la teinte des diodes éteintes. Les interstices sombres
+      // se prolongent sur toute une ligne ou colonne, y compris au bord du module.
+      const largeur=1.025, jointX=.12/COLONNES, jointY=.125/LIGNES;
+      const devant=[0,0,1];
+      face(0,0,largeur,1,-.40,[0,0,-1]);
+      face(0,0,largeur,1,.49,[0,.83,.56]);
+      for (let i=0; i<=COLONNES; i++) {
+        const x=i/COLONNES-.5;
+        const gauche=i===0 ? -largeur/2 : x-jointX;
+        const droite=i===COLONNES ? largeur/2 : x+jointX;
+        face((gauche+droite)/2,0,droite-gauche,1,.495,devant);
       }
+      for (let j=0; j<=LIGNES; j++) {
+        const y=j/LIGNES-.5, bas=Math.max(-.5,y-jointY), haut=Math.min(.5,y+jointY);
+        face(0,(bas+haut)/2,largeur,haut-bas,.495,devant);
+      }
+      return triangles;
+    }
+    const normale=[0,0,1];
+    for (let j=0; j<LIGNES; j++) for (let i=0; i<COLONNES; i++) {
+      const x=(i+.5)/COLONNES-.5, y=(j+.5)/LIGNES-.5;
+      const pointe=.47-1.10*Math.abs(y);
+      const motif=(modulo(i-phase,COLONNES)+.5)/COLONNES-.5;
+      if (Math.abs(y)>.46 || motif>pointe || motif<pointe-.37) continue;
+      face(x,y,.76/COLONNES,.75/LIGNES,.49,normale);
     }
     return triangles;
   }

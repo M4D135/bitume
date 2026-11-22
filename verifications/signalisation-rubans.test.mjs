@@ -82,6 +82,26 @@ test('la courbe douce qui chevauche le départ possède une seule jointure et le
   assert(B.signalisationCourse.creer(c,{}).rubans.every(v=>v.debut>=0 && v.fin<=c.arrivee));
 });
 
+test('les 209 cellules de la grille restent séparées par un joint horizontal et vertical', () => {
+  const { vertices, indices, ranges } = globalThis.FRender.shared.geometry(false);
+  const grille = ranges['bitume-ruban-grille'];
+  const debut = grille.offset / indices.BYTES_PER_ELEMENT;
+  const joints = [];
+  for (let i = debut; i < debut + grille.count; i += 6) {
+    const points = Array.from(indices.subarray(i, i + 6), index => vertices.subarray(6 * index, 6 * index + 3));
+    if (points[0][2] <= .492) continue;
+    const xs = points.map(p => p[0]), ys = points.map(p => p[1]);
+    joints.push({ gauche: Math.min(...xs), droite: Math.max(...xs), bas: Math.min(...ys), haut: Math.max(...ys) });
+  }
+  const estJoint = (x, y) => joints.some(j => x >= j.gauche && x <= j.droite && y >= j.bas && y <= j.haut);
+  for (let ligne = 0; ligne < 11; ligne++) for (let col = 0; col < 19; col++) {
+    const x = (col + .5) / 19 - .5, y = (ligne + .5) / 11 - .5;
+    assert(!estJoint(x, y));
+    assert(estJoint(x - .5 / 19, y));
+    assert(estJoint(x, y - .5 / 11));
+  }
+});
+
 test('Larche à 29,4 km : flèches volumiques mobiles, lumière continue sous pluie et immobilisation du mouvement réduit',()=>{
   const c=B.larche.creer(210), etat=B.signalisationCourse.creer(c,{});
   const droite=etat.rubans.find(r=>dans(c,r,2868)), gauche=etat.rubans.find(r=>dans(c,r,2920));
@@ -97,7 +117,8 @@ test('Larche à 29,4 km : flèches volumiques mobiles, lumière continue sous pl
     assert(sortie.some(v=>v.shape==='bitume-ruban-chevron'),'au loin, silhouette pleine antimoiré');
     const led=globalThis.FRender.shared.geometry(false).ranges['bitume-ruban-led-0'];
     const grille=globalThis.FRender.shared.geometry(false).ranges['bitume-ruban-grille'];
-    assert(led.count/3>80 && led.count<grille.count,'plusieurs dizaines de diodes en une seule forme');
+    assert(led.count/3>80,'plusieurs dizaines de diodes allumées en une seule forme');
+    assert.equal(grille.count/3,68,'deux faces et les 20 joints verticaux / 12 joints horizontaux');
     const avant=[...o.p], e0=o.emissive, phase=o.shape;
     assert(image(etat,s+.16,vue,opt).includes(o),'le mouvement réutilise la même instance');
     assert.deepEqual(o.p,avant,'les diodes sont fixées à la dalle');

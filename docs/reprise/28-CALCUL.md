@@ -248,3 +248,17 @@ en `file://` (refusé) ; Worker ou cache qui transportent le graphe d'objets (2
 4. WebGPU : un banc séparé d'abord, le jeu restant en WebGL2 tant que le gain n'est pas mesuré ? *Par défaut : oui.*
 5. Portage natif : rien maintenant, mais données à plat et noyaux en C portable dès qu'on y touche ? *Par défaut : oui.*
 6. Un monde identique au bit entre navigateurs est-il requis ? *Par défaut : non, tant que le jeu en ligne reste en état synchronisé.*
+
+## 28E — premier raccord en jeu, panorama de Larche (22 novembre 2026)
+
+La préparation des menus lance la lecture IndexedDB pendant le voile. Si le bloc est prêt quand la construction du terrain atteint la couronne visuelle, le jeu réutilise ses sommets et ses indices. Au premier passage, en cas de corruption ou si le navigateur tarde, le générateur reprend la main immédiatement. L’écriture est proposée au repos après la première image. Une préparation annulée abandonne sa copie. La clé inclut le circuit, sa graine, le palier du décor, l’enrichissement, les matières, la végétation, la saison et la version affichée du jeu.
+
+Sur Chrome WebGL2 / ANGLE Metal, Apple M5, en fichier local à 960 × 540, le premier calcul a pris **156,9 ms**. Après rechargement complet de la page, la lecture et le décodage ont pris **18,7 ms** et le générateur n’a reçu aucun appel. La préparation du décor complet a pris respectivement **1 702,7 et 1 548,5 ms** sur cette paire. Son temps inclut la construction du corridor proche et l’envoi au moteur. Les deux états du terrain rendent 396 nappes identiques, avec un bloc de 2 109 188 octets.
+
+Le banc compare cinq ouvertures dans un profil Chrome jetable. Une entrée altérée est remplacée. Le refus du stockage et une lecture suspendue indéfiniment aboutissent également à l’écran de course. L’empreinte des octets de sommets et d’indices vaut 283003719 dans les cinq cas. La portée de ce premier raccord est le panorama visuel. Le cache des autres décors, de l’herbier binaire et des données de niveau reste ouvert.
+
+```sh
+python3 construire.py
+node tools/banc-navigateur.mjs --url "file://$PWD/dist/bitume.html" --mode cache-panorama --taille 960,540 --attendre 90000 --angle native
+node --test verifications/cache-panorama.test.mjs verifications/relief-vallee.test.mjs verifications/backlog-0286.test.mjs
+```

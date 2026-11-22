@@ -11,6 +11,10 @@
   // ─── FNV-1a 32-bit ───────────────────────────────────────────────────────
   function checksum(donnees) {
     let h = 0x811c9dc5;
+    if (donnees instanceof ArrayBuffer) {
+      for (const octet of new Uint8Array(donnees)) h = Math.imul(h ^ octet, 0x01000193);
+      return h >>> 0;
+    }
     const str = typeof donnees === 'string' ? donnees : JSON.stringify(donnees);
     for (let i = 0; i < str.length; i++) {
       h ^= str.charCodeAt(i);
@@ -27,7 +31,7 @@
 
   // ─── Détection IndexedDB ─────────────────────────────────────────────────
   function disponible() {
-    return typeof indexedDB !== 'undefined' && indexedDB !== null;
+    try { return typeof indexedDB !== 'undefined' && indexedDB !== null; } catch (_) { return false; }
   }
 
   // ─── Backend mémoire (fallback / tests) ──────────────────────────────────
@@ -44,6 +48,7 @@
       if (!disponible()) { reject(new Error('IDB absent')); return; }
       try {
         const req = indexedDB.open(DB_NAME, VERSION_SCHEMA);
+        let bloque = false;
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
           if (!db.objectStoreNames.contains(STORE_NAME)) {
@@ -51,9 +56,14 @@
             store.createIndex('accesAt', 'accesAt', { unique: false });
           }
         };
-        req.onsuccess = () => resolve(req.result);
+        req.onsuccess = () => {
+          const db = req.result;
+          if (bloque) { db.close(); return; }
+          db.onversionchange = () => db.close();
+          resolve(db);
+        };
         req.onerror = () => reject(req.error);
-        req.onblocked = () => reject(new Error('IDB bloqué'));
+        req.onblocked = () => { bloque = true; reject(new Error('IDB bloqué')); };
       } catch (e) {
         reject(e);
       }
@@ -61,15 +71,25 @@
   }
 
   // ─── Opérations IndexedDB ────────────────────────────────────────────────
-  function _idbGet(db, cle) {
+  function valide(entree) {
+    if (!entree || entree.versionSchema !== VERSION_SCHEMA) return false;
+    try { return entree.checksum === checksum(entree.valeur); } catch (_) { return false; }
+  }
+  // Lecture, contrôle et date d'accès dans une seule transaction. Une ancienne lecture
+  // ne peut ainsi réinsérer une entrée purgée ou écraser sa régénération dans un autre onglet.
+  function _idbLire(db, cle) {
     return new Promise((resolve, reject) => {
-      try {
-        const tx = db.transaction(STORE_NAME, 'readonly');
-        const store = tx.objectStore(STORE_NAME);
-        const req = store.get(cle);
-        req.onsuccess = () => resolve(req.result || null);
-        req.onerror = () => reject(req.error);
-      } catch (e) { reject(e); }
+      const tx = db.transaction(STORE_NAME, 'readwrite'), store = tx.objectStore(STORE_NAME);
+      let valeur = null;
+      const req = store.get(cle);
+      req.onsuccess = () => {
+        const entree = req.result;
+        if (!entree) return;
+        if (!valide(entree)) { store.delete(cle); return; }
+        valeur = entree.valeur; entree.accesAt = Date.now(); store.put(entree);
+      };
+      tx.oncomplete = () => resolve(valeur);
+      tx.onabort = () => reject(tx.error);
     });
   }
 
@@ -78,9 +98,9 @@
       try {
         const tx = db.transaction(STORE_NAME, 'readwrite');
         const store = tx.objectStore(STORE_NAME);
-        const req = store.put(entree);
-        req.onsuccess = () => resolve(true);
-        req.onerror = () => reject(req.error);
+        store.put(entree);
+        tx.oncomplete = () => resolve(true);
+        tx.onabort = () => reject(tx.error);
       } catch (e) { reject(e); }
     });
   }
@@ -90,9 +110,9 @@
       try {
         const tx = db.transaction(STORE_NAME, 'readwrite');
         const store = tx.objectStore(STORE_NAME);
-        const req = store.delete(cle);
-        req.onsuccess = () => resolve(true);
-        req.onerror = () => reject(req.error);
+        store.delete(cle);
+        tx.oncomplete = () => resolve(true);
+        tx.onabort = () => reject(tx.error);
       } catch (e) { reject(e); }
     });
   }
@@ -114,33 +134,41 @@
       try {
         const tx = db.transaction(STORE_NAME, 'readwrite');
         const store = tx.objectStore(STORE_NAME);
-        const req = store.clear();
-        req.onsuccess = () => resolve(true);
-        req.onerror = () => reject(req.error);
+        store.clear();
+        tx.oncomplete = () => resolve(true);
+        tx.onabort = () => reject(tx.error);
       } catch (e) { reject(e); }
     });
   }
 
   // ─── Éviction LRU ────────────────────────────────────────────────────────
-  async function _evictLRU(db) {
-    try {
-      const all = await _idbAll(db);
-      if (all.length <= MAX_ENTREES) return;
-      all.sort((a, b) => (a.accesAt || 0) - (b.accesAt || 0));
-      const aSupprimer = all.slice(0, all.length - MAX_ENTREES);
-      for (const e of aSupprimer) {
-        await _idbDelete(db, e.cle);
-      }
-    } catch (_) { /* silencieux */ }
+  // L'index fournit les clés par ordre d'accès sans relire tous les blocs binaires.
+  function _evictLRU(db) {
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readwrite'), store = tx.objectStore(STORE_NAME);
+      const compte = store.count();
+      compte.onsuccess = () => {
+        let restant = compte.result - MAX_ENTREES;
+        if (restant <= 0) return;
+        const ordre = store.index('accesAt').openKeyCursor();
+        ordre.onsuccess = () => {
+          const curseur = ordre.result;
+          if (!curseur) return;
+          store.delete(curseur.primaryKey);
+          if (--restant > 0) curseur.continue();
+        };
+      };
+      tx.oncomplete = () => resolve(true);
+      tx.onabort = () => reject(tx.error);
+    });
   }
 
-  // ─── API publique ────────────────────────────────────────────────────────
   async function lire(cle) {
     // Backend mémoire prioritaire si fourni
     if (_memoryStore) {
       const entree = _memoryStore.get(cle);
       if (!entree) return null;
-      if (entree.checksum !== checksum(entree.valeur)) {
+      if (!valide(entree)) {
         _memoryStore.delete(cle);
         return null;
       }
@@ -148,27 +176,13 @@
       return entree.valeur;
     }
 
+    let db;
     try {
-      const db = await _ouvrirDB();
-      const entree = await _idbGet(db, cle);
-      if (!entree) return null;
-      // Vérification intégrité
-      if (entree.checksum !== checksum(entree.valeur)) {
-        await _idbDelete(db, cle);
-        return null;
-      }
-      // Vérification version
-      if (entree.versionSchema !== VERSION_SCHEMA) {
-        await _idbDelete(db, cle);
-        return null;
-      }
-      // Mise à jour LRU
-      entree.accesAt = Date.now();
-      await _idbPut(db, entree);
-      return entree.valeur;
+      db = await _ouvrirDB();
+      return await _idbLire(db, cle);
     } catch (_) {
       return null;
-    }
+    } finally { db?.close(); }
   }
 
   async function ecrire(cle, valeur, meta = {}) {
@@ -195,14 +209,15 @@
       return true;
     }
 
+    let db;
     try {
-      const db = await _ouvrirDB();
+      db = await _ouvrirDB();
       await _idbPut(db, entree);
       await _evictLRU(db);
       return true;
     } catch (_) {
       return false;
-    }
+    } finally { db?.close(); }
   }
 
   async function purger(prefixeOuVersion = null) {
@@ -224,8 +239,9 @@
       return true;
     }
 
+    let db;
     try {
-      const db = await _ouvrirDB();
+      db = await _ouvrirDB();
       if (prefixeOuVersion === null) {
         await _idbClear(db);
         return true;
@@ -241,7 +257,7 @@
       return true;
     } catch (_) {
       return false;
-    }
+    } finally { db?.close(); }
   }
 
   // ─── Injection backend mémoire pour tests ────────────────────────────────

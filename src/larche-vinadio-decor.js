@@ -501,8 +501,10 @@ function terrain(c, th, interroger, g, ecologie, organique) {
     }
   }
 
-  if (B.larcheData?.reliefVallee && B.larcheRelief)
-    liste.push(...B.larcheRelief.construire(B.larcheData.reliefVallee, maillages, TILE, G, saison));
+  if (B.larcheData?.reliefVallee && B.larcheRelief) {
+    const construire = () => B.larcheRelief.construire(B.larcheData.reliefVallee, maillages, TILE, G, saison);
+    liste.push(...(g?.cachePanorama ? B.panoramaCache.obtenir(g.cachePanorama, construire) : construire()));
+  }
 
   /* ── Lac de la Maddalena ── */
   if (c.larche && c.larche.lac) {

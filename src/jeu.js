@@ -239,12 +239,19 @@
   function sceneEnPlace(i, saisonDemandee, v = voeuDecor(saisonDemandee)) {
     return !!scene && scene.index === i && scene.enrichi === decorEnrichi && scene.palier === v.ancre && scene.vegetationQualite === v.vegetationQualite && scene.saison === v.saison;
   }
-  function installer(i, saisonDemandee) {
+  function clePanorama(i, v) {
+    const k = CATALOGUE[i], version = document.querySelector('.version-jeu')?.textContent;
+    if (k.id !== 'larche' || !version) return null;
+    const options = [v.ancre, decorEnrichi, v.veut.matieres, v.vegetationQualite].join('/');
+    return 'panorama-v1:' + B.cache.cleDecor(k.id, k.graine, options, v.saison, version);
+  }
+  function installer(i, saisonDemandee, panorama) {
     // Le décor est bâti sur un palier « ancre » (voir « profils graphiques du menu ») : la même piste ne se
     // reconstruit pas à chaque fluctuation du gouverneur, seulement quand l'ancre ou l'enrichissement change.
     const v = voeuDecor(saisonDemandee), { ancre, veut, vegetationQualite, saison } = v;
     if (sceneEnPlace(i, saisonDemandee, v)) return scene;
     const c = circuit(i), decor = B.decor.construire(c, {
+      cachePanorama: panorama && panorama.cle === clePanorama(i, v) ? panorama : null,
       qualite: ancre,
       matieres: decorEnrichi && veut.matieres,
       vegetation: decorEnrichi && veut.vegetation,
@@ -4952,6 +4959,8 @@
     // peu de travail en vue : même scène, code déjà chaud pour ce type, rendu déjà chauffé sur cette scène, glaces
     // prêtes. Le compte exact (variantes de cette météo, taille d'image, piste mouillable) se fait une fois la séance
     // lancée : s'il manque quelque chose, le voile devient opaque avant de le faire.
+    const cle = aBatir && CATALOGUE[i].id === 'larche' && B.cache?.disponible() && clePanorama(i, voeuDecor(saison));
+    const panorama = cle ? B.panoramaCache.ouvrir(cle) : null;
     let leger = !vitrine && !aBatir && (prepa.chaud.has(typeCode + ':sec') || prepa.chaud.has(typeCode + ':mouille')) && !!scene.chauffe && scene.chauffe.rendu.size > 0 && (!glaces || glacesPretes(retro.j1));
     const R = { type: typeCode, circuit: i, leger, etapes: [], date: Date.now() };
     Object.assign(prepa, { enCours: true, voile: !vitrine, attente: false, type: typeCode, i, saison, rapport: R, conditions: null, etape: null });
@@ -5008,7 +5017,10 @@
       if (!leger) { const t1 = performance.now(); await suite(); if (!document.hidden) prepa.periode = clamp(performance.now() - t1, 4, 60); }
       // 2. décor, s'il change (le seul travail synchrone indivisible : B.decor.construire)
       await etape('decor', aBatir);
-      if (aBatir) installer(i, saison);
+      if (aBatir) {
+        installer(i, saison, panorama);
+        if (panorama?.choisi) R.cachePanorama = panorama.rapport;
+      }
       // 3. moteur des rétroviseurs : sa copie du décor et les toiles des quatre glaces
       await etape('retro', glaces && !leger && (!retro.rendu || retro.scene !== scene));
       if (glaces) preparerGlaces();
@@ -5068,9 +5080,12 @@
       if (!vitrine) { majHud(S); if (S.type === 'duo' && S.vueJ2) majHud(S.vueJ2, HUD2, S.course.voitures[S.locaux[1]]); }
       attendreGPU(rendu);
       if (!leger) { if (!vitrine) tiedirVoile(S); await suite(); }
-      // 11. l'écran de course, puis le fondu
-      return terminer();
+      // 11. l'écran de course, puis le fondu. Le bloc optionnel s'écrit ensuite au repos.
+      const rapport = terminer();
+      if (panorama) B.panoramaCache.conserver(panorama);
+      return rapport;
     } catch (e) {
+      if (panorama) panorama.nappes = null;
       // l'état des vues appartient à la séance : toujours rendu ; les glaces sont communes : seulement si personne
       // d'autre ne prépare
       if (!restaure) { if (gel) rendreVues(gel); if (glacesGel && jeton === prepa.jeton) { for (const [G, pas, cote] of glacesGel) { G.pas = pas; G.cote = cote; } for (const J of ETATS_GLACES) J.vu = false; } restaure = true; }

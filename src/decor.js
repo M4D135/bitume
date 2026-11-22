@@ -345,9 +345,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
   }
 
   // Terrain : grille autour du circuit, raccordée à la chaussée par une pondération continue des hauteurs de l'axe.
-  function nappesTerrain(c, th, interroger, g, ecologie = null, organique = false, saison = null) {
+  function nappesTerrain(c, th, interroger, g, ecologie = null, organique = false, saison = null, cachePanorama = null) {
     if (B.larcheDecor) {
-      const corridor = B.larcheDecor.terrain(c, th, interroger, { saison }, ecologie, organique);
+      const corridor = B.larcheDecor.terrain(c, th, interroger, { saison, cachePanorama }, ecologie, organique);
       if (corridor) return corridor;
     }
     if (B.marseilleDecor) {
@@ -1229,7 +1229,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const reperes = options.reperesVirages !== false && B.virages ? preparerReperes(c) : null;
     let tunnelLampes = null;   // positions des lampes du tunnel : le jeu en fait des lumières près de la caméra
     const nappes = nappesRoute(c, th, lim, qualite !== 'low' || options.organique === true, qualite === 'low' ? null : ecologie, saison, reperes, organique && options.matieres !== false);
-    const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie, options.organique === true, saison);
+    const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie, options.organique === true, saison, options.cachePanorama);
     const maisonsBaikal = terrain.paysageBaikal ? B.baikal.habitations(c, terrain, interroger, terrain.paysageBaikal) : null;
     // Hasard architectural séparé ; le repli sert seulement à relire l'oracle historique du décor.
     const architecture = options.batiments !== false && B.batiments ? { maisons: [], stands: [] } : null;
