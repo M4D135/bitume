@@ -216,7 +216,8 @@
       cible = Math.min(18, lire(c, c.vitesse, e.s) * Math.sqrt(adhesion) * .8);
       if (!peutRentrer || !fusionLibre) cible = PARAMS.vitesseVoie;
       if (separe && !fusionLibre && sIci < S.fin) {
-        const arret=S.detachee ? jonction-moiLong-1 : S.mur1+5;
+        const finVoie = c.ouvert ? S.fin : S.mur1;
+        const arret = S.detachee ? jonction - moiLong - 1 : finVoie + 5;
         cible = Math.min(cible,Math.sqrt(2*deceleration*Math.max(0,arret-sIci)));
         if (sIci >= S.mur1-8) dVise = S.detachee ? axe : S.d;
       }
