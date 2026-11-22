@@ -129,7 +129,7 @@ for (const qualite of ['low', 'high']) verifier('Val-Brûlé / ' + qualite + ' :
 });
 verifier('le jeu active les sols procéduraux dans tous les profils et modes de décor', () => {
   // Exécute la vraie fonction jusqu’à la réception des options, sans initialiser un navigateur ni remplacer le décor testé ci-dessus.
-  const installer = sourceJeu.match(/  function installer\(i, saisonDemandee\) \{[\s\S]*?\n  \}/)?.[0];
+  const installer = sourceJeu.match(/  function installer\([^)]*\) \{[\s\S]*?\n  \}/)?.[0];
   assert.ok(installer, 'fonction de construction du jeu absente');
   const recueilli = {};
   for (const qualite of ['low', 'high']) for (const enrichi of [false, true]) {

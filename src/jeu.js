@@ -4399,18 +4399,21 @@
     const j = co.joueur, corps = $('res-lignes'), entete = document.querySelector('.tableau-resultats thead tr');
     const nomCircuit = CATALOGUE[S.i].nom;
     if (co.mode === 'chrono') {
-      $('res-titre').textContent = j.abandon ? 'Voiture détruite' : 'Séance de chrono';
+      const speciale = co.c.ouvert && j.fini;
+      $('res-titre').textContent = j.abandon ? 'Voiture détruite' : speciale ? 'Arrivée de la spéciale' : 'Séance de chrono';
       const r = records[CATALOGUE[S.i].id];
-      $('res-sous').textContent = nomCircuit + ' · meilleur tour ' + chrono(j.meilleur) + (r ? ' · record ' + chrono(r.tour) : '');
-      entete.innerHTML = '<th>Tour</th><th class="nom">Temps</th><th>Écart au meilleur</th>';
-      corps.innerHTML = j.tempsTours.map((t, k) => '<tr' + (t === j.meilleur ? ' class="joueur"' : '') + '><td>' + (k + 1) + '</td><td class="nom">' + chrono(t) + '</td><td>' + (t === j.meilleur ? '–' : ecartTexte(t - j.meilleur, 3)) + '</td></tr>').join('');
+      const tempsSeance = speciale ? 'temps ' + chrono(j.tempsFinal) + (j.meilleur === null ? ' · hors record' : '') : 'meilleur tour ' + chrono(j.meilleur);
+      $('res-sous').textContent = nomCircuit + ' · ' + tempsSeance + (r ? ' · record ' + chrono(r.tour) : '');
+      entete.innerHTML = '<th>' + (co.c.ouvert ? 'Spéciale' : 'Tour') + '</th><th class="nom">Temps</th><th>Écart au meilleur</th>';
+      corps.innerHTML = j.tempsTours.map((t, k) => '<tr' + (t === j.meilleur ? ' class="joueur"' : '') + '><td>' + (k + 1) + '</td><td class="nom">' + chrono(t) + '</td><td>' + (j.meilleur == null || t === j.meilleur ? '–' : ecartTexte(t - j.meilleur, 3)) + '</td></tr>').join('');
     } else {
       const ordre = co.classement.map(id => co.voitures[id]), tete = ordre[0];
       const meilleurAbsolu = Math.min(...ordre.map(v => v.meilleur ?? Infinity));
       const [h1, h2] = (S.locaux || [0]).map(id => co.voitures[id]);
       $('res-titre').textContent = co.duo && h2 ? (h1.position < h2.position ? h1.nom : h2.nom) + ' devant · ' + Math.min(h1.position, h2.position) + 'e et ' + Math.max(h1.position, h2.position) + 'e'
-        : j.abandon ? 'Abandon · voiture détruite' : j.position === 1 ? 'Victoire' : 'Arrivée · ' + j.position + 'e';
-      $('res-sous').textContent = nomCircuit + ' · ' + co.toursTotal + ' tours · rivaux ' + ['faciles', 'normaux', 'coriaces'][co.difficulte]
+        : j.abandon ? 'Abandon · voiture détruite' : !j.fini ? 'Ligne non franchie · ' + j.position + 'e'
+        : j.position === 1 ? 'Victoire' : 'Arrivée · ' + j.position + 'e';
+      $('res-sous').textContent = nomCircuit + ' · ' + co.toursTotal + (co.toursTotal > 1 ? ' tours' : ' tour') + ' · rivaux ' + ['faciles', 'normaux', 'coriaces'][co.difficulte]
         + (!S.enLigneOrigine || !lienActif() ? '' : !co.termine ? ' · course en cours' : EL.role === 'hote' ? '' : ' · l’hôte choisit la suite');
       entete.innerHTML = '<th>Pos.</th><th>N°</th><th class="nom">Pilote</th><th>Tours</th><th>Temps</th><th>Meilleur tour</th>';
       corps.innerHTML = ordre.map((v, r) => {
@@ -4420,7 +4423,7 @@
         else if (r === 0 && v.fini) tps = chrono(v.tempsFinal);
         else if (v.fini && tete.fini && v.tours === tete.tours) tps = ecartTexte(v.tempsFinal - tete.tempsFinal, 3);
         else if (tete.tours - v.tours >= 1 && v.fini) tps = '+' + (tete.tours - v.tours) + ' tour' + (tete.tours - v.tours > 1 ? 's' : '');
-        else tps = v.fini ? chrono(v.tempsFinal) : 'en piste';
+        else tps = v.fini ? chrono(v.tempsFinal) : classementFinal && co.termine ? 'Non arrivé' : 'en piste';
         return '<tr' + (v.joueur ? ' class="joueur"' : '') + '><td>' + (r + 1) + '</td><td>' + v.numero + '</td><td class="nom"><span class="pastille" style="background:' + col + '"></span>' + (v.joueur && !co.duo ? 'Vous' : v.nom) + '</td><td>' + v.tours + '</td><td>' + tps + '</td><td' + (v.meilleur === meilleurAbsolu ? ' class="record-tour"' : '') + '>' + chrono(v.meilleur) + '</td></tr>';
       }).join('');
     }

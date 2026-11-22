@@ -415,7 +415,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     // Sous-virage.
     if (!recuperer && Math.abs(kIci) > 4e-3) {
       const large = (lIci + ia.decal + ia.decalDep - e.d) * Math.sign(kIci);
-      if (large > 2) cible = Math.min(cible, vit * (1 - .03 * Math.min(large - 2, 3)));
+      // Une voiture écartée de sa ligne garde une allure de manœuvre. Un nez
+      // contre le parapet doit encore pouvoir demander le dégagement à l'arrêt.
+      if (large > 2) cible = Math.min(cible, Math.max(3, vit * (1 - .03 * Math.min(large - 2, 3))));
     }
 
     let gaz = 0, frein = 0;
