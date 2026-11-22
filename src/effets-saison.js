@@ -222,6 +222,7 @@
       const a = t * (neige ? .57 : 1.23) + s.phase2;
       const px = s.x + Math.sin(a) * s.rayon + e.ventX * phase * .055;
       const pz = s.z + Math.cos(a * .731 + s.phase2) * s.rayon + e.ventZ * phase * .055;
+      if (!neige && e.interdits.has(cleSol(Math.floor(px / CELLULE), Math.floor(pz / CELLULE)))) continue;
       const py = s.haut + (s.bas - s.haut) * phase;
       const distance = neige ? Math.hypot(px - x, py - y, pz - z) : Math.hypot(px - x, pz - z);
       const visible = (1 - lisse(neige ? 14 : 18, neige ? PORTEE_NEIGE : PORTEE_FEUILLES, distance))
