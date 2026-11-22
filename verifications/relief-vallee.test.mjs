@@ -25,7 +25,7 @@ test('le panorama utilise les altitudes mesurées en mètres, avec la bonne orig
   assert(Number.isNaN(lire(g.x0-1000,g.z0)));
 });
 
-test('la couronne alpine se raccorde aux vrais sommets des tuiles et reste hors du monde de conduite', () => {
+test('la couronne alpine se raccorde aux vrais sommets des tuiles et reste hors du monde de conduite', t => {
   const c = creerCircuitCatalogue(B,catalogueJeu.find(x=>x.id==='larche'));
   const d = B.decor.construire(c,{qualite:'low',saison:'ete',vegetation:false});
   const collines = d.nappes.filter(n=>n.surfaceType==='panorama');
@@ -34,6 +34,29 @@ test('la couronne alpine se raccorde aux vrais sommets des tuiles et reste hors 
   for (const n of d.nappes.filter(n=>n.surfaceType==='terrain')) {
     for (let k=0;k<n.sommets.length;k+=13) terrain.set(n.sommets[k]+','+n.sommets[k+2],n.sommets.subarray(k,k+13));
   }
+  // Couper seulement le pigment mesuré du terrain proche et comparer les mêmes sommets.
+  // Les points sur le ruban routier conservent leur teinte ; le pied des versants évolue.
+  t.mock.method(B.larcheRelief, 'pigmentsRelief', () => () => false);
+  const original=B.decor.construire(c,{qualite:'low',saison:'ete',vegetation:false});
+  const surRoute=new Set();
+  for (let i=0;i<c.n;i+=49) {
+    const x=Math.round(c.x[i]/32)*32,z=Math.round(c.z[i]/32)*32;
+    if (Math.hypot(x-c.x[i],z-c.z[i])<16) surRoute.add(x+','+z);
+  }
+  let modifies=0, routeVerifiee=0;
+  for (const n of original.nappes.filter(n=>n.surfaceType==='terrain')) {
+    const v=n.sommets;
+    for (let k=0;k<v.length;k+=13) {
+      const cle=v[k]+','+v[k+2], h=terrain.get(cle);
+      if (h[10]!==v[k+10] || h[11]!==v[k+11] || h[12]!==v[k+12]) modifies++;
+      if (surRoute.delete(cle)) {
+        assert.deepEqual(h.subarray(10,13),v.subarray(k+10,k+13));
+        routeVerifiee++;
+      }
+    }
+  }
+  assert.ok(modifies>10000, 'les pigments mesurés atteignent les tuiles proches');
+  assert.ok(routeVerifiee>30, 'la chaussée conserve son sol historique');
   let joints=0, triangles=0;
   for (const n of collines) {
     for (let k=0;k<n.sommets.length;k+=13) {

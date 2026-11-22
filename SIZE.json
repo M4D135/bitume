@@ -1,8 +1,8 @@
 {
-  "version": "0.2.112",
-  "raw": 15262688,
-  "gzip": 3741169,
-  "sha256": "79401555c3f6354dacde7723af83d06b6b5619985db59bfb0aa02c746324aa87",
+  "version": "0.2.113",
+  "raw": 15262702,
+  "gzip": 3741171,
+  "sha256": "a9a7d2ec175443cc5133e6c24215674bcef07bd16b06abd1e029a29cc6fb9860",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 315940,
@@ -18,7 +18,7 @@
     "larche-vinadio.js": 13285,
     "larche-relief.js": 12186,
     "coniferes-alpins.js": 7139,
-    "larche-vinadio-decor.js": 51947,
+    "larche-vinadio-decor.js": 51961,
     "marseille.js": 14511,
     "marseille-decor.js": 50206,
     "destinations.js": 16250,

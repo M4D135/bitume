@@ -340,7 +340,7 @@ function degagerChaussee(c, pas, gr) {
     let v = sommets.get(cle);
     if (!v) {
       const x = i * pas, z = j * pas, q = _queryRoute(gr, x, z);
-      v = { x: i, z: j, s: q.s, yRoute: q.yRoute, h: _H(x,z,gr,c,q), retrait: 0 };
+      v = { x: i, z: j, s: q.s, absD: q.absD, yRoute: q.yRoute, h: _H(x,z,gr,c,q), retrait: 0 };
       sommets.set(cle, v);
     }
     return v;
