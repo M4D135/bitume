@@ -310,7 +310,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       let dansLeSillage = false;
       if (o && !o.fini && !o.abandon && !horsService(o.etat)) {
         const ds = ecart(c, o.etat.s, e.s);
-        dansLeSillage = ds > 0 && ds < 15 + moiLong && Math.abs(o.etat.d - e.d) < 5;
+        // La défense s’engage sous 4 m d’écart latéral et se maintient jusqu’au seuil de sortie de 7 m.
+        dansLeSillage = ds > 0 && ds < 15 + moiLong && Math.abs(o.etat.d - e.d) < 7;
       }
       if (dansLeSillage) ia.perteDefense = null;
       else if (ia.perteDefense == null) ia.perteDefense = ia.t;

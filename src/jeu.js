@@ -113,7 +113,7 @@
     }
   };
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
-  const PHYSIQUE = 'p28', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
+  const PHYSIQUE = 'p29', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const recordsLus = lireStock(CLE_RECORDS, {});
   // JSON.stringify ignore les clés nommées d'un tableau. Reprendre ses temps sous leurs
   // anciens identifiants avant que la première amélioration sur un raccord soit sauvegardée.
