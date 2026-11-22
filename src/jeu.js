@@ -94,7 +94,10 @@
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
   const PHYSIQUE = 'p15', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const records = lireStock(CLE_RECORDS, {});
-  const recordsEnrichis = B.records ? Object.assign(B.records.migrerAnciens(records, CATALOGUE), B.records.lireTout(globalThis.localStorage, CATALOGUE)) : null;
+  const recordsEnrichis = (() => {
+    try { return B.records ? Object.assign(B.records.migrerAnciens(records, CATALOGUE), B.records.lireTout(globalThis.localStorage, CATALOGUE)) : null; }
+    catch (e) { return null; }
+  })();
   // temps et longueur du fantôme gardé, par circuit : lus une fois, puis tenus à jour à chaque écriture (finTour
   // relisait et analysait le fantôme entier à chaque tour de chrono)
   const fantomesGardes = new Map();
@@ -444,7 +447,7 @@
   });
   if (!reglages.manettesVersion || reglages.manettesVersion < 3) {
     reglages.manettesVersion = 3;
-    if (Array.isArray(reglages.manettes)) { reglages.manettes = configurationsManettes.map(m => B.commandesManette.normaliser(m)); sauverReglages(); }
+    if (Array.isArray(reglages.manettes)) { reglages.manettes = configurationsManettes.map(m => B.commandesManette.normaliser(m)); ecrireStock('bitume.reglages', reglages); }
   }
   let captureManette = null, dernierSignalManette = -Infinity;
   let nbManettes = 0, manettes = [];
