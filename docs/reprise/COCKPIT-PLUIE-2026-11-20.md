@@ -6,6 +6,12 @@
 **Statut au 21 novembre : 0.2.75 publiée sur main via PR 51 ; correctif reçu.**
 [Reçu final](rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json). Les comptes rendus de candidats ci-dessous restent historiques ; réserve CPU décor séparée et ouverte.
 
+## Réouverture — 21 novembre
+
+David refuse le cockpit .75 : volant trop proche et mal orienté, supports de rétros trop hauts.
+Les preuves ci-dessous décrivent la publication et ses contrôles, pas une approbation du modèle.
+Correctif actif : [poste 312 T5, FOV 70° vertical, météo arrière et klaxons](COCKPIT-312T5-2026-11-21.md).
+
 ## Demande et périmètre
 
 La photo utilisateur montre un volant et un tableau trop hauts, avec des glaces
