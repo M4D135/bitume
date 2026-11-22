@@ -123,13 +123,14 @@
         b*((1-a)*fractions[k+ligne]+a*fractions[k+ligne+3]))/255;
     };
   }
-  function instance(site, loin, p, largeur, h, axes, color) {
-    return {shape:loin?site.forme+'-loin':site.forme,p,r:B.decor.angles(...axes),s:[largeur,h,largeur],color,mat:11};
+  function instance(site, loin, p, largeur, h, axes, color, t) {
+    const profondeur=largeur*(.78+.22*t);
+    return {shape:loin?site.forme+'-loin':site.forme,p,r:B.decor.angles(...axes),s:[largeur,h,profondeur],color,mat:11};
   }
   function ajouterInstance(lot, site, leger, x, z, t, p, largeur, h, axes, loinSeul = false) {
     const teinte=site.couleur.map(v=>v*(.83+.28*t));
     const color=site.saison ? B.saisons.teinte(site.saison,site.genre==='lande'?'herbe':'feuillage-persistant',teinte,x,z) : teinte;
-    const o=instance(site,leger||loinSeul,p,largeur,h,axes,color);
+    const o=instance(site,leger||loinSeul,p,largeur,h,axes,color,t);
     if (loinSeul) { lot.loin.push(o); return; }
     lot.objets.push(o);
     // En Légère, le modèle unique est déjà le lointain.
@@ -148,7 +149,7 @@
         axes[j][0]=semis[a]; axes[j][1]=semis[a+1]; axes[j][2]=semis[a+2];
       }
       const p=[semis[k],semis[k+1],semis[k+2]], site=palettes[semis[k+8]];
-      if (ombres) ombres.push(instance(site,true,p,semis[k+3],semis[k+4],axes,site.couleur));
+      if (ombres) ombres.push(instance(site,true,p,semis[k+3],semis[k+4],axes,site.couleur,semis[k+7]));
       else ajouterInstance(lot,site,leger,semis[k+5],semis[k+6],semis[k+7],p,semis[k+3],semis[k+4],axes,loinSeul);
     }
   }
@@ -290,7 +291,8 @@
         for (let k=0;k<g.length;k+=PAS_SEMIS)
           l.rayon=Math.max(l.rayon,Math.hypot(g[k]-l.centre[0],g[k+1]-l.centre[1],g[k+2]-l.centre[2])+Math.hypot(g[k+3],g[k+4],g[k+3])/2);
       } else {
-        for (const o of l.objets) l.rayon=Math.max(l.rayon,Math.hypot(o.p[0]-l.centre[0],o.p[1]-l.centre[1],o.p[2]-l.centre[2])+Math.hypot(...o.s)/2);
+        // Garder l’enveloppe maximale employée par le semis progressif.
+        for (const o of l.objets) l.rayon=Math.max(l.rayon,Math.hypot(o.p[0]-l.centre[0],o.p[1]-l.centre[1],o.p[2]-l.centre[2])+Math.hypot(o.s[0],o.s[1],o.s[0])/2);
       }
       resultat.push(l);
     }

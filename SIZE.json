@@ -1,8 +1,8 @@
 {
-  "version": "0.2.133",
-  "raw": 16707643,
-  "gzip": 4638091,
-  "sha256": "2d6dd6e781dbfc7ada71491f894a6547009d7e2b47aed72ef208f77a174ed2b5",
+  "version": "0.2.134",
+  "raw": 16707794,
+  "gzip": 4638155,
+  "sha256": "7e4892fe2e60b40d83719f594768e081d7f98cb62da0f7a270af4881ad31a261",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
@@ -44,7 +44,7 @@
     "ecologie.js": 3127,
     "saisons.js": 7783,
     "vegetation.js": 37614,
-    "bosquets.js": 15508,
+    "bosquets.js": 15659,
     "bords.js": 31417,
     "baikal.js": 7810,
     "batiments.js": 14306,
