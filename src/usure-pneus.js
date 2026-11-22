@@ -44,7 +44,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
   // Aucun objet, tableau, événement ou tirage aléatoire n'est créé dans cette boucle.
   function pas(e, dt, distanceSignee, eau = 0, neige = 0, contactsFrais = true, surface = e?.surface) {
     const recul = contactsFrais === 'recul';
-    if ((!recul && contactsFrais !== true) || exclu(e) || !Number.isFinite(dt) || dt <= 0 || dt > PARAMS.pasMax ||
+    if ((!recul && contactsFrais !== true) || exclu(e) || !Number.isFinite(dt) || dt <= 0 ||
       !Number.isFinite(distanceSignee) || !Array.isArray(e.etatPneus) || e.etatPneus.length !== 4 ||
       !Array.isArray(e.roues)) return 0;
     if (recul && (!Number.isFinite(e.v) || e.v >= 0)) return 0;
