@@ -1,0 +1,205 @@
+{
+  "date": "2026-11-22",
+  "machine": "MacBook Air Mac17,4, Apple M5, arm64, macOS 27.2.1 (26B131)",
+  "chaine": {
+    "xcode": "27.2 (27B52)",
+    "sdk_macos": "27.2",
+    "clang": "21.0.0 (clang-2100.4.1.1)",
+    "cmake": "3.31.6",
+    "paquet_ninja": "1.11.1.4",
+    "cible_compilation_macos": "14.0"
+  },
+  "sdl": {
+    "tag": "release-3.4.20",
+    "commit": "f00dc919ca35b9756316e86c4777392de442f9b2",
+    "archive": "https://github.com/libsdl-org/SDL/releases/download/release-3.4.20/SDL3-3.4.20.tar.gz",
+    "sha256_archive": "f3bb06f55bed9557227a700af2ea62e49497ebdf58037732a731a5fb3ef8581f"
+  },
+  "sources_sonde": {
+    "deux-passes.cpp": "06fef8d7289df4983fdb91b99f4536ba6bda84c460cdb0141dfce68cdb90977f",
+    "deux-passes.metal": "2dd73a67e2756aa89ac7f28bfd4a01ee35712282a4eefc49bbc9298a67d17faf",
+    "sdl-rendu.log": "d329c0908bdd948334aa7f65308ab5fc22499100edafb6e2d129a2fba0b64cb6",
+    "sdl-mac.sh": "e3371afe81245eb5d46155d54ca5ddc5db432f159f85603774e0051815a4e5af"
+  },
+  "lectures_pixels": {
+    "format": "RGB entier",
+    "y": 8,
+    "colonnes": [
+      0,
+      8,
+      24
+    ]
+  },
+  "constructions": [
+    {
+      "numero": 1,
+      "etapes_ninja": 253,
+      "revision_exportee": "SDL-release-3.4.20-0-gf00dc919c",
+      "architecture": "arm64",
+      "dylib_sha256": "30136b2f18452a42059092835e2fa99fe6f12ec5cbf0cf520e3979cd128e7be5",
+      "octets_dylib": 2886992,
+      "sonde_sha256": "1e174d93f67acd73ea5b439581917d48e3fec72284b6188794a993ae3bf6b929",
+      "metallib_sha256": "673ba55c874051b375d57c1ddc2a321b596b87ca8ebfa6fbb2e51ce933297f8d",
+      "cible_dyld": "@rpath/libSDL3.0.dylib",
+      "processus": [
+        {
+          "pid": 49010,
+          "bibliotheque_ouverte": "install/lib/libSDL3.0.dylib",
+          "uuid_image_chargee": "EAD7BAF7-B69E-38ED-A6DE-436E0C9C9D17",
+          "validation_metal": true,
+          "backend": "metal",
+          "rgb": [
+            [
+              0,
+              255,
+              0
+            ],
+            [
+              0,
+              128,
+              128
+            ],
+            [
+              128,
+              128,
+              0
+            ]
+          ]
+        },
+        {
+          "pid": 49015,
+          "bibliotheque_ouverte": "install/lib/libSDL3.0.dylib",
+          "uuid_image_chargee": "EAD7BAF7-B69E-38ED-A6DE-436E0C9C9D17",
+          "validation_metal": true,
+          "backend": "metal",
+          "rgb": [
+            [
+              0,
+              255,
+              0
+            ],
+            [
+              0,
+              128,
+              128
+            ],
+            [
+              128,
+              128,
+              0
+            ]
+          ]
+        },
+        {
+          "pid": 49020,
+          "bibliotheque_ouverte": "install/lib/libSDL3.0.dylib",
+          "uuid_image_chargee": "EAD7BAF7-B69E-38ED-A6DE-436E0C9C9D17",
+          "validation_metal": true,
+          "backend": "metal",
+          "rgb": [
+            [
+              0,
+              255,
+              0
+            ],
+            [
+              0,
+              128,
+              128
+            ],
+            [
+              128,
+              128,
+              0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 2,
+      "etapes_ninja": 253,
+      "revision_exportee": "SDL-release-3.4.20-0-gf00dc919c",
+      "architecture": "arm64",
+      "dylib_sha256": "30136b2f18452a42059092835e2fa99fe6f12ec5cbf0cf520e3979cd128e7be5",
+      "octets_dylib": 2886992,
+      "sonde_sha256": "7810ac493674a80035acdaa4d04ced3056f8e6bee2eff588c4f90bb1792b5844",
+      "metallib_sha256": "673ba55c874051b375d57c1ddc2a321b596b87ca8ebfa6fbb2e51ce933297f8d",
+      "cible_dyld": "@rpath/libSDL3.0.dylib",
+      "processus": [
+        {
+          "pid": 56113,
+          "bibliotheque_ouverte": "install/lib/libSDL3.0.dylib",
+          "uuid_image_chargee": "EAD7BAF7-B69E-38ED-A6DE-436E0C9C9D17",
+          "validation_metal": true,
+          "backend": "metal",
+          "rgb": [
+            [
+              0,
+              255,
+              0
+            ],
+            [
+              0,
+              128,
+              128
+            ],
+            [
+              128,
+              128,
+              0
+            ]
+          ]
+        },
+        {
+          "pid": 56116,
+          "bibliotheque_ouverte": "install/lib/libSDL3.0.dylib",
+          "uuid_image_chargee": "EAD7BAF7-B69E-38ED-A6DE-436E0C9C9D17",
+          "validation_metal": true,
+          "backend": "metal",
+          "rgb": [
+            [
+              0,
+              255,
+              0
+            ],
+            [
+              0,
+              128,
+              128
+            ],
+            [
+              128,
+              128,
+              0
+            ]
+          ]
+        },
+        {
+          "pid": 56119,
+          "bibliotheque_ouverte": "install/lib/libSDL3.0.dylib",
+          "uuid_image_chargee": "EAD7BAF7-B69E-38ED-A6DE-436E0C9C9D17",
+          "validation_metal": true,
+          "backend": "metal",
+          "rgb": [
+            [
+              0,
+              255,
+              0
+            ],
+            [
+              0,
+              128,
+              128
+            ],
+            [
+              128,
+              128,
+              0
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}
