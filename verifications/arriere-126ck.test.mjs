@@ -56,7 +56,9 @@ test('les quatre flammes partent des embouchures ouvertes, supérieures plus gro
   assert(bord.every(p=>Math.abs(Math.hypot(p[1]-S.y,p[2]-S.z)-S.r)<1e-8));
   assert(!triangles.some(t=>hit([S.x-.02,S.y,S.z],[S.x+.03,S.y,S.z],t)),'tube bouché');
  }
- assert(X.SORTIES[0].r>X.SORTIES[2].r*1.7);
+ // Dimensions du modèle affiné en .88 (b9513bc), également vérifiées sur les vrais sommets ci-dessus.
+ assert.equal(X.SORTIES[0].r, .052);
+ assert.equal(X.SORTIES[2].r, .033);
  assert(X.SORTIES[0].x>X.SORTIES[2].x+.3);
 });
 test('aile avant et arrière ont des profils de volume fini dans les bornes physiques conservées',()=>{

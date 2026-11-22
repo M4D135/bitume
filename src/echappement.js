@@ -27,11 +27,13 @@
   // Embouchures 126 CK des quatre tubes de voiture.js (formes « echappements-hauts » et « echappements-bas ») : dernier point
   // de chaque tube et son rayon, dans le repère de la voiture (x vers l'avant, y vers le haut, z vers la droite). Les
   // tubes finissent dans l'axe : la flamme part vers −x. Banc 0 : côté gauche (z < 0).
+  const arriere = B.voiture.ARRIERE_126CK;
+  function sortie(x, y, z, r, banc, haut) {
+    return Object.freeze({ x, y, z: banc === 0 ? -z : z, r, banc, haut });
+  }
   const SORTIES = Object.freeze([
-    Object.freeze({ x: -1.42, y: .58, z: -.215, r: .065, banc: 0, haut: true }),
-    Object.freeze({ x: -1.42, y: .58, z: .215, r: .065, banc: 1, haut: true }),
-    Object.freeze({ x: -1.82, y: .16, z: -.36, r: .035, banc: 0, haut: false }),
-    Object.freeze({ x: -1.82, y: .16, z: .36, r: .035, banc: 1, haut: false })
+    ...[0, 1].map(banc => sortie(arriere.sortieHauteX, arriere.sortieHauteY, arriere.sortieHauteZ, arriere.sortieHauteRayon, banc, true)),
+    ...[0, 1].map(banc => sortie(arriere.sortieBasseX, arriere.sortieBasseY, arriere.sortieBasseZ, arriere.sortieBasseRayon, banc, false))
   ]);
   const NS = SORTIES.length, TOUTES = (1 << NS) - 1;
   const BANC = [1 | 4, 2 | 8];                 // sorties d'un banc : le tube haut et le tube bas du même côté
