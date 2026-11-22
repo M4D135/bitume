@@ -220,9 +220,20 @@
   // dans le plan horizontal de la paroi. Aucun rayon, impulsion ou écriture dans la simulation.
   function suivreRaclement(r, ph, temps) {
     r.matiere = ''; r.vitesse = 0; r.duree = 0;
-    if (r.acteur !== ph) { r.acteur = ph; r.dernier = -Infinity; }
-    if (!ph || ph.distant || ph.v.fini || ph.v.abandon || ph.e.recuperation) { r.dernier = -Infinity; return; }
-    if (!ph.course.co._obstacleMemo?.[ph.v.id]?.size) return;
+    function reinitialiserEpisode() {
+      r.dernier = -Infinity;
+      r.paroi = '';
+      r.debut = 0;
+    }
+    if (r.acteur !== ph) {
+      r.acteur = ph;
+      reinitialiserEpisode();
+    }
+    if (!ph || ph.distant || ph.v.fini || ph.v.abandon || ph.e.recuperation ||
+        !ph.course.co._obstacleMemo?.[ph.v.id]?.size) {
+      reinitialiserEpisode();
+      return;
+    }
     const contacts = ph.world.contacts, solides = ph.course.solids.acteurs;
     let nx = 0, nz = 0;
     for (let i = 0; i < contacts.count; i++) {
@@ -235,9 +246,11 @@
       const vitesse = Math.abs(ph.velocity[0] * c.nz - ph.velocity[2] * c.nx) / norme;
       if (!r.matiere || vitesse > r.vitesse) { r.matiere = matiere; r.vitesse = vitesse; nx = c.nx / norme; nz = c.nz / norme; }
     }
-    if (!r.matiere) return;
-    // Un joint entre deux sections ne répète pas le coup initial. Un pas sans contact coupe
-    // immédiatement la cible sonore, même pendant cette brève tolérance entre deux épisodes.
+    if (!r.matiere) {
+      reinitialiserEpisode();
+      return;
+    }
+    // Un joint franchi sans perte de contact peut prolonger le même épisode.
     if (temps - r.dernier > .05 || temps < r.dernier || r.paroi !== r.matiere || Math.abs(nx * r.nx + nz * r.nz) < .75) {
       r.debut = temps; r.coupJoue = false;
     }
