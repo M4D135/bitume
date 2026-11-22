@@ -110,8 +110,9 @@ for (const reference of expected) {
   // contrôlent les ajouts actifs et les solides. Les nouveaux repères visuels ne font pas partie de cet oracle.
   // L'architecture détaillée est contrôlée dans batiments-stands.test.mjs ; aucune empreinte n'est remplacée.
   const { railsVirages, ...decorHistorique } = B.decor.construire(c, { matieres: false, vegetation: false, reperesVirages: false, batiments: false });
-  // Cet index de la signalisation est vide en l'absence du module virages dans le témoin.
-  assert.deepEqual(railsVirages, []);
+  // Les références de signalisation désignent les glissières déjà incluses dans les lots vérifiés.
+  const objets = new Set(decorHistorique.lots.flatMap(lot => lot.objets));
+  assert(railsVirages.every(troncon => objets.has(troncon.rail)));
   assert.equal(digest(decorHistorique), ref, `${environnement} : ${JSON.stringify(spec)}`);
 }
 console.log(`décor : 9 géométries de référence inchangées (${environnement})`);
