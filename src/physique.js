@@ -183,7 +183,8 @@
       const vitesse = w.velocity[0] * n[0] + w.velocity[1] * n[1] + w.velocity[2] * n[2];
       const masseRoue = ph.mass * (w.i < 2 ? ph.front : 1 - ph.front) / 2;
       const amort = 2 * Math.sqrt(w.k * masseRoue) * PROFIL.amortissement;
-      w.load = clamp(w.k * (PROFIL.courseLibre - (hit.distance - rayon)) - amort * vitesse, 0, PROFIL.forceMaxRoue * ph.mass / PROFIL.masse);
+      const compression = PROFIL.courseLibre - (hit.distance - rayon);
+      w.load = compression > 0 ? clamp(w.k * compression - amort * vitesse, 0, PROFIL.forceMaxRoue * ph.mass / PROFIL.masse) : 0;
       if (w.load > 0) nb++;
       const type = B.solidesPhysX.surface?.(ph.course.solids, hit.body, hit.faceIndex);
       w.surface = typeof type === 'string' ? type : type?.type || 'herbe';
