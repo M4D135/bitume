@@ -1,5 +1,13 @@
 # BITUME — reprise courte
 
+## Décision du 22 novembre 2026 — C++ natif, macOS puis Linux puis Windows
+
+[Plan de migration native](docs/reprise/PLAN-NATIF-CPP-MACOS-LINUX-WINDOWS-2026-11-22.md) : FERRO et BITUME en C++, première édition
+macOS, puis Linux, puis Windows. Le lot demandé est **documentaire uniquement** :
+implémentation non commencée, aucune qualification native acquise. Le plan fixe les lots,
+la fidélité à p15, les mesures matérielles et les critères de passage entre plateformes.
+Prochain lot natif proposé : N0, après instruction d’exécution. Le suivi web ci-dessous est conservé.
+
 ## 0.2.88 livré (22 novembre 2026) — Retours jeu réel, Faune proche & Démos refaites (16 circuits), Menu Arcade, Col de Larche fluide, Hélico TV bas & Arbres réalistes
 
 Livraison complète construite avec délégation lourde sur le Spark local (`spark-local`), vérifiée en Node (21/21 suites vertes + simulation PhysX WASM 12 voitures sur Col de Larche) et par 12 captures réelles Chrome WebGL2 (`1280×720` et `1600×1000`, 0 erreur console, migration `0.2.85 → 0.2.88` validée) :

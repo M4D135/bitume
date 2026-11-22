@@ -301,5 +301,38 @@
     "runtime_modifie": false,
     "preuves_runtime": [],
     "larche": "À ajouter aux démos lors de son intégration jouable ; sommet → Vinadio, sans rebouclage."
+  },
+  "portage_natif_cpp": {
+    "date": "2026-11-22",
+    "statut": "planifie_non_commence",
+    "demande": "Plan et publication GitHub uniquement ; C++ natif, macOS puis Linux puis Windows.",
+    "fiche": "docs/reprise/PLAN-NATIF-CPP-MACOS-LINUX-WINDOWS-2026-11-22.md",
+    "langage": "C++",
+    "plateformes_ordre": [
+      "macOS",
+      "Linux",
+      "Windows"
+    ],
+    "moteur_canonique": "M4D135/FERRO",
+    "base_bitume": "73ce09ffc820501a14a9330e2cd6be9807985fe3",
+    "reference_physique": "p15",
+    "implementation_commencee": false,
+    "implementation_autorisee_par_ce_lot": false,
+    "prochaine_etape_proposee": "N0 — référence et décisions techniques, après instruction d’exécution.",
+    "jalons": [
+      "N0",
+      "N1",
+      "N2",
+      "N3",
+      "N4",
+      "N5",
+      "N6",
+      "L1",
+      "L2",
+      "W1",
+      "W2"
+    ],
+    "qualification_materielle_native": false,
+    "runtime_modifie": false
   }
 }
