@@ -205,7 +205,7 @@ export async function qualifierCommandesXbox(o) {
   const titrePret = async () => {
     await attendre(() => {
       const J = window.BITUME_JEU;
-      return J?.ecran === 'titre' && J.session?.type === 'vitrine' && J.rendu &&
+      return J?.ecran === 'titre' && J.session === null && J.scene === null && J.rendu &&
         !J.chargement.enCours && !J.chargement.voile && globalThis.FPhysX?.status?.().ready;
     }, 'vrai premier démarrage achevé');
     await pas(2); await page.evaluate(observerConduiteXbox);

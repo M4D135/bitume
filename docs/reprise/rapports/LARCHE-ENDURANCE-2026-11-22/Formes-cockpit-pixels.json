@@ -1,0 +1,60 @@
+{
+  "base": "a9a7d2ec175443cc5133e6c24215674bcef07bd16b06abd1e029a29cc6fb9860",
+  "prototype": "ec8e8e747d94f8fc6c583aa3103e5b86cdf0586f293f80f7b18067af842e8b5d",
+  "images": [
+    {
+      "image": "0000.png",
+      "bboxDelta": null,
+      "shaPixelsAvant": "ff15138cd184a11b8bf11e614ff2c42e88e40f3619f2adbaa24c1dc3e0611f37",
+      "shaPixelsApres": "ff15138cd184a11b8bf11e614ff2c42e88e40f3619f2adbaa24c1dc3e0611f37",
+      "pose": {
+        "cam": {
+          "pos": [
+            1793.4078285349876,
+            1063.3873225865154,
+            1961.2637035027958
+          ],
+          "yaw": 3.840236487430577,
+          "pitch": -0.15327172306875908,
+          "fov": 71.55817763832943
+        },
+        "s": 2891.7546424720495,
+        "phase": "pluie",
+        "appels": 545,
+        "triangles": 1576816
+      },
+      "indices": {
+        "shapes": 638,
+        "references": 1947930,
+        "reused": 1206748
+      }
+    },
+    {
+      "image": "0001.png",
+      "bboxDelta": null,
+      "shaPixelsAvant": "a418d980aeae75d532877273619617bff2eb1b38ce5fb47a7e19333ec783126a",
+      "shaPixelsApres": "a418d980aeae75d532877273619617bff2eb1b38ce5fb47a7e19333ec783126a",
+      "pose": {
+        "cam": {
+          "pos": [
+            1789.9464999655515,
+            1063.5789875102942,
+            1962.50208071459
+          ],
+          "yaw": 3.848400317578321,
+          "pitch": -0.24807387296611458,
+          "fov": 71.39380016095838
+        },
+        "s": 2894.5355455419485,
+        "phase": "pluie",
+        "appels": 542,
+        "triangles": 1562604
+      },
+      "indices": {
+        "shapes": 638,
+        "references": 1947930,
+        "reused": 1206748
+      }
+    }
+  ]
+}

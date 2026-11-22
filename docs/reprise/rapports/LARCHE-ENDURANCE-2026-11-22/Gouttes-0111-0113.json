@@ -1,0 +1,331 @@
+{
+  "versions": [
+    {
+      "sha": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59",
+      "version": "V0.2.111",
+      "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+      "erreurs": [],
+      "images": [
+        {
+          "nom": "grille",
+          "fichier": "0000.png",
+          "s": 42,
+          "d": 2.4,
+          "v": 0,
+          "grille": {
+            "id": 0,
+            "s": 42,
+            "d": 2.4
+          },
+          "vue": "poursuite",
+          "meteo": "pluie",
+          "abri": false,
+          "traits": 0,
+          "gouttes": 2,
+          "eau": 0.7869452238168697,
+          "visible": true,
+          "p": {
+            "fond": "box",
+            "fleche": "bitume-ruban-chevron"
+          }
+        },
+        {
+          "nom": "roulage",
+          "fichier": "0001.png",
+          "s": 2870.0768229177193,
+          "d": -0.12395039235805612,
+          "v": 41.55549084357934,
+          "grille": {
+            "id": 0,
+            "s": 42,
+            "d": 2.4
+          },
+          "vue": "poursuite",
+          "meteo": "pluie",
+          "abri": false,
+          "traits": 0,
+          "gouttes": 7,
+          "eau": 0.808245660020273,
+          "visible": true,
+          "p": {
+            "fond": "box",
+            "fleche": "bitume-ruban-chevron"
+          }
+        }
+      ]
+    },
+    {
+      "sha": "a9a7d2ec175443cc5133e6c24215674bcef07bd16b06abd1e029a29cc6fb9860",
+      "version": "V0.2.113",
+      "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+      "erreurs": [],
+      "images": [
+        {
+          "nom": "grille",
+          "fichier": "0000.png",
+          "s": 42,
+          "d": 2.4,
+          "v": 0,
+          "grille": {
+            "id": 0,
+            "s": 42,
+            "d": 2.4
+          },
+          "vue": "poursuite",
+          "meteo": "pluie",
+          "abri": false,
+          "traits": 0,
+          "gouttes": 2,
+          "eau": 0.7869452238168697,
+          "visible": true,
+          "p": {
+            "s": 2860,
+            "fond": "bitume-balise-boitier",
+            "fleche": "bitume-ruban-chevron"
+          }
+        },
+        {
+          "nom": "roulage",
+          "fichier": "0001.png",
+          "s": 2870.0768229177193,
+          "d": -0.12395039235805612,
+          "v": 41.55549084357934,
+          "grille": {
+            "id": 0,
+            "s": 42,
+            "d": 2.4
+          },
+          "vue": "poursuite",
+          "meteo": "pluie",
+          "abri": false,
+          "traits": 0,
+          "gouttes": 7,
+          "eau": 0.808245660020273,
+          "visible": true,
+          "p": {
+            "s": 2860,
+            "fond": "bitume-ruban-grille",
+            "fleche": "bitume-balise-led"
+          }
+        },
+        {
+          "nom": "approche55",
+          "fichier": "0002.png",
+          "s": 2805,
+          "d": 0,
+          "v": 0,
+          "grille": {
+            "id": 0,
+            "s": 42,
+            "d": 2.4
+          },
+          "vue": "poursuite",
+          "meteo": "clair",
+          "abri": false,
+          "traits": 0,
+          "gouttes": 0,
+          "eau": 0,
+          "visible": true,
+          "p": {
+            "s": 2860,
+            "fond": "bitume-balise-boitier",
+            "fleche": "bitume-ruban-chevron"
+          },
+          "vueReelle": "poursuite"
+        },
+        {
+          "nom": "approche18",
+          "fichier": "0003.png",
+          "s": 2842,
+          "d": 0,
+          "v": 0,
+          "grille": {
+            "id": 0,
+            "s": 42,
+            "d": 2.4
+          },
+          "vue": "poursuite",
+          "meteo": "clair",
+          "abri": false,
+          "traits": 0,
+          "gouttes": 0,
+          "eau": 0,
+          "visible": true,
+          "p": {
+            "s": 2860,
+            "fond": "bitume-ruban-grille",
+            "fleche": "bitume-balise-led"
+          },
+          "vueReelle": "poursuite"
+        },
+        {
+          "nom": "face",
+          "fichier": "0004.png",
+          "s": 2842,
+          "d": 0,
+          "v": 0,
+          "grille": {
+            "id": 0,
+            "s": 42,
+            "d": 2.4
+          },
+          "vue": "poursuite",
+          "meteo": "clair",
+          "abri": false,
+          "traits": 0,
+          "gouttes": 0,
+          "eau": 0,
+          "visible": true,
+          "p": {
+            "s": 2860,
+            "fond": "bitume-ruban-grille",
+            "fleche": "bitume-balise-led"
+          },
+          "suppressions": 1,
+          "vueReelle": "inspection du boîtier"
+        },
+        {
+          "nom": "dos",
+          "fichier": "0005.png",
+          "s": 2842,
+          "d": 0,
+          "v": 0,
+          "grille": {
+            "id": 0,
+            "s": 42,
+            "d": 2.4
+          },
+          "vue": "poursuite",
+          "meteo": "clair",
+          "abri": false,
+          "traits": 0,
+          "gouttes": 0,
+          "eau": 0,
+          "visible": true,
+          "p": {
+            "s": 2860,
+            "fond": "bitume-ruban-grille",
+            "fleche": "bitume-balise-led"
+          },
+          "suppressions": 1,
+          "vueReelle": "inspection du boîtier"
+        },
+        {
+          "nom": "oblique",
+          "fichier": "0006.png",
+          "s": 2842,
+          "d": 0,
+          "v": 0,
+          "grille": {
+            "id": 0,
+            "s": 42,
+            "d": 2.4
+          },
+          "vue": "poursuite",
+          "meteo": "clair",
+          "abri": false,
+          "traits": 0,
+          "gouttes": 0,
+          "eau": 0,
+          "visible": true,
+          "p": {
+            "s": 2860,
+            "fond": "bitume-ruban-grille",
+            "fleche": "bitume-balise-led"
+          },
+          "vueReelle": "inspection du boîtier"
+        }
+      ]
+    }
+  ],
+  "mesures": {
+    "pluie_par_rapport_au_meme_instant_toile_vitre_masquee": {
+      "avant": [
+        {
+          "pixels": 518400,
+          "deltaMax": 92,
+          "plus2": 32463,
+          "plus8": 15720,
+          "plus24": 4791,
+          "MAD_0_255": 0.75111
+        },
+        {
+          "pixels": 518400,
+          "deltaMax": 117,
+          "plus2": 32452,
+          "plus8": 14170,
+          "plus24": 3222,
+          "MAD_0_255": 0.68093
+        }
+      ],
+      "apres": [
+        {
+          "pixels": 518400,
+          "deltaMax": 43,
+          "plus2": 2833,
+          "plus8": 548,
+          "plus24": 26,
+          "MAD_0_255": 0.05219
+        },
+        {
+          "pixels": 518400,
+          "deltaMax": 39,
+          "plus2": 3004,
+          "plus8": 519,
+          "plus24": 12,
+          "MAD_0_255": 0.0581
+        }
+      ]
+    },
+    "balise_avec_sans_diodes": {
+      "face": {
+        "zone_centrale": {
+          "pixels": 10880,
+          "deltaMax": 196,
+          "plus2": 6085,
+          "plus8": 5161,
+          "plus24": 3180,
+          "MAD_0_255": 23.60573
+        },
+        "zone_boitier": {
+          "pixels": 84672,
+          "deltaMax": 200,
+          "plus2": 36881,
+          "plus8": 30963,
+          "plus24": 17258,
+          "MAD_0_255": 15.67564
+        }
+      },
+      "dos": {
+        "zone_centrale": {
+          "pixels": 10880,
+          "deltaMax": 0,
+          "plus2": 0,
+          "plus8": 0,
+          "plus24": 0,
+          "MAD_0_255": 0.0
+        },
+        "zone_boitier": {
+          "pixels": 84672,
+          "deltaMax": 5,
+          "plus2": 52,
+          "plus8": 0,
+          "plus24": 0,
+          "MAD_0_255": 0.00367
+        }
+      }
+    }
+  },
+  "methode": [
+    "Pluie fixe des conditions de course, rendu à 960×540 en poursuite, même graine et emplacements. La première pose reprend la grille construite par la course ; la deuxième roule sous PhysX après repositionnement.",
+    "À chacun des deux instants de pluie, capture à nouveau à horloge constante en masquant seulement la toile optique #vitre. Le seuil 8 mesure les pixels pour lesquels au moins une composante RGB varie de plus de huit niveaux sur 255.",
+    "Pour la balise de s2860, les captures de contrôle retirent une seule fois son objet LED de la liste de rendu. Conservation de la même caméra, même phase de l’onde et même boîtier ; fenêtre centrale 170×64, fenêtre élargie 392×216.",
+    "Les approches à 55 et 18 mètres sont en poursuite. S.vue dans la sonde a servi de témoin interne, mais c’est reglages.vue qui sélectionne la vraie caméra de jeu. La pose à 55 m conserve un pivot latéral du suivi. Le dernier trio utilise une caméra d’inspection.",
+    "SwiftShader qualifie les pixels de ces poses et les états physiques des deux témoins. Aucun chronométrage GPU physique."
+  ],
+  "empreintesImages": {
+    "gouttes.jpg": "447f67cba0c94d6026f9ad0f3c75d83aa72a7da8e4a7e5440c5aa6558bc1f349",
+    "balises-approche.jpg": "f8cec6196079ee8a70e8e1838630e6283f3247c0976f5b48d474ff78557536ab",
+    "balises-boitier.jpg": "fa0a268969b81feaad19a736617c0a87da1ba3965208058bae35b58b5960b726"
+  }
+}

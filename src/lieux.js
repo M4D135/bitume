@@ -521,11 +521,11 @@
     }
     return false;
   }
-  function choisirPassage(c, fractionCible, courbureMax = .012) {
-    const n = c.n, centre = Math.floor(fractionCible * n) % n, plage = Math.floor(n * .16);
+  function choisirPassage(c, secteur, fractionCible, courbureMax = .012) {
+    const n = secteur?.n ?? c.n, centre = Math.floor(fractionCible * n) % n, plage = Math.floor(n * .16);
     for (let off = 0; off < plage; off++) {
       for (const sgn of off === 0 ? [0] : [1, -1]) {
-        const i = (centre + sgn * off + n) % n;
+        const i = secteur ? secteur.indice(fractionCible, sgn * off) : (centre + sgn * off + n) % n;
         const f = B.decor.cadre(c, i);
         if (Math.abs(B.circuit.ecart(c, 0, f.s)) < 360) continue;
         if (B.circuit.dansCouvert && B.circuit.dansCouvert(c, f.s, 75)) continue;
@@ -534,13 +534,13 @@
         return f;
       }
     }
-    return B.decor.cadre(c, centre);
+    return secteur ? null : B.decor.cadre(c, centre);
   }
-  function choisirSite(c, terrain, interroger, lim, fractionCible, cotePref, distMin, distMax, rayon, eauMin) {
-    const n = c.n, centre = Math.floor(fractionCible * n) % n;
+  function choisirSite(c, secteur, terrain, interroger, lim, fractionCible, cotePref, distMin, distMax, rayon, eauMin) {
+    const n = secteur?.n ?? c.n, centre = Math.floor(fractionCible * n) % n;
     for (const cote of [cotePref, -cotePref]) {
       for (let off = 0; off < Math.floor(n * .18); off += 3) {
-        const i = (centre + off) % n, f = B.decor.cadre(c, i);
+        const i = secteur ? secteur.indice(fractionCible, off) : (centre + off) % n, f = B.decor.cadre(c, i);
         if (Math.abs(B.circuit.ecart(c, 0, f.s)) < 320) continue;
         for (let d = distMin; d <= distMax; d += 12) {
           const x = f.x + f.r[0] * cote * d, z = f.z + f.r[2] * cote * d;
@@ -553,10 +553,10 @@
     }
     return null;
   }
-  function choisirSiteEau(c, terrain, interroger, lim, fractionCible, niveauEau, rayon) {
-    const n = c.n, centre = Math.floor(fractionCible * n) % n;
+  function choisirSiteEau(c, secteur, terrain, interroger, lim, fractionCible, niveauEau, rayon) {
+    const n = secteur?.n ?? c.n, centre = Math.floor(fractionCible * n) % n;
     for (let off = 0; off < n; off += 4) {
-      const i = (centre + off) % n, f = B.decor.cadre(c, i);
+      const i = secteur ? secteur.indice(fractionCible, off) : (centre + off) % n, f = B.decor.cadre(c, i);
       if (Math.abs(B.circuit.ecart(c, 0, f.s)) < 320) continue;
       for (const cote of [-1, 1]) {
         for (let d = 55; d <= 165; d += 18) {
@@ -597,9 +597,9 @@
   }
 
   function poser(c, outils) {
-    const { terrain, limites: lim, interroger, qualite, saison, ajouter, th } = outils;
-    const rng = prng((c.graine || 1) ^ 0x51a7c9e3);
-    const theme = c.theme || 'foret';
+    const { terrain, limites: lim, interroger, qualite, saison, ajouter, th, secteur } = outils;
+    const rng = prng((secteur?.graine ?? c.graine ?? 1) ^ 0x51a7c9e3);
+    const theme = secteur?.theme || c.theme || 'foret';
     const estCimes = c.id === 'route-des-cimes';
     const low = qualite === 'low';
     const neige = !!(saison && saison.neige);
@@ -607,7 +607,7 @@
 
     // ─── 1. ROUTE DES CIMES : Arche-Portique du Col + Belvédère Panoramique ───
     if (estCimes) {
-      const f = choisirPassage(c, .22, .012);
+      const f = choisirPassage(c, secteur, .22, .012);
       if (f) {
         const { objets, cx, cz, span, hTot, ySommet } = poserArcheRoute(f, lim, terrain, 'bitume-lieu-arche-pont', 15.5, 4.4, 3, [.52, .50, .47], 9, [.44, .42, .39]);
         const tab = obj('box', [cx, ySommet + .45, cz], [5.4, 1.1, span + 4], [0, -f.a, 0], 3, [.58, .56, .52]);
@@ -615,7 +615,7 @@
         deposer(ajouter, objets, objets.slice(), cx, cz);
         marqueurs.push({ nom: 'Arche du Col des Cimes', type: 'arche', x: cx, y: f.y + hTot, z: cz });
       }
-      const site = choisirSite(c, terrain, interroger, lim, .62, 1, 36, 95, 16);
+      const site = choisirSite(c, secteur, terrain, interroger, lim, .62, 1, 36, 95, 16);
       if (site) {
         const yb = basEmprise(terrain, site.x, site.z, 9) - .8, objets = [];
         objets.push(solide(obj('bitume-lieu-rocher-alpin', [site.x, yb + 3.2, site.z], [20, 8, 18], [0, rng() * TAU, 0], 9, [.45, .44, .41]), 'roche-lieu'));
@@ -630,7 +630,7 @@
 
     // ─── 2. VAL-BRÛLÉ (foret) : Viaduc des Chênes + Beffroi / Tour de l'Horloge ───
     if (theme === 'foret') {
-      const f = choisirPassage(c, .26, .012);
+      const f = choisirPassage(c, secteur, .26, .012);
       if (f) {
         const { objets, cx, cz, span, ySommet } = poserArcheRoute(f, lim, terrain, 'bitume-lieu-arche-pont', 15, 4.6, 3, [.58, .54, .48], 3, [.50, .47, .42]);
         objets.push(obj('box', [cx, ySommet + .45, cz], [5.8, 1.2, span + 6], [0, -f.a, 0], 3, [.54, .50, .44]));
@@ -640,7 +640,7 @@
         deposer(ajouter, objets, objets.slice(), cx, cz);
         marqueurs.push({ nom: 'Viaduc des Chênes', type: 'viaduc', x: cx, y: ySommet + 1.5, z: cz });
       }
-      const siteT = choisirSite(c, terrain, interroger, lim, .62, 1, 38, 92, 12);
+      const siteT = choisirSite(c, secteur, terrain, interroger, lim, .62, 1, 38, 92, 12);
       if (siteT) {
         const yb = basEmprise(terrain, siteT.x, siteT.z, 6) - .8, H = 24, a = -siteT.f.a, objets = [];
         objets.push(solide(obj('box', [siteT.x, yb + H * .5, siteT.z], [6.4, H, 6.4], [0, a, 0], 3, [.68, .63, .54]), 'tour-horloge'));
@@ -659,7 +659,7 @@
     // ─── 3. PORT-SABLE (cote) : Grand Phare du Cap + Port aux Voiliers + Arche Maritime ───
     if (theme === 'cote') {
       const eau = terrain.niveauEau !== undefined ? terrain.niveauEau : -4;
-      const siteP = choisirSite(c, terrain, interroger, lim, .28, 1, 40, 105, 16, eau + 1.5);
+      const siteP = choisirSite(c, secteur, terrain, interroger, lim, .28, 1, 40, 105, 16, eau + 1.5);
       if (siteP) {
         const yb = basEmprise(terrain, siteP.x, siteP.z, 7) - 1.2, H = 34, objets = [];
         objets.push(solide(obj('bitume-lieu-galet-b', [siteP.x, yb + 2.2, siteP.z], [15, 5.5, 14], [0, rng() * TAU, 0], 9, [.44, .41, .36]), 'roche-lieu'));
@@ -672,20 +672,18 @@
         deposer(ajouter, objets, objets.slice(0, 5), siteP.x, siteP.z);
         marqueurs.push({ nom: 'Grand Phare du Cap', type: 'phare', x: siteP.x, y: yb + H + 6, z: siteP.z });
       }
-      const sitePort = choisirSiteEau(c, terrain, interroger, lim, .68, eau, 22);
+      const sitePort = choisirSiteEau(c, secteur, terrain, interroger, lim, .68, eau, 22);
       if (sitePort) {
         const a = -sitePort.f.a, objets = [];
         objets.push(obj('box', [sitePort.x, eau + .9, sitePort.z], [28, 1.4, 4.2], [0, a, 0], 10, [.42, .30, .18]));
         for (let v = 0; v < (low ? 2 : 3); v++) {
           const dec = (v - 1) * 11, vx = sitePort.x + sitePort.f.t[0] * dec + sitePort.f.r[0] * 10, vz = sitePort.z + sitePort.f.t[2] * dec + sitePort.f.r[2] * 10;
-          objets.push(obj('bitume-lieu-galet-a', [vx, eau + .6, vz], [8.5, 1.8, 3.0], [0, a + .15 * v, 0], 16, [.92, .91, .88]));
-          objets.push(obj('cylinder', [vx, eau + 6.4, vz], [.22, 11, .22], [0, 0, 0], 0, [.72, .74, .76]));
-          objets.push(obj('bitume-lieu-voile', [vx, eau + 6.8, vz], [1.4, 9.5, 5.6], [0, a + .35, 0], 16, [.97, .96, .93]));
+          ajouterVoilier(objets, vx, vz, eau, a + .15 * v, a + .35);
         }
         deposer(ajouter, objets, objets.slice(), sitePort.x, sitePort.z);
         marqueurs.push({ nom: 'Port aux Voiliers', type: 'port', x: sitePort.x, y: eau + 10, z: sitePort.z });
       }
-      const fa = choisirPassage(c, .50, .012);
+      const fa = choisirPassage(c, secteur, .50, .012);
       if (fa) {
         const { objets, cx, cz, hTot } = poserArcheRoute(fa, lim, terrain, 'bitume-lieu-arche-naturelle', 17, 6.5, 9, [.64, .58, .48]);
         deposer(ajouter, objets, objets.slice(), cx, cz);
@@ -696,7 +694,7 @@
 
     // ─── 4. HAUT-COL (montagne) : Galerie Paravalanche + Téléphérique des Aiguilles ───
     if (theme === 'montagne') {
-      const fg = choisirPassage(c, .32, .009);
+      const fg = choisirPassage(c, secteur, .32, .009);
       if (fg) {
         const limG = (lim.G[fg.i] || 12) + 2.8, limD = (lim.D[fg.i] || 12) + 2.8;
         const dec = (limD - limG) * .5, span = limG + limD + 3.2, galLen = 54, rot = [0, -fg.a, 0];
@@ -713,7 +711,7 @@
         deposer(ajouter, objets, objets.slice(), cx, cz);
         marqueurs.push({ nom: 'Galerie Paravalanche', type: 'galerie', x: cx, y: fg.y + 11, z: cz });
       }
-      const ft = choisirPassage(c, .70, .012);
+      const ft = choisirPassage(c, secteur, .70, .012);
       if (ft) {
         const limG = (lim.G[ft.i] || 12) + 6.5, limD = (lim.D[ft.i] || 12) + 6.5;
         const pL = [ft.x - ft.r[0] * limG, Math.min(ft.y, terrain.sol(ft.x - ft.r[0] * limG, ft.z - ft.r[2] * limG)), ft.z - ft.r[2] * limG];
@@ -740,14 +738,14 @@
 
     // ─── 5. LANDE-NOIRE (islande) : Pont-Arche Noir + Kirkja Nordique + Lagon Géothermal ───
     if (theme === 'islande') {
-      const fp = choisirPassage(c, .24, .012);
+      const fp = choisirPassage(c, secteur, .24, .012);
       if (fp) {
         const { objets, cx, cz, span, ySommet } = poserArcheRoute(fp, lim, terrain, 'bitume-lieu-arche-pont', 16, 3.6, 0, [.13, .14, .16], 9, [.14, .15, .17]);
         objets.push(obj('box', [cx, ySommet + .45, cz], [5.4, .95, span + 5], [0, -fp.a, 0], 0, [.16, .17, .19]));
         deposer(ajouter, objets, objets.slice(), cx, cz);
         marqueurs.push({ nom: 'Pont-Arche Noir de la Faille', type: 'pont', x: cx, y: ySommet + 1.5, z: cz });
       }
-      const siteK = choisirSite(c, terrain, interroger, lim, .55, 1, 38, 92, 14);
+      const siteK = choisirSite(c, secteur, terrain, interroger, lim, .55, 1, 38, 92, 14);
       if (siteK) {
         const yb = basEmprise(terrain, siteK.x, siteK.z, 8) - .8, a = -siteK.f.a, objets = [];
         objets.push(solide(obj('box', [siteK.x, yb + 4.2, siteK.z], [9, 8.4, 15], [0, a, 0], 7, [.12, .12, .13]), 'kirkja'));
@@ -757,7 +755,7 @@
         deposer(ajouter, objets, objets.slice(), siteK.x, siteK.z);
         marqueurs.push({ nom: 'Kirkja Nordique', type: 'monument', x: siteK.x, y: yb + 23, z: siteK.z });
       }
-      const siteL = choisirSite(c, terrain, interroger, lim, .80, -1, 44, 105, 22);
+      const siteL = choisirSite(c, secteur, terrain, interroger, lim, .80, -1, 44, 105, 22);
       if (siteL) {
         const yb = terrain.sol(siteL.x, siteL.z), objets = [];
         objets.push(obj('cylinder', [siteL.x, yb + .25, siteL.z], [28, .8, 22], [0, rng() * TAU, 0], 5, [.28, .82, .88], { emissive: .45 }));
@@ -774,7 +772,7 @@
 
     // ─── 6. ROCHE-FAUVE (desert) : Nécropole des Pyramides + Grande Arche en Grès + Oasis ───
     if (theme === 'desert') {
-      const sitePyr = choisirSite(c, terrain, interroger, lim, .18, 1, 68, 140, 38);
+      const sitePyr = choisirSite(c, secteur, terrain, interroger, lim, .18, 1, 68, 140, 38);
       if (sitePyr) {
         const yb1 = basEmprise(terrain, sitePyr.x, sitePyr.z, 26) - 2.2, objets = [];
         objets.push(solide(obj('bitume-lieu-pyramide', [sitePyr.x, yb1 + 22, sitePyr.z], [64, 44, 64], [0, .28, 0], 9, [.78, .61, .36]), 'pyramide'));
@@ -799,13 +797,13 @@
         deposer(ajouter, objets, objets.slice(), sitePyr.x, sitePyr.z);
         marqueurs.push({ nom: 'Nécropole des Pyramides', type: 'pyramides', x: sitePyr.x, y: yb1 + 44, z: sitePyr.z });
       }
-      const fa = choisirPassage(c, .50, .012);
+      const fa = choisirPassage(c, secteur, .50, .012);
       if (fa) {
         const { objets, cx, cz, hTot } = poserArcheRoute(fa, lim, terrain, 'bitume-lieu-arche-naturelle', 18, 7.5, 9, [.64, .34, .18]);
         deposer(ajouter, objets, objets.slice(), cx, cz);
         marqueurs.push({ nom: 'Grande Arche Naturelle en Grès', type: 'arche', x: cx, y: fa.y + hTot, z: cz });
       }
-      const siteO = choisirSite(c, terrain, interroger, lim, .76, -1, 46, 115, 22);
+      const siteO = choisirSite(c, secteur, terrain, interroger, lim, .76, -1, 46, 115, 22);
       if (siteO) {
         const yb = terrain.sol(siteO.x, siteO.z), objets = [];
         objets.push(obj('cylinder', [siteO.x, yb + .25, siteO.z], [24, .7, 19], [0, rng() * TAU, 0], 5, [.16, .62, .68], { emissive: .22 }));
@@ -827,7 +825,7 @@
 
     // ─── 7. BRUME-DE-JADE (asie) : Grand Portail Torii Vermillon + Pagode des Brumes ───
     if (theme === 'asie') {
-      const ft = choisirPassage(c, .28, .010);
+      const ft = choisirPassage(c, secteur, .28, .010);
       if (ft) {
         const limG = (lim.G[ft.i] || 12) + 3.2, limD = (lim.D[ft.i] || 12) + 3.2;
         const dec = (limD - limG) * .5, span = limG + limD + 4, rot = [0, -ft.a, 0];
@@ -846,7 +844,7 @@
         deposer(ajouter, objets, objets.slice(), cx, cz);
         marqueurs.push({ nom: 'Grand Portail Torii Vermillon', type: 'torii', x: cx, y: ft.y + 15, z: cz });
       }
-      const sitePag = choisirSite(c, terrain, interroger, lim, .64, 1, 40, 96, 16);
+      const sitePag = choisirSite(c, secteur, terrain, interroger, lim, .64, 1, 40, 96, 16);
       if (sitePag) {
         const yb = basEmprise(terrain, sitePag.x, sitePag.z, 9) - 1.0, etages = low ? 3 : 4, objets = [];
         objets.push(solide(obj('box', [sitePag.x, yb + 1.2, sitePag.z], [14, 2.4, 14], [0, 0, 0], 9, [.44, .46, .45]), 'pagode'));
@@ -864,7 +862,7 @@
 
     // ─── 8. CAP-SÉQUOIA (pacifique) : Grand Pont Suspendu Vermillon + Arche Séquoia Géant ───
     if (theme === 'pacifique') {
-      const fp = choisirPassage(c, .26, .006);
+      const fp = choisirPassage(c, secteur, .26, .006);
       if (fp) {
         const limG = (lim.G[fp.i] || 13) + 3.6, limD = (lim.D[fp.i] || 13) + 3.6;
         const dec = (limD - limG) * .5, span = limG + limD + 2.4, rot = [0, -fp.a, 0];
@@ -903,7 +901,7 @@
         deposer(ajouter, objets, objets.slice(0, 14), cx, cz);
         marqueurs.push({ nom: 'Grand Pont Suspendu Vermillon', type: 'pont-suspendu', x: cx, y: fp.y + pylH, z: cz });
       }
-      const fs = choisirPassage(c, .66, .012);
+      const fs = choisirPassage(c, secteur, .66, .012);
       if (fs) {
         const { objets, cx, cz, hTot } = poserArcheRoute(fs, lim, terrain, 'bitume-lieu-arche-naturelle', 17, 6.2, 10, [.38, .19, .10]);
         deposer(ajouter, objets, objets.slice(), cx, cz);
@@ -915,7 +913,7 @@
     // ─── 9. BAÏKAL (baikal) : Chapelle aux Bulbes Dorés + Phare-Jetée + Portique Sibérien ───
     if (theme === 'baikal') {
       const eau = terrain.niveauEau !== undefined ? terrain.niveauEau : -8;
-      const siteCh = choisirSite(c, terrain, interroger, lim, .30, 1, 36, 90, 14, eau + 2);
+      const siteCh = choisirSite(c, secteur, terrain, interroger, lim, .30, 1, 36, 90, 14, eau + 2);
       if (siteCh) {
         const yb = basEmprise(terrain, siteCh.x, siteCh.z, 8) - 1.0, a = -siteCh.f.a, objets = [];
         objets.push(solide(obj('box', [siteCh.x, yb + 1.2, siteCh.z], [11.5, 2.4, 15.5], [0, a, 0], 9, [.44, .45, .46]), 'chapelle'));
@@ -930,7 +928,7 @@
         deposer(ajouter, objets, objets.slice(), siteCh.x, siteCh.z);
         marqueurs.push({ nom: 'Chapelle Sibérienne aux Bulbes Dorés', type: 'chapelle', x: siteCh.x, y: yb + 19, z: siteCh.z });
       }
-      const sitePJ = choisirSiteEau(c, terrain, interroger, lim, .62, eau, 18);
+      const sitePJ = choisirSiteEau(c, secteur, terrain, interroger, lim, .62, eau, 18);
       if (sitePJ) {
         const a = -sitePJ.f.a, objets = [];
         objets.push(obj('box', [sitePJ.x, eau + .9, sitePJ.z], [22, 1.2, 3.6], [0, a, 0], 10, [.38, .26, .15]));
@@ -941,7 +939,7 @@
         deposer(ajouter, objets, objets.slice(), sitePJ.x, sitePJ.z);
         marqueurs.push({ nom: 'Phare-Jetée du Lac Baïkal', type: 'phare', x: tx, y: eau + 15, z: tz });
       }
-      const fpq = choisirPassage(c, .82, .012);
+      const fpq = choisirPassage(c, secteur, .82, .012);
       if (fpq) {
         const limG = (lim.G[fpq.i] || 12) + 3.0, limD = (lim.D[fpq.i] || 12) + 3.0;
         const dec = (limD - limG) * .5, span = limG + limD + 3.6, rot = [0, -fpq.a, 0];
@@ -962,5 +960,11 @@
     return { marqueurs };
   }
 
-  B.lieux = { FORMES, rocherPour, pyramidePour, poser };
+  function ajouterVoilier(objets, x, z, eau, coque, voile) {
+    objets.push(obj('bitume-lieu-galet-a', [x, eau + .6, z], [8.5, 1.8, 3.0], [0, coque, 0], 16, [.92, .91, .88]));
+    objets.push(obj('cylinder', [x, eau + 6.4, z], [.22, 11, .22], [0, 0, 0], 0, [.72, .74, .76]));
+    objets.push(obj('bitume-lieu-voile', [x, eau + 6.8, z], [1.4, 9.5, 5.6], [0, voile, 0], 16, [.97, .96, .93]));
+  }
+
+  B.lieux = { FORMES, rocherPour, pyramidePour, poser, ajouterVoilier };
 })(globalThis.BITUME = globalThis.BITUME || {});

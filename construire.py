@@ -33,6 +33,8 @@ MODULES = [
     'ferro/gpu-profile.js',
     'circuit.js',
     'couverts.js',  # sections, abri 3D et galeries ; avant chaussée/décor/jeu
+    'circuit-raccords-data.js',
+    'circuit-raccords.js',
     'route-des-cimes.js',
     'route-des-cimes-decor.js',
     'larche-vinadio-data.js',
@@ -68,6 +70,7 @@ MODULES = [
     'batiments.js',  # façades, garages et repères de la voie de service, préparés une fois
     'lieux.js',  # rochers organiques, pyramides du désert et lieux emblématiques des neuf circuits
     'herbier-wasm.js',
+    'lagon.js',
     'decor.js',
     'physique.js',
     'faune.js',

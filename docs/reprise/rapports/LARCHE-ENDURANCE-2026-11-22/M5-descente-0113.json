@@ -1,0 +1,231 @@
+{
+  "sha256": "a9a7d2ec175443cc5133e6c24215674bcef07bd16b06abd1e029a29cc6fb9860",
+  "fichier": "0113-larche-integree.html",
+  "preuve": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+  "depart": {
+    "graine": 23731,
+    "circuit": "larche",
+    "depart": 0,
+    "arrivee": 32249.33,
+    "PhysX": true,
+    "pilote": true,
+    "modeCadence": "ecran",
+    "rendu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+    "voitures": [
+      {
+        "id": 0,
+        "nom": "Vous",
+        "s": 41.997910640449845
+      },
+      {
+        "id": 1,
+        "nom": "R. Castagnet",
+        "s": 9.998599042824935
+      },
+      {
+        "id": 2,
+        "nom": "E. Varenne",
+        "s": 82.00027997900179
+      },
+      {
+        "id": 3,
+        "nom": "P. Morvan",
+        "s": 26.011428747646278
+      },
+      {
+        "id": 4,
+        "nom": "L. Brasquet",
+        "s": 90.00004309612996
+      },
+      {
+        "id": 5,
+        "nom": "H. Delacour",
+        "s": 49.999196949567704
+      },
+      {
+        "id": 6,
+        "nom": "T. Okafor",
+        "s": 65.99992504483089
+      },
+      {
+        "id": 7,
+        "nom": "J. Vanmeer",
+        "s": 74.00003275454947
+      },
+      {
+        "id": 8,
+        "nom": "S. Ferrandi",
+        "s": 97.99944019577379
+      },
+      {
+        "id": 9,
+        "nom": "K. Lindgren",
+        "s": 18.00243294743268
+      },
+      {
+        "id": 10,
+        "nom": "M. Duvernet",
+        "s": 58.000175344684976
+      },
+      {
+        "id": 11,
+        "nom": "A. Kowalczyk",
+        "s": 34.006112774331996
+      }
+    ],
+    "resolution": [
+      1920,
+      1080
+    ]
+  },
+  "arrivee": {
+    "ecran": "course",
+    "termine": true,
+    "abandon": false,
+    "temps": 978.3611918756001,
+    "s": 32249.559928209463
+  },
+  "observations": 906,
+  "imagesRAF": 54345,
+  "rendusPrincipaux": 54343,
+  "dureeS": 978.461,
+  "fpsRendus": 55.54,
+  "fpsRaf": 55.54,
+  "p50RafMs": 16.7,
+  "p95RendusMs": 33.3,
+  "p99RendusMs": 33.4,
+  "pireRenduMs": 183.4,
+  "images25ms": 4257,
+  "images50ms": 65,
+  "images100ms": 5,
+  "kms_au_moins_59_5": 4,
+  "kms_au_moins_59": 5,
+  "kms_total": 33,
+  "kms_50_ou_moins": [
+    21,
+    26
+  ],
+  "pire_km": 26,
+  "intervallesPires": [
+    {
+      "km": 5,
+      "tempsS": 164.31,
+      "ms": 183.4,
+      "abscisseM": 4579.33
+    },
+    {
+      "km": 5,
+      "tempsS": 140.261,
+      "ms": 150.1,
+      "abscisseM": 4011.31
+    },
+    {
+      "km": 3,
+      "tempsS": 91.33,
+      "ms": 150,
+      "abscisseM": 2860
+    },
+    {
+      "km": 23,
+      "tempsS": 757.086,
+      "ms": 116.7,
+      "abscisseM": 22640.63
+    },
+    {
+      "km": 5,
+      "tempsS": 140.561,
+      "ms": 100,
+      "abscisseM": 4016.04
+    },
+    {
+      "km": 17,
+      "tempsS": 563.111,
+      "ms": 83.4,
+      "abscisseM": 16495.21
+    },
+    {
+      "km": 5,
+      "tempsS": 140.344,
+      "ms": 83.3,
+      "abscisseM": 4012.63
+    },
+    {
+      "km": 5,
+      "tempsS": 140.428,
+      "ms": 83.3,
+      "abscisseM": 4014.02
+    },
+    {
+      "km": 20,
+      "tempsS": 653.157,
+      "ms": 83.3,
+      "abscisseM": 19792.29
+    },
+    {
+      "km": 5,
+      "tempsS": 163.843,
+      "ms": 83.2,
+      "abscisseM": 4573.28
+    },
+    {
+      "km": 12,
+      "tempsS": 395.084,
+      "ms": 66.6,
+      "abscisseM": 11328.8
+    },
+    {
+      "km": 5,
+      "tempsS": 163.76,
+      "ms": 50.1,
+      "abscisseM": 4572
+    }
+  ],
+  "qualite": [
+    "high"
+  ],
+  "palier": [
+    "high"
+  ],
+  "largeur": [
+    "1920"
+  ],
+  "hauteur": [
+    "1080"
+  ],
+  "vue": [
+    "cockpit"
+  ],
+  "retro": [
+    "oui"
+  ],
+  "hzParGlace": [
+    "30"
+  ],
+  "glacesVisibles": [
+    "2"
+  ],
+  "voitures": [
+    "12"
+  ],
+  "physx": [
+    "True"
+  ],
+  "pluieObservee": [
+    0.75
+  ],
+  "mouilleObserve": [
+    0.16517876666666695,
+    1
+  ],
+  "thermiqueSecondesApprox": {
+    "1": 974.96
+  },
+  "pertesVisibilite": 0,
+  "violationsDeReglages": 0,
+  "erreursJS": [],
+  "limites": [
+    "Mac M5 en Chrome headless ANGLE Metal à DPR 1 ; température interne en °C non exposée. État de pression thermique macOS échantillonné toutes les dix secondes.",
+    "FPS du renderer principal relevés directement sur draw, intervalles de l’écran relevés par rAF. Le volet de chronométrage GPU du jeu est fermé pour ne pas modifier la cadence.",
+    "Les changements météorologiques locaux sous une voûte n’affectent pas le réglage de forte pluie. La course se termine à l’arrivée du pilote local."
+  ]
+}

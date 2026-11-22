@@ -8,8 +8,8 @@ import { capturer, optionsCapture } from './controle-visuel.mjs';
 
 import { catalogueJeu } from './qualification/circuit-catalogue.mjs';
 
-const DEPARTS = { 'val-brule': 1100, marseille: 1450, corail: 1450, 'cap-sequoia': 1500,
-  fjord: 1800, 'route-des-cimes': 1400, larche: 4750, 'lande-noire': 1700, sierra: 1900, 'brume-de-jade': 2000, baikal: 2000 };
+const DEPARTS = { 'forets-du-pacifique': 1100, marseille: 1450, 'karst-et-lagon': 2000, sierra: 1900,
+  'nord-atlantique': 1800, 'route-des-cimes': 1400, larche: 4750, baikal: 2000 };
 export const CIRCUITS_SAISONS = Object.freeze(catalogueJeu.map(({ id }, circuit) => Object.freeze({ id, depart: DEPARTS[id], circuit })));
 export const SAISONS = Object.freeze(['printemps', 'ete', 'automne', 'hiver']);
 export function optionsSaisons(argv) {

@@ -1,20 +1,18 @@
 import {createRequire} from 'node:module';
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
-import vm from 'node:vm';
+import {catalogueJeu as catalogue,creerCircuitCatalogue} from './circuit-catalogue.mjs';
 import {createHash} from 'node:crypto';
 import {chargerPhysX} from '../../verifications/helpers/physx-runtime.mjs';
 const require=createRequire(import.meta.url);
-for(const f of ['circuit','conduite','degats','contacts','obstacles','botanique','ecologie','saisons','vegetation','bords','carene','decor','meteo','strategie-stands','course','solides-physx','physique'])require('../../src/'+f+'.js');
+for(const f of ['circuit','couverts','destinations','conduite','degats','contacts','obstacles','botanique','ecologie','saisons','vegetation','bosquets','bords','carene','larche-vinadio-decor','marseille-decor','decor','meteo','strategie-stands','course','solides-physx','physique'])require('../../src/'+f+'.js');
 const B=globalThis.BITUME, X=globalThis.FPhysX=await chargerPhysX(),DT=1/120;
-const src=readFileSync(new URL('../../src/jeu.js',import.meta.url),'utf8');
-const catalogue=vm.runInNewContext(src.match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1]);
 const ids=(process.env.CIRCUITS||'baikal').split(','), duree=+(process.env.DUREE||75), rivals=+(process.env.RIVAUX||11), out=process.env.RAPPORT||'/tmp/bitume-physx-courses.json';
-const sourceFiles=['src/physique.js','src/conduite.js','src/course.js','src/solides-physx.js','src/decor.js','src/traces.js','src/bords.js','src/chaussee.js','tools/qualification/physx-courses.mjs'];
+const sourceFiles=['src/jeu.js','src/circuit.js','src/circuit-raccords.js','src/route-des-cimes.js','src/marseille.js','src/larche-vinadio.js','src/larche-vinadio-data.js','src/physique.js','src/conduite.js','src/course.js','src/solides-physx.js','src/decor.js','src/traces.js','src/bords.js','src/chaussee.js','tools/qualification/physx-courses.mjs'];
 const sourceHashes=Object.fromEntries(sourceFiles.map(p=>[p,createHash('sha256').update(readFileSync(new URL('../../'+p,import.meta.url))).digest('hex')]));
 const adapterPath=process.env.BITUME_PHYSX_ADAPTER||new URL('../../src/ferro/physx.js',import.meta.url);
 const report={backend:X.status(),dt:DT,duree,sourceHashes,adapterSHA256:createHash('sha256').update(readFileSync(adapterPath)).digest('hex'),resultats:[]};
 for(const k of catalogue.filter(c=>ids.includes(c.id))){
- const start=performance.now(),c=B.circuit.creer(k.graine,{theme:k.theme,longueur:k.longueur,nom:k.nom});B.bords.limites(c,B.bords.planifier(c));
+ const start=performance.now(),c=creerCircuitCatalogue(B,k);
  const weather=process.env.METEO||'sec';
  const decor=B.decor.construire(c,{qualite:'high',matieres:true,vegetation:true,vegetationQualite:'high',saison:weather==='neige'?'hiver':'ete',solsProceduraux:true});c.obstacles=B.obstacles.creer(decor.obstacles);
  const surface=weather==='pluie'?{pluie:1,mouille:1,neigeSol:0}:weather==='neige'?{pluie:.8,mouille:0,neigeSol:.8,precipitationsNeige:true}:{pluie:0,mouille:0,neigeSol:0};

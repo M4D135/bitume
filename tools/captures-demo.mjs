@@ -6,10 +6,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { capturer, optionsCapture } from './controle-visuel.mjs';
 
-export const CIRCUITS_DEMO = Object.freeze([
-  'val-brule', 'marseille', 'corail', 'cap-sequoia', 'fjord', 'route-des-cimes',
-  'larche', 'lande-noire', 'sierra', 'brume-de-jade', 'baikal'
-]);
+import { catalogueJeu } from './qualification/circuit-catalogue.mjs';
+
+export const CIRCUITS_DEMO = Object.freeze(catalogueJeu.map(c => c.id));
 export const SCENARIOS = Object.freeze([
   ...CIRCUITS_DEMO.flatMap((id, circuit) => [
     { id: 'route-' + id, circuit, vue: 'peloton', attendu: 'peloton', cadrage: 'route', instants: [.4, 4, 7.6] },

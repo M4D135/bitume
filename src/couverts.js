@@ -77,6 +77,20 @@
     return null;
   }
   function invalider(c) { if (c && typeof c === 'object') CACHE.delete(c); }
+  // Chaque tranche contient aussi le dernier sommet du dernier segment. Une
+  // marge horizontale égale à la largeur du couvert préserve les portails et
+  // les bords courbes. La hauteur et le dévers restent évalués sur le vrai sol.
+  function emprise(axe, debut, fin, marge) {
+    let x0 = Infinity, z0 = Infinity, x1 = -Infinity, z1 = -Infinity;
+    for (let k = debut; k <= fin; k += 5) {
+      x0 = Math.min(x0, axe[k]); x1 = Math.max(x1, axe[k]);
+      z0 = Math.min(z0, axe[k + 2]); z1 = Math.max(z1, axe[k + 2]);
+    }
+    return { debut, fin, x0: x0 - marge, x1: x1 + marge, z0: z0 - marge, z1: z1 + marge };
+  }
+  function horsEmprise(b, x, z) {
+    return x < b.x0 || x > b.x1 || z < b.z0 || z > b.z1;
+  }
   // Préparation de scène. Les sommets sont ceux de la polyligne réellement échantillonnée, y et dévers compris.
   // Une modification en place du tracé ou d'un ouvrage exige invalider(c), avant le prochain rendu.
   function preparer(c) {
@@ -95,7 +109,10 @@
         if (s === fin) break;
         s = Math.min(fin, (Math.floor((s + 1e-8) / pas) + 1) * pas);
       }
-      blocs.push({ t, axe: new Float64Array(points), politique: politique(t) });
+      const axe = new Float64Array(points), finAxe = axe.length - 5, tranches = [];
+      for (let k = 0; k < finAxe; k += 80)
+        tranches.push(emprise(axe, k, Math.min(finAxe, k + 80), t.mur));
+      blocs.push({ t, axe, tranches, emprise: emprise(axe, 0, finAxe, t.mur), politique: politique(t) });
     }
     const resultat = { liste: ts, longueur: c.longueur, x: c.x, y: c.y, z: c.z, devers: c.devers, blocs };
     CACHE.set(c, resultat); return resultat;
@@ -109,23 +126,27 @@
   // Les extrémités restent des portails plans ; seuls les raccords intérieurs joignent les petits segments.
   function position(c, p, destination) {
     const out = destination || {}, px = p?.[0], py = p?.[1], pz = p?.[2]; vider(out);
-    if (![px, py, pz].every(fini) || !c || !liste(c).length) return null;
+    if (!fini(px) || !fini(py) || !fini(pz) || !c || !liste(c).length) return null;
     let meilleur = Infinity;
     for (const bloc of preparer(c).blocs) {
+      if (horsEmprise(bloc.emprise, px, pz)) continue;
       const { t, axe: A } = bloc;
       let proche = Infinity, index = -1, fraction = 0, decalage = 0, hauteur = 0, solProche = 0, portail = false;
-      for (let k = 0; k < A.length - 5; k += 5) {
-        const dx = A[k + 5] - A[k], dz = A[k + 7] - A[k + 2], l2 = dx * dx + dz * dz;
-        if (l2 < 1e-12) continue;
-        const vx = px - A[k], vz = pz - A[k + 2], u0 = (vx * dx + vz * dz) / l2;
-        const u = borner(u0, 0, 1), qx = vx - dx * u, qz = vz - dz * u, d2 = qx * qx + qz * qz;
-        if (d2 >= t.mur * t.mur || d2 >= proche) continue;
-        const d = (vz * dx - vx * dz) / Math.sqrt(l2), devers = A[k + 4] + (A[k + 9] - A[k + 4]) * u;
-        const sol = A[k + 1] + (A[k + 6] - A[k + 1]) * u - d * Math.sin(devers), h = py - sol;
-        // Le segment le plus proche décide aussi d'un refus au portail. Ne pas l'ignorer puis
-        // accepter le disque arrondi d'un segment intérieur, ce qui abriterait avant le toit.
-        proche = d2; index = k; fraction = u; decalage = d; hauteur = h; solProche = sol;
-        portail = k === 0 && u0 <= 0 || k === A.length - 10 && u0 >= 1;
+      for (const tranche of bloc.tranches) {
+        if (horsEmprise(tranche, px, pz)) continue;
+        for (let k = tranche.debut; k < tranche.fin; k += 5) {
+          const dx = A[k + 5] - A[k], dz = A[k + 7] - A[k + 2], l2 = dx * dx + dz * dz;
+          if (l2 < 1e-12) continue;
+          const vx = px - A[k], vz = pz - A[k + 2], u0 = (vx * dx + vz * dz) / l2;
+          const u = borner(u0, 0, 1), qx = vx - dx * u, qz = vz - dz * u, d2 = qx * qx + qz * qz;
+          if (d2 >= t.mur * t.mur || d2 >= proche) continue;
+          const d = (vz * dx - vx * dz) / Math.sqrt(l2), devers = A[k + 4] + (A[k + 9] - A[k + 4]) * u;
+          const sol = A[k + 1] + (A[k + 6] - A[k + 1]) * u - d * Math.sin(devers), h = py - sol;
+          // Le segment le plus proche décide aussi d'un refus au portail. Ne pas l'ignorer puis
+          // accepter le disque arrondi d'un segment intérieur, ce qui abriterait avant le toit.
+          proche = d2; index = k; fraction = u; decalage = d; hauteur = h; solProche = sol;
+          portail = k === 0 && u0 <= 0 || k === A.length - 10 && u0 >= 1;
+        }
       }
       if (index < 0 || portail || hauteur < -.12 || hauteur >= t.hauteur || proche >= meilleur) continue;
       meilleur = proche;

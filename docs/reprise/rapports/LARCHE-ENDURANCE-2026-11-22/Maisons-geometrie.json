@@ -1,0 +1,56 @@
+{
+  "low": {
+    "ancien": {
+      "maisons": 12,
+      "shaSolides": "e0d27c73dadb3881f093309f99fb630e24446da011f52231ec614a4c684ed67c",
+      "shaMasquesHerbier": "e93cac7ddaca95b2a3ab6962e183fe996ee33919747fcd8a20f800ad80195846",
+      "formes": {},
+      "trianglesProche": 672,
+      "trianglesLoin": 672,
+      "instances": 24,
+      "msConstat": 6
+    },
+    "nouveau": {
+      "maisons": 12,
+      "shaSolides": "e0d27c73dadb3881f093309f99fb630e24446da011f52231ec614a4c684ed67c",
+      "shaMasquesHerbier": "e93cac7ddaca95b2a3ab6962e183fe996ee33919747fcd8a20f800ad80195846",
+      "formes": {
+        "stura-couverture": 20,
+        "stura-pignons": 2,
+        "stura-cadre": 20
+      },
+      "trianglesProche": 2616,
+      "trianglesLoin": 552,
+      "instances": 180,
+      "msConstat": 6
+    },
+    "ecartsSolides": []
+  },
+  "high": {
+    "ancien": {
+      "maisons": 30,
+      "shaSolides": "1e5d00a3941883f277cd5e8fbdf57fc6ba1e16ed4bb0dad4e92b7534c3899d32",
+      "shaMasquesHerbier": "985af94aa645ec79d3e4db4ec8d94ce790885cd2104fd186cef7b11c1850de36",
+      "formes": {},
+      "trianglesProche": 1680,
+      "trianglesLoin": 1680,
+      "instances": 60,
+      "msConstat": 19
+    },
+    "nouveau": {
+      "maisons": 30,
+      "shaSolides": "1e5d00a3941883f277cd5e8fbdf57fc6ba1e16ed4bb0dad4e92b7534c3899d32",
+      "shaMasquesHerbier": "985af94aa645ec79d3e4db4ec8d94ce790885cd2104fd186cef7b11c1850de36",
+      "formes": {
+        "stura-couverture": 20,
+        "stura-pignons": 2,
+        "stura-cadre": 20
+      },
+      "trianglesProche": 13260,
+      "trianglesLoin": 1380,
+      "instances": 970,
+      "msConstat": 18
+    },
+    "ecartsSolides": []
+  }
+}

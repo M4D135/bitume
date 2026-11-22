@@ -1,0 +1,44 @@
+[
+  {
+    "machine": "Apple M5",
+    "version": "0.2.117",
+    "statut": "interrompu",
+    "cause": "La caméra recevait des entrées extérieures.",
+    "journal_sha256": "4f155a85a1ee8ff308aacae41cb5301ad535ae5c8eac4aeea9f18f9053e6d0c9",
+    "derniere_observation": {
+      "utc": "2026-11-22T18:42:19.955Z",
+      "kmRoute": 8.104885245117927,
+      "tReel": 384.28459999999995,
+      "compteur": 16328,
+      "erreurs": 7
+    }
+  },
+  {
+    "machine": "NVIDIA GB10",
+    "version": "0.2.117",
+    "statut": "interrompu",
+    "cause": "Arrêt demandé avant le drapeau.",
+    "journal_sha256": "b53dc526d137823524134fd3d7fea0892e92ba300eac437ca70c85ea881dc004",
+    "derniere_observation": {
+      "utc": "2026-11-22T18:44:24.499Z",
+      "kmRoute": 29.217155511220117,
+      "tReel": 907.2804,
+      "compteur": 54211,
+      "erreurs": 0
+    }
+  },
+  {
+    "machine": "Apple M5",
+    "version": "0.2.119",
+    "statut": "interrompu",
+    "cause": "Arrêt demandé avant le drapeau.",
+    "journal_sha256": "16ae5c1d7181bad3bf0a78f5325592bc360c30d1aacbcd5d159495458b1a7ab7",
+    "derniere_observation": {
+      "utc": "2026-11-22T18:44:30.890Z",
+      "kmRoute": 1.0349086639817906,
+      "tReel": 39.7985,
+      "compteur": 2321,
+      "erreurs": 0
+    }
+  }
+]

@@ -6,15 +6,30 @@
   const POINTS = Object.freeze([25, 18, 15, 12, 10, 8, 6, 4, 2, 1, 0, 0]);
   const STORAGE_KEY = 'bitume.championnat.v1';
 
+  // L’ordre des onze tracés de la version 0.2.120 ne se déduit pas de leur nouvel emplacement.
+  // Il sert également à rattacher les vieux records par indice à leur piste d’origine.
+  const ANCIEN_CATALOGUE = Object.freeze([
+    'val-brule', 'marseille', 'corail', 'cap-sequoia', 'fjord', 'route-des-cimes',
+    'larche', 'lande-noire', 'sierra', 'brume-de-jade', 'baikal'
+  ].map(id => Object.freeze({ id })));
+
+  function indiceCircuit(catalogue, id, ancienIndice) {
+    const cherche = id || ANCIEN_CATALOGUE[ancienIndice]?.id;
+    if (!cherche) return -1;
+    return catalogue.findIndex(c => c.id === cherche || c.troncons?.some(t => t.id === cherche));
+  }
+
   const SAISONS = Object.freeze({
     europe: {
       nom: "Coupe d'Europe",
-      circuits: ['val-brule', 'marseille', 'fjord', 'route-des-cimes', 'larche'],
-      manches: [0, 1, 2, 3, 9]
+      circuits: ['forets-du-pacifique', 'marseille', 'nord-atlantique', 'route-des-cimes', 'larche'],
+      anciensCircuits: ['val-brule', 'marseille', 'fjord', 'route-des-cimes', 'larche'],
+      manches: [0, 1, 4, 5, 6]
     },
     monde: {
       nom: 'Tour du Monde',
-      circuits: ['val-brule', 'marseille', 'corail', 'cap-sequoia', 'fjord', 'route-des-cimes', 'sierra', 'brume-de-jade'],
+      circuits: ['forets-du-pacifique', 'marseille', 'karst-et-lagon', 'nord-atlantique', 'route-des-cimes', 'sierra', 'larche', 'baikal'],
+      anciensCircuits: ['val-brule', 'marseille', 'corail', 'cap-sequoia', 'fjord', 'route-des-cimes', 'sierra', 'brume-de-jade'],
       manches: [0, 1, 2, 3, 4, 5, 6, 7]
     },
     integral: {
@@ -31,10 +46,12 @@
     if (saison.manches === null) {
       // integral : tous les circuits du catalogue
       indicesManches = (catalogue || []).map((_, i) => i);
-    } else if (catalogue && saison.circuits.some(id => catalogue.some(c => c.id === id))) {
-      indicesManches = saison.circuits.map(id => catalogue.findIndex(c => c.id === id)).filter(i => i >= 0);
     } else {
-      indicesManches = saison.manches.filter(i => i < (catalogue || []).length);
+      const pistes = catalogue || [];
+      const calendrier = pistes.some(c => saison.anciensCircuits.includes(c.id) && !saison.circuits.includes(c.id))
+        ? saison.anciensCircuits : saison.circuits;
+      indicesManches = calendrier.map(id => pistes.findIndex(c => c.id === id)).filter(i => i >= 0);
+      if (!indicesManches.length) indicesManches = saison.manches.filter(i => i < pistes.length);
     }
 
     const pilotes = (options.pilotes || []).map(p => ({
@@ -133,7 +150,7 @@
     }
   }
 
-  function charger(storage) {
+  function charger(storage, catalogue) {
     try {
       if (storage === undefined) storage = globalThis.localStorage;
       if (!storage) return null;
@@ -146,6 +163,18 @@
           || etat.termine !== (etat.indexManche === etat.manches.length)
           || !etat.manches.every(m => m && Number.isInteger(m.circuitIndex))
           || !etat.pilotes.every(p => p && typeof p.nom === 'string' && Number.isFinite(p.points))) return null;
+      if (catalogue) {
+        let changement = false;
+        // Préserver le nombre et l’ordre des manches, les arrivées et les points déjà attribués.
+        for (const manche of etat.manches.slice(etat.indexManche)) {
+          const i = indiceCircuit(catalogue, manche.circuitId, manche.circuitIndex);
+          if (i < 0 || (manche.circuitIndex === i && manche.circuitId === catalogue[i].id)) continue;
+          manche.circuitIndex = i;
+          manche.circuitId = catalogue[i].id;
+          changement = true;
+        }
+        if (changement) sauver(etat, storage);
+      }
       return etat;
     } catch (_) {
       return null;
@@ -165,6 +194,8 @@
 
   B.championnat = {
     creer,
+    indiceCircuit,
+    ANCIEN_CATALOGUE,
     enregistrerCourse,
     classement,
     sauver,

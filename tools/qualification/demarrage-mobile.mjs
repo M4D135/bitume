@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Premier démarrage mobile, sans cache et sans substituer les fonctions du jeu.
-// Le vrai rendu WebGL2 suit la vitrine prête ; deux images, aucun banc FPS.
+// Le vrai rendu WebGL2 suit le titre prêt ; deux images, aucun banc FPS.
 import assert from 'node:assert/strict';
 import { writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -56,8 +56,8 @@ function releverMobile() {
 export function verifierDemarrageMobile(r) {
   assert.ok(!r.fatal, r.fatal);
   assert.deepEqual(r.erreurs, [], 'aucune erreur navigateur');
-  assert.ok(r.demarrage?.pret && r.demarrage.ecran === 'titre' && r.demarrage.type === 'vitrine',
-    'le vrai démarrage finit sa vitrine avant reference()');
+  assert.ok(r.demarrage?.pret && r.demarrage.ecran === 'titre' && r.demarrage.type === null,
+    'le titre est prêt sans séance avant reference()');
   assert.equal(r.environnement.webgl2, true);
   assert.equal(r.environnement.physx?.ready, true);
   assert.equal(r.images.length, 2, 'deux captures du jeu réel');

@@ -86,8 +86,8 @@
     }
     // La mer et les grands lacs plans sont déjà bornés par niveauEau. La Stura
     // et la Maddalena ont leurs propres contours, sans plan d'eau global.
-    if (!Number.isFinite(terrain.niveauEau)) for (const n of terrain.liste) {
-      if (n.surfaceType!=='eau') continue;
+    for (const n of terrain.liste) {
+      if (n.surfaceType!=='eau' || (Number.isFinite(terrain.niveauEau) && n !== terrain.lagon?.eau)) continue;
       const V=n.sommets,I=n.indices;
       for (let k=0;k<I.length;k+=3) {
         const a=I[k]*13,b=I[k+1]*13,c=I[k+2]*13;

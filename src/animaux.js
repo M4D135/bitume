@@ -1215,6 +1215,11 @@
     }
     const d = new Float32Array(N).fill(1e10), bords = new Float32Array(N).fill(c.largeur / 2 || 5), h = new Float32Array(N), ny = new Uint8Array(N), arbres = new Uint8Array(N), drap = new Uint8Array(N);
     const G = { x0, z0, nx, nz, N, premier, fin, lignes, d, bords, h, ny, arbres, drap, T, eau: Number.isFinite(decor.niveauEau) ? decor.niveauEau : -1e5 };
+    // Une carte locale utilise un bit par case de corridor. Le niveau d'eau global conserve
+    // sa valeur historique ; un terrain bas sur l'autre moitié du circuit est toujours sec.
+    G.eauLocale = decor.lagon && decor.niveauEauA ? new Uint32Array(Math.ceil(N/32)) : null;
+    G.lagon = decor.lagon;
+    G.niveauLagon = decor.lagon?.niveau;
     // Distance exacte aux échantillons de l'axe, tous les 2 m, jusqu'à 96 m ; bord du côté correspondant.
     const r = Math.ceil(R_EXACT / CASE), R2 = R_EXACT * R_EXACT;
     for (let s = 0; s < c.n; s++) {
@@ -1265,7 +1270,11 @@
     }
     for (let j = 0; j < nz; j++) for (let i = premier[j]; i < fin[j]; i++) {
       const k = lignes[j] + i;
-      if (d[k] <= PORTEE_HABITAT) h[k] = solExact(T, x0 + (i + .5) * CASE, z0 + (j + .5) * CASE);
+      if (d[k] <= PORTEE_HABITAT) {
+        const x=x0+(i+.5)*CASE, z=z0+(j+.5)*CASE;
+        h[k]=solExact(T,x,z);
+        if (G.eauLocale && Number.isFinite(G.lagon.niveauHabitatA(x,z))) G.eauLocale[k>>>5] |= 1<<(k&31);
+      }
     }
     // Pente à partir du sol échantillonné, sans nouveau sondage par case.
     for (let j = 0; j + 1 < nz; j++) for (let i = Math.max(premier[j], premier[j + 1]); i < Math.min(fin[j] - 1, fin[j + 1]); i++) {
@@ -1330,12 +1339,15 @@
   // Case praticable pour un habitat : hors obstacles et zones interdites, au-delà du vrai bord en tout point de la
   // case, pente et profondeur d'eau dans les bornes de l'espèce ; « strict » ajoute la densité d'arbres (choix du
   // domaine seulement : une bête traverse une clairière pour fuir).
+  function eauCase(G,k) {
+    return G.eauLocale && k >= 0 && ((G.eauLocale[k>>>5] >>> (k&31))&1) ? G.niveauLagon : G.eau;
+  }
   function praticable(G, hab, k, strict) {
     if (k < 0 || G.drap[k] || G.d[k] < Math.max(D_MIN, G.bords[k] + GARDE_BORD + (hab.marge || 2)) + DEMI_CASE) return false;
     if (hab.bande && G.d[k] - G.bords[k] > hab.bande - DEMI_CASE) return false;
     const n = G.ny[k] * (1 / 255);
     if (n < hab.ny[0] || n > hab.ny[1]) return false;
-    const p = G.eau - G.h[k];
+    const p = eauCase(G,k) - G.h[k];
     if (p < hab.eau[0] || p > hab.eau[1]) return false;
     if (strict) { const a = G.arbres[k]; if (a < hab.arbres[0] || a > hab.arbres[1]) return false; }
     return true;
@@ -1489,15 +1501,8 @@
     v.stats.vues = v.nombre;
     return v.nombre;
   }
-  function creer(c, decor, options = {}) {
-    const t0 = (globalThis.performance && performance.now) ? performance.now() : 0;
-    const theme = c.id === 'marseille' ? 'marseille' : BIOMES[c.theme] ? c.theme : 'foret', saison = (B.saisons && B.saisons.normaliser) ? B.saisons.normaliser(options.saison) : (options.saison || 'ete');
-    const graine = ((options.graine === undefined ? (c.graine || 1) : options.graine) ^ hacher('animaux:' + theme)) >>> 0, rnd = generateur(graine);
-    const etat = { c, theme, saison, moment: options.moment || 'jour', nuitFixe: options.nuit,
-      G: grille(c, decor), groupes: [], volants: [], animaux: [], especes: [], absentes: [], k: 0, depart: true };
-    const G = etat.G;
-    const debutCourse = c.ouvert ? c.depart || 0 : 0;
-    const finCourse = c.ouvert ? c.arrivee ?? c.longueur : c.longueur;
+  function peupler(etat, theme, debutCourse, finCourse, rnd) {
+    const { c, saison } = etat;
     const longueur = finCourse - debutCourse;
     const terrestres = BIOMES[theme].filter(cle => AU_SOL.has(ESPECES[cle].famille)
       && (!ESPECES[cle].saisons || ESPECES[cle].saisons.includes(saison)));
@@ -1517,7 +1522,7 @@
         const pasSecteur = longueur / (rotations * terrestres.length);
         for (let g = 0; g < rotations; g++) {
           const secteur = g * terrestres.length + terrestres.indexOf(cle);
-          const debut = Math.min(c.n - 1, Math.floor((debutCourse + secteur * pasSecteur) / c.pas));
+          const debut = Math.min(c.n - 1, Math.max(c.tronconsThemes ? Math.ceil(debutCourse / c.pas) : 0, Math.floor((debutCourse + secteur * pasSecteur) / c.pas)));
           const fin = Math.min(c.n, Math.ceil((debutCourse + (secteur + 1) * pasSecteur) / c.pas));
           const dom = choisirDomaine(etat, e, cle, rnd, hab, g === 0 ? bandeDe(e, hab) : null, debut, fin);
           if (!dom) continue;
@@ -1538,6 +1543,23 @@
         if (!v) etat.absentes.push({ cle, raison: 'habitat' });
       }
     }
+  }
+  function creer(c, decor, options = {}) {
+    const t0 = (globalThis.performance && performance.now) ? performance.now() : 0;
+    const theme = c.id === 'marseille' ? 'marseille' : BIOMES[c.theme] ? c.theme : 'foret', saison = (B.saisons && B.saisons.normaliser) ? B.saisons.normaliser(options.saison) : (options.saison || 'ete');
+    const graine = ((options.graine === undefined ? (c.graine || 1) : options.graine) ^ hacher('animaux:' + theme)) >>> 0, rnd = generateur(graine);
+    const etat = { c, theme, saison, moment: options.moment || 'jour', nuitFixe: options.nuit,
+      G: grille(c, decor), groupes: [], volants: [], animaux: [], especes: [], absentes: [], k: 0, depart: true };
+    const G = etat.G;
+    const debutCourse = c.ouvert ? c.depart || 0 : 0;
+    const finCourse = c.ouvert ? c.arrivee ?? c.longueur : c.longueur;
+    const secteurs = B.saisons?.secteurs?.(c);
+    if (secteurs) {
+      for (const plage of secteurs.plages) {
+        const debut = Math.max(plage.debut, debutCourse), fin = Math.min(plage.fin, finCourse);
+        if (fin - debut >= c.pas) peupler(etat, BIOMES[plage.theme] ? plage.theme : theme, debut, fin, rnd);
+      }
+    } else peupler(etat, theme, debutCourse, finCourse, rnd);
     // membres : positions en tournesol autour du centre, sexe, âge, taille, robe ; activités décalées
     let total = 0;
     for (const g of etat.groupes) { g.debut = total; total += g.n; }
@@ -1620,28 +1642,35 @@
         f.h = e.altitude[0] + rnd() * (e.altitude[1] - e.altitude[0]); f.r = 16 + rnd() * 16; f.v = 9 + rnd() * 3;
         for (let k = 0; k < n; k++) f.oiseaux.push({ r: f.r * (.75 + .5 * rnd()), th: rnd() * TAU, dh: (rnd() - .5) * 20, ech: .94 + .12 * rnd(), flap: rnd() * 100 });
       } else if (e.famille === 'cotier' || e.famille === 'marin') {
-        const marin = e.famille === 'marin';
+        const marin = e.famille === 'marin', baie = G.lagon;
+        if (baie && (baie.s < debutCourse + g*secteur || baie.s >= debutCourse+(g+1)*secteur || !baie.mouillage)) continue;
         let trouve = null;
         for (let essai = 0; essai < 900 && !trouve; essai++) {
           const i = point(), cote = rnd() < .5 ? -1 : 1, d = marin ? 55 + rnd() * 65 : 24 + rnd() * 48;
-          const x = c.x[i] - Math.sin(c.cap[i]) * cote * d, z = c.z[i] + Math.cos(c.cap[i]) * cote * d, k = cellule(G, x, z);
-          if (k < 0 || G.eau - G.h[k] < (marin ? 12 : .6)) continue;
-          const A = marin ? 22 + rnd() * 16 : 14 + rnd() * 14, Bm = marin ? 12 + rnd() * 8 : 7 + rnd() * 7, psi = c.cap[i];
+          const angle=baie && essai ? rnd()*TAU : 0, rayon=baie && essai ? rnd()*32 : 0;
+          const x = baie ? baie.mouillage.x+Math.cos(angle)*rayon : c.x[i]-Math.sin(c.cap[i])*cote*d;
+          const z = baie ? baie.mouillage.z+Math.sin(angle)*rayon : c.z[i]+Math.cos(c.cap[i])*cote*d, k=cellule(G,x,z);
+          if (k < 0 || baie && !Number.isFinite(baie.niveauEauA(x,z)) || eauCase(G,k) - G.h[k] < (marin ? 12 : .6)) continue;
+          const A = marin ? 22 + rnd() * 16 : 14 + rnd() * 14, Bm = marin ? 12 + rnd() * 8 : 7 + rnd() * 7, psi = baie ? baie.cap : c.cap[i];
           let ok = true;
           for (let q = 0; q < 16 && ok; q++) {
             const a = q / 16 * TAU, px = x + A * Math.cos(a) * Math.cos(psi) - Bm * Math.sin(a) * Math.sin(psi), pz = z + A * Math.cos(a) * Math.sin(psi) + Bm * Math.sin(a) * Math.cos(psi);
             const kk = cellule(G, px, pz);
-            ok = kk >= 0 && G.d[kk] >= (marin ? 24 : 18) && (!marin || G.eau - G.h[kk] > 8);
+            ok = kk >= 0 && G.d[kk] >= (marin ? 24 : 18)
+              && (!baie || Number.isFinite(baie.niveauEauA(px,pz)))
+              && (marin ? eauCase(G,kk)-G.h[kk]>8 : !baie || eauCase(G,kk)-G.h[kk]>.15);
           }
           if (ok) trouve = { x, z, A, B: Bm, psi };
         }
         if (!trouve) continue;
-        Object.assign(f, { cx: trouve.x, cz: trouve.z, A: trouve.A, B: trouve.B, psi: trouve.psi, v: marin ? 1.6 : e.cle === 'pelican' ? 10 : 8.5, h: e.altitude ? e.altitude[0] + rnd() * (e.altitude[1] - e.altitude[0]) : 0 });
+        Object.assign(f, { eau: eauCase(G,cellule(G,trouve.x,trouve.z)), cx: trouve.x, cz: trouve.z, A: trouve.A, B: trouve.B, psi: trouve.psi, v: marin ? 1.6 : e.cle === 'pelican' ? 10 : 8.5, h: e.altitude ? e.altitude[0] + rnd() * (e.altitude[1] - e.altitude[0]) : 0 });
         f.periode = marin ? 48 + rnd() * 20 : 0;
         for (let k = 0; k < n; k++) f.oiseaux.push({ th: e.cle === 'pelican' ? -k * 8 / Math.max(1, trouve.A) : rnd() * TAU, dh: (rnd() - .5) * 6, ech: .94 + .12 * rnd(), flap: rnd() * 100 });
       } else if (e.famille === 'migrateur') {
         let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
-        for (let i = 0; i < c.n; i++) { x0 = Math.min(x0, c.x[i]); x1 = Math.max(x1, c.x[i]); z0 = Math.min(z0, c.z[i]); z1 = Math.max(z1, c.z[i]); }
+        const debut = c.tronconsThemes ? Math.ceil(debutCourse / c.pas) : 0;
+        const fin = c.tronconsThemes ? Math.min(c.n, Math.ceil(finCourse / c.pas)) : c.n;
+        for (let i = debut; i < fin; i++) { x0 = Math.min(x0, c.x[i]); x1 = Math.max(x1, c.x[i]); z0 = Math.min(z0, c.z[i]); z1 = Math.max(z1, c.z[i]); }
         Object.assign(f, { cx: (x0 + x1) / 2, cz: (z0 + z1) / 2, D: Math.hypot(x1 - x0, z1 - z0) * .5 + 500, v: 14, periode: 170 + rnd() * 60, h: e.altitude[0] + rnd() * (e.altitude[1] - e.altitude[0]), graine: Math.floor(rnd() * 1e9), passe: -1, ang: .5, decal: .5 });
         for (let k = 0; k < n; k++) f.oiseaux.push({ rang: Math.ceil(k / 2), cote: k === 0 ? 0 : k & 1 ? 1 : -1, ech: .94 + .12 * rnd(), flap: rnd() * .3 });
       }
@@ -1935,7 +1964,7 @@
   // Rend faux quand la bête n'est pas à l'air (baleine en plongée, oies entre deux passages).
   function poseVolant(etat, f, k, t, ps) { IMG[1] = t; return poseVolantT(etat, f, k, ps); }
   function poseVolantT(etat, f, k, ps) {
-    const e = f.e, ois = f.oiseaux[k], T = etat.G.T, eau = etat.G.eau, tt = IMG[1] + f.phase;
+    const e = f.e, ois = f.oiseaux[k], T = etat.G.T, eau = f.eau ?? etat.G.eau, tt = IMG[1] + f.phase;
     ps.echelle = ois.ech * (e.echelle || 1); ps.vol = 1; ps.v = 10; ps.cou = .8; ps.regard = 0; ps.patte = 0; ps.couche = 0; ps.debout = 0; ps.enfoui = 0;
     ps.souffle = 0; ps.caudale = 0; ps.lueur = 0; ps.queue = 0; ps.cornes = 0; ps.phase = 0;
     if (f.famille === 'plane') { // spirale de thermique dont le centre dérive lentement sur le paysage
@@ -2072,7 +2101,8 @@
       ps.x = f.cx + ca * dist - sa * decal + ca * back - sa * lat; ps.z = f.cz + sa * dist + ca * decal + sa * back + ca * lat;
     }
     const celluleSol = cellule(G, ps.x, ps.z), sol = celluleSol >= 0 ? G.h[celluleSol] : 0;
-    ps.y = f.famille === 'marin' ? G.eau : Math.max(G.eau, sol) + f.h;
+    const eau=f.eau ?? eauCase(G,celluleSol);
+    ps.y = f.famille === 'marin' ? eau : Math.max(eau,sol) + f.h;
     ps.echelle = o.ech * (f.e.echelle || 1);
     return true;
   }

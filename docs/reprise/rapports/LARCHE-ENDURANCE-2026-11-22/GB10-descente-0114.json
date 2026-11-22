@@ -1,0 +1,488 @@
+{
+  "jeu": "ANGLE (NVIDIA, Vulkan 1.4.312 (NVIDIA NVIDIA GB10 (0x00002E12)), NVIDIA)",
+  "vraiFramebuffer": [
+    1920,
+    1080
+  ],
+  "qualite": "Fine",
+  "cadence": "écran",
+  "retroviseursVisibles": 2,
+  "vues": 597,
+  "echantillonsRendu": 35819,
+  "ongletMasque": 0,
+  "pilotes": 12,
+  "pluieMinMax": [
+    0.75,
+    0.75
+  ],
+  "chronoCourseSecondes": 978.3611918756001,
+  "chronoMesureReelSecondes": 985.744,
+  "classementJoueur": 10,
+  "arrivesAuPassageDuJoueur": 11,
+  "resultatLigne": {
+    "ecran": "course",
+    "termine": true,
+    "abandon": false,
+    "temps": 978.3611918756001,
+    "s": 32250.603011771207
+  },
+  "departM": 0,
+  "arriveeM": 32249.33,
+  "images3D": 35819,
+  "imagesParSeconde3D": 36.34,
+  "fpsRAF": 36.34,
+  "intervalle3Dp95Ms": 49.9,
+  "intervalle3Dp99Ms": 50.1,
+  "pireIntervalle3DMs": 333.2,
+  "kmSous60": 33,
+  "pireKmParFPS": 33,
+  "ecartSimulationFinAuTempsReel": -2.635,
+  "thermique": {
+    "echantillons": 99,
+    "periodeSecondes": 10,
+    "temperatureMinMaxC": [
+      47,
+      58
+    ],
+    "frequenceGPUminMaxMHz": [
+      2405,
+      2424
+    ],
+    "ralentissementsThermiquesSW": 0,
+    "ralentissementsThermiquesHW": 0
+  },
+  "kilometres": [
+    {
+      "km": 1,
+      "secondes": 38.815,
+      "images3D": 2046,
+      "fps3D": 52.71,
+      "intervalle3Dp95Ms": 33.4,
+      "intervalle3Dp99Ms": 33.4,
+      "pireIntervalle3DMs": 33.4,
+      "debutFinMetres": [
+        42.0,
+        999.99
+      ]
+    },
+    {
+      "km": 2,
+      "secondes": 20.149,
+      "images3D": 1080,
+      "fps3D": 53.6,
+      "intervalle3Dp95Ms": 33.4,
+      "intervalle3Dp99Ms": 33.4,
+      "pireIntervalle3DMs": 33.5,
+      "debutFinMetres": [
+        1000.52,
+        1999.6
+      ]
+    },
+    {
+      "km": 3,
+      "secondes": 41.815,
+      "images3D": 1941,
+      "fps3D": 46.42,
+      "intervalle3Dp95Ms": 33.4,
+      "intervalle3Dp99Ms": 33.4,
+      "pireIntervalle3DMs": 66.7,
+      "debutFinMetres": [
+        2000.74,
+        2999.86
+      ]
+    },
+    {
+      "km": 4,
+      "secondes": 38.782,
+      "images3D": 1879,
+      "fps3D": 48.45,
+      "intervalle3Dp95Ms": 33.4,
+      "intervalle3Dp99Ms": 33.4,
+      "pireIntervalle3DMs": 66.7,
+      "debutFinMetres": [
+        3000.58,
+        3999.65
+      ]
+    },
+    {
+      "km": 5,
+      "secondes": 46.165,
+      "images3D": 2041,
+      "fps3D": 44.21,
+      "intervalle3Dp95Ms": 33.4,
+      "intervalle3Dp99Ms": 50,
+      "pireIntervalle3DMs": 83.3,
+      "debutFinMetres": [
+        4000.49,
+        4999.66
+      ]
+    },
+    {
+      "km": 6,
+      "secondes": 72.297,
+      "images3D": 3090,
+      "fps3D": 42.74,
+      "intervalle3Dp95Ms": 33.4,
+      "intervalle3Dp99Ms": 33.4,
+      "pireIntervalle3DMs": 100,
+      "debutFinMetres": [
+        5000.5,
+        5999.22
+      ]
+    },
+    {
+      "km": 7,
+      "secondes": 20.816,
+      "images3D": 755,
+      "fps3D": 36.27,
+      "intervalle3Dp95Ms": 33.4,
+      "intervalle3Dp99Ms": 50,
+      "pireIntervalle3DMs": 166.7,
+      "debutFinMetres": [
+        6000.73,
+        6999.86
+      ]
+    },
+    {
+      "km": 8,
+      "secondes": 22.183,
+      "images3D": 891,
+      "fps3D": 40.17,
+      "intervalle3Dp95Ms": 33.4,
+      "intervalle3Dp99Ms": 33.5,
+      "pireIntervalle3DMs": 100,
+      "debutFinMetres": [
+        7001.52,
+        7999.86
+      ]
+    },
+    {
+      "km": 9,
+      "secondes": 22.299,
+      "images3D": 916,
+      "fps3D": 41.08,
+      "intervalle3Dp95Ms": 33.4,
+      "intervalle3Dp99Ms": 33.4,
+      "pireIntervalle3DMs": 100.1,
+      "debutFinMetres": [
+        8001.26,
+        8999.09
+      ]
+    },
+    {
+      "km": 10,
+      "secondes": 23.649,
+      "images3D": 983,
+      "fps3D": 41.57,
+      "intervalle3Dp95Ms": 33.4,
+      "intervalle3Dp99Ms": 33.4,
+      "pireIntervalle3DMs": 116.7,
+      "debutFinMetres": [
+        9000.27,
+        9999.49
+      ]
+    },
+    {
+      "km": 11,
+      "secondes": 31.765,
+      "images3D": 1305,
+      "fps3D": 41.08,
+      "intervalle3Dp95Ms": 33.4,
+      "intervalle3Dp99Ms": 33.4,
+      "pireIntervalle3DMs": 116.7,
+      "debutFinMetres": [
+        10000.2,
+        10999.67
+      ]
+    },
+    {
+      "km": 12,
+      "secondes": 37.032,
+      "images3D": 1351,
+      "fps3D": 36.48,
+      "intervalle3Dp95Ms": 33.4,
+      "intervalle3Dp99Ms": 33.5,
+      "pireIntervalle3DMs": 116.8,
+      "debutFinMetres": [
+        11000.56,
+        11999.23
+      ]
+    },
+    {
+      "km": 13,
+      "secondes": 20.866,
+      "images3D": 623,
+      "fps3D": 29.86,
+      "intervalle3Dp95Ms": 50,
+      "intervalle3Dp99Ms": 50.1,
+      "pireIntervalle3DMs": 133.3,
+      "debutFinMetres": [
+        12000.79,
+        12998.5
+      ]
+    },
+    {
+      "km": 14,
+      "secondes": 33.582,
+      "images3D": 1199,
+      "fps3D": 35.7,
+      "intervalle3Dp95Ms": 33.4,
+      "intervalle3Dp99Ms": 50.1,
+      "pireIntervalle3DMs": 149.9,
+      "debutFinMetres": [
+        13000.38,
+        13999.5
+      ]
+    },
+    {
+      "km": 15,
+      "secondes": 45.432,
+      "images3D": 1918,
+      "fps3D": 42.22,
+      "intervalle3Dp95Ms": 33.4,
+      "intervalle3Dp99Ms": 33.4,
+      "pireIntervalle3DMs": 150.1,
+      "debutFinMetres": [
+        14000.25,
+        14999.49
+      ]
+    },
+    {
+      "km": 16,
+      "secondes": 30.849,
+      "images3D": 1142,
+      "fps3D": 37.02,
+      "intervalle3Dp95Ms": 49.9,
+      "intervalle3Dp99Ms": 50.1,
+      "pireIntervalle3DMs": 150,
+      "debutFinMetres": [
+        15000.21,
+        15999.28
+      ]
+    },
+    {
+      "km": 17,
+      "secondes": 32.315,
+      "images3D": 953,
+      "fps3D": 29.49,
+      "intervalle3Dp95Ms": 50,
+      "intervalle3Dp99Ms": 83.3,
+      "pireIntervalle3DMs": 166.7,
+      "debutFinMetres": [
+        16000.17,
+        16999.32
+      ]
+    },
+    {
+      "km": 18,
+      "secondes": 22.732,
+      "images3D": 601,
+      "fps3D": 26.44,
+      "intervalle3Dp95Ms": 50.1,
+      "intervalle3Dp99Ms": 50.1,
+      "pireIntervalle3DMs": 183.4,
+      "debutFinMetres": [
+        17000.76,
+        17999.41
+      ]
+    },
+    {
+      "km": 19,
+      "secondes": 32.465,
+      "images3D": 863,
+      "fps3D": 26.58,
+      "intervalle3Dp95Ms": 50,
+      "intervalle3Dp99Ms": 133.3,
+      "pireIntervalle3DMs": 200,
+      "debutFinMetres": [
+        18000.27,
+        18999.31
+      ]
+    },
+    {
+      "km": 20,
+      "secondes": 37.782,
+      "images3D": 1096,
+      "fps3D": 29.01,
+      "intervalle3Dp95Ms": 50,
+      "intervalle3Dp99Ms": 50.1,
+      "pireIntervalle3DMs": 183.4,
+      "debutFinMetres": [
+        19000.69,
+        19999.33
+      ]
+    },
+    {
+      "km": 21,
+      "secondes": 22.782,
+      "images3D": 774,
+      "fps3D": 33.97,
+      "intervalle3Dp95Ms": 49.9,
+      "intervalle3Dp99Ms": 50.1,
+      "pireIntervalle3DMs": 183.2,
+      "debutFinMetres": [
+        20001.55,
+        20999.01
+      ]
+    },
+    {
+      "km": 22,
+      "secondes": 35.282,
+      "images3D": 1083,
+      "fps3D": 30.7,
+      "intervalle3Dp95Ms": 50,
+      "intervalle3Dp99Ms": 50.1,
+      "pireIntervalle3DMs": 216.6,
+      "debutFinMetres": [
+        21000.17,
+        21999.59
+      ]
+    },
+    {
+      "km": 23,
+      "secondes": 37.015,
+      "images3D": 967,
+      "fps3D": 26.12,
+      "intervalle3Dp95Ms": 50,
+      "intervalle3Dp99Ms": 116.6,
+      "pireIntervalle3DMs": 333.2,
+      "debutFinMetres": [
+        22000.11,
+        22999.18
+      ]
+    },
+    {
+      "km": 24,
+      "secondes": 24.582,
+      "images3D": 623,
+      "fps3D": 25.34,
+      "intervalle3Dp95Ms": 50.1,
+      "intervalle3Dp99Ms": 50.1,
+      "pireIntervalle3DMs": 199.9,
+      "debutFinMetres": [
+        23001.17,
+        23999.13
+      ]
+    },
+    {
+      "km": 25,
+      "secondes": 21.582,
+      "images3D": 654,
+      "fps3D": 30.3,
+      "intervalle3Dp95Ms": 33.4,
+      "intervalle3Dp99Ms": 66.7,
+      "pireIntervalle3DMs": 183.3,
+      "debutFinMetres": [
+        24000.62,
+        24999.1
+      ]
+    },
+    {
+      "km": 26,
+      "secondes": 19.899,
+      "images3D": 635,
+      "fps3D": 31.91,
+      "intervalle3Dp95Ms": 33.4,
+      "intervalle3Dp99Ms": 50.1,
+      "pireIntervalle3DMs": 199.9,
+      "debutFinMetres": [
+        25000.34,
+        25999.28
+      ]
+    },
+    {
+      "km": 27,
+      "secondes": 22.999,
+      "images3D": 667,
+      "fps3D": 29,
+      "intervalle3Dp95Ms": 50,
+      "intervalle3Dp99Ms": 50.1,
+      "pireIntervalle3DMs": 200,
+      "debutFinMetres": [
+        26002.43,
+        26999.83
+      ]
+    },
+    {
+      "km": 28,
+      "secondes": 32.482,
+      "images3D": 1057,
+      "fps3D": 32.54,
+      "intervalle3Dp95Ms": 33.4,
+      "intervalle3Dp99Ms": 50,
+      "pireIntervalle3DMs": 200.1,
+      "debutFinMetres": [
+        27001.4,
+        27998.68
+      ]
+    },
+    {
+      "km": 29,
+      "secondes": 18.166,
+      "images3D": 526,
+      "fps3D": 28.96,
+      "intervalle3Dp95Ms": 33.4,
+      "intervalle3Dp99Ms": 50.1,
+      "pireIntervalle3DMs": 216.7,
+      "debutFinMetres": [
+        28000.35,
+        28999.6
+      ]
+    },
+    {
+      "km": 30,
+      "secondes": 24.082,
+      "images3D": 659,
+      "fps3D": 27.36,
+      "intervalle3Dp95Ms": 50,
+      "intervalle3Dp99Ms": 183.4,
+      "pireIntervalle3DMs": 216.7,
+      "debutFinMetres": [
+        29001.27,
+        29998.0
+      ]
+    },
+    {
+      "km": 31,
+      "secondes": 19.666,
+      "images3D": 596,
+      "fps3D": 30.31,
+      "intervalle3Dp95Ms": 50,
+      "intervalle3Dp99Ms": 50.1,
+      "pireIntervalle3DMs": 216.7,
+      "debutFinMetres": [
+        30000.36,
+        30999.79
+      ]
+    },
+    {
+      "km": 32,
+      "secondes": 28.949,
+      "images3D": 744,
+      "fps3D": 25.7,
+      "intervalle3Dp95Ms": 50.1,
+      "intervalle3Dp99Ms": 50.1,
+      "pireIntervalle3DMs": 233.3,
+      "debutFinMetres": [
+        31000.87,
+        31999.21
+      ]
+    },
+    {
+      "km": 33,
+      "secondes": 6.466,
+      "images3D": 161,
+      "fps3D": 24.9,
+      "intervalle3Dp95Ms": 50.1,
+      "intervalle3Dp99Ms": 183.3,
+      "pireIntervalle3DMs": 183.3,
+      "debutFinMetres": [
+        32000.41,
+        32250.6
+      ]
+    }
+  ],
+  "empreinteHTML": "d98562a0fb5ac906722564b1933dd22f3b2c06bdc670094904bc9f17d1a2351c",
+  "empreinteRapport": "44cf0bcb12de536389519d243e937a01b0f2b8ff14c6decff7d5931a59f69e61",
+  "recette": "Chrome ARM natif du Spark, ANGLE sur Vulkan matériel GB10. Pilote automatique du jeu et chronomètre navigateur temps réel. Chaque segment compte les appels aboutis du draw principal ; les glaces sont contrôlées indépendamment. Les mesures se terminent au passage du joueur."
+}

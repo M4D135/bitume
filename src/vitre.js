@@ -72,9 +72,11 @@
     return creerSimulation(options, canvas, contexte);
   }
   // Même dépôt mobile pour la réfraction WebGL et le repli Canvas ; aucun contexte ni pixel requis ici.
+  const BANDES_FUSION = 24, MOTS_FUSION = Math.ceil(BUDGETS.ultra.gouttes / 32);
   function creerSimulation(options, canvas = null, contexte = null) {
     const e = { canvas, contexte, gouttes: pool(112), neige: pool(36), accumulateur: 0, temps: 0, sequence: 0, masquee: false,
       graine: options && Number.isInteger(options.graine) ? options.graine | 0 : 0,
+      bandesFusion: new Uint32Array(BANDES_FUSION * MOTS_FUSION), motFusion: new Uint32Array(MOTS_FUSION),
       creditEau: 0, creditNeige: 0, largeur: canvas ? canvas.clientWidth || canvas.width || 1 : 1280,
       hauteur: canvas ? canvas.clientHeight || canvas.height || 1 : 720, dpr: 1, dprPalier: null, propre: true, libere: false,
       flux: { air: 0, vitesseAir: 0, vitesseIncidente: 0, expansion: 0, deriveX: 0, deriveY: 0, graviteX: 0, graviteY: 1, centreX: .5, centreY: .45 },
@@ -167,21 +169,44 @@
     for (let j = 5; j > 0; j--) { p.traceX[j] = p.traceX[j - 1]; p.traceY[j] = p.traceY[j - 1]; }
     p.traceX[0] = p.px; p.traceY[0] = p.py;
   }
-  // Une rencontre rassemble la surface d'eau et son centre de masse. Test balayé : une coulure rapide peut
-  // ramasser une perle entre deux pas. 112 gouttes et 36 amas au plus, donc 6 846 paires au pire par pas.
-  // Le rayon est plafonné : l'excédent s'écoule hors du dépôt, au lieu de former une lentille géante sur l'écran.
+  // Indexer les bandes traversées entre les deux poses, rayon compris. Les masques
+  // conservent l'ordre des indices quand plusieurs gouttes peuvent fusionner au même pas.
+  const bandeFusion = y => clamp(Math.floor(y * BANDES_FUSION), 0, BANDES_FUSION - 1);
+  function candidatesFusion(e, p, tailleY, mots) {
+    const debut = bandeFusion(Math.min(p.y, p.py) - p.taille * tailleY);
+    const fin = bandeFusion(Math.max(p.y, p.py) + p.taille * tailleY);
+    e.motFusion.fill(0, 0, mots);
+    for (let b = debut; b <= fin; b++)
+      for (let m = 0; m < mots; m++) e.motFusion[m] |= e.bandesFusion[b * MOTS_FUSION + m];
+  }
   function fusionner(e, liste, limite, neige) {
+    if (limite < 2) return 0;
     let nombre = 0;
-    const maximum = neige ? MAX_RAYON_NEIGE : MAX_RAYON_EAU;
-    for (let i = 0; i < limite; i++) {
+    const maximum = neige ? MAX_RAYON_NEIGE : MAX_RAYON_EAU, facteur = neige ? .7 : .8;
+    const tailleY = facteur / e.hauteur, mots = Math.ceil(limite / 32);
+    e.bandesFusion.fill(0);
+    for (let j = 0; j < limite; j++) {
+      const p = liste[j]; if (!p.vivant) continue;
+      const debut = bandeFusion(Math.min(p.y, p.py) - p.taille * tailleY);
+      const fin = bandeFusion(Math.max(p.y, p.py) + p.taille * tailleY);
+      for (let b = debut; b <= fin; b++) e.bandesFusion[b * MOTS_FUSION + (j >>> 5)] |= 1 << (j & 31);
+    }
+    for (let i = 0; i + 1 < limite; i++) {
       const a = liste[i]; if (!a.vivant) continue;
-      for (let j = i + 1; j < limite; j++) {
-        const b = liste[j]; if (!b.vivant) continue;
+      candidatesFusion(e, a, tailleY, mots);
+      for (let suivant = i + 1; suivant < limite;) {
+        const mot = suivant >>> 5, reste = e.motFusion[mot] & (-1 << (suivant & 31));
+        if (!reste) { suivant = (mot + 1) * 32; continue; }
+        const j = mot * 32 + 31 - Math.clz32(reste & -reste), b = liste[j];
+        suivant = j + 1;
+        if (!b.vivant) continue;
+        const r = (a.taille + b.taille) * facteur;
+        if ((Math.min(a.x, a.px) - Math.max(b.x, b.px)) * e.largeur > r ||
+            (Math.min(b.x, b.px) - Math.max(a.x, a.px)) * e.largeur > r) continue;
         e.stats.paires++;
         const dx = (a.px - b.px) * e.largeur, dy = (a.py - b.py) * e.hauteur;
         const vx = (a.x - a.px - b.x + b.px) * e.largeur, vy = (a.y - a.py - b.y + b.py) * e.hauteur;
         const vv = vx * vx + vy * vy, t = vv > 1e-9 ? clamp(-(dx * vx + dy * vy) / vv, 0, 1) : 0;
-        const r = (a.taille + b.taille) * (neige ? .7 : .8);
         if ((dx + vx * t) ** 2 + (dy + vy * t) ** 2 > r * r) continue;
         const ma = a.taille * a.taille, mb = b.taille * b.taille, masse = ma + mb;
         a.x = (a.x * ma + b.x * mb) / masse; a.y = (a.y * ma + b.y * mb) / masse;
@@ -196,6 +221,8 @@
         // Le dépôt absorbé reste dessinable pendant le pas interpolé : son aire décroît pendant que
         // celle du receveur grandit. À 144 Hz, la fusion ne perd donc pas une perle durant quatre images.
         b.vivant = false; b.fusion = true; nombre++;
+        // Le barycentre vient de bouger. Rechercher aussi les nouveaux voisins au-delà de j.
+        candidatesFusion(e, a, tailleY, mots);
         if (neige) e.stats.fusionsNeige++; else e.stats.fusionsEau++;
       }
     }

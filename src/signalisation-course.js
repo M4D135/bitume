@@ -181,7 +181,9 @@
         for (const o of modules) {
           o.p[0] += tx * face * .07; o.p[2] += tz * face * .07;
         }
-        bandeaux.push({ s, modules, lettres, support, texte: '', visibles: [] });
+        // Le fond enveloppe la largeur des lettres et des témoins, avec leur saillie verticale.
+        const rayon = .5*Math.hypot(...support.s) + 1;
+        bandeaux.push({ s, modules, lettres, support, rayon, texte: '', visibles: [] });
       }
     }
 
@@ -278,6 +280,9 @@
       for (let b = 0; b < bandeaux.length; b++) {
         const bandeau = bandeaux[b], mods = bandeau.modules;
         const p = bandeau.support.p;
+        // Message et allumage sont fonctions du temps absolu et de la course, donc
+        // entièrement restaurés dès que la face entre dans une vue ou un volume d'ombre.
+        if (sortie && contexte?.visible && !contexte.visible(p[0],p[1],p[2],bandeau.rayon)) continue;
         if (sortie && (!camPos || (p[0]-camPos[0])**2 + (p[2]-camPos[2])**2 < PORTEE**2)) {
           lettresPortique(bandeau, messagePortique(co, bandeau, temps, pluie, phaseCourse), nuit, sortie);
         }

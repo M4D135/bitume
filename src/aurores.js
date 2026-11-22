@@ -57,10 +57,14 @@
   const PREPARATION = 'aurores';
   // Partie statique d'une scène : les trois rubans ne dépendent que du circuit (emprise, altitude, graine).
   // L'appelant peut la garder sur la scène ; creer() refuse celle d'un autre circuit et la refait alors.
+  function concerne(c) {
+    return c?.theme === 'islande' || !!c?.tronconsThemes?.some(t => t.theme === 'islande');
+  }
   function preparer(circuit) {
-    const c = circuit || {}, actif = c.theme === 'islande';
+    const c = circuit || {}, actif = concerne(c), secteurs = B.saisons?.secteurs?.(c);
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity, haut = 0;
     for (let i = 0; i < (c.x ? c.x.length : 0); i++) {
+      if (secteurs && secteurs.plages[secteurs.indices[i]].theme !== 'islande') continue;
       x0 = Math.min(x0, c.x[i]); x1 = Math.max(x1, c.x[i]);
       z0 = Math.min(z0, c.z[i]); z1 = Math.max(z1, c.z[i]);
       if (c.y && Number.isFinite(c.y[i])) haut = Math.max(haut, c.y[i]);
@@ -90,7 +94,7 @@
     const budget = BUDGETS[c.qualite] === undefined ? BUDGETS.medium : BUDGETS[c.qualite];
     const nuit = lisse(.48, .93, unite(c.nuit)), precipitation = Math.max(unite(c.pluie), unite(c.neige));
     const nuages = unite(c.nuages === undefined ? c.nuage : c.nuages);
-    const intensite = nuit * (1 - .88 * precipitation) * (1 - lisse(.18, .94, nuages));
+    const intensite = (c.presence ?? 1) * nuit * (1 - .88 * precipitation) * (1 - lisse(.18, .94, nuages));
     if (intensite < .012 || !budget) return stats;
     const t = Number.isFinite(temps) ? temps : 0;
     for (let i = 0; i < budget; i++) {
@@ -110,5 +114,5 @@
     stats.rubans = budget; stats.objets = budget * BANDES; stats.triangles = stats.objets * SEGMENTS * 8; stats.intensite = intensite;
     return stats;
   }
-  B.aurores = { preparer, creer, dessiner, BUDGETS, MAX_OBJETS: 18, TRIANGLES_PAR_RUBAN: BANDES * SEGMENTS * 8 };
+  B.aurores = { concerne, preparer, creer, dessiner, BUDGETS, MAX_OBJETS: 18, TRIANGLES_PAR_RUBAN: BANDES * SEGMENTS * 8 };
 })(globalThis.BITUME = globalThis.BITUME || {});

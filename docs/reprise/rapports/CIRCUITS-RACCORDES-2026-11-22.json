@@ -1,0 +1,119 @@
+[
+  {
+    "id": "forets-du-pacifique",
+    "longueur": 9707.978526851392,
+    "rayonMin": 29.92288168156182,
+    "penteMax": 0.06798091881052555,
+    "conservation": [
+      0.9431549028896258,
+      0.9541459686664119
+    ],
+    "sensB": 1,
+    "ecartement": 180,
+    "ecartMinimalBrasDistants": 42,
+    "margeExterieureGlissieres": 1,
+    "tronconsDeRubanSansIntersection": 4854,
+    "corridors": [
+      {
+        "debut": 2117.5751553432683,
+        "fin": 2483.138311383238
+      },
+      {
+        "debut": 7477.3121761064285,
+        "fin": 7845.3633913341
+      }
+    ],
+    "tronconsThemes": [
+      {
+        "id": "val-brule",
+        "theme": "foret",
+        "debut": 7845.3633913341,
+        "fin": 2117.5751553432683
+      },
+      {
+        "id": "cap-sequoia",
+        "theme": "pacifique",
+        "debut": 2483.138311383238,
+        "fin": 7477.3121761064285
+      }
+    ]
+  },
+  {
+    "id": "karst-et-lagon",
+    "longueur": 9782.389765389202,
+    "rayonMin": 31.30492305759576,
+    "penteMax": 0.06339732061094051,
+    "conservation": [
+      0.9609406137903547,
+      0.9579646017699115
+    ],
+    "sensB": 1,
+    "ecartement": 180,
+    "ecartMinimalBrasDistants": 42,
+    "margeExterieureGlissieres": 1,
+    "tronconsDeRubanSansIntersection": 4892,
+    "corridors": [
+      {
+        "debut": 1806.2650974963385,
+        "fin": 2120.2327279997103
+      },
+      {
+        "debut": 6449.886836443259,
+        "fin": 6765.886993483649
+      }
+    ],
+    "tronconsThemes": [
+      {
+        "id": "brume-de-jade",
+        "theme": "asie",
+        "debut": 6765.886993483649,
+        "fin": 1806.2650974963385
+      },
+      {
+        "id": "corail",
+        "theme": "corail",
+        "debut": 2120.2327279997103,
+        "fin": 6449.886836443259
+      }
+    ]
+  },
+  {
+    "id": "nord-atlantique",
+    "longueur": 9995.720060221684,
+    "rayonMin": 24.88545971012706,
+    "penteMax": 0.06854676404633324,
+    "conservation": [
+      0.9640484564282923,
+      0.9523396880415944
+    ],
+    "sensB": 1,
+    "ecartement": 180,
+    "ecartMinimalBrasDistants": 42,
+    "margeExterieureGlissieres": 1,
+    "tronconsDeRubanSansIntersection": 4998,
+    "corridors": [
+      {
+        "debut": 3862.713024255782,
+        "fin": 4189.921237026617
+      },
+      {
+        "debut": 8583.282347122766,
+        "fin": 8924.06436288401
+      }
+    ],
+    "tronconsThemes": [
+      {
+        "id": "fjord",
+        "theme": "fjord",
+        "debut": 8924.06436288401,
+        "fin": 3862.713024255782
+      },
+      {
+        "id": "lande-noire",
+        "theme": "islande",
+        "debut": 4189.921237026617,
+        "fin": 8583.282347122766
+      }
+    ]
+  }
+]

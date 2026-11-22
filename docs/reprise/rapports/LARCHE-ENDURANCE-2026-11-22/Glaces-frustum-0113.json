@@ -1,0 +1,188 @@
+{
+  "candidate": "fed9753bfffd2d0a9faf50dcbe6747764056fa87363199ef94cbb90a98215822",
+  "jeuCandidate": "c5cfc70178e24c746e42d6b5f62b6d06622e942da8177e02e92c3182d1086920",
+  "reference": "a9a7d2ec175443cc5133e6c24215674bcef07bd16b06abd1e029a29cc6fb9860",
+  "renderer": "ca8cce2cfb0ec2326857a2897e6942ecfda2be1ad24713a06bb8f2c5691826a1",
+  "fichierOracle": "0f6977f4985f528b82d7970d3f4410122beb201481d7d9310f9ce8bd7978e966",
+  "mesures": {
+    "piecesAvant": 13412,
+    "piecesApres": 10818,
+    "trianglesAvant": 3890046,
+    "trianglesApres": 2375003,
+    "sommetsTestes": 2084670,
+    "trianglesSusceptiblesVisibles": 1331088,
+    "trianglesPerdus": 0,
+    "refusMultiPlans": 0
+  },
+  "cas": [
+    {
+      "nom": "Grille de départ Larche · grille du jeu",
+      "cote": "gauche",
+      "largeur": 495,
+      "hauteur": 150,
+      "instances": [
+        1194,
+        918
+      ],
+      "triangles": [
+        323940,
+        181775
+      ],
+      "dureeTriMicrosecondes": 95
+    },
+    {
+      "nom": "Grille de départ Larche · grille du jeu",
+      "cote": "droite",
+      "largeur": 495,
+      "hauteur": 150,
+      "instances": [
+        1194,
+        1030
+      ],
+      "triangles": [
+        323940,
+        235254
+      ],
+      "dureeTriMicrosecondes": 72
+    },
+    {
+      "nom": "Pietraporzio à 17 930 m · peloton placé sur la chaussée",
+      "cote": "gauche",
+      "largeur": 495,
+      "hauteur": 150,
+      "instances": [
+        1976,
+        1690
+      ],
+      "triangles": [
+        530146,
+        374917
+      ],
+      "dureeTriMicrosecondes": 134
+    },
+    {
+      "nom": "Pietraporzio à 17 930 m · peloton placé sur la chaussée",
+      "cote": "droite",
+      "largeur": 495,
+      "hauteur": 150,
+      "instances": [
+        1976,
+        1571
+      ],
+      "triangles": [
+        530146,
+        312298
+      ],
+      "dureeTriMicrosecondes": 66
+    },
+    {
+      "nom": "Six limites · proche, arrière, lointaine et bords horizontaux/verticaux",
+      "cote": "gauche",
+      "largeur": 468,
+      "hauteur": 142,
+      "instances": [
+        2334,
+        1790
+      ],
+      "triangles": [
+        712184,
+        349740
+      ],
+      "dureeTriMicrosecondes": 106
+    },
+    {
+      "nom": "Six limites · proche, arrière, lointaine et bords horizontaux/verticaux",
+      "cote": "droite",
+      "largeur": 468,
+      "hauteur": 142,
+      "instances": [
+        2334,
+        1807
+      ],
+      "triangles": [
+        712184,
+        367772
+      ],
+      "dureeTriMicrosecondes": 75
+    },
+    {
+      "nom": "Voiture suivie inclinée · lacet, tangage, roulis et épave",
+      "cote": "gauche",
+      "largeur": 495,
+      "hauteur": 150,
+      "instances": [
+        1202,
+        1013
+      ],
+      "triangles": [
+        378753,
+        283077
+      ],
+      "dureeTriMicrosecondes": 33
+    },
+    {
+      "nom": "Voiture suivie inclinée · lacet, tangage, roulis et épave",
+      "cote": "droite",
+      "largeur": 495,
+      "hauteur": 150,
+      "instances": [
+        1202,
+        999
+      ],
+      "triangles": [
+        378753,
+        270170
+      ],
+      "dureeTriMicrosecondes": 36
+    }
+  ],
+  "parMode": {
+    "complet": [
+      12392,
+      10001,
+      3416208,
+      2003141
+    ],
+    "pilote suivi": [
+      110,
+      93,
+      169216,
+      166656
+    ],
+    "simple": [
+      444,
+      353,
+      118860,
+      74436
+    ],
+    "moyen": [
+      432,
+      337,
+      164612,
+      109620
+    ],
+    "épave": [
+      34,
+      34,
+      21150,
+      21150
+    ]
+  },
+  "formesNormalisees": 325,
+  "demiEtendueMaximale": 0.5000000000000111,
+  "tauxEconomieTriangles": 0.38946660270855404,
+  "controlePositif": 1098238,
+  "cachePermanent": {
+    "piecesReemployees": 108,
+    "poseSuivanteIdentique": true
+  },
+  "verifications": [
+    "Rz*Ry*Rx du vertex shader sur les coordonnées float32 de chaque forme réellement posée. Six plans normalisés en coordonnées caméra et rejet trivial des triangles hors d’un même plan. Une intersection possible est conservée.",
+    "Aucune pièce écartée dont un triangle serait susceptible de couper le volume rendu. Vérification des six plans indépendamment de FRender.shared.visible.",
+    "Les objets inconnus, primitifs, FX et overlays sont conservés dans le même ordre et par la même référence ; repli si taille nulle ou API absente ; poses et tailles inchangées ; filtre idempotent."
+  ],
+  "limites": [
+    "Diagnostic géométrique statique sur 4 configurations de peloton, 2 glaces chacune. Les triangles comptent les formes hautes des primitives FERRO ; les maillages propres aux voitures ont les mêmes triangles à tous les paliers FERRO. Les silhouettes, roues et variantes des voitures suivent les règles de détail de la glace.",
+    "Les durées de tri sont un ordre de grandeur CPU Node (16 répétitions en mémoire par vue), sans qualification de FPS, du coût des pilotes graphiques, des fragments ou du décor. La seconde étape demande un A/B Metal après la descente."
+  ]
+}

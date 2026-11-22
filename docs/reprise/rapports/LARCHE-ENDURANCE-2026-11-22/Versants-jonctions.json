@@ -1,0 +1,82 @@
+[
+  {
+    "metres": 4588.934011149999,
+    "avant": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59",
+    "apres": "c8e7e2bcd3b0a023ad630a1bde3653f2b53b2cfe42ffbda6fe71e961cdefdc15",
+    "camera": {
+      "pos": [
+        2301.4019462523543,
+        1025.6739381713867,
+        2661.7215744868545
+      ],
+      "yaw": 3.6110432656967224,
+      "pitch": -0.11999999999999589,
+      "fov": 64.32134117744523
+    },
+    "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+    "zones": [
+      {
+        "box": [
+          200,
+          111,
+          372,
+          179
+        ],
+        "deltaMoyenMaxCanal255": 12.87,
+        "fractionChangeeAuMoins3Sur255": 0.988,
+        "nouveauxBordsForts": 0.0
+      },
+      {
+        "box": [
+          730,
+          133,
+          936,
+          161
+        ],
+        "deltaMoyenMaxCanal255": 9.27,
+        "fractionChangeeAuMoins3Sur255": 0.981,
+        "nouveauxBordsForts": 0.0
+      }
+    ]
+  },
+  {
+    "metres": 16501.128756923485,
+    "avant": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59",
+    "apres": "c8e7e2bcd3b0a023ad630a1bde3653f2b53b2cfe42ffbda6fe71e961cdefdc15",
+    "camera": {
+      "pos": [
+        9053.115969570359,
+        651.3639406738282,
+        8988.167211266078
+      ],
+      "yaw": 1.297915398969589,
+      "pitch": -0.12000000000000272,
+      "fov": 64.34492147562067
+    },
+    "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+    "zones": [
+      {
+        "box": [
+          208,
+          109,
+          346,
+          146
+        ],
+        "deltaMoyenMaxCanal255": 7.69,
+        "fractionChangeeAuMoins3Sur255": 0.956,
+        "nouveauxBordsForts": 0.00205
+      },
+      {
+        "box": [
+          742,
+          100,
+          909,
+          143
+        ],
+        "deltaMoyenMaxCanal255": 26.84,
+        "fractionChangeeAuMoins3Sur255": 1.0,
+        "nouveauxBordsForts": 0.0
+      }
+    ]
+  }
+]

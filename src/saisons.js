@@ -17,7 +17,46 @@
       faune: neige || theme === 'islande' || theme === 'desert' ? 0 : d.faune, soleil: d.soleil, teinteSoleil: Object.freeze(d.teinteSoleil.slice()) });
   }
   function profil(id, theme = 'foret') {
+    if (theme === 'corail') theme = 'cote';
     return profils[normaliser(id) + ':' + (theme === 'cote' || theme === 'montagne' || theme === 'islande' || theme === 'desert' || theme === 'asie' || theme === 'pacifique' || theme === 'baikal' ? theme : 'foret')];
+  }
+  // L'axe est échantillonné à pas constant. Une table légère par circuit mixte est
+  // partagée entre construction du terrain, placement des habitats et caméras.
+  const CACHE_SECTEURS = new WeakMap();
+  function secteurs(c) {
+    if (!c?.tronconsThemes?.length || !(c.longueur > 0) || !(c.pas > 0) || !c.n) return null;
+    if (CACHE_SECTEURS.has(c)) return CACHE_SECTEURS.get(c);
+    const L = c.longueur;
+    const parties = c.tronconsThemes.filter(t => t.theme && Number.isFinite(t.debut) && Number.isFinite(t.fin));
+    const repere = valeur => valeur >= 0 && valeur <= L ? valeur : (valeur % L + L) % L;
+    const bornes = [...new Set([0, L, ...parties.flatMap(t => [repere(t.debut), repere(t.fin)])])].sort((a,b) => a-b);
+    const plages = [];
+    for (let i = 1; i < bornes.length; i++) {
+      const debut = bornes[i-1], fin = bornes[i], milieu = (debut + fin) / 2;
+      const partie = parties.find(t => {
+        const a = repere(t.debut), b = repere(t.fin);
+        return a <= b ? milieu >= a && milieu < b : milieu >= a || milieu < b;
+      });
+      const theme = partie?.theme || c.theme, precedente = plages[plages.length-1];
+      if (precedente?.theme === theme) { precedente.fin = fin; continue; }
+      plages.push({ debut, fin, theme, profils: Object.fromEntries(IDS.map(id => [id, profil(id, theme)])) });
+    }
+    const indices = new Uint8Array(c.n);
+    let p = 0;
+    for (let i = 0; i < c.n; i++) {
+      while (p+1 < plages.length && i*c.pas >= plages[p].fin) p++;
+      indices[i] = p;
+    }
+    const decoupage = { plages, indices, a(s) {
+      // Nombre d'intervalles limité à trois sur les circuits mixtes. Le domaine
+      // au mètre près sert aux changements d'ambiance et aux fondus à la frontière.
+      if (s < 0 || s >= L) s = (s % L + L) % L;
+      let p = indices[Math.min(c.n-1, Math.floor(s/c.pas))] || 0;
+      while (p+1 < plages.length && s >= plages[p].fin) p++;
+      return plages[p];
+    } };
+    CACHE_SECTEURS.set(c, decoupage);
+    return decoupage;
   }
   function bruit(x, z, sel) {
     const px = (x * .8 - z * .6) / 73, pz = (x * .6 + z * .8) / 73;
@@ -87,5 +126,5 @@
     }
     return resultat;
   }
-  B.saisons = { IDS, normaliser, profil, teinte, atmosphere };
+  B.saisons = { IDS, normaliser, profil, secteurs, teinte, atmosphere };
 })(globalThis.BITUME = globalThis.BITUME || {});

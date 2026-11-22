@@ -95,12 +95,13 @@ for (const [nom, nav] of [['iPhone', iphone], ['iPad avec agent Mac', ipad], ['A
   test(nom + ' : premier lancement prudent sans scène de mesure ni rétroviseur supplémentaire', async () => {
     const h = orchestration(B, { demarrage: true, navigator: nav, fenetre: [390, 844], coarse: true });
     await h.demarrer();
-    assert.deepEqual(h.erreurs, []); assert.equal(h.ecran, 'titre'); assert.equal(h.session.type, 'vitrine');
+    assert.deepEqual(h.erreurs, []); assert.equal(h.ecran, 'titre'); assert.equal(h.session, null);
     assert.deepEqual(six(h.reglages), A.reglages('low'));
     assert.equal(h.estimations, 1); assert.equal(h.gpuModeste, true);
     assert.equal(h.appels.includes('retro'), false); assert.equal(h.appels.some(a => /banc|scene-test/.test(a)), false);
     assert.deepEqual(h.appels.filter(a => a.startsWith('profil:')), ['profil:low'], 'aucune allocation provisoire d’un profil coûteux');
-    assert.ok(h.appels.indexOf('profil:low') < h.appels.indexOf('seance:vitrine:low'));
+    assert.equal(h.appels.some(a => a.startsWith('seance:') || a.startsWith('lancer:')), false);
+    assert.ok(h.appels.indexOf('profil:low') < h.appels.indexOf('titre'));
     assert.ok(h.appels.includes('boucle')); assert.equal(h.canvas.style.cssText, 'width: 390px; height: 844px');
     assert.equal(h.nodes.get('autodetection'), undefined, 'aucun écran de test créé ou ouvert');
     for (const cle of ['resolution', 'maxPixels', 'renderScale'])
@@ -118,7 +119,8 @@ test('Xbox sur grand écran : profil léger avant la séance, sans banc ni moteu
     assert.equal(h.estimations, 1); assert.equal(h.gpuModeste, true);
     assert.equal(h.appels.includes('retro'), false); assert.equal(h.appels.some(a => /banc|scene-test/.test(a)), false);
     assert.deepEqual(h.appels.filter(a => a.startsWith('profil:')), ['profil:low']);
-    assert.ok(h.appels.indexOf('profil:low') < h.appels.indexOf('seance:vitrine:low'));
+    assert.equal(h.appels.some(a => a.startsWith('seance:') || a.startsWith('lancer:')), false);
+    assert.ok(h.appels.indexOf('profil:low') < h.appels.indexOf('titre'));
     assert.deepEqual(h.reglages.commandes, ['clavier', 'manette'], 'la détection graphique ne réaffecte aucun joueur');
     assert.equal(h.moteurs.length, 1);
     assert.equal(h.moteurs[0].options.resolution, 'native');
@@ -280,6 +282,7 @@ test('PhysX absent ou non prêt : erreur explicite et aucune séance démarrée'
 test('ordinateur : recommandation annoncée comme estimation, sans niveau extrême automatique', async () => {
   const h = orchestration(B, { demarrage: true, navigator: bureau }); await h.demarrer();
   assert.equal(h.ecran, 'titre'); assert.equal(h.reglages.qualite, 'medium');
+  assert.equal(h.session, null); assert.equal(h.appels.includes('retro'), false);
   assert.equal(h.stockage[A.CLE].performancesMesurees, false); assert.match(h.nodes.get('r-detection-etat').textContent, /Profil estimé/);
   for (const cle of ['resolution', 'maxPixels', 'renderScale'])
     assert.equal(Object.hasOwn(h.moteurs[0].options, cle), false, 'plafond Xbox absent sur ordinateur : ' + cle);

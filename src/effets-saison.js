@@ -90,9 +90,10 @@
     if (e.cacheCles[cache] === cle) return e.cacheSols[cache];
     let sol = -Infinity, valide = !e.interdits.has(cle) && typeof e.decor.sol === 'function';
     if (valide) for (let j = 0; j < 3; j++) for (let i = 0; i < 3; i++) {
-      const h = e.decor.sol(cx * CELLULE - 2.2 + i * (CELLULE + 4.4) / 2,
-        cz * CELLULE - 2.2 + j * (CELLULE + 4.4) / 2);
-      if (!Number.isFinite(h) || Number.isFinite(e.decor.niveauEau) && h <= e.decor.niveauEau + .05) valide = false;
+      const x=cx*CELLULE-2.2+i*(CELLULE+4.4)/2, z=cz*CELLULE-2.2+j*(CELLULE+4.4)/2;
+      const h=e.decor.sol(x,z);
+      const eau=e.decor.niveauEauA ? e.decor.niveauEauA(x,z) : e.decor.niveauEau;
+      if (!Number.isFinite(h) || Number.isFinite(eau) && h <= eau + .05) valide = false;
       sol = Math.max(sol, h);
     }
     sol = valide ? Math.max(sol, e.route.get(cle) ?? -Infinity) + .04 : NaN;
@@ -106,9 +107,9 @@
     }
     v.candidats[i] = cle; v.distances[i] = d; v.sols[i] = sol; v.nombre = Math.min(v.candidats.length, v.nombre + 1);
   }
-  function selectionner(e, v, x, y, z, neigeActive) {
+  function selectionner(e, v, x, y, z, neigeActive, feuillesActives) {
     v.feuilles.nombre = v.neige.nombre = 0; v.nombre = 0; v.stats.requetes++;
-    if (e.saison.feuilles) {
+    if (feuillesActives) {
       for (let i = 0; i < e.sources.length; i++) {
         const s = e.sources[i], d = (s.x - x) ** 2 + (s.z - z) ** 2;
         if (d < (PORTEE_FEUILLES + s.rayon + 2) ** 2) inserer(v, i, d, s.sol);
@@ -249,8 +250,9 @@
     const budget = BUDGETS[c.qualite] || BUDGETS.high, pose = c.pose;
     const pluie = clamp(Number(c.pluie) || 0, 0, 1), nuit = clamp(Number(c.nuit) || 0, 0, 1);
     // Une mesure météo réelle peut commander la neige hors hiver, jamais sur Port-Sable.
-    const neige = etat.cote ? 0 : Number.isFinite(c.neige) ? clamp(c.neige, 0, 1) : etat.saison.neige ? pluie : 0;
-    if (budget === BUDGETS.off || c.abri || !pose || !etat.saison.feuilles && !neige && !v.neige.limite) {
+    const saison = c.saison || etat.saison;
+    const neige = etat.cote || saison.theme === 'cote' ? 0 : Number.isFinite(c.neige) ? clamp(c.neige, 0, 1) : saison.neige ? pluie : 0;
+    if (budget === BUDGETS.off || c.abri || !pose || !saison.feuilles && !neige && !v.neige.limite && !v.feuilles.limite) {
       if (v.feuilles.limite || v.neige.limite) effacer(v); return stats;
     }
     const x = Number.isFinite(pose.x) ? pose.x : pose[0], y = Number.isFinite(pose.y) ? pose.y : pose[1], z = Number.isFinite(pose.z) ? pose.z : pose[2];
@@ -264,8 +266,11 @@
       etat.ventZ += (clamp(Number(c.ventZ) || 0, -20, 20) - etat.ventZ) * f; etat.temps = temps;
     }
     v.change = false;
-    if ((x - v.x) ** 2 + (y - v.y) ** 2 + (z - v.z) ** 2 > 9 || v.neigeActive !== (neige > 0)) selectionner(etat, v, x, y, z, neige > 0);
-    planifier(v.feuilles, etat.saison.feuilles ? budget.feuilles : 0, v.change);
+    if ((x - v.x) ** 2 + (y - v.y) ** 2 + (z - v.z) ** 2 > 9 || v.neigeActive !== (neige > 0) || v.feuillesActives !== saison.feuilles) {
+      v.feuillesActives = saison.feuilles;
+      selectionner(etat, v, x, y, z, neige > 0, saison.feuilles);
+    }
+    planifier(v.feuilles, saison.feuilles ? budget.feuilles : 0, v.change);
     planifier(v.neige, budget.neige * neige, v.change);
     dessinerPool(etat, v, v.feuilles, temps, dt, x, y, z, nuit, sortie);
     dessinerPool(etat, v, v.neige, temps, dt, x, y, z, nuit, sortie);

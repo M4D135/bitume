@@ -84,10 +84,11 @@
 
   const FORMES = {};
 
-  function trouverSite(c, outils, sPref, dMin, dMax, essais = 28) {
+  function trouverSite(c, outils, fraction, dMin, dMax, essais = 28) {
     const { interroger, terrain } = outils;
     for (let k = 0; k < essais; k++) {
-      const s = ((sPref + k * 145) % c.longueur + c.longueur) % c.longueur;
+      const s = outils.secteur ? outils.secteur.position(fraction, k * 145) : (c.longueur * fraction + k * 145) % c.longueur;
+      if (outils.secteur && (!horsZoneDepart(c, s) || B.circuit.dansCouvert?.(c, s, 45))) continue;
       const f = B.circuit.echantillon(c, s);
       const cote = (k & 1) ? 1 : -1;
       const d = dMin + ((k * 37) % 100) / 100 * (dMax - dMin);
@@ -98,7 +99,8 @@
         return { x, z, y: terrain.sol(x, z), cap: f.cap, f, cote, s };
       }
     }
-    const f = B.circuit.echantillon(c, sPref % c.longueur);
+    if (outils.secteur) return null;
+    const sPref = c.longueur * fraction, f = B.circuit.echantillon(c, sPref % c.longueur);
     const x = f.x - Math.sin(f.cap) * dMax, z = f.z + Math.cos(f.cap) * dMax;
     return { x, z, y: terrain.sol(x, z), cap: f.cap, f, cote: 1, s: sPref };
   }
@@ -115,28 +117,30 @@
     return true;
   }
 
-  function trouverLigneDroite(c, sPref) {
+  function trouverLigneDroite(c, secteur, fraction) {
     let bestS = -1, bestK = Infinity;
     for (let k = 0; k < 36; k++) {
-      const s = ((sPref + k * 115) % c.longueur + c.longueur) % c.longueur;
+      const s = secteur ? secteur.position(fraction, k * 115) : (c.longueur * fraction + k * 115) % c.longueur;
       if (!horsZoneDepart(c, s)) continue;
       if (B.circuit.dansCouvert && B.circuit.dansCouvert(c, s, 45)) continue;
       const idx = Math.floor(s / c.pas) % c.n;
       const ak = Math.abs(c.courbure[idx]);
       if (ak < bestK) { bestK = ak; bestS = s; }
     }
+    if (bestS < 0 && secteur) return null;
     if (bestS < 0) bestS = Math.max(400, Math.min(c.longueur - 400, c.longueur * 0.45));
     return B.circuit.echantillon(c, bestS);
   }
 
   function poser(c, outils) {
-    if (!c || !THEMES[c.theme] || !outils || !outils.ajouter) return null;
+    const theme = outils?.secteur?.theme || c?.theme;
+    if (!c || !THEMES[theme] || !outils || !outils.ajouter) return null;
     const { terrain, limites, ajouter, qualite } = outils;
     const D = B.decor;
     const rocheShape = B.lieux ? 'bitume-lieu-rocher-alpin' : 'octa';
     const galetShape = B.lieux ? 'bitume-lieu-galet-a' : 'octa';
     const isLow = qualite === 'low';
-    const compte = { theme: c.theme, objets: 0, marqueurs: [] };
+    const compte = { theme, objets: 0, marqueurs: [] };
     function marquer(nom, x, y, z, rayon = 105, hauteur = 42) {
       compte.marqueurs.push({ nom, x, y, z, rayon, hauteur });
     }
@@ -146,9 +150,10 @@
       compte.objets += objs.length;
     }
 
-    if (c.theme === 'fjord') {
+    if (theme === 'fjord') {
       // Grand Pont Haubané au-dessus d'une portion droite + 2 cascades de granit
-      const f = trouverLigneDroite(c, c.longueur * 0.32);
+      const f = trouverLigneDroite(c, outils.secteur, 0.32);
+      if (!f) return compte;
       const rx = -Math.sin(f.cap), rz = Math.cos(f.cap);
       const span = (c.largeur || 12) + 14;
       const objs = [], loin = [];
@@ -175,7 +180,8 @@
       }
       push(objs, loin, f.x, f.z);
       marquer('Grand Pont du Fjord-d’Argent', f.x, f.y + 12, f.z, 115, 48);
-      const siteC = trouverSite(c, outils, c.longueur * 0.65, 55, 110);
+      const siteC = trouverSite(c, outils, 0.65, 55, 110);
+      if (!siteC) return compte;
       const cascForme = B.lieux ? 'bitume-lieu-cascade' : 'bevel';
       const lacForme = B.lieux ? 'bitume-lieu-lac-organique' : 'cylinder';
       const casc = [
@@ -183,9 +189,10 @@
         { shape: lacForme, p: [siteC.x, siteC.y + .45, siteC.z], s: [26, .9, 21], r: [0, -siteC.cap + .4, 0], mat: 12, color: [.10, .30, .42] }
       ];
       push(casc, casc, siteC.x, siteC.z);
-    } else if (c.theme === 'carpates') {
+    } else if (theme === 'carpates') {
       // Citadelle des Carpates (donjon + 4 tours à toits coniques + courtines)
-      const site = trouverSite(c, outils, c.longueur * 0.42, 48, 95);
+      const site = trouverSite(c, outils, 0.42, 48, 95);
+      if (!site) return compte;
       const objs = [], loin = [], pierre = [.50, .47, .42], toit = [.24, .18, .17];
       const donjon = { shape: 'cylinder', p: [site.x, site.y + 15, site.z], s: [11, 30, 11], r: [0, 0, 0], mat: 9, color: pierre };
       const toitD = { shape: 'cone', p: [site.x, site.y + 34, site.z], s: [13, 10, 13], r: [0, 0, 0], mat: 1, color: toit };
@@ -202,14 +209,16 @@
       }
       push(objs, loin, site.x, site.z);
       marquer('Citadelle des Carpates', site.x, site.y + 18, site.z, 110, 46);
-    } else if (c.theme === 'ecosse') {
+    } else if (theme === 'ecosse') {
       // Château des Highlands en pierre grise + cercle de menhirs organiques
-      const site = trouverSite(c, outils, c.longueur * 0.38, 45, 90);
+      const site = trouverSite(c, outils, 0.38, 45, 90);
+      if (!site) return compte;
       const objs = [], loin = [], pierre = [.38, .39, .40];
       const tour = { shape: 'bevel', p: [site.x, site.y + 11, site.z], s: [10, 22, 10], r: [0, -site.cap, 0], mat: 9, color: pierre };
       const aile = { shape: 'bevel', p: [site.x + 11, site.y + 6, site.z], s: [14, 12, 8], r: [0, -site.cap, 0], mat: 9, color: [.42, .43, .44] };
       objs.push(tour, aile); loin.push(tour, aile);
-      const siteM = trouverSite(c, outils, c.longueur * 0.72, 32, 65);
+      const siteM = trouverSite(c, outils, 0.72, 32, 65);
+      if (!siteM) return compte;
       const menhirs = [];
       for (let i = 0; i < 9; i++) {
         const a = i * Math.PI * 2 / 9 + Math.sin(i * 3.7) * 0.22;
@@ -221,9 +230,10 @@
       push(objs, loin, site.x, site.z);
       push(menhirs, menhirs.slice(0, 4), siteM.x, siteM.z);
       marquer('Château des Highlands', site.x, site.y + 14, site.z, 105, 42);
-    } else if (c.theme === 'sierra') {
+    } else if (theme === 'sierra') {
       // Grande Arche de Grès Naturelle au-dessus d'une droite HORS zone départ/stands
-      const f = trouverLigneDroite(c, c.longueur * 0.45);
+      const f = trouverLigneDroite(c, outils.secteur, 0.45);
+      if (!f) return compte;
       const rx = -Math.sin(f.cap), rz = Math.cos(f.cap), gres = [.56, .25, .14];
       const objs = [], loin = [];
       for (let i = 0; i <= 12; i++) {
@@ -237,9 +247,10 @@
       }
       push(objs, loin, f.x, f.z);
       marquer('Grande Arche de la Sierra', f.x, f.y + 12, f.z, 105, 42);
-    } else if (c.theme === 'corail') {
+    } else if (theme === 'corail') {
       // Grand Phare Blanc & Rouge sur îlot du lagon + voiliers blancs
-      const site = trouverSite(c, outils, c.longueur * 0.35, 55, 110);
+      const site = terrain.lagon?.rive || trouverSite(c, outils, 0.35, 55, 110);
+      if (!site) return compte;
       const objs = [], loin = [];
       const ilot = { shape: galetShape, p: [site.x, site.y + 1.5, site.z], s: [24, 5, 22], r: [0, 0, 0], mat: 9, color: [.74, .68, .54] };
       const f1 = { shape: 'cylinder', p: [site.x, site.y + 9, site.z], s: [5.2, 12, 5.2], r: [0, 0, 0], mat: 13.2, color: [.94, .94, .92] };
@@ -250,10 +261,24 @@
       objs.push(ilot, f1, f2, f3, lanterne, coupole);
       loin.push(ilot, f1, f2, f3, lanterne);
       push(objs, loin, site.x, site.z);
+      const mouillage = terrain.lagon?.mouillage;
+      if (mouillage && B.lieux?.ajouterVoilier) {
+        const { x, y, z, cap } = mouillage, tx = Math.cos(cap), tz = Math.sin(cap);
+        const voiliers = [];
+        for (const ecart of [0, 17]) {
+          const vx = x + ecart * tx, vz = z + ecart * tz;
+          // La coque entière doit tenir sur la nappe, jusqu'à la proue et aux deux bords.
+          if ([-5, 5].every(d => [-2, 2].every(l => Number.isFinite(
+            terrain.niveauEauA(vx + d * tx - l * tz, vz + d * tz + l * tx)))))
+            B.lieux.ajouterVoilier(voiliers, vx, vz, y, -cap, -cap + .35);
+        }
+        if (voiliers.length) push(voiliers, voiliers.slice(), x, z);
+      }
       marquer('Phare de la Baie-du-Corail', site.x, site.y + 18, site.z, 110, 44);
-    } else if (c.theme === 'andes') {
+    } else if (theme === 'andes') {
       // Observatoire Astronomique d'Altitude (3 coupoles blanches brillantes)
-      const site = trouverSite(c, outils, c.longueur * 0.50, 50, 105);
+      const site = trouverSite(c, outils, 0.50, 50, 105);
+      if (!site) return compte;
       const objs = [], loin = [], blanc = [.94, .95, .97], alu = [.72, .75, .79];
       for (const [dx, dz, rad] of [[0, 0, 9.5], [-18, 8, 6.5], [16, -9, 6.0]]) {
         const ox = site.x + dx, oz = site.z + dz, oy = terrain.sol(ox, oz);

@@ -125,7 +125,10 @@
   // ensuite ; vues, séances et rétroviseurs les partagent. Le circuit et le décor d'origine sont gardés pour que
   // creer() refuse une préparation venue d'une autre scène au lieu d'animer des essaims ailleurs.
   function preparerParTranches(c, decor) {
-    const activite = decor && decor.saison && Number.isFinite(decor.saison.faune) ? clamp(decor.saison.faune, 0, 1) : 1;
+    let activite = decor && decor.saison && Number.isFinite(decor.saison.faune) ? clamp(decor.saison.faune, 0, 1) : 1;
+    const secteurs = B.saisons?.secteurs?.(c);
+    if (secteurs && decor?.saison) for (const plage of secteurs.plages)
+      activite = Math.max(activite, plage.profils[decor.saison.id]?.faune || 0);
     const liste = [], controle = { fin: Infinity };
     const etapes = activite === 0 ? null : etapesHabitats(c || {}, decor, liste, controle);
     const travail = { fini: false, resultat: null, habitats: 0,

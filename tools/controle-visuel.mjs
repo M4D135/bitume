@@ -87,8 +87,8 @@ export function horlogeCapture(graine) {
   })()`;
 }
 
-// Le renderer existe avant la fin du démarrage asynchrone (détection puis vitrine). Une référence
-// installée trop tôt est remplacée plus tard par cette vitrine, puis par la démo automatique.
+// Le renderer existe avant la fin du démarrage asynchrone (détection du profil). Une référence
+// installée trop tôt perturbe cette initialisation. La démo automatique attend ensuite sur le titre.
 // Faire vivre les rAF du démarrage et passer le banc matériel par son bouton : le profil demandé
 // pour les captures sera ensuite imposé par reference(), sans prétendre mesurer SwiftShader.
 export async function attendreDemarrage(evaluer, attendre, dormir = ms => new Promise(r => setTimeout(r, ms))) {
@@ -102,8 +102,8 @@ export async function attendreDemarrage(evaluer, attendre, dormir = ms => new Pr
       const detection = document.getElementById('autodetection');
       if (J.ecran === 'detection' && detection && !detection.hidden)
         document.getElementById('detection-annuler').click();
-      const chargement = J.chargement, type = J.session?.type;
-      return { pret: !!J.rendu && J.ecran === 'titre' && type === 'vitrine' && !!chargement && !chargement.enCours && !chargement.voile,
+      const chargement = J.chargement, type = J.session?.type ?? null;
+      return { pret: !!J.rendu && J.ecran === 'titre' && (type === null || type === 'vitrine') && !!chargement && !chargement.enCours && !chargement.voile,
         ecran: J.ecran, type, etape: chargement?.etape, preparation: !!chargement?.enCours };
     })()`);
     if (etat.pret) return etat;

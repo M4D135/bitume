@@ -497,29 +497,33 @@
     piloterAppareil(etat.volH, cxH, cyH, czH, c, sH, _ptCible[1], sol, obstacles, 28, dt, 1.9, 2.2, 115, 24);
 
     const hx = etat.volH.pos[0], hy = etat.volH.pos[1], hz = etat.volH.pos[2];
-    const capH = etat.volH.cap, yawH = -capH, cosH = Math.cos(capH), sinH = Math.sin(capH);
-    const H = etat.helico;
-    attitudeAngles(capH, etat.volH.pitch, etat.volH.roll, H.corps.r);
+    // Le pilotage et les obstacles restent actifs hors champ. La queue et le rotor
+    // tiennent dans 8 m autour du centre, quels que soient tangage et roulis.
+    if (!contexte?.visible || contexte.visible(hx, hy, hz, 8)) {
+      const capH = etat.volH.cap, yawH = -capH, cosH = Math.cos(capH), sinH = Math.sin(capH);
+      const H = etat.helico;
+      attitudeAngles(capH, etat.volH.pitch, etat.volH.roll, H.corps.r);
 
-    for (const part of [H.corps, H.bulle, H.poutre, H.patins, H.nacelle]) {
-      part.p[0] = hx; part.p[1] = hy; part.p[2] = hz;
-      if (part !== H.corps) { part.r[0] = H.corps.r[0]; part.r[1] = H.corps.r[1]; part.r[2] = H.corps.r[2]; }
+      for (const part of [H.corps, H.bulle, H.poutre, H.patins, H.nacelle]) {
+        part.p[0] = hx; part.p[1] = hy; part.p[2] = hz;
+        if (part !== H.corps) { part.r[0] = H.corps.r[0]; part.r[1] = H.corps.r[1]; part.r[2] = H.corps.r[2]; }
+      }
+      H.nacelle.emissive = nuit > 0.2 ? 1.8 * nuit : 0.2;
+      H.rotor.p[0] = hx + 0.15 * cosH;
+      H.rotor.p[1] = hy + 1.22;
+      H.rotor.p[2] = hz + 0.15 * sinH;
+      attitudeAngles(capH - (t * 22) % PI2, 0, 0, H.rotor.r);
+      H.anticouple.p[0] = hx - 5.65 * cosH - 0.16 * sinH;
+      H.anticouple.p[1] = hy + 0.62;
+      H.anticouple.p[2] = hz - 5.65 * sinH + 0.16 * cosH;
+      H.anticouple.r[0] = (t * 38) % PI2; H.anticouple.r[1] = yawH + PI * 0.5; H.anticouple.r[2] = 0;
+      H.balise.p[0] = hx - 5.80 * cosH;
+      H.balise.p[1] = hy + 1.42;
+      H.balise.p[2] = hz - 5.80 * sinH;
+      H.balise.emissive = Math.sin(t * 6.5) > 0.2 ? 1.8 : 0.1;
+
+      sortie.push(H.corps, H.bulle, H.poutre, H.patins, H.nacelle, H.rotor, H.anticouple, H.balise);
     }
-    H.nacelle.emissive = nuit > 0.2 ? 1.8 * nuit : 0.2;
-    H.rotor.p[0] = hx + 0.15 * cosH;
-    H.rotor.p[1] = hy + 1.22;
-    H.rotor.p[2] = hz + 0.15 * sinH;
-    attitudeAngles(capH - (t * 22) % PI2, 0, 0, H.rotor.r);
-    H.anticouple.p[0] = hx - 5.65 * cosH - 0.16 * sinH;
-    H.anticouple.p[1] = hy + 0.62;
-    H.anticouple.p[2] = hz - 5.65 * sinH + 0.16 * cosH;
-    H.anticouple.r[0] = (t * 38) % PI2; H.anticouple.r[1] = yawH + PI * 0.5; H.anticouple.r[2] = 0;
-    H.balise.p[0] = hx - 5.80 * cosH;
-    H.balise.p[1] = hy + 1.42;
-    H.balise.p[2] = hz - 5.80 * sinH;
-    H.balise.emissive = Math.sin(t * 6.5) > 0.2 ? 1.8 : 0.1;
-
-    sortie.push(H.corps, H.bulle, H.poutre, H.patins, H.nacelle, H.rotor, H.anticouple, H.balise);
 
     // ── 2. Drones TV : Drone 1 sur le peloton de tête, Drone 2 en balayage tête ↔ dernier ──
     const nbDrones = qualite === 'low' ? 1 : 2;
@@ -535,6 +539,7 @@
       piloterAppareil(vol, cxD, cyD, czD, c, sD, _ptCible[1], sol, obstacles, 22, dt, 2.5, 2.5, 130, 30);
 
       const dx = vol.pos[0], dy = vol.pos[1], dz = vol.pos[2];
+      if (contexte?.visible && !contexte.visible(dx, dy, dz, 2)) continue;
       const capD = vol.cap, yawD = -capD, ca = Math.cos(capD), sa = Math.sin(capD);
 
       D.chassis.p[0] = dx; D.chassis.p[1] = dy; D.chassis.p[2] = dz;

@@ -1,0 +1,119 @@
+{
+  "fichier": "0116-formes-glaces.html",
+  "sha256": "b6632bcac960170ffa7fc7b03eb50bf1a94baadbc35ca69228569da24516738f",
+  "arriveeConfirmee": false,
+  "dernierEtat": {
+    "fin": null,
+    "kmRoute": 31.885665600118205,
+    "km": 31.885665600118205,
+    "tReel": 968.9779,
+    "simulation": 969.0166666659437,
+    "compteur": 54412,
+    "pertes": 0,
+    "erreurs": 0,
+    "utc": "2026-11-22T18:28:34.659Z",
+    "thermique": 1
+  },
+  "segmentCompletJusquaKm": 31,
+  "rendusSegmentsComplets": 52991,
+  "secondesSegmentsComplets": 943.696,
+  "fpsSegmentsComplets": 56.15,
+  "intervalleMaxMs": 66.7,
+  "intervallesPires": [
+    {
+      "km": 5,
+      "tempsS": 142.694,
+      "ms": 66.7,
+      "abscisseM": 4045.51
+    },
+    {
+      "km": 3,
+      "tempsS": 82.28,
+      "ms": 66.6,
+      "abscisseM": 2665.85
+    },
+    {
+      "km": 3,
+      "tempsS": 81.897,
+      "ms": 50.1,
+      "abscisseM": 2660.79
+    },
+    {
+      "km": 3,
+      "tempsS": 82.03,
+      "ms": 50.1,
+      "abscisseM": 2662.76
+    },
+    {
+      "km": 3,
+      "tempsS": 82.33,
+      "ms": 50.1,
+      "abscisseM": 2666.53
+    },
+    {
+      "km": 3,
+      "tempsS": 82.413,
+      "ms": 50.1,
+      "abscisseM": 2667.64
+    },
+    {
+      "km": 12,
+      "tempsS": 384.485,
+      "ms": 50.1,
+      "abscisseM": 11136.73
+    },
+    {
+      "km": 3,
+      "tempsS": 62.981,
+      "ms": 50,
+      "abscisseM": 2180.99
+    },
+    {
+      "km": 3,
+      "tempsS": 69.097,
+      "ms": 50,
+      "abscisseM": 2383.22
+    },
+    {
+      "km": 3,
+      "tempsS": 81.78,
+      "ms": 50,
+      "abscisseM": 2659.47
+    }
+  ],
+  "intervalles25msSegmentsComplets": 3600,
+  "intervalles50msSegmentsComplets": 27,
+  "observation": "Le processus de Chrome headless a disparu avant que le contrôleur reçoive le franchissement de la ligne. Les statistiques agrégées ci-dessus portent uniquement sur les kilomètres terminés et archivés. Une session graphique distincte de Chrome s’est ouverte ultérieurement. La cause de la sortie est indéterminée.",
+  "CDP": {
+    "utc": "2026-11-22T18:25:38.156Z",
+    "contexte": "Requête CDP au navigateur de la descente .116 en cours, sans appel au thread du jeu",
+    "featureStatus": {
+      "2d_canvas": "enabled",
+      "direct_rendering_display_compositor": "disabled_off_ok",
+      "gpu_compositing": "enabled",
+      "multiple_raster_threads": "enabled_on",
+      "opengl": "enabled_on",
+      "rasterization": "enabled",
+      "skia_graphite": "enabled_on",
+      "trees_in_viz": "disabled_off",
+      "video_decode": "enabled",
+      "video_encode": "enabled",
+      "webgl": "enabled",
+      "webgpu": "enabled",
+      "webnn": "disabled_off"
+    },
+    "materiels": [
+      {
+        "nom": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Version 27.2.1 (Build 26B131))",
+        "constructeur": "Google Inc. (Apple)",
+        "pilote": "27.2.1"
+      }
+    ],
+    "auxiliaire": {
+      "typeGL": "(gl=egl-angle,angle=metal)",
+      "rendu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Version 27.2.1 (Build 26B131))",
+      "version": "OpenGL ES 3.0 (ANGLE 2.1.29101 git hash: c56e2a4a9b8c)",
+      "displayType": "ANGLE_METAL"
+    }
+  }
+}

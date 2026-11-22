@@ -8,6 +8,7 @@ export const catalogueJeu = JSON.parse(JSON.stringify(vm.runInNewContext(jeu.mat
 const declaration = jeu.match(/  function circuit\(i\) \{[\s\S]*?\n  \}/)[0];
 const fabrique = new Function('B', 'CATALOGUE', 'circuits', declaration + '; return circuit(0);');
 export function creerCircuitCatalogue(B, definition) {
+  require('../../src/circuit-raccords.js');
   require('../../src/route-des-cimes.js');
   require('../../src/marseille.js');
   require('../../src/larche-vinadio.js');

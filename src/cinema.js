@@ -93,6 +93,28 @@
     for (let i = 0; i < c.n; i += 4) { const q = (c.x[i] - x) ** 2 + (c.z[i] - z) ** 2; if (q < d) { d = q; k = i; } }
     return k * c.pas;
   }
+  function fenetresPanorama(c, arrivee) {
+    const sections = B.saisons?.secteurs?.(c);
+    if (!sections) return null;
+    // Une première fenêtre par portion ; attribuer le reste aux plus grandes distances
+    // encore couvertes par une seule prise. Huit trajectoires en tout, comme sur une piste simple.
+    const frequences = sections.plages.map(() => 1);
+    for (let n=frequences.length; n<8; n++) {
+      let indice=0, maximum=-1;
+      for (let i=0; i<frequences.length; i++) {
+        const p=sections.plages[i], largeur=(p.fin-p.debut)/frequences[i];
+        if (largeur>maximum) { maximum=largeur; indice=i; }
+      }
+      frequences[indice]++;
+    }
+    const fenetres=[];
+    for (let i=0; i<frequences.length; i++) {
+      const p=sections.plages[i], fin=Math.min(p.fin,arrivee), largeur=(fin-p.debut)/frequences[i];
+      if (!(largeur>0)) continue;
+      for (let j=0; j<frequences[i]; j++) fenetres.push([p.debut+j*largeur,p.debut+(j+1)*largeur]);
+    }
+    return fenetres;
+  }
   function statiques(c, decor) {
     const cached = CACHE.get(decor); if (cached) return cached;
     const panorama = [], lieu = [], virages = B.virages?.planifier(c) || [];
@@ -103,8 +125,10 @@
     if (!Number.isFinite(maxY)) { maxY = 300; minY = -100; }
     // Huit fenêtres du tracé : relief et courbes différents, sans inventer un lieu absent du décor.
     const arrivee = c.ouvert ? (c.arrivee ?? c.longueur) : c.longueur;
-    for (let secteur = 0; secteur < 8; secteur++) {
-      const debut = secteur * arrivee / 8, fin = (secteur + 1) * arrivee / 8;
+    const fenetres = fenetresPanorama(c, arrivee);
+    for (let secteur = 0; secteur < (fenetres ? fenetres.length : 8); secteur++) {
+      const debut = fenetres ? fenetres[secteur][0] : secteur * arrivee / 8;
+      const fin = fenetres ? fenetres[secteur][1] : (secteur + 1) * arrivee / 8;
       let courbe = null;
       for (const v of virages) {
         if (v.sommet < debut || v.sommet >= fin || B.circuit.dansCouvert(c, v.sommet, 90)) continue;

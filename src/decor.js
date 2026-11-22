@@ -1,5 +1,6 @@
 /* BITUME — décor calculé depuis le circuit : chaussée, accotements, terrain, eau, arbres, tribunes, glissières.
    Aucune image ni modèle : des nappes de triangles (matière et couleur par sommet) et des primitives du moteur FERRO. */
+if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lagon) require('./lagon.js');
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaussee) require('./chaussee.js');
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virages) require('./virages.js');
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.baikal) require('./baikal.js');
@@ -364,6 +365,22 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     x0 -= marge; z0 -= marge; x1 += marge; z1 += marge;
     const nx = Math.ceil((x1 - x0) / pasT) + 1, nz = Math.ceil((z1 - z0) / pasT) + 1;
     const H = new Float32Array(nx * nz), D = new Float32Array(nx * nz);
+    const secteurs = B.saisons?.secteurs?.(c);
+    const secondaire = secteurs?.plages.find(p => p.theme !== c.theme);
+    const paletteB = secondaire && (THEMES[secondaire.theme] || B.destinations?.THEMES[secondaire.theme]);
+    const poidsAxe = paletteB ? new Uint8Array(c.n) : null, poidsSol = paletteB ? new Uint8Array(nx*nz) : null;
+    const centres = paletteB ? [[0,0,0],[0,0,0]] : null;
+    if (paletteB) {
+      const bornes = secteurs.plages.filter((p,i,liste) => liste[(i+liste.length-1)%liste.length].theme !== p.theme).map(p => p.debut);
+      for (let i=0; i<c.n; i++) {
+        const s=i*c.pas, cote=secteurs.plages[secteurs.indices[i]].theme === secondaire.theme ? 1 : 0;
+        let distance=Infinity;
+        for (const borne of bornes) { const ds=Math.abs(s-borne); distance=Math.min(distance,ds,c.longueur-ds); }
+        poidsAxe[i]=Math.round(255*lisse(-95,95,cote ? distance : -distance));
+        centres[cote][0]+=c.x[i]; centres[cote][1]+=c.z[i]; centres[cote][2]++;
+      }
+      for (const centre of centres) { centre[0]/=Math.max(1,centre[2]); centre[1]/=Math.max(1,centre[2]); }
+    }
     const centreX = (x0 + x1) / 2, centreZ = (z0 + z1) / 2;
     // Brume-de-Jade : sept sommets inégaux, répartis en deux massifs et un éperon isolé.
     // Ce sont des hauteurs de la grille existante, jamais des objets ajoutés ni un travail par image.
@@ -385,8 +402,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     // supprime le mur vertical de 300 m à d = 230 m causé par le saut brutal q.i < 0 → d = 1e4 / yT = 0.
     const champContinu = organique || c.id === 'route-des-cimes';
     let loinX = null, loinY = null, loinZ = null, loinN = 0, yFond = 0;
+    const pasLoin = Math.max(1, Math.round(18 / c.pas));
     if (champContinu) {
-      const pasLoin = Math.max(1, Math.round(18 / c.pas));
       loinN = Math.ceil(c.n / pasLoin);
       loinX = new Float32Array(loinN); loinY = new Float32Array(loinN); loinZ = new Float32Array(loinN);
       let yMinC = Infinity;
@@ -396,15 +413,18 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
       yFond = Number.isFinite(yMinC) ? yMinC : 0;
     }
-    const hauteur = (x, z) => {
+    const hauteur = (x, z, cellule) => {
       const rayonQ = th.karstique ? 380 : 230;
       const q = interroger(x, z, rayonQ);
-      let d = q.i < 0 ? 1e4 : q.d, yT = q.i < 0 ? 0 : q.y;
+      let indiceAxe = q.i, d = q.i < 0 ? 1e4 : q.d, yT = q.i < 0 ? 0 : q.y;
       if (champContinu && (q.i < 0 || d > rayonQ - 65)) {
         let d2min = Infinity, sY = 0, sW = 0;
         for (let k = 0; k < loinN; k++) {
           const dx = loinX[k] - x, dz = loinZ[k] - z, d2 = dx * dx + dz * dz;
-          if (d2 < d2min) d2min = d2;
+          if (d2 < d2min) {
+            d2min = d2;
+            if (poidsSol && q.i < 0) indiceAxe = k * pasLoin;
+          }
           const w = 1 / (d2 + 2500);
           sY += w * loinY[k]; sW += w;
         }
@@ -474,13 +494,24 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         } else h -= 34 * lisse(merDebut - 40, merDebut + 220, p) * lisse(60, 140, d);
       }
       if (B.cimesDecor) h = B.cimesDecor.relief(c, x, z, q, h);
+      if (poidsSol) {
+        if (indiceAxe >= 0) poidsSol[cellule] = poidsAxe[indiceAxe];
+        else {
+          // Le terrain simple n'a pas d'axe voisin pour ses marges éloignées.
+          // Prolonger la couleur selon les deux centres déjà calculés, sans requête spatiale.
+          const da = Math.hypot(x-centres[0][0],z-centres[0][1]), db = Math.hypot(x-centres[1][0],z-centres[1][1]);
+          poidsSol[cellule] = Math.round(255*lisse(-180,180,da-db));
+        }
+      }
       return { h, d };
     };
     for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
-      const r = hauteur(x0 + i * pasT, z0 + j * pasT); H[j * nx + i] = r.h; D[j * nx + i] = r.d;
+      const r = hauteur(x0 + i * pasT, z0 + j * pasT, j*nx+i); H[j * nx + i] = r.h; D[j * nx + i] = r.d;
     }
+    const lagon = secondaire?.theme === 'corail' && poidsSol
+      ? B.lagon.construire(c, secteurs, interroger, { x0,z0,nx,nz,pas:pasT,H,D,poidsSol,alterne:organique }, { nappe,sommet,finir }) : null;
     const liste = [], TUILE = 14, habitat = {};
-    const couleur = (h, d, ny, x, z) => {
+    const couleur = (h, d, ny, x, z, th) => {
       // En mode organique : déformation douce de domaine (domain warping) pour casser toute régularité
       // de grille et fondre les transitions sol/roche/sable/neige sans cassure triangulaire ni bande carrée.
       let wx = x, wz = z;
@@ -593,7 +624,17 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         const hx = H[j * nx + Math.min(nx - 1, i + 1)] - H[j * nx + Math.max(0, i - 1)];
         const hz = H[Math.min(nz - 1, j + 1) * nx + i] - H[Math.max(0, j - 1) * nx + i];
         const no = [-hx / (2 * pasT), 1, -hz / (2 * pasT)], l = Math.hypot(no[0], no[1], no[2]); no[0] /= l; no[1] /= l; no[2] /= l;
-        const [mat, col] = couleur(h, D[cle], no[1], x, z);
+        const part = poidsSol ? poidsSol[cle] / 255 : 0;
+        let [mat, col] = couleur(h, D[cle], no[1], x, z, part === 1 ? paletteB : th);
+        if (part > 0 && part < 1) {
+          const [autreMat, autreCol] = couleur(h, D[cle], no[1], x, z, paletteB);
+          col = melange(col, autreCol, part);
+          if (part >= .5) mat = autreMat;
+        }
+        if (lagon) {
+          const sable=lagon.sable(i,j);
+          if (sable>0) col=melange(col,paletteB.sable,sable);
+        }
         const k = sommet(nap, [x, h, z], no, mat, col); indicesTuile[local] = k + 1; return k;
       };
       // En mode organique : un même triangle n'interpole jamais deux indices de matière (évite que
@@ -634,12 +675,17 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
             if (fini.sommets[id + 9] !== 8 || fini.sommets[id + 4] < .7
               || (th.eau !== undefined && fini.sommets[id + 1] < th.eau + 2.2)) herbe = false;
           }
+          if (herbe && lagon) for (let v=0; v<3; v++) {
+            const off=fini.indices[k+v]*13;
+            if (Number.isFinite(lagon.niveauEauA(fini.sommets[off],fini.sommets[off+2]))) { herbe=false; break; }
+          }
           if (herbe) herbeTriangles.push(k);
         }
         Object.defineProperties(fini, { herbeTriangles: { value: herbeTriangles }, surfaceType: { value: 'terrain' } });
         liste.push(fini);
       }
     }
+    if (lagon) liste.push(lagon.eau);
     let eau = null;
     if (th.eau !== undefined) {
       const nap = nappe(4), y = th.eau, col = th.baikal ? [.055, .23, .32] : th.pacifique ? [.075, .235, .29] : [.10, .30, .40];
@@ -654,9 +700,21 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       const fi = (x - x0) / pasT, fj = (z - z0) / pasT, i = Math.max(0, Math.min(nx - 2, Math.floor(fi))), j = Math.max(0, Math.min(nz - 2, Math.floor(fj)));
       const u = Math.max(0, Math.min(1, fi - i)), v = Math.max(0, Math.min(1, fj - j));
       const h00 = H[j * nx + i], h10 = H[j * nx + i + 1], h01 = H[(j + 1) * nx + i], h11 = H[(j + 1) * nx + i + 1];
+      if (lagon?.contientCellule(i,j)) {
+        if (organique && ((i+j)&1)) return u+v<=1 ? h00+(h10-h00)*u+(h01-h00)*v
+          : h11+(h01-h11)*(1-u)+(h10-h11)*(1-v);
+        return u>=v ? h00+(h10-h00)*u+(h11-h10)*v : h00+(h11-h01)*u+(h01-h00)*v;
+      }
       return h00 * (1 - u) * (1 - v) + h10 * u * (1 - v) + h01 * (1 - u) * v + h11 * u * v;
     };
-    return { liste: eau ? liste.concat([eau]) : liste, sol, maillageSol: { x0, z0, nx, nz, pas: pasT, alterne: organique, H }, bornes: [x0, z0, x1, z1], niveauEau: th.eau, paysageBaikal };
+    // Réutiliser la grille de hauteur pour le sol, les arbres et les lots de végétation.
+    const partSecondaire = poidsSol && ((x,z) => {
+      const fi=(x-x0)/pasT, fj=(z-z0)/pasT;
+      const i=Math.max(0,Math.min(nx-2,Math.floor(fi))), j=Math.max(0,Math.min(nz-2,Math.floor(fj))), k=j*nx+i;
+      const u=Math.max(0,Math.min(1,fi-i)), v=Math.max(0,Math.min(1,fj-j));
+      return ((poidsSol[k]*(1-u)+poidsSol[k+1]*u)*(1-v)+(poidsSol[k+nx]*(1-u)+poidsSol[k+nx+1]*u)*v)/255;
+    });
+    return { liste: eau ? liste.concat([eau]) : liste, sol, lagon, niveauEauA: lagon?.niveauEauA, partSecondaire, saisonSecondaire: secondaire && saison && secondaire.profils[saison.id], maillageSol: { x0, z0, nx, nz, pas: pasT, alterne: organique, H }, bornes: [x0, z0, x1, z1], niveauEau: th.eau, paysageBaikal };
   }
 
   // Surface réellement disponible pour les plantes et la petite faune. Les polygones sont découpés
@@ -1270,7 +1328,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     // Hasard architectural séparé ; le repli sert seulement à relire l'oracle historique du décor.
     const architecture = options.batiments !== false && B.batiments ? { maisons: [], stands: [] } : null;
     if (saison) {
-      const habitat = {}, couleur = [0, 0, 0], teinte = [0, 0, 0];
+      const habitat = {}, couleur = [0, 0, 0], teinte = [0, 0, 0], autreTeinte = [0, 0, 0];
       for (const n of nappes.concat(terrain.liste)) {
         if (n.surfaceType === 'panorama') continue;
         const visites = new Uint8Array(n.sommets.length / 13);
@@ -1284,7 +1342,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           const k = v * 13, x = n.sommets[k], z = n.sommets[k + 2];
           if (ecologie) ecologie.echantillonner(x, z, habitat);
           for (let a = 0; a < 3; a++) couleur[a] = n.sommets[k + 10 + a];
-          B.saisons.teinte(saison, 'sol', couleur, x, z, ecologie ? habitat : null, teinte);
+          const part = terrain.partSecondaire ? terrain.partSecondaire(x,z) : 0;
+          B.saisons.teinte(part === 1 ? terrain.saisonSecondaire : saison, 'sol', couleur, x, z, ecologie ? habitat : null, teinte);
+          if (part > 0 && part < 1) {
+            B.saisons.teinte(terrain.saisonSecondaire, 'sol', couleur, x, z, ecologie ? habitat : null, autreTeinte);
+            for (let a=0; a<3; a++) teinte[a] += (autreTeinte[a]-teinte[a])*part;
+          }
           for (let a = 0; a < 3; a++) n.sommets[k + 10 + a] = teinte[a];
         }
       }
@@ -1652,12 +1715,13 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         l.loin.push({ shape: B.botanique.TRONC_LOINTAIN, p: tronc.p.slice(), s: tronc.s.slice(), r: tronc.r.slice(), mat: tronc.mat, color: tronc.color.slice() });
     }
     function saisonArbre(objets, loin, x, z, essence = th.essence, solSource = null) {
+      const saisonArbreLocale = terrain.saisonSecondaire && terrain.partSecondaire(x,z) >= .5 ? terrain.saisonSecondaire : saison;
       const pied = objets.find(o => o.collision === 'tronc'), h = pied.s[1] / .84, sol = pied.p[1] - h * .42 + .2;
       if (ecologie) ecologie.echantillonner(x, z, habitatArbre);
       // Forêt basse mêlée aux conifères : choix spatial stable, indépendant de la saison et du hasard
       // historique. Le tronc solide conserve exactement sa position et ses dimensions. Au-dessus de
       // la bande basse, seuls les conifères historiques restent ; aucun arbre n'est ajouté au col.
-      if (saison && th.montagnes && B.botanique && sol < 120
+      if (saisonArbreLocale && th.montagnes && B.botanique && sol < 120
         && hache(Math.round(x * 8), Math.round(z * 8), g + 541) < .48 * (1 - lisse(70, 120, sol))) {
         essence = 'feuillu';
         const vert = [.17, .31, .09].map(v => v * (.90 + .20 * hache(Math.round(x), Math.round(z), g + 547)));
@@ -1668,7 +1732,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           objets.push(couronne); loin.push({ ...couronne, p: couronne.p.slice(), s: couronne.s.slice() });
         }
       }
-      const nu = !!(saison && saison.id === 'hiver' && essence === 'feuillu' && B.botanique);
+      const nu = !!(saisonArbreLocale && saisonArbreLocale.id === 'hiver' && !(terrain.saisonSecondaire && saisonArbreLocale.theme === 'cote') && essence === 'feuillu' && B.botanique);
       // Les platanes de bord avaient une seule couronne simple, même en Fine : leurs rameaux restent
       // au budget de 72 triangles. La forêt détaillée conserve, elle, ses vraies branches détaillées.
       if (nu) {
@@ -1676,11 +1740,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         habiller(objets, loin, essence, detailNu, h, pied.r[0], pied.color, true);
       }
       const parties = new Set(objets.concat(loin));
-      if (saison) {
+      if (saisonArbreLocale) {
         for (const o of parties) if (!nu && couronneArbre(o) && o.color) {
-          o.color = B.saisons.teinte(saison, essence === 'feuillu' ? 'feuillage-caduque' : 'feuillage-persistant', o.color, o.p[0], o.p[2], ecologie ? habitatArbre : null);
+          o.color = B.saisons.teinte(saisonArbreLocale, essence === 'feuillu' ? 'feuillage-caduque' : 'feuillage-persistant', o.color, o.p[0], o.p[2], ecologie ? habitatArbre : null);
         }
-        if (saison.feuilles && essence === 'feuillu') {
+        if (saisonArbreLocale.feuilles && essence === 'feuillu') {
           sourcesFeuilles.push({ x, y: sol + h * .78, z, rayon: h * .36, sol: solSource ?? sol });
         }
       }
@@ -1694,6 +1758,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
     }
     function retenirArbre(objets, loin, x, z, essence = th.essence) {
+      if (terrain.lagon && Number.isFinite(terrain.niveauEauA(x,z))) return;
       if (maisonsBaikal && maisonsBaikal.some(m => Math.hypot(m.x - x, m.z - z) < 18)) return;
       const richesse = ecologie ? ecologie.echantillonner(x, z, habitatArbre).boisement : 1;
       if (!th.pacifique && (richesse < .08 || hache(Math.round(x * 8), Math.round(z * 8), g + 337) > richesse)) return;
@@ -1975,17 +2040,44 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const lieuxCimes = B.cimesDecor && B.cimesDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter });
     const lieuxLarche = B.larcheDecor && B.larcheDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter });
     const lieuxMarseille = B.marseilleDecor && B.marseilleDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter });
-    const lieuxDest = B.destinations && B.destinations.poser(c, { terrain, limites: lim, interroger, qualite, saison, ajouter, th });
+    const outilsLieux = { terrain, limites: lim, interroger, qualite, saison, ajouter, th };
+    // Les repères prennent leur abscisse dans leur paysage d'origine. Le contrôle
+    // physique consulte toujours le circuit entier, y compris le bras d'en face.
+    const paysages = B.saisons?.secteurs?.(c)?.plages;
+    const portionsLieux = paysages?.map(p => ({ theme: p.theme, debut: p.debut, fin: p.fin }));
+    if (portionsLieux?.length > 1 && portionsLieux[0].theme === portionsLieux.at(-1).theme) {
+      // La première boucle peut traverser la ligne de départ.
+      portionsLieux[0].debut = portionsLieux.pop().debut - c.longueur;
+    }
+    function poserParPaysage(module) {
+      if (!module) return null;
+      if (!portionsLieux) return module.poser(c, outilsLieux);
+      const marqueurs = [];
+      for (const p of portionsLieux) {
+        const premier = Math.ceil(p.debut / c.pas), n = Math.ceil(p.fin / c.pas) - premier;
+        if (n <= 0) continue;
+        const modulo = (v, periode) => ((v % periode) + periode) % periode;
+        const origine = c.tronconsThemes.find(t => t.theme === p.theme);
+        const secteur = { theme: p.theme, graine: origine?.graine ?? c.graine, n,
+          indice: (fraction, delta) => modulo(premier + modulo(Math.floor(fraction * n) + delta, n), c.n),
+          position: (fraction, delta) => modulo(p.debut + modulo(fraction * (p.fin-p.debut) + delta, p.fin-p.debut), c.longueur) };
+        const local = saison ? B.saisons.profil(saison.id, p.theme) : null;
+        const lieux = module.poser(c, { ...outilsLieux, secteur, saison: local });
+        if (lieux?.marqueurs) marqueurs.push(...lieux.marqueurs);
+      }
+      return { marqueurs };
+    }
+    const lieuxDest = poserParPaysage(B.destinations);
     if (organique && c.stands && B.equipeStands && B.equipeStands.construireDecors) {
       B.equipeStands.construireDecors(c, terrain, ajouter);
     }
-    let lieuxEmblematiques = organique && !estMarseille ? B.lieux.poser(c, { terrain, limites: lim, interroger, qualite, saison, ajouter, th }) : null;
+    let lieuxEmblematiques = organique && !estMarseille ? poserParPaysage(B.lieux) : null;
     if (lieuxLarche && lieuxLarche.marqueurs && lieuxLarche.marqueurs.length) {
       lieuxEmblematiques = Object.assign({}, lieuxEmblematiques || {}, { marqueurs: lieuxLarche.marqueurs });
     } else if (lieuxMarseille && lieuxMarseille.marqueurs && lieuxMarseille.marqueurs.length) {
       lieuxEmblematiques = Object.assign({}, lieuxEmblematiques || {}, { marqueurs: lieuxMarseille.marqueurs });
     } else if (lieuxDest && lieuxDest.marqueurs && lieuxDest.marqueurs.length) {
-      lieuxEmblematiques = Object.assign({}, lieuxEmblematiques || {}, { marqueurs: lieuxDest.marqueurs });
+      lieuxEmblematiques = Object.assign({}, lieuxEmblematiques || {}, { marqueurs: portionsLieux ? [...(lieuxEmblematiques?.marqueurs || []), ...lieuxDest.marqueurs] : lieuxDest.marqueurs });
     }
 
     // Finition des lots : sphère englobante et portée.
@@ -2029,7 +2121,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const atmosphere = saison ? B.saisons.atmosphere(saison, atmosphereBase) : atmosphereBase;
     // enceinte : portion de la ligne droite bordée de tribunes et de stands (abscisses comptées depuis la ligne) ; une
     // caméra de bord de piste s'y place devant eux, pas derrière la glissière où elle serait dans les gradins.
-    const decor = { nappes: nappes.concat(terrain.liste), lots: lotsDessin, railsVirages, atmosphere, portique, obstacles, sol: terrain.sol, niveauEau: terrain.niveauEau, limites: lim, theme: th,
+    const decor = { nappes: nappes.concat(terrain.liste), lots: lotsDessin, railsVirages, atmosphere, portique, obstacles, sol: terrain.sol, niveauEau: terrain.niveauEau, lagon: terrain.lagon, niveauEauA: terrain.niveauEauA, limites: lim, theme: th,
       arbres: positionsArbres,
       enceinte: { debut: avant - 10, fin: apres + 50 } };
     Object.defineProperty(decor, 'maillageSol', { value: terrain.maillageSol });
@@ -2066,7 +2158,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       saison: { value: saison },
       sourcesFeuilles: { value: sourcesFeuilles },
       herbier: { get: ouvrirHerbier },
-      surfaceHerbe: { value: (x, z, sortie) => ouvrirHerbier().surface(x, z, sortie) },
+      surfaceHerbe: { value: (x, z, sortie) => terrain.lagon && Number.isFinite(terrain.niveauEauA(x,z)) ? null : ouvrirHerbier().surface(x, z, sortie) },
     });
     if (tunnelLampes) decor.tunnelLampes = tunnelLampes;
     // Végétation basse : générateur et lots indépendants. Le décor historique et ses solides restent identiques ;
@@ -2086,13 +2178,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         ecologie });
       if (saison) {
         const habitat = {};
-        for (const lot of v.lots) for (let i = 0; i < lot.objets.length; i++) {
-          const o = lot.objets[i]; if (!o.color || o.shape === 'humus-val') continue;
-          if (ecologie) ecologie.echantillonner(o.p[0], o.p[2], habitat);
-          const famille = o.shape === 'fleurs-val' ? 'fleurs' : 'herbe';
-          const couleur = B.saisons.teinte(saison, famille, o.color, o.p[0], o.p[2], ecologie ? habitat : null);
-          o.color = couleur;
-          if (lot.loin[i]) lot.loin[i].color = couleur;
+        for (const lot of v.lots) {
+          const saisonLot = terrain.saisonSecondaire && terrain.partSecondaire(lot.centre[0],lot.centre[2]) >= .5 ? terrain.saisonSecondaire : saison;
+          for (let i=0; i<lot.objets.length; i++) {
+            const o = lot.objets[i]; if (!o.color || o.shape === 'humus-val') continue;
+            if (ecologie) ecologie.echantillonner(o.p[0], o.p[2], habitat);
+            const famille = o.shape === 'fleurs-val' ? 'fleurs' : 'herbe';
+            const couleur = B.saisons.teinte(saisonLot, famille, o.color, o.p[0], o.p[2], ecologie ? habitat : null);
+            o.color = couleur;
+            if (lot.loin[i]) lot.loin[i].color = couleur;
+          }
         }
       }
       // Les masques d'herbe ouverts plus tard relisent `lots`, qui reçoit donc les massifs ; les lots d'image les

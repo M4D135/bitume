@@ -111,17 +111,13 @@ verifier('tous les lancements passent par la préparation : plus de lancement di
     assert.ok(!corps.includes('setTimeout') && !/\blancer\(/.test(corps), debut.trim() + ' ne lance plus directement');
   }
   const demarrer = section('  async function demarrer()', "  // Outil d'essai");
-  assert.ok(demarrer.includes("await preparerSeance('vitrine'"), 'la vitrine du titre se prépare sous le voile de la page');
-  assert.ok(demarrer.indexOf('creerMoteurRetro()') < demarrer.indexOf("preparerSeance('vitrine'"), 'moteur des glaces créé avec la page');
-  // un lancement direct (banc, essais) arrête la préparation qui court ; les seuls lancements de vitrine directs restent
+  assert.doesNotMatch(demarrer, /\b(?:preparerSeance|lancer|creerMoteurRetro)\(/, 'aucune séance ni miroir au démarrage');
+  assert.ok(demarrer.includes("aller('titre')") && demarrer.includes('requestAnimationFrame(image)'), 'menu et commandes actifs');
   const lancer = section('  function lancer(', '\n  }\n');
   assert.ok(lancer.includes('if (prepa.enCours && !prepa.interne) annulerPreparation();'));
   assert.ok(lancer.includes('if (!prepa.interne) prechargerSeance(S);'), 'un lancement direct précharge aussi');
-  assert.equal(source.match(/lancer\('vitrine'/g).length, 3, 'vitrine directe : seulement remettreVitrine, lancerVitrine et le repli du démarrage');
-  // une vitrine de démarrage abandonnée avant sa séance (contexte perdu) se lance d'un bloc au lieu d'arrêter le jeu
-  const repli = demarrer.slice(demarrer.indexOf("await preparerSeance('vitrine'"), demarrer.indexOf("aller('titre')"));
-  assert.ok(/if \(!session && R && R\.annule\) lancer\('vitrine'/.test(repli) && repli.indexOf("lancer('vitrine'") < repli.indexOf('throw new Error'),
-    'repli de la vitrine avant l’erreur fatale');
+  const preparer = section('  async function preparerSeance(', '  function lancerVitrine(');
+  assert.ok(preparer.includes('if (glaces) preparerGlaces()'), 'première vraie séance : miroirs selon le profil');
   // la démo des outils reste synchrone, comme reference() : séance et scène en place au retour de BITUME_JEU.demo
   const outil = section('  window.BITUME_JEU = {', '  setTimeout(demarrer, 20);');
   assert.ok(/\bdemo: i => demoDirecte\(/.test(outil), 'BITUME_JEU.demo passe par demoDirecte');

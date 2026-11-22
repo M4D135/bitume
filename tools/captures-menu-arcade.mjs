@@ -34,7 +34,7 @@ const page = await context.newPage();
 page.setDefaultTimeout(15000);
 page.on('pageerror', e => rapport.erreurs.push(e.message));
 const notes = (nom, preuve = {}) => { rapport.controles.push({ nom, statut: 'ok', ...preuve }); console.log('OK ' + nom); };
-const lire = () => page.evaluate(() => ({ ecran: BITUME_JEU.ecran, menu: BITUME_JEU.menuArcade, reglages: BITUME_JEU.reglages, dessins: __menuEssai.dessins, vibrations: __menuEssai.vibrations, session: { i: BITUME_JEU.session?.i, type: BITUME_JEU.session?.type }, manettesSimulees: { lectures: __menuEssai.lecturesManettes, transition: __menuEssai.transitionManette } }));
+const lire = () => page.evaluate(() => ({ ecran: BITUME_JEU.ecran, menu: BITUME_JEU.menuArcade, reglages: BITUME_JEU.reglages, dessins: __menuEssai.dessins, vibrations: __menuEssai.vibrations, session: BITUME_JEU.session && { i: BITUME_JEU.session.i, type: BITUME_JEU.session.type }, manettesSimulees: { lectures: __menuEssai.lecturesManettes, transition: __menuEssai.transitionManette } }));
 const ecran = n => page.waitForFunction(n => window.BITUME_JEU?.ecran === n, n, { timeout: 120000 });
 const deuxImages = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 async function attendreTitre(phase) {
@@ -147,12 +147,13 @@ try {
   assert.deepEqual(optionsInconnues, [], 'la fixture utilise uniquement les choix réellement proposés');
   await attendreTitre('ouverture'); await calme('Titre opaque sans rendu caché');
   await page.locator('[data-aller="course"]').focus(); await page.keyboard.press('Enter'); await ecran('preparation');
-  assert.equal(await page.locator('#circuits [role="radio"]').count(), 9);
+  const catalogues = await page.evaluate(() => BITUME_JEU.CATALOGUE.map(c => c.nom));
+  assert.equal(await page.locator('#circuits [role="radio"]').count(), catalogues.length);
   await page.locator('#circuits [aria-checked="true"]').focus(); await page.keyboard.press('End');
-  await page.waitForFunction(() => BITUME_JEU.reglages.circuit === 8 && BITUME_JEU.menuArcade.images > 0);
-  assert.equal(await page.locator('#p-circuit-nom').textContent(), 'Route-des-Cimes');
-  assert.equal((await lire()).session.i, 0, 'la sélection ne reconstruit pas une vitrine');
-  notes('Clavier : neuf circuits, sélection réelle de Route-des-Cimes, scène inchangée');
+  await page.waitForFunction(() => BITUME_JEU.reglages.circuit === BITUME_JEU.CATALOGUE.length - 1 && BITUME_JEU.menuArcade.images > 0);
+  assert.equal(await page.locator('#p-circuit-nom').textContent(), catalogues.at(-1));
+  assert.equal((await lire()).session, null, 'la sélection ne lance aucune séance');
+  notes('Clavier : sélection de la dernière piste sans démarrer de séance', { nombre: catalogues.length, piste: catalogues.at(-1) });
   // Figer un aperçu visible demande une dernière image statique utile. La mesurer seulement après sa présentation.
   await page.locator('#p-rotation').click(); await deuxImages(); await calme('Tracé figé sans nouveau dessin');
   await page.locator('#p-rotation').click(); await deuxImages();

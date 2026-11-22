@@ -140,7 +140,7 @@ test('l’horloge de capture contrôle chaque rAF sans falsifier performance.now
   assert.equal(ctx.resultats.at(-1), 1100, 'le démarrage ne décale pas les captures avant/après');
 });
 
-test('le démarrage asynchrone finit sa vitrine avant d’autoriser la référence', async () => {
+test('le démarrage asynchrone montre le titre sans séance avant d’autoriser la référence', async () => {
   const ctx = vm.createContext({ performance: { now: () => 12345 } });
   vm.runInContext('window = globalThis', ctx);
   vm.runInContext(horlogeCapture(17017), ctx);
@@ -152,7 +152,6 @@ test('le démarrage asynchrone finit sa vitrine avant d’autoriser la référen
       if (passes++) return;
       requestAnimationFrame(() => {
         BITUME_JEU.ecran = 'chargement'; chargement.enCours = true; chargement.etape = 'seance';
-        BITUME_JEU.session = { type: 'vitrine' };
         requestAnimationFrame(() => {
           chargement.enCours = false; chargement.etape = null; BITUME_JEU.ecran = 'titre';
         });
@@ -165,7 +164,7 @@ test('le démarrage asynchrone finit sa vitrine avant d’autoriser la référen
     if (r?.ecran) phases.push([r.ecran, r.pret]);
     return r;
   }, 1000, async () => {});
-  assert.equal(etat.pret, true);
+  assert.equal(etat.pret, true); assert.equal(etat.type, null);
   assert.deepEqual(phases, [['detection', false], ['chargement', false], ['titre', true]]);
   assert.equal(ctx.BITUME_JEU.reglages.demo, 'non');
   assert.equal(ctx.BITUME_JEU.pauseAuto, false);
