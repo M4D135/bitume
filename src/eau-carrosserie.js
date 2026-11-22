@@ -175,8 +175,8 @@
     if (pluie === 0 && e.humide < 1e-5) e.humide = 0;
     e.pluie = pluie; e.age += dt; e.revisions++; e.dernierInstant = instant; e.actives = Math.ceil(e.humide * MAX);
     // Une carrosserie déjà sèche ne parcourt ni ses perles ni ses couleurs. Le dernier pas
-    // de séchage passe encore ci-dessous pour restaurer les attaches et la peinture ;
-    // la prochaine pluie reprend les mêmes pools et recalcule leur transport normalement.
+    // de séchage désactive les perles et restaure la peinture. Le transport des perles
+    // reprend à la prochaine pluie.
     if (dejaSec) return true;
     const p = Number.isFinite(pose?.tangage) ? pose.tangage : 0, r = Number.isFinite(pose?.roulis) ? pose.roulis : 0;
     // Gravité exprimée dans le repère incliné de la voiture, et air vers l'arrière (inverse en marche arrière).
@@ -212,14 +212,12 @@
     for (let i = 0; i < MAX; i++) {
       const g = e.gouttes[i], f = g.face;
       g.force = clamp(charge - i, 0, 1); g.allongement = allongement;
-      if ((e.humide === 0 || g.support.deplacementInchange) && g.u === g.u0 && g.v === g.v0) continue;
-      if (e.humide === 0) { g.u = g.u0; g.v = g.v0; }
-      else {
-        g.u = Math.max(g.marge[1], g.u0 + g.support.du);
-        g.v = Math.max(g.marge[2], g.v0 + g.support.dv);
-        const somme = g.u + g.v - g.marge[1] - g.marge[2];
-        if (somme > g.libre) { const k = g.libre / somme; g.u = g.marge[1] + (g.u - g.marge[1]) * k; g.v = g.marge[2] + (g.v - g.marge[2]) * k; }
-      }
+      if (e.humide === 0) continue;
+      if (g.support.deplacementInchange && g.u === g.u0 && g.v === g.v0) continue;
+      g.u = Math.max(g.marge[1], g.u0 + g.support.du);
+      g.v = Math.max(g.marge[2], g.v0 + g.support.dv);
+      const somme = g.u + g.v - g.marge[1] - g.marge[2];
+      if (somme > g.libre) { const k = g.libre / somme; g.u = g.marge[1] + (g.u - g.marge[1]) * k; g.v = g.marge[2] + (g.v - g.marge[2]) * k; }
       g.local[0] = f.a[0] + f.u[0] * g.u + f.v[0] * g.v;
       g.local[1] = f.a[1] + f.u[1] * g.u + f.v[1] * g.v;
       g.local[2] = f.a[2] + f.u[2] * g.u + f.v[2] * g.v;
