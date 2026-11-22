@@ -232,11 +232,18 @@
     function ouvrir() {
       return new Promise((ok, ko) => {
         try { ws = new WebSocket(options.url); } catch (e) { ko(e); return; }
+        const socket=ws;
         ws.binaryType = 'arraybuffer';
-        ws.onopen = () => { R.etat = 'salon'; ok(); };
+        ws.onopen = () => {
+          if (ws!==socket) { ko(new Error('connexion annulée')); return; }
+          R.etat = 'salon'; ok();
+        };
         ws.onerror = () => { if (R.etat === 'ferme') ko(new Error('salon injoignable')); };
         // sans salon, plus de nouvelles liaisons ni de relais : la partie ne tient que si toutes ses liaisons sont directes
-        ws.onclose = () => { if (R.etat !== 'ferme' && (!pairs.size || [...pairs.values()].some(p => p.relais || !p.pret))) terminer('salon'); };
+        ws.onclose = () => {
+          if (R.etat==='ferme') { ko(new Error('connexion fermée')); return; }
+          if (ws===socket && (!pairs.size || [...pairs.values()].some(p => p.relais || !p.pret))) terminer('salon');
+        };
         ws.onmessage = ev => {
           if (typeof ev.data !== 'string') { const u = new Uint8Array(ev.data); if (u.length > 1) recevoirEtat(ev.data.slice(1), u[0]); return; }
           let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
@@ -399,7 +406,16 @@
       ws = null;
       emettre('ferme', raison);
     }
-    R.fermer = () => { try { R.envoyer({ t: 'bye' }); } catch (e) { /* liaison déjà coupée */ } terminer('local'); };
+    R.fermer = () => {
+      // Pendant l'ouverture du WebSocket, il n'y a pas encore de salon à quitter.
+      if (R.etat==='ferme' && ws) {
+        const socket=ws; ws=null;
+        try { socket.close(); } catch (_) { /* ouverture déjà interrompue */ }
+        return;
+      }
+      try { R.envoyer({ t: 'bye' }); } catch (e) { /* liaison déjà coupée */ }
+      terminer('local');
+    };
     return R;
   }
 

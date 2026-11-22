@@ -71,6 +71,19 @@ button, input, select { font: inherit; color: inherit; }
 .entete { display: flex; align-items: center; gap: 16px; margin-bottom: clamp(14px, 2.4vh, 26px); }
 .entete .sous { margin: 6px 0 0; color: var(--papier-2); }
 
+/* La pagination garde distincts le choix de page et la disponibilité d'un réglage en solo ou en duo. */
+.menu-coquille [data-page-inactive], .pages-reglages[hidden] { display: none !important; }
+#preparation .panneaux-menu, #reglages .panneaux-menu { overflow-y: auto; }
+.pages-reglages { display: flex; align-items: center; gap: .75rem; width: fit-content; margin: 0 0 .85rem;
+  color: var(--papier-2); font: 650 .85rem/1.2 var(--f-texte); font-variant-numeric: tabular-nums; }
+.pages-reglages > span { min-width: 4ch; text-align: center; }
+.pages-reglages button { min-width: 3.6rem; min-height: 44px; padding: .3rem .6rem; border: 1px solid var(--trait-fort);
+  border-radius: var(--rayon); background: var(--nuit-legere); color: var(--papier); font: inherit; cursor: pointer; }
+.pages-reglages button:hover, .pages-reglages button:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+#reglages [data-pages-reglages] .grille-reglages { grid-template-columns: repeat(auto-fit,minmax(min(100%,260px),1fr)); max-width: 60rem; }
+#preparation [data-pages-reglages] .conditions-grille { grid-template-columns: minmax(0,1fr); max-width: 45rem; }
+#reglages [data-pages-reglages] .commandes-joueurs { grid-template-columns: minmax(0,1fr); max-width: 50rem; }
+
 .titre { display: flex; flex-direction: column; justify-content: center; gap: clamp(20px, 5vh, 48px);
   background: linear-gradient(90deg, rgba(8, 9, 11, .86) 0%, rgba(8, 9, 11, .55) 42%, rgba(8, 9, 11, 0) 72%); }
 .marque { --t-marque: clamp(72px, 15vw, 210px); }
@@ -220,9 +233,12 @@ button:disabled { cursor: not-allowed; opacity: .55; }
   .aide-manette { margin-top: 8px; }
 }
 
-.pause { display: flex; flex-direction: column; justify-content: center; gap: 24px; background: rgba(8, 9, 11, .66); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
-.pause .service-pneus { max-width: 1040px; padding-top: 18px; border-top: 1px solid var(--trait-fort); }
-.service-pneus h3 { margin: 0 0 8px; font: 700 22px/1.1 var(--f-titre); }
+.pause { display: flex; flex-direction: column; justify-content: center; gap: clamp(14px, 2.5vh, 24px); background: rgba(8, 9, 11, .66); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+.pause .entete { margin: 0; }
+.pause .choix { width: min(100%, 32rem); align-items: stretch; }
+.pause .choix button { min-width: 0; min-height: 48px; text-align: left; }
+.pause .service-pneus { width: min(100%, 42rem); }
+.pause #ps-choix-pilote { width: fit-content; margin-bottom: 12px; }
 .service-pneus .options { margin-top: 16px; }
 .service-pneus fieldset { flex: 1 1 300px; }
 .service-pneus fieldset:disabled label { cursor: default; }
@@ -558,27 +574,23 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 
 /* deux manettes branchées : l'écran titre le signale sur « À deux » */
 .gros .detecte { display: inline-block; margin-left: 14px; padding: 4px 8px 3px; vertical-align: middle; font: normal 700 12px/1 var(--f-texte); letter-spacing: .1em; text-transform: uppercase; color: var(--encre); background: var(--vert); border-radius: var(--rayon); }
-/* Jeu en ligne : nom, puis deux cartes (créer, rejoindre), puis le code et l'état de la liaison */
+/* Salon en ligne : choix, formulaire, puis partie connectée. */
 .enligne { background: linear-gradient(180deg, rgba(8, 9, 11, .92), rgba(8, 9, 11, .8)); }
 .salon { display: flex; flex-direction: column; gap: 22px; max-width: 920px; }
 .champ-nom { display: flex; flex-direction: column; gap: 8px; max-width: 320px; font: 600 11px/1 var(--f-texte); letter-spacing: .14em; text-transform: uppercase; color: var(--papier-2); }
 .enligne input { font: 700 22px/1.2 var(--f-titre); padding: 11px 14px; background: rgba(8, 9, 11, .9); color: var(--papier); border: 1px solid var(--trait-fort); border-radius: var(--rayon); user-select: text; -webkit-user-select: text; }
 .enligne input::placeholder { color: var(--papier-3); }
 .enligne input:focus { outline: 2px solid var(--ambre); outline-offset: 2px; }
-.enligne-choix { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 16px; }
-.carte-salon { display: flex; flex-direction: column; gap: 12px; padding: 20px 22px 22px; background: rgba(22, 24, 28, .82); border: 1px solid var(--trait); border-top: 3px solid var(--rouge); border-radius: var(--rayon); }
-.carte-salon.rejoindre { border-top-color: var(--bleu); }
-.carte-salon h3 { margin: 0; font: italic 800 30px/1 var(--f-titre); font-stretch: condensed; text-transform: uppercase; letter-spacing: .02em; }
-.carte-salon p { margin: 0; color: var(--papier-2); }
-.carte-salon .gros { align-self: flex-start; min-width: 0; margin-top: auto; }
-.ligne-code { display: flex; flex-wrap: wrap; gap: 12px; align-items: stretch; margin-top: auto; }
-.ligne-code .gros { margin-top: 0; }
+.enligne-choix, .formulaire-salon { display: grid; gap: 16px; width: min(100%, 540px); }
+.enligne-choix .gros { width: 100%; text-align: left; }
+.formulaire-salon > button, #l-annuler { justify-self: start; align-self: flex-start; }
+.formulaire-salon .ligne-identite { align-items: flex-start; flex-direction: column; }
 .enligne #l-code { width: 9ch; font-size: 28px; text-transform: uppercase; letter-spacing: .3em; text-align: center; }
 .etat-salon { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
 .note-enligne { margin: 0; color: var(--papier); font-size: 16px; }
 .note-enligne:empty { display: none; }
 .code-partie { margin: 0; padding: 14px 24px 16px; font: italic 800 64px/1 var(--f-titre); letter-spacing: .22em; color: var(--papier); text-align: left; background: rgba(22, 24, 28, .9); border: 1px solid var(--trait-fort); border-left: 4px solid var(--ambre); border-radius: var(--rayon); cursor: copy; }
-.code-partie::before { content: 'Code de la partie · toucher pour copier'; display: block; margin-bottom: 10px; font: normal 600 11px/1 var(--f-texte); letter-spacing: .14em; text-transform: uppercase; color: var(--papier-2); }
+.code-partie::before { content: 'Code de la partie · copier'; display: block; margin-bottom: 10px; font: normal 600 11px/1 var(--f-texte); letter-spacing: .14em; text-transform: uppercase; color: var(--papier-2); }
 .code-partie:hover, .code-partie:focus-visible { border-color: var(--ambre); outline: none; }
 
 /* Écran partagé à deux : deux moitiés, l'une sur l'autre ou côte à côte ; chaque affichage est mis en page dans une
@@ -1110,7 +1122,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 }
 #titre [data-aller="championnat"] { --accent: #ffd35e; --fond: #51412b; }
 #titre [data-aller="chrono"] { --accent: #61d6f0; --fond: #20434e; }
-#titre [data-aller="duo"] { --accent: #c9abff; --fond: #393149; }
+#titre [data-ouvrir-titre="multi"], #titre [data-aller="duo"] { --accent: #c9abff; --fond: #393149; }
 #titre [data-aller="enligne"] { --accent: #6ae1ac; --fond: #244237; }
 #titre [data-aller="reglages"] { --accent: #a4bee4; --fond: #29394c; }
 #titre .mode-arcade::before {
@@ -1126,11 +1138,11 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 #titre .mode-arcade small { font: 550 clamp(15px, 1.25vw, 19px)/1.25 var(--f-texte); color: #e4e6e9; margin: 8px 0 0; }
 #titre .mode-fleche { grid-area: 1 / 2; align-self: center; color: var(--accent); font: 700 29px/1 var(--f-texte); }
 #titre .mode-picto { position: relative; display: block; grid-area: 1 / 1; width: 35px; height: 28px; color: var(--accent); }
-#titre [data-aller="course"] i { transform: skewX(-12deg); border-left: 3px solid; background: repeating-conic-gradient(currentColor 0 25%, transparent 0 50%) 2px 0 / 12px 12px no-repeat; background-size: 12px 12px; background-repeat: repeat; clip-path: polygon(0 0,100% 0,98% 73%,9% 73%,9% 100%,0 100%); }
+#titre [data-ouvrir-titre="solo"] i, #titre [data-aller="course"] i { transform: skewX(-12deg); border-left: 3px solid; background: repeating-conic-gradient(currentColor 0 25%, transparent 0 50%) 2px 0 / 12px 12px no-repeat; background-size: 12px 12px; background-repeat: repeat; clip-path: polygon(0 0,100% 0,98% 73%,9% 73%,9% 100%,0 100%); }
 #titre [data-aller="championnat"] i { background: currentColor; clip-path: polygon(0 9%,16% 9%,16% 0,83% 0,83% 9%,100% 9%,93% 39%,77% 49%,65% 64%,55% 69%,55% 82%,74% 89%,74% 100%,26% 100%,26% 89%,45% 82%,45% 69%,30% 58%,23% 49%,7% 39%,0 9%,8% 17%,14% 33%,22% 38%,17% 17%,7% 17%); }
 #titre [data-aller="chrono"] i { width: 25px; height: 25px; border: 3px solid; border-radius: 50%; margin: 2px 0 0 4px; }
 #titre [data-aller="chrono"] i::after { content: ''; position: absolute; left: 48%; bottom: 45%; width: 3px; height: 8px; background: currentColor; transform: rotate(35deg); transform-origin: bottom; }
-#titre [data-aller="duo"] i { border: 3px solid; border-radius: 4px; background: linear-gradient(90deg, transparent 46%, currentColor 46% 54%, transparent 54%); }
+#titre [data-ouvrir-titre="multi"] i, #titre [data-aller="duo"] i { border: 3px solid; border-radius: 4px; background: linear-gradient(90deg, transparent 46%, currentColor 46% 54%, transparent 54%); }
 #titre [data-aller="enligne"] i { width: 29px; height: 29px; border: 2px solid; border-radius: 50%; background: linear-gradient(transparent 46%, currentColor 46% 54%, transparent 54%); }
 #titre [data-aller="enligne"] i::after { content: ''; position: absolute; inset: -2px 5px; border: 2px solid; border-radius: 50%; }
 #titre [data-aller="reglages"] i { background: radial-gradient(circle at 30% 18%, currentColor 0 4px, transparent 4.5px), radial-gradient(circle at 75% 50%, currentColor 0 4px, transparent 4.5px), radial-gradient(circle at 42% 82%, currentColor 0 4px, transparent 4.5px), repeating-linear-gradient(transparent 0 4px, currentColor 4px 6px, transparent 6px 9px); }
@@ -1164,3 +1176,21 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 #ch-choix { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); max-width: 68rem; }
 #ch-choix button { padding: 22px 18px; border: 1px solid #75674e; border-top: 4px solid #ffd35e; border-radius: 4px 12px 4px 4px; background: linear-gradient(130deg,#453a29,#202a33); color: #fff3da; text-align: left; }
 #ch-choix button:focus-visible, #ch-choix button:hover { outline: 3px solid #ffd35e; outline-offset: 3px; }
+
+#titre-section { width: var(--paddock); display: flex; align-items: center; gap: 18px; }
+#titre-section h2 { margin: 0; font: italic 800 clamp(24px, 3vw, 36px)/1 var(--f-titre); }
+#p-categories { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+#p-categories button { width: 44px; min-height: 40px; border: 1px solid #536778; border-radius: 4px; background: #192531; color: var(--papier); font: 700 24px/1 var(--f-titre); }
+#p-categories button:focus-visible { outline: 3px solid var(--ambre); outline-offset: 2px; }
+#p-famille { text-align: center; font: 700 clamp(16px, 2vw, 22px)/1.15 var(--f-titre); }
+#p-piste #circuits { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+#circuits .carte-circuit { grid-template-columns: minmax(0, 1fr); align-content: center; min-height: 64px; padding: 9px 14px; }
+#circuits .carte-circuit .nom, #circuits .carte-circuit .fiche { grid-column: 1; white-space: normal; }
+#circuits .carte-circuit .nom { font-size: clamp(17px, 1.65vw, 24px); }
+#circuits .carte-circuit .fiche { font-size: 13px; }
+@media (max-width: 700px) {
+  #p-piste #circuits, #titre .arcade-modes { grid-template-columns: 1fr; }
+  #titre .mode-arcade { grid-template-columns: 32px 1fr auto; grid-template-rows: auto; align-items: center; min-height: 72px; }
+  #titre .mode-libelle { grid-area: 1 / 2; }
+  #titre .mode-fleche { grid-area: 1 / 3; }
+}

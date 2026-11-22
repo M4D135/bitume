@@ -74,7 +74,7 @@
   }
   function construireDecors(c,terrain,ajouter) {
     if(!c||!c.stands||!ajouter)return null;
-    const S=c.stands, box=centre(c), objets=[],loin=[], f=ancrage(c,box.s,box.d);
+    const S=c.stands, cote=S.cote||1, box=centre(c), objets=[],loin=[], f=ancrage(c,box.s,box.d);
     // Chaque station prend l'altitude réelle de la chaussée à sa propre abscisse,
     // notamment les portiques, indépendants du plat du box.
     function bloc(s,d,y,shape,sx,sy,sz,col,mat,lointain=false,partie='atelier') {
@@ -83,7 +83,7 @@
       objets.push(o); if(lointain)loin.push(o); return o;
     }
     function garage(x,z,y,shape,sx,sy,sz,col,mat,loin=false,partie) {
-      return bloc(box.s+x,box.d+z,y,shape,sx,sy,sz,col,mat,loin,partie);
+      return bloc(box.s+x,box.d+cote*z,y,shape,sx,sy,sz,col,mat,loin,partie);
     }
     function livrer(x,z) {
       if(objets.length)ajouter(objets.slice(),loin.slice(),x,z);
@@ -92,11 +92,11 @@
     const inventaire=[];
     // Seul le bras haut passe au-dessus de la voie ; les pieds sont plantés à l'extérieur de l'enrobé.
     for(const entree of [true,false]){
-      const s=entree?S.debut+2:S.fin-2,d=voie(c,s),bord=B.circuit.bordStands?.(c,s);
-      const pied=Math.max(d+S.demi,Number.isFinite(bord)?bord:c.largeur/2)+.95,rep=ancrage(c,s,pied);
+      const s=entree?S.debut+2:S.fin-2,d=voie(c,s),bord=B.circuit.bordStands?.(c,s,cote);
+      const pied=cote*(Math.max(d*cote+S.demi,Number.isFinite(bord)?bord:c.largeur/2)+.95),rep=ancrage(c,s,pied);
       bloc(s,pied,2.38,'box',.26,4.76,.29,acier,0,true,'pied-portique');
       bloc(s,pied,.23,'bevel',.56,.46,.56,anthracite,22,true);
-      bloc(s,(pied+d)/2,4.53,'box',.25,.25,pied-d+.27,acier,0,true);
+      bloc(s,(pied+d)/2,4.53,'box',.25,.25,Math.abs(pied-d)+.27,acier,0,true);
       bloc(s,d,4.27,'bevel',.32,.68,2.4,anthracite,24,true,'panneau-voie');
       const couleur=entree?ambre:vert,texte=entree?'PIT IN':'PIT OUT';
       // Même alphabet que les portiques de course, devant le support et face à l'arrivée.
@@ -112,7 +112,7 @@
     // Atelier ouvert vers le box. La poutre de rive est en porte-à-faux : aucune colonne entre l'équipe et la roue.
     let bas=-.16;
     if(terrain?.sol)for(const x of [-7,0,7])for(const z of [3.2,6.45,9.9]){
-      const pied=ancrage(c,box.s+x,box.d+z),sol=terrain.sol(pied.x,pied.z);
+      const pied=ancrage(c,box.s+x,box.d+cote*z),sol=terrain.sol(pied.x,pied.z);
       if(Number.isFinite(sol))bas=Math.min(bas,sol-pied.y-.05);
     }
     const dalle=garage(0,6.54,(bas+.018)*.5,'box',14.4,.018-bas,6.82,[.32,.34,.34],22,true,'socle-atelier');
@@ -184,12 +184,12 @@
   }
   function creer(c,decor) {
     if(!c||!c.stands)return {actif:false,objets:[]};
-    const box=centre(c),f=ancrage(c,box.s,box.d),mecs=POSTES.map(([role,coin,x,z],i)=>({
-      role,coin,i,parc:ancrage(c,box.s+x,box.d+z),pieces:null
+    const cote=c.stands.cote||1,box=centre(c),f=ancrage(c,box.s,box.d),mecs=POSTES.map(([role,coin,x,z],i)=>({
+      role,coin,i,parc:ancrage(c,box.s+x,box.d+cote*z),pieces:null
     }));
-    return {actif:true,c,box,fBox:f,mecs,objets:[],points:Array.from({length:10},vec),angles:new Float32Array(8),
+    return {actif:true,c,cote,box,fBox:f,mecs,objets:[],points:Array.from({length:10},vec),angles:new Float32Array(8),
       squat:new Float32Array(8),appuis:new Float32Array(2),car:{},moyeux:Array.from({length:4},vec),
-      arrivee:ancrage(c,box.s-.85,box.d+1.53),lampes:null};
+      arrivee:ancrage(c,box.s-.85,box.d+cote*1.53),lampes:null};
   }
   function pneuPorte(m,neuf,roue) {
     const liste=[],essieu=roue.x>0?'av':'ar', J=B.voiture?.JANTES_FORMES?.[essieu];
@@ -313,15 +313,15 @@
     const ax=(m.parc.x-c.x)*c.tx+(m.parc.z-c.z)*c.tz,az=-(m.parc.x-c.x)*c.tz+(m.parc.z-c.z)*c.tx;
     const cric=m.role==='cric',carburant=m.role==='essence',chef=m.role==='chef',porteur=m.role==='pneu';
     const bx=cric?bout*3.25:chef?2.45:carburant?-.64:roue.x+(porteur?bout*.60:0);
-    const bz=cric?.05:chef?2.65:carburant?1.19:roue.z+side*(porteur?.88:.65);
+    const bz=cric?.05:chef?eq.cote*2.65:carburant?1.19:roue.z+side*(porteur?.88:.65);
     const retard=carburant||chef||cric?0:RETARD[m.coin];
     const arrive=lisse(.005+retard,.276+retard,u),retour=lisse(.73+retard,.988,u);
     const av=arrive*(1-retour);
     // Un couloir devant le nez ou derrière la boîte de vitesses dessert le côté opposé.
     // Les intervenants proches du garage ont leur propre trajet direct. Longueurs réelles
     // de chaque tronçon pour piloter la foulée, y compris au retour.
-    const contour=!chef&&!carburant&&side<0&&!cric;
-    const couloir=bout*(porteur?3.58:3.06),lx=contour?couloir:bx,lz=contour?bz:az;
+    const contour=carburant ? eq.cote<0 : !chef&&!cric&&side*eq.cote<0;
+    const couloir=carburant?-3.3:bout*(porteur?3.58:3.06),lx=contour?couloir:bx,lz=contour?bz:az;
     const d1=Math.hypot(lx-ax,lz-az),d2=Math.hypot(bx-lx,bz-lz);
     // Sur le côté opposé, garder l'abscisse extrême pendant toute la traversée.
     const d0=contour?Math.abs(couloir-ax):0;
@@ -339,12 +339,12 @@
     m.marche=depart?Math.min(lisse(0,.12,av),1-lisse(.88,1,av)):0;
     m.distance=retour>0?(2-av)*total:distance;
     // Regarder l'écrou, la vanne ou le pilote au poste ; pendant la marche, tourner vers le trajet.
-    const cibleX=chef?-1:cric?-bout:carburant?.16:roue.x-bx,cibleZ=chef?-.45:cric?0:carburant?-1:roue.z-bz;
+    const cibleX=chef?-1:cric?-bout:carburant?.16:roue.x-bx,cibleZ=chef?-.45*eq.cote:cric?0:carburant?-1:roue.z-bz;
     const f=eq.fBox,delta=retour>0?-1:1,capTravail=Math.atan2(cibleZ,cibleX),capPas=Math.atan2(dz*delta,dx*delta);
     m.veille=1-lisse(0,.15,av);
     const versTravail=lisse(.80,1,av),regardEntree=-2.68+m.i*.035;
     const accueil=eq.entree?regardEntree:m.role==='chef'?-2.65:m.role==='essence'?-.62:-1.6+Math.sin(m.i*2.7)*1.02;
-    const direction=virer(virer(accueil,capPas,lisse(0,.18,av)),capTravail,versTravail);
+    const direction=virer(virer(accueil*eq.cote,capPas,lisse(0,.18,av)),capTravail,versTravail);
     const cs=Math.cos(direction),sn=Math.sin(direction);
     m.fx=c.tx*cs-c.tz*sn; m.fz=c.tz*cs+c.tx*sn;
     m.x=c.x+c.tx*x-c.tz*z; m.z=c.z+c.tz*x+c.tx*z;
@@ -539,7 +539,7 @@
       for(const o of m.pieces)if((detail||!o.detailStand)&&(!o.ravitaillement||m.ravitaille))emettre(out,o);
     }
     if(!eq.lampes){
-      const pied=ancrage(eq.c,eq.box.s+3.35,eq.box.d+2.42);
+      const pied=ancrage(eq.c,eq.box.s+3.35,eq.box.d+eq.cote*2.42);
       eq.lampes=[piece('bevel',[.19,.53,.26],0,anthracite),piece('sphere',[.10,.14,.14],16,rouge),piece('sphere',[.10,.14,.14],16,vert),
         piece('cylinder',[.065,1.72,.065],0,acier)];
       eq.lampes.forEach((o,j)=>{

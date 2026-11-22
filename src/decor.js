@@ -1,5 +1,6 @@
 /* BITUME — décor calculé depuis le circuit : chaussée, accotements, terrain, eau, arbres, tribunes, glissières.
    Aucune image ni modèle : des nappes de triangles (matière et couleur par sommet) et des primitives du moteur FERRO. */
+if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.ovaleForgesDecor) require('./ovale-forges-decor.js');
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lagon) require('./lagon.js');
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.chaussee) require('./chaussee.js');
 if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.virages) require('./virages.js');
@@ -72,6 +73,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
 
   // ---------------------------------------------------------------- thèmes
   const THEMES = {
+    ovale: B.ovaleForgesDecor?.theme,
     foret: {
       atmosphere: { skyTop: [.15, .35, .62], skyBottom: [.66, .77, .85], fog: [.62, .70, .75], sunDirection: [.52, .58, .40], sunColor: [1.32, 1.13, .90], ambient: [.30, .35, .38], fogDensity: .0011, wind: .55, biome: 'foret' },
       herbe: [.19, .33, .10], herbeClaire: [.26, .40, .13], terre: [.25, .30, .12], relief: 26, echelle: 430, essence: 'feuillu', densite: .62, marge: 760
@@ -295,6 +297,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
 
   function nappesRoute(c, th, lim, ecologie = null, saison = null, reperes = null, pont = null) {
     const w = c.largeur / 2, n = c.n, LIGNES = 60, liste = [];
+    const largeurBord = 1.2, hautVibreur = .05, basBord = -.015;
+    const eclairage = B.chaussee?.creerNormalesRuban?.(c, largeurBord, hautVibreur - basBord);
+    const normaleG = [0, 1, 0], normaleD = [0, 1, 0];
     const matAsphalte = th.asphalte===MATIERES_PILOTES.asphalte ? 21.125 : th.asphalte;
     const habitat = {};
     const meteoRoute = B.chaussee ? B.chaussee.preparer({}, saison) : null, surfaceRoute = {};
@@ -314,7 +319,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const bandes = [
       ['jupe', -1], ['herbe', -1], ['bord', -1], ['ligne', -1], ['asphalte', 0], ['ligne', 1], ['bord', 1], ['herbe', 1], ['jupe', 1]
     ];
-    if (c.stands) bandes.push(['voie-stands', 1]);
+    const coteStands = c.stands?.cote < 0 ? -1 : 1, intervalleStands = {};
+    if (c.stands) bandes.push(['voie-stands', coteStands]);
+    if (c.stands?.detachee) bandes.push(['terre-plein-stands', coteStands]);
     if (pont) bandes.push(['intrados', 0]);
     const betonPont = [.38,.41,.42], basY = [0,-1,0];
     const hautY = [0, 1, 0];
@@ -345,7 +352,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       premA.fill(-1);
       for (let i = debut; i <= fin; i++) {
         const f = cadre(c, i), no = [Math.sin(f.devers) * f.r[0], Math.cos(f.devers), Math.sin(f.devers) * f.r[2]];
-        const limG = lim.G[f.i], limD = lim.D[f.i], bordStand = c.stands ? B.circuit.bordStands(c,f.s) : w;
+        eclairage?.preparerRangee(f);
+        const limG = lim.G[f.i], limD = lim.D[f.i];
+        const voie = c.stands && B.circuit.bandeStands(c, f.s, intervalleStands);
+        const procheStand = voie ? (coteStands < 0 ? -voie.max : voie.min) : w;
+        const bordStand = voie ? (coteStands < 0 ? -voie.min : voie.max) : w;
+        const distante = c.stands?.detachee && f.s >= c.stands.debut && f.s <= c.stands.fin;
         const surPont = pont && Math.abs(B.circuit.ecart(c,pont.f.s,f.s)) <= pont.demi;
         const segmentPont = pont && Math.abs(B.circuit.ecart(c,pont.f.s,f.s - c.pas/2)) <= pont.demi;
         const part=partPaysage(f);
@@ -355,8 +367,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           let d0, d1, y0, y1, mat = 8, col = null, n0 = no, n1 = no;
           if (type === 'voie-stands') {
             if (f.s < c.stands.debut-c.pas || f.s > c.stands.fin+c.pas) { premA[b] = -1; continue; }
-            d0 = w; d1 = bordStand; y0 = y1 = hauteurRoute(f,w,w); n0 = n1 = hautY;
+            d0 = voie.min; d1 = voie.max; y0 = y1 = hauteurRoute(f,coteStands*w,w); n0 = n1 = hautY;
             mat = matAsphalte; col = asphalte(f.i);
+          } else if (type === 'terre-plein-stands') {
+            if (!distante) { premA[b] = -1; continue; }
+            const debutTerre = Math.min(w + largeurBord, procheStand), yBord = hauteurRoute(f,cote*w,w);
+            const releve = (vib & (cote < 0 ? 1 : 2)) ? hautVibreur : basBord;
+            const hauteurBord = yBord + releve * Math.min(1, (procheStand-debutTerre) / largeurBord);
+            d0 = cote < 0 ? -procheStand : debutTerre; d1 = cote < 0 ? -debutTerre : procheStand;
+            y0 = cote < 0 ? yBord : hauteurBord; y1 = cote < 0 ? hauteurBord : yBord;
+            n0 = n1 = hautY;
           } else if (type === 'intrados') {
             if (!surPont) { premA[b] = -1; continue; }
             d0 = -(limG + 3.3); d1 = limD + 3.3;
@@ -369,9 +389,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
             const ext = limite + (surPont ? 3.3 : 4);
             if (type === 'ligne') { d0 = bord * (w - .3); d1 = bord * w; y0 = hauteurRoute(f, d0, w); y1 = yBord; mat = 14.25; col = blanc; }
             else if (type === 'bord') {
-              d0 = bord * w; d1 = bord * (w + 1.2); y0 = yBord;
+              d0 = bord * w; d1 = bord * (w + largeurBord); y0 = yBord;
               const avec = cote < 0 ? (vib & 1) : (vib & 2);
-              y1 = yBord + (avec ? .05 : -.015);
+              y1 = yBord + (avec ? hautVibreur : basBord);
               if (avec) {
                 mat = 14.25; col = reperes && reperes.vibreurs[f.i] ? (tranche ? rougeVirage : blancVirage) : (tranche ? rouge : blancBordure);
               } else if (surPont) { mat = MATIERES_PILOTES.beton; col = betonPont; } else { mat = 8; }
@@ -382,12 +402,30 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
               if (type === 'jupe') { d1 = d0; y1 = y0 - 1.15; n0 = n1 = [bord*f.r[0],0,bord*f.r[2]]; }
             }
             // Le ruban latéral remplace l'accotement sous ses roues, sans dalle superposée.
-            if (cote > 0 && bordStand > w && (type === 'bord' || type === 'herbe')) {
-              d0 = Math.max(d0, bordStand);
-              if (d0 === bordStand) y0 = yBord;
-              if (d1 <= bordStand) { d1 = bordStand; y1 = yBord; }
+            if (cote === coteStands && distante) {
+              // Marges appariées à la même rangée de la bretelle : bordure, terre-plein,
+              // voie asphaltée puis accotement extérieur se touchent sans dalle superposée.
+              const finTalus = yBord - .02 * (ext - bordStand);
+              if (type === 'bord') {
+                d1 = cote * Math.min(w + largeurBord, procheStand);
+                y1 = yBord + (y1-yBord) * Math.max(0, Math.min(1, (procheStand-w-largeurBord) / largeurBord));
+              } else if (type === 'herbe') {
+                d0 = cote * bordStand; y0 = yBord; y1 = finTalus;
+              } else if (type === 'jupe') {
+                y0 = finTalus; y1 = y0 - 2.6;
+              }
+            } else if (cote === coteStands && !c.stands?.detachee && bordStand > w && (type === 'bord' || type === 'herbe')) {
+              d0 = cote*Math.max(cote*d0, bordStand);
+              if (cote*d0 === bordStand) y0 = yBord;
+              if (cote*d1 <= bordStand) { d1 = cote*bordStand; y1 = yBord; }
             }
             if (cote < 0) { const t = d0; d0 = d1; d1 = t; const u = y0; y0 = y1; y1 = u; }
+          }
+          if (eclairage && d1 - d0 > 1e-5 && (type === 'asphalte' || type === 'ligne' || type === 'bord' || type === 'voie-stands')) {
+            const penteTransverse = (y1 - y0) / (d1 - d0);
+            eclairage.normale(d0, penteTransverse, type === 'bord', normaleG);
+            eclairage.normale(d1, penteTransverse, type === 'bord', normaleD);
+            n0 = normaleG; n1 = normaleD;
           }
           const p0 = pointPlan(f, d0, y0), p1 = pointPlan(f, d1, y1);
           const col0=col || teinteBord(p0[0],p0[2],part), col1=col || teinteBord(p1[0],p1[2],part);
@@ -407,7 +445,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
               };
               pa=reprendre(pa); pb=reprendre(pb);
             }
-            if (!segmentPont && (type === 'herbe' || type === 'jupe')) herbeTriangles.push(nap.i.length, nap.i.length + 3);
+            if (!segmentPont && (type === 'herbe' || type === 'jupe' || type === 'terre-plein-stands')) herbeTriangles.push(nap.i.length, nap.i.length + 3);
             if (type === 'intrados') nap.i.push(pa,ib,pb,pa,ia,ib);
             else nap.i.push(pa, pb, ib, pa, ib, ia);
             const surface = type === 'voie-stands' || type === 'asphalte' || type === 'ligne' ? 1 : type === 'bord' && (vib & (cote < 0 ? 1 : 2)) ? 2 : segmentPont ? 1 : 3;
@@ -424,7 +462,32 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
   }
 
   // Terrain : grille autour du circuit, raccordée à la chaussée par une pondération continue des hauteurs de l'axe.
-  function nappesTerrain(c, th, interroger, g, ecologie = null, organique = false, saison = null, cachePanorama = null, pont = null) {
+  // Un triangle de terre conservé au bord d'une maille de 18 ou 24 m peut passer
+  // au-dessus du bas de l'anneau relevé ou d'une bretelle du paddock. Borner
+  // les quatre sommets des mailles couvertes par les vrais triangles roulables
+  // garantit la garde sur toute leur surface, quel que soit le choix de diagonale.
+  function degagerTerreOvale(nappes, H, x0, z0, nx, nz, pas) {
+    for (const nap of nappes) {
+      const sommets = nap.sommets, indices = nap.indices;
+      for (let k = 0; k < indices.length; k += 3) {
+        const surface = nap.surfacesPhysX[k / 3];
+        if (surface !== 1 && surface !== 2) continue;
+        const a = 13 * indices[k], b = 13 * indices[k+1], c = 13 * indices[k+2];
+        const ax = sommets[a], az = sommets[a+2], bx = sommets[b], bz = sommets[b+2], cx = sommets[c], cz = sommets[c+2];
+        if ((bx-ax)*(cz-az) === (bz-az)*(cx-ax)) continue;
+        const hauteur = Math.min(sommets[a+1], sommets[b+1], sommets[c+1]) - .35;
+        const i0 = Math.max(0, Math.floor((Math.min(ax,bx,cx)-x0)/pas));
+        const i1 = Math.min(nx-1, 1 + Math.floor((Math.max(ax,bx,cx)-x0)/pas));
+        const j0 = Math.max(0, Math.floor((Math.min(az,bz,cz)-z0)/pas));
+        const j1 = Math.min(nz-1, 1 + Math.floor((Math.max(az,bz,cz)-z0)/pas));
+        for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) {
+          const index = j*nx+i;
+          if (H[index] > hauteur) H[index] = hauteur;
+        }
+      }
+    }
+  }
+  function nappesTerrain(c, th, interroger, g, ecologie = null, organique = false, saison = null, cachePanorama = null, pont = null, chausseesOvale = null) {
     if (B.larcheDecor) {
       const corridor = B.larcheDecor.terrain(c, th, interroger, { saison, cachePanorama }, ecologie, organique);
       if (corridor) return corridor;
@@ -465,6 +528,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       [x1 - 610, z0 + 710, 125, 160, 175], [x1 - 900, z0 + 400, 155, 130, 215],
       [x1 - 450, z1 - 650, 185, 140, 160]
     ] : null;
+    const littoral = th.alizes ? B.ovaleForgesDecor.littoral(c,th.eau) : null;
     const paysageBaikal = th.baikal ? B.baikal.planifier(c, th.eau) : null;
     const merAngle = hache(g, 7, 3) * Math.PI * 2, mer = [Math.cos(merAngle), Math.sin(merAngle)];
     let merDebut = -Infinity;
@@ -553,6 +617,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         h += plateaux * lisse(135, 350, d) - ravine * lisse(65, 180, d);
       }
       if (paysageBaikal) h = B.baikal.relief(paysageBaikal, x, z, d, h);
+      else if (littoral) h = littoral.relief(x,z,h);
       else if (th.eau !== undefined) {
         const p = (x - centreX) * mer[0] + (z - centreZ) * mer[1];
         if (th.pacifique) {
@@ -582,6 +647,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
       const r = hauteur(x0 + i * pasT, z0 + j * pasT, j*nx+i); H[j * nx + i] = r.h; D[j * nx + i] = r.d;
     }
+    if (chausseesOvale) degagerTerreOvale(chausseesOvale, H, x0, z0, nx, nz, pasT);
     const lagon = secondaire?.theme === 'corail' && poidsSol
       ? B.lagon.construire(c, secteurs, interroger, { x0,z0,nx,nz,pas:pasT,H,D,poidsSol,alterne:organique }, { nappe,sommet,finir }) : null;
     const liste = [], TUILE = 14, habitat = {};
@@ -653,7 +719,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           const rive=B.baikal.riveRocheuse(paysageBaikal,x,z);
           roche=Math.max(roche,lisse(.07,.32,rive)*lisse(40,74,d),1-lisse(.66,.91,ny+rugosite));
         }
-        if (th.eau!==undefined && !th.pacifique) sable=1-lisse(th.eau+.6,th.eau+5+(detail-.5)*2,h);
+        if (littoral) sable=lisse(-38,-8+(detail-.5)*8,littoral.distance(x,z));
+        else if (th.eau!==undefined && !th.pacifique) sable=1-lisse(th.eau+.6,th.eau+5+(detail-.5)*2,h);
         if (ecologie) {
           const prairie=couleurPrairie(th,col,ecologie.echantillonner(x,z,habitat));
           col=melange(col,prairie,lisse(.57,.84,ny)*(1-roche)*(1-sable));
@@ -739,6 +806,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
             if (fini.sommets[id + 9] !== 8 || fini.sommets[id + 4] < .7
               || (th.eau !== undefined && fini.sommets[id + 1] < th.eau + 2.2)) herbe = false;
           }
+          if (herbe && littoral) for (let v=0; v<3; v++) {
+            const off=fini.indices[k+v]*13;
+            if (littoral.distance(fini.sommets[off],fini.sommets[off+2])>-26) { herbe=false; break; }
+          }
           if (herbe && lagon) for (let v=0; v<3; v++) {
             const off=fini.indices[k+v]*13;
             if (Number.isFinite(lagon.niveauEauA(fini.sommets[off],fini.sommets[off+2]))) { herbe=false; break; }
@@ -752,7 +823,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     }
     if (lagon) liste.push(lagon.eau);
     let eau = null;
-    if (th.eau !== undefined) {
+    if (littoral) eau=littoral.eau(nappe,sommet,finir);
+    else if (th.eau !== undefined) {
       const nap = nappe(4), y = th.eau, col = th.baikal ? [.055, .23, .32] : th.pacifique ? [.075, .235, .29] : [.10, .30, .40];
       const e = 2600, coins = paysageBaikal ? B.baikal.coinsEau(paysageBaikal)
         : [[centreX - e, centreZ - e], [centreX + e, centreZ - e], [centreX + e, centreZ + e], [centreX - e, centreZ + e]];
@@ -768,7 +840,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       const dxPont = pont && x-pont.f.x, dzPont = pont && z-pont.f.z;
       const dansGorge = pont && Math.abs(dxPont*pont.tx+dzPont*pont.tz) <= pont.demi+pasT &&
         Math.abs(dzPont*pont.tx-dxPont*pont.tz) <= 145+pasT;
-      if (dansGorge || lagon?.contientCellule(i,j)) {
+      if (littoral || dansGorge || lagon?.contientCellule(i,j)) {
         if (organique && ((i+j)&1)) return u+v<=1 ? h00+(h10-h00)*u+(h01-h00)*v
           : h11+(h01-h11)*(1-u)+(h10-h11)*(1-v);
         return u>=v ? h00+(h10-h00)*u+(h11-h10)*v : h00+(h11-h01)*u+(h01-h00)*v;
@@ -782,7 +854,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       const u=Math.max(0,Math.min(1,fi-i)), v=Math.max(0,Math.min(1,fj-j));
       return ((poidsPigments[k]*(1-u)+poidsPigments[k+1]*u)*(1-v)+(poidsPigments[k+nx]*(1-u)+poidsPigments[k+nx+1]*u)*v)/255;
     });
-    return { liste: eau ? liste.concat([eau]) : liste, sol, lagon, niveauEauA: lagon?.niveauEauA, partSecondaire, saisonSecondaire: secondaire && saison && secondaire.profils[saison.id], maillageSol: { x0, z0, nx, nz, pas: pasT, alterne: organique, H }, bornes: [x0, z0, x1, z1], niveauEau: th.eau, paysageBaikal };
+    return { liste: eau ? liste.concat([eau]) : liste, sol, lagon, niveauEauA: littoral?.niveauEauA || lagon?.niveauEauA, partSecondaire, saisonSecondaire: secondaire && saison && secondaire.profils[saison.id], maillageSol: { x0, z0, nx, nz, pas: pasT, alterne: organique, H }, bornes: [x0, z0, x1, z1], niveauEau: th.eau, paysageBaikal };
   }
 
   // Surface réellement disponible pour les plantes et la petite faune. Les polygones sont découpés
@@ -869,6 +941,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         const droite = tunnel ? Math.max(lim.D[i], lim.D[j]) + 32 : Math.max(paddock ? w + 28 : w + 1.24, empriseStand+.25);
         const p = (k, d) => [c.x[k] - Math.sin(c.cap[k]) * d, 0, c.z[k] + Math.cos(c.cap[k]) * d];
         masquer([p(i, -gauche), p(i, droite), p(j, droite), p(j, -gauche)]);
+        if (c.stands?.cote<0 && i*c.pas<c.stands.fin && (i+1)*c.pas>c.stands.debut) {
+          const a=B.circuit.bandeStands(c,i*c.pas), b=B.circuit.bandeStands(c,(i+1)*c.pas);
+          masquer([p(i,a.min-.25),p(i,a.max+.25),p(j,b.max+.25),p(j,b.min-.25)]);
+        }
       }
       for (const lot of lots) for (const o of lot.objets) {
         const m = Math.floor((o.mat || 0) + .01);
@@ -1161,8 +1237,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     for (let i=1;i<stations.length;i++) {
       const a=stations[i-1], b=stations[i], milieu=(a.s+b.s)/2;
       const garage=milieu>=S.garage0-4 && milieu<=S.garage1+4;
-      const bord=s=>garage ? S.dBox+11 : B.circuit.bordStands(c,s);
-      bandes.push([point(a.f,c.largeur/2-.2),point(b.f,c.largeur/2-.2),point(b.f,bord(b.s)),point(a.f,bord(a.s))]);
+      const cote=S.cote<0?-1:1;
+      const voie=s=>B.circuit.bandeStands(c,s);
+      const proche=s=>cote<0 ? voie(s).max+.2 : c.largeur/2-.2;
+      const bord=s=>garage ? S.dBox+cote*11 : cote*B.circuit.bordStands(c,s,cote);
+      bandes.push([point(a.f,proche(a.s)),point(b.f,proche(b.s)),point(b.f,bord(b.s)),point(a.f,bord(a.s))]);
     }
     return bandes;
   }
@@ -1190,6 +1269,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       longueur:64, marches:8, profondeur:1.15, haut:.5 };
   }
   function planGradins(c) {
+    if (c.partition==='ovale-des-forges' && B.ovaleForgesDecor) return B.ovaleForgesDecor.planGradins(c);
     const droite=c.ligneDroite || { debut:-200, fin:200 };
     const avant=Math.max(-300,B.circuit.ecart(c,0,droite.debut)+40), apres=Math.min(260,B.circuit.ecart(c,0,droite.fin)-60);
     const enceinte = { debut:c.ouvert ? Math.max(0,avant-10) : avant-10, fin:c.ouvert ? Math.min(c.longueur,apres+50) : apres+50 };
@@ -1221,8 +1301,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const vers = (d, h, l = 0) => [f.x + f.r[0] * d + f.t[0] * l, y0 + h, f.z + f.r[2] * d + f.t[2] * l];
     for (let m = 0; m < marches; m++) {
       const d = recul + cote * (m * profondeur + profondeur / 2);
-      const marche = { shape: 'box', collision: 'gradin', p: vers(d, (m + 1) * haut / 2), s: [longueur, (m + 1) * haut, profondeur], r: rot, mat: 3, color: [.62, .62, .6] };
+      const socle=site.socle || 0;
+      const marche = { shape: 'box', collision: 'gradin', p: vers(d, ((m + 1) * haut-socle) / 2), s: [longueur, (m + 1) * haut+socle, profondeur], r: rot, mat: 3, color: [.62, .62, .6] };
       liste.push(marche);
+      if (site.toitAlizes) { loin.push(marche); continue; }
       // spectateurs : une rangée de silhouettes colorées par marche, avec des trous. Avec le public (public.js), ce
       // sont de vrais corps dessinés à part : les mêmes nombres sont tirés, pour que la suite du décor ne change pas,
       // mais les boîtes ne sont pas posées.
@@ -1236,17 +1318,20 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         : { shape: 'box', p: vers(d, (m + 1) * haut / 2 + .3, 0), s: [longueur, (m + 1) * haut + .6, profondeur], r: rot, mat: 18, color: [.42, .36, .34] });
     }
     const fond = recul + cote * (marches * profondeur + .3);
-    const dossier={ shape: 'box', collision: 'gradin', p: vers(fond, 3.6), s: [longueur, 7.2, .4], r: rot, mat: 3, color: [.55, .55, .53] };
-    const toit={ shape: 'box', collision: 'toit', p: vers(recul + cote * marches * profondeur * .5, 7.4), s: [longueur + 2, .3, marches * profondeur + 2.4], r: rot, mat: 0, color: [.80, .82, .84] };
+    const hToit=site.toitAlizes ? marches*haut+2.55 : 7.4;
+    const hDossier=site.toitAlizes ? marches*haut+.38 : 7.2;
+    const dossier={ shape: 'box', collision: 'gradin', p: vers(fond, hDossier/2), s: [longueur, hDossier, .4], r: rot, mat: 3, color: [.55, .55, .53] };
+    if (site.couvertAlizes===false) { liste.push(dossier); loin.push(dossier); return; }
+    const toit={ shape: 'box', collision: 'toit', p: vers(recul + cote * marches * profondeur * .5, hToit), s: [longueur + 2, .3, marches * profondeur + 2.4], r: rot, mat: 0, color: site.toitAlizes || [.80, .82, .84] };
     liste.push(dossier,toit); loin.push(dossier,toit);
     for (let k = -longueur / 2; k <= longueur / 2; k += 12) {
-      const pilier={ shape: 'cylinder', collision: 'pilier', p: vers(recul - cote * .3, 3.7, k), s: [.22, 7.4, .22], mat: 0, color: [.7, .72, .74] };
+      const pilier={ shape: 'cylinder', collision: 'pilier', p: vers(recul - cote * .3, hToit/2, k), s: [.22, hToit, .22], mat: 0, color: [.7, .72, .74] };
       liste.push(pilier);
       if (k===-longueur/2 || k+12>longueur/2) loin.push(pilier);
     }
     // bandeau coloré sous le toit
     const teinte = PUBLICITES[Math.floor(r() * 4)];
-    liste.push({ shape: 'box', p: vers(recul - cote * .9, 6.9, 0), s: [longueur + 2, .9, .12], r: rot, mat: 16, color: teinte });
+    liste.push({ shape: 'box', p: vers(recul - cote * .9, hToit-.5, 0), s: [longueur + 2, .9, .12], r: rot, mat: 16, color: teinte });
   }
 
   function batimentStands(liste, loin, f, w, cote, longueur, matieres) {
@@ -1280,6 +1365,56 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
   const CASE_ARBRES = 60, BASCULE_ARBRES = 80, PIXELS_BASCULE = 150, ARBRES_EPARS = 3, CASE_EPARSE = 2 * CASE_ARBRES;
   const reculGeant = hauteur => hauteur * 1080 / (2 * Math.tan(Math.PI / 6) * PIXELS_BASCULE);
   const basculeCase = (hauteur, base = BASCULE_ARBRES) => Math.max(base, reculGeant(hauteur));
+  // FERRO consulte une même sphère pour ses frustums, ses ombres et ses deux LOD.
+  // Les formes libres peuvent être excentrées ; consulter une fois leurs sommets
+  // locaux (les trois premières entrées de chaque triangle, avant les normales).
+  function mesureLotsMobilier() {
+    const unite = [.5,.5,.5], formes = new Map(), rayons = [];
+    const libres = globalThis.FRender?.shared?.shapes;
+    function demiForme(nom) {
+      let demi = formes.get(nom);
+      if (demi) return demi;
+      const triangles = libres?.get(nom) || B.lieux?.FORMES?.[nom];
+      demi = unite;
+      if (triangles?.length) {
+        demi = [0,0,0];
+        for (const t of triangles) for (let i=0; i<3; i++)
+          for (let k=0; k<3; k++) demi[k]=Math.max(demi[k],Math.abs(t[i][k]));
+      }
+      formes.set(nom,demi);
+      return demi;
+    }
+    return function borner(lot) {
+      const proche = lot.objets, loin = lot.loin, n = proche.length + (loin === proche ? 0 : loin.length);
+      let x0=Infinity, y0=Infinity, z0=Infinity, x1=-Infinity, y1=-Infinity, z1=-Infinity;
+      for (let i=0; i<n; i++) {
+        const o = i < proche.length ? proche[i] : loin[i-proche.length];
+        const p = o.p, s = o.s || [1,1,1], h = demiForme(o.shape);
+        const cisaillement = o.groundCover ? Math.abs(o.groundShear || 0) : 0;
+        const sx=Math.abs(s[0])*h[0]+cisaillement*h[2], sy=s[1]*h[1], sz=s[2]*h[2];
+        // Bornes du vent de FERRO en couleur et en ombre. BITUME crée ses
+        // deux moteurs avec sea:false : les surfaces d'eau restent à leur cote.
+        const vent = o.windResponsive ? 2.3*Math.min(2,Math.abs(s[1])) :
+          o.mat>10.5 && o.mat<11.5 ? .14*(h[1]+.5) : o.mat>26.5 && o.mat<27.5 ? .80 : 0;
+        const r = Math.sqrt(sx*sx+sy*sy+sz*sz)+vent;
+        rayons[i]=r;
+        x0=Math.min(x0,p[0]-r); x1=Math.max(x1,p[0]+r);
+        y0=Math.min(y0,p[1]-r); y1=Math.max(y1,p[1]+r);
+        z0=Math.min(z0,p[2]-r); z1=Math.max(z1,p[2]+r);
+      }
+      const x=(x0+x1)/2, y=(y0+y1)/2, z=(z0+z1)/2;
+      let rayon=0;
+      for (let i=0; i<n; i++) {
+        const p = (i < proche.length ? proche[i] : loin[i-proche.length]).p;
+        const dx=p[0]-x, dy=p[1]-y, dz=p[2]-z;
+        rayon=Math.max(rayon,Math.sqrt(dx*dx+dy*dy+dz*dz)+rayons[i]);
+      }
+      lot.centre=[x,y,z];
+      // L'envoi des poses/échelles passe des doubles JS aux flottants du GPU.
+      lot.rayon=rayon*1.00001+.003+.000002*(1+Math.abs(x)+Math.abs(y)+Math.abs(z));
+      return lot;
+    };
+  }
   function sansObjetsArbres(objets, arbres) {
     let i=0;
     while (i<objets.length && !arbres.has(objets[i])) i++;
@@ -1288,13 +1423,17 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     for (i++; i<objets.length; i++) if (!arbres.has(objets[i])) gardes.push(objets[i]);
     return gardes;
   }
-  function lotsImage(lots, cases, objetsArbres) {
-    // Le mobilier garde ses lots, leurs sphères et leurs bascules : seuls les arbres en sortent.
+  function lotsImage(lots, cases, objetsArbres, borner) {
     const sortie = [];
     for (const l of lots) {
       const objets = sansObjetsArbres(l.objets,objetsArbres), loin = sansObjetsArbres(l.loin,objetsArbres);
       if (objets===l.objets && loin===l.loin) sortie.push(l);
-      else if (objets.length) sortie.push(Object.assign({}, l, { objets, loin }));
+      else if (objets.length || (borner && loin.length)) {
+        // La forêt a désormais ses propres cases. Sa distance initiale au rail
+        // ne doit plus grossir la sphère du mobilier restant, jusque dans les glaces.
+        const mobilier = Object.assign({}, l, { objets, loin });
+        sortie.push(borner ? borner(mobilier) : mobilier);
+      }
     }
     // Cases denses telles quelles, cases éparses regroupées, dans l'ordre où leur premier arbre est apparu.
     const groupes = [], eparses = new Map();
@@ -1564,6 +1703,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
   }
 
   function construire(c, options = {}) {
+    const ovale=c.partition==='ovale-des-forges' && B.ovaleForgesDecor;
     if (c.stands && c.stands.dBox === undefined) B.circuit.preparerStands(c);
     const th = Object.assign({}, THEMES[c.theme] || (B.destinations && B.destinations.THEMES && B.destinations.THEMES[c.theme]) || THEMES.foret), g = (c.graine * 7919 + 13) >>> 0, r = alea(g);
     const qualite = normaliserQualite(options.qualite);
@@ -1591,7 +1731,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const reperes = options.reperesVirages !== false && B.virages ? preparerReperes(c) : null;
     let tunnelLampes = null;   // positions des lampes du tunnel : le jeu en fait des lumières près de la caméra
     const nappes = nappesRoute(c, th, lim, qualite === 'low' ? null : ecologie, saison, reperes, pontFjord);
-    const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie, options.organique === true, saison, options.cachePanorama, pontFjord);
+    const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie, options.organique === true, saison, options.cachePanorama, pontFjord,
+      c.partition === 'ovale-des-forges' ? nappes : null);
     const maisonsBaikal = terrain.paysageBaikal ? B.baikal.habitations(c, terrain, interroger, terrain.paysageBaikal) : null;
     // Hasard architectural séparé ; le repli sert seulement à relire l'oracle historique du décor.
     const architecture = options.batiments !== false && B.batiments ? { maisons: [], stands: [] } : null;
@@ -1625,13 +1766,13 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const Sstand=c.stands, emprisesVerifiees=new Set();
     let xMinStand=Infinity,xMaxStand=-Infinity,zMinStand=Infinity,zMaxStand=-Infinity;
     if (Sstand) for(let s=Sstand.debut;s<=Sstand.fin+c.pas;s+=c.pas) {
-      const f=cadre(c,Math.round(s/c.pas)), marge=Sstand.dBox+15;
+      const f=cadre(c,Math.round(s/c.pas)), marge=Math.abs(Sstand.dBox)+15;
       xMinStand=Math.min(xMinStand,f.x-marge); xMaxStand=Math.max(xMaxStand,f.x+marge);
       zMinStand=Math.min(zMinStand,f.z-marge); zMaxStand=Math.max(zMaxStand,f.z+marge);
     }
     function dansReserve(x,z,rayon) {
       if (!Sstand || x+rayon<xMinStand || x-rayon>xMaxStand || z+rayon<zMinStand || z-rayon>zMaxStand) return false;
-      const i=interroger(x,z,Sstand.dFond+rayon+40,true).i;
+      const i=interroger(x,z,Math.abs(Sstand.dFond)+rayon+40,true).i;
       if(i<0) return false;
       const dx=x-c.x[i],dz=z-c.z[i], co=Math.cos(c.cap[i]),si=Math.sin(c.cap[i]);
       return B.circuit.empriseStands(c,i*c.pas+dx*co+dz*si,-dx*si+dz*co,rayon);
@@ -1675,6 +1816,13 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         const dir = [p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]], long = Math.hypot(...dir);
         const [ax, ay, az] = base(dir, [0, 1, 0]), rot = angles(ax, ay, az);
         const milieu = [(p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2, (p0[2] + p1[2]) / 2];
+        if (ovale && cote>0) {
+          const modules=ovale.mur(milieu,long,rot,ay,az,f0.s);
+          if (cote===coteLed) railsVirages.push({rail:modules[0],haut:ay,s:f0.s,cote,longueur:long});
+          ajouter(modules,modules,milieu[0],milieu[2]);
+          continue;
+        }
+        if (ovale && Sstand && f0.s<Sstand.fin+c.pas*PAS_G && f0.s+c.pas*PAS_G>Sstand.debut-c.pas*PAS_G) continue;
         const objets = [
           { shape: 'box', p: [milieu[0], milieu[1] + .62, milieu[2]], s: [long + .25, .34, .07], r: rot, mat: 0, color: [.74, .76, .78], detail: 1 },
           { shape: 'box', p: [p0[0], p0[1] + .4, p0[2]], s: [.09, .8, .09], r: rot, mat: 0, color: [.5, .52, .54], detail: 2 }
@@ -1723,7 +1871,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       // Ligne de rive sur les deux raccords, sans quilles ni obstacle dans la zone carrossable.
       for(let s=S.debut;s<S.fin;s+=4) {
         const t=Math.min(s+4,S.fin);
-        section(s,t,B.circuit.bordStands(c,s)-.14,B.circuit.bordStands(c,t)-.14,.18,.012,.014,dessus,false);
+        const cote=S.cote<0?-1:1;
+        section(s,t,cote*(B.circuit.bordStands(c,s,cote)-.14),cote*(B.circuit.bordStands(c,t,cote)-.14),.18,.012,.014,dessus,false);
       }
     }
 
@@ -1914,6 +2063,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         for (let b = 0; b < barres; b++) objets.push({ shape: 'box', p: [p[0] - f.t[0] * .05, p[1] + .85 + b * .38, p[2] - f.t[2] * .05], s: [.03, .18, 1.0], r: rot, mat: 16, color: [.07, .07, .08] });
         ajouter(objets, [objets[0]], p[0], p[2]);
       }
+      if (ovale) continue;
       // murs de pneus à l'extérieur, devant la glissière (sur route de col ouverte, jamais dans la zone de roulement)
       for (let j = -8; j <= 14; j += 2) {
         const f = cadre(c, v.i + j), limExt = (ext < 0 ? lim.G : lim.D)[f.i], L = limExt - .8;
@@ -1949,7 +2099,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       objetsDepart.push({ shape: 'box', p, s: [1.1, .024, (2 * w - .6) / 12], r: rot0, mat: MATIERES_PILOTES.asphalte, color: (k + rg) % 2 ? [.07, .07, .075] : [.9, .9, .88] });
     }
     for (let k = 0; k < 12; k++) {
-      const f = cadre(c, Math.round((-10 - 8 * k) / c.pas)), d = k % 2 ? 2.4 : -2.4, rot = capRot(f.a);
+      const i = B.circuit.abscisseGrille(c, k) / c.pas;
+      const f = c.partition === 'ovale-des-forges' ? cadreOuvrage(c, i) : cadre(c, Math.round(i));
+      const d = k % 2 ? 2.4 : -2.4, rot = capRot(f.a);
       const p = [f.x + f.r[0] * d, hauteurRoute(f, d, w) + .012, f.z + f.r[2] * d];
       objetsDepart.push({ shape: 'box', p: [p[0] + f.t[0] * 2.4, p[1], p[2] + f.t[2] * 2.4], s: [.22, .024, 2.2], r: rot, mat: MATIERES_PILOTES.asphalte, color: [.88, .88, .85] });
       objetsDepart.push({ shape: 'box', p: [p[0] + f.t[0] * 1.6, p[1], p[2] + f.t[2] * 1.6 + 0], s: [1.6, .024, .16], r: rot, mat: MATIERES_PILOTES.asphalte, color: [.88, .88, .85] });
@@ -1974,6 +2126,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     // tribunes à gauche, stands à droite, le long de la ligne droite
     const estMarseille = c.id === 'marseille';
     const { candidats, gradins: amenagement } = planGradins(c);
+    if (ovale) ovale.asseoir(amenagement,terrain);
     // public.js : la description des gradins, pour y asseoir de vrais spectateurs (options.public)
     const gradins = options.public ? amenagement : null;
     if (!estMarseille) {
@@ -1999,7 +2152,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
 
       // Passerelle au-dessus de la piste, sur une portion presque droite au milieu du tour.
-      for (let essai = 0; essai < 200; essai++) {
+      for (let essai = 0; !ovale && essai < 200; essai++) {
         const i = Math.floor((.45 + essai * .002) * c.n);
         if (Math.abs(c.courbure[i]) > 1 / 600) continue;
         const f = cadre(c, i), L = Math.min(lim.G[i], lim.D[i]) + 1, y = hauteurRoute(f, 0, w), rot = capRot(f.a), objets = [];
@@ -2082,7 +2235,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         if (Math.abs(dx*pontFjord.tx+dz*pontFjord.tz) < pontFjord.demi+10 &&
             Math.abs(dz*pontFjord.tx-dx*pontFjord.tz) < c.limite+14) return;
       }
-      if (terrain.lagon && Number.isFinite(terrain.niveauEauA(x,z))) return;
+      if (terrain.niveauEauA && Number.isFinite(terrain.niveauEauA(x,z))) return;
       if (maisonsBaikal && maisonsBaikal.some(m => Math.hypot(m.x - x, m.z - z) < 18)) return;
       const richesse = ecologie ? ecologie.echantillonner(x, z, habitatArbre).boisement : 1;
       if (!th.pacifique && (richesse < .08 || hache(Math.round(x * 8), Math.round(z * 8), g + 337) > richesse)) return;
@@ -2091,7 +2244,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       if (casesArbres) rangerArbre(objets, loin, x, z);
     }
     let nombre = 0;
-    const MAX = estMarseille || th.volcanique || th.aride || th.pacifique ? 0 : options.arbres === undefined ? (th.karstique ? 160 : 2600) : options.arbres;
+    const MAX = ovale || estMarseille || th.volcanique || th.aride || th.pacifique ? 0 : options.arbres === undefined ? (th.karstique ? 160 : 2600) : options.arbres;
     // Le budget réduit du nouveau biome est distribué sur tout le tour, sans remplir seulement le départ.
     const pasArbres = th.karstique ? Math.max(7, Math.ceil(c.n / 72)) : 7;
     for (let i = 0; i < c.n && nombre < MAX; i += pasArbres) {   // historique : un plan par 14 m de piste
@@ -2194,7 +2347,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     }
 
     // Repères lointains selon le thème : phare et cabanons sur la côte, chalets en montagne, fermes en forêt.
-    const villages = estMarseille || th.volcanique || th.aride || th.karstique || th.pacifique ? 0 : th.eau !== undefined ? 3 : 4;
+    const villages = ovale || estMarseille || th.volcanique || th.aride || th.karstique || th.pacifique ? 0 : th.eau !== undefined ? 3 : 4;
     for (let v = 0; v < villages; v++) {
       for (let essai = 0; essai < 40; essai++) {
         const x = bx0 + 200 + r() * (bx1 - bx0 - 400), z = bz0 + 200 + r() * (bz1 - bz0 - 400), q = interroger(x, z, 300);
@@ -2383,12 +2536,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const lieuxDest = poserParPaysage(B.destinations);
     if (organique && c.stands && B.equipeStands && B.equipeStands.construireDecors) {
       B.equipeStands.construireDecors(c, terrain, (objets,loin,x,z)=>{
-        for (const o of objets) propresStands.add(o);
-        for (const o of loin) propresStands.add(o);
+        for (const o of objets) emprisesVerifiees.add(o);
+        for (const o of loin) emprisesVerifiees.add(o);
         ajouter(objets,loin,x,z);
       });
     }
-    let lieuxEmblematiques = organique && !estMarseille ? poserParPaysage(B.lieux) : null;
+    let lieuxEmblematiques = ovale ? ovale.poser(c,terrain,lim,interroger,ajouter,amenagement) : organique && !estMarseille ? poserParPaysage(B.lieux) : null;
     if (lieuxLarche && lieuxLarche.marqueurs && lieuxLarche.marqueurs.length) {
       lieuxEmblematiques = Object.assign({}, lieuxEmblematiques || {}, { marqueurs: lieuxLarche.marqueurs });
     } else if (lieuxMarseille && lieuxMarseille.marqueurs && lieuxMarseille.marqueurs.length) {
@@ -2416,8 +2569,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     }
     // Finition des lots : sphère englobante et portée.
     const lots = [];
+    const bornerMobilier = organique ? mesureLotsMobilier() : null;
     for (const l of groupes.values()) {
-      if (!l.objets.length) continue;
+      if (!l.objets.length && !(bornerMobilier && l.loin.length)) continue;
       // Ces objets gardent exactement leur géométrie, leurs solides et leur répartition. La recette de surface
       // change seulement dans le biome pilote, dans les versions proches et lointaines du même lot.
       if (th.matieres) for (const objets of [l.objets, l.loin]) for (const o of objets) {
@@ -2430,16 +2584,24 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         const genre = o.solidePhysX?.genre;
         if (o.mat === 9 && (PIERRES_MONTAGNE.has(genre) || genre === 'refuge-cimes' && o.partie === 'socle-refuge')) o.mat = MATIERES_PILOTES.roche;
       }
-      let mx = 0, my = 0, mz = 0;
-      for (const o of l.objets) { mx += o.p[0]; my += o.p[1]; mz += o.p[2]; }
-      mx /= l.objets.length; my /= l.objets.length; mz /= l.objets.length;
-      let rayon = 0;
-      for (const o of l.objets) { const s = o.s || [1, 1, 1]; rayon = Math.max(rayon, Math.hypot(o.p[0] - mx, o.p[1] - my, o.p[2] - mz) + Math.hypot(s[0], s[1], s[2]) / 2); }
       // Aucune portée propre : un lot se dessine jusqu'au plan lointain de la caméra, la brume fait la limite (un massif
       // qui surgit à 1 900 m se voit). La bascule vers la version allégée se fait là où un tronc tient en un pixel.
       const basculeDefaut = qualite === 'low' && options.organique === true
         ? (l.lointain ? 480 : 280) : (l.lointain ? 900 : 520);
-      lots.push({ objets: l.objets, loin: l.loin, centre: [mx, my, mz], rayon, portee: Infinity, bascule: l.bascule || basculeDefaut });
+      const lot = { objets: l.objets, loin: l.loin, centre: null, rayon: 0, portee: Infinity, bascule: l.bascule || basculeDefaut };
+      if (bornerMobilier) bornerMobilier(lot);
+      else {
+        // Contrat de construction du décor historique, relu par les anciennes recettes.
+        let mx = 0, my = 0, mz = 0;
+        for (const o of l.objets) { mx += o.p[0]; my += o.p[1]; mz += o.p[2]; }
+        mx /= l.objets.length; my /= l.objets.length; mz /= l.objets.length;
+        lot.centre = [mx,my,mz];
+        for (const o of l.objets) {
+          const s = o.s || [1, 1, 1];
+          lot.rayon = Math.max(lot.rayon, Math.hypot(o.p[0]-mx,o.p[1]-my,o.p[2]-mz) + Math.hypot(s[0],s[1],s[2])/2);
+        }
+      }
+      lots.push(lot);
     }
     // Collision et image partagent les mêmes primitives ; aucune consommation du hasard supplémentaire.
     // Les troncs gardent le prisme à 16 côtés et la rotation du cylindre WebGL, indépendants de la qualité.
@@ -2451,7 +2613,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       if (o.shape === 'cylinder') obstacles.push(Object.assign(commun, { type: 'circle', r: o.s[0]/2 }));
       else obstacles.push(Object.assign(commun, { type: 'box', angle: o.empriseStand?.angle ?? -(o.r ? o.r[1] : 0), hx: o.s[0]/2, hz: o.s[2]/2 }));
     }
-    const lotsDessin = casesArbres ? lotsImage(lots, casesArbres, objetsArbres) : lots;
+    const lotsDessin = casesArbres ? lotsImage(lots, casesArbres, objetsArbres, bornerMobilier) : lots;
     const atmosphereBase = Object.assign({ outdoorZones: [{ x: 0, z: 0, w: 1e7, d: 1e7 }] }, th.atmosphere, estMarseille ? { fogDensity: .00046 } : c.id === 'larche' ? { fogDensity: .00022 } : null);
     const atmosphere = saison ? B.saisons.atmosphere(saison, atmosphereBase) : atmosphereBase;
     // enceinte : portion de la ligne droite bordée de tribunes et de stands (abscisses comptées depuis la ligne) ; une
@@ -2493,7 +2655,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       saison: { value: saison },
       sourcesFeuilles: { value: sourcesFeuilles },
       herbier: { get: ouvrirHerbier },
-      surfaceHerbe: { value: (x, z, sortie) => terrain.lagon && Number.isFinite(terrain.niveauEauA(x,z)) ? null : ouvrirHerbier().surface(x, z, sortie) },
+      surfaceHerbe: { value: (x, z, sortie) => terrain.niveauEauA && Number.isFinite(terrain.niveauEauA(x,z)) ? null : ouvrirHerbier().surface(x, z, sortie) },
     });
     if (tunnelLampes) decor.tunnelLampes = tunnelLampes;
     // Végétation basse : générateur et lots indépendants. Le décor historique et ses solides restent identiques ;

@@ -72,6 +72,7 @@ MODULES = [
     'lieux.js',  # rochers organiques, pyramides du désert et lieux emblématiques des neuf circuits
     'herbier-wasm.js',
     'lagon.js',
+    'ovale-forges-decor.js',
     'decor.js',
     'physique.js',
     'faune.js',

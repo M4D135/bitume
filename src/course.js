@@ -138,7 +138,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
         sAbs = chrono ? Math.max(0, Math.min(depart + 10, (c.arrivee || L) - 1)) : Math.max(0, Math.min(baseS - 8 * k, (c.arrivee || L) - 1));
         prog = sAbs - depart;
       } else {
-        const s = chrono ? -40 : -10 - 8 * k;
+        const s = chrono ? -40 : B.circuit.abscisseGrille(c, k);
         sAbs = ramener(depart + s, L);
         prog = s;
       }
@@ -679,8 +679,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
   }
   function dansLaVoie(c, e, S) {
     const x = ecart(c, S.debut, e.s);
-    return x >= 0 && x <= S.fin - S.debut && e.d > c.largeur / 2 + 1 &&
-      e.d < B.circuit.bordStands(c, e.s) + .25;
+    return x >= 0 && x <= S.fin - S.debut && (S.cote || 1) * e.d > c.largeur / 2 + 1 &&
+      B.circuit.surVoieStands(c, e.s, e.d, .25);
   }
   function dansLeGarage(c, e, S) {
     return Math.abs(ecart(c, S.sBox, e.s)) <= 2.35 && Math.abs(e.d - S.dBox) <= 1.15 &&

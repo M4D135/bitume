@@ -11,26 +11,28 @@
 
   // L'identité du parcours complet sépare ses résultats et ses fantômes de ceux de chaque ancien tronçon.
   const CATALOGUE = [
-    { id: 'forets-du-pacifique', nom: 'Forêts du Pacifique', lieu: 'Val-Brûlé et les falaises de Cap-Séquoia', theme: 'foret', graine: 11,
+    { id: 'forets-du-pacifique', nom: 'Ça sent le sapin', lieu: 'Val-Brûlé et les falaises de Cap-Séquoia', theme: 'foret', graine: 11,
       troncons: [
         { id: 'val-brule', nom: 'Val-Brûlé', theme: 'foret', graine: 11, longueur: 4200 },
         { id: 'cap-sequoia', nom: 'Cap-Séquoia', theme: 'pacifique', graine: 157, longueur: 5200 }
       ] },
-    { id: 'marseille', nom: 'Marseille · Vieux-Port → Corniche', lieu: 'Méditerranée · Vieux-Port, Vallon des Auffes & David', theme: 'cote', graine: 313, longueur: 5992, distanceCourse: 5752, ouvert: true },
-    { id: 'karst-et-lagon', nom: 'Karst et Lagon', lieu: 'Terrasses de Brume-de-Jade et Baie-du-Corail', theme: 'asie', graine: 131,
+    { id: 'marseille', nom: 'La Sardine en pole', lieu: 'Marseille · du Vieux-Port à la Corniche', theme: 'cote', graine: 313, longueur: 5992, distanceCourse: 5752, ouvert: true },
+    { id: 'karst-et-lagon', nom: 'Ça karste ou ça casse', lieu: 'Terrasses de Brume-de-Jade et Baie-du-Corail', theme: 'asie', graine: 131,
       troncons: [
         { id: 'brume-de-jade', nom: 'Brume-de-Jade', theme: 'asie', graine: 131, longueur: 5000 },
         { id: 'corail', nom: 'Baie-du-Corail', theme: 'corail', graine: 283, longueur: 4500 }
       ] },
-    { id: 'sierra', nom: 'Sierra-Cuivrée', lieu: 'Canyons ocre · arche et viaduc rouge', theme: 'sierra', graine: 271, longueur: 5000 },
-    { id: 'nord-atlantique', nom: 'Nord Atlantique', lieu: 'Fjord-d’Argent et plateau volcanique de Lande-Noire', theme: 'fjord', graine: 223,
+    { id: 'sierra', nom: 'Le Canyon qui klaxonne', lieu: 'Sierra-Cuivrée · arche et viaduc rouge', theme: 'sierra', graine: 271, longueur: 5000 },
+    { id: 'nord-atlantique', nom: 'Fjord à bâbord', lieu: 'Fjord-d’Argent et plateau volcanique de Lande-Noire', theme: 'fjord', graine: 223,
       troncons: [
         { id: 'fjord', nom: 'Fjord-d’Argent', theme: 'fjord', graine: 223, longueur: 5100 },
         { id: 'lande-noire', nom: 'Lande-Noire', theme: 'islande', graine: 83, longueur: 4600 }
       ] },
-    { id: 'route-des-cimes', nom: 'Route-des-Cimes', lieu: 'Grand col alpin · cirque de l’Aiglière', theme: 'montagne', graine: 181, longueur: 9697.52858032384, partition: 'route-des-cimes' },
-    { id: 'larche', nom: 'Col de Larche → Vinadio', lieu: 'Alpes · descente de la SS21', theme: 'montagne', graine: 210, longueur: 32816.81, distanceCourse: 32249.33, ouvert: true },
-    { id: 'baikal', nom: 'Baïkal', lieu: 'Russie · rives gelées et tremplin', theme: 'baikal', graine: 179, longueur: 5400 }
+    { id: 'route-des-cimes', nom: 'Le Col des Fondus', lieu: 'Grand col alpin · cirque de l’Aiglière', theme: 'montagne', graine: 181, longueur: 9697.52858032384, partition: 'route-des-cimes' },
+    { id: 'larche', nom: 'Raclette en roue libre', lieu: 'Col de Larche → Vinadio · SS21', theme: 'montagne', graine: 210, longueur: 32816.81, distanceCourse: 32249.33, ouvert: true },
+    { id: 'baikal', nom: 'Les Glaçons à réaction', lieu: 'Lac Baïkal · rives gelées et tremplin', theme: 'baikal', graine: 179, longueur: 5400 },
+    { id: 'ovale-des-forges', nom: 'Le Cocodrome', lieu: 'Caraïbes · speedway de plage, quatre virages relevés à 24 %',
+      theme: 'ovale', graine: 347, longueur: 1600, partition: 'ovale-des-forges' }
   ];
 
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
@@ -111,7 +113,7 @@
     }
   };
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
-  const PHYSIQUE = 'p18', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
+  const PHYSIQUE = 'p19', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const recordsLus = lireStock(CLE_RECORDS, {});
   // JSON.stringify ignore les clés nommées d'un tableau. Reprendre ses temps sous leurs
   // anciens identifiants avant que la première amélioration sur un raccord soit sauvegardée.
@@ -162,6 +164,7 @@
       else if (k.id === 'larche' && B.larche) circuits[i] = B.larche.creer(k.graine);
       else if (k.id === 'marseille' && B.marseille) circuits[i] = B.marseille.creer(k.graine);
       else circuits[i] = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition });
+      circuits[i].nom = k.nom;
       // lot 22F : le parapet, le muret ou le bord du fossé d'un bord dangereux devient la limite (une fois, à la création)
       if (B.bords && !circuits[i].ouvert) B.bords.limites(circuits[i], B.bords.planifier(circuits[i]));
     }
@@ -667,7 +670,10 @@
     if (course && (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code) || [0, 1].some(n => ACTIONS.some(a => toucheDe(n, a).includes(e.code))))) e.preventDefault();
     touches.add(e.code);
     if (e.code === 'Escape' || lettre === 'p') {
-      if (course || ecran === 'pause') { basculerPause(); e.preventDefault(); }
+      if (course || ecran === 'pause') {
+        if (ecran === 'pause' && e.code === 'Escape') retourPause(); else basculerPause();
+        e.preventDefault();
+      }
       else if (e.code === 'Escape') retour();
       return;
     }
@@ -996,7 +1002,7 @@
       }
     }
     navigationManetteTraitee = B.navigationMenu.naviguer(zone, nouveau, { pad: manette, temps: performance.now(), activer: activerSon,
-      retour: () => ecran === 'pause' ? basculerPause() : retour(),
+      retour: () => ecran === 'pause' ? retourPause() : retour(),
       demarrer: ecran === 'titre' ? () => { modePrepa = manette === manettes[1] ? 'duo' : 'course'; aller('preparation'); }
         : ecran === 'preparation' ? () => { const b = $('b-depart'); if (b && !b.disabled) b.click(); } : null,
       valider: el => ecran === 'preparation' && menuArcade.valider(el) });
@@ -1504,13 +1510,27 @@
   const propre = t => String(t || '').replace(/[<>&"'`\\]/g, '').trim().slice(0, 16) || 'Pilote';
   function etatEnLigne(t) { texte($('l-etat'), t); }
   const lienActif = () => !!(EL.R && EL.R.etat === 'connecte');
-  function quitterEnLigne() {
+  let parcoursSalon = null, connexionSalon = false, dernierChoixSalon = 'creer';
+  function fermerLiaisonSalon() {
     const R = EL.R;
     annulerConfirmation(); EL.course = null; EL.pneusDe.clear(); EL.trollDe.clear();
-    EL.R = null; EL.role = null;
+    EL.R = null; EL.role = null; connexionSalon = false;
     if (R) R.fermer();
-    etatEnLigne('');
-    aller('titre');
+  }
+  function quitterEnLigne() {
+    fermerLiaisonSalon(); parcoursSalon = null;
+    etatEnLigne(''); aller('titre');
+  }
+  function retourSalon() {
+    if (!connexionSalon && !parcoursSalon && !EL.role) { quitterEnLigne(); return; }
+    const enCours=connexionSalon;
+    fermerLiaisonSalon();
+    if (!enCours) parcoursSalon=null;
+    etatEnLigne(''); majSalon(true);
+  }
+  function ouvrirParcoursSalon(choix) {
+    parcoursSalon=choix; dernierChoixSalon=choix;
+    etatEnLigne(''); majSalon(true);
   }
   // pilotes de la partie, dans l'ordre des machines (voitures humaines 0 à 3) ; « prets » : l'hôte et les machines liées
   function pilotesSalle(R, prets) {
@@ -1522,9 +1542,19 @@
     return p;
   }
   // l'écran du salon : choix créer / rejoindre sans partie, sinon le code, la liste des machines et l'état
-  function majSalon() {
-    const R = EL.R, ouvert = !!R && R.etat !== 'ferme', actif = lienActif();
-    for (const sel of ['.enligne-choix', '.champ-nom', '.champ-joueurs']) document.querySelector(sel).hidden = ouvert;
+  function majSalon(focus=false) {
+    const R = EL.R, ouvert = !!(R && R.etat !== 'ferme' && EL.role), actif = lienActif();
+    const page=ouvert ? 'salle' : connexionSalon ? 'connexion' : parcoursSalon || 'choix';
+    const creer=page==='creer', rejoindre=page==='rejoindre';
+    const titres={choix:'En ligne',creer:'Créer une partie',rejoindre:'Rejoindre une partie',connexion:'Connexion',salle:'Salon de la partie'};
+    texte($('l-titre'),titres[page]);
+    texte($('l-aide'),creer ? 'Partagez le code avec les autres pilotes une fois la partie créée.' :
+      rejoindre ? 'Entrez les quatre lettres communiquées par l’hôte.' : page==='choix' ? 'De deux à quatre pilotes, jusqu’à deux par machine.' : '');
+    $('l-aide').hidden=page==='connexion' || ouvert;
+    $('l-choix').hidden=page!=='choix'; $('l-formulaire').hidden=!creer && !rejoindre;
+    $('l-champ-code').hidden=!rejoindre; $('l-creer').hidden=!creer; $('l-rejoindre').hidden=!rejoindre;
+    $('l-annuler').hidden=page!=='connexion'; $('l-salle').hidden=!ouvert;
+    $('l-retour').setAttribute('aria-label',ouvert ? 'Quitter la partie' : page==='connexion' ? 'Annuler la connexion' : page==='choix' ? 'Retour au menu' : 'Retour au choix du salon');
     $('l-code-affiche').hidden = !(ouvert && EL.role === 'hote' && R.code);
     const liste = $('l-pilotes');
     liste.hidden = !ouvert;
@@ -1544,6 +1574,13 @@
     if (ouvert && !actif) etatEnLigne(EL.role === 'hote' ? 'Partie créée. Donnez ce code aux autres pilotes : quatre pilotes au plus.' : 'Connexion aux autres pilotes…');
     else if (actif) etatEnLigne(n > 4 ? 'Plus de quatre pilotes : une machine doit passer à un seul pilote.'
       : EL.role === 'hote' ? n + ' pilotes. Choisissez la course quand tout le monde est là.' : n + ' pilotes. L’hôte choisit la course…');
+    const element=document.activeElement, zone=$('enligne');
+    if (ecran==='enligne' && (focus || !zone.contains(element) || element?.disabled || element?.closest('[hidden]'))) {
+      const priorites=ouvert ? ['l-vers-prets','l-choisir','l-code-affiche','l-reglages'] :
+        [page==='connexion' ? 'l-annuler' : creer ? 'l-creer' : rejoindre ? (estTactile ? 'l-rejoindre' : 'l-code') : 'l-choix-'+dernierChoixSalon];
+      const cible=priorites.map($).find(b=>b && !b.disabled && !b.closest('[hidden]'));
+      cible?.focus({preventScroll:true});
+    }
   }
   // Prochaine course (David, 16/11 : « pourquoi les autres ne peuvent pas choisir les pneus ? ») : l'hôte annonce
   // circuit, tours et météo prévue (la même graine que la course qui partira) ; chaque machine choisit ses pneus, que
@@ -1595,7 +1632,7 @@
     const force = { fine: 'fine', moderee: 'modérée', forte: 'forte', tres_forte: 'très forte' }[B.conditionsCourse.normaliserForcePluie(k.forcePluie)];
     const nom = k.meteo === 'pluie' ? 'pluie ' + force : NOMS_METEO[k.meteo] || (k.eau > .25 ? 'pluie, tirée au sort' : 'sec, tirée au sort');
     const profil = B.saisons.profil(k.saison, CATALOGUE[k.i].theme);
-    const neige = CATALOGUE[k.i].theme !== 'cote' && (k.mReelle ? k.mReelle.neige : profil.neige);
+    const neige = profil.theme !== 'cote' && (k.mReelle ? k.mReelle.neige : profil.neige);
     if (k.mReelle) return (k.mReelle.pluie > .02 ? neige ? 'neige' : k.mReelle.phase === 'orage' ? 'orage' : 'pluie'
       : k.mReelle.nuage > .65 ? 'couvert' : k.mReelle.nuage > .25 ? 'éclaircies' : 'soleil') + ' · réelle';
     return neige ? nom.replace('pluie', 'neige') : nom;
@@ -1790,15 +1827,19 @@
   }
   function nouvelleLiaison() {
     annulerConfirmation();
-    if (EL.R) EL.R.fermer();
+    const precedente=EL.R; EL.R=null;
+    if (precedente) precedente.fermer();
     EL.course = null; EL.pneusDe.clear(); EL.trollDe.clear(); EL.seanceAcceptee = null; EL.dernierDepart = -Infinity;
     const R = EL.R = B.reseau.creer({ url: B.reseau.adresseSalon(), nom: nomPilote(), joueurs: joueursIci() });
     EL.role = null;
     $('l-choisir').hidden = true; $('l-code-affiche').hidden = true;
     R.on('salon', m => {
       if (R !== EL.R) return;
-      EL.role = m.role;
-      if (m.role === 'hote') texte($('l-code-affiche'), m.code);
+      connexionSalon=false; EL.role = m.role;
+      if (m.role === 'hote') {
+        texte($('l-code-affiche'),m.code);
+        $('l-code-affiche').setAttribute('aria-label','Copier le code de la partie '+m.code);
+      }
       majSalon();
     }).on('salle', () => { if (R === EL.R) { majSalon(); if (EL.confirmation) { diffuserPrets(); majPrets(); } } })
       .on('pair', id => {
@@ -1820,7 +1861,11 @@
       .on('parti', id => { if (R === EL.R) surDepart(id); })
       .on('message', (m, de) => { if (R === EL.R) surMessageEnLigne(m, de); })
       .on('etat', (p, de) => { if (R === EL.R) recevoirEtatEnLigne(p, de); })
-      .on('erreur', t => { if (R === EL.R) etatEnLigne(t); })
+      .on('erreur', t => {
+        if (R !== EL.R) return;
+        if (connexionSalon) { fermerLiaisonSalon(); majSalon(true); }
+        etatEnLigne(t);
+      })
       .on('ferme', raison => { if (R === EL.R) surFermeture(raison); });
     return R;
   }
@@ -1905,6 +1950,7 @@
     message('Un pilote est parti', 'ambre'); sousMessage('Sa voiture passe à l’ordinateur');
   }
   function surFermeture(raison) {
+    connexionSalon=false;
     annulerConfirmation(); EL.course = null; EL.pneusDe.clear(); EL.trollDe.clear();
     if (retourReglages === 'prets') retourReglages = 'enligne';
     if (ecran === 'prets') aller('enligne');
@@ -2153,17 +2199,29 @@
   for (const r of document.querySelectorAll('input[name="joueursIci"]')) r.checked = String(joueursIci()) === r.value;
   $('l-nom').value = reglages.nom || '';
   $('l-nom').addEventListener('input', e => { reglages.nom = e.target.value.slice(0, 16); sauverReglages(); });
-  $('l-creer').addEventListener('click', async () => {
-    const R = nouvelleLiaison(); etatEnLigne('Connexion au salon…');
-    try { await R.creerSalon(); } catch (e) { etatEnLigne('Le salon ne répond pas. Réessayez plus tard.'); }
-  });
-  const rejoindre = async () => {
-    const code = $('l-code').value.trim().toUpperCase();
-    if (!/^[A-Z]{4}$/.test(code)) { etatEnLigne('Le code a quatre lettres.'); return; }
-    const R = nouvelleLiaison(); etatEnLigne('Recherche de la partie ' + code + '…');
-    try { await R.rejoindreSalon(code); } catch (e) { etatEnLigne('Le salon ne répond pas. Réessayez plus tard.'); }
-  };
-  $('l-rejoindre').addEventListener('click', rejoindre);
+  $('l-choix-creer').addEventListener('click',()=>ouvrirParcoursSalon('creer'));
+  $('l-choix-rejoindre').addEventListener('click',()=>ouvrirParcoursSalon('rejoindre'));
+  $('l-annuler').addEventListener('click',retourSalon);
+  $('l-quitter').addEventListener('click',retourSalon);
+  async function connecterSalon(choix) {
+    if (connexionSalon || parcoursSalon!==choix || EL.R?.role && EL.R.etat!=='ferme') return;
+    const code=$('l-code').value.trim().toUpperCase();
+    if (choix==='rejoindre' && !/^[A-Z]{4}$/.test(code)) {
+      etatEnLigne('Le code doit contenir quatre lettres.');
+      $('l-code').focus({preventScroll:true}); return;
+    }
+    const R=nouvelleLiaison();
+    connexionSalon=true; majSalon(true);
+    etatEnLigne(choix==='creer' ? 'Création de la partie…' : 'Recherche de la partie '+code+'…');
+    try {
+      if (choix==='creer') await R.creerSalon(); else await R.rejoindreSalon(code);
+    } catch (e) {
+      if (R!==EL.R) return;
+      fermerLiaisonSalon(); majSalon(true); etatEnLigne('Le salon ne répond pas. Réessayez plus tard.');
+    }
+  }
+  $('l-creer').addEventListener('click',()=>connecterSalon('creer'));
+  $('l-rejoindre').addEventListener('click',()=>connecterSalon('rejoindre'));
   $('p-touches').addEventListener('click', () => { retourReglages = 'preparation'; aller('reglages'); B.navigationMenu.ouvrirOnglet($('reglages'), 'r-commandes-panel', true); });
   $('p-reglages-pilote').addEventListener('click', () => { retourReglages = 'preparation'; aller('reglages'); B.navigationMenu.ouvrirOnglet($('reglages'), 'r-pilotage', true); });
   $('l-code').addEventListener('input', e => { const v = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4); if (v !== e.target.value) e.target.value = v; });
@@ -2171,7 +2229,7 @@
     const code = $('l-code-affiche').textContent;
     if (navigator.clipboard && code) navigator.clipboard.writeText(code).then(() => etatEnLigne('Code ' + code + ' copié. Envoyez-le à l’autre pilote.'), () => {});
   });
-  $('l-code').addEventListener('keydown', e => { if (e.key === 'Enter') rejoindre(); });
+  $('l-code').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); connecterSalon('rejoindre'); } });
   $('l-choisir').addEventListener('click', () => { modePrepa = 'enligne'; aller('preparation'); annoncerCourse(); });
   $('l-reglages').addEventListener('click', () => { retirerPret(); retourReglages = 'enligne'; aller('reglages'); });
   $('l-vers-prets').addEventListener('click', () => aller('prets'));
@@ -3819,6 +3877,24 @@
       S.raclement.acteur === et._physx ? S.raclement : null;
     const auSol = et._physx ? et._physx.groundCount > 0 : !et.saut?.actif && !(et.bond > .03);
     sortie.contactPneus = auSol && et.rapport > 0 && !et.recuperation && et.stands?.phase !== 'service';
+    sortie.eauRoulement = 0; sortie.microRoulement = 0;
+    if (auSol && Math.abs(et.v) > .5 && !et.recuperation && et.stands?.phase !== 'service'
+      && (ecran === 'course' || ecran === 'demo') && B.chaussee?.lire) {
+      // La même eau que l'adhérence, à la position du pilote. Un tunnel peut rester sec en pleine pluie.
+      const surface = sortie.chausseeRoulement || (sortie.chausseeRoulement = {});
+      const eau = B.chaussee.lire(S.course.c, et.s, S.meteo, surface).eau;
+      if (eau > 0) {
+        const roues = et._physx?.contacts;
+        let part = 0;
+        if (roues?.length) {
+          for (const roue of roues) if (roue.load > 0 && (roue.surface === 'piste' || roue.surface === 'vibreur')) part++;
+          part /= roues.length;
+        } else if (et.surface === 'piste' || et.surface === 'vibreur') part = 1;
+        sortie.eauRoulement = eau * part;
+        const distance = S.distances?.[voiture.id];
+        if (exterieur && distance >= 0) sortie.microRoulement = B.son.gainDistance(distance);
+      }
+    }
     sortie.aspiration = Number.isFinite(et.aspiration) ? clamp(et.aspiration, 0, 1) : 0;
     sortie.ventActif = (ecran === 'course' || ecran === 'demo') && VUES_COURSE.includes(S.vue);
     sortie.turbo = et.turbo.reste > 0; sortie.vue = S.vue === 'cockpit' ? 'cockpit' : 'poursuite';
@@ -4156,9 +4232,10 @@
       } else if (st.phase === 'sortie') consigne = 'Feu vert · Suivez la voie de sortie';
       else {
         const stand = co.c.stands, distance = B.circuit.ecart(co.c, et.s, stand.sBox);
-        consigne = distance > 9 ? 'Box à droite · ' + Math.round(distance) + ' m'
+        const cote = stand.cote === -1 ? 'à gauche' : 'à droite';
+        consigne = distance > 9 ? 'Box ' + cote + ' · ' + Math.round(distance) + ' m'
           : distance < -2.35 ? 'Box dépassé · Suivez la sortie'
-          : Math.abs(et.d - stand.dBox) > 1.15 ? 'Rangez-vous dans le box à droite'
+          : Math.abs(et.d - stand.dBox) > 1.15 ? 'Rangez-vous dans le box ' + cote
           : distance > 2.35 ? 'Avancez au repère' : 'Immobilisez la voiture';
       }
       texte(box, consigne);
@@ -4243,9 +4320,32 @@
   const compteurVisites = B.visites?.creer();
   const ECRANS = ['titre', 'championnat', 'enligne', 'prets', 'preparation', 'reglages', 'pause', 'resultats'];
   let modePrepa = 'course', retourReglages = 'titre';
+  let pagePause = 'accueil', piloteStand = 0;
   const enCourse = () => ecran === 'course';
   const menuOpaque = () => ['titre', 'championnat', 'preparation', 'reglages', 'enligne', 'prets'].includes(ecran);
   const menuArcade = B.menuArcade.installer($('preparation'), { retour, actualiser: () => { majBilanArcade(); majChoixTroll(); } });
+
+  let pageTitre = 'accueil', dernierModeTitre = null;
+  function ouvrirPageTitre(page) {
+    const precedente = pageTitre;
+    pageTitre = page;
+    const nav = $('titre-modes');
+    for (const bouton of nav.children) bouton.hidden = bouton.dataset.pageTitre !== page;
+    $('titre-section').hidden = page === 'accueil';
+    const libelle = { accueil: 'Menu principal', solo: 'Solo', multi: 'Multijoueur' }[page];
+    texte($('titre-section-nom'), libelle);
+    nav.setAttribute('aria-label', libelle);
+    dernierModeTitre = (page === 'accueil' && nav.querySelector('[data-ouvrir-titre="' + precedente + '"]')) ||
+      nav.querySelector('button:not([hidden])');
+    dernierModeTitre.focus({ preventScroll: true });
+    dernierGeste = performance.now();
+    if (son) son.evenement('clic');
+  }
+  $('titre').addEventListener('click', e => {
+    const ouvrir = e.target.closest('[data-ouvrir-titre]');
+    if (ouvrir) ouvrirPageTitre(ouvrir.dataset.ouvrirTitre);
+    else if (e.target.closest('[data-aller]')) dernierModeTitre = e.target.closest('[data-aller]');
+  });
 
   let coupe = null;
   let choisirCoupe = false;
@@ -4377,13 +4477,21 @@
     if (nom === 'titre') dernierGeste = performance.now();
     // Les menus opaques ne préparent pas une course invisible. La scène change au vrai départ.
     // en ligne, la pause n'arrête pas la course : pas de « Recommencer »
-    if (nom === 'pause') { $('b-recommencer').hidden = !!(session && session.enLigne); $('b-replacer').hidden = aDeux(); majPneusStands(); }
+    if (nom === 'pause') {
+      $('b-recommencer').hidden = !!session?.enLigne; $('b-replacer').hidden = aDeux();
+      if (precedent !== 'reglages') piloteStand = 0;
+      ouvrirPagePause(precedent === 'reglages' ? 'options' : 'accueil',
+        precedent === 'reglages' ? $('b-reglages-pause') : $('b-reprendre'));
+    }
     if (nom === 'championnat') {
       coupe ??= B.championnat.charger(undefined, CATALOGUE);
       choisirCoupe = false;
       afficherChampionnat();
     }
-    if (nom === 'enligne') majSalon();
+    if (nom === 'enligne') {
+      majSalon(precedent!==nom);
+      if (precedent==='reglages' && !$('l-salle').hidden) $('l-reglages').focus({preventScroll:true});
+    }
     if (nom === 'prets') { majPrets(); majChoixTroll(); }
     tactile(nom === 'course' && !aDeux());
     if (nom === 'preparation') {
@@ -4402,7 +4510,8 @@
     const zone = $(nom);
     if (zone && !estTactile) setTimeout(() => {
       if (ecran !== nom || zone.contains(document.activeElement) && !document.activeElement.closest('[hidden]')) return;
-      const focus = zone.querySelector('[data-menu-tab][aria-selected="true"]') || zone.querySelector('button.gros, button');
+      const focus = (nom === 'titre' && (dernierModeTitre || $('titre-modes').querySelector('button:not([hidden])'))) ||
+        zone.querySelector('[data-menu-tab][aria-selected="true"]') || zone.querySelector('button.gros, button');
       if (focus && !focus.closest('[hidden]')) focus.focus({ preventScroll: true });
     }, 30);
   }
@@ -4423,7 +4532,7 @@
   // circuit d'après. Un clic, une touche ou un bouton de manette ramène à l'écran titre.
   const ATTENTE_DEMO = 5, APRES_DRAPEAU = 9;
   function majAttente() {
-    const z = $('titre-attente'), actif = ecran === 'titre' && reglages.demo !== 'non' && !!rendu && !prepa.enCours && !erreurPhysique;
+    const z = $('titre-attente'), actif = ecran === 'titre' && pageTitre === 'accueil' && reglages.demo !== 'non' && !!rendu && !prepa.enCours && !erreurPhysique;
     if (z.hidden === actif) z.hidden = !actif;
     if (!actif) return;
     if (document.hidden || contexteRenduPerdu) { dernierGeste = performance.now(); return; }
@@ -4521,6 +4630,12 @@
   }
   $('p-actualiser-conditions').addEventListener('click', () => actualiserConditions(true));
 
+  const FAMILLES_CIRCUITS = [
+    { nom: 'Forêts et côtes', ids: ['forets-du-pacifique', 'marseille', 'karst-et-lagon'] },
+    { nom: 'Montagnes et cols', ids: ['route-des-cimes', 'larche'] },
+    { nom: 'Terres sauvages', ids: ['sierra', 'nord-atlantique', 'baikal'] },
+    { nom: 'Speedway', ids: ['ovale-des-forges'] }
+  ];
   function remplirPreparation() {
     $('p-titre').textContent = modePrepa === 'chrono' ? 'Chrono' : modePrepa === 'enligne' ? 'Course en ligne' : modePrepa === 'duo' ? 'Course à deux' : 'Course';
     $('o-partage').hidden = modePrepa !== 'duo';
@@ -4533,15 +4648,16 @@
     $('o-tours').hidden = $('o-difficulte').hidden = modePrepa === 'chrono';
     $('o-chrono').hidden = modePrepa !== 'chrono';
     const zone = $('circuits');
-    const BIOME_COULEURS = { foret: '#39ff8e', cote: '#00d4ff', marseille: '#00c8ff', montagne: '#8ee8ff', larche: '#5cd6ff', islande: '#ff6b35', desert: '#ffb84d', asie: '#ff66b2', pacifique: '#2dd4bf', baikal: '#60a5fa', fjord: '#38bdf8', carpates: '#a3e635', ecosse: '#34d399', sierra: '#fb923c', corail: '#22d3ee', andes: '#c084fc' };
-    const CATS = { tous: null, 'forets-cotes': ['forets-du-pacifique', 'marseille', 'karst-et-lagon'], montagnes: ['route-des-cimes', 'larche'], sauvages: ['sierra', 'nord-atlantique', 'baikal'] };
+    const BIOME_COULEURS = { foret: '#39ff8e', cote: '#00d4ff', marseille: '#00c8ff', montagne: '#8ee8ff', larche: '#5cd6ff', islande: '#ff6b35', desert: '#ffb84d', asie: '#ff66b2', pacifique: '#2dd4bf', baikal: '#60a5fa', fjord: '#38bdf8', carpates: '#a3e635', ecosse: '#34d399', sierra: '#fb923c', corail: '#22d3ee', andes: '#c084fc', ovale: '#4bd8ca' };
     const barreCat = $('p-categories');
-    function afficherCategorie(cat) {
-      const ids = CATS[cat];
-      for (const b of zone.children) {
-        b.hidden = !!ids && !ids.includes(b.dataset.id);
-      }
-      for (const btn of barreCat.querySelectorAll('.cat-btn')) btn.setAttribute('aria-selected', String(btn.dataset.cat === cat));
+    function familleChoisie() {
+      const id = CATALOGUE[reglages.circuit].id;
+      return FAMILLES_CIRCUITS.findIndex(f => f.ids.includes(id));
+    }
+    function afficherFamille(index) {
+      const f = FAMILLES_CIRCUITS[index];
+      for (const b of zone.children) b.hidden = !f.ids.includes(b.dataset.id);
+      texte($('p-famille'), f.nom + ' · ' + (index + 1) + ' / ' + FAMILLES_CIRCUITS.length);
     }
     if (!zone.childElementCount) {
       CATALOGUE.forEach((k, i) => {
@@ -4550,33 +4666,27 @@
         b.type = 'button'; b.className = 'carte-circuit'; b.setAttribute('role', 'radio'); b.dataset.index = i; b.dataset.id = k.id; b.dataset.theme = clefTheme;
         b.style.setProperty('--biome', BIOME_COULEURS[clefTheme] || '#39ff8e');
         b.style.animationDelay = (i * 18) + 'ms';
-        b.innerHTML = '<span class="circuit-rang">' + String(i + 1).padStart(2, '0') + '</span><span class="nom">' + k.nom + '</span>' +
-          '<span class="fiche">' + k.lieu + '</span>';
+        b.innerHTML = '<span class="nom">' + k.nom + '</span><span class="fiche">' + k.lieu + '</span>';
         b.addEventListener('click', () => { reglages.circuit = i; sauverReglages(); majPreparation(); if (son) son.evenement('clic'); if (EL.role === 'hote' && lienActif()) annoncerCourse(); });
         zone.appendChild(b);
       });
-      if (barreCat && !barreCat.dataset.lie) {
-        barreCat.dataset.lie = '1';
-        const CAT_ORDRE = Object.keys(CATS);
-        const filtrerCat = cat => {
-          if (!Object.prototype.hasOwnProperty.call(CATS, cat)) return;
-          const focusDansGrille = zone.contains(document.activeElement);
-          afficherCategorie(cat);
-          if (zone.children[reglages.circuit].hidden) {
-            const premiere = zone.querySelector('.carte-circuit:not([hidden])');
-            premiere.click();
-            if (focusDansGrille) premiere.focus();
-          } else if (son) son.evenement('clic');
-        };
-        barreCat.addEventListener('click', ev => { const btn = ev.target.closest('.cat-btn'); if (btn) filtrerCat(btn.dataset.cat); });
-        barreCat._decaler = sens => {
-          const active = barreCat.querySelector('[aria-selected="true"]').dataset.cat;
-          filtrerCat(CAT_ORDRE[(CAT_ORDRE.indexOf(active) + sens + CAT_ORDRE.length) % CAT_ORDRE.length]);
-        };
-      }
+      const dernierCircuit = new Map();
+      barreCat._decaler = sens => {
+        const depart = familleChoisie(), n = FAMILLES_CIRCUITS.length;
+        const arrivee = (depart + sens + n) % n, famille = FAMILLES_CIRCUITS[arrivee];
+        dernierCircuit.set(depart, reglages.circuit);
+        const cible = zone.children[dernierCircuit.get(arrivee)] || zone.querySelector('[data-id="' + famille.ids[0] + '"]');
+        const suivreFocus = zone.contains(document.activeElement);
+        afficherFamille(arrivee);
+        cible.click();
+        if (suivreFocus) cible.focus({ preventScroll: true });
+      };
+      barreCat.addEventListener('click', ev => {
+        const bouton = ev.target.closest('[data-famille-sens]');
+        if (bouton) barreCat._decaler(Number(bouton.dataset.familleSens));
+      });
     }
-    // Une course rejointe en ligne peut avoir changé la sélection depuis la dernière visite du menu.
-    if (barreCat && zone.children[reglages.circuit].hidden) afficherCategorie('tous');
+    afficherFamille(familleChoisie());
     for (const nom of ['tours', 'difficulte']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
     for (const r of document.querySelectorAll('input[name="meteo"]')) r.checked = String(reglages.meteo || 'aleatoire') === r.value;
     majPreparation();
@@ -4641,14 +4751,14 @@
     majPneusStands(); return accepte;
   }
   function majPneusStands() {
+    if (ecran !== 'pause' || pagePause !== 'stands') return;
     const S = session, co = S && S.course;
-    $('pneus-stands').hidden = !(co && S.type !== 'demo' && S.type !== 'vitrine');
     const garage = !!co?.c?.stands;
     texte($('ps-note'), garage ? 'Empruntez la bretelle, puis immobilisez la voiture au repère devant le garage. L’équipe change les quatre pneus, répare la voiture et fait le plein en course. Repartez au feu vert.' :
       'Ce parcours ne propose pas de réparation complète ni de changement de pneus.');
     for (let n = 0; n < 2; n++) {
       const id = S && S.locaux && S.locaux[n], v = co && co.voitures[id], zone = $('ps-pilote-' + n);
-      zone.hidden = !v; if (!v) continue;
+      zone.hidden = !v || n !== piloteStand; if (zone.hidden) continue;
       const et = v.etat, st = et.stands, service = st && st.phase === 'service';
       const type = B.pneus.estJouable(et.pneusProchainArret) ? et.pneusProchainArret : et.pneus;
       const prochainArret = garage && !v.distant && !v.reprise && !v.fini && !v.abandon && !co.termine;
@@ -4941,9 +5051,10 @@
     if (prepa.voile) return;   // sous le voile, rien ne se quitte : la préparation finit ou s'annule seule
     if (captureTouche || captureManette) { captureTouche = captureManette = null; majCommandes(); return; }
     if (ecran === 'reglages') { aller(retourReglages || 'titre'); if (ecran === 'pause' && session && session.type !== 'vitrine') rechaufferEnPause(session); }
+    else if (ecran === 'titre' && pageTitre !== 'accueil') ouvrirPageTitre('accueil');
     else if (ecran === 'preparation' && menuArcade.retour()) return;
     else if (ecran === 'preparation' && modePrepa === 'enligne') aller('enligne');
-    else if (ecran === 'enligne') quitterEnLigne();
+    else if (ecran === 'enligne') retourSalon();
     else if (ecran === 'prets') quitterPrets();
     else if (ecran === 'championnat') { choisirCoupe = false; aller('titre'); }
     else if (ecran === 'resultats' && session?.mancheChampionnat != null) $('b-rejouer').click();
@@ -4963,6 +5074,38 @@
     return preparerSeance(type, reglages.circuit, null, choix, { verifier: () => ecran === avant,
       apres: type === 'chrono' ? () => sousMessage('Le chrono part à la ligne') : null });
   }
+  function ouvrirPagePause(page, cible) {
+    const avecStand = !!session?.course && session.type !== 'demo' && session.type !== 'vitrine';
+    const precedent = pagePause;
+    pagePause = page === 'stands' && !avecStand ? 'accueil' : page;
+    $('pause-accueil').hidden = pagePause !== 'accueil';
+    $('pause-options').hidden = pagePause !== 'options';
+    $('pause-vers-stands').hidden = !avecStand;
+    $('pneus-stands').hidden = pagePause !== 'stands';
+    $('pause-retour').hidden = pagePause === 'accueil';
+    texte($('pause-titre'), pagePause === 'stands' ? 'Stratégie de stand' : pagePause === 'options' ? 'Options de séance' : 'Pause');
+    if (pagePause === 'stands') {
+      const choix = $('ps-choix-pilote'), deux = session.locaux?.length > 1;
+      choix.hidden = !deux;
+      if (!deux) piloteStand = 0;
+      const radio = choix.querySelector('[value="' + piloteStand + '"]');
+      radio.checked = true;
+      majPneusStands();
+      cible ||= deux ? radio : $('ps-pilote-0').querySelector('input:checked:not(:disabled)');
+    } else if (pagePause === 'options') cible ||= $('pause-options').querySelector('button:not([hidden])');
+    else cible ||= precedent === 'options' ? $('pause-vers-options') : avecStand && precedent === 'stands' ? $('pause-vers-stands') : $('b-reprendre');
+    (cible || $('pause-retour')).focus({ preventScroll: true });
+    $('pause').scrollTop = 0;
+  }
+  function retourPause() {
+    if (pagePause === 'accueil') basculerPause(); else ouvrirPagePause('accueil');
+  }
+  $('pause-vers-stands').addEventListener('click', () => ouvrirPagePause('stands'));
+  $('pause-vers-options').addEventListener('click', () => ouvrirPagePause('options'));
+  $('pause-retour').addEventListener('click', retourPause);
+  $('ps-choix-pilote').addEventListener('change', e => {
+    if (e.target.name === 'piloteStand') { piloteStand = Number(e.target.value); majPneusStands(); }
+  });
   function basculerPause(forcer) {
     if (prepa.voile) return;
     if (ecran === 'course') aller('pause');

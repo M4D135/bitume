@@ -336,9 +336,11 @@
     function bruitPneus(numero) {
       const s = bruitEnBoucle(), lateral = filtre('bandpass', 350, 1.4), longitudinal = filtre('bandpass', 760, 4);
       const gl = gain(0), gx = gain(0), pan = vents[numero].pan;
+      const eau = filtre('bandpass', 2400, .62), ge = gain(0);
       s.connect(lateral).connect(gl).connect(pan); s.connect(longitudinal).connect(gx).connect(pan);
+      s.connect(eau).connect(ge).connect(pan);
       s.start(ctx.currentTime, numero ? .83 : 0);
-      return { lateral, longitudinal, gl, gx, actif: false };
+      return { lateral, longitudinal, gl, gx, eau, ge, actif: false, mouille: false };
     }
 
     function eteindrePneus(p, t) {
@@ -347,7 +349,23 @@
       p.actif = false;
     }
 
+    // L'eau chassée par le pneu s'entend aussi en ligne droite, sur la boucle déjà utilisée par ce pilote.
+    function reglerRoulementMouille(p, j, t, silence, poids) {
+      const eau = !silence && Number.isFinite(j?.eauRoulement) ? clamp(j.eauRoulement, 0, 1) : 0;
+      const vitesse = eau && Number.isFinite(j.v) ? clamp((Math.abs(j.v) - .5) / 58, 0, 1) : 0;
+      const micro = j?.muet ? clamp(+j.microRoulement || 0, 0, 1) : 1;
+      if (!(vitesse * micro > 0)) {
+        if (p.mouille) rampe(p.ge.gain, 0, t, .035);
+        p.mouille = false; return;
+      }
+      const cockpit = j.vue === 'cockpit';
+      vise(p.eau.frequency, (cockpit ? 850 : 1300) + (cockpit ? 1800 : 2900) * vitesse, t, .09);
+      vise(p.ge.gain, .34 * eau * vitesse * poids * micro * (cockpit ? .78 : 1), t, .065);
+      p.mouille = true;
+    }
+
     function reglerPneus(p, j, t, silence, poids) {
+      reglerRoulementMouille(p, j, t, silence, poids);
       if (silence || !j || j.muet || j.contactPneus === false || j.surface === 'herbe') return eteindrePneus(p, t);
       const vitesse = clamp((Math.abs(+j.v || 0) - 1) / 8, 0, 1);
       // Les angles sont ceux des essieux rapportés à leur pic. L’ancienne entrée glisse reste utilisable.
@@ -540,7 +558,7 @@
       vise(vent.pan.pan, pan, t, .08);
     }
 
-    // etat = { pause, joueur: { id, regime, gaz, rapport, v, glisse, deriveRelative, patinage, blocage, contactPneus, surface, turbo, vue, muet, aspiration, ventActif },
+    // etat = { pause, joueur: { id, regime, gaz, rapport, v, glisse, deriveRelative, patinage, blocage, contactPneus, surface, eauRoulement, microRoulement, turbo, vue, muet, aspiration, ventActif },
     //          joueur2: même structure ou null, rivaux: [{ id, distance, angle, regime, gaz, vRel }] }
     // En duo les distances des rivaux viennent de la caméra humaine la plus proche (adaptateur du jeu).
     function mettreAJour(etat) {
@@ -863,7 +881,7 @@
       if (!pret) return;
       const t = ctx.currentTime;
       for (const g of [m.sortie.gain, m.echoG.gain, vib.g.gain, herbe.g.gain]) vise(g, 0, t, 0.03);
-      for (const p of pneus) eteindrePneus(p, t);
+      for (const p of pneus) { eteindrePneus(p, t); reglerRoulementMouille(p, null, t, true, 0); }
       couperRaclements();
       if (fouleNoeud) vise(fouleNoeud.master.gain, 0, t, 0.05);
       if (m2) { vise(m2.sortie.gain, 0, t, .03); vise(m2.echoG.gain, 0, t, .03); }

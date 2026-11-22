@@ -14,6 +14,20 @@
   const ramener = (x, l) => ((x % l) + l) % l;
   const ecart = (c, a, b) => B.circuit.ecart(c, a, b);
   function rampe(s,a,b) { const t=clamp((s-a)/(b-a),0,1); return t*t*(3-2*t); }
+  // Première section de sortie où le bord de la voie rejoint celui de la piste.
+  // Cherchée une fois sur la géométrie effective de la bretelle détachée.
+  const jonctions=new WeakMap();
+  function jonctionSortie(c,S) {
+    if (jonctions.has(S)) return jonctions.get(S);
+    const cote=S.cote || 1, bord=c.largeur/2+S.demi+.8;
+    let a=S.mur1,b=S.fin;
+    for (let i=0;i<20;i++) {
+      const m=(a+b)/2;
+      if (cote*B.circuit.axeStands(c,m)>bord) a=m;
+      else b=m;
+    }
+    jonctions.set(S,b); return b;
+  }
   function lire(c, tab, s) {
     const f = c.ouvert ? clamp(s/c.pas,0,c.n-1) : ramener(s, c.longueur) / c.pas;
     const i = Math.floor(f), j = c.ouvert ? Math.min(i+1,c.n-1) : (i+1)%c.n;
@@ -145,9 +159,11 @@
     const h = e.psi + e.beta, moiLat = 2.475 * Math.abs(Math.sin(h)) + 1.01 * Math.abs(Math.cos(h));
     const moiLong = 2.475 * Math.abs(Math.cos(h)) + 1.01 * Math.abs(Math.sin(h));
     const utile = Math.max(.5, c.largeur / 2 - moiLat - .25);
-    const separe = Number.isFinite(S.dBox), w = c.largeur / 2;
+    const separe = Number.isFinite(S.dBox), w = c.largeur / 2, cote = S.cote || 1;
     const sVue = S.debut + x + regard, sIci = S.debut+x;
     const axe = separe ? B.circuit.axeStands(c,sVue) : S.d;
+    const jonction=S.detachee ? jonctionSortie(c,S) : S.mur1;
+    const surBretelle=S.detachee && (sVue>S.debut && sIci<S.mur0 || sVue>S.mur1 && sIci<S.fin);
     let dVise = axe, cible = PARAMS.vitesseVoie, rang = 0, humainAuGarage = false, fusionLibre = true;
     const V = co.voitures;
     // Réservation dérivée de l'ordre réel : aucune file invisible, aucun déplacement d'une autre voiture.
@@ -163,21 +179,25 @@
       // Même après un service payé, une sortie obstruée doit pouvoir rejoindre la piste avant le bout de la voie.
       if (p.phase === 'sortie' && ds > 0 && ds < 25 && Math.abs(oe.d - e.d) < 2.8 && Math.abs(oe.v) < .5) p.contourne = true;
       // La disponibilité vaut aussi pour une décision de dégagement prise plus bas dans ce même pas.
-      if (oe.d < S.d - 1.8 && ds > -Math.max(14, (oe.v - vitesse) * 3 + 10) && ds < 12) fusionLibre = false;
+      const surLigneFusion=S.detachee ? oe.d*cote<w+1.5 : (oe.d-S.d)*cote < -1.8;
+      if (surLigneFusion && ds > -Math.max(14, (oe.v - vitesse) * 3 + 10) && ds < 12) fusionLibre = false;
     }
     p.admission = rang === 0 && !humainAuGarage;
     if (!sortieStand && !p.admission && x >= garage0 - 1) { p.phase = 'degager'; sortieStand = true; }
-    if (separe && sIci >= S.mur0 && sIci <= S.mur1 && e.d < S.dMur && !st) {
+    if (separe && sIci >= S.mur0 && sIci <= S.mur1 && (e.d - S.dMur) * cote < 0 && !st) {
       // Entrée manquée : une IA sur la piste ne tente pas de traverser le muret.
       finir(co,v); return null;
     }
     const contourner = p.phase === 'degager' || p.contourne;
     if (sortieStand) {
-      const peutRentrer = separe ? sIci > S.mur1 + moiLong : contourner || x > S.fin - S.debut - 25;
+      // Dès que l'on a franchi la jonction physique, s'arrêter pour céder à
+      // une voiture derrière soi bloquerait les deux files sur la piste même.
+      if (S.detachee && sIci>=jonction) fusionLibre=true;
+      const peutRentrer = separe ? sIci > (S.detachee ? jonction : S.mur1 + moiLong) : contourner || x > S.fin - S.debut - 25;
       if (separe) {
         const part = 1 - rampe(sVue,S.sBox,S.garage1+8);
         if (p.reussi && sIci < S.garage1+8) dVise = axe + (S.dBox-axe)*part;
-        if (peutRentrer && fusionLibre) dVise += (ligne-dVise)*rampe(sVue,S.mur1,S.fin+8);
+        if (peutRentrer && fusionLibre) dVise += (ligne-dVise)*rampe(sVue,jonction,S.fin+8);
       } else if (peutRentrer && fusionLibre) dVise = contourner ? Math.min(ligne, 0) : ligne;
       const rejoint = !separe && contourner ? Math.abs(e.d - S.d) > S.demi + 1 : Math.abs(e.d - ligne) < .6;
       const degagementFini = !contourner || !p.vuStand || x > garage1 + 12;
@@ -195,8 +215,9 @@
       cible = Math.min(18, lire(c, c.vitesse, e.s) * Math.sqrt(adhesion) * .8);
       if (!peutRentrer || !fusionLibre) cible = PARAMS.vitesseVoie;
       if (separe && !fusionLibre && sIci < S.fin) {
-        cible = Math.min(cible,Math.sqrt(2*deceleration*Math.max(0,S.mur1+5-sIci)));
-        if (sIci >= S.mur1-8) dVise = S.d;
+        const arret=S.detachee ? jonction-moiLong-1 : S.mur1+5;
+        cible = Math.min(cible,Math.sqrt(2*deceleration*Math.max(0,arret-sIci)));
+        if (sIci >= S.mur1-8) dVise = S.detachee ? axe : S.d;
       }
     } else {
       const attente = rang > 0 || humainAuGarage;
@@ -210,14 +231,25 @@
           Math.sqrt(PARAMS.vitesseVoie ** 2 + 2 * freinage * Math.max(0, -x - 25)));
         const debut = Math.max((c.ligneDroite?.debut ?? S.debut-230) - S.debut + 20, -210);
         const f = clamp((x - debut) / Math.max(30, -25 - debut), 0, 1);
-        dVise = ligne + ((separe ? w-1.6 : S.d) - ligne) * f;
+        dVise = ligne + ((separe ? cote*(w-1.6) : S.d) - ligne) * f;
       }
       if (restant < -3 && x > garage1) p.phase = 'degager';
     }
-    const bord = separe ? B.circuit.bordStands(c,sVue) : w;
-    let dMin = -utile, dMax = Math.max(utile,bord-moiLat-.20), espaceAvant = Infinity, espaceArriere = Infinity;
-    if (separe && sIci >= S.mur0-moiLong && sIci <= S.mur1+moiLong && e.d > S.dMur) {
-      dMin = S.dMur+.21+moiLat+.15;
+    const bord = separe ? B.circuit.bordStands(c,sVue,cote) : w;
+    const portee = Math.max(utile,bord-moiLat-.20);
+    let dMin = cote < 0 ? -portee : -utile, dMax = cote > 0 ? portee : utile;
+    if (surBretelle && cote*axe>w+S.demi+.8) {
+      // La largeur utile est celle du ruban oblique. Un évitement local ne
+      // peut choisir un point de la pelouse même si la chaussée principale est libre.
+      const garde=Math.min(moiLat+.2,S.demi+.75);
+      dMin=Math.max(dMin,axe-S.demi-.8+garde);
+      dMax=Math.min(dMax,axe+S.demi+.8-garde);
+    }
+    let espaceAvant = Infinity, espaceArriere = Infinity;
+    if (separe && sIci >= S.mur0-moiLong && sIci <= S.mur1+moiLong && (e.d-S.dMur)*cote > 0) {
+      const butee = S.dMur + cote*(.21+moiLat+.15);
+      if (cote > 0) dMin = butee;
+      else dMax = butee;
     }
     // Les mêmes emprises que l'IA ordinaire : garder un intervalle réel avant de se rabattre ou d'avancer.
     for (let i = 0; i < V.length; i++) {
@@ -252,7 +284,7 @@
     // voie libère cette distance, sans modifier pose, vitesse ni pneus. Les commandes normales font tout.
     // Le frein arrière propulse : arrêter le recul exige de retirer explicitement son autorisation.
     if (!p.recul && contourner && Math.abs(e.v) < .35 && espaceAvant < 9 &&
-      fusionLibre && dVise < e.d - 1.5 && espaceArriere > PARAMS.reculDistance + 2 &&
+      fusionLibre && (dVise-e.d)*cote < -1.5 && espaceArriere > PARAMS.reculDistance + 2 &&
       p.reculEssais < PARAMS.reculEssais) {
       p.recul = 1; p.reculS = e.s; p.reculD = e.d; p.reculDebut = maintenant; p.reculEssais++;
     }
@@ -272,7 +304,14 @@
         return cmd;
       }
     }
-    const ouverture = Math.min(contourner ? .65 : .30, Math.asin(Math.min(1, 4 / Math.max(vitesse, 1))));
+    let ouverture=Math.min(contourner ? .65 : .30,Math.asin(Math.min(1,4/Math.max(vitesse,1))));
+    if (surBretelle) {
+      // Sur 124 m, la voie se décale de 50,25 m. Au milieu, sa tangente
+      // atteint 31° : un plafond de 17° forçait la voiture hors de la voie.
+      const angle=Math.atan2(axe-B.circuit.axeStands(c,sIci),regard);
+      ouverture=Math.max(ouverture,Math.abs(angle)+.12);
+      if (Math.abs(angle)>.01) cible=Math.min(cible,4/Math.abs(Math.sin(angle)));
+    }
     const psi = clamp(Math.atan2(dVise - e.d, regard), -ouverture, ouverture);
     const k = courbure / Math.max(1 - courbure * e.d, .3) +
       2.2 * (psi - e.psi) * Math.max(vitesse, 5) / (10 * Math.max(vitesse, 3));

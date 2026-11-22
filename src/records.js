@@ -6,7 +6,7 @@
    * L’ancien stockage enrichi reste lisible. Chaque nouvelle physique possède sa clé d’écriture.
    */
 
-  const VERSION_PHYSIQUE = 'p18';
+  const VERSION_PHYSIQUE = 'p19';
   const ARCHIVE_ENRICHIE = 'bitume.records.v2';
   const STORAGE_KEY = ARCHIVE_ENRICHIE + '.' + VERSION_PHYSIQUE;
 
@@ -151,10 +151,16 @@
     }
     // Les clés de finTour contiennent des secondes. Les anciennes archives enrichies sont déjà en ms.
     // Les tableaux p15 sans identifiants sont antérieurs au tri du catalogue et gardent leurs indices.
-    const anciens = migrerAnciens(lire('bitume.records.p15'), null, 'p15', 1000);
-    const courants = migrerAnciens(lire('bitume.records.' + VERSION_PHYSIQUE), catalogue, VERSION_PHYSIQUE, 1000);
-    const p16 = migrerAnciens(lire('bitume.records.p16'), catalogue, 'p16', 1000);
-    return Object.assign(anciens, p16, courants, lire(ARCHIVE_ENRICHIE), lire(ARCHIVE_ENRICHIE+'.p16'), lire(STORAGE_KEY));
+    const table = migrerAnciens(lire('bitume.records.p15'), null, 'p15', 1000);
+    const version = Number(VERSION_PHYSIQUE.slice(1));
+    for (let n = 16; n <= version; n++) {
+      const physique = 'p' + n;
+      Object.assign(table, migrerAnciens(lire('bitume.records.' + physique), catalogue, physique, 1000));
+    }
+    // Les entrées enrichies conservent leurs identifiants de physique et priment sur les temps bruts.
+    Object.assign(table, lire(ARCHIVE_ENRICHIE));
+    for (let n = 16; n <= version; n++) Object.assign(table, lire(ARCHIVE_ENRICHIE + '.p' + n));
+    return table;
   }
 
   function courants(table) {

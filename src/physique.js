@@ -67,9 +67,24 @@
     const e = ph.e, q = B.circuit.echantillon(ph.c, e.s), cap = q.cap + e.psi + e.beta;
     const rel = cap - q.cap, pente = (q.pente || 0) * Math.cos(rel) - Math.sin(q.devers || 0) * Math.sin(rel);
     ph.cap = cap;
-    const bank = Math.atan((q.pente || 0) * Math.sin(rel) + Math.sin(q.devers || 0) * Math.cos(rel));
-    const rot = quaternion(cap, Math.atan(pente), bank), x = q.x - Math.sin(q.cap) * e.d, z = q.z + Math.cos(q.cap) * e.d;
-    const p = [x, q.y - e.d * Math.sin(q.devers || 0), z, ...rot];
+    let tangage = Math.atan(pente), bank = Math.atan((q.pente || 0) * Math.sin(rel) + Math.sin(q.devers || 0) * Math.cos(rel));
+    const x = q.x - Math.sin(q.cap) * e.d, z = q.z + Math.cos(q.cap) * e.d;
+    let baseY = q.y - e.d * Math.sin(q.devers || 0);
+    if (ph.c.partition === 'ovale-des-forges') {
+      // Dans le raccord d'un virage relevé, les bords montent ou descendent même si l'axe est plat.
+      // Le box intérieur a, lui aussi, son propre sol. Prendre le plan de la face sous la caisse.
+      const demi = ph.c.largeur / 2;
+      baseY = q.y - clamp(e.d, -demi, demi) * Math.sin(q.devers || 0);
+      ph.from[0] = x; ph.from[1] = baseY + 5; ph.from[2] = z;
+      const sol = ph.world.raycast(ph.from, [0, -1, 0], 18, { mask: SOL, staticOnly: true }, ph.hit);
+      if (sol.hit && sol.ny > .65) {
+        const co = Math.cos(cap), si = Math.sin(cap);
+        tangage = Math.atan2(-(sol.nx * co + sol.nz * si), sol.ny);
+        bank = Math.atan2((-sol.nx * si + sol.nz * co) * Math.cos(tangage), sol.ny);
+        baseY = sol.y;
+      }
+    }
+    const p = [x, baseY, z, ...quaternion(cap, tangage, bank)];
     // Quatre sondes de placement, dans le même maillage que la suspension. Une seule correction au départ.
     let y = p[1];
     for (const roue of roues()) {
@@ -79,6 +94,10 @@
       if (hit.hit) y = Math.max(y, hit.y + roue.r - (ph.tmp[1] - p[1]) + .025);
     }
     p[1] = y; return p;
+  }
+  function lancerSurSolOvale(ph, pose, vitesse) {
+    tourner(pose, [1, 0, 0], ph.tmp);
+    ph.world.setVelocity(ph.id, [ph.tmp[0] * vitesse, ph.tmp[1] * vitesse, ph.tmp[2] * vitesse]);
   }
   function corps(ph, continuite) {
     const shapes = [{ type: 'box', half: [1.98, .23, .69], pose: [-.12, .31, 0, 0, 0, 0, 1], friction: .55, restitution: .08 }];
@@ -98,7 +117,10 @@
     ph.distant = !!ph.v.distant;
     if (dynamique && continuite) {
       ph.world.setVelocity(ph.id, continuite.velocity); ph.world.setAngularVelocity(ph.id, continuite.angular);
-    } else if (dynamique && Math.abs(ph.e.v) > .01) ph.world.setVelocity(ph.id, [Math.cos(ph.cap || 0) * ph.e.v, 0, Math.sin(ph.cap || 0) * ph.e.v]);
+    } else if (dynamique && Math.abs(ph.e.v) > .01) {
+      if (ph.c.partition === 'ovale-des-forges') lancerSurSolOvale(ph, p, ph.e.v);
+      else ph.world.setVelocity(ph.id, [Math.cos(ph.cap || 0) * ph.e.v, 0, Math.sin(ph.cap || 0) * ph.e.v]);
+    }
     lecture(ph, false);
   }
   function installer(co, decor, options = {}) {
@@ -204,9 +226,12 @@
       const pose = poseDepart(ph);
       ph.world.setPose(ph.id, pose);
       const v = ph.e.v || 0, cap = ph.cap || 0;
-      const e = B.circuit.echantillon(ph.c, ph.e.s);
-      const pente = e.pente || 0, inv = 1 / Math.hypot(1, pente);
-      ph.world.setVelocity(ph.id, [Math.cos(cap) * v * inv, pente * v * inv, Math.sin(cap) * v * inv]);
+      if (ph.c.partition === 'ovale-des-forges') lancerSurSolOvale(ph, pose, v);
+      else {
+        const e = B.circuit.echantillon(ph.c, ph.e.s);
+        const pente = e.pente || 0, inv = 1 / Math.hypot(1, pente);
+        ph.world.setVelocity(ph.id, [Math.cos(cap) * v * inv, pente * v * inv, Math.sin(cap) * v * inv]);
+      }
       ph.world.setAngularVelocity(ph.id, [0, 0, 0]);
       lecture(ph, false);
     }
@@ -347,6 +372,7 @@
     for (const [key, imp] of p.impacts) {
       const magnitude = Math.hypot(imp.x, imp.y, imp.z), old = p.collisions.get(key) ?? -Infinity;
       if (imp.A && imp.C) envolPneuContrePneu(p, key, imp.A, imp.C, magnitude, imp, ev);
+      let contactRival = null, impactAdmissible = false;
       for (const ph of [imp.A, imp.C]) {
         if (!ph || ph.distant) continue;
         const other = ph === imp.A ? imp.b : imp.a, solid = p.solids.acteurs.get(other);
@@ -356,10 +382,15 @@
           const mem = p.co._obstacleMemo || (p.co._obstacleMemo = []), map = mem[ph.v.id] || (mem[ph.v.id] = new Map()); map.set(other, p.temps);
           ph.e.auRail = /lisse|gliss|mur|rail|parapet/.test(solid.genre || '');
         }
-        if (force < .35 || p.temps - old < .22) continue;
+        if (force < .35) continue;
+        impactAdmissible = true;
+        if (p.temps - old < .22) continue;
         const car = ph === imp.A ? imp.C : imp.A;
         if (!car) ev.push({ type: 'choc', id: ph.v.id, force, obstacle: solid?.genre || 'debris', obstacleId: other });
-        else if (ph === imp.A || imp.A?.distant) ev.push({ type: 'contact', a: ph.v.id, b: car.v.id, force });
+        else if (!contactRival) {
+          contactRival = { type: 'contact', a: ph.v.id, b: car.v.id, force };
+          ev.push(contactRival);
+        } else contactRival.force = Math.max(contactRival.force, force);
         for (const x of B.conduite.subirChoc(ph.e, force, zoneImpact(ph,imp))) { x.id = ph.v.id; ev.push(x); }
         if (ph.v.joueur) {
           const annule = B.conduite.annulerDerive(ph.e, true); if (annule) { annule.id = ph.v.id; ev.push(annule); }
@@ -367,7 +398,9 @@
         }
         ph.e.choc = B.conduite.PARAMS.chocDuree;
       }
-      if (magnitude > 200) p.collisions.set(key, p.temps);
+      // Seul un contact qualifié prolonge son épisode. Le même seuil en m/s
+      // sert à annoncer le premier choc et à éviter de le rejouer à chaque pas.
+      if (impactAdmissible) p.collisions.set(key, p.temps);
     }
     if (p.pas % 120 === 0) {
       for (const [key, t] of p.collisions) if (p.temps - t > 2) p.collisions.delete(key);

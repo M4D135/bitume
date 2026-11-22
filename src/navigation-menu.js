@@ -3,7 +3,8 @@
   'use strict';
   const ETATS = new WeakMap(), INTERACTIONS = new WeakMap(), SAISIES = new WeakMap(), DELAI = 360, REPETITION = 95;
   const COMMANDES = 'button,input,select,textarea,a[href],[role="button"],[role="radio"],[role="checkbox"],[tabindex]';
-  const TAB = '[data-menu-tab]', MASQUE = '[hidden],[inert],[aria-hidden="true"]';
+  const TAB = '[data-menu-tab]', MASQUE = '[hidden],[inert],[aria-hidden="true"],[data-page-inactive]';
+  const PAGINATIONS = new WeakMap();
   const role = el => el && el.getAttribute('role');
   const bloque = el => !el || el.disabled || el.matches(':disabled') || !!el.closest('[aria-disabled="true"]');
 
@@ -45,6 +46,8 @@
     if (!pairs.length) return false;
     // Un appel programmatique peut fermer le panneau qui contient le focus, sans clic sur l'onglet.
     // Ne pas conserver les commandes du clavier dans ce panneau devenu invisible.
+    const pagination = PAGINATIONS.get(panneau);
+    if (pagination) actualiserPages(pagination);
     const actif = zone.ownerDocument.activeElement;
     if ((focus || panneaux.some(p => p.hidden && p.contains(actif))) && visible(cible)) focaliser(cible);
     if (changement && zone.dispatchEvent) {
@@ -54,6 +57,124 @@
     return true;
   }
 
+  function pagesDuPanneau(panneau) {
+    const pages = [];
+    if (panneau.id === 'r-commandes-panel') {
+      const vibrations = panneau.querySelector(':scope > fieldset');
+      if (vibrations) pages.push({ cle: 'vibrations', elements: [vibrations] });
+      const actions = panneau.querySelector('#r-commandes > .actions-commandes');
+      const annuler = actions?.querySelector('#r-pad-annuler:not([hidden])');
+      for (const [i, joueur] of Array.from(panneau.querySelectorAll('.joueur-commandes')).entries()) {
+        const lignes = Array.from(joueur.querySelectorAll('tbody tr'));
+        for (let j = 0; j < lignes.length; j += 3) {
+          const tranche = lignes.slice(j,j+3), elements = [joueur, ...tranche];
+          // Un joueur tactile doit pouvoir quitter la capture depuis l'action qu'il règle.
+          if (annuler && tranche.some(ligne => ligne.querySelector('.touche.attente'))) elements.push(actions,annuler);
+          pages.push({ cle: 'joueur-' + i + '-' + j, elements });
+        }
+      }
+      const aide = Array.from(panneau.querySelectorAll('#r-commandes > :not(.joueur-commandes)'));
+      if (actions) aide.push(...actions.children);
+      if (aide.length) pages.push({ cle: 'affectations', elements: aide });
+      return pages;
+    }
+    // Les champs J2 et les conditions réelles ont leur propre [hidden], détenu par le jeu.
+    // Le panneau peut lui-même être fermé lorsque les modes de préparation sont mis à jour.
+    for (const champ of panneau.querySelectorAll('fieldset')) {
+      const masque = champ.closest('[hidden],[inert],[aria-hidden="true"]');
+      if (masque && masque !== panneau && panneau.contains(masque)) continue;
+      const cle = champ.id || champ.querySelector('legend')?.textContent || String(pages.length);
+      const course = panneau.id === 'p-conditions' && (cle === 'o-tours' || cle === 'o-difficulte');
+      const paire = course ? 'course' : panneau.id === 'p-pilotes' ? cle.replace(/-[012]$/, '') : null;
+      const derniere = pages[pages.length-1];
+      if (derniere && derniere.elements.length === 1 &&
+          (paire ? paire === derniere.cle : panneau.id !== 'p-conditions')) derniere.elements.push(champ);
+      else pages.push({ cle: paire || cle, titre: course ? 'Course' : '', elements: [champ] });
+    }
+    return pages;
+  }
+
+  function afficherPage(etat, index, entrer) {
+    const { panneau, pages, nav, compteur } = etat, page = pages[index];
+    etat.index = index; etat.cle = page?.cle;
+    nav.hidden = pages.length < 2;
+    const retenus = new Set(page?.elements || []);
+    for (const el of etat.elements) el.toggleAttribute('data-page-inactive', !retenus.has(el));
+    const indication = (page?.titre ? page.titre + ' · ' : '') + (index + 1) + ' / ' + pages.length;
+    if (compteur.textContent !== indication) compteur.textContent = indication;
+    if (entrer && page && !panneau.hidden && !panneau.closest('[hidden]')) {
+      const ancien = etat.memoire.get(page.cle);
+      const champs = groupes(panneau).filter(g => !nav.contains(g.elements[0]) &&
+        page.elements.some(el => g.elements.some(cible => el.contains(cible))));
+      focaliser(ancien && panneau.contains(ancien) && visible(ancien) ? ancien : selection(champs[0]));
+    }
+  }
+  function actualiserPages(etat) {
+    const pages = pagesDuPanneau(etat.panneau), actif = etat.panneau.ownerDocument.activeElement;
+    for (const [cle, el] of etat.memoire) if (!etat.panneau.contains(el)) etat.memoire.delete(cle);
+    // Une affectation peut reconstruire la table entière. Reprendre la même page et le
+    // bouton que le jeu vient de restaurer, même lorsque ses nœuds ont changé.
+    const index = pages.findIndex(p => p.cle === etat.cle);
+    const choisie = index < 0 ? Math.max(0, Math.min(etat.index, pages.length - 1)) : index;
+    const elements = new Set(pages.flatMap(p => p.elements));
+    for (const el of etat.elements) if (!elements.has(el)) el.removeAttribute('data-page-inactive');
+    const focusMasque = etat.panneau.contains(actif) && !etat.nav.contains(actif) &&
+      actif.closest('fieldset, .joueur-commandes, #r-commandes') &&
+      (!pages[choisie]?.elements.some(el => el.contains(actif)) || !!actif.closest('[hidden]'));
+    // Masquer J2 ou reconstruire un bouton capturé peut rendre le focus au body
+    // avant la notification DOM. Le restaurer seulement s'il appartenait à cette page.
+    const dernier = etat.dernierFocus;
+    const focusPerdu = focusMasque || (actif === etat.panneau.ownerDocument.body && dernier &&
+      (!dernier.isConnected || dernier.closest('[hidden]')));
+    etat.pages = pages; etat.elements = elements;
+    afficherPage(etat, choisie, focusPerdu);
+  }
+  function decalerPages(zone, sens) {
+    if (!zone || !sens) return false;
+    for (const p of zone.querySelectorAll('[data-menu-panel]')) {
+      const e = PAGINATIONS.get(p);
+      if (!e || p.closest('[hidden],[inert]') || e.pages.length < 2) continue;
+      afficherPage(e, (e.index + (sens < 0 ? -1 : 1) + e.pages.length) % e.pages.length,
+        !e.nav.contains(zone.ownerDocument.activeElement));
+      return true;
+    }
+    return false;
+  }
+  function installerPages(zone) {
+    if (zone.id !== 'preparation' && zone.id !== 'reglages') return;
+    const doc = zone.ownerDocument;
+    for (const panneau of zone.querySelectorAll('[data-menu-panel]')) {
+      if (!['p-conditions','p-pilotes','r-image','r-pilotage','r-commandes-panel'].includes(panneau.id)) continue;
+      let ancre = panneau.querySelector('fieldset');
+      if (!ancre) continue;
+      while (ancre.parentElement !== panneau) ancre = ancre.parentElement;
+      const nav = doc.createElement('nav'), compteur = doc.createElement('span');
+      nav.className = 'pages-reglages'; nav.setAttribute('aria-label','Pages de réglages');
+      compteur.setAttribute('aria-live','polite'); compteur.setAttribute('aria-atomic','true');
+      function bouton(sens, texte, etiquette) {
+        const b = doc.createElement('button'); b.type = 'button'; b.textContent = texte;
+        b.setAttribute('aria-label',etiquette); b.setAttribute('aria-controls',panneau.id);
+        b.addEventListener('click', () => decalerPages(zone,sens)); return b;
+      }
+      nav.append(bouton(-1,'‹ LT','Page précédente'), compteur, bouton(1,'RT ›','Page suivante'));
+      panneau.insertBefore(nav,ancre); panneau.setAttribute('data-pages-reglages','');
+      const e = { panneau, nav, compteur, pages: [], elements: new Set(), memoire: new Map(), index: 0 };
+      PAGINATIONS.set(panneau,e); actualiserPages(e);
+      panneau.addEventListener('focusin', evt => {
+        e.dernierFocus = evt.target;
+        if (!nav.contains(evt.target) && e.pages[e.index]?.elements.some(el => el.contains(evt.target))) e.memoire.set(e.cle,evt.target);
+      });
+      panneau.addEventListener('focusout', evt => {
+        if (evt.relatedTarget && !panneau.contains(evt.relatedTarget)) e.dernierFocus = null;
+      });
+      const Observer = doc.defaultView.MutationObserver;
+      if (Observer) new Observer(changements => {
+        if (changements.some(m => m.type === 'childList' ? m.target.id === 'r-commandes' :
+          m.target.matches('fieldset, .options-pilotes, .conditions-grille'))) actualiserPages(e);
+      }).observe(panneau,{subtree:true,childList:true,attributes:true,attributeFilter:['hidden']});
+    }
+  }
+
   function initialiser(zone) {
     if (!zone || !zone.addEventListener) return false;
     const saisie = SAISIES.get(zone.ownerDocument);
@@ -61,6 +182,7 @@
     // À chaque entrée d'écran, attendre le retour au neutre d'un manche tenu pendant la conduite.
     if (ETATS.has(zone)) { ETATS.get(zone).pads.clear(); return true; }
     ETATS.set(zone, { pads: new Map() });
+    installerPages(zone);
     const listes = new Set(onglets(zone).map(t => t.closest('[data-menu-tabs]')));
     for (const nav of listes) {
       const ts = onglets(zone, nav), actif = ts.find(t => t.getAttribute('aria-selected') === 'true') || ts[0];
@@ -74,6 +196,12 @@
     zone.addEventListener('keydown', e => {
       delete zone.dataset.manette;
       if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
+      const dansPages = e.target.closest('.pages-reglages'), sensPage =
+        e.key === 'PageDown' || (dansPages && e.key === 'ArrowRight') ? 1 :
+        e.key === 'PageUp' || (dansPages && e.key === 'ArrowLeft') ? -1 : 0;
+      if (sensPage && !e.target.matches('input[type="range"], select, textarea') && decalerPages(zone,sensPage)) {
+        e.preventDefault(); return;
+      }
       const t = e.target.closest(TAB);
       if (!t || !zone.contains(t) || !visible(t)) return;
       const nav = t.closest('[data-menu-tabs]'), ts = onglets(zone, nav).filter(visible), i = ts.indexOf(t);
@@ -98,6 +226,7 @@
       let type = '', cle = null;
       if (el.type === 'radio' && el.name) { type = 'radio'; cle = el.name; }
       else if (role(el) === 'radio') { type = 'choix'; cle = el.closest('[role="radiogroup"]'); }
+      else if (el.closest('.pages-reglages')) { type = 'pages'; cle = el.closest('.pages-reglages'); }
       else if (el.matches(TAB)) { type = 'onglets'; cle = el.closest('[data-menu-tabs]'); }
       // Un tabindex négatif ordinaire retire un élément du parcours ; les groupes ont leur propre sélection.
       if (!type && el.hasAttribute('tabindex') && el.tabIndex < 0) continue;
@@ -211,6 +340,7 @@
   }
 
   function ajuster(zone, el, g, sens) {
+    if (g.type === 'pages') return decalerPages(zone, sens);
     if (el.readOnly) return true;
     if (el.type === 'range') {
       const min = el.min !== '' && Number.isFinite(+el.min) ? +el.min : 0;
@@ -289,8 +419,9 @@
     const pad = options.pad, temps = Number.isFinite(options.temps) ? options.temps : performance.now();
     const d = deplacement(etat, pad, front, temps);
     const retour = front(8), gauche = front(4), droite = front(5), valider = front(0);
+    const page = zone.id === 'preparation' || zone.id === 'reglages' ? (front(7) ? 1 : front(6) ? -1 : 0) : 0;
     const demarrer = typeof options.demarrer === 'function' && front(9);
-    if (!retour && !gauche && !droite && !valider && !demarrer && !d) return false; // Aucun parcours DOM sur une image au repos.
+    if (!retour && !gauche && !droite && !valider && !demarrer && !d && !page) return false; // Aucun parcours DOM sur une image au repos.
     const vue = zone.ownerDocument.defaultView, style = vue && vue.getComputedStyle(zone);
     if (!zone.getClientRects().length || style && (style.visibility === 'hidden' || style.visibility === 'collapse')) return false;
     const cle = pad && pad.index != null ? pad.index : -1, avant = INTERACTIONS.get(zone.ownerDocument);
@@ -309,6 +440,8 @@
     }
     if (retour) { if (options.retour) options.retour(); return true; }
     if (demarrer) { options.demarrer(); return true; }
+    if (page && decalerPages(zone,page)) return true;
+    if (page && !gauche && !droite && !valider && !d) return false;
     if (gauche || droite) {
       const ts = onglets(zone).filter(visible), actif = ts.find(t => t.getAttribute('aria-selected') === 'true') || ts[0];
       if (actif) {
@@ -349,5 +482,5 @@
     return true;
   }
 
-  B.navigationMenu = Object.freeze({ initialiser, ouvrirOnglet, naviguer, fermerSaisie });
+  B.navigationMenu = Object.freeze({ initialiser, ouvrirOnglet, naviguer, decalerPages, fermerSaisie });
 })(globalThis.BITUME = globalThis.BITUME || {});

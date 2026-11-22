@@ -1,20 +1,20 @@
 {
   "date": "2026-11-22",
   "etat_courant": {
-    "version_courante": "0.2.130",
+    "version_courante": "0.2.131",
     "version_publiee_verifiee": "0.2.130",
-    "physique": "p18",
+    "physique": "p19",
     "moteur": "FERRO 0.3.26 canonique",
-    "circuits": 8,
+    "circuits": 9,
     "statut": "integre_sur_main",
-    "lot": "catalogue_rendu_course",
-    "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
+    "lot": "menus_arcade_cocodrome",
+    "fiche": "docs/reprise/NUIT-2026-11-22-23.md",
     "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
     "dernieres_demandes": "docs/reprise/NUIT-2026-11-22-23.md",
     "dernier_lot_clos": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json",
-    "prochaine_action": "Viser 60 images 3D/s sur les huit circuits, en 1080p Fine avec les deux rétroviseurs, et couvrir tous les matériels, vues, modes et conditions pris en charge.",
+    "prochaine_action": "Viser 60 images 3D/s sur les neuf circuits, en 1080p Fine avec les deux rétroviseurs, et couvrir tous les matériels, vues, modes et conditions pris en charge.",
     "branche_candidate": "main",
-    "version_candidate": "0.2.130",
+    "version_candidate": "0.2.131",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/NUIT-2026-11-22-23.md"
   },
@@ -81,7 +81,7 @@
     "fps_materiels_qualifies": false,
     "manettes_physiques_qualifiees": false,
     "reseau_entre_machines_qualifie": false,
-    "spark_disponible": false,
+    "spark_disponible": true,
     "projections_poursuite": "Pluie de lentille et précipitations du monde alternées en conduite. Réception à 0 et 288 km/h sur Larche dans le rapport courant.",
     "lissage_S8_facultatif": {
       "obligatoire": false,
@@ -145,10 +145,10 @@
       "Deux joueurs et réseau 27, cache et calcul 28, puis étapes du moteur C++ sur Mac, Linux et Windows"
     ],
     "acquis_R4b_a_preserver": true,
-    "prochaine_priorite": "Viser 60 images 3D/s sur les huit circuits, en 1080p Fine avec les deux rétroviseurs, et couvrir tous les matériels, vues, modes et conditions pris en charge."
+    "prochaine_priorite": "Viser 60 images 3D/s sur les neuf circuits, en 1080p Fine avec les deux rétroviseurs, et couvrir tous les matériels, vues, modes et conditions pris en charge."
   },
   "catalogue": {
-    "jouables": 8,
+    "jouables": 9,
     "baikal": "Identifiant baikal, index 7 dans ce catalogue.",
     "ajouts_demandes": [
       "Grand circuit de montagne distinct de Haut-Col",
@@ -157,7 +157,7 @@
     ],
     "propositions_conservees": 6,
     "programme_complet": "docs/reprise/CONTINUATION-AUTONOME-2026-11-19.md",
-    "regle": "Menu resserré à onze identités selon la décision .89 et l’intégration de Marseille en .90.",
+    "regle": "Identifiants persistants pour les sauvegardes. Les neuf épreuves utilisent leur nom arcade dans les menus et en course.",
     "route_des_cimes": "id route-des-cimes, index 5 dans ce catalogue.",
     "ids": [
       "forets-du-pacifique",
@@ -167,10 +167,11 @@
       "nord-atlantique",
       "route-des-cimes",
       "larche",
-      "baikal"
+      "baikal",
+      "ovale-des-forges"
     ],
     "destinations_prevues_historiquement": 17,
-    "decision_courante": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md"
+    "decision_courante": "docs/reprise/NUIT-2026-11-22-23.md"
   },
   "parcours_larche_vinadio": {
     "nom": "Col de Larche → Vinadio",
@@ -784,7 +785,7 @@
     "feuille": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
     "etat_des_receptions": "Essais suspendus à la demande du joueur. Les mesures d’une autre version restent identifiées séparément.",
     "ordre_de_suite": [
-      "Viser 60 images 3D/s sur les huit circuits, en 1080p Fine avec les deux rétroviseurs, et couvrir tous les matériels, vues, modes et conditions pris en charge.",
+      "Viser 60 images 3D/s sur les neuf circuits, en 1080p Fine avec les deux rétroviseurs, et couvrir tous les matériels, vues, modes et conditions pris en charge.",
       "Recevoir les entrées et sorties des huit cartes, la précision de l’arrêt au box, les roues et le carburant en solo et en réseau, ainsi que les collisions des arches.",
       "Visibilité des voitures, LED et ombres, BVH FERRO, primitives à la demande, appels WebGL2 groupés, rétroviseurs hors écran et budget des bosquets",
       "Huit circuits, trois tracés à deux habitats et huit démonstrations de la course, du tracé et des lieux",

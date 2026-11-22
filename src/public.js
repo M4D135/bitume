@@ -668,7 +668,7 @@
           const pas = (enfant ? .44 : .50) + r() * .12, kk = k + (r() - .5) * .06;
           const d = debout ? bordD + t.cote * (.55 + r() * .3) : bordD + t.cote * (.13 + r() * .04), dc = r(), hR = r(), lR = r();
           // au premier rang, les genoux passeraient dans les piliers du toit (decor.js : tous les 12 m, devant la tribune)
-          const u = ((kk + t.longueur / 2) % 12 + 12) % 12, pilier = m === 0 && Math.min(u, 12 - u) < .42;
+          const u = ((kk + t.longueur / 2) % 12 + 12) % 12, pilier = t.couvertAlizes!==false && m === 0 && Math.min(u, 12 - u) < .42;
           const x = t.x + rx * d + tx * kk, z = t.z + rz * d + tz * kk, y = debout ? t.y + haut : t.y + haut + .10, cp = cap + (dc - .5) * .22;
           // ni le corps ni, assis, les genoux dans un solide du décor (un poteau planté dans les gradins, par exemple)
           const genou = .44 * (enfant ? .78 : 1) * .9;
@@ -684,7 +684,9 @@
     const rails = [];
     if (palier.debout > 0 && limites) {
       const r = alea(hache(graine ^ 0x6C1A55E7));
-      const pris = (s, cote) => cote < 0 ? gradins.tribunes.some(t => Math.abs(s - t.s) < t.longueur / 2 + 1.5)
+      const pris = (s, cote) => c.partition==='ovale-des-forges'
+        ? cote<0 || gradins.tribunes.some(t=>Math.abs(B.circuit.ecart(c,s,t.s))<t.longueur/2+1.5)
+        : cote < 0 ? gradins.tribunes.some(t => Math.abs(s - t.s) < t.longueur / 2 + 1.5)
         : gradins.stands.some(t => Math.abs(s - t.s) < t.longueur / 2 + 2);
       for (const cote of [-1, 1]) {
         const phase = r() * 50;

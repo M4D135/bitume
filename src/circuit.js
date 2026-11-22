@@ -280,26 +280,56 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
 
   // L’allée se sépare du bord droit, rejoint le box par une aire latérale puis revient sur la route.
   const transitionStand = t => { t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2 * t); };
-  function axeStands(c, s) {
-    const S = c.stands, bord = c.largeur / 2 - 1.6;
-    if (!S) return bord;
-    const t = Math.min((s - S.debut) / (S.mur0 - S.debut), (S.fin - s) / (S.fin - S.mur1));
-    return bord + (S.d - bord) * transitionStand(t);
+  const tamponVoie = {};
+  function accesStands(S, s) {
+    return transitionStand(Math.min((s - S.debut) / (S.mur0 - S.debut), (S.fin - s) / (S.fin - S.mur1)));
   }
-  function bordStands(c, s) {
-    const w = c.largeur / 2, S = c.stands;
-    if (!S || s <= S.debut || s >= S.fin) return w;
-    const acces = transitionStand(Math.min((s-S.debut)/(S.mur0-S.debut), (S.fin-s)/(S.fin-S.mur1)));
-    const aire = transitionStand(Math.min((s-S.garage0+18)/18, (S.garage1+18-s)/18));
-    return w + acces * (S.d + S.demi + .8 - w + aire * (S.dFond - S.d - S.demi - .8));
+  function axeStands(c, s) {
+    const S = c.stands, cote = S?.cote < 0 ? -1 : 1;
+    const bord = cote * (c.largeur / 2 - (S?.detachee ? S.demi + .8 : 1.6));
+    if (!S) return bord;
+    return bord + (S.d - bord) * accesStands(S, s);
+  }
+  // Intervalle carrossable en d signé. Une voie détachée laisse un terre-plein à
+  // l'intérieur de cet anneau ; la voie historique reste attenante au bord de piste.
+  function bandeStands(c, s, out = {}) {
+    const w = c.largeur / 2, S = c.stands, cote = S?.cote < 0 ? -1 : 1;
+    let proche = w, loin = w;
+    if (S && s > S.debut && s < S.fin) {
+      const acces = accesStands(S,s), demi = S.demi + .8, centre = cote * S.d, fond = cote * S.dFond;
+      const aire = transitionStand(Math.min((s-S.garage0+18)/18, (S.garage1+18-s)/18));
+      if (S.detachee) {
+        const axe = w - demi + (centre - w + demi) * acces;
+        proche = Math.max(w, axe - demi);
+        loin = Math.max(w, axe + demi + aire * (fond - centre - demi));
+      } else {
+        loin = w + acces * (centre + S.demi + .8 - w + aire * (fond - centre - S.demi - .8));
+      }
+    }
+    out.min = cote < 0 ? -loin : proche; out.max = cote < 0 ? -proche : loin;
+    return out;
+  }
+  // Portée positive sur le côté demandé. L'appel historique sans côté désigne le bord droit.
+  function bordStands(c, s, cote = 1) {
+    if (!c.stands || (c.stands.cote < 0) !== (cote < 0)) return c.largeur / 2;
+    bandeStands(c, s, tamponVoie);
+    return cote < 0 ? -tamponVoie.min : tamponVoie.max;
+  }
+  function surVoieStands(c, s, d, marge = 0) {
+    const S = c.stands;
+    if (!S || !(s > S.debut && s < S.fin) || (S.cote < 0 ? -d : d) <= c.largeur / 2) return false;
+    const voie = bandeStands(c, s, tamponVoie);
+    return voie.max > voie.min && d >= voie.min - marge && d <= voie.max + marge;
   }
 
   // Réservation des plantations et objets. Les roues emploient uniquement bordStands.
   function empriseStands(c,s,d,marge=0) {
-    const S=c.stands, w=c.largeur/2;
-    if (!S || s < S.debut-marge || s > S.fin+marge || d < w-.2-marge) return false;
-    const exterieur = s >= S.garage0-4-marge && s <= S.garage1+4+marge ? S.dBox+11 : bordStands(c,s);
-    return d <= exterieur+marge;
+    const S=c.stands;
+    if (!S || s < S.debut-marge || s > S.fin+marge) return false;
+    const cote = S.cote < 0 ? -1 : 1, voie = bandeStands(c,s,tamponVoie);
+    const proche = cote < 0 ? -voie.max : voie.min, loin = cote < 0 ? -voie.min : voie.max;
+    const exterieur = s >= S.garage0-4-marge && s <= S.garage1+4+marge ? cote*S.dBox+11 : loin;
+    return cote*d >= proche-.2-marge && cote*d <= exterieur+marge;
   }
 
   function halteEnLigne(c) {
@@ -334,13 +364,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     }
     const S=c.stands, w=c.largeur/2;
     if (!S || S.dBox !== undefined) return;
-    const raccord = Math.min(35,(S.fin-S.debut)*.2);
-    Object.assign(S,{ cote:1, d:w+3.8, demi:2.45, dMur:w+.45, mur0:S.debut+raccord, mur1:S.fin-raccord,
-      sBox:(S.garage0+S.garage1)/2, dBox:w+10.2, demiBox:2.65, dFond:w+16 });
+    const cote = S.cote < 0 ? -1 : 1, centre = S.retrait ?? w+3.8;
+    const raccord = S.raccord ?? Math.min(35,(S.fin-S.debut)*.2);
+    Object.assign(S,{ cote, d:cote*centre, demi:2.45, dMur:cote*(S.detachee ? centre-3.25 : w+.45),
+      mur0:S.debut+raccord, mur1:S.fin-raccord, sBox:(S.garage0+S.garage1)/2,
+      dBox:cote*(S.detachee ? centre+6.4 : w+10.2), demiBox:2.65, dFond:cote*(S.detachee ? centre+12.2 : w+16) });
     // Les glissières physiques et visuelles longent désormais l'extérieur de l'aire et ses raccordements.
-    if (c.limiteD) for (let i=Math.max(0,Math.floor(S.debut/c.pas)-6); i<Math.min(c.n,Math.ceil(S.fin/c.pas)+7); i++) {
+    const limites = cote < 0 ? c.limiteG : c.limiteD;
+    if (limites) for (let i=Math.max(0,Math.floor(S.debut/c.pas)-6); i<Math.min(c.n,Math.ceil(S.fin/c.pas)+7); i++) {
       const s=i*c.pas;
-      c.limiteD[i]=Math.max(c.limiteD[i],bordStands(c,s)+1.5);
+      limites[i]=Math.max(limites[i],bordStands(c,s,cote)+1.5);
     }
   }
 
@@ -375,8 +408,74 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
   }
 
   // ---------------------------------------------------------------- création
+  function creerOvaleDesForges(graine, options) {
+    if (graine !== 347) throw new Error('BITUME : identité du Cocodrome invalide');
+    const droite = 400, courte = 120, virage = 140, raccord = 24, avantLigne = 112;
+    const demiTour = droite + courte + 2 * virage, longueur = 2 * demiTour, n = longueur / PAS;
+    const premier = droite - avantLigne, second = premier + virage + courte;
+    const debuts = [premier, second, premier + demiTour, second + demiTour];
+    const angleDroit = Math.PI / 2, courbureMax = angleDroit / (virage - raccord);
+    // Intégrale de la courbure : montée en smoothstep sur 24 m, arc, sortie symétrique.
+    // Son aire vaut exactement π/2. Les portions opposées se ferment par symétrie.
+    function rotationQuart(u) {
+      if (u >= virage) return angleDroit;
+      const l = Math.min(u, virage - u), t = l / raccord;
+      const rotation = courbureMax * (l < raccord ? raccord * t * t * t * (1 - .5 * t) : l - raccord / 2);
+      return u > virage / 2 ? angleDroit - rotation : rotation;
+    }
+    function direction(s) {
+      let a = 0;
+      for (const debut of debuts) {
+        if (s <= debut) break;
+        a -= rotationQuart(s - debut);
+      }
+      return a;
+    }
+    const x = new Float64Array(n), y = new Float64Array(n), z = new Float64Array(n);
+    const cap = new Float64Array(n), courbure = new Float64Array(n), pente = new Float64Array(n);
+    const devers = new Float64Array(n), vibreur = new Uint8Array(n);
+    for (let i = 0; i < n; i++) {
+      const s = i * PAS;
+      cap[i] = angle(direction(s));
+      if (i + 1 < n) {
+        const milieu = direction(s + PAS / 2);
+        x[i + 1] = x[i] + PAS * Math.cos(milieu);
+        z[i + 1] = z[i] + PAS * Math.sin(milieu);
+      }
+      for (const debut of debuts) {
+        const u = s - debut, bord = Math.min(u, virage - u);
+        if (bord <= -10) continue;
+        // d<0 est à gauche. Le mesh emploie y - d*sin(devers) : 24 cm/m
+        // au cœur des quatre gauches et 100 m entièrement plats sur chaque petite droite.
+        devers[i] = -Math.asin(.24 * lisse(-10, raccord, bord));
+        courbure[i] = -courbureMax * lisse(0, raccord, bord);
+        if (bord > 0) vibreur[i] = 1;
+        break;
+      }
+    }
+    const largeur = 16, lim = limites(courbure, n, largeur);
+    // La grille de douze tient derrière le départ ; le garage dispose de l'autre
+    // grande droite. La route et sa voie latérale alimentent les mêmes triangles PhysX.
+    const droiteStands = second + virage;
+    const stands = { cote: -1, detachee: true, retrait: 55, raccord: 124,
+      debut: droiteStands + 12, fin: droiteStands + droite - 12,
+      garage0: droiteStands + 174, garage1: droiteStands + 226, vitesse: 11 };
+    const c = { id: 'ovale-des-forges', partition: 'ovale-des-forges', graine, nom: 'Le Cocodrome',
+      theme: options.theme || 'ovale', longueur, pas: PAS, n, x, y, z, cap, courbure, pente, devers, vibreur, largeur,
+      limite: LIMITE, limiteG: lim.G, limiteD: lim.D, depart: 0, ligneDroite: { debut: -avantLigne, fin: premier },
+      secteurs: [longueur / 3, 2 * longueur / 3], stands, tunnel: null, essais: 1 };
+    preparerParcours(c);
+    for (let i = 0; i < n; i++) {
+      const s = i * PAS, marge = Math.min(s - (stands.garage0 - 10), stands.garage1 + 10 - s);
+      const fondGarage = LIMITE + (Math.abs(stands.dBox) + 13.5 - LIMITE) * lisse(-24, 0, marge);
+      c.limiteG[i] = Math.max(c.limiteG[i], fondGarage);
+    }
+    return c;
+  }
+
   function creer(graine, options = {}) {
     if (options.partition !== undefined) {
+      if (options.partition === 'ovale-des-forges') return creerOvaleDesForges(graine, options);
       if (options.partition === 'marseille' && B.marseille) return B.marseille.creer(graine, options);
       if (options.partition !== 'route-des-cimes' || graine !== 181 || !B.routeDesCimes) throw new Error('BITUME : partition absente ou identité invalide');
       return B.routeDesCimes.creer();
@@ -713,6 +812,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     const n = [r[1] * t[2] - r[2] * t[1], r[2] * t[0] - r[0] * t[2], r[0] * t[1] - r[1] * t[0]];
     return { t, r, n };
   }
+  // Un léger décalage entre les deux colonnes maintient l'ordre de grille dès le premier pas.
+  function abscisseGrille(c, place) {
+    if (c.partition === 'ovale-des-forges') return -10 - 10 * Math.floor(place / 2) - .6 * (place % 2);
+    return -10 - 8 * place;
+  }
   function ecart(c, s1, s2) {
     if (c.ouvert) return s2 - s1;
     const L = c.longueur;
@@ -748,5 +852,5 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     return pb;
   }
 
-  B.circuit = { creer, creerDepuisTrace, preparerParcours, preparerStands, axeStands, bordStands, empriseStands, ramener, echantillon, point, repere, ecart, vibreurA, limiteA, largeurA, valider, dansTunnel, dansCouvert, choisirTunnel, PAS, LARGEUR };
+  B.circuit = { creer, creerDepuisTrace, preparerParcours, preparerStands, abscisseGrille, axeStands, bandeStands, bordStands, surVoieStands, empriseStands, ramener, echantillon, point, repere, ecart, vibreurA, limiteA, largeurA, valider, dansTunnel, dansCouvert, choisirTunnel, PAS, LARGEUR };
 })(globalThis.BITUME = globalThis.BITUME || {});

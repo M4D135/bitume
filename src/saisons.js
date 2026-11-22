@@ -17,7 +17,7 @@
       faune: neige || theme === 'islande' || theme === 'desert' ? 0 : d.faune, soleil: d.soleil, teinteSoleil: Object.freeze(d.teinteSoleil.slice()) });
   }
   function profil(id, theme = 'foret') {
-    if (theme === 'corail') theme = 'cote';
+    if (theme === 'corail' || theme === 'ovale') theme = 'cote';
     return profils[normaliser(id) + ':' + (theme === 'cote' || theme === 'montagne' || theme === 'islande' || theme === 'desert' || theme === 'asie' || theme === 'pacifique' || theme === 'baikal' ? theme : 'foret')];
   }
   // L'axe est échantillonné à pas constant. Une table légère par circuit mixte est

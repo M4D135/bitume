@@ -1,11 +1,11 @@
 # BITUME — feuille de route
 
 <!-- bitume-reprise-actuelle-debut -->
-## Programme des huit circuits
+## Programme des neuf circuits
 
-La décision du 22 novembre au soir donne le même objectif aux huit circuits et à chaque configuration prise en charge. La [feuille de route de nuit](docs/reprise/NUIT-2026-11-22-23.md) répartit les lots, la revue du code et les critères de réception.
+La décision du 22 novembre au soir donne le même objectif aux neuf circuits et à chaque configuration prise en charge. La [feuille de route de nuit](docs/reprise/NUIT-2026-11-22-23.md) répartit les lots, la revue du code et les critères de réception.
 
-Les décisions sur les huit circuits, les trois tracés mixtes, le rendu et les réceptions en course figurent en tête de la [feuille détaillée](docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md). Les programmes historiques suivent ci-dessous.
+Les décisions antérieures sur les huit premiers circuits, les trois tracés mixtes, le rendu et les réceptions en course figurent en tête de la [feuille détaillée](docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md). Les programmes historiques suivent ci-dessous.
 
 La .130 corrige les trois cadrans du cockpit et conserve les tribunes situées en face des stands. Les chevrons marquent les portions serrées sur le bord extérieur du virage. La pluie projetée est visible avec la visière. La densité des petites gouttes de visière est multipliée par dix et les projections augmentent dans le sillage. La cadence de la .130 à chaud sous la pluie à Pietraporzio et sur les 32 km de Larche reste à mesurer en 1080p Fine. [Sources de la .130](https://github.com/M4D135/bitume/commit/b15cd823af4e1f803fe4c1ac7f5af04882332cca)
 

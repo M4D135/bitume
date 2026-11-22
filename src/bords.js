@@ -73,6 +73,11 @@
   // ---------------------------------------------------------------- plan
   function planifier(c) {
     if (c._bords) return c._bords;
+    if (c.partition==='ovale-des-forges') {
+      const plan={graine:graineBords(c),marques:[],dangers:[],bandeaux:[],affiches:[],passerelles:[]};
+      Object.defineProperty(c,'_bords',{value:plan,configurable:true});
+      return plan;
+    }
     const r = alea(graineBords(c)), n = c.n, pas = c.pas, L = c.longueur, theme = c.theme || 'foret';
     // -- bords dangereux : ceux que le tracé déclare (génération 3), sinon choisis à l'extérieur des courbes rapides
     let dangers = [];

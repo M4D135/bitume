@@ -10,6 +10,7 @@
     foret:    { bg0:'#0a1f14', bg1:'#041208', halo:'#1aff6e', grid:'#0f4a2a', accent:'#39ff8e' },
     cote:     { bg0:'#081a2e', bg1:'#030d1a', halo:'#00cfff', grid:'#0a3355', accent:'#00e5ff' },
     marseille:{ bg0:'#071d32', bg1:'#030f1e', halo:'#00c8ff', grid:'#0a3b64', accent:'#ffd166' },
+    ovale:    { bg0:'#09302e', bg1:'#051918', halo:'#34c6b7', grid:'#185052', accent:'#ffcd72' },
     corail:   { bg0:'#06152a', bg1:'#020a18', halo:'#00b4d8', grid:'#083050', accent:'#48cae4' },
     montagne: { bg0:'#0c1520', bg1:'#050a10', halo:'#7ec8e3', grid:'#1a3050', accent:'#a8dadc' },
     larche:   { bg0:'#0b1422', bg1:'#040912', halo:'#6db3f2', grid:'#162d4a', accent:'#90caf9' },
@@ -472,13 +473,16 @@
         } else if (e.key === 'ArrowDown') j = i + cols < liste.length ? i + cols : i % cols;
         liste[j].click(); liste[j].focus({ preventScroll: true }); liste[j].scrollIntoView({ block: 'nearest', behavior: 'auto' });
       } else if (e.key === 'Enter' && carte.getAttribute('aria-checked') === 'true') {
-        e.preventDefault(); if (!e.repeat) { const dep = $('b-depart'); if (dep && !dep.disabled) dep.click(); else avancer(1); }
+        e.preventDefault(); if (!e.repeat) avancer(1);
       }
     });
     const api = Object.freeze({
       ouvrir, actualiser,
       retour() { if (detruit || !etape) return false; avancer(-1); return true; },
-      valider(el) { if (!detruit && etape === 0 && disponible(el) && zone.contains(el) && el.closest('#circuits') && el.getAttribute('aria-checked') === 'true') { const dep = $('b-depart'); if (dep && !dep.disabled) { dep.click(); return true; } avancer(1); return true; } return false; },
+      valider(el) {
+        if (detruit || etape !== 0 || !disponible(el) || !zone.contains(el) || !el.closest('#circuits') || el.getAttribute('aria-checked') !== 'true') return false;
+        return avancer(1);
+      },
       trace(c, fiche, catalogue, index, total) {
         if (detruit) return;
         apercu.choisir(c); $('p-trace-3d').setAttribute('aria-label', 'Tracé en trois dimensions de ' + catalogue.nom + ', avec son relief réel');
