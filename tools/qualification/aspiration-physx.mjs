@@ -55,8 +55,27 @@ function mesurerCas(B, options, vitesseKmh, secondes) {
     : { mode: 'chrono', rivaux: 0, graine: 1401 });
   co.phase = 'course'; co.feux.vert = true;
   for (const v of co.voitures) Object.assign(v.etat, { s: 500 + (v.id ? options.ecart : 0),
-    d: v.id ? options.lateral : 0, v: vitesseKmh / 3.6, rapport: 6 });
-  const p = B.physique.installer(co, decor), ev = [], initial = co.voitures.map(v => ({
+    d: v.id ? options.lateral : 0, v: 0, rapport: 6 });
+  const p = B.physique.installer(co, decor), ev = [];
+  // L'installation garde une marge au-dessus du sol. Laisser les ressorts prendre la
+  // charge avant le départ lancé évite de mesurer un essieu encore en l'air.
+  const immobilise = { ...COMMANDE, gaz: 0, frein: 1 };
+  const commandesRepos = duo ? [immobilise, immobilise] : immobilise;
+  for (let i = 0; i < 120; i++) B.course.pas(co, commandesRepos, DT, ev);
+  const pasRepos = p.pas;
+  for (const ph of p.voitures) {
+    assert.equal(ph.groundCount, 4, 'quatre appuis avant le départ lancé');
+    const x = 500 + (ph.v.id ? options.ecart : 0), z = ph.v.id ? options.lateral : 0;
+    // Même cap, mêmes coordonnées de départ et même vitesse dans les quatre expériences.
+    const hauteur = p.world.readPose(ph.id)[1];
+    p.world.setPose(ph.id, [x, hauteur, z, 0, 0, 0, 1]);
+    p.world.setAngularVelocity(ph.id, [0, 0, 0]);
+    ph.e.s = x; ph.e.d = z;
+    ph.e.v = vitesseKmh / 3.6;
+    ph.e.rapport = 6;
+    p.world.setVelocity(ph.id, [ph.e.v, 0, 0]);
+  }
+  const initial = co.voitures.map(v => ({
     id: v.id, s: v.etat.s, d: v.etat.d, v: v.etat.v, pose: p.world.readPose(v.etat._physx.id),
     vitesse: p.world.readVelocity(v.etat._physx.id) }));
   const r = { id: options.id, vitesseInitialeKmh: vitesseKmh, secondes, ecartInitialM: options.ecart,
@@ -109,7 +128,7 @@ function mesurerCas(B, options, vitesseKmh, secondes) {
       }) });
     }
     r.replacements = p.placements;
-    assert.equal(p.pas, r.pas); assert.equal(r.corrections, 0, 'une pose ou vitesse a été imposée après le départ');
+    assert.equal(p.pas - pasRepos, r.pas); assert.equal(r.corrections, 0, 'une pose ou vitesse a été imposée après le départ');
     assert.equal(r.replacements, 0); assert.equal(r.contactsVoitures, 0, 'contact entre voitures : le gain ne serait plus isolé');
     assert.equal(r.contactsPerdus, 0); assert.equal(r.maxErreurForceN, 0);
     assert.equal(r.forcesNatives, r.pas * r.corpsDynamiques, 'force aérodynamique manquante');
