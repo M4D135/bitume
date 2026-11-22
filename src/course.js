@@ -311,7 +311,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       if (o && !o.fini && !o.abandon && !horsService(o.etat)) {
         const ds = ecart(c, o.etat.s, e.s);
         // La défense s’engage sous 4 m d’écart latéral et se maintient jusqu’au seuil de sortie de 7 m.
-        dansLeSillage = ds > 0 && ds < 15 + moiLong && Math.abs(o.etat.d - e.d) < 7;
+        dansLeSillage = ds > 0 && ds < 15 + 2 * moiLong && Math.abs(o.etat.d - e.d) < 7;
       }
       if (dansLeSillage) ia.perteDefense = null;
       else if (ia.perteDefense == null) ia.perteDefense = ia.t;
@@ -367,7 +367,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       else if (ia.cible < 0) ia.entamee = null;
       const horsJeu = horsService(od), contourne = horsJeu || obstacle;
       const atteignable = (contourne || gap <= IA_PORT) && vit - od.v > Math.max(0.3, gap * IA_ECART_VITESSE);
-      if (!recuperer && ia.cible !== devant.id && (contourne || vit > od.v + 0.3 || aspire) && atteignable &&
+      if (!recuperer && ia.cible !== devant.id && (contourne || (!ia.defend && (vit > od.v + 0.3 || aspire))) && atteignable &&
           gap < (obstacle ? Math.max(70, v2 / 45 + 25) : 30) && (contourne || ia.t - (ia.derniereAttaque ?? -99) >= IA_ATTENTE)) {
         const interieur = kAv > 0 ? 1 : kAv < 0 ? -1 : (od.d > e.d ? -1 : 1);
         const douce = Math.abs(kAv) < 0.005 && (vit - od.v) > 3.5;
