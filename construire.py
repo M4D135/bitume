@@ -35,6 +35,7 @@ MODULES = [
     'route-des-cimes-decor.js',
     'larche-vinadio-data.js',
     'larche-vinadio.js',
+    'larche-relief.js',
     'larche-vinadio-decor.js',
     'marseille.js',
     'marseille-decor.js',
@@ -98,6 +99,7 @@ MODULES = [
     # cadence d'affichage : période de l'écran, pas fixes verrouillés, diviseur d'images (lue par la boucle de jeu.js)
     'cadence.js',
     'graphismes.js',
+    'detail-peripherique.js',
     'ambiance.js',
     'conditions-course.js',
     'navigation-menu.js',

@@ -1,5 +1,6 @@
 (function (B) {
   'use strict';
+if (!B.larcheRelief && typeof require === 'function') require('./larche-relief.js');
 const PAS_L = 32;
 const OFFSETS = [-260, -160, -90, -42, -16, -9, 9, 16, 42, 90, 160, 260];
 const N_LAT = OFFSETS.length;
@@ -77,17 +78,17 @@ function _hash(ix, iz) {
   n = (n << 13) ^ n;
   return (((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
 }
-function _noise2(x, z) {
+function _noise2(x, z, hash = _hash) {
   const ix = Math.floor(x), iz = Math.floor(z);
   const fx = x - ix, fz = z - iz;
   const sx = fx * fx * (3 - 2 * fx), sz = fz * fz * (3 - 2 * fz);
-  const a = _hash(ix, iz), b = _hash(ix + 1, iz);
-  const c2 = _hash(ix, iz + 1), d = _hash(ix + 1, iz + 1);
+  const a = hash(ix, iz), b = hash(ix + 1, iz);
+  const c2 = hash(ix, iz + 1), d = hash(ix + 1, iz + 1);
   return a * (1 - sx) * (1 - sz) + b * sx * (1 - sz) + c2 * (1 - sx) * sz + d * sx * sz;
 }
-function _fbm(x, z, oct) {
+function _fbm(x, z, oct, hash = _hash) {
   let v = 0, a = 1, f = 1, t = 0;
-  for (let o = 0; o < oct; o++) { v += a * _noise2(x * f, z * f); t += a; a *= 0.5; f *= 2.03; }
+  for (let o = 0; o < oct; o++) { v += a * _noise2(x * f, z * f, hash); t += a; a *= 0.5; f *= 2.03; }
   return v / t;
 }
 function _ridge(x, z, oct) {
@@ -200,57 +201,41 @@ function _geomorphoDelta(s, absD, signD, x, z, c) {
 /* ──────────────────────────────────────────────
    COLORATION MULTI-STRATES
    ────────────────────────────────────────────── */
-function _colorTerrain(x, z, y, ny, s, absD, saison) {
-  const sKm = s / 1000;
-  let r, g, b;
+// Le pigment utilise des produits entiers 32 bits. Le bruit historique de hauteur,
+// partagé avec les accotements, garde exactement ses coordonnées et ses valeurs.
+function pigment(ix, iz) {
+  let n = Math.imul(ix, 0x1f1f1f1f) ^ Math.imul(iz, 0x68bc21eb);
+  n = Math.imul(n ^ (n >>> 16), 0x85ebca6b);
+  n = Math.imul(n ^ (n >>> 13), 0xc2b2ae35);
+  return ((n ^ (n >>> 16)) >>> 0) / 4294967296;
+}
 
-  // fond : prairie alpine ocre-verte
-  const prairie = _fbm(x * 0.006 + 1.1, z * 0.006 - 0.7, 3);
-  r = 0.38 + prairie * 0.12; g = 0.52 + prairie * 0.10; b = 0.22 + prairie * 0.06;
-
-  // conifères mélèzes/épicéas (versants moyens 1100–1750 m)
-  const yRouteEst = y; // approximation : y est déjà la hauteur terrain
-  if (ny > 0.55 && ny < 0.84 && sKm > 2 && sKm < 20) {
-    const forest = _fbm(x * 0.004 + 5.5, z * 0.004 + 3.3, 4);
-    if (forest > 0.35) {
-      const t = _smoothstep(0.35, 0.65, forest);
-      r = _lerp(r, 0.12, t); g = _lerp(g, 0.32, t); b = _lerp(b, 0.10, t);
-    }
-  }
-
-  // roche calcaire/granit dès pente raide (ny < 0.84) ou Gole delle Barricate
-  const goles = (s >= 13500 && s <= 19500);
-  if (ny < 0.84 || goles) {
-    const rockT = goles ? _smoothstep(0.95, 0.55, ny) : _smoothstep(0.84, 0.55, ny);
-    const rockNoise = _fbm(x * 0.008 + 17, z * 0.008 - 12, 4);
-    const rr = 0.55 + rockNoise * 0.18, rg = 0.50 + rockNoise * 0.15, rb = 0.42 + rockNoise * 0.12;
-    r = _lerp(r, rr, rockT); g = _lerp(g, rg, rockT); b = _lerp(b, rb, rockT);
-  }
-
-  // neige / névés sur crêtes hautes
-  const yRoute = y; // déjà intégré
-  const neigeSeuil = yRoute + 185;
-  const hautCol = (sKm < 3.5 && y > 1220);
-  let neigeT = 0;
-  if (y > neigeSeuil) neigeT = _smoothstep(neigeSeuil, neigeSeuil + 80, y);
-  if (hautCol) neigeT = Math.max(neigeT, _smoothstep(1220, 1400, y));
-  if (saison && saison.neige) {
-    neigeT = Math.max(neigeT, _smoothstep(900, 1100, y));
-    if (sKm < 5) neigeT = Math.max(neigeT, _smoothstep(700, 900, y));
-  }
-  if (neigeT > 0) {
-    const snow = 0.88 + _fbm(x * 0.01, z * 0.01, 2) * 0.10;
-    r = _lerp(r, snow, neigeT); g = _lerp(g, snow, neigeT); b = _lerp(b, snow + 0.02, neigeT);
-  }
-
-  return [r, g, b];
+function _colorTerrain(x, z, y, ny, route, saison) {
+  const prairie = _fbm(x * .004 + 1.1, z * .004 - .7, 3, pigment);
+  const veine = _noise2(x * .014 + y * .026, z * .006 + 19, pigment);
+  const herbe = _smoothstep(.26, .73, prairie);
+  const roche = _smoothstep(.92, .63, ny - (veine - .5) * .17);
+  const eboulis = _smoothstep(.77, .47, ny) + .38 * _smoothstep(.62, .83, prairie);
+  const sec = _smoothstep(.34, .71, veine + (1 - ny) * .28);
+  // Pâturages ras, poches d'herbe sèche et strates claires des versants exposés.
+  let r = _lerp(.19, .37, herbe) + sec * .090;
+  let g = _lerp(.235, .405, herbe) + sec * .024;
+  let b = _lerp(.125, .215, herbe) - sec * .018;
+  const pierre = .30 + veine * .21 + eboulis * .09;
+  r = _lerp(r, pierre * 1.05, roche);
+  g = _lerp(g, pierre * 1.01, roche);
+  b = _lerp(b, pierre * .94, roche);
+  const niveau = y - route.yRoute;
+  const neve = (1 - _smoothstep(1000, 9000, route.s)) * _smoothstep(145, 245, niveau + 52 * (prairie - .5));
+  const hiver = saison?.neige ? _smoothstep(740, 1060, y + (veine - .5) * 90) : 0;
+  const neige = Math.max(neve, hiver) * _smoothstep(.47, .83, ny);
+  return [_lerp(r, .87, neige), _lerp(g, .89, neige), _lerp(b, .92, neige)];
 }
 
 /* ──────────────────────────────────────────────
    HAUTEUR DU TERRAIN H(x,z) — monovalué, continu, garanti SOUS la chaussée & les ponts
    ────────────────────────────────────────────── */
-function _H(x, z, gr, c) {
-  const q = _queryRoute(gr, x, z);
+function _H(x, z, gr, c, q = _queryRoute(gr, x, z)) {
   const { absD, d, yRoute, ySmooth, s } = q;
 
   // Sous les 16 ponts : creuser le ravin sous le tablier (absD <= 54 m) pour zéro herbe sur le pont !
@@ -344,7 +329,8 @@ function degagerChaussee(c, pas, gr) {
     const cle = i + ',' + j;
     let v = sommets.get(cle);
     if (!v) {
-      v = { x: i, z: j, h: _H(i * pas, j * pas, gr, c), retrait: 0 };
+      const x = i * pas, z = j * pas, q = _queryRoute(gr, x, z);
+      v = { x: i, z: j, s: q.s, yRoute: q.yRoute, h: _H(x,z,gr,c,q), retrait: 0 };
       sommets.set(cle, v);
     }
     return v;
@@ -387,10 +373,7 @@ function degagerChaussee(c, pas, gr) {
     }
     debut = fin;
   }
-  return (x, z) => {
-    const v = sommets.get(x / pas + ',' + z / pas);
-    return v ? v.h - v.retrait : _H(x, z, gr, c);
-  };
+  return sommet;
 }
 
 /* ──────────────────────────────────────────────
@@ -398,14 +381,17 @@ function degagerChaussee(c, pas, gr) {
    ────────────────────────────────────────────── */
 function terrain(c, th, interroger, g, ecologie, organique) {
   if (!c || c.id !== 'larche') return null;
-  const qualite = (g && typeof g === 'object' && g.qualite) || 'high';
   const saison = (g && typeof g === 'object' && g.saison) || null;
   const G = 32;
   const TILE = 256;
   const RANGE = 420;
 
   const gr = _buildGrilleRoute(c);
-  const hauteurSommet = degagerChaussee(c, G, gr);
+  const sommetGrille = degagerChaussee(c, G, gr);
+  const hauteurSommet = (x,z) => {
+    const v = sommetGrille(x/G,z/G);
+    return v.h - v.retrait;
+  };
   const maillages = new Map(), liste = [];
 
   let bxMin = Infinity, bxMax = -Infinity, bzMin = Infinity, bzMax = -Infinity;
@@ -475,8 +461,7 @@ function terrain(c, th, interroger, g, ecologie, organique) {
           sommets[off + 9] = 25; // organicSoil unifié
 
           // couleur
-          const q = _queryRoute(gr, wx, wz);
-          const col = _colorTerrain(wx, wz, wy, dny, q.s, q.absD, saison);
+          const col = _colorTerrain(wx, wz, wy, dny, sommetGrille(wx/G,wz/G), saison);
           sommets[off + 10] = col[0]; sommets[off + 11] = col[1]; sommets[off + 12] = col[2];
           vi++;
         }
@@ -515,6 +500,9 @@ function terrain(c, th, interroger, g, ecologie, organique) {
       maillages.set(nx + ',' + nz, sommets);
     }
   }
+
+  if (B.larcheData?.reliefVallee && B.larcheRelief)
+    liste.push(...B.larcheRelief.construire(B.larcheData.reliefVallee, maillages, TILE, G, saison));
 
   /* ── Lac de la Maddalena ── */
   if (c.larche && c.larche.lac) {
@@ -945,19 +933,20 @@ function poser(c, outils) {
         const wz = c.z[idx] + tzA * dist * cote + (h3 - 0.5) * 26;
         const qr = _queryRoute(grF, wx, wz);
         if (qr.absD < 18) continue;
-        const wy = terr ? Math.min(terr.sol(wx, wz), terr.sol(wx - 4, wz), terr.sol(wx + 4, wz), terr.sol(wx, wz - 4), terr.sol(wx, wz + 4)) : c.y[idx];
-        const hL = terr ? terr.sol(wx - 4, wz) : wy, hR = terr ? terr.sol(wx + 4, wz) : wy;
-        const hD = terr ? terr.sol(wx, wz - 4) : wy, hU = terr ? terr.sol(wx, wz + 4) : wy;
+        const centre = terr ? terr.sol(wx, wz) : c.y[idx];
+        const hL = terr ? terr.sol(wx - 4, wz) : centre, hR = terr ? terr.sol(wx + 4, wz) : centre;
+        const hD = terr ? terr.sol(wx, wz - 4) : centre, hU = terr ? terr.sol(wx, wz + 4) : centre;
+        const wy = Math.min(centre, hL, hR, hD, hU);
         if (Math.hypot((hL - hR) / 8, (hD - hU) / 8) > 0.65) continue;
         // Sous 1780 m (ou s > 2200) : conifères & mélèzes verts/dorés réalistes
         const estMeleze = (h3 > 0.62 && s > 4200 && s < 27000);
-        const essence = estMeleze ? 'feuillu' : 'conifere';
+        const essence = estMeleze ? 'pin' : 'conifere';
         const taille = (estMeleze ? 9.5 : 12.0) + h2 * 8.5;
         const rL = taille * (estMeleze ? 0.85 : 0.68);
         const ang = h1 * PI * 2;
         const col = estMeleze
-          ? (saison && saison.automne ? [0.68, 0.50, 0.14] : [0.22, 0.38, 0.14])
-          : [0.10 + h2 * 0.05, 0.23 + h3 * 0.06, 0.09 + h1 * 0.03];
+          ? (saison?.id === 'automne' ? [0.50, 0.34, 0.13] : [0.18 + h1 * .06, 0.285 + h2 * .07, 0.16 + h3 * .04])
+          : [0.095 + h2 * .065, 0.17 + h3 * .09, 0.125 + h1 * .06];
         const tronc = { shape: 'cylinder', p: [wx, wy + taille * 0.18 - 0.6, wz], s: [0.42, taille * 0.44 + 1.2, 0.42], r: [0, 0, 0], mat: 26, color: [0.24, 0.16, 0.10] };
         const oProche = { shape: B.botanique.nomForme(essence, false, qArbre), p: [wx, wy + taille * 0.56 - 0.5, wz], s: [rL, taille * 0.84, rL], r: [0, ang, 0], mat: 27, color: col };
         const oLoin = { shape: B.botanique.nomForme(essence, true, qArbre), p: [wx, wy + taille * 0.56 - 0.5, wz], s: [rL, taille * 0.84, rL], r: [0, ang, 0], mat: 27, color: col };

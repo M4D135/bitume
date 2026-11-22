@@ -62,15 +62,14 @@ verifier('vibreur : la fréquence de battement double à peu près entre 10 m/s 
   const V2 = VIB.creer();
   const t1 = trace(V1, { v: 10, vibreur: true, regime: 4000, ralenti: 1000, maxUtile: 14000 }, 2, 1 / 240);
   const t2 = trace(V2, { v: 20, vibreur: true, regime: 4000, ralenti: 1000, maxUtile: 14000 }, 2, 1 / 240);
-  // Seuil au milieu de l'oscillation (pics ~0.7, creux lissés sous 0.5) pour compter
-  // les battements malgré le lissage de sortie et le léger fond moteur.
-  const p1 = passages(t1.map(x => x.fort), 0.5);
-  const p2 = passages(t2.map(x => x.fort), 0.5);
+  // Le milieu de la nouvelle enveloppe de bordure se trouve entre les creux à .05 et les crêtes à .28.
+  const p1 = passages(t1.map(x => x.fort), 0.17);
+  const p2 = passages(t2.map(x => x.fort), 0.17);
   const ratio = p2 / p1;
   assert.ok(ratio > 1.6 && ratio < 2.4, 'ratio=' + ratio + ' p10=' + p1 + ' p20=' + p2);
   const V80 = VIB.creer();
   const t80 = trace(V80, { v: 80, vibreur: true, regime: 4000, ralenti: 1000, maxUtile: 14000 }, 2, 1 / 240);
-  const p80 = passages(t80.map(x => x.fort), 0.5);
+  const p80 = passages(t80.map(x => x.fort), 0.17);
   const freq80 = p80 / 2;
   assert.ok(freq80 <= 14.2, 'freq80=' + freq80 + ' p80=' + p80);
 });

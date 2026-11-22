@@ -54,6 +54,7 @@
   }
   // Identifiants persistés : « poursuite » conserve son cadre historique à 7,4 m.
   const VUES_COURSE = Object.freeze(['aileron-avant', 'nez', 'cockpit', 'arceau', 'poursuite-proche', 'poursuite']);
+  const preferenceMouvement = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
   const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 70, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'bas-gauche', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
     anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'non', gouttes: 1, forcePluie: 'forte',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
@@ -271,7 +272,7 @@
     // profondeur du volume d'ombre : un point du sol au bord du carré est décalé de OMBRE × cotangente de la hauteur du soleil
     const sol = decor.atmosphere.sunDirection, sinus = sol[1] / Math.hypot(sol[0], sol[1], sol[2]);
     const ombre = { extent: OMBRE, depth: 2 * (OMBRE * Math.sqrt(Math.max(0, 1 - sinus * sinus)) / Math.max(.25, sinus) + 30) };
-    scene = { index: i, enrichi: decorEnrichi, palier: ancre, vegetationQualite, saison, c, decor, fond, plan: p, ombre, public: pub, vuePublic };
+    scene = { index: i, enrichi: decorEnrichi, palier: ancre, vegetationQualite, saison, c, decor, fond, plan: p, ombre, detailPeripherique: B.detailPeripherique.creer(decor.lots), public: pub, vuePublic };
     return scene;
   }
   // Six champs préalloués : vue principale et deux glaces par joueur. Les caméras de rendu
@@ -646,12 +647,21 @@
   addEventListener('blur', () => { touches.clear(); souris.gaz = souris.frein = souris.derive = false; relacherTactile(); if (pauseAuto && enCourse()) basculerPause(true); });
   document.addEventListener('visibilitychange', () => {
     oublierIntervalle();
-    if (document.hidden) { relacherTactile(); viderStock(); suspendreAnnoncesVirages(); }   // un onglet masqué peut être tué sans autre avis
+    if (document.hidden) { arreterManettes(); relacherTactile(); viderStock(); suspendreAnnoncesVirages(); }   // un onglet masqué peut être tué sans autre avis
     if (pauseAuto && document.hidden && enCourse()) basculerPause(true);
     if (son) son.musique(!document.hidden && ecran === 'titre'); // onglet caché : le minuteur du thème serait bridé
   });
+  addEventListener('gamepaddisconnected', ev => {
+    for (let n = 0; n < vibrations.length; n++) {
+      const o = vibrations[n].sortie;
+      if (o.pad && o.pad.index === ev.gamepad.index && o.pad.id === ev.gamepad.id) {
+        arreterVibrations(n);
+        B.vibrations.affecter(o, null);
+      }
+    }
+  });
   addEventListener('focus', oublierIntervalle);
-  addEventListener('pagehide', () => { viderStock(); suspendreAnnoncesVirages(); });   // page fermée ou rechargée : la file part avant
+  addEventListener('pagehide', () => { arreterManettes(); viderStock(); suspendreAnnoncesVirages(); });   // page fermée ou rechargée : la file part avant
   addEventListener('pointerdown', activerSon, { passive: true });
   // Gestes : ils remettent à zéro l'attente de la démo sur l'écran titre ; pendant la démo, le premier ramène au
   // titre et ne compte pas comme un clic sur le menu qui revient.
@@ -752,49 +762,19 @@
     }
   }
 
-  // Vibrations de manette (David, 14/11 puis 18/11 : « de meilleures vibrations ») : src/vibrations.js calcule quatre
-  // sorties continues (moteur léger, moteur lourd, gâchettes gauche et droite) une fois par image rendue, avec la durée
-  // réelle de l'image : le ressenti reste le même à 30, 60 ou 120 images par seconde. Chaque joueur a sa manette, son
-  // état (phases et enveloppes) et les événements de son image (chocs, contacts, rapports, réceptions), retenus pas
-  // après pas dans un tableau réutilisé. Moteur lourd (grave) à droite, léger (aigu) à gauche ; rien si la manette ne
-  // sait pas vibrer.
-  // Une manette ne suit pas une modulation plus fine qu'une quinzaine de hertz, et chaque reprogrammation passe par le
-  // pilote : une trentaine par seconde au plus (31 ms, pour qu'une image à 30 Hz un peu en avance passe encore). L'effet
-  // dure trois intervalles : une image en retard ne coupe pas le grondement, un onglet quitté l'éteint seul.
-  const VIB_INTERVALLE = 31, VIB_DUREE = 100, VIB_EVENEMENTS = 64;
-  const VIB_ATTERRISSAGE = Object.freeze({ type: 'atterrissage', force: 0 }), sansSuite = () => {};
+  // Vibrations de manette (David, 14/11 puis 22/11). Une synthèse et une sortie matérielle par pilote local.
+  const VIB_EVENEMENTS = 64;
+  const VIB_ATTERRISSAGE = Object.freeze({ type: 'atterrissage', force: 0 });
   function etatVibrations() {
-    return {
-      V: B.vibrations.creer(), evenements: [],
-      entree: { regime: 0, ralenti: 0, maxUtile: 0, gaz: 0, frein: 0, v: 0, along: 0, surface: 'piste', vibreur: false, patinage: 0,
-        blocage: 0, glisseAr: 0, glisseAv: 0, bosse: 0, turbo: 0, force: .5, derive: null, evenements: null },
-      // paramètres des effets, réutilisés : le navigateur les lit pendant l'appel
-      double: { startDelay: 0, duration: VIB_DUREE, weakMagnitude: 0, strongMagnitude: 0 },
-      gachettes: { startDelay: 0, duration: VIB_DUREE, weakMagnitude: 0, strongMagnitude: 0, leftTrigger: 0, rightTrigger: 0 },
-      instant: -Infinity, arret: true
-    };
+    return { V: B.vibrations.creer(), sortie: B.vibrations.creerSortie(), actif: false, evenements: [], entree: {} };
   }
   const vibrations = [etatVibrations(), etatVibrations()];
-  let vibreImage = false;   // garde-fou du dernier pas (manetteVibre), lu par l'image qui suit
-  // Envoie les quatre intensités à la manette du joueur P (pad ou pad2). Un arrêt (tout à zéro) part aussitôt et une
-  // seule fois ; une intensité attend la fin de l'intervalle. « trigger-rumble » quand la manette l'annonce (moteurs
-  // dans les gâchettes) porte aussi les deux moteurs du corps : deux effets joués coup sur coup s'interrompraient.
-  function secouerManette(faible, fort, P = pad, gauche = 0, droite = 0, maintenant = performance.now()) {
-    const J = P === pad2 ? vibrations[1] : vibrations[0], p = P.manette, a = p && p.vibrationActuator;
-    if (!a || typeof a.playEffect !== 'function') { J.arret = true; return; }
-    faible = clamp(faible || 0, 0, 1); fort = clamp(fort || 0, 0, 1); gauche = clamp(gauche || 0, 0, 1); droite = clamp(droite || 0, 0, 1);
-    const arret = !faible && !fort && !gauche && !droite;
-    if (arret ? J.arret : maintenant - J.instant < VIB_INTERVALLE) return;
-    J.arret = arret; J.instant = maintenant;
-    try {
-      const avecGachettes = !!a.effects && typeof a.effects.includes === 'function' && a.effects.includes('trigger-rumble');
-      const o = avecGachettes ? J.gachettes : J.double;
-      o.weakMagnitude = faible; o.strongMagnitude = fort;
-      if (avecGachettes) { o.leftTrigger = gauche; o.rightTrigger = droite; }
-      const effet = a.playEffect(avecGachettes ? 'trigger-rumble' : 'dual-rumble', o);
-      if (effet && typeof effet.catch === 'function') effet.catch(sansSuite);
-    } catch (e) { /* manette sans vibration */ }
+  let vibreImage = false;
+  function arreterVibrations(n) {
+    B.vibrations.arreter(vibrations[n].sortie);
+    calmerVibrations(n);
   }
+  function arreterManettes() { arreterVibrations(0); arreterVibrations(1); }
   // Événements d'un pas qui touchent la voiture id, gardés pour l'image : la réception d'un saut devient l'atterrissage
   // du module. Le tableau est vidé à chaque image rendue ; la borne ne sert qu'aux pas sans image (outils).
   function retenirVibrations(J, ev, id) {
@@ -807,24 +787,38 @@
     }
   }
   // Voiture replacée en piste : ni événement de l'image ni pic d'un choc antérieur ne la suivent.
-  function calmerVibrations(n) { vibrations[n].evenements.length = 0; vibrations[n].V = B.vibrations.creer(); }
-  // Une fois par image rendue qui fait tourner la séance : dt est la durée réelle de l'image, t son horodatage.
+  function calmerVibrations(n) {
+    const J = vibrations[n];
+    J.evenements.length = 0;
+    if (J.actif) J.V = B.vibrations.creer();
+    J.actif = false;
+  }
   function majVibrations(S, dt, t) {
-    const co = S.course, PR = B.conduite.PARAMS, pousseeMax = PR.turboAcc[PR.turboAcc.length - 1] || 1;
+    const co = S.course, PR = B.conduite.PARAMS;
     for (let n = 0; n < 2; n++) {
       const J = vibrations[n], P = n ? pad2 : pad;
-      const v = !vibreImage || !P.manette ? null : n === 0 ? co.joueur : S.type === 'duo' ? co.voitures[S.locaux[1]] : null;
-      if (!v) { J.evenements.length = 0; secouerManette(0, 0, P); continue; }
-      const et = v.etat, e = J.entree;
-      e.regime = et.regime; e.ralenti = PR.ralenti; e.maxUtile = PR.maxUtile; e.gaz = et.gaz; e.frein = et.frein; e.v = et.v; e.along = et.along || 0;
-      e.surface = et.surface; e.vibreur = et.vibreur; e.patinage = et.patinage; e.blocage = et.blocage;
-      e.glisseAr = et.glisseAr; e.glisseAv = et.glisseAv; e.derive = et.derive;
-      e.turbo = et.turbo && et.turbo.reste > 0 ? clamp(et.turbo.poussee / pousseeMax, 0, 1) : 0;
-      e.force = clamp(reglages.vibrationForce != null ? +reglages.vibrationForce : .5, 0, 1);
+      if (B.vibrations.affecter(J.sortie, P.manette) && J.actif) calmerVibrations(n);
+      const mode = commande(n), force = clamp(reglages.vibrationForce != null ? +reglages.vibrationForce : .5, 0, 1);
+      const v = n === 0 ? co.joueur : S.type === 'duo' ? co.voitures[S.locaux[1]] : null;
+      if (!vibreImage || !v || !force || (mode !== 'auto' && mode !== 'manette') || !J.sortie.routes[J.sortie.route]) {
+        arreterVibrations(n); continue;
+      }
+      const et = v.etat, ph = et._physx, e = J.entree;
+      J.actif = true;
+      e.regime = et.regime; e.ralenti = PR.ralenti; e.maxUtile = PR.maxUtile; e.gaz = et.gaz; e.v = et.v;
+      e.auSol = ph ? ph.groundCount > 0 : !(et.bond > .03);
+      e.surface = et.surface;
+      // Une seule roue chargée suffit à sentir les dents, même si les trois autres restent sur l'asphalte.
+      e.vibreur = ph ? false : et.vibreur;
+      if (ph && e.auSol) for (const roue of ph.contacts) {
+        if (roue.load > 0 && roue.surface === 'vibreur') { e.vibreur = true; break; }
+      }
+      e.patinage = et.patinage; e.blocage = et.blocage; e.glisseAr = et.glisseAr; e.glisseAv = et.glisseAv; e.derive = et.derive;
+      e.force = force;
       e.evenements = J.evenements;
       const s = B.vibrations.calculer(J.V, e, dt);
       J.evenements.length = 0;
-      if (t - J.instant >= VIB_INTERVALLE) secouerManette(s.faible, s.fort, P, s.gachetteG, s.gachetteD, t);
+      B.vibrations.envoyer(J.sortie, s, t);
     }
   }
 
@@ -3086,6 +3080,7 @@
       const sig = S.signalisation || (S.signalisation = creationTardive('signalisation', B.signalisationCourse.creer(c, scene.decor)));
       const ctxSig = S.signalisationVue || (S.signalisationVue = creationTardive('contexteSignalisation', { qualite: P.palier, phase: 'vert', feux: 0, pluie: 0, nuit: 0, cameraPos: null }));
       ctxSig.qualite = P.palier;
+      ctxSig.mouvementReduit = !!preferenceMouvement?.matches;
       ctxSig.pluie = meteo.pluie || 0; ctxSig.nuit = S.nature?.ambiance?.nuit || 0; ctxSig.cameraPos = cam.pos;
       if (co.phase === 'feux' || co.phase === 'grille') { ctxSig.phase = 'depart'; ctxSig.feux = Math.max(0, Math.min(5, Math.ceil((5 - (co.compte || 0))))); }
       else if (co.phase === 'arrivee' || suivie.fini) ctxSig.phase = 'damier';
@@ -3251,7 +3246,15 @@
     // adaptive: false partout : le gouverneur du moteur baissait la taille de l'image au fil des images lentes, en
     // pleine conduite, et la vitrine des menus léguait l'échelle réduite à la course suivante. La qualité Auto
     // (paliers) et la cadence décident seules ; la résolution ne change qu'à un arrêt.
-    rendu.draw(cam, sortie, { time: horlogeReelle, msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, P, meteo), weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, foule: S.foulePublic, contacts: ombresVue.contacts, ombreProche: ombresVue.ombreProche, penombre: ombresVue.penombre });
+    // La caméra de chaque joueur prépare ses propres branches périphériques. Les glaces et les
+    // vues du réalisateur retrouvent les seuils de la scène, y compris si le dessin échoue.
+    const detail = scene.detailPeripherique;
+    try {
+      if (!S.regardArriere && !S.camTransition?.actif && VUES_COURSE.includes(vue) && S.type !== 'demo' && S.type !== 'vitrine') {
+        B.detailPeripherique.appliquer(detail, c, suivie.etat, cam, canvas.width, canvas.height);
+      }
+      rendu.draw(cam, sortie, { time: horlogeReelle, msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, P, meteo), weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, foule: S.foulePublic, contacts: ombresVue.contacts, ombreProche: ombresVue.ombreProche, penombre: ombresVue.penombre });
+    } finally { B.detailPeripherique.restaurer(detail); }
     if (B.mesures.actif) {
       B.mesures.section('rendu', performance.now() - tDraw);
       B.mesures.vue(S === session ? 'principale' : 'joueur2', rendu, { lampes: lampes ? lampes.length : 0, ombres: avecOmbres(P) });
@@ -3755,7 +3758,7 @@
     if ((ecran === 'course' || ecran === 'demo') !== (nom === 'course' || nom === 'demo'))
       B.qualite.avancer(palier, 0, { actif: false });
     if (son && nom !== 'demo') son.evenement('clic');
-    if (nom !== 'course') { secouerManette(0, 0); secouerManette(0, 0, pad2); }
+    if (nom !== 'course') arreterManettes();
     // pause, résultats, menus : les écritures différées de la course (records, fantôme, réglages) partent ici
     if (nom !== 'course') viderStock();
     for (const e of ECRANS) $(e).hidden = e !== nom;
@@ -4136,7 +4139,7 @@
   $('v-champ').addEventListener('input', e => { reglages.champ = clamp(+e.target.value, 60, 105); $('v-champ-valeur').textContent = reglages.champ + '°'; sauverReglages(); });
   $('v-secousses').addEventListener('input', e => { reglages.secousses = clamp(+e.target.value, 0, 1); $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %'; sauverReglages(); });
   $('v-gouttes').addEventListener('input', e => { reglages.gouttes = clamp(+e.target.value, 0, 2); $('v-gouttes-valeur').textContent = reglages.gouttes.toFixed(1).replace('.', ',') + ' ×'; sauverReglages(); });
-  $('v-vibrations').addEventListener('change', e => { reglages.vibrations = e.target.checked ? 'oui' : 'non'; if (!e.target.checked) { secouerManette(0, 0); secouerManette(0, 0, pad2); } sauverReglages(); });
+  $('v-vibrations').addEventListener('change', e => { reglages.vibrations = e.target.checked ? 'oui' : 'non'; if (!e.target.checked) arreterManettes(); sauverReglages(); });
   $('v-carte').addEventListener('change', e => { reglages.carte = e.target.checked ? 'oui' : 'non'; sauverReglages(); appliquerCarte(); });
   $('v-vibration-force').addEventListener('input', e => { reglages.vibrationForce = clamp(+e.target.value, 0, 1); $('v-vibration-force-valeur').textContent = Math.round(reglages.vibrationForce * 100) + ' %'; sauverReglages(); });
   document.addEventListener('change', e => {

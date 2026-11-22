@@ -263,7 +263,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     return resultat;
   }
 
-  function nappesRoute(c, th, lim, naturel = false, ecologie = null, saison = null, reperes = null) {
+  function nappesRoute(c, th, lim, naturel = false, ecologie = null, saison = null, reperes = null, vibreursBeton = false) {
     const w = c.largeur / 2, n = c.n, LIGNES = 60, liste = [];
     const habitat = {};
     const meteoRoute = B.chaussee ? B.chaussee.preparer({}, saison) : null, surfaceRoute = {};
@@ -311,7 +311,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
               const avec = cote < 0 ? (vib & 1) : (vib & 2);
               y1 = yBord + (avec ? .05 : -.015);
               if (avec) {
-                mat = 14; col = reperes && reperes.vibreurs[f.i] ? (tranche ? rougeVirage : blancVirage) : (tranche ? rouge : blancBordure);
+                mat = vibreursBeton ? MATIERES_PILOTES.beton : 14; col = reperes && reperes.vibreurs[f.i] ? (tranche ? rougeVirage : blancVirage) : (tranche ? rouge : blancBordure);
               } else { mat = 8; col = tonte; }
             } else if (type === 'herbe') { d0 = bord * (w + 1.2); d1 = bord * ext; y0 = yBord - .015; y1 = yBord - .02 * (ext - w - 1.2); col = tonte; n0 = n1 = hautY; }
             else { d0 = bord * ext; d1 = bord * (ext + 4); y0 = yBord - .02 * (ext - w - 1.2); y1 = y0 - 2.6; col = colJupe; n0 = n1 = hautY; }
@@ -331,7 +331,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
             const pb = premB[b];
             if (type === 'herbe' || type === 'jupe') herbeTriangles.push(nap.i.length, nap.i.length + 3);
             nap.i.push(pa, pb, ib, pa, ib, ia);
-            const surface = type === 'asphalte' || type === 'ligne' ? 1 : type === 'bord' && mat === 14 ? 2 : 3;
+            const surface = type === 'asphalte' || type === 'ligne' ? 1 : type === 'bord' && (vib & (cote < 0 ? 1 : 2)) ? 2 : 3;
             surfacesPhysX.push(surface, surface);
           }
           premA[b] = ia; premB[b] = ib;
@@ -345,9 +345,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
   }
 
   // Terrain : grille autour du circuit, raccordée à la chaussée par une pondération continue des hauteurs de l'axe.
-  function nappesTerrain(c, th, interroger, g, ecologie = null, organique = false) {
+  function nappesTerrain(c, th, interroger, g, ecologie = null, organique = false, saison = null) {
     if (B.larcheDecor) {
-      const corridor = B.larcheDecor.terrain(c, th, interroger, g, ecologie, organique);
+      const corridor = B.larcheDecor.terrain(c, th, interroger, { saison }, ecologie, organique);
       if (corridor) return corridor;
     }
     if (B.marseilleDecor) {
@@ -1198,6 +1198,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     }
     for (const v of plan.virages) {
       for (const metres of (v.difficulte === 3 ? [200, 150, 100, 50] : [150, 100, 50])) panneau(v, v.debut - metres, metres);
+      // Les bandeaux de course prennent en charge la direction sur toute la courbe.
+      if (B.signalisationCourse) continue;
       const nombre = Math.max(2, Math.min(5, Math.ceil(v.longueur / 38))), marge = Math.min(14, v.longueur * .15);
       for (let j = 0; j < nombre; j++) panneau(v, v.debut + marge + (v.longueur - 2 * marge) * j / (nombre - 1), 0);
     }
@@ -1226,14 +1228,15 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     // Le repli false sert à relire l'oracle visuel historique, sans changer les empreintes de référence.
     const reperes = options.reperesVirages !== false && B.virages ? preparerReperes(c) : null;
     let tunnelLampes = null;   // positions des lampes du tunnel : le jeu en fait des lumières près de la caméra
-    const nappes = nappesRoute(c, th, lim, qualite !== 'low' || options.organique === true, qualite === 'low' ? null : ecologie, saison, reperes);
-    const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie, options.organique === true);
+    const nappes = nappesRoute(c, th, lim, qualite !== 'low' || options.organique === true, qualite === 'low' ? null : ecologie, saison, reperes, organique && options.matieres !== false);
+    const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie, options.organique === true, saison);
     const maisonsBaikal = terrain.paysageBaikal ? B.baikal.habitations(c, terrain, interroger, terrain.paysageBaikal) : null;
     // Hasard architectural séparé ; le repli sert seulement à relire l'oracle historique du décor.
     const architecture = options.batiments !== false && B.batiments ? { maisons: [], stands: [] } : null;
     if (saison) {
       const habitat = {}, couleur = [0, 0, 0], teinte = [0, 0, 0];
       for (const n of nappes.concat(terrain.liste)) {
+        if (n.surfaceType === 'panorama') continue;
         const visites = new Uint8Array(n.sommets.length / 13);
         for (const triangle of n.herbeTriangles || []) for (let j = 0; j < 3; j++) visites[n.indices[triangle + j]] = 1;
         // Le bord sans vibreur est aussi herbeux, mais reste exclu de la plantation des brins.

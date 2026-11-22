@@ -86,7 +86,9 @@
     };
     try {
       for (let i = 0; i < decor.nappes.length; i++) {
-        const source = decor.nappes[i], g = nappe(source);
+        const source = decor.nappes[i];
+        if (source.surfaceType === 'panorama') continue;
+        const g = nappe(source);
         montage.statistiques.trianglesEauIgnores += g.eauIgnoree;
         if (!g.indices.length) continue;
         ajouter(g, { genre: source.surfaceType === 'accotement' ? 'chaussee' : 'terrain', groupe: GROUPES.sol, source: 'nappe', index: i, surfaces: g.surfaces });

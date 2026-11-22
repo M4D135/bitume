@@ -199,6 +199,7 @@ const creerReseau = new Function('B', `
   const document={querySelector:$,querySelectorAll:()=>[]},texte=(e,t)=>e.textContent=t,classe=()=>{};
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   ${source.match(/  const CATALOGUE = \[[\s\S]*?\n  \];/)[0]}
+  ${source.match(/  const PHYSIQUE = .*?;/)[0]}
   const NOMS_PNEUS=B.pneus.NOMS_PNEUS;
   const reglages={circuit:0,tours:3,difficulte:1,meteo:'soleil',saison:'ete',moment:'jour',boite:'auto',vue:'cockpit',
     joueursLocaux:1,pneusPilotes:['slicks','pluie'],trollPilotes:[{geste:'majeur',klaxon:'classique'},{geste:'majeur',klaxon:'classique'}]};

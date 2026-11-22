@@ -368,7 +368,7 @@
         if (objets.length) ajouter(objets, loin, objets[0].p);
       }
       // chevrons à l'extérieur, au début de la portion, sur les vides et les murets
-      if (d.type === 'vide' || d.type === 'muret') for (let k = 0; k < 3; k++) {
+      if (!B.signalisationCourse && (d.type === 'vide' || d.type === 'muret')) for (let k = 0; k < 3; k++) {
         const f = cadre(c, i0 + k * 6), Lc = limiteA(f, cote) + .9, y = hauteur(f, cote * w, w), p = pointPlan(f, cote * Lc, y);
         const ax = f.t, rot = angles(ax, [0, 1, 0], f.r), objets = [{ shape: 'box', p: [p[0], y + 1.4, p[2]], s: [1.2, .8, .05], r: rot, mat: 16, color: [.08, .08, .09] }];
         marquer(objets[0], 'chevron-bord');

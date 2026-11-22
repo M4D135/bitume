@@ -1,293 +1,191 @@
-/* BITUME — vibrations de manette, ressenties à la main.
-   Quatre sorties continues (faible, fort, gâchette gauche/droite), calculées au pas dt
-   pour le même ressenti à 30, 60 ou 120 images par seconde. Aucun état global : chaque
-   manette porte son propre état V. Rien n'est alloué pendant calculer. */
+/* BITUME — synthèse des vibrations, un état indépendant par voiture locale. */
 (function (B) {
   'use strict';
-
-  // Sous ce seuil le moteur de la manette est parfaitement silencieux : on coupe net
-  // pour éviter un bourdonnement de fond qui fatigue la main.
-  var SEUIL = 0.03;
-
-  // Les moteurs d'une manette ne suivent pas une modulation d'amplitude au-delà d'une
-  // quinzaine de hertz, et le jeu ne peut reprogrammer l'effet qu'environ 30 fois par
-  // seconde : tous les battements restent sous 15 Hz pour être perçus à la main sans
-  // repliement de spectre, quelle que soit la cadence d'appel (30, 60 ou 120 Hz).
-  var FREQ_RUPTEUR = 12;           // crépitement en haut régime
-  var FREQ_BLOCAGE = 10;           // pulsation de la roue bloquée au frein
-  var FREQ_PATINAGE = 12;          // pulsation de la roue qui patine
-  var FREQ_GLISSE_AR = 8;          // frémissement lent du train arrière qui part
-  var FREQ_GLISSE_AV = 11;         // frémissement plus aigu du train avant
-  var FREQ_FENETRE = 12;           // signal de relâchement de la dérive chargée
-  var VIBREUR_HZ_PAR_MS = 1 / 3.6; // dents tous les 3,6 m : rythme = v / 3.6
-  var VIBREUR_MIN = 3;             // plancher à très basse vitesse
-  var VIBREUR_MAX = 14;            // plafond : sature vers 50 m/s, reste sous 15 Hz
-
+  const SEUIL = .018, TAU = Math.PI * 2;
+  const unite = x => Math.max(0, Math.min(1, Number.isFinite(x) ? x : 0));
+  const phase = (p, hz, dt) => (p + hz * dt) % 1;
+  const onde = p => (1 + Math.sin(p * TAU)) * .5;
   function creer() {
     return {
-      // Phases d'oscillateurs, accumulées avec dt (jamais le temps absolu) pour que
-      // les battements restent cohérents quand la cadence change.
-      phVibreur: 0, phHerbe1: 0, phHerbe2: 0, phHerbe3: 0,
-      phGlisseAr: 0, phGlisseAv: 0, phBlocage: 0, phPatinage: 0,
-      phRupteur: 0, phDerive: 0, phFenetre: 0,
-      // Enveloppes d'événements : valeur courante et durée de retombée (s) de l'effet
-      // retenu. Les pics ne s'additionnent pas : on garde le plus fort sur le moteur
-      // lourd, qui décroît ensuite de façon exponentielle.
-      envFort: 0, decFort: 0.35,
-      envRapportGD: 0,     // coup sec de passage sur la gâchette droite, indépendant
-      envRapportFaible: 0, // claquement sec haute fréquence du changement de rapport
-      envTic: 0,           // « tic » de montée de niveau de dérive sur le moteur lourd
-      envDerive: 0,    // battement de dérive déclenché au tour de phase, retombée 0,07 s
-      dernierNiveau: -1, // niveau de dérive vu au pas précédent, pour détecter la montée
-      // Sorties lissées au temps : la montée est vive, la descente plus douce.
-      lFaible: 0, lFort: 0, lGG: 0, lGD: 0,
-      // Entrée vide réutilisée : évite toute propriété créée à la volée sur V.
-      vide: {},
-      // Objet de sortie réutilisé à chaque appel : calculer ne doit rien allouer.
-      sortie: { faible: 0, fort: 0, gachetteG: 0, gachetteD: 0 }
+      moteur: 0, grain: 0, grainFin: 0, bord: 0, aide: 0, derive: 0, dernierNiveau: -1,
+      envFort: 0, tenueFort: 0, dureeFort: .12, rapport: 0, envDerive: 0, envTic: 0,
+      vide: {}, sortie: { faible: 0, fort: 0, gachetteG: 0, gachetteD: 0 }
     };
   }
-
+  function impact(V, niveau, duree) {
+    if (niveau <= 0 || niveau < V.envFort) return;
+    V.envFort = niveau;
+    V.tenueFort = .038;
+    V.dureeFort = duree;
+  }
+  function intensite(x, gain) {
+    const v = unite(x * gain);
+    return v >= SEUIL ? v : 0;
+  }
   function calculer(V, entree, dt) {
-    var e = entree || V.vide;
+    const e = entree || V.vide, pas = Number.isFinite(dt) ? Math.min(.25, Math.max(0, dt)) : 0;
+    const gain = unite(e.force == null ? .5 : e.force);
+    const volume = gain <= .5 ? 2 * gain : 1 + (gain - .5) * 1.15;
+    const vitesse = Math.abs(e.v || 0), charge = unite(e.gaz);
+    const plage = e.maxUtile - e.ralenti;
+    const r = plage > 0 ? unite((e.regime - e.ralenti) / plage) : 0;
+    // Le moteur accélère son battement et déplace une partie du grave vers l'aigu.
+    // Les fréquences sont celles de l'enveloppe des actionneurs, en dessous de la cadence d'envoi.
+    V.moteur = phase(V.moteur, 3 + 7 * r, pas);
+    const battement = onde(V.moteur);
+    const moteur = Math.sqrt(r) * (.55 + .45 * charge);
+    let fort = moteur * (.10 + .053 * battement);
+    let faible = moteur * r * (.038 + .065 * battement);
+    let gauche = 0, droite = 0;
+    if (r > .97) droite = battement * .10 * charge;
 
-    // Lecture défensive : tout champ absent vaut 0 ou faux, jamais NaN.
-    var regime = +e.regime || 0;
-    var ralenti = +e.ralenti || 0;
-    var maxUtile = +e.maxUtile || 0;
-    var gaz = +e.gaz || 0;
-    var frein = +e.frein || 0;
-    var v = +e.v || 0;
-    var surface = e.surface || 'piste';
-    var vibreur = !!e.vibreur;
-    var patinage = +e.patinage || 0;
-    var blocage = +e.blocage || 0;
-    var glisseAr = +e.glisseAr || 0;
-    var glisseAv = +e.glisseAv || 0;
-    var bosse = +e.bosse || 0;
-    var turbo = +e.turbo || 0;
-    var along = +e.along || 0;
-    var force = e.force == null ? 0.5 : +e.force;
-    if (!(force > 0)) force = 0;
-    if (force > 1) force = 1;
-    // dt absent, négatif ou non fini vaut 0 ; un très grand dt (retour d'onglet) est borné à un quart de
-    // seconde, sinon une phase infinie donnerait un sinus NaN sur toutes les sorties.
-    var pas = +dt;
-    if (!(pas > 0)) pas = 0; else if (pas > 0.25) pas = 0.25;
-
-    var absV = v < 0 ? -v : v;
-
-    // Contributions brutes par sortie, sommées avant mise en forme.
-    var cFaible = 0, cFort = 0, cGG = 0, cGD = 0;
-
-    // a. Moteur & accélération : grondement vivant du V12 qui monte fort avec le régime, la charge et la poussée réelle.
-    // La base ne s'ajoute que si la voiture tourne vraiment, pour garder le ralenti à l'arrêt silencieux sous le seuil.
-    var denom = maxUtile - ralenti;
-    var r = denom > 0 ? (regime - ralenti) / denom : 0;
-    if (r < 0) r = 0; else if (r > 1) r = 1;
-    var motActif = r > 0.001 || gaz > 0.001 || absV > 0.05;
-    if (motActif) {
-      cFort += 0.03 + 0.34 * r * r * (0.35 + 0.65 * gaz);
-      if (gaz > 0.15 && r > 0.35) cFaible += 0.16 * r * r * gaz;
-    }
-    // Ressenti viscéral de l'accélération réelle (along > 1.5 m/s²) : poussée grave dans le moteur lourd + retour gâchette droite
-    if (along > 1.5 && gaz > 0.2) {
-      var accNorm = (along - 1.5) / 14;
-      if (accNorm > 1) accNorm = 1;
-      cFort += 0.44 * accNorm * gaz;
-      cFaible += 0.24 * accNorm * gaz;
-      cGD += 0.38 * accNorm * gaz;
-    }
-    // Rupteur : crépitement sec en haut régime, senti sur le léger et la gâchette droite.
-    if (r > 0.97) {
-      V.phRupteur += FREQ_RUPTEUR * pas;
-      V.phRupteur -= (V.phRupteur | 0);
-      var rup = V.phRupteur < 0.5 ? 1 : 0;
-      cFaible += 0.25 * rup;
-      cGD += 0.3 * rup;
-    }
-
-    // b. Route : roulement léger proportionnel à la vitesse, les bosses cognent le lourd.
-    cFaible += 0.1 * (absV / 90 < 1 ? absV / 90 : 1);
-    cFort += bosse * 0.5;
-
-    // c. Vibreur : dents régulières tous les 3,6 m, donc la fréquence suit la vitesse.
-    // Onde carrée adoucie (tangente hyperbolique du sinus) pour un battement franc
-    // sans clic numérique ; la phase est accumulée, jamais déduite du temps absolu.
-    if (vibreur && absV > 0.01) {
-      var freqV = absV * VIBREUR_HZ_PAR_MS;
-      if (freqV < VIBREUR_MIN) freqV = VIBREUR_MIN; else if (freqV > VIBREUR_MAX) freqV = VIBREUR_MAX;
-      V.phVibreur += freqV * pas;
-      V.phVibreur -= (V.phVibreur | 0);
-      var sV = Math.sin(6.283185307179586 * V.phVibreur);
-      var ondeV = (1 + Math.tanh(2.5 * sV)) * 0.5;
-      cFort += 0.55 * ondeV;
-      cFaible += 0.45 * ondeV;
-    }
-
-    // d. Herbe et gravier : grondement irrégulier, somme de trois fréquences sans rapport
-    // simple pour éviter un ronronnement périodique ; le gravier mord 1,3 fois plus.
-    if (surface === 'herbe' || surface === 'gravier') {
-      V.phHerbe1 += 7 * pas;    V.phHerbe1 -= (V.phHerbe1 | 0);
-      V.phHerbe2 += 11.3 * pas; V.phHerbe2 -= (V.phHerbe2 | 0);
-      V.phHerbe3 += 13.7 * pas; V.phHerbe3 -= (V.phHerbe3 | 0);
-      var irr = (Math.sin(6.283185307179586 * V.phHerbe1)
-        + Math.sin(6.283185307179586 * V.phHerbe2)
-        + Math.sin(6.283185307179586 * V.phHerbe3)) / 3;
-      var rug = (irr + 1) * 0.5; // ramené dans [0, 1]
-      var vitSol = absV / 26 < 1 ? absV / 26 : 1;
-      var coefSol = surface === 'gravier' ? 1.3 : 1;
-      cFort += 0.45 * vitSol * rug * coefSol;
-      cFaible += 0.3 * vitSol * rug * coefSol;
-    }
-
-    // e. Glisses : l'arrière qui part vibre le léger avec un frémissement lent, l'avant
-    // plus aigu ; la profondeur de 30 % garde une composante continue sous le tremblement.
-    if (glisseAr > 0) {
-      V.phGlisseAr += FREQ_GLISSE_AR * pas; V.phGlisseAr -= (V.phGlisseAr | 0);
-      var tremAr = 0.7 + 0.3 * ((Math.sin(6.283185307179586 * V.phGlisseAr) + 1) * 0.5);
-      cFaible += 0.45 * glisseAr * tremAr;
-    }
-    if (glisseAv > 0) {
-      V.phGlisseAv += FREQ_GLISSE_AV * pas; V.phGlisseAv -= (V.phGlisseAv | 0);
-      var tremAv = 0.7 + 0.3 * ((Math.sin(6.283185307179586 * V.phGlisseAv) + 1) * 0.5);
-      cFaible += 0.25 * glisseAv * tremAv;
-    }
-
-    // f. Blocage au frein : la gâchette gauche pulse pour signaler la roue qui frotte.
-    var bEff = blocage < 1 ? blocage : 1; if (bEff < 0) bEff = 0;
-    if (bEff > 0) {
-      V.phBlocage += FREQ_BLOCAGE * pas; V.phBlocage -= (V.phBlocage | 0);
-      cGG += bEff * 0.9 * (V.phBlocage < 0.5 ? 1 : 0);
-      cFort += 0.2 * bEff;
-    }
-
-    // g. Patinage : la gâchette droite pulse, symétrique du blocage, pour la roue qui chasse.
-    var pEff = patinage < 1 ? patinage : 1; if (pEff < 0) pEff = 0;
-    if (pEff > 0) {
-      V.phPatinage += FREQ_PATINAGE * pas; V.phPatinage -= (V.phPatinage | 0);
-      cGD += pEff * 0.8 * (V.phPatinage < 0.5 ? 1 : 0);
-      cFaible += 0.3 * pEff;
-    }
-
-    // h. Événements : chocs et passages donnent des pics qui retombent seuls. On garde le
-    // plus fort sur chaque canal (pas d'addition) puis on le laisse décroître avec dt.
-    var evs = e.evenements;
-    if (evs && evs.length) {
-      for (var i = 0; i < evs.length; i++) {
-        var ev = evs[i];
-        var type = ev.type;
-        var fEv = +ev.force || 0;
-        if (type === 'rapport') {
-          // Secousse brutale de boîte séquentielle F1 : coup de bélier franc dans les deux moteurs et la gâchette droite
-          if (1.0 >= V.envFort) { V.envFort = 1.0; V.decFort = 0.16; }
-          if (0.95 >= V.envRapportGD) V.envRapportGD = 0.95;
-          if (0.92 >= V.envRapportFaible) V.envRapportFaible = 0.92;
-        } else if (type === 'choc' || type === 'contact') {
-          var picC = (fEv - 2) / 28; if (picC < 0) picC = 0; else if (picC > 1) picC = 1; picC *= 0.95;
-          if (picC >= V.envFort) { V.envFort = picC; V.decFort = 0.35; }
-        } else if (type === 'roue' || type === 'casse') {
-          if (0.9 >= V.envFort) { V.envFort = 0.9; V.decFort = 0.5; }
-        } else if (type === 'atterrissage') {
-          if (0.7 >= V.envFort) { V.envFort = 0.7; V.decFort = 0.2; }
-        }
+    // Deux ondulations du grain avancent avec la distance parcourue. À moteur coupé
+    // et en roue libre, le grain reste sensible sur le seul canal léger.
+    const auSol = e.auSol !== false, actifSol = auSol && vitesse > .3;
+    if (actifSol) {
+      V.grain = phase(V.grain, Math.min(6.3, vitesse * .21), pas);
+      V.grainFin = phase(V.grainFin, Math.min(11.7, vitesse * .39), pas);
+      const texture = .22 + .48 * onde(V.grain) + .30 * onde(V.grainFin);
+      const roulement = Math.sqrt(unite(vitesse / 56));
+      const meuble = e.surface === 'herbe' || e.surface === 'gravier';
+      const grain = roulement * texture * (meuble ? (e.surface === 'gravier' ? .19 : .15) : .064);
+      faible = Math.max(faible, grain);
+      if (meuble) fort = Math.max(fort, grain * .72);
+      if (e.vibreur || e.surface === 'vibreur') {
+        // Une dent tous les 3,6 m. Le bas de l'onde laisse une séparation franche entre les dents.
+        V.bord = phase(V.bord, Math.min(12, vitesse / 3.6), pas);
+        const dent = .5 + .5 * Math.tanh(2.2 * Math.sin(TAU * V.bord));
+        const bord = Math.min(1, vitesse / 6) * (.052 + .235 * dent);
+        faible = Math.max(faible * .55, bord * .65);
+        fort = Math.max(fort * .55, bord);
       }
     }
 
-    // i. Dérive chargée : battement lent qui s'accélère avec le niveau pour faire sentir
-    // la montée en charge, tic franc au changement de niveau, et frémissement rapide dans
-    // la fenêtre de relâchement parfait — le signal « lâchez maintenant ».
-    var derive = e.derive;
-    if (derive) {
-      var fen = +derive.fenetre || 0;
-      if (derive.actif) {
-        var niveau = (derive.niveau | 0);
-        if (niveau < 0) niveau = 0; else if (niveau > 3) niveau = 3;
-        var freqD = 2 + 2 * niveau; // 2, 4, 6, 8 Hz
-        V.phDerive += freqD * pas;
-        if (V.phDerive >= 1) {
-          // Déclenchement au passage de la phase par 1 : une enveloppe brève remplace
-          // l'impulsion de 15 ms, impossible à échantillonner de façon fiable à 30 Hz.
-          // Un seul déclenchement même si dt couvre plusieurs tours d'un coup.
-          V.phDerive -= (V.phDerive | 0);
-          V.envDerive = 0.18 + 0.08 * niveau;
-        }
-        // Tic quand le niveau monte par rapport au dernier niveau actif connu, même si la
-        // dérive a été coupée entre-temps : la main doit sentir la reprise plus chargée.
-        if (V.dernierNiveau >= 0 && niveau > V.dernierNiveau) {
-          V.envTic = 0.5; // pic retenu séparément, retombée fixe 0,08 s
-        }
-        V.dernierNiveau = niveau;
-      }
-      if (fen > 0) {
-        V.phFenetre += FREQ_FENETRE * pas; V.phFenetre -= (V.phFenetre | 0);
-        var tremF = (V.phFenetre < 0.5 ? 1 : 0) * 0.6;
-        cFaible += tremF;
-        cFort += tremF;
-      }
+    // Les aides restent en arrière-plan. Les gâchettes portent le blocage et le patinage
+    // sur les manettes qui les exposent. Elles n'ajoutent pas un deuxième impact au corps.
+    V.aide = phase(V.aide, 8, pas);
+    const pulse = .38 + .62 * onde(V.aide);
+    if (auSol) {
+      gauche = unite(e.blocage) * (.11 + .12 * pulse);
+      droite = Math.max(droite, unite(e.patinage) * (.11 + .12 * pulse));
+      faible = Math.max(faible, Math.max(unite(e.glisseAr), unite(e.glisseAv)) * pulse * .064);
     }
+    const d = e.derive;
+    if (d && d.actif) {
+      const n = Math.round(3 * unite(d.niveau / 3));
+      const precedent = V.derive;
+      V.derive = phase(V.derive, 2 + 2 * n, pas);
+      if (V.derive < precedent) V.envDerive = .075 + .010 * n;
+      if (V.dernierNiveau >= 0 && n > V.dernierNiveau) V.envTic = .12;
+      V.dernierNiveau = n;
+    }
+    fort = Math.max(fort, V.envTic);
+    faible = Math.max(faible, V.envDerive);
+    if (d && d.fenetre > 0) {
+      faible = Math.max(faible, .085 * pulse);
+      fort = Math.max(fort, .053 * pulse);
+    }
+    V.envDerive *= Math.exp(-pas / .025);
+    V.envTic *= Math.exp(-pas / .033);
 
-    // Décroissance exponentielle des enveloppes. La constante 4/durée amène un pic sous
-    // le seuil bien avant 6× la durée, ce qui correspond au retour demandé par les tests.
-    if (V.envFort > 0) {
-      cFort += V.envFort;
-      V.envFort *= Math.exp(-pas * 4 / (V.decFort || 0.35));
-      if (V.envFort < 1e-6) V.envFort = 0;
+    const events = e.evenements;
+    if (events) for (let i = 0; i < events.length; i++) {
+      const ev = events[i];
+      if (ev.type === 'rapport') V.rapport = .105;
+      else if (ev.type === 'choc' || ev.type === 'contact') {
+        const niveau = Math.sqrt(unite((ev.force - 2) / 28));
+        impact(V, niveau * .61, .060 + .095 * niveau);
+      } else if (ev.type === 'roue' || ev.type === 'casse') impact(V, .55, .13);
+      else if (ev.type === 'atterrissage') impact(V, .31, .088);
     }
-    if (V.envRapportGD > 0) {
-      cGD += V.envRapportGD;
-      V.envRapportGD *= Math.exp(-pas * 4 / 0.12);
-      if (V.envRapportGD < 1e-6) V.envRapportGD = 0;
-    }
-    if (V.envRapportFaible > 0) {
-      cFaible += V.envRapportFaible;
-      V.envRapportFaible *= Math.exp(-pas * 4 / 0.10);
-      if (V.envRapportFaible < 1e-6) V.envRapportFaible = 0;
-    }
-    if (V.envTic > 0) {
-      cFort += V.envTic;
-      V.envTic *= Math.exp(-pas * 4 / 0.08);
-      if (V.envTic < 1e-6) V.envTic = 0;
-    }
-    // Battement de dérive : enveloppe déclenchée au tour de phase (pas une fenêtre étroite),
-    // pour rester identique à 30, 60 ou 120 Hz ; retombée en 0,07 s sur le moteur léger.
-    if (V.envDerive > 0) {
-      cFaible += V.envDerive;
-      V.envDerive *= Math.exp(-pas * 4 / 0.07);
-      if (V.envDerive < 1e-6) V.envDerive = 0;
-    }
+    // Un choc lourd prend le premier plan. La boîte donne une impulsion légère de
+    // 40 ms puis s'efface. Chacun atteint au moins une commande même à 144 images/s.
+    const boite = Math.min(1, V.rapport / .065);
+    const apresChoc = 1 - unite(V.envFort / .27);
+    const fond = (1 - boite * .76) * apresChoc;
+    fort = Math.max(fort * fond, V.envFort, .055 * boite * apresChoc);
+    faible = Math.max(faible * fond, .32 * boite * boite * apresChoc);
+    gauche *= fond;
+    droite = Math.max(droite * fond, .19 * boite * boite * apresChoc);
+    V.rapport = Math.max(0, V.rapport - pas);
+    V.envFort *= Math.exp(-Math.max(0, pas - V.tenueFort) / (V.dureeFort * .44));
+    V.tenueFort = Math.max(0, V.tenueFort - pas);
 
-    // j. Turbo : poussée grave franche et contre-pression sur la gâchette droite.
-    if (turbo > 0) {
-      cFort += 0.5 * turbo;
-      cGD += 0.4 * turbo;
-    }
-
-    // k. Mise en forme : compression douce pour garder de la marge, gain joueur, lissage
-    // au temps (montée vive 15 ms, descente plus lente 60 ms) puis coupure sous le seuil.
-    var gain = force * 2;
-    var s = V.sortie;
-    s.faible = cFaible; s.fort = cFort; s.gachetteG = cGG; s.gachetteD = cGD;
-
-    // Faible
-    var x = s.faible; if (x < 0) x = 0; x = x / (1 + 0.6 * x) * 1.6; if (x > 1) x = 1; x *= gain; if (x > 1) x = 1;
-    var coef = x > V.lFaible ? (1 - Math.exp(-pas / 0.015)) : (1 - Math.exp(-pas / 0.06));
-    V.lFaible += (x - V.lFaible) * coef; if (V.lFaible < SEUIL) V.lFaible = 0; s.faible = V.lFaible;
-    // Fort
-    x = s.fort; if (x < 0) x = 0; x = x / (1 + 0.6 * x) * 1.6; if (x > 1) x = 1; x *= gain; if (x > 1) x = 1;
-    coef = x > V.lFort ? (1 - Math.exp(-pas / 0.015)) : (1 - Math.exp(-pas / 0.06));
-    V.lFort += (x - V.lFort) * coef; if (V.lFort < SEUIL) V.lFort = 0; s.fort = V.lFort;
-    // Gâchette gauche
-    x = s.gachetteG; if (x < 0) x = 0; x = x / (1 + 0.6 * x) * 1.6; if (x > 1) x = 1; x *= gain; if (x > 1) x = 1;
-    coef = x > V.lGG ? (1 - Math.exp(-pas / 0.015)) : (1 - Math.exp(-pas / 0.06));
-    V.lGG += (x - V.lGG) * coef; if (V.lGG < SEUIL) V.lGG = 0; s.gachetteG = V.lGG;
-    // Gâchette droite
-    x = s.gachetteD; if (x < 0) x = 0; x = x / (1 + 0.6 * x) * 1.6; if (x > 1) x = 1; x *= gain; if (x > 1) x = 1;
-    coef = x > V.lGD ? (1 - Math.exp(-pas / 0.015)) : (1 - Math.exp(-pas / 0.06));
-    V.lGD += (x - V.lGD) * coef; if (V.lGD < SEUIL) V.lGD = 0; s.gachetteD = V.lGD;
-
+    const s = V.sortie;
+    s.faible = intensite(faible, volume); s.fort = intensite(fort, volume);
+    s.gachetteG = intensite(gauche, volume); s.gachetteD = intensite(droite, volume);
     return s;
   }
-
-  B.vibrations = { creer: creer, calculer: calculer, SEUIL: SEUIL };
+  // L'API Web peut exposer quatre canaux, deux canaux ou un simple pulse. Le choix
+  // dépend du pilote et de la liaison de cette manette, y compris pour un même modèle.
+  const INTERVALLE = 31, DUREE = 100;
+  const ignorer = () => {};
+  function creerSortie() {
+    return { pad: null, routes: [], route: 0, active: false, instant: -Infinity,
+      double: { startDelay: 0, duration: DUREE, weakMagnitude: 0, strongMagnitude: 0 },
+      gachettes: { startDelay: 0, duration: DUREE, weakMagnitude: 0, strongMagnitude: 0, leftTrigger: 0, rightTrigger: 0 } };
+  }
+  function arreter(O) {
+    if (!O.active) return;
+    O.active = false; O.instant = -Infinity;
+    // Un ancien effet peut encore tourner lors d'un repli vers une autre route.
+    for (const route of O.routes) {
+      if (!route.jouee) continue;
+      route.jouee = false;
+      for (const a of route.moteurs) {
+        try {
+          const res = typeof a.reset === 'function' ? a.reset() : route.mode === 'pulse' ? a.pulse(0, 0)
+            : a.playEffect(route.mode, { duration: 0, weakMagnitude: 0, strongMagnitude: 0, leftTrigger: 0, rightTrigger: 0 });
+          if (res && res.catch) res.catch(ignorer);
+        } catch { /* l'actionneur vient de se déconnecter */ }
+      }
+    }
+  }
+  function affecter(O, pad) {
+    const p = pad && pad.connected !== false ? pad : null, ancien = O.pad;
+    if (p === ancien || (ancien && p && ancien.connected !== false && p.index != null && p.index === ancien.index && p.id === ancien.id)) return false;
+    arreter(O);
+    O.pad = p; O.routes = []; O.route = 0; O.instant = -Infinity;
+    if (p) {
+      const a = p.vibrationActuator, routes = O.routes;
+      function ajouter(mode, moteurs) {
+        const route = { mode, moteurs, jouee: false };
+        function nonSupporte() {
+          if (O.routes === routes && routes[O.route] === route) { route.jouee = false; O.route++; }
+        }
+        route.resultat = r => { if (r === 'not-supported') nonSupporte(); };
+        route.echec = e => { if (e && (e.name === 'NotSupportedError' || e.name === 'TypeError')) nonSupporte(); };
+        routes.push(route);
+      }
+      if (a && typeof a.playEffect === 'function') {
+        if (a.effects?.includes('trigger-rumble')) ajouter('trigger-rumble', [a]);
+        if (a.effects ? a.effects.includes('dual-rumble') : !a.type || a.type === 'dual-rumble') ajouter('dual-rumble', [a]);
+      }
+      const moteurs = Array.from(p.hapticActuators || []).filter(m => m && typeof m.pulse === 'function');
+      if (!moteurs.length && a && typeof a.pulse === 'function') moteurs.push(a);
+      if (moteurs.length) ajouter('pulse', moteurs);
+    }
+    return true;
+  }
+  function envoyer(O, s, t) {
+    const route = O.routes[O.route];
+    if (!route || t - O.instant < INTERVALLE) return;
+    if (!(s.faible || s.fort || s.gachetteG || s.gachetteD)) {
+      if (O.active) { arreter(O); O.instant = t; }
+      return;
+    }
+    O.instant = t; O.active = true; route.jouee = true;
+    const gachettes = route.mode === 'trigger-rumble', o = gachettes ? O.gachettes : O.double;
+    o.strongMagnitude = s.fort;
+    o.weakMagnitude = gachettes ? s.faible : Math.max(s.faible, .36 * s.gachetteG, .36 * s.gachetteD);
+    if (gachettes) { o.leftTrigger = s.gachetteG; o.rightTrigger = s.gachetteD; }
+    for (const a of route.moteurs) {
+      try {
+        const res = route.mode === 'pulse' ? a.pulse(Math.max(o.weakMagnitude, o.strongMagnitude), DUREE) : a.playEffect(route.mode, o);
+        if (res && res.then) res.then(route.resultat, route.echec);
+        else route.resultat(res);
+      } catch (e) { route.echec(e); }
+    }
+  }
+  B.vibrations = { creer, calculer, SEUIL, creerSortie, affecter, arreter, envoyer };
 })(globalThis.BITUME = globalThis.BITUME || {});

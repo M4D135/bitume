@@ -267,21 +267,28 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 
 /* ------------------------------------------------------------------ affichage de course */
 #hud { position: absolute; inset: 0; pointer-events: none; padding: var(--marge); padding-top: max(var(--marge), env(safe-area-inset-top)); font-variant-numeric: tabular-nums; }
-#hud, #hud2 { container: affichage-course / size; }
+#hud, #hud2 {
+  container: affichage-course / size;
+  --verre-course: linear-gradient(155deg, rgba(47, 59, 70, .52), rgba(11, 19, 26, .46) 58%, rgba(12, 19, 25, .38));
+  --reflet-course: inset 0 1px rgba(255, 255, 255, .26), inset 0 -1px rgba(255, 255, 255, .07);
+  --texte-course: 0 1px 2px rgba(0, 0, 0, .92), 0 0 3px rgba(0, 0, 0, .55);
+}
 .hud-rivaux { display: contents; }
 .hud-haut { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
-.compteurs { display: flex; gap: 8px; }
-.classement li { background: var(--nuit-legere); border: 1px solid var(--trait); border-radius: var(--rayon); }
-.case, .chronos, .tableau { border: 0; background: transparent; text-shadow: 0 1px 3px #000, 0 0 12px rgba(0,0,0,.6); }
-.case { padding: 8px 14px 9px; border-top: 2px solid var(--rouge); min-width: 88px; }
+.compteurs { display: flex; gap: 2px; align-items: flex-start; }
+.compteurs, .classement, .annonce-virage { background: var(--verre-course); border-radius: 8px; box-shadow: var(--reflet-course); }
+.compteurs { padding: 2px 3px; }
+.hud-haut .etiquette { font-size: 10px; letter-spacing: .09em; color: #e6e5e0; }
+.case, .chronos, .tableau { border: 0; background: transparent; text-shadow: var(--texte-course); }
+.case { padding: 5px 9px 6px; border-top: 1px solid color-mix(in srgb, var(--rouge) 70%, transparent); min-width: 68px; }
 #c-tour { border-top-color: var(--papier-2); }
 /* Pneus montés : pastille de couleur, comme le cercle peint sur le flanc (slicks jaune, intermédiaires vert, pluie bleu, neige blanc) */
 #c-pneus { --pneu: #f2c418; border-top-color: var(--pneu); }
 #c-pneus[data-pneus="inter"] { --pneu: #2fbf5a; }
 #c-pneus[data-pneus="pluie"] { --pneu: #2f7fe0; }
 #c-pneus[data-pneus="neige"] { --pneu: #dbe6f5; }
-.case .nom-pneus { display: flex; align-items: center; gap: 7px; margin-top: 8px; font: italic 800 19px/1 var(--f-titre); font-stretch: condensed; text-transform: uppercase; }
-.case .nom-pneus i { width: 13px; height: 13px; border-radius: 50%; border: 3px solid var(--pneu); background: #111; flex: none; }
+.case .nom-pneus { display: flex; align-items: center; gap: 5px; margin-top: 5px; font: italic 700 16px/1 var(--f-titre); font-stretch: condensed; text-transform: uppercase; }
+.case .nom-pneus i { width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--pneu); background: #111; flex: none; }
 /* Quatre réserves de gomme, dans l'ordre avant gauche/droite puis arrière gauche/droite.
    Le pourcentage annonce le pneu le plus usé ; il ne représente pas un pourcentage d'adhérence. */
 .case .usure-pneus { display: block; margin-top: 5px; font: 600 10px/1.1 var(--f-texte); color: var(--papier-2); }
@@ -300,17 +307,18 @@ body.tactile .case .barres-pneus { height: 2px; margin-top: 2px; }
 .case.sante[data-phase="service"] .etiquette { color: #ffd166; }
 body.tactile .case .barre-sante { height: 4px; margin-top: 3px; }
 #jeu[data-ecran="demo"] #c-pneus { display: none; }
-.case .grand { display: block; margin-top: 4px; font: italic 800 40px/.9 var(--f-titre); font-stretch: condensed; }
-.case .grand small { font-size: 22px; color: var(--papier-2); margin-left: 2px; }
+.case .grand { display: block; margin-top: 4px; font: italic 700 32px/.95 var(--f-titre); font-stretch: condensed; }
+.case .grand b, .case .nom-pneus b { font-weight: 700; }
+.case .grand small { font-size: 17px; color: var(--papier-2); margin-left: 2px; }
 .case.eclat { animation: eclat .7s ease-out; }
 @keyframes eclat { from { background: rgba(224, 48, 30, .8); } to { background: transparent; } }
 /* Relance sans mesure (jeu.js, eclat et appliquerMessages) : la classe bis passe sur une copie identique de
    l'animation ; un nom d'animation qui change la relance, sans le calcul de mise en page forcé de offsetWidth. */
 .case.eclat.bis { animation-name: eclat-bis; }
 @keyframes eclat-bis { from { background: rgba(224, 48, 30, .8); } to { background: transparent; } }
-.chronos { min-width: 220px; padding: 8px 14px 10px; display: grid; gap: 5px; }
+.chronos { min-width: 178px; padding: 5px 8px; display: grid; gap: 3px; }
 .ligne-chrono { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
-.ligne-chrono .temps { font: 700 22px/1 var(--f-titre); font-stretch: condensed; letter-spacing: .02em; }
+.ligne-chrono .temps { font: 650 19px/1 var(--f-titre); font-stretch: condensed; letter-spacing: .02em; }
 .ligne-chrono.delta .temps.avance { color: var(--vert); }
 .ligne-chrono.delta .temps.retard { color: #ff6a55; }
 
@@ -320,17 +328,17 @@ body.tactile .case .barre-sante { height: 4px; margin-top: 3px; }
 
 /* Compteur FPS en course et en démo, en bas à gauche ; ambre sous la barre des 50. */
 .fps { position: absolute; left: max(12px, env(safe-area-inset-left)); bottom: max(12px, env(safe-area-inset-bottom)); transform: none;
-  padding: 4px 11px; background: var(--nuit); border: 1px solid var(--trait); border-radius: var(--rayon);
-  color: var(--papier-2); font: 700 13px/1 var(--f-texte); font-variant-numeric: tabular-nums; letter-spacing: .08em; pointer-events: none; }
+  padding: 3px 7px; background: var(--verre-course); border: 0; border-radius: 5px; text-shadow: var(--texte-course);
+  color: var(--papier-2); font: 600 11px/1 var(--f-texte); font-variant-numeric: tabular-nums; letter-spacing: .05em; pointer-events: none; }
 .fps.bas { color: var(--ambre); border-color: rgba(244, 165, 28, .5); }
 
-.classement { position: absolute; left: var(--marge); top: calc(var(--marge) + 112px); margin: 0; padding: 0; list-style: none; display: grid; gap: 3px; width: 214px; }
-.classement li { display: grid; grid-template-columns: 26px 6px 1fr auto; align-items: center; gap: 8px; padding: 4px 8px 4px 0; font: 700 15px/1.1 var(--f-titre); font-stretch: condensed; letter-spacing: .03em; text-transform: uppercase; }
-.classement li .p { text-align: right; font-style: italic; font-size: 17px; }
-.classement li .c { width: 6px; height: 16px; transform: skewX(-14deg); }
+.classement { position: absolute; left: var(--marge); top: calc(var(--marge) + 89px); margin: 0; padding: 2px 3px; list-style: none; display: grid; gap: 1px; width: 177px; text-shadow: var(--texte-course); }
+.classement li { display: grid; grid-template-columns: 20px 4px minmax(0,1fr) auto; align-items: center; gap: 6px; padding: 3px 6px 3px 0; border-radius: 4px; font: 600 13px/1.1 var(--f-titre); font-stretch: condensed; letter-spacing: .03em; text-transform: uppercase; }
+.classement li .p { text-align: right; font-style: italic; font-size: 14px; }
+.classement li .c { width: 4px; height: 12px; transform: skewX(-14deg); }
 .classement li .n { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.classement li .e { color: var(--papier-2); font-size: 13px; }
-.classement li.joueur { background: rgba(158, 29, 18, .82); border-color: rgba(255, 120, 100, .5); }
+.classement li .e { color: #e2e2dc; font-size: 12px; }
+.classement li.joueur { background: linear-gradient(90deg, rgba(166, 42, 30, .60), rgba(126, 40, 35, .39)); box-shadow: inset 2px 0 #f47767; font-weight: 700; }
 .classement li.joueur .e { color: var(--papier); }
 .classement li.saut { background: none; border: 0; height: 6px; padding: 0; }
 
@@ -343,32 +351,32 @@ body.tactile .case .barre-sante { height: 4px; margin-top: 3px; }
 @keyframes message { 0% { opacity: 0; transform: scale(1.18); } 10% { opacity: 1; transform: scale(1); } 75% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
 .sous-message { position: absolute; left: 0; right: 0; top: calc(30% + clamp(44px, 8vw, 96px)); text-align: center; font: 700 clamp(16px, 2.2vw, 24px)/1.2 var(--f-titre); letter-spacing: .06em; text-transform: uppercase; color: var(--papier-2); text-shadow: 0 2px 12px rgba(0, 0, 0, .6); opacity: 0; }
 .sous-message.visible { animation: message 2.2s ease-out forwards; }
-.annonce-virage { position: absolute; top: calc(var(--hud-top) + 100px); left: 50%; transform: translateX(-50%); display: grid; grid-template-columns: 34px minmax(0,1fr) auto; align-items: center; gap: 9px; max-width: calc(100% - 32px); padding: 7px 11px 7px 7px; color: var(--papier); background: rgba(10,12,15,.87); border: 1px solid rgba(242,236,223,.25); border-left: 3px solid var(--ambre); border-radius: var(--rayon); box-shadow: 0 2px 10px rgba(0,0,0,.2); }
-.virage-fleche { width: 34px; height: 34px; fill: none; stroke: var(--ambre); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+.annonce-virage { position: absolute; top: calc(var(--hud-top) + 100px); left: 50%; transform: translateX(-50%); display: grid; grid-template-columns: 23px minmax(0,1fr) auto; align-items: center; gap: 6px; max-width: calc(100% - 32px); padding: 5px 9px 5px 6px; color: #fffaf0; text-shadow: var(--texte-course); border-left: 2px solid var(--ambre); }
+.virage-fleche { width: 23px; height: 23px; fill: none; stroke: var(--ambre); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .annonce-virage[data-sens="gauche"] .virage-fleche { transform: scaleX(-1); }
 .virage-epingle, .annonce-virage[data-difficulte="3"] .virage-courbe { display: none; }
 .annonce-virage[data-difficulte="3"] .virage-epingle { display: block; }
 .annonce-virage[data-difficulte="3"] { border-left-color: #ff745f; }
 .annonce-virage[data-difficulte="3"] .virage-fleche { stroke: #ff745f; }
-.virage-nom { font: 800 17px/1.15 var(--f-titre); letter-spacing: .025em; }
-.virage-distance { min-width: 4ch; text-align: right; color: var(--ambre); font: 800 20px/1 var(--f-titre); white-space: nowrap; }
+.virage-nom { font: 600 14px/1.15 var(--f-texte); letter-spacing: -.01em; }
+.virage-distance { min-width: 4ch; text-align: right; color: #ffda90; font: 700 15px/1 var(--f-titre); white-space: nowrap; }
 .message.visible.bis, .sous-message.visible.bis { animation-name: message-bis; }
 @keyframes message-bis { 0% { opacity: 0; transform: scale(1.18); } 10% { opacity: 1; transform: scale(1); } 75% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
 
 .hud-bas { position: absolute; left: var(--marge); right: var(--marge); bottom: max(var(--marge), env(safe-area-inset-bottom)); display: flex; justify-content: flex-end; align-items: flex-end; gap: 16px; }
 .carte { display: block; width: 100%; height: 100%; aspect-ratio: 1; background: transparent; border: 0; border-radius: 0; filter: drop-shadow(0 1px 2px rgba(0,0,0,.9)); }
-.tableau { position: relative; display: grid; justify-items: end; gap: 6px; padding: 10px 14px 12px 18px; min-width: 220px; }
-.vitesse b { font: italic 900 clamp(54px, 6.6vw, 82px)/.85 var(--f-titre); font-stretch: condensed; letter-spacing: .01em; }
+.tableau { position: relative; display: grid; justify-items: end; gap: 4px; padding: 6px 8px 7px 10px; min-width: 170px; }
+.vitesse b { font: italic 750 clamp(45px, 5.2vw, 65px)/.88 var(--f-titre); font-stretch: condensed; letter-spacing: .01em; }
 .vitesse small { margin-left: 6px; font: 600 12px/1 var(--f-texte); letter-spacing: .14em; text-transform: uppercase; color: var(--papier-2); }
 .regime { display: flex; align-items: center; gap: 10px; width: 100%; }
-.regime .barre { --r: 0; position: relative; flex: 1; height: 14px; border-radius: 2px; overflow: hidden; background: rgba(242, 236, 223, .1);
+.regime .barre { --r: 0; position: relative; flex: 1; height: 9px; border-radius: 2px; overflow: hidden; background: rgba(242, 236, 223, .16);
   -webkit-mask: repeating-linear-gradient(90deg, #000 0 9px, transparent 9px 12px); mask: repeating-linear-gradient(90deg, #000 0 9px, transparent 9px 12px); }
 /* régime en transform plutôt qu'en largeur : 30 fois par seconde sans recalcul de mise en page. Le dégradé suit
    l'échelle comme il suivait la largeur (il couvre la partie allumée) ; le masque des graduations reste sur .barre. */
 .regime .barre::before { content: ""; position: absolute; inset: 0; transform: scaleX(var(--r)); transform-origin: 0 50%; background: linear-gradient(90deg, #d8d2c2 0%, #d8d2c2 58%, var(--ambre) 76%, var(--rouge) 92%); }
 .regime.passer .barre::before { background: var(--rouge); animation: passer .12s steps(2) infinite; }
 @keyframes passer { 50% { opacity: .35; } }
-.rapport { min-width: 30px; text-align: center; font: italic 900 34px/1 var(--f-titre); font-stretch: condensed; }
+.rapport { min-width: 30px; text-align: center; font: italic 750 27px/1 var(--f-titre); font-stretch: condensed; }
 .jauge-derive { position: absolute; right: 14px; top: -46px; display: flex; align-items: center; gap: 10px; padding: 7px 10px; background: var(--nuit); border: 1px solid var(--trait); border-radius: var(--rayon); }
 .jauge-derive .segments { display: flex; gap: 4px; }
 .jauge-derive i { --f: 0; position: relative; width: 34px; height: 12px; transform: skewX(-18deg); background: rgba(242, 236, 223, .12); overflow: hidden; }
@@ -404,8 +412,8 @@ body.tactile #b-pause { display: block; }
   .chronos { min-width: 0; }
   .ligne-chrono .etiquette { font-size: 9.5px; }
   .ligne-chrono .temps { font-size: 18px; }
-  .case { min-width: 72px; padding: 6px 10px 7px; }
-  .case .grand { font-size: 34px; }
+  .case { min-width: 58px; padding: 4px 6px; }
+  .case .grand { font-size: 27px; }
   .tableau { min-width: 0; }
   .gros { min-width: 0; width: 100%; }
   .choix { align-items: stretch; }
@@ -475,7 +483,7 @@ body.tactile #jeu[data-carte-taille="grande"] { --carte-taille: 140px; }
 body.tactile #hud { padding: var(--hud-top) max(8px,env(safe-area-inset-right)) 8px max(8px,env(safe-area-inset-left)); }
 body.tactile #hud::before { content: ""; position: absolute; inset: 0 0 auto; height: calc(var(--hud-top) + 84px); background: linear-gradient(180deg,rgba(5,8,12,.38),transparent); pointer-events: none; }
 body.tactile .hud-haut { position: relative; min-height: 40px; gap: 10px; padding-right: 52px; align-items: center; }
-body.tactile .compteurs { gap: 10px; }
+body.tactile .compteurs { gap: 4px; }
 body.tactile .case { min-width: 42px; padding: 2px 3px; border: 0; }
 body.tactile .case .etiquette { font-size: 8px; letter-spacing: .1em; color: var(--papier-2); }
 body.tactile .case .grand { margin-top: 3px; font-size: 25px; }
@@ -488,10 +496,10 @@ body.tactile .ligne-chrono .etiquette { font-size: 8px; letter-spacing: .08em; }
 body.tactile .ligne-chrono .temps { font-size: 22px; }
 body.tactile .ligne-chrono:not(:first-child), body.tactile .classement { display: none; }
 body.tactile #b-pause { top: var(--hud-top); right: max(8px,env(safe-area-inset-right)); width: 44px; height: 44px; border-radius: 8px; border-color: rgba(242,236,223,.32); background: rgba(10,12,15,.16); text-shadow: 0 1px 3px #000; }
-body.tactile #zone-carte { top: calc(var(--hud-top) + 50px); right: max(8px,env(safe-area-inset-right)); }
-body.tactile #jeu[data-carte-position="gauche"] #zone-carte { right: auto; left: max(8px,env(safe-area-inset-left)); }
+body.tactile #jeu #zone-carte { top: calc(var(--hud-top) + var(--y-carte-tactile, 50px)); bottom: auto; right: max(8px,env(safe-area-inset-right)); left: auto; }
+body.tactile #jeu[data-carte-position$="gauche"] #zone-carte { right: auto; left: max(8px,env(safe-area-inset-left)); }
 body.tactile .hud-bas { top: calc(var(--hud-top) + 52px); bottom: auto; left: max(8px,env(safe-area-inset-left)); right: auto; }
-body.tactile #jeu[data-carte-position="gauche"] .hud-bas { left: auto; right: max(8px,env(safe-area-inset-right)); }
+body.tactile #jeu[data-carte-position$="gauche"] .hud-bas { left: auto; right: max(8px,env(safe-area-inset-right)); }
 body.tactile .tableau { min-width: 0; padding: 2px 3px; gap: 3px; }
 body.tactile .vitesse b { font-size: 34px; }
 body.tactile .vitesse small { font-size: 8px; margin-left: 3px; }
@@ -508,10 +516,10 @@ body.tactile .feux { top: calc(var(--hud-top) + var(--carte-presence) + 58px); p
 body.tactile .feux i { width: 18px; }
 body.tactile .message { top: max(28%,calc(var(--hud-top) + var(--carte-presence) + 76px)); font-size: clamp(26px,6vw,48px); }
 body.tactile .sous-message { top: max(calc(28% + 42px),calc(var(--hud-top) + var(--carte-presence) + 118px)); font-size: 13px; }
-body.tactile .annonce-virage { top: calc(var(--hud-top) + 55px); padding: 5px 8px 5px 5px; gap: 6px; grid-template-columns: 27px minmax(0,1fr) auto; }
-body.tactile .virage-fleche { width: 27px; height: 27px; }
-body.tactile .virage-nom { font-size: 15px; }
-body.tactile .virage-distance { font-size: 17px; }
+body.tactile .annonce-virage { top: calc(var(--hud-top) + 55px); padding: 4px 6px; gap: 5px; grid-template-columns: 22px minmax(0,1fr) auto; }
+body.tactile .virage-fleche { width: 22px; height: 22px; }
+body.tactile .virage-nom { font-size: 13px; }
+body.tactile .virage-distance { font-size: 14px; }
 body.tactile .demo-bandeau { top: calc(var(--hud-top) + var(--carte-presence) + 58px); background: rgba(10,12,15,.3); border: 0; }
 body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98px); background: rgba(10,12,15,.2); }
 
@@ -531,15 +539,16 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   .chronos, body.tactile .chronos { width: 100%; min-width: 0; padding: 4px 2px; }
   .chronos { display: flex; gap: 8px; }
   .ligne-chrono { flex: 1; min-width: 0; flex-direction: column; align-items: flex-start; gap: 3px; }
-  body.tactile .chronos { min-height: 44px; padding-right: 52px; align-items: flex-start; }
+  body.tactile .chronos { min-height: 32px; width: calc(100% - 52px); align-items: flex-start; }
   body.tactile .ligne-chrono { flex-direction: row; align-items: baseline; justify-content: flex-start; gap: 8px; }
-  body.tactile #b-pause { top: calc(var(--hud-top) + 58px); }
-  body.tactile #zone-carte, body.tactile .hud-bas { top: calc(var(--hud-top) + 110px); }
+  body.tactile #b-pause { top: calc(var(--hud-top) + 74px); }
+  body.tactile #jeu { --y-carte-tactile: 126px; }
+  body.tactile .hud-bas { top: calc(var(--hud-top) + var(--y-carte-tactile)); }
   .annonce-virage, body.tactile .annonce-virage { top: calc(var(--hud-top) + 190px); left: var(--marge); right: auto; transform: none; width: min(240px,calc(100% - var(--carte-presence) - 3 * var(--marge))); max-width: none; grid-template-columns: 27px minmax(0,1fr); gap: 3px 6px; }
   .annonce-virage .virage-fleche { grid-row: 1 / 3; width: 27px; height: 27px; }
   .annonce-virage .virage-distance { grid-column: 2; text-align: left; font-size: 17px; }
   .annonce-virage .virage-nom { font-size: 15px; }
-  #jeu[data-carte-position="gauche"] .annonce-virage { right: var(--marge); left: auto; }
+  #jeu[data-carte-position$="gauche"] .annonce-virage { right: var(--marge); left: auto; }
 }
 
 /* deux manettes branchées : l'écran titre le signale sur « À deux » */
@@ -593,21 +602,21 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 /* Cockpit large : les panneaux latéraux dégagent les glaces et l'horizon. Le ratio est celui de chaque
    affichage, y compris à deux après réduction ; les vues étroites et le tactile gardent leur disposition haute. */
 @container affichage-course (min-aspect-ratio: 6/5) {
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .hud-rivaux { position: absolute; left: max(var(--marge),env(safe-area-inset-left)); bottom: 30%; width: min(192px,22%); display: grid; gap: 6px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .hud-rivaux { position: absolute; left: max(var(--marge),env(safe-area-inset-left)); bottom: 30%; width: min(164px,22%); display: grid; gap: 4px; }
   body:not(.tactile) #jeu[data-carte-position="gauche"]:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .hud-rivaux { left: auto; right: max(var(--marge),env(safe-area-inset-right)); }
   /* La main remonte vers le bord en braquant. Réduire seulement le classement avec la hauteur locale
      garde les noms à une ligne, sans rétrécir l'annonce ni la faire remonter vers une glace. */
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement { position: static; inset: auto; width: min(100%,30cqh); justify-self: start; gap: 2px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement { position: static; inset: auto; width: min(100%,30cqh); justify-self: start; gap: 0; }
   body:not(.tactile) #jeu[data-carte-position="gauche"]:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .classement { justify-self: end; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li { grid-template-columns: 22px 5px minmax(0,1fr) auto; gap: 6px; padding: 2px 6px 2px 0; font-size: 13px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li .p { font-size: 15px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li .c { width: 5px; height: 12px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li { grid-template-columns: 18px 4px minmax(0,1fr) auto; gap: 5px; padding: 2px 5px 2px 0; font-size: 12px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li .p { font-size: 13px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li .c { width: 4px; height: 11px; }
   body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li .e { font-size: 11px; }
   body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li.saut { height: 4px; padding: 0; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .annonce-virage { position: static; inset: auto; transform: none; width: auto; max-width: none; grid-template-columns: 24px minmax(0,1fr); gap: 3px 6px; padding: 5px 6px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .virage-fleche { grid-row: 1 / 3; width: 24px; height: 24px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .annonce-virage { position: static; inset: auto; transform: none; width: auto; max-width: none; grid-template-columns: 21px minmax(0,1fr); gap: 1px 5px; padding: 4px 6px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .virage-fleche { grid-row: 1 / 3; width: 21px; height: 21px; }
   body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .virage-nom { font-size: 13px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .virage-distance { grid-column: 2; text-align: left; font-size: 15px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .virage-distance { grid-column: 2; text-align: left; font-size: 13px; }
   /* Les compteurs supplémentaires restent dans la bande extérieure, même en petit paysage.
      Vitesse, unité, régime et rapport sont tous conservés ; le mode planche seule reste inchangé. */
   body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .tableau { min-width: 0; width: min(160px,20cqh); padding: 0; gap: 6px; }
@@ -642,6 +651,13 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   body:not(.tactile) #jeu[data-partage="haut-bas"] :is(#hud, #hud2)[data-vue="cockpit"] .classement li { padding-block: 0; }
   body:not(.tactile) #jeu[data-partage="haut-bas"] :is(#hud, #hud2)[data-vue="cockpit"] .case.sante .nom-pneus { margin-top: 4px; }
   body:not(.tactile) #jeu[data-partage="haut-bas"] :is(#hud, #hud2)[data-vue="cockpit"] .case.sante .barre-sante { margin-top: 2px; }
+}
+
+/* En partage horizontal très large, réserver l’emprise réelle de la carte sous le classement. */
+@container affichage-course (min-aspect-ratio: 2/1) {
+  body:not(.tactile) #jeu[data-partage="haut-bas"][data-carte-position="bas-gauche"]:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .hud-rivaux {
+    bottom: calc(var(--carte-cote) + var(--marge) + 8px);
+  }
 }
 
 /* Entre 6/5 et 2/1, les glaces occupent les coins hauts : la carte prend une place réservée entre les

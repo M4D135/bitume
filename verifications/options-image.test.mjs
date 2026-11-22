@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 const require = createRequire(import.meta.url);
 require('../src/graphismes.js');
+require('../src/detail-peripherique.js');
 require('../src/pneus.js');
 require('../src/ambiance.js');
 require('../src/saisons.js');

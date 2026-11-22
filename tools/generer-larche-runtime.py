@@ -12,7 +12,7 @@ Conventions runtime explicites (non présentées comme mesures terrain) :
 - Lissage local de la chaussée si une marche LiDAR ponctuelle dépasse 15 % de pente sur < 30 m (artefact MNT 5 m).
 - Largeur de chaussée course : 11 m (5,5 m/voie pour une 2 voies SS21 jouable en GT/F1).
 """
-import json, math, pathlib
+import base64, json, math, pathlib, struct
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / 'docs' / 'references' / 'larche-vinadio-2026' / 'trace-l1.json'
@@ -116,6 +116,21 @@ def main():
     # Altitude du lac : proche de la route aux alentours de s = 800..1100 m (1974 m IGN/Piemonte)
     lac_y = round(1974.0 - ALT_BASE, 1)
 
+    # Le MNT de vallée est redistribué avec attribution. Coordonnées au centre
+    # des pixels GeoTIFF, Z du jeu vers le sud et même origine verticale que la piste.
+    dtm = json.loads((SRC.parent / 'sources/piemonte-dtm5-samples.json').read_text())
+    grille = dtm['valleyOverview100m']
+    pas = grille['resM']
+    hauteurs = [round(y - ALT_BASE) if y is not None else -32768 for y in grille['elevationsM']]
+    relief = {
+        'source': 'Regione Piemonte, RIPRESA AEREA ICE 2009–2011 — DTM 5, CC BY 4.0',
+        'licence': 'https://creativecommons.org/licenses/by/4.0/',
+        'pas': pas, 'nx': grille['width'], 'nz': grille['height'],
+        'x0': round(grille['originE'] + pas / 2 - origin_e, 3),
+        'z0': round(origin_n - grille['originN'] + pas / 2, 3),
+        'metresI16LE': base64.b64encode(struct.pack(f'<{len(hauteurs)}h', *hauteurs)).decode('ascii'),
+    }
+
     payload = {
         'provenance': {
             'source': 'docs/references/larche-vinadio-2026/trace-l1.json',
@@ -124,6 +139,7 @@ def main():
             'conventionsRuntime': 'Largeur chaussée 11 m (SS21 2 voies), radier interpolé linéairement entre portails sur tunnels/ponts, lissage local artefacts DTM5m > 14,5 %, dévers léger dérivé de courbure',
         },
         'altitudeBaseM': ALT_BASE,
+        'reliefVallee': relief,
         'altitudeDepartM': round(y_arr[0], 2),
         'altitudeArriveeM': round(y_arr[tr['resume']['nbPointsCourse'] - 1], 2),
         'longueurCourseM': round(tr['resume']['longueurPlanCourseM'], 2),
