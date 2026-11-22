@@ -157,7 +157,7 @@
       const e = ev[i];
       if (e.type === 'contact') contact(fx, co, poses, e);
       else if (e.type === 'roue' || e.type === 'casse' || e.type === 'panneau') detacher(fx, co, poses, e);
-      else if (e.repositionnement) lacher(fx, e.id);
+      if (e.repositionnement) lacher(fx, e.id);
     }
     fx.acc += dt;
     if (fx.acc < PAS * .999) return;
@@ -170,6 +170,7 @@
       let ds = (et.s - ref) % L;
       if (ds > L / 2) ds -= L; else if (ds < -L / 2) ds += L;
       if (!p || (k !== suivie && Math.abs(ds) > PORTEE)) { lacher(fx, k); continue; }
+      if (et.v === 0) { lacher(fx, k, false); continue; }
       attitude(MV, p);
       const cap = p.cap - (et.beta || 0);
       VC[0] = Math.cos(cap) * et.v; VC[1] = Math.sin(cap) * et.v; VC[2] = eau;
@@ -197,9 +198,9 @@
     }
   }
 
-  function lacher(fx, k) {
+  function lacher(fx, k, reinitialiserPieces = true) {
     for (let w = 0; w < 4; w++) { fx.valide[k * 4 + w] = 0; fx.ouverte[k * 4 + w] = -1; }
-    if (fx.pieces) fx.pieces[k] = 0;   // la voiture est neuve ici : son budget de pièces repart
+    if (reinitialiserPieces && fx.pieces) fx.pieces[k] = 0;
   }
 
   function roue(fx, k, w, et, p, auSol, herbe) {
