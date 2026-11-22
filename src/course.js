@@ -113,7 +113,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     // goût de la défense, régularité d'un tour à l'autre ; tiré à part, sans changer la grille.
     for (const v of voitures) {
       const h = mulberry32((graine ^ Math.imul(v.id + 1, 0x9E3779B1)) >>> 0);
-      Object.assign(v.ia, { agressivite: v.joueur ? .5 : .25 + .75 * h(), defense: v.joueur ? 0 : h(), regularite: v.joueur ? 1 : .55 + .45 * h(), forme: 1, sillage: -1, defend: 0, defendu: -1,
+      Object.assign(v.ia, { agressivite: v.joueur ? .5 : .25 + .75 * h(), defense: v.joueur ? 0 : h(), regularite: v.joueur ? 1 : .55 + .45 * h(), forme: 1, sillage: -1, defend: 0, defendu: -1, adversaireDefense: -1, perteDefense: null,
         t: 0, derniereAttaque: -99, attaques: 0, abandons: 0, presses: 0, presse: -1, tenu: -99, changements: 0,
         // Champs posés en cours de course, déclarés ici dans un ordre fixe : toutes les voitures gardent la même
         // forme d'objet et le pas de l'IA reste compilé pour une seule (sinon chaque voiture les ajoute dans son
@@ -305,18 +305,37 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       ia.sillage = gap > 6 && gap < 45 && Math.abs(devant.etat.v - vit) < 6 ? devant.id : -1;
     } else ia.sillage = -1;
     // Défense.
-    if (!recuperer && kAv && ia.cible < 0 && (ia.defense || 0) > .45 && course.phase === 'course') {
+    if (ia.defend) {
+      const o = V[ia.adversaireDefense];
+      let dansLeSillage = false;
+      if (o && !o.fini && !o.abandon && !horsService(o.etat)) {
+        const ds = ecart(c, o.etat.s, e.s);
+        dansLeSillage = ds > 0 && ds < 15 + moiLong && Math.abs(o.etat.d - e.d) < 5;
+      }
+      if (dansLeSillage) ia.perteDefense = null;
+      else if (ia.perteDefense == null) ia.perteDefense = ia.t;
+      else if (ia.t - ia.perteDefense >= .5) {
+        ia.defend = 0;
+        ia.adversaireDefense = -1;
+        ia.perteDefense = null;
+      }
+    } else if (!recuperer && kAv && ia.cible < 0 && (ia.defense || 0) > .45 && course.phase === 'course') {
       const virage = (i0 + Math.round(Math.max(60, v2 / 20 + 30) / P)) / 40 | 0;
       if (ia.defendu !== virage) {
         for (let i = 0; i < V.length; i++) {
           const o = V[i];
-          if (o === v || o.fini) continue;
+          if (o === v || o.fini || o.abandon || horsService(o.etat)) continue;
           const ds = ecart(c, o.etat.s, e.s);
-          if (ds > 2 && ds < 12 + moiLong && Math.abs(o.etat.d - e.d) < 4) { ia.defend = Math.sign(kAv); ia.defendu = virage; break; }
+          if (ds > 2 && ds < 12 + moiLong && Math.abs(o.etat.d - e.d) < 4) {
+            ia.defend = Math.sign(kAv);
+            ia.defendu = virage;
+            ia.adversaireDefense = i;
+            ia.perteDefense = null;
+            break;
+          }
         }
       }
     }
-    if (!kAv && ia.defend && Math.abs(kIci) < 3e-3) ia.defend = 0;
     // Blocage (lot 3).
     const gene = !!devant && devant.etat.v < vit - 10;
     if (!recuperer && !gene && ia.cible < 0 && Math.abs(e.d) <= utile && (ia.agressivite || 0) > .55 && course.phase === 'course') {
@@ -403,8 +422,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     let vise = ia.cible >= 0 ? ia.decalVise : 0, vLat = (ia.cible >= 0 ? (devant && vit > devant.etat.v + 8 ? 6.0 : 3.0) : recuperer ? 4 : .8) * dt;
     if (ia.cible < 0 && !recuperer) {
       if (ia.presse >= 0) { vise = e.d - base; vLat = 1.2 * dt; }
-      else if (ia.sillage >= 0) { vise = clamp(course.voitures[ia.sillage].etat.d - base, -utile - base, utile - base); vLat = 1.6 * dt; }
       else if (ia.defend) { vise = ia.defend * (utile - .6) - base; vLat = 2.2 * dt; cible *= .985; }
+      else if (ia.sillage >= 0) { vise = clamp(course.voitures[ia.sillage].etat.d - base, -utile - base, utile - base); vLat = 1.6 * dt; }
     }
     ia.decalDep += clamp(vise - ia.decalDep, -vLat, vLat);
 
