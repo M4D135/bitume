@@ -10,10 +10,10 @@
   const ramener = (s, L) => ((s % L) + L) % L;
 
   // Catalogue progressif : graines originales fixes, tracés générés par circuit.js.
-  // Catalogue épuré (10 identités vraiment uniques, doublons fusionnés : Port-Sable→Corail,
-  // Haut-Col/Carpates/Andes→Route-des-Cimes & Larche, Roche-Fauve→Sierra, Écosse→Val-Brûlé).
+  // Catalogue épuré (11 identités vraiment uniques : 10 circuits signature + Marseille Vieux-Port → Corniche).
   const CATALOGUE = [
     { id: 'val-brule', nom: 'Val-Brûlé', lieu: 'Forêt tempérée', theme: 'foret', graine: 11, longueur: 4200 },
+    { id: 'marseille', nom: 'Marseille · Vieux-Port → Corniche', lieu: 'Méditerranée · Vieux-Port, Vallon des Auffes & David', theme: 'cote', graine: 313, longueur: 5992, ouvert: true },
     { id: 'corail', nom: 'Baie-du-Corail', lieu: 'Lagon turquoise · atoll et phare blanc', theme: 'corail', graine: 283, longueur: 4500 },
     { id: 'cap-sequoia', nom: 'Cap-Séquoia', lieu: 'États-Unis · falaises du Pacifique', theme: 'pacifique', graine: 157, longueur: 5200 },
     { id: 'fjord', nom: 'Fjord-d’Argent', lieu: 'Norvège · fjord de granit et cascade', theme: 'fjord', graine: 223, longueur: 5100 },
@@ -141,7 +141,9 @@
       const k = CATALOGUE[i];
       circuits[i] = k.id === 'larche' && B.larche
         ? B.larche.creer(k.graine)
-        : B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition });
+        : k.id === 'marseille' && B.marseille
+          ? B.marseille.creer(k.graine)
+          : B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition });
       // lot 22F : le parapet, le muret ou le bord du fossé d'un bord dangereux devient la limite (une fois, à la création)
       if (B.bords && !circuits[i].ouvert) B.bords.limites(circuits[i], B.bords.planifier(circuits[i]));
     }
@@ -3088,6 +3090,13 @@
       else ctxSig.phase = 'vert';
       B.signalisationCourse.mettreAJour(sig, S.tRendu, ctxSig, sortie);
     }
+    // Équipe F1 des stands (12 mécaniciens, roues, essence, sucette STOP → GO ! & LEDs portiques)
+    if (B.equipeStands && c.stands && S.type !== 'vitrine') {
+      const eq = S.equipeStands || (S.equipeStands = creationTardive('equipeStands', B.equipeStands.creer(c, scene.decor)));
+      const ctxEq = S.equipeStandsVue || (S.equipeStandsVue = creationTardive('contexteEquipeStands', { course: null, nuit: 0, cameraPos: null }));
+      ctxEq.course = co; ctxEq.nuit = S.nature?.ambiance?.nuit || 0; ctxEq.cameraPos = cam.pos;
+      B.equipeStands.animer(eq, S.tRendu, ctxEq, sortie);
+    }
     // Animaux des abords : poses du cerveau interpolées à l'instant affiché des voitures (même horloge de course,
     // mêmes images à 30, 60 ou 120 images/s). Quelques animaux proches en Légère ; aucune pose
     // hors de la vue principale et des champs réfléchis réellement actifs. Contextes préchargés.
@@ -3541,8 +3550,8 @@
     // Santé (lot 4) : la jauge vient du même état que les pénalités et la réparation (B.degats.sante), jamais d'un
     // compteur monté pour le seul affichage. Le stand y ajoute son fil : voie, service avec le temps restant, sortie.
     const av = et.degats, st = et.stands, s01 = B.degats.sante(av);
-    texte(H['h-sante'], st ? (st.phase === 'service' ? 'Service ' + Math.max(0, st.duree - st.t).toFixed(1) + ' s'
-      : st.repare ? 'Réparée' : 'Stand') : s01 > .999 ? 'Neuve' : Math.round(s01 * 100) + ' %');
+    texte(H['h-sante'], st ? (st.phase === 'service' ? 'Stands · ' + Math.max(0, st.duree - st.t).toFixed(1) + ' s'
+      : st.repare ? 'GO ! Sortie stands' : 'Voie stands · 40 km/h') : s01 > .999 ? 'Neuve' : Math.round(s01 * 100) + ' %');
     style(H['h-sante-barre'], '--f', s01.toFixed(2));
     attr(H['c-sante'], 'data-sante', s01 > .999 ? 'neuve' : s01 > .55 ? 'abimee' : 'grave');
     attr(H['c-sante'], 'data-phase', st ? st.phase : 'piste');
@@ -3834,12 +3843,12 @@
     $('o-tours').hidden = $('o-difficulte').hidden = modePrepa === 'chrono';
     $('o-chrono').hidden = modePrepa !== 'chrono';
     const zone = $('circuits');
-    const BIOME_COULEURS = { foret: '#39ff8e', cote: '#00d4ff', montagne: '#8ee8ff', larche: '#5cd6ff', islande: '#ff6b35', desert: '#ffb84d', asie: '#ff66b2', pacifique: '#2dd4bf', baikal: '#60a5fa', fjord: '#38bdf8', carpates: '#a3e635', ecosse: '#34d399', sierra: '#fb923c', corail: '#22d3ee', andes: '#c084fc' };
-    const CATS = { tous: null, 'forets-cotes': ['val-brule', 'corail', 'cap-sequoia', 'fjord'], montagnes: ['route-des-cimes', 'larche'], sauvages: ['lande-noire', 'sierra', 'brume-de-jade', 'baikal'] };
+    const BIOME_COULEURS = { foret: '#39ff8e', cote: '#00d4ff', marseille: '#00c8ff', montagne: '#8ee8ff', larche: '#5cd6ff', islande: '#ff6b35', desert: '#ffb84d', asie: '#ff66b2', pacifique: '#2dd4bf', baikal: '#60a5fa', fjord: '#38bdf8', carpates: '#a3e635', ecosse: '#34d399', sierra: '#fb923c', corail: '#22d3ee', andes: '#c084fc' };
+    const CATS = { tous: null, 'forets-cotes': ['val-brule', 'marseille', 'corail', 'cap-sequoia', 'fjord'], montagnes: ['route-des-cimes', 'larche'], sauvages: ['lande-noire', 'sierra', 'brume-de-jade', 'baikal'] };
     if (!zone.childElementCount) {
       CATALOGUE.forEach((k, i) => {
         const b = document.createElement('button');
-        const clefTheme = k.id === 'larche' ? 'larche' : (k.theme || 'foret');
+        const clefTheme = k.id === 'larche' ? 'larche' : k.id === 'marseille' ? 'marseille' : (k.theme || 'foret');
         b.type = 'button'; b.className = 'carte-circuit'; b.setAttribute('role', 'radio'); b.dataset.index = i; b.dataset.id = k.id; b.dataset.theme = clefTheme;
         b.style.setProperty('--biome', BIOME_COULEURS[clefTheme] || '#39ff8e');
         b.style.animationDelay = (i * 18) + 'ms';
@@ -4445,6 +4454,10 @@
       if (B.sillage && !S.sillage) S.sillage = B.sillage.creer();
       if (B.aeriens && !S.aeriens && S.type !== 'vitrine') S.aeriens = B.aeriens.creer(c, { qualite: profilDe(S).palier });
       if (B.signalisationCourse && !S.signalisation && S.type !== 'vitrine' && scene?.decor) S.signalisation = B.signalisationCourse.creer(c, scene.decor);
+      if (B.equipeStands && c.stands && !S.equipeStands && S.type !== 'vitrine' && scene?.decor) {
+        S.equipeStands = B.equipeStands.creer(c, scene.decor);
+        S.equipeStandsVue = { course: co, nuit: 0, cameraPos: null };
+      }
       if (B.cameraTransition && !S.camTransition) S.camTransition = B.cameraTransition.creer();
       if (!S.ambianceImage) S.ambianceImage = {};
       // pluie projetée et vitre : celles du joueur 2 aussi, à deux

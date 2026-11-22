@@ -285,9 +285,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
   // ---------------------------------------------------------------- création
   function creer(graine, options = {}) {
     if (options.partition !== undefined) {
+      if (options.partition === 'marseille' && B.marseille) return B.marseille.creer(graine, options);
       if (options.partition !== 'route-des-cimes' || graine !== 181 || !B.routeDesCimes) throw new Error('BITUME : partition absente ou identité invalide');
       return B.routeDesCimes.creer();
     }
+    if (options.id === 'marseille' && B.marseille) return B.marseille.creer(graine, options);
     const theme = options.theme || 'foret', vise = options.longueur || 4500, nom = options.nom || 'Circuit ' + graine;
     for (let essai = 0; essai < 400; essai++) {
       const r = alea((graine >>> 0) * 2654435761 + essai * 40503);
@@ -624,6 +626,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
   }
   function valider(c) {
     if (c && c.partition === 'route-des-cimes') return B.routeDesCimes.valider(c);
+    if (c && c.id === 'marseille' && B.marseille) return B.marseille.valider(c);
     if (c && c.type === 'trace-explicite') return validerTrace(c);
     const pb = [];
     const finis = ['x', 'y', 'z', 'cap', 'courbure', 'pente', 'devers', 'ligne', 'vitesse'].every(k => c[k].length === c.n && c[k].every(Number.isFinite));

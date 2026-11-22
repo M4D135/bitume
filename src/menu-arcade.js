@@ -9,6 +9,7 @@
   const THEMES = Object.freeze({
     foret:    { bg0:'#0a1f14', bg1:'#041208', halo:'#1aff6e', grid:'#0f4a2a', accent:'#39ff8e' },
     cote:     { bg0:'#081a2e', bg1:'#030d1a', halo:'#00cfff', grid:'#0a3355', accent:'#00e5ff' },
+    marseille:{ bg0:'#071d32', bg1:'#030f1e', halo:'#00c8ff', grid:'#0a3b64', accent:'#ffd166' },
     corail:   { bg0:'#06152a', bg1:'#020a18', halo:'#00b4d8', grid:'#083050', accent:'#48cae4' },
     montagne: { bg0:'#0c1520', bg1:'#050a10', halo:'#7ec8e3', grid:'#1a3050', accent:'#a8dadc' },
     larche:   { bg0:'#0b1422', bg1:'#040912', halo:'#6db3f2', grid:'#162d4a', accent:'#90caf9' },
@@ -24,7 +25,9 @@
   });
   const THEME_DEFAUT = THEMES.foret;
   function themeDe(source) {
-    if (!source || !source.theme) return THEME_DEFAUT;
+    if (!source) return THEME_DEFAUT;
+    if (source.id && THEMES[source.id]) return THEMES[source.id];
+    if (!source.theme) return THEME_DEFAUT;
     return THEMES[source.theme] || THEME_DEFAUT;
   }
 
