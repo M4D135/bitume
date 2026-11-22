@@ -283,6 +283,12 @@
         const proche = clamp((profondeur - .8) / 2, 0, 1);
         const loin = clamp((30 - profondeur) / 10, 0, 1);
         if (graineMasque[i] >= proche * loin || (o.cockpit && ey >= h * .86)) continue;
+        if (boites.length) {
+          point[0] = pos[0] + x; point[1] = pos[1] + y; point[2] = pos[2] + z;
+          if (sousCouvert(o.circuit, point, boites)) {
+            stats.spatiaux++; stats.abrites++; continue;
+          }
+        }
         // La vitesse relative produit une vraie expansion à grande vitesse, même droit devant.
         const tx = x - (ventX - vx) * exposition, ty = y + (chute + vy) * exposition, tz = z - (ventZ - vz) * exposition;
         const dp = tx * fx + ty * fy + tz * fz;
@@ -306,13 +312,12 @@
           // au milieu de la seule portion réellement dessinée, surtout à grande vitesse.
           const fractionMonde = fractionEcran * profondeur / (dp * (1 - fractionEcran) + fractionEcran * profondeur);
           const profondeurQueue = profondeur + (dp - profondeur) * fractionMonde;
-          point[0] = pos[0] + x; point[1] = pos[1] + y; point[2] = pos[2] + z;
           queue[0] = point[0] + (tx - x) * fractionMonde;
           queue[1] = point[1] + (ty - y) * fractionMonde;
           queue[2] = point[2] + (tz - z) * fractionMonde;
           if (presDuCouvert(pos, point, queue, boites)) {
             stats.spatiaux++;
-            if (sousCouvert(o.circuit, point, boites) || sousCouvert(o.circuit, queue, boites)) { stats.abrites++; continue; }
+            if (sousCouvert(o.circuit, queue, boites)) { stats.abrites++; continue; }
             // Une paroi coupe le trait avant toute sonde verticale ou supplémentaire.
             if (occulte(pos, point, o.physique)) { stats.occultes++; continue; }
             if (sousToitReel(point, o.physique, boites, hit, stats) || sousToitReel(queue, o.physique, boites, hit, stats)) { stats.abrites++; continue; }
