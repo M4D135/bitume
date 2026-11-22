@@ -40,7 +40,7 @@ test('vibration : un joueur en course la reçoit',()=>assert.equal(vibre('course
 for(const ecran of ['titre','preparation','reglages','pause','resultats','demo','enligne','prets'])test('vibration : aucune sur l’écran '+ecran,()=>assert.equal(vibre(ecran,false),false));
 test('vibration : aucune quand l’ordinateur conduit (vitrine des menus, démo, outils)',()=>assert.equal(vibre('course',true),false));
 test('vibration : aucune si le réglage est à non',()=>assert.equal(vibre('course',false,'non'),false));
-test('vibration : la vitrine et la démo passent par le garde-fou',()=>{assert.match(extract('pasSimulation'),/const vibre = manetteVibre\(auto\);/);assert.match(extract('aller'),/if \(nom !== 'course'\) arreterManettes\(\);/)});
+test('vibration : la vitrine et la démo passent par le garde-fou',()=>{assert.match(extract('pasSimulation'),/const vibre = manetteVibre\(auto\);/);assert.match(extract('aller'),/if \(nom !== 'course'\)\s*\{?\s*arreterManettes\(\);/)});
 // Vibrations par image : le vrai bloc de jeu.js et le vrai module src/vibrations.js, une manette simulée. Le pas
 // retient les événements derrière le garde-fou ; l'image rendue calcule une fois et reprogramme au plus ~30 fois/s.
 test('vibration : les pas retiennent derrière le garde-fou, chaque image rendue calcule',()=>{

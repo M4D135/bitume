@@ -21,7 +21,7 @@ function fonction(nom) {
 }
 const noms = ['contratPiste', 'choixPneusLocaux', 'pneusAutomatiques', 'appliquerConseilPneus', 'choisirPneusPilote', 'majChoixPneus',
   'monterPneusDepart', 'choisirPneusStands', 'majPneusStands', 'initialiserPneusReseau', 'envoyerPneusReseau',
-  'recevoirPneusReseau', 'recevoirEtatEnLigne', 'reprendrePneusReseau', 'actualiserPneusDistants', 'traiter'];
+  'recevoirPneusReseau', 'recevoirEtatEnLigne', 'reprendrePneusReseau', 'actualiserPneusDistants', 'annoncerRecuperation', 'traiter'];
 const ajouts = noms.filter(n => !reseau.includes('  function ' + n + '(')).map(fonction).join('\n');
 const catalogue = source.match(/  const CATALOGUE = \[[\s\S]*?\n  \];/)[0];
 const assembler = new Function('B', `
