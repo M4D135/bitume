@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Réception du passage opaque/FX sur le vrai rendu du jeu. La caméra de diagnostic
+// Réception du fondu de couverture opaque sur le vrai rendu du jeu. La caméra de diagnostic
 // grossit un animal naturel ; ni population, ni pose, ni matériau ne sont déplacés.
 // Chaque vue possède un témoin qui omet seulement la sortie animaux après son calcul
 // natif. Cette paire isole leur contribution aux pixels, pas les performances.
@@ -78,15 +78,15 @@ export function preparerFondu(s) {
       const V = etat.vues[0], pose = A.poseAnimal(etat, ancre.animal, t, {});
       const opacite = V.lod[ancre.animal] ? V.opacites[ancre.animal] : 0;
       // L'opacité calculée pour l'entité distingue sa silhouette des voisins du troupeau
-      // qui peuvent déjà avoir franchi le seuil ; en opaque, tous ces voisins sont aussi opaques.
-      const proches = V.lod[ancre.animal] ? sortie.slice(debut).filter(o => o.alpha === opacite && o.animal === ancre.espece && o.p &&
+      // qui peuvent déjà avoir franchi le seuil ; à pleine couverture, plusieurs voisins partagent 1.
+      const proches = V.lod[ancre.animal] ? sortie.slice(debut).filter(o => o.opacity === opacite && o.animal === ancre.espece && o.p &&
         Math.hypot(o.p[0] - pose.x, o.p[2] - pose.z) < Math.max(3, ancre.longueur * 1.5))
         : [];
       F.derniere = { temps: t, pose, lod: V.lod[ancre.animal],
         opacite,
         distance: V.lod[ancre.animal] ? V.dist[ancre.animal] : null,
         objets: proches.map(o => ({ forme: o.shape, p: Array.from(o.p), s: Array.from(o.s), r: Array.from(o.r),
-          couleur: Array.from(o.color), mat: o.mat, alpha: o.alpha, fx: o.fx, priorite: o.fxPriority || null })),
+          couleur: Array.from(o.color), mat: o.mat, alpha: o.alpha, opacity: o.opacity, fx: o.fx, priorite: o.fxPriority || null })),
         objetsNatifs: sortie.length - debut };
       if (F.temoin) sortie.length = debut;
     }
@@ -168,7 +168,7 @@ function analyserPassage(r, dossier) {
   for (const e of r.avertissements || []) if (/GL_INVALID|shader.*(error|failed)|GLSL|context lost/i.test(e)) erreurs.push(e);
   if (r.images.length !== DISTANCES_FONDU.length * 2) erreurs.push('Douze images requises');
   if (!r.environnement.webgl2 || !r.environnement.physx?.ready) erreurs.push('WebGL2/PhysX réel absent');
-  let poseInitiale = null, tempsInitial = null, alphaPrecedent = 1;
+  let poseInitiale = null, tempsInitial = null, opacitePrecedente = 1;
   for (let i = 0; i + 1 < r.images.length; i += 2) {
     const im = r.images[i], sans = r.images[i + 1], a = im.observation, b = sans.observation;
     if (!a?.animaux || !b?.animaux || !a.rendu || !b.rendu) { erreurs.push('Observation de rendu absente'); continue; }
@@ -186,34 +186,36 @@ function analyserPassage(r, dossier) {
     if (a.fraction < 1) {
       if (!a.animaux.lod || !a.animaux.objets.length) erreurs.push('Animal naturel absent avant extinction');
       if (Math.abs(a.animaux.distance - a.distanceDemandee) > .001) erreurs.push('Distance de fondu différente de la distance prescrite');
-      if (a.fraction < .8 && a.animaux.objets.some(o => o.fx || o.alpha !== 1)) erreurs.push('Retour opaque absent');
-      if (a.fraction > .8 && a.animaux.objets.some(o => !o.fx || o.alpha >= 1 || o.alpha <= 0)) erreurs.push('Passe FX/opacité attendue absente');
+      if (a.animaux.objets.some(o => o.fx || o.alpha !== 1 || o.priorite)) erreurs.push('Corps animal passé en FX');
+      if (a.fraction < .8 && a.animaux.objets.some(o => o.opacity !== 1)) erreurs.push('Retour opaque absent');
+      if (a.fraction > .8 && a.animaux.objets.some(o => !Number.isFinite(o.opacity) || o.opacity >= 1 || o.opacity <= 0))
+        erreurs.push('Couverture opaque attendue absente');
     } else if (a.animaux.lod || a.animaux.opacite) erreurs.push('Animal sélectionné au-delà de la portée');
-    if (i < 10 && a.animaux.opacite > alphaPrecedent) erreurs.push('Alpha non décroissant');
-    alphaPrecedent = a.animaux.opacite;
+    if (i < 10 && a.animaux.opacite > opacitePrecedente) erreurs.push('Opacité non décroissante');
+    opacitePrecedente = a.animaux.opacite;
     const image = decoderPng(readFileSync(path.join(dossier, im.fichier))), temoin = decoderPng(readFileSync(path.join(dossier, sans.fichier)));
     const m = mesurerContribution(image, temoin, a.zone), { masque, ...resume } = m;
     if (a.fraction === .799 && !m.pixelsContribuants) erreurs.push('Animal opaque sans contribution visible dans la zone');
     const masqueFichier = String(i).padStart(4, '0') + '-contribution.json';
     writeFileSync(path.join(dossier, masqueFichier), JSON.stringify({ format: 'pixels-rgb-signes-1', ...resume, pixels: masque }) + '\n');
     mesures.push({ fraction: a.fraction, image: im.fichier, temoin: sans.fichier, masque: masqueFichier,
-      alphaCPU: a.animaux.opacite, lod: a.animaux.lod, ...resume });
+      opaciteCPU: a.animaux.opacite, lod: a.animaux.lod, ...resume });
   }
   const retour = mesures.length === 6 ? { memeContribution: mesures[0].empreinteContribution === mesures[5].empreinteContribution,
     aller: mesures[0].empreinteContribution, retour: mesures[5].empreinteContribution } : null;
   if (retour && !retour.memeContribution) erreurs.push('Retour à la même caméra/pose : pixels animaux différents');
   return { erreurs: [...new Set(erreurs)], mesures, retour,
-    receptionVisuelle: 'obligatoire : aucun seuil automatique ne déclare la continuité opaque/FX acceptable' };
+    receptionVisuelle: 'obligatoire : aucun seuil automatique ne déclare la continuité du modelé pendant le fondu acceptable' };
 }
 
 export async function campagneFondu(o) {
   mkdirSync(o.sortie, { recursive: true });
-  const rapport = { format: 'bitume-faune-fondu-1', passages: [], echecsStructurels: 0,
+  const rapport = { format: 'bitume-faune-fondu-2', passages: [], echecsStructurels: 0,
     receptionVisuelle: 'a_recevoir',
     limites: ['Caméra de diagnostic 10° : aucune validation du cadrage de conduite ou de FPS.',
       'Le témoin omet uniquement les objets rendus par animaux.dessiner après leur préparation native ; population et shader inchangés.',
       'Les métriques isolent les pixels animaux et leurs effets dans une zone ; ce ne sont pas des mesures photométriques HDR.',
-      'La continuité opaque/FX exige l’inspection des PNG, particulièrement .799/.801 jour et nuit ; aucun seuil ne la valide automatiquement.',
+      'La continuité du modelé pendant le fondu exige l’inspection des PNG, particulièrement .799/.801 jour et nuit ; aucun seuil ne la valide automatiquement.',
       'Ce scénario ne qualifie ni J2 ni les rétroviseurs.'] };
   for (const id of o.cas) {
     const [qualite, moment] = id.split('-'), sortie = path.join(o.sortie, id);

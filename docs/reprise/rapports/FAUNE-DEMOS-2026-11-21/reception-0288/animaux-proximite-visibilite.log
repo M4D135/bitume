@@ -1,0 +1,13 @@
+ok chaque biome du catalogue possède une bande proche finie
+ok abords : chaque animal reste proche du vrai bord, hors du dégagement
+ok aucune vue au départ : cerveau et hasard restent immobiles
+ok sélection avant simulation : seuls les groupes du champ avancent
+ok sommeil long puis réveil : aucun rattrapage, aucun saut de position
+ok union J1/J2 et glaces : une vraie vue arrière compte, le booléen seul ne compte plus
+ok frustum vertical et distance : aucune pose détaillée hors champ
+ok Légère garde les animaux proches dans les budgets
+ok portées low/high : le fondu garde la matière et la géométrie dans la passe opaque FERRO
+ok fondu : une glace utile garde l’animal et les pools J1/J2 restent indépendants
+ok baleine : le souffle conserve son alpha FX, suit le fondu et ne survit pas au changement de détail
+ok même séquence de vues : simulation déterministe à 30/60/120 images par seconde
+12 contrôles animaux proximité/visibilité

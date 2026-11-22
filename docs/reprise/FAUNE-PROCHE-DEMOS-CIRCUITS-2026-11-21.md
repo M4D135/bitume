@@ -1,6 +1,18 @@
 # BITUME — faune proche et démos des circuits
 
-Date : 21 novembre 2026. **État : F1/F2 et D1/D2 préparés ; candidat 0.2.87 en réception.**
+Date : 22 novembre 2026. **État : candidat 0.2.88 / FERRO 0.3.16 en réception.**
+
+La .87 a terminé ses 203 suites Node, 8 tests Python, démos et proximité corrigée,
+mais reste **refusée visuellement** : le début de fondu FX perd le modelé du cerf.
+La .88 conserve les corps dans le rendu opaque avec couverture `opacity`, la matière,
+l'éclairage et la profondeur canoniques FERRO. La réserve FX des corps est supprimée ;
+les souffles gardent leur alpha et sont réinitialisés au retour silhouette.
+Build reproductible, 34 modules identiques et cinq suites ciblées réussies ;
+**CI complète et pixels du candidat exact restent à recevoir**.
+[Reçu .88](rapports/FAUNE-DEMOS-2026-11-21/reception-0288/CANDIDAT-0288.json).
+
+### Historique .85–.87 (états conservés)
+
 Base observée sur `main` : **0.2.85**, commit `0e7273c0361996b9c217e6f1051a9ef9a54b18c7`.
 Demandes publiées dans `7fb5dcc`, implémentation initiale dans `815158c` / 0.2.86.
 Les 81 captures des neuf circuits ont été inspectées : route, tracé et lieux cadrés,

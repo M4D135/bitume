@@ -1,0 +1,240 @@
+{
+  "context": {
+    "renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+    "version": "4.5 (Core Profile) Mesa 25.0.7-2+deb13u1",
+    "egl": "1.5",
+    "softwareThreads": 1
+  },
+  "baselineSha256": "4f1aec57d90908d3d8f7b827861c5962409fa22672800551e35634d1a1e272a8",
+  "candidateSha256": "eef34e287a5467b3ae967b0eed07c2bc14bd6788c602e11f07d1ebefafed2ac9",
+  "legacyComparisons": 120,
+  "cases": [
+    {
+      "name": "day-tint-1",
+      "opacity": 1,
+      "coverage": 1.0,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "day-tint-0.999925",
+      "opacity": 0.999925,
+      "coverage": 1.0,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "day-tint-0.9",
+      "opacity": 0.9,
+      "coverage": 0.90008544921875,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "day-tint-0.5",
+      "opacity": 0.5,
+      "coverage": 0.50042724609375,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "day-tint-0.1",
+      "opacity": 0.1,
+      "coverage": 0.099853515625,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "day-tint-7.5e-05",
+      "opacity": 7.5e-05,
+      "coverage": 0.00018310546875,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "day-tint-0",
+      "opacity": 0,
+      "coverage": 0.0,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "day-plain-1",
+      "opacity": 1,
+      "coverage": 1.0,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "day-plain-0.999925",
+      "opacity": 0.999925,
+      "coverage": 1.0,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "day-plain-0.9",
+      "opacity": 0.9,
+      "coverage": 0.90008544921875,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "day-plain-0.5",
+      "opacity": 0.5,
+      "coverage": 0.50042724609375,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "day-plain-0.1",
+      "opacity": 0.1,
+      "coverage": 0.099853515625,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "day-plain-7.5e-05",
+      "opacity": 7.5e-05,
+      "coverage": 0.00018310546875,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "day-plain-0",
+      "opacity": 0,
+      "coverage": 0.0,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "night-tint-1",
+      "opacity": 1,
+      "coverage": 1.0,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "night-tint-0.999925",
+      "opacity": 0.999925,
+      "coverage": 1.0,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "night-tint-0.9",
+      "opacity": 0.9,
+      "coverage": 0.90008544921875,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "night-tint-0.5",
+      "opacity": 0.5,
+      "coverage": 0.50042724609375,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "night-tint-0.1",
+      "opacity": 0.1,
+      "coverage": 0.099853515625,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "night-tint-7.5e-05",
+      "opacity": 7.5e-05,
+      "coverage": 0.00018310546875,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "night-tint-0",
+      "opacity": 0,
+      "coverage": 0.0,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "night-plain-1",
+      "opacity": 1,
+      "coverage": 1.0,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "night-plain-0.999925",
+      "opacity": 0.999925,
+      "coverage": 1.0,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "night-plain-0.9",
+      "opacity": 0.9,
+      "coverage": 0.90008544921875,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "night-plain-0.5",
+      "opacity": 0.5,
+      "coverage": 0.50042724609375,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "night-plain-0.1",
+      "opacity": 0.1,
+      "coverage": 0.099853515625,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "night-plain-7.5e-05",
+      "opacity": 7.5e-05,
+      "coverage": 0.00018310546875,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    },
+    {
+      "name": "night-plain-0",
+      "opacity": 0,
+      "coverage": 0.0,
+      "depthMatches": true,
+      "survivingColoursExact": true,
+      "objectAnchorError": 0.0
+    }
+  ],
+  "limits": [
+    "Procedural shader plane, not gameplay or hardware performance."
+  ]
+}

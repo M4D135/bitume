@@ -42,7 +42,7 @@ jobs:
           git diff --exit-code -- src/ construire.py VERSION.json SIZE.json dist/ FERRO.lock.json
           node --check tools/qualification/faune-fondu.mjs
           sha256sum tools/controle-visuel.mjs tools/qualification/faune-fondu.mjs > qualification-fondu/OUTILS-SHA256.txt
-      - name: Capturer la transition opaque et transparente de jour et de nuit
+      - name: Capturer le modelé et le fondu de couverture de jour et de nuit
         shell: bash
         run: |
           set -euo pipefail

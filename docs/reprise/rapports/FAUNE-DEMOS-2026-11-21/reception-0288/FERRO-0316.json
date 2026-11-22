@@ -1,0 +1,31 @@
+{
+  "sourceCommit": "eda17f82cfb33feda52cf4e3f730b4ab87ffc410",
+  "version": "0.3.16",
+  "modulesVerified": 34,
+  "targetedNodeTests": {
+    "passed": 4,
+    "failed": 0
+  },
+  "egl": {
+    "legacyComparisons": 120,
+    "opacityCases": 28,
+    "survivingColoursExact": true,
+    "depthMatches": true,
+    "context": {
+      "renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+      "version": "4.5 (Core Profile) Mesa 25.0.7-2+deb13u1",
+      "egl": "1.5",
+      "softwareThreads": 1
+    }
+  },
+  "review": {
+    "blockingFindings": [],
+    "notes": [
+      "Source snapshot materialized via GitHub connector; not a Git checkout.",
+      "Full-suite result is verified stored receipt: 217 passed, 0 failed, 1 historical TODO. Full suite not rerun here.",
+      "EMPRISE stored receipt: 5 original harnesses passed and 2 identical historical failures; no newly detected failure.",
+      "No WebGPU hardware execution or gameplay/FPS claim.",
+      "Actual BITUME deer reception required separately."
+    ]
+  }
+}

@@ -4360,9 +4360,9 @@
     for (const o of liste) { if (o.fx) effects++; else if (o.overlay) overlay++; else dynamic++; }
     const betes = B.animaux && S.animaux ? B.animaux.BUDGETS[reglages.faune === 'ultra' ? 'ultra' : 'high'].objets : 0;
     const flammes = B.echappement && S.ech ? S.course.voitures.length * B.echappement.OBJETS_PAR_VOITURE : 0;
-    // Les animaux passent brièvement en transparence à la limite de portée : réserver
-    // aussi ce flux pendant le chargement, avant le premier fondu en conduite.
-    return { dynamic: 2 * dynamic + betes, overlay: 2 * overlay, effects: 2 * effects + betes + flammes + 8 };
+    // Le fondu des animaux reste dans le flux opaque ; les huit effets réservés
+    // couvrent notamment les souffles, sans réserver une seconde fois leurs corps.
+    return { dynamic: 2 * dynamic + betes, overlay: 2 * overlay, effects: 2 * effects + flammes + 8 };
   }
   async function chaufferRendu(S, suite, synchrone, alpha = 0) {
     const t0 = performance.now(), E = etatChauffe(), voisins = machineLente(), r = { variantes: 0, retro: 0, prewarm: false, voisins, ms: 0 };

@@ -1,35 +1,32 @@
 # BITUME — reprise courte
 
-## Réception de la 0.2.87 — faune proche et démos
+## 0.2.88 — réception du fondu des animaux
 
-Base main : `7fb5dcc` / .85. Physique p15 et FERRO 0.3.15 conservés.
-Le candidat autorisé `4200e03` est publié sur GitHub sous `dbda6a7` :
-**même arbre exact** `49fffaac9612fc407eff02c3b608ce93b7d57b99`.
-HTML .87 : `d11860da1224be393a24f7d6873f466ad5448b0984e6569887c135c02e6ff9ff`.
+Main observé : **0.2.85**, `7fb5dcc`. Candidat : **0.2.88 / p15 / FERRO 0.3.16**,
+branche `codex/bitume-faune-fondu-0288-20261122`, depuis `5eefd967`.
 
-- Faune proche de la route, sommeil hors des vues utiles, J1/J2 et rétros actifs.
-- Démonstrations des neuf circuits centrées sur route, tracé et lieu.
-- Fondu de portée ajouté en .87 ; aucun changement de conduite ni de moteur.
-- Qualification locale : 203/203 suites Node et 8/8 contrôles Python.
-- CI distante `44952214196` en cours. Démonstrations `44952214169` :
-  81 images des neuf circuits inspectées, sans refus ; sécurité reçue, météo en cours.
+La .87 reste refusée : les PNG montrent une perte de modelé dès le début du fondu,
+malgré 203 suites Node et 8 tests Python réussis. Ses démos et sa proximité corrigée
+ont terminé avec succès ; les reçus anciens restent historiques.
 
-La première capture de proximité a correctement refusé high/low : le banc
-plaçait les états de conduite près d’un habitat mais laissait les corps PhysX
-sur la grille. La branche complémentaire corrige uniquement cet outillage,
-demande le replacement natif avant chauffe et contrôle le placement réel.
-Le témoin Faune désactivée réussit. Ne pas recevoir les images high/low initiales.
+La .88 importe les **34 modules canoniques** FERRO `eda17f82`. Les corps animaux
+gardent leur matière et leur éclairage dans la passe opaque ; `opacity` réduit
+progressivement leur couverture. Les souffles restent des effets transparents,
+avec remise à zéro après un changement de niveau de détail. La seconde réserve FX
+des corps est supprimée. Physique et démos conservées.
 
-Branche complémentaire : `codex/bitume-faune-demos-reception-0287-20261121`.
-Elle ajoute le contrôle visuel du passage opaque/FX, low/high, jour/nuit,
-et conserve le HTML .87 à l’identique. Réception de ces pixels avant main.
+Construction reproductible et **5/5 suites ciblées** réussies. FERRO : **4/4 contrôles
+opacité**, **120 comparaisons par défaut + 28 opacités EGL** réussies ici.
+Les reçus canoniques 217 réussites/1 TODO et EMPRISE sans nouvel échec sont vérifiés.
 
-[Reçu distant](docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-DISTANTE-0287.json)
+[Reçu du candidat](docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/reception-0288/CANDIDAT-0288.json)
 · [Fiche](docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md)
 
-## Suite
+## Suite immédiate
 
-1. Recevoir CI, neuf démos, faune proche corrigée et transition de distance.
-2. Corriger tout refus réel, puis intégrer le candidat qualifié sur main.
-3. Conserver essais matériels Xbox/iOS et autres lots ; aucun FPS matériel annoncé.
-4. Larche → Vinadio : L3/L4 puis sa démo lors de l’entrée au catalogue.
+1. Recevoir CI complète et PNG exacts : fondu low/high jour/nuit, proximité et démos.
+2. Inspecter .799/.801, disparition et retour ; les tests structurels ne valent pas réception visuelle.
+3. Corriger tout refus, puis publier le candidat qualifié sur main et vérifier la publication.
+4. Conserver PR 43, essais matériels Xbox/iOS et les autres lots ; poursuivre ensuite Larche → Vinadio L3/L4.
+
+Aucun déploiement du site ni FPS matériel annoncé par cette préparation.

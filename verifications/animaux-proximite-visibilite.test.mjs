@@ -119,27 +119,32 @@ function animalIsole() {
   return { etat, contexte };
 }
 
-verifier('portées low/high : la silhouette disparaît progressivement dans la vraie passe FX FERRO', () => {
+verifier('portées low/high : le fondu garde la matière et la géométrie dans la passe opaque FERRO', () => {
   for (const [qualite, portee] of [['low', 180], ['high', 360]]) {
     const { etat, contexte } = animalIsole(), sortie = [], V = etat.vues[0];
-    const opacites = V.opacites, objets = V.objets, taille = objets.length, pack = globalThis.FRender.shared.effectsPacker();
-    let precedente = 1, silhouette;
-    for (const fraction of [.7, .85, .9, .95, .99]) {
+    const opacites = V.opacites, objets = V.objets, taille = objets.length, pack = globalThis.FRender.shared.instancePacker();
+    let precedente = 1, silhouette, opaque;
+    for (const fraction of [.7, .799, .801, .85, .9, .95, .99]) {
       sortie.length = 0; A.dessiner(etat, 0, contexte(portee * fraction, qualite), sortie);
       assert.equal(sortie.length, 1, qualite + ' : silhouette encore présente dans le fondu');
       const o = sortie[0]; silhouette ||= o;
       assert.strictEqual(o, silhouette, 'même objet réutilisé pendant toute l’approche');
-      assert(o.alpha <= precedente && o.alpha > 0);
-      if (fraction === .7) { assert.equal(o.alpha, 1); assert.equal(o.fx, false); }
+      assert(o.opacity <= precedente && o.opacity > 0);
+      assert.equal(o.fx, false, 'le corps conserve son éclairage opaque');
+      assert.equal(o.fxPriority, undefined); assert.equal(o.alpha, 1, 'aucun détournement du contrat FX');
+      const lot = pack(sortie, null, true);
+      assert.equal(lot.length, 16, 'la forme animale entre dans le vrai packer opaque');
+      assert.equal(lot.groups[0].name, o.shape, 'le fondu conserve le maillage animal');
+      opaque ||= lot.values.slice();
+      assert.deepEqual(lot.values.subarray(0, 15), opaque.subarray(0, 15),
+        'position, dimensions, orientation, matière, lumière et couleur inchangées');
+      if (fraction < .8) { assert.equal(o.opacity, 1); assert.equal(lot.values[15], 1); }
       else {
-        assert(o.alpha < precedente, 'opacité strictement décroissante'); assert.equal(o.fx, true);
-        const lot = pack(sortie, null, contexte(portee * fraction, qualite).camera.pos);
-        assert.equal(lot.length, 16, 'la forme animale entre dans la passe transparente');
-        assert.equal(lot.groups[0].name, o.shape, 'le fondu conserve le maillage animal');
-        assert.equal(lot.values[3], 16, 'silhouette entière, sans masque de fumée au bord');
-        assert.equal(lot.values[15], o.alpha, 'alpha transmis au GPU par le vrai packer');
+        assert(o.opacity < precedente, 'opacité strictement décroissante');
+        assert(Math.abs(lot.values[15] - (2 + o.opacity)) < 2e-7,
+          'couverture transmise au GPU sans remplacer la matière');
       }
-      precedente = o.alpha;
+      precedente = o.opacity;
     }
     assert(precedente < .01, 'silhouette quasi invisible avant la limite');
     const poses = A.stats(etat).activite.posesPreparees;
@@ -148,8 +153,9 @@ verifier('portées low/high : la silhouette disparaît progressivement dans la v
     }
     assert.equal(A.stats(etat).activite.posesPreparees, poses, 'aucune pose après extinction');
     sortie.length = 0; A.dessiner(etat, 0, contexte(portee * .7, qualite), sortie);
-    assert.strictEqual(sortie[0], silhouette); assert.equal(silhouette.alpha, 1); assert.equal(silhouette.fx, false);
+    assert.strictEqual(sortie[0], silhouette); assert.equal(silhouette.opacity, 1); assert.equal(silhouette.alpha, 1); assert.equal(silhouette.fx, false);
     assert.equal(silhouette.fxPriority, undefined, 'la réutilisation restaure le rendu opaque');
+    assert.deepEqual(pack(sortie, null, true).values, opaque, 'retour aux octets opaques initiaux');
     assert.strictEqual(V.opacites, opacites); assert.strictEqual(V.objets, objets); assert.equal(objets.length, taille);
   }
 });
@@ -159,17 +165,52 @@ verifier('fondu : une glace utile garde l’animal et les pools J1/J2 restent in
   principale.vuesSecondaires = [miroir];
   const j1 = [], j2 = [];
   A.dessiner(etat, 0, principale, j1);
-  assert.equal(j1.length, 1); assert(j1[0].alpha > .49 && j1[0].alpha < .51, 'portée de la glace low respectée');
-  const alphaJ1 = j1[0].alpha;
+  assert.equal(j1.length, 1); assert(j1[0].opacity > .49 && j1[0].opacity < .51, 'portée de la glace low respectée');
+  const opaciteJ1 = j1[0].opacity;
   A.dessiner(etat, 0, contexte(40, 'high', 1), j2);
-  assert(j2.length > 0 && j2.every(o => o.alpha === 1 && !o.fx));
-  assert(!j2.includes(j1[0])); assert.equal(j1[0].alpha, alphaJ1, 'J2 ne change pas l’opacité de J1');
+  assert(j2.length > 0 && j2.every(o => o.opacity === 1 && !o.fx));
+  assert(!j2.includes(j1[0])); assert.equal(j1[0].opacity, opaciteJ1, 'J2 ne change pas l’opacité de J1');
   miroir.camera.pos[0] -= 40; j1.length = 0; A.dessiner(etat, 0, principale, j1);
-  assert(j1.length > 0 && j1.every(o => o.alpha === 1 && !o.fx), 'le champ proche prime sur le champ lointain');
+  assert(j1.length > 0 && j1.every(o => o.opacity === 1 && !o.fx), 'le champ proche prime sur le champ lointain');
   miroir.qualite = 'off'; j1.length = 0;
   const poses = A.stats(etat).activite.posesPreparees;
   A.dessiner(etat, 0, principale, j1); assert.equal(j1.length, 0);
   assert.equal(A.stats(etat).activite.posesPreparees, poses, 'une glace coupée ne prépare plus de pose');
+});
+
+verifier('baleine : le souffle conserve son alpha FX, suit le fondu et ne survit pas au changement de détail', () => {
+  const etat = creer(), espece = { ...A.ESPECES.baleine, cle: 'baleine' };
+  // Entité marine isolée : la disponibilité d'un habitat profond n'intervient pas
+  // dans ce contrôle du vrai poseur, de ses niveaux de détail et du pool d'effets.
+  const f = { e: espece, cle: 'baleine', md: A.MODELES.baleine, famille: 'marin', n: 1, premier: 0,
+    phase: 0, sens: 1, oiseaux: [{ th: 0, ech: 1 }], cx: c.x[0], cz: c.z[0], A: 22, B: 12, psi: 0, v: 2, periode: 90 };
+  etat.nAnimaux = 0; etat.nEntites = 1; etat.volants = [f];
+  const temps = f.periode * .035, pose = {};
+  assert.equal(A.poseVolant(etat, f, 0, temps, pose), true);
+  const contexte = (distance, fov = 10) => ({ vue: 0, qualite: 'high', camera: {
+    pos: [pose.x + distance, etat.G.eau, pose.z], yaw: -Math.PI / 2, pitch: 0, fov,
+  }, aspect: 16 / 9, hauteur: 720 });
+  const sortie = [], reserve = etat.vues[0].fx, packFx = globalThis.FRender.shared.effectsPacker();
+  A.dessiner(etat, temps, contexte(35), sortie);
+  const souffle = sortie.find(o => o.fx), alphaInitial = souffle?.alpha;
+  assert(souffle && alphaInitial > .3 && reserve.includes(souffle), 'vrai souffle détaillé présent');
+  sortie.length = 0; A.dessiner(etat, temps, contexte(324), sortie);
+  assert(sortie.includes(souffle), 'même effet du pool pendant le fondu');
+  const opacite = etat.vues[0].opacites[0];
+  assert(opacite > .49 && opacite < .51);
+  assert(Math.abs(souffle.alpha - alphaInitial * opacite) < 1e-7);
+  assert(sortie.filter(o => !o.fx).every(o => o.opacity === opacite && o.alpha === 1));
+  const lotFx = packFx([souffle], null, contexte(324).camera.pos);
+  assert.equal(lotFx.length, 16); assert.equal(lotFx.values[3], 7, 'le souffle garde sa matière FX, sans masque hazard');
+  assert(Math.abs(lotFx.values[15] - souffle.alpha) < 1e-7);
+  sortie.length = 0; A.dessiner(etat, temps, contexte(324, 150), sortie);
+  assert.equal(etat.vues[0].lod[0], 1); assert.equal(sortie.length, 1);
+  assert.equal(souffle.alpha, 0, 'aucun alpha résiduel après le retour à la silhouette');
+  assert(!sortie.some(o => o.fx));
+  sortie.length = 0; A.dessiner(etat, temps, contexte(365), sortie);
+  assert.equal(sortie.length, 0, 'aucun corps ni souffle après extinction');
+  sortie.length = 0; A.dessiner(etat, temps, contexte(35), sortie);
+  assert(sortie.includes(souffle)); assert.equal(souffle.alpha, alphaInitial, 'retour sans atténuation accumulée');
 });
 
 verifier('même séquence de vues : simulation déterministe à 30/60/120 images par seconde', () => {

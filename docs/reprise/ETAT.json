@@ -1,63 +1,45 @@
 {
-  "date": "2026-11-21",
+  "date": "2026-11-22",
   "etat_courant": {
     "version_courante": "0.2.85",
     "version_publiee_verifiee": "0.2.85",
     "physique": "p15",
-    "moteur": "FERRO 0.3.15 canonique",
+    "moteur": "FERRO 0.3.15 sur main ; 0.3.16 dans le candidat .88",
     "circuits": 9,
-    "commit_fusion": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
-    "tete_qualifiee": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
-    "statut": "candidat_publie_reception_en_cours",
+    "commit_fusion": "7fb5dcca58b6da5e7a2ca7aaea1192f86c5005af",
+    "tete_qualifiee": null,
+    "statut": "candidat_0288_construit_reception_requise",
     "lot": "faune_proche_demos_circuits",
     "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
     "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-21.md",
     "dernieres_demandes": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
     "dernier_lot_clos": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
-    "prochaine_action": "Recevoir CI et démos dbda6a7, puis faune proche corrigée et transition opaque/FX avant main.",
-    "branche_candidate": "codex/bitume-faune-demos-reception-0287-20261121",
-    "version_candidate": "0.2.87",
+    "prochaine_action": "Publier le candidat puis recevoir CI complète, images fondu/proximité/démos, inspecter et intégrer sur main.",
+    "branche_candidate": "codex/bitume-faune-fondu-0288-20261122",
+    "version_candidate": "0.2.88",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
-    "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md"
+    "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md",
+    "recu_candidat": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/reception-0288/CANDIDAT-0288.json"
   },
   "publication": {
-    "version": "0.2.80",
-    "commit_fusion": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
-    "commit_sources": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
-    "statut": "publie_sur_main",
-    "url": "https://github.com/M4D135/bitume/commit/6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
-    "recu": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
+    "version": "0.2.85",
+    "commit_fusion": "7fb5dcca58b6da5e7a2ca7aaea1192f86c5005af",
+    "commit_sources": "0e7273c0361996b9c217e6f1051a9ef9a54b18c7",
+    "statut": "main_observe_avant_reception_0288",
+    "url": "https://github.com/M4D135/bitume/commit/7fb5dcca58b6da5e7a2ca7aaea1192f86c5005af",
     "site_deploiement_verifie": false
   },
   "qualification": {
-    "version": "0.2.80",
-    "tete_qualifiee": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
-    "build_octets": 14549596,
-    "build_sha256": "20185cd2341e2aefb7a5167a35c1f4d68a50eedf1d9fabaa8491c329fa87410a",
-    "ci": {
-      "run": 44922327402,
-      "job": 136900842905,
-      "conclusion": "success",
-      "suites_node": 192,
-      "suites_echec": 0,
-      "tests_python": 8,
-      "reconstruction_identique": true
-    },
-    "recu": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
-    "capture_Gemini": "docs/reprise/rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md",
-    "captures_base_reinspectees_dans_cette_reprise": false,
-    "essai_utilisateur_valide": false,
-    "limites": "La CI .79 et le reçu Gemini ne valident pas le réalisme final demandé. FPS matériels, manettes physiques et réseau réel non qualifiés.",
-    "demarrage_mobile": {
-      "run": 44922327560,
-      "conclusion": "success",
-      "png_inspectes": 2,
-      "appel_banc": 0,
-      "appel_scene_banc": 0,
-      "profil": "low",
-      "navigateur": "Chrome + caractéristiques iPhone émulées",
-      "telephone_physique": false
-    }
+    "version": "0.2.88",
+    "statut": "candidat_local_ci_et_images_requises",
+    "build_sha256": "aa0b075f4712a5c7d2b5cd0f036afe72f3f2fbb0d98908efb237620788129a53",
+    "build_octets": 14658790,
+    "reconstruction_identique": true,
+    "recu": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/reception-0288/CANDIDAT-0288.json",
+    "controles_cibles_reussis": 5,
+    "controles_cibles_echec": 0,
+    "visuel_recu": false,
+    "essai_utilisateur_valide": false
   },
   "acquis_0279": {
     "voiture": "126 CK et implantation commune à toutes les caméras",
@@ -145,16 +127,14 @@
     "ancien_contact_manche_pommeau_R4b": "Résolu en .79 ; conserver les contrôles de contact."
   },
   "suite": {
-    "lot": "xbox_edge_commandes",
-    "statut": "in_progress",
-    "fiche": "docs/reprise/XBOX-EDGE-COMMANDES-2026-11-21.md",
+    "lot": "faune_proche_demos_circuits",
+    "statut": "reception_0288",
+    "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
     "apres": [
-      "PR 56 mains : vue pommeau et intégration renumérotée",
-      "personnages et manches",
-      "Larche/Vinadio L0–L2"
-    ],
-    "acquis_R4b_a_preserver": true,
-    "prochaine_priorite": "faune_proche_champ puis demos_route_lieux"
+      "Larche/Vinadio L3/L4",
+      "essais matériels Xbox/iOS",
+      "autres lots du programme conservés"
+    ]
   },
   "catalogue": {
     "jouables": 9,
@@ -329,5 +309,58 @@
     "arbre_publie": "49fffaac9612fc407eff02c3b608ce93b7d57b99",
     "branche_reception": "codex/bitume-faune-demos-reception-0287-20261121",
     "reception_distante": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-DISTANTE-0287.json"
+  },
+  "historique_reception_avant_0288": {
+    "publication": {
+      "version": "0.2.80",
+      "commit_fusion": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+      "commit_sources": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+      "statut": "publie_sur_main",
+      "url": "https://github.com/M4D135/bitume/commit/6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+      "recu": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
+      "site_deploiement_verifie": false
+    },
+    "qualification": {
+      "version": "0.2.80",
+      "tete_qualifiee": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
+      "build_octets": 14549596,
+      "build_sha256": "20185cd2341e2aefb7a5167a35c1f4d68a50eedf1d9fabaa8491c329fa87410a",
+      "ci": {
+        "run": 44922327402,
+        "job": 136900842905,
+        "conclusion": "success",
+        "suites_node": 192,
+        "suites_echec": 0,
+        "tests_python": 8,
+        "reconstruction_identique": true
+      },
+      "recu": "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json",
+      "capture_Gemini": "docs/reprise/rapports/MODELE-126CK-2026-11-21/REPRISE-CHECKPOINT.md",
+      "captures_base_reinspectees_dans_cette_reprise": false,
+      "essai_utilisateur_valide": false,
+      "limites": "La CI .79 et le reçu Gemini ne valident pas le réalisme final demandé. FPS matériels, manettes physiques et réseau réel non qualifiés.",
+      "demarrage_mobile": {
+        "run": 44922327560,
+        "conclusion": "success",
+        "png_inspectes": 2,
+        "appel_banc": 0,
+        "appel_scene_banc": 0,
+        "profil": "low",
+        "navigateur": "Chrome + caractéristiques iPhone émulées",
+        "telephone_physique": false
+      }
+    },
+    "suite": {
+      "lot": "xbox_edge_commandes",
+      "statut": "in_progress",
+      "fiche": "docs/reprise/XBOX-EDGE-COMMANDES-2026-11-21.md",
+      "apres": [
+        "PR 56 mains : vue pommeau et intégration renumérotée",
+        "personnages et manches",
+        "Larche/Vinadio L0–L2"
+      ],
+      "acquis_R4b_a_preserver": true,
+      "prochaine_priorite": "faune_proche_champ puis demos_route_lieux"
+    }
   }
 }

@@ -946,7 +946,7 @@
   const kv = (o, a, b, c) => { o[0] = a; o[1] = b; o[2] = c; return o; }, k1 = a => { A1[0] = a; return A1; };
   function objetVide() {
     return { shape: 'box', forme: null, p: [0, 0, 0], s: [0, 0, 0], r: [0, 0, 0], color: [0, 0, 0], mat: 18, emissive: 0,
-      surface: 'object', outdoor: true, overlay: false, windResponsive: false, fx: false, fxPriority: undefined, alpha: 1, animal: '' };
+      surface: 'object', outdoor: true, overlay: false, windResponsive: false, fx: false, fxPriority: undefined, alpha: 1, opacity: 1, animal: '' };
   }
   const POIL = 18, CORNE = 17;
   const ALLURES = [
@@ -1134,6 +1134,9 @@
   }
   function poserBaleine(ps, e, md, lod, r, k, col, fx) {
     const sc = ps.echelle, nom = e.cle;
+    // Un souffle du niveau détaillé ne doit pas survivre dans le pool après
+    // le retour à la silhouette, qui sort avant la préparation de cet effet.
+    if (fx) fx.alpha = 0;
     KS[0] = KS[1] = KS[2] = sc;
     mRepere(MB, kv(VR, ps.cap, ps.tangage, 0));
     J0[0] = ps.x; J0[1] = ps.y; J0[2] = ps.z;
@@ -2126,10 +2129,10 @@
       etat.visibilite.stats.posesPreparees++;
       for (let j = k; j < k + n; j++) {
         const o = r[j];
-        // FERRO ignore alpha dans la passe opaque. Pendant le fondu seulement, la passe
-        // FX reçoit la vraie silhouette (sans adoucissement de volume/fumée) ; au retour
-        // proche, restaurer aussi fx pour ne pas laisser un objet du pool translucide.
-        o.alpha = opacite; o.fx = opacite < 1; o.fxPriority = o.fx ? 'hazard' : undefined;
+        // FERRO 0.3.16 réduit la couverture dans la passe opaque : la matière,
+        // le modelé et la profondeur restent ceux de l'animal pendant le fondu.
+        // Restaurer tous les champs du pool, y compris au retour à pleine opacité.
+        o.opacity = opacite; o.alpha = 1; o.fx = false; o.fxPriority = undefined;
         sortie.push(o); S.triangles += o.forme.triangles;
       }
       k += n; S.animaux++;

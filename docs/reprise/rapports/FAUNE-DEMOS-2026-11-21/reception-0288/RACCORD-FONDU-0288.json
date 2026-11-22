@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-22",
+  "suites": [
+    {
+      "suite": "animaux-proximite-visibilite.test.mjs",
+      "exit_code": 0,
+      "seconds": 2.222,
+      "log": "animaux-proximite-visibilite.log",
+      "summary": "12 contrôles animaux proximité/visibilité"
+    },
+    {
+      "suite": "animaux.test.mjs",
+      "exit_code": 0,
+      "seconds": 7.312,
+      "log": "animaux.log",
+      "summary": "13 contrôles animaux"
+    },
+    {
+      "suite": "faune-vues-jeu.test.mjs",
+      "exit_code": 0,
+      "seconds": 0.095,
+      "log": "faune-vues-jeu.log",
+      "summary": "ℹ duration_ms 12.082304"
+    },
+    {
+      "suite": "controle-visuel.test.mjs",
+      "exit_code": 0,
+      "seconds": 0.086,
+      "log": "controle-visuel.log",
+      "summary": "ℹ duration_ms 24.855912"
+    },
+    {
+      "suite": "chargement.test.mjs",
+      "exit_code": 0,
+      "seconds": 2.762,
+      "log": "chargement.log",
+      "summary": "9 contrôles de la préparation des séances réussis."
+    }
+  ],
+  "passed": 5,
+  "failed": 0,
+  "runtime_sources": {
+    "src/animaux.js": "88a661211370ce8cd8ae6ab7136bd18ae74feeed59427a319c36f138cd62fa44",
+    "src/jeu.js": "aff57485ced7b821efb70ff1ebbc5026d6abf18f459c386578f54f22b973b35e"
+  },
+  "limitations": [
+    "Aucune capture navigateur locale : socket Chrome interdit ; réception visuelle distante requise."
+  ]
+}
