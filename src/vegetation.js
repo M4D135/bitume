@@ -411,19 +411,19 @@
     const tapis = TAPIS[qualite];
     let brinsTapis = 0, brinsAccotements = 0, brinsTerrain = 0, aireAccotements = 0, aireTerrain = 0;
     let aireDisponible = 0, aireRiche = 0, brinsRiches = 0;
+    function hash(x, z, sel = 0) {
+      let h = Math.imul(x | 0, 374761393) ^ Math.imul(z | 0, 668265263) ^ Math.imul(c.graine + sel, 2246822519);
+      h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+    }
+    function bruit(x, z, echelle, sel) {
+      x /= echelle; z /= echelle;
+      const ix = Math.floor(x), iz = Math.floor(z), fx = x - ix, fz = z - iz;
+      const u = fx * fx * (3 - 2 * fx), v = fz * fz * (3 - 2 * fz);
+      const a = hash(ix, iz, sel), b = hash(ix + 1, iz, sel), d = hash(ix, iz + 1, sel), e = hash(ix + 1, iz + 1, sel);
+      return a + (b - a) * u + (d - a) * v + (a - b - d + e) * u * v;
+    }
     if (tapis) {
       const surfaces = options.surfaces || (B.decor && B.decor.construire(c, { qualite: 'high', vegetation: false }).herbier);
-      const hash = (x, z, sel = 0) => {
-        let h = Math.imul(x | 0, 374761393) ^ Math.imul(z | 0, 668265263) ^ Math.imul(c.graine + sel, 2246822519);
-        h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
-      };
-      const bruit = (x, z, echelle, sel) => {
-        x /= echelle; z /= echelle;
-        const ix = Math.floor(x), iz = Math.floor(z), fx = x - ix, fz = z - iz;
-        const u = fx * fx * (3 - 2 * fx), v = fz * fz * (3 - 2 * fz);
-        const a = hash(ix, iz, sel), b = hash(ix + 1, iz, sel), d = hash(ix, iz + 1, sel), e = hash(ix + 1, iz + 1, sel);
-        return a + (b - a) * u + (d - a) * v + (a - b - d + e) * u * v;
-      };
       const lisse = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
       function planter(source, points, cle, profondeur = 0) {
         if (tuiles >= tapis.maximum) return;
@@ -505,10 +505,16 @@
     // Fougères : générées sur leur propre maille, côté opposé aux herbes, avec leur terreau.
     if (palier.fougeres && biome.familles.includes('fougères')) {
       const rf = hasard((c.graine ^ 0x2c1f9a17) >>> 0);
-      const stationsF = Math.max(1, Math.round(stations * .82 * biome.densite)), pasF = Math.max(1, Math.ceil(c.n / stationsF));
+      const stationsDenses = Math.max(1, Math.round(PALIERS.high.stations * biome.stations));
+      const stationsF = Math.max(1, Math.round(stationsDenses * .82 * biome.densite));
+      const pasF = Math.max(1, Math.ceil(c.n / stationsF));
+      const stationsRetenues = Math.max(1, Math.round(stations * .82 * biome.densite));
+      const densite = stationsRetenues / stationsF;
       for (let station = 0, i = 0; i < c.n && station < stationsF; i += pasF, station++) {
         if (interdit(i)) continue;
         const t = [rf(), rf(), rf(), rf(), rf(), rf()];
+        // La densité filtre la maille commune après le tirage de la station.
+        if (Math.ceil((station + 1) * densite) === Math.ceil(station * densite)) continue;
         const cote = t[5] < .5 ? -1 : 1;
         const limite = cote < 0 ? limites.G[i] : limites.D[i], espace = limite - w - 4.2;
         if (espace < 2.2) continue;
@@ -518,8 +524,15 @@
           const j = (i + k + Math.floor(t[3] * pasF * .75)) % c.n, vert = .78 + t[2 + (k % 4)] * .34;
           const largeur = (1.05 + t[2] * .55) * biome.taille, h = (.52 + t[3] * .26) * biome.taille;
           const b = biome.fougere;
-          const plant = ajouter(j, d + cote * k * .85, 'fougeres', t[4] * PI2 + k * 1.7,
-            [largeur, h, largeur * (.86 + t[5] * .22)], [b[0] * vert, b[1] * vert, b[2] * vert], palier.mat);
+          const decalage = d + cote * k * .85, cap = c.cap[j];
+          const x = c.x[j] - Math.sin(cap) * decalage, z = c.z[j] + Math.cos(cap) * decalage;
+          const specimen = hasard((c.graine ^ Math.imul(i + 1, 0x9e3779b1) ^ Math.imul(k + 1, 0x85ebca6b)) >>> 0);
+          const stature = bruit(x, z, 17, 2411);
+          const angle = (t[4] * PI2 + k * 1.7 + (specimen() - .5) * .8 + PI2) % PI2;
+          const largeurF = largeur * (.92 + .06 * k + .03 * specimen() + .02 * stature);
+          const hauteurF = h * (.90 + .12 * specimen() + .08 * stature);
+          const plant = ajouter(j, decalage, 'fougeres', angle,
+            [largeurF, hauteurF, largeurF * (.86 + t[5] * .22)], [b[0] * vert, b[1] * vert, b[2] * vert], palier.mat);
           if (!plant) continue;
           fougeres++;
           // Le pied de fougère repose sur une couronne de terreau posée au sol, même empreinte au sol que la fronde.
