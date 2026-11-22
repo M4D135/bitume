@@ -21,6 +21,67 @@
     };
   }
 
+  // À la résolution du MNT, les pentes et la position dans le versant
+  // distinguent affleurements, dépôts de bas de pente et prairies abritées.
+  // Les classes non documentées (dont l'eau) gardent leur pigment antérieur.
+  const pigmentsEte = new WeakMap();
+  function pigmentsRelief(d) {
+    if (!d?.couverture) return null;
+    if (pigmentsEte.has(d)) return pigmentsEte.get(d);
+    const esa = d.couverture;
+    const occupations = Uint8Array.from(atob(esa.fractionsU8), c => c.charCodeAt(0));
+    const altitudes = new DataView(Uint8Array.from(atob(d.metresI16LE), c => c.charCodeAt(0)).buffer);
+    const pigments = new Float32Array(d.nx*d.nz*4);
+    const borne = t => Math.max(0, Math.min(1, t));
+    const lisser = (a,b,t) => { const u=borne((t-a)/(b-a)); return u*u*(3-2*u); };
+    const h = (i,j,defaut) => {
+      if (i<0 || j<0 || i>=d.nx || j>=d.nz) return defaut;
+      const v = altitudes.getInt16(2*(j*d.nx+i),true);
+      return v === -32768 ? defaut : v;
+    };
+    for (let j=0;j<d.nz;j++) for (let i=0;i<d.nx;i++) {
+      const centre=h(i,j,NaN);
+      if (!Number.isFinite(centre)) continue;
+      const x=d.x0+i*d.pas, z=d.z0+j*d.pas;
+      const u=Math.max(0, Math.min(esa.nx-1, (x-esa.x0)/esa.pas)), v=Math.max(0, Math.min(esa.nz-1, (z-esa.z0)/esa.pas));
+      const ix=Math.min(esa.nx-2,Math.floor(u)), iz=Math.min(esa.nz-2,Math.floor(v)), a=u-ix,b=v-iz;
+      const e=3*(iz*esa.nx+ix), ligne=3*esa.nx;
+      const fraction = k => ((1-b)*((1-a)*occupations[e+k]+a*occupations[e+3+k])+
+        b*((1-a)*occupations[e+ligne+k]+a*occupations[e+ligne+3+k]))/255;
+      const foret=fraction(0), herbe=fraction(1), nu=fraction(2), autre=Math.max(0,1-foret-herbe-nu);
+      const dx=(h(i+1,j,centre)-h(i-1,j,centre))/(2*d.pas);
+      const dz=(h(i,j+1,centre)-h(i,j-1,centre))/(2*d.pas);
+      const pente=Math.hypot(dx,dz);
+      // Écart à la moyenne des quatre versants à 300 m. La roche ressort
+      // sur les buttes convexes ; les dépressions abritent les sols plus frais.
+      const relief=centre-(h(i-3,j,centre)+h(i+3,j,centre)+h(i,j-3,centre)+h(i,j+3,centre))*.25;
+      const escarpe=lisser(.34,.95,pente), expose=lisser(-28,38,relief);
+      const frais=lisser(-7,-44,relief)*(1-.55*escarpe);
+      const pierre=nu+(herbe*.50*escarpe*(.25+.75*expose));
+      const pelouse=Math.max(0,herbe+nu-pierre);
+      const rocheClaire=.36+.23*escarpe+.10*expose;
+      const prairie=.91+.24*expose-.22*frais;
+      const sousBois=.84+.26*expose-.19*frais;
+      const k=4*(j*d.nx+i);
+      pigments[k]=foret*.037*sousBois+pelouse*.22*prairie+pierre*rocheClaire*1.04+autre*.201;
+      pigments[k+1]=foret*.086*sousBois+pelouse*(.285+.027*frais)*prairie+pierre*rocheClaire+autre*.209;
+      pigments[k+2]=foret*.052*sousBois+pelouse*.108*prairie+pierre*rocheClaire*(.90+.035*escarpe)+autre*.174;
+      pigments[k+3]=1;
+    }
+    function lire(x,z,sortie) {
+      const u=(x-d.x0)/d.pas,v=(z-d.z0)/d.pas,i=Math.floor(u),j=Math.floor(v);
+      if (i<0 || j<0 || i+1>=d.nx || j+1>=d.nz) return false;
+      const a=u-i,b=v-j, k=4*(j*d.nx+i), l=d.nx*4;
+      const w0=(1-a)*(1-b)*pigments[k+3], w1=a*(1-b)*pigments[k+7];
+      const w2=(1-a)*b*pigments[k+l+3], w3=a*b*pigments[k+l+7], poids=w0+w1+w2+w3;
+      if (poids<=.5) return false;
+      for(let m=0;m<3;m++) sortie[m]=(w0*pigments[k+m]+w1*pigments[k+4+m]+w2*pigments[k+l+m]+w3*pigments[k+l+4+m])/poids;
+      return true;
+    }
+    pigmentsEte.set(d,lire);
+    return lire;
+  }
+
   function paletteVersants(d, hiver) {
     if (!d) return () => hiver ? [.66,.6864,.693] : [.36,.3744,.378];
     const donnees = Uint8Array.from(atob(d.fractionsU8), c => c.charCodeAt(0));
@@ -42,10 +103,8 @@
     };
   }
 
-  function construire(d, proches, cote, pas, saison) {
-    const altitude = lireGrille(d), groupes = new Map(), sommetsBord = new Map();
-    const nx = Math.round(cote / pas) + 1;
-    const couleur = paletteVersants(d.couverture, !!saison?.neige);
+  function sommetsRaccord(proches, cote, pas) {
+    const sommetsBord = new Map(), nx = Math.round(cote / pas) + 1;
     // Le même sommet que le terrain proche ferme chaque jonction, à son altitude exacte.
     for (const [cle, v] of proches) {
       const [i, j] = cle.split(',').map(Number);
@@ -59,6 +118,26 @@
         }
       }
     }
+    return sommetsBord;
+  }
+
+  function raccorderPigments(panorama, bord) {
+    // Les teintes de saison sont posées après la construction des deux maillages.
+    // Les vues du tableau pointent sur les sommets proches déjà recolorés.
+    for (const nappe of panorama) {
+      const v = nappe.sommets;
+      for (let k=0;k<v.length;k+=13) {
+        const proche=bord.get(v[k]+','+v[k+2]);
+        if (proche) v.set(proche.subarray(10,13),k+10);
+      }
+    }
+  }
+
+  function construire(d, proches, cote, pas, saison, sommetsBord = sommetsRaccord(proches,cote,pas)) {
+    const altitude = lireGrille(d), groupes = new Map();
+    const nx = Math.round(cote / pas) + 1;
+    const couleur = paletteVersants(d.couverture, !!saison?.neige);
+    const versant = saison?.neige ? null : pigmentsRelief(d), pigment = [0,0,0];
     // La grille lointaine et les accotements jouables ont des résolutions et
     // des profils différents. Raccorder le MNT en pente douce au bord réel du jeu.
     const raccords = new Map(), voisinages = new Map(), portee = 650;
@@ -116,7 +195,8 @@
       const normaleX = bord ? bord[3] : dx/norme;
       const normaleY = bord ? bord[4] : 2*p/norme;
       const normaleZ = bord ? bord[5] : dz/norme;
-      const rgb = couleur(x, z);
+      // Le joint reprend les trois canaux du sommet proche qui partage son altitude.
+      const rgb = versant && bord ? bord.subarray(10,13) : versant && versant(x,z,pigment) ? pigment : couleur(x,z);
       g.s.push(x,h,z,normaleX,normaleY,normaleZ,0,0,0,23,rgb[0],rgb[1],rgb[2]);
       return id;
     }
@@ -156,5 +236,5 @@
     }
     return nappes;
   }
-  B.larcheRelief = { lireGrille, construire };
+  B.larcheRelief = { lireGrille, pigmentsRelief, construire, sommetsRaccord, raccorderPigments };
 })(globalThis.BITUME = globalThis.BITUME || {});

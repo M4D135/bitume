@@ -3,8 +3,6 @@ import { test } from 'node:test';
 import { B, CATALOGUE_SAISONS, creerCircuitSaisons } from '../tools/qualification/saisons-circuits.mjs';
 await import('../src/signalisation-course.js');
 
-const signe = x => Math.sign(x);
-const dans = (c, v, s) => ((s - v.debut) % c.longueur + c.longueur) % c.longueur < v.longueur;
 const camera = (c, s) => {
   const q = B.circuit.echantillon(c, s);
   return [q.x, q.y + 1.1, q.z];
@@ -15,120 +13,69 @@ function image(etat, t, cameraPos, options = {}) {
   return sortie;
 }
 
-test('les onze parcours couvrent virages annoncés et courbes douces, dans les deux sens', t => {
-  assert.equal(CATALOGUE_SAISONS.length, 11);
+test('onze parcours : balises espacées à l’extérieur des virages marqués, tournées vers l’approche', t => {
+  assert.equal(CATALOGUE_SAISONS.length,11);
   for (const def of CATALOGUE_SAISONS) {
-    const c = creerCircuitSaisons(def), etat = B.signalisationCourse.creer(c, {});
-    assert.deepEqual(new Set(etat.rubans.map(v => v.sens)), new Set([-1, 1]), def.id);
-    for (const v of B.virages.planifier(c)) {
-      for (let d = c.pas / 2; d < v.longueur; d += c.pas) {
-        assert(etat.rubans.some(r => r.sens === v.sens && r.difficulte >= v.difficulte && dans(c,r,v.debut+d)), def.id + ' ' + (v.debut+d));
+    const c=creerCircuitSaisons(def), etat=B.signalisationCourse.creer(c,{}), virages=B.virages.planifier(c);
+    assert(etat.panneaux.length>0,def.id);
+    for (const v of virages) {
+      const groupe=etat.panneaux.filter(p=>(p.s-v.debut+c.longueur)%c.longueur<v.longueur);
+      assert(groupe.length<=v.difficulte);
+      const offsets=groupe.map(p=>(p.s-v.debut+c.longueur)%c.longueur).sort((a,b)=>a-b);
+      for (let i=1;i<offsets.length;i++) assert(offsets[i]-offsets[i-1]>=16.99);
+    }
+    for (const p of etat.panneaux) {
+      const v=virages.find(v=>(p.s-v.debut+c.longueur)%c.longueur<v.longueur);
+      assert(v && !B.couverts.segment(c,p.s));
+      assert.equal(Math.sign(p.lat),-v.sens);
+      assert.deepEqual(p.fond.s,[2.45,1.4,.12]);
+      const amont=camera(c,c.ouvert?Math.max(0,p.s-28):(p.s-28+c.longueur)%c.longueur);
+      const [rx,ry,rz]=p.fond.r, cx=Math.cos(rx), sx=Math.sin(rx);
+      const normale=[Math.cos(rz)*Math.sin(ry)*cx+Math.sin(rz)*sx,Math.sin(rz)*Math.sin(ry)*cx-Math.cos(rz)*sx,Math.cos(ry)*cx];
+      const dx=amont[0]-p.x,dz=amont[2]-p.z;
+      assert((normale[0]*dx+normale[2]*dz)/Math.hypot(dx,dz)>.99999,'face LED tournée vers le pilote');
+      for (const poteau of p.supports) {
+        const d=(poteau.p[0]-p.x)*normale[0]+(poteau.p[2]-p.z)*normale[2];
+        assert(d<-.08 && poteau.p[1]-poteau.s[1]/2 < p.fond.p[1]-.7);
       }
     }
-    const limites = B.decor.limites(c);
-    let modules = 0, maximum = 0;
-    for (const v of etat.rubans) {
-      assert.equal(v.points[0].s, v.debut);
-      assert(Math.abs(v.points.at(-1).s-v.fin)<1e-8);
-      for (let i=0; i<v.points.length; i++) {
-        const a=v.points[i], b=v.points[i+1];
-        assert.equal(signe(a.lat), -v.sens, 'rive extérieure');
-        assert([a.x,a.y,a.z].every(Number.isFinite));
-        const q=B.circuit.echantillon(c,a.s), largeur=B.circuit.largeurA(c,a.s,-v.sens);
-        assert(Math.abs(a.lat)>largeur, def.id+' : emprise au-delà de la chaussée');
-        const delta=[a.x-q.x,a.z-q.z];
-        assert(Math.abs(delta[0]*Math.cos(q.cap)+delta[1]*Math.sin(q.cap))<1e-5, 'ancré perpendiculairement à la route');
-        const ouvrage=B.couverts.segment(c,a.s);
-        if (!ouvrage) {
-          const index=Math.min(c.n-1,Math.floor((a.s%c.longueur)/c.pas));
-          const j=c.ouvert?Math.min(c.n-1,index+1):(index+1)%c.n, f=(a.s%c.longueur)/c.pas-index;
-          const rail=v.sens>0?limites.G:limites.D;
-          assert(Math.abs(a.lat) >= rail[index]*(1-f)+rail[j]*f+.8, 'garde de la glissière');
-        } else if (Number.isFinite(ouvrage.mur)) assert(Math.abs(a.lat)<ouvrage.mur, 'montage sur la face visible du couvert');
-        if (b) { assert(b.s>a.s && b.s-a.s<=6.00001); modules++; }
+    t.diagnostic(def.id+' : '+etat.panneaux.length+' panneaux sur '+virages.length+' virages annoncés');
+  }
+});
+
+test('la face LED et la tôle ferment le boîtier de près et de loin, sans surface superposée', () => {
+  const { vertices, indices, ranges }=globalThis.FRender.shared.geometry(false);
+  for (const [metal,lumiere] of [['bitume-ruban-grille','bitume-balise-led'],['bitume-balise-boitier','bitume-ruban-chevron']]) {
+    const aire={avant:0,dos:0,chants:0};
+    for (const nom of [metal,lumiere]) {
+      const r=ranges[nom], debut=r.offset/indices.BYTES_PER_ELEMENT;
+      for (let i=debut;i<debut+r.count;i+=3) {
+        const [a,b,c]=Array.from(indices.subarray(i,i+3),j=>vertices.subarray(6*j,6*j+3));
+        if (nom===lumiere) assert([a,b,c].every(p=>p[2]===.5),'LED seulement côté route');
+        const u=b.map((x,j)=>x-a[j]), v=c.map((x,j)=>x-a[j]);
+        const normale=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]];
+        const face=normale[2]>0?'avant':normale[2]<0?'dos':'chants';
+        aire[face]+=Math.hypot(...normale)/2;
       }
     }
-    for (let i=0;i<c.n;i+=16) {
-      const ensemble=image(etat, 1, [c.x[i], c.y[i]+1.5, c.z[i]]);
-      maximum=Math.max(maximum,ensemble.length);
-      assert.equal(ensemble.length, new Set(ensemble).size);
-    }
-    assert(maximum<900 && etat.objets.length<1050,'réservation spatiale indépendante des kilomètres de parcours');
-    t.diagnostic(def.id+' : '+etat.rubans.length+' rubans, '+modules+' modules, '+maximum+' instances au plus sur le parcours échantillonné');
+    for (const [face,attendu] of Object.entries({avant:1,dos:1,chants:4})) assert(Math.abs(aire[face]-attendu)<1e-5,face);
   }
 });
 
-test('la courbe douce qui chevauche le départ possède une seule jointure et les sections ouvertes finissent au drapeau',()=>{
-  // Un stade de 480 m de large. La ligne de départ se trouve au milieu du demi-tour est.
-  const points = [];
-  function arc(centre, debut, fin) {
-    const n = Math.round((fin-debut)*240);
-    for (let i=0; i<=n; i++) {
-      const a=debut+(fin-debut)*i/n;
-      points.push({x:centre+240*Math.cos(a),y:0,z:240*Math.sin(a),largeurG:6,largeurD:6,limiteG:9,limiteD:9});
-    }
-  }
-  arc(160,0,Math.PI/2); arc(-160,Math.PI/2,1.5*Math.PI); arc(160,1.5*Math.PI,2*Math.PI);
-  points[points.length-1]={...points[0]};
-  const circuit=B.circuit.creerDepuisTrace({unite:'m',pasMax:2,points});
-  const etat=B.signalisationCourse.creer(circuit,{}), raccords=etat.rubans.filter(r=>r.fin>circuit.longueur);
-  assert.equal(etat.rubans.length,2);
-  assert.equal(raccords.length,1);
-  assert.equal(B.virages.planifier(circuit).length,0);
-  const [r]=raccords;
-  assert(r.debut>circuit.longueur/2 && r.sens===1);
-  assert(r.points.some((a,i)=>a.s<circuit.longueur && r.points[i+1]?.s>=circuit.longueur));
-  const c=B.larche.creer(210);
-  assert(B.signalisationCourse.creer(c,{}).rubans.every(v=>v.debut>=0 && v.fin<=c.arrivee));
-});
-
-test('les 209 cellules de la grille restent séparées par un joint horizontal et vertical', () => {
-  const { vertices, indices, ranges } = globalThis.FRender.shared.geometry(false);
-  const grille = ranges['bitume-ruban-grille'];
-  const debut = grille.offset / indices.BYTES_PER_ELEMENT;
-  const joints = [];
-  for (let i = debut; i < debut + grille.count; i += 6) {
-    const points = Array.from(indices.subarray(i, i + 6), index => vertices.subarray(6 * index, 6 * index + 3));
-    if (points[0][2] <= .492) continue;
-    const xs = points.map(p => p[0]), ys = points.map(p => p[1]);
-    joints.push({ gauche: Math.min(...xs), droite: Math.max(...xs), bas: Math.min(...ys), haut: Math.max(...ys) });
-  }
-  const estJoint = (x, y) => joints.some(j => x >= j.gauche && x <= j.droite && y >= j.bas && y <= j.haut);
-  for (let ligne = 0; ligne < 11; ligne++) for (let col = 0; col < 19; col++) {
-    const x = (col + .5) / 19 - .5, y = (ligne + .5) / 11 - .5;
-    assert(!estJoint(x, y));
-    assert(estJoint(x - .5 / 19, y));
-    assert(estJoint(x, y - .5 / 11));
-  }
-});
-
-test('Larche à 29,4 km : flèches volumiques mobiles, lumière continue sous pluie et immobilisation du mouvement réduit',()=>{
-  const c=B.larche.creer(210), etat=B.signalisationCourse.creer(c,{});
-  const droite=etat.rubans.find(r=>dans(c,r,2868)), gauche=etat.rubans.find(r=>dans(c,r,2920));
-  assert.equal(droite.sens,1);assert.equal(gauche.sens,-1);assert.notEqual(droite,gauche);
-  const geom=globalThis.FRender.shared.geometry(false).ranges['bitume-ruban-chevron'];
-  assert.equal(geom.count/3,20,'20 triangles instanciés pour la face, son revers et le profil');
-  const vue=camera(c,2868);
+test('sous la pluie, une pulsation stable par panneau et des supports indépendants du niveau de détail',()=>{
+  const c=B.larche.creer(210), etat=B.signalisationCourse.creer(c,{}), p=etat.panneaux[0];
+  const proche=[p.x+8,p.fond.p[1],p.z], loin=[p.x+98,p.fond.p[1],p.z];
   for (const qualite of ['low','high']) {
-    const opt={qualite,pluie:1,nuit:1}, s=.18;
-    const sortie=image(etat,s,vue,opt), o=sortie.find(v=>v.shape.startsWith('bitume-ruban-led-'));
-    assert(o && o.s[1]>2.5 && o.emissive>.7);
-    assert(sortie.some(v=>v.shape==='bitume-ruban-grille'),'diodes éteintes groupées sur la dalle');
-    assert(sortie.some(v=>v.shape==='bitume-ruban-chevron'),'au loin, silhouette pleine antimoiré');
-    const led=globalThis.FRender.shared.geometry(false).ranges['bitume-ruban-led-0'];
-    const grille=globalThis.FRender.shared.geometry(false).ranges['bitume-ruban-grille'];
-    assert(led.count/3>80,'plusieurs dizaines de diodes allumées en une seule forme');
-    assert.equal(grille.count/3,68,'deux faces et les 20 joints verticaux / 12 joints horizontaux');
-    const avant=[...o.p], e0=o.emissive, phase=o.shape;
-    assert(image(etat,s+.16,vue,opt).includes(o),'le mouvement réutilise la même instance');
-    assert.deepEqual(o.p,avant,'les diodes sont fixées à la dalle');
-    assert.notEqual(o.shape,phase,'la flèche défile par colonnes de diodes');
-    assert.notEqual(o.emissive,e0);
-    image(etat,s,vue,{...opt,mouvementReduit:true});
-    const fixe=[...o.p,o.emissive];
-    image(etat,s+1,vue,{...opt,mouvementReduit:true});
-    assert.deepEqual([...o.p,o.emissive],fixe);
-    assert(o.emissive>.7,'une silhouette lumineuse subsiste');
+    const opt={qualite,pluie:1,nuit:1};
+    assert(image(etat,0,proche,opt).includes(p.fleche)); assert.equal(p.fleche.shape,'bitume-balise-led');
+    const niveau=p.fleche.emissive, position=[...p.fleche.p];
+    image(etat,.6,proche,opt); assert.notEqual(p.fleche.emissive,niveau);
+    const visibles=image(etat,0,loin,opt);
+    assert(visibles.includes(p.fond) && p.supports.every(o=>visibles.includes(o)));
+    assert.equal(p.fleche.shape,'bitume-ruban-chevron'); assert.equal(p.fond.emissive,0);
+    assert.deepEqual(p.fleche.p,position);
+    image(etat,0,proche,{...opt,mouvementReduit:true}); const fixe=p.fleche.emissive;
+    image(etat,.6,proche,{...opt,mouvementReduit:true}); assert.equal(p.fleche.emissive,fixe);
   }
 });
 

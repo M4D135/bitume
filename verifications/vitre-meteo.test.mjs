@@ -41,10 +41,10 @@ verifier('le repli dessine la surface entière pendant la fusion, y compris entr
   depot(e, false, 0, .4, .4, 3); depot(e, false, 1, .402, .4, 4);
   V.mettreAJour(e, PAS, contexte());
   for (let image = 0; image <= 4; image++) {
-    const corps = t.image.filter(d => d.style === 'rgba(23,48,61,0.16)');
+    const corps = t.image.filter(d => d.style === 'rgba(23,48,61,0.06)');
     assert.equal(corps.length, image === 4 ? 1 : 2);
     const aire = corps.reduce((s, d) => s + d.chemin[0][3] ** 2, 0);
-    assert(Math.abs(aire - 25) < 1e-10, 'aire visible disparue pendant la fusion');
+    assert(Math.abs(aire - 25 * .45 ** 2) < 1e-10, 'aire visible disparue pendant la fusion');
     if (image < 4) V.mettreAJour(e, 1 / 120, contexte());
   }
   V.effacer(e); assert(e.gouttes.every(p => !p.vivant && !p.fusion));

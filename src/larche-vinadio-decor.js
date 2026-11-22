@@ -211,7 +211,7 @@ function pigment(ix, iz) {
   return ((n ^ (n >>> 16)) >>> 0) / 4294967296;
 }
 
-function _colorTerrain(x, z, y, ny, route, saison) {
+function _colorTerrain(x, z, y, ny, route, saison, versant, pigmentMesure) {
   const prairie = _fbm(x * .004 + 1.1, z * .004 - .7, 3, pigment);
   const veine = _noise2(x * .014 + y * .026, z * .006 + 19, pigment);
   const herbe = _smoothstep(.26, .73, prairie);
@@ -226,6 +226,15 @@ function _colorTerrain(x, z, y, ny, route, saison) {
   r = _lerp(r, pierre * 1.05, roche);
   g = _lerp(g, pierre * 1.01, roche);
   b = _lerp(b, pierre * .94, roche);
+  // Le bord de piste garde son sol de proximité. À flanc de vallée, la même
+  // répartition de prairie, forêt et roche habille les tuiles proches et le panorama.
+  const part = _smoothstep(20,145,route.absD);
+  if (part > 0 && versant && versant(x,z,pigmentMesure)) {
+    const grain = 1 + .11*(veine-.5);
+    r = _lerp(r, pigmentMesure[0]*grain, part);
+    g = _lerp(g, pigmentMesure[1]*grain, part);
+    b = _lerp(b, pigmentMesure[2]*grain, part);
+  }
   const niveau = y - route.yRoute;
   const neve = (1 - _smoothstep(1000, 9000, route.s)) * _smoothstep(145, 245, niveau + 52 * (prairie - .5));
   const hiver = saison?.neige ? _smoothstep(740, 1060, y + (veine - .5) * 90) : 0;
@@ -383,6 +392,8 @@ function degagerChaussee(c, pas, gr) {
 function terrain(c, th, interroger, g, ecologie, organique) {
   if (!c || c.id !== 'larche') return null;
   const saison = (g && typeof g === 'object' && g.saison) || null;
+  const versant = saison?.neige ? null : B.larcheRelief?.pigmentsRelief(B.larcheData?.reliefVallee);
+  const pigmentMesure = [0,0,0];
   const G = 32;
   const TILE = 256;
   const RANGE = 420;
@@ -462,7 +473,7 @@ function terrain(c, th, interroger, g, ecologie, organique) {
           sommets[off + 9] = 25; // organicSoil unifié
 
           // couleur
-          const col = _colorTerrain(wx, wz, wy, dny, sommetGrille(wx/G,wz/G), saison);
+          const col = _colorTerrain(wx, wz, wy, dny, sommetGrille(wx/G,wz/G), saison, versant, pigmentMesure);
           sommets[off + 10] = col[0]; sommets[off + 11] = col[1]; sommets[off + 12] = col[2];
           vi++;
         }
@@ -497,14 +508,22 @@ function terrain(c, th, interroger, g, ecologie, organique) {
       };
       Object.defineProperty(nappeObj, 'herbeTriangles', { enumerable: false, value: herbeTri });
       Object.defineProperty(nappeObj, 'surfaceType', { enumerable: false, value: 'terrain' });
+      if (versant) nappeObj.vertexTint='smooth';
       liste.push(nappeObj);
       maillages.set(nx + ',' + nz, sommets);
     }
   }
 
+  let raccorderPigments;
   if (B.larcheData?.reliefVallee && B.larcheRelief) {
-    const construire = () => B.larcheRelief.construire(B.larcheData.reliefVallee, maillages, TILE, G, saison);
-    liste.push(...(g?.cachePanorama ? B.panoramaCache.obtenir(g.cachePanorama, construire) : construire()));
+    const bord=versant ? B.larcheRelief.sommetsRaccord(maillages,TILE,G) : undefined;
+    const construire = () => B.larcheRelief.construire(B.larcheData.reliefVallee, maillages, TILE, G, saison, bord);
+    const panorama = g?.cachePanorama ? B.panoramaCache.obtenir(g.cachePanorama, construire) : construire();
+    if (bord) raccorderPigments = () => B.larcheRelief.raccorderPigments(panorama,bord);
+    for (const nappe of panorama) {
+      if (versant) nappe.vertexTint='smooth';
+      liste.push(nappe);
+    }
   }
 
   /* ── Lac de la Maddalena ── */
@@ -616,12 +635,99 @@ function terrain(c, th, interroger, g, ecologie, organique) {
   return {
     liste,
     sol,
+    raccorderPigments,
     bornes: [bxMin, bzMin, bxMax, bzMax],
     niveauEau: undefined,
     paysageBaikal: null
   };
 }
 
+
+// Maillages communs aux bourgs de la Stura. La pente et la largeur réelles sont portées par l'instance.
+function formesMaisons(rendu) {
+  if (!rendu?.forme) return;
+  const toiture = [], pignons = [], cadre = [];
+  function face(liste, points) {
+    const [a,b,c] = points, u = b.map((v,k) => v-a[k]), v = c.map((q,k) => q-a[k]);
+    const n = [u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]];
+    const l = Math.hypot(...n); for (let k=0;k<3;k++) n[k] /= l;
+    for (let k=1;k+1<points.length;k++) liste.push([a,points[k],points[k+1],n,n,n]);
+  }
+  for (const cote of [-1,1]) {
+    const z=cote*.5, fetage=.5, rive=-.43;
+    const pan=[[-.5,fetage,0],[-.5,rive,z],[.5,rive,z],[.5,fetage,0]];
+    face(toiture,cote>0?pan:pan.reverse());
+    const tranche=[[-.5,-.5,z],[.5,-.5,z],[.5,rive,z],[-.5,rive,z]];
+    face(toiture,cote>0?tranche:tranche.reverse());
+    const dessous=[[-.5,-.5,z],[-.5,.43,0],[.5,.43,0],[.5,-.5,z]];
+    face(toiture,cote>0?dessous:dessous.reverse());
+    const x=cote*.5;
+    const bout=[[x,-.5,-.5],[x,.5,0],[x,-.5,.5]];
+    face(pignons,cote>0?bout:bout.reverse());
+    for (const signZ of [-1,1]) {
+      const z=signZ*.5, chant=[[x,.43,0],[x,-.5,z],[x,rive,z],[x,.5,0]];
+      face(toiture,cote*signZ<0?chant:chant.reverse());
+    }
+  }
+  // La feuillure et ses quatre retours entourent une vitre placée 8 cm derrière le nez du cadre.
+  const quad=(x0,y0,x1,y1)=>face(cadre,[[x0,y0,.5],[x1,y0,.5],[x1,y1,.5],[x0,y1,.5]]);
+  quad(-.5,-.5,.5,-.41);quad(-.5,.41,.5,.5);quad(-.5,-.41,-.43,.41);quad(.43,-.41,.5,.41);
+  quad(-.026,-.41,.026,.41);quad(-.43,.10,.43,.14);
+  const trou=[[-.43,-.41],[.43,-.41],[.43,.41],[-.43,.41]];
+  for(let i=0;i<4;i++){const [x,y]=trou[i],[u,v]=trou[(i+1)%4];face(cadre,[[x,y,.5],[u,v,.5],[u,v,-.5],[x,y,-.5]]);}
+  rendu.forme('stura-couverture',toiture);rendu.forme('stura-pignons',pignons);rendu.forme('stura-cadre',cadre);
+}
+formesMaisons(globalThis.FRender);
+
+function maisonStura(mx,my,mz,w,h,d,yaw,cote,variante,neige,detail) {
+  const proche=[], loin=[], co=Math.cos(yaw), si=Math.sin(yaw);
+  const enduits=[[.65,.61,.52],[.76,.70,.58],[.62,.65,.60],[.69,.55,.42]];
+  const cadres=[[.33,.24,.17],[.36,.40,.34],[.39,.31,.23],[.42,.27,.19]];
+  const bois=[.34,.26,.18], pierre=[.51,.49,.43], zinc=[.34,.36,.35], vitre=[.16,.22,.24];
+  const ton=variante%4, direction=-cote;
+  function objet(shape,partie,x,y,z,taille,mat,color,distant=false,angle=0) {
+    const o={shape, p:[mx+co*x+si*z,my+y,mz-si*x+co*z],r:[0,yaw+angle,0],s:taille,mat,color,architecture:'haute-stura',partie};
+    proche.push(o);if(distant)loin.push(o);return o;
+  }
+  const mur=objet('box','mur',0,h/2-1.2,0,[w,h+2.4,d],ton===0?23:22,enduits[ton],true);
+  mur.p[1]=my+h/2-1.2; // Même ordre d’opérations que le centre du solide historique.
+  const hauteur=1.65+.14*(variante%5), couverture=objet('stura-couverture','toit',0,h+hauteur/2,0,[w+.6,hauteur,d+.6],
+    neige?25:24,neige?[.86,.89,.90]:ton%2?zinc:[.38,.34,.30],true);
+  // Même empreinte au sol que les deux silhouettes antérieures, y compris pour un enduit ou de la tôle.
+  mur.masqueHerbier=couverture.masqueHerbier=true;
+  if (B.decor?.marquerSolide) B.decor.marquerSolide(mur,'box',2);
+  objet('stura-pignons','pignons',0,h+hauteur*.44,0,[w,hauteur*.88,d],26,bois,true);
+  const chemineeX=(ton%2?-.22:.22)*w, chemineeZ=.12*d;
+  objet('box','cheminee',chemineeX,h+hauteur*.86,chemineeZ,[.45,.96,.46],22,pierre,true);
+  // Faces latérales vers le col et vers Vinadio, façade principale vers la route. Les détails entrent
+  // dans les lots instanciés existants ; le palier léger et les vues lointaines gardent la silhouette.
+  function applique(face,leLong,y,sortie,taille,shape,mat,couleur,partie,distant=false) {
+    const nx=Math.sin(face), nz=Math.cos(face), demi=Math.abs(nx)>.5?w/2:d/2;
+    return objet(shape,partie,nz*leLong+nx*(demi+sortie),y,-nx*leLong+nz*(demi+sortie),taille,mat,couleur,distant,face);
+  }
+  const rue=direction>0?0:Math.PI;
+  function fenetre(face,u,y,l,ha,volets) {
+    applique(face,u,y,.035,[l*.92,ha*.91,.06],'box',19.1,vitre,'vitrage');
+    applique(face,u,y,.09,[l,ha,.11],'stura-cadre',10,cadres[ton],'menuiserie');
+    if(!detail)return;
+    applique(face,u,y-ha/2-.025,.115,[l+.12,.095,.24],'box',22,pierre,'appui');
+    if(volets)for(const sens of [-1,1])applique(face,u+sens*l*.69,y,.065,[l*.33,ha*.91,.08],'box',10,cadres[ton],'volet');
+  }
+  const porte=(ton%2?-.15:.16)*w;
+  applique(rue,porte,1.04,.04,[ton===0?1.46:1.04,2.08,.09],'box',10,bois,'porte');
+  for(const u of [-.26,.26])fenetre(rue,u*w,h-1.05,1.02,1.24,ton!==0);
+  fenetre(rue,-porte*1.6,1.25,.84,1.02,false);
+  for(const sens of [-1,1]){
+    const face=sens*Math.PI/2;
+    fenetre(face,(ton%2?.13:-.13)*d,h-1.18,.92,1.16,false);
+    if(detail) fenetre(face,-.17*d,1.15,.66,.82,false);
+    if(detail && ton%2===0) for(const u of [-.20,0,.20]){
+      const haut=hauteur*(.78-Math.abs(u)*1.5);
+      applique(face,u*d,h+haut/2,.016,[.105,haut,.035],'box',10,[.17,.145,.12],'jour-fenil');
+    }
+  }
+  return {proche,loin};
+}
 
 function poser(c, outils) {
   if (!c || c.id !== 'larche') return null;
@@ -815,11 +921,10 @@ function poser(c, outils) {
       const w = 5 + hache(m + 200, v.s | 0) * 3;
       const h = 4 + hache(m + 300, v.s | 0) * 2;
       const d = 4 + hache(m + 400, v.s | 0) * 2;
-      const maison = { forme: 'box', taille: [w, h + 2.4, d], pos: [mx, my + h / 2 - 1.2, mz], angles: [0, -pos.cap + (hache(m, 7) - 0.5) * 0.3, 0], mat: 'pierre', couleur: [0.62, 0.58, 0.50] };
-      const toit = { forme: 'bevel', taille: [w + 0.6, 2.2, d + 0.6], pos: [mx, my + h + 0.9, mz], angles: [0, -pos.cap + (hache(m, 7) - 0.5) * 0.3, 0], mat: 'ardoise', couleur: [0.3, 0.28, 0.30] };
-      add(objets, true, mx, mz, maison);
-      add(objets, true, mx, mz, toit);
-      if (B.decor && B.decor.marquerSolide) B.decor.marquerSolide(maison, 'box', 2);
+      const yaw=-pos.cap+(hache(m,7)-.5)*.3;
+      const maison=maisonStura(mx,my,mz,w,h,d,yaw,cote,Math.floor(hache(m+701,v.s|0)*32),!!saison?.neige,!isLow);
+      objets.push(...maison.proche);
+      if(ajouter)ajouter(maison.proche,maison.loin,mx,mz);
     }
     // Clocher à Bersezio et Sambuco
     if (!isLow && (v.nom === 'Bersezio' || v.nom === 'Sambuco')) {

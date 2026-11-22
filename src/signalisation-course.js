@@ -1,68 +1,54 @@
-/* BITUME — rubans de virage et bandeaux des portiques. Les géométries restent visuelles. */
+/* BITUME — balises de virage et bandeaux des portiques. Les géométries restent visuelles. */
 (function (B) {
   'use strict';
-  const LED_COUNT = 12, MAILLE = 128, PORTEE = 355, HAUTEUR = 2.85;
+  const LED_COUNT = 12, MAILLE = 128, PORTEE = 355;
+  const LARGEUR = 2.45, HAUTEUR = 1.40, EPAISSEUR = .12;
   const COLONNES = 19, LIGNES = 11;
-  const FORME = 'bitume-ruban-chevron';
+  const FORME = 'bitume-ruban-chevron', GRILLE = 'bitume-ruban-grille';
+  const LED = 'bitume-balise-led', BOITIER = 'bitume-balise-boitier';
   const modulo = (x, longueur) => ((x % longueur) + longueur) % longueur;
   const cleCase = (x, z) => x * 65536 + z;
 
-  // Flèche monobloc fermée. Son X local indique toujours le sens de circulation.
-  function formeChevron() {
-    const contour = [[-.5,-.5],[-.12,-.5],[.5,0],[-.12,.5],[-.5,.5],[.12,0]];
-    const triangles = [];
-    for (const z of [-.5,.5]) {
-      const points = contour.map(([x,y]) => [x,y,z]), n = [0,0,Math.sign(z)];
-      for (const [a,b,c] of [[0,1,5],[1,2,5],[5,2,3],[5,3,4]])
-        triangles.push(z > 0 ? [points[a],points[b],points[c],n,n,n] : [points[c],points[b],points[a],n,n,n]);
+  // Le métal et la lumière se partagent la face avant bord à bord. Aucun polygone
+  // lumineux au dos, aucun empilement de surfaces coplanaires, même dans une glace.
+  function formeBalise(matrice) {
+    const metal = [], lumiere = [], avant = [0,0,1];
+    function quad(lot,a,b,c,d,n) { lot.push([a,b,c,n,n,n],[a,c,d,n,n,n]); }
+    function bande(lot, y0, y1, x0, x1, X0 = x0, X1 = x1, n = avant) {
+      quad(lot,[x0,y0,.5],[x1,y0,.5],[X1,y1,.5],[X0,y1,.5],n);
     }
-    for (let i=0; i<contour.length; i++) {
-      const [x,y]=contour[i], [u,v]=contour[(i+1)%contour.length], l=Math.hypot(u-x,v-y);
-      const n=[(v-y)/l,(x-u)/l,0], a=[x,y,-.5], b=[u,v,-.5], c=[u,v,.5], d=[x,y,.5];
-      triangles.push([a,b,c,n,n,n],[a,c,d,n,n,n]);
+    const a=[-.5,-.5,-.5], b=[.5,-.5,-.5], c=[.5,.5,-.5], d=[-.5,.5,-.5];
+    const contour = [a,b,c,d], normales = [[0,-1,0],[1,0,0],[0,1,0],[-1,0,0]];
+    quad(metal,d,c,b,a,[0,0,-1]);
+    for (let i=0; i<4; i++) {
+      const p=contour[i], q=contour[(i+1)%4];
+      quad(metal,p,q,[q[0],q[1],.5],[p[0],p[1],.5],normales[i]);
     }
-    return triangles;
-  }
-  // Un même atlas de triangles pour tous les rubans. Les LED éteintes appartiennent à
-  // la dalle, les LED chaudes à la flèche. Aucune diode ne devient un objet de la scène.
-  function formeMatrice(phase) {
-    const allumee = phase >= 0;
-    const triangles = [];
-    function face(x, y, largeur, hauteur, z, normale) {
-      const a = [x-largeur/2,y-hauteur/2,z], b = [x+largeur/2,y-hauteur/2,z];
-      const c = [x+largeur/2,y+hauteur/2,z], d = [x-largeur/2,y+hauteur/2,z];
-      const n = normale;
-      if (z > 0) triangles.push([a,b,c,n,n,n],[a,c,d,n,n,n]);
-      else triangles.push([c,b,a,n,n,n],[d,c,a,n,n,n]);
-    }
-    if (!allumee) {
-      // La face avant porte la teinte des diodes éteintes. Les interstices sombres
-      // se prolongent sur toute une ligne ou colonne, y compris au bord du module.
-      const largeur=1.025, jointX=.12/COLONNES, jointY=.125/LIGNES;
-      const devant=[0,0,1];
-      face(0,0,largeur,1,-.40,[0,0,-1]);
-      face(0,0,largeur,1,.49,[0,.83,.56]);
-      for (let i=0; i<=COLONNES; i++) {
-        const x=i/COLONNES-.5;
-        const gauche=i===0 ? -largeur/2 : x-jointX;
-        const droite=i===COLONNES ? largeur/2 : x+jointX;
-        face((gauche+droite)/2,0,droite-gauche,1,.495,devant);
+    const pointe = y => .38 - 1.22*Math.abs(y);
+    if (matrice) {
+      const eteinte=[0,.24,.971];
+      for (let j=0; j<LIGNES; j++) {
+        const bas=j/LIGNES-.5, haut=(j+1)/LIGNES-.5, y=(bas+haut)/2;
+        const y0=bas+.15/LIGNES, y1=haut-.15/LIGNES;
+        bande(metal,bas,y0,-.5,.5); bande(metal,y1,haut,-.5,.5);
+        for (let i=0; i<COLONNES; i++) {
+          const g=i/COLONNES-.5, d=(i+1)/COLONNES-.5, x=(g+d)/2;
+          const x0=g+.13/COLONNES, x1=d-.13/COLONNES;
+          const active=Math.abs(y)<.41 && x<=pointe(y) && x>=pointe(y)-.28;
+          bande(metal,y0,y1,g,x0); bande(metal,y0,y1,x1,d);
+          bande(active?lumiere:metal,y0,y1,x0,x1,x0,x1,active?avant:eteinte);
+        }
       }
-      for (let j=0; j<=LIGNES; j++) {
-        const y=j/LIGNES-.5, bas=Math.max(-.5,y-jointY), haut=Math.min(.5,y+jointY);
-        face(0,(bas+haut)/2,largeur,haut-bas,.495,devant);
+    } else {
+      bande(metal,-.5,-.41,-.5,.5); bande(metal,.41,.5,-.5,.5);
+      for (const [bas,haut] of [[-.41,0],[0,.41]]) {
+        const b=pointe(bas), h=pointe(haut);
+        bande(metal,bas,haut,-.5,b-.28,-.5,h-.28);
+        bande(lumiere,bas,haut,b-.28,b,h-.28,h);
+        bande(metal,bas,haut,b,.5,h,.5);
       }
-      return triangles;
     }
-    const normale=[0,0,1];
-    for (let j=0; j<LIGNES; j++) for (let i=0; i<COLONNES; i++) {
-      const x=(i+.5)/COLONNES-.5, y=(j+.5)/LIGNES-.5;
-      const pointe=.47-1.10*Math.abs(y);
-      const motif=(modulo(i-phase,COLONNES)+.5)/COLONNES-.5;
-      if (Math.abs(y)>.46 || motif>pointe || motif<pointe-.37) continue;
-      face(x,y,.76/COLONNES,.75/LIGNES,.49,normale);
-    }
-    return triangles;
+    return {metal,lumiere};
   }
   // Chaque rangée encode les trois colonnes d'une lettre du portique, de gauche à droite.
   const glyphes = {
@@ -85,74 +71,47 @@
     }
     return triangles;
   }
-  const phasesLED = Array.from({length: COLONNES}, (_, i) => 'bitume-ruban-led-'+i);
   const renderer = globalThis.FRender || globalThis.window?.FRender;
   if (renderer?.forme) {
+    const proche=formeBalise(true), loin=formeBalise(false);
+    renderer.forme(GRILLE,proche.metal); renderer.forme(LED,proche.lumiere);
+    renderer.forme(BOITIER,loin.metal); renderer.forme(FORME,loin.lumiere);
     for (const [lettre, lignes] of Object.entries(glyphes)) {
       nomsGlyphes[lettre] = 'bitume-portique-' + lettre;
       renderer.forme(nomsGlyphes[lettre], formeLettre(lignes));
     }
-    renderer.forme(FORME, formeChevron());
-    phasesLED.forEach((nom, i) => renderer.forme(nom, formeMatrice(i)));
-    renderer.forme('bitume-ruban-grille', formeMatrice(-1));
   }
 
-  function planGeometrique(c) {
-    // Le profil de conduite lisse la courbure. Sur une trace GPS, un virage doux peut
-    // donc commencer quelques échantillons avant son annonce. Relire les deux cordes.
-    const courbure = new Float32Array(c.n);
-    for (let i = c.ouvert ? 1 : 0; i < c.n - (c.ouvert ? 1 : 0); i++) {
-      const a = (i+c.n-1)%c.n, b = (i+1)%c.n;
-      const ux=c.x[i]-c.x[a], uz=c.z[i]-c.z[a], vx=c.x[b]-c.x[i], vz=c.z[b]-c.z[i];
-      const longueur=(Math.hypot(ux,uz)+Math.hypot(vx,vz))*.5;
-      if (longueur>.001) courbure[i]=Math.atan2(ux*vz-uz*vx,ux*vx+uz*vz)/longueur;
-    }
-    return B.virages.planifier({ ...c, courbure });
-  }
-
-  function viragesDuRuban(c) {
-    const finCourse = c.ouvert ? (c.arrivee || c.longueur) : c.longueur;
-    const n = Math.min(c.ouvert ? c.n-1 : c.n, Math.ceil(finCourse/c.pas));
-    const sens = new Int8Array(n), niveaux = new Uint8Array(n);
-    // Inclure les courbes douces qui changent réellement le cap mais n'exigent pas d'annonce de freinage.
-    for (let i=0; i<n; i++) if (Math.abs(c.courbure[i]) > 1/3000) sens[i] = Math.sign(c.courbure[i]);
-    const plans = B.virages ? [...planGeometrique(c), ...B.virages.planifier(c)] : [];
-    for (const v of plans) {
-      const debut = Math.round(v.debut/c.pas), fin = Math.ceil((v.debut+v.longueur)/c.pas-1e-8);
-      for (let j=debut; j<fin; j++) { const i=j%n; sens[i]=v.sens; niveaux[i]=v.difficulte; }
-    }
-    let depart = 0;
-    if (!c.ouvert && n) {
-      // Dérouler depuis un vrai changement de signe, même si le virage coupe la ligne de départ.
-      while (depart<n && sens[depart]===sens[(depart+n-1)%n]) depart++;
-      if (depart===n) depart=0;
-    }
-    const rubans = [];
-    for (let j=depart; j<depart+n;) {
-      const premier=j, signe=sens[j%n]; let angle=0, difficulte=0;
-      do { const i=j%n; angle+=Math.abs(c.courbure[i])*c.pas; difficulte=Math.max(difficulte,niveaux[i]);j++; }
-      while (j<depart+n && sens[j%n]===signe);
-      const s0=(premier%n)*c.pas, s1=c.ouvert?Math.min(j*c.pas,finCourse):s0+(j-premier)*c.pas;
-      if (signe && (difficulte || (s1-s0>=8 && angle>=.04))) {
-        rubans.push({debut:s0,fin:s1,longueur:s1-s0,sens:signe,difficulte:difficulte||1,points:[]});
-      }
-    }
-    return rubans;
-  }
-
-  function ancre(c, decor, limites, s, sens) {
-    const q=B.circuit.echantillon(c,s), i=Math.min(c.n-1,Math.floor(modulo(s,c.longueur)/c.pas));
-    const j=c.ouvert?Math.min(c.n-1,i+1):(i+1)%c.n, f=modulo(s,c.longueur)/c.pas-i;
+  function placerBalise(c, decor, limites, s, sens, rang) {
+    const q=B.circuit.echantillon(c,s), i=Math.min(c.n-1,Math.floor(s/c.pas));
+    const j=c.ouvert?Math.min(c.n-1,i+1):(i+1)%c.n, f=s/c.pas-i;
     const ext=-sens, bords=ext<0?limites?.G:limites?.D;
     const largeur=B.circuit.largeurA(c,s,ext), rail=bords?bords[i]+(bords[j]-bords[i])*f:largeur+3;
-    const ouvrage=B.couverts?.segment(c,s) || null;
-    const latMur=ouvrage && Number.isFinite(ouvrage.mur) ? ouvrage.mur-.68 : null;
-    const lat=ext*(latMur===null?Math.max(largeur+.9,rail+.85):Math.max(largeur+.3,latMur));
+    // En tunnel la paroi guide déjà le pilote. Pas de panneau transversal dans le gabarit.
+    if (B.couverts?.segment(c,s)) return null;
+    const lat=ext*(Math.max(rail,largeur)+LARGEUR/2+.55);
     const x=q.x-Math.sin(q.cap)*lat, z=q.z+Math.cos(q.cap)*lat;
+    const amont=B.circuit.echantillon(c,c.ouvert?Math.max(0,s-28):modulo(s-28,c.longueur));
+    const dx=amont.x-x, dz=amont.z-z, d=Math.hypot(dx,dz);
+    if (d<.01) return null;
+    const nx=dx/d, nz=dz/d;
+    const rotation=B.decor.angles([sens*nz,0,-sens*nx],[0,sens,0],[nx,0,nz]);
     const route=q.y-Math.sin(q.devers||0)*ext*largeur;
-    const sol=latMur===null && typeof decor?.sol==='function'?decor.sol(x,z):route;
-    const y=Math.max(route+1.08,Number.isFinite(sol)?sol+.14:route+1.08)+HAUTEUR/2;
-    return {s,x,y,z,lat};
+    const poteaux=[-.68,.68].map(ecart=>{
+      const px=x+nz*ecart-nx*.095, pz=z-nx*ecart-nz*.095;
+      const sol=decor?.sol?.(px,pz);
+      return {x:px,z:pz,sol:Number.isFinite(sol)?sol:route};
+    });
+    const bas=Math.max(route+1.12,...poteaux.map(p=>p.sol+.72));
+    const fond=objet(BOITIER,17,[.14,.16,.17]), fleche=objet(FORME,16,[1,.68,.14]);
+    fond.p=fleche.p=[x,bas+HAUTEUR/2,z]; fond.s=fleche.s=[LARGEUR,HAUTEUR,EPAISSEUR];
+    fond.r=fleche.r=rotation;
+    const supports=poteaux.map(p=>{
+      const o=objet('box',17,[.42,.45,.46]), haut=bas+HAUTEUR*.78;
+      o.p=[p.x,(haut+p.sol)/2,p.z]; o.s=[.064,haut-p.sol,.064]; o.r=[0,Math.atan2(nx,nz),0];
+      return o;
+    });
+    return {s,x,z,lat,rang,fond,fleche,supports};
   }
 
   function objet(shape, mat, couleur) {
@@ -160,42 +119,30 @@
   }
 
   function creer(circuit, decor) {
-    const rubans = [], cases = new Map(), bandeaux = [], objets = [], panneaux = [];
-    const etat={rubans,cases,panneaux,chevrons:panneaux,bandeaux,portique:bandeaux,objets};
+    const cases=new Map(), panneaux=[], bandeaux=[], objets=[];
+    const etat={cases,panneaux,chevrons:panneaux,bandeaux,portique:bandeaux,objets};
     if (!circuit?.n) return etat;
     const limites=B.decor?.limites(circuit);
-    let places=0;
-    for (const v of viragesDuRuban(circuit)) {
-      const index=rubans.push(v)-1;
-      // Un module d'environ 5 m épouse l'épingle et reste lisible de l'autre côté d'une longue courbe.
-      const nombre=Math.max(2,Math.ceil(v.longueur/5.05));
-      for (let i=0;i<=nombre;i++) v.points.push(ancre(circuit,decor,limites,v.debut+v.longueur*i/nombre,v.sens));
-      for (let i=0;i<nombre;i++) {
-        const a=v.points[i], b=v.points[i+1], dx=b.x-a.x,dy=b.y-a.y,dz=b.z-a.z;
-        const horizontal=Math.hypot(dx,dz), longueur=Math.hypot(horizontal,dy);
-        if (horizontal<.01) continue;
-        const x=(a.x+b.x)/2, z=(a.z+b.z)/2;
-        const axes=B.decor.base([dx,dy,dz],[0,1,0]);
-        const r = B.decor.angles(...axes);
-        const face = v.sens>0 ? r : [r[0]+Math.PI,r[1],r[2]];
-        const module={a,dx,dy,dz,x,z,longueur,r,face,index,i,nombre,
-          faceX:-v.sens*dz/horizontal,faceZ:v.sens*dx/horizontal};
-        const rayon=PORTEE+horizontal/2;
-        for (let cx=Math.floor((x-rayon)/MAILLE);cx<=Math.floor((x+rayon)/MAILLE);cx++)
-          for (let cz=Math.floor((z-rayon)/MAILLE);cz<=Math.floor((z+rayon)/MAILLE);cz++) {
-            const distanceX=Math.max(cx*MAILLE-x, 0, x-(cx+1)*MAILLE);
-            const distanceZ=Math.max(cz*MAILLE-z, 0, z-(cz+1)*MAILLE);
-            if (distanceX*distanceX+distanceZ*distanceZ > rayon*rayon) continue;
-            const cle=cleCase(cx,cz); let cellule=cases.get(cle);
+    for (const v of B.virages?.planifier(circuit) || []) {
+      // Un repère au point de corde, deux ou trois autour d'un coude marqué.
+      // L'espacement reste en mètres, y compris si le virage coupe la ligne de départ.
+      const sommet=modulo(v.sommet-v.debut,circuit.longueur);
+      const positions=[sommet];
+      if (v.difficulte>=2 && sommet>=22) positions.unshift(sommet-17);
+      if (v.difficulte===3 && v.longueur-sommet>=22) positions.push(sommet+17);
+      for (let k=0;k<positions.length;k++) {
+        const s=modulo(v.debut+positions[k],circuit.longueur);
+        const p=placerBalise(circuit,decor,limites,s,v.sens,k);
+        if (!p) continue;
+        panneaux.push(p); objets.push(p.fond,p.fleche,...p.supports);
+        for (let cx=Math.floor((p.x-PORTEE)/MAILLE);cx<=Math.floor((p.x+PORTEE)/MAILLE);cx++)
+          for (let cz=Math.floor((p.z-PORTEE)/MAILLE);cz<=Math.floor((p.z+PORTEE)/MAILLE);cz++) {
+            const cle=cleCase(cx,cz);
+            let cellule=cases.get(cle);
             if (!cellule) { cellule=[];cases.set(cle,cellule); }
-            cellule.push(module);places=Math.max(places,cellule.length);
+            cellule.push(p);
           }
       }
-    }
-    // Réserver seulement la plus grande fenêtre spatiale, indépendamment de la longueur totale.
-    for (let i=0;i<places;i++) {
-      const fond=objet('box',16,[.027,.058,.081]), fleche=objet(FORME,16,[1,.68,.13]);
-      panneaux.push({fond,fleche});objets.push(fond,fleche);
     }
     const portiquesS = [0];
     if (circuit.ouvert && Number.isFinite(circuit.arrivee) && circuit.arrivee > 100) {
@@ -253,43 +200,22 @@
     return etat;
   }
 
-  function dessinerRubans(etat, temps, contexte, camera, sortie) {
+  function dessinerBalises(etat, temps, contexte, camera, sortie) {
     if (!sortie || !camera) return;
-    const modules=etat.cases.get(cleCase(Math.floor(camera[0]/MAILLE),Math.floor(camera[2]/MAILLE)));
-    if (!modules) return;
-    const reduit=!!contexte?.mouvementReduit, portee=contexte?.qualite==='low'?265:PORTEE;
-    const avance= reduit ? .5 : modulo(temps/.62,1);
-    const motif=phasesLED[reduit ? 0 : Math.floor(avance*COLONNES)];
-    const distanceLED=contexte?.qualite==='low'?42:60;
-    const luminosite=(1+.16*(contexte?.pluie||0))*(1-.18*(contexte?.nuit||0));
-    let utilise=0;
-    for (let k=0;k<modules.length;k++) {
-      const m=modules[k], dx=m.x-camera[0], dz=m.z-camera[2];
-      const distance2=dx*dx+dz*dz;
-      if (distance2>portee*portee) continue;
-      // Une seule matrice précompilée par phase, commune à toutes les dalles proches.
-      // Au loin la silhouette pleine évite le moiré et les triangles sous-pixel.
-      const matrice=distance2<distanceLED*distanceLED;
-      const phase=matrice ? .5 : avance;
-      const {fond,fleche}=etat.panneaux[utilise++], a=m.a;
-      fond.shape=matrice?'bitume-ruban-grille':'box';
-      fleche.shape=matrice?motif:FORME;
-      fond.r=fleche.r=matrice?m.face:m.r;
-      fond.p[0]=m.x; fond.p[1]=a.y+m.dy*.5; fond.p[2]=m.z;
-      fond.s[0]=m.longueur+(matrice?0:.14); fond.s[1]=HAUTEUR; fond.s[2]=.18;
-      fond.emissive=.10;
-      fleche.p[0]=a.x+m.dx*phase+m.faceX*.17;
-      fleche.p[1]=a.y+m.dy*phase;
-      fleche.p[2]=a.z+m.dz*phase+m.faceZ*.17;
-      // Les flèches entrent et sortent du ruban à ses extrémités, avec position et phase
-      // continues aux jonctions. Au milieu, la silhouette complète reste allumée.
-      const bord=Math.min(m.i+phase, m.nombre-m.i-phase);
-      fleche.s[0]=m.longueur*Math.min(matrice?1:.87, Math.max(.012,2*bord));
-      fleche.s[1]=HAUTEUR*(matrice?1:.88);fleche.s[2]=.075;
-      const eclat = reduit ? .65 : .5+.5*Math.cos((m.i+avance-temps*4.2)*Math.PI/2);
-      fleche.color[1]=.44+.43*eclat; fleche.color[2]=.045+.28*eclat;
-      fleche.emissive=(.81+1.43*eclat)*luminosite*(matrice?1.12:.9);
-      sortie.push(fond,fleche);
+    const proches=etat.cases.get(cleCase(Math.floor(camera[0]/MAILLE),Math.floor(camera[2]/MAILLE)));
+    if (!proches) return;
+    const bas=contexte?.qualite==='low', portee=bas?265:PORTEE, distanceLED=bas?25:38;
+    const pluie=contexte?.pluie||0, nuit=contexte?.nuit||0;
+    for (const p of proches) {
+      const d2=(p.x-camera[0])**2+(p.z-camera[2])**2;
+      if (d2>portee*portee) continue;
+      const matrice=d2<distanceLED**2;
+      p.fond.shape=matrice?GRILLE:BOITIER;
+      p.fleche.shape=matrice?LED:FORME;
+      // Une pulsation douce se transmet d'une balise à la suivante. La flèche reste fixe et lisible.
+      const onde=contexte?.mouvementReduit ? .5 : .5+.5*Math.cos(temps*3.2-p.rang*1.1);
+      p.fleche.emissive=.69+.13*pluie-.10*nuit+(.13+.18*Math.max(pluie,nuit))*onde;
+      sortie.push(...p.supports,p.fond,p.fleche);
     }
   }
 
@@ -358,7 +284,7 @@
     const temps = Number.isFinite(t) ? t : 0;
     const boostNuit = 1 + 1.6 * nuit;
 
-    dessinerRubans(etat, temps, contexte, camPos, sortie);
+    dessinerBalises(etat, temps, contexte, camPos, sortie);
 
     const bandeaux = etat.bandeaux;
     if (bandeaux) {

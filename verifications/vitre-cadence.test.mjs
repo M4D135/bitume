@@ -38,7 +38,7 @@ verifier('chaque image montre une position nouvelle, pas seulement les images de
     for (let i = 0; i < hz / 2; i++) {
       V.mettreAJour(e, 1 / hz, c);
       if (!goutte.vivant) break;
-      const moi = corps(t.etat.image).find(el => Math.abs(el[2] - goutte.taille) < 1e-12);
+      const moi = corps(t.etat.image).find(el => Math.abs(el[2] - .45 * goutte.taille) < 1e-12);
       if (!moi) continue;
       if (precedent !== null) { if (Math.hypot(moi[0] - precedent[0], moi[1] - precedent[1]) > 1e-8) mouvements++; else immobiles++; }
       precedent = moi;
@@ -103,7 +103,7 @@ verifier('une goutte naît transparente puis apparaît en fondu', () => {
   const alphas = [];
   for (let i = 0; i < 24; i++) {
     V.mettreAJour(e, 1 / 120, c);
-    const moi = corps(t.etat.image).find(el => Math.abs(el[2] - premiere.taille) < 1e-12);
+    const moi = corps(t.etat.image).find(el => Math.abs(el[2] - .45 * premiere.taille) < 1e-12);
     alphas.push(moi ? moi[4] : 0);
   }
   assert(alphas.every((a, i) => !i || a >= alphas[i - 1] - 1e-12) && alphas[alphas.length - 1] > .05, 'opacité croissante : ' + alphas.map(a => a.toFixed(3)));

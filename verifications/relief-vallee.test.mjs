@@ -29,15 +29,20 @@ test('la couronne alpine se raccorde aux vrais sommets des tuiles et reste hors 
   const c = creerCircuitCatalogue(B,catalogueJeu.find(x=>x.id==='larche'));
   const d = B.decor.construire(c,{qualite:'low',saison:'ete',vegetation:false});
   const collines = d.nappes.filter(n=>n.surfaceType==='panorama');
+  assert(d.nappes.every(n => (n.vertexTint==='smooth') === ['terrain','panorama'].includes(n.surfaceType)));
   const terrain = new Map();
   for (const n of d.nappes.filter(n=>n.surfaceType==='terrain')) {
-    for (let k=0;k<n.sommets.length;k+=13) terrain.set(n.sommets[k]+','+n.sommets[k+2],n.sommets[k+1]);
+    for (let k=0;k<n.sommets.length;k+=13) terrain.set(n.sommets[k]+','+n.sommets[k+2],n.sommets.subarray(k,k+13));
   }
   let joints=0, triangles=0;
   for (const n of collines) {
     for (let k=0;k<n.sommets.length;k+=13) {
       const v=n.sommets, h=terrain.get(v[k]+','+v[k+2]);
-      if (h!==undefined) { assert.equal(v[k+1],h); joints++; }
+      if (h!==undefined) {
+        assert.equal(v[k+1],h[1]);
+        assert.deepEqual(v.subarray(k+10,k+13),h.subarray(10,13));
+        joints++;
+      }
       assert(Math.abs(Math.hypot(v[k+3],v[k+4],v[k+5])-1)<1e-5);
     }
     const v=n.sommets;
@@ -106,4 +111,27 @@ test('les proportions WorldCover utilisent la grille du MNT et changent uniqueme
     assert.ok(foret.sommets[k+10]<mineral.sommets[k+10] && foret.sommets[k+11]>foret.sommets[k+10]);
     assert.ok(hiver.sommets[k+10]>foret.sommets[k+10]);
   }
+});
+
+test('les pigments de versant suivent les pentes et l’occupation mesurées', () => {
+  const n = 15, pas = 100;
+  const relief = (classe, altitude) => {
+    const hauteurs = Buffer.alloc(n*n*2), fractions = Buffer.alloc(3*n*n);
+    for (let j=0;j<n;j++) for (let i=0;i<n;i++) {
+      hauteurs.writeInt16LE(altitude(i,j), 2*(j*n+i));
+      if (classe !== null) fractions[3*(j*n+i)+classe] = 255;
+    }
+    const grille = { nx:n,nz:n,x0:0,z0:0,pas };
+    return B.larcheRelief.pigmentsRelief({ ...grille, metresI16LE:hauteurs.toString('base64'),
+      couverture:{ ...grille, fractionsU8:fractions.toString('base64') } });
+  };
+  const plat=()=>500, pente=i=>200+110*i, dos=i=>1200-75*Math.abs(i-7);
+  const lire = (f, x=700) => { const rgb=[]; assert.ok(f(x,700,rgb)); return rgb; };
+  const herbe=lire(relief(1,plat)), foret=lire(relief(0,plat)), roche=lire(relief(2,plat));
+  assert.ok(foret[0]<herbe[0] && foret[1]>foret[0] && herbe[0]<roche[0]);
+  assert.ok(lire(relief(2,pente))[0]>roche[0]+.10, 'affleurement sur le versant escarpé');
+  assert.ok(lire(relief(2,dos))[0]>roche[0], 'épaulement exposé');
+  assert.deepEqual(lire(relief(null,pente)),lire(relief(null,plat)), 'les autres classes ne reçoivent aucun affleurement');
+  const absent=relief(1,()=>-32768);
+  assert.equal(absent(700,700,[]),false);assert.equal(relief(2,plat)(-100,700,[]),false);
 });

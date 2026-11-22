@@ -321,8 +321,11 @@
     vObject=mod(floor(iRotation.w*.25),2.);
     vSurface=vObject>.5?localPosition:vWorld;
     vLocal=aPosition;vFaceNormal=aNormal;vDimensions=abs(iScale.xyz);
-    vSurfaceNormal=vObject>.5?normalize(localNormal):vNormal;
-    vColor=vec4(iColor.rgb,iColor.w>1.?1.:iColor.w<0.?0.:iColor.w);
+    // World-mapped terrain already carries the same normal in vNormal. Its
+    // opt-in colour can use this interpolated vec3 without adding a varying.
+    bool smoothTerrainTint=iRotation.w==34.;
+    vSurfaceNormal=smoothTerrainTint?iColor.rgb:vObject>.5?normalize(localNormal):vNormal;
+    vColor=vec4(iColor.rgb,smoothTerrainTint?2.:iColor.w>1.?1.:iColor.w<0.?0.:iColor.w);
     gl_Position=uViewProjection*vec4(vWorld,1.);
   }`;
 
@@ -507,7 +510,10 @@
   }
   void main() {
     groundCoverDiscard();
-    vec3 geometricNormal=normalize(vNormal), n=geometricNormal, an=abs(normalize(vSurfaceNormal));
+    bool smoothTerrainTint=vColor.w>1.5;
+    vec3 tintRGB=smoothTerrainTint?vSurfaceNormal:vColor.rgb;
+    vec3 geometricNormal=normalize(vNormal), n=geometricNormal;
+    vec3 an=abs(smoothTerrainTint?geometricNormal:normalize(vSurfaceNormal));
     vec2 uv=an.y>.65?vSurface.xz:(an.x>an.z?vSurface.zy:vSurface.xy);
     float recipe=vMaterial>20.5&&vMaterial<29.5?floor(vMaterial+.5)-20.:0.;
     float m=recipe==1.?14.:recipe==2.?3.:recipe==3.?9.:recipe==4.?16.:recipe==5.?8.:recipe==6.?10.:recipe==7.?11.:recipe==8.?7.:recipe==9.?18.:vMaterial, emission=vEmission;
@@ -528,7 +534,7 @@
       float patches=surfaceNoise(uv+vec2(17.3,8.1),.17,pixelSpan);
       float structure=surfaceNoise(uv+vec2(3.7,11.9),2.6,pixelSpan);
       float aggregate=surfaceNoise(uv,83.,pixelSpan);
-      vec3 tint=vColor.w>.5?vColor.rgb:vec3(.5);
+      vec3 tint=vColor.w>.5?tintRGB:vec3(.5);
       if(recipe<1.5){
         if(vColor.w<.5)tint=vec3(.18,.18,.19);
         float repair=smoothstep(.48,.69,patches);
@@ -776,7 +782,7 @@
       // PDR : façade d'immeuble. Étages, fenêtres en retrait, vitrines du rez-de-chaussée et toit de gravier ;
       // la fraction de la matière (12,55 à 13,45) choisit le rythme des baies.
       float style=clamp((m-12.55)/.9,0.,1.);
-      vec3 enduit=vColor.w>.5?vColor.rgb:vec3(.72,.67,.6);
+      vec3 enduit=vColor.w>.5?tintRGB:vec3(.72,.67,.6);
       roughness=.86;metalness=0.;
       if(an.y>.65){
         base=mix(vec3(.15,.15,.155),enduit*.55,.3)*(.82+grain*.26+broad*.14)*(.93+noise(uv*3.1)*.12);
@@ -824,7 +830,7 @@
       }
     } else if(m<14.5) {
       // PDR : asphalte, granulat fin, reprises et fissures.
-      vec3 teinte=vColor.w>.5?vColor.rgb:vec3(.2,.2,.21);
+      vec3 teinte=vColor.w>.5?tintRGB:vec3(.2,.2,.21);
       float granulat=mix(.5,noise(uv*95.),fineDetail);
       float reprise=smoothstep(.55,.75,noise(uv*.18+3.));
       float fissure=(1.-smoothstep(0.,.035,abs(noise(uv*.9)-.5)))*step(.55,noise(uv*.23+9.))*fineDetail;
@@ -833,7 +839,7 @@
       urbanHeight=granulat*.006-fissure*.01;
     } else if(m<15.5) {
       // PDR : dallage de pierre, appareil à joints décalés.
-      vec3 teinte=vColor.w>.5?vColor.rgb:vec3(.7,.67,.6);
+      vec3 teinte=vColor.w>.5?tintRGB:vec3(.7,.67,.6);
       vec2 d=uv*1.3,rang=vec2(d.x+.5*mod(floor(d.y),2.),d.y);
       float joint=grid(rang,.035),pierre=hash(floor(rang));
       base=teinte*(.86+pierre*.16+grain*.12)*(1.-joint*.3);
@@ -841,15 +847,15 @@
       urbanHeight=(1.-joint)*.006;
     } else if(m<16.5) {
       // PDR : peinture laquée des véhicules et des boucliers.
-      base=(vColor.w>.5?vColor.rgb:vec3(.5))*(.94+grain*.06);
+      base=(vColor.w>.5?tintRGB:vec3(.5))*(.94+grain*.06);
       roughness=.22;metalness=.35;
     } else if(m<17.5) {
       // BITUME : peinture satinée 17, couleur conservée sous le ciel en incidence rasante.
-      base=(vColor.w>.5?vColor.rgb:vec3(.5))*(.95+grain*.05);
+      base=(vColor.w>.5?tintRGB:vec3(.5))*(.95+grain*.05);
       roughness=mix(.46,.3,uPhoto);metalness=.04;
     } else {
       // PDR : tissu et peau des figurines.
-      base=(vColor.w>.5?vColor.rgb:vec3(.5))*(.9+grain*.14);
+      base=(vColor.w>.5?tintRGB:vec3(.5))*(.9+grain*.14);
       roughness=.92;metalness=0.;
     }
     if(m>19.05&&m<19.15){
@@ -860,7 +866,7 @@
       windowGlow=mix(vec3(1.,.58,.25),vec3(.92,.87,.66),step(.78,home))*night*occupied*1.7;
     }
     if(recipe<.5&&vColor.w>.5&&m<12.5&&!(m>11.5&&vAnchor.y<0.)){
-      vec3 tint=vColor.rgb*(.88+grain*.2)*(1.-panel*.12)*(m<3.5?.65:1.);
+      vec3 tint=tintRGB*(.88+grain*.2)*(1.-panel*.12)*(m<3.5?.65:1.);
       base=m>7.5?base*.35+tint*.65:tint;
     }
     if(vObject>.5&&m<2.5){
@@ -875,7 +881,7 @@
       base+=vec3(.04,.045,.048)*scuff;
       roughness=mix(roughness,.21,wear*.82);
     }
-    if(m>18.5&&m<19.5){base=vColor.rgb;roughness=.08;metalness=.48;}
+    if(m>18.5&&m<19.5){base=tintRGB;roughness=.08;metalness=.48;}
     float height=(1.-panel)*.012+grain*.003*fineDetail;
     if(m>1.5&&m<2.5){
       vec2 treadUV=mat2(.707,-.707,.707,.707)*uv*12.;
@@ -895,7 +901,7 @@
     if(recipe<.5&&uPbrReady>.5&&pbrWeight>0.){
       vec2 texUV=uv/(pbrLayer<.5?3.:2.);vec3 coord=vec3(texUV,pbrLayer);
       vec3 albedo=texture(uPbrAlbedo,coord).rgb;
-      if(pbrLayer>.5)albedo*=vColor.w>.5?vColor.rgb*1.9:vec3(1.25);
+      if(pbrLayer>.5)albedo*=vColor.w>.5?tintRGB*1.9:vec3(1.25);
       base=mix(base,albedo,pbrWeight*.92);roughness=mix(roughness,clamp(texture(uPbrRough,coord).r,.35,.98),pbrWeight);
       vec3 mapN=texture(uPbrNormal,coord).xyz*2.-1.;mapN.xy*=.50;
       vec3 dp1=dFdx(vWorld),dp2=dFdy(vWorld);vec2 duv1=dFdx(texUV),duv2=dFdy(texUV);
@@ -904,7 +910,7 @@
       float inv=inversesqrt(max(max(dot(t,t),dot(b,b)),1e-10));
       vec3 mapped=normalize(mat3(t*inv,b*inv,geometricNormal)*mapN);n=normalize(mix(n,mapped,pbrWeight));metalness=0.;
     }
-    if(m>19.5&&m<20.5){base=vColor.rgb*(.96+noise(uv*210.)*.04);roughness=.53;metalness=0.;}
+    if(m>19.5&&m<20.5){base=tintRGB*(.96+noise(uv*210.)*.04);roughness=.53;metalness=0.;}
     // Pixel-scale normal variation broadens highlights instead of shimmering.
     vec3 ndx=dFdx(n),ndy=dFdy(n);
     roughness=min(.98,sqrt(roughness*roughness+min(.16,max(dot(ndx,ndx),dot(ndy,ndy))*.28)));
@@ -3145,11 +3151,15 @@
     function dessinerNappes(eye,axes,horizontal,vertical,far){
       if(!nappeVao)return;
       gl.bindVertexArray(nappeVao);gl.vertexAttrib4f(3,1,1,1,0);gl.vertexAttrib4f(4,0,0,0,2);
+      let smoothTint=false;
       for(let i=0;i<nappes.length;i++){
         const n=nappes[i],bounds=nappeBounds[i];bounds.p=n.centre;bounds.radius=n.rayon;
         if(!visible(bounds,eye,axes,horizontal,vertical,far))continue;
+        const tint=n.vertexTint==='smooth';
+        if(tint!==smoothTint){gl.vertexAttrib4f(4,0,0,0,tint?34:2);smoothTint=tint;}
         gl.drawElements(gl.TRIANGLES,n.compte,gl.UNSIGNED_INT,n.debut);stats.drawCalls++;stats.triangles+=n.compte/3;
       }
+      if(smoothTint)gl.vertexAttrib4f(4,0,0,0,2);
       gl.bindVertexArray(vao);
     }
     // Préchauffage : chaque nappe, sans test de champ. Les nappes ne projettent pas d'ombre (aucune passe d'ombre
@@ -3159,7 +3169,13 @@
       if(!nappeVao)return;
       const cle=warm.cible+' nappes',seule=warm.balayes.has(cle);warm.balayes.add(cle);
       gl.bindVertexArray(nappeVao);gl.vertexAttrib4f(3,1,1,1,0);gl.vertexAttrib4f(4,0,0,0,2);
-      for(const n of nappes){gl.drawElements(gl.TRIANGLES,n.compte,gl.UNSIGNED_INT,n.debut);stats.drawCalls++;stats.triangles+=n.compte/3;warm.nappes++;if(seule)break;}
+      let smoothTint=false;
+      for(const n of nappes){
+        const tint=n.vertexTint==='smooth';
+        if(tint!==smoothTint){gl.vertexAttrib4f(4,0,0,0,tint?34:2);smoothTint=tint;}
+        gl.drawElements(gl.TRIANGLES,n.compte,gl.UNSIGNED_INT,n.debut);stats.drawCalls++;stats.triangles+=n.compte/3;warm.nappes++;if(seule)break;
+      }
+      if(smoothTint)gl.vertexAttrib4f(4,0,0,0,2);
       gl.bindVertexArray(vao);
     }
     function chargerLots(){

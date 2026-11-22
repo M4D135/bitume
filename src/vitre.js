@@ -302,11 +302,11 @@
       const p = e.gouttes[i]; if (!p.vivant && !p.fusion) continue;
       const age = melange(p.pa, p.age, k), a = clamp(Math.min(1, age / .24, (p.duree - age) / 1.5) * melange(p.pp, p.poids, k) * e.opacite, 0, 1);
       const x = melange(p.px, p.x, k) * w, y = melange(p.py, p.y, k) * h;
-      const r = Math.sqrt(melange(p.pr * p.pr, p.vivant ? p.taille * p.taille : 0, k));
+      const r = .45 * Math.sqrt(melange(p.pr * p.pr, p.vivant ? p.taille * p.taille : 0, k));
       if (r < .05) continue;
       const impact = e.impactTampon;
       if (lireImpact(p, k, impact, 0, e.impactsActifs) > .005) {
-        const phase = impact[0], rayon = impact[3] * (.65 + 1.7 * phase), aplati = .60 + .25 * phase;
+        const phase = impact[0], rayon = .45 * impact[3] * (.65 + 1.7 * phase), aplati = .60 + .25 * phase;
         ctx.globalAlpha = Math.min(.95, impact[1] * e.opacite);
         // Couronne brisée et trois micro-éclaboussures, locales et orientées par la graine
         // de la goutte. Aucun aplat ni reprise d'une grille écran.
@@ -342,12 +342,12 @@
         }
       }
       const angle = dx * dx + dy * dy > .25 ? Math.atan2(dy, dx) - Math.PI / 2 : .12 * p.sin;
-      ctx.fillStyle = 'rgba(23,48,61,0.16)'; ctx.beginPath(); ctx.ellipse(x, y, r, r * 1.36, angle, 0, TAU); ctx.fill();
-      ctx.strokeStyle = 'rgba(12,31,40,0.35)'; ctx.lineWidth = Math.max(.6, r * .22);
+      ctx.fillStyle = 'rgba(23,48,61,0.06)'; ctx.beginPath(); ctx.ellipse(x, y, r, r * 1.36, angle, 0, TAU); ctx.fill();
+      ctx.strokeStyle = 'rgba(12,31,40,0.17)'; ctx.lineWidth = Math.max(.6, r * .22);
       ctx.beginPath(); ctx.ellipse(x + r * .08, y + r * .13, r * .82, r * 1.04, angle, -.1, 2.5); ctx.stroke();
-      ctx.strokeStyle = 'rgba(225,245,253,0.61)'; ctx.lineWidth = Math.max(.65, r * .17);
+      ctx.strokeStyle = 'rgba(225,245,253,0.35)'; ctx.lineWidth = Math.max(.65, r * .17);
       ctx.beginPath(); ctx.ellipse(x - r * .13, y - r * .21, r * .73, r * .94, angle, 3.35, 5.8); ctx.stroke();
-      ctx.fillStyle = 'rgba(242,252,255,0.48)'; ctx.beginPath();
+      ctx.fillStyle = 'rgba(242,252,255,0.28)'; ctx.beginPath();
       ctx.ellipse(x - r * .28, y - r * .55, Math.max(.32, r * .14), Math.max(.4, r * .22), -.3, 0, TAU); ctx.fill();
     }
     for (let i = 0; i < e.neige.length; i++) {

@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const enregistrees = new Map();
-globalThis.FRender = { forme(nom, triangles) { enregistrees.set(nom, triangles); } };
+globalThis.FRender = { forme(nom, triangles) { if (nom.startsWith('arbre-alpin-')) enregistrees.set(nom, triangles); } };
 for (const f of ['circuit', 'couverts', 'larche-vinadio-data', 'larche-vinadio', 'larche-vinadio-decor']) require('../src/' + f + '.js');
 delete globalThis.FRender;
 const B = globalThis.BITUME;

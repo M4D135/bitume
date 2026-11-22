@@ -7,9 +7,9 @@
   const QUALITES = Object.freeze({ low: 0, medium: 1, high: 2, ultra: 3 });
   const MAX_GOUTTES_MOBILES = 32;
   const DEPOTS = Object.freeze([6, 12, 24, 32].map((gouttes, i) => Object.freeze({ gouttes, neige: 0, echelleEau: 1.4 + i * .1 })));
-  // Micro-impacts, perles fines/moyennes/larges, film et neige humide. Chaque couche garde
+  // Micro-impacts, perles fines/moyennes, dépôts espacés, filets et neige humide. Chaque couche garde
   // son transport réel : modifier le vent ou le regard change sa vitesse, jamais sa position.
-  const COUCHES = Object.freeze([[.015,.76],[.04,1.85],[.22,4.1],[.65,9.7],[.85,11],[.08,4.5]].map(Object.freeze));
+  const COUCHES = Object.freeze([[.015,.76],[.04,1.35],[.22,2.1],[.65,3.2],[.45,1.25],[.08,4.5]].map(Object.freeze));
   const FONDU_TRANSPORT = .55;
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   const nombre = (v, defaut = 0) => Number.isFinite(Number(v)) && v != null ? Number(v) : defaut;
@@ -116,24 +116,6 @@
     int i=groupe*2;
     return perlesGeneration(p,cellule,taille,densite,couche,mobilite,i)+perlesGeneration(p,cellule,taille,densite,couche,mobilite,i+1);
   }
-  vec4 nappeGeneration(vec2 p,float densite,int indice) {
-    vec4 tr=uTransport[indice];if(tr.w<.0001)return vec4(0);
-    float graine=uVue.z+uPhase[indice/4][indice%4];
-    mat2 rotation=mat2(.932,.362,-.362,.932);
-    vec2 q=rotation*positionSource(p,tr)/vec2(157.0,191.0),id=floor(q),a=h22(id+103.0+graine);
-    vec2 d=(fract(q)-.5-(a-.5)*.36)*vec2(1.0,.84)*tr.x;
-    float vie = fract(uMouvement.x*(.021+a.y*.017)+a.x);
-    float rayon = .08+a.y*.095;
-    float angle = atan(d.y,d.x);
-    float r = length(d)/(rayon*(1.0+.18*sin(angle*3.0+a.x*15.0)+.09*sin(angle*5.0-a.y*9.0)));
-    float present = (1.0-smoothstep(densite-.05,densite+.08,h21(id+vec2(31,81)+graine)))*tr.w;
-    float fondu = smoothstep(0.0,.13,vie)*(1.0-smoothstep(.72,1.0,vie));
-    float m = bords(r,.035)*present*fondu;
-    return vec4(transpose(rotation)*clamp(d/rayon,vec2(-1),vec2(1))*m*.65,m,m*(.5+.5*sqrt(max(0.0,1.0-min(r*r,1.0)))));
-  }
-  vec4 nappe(vec2 p,float densite) {
-    return nappeGeneration(p,densite,8)+nappeGeneration(p,densite,9);
-  }
   vec4 impactGoutte(vec2 delta,vec4 impact) {
     if(impact.y<.005)return vec4(0);
     float phase=impact.x,rayon=impact.w*(.65+1.7*phase),angle=impact.z;
@@ -169,7 +151,7 @@
         i=int(floatBitsToUint(float(bit))>>23u)-127;
         masque&=masque-1u;
       } else if(i>=uNbGouttes) break;
-      vec4 g=uGouttes[i],tr=uTrajets[i],impact=uImpacts[i]; float rayon=g.z;
+      vec4 g=uGouttes[i],tr=uTrajets[i],impact=uImpacts[i]; float rayon=g.z*.45; impact.w*=.45;
       float emprise=max(rayon*(2.3+wMob*6.5),impact.y>.005?impact.w*(.65+1.7*impact.x)*1.75+2.0:0.0);
       vec2 bas=min(g.xy,min(tr.xy,tr.zw))-emprise,haut=max(g.xy,max(tr.xy,tr.zw))+emprise;
       // Les calculs de lentille et de courbe sont locaux ; le reste de l'écran ne parcourt que les emprises.
@@ -226,20 +208,19 @@
     // des perles à ménisque net. Le panache renouvelle ces impacts même à grande vitesse.
     vec4 micro=vec4(0);
     if (uQualite > 0) micro=perles(p+vec2(3.7,8.1),9.5,.76,clamp(eau*(.78+uMouvement.w*.28),0.0,.96),7.0,.015,0);
-    vec4 a=perles(p,15.0,1.85,clamp(eau*.94,0.0,.97),1.0,.04,1);
-    vec4 b=perles(p,35.0,4.1,clamp(eau*.83,0.0,.93),2.0,.22,2);
-    vec4 c=vec4(0),n=vec4(0),filets=vec4(0);
+    vec4 a=perles(p,15.0,1.35,clamp(eau*.94,0.0,.97),1.0,.04,1);
+    vec4 b=perles(p,35.0,2.1,clamp(eau*.83,0.0,.93),2.0,.22,2);
+    vec4 c=vec4(0),filets=vec4(0);
     if (uQualite > 0) {
       float attenuGros = mix(1.0, 0.18, clamp(uMouvement.w, 0.0, 1.0));
-      c=perles(p,77.0,9.7,clamp(eau*.70*attenuGros,0.0,.85),3.0,.65,3)*attenuGros;
-      n=nappe(p,clamp(((eau-.30)*.48+film*.32)*attenuGros,0.0,.65))*attenuGros;
-      if (eau > .30) filets=perles(p+vec2(11.3,4.7),18.0,1.25,clamp(eau*.95,0.0,.96),4.0,.45,0);
+      c=perles(p,77.0,3.2,clamp(eau*.34*attenuGros,0.0,.85),3.0,.65,3)*attenuGros;
+      if (eau > .30) filets=perles(p+vec2(11.3,4.7),18.0,1.25,clamp(eau*.95,0.0,.96),4.0,.45,4);
     } else { a*=.6; }
     vec4 mobiles=gouttesMobiles(p);
-    vec2 normale=micro.xy*.20+filets.xy*.26+a.xy*.44+b.xy*.68+c.xy*.9+n.xy+mobiles.xy;
-    float goutte=clamp(micro.z+filets.z*.72+a.z+b.z+c.z+n.z+mobiles.z,0.0,1.0);
-    float relief=clamp(micro.w*.16+filets.w*.20+a.w*.3+b.w*.5+c.w*.8+n.w+mobiles.w,0.0,1.0);
-    float menisque=clamp((micro.z-micro.w+filets.z-filets.w+a.z-a.w+b.z-b.w+c.z-c.w+n.z-n.w+mobiles.z-mobiles.w)*1.7,0.0,1.0);
+    vec2 normale=micro.xy*.20+filets.xy*.26+a.xy*.44+b.xy*.68+c.xy*.9+mobiles.xy;
+    float goutte=clamp(micro.z+filets.z*.72+a.z+b.z+c.z+mobiles.z,0.0,1.0);
+    float relief=clamp(micro.w*.16+filets.w*.20+a.w*.3+b.w*.5+c.w*.8+mobiles.w,0.0,1.0);
+    float menisque=clamp((micro.z-micro.w+filets.z-filets.w+a.z-a.w+b.z-b.w+c.z-c.w+mobiles.z-mobiles.w)*1.7,0.0,1.0);
     // Brouillard d'eau local dans l'axe : il monte puis retombe dans le modèle, pas d'aplat blanc instantané.
     float turbulent=.5;
     if (embruns>.001 || (uAvecScene && film>.001)) {
@@ -272,18 +253,18 @@
     if (alpha<.002) { couleur=vec4(0); return; }
     vec3 image=vec3(.61,.69,.73);
     if (uAvecScene) {
-      vec2 deviation=normale*vec2(10.0,12.0)/uVue.xy;
+      vec2 deviation=normale*vec2(3.0,3.6)/uVue.xy;
       deviation += (vec2(turbulent,bruit(uv*13.0+uMouvement.x*.2))-.5)*film*.002;
-      image=scene(uv+deviation,clamp(relief*.45+voile*.88+blanc*.72,0.0,1.0));
+      image=scene(uv+deviation,clamp(relief*.22+voile*.88+blanc*.72,0.0,1.0));
       float ombre=smoothstep(.01,.24,dot(normale,normalize(vec2(.35,-.94))));
       float reflet=pow(smoothstep(.02,.33,dot(-normale,normalize(vec2(.35,-.94)))),2.0);
-      image *= 1.0-ombre*(.10+menisque*.37)-menisque*.19;
-      image += vec3(.72,.85,.94)*reflet*(.11+menisque*.43);
+      image *= 1.0-ombre*(.025+menisque*.10)-menisque*.035;
+      image += vec3(.72,.85,.94)*reflet*(.045+menisque*.18);
     } else {
       // Légère : ménisques contrastés sur fond transparent, aucune copie ni lecture de la scène.
       float lumiere=dot(-normale,normalize(vec2(.35,-.94)));
       image=mix(vec3(.08,.15,.19),vec3(.87,.94,.98),smoothstep(-.2,.5,lumiere));
-      alpha*=.44;
+      alpha*=.30;
     }
     image=mix(image,vec3(.72,.78,.80),voile*.63+brume);
     image=mix(image,vec3(.86,.91,.94)+grain*.055,blanc);

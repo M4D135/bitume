@@ -743,7 +743,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
       for (const lot of lots) for (const o of lot.objets) {
         const m = Math.floor((o.mat || 0) + .01);
-        if (!(o.collision && o.collision !== 'poutre') && m !== 9 && m !== 23 && m !== 13) continue;
+        if (!o.masqueHerbier && !(o.collision && o.collision !== 'poutre') && m !== 9 && m !== 23 && m !== 13) continue;
         const a = -(o.r ? o.r[1] : 0), co = Math.cos(a), si = Math.sin(a);
         const hx = o.s[0] / 2 + .10, hz = o.s[2] / 2 + .10;
         const points = [];
@@ -1268,6 +1268,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         }
       }
     }
+    terrain.raccorderPigments?.();
     const groupes = new Map();   // lots par portion de 150 m, plus lots lointains
     const TRONCON = 150;
     const lotDe = (x, z, i) => {
