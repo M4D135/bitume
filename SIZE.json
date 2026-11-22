@@ -1,8 +1,8 @@
 {
-  "version": "0.2.95",
-  "raw": 15026595,
-  "gzip": 3612823,
-  "sha256": "ec4f87ce20a06558ac89872d435966c2f7f1ae9f0ba6b646880bb7803809b77f",
+  "version": "0.2.96",
+  "raw": 15027128,
+  "gzip": 3613041,
+  "sha256": "afc1007cdf6f401fb49293cd8a7fc349ba915f4ed9b9d83445c0e5573317c184",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 315148,
@@ -40,7 +40,7 @@
     "baikal.js": 7810,
     "batiments.js": 14306,
     "lieux.js": 53993,
-    "decor.js": 149112,
+    "decor.js": 149645,
     "solides-physx.js": 8835,
     "physique.js": 25355,
     "faune.js": 30594,

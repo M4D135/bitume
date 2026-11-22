@@ -1351,11 +1351,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
             const horizontale = Math.hypot(direction[0], direction[2]), devers = (q0.devers + q1.devers) / 2;
             const normale = [-Math.sin(devers) * direction[2] / horizontale, Math.cos(devers), Math.sin(devers) * direction[0] / horizontale];
             const axes = base(direction, normale), rotation = angles(...axes);
-            const angle = Math.abs(Math.atan2(Math.sin(q1.a - q0.a), Math.cos(q1.a - q0.a)));
-            const taille = longueur + .02 + M * Math.tan(Math.min(angle / 2, .45));
-            const antiZ = (partie & 1) ? .0008 : 0;
+            // La section commune au joint suit le cap de la route. Sur chaque dalle, projeter
+            // le bord de cette section sur son axe réel (corde 3D), des deux côtés séparément.
+            // Le cap interpolé peut tourner même quand la corde suit un seul segment du tracé.
+            const debord = q => M * Math.abs(q.r[0] * axes[0][0] - Math.sin(q.devers) * axes[0][1] + q.r[2] * axes[0][2]);
+            const extension0 = j0 > iD ? debord(q0) : 0, extension1 = j1 < iF ? debord(q1) : 0;
+            const taille = longueur + .02 + extension0 + extension1;
+            const antiZ = (partie & 1) ? .0008 : 0, decalage = (extension1 - extension0) / 2;
             const dessus = [(q0.x + q1.x) / 2, (qy0 + qy1 + h0 + h1) / 2 + antiZ, (q0.z + q1.z) / 2];
-            const position = dessus.map((v, k) => v - .05 * axes[1][k]);
+            const centreDalle = dessus.map((v, k) => v + decalage * axes[0][k]);
+            const position = centreDalle.map((v, k) => v - .05 * axes[1][k]);
             const sol = marquerSolide({ shape: 'box', p: position, s: [taille, .1, 2 * M], r: rotation, mat: organique ? 21 : 7, color: SOL, outdoor: false, surface: 'object' }, 'sol-tunnel', 1, 'piste');
             objets.push(sol); loin.push(sol);
             for (const cote of [-1, 1]) {
