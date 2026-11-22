@@ -2,7 +2,7 @@
   "date": "2026-11-22",
   "etat_courant": {
     "version_courante": "0.2.131",
-    "version_publiee_verifiee": "0.2.130",
+    "version_publiee_verifiee": "0.2.131",
     "physique": "p19",
     "moteur": "FERRO 0.3.26 canonique",
     "circuits": 9,
@@ -11,7 +11,7 @@
     "fiche": "docs/reprise/NUIT-2026-11-22-23.md",
     "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
     "dernieres_demandes": "docs/reprise/NUIT-2026-11-22-23.md",
-    "dernier_lot_clos": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json",
+    "dernier_lot_clos": "docs/reprise/NUIT-2026-11-22-23.md",
     "prochaine_action": "Viser 60 images 3D/s sur les neuf circuits, en 1080p Fine avec les deux rétroviseurs, et couvrir tous les matériels, vues, modes et conditions pris en charge.",
     "branche_candidate": "main",
     "version_candidate": "0.2.131",
@@ -19,31 +19,31 @@
     "repartition_parallele": "docs/reprise/NUIT-2026-11-22-23.md"
   },
   "publication": {
-    "version": "0.2.130",
-    "commit_sources": "b15cd823af4e1f803fe4c1ac7f5af04882332cca",
+    "version": "0.2.131",
+    "commit_sources": "9703e711bf9f849fbd2c8d9fdc320f6e0177857d",
     "statut": "publie_sur_main",
-    "url": "https://github.com/M4D135/bitume/commit/b15cd823af4e1f803fe4c1ac7f5af04882332cca",
-    "recu": "https://github.com/M4D135/bitume/blob/b15cd823af4e1f803fe4c1ac7f5af04882332cca/SIZE.json",
+    "url": "https://github.com/M4D135/bitume/commit/9703e711bf9f849fbd2c8d9fdc320f6e0177857d",
+    "recu": "https://github.com/M4D135/bitume/blob/9703e711bf9f849fbd2c8d9fdc320f6e0177857d/SIZE.json",
     "site_deploiement_verifie": true
   },
   "qualification": {
-    "version": "0.2.130",
+    "version": "0.2.131",
     "tete_qualifiee": null,
-    "build_octets": 16651674,
-    "build_sha256": "a8767ad1264598702650507bbb71c3c65c6f7604c9ac25a87afc953fc0c9a74d",
+    "build_octets": 16707222,
+    "build_sha256": "4b6c4411322bde0e99671ad00e20c04b55bbaed0bbc6be5b38d37372019fd0be",
     "locale": {
       "statut": "nouvelle_reception_suspendue"
     },
     "github_actions": {
       "conclusion": null,
-      "commit": "b15cd823af4e1f803fe4c1ac7f5af04882332cca",
+      "commit": "9703e711bf9f849fbd2c8d9fdc320f6e0177857d",
       "statut": "suspendu_a_la_demande_du_joueur"
     },
     "recu": null,
     "limites": [
       "Essais suspendus à la demande du joueur. Les mesures d’une autre version restent identifiées séparément."
     ],
-    "reconstruction_identique": null,
+    "reconstruction_identique": true,
     "essai_utilisateur_valide": null
   },
   "acquis_0279": {
@@ -136,7 +136,7 @@
     "statut": "in_progress",
     "fiche": "docs/reprise/NUIT-2026-11-22-23.md",
     "apres": [
-      "Recevoir les entrées et sorties des huit cartes, la précision de l’arrêt au box, les roues et le carburant en solo et en réseau, ainsi que les collisions des arches.",
+      "Recevoir les entrées et sorties des neuf cartes, la précision de l’arrêt au box, les roues et le carburant en solo et en réseau, ainsi que les collisions des arches.",
       "Visibilité des voitures, LED et ombres, BVH FERRO, primitives à la demande, appels WebGL2 groupés, rétroviseurs hors écran et budget des bosquets",
       "Huit circuits, trois tracés à deux habitats et huit démonstrations de la course, du tracé et des lieux",
       "Arrivée et dégagement de la meute, contacts pneu contre pneu, nez déformé et records et fantômes p18, conservation de p17",
@@ -742,51 +742,55 @@
   },
   "suivi_du_runtime": {
     "date": "2026-11-22",
-    "revision_runtime": "b15cd823af4e1f803fe4c1ac7f5af04882332cca",
-    "version": "0.2.130",
-    "physique": "p18",
+    "revision_runtime": "9703e711bf9f849fbd2c8d9fdc320f6e0177857d",
+    "version": "0.2.131",
+    "physique": "p19",
     "moteur": "FERRO 0.3.26",
-    "sha256_html": "a8767ad1264598702650507bbb71c3c65c6f7604c9ac25a87afc953fc0c9a74d",
-    "octets_html": 16651674,
+    "sha256_html": "4b6c4411322bde0e99671ad00e20c04b55bbaed0bbc6be5b38d37372019fd0be",
+    "octets_html": 16707222,
     "circuits": [
       {
         "id": "forets-du-pacifique",
-        "nom": "Forêts du Pacifique"
+        "nom": "Ça sent le sapin"
       },
       {
         "id": "marseille",
-        "nom": "Marseille · Vieux-Port → Corniche"
+        "nom": "La Sardine en pole"
       },
       {
         "id": "karst-et-lagon",
-        "nom": "Karst et Lagon"
+        "nom": "Ça karste ou ça casse"
       },
       {
         "id": "sierra",
-        "nom": "Sierra-Cuivrée"
+        "nom": "Le Canyon qui klaxonne"
       },
       {
         "id": "nord-atlantique",
-        "nom": "Nord Atlantique"
+        "nom": "Fjord à bâbord"
       },
       {
         "id": "route-des-cimes",
-        "nom": "Route-des-Cimes"
+        "nom": "Le Col des Fondus"
       },
       {
         "id": "larche",
-        "nom": "Col de Larche → Vinadio"
+        "nom": "Raclette en roue libre"
       },
       {
         "id": "baikal",
-        "nom": "Baïkal"
+        "nom": "Les Glaçons à réaction"
+      },
+      {
+        "id": "ovale-des-forges",
+        "nom": "Le Cocodrome"
       }
     ],
-    "feuille": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
+    "feuille": "docs/reprise/NUIT-2026-11-22-23.md",
     "etat_des_receptions": "Essais suspendus à la demande du joueur. Les mesures d’une autre version restent identifiées séparément.",
     "ordre_de_suite": [
       "Viser 60 images 3D/s sur les neuf circuits, en 1080p Fine avec les deux rétroviseurs, et couvrir tous les matériels, vues, modes et conditions pris en charge.",
-      "Recevoir les entrées et sorties des huit cartes, la précision de l’arrêt au box, les roues et le carburant en solo et en réseau, ainsi que les collisions des arches.",
+      "Recevoir les entrées et sorties des neuf cartes, la précision de l’arrêt au box, les roues et le carburant en solo et en réseau, ainsi que les collisions des arches.",
       "Visibilité des voitures, LED et ombres, BVH FERRO, primitives à la demande, appels WebGL2 groupés, rétroviseurs hors écran et budget des bosquets",
       "Huit circuits, trois tracés à deux habitats et huit démonstrations de la course, du tracé et des lieux",
       "Arrivée et dégagement de la meute, contacts pneu contre pneu, nez déformé et records et fantômes p18, conservation de p17",
@@ -857,6 +861,12 @@
       "Les chevrons sont placés sur la glissière extérieure des virages classés serrés. Le seuil de rayon est de 85 m. Dans chaque virage retenu, seules les portions de rail dont la courbure moyenne atteint ce seuil portent les flèches.",
       "La pluie projetée dans la scène reste visible quand la visière est active. La densité des petites gouttes de visière est multipliée par dix. Le sillage d’un concurrent ajoute des gouttes moyennes et des filets."
     ],
-    "reception_cadence_0130": "La cadence de la .130 à chaud sous la pluie à Pietraporzio et sur les 32 km de Larche reste à mesurer en 1080p Fine."
+    "reception_cadence_0130": "La cadence de la .130 à chaud sous la pluie à Pietraporzio et sur les 32 km de Larche reste à mesurer en 1080p Fine.",
+    "changements_0131": [
+      "Accueil, pause et salon arcade. Circuits et réglages par petites pages à la manette.",
+      "Neuf noms au catalogue. Quatre virages à 24 % au Cocodrome, tribunes autour, stands dans l’infield.",
+      "Normales de chaussée, visibilité du décor, restitution des impacts et roulement des pneus sur l’eau."
+    ],
+    "reception_cadence_0131": "Assemblage reproductible et empreinte publique vérifiée. Aucune séance de jeu ni mesure de cadence pour cette version."
   }
 }
