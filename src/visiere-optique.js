@@ -443,7 +443,7 @@
     const copie=canvas.ownerDocument.createElement('canvas'); copie.width=1; copie.height=1;
     const e={canvas,gl,contexte:gl,simulation:creerEtat(options),source:copie,sourceContexte:copie.getContext('2d',{alpha:false}),
       masquee:false,propre:true,perdu:false,libere:false,pret:false,dprPalier:null,largeur:1,hauteur:1,dpr:1,
-      stats:{backend:'webgl2',pret:false,perdu:false,erreur:null,copiesScene:0,dessins:0,etapes:0,pixels:0,pixelsSource:0,
+      stats:{backend:'webgl2',pret:false,perdu:false,erreur:null,copiesScene:0,copiesDirectes:0,dessins:0,etapes:0,pixels:0,pixelsSource:0,
         largeur:0,hauteur:0,dpr:1,eau:0,accumulationNeige:0,embruns:0,gouttes:0,neige:0,
         fusionsEau:0,expulses:0,depotsEau:0,depotsEmbruns:0,impactsEmis:0,surfaceExpulsee:0}};
     e.uMeteo=e.simulation.uniformes.subarray(0,4);e.uMouvement=e.simulation.uniformes.subarray(4,8);e.uVue=e.simulation.uniformes.subarray(8,12);
@@ -476,9 +476,20 @@
     let avecScene=false;
     if(niveau>0 && e.sourceContexte && c.sourceScene && c.sourceScene.width>0 && c.sourceScene.height>0) {
       try {
-        e.sourceContexte.drawImage(c.sourceScene,0,0,e.source.width,e.source.height);
+        const scene=c.sourceScene;
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
-        gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,e.source);
+        // À taille native, la texture reçoit directement le canvas opaque de cette caméra.
+        // Le passage 2D ne sert qu'au redimensionnement ou au repli d'un navigateur.
+        if(typeof scene.getContext==='function' && scene.width===e.source.width && scene.height===e.source.height) {
+          try {
+            gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,scene);
+            e.stats.copiesDirectes++;avecScene=true;
+          } catch (_) { /* Le passage 2D peut accepter une source refusée en copie directe. */ }
+        }
+        if(!avecScene) {
+          e.sourceContexte.drawImage(scene,0,0,e.source.width,e.source.height);
+          gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,e.source);
+        }
         e.stats.copiesScene++;e.stats.erreur=null;avecScene=true;
       }catch(err){e.stats.erreur='copie scène : '+String(err.message||err);}
     }

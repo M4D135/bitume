@@ -3076,7 +3076,7 @@
     // survol haut anti-tunnel, anti-arbres et anti-décor (ZÉRO couplage au cap du joueur).
     if (B.aeriens && S.type !== 'vitrine') {
       const ae = S.aeriens || (S.aeriens = creationTardive('aeriens', B.aeriens.creer(c, { qualite: P.palier })));
-      const ctxAe = S.aeriensVue || (S.aeriensVue = creationTardive('contexteAeriens', { qualite: P.palier, sTete: 0, sDernier: 0, sCible: 0, nuit: 0, sol: null, obstacles: null }));
+      const ctxAe = S.aeriensVue || (S.aeriensVue = creationTardive('contexteAeriens', { qualite: P.palier, sTete: 0, sDernier: 0, sCible: 0, nuit: 0, sol: null }));
       const cl = co.classement;
       const vTete = cl && cl.length ? co.voitures[cl[0]] : suivie;
       const vDernier = cl && cl.length ? co.voitures[cl[cl.length - 1]] : suivie;
@@ -3086,21 +3086,16 @@
       ctxAe.sCible = suivie.etat.s || 0;
       ctxAe.nuit = S.nature?.ambiance?.nuit || 0;
       ctxAe.sol = scene.decor.sol;
-      ctxAe.obstacles = scene.decor.obstacles || null;
       B.aeriens.dessiner(ae, S.tRendu, ctxAe, sortie);
     }
     // Panneaux directionnels de virage animés + bandeaux LED dynamiques du portique
     if (B.signalisationCourse && S.type !== 'vitrine') {
       const sig = S.signalisation || (S.signalisation = creationTardive('signalisation', B.signalisationCourse.creer(c, scene.decor)));
-      const ctxSig = S.signalisationVue || (S.signalisationVue = creationTardive('contexteSignalisation', { qualite: P.palier, phase: 'vert', feux: 0, pluie: 0, nuit: 0, cameraPos: null }));
+      const ctxSig = S.signalisationVue || (S.signalisationVue = creationTardive('contexteSignalisation', { qualite: P.palier, course: co, pluie: 0, nuit: 0, cameraPos: null }));
       ctxSig.qualite = P.palier;
       ctxSig.mouvementReduit = !!preferenceMouvement?.matches;
       ctxSig.pluie = meteo.pluie || 0; ctxSig.nuit = S.nature?.ambiance?.nuit || 0; ctxSig.cameraPos = cam.pos;
-      if (co.phase === 'feux' || co.phase === 'grille') { ctxSig.phase = 'depart'; ctxSig.feux = Math.max(0, Math.min(5, Math.ceil((5 - (co.compte || 0))))); }
-      else if (co.phase === 'arrivee' || suivie.fini) ctxSig.phase = 'damier';
-      else if (meteo.pluie > .35) ctxSig.phase = 'pluie';
-      else if (!c.ouvert && suivie.tours + 1 >= co.toursTotal && co.toursTotal > 1) ctxSig.phase = 'dernier-tour';
-      else ctxSig.phase = 'vert';
+      ctxSig.course = co;
       B.signalisationCourse.mettreAJour(sig, S.tRendu, ctxSig, sortie);
     }
     // Équipe F1 des stands (12 mécaniciens, roues, essence, sucette STOP → GO ! & LEDs portiques)
@@ -3296,6 +3291,11 @@
     const et = voiture.etat, exterieur = VUES_DEHORS.has(S.vue);
     sortie.id = voiture.id; sortie.regime = et.regime; sortie.gaz = et.gaz; sortie.rapport = et.rapport;
     sortie.v = Math.abs(et.v); sortie.glisse = et.glisse; sortie.surface = et.surface;
+    const PR = B.conduite.PARAMS;
+    sortie.deriveRelative = Math.max(Math.abs(et.deriveAv) / PR.alphaAv, Math.abs(et.deriveAr) / PR.alphaAr);
+    sortie.blocage = et.blocage; sortie.patinage = et.patinage;
+    const auSol = et._physx ? et._physx.groundCount > 0 : !et.saut?.actif && !(et.bond > .03);
+    sortie.contactPneus = auSol && et.rapport > 0 && !et.recuperation && et.stands?.phase !== 'service';
     sortie.aspiration = Number.isFinite(et.aspiration) ? clamp(et.aspiration, 0, 1) : 0;
     sortie.ventActif = (ecran === 'course' || ecran === 'demo') && VUES_COURSE.includes(S.vue);
     sortie.turbo = et.turbo.reste > 0; sortie.vue = S.vue === 'cockpit' ? 'cockpit' : 'poursuite';

@@ -131,3 +131,37 @@ test('Larche à 29,4 km : flèches volumiques mobiles, lumière continue sous pl
     assert(o.emissive>.7,'une silhouette lumineuse subsiste');
   }
 });
+
+test('les deux faces du portique suivent les feux réels, la tête, les incidents locaux et le drapeau', () => {
+  const c = creerCircuitSaisons(CATALOGUE_SAISONS[0]);
+  const sig = B.signalisationCourse.creer(c, {}), cameraPos = camera(c, 0);
+  const voitures = [{ tours: 0, etat: { s: 14 } }, { tours: 1, etat: { s: c.secteurs[1] + 30 } }];
+  const co = { c, phase: 'grille', mode: 'course', drapeau: null, feux: { allumes: 0 },
+    voitures, classement: [1,0], toursTotal: 3 };
+  function lire(t, pluie = 0, qualite = 'high') {
+    const sortie = image(sig, t, cameraPos, { course: co, pluie, qualite });
+    for (const b of sig.bandeaux) {
+      assert(sortie.includes(b.support));
+      assert.equal(b.visibles.map(o => o.shape.slice('bitume-portique-'.length)).join(''), b.texte.replaceAll(' ', ''));
+    }
+    assert.equal(sig.bandeaux[0].texte, sig.bandeaux[1].texte);
+    return sig.bandeaux[0].texte;
+  }
+  assert.equal(lire(0), 'DEPART');
+  assert(sig.bandeaux[0].modules.every(o => o.emissive < .1));
+  co.phase = 'feux'; co.feux.allumes = 3;
+  lire(3);
+  assert.equal(sig.bandeaux[0].modules.filter(o => o.emissive > 1).length, 7);
+  co.phase = 'course';
+  assert.equal(lire(12, .7), 'PLUIE');
+  assert.equal(lire(6, .7), 'TOUR 2');
+  assert.equal(lire(8), 'TETE S3');
+  voitures[0].etat.stands = { phase: 'service' };
+  assert.equal(lire(6), 'STANDS');
+  voitures[1].tours = 2;
+  assert.equal(lire(12, .7), 'DERNIER TOUR');
+  voitures[0].etat.accident = true; voitures[0].etat.s = c.longueur - 45;
+  assert.equal(lire(12, .7), 'DANGER');
+  co.drapeau = 95;
+  assert.equal(lire(12, .7, 'low'), 'ARRIVEE');
+});

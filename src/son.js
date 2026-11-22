@@ -208,9 +208,9 @@
     let ctx = null, pret = false, enPause = false, coupFin = 0;
     let musiqueOn = false, minuteur = null, pas = 0, prochain = 0, busMus = null, echo = null;
     const vols = { general: 1, moteur: 1, effets: 1 };
-    let maitre = null, busMot = null, busEff = null, bruit = null, m = null, m2 = null, pneus = null, vib = null, herbe = null, fouleNoeud = null;
+    let maitre = null, busMot = null, busEff = null, bruit = null, m = null, m2 = null, vib = null, herbe = null, fouleNoeud = null;
     let deuxJoueurs = false, joueur2LibereA = 0;
-    const voix = [], proches = [], vents = [];
+    const voix = [], proches = [], vents = [], pneus = [];
     // échappement : voix préparées, tampons, lecture de la file de src/echappement.js
     const voixEch = [], tamponsEch = {};
     let echFile = null, echLu = 0, echVu = -1, echJoues = 0, echIgnores = 0;
@@ -291,6 +291,45 @@
       return { pb, aiguG, graveG, pan };
     }
 
+    // Deux bandes par pilote, sur le panoramique d’effets de sa vue. En duo les boucles sont décalées.
+    function bruitPneus(numero) {
+      const s = bruitEnBoucle(), lateral = filtre('bandpass', 350, 1.4), longitudinal = filtre('bandpass', 760, 4);
+      const gl = gain(0), gx = gain(0), pan = vents[numero].pan;
+      s.connect(lateral).connect(gl).connect(pan); s.connect(longitudinal).connect(gx).connect(pan);
+      s.start(ctx.currentTime, numero ? .83 : 0);
+      return { lateral, longitudinal, gl, gx, actif: false };
+    }
+
+    function eteindrePneus(p, t) {
+      if (!p.actif) return;
+      vise(p.gl.gain, 0, t, .03); vise(p.gx.gain, 0, t, .03);
+      p.actif = false;
+    }
+
+    function reglerPneus(p, j, t, silence, poids) {
+      if (silence || !j || j.muet || j.contactPneus === false || j.surface === 'herbe') return eteindrePneus(p, t);
+      const vitesse = clamp((Math.abs(+j.v || 0) - 1) / 8, 0, 1);
+      // Les angles sont ceux des essieux rapportés à leur pic. L’ancienne entrée glisse reste utilisable.
+      const glisse = clamp(+j.glisse || 0, 0, 1);
+      const angle = Number.isFinite(j.deriveRelative) ? j.deriveRelative : glisse ? .8 + .8 * glisse : 0;
+      const limite = clamp((angle - .65) / .35, 0, 1), derive = clamp((angle - 1) / .65, 0, 1);
+      const patinage = clamp(+j.patinage || 0, 0, 1), blocage = vitesse * clamp(+j.blocage || 0, 0, 1);
+      const lateral = vitesse * (.085 * limite + .43 * derive), longitudinal = Math.max(.41 * patinage, .39 * blocage);
+      if (!lateral && !longitudinal) return eteindrePneus(p, t);
+      p.actif = true;
+      // Frottement doux à l’approche du pic, sifflement médium en travers, râpe grave des roues motrices
+      // et crissement aigu des roues bloquées. Les efforts longitudinal et latéral peuvent coexister.
+      if (lateral) {
+        vise(p.lateral.frequency, 330 + 110 * limite + 1190 * derive, t, .045);
+        vise(p.lateral.Q, 1.4 + 3.4 * derive, t, .045);
+      }
+      if (longitudinal) {
+        const frein = blocage / (blocage + patinage);
+        vise(p.longitudinal.frequency, lerp(650 + 200 * patinage, 2700 + 500 * blocage, frein), t, .035);
+      }
+      vise(p.gl.gain, poids * lateral, t, .03); vise(p.gx.gain, poids * longitudinal, t, .03);
+    }
+
     function init() {
       const t = ctx.currentTime;
       const lim = ctx.createDynamicsCompressor();
@@ -304,11 +343,6 @@
       for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
       m = moteur();
       for (let i = 0; i < MAX_RIVAUX; i++) voix.push(voixRival());
-      { // pneus : deux bandes de bruit
-        const s = bruitEnBoucle(), b1 = filtre('bandpass', 1800, 5), b2 = filtre('bandpass', 2600, 5), g1 = gain(0), g2 = gain(0);
-        s.connect(b1).connect(g1).connect(busEff); s.connect(b2).connect(g2).connect(busEff); s.start(t);
-        pneus = { g1, g2 };
-      }
       { // vibreur : scie à 34 Hz modulée à 18 Hz (profondeur bornée), puis porte de niveau
         const o = osc('sawtooth', 34), am = gain(0.5), lfo = osc('sine', 18), lfoG = gain(0.5), g = gain(0);
         lfo.connect(lfoG).connect(am.gain); o.connect(am).connect(g).connect(busEff); o.start(t); lfo.start(t);
@@ -351,6 +385,7 @@
         fouleNoeud = { master, gA, gHP };
       }
       vents.push(vent(0), vent(1));
+      pneus.push(bruitPneus(0));
       { // échappement : tampons et voix préparés ici, avant le départ (rien n'est construit en course)
         const sr = ctx.sampleRate, synth = synthEchappement(sr);
         for (const genre of GENRES_ECH) tamponsEch[genre] = synth[genre].map(d => {
@@ -430,7 +465,7 @@
       vise(vent.pan.pan, pan, t, .08);
     }
 
-    // etat = { pause, joueur: { id, regime, gaz, rapport, v, glisse, surface, turbo, vue, muet, aspiration, ventActif },
+    // etat = { pause, joueur: { id, regime, gaz, rapport, v, glisse, deriveRelative, patinage, blocage, contactPneus, surface, turbo, vue, muet, aspiration, ventActif },
     //          joueur2: même structure ou null, rivaux: [{ id, distance, angle, regime, gaz, vRel }] }
     // En duo les distances des rivaux viennent de la caméra humaine la plus proche (adaptateur du jeu).
     function mettreAJour(etat) {
@@ -439,7 +474,7 @@
       const silence = enPause || !!etat.pause, muet = silence || !!j.muet;
       // Le second graphe est créé une seule fois, après le premier geste audio et seulement si J2 existe. Les
       // séances suivantes réutilisent ce graphe ; sa distance à J1 ne peut jamais le sortir du budget.
-      if (j2 && !m2) m2 = moteur();
+      if (j2 && !m2) { m2 = moteur(); pneus.push(bruitPneus(1)); }
       if (!j2 && deuxJoueurs) { vise(m2.sortie.gain, 0, t, .03); vise(m2.echoG.gain, 0, t, .03); joueur2LibereA = t + .12; }
       deuxJoueurs = !!j2;
       reglerMoteur(m, j, t, silence, j2 ? Math.SQRT1_2 : 1, j2 ? -.24 : 0);
@@ -469,8 +504,8 @@
         vise(vx.sortie.gain, silence ? 0 : gainDistance(+r.distance || 0) * 0.5 * 0.42, t, 0.1 / 3);
       }
 
-      const gl = clamp(+j.glisse || 0, 0, 1), np = muet ? 0 : gl * gl * 0.5;
-      vise(pneus.g1.gain, np * 0.6, t, 0.03); vise(pneus.g2.gain, np * 0.4, t, 0.03);
+      reglerPneus(pneus[0], j, t, silence, j2 ? Math.SQRT1_2 : 1);
+      if (pneus[1]) reglerPneus(pneus[1], j2, t, silence, Math.SQRT1_2);
       vise(vib.g.gain, !muet && j.surface === 'vibreur' ? 0.22 : 0, t, 0.02);
       vise(herbe.g.gain, !muet && j.surface === 'herbe' ? clamp((+j.v || 0) / 60, 0, 1) * 0.25 : 0, t, 0.03);
     }
@@ -743,7 +778,8 @@
       enPause = true;
       if (!pret) return;
       const t = ctx.currentTime;
-      for (const g of [m.sortie.gain, m.echoG.gain, pneus.g1.gain, pneus.g2.gain, vib.g.gain, herbe.g.gain]) vise(g, 0, t, 0.03);
+      for (const g of [m.sortie.gain, m.echoG.gain, vib.g.gain, herbe.g.gain]) vise(g, 0, t, 0.03);
+      for (const p of pneus) eteindrePneus(p, t);
       if (fouleNoeud) vise(fouleNoeud.master.gain, 0, t, 0.05);
       if (m2) { vise(m2.sortie.gain, 0, t, .03); vise(m2.echoG.gain, 0, t, .03); }
       for (const v of vents) { vise(v.aiguG.gain, 0, t, .03); vise(v.graveG.gain, 0, t, .03); }

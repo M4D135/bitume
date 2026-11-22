@@ -3,6 +3,7 @@ import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 
 createRequire(import.meta.url)('../src/son.js');
+createRequire(import.meta.url)('../src/conduite.js');
 const Son = globalThis.BITUME.son;
 let controles = 0;
 const verifier = (nom, fn) => { fn(); controles++; console.log('ok  ' + nom); };
@@ -166,11 +167,11 @@ verifier('le vrai raccord du jeu transmet l’aspiration du pilote suivi et auto
   const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
   const debut = source.indexOf('  function decrireMoteur('), fin = source.indexOf('  // écoute des claquements', debut);
   assert(debut >= 0 && fin > debut);
-  const description = new Function('ecran', 'VUES_DEHORS', 'sousLaVoute', 'clamp', source.match(/^  const VUES_COURSE = [^\n]+;/m)[0] + '\n' + source.slice(debut, fin) + '; return decrireMoteur;');
+  const description = new Function('B', 'ecran', 'VUES_DEHORS', 'sousLaVoute', 'clamp', source.match(/^  const VUES_COURSE = [^\n]+;/m)[0] + '\n' + source.slice(debut, fin) + '; return decrireMoteur;');
   const v = { id: 7, etat: { v: 300 / 3.6, regime: 10000, gaz: 1, rapport: 6, glisse: 0, surface: 0, turbo: { reste: 0 }, aspiration: .8 } };
   const avant = JSON.stringify(v), resultat = {};
   for (const ecran of ['titre', 'reglages', 'pause', 'course', 'demo']) {
-    const decrire = description(ecran, new Set(['helico', 'tele', 'faune']), () => false, (x,a,b) => Math.max(a, Math.min(b,x)));
+    const decrire = description(globalThis.BITUME, ecran, new Set(['helico', 'tele', 'faune']), () => false, (x,a,b) => Math.max(a, Math.min(b,x)));
     for (const vue of ['cockpit', 'arceau', 'nez', 'aileron-avant', 'poursuite-proche', 'poursuite', 'helico', 'tele', 'faune']) {
       decrire(resultat, { vue, course: { c: {} } }, v, { pos: [0,1,0] });
       assert.equal(resultat.id, 7); assert.equal(resultat.aspiration, .8);
@@ -180,6 +181,18 @@ verifier('le vrai raccord du jeu transmet l’aspiration du pilote suivi et auto
     }
   }
   assert.equal(JSON.stringify(v), avant, 'le son ne doit modifier aucun état de conduite');
+  const P = globalThis.BITUME.conduite.PARAMS;
+  const decrire = description(globalThis.BITUME, 'course', new Set(), () => false, (x,a,b) => Math.max(a, Math.min(b,x)));
+  const et = v.etat;
+  Object.assign(et, { deriveAv: .9 * P.alphaAv, deriveAr: -1.6 * P.alphaAr, patinage: .32, blocage: .17 });
+  const mesurer = () => { decrire(resultat, { vue: 'cockpit', course: { c: {} } }, v, { pos: [0,1,0] }); return resultat.contactPneus; };
+  assert(mesurer()); assert(Math.abs(resultat.deriveRelative - 1.6) < 1e-12);
+  assert.equal(resultat.patinage, .32); assert.equal(resultat.blocage, .17);
+  for (const [k,v] of [['rapport',-1], ['recuperation',{}], ['stands',{phase:'service'}], ['saut',{actif:true}], ['bond',.12], ['_physx',{groundCount:0}]]) {
+    const ancien = et[k]; et[k] = v; assert.equal(mesurer(), false, k); et[k] = ancien;
+  }
+  et._physx = { groundCount: 1 }; assert(mesurer(), 'une roue posée suffit');
+
 }));
 
 console.log(`${controles} contrôles son aspiration réussis`);

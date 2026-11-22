@@ -107,6 +107,31 @@
     return { objets, grille, cellules, boites: Float64Array.from(boites), vus:new Uint32Array(objets.length), generation:0, voisins:[] };
   }
 
+  // Sommet des boîtes englobantes à portée d'un appareil. Les cellules et les
+  // emprises sont celles des collisions, y compris les prismes inclinés des arbres.
+  function sommetProche(index, x, z, rayon) {
+    let sommet = -Infinity;
+    const minZ = Math.floor((z - rayon) / CELLULE), maxZ = Math.floor((z + rayon) / CELLULE);
+    const maxX = Math.floor((x + rayon) / CELLULE), b = index.boites;
+    for (let cx = Math.floor((x - rayon) / CELLULE); cx <= maxX; cx++) {
+      const colonne = index.cellules.get(cx);
+      if (!colonne) continue;
+      for (let cz = minZ; cz <= maxZ; cz++) {
+        const ids = colonne.get(cz);
+        if (!ids) continue;
+        for (let i = 0; i < ids.length; i++) {
+          const id = ids[i], top = index.objets[id].ymax;
+          if (top <= sommet) continue;
+          const k = id * 4;
+          const dx = Math.max(0, b[k] - x, x - b[k + 1]);
+          const dz = Math.max(0, b[k + 2] - z, z - b[k + 3]);
+          if (dx * dx + dz * dz <= rayon * rayon) sommet = top;
+        }
+      }
+    }
+    return sommet;
+  }
+
   // Normale obstacle -> voiture. Test pur ; le calcul de profondeur couvre aussi un rectangle contenu.
   function tester(a, o) {
     if(o.type==='prism')return testerPrisme(a,o.sommets?o:prisme(o));
@@ -297,5 +322,5 @@
       }
     }
   }
-  B.obstacles={creer,avant,pas,tester};
+  B.obstacles={creer,avant,pas,tester,sommetProche};
 })(globalThis.BITUME=globalThis.BITUME||{});

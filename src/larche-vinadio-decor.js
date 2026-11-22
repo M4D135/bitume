@@ -1,6 +1,7 @@
 (function (B) {
   'use strict';
 if (!B.larcheRelief && typeof require === 'function') require('./larche-relief.js');
+if (!B.coniferesAlpins && typeof require === 'function') require('./coniferes-alpins.js');
 const PAS_L = 32;
 const OFFSETS = [-260, -160, -90, -42, -16, -9, 9, 16, 42, 90, 160, 260];
 const N_LAT = OFFSETS.length;
@@ -917,8 +918,8 @@ function poser(c, outils) {
 
 
   // 7. Forêts alpines de mélèzes et conifères le long de la Valle Stura (dès s > 2200 m, ancrées sur terr.sol)
-  if (B.botanique && typeof B.botanique.nomForme === 'function' && ajouter) {
-    const qArbre = qualite === 'low' ? 'low' : qualite === 'high' || qualite === 'ultra' ? 'high' : 'medium';
+  if (B.coniferesAlpins && ajouter) {
+    const detail = qualite === 'high' || qualite === 'ultra' ? 'proche' : 'leger';
     const pasArbre = isLow ? 65 : 28;
     const grF = _buildGrilleRoute(c);
     for (let s = 2200; s < c.longueur - 180; s += pasArbre) {
@@ -942,16 +943,19 @@ function poser(c, outils) {
         if (Math.hypot((hL - hR) / 8, (hD - hU) / 8) > 0.65) continue;
         // Sous 1780 m (ou s > 2200) : conifères & mélèzes verts/dorés réalistes
         const estMeleze = (h3 > 0.62 && s > 4200 && s < 27000);
-        const essence = estMeleze ? 'pin' : 'conifere';
+        const nu = estMeleze && saison?.id === 'hiver';
+        const essence = nu ? 'meleze-nu' : estMeleze ? 'meleze' : 'sapin';
         const taille = (estMeleze ? 9.5 : 12.0) + h2 * 8.5;
         const rL = taille * (estMeleze ? 0.85 : 0.68);
         const ang = h1 * PI * 2;
-        const col = estMeleze
-          ? (saison?.id === 'automne' ? [0.50, 0.34, 0.13] : [0.18 + h1 * .06, 0.285 + h2 * .07, 0.16 + h3 * .04])
-          : [0.095 + h2 * .065, 0.17 + h3 * .09, 0.125 + h1 * .06];
-        const tronc = { shape: 'cylinder', p: [wx, wy + taille * 0.18 - 0.6, wz], s: [0.42, taille * 0.44 + 1.2, 0.42], r: [0, 0, 0], mat: 26, color: [0.24, 0.16, 0.10] };
-        const oProche = { shape: B.botanique.nomForme(essence, false, qArbre), p: [wx, wy + taille * 0.56 - 0.5, wz], s: [rL, taille * 0.84, rL], r: [0, ang, 0], mat: 27, color: col };
-        const oLoin = { shape: B.botanique.nomForme(essence, true, qArbre), p: [wx, wy + taille * 0.56 - 0.5, wz], s: [rL, taille * 0.84, rL], r: [0, ang, 0], mat: 27, color: col };
+        const bois = [0.24, 0.16, 0.10];
+        const col = nu ? bois : estMeleze
+          ? (saison?.id === 'automne' ? [0.56, 0.35, 0.095] : [0.22 + h1*.07, 0.34 + h2*.08, 0.16 + h3*.04])
+          : [0.10 + h2*.055, 0.19 + h3*.075, 0.14 + h1*.045];
+        const tronc = { shape: 'cylinder', p: [wx, wy + taille * 0.18 - 0.6, wz], s: [0.42, taille * 0.44 + 1.2, 0.42], r: [0, 0, 0], mat: 26, color: bois };
+        // Le pied du fût partagé par les deux silhouettes pénètre le sol de 50 cm.
+        const oProche = { shape: B.coniferesAlpins.nom(essence, detail), p: [wx, wy + taille * 0.49 - 0.5, wz], s: [rL, taille * 0.98, rL], r: [0, ang, 0], mat: nu ? 26 : 27, color: col };
+        const oLoin = { ...oProche, shape: B.coniferesAlpins.nom(essence, 'loin') };
         ajouter([tronc, oProche], [oLoin], wx, wz);
       }
     }

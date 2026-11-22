@@ -401,25 +401,8 @@
     if (s2 > solMax) solMax = s2;
     if (s3 > solMax) solMax = s3;
     if (s4 > solMax) solMax = s4;
-    let yMin = Math.max(solMax + margeCanopee, yPiste + margeCanopee * 0.82, hauteurAntiTunnel(c, s, yPiste));
-    if (B.couverts && typeof B.couverts.abri === 'function') {
-      const abri = B.couverts.abri(x, z);
-      if (abri && abri.hauteur) yMin = Math.max(yMin, abri.hauteur + 32);
-    }
-    // Survol garanti au-dessus des grands ouvrages/arches/pylônes/rochers proches
-    if (obstacles && obstacles.length) {
-      for (let i = 0; i < obstacles.length; i++) {
-        const o = obstacles[i];
-        if (!o || o.ymax === undefined || o.ymax < yMin - 10) continue;
-        const dx = o.x - x, dz = o.z - z;
-        const rad = (o.rayon || Math.max(o.demiL || 0, o.demiP || 0) || 4) + 18;
-        if (dx * dx + dz * dz < rad * rad) {
-          const yOb = o.ymax + 12;
-          if (yOb > yMin) yMin = yOb;
-        }
-      }
-    }
-    return yMin;
+    const sommet = obstacles ? B.obstacles.sommetProche(obstacles, x, z, 18) : -Infinity;
+    return Math.max(solMax + margeCanopee, yPiste + margeCanopee * .82, hauteurAntiTunnel(c, s, yPiste), sommet + 12);
   }
 
   // Enveloppe d'aller-retour peloton de tête -> dernier -> retour rapide vers la tête
@@ -434,8 +417,10 @@
     return 0.5 * (1 - Math.cos(PI * Math.max(0, Math.min(1, s))));
   }
 
-  function piloterAppareil(app, cibleX, cibleY, cibleZ, yPlancher, dt, kp, kd, vMax, aMax) {
-    if (!app.init || Math.hypot(cibleX - app.pos[0], cibleZ - app.pos[2]) > 900) {
+  function piloterAppareil(app, cibleX, cibleY, cibleZ, c, s, yPiste, sol, obstacles, marge, dt, kp, kd, vMax, aMax) {
+    const reprise = !app.init || Math.hypot(cibleX - app.pos[0], cibleZ - app.pos[2]) > 900;
+    const yPlancher = plancherSecurite(c, reprise ? cibleX : app.pos[0], reprise ? cibleZ : app.pos[2], s, yPiste, sol, obstacles, marge);
+    if (reprise) {
       app.pos[0] = cibleX; app.pos[1] = Math.max(cibleY, yPlancher); app.pos[2] = cibleZ;
       app.vel[0] = 0; app.vel[1] = 0; app.vel[2] = 0;
       app.init = true;
@@ -482,8 +467,16 @@
     const qualite = (contexte && contexte.qualite) || 'medium';
     const nuit = (contexte && contexte.nuit) || 0;
     const sol = (contexte && contexte.sol) || (() => 0);
-    const obstacles = (contexte && contexte.obstacles) || null;
-    const dt = (etat.lastT >= 0 && t > etat.lastT && t - etat.lastT < 0.25) ? (t - etat.lastT) : 0.016;
+    let obstacles = c?.obstacles;
+    if (!obstacles && contexte?.obstacles && B.obstacles) {
+      // Les scènes isolées peuvent fournir les descripteurs du décor sans circuit préparé.
+      if (etat.sourcesObstacles !== contexte.obstacles) {
+        etat.sourcesObstacles = contexte.obstacles;
+        etat.indexObstacles = B.obstacles.creer(contexte.obstacles);
+      }
+      obstacles = etat.indexObstacles;
+    }
+    const dt = (etat.lastT >= 0 && t >= etat.lastT && t - etat.lastT < 0.25) ? (t - etat.lastT) : 0.016;
     etat.lastT = t;
 
     // Position autonome de la course : focus peloton de tête + balayage périodique vers le dernier
@@ -501,8 +494,7 @@
     const cxH = _ptCible[0] - Math.sin(capPisteH) * latH;
     const czH = _ptCible[2] + Math.cos(capPisteH) * latH;
     const cyH = _ptCible[1] + 30 + 4.5 * Math.sin(t * 0.23);
-    const plancherH = plancherSecurite(c, etat.volH.init ? etat.volH.pos[0] : cxH, etat.volH.init ? etat.volH.pos[2] : czH, sH, _ptCible[1], sol, obstacles, 28);
-    piloterAppareil(etat.volH, cxH, cyH, czH, plancherH, dt, 1.9, 2.2, 115, 24);
+    piloterAppareil(etat.volH, cxH, cyH, czH, c, sH, _ptCible[1], sol, obstacles, 28, dt, 1.9, 2.2, 115, 24);
 
     const hx = etat.volH.pos[0], hy = etat.volH.pos[1], hz = etat.volH.pos[2];
     const capH = etat.volH.cap, yawH = -capH, cosH = Math.cos(capH), sinH = Math.sin(capH);
@@ -540,8 +532,7 @@
       const cxD = _ptCible[0] - Math.sin(capPisteD) * latD;
       const czD = _ptCible[2] + Math.cos(capPisteD) * latD;
       const cyD = _ptCible[1] + (d === 0 ? 22 : 25) + 3.0 * Math.sin(t * 0.55 + d);
-      const plancherD = plancherSecurite(c, vol.init ? vol.pos[0] : cxD, vol.init ? vol.pos[2] : czD, sD, _ptCible[1], sol, obstacles, 22);
-      piloterAppareil(vol, cxD, cyD, czD, plancherD, dt, 2.5, 2.5, 130, 30);
+      piloterAppareil(vol, cxD, cyD, czD, c, sD, _ptCible[1], sol, obstacles, 22, dt, 2.5, 2.5, 130, 30);
 
       const dx = vol.pos[0], dy = vol.pos[1], dz = vol.pos[2];
       const capD = vol.cap, yawD = -capD, ca = Math.cos(capD), sa = Math.sin(capD);

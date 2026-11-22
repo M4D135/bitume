@@ -15,7 +15,7 @@ function toile(support=true){
     TEXTURE_WRAP_S:16,TEXTURE_WRAP_T:17,CLAMP_TO_EDGE:18,UNPACK_FLIP_Y_WEBGL:19,
     createShader:()=>({}),shaderSource(){},compileShader(){},getShaderParameter:()=>true,getShaderInfoLog:()=>'',deleteShader(){},
     createProgram:()=>({}),attachShader(){},linkProgram(){},getProgramParameter:()=>true,getProgramInfoLog:()=>'',
-    createVertexArray:()=>({}),createTexture:()=>({}),bindTexture(){},texParameteri(){},texImage2D(){appels.textures++;},
+    createVertexArray:()=>({}),createTexture:()=>({}),bindTexture(){},texParameteri(){},texImage2D(...args){if(args[5]===appels.directeRefusee && appels.directeRefusee)throw new Error('texture directe refusée');appels.textures++;},
     getUniformLocation:(_,nom)=>nom,disable(){},clearColor(){},viewport(){},useProgram(){},bindVertexArray(){},activeTexture(){},pixelStorei(){},
     uniform1i(n,v){appels.uniformes[n]=v;},uniform2f(n,...v){appels.uniformes[n]=v;},uniform4fv(n,v){appels.uniformes[n]=Array.from(v);},
     drawArrays(){appels.dessins++;},clear(){appels.clear++;},deleteTexture(){appels.supprimes++;},deleteProgram(){appels.supprimes++;},deleteVertexArray(){appels.supprimes++;}};
@@ -95,6 +95,19 @@ verifier('source propre à la vue, budgets de pixels et palier Léger sans copie
   const copies=e.stats.copiesScene;V.mettreAJour(e,1/60,{...c,qualite:'low'});
   assert.equal(e.stats.copiesScene,copies);assert.equal(t.appels.uniformes.uAvecScene,false);
   V.mettreAJour(e,1/60,c);assert.equal(e.stats.copiesScene,copies+1);assert.equal(t.appels.uniformes.uAvecScene,true);
+});
+verifier('canvas natif : transfert direct ; dimensions différentes et transfert refusé : redimensionnement 2D',()=>{
+  const t=toile(),e=V.creer(t.canvas),scene={width:1280,height:720,getContext(){}};
+  const c=contexte({largeur:1280,hauteur:720,dpr:1,sourceScene:scene});
+  for(let i=0;i<60;i++)V.mettreAJour(e,1/60,c);
+  assert(e.stats.copiesDirectes>0);assert.equal(e.stats.copiesDirectes,e.stats.copiesScene);
+  assert.equal(t.appels.copies,0);assert.equal(t.appels.uniformes.uAvecScene,true);
+  const directes=e.stats.copiesDirectes;
+  scene.width=1920;V.mettreAJour(e,1/60,c);
+  assert.equal(t.appels.copies,1);assert.equal(e.stats.copiesDirectes,directes);
+  scene.width=1280;t.appels.directeRefusee=scene;V.mettreAJour(e,1/60,c);
+  assert.equal(t.appels.copies,2);assert.equal(e.stats.copiesDirectes,directes);
+  assert.equal(t.appels.uniformes.uAvecScene,true);assert.equal(e.stats.erreur,null);
 });
 verifier('copie refusée : overlay sans scène ; copie suivante valide rétablit la réfraction',()=>{
   const t=toile(),e=V.creer(t.canvas),c=contexte({sourceScene:{width:1280,height:720}});

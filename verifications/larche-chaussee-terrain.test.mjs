@@ -81,3 +81,26 @@ test('les tuiles sont jointives et les points d’appui du décor suivent le tri
   }
   assert.ok(doublons > 0);
 });
+
+test('le bitume de la SS21 garde ses pigments, sa géométrie, ses marquages et ses surfaces PhysX', t => {
+  const options = { qualite: 'high', organique: true, vegetation: false };
+  const route = o => B.decor.construire(circuit, o).nappes.filter(n => n.surfaceType === 'accotement');
+  const reference = route(options), enrichie = route({ ...options, matieres: true });
+  assert.equal(reference.length, enrichie.length);
+  let modifies = 0;
+  for (let i = 0; i < reference.length; i++) {
+    const avant = reference[i], apres = enrichie[i], attendu = avant.sommets.slice();
+    assert.deepEqual(apres.indices, avant.indices);
+    assert.deepEqual(apres.surfacesPhysX, avant.surfacesPhysX);
+    for (let k = 9; k < attendu.length; k += 13) {
+      if (apres.sommets[k] !== 21) continue;
+      assert.equal(attendu[k], 14);
+      assert(attendu[k + 1] < .3, 'le blanc des marquages ne devient pas du goudron');
+      attendu[k] = 21;
+      modifies++;
+    }
+    assert.deepEqual(apres.sommets, attendu);
+  }
+  assert(modifies > 10000);
+  t.diagnostic(modifies + ' sommets d’asphalte sur ' + enrichie.length + ' nappes routières');
+});

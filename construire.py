@@ -36,6 +36,7 @@ MODULES = [
     'larche-vinadio-data.js',
     'larche-vinadio.js',
     'larche-relief.js',
+    'coniferes-alpins.js',
     'larche-vinadio-decor.js',
     'marseille.js',
     'marseille-decor.js',

@@ -266,6 +266,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
 
   function nappesRoute(c, th, lim, naturel = false, ecologie = null, saison = null, reperes = null, vibreursBeton = false) {
     const w = c.largeur / 2, n = c.n, LIGNES = 60, liste = [];
+    const matAsphalte = th.asphalte ?? th.matieres?.asphalte ?? 14;
     const habitat = {};
     const meteoRoute = B.chaussee ? B.chaussee.preparer({}, saison) : null, surfaceRoute = {};
     const neigeRoute = [.84, .87, .90];
@@ -302,7 +303,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         for (let b = 0; b < bandes.length; b++) {
           const type = bandes[b][0], cote = bandes[b][1];
           let d0, d1, y0, y1, mat = 8, col = tonte, n0 = no, n1 = no;
-          if (type === 'asphalte') { d0 = -w + .3; d1 = w - .3; y0 = hauteurRoute(f, d0, w); y1 = hauteurRoute(f, d1, w); mat = th.matieres ? th.matieres.asphalte : 14; col = asphalte(f.i); }
+          if (type === 'asphalte') { d0 = -w + .3; d1 = w - .3; y0 = hauteurRoute(f, d0, w); y1 = hauteurRoute(f, d1, w); mat = matAsphalte; col = asphalte(f.i); }
           else {
             const bord = cote < 0 ? -1 : 1, limite = cote < 0 ? limG : limD, yBord = hauteurRoute(f, bord * w, w);
             const ext = limite + 4;
@@ -1222,6 +1223,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const ecologie = B.ecologie ? B.ecologie.creer(c.graine, c.theme) : null;
     const saison = B.saisons ? B.saisons.profil(options.saison, c.theme) : null;
     if (c.theme === 'foret' && options.matieres !== false) th.matieres = MATIERES_PILOTES;
+    // La SS21 utilise le granulat filtré et le film d'eau diélectrique du bitume FERRO.
+    if (c.id === 'larche' && qualite === 'high' && options.matieres === true) th.asphalte = MATIERES_PILOTES.asphalte;
     // l'eau ne noie jamais la piste : le niveau descend sous le point le plus bas de l'axe (le virage de
     // Port-Sable plongeait à −5,8 sous le niveau −4 du thème cote, David 14/11)
     if (th.eau !== undefined) {

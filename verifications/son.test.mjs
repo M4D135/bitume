@@ -80,7 +80,7 @@ function fauxAudio() {
     parametres.push(p); return p;
   };
   // chaque nœud porte son rang de création et retient le nœud auquel il se branche (suite)
-  const noeud = extra => Object.assign({ rang: noeuds++, connect(x) { this.suite = x; return x; }, disconnect() { this.debranche = true; } }, extra);
+  const noeud = extra => Object.assign({ rang: noeuds++, connect(x) { (this.connexions ||= []).push(x); this.suite = x; return x; }, disconnect() { this.debranche = true; } }, extra);
   const source = extra => noeud(Object.assign({ start(t) { actifs++; this.debut = t; if (t < contextes[contextes.length - 1].currentTime - 1e-9) enRetard++; }, stop(t) { this.fin = t; }, set onended(f) { this._fin = f; } }, extra));
   class Ctx {
     constructor() { this.currentTime = 0; this.sampleRate = 48000; this.state = 'running'; this.destination = noeud({}); contextes.push(this); }
@@ -139,6 +139,48 @@ verifier('deux moteurs humains conservés à toute distance et trois rivaux au m
     s.suspendre();
     assert.ok(fa.parametres.filter(p => p.cibles.at(-1)?.v === 0 && p.cibles.at(-1)?.tc === .03).length >= 9, 'pause : moteurs, échos et rivaux coupés en fondu');
     assert.equal(s.stats().musique, false);
+  } finally { delete globalThis.window; }
+});
+
+verifier('pneus : quatre signatures, adhérence silencieuse et deux auditeurs indépendants', function () {
+  const fa = fauxAudio(); globalThis.window = { AudioContext: fa.Ctx };
+  try {
+    const s = B.son.creer(); s.demarrer();
+    const j = { v: 28, surface: 'piste', rapport: 2, contactPneus: true, deriveRelative: 0 };
+    const j2 = { ...j, blocage: 1 }, e = { joueur: j, joueur2: j2 };
+    s.mettreAJour(e);
+    const bandes = fa.sources.filter(n => n.connexions?.length === 2 && n.connexions.every(f => f.type === 'bandpass'))
+      .map(n => n.connexions);
+    assert.equal(bandes.length, 2);
+    const [[lat, lon], [lat2, lon2]] = bandes, cible = p => p.cibles.at(-1)?.v ?? p.value, niveau = f => cible(f.suite.gain);
+    assert.equal(niveau(lat) + niveau(lon), 0);
+    assert(niveau(lon2) > 0 && niveau(lat2) === 0);
+    assert(cible(lat.suite.suite.pan) < 0 && cible(lat2.suite.suite.pan) > 0);
+    j.deriveRelative = .94; s.mettreAJour(e);
+    const approche = niveau(lat), frequenceApproche = cible(lat.frequency);
+    assert(approche > 0 && niveau(lon) === 0);
+    j.deriveRelative = 1.8; s.mettreAJour(e);
+    const frequenceDerive = cible(lat.frequency);
+    assert(niveau(lat) > approche * 4 && frequenceDerive > frequenceApproche * 1.8);
+    j.deriveRelative = 0; j.patinage = 1; s.mettreAJour(e);
+    assert(niveau(lon) > 0 && niveau(lat) === 0);
+    assert(cible(lon.frequency) < frequenceDerive * .7 && cible(lon2.frequency) > frequenceDerive * 1.6);
+    const avant = fa.compte().noeuds;
+    for (let i = 0; i < 180; i++) { fa.contextes[0].currentTime += 1 / 60; s.mettreAJour(e); }
+    assert.equal(fa.compte().noeuds, avant, 'deux sources de pneus continues, aucun nœud par image');
+    j.v = 0; s.mettreAJour(e); assert(niveau(lon) > 0, 'patinage moteur au départ');
+    j.patinage = 0; j.blocage = 1; j.deriveRelative = 2; s.mettreAJour(e);
+    assert.equal(niveau(lat) + niveau(lon), 0, 'frein tenu à l’arrêt');
+    j.v = 28;
+    for (const [k,v] of [['surface','herbe'], ['muet',true], ['contactPneus',false]]) {
+      const origine = j[k]; j[k] = v; s.mettreAJour(e); assert.equal(niveau(lat) + niveau(lon), 0, k);
+      j[k] = origine;
+    }
+    s.suspendre(); s.mettreAJour(e); assert.equal(niveau(lat) + niveau(lon) + niveau(lon2), 0);
+    s.reprendre(); s.mettreAJour(e); assert(niveau(lat) > 0 && niveau(lon) > 0 && niveau(lon2) > 0);
+    e.pause = true; s.mettreAJour(e); assert.equal(niveau(lat) + niveau(lon) + niveau(lon2), 0);
+    e.pause = false; e.joueur2 = null; s.mettreAJour(e);
+    assert.equal(niveau(lon2), 0); assert.equal(cible(lat.suite.suite.pan), 0);
   } finally { delete globalThis.window; }
 });
 

@@ -64,9 +64,34 @@
     }
     return triangles;
   }
+  // Chaque rangée encode les trois colonnes d'une lettre du portique, de gauche à droite.
+  const glyphes = {
+    A:[2,5,7,5,5], B:[6,5,6,5,6], C:[3,4,4,4,3], D:[6,5,5,5,6], E:[7,4,6,4,7],
+    F:[7,4,6,4,4], G:[3,4,5,5,3], H:[5,5,7,5,5], I:[7,2,2,2,7], J:[1,1,1,5,2],
+    L:[4,4,4,4,7], M:[5,7,7,5,5], N:[5,7,7,7,5], O:[2,5,5,5,2], P:[6,5,6,4,4],
+    R:[6,5,6,5,5], S:[3,4,2,1,6], T:[7,2,2,2,2], U:[5,5,5,5,7], V:[5,5,5,5,2],
+    0:[7,5,5,5,7], 1:[2,6,2,2,7], 2:[6,1,2,4,7], 3:[6,1,2,1,6], 4:[5,5,7,1,1],
+    5:[7,4,6,1,6], 6:[3,4,7,5,7], 7:[7,1,2,2,2], 8:[7,5,7,5,7], 9:[7,5,7,1,6],
+  };
+  const nomsGlyphes = {};
+  function formeLettre(lignes) {
+    const triangles = [], normale = [-1,0,0];
+    for (let j = 0; j < 5; j++) for (let i = 0; i < 3; i++) {
+      if (!(lignes[j] & (4 >> i))) continue;
+      const z = (i + .5) / 3 - .5, y = .4 - j / 5;
+      const a = [0,y-.09,z-.15], b = [0,y-.09,z+.15];
+      const c = [0,y+.09,z+.15], d = [0,y+.09,z-.15];
+      triangles.push([a,b,c,normale,normale,normale], [a,c,d,normale,normale,normale]);
+    }
+    return triangles;
+  }
   const phasesLED = Array.from({length: COLONNES}, (_, i) => 'bitume-ruban-led-'+i);
   const renderer = globalThis.FRender || globalThis.window?.FRender;
   if (renderer?.forme) {
+    for (const [lettre, lignes] of Object.entries(glyphes)) {
+      nomsGlyphes[lettre] = 'bitume-portique-' + lettre;
+      renderer.forme(nomsGlyphes[lettre], formeLettre(lignes));
+    }
     renderer.forme(FORME, formeChevron());
     phasesLED.forEach((nom, i) => renderer.forme(nom, formeMatrice(i)));
     renderer.forme('bitume-ruban-grille', formeMatrice(-1));
@@ -203,7 +228,25 @@
           modules.push(obj);
           objets.push(obj);
         }
-        bandeaux.push({ s, modules });
+        // Les deux textes se lisent de gauche à droite depuis leur propre côté de la ligne.
+        const lettres = [], rotation = [0, -cap + (face > 0 ? Math.PI : 0), 0];
+        const support = objet('box', 7, [.027,.035,.043]);
+        support.p = [cx + tx * face * .32, cy + 6.10, cz + tz * face * .32];
+        support.s = [.12,.94,largeurBandeau];
+        support.r = rotation;
+        for (let m = 0; m < LED_COUNT; m++) {
+          const lat = (m + .5 - LED_COUNT / 2) * Math.min(.60, largeurBandeau / LED_COUNT) * -face;
+          const o = objet('box', 16, [1,.93,.70]);
+          o.p = [cx + rx * lat + tx * face * .40, cy + 6.14, cz + rz * lat + tz * face * .40];
+          o.s = [.04,.64,Math.min(.46, largeurBandeau / LED_COUNT * .8)];
+          o.r = rotation;
+          lettres.push(o);
+        }
+        // La rangée de témoins est située en saillie sous le texte.
+        for (const o of modules) {
+          o.p[0] += tx * face * .07; o.p[2] += tz * face * .07;
+        }
+        bandeaux.push({ s, modules, lettres, support, texte: '', visibles: [] });
       }
     }
 
@@ -250,11 +293,66 @@
     }
   }
 
+  const MESSAGES_TOUR = Array.from({length: 100}, (_, i) => 'TOUR ' + i);
+  const MESSAGES_SECTEUR = ['TETE S1','TETE S2','TETE S3'];
+  function messagePortique(co, bandeau, temps, pluie, phase) {
+    if (phase === 'depart' || phase === 'feux') return 'DEPART';
+    if (phase === 'damier' || phase === 'fini' || phase === 'arrivee') return 'ARRIVEE';
+    let stands = false;
+    if (co) for (const v of co.voitures) {
+      const e = v.etat;
+      let distance = Math.abs(e.s - bandeau.s);
+      if (!co.c.ouvert) distance = Math.min(distance, co.c.longueur - distance);
+      if ((e.accident || e.recuperation) && distance < 180) return 'DANGER';
+      if (e.stands) stands = true;
+    }
+    if (phase === 'dernier-tour') return 'DERNIER TOUR';
+    // Un tour d'affichage dure douze secondes. Les informations restent fixes à la lecture.
+    const page = Math.floor(temps / 4) % 3;
+    if (pluie > .35 && (page === 0 || !co)) return 'PLUIE';
+    if (!co) return 'COURSE';
+    if (page === 1 && stands && co.c.stands) return 'STANDS';
+    const tete = co.voitures[co.classement[0]];
+    if (page === 2 && tete && co.c.secteurs?.length === 2) {
+      const s = tete.etat.s, limites = co.c.secteurs;
+      return MESSAGES_SECTEUR[s < limites[0] ? 0 : s < limites[1] ? 1 : 2];
+    }
+    if (co.mode === 'chrono') return 'CHRONO';
+    if (co.c.ouvert) return 'SPECIALE';
+    return MESSAGES_TOUR[Math.min(99, (tete?.tours || 0) + 1)];
+  }
+  function lettresPortique(bandeau, message, nuit, sortie) {
+    if (message !== bandeau.texte) {
+      bandeau.texte = message;
+      bandeau.visibles.length = 0;
+      const debut = Math.floor((LED_COUNT - message.length) / 2);
+      for (let i = 0; i < message.length; i++) {
+        const forme = nomsGlyphes[message[i]];
+        if (!forme) continue;
+        const o = bandeau.lettres[debut + i];
+        o.shape = forme;
+        bandeau.visibles.push(o);
+      }
+    }
+    sortie.push(bandeau.support);
+    for (const o of bandeau.visibles) {
+      o.emissive = 1.15 - .40 * nuit;
+      sortie.push(o);
+    }
+  }
+
   function animer(etat, t, contexte, sortie) {
     if (!etat) return;
     const camPos = contexte && (contexte.cameraPos || contexte.camPos);
-    const phaseCourse = (contexte && contexte.phase) || 'vert';
-    const feuxAllumes = (contexte && (contexte.feux ?? contexte.feuxAllumes)) || 0;
+    const co = contexte?.course;
+    const tete = co?.voitures[co.classement[0]];
+    let phaseCourse = contexte?.phase || 'vert';
+    if (co) {
+      if (co.phase === 'grille' || co.phase === 'feux') phaseCourse = 'depart';
+      else if (co.drapeau != null || co.phase === 'arrivee') phaseCourse = 'damier';
+      else if (!co.c.ouvert && co.toursTotal > 1 && tete?.tours + 1 >= co.toursTotal) phaseCourse = 'dernier-tour';
+    }
+    const feuxAllumes = co?.feux.allumes ?? contexte?.feux ?? contexte?.feuxAllumes ?? 0;
     const pluie = (contexte && contexte.pluie) || 0;
     const nuit = (contexte && contexte.nuit) || 0;
     const temps = Number.isFinite(t) ? t : 0;
@@ -265,7 +363,11 @@
     const bandeaux = etat.bandeaux;
     if (bandeaux) {
       for (let b = 0; b < bandeaux.length; b++) {
-        const mods = bandeaux[b].modules;
+        const bandeau = bandeaux[b], mods = bandeau.modules;
+        const p = bandeau.support.p;
+        if (sortie && (!camPos || (p[0]-camPos[0])**2 + (p[2]-camPos[2])**2 < PORTEE**2)) {
+          lettresPortique(bandeau, messagePortique(co, bandeau, temps, pluie, phaseCourse), nuit, sortie);
+        }
         for (let m = 0; m < mods.length; m++) {
           const o = mods[m];
 
@@ -282,7 +384,7 @@
             o.color[1] = damier ? 0.96 : 0.08;
             o.color[2] = damier ? 0.96 : 0.08;
             o.emissive = (damier ? 1.1 : 0.06) * boostNuit;
-          } else if (phaseCourse === 'pluie' || pluie > 0.35) {
+          } else if (phaseCourse === 'pluie' || pluie > 0.35 && phaseCourse !== 'dernier-tour') {
             let phase = (temps * 0.7 - m * 0.08) % 1;
             if (phase < 0) phase += 1;
             const vague = phase < 0.5 ? phase * 2 : 2 - phase * 2;
