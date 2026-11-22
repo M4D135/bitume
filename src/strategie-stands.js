@@ -197,7 +197,8 @@
       if (separe) {
         const part = 1 - rampe(sVue,S.sBox,S.garage1+8);
         if (p.reussi && sIci < S.garage1+8) dVise = axe + (S.dBox-axe)*part;
-        if (peutRentrer && fusionLibre) dVise += (ligne-dVise)*rampe(sVue,jonction,S.fin+8);
+        const debutRabattement = S.detachee ? jonction : S.fin;
+        if (peutRentrer && fusionLibre) dVise += (ligne-dVise)*rampe(sVue,debutRabattement,S.fin+8);
       } else if (peutRentrer && fusionLibre) dVise = contourner ? Math.min(ligne, 0) : ligne;
       const rejoint = !separe && contourner ? Math.abs(e.d - S.d) > S.demi + 1 : Math.abs(e.d - ligne) < .6;
       const degagementFini = !contourner || !p.vuStand || x > garage1 + 12;
