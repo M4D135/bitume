@@ -143,7 +143,7 @@
         local: Float64Array.of(x, y, z), objet: { shape: NOM, p: [0, 0, 0], s: [0, 0, 0], r: [0, 0, 0],
           mat: MAT_EAU, color: base.map((c, k) => c * .42 + [.25, .28, .32][k]), surface: 'object', overlay: false } });
     }
-    return (modele.eauCarrosserie = { atlas, gouttes, couleurs, supports, poseEau: 0, gx: NaN, gy: NaN, gz: NaN, matrice: new Float64Array(9), deplacement: new Float64Array(3), humide: 0, pluie: 0,
+    return (modele.eauCarrosserie = { atlas, gouttes, couleurs, supports, poseEau: 0, gx: NaN, gy: NaN, gz: NaN, matrice: new Float64Array(9), matriceSuivante: new Float64Array(9), deplacement: new Float64Array(3), humide: 0, pluie: 0,
       actives: 0, age: 0, revisions: 0, dernierInstant: -Infinity, dernierAjout: 0, dernierLOD: 'simple' });
   }
 
@@ -181,7 +181,10 @@
       const composante = gx * n[0] + gy * n[1] + gz * n[2], tx = gx - composante * n[0], ty = gy - composante * n[1], tz = gz - composante * n[2];
       const longueur = Math.hypot(tx, ty, tz), m = support.repere;
       if (longueur > 1e-12) {
-        m[0] = tx / longueur; m[1] = ty / longueur; m[2] = tz / longueur;
+        const x = tx / longueur, y = ty / longueur, z = tz / longueur;
+        if (Object.is(m[0], x) && Object.is(m[1], y) && Object.is(m[2], z)) continue;
+        support.pose = -1;
+        m[0] = x; m[1] = y; m[2] = z;
         m[6] = m[1] * n[2] - m[2] * n[1]; m[7] = m[2] * n[0] - m[0] * n[2]; m[8] = m[0] * n[1] - m[1] * n[0];
       }
     }
@@ -246,10 +249,14 @@
   function ajouter(sortie, pose, e, lod = 'complet', overlay = false, matrice = null) {
     const limite = typeof LIMITES[lod] === 'number' ? LIMITES[lod] : 0; e.dernierAjout = 0; e.dernierLOD = lod;
     if (!e.actives || !limite) return 0;
-    e.poseEau++;
-    const M = e.matrice;
-    if (matrice) for (let c = 0; c < 3; c++) for (let r = 0; r < 3; r++) M[c * 3 + r] = matrice[c][r];
-    else attitude(M, pose);
+    const M = e.matrice, suivante = e.matriceSuivante;
+    if (matrice) for (let c = 0; c < 3; c++) for (let r = 0; r < 3; r++) suivante[c * 3 + r] = matrice[c][r];
+    else attitude(suivante, pose);
+    // Les vues peuvent partager les rotations si la matrice de la voiture est identique.
+    if (e.poseEau === 0 || suivante.some((valeur, i) => !Object.is(valeur, M[i]))) {
+      M.set(suivante);
+      e.poseEau++;
+    }
     const px = pose.p ? pose.p[0] : pose.x, py = pose.p ? pose.p[1] : pose.y, pz = pose.p ? pose.p[2] : pose.z;
     const profilNez=pose.zonesDegats?B.voiture.profilImpact(pose.zonesDegats):0;
     const pas = MAX / limite, masque = lod === 'epave' || lod === 'epave-moyen' || lod === 'epave-leger' ? 4
