@@ -262,6 +262,9 @@
         x=ph?.x??a.x;y=(ph?.y??(Number.isFinite(e.y)?e.y:a.y))+hauteurCric(st);z=ph?.z??a.z;
         cap=ph?.cap??(a.cap+(e.psi||0)+(e.beta||0));pitch=e.tangage||0;roll=e.roulis||0;
       }
+      // Raccorder l'altitude du box à la pose avant le branchement de la buse.
+      const u=progression(st);
+      if(u>=0&&u<.16)y=lerp(f.y,y,lisse(0,.16,u));
     }
     c.x=x;c.y=y;c.z=z;c.tx=Math.cos(cap);c.tz=Math.sin(cap);c.cp=Math.cos(pitch);c.sp=Math.sin(pitch);c.cr=Math.cos(roll);c.sr=Math.sin(roll);
     c.rebond=pose?.rebond||e?._physx?.offsets;
