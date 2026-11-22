@@ -1,0 +1,267 @@
+{
+  "schema": 1,
+  "lot": "04-M1",
+  "decision": "activation_automatique_rejetee_candidat_conserve_optin",
+  "source_candidat_initial": "26e7c5602b428791c9ee47cc066575a5a634b93e",
+  "source_outillage_reprise": "373ed7e9cea34aefe56695a4bcaa0075a8cb619a",
+  "source_finale": "b0154971de2da88cd2fb7f9f8de23bdeeb43f820",
+  "html_candidat_sha256": "d66623243cfadbca3b0c896c76cb46b442e01c820282064dab84e23e243ad935",
+  "rendu": {
+    "defaut": "Matière9 d’origine sur les pierres ; aucune activation M1 dans le jeu livré.",
+    "option": "decor.construire(c, { qualite: 'high', pierresProcedurales: true }) ; matieres:false désactive, low/medium restent inchangés.",
+    "selection": {
+      "haut-col": 278,
+      "route-des-cimes": 682
+    },
+    "integration00": "Conserver le défaut ; aucune activation jeu.js à faire tant que image/coût ne sont pas acceptés."
+  },
+  "qualification_visuelle": {
+    "png_inspectes_total": 24,
+    "campagne_initiale": "M1-CAPTURES-INITIALES.json :16 PNG, comptes et empreintes A/B égaux ; pont distant neutre, portail sombre plus lisse.",
+    "reprise": {
+      "run": 44788669375,
+      "url": "https://github.com/M4D135/bitume/actions/runs/44788669375",
+      "conclusion_ci": "failure",
+      "cause": "Chaque série de dessin avec lecture CPU dépasse l’échéance Runtime.evaluate de120s.",
+      "png_inspectes": 8,
+      "observations_runtime_completes": 4,
+      "cout_qualifie": false,
+      "images": [
+        {
+          "scene": "route-des-cimes-roche-eclairee-ete-procedurale",
+          "fichier": "0000.png",
+          "sha256": "e0f06bd4e6be08b5617e42dd3b091acee3c18f86aa54c344c5d0b2ff1a884eac",
+          "observation_runtime_complete": true
+        },
+        {
+          "scene": "route-des-cimes-roche-eclairee-ete-procedurale",
+          "fichier": "0001.png",
+          "sha256": "4f880496e8e61dda0ec63b1ef4bf309f305f6bc109e6b043bf2eb100e8f0532d",
+          "observation_runtime_complete": false
+        },
+        {
+          "scene": "route-des-cimes-roche-eclairee-ete-reference",
+          "fichier": "0000.png",
+          "sha256": "3330b6631ffc643725020acc2dfaee7215544b82c7fc0751741731fdb7bb62af",
+          "observation_runtime_complete": true
+        },
+        {
+          "scene": "route-des-cimes-roche-eclairee-ete-reference",
+          "fichier": "0001.png",
+          "sha256": "3e49c6d32b9fa642a00c0991e656e5ffbc2c59e2f225172c24bb3861e3a13843",
+          "observation_runtime_complete": false
+        },
+        {
+          "scene": "route-des-cimes-roche-eclairee-hiver-procedurale",
+          "fichier": "0000.png",
+          "sha256": "25f2e78a68bbe0dae93fac86a06c16e50c9d2e2a76a46c3c79a77aff5d5c6358",
+          "observation_runtime_complete": true
+        },
+        {
+          "scene": "route-des-cimes-roche-eclairee-hiver-procedurale",
+          "fichier": "0001.png",
+          "sha256": "5d6bc8ec4e0e1b6c0995d33fa86f26a48c9df7b3fcae008018a1b408009bffda",
+          "observation_runtime_complete": false
+        },
+        {
+          "scene": "route-des-cimes-roche-eclairee-hiver-reference",
+          "fichier": "0000.png",
+          "sha256": "907940e415ac96a4106ee88eb1bd3521b0dca87dcc3bad61f862dc7425e9dc12",
+          "observation_runtime_complete": true
+        },
+        {
+          "scene": "route-des-cimes-roche-eclairee-hiver-reference",
+          "fichier": "0001.png",
+          "sha256": "63bbe07cbe1cd9b2cd179088dc5500bbebf62081c5d745560b732b4176abe747",
+          "observation_runtime_complete": false
+        }
+      ],
+      "observations": [
+        {
+          "scene": "route-des-cimes-roche-eclairee-ete-procedurale",
+          "rendu": {
+            "drawCalls": 763,
+            "triangles": 928008,
+            "instances": 8637
+          },
+          "glErreur": 0,
+          "glPerdu": false,
+          "empreintes": {
+            "lotsSansRecette": "32b09f4c284fc846ddb0260bb28d5848ae81484f3b8c566b9625383b2a42036b",
+            "nappes": "05cb8dcbcd46284e42e6e120eefb459f4fc97f9983f2dc316638375952fd5f49",
+            "solides": "6457849cb760d567a5ea3f66f921023ecc85d51ea445a2e055c34ba653da9b7a",
+            "obstacles": "d4a595314138b02c654926755fea711edce1fb72cbf2faca1a7ae28e4eaf7de0",
+            "racines": "d93a173faa97d1398b852b9347517134e1c7a414de0b27021d8990d6d0fda6fb"
+          },
+          "camera": {
+            "pos": [
+              1068.0023733948929,
+              262.48922001119945,
+              -2505.1959693668027
+            ],
+            "yaw": 3.0862860313146228,
+            "pitch": -0.21694480902511387,
+            "fov": 52
+          },
+          "visee": {
+            "cibleDistance": 18.317846909437343,
+            "touchePierre": true,
+            "genre": "roche-tunnel",
+            "distance": 18.251718521118164
+          },
+          "cout": null,
+          "fatal_mesure": "Runtime.evaluate : échéance120s dépassée au second observer."
+        },
+        {
+          "scene": "route-des-cimes-roche-eclairee-ete-reference",
+          "rendu": {
+            "drawCalls": 763,
+            "triangles": 928008,
+            "instances": 8637
+          },
+          "glErreur": 0,
+          "glPerdu": false,
+          "empreintes": {
+            "lotsSansRecette": "32b09f4c284fc846ddb0260bb28d5848ae81484f3b8c566b9625383b2a42036b",
+            "nappes": "05cb8dcbcd46284e42e6e120eefb459f4fc97f9983f2dc316638375952fd5f49",
+            "solides": "6457849cb760d567a5ea3f66f921023ecc85d51ea445a2e055c34ba653da9b7a",
+            "obstacles": "d4a595314138b02c654926755fea711edce1fb72cbf2faca1a7ae28e4eaf7de0",
+            "racines": "d93a173faa97d1398b852b9347517134e1c7a414de0b27021d8990d6d0fda6fb"
+          },
+          "camera": {
+            "pos": [
+              1068.0023733948929,
+              262.48922001119945,
+              -2505.1959693668027
+            ],
+            "yaw": 3.0862860313146228,
+            "pitch": -0.21694480902511387,
+            "fov": 52
+          },
+          "visee": {
+            "cibleDistance": 18.317846909437343,
+            "touchePierre": true,
+            "genre": "roche-tunnel",
+            "distance": 18.251718521118164
+          },
+          "cout": null,
+          "fatal_mesure": "Runtime.evaluate : échéance120s dépassée au second observer."
+        },
+        {
+          "scene": "route-des-cimes-roche-eclairee-hiver-procedurale",
+          "rendu": {
+            "drawCalls": 762,
+            "triangles": 888492,
+            "instances": 8441
+          },
+          "glErreur": 0,
+          "glPerdu": false,
+          "empreintes": {
+            "lotsSansRecette": "a799d6d50c678ae2b31324af03136b963797276b50682f1b6040a1cbc30f05ba",
+            "nappes": "60d7a04287d568ba5aa332ddd819831e904904a0358953c621e8eb866f3406c1",
+            "solides": "6457849cb760d567a5ea3f66f921023ecc85d51ea445a2e055c34ba653da9b7a",
+            "obstacles": "d4a595314138b02c654926755fea711edce1fb72cbf2faca1a7ae28e4eaf7de0",
+            "racines": "d93a173faa97d1398b852b9347517134e1c7a414de0b27021d8990d6d0fda6fb"
+          },
+          "camera": {
+            "pos": [
+              1068.0023733948929,
+              262.48922001119945,
+              -2505.1959693668027
+            ],
+            "yaw": 3.0862860313146228,
+            "pitch": -0.21694480902511387,
+            "fov": 52
+          },
+          "visee": {
+            "cibleDistance": 18.317846909437343,
+            "touchePierre": true,
+            "genre": "roche-tunnel",
+            "distance": 18.251718521118164
+          },
+          "cout": null,
+          "fatal_mesure": "Runtime.evaluate : échéance120s dépassée au second observer."
+        },
+        {
+          "scene": "route-des-cimes-roche-eclairee-hiver-reference",
+          "rendu": {
+            "drawCalls": 762,
+            "triangles": 888492,
+            "instances": 8441
+          },
+          "glErreur": 0,
+          "glPerdu": false,
+          "empreintes": {
+            "lotsSansRecette": "a799d6d50c678ae2b31324af03136b963797276b50682f1b6040a1cbc30f05ba",
+            "nappes": "60d7a04287d568ba5aa332ddd819831e904904a0358953c621e8eb866f3406c1",
+            "solides": "6457849cb760d567a5ea3f66f921023ecc85d51ea445a2e055c34ba653da9b7a",
+            "obstacles": "d4a595314138b02c654926755fea711edce1fb72cbf2faca1a7ae28e4eaf7de0",
+            "racines": "d93a173faa97d1398b852b9347517134e1c7a414de0b27021d8990d6d0fda6fb"
+          },
+          "camera": {
+            "pos": [
+              1068.0023733948929,
+              262.48922001119945,
+              -2505.1959693668027
+            ],
+            "yaw": 3.0862860313146228,
+            "pitch": -0.21694480902511387,
+            "fov": 52
+          },
+          "visee": {
+            "cibleDistance": 18.317846909437343,
+            "touchePierre": true,
+            "genre": "roche-tunnel",
+            "distance": 18.251718521118164
+          },
+          "cout": null,
+          "fatal_mesure": "Runtime.evaluate : échéance120s dépassée au second observer."
+        }
+      ]
+    },
+    "avis": "Les strates larges se lisent mieux, mais la pierre éclairée est nettement plus lisse. Pas de gain net de grain ou de relief apparent ; deux inspections indépendantes convergent.",
+    "limites": "Deux vues proches et une distante, été/hiver, jour sec. Les quatre seconds PNG de la reprise existent avant la mesure interrompue, mais leur observation runtime complète n’a pas été conservée ; aucune série entière ni coût validé."
+  },
+  "cout": {
+    "statut": "non_qualifie",
+    "anciens_finish_seul": "Non concluants, chiffres bruts conservés sans gain ni absence de surcoût revendiqués.",
+    "lecture_cpu": "Échéance120s atteinte dans les quatre variantes ; aucun échantillon achevé transmis.",
+    "decision": "Aucun budget GPU accepté pour une activation automatique.",
+    "outillage_suivant": "Observation de chaque image conservée avant mesure ; échéance Node15s pour le coût, série incomplète explicitement non qualifiée, sans ratio."
+  },
+  "tests_optin": {
+    "commande": "node --test verifications/pierres-procedurales.test.mjs",
+    "tests": 22,
+    "reussis": 22,
+    "echecs": 0,
+    "duree_ms": 41119.786523,
+    "log_sha256": "ccb110b9be664b0e3d20c48a183803a4d0392497f53bedc20c09c5271d22bd5e",
+    "defaut": "Égalité exacte défaut/false aux quatre saisons des deux montagnes, herbiers neufs compris.",
+    "candidat": "Opt-in true, garde high, matieres:false, low/medium, sélection, physique, nappes, palettes, eau/fossés et masques vérifiés."
+  },
+  "raccord02": [
+    "Reprendre le grain de fréquence intermédiaire et le relief de la recette roche canonique ; rendre le détail utile perceptible après filtrage au loin.",
+    "Le lissage observé est compatible avec le grain83/m devenu sous-pixel ; hypothèse, fwidth non mesuré.",
+    "Garder l’ancrage monde, le filtrage et les pigments saisonniers ; éviter d’amplifier uniquement le bruit ou de créer des répétitions.",
+    "Traiter séparément le pigment flat du terrain ; ne pas modifier physique ni densité de maillage pour masquer les facettes.",
+    "Rejouer les vues sombre/éclairée/distante et mesurer le coût sur un environnement adapté avant activation."
+  ],
+  "tests_outillage_finaux": {
+    "commande": "node --test verifications/captures-pierres.test.mjs",
+    "tests": 6,
+    "reussis": 6,
+    "echecs": 0,
+    "duree_ms": 15425.935562,
+    "log_sha256": "72acb7fa05ca143e355e0837ebd41d2847cb4102ac6cbfd3900d209f285b9e35",
+    "objets_reels": "Six scènes avec décors et PhysX réels ; défaut9 et option23, sélection homogène, scène hors recette identique.",
+    "expiration": "Faux évaluateur seulement : observation conservée, délai15s maximal et rejet tardif traité ; aucune fausse image ni performance simulée."
+  },
+  "fichiers_finaux_sha256": {
+    "src/decor.js": "b8526e8dc04a7105c468614b7dc89d9bd3b7f8d26f97a9be1cdeaa89bda3a9c9",
+    "tools/captures-pierres.mjs": "3bb3e3d459941420083a01dcb1d79169d1419d703bff5a6c200e771982bb5128",
+    "verifications/pierres-procedurales.test.mjs": "d560c1d5f40135e25ecec3e81ade0650f82c93afe74fbde581024a75338a7bc2",
+    "verifications/captures-pierres.test.mjs": "71f83ba895d3c199366ad911f1eec4958da5eb3c68d34df848cb3895097f0a16"
+  },
+  "nouvelle_campagne_apres_retrait": false,
+  "raison": "Le candidat visuel reste celui testé ; le défaut revient à la recette9 de S1. Le retrait et la conservation des observations sont vérifiés par les22+6tests finaux. Pas de relance du rendu logiciel coûteux pour ce changement de garde."
+}

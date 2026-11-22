@@ -2,36 +2,42 @@
   "schema": 1,
   "discussion": "04",
   "mission": "Saisons et matieres",
-  "statut": "saisons_qualifiees_matieres_en_cours",
+  "statut": "saisons_qualifiees_matiere_optin_a_reprendre_avec_02",
   "fiche": "docs/reprise/PARALLELE-2026-11-20/04-SAISON-MATIERES.md",
   "base_main": "1c71bb341d20df4328e5178497503ee4ad26a131",
   "branche_proposee": "codex/bitume-p04-saisons-matieres-20261120",
   "branche_reelle": "codex/bitume-p04-saisons-matieres-20261120",
-  "head": "d93d23971fdf462f6851e09c88d6eb0fa059f169",
+  "head": "b0154971de2da88cd2fb7f9f8de23bdeeb43f820",
   "pr": null,
-  "sous_lot": "04-S1 clos : saisons qualifiées ; 04-M1 pierres proches en préparation",
+  "sous_lot": "04-S1 clos ; 04-M1 expérimenté, activation automatique rejetée, candidat opt-in conservé",
   "preuves": [
     "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S0-REPRISE.json",
     "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-NODE.json",
     "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-COMPARAISON.json",
     "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-CAPTURES-INITIALES.json",
     "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-VISUEL.json",
-    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-FORMES-NUES.json"
+    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/S1-FORMES-NUES.json",
+    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/M1-NODE.json",
+    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/M1-CAPTURES-INITIALES.json",
+    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/M1-DECISION.json",
+    "docs/reprise/rapports/P04-SAISON-MATIERES-20261120/M1-VUE-ECLAIREE.json"
   ],
   "reserves": [
     "Aucun gain matériel Xbox/Intel ni FPS annoncé.",
     "Six formes nues : +269472 octets de géométrie brute par renderer ; mémoire totale du pilote non mesurée.",
-    "Aucune fusion main ni publication du build commun.",
+    "M1 : aucun gain visuel net et coût non qualifié ; ne pas activer automatiquement la recette23.",
+    "La reprise de mesure M1 échoue ; observations désormais conservées et mesure bornée à 15 s, sans nouvelle campagne.",
     "CI commune attend le build publié par 00 ; garde de reconstruction rouge sur la branche de sources.",
-    "Transitions du pigment de terrain demandées à 02 ; shader canonique inchangé."
+    "Transitions du pigment et grain de pierre demandés à 02 ; shader canonique inchangé.",
+    "Aucune fusion main ni publication du build commun."
   ],
-  "prochaine_action": "Comparer image/coût du raccord ciblé de la recette pierre 23 aux objets montagne en qualité high, puis publier le petit lot vérifié.",
+  "prochaine_action": "00 : intégrer S1 avec la matière9 par défaut et qualifier le build commun. 02 : reprendre grain/relief de la pierre et interpolation du pigment terrain avant nouvelle comparaison image/coût.",
   "regle": "Etat propre a cette discussion sur sa branche ; reprise globale par 00.",
   "preparations_portables": [
     "docs/reprise/PARALLELE-2026-11-20/preparations/saisons.patch"
   ],
   "preparations_statut": "saisons.patch_reprise_sans_audio",
-  "head_designe": "Dernier commit des sources de ce sous-lot ; le commit de cet état vient ensuite.",
+  "head_designe": "Dernier commit des sources et de l’outillage ; le commit de cet état vient ensuite.",
   "capture_ci": {
     "runs": [
       44782100015,
@@ -42,5 +48,24 @@
     "png_inspectes": 104,
     "png_rejetes_cadrage": 16,
     "html_sha256": "8aeb52151348c92dfef357d11f6d06684ec98a7ab3d7eaed9f8f6a69ee28a784"
+  },
+  "matieres_ci": {
+    "runs": [
+      44786811877,
+      44788669375
+    ],
+    "png_inspectes": 24,
+    "observations_runtime_completes": 20,
+    "source_candidat": "26e7c5602b428791c9ee47cc066575a5a634b93e",
+    "source_reprise": "373ed7e9cea34aefe56695a4bcaa0075a8cb619a",
+    "html_sha256": "d66623243cfadbca3b0c896c76cb46b442e01c820282064dab84e23e243ad935",
+    "cout": "non_qualifie : finish seul non concluant ; lecture CPU expirée4fois à120s.",
+    "decision": "opt-in uniquement, défaut matière9 conservé."
+  },
+  "tests_finaux_m1": {
+    "sources": "b0154971de2da88cd2fb7f9f8de23bdeeb43f820",
+    "candidat_et_defaut": 22,
+    "outillage": 6,
+    "echecs": 0
   }
 }

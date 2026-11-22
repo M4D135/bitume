@@ -1,0 +1,288 @@
+{
+  "fixture": {
+    "id": "route-des-cimes-roche-eclairee",
+    "circuit": 8,
+    "circuitId": "route-des-cimes",
+    "depart": 4585.777074589104,
+    "fov": 52,
+    "position": [
+      1068.0023733948929,
+      262.48922001119945,
+      -2505.1959693668027
+    ],
+    "cible": [
+      1068.9912199364128,
+      258.5463573890858,
+      -2487.3348514774307
+    ],
+    "genres": [
+      "roche-tunnel"
+    ]
+  },
+  "preuves": [
+    {
+      "saison": "ete",
+      "camera": {
+        "pos": [
+          1068.0023733948929,
+          262.48922001119945,
+          -2505.1959693668027
+        ],
+        "cible": [
+          1068.9912199364128,
+          258.5463573890858,
+          -2487.3348514774307
+        ],
+        "yaw": 3.0862860313146228,
+        "pitch": -0.21694480902511387,
+        "roll": 0,
+        "fov": 52,
+        "near": 0.08,
+        "far": 6000,
+        "sujetNature": false
+      },
+      "visee": {
+        "cibleDistance": 18.317846909437343,
+        "touchePierre": true,
+        "genre": "roche-tunnel",
+        "distance": 18.251718521118164
+      },
+      "solCamera": 254.87718704262693,
+      "hauteurSurSol": 7.612032968572521,
+      "pierre": {
+        "p": [
+          1066.7589899811169,
+          257.7239986539302,
+          -2481.7399195173143
+        ],
+        "s": [
+          14.315414254320785,
+          7.632479021583769,
+          12.279340130276978
+        ],
+        "r": [
+          3.0059130387928317,
+          0.37962120709204916,
+          3.141592653589793
+        ],
+        "shape": "bevel",
+        "color": [
+          0.48,
+          0.46,
+          0.42
+        ],
+        "genre": "roche-tunnel",
+        "mat": 23
+      },
+      "soleilDirection": [
+        0.3371850897352484,
+        0.7867652093822463,
+        -0.5170171375940477
+      ],
+      "cosLumiere": 0.7060174382408005,
+      "rayonSoleilLibre": true,
+      "grille": [
+        {
+          "u": -0.28,
+          "v": -0.28,
+          "memePierre": true,
+          "soleilLibre": true
+        },
+        {
+          "u": -0.28,
+          "v": 0,
+          "memePierre": true,
+          "soleilLibre": true
+        },
+        {
+          "u": -0.28,
+          "v": 0.28,
+          "memePierre": true,
+          "soleilLibre": true
+        },
+        {
+          "u": 0,
+          "v": -0.28,
+          "memePierre": true,
+          "soleilLibre": true
+        },
+        {
+          "u": 0,
+          "v": 0,
+          "memePierre": true,
+          "soleilLibre": true
+        },
+        {
+          "u": 0,
+          "v": 0.28,
+          "memePierre": true,
+          "soleilLibre": true
+        },
+        {
+          "u": 0.28,
+          "v": -0.28,
+          "memePierre": true,
+          "soleilLibre": true
+        },
+        {
+          "u": 0.28,
+          "v": 0,
+          "memePierre": true,
+          "soleilLibre": true
+        },
+        {
+          "u": 0.28,
+          "v": 0.28,
+          "memePierre": true,
+          "soleilLibre": true
+        }
+      ],
+      "projectionEnveloppe": {
+        "x": [
+          -0.36012183943392556,
+          0.5219735791703206
+        ],
+        "y": [
+          -0.5815586239486188,
+          0.43645140504549634
+        ]
+      },
+      "arbreLePlusProche": 578.3789655191412
+    },
+    {
+      "saison": "hiver",
+      "camera": {
+        "pos": [
+          1068.0023733948929,
+          262.48922001119945,
+          -2505.1959693668027
+        ],
+        "cible": [
+          1068.9912199364128,
+          258.5463573890858,
+          -2487.3348514774307
+        ],
+        "yaw": 3.0862860313146228,
+        "pitch": -0.21694480902511387,
+        "roll": 0,
+        "fov": 52,
+        "near": 0.08,
+        "far": 6000,
+        "sujetNature": false
+      },
+      "visee": {
+        "cibleDistance": 18.317846909437343,
+        "touchePierre": true,
+        "genre": "roche-tunnel",
+        "distance": 18.251718521118164
+      },
+      "solCamera": 254.87718704262693,
+      "hauteurSurSol": 7.612032968572521,
+      "pierre": {
+        "p": [
+          1066.7589899811169,
+          257.7239986539302,
+          -2481.7399195173143
+        ],
+        "s": [
+          14.315414254320785,
+          7.632479021583769,
+          12.279340130276978
+        ],
+        "r": [
+          3.0059130387928317,
+          0.37962120709204916,
+          3.141592653589793
+        ],
+        "shape": "bevel",
+        "color": [
+          0.48,
+          0.46,
+          0.42
+        ],
+        "genre": "roche-tunnel",
+        "mat": 23
+      },
+      "soleilDirection": [
+        0.3371850897352484,
+        0.7867652093822463,
+        -0.5170171375940477
+      ],
+      "cosLumiere": 0.7060174382408005,
+      "rayonSoleilLibre": true,
+      "grille": [
+        {
+          "u": -0.28,
+          "v": -0.28,
+          "memePierre": true,
+          "soleilLibre": true
+        },
+        {
+          "u": -0.28,
+          "v": 0,
+          "memePierre": true,
+          "soleilLibre": true
+        },
+        {
+          "u": -0.28,
+          "v": 0.28,
+          "memePierre": true,
+          "soleilLibre": true
+        },
+        {
+          "u": 0,
+          "v": -0.28,
+          "memePierre": true,
+          "soleilLibre": true
+        },
+        {
+          "u": 0,
+          "v": 0,
+          "memePierre": true,
+          "soleilLibre": true
+        },
+        {
+          "u": 0,
+          "v": 0.28,
+          "memePierre": true,
+          "soleilLibre": true
+        },
+        {
+          "u": 0.28,
+          "v": -0.28,
+          "memePierre": true,
+          "soleilLibre": true
+        },
+        {
+          "u": 0.28,
+          "v": 0,
+          "memePierre": true,
+          "soleilLibre": true
+        },
+        {
+          "u": 0.28,
+          "v": 0.28,
+          "memePierre": true,
+          "soleilLibre": true
+        }
+      ],
+      "projectionEnveloppe": {
+        "x": [
+          -0.36012183943392556,
+          0.5219735791703206
+        ],
+        "y": [
+          -0.5815586239486188,
+          0.43645140504549634
+        ]
+      },
+      "arbreLePlusProche": 578.3789655191412
+    }
+  ],
+  "limites": [
+    "Validation géométrique Node PhysX réel ; image GPU à capturer avant de conclure au gain de matière.",
+    "Végétation basse non construite dans ce contrôle ; pierres, troncs et ouvrages réels, 2600 candidats arbres."
+  ],
+  "source": "26e7c5602b428791c9ee47cc066575a5a634b93e",
+  "methode": "Choix géométrique Node/PhysX de la vue, puis capture réelle ; ne constitue pas un score de qualité visuelle."
+}
