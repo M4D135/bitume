@@ -3,13 +3,13 @@
   "date": "2026-11-22",
   "base": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
   "runtime_livre": {
-    "version": "0.2.123",
-    "moteur": "FERRO 0.3.20",
+    "version": "0.2.125",
+    "moteur": "FERRO 0.3.21",
     "physique": "p17",
-    "commit_sources": "f5e0e864c25881587f146c2f4776002ae13bfe8b",
-    "html_sha256": "d8b1f75687b03ef83866366efd4c1afe9298753eba87e95b19dc732599ebbea8",
+    "commit_sources": "247dcbe541c56c5ce7df9d58e8571224a068f6f4",
+    "html_sha256": "936c049359f0c57192b0e824aa4722c66a6d79412c8337b2532c8b93a08cddf1",
     "circuits": 8,
-    "recu": "https://github.com/M4D135/bitume/blob/f5e0e864c25881587f146c2f4776002ae13bfe8b/SIZE.json"
+    "recu": "https://github.com/M4D135/bitume/blob/247dcbe541c56c5ce7df9d58e8571224a068f6f4/SIZE.json"
   },
   "destinations_prevues": 17,
   "lot_actif": "catalogue_rendu_course",
@@ -936,10 +936,10 @@
   "base_initiale": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_candidat": {
     "statut": "integre_sur_main",
-    "version": "0.2.123",
+    "version": "0.2.125",
     "branche": "main",
     "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
-    "recu": "https://github.com/M4D135/bitume/blob/f5e0e864c25881587f146c2f4776002ae13bfe8b/SIZE.json"
+    "recu": "https://github.com/M4D135/bitume/blob/247dcbe541c56c5ce7df9d58e8571224a068f6f4/SIZE.json"
   },
   "demandes_video_survol_2026_11_20": {
     "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
@@ -1070,6 +1070,24 @@
       "commit_sources": "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
       "html_sha256": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59",
       "recu": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json"
+    },
+    "f5e0e864c25881587f146c2f4776002ae13bfe8b": {
+      "version": "0.2.123",
+      "moteur": "FERRO 0.3.20",
+      "physique": "p17",
+      "commit_sources": "f5e0e864c25881587f146c2f4776002ae13bfe8b",
+      "html_sha256": "d8b1f75687b03ef83866366efd4c1afe9298753eba87e95b19dc732599ebbea8",
+      "circuits": 8,
+      "recu": "https://github.com/M4D135/bitume/blob/f5e0e864c25881587f146c2f4776002ae13bfe8b/SIZE.json"
+    },
+    "2a6dcd9843b2ce101d0f8ce6989f395c125ea3ed": {
+      "version": "0.2.124",
+      "moteur": "FERRO 0.3.21",
+      "physique": "p17",
+      "commit_sources": "2a6dcd9843b2ce101d0f8ce6989f395c125ea3ed",
+      "html_sha256": "264931384ece57f26706e6424885c4ae71519e922451458070eff10196bbdace",
+      "circuits": 8,
+      "recu": "https://github.com/M4D135/bitume/blob/2a6dcd9843b2ce101d0f8ce6989f395c125ea3ed/SIZE.json"
     }
   },
   "candidats_precedents": {
@@ -1081,16 +1099,30 @@
       "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
       "recu": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0287.json",
       "reception_locale": "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json"
+    },
+    "0.2.123": {
+      "statut": "integre_sur_main",
+      "version": "0.2.123",
+      "branche": "main",
+      "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
+      "recu": "https://github.com/M4D135/bitume/blob/f5e0e864c25881587f146c2f4776002ae13bfe8b/SIZE.json"
+    },
+    "0.2.124": {
+      "statut": "integre_sur_main",
+      "version": "0.2.124",
+      "branche": "main",
+      "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
+      "recu": "https://github.com/M4D135/bitume/blob/2a6dcd9843b2ce101d0f8ce6989f395c125ea3ed/SIZE.json"
     }
   },
   "suivi_du_runtime": {
     "date": "2026-11-22",
-    "revision_runtime": "f5e0e864c25881587f146c2f4776002ae13bfe8b",
-    "version": "0.2.123",
+    "revision_runtime": "247dcbe541c56c5ce7df9d58e8571224a068f6f4",
+    "version": "0.2.125",
     "physique": "p17",
-    "moteur": "FERRO 0.3.20",
-    "sha256_html": "d8b1f75687b03ef83866366efd4c1afe9298753eba87e95b19dc732599ebbea8",
-    "octets_html": 16521016,
+    "moteur": "FERRO 0.3.21",
+    "sha256_html": "936c049359f0c57192b0e824aa4722c66a6d79412c8337b2532c8b93a08cddf1",
+    "octets_html": 16544790,
     "circuits": [
       {
         "id": "forets-du-pacifique",

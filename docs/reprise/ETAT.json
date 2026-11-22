@@ -1,10 +1,10 @@
 {
   "date": "2026-11-22",
   "etat_courant": {
-    "version_courante": "0.2.123",
-    "version_publiee_verifiee": "0.2.123",
+    "version_courante": "0.2.125",
+    "version_publiee_verifiee": "0.2.125",
     "physique": "p17",
-    "moteur": "FERRO 0.3.20 canonique",
+    "moteur": "FERRO 0.3.21 canonique",
     "circuits": 8,
     "statut": "integre_sur_main",
     "lot": "catalogue_rendu_course",
@@ -14,29 +14,29 @@
     "dernier_lot_clos": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json",
     "prochaine_action": "Cadence de 60 images 3D/s sur chaque kilomètre de Larche en 1080p Fine sous la pluie, deux glaces et douze voitures",
     "branche_candidate": "main",
-    "version_candidate": "0.2.123",
+    "version_candidate": "0.2.125",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md"
   },
   "publication": {
-    "version": "0.2.123",
-    "commit_sources": "f5e0e864c25881587f146c2f4776002ae13bfe8b",
+    "version": "0.2.125",
+    "commit_sources": "247dcbe541c56c5ce7df9d58e8571224a068f6f4",
     "statut": "publie_sur_main",
-    "url": "https://github.com/M4D135/bitume/commit/f5e0e864c25881587f146c2f4776002ae13bfe8b",
-    "recu": "https://github.com/M4D135/bitume/blob/f5e0e864c25881587f146c2f4776002ae13bfe8b/SIZE.json",
+    "url": "https://github.com/M4D135/bitume/commit/247dcbe541c56c5ce7df9d58e8571224a068f6f4",
+    "recu": "https://github.com/M4D135/bitume/blob/247dcbe541c56c5ce7df9d58e8571224a068f6f4/SIZE.json",
     "site_deploiement_verifie": true
   },
   "qualification": {
-    "version": "0.2.123",
+    "version": "0.2.125",
     "tete_qualifiee": null,
-    "build_octets": 16521016,
-    "build_sha256": "d8b1f75687b03ef83866366efd4c1afe9298753eba87e95b19dc732599ebbea8",
+    "build_octets": 16544790,
+    "build_sha256": "936c049359f0c57192b0e824aa4722c66a6d79412c8337b2532c8b93a08cddf1",
     "locale": {
       "statut": "nouvelle_reception_suspendue"
     },
     "github_actions": {
       "conclusion": null,
-      "commit": "f5e0e864c25881587f146c2f4776002ae13bfe8b",
+      "commit": "247dcbe541c56c5ce7df9d58e8571224a068f6f4",
       "statut": "suspendu_a_la_demande_du_joueur"
     },
     "recu": null,
@@ -202,7 +202,7 @@
     "priorite_utilisateur": "Optimisation générale et 60 images 3D/s en 1080p Fine sous la pluie sur toute la descente de Larche.",
     "lot_actif": "catalogue_rendu_course",
     "statut": "en_cours",
-    "recu_publication": "https://github.com/M4D135/bitume/blob/f5e0e864c25881587f146c2f4776002ae13bfe8b/SIZE.json",
+    "recu_publication": "https://github.com/M4D135/bitume/blob/247dcbe541c56c5ce7df9d58e8571224a068f6f4/SIZE.json",
     "prochain_lot": "receptions_sur_demande",
     "dernieres_demandes": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md"
   },
@@ -400,6 +400,66 @@
             "reconstruction_git_identique": true
           }
         }
+      },
+      "f5e0e864c25881587f146c2f4776002ae13bfe8b": {
+        "publication": {
+          "version": "0.2.123",
+          "commit_sources": "f5e0e864c25881587f146c2f4776002ae13bfe8b",
+          "statut": "publie_sur_main",
+          "url": "https://github.com/M4D135/bitume/commit/f5e0e864c25881587f146c2f4776002ae13bfe8b",
+          "recu": "https://github.com/M4D135/bitume/blob/f5e0e864c25881587f146c2f4776002ae13bfe8b/SIZE.json",
+          "site_deploiement_verifie": true
+        },
+        "qualification": {
+          "version": "0.2.123",
+          "tete_qualifiee": null,
+          "build_octets": 16521016,
+          "build_sha256": "d8b1f75687b03ef83866366efd4c1afe9298753eba87e95b19dc732599ebbea8",
+          "locale": {
+            "statut": "nouvelle_reception_suspendue"
+          },
+          "github_actions": {
+            "conclusion": null,
+            "commit": "f5e0e864c25881587f146c2f4776002ae13bfe8b",
+            "statut": "suspendu_a_la_demande_du_joueur"
+          },
+          "recu": null,
+          "limites": [
+            "Essais suspendus à la demande du joueur. Les mesures d’une autre version restent identifiées séparément."
+          ],
+          "reconstruction_identique": null,
+          "essai_utilisateur_valide": null
+        }
+      },
+      "2a6dcd9843b2ce101d0f8ce6989f395c125ea3ed": {
+        "publication": {
+          "version": "0.2.124",
+          "commit_sources": "2a6dcd9843b2ce101d0f8ce6989f395c125ea3ed",
+          "statut": "publie_sur_main",
+          "url": "https://github.com/M4D135/bitume/commit/2a6dcd9843b2ce101d0f8ce6989f395c125ea3ed",
+          "recu": "https://github.com/M4D135/bitume/blob/2a6dcd9843b2ce101d0f8ce6989f395c125ea3ed/SIZE.json",
+          "site_deploiement_verifie": true
+        },
+        "qualification": {
+          "version": "0.2.124",
+          "tete_qualifiee": null,
+          "build_octets": 16542610,
+          "build_sha256": "264931384ece57f26706e6424885c4ae71519e922451458070eff10196bbdace",
+          "locale": {
+            "statut": "nouvelle_reception_suspendue"
+          },
+          "github_actions": {
+            "conclusion": null,
+            "commit": "2a6dcd9843b2ce101d0f8ce6989f395c125ea3ed",
+            "statut": "suspendu_a_la_demande_du_joueur"
+          },
+          "recu": null,
+          "limites": [
+            "Essais suspendus à la demande du joueur. Les mesures d’une autre version restent identifiées séparément."
+          ],
+          "reconstruction_identique": null,
+          "essai_utilisateur_valide": null
+        }
       }
     }
   },
@@ -530,12 +590,12 @@
   },
   "suivi_du_runtime": {
     "date": "2026-11-22",
-    "revision_runtime": "f5e0e864c25881587f146c2f4776002ae13bfe8b",
-    "version": "0.2.123",
+    "revision_runtime": "247dcbe541c56c5ce7df9d58e8571224a068f6f4",
+    "version": "0.2.125",
     "physique": "p17",
-    "moteur": "FERRO 0.3.20",
-    "sha256_html": "d8b1f75687b03ef83866366efd4c1afe9298753eba87e95b19dc732599ebbea8",
-    "octets_html": 16521016,
+    "moteur": "FERRO 0.3.21",
+    "sha256_html": "936c049359f0c57192b0e824aa4722c66a6d79412c8337b2532c8b93a08cddf1",
+    "octets_html": 16544790,
     "circuits": [
       {
         "id": "forets-du-pacifique",
