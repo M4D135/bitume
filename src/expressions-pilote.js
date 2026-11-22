@@ -63,10 +63,14 @@
     if (!E || !sortie || typeof sortie !== 'object') return false;
     while (E.evenementsLu < E.evenementsN) {
       const p = E.pilotes[E.evenements[E.evenementsLu]], e = p.evenement;
-      if (!p.evenementPret || e.temps !== E.temps) { E.evenementsLu++; continue; }
-      sortie.sequence = e.sequence; sortie.pilote = e.id; sortie.geste = e.geste;
-      sortie.klaxon = e.klaxon; sortie.instant = e.temps; sortie.cote = e.cote;
-      p.evenementPret = false; E.evenementsLu++; return true;
+      E.evenementsLu++;
+      if (!p.evenementPret || e.temps !== E.temps) continue;
+      // Marquer l'événement avant toute écriture dans la sortie de l'appelant.
+      p.evenementPret = false;
+      const { sequence, id, geste, klaxon, temps, cote } = e;
+      sortie.sequence = sequence; sortie.pilote = id; sortie.geste = geste;
+      sortie.klaxon = klaxon; sortie.instant = temps; sortie.cote = cote;
+      return true;
     }
     return false;
   }
