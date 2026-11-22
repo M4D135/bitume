@@ -1371,7 +1371,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const taille = 320, portee = 800, seuil = 64;
     const colonnes = new Map(), grands = [], candidats = [], dernieresVues = [];
     const distances = new Float64Array(lots.length), visites = new Uint32Array(lots.length);
-    let passage = 0, curseur = 0;
+    const visitesVue = new Uint32Array(lots.length);
+    let passage = 0, numeroVue = 0, curseur = 0;
     for (let i = 0; i < lots.length; i++) {
       const {centre, rayon} = lots[i];
       if (!centre || !Number.isFinite(rayon) || rayon > taille * 2) { grands.push(i); continue; }
@@ -1388,6 +1389,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
     }
     function retenir(i, vue) {
+      // Un lot peut occuper plusieurs cases. Sa distance est unique pour cette caméra,
+      // tandis que la file commune conserve le minimum entre les deux joueurs et leurs cibles.
+      if (visitesVue[i] === numeroVue) return;
+      visitesVue[i] = numeroVue;
       const lot = lots[i], p = lot.centre;
       if (!p) return;
       const d = Math.max(0, Math.hypot(p[0]-vue[0], p[1]-vue[1], p[2]-vue[2]) - lot.rayon);
@@ -1398,8 +1403,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       } else if (d < distances[i]) distances[i] = d;
     }
     function recadrer(vues) {
-      passage++; curseur = 0; candidats.length = 0;
+      passage = (passage + 1) >>> 0;
+      if (!passage) { visites.fill(0); passage = 1; }
+      curseur = 0; candidats.length = 0;
       for (let v = 0; v < vues.length; v++) {
+        numeroVue = (numeroVue + 1) >>> 0;
+        if (!numeroVue) { visitesVue.fill(0); numeroVue = 1; }
         const p = vues[v], ancre = dernieresVues[v] || (dernieresVues[v] = [0,0,0]);
         ancre[0] = p[0]; ancre[1] = p[1]; ancre[2] = p[2];
         const z0 = Math.floor((p[2]-portee)/taille), z1 = Math.floor((p[2]+portee)/taille);

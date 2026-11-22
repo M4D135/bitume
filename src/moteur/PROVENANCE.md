@@ -100,3 +100,7 @@ Migration vers le renderer de référence EMPRISE/src/ferro/renderer.js, identiq
 ## FERRO 0.3.21 — 22 novembre 2026
 
 Le verrou de BITUME provient de [FERRO 0.3.21](https://github.com/M4D135/FERRO/commit/ba7d14cbfc1bed01a1f6ac4d5a764524edd42762). Le runtime WebGL2 et les modules WebGPU sont installés avec l’installateur canonique. Les règles de préparation des circuits et la géométrie des décors restent dans le jeu.
+
+## FERRO 0.3.22 — 22 novembre 2026
+
+Les 34 modules et leur verrou ont été installés depuis le dépôt canonique. Cet apport couvre l’index du terrain, le cache WebGL2 des lots instanciés et la gestion des images multisample. [FERRO 0.3.22](https://github.com/M4D135/FERRO/commit/aae3fa19cf1c7fe0f8cb65dbd2e3c2e4ecba7a39)

@@ -1960,7 +1960,8 @@
     for (let variante = 0; variante < 11; variante++) {
       const li = variante < 8 ? variante >> 1 : (variante === 8 || variante === 10) ? CORPS : EPAVE;
       const niveau = li === SIMPLES ? 2 : li === MOYENS ? 1 : 0, overlay = variante === 10 || (variante < 8 && !!(variante & 1));
-      const V = { niveau, rotM: trois(), pieces: [] };
+      const V = { niveau, rotM: trois(), pieces: [], epoque: 0 };
+      const rotations = new Map();
       const objet = (shape, mat, color) => {
         const o = { shape, p: trois(), s: trois(), r: trois(), mat, color, surface: 'object' };
         if (overlay) o.overlay = true;
@@ -1968,8 +1969,15 @@
       };
       const ajouter = (role, source, simple) => {
         const o = objet(simple || source.objet.shape, source.objet.mat, source.objet.color);
-        if (!source.rep) o.r = V.rotM;
-        V.pieces.push({ role, source, simple, objet: o });
+        // Comme dans l'habitacle, les segments de la planche, le volant et chaque gant
+        // partagent leur repère. La rotation monde reste propre à cette variante.
+        let rotation = null;
+        if (source.rep) {
+          rotation = rotations.get(source.rep);
+          if (!rotation) { rotation = { r: o.r, epoque: -1 }; rotations.set(source.rep, rotation); }
+          o.r = rotation.r;
+        } else o.r = V.rotM;
+        V.pieces.push({ role, source, simple, objet: o, rotation });
       };
       ajouter('volant', H.jante, niveau === 2 ? 'cylinder' : null);
       if (niveau < 2) ajouter('branches', H.branches, null);
@@ -2130,6 +2138,7 @@
   function poserPiloteExterieur(R, variante, M, ev, sortie, retro, sansPilote = false) {
     const V = variante === 10 ? R.cockpit : R.variantes[variante], A = R.articulations;
     const px = ev.p[0], py = ev.p[1], pz = ev.p[2], ca = retro ? Math.cos(ev.cap) : 0, sa = retro ? Math.sin(ev.cap) : 0;
+    V.epoque++;
     anglesDans(V.rotM, M);
     for (let i = 0; i < V.pieces.length; i++) {
       const e = V.pieces[i], objet = e.objet, p = objet.p;
@@ -2156,7 +2165,10 @@
         objet.mat = source.objet.mat; objet.color = source.objet.color; objet.emissive = source.objet.emissive;
         objet.shape = e.simple || source.objet.shape;
         objet.s[0] = taille[0]; objet.s[1] = taille[1]; objet.s[2] = taille[2];
-        if (source.rep) anglesPiloteProduit(objet.r, M, source.rep.m);
+        const rotation = e.rotation;
+        if (rotation && rotation.epoque !== V.epoque) {
+          anglesPiloteProduit(rotation.r, M, source.rep.m); rotation.epoque = V.epoque;
+        }
       } else if (e.de !== undefined) {
         const a = e.de, b = e.a;
         AXE[0] = A[b] - A[a]; AXE[1] = A[b + 1] - A[a + 1]; AXE[2] = A[b + 2] - A[a + 2];

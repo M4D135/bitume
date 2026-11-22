@@ -61,6 +61,10 @@
   // Eau soulevée derrière les pneus : exposition locale de la caméra, d'après les poses du rendu.
   // Ne dépend ni du classement ni de l'abscisse de piste (deux portions voisines peuvent se croiser).
   // Le cône suit la vitesse réelle, s'élargit puis se dissipe ; aucune allocation par vue.
+  const porteeEmbruns = vitesse => 12 + Math.min(vitesse, 100) * .85;
+  const rayonEmbruns = derriere => 1.6 + derriere * .085;
+  // Projection sur un axe du monde : la somme des maxima longitudinal et latéral couvre toute orientation.
+  const PORTEE_MAX = porteeEmbruns(100), EMPRISE_EMBRUNS = PORTEE_MAX + rayonEmbruns(PORTEE_MAX) + 1;
   function exposition(etat, position, mouille, idExclu) {
     const eau = Number.isFinite(mouille) ? clamp(mouille, 0, 1) : 0;
     if (!etat || !etat.sources || !position || !eau ||
@@ -68,19 +72,22 @@
     let charge = 0;
     for (const source of etat.sources) {
       if (!source || source.id === idExclu || !(source.strength > 0)) continue;
+      const dx = position[0] - source.p[0], dy = position[1] - source.p[1], dz = position[2] - source.p[2];
+      if (!Number.isFinite(dx) || !Number.isFinite(dy) || !Number.isFinite(dz) || dy < -1 ||
+          Math.abs(dx) > EMPRISE_EMBRUNS || Math.abs(dz) > EMPRISE_EMBRUNS) continue;
       const vx = source.velocity[0], vz = source.velocity[2], vitesse = Math.hypot(vx, vz);
       if (!Number.isFinite(vitesse) || vitesse < 8) continue;
-      const dx = position[0] - source.p[0], dy = position[1] - source.p[1], dz = position[2] - source.p[2];
-      if (!Number.isFinite(dx) || !Number.isFinite(dy) || !Number.isFinite(dz)) continue;
-      const derriere = -(dx * vx + dz * vz) / vitesse, lateral = Math.abs(dx * vz - dz * vx) / vitesse;
-      const portee = 12 + Math.min(vitesse, 100) * .85, rayon = 1.6 + Math.max(0, derriere) * .085;
+      const derriere = -(dx * vx + dz * vz) / vitesse, portee = porteeEmbruns(vitesse);
+      if (derriere <= 0 || derriere >= portee) continue;
+      const lateral = Math.abs(dx * vz - dz * vx) / vitesse, rayon = rayonEmbruns(derriere);
+      if (lateral >= rayon) continue;
       // À grande vitesse, l'eau pulvérisée remonte dans le sillage turbulent. L'ancien plafond bas
       // perdait presque toute la caméra de poursuite (2,45 m), alors que le casque recevait le nuage.
       // Une chaussée peu mouillée ou une voiture lente conservent un panache bas ; le cœur humide
       // s'amenuise progressivement jusqu'à son sommet, sans palier opaque ni dépendance à la vue.
       const pulverisation = eau * clamp((vitesse - 20) / 50, 0, 1);
-      const hauteur = 1.35 + Math.max(0, derriere) * (.032 + .035 * pulverisation) + .50 * pulverisation;
-      if (derriere <= 0 || derriere >= portee || lateral >= rayon || dy < -1 || dy > hauteur) continue;
+      const hauteur = 1.35 + derriere * (.032 + .035 * pulverisation) + .50 * pulverisation;
+      if (dy > hauteur) continue;
       const bord = 1 - lateral / rayon, distance = 1 - derriere / portee;
       const altitude = Math.max(0, dy) / hauteur, vertical = 1 - altitude * altitude;
       charge += eau * clamp((vitesse - 8) / 42, 0, 1) * bord * bord * distance * vertical * 2.8;

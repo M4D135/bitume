@@ -156,7 +156,9 @@
   // Même enveloppe interpolée pour le Canvas et WebGL. Le tampon appartient à la vue.
   function lireImpact(p, k, sortie, offset = 0, actif = true) {
     const phase = p.impactDuree > 0 ? clamp(melange(p.impactAvant, p.impactAge, k) / p.impactDuree, 0, 1) : 1;
-    const force = actif && (p.vivant || p.fusion) ? p.impactForce * Math.min(1, phase / .16) * Math.pow(1 - phase, 1.4) * (p.vivant ? 1 : 1 - k) : 0;
+    // L'impact cesse à la fin de sa brève enveloppe, même si sa perle subsiste plusieurs secondes.
+    const force = actif && (p.vivant || p.fusion) && p.impactForce > 0 && phase < 1
+      ? p.impactForce * Math.min(1, phase / .16) * Math.pow(1 - phase, 1.4) * (p.vivant ? 1 : 1 - k) : 0;
     sortie[offset] = phase; sortie[offset + 1] = force; sortie[offset + 2] = p.phase; sortie[offset + 3] = p.impactRayon;
     return force;
   }
@@ -301,11 +303,11 @@
       else restes++;
     }
     e.stats.paires = 0;
-    gouttes -= fusionner(e, e.gouttes, budget.gouttes, false);
-    restes -= fusionner(e, e.neige, budget.neige, true);
+    if (gouttes >= 2) gouttes -= fusionner(e, e.gouttes, budget.gouttes, false);
+    if (restes >= 2) restes -= fusionner(e, e.neige, budget.neige, true);
     e.stats.gouttes = gouttes; e.stats.neige = restes;
   }
-  function avancerSimulation(e, dt, c, budget) {
+  function avancerSimulation(e, dt, c, budget, fluxPrepare) {
     if (!e || !c || c.pause || !Number.isFinite(dt) || dt <= 0) return e?.stats;
     const intensite = c.intensite == null || !Number.isFinite(Number(c.intensite)) ? 1 : clamp(Number(c.intensite), 0, 2);
     if (c.actif === false || c.retro || c.qualite === 'off' || !intensite) { effacer(e); return e.stats; }
@@ -313,7 +315,8 @@
     e.impactsActifs = impactsExposes(c);
     e.largeur = Math.max(1, Number(c.largeur) || e.largeur); e.hauteur = Math.max(1, Number(c.hauteur) || e.hauteur);
     const pluie = clamp(Number(c.pluie) || 0, 0, 1), neige = clamp(Number(c.neige) || 0, 0, 1);
-    calculerFlux(c, e.flux);
+    // La visière optique vient de remplir ce même champ pour ses couches de réfraction.
+    if (fluxPrepare !== e.flux) calculerFlux(c, e.flux);
     e.accumulateur += Math.min(.25, dt);
     while (e.accumulateur + 1e-10 >= PAS) { avancer(e, c, budget, pluie, neige, intensite); e.accumulateur -= PAS; }
     return e.stats;

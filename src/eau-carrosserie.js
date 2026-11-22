@@ -97,6 +97,15 @@
     return false;
   }
 
+  // L'orientation et le déplacement projeté appartiennent au triangle ; chaque perle garde son attache et ses limites.
+  // Une voiture possède ses propres supports car deux voitures ne subissent pas le même vent ni le même roulis.
+  function supportMouille(face) {
+    const n = face.normal, longueur = Math.hypot(...face.u), t = face.u.map(x => x / longueur);
+    const repere = Float64Array.of(t[0], t[1], t[2], n[0], n[1], n[2],
+      t[1] * n[2] - t[2] * n[1], t[2] * n[0] - t[0] * n[2], t[0] * n[1] - t[1] * n[0]);
+    return { face, repere, du: 0, dv: 0, pose: 0, rotation: new Float64Array(3) };
+  }
+
   function preparer(modele, graine = 1) {
     if (modele.eauCarrosserie) return modele.eauCarrosserie;
     const atlas = catalogue(modele), alea = hasard(graine), peintes = modele.corps.filter(peinte);
@@ -111,28 +120,30 @@
       for (const p of t.liste) { if (t.cockpit && p.tetePilote) continue;
         const lien = parPiece.get(p); if (lien) t.objets[i].color = lien.couleur; i++; }
     }
-    const gouttes = [];
+    const gouttes = [], supports = [], parFace = new Map();
     for (let i = 0; i < MAX; i++) {
-      let f, u, v, rayon, marge, x, y, z, trouve = false;
+      let f, u, v, rayon, marge, libre, x, y, z, trouve = false;
       for (let essai = 0; essai < 96 && !trouve; essai++) {
         const choix = alea() * atlas.aire; let lo = 0, hi = atlas.candidates.length - 1;
         while (lo < hi) { const milieu = (lo + hi) >> 1; if (atlas.candidates[milieu].cumul < choix) lo = milieu + 1; else hi = milieu; }
         f = atlas.candidates[lo]; rayon = Math.min(.001 + alea() * .0017, f.rayonInscrit * .22);
         marge = f.hauteurs.map(h => (rayon * 1.8 + ECART) / h);
-        const libre = 1 - marge[0] - marge[1] - marge[2], a = Math.sqrt(alea()), b = alea();
+        libre = 1 - marge[0] - marge[1] - marge[2];
+        const a = Math.sqrt(alea()), b = alea();
         u = marge[1] + libre * a * (1 - b); v = marge[2] + libre * a * b;
         x = f.a[0] + f.u[0] * u + f.v[0] * v; y = f.a[1] + f.u[1] * u + f.v[1] * v; z = f.a[2] + f.u[2] * u + f.v[2] * v;
         trouve = !cachee(atlas, f, x, y, z);
       }
       if (!trouve) throw new Error('Eau : impossible de trouver une attache exposée');
-      const base = parPiece.get(peintes[f.piece]).base, longueur = Math.hypot(...f.u);
-      const tangent = f.u.map(x => x / longueur), n = f.normal, transverse = [tangent[1] * n[2] - tangent[2] * n[1], tangent[2] * n[0] - tangent[0] * n[2], tangent[0] * n[1] - tangent[1] * n[0]];
-      const repere = Float64Array.from([...tangent, ...n, ...transverse]);
-      gouttes.push({ face: f, u, v, u0: u, v0: v, marge, rayon, force: 0, allongement: 1, repere,
+      const base = parPiece.get(peintes[f.piece]).base;
+      let support = parFace.get(f);
+      if (!support) { support = supportMouille(f); parFace.set(f, support); supports.push(support); }
+      gouttes.push({ face: f, support, u, v, u0: u, v0: v, marge, libre,
+        rayon, force: 0, allongement: 1, repere: support.repere,
         local: Float64Array.of(x, y, z), objet: { shape: NOM, p: [0, 0, 0], s: [0, 0, 0], r: [0, 0, 0],
           mat: MAT_EAU, color: base.map((c, k) => c * .42 + [.25, .28, .32][k]), surface: 'object', overlay: false } });
     }
-    return (modele.eauCarrosserie = { atlas, gouttes, couleurs, matrice: new Float64Array(9), deplacement: new Float64Array(3), humide: 0, pluie: 0,
+    return (modele.eauCarrosserie = { atlas, gouttes, couleurs, supports, poseEau: 0, gx: NaN, gy: NaN, gz: NaN, matrice: new Float64Array(9), deplacement: new Float64Array(3), humide: 0, pluie: 0,
       actives: 0, age: 0, revisions: 0, dernierInstant: -Infinity, dernierAjout: 0, dernierLOD: 'simple' });
   }
 
@@ -153,25 +164,37 @@
     if (dejaSec) return true;
     const p = Number.isFinite(pose?.tangage) ? pose.tangage : 0, r = Number.isFinite(pose?.roulis) ? pose.roulis : 0;
     // Gravité exprimée dans le repère incliné de la voiture, et air vers l'arrière (inverse en marche arrière).
-    const gx = -.0018 * Math.sin(p) - .0035 * clamp(v / 85, -1, 1), gy = -.0018 * Math.cos(p) * Math.cos(r), gz = .0018 * Math.cos(p) * Math.sin(r);
+    const cp = Math.cos(p), gx = -.0018 * Math.sin(p) - .0035 * clamp(v / 85, -1, 1), gy = -.0018 * cp * Math.cos(r), gz = .0018 * cp * Math.sin(r);
     const D = e.deplacement;
     if (e.humide === 0) { D[0] = 0; D[1] = 0; D[2] = 0; }
     else { D[0] += gx * dt; D[1] += gy * dt; D[2] += gz * dt; }
-    for (let i = 0; i < MAX; i++) {
-      const g = e.gouttes[i], f = g.face, n = f.normal;
-      g.force = clamp(e.humide * MAX - i, 0, 1); g.allongement = 1 + .65 * clamp(Math.abs(v) / 85, 0, 1);
-      if (e.humide === 0) { g.u = g.u0; g.v = g.v0; }
-      else {
+    const reorienter = !Object.is(e.gx, gx) || !Object.is(e.gy, gy) || !Object.is(e.gz, gz);
+    e.gx = gx; e.gy = gy; e.gz = gz;
+    for (let i = 0; i < e.supports.length; i++) {
+      const support = e.supports[i], f = support.face, n = f.normal;
+      if (e.humide > 0) {
         const fu = f.u[0] * D[0] + f.u[1] * D[1] + f.u[2] * D[2], fv = f.v[0] * D[0] + f.v[1] * D[1] + f.v[2] * D[2];
-        g.u = Math.max(g.marge[1], g.u0 + (fu * f.vv - fv * f.uv) / f.determinant);
-        g.v = Math.max(g.marge[2], g.v0 + (fv * f.uu - fu * f.uv) / f.determinant);
-        const libre = 1 - g.marge[0] - g.marge[1] - g.marge[2], somme = g.u + g.v - g.marge[1] - g.marge[2];
-        if (somme > libre) { const k = libre / somme; g.u = g.marge[1] + (g.u - g.marge[1]) * k; g.v = g.marge[2] + (g.v - g.marge[2]) * k; }
+        support.du = (fu * f.vv - fv * f.uv) / f.determinant;
+        support.dv = (fv * f.uu - fu * f.uv) / f.determinant;
       }
-      const composante = gx * n[0] + gy * n[1] + gz * n[2], tx = gx - composante * n[0], ty = gy - composante * n[1], tz = gz - composante * n[2], longueur = Math.hypot(tx, ty, tz), m = g.repere;
+      if (!reorienter) continue;
+      const composante = gx * n[0] + gy * n[1] + gz * n[2], tx = gx - composante * n[0], ty = gy - composante * n[1], tz = gz - composante * n[2];
+      const longueur = Math.hypot(tx, ty, tz), m = support.repere;
       if (longueur > 1e-12) {
         m[0] = tx / longueur; m[1] = ty / longueur; m[2] = tz / longueur;
         m[6] = m[1] * n[2] - m[2] * n[1]; m[7] = m[2] * n[0] - m[0] * n[2]; m[8] = m[0] * n[1] - m[1] * n[0];
+      }
+    }
+    const charge = e.humide * MAX, allongement = 1 + .65 * clamp(Math.abs(v) / 85, 0, 1);
+    for (let i = 0; i < MAX; i++) {
+      const g = e.gouttes[i], f = g.face;
+      g.force = clamp(charge - i, 0, 1); g.allongement = allongement;
+      if (e.humide === 0) { g.u = g.u0; g.v = g.v0; }
+      else {
+        g.u = Math.max(g.marge[1], g.u0 + g.support.du);
+        g.v = Math.max(g.marge[2], g.v0 + g.support.dv);
+        const somme = g.u + g.v - g.marge[1] - g.marge[2];
+        if (somme > g.libre) { const k = g.libre / somme; g.u = g.marge[1] + (g.u - g.marge[1]) * k; g.v = g.marge[2] + (g.v - g.marge[2]) * k; }
       }
       g.local[0] = f.a[0] + f.u[0] * g.u + f.v[0] * g.v;
       g.local[1] = f.a[1] + f.u[1] * g.u + f.v[1] * g.v;
@@ -207,11 +230,23 @@
     return petit ? 'leger' : pixels < 1.1 || palier === 'medium' ? 'moyen' : 'complet';
   }
 
+  function orienterSupport(M, support) {
+    const m = support.repere, r = support.rotation;
+    const a00 = M[0] * m[0] + M[3] * m[1] + M[6] * m[2], a01 = M[1] * m[0] + M[4] * m[1] + M[7] * m[2], a02 = M[2] * m[0] + M[5] * m[1] + M[8] * m[2];
+    const a12 = M[2] * m[3] + M[5] * m[4] + M[8] * m[5], a22 = M[2] * m[6] + M[5] * m[7] + M[8] * m[8];
+    r[1] = -Math.asin(clamp(a02, -1, 1));
+    if (Math.abs(a02) > 1 - 1e-12) {
+      const a10 = M[0] * m[3] + M[3] * m[4] + M[6] * m[5], a11 = M[1] * m[3] + M[4] * m[4] + M[7] * m[5];
+      r[0] = Math.atan2(-a02 * a10, a11); r[2] = 0;
+    } else { r[0] = Math.atan2(a12, a22); r[2] = Math.atan2(a01, a00); }
+  }
+
   // Appeler juste après voiture.poser/cockpit ; leur matrice renvoyée peut être réutilisée ici.
   // Reposer dans J2/J1/rétros ne change ni humidité, ni barycentriques, ni âge, ni graine.
   function ajouter(sortie, pose, e, lod = 'complet', overlay = false, matrice = null) {
     const limite = typeof LIMITES[lod] === 'number' ? LIMITES[lod] : 0; e.dernierAjout = 0; e.dernierLOD = lod;
     if (!e.actives || !limite) return 0;
+    e.poseEau++;
     const M = e.matrice;
     if (matrice) for (let c = 0; c < 3; c++) for (let r = 0; r < 3; r++) M[c * 3 + r] = matrice[c][r];
     else attitude(M, pose);
@@ -219,7 +254,8 @@
     const profilNez=pose.zonesDegats?B.voiture.profilImpact(pose.zonesDegats):0;
     const pas = MAX / limite, masque = lod === 'epave' || lod === 'epave-moyen' || lod === 'epave-leger' ? 4
       : lod === 'moyen' || lod === 'moyen-leger' ? 2 : 1;
-    for (let i = 0; i < MAX; i += pas) {
+    const fin = Math.min(e.actives, MAX);
+    for (let i = 0; i < fin; i += pas) {
       const g = e.gouttes[i]; if (!(g.force > 0) || !(g.face.masque & masque)) continue;
       const n=g.face.normal,o=g.objet;
       let x=g.local[0]+n[0]*ECART,y=g.local[1]+n[1]*ECART,z=g.local[2]+n[2]*ECART;
@@ -230,14 +266,13 @@
         x=point[0];y=point[1];z=point[2];
       }
       o.p[0] = px + M[0] * x + M[3] * y + M[6] * z; o.p[1] = py + M[1] * x + M[4] * y + M[7] * z; o.p[2] = pz + M[2] * x + M[5] * y + M[8] * z;
-      const m = g.repere;
-      const a00 = M[0] * m[0] + M[3] * m[1] + M[6] * m[2], a01 = M[1] * m[0] + M[4] * m[1] + M[7] * m[2], a02 = M[2] * m[0] + M[5] * m[1] + M[8] * m[2];
-      const a12 = M[2] * m[3] + M[5] * m[4] + M[8] * m[5], a22 = M[2] * m[6] + M[5] * m[7] + M[8] * m[8];
-      o.r[1] = -Math.asin(clamp(a02, -1, 1));
-      if (Math.abs(a02) > 1 - 1e-12) {
-        const a10 = M[0] * m[3] + M[3] * m[4] + M[6] * m[5], a11 = M[1] * m[3] + M[4] * m[4] + M[7] * m[5];
-        o.r[0] = Math.atan2(-a02 * a10, a11); o.r[2] = 0;
-      } else { o.r[0] = Math.atan2(a12, a22); o.r[2] = Math.atan2(a01, a00); }
+      const support = g.support;
+      if (support.pose !== e.poseEau) {
+        orienterSupport(M, support);
+        support.pose = e.poseEau;
+      }
+      const rotation = support.rotation;
+      o.r[0] = rotation[0]; o.r[1] = rotation[1]; o.r[2] = rotation[2];
       const rayon = g.rayon * Math.sqrt(g.force);
       o.s[0] = 2 * rayon * g.allongement; o.s[1] = rayon * .9; o.s[2] = 2 * rayon;
       o.overlay = overlay; sortie.push(o); e.dernierAjout++;

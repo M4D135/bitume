@@ -399,7 +399,7 @@
     const f=e.fluxUniformes;f[0]=flux.expansion;f[1]=flux.deriveX;f[2]=flux.deriveY;f[3]=flux.air;
     f[4]=flux.graviteX;f[5]=flux.graviteY;f[6]=flux.centreX;f[7]=flux.centreY;
     preparerTransport(e,k);
-    B.vitre.avancerSimulation(e.depots,dt,c,DEPOTS[niveau]);preparerDepots(e);
+    B.vitre.avancerSimulation(e.depots,dt,c,DEPOTS[niveau],flux);preparerDepots(e);
   }
   function montrer(e, oui) {
     if (e.masquee===!oui) return;
@@ -419,13 +419,19 @@
     if(!gl.getProgramParameter(programme,gl.LINK_STATUS)) {
       const message=gl.getProgramInfoLog(programme); gl.deleteProgram(programme); throw new Error(message);
     }
-    e.reduction=null;
+    e.reduction=null; e.reductionRefusee=null;
+    e.stockageScene={largeur:1,hauteur:1};
+    e.sousImage={directe:null,reduction:null,secours:null};
     e.programme=programme; e.vao=gl.createVertexArray(); e.texture=gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D,e.texture);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
     gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([0,0,0,255]));
     e.lieux={}; for(const nom of ['uScene','uMeteo','uMouvement','uVue','uTexel','uQualite','uAvecScene','uNbGouttes','uGouttes','uTrajets','uImpacts','uFlux','uGravite','uAvecTuiles','uTuilesGouttes','uTransport','uHistoire','uPhase']) e.lieux[nom]=gl.getUniformLocation(programme,nom);
+    // Ce programme et l'orientation des transferts appartiennent au seul contexte de cette visière.
+    gl.useProgram(programme);gl.uniform1i(e.lieux.uScene,0);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
+    e.uniformesVue={w:0,h:0,niveau:-1,scene:null,tuiles:null};
     gl.disable(gl.DEPTH_TEST); gl.disable(gl.BLEND); gl.clearColor(0,0,0,0);
     e.pret=true; e.perdu=false; e.stats.pret=true; e.stats.perdu=false;e.stats.erreur=null;
   }
@@ -463,37 +469,76 @@
     if(e.source.width!==sw || e.source.height!==sh){e.source.width=sw;e.source.height=sh;}
     e.stats.pixelsSource=sw*sh;
   }
+  // La texture est déjà liée. Le premier transfert à une nouvelle taille fournit directement ses pixels.
+  // Une source WebGL et la toile de secours 2D peuvent emprunter des chemins distincts dans le pilote.
+  function televerserCanvas(e,stockage,source,chemin) {
+    const gl=e.gl, w=source.width, h=source.height, accepte=e.sousImage[chemin];
+    if(stockage.largeur===w && stockage.hauteur===h && accepte!==false && typeof gl.texSubImage2D==='function') {
+      try {
+        gl.texSubImage2D(gl.TEXTURE_2D,0,0,0,gl.RGBA,gl.UNSIGNED_BYTE,source);
+        // Une seule sonde par chemin et par contexte. Une erreur WebGL peut arriver sans exception JS.
+        if(accepte===true)return;
+        if(typeof gl.getError!=='function' || gl.getError()===gl.NO_ERROR) {
+          e.sousImage[chemin]=true;
+          return;
+        }
+      } catch(_) { /* Reprendre le transfert complet si le navigateur refuse cette source. */ }
+      e.sousImage[chemin]=false;
+    }
+    gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,source);
+    stockage.largeur=w;stockage.hauteur=h;
+  }
+
+  function libererReduction(e) {
+    const r=e.reduction;
+    if(r && !e.perdu) {
+      if(r.texture)e.gl.deleteTexture(r.texture);
+      if(r.lecture)e.gl.deleteFramebuffer(r.lecture);
+      if(r.ecriture)e.gl.deleteFramebuffer(r.ecriture);
+    }
+    e.reduction=null;
+  }
   // Réduction d'une scène opaque dans le contexte de sa propre visière.
   // La texture composée conserve exactement les dimensions de la source bornée.
   function reduireScene(e,scene) {
-    const gl=e.gl, w=e.source.width, h=e.source.height;
+    const gl=e.gl, w=e.source.width, h=e.source.height, sw=scene.width, sh=scene.height;
     // Au-delà de 4 Mpx, éviter la texture tampon pleine taille : Canvas2D copie au budget borné.
-    if(typeof gl.blitFramebuffer!=='function' || scene.width*scene.height > 4*MAX_SOURCE_PIXELS)return false;
+    if(typeof gl.blitFramebuffer!=='function' || sw*sh>4*MAX_SOURCE_PIXELS)return false;
+    const refus=e.reductionRefusee;
+    if(refus && refus.w===w && refus.h===h && refus.sw===sw && refus.sh===sh)return false;
     let r=e.reduction;
-    if(!r){
-      r=e.reduction={texture:gl.createTexture(),lecture:gl.createFramebuffer(),ecriture:gl.createFramebuffer(),w:0,h:0,sw:0,sh:0};
-      if(!r.texture || !r.lecture || !r.ecriture){r.invalide=true;return false;}
-      gl.bindTexture(gl.TEXTURE_2D,r.texture);
-      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
-    }
-    if(r.invalide)return false;
-    try{
-      gl.bindTexture(gl.TEXTURE_2D,r.texture);
-      gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,scene);
+    try {
+      if(!r) {
+        r=e.reduction={texture:null,lecture:null,ecriture:null,stockage:{largeur:0,hauteur:0},w:0,h:0,sw:0,sh:0};
+        r.texture=gl.createTexture();r.lecture=gl.createFramebuffer();r.ecriture=gl.createFramebuffer();
+        if(!r.texture || !r.lecture || !r.ecriture)throw new Error('Tampons de réduction indisponibles');
+        gl.bindTexture(gl.TEXTURE_2D,r.texture);
+        gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+      } else gl.bindTexture(gl.TEXTURE_2D,r.texture);
+      televerserCanvas(e,r.stockage,scene,'reduction');
       gl.bindFramebuffer(gl.READ_FRAMEBUFFER,r.lecture);gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,r.ecriture);
-      if(r.sw!==scene.width || r.sh!==scene.height || r.w!==w || r.h!==h){
+      if(r.sw!==sw || r.sh!==sh || r.w!==w || r.h!==h) {
         gl.framebufferTexture2D(gl.READ_FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,r.texture,0);
-        gl.bindTexture(gl.TEXTURE_2D,e.texture);
-        gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
+        if(e.stockageScene.largeur!==w || e.stockageScene.hauteur!==h) {
+          gl.bindTexture(gl.TEXTURE_2D,e.texture);
+          gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
+          e.stockageScene.largeur=w;e.stockageScene.hauteur=h;
+        }
         gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,e.texture,0);
-        if(gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE || gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE){r.invalide=true;return false;}
-        r.w=w;r.h=h;r.sw=scene.width;r.sh=scene.height;
+        if(gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE || gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)
+          throw new Error('Tampons de réduction incomplets');
+        r.w=w;r.h=h;r.sw=sw;r.sh=sh;
       }
-      gl.blitFramebuffer(0,0,scene.width,scene.height,0,0,w,h,gl.COLOR_BUFFER_BIT,gl.LINEAR);
+      gl.blitFramebuffer(0,0,sw,sh,0,0,w,h,gl.COLOR_BUFFER_BIT,gl.LINEAR);
+      e.reductionRefusee=null;
       return true;
-    } catch(_){r.invalide=true;return false;}
-    finally{gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.bindTexture(gl.TEXTURE_2D,e.texture);}
+    } catch(_) {
+      libererReduction(e);e.reductionRefusee={w,h,sw,sh};
+      // L'allocation de la cible peut avoir échoué : le repli 2D doit redéfinir son stockage.
+      e.stockageScene.largeur=0;e.stockageScene.hauteur=0;
+      return false;
+    } finally {gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.bindTexture(gl.TEXTURE_2D,e.texture);}
   }
   // Une liste de 32 bits par tuile ; le dernier bit représente aussi une vraie goutte.
   // Les indices actifs sont lus dans leur ordre d'origine pour maintenir l'addition du shader.
@@ -522,12 +567,11 @@
     if(niveau>0 && e.sourceContexte && c.sourceScene && c.sourceScene.width>0 && c.sourceScene.height>0) {
       try {
         const scene=c.sourceScene;
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
         // À taille native, la texture reçoit directement le canvas opaque de cette caméra.
         // Le passage 2D ne sert qu'au redimensionnement ou au repli d'un navigateur.
         if(typeof scene.getContext==='function' && scene.width===e.source.width && scene.height===e.source.height) {
           try {
-            gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,scene);
+            televerserCanvas(e,e.stockageScene,scene,'directe');
             if(e.reduction)e.reduction.w=0;
             e.stats.copiesDirectes++;avecScene=true;
           } catch (_) { /* Le passage 2D peut accepter une source refusée en copie directe. */ }
@@ -538,17 +582,23 @@
         if(!avecScene) {
           if(e.reduction)e.reduction.w=0;
           e.sourceContexte.drawImage(scene,0,0,e.source.width,e.source.height);
-          gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,e.source);
+          televerserCanvas(e,e.stockageScene,e.source,'secours');
         }
         e.stats.copiesScene++;e.stats.erreur=null;avecScene=true;
       }catch(err){e.stats.erreur='copie scène : '+String(err.message||err);}
     }
     u[8]=e.largeur;u[9]=e.hauteur;
-    gl.uniform1i(e.lieux.uScene,0);gl.uniform4fv(e.lieux.uMeteo,e.uMeteo);
+    gl.uniform4fv(e.lieux.uMeteo,e.uMeteo);
     gl.uniform4fv(e.lieux.uMouvement,e.uMouvement);gl.uniform4fv(e.lieux.uVue,e.uVue);
-    gl.uniform2f(e.lieux.uTexel,1/e.source.width,1/e.source.height);gl.uniform1i(e.lieux.uQualite,niveau);gl.uniform1i(e.lieux.uAvecScene,avecScene);
+    const fixes=e.uniformesVue;
+    if(fixes.w!==e.source.width || fixes.h!==e.source.height) {
+      fixes.w=e.source.width;fixes.h=e.source.height;
+      gl.uniform2f(e.lieux.uTexel,1/fixes.w,1/fixes.h);
+    }
+    if(fixes.niveau!==niveau){gl.uniform1i(e.lieux.uQualite,niveau);fixes.niveau=niveau;}
+    if(fixes.scene!==avecScene){gl.uniform1i(e.lieux.uAvecScene,avecScene);fixes.scene=avecScene;}
     const avecTuiles=typeof gl.uniform4uiv==='function';
-    gl.uniform1i(e.lieux.uAvecTuiles,avecTuiles);
+    if(fixes.tuiles!==avecTuiles){gl.uniform1i(e.lieux.uAvecTuiles,avecTuiles);fixes.tuiles=avecTuiles;}
     if(avecTuiles) {
       preparerTuiles(e);
       gl.uniform4uiv(e.lieux.uTuilesGouttes,e.tuilesGouttes);
@@ -596,10 +646,11 @@
   function liberer(e) {
     if(!e || e.libere)return;effacer(e);
     e.canvas.removeEventListener('webglcontextlost',e.perte); e.canvas.removeEventListener('webglcontextrestored',e.restauration);
+    libererReduction(e);
     if(!e.perdu){
-      if(e.reduction){e.gl.deleteTexture(e.reduction.texture);e.gl.deleteFramebuffer(e.reduction.lecture);e.gl.deleteFramebuffer(e.reduction.ecriture);}
       e.gl.deleteTexture(e.texture);e.gl.deleteVertexArray(e.vao);e.gl.deleteProgram(e.programme);}
     e.libere=true;e.canvas=null;e.contexte=null;e.source=null;e.sourceContexte=null;e.gl=null;
+    e.texture=e.vao=e.programme=e.lieux=null;
   }
   B.visiereOptique={creer,creerEtat,avancerEtat,mettreAJour,prechauffer,effacer,liberer,MAX_PIXELS,MAX_SOURCE_PIXELS,MAX_GOUTTES_MOBILES,QUALITES,COUCHES};
 })(globalThis.BITUME=globalThis.BITUME||{});

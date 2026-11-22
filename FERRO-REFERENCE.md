@@ -93,3 +93,7 @@ La scène et les rétroviseurs activent `indexRegisteredShapes`. Deux sommets d�
 ## Version 0.3.21 — chargement à l’approche et surfaces naturelles
 
 Les huit circuits utilisent les lots progressifs et les pigments interpolés du moteur. Chaque contexte graphique peut charger et libérer ses propres tampons. Le jeu prépare les lots voisins des caméras et des voitures. Les premiers plans de Pietraporzio et d’Argentera peuvent construire les détails de façade à la demande. [FERRO 0.3.21](https://github.com/M4D135/FERRO/commit/ba7d14cbfc1bed01a1f6ac4d5a764524edd42762)
+
+## Version 0.3.22 — terrain, décor instancié et reflets
+
+Les huit circuits déclarent les bornes fixes de leurs nappes au moteur. La vue principale et chaque rétroviseur peuvent écarter des secteurs entiers à partir de ces bornes. WebGL2 garde la configuration des lots de décor en mémoire et réutilise la même image pour les reflets et le halo quand la caméra dessine une vue sans habitacle superposé. [FERRO 0.3.22](https://github.com/M4D135/FERRO/commit/aae3fa19cf1c7fe0f8cb65dbd2e3c2e4ecba7a39)

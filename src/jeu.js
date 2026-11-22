@@ -284,7 +284,7 @@
     decor.atmosphere = B.graphismes.atmosphere(decor.atmosphere);
     if (B.obstacles) c.obstacles = B.obstacles.creer(decor.obstacles);
     rendu.setWorld([], [], decor.atmosphere);
-    rendu.setNappes(decor.nappes);
+    rendu.setNappes(decor.nappes, { staticBounds: true });
     rendu.setLots(decor.lots, { staticBounds: true, progressif: !!decor.fluxDecor });
     // Le public (public.js) : de vrais spectateurs à la place des boîtes des gradins, dessinés par le point d'accroche
     // « foule » du moteur. Bâti au palier ancre, comme le décor ; la vue de l'ancienne scène rend ses tampons.
@@ -333,7 +333,7 @@
     return z + rayon > .01 && Math.abs(x * cr + y * sr) <= z * tan * aspect + rayon * (1 + tan * aspect)
       && Math.abs(y * cr - x * sr) <= z * tan + rayon * (1 + tan);
   }
-  function preparerChampsFaune(S, vue, cam, ps, P, acteurs, avecGlaces = glacesVives(S, vue)) {
+  function preparerChampsFaune(S, vue, cam, ps, P, acteurs, avecGlaces = glacesVives(S, vue), glaces) {
     const champs = S.champsFaune, premier = S === session ? 0 : 3;
     if (acteurs) { acteurs.masque = 0; acteurs.indetermine = avecGlaces; }
     if (!champs) return;
@@ -347,9 +347,11 @@
     const source = $('retro-rendu');
     if (acteurs) tailleGlaces(source);
     if (!(retro.l > 0 && retro.h > 0)) return;
-    const ev = POSE_GLACES, J = ETATS_GLACES[premier ? 1 : 0];
-    ev.p[0] = ps.x; ev.p[1] = ps.y; ev.p[2] = ps.z; ev.cap = ps.cap; ev.tangage = ps.tangage; ev.roulis = ps.roulis;
-    const glaces = B.voiture.glacesCockpit(ev, J.glaces);
+    if (!glaces) {
+      const ev = POSE_GLACES, J = ETATS_GLACES[premier ? 1 : 0];
+      ev.p[0] = ps.x; ev.p[1] = ps.y; ev.p[2] = ps.z; ev.cap = ps.cap; ev.tangage = ps.tangage; ev.roulis = ps.roulis;
+      glaces = B.voiture.glacesCockpit(ev, J.glaces);
+    }
     // La vraie projection CSS utilise les dimensions de la surface affichée. Le champ
     // le plus large inclut aussi l'arrondi du tampon FERRO, même en écran partagé.
     const aspectGlaces = Math.max(aspect, (canvas.clientWidth || 0) / Math.max(1, canvas.clientHeight || 0));
@@ -365,6 +367,7 @@
         else acteurs.indetermine = true;
       }
     }
+    return glaces;
   }
   function selectionnerChampsFaune(S) {
     if (!S.animaux || !B.animaux || !B.animaux.selectionnerVues) return;
@@ -2681,7 +2684,7 @@
     if (!retro.rendu || !scene || retro.scene === scene) return;
     const d = scene.decor;
     retro.rendu.setWorld([], [], d.atmosphere);
-    retro.rendu.setNappes(d.nappes.map(n => Object.assign({}, n)));
+    retro.rendu.setNappes(d.nappes.map(n => Object.assign({}, n)), { staticBounds: true });
     retro.rendu.setLots(d.lots.map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null })), { staticBounds: true, progressif: !!d.fluxDecor });
     // le public dans les glaces : son propre contexte WebGL, sans le niveau proche ni les ombres (glace sans ombre)
     if (retro.vuePublic) retro.vuePublic.liberer();
@@ -2737,7 +2740,7 @@
       }
     }
   }
-  function majGlaces(S, vue, cam, ps, sortie, ambiance, suivie, dtImage) {
+  function majGlaces(S, vue, cam, ps, sortie, ambiance, suivie, dtImage, glaces) {
     // à deux, le joueur 2 a ses deux glaces, posées sur sa moitié
     const G = glacesDe(S !== session ? 'j2' : 'j1');
     const toiles = G.toiles, J = ETATS_GLACES[S !== session ? 1 : 0];
@@ -2760,9 +2763,11 @@
     C.L = canvas.clientWidth; C.H = canvas.clientHeight; C.t = Math.tan(cam.fov * Math.PI / 360); C.asp = C.L / Math.max(1, C.H);
     C.x = cam.pos[0]; C.y = cam.pos[1]; C.z = cam.pos[2];
     const Q = COINS_ECRAN;
-    const ev = POSE_GLACES;
-    ev.p[0] = ps.x; ev.p[1] = ps.y; ev.p[2] = ps.z; ev.cap = ps.cap; ev.tangage = ps.tangage; ev.roulis = ps.roulis;
-    const glaces = B.voiture.glacesCockpit(ev, J.glaces);
+    if (!glaces) {
+      const ev = POSE_GLACES;
+      ev.p[0] = ps.x; ev.p[1] = ps.y; ev.p[2] = ps.z; ev.cap = ps.cap; ev.tangage = ps.tangage; ev.roulis = ps.roulis;
+      glaces = B.voiture.glacesCockpit(ev, J.glaces);
+    }
     J.toiles = toiles;
     let aRepeindre = 0;
     for (let i = 0; i < 2; i++) {
@@ -2800,7 +2805,7 @@
     for (let i = 0; i < 2; i++) {
       if (!(aRepeindre & (1 << i))) continue;
       const dtGlace = J.ecoule[i]; J.ecoule[i] = 0;
-      peindreGlace(S, G, i, glaces[i], cam, ps, sortie, ambiance, suivie, P, source, l, h, dtGlace);
+      peindreGlace(S, G, i, glaces[i], cam, ps, sortie, ambiance, suivie, P, source, l, h, dtGlace, i === 0 && aRepeindre === 3);
     }
   }
   // quelque valeur de la matrice a-t-elle changé depuis la dernière chaîne ? (mémorise les valeurs)
@@ -2903,7 +2908,7 @@
     objets.length=n;
   }
   // Une glace : la caméra est à la glace et regarde dans la direction réfléchie du regard.
-  function peindreGlace(S, G, i, g, cam, ps, sortie, ambiance, suivie, P, source, l, h, dtGlace) {
+  function peindreGlace(S, G, i, g, cam, ps, sortie, ambiance, suivie, P, source, l, h, dtGlace, secondeGlace) {
     const toiles = G.toiles;
     const champs = S.visibiliteActeurs;
     const prepare = champs && (champs.masque & 1 << i) ? champs.reflets[i] : null;
@@ -2912,7 +2917,7 @@
     const sun = camR.sun;
     sun.center[0] = ps.x; sun.center[1] = ps.y; sun.center[2] = ps.z; sun.extent = scene.ombre.extent; sun.depth = scene.ombre.depth;
     const champ = prepare || champGlace(camR, source.width, source.height);
-    const objets = listeGlace(S, camR, sortie, suivie, source.height, i, champ, P.palier);
+    const objets = listeGlace(S, camR, sortie, suivie, source.height, i, champ, P.palier, secondeGlace);
     ecarterPiecesHorsGlace(objets, camR, champ);
     retro.foulePublic = publicVisible && retro.vuePublic ? retro.vuePublic.fx : null;
     if (S.nature && (retro.ambianceSource !== S.nature.ambiance || retro.ambianceRevision !== S.nature.ambiance.revision)) {
@@ -2925,6 +2930,31 @@
     if (toiles[i].width !== source.width || toiles[i].height !== source.height) { toiles[i].width = source.width; toiles[i].height = source.height; }
     ctx.drawImage(source, 0, 0);
   }
+  // Entre le dessin d'une vue et ses deux reflets, les poses monde et les dégâts sont figés.
+  // Une autre variante peut réécrire les objets de la table : seule la dernière pose est réutilisable.
+  // La silhouette de l'essieu arrière possède sa propre table, réservée à la voiture suivie.
+  function cleGeometrieVoiture(o, essieu) {
+    return (essieu ? 4 : o.casse ? 3 : RANG_DETAIL[o.detail]) * 4 + o.rouesDetail;
+  }
+  function retenirGeometrie(prise, cle, liste, debut, attitude) {
+    prise.cle = cle; prise.liste = liste; prise.debut = debut; prise.fin = liste.length; prise.attitude = attitude;
+  }
+  function poserVoitureGlace(S, k, ev, objets, o, essieu, secondeGlace) {
+    const poser = essieu ? B.voiture.poserRetro : B.voiture.poser, modele = S.modeles[k];
+    const reserve = S.geometrieGlaces, prise = reserve && reserve.voitures[k];
+    if (!prise) return poser(modele, ev, objets, o);
+    const cle = cleGeometrieVoiture(o, essieu);
+    if (prise.cle !== cle) {
+      prise.cle = -1;
+      if (!secondeGlace) return poser(modele, ev, objets, o);
+      const pieces = reserve.pieces, debut = pieces.length;
+      const attitude = poser(modele, ev, pieces, o);
+      retenirGeometrie(prise, cle, pieces, debut, attitude);
+    }
+    const liste = prise.liste;
+    for (let i = prise.debut; i < prise.fin; i++) objets.push(liste[i]);
+    return prise.attitude;
+  }
   // Liste propre à une glace (avant : tous les objets de la vue). Décor vivant (faune, effets de saison, aurores),
   // fantôme et feux : ce qui n'est pas derrière la glace (devantGlace). Voitures : reposées au niveau de détail de
   // leur taille dans la toile de la glace, jamais plus lourd que la règle de la vue (plafond, avant le passage au
@@ -2932,7 +2962,7 @@
   // roue arrière (voiture.js, poserRetro). Effets : leur propre appel, au même instant que la vue, sans coupure à
   // distance. Même ordre qu'avant : décor, voitures, fantôme et feux, effets, roue arrière. Les objets de la vue sont
   // réécrits : elle est déjà dessinée.
-  function listeGlace(S, camR, sortie, suivie, hauteur, cote, champ, palierVue) {
+  function listeGlace(S, camR, sortie, suivie, hauteur, cote, champ, palierVue, secondeGlace) {
     const objets = retro.objets; objets.length = 0;
     const axe = axeCamera(camR, AXE_GLACE), ox = camR.pos[0], oy = camR.pos[1], oz = camR.pos[2];
     for (let k = 0, n = S.iVoitures0; k < n; k++) if (devantGlace(sortie[k], axe, ox, oy, oz)) objets.push(sortie[k]);
@@ -2959,7 +2989,7 @@
       o.rouesDetail = niveauRoues;
       o.detail = plusLeger(OPTIONS_POSE[k].plafond, detailVoiture(ex * ex + ez * ez, tanDemi, hauteur));
       o.roues = v.degats && v.degats.roues; o.casse = !!(v.degats && v.degats.casse);
-      const attitude = B.voiture.poser(S.modeles[k], pose, objets, o);
+      const attitude = poserVoitureGlace(S, k, pose, objets, o, false, secondeGlace);
       poserEauCarrosserie(S, k, pose, objets, o.casse ? 'epave' : o.detail, false, attitude,
         ex * ex + ez * ez, tanDemi, hauteur, palierVue);
     }
@@ -2970,7 +3000,7 @@
     const R = OPTIONS_RETRO;
     R.roues = suivie.degats && suivie.degats.roues; R.casse = !!(suivie.etat.degats && suivie.etat.degats.casse);
     R.rouesDetail = detailsRoues[suivie.id] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(POSES_RENDU[suivie.id], camR.pos), tanDemi, hauteur, detailsRoues[suivie.id]);
-    B.voiture.poserRetro(S.modeles[suivie.id], POSES_RENDU[suivie.id], objets, R);
+    poserVoitureGlace(S, suivie.id, POSES_RENDU[suivie.id], objets, R, true, secondeGlace);
     return objets;
   }
   function optionsGlace(k) { return OPTIONS_GLACE[k] || (OPTIONS_GLACE[k] = nouvellesOptions()); }
@@ -3330,7 +3360,10 @@
     const saisonLocale = S.saisonLocale = plage && S.nature.saison ? plage.profils[S.nature.saison.id] : S.nature?.saison;
     const champsActeurs = S.visibiliteActeurs;
     if (champsActeurs) champsActeurs.principal = acteurVisible;
-    preparerChampsFaune(S, vue, cam, ps, P, champsActeurs, avecGlaces);
+    // Le cadrage du cockpit a déjà transformé les deux glaces de cette voiture. Le champ
+    // réfléchi et la projection CSS lisent les mêmes coins, même pendant une transition de caméra.
+    const glacesCockpit = vue === 'cockpit' && S.cadrageCockpit?.glaces;
+    const glacesMonde = preparerChampsFaune(S, vue, cam, ps, P, champsActeurs, avecGlaces, glacesCockpit) || glacesCockpit;
     const toutesVues = avecGlaces ? champsActeurs?.visible : acteurVisible;
     // Habitats partagés ; pools propres aux deux vues. Le temps absolu garde les mêmes vols dans les miroirs.
     if (S.nature && B.faune && P.faune !== 'off' && (!saisonLocale || saisonLocale.faune > 0 || S.fauneVue)) {
@@ -3418,6 +3451,11 @@
     // toile suit l'écran et la résolution du profil ; le seuil suit le champ (un téléobjectif garde le modèle complet
     // bien plus loin).
     const tanDemi = Math.tan(clamp(cam.fov, 10, 110) * Math.PI / 360), hauteur = canvas.height;
+    const geometrieGlaces = avecGlaces && S.geometrieGlaces;
+    if (geometrieGlaces) {
+      geometrieGlaces.pieces.length = 0;
+      for (const prise of geometrieGlaces.voitures) prise.cle = -1;
+    }
     S.iVoitures0 = sortie.length;   // repères de la liste pour celle des glaces (listeGlace)
     let ombreDebut = 0, ombreFin = 0; // objets de la voiture filmée dans sortie : sa tuile d'ombre (src/ombres.js)
     for (let k = 0; k < co.voitures.length; k++) {
@@ -3470,7 +3508,10 @@
       o.detail = o.plafond === 'complet' && dx * avX + dz * avZ < -DERRIERE_CAMERA ? 'moyen' : o.plafond;
       o.roues = co.voitures[k].degats && co.voitures[k].degats.roues; o.casse = !!(co.voitures[k].degats && co.voitures[k].degats.casse);
       if (!visible) continue;
-      const attitude = B.voiture.poser(S.modeles[k], ev, sortie, o);
+      const debut = sortie.length, attitude = B.voiture.poser(S.modeles[k], ev, sortie, o);
+      // L'eau conserve son propre détail par caméra. La plage ne couvre que la voiture.
+      const prise = geometrieGlaces && geometrieGlaces.voitures[k];
+      if (prise && k !== suivie.id) retenirGeometrie(prise, cleGeometrieVoiture(o, false), sortie, debut, attitude);
       poserEauCarrosserie(S, k, ev, sortie, o.casse ? 'epave' : o.detail, false, attitude,
         d2, tanDemi, hauteur, P.palier);
       if (k === suivie.id) ombreFin = sortie.length;
@@ -3551,7 +3592,7 @@
       B.mesures.vue(S === session ? 'principale' : 'joueur2', rendu, { lampes: lampes ? lampes.length : 0, ombres: avecOmbres(P) });
     }
     dessinerMeteo(S, dtImage, cam, vue, P, suivie);
-    majGlaces(S, vue, cam, ps, sortie, S.ambianceImage, suivie, dtImage);
+    majGlaces(S, vue, cam, ps, sortie, S.ambianceImage, suivie, dtImage, glacesMonde);
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
     S.camera = cam; S.vue = vue; S.suivie = suivie.id;
     const affichage = S.type === 'duo' && S !== session ? hud2 : $('hud');
@@ -4987,7 +5028,10 @@
       // rétroviseurs : glaces de chaque joueur, et moteur des miroirs avec sa copie du décor quand la séance peut en montrer
       if (S.type !== 'vitrine') {
         glacesDe('j1'); if (duo) glacesDe('j2');
-        if (glacesPossibles(S)) preparerGlaces();
+        if (glacesPossibles(S) && preparerGlaces() && !S.geometrieGlaces) {
+          S.geometrieGlaces = { pieces: [], voitures: Array.from({ length: n },
+            () => ({ cle: -1, liste: null, debut: 0, fin: 0, attitude: null })) };
+        }
       }
       // Raccords : les modules qui savent préparer leurs ressources le font ici (fonctions encore absentes de leur
       // module : rien n'est appelé tant qu'elles n'existent pas).
@@ -5707,7 +5751,7 @@
     scene.chauffe = null;   // le banc a remplacé le monde du moteur : la chauffe de cette scène est à refaire
     if (contexteRenduPerdu) { restaurerDecorApresContexte = true; return; }
     const atm = session && session.nature ? session.nature.ambiance.atmosphere : scene.decor.atmosphere;
-    rendu.setWorld([], [], atm); rendu.setNappes(scene.decor.nappes); rendu.setLots(scene.decor.lots, { staticBounds: true, progressif: !!scene.decor.fluxDecor });
+    rendu.setWorld([], [], atm); rendu.setNappes(scene.decor.nappes, { staticBounds: true }); rendu.setLots(scene.decor.lots, { staticBounds: true, progressif: !!scene.decor.fluxDecor });
     if (session && session.nature) session.nature.revisionRendu = -1;
     restaurerDecorApresContexte = false;
   }

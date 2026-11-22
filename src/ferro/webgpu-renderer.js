@@ -38,7 +38,7 @@ async function create(canvas,options={}){
  const lightPositions=new Float32Array(36),lightColors=new Float32Array(36),lightRanges=new Float32Array(12),lightDirections=new Float32Array(36),lightCones=new Float32Array(24);
  const staticCaches=Array.from({length:5},()=>({entries:[],batch:S.pack([]),buffer:null,capacity:0})),dynamicSlot={},overlaySlot={},fxSlot={},overlayFxSlot={},crowdSlot={},pdrSlots=[];
  const packDynamic=S.instancePacker(),packOverlay=S.instancePacker(),packFx=S.effectsPacker(),packOverlayFx=S.effectsPacker();
- const localWind=S.localWindState(),windFrame=localWind.frame,lotView=S.lotViewState(),colourRadii={horizontal:0,vertical:0},nappeBounds={p:null,radius:0},vegetation=S.vegetationFrame(),vegetationState=vegetation.frame;
+ const localWind=S.localWindState(),windFrame=localWind.frame,lotView=S.lotViewState(),colourRadii={horizontal:0,vertical:0},terrainView=S.terrainViewState(),vegetation=S.vegetationFrame(),vegetationState=vegetation.frame;
  const ordinary=[],overlay=[],particles=[],overlayParticles=[];
  let nappes=[],lots=[],lampCasters=[];const chunkCategories=new WeakMap(),chunkState={index:null,epoch:0};
  const gpu={device,adapter,context,format,canvasFormat,depthFormat,samples:config.msaa?4:1,generation:1,shadowView:null,config,vignette:config.vignette};
@@ -122,7 +122,27 @@ async function create(canvas,options={}){
  // Diagnostic A/B on the same poses, uniforms and GPU resources. A primitive
  // changed by updateShape stays expanded even when indexing is re-enabled.
  function setPrimitiveIndexing(enabled){enabled=enabled===true;if(disposed||stats.contextLost||enabled===stats.primitiveIndexing)return stats.primitiveIndexing;const base=enabled?primitiveIndexing.indices:source.indices;device.queue.writeBuffer(ibo,0,registeredIndexing?groundIndex.select(base):base);stats.primitiveIndexing=enabled;return enabled;}
- function setNappes(list){for(const n of nappes){freeBuffer(n.vertex);freeBuffer(n.instance);freeBuffer(n.index);}nappes=[];for(const n of list||[]){if(!n.sommets||!n.indices?.length)continue;const count=n.sommets.length/13,vertices=new Float32Array(count*6),instances=new Float32Array(count*16);for(let i=0;i<count;i++){vertices.set(n.sommets.subarray? n.sommets.subarray(i*13,i*13+6):n.sommets.slice(i*13,i*13+6),i*6);instances.set([0,0,0,n.sommets[i*13+9],1,1,1,0,0,0,0,n.vertexTint==='smooth'?34:2,n.sommets[i*13+10],n.sommets[i*13+11],n.sommets[i*13+12],1],i*16);}nappes.push({...n,vertex:buffer(vertices,GPUBufferUsage.VERTEX,'FERRO terrain vertices'),instance:buffer(instances,GPUBufferUsage.VERTEX,'FERRO terrain materials'),index:buffer(new Uint32Array(n.indices),GPUBufferUsage.INDEX,'FERRO terrain indices')});}stats.nappeTriangles=nappes.reduce((sum,n)=>sum+n.indices.length/3,0);}
+ function setNappes(list,options){
+  for(const n of nappes){freeBuffer(n.vertex);freeBuffer(n.instance);freeBuffer(n.index);}
+  nappes=[];let triangles=0;
+  for(const n of list||[]){
+   if(!n?.sommets||!n.indices?.length)continue;
+   const data=n.sommets,count=data.length/13,vertices=new Float32Array(count*6),instances=new Float32Array(count*16);
+   const tint=n.vertexTint==='smooth'?34:2;
+   for(let i=0;i<count;i++){
+    const src=i*13,vertex=i*6,row=i*16;
+    for(let k=0;k<6;k++)vertices[vertex+k]=data[src+k];
+    instances[row+3]=data[src+9];
+    instances[row+4]=instances[row+5]=instances[row+6]=1;
+    instances[row+11]=tint;
+    instances[row+12]=data[src+10];instances[row+13]=data[src+11];instances[row+14]=data[src+12];instances[row+15]=1;
+   }
+   const index=n.indices instanceof Uint32Array?n.indices:new Uint32Array(n.indices);
+   nappes.push({...n,vertex:buffer(vertices,GPUBufferUsage.VERTEX,'FERRO terrain vertices'),instance:buffer(instances,GPUBufferUsage.VERTEX,'FERRO terrain materials'),index:buffer(index,GPUBufferUsage.INDEX,'FERRO terrain indices')});
+   triangles+=index.length/3;
+  }
+  terrainView.reset(nappes,options?.staticBounds===true);stats.nappeTriangles=triangles;
+ }
  // The spatial index uses the source bounds. Buffers, plans and their lifetime belong to this device.
  let lotSlots=[],lotInputSlots=[],progressiveLots=false,lotCursor=0,lotEnvironment=null;
  function releaseLot(slot){
@@ -265,11 +285,16 @@ async function create(canvas,options={}){
   pass.setPipeline(pipeline('fx'));pass.setBindGroup(0,bind('fx',overlay?'overlay':'world',{uViewProjection:clip,uWindTime:[0,time],uSkyTop:environment?.skyTop||[.2,.3,.4],uSkyBottom:environment?.skyBottom||[.5,.6,.6],uEye:eye,uAmbient:environment?.ambient||[.12,.15,.16],uFogColor:environment?.fog||[.009,.018,.024],uEnvironment:[environment?1:0,environment?.fogDensity??.018],uTime:time}));renderBatch(pass,batch,storage);
  }
  function renderNappes(pass,eye,axes,horizontal,vertical,far,uniforms,radii){
-  let count=0;for(const n of nappes){if(warm)warm.nappes++;else{
-   nappeBounds.p=n.centre;nappeBounds.radius=n.rayon;
-   if(!S.visible(nappeBounds,eye,axes,horizontal,vertical,far,radii))continue;
-  }if(!count++){pass.setPipeline(pipeline('world',{nappe:true}));pass.setBindGroup(0,uniforms);}pass.setVertexBuffer(0,n.vertex);pass.setVertexBuffer(1,n.instance);pass.setIndexBuffer(n.index,'uint32');pass.drawIndexed(n.indices.length);stats.drawCalls++;stats.triangles+=n.indices.length/3;}
-  if(count){pass.setPipeline(pipeline('world'));pass.setBindGroup(0,uniforms);}return count;
+  const count=warm?nappes.length:terrainView.select(eye,axes,horizontal,vertical,far,radii);
+  if(!count)return 0;
+  if(warm)warm.nappes+=count;
+  pass.setPipeline(pipeline('world',{nappe:true}));pass.setBindGroup(0,uniforms);
+  for(let i=0;i<count;i++){
+   const n=nappes[warm?i:terrainView.indices[i]];
+   pass.setVertexBuffer(0,n.vertex);pass.setVertexBuffer(1,n.instance);pass.setIndexBuffer(n.index,'uint32');
+   pass.drawIndexed(n.indices.length);stats.drawCalls++;stats.triangles+=n.indices.length/3;
+  }
+  pass.setPipeline(pipeline('world'));pass.setBindGroup(0,uniforms);return count;
  }
  // Préchauffage : chaque lot, proche ET lointain, sans test de champ ni de portée, puis chaque sous-ensemble d'indices
  // des prairies une fois par passe. En passe d'ombre, les lots « ombre: false » restent exclus, comme en jeu.
@@ -338,8 +363,12 @@ async function create(canvas,options={}){
   if(voile&&!voile.textureView)voile.textureView=voile.texture.createView();
   const worldTextures={uPbrAlbedo:pbr[0],uPbrNormal:pbr[1],uPbrRough:pbr[2],uShadowMap:stats.shadows?shadowTarget:whiteDepth,uVoile:voile?{view:voile.textureView}:white};
   const worldValues={uOverlayMode:options.overlayLighting==='world'?1:0,uSeaMode:options.sea===false?0:1,uPhoto:fx.photo||0,uSeaOrigin:fx.sea?.origin||[0,0,0,0],uSeaMotion:fx.sea?.motion||[0,0,-1.25,0],uViewProjection:vp,uEye:eye,uForward:forward,uCloudOffset:fx.cloudOffset||weather.cloudOffset,uWindTime:[weather.wind,t],uLocalWindCount:windFrame.count,uLocalWindPosition:windFrame.positions,uLocalWindMotion:windFrame.motions,uSunDirection:environment?.sunDirection||[.4,.8,.3],uSunColor:weather.sunColor,uAmbient:weather.ambient,uFogColor:weather.fog,uEnvironment:[environment?1:0,weather.fogDensity],uNightHour:[environment?.night||0,environment?.hour??14],uSkyTop:weather.skyTop,uSkyBottom:weather.skyBottom,uWeather:weather.values,uLightDirection:lightDirections,uLightCone:lightCones,uLightPosition:lightPositions,uLightColor:lightColors,uLightRange:lightRanges,uLightCount:selected.length,uResolution:[canvas.width,canvas.height],uEffects:[t,fx.flash||0,fx.damage||0,Math.max(0,Math.min(1,fx.pulse||0))],uShadowMatrix:shadowMatrices,uShadowSettings:[stats.shadows&&!sunOnly?shadowLights.length:0,1/(shadowTarget.size*2),stats.shadows&&!sunOnly&&fx.torch!==false?1:0,stats.shadows&&environment?(sunOnly?2:1):0],uTorchPosition:fx.torch===false?[0,-1e5,0]:torchPosition,uVoileZone:voile?[voile.origine[0],voile.origine[1],1/Math.max(.001,voile.taille[0]),1/Math.max(.001,voile.taille[1])]:[0,0,0,0],uVoileForce:voile?Math.min(1,voile.force):0,uPbrReady:layers.length?1:0,uVignette:config.vignette};
-  const mainUniforms=bind('world','main',worldValues,worldTextures),sceneBeforeOverlay=hasOverlay?targets.pre:targets.scene,mainColor=targets.msaa?targets.msaa.view:sceneBeforeOverlay.view;
-  const pass=begin({label:'FERRO scene',colorAttachments:[{view:mainColor,...(targets.msaa?{resolveTarget:sceneBeforeOverlay.view}:{}),loadOp:'clear',clearValue:[.035,.06,.073,1],storeOp:'store'}],depthStencilAttachment:{view:targets.depth.view,depthLoadOp:'clear',depthClearValue:1,depthStoreOp:'store'}});
+  stats.reflections=config.reflections&&stats.bloom&&fx.reflections!==false&&fx.reflections!=='off';stats.reflectionSteps=stats.reflections?48:0;
+  const mainUniforms=bind('world','main',worldValues,worldTextures);
+  // Only SSR needs the world colour before the cockpit. Otherwise both passes share one attachment.
+  const keepWorld=hasOverlay&&stats.reflections,sceneBeforeOverlay=keepWorld?targets.pre:targets.scene;
+  const mainColor=targets.msaa?targets.msaa.view:sceneBeforeOverlay.view;
+  const pass=begin({label:'FERRO scene',colorAttachments:[{view:mainColor,...(targets.msaa&&(!hasOverlay||keepWorld)?{resolveTarget:sceneBeforeOverlay.view}:{}),loadOp:'clear',clearValue:[.035,.06,.073,1],storeOp:targets.msaa&&!hasOverlay?'discard':'store'}],depthStencilAttachment:{view:targets.depth.view,depthLoadOp:'clear',depthClearValue:1,depthStoreOp:stats.reflections?'store':'discard'}});
   if(environment){pass.setPipeline(pipeline('sky'));pass.setBindGroup(0,bind('sky','main',{uSkyRight:right,uSkyUp:up,uSkyForward:forward,uSkyTop:weather.skyTop,uSkyBottom:weather.skyBottom,uSkyFog:weather.fog,uSunDirection:environment.sunDirection,uSunColor:weather.sunColor,uSkyFov:[horizontal,1/f],uWeather:weather.values,uSkyMotion:[t,weather.wind],uCloudOffset:fx.cloudOffset||[0,0],uSkyNight:environment.night}));pass.draw(3);stats.drawCalls++;}
   stats.backgroundWater=backgroundIndex.entries.length;stats.backgroundDrawCalls=0;
   if(backgroundIndex.entries.length){const before=stats.drawCalls;pass.setPipeline(pipeline('world',{background:true}));pass.setBindGroup(0,mainUniforms);renderStatic(pass,backgroundIndex.entries,4);stats.backgroundDrawCalls=stats.drawCalls-before;}
@@ -350,11 +379,10 @@ async function create(canvas,options={}){
    Object.assign(crowdView.ombre,{textureView:stats.shadows?shadowTarget.view:whiteDepth.view,active:!!(stats.shadows&&environment),plein:sunOnly,texel:1/(shadowTarget.size*2)});crowdView.lumieres.nombre=selected.length;countCrowd(fx.foule.gpuColor(pass,crowdView));
   }
   if(particles.length)renderEffects(pass,particles,eye,t);pass.end();
-  stats.reflections=config.reflections&&stats.bloom&&fx.reflections!==false&&fx.reflections!=='off';stats.reflectionSteps=stats.reflections?48:0;
   if(stats.reflections&&targets.msaa){const depthPass=begin({label:'FERRO SSR depth resolve',colorAttachments:[],depthStencilAttachment:{view:targets.resolvedDepth.view,depthLoadOp:'clear',depthClearValue:1,depthStoreOp:'store'}});depthPass.setPipeline(depthResolvePipeline);depthPass.setBindGroup(0,targets.depthResolveBind);depthPass.draw(3);depthPass.end();stats.drawCalls++;}
   if(hasOverlay){
-   if(!targets.msaa)encoder.copyTextureToTexture({texture:targets.pre.texture},{texture:targets.scene.texture},[canvas.width,canvas.height]);
-   const overlayPass=begin({label:'FERRO close weapon',colorAttachments:[{view:targets.msaa?targets.msaa.view:targets.scene.view,...(targets.msaa?{resolveTarget:targets.scene.view}:{}),loadOp:'load',storeOp:'store'}],depthStencilAttachment:{view:targets.overlayDepth.view,depthLoadOp:'clear',depthClearValue:1,depthStoreOp:'discard'}});
+   if(keepWorld&&!targets.msaa)encoder.copyTextureToTexture({texture:targets.pre.texture},{texture:targets.scene.texture},[canvas.width,canvas.height]);
+   const overlayPass=begin({label:'FERRO close weapon',colorAttachments:[{view:targets.msaa?targets.msaa.view:targets.scene.view,...(targets.msaa?{resolveTarget:targets.scene.view}:{}),loadOp:'load',storeOp:targets.msaa?'discard':'store'}],depthStencilAttachment:{view:targets.overlayDepth.view,depthLoadOp:'clear',depthClearValue:1,depthStoreOp:'discard'}});
    const overlayNear=Math.min(near,Math.max(.005,Number(camera.overlayNear)||near));let clip=vp;if(overlayNear!==near){overlayProjection.set(projection);overlayProjection[10]=(far+overlayNear)/(overlayNear-far);overlayProjection[14]=2*far*overlayNear/(overlayNear-far);S.multiply(overlayProjection,view,overlayVP);clip=overlayVP;}
    if(blackout)selected.forEach(({light},i)=>{const c=light.color||[1,1,1],power=light.power===undefined?1:light.power;lightColors.set(c.map(v=>v*power),i*3);});
    if(overlay.length){const batch=packOverlay(overlay,environment,true);ensureSlot(overlaySlot,batch);overlayPass.setPipeline(pipeline('world',{overlay:true}));overlayPass.setBindGroup(0,bind('world','overlay',{...worldValues,uViewProjection:clip},worldTextures));renderBatch(overlayPass,batch,overlaySlot);}
@@ -424,7 +452,7 @@ async function create(canvas,options={}){
  // WebGPU ne libère aucune cible à l'inactivité : retain ne fait que mémoriser l'état demandé.
  function retain(value){if(value===undefined)return retained;retained=!!value;return retained;}
  function resetStats(){stats.creations=0;return stats;}
- function dispose(){if(disposed)return;disposed=true;profiling=false;localWind.reset();releaseLots();try{context.unconfigure();}catch{}for(const b of buffers)b.destroy();for(const t of textures)t.destroy();buffers.clear();textures.clear();timing?.query.destroy();bindings.clear();pipelines.clear();copyPipelines.clear();chunks.clear();programs.clear();device.destroy();}
+ function dispose(){if(disposed)return;disposed=true;profiling=false;localWind.reset();terrainView.reset();nappes=[];releaseLots();try{context.unconfigure();}catch{}for(const b of buffers)b.destroy();for(const t of textures)t.destroy();buffers.clear();textures.clear();timing?.query.destroy();bindings.clear();pipelines.clear();copyPipelines.clear();chunks.clear();programs.clear();device.destroy();}
  // Resolve expensive shader/pipeline compilation before the title screen or a
  // measured gameplay frame. Validation errors fail creation and permit fallback.
  for(const samples of config.msaa?[1,4]:[1]){pipeline('world',{samples});pipeline('world',{samples,background:true});pipeline('world',{samples,overlay:true});pipeline('world',{samples,nappe:true});pipeline('fx',{samples});pipeline('sky',{samples});}
