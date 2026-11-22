@@ -16,6 +16,9 @@
 // nouvelles prises frontales ; le numéro du nez suit la nouvelle peau. 117/134 groupes changent
 // dans chaque configuration. Ancrages, roues et pièces du poste identiques ; aucun seuil changé.
 // Voir preuves/CARROSSERIE-126CK-0278/assemblage/invariants.json et l'outil raccord-carrosserie-126ck.
+// Les prises d’air arrière suivent le ponton resserré. Le recalage du fond change les bornes du seul
+// maillage pontons-conduits. Après neutralisation de sa position et de sa taille, les 134 groupes de
+// chaque configuration rendent la même empreinte qu’avant le recalage.
 //   node verifications/voiture-identite.test.mjs                  vérifier
 //   BITUME_FIGER=1 node verifications/voiture-identite.test.mjs   réécrire l'empreinte : seulement pour un changement
 //                                                                 d'image voulu, à dire dans le commit

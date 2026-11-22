@@ -36,14 +36,29 @@ test('grille fine : montants réels et intervalles libres, sans masquer le fond'
  }
 });
 test('prises arrière sur le dessus : deux dépressions ouvertes avec leur rampe',()=>{
- const fond=mesh('pontons-conduits');
- for(const nom of ['pontons','loin-caisse'])for(const k of [-1,1])for(const [x,z] of [[-.94,.46],[-.94,.50],[-.94,.54],[-.87,.50]]){
-  const a=[x,.56,k*z],b=[x,.47,k*z];
-  assert(!coupe(mesh(nom),a,b),`toit non ouvert ${nom} ${x}/${z}`);
-  assert(!coupe(fond,a,b),'rampe au-dessus de la dépression');
-  assert(coupe(fond,a,[x,.44,k*z]),'rampe absente');
+ const fond = mesh('pontons-conduits');
+ // Les deux rives intactes définissent la hauteur locale du plateau actuel.
+ function hauteur(tris, x, z) {
+  let bas = .29, haut = .65;
+  if (!coupe(tris, [x, haut, z], [x, bas, z])) return null;
+  for (let i = 0; i < 16; i++) {
+   const milieu = (bas + haut) * .5;
+   if (coupe(tris, [x, haut, z], [x, milieu, z])) bas = milieu;
+   else haut = milieu;
+  }
+  return (bas + haut) * .5;
  }
- for(const k of [-1,1])assert(coupe(mesh('pontons'),[-.94,.56,k*.62],[-.94,.44,k*.62]),'plateau disparu hors prise');
+ for (const nom of ['pontons', 'loin-caisse']) for (const cote of [-1, 1]) {
+  const peau = mesh(nom);
+  for (const [x, z] of [[-.94, .355], [-.94, .383], [-.94, .406], [-.87, .408]]) {
+   const interieur = hauteur(peau, x, cote * .315), exterieur = hauteur(peau, x, cote * .448);
+   assert(interieur != null && exterieur != null, 'plateau disparu autour de la prise');
+   const plateau = interieur + (exterieur - interieur) * (z - .315) / (.448 - .315);
+   assert.equal(hauteur(peau, x, cote * z), null, 'toit non ouvert ' + nom);
+   const rampe = hauteur(fond, x, cote * z);
+   assert(rampe != null && rampe < plateau - .012 && rampe > plateau - .060, 'rampe hors du ponton ' + nom);
+  }
+ }
 });
 test('LOD : conduits partagés, grilles proches/moyennes et joints proches seulement',()=>{
  const mod=V.modele({couleur:[.8,.1,.1],numero:27}),ev={p:[0,0,0],cap:0,roule:0,braquage:0,v:0};

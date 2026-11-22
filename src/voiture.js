@@ -297,7 +297,21 @@
   // Ouïes latérales 126 CK (02/22, 04/24 et 11/31), décroissantes vers les roues avant.
   // Le contour est découpé dans les triangles : pas de panneau noir sur une peau pleine.
   const PONTON_OUIE = Object.freeze([[.10, .302], [.51, .302], [.73, .392], [.73, .416], [.10, .438]].map(Object.freeze));
-  const PONTON_PRISE = Object.freeze([[-.97, .425], [-.735, .488], [-.735, .512], [-.97, .575]].map(Object.freeze));
+  const profilPonton = C.profil(S_PONTONS);
+  const flancPonton = (x, y) => { const s = profilPonton(x), h = (s.y1 - s.y0) / 2,
+    r = Math.min(1, Math.abs(y - (s.y0 + s.y1) / 2) / h) ** (s.n / 2);
+    return s.l * Math.sqrt(Math.max(0, 1 - r * r)) ** (2 / s.n); };
+  const dessusPonton = (x, z) => { const s = profilPonton(x), r = Math.min(1, Math.abs(z) / s.l) ** (s.n / 2);
+    return (s.y0 + s.y1) / 2 + (s.y1 - s.y0) / 2 * Math.sqrt(Math.max(0, 1 - r * r)) ** (2 / s.n); };
+
+  // La découpe garde ses proportions sur le dessus du ponton qui se resserre vers la roue arrière.
+  // Les profondeurs suivent la peau, même sur la partie arrondie du plateau.
+  const PONTON_PRISE = [[-.97, .425], [-.735, .488], [-.735, .512], [-.97, .575]]
+    .map(([x, z]) => [x, z * profilPonton(x).l / .72]);
+  const hautPrise = PONTON_PRISE.map(([x, z]) => [x, dessusPonton(x, z), z]);
+  const basPrise = hautPrise.map(([x, y, z]) => [x, y - (.043 - .029 * (x + .97) / .235), z]);
+  const plancherDecoupe = Math.min(...basPrise.map(p => p[1])) - .015;
+
   const plansPrisme = (contour, axes, min, max) => {
     const plans = [], axeLibre = 3 - axes[0] - axes[1];
     for (let i = 0; i < contour.length; i++) {
@@ -340,7 +354,7 @@
     for (const k of [-1, 1]) {
       triangles = retirerVolumePonton(triangles, plansPrisme(PONTON_OUIE, [0, 1], k < 0 ? -.86 : .62, k < 0 ? -.62 : .86));
       const prise = k < 0 ? PONTON_PRISE.map(p => [p[0], -p[1]]).reverse() : PONTON_PRISE;
-      triangles = retirerVolumePonton(triangles, plansPrisme(prise, [0, 2], .438, .56));
+      triangles = retirerVolumePonton(triangles, plansPrisme(prise, [0, 2], plancherDecoupe, .56));
     }
     return triangles;
   }
@@ -364,12 +378,6 @@
     for (let i = 0; i < 4; i++) { const j = (i + 1) % 4; face(a[i], b[i], b[j]); face(a[i], b[j], a[j]); }
     face(b[0], b[1], b[2]); face(b[0], b[2], b[3]);
     // Flanc ouvert, conduit de 7–9 cm et fond de radiateur ; même fond aux trois détails.
-    const profilPonton = C.profil(S_PONTONS);
-    const flancPonton = (x, y) => { const s = profilPonton(x), h = (s.y1 - s.y0) / 2,
-      r = Math.min(1, Math.abs(y - (s.y0 + s.y1) / 2) / h) ** (s.n / 2);
-      return s.l * Math.sqrt(Math.max(0, 1 - r * r)) ** (2 / s.n); };
-    const dessusPonton = (x, z) => { const s = profilPonton(x), r = Math.min(1, Math.abs(z) / s.l) ** (s.n / 2);
-      return (s.y0 + s.y1) / 2 + (s.y1 - s.y0) / 2 * Math.sqrt(Math.max(0, 1 - r * r)) ** (2 / s.n); };
     const bord = PONTON_OUIE.map(p => [p[0], p[1], flancPonton(...p)]), fond = PONTON_OUIE.map(p => [p[0], p[1], .625]);
     const orientee = (dest, p, q, r, normale) => { const n = croix(q.map((v, i) => v - p[i]), r.map((v, i) => v - p[i]));
       dest.push(n.reduce((s, v, i) => s + v * normale[i], 0) < 0 ? [p, r, q] : [p, q, r]); };
@@ -379,10 +387,10 @@
     for (let i = 1; i + 1 < fond.length; i++) orientee(parois, fond[0], fond[i], fond[i + 1], [0, 0, 1]);
     // Dépressions triangulaires à l'arrière du dessus (09/29) : rampe et parois,
     // la peau du ponton est réellement retirée au-dessus, jusqu'à un fond sous la lèvre.
-    const haut = PONTON_PRISE.map(p => [p[0], dessusPonton(...p), p[1]]);
-    const bas = PONTON_PRISE.map(p => [p[0], .448 + (p[0] + .97) / .235 * .044, p[1]]);
+    const haut = hautPrise, bas = basPrise;
+    const milieuPrise = haut.reduce((centre, p) => [centre[0] + p[0] / haut.length, centre[1] + p[2] / haut.length], [0, 0]);
     for (let i = 0; i < haut.length; i++) { const j = (i + 1) % haut.length;
-      quad(parois, haut[i], haut[j], bas[j], bas[i], [-.85 - (haut[i][0] + haut[j][0]) / 2, 0, .5 - (haut[i][2] + haut[j][2]) / 2]); }
+      quad(parois, haut[i], haut[j], bas[j], bas[i], [milieuPrise[0] - (haut[i][0] + haut[j][0]) / 2, 0, milieuPrise[1] - (haut[i][2] + haut[j][2]) / 2]); }
     for (let i = 1; i + 1 < bas.length; i++) orientee(parois, bas[0], bas[i], bas[i + 1], [0, 1, 0]);
     forme('pontons-conduits', deuxCotes(C.lisser(parois, 70)));
     // Montants de grille peints, réunis en un seul maillage. Aucun barreau au loin.
@@ -722,10 +730,10 @@
     // Il n'ajoute aucune instance selon le nombre de petits boulons ou de spires.
     forme('arriere-metal-simple', plateau.concat(arceau, renforts, bloc, boite, carterTri, sorties, mat, ailes, derives));
   }
-  // Version lointaine : mêmes sections du nez et des pontons, huit côtés, un seul lot.
+  // Version lointaine : mêmes sections, un seul lot. Les douze côtés des pontons préservent les lèvres des ouïes.
   // La bascule de détail ne rétablit pas l'ancienne flèche pleine entre les roues avant.
   forme('loin-caisse', ouvrirPontons(creuserCellule(C.carene(S_FLECHE, { cotes: 8, pas: 1 })
-    .concat(C.carene(S_PONTONS, { cotes: 8, pas: 1 })))));
+    .concat(C.carene(S_PONTONS, { cotes: 12, pas: 1 })))));
   forme('loin-dessus', creuserCellule(C.carene(S_GOUTTE,
     { cotes: 16, pas: 1, ouverture: OUVERTURE, interieur: true })));
   Object.defineProperty(FORMES, 'loin-dessus-pilote', { value: FORMES['loin-dessus'] });

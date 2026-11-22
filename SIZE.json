@@ -1,8 +1,8 @@
 {
-  "version": "0.2.99",
-  "raw": 15028139,
-  "gzip": 3613341,
-  "sha256": "f57261ceb41fa287986af1d0b8c49e4b2a105a90a97bf11ee1a9fd63766ba844",
+  "version": "0.2.100",
+  "raw": 15028649,
+  "gzip": 3613546,
+  "sha256": "88a3b70fb92962e2e4e7d55b734ce32c0d0508289c1e40b6816453edd8841fa0",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 315148,
@@ -59,7 +59,7 @@
     "public.js": 94461,
     "main.js": 13346,
     "cockpit-matieres.js": 1453,
-    "voiture.js": 191058,
+    "voiture.js": 191566,
     "eau-carrosserie.js": 16332,
     "animaux.js": 167253,
     "traces.js": 45633,
@@ -88,7 +88,7 @@
     "ombres.js": 12015,
     "visites.js": 6566,
     "jeu.js": 395067,
-    "index.html": 71610,
+    "index.html": 71612,
     "style.css": 100815
   }
 }
