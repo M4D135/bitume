@@ -102,11 +102,13 @@
     for (const el of etat.elements) el.toggleAttribute('data-page-inactive', !retenus.has(el));
     const indication = (page?.titre ? page.titre + ' · ' : '') + (index + 1) + ' / ' + pages.length;
     if (compteur.textContent !== indication) compteur.textContent = indication;
-    if (entrer && page && !panneau.hidden && !panneau.closest('[hidden]')) {
-      const ancien = etat.memoire.get(page.cle);
+    if (entrer && visible(panneau)) {
+      const doc = panneau.ownerDocument, ancien = etat.memoire.get(page?.cle);
+      if (panneau.contains(ancien) && restaurerFocus(doc, ancien)) return;
       const champs = groupes(panneau).filter(g => !nav.contains(g.elements[0]) &&
-        page.elements.some(el => g.elements.some(cible => el.contains(cible))));
-      focaliser(ancien && panneau.contains(ancien) && visible(ancien) ? ancien : selection(champs[0]));
+        page?.elements.some(el => g.elements.some(cible => el.contains(cible))));
+      if (champs.some(g => restaurerFocus(doc, selection(g)))) return;
+      restaurerNavigation(etat.zone, panneau);
     }
   }
   function actualiserPages(etat) {
@@ -127,7 +129,9 @@
     const focusPerdu = focusMasque || (actif === etat.panneau.ownerDocument.body && dernier &&
       (!dernier.isConnected || dernier.closest('[hidden]')));
     etat.pages = pages; etat.elements = elements;
-    afficherPage(etat, choisie, focusPerdu);
+    const focusPaginationPerdu = pages.length < 2 && (etat.nav.contains(actif) ||
+      (actif === etat.panneau.ownerDocument.body && etat.nav.contains(dernier)));
+    afficherPage(etat, choisie, focusPerdu || focusPaginationPerdu);
   }
   function decalerPages(zone, sens) {
     if (!zone || !sens) return false;
@@ -158,7 +162,7 @@
       }
       nav.append(bouton(-1,'‹ LT','Page précédente'), compteur, bouton(1,'RT ›','Page suivante'));
       panneau.insertBefore(nav,ancre); panneau.setAttribute('data-pages-reglages','');
-      const e = { panneau, nav, compteur, pages: [], elements: new Set(), memoire: new Map(), index: 0 };
+      const e = { zone, panneau, nav, compteur, pages: [], elements: new Set(), memoire: new Map(), index: 0 };
       PAGINATIONS.set(panneau,e); actualiserPages(e);
       panneau.addEventListener('focusin', evt => {
         e.dernierFocus = evt.target;
@@ -250,6 +254,41 @@
     el.dispatchEvent(new Evenement('change', { bubbles: true }));
   }
 
+  function restaurable(doc, el) {
+    return el && el.isConnected && el.ownerDocument === doc && visible(el);
+  }
+
+  function restaurerFocus(doc, el) {
+    if (!restaurable(doc, el)) return false;
+    try { focaliser(el); } catch (_) { /* Vérifier le focus avant de poursuivre le repli. */ }
+    return doc.activeElement === el && restaurable(doc, el);
+  }
+
+  function restaurerNavigation(zone, panneau, exclu) {
+    const doc = zone.ownerDocument;
+    if (!restaurable(doc, zone)) return;
+    const tabs = onglets(zone).filter(el => el !== exclu);
+    const selectionne = tabs.find(el => el.getAttribute('aria-selected') === 'true' && visible(el));
+    if (restaurerFocus(doc, selectionne) ||
+        tabs.some(el => el !== selectionne && restaurerFocus(doc, el))) return;
+
+    const conteneurs = panneau && panneau !== zone && zone.contains(panneau) ? [panneau, zone] : [zone];
+    for (const conteneur of conteneurs) {
+      if (conteneur === doc.body || !restaurable(doc, conteneur)) continue;
+      if (restaurerFocus(doc, conteneur)) return;
+      if (conteneur.hasAttribute('tabindex')) continue;
+      conteneur.setAttribute('tabindex', '-1');
+      const retirerTabindex = () => {
+        if (conteneur.getAttribute('tabindex') === '-1') conteneur.removeAttribute('tabindex');
+      };
+      if (restaurerFocus(doc, conteneur)) {
+        conteneur.addEventListener('blur', retirerTabindex, { once: true });
+        return;
+      }
+      retirerTabindex();
+    }
+  }
+
   // Nom et code du salon restent des champs natifs au clavier/tactile. A ouvre ici un brouillon
   // local, pour que la manette seule puisse aussi les remplir sans dépendre du clavier du système.
   function fermerSaisie(doc, rendreFocus = true) {
@@ -257,35 +296,8 @@
     if (!s) return false;
     SAISIES.delete(doc);
     if (s.dialogue.open) s.dialogue.close();
-    if (!rendreFocus) return true;
-
-    function restaurable(el) {
-      return el && el.isConnected && el.ownerDocument === doc && !bloque(el) && visible(el);
-    }
-
-    function restaurer(el) {
-      if (!restaurable(el)) return false;
-      try { focaliser(el); } catch (_) { /* Vérifier le focus avant de poursuivre le repli. */ }
-      return doc.activeElement === el;
-    }
-
-    if (s.zone.contains(s.cible) && restaurer(s.cible)) return true;
-    const conteneurs = s.zone.contains(s.panneau) ? [s.panneau, s.zone] : [s.zone];
-    const essayes = new Set([s.cible]);
-    for (const conteneur of conteneurs) {
-      if (!restaurable(conteneur)) continue;
-      for (const el of conteneur.querySelectorAll(COMMANDES)) {
-        if (essayes.has(el) || !(el.tabIndex >= 0)) continue;
-        essayes.add(el);
-        if (restaurer(el)) return true;
-      }
-    }
-    for (const conteneur of conteneurs) {
-      if (!restaurable(conteneur)) continue;
-      const ajouterTabindex = !conteneur.hasAttribute('tabindex');
-      if (ajouterTabindex) conteneur.setAttribute('tabindex', '-1');
-      if (restaurer(conteneur)) return true;
-      if (ajouterTabindex) conteneur.removeAttribute('tabindex');
+    if (rendreFocus && !(s.zone.contains(s.cible) && restaurerFocus(doc, s.cible))) {
+      restaurerNavigation(s.zone, s.panneau, s.cible);
     }
     return true;
   }
