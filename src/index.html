@@ -98,6 +98,7 @@
       <button type="button" class="gros mode-arcade" data-aller="chrono"><span class="mode-numero" aria-hidden="true">02</span><span>Chrono<small>La piste. Le temps. Votre fantôme.</small></span><span class="mode-fleche" aria-hidden="true">↗</span></button>
       <button type="button" class="gros mode-arcade" data-aller="duo" id="b-duo"><span class="mode-numero" aria-hidden="true">03</span><span>À deux<small>Écran partagé · deux pilotes</small><small id="t-manettes" class="detecte" hidden>2 manettes</small></span><span class="mode-fleche" aria-hidden="true">↗</span></button>
       <button type="button" class="gros mode-arcade" data-aller="enligne"><span class="mode-numero" aria-hidden="true">04</span><span>En ligne<small>Retrouvez les autres pilotes</small></span><span class="mode-fleche" aria-hidden="true">↗</span></button>
+      <button type="button" class="discret arcade-championnat" data-aller="championnat">Championnat ↗</button>
       <button type="button" class="discret arcade-reglages" data-aller="reglages">Réglages <span aria-hidden="true">↗</span></button>
     </nav>
     <p id="titre-attente" class="attente" hidden><span id="titre-attente-texte">Démo dans 5 s</span><i><b></b></i></p>
@@ -214,6 +215,26 @@
       <p id="pr-etat" class="note-enligne" role="status" aria-live="polite"></p>
       <button type="button" class="gros principal" id="pr-pret">Je suis prêt</button>
     </div>
+  </section>
+
+  <section id="championnat" class="ecran championnat" hidden>
+    <header class="entete">
+      <button type="button" class="retour" data-aller="titre" aria-label="Retour au menu">←</button>
+      <div><h2>Championnat</h2><p id="ch-nom" class="sous"></p></div>
+    </header>
+    <div id="ch-choix" class="choix" aria-label="Choisir une coupe"></div>
+    <div id="ch-saison" hidden>
+      <p id="ch-prochaine"></p>
+      <table id="ch-table" class="tableau-resultats" aria-label="Classement général" hidden>
+        <thead><tr><th>Pos.</th><th class="nom">Pilote</th><th>Points</th></tr></thead>
+        <tbody id="ch-classement"></tbody>
+      </table>
+      <div class="actions">
+        <button type="button" class="gros principal" id="ch-depart">Courir la manche</button>
+        <button type="button" class="discret" id="ch-nouveau">Changer de coupe</button>
+      </div>
+    </div>
+    <p id="ch-stock" class="sous" role="status"></p>
   </section>
 
   <!-- Préparation : chaque condition est choisie avant la course. -->

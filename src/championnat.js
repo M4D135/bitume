@@ -9,10 +9,12 @@
   const SAISONS = Object.freeze({
     europe: {
       nom: "Coupe d'Europe",
+      circuits: ['val-brule', 'marseille', 'fjord', 'route-des-cimes', 'larche'],
       manches: [0, 1, 2, 3, 9]
     },
     monde: {
       nom: 'Tour du Monde',
+      circuits: ['val-brule', 'marseille', 'corail', 'cap-sequoia', 'fjord', 'route-des-cimes', 'sierra', 'brume-de-jade'],
       manches: [0, 1, 2, 3, 4, 5, 6, 7]
     },
     integral: {
@@ -29,6 +31,8 @@
     if (saison.manches === null) {
       // integral : tous les circuits du catalogue
       indicesManches = (catalogue || []).map((_, i) => i);
+    } else if (catalogue && saison.circuits.some(id => catalogue.some(c => c.id === id))) {
+      indicesManches = saison.circuits.map(id => catalogue.findIndex(c => c.id === id)).filter(i => i >= 0);
     } else {
       indicesManches = saison.manches.filter(i => i < (catalogue || []).length);
     }
@@ -50,6 +54,7 @@
       nom: saison.nom,
       manches: indicesManches.map(ci => ({
         circuitIndex: ci,
+        circuitId: catalogue[ci].id,
         sens: (options.sens && options.sens[ci]) || 0,
         meteo: (options.meteo && options.meteo[ci]) || 'sec',
         terminee: false,
@@ -76,7 +81,7 @@
       ...r,
       rang: i + 1,
       points: r.abandon ? 0 : (POINTS[i] || 0) +
-        (meilleurTourId && r.id === meilleurTourId && i < 10 ? 1 : 0)
+        (meilleurTourId != null && r.id === meilleurTourId && i < 10 ? 1 : 0)
     }));
 
     // Mise à jour des pilotes
@@ -88,15 +93,13 @@
         etat.pilotes.push(pilote);
       }
 
-      const pts = r.abandon ? 0 : (POINTS[i] || 0) +
-        (meilleurTourId && r.id === meilleurTourId && i < 10 ? 1 : 0);
-      pilote.points += pts;
+      pilote.points += manche.resultats[i].points;
 
       if (!r.abandon) {
         if (i === 0) pilote.victoires++;
         if (i < 3) pilote.podiums++;
       }
-      if (r.meilleurTour && r.meilleurTour > pilote.meilleurTour) {
+      if (r.meilleurTour > 0 && (!pilote.meilleurTour || r.meilleurTour < pilote.meilleurTour)) {
         pilote.meilleurTour = r.meilleurTour;
       }
     }
@@ -119,8 +122,9 @@
     });
   }
 
-  function sauver(etat, storage = globalThis.localStorage) {
+  function sauver(etat, storage) {
     try {
+      if (storage === undefined) storage = globalThis.localStorage;
       if (!storage) return false;
       storage.setItem(STORAGE_KEY, JSON.stringify(etat));
       return true;
@@ -129,21 +133,28 @@
     }
   }
 
-  function charger(storage = globalThis.localStorage) {
+  function charger(storage) {
     try {
+      if (storage === undefined) storage = globalThis.localStorage;
       if (!storage) return null;
       const raw = storage.getItem(STORAGE_KEY);
       if (!raw) return null;
       const etat = JSON.parse(raw);
-      if (!etat || etat.version !== 1) return null;
+      if (!etat || etat.version !== 1 || !Object.hasOwn(SAISONS, etat.saisonId)
+          || !Array.isArray(etat.manches) || !etat.manches.length || !Array.isArray(etat.pilotes)
+          || !Number.isInteger(etat.indexManche) || etat.indexManche < 0 || etat.indexManche > etat.manches.length
+          || etat.termine !== (etat.indexManche === etat.manches.length)
+          || !etat.manches.every(m => m && Number.isInteger(m.circuitIndex))
+          || !etat.pilotes.every(p => p && typeof p.nom === 'string' && Number.isFinite(p.points))) return null;
       return etat;
     } catch (_) {
       return null;
     }
   }
 
-  function effacer(storage = globalThis.localStorage) {
+  function effacer(storage) {
     try {
+      if (storage === undefined) storage = globalThis.localStorage;
       if (!storage) return false;
       storage.removeItem(STORAGE_KEY);
       return true;

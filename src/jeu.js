@@ -940,7 +940,7 @@
   // Les appareils déjà lus comme J1/J2 sont exclus : aucun front ne se traite deux fois.
   const suivisManettesMenu = new Map();
   function lireAutresManettesMenu(consommer = false) {
-    const menus = ['titre', 'preparation', 'reglages', 'enligne', 'prets', 'pause', 'resultats'];
+    const menus = ['titre', 'championnat', 'preparation', 'reglages', 'enligne', 'prets', 'pause', 'resultats'];
     if (document.hidden || !menus.includes(ecran) || captureManette) { suivisManettesMenu.clear(); return; }
     const presentes = new Set();
     for (const p of manettes) {
@@ -3631,11 +3631,83 @@
   // ---------------------------------------------------------------- écrans
   let ecran = 'chargement';
   const compteurVisites = B.visites?.creer();
-  const ECRANS = ['titre', 'enligne', 'prets', 'preparation', 'reglages', 'pause', 'resultats'];
+  const ECRANS = ['titre', 'championnat', 'enligne', 'prets', 'preparation', 'reglages', 'pause', 'resultats'];
   let modePrepa = 'course', retourReglages = 'titre';
   const enCourse = () => ecran === 'course';
-  const menuOpaque = () => ['titre', 'preparation', 'reglages', 'enligne', 'prets'].includes(ecran);
+  const menuOpaque = () => ['titre', 'championnat', 'preparation', 'reglages', 'enligne', 'prets'].includes(ecran);
   const menuArcade = B.menuArcade.installer($('preparation'), { retour, actualiser: () => { majBilanArcade(); majChoixTroll(); } });
+
+  let coupe = B.championnat.charger();
+  let choisirCoupe = false;
+
+  function afficherChampionnat() {
+    const choisir = !coupe || choisirCoupe;
+    $('ch-choix').hidden = !choisir;
+    $('ch-saison').hidden = choisir;
+    texte($('ch-nom'), choisir ? 'Choisissez votre coupe' : coupe.nom);
+    if (choisir) {
+      $('ch-choix').replaceChildren();
+      for (const id of Object.keys(B.championnat.SAISONS)) {
+        const serie = B.championnat.creer(id, CATALOGUE);
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'gros';
+        b.textContent = serie.nom + ' · ' + serie.manches.length + ' manches';
+        b.onclick = () => {
+          coupe = serie; choisirCoupe = false;
+          sauverChampionnat(); afficherChampionnat();
+          $('ch-depart').focus();
+        };
+        $('ch-choix').append(b);
+      }
+      return;
+    }
+    const manche = coupe.manches[coupe.indexManche];
+    const i = indiceManche(manche);
+    texte($('ch-prochaine'), coupe.termine ? 'Coupe terminée' : i < 0 ? 'Circuit de la sauvegarde indisponible'
+      : 'Manche ' + (coupe.indexManche + 1) + ' / ' + coupe.manches.length + ' · ' + CATALOGUE[i].nom);
+    $('ch-depart').hidden = coupe.termine; $('ch-depart').disabled = i < 0;
+    $('ch-table').hidden = !coupe.pilotes.length;
+    const lignes = $('ch-classement'); lignes.replaceChildren();
+    for (const [pos, pilote] of B.championnat.classement(coupe).entries()) {
+      const row = lignes.insertRow(); if (pilote.joueur) row.className = 'joueur';
+      row.insertCell().textContent = pos + 1;
+      const nom = row.insertCell(); nom.className = 'nom'; nom.textContent = pilote.nom;
+      row.insertCell().textContent = pilote.points;
+    }
+    texte($('ch-nouveau'), coupe.termine ? 'Nouvelle coupe' : 'Changer de coupe');
+  }
+
+  function indiceManche(manche) {
+    if (!manche) return -1;
+    return manche.circuitId ? CATALOGUE.findIndex(c => c.id === manche.circuitId) :
+      CATALOGUE[manche.circuitIndex] ? manche.circuitIndex : -1;
+  }
+  function sauverChampionnat() {
+    const ok = B.championnat.sauver(coupe);
+    texte($('ch-stock'), ok ? '' : 'Stockage indisponible. La progression sera perdue à la fermeture.');
+  }
+  function partirChampionnat() {
+    const numero = coupe?.indexManche, manche = coupe?.manches[numero], i = indiceManche(manche);
+    if (i < 0 || prepa.voile) return;
+    const avant = ecran;
+    const conditions = { ...conditionsDuDepart(), meteo: manche.meteo === 'sec' ? 'soleil' : manche.meteo, mReelle: null };
+    return preparerSeance('course', i, null, conditions, { verifier: () => ecran === avant,
+      apres: () => { session.mancheChampionnat = numero; } });
+  }
+  $('ch-depart').addEventListener('click', partirChampionnat);
+  $('ch-nouveau').addEventListener('click', () => {
+    choisirCoupe = true; afficherChampionnat(); $('ch-choix').firstElementChild?.focus();
+  });
+  function compterManche(S) {
+    if (!coupe || S.essai || S.mancheChampionnat !== coupe.indexManche || indiceManche(coupe.manches[coupe.indexManche]) !== S.i) return;
+    const ordre = S.course.classement.map(id => S.course.voitures[id]);
+    const valides = ordre.filter(v => !v.abandon && v.meilleur > 0);
+    const meilleur = valides.reduce((a, v) => !a || v.meilleur < a.meilleur ? v : a, null);
+    B.championnat.enregistrerCourse(coupe, ordre.map(v => ({
+      id: v.id, nom: v.nom, couleur: v.couleur, joueur: v.joueur, abandon: v.abandon, meilleurTour: v.meilleur,
+    })), meilleur?.id);
+    sauverChampionnat();
+  }
 
   function pilotesMenu() {
     const membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
@@ -3697,6 +3769,7 @@
     // Les menus opaques ne préparent pas une course invisible. La scène change au vrai départ.
     // en ligne, la pause n'arrête pas la course : pas de « Recommencer »
     if (nom === 'pause') { $('b-recommencer').hidden = !!(session && session.enLigne); $('b-replacer').hidden = aDeux(); majPneusStands(); }
+    if (nom === 'championnat') { choisirCoupe = false; afficherChampionnat(); }
     if (nom === 'enligne') majSalon();
     if (nom === 'prets') { majPrets(); majChoixTroll(); }
     tactile(nom === 'course' && !aDeux());
@@ -4226,6 +4299,8 @@
     else if (ecran === 'preparation' && modePrepa === 'enligne') aller('enligne');
     else if (ecran === 'enligne') quitterEnLigne();
     else if (ecran === 'prets') quitterPrets();
+    else if (ecran === 'championnat') { choisirCoupe = false; aller('titre'); }
+    else if (ecran === 'resultats' && session?.mancheChampionnat != null) $('b-rejouer').click();
     else if (ecran === 'resultats' && enLigneApres()) $('b-menu').click();
     else if (ecran === 'preparation' || ecran === 'resultats') aller('titre');
   }
@@ -4249,10 +4324,11 @@
   }
   $('b-reprendre').addEventListener('click', () => aller('course'));
   $('b-replacer').addEventListener('click', () => { replacer(); aller('course'); });
-  $('b-recommencer').addEventListener('click', () => demarrerSeance(session ? session.type : 'course'));
+  $('b-recommencer').addEventListener('click', () => session?.mancheChampionnat != null ? partirChampionnat() : demarrerSeance(session ? session.type : 'course'));
   $('b-reglages-pause').addEventListener('click', () => { retourReglages = 'pause'; aller('reglages'); });
   $('b-abandon').addEventListener('click', () => {
     if (session && session.enLigne) quitterEnLigne();
+    else if (session?.mancheChampionnat != null) aller('championnat');
     else if (session && session.type === 'chrono' && session.course.joueur.tempsTours.length) montrerResultats(session);
     else aller('titre');
   });
@@ -4261,10 +4337,12 @@
   const enLigneApres = () => !!(session && session.enLigneOrigine && lienActif());
   function boutonsResultats(S) {
     const enl = !!(S && S.enLigneOrigine) && lienActif(), fin = !!(S && S.course.termine);
+    const manche = S?.mancheChampionnat != null;
+    $('b-menu').disabled = manche && S.attenteClassementChampionnat;
     texte($('b-menu'), enl ? (fin ? 'Salon' : 'Quitter') : 'Menu');
-    texte($('b-rejouer'), enl ? 'Revanche' : 'Rejouer');
+    texte($('b-rejouer'), manche ? 'Classement général' : enl ? 'Revanche' : 'Rejouer');
     $('b-rejouer').hidden = enl && EL.role !== 'hote';
-    $('b-rejouer').disabled = enl && !fin;
+    $('b-rejouer').disabled = (enl && !fin) || (manche && S.attenteClassementChampionnat);
   }
   $('b-menu').addEventListener('click', () => {
     if (!enLigneApres()) aller('titre');
@@ -4272,7 +4350,8 @@
     else { if (EL.role === 'hote') EL.R.envoyer({ t: 'vers-salon' }); aller('enligne'); }
   });
   $('b-rejouer').addEventListener('click', () => {
-    if (!enLigneApres()) demarrerSeance(session ? session.type : 'course');
+    if (session?.mancheChampionnat != null) aller('championnat');
+    else if (!enLigneApres()) demarrerSeance(session ? session.type : 'course');
     else if (EL.role === 'hote' && session.course.termine) proposerCourse();
   });
 
@@ -4329,6 +4408,10 @@
         else tps = v.fini ? chrono(v.tempsFinal) : 'en piste';
         return '<tr' + (v.joueur ? ' class="joueur"' : '') + '><td>' + (r + 1) + '</td><td>' + v.numero + '</td><td class="nom"><span class="pastille" style="background:' + col + '"></span>' + (v.joueur && !co.duo ? 'Vous' : v.nom) + '</td><td>' + v.tours + '</td><td>' + tps + '</td><td' + (v.meilleur === meilleurAbsolu ? ' class="record-tour"' : '') + '>' + chrono(v.meilleur) + '</td></tr>';
       }).join('');
+    }
+    if (S.mancheChampionnat != null) {
+      S.attenteClassementChampionnat = !classementFinal && co.drapeau !== null && !j.abandon;
+      if (!S.attenteClassementChampionnat) compterManche(S);
     }
     boutonsResultats(S);
     if (!classementFinal) {
@@ -4840,7 +4923,7 @@
   // course que personne ne verra. Sur un menu, la vitrine reprend sur la scène en place, sans rebâtir.
   function remettreVitrine() {
     if (!rendu || !scene || detectionGraphiqueActive || prepa.enCours) return;
-    const menus = ['titre', 'preparation', 'enligne', 'prets'];
+    const menus = ['titre', 'championnat', 'preparation', 'enligne', 'prets'];
     const menu = menus.includes(ecran) || (ecran === 'reglages' && menus.includes(retourReglages));
     if (!session || session.i !== scene.index || (menu && session.type !== 'vitrine'))
       lancer('vitrine', scene.index, null, Object.assign({}, conditionsDuDepart(), { saison: scene.saison }));

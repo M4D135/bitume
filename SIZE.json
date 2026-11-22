@@ -1,8 +1,8 @@
 {
-  "version": "0.2.92",
-  "raw": 15013315,
-  "gzip": 3608985,
-  "sha256": "e32cebb3c4b1fd827cffcb2ced863ccdf4d20773b1bb5f15c8be9cfd3ce3acec",
+  "version": "0.2.93",
+  "raw": 15020404,
+  "gzip": 3610807,
+  "sha256": "ed26a228edadc7553553c7d78f47ef4e0c32acef1f0a0cdd1318b5f9f20aa245",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 313289,
@@ -48,7 +48,7 @@
     "signalisation-course.js": 19299,
     "equipe-stands.js": 38782,
     "camera-transition.js": 4372,
-    "championnat.js": 4486,
+    "championnat.js": 5497,
     "records.js": 5730,
     "cache.js": 8909,
     "effets-saison.js": 17336,
@@ -87,8 +87,8 @@
     "vibrations.js": 14428,
     "ombres.js": 12015,
     "visites.js": 6566,
-    "jeu.js": 390303,
-    "index.html": 70539,
-    "style.css": 100270
+    "jeu.js": 394765,
+    "index.html": 71610,
+    "style.css": 100815
   }
 }

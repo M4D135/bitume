@@ -1054,3 +1054,15 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   .arcade-preparation #b-depart { min-width: 190px; }
   .arcade-preparation .aide-manette { margin-top: 5px; }
 }
+
+.arcade-modes .arcade-championnat, .arcade-modes .arcade-reglages {
+  grid-column: auto; width: max-content; min-height: 44px; padding: 6px 12px;
+}
+.championnat { background: var(--encre); }
+.championnat .choix { display: grid; gap: 12px; max-width: 46rem; }
+.championnat .actions { margin-top: 16px; }
+.championnat .tableau-resultats td { padding-block: 4px; }
+.championnat .tableau-resultats .nom { display: table-cell; }
+@media (max-width: 760px) {
+  .arcade-modes .arcade-championnat, .arcade-modes .arcade-reglages { min-height: 36px; }
+}
