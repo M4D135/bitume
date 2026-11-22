@@ -95,17 +95,30 @@
   }
   function statiques(c, decor) {
     const cached = CACHE.get(decor); if (cached) return cached;
-    const panorama = [], lieu = [];
+    const panorama = [], lieu = [], virages = B.virages?.planifier(c) || [];
     let maxY = -Infinity, minY = Infinity;
     for (const n of decor.nappes || []) for (let k = 1; k < n.sommets.length; k += 13) {
       maxY = Math.max(maxY, n.sommets[k]); minY = Math.min(minY, n.sommets[k]);
     }
     if (!Number.isFinite(maxY)) { maxY = 300; minY = -100; }
     // Huit fenêtres du tracé : relief et courbes différents, sans inventer un lieu absent du décor.
+    const arrivee = c.ouvert ? (c.arrivee ?? c.longueur) : c.longueur;
     for (let secteur = 0; secteur < 8; secteur++) {
+      const debut = secteur * arrivee / 8, fin = (secteur + 1) * arrivee / 8;
+      let courbe = null;
+      for (const v of virages) {
+        if (v.sommet < debut || v.sommet >= fin || B.circuit.dansCouvert(c, v.sommet, 90)) continue;
+        if (!courbe || v.angle > courbe.angle) courbe = v;
+      }
+      if (courbe) {
+        const q = B.circuit.echantillon(c, courbe.sommet);
+        panorama.push({ type: 'panorama', s: courbe.sommet, cap: q.cap, cible: [q.x,q.y+2,q.z],
+          rayon: 105, hauteur: 48, label: courbe.libelle, virage: courbe.id });
+        continue;
+      }
       let meilleur = null;
       for (let j = 0; j < 6; j++) {
-        const s = (secteur + (j + .5) / 6) * c.longueur / 8;
+        const s = debut + (j + .5) * (fin - debut) / 6;
         if (B.circuit.dansCouvert(c, s, 90)) continue;
         const q = B.circuit.echantillon(c, s), score = q.y + Math.abs(q.courbure) * 1800 + Math.abs(q.pente || 0) * 180;
         if (!meilleur || score > meilleur.score) meilleur = { type: 'panorama', s, cap: q.cap, cible: [q.x, q.y + 2, q.z], rayon: 105, hauteur: 48, label: 'Relief et tracé', score };
@@ -141,10 +154,18 @@
   function disponible(C, a, t) {
     return !!C && !!a && NATURE.has(a.type) && !!C.trajets.get(a)?.some(Boolean);
   }
-  function choisir(C, type, numero, t) {
+  function choisir(C, type, numero, t, position) {
     const liste = C?.ancres[type]; if (!liste?.length) return null;
-    for (let i = 0; i < liste.length; i++) { const a = liste[(numero + i) % liste.length]; if (disponible(C, a, t)) return a; }
-    return null;
+    let meilleure = null, distance = Infinity;
+    for (let i = 0; i < liste.length; i++) {
+      const a = liste[(numero + i) % liste.length];
+      if (!disponible(C, a, t)) continue;
+      if (!Number.isFinite(position)) return a;
+      const ecart = Math.abs(B.circuit.ecart(C.c, a.s, position));
+      if (type === 'lieu' && ecart > Math.min(800, C.c.longueur * .18)) continue;
+      if (ecart < distance) { meilleure = a; distance = ecart; }
+    }
+    return meilleure;
   }
   function sol(C, x, z, y) {
     if (C.monde?.raycast) {

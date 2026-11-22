@@ -13,7 +13,7 @@ function image(etat, t, cameraPos, options = {}) {
   return sortie;
 }
 
-test('les bandeaux des onze circuits suivent exclusivement les glissières présentes, à dix centimètres maximum', t=>{
+test('les bandeaux des onze circuits suivent exclusivement les glissières présentes, sur vingt centimètres au-dessus du rail', t=>{
   for (const def of CATALOGUE_SAISONS) {
     const c=creerCircuitSaisons(def), decor=B.decor.construire(c,{qualite:'low',vegetation:false});
     const etat=B.signalisationCourse.creer(c,decor), rails=decor.railsVirages;
@@ -27,7 +27,7 @@ test('les bandeaux des onze circuits suivent exclusivement les glissières prés
       assert(Math.abs(p.fond.s[0]-(rail.s[0]-.25))<1e-8,'longueur utile du rail');
       const hauteurNormale=t.haut.reduce((h,n,j)=>h+n*(p.fond.p[j]-rail.p[j]),0);
       const garde=(hauteurNormale-rail.s[1]/2-p.fond.s[1]/2)/t.haut[1];
-      assert(Math.abs(garde-.01)<1e-7 && garde+p.fond.s[1]/t.haut[1]<=.1000001);
+      assert(Math.abs(garde)<1e-7 && Math.abs(p.fond.s[1]/t.haut[1]-.20)<1e-7);
       const [rx,ry,rz]=p.fond.r, cx=Math.cos(rx), sx=Math.sin(rx);
       const nx=Math.cos(rz)*Math.sin(ry)*cx+Math.sin(rz)*sx, nz=Math.cos(ry)*cx;
       const axe=B.circuit.echantillon(c,t.s);
@@ -37,10 +37,10 @@ test('les bandeaux des onze circuits suivent exclusivement les glissières prés
   }
 });
 
-test('à chaque phase au moins trois chevrons complets par groupe, un dos fermé et aucune diode au revers',()=>{
+test('une file de 32 chevrons traverse chaque raccord à chaque phase, uniquement côté route',()=>{
   const {vertices,indices,ranges}=globalThis.FRender.shared.geometry(false);
   for (let grille=0;grille<=1;grille++) for (let phase=0;phase<8;phase++) {
-    const nom='bitume-rail-'+grille+'-'+phase, rects=[];
+    const nom='bitume-rail-'+grille+'-'+phase, lignes=[.008,.367,-.367].map(y=>({y,intervalles:[]}));
     const aire={avant:0,dos:0,chants:0};
     for (const forme of [nom,nom+'-led']) {
       const r=ranges[forme], debut=r.offset/indices.BYTES_PER_ELEMENT;
@@ -48,7 +48,13 @@ test('à chaque phase au moins trois chevrons complets par groupe, un dos fermé
         const [a,b,c]=Array.from(indices.subarray(i,i+3),j=>vertices.subarray(6*j,6*j+3));
         if (forme.endsWith('-led')) {
           assert([a,b,c].every(p=>p[2]===.5));
-          if (i%6===debut%6) rects.push([a[0],b[0],a[1],c[1]]);
+          for(const {y,intervalles} of lignes) {
+            const xs=[];
+            for(const [p,q] of [[a,b],[b,c],[c,a]]) {
+              if((p[1]>y)!==(q[1]>y)) xs.push(p[0]+(q[0]-p[0])*(y-p[1])/(q[1]-p[1]));
+            }
+            if(xs.length===2) intervalles.push([Math.min(...xs),Math.max(...xs)]);
+          }
         }
         const u=b.map((x,j)=>x-a[j]), v=c.map((x,j)=>x-a[j]);
         const n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]];
@@ -56,17 +62,12 @@ test('à chaque phase au moins trois chevrons complets par groupe, un dos fermé
       }
     }
     for (const [k,v] of Object.entries({avant:1,dos:1,chants:4})) assert(Math.abs(aire[k]-v)<1e-5,k);
-    for (let groupe=0;groupe<4;groupe++) {
-      let complets=0;
-      for (let k=-1;k<=4;k++) {
-        const col=k*8+phase+6.5;
-        if (col-4<0 || col+.5>32) continue;
-        const pointe=(groupe*128+48+col)/512-.5, pied=pointe-3/512;
-        for(const [x,y] of [[pointe,0],[pied,.37],[pied,-.37]])
-          assert(rects.some(([g,d,b,h])=>x>g && x<d && y>b && y<h),'pointe et branches allumées');
-        complets++;
-      }
-      assert(complets>=3);
+    for(let k=0;k<32;k++) for(const [j,{intervalles}] of lignes.entries()) {
+      // Tester aussi le motif coupé par le joint : il reprend sur le rail voisin.
+      const milieu=((k*8+phase+(j===0?6.5:3.5))%256)/256-.5;
+      assert(intervalles.some(([a,b])=>milieu>=a && milieu<=b),nom+' motif '+k+' rang '+j);
+      const eteint=(milieu+.5+4/256)%1-.5;
+      assert(!intervalles.some(([a,b])=>eteint>a && eteint<b),'espacement régulier des glyphes');
     }
   }
 });
@@ -77,7 +78,7 @@ test('le défilement change les LED, le boîtier reste fixe et la préférence d
   const cam=[0,1,3], loin=[0,1,40], opt={pluie:1};
   assert(image(etat,0,cam,opt).includes(p.fleche));assert.equal(p.fleche.shape,'bitume-rail-1-0-led');
   const pos=[...p.fleche.p], e=p.fleche.emissive;
-  image(etat,.25,cam,opt);assert.equal(p.fleche.shape,'bitume-rail-1-2-led');assert.equal(p.fleche.emissive,e);
+  image(etat,.09,cam,opt);assert.equal(p.fleche.shape,'bitume-rail-1-2-led');assert.equal(p.fleche.emissive,e);
   image(etat,2,loin,{...opt,mouvementReduit:true});assert.equal(p.fleche.shape,'bitume-rail-0-0-led');
   assert.deepEqual(p.fleche.p,pos);assert.equal(p.fond.emissive,0);
 });

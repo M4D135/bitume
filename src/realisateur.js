@@ -39,7 +39,7 @@
 
   function creer(graine) {
     return { alea: mulberry32((graine >>> 0) + 0x51ED270B), plan: null, n: 0, vert: -1, vainqueur: -1, sprint: false,
-      vus: {}, ordre: null, action: null, cinema: null, plansCourse: 0, natureTour: 0, natureDerniere: -1e9 };
+      vus: {}, ordre: null, action: null, cinema: null, plansCourse: 0, natureTour: 0, natureDerniere: -1e9, dernierFreinage: -Infinity, dernierPlanPluie: -Infinity };
   }
 
   // côté du milieu de la piste, vu de la voiture : les caméras latérales s'y placent, loin des arbres et des rails
@@ -54,9 +54,9 @@
 
   function respiration(R, co) {
     if (!R.cinema || R.sprint || co.drapeau !== null || R.plansCourse < 3 || co.horloge - R.natureDerniere < 15 || co.horloge - R.vert < 11) return null;
-    const types = ['lieu', 'panorama'];
+    const types = ['lieu', 'panorama'], tete = co.voitures[co.classement[0]];
     for (let k = 0; k < types.length; k++) {
-      const type = types[(R.natureTour + k) % types.length], ancre = B.cinema.choisir(R.cinema, type, Math.floor(R.natureTour / types.length), co.horloge);
+      const type = types[(R.natureTour + k) % types.length], ancre = B.cinema.choisir(R.cinema, type, Math.floor(R.natureTour / types.length), co.horloge, tete.etat.s);
       if (!ancre) continue;
       R.natureTour += k + 1;
       let sujet = co.classement[0], distance = Infinity;
@@ -85,11 +85,36 @@
     return co.voitures.some(o => o !== v && !o.fini && v.progression - o.progression > 0 && v.progression - o.progression < DUEL);
   }
 
+  // Une voiture qui freine à l'entrée d'un virage, filmée depuis celle qui la suit.
+  // Une coupure de réalisation suffit : aucune recherche dans le pas de conduite ni dans le rendu.
+  function filmerFreinage(R, co, enPiste) {
+    if (!R.cinema || co.horloge - R.dernierFreinage < 18) return null;
+    const virages = B.virages?.planifier(co.c);
+    if (!virages?.length) return null;
+    for (let i = 1; i < enPiste.length; i++) {
+      const devant = enPiste[i-1], suit = enPiste[i], e = devant.etat, f = suit.etat;
+      const ecart = devant.progression - suit.progression;
+      if (!(e.frein >= .18 && e.v > ALLURE && f.v > ALLURE && ecart >= 5 && ecart <= 32)) continue;
+      if (e.stands || f.stands || e.recuperation || f.recuperation || e.accident || f.accident) continue;
+      const virage = virages.find(v => {
+        let distance = v.sommet - e.s;
+        if (!co.c.ouvert && distance < -8) distance += co.c.longueur;
+        return distance >= -8 && distance < Math.min(125, e.v * 2.5);
+      });
+      if (!virage) continue;
+      R.dernierFreinage = co.horloge;
+      const vue = R.plan?.vue === 'cockpit' ? 'poursuite' : 'cockpit';
+      return couper(R, co, vue, suit.id, 4.5, 'freinage', { rival: devant.id, virage: virage.id, label: virage.libelle });
+    }
+    return null;
+  }
+
   function suivant(R, co) {
     const avant = R.plan, V = co.voitures;
-    const enPiste = co.classement.map(id => V[id]).filter(v => !v.fini);
+    const enPiste = co.classement.map(id => V[id]).filter(v => !v.fini && !v.abandon);
     if (!enPiste.length) return couper(R, co, 'tele', co.classement[0], DUREES.tele, 'tete');
     const paysage = respiration(R, co); if (paysage) return paysage;
+    const freinage = filmerFreinage(R, co, enPiste); if (freinage) return freinage;
 
     // Les duels : la voiture qui chasse, pour que celle de devant soit à l'image. La tête de course pèse plus lourd,
     // l'écart court aussi ; on évite de reprendre la voiture du plan précédent.
@@ -110,6 +135,12 @@
 
     // la caméra : jamais la même deux fois ; l'arrière seulement si quelqu'un suit ; rien de porté sur une voiture lente
     const lente = V[sujet].etat.v <= ALLURE;
+    // La caméra réelle reçoit la pluie, les gouttes et les reflets déjà calculés pour la course.
+    if (!lente && R.cinema?.options?.pluie >= .25 && co.horloge - R.dernierPlanPluie >= 24) {
+      R.dernierPlanPluie = co.horloge;
+      const vue = avant?.vue === 'cockpit' ? 'poursuite' : 'cockpit';
+      return couper(R, co, vue, sujet, DUREES[vue], 'pluie');
+    }
     const catalogue = R.cinema ? VUES.concat(['peloton']) : VUES;
     const vues = catalogue.filter(v => (!avant || v !== avant.vue) && !(v === 'arriere' && !chasse(co, sujet)) && !(lente && dePres(v)));
     const vue = tirer(R, vues.map(v => [v, poids(R, v)]));

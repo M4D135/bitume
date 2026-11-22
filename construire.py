@@ -38,6 +38,8 @@ MODULES = [
     'larche-vinadio.js',
     'larche-relief.js',
     'coniferes-alpins.js',
+    'pietraporzio-data.js',
+    'pietraporzio.js',
     'larche-vinadio-decor.js',
     'marseille.js',
     'marseille-decor.js',

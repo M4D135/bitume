@@ -3625,7 +3625,12 @@
     if (x.seance !== S) { x.seance = S; x.tChiffres = x.tPlan = -Infinity; }
     majAnnonceVirage(S, x, j);
     if (x === HUD1) afficherAideRetour(aideRetour(S));
-    if (demo && S.planVu) texte($('demo-plan'), CATALOGUE[S.i].nom + ' · ' + LIBELLES_PLAN[S.planVu.vue] + ' · ' + (S.planVu.nature ? S.planVu.label : j.nom));
+    if (demo && S.planVu) {
+      const p = S.planVu;
+      const legende = p.nature ? p.label : p.motif === 'freinage' ? 'Freinage · ' + p.label
+        : p.motif === 'pluie' ? 'Sous la pluie · ' + j.nom : LIBELLES_PLAN[p.vue] + ' · ' + j.nom;
+      texte($('demo-plan'), CATALOGUE[S.i].nom + ' · ' + legende);
+    }
     texte(H['h-pos'], chronoMode ? '–' : String(j.position)); texte(H['h-sur'], chronoMode ? '' : '/' + nb);
     if (!chronoMode && !demo && S.positionPrec && j.position < S.positionPrec && co.phase === 'course') eclat(H['c-position']);
     S.positionPrec = j.position;
@@ -3980,6 +3985,7 @@
     texte($('p-resume'), resume);
     majBilanArcade();
     $('p-conditions-reel').hidden = !reel;
+    if ($('p-bdtre')) $('p-bdtre').hidden = CATALOGUE[reglages.circuit].id !== 'larche';
     $('p-meteo-sources').hidden = reglages.meteoMode !== 'reel';
     $('p-actualiser-conditions').hidden = !reel && !['saison', 'moment', 'meteo'].some(n => reglages[n + 'Mode'] === 'aleatoire');
     texte($('p-actualiser-conditions'), reel ? 'Actualiser les conditions' : 'Tirer à nouveau');

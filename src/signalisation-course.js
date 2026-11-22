@@ -2,13 +2,13 @@
 (function (B) {
   'use strict';
   const LED_COUNT = 12, MAILLE = 128, PORTEE = 355;
-  const HAUTEUR = .09, GARDE = .01, EPAISSEUR = .045;
-  const GROUPES = 4, PAS_GROUPE = 128, LIGNES = 7, PHASES = 8;
+  const HAUTEUR = .20, EPAISSEUR = .045;
+  const CHEVRONS = 32, LIGNES = 7, PHASES = 8, COLONNES = CHEVRONS * PHASES;
   const cleCase = (x, z) => x * 65536 + z;
   const formesRuban = [[],[]];
 
-  // Quatre fenêtres de 32 colonnes par tronçon. Les diodes ont une largeur voisine
-  // de leur hauteur ; trois chevrons entiers restent visibles dans chaque fenêtre.
+  // Chaque tronçon porte un nombre entier de motifs. Au raccord, la dernière
+  // colonne et la première du rail suivant sont voisines dans le même cycle.
   function formeRuban(phase, grille) {
     const metal=[], lumiere=[], avant=[0,0,1];
     function quad(lot,a,b,c,d,n) { lot.push([a,b,c,n,n,n],[a,c,d,n,n,n]); }
@@ -22,27 +22,50 @@
       const p=contour[i], q=contour[(i+1)%4];
       quad(metal,p,q,[q[0],q[1],.5],[p[0],p[1],.5],normales[i]);
     }
-    const colonnes=GROUPES*PAS_GROUPE, x=i=>i/colonnes-.5;
+    const x=i=>i/COLONNES-.5;
     rectangle(metal,-.5,.5,-.5,-.43); rectangle(metal,-.5,.5,.43,.5);
-    for (let j=0;j<LIGNES;j++) {
-      const pointe=6-Math.abs(j-3), bas=-.43+.86*j/LIGNES, haut=-.43+.86*(j+1)/LIGNES;
-      const allumee=i=>{
-        const position=i%PAS_GROUPE-48;
-        if (position<0 || position>=32) return false;
-        const col=(position+PHASES-phase)%PHASES;
-        return col>=pointe-1 && col<=pointe;
-      };
-      const y0=bas+(grille ? .012 : 0), y1=haut-(grille ? .012 : 0);
-      if (grille) { rectangle(metal,-.5,.5,bas,y0); rectangle(metal,-.5,.5,y1,haut); }
-      for (let i=0;i<colonnes;) {
-        const premier=i, actif=allumee(i);
-        do { i++; } while (i<colonnes && allumee(i)===actif);
-        if (!actif || !grille) { rectangle(actif?lumiere:metal,x(premier),x(i),y0,y1); continue; }
-        for (let k=premier;k<i;k++) {
-          rectangle(metal,x(k),x(k+.12),y0,y1); rectangle(lumiere,x(k+.12),x(k+.88),y0,y1);
-          rectangle(metal,x(k+.88),x(k+1),y0,y1);
+    if (!grille) {
+      // Au-delà du gros plan, chaque bras est un trapèze continu. Découper métal
+      // et lumière sur les mêmes arêtes évite la superposition de deux surfaces.
+      for (const [y0,y1,c0,c1] of [[-.43,0,2,5],[0,.43,5,2]]) {
+        // Couper également en hauteur si un bord oblique traverse le bout du rail.
+        const coupes=[0,1];
+        for (const bord of [0,2]) for (let tour=-2;tour<=1;tour++) {
+          const t=-(tour*PHASES+phase+c0+bord)/(c1-c0);
+          if (t>0 && t<1) coupes.push(t);
+        }
+        coupes.sort((a,b)=>a-b);
+        for (let j=1;j<coupes.length;j++) {
+          const a=coupes[j-1], b=coupes[j];
+          if (b===a) continue;
+          const bas=y0+(y1-y0)*a, haut=y0+(y1-y0)*b;
+          const debutA=phase+c0+(c1-c0)*a, debutB=phase+c0+(c1-c0)*b;
+          const borner=i=>x(Math.max(0,Math.min(COLONNES,i)));
+          for(let k=-2;k<CHEVRONS;k++) {
+            for(const [lot,g,d] of [[lumiere,0,2],[metal,2,PHASES]]) {
+              const u=k*PHASES+debutA,v=k*PHASES+debutB;
+              if(Math.max(u,v)+d<=0 || Math.min(u,v)+g>=COLONNES) continue;
+              quad(lot,[borner(u+g),bas,.5],[borner(u+d),bas,.5],
+                [borner(v+d),haut,.5],[borner(v+g),haut,.5],avant);
+            }
+          }
         }
       }
+      return {metal,lumiere};
+    }
+    for (let j=0;j<LIGNES;j++) {
+      const pointe=6-Math.abs(j-3), bas=-.43+.86*j/LIGNES, haut=-.43+.86*(j+1)/LIGNES;
+      const y0=bas+.012, y1=haut-.012;
+      rectangle(metal,-.5,.5,bas,y0); rectangle(metal,-.5,.5,y1,haut);
+      let bord=0;
+      for(let i=0;i<COLONNES;i++) {
+        const col=(i+PHASES-phase)%PHASES;
+        if(col!==pointe && col!==pointe-1) continue;
+        rectangle(metal,x(bord),x(i+.12),y0,y1);
+        rectangle(lumiere,x(i+.12),x(i+.88),y0,y1);
+        bord=i+.88;
+      }
+      rectangle(metal,x(bord),.5,y0,y1);
     }
     return {metal,lumiere};
   }
@@ -82,9 +105,9 @@
 
   function bandeauSurRail(troncon) {
     const {rail,haut,s,cote,longueur}=troncon;
-    // Le contrôle des dix centimètres est vertical, y compris sur une glissière en pente.
+    // Le contrôle des vingt centimètres est vertical, y compris sur une glissière en pente.
     const h=HAUTEUR*haut[1], offset=(rail.s[1]+h)/2;
-    const pos=rail.p.map((p,i)=>p+haut[i]*offset+(i===1?GARDE:0));
+    const pos=rail.p.map((p,i)=>p+haut[i]*offset);
     const taille=[longueur,h,EPAISSEUR], r=rail.r;
     const rotation=cote<0?r:[r[0]+Math.PI,r[1],r[2]];
     const fond=objet('box',17,[.10,.12,.13]), fleche=objet('box',16,[1,.68,.14]);
@@ -168,7 +191,7 @@
   function dessinerBalises(etat, temps, contexte, camera, sortie) {
     if (!sortie || !camera) return;
     const bas=contexte?.qualite==='low', portee=bas?265:PORTEE;
-    const phase=contexte?.mouvementReduit?0:Math.floor(temps*9)%PHASES;
+    const phase=contexte?.mouvementReduit?0:Math.floor(temps*24)%PHASES;
     const eclat=.86+.18*(contexte?.pluie||0)-.12*(contexte?.nuit||0);
     for (let x=Math.floor((camera[0]-portee)/MAILLE);x<=Math.floor((camera[0]+portee)/MAILLE);x++)
       for (let z=Math.floor((camera[2]-portee)/MAILLE);z<=Math.floor((camera[2]+portee)/MAILLE);z++) {

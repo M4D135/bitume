@@ -62,8 +62,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
 
   // La géométrie physique lit les mêmes primitives que l'image. Ces informations de construction ne changent
   // ni les lots, ni les oracles visuels historiques ; aucune limite abstraite n'est transformée en mur.
-  function marquerSolide(objet, genre, groupe = 2, surface = null) {
-    Object.defineProperty(objet, 'solidePhysX', { value: Object.freeze({ genre, groupe, surface }) });
+  function marquerSolide(objet, genre, groupe = 2, surface = null, maillage = null) {
+    const solide = { genre, groupe, surface };
+    if (maillage) solide.maillage = maillage;
+    Object.defineProperty(objet, 'solidePhysX', { value: Object.freeze(solide) });
     return objet;
   }
 
@@ -743,6 +745,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
       for (const lot of lots) for (const o of lot.objets) {
         const m = Math.floor((o.mat || 0) + .01);
+        if (o.trianglesMasque) {
+          for (const triangle of o.trianglesMasque) masquer(triangle);
+          continue;
+        }
         if (!o.masqueHerbier && !(o.collision && o.collision !== 'poutre') && m !== 9 && m !== 23 && m !== 13) continue;
         const a = -(o.r ? o.r[1] : 0), co = Math.cos(a), si = Math.sin(a);
         const hx = o.s[0] / 2 + .10, hz = o.s[2] / 2 + .10;

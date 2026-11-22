@@ -460,6 +460,7 @@ body.tactile #b-pause { display: block; }
 .demo-tactile, body.tactile .demo-souris { display: none; }
 body.tactile .demo-tactile { display: inline; }
 #jeu[data-ecran="demo"] .feux, #jeu[data-ecran="demo"] #b-pause, #jeu[data-ecran="demo"] #h-delta-ligne, #jeu[data-ecran="demo"] .jauge-derive { display: none !important; }
+#jeu[data-ecran="demo"] :is(#c-pneus, #c-sante, .chronos, #h-fps, #h-virage) { display: none; }
 /* Sous 1 000 px de large, compteurs et chronos prennent le haut de l'écran : le bandeau passe dessous. */
 @media (max-width: 1000px) {
   .demo-bandeau { top: calc(max(var(--marge), env(safe-area-inset-top)) + 92px); }
@@ -1182,7 +1183,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre arcade-titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.118">V0.2.118</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.119">V0.2.119</b>
     </div>
     <a class="signature" href="https://bitume.estrasse.fr/" download="BITUME.html" title="Télécharger BITUME"><img class="signature-avatar" src="data:image/jpeg;base64,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" alt="" />m4d135</a>
     <p class="arcade-surtitre">Choisissez votre mode</p>
@@ -1446,6 +1447,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
           <button type="button" class="discret" id="p-actualiser-conditions">Actualiser les conditions</button>
         </div>
         <p class="note-conditions" id="p-conditions-reel" hidden>En mode réel, la date et l’heure suivent le monde réel. La météo utilise votre zone approximative par IP. En ligne, les conditions de l’hôte s’appliquent à tous.</p>
+        <p class="note-conditions" id="p-bdtre" hidden>Empreintes et volumes de Pietraporzio adaptés de la <a href="https://igr.piemonte.it/scheda-informativa/bdtre-base-cartografica-riferimento" target="_blank" rel="noopener noreferrer">BDTRE, Regione Piemonte et CSI Piemonte</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a></p>
         <p class="note-conditions" id="p-meteo-sources" hidden>Météo : <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> · Localisation IP : <a href="https://www.geojs.io/" target="_blank" rel="noopener noreferrer">GeoJS</a></p>
       </div>
       <div id="p-pilotes" class="panneau-menu" role="tabpanel" data-menu-panel aria-labelledby="onglet-p-pilotes" hidden>
@@ -61838,11 +61840,176 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
+// ---- pietraporzio-data.js ----
+/* Géométrie BDTRE de Regione Piemonte, CC BY 4.0. Généré par tools/preparer-pietraporzio.py. */
+(globalThis.BITUME=globalThis.BITUME||{}).pietraporzioData=[
+{"id":"11e7beea-3c33-4827-a117-17577476d05a","volume":"a2df5231-045a-4011-b887-ce4f363bbdee","usage":"strutture ricettive","h":6,"s":17996,"axe":13.851,"x":10353.84,"z":9338.09,"cm":[[1214,222],[1210,228],[726,961],[478,1336],[-718,554],[-404,150],[-1595,-683],[-1179,-1313],[-1051,-1507],[1328,49]],"tri":[[9,0,1],[9,1,2],[9,2,3],[9,3,4],[9,4,5],[9,5,6],[9,6,7],[7,8,9]]},
+{"id":"3fe815fd-cd8c-4118-ad53-96712523d086","volume":"fc0fde0b-68a7-42f5-b33f-0172817b9958","usage":"servizio pubblico","h":8,"s":18040,"axe":22.748,"x":10378.5,"z":9361.09,"cm":[[1330,5],[716,1171],[-1330,-5],[-716,-1172]],"tri":[[3,0,1],[1,2,3]]},
+{"id":"bd60a784-9aac-41cb-8158-5c702ea81019","volume":"21635d57-9c2f-4593-ae2e-2e04da9f18b3","usage":"municipio","h":11,"s":18092,"axe":20.64,"x":10402.34,"z":9429.8,"cm":[[792,607],[775,892],[-1099,790],[-1032,-368],[-489,-335],[-479,-531],[349,-502],[344,-289],[842,-266]],"tri":[[8,0,1],[8,1,2],[2,3,4],[4,5,6],[2,4,6],[2,6,7],[2,7,8]]},
+{"id":"d7acd87d-fbc1-4ae8-9c02-91b3c3f04ea0","volume":"b2f8c775-5274-4b76-b2ce-150166aee37f","usage":"commerciale","h":6,"s":18120,"axe":15.235,"x":10426.75,"z":9434.22,"cm":[[-751,468],[-708,-514],[-700,-702],[500,-651],[678,-643],[627,528],[538,524],[452,520],[-636,473]],"tri":[[8,0,1],[8,1,2],[8,2,3],[8,3,4],[4,5,6],[4,6,7],[4,7,8]]},
+{"id":"cee4bb15-89f0-42b8-b032-3d24b115eddd","volume":"34d6172b-8688-44d9-89fa-35e04691ff98","usage":"abitativa","h":8,"s":18176,"axe":21.618,"x":10490.77,"z":9451.77,"cm":[[-202,-513],[30,-456],[427,-359],[673,-298],[372,786],[175,738],[-519,568],[-517,558],[-220,-511],[-218,-517]],"tri":[[1,2,3],[0,1,3],[0,3,4],[9,0,4],[9,4,5],[9,5,6],[9,6,7],[7,8,9]]},
+{"id":"88fecd71-f25d-4d2b-b2a4-1ffea21614f5","volume":"f9071dad-160a-45d1-9d46-81f2d3459467","usage":"abitativa","h":5,"s":18244,"axe":18.858,"x":10547.97,"z":9454.99,"cm":[[-455,-717],[325,-611],[247,-37],[355,-18],[284,400],[188,393],[161,593],[-619,487],[-486,-491]],"tri":[[8,0,1],[8,1,2],[2,3,4],[8,2,4],[8,4,5],[8,5,6],[6,7,8]]},
+{"id":"882b5d1d-d824-47e7-97b6-906ab20337fa","volume":"8bd4b54e-2f68-4786-ae60-a4b1985079df","usage":"residenziale","h":10,"s":18264,"axe":9.688,"x":10573.33,"z":9453.44,"cm":[[359,-600],[818,-514],[566,829],[-674,596],[-644,437],[-422,-747]],"tri":[[0,1,2],[5,0,2],[2,3,4],[2,4,5]]},
+{"id":"d0082ccf-3b6c-406e-aafa-6e198337544d","volume":"f829da8c-c674-40a9-82ed-00413ae780f5","usage":"Non conosciuto","h":3,"s":18440,"axe":10.219,"x":10705.59,"z":9544.06,"cm":[[-683,167],[27,-519],[218,-321],[410,-122],[275,8],[55,221],[-300,563]],"tri":[[6,0,1],[6,1,2],[2,3,4],[6,2,4],[4,5,6]]}
+];
+</script>
+<script>
+// ---- pietraporzio.js ----
+/* BITUME · empreintes régionales de Pietraporzio. Les pans et les ouvertures sont procéduraux. */
+(function (B) {
+  'use strict';
+  if (!B.pietraporzioData && typeof require === 'function') require('./pietraporzio-data.js');
+
+  function face(triangles,a,b,c) {
+    const u=b.map((v,i)=>v-a[i]), v=c.map((n,i)=>n-a[i]);
+    const n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]];
+    const l=Math.hypot(...n);
+    if(l<1e-10)return;
+    for(let i=0;i<3;i++)n[i]/=l;
+    triangles.push([a,b,c,n,n,n]);
+  }
+  function cadreToit(poly) {
+    let aire=Infinity, cadre;
+    for(let i=0;i<poly.length;i++) {
+      const a=poly[i], b=poly[(i+1)%poly.length], dx=b[0]-a[0], dz=b[1]-a[1], l=Math.hypot(dx,dz);
+      if(!l)continue;
+      const u=[dx/l,dz/l], v=[-u[1],u[0]];
+      const proj=(n)=>poly.map(p=>p[0]*n[0]+p[1]*n[1]);
+      const pu=proj(u), pv=proj(v), du=Math.max(...pu)-Math.min(...pu), dv=Math.max(...pv)-Math.min(...pv);
+      if(du*dv>=aire)continue;
+      aire=du*dv;
+      const p=du>dv?pv:pu, n=du>dv?v:u;
+      cadre={n,milieu:(Math.max(...p)+Math.min(...p))*.5,demi:Math.min(du,dv)*.5};
+    }
+    return cadre;
+  }
+  function construire(f) {
+    const poly=f.cm.map(([x,z])=>[x/100,z/100]), largeur=Math.max(...poly.map(p=>Math.abs(p[0])))*2;
+    const profondeur=Math.max(...poly.map(p=>Math.abs(p[1])))*2;
+    const cadre=cadreToit(poly), coupe=p=>p[0]*cadre.n[0]+p[1]*cadre.n[1]-cadre.milieu;
+    const toit=p=>Math.max(0,1-Math.abs(coupe(p))/cadre.demi);
+    const sommet=(p,y)=>[p[0]/largeur,y,p[1]/profondeur];
+    const interp=(a,b)=>{const u=coupe(a)/(coupe(a)-coupe(b));return [a[0]+u*(b[0]-a[0]),a[1]+u*(b[1]-a[1])];};
+    const murs=[],pans=[],pignons=[];
+    for(let i=0;i<poly.length;i++){
+      const a=poly[i], b=poly[(i+1)%poly.length];
+      face(murs,sommet(a,-.5),sommet(a,.5),sommet(b,.5));
+      face(murs,sommet(a,-.5),sommet(b,.5),sommet(b,-.5));
+      const bord=coupe(a)*coupe(b)<0?[a,interp(a,b),b]:[a,b];
+      for(let j=1;j<bord.length;j++) {
+        const u=bord[j-1],v=bord[j];
+        face(pignons,sommet(u,-.5),sommet(u,toit(u)-.5),sommet(v,toit(v)-.5));
+        face(pignons,sommet(u,-.5),sommet(v,toit(v)-.5),sommet(v,-.5));
+      }
+    }
+    for(const indices of f.tri) for(const cote of [-1,1]){
+      const decoupe=[];
+      for(let i=0;i<3;i++) {
+        const a=poly[indices[i]], b=poly[indices[(i+1)%3]], da=coupe(a)*cote, db=coupe(b)*cote;
+        if(da>=0)decoupe.push(a);
+        if(da*db<0)decoupe.push(interp(a,b));
+      }
+      const p=decoupe.map(q=>sommet(q,toit(q)-.5));
+      for(let i=2;i<p.length;i++)face(pans,p[0],p[i],p[i-1]);
+    }
+    const formes={};
+    for(const [partie,triangles] of Object.entries({mur:murs,toit:pans,pignons})) {
+      const nom='pietraporzio-'+f.id+'-'+partie;
+      globalThis.FRender?.forme?.(nom,triangles);
+      const vertices=new Float32Array(triangles.flatMap(t=>t.slice(0,3).flat()));
+      formes[partie]={nom,maillage:{vertices,indices:Uint32Array.from({length:vertices.length/3},(_,i)=>i)}};
+    }
+    return {f,poly,largeur,profondeur,formes,montee:Math.min(f.h*.28,cadre.demi*.40)};
+  }
+
+  const modeles=B.pietraporzioData.map(construire);
+  // Cercle de la couronne ou du bloc contre le polygone cadastral, y compris ses décrochements.
+  function recouvre(x,z,rayon) {
+    for(const {f,poly,largeur,profondeur} of modeles) {
+      const px=x-f.x,pz=z-f.z;
+      if(Math.abs(px)>largeur/2+rayon || Math.abs(pz)>profondeur/2+rayon)continue;
+      let dedans=false;
+      for(let i=0;i<poly.length;i++) {
+        const a=poly[i],b=poly[(i+1)%poly.length], dx=b[0]-a[0],dz=b[1]-a[1];
+        const t=Math.max(0,Math.min(1,((px-a[0])*dx+(pz-a[1])*dz)/(dx*dx+dz*dz)));
+        if(Math.hypot(px-a[0]-t*dx,pz-a[1]-t*dz)<=rayon)return true;
+        if((a[1]>pz)!==(b[1]>pz) && px<a[0]+(pz-a[1])*dx/dz)dedans=!dedans;
+      }
+      if(dedans)return true;
+    }
+    return false;
+  }
+  function poser(terrain,position,neige,detail,ajouter) {
+    for(const {f,poly,largeur,profondeur,formes,montee} of modeles) {
+      const proche=[], loin=[], route=position(f.s);
+      const sol=(x,z)=>terrain?terrain.sol(f.x+x,f.z+z):route.y;
+      const hauteurs=poly.map(p=>sol(...p)).sort((a,b)=>a-b);
+      const seuil=(hauteurs[Math.floor((hauteurs.length-1)/2)]+hauteurs[Math.floor(hauteurs.length/2)])*.5;
+      const base=hauteurs[0]-.45, rive=seuil+f.h-montee;
+      // Sur les plus fortes pentes, le soubassement descend jusqu'au terrain de chaque façade.
+      const enduit=f.usage==='municipio'?[.75,.65,.51]:f.h>7?[.68,.64,.56]:[.63,.65,.58];
+      const bois=[.29,.24,.18], vitre=[.16,.22,.24];
+      function objet(partie,shape,p,s,mat,color,angle=0) {
+        const o={shape,p,s,r:[0,angle,0],mat,color,architecture:'pietraporzio-bdtre',batiment:f.id,partie};
+        proche.push(o);return o;
+      }
+      for(const [partie,forme] of Object.entries(formes)) {
+        const mur=partie==='mur', couverture=partie==='toit';
+        const haut=mur?rive-base:montee, milieu=mur?base+haut/2:rive+haut/2;
+        const o=objet(partie,forme.nom,[f.x,milieu,f.z],[largeur,haut,profondeur],
+          couverture?(neige?25:24):22,couverture?(neige?[.86,.89,.90]:[.37,.37,.35]):enduit);
+        if(B.decor?.marquerSolide)B.decor.marquerSolide(o,'bati-bdtre',2,null,forme.maillage);
+        if(mur)o.trianglesMasque=f.tri.map(t=>t.map(i=>[f.x+poly[i][0],0,f.z+poly[i][1]]));
+        loin.push(o);
+      }
+      const facades=[];
+      for(let i=0;i<poly.length;i++) {
+        const a=poly[i], b=poly[(i+1)%poly.length], dx=b[0]-a[0], dz=b[1]-a[1], l=Math.hypot(dx,dz);
+        if(l<3.5)continue;
+        const nx=dz/l, nz=-dx/l, x=route.x-f.x-(a[0]+b[0])*.5, z=route.z-f.z-(a[1]+b[1])*.5;
+        const rue=(nx*x+nz*z)/Math.hypot(x,z), amont=-nx*Math.cos(route.cap)-nz*Math.sin(route.cap);
+        facades.push({a,dx,dz,l,nx,nz,rue,amont});
+      }
+      // Depuis la route, le pignon d'approche se lit avant la façade latérale.
+      const principale=facades.sort((a,b)=>b.rue*b.l-a.rue*a.l)[0];
+      const approche=facades.filter(b=>b!==principale && b.amont>.30 && b.nx*principale.nx+b.nz*principale.nz<.80)
+        .sort((a,b)=>b.amont*b.l-a.amont*a.l)[0];
+      for(const [index,bord] of [principale,approche].filter(Boolean).entries()) {
+        const {a,dx,dz,l,nx,nz}=bord, yaw=Math.atan2(nx,nz);
+        const applique=(partie,shape,u,y,saillie,s,mat,couleur)=>objet(partie,shape,
+          [f.x+a[0]+u*dx+nx*saillie,y,f.z+a[1]+u*dz+nz*saillie],s,mat,couleur,yaw);
+        const colonnes=Math.max(2,Math.min(detail?5:3,Math.floor(l/3)));
+        const etages=Math.max(1,Math.min(3,Math.round((rive-seuil)/3)));
+        for(let col=0;col<colonnes;col++){
+          const u=(col+.5)/colonnes, solLocal=sol(a[0]+u*dx,a[1]+u*dz);
+          for(let et=0;et<etages;et++){
+            if(!et && !index && col===0) {
+              if(solLocal+2.10<rive)applique('porte','box',u,solLocal+1.04,.045,[1.12,2.08,.09],10,bois);
+              continue;
+            }
+            const y=rive-1.10-3.0*(etages-et-1);
+            if(y-.62<solLocal+.12)continue;
+            applique('vitrage','box',u,y,.035,[1.04,1.22,.07],19.1,vitre);
+            if(detail)applique('menuiserie','stura-cadre',u,y,.09,[1.11,1.30,.10],10,bois);
+            if(detail && (f.usage==='abitativa'||f.usage==='residenziale') && l/colonnes>=2.15){
+              for(const cote of [-1,1])applique('volet','box',u+cote*.73/l,y,.065,[.31,1.16,.09],10,[.36,.40,.34]);
+            }
+          }
+        }
+      }
+      ajouter(proche,loin,f.x,f.z);
+    }
+  }
+  B.pietraporzio={poser,recouvre};
+})(globalThis.BITUME=globalThis.BITUME||{});
+</script>
+<script>
 // ---- larche-vinadio-decor.js ----
 (function (B) {
   'use strict';
 if (!B.larcheRelief && typeof require === 'function') require('./larche-relief.js');
 if (!B.coniferesAlpins && typeof require === 'function') require('./coniferes-alpins.js');
+if (!B.pietraporzio && typeof require === 'function') require('./pietraporzio.js');
 const PAS_L = 32;
 const OFFSETS = [-260, -160, -90, -42, -16, -9, 9, 16, 42, 90, 160, 260];
 const N_LAT = OFFSETS.length;
@@ -62749,6 +62916,13 @@ function poser(c, outils) {
   ];
   const nMaisons = isLow ? 2 : 5;
   for (const v of villages) {
+    if (v.nom === 'Pietraporzio') {
+      B.pietraporzio.poser(terr,getPos,!!saison?.neige,!isLow,(proche,loin,x,z)=>{
+        objets.push(...proche);
+        if (ajouter) ajouter(proche,loin,x,z);
+      });
+      continue;
+    }
     const pos = getPos(v.s);
     const tx = -Math.sin(pos.cap), tz = Math.cos(pos.cap);
     for (let m = 0; m < nMaisons; m++) {
@@ -62850,6 +63024,7 @@ function poser(c, outils) {
       const sx = taille * (0.75 + hache(r + 711, graine) * 0.65);
       const sy = taille * (0.45 + hache(r + 723, graine) * 0.55);
       const sz = taille * (0.70 + hache(r + 739, graine) * 0.68);
+      if (s >= 17800 && s <= 18600 && B.pietraporzio.recouvre(rx,rz,Math.hypot(sx,sz)/2)) continue;
       const rocher = {
         forme: rocheForme(graine ^ Math.imul(r + 13, 1597334677)),
         taille: [sx, sy, sz],
@@ -62893,6 +63068,7 @@ function poser(c, outils) {
         const essence = nu ? 'meleze-nu' : estMeleze ? 'meleze' : 'sapin';
         const taille = (estMeleze ? 9.5 : 12.0) + h2 * 8.5;
         const rL = taille * (estMeleze ? 0.85 : 0.68);
+        if (s >= 17800 && s <= 18600 && B.pietraporzio.recouvre(wx,wz,rL/2)) continue;
         const ang = h1 * PI * 2;
         const bois = [0.24, 0.16, 0.10];
         const col = nu ? bois : estMeleze
@@ -62907,10 +63083,15 @@ function poser(c, outils) {
     }
   }
 
-  const posCol = getPos(320), posViaduc = getPos(Math.min(18200, c.longueur * 0.52)), posFort = getPos(Math.min(32250, c.longueur - 400));
+  // Le quartier est cadré sur la mairie si son empreinte BDTRE est disponible.
+  const mairie = B.pietraporzioData?.find(v => v.usage === 'municipio');
+  const routeBourg = getPos(mairie?.s ?? villages.find(v => v.nom === 'Pietraporzio').s);
+  const pointBourg = mairie ? { x: mairie.x, y: (terr?.sol(mairie.x,mairie.z) ?? routeBourg.y) + mairie.h * .5, z: mairie.z }
+    : { x: routeBourg.x, y: routeBourg.y + 8, z: routeBourg.z };
+  const posCol = getPos(320), posFort = getPos(Math.min(32250, c.longueur - 400));
   const marqueurs = [
     { nom: 'Col de Larche · Lac de la Maddalena', x: posCol.x, y: posCol.y + 8, z: posCol.z, rayon: 110, hauteur: 44 },
-    { nom: 'Vallée de la Stura · Pietraporzio', x: posViaduc.x, y: posViaduc.y + 8, z: posViaduc.z, rayon: 115, hauteur: 48 },
+    { nom: 'Vallée de la Stura · Pietraporzio', ...pointBourg, rayon: 115, hauteur: 48 },
     { nom: 'Fort Albertino de Vinadio', x: posFort.x - Math.sin(posFort.cap) * 35, y: posFort.y + 10, z: posFort.z + Math.cos(posFort.cap) * 35, rayon: 105, hauteur: 42 }
   ];
   return { objets, marqueurs };
@@ -71640,8 +71821,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
 
   // La géométrie physique lit les mêmes primitives que l'image. Ces informations de construction ne changent
   // ni les lots, ni les oracles visuels historiques ; aucune limite abstraite n'est transformée en mur.
-  function marquerSolide(objet, genre, groupe = 2, surface = null) {
-    Object.defineProperty(objet, 'solidePhysX', { value: Object.freeze({ genre, groupe, surface }) });
+  function marquerSolide(objet, genre, groupe = 2, surface = null, maillage = null) {
+    const solide = { genre, groupe, surface };
+    if (maillage) solide.maillage = maillage;
+    Object.defineProperty(objet, 'solidePhysX', { value: Object.freeze(solide) });
     return objet;
   }
 
@@ -72321,6 +72504,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
       for (const lot of lots) for (const o of lot.objets) {
         const m = Math.floor((o.mat || 0) + .01);
+        if (o.trianglesMasque) {
+          for (const triangle of o.trianglesMasque) masquer(triangle);
+          continue;
+        }
         if (!o.masqueHerbier && !(o.collision && o.collision !== 'poutre') && m !== 9 && m !== 23 && m !== 13) continue;
         const a = -(o.r ? o.r[1] : 0), co = Math.cos(a), si = Math.sin(a);
         const hx = o.s[0] / 2 + .10, hz = o.s[2] / 2 + .10;
@@ -73724,8 +73911,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const pose = { pos: Array.from(o.p), quaternion: quaternion(o.r) };
     if (o.shape === 'box') return { ...pose, half: Array.from(o.s, v => v / 2) };
     if (typeof o.shape === 'string' && o.shape.startsWith('bitume-lieu-')) return { ...pose, half: Array.from(o.s, v => v * .44) };
-    primitives();
-    const g = PRIMITIVES.get(o.shape);
+    if (!o.solidePhysX?.maillage) primitives();
+    const g = o.solidePhysX?.maillage || PRIMITIVES.get(o.shape);
     if (!g) throw new TypeError('PhysX : forme solide non prise en charge (' + o.shape + ')');
     const vertices = new Float32Array(g.vertices.length);
     for (let k = 0; k < vertices.length; k++) vertices[k] = g.vertices[k] * o.s[k % 3];
@@ -75252,13 +75439,13 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (function (B) {
   'use strict';
   const LED_COUNT = 12, MAILLE = 128, PORTEE = 355;
-  const HAUTEUR = .09, GARDE = .01, EPAISSEUR = .045;
-  const GROUPES = 4, PAS_GROUPE = 128, LIGNES = 7, PHASES = 8;
+  const HAUTEUR = .20, EPAISSEUR = .045;
+  const CHEVRONS = 32, LIGNES = 7, PHASES = 8, COLONNES = CHEVRONS * PHASES;
   const cleCase = (x, z) => x * 65536 + z;
   const formesRuban = [[],[]];
 
-  // Quatre fenêtres de 32 colonnes par tronçon. Les diodes ont une largeur voisine
-  // de leur hauteur ; trois chevrons entiers restent visibles dans chaque fenêtre.
+  // Chaque tronçon porte un nombre entier de motifs. Au raccord, la dernière
+  // colonne et la première du rail suivant sont voisines dans le même cycle.
   function formeRuban(phase, grille) {
     const metal=[], lumiere=[], avant=[0,0,1];
     function quad(lot,a,b,c,d,n) { lot.push([a,b,c,n,n,n],[a,c,d,n,n,n]); }
@@ -75272,27 +75459,50 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       const p=contour[i], q=contour[(i+1)%4];
       quad(metal,p,q,[q[0],q[1],.5],[p[0],p[1],.5],normales[i]);
     }
-    const colonnes=GROUPES*PAS_GROUPE, x=i=>i/colonnes-.5;
+    const x=i=>i/COLONNES-.5;
     rectangle(metal,-.5,.5,-.5,-.43); rectangle(metal,-.5,.5,.43,.5);
-    for (let j=0;j<LIGNES;j++) {
-      const pointe=6-Math.abs(j-3), bas=-.43+.86*j/LIGNES, haut=-.43+.86*(j+1)/LIGNES;
-      const allumee=i=>{
-        const position=i%PAS_GROUPE-48;
-        if (position<0 || position>=32) return false;
-        const col=(position+PHASES-phase)%PHASES;
-        return col>=pointe-1 && col<=pointe;
-      };
-      const y0=bas+(grille ? .012 : 0), y1=haut-(grille ? .012 : 0);
-      if (grille) { rectangle(metal,-.5,.5,bas,y0); rectangle(metal,-.5,.5,y1,haut); }
-      for (let i=0;i<colonnes;) {
-        const premier=i, actif=allumee(i);
-        do { i++; } while (i<colonnes && allumee(i)===actif);
-        if (!actif || !grille) { rectangle(actif?lumiere:metal,x(premier),x(i),y0,y1); continue; }
-        for (let k=premier;k<i;k++) {
-          rectangle(metal,x(k),x(k+.12),y0,y1); rectangle(lumiere,x(k+.12),x(k+.88),y0,y1);
-          rectangle(metal,x(k+.88),x(k+1),y0,y1);
+    if (!grille) {
+      // Au-delà du gros plan, chaque bras est un trapèze continu. Découper métal
+      // et lumière sur les mêmes arêtes évite la superposition de deux surfaces.
+      for (const [y0,y1,c0,c1] of [[-.43,0,2,5],[0,.43,5,2]]) {
+        // Couper également en hauteur si un bord oblique traverse le bout du rail.
+        const coupes=[0,1];
+        for (const bord of [0,2]) for (let tour=-2;tour<=1;tour++) {
+          const t=-(tour*PHASES+phase+c0+bord)/(c1-c0);
+          if (t>0 && t<1) coupes.push(t);
+        }
+        coupes.sort((a,b)=>a-b);
+        for (let j=1;j<coupes.length;j++) {
+          const a=coupes[j-1], b=coupes[j];
+          if (b===a) continue;
+          const bas=y0+(y1-y0)*a, haut=y0+(y1-y0)*b;
+          const debutA=phase+c0+(c1-c0)*a, debutB=phase+c0+(c1-c0)*b;
+          const borner=i=>x(Math.max(0,Math.min(COLONNES,i)));
+          for(let k=-2;k<CHEVRONS;k++) {
+            for(const [lot,g,d] of [[lumiere,0,2],[metal,2,PHASES]]) {
+              const u=k*PHASES+debutA,v=k*PHASES+debutB;
+              if(Math.max(u,v)+d<=0 || Math.min(u,v)+g>=COLONNES) continue;
+              quad(lot,[borner(u+g),bas,.5],[borner(u+d),bas,.5],
+                [borner(v+d),haut,.5],[borner(v+g),haut,.5],avant);
+            }
+          }
         }
       }
+      return {metal,lumiere};
+    }
+    for (let j=0;j<LIGNES;j++) {
+      const pointe=6-Math.abs(j-3), bas=-.43+.86*j/LIGNES, haut=-.43+.86*(j+1)/LIGNES;
+      const y0=bas+.012, y1=haut-.012;
+      rectangle(metal,-.5,.5,bas,y0); rectangle(metal,-.5,.5,y1,haut);
+      let bord=0;
+      for(let i=0;i<COLONNES;i++) {
+        const col=(i+PHASES-phase)%PHASES;
+        if(col!==pointe && col!==pointe-1) continue;
+        rectangle(metal,x(bord),x(i+.12),y0,y1);
+        rectangle(lumiere,x(i+.12),x(i+.88),y0,y1);
+        bord=i+.88;
+      }
+      rectangle(metal,x(bord),.5,y0,y1);
     }
     return {metal,lumiere};
   }
@@ -75332,9 +75542,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
   function bandeauSurRail(troncon) {
     const {rail,haut,s,cote,longueur}=troncon;
-    // Le contrôle des dix centimètres est vertical, y compris sur une glissière en pente.
+    // Le contrôle des vingt centimètres est vertical, y compris sur une glissière en pente.
     const h=HAUTEUR*haut[1], offset=(rail.s[1]+h)/2;
-    const pos=rail.p.map((p,i)=>p+haut[i]*offset+(i===1?GARDE:0));
+    const pos=rail.p.map((p,i)=>p+haut[i]*offset);
     const taille=[longueur,h,EPAISSEUR], r=rail.r;
     const rotation=cote<0?r:[r[0]+Math.PI,r[1],r[2]];
     const fond=objet('box',17,[.10,.12,.13]), fleche=objet('box',16,[1,.68,.14]);
@@ -75418,7 +75628,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   function dessinerBalises(etat, temps, contexte, camera, sortie) {
     if (!sortie || !camera) return;
     const bas=contexte?.qualite==='low', portee=bas?265:PORTEE;
-    const phase=contexte?.mouvementReduit?0:Math.floor(temps*9)%PHASES;
+    const phase=contexte?.mouvementReduit?0:Math.floor(temps*24)%PHASES;
     const eclat=.86+.18*(contexte?.pluie||0)-.12*(contexte?.nuit||0);
     for (let x=Math.floor((camera[0]-portee)/MAILLE);x<=Math.floor((camera[0]+portee)/MAILLE);x++)
       for (let z=Math.floor((camera[2]-portee)/MAILLE);z<=Math.floor((camera[2]+portee)/MAILLE);z++) {
@@ -86127,17 +86337,30 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   }
   function statiques(c, decor) {
     const cached = CACHE.get(decor); if (cached) return cached;
-    const panorama = [], lieu = [];
+    const panorama = [], lieu = [], virages = B.virages?.planifier(c) || [];
     let maxY = -Infinity, minY = Infinity;
     for (const n of decor.nappes || []) for (let k = 1; k < n.sommets.length; k += 13) {
       maxY = Math.max(maxY, n.sommets[k]); minY = Math.min(minY, n.sommets[k]);
     }
     if (!Number.isFinite(maxY)) { maxY = 300; minY = -100; }
     // Huit fenêtres du tracé : relief et courbes différents, sans inventer un lieu absent du décor.
+    const arrivee = c.ouvert ? (c.arrivee ?? c.longueur) : c.longueur;
     for (let secteur = 0; secteur < 8; secteur++) {
+      const debut = secteur * arrivee / 8, fin = (secteur + 1) * arrivee / 8;
+      let courbe = null;
+      for (const v of virages) {
+        if (v.sommet < debut || v.sommet >= fin || B.circuit.dansCouvert(c, v.sommet, 90)) continue;
+        if (!courbe || v.angle > courbe.angle) courbe = v;
+      }
+      if (courbe) {
+        const q = B.circuit.echantillon(c, courbe.sommet);
+        panorama.push({ type: 'panorama', s: courbe.sommet, cap: q.cap, cible: [q.x,q.y+2,q.z],
+          rayon: 105, hauteur: 48, label: courbe.libelle, virage: courbe.id });
+        continue;
+      }
       let meilleur = null;
       for (let j = 0; j < 6; j++) {
-        const s = (secteur + (j + .5) / 6) * c.longueur / 8;
+        const s = debut + (j + .5) * (fin - debut) / 6;
         if (B.circuit.dansCouvert(c, s, 90)) continue;
         const q = B.circuit.echantillon(c, s), score = q.y + Math.abs(q.courbure) * 1800 + Math.abs(q.pente || 0) * 180;
         if (!meilleur || score > meilleur.score) meilleur = { type: 'panorama', s, cap: q.cap, cible: [q.x, q.y + 2, q.z], rayon: 105, hauteur: 48, label: 'Relief et tracé', score };
@@ -86173,10 +86396,18 @@ globalThis.FGeometry=globalThis.BITUME.carene;
   function disponible(C, a, t) {
     return !!C && !!a && NATURE.has(a.type) && !!C.trajets.get(a)?.some(Boolean);
   }
-  function choisir(C, type, numero, t) {
+  function choisir(C, type, numero, t, position) {
     const liste = C?.ancres[type]; if (!liste?.length) return null;
-    for (let i = 0; i < liste.length; i++) { const a = liste[(numero + i) % liste.length]; if (disponible(C, a, t)) return a; }
-    return null;
+    let meilleure = null, distance = Infinity;
+    for (let i = 0; i < liste.length; i++) {
+      const a = liste[(numero + i) % liste.length];
+      if (!disponible(C, a, t)) continue;
+      if (!Number.isFinite(position)) return a;
+      const ecart = Math.abs(B.circuit.ecart(C.c, a.s, position));
+      if (type === 'lieu' && ecart > Math.min(800, C.c.longueur * .18)) continue;
+      if (ecart < distance) { meilleure = a; distance = ecart; }
+    }
+    return meilleure;
   }
   function sol(C, x, z, y) {
     if (C.monde?.raycast) {
@@ -86395,7 +86626,7 @@ globalThis.FGeometry=globalThis.BITUME.carene;
 
   function creer(graine) {
     return { alea: mulberry32((graine >>> 0) + 0x51ED270B), plan: null, n: 0, vert: -1, vainqueur: -1, sprint: false,
-      vus: {}, ordre: null, action: null, cinema: null, plansCourse: 0, natureTour: 0, natureDerniere: -1e9 };
+      vus: {}, ordre: null, action: null, cinema: null, plansCourse: 0, natureTour: 0, natureDerniere: -1e9, dernierFreinage: -Infinity, dernierPlanPluie: -Infinity };
   }
 
   // côté du milieu de la piste, vu de la voiture : les caméras latérales s'y placent, loin des arbres et des rails
@@ -86410,9 +86641,9 @@ globalThis.FGeometry=globalThis.BITUME.carene;
 
   function respiration(R, co) {
     if (!R.cinema || R.sprint || co.drapeau !== null || R.plansCourse < 3 || co.horloge - R.natureDerniere < 15 || co.horloge - R.vert < 11) return null;
-    const types = ['lieu', 'panorama'];
+    const types = ['lieu', 'panorama'], tete = co.voitures[co.classement[0]];
     for (let k = 0; k < types.length; k++) {
-      const type = types[(R.natureTour + k) % types.length], ancre = B.cinema.choisir(R.cinema, type, Math.floor(R.natureTour / types.length), co.horloge);
+      const type = types[(R.natureTour + k) % types.length], ancre = B.cinema.choisir(R.cinema, type, Math.floor(R.natureTour / types.length), co.horloge, tete.etat.s);
       if (!ancre) continue;
       R.natureTour += k + 1;
       let sujet = co.classement[0], distance = Infinity;
@@ -86441,11 +86672,36 @@ globalThis.FGeometry=globalThis.BITUME.carene;
     return co.voitures.some(o => o !== v && !o.fini && v.progression - o.progression > 0 && v.progression - o.progression < DUEL);
   }
 
+  // Une voiture qui freine à l'entrée d'un virage, filmée depuis celle qui la suit.
+  // Une coupure de réalisation suffit : aucune recherche dans le pas de conduite ni dans le rendu.
+  function filmerFreinage(R, co, enPiste) {
+    if (!R.cinema || co.horloge - R.dernierFreinage < 18) return null;
+    const virages = B.virages?.planifier(co.c);
+    if (!virages?.length) return null;
+    for (let i = 1; i < enPiste.length; i++) {
+      const devant = enPiste[i-1], suit = enPiste[i], e = devant.etat, f = suit.etat;
+      const ecart = devant.progression - suit.progression;
+      if (!(e.frein >= .18 && e.v > ALLURE && f.v > ALLURE && ecart >= 5 && ecart <= 32)) continue;
+      if (e.stands || f.stands || e.recuperation || f.recuperation || e.accident || f.accident) continue;
+      const virage = virages.find(v => {
+        let distance = v.sommet - e.s;
+        if (!co.c.ouvert && distance < -8) distance += co.c.longueur;
+        return distance >= -8 && distance < Math.min(125, e.v * 2.5);
+      });
+      if (!virage) continue;
+      R.dernierFreinage = co.horloge;
+      const vue = R.plan?.vue === 'cockpit' ? 'poursuite' : 'cockpit';
+      return couper(R, co, vue, suit.id, 4.5, 'freinage', { rival: devant.id, virage: virage.id, label: virage.libelle });
+    }
+    return null;
+  }
+
   function suivant(R, co) {
     const avant = R.plan, V = co.voitures;
-    const enPiste = co.classement.map(id => V[id]).filter(v => !v.fini);
+    const enPiste = co.classement.map(id => V[id]).filter(v => !v.fini && !v.abandon);
     if (!enPiste.length) return couper(R, co, 'tele', co.classement[0], DUREES.tele, 'tete');
     const paysage = respiration(R, co); if (paysage) return paysage;
+    const freinage = filmerFreinage(R, co, enPiste); if (freinage) return freinage;
 
     // Les duels : la voiture qui chasse, pour que celle de devant soit à l'image. La tête de course pèse plus lourd,
     // l'écart court aussi ; on évite de reprendre la voiture du plan précédent.
@@ -86466,6 +86722,12 @@ globalThis.FGeometry=globalThis.BITUME.carene;
 
     // la caméra : jamais la même deux fois ; l'arrière seulement si quelqu'un suit ; rien de porté sur une voiture lente
     const lente = V[sujet].etat.v <= ALLURE;
+    // La caméra réelle reçoit la pluie, les gouttes et les reflets déjà calculés pour la course.
+    if (!lente && R.cinema?.options?.pluie >= .25 && co.horloge - R.dernierPlanPluie >= 24) {
+      R.dernierPlanPluie = co.horloge;
+      const vue = avant?.vue === 'cockpit' ? 'poursuite' : 'cockpit';
+      return couper(R, co, vue, sujet, DUREES[vue], 'pluie');
+    }
     const catalogue = R.cinema ? VUES.concat(['peloton']) : VUES;
     const vues = catalogue.filter(v => (!avant || v !== avant.vue) && !(v === 'arriere' && !chasse(co, sujet)) && !(lente && dePres(v)));
     const vue = tirer(R, vues.map(v => [v, poids(R, v)]));
@@ -94052,7 +94314,7 @@ FERRO.initPhysics().then(function(){
     numeroSeance: 0, seanceAcceptee: null, dernierDepart: -Infinity };
   const VERSION_CHOIX_PNEUS = 2, VERSION_PNEUS_RESEAU = 1;
   // Empreinte des sources du build, incluant catalogue, générateur, limites et collisions : même piste, même jeu.
-  const REVISION_PISTES = '3d09d12b6bf7808bdb5a8d9abd640615053c1b85870f8b00ab4d877126b4e02f';
+  const REVISION_PISTES = '75b51f9643bccf41df3d92263d6fd6e3934ba97ab791e84f7ea04100e55f6912';
   function contratPiste(i) {
     return Number.isInteger(i) && CATALOGUE[i] ? { id: CATALOGUE[i].id, revision: REVISION_PISTES, physique: PHYSIQUE } : null;
   }
@@ -96241,7 +96503,12 @@ FERRO.initPhysics().then(function(){
     if (x.seance !== S) { x.seance = S; x.tChiffres = x.tPlan = -Infinity; }
     majAnnonceVirage(S, x, j);
     if (x === HUD1) afficherAideRetour(aideRetour(S));
-    if (demo && S.planVu) texte($('demo-plan'), CATALOGUE[S.i].nom + ' · ' + LIBELLES_PLAN[S.planVu.vue] + ' · ' + (S.planVu.nature ? S.planVu.label : j.nom));
+    if (demo && S.planVu) {
+      const p = S.planVu;
+      const legende = p.nature ? p.label : p.motif === 'freinage' ? 'Freinage · ' + p.label
+        : p.motif === 'pluie' ? 'Sous la pluie · ' + j.nom : LIBELLES_PLAN[p.vue] + ' · ' + j.nom;
+      texte($('demo-plan'), CATALOGUE[S.i].nom + ' · ' + legende);
+    }
     texte(H['h-pos'], chronoMode ? '–' : String(j.position)); texte(H['h-sur'], chronoMode ? '' : '/' + nb);
     if (!chronoMode && !demo && S.positionPrec && j.position < S.positionPrec && co.phase === 'course') eclat(H['c-position']);
     S.positionPrec = j.position;
@@ -96596,6 +96863,7 @@ FERRO.initPhysics().then(function(){
     texte($('p-resume'), resume);
     majBilanArcade();
     $('p-conditions-reel').hidden = !reel;
+    if ($('p-bdtre')) $('p-bdtre').hidden = CATALOGUE[reglages.circuit].id !== 'larche';
     $('p-meteo-sources').hidden = reglages.meteoMode !== 'reel';
     $('p-actualiser-conditions').hidden = !reel && !['saison', 'moment', 'meteo'].some(n => reglages[n + 'Mode'] === 'aleatoire');
     texte($('p-actualiser-conditions'), reel ? 'Actualiser les conditions' : 'Tirer à nouveau');

@@ -1,6 +1,6 @@
 # Maisons de la haute vallée de la Stura
 
-Les six groupes de maisons occupent les positions procédurales déjà présentes dans le parcours, d’Argentera à Pianche. Le repère de Pietraporzio est au km 18,207. Les hauteurs des ouvertures, les nuances de peinture et la disposition des façades sont des choix de modélisation. Le jeu ne possède pas de relevé individuel des trente maisons.
+Cinq villages conservent leurs groupes de maisons procédurales, d’Argentera à Pianche. À Pietraporzio, entre les km 17,99 et 18,44, huit bâtiments reprennent les polygones et les hauteurs d’extrusion de la cartographie régionale. La forme des couvertures et l’agencement des façades restent des choix de modélisation. [Emprises et recalage de Pietraporzio](PIETRAPORZIO-BDTRE.md)
 
 ## Références locales
 
@@ -12,4 +12,4 @@ L’Unione Montana Valle Stura mentionne les habitations de pierre et de bois du
 
 Les toits à deux pans comportent un faîtage, des rives et un dessous visible depuis la chaussée. Les façades alternent pierre et enduit, bois des pignons, tablettes de fenêtres, volets et jours de fenil. Les vitres se trouvent derrière la face des menuiseries. Elles utilisent le verre des logements de FERRO, qui gère les reflets et l’éclairage nocturne par baie. La neige couvre les pans dans la variante hivernale. Les formes partagées et les matériaux sont générés par le jeu, sans photographie, texture téléchargée ou reproduction des illustrations.
 
-À distance, le moteur conserve quatre éléments par maison, soit 46 triangles pour le mur, la couverture, les pignons et la cheminée. La silhouette précédente en demandait 56. Les détails d’ouvertures rejoignent les lots proches du décor. Le seul solide de chaque maison reste le mur d’origine et la découpe des prairies garde les deux mêmes empreintes horizontales.
+Dans les cinq villages procéduraux, le moteur conserve à distance quatre éléments par maison, soit 46 triangles pour le mur, la couverture, les pignons et la cheminée. La silhouette précédente en demandait 56. Les détails d’ouvertures rejoignent les lots proches du décor. Le seul solide de chaque maison reste le mur d’origine et la découpe des prairies garde les deux mêmes empreintes horizontales.

@@ -2,6 +2,7 @@
   'use strict';
 if (!B.larcheRelief && typeof require === 'function') require('./larche-relief.js');
 if (!B.coniferesAlpins && typeof require === 'function') require('./coniferes-alpins.js');
+if (!B.pietraporzio && typeof require === 'function') require('./pietraporzio.js');
 const PAS_L = 32;
 const OFFSETS = [-260, -160, -90, -42, -16, -9, 9, 16, 42, 90, 160, 260];
 const N_LAT = OFFSETS.length;
@@ -908,6 +909,13 @@ function poser(c, outils) {
   ];
   const nMaisons = isLow ? 2 : 5;
   for (const v of villages) {
+    if (v.nom === 'Pietraporzio') {
+      B.pietraporzio.poser(terr,getPos,!!saison?.neige,!isLow,(proche,loin,x,z)=>{
+        objets.push(...proche);
+        if (ajouter) ajouter(proche,loin,x,z);
+      });
+      continue;
+    }
     const pos = getPos(v.s);
     const tx = -Math.sin(pos.cap), tz = Math.cos(pos.cap);
     for (let m = 0; m < nMaisons; m++) {
@@ -1009,6 +1017,7 @@ function poser(c, outils) {
       const sx = taille * (0.75 + hache(r + 711, graine) * 0.65);
       const sy = taille * (0.45 + hache(r + 723, graine) * 0.55);
       const sz = taille * (0.70 + hache(r + 739, graine) * 0.68);
+      if (s >= 17800 && s <= 18600 && B.pietraporzio.recouvre(rx,rz,Math.hypot(sx,sz)/2)) continue;
       const rocher = {
         forme: rocheForme(graine ^ Math.imul(r + 13, 1597334677)),
         taille: [sx, sy, sz],
@@ -1052,6 +1061,7 @@ function poser(c, outils) {
         const essence = nu ? 'meleze-nu' : estMeleze ? 'meleze' : 'sapin';
         const taille = (estMeleze ? 9.5 : 12.0) + h2 * 8.5;
         const rL = taille * (estMeleze ? 0.85 : 0.68);
+        if (s >= 17800 && s <= 18600 && B.pietraporzio.recouvre(wx,wz,rL/2)) continue;
         const ang = h1 * PI * 2;
         const bois = [0.24, 0.16, 0.10];
         const col = nu ? bois : estMeleze
@@ -1066,10 +1076,15 @@ function poser(c, outils) {
     }
   }
 
-  const posCol = getPos(320), posViaduc = getPos(Math.min(18200, c.longueur * 0.52)), posFort = getPos(Math.min(32250, c.longueur - 400));
+  // Le quartier est cadré sur la mairie si son empreinte BDTRE est disponible.
+  const mairie = B.pietraporzioData?.find(v => v.usage === 'municipio');
+  const routeBourg = getPos(mairie?.s ?? villages.find(v => v.nom === 'Pietraporzio').s);
+  const pointBourg = mairie ? { x: mairie.x, y: (terr?.sol(mairie.x,mairie.z) ?? routeBourg.y) + mairie.h * .5, z: mairie.z }
+    : { x: routeBourg.x, y: routeBourg.y + 8, z: routeBourg.z };
+  const posCol = getPos(320), posFort = getPos(Math.min(32250, c.longueur - 400));
   const marqueurs = [
     { nom: 'Col de Larche · Lac de la Maddalena', x: posCol.x, y: posCol.y + 8, z: posCol.z, rayon: 110, hauteur: 44 },
-    { nom: 'Vallée de la Stura · Pietraporzio', x: posViaduc.x, y: posViaduc.y + 8, z: posViaduc.z, rayon: 115, hauteur: 48 },
+    { nom: 'Vallée de la Stura · Pietraporzio', ...pointBourg, rayon: 115, hauteur: 48 },
     { nom: 'Fort Albertino de Vinadio', x: posFort.x - Math.sin(posFort.cap) * 35, y: posFort.y + 10, z: posFort.z + Math.cos(posFort.cap) * 35, rayon: 105, hauteur: 42 }
   ];
   return { objets, marqueurs };

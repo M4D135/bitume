@@ -31,11 +31,11 @@ test('pans, pignons et feuillures instanciés, normales orientées et 42 triangl
   assert.ok(couv.some(t=>t[3][1]>.3 && t[3][2]>.5)); assert.ok(couv.some(t=>t[3][1]>.3 && t[3][2]<-.5));
 });
 
-test('les solides de la .111 et ses empreintes de végétation restent aux mêmes coordonnées', () => {
-  // Témoins indépendants des anciens couples cube/biseau, classements de la route et sol de test inchangés.
+test('les cinq villages synthétiques conservent leurs solides et empreintes antérieurs', () => {
+  // Témoin .115 après exclusion du quatrième groupe, Pietraporzio, désormais fondé sur la BDTRE.
   for (const [qualite,nb,solides,emprises] of [
-    ['low',12,'e0d27c73dadb3881f093309f99fb630e24446da011f52231ec614a4c684ed67c','e93cac7ddaca95b2a3ab6962e183fe996ee33919747fcd8a20f800ad80195846'],
-    ['high',30,'1e5d00a3941883f277cd5e8fbdf57fc6ba1e16ed4bb0dad4e92b7534c3899d32','985af94aa645ec79d3e4db4ec8d94ce790885cd2104fd186cef7b11c1850de36']
+    ['low',10,'31f03e133a85ae62aec0a5c44897cddb9193f41d7ea5f1fdab3c462a6ff7e8ea','830298a8ebdee914713305cee5ff828e9548c62002de62b998db22727f60cc14'],
+    ['high',25,'9eaa15a82745141a81f67bd5d6d4b0d2ad57eb54a18f1e37f1064f43c7f25b52','27faa3d3c759ca3f157555711e869c354664d1e9d3c38e40072d832101330929']
   ]) {
     const maisons=villages(qualite); assert.equal(maisons.length,nb);
     const murs=maisons.flatMap(g=>g.proche.filter(o=>o.solidePhysX)).map(o=>({shape:o.shape,p:o.p,s:o.s,r:o.r,solide:o.solidePhysX}));
