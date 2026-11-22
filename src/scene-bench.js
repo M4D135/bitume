@@ -155,7 +155,7 @@
       decor.atmosphere = B.graphismes.atmosphere(decor.atmosphere);
       positions ||= endroitsCharges(decor, DEPART);
       rendu.resize(P.rendu.resolution);
-      rendu.setWorld([], [], decor.atmosphere); rendu.setNappes(decor.nappes); rendu.setLots(decor.lots);
+      rendu.setWorld([], [], decor.atmosphere); rendu.setNappes(decor.nappes); rendu.setLots(decor.lots, { staticBounds: true });
       if (!faune && P.faune !== 'off') faune = B.faune.creer(c, decor);
       fauneVue.qualite = P.faune;
       if (rendu.profile) rendu.profile(false);
@@ -185,7 +185,7 @@
         // Le moteur des glaces reçoit ses propres copies des nappes et des lots, comme en course.
         glacesRendu.setWorld([], [], decor.atmosphere);
         glacesRendu.setNappes(decor.nappes.map(n => Object.assign({}, n)));
-        glacesRendu.setLots(decor.lots.map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null })));
+        glacesRendu.setLots(decor.lots.map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null })), { staticBounds: true });
         // En course, chaque glace rendue est copiée dans la toile 2D posée sur le rétroviseur (drawImage) : le
         // parcours fait la même copie dans une toile à lui, jamais affichée.
         const source = glacesRendu.gl && glacesRendu.gl.canvas, doc = globalThis.document;

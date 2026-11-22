@@ -910,10 +910,12 @@ function poser(c, outils) {
   const nMaisons = isLow ? 2 : 5;
   for (const v of villages) {
     if (v.nom === 'Pietraporzio') {
-      B.pietraporzio.poser(terr,getPos,!!saison?.neige,!isLow,(proche,loin,x,z)=>{
+      const ajouterBati=(proche,loin,x,z)=>{
         objets.push(...proche);
         if (ajouter) ajouter(proche,loin,x,z);
-      });
+      };
+      B.pietraporzio.poser(terr,getPos,!!saison?.neige,!isLow,ajouterBati);
+      B.pietraporzio.poserCouronne(!!saison?.neige,ajouterBati);
       continue;
     }
     const pos = getPos(v.s);

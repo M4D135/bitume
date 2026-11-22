@@ -112,7 +112,7 @@
     const rotation=cote<0?r:[r[0]+Math.PI,r[1],r[2]];
     const fond=objet('box',17,[.10,.12,.13]), fleche=objet('box',16,[1,.68,.14]);
     fond.p=fleche.p=pos; fond.s=fleche.s=taille; fond.r=fleche.r=rotation;
-    return {s,x:pos[0],z:pos[2],fond,fleche};
+    return {s,x:pos[0],z:pos[2],rayon:.5*Math.hypot(...taille),fond,fleche};
   }
 
   function objet(shape, mat, couleur) {
@@ -198,7 +198,7 @@
         const proches=etat.cases.get(cleCase(x,z)); if (!proches) continue;
         for (const p of proches) {
           const d2=(p.x-camera[0])**2+(p.z-camera[2])**2;
-          if (d2>portee**2) continue;
+          if (d2>portee**2 || (contexte?.visible && !contexte.visible(p.x,p.fond.p[1],p.z,p.rayon))) continue;
           const noms=formesRuban[d2<12**2?1:0][phase]; if (!noms) continue;
           p.fond.shape=noms[0]; p.fleche.shape=noms[1]; p.fleche.emissive=eclat;
           sortie.push(p.fond,p.fleche);

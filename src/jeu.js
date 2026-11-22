@@ -267,7 +267,7 @@
     if (B.obstacles) c.obstacles = B.obstacles.creer(decor.obstacles);
     rendu.setWorld([], [], decor.atmosphere);
     rendu.setNappes(decor.nappes);
-    rendu.setLots(decor.lots);
+    rendu.setLots(decor.lots, { staticBounds: true });
     // Le public (public.js) : de vrais spectateurs à la place des boîtes des gradins, dessinés par le point d'accroche
     // « foule » du moteur. Bâti au palier ancre, comme le décor ; la vue de l'ancienne scène rend ses tampons.
     if (scene && scene.vuePublic) scene.vuePublic.liberer();
@@ -2607,7 +2607,7 @@
     const d = scene.decor;
     retro.rendu.setWorld([], [], d.atmosphere);
     retro.rendu.setNappes(d.nappes.map(n => Object.assign({}, n)));
-    retro.rendu.setLots(d.lots.map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null })));
+    retro.rendu.setLots(d.lots.map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null })), { staticBounds: true });
     // le public dans les glaces : son propre contexte WebGL, sans le niveau proche ni les ombres (glace sans ombre)
     if (retro.vuePublic) retro.vuePublic.liberer();
     retro.vuePublic = null;
@@ -2689,11 +2689,19 @@
     ev.p[0] = ps.x; ev.p[1] = ps.y; ev.p[2] = ps.z; ev.cap = ps.cap; ev.tangage = ps.tangage; ev.roulis = ps.roulis;
     const glaces = B.voiture.glacesCockpit(ev, J.glaces);
     J.toiles = toiles;
+    let aRepeindre = 0;
     for (let i = 0; i < 2; i++) {
-      // image retournée : son coin haut gauche va au coin haut droit de la glace
+      // Chaque glace reste visible dès qu'une partie de son rectangle projeté entre dans la vue.
       const g = glaces[i], PC = J.poses[i], v = PC.v;
-      const ok = projeterCoin(g.coins[1], 0, Q) && projeterCoin(g.coins[0], 1, Q) && projeterCoin(g.coins[3], 2, Q) && projeterCoin(g.coins[2], 3, Q) && homographie(Q, l, h, v);
-      if (changee(v, PC) || (ok && PC.chaine === '')) PC.chaine = ok ? chaineMatrice(v) : '';
+      const ok = projeterCoin(g.coins[1], 0, Q) && projeterCoin(g.coins[0], 1, Q)
+        && projeterCoin(g.coins[3], 2, Q) && projeterCoin(g.coins[2], 3, Q)
+        && Math.max(Q[0], Q[2], Q[4], Q[6]) >= 0 && Math.min(Q[0], Q[2], Q[4], Q[6]) <= C.L
+        && Math.max(Q[1], Q[3], Q[5], Q[7]) >= 0 && Math.min(Q[1], Q[3], Q[5], Q[7]) <= C.H
+        && homographie(Q, l, h, v);
+      if (ok) {
+        if (changee(v, PC) || !PC.chaine) PC.chaine = chaineMatrice(v);
+        if (!PC.ok || !J.vu) aRepeindre |= 1 << i;
+      }
       PC.ok = ok;
     }
     J.aPoser = true;
@@ -2710,6 +2718,12 @@
     for (let n = 0; n < 2 && J.dette >= intervalle - dt / 2; n++) {
       J.dette -= intervalle;
       const i = G.cote; G.cote = 1 - G.cote;
+      if (J.poses[i].ok) aRepeindre |= 1 << i;
+    }
+    // Une glace qui revient dans le champ reçoit une image fraîche dès cette vue.
+    // Les deux côtés conservent leurs créneaux ; rien à préparer ou copier hors écran.
+    for (let i = 0; i < 2; i++) {
+      if (!(aRepeindre & (1 << i))) continue;
       const dtGlace = J.ecoule[i]; J.ecoule[i] = 0;
       peindreGlace(S, G, i, glaces[i], cam, ps, sortie, ambiance, suivie, P, source, l, h, dtGlace);
     }
@@ -2748,6 +2762,10 @@
     CHAMP_GLACE.vertical = Math.tan(clamp(camR.fov, 10, 110) * Math.PI / 360);
     CHAMP_GLACE.horizontal = CHAMP_GLACE.vertical * largeur / hauteur;
     return CHAMP_GLACE;
+  }
+  function rayonMonoplace(pose) {
+    const r = pose.rebond;
+    return DERRIERE_CAMERA + (r ? Math.max(Math.abs(r[0] || 0), Math.abs(r[1] || 0), Math.abs(r[2] || 0), Math.abs(r[3] || 0)) : 0);
   }
   function visibleDansGlace(borne, camR, champ) {
     return champ.visible(borne, camR.pos, champ.axes, champ.horizontal, champ.vertical, camR.far);
@@ -2811,9 +2829,8 @@
       if (champ) {
         // La monoplace de 4,53 m, son pilote et les dépôts sur sa peau tiennent dans la
         // marge de 8 m utilisée pour la coupe arrière. Le débattement des quatre roues s'y ajoute.
-        const rebond = pose.rebond;
         BORNE_GLACE.p = pose.p;
-        BORNE_GLACE.radius = DERRIERE_CAMERA + (rebond ? Math.max(Math.abs(rebond[0] || 0), Math.abs(rebond[1] || 0), Math.abs(rebond[2] || 0), Math.abs(rebond[3] || 0)) : 0);
+        BORNE_GLACE.radius = rayonMonoplace(pose);
         if (!visibleDansGlace(BORNE_GLACE, camR, champ)) continue;
       }
       const o = optionsGlace(k);
@@ -3025,7 +3042,7 @@
     if (S.type === 'vitrine') { suivie = co.voitures[co.classement[S.suiviRang || 0]] || j; vue = 'tele'; }
     else if (S.type === 'demo') {
       B.cinema.regler(S.cinema, { faune: B.animaux.qualite(reglages.faune, P.palier), nuit: S.nature?.ambiance.nuit || 0, pluie: meteo.pluie || 0 });
-      const pl = B.realisateur.tenir(S.real, co, S.cinema, S.expressions);
+      const pl = B.realisateur.tenir(S.real, co, S.cinema, S.expressions, co.voitures[co.classement[0]].etat.s);
       // coupe : les caméras lissées repartent de la nouvelle voiture, les écarts du son aussi
       if (S.planVu !== pl) { S.planVu = pl; S.camCap = null; S.tete = null; S.tele.poste = null; S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0; }
       vue = pl.vue; suivie = co.voitures[pl.sujet];
@@ -3135,6 +3152,15 @@
     // chaque draw un index spatial vide (clés de grille et tableaux temporaires). Image identique.
     cam.allStatic = true;
 
+    // Le même filtre FERRO considère la caméra et les volumes projetant des ombres.
+    // Les glaces reposent ensuite leurs voitures indépendamment de la vue principale.
+    const optionsVisibilite = S.optionsVisibilite || (S.optionsVisibilite = { sunOnly: true });
+    optionsVisibilite.time = horlogeReelle;
+    optionsVisibilite.shadows = avecOmbres(P);
+    optionsVisibilite.reflections = avecReflets(S, P, meteo);
+    const acteurVisible = rendu?.actorFilter?.(cam, optionsVisibilite);
+    const avecGlaces = glacesVives(S, vue);
+
     preparerChampsFaune(S, vue, cam, ps, P);
     // Habitats partagés ; pools propres aux deux vues. Le temps absolu garde les mêmes vols dans les miroirs.
     if (S.nature && B.faune && P.faune !== 'off' && (!S.nature.saison || S.nature.saison.faune > 0)) {
@@ -3170,6 +3196,7 @@
       ctxSig.mouvementReduit = !!preferenceMouvement?.matches;
       ctxSig.pluie = meteo.pluie || 0; ctxSig.nuit = S.nature?.ambiance?.nuit || 0; ctxSig.cameraPos = cam.pos;
       ctxSig.course = co;
+      ctxSig.visible = avecGlaces ? null : acteurVisible;
       B.signalisationCourse.mettreAJour(sig, S.tRendu, ctxSig, sortie);
     }
     // Équipe F1 des stands (12 mécaniciens, roues, essence, sucette STOP → GO ! & LEDs portiques)
@@ -3214,7 +3241,7 @@
       B.aurores.dessiner(nature.aurores, S.tRendu, contexte, sortie);
     }
 
-    // voitures : toujours dessinées. Niveau de détail selon la taille à l'écran (detailVoiture) : la hauteur de la
+    // Voitures retenues par la caméra et les ombres. Le détail dépend de la taille à l'écran : la hauteur de la
     // toile suit l'écran et la résolution du profil ; le seuil suit le champ (un téléobjectif garde le modèle complet
     // bien plus loin).
     const tanDemi = Math.tan(clamp(cam.fov, 10, 110) * Math.PI / 360), hauteur = canvas.height;
@@ -3222,6 +3249,8 @@
     let ombreDebut = 0, ombreFin = 0; // objets de la voiture filmée dans sortie : sa tuile d'ombre (src/ombres.js)
     for (let k = 0; k < co.voitures.length; k++) {
       const p = poses[k], dx = p.x - cam.pos[0], dz = p.z - cam.pos[2], d2 = dx * dx + dz * dz;
+      const visible = k === suivie.id || !acteurVisible || acteurVisible(p.x, p.y, p.z, rayonMonoplace(p));
+      if (!visible && !avecGlaces) continue;
       B.voiture.changerPneus(S.modeles[k], co.voitures[k].etat.pneus);
       const etatsPneus = co.voitures[k].distant && S.pneusVisuels ? S.pneusVisuels[k] : co.voitures[k].etat.etatPneus;
       const ev = poseRendu(k, p, RV[k], co.voitures[k].etat, etatsPneus);
@@ -3237,7 +3266,7 @@
       const rouesDetail = S.detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(ev, cam.pos), tanDemi, hauteur, S.detailsRoues[k]);
       if (k === suivie.id) ombreDebut = sortie.length;
       if (k === suivie.id && vue === 'cockpit') {
-        const et = suivie.etat, atm = S.nature ? S.nature.ambiance.atmosphere : scene.decor.atmosphere, glaceVive = glacesVives(S, vue);
+        const et = suivie.etat, atm = S.nature ? S.nature.ambiance.atmosphere : scene.decor.atmosphere, glaceVive = avecGlaces;
         const etc = ETAT_COCKPIT;
         etc.regime = et.regime; etc.volant = et.volant; etc.rapport = et.rapport; etc.kmh = B.conduite.kmh(et);
         etc.rouesDetail = rouesDetail;
@@ -3262,6 +3291,7 @@
       o.rouesDetail = rouesDetail;
       o.detail = o.plafond === 'complet' && dx * avX + dz * avZ < -DERRIERE_CAMERA ? 'moyen' : o.plafond;
       o.roues = co.voitures[k].degats && co.voitures[k].degats.roues; o.casse = !!(co.voitures[k].degats && co.voitures[k].degats.casse);
+      if (!visible) continue;
       const attitude = B.voiture.poser(S.modeles[k], ev, sortie, o);
       poserEauCarrosserie(S, k, ev, sortie, o.casse ? 'epave' : o.detail, false, attitude,
         d2, tanDemi, hauteur, P.palier);
@@ -3336,7 +3366,7 @@
       if (!S.regardArriere && !S.camTransition?.actif && VUES_COURSE.includes(vue) && S.type !== 'demo' && S.type !== 'vitrine') {
         B.detailPeripherique.appliquer(detail, c, suivie.etat, cam, canvas.width, canvas.height);
       }
-      rendu.draw(cam, sortie, { time: horlogeReelle, msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: avecReflets(S, P, meteo), weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, foule: S.foulePublic, contacts: ombresVue.contacts, ombreProche: ombresVue.ombreProche, penombre: ombresVue.penombre });
+      rendu.draw(cam, sortie, { time: horlogeReelle, msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: optionsVisibilite.reflections, weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, foule: S.foulePublic, contacts: ombresVue.contacts, ombreProche: ombresVue.ombreProche, penombre: ombresVue.penombre });
     } finally { B.detailPeripherique.restaurer(detail); }
     if (B.mesures.actif) {
       B.mesures.section('rendu', performance.now() - tDraw);
@@ -5471,7 +5501,7 @@
     scene.chauffe = null;   // le banc a remplacé le monde du moteur : la chauffe de cette scène est à refaire
     if (contexteRenduPerdu) { restaurerDecorApresContexte = true; return; }
     const atm = session && session.nature ? session.nature.ambiance.atmosphere : scene.decor.atmosphere;
-    rendu.setWorld([], [], atm); rendu.setNappes(scene.decor.nappes); rendu.setLots(scene.decor.lots);
+    rendu.setWorld([], [], atm); rendu.setNappes(scene.decor.nappes); rendu.setLots(scene.decor.lots, { staticBounds: true });
     if (session && session.nature) session.nature.revisionRendu = -1;
     restaurerDecorApresContexte = false;
   }

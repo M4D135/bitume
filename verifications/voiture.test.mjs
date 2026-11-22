@@ -606,4 +606,30 @@ verifier('le joueur et les concurrents allument et relâchent indépendamment le
   }
 });
 
+verifier('le choc arrière garde le nez intact, le frontal le raccourcit et les deux chocs obliques le plient en sens opposés', () => {
+  const pose={p:[0,0,0],cap:0,tangage:0,roulis:0,braquage:0,roule:0,v:24};
+  const arriere={avant:0,arriere:.9,pli:0}, frontal={avant:.8,pli:0};
+  const gauche={avant:.65,pli:.4}, droite={avant:.65,pli:-.4};
+  function objets(detail,zonesDegats){
+    const l=[];V.poser(mod,{...pose,zonesDegats},l,{detail});
+    return l.map(o=>({shape:o.shape,p:[...o.p],s:[...o.s],r:o.r?Array.from(o.r):undefined}));
+  }
+  for(const detail of ['complet','moyen','simple']){
+    const intact=objets(detail), apres=objets(detail,frontal);
+    assert.deepEqual(objets(detail,arriere),intact);
+    assert.equal(apres.length,intact.length);
+    assert.ok(apres.some(o=>o.shape.includes('-plie-')));
+    for(let i=0;i<intact.length;i++) if(!apres[i].shape.includes('-plie-') && intact[i].p[0]<.98)
+      assert.deepEqual(apres[i],intact[i],intact[i].shape);
+    assert.deepEqual(objets(detail),intact,'une pose réparée retrouve les pièces saines');
+  }
+  function pointe(zones){
+    const p=[2.12,.235,0];
+    return V.pointSurNez(V.FORMES.fleche.nom,V.profilImpact(zones),p);
+  }
+  assert.deepEqual(pointe(arriere),[2.12,.235,0]);
+  assert.ok(pointe(frontal)[0]<1.9);assert.equal(pointe(frontal)[2],0);
+  assert.ok(pointe(gauche)[2]>.1);assert.ok(pointe(droite)[2]<-.1);
+});
+
 console.log(`${compte} vérifications réussies`);

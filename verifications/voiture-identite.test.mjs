@@ -128,9 +128,35 @@ function filtreRetro(V, objets, n0, ev) {
   }
 }
 
+// Seule la définition des deux pièces remplacées par le feu de freinage .118 est historique.
+// Ces bornes sont les sommets extrêmes des deux plaques de a7469d6 dans src/voiture.js, juste
+// avant e3dc543. On les remet dans le modèle fourni à la pose actuelle ; les pièces non visées
+// (y compris les numéros et toute la carrosserie) passent intégralement dans l'ancien SHA.
+const LAMPES_ACTUELLES = ['bitume-feu-stop-boitier','bitume-feu-stop-lentille'];
+function modeleDuTemoin(V,livree) {
+  const mod=V.modele(livree);
+  const [boitier,lentille]=LAMPES_ACTUELLES.map(nom=>{
+    const pieces=mod.corps.filter(pc=>pc.shape===nom);
+    assert.equal(pieces.length,1,nom);
+    return pieces[0];
+  });
+  const lampeAncienne=(piece,nom,min,max,couleur)=>{
+    const {feuStop,...base}=piece;
+    return {...base,shape:nom,o:min.map((v,k)=>(v+max[k])/2),s:min.map((v,k)=>max[k]-v),color:couleur};
+  };
+  const boite=lampeAncienne(boitier,'bitume-feu-pluie-boitier',[-1.815,.258,-.030],[-1.765,.322,.030],boitier.color);
+  const led=lampeAncienne(lentille,'bitume-feu-pluie-led',[-1.822,.266,-.022],[-1.812,.314,.022],[.96,.08,.05]);
+  led.emissive=1.8;
+  mod.corps=mod.corps.map(pc=>pc===boitier?boite:pc===lentille?led:pc);
+  // Les deux pièces venaient exclusivement du modèle détaillé avant la .118.
+  mod.moyens=mod.moyens.filter(pc=>pc!==boitier && pc!==lentille);
+  mod.simples=mod.simples.filter(pc=>pc!==boitier && pc!==lentille);
+  return mod;
+}
+
 function empreintes(B) {
   const V = B.voiture, R = {}, a = alea(20261118);
-  const modeles = LIVREES.map(l => V.modele(l));
+  const modeles = LIVREES.map(l => modeleDuTemoin(V,l));
   const poses = POSES_FIXES.concat(Array.from({ length: 8 }, () => poseAuHasard(a)));
   // poser : chaque voiture, chaque pose, chaque jeu d'options
   modeles.forEach((mod, i) => OPTIONS_POSER.forEach((options, j) => {

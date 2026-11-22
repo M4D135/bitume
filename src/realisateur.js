@@ -52,11 +52,11 @@
     return R.plan;
   }
 
-  function respiration(R, co) {
+  function respiration(R, co, positionPeloton) {
     if (!R.cinema || R.sprint || co.drapeau !== null || R.plansCourse < 3 || co.horloge - R.natureDerniere < 15 || co.horloge - R.vert < 11) return null;
-    const types = ['lieu', 'panorama'], tete = co.voitures[co.classement[0]];
+    const types = ['lieu', 'panorama'];
     for (let k = 0; k < types.length; k++) {
-      const type = types[(R.natureTour + k) % types.length], ancre = B.cinema.choisir(R.cinema, type, Math.floor(R.natureTour / types.length), co.horloge, tete.etat.s);
+      const type = types[(R.natureTour + k) % types.length], ancre = B.cinema.choisir(R.cinema, type, Math.floor(R.natureTour / types.length), co.horloge, positionPeloton);
       if (!ancre) continue;
       R.natureTour += k + 1;
       let sujet = co.classement[0], distance = Infinity;
@@ -109,11 +109,11 @@
     return null;
   }
 
-  function suivant(R, co) {
+  function suivant(R, co, positionPeloton) {
     const avant = R.plan, V = co.voitures;
     const enPiste = co.classement.map(id => V[id]).filter(v => !v.fini && !v.abandon);
     if (!enPiste.length) return couper(R, co, 'tele', co.classement[0], DUREES.tele, 'tete');
-    const paysage = respiration(R, co); if (paysage) return paysage;
+    const paysage = respiration(R, co, positionPeloton); if (paysage) return paysage;
     const freinage = filmerFreinage(R, co, enPiste); if (freinage) return freinage;
 
     // Les duels : la voiture qui chasse, pour que celle de devant soit à l'image. La tête de course pèse plus lourd,
@@ -159,7 +159,7 @@
     }
   }
 
-  function tenir(R, co, cinema = null, expressions = null) {
+  function tenir(R, co, cinema = null, expressions = null, positionPeloton) {
     R.cinema = cinema;
     const t = co.horloge, p = R.plan, V = co.voitures;
     // La première découverte tient dans le délai existant : les feux et le départ restent en temps réel.
@@ -184,7 +184,7 @@
       }
       return t < p.fin ? p : couper(R, co, 'helico', R.vainqueur, 1e9, 'honneur');
     }
-    if (!p) { R.ordre = co.classement.slice(); return suivant(R, co); }
+    if (!p) { R.ordre = co.classement.slice(); return suivant(R, co, positionPeloton); }
     // Les 300 derniers mètres de la tête : on finit avec elle, de près, et le plan tient jusqu'au drapeau.
     const tete = V[co.classement[0]];
     const ligneArrivee = co.c.ouvert ? (co.c.arrivee ?? co.c.longueur) - (co.c.depart || 0) : co.toursTotal * co.c.longueur;
@@ -195,7 +195,7 @@
     }
     // Un plan de circuit garde sa durée tant que sa trajectoire est disponible.
     // Un sprint ou le drapeau garde toujours la priorité ci-dessus.
-    if (p.nature && !R.sprint) return B.cinema.disponible(cinema, p.ancre, t) && t < p.fin ? p : suivant(R, co);
+    if (p.nature && !R.sprint) return B.cinema.disponible(cinema, p.ancre, t) && t < p.fin ? p : suivant(R, co, positionPeloton);
     if (!R.sprint) {
       // L'action : un choc fort, filmé de dehors, à vitesse réelle (sans ralenti)
       const a = R.action; R.action = null;
@@ -219,7 +219,7 @@
     }
     const s = V[p.sujet];
     const arrete = dePres(p.vue) && p.motif !== 'action' && t - p.debut > 1.5 && s.etat.v < ARRET;
-    return t < p.fin && !s.fini && !arrete ? p : suivant(R, co);
+    return t < p.fin && !s.fini && !arrete ? p : suivant(R, co, positionPeloton);
   }
 
   // Une caméra mobile devenue masquée change réellement de plan : le numéro et les filtres repartent ensemble.

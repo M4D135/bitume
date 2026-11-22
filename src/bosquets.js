@@ -70,6 +70,13 @@
     }
     for (const l of lots) for (const o of l.objets) {
       const mat=Math.floor(o.mat || 0);
+      if (o.trianglesMasque) {
+        // Un îlot peut réunir plusieurs bâtiments. Seules leurs emprises
+        // ferment les clairières et les jardins entre les façades.
+        for(const [a,b,c] of o.trianglesMasque) masquer(Math.min(a[0],b[0],c[0])-4,Math.min(a[2],b[2],c[2])-4,
+          Math.max(a[0],b[0],c[0])+4,Math.max(a[2],b[2],c[2])+4);
+        continue;
+      }
       if (o.collision==='tronc' || o.partieArbre) continue;
       if (!o.collision && !o.solidePhysX && !o.masqueHerbier && !o.trianglesMasque &&
         ![9,12,13,22,23].includes(mat)) continue;

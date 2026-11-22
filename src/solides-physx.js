@@ -3,7 +3,8 @@
 (function (B) {
   'use strict';
   const GROUPES = Object.freeze({ sol: 1, obstacles: 2, voitures: 4, debris: 8 });
-  const SURFACES = [null, 'piste', 'vibreur', 'herbe'], PRIMITIVES = new Map();
+  const SURFACES = [null, 'piste', 'vibreur', 'herbe'];
+  let primitivesPhysiques;
   const vecteur = (v, n, nom) => {
     if ((!Array.isArray(v) && !ArrayBuffer.isView(v)) || v.length !== n || !Array.from(v).every(Number.isFinite)) throw new TypeError('PhysX : ' + nom);
   };
@@ -14,11 +15,11 @@
     return [sx * cy * cz - cx * sy * sz, cx * sy * cz + sx * cy * sz, cx * cy * sz - sx * sy * cz, cx * cy * cz + sx * sy * sz];
   }
   function primitives() {
-    if (PRIMITIVES.size) return;
+    if (primitivesPhysiques) return primitivesPhysiques;
     if (typeof module !== 'undefined' && module.exports && !globalThis.FRender?.shared?.geometry) require('./moteur/renderer.js');
     if (!globalThis.FRender?.shared?.geometry) throw new Error('PhysX : géométrie canonique FERRO absente');
     // Lecture publique du moteur, sans le modifier. Les formes de détail des plantes ne deviennent pas solides.
-    const g = globalThis.FRender.shared.geometry();
+    const g = globalThis.FRender.shared.geometry(), maillages = new Map();
     for (const nom of ['cylinder', 'bevel', 'octa', 'wedge']) {
       const plage = g.ranges[nom];
       if (!plage) throw new Error('PhysX : primitive FERRO absente (' + nom + ')');
@@ -27,17 +28,23 @@
         const v = g.indices[premier + k] * 6;
         vertices[k * 3] = g.vertices[v]; vertices[k * 3 + 1] = g.vertices[v + 1]; vertices[k * 3 + 2] = g.vertices[v + 2]; indices[k] = k;
       }
-      PRIMITIVES.set(nom, { vertices, indices });
+      maillages.set(nom, { vertices, indices });
     }
+    primitivesPhysiques = maillages;
+    return maillages;
   }
+  // geometry() assemble aussi toutes les formes libres inscrites dans FERRO. Dans la page, ce module
+  // suit immédiatement le renderer : seules ses primitives sont alors présentes. Une entrée autonome
+  // chargée plus tard garde la lecture à la demande lors de son premier solide non cubique.
+  const partage = globalThis.FRender?.shared;
+  if (partage?.shapes?.size === 0 && typeof partage.geometry === 'function') primitives();
   function primitive(o) {
     vecteur(o.p, 3, 'position'); vecteur(o.s, 3, 'taille');
     if (Array.from(o.s).some(v => v <= 0)) throw new RangeError('PhysX : taille positive requise');
     const pose = { pos: Array.from(o.p), quaternion: quaternion(o.r) };
     if (o.shape === 'box') return { ...pose, half: Array.from(o.s, v => v / 2) };
     if (typeof o.shape === 'string' && o.shape.startsWith('bitume-lieu-')) return { ...pose, half: Array.from(o.s, v => v * .44) };
-    if (!o.solidePhysX?.maillage) primitives();
-    const g = o.solidePhysX?.maillage || PRIMITIVES.get(o.shape);
+    const g = o.solidePhysX?.maillage || primitives().get(o.shape);
     if (!g) throw new TypeError('PhysX : forme solide non prise en charge (' + o.shape + ')');
     const vertices = new Float32Array(g.vertices.length);
     for (let k = 0; k < vertices.length; k++) vertices[k] = g.vertices[k] * o.s[k % 3];
@@ -55,20 +62,24 @@
   function nappe(n) {
     const s = n.sommets, entree = n.indices;
     if (!s || s.length % 13 || !entree || entree.length % 3) throw new TypeError('PhysX : nappe invalide');
-    const vertices = new Float32Array(s.length / 13 * 3), indices = [], surfaces = [], nb = s.length / 13;
+    const nb = s.length / 13, vertices = new Float32Array(nb * 3);
+    const indices = new Uint32Array(entree.length), surfaces = new Uint8Array(entree.length / 3);
+    const surfaceDefaut = n.surfaceType === 'accotement' ? 1 : 3;
+    let faces = 0;
     for (let k = 0; k < nb; k++) for (let a = 0; a < 3; a++) {
       const x = s[k * 13 + a]; if (!Number.isFinite(x)) throw new TypeError('PhysX : sommet non fini');
       vertices[k * 3 + a] = x;
     }
+    const indiceValide = i => Number.isInteger(i) && i >= 0 && i < nb;
     for (let k = 0; k < entree.length; k += 3) {
       const a = entree[k], b = entree[k + 1], c = entree[k + 2];
-      if (![a, b, c].every(i => Number.isInteger(i) && i >= 0 && i < nb)) throw new RangeError('PhysX : indice hors nappe');
-      // L'eau est une surface visuelle, jamais une dalle invisible pour les roues ou le châssis.
-      if ([a, b, c].every(i => s[i * 13 + 9] === 12)) continue;
-      indices.push(a, b, c);
-      surfaces.push(n.surfacesPhysX ? n.surfacesPhysX[k / 3] : n.surfaceType === 'accotement' ? 1 : 3);
+      if (!indiceValide(a) || !indiceValide(b) || !indiceValide(c)) throw new RangeError('PhysX : indice hors nappe');
+      // L'eau est visuelle. Compacter directement dans les tampons utilisés par PhysX.
+      if (s[a * 13 + 9] === 12 && s[b * 13 + 9] === 12 && s[c * 13 + 9] === 12) continue;
+      indices[faces * 3] = a; indices[faces * 3 + 1] = b; indices[faces * 3 + 2] = c;
+      surfaces[faces++] = n.surfacesPhysX ? n.surfacesPhysX[k / 3] : surfaceDefaut;
     }
-    return { vertices, indices: new Uint32Array(indices), surfaces: new Uint8Array(surfaces), eauIgnoree: (entree.length - indices.length) / 3 };
+    return { vertices, indices: indices.subarray(0, faces * 3), surfaces: surfaces.subarray(0, faces), eauIgnoree: entree.length / 3 - faces };
   }
   function installer(world, c, decor) {
     if (!world || typeof world.addTriangleMesh !== 'function' || typeof world.addBox !== 'function' || typeof world.remove !== 'function') throw new TypeError('PhysX : monde statique incomplet');
@@ -97,7 +108,8 @@
       // lotsHerbier conserve les primitives de collision dans leur ordre d'origine, avant les LOD des arbres.
       const lots = decor.lotsHerbier || decor.lots || [], vus = new Set(), sources = [], complements = [];
       for (const lot of lots) for (const o of lot.objets || []) {
-        if (vus.has(o)) continue; vus.add(o);
+        if ((!o.collision && !o.solidePhysX) || vus.has(o)) continue;
+        vus.add(o);
         if (o.collision) sources.push(o);
         else if (o.solidePhysX) complements.push(o);
       }

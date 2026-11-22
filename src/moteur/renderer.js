@@ -37,26 +37,107 @@
     return Number.isFinite(height)&&height>0&&Number.isFinite(viewportHeight)&&viewportHeight>0 ? viewportHeight/height : undefined;
   }
 
-  // The colour and sun passes need the same camera-relative LOD. Prepare it
-  // once per view, and reuse bounds rather than allocating an object (and, on
-  // WebGPU, a mapped position array) for each lot in each pass.
+  // Each sphere encloses the complete input spheres, also when a very large lot sits off-centre.
+  // Partition by the longest spread of centres. Only setLots builds this hierarchy.
+  function buildLotTree(entries){
+    const low=[Infinity,Infinity,Infinity],high=[-Infinity,-Infinity,-Infinity];
+    for(const entry of entries)for(let k=0;k<3;k++){
+      const n=entry.bounds.p[k];
+      low[k]=Math.min(low[k],n);high[k]=Math.max(high[k],n);
+    }
+    const p=low.map((v,k)=>v*.5+high[k]*.5);
+    let radius=0;
+    for(const entry of entries){
+      const b=entry.bounds;
+      radius=Math.max(radius,Math.hypot(p[0]-b.p[0],p[1]-b.p[1],p[2]-b.p[2])+b.radius);
+    }
+    // Only the broad phase is padded. Leaves still use the host's exact volume and inequalities.
+    radius+=1e-7+16*Number.EPSILON*Math.max(1,radius,...p.map(Math.abs));
+    const bounds=Number.isFinite(radius)?{p,radius}:null;
+    if(entries.length<=8)return {bounds,entries};
+    let axis=0;
+    for(let k=1;k<3;k++)if(high[k]-low[k]>high[axis]-low[axis])axis=k;
+    entries.sort((a,b)=>a.bounds.p[axis]-b.bounds.p[axis]||a.index-b.index);
+    const middle=entries.length>>>1;
+    return {bounds,left:buildLotTree(entries.slice(0,middle)),right:buildLotTree(entries.slice(middle))};
+  }
+
   function lotViewState(){
-    const records=[];let source=null,frame=0;
-    return {records,get frame(){return frame;},reset(){records.length=0;source=null;},prepare(lots,eye,vertical,height,cover){
-      frame++;
-      if(source!==lots){records.length=0;for(const lot of lots)records.push({lot,bounds:{p:lot.centre,radius:lot.rayon},distance:0,near:true});source=lots;}
-      // A sequence of tree or grass lots usually shares its reference lens and viewport.
-      // Reset at each view and read both properties on each lot so edits and split views take effect immediately.
-      let lastFov,lastHeight,fovScale=1,heightScale=1;
-      for(const entry of records){const l=entry.lot,dx=l.centre[0]-eye[0],dy=l.centre[1]-eye[1],dz=l.centre[2]-eye[2];entry.bounds.p=l.centre;entry.bounds.radius=l.rayon;entry.distance=Math.sqrt(dx*dx+dy*dy+dz*dz)-l.rayon;
-        const active=l.groundCover===true&&cover?.enabled;entry.range=active&&cover.range[1]>0?cover.range[1]:(l.portee||Infinity);
-        const fov=l.lodReferenceFov,referenceHeight=l.lodReferenceHeight;
-        if(fov!==lastFov){fovScale=lotFovScale(fov,vertical)??1;lastFov=fov;}
-        if(referenceHeight!==lastHeight){heightScale=lotHeightScale(referenceHeight,height)??1;lastHeight=referenceHeight;}
-        entry.near=entry.distance<Math.max((l.bascule||240)*fovScale*heightScale,active?cover.density[1]:0);entry.cover=active;
+    const records=[],selected=[],unbounded=[],words=[];
+    let source=null,tree=null,bits=null,frame=0,distanceTests=0;
+    let eye,vertical,height,cover,lastFov,lastHeight,fovScale,heightScale;
+
+    function reset(lots=null,staticBounds=false){
+      records.length=selected.length=unbounded.length=words.length=0;
+      tree=null;bits=null;source=lots;
+      if(!lots)return;
+      for(const lot of lots)records.push({index:records.length,lot,bounds:{p:lot.centre,radius:lot.rayon},distance:0,near:true,view:-1});
+      if(!staticBounds||lots.length<32)return;
+      const bounded=[];
+      for(const entry of records){
+        const {p,radius}=entry.bounds;
+        if(p&&Number.isFinite(p[0])&&Number.isFinite(p[1])&&Number.isFinite(p[2])&&Number.isFinite(radius)&&radius>=0)bounded.push(entry);
+        else unbounded.push(entry);
       }
-      return records;
-    }};
+      if(bounded.length<32)return;
+      tree=buildLotTree(bounded);
+      bits=new Uint32Array(Math.ceil(records.length/32));
+    }
+    function resolve(entry){
+      if(entry.view===frame)return;
+      const l=entry.lot,dx=l.centre[0]-eye[0],dy=l.centre[1]-eye[1],dz=l.centre[2]-eye[2];
+      entry.bounds.p=l.centre;entry.bounds.radius=l.rayon;
+      entry.distance=Math.sqrt(dx*dx+dy*dy+dz*dz)-l.rayon;
+      const active=l.groundCover===true&&cover?.enabled;
+      entry.range=active&&cover.range[1]>0?cover.range[1]:(l.portee||Infinity);
+      const fov=l.lodReferenceFov,referenceHeight=l.lodReferenceHeight;
+      if(fov!==lastFov){fovScale=lotFovScale(fov,vertical)??1;lastFov=fov;}
+      if(referenceHeight!==lastHeight){heightScale=lotHeightScale(referenceHeight,height)??1;lastHeight=referenceHeight;}
+      entry.near=entry.distance<Math.max((l.bascule||240)*fovScale*heightScale,active?cover.density[1]:0);
+      entry.cover=active;entry.view=frame;distanceTests++;
+    }
+    function mark(entry){
+      const word=entry.index>>>5;
+      if(bits[word]===0)words.push(word);
+      bits[word]|=1<<(entry.index&31);
+    }
+    function visit(node,accept){
+      if(node.bounds&&!accept(node.bounds))return;
+      if(node.entries){for(const entry of node.entries)mark(entry);return;}
+      visit(node.left,accept);visit(node.right,accept);
+    }
+    function candidates(accept,axes,h,v,far,radii){
+      if(!tree)return records;
+      // Colour, mirror and orthographic sun passes each supply their own volume.
+      // Ground cover density and LOD still use the camera of this view, including off-screen casters.
+      const intersects=accept||((bounds)=>visible(bounds,eye,axes,h,v,far,radii));
+      visit(tree,intersects);
+      for(const entry of unbounded)mark(entry);
+      // Restore the exact previous submission order, even when spatial leaves interleave in the input.
+      // Sort only occupied blocks of 32 original entries. No scan through empty regions of the circuit.
+      words.sort((a,b)=>a-b);
+      selected.length=0;
+      for(const word of words){
+        let flags=bits[word];
+        while(flags){
+          const bit=31-Math.clz32(flags&-flags),entry=records[word*32+bit];
+          resolve(entry);selected.push(entry);
+          flags=(flags&(flags-1))>>>0;
+        }
+        bits[word]=0;
+      }
+      words.length=0;
+      return selected;
+    }
+    return {records,candidates,reset,get frame(){return frame;},get distanceTests(){return distanceTests;},
+      prepare(lots,viewEye,viewVertical,viewHeight,viewCover){
+        if(source!==lots)reset(lots);
+        frame++;distanceTests=0;
+        eye=viewEye;vertical=viewVertical;height=viewHeight;cover=viewCover;
+        lastFov=undefined;lastHeight=undefined;fovScale=1;heightScale=1;
+        if(!tree)for(const entry of records)resolve(entry);
+        return records;
+      }};
   }
 
   // Optional vegetation controls are per view; storage is renderer-owned and
@@ -2921,6 +3002,7 @@
     }
     // BITUME : nappes (chaussée, accotements, terrain : triangles continus, matière et couleur par sommet) et lots
     // de décor (instances statiques groupées par portion de circuit, chacune avec sa version lointaine allégée).
+    let multiDrawNappes=null;
     let nappes=[],nappeVao=null,nappeVbo=null,nappeIbo=null,lots=[],groundPlans=new WeakMap();
     const lotView=lotViewState(),colourRadii={horizontal:0,vertical:0};
     let viewCache=null,torchCache=null,sunCache=null,indexRevision=0,selectionGen=0,selectionRebuilt=false;
@@ -3140,6 +3222,7 @@
     function initialize() {
       // Limite stable pendant la vie du contexte : aucune requête synchrone au GPU par vue ou par image.
       // Une restauration peut changer d'adaptateur ; relire alors sa capacité avant toute nouvelle allocation.
+      multiDrawNappes=gl.getExtension('WEBGL_multi_draw');
       maxShadowTileSize=Math.max(1,Math.floor((Number(gl.getParameter(gl.MAX_TEXTURE_SIZE))||2048)/2));
       if(profiler){profiler.dispose();profiler=window.FGPUProfile.create(gl,profileOptions);}
       fskyProgram=null;fskyBound=null;fskyCache={};skyFrame={};fogCaches.clear();screenCaches.clear();
@@ -3229,18 +3312,53 @@
     }
     // Une sphère de test par nappe, relue à chaque vue : aucune allocation par nappe et par image.
     let nappeBounds=[];
-    function setNappes(liste){nappes=(liste||[]).filter(n=>n&&n.sommets&&n.indices&&n.indices.length);nappeBounds=nappes.map(n=>({p:n.centre,radius:n.rayon}));chargerNappes();}
+    let comptesNappes=new Int32Array(0), debutsNappes=new Int32Array(0);
+    function setNappes(liste){
+      nappes=(liste||[]).filter(n=>n&&n.sommets&&n.indices&&n.indices.length);
+      nappeBounds=nappes.map(n=>({p:n.centre,radius:n.rayon}));
+      comptesNappes=new Int32Array(nappes.length);
+      debutsNappes=new Int32Array(nappes.length);
+      chargerNappes();
+    }
+    function envoyerNappes(nombre){
+      if(nombre>1 && typeof multiDrawNappes?.multiDrawElementsWEBGL==='function'){
+        multiDrawNappes.multiDrawElementsWEBGL(gl.TRIANGLES,comptesNappes,0,gl.UNSIGNED_INT,debutsNappes,0,nombre);
+        stats.drawCalls++;
+      }else{
+        for(let i=0;i<nombre;i++)gl.drawElements(gl.TRIANGLES,comptesNappes[i],gl.UNSIGNED_INT,debutsNappes[i]);
+        stats.drawCalls+=nombre;
+      }
+    }
     function dessinerNappes(eye,axes,horizontal,vertical,far,radii){
       if(!nappeVao)return;
       gl.bindVertexArray(nappeVao);gl.vertexAttrib4f(3,1,1,1,0);gl.vertexAttrib4f(4,0,0,0,2);
-      let smoothTint=false;
+      let smoothTint=false, nombre=0;
       for(let i=0;i<nappes.length;i++){
         const n=nappes[i],bounds=nappeBounds[i];bounds.p=n.centre;bounds.radius=n.rayon;
         if(!visible(bounds,eye,axes,horizontal,vertical,far,radii))continue;
         const tint=n.vertexTint==='smooth';
-        if(tint!==smoothTint){gl.vertexAttrib4f(4,0,0,0,tint?34:2);smoothTint=tint;}
-        gl.drawElements(gl.TRIANGLES,n.compte,gl.UNSIGNED_INT,n.debut);stats.drawCalls++;stats.triangles+=n.compte/3;
+        if(tint!==smoothTint){
+          envoyerNappes(nombre);nombre=0;
+          gl.vertexAttrib4f(4,0,0,0,tint?34:2);smoothTint=tint;
+        }
+        stats.triangles+=n.compte/3;
+        // L'extension prend des offsets signés 32 bits, drawElements accepte un GLintptr.
+        if(n.debut>0x7fffffff){
+          envoyerNappes(nombre);nombre=0;
+          gl.drawElements(gl.TRIANGLES,n.compte,gl.UNSIGNED_INT,n.debut);stats.drawCalls++;
+          continue;
+        }
+        // Fusion contiguë également disponible en WebGL2 de base. Une fin de primitive
+        // incomplète doit rester la fin de son propre dessin.
+        const precedent=nombre-1;
+        if(nombre && comptesNappes[precedent]%3===0 && comptesNappes[precedent]+n.compte<=0x7fffffff
+          && debutsNappes[precedent]+comptesNappes[precedent]*4===n.debut){
+          comptesNappes[precedent]+=n.compte;
+        }else{
+          debutsNappes[nombre]=n.debut;comptesNappes[nombre]=n.compte;nombre++;
+        }
       }
+      envoyerNappes(nombre);
       if(smoothTint)gl.vertexAttrib4f(4,0,0,0,2);
       gl.bindVertexArray(vao);
     }
@@ -3270,10 +3388,14 @@
         groundPlans.set(l,groundCoverPlan(l,l.paquet,l.paquetLoin,groundIndex));
       }
     }
-    function setLots(liste){for(const l of lots)for(const cle of ['tampon','tamponLoin'])if(l[cle])gl.deleteBuffer(l[cle]);lotView.reset();groundPlans=new WeakMap();lots=(liste||[]).filter(l=>l&&l.objets);chargerLots();stats.lots=lots.length;}
+    function setLots(liste,options){
+      for(const l of lots)for(const cle of ['tampon','tamponLoin'])if(l[cle])gl.deleteBuffer(l[cle]);
+      groundPlans=new WeakMap();lots=(liste||[]).filter(l=>l&&l.objets);
+      lotView.reset(lots,options?.staticBounds===true);chargerLots();stats.lots=lots.length;
+    }
     function dessinerLots(eye,axes,horizontal,vertical,far,accepte,radii){
       let dessines=0;
-      for(const entry of lotView.records){const l=entry.lot;
+      for(const entry of lotView.candidates(accepte,axes,horizontal,vertical,far,radii)){const l=entry.lot;
         if(!l.tampon)continue;
         if(entry.cover&&entry.distance>entry.range)continue;
         // lot.ombre === false : le lot ne projette pas d'ombre du soleil (herbe courte, marquages au sol).
@@ -3287,6 +3409,7 @@
         const proche=!l.paquetLoin||entry.near;
         renderBatch(proche?l.paquet:l.paquetLoin,proche?l.tampon:l.tamponLoin,false,!!accepte);dessines++;
       }
+      stats.lotDistanceTests=lotView.distanceTests;
       return dessines;
     }
     // Préchauffage : chaque tampon de lot, proche ET lointain, sans test de champ ni de portée, puis une fois chaque
@@ -3678,7 +3801,7 @@
         -(right[0]*eye[0]+right[1]*eye[1]+right[2]*eye[2]),-(up[0]*eye[0]+up[1]*eye[1]+up[2]*eye[2]),forward[0]*eye[0]+forward[1]*eye[1]+forward[2]*eye[2],1]);
       const fov=Math.max(FOV_MIN,Math.min(110,camera.fov||75))*Math.PI/180,f=1/Math.tan(fov*.5),near=camera.near||.045,far=camera.far||180;
       vegetation.update(fx,eye,1/f,canvas.height);stats.windStrength=vegetationState.strength;stats.groundCover=vegetationState.enabled;
-      lotView.prepare(lots,eye,1/f,canvas.height,vegetationState);stats.lotDistanceTests=lots.length;stats.lotInstanceTests=0;
+      lotView.prepare(lots,eye,1/f,canvas.height,vegetationState);stats.lotDistanceTests=lotView.distanceTests;stats.lotInstanceTests=0;
       projection.fill(0);projection[0]=f/(canvas.width/canvas.height);projection[5]=f;projection[10]=(far+near)/(near-far);projection[11]=-1;projection[14]=2*far*near/(near-far);
       multiply(projection,view,vp);
       if(camera.chunked&&!chunks.size)rebuildChunks();

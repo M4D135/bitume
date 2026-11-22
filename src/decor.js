@@ -1147,24 +1147,39 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     }
     return false;
   }
+  const plansReperes = new WeakMap();
   function preparerReperes(c) {
+    const connu = plansReperes.get(c);
+    if (connu) return connu;
     const virages = B.virages.planifier(c).filter(v => v.difficulte >= 2);
     const vibreurs = new Uint8Array(c.n), glissieres = new Int8Array(c.n);
-    for (let i = 0; i < c.n; i++) {
-      const s = i * c.pas;
-      if (zoneSansRepere(c, s)) continue;
-      const courbe = virages.find(v => distanceRepere(c, v.debut, s) <= v.longueur);
-      if (courbe) { vibreurs[i] = courbe.difficulte; glissieres[i] = -courbe.sens; continue; }
-      let voisine = null, proche = Infinity;
-      for (const v of virages) {
+    const priorite = new Float64Array(c.n).fill(Infinity);
+    const periode = c.ouvert ? c.n - 1 : c.n;
+    // Un virage n'affecte que son approche (120 m), sa courbe et sa sortie (24 m).
+    // Visiter ces fenêtres évite de comparer chaque point des 32 km de Larche à tous les virages.
+    for (const v of virages) {
+      const debut = Math.floor((v.debut - 120) / c.pas) - 1;
+      const fin = Math.ceil((v.debut + v.longueur + 24) / c.pas) + 1;
+      for (let j = debut; j <= fin; j++) {
+        const i = ((j % periode) + periode) % periode, s = i * c.pas;
+        const courbe = distanceRepere(c, v.debut, s) <= v.longueur;
         const avant = distanceRepere(c, s, v.debut), apres = distanceRepere(c, v.fin, s);
-        // Une courbe en cours prime sur l'approche du S suivant ; hors courbe, l'approche prime sur la sortie.
-        const d = avant <= 120 ? avant : apres <= 24 ? apres + 120 : Infinity;
-        if (d < proche) { proche = d; voisine = v; }
+        const d = courbe ? -1 : avant <= 120 ? avant : apres <= 24 ? apres + 120 : Infinity;
+        if (d >= priorite[i]) continue;
+        priorite[i] = d;
+        glissieres[i] = -v.sens;
+        vibreurs[i] = courbe ? v.difficulte : 0;
       }
-      if (voisine) glissieres[i] = -voisine.sens;
     }
-    return { virages, vibreurs, glissieres };
+    // Une spéciale conserve deux échantillons distincts aux extrémités, avec leurs
+    // propres exclusions de grille, de pont et de tunnel.
+    if (c.ouvert) { vibreurs[periode] = vibreurs[0]; glissieres[periode] = glissieres[0]; }
+    for (let i = 0; i < c.n; i++) {
+      if (glissieres[i] && zoneSansRepere(c, i * c.pas)) { vibreurs[i] = 0; glissieres[i] = 0; }
+    }
+    const plan = { virages, vibreurs, glissieres };
+    plansReperes.set(c, plan);
+    return plan;
   }
 
   const CHIFFRES_REPERES = ['abcdef', 'bc', 'abdeg', 'abcdg', 'bcfg', 'acdfg', 'acdefg', 'abc', 'abcdefg', 'abcdfg'];

@@ -26,7 +26,7 @@
     }
     return cadre;
   }
-  function construire(f) {
+  function construire(f, groupe = null) {
     const poly=f.cm.map(([x,z])=>[x/100,z/100]), largeur=Math.max(...poly.map(p=>Math.abs(p[0])))*2;
     const profondeur=Math.max(...poly.map(p=>Math.abs(p[1])))*2;
     const cadre=cadreToit(poly), coupe=p=>p[0]*cadre.n[0]+p[1]*cadre.n[1]-cadre.milieu;
@@ -55,20 +55,63 @@
       const p=decoupe.map(q=>sommet(q,toit(q)-.5));
       for(let i=2;i<p.length;i++)face(pans,p[0],p[i],p[i-1]);
     }
-    const formes={};
-    for(const [partie,triangles] of Object.entries({mur:murs,toit:pans,pignons})) {
-      const nom='pietraporzio-'+f.id+'-'+partie;
-      globalThis.FRender?.forme?.(nom,triangles);
-      const vertices=new Float32Array(triangles.flatMap(t=>t.slice(0,3).flat()));
-      formes[partie]={nom,maillage:{vertices,indices:Uint32Array.from({length:vertices.length/3},(_,i)=>i)}};
+    const montee=f.usage==='centrale elettrica'?Math.min(f.h*.12,cadre.demi*.16):Math.min(f.h*.28,cadre.demi*.40);
+    const modele={f,poly,largeur,profondeur,montee,formes:{}};
+    const parties={mur:murs,toit:pans,pignons};
+    if(groupe) {
+      // La première couronne conserve ses maillages par bâtiment. Plus loin,
+      // les élévations du sol dessiné permettent de regrouper les murs et les
+      // couvertures exacts sans un maillage de rendu par maison.
+      const base=f.solCm[0]/100-.45, rive=f.solCm[1]/100+f.h-montee;
+      for(const [partie,triangles] of Object.entries(parties)) {
+        const mur=partie==='mur', bas=mur?base:rive, h=mur?rive-base:montee;
+        const lot=partie==='toit'?groupe.toits:groupe.facades;
+        for(const t of triangles) lot.push(t.slice(0,3).map(v=>[
+          f.x+v[0]*largeur,bas+h*(v[1]+.5),f.z+v[2]*profondeur]));
+      }
+      groupe.empreintes.push(...f.tri.map(t=>t.map(i=>[f.x+poly[i][0],0,f.z+poly[i][1]])));
+    } else for(const [partie,triangles] of Object.entries(parties)) {
+      modele.formes[partie]=enregistrer('pietraporzio-'+f.id+'-'+partie,triangles);
     }
-    return {f,poly,largeur,profondeur,formes,montee:Math.min(f.h*.28,cadre.demi*.40)};
+    return modele;
   }
-
-  const modeles=B.pietraporzioData.map(construire);
+  function enregistrer(nom,triangles) {
+    globalThis.FRender?.forme?.(nom,triangles);
+    const vertices=new Float32Array(triangles.flatMap(t=>t.slice(0,3).flat()));
+    return {nom,maillage:{vertices,indices:Uint32Array.from({length:vertices.length/3},(_,i)=>i)}};
+  }
+  const modeles=B.pietraporzioData.map(f=>construire(f));
+  const emprises=modeles.slice(), ilots=[];
+  const groupes=new Map();
+  for(const f of B.pietraporzioCouronne || []) {
+    const cle=Math.floor(f.s/100);
+    let g=groupes.get(cle);
+    if(!g)groupes.set(cle,g={facades:[],toits:[],empreintes:[]});
+    emprises.push(construire(f,g));
+  }
+  for(const [cle,g] of groupes) {
+    const min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];
+    for(const faces of [g.facades,g.toits]) for(const t of faces) for(const v of t) for(let k=0;k<3;k++) {
+      min[k]=Math.min(min[k],v[k]);max[k]=Math.max(max[k],v[k]);
+    }
+    const p=min.map((v,k)=>(v+max[k])/2),s=min.map((v,k)=>max[k]-v);
+    const formes={};
+    for(const partie of ['facades','toits']) {
+      const triangles=[];
+      for(const t of g[partie]) {
+        const points=t.map(v=>v.map((q,k)=>(q-p[k])/s[k]));
+        face(triangles,...points);
+      }
+      formes[partie]=enregistrer('stura-ilot-'+cle+'-'+partie,triangles);
+    }
+    ilots.push({p,s,formes,empreintes:g.empreintes});
+  }
+  // Les grands tableaux de points en coordonnées monde ne servent qu'à
+  // produire les maillages locaux utilisés en commun par FERRO et PhysX.
+  groupes.clear();
   // Cercle de la couronne ou du bloc contre le polygone cadastral, y compris ses décrochements.
   function recouvre(x,z,rayon) {
-    for(const {f,poly,largeur,profondeur} of modeles) {
+    for(const {f,poly,largeur,profondeur} of emprises) {
       const px=x-f.x,pz=z-f.z;
       if(Math.abs(px)>largeur/2+rayon || Math.abs(pz)>profondeur/2+rayon)continue;
       let dedans=false;
@@ -143,5 +186,18 @@
       ajouter(proche,loin,f.x,f.z);
     }
   }
-  B.pietraporzio={poser,recouvre};
+  function poserCouronne(neige,ajouter) {
+    for(const g of ilots) {
+      const surfaces=[];
+      for(const [partie,forme] of Object.entries(g.formes)) {
+        const toit=partie==='toits', o={shape:forme.nom,p:g.p,s:g.s,architecture:'ilot-stura',partie,
+          mat:toit?(neige?25:24):22, color:toit?(neige?[.86,.89,.90]:[.34,.34,.33]):[.66,.63,.55],
+          trianglesMasque:toit?[]:g.empreintes};
+        B.decor?.marquerSolide?.(o,'bati-bdtre',2,null,forme.maillage);
+        surfaces.push(o);
+      }
+      ajouter(surfaces,surfaces,g.p[0],g.p[2]);
+    }
+  }
+  B.pietraporzio={poser,poserCouronne,recouvre};
 })(globalThis.BITUME=globalThis.BITUME||{});

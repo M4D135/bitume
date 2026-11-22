@@ -11,7 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 REFERENCE = ROOT / 'docs/references/larche-vinadio-2026'
 DEBUT, FIN = 17900, 18500
 MARGE_RAIL = 1.20
-RAYON = 35
+PREMIER_RANG = 35
+RAYON = 65
 
 
 def produit(a, b, p):
@@ -121,6 +122,31 @@ def generer():
             pts_cm.reverse()
         batiments.append(dict(id=f['uuid'],volume=vs[0]['uuid'],usage=f['edifc_uso'],h=int(vs[0]['un_vol_av']),
                               s=route[k][0],axe=round(d,3),x=x,z=z,cm=pts_cm,tri=trianguler(pts_cm)))
+    # Les origines verticales des îlots appartiennent au sol dessiné, pas à une
+    # cote altimétrique BDTRE. L'extraction géométrique ne crée ni vue ni course.
+    fond = [f for f in batiments if f['axe'] > PREMIER_RANG]
+    if fond:
+        extraire = """const {readFileSync}=require('node:fs');require('./src/larche-vinadio.js');
+        BITUME.pietraporzio={};require('./src/larche-vinadio-decor.js');
+        const sol=BITUME.larcheDecor.terrain(BITUME.larche.creer(210)).sol;
+        console.log(JSON.stringify(JSON.parse(readFileSync(0,'utf8')).map(f=>{
+          const lire=([x,z])=>sol(f.x+x/100,f.z+z/100);
+          const sommets=f.cm.map(lire).sort((a,b)=>a-b);
+          const mediane=(sommets[(sommets.length-1)>>1]+sommets[sommets.length>>1])/2;
+          const echantillons=sommets.slice();
+          for(let i=0;i<f.cm.length;i++){
+            const a=f.cm[i],b=f.cm[(i+1)%f.cm.length];echantillons.push(lire([(a[0]+b[0])/2,(a[1]+b[1])/2]));
+          }
+          for(const [a,b,c] of f.tri)echantillons.push(lire([0,1].map(i=>(f.cm[a][i]+f.cm[b][i]+f.cm[c][i])/3)));
+          return [Math.round(Math.min(...echantillons)*100),Math.round(mediane*100),Math.round(Math.max(...echantillons)*100)];
+        }))); """
+        niveaux=json.loads(subprocess.check_output(['node','-e',extraire],input=json.dumps(fond),text=True,cwd=ROOT))
+        for f, h in zip(fond,niveaux):
+            # Refuser une façade aval démesurée ou un égout noyé côté amont.
+            if h[2]-h[0] > 65*f['h'] or h[2]-h[1] > 45*f['h']:
+                batiments.remove(f)
+                continue
+            f['solCm']=h
     axe_regional = []
     for r in couches['el_str']['objets']:
         ligne = [(e-origine[0]+decalage[0],origine[1]-n+decalage[1]) for e,n in r['geometrie']['coordinates']]
@@ -136,7 +162,10 @@ if __name__ == '__main__':
     batiments,n,erreur,decalage,axe = generer()
     texte = '/* Géométrie BDTRE de Regione Piemonte, CC BY 4.0. Généré par tools/preparer-pietraporzio.py. */\n'
     texte += '(globalThis.BITUME=globalThis.BITUME||{}).pietraporzioData=[\n'
-    texte += ',\n'.join(json.dumps(f,ensure_ascii=False,separators=(',',':')) for f in batiments)+'\n];\n'
+    def lignes(fiches):
+        return ',\n'.join(json.dumps(f,ensure_ascii=False,separators=(',',':')) for f in fiches)+'\n];\n'
+    texte += lignes(f for f in batiments if 'solCm' not in f)
+    texte += 'globalThis.BITUME.pietraporzioCouronne=\x5b\n' + lignes(f for f in batiments if 'solCm' in f)
     sortie = ROOT/'src/pietraporzio-data.js'
     if args.check and sortie.read_text()!=texte:
         raise SystemExit('Extrait différent du fichier embarqué')

@@ -130,16 +130,41 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     return { debut: meilleur.debut, longueur: meilleur.longueur * PAS };
   }
 
-  function separation(x, z, n) {
-    // plus petite distance entre deux points séparés de plus de 150 m le long du tour
+  function brasTropProches(x, z, n, seuil) {
     const ecartMin = Math.ceil(150 / PAS);
-    let min = Infinity;
-    for (let i = 0; i < n; i += 2) for (let j = i + ecartMin; j < n; j += 2) {
-      if (n - (j - i) < ecartMin) continue;
-      const dx = x[i] - x[j], dz = z[i] - z[j], d2 = dx * dx + dz * dz;
-      if (d2 < min) min = d2;
+    if (n < 2 * ecartMin) return false;
+    const cote = 2 ** Math.ceil(Math.log2(seuil)), seuil2 = seuil * seuil;
+    const colonnes = new Map();
+    // Pour chaque j, les i admissibles sont pairs et dans [j - (n - ecartMin), j - ecartMin].
+    // On ajoute le dernier i devenu admissible ; la borne basse protège la jonction fin/départ.
+    for (let j = ecartMin; j < n; j += 2) {
+      const i = j - ecartMin;
+      if (Number.isFinite(x[i]) && Number.isFinite(z[i])) {
+        const cx = Math.floor(x[i] / cote), cz = Math.floor(z[i] / cote);
+        let colonne = colonnes.get(cx);
+        if (!colonne) { colonne = new Map(); colonnes.set(cx, colonne); }
+        let indices = colonne.get(cz);
+        if (!indices) { indices = []; colonne.set(cz, indices); }
+        indices.push(i);
+      }
+      if (!Number.isFinite(x[j]) || !Number.isFinite(z[j])) continue;
+      const cx = Math.floor(x[j] / cote), cz = Math.floor(z[j] / cote), premier = j - (n - ecartMin);
+      // Une paire sous le seuil tient dans deux cases adjacentes, y compris aux coordonnées négatives.
+      for (let a = -1; a <= 1; a++) {
+        const colonne = colonnes.get(cx + a);
+        if (!colonne) continue;
+        for (let b = -1; b <= 1; b++) {
+          const indices = colonne.get(cz + b);
+          if (!indices) continue;
+          for (let k = indices.length - 1; k >= 0 && indices[k] >= premier; k--) {
+            const p = indices[k], dx = x[p] - x[j], dz = z[p] - z[j], d2 = dx * dx + dz * dz;
+            // Conserver l'arrondi du sqrt historique à la frontière exacte de 59 ou 60 m.
+            if (d2 < seuil2 && Math.sqrt(d2) < seuil) return true;
+          }
+        }
+      }
     }
-    return Math.sqrt(min);
+    return false;
   }
 
   function nombreVirages(courbure, n, seuil) {
@@ -314,7 +339,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
       const droite = plusLongueDroite(courbure, n);
       if (droite.longueur < 450) continue;
       if (nombreVirages(courbure, n, 1 / 70) < 3) continue;
-      if (separation(x, z, n) < 60) continue;
+      if (brasTropProches(x, z, n, 60)) continue;
       // le départ à 35 % de la plus longue ligne droite : l'échantillon 0 devient la ligne
       const decalage = (droite.debut + Math.round(droite.longueur * .35 / PAS)) % n;
       const X = tourner(x, decalage), Z = tourner(z, decalage);
@@ -334,8 +359,6 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
       for (let i = 0; i < n; i++) devers[i] *= 1 - plat[i];
       const vibreur = new Uint8Array(n), V = Math.round(15 / PAS);
       for (let i = 0; i < n; i++) if (Math.abs(courbure[i]) > 1 / 140) for (let j = -V; j <= V; j++) vibreur[(i + j + n) % n] = 3;
-      const ligne = trajectoire(X, Z, cap, n, LARGEUR);
-      const vitesse = vitesses(X, Z, cap, ligne, n);
       const lim = limites(courbure, n, LARGEUR);
       // Tunnel (David, 16/11 : « dans le circuit Haut-Col, fais une partie dans un tunnel ») : en montagne, 260 m de
       // piste passent sous la roche, au milieu de la plus longue portion droite (rayon > 400 m), loin de la ligne des
@@ -366,15 +389,32 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
         debut: s0, fin: s1, garage0: g0, garage1: g1,
         vitesse: 11,                                      // m/s : 40 km/h, au-delà le service n'est pas rendu
       } : null;
-      return {
+      const c = {
         graine, nom, theme, longueur: L, pas: PAS, n,
-        x: X, y, z: Z, cap, courbure, pente, devers, largeur: LARGEUR, vibreur, ligne, vitesse,
+        x: X, y, z: Z, cap, courbure, pente, devers, largeur: LARGEUR, vibreur, ligne: undefined, vitesse: undefined,
         limite: LIMITE, limiteG: lim.G, limiteD: lim.D,
         depart: 0, ligneDroite: { debut: debutDroite, fin: finDroite }, secteurs: [Math.round(L / 3 / PAS) * PAS, Math.round(2 * L / 3 / PAS) * PAS], tunnel, stands,
         essais: essai + 1
       };
+      if (options.differerTrajectoire !== true) return preparerParcours(c);
+      // Une fusion extrait d'abord la géométrie des boucles sources et prépare ensuite son propre tracé.
+      // Si un autre consommateur demande malgré tout ces tableaux, fournir leurs valeurs ordinaires.
+      differerTableau(c, 'ligne', () => trajectoire(c.x, c.z, c.cap, c.n, c.largeur));
+      differerTableau(c, 'vitesse', () => vitesses(c.x, c.z, c.cap, c.ligne, c.n, c.pas));
+      return c;
     }
     throw new Error('BITUME : aucun tracé valide pour la graine ' + graine);
+  }
+
+  function differerTableau(c, cle, calculer) {
+    let valeur;
+    Object.defineProperty(c, cle, { configurable: true, enumerable: true,
+      get() {
+        if (calculer) { valeur = calculer(); calculer = null; }
+        return valeur;
+      },
+      set(tableau) { valeur = tableau; calculer = null; }
+    });
   }
 
   // ---------------------------------------------------------------- tracé métrique fourni (fondation 14B1)
@@ -615,7 +655,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     return d;
   }
   function vibreurA(c, s, cote) {
-    if (c.type === 'trace-explicite') return false; // aucun vibreur déduit du seul relevé de l'axe
+    if (c.type === 'trace-explicite' && c.vibreur?.length !== c.n) return false; // couche optionnelle du parcours
     const i = Math.round(ramener(c, s) / c.pas) % c.n;
     return !!(c.vibreur[i] & (cote < 0 ? 1 : 2));
   }
@@ -638,7 +678,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     for (let i = 0; i < c.n; i++) { kmax = Math.max(kmax, Math.abs(c.courbure[i])); pmax = Math.max(pmax, Math.abs(c.pente[i])); }
     if (kmax > 1 / 23.5) pb.push('rayon minimal inférieur à 24 m');
     if (pmax > .07) pb.push('pente supérieure à 7 %');
-    if (separation(c.x, c.z, c.n) < 59) pb.push('deux portions du tracé trop proches');
+    if (brasTropProches(c.x, c.z, c.n, 59)) pb.push('deux portions du tracé trop proches');
     return pb;
   }
 

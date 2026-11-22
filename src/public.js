@@ -810,7 +810,10 @@
       let somme = 0, meilleur = 0, q = .002, bx = cx * q, by = cy * q, bz = cz * q;
       for (let j = 0; j < n; j++) {
         const v = voitures[j]; if (!v) continue;
-        const dx = v.x - cx, dz = v.z - cz, p = lisse(170, 22, Math.sqrt(dx * dx + dz * dz)), p3 = p * p * p;
+        const dx = v.x - cx, dz = v.z - cz, distance2 = dx * dx + dz * dz;
+        // Au-delà de 170 m, le poids de cette voiture est exactement nul pour la tribune.
+        if (distance2 >= 170 * 170) continue;
+        const p = lisse(170, 22, Math.sqrt(distance2)), p3 = p * p * p;
         somme += p; if (p > meilleur) meilleur = p;
         q += p3; bx += v.x * p3; by += (v.y + .5) * p3; bz += v.z * p3;
       }

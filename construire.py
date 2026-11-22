@@ -24,6 +24,7 @@ DIST = ICI / 'dist'
 MODULES = [
     'ferro/surface.js',  # taille physique et plafond de pixels, copie FERRO verrouillée
     'moteur/renderer.js',
+    'solides-physx.js',  # prélève les quatre primitives physiques avant les formes de décor et les monoplaces
     'ferro/engine.js',
     'ferro/physx-runtime.js',
     'ferro/physx.js',
@@ -68,7 +69,6 @@ MODULES = [
     'lieux.js',  # rochers organiques, pyramides du désert et lieux emblématiques des neuf circuits
     'herbier-wasm.js',
     'decor.js',
-    'solides-physx.js',
     'physique.js',
     'faune.js',
     'aeriens.js',
