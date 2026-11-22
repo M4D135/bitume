@@ -23,7 +23,7 @@
   function pool(type, n) {
     const slots = new Array(n);
     for (let i = 0; i < n; i++) slots[i] = { objet: objet(type), cle: -1, cible: -1, poids: 0, demande: 0,
-      x: 0, z: 0, bas: 0, haut: 0, rayon: 0, phase: 0, phase2: 0, duree: 0, taille: 0 };
+      x: 0, z: 0, bas: 0, haut: 0, rayon: 0, phase: 0, phase2: 0, duree: 0, taille: 0, rotationY: 0 };
     return { type, slots, plan: new Float64Array(n), sols: new Float64Array(n), nombre: 0, limite: 0,
       demande: -1, entier: -1, partiel: -1, proprietaires: new Float64Array(2048).fill(-1), indices: new Int16Array(2048),
       positions: new Uint16Array(n), nPositions: 0,
@@ -195,6 +195,8 @@
     s.taille = type === 'neige' ? .018 + hasard(seed + 31) * .043 : .065 + hasard(seed + 31) * .095;
     const o = s.objet;
     if (type === 'feuille') {
+      s.taille *= .8 + hasard(seed + 59) * .4;
+      s.rotationY = hasard(seed + 67) * TAU;
       const source = e.sources[Math.floor(cle / 8)], angle = hasard(seed + 37) * TAU;
       const rayon = Math.sqrt(hasard(seed + 43)) * source.rayon * .68;
       s.x = source.x + Math.cos(angle) * rayon; s.z = source.z + Math.sin(angle) * rayon;
@@ -231,7 +233,7 @@
       const o = s.objet; o.p[0] = px; o.p[1] = py; o.p[2] = pz;
       const taille = s.taille * Math.sqrt(visible);
       o.s[0] = taille; o.s[1] = taille * (neige ? .8 : .075); o.s[2] = taille * (neige ? 1 : 1.7);
-      o.r[0] = a * .8; o.r[1] = a * .51; o.r[2] = Math.sin(a * 1.31) * 1.2;
+      o.r[0] = a * .8; o.r[1] = a * .51 + s.rotationY; o.r[2] = Math.sin(a * 1.31) * 1.2;
       o.alpha = Math.min(1, visible * (neige ? .78 : 1)); o.emissive = neige ? .08 + nuit * .15 : 0;
       sortie.push(o); v.stats[neige ? 'neige' : 'feuilles']++; v.stats.objets++;
     }
