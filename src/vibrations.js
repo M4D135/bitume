@@ -8,20 +8,15 @@
   function creer() {
     return {
       moteur: 0, grain: 0, grainFin: 0, bord: 0, aide: 0, derive: 0, dernierNiveau: -1,
-      envFort: 0, tenueFort: 0, dureeFort: .12, picFort: 0, fenetreFort: 0,
+      impactsFort: [], envFort: 0,
       rapport: 0, envDerive: 0, envTic: 0,
       vide: {}, sortie: { faible: 0, fort: 0, gachetteG: 0, gachetteD: 0 }
     };
   }
   function impact(V, niveau, duree) {
-    if (niveau <= 0 || niveau < V.envFort) return;
-    // Comparer les impacts rapprochés au pic initial, avant sa décroissance.
-    if (V.fenetreFort > 0 && niveau <= V.picFort) return;
-    V.picFort = niveau;
-    V.fenetreFort = .050;
-    V.envFort = niveau;
-    V.tenueFort = .038;
-    V.dureeFort = duree;
+    if (niveau <= 0) return;
+    V.impactsFort.push({ niveau, constante: duree * .44 });
+    V.envFort += niveau;
   }
   function intensite(x, gain) {
     const v = unite(x * gain);
@@ -93,6 +88,17 @@
     V.envDerive *= Math.exp(-pas / .025);
     V.envTic *= Math.exp(-pas / .033);
 
+    // Appliquer le temps écoulé aux chocs reçus lors des appels précédents.
+    V.envFort = 0;
+    let restants = 0;
+    for (const choc of V.impactsFort) {
+      choc.niveau *= Math.exp(-pas / choc.constante);
+      if (choc.niveau <= Number.EPSILON) continue;
+      V.impactsFort[restants++] = choc;
+      V.envFort += choc.niveau;
+    }
+    V.impactsFort.length = restants;
+
     const events = e.evenements;
     if (events) for (let i = 0; i < events.length; i++) {
       const ev = events[i];
@@ -113,9 +119,6 @@
     gauche *= fond;
     droite = Math.max(droite * fond, .19 * boite * boite * apresChoc);
     V.rapport = Math.max(0, V.rapport - pas);
-    V.envFort *= Math.exp(-Math.max(0, pas - V.tenueFort) / (V.dureeFort * .44));
-    V.tenueFort = Math.max(0, V.tenueFort - pas);
-    V.fenetreFort = Math.max(0, V.fenetreFort - pas);
 
     const s = V.sortie;
     s.faible = intensite(faible, volume); s.fort = intensite(fort, volume);
