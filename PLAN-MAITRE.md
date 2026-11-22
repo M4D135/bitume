@@ -1,5 +1,13 @@
 # BITUME — plan maître
 
+## Décision du 22 novembre 2026 — édition native C++
+
+David demande **C++**, avec l’ordre **macOS → Linux → Windows**, et précise :
+**plan et publication GitHub uniquement**.
+Le [plan natif détaillé](docs/reprise/PLAN-NATIF-CPP-MACOS-LINUX-WINDOWS-2026-11-22.md) décrit l’architecture proposée, les lots N0–N6/L1–L2/W1–W2,
+les critères de fidélité et de performance. Statut : **planifié, non commencé**.
+Les états historiques ci-dessous ne constituent pas une validation du portage.
+
 > **Référence voiture actualisée le 21 novembre 2026 :** David choisit désormais la
 > galerie RenderBlade de la **126 CK** comme objectif visuel, en remplacement de la
 > 312 T5 mentionnée dans l'historique ci-dessous. [Objectif et état du chantier](docs/reprise/OBJECTIF-126CK-2026-11-21.md)
