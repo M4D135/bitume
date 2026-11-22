@@ -1,0 +1,4 @@
+SDL 3004020, backend metal, shaders metallib, 2 instances transparentes et profondeur, texture miroir relue
+x=0 RGB 0 255 0
+x=8 RGB 0 128 128
+x=24 RGB 128 128 0

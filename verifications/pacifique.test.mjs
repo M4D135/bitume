@@ -1,3 +1,4 @@
+import { definitionHistorique, historiques } from './helpers/catalogue-historique.mjs';
 // Cap-Séquoia : la côte, ses grands arbres et les saisons gardent une route praticable.
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
@@ -81,16 +82,18 @@ function verifierTroncsLointains(d) {
   return { proches: proches.size, lointains: lointains.size, collisions: collisions.size };
 }
 
-verifier('septième circuit, sans déplacer les identifiants et graines des six précédents', () => {
+verifier('catalogue actuel et définitions historiques de cap-sequoia', () => {
   const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
   const declaration = source.match(/  const CATALOGUE = \[[\s\S]*?\n  \];/)[0];
   const catalogue = new Function(declaration + '; return CATALOGUE;')();
-  assert.deepEqual(catalogue.slice(0, 6).map(k => [k.id, k.graine, k.longueur]), [
+  assert.deepEqual(historiques.slice(0, 6).map(h => definitionHistorique(catalogue, h.id)).map(k => [k.id, k.graine, k.longueur]), [
     ['val-brule', 11, 4200], ['port-sable', 29, 3600], ['haut-col', 47, 5200],
     ['lande-noire', 83, 4600], ['roche-fauve', 107, 4800], ['brume-de-jade', 131, 5000]
   ]);
-  assert.equal(catalogue.findIndex(k => k.id === 'cap-sequoia'), 6);
-  assert.deepEqual([catalogue[6].nom, catalogue[6].theme, catalogue[6].graine, catalogue[6].longueur],
+  const selection = catalogue.filter(k => k.id === 'cap-sequoia');
+  assert.equal(selection.length, 1);
+  const [k] = selection;
+  assert.deepEqual([k.nom, k.theme, k.graine, k.longueur],
     [options.nom, options.theme, 157, options.longueur]);
 });
 verifier('boucle fermée et trajectoire praticable, départ en ligne droite', () => {

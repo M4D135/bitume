@@ -1,3 +1,4 @@
+import { definitionHistorique, historiques } from './helpers/catalogue-historique.mjs';
 // Brume-de-Jade : circuit original, relief en pics/terrasses, bosquets et saisons stables.
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
@@ -49,16 +50,18 @@ function memeGeometrie(a, b) {
   assert.equal(empreinte(a.obstacles), empreinte(b.obstacles));
 }
 
-verifier('sixième entrée, les cinq identifiants et graines précédents restent en place', () => {
+verifier('catalogue actuel et définitions historiques de brume-de-jade', () => {
   const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
   const declaration = source.match(/  const CATALOGUE = \[[\s\S]*?\n  \];/)[0];
   const catalogue = new Function(declaration + '; return CATALOGUE;')();
-  assert.deepEqual(catalogue.slice(0, 5).map(k => [k.id, k.graine, k.longueur]), [
+  assert.deepEqual(historiques.slice(0, 5).map(h => definitionHistorique(catalogue, h.id)).map(k => [k.id, k.graine, k.longueur]), [
     ['val-brule', 11, 4200], ['port-sable', 29, 3600], ['haut-col', 47, 5200],
     ['lande-noire', 83, 4600], ['roche-fauve', 107, 4800]
   ]);
-  assert.equal(catalogue.findIndex(k => k.id === 'brume-de-jade'), 5);
-  assert.deepEqual([catalogue[5].nom, catalogue[5].theme, catalogue[5].graine, catalogue[5].longueur],
+  const selection = catalogue.filter(k => k.id === 'brume-de-jade');
+  assert.equal(selection.length, 1);
+  const [k] = selection;
+  assert.deepEqual([k.nom, k.theme, k.graine, k.longueur],
     [options.nom, options.theme, 131, options.longueur]);
 });
 verifier('boucle fermée, départ droit, pente et trajectoire praticables', () => {

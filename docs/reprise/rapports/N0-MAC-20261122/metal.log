@@ -1,0 +1,4 @@
+GPU Apple M5, natif arm64, C++20, cible RGBA8 + profondeur Depth32Float 32x16
+x=0 RGB 0 255 0
+x=8 RGB 128 128 0
+x=24 RGB 0 128 128

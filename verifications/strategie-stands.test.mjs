@@ -1,3 +1,5 @@
+import { definitionHistorique, historiques } from './helpers/catalogue-historique.mjs';
+import { creerCircuitCatalogue } from '../tools/qualification/circuit-catalogue.mjs';
 // 12F4 : décisions et trajets physiques vers les stands, sans déplacer les voitures pendant un parcours réussi.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
@@ -11,17 +13,17 @@ for (const nom of ['circuit', 'route-des-cimes', 'conduite', 'degats', 'contacts
 const B = globalThis.BITUME, DT = 1 / 120;
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const CATALOGUE = new Function(source.match(/  const CATALOGUE = \[[\s\S]*?\n  \];/)[0] + '; return CATALOGUE;')();
-assert.deepEqual(CATALOGUE.slice(0, 7).map(c => c.id), ['val-brule', 'port-sable', 'haut-col', 'lande-noire', 'roche-fauve', 'brume-de-jade', 'cap-sequoia'], 'les sept circuits historiques gardent leur place');
-assert.equal(CATALOGUE[7].id, 'baikal', 'le nouveau circuit participe aussi aux trajets de stands');
+const circuitsAvecStands = [...CATALOGUE.filter(k => !k.ouvert),
+  ...historiques.filter(h => !CATALOGUE.some(k => k.id === h.id))];
+assert.ok(circuitsAvecStands.some(k => k.id === 'baikal'));
 const RAPPORTS = process.env.BITUME_RAPPORTS_STANDS || path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../12f4-tests');
 mkdirSync(RAPPORTS, {recursive: true});
 const NEUTRE = {gaz: 0, frein: 1, volant: 0, derive: false, haut: false, bas: false, boite: 'auto', aide: 0};
 const circuits = new Map();
 function circuit(id) {
   if (!circuits.has(id)) {
-    const k = CATALOGUE.find(k => k.id === id); assert.ok(k);
-    const c = B.circuit.creer(k.graine, {theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition});
-    B.bords.limites(c, B.bords.planifier(c));
+    const k = definitionHistorique(CATALOGUE, id);
+    const c = creerCircuitCatalogue(B, k);
     const decor = B.decor.construire(c, {qualite: 'high', matieres: true, vegetation: true, vegetationQualite: 'high', saison: 'ete'});
     c.obstacles = B.obstacles.creer(decor.obstacles);
     assert.ok(c.obstacles.objets.length > 0, 'les solides du vrai décor sont actifs');
@@ -151,7 +153,7 @@ function parcourir(co, ids, journal, secondes = 150, monteApres = null) {
   return suivi;
 }
 
-for (const k of CATALOGUE) verifier('12F4 ' + k.id + ' usure forte entrée service sortie sur le vrai parcours', journal => {
+for (const k of circuitsAvecStands) verifier('12F4 ' + k.id + ' usure forte entrée service sortie sur le vrai parcours', journal => {
   const co = seance(k.id), v = co.voitures[1]; user(v);
   const joueur = roues(co.joueur); parcourir(co, [v.id], journal);
   assert.deepEqual(roues(co.joueur), joueur, 'le rival ne remplace aucun pneu du joueur');

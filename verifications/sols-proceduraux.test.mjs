@@ -1,3 +1,5 @@
+import { definitionHistorique } from './helpers/catalogue-historique.mjs';
+import { creerCircuitCatalogue } from '../tools/qualification/circuit-catalogue.mjs';
 // Sols naturels FERRO 25 (terre/herbe/neige) et 23 (roche) : seules les matières changent.
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
@@ -10,11 +12,11 @@ const B = globalThis.BITUME, sourceJeu = readFileSync(new URL('../src/jeu.js', i
 const catalogue = vm.runInNewContext(sourceJeu.match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1]);
 const rapports = []; let controles = 0;
 function verifier(nom, f) { const r = f(); controles++; console.log('ok  ' + nom); if (r) rapports.push({ nom, ...r }); }
-function circuit(k) { const c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition }); B.bords.limites(c, B.bords.planifier(c)); return c; }
+function circuit(k) { return creerCircuitCatalogue(B, k); }
 function empreinte(x) { return createHash('sha256').update(JSON.stringify(x)).digest('hex'); }
 function solides(d) { return d.lotsHerbier.flatMap(l => l.objets).map(o => o.solidePhysX || null); }
 function photographieVegetation(qualite, actif) {
-  const d = B.decor.construire(circuit(catalogue[0]), { qualite, saison: 'printemps', matieres: true,
+  const d = B.decor.construire(circuit(catalogue.find(k => k.id === 'val-brule')), { qualite, saison: 'printemps', matieres: true,
     vegetation: true, vegetationQualite: qualite, solsProceduraux: actif });
   assert.ok(d.vegetation, 'générateur de végétation non exercé');
   const hash = createHash('sha256'), json = x => hash.update(JSON.stringify(x)), donnees = x => hash.update(Buffer.from(x.buffer, x.byteOffset, x.byteLength));
@@ -87,7 +89,7 @@ function comparer(ancien, actif) {
 }
 
 verifier('Haut-Col : aucun triangle de terrain ne reçoit le béton des bâtiments', () => {
-  const d = B.decor.construire(circuit(catalogue.find(k => k.id === 'haut-col')), {
+  const d = B.decor.construire(circuit(definitionHistorique(catalogue, 'haut-col')), {
     qualite: 'low', saison: 'ete', vegetation: false, solsProceduraux: true,
   });
   let triangles = 0, fuites = 0, neige = 0;
@@ -114,7 +116,7 @@ for (const k of catalogue) for (const qualite of ['low', 'high']) {
   });
 }
 verifier('sans option explicite, le décor historique reste identique à solsProceduraux:false', () => {
-  const c = circuit(catalogue[0]), options = { qualite: 'low', saison: 'ete', vegetation: false };
+  const c = circuit(catalogue.find(k => k.id === 'val-brule')), options = { qualite: 'low', saison: 'ete', vegetation: false };
   const ancien = B.decor.construire(c, options), explicite = B.decor.construire(c, { ...options, solsProceduraux: false });
   assert.equal(empreinte(ancien), empreinte(explicite));
   assert.ok(ancien.nappes.some(n => n.sommets.some((x, i) => i % 13 === 9 && x === 8)));

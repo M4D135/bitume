@@ -1,3 +1,4 @@
+import { definitionHistorique, historiques } from './helpers/catalogue-historique.mjs';
 // Repères routiers : géométrie lisible, mêmes symboles en Légère/au loin, aucune incidence physique.
 // Oracle indépendant : sources de 0.2.53 au commit 510e6d43ae83f21334237310b2972b13ba68f228,
 // capturées par git show avant modification de decor.js. La fixture conserve cette seule source, comprimée.
@@ -78,12 +79,13 @@ function dehors(c, d, p) {
   }
 }
 
+const circuitsHistoriques = [...historiques, definitionHistorique(CATALOGUE, 'baikal')];
 verifier('les huit références indépendantes couvrent tous les circuits historiques', () => {
-  assert.deepEqual(Array.from(CATALOGUE.slice(0, 8), k => k.id).sort(), Object.keys(HISTORIQUE).sort());
+  assert.deepEqual(Array.from(circuitsHistoriques, k => k.id).sort(), Object.keys(HISTORIQUE).sort());
 });
 
 // Les fixtures 0.2.53 ne contiennent pas Route-des-Cimes ; son décor a une qualification dédiée.
-for (const k of CATALOGUE.slice(0, 8)) {
+for (const k of circuitsHistoriques) {
   const c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom });
   B.bords.limites(c, B.bords.planifier(c));
   const avant = tableaux(c), d = B.decor.construire(c, OPTIONS);

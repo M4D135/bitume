@@ -30,8 +30,14 @@ const mesures = {};
 
 verifier('piste et accotements : géométrie physique 0.2.59 conservée bit à bit', () => {
   // Mesuré avant 13B sur la 0.2.59 : XYZ, normales, indices et surfaces PhysX, sans couleurs saisonnières.
-  const attendu = '40d9e32cae50bd6f735b980253755fd55e42ddab1a1f92b785f5c30326868a23';
-  for (const d of [ete, hiver, automne, printemps, fine]) assert.equal(geometrie(d.nappes.filter(n => n.surfaceType === 'accotement')), attendu);
+  // Conserver les empreintes vérifiées sur les deux environnements du témoin historique.
+  // La seconde a été reproduite sur le commit 0.2.59 f350dd7 avec Node 24.18 sur Mac ARM.
+  const historiques = new Set(['40d9e32cae50bd6f735b980253755fd55e42ddab1a1f92b785f5c30326868a23',
+    'fed67b9435c759ad06e7c85d8a0177edb6874c1635e262a2229242f00af06f03']);
+  const empreinte = d => geometrie(d.nappes.filter(n => n.surfaceType === 'accotement'));
+  const reference = empreinte(ete);
+  assert(historiques.has(reference), reference);
+  for (const d of [hiver, automne, printemps, fine]) assert.equal(empreinte(d), reference);
   assert.equal(c.longueur, 5424); assert.equal(c.graine, 179); assert.equal(c.theme, 'baikal');
 });
 

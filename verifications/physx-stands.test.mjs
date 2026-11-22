@@ -1,3 +1,4 @@
+import { definitionHistorique } from './helpers/catalogue-historique.mjs';
 // Voie, service et file bloquée avec les vrais corps PhysX et les vrais solides du circuit.
 import assert from 'node:assert/strict';
 import { test, after } from 'node:test';
@@ -80,7 +81,7 @@ function fixture() {
 }
 function reelle(id = 'val-brule', meteo = 'sec', distance = 8, approche = false) {
   if (!circuits.has(id)) {
-    const k = CATALOGUE.find(x => x.id === id), c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition });
+    const k = definitionHistorique(CATALOGUE, id), c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition });
     B.bords.limites(c, B.bords.planifier(c));
     const decor = B.decor.construire(c, { qualite: 'high', matieres: true, vegetation: true, vegetationQualite: 'high', saison: 'ete' });
     c.obstacles = B.obstacles.creer(decor.obstacles); circuits.set(id, { c, decor });

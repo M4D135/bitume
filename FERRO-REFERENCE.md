@@ -1,4 +1,4 @@
-# FERRO — référence commune 0.3.15
+# FERRO — référence commune 0.3.16
 
 Décision de David du 16 novembre 2026 : entièrement procédural, aucun plafond de taille du code ni du build. Moteur prioritaire, atelier secondaire.
 
@@ -70,3 +70,13 @@ indisponible. Ces mesures logicielles ne qualifient ni le rendu navigateur compl
 ni les FPS matériels. La CI GitHub n'a exécuté aucune étape : le compte est bloqué par un problème de
 paiement ou de limite de dépenses, consigné sur la PR avant fusion. Notice et synthèse canoniques :
 [`docs/upholstery-0315/`](https://github.com/M4D135/FERRO/tree/47a1f7662028f9c84966b7c335b6cd10f3021086/docs/upholstery-0315).
+
+
+## Version 0.3.16 — fondu des modèles opaques
+
+BITUME utilise le commit `eda17f82cfb33feda52cf4e3f730b4ab87ffc410` de la branche
+`M4D135/FERRO:codex/ferro-opacity-reception-20261121`. Au contrôle du 22 novembre 2026,
+la branche principale de FERRO référençait encore la version 0.3.15. L’installateur de ce
+commit reproduit les 34 empreintes du verrou de BITUME. Le fondu conserve la géométrie
+et la matière de l’animal. Le souffle des baleines utilise la passe d’effets.
+[Qualification de l’opacité dans le dépôt FERRO](https://github.com/M4D135/FERRO/tree/eda17f82cfb33feda52cf4e3f730b4ab87ffc410/docs/opaque-opacity-0316).
