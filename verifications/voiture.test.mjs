@@ -52,7 +52,8 @@ verifier('pièces et version lointaine bien formées', () => {
     assert.ok(p.o.concat(p.s).every(Number.isFinite) && p.s.every(v => v > 0), JSON.stringify(p));
   }
   // 126 CK : 16 volumes au loin (assise et dossier gardés distincts pour le contrôle thorax/siège aux trois LOD).
-  assert.ok(mod.simples.length <= 16, `${mod.simples.length} volumes au loin, avec cuve et siège communs`);
+  assert.equal(mod.simples.filter(p => p.feuStop).length, 1, 'un feu stop au loin');
+  assert.ok(mod.simples.filter(p => !p.feuStop).length <= 16, 'seize volumes au plus pour la voiture lointaine hors feu stop');
 });
 
 // Pièces dessinées en vue extérieure, à l'arrêt : leur rang est celui des instances rendues par poser.
@@ -583,6 +584,26 @@ verifier('trajet au pommeau : les doigts ne traversent ni la jante ni la branche
   assert.equal(dansTore, 0, `${dansTore} sommets dans le tore de la jante, jusqu\'à ${(pireTore * 1000).toFixed(1)} mm de pénétration`);
   assert.equal(dansBranche, 0, `${dansBranche} sommets dans la branche de 3 h pendant le trajet`);
   assert.equal(dansBoule, 0, `${dansBoule} sommets dans la boule du pommeau pendant le trajet`);
+});
+
+verifier('le joueur et les concurrents allument et relâchent indépendamment leur feu stop à tous les niveaux de détail', () => {
+  const rival = V.modele({...livree, numero: 8});
+  const lentille = V.FORMES['feu-stop-lentille'].nom;
+  function dessiner(modele, detail, feuStop) {
+    const sortie = [], pose = {p:[0,0,0],cap:0,tangage:0,roulis:0,braquage:0,roule:0,v:24,feuStop};
+    V.poser(modele,pose,sortie,{detail});
+    const lampes = sortie.filter(o => o.shape === lentille);
+    assert.equal(lampes.length,1);
+    return lampes[0];
+  }
+  for(const detail of ['complet','moyen','simple']) {
+    const joueur = dessiner(mod,detail,true), concurrent = dessiner(rival,detail,false);
+    assert(joueur.emissive >= 4 && joueur.color[0] > .9);
+    assert.equal(concurrent.emissive,0); assert(concurrent.color[0] < .25);
+    assert.strictEqual(dessiner(rival,detail,true),concurrent);
+    assert.strictEqual(dessiner(mod,detail,false),joueur);
+    assert.equal(joueur.emissive,0); assert(concurrent.emissive >= 4);
+  }
 });
 
 console.log(`${compte} vérifications réussies`);

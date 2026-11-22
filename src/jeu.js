@@ -2840,10 +2840,11 @@
   const LAMPES_PORTIQUE = [], FEU_ALLUME = [1, .14, .06], FEU_ETEINT = [.1, .03, .03], TAILLE_FEU = [.56, .05, .56];
   // une voiture plus loin que ces 8 m derrière le plan d'une caméra ne s'y voit que par son ombre portée vers l'avant
   const DERRIERE_CAMERA = 8;
-  function poseRendu(k, p, roule, v, etatPneus) {
+  function poseRendu(k, p, roule, etat, etatPneus) {
     const ev = POSES_RENDU[k] || (POSES_RENDU[k] = nouvellePose());
     ev.p[0] = p.x; ev.p[1] = p.y; ev.p[2] = p.z;
-    ev.cap = p.cap; ev.tangage = p.tangage; ev.roulis = p.roulis; ev.braquage = p.braquage; ev.roule = roule; ev.rebond = p.rebond; ev.v = v;
+    ev.cap = p.cap; ev.tangage = p.tangage; ev.roulis = p.roulis; ev.braquage = p.braquage; ev.roule = roule; ev.rebond = p.rebond; ev.v = etat.v;
+    ev.feuStop = (etat.rapport < 0 ? etat.gaz : etat.frein) > .01;
     ev.etatPneus = etatPneus || null;
     return ev;
   }
@@ -3198,7 +3199,7 @@
       const p = poses[k], dx = p.x - cam.pos[0], dz = p.z - cam.pos[2], d2 = dx * dx + dz * dz;
       B.voiture.changerPneus(S.modeles[k], co.voitures[k].etat.pneus);
       const etatsPneus = co.voitures[k].distant && S.pneusVisuels ? S.pneusVisuels[k] : co.voitures[k].etat.etatPneus;
-      const ev = poseRendu(k, p, RV[k], co.voitures[k].etat.v, etatsPneus);
+      const ev = poseRendu(k, p, RV[k], co.voitures[k].etat, etatsPneus);
       const pilote = ev.pilote, voiture = co.voitures[k], etatPilote = voiture.etat;
       pilote.volant = etatPilote.volant; pilote.rapport = etatPilote.rapport;
       pilote.rapportAvant = voiture.rapportAvant === undefined ? etatPilote.rapport : voiture.rapportAvant;

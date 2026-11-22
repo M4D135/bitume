@@ -715,9 +715,9 @@
       diffuseur.push(...plaque([[-1.82, .102], [-1.20, .102], [-1.20, .130], [-1.82, .215]], z - .007, z + .007));
     }
     forme('diffuseur', diffuseur);
-    // Feu de pluie FIA arrière central : boîtier carbone et lentille LED rouge.
-    forme('feu-pluie-boitier', plaque([[-1.815, .258], [-1.765, .258], [-1.765, .322], [-1.815, .322]], -.030, .030));
-    forme('feu-pluie-led', plaque([[-1.822, .266], [-1.812, .266], [-1.812, .314], [-1.822, .314]], -.022, .022));
+    // Feu stop centré sur le carter, lentille en saillie vers la voiture qui suit.
+    forme('feu-stop-boitier', plaque([[-1.853, .252], [-1.765, .252], [-1.765, .390], [-1.853, .390]], -.112, .112));
+    forme('feu-stop-lentille', plaque([[-1.863, .265], [-1.850, .265], [-1.850, .377], [-1.863, .377]], -.098, .098));
     // Étriers de freins sport (fixes sur chaque porte-moyeu, visibles derrière les rayons de jante).
     const etriers = [];
     for (const w of ROUES) {
@@ -986,6 +986,7 @@
   // ---------------------------------------------------------------- modèle
   function piece(shape, o, s, mat, color, extra) { return Object.assign({ shape, o, s, mat, color }, extra || {}); }
 
+  const STOP_ETEINT = [.15, .008, .012], STOP_ALLUME = [1, .014, .006];
   function modele(livree) {
     const c1 = livree.couleur, c2 = livree.seconde || BLANC, casque = livree.casque || c2, combi = livree.combinaison || c1.map(v => v * .7);
     const corps = [], simples = [], moyennes = new Set();
@@ -1096,8 +1097,9 @@
     Moy(L('echappements-interieurs', MAT, [.018, .019, .021], AR()));
     Moy(L('echappements-levres', METAL_MAT, [.58, .51, .42], AR()));
     Moy(L('diffuseur', MAT, CARBONE, AR()));
-    L('feu-pluie-boitier', MAT, NOIR, AR());
-    L('feu-pluie-led', LAQUE, [.96, .08, .05], AR({ emissive: 1.8 }));
+    Moy(L('feu-stop-boitier', MAT, NOIR, AR()));
+    const feuStop = Moy(L('feu-stop-lentille', LAQUE, STOP_ETEINT, AR({ feuStop: true })));
+    simples.push(feuStop);
     Moy(L('mat-aileron', MAT, CARBONE, AR()));
     Moy(L('aileron-arriere', METAL_MAT, [.84, .85, .87], AR()));
     Moy(L('derives-arriere', MAT, CARBONE, AR()));
@@ -1296,6 +1298,7 @@
     for (const pc of liste) {
       if (cockpit && pc.tetePilote) continue;
       const objet = { shape: pc.shape, p: trois(), s: pc.s, r: t.rotM, mat: pc.mat, color: pc.color, surface: 'object' };
+      if (pc.feuStop) t.feuStop = objet;
       if (pc.usureRoue) objet.color = pc.color.slice();
       if (pc.usureRoue === 5) objet.s = pc.s.slice();
       if (pc.fx) { objet.fx = true; objet.alpha = pc.alpha; }
@@ -1401,6 +1404,10 @@
   // filtre des rétroviseurs sont rendues, et seules leurs rotations sont calculées.
   function poserTable(t, M, ev, sortie, roues, retro, detailRoues = 0, tete = null, sansPilote = false) {
     const px = ev.p[0], py = ev.p[1], pz = ev.p[2], v = ev.v || 0, rebond = ev.rebond, fixes = t.fixes, groupes = t.groupes;
+    if (t.feuStop) {
+      t.feuStop.color = ev.feuStop ? STOP_ALLUME : STOP_ETEINT;
+      t.feuStop.emissive = ev.feuStop ? 4.5 : 0;
+    }
     preparerPneus(t, ev.etatPneus);
     anglesDans(t.rotM, M);
     if (tete) anglesProduit(t.rotTete, M, tete);
