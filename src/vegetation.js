@@ -385,6 +385,12 @@
     function interdit(i) {
       return Math.abs(B.circuit.ecart(c, 0, i * c.pas)) < 360 || (B.circuit.dansCouvert && B.circuit.dansCouvert(c, i * c.pas, 20));
     }
+    function tiragesSpecimen(i, d, sel) {
+      const cap = c.cap[i];
+      const x = Math.floor((c.x[i] - Math.sin(cap) * d) * 100);
+      const z = Math.floor((c.z[i] + Math.cos(cap) * d) * 100);
+      return [hash(x, z, sel), hash(x, z, sel + 1), hash(x, z, sel + 2)];
+    }
     for (let station = 0, i = 0; i < c.n && station < stations; i += pas, station++) {
       const hasardStation = [r(), r(), r(), r(), r(), r(), r(), r()];
       const cote = qualite === 'low' ? (station % 2 ? 1 : -1) : (hasardStation[6] < .5 ? -1 : 1);
@@ -393,15 +399,23 @@
       if (espace < 1.2) continue;
       const d = cote * (w + 2.5 + hasardStation[0] * Math.min(espace - .3, 4.5));
       for (let k = 0; k < palier.herbes; k++) {
-        const j = (i + k * 2) % c.n, largeur = (.95 + hasardStation[k + 1] * .52) * biome.taille, h = (.40 + hasardStation[k + 3] * .28) * biome.taille;
+        const j = (i + k * 2) % c.n, decalage = d + cote * k * .75;
+        const [orientation, ampleur, stature] = qualite === 'low'
+          ? [hasardStation[k + 2], hasardStation[k + 1], hasardStation[k + 3]]
+          : tiragesSpecimen(j, decalage, 1001);
+        const largeur = (.95 + ampleur * .52) * biome.taille, h = (.40 + stature * .28) * biome.taille;
         const vert = .82 + hasardStation[k + 4] * .30, b = biome.herbe;
-        if (ajouter(j, d + cote * k * .75, 'herbes', hasardStation[k + 2] * PI2,
-          [largeur, h, largeur * (.72 + hasardStation[k + 3] * .20)], [b[0] * vert, b[1] * vert, b[2] * vert], palier.mat)) herbes++;
+        if (ajouter(j, decalage, 'herbes', orientation * PI2,
+          [largeur, h, largeur * (.72 + stature * .20)], [b[0] * vert, b[1] * vert, b[2] * vert], palier.mat)) herbes++;
       }
       if (hasardStation[7] < palier.taillis && espace > 3) {
-        const largeur = (1.0 + hasardStation[5] * .55) * biome.taille, h = (.75 + hasardStation[6] * .35) * biome.taille;
+        const decalage = cote * Math.min(limite - 2.3, Math.abs(d) + 2.5);
+        const [orientation, ampleur, stature] = qualite === 'low'
+          ? [hasardStation[4], hasardStation[5], hasardStation[6]]
+          : tiragesSpecimen(i, decalage, 1011);
+        const largeur = (1.0 + ampleur * .55) * biome.taille, h = (.75 + stature * .35) * biome.taille;
         const b = biome.taillis, n = biome.taillisNuance, t = hasardStation[3];
-        if (ajouter(i, cote * Math.min(limite - 2.3, Math.abs(d) + 2.5), 'taillis', hasardStation[4] * PI2,
+        if (ajouter(i, decalage, 'taillis', orientation * PI2,
           [largeur, h, largeur * .85], [b[0] + n[0] * t, b[1] + n[1] * t, b[2] + n[2] * t], palier.mat)) taillis++;
       }
     }
@@ -522,17 +536,12 @@
         const nombre = 1 + Math.floor(t[1] * (palier.fougeres + .35));
         for (let k = 0; k < nombre; k++) {
           const j = (i + k + Math.floor(t[3] * pasF * .75)) % c.n, vert = .78 + t[2 + (k % 4)] * .34;
-          const largeur = (1.05 + t[2] * .55) * biome.taille, h = (.52 + t[3] * .26) * biome.taille;
+          const decalage = d + cote * k * .85;
+          const [orientation, ampleur, stature] = tiragesSpecimen(j, decalage, 1021);
+          const largeur = (1.05 + ampleur * .55) * biome.taille, h = (.52 + stature * .26) * biome.taille;
           const b = biome.fougere;
-          const decalage = d + cote * k * .85, cap = c.cap[j];
-          const x = c.x[j] - Math.sin(cap) * decalage, z = c.z[j] + Math.cos(cap) * decalage;
-          const specimen = hasard((c.graine ^ Math.imul(i + 1, 0x9e3779b1) ^ Math.imul(k + 1, 0x85ebca6b)) >>> 0);
-          const stature = bruit(x, z, 17, 2411);
-          const angle = (t[4] * PI2 + k * 1.7 + (specimen() - .5) * .8 + PI2) % PI2;
-          const largeurF = largeur * (.92 + .06 * k + .03 * specimen() + .02 * stature);
-          const hauteurF = h * (.90 + .12 * specimen() + .08 * stature);
-          const plant = ajouter(j, decalage, 'fougeres', angle,
-            [largeurF, hauteurF, largeurF * (.86 + t[5] * .22)], [b[0] * vert, b[1] * vert, b[2] * vert], palier.mat);
+          const plant = ajouter(j, decalage, 'fougeres', orientation * PI2,
+            [largeur, h, largeur * (.86 + t[5] * .22)], [b[0] * vert, b[1] * vert, b[2] * vert], palier.mat);
           if (!plant) continue;
           fougeres++;
           // Le pied de fougère repose sur une couronne de terreau posée au sol, même empreinte au sol que la fronde.
@@ -559,9 +568,11 @@
         const nombre = 1 + Math.floor(t[1] * (palier.fleurs + .4));
         for (let k = 0; k < nombre; k++) {
           const j = (i + k + Math.floor(t[3] * pasL * .75)) % c.n, vert = .84 + t[2 + (k % 4)] * .30;
-          const largeur = (.62 + t[2] * .40) * biome.taille, h = (.30 + t[3] * .18) * biome.taille;
+          const decalage = d + cote * k * .6;
+          const [orientation, ampleur, stature] = tiragesSpecimen(j, decalage, 1031);
+          const largeur = (.62 + ampleur * .40) * biome.taille, h = (.30 + stature * .18) * biome.taille;
           const c0 = biome.fleurs[Math.floor(t[5] * biome.fleurs.length) % biome.fleurs.length];
-          if (ajouter(j, d + cote * k * .6, 'fleurs', t[4] * PI2 + k * 2.1,
+          if (ajouter(j, decalage, 'fleurs', orientation * PI2,
             [largeur, h, largeur * (.9 + t[5] * .25)], [c0[0] * vert, c0[1] * vert, c0[2] * vert], palier.mat)) fleurs++;
         }
       }
