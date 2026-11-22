@@ -1,0 +1,329 @@
+{
+  "schema": 1,
+  "meteoSha256": "652f362680e3b6a5d8e9f72b4a85ee465bf185905b8779ceaac3f5acc7559696",
+  "controles": 0,
+  "traits": 29097,
+  "sondes": 500747,
+  "occultations": 16,
+  "exemples": [
+    {
+      "nom": "galerie-oblique--0.15-3.8",
+      "frame": 23,
+      "goutte": 539,
+      "genre": "portail-tunnel",
+      "fractionTrait": 0.4444444444444444,
+      "pixel": [
+        842.7670423719618,
+        137.93060980902777
+      ],
+      "segment": [
+        848.4739379882812,
+        136.0782470703125,
+        835.6334228515625,
+        140.24606323242188
+      ],
+      "distanceSurface": 23.51836395263672,
+      "profondeurPluie": 12.534718741600942
+    },
+    {
+      "nom": "galerie-oblique--0.15-3.8",
+      "frame": 23,
+      "goutte": 539,
+      "genre": "portail-tunnel",
+      "fractionTrait": 0.48148148148148145,
+      "pixel": [
+        842.2914677372685,
+        138.0849733705874
+      ],
+      "segment": [
+        848.4739379882812,
+        136.0782470703125,
+        835.6334228515625,
+        140.24606323242188
+      ],
+      "distanceSurface": 23.509265899658203,
+      "profondeurPluie": 12.558072112660899
+    },
+    {
+      "nom": "galerie-oblique--0.15-3.8",
+      "frame": 23,
+      "goutte": 539,
+      "genre": "portail-tunnel",
+      "fractionTrait": 0.5185185185185185,
+      "pixel": [
+        841.8158931025753,
+        138.23933693214698
+      ],
+      "segment": [
+        848.4739379882812,
+        136.0782470703125,
+        835.6334228515625,
+        140.24606323242188
+      ],
+      "distanceSurface": 23.500160217285156,
+      "profondeurPluie": 12.581512665243206
+    },
+    {
+      "nom": "galerie-oblique--0.15-3.8",
+      "frame": 23,
+      "goutte": 539,
+      "genre": "portail-tunnel",
+      "fractionTrait": 0.5555555555555556,
+      "pixel": [
+        841.340318467882,
+        138.3937004937066
+      ],
+      "segment": [
+        848.4739379882812,
+        136.0782470703125,
+        835.6334228515625,
+        140.24606323242188
+      ],
+      "distanceSurface": 23.491056442260742,
+      "profondeurPluie": 12.605040888452727
+    },
+    {
+      "nom": "galerie-oblique--0.15-3.8",
+      "frame": 23,
+      "goutte": 539,
+      "genre": "portail-tunnel",
+      "fractionTrait": 0.5925925925925926,
+      "pixel": [
+        840.8647438331886,
+        138.5480640552662
+      ],
+      "segment": [
+        848.4739379882812,
+        136.0782470703125,
+        835.6334228515625,
+        140.24606323242188
+      ],
+      "distanceSurface": 23.481945037841797,
+      "profondeurPluie": 12.628657275059803
+    },
+    {
+      "nom": "galerie-oblique--0.15-3.8",
+      "frame": 23,
+      "goutte": 539,
+      "genre": "portail-tunnel",
+      "fractionTrait": 0.6296296296296297,
+      "pixel": [
+        840.3891691984953,
+        138.70242761682582
+      ],
+      "segment": [
+        848.4739379882812,
+        136.0782470703125,
+        835.6334228515625,
+        140.24606323242188
+      ],
+      "distanceSurface": 23.472827911376953,
+      "profondeurPluie": 12.652362321534648
+    },
+    {
+      "nom": "galerie-oblique--0.15-3.8",
+      "frame": 23,
+      "goutte": 539,
+      "genre": "portail-tunnel",
+      "fractionTrait": 0.6666666666666666,
+      "pixel": [
+        839.9135945638021,
+        138.8567911783854
+      ],
+      "segment": [
+        848.4739379882812,
+        136.0782470703125,
+        835.6334228515625,
+        140.24606323242188
+      ],
+      "distanceSurface": 23.463706970214844,
+      "profondeurPluie": 12.676156528082165
+    },
+    {
+      "nom": "galerie-oblique--0.15-3.8",
+      "frame": 23,
+      "goutte": 539,
+      "genre": "portail-tunnel",
+      "fractionTrait": 0.7037037037037037,
+      "pixel": [
+        839.4380199291088,
+        139.01115473994503
+      ],
+      "segment": [
+        848.4739379882812,
+        136.0782470703125,
+        835.6334228515625,
+        140.24606323242188
+      ],
+      "distanceSurface": 23.454580307006836,
+      "profondeurPluie": 12.70004039867712
+    },
+    {
+      "nom": "galerie-oblique--0.15-3.8",
+      "frame": 23,
+      "goutte": 539,
+      "genre": "portail-tunnel",
+      "fractionTrait": 0.7407407407407407,
+      "pixel": [
+        838.9624452944155,
+        139.16551830150462
+      ],
+      "segment": [
+        848.4739379882812,
+        136.0782470703125,
+        835.6334228515625,
+        140.24606323242188
+      ],
+      "distanceSurface": 23.445451736450195,
+      "profondeurPluie": 12.7240144410997
+    },
+    {
+      "nom": "galerie-oblique--0.15-3.8",
+      "frame": 23,
+      "goutte": 539,
+      "genre": "portail-tunnel",
+      "fractionTrait": 0.7777777777777778,
+      "pixel": [
+        838.4868706597222,
+        139.31988186306424
+      ],
+      "segment": [
+        848.4739379882812,
+        136.0782470703125,
+        835.6334228515625,
+        140.24606323242188
+      ],
+      "distanceSurface": 23.43631935119629,
+      "profondeurPluie": 12.748079166971534
+    },
+    {
+      "nom": "galerie-oblique--0.15-3.8",
+      "frame": 23,
+      "goutte": 539,
+      "genre": "portail-tunnel",
+      "fractionTrait": 0.8148148148148148,
+      "pixel": [
+        838.011296025029,
+        139.47424542462383
+      ],
+      "segment": [
+        848.4739379882812,
+        136.0782470703125,
+        835.6334228515625,
+        140.24606323242188
+      ],
+      "distanceSurface": 23.427181243896484,
+      "profondeurPluie": 12.772235091792068
+    },
+    {
+      "nom": "galerie-oblique--0.15-3.8",
+      "frame": 23,
+      "goutte": 539,
+      "genre": "portail-tunnel",
+      "fractionTrait": 0.8518518518518519,
+      "pixel": [
+        837.5357213903357,
+        139.62860898618345
+      ],
+      "segment": [
+        848.4739379882812,
+        136.0782470703125,
+        835.6334228515625,
+        140.24606323242188
+      ],
+      "distanceSurface": 23.418041229248047,
+      "profondeurPluie": 12.796482734975378
+    }
+  ],
+  "scenarios": [
+    {
+      "nom": "galerie-piliers-statique",
+      "images": 72,
+      "palier": "high",
+      "traits": 5528,
+      "sondes": 50592,
+      "occultations": 0
+    },
+    {
+      "nom": "galerie-flou-300",
+      "images": 18,
+      "palier": "high",
+      "traits": 1530,
+      "sondes": 41939,
+      "occultations": 0
+    },
+    {
+      "nom": "galerie-flou-300-low",
+      "images": 18,
+      "palier": "low",
+      "traits": 762,
+      "sondes": 20973,
+      "occultations": 0
+    },
+    {
+      "nom": "coin-portail",
+      "images": 60,
+      "palier": "high",
+      "traits": 5260,
+      "sondes": 52069,
+      "occultations": 0
+    },
+    {
+      "nom": "pilier-proche",
+      "images": 40,
+      "palier": "high",
+      "traits": 1928,
+      "sondes": 20191,
+      "occultations": 0
+    },
+    {
+      "nom": "galerie-oblique--0.15-1.2",
+      "images": 40,
+      "palier": "high",
+      "traits": 2142,
+      "sondes": 46411,
+      "occultations": 0
+    },
+    {
+      "nom": "galerie-oblique--0.15-3.8",
+      "images": 40,
+      "palier": "high",
+      "traits": 2244,
+      "sondes": 49516,
+      "occultations": 16
+    },
+    {
+      "nom": "galerie-oblique--0.25-1.2",
+      "images": 40,
+      "palier": "high",
+      "traits": 2284,
+      "sondes": 49459,
+      "occultations": 0
+    },
+    {
+      "nom": "galerie-oblique--0.25-3.8",
+      "images": 40,
+      "palier": "high",
+      "traits": 2435,
+      "sondes": 53481,
+      "occultations": 0
+    },
+    {
+      "nom": "galerie-oblique--0.4-1.2",
+      "images": 40,
+      "palier": "high",
+      "traits": 2382,
+      "sondes": 55414,
+      "occultations": 0
+    },
+    {
+      "nom": "galerie-oblique--0.4-3.8",
+      "images": 40,
+      "palier": "high",
+      "traits": 2602,
+      "sondes": 60702,
+      "occultations": 0
+    }
+  ],
+  "limite": "Centre du trait à pas <= 0,5 pixel, profondeur perspective et vrais murs/toits/portails/piliers PhysX ; ne qualifie ni rochers de décor ni franges antialias Canvas."
+}
