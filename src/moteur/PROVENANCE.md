@@ -116,3 +116,7 @@ Les 34 modules et leur verrou viennent de l’installateur canonique. Les nappes
 ## FERRO 0.3.25 — 22 novembre 2026
 
 Les 34 modules et leur verrou viennent de l’installateur canonique. La passe solaire WebGL2 utilise les bornes des groupes du décor et le shader de contact partage la normale des deux pneus de chaque essieu. [Commit du moteur](https://github.com/M4D135/FERRO/commit/5702caa5f3968a33bbe86b7a758c6c18cac4d3be)
+
+## FERRO 0.3.26 — 22 novembre 2026
+
+Les modules et leurs empreintes proviennent de l’installateur canonique. WebGL2 peut projeter le cockpit en coordonnées locales et réutiliser ses instances pour la tuile d’ombre. [Commit du moteur](https://github.com/M4D135/FERRO/commit/921f2c19a7de967f58e53ce0283a2d889ab8f883)

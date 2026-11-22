@@ -1,6 +1,6 @@
 # Pluie projetée — 16 novembre 2026
 
-La pluie de BITUME est calculée dans un volume autour de la caméra, puis projetée sur le canvas météo avec les mêmes axes et le même champ vertical que FERRO. Elle remplace les traits uniformes attachés à l'écran. Les gouttes proches sont plus épaisses ; les lointaines sont plus fines et moins opaques. Les rafales sont exprimées dans le monde, et la traînée tient compte du mouvement de la caméra avec une exposition fixe de 1/90 s. Une coupe de caméra ne produit pas une traînée démesurée.
+La pluie de BITUME est calculée dans un volume autour de la caméra, puis projetée sur le canvas météo avec les mêmes axes et le même champ vertical que FERRO. Elle remplace les traits uniformes attachés à l'écran. Les gouttes proches sont plus épaisses ; les lointaines sont plus fines et moins opaques. Les rafales sont exprimées dans le monde, et la traînée tient compte du mouvement de la caméra avec une exposition de 1/90 s en pluie légère, prolongée jusqu’à 1,45/90 s sous une forte averse. Une coupe de caméra ne produit pas une traînée démesurée.
 
 Le volume contient au plus 840 candidats et n'utilise que trois chemins Canvas2D, sans allocation par goutte pendant le rendu. Les gouttes sont générées par des graines fixes et des positions analytiques ; leur animation ne dépend pas du nombre d'images. L'atténuation progressive dans le bas du cockpit dégage les mains et la planche. L'intensité des éclairs passe par l'ambiance du moteur ; aucun grand voile blanc n'est ajouté au canvas.
 
@@ -38,7 +38,7 @@ La pluie reste un overlay : elle ne lit pas le tampon de profondeur et n'est pas
 
 ## Visière optique — 20 novembre 2026
 
-Les précipitations dans l'air ci-dessus restent distinctes des dépôts sur la visière. Le module
+Depuis la .130, la caméra de course affiche simultanément la chute de la pluie dans l’air et les gouttes sur la visière. Le réglage de la visière à zéro laisse l’averse visible sur le circuit. Les couches de petites perles disposent de dix fois plus de positions sur une même surface. Le sillage des roues active des positions supplémentaires pour les gouttes moyennes et les filets. Le module
 `src/visiere-optique.js`, chargé avant `vitre.js`, reconstruit le contrat du prototype Claude décrit
 dans `docs/reprise/rapports/etudes-2026-11-18/etudier-vitre.json` : petites perles, grosses gouttes,
 ruissellement, nappes, embruns, neige humide périphérique et buée. Les formes et les variations sont

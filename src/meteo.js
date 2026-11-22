@@ -163,11 +163,12 @@
   }
   function creerPluie(canvas) {
     const ctx = canvas && canvas.getContext('2d');
-    const graines = new Float64Array(N * 4), segments = new Float32Array(N * 4);
+    const graines = new Float64Array(N * 4), graineMasque = new Float64Array(N), segments = new Float32Array(N * 4);
     const lots = new Uint8Array(N);
     const stats = { candidats: 0, visibles: 0, traits: 0, lots: 0, lectures: 0, pixels: 0, propre: true, masquee: false,
       spatiaux: 0, abrites: 0, occultes: 0, rayons: 0 };
     const point = [0, 0, 0], queue = [0, 0, 0], milieu = [0, 0, 0], direction = [0, 0, 0], hit = {};
+    const boitesLocales = [];
     function occulte(a, b, physique) {
       if (!physique?.world?.raycast) return false;
       for (let k = 0; k < 3; k++) direction[k] = b[k] - a[k];
@@ -181,6 +182,7 @@
       graines[i * 4 + 1] = hasard(i * 4 + 2) * HAUTEUR;
       graines[i * 4 + 2] = hasard(i * 4 + 3) * LARGEUR;
       graines[i * 4 + 3] = 12 + hasard(i * 4 + 4) * 4;
+      graineMasque[i] = hasard(i + 4001);
     }
     let px = 0, py = 0, pz = 0, ancienYaw = 0, vx = 0, vy = 0, vz = 0, precedente = false;
     // propre : la toile ne contient aucun pixel. Masquée (visibility et non display, qui annulerait la taille
@@ -242,11 +244,25 @@
       const focale = h / (2 * Math.tan(clamp(cam.fov || 60, 10, 110) * Math.PI / 360));
       const t = m.t || 0;
       // Intégrales analytiques du vent, sans saut lorsque sa vitesse change.
-      const ventX = 1.8 + .9 * Math.sin(t * .61) + .5 * Math.sin(t * 1.47), ventZ = .55 + .35 * Math.cos(t * .43);
-      const deriveX = 1.8 * t + .9 / .61 * (1 - Math.cos(t * .61)) + .5 / 1.47 * (1 - Math.cos(t * 1.47));
-      const deriveZ = .55 * t + .35 / .43 * Math.sin(t * .43);
+      const ventX = m.reel ? m.ventX || 0 : 1.8 + .9 * Math.sin(t * .61) + .5 * Math.sin(t * 1.47);
+      const ventZ = m.reel ? m.ventZ || 0 : .55 + .35 * Math.cos(t * .43);
+      const deriveX = m.reel ? t * ventX : 1.8 * t + .9 / .61 * (1 - Math.cos(t * .61)) + .5 / 1.47 * (1 - Math.cos(t * 1.47));
+      const deriveZ = m.reel ? t * ventZ : .55 * t + .35 / .43 * Math.sin(t * .43);
+      const intensite = clamp((pluie - .35) / .65, 0, 1), averse = intensite * intensite * (3 - 2 * intensite);
+      const exposition = EXPOSITION * (1 + .45 * averse), maximum = Math.min(18, h * .025) * (1 + .30 * averse);
       const cible = Math.round((BUDGETS[o.palier] || N) * pluie);
-      const boites = boitesCouverts(o.circuit);
+      // L'enveloppe inclut la caméra, toutes les têtes et l'exposition entière des queues,
+      // même en marche arrière. Hors de ce volume, aucun trait ni rayon ne peut toucher l'ouvrage.
+      const ouvrages = boitesCouverts(o.circuit), boites = boitesLocales;
+      const mx = LARGEUR / 2 + Math.abs(ventX - vx) * exposition, mz = LARGEUR / 2 + Math.abs(ventZ - vz) * exposition;
+      const my = HAUTEUR / 2 + (16 + Math.abs(vy)) * exposition;
+      let nbBoites = 0;
+      for (let j = 0; j < ouvrages.length; j++) {
+        const b = ouvrages[j];
+        if (b.max[0] >= pos[0]-mx && b.min[0] <= pos[0]+mx && b.max[2] >= pos[2]-mz && b.min[2] <= pos[2]+mz &&
+            b.max[1] >= pos[1]-my && b.min[1] <= pos[1]+my) boites[nbBoites++] = b;
+      }
+      boites.length = nbBoites;
       stats.candidats = cible;
       for (let i = 0; i < cible; i++) {
         const k = i * 4, chute = graines[k + 3];
@@ -259,21 +275,23 @@
         const ex = w * .5 + (x * rx + y * ry + z * rz) * focale / profondeur;
         const ey = h * .5 - (x * ux + y * uy + z * uz) * focale / profondeur;
         if (ex < -20 || ex > w + 20 || ey < -20 || ey > h + 20) continue;
-        // Amincissement progressif : planche, mains et route restent dégagées, sans barre de coupure.
-        const bas = o.cockpit ? clamp((ey / h - .49) / .37, 0, 1) : 0;
-        const masque = 1 - bas * bas * (3 - 2 * bas);
         const proche = clamp((profondeur - .8) / 2, 0, 1);
         const loin = clamp((30 - profondeur) / 10, 0, 1);
-        if (hasard(i + 4001) > masque * proche * loin) continue;
+        if (graineMasque[i] >= proche * loin || (o.cockpit && ey >= h * .86)) continue;
         // La vitesse relative produit une vraie expansion à grande vitesse, même droit devant.
-        const tx = x - (ventX - vx) * EXPOSITION, ty = y + (chute + vy) * EXPOSITION, tz = z - (ventZ - vz) * EXPOSITION;
+        const tx = x - (ventX - vx) * exposition, ty = y + (chute + vy) * exposition, tz = z - (ventZ - vz) * exposition;
         const dp = tx * fx + ty * fy + tz * fz;
         if (dp < .8) continue;
         let dx = w * .5 + (tx * rx + ty * ry + tz * rz) * focale / dp - ex;
         let dy = h * .5 - (tx * ux + ty * uy + tz * uz) * focale / dp - ey;
-        const longueur = Math.hypot(dx, dy), maximum = Math.min(18, h * .025);
+        const longueur = Math.hypot(dx, dy);
         const fractionEcran = longueur > maximum ? maximum / longueur : 1;
         if (fractionEcran < 1) { dx *= fractionEcran; dy *= fractionEcran; }
+        if (o.cockpit) {
+          // La partie la plus basse du trait gouverne le masque, également sous forte averse.
+          const bas = clamp(((ey + Math.max(0, dy)) / h - .49) / .37, 0, 1);
+          if (graineMasque[i] >= (1 - bas * bas * (3 - 2 * bas)) * proche * loin) continue;
+        }
         // Ne requêter que des traits déjà projetés dans le cadre et dont le rayon rencontre un
         // couvert. Aucun quota aléatoire : tous ces traits ont la même protection, même en Légère.
         // Deux extrémités sèches et trois lignes de vue protègent aussi le flou près d'un pilier.
@@ -309,8 +327,9 @@
         let n = 0;
         for (let j = 0; j < stats.visibles; j++) if (lots[j] === lot) {
           if (!n) {
-            ctx.lineWidth = lot === 0 ? 1 : lot === 1 ? .75 : .5;
-            ctx.globalAlpha = (lot === 0 ? .28 : lot === 1 ? .21 : .14) * (.55 + pluie * .45); ctx.beginPath();
+            ctx.lineWidth = (lot === 0 ? 1 : lot === 1 ? .75 : .5) + .25 * averse;
+            ctx.globalAlpha = ((lot === 0 ? .28 : lot === 1 ? .21 : .14) + (lot === 2 ? .17 : .21) * averse) * (.55 + pluie * .45);
+            ctx.beginPath();
           }
           const o4 = j * 4; ctx.moveTo(segments[o4], segments[o4 + 1]); ctx.lineTo(segments[o4 + 2], segments[o4 + 3]); n++;
         }

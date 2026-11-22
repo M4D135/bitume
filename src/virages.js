@@ -5,6 +5,7 @@
 (function (B) {
   'use strict';
   const plans = new WeakMap(), suivis = new WeakMap(), VIDE = Object.freeze([]);
+  const RAYON_SERRE = 85;
   const borner = (x, a, b) => Math.max(a, Math.min(b, x));
   const ramener = (s, L) => ((s % L) + L) % L;
 
@@ -85,7 +86,7 @@
       const rayonMin = 1 / maximum;
       // Une épingle exige aussi un changement de direction : un coude à 90°, même
       // très court, reste « serré ». Les valeurs classent le tracé, jamais la météo.
-      const difficulte = rayonMin <= 45 && angle >= 2 ? 3 : rayonMin <= 85 ? 2 : 1;
+      const difficulte = rayonMin <= 45 && angle >= 2 ? 3 : rayonMin <= RAYON_SERRE ? 2 : 1;
       const direction = v.sens > 0 ? 'droite' : 'gauche';
       const libelle = difficulte === 3 ? 'Épingle à ' + direction
         : (v.sens > 0 ? 'Droite' : 'Gauche') + (difficulte === 2 ? ' serrée' : ' marquée');
@@ -195,5 +196,5 @@
     return { dire, annuler, disponible: () => !!choisir() };
   }
 
-  B.virages = { planifier, lire, creerVoix };
+  B.virages = { planifier, lire, creerVoix, RAYON_SERRE };
 })(globalThis.BITUME = globalThis.BITUME || {});

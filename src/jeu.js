@@ -915,6 +915,7 @@
     E.ajouter(sortie, ev, etat, lod, overlay, matrice);
   }
   let pluieVue = null, pluieVue2 = null, vitreVue = null, vitreVue2 = null;
+  const projectionsPluie = [{}, {}];
   const SANS_PLUIE_PROJETEE = { pluie: 0 };
   const ambiancePublic = () => ({ pluie: 0, neige: 0, mouille: 0, feux: 0, vert: false, termine: false });
   function precipitationsNeige(S) {
@@ -928,7 +929,6 @@
     if (deux && !pluieVue2) pluieVue2 = creationTardive('pluie', B.meteo.creerPluie($('meteo2')));
     if (!deux && !pluieVue) pluieVue = creationTardive('pluie', B.meteo.creerPluie($('meteo')));
     const abri = sousLaVoute(S.course.c, cam.pos) || B.meteo.abriCouverts(S.course.c, cam.pos, S.course.physique), neige = precipitationsNeige(S);
-    let pluieSurLentille = false;
     if (B.vitre) {
       if (deux && !vitreVue2) vitreVue2 = creationTardive('vitre', B.vitre.creer($('vitre2'), { graine: 2 }));
       if (!deux && !vitreVue) vitreVue = creationTardive('vitre', B.vitre.creer($('vitre')));
@@ -968,17 +968,17 @@
       // rendreVue vient de dessiner cette caméra : en duo, la source contient encore J2 avant la copie scene2,
       // puis J1 à son tour. La visière capture sa propre image, sans getImageData ni readPixels.
       contexte.sourceScene = $('scene');
-      contexte.embruns = !abri && neige === 0 && B.sillage && B.sillage.exposition
+      contexte.embruns = contexte.actif && contexte.intensite > 0 && profil.palier !== 'off' && !abri && neige === 0 && B.sillage && B.sillage.exposition
         ? B.sillage.exposition(session.sillage, cam.pos, Math.max(S.meteo.mouille || 0, S.meteo.pluie || 0), voiture.id) : 0;
       const vitre = deux ? vitreVue2 : vitreVue;
-      const etat = B.vitre.mettreAJour(vitre, dt, contexte);
-      pluieSurLentille = !abri && contexte.actif && contexte.intensite > 0 && profil.palier !== 'off' && etat?.pret && !vitre.libere;
+      B.vitre.mettreAJour(vitre, dt, contexte);
     }
-    // En conduite la pluie atteint la lentille. Depuis une caméra abritée on voit
-    // la pluie au-delà du portail pendant que les dépôts existants sèchent.
-    const meteoProjetee = neige > 0 || pluieSurLentille ? SANS_PLUIE_PROJETEE : S.meteo;
-    S.pluieImage = (deux ? pluieVue2 : pluieVue).dessiner(meteoProjetee, cam, dt,
-      { cockpit: vue === 'cockpit', dpr: window.devicePixelRatio || 1, palier: profil.palier, circuit: S.course.c, physique: S.course.physique });
+    // L'averse existe dans le monde, y compris au-delà d'un portail. L'intensité de
+    // la visière règle seulement l'eau qui s'attache à la caméra de ce joueur.
+    const projection = projectionsPluie[deux ? 1 : 0];
+    projection.cockpit = vue === 'cockpit'; projection.dpr = window.devicePixelRatio || 1;
+    projection.palier = profil.palier; projection.circuit = S.course.c; projection.physique = S.course.physique;
+    S.pluieImage = (deux ? pluieVue2 : pluieVue).dessiner(neige > 0 ? SANS_PLUIE_PROJETEE : S.meteo, cam, dt, projection);
   }
 
   // Dans les menus, A valide et Select/View revient. B reste une commande de conduite affectable.
@@ -6103,7 +6103,7 @@
     try {
       // ombres photo (src/ombres.js) : tuile de 512² ; à 1024², des dents rampent sous la casquette de la planche.
       // Bloc PCSS compilé seulement si la pénombre variable sert (B.ombres.reglages.pcssFine) : shader plus court sinon.
-      const optionsRendu = { indexRegisteredShapes: true, cullRigidOverlay: true, cullRigidSunCasters: true, msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512, pcss: !!(B.ombres && B.ombres.reglages.pcssFine) } };
+      const optionsRendu = { indexRegisteredShapes: true, cullRigidOverlay: true, cameraRelativeOverlay: true, cullRigidSunCasters: true, msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512, pcss: !!(B.ombres && B.ombres.reglages.pcssFine) } };
       // L'interface garde sa définition CSS ; seule la scène Xbox est bornée
       // à 720p, y compris sur TV 4K et après redimensionnement. FSurface applique
       // ce budget avant l'allocation des cibles WebGL, sans retouche de FERRO.

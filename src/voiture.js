@@ -1755,6 +1755,32 @@
       [.100, .088], [.146, .067], [.166, .025]];
     forme('planche', C.carene(bord.map(([x, haut]) => ({ x, y0: -.066, y1: haut, l: .007, n: 6 })), { cotes: 24, pas: 3 }));
     forme('casquette', C.carene(bord.map(([x, haut]) => ({ x, y0: haut + .002, y1: haut + .007, l: .010, n: 3, z: .008 })), { cotes: 20, pas: 3 }));
+    // Bague sertie ouverte au centre. Les deux tailles conservent la même largeur de lèvre.
+    for (const [nom, diametre] of [['compte-tours', .095], ['auxiliaire', .055]]) {
+      const r = diametre / 2;
+      forme('lunette-' + nom, revolutionRoue([
+        [.005, r + .001], [.005, r + .004], [.007, r + .005], [.015, r + .005],
+        [.018, r + .003], [.018, r - .0005], [.015, r - .0015], [.013, r + .001]
+      ], 32, false));
+    }
+    // Même périmètre à 32 côtés que la bague dans tous les LOD, y compris au niveau léger.
+    const disque = C.carene([-.5,.5].map(x => ({ x, y0: -.5, y1: .5, l: .5, n: 2 })), { cotes: 32, pas: 1 });
+    forme('fond-cadran', C.transformer(disque, [[0,1,0],[1,0,0],[0,0,-1]]));
+    // Diffuseur d'une barrette LED, biseaux visibles dans le plan de lecture.
+    const contour = [[-.5, 0], [-.36, -.5], [.36, -.5], [.5, 0], [.36, .5], [-.36, .5]];
+    const avant = contour.map(([x,y]) => [x,y,.5]), arriere = contour.map(([x,y]) => [x,y,-.5]), led = [];
+    const faceLed = (a,b,c,n) => led.push([a,b,c,n,n,n]);
+    for (let i = 1; i < contour.length-1; i++) {
+      faceLed(avant[0], avant[i], avant[i+1], [0,0,1]);
+      faceLed(arriere[0], arriere[i+1], arriere[i], [0,0,-1]);
+    }
+    for (let i = 0; i < contour.length; i++) {
+      const j = (i+1) % contour.length, dx = contour[j][0]-contour[i][0], dy = contour[j][1]-contour[i][1];
+      const longueur = Math.hypot(dx,dy), n = [dy/longueur,-dx/longueur,0];
+      faceLed(arriere[i],arriere[j],avant[j],n);
+      faceLed(arriere[i],avant[j],avant[i],n);
+    }
+    forme('segment-led', led);
     forme('jante', C.tube(Array.from({ length: 24 }, (_, i) => { const a = i * Math.PI / 12; return [R * Math.cos(a), 0, R * Math.sin(a)]; }), .0225 * e / 2, { cotes: 10, ferme: true, pas: 2 }));
     // Photo réelle fournie : branches noires pleines, légèrement effilées vers la jante.
     const branche = C.carene([{ x: .028 * e, y0: -.003, y1: .003, l: .016 * e, n: 4 },
@@ -1903,35 +1929,50 @@
     L.push(mettre('box', sur(-.133, -.039, .0085), [.004, .033, .026], LAQUE, [.012, .012, .014], plat));
     L.push(mettre('box', sur(.120, -.039, .0085), [.004, .030, .068], LAQUE, [.012, .012, .014], plat));
     // cadrans : lunette, fond, graduations, aiguille (place et repère recalculés), cache central
-    const cadran = (a, b, d, fond) => { L.push(mettre('cylinder', sur(a, b, .009), [d + .010, .008, d + .010], METAL_MAT, ARGENT, rond), mettre('cylinder', sur(a, b, .012), [d, .006, d], MAT, fond, rond)); return sur(a, b, .016); };
+    const cadran = (a, b, d, nom) => {
+      L.push(posee('lunette-' + nom, sur(a, b, 0), rond, METAL_MAT, ARGENT));
+      L.push(mettre(FORMES['fond-cadran'].nom, sur(a, b, .009), [d, .006, d], MAT, [.02, .02, .022], rond));
+      // Fond à .012. Les graduations sont serties dedans et font saillie jusqu'à .0137.
+      return sur(a, b, .0127);
+    };
     const aiguille = (centre, rayon, long, large, emissive) => { const e = mettre('box', null, [long, .002, large], 5, [1, .40, .08], libre(), emissive); e.centre = centre; e.rayon = rayon; H.aiguilles.push(e); L.push(e); };
-    const tours = cadran(0, .050, .095, [.02, .02, .022]);
+    const tours = cadran(0, .050, .095, 'compte-tours');
     for (let g = 0; g <= 13; g++) {
       const long = g % 2 ? .006 : .010, rouge = g >= 12;
       L.push(trait(tours, -2.36 + 4.72 * g / 13, .044 - long / 2, long, .0028, rouge ? 5 : TISSU, rouge ? [1, .1, .05] : IVOIRE, rouge ? .5 : undefined));
     }
-    aiguille(plus(tours, [PN, .002]), .014, .037, .0036, .9);
-    L.push(mettre('cylinder', plus(tours, [PN, .003]), [.016, .006, .016], METAL_MAT, ARGENT, rond));
+    aiguille(plus(tours, [PN, .0045]), .014, .037, .0036, .9);
+    L.push(mettre('cylinder', plus(tours, [PN, .0045]), [.016, .009, .016], METAL_MAT, ARGENT, rond));
     for (const a of [-.089, .089]) {
-      const centre = cadran(a, .005, .055, [.02, .02, .022]);
+      const centre = cadran(a, .005, .055, 'auxiliaire');
       for (let g = 0; g < 5; g++) L.push(trait(centre, -1.2 + .6 * g, .0155, .005, .0022, TISSU, IVOIRE));
-      aiguille(plus(centre, [PN, .0015]), .008, .017, .0026, .7);
-      L.push(mettre('cylinder', plus(centre, [PN, .002]), [.008, .005, .008], METAL_MAT, ARGENT, rond));
+      aiguille(plus(centre, [PN, .0045]), .008, .017, .0026, .7);
+      L.push(mettre('cylinder', plus(centre, [PN, .004]), [.008, .008, .008], METAL_MAT, ARGENT, rond));
     }
     for (const a of [-.046, -.034]) L.push(mettre('cylinder', sur(a, -.043, .011), [.010, .006, .010], METAL_MAT, ARGENT, rond), mettre('box', sur(a, -.039, .019), [.003, .011, .003], METAL_MAT, ARGENT, cadre));
     const voyant = (a, b, couleur, force) => { L.push(mettre('cylinder', sur(a, b, .012), [.0125, .005, .0125], METAL_MAT, [.32, .32, .34], rond)); const e = mettre('sphere', sur(a, b, .016), [.009, .009, .009], 5, couleur, null, force); L.push(e); return e; };
     voyant(.032, -.043, [.14, .9, .3], 1.1);                 // contact : toujours allumé
     H.alerte = voyant(.050, -.043, TEMOIN_ETEINT, undefined);
     // Afficheurs à sept segments : rapport (et sa diagonale pour R), trois chiffres de vitesse
+    const barrette = (centre, x, y, dx, dy, longueur, largeur, mat, couleur, emission) => {
+      const axe = WR.map((v,k) => v*dx + PU[k]*dy);
+      return mettre(FORMES['segment-led'].nom, plus(centre,[WR,x],[PU,y],[PN,.0123]),
+        [longueur,largeur,.004], mat,couleur,[axe,croix(PN,axe),PN],emission);
+    };
     const chiffre = (centre, h) => {
-      const l = h * .56, t = h * .13, places = [[0, h / 2, l, t], [l / 2, h / 4, t, h / 2], [l / 2, -h / 4, t, h / 2], [0, -h / 2, l, t], [-l / 2, -h / 4, t, h / 2], [-l / 2, h / 4, t, h / 2], [0, 0, l, t]];
-      return places.map(([x, y, sx, sy]) => mettre('box', plus(centre, [WR, x], [PU, y], [PN, .011]), [sx, sy, .002], MAT, ETEINT, cadre));
+      const l = h * .56, t = h * .13;
+      const horizontale = y => barrette(centre,0,y,1,0,l-1.15*t,t,MAT,ETEINT);
+      const verticale = (x,y) => barrette(centre,x,y,0,1,h/2-1.15*t,t,MAT,ETEINT);
+      return [horizontale(h/2), verticale(l/2,h/4), verticale(l/2,-h/4), horizontale(-h/2),
+        verticale(-l/2,-h/4), verticale(-l/2,h/4), horizontale(0)];
     };
     {
       const centre = plus(PLANCHE, [WR, -.133], [PU, -.039]), h = .025, l = h * .56, t = h * .13;
       H.rapport = chiffre(centre, h);
-      const long = Math.hypot(l / 2, h / 2), d = WR.map((v, k) => (v * l / 2 - PU[k] * h / 2) / long);
-      H.diagonale = mettre('box', plus(centre, [WR, l / 4], [PU, -h / 4], [PN, .011]), [t, long, .002], 5, AMBRE, [croix(d, PN), d, PN], 1.1);
+      // La patte du R a son propre logement, entre la traverse médiane et les LED du coin droit.
+      const ax=-.55*t, ay=-.8*t, bx=l/2-t, by=-h/2+.85*t;
+      const dx=bx-ax, dy=by-ay, long=Math.hypot(dx,dy);
+      H.diagonale = barrette(centre,(ax+bx)/2,(ay+by)/2,dx/long,dy/long,long,.7*t,5,AMBRE,1.1);
     }
     for (let k = 0; k < 3; k++) H.vitesse.push(chiffre(plus(PLANCHE, [WR, .100 + k * .020], [PU, -.039]), .020));
     // Volant, levier et mains : places et repères posés par majVolant
@@ -1942,7 +1983,8 @@
     const coussin = FORMES['moyeu-capitonne'];
     H.moyeu.push(mettre(coussin.nom, plus(CV, [WN, coussin.centre[1]]), coussin.taille, TISSU, NOIR, H.rJante));
     // Écusson central course or/jaune + 2 boutons poussoirs (rouge boost / jaune radio) tournant avec le volant.
-    H.moyeu.push(mettre('box', plus(CV, [WN, .026]), [.022, .003, .017], LAQUE, [.94, .74, .09], H.rJante));
+    const faceCoussin = coussin.centre[1] + coussin.taille[1]/2;
+    H.moyeu.push(mettre('bevel', plus(CV, [WN, faceCoussin+.0015]), [.022, .005, .017], LAQUE, [.94, .74, .09], H.rJante));
     H.moyeu.push(mettre('cylinder', plus(CV, [WR, -.072], [WN, .012]), [.010, .008, .010], LAQUE, [.86, .11, .09], H.rJante));
     H.moyeu.push(mettre('cylinder', plus(CV, [WR, .072], [WN, .012]), [.010, .008, .010], LAQUE, [.94, .74, .09], H.rJante));
     V.push(...H.moyeu);

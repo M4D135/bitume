@@ -1,4 +1,4 @@
-# FERRO — référence commune 0.3.25
+# FERRO — référence commune 0.3.26
 
 Décision de David du 16 novembre 2026 : entièrement procédural, aucun plafond de taille du code ni du build. Moteur prioritaire, atelier secondaire.
 
@@ -105,3 +105,7 @@ Les deux vues principales de BITUME activent `cullRigidOverlay`. Les pièces rig
 La version 0.3.24 compacte les sommets des nappes de terrain rigides à 40 octets sur WebGL2 et WebGPU. Le cockpit WebGL2 écarte les objets qui ne peuvent projeter d’ombre dans la carte solaire et les fragments hors du volume de sa tuile locale. [Commit du moteur](https://github.com/M4D135/FERRO/commit/f9195273ceed7e0a01ed8dc221aa3cfdc554b03e)
 
 La version 0.3.25 écarte les groupes d’instances hors du volume de l’ombre solaire proche sur WebGL2. Le calcul du contact de l’ombre partage la projection entre la caisse et les quatre pneus. [Commit du moteur](https://github.com/M4D135/FERRO/commit/5702caa5f3968a33bbe86b7a758c6c18cac4d3be)
+
+## Version 0.3.26 — précision du cockpit
+
+Les positions des pièces de l’habitacle sont exprimées dans le repère de la caméra avant leur conversion en flottants 32 bits. Les compteurs gardent ainsi leur précision sur les longs parcours. [Commit du moteur](https://github.com/M4D135/FERRO/commit/921f2c19a7de967f58e53ce0283a2d889ab8f883)

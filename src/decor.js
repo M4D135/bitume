@@ -1145,34 +1145,105 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     if (qualite && qualite !== 'low') habiller(liste, loin, essence, qualite, h, penche, v);
   }
 
-  function tribune(liste, loin, f, w, cote, longueur, r, gradins = null) {
+  // Une marche de 64 m est longue dans le sens de la piste, et mesure seulement
+  // 1,15 m dans l'autre. Comparer l'empreinte orientée de la tribune entière
+  // aux tronçons réels de la voie de service, y compris si un autre virage la longe.
+  function bandesStandsTribunes(c) {
+    const S=c.stands;
+    if (!S) return [];
+    const coupures = new Set([S.debut,S.fin]);
+    for (let s=Math.ceil(S.debut/c.pas)*c.pas;s<S.fin;s+=c.pas) coupures.add(s);
+    for (const s of [S.mur0,S.mur1,S.garage0-18,S.garage0-4,S.garage0,S.garage1,S.garage1+4,S.garage1+18])
+      if (s>S.debut && s<S.fin) coupures.add(s);
+    const stations = [...coupures].sort((a,b)=>a-b).map(s=>({ s, f:cadreOuvrage(c,s/c.pas) }));
+    const point=(f,d)=>[f.x+f.r[0]*d,f.z+f.r[2]*d];
+    const bandes=[];
+    for (let i=1;i<stations.length;i++) {
+      const a=stations[i-1], b=stations[i], milieu=(a.s+b.s)/2;
+      const garage=milieu>=S.garage0-4 && milieu<=S.garage1+4;
+      const bord=s=>garage ? S.dBox+11 : B.circuit.bordStands(c,s);
+      bandes.push([point(a.f,c.largeur/2-.2),point(b.f,c.largeur/2-.2),point(b.f,bord(b.s)),point(a.f,bord(a.s))]);
+    }
+    return bandes;
+  }
+  function tribuneDisponible(c,t,bandes) {
+    const demiL=t.longueur/2+1, demiP=t.marches*t.profondeur/2+1.2;
+    if (c.ouvert && (t.s<demiL || t.s+demiL>c.longueur)) return false;
+    const co=Math.cos(t.a), si=Math.sin(t.a), d=t.recul+t.cote*t.marches*t.profondeur/2;
+    const cx=t.x-si*d, cz=t.z+co*d;
+    for (const bande of bandes) {
+      const p=bande.map(([x,z])=>[(x-cx)*co+(z-cz)*si,-(x-cx)*si+(z-cz)*co]);
+      if (p.every(v=>v[0]>demiL) || p.every(v=>v[0]<-demiL) ||
+          p.every(v=>v[1]>demiP) || p.every(v=>v[1]<-demiP)) continue;
+      let separe=false;
+      for (let i=0;i<4;i++) {
+        const a=p[i], b=p[(i+1)%4], nx=b[1]-a[1], nz=a[0]-b[0];
+        const limite=demiL*Math.abs(nx)+demiP*Math.abs(nz);
+        if (p.every(v=>v[0]*nx+v[1]*nz>limite) || p.every(v=>v[0]*nx+v[1]*nz < -limite)) { separe=true; break; }
+      }
+      if (!separe) return false;
+    }
+    return true;
+  }
+  function decrireTribune(f,w,s) {
+    return { s, x:f.x, z:f.z, y:hauteurRoute(f,-w,w)-.2, a:f.a, cote:-1, recul:-(w+9),
+      longueur:64, marches:8, profondeur:1.15, haut:.5 };
+  }
+  function planGradins(c) {
+    const droite=c.ligneDroite || { debut:-200, fin:200 };
+    const avant=Math.max(-300,B.circuit.ecart(c,0,droite.debut)+40), apres=Math.min(260,B.circuit.ecart(c,0,droite.fin)-60);
+    const enceinte = { debut:c.ouvert ? Math.max(0,avant-10) : avant-10, fin:c.ouvert ? Math.min(c.longueur,apres+50) : apres+50 };
+    const candidats=[], gradins={ tribunes:[], stands:[], enceinte };
+    if (c.id!=='marseille') {
+      const bandes=bandesStandsTribunes(c);
+      const premier=avant+30;
+      const premierSurRoute=premier+Math.max(0,Math.ceil(-premier/72))*72;
+      const decalage=c.ouvert ? Math.max(0,33-premierSurRoute) : 0;
+      for (let position=premier;position<apres-30;position+=72) {
+        // Sur une étape, plusieurs abscisses négatives seraient toutes rabattues sur le point zéro.
+        // Garder les 72 m d'intervalle et placer le premier toit entièrement sur la ligne droite.
+        const s=position>=0 ? position+decalage : position;
+        const f=cadreOuvrage(c,s/c.pas), t=decrireTribune(f,c.largeur/2,s);
+        const disponible=tribuneDisponible(c,t,bandes);
+        candidats.push({ f, t, disponible });
+        if (disponible) gradins.tribunes.push(t);
+      }
+      for (let s=avant+40;s<apres-20;s+=60) {
+        if (c.stands && s+46>=c.stands.debut-4 && s-46<=c.stands.fin+4) continue;
+        gradins.stands.push({ s, cote:1, longueur:60 });
+      }
+    }
+    return { candidats, gradins };
+  }
+  function tribune(liste, loin, f, site, r, avecPublic) {
     // Gradins face à la piste, côté gauche (cote −1) ou droit (+1), alignés sur la ligne droite.
-    const recul = cote * (w + 9), rot = capRot(f.a), y0 = hauteurRoute(f, cote * w, w) - .2;
+    const { recul, cote, longueur, marches, profondeur, haut, y:y0 } = site, rot = capRot(f.a);
     const vers = (d, h, l = 0) => [f.x + f.r[0] * d + f.t[0] * l, y0 + h, f.z + f.r[2] * d + f.t[2] * l];
-    const marches = 8, profondeur = 1.15, haut = .5;
     for (let m = 0; m < marches; m++) {
       const d = recul + cote * (m * profondeur + profondeur / 2);
-      liste.push({ shape: 'box', collision: 'gradin', p: vers(d, (m + 1) * haut / 2), s: [longueur, (m + 1) * haut, profondeur], r: rot, mat: 3, color: [.62, .62, .6] });
+      const marche = { shape: 'box', collision: 'gradin', p: vers(d, (m + 1) * haut / 2), s: [longueur, (m + 1) * haut, profondeur], r: rot, mat: 3, color: [.62, .62, .6] };
+      liste.push(marche);
       // spectateurs : une rangée de silhouettes colorées par marche, avec des trous. Avec le public (public.js), ce
       // sont de vrais corps dessinés à part : les mêmes nombres sont tirés, pour que la suite du décor ne change pas,
       // mais les boîtes ne sont pas posées.
-      const rangee = [];
       for (let k = -longueur / 2 + .6; k < longueur / 2 - .4; k += .62) {
         if (r() < .22) continue;
-        rangee.push(k);
         const silhouette = { shape: 'box', p: vers(d + cote * .1, (m + 1) * haut + .34, k), s: [.42, .68, .36], r: rot, mat: 18, color: PUBLICITES[Math.floor(r() * PUBLICITES.length)].map(v => v * (.6 + r() * .4)) };
-        if (!gradins) liste.push(silhouette);
+        if (!avecPublic) liste.push(silhouette);
       }
       // au loin, la marche et sa foule en un bloc ; avec le public, la marche seule (les silhouettes restent des corps)
-      loin.push(gradins ? { shape: 'box', p: vers(d, (m + 1) * haut / 2), s: [longueur, (m + 1) * haut, profondeur], r: rot, mat: 3, color: [.62, .62, .6] }
+      loin.push(avecPublic ? marche
         : { shape: 'box', p: vers(d, (m + 1) * haut / 2 + .3, 0), s: [longueur, (m + 1) * haut + .6, profondeur], r: rot, mat: 18, color: [.42, .36, .34] });
     }
-    if (gradins) gradins.push({ s: f.s, x: f.x, z: f.z, y: y0, a: f.a, cote, recul, longueur, marches, profondeur, haut });
     const fond = recul + cote * (marches * profondeur + .3);
-    liste.push({ shape: 'box', collision: 'gradin', p: vers(fond, 3.6), s: [longueur, 7.2, .4], r: rot, mat: 3, color: [.55, .55, .53] });
-    liste.push({ shape: 'box', collision: 'toit', p: vers(recul + cote * marches * profondeur * .5, 7.4), s: [longueur + 2, .3, marches * profondeur + 2.4], r: rot, mat: 0, color: [.80, .82, .84] });
-    loin.push({ shape: 'box', p: vers(recul + cote * marches * profondeur * .5, 7.4), s: [longueur + 2, .3, marches * profondeur + 2.4], r: rot, mat: 0, color: [.80, .82, .84] });
-    for (let k = -longueur / 2; k <= longueur / 2; k += 12) liste.push({ shape: 'cylinder', collision: 'pilier', p: vers(recul - cote * .3, 3.7, k), s: [.22, 7.4, .22], mat: 0, color: [.7, .72, .74] });
+    const dossier={ shape: 'box', collision: 'gradin', p: vers(fond, 3.6), s: [longueur, 7.2, .4], r: rot, mat: 3, color: [.55, .55, .53] };
+    const toit={ shape: 'box', collision: 'toit', p: vers(recul + cote * marches * profondeur * .5, 7.4), s: [longueur + 2, .3, marches * profondeur + 2.4], r: rot, mat: 0, color: [.80, .82, .84] };
+    liste.push(dossier,toit); loin.push(dossier,toit);
+    for (let k = -longueur / 2; k <= longueur / 2; k += 12) {
+      const pilier={ shape: 'cylinder', collision: 'pilier', p: vers(recul - cote * .3, 3.7, k), s: [.22, 7.4, .22], mat: 0, color: [.7, .72, .74] };
+      liste.push(pilier);
+      if (k===-longueur/2 || k+12>longueur/2) loin.push(pilier);
+    }
     // bandeau coloré sous le toit
     const teinte = PUBLICITES[Math.floor(r() * 4)];
     liste.push({ shape: 'box', p: vers(recul - cote * .9, 6.9, 0), s: [longueur + 2, .9, .12], r: rot, mat: 16, color: teinte });
@@ -1551,7 +1622,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     }
     terrain.raccorderPigments?.();
     // Réserver aussi les emprises de décor qui débordent par-dessus l’aire de service.
-    const Sstand=c.stands, propresStands=new Set();
+    const Sstand=c.stands, emprisesVerifiees=new Set();
     let xMinStand=Infinity,xMaxStand=-Infinity,zMinStand=Infinity,zMaxStand=-Infinity;
     if (Sstand) for(let s=Sstand.debut;s<=Sstand.fin+c.pas;s+=c.pas) {
       const f=cadre(c,Math.round(s/c.pas)), marge=Sstand.dBox+15;
@@ -1583,6 +1654,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     // Glissières à double lisse sur poteaux, posées à la limite de chaque côté.
     const railsVirages=[], sensVirage=new Int8Array(c.n);
     for (const v of B.virages?.planifier(c) || []) {
+      if (v.difficulte < 2) continue;
       const debut=Math.round(v.debut/c.pas), fin=Math.ceil((v.debut+v.longueur)/c.pas-1e-8);
       for (let j=debut;j<fin;j++) sensVirage[j%c.n]=v.sens;
     }
@@ -1590,6 +1662,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const finG = c.ouvert ? c.n - PAS_G : c.n;
     for (let i = 0; i < finG; i += PAS_G) {
       if (sousTunnel(i)) continue;
+      // Un virage annoncé inclut ses raccords et parfois une portion droite entre deux sommets.
+      // Le rail porte des LED seulement si sa courbure moyenne atteint celle d’un virage serré.
+      const sens = sensVirage[(i + PAS_G / 2) % c.n];
+      let cumulCourbure = 0;
+      if (sens) for (let j = 0; j < PAS_G; j++) cumulCourbure += c.courbure[(i + j) % c.n];
+      const coteLed = sens && sens * cumulCourbure >= PAS_G / B.virages.RAYON_SERRE ? -sens : 0;
       for (const cote of [-1, 1]) {
         const f0 = cadre(c, i), f1 = cadre(c, i + PAS_G), L0 = (cote < 0 ? lim.G : lim.D)[f0.i], L1 = (cote < 0 ? lim.G : lim.D)[f1.i];
         const y0 = hauteurRoute(f0, cote * w, w) - .02 * (L0 - w - 1.2), y1 = hauteurRoute(f1, cote * w, w) - .02 * (L1 - w - 1.2);
@@ -1619,10 +1697,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         // lot 22F : le parapet d'un vide, le muret ou les balises d'un fossé remplacent la glissière ; le hasard du décor
         // est déjà tiré et le lot est créé au même moment, l'ordre des lots ne change pas
         if (planBords && B.bords.sansGlissiere(c, i, cote)) { objets.splice(0, 2); loin.splice(0, 1); }
-        else {
-          const sens=sensVirage[i] || (Math.abs(f0.k)>1/350 ? Math.sign(f0.k) : 0);
-          if (cote===-sens) railsVirages.push({rail:objets[0],haut:ay,s:f0.s,cote,longueur:long});
-        }
+        else if (cote === coteLed) railsVirages.push({rail:objets[0],haut:ay,s:f0.s,cote,longueur:long});
         ajouter(objets, loin, milieu[0], milieu[2]);
       }
     }
@@ -1641,7 +1716,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           o.collision='muret';
           o.empriseStand={angle:Math.atan2(dz,dx),ymin:Math.min(a[1],b[1])-haut/2,ymax:Math.max(a[1],b[1])+haut/2};
         }
-        propresStands.add(o);
+        emprisesVerifiees.add(o);
         ajouter([o],[o],o.p[0],o.p[2]);
       }
       for(let s=S.mur0;s<S.mur1;s+=4) section(s,Math.min(s+4,S.mur1),S.dMur,S.dMur,.42,1.02,.51,beton,true);
@@ -1898,27 +1973,28 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     for (const o of loinDepart) lotDe(0, 0, 0).loin.push(o);
     // tribunes à gauche, stands à droite, le long de la ligne droite
     const estMarseille = c.id === 'marseille';
-    const droite = c.ligneDroite || { debut: -200, fin: 200 };
-    const avant = Math.max(-300, B.circuit.ecart(c, 0, droite.debut) + 40), apres = Math.min(260, B.circuit.ecart(c, 0, droite.fin) - 60);
+    const { candidats, gradins: amenagement } = planGradins(c);
     // public.js : la description des gradins, pour y asseoir de vrais spectateurs (options.public)
-    const gradins = options.public ? { tribunes: [], stands: [], enceinte: { debut: avant - 10, fin: apres + 50 } } : null;
+    const gradins = options.public ? amenagement : null;
     if (!estMarseille) {
-      for (let s = avant + 30; s < apres - 30; s += 72) {
-        const f = cadre(c, Math.round(s / c.pas)), objets = [], loin = [];
-        tribune(objets, loin, f, w, -1, 64, r, gradins && gradins.tribunes);
-        if (gradins) gradins.tribunes[gradins.tribunes.length - 1].s = s;
+      for (const { f, t, disponible } of candidats) {
+        const objets = [], loin = [];
+        // Le tirage des silhouettes reste identique pour les éléments suivants du décor.
+        tribune(objets, loin, f, t, r, !!gradins);
+        if (!disponible) continue;
+        if (Sstand) {
+          for (const o of objets) emprisesVerifiees.add(o);
+          for (const o of loin) emprisesVerifiees.add(o);
+        }
         const l = lotDe(f.x, f.z, f.i); l.objets.push(...objets); l.loin.push(...loin);
       }
-      for (let s = avant + 40; s < apres - 20; s += 60) {
-        // Le bâtiment historique possède son propre mur de 90 m. Le garage équipé occupe seul ce tronçon.
-        if (c.stands && s+46 >= c.stands.debut-4 && s-46 <= c.stands.fin+4) continue;
+      for (const { s } of amenagement.stands) {
         const f = cadre(c, Math.round(s / c.pas)), objets = [], loin = [];
         if (architecture) {
           const site = { x: f.x, z: f.z, sol: hauteurRoute(f, w, w) - .2, a: f.a, demiRoute: w, longueur: 60, graine: c.graine, s };
           const batiment = B.batiments.stands(site, { detail: qualite !== 'low' });
           objets.push(...batiment.objets); loin.push(...batiment.loin); architecture.stands.push(site);
         } else batimentStands(objets, loin, f, w, 1, 60, th.matieres);
-        if (gradins) gradins.stands.push({ s, cote: 1, longueur: 60 });
         const l = lotDe(f.x, f.z, f.i); l.objets.push(...objets); l.loin.push(...loin);
       }
 
@@ -2323,7 +2399,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
 
     if (Sstand) {
       function libre(o) {
-        if (propresStands.has(o) || !o.p || !o.s) return true;
+        if (emprisesVerifiees.has(o) || !o.p || !o.s) return true;
         const rayon=Math.hypot(o.s[0],o.s[2])*.5+.2;
         return !dansReserve(o.p[0],o.p[2],rayon);
       }
@@ -2382,7 +2458,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     // caméra de bord de piste s'y place devant eux, pas derrière la glissière où elle serait dans les gradins.
     const decor = { mobilesPhysX, nappes: nappes.concat(terrain.liste), lots: lotsDessin, railsVirages, atmosphere, portique, obstacles, sol: terrain.sol, niveauEau: terrain.niveauEau, lagon: terrain.lagon, niveauEauA: terrain.niveauEauA, limites: lim, theme: th,
       arbres: positionsArbres,
-      enceinte: { debut: avant - 10, fin: apres + 50 } };
+      enceinte: amenagement.enceinte };
     Object.defineProperty(decor, 'maillageSol', { value: terrain.maillageSol });
     if (architecture) Object.defineProperty(decor, 'architecture', { value: architecture });
     if (lieuxCimes) decor.cimes = lieuxCimes;
@@ -2485,6 +2561,6 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     return decor;
   }
 
-  B.decor = { construire, THEMES, angles, base, limites, hauteurRoute, cadre, marquerSolide, CASE_ARBRES, BASCULE_ARBRES, PIXELS_BASCULE,
+  B.decor = { construire, THEMES, angles, base, limites, hauteurRoute, cadre, planGradins, marquerSolide, CASE_ARBRES, BASCULE_ARBRES, PIXELS_BASCULE,
     ARBRES_EPARS, CASE_EPARSE, basculeArbres, lotsSecondMoteur, comptesHerbier: COMPTES_HERBIER };
 })(globalThis.BITUME = globalThis.BITUME || {});

@@ -118,9 +118,16 @@
     float rayon = taille * (.48 + alea.x*alea.x*.94) / cellule;
     // À haute vitesse : les perles s'affinent fortement en largeur et s'étirent en longues traînées radiales vives.
     float wVit = clamp(uMouvement.w, 0.0, 1.0);
-    float rxCell = max(.006, rayon * mix(1.0, .28, wVit));
+    // Les gouttes fines restent résolues en largeur, même étirées à grande vitesse.
+    float bordMin = couche==7.0 || couche==1.0 || couche==4.0 ? .38/cellule : .006;
+    float rxCell = max(bordMin, rayon * mix(1.0, .28, wVit));
     float ryCell = max(.008, rayon * (1.12 + mobilite * (.5 + air * 1.4) + wVit * (2.6 + 5.2 * mobilite)));
-    vec2 axes = vec2(rxCell, min(.46, ryCell));
+    // Dans le semis dense, garder la crête et la pointe de la traînée dans la cellule
+    // de leur centre décalé évite les terminaisons rectangulaires aux fortes incidences.
+    bool semisDense=couche==7.0 || couche==1.0 || couche==2.0 || couche==4.0;
+    float bordCellule=(.5-max(abs(centre.x),abs(centre.y)))*tr.x;
+    float limiteAxe=semisDense ? min(.46,.86*bordCellule) : .46;
+    vec2 axes = vec2(semisDense ? min(rxCell,limiteAxe) : rxCell, min(limiteAxe, ryCell));
     vec2 n = d/max(axes,vec2(.001));
     float angle = atan(n.y,n.x);
     float asymetrie = 1.0 + sin(angle*3.0+alea.y*6.283)*(couche==6.0 ? .23 : .10*taille/12.0);
@@ -135,7 +142,11 @@
     if(r>1.59 && !tracePossible)return vec4(0);
     float vie = fract(t * (.033 + alea.x*.022) + alea.y);
     float apparition = smoothstep(0.0,.09,vie) * (1.0-smoothstep(.84,1.0,vie));
-    float presence = (1.0-smoothstep(densite-.08,densite+.025,h21(id+73.1+couche+graine))) * clamp(densite*8.0,0.0,1.0)*tr.w;
+    float choix=h21(id+73.1+couche+graine);
+    // Une moitié des sites moyens et des filets est réservée à l'eau soulevée par les pneus.
+    // Augmenter l'exposition révèle de nouveaux centres fixes, sans déplacer les dépôts existants.
+    if(couche==2.0 || couche==4.0) choix/=mix(.5,1.0,clamp(uMeteo.z,0.0,1.0));
+    float presence = (1.0-smoothstep(densite-.08,densite+.025,choix)) * clamp(densite*8.0,0.0,1.0)*tr.w;
     if(presence==0.0 || apparition==0.0)return vec4(0);
     // Dégagement progressif du centre de l'écran à haute vitesse : les traînées filent vers la périphérie !
     vec2 uvC = vec2(centreEcran.x/uVue.x, 1.0-centreEcran.y/uVue.y) - uGravite.zw;
@@ -144,7 +155,8 @@
     float masque = bords(r,aa) * presence * apparition * clairCentre * mix(1.0, 0.65, wVit);
     float tx=0.0,trace=0.0;
     if(tracePossible) {
-      float longueur=min(.46, rayon*1.5+min(.24,length(trajet)/cellule)+rayon*wVit*(2.8+6.5*mobilite));
+      float limiteTrace=semisDense ? min(.46,.92*bordCellule) : .46;
+      float longueur=min(limiteTrace, rayon*1.5+min(.24,length(trajet)/cellule)+rayon*wVit*(2.8+6.5*mobilite));
       tx=d.x-sin(arriere*25.0+alea.x*12.0)*rayon*.10*(1.0-wVit*.6);
       trace=(1.0-smoothstep(rxCell*.22,rxCell*.75,abs(tx)))*smoothstep(rayon*.4,rayon*1.2,arriere);
       trace*=(1.0-smoothstep(longueur*.65,longueur,arriere))*(mobilite+wVit*.35)*presence*apparition*clairCentre*smoothstep(.06,1.2,length(trajet)+wVit*1.4);
@@ -246,17 +258,19 @@
     float eau=uMeteo.x, neige=uMeteo.y, embruns=uMeteo.z, film=uMeteo.w;
     if (max(max(eau,neige),max(embruns,film)) < .001 && uNbGouttes==0) { couleur=vec4(0); return; }
     vec2 p=uv*uVue.xy;
-    // Deux granulométries fines indépendantes : des milliers de micro-impacts ponctuels, puis
-    // des perles à ménisque net. Le panache renouvelle ces impacts même à grande vitesse.
+    // En deux dimensions, un entraxe divisé par racine(10) donne dix fois plus de sites
+    // sur la même surface. Le rayon reste en pixels CSS ; les grandes perles et les mobiles
+    // conservent leur espacement. Même nombre de couches et une seule cellule par fragment.
+    const float pasPluie=.316227766, pasSillage=.223606798;
     vec4 micro=vec4(0);
-    if (uQualite > 0) micro=perles(p+vec2(3.7,8.1),9.5,.76,clamp(eau*(.78+uMouvement.w*.28),0.0,.96),7.0,.015,0);
-    vec4 a=perles(p,15.0,1.35,clamp(eau*.94,0.0,.97),1.0,.04,1);
-    vec4 b=perles(p,35.0,2.1,clamp(eau*.83,0.0,.93),2.0,.22,2);
+    if (uQualite > 0) micro=perles(p+vec2(3.7,8.1),9.5*pasPluie,.76,clamp(eau*(.78+uMouvement.w*.28),0.0,.96),7.0,.015,0);
+    vec4 a=perles(p,15.0*pasPluie,1.35,clamp(eau*.94,0.0,.97),1.0,.04,1);
+    vec4 b=perles(p,35.0*pasSillage,2.1,clamp(eau*.83,0.0,.93),2.0,.22,2);
     vec4 c=vec4(0),filets=vec4(0);
     if (uQualite > 0) {
       float attenuGros = mix(1.0, 0.18, clamp(uMouvement.w, 0.0, 1.0));
       c=perles(p,77.0,3.2,clamp(eau*.34*attenuGros,0.0,.85),3.0,.65,3)*attenuGros;
-      if (eau > .30) filets=perles(p+vec2(11.3,4.7),18.0,1.25,clamp(eau*.95,0.0,.96),4.0,.45,4);
+      if (eau > .30) filets=perles(p+vec2(11.3,4.7),18.0*pasSillage,1.25,clamp(eau*.95,0.0,.96),4.0,.45,4);
     } else { a*=.6; }
     vec4 mobiles=gouttesMobiles(p);
     vec2 normale=micro.xy*.20+filets.xy*.26+a.xy*.44+b.xy*.68+c.xy*.9+mobiles.xy;

@@ -73,15 +73,19 @@
   }
   // Même dépôt mobile pour la réfraction WebGL et le repli Canvas ; aucun contexte ni pixel requis ici.
   const BANDES_FUSION = 24, MOTS_FUSION = Math.ceil(BUDGETS.ultra.gouttes / 32);
+  // Neuf perles fines par arrivée d'eau dans le repli 2D. Elles ont chacune leur position,
+  // leur rayon et leur durée ; seules les grosses gouttes entrent dans le calcul des fusions.
+  const FINES_PAR_ARRIVEE = 9, PAS_FINE = 7; // x, y, x précédent, y précédent, âge, durée, rayon CSS
   function creerSimulation(options, canvas = null, contexte = null) {
     const e = { canvas, contexte, gouttes: pool(112), neige: pool(36), accumulateur: 0, temps: 0, sequence: 0, masquee: false,
       graine: options && Number.isInteger(options.graine) ? options.graine | 0 : 0,
       bandesFusion: new Uint32Array(BANDES_FUSION * MOTS_FUSION), motFusion: new Uint32Array(MOTS_FUSION),
+      fines: contexte ? { points: new Float32Array(BUDGETS.ultra.gouttes * FINES_PAR_ARRIVEE * PAS_FINE), fin: 0, prochain: 0, sequence: 0 } : null,
       creditEau: 0, creditNeige: 0, largeur: canvas ? canvas.clientWidth || canvas.width || 1 : 1280,
       hauteur: canvas ? canvas.clientHeight || canvas.height || 1 : 720, dpr: 1, dprPalier: null, propre: true, libere: false,
       flux: { air: 0, vitesseAir: 0, vitesseIncidente: 0, expansion: 0, deriveX: 0, deriveY: 0, graviteX: 0, graviteY: 1, centreX: .5, centreY: .45 },
       opacite: 1, impactsActifs: false, impactTampon: new Float32Array(4),
-      stats: { backend: 'canvas2d', pret: !!contexte, gouttes: 0, neige: 0, dessins: 0, etapes: 0, largeur: 0, hauteur: 0, dpr: 1, pixels: 0, fraction: 0,
+      stats: { backend: 'canvas2d', pret: !!contexte, gouttes: 0, microgouttes: 0, neige: 0, dessins: 0, etapes: 0, largeur: 0, hauteur: 0, dpr: 1, pixels: 0, fraction: 0,
         fusionsEau: 0, fusionsNeige: 0, fonte: 0, expulses: 0, seches: 0, surfaceExpulsee: 0,
         depotsEau: 0, depotsEmbruns: 0, impactsEmis: 0, eauEvacuee: 0, paires: 0 } };
     montrer(e, false); // toile neuve, vide
@@ -99,14 +103,15 @@
     montrer(e, false);
     for (let i = 0; i < e.gouttes.length; i++) e.gouttes[i].vivant = e.gouttes[i].fusion = false;
     for (let i = 0; i < e.neige.length; i++) e.neige[i].vivant = e.neige[i].fusion = false;
-    e.stats.gouttes = e.stats.neige = 0; e.accumulateur = e.creditEau = e.creditNeige = 0;
+    if (e.fines) e.fines.fin = e.fines.prochain = 0;
+    e.stats.gouttes = e.stats.microgouttes = e.stats.neige = 0; e.accumulateur = e.creditEau = e.creditNeige = 0;
     e.impactsActifs = false; e.impactTampon.fill(0);
     e.dprPalier = null; // nouvelle séance : le prochain appel actif reprend la définition du palier courant
   }
   function liberer(e) {
     if (!e || e.libere) return;
     if (e.optique) { B.visiereOptique.liberer(e); return; }
-    effacer(e); e.canvas = null; e.contexte = null; e.libere = true;
+    effacer(e); e.canvas = null; e.contexte = null; e.fines = null; e.libere = true;
   }
   // La part du palier dans la définition ne fait que descendre pendant une séance : le premier appel actif la
   // fixe, même au sec, et chaque baisse de palier (qualité Auto qui allège) la réduit aussitôt, puisque la visière
@@ -153,6 +158,41 @@
     p.traceX.fill(p.x); p.traceY.fill(p.y); return true;
   }
   const impactsExposes = c => !c.abri && !(Number(c.neige) > 0) && (Number(c.pluie) > 0 || Number(c.embruns) > 0);
+  function deposerFines(e, limite, x, y) {
+    if (!limite) return;
+    const f = e.fines, points = f.points, enGerbe = Number.isFinite(x);
+    for (let j = 0; j < FINES_PAR_ARRIVEE; j++) {
+      if (f.prochain >= limite) f.prochain = 0;
+      const i = f.prochain++ * PAS_FINE, graine = Math.imul(++f.sequence, 1597334677) ^ e.graine;
+      const a = hache(graine), b = hache(graine + 13);
+      points[i] = points[i + 2] = enGerbe ? x + (a - .5) * .17 * e.hauteur / e.largeur : a;
+      points[i + 1] = points[i + 3] = enGerbe ? y + (b - .5) * .17 : b;
+      points[i + 4] = 0; points[i + 5] = 8 + hache(graine + 29) * 13;
+      points[i + 6] = .7 + hache(graine + 41) * (enGerbe ? 1.2 : .8);
+      f.fin = Math.max(f.fin, f.prochain);
+    }
+  }
+  function avancerFines(e, limite, mouille) {
+    const f = e.fines, points = f.points, flux = e.flux, aspect = e.hauteur / e.largeur;
+    const expansion = flux.expansion * .37, dx = flux.deriveX * .37 * aspect, dy = flux.deriveY * .37;
+    const age = PAS * (mouille ? 1 : 1.55);
+    f.fin = Math.min(f.fin, limite);
+    if (f.prochain > limite) f.prochain = 0;
+    let actives = 0;
+    for (let j = 0; j < f.fin; j++) {
+      const i = j * PAS_FINE;
+      if (!points[i + 5]) continue;
+      const x = points[i + 2] = points[i], y = points[i + 3] = points[i + 1];
+      const poids = .8 * (points[i + 6] * .35 + 1.5) / 720;
+      points[i] += PAS * (dx + flux.graviteX * poids * aspect + (x - flux.centreX) * expansion);
+      points[i + 1] += PAS * (dy + flux.graviteY * poids + (y - flux.centreY) * expansion);
+      points[i + 4] += age;
+      if (points[i + 4] >= points[i + 5] || x < -.01 || x > 1.01 || y < -.01 || y > 1.01) points[i + 5] = 0;
+      else actives++;
+    }
+    if (!actives) f.prochain = f.fin = 0;
+    e.stats.microgouttes = actives;
+  }
   // Même enveloppe interpolée pour le Canvas et WebGL. Le tampon appartient à la vue.
   function lireImpact(p, k, sortie, offset = 0, actif = true) {
     const phase = p.impactDuree > 0 ? clamp(melange(p.impactAvant, p.impactAge, k) / p.impactDuree, 0, 1) : 1;
@@ -246,16 +286,19 @@
     e.creditNeige = Math.min(2, e.creditNeige + PAS * flocons * (1 + vitesse * .035) * budget.neige / 12 * exposition / (1 + air * 3.5));
     while (e.creditEau >= 1) {
       // Impacts groupés du panache, renouvelés quatre fois par seconde. Le test balayé décide des fusions.
-      const enSpray = spray > .05 && hache(e.sequence * 13 + 5) < fluxSpray / Math.max(.001, fluxPluie + fluxSpray);
+      const sequence = e.fines ? e.fines.sequence : e.sequence;
+      const enSpray = spray > .05 && hache(sequence * 13 + 5) < fluxSpray / Math.max(.001, fluxPluie + fluxSpray);
       const gerbe = Math.floor(e.temps * 4) + e.graine * 739;
-      const x = enSpray ? .12 + hache(gerbe * 37 + 91) * .76 + (hache(e.sequence * 43 + 7) - .5) * .075 : undefined;
-      const y = enSpray ? .10 + hache(gerbe * 53 + 83) * .78 + (hache(e.sequence * 47 + 3) - .5) * .075 : undefined;
+      const x = enSpray ? .12 + hache(gerbe * 37 + 91) * .76 + (hache(sequence * 43 + 7) - .5) * .075 : undefined;
+      const y = enSpray ? .10 + hache(gerbe * 53 + 83) * .78 + (hache(sequence * 47 + 3) - .5) * .075 : undefined;
       const forceImpact = (.25 + .75 * Math.max(eau, spray)) * Math.min(1.35, intensite);
       if (deposer(e, false, budget.gouttes, x, y, undefined, budget.echelleEau || 1, forceImpact)) {
         e.stats.depotsEau++; if (enSpray) e.stats.depotsEmbruns++;
       }
+      if (e.fines) deposerFines(e, budget.gouttes * FINES_PAR_ARRIVEE, x, y);
       e.creditEau--;
     }
+    if (e.fines?.fin) avancerFines(e, budget.gouttes * FINES_PAR_ARRIVEE, eau || spray);
     while (e.creditNeige >= 1) { deposer(e, true, budget.neige); e.creditNeige--; }
     let gouttes = 0, restes = 0;
     for (let i = 0; i < e.gouttes.length; i++) {
@@ -328,6 +371,26 @@
     viderPixels(e); ctx.setTransform(e.dpr, 0, 0, e.dpr, 0, 0);
     // Quelques traits et contours : ni lecture de pixels, ni réfraction plein écran.
     ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    if (e.stats.microgouttes) {
+      const f = e.fines, points = f.points;
+      // Deux traits groupés pour tous les ménisques fins de cette vue, quel que soit le palier.
+      ctx.globalAlpha = Math.min(1, e.opacite);
+      for (let bord = 0; bord < 2; bord++) {
+        ctx.strokeStyle = bord ? 'rgba(230,247,254,0.50)' : 'rgba(19,43,60,0.27)';
+        ctx.lineWidth = bord ? .8 : 1; ctx.beginPath();
+        for (let j = 0; j < f.fin; j++) {
+          const i = j * PAS_FINE, duree = points[i + 5];
+          if (!duree) continue;
+          const age = Math.max(0, points[i + 4] - (1 - k) * PAS);
+          const r = points[i + 6] * clamp(Math.min(age * 5, (duree - age) * 1.5), 0, 1);
+          if (r < .15) continue;
+          const x = melange(points[i + 2], points[i], k) * w, y = melange(points[i + 3], points[i + 1], k) * h;
+          const d = bord ? -r : r;
+          ctx.moveTo(x + d, y); ctx.quadraticCurveTo(x + d, y + d, x, y + d);
+        }
+        ctx.stroke();
+      }
+    }
     for (let i = 0; i < e.gouttes.length; i++) {
       const p = e.gouttes[i]; if (!p.vivant && !p.fusion) continue;
       const age = melange(p.pa, p.age, k), a = clamp(Math.min(1, age / .24, (p.duree - age) / 1.5) * melange(p.pp, p.poids, k) * e.opacite, 0, 1);
@@ -402,7 +465,7 @@
       ctx.ellipse(x - p.cos * r * .38, y - p.sin * r * .38, r * .24, r * .16, p.phase, 0, TAU);
       ctx.ellipse(x + p.sin * r * .35, y - p.cos * r * .35, r * .18, r * .22, p.phase, 0, TAU); ctx.fill();
     }
-    ctx.globalAlpha = 1; e.propre = e.stats.gouttes === 0 && e.stats.neige === 0; e.stats.dessins++; e.stats.fraction = k;
+    ctx.globalAlpha = 1; e.propre = !e.stats.gouttes && !e.stats.microgouttes && !e.stats.neige; e.stats.dessins++; e.stats.fraction = k;
     montrer(e, !e.propre);
   }
   function mettreAJour(e, dt, contexte) {
@@ -418,7 +481,7 @@
     suivrePalier(e, budget);
     if (!Number.isFinite(dt) || dt <= 0) return e.stats;
     e.accumulateur += Math.min(.25, dt);
-    const vide = !e.stats.gouttes && !e.stats.neige;
+    const vide = !e.stats.gouttes && !e.stats.microgouttes && !e.stats.neige;
     if (e.accumulateur + 1e-10 >= PAS) {
       const pluie = clamp(Number(c.pluie) || 0, 0, 1), neige = clamp(Number(c.neige) || 0, 0, 1);
       // Au sec, sous abri ou sans précipitation, visière vide et propre : un pas ne ferait qu'avancer l'horloge
@@ -430,7 +493,7 @@
       dimensionner(e, c, budget);
       while (e.accumulateur + 1e-10 >= PAS) { avancer(e, c, budget, pluie, neige, intensite); e.accumulateur -= PAS; }
     } else if (vide && e.propre) return e.stats;
-    if (e.stats.gouttes || e.stats.neige || !e.propre) dessiner(e, clamp(e.accumulateur / PAS, 0, 1));
+    if (e.stats.gouttes || e.stats.microgouttes || e.stats.neige || !e.propre) dessiner(e, clamp(e.accumulateur / PAS, 0, 1));
     return e.stats;
   }
   // Sous le voile de chargement : une goutte et un flocon presque transparents, pour que la première averse ne

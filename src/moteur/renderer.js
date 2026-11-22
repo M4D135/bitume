@@ -377,6 +377,14 @@
   layout(location=4) in vec4 iRotation;
   layout(location=5) in vec4 iColor;
   uniform mat4 uViewProjection;
+  #ifdef CAMERA_RELATIVE_OVERLAY
+  uniform vec3 uDrawOrigin;
+  #define WORLD_POINT(p) ((p)+uDrawOrigin)
+  #define DRAW_HEIGHT(y) ((y)-uDrawOrigin.y)
+  #else
+  #define WORLD_POINT(p) (p)
+  #define DRAW_HEIGHT(y) (y)
+  #endif
   uniform vec2 uWindTime;
   uniform float uWindStrength;
   uniform vec3 uGroundCoverEye;
@@ -414,10 +422,11 @@
     // alpha values in [0,1]. Opaque opacity uses disjoint ranges without a
     // larger instance stride: [2,3) with a tint, [-2,-1] without one.
     vOpacity=iColor.w>1.?clamp(iColor.w-2.,0.,1.):iColor.w<0.?clamp(-iColor.w-1.,0.,1.):1.;
+    vec3 anchor=WORLD_POINT(iPosition.xyz);
     bool groundCover=mod(floor(iRotation.w*.0625),2.)>.5;
     vGroundCoverage=1.;
     if(groundCover&&uGroundCoverDensity.w>.5){
-      float distanceToEye=length(iPosition.xyz-uGroundCoverEye);
+      float distanceToEye=length(anchor-uGroundCoverEye);
       if(uGroundCoverRange.y>uGroundCoverRange.x)vGroundCoverage=1.-smoothstep(uGroundCoverRange.x,uGroundCoverRange.y,distanceToEye);
       if(uGroundCoverDensity.y>uGroundCoverDensity.x&&uGroundCoverDensity.z<1.){
         vec2 cell=floor((aPosition.xz+.5)*32.);
@@ -440,7 +449,7 @@
     vec3 localPosition=aPosition*iScale.xyz;
     if(groundCover)localPosition.x+=aPosition.z*iScale.w;
     vWorld=rotation*localPosition+iPosition.xyz;
-    vec3 windPosition=vWorld;
+    vec3 windPosition=WORLD_POINT(vWorld);
     bool windResponsive=mod(floor(iRotation.w*.125),2.)>.5;
     if(windResponsive){
       // A minimum breeze keeps opted-in short vegetation alive in calm
@@ -457,17 +466,17 @@
       movement+=vec2(.75,-.65)*flutter*root*root*root*.035;
       vWorld.xz+=movement*height*strength;
     }else if(iPosition.w>10.5&&iPosition.w<11.5){
-      float phase=uWindTime.y*.85+iPosition.x*.37+iPosition.z*.21;
+      float phase=uWindTime.y*.85+anchor.x*.37+anchor.z*.21;
       float bend=(aPosition.y+.5)*uWindTime.x*.055;
       vWorld.x+=sin(phase)*bend;vWorld.z+=cos(phase*.73)*bend*.6;
     }else if(iPosition.w>26.5&&iPosition.w<27.5){
       // The same vertex program drives colour and shadow depth. Roots stay fixed,
       // broad gusts move the stem and a smaller phase moves its free tip.
       float root=clamp(aPosition.y+.5,0.,1.);
-      vec2 phasePosition=windResponsive?windPosition.xz:iPosition.xz;
+      vec2 phasePosition=windResponsive?windPosition.xz:anchor.xz;
       float phase=uWindTime.y*.85+phasePosition.x*.37+phasePosition.y*.21;
       float bend=root*root*uWindTime.x*.075*clamp(abs(iScale.y),.25,4.);
-      float tip=sin(uWindTime.y*2.1+iPosition.x*1.9+iPosition.z*.43+root*4.5)
+      float tip=sin(uWindTime.y*2.1+anchor.x*1.9+anchor.z*.43+root*4.5)
         *root*root*root*uWindTime.x*.015*min(abs(iScale.y),2.);
       vWorld.x+=sin(phase)*bend+tip;vWorld.z+=cos(phase*.73)*bend*.65-tip*.4;
     }
@@ -475,16 +484,19 @@
     vec3 localNormal=aNormal/max(abs(iScale.xyz),vec3(.0001));
     if(groundCover)localNormal.z-=iScale.w*aNormal.x/max(abs(iScale.x*iScale.z),.0001);
     vNormal=normalize(rotation*localNormal);
-        if(uSeaMode>.5&&iPosition.w>11.5&&iPosition.w<12.5&&iPosition.y<0.) {
-      if(iPosition.w>12.1&&uSeaMotion.w>.5){vec3 w=seaField(vWorld.xz);vWorld.y=uSeaMotion.z+w.x;vNormal=normalize(vec3(-w.y,1.,-w.z));}
-      else vWorld.y=-1.25+(aPosition.y-.5)*abs(iScale.y);
+        if(uSeaMode>.5&&iPosition.w>11.5&&iPosition.w<12.5&&anchor.y<0.) {
+      if(iPosition.w>12.1&&uSeaMotion.w>.5){vec3 w=seaField(WORLD_POINT(vWorld).xz);vWorld.y=DRAW_HEIGHT(uSeaMotion.z+w.x);vNormal=normalize(vec3(-w.y,1.,-w.z));}
+      else vWorld.y=DRAW_HEIGHT(-1.25+(aPosition.y-.5)*abs(iScale.y));
     }
 
-    vAnchor=iPosition.xyz;vMaterial=iPosition.w;
+    vAnchor=anchor;vMaterial=iPosition.w;
     vEmission=groundCover?0.:iScale.w;
     vOverlay=mod(iRotation.w,2.);
     vOutdoor=mod(floor(iRotation.w*.5),2.);
     vObject=mod(floor(iRotation.w*.25),2.);
+    // Project in draw space; lighting, fog and shadows still receive world coordinates.
+    gl_Position=uViewProjection*vec4(vWorld,1.);
+    vWorld=WORLD_POINT(vWorld);
     vSurface=vObject>.5?localPosition:vWorld;
     vLocal=aPosition;vFaceNormal=aNormal;vDimensions=abs(iScale.xyz);
     // World-mapped terrain already carries the same normal in vNormal. Its
@@ -492,7 +504,6 @@
     bool smoothTerrainTint=iRotation.w==34.;
     vSurfaceNormal=smoothTerrainTint?iColor.rgb:vObject>.5?normalize(localNormal):vNormal;
     vColor=vec4(iColor.rgb,smoothTerrainTint?2.:iColor.w>1.?1.:iColor.w<0.?0.:iColor.w);
-    gl_Position=uViewProjection*vec4(vWorld,1.);
   }`;
 
   const FRAG = `#version 300 es
@@ -2028,7 +2039,7 @@
     let counts=new Uint32Array(0),next=new Uint32Array(0),storage=new Float32Array(0),active=new Float32Array(0),required=0;
     const groups=[],records=[],zero=[0,0,0],one=[1,1,1];
     const batch={groups,storage,length:0,get values(){if(active.buffer!==storage.buffer||active.length!==required)active=storage.subarray(0,required);return active;}};
-    return (meshes,environment,objects=false)=>{
+    return (meshes,environment,objects=false,origin=zero)=>{
       if(counts.length<names.length){counts=new Uint32Array(names.length);next=new Uint32Array(names.length);}
       else counts.fill(0);
       let total=0;for(const mesh of meshes||[]){const i=shapeIndices.get(mesh.shape||'box');if(i!==undefined){counts[i]++;total++;}}
@@ -2037,7 +2048,7 @@
       let offset=0;for(let i=0;i<names.length;i++){next[i]=offset;if(counts[i]){const group=records[i]||(records[i]={name:names[i],offset:0,count:0});group.offset=offset*4;group.count=counts[i];groups.push(group);offset+=counts[i]*16;}}
       for(const mesh of meshes||[]){const i=shapeIndices.get(mesh.shape||'box');if(i===undefined)continue;const at=next[i];next[i]+=16;
         const p=mesh.p||zero,s=mesh.s||one,r=mesh.r||zero,c=mesh.color||zero;
-        out[at]=p[0];out[at+1]=p[1];out[at+2]=p[2];out[at+3]=mesh.mat||0;out[at+4]=s[0];out[at+5]=s[1];out[at+6]=s[2];out[at+7]=instanceDataW(mesh);out[at+8]=r[0];out[at+9]=r[1];out[at+10]=r[2];out[at+11]=surfaceFlags(mesh,environment,objects);out[at+12]=c[0];out[at+13]=c[1];out[at+14]=c[2];out[at+15]=opaqueColorMarker(mesh);
+        out[at]=p[0]-origin[0];out[at+1]=p[1]-origin[1];out[at+2]=p[2]-origin[2];out[at+3]=mesh.mat||0;out[at+4]=s[0];out[at+5]=s[1];out[at+6]=s[2];out[at+7]=instanceDataW(mesh);out[at+8]=r[0];out[at+9]=r[1];out[at+10]=r[2];out[at+11]=surfaceFlags(mesh,environment,objects);out[at+12]=c[0];out[at+13]=c[1];out[at+14]=c[2];out[at+15]=opaqueColorMarker(mesh);
       }return batch;
     };
   }
@@ -2050,10 +2061,10 @@
     let counts=new Uint32Array(0),nears=new Uint32Array(0),next=new Uint32Array(0),storage=new Float32Array(0),active=new Float32Array(0),required=0;
     const groups=[],records=[],zero=[0,0,0],one=[1,1,1];
     const batch={groups,storage,length:0,nearTotal:0,get values(){if(active.buffer!==storage.buffer||active.length!==required)active=storage.subarray(0,required);return active;}};
-    const write=(mesh,environment)=>{const i=shapeIndices.get(mesh.shape||'box');if(i===undefined)return;const at=next[i],out=storage;next[i]+=16;
+    const write=(mesh,environment,origin)=>{const i=shapeIndices.get(mesh.shape||'box');if(i===undefined)return;const at=next[i],out=storage;next[i]+=16;
       const p=mesh.p||zero,s=mesh.s||one,r=mesh.r||zero,c=mesh.color||zero;
-      out[at]=p[0];out[at+1]=p[1];out[at+2]=p[2];out[at+3]=mesh.mat||0;out[at+4]=s[0];out[at+5]=s[1];out[at+6]=s[2];out[at+7]=instanceDataW(mesh);out[at+8]=r[0];out[at+9]=r[1];out[at+10]=r[2];out[at+11]=surfaceFlags(mesh,environment,true);out[at+12]=c[0];out[at+13]=c[1];out[at+14]=c[2];out[at+15]=opaqueColorMarker(mesh);};
-    return (meshes,near,environment)=>{
+      out[at]=p[0]-origin[0];out[at+1]=p[1]-origin[1];out[at+2]=p[2]-origin[2];out[at+3]=mesh.mat||0;out[at+4]=s[0];out[at+5]=s[1];out[at+6]=s[2];out[at+7]=instanceDataW(mesh);out[at+8]=r[0];out[at+9]=r[1];out[at+10]=r[2];out[at+11]=surfaceFlags(mesh,environment,true);out[at+12]=c[0];out[at+13]=c[1];out[at+14]=c[2];out[at+15]=opaqueColorMarker(mesh);};
+    return (meshes,near,environment,origin=zero)=>{
       if(counts.length<names.length){counts=new Uint32Array(names.length);nears=new Uint32Array(names.length);next=new Uint32Array(names.length);}
       else{counts.fill(0);nears.fill(0);}
       let total=0,nearTotal=0;
@@ -2064,8 +2075,8 @@
       // Groupes écrits par indice (length=0 puis push rendrait leur stockage et en allouerait un neuf à chaque image).
       let offset=0,g=0;for(let i=0;i<names.length;i++){next[i]=offset;if(counts[i]){const group=records[i]||(records[i]={name:names[i],offset:0,count:0,near:0});group.offset=offset*4;group.count=counts[i];group.near=nears[i];groups[g++]=group;offset+=counts[i]*16;}}
       groups.length=g;
-      for(const mesh of meshes)write(mesh,environment);
-      for(const mesh of near)write(mesh,environment);
+      for(const mesh of meshes)write(mesh,environment,origin);
+      for(const mesh of near)write(mesh,environment,origin);
       return batch;
     };
   }
@@ -2086,7 +2097,7 @@
     const order=[],records=[],groups=[],groupRecords=[],zero=[0,0,0],one=[1,1,1],gray=[.5,.5,.5];
     let storage=new Float32Array(0),active=new Float32Array(0),previous=0,required=0;
     const batch={groups,storage,length:0,get values(){if(active.buffer!==storage.buffer||active.length!==required)active=storage.subarray(0,required);return active;}};
-    return (meshes,environment,eye)=>{
+    return (meshes,environment,eye,origin=zero)=>{
       order.length=0;let count=0;
       for(const mesh of meshes){if(!shapeIndices.has(mesh.shape||'sphere')||!(mesh.alpha>.003))continue;
         const record=records[count]||(records[count]={mesh:null,distance:0,index:0});record.mesh=mesh;record.distance=(mesh.p[0]-eye[0])**2+(mesh.p[1]-eye[1])**2+(mesh.p[2]-eye[2])**2;record.index=count++;order.push(record);
@@ -2099,7 +2110,7 @@
       for(const record of order){const mesh=record.mesh,name=mesh.shape||'sphere',last=groups[groups.length-1];
         if(last&&last.name===name)last.count++;else{const group=groupRecords[groups.length]||(groupRecords[groups.length]={name:'',offset:0,count:0});group.name=name;group.offset=offset*4;group.count=1;groups.push(group);}
         const p=mesh.p,s=mesh.s||one,r=mesh.r||zero,c=mesh.color||gray,material=mesh.window?18:mesh.shape==='ring'&&Number.isFinite(mesh.innerRatio)?20+Math.min(.999,Math.max(0,mesh.innerRatio)):mesh.fxPriority==='hazard'?16:mesh.fxFire?14:mesh.fxSmoke?15:mesh.fxSpark?17:7;
-        out[offset]=p[0];out[offset+1]=p[1];out[offset+2]=p[2];out[offset+3]=material;out[offset+4]=s[0];out[offset+5]=s[1];out[offset+6]=s[2];out[offset+7]=mesh.emissive||0;out[offset+8]=r[0];out[offset+9]=r[1];out[offset+10]=r[2];out[offset+11]=surfaceFlags(mesh,environment,true);out[offset+12]=c[0];out[offset+13]=c[1];out[offset+14]=c[2];out[offset+15]=Math.min(1,Math.max(0,mesh.alpha));offset+=16;
+        out[offset]=p[0]-origin[0];out[offset+1]=p[1]-origin[1];out[offset+2]=p[2]-origin[2];out[offset+3]=material;out[offset+4]=s[0];out[offset+5]=s[1];out[offset+6]=s[2];out[offset+7]=mesh.emissive||0;out[offset+8]=r[0];out[offset+9]=r[1];out[offset+10]=r[2];out[offset+11]=surfaceFlags(mesh,environment,true);out[offset+12]=c[0];out[offset+13]=c[1];out[offset+14]=c[2];out[offset+15]=Math.min(1,Math.max(0,mesh.alpha));offset+=16;
       }return batch;
     };
   }
@@ -3144,13 +3155,16 @@
     let post=null,msaaBuffer,msaaIdle=0,shadowTarget=null,shadowIdle=0,maxShadowTileSize=1024,whiteTexture=null,pbrTextures=[],targetKey='',shadowKey='',shadowLight=null;
     let world=[],worldIndex=spatialIndex([]),backgroundIndex=spatialIndex([]),lights=[],environment=null,worldBatch=pack([]),quality='auto',disposed=false,worldRevision=0,partitionState=null;
     let staticCaches=[],lampCasters=[],actorLightPlan=null,dynamicStream=null,overlayStream=null,fxStream=null;
+    const cameraRelativeOverlay=options.cameraRelativeOverlay===true;
+    const relativeView=new Float32Array(16),relativeTile=new Float32Array(16);
+    const overlayVertex=src=>cameraRelativeOverlay?src.replace('#version 300 es','#version 300 es\n#define CAMERA_RELATIVE_OVERLAY'):src;
     const packDynamic=instancePacker(),packOverlay=instancePacker(),packFx=effectsPacker();
 
     // FERRO 0.3.11 (ombresPhoto) : rien de ceci ne fait d'appel GL sans l'option. photoTile : tuile de la voiture filmée
     // (créée à l'initialisation, jamais en course) ; photoFar : carte lointaine (precalculerOmbre, au chargement) ;
     // photoDepth : profondeur 1 × 1 liée aux échantillonneurs de comparaison inactifs ; photoSampler : comparaison filtrée.
     const photo=!!options.ombresPhoto,photoTileSize=photo&&options.ombresPhoto.tuile===512?512:photo?1024:0,photoPcssOn=photo&&options.ombresPhoto.pcss!==false;
-    let photoUniforms=null,photoSampler=null,photoDepth=null,photoTile=null,photoFar=null,photoFarRequest=null,photoSplit=false,photoOverlay=null;
+    let depthDrawOrigin=null,photoUniforms=null,photoSampler=null,photoDepth=null,photoTile=null,photoFar=null,photoFarRequest=null,photoSplit=false,photoOverlay=null;
     let photoSunRange=1,photoSunTexel=1,photoTileExtent=3.5;
     const photoTileSphere=new Float32Array(4);
     const photoTileMatrix=new Float32Array(16),photoFarMatrix=new Float32Array(16),photoMatrix=new Float32Array(16),photoProjection=new Float32Array(16);
@@ -3414,7 +3428,7 @@
       // partagent donc un seul shader de sommets compilé, sans changer l'image.
       const advanced=!!(options.advancedSky&&window.FSky);fskyProgram=advanced;
       try{
-        const pairs=[[POST_VERT,SSR_FRAG],[VERT,reflectionShader(screenShader('world',skyFogShader(worldFrag)))],[VERT,DEPTH_FRAG],[POST_VERT,screenShader('post',postFrag)],[POST_VERT,screenShader('sky',SKY_FRAG)],[FX_VERT,screenShader('fx',skyFogShader(FX_FRAG))]];
+        const pairs=[[POST_VERT,SSR_FRAG],[overlayVertex(VERT),reflectionShader(screenShader('world',skyFogShader(worldFrag)))],[overlayVertex(VERT),DEPTH_FRAG],[POST_VERT,screenShader('post',postFrag)],[POST_VERT,screenShader('sky',SKY_FRAG)],[overlayVertex(FX_VERT),screenShader('fx',skyFogShader(FX_FRAG))]];
         if(advanced)pairs.unshift([window.FSky.VERT,screenShader('fsky',window.FSky.FRAG)]);
         const linked=linkAll(pairs);fskyProgram=advanced?linked.shift():null;
         [ssrProgram,program,depthProgram,postProgram,skyProgram,fxProgram]=linked;
@@ -3424,6 +3438,11 @@
       postUniforms={};for(const name of ['uScene','uBloom','uReflection','uReflections','uTexel','uPass'])postUniforms[name]=gl.getUniformLocation(postProgram,name);
       skyUniforms={};for(const name of ['uSkyRight','uSkyUp','uSkyForward','uSkyTop','uSkyBottom','uSkyFog','uSunDirection','uSunColor','uSkyFov','uSkyMotion','uWeather','uCloudOffset','uSkyNight'])skyUniforms[name]=gl.getUniformLocation(skyProgram,name);
       fxUniforms={};for(const name of ['uViewProjection','uWindTime','uEye','uAmbient','uSkyTop','uSkyBottom','uFogColor','uEnvironment','uTime'])fxUniforms[name]=gl.getUniformLocation(fxProgram,name);
+      if(cameraRelativeOverlay){
+        uniforms.uDrawOrigin=gl.getUniformLocation(program,'uDrawOrigin');
+        fxUniforms.uDrawOrigin=gl.getUniformLocation(fxProgram,'uDrawOrigin');
+        depthDrawOrigin=gl.getUniformLocation(depthProgram,'uDrawOrigin');
+      }
       depthMatrix=gl.getUniformLocation(depthProgram,'uViewProjection');depthWind=gl.getUniformLocation(depthProgram,'uWindTime');
       depthLocalWind={};for(const name of ['uWindStrength','uGroundCoverEye','uGroundCoverDensity','uGroundCoverRange','uLocalWindCount','uLocalWindPosition','uLocalWindMotion'])depthLocalWind[name]=gl.getUniformLocation(depthProgram,name);
       vao=gl.createVertexArray();gl.bindVertexArray(vao);
@@ -4015,13 +4034,17 @@
       if(!same){cache.entries=entries;cache.batch=packIndexed(entries);}
       renderBatch(cache.batch,cache.buffer,!same,shadow);
     }
-    function renderEffects(meshes,eye,time,clip=vp){
-      const batch=packFx(meshes,environment,eye);stats.fxInstances+=batch.length/16;if(!batch.groups.length)return;
-      gl.useProgram(fxProgram);gl.uniformMatrix4fv(fxUniforms.uViewProjection,false,clip);gl.uniform2f(fxUniforms.uWindTime,0,time);
+    function renderEffects(meshes,eye,time,clip=vp,origin){
+      const batch=packFx(meshes,environment,eye,origin);stats.fxInstances+=batch.length/16;if(!batch.groups.length)return;
+      gl.useProgram(fxProgram);
+      if(origin)gl.uniform3fv(fxUniforms.uDrawOrigin,origin);
+      gl.uniformMatrix4fv(fxUniforms.uViewProjection,false,clip);gl.uniform2f(fxUniforms.uWindTime,0,time);
       gl.uniform3fv(fxUniforms.uSkyTop,environment?.skyTop||[.2,.3,.4]);gl.uniform3fv(fxUniforms.uSkyBottom,environment?.skyBottom||[.5,.6,.6]);gl.uniform3fv(fxUniforms.uEye,eye);gl.uniform3fv(fxUniforms.uAmbient,environment?environment.ambient:[.12,.15,.16]);
       gl.uniform3fv(fxUniforms.uFogColor,environment?environment.fog:[.009,.018,.024]);gl.uniform2f(fxUniforms.uEnvironment,environment?1:0,environment?environment.fogDensity:.018);gl.uniform1f(fxUniforms.uTime,time);
       gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(false);
-      streamUpload(fxStream,batch);renderBatch(batch,fxBuffer,false);gl.depthMask(true);gl.disable(gl.BLEND);gl.useProgram(program);
+      streamUpload(fxStream,batch);renderBatch(batch,fxBuffer,false);gl.depthMask(true);gl.disable(gl.BLEND);
+      if(origin)gl.uniform3f(fxUniforms.uDrawOrigin,0,0,0);
+      gl.useProgram(program);
     }
     function shadowPass(light,dynamicBatch,slot,torchAxes,time){
       const p=light.p,shadowAxes=torchAxes||{right:[1,0,0],up:[0,0,-1],forward:[0,-1,0]};
@@ -4304,6 +4327,7 @@
       lightPositions.fill(0);lightColors.fill(0);lightRanges.fill(0);lightDirections.fill(0);lightCones.fill(0);
       for(let i=0;i<selected.length;i++){const light=selected[i].light;if(light.dir){lightDirections.set(light.dir,i*3);lightCones.set(light.cone||DEFAULT_CONE,i*2);}lightPositions.set(light.p,i*3);lightRanges[i]=light.range||0;const c=light.color||WHITE,power=(light.power===undefined?1:light.power)*(blackout?.get(light)??1);lightColors[i*3]=c[0]*power;lightColors[i*3+1]=c[1]*power;lightColors[i*3+2]=c[2]*power;}
       const tuile=photo?photoTuile(fx,camera):null;photoSplit=!!tuile;photoOverlay=null;
+      const drawOrigin=cameraRelativeOverlay?eye:undefined;
       partitionDynamic(dynamic,tuile);
       const colourOverlay=overlayView?overlayView.select(overlay,eye,axes,horizontal,vertical,colourRadii,warm):overlay;
       stats.overlayCulled=overlay.length-colourOverlay.length;
@@ -4334,7 +4358,7 @@
         if(!sunOnly)shadowLights.forEach((light,i)=>{const fw=light.dir,axes=fw?{forward:fw,right:[-fw[2],0,fw[0]],up:[0,1,0]}:null;shadowPass(light,dynamicBatch,i,axes,t);});
         if(environment)sunShadowPass(eye,axes,dynamicBatch,t,camera,fx,crowd);
         if(!sunOnly&&fx.torch!==false)shadowPass({p:torchPosition},dynamicBatch,2,axes,t);
-        if(tuile)photoTilePass(tuile,dynamicBatch,colourOverlay,t);
+        if(tuile)photoTilePass(tuile,dynamicBatch,colourOverlay,t,drawOrigin);
       }
       prof?.end();
       stats.reflections=reflectionMode==='off'&&!!(stats.bloom&&post.reflectSource&&post.reflection&&fx.reflections!==false&&fx.reflections!=='off');stats.reflectionSteps=stats.reflections?96:0;
@@ -4426,16 +4450,26 @@
         // World projection and its depth texture stay unchanged for SSR and crowds.
         const overlayNear=Math.min(near,Math.max(.005,Number(camera.overlayNear)||near));
         let overlayClip=vp;
-        if(overlayNear!==near){overlayProjection.set(projection);overlayProjection[10]=(far+overlayNear)/(overlayNear-far);overlayProjection[14]=2*far*overlayNear/(overlayNear-far);multiply(overlayProjection,view,overlayVP);overlayClip=overlayVP;gl.uniformMatrix4fv(uniforms.uViewProjection,false,overlayClip);}
+        if(overlayNear!==near||drawOrigin){
+          overlayProjection.set(projection);
+          overlayProjection[10]=(far+overlayNear)/(overlayNear-far);overlayProjection[14]=2*far*overlayNear/(overlayNear-far);
+          if(drawOrigin){
+            relativeView.set(view);relativeView[12]=relativeView[13]=relativeView[14]=0;
+            gl.uniform3fv(uniforms.uDrawOrigin,drawOrigin);
+          }
+          overlayClip=multiply(overlayProjection,drawOrigin?relativeView:view,overlayVP);
+          gl.uniformMatrix4fv(uniforms.uViewProjection,false,overlayClip);
+        }
         if(blackout){for(let i=0;i<selected.length;i++){const light=selected[i].light,c=light.color||WHITE,power=light.power===undefined?1:light.power;lightColors[i*3]=c[0]*power;lightColors[i*3+1]=c[1]*power;lightColors[i*3+2]=c[2]*power;}gl.uniform3fv(uniforms.uLightColor,lightColors);}
         gl.clear(gl.DEPTH_BUFFER_BIT);
         if(colourOverlay.length){
-          const cockpit=photoOverlay||packOverlay(colourOverlay,environment,true);
+          const cockpit=photoOverlay||packOverlay(colourOverlay,environment,true,drawOrigin);
           if(!photoOverlay)streamUpload(overlayStream,cockpit);
           if(cockpit.nearTotal)renderPart(cockpit,overlayBuffer,1,true);
           else renderBatch(cockpit,overlayBuffer,false);
         }
-        if(overlayParticles.length)renderEffects(overlayParticles,eye,t,overlayClip);
+        if(overlayParticles.length)renderEffects(overlayParticles,eye,t,overlayClip,drawOrigin);
+        if(drawOrigin)gl.uniform3f(uniforms.uDrawOrigin,0,0,0);
         if(overlayClip!==vp)gl.uniformMatrix4fv(uniforms.uViewProjection,false,vp);
       }
       if(msaa){
@@ -4564,7 +4598,7 @@
     }
     // Profondeur de la voiture filmée : ses pièces ordinaires (part 2 du lot dynamique) et l'habitacle (overlay, empaqueté
     // ici une fois, repris par la passe de l'habitacle). Grille liée à la voiture quand l'axe est donné, sinon au monde.
-    function photoTilePass(tuile,dynamicBatch,overlayList,time){
+    function photoTilePass(tuile,dynamicBatch,overlayList,time,drawOrigin){
       const e=Number.isFinite(tuile.etendue)&&tuile.etendue>.5?tuile.etendue:3.5;photoTileExtent=e;
       const axe=tuile.axe&&Number.isFinite(tuile.axe[0])&&Number.isFinite(tuile.axe[1])&&Number.isFinite(tuile.axe[2])?tuile.axe:null;
       photoSunMatrix(photoTileMatrix,tuile.centre,e,photoTile.size,8,.5,16,axe,!axe);
@@ -4578,8 +4612,8 @@
         ? radius*radius : -1;
       if(overlayView?.hidden.length){
         // One upload: visible instances first within each shape. The complete batch casts its shadow.
-        photoOverlay=packSplitOverlay(overlayList,overlayView.hidden,environment);
-      }else if(overlayList.length)photoOverlay=packOverlay(overlayList,environment,true);
+        photoOverlay=packSplitOverlay(overlayList,overlayView.hidden,environment,drawOrigin);
+      }else if(overlayList.length)photoOverlay=packOverlay(overlayList,environment,true,drawOrigin);
       if(photoOverlay)streamUpload(overlayStream,photoOverlay);
       gl.bindFramebuffer(gl.FRAMEBUFFER,photoTile.framebuffer);gl.viewport(0,0,photoTile.size,photoTile.size);gl.clear(gl.DEPTH_BUFFER_BIT);
       gl.useProgram(depthProgram);gl.bindVertexArray(vao);gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.enable(gl.POLYGON_OFFSET_FILL);gl.polygonOffset(1.1,2);
@@ -4588,7 +4622,17 @@
       gl.cullFace(gl.FRONT);
       gl.uniformMatrix4fv(depthMatrix,false,photoTileMatrix);gl.uniform2f(depthWind,weather.wind,time);bindLocalWind(depthLocalWind);
       if(warm)warm.cible='tuile';
-      renderPart(dynamicBatch,dynamicBuffer,2);if(photoOverlay)renderBatch(photoOverlay,overlayBuffer,false,true);
+      renderPart(dynamicBatch,dynamicBuffer,2);
+      if(photoOverlay){
+        if(drawOrigin){
+          // The same uploaded cockpit instances cast into the absolute world tile.
+          relativeTile.set(m);
+          for(let row=0;row<4;row++)relativeTile[12+row]=m[row]*drawOrigin[0]+m[4+row]*drawOrigin[1]+m[8+row]*drawOrigin[2]+m[12+row];
+          gl.uniformMatrix4fv(depthMatrix,false,relativeTile);gl.uniform3fv(depthDrawOrigin,drawOrigin);
+        }
+        renderBatch(photoOverlay,overlayBuffer,false,true);
+        if(drawOrigin)gl.uniform3f(depthDrawOrigin,0,0,0);
+      }
       gl.disable(gl.POLYGON_OFFSET_FILL);gl.cullFace(gl.BACK);
     }
     const PHOTO_PENOMBRE={off:0,meteo:1,pcss:2};

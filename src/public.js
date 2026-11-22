@@ -475,20 +475,12 @@
   }
 
   // ---------------------------------------------------------------------------------------------------------------
-  // Description des gradins : celle que decor.js exporte (decor.gradins), sinon les mêmes formules que lui
+  // Description des gradins construits ou du plan d'implantation partagé pour les aperçus.
   // ---------------------------------------------------------------------------------------------------------------
 
-  /** Tribunes et stands de la ligne droite, aux formules de decor.js (construire : « Ligne droite principale »). */
+  /** Même plan que les lots proches et lointains, y compris pour un aperçu sans décor construit. */
   function decrireGradins(c) {
-    const D = B.decor, w = c.largeur / 2, droite = c.ligneDroite || { debut: -200, fin: 200 };
-    const avant = Math.max(-300, B.circuit.ecart(c, 0, droite.debut) + 40), apres = Math.min(260, B.circuit.ecart(c, 0, droite.fin) - 60);
-    const tribunes = [], stands = [];
-    for (let s = avant + 30; s < apres - 30; s += 72) {
-      const f = D.cadre(c, Math.round(s / c.pas));
-      tribunes.push({ s, x: f.x, z: f.z, y: D.hauteurRoute(f, -w, w) - .2, a: f.a, cote: -1, recul: -(w + 9), longueur: 64, marches: 8, profondeur: 1.15, haut: .5 });
-    }
-    for (let s = avant + 40; s < apres - 20; s += 60) stands.push({ s, cote: 1, longueur: 60 });
-    return { tribunes, stands, enceinte: { debut: avant - 10, fin: apres + 50 } };
+    return B.decor.planGradins(c).gradins;
   }
 
   // Palettes (couleurs linéaires du moteur). Peaux : EMPRISE human.js ; cheveux : FERRO crowd.js ; le reste dit
