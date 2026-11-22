@@ -6,7 +6,7 @@
    * L’ancien stockage enrichi reste lisible. Chaque nouvelle physique possède sa clé d’écriture.
    */
 
-  const VERSION_PHYSIQUE = 'p27';
+  const VERSION_PHYSIQUE = 'p28';
   const ARCHIVE_ENRICHIE = 'bitume.records.v2';
   const STORAGE_KEY = ARCHIVE_ENRICHIE + '.' + VERSION_PHYSIQUE;
 

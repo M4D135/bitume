@@ -274,33 +274,44 @@
         if (neige) e.stats.fusionsNeige++; else e.stats.fusionsEau++;
       }
     }
-    if (!neige && e.stats.microgouttes) absorberFines(e, liste, limite);
     return nombre;
   }
   function absorberFines(e, liste, limite) {
     const { points, cellules, suivants, fin } = e.fines;
     const w = e.largeur, h = e.hauteur;
+    let deriveX = 0, deriveY = 0;
     cellules.fill(-1);
     for (let j = 0; j < fin; j++) {
       const i = j * PAS_FINE;
       if (points[i + 5] <= 0) continue;
       const cellule = celluleFine(points[i + 1]) * GRILLE_FINES + celluleFine(points[i]);
       suivants[j] = cellules[cellule]; cellules[cellule] = j;
+      deriveX = Math.max(deriveX, Math.abs(points[i] - points[i + 2]));
+      deriveY = Math.max(deriveY, Math.abs(points[i + 1] - points[i + 3]));
     }
-    for (let j = 0; j < limite; j++) {
+    for (let j = 0; j < limite && e.stats.microgouttes; j++) {
       const p = liste[j]; if (!p.vivant) continue;
-      const rayon = .45 * p.taille, portee = rayon + MAX_RAYON_FINE;
-      const x0 = celluleFine(p.x - portee / w), x1 = celluleFine(p.x + portee / w);
-      const y0 = celluleFine(p.y - portee / h), y1 = celluleFine(p.y + portee / h);
+      // Le grand axe du ménisque borne son empreinte quelle que soit son orientation.
+      const rayon = .45 * 1.36 * p.taille, portee = rayon + MAX_RAYON_FINE;
+      // La grille indexe la pose finale des fines, y compris celles qui ont traversé le trajet.
+      const margeX = portee / w + deriveX, margeY = portee / h + deriveY;
+      const x0 = celluleFine(Math.min(p.px, p.x) - margeX), x1 = celluleFine(Math.max(p.px, p.x) + margeX);
+      const y0 = celluleFine(Math.min(p.py, p.y) - margeY), y1 = celluleFine(Math.max(p.py, p.y) + margeY);
       let aire = 0;
       for (let y = y0; y <= y1; y++) {
         for (let x = x0; x <= x1; x++) {
           for (let n = cellules[y * GRILLE_FINES + x]; n >= 0; n = suivants[n]) {
             const i = n * PAS_FINE, duree = points[i + 5], age = points[i + 4];
             if (duree <= 0) continue;
+            const dx = (p.px - points[i + 2]) * w, dy = (p.py - points[i + 3]) * h;
+            const finX = (p.x - points[i]) * w, finY = (p.y - points[i + 1]) * h;
+            const borne = rayon + points[i + 6];
+            if (Math.min(dx, finX) > borne || Math.max(dx, finX) < -borne ||
+                Math.min(dy, finY) > borne || Math.max(dy, finY) < -borne) continue;
             const r = points[i + 6] * clamp(Math.min(age * 5, (duree - age) * 1.5), 0, 1);
-            const dx = (p.x - points[i]) * w, dy = (p.y - points[i + 1]) * h;
-            if (dx * dx + dy * dy > (rayon + r) ** 2) continue;
+            const vx = finX - dx, vy = finY - dy, vv = vx * vx + vy * vy;
+            const t = vv > 1e-9 ? clamp(-(dx * vx + dy * vy) / vv, 0, 1) : 0;
+            if ((dx + vx * t) ** 2 + (dy + vy * t) ** 2 > (rayon + r) ** 2) continue;
             // La durée négative garde le ménisque dessinable pendant le pas de fusion.
             points[i + 5] = -duree;
             aire += (r / .45) ** 2;
@@ -391,7 +402,8 @@
       else restes++;
     }
     e.stats.paires = 0;
-    if (gouttes >= 2 || (gouttes && e.stats.microgouttes)) gouttes -= fusionner(e, e.gouttes, budget.gouttes, false);
+    if (gouttes >= 2) gouttes -= fusionner(e, e.gouttes, budget.gouttes, false);
+    if (gouttes && e.fines && e.stats.microgouttes) absorberFines(e, e.gouttes, budget.gouttes);
     if (restes >= 2) restes -= fusionner(e, e.neige, budget.neige, true);
     e.stats.gouttes = gouttes; e.stats.neige = restes;
   }
