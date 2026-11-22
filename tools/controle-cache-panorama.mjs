@@ -63,7 +63,8 @@ export async function controlerCachePanorama(evaluer, envoyer, attente) {
     await attendreDemarrage(evaluer, attente);
     const essai = await evaluer('(' + mesurer.toString() + ')(' + JSON.stringify(mode) + ')');
     assert.equal(essai.ecran, 'course'); assert.ok(essai.nappes > 0);
-    assert.equal(essai.constructions, mode === 'reouverture' ? 0 : 1);
+    assert.equal(essai.constructions, mode === 'reouverture' ? 0 : 1,
+      'Calculs du panorama lors du chargement ' + mode + ' : ' + JSON.stringify(essai));
     if (essais.length) assert.deepEqual([essai.nappes, essai.empreinte], [essais[0].nappes, essais[0].empreinte]);
     if (mode === 'reouverture') assert.equal(essai.panorama.source, 'indexeddb');
     else if (mode === 'refus') assert.equal(essai.panorama, null);

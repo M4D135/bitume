@@ -208,6 +208,55 @@ verifier('aspiration', () => {
   } finally { B.circuit = vrai; }
 });
 
+const speciale = { ...c, ouvert: true, depart: 120, arrivee: 1800 };
+function grilleHumaine(noms, locaux, rivaux) {
+  const co = B.course.creer(speciale, { mode: 'course', graine: 23731, rivaux,
+    humains: { noms, locaux, hote: true, enLigne: locaux.length < noms.length } });
+  co.phase = 'course'; co.temps = 100; co.horloge = 107;
+  return co;
+}
+verifier('arrivée de la spéciale : deux humains et le dernier des dix rivaux sont chronométrés une fois', () => {
+  const co = grilleHumaine(['J1','J2'], [0,1], 11);
+  const ligne = co.c.arrivee, ids = [11,0,1], arrivees = [];
+  for (const [k,id] of ids.entries()) Object.assign(co.voitures[id].etat, { s: ligne - 2 - k * 12, v: 22 });
+  // Un replacement du joueur invalide son record. Il peut toujours franchir la ligne en roulant.
+  B.course.replacer(co, co.voitures[1]); co.voitures[1].etat.v = 22;
+  const commandes = [0,1].map(() => ({ gaz: .4, frein: 0, volant: 0, boite: 'auto' }));
+  for (let k = 0; k < 2 * 120; k++) {
+    const t = co.temps, avant = ids.map(id => co.voitures[id].etat.s);
+    for (const e of B.course.pas(co, commandes, dt)) if (e.type === 'arrivee') {
+      const v = co.voitures[e.id], a = avant[ids.indexOf(v.id)], b = v.etat.s;
+      assert.ok(a < ligne && b >= ligne, 'franchissement roulant');
+      assert.ok(Math.abs(v.tempsFinal - (t + dt * (ligne-a)/(b-a))) < 1e-8, 'temps interpolé dans le pas');
+      assert.equal(v.tempsTours.length,1); arrivees.push(v.id);
+    }
+  }
+  assert.ok(co.voitures[11].etat.s > ligne, 'le dernier rival a réellement franchi la ligne');
+  assert.deepEqual(arrivees, ids);assert.equal(co.finisseurs,3);
+  assert.equal(co.voitures[11].etat.repositionnements || 0, 0);
+  assert.equal(co.voitures[1].meilleur,null);assert.ok(co.voitures[1].tempsFinal > 100);
+  assert.equal(co.sAvant.length,co.voitures.length);assert.equal(co.contactsT.length,co.voitures.length**2);
+  assert.deepEqual(co.voitures[11].tempsTours,[co.voitures[11].tempsFinal]);
+});
+verifier('quatre humains : un saut de position distant au-delà de la ligne ne crédite aucune arrivée', () => {
+  const co = grilleHumaine(['A','B','C','D'],[0],3), v = co.voitures[3], ligne = co.c.arrivee;
+  assert.equal(co.voitures.length,4);v.etat.s = ligne - 1;
+  let prochain = ligne + 6, replacement = true;
+  co.distant = autre => {
+    if (autre !== v) return;
+    v.etat.s = prochain;
+    if (replacement) B.conduite.replacer(v.etat,co.c);
+  };
+  const pas = () => B.course.pas(co,null,dt).filter(e => e.id===v.id && e.type==='arrivee');
+  assert.deepEqual(pas(),[]);assert.equal(v.fini,false);assert.equal(v.tempsFinal,null);
+  prochain=ligne-1;assert.deepEqual(pas(),[]);
+  replacement=false;prochain=ligne+3;const avant=co.temps;
+  assert.equal(pas().length,1);assert.ok(Math.abs(v.tempsFinal - (avant+dt/4)) < 1e-9);
+  const temps = v.tempsFinal;
+  prochain=ligne-2;pas();prochain=ligne+2;assert.deepEqual(pas(),[]);
+  assert.equal(v.tempsFinal,temps);assert.equal(v.meilleur,null);assert.equal(co.finisseurs,1);
+});
+
 console.log('---');
 console.log(nbOk + ' tests passes');
 process.exit(0);

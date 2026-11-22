@@ -274,7 +274,8 @@ for (let essai = 0; essai < 4 && !Number.isFinite(octets); essai++) {
 console.log(JSON.stringify({ octets, objets: N.objets / 6000 }));
 `;
 const mesureTas = cas => {
-  const r = spawnSync(process.execPath, ['--expose-gc', '--input-type=module', '-e', MESURE_TAS(new URL('../src/', import.meta.url).pathname, cas)], { encoding: 'utf8', timeout: 120000 });
+  // La compilation synchrone évite que la charge de la machine décide quelles interpolations V8 intègre.
+  const r = spawnSync(process.execPath, ['--expose-gc', '--no-concurrent-recompilation', '--input-type=module', '-e', MESURE_TAS(new URL('../src/', import.meta.url).pathname, cas)], { encoding: 'utf8', timeout: 120000 });
   assert.equal(r.status, 0, r.stderr);
   const m = JSON.parse(r.stdout.trim().split('\n').pop());
   assert(Number.isFinite(m.octets), 'mesure troublée par le ramasse-miettes (' + cas + ')');

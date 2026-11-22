@@ -78,9 +78,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       : { noms: humains.noms, locaux: [humains.local], hote: humains.local === 0, enLigne: true };
     const nH = humains ? clamp(humains.noms.length, 1, 4) : 0;
     const nbRivaux = chrono ? 0 : clamp(Math.round(o.rivaux ?? 11) - Math.max(0, nH - 1), 0, PILOTES.length);
-    const nb = nbRivaux + 1;
     const graine = (o.graine ?? 1) >>> 0;
-    const placeJoueur = clamp(Math.round(o.placeJoueur ?? Math.min(8, nb)), 1, nb);
     const rng = mulberry32(graine + 0x2545F491);
     const habBase = [0.90, 0.955, 0.99][difficulte];
 
@@ -109,6 +107,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     const premierRival = voitures.length;
     for (let r = 0; r < nbRivaux; r++) voitures.push(voiture(r + premierRival, PILOTES[r][0], PILOTES[r][1], LIVREES[r], false));
     if (humains) for (const v of voitures) { v.humain = v.id < nH; v.distant = !!humains.enLigne && !humains.locaux.includes(v.id) && (v.humain || !humains.hote); }
+    const nb = voitures.length;
+    const placeJoueur = clamp(Math.round(o.placeJoueur ?? Math.min(8, nb)), 1, nb);
     // Caractère de chaque rival (David, 16/11 : « rends les IA plus intelligentes ») : combativité au dépassement,
     // goût de la défense, régularité d'un tour à l'autre ; tiré à part, sans changer la grille.
     for (const v of voitures) {

@@ -1037,7 +1037,11 @@
         t1 += al[a] * f1; t2 += al[a] * f2;
       }
       t1 += P.t1 - tg * (1 - couche); t2 += P.t2;
-      if (couche) { t1 = mix(t1, avant ? -1.05 : -1.1, couche); t2 = mix(t2, avant ? 2.95 : 2.66, couche); }
+      if (couche) {
+        // Les appels à mix dans cette boucle peuvent allouer des flottants pour chaque patte si V8 ne les intègre pas.
+        t1 += ((avant ? -1.05 : -1.1) - t1) * couche;
+        t2 += ((avant ? 2.95 : 2.66) - t2) * couche;
+      }
       if (debout) { if (avant) { t1 = mix(t1, .3 - DEBOUT, debout); t2 = mix(t2, -.6, debout); } else { t1 = mix(t1, Math.PI / 2 - DEBOUT, debout); t2 = mix(t2, 0, debout); } }
       mPoint(J3, J0, MB, kv(VP, P.x * sc, P.y * sc, z * sc));
       if (lod === 3) {
