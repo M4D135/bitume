@@ -5,6 +5,8 @@
 
 Les décisions sur les huit circuits, les trois tracés mixtes, le rendu et les réceptions en course figurent en tête de la [feuille détaillée](docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md). Les programmes historiques suivent ci-dessous.
 
+La .129 ancre l’arche de Sierra-Cuivrée et pose chaque éboulis sur le terrain. Quatre flèches de 60 cm occupent chaque rail de 8 m. La faune, les arbres et les ombres proches sont sélectionnés par groupes. La préparation des glaces suit les côtés à rafraîchir. La cadence de la .129 à chaud sous la pluie à Pietraporzio et sur les 32 km de Larche reste à mesurer en 1080p Fine. [Sources de la .129](https://github.com/M4D135/bitume/commit/a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb)
+
 La .128 ajoute la voie et le service aux stands, les gestes tirés des captures CMU, une flèche jaune de 0,60 m et les arches rocheuses mobiles PhysX. La foule, le décor, les lampes de tunnel et les ombres solaires évitent des calculs répétés. Les nouveaux temps et fantômes utilisent p18, et les enregistrements p17 sont conservés. La cadence de la .128 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer. [Sources de la .128](https://github.com/M4D135/bitume/commit/9651b7bb218ba55f97c6070a19c9e92c9c0d332e)
 
 <!-- bitume-reprise-actuelle-fin -->

@@ -3,13 +3,13 @@
   "date": "2026-11-22",
   "base": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
   "runtime_livre": {
-    "version": "0.2.128",
-    "moteur": "FERRO 0.3.24",
+    "version": "0.2.129",
+    "moteur": "FERRO 0.3.25",
     "physique": "p18",
-    "commit_sources": "9651b7bb218ba55f97c6070a19c9e92c9c0d332e",
-    "html_sha256": "bcf717f0a951134f68f62a2a5e8be149d52f4c3e5233821b48bad7444edf4731",
+    "commit_sources": "a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb",
+    "html_sha256": "0d152c11d2167def5e2f97c5c0eacf1c8588cf1f403b69f39ab3e93fe2a357c9",
     "circuits": 8,
-    "recu": "https://github.com/M4D135/bitume/blob/9651b7bb218ba55f97c6070a19c9e92c9c0d332e/SIZE.json"
+    "recu": "https://github.com/M4D135/bitume/blob/a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb/SIZE.json"
   },
   "destinations_prevues": 17,
   "lot_actif": "catalogue_rendu_course",
@@ -936,10 +936,10 @@
   "base_initiale": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_candidat": {
     "statut": "integre_sur_main",
-    "version": "0.2.128",
+    "version": "0.2.129",
     "branche": "main",
     "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
-    "recu": "https://github.com/M4D135/bitume/blob/9651b7bb218ba55f97c6070a19c9e92c9c0d332e/SIZE.json",
+    "recu": "https://github.com/M4D135/bitume/blob/a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb/SIZE.json",
     "physique": "p18"
   },
   "demandes_video_survol_2026_11_20": {
@@ -1117,6 +1117,15 @@
       "html_sha256": "4fd027375aa50a1a37d74ea6627c33a699c9af698ea7d348637f7f051c3081e9",
       "circuits": 8,
       "recu": "https://github.com/M4D135/bitume/blob/6febf9fb2b8493101b54b37c8314fd2510443991/SIZE.json"
+    },
+    "9651b7bb218ba55f97c6070a19c9e92c9c0d332e": {
+      "version": "0.2.128",
+      "moteur": "FERRO 0.3.24",
+      "physique": "p18",
+      "commit_sources": "9651b7bb218ba55f97c6070a19c9e92c9c0d332e",
+      "html_sha256": "bcf717f0a951134f68f62a2a5e8be149d52f4c3e5233821b48bad7444edf4731",
+      "circuits": 8,
+      "recu": "https://github.com/M4D135/bitume/blob/9651b7bb218ba55f97c6070a19c9e92c9c0d332e/SIZE.json"
     }
   },
   "candidats_precedents": {
@@ -1163,16 +1172,24 @@
       "branche": "main",
       "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
       "recu": "https://github.com/M4D135/bitume/blob/6febf9fb2b8493101b54b37c8314fd2510443991/SIZE.json"
+    },
+    "0.2.128": {
+      "statut": "integre_sur_main",
+      "version": "0.2.128",
+      "branche": "main",
+      "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
+      "recu": "https://github.com/M4D135/bitume/blob/9651b7bb218ba55f97c6070a19c9e92c9c0d332e/SIZE.json",
+      "physique": "p18"
     }
   },
   "suivi_du_runtime": {
     "date": "2026-11-22",
-    "revision_runtime": "9651b7bb218ba55f97c6070a19c9e92c9c0d332e",
-    "version": "0.2.128",
+    "revision_runtime": "a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb",
+    "version": "0.2.129",
     "physique": "p18",
-    "moteur": "FERRO 0.3.24",
-    "sha256_html": "bcf717f0a951134f68f62a2a5e8be149d52f4c3e5233821b48bad7444edf4731",
-    "octets_html": 16620845,
+    "moteur": "FERRO 0.3.25",
+    "sha256_html": "0d152c11d2167def5e2f97c5c0eacf1c8588cf1f403b69f39ab3e93fe2a357c9",
+    "octets_html": 16638284,
     "circuits": [
       {
         "id": "forets-du-pacifique",
@@ -1265,6 +1282,16 @@
       "La passe Photo de FERRO parcourt les objets dynamiques une seule fois pour répartir les objets de la scène, de l’habitacle et de la tuile d’ombre de la voiture.",
       "Dans la passe d’ombre solaire WebGL2, les extrémités d’une plage d’instances rigides peuvent être écartées lorsqu’elles sont entièrement hors du volume éclairé. Les autres instances gardent leur ordre de soumission."
     ],
-    "reception_cadence_0128": "La cadence de la .128 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer."
+    "reception_cadence_0128": "La cadence de la .128 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer.",
+    "optimisations_0129": [
+      "FERRO divise les lots statiques en sous-lots pour sélectionner les instances de la passe d’ombre solaire proche.",
+      "La sélection multi-vues de la faune élimine les groupes au repos hors de portée de toutes les caméras. Le choix du niveau de détail parcourt les individus candidats.",
+      "Le décor périphérique regroupe les arbres par cellule. Une cellule entière peut être écartée avant la sélection individuelle des arbres de la périphérie.",
+      "Le rythme de rafraîchissement des rétroviseurs reste celui du profil. La préparation des poses et des reflets prend en compte les côtés qui seront effectivement repeints.",
+      "Sur une glissière de 8 m, quatre chevrons jaunes se suivent au pas de 2 m. La flèche mesure 60 cm de haut et chaque bras a une épaisseur horizontale d’environ 31 cm.",
+      "Sur Sierra-Cuivrée, les pieds de l’arche de grès sont ancrés dans les deux rives. Les blocs d’éboulis reposent sur les faces locales du terrain et possèdent des corps PhysX indépendants.",
+      "Le shader WebGL2 intègre le changement de calcul de l’ombre de contact."
+    ],
+    "reception_cadence_0129": "La cadence de la .129 à chaud sous la pluie à Pietraporzio et sur les 32 km de Larche reste à mesurer en 1080p Fine."
   }
 }
