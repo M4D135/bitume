@@ -832,7 +832,11 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
     const ev=sortie||[];
     if(!etat.recuperation&&(etat.accident||etat.reparation||(etat.degats&&(etat.degats.casse||B.degats?.uneRouePerdue(etat.degats)))))immobiliser(etat,ev);
     if(etat.recuperation){recuperer(etat,c,dt,ev);return ev;}
-    const gaz=borne01(cmd.gaz),frein=borne01(cmd.frein),aide=borne01(cmd.aide),guidage=borne01(cmd.guidage);
+    const seuilPedales = 0.06;
+    const gazBrut = cmd.gaz, freinBrut = cmd.frein;
+    const gaz = gazBrut <= seuilPedales ? 0 : borne01(gazBrut);
+    const frein = freinBrut <= seuilPedales ? 0 : borne01(freinBrut);
+    const aide=borne01(cmd.aide),guidage=borne01(cmd.guidage);
     etat.gaz=gaz;etat.frein=frein;filtrerVolant(etat,clamp(+cmd.volant||0,-1,1),dt);
     if(etat.immunite>0)etat.immunite=Math.max(0,etat.immunite-dt);
     if(!etat._physx&&etat.saut&&etat.saut.actif){voler(etat,cmd,c,dt,ev);heurterGlissiere(etat,c,dt,ev,true);return ev;}
