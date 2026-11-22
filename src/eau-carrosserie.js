@@ -214,10 +214,17 @@
       g.force = clamp(charge - i, 0, 1); g.allongement = allongement;
       if (e.humide === 0) continue;
       if (g.support.deplacementInchange && g.u === g.u0 && g.v === g.v0) continue;
-      g.u = Math.max(g.marge[1], g.u0 + g.support.du);
-      g.v = Math.max(g.marge[2], g.v0 + g.support.dv);
-      const somme = g.u + g.v - g.marge[1] - g.marge[2];
-      if (somme > g.libre) { const k = g.libre / somme; g.u = g.marge[1] + (g.u - g.marge[1]) * k; g.v = g.marge[2] + (g.v - g.marge[2]) * k; }
+      let u = Math.max(g.marge[1], g.u0 + g.support.du);
+      let v = Math.max(g.marge[2], g.v0 + g.support.dv);
+      const somme = u + v - g.marge[1] - g.marge[2];
+      if (somme > g.libre) {
+        const k = g.libre / somme;
+        u = g.marge[1] + (u - g.marge[1]) * k;
+        v = g.marge[2] + (v - g.marge[2]) * k;
+      }
+      if (g.support.deplacementInchange && u === g.u && v === g.v) continue;
+      g.u = u;
+      g.v = v;
       g.local[0] = f.a[0] + f.u[0] * g.u + f.v[0] * g.v;
       g.local[1] = f.a[1] + f.u[1] * g.u + f.v[1] * g.v;
       g.local[2] = f.a[2] + f.u[2] * g.u + f.v[2] * g.v;
