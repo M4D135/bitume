@@ -776,9 +776,10 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
     if (etat._physx) {
       const ph = etat._physx, u = ph.u, w = ph.w, r = etat.omega;
       etat.rapport = -1; etat.braquage = etat.volant * P.braquageMeca;
-      let moteur = autorise && gaz < .01 ? -ph.mass * P.reculAcc * frein * clamp((P.reculMax + u) / .5, 0, 1) : 0;
-      if (gaz > .01 || !autorise) moteur += ph.mass * P.reculFrein * Math.max(gaz, .5);
-      if (u > -.04 && (gaz > .01 || !autorise)) { etat.rapport = 1; etat.freinRecul = 0; return; }
+      if (u > -.04 && !autorise) { etat.rapport = 1; etat.freinRecul = 0; return; }
+      const moteur = autorise
+        ? -ph.mass * P.reculAcc * frein * clamp((P.reculMax + u) / .5, 0, 1)
+        : ph.mass * P.reculFrein * Math.max(gaz, .5);
       const a = ph.wheelbase * (1 - ph.front), b = ph.wheelbase * ph.front, ua = Math.max(Math.abs(u), 1);
       const alphaAv = -etat.braquage - Math.atan2(w + a * r, ua), alphaAr = -Math.atan2(w - b * r, ua);
       const surface = B.chaussee.lire(c, etat.s, undefined, CHAUSSEE.recul);
