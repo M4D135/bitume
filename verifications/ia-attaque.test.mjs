@@ -51,16 +51,39 @@ check('la même capacité d attaque contre une autre IA (pas de convoi centré s
   for (let k = 0; k < 1200 && !vise; k++) { B.course.pas(co, NEUTRE, DT); vise = co.voitures[4].ia.cible === 3 && co.voitures[4].ia.attaque; }
   assert.ok(vise, 'aucune IA ne s est engagée contre une autre IA');
 });
-check('un adversaire en récupération ou en service n est pas attaqué, mais reste contourné', () => {
-  const co = course(23, 4, 2);
-  const e = placer(co, 3, 1000, 0, 0);
-  e.recuperation = { t: 0, cause: 'choc' }; e.accident = { t: 0, duree: .65, d0: 0 };
-  for (let k = 0; k < 4; k++) placer(co, k + 1, 930 - k * 25, (k % 3 - 1) * 1.2, 44);
-  rouler(co, 900);
+for (const mode of ['récupération', 'service']) check('une IA contourne une voiture en ' + mode + ' sans l’attaquer', () => {
+  const co = course(23, 3, 2), garage = co.c.stands;
+  const s = (garage.garage0 + garage.garage1) / 2, d = garage.d;
+  placer(co, 0, 2400, 0, 30); placer(co, 2, 3100, 0, 30);
+  const arret = co.voitures[3], suivi = co.voitures[1];
+  placer(co, 3, s, d, 0);
+  // Une récupération ne dure que 0,65 s. Le suiveur est déjà décalé dans le même couloir.
+  // Le service dure plus longtemps et permet d'observer la manœuvre depuis 48 m.
+  const recupere = mode === 'récupération';
+  placer(co, 1, s - (recupere ? 20 : 48), d - (recupere ? 2.15 : 1.6), 44);
+  if (recupere) B.conduite.declencherAccident(arret.etat, {});
+  else {
+    arret.humain = true;
+    B.course.stands(co, arret, DT, []); B.course.stands(co, arret, DT, []);
+    assert.equal(arret.etat.stands?.phase, 'service');
+  }
+  let evite = false, double = false;
+  for (let k = 0; k < 900 && B.circuit.ecart(co.c, arret.etat.s, suivi.etat.s) <= 10; k++) {
+    const ev = B.course.pas(co, NEUTRE, DT);
+    assert.ok(!ev.some(e => e.type === 'contact' && [e.a, e.b].includes(arret.id) && [e.a, e.b].includes(suivi.id)), 'collision avec la voiture immobilisée');
+    if (suivi.ia.cible === arret.id && B.course.horsService(arret.etat)) {
+      evite = true;
+      assert.equal(suivi.ia.attaque, false, 'le contournement est classé comme attaque');
+    }
+    if (!double && B.circuit.ecart(co.c, arret.etat.s, suivi.etat.s) >= 0) {
+      double = true;
+      assert.ok(B.course.horsService(arret.etat), 'la voiture doit encore être immobilisée au passage');
+      const marge = Math.abs(suivi.etat.d - arret.etat.d) - B.course.empriseIA(suivi.etat).lat - B.course.empriseIA(arret.etat).lat;
+      assert.ok(marge > 0, 'les emprises latérales se recouvrent');
+    }
+  }
   assert.equal(co.statsIa.attaques, 0, 'une voiture hors service a été attaquée');
-  const derriere = co.voitures.filter((v, i) => i > 0 && v.etat.s < 1000 && v.etat.v > 5);
-  assert.ok(derriere.length >= 0);
-  assert.ok(co.voitures.slice(1).some(v => v.etat.s > 1010), 'personne n a contourné la voiture arrêtée');
+  assert.ok(evite && double && B.circuit.ecart(co.c, arret.etat.s, suivi.etat.s) > 10, 'le suiveur doit ressortir devant');
 });
 check('délai entre deux engagements : pas d enchaînement immédiat sur la même cible', () => {
   const co = duel(24, { id: 3, v: 34 }, { id: 4, v: 34 + 9, gap: 20 });

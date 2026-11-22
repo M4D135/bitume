@@ -383,9 +383,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     }
     const base = lIci + ia.decal;
     if (ia.cible >= 0 && dMin > dMax) renoncer(ia, course);
-    if (ia.cible >= 0 && horsService(course.voitures[ia.cible] && course.voitures[ia.cible].etat)) renoncer(ia, course);
     if (ia.cible >= 0) {
       const o = course.voitures[ia.cible], avance = ecart(c, o.etat.s, e.s);
+      // Une panne interrompt le duel, mais sa caisse occupe toujours le couloir à contourner.
+      if (horsService(o.etat)) ia.attaque = false;
       if (avance > 3 + moiLong + longueurDe(E, ia.cible, o.etat) || avance < -(regard + 10)) renoncer(ia, course);
       else ia.decalVise = o.etat.d + (moiLat + largeurDe(E, ia.cible, o.etat) + .5) * ia.cote - base;
     }
@@ -444,7 +445,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     // Dégagement d'un contact fixe confirmé.
     let marcheArriere = false;
     ia.degagementAttente = Math.max(0, (ia.degagementAttente || 0) - dt);
-    if (ia.degagementEssais > 0 && Math.hypot(ecart(c, ia.degagementOrigineS, e.s), e.d - ia.degagementOrigineD) >= 8) ia.degagementEssais = 0;
+    // Seul le guidage normal confirme la sortie. Le recul commandé peut dépasser 8 m
+    // en deux manœuvres, puis ramener la voiture contre le même obstacle.
+    if (!ia.degagement && ia.degagementEssais > 0 && Math.hypot(ecart(c, ia.degagementOrigineS, e.s), e.d - ia.degagementOrigineD) >= 8) ia.degagementEssais = 0;
     const contactFixe = e.auRail || !!course._obstacleMemo?.[v.id]?.size;
     if (!ia.degagement && ia.bloque > .8 && contactFixe && !ia.degagementAttente && ia.degagementEssais < 2) {
       if (!ia.degagementEssais) { ia.degagementOrigineS = e.s; ia.degagementOrigineD = e.d; }
