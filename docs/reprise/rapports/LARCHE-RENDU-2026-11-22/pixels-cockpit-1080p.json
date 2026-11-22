@@ -1,0 +1,79 @@
+{
+  "environnement": {
+    "navigateur": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+    "rendu": "WebKit WebGL",
+    "nonMasque": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+    "webgl2": true,
+    "backend": "webgl2",
+    "chronometrageGpu": true,
+    "gpuModeste": false,
+    "resolution": [
+      1920,
+      1080
+    ],
+    "fenetre": [
+      1920,
+      1080,
+      1
+    ],
+    "visible": true,
+    "version": "V0.2.110",
+    "signature": true,
+    "liensSignature": 0
+  },
+  "build": {
+    "sha256": "38ea00447486e5196d72f1ac20a275e53915840c7597634fab9c6affcf2ba1c6",
+    "octets": 15243175
+  },
+  "refletsActifs": true,
+  "pixels": {
+    "fini": true,
+    "s": 2868,
+    "vitesse": 16.06660403896942,
+    "simulation": 7.916666666666762,
+    "largeur": 1885,
+    "hauteur": 1060,
+    "source": 1048320,
+    "octets": 7992400,
+    "octetsDifferents": 34,
+    "pixelsDifferents": 31,
+    "erreurMax": 1,
+    "erreurMoyenne": 4.254041339272309e-06,
+    "pixelsAlpha16": 867707,
+    "webGL": 0,
+    "statistiques": {
+      "backend": "webgl2",
+      "pret": true,
+      "perdu": false,
+      "erreur": null,
+      "copiesScene": 109,
+      "copiesDirectes": 0,
+      "reductionsGPU": 109,
+      "dessins": 109,
+      "etapes": 229,
+      "pixels": 1998100,
+      "pixelsSource": 1048320,
+      "largeur": 1885,
+      "hauteur": 1060,
+      "dpr": 0.9820927516479826,
+      "eau": 0.7173360059828963,
+      "accumulationNeige": 0,
+      "embruns": 0.11314435668145958,
+      "gouttes": 8,
+      "neige": 0,
+      "fusionsEau": 0,
+      "expulses": 0,
+      "depotsEau": 8,
+      "depotsEmbruns": 3,
+      "impactsEmis": 8,
+      "surfaceExpulsee": 0
+    }
+  },
+  "erreurs": [],
+  "avertissements": [
+    {
+      "type": "info",
+      "texte": "BITUME banc {\"qualite\":\"high\",\"duree\":4.02,\"images\":136,\"p50\":16.7,\"p95\":33.4,\"pire\":2349.9,\"fenetre\":\"1920×1080\",\"image\":\"1920×1080\",\"circuit\":\"Col de Larche → Vinadio\",\"interrompu\":false,\"reference\":{\"graine\":17017,\"circuit\":6,\"circuitId\":\"larche\",\"graineCircuit\":210,\"mode\":\"solo\",\"qualite\":\"high\",\"anticrenelage\":\"profil\",\"ombres\":\"profil\",\"vegetation\":\"profil\",\"faune\":\"profil\",\"moment\":\"jour\",\""
+    }
+  ]
+}

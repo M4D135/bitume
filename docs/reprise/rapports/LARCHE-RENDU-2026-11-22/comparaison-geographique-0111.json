@@ -1,0 +1,474 @@
+{
+  "pression1": [
+    {
+      "version": "110",
+      "borneCommuneMetres": [
+        2856.39,
+        2894.93
+      ],
+      "debut": {
+        "t": 0.2162,
+        "ms": 16.7,
+        "s": 2856.39,
+        "kmh": 58.09
+      },
+      "fin": {
+        "t": 3.2661,
+        "ms": 33.3,
+        "s": 2894.93,
+        "kmh": 43.49
+      },
+      "images": 140,
+      "ips": 45.65,
+      "p50": 16.7,
+      "p95": 33.4,
+      "pire": 33.5,
+      "images25ms": 44,
+      "fpsFenetre10s": 43.91,
+      "gouttesFin": 24,
+      "meteoFixee": {
+        "graine": 17017,
+        "circuit": 6,
+        "circuitId": "larche",
+        "graineCircuit": 210,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "oui",
+        "meteo": "pluie",
+        "forcePluie": "forte",
+        "mouille": 0.75,
+        "depart": 2650,
+        "vitesse": 20,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 14336.3,
+          "fin": 15155.9
+        }
+      },
+      "rss": true,
+      "traficA2868": null,
+      "reductionsGpu": null,
+      "pixelsSource": 1048320,
+      "prisesEnCompteParFrameDes240Dernieres": {
+        "principale": {
+          "appels": 798.8083333333333,
+          "triangles": 2245360.425
+        },
+        "joueur2": {
+          "appels": 0,
+          "triangles": 0
+        },
+        "retro": {
+          "appels": 481.24583333333334,
+          "triangles": 1345420.8708333333
+        }
+      }
+    },
+    {
+      "version": "111",
+      "borneCommuneMetres": [
+        2856.39,
+        2894.93
+      ],
+      "debut": {
+        "t": 0.0328,
+        "ms": 33.3,
+        "s": 2856.39,
+        "kmh": 58.09
+      },
+      "fin": {
+        "t": 3.0827,
+        "ms": 16.6,
+        "s": 2894.93,
+        "kmh": 43.49
+      },
+      "images": 149,
+      "ips": 48.33,
+      "p50": 16.7,
+      "p95": 33.4,
+      "pire": 33.4,
+      "images25ms": 36,
+      "fpsFenetre10s": 48.5,
+      "gouttesFin": 22,
+      "meteoFixee": {
+        "graine": 17017,
+        "circuit": 6,
+        "circuitId": "larche",
+        "graineCircuit": 210,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "oui",
+        "meteo": "pluie",
+        "forcePluie": "forte",
+        "mouille": 0.75,
+        "depart": 2650,
+        "vitesse": 20,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 14336.3,
+          "fin": 15155.9
+        }
+      },
+      "rss": true,
+      "traficA2868": null,
+      "reductionsGpu": 928,
+      "pixelsSource": 1048320,
+      "prisesEnCompteParFrameDes240Dernieres": {
+        "principale": {
+          "appels": 812.4875,
+          "triangles": 2217933.85
+        },
+        "joueur2": {
+          "appels": 0,
+          "triangles": 0
+        },
+        "retro": {
+          "appels": 443.67083333333335,
+          "triangles": 1252527.175
+        }
+      }
+    }
+  ],
+  "initialementNominal": [
+    {
+      "version": "110",
+      "borneCommuneMetres": [
+        2857.15,
+        2894.83
+      ],
+      "debut": {
+        "t": 0.1161,
+        "ms": 16.6,
+        "s": 2857.28,
+        "kmh": 56.96
+      },
+      "fin": {
+        "t": 3.0994,
+        "ms": 16.7,
+        "s": 2894.83,
+        "kmh": 43.51
+      },
+      "images": 166,
+      "ips": 55.34,
+      "p50": 16.7,
+      "p95": 33.3,
+      "pire": 33.4,
+      "images25ms": 14,
+      "fpsFenetre10s": 56.49,
+      "gouttesFin": 22,
+      "meteoFixee": {
+        "graine": 17017,
+        "circuit": 6,
+        "circuitId": "larche",
+        "graineCircuit": 210,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "oui",
+        "meteo": "pluie",
+        "forcePluie": "forte",
+        "mouille": 0.75,
+        "depart": 2650,
+        "vitesse": 20,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 14336.3,
+          "fin": 15155.9
+        }
+      },
+      "rss": true,
+      "traficA2868": {
+        "s": 2868,
+        "simulation": 16.7749999999996,
+        "meteo": {
+          "pluie": 0.75,
+          "mouille": 1,
+          "vent": 1.9932022948773072
+        },
+        "voitures": [
+          {
+            "id": 0,
+            "s": 2868,
+            "d": -3.12489661958055,
+            "kmh": 52.38760542174572
+          },
+          {
+            "id": 1,
+            "s": 2674.540640698673,
+            "d": 3.0611187536841364,
+            "kmh": 11.86815237082851
+          },
+          {
+            "id": 2,
+            "s": 2683.4012473066614,
+            "d": -0.6887420095742762,
+            "kmh": 29.7607449278046
+          },
+          {
+            "id": 3,
+            "s": 2927.8445131789194,
+            "d": -1.0786951736839545,
+            "kmh": 54.99549652960183
+          },
+          {
+            "id": 4,
+            "s": 2837.687806193717,
+            "d": 0.0008822355400487791,
+            "kmh": 70.44426619655087
+          },
+          {
+            "id": 5,
+            "s": 2887.9419517727147,
+            "d": -3.662612755205062,
+            "kmh": 83.5028511069504
+          },
+          {
+            "id": 6,
+            "s": 2938.8374313648674,
+            "d": -0.8435044922003367,
+            "kmh": 69.65244464877229
+          },
+          {
+            "id": 7,
+            "s": 2876.3936408956506,
+            "d": 0.4987287157808773,
+            "kmh": 69.26972026839273
+          },
+          {
+            "id": 8,
+            "s": 2863.0032154988294,
+            "d": -2.996830781813466,
+            "kmh": 58.39249223226653
+          },
+          {
+            "id": 9,
+            "s": 2883.469250007707,
+            "d": -7.8434039353694525,
+            "kmh": 42.04288259502998
+          },
+          {
+            "id": 10,
+            "s": 2923.1791361414216,
+            "d": -3.8670145692839397,
+            "kmh": 39.33681865667955
+          },
+          {
+            "id": 11,
+            "s": 2861.895427245894,
+            "d": -4.6955221259828965,
+            "kmh": 61.88816558691192
+          }
+        ]
+      },
+      "reductionsGpu": null,
+      "pixelsSource": 1048320,
+      "prisesEnCompteParFrameDes240Dernieres": {
+        "principale": {
+          "appels": 851.0583333333333,
+          "triangles": 2210264
+        },
+        "joueur2": {
+          "appels": 0,
+          "triangles": 0
+        },
+        "retro": {
+          "appels": 380.27916666666664,
+          "triangles": 1076512.3291666666
+        }
+      }
+    },
+    {
+      "version": "111",
+      "borneCommuneMetres": [
+        2857.15,
+        2894.83
+      ],
+      "debut": {
+        "t": 0.0162,
+        "ms": 16.6,
+        "s": 2857.15,
+        "kmh": 57.1
+      },
+      "fin": {
+        "t": 2.9994,
+        "ms": 16.6,
+        "s": 2894.73,
+        "kmh": 43.54
+      },
+      "images": 180,
+      "ips": 60.0,
+      "p50": 16.7,
+      "p95": 16.7,
+      "pire": 16.8,
+      "images25ms": 0,
+      "fpsFenetre10s": 59.98,
+      "gouttesFin": 22,
+      "meteoFixee": {
+        "graine": 17017,
+        "circuit": 6,
+        "circuitId": "larche",
+        "graineCircuit": 210,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "oui",
+        "meteo": "pluie",
+        "forcePluie": "forte",
+        "mouille": 0.75,
+        "depart": 2650,
+        "vitesse": 20,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 14336.3,
+          "fin": 15155.9
+        }
+      },
+      "rss": true,
+      "traficA2868": {
+        "s": 2868,
+        "simulation": 16.766666666666268,
+        "meteo": {
+          "pluie": 0.75,
+          "mouille": 1,
+          "vent": 1.9932225812734057
+        },
+        "voitures": [
+          {
+            "id": 0,
+            "s": 2868,
+            "d": -3.1339491326085835,
+            "kmh": 52.40912944624987
+          },
+          {
+            "id": 1,
+            "s": 2674.516043276788,
+            "d": 3.048617585646803,
+            "kmh": 11.66405973637058
+          },
+          {
+            "id": 2,
+            "s": 2683.3440506079714,
+            "d": -0.6501757175468862,
+            "kmh": 29.483461886145243
+          },
+          {
+            "id": 3,
+            "s": 2927.7233076600314,
+            "d": -1.1171248285731548,
+            "kmh": 55.09325210225068
+          },
+          {
+            "id": 4,
+            "s": 2837.528431158309,
+            "d": 0.02216382383153603,
+            "kmh": 70.43622314294024
+          },
+          {
+            "id": 5,
+            "s": 2887.752643484877,
+            "d": -3.625332936023191,
+            "kmh": 83.42250068819828
+          },
+          {
+            "id": 6,
+            "s": 2938.6788769935374,
+            "d": -0.8650184770287886,
+            "kmh": 69.679231459364
+          },
+          {
+            "id": 7,
+            "s": 2876.233696824478,
+            "d": 0.49950851178120337,
+            "kmh": 68.9907562314618
+          },
+          {
+            "id": 8,
+            "s": 2862.8692384988753,
+            "d": -2.99774985796832,
+            "kmh": 58.45105167334893
+          },
+          {
+            "id": 9,
+            "s": 2883.372603480144,
+            "d": -7.85492707214346,
+            "kmh": 41.98146844566093
+          },
+          {
+            "id": 10,
+            "s": 2923.0997657984917,
+            "d": -3.90281979305304,
+            "kmh": 39.552344505384085
+          },
+          {
+            "id": 11,
+            "s": 2861.75349249351,
+            "d": -4.690573956160466,
+            "kmh": 61.92981793727767
+          }
+        ]
+      },
+      "reductionsGpu": 1189,
+      "pixelsSource": 1048320,
+      "prisesEnCompteParFrameDes240Dernieres": {
+        "principale": {
+          "appels": 889.3958333333334,
+          "triangles": 2225858.779166667
+        },
+        "joueur2": {
+          "appels": 0,
+          "triangles": 0
+        },
+        "retro": {
+          "appels": 353.21666666666664,
+          "triangles": 1002636.9416666667
+        }
+      }
+    }
+  ]
+}

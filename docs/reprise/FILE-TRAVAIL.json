@@ -3,12 +3,12 @@
   "date": "2026-11-22",
   "base": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
   "runtime_livre": {
-    "version": "0.2.110",
+    "version": "0.2.111",
     "physique": "p16",
     "moteur": "FERRO 0.3.16",
     "circuits": 11,
-    "commit_sources": "e10cc3bf12698ce2aaf83c4c04057a0d4c0d7d5e",
-    "html_sha256": "89cf623854ed3caa33a983f1f52b028f1835f30844e0c30fff9c7e1cc5fbaca1",
+    "commit_sources": "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
+    "html_sha256": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59",
     "recu": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json"
   },
   "destinations_prevues": 17,
@@ -386,8 +386,8 @@
       "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md",
       "reste": "Contrat p16, replays et migration conservés. Comparer les signatures haptiques sur les trois manettes.",
       "reception_22_novembre_rendu": {
-        "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/raclement-r6.json",
-        "resultat": "Pneus, impact, raclement et avaries en pause reliés aux états de conduite existants."
+        "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/course-0111.json",
+        "resultat": "R5 à R8 intégrés. Les pilotes entendent les états de pneu et les contacts, lisent leur bilan et leur commande de récupération."
       }
     },
     {
@@ -404,8 +404,8 @@
       "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md",
       "reste": "Relief du Piémont utilisé à Larche. Reprendre matériaux, éclairage et rendu des objets proches.",
       "reception_22_novembre_rendu": {
-        "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/cadence-0110.json",
-        "resultat": "Cadence sous pluie et visière équivalente au pixel sur Mac M5."
+        "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/comparaison-geographique-0111.json",
+        "resultat": "Mac M5 en Fine et pluie, 60 i/s au virage à température nominale et 48,33 i/s au même point à chaud en 1080p."
       }
     },
     {
@@ -602,8 +602,8 @@
         "proprietaire_suivant": "04"
       },
       "reception_22_novembre_rendu": {
-        "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/budget-decors.json",
-        "resultat": "Onze coûts CPU mesurés. Découpe d’herbe différée au Fjord."
+        "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/chargement-herbier-0111.json",
+        "resultat": "Onze coûts CPU mesurés ; découpe différée au Fjord et 218 ms gagnées à Larche avec WebAssembly."
       }
     },
     {
@@ -756,8 +756,8 @@
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
       "reception_22_novembre_rendu": {
-        "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/menu-et-avaries-0110.json",
-        "resultat": "Cartes et menu à la distance entre lignes. Rendu des aiguilles, du film d’eau et de l’asphalte essayé."
+        "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/parcours-pluie-0111.json",
+        "resultat": "Course complète sous la pluie en .111 ; les douze voitures franchissent la ligne des 32,249 km."
       }
     },
     {

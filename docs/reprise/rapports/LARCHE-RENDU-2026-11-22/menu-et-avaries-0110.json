@@ -106,10 +106,10 @@
     }
   ],
   "captures": [
-    "0000.png",
-    "0001.png",
-    "chrono-larche.png",
-    "chrono-marseille.png"
+    "menu-et-avaries/0000.png",
+    "menu-et-avaries/0001.png",
+    "menu-et-avaries/chrono-larche.png",
+    "menu-et-avaries/chrono-marseille.png"
   ],
   "fatal": null,
   "erreurs": []

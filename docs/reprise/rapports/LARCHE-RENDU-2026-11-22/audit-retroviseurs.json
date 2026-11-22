@@ -1,0 +1,70 @@
+{
+  "commit": "83b388c",
+  "releve": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59",
+  "fenetre240Images": {
+    "trianglesPrincipale": 2761262.6375,
+    "trianglesRetros": 828704.2416666667,
+    "rendusRetrosParImage": 1.1416666666666666
+  },
+  "reference": "Géométrie de la caméra en cockpit à plat, yeux en position nominale, roulis et tangage nuls. Ce calcul est invariant par translation et rotation commune en lacet. Pas de capture des pièces au kilomètre 3 en conduite.",
+  "preuves": [
+    {
+      "glace": -1,
+      "roue": -1,
+      "piece": "moyeu",
+      "trianglesNiveauProche": 768,
+      "margeSousPlanBasM": 0.20542658466088812
+    },
+    {
+      "glace": -1,
+      "roue": -1,
+      "piece": "fut",
+      "trianglesNiveauProche": 1536,
+      "margeSousPlanBasM": 0.05803552909674408
+    },
+    {
+      "glace": -1,
+      "roue": 1,
+      "piece": "moyeu",
+      "trianglesNiveauProche": 768,
+      "margeSousPlanBasM": 0.1864669009346204
+    },
+    {
+      "glace": -1,
+      "roue": 1,
+      "piece": "fut",
+      "trianglesNiveauProche": 1536,
+      "margeSousPlanBasM": 0.039075845370476314
+    },
+    {
+      "glace": 1,
+      "roue": -1,
+      "piece": "moyeu",
+      "trianglesNiveauProche": 768,
+      "margeSousPlanBasM": 0.18646690093462037
+    },
+    {
+      "glace": 1,
+      "roue": -1,
+      "piece": "fut",
+      "trianglesNiveauProche": 1536,
+      "margeSousPlanBasM": 0.039075845370476314
+    },
+    {
+      "glace": 1,
+      "roue": 1,
+      "piece": "moyeu",
+      "trianglesNiveauProche": 768,
+      "margeSousPlanBasM": 0.20542658466088806
+    },
+    {
+      "glace": 1,
+      "roue": 1,
+      "piece": "fut",
+      "trianglesNiveauProche": 1536,
+      "margeSousPlanBasM": 0.05803552909674408
+    }
+  ],
+  "trianglesCertainementInvisiblesParGlaceEnPoseDeReference": 4608,
+  "explication": "Les deux fûts et les deux moyeux sources sont soumis de nouveau dans chaque glace par poserRetro, qui filtre la position de la roue mais pas le champ. Les huit coins des boîtes des quatre solides sont tous sous le plan bas. Aucune conclusion de suppression permanente dans toutes les autres poses, en suspension ou en regard libre. Les deux caméras ont des origines et regards distincts."
+}

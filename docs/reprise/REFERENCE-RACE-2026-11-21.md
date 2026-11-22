@@ -1,6 +1,8 @@
 # Référence race — pistes enregistrées le 21 novembre 2026
 
-**État : demande de David enregistrée et huit pistes intégrées au programme du chantier. Étude documentaire ; aucune de ces pistes n’est annoncée comme implémentée ou qualifiée.** La réalisation reste découpée en petits lots, selon les propriétaires ci-dessous. Rattachement documentaire principal dans `FILE-TRAVAIL` : **`references`** ; les autres identifiants cités sont ceux du programme existant, sans nouveau lot runtime dans cette livraison.
+Le 21 novembre, les huit pistes ci-dessous ont été inscrites au programme. Les critères et les constats de départ sont conservés dans le tableau.
+
+**Réception du 22 novembre.** Les sons de pneus (R5), l’impact et le raclement (R6), le bilan des avaries aux stands (R7) et la consigne de récupération (R8) ont été intégrés dans les versions .109 à .111. Les mesures portent sur les états de conduite réels, la restitution audio et le HUD de chaque pilote local. Le dossier de réception contient les écoutes et les contrôles de présentation. Les quatre pistes de matériaux et de paysage ont encore des critères ouverts. [Feuille de route](FEUILLE-DE-ROUTE-2026-11-22.md) · [Dossier de réception](rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json)
 
 ## Référence et limites de la lecture
 

@@ -1,0 +1,130 @@
+[
+  {
+    "thermiqueNSProcessInfoAvant": 1,
+    "thermiqueNSProcessInfoApres": 1,
+    "sha": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59",
+    "id": "111",
+    "fpsFenetre": 48.5,
+    "p95Fenetre": 33.4,
+    "positionFenetre": [
+      {
+        "t": 0.0328,
+        "s": 2856.39,
+        "kmh": 58.09
+      },
+      {
+        "t": 10.0158,
+        "s": 2983.22,
+        "kmh": 58.06
+      }
+    ],
+    "echantillons": 149,
+    "gouttesFin": 22,
+    "source": 1048320,
+    "reductionsGpu": 928,
+    "ssr": true,
+    "vues": {
+      "principale": {
+        "images": 926,
+        "drawCalls": 947.7365010799136,
+        "triangles": 2486594.145788337,
+        "rendusParImage": 1,
+        "drawCallsParImage": 812.4875,
+        "trianglesParImage": 2217933.85
+      },
+      "joueur2": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0,
+        "rendusParImage": 0,
+        "drawCallsParImage": 0,
+        "trianglesParImage": 0
+      },
+      "retro": {
+        "images": 1196,
+        "drawCalls": 321.6178929765886,
+        "triangles": 833947.3185618729,
+        "rendusParImage": 1.2791666666666666,
+        "drawCallsParImage": 443.67083333333335,
+        "trianglesParImage": 1252527.175
+      }
+    },
+    "abscisses": [
+      2856.39,
+      2894.93
+    ],
+    "vitesses": [
+      58.09,
+      43.49
+    ],
+    "fpsDansVirage": 48.33,
+    "p50": 16.7,
+    "p95": 33.4,
+    "pire": 33.4,
+    "pics": 36
+  },
+  {
+    "thermiqueNSProcessInfoAvant": 1,
+    "thermiqueNSProcessInfoApres": 1,
+    "sha": "89cf623854ed3caa33a983f1f52b028f1835f30844e0c30fff9c7e1cc5fbaca1",
+    "id": "110",
+    "fpsFenetre": 43.91,
+    "p95Fenetre": 33.4,
+    "positionFenetre": [
+      {
+        "t": 0.0163,
+        "s": 2853.47,
+        "kmh": 61.5
+      },
+      {
+        "t": 10.0159,
+        "s": 2980.32,
+        "kmh": 56.14
+      }
+    ],
+    "echantillons": 149,
+    "gouttesFin": 24,
+    "source": 1048320,
+    "reductionsGpu": null,
+    "ssr": true,
+    "vues": {
+      "principale": {
+        "images": 821,
+        "drawCalls": 950.3580998781973,
+        "triangles": 2493083.2241169307,
+        "rendusParImage": 1,
+        "drawCallsParImage": 798.8083333333333,
+        "trianglesParImage": 2245360.425
+      },
+      "joueur2": {
+        "images": 0,
+        "drawCalls": 0,
+        "triangles": 0,
+        "rendusParImage": 0,
+        "drawCallsParImage": 0,
+        "trianglesParImage": 0
+      },
+      "retro": {
+        "images": 1172,
+        "drawCalls": 320.69112627986345,
+        "triangles": 830866.1006825939,
+        "rendusParImage": 1.4166666666666667,
+        "drawCallsParImage": 481.24583333333334,
+        "trianglesParImage": 1345420.8708333333
+      }
+    },
+    "abscisses": [
+      2853.47,
+      2894.93
+    ],
+    "vitesses": [
+      61.5,
+      43.49
+    ],
+    "fpsDansVirage": 45.38,
+    "p50": 16.7,
+    "p95": 33.4,
+    "pire": 33.5,
+    "pics": 48
+  }
+]

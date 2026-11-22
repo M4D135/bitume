@@ -1,6 +1,6 @@
 # BITUME — feuille de route des modifications et essais
 
-**22 novembre 2026.** La version jouable **0.2.110** reprend les demandes consignées dans les Markdown de GitHub et les 47 entrées du registre. Chaque mesure indique la version testée. Les essais complets de la spéciale, les mesures en temps réel sur secteur et les réceptions matérielles ont leurs propres relevés. [Version jouable][v110] · [Réception 0.2.110][reception110] · [Réception précédente][reception103] · [Version de départ][base] · [Demandes récentes][retours] · [Registre des lots][file] · [Programme autonome][autonome]
+**22 novembre 2026.** La version jouable **0.2.111** reprend les demandes consignées dans les Markdown de GitHub et les 47 entrées du registre. Chaque mesure indique la version testée. Les essais complets de la spéciale, les mesures en temps réel sur secteur et les réceptions matérielles ont leurs propres relevés. [Version jouable][v111] · [Réception 0.2.111][reception111] · [Version .110][v110] · [Réception .110][reception110] · [Réception précédente][reception103] · [Version de départ][base] · [Demandes récentes][retours] · [Registre des lots][file] · [Programme autonome][autonome]
 
 ## Larche sous la pluie et changements depuis la version 0.2.108
 
@@ -9,6 +9,8 @@
 | Fluidité sous la pluie | À qualité Fine, en cockpit 1 280 × 720 sur Mac M5 avec douze voitures et rétroviseurs actifs, la version .108 donnait 52,35 i/s au virage de référence. Sur .109, trois passages donnent chacun 59,98 i/s. La visière reçoit directement l’image de FERRO à taille égale. Le nombre de gouttes, les reflets en espace écran et le niveau de détail sont conservés. Une comparaison en course retrouve à l’octet près les 921 600 pixels de la visière. [Mesures avant/après][cadence109] · [Contrôle des pixels][pixels109] |
 | Régularité sur la spéciale | La .109 a été mesurée au départ, en forêt à 136 km/h, sur le pont du km 11,43, dans le tunnel, à Pietraporzio et à Vinadio. Les premiers passages en zone bâtie descendent à 59,12 et 59,26 i/s avec quelques intervalles de 33,4 ms. Les deux reprises atteignent 59,97 i/s. Le parcours de bout en bout réalisé précédemment qualifie la course et les collisions. [Chronométrage par secteur][secteurs109] · [Parcours entier][parcours] |
 | Version intégrée .110 | Trois passages sous la pluie au virage de référence donnent 59,98 i/s chacun, avec un 95e centile de 16,7 à 16,8 ms. À Pietraporzio, les deux passages de jour sous la pluie donnent 59,97 i/s, avec un 95e centile de 16,8 ms. [Mesures de la .110][cadence110] · [Passages en ville][ville110] |
+| Version intégrée .111 | À 1 280 × 720, le passage pluvieux reste à 59,98 i/s. À 1 920 × 1 080, le sec donne également 59,98 i/s. Sous la pluie aux km 2,94–3,06, trois passages donnent 51,80, 43,51 et 40,52 i/s, soit 45,28 i/s sur les 30,06 s cumulées. Le 95e centile atteint 33,4 ms sur les trois passages. À Pietraporzio à 1080p, la mesure donne 39,18 i/s. Sur le même intervalle du virage du km 2,86 et avec le même état thermique macOS, la .111 donne 48,33 i/s contre 45,65 en .110. La cible de 60 i/s en 1080p soutenu reste ouverte. [Tous les intervalles longs][cadence111] · [Deux versions sur le même virage][virage111] |
+| Virage de la capture à 1080p | Avec un état thermique nominal au départ et à la fin de chaque essai, la bande commune du km 2,857 au km 2,895 passe de 55,34 i/s en .110 à **60,00 i/s** en .111. Le 95e centile passe de 33,3 à 16,7 ms. La .111 n’y dépasse jamais 16,8 ms. La fenêtre roulante entière de dix secondes donne respectivement 56,49 et 59,98 i/s. À l’abscisse 2 868 m les positions longitudinales des douze voitures diffèrent au plus de 19 cm. La paire à pression thermique 1 figure à la ligne précédente. [Comparaison des deux conditions][apparie111] |
 | Matériaux et paysage | Le film d’eau et le granulat de la SS21 utilisent le matériau routier de FERRO. Les 16 682 sommets des 137 portions d’asphalte, les lignes, les vibreurs et les contacts PhysX sont conservés. Les sapins et mélèzes se distinguent au bord de la route et à distance. En hiver, le mélèze perd ses aiguilles et sa silhouette lointaine tient en 143 triangles. Les versants, les façades, l’éclairage et les reflets urbains restent des chantiers du photoréalisme. [Asphalte sous la pluie][asphalte109] · [Mélèzes en automne][arbres109] |
 | Couleurs des montagnes | Deux comparaisons aux km 4,59 et 16,50 ont révélé que les teintes plus contrastées dessinaient les triangles de 128 m sur certains versants. Le filtrage atténuait également les nuances de la vallée. Le jeu conserve les couleurs précédentes. Un prototype d’interpolation de teinte sur le sol et la roche améliore la continuité. Avant son adoption, FERRO doit l’exposer comme option et la qualifier sur ses différentes passes de rendu. [Mesures et limites][etudeversants] · [Comparaison du prototype][protovert] |
 | Chronométrage et carte | Les deux spéciales affichent la distance entre leurs lignes de départ et d’arrivée. La carte et l’aperçu s’arrêtent exactement au drapeau, même si celui-ci tombe entre deux points de la route. Larche affiche **32,25 km** et Marseille **5,75 km**. Les voitures conservent la zone de décélération au-delà de la ligne. [Contrôle en jeu du menu et des avaries][menu110] |
@@ -19,6 +21,20 @@
 **Mesure 1080p.** Sur le même M5 en qualité Fine, la .110 donne 59,98 i/s au sec et 48,67 i/s sous la pluie à 1 920 × 1 080. Le coût augmente avec le nombre de pixels de l’optique et la composition des effets. [Trois passages en 1080p][cadence1080]
 
 **Préparation du paysage.** La comparaison du noyau de découpe des prairies sur Larche mesure 365 ms en JavaScript et 136 ms en WebAssembly avec les mêmes arguments. Les cinq répétitions dans chaque moteur produisent les mêmes 252 348 triangles, dans le même ordre. Ces durées concernent le calcul du noyau, hors placement des arbres, construction de la scène et affichage. [Mesures du noyau][herbier110]
+
+**Gouttes mobiles et résolution.** Pour chaque image, la .111 répertorie les gouttes qui touchent chacune des 144 régions de la visière. Un pixel traite uniquement les gouttes susceptibles de le recouvrir, dans leur ordre d’origine. Les longues traînées, les halos d’impact et les 32 gouttes du palier maximal sont compris. Sur 991 273 contributions attendues, aucune ne manque. La réduction de l’image de scène se fait sur le GPU quand ses dimensions le permettent. En cockpit pluvieux, la plus grande différence observée après composition est de 1 niveau sur 255. [Oracle indépendant][index111] · [Pixels du cockpit][pixels111]
+
+Un contrôle dans le HTML assemblé confirme que la sélection de Larche n’instancie aucune découpe WebAssembly au menu. Le départ de la course l’utilise une fois. Le cockpit au point signalé montre la chaussée entière, à 29,4 km de l’arrivée, avec les gouttes de lentille et le ruban LED de l’épingle. Cette capture utilise une horloge commandée pour comparer le décor. [Capture en jeu][cockpit111] · [Vérification de la séance][essai111]
+
+Dans la portion la plus chargée, les compteurs distinguent environ 2,76 millions de triangles par image pour la vue principale et 829 000 pour les rétros. Les deux glaces ont des positions et des directions différentes. Un essai géométrique identifie 4 608 triangles de moyeux et de fûts de roues hors du champ de chaque glace sur une pose à plat. La suite consiste à mesurer les passes de rendu sur la portion roulée, où la pente, les voitures et les reflets varient. [Mesures et pose des rétroviseurs][retros111]
+
+La .111 a également refait la spéciale entière en course sous la pluie, au pas de simulation fixe. Les douze voitures franchissent la ligne des 32,249 km. Le pilote automatique termine dixième en 16 min 18,361 s. Avec la même graine, les douze résultats et la trace enregistrée sont identiques à ceux de la .108. [Classement du parcours complet][complet111]
+
+**Récupération et jeu à deux.** Un pilote bloqué qui accélère voit la commande utilisable avec son périphérique. L’avis tient sur une ligne, s’efface dès la reprise et respecte les arrêts volontaires et les stands. En duo, casse, perte de roue et retour sont annoncés sur l’écran du pilote concerné. Les délais mesurés dans les dix états de conduite sont conservés. [Réception du HUD][r8111]
+
+**Chargement de Larche.** La .111 embarque le noyau WebAssembly pour la préparation des grands herbiers en séance. En six chargements CPU indépendants, préparer le circuit, le décor et la végétation prend 1,32 s contre 1,54 s en JavaScript. L’empreinte des triangles est identique. Le menu et les petites découpes utilisent JavaScript. Une allocation refusée ou un calcul incomplet reprend le chemin JavaScript. Le pic observé de mémoire linéaire du noyau à Larche est de 100,625 Mio, libérable après la découpe. [Temps et mémoire de la préparation][herbier111]
+
+**Qualification de la version jouable.** Les 229 suites Node et les huit tests Python passent sur Mac arm64 et sur GitHub Actions. Les deux assemblages locaux et la reconstruction GitHub donnent le même HTML. [Détail des suites locales][qualmac111] · [Qualification GitHub][qualgithub111]
 
 ## Demandes du 22 novembre et ordre de réception
 
@@ -76,7 +92,7 @@
 | 19/21 — eau, neige, lumière et Photo | Conserver les impacts sur la lentille, les gouttes qui fusionnent, gel/fonte, panache et eau de carrosserie. Recevoir toutes les vues et paliers, notamment tunnel, soleil bas, pleine nuit, phares et galerie ouverte. Comparer reflets des flaques, sur carrosserie et pilotes, ombres stables et contact sous véhicule, adaptation de l’œil aux portails et teintes préservées. Qualifier un palier Photo et les effets coûteux par image et par passe. Reproduire sur la version courante tout ancien défaut de bandes ou diagonales avant correction. [Programme rendu][autonome] · [Optique][eau] |
 | 22/26 — saisons, arbres, flore et faune | Le jeu comprend déjà quatre saisons, décors organiques, arbres procéduraux, rochers, lieux emblématiques, animaux 3D et groupes de spectateurs. Contrôler chaque circuit réellement au menu sur changement de saison, espèces, feuillage, floraison, neige, densité et LOD. Retirer les motifs géométriques visibles et objets flottants restants. Vérifier sommeil hors champ, apparitions/disparitions progressives et absence d’animaux dans les collisions de piste. [Saisons][saisons] · [Faune et démos][faune] |
 | 23/25 — matériaux cockpit et voiture | Fignoler grain et rugosité à petite échelle, vernis, métal, caoutchouc mat, coque, casque et peintures reflétant la scène. Dépend de la lumière du lot 21. Vérifier freins qui rougissent, chaleur d’échappement, salissures et usure, sans introduire de surfaces qui scintillent ou de roues barrées. Préserver le décor pas à pas dans les trois niveaux de détail et les rétros. [Programme réaliste][autonome] · [Référence voiture][modele] |
-| Huit idées « race » | Les pneus (R5), le choc et le raclement (R6) et le bilan de service (R7) ont reçu des essais de son et de conduite. Poursuivre les raccords de revêtement, les transitions terre–gravier–herbe, le rendu au loin et les consignes de récupération, selon les critères du dossier. [R1–R8][race] |
+| Huit idées « race » | Les pneus (R5), le choc et le raclement (R6) et le bilan de service (R7) ont reçu des essais de son et de conduite. Poursuivre les raccords de revêtement, les transitions terre–gravier–herbe et le rendu au loin selon les critères du dossier. Les consignes de récupération (R8) sont intégrées. [R1–R8][race] |
 
 ## 5. Fluidité, mémoire et GPU
 
@@ -202,7 +218,7 @@ Les 47 lignes suivent le registre dans son ordre. L’état ci-dessous tient com
 | 27 : invitations sans serveur dédié à administrer | §6 | Partiel. Salon, WebRTC et relais présents. Brancher l’invitation autonome et tester sur deux réseaux Internet distincts. |
 | 28B/28D : précréation et installation progressive | §5 | Onze coûts CPU mesurés en Fine. Le Fjord est ramené à environ 104 ms. Réduire les coûts restants, dont Larche, puis mesurer les changements de saison et les premières images. |
 | 28E : IndexedDB versionné et intègre | §5 | Partiel. Panorama de Larche relu en jeu sur cinq scénarios. Étendre les données binaires au reste du niveau et recevoir quotas et mémoire. |
-| 28F–H : Worker/WASM/WebGPU selon mesure | §5 | Conditionnel. Engager Worker, WASM ou WebGPU seulement après mesure du coût visé et validation du repli. |
+| 28F–H : Worker/WASM/WebGPU selon mesure | §5 | 28F intégré pour les grandes découpes de prairie, avec repli et coûts mesurés. Worker et WebGPU restent à comparer selon le poste dominant. |
 | Records par circuit, mode, boîte et modèle | §3 | Partiel. Records enrichis et espaces p15/p16 distincts. Qualifier les sauvegardes réelles, les tours propres et les fantômes par mode. |
 | Championnat de plusieurs courses | §1 | Jouable. Coupe d’Europe entièrement conduite en Chrome avec douze voitures par manche, classement et points retrouvés après rechargement. Les coupes de huit et onze manches ont aussi été parcourues et leur classement retrouvé après rechargement. Comparer sur les appareils cibles. |
 | Qualification et publication du programme | §6 | Par version. Rapports du 22 novembre disponibles. Matériel réel, duo sur manettes et réseaux distants restent à recevoir. |
@@ -316,7 +332,7 @@ Les 47 lignes suivent le registre dans son ordre. L’état ci-dessous tient com
 [cadence108]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/INTEGRATION-2026-11-22/cadence-larche-0.2.108.json
 [cadences]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/INTEGRATION-2026-11-22/comparaison-cadence-0107-0108.json
 [v110]: https://github.com/M4D135/bitume/commit/350bb0f406598cfdd24770d27a6942475277086c
-[reception110]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json
+[reception110]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION-0110.json
 [cadence109]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/cadence-0108-0109.json
 [pixels109]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/pixels-cockpit.json
 [secteurs109]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/secteurs-0109.json
@@ -336,3 +352,18 @@ Les 47 lignes suivent le registre dans son ordre. L’état ci-dessous tient com
 [protovert]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/versants-prototype.jpg
 [cadence1080]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/cadence-0110-1080p.json
 [herbier110]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/comparaison-herbier-larche.json
+[v111]: https://github.com/M4D135/bitume/commit/83b388cabf163d65a216746c741d806e3dd4bc2e
+[reception111]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json
+[index111]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/index-gouttes.json
+[pixels111]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/pixels-cockpit-1080p.json
+[r8111]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/recuperation-r8.json
+[herbier111]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/chargement-herbier-0111.json
+[cadence111]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/cadence-0111.json
+[virage111]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/virage-1080p-chaud.json
+[cockpit111]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/Larche-cockpit-pluie-0111.png
+[essai111]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/course-0111.json
+[apparie111]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/comparaison-geographique-0111.json
+[retros111]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/audit-retroviseurs.json
+[complet111]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/parcours-pluie-0111.json
+[qualmac111]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/qualification-macos-0111.json
+[qualgithub111]: https://github.com/M4D135/bitume/blob/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22/qualification-github-0111.json

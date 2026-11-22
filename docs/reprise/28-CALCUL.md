@@ -1,5 +1,7 @@
 # Lot 28 « calcul » : où part le temps, et ce qui le réduit
 
+**Mise à jour du 22 novembre, version 0.2.111.** Le Fjord prépare son herbier à la demande. Pour un grand herbier en séance, le jeu embarque le noyau WebAssembly de 28F avec repli JavaScript. À Larche, en Fine, les six chargements CPU donnent un gain médian de 218 ms pour le circuit, le décor et la végétation, à empreinte géométrique identique. Les mesures historiques ci-dessous restent celles de leurs versions. [Mesures de Larche](rapports/LARCHE-RENDU-2026-11-22/chargement-herbier-0111.json) · [Budget des onze circuits](rapports/LARCHE-RENDU-2026-11-22/budget-decors.json)
+
 Étude du 18/11/2026, arbre `etude/calcul` (base main 0.2.39) ; Apple M5 (10 cœurs, 24 Go), Chrome 157 sans interface avec la vraie carte graphique, Node
 24.18. D'autres agents chargeaient la machine (charge 13 à 160) : les temps muraux varient jusqu'à ×3 d'un essai à l'autre, d'où les temps processeur de Node
 partout où c'est possible. Chiffres : médiane [min–max] d'au moins trois essais. Résumés dans `docs/reprise/rapports/calcul-2026-11-18/` (index :

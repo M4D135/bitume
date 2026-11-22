@@ -25,7 +25,11 @@
       },
       "nappes": 180,
       "objets": 59822,
-      "decoupesHerbier": 1
+      "decoupesHerbier": 1,
+      "etePuisHiverMs": [
+        400.237,
+        278.029
+      ]
     },
     {
       "id": "marseille",
@@ -43,7 +47,11 @@
       },
       "nappes": 367,
       "objets": 28415,
-      "decoupesHerbier": 1
+      "decoupesHerbier": 1,
+      "etePuisHiverMs": [
+        344.565,
+        241.52
+      ]
     },
     {
       "id": "corail",
@@ -61,7 +69,11 @@
       },
       "nappes": 208,
       "objets": 6400,
-      "decoupesHerbier": 0
+      "decoupesHerbier": 0,
+      "etePuisHiverMs": [
+        87.896,
+        78.573
+      ]
     },
     {
       "id": "cap-sequoia",
@@ -79,7 +91,11 @@
       },
       "nappes": 301,
       "objets": 7451,
-      "decoupesHerbier": 0
+      "decoupesHerbier": 0,
+      "etePuisHiverMs": [
+        116.731,
+        102.056
+      ]
     },
     {
       "id": "fjord",
@@ -97,7 +113,11 @@
       },
       "nappes": 240,
       "objets": 9304,
-      "decoupesHerbier": 1
+      "decoupesHerbier": 1,
+      "etePuisHiverMs": [
+        105.296,
+        98.907
+      ]
     },
     {
       "id": "route-des-cimes",
@@ -115,7 +135,11 @@
       },
       "nappes": 442,
       "objets": 56331,
-      "decoupesHerbier": 1
+      "decoupesHerbier": 1,
+      "etePuisHiverMs": [
+        543.359,
+        394.901
+      ]
     },
     {
       "id": "larche",
@@ -134,6 +158,10 @@
       "nappes": 1304,
       "objets": 103245,
       "decoupesHerbier": 1,
+      "etePuisHiverMs": [
+        1364.126,
+        818.226
+      ],
       "panoramaFroidMs": {
         "min": 47.68,
         "mediane": 47.83,
@@ -162,7 +190,11 @@
       },
       "nappes": 249,
       "objets": 6871,
-      "decoupesHerbier": 0
+      "decoupesHerbier": 0,
+      "etePuisHiverMs": [
+        102.671,
+        88.127
+      ]
     },
     {
       "id": "sierra",
@@ -180,7 +212,11 @@
       },
       "nappes": 282,
       "objets": 7042,
-      "decoupesHerbier": 0
+      "decoupesHerbier": 0,
+      "etePuisHiverMs": [
+        118.556,
+        103.448
+      ]
     },
     {
       "id": "brume-de-jade",
@@ -198,7 +234,11 @@
       },
       "nappes": 282,
       "objets": 7211,
-      "decoupesHerbier": 0
+      "decoupesHerbier": 0,
+      "etePuisHiverMs": [
+        132.783,
+        119.439
+      ]
     },
     {
       "id": "baikal",
@@ -216,7 +256,11 @@
       },
       "nappes": 285,
       "objets": 65280,
-      "decoupesHerbier": 1
+      "decoupesHerbier": 1,
+      "etePuisHiverMs": [
+        521,
+        338.489
+      ]
     }
   ],
   "correctionFjord": {
@@ -234,5 +278,161 @@
     "herbierExpliciteIdentique": true,
     "trianglesHerbierExplicite": 84623,
     "shaHerbierExplicite": "721fbb22f538d1203180a2003fc392289358e06bb3775d4d9d4bbade4d8a9769"
-  }
+  },
+  "fixtures": [
+    [
+      {
+        "id": "val-brule",
+        "ms": 40.943000000000005,
+        "nappes": 117
+      },
+      {
+        "id": "port-sable",
+        "ms": 27.76808299999999,
+        "nappes": 104
+      },
+      {
+        "id": "haut-col",
+        "ms": 35.697790999999995,
+        "nappes": 176
+      },
+      {
+        "id": "route-des-cimes",
+        "ms": 41.512958999999995,
+        "nappes": 277
+      }
+    ],
+    [
+      {
+        "id": "val-brule",
+        "ms": 42.973708,
+        "nappes": 117
+      },
+      {
+        "id": "port-sable",
+        "ms": 30.045166999999992,
+        "nappes": 104
+      },
+      {
+        "id": "haut-col",
+        "ms": 36.38787499999998,
+        "nappes": 176
+      },
+      {
+        "id": "route-des-cimes",
+        "ms": 43.30562499999999,
+        "nappes": 277
+      }
+    ],
+    [
+      {
+        "id": "val-brule",
+        "ms": 41.023041,
+        "nappes": 117
+      },
+      {
+        "id": "port-sable",
+        "ms": 30.514459000000016,
+        "nappes": 104
+      },
+      {
+        "id": "haut-col",
+        "ms": 36.421167,
+        "nappes": 176
+      },
+      {
+        "id": "route-des-cimes",
+        "ms": 44.93295800000001,
+        "nappes": 277
+      }
+    ],
+    [
+      {
+        "id": "val-brule",
+        "ms": 41.757042,
+        "nappes": 117
+      },
+      {
+        "id": "port-sable",
+        "ms": 29.813833000000002,
+        "nappes": 104
+      },
+      {
+        "id": "haut-col",
+        "ms": 38.02366699999999,
+        "nappes": 176
+      },
+      {
+        "id": "route-des-cimes",
+        "ms": 44.264792,
+        "nappes": 277
+      }
+    ],
+    [
+      {
+        "id": "val-brule",
+        "ms": 40.86020799999999,
+        "nappes": 117
+      },
+      {
+        "id": "port-sable",
+        "ms": 29.834959000000012,
+        "nappes": 104
+      },
+      {
+        "id": "haut-col",
+        "ms": 37.262666000000024,
+        "nappes": 176
+      },
+      {
+        "id": "route-des-cimes",
+        "ms": 42.77433400000001,
+        "nappes": 277
+      }
+    ],
+    [
+      {
+        "id": "val-brule",
+        "ms": 40.371708999999996,
+        "nappes": 117
+      },
+      {
+        "id": "port-sable",
+        "ms": 29.426916000000006,
+        "nappes": 104
+      },
+      {
+        "id": "haut-col",
+        "ms": 43.77074999999999,
+        "nappes": 176
+      },
+      {
+        "id": "route-des-cimes",
+        "ms": 36.603916,
+        "nappes": 277
+      }
+    ],
+    [
+      {
+        "id": "val-brule",
+        "ms": 41.629999999999995,
+        "nappes": 117
+      },
+      {
+        "id": "port-sable",
+        "ms": 29.143249999999995,
+        "nappes": 104
+      },
+      {
+        "id": "haut-col",
+        "ms": 35.86712499999999,
+        "nappes": 176
+      },
+      {
+        "id": "route-des-cimes",
+        "ms": 42.20412500000003,
+        "nappes": 277
+      }
+    ]
+  ]
 }

@@ -1,12 +1,12 @@
 {
   "date": "2026-11-22",
-  "version": "0.2.110",
-  "commit_sources": "e10cc3bf12698ce2aaf83c4c04057a0d4c0d7d5e",
+  "version": "0.2.111",
+  "commit_sources": "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
   "branche": "main",
   "build": {
-    "raw": 15238343,
-    "gzip": 3731133,
-    "sha256": "89cf623854ed3caa33a983f1f52b028f1835f30844e0c30fff9c7e1cc5fbaca1"
+    "raw": 15256987,
+    "gzip": 3738792,
+    "sha256": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59"
   },
   "assemblages_locaux_identiques": true,
   "circuits": 11,
@@ -14,48 +14,68 @@
   "physique": "p16",
   "qualification_github": {
     "conclusion": "success",
-    "commit": "e10cc3bf12698ce2aaf83c4c04057a0d4c0d7d5e",
-    "version": "0.2.110",
-    "url": "https://github.com/M4D135/bitume/actions/runs/45045468202",
-    "suites_node": 227,
+    "commit": "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
+    "version": "0.2.111",
+    "url": "https://github.com/M4D135/bitume/actions/runs/45047690074",
+    "suites_node": 229,
     "tests_python": 8,
     "suites_en_echec": 0,
-    "sha256_html": "89cf623854ed3caa33a983f1f52b028f1835f30844e0c30fff9c7e1cc5fbaca1",
-    "artefact": 14763373282,
+    "sha256_html": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59",
+    "artefact": 14763803831,
     "lots": [
+      58,
       57,
       57,
-      57,
-      56
+      57
     ],
     "reconstruction_git_identique": true
   },
   "preuves": [
     "Glissiere-en-contact.wav",
     "Larche-asphalte-pluie.jpg",
+    "Larche-cockpit-pluie-0111.png",
     "Larche-coniferes-automne.jpg",
     "Mur-en-contact.wav",
     "Pneus-quatre-etats.wav",
     "Portique-en-course.png",
+    "RECEPTION-0110.json",
+    "audit-retroviseurs.json",
     "avaries-r7.json",
     "budget-decors.json",
     "cadence-0108-0109.json",
     "cadence-0110-1080p.json",
     "cadence-0110.json",
+    "cadence-0111.json",
+    "chargement-herbier-0111.json",
+    "comparaison-geographique-0111.json",
     "comparaison-herbier-larche.json",
+    "comparaisons-1080p.json",
     "coniferes-0109.json",
+    "course-0111.json",
     "diagnostic-optique.json",
+    "essais-optiques-1080p.json",
     "essais-versants.json",
+    "index-gouttes.json",
     "menu-et-avaries-0110.json",
+    "menu-et-avaries/0000.png",
+    "menu-et-avaries/0001.png",
+    "menu-et-avaries/chrono-larche.png",
+    "menu-et-avaries/chrono-marseille.png",
     "mire-visiere.json",
+    "parcours-pluie-0111.json",
     "pietraporzio-0110.json",
+    "pixels-cockpit-1080p.json",
     "pixels-cockpit.json",
     "pneus-r5.json",
     "qualification-0110.json",
+    "qualification-github-0111.json",
+    "qualification-macos-0111.json",
     "raclement-r6.json",
+    "recuperation-r8.json",
     "secteurs-0109.json",
     "survol-catalogue.json",
-    "versants-prototype.jpg"
+    "versants-prototype.jpg",
+    "virage-1080p-chaud.json"
   ],
   "limites": [
     "Cadence mesurée sur le Mac M5 du test, dans les conditions de chaque relevé. Les autres appareils demandent une réception matérielle.",
@@ -63,5 +83,28 @@
     "Les modèles proches, les façades et la lumière du catalogue demandent de nouveaux essais pour le photoréalisme.",
     "La pigmentation continue des versants a été évaluée dans un prototype WebGL2 séparé."
   ],
-  "deploiement_public": false
+  "deploiement_public": false,
+  "dossier_de_preuves": "https://github.com/M4D135/bitume/tree/main/docs/reprise/rapports/LARCHE-RENDU-2026-11-22",
+  "feuille_de_route": "https://github.com/M4D135/bitume/blob/main/docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
+  "reception_jeu": {
+    "virage_1080p_nominal": {
+      "avant_ips": 55.34,
+      "apres_ips": 60.0,
+      "p95_ms": 16.7
+    },
+    "virage_1080p_pression_thermique_1": {
+      "avant_ips": 45.65,
+      "apres_ips": 48.33
+    },
+    "essai_720p_pluie_ips": 59.98,
+    "pluie_1080p_dix_secondes_trois_passages_ips": 45.28,
+    "pietraporzio_pluie_1080p_chaud_ips": 39.18,
+    "finisseurs_sur_la_speciale_pluvieuse": 12,
+    "preparation_Larche_gain_cpu_ms": 217.9
+  },
+  "reception_macos": {
+    "suites_node": 229,
+    "tests_python": 8,
+    "rapport": "qualification-macos-0111.json"
+  }
 }

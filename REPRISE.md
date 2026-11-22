@@ -1,10 +1,18 @@
 # BITUME — reprise courte
 
+## Larche en 1080p et préparation du paysage, version 0.2.111
+
+Sur Mac M5 en Fine, au virage du km 2,868, la paire en régime thermique nominal passe de 55,34 à 60,00 i/s sous la pluie. En régime thermique élevé, la même comparaison donne 45,65 et 48,33 i/s. La nouvelle version atteint 59,98 i/s en pluie 720p. À Pietraporzio à chaud en pluie 1080p, elle donne 39,18 i/s. La feuille de route conserve les durées des images et les conditions de chaque passage.
+
+La visière sélectionne les gouttes qui touchent chaque partie de l’écran. La préparation des grandes prairies de Larche utilise WebAssembly en séance et gagne 218 ms en médiane à géométrie identique. Un pilote bloqué reçoit la commande disponible sur son périphérique. Les deux pilotes locaux reçoivent leurs propres avis d’accident. Le contrôle de course est passé au point de la capture initiale, à 29,4 km de l’arrivée.
+
+[Feuille de route des 47 demandes](docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md) · [Dossier de réception](docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json) · [Capture de Larche](docs/reprise/rapports/LARCHE-RENDU-2026-11-22/Larche-cockpit-pluie-0111.png)
+
 ## Larche sous la pluie et état de course, version 0.2.110
 
 Sur Mac M5 en cockpit 1 280 × 720, la visière réutilise directement l’image de FERRO. Les trois passages pluvieux de référence passent de 52,35 i/s en .108 à 59,98 i/s. En 1 920 × 1 080, le relevé initial donne 48,67 i/s sous la pluie. Les arbres et l’asphalte de Larche, les distances chronométrées, les sons de pneus et de glissières, la pause des deux pilotes, l’affichage du portique et le survol des obstacles ont reçu des essais distincts. La qualification GitHub de la .110 passe ses 227 suites Node et ses huit tests Python.
 
-[Feuille de route des 47 demandes](docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md) · [Mesures, écoute et comparaisons en course](docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json)
+[Feuille de route des 47 demandes](docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md) · [Mesures, écoute et comparaisons en course](docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION-0110.json)
 
 ## Livraison intégrée du 22 novembre — 0.2.108
 

@@ -1,0 +1,150 @@
+{
+  "sha256": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59",
+  "protocole": "HTML assemblé dans Chrome, pilote automatique et onze rivaux. Simulation PhysX au pas fixe, temps de course accéléré. Cette course qualifie le tracé et les arrivées.",
+  "conditions": {
+    "graine": 23731,
+    "grille": [
+      8,
+      4,
+      2,
+      7,
+      6,
+      10,
+      5,
+      0,
+      11,
+      3,
+      9,
+      1
+    ],
+    "circuit": "larche",
+    "version": "V0.2.111",
+    "depart": 0,
+    "arrivee": 32249.33,
+    "horloge": 0,
+    "phase": "pluie",
+    "pluie": 0.75,
+    "fixe": true,
+    "physique": true,
+    "position": 41.997910640449845,
+    "abscisseInitiale": 41.997910640449845,
+    "n": 12,
+    "versionPhysX": "5.12.0"
+  },
+  "ecranFinal": "resultats",
+  "finisseurs": 12,
+  "pilote": {
+    "position": 10,
+    "chronoSecondes": 978.3611918756001
+  },
+  "classement": [
+    [
+      "1",
+      "19",
+      "S. Ferrandi",
+      "1",
+      "13:51,364",
+      "–"
+    ],
+    [
+      "2",
+      "17",
+      "J. Vanmeer",
+      "1",
+      "+41,500",
+      "–"
+    ],
+    [
+      "3",
+      "8",
+      "L. Brasquet",
+      "1",
+      "+64,671",
+      "–"
+    ],
+    [
+      "4",
+      "14",
+      "T. Okafor",
+      "1",
+      "+81,994",
+      "–"
+    ],
+    [
+      "5",
+      "28",
+      "A. Kowalczyk",
+      "1",
+      "+95,065",
+      "–"
+    ],
+    [
+      "6",
+      "11",
+      "H. Delacour",
+      "1",
+      "+107,562",
+      "–"
+    ],
+    [
+      "7",
+      "7",
+      "P. Morvan",
+      "1",
+      "+118,194",
+      "–"
+    ],
+    [
+      "8",
+      "22",
+      "K. Lindgren",
+      "1",
+      "+130,469",
+      "–"
+    ],
+    [
+      "9",
+      "5",
+      "E. Varenne",
+      "1",
+      "+145,447",
+      "–"
+    ],
+    [
+      "10",
+      "1",
+      "Vous",
+      "1",
+      "+146,997",
+      "–"
+    ],
+    [
+      "11",
+      "26",
+      "M. Duvernet",
+      "1",
+      "+149,044",
+      "–"
+    ],
+    [
+      "12",
+      "3",
+      "R. Castagnet",
+      "1",
+      "+159,211",
+      "–"
+    ]
+  ],
+  "classementIdentiqueA0108": true,
+  "dernierEchantillon": {
+    "phase": "arrivee",
+    "s": 32299.085238545827,
+    "arrivee": 32249.33,
+    "physique": true,
+    "phaseMeteo": "pluie",
+    "pluie": 0.75,
+    "mouille": 1
+  },
+  "erreurs": [],
+  "traceIdentiqueA0108": true
+}

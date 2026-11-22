@@ -1,0 +1,157 @@
+{
+  "lot": "28F",
+  "plateforme": "macOS arm64, Apple M5, Node v24.18.0",
+  "scene": "Col de Larche → Vinadio, été, Fine, enrichie, sols procéduraux et public activés.",
+  "protocole": "Six processus Node frais, même définition du parcours et mêmes arguments que le jeu. Ordre WASM/JS/JS/WASM/WASM/JS. Durée totale du circuit au décor complet incluant la végétation et la première ouverture de l’herbier. Le calcul du condensat suit la mesure. Chaque mode utilise le même pont de sélection. GPU, envoi des ressources de rendu, préparation des voitures, PhysX et première image hors périmètre.",
+  "horloge": "2026-11-22, heures locales CET ; fins sur disque après contrôle des triangles. Début de la première construction estimé près de 17:52:16.6.",
+  "medianes": {
+    "msTotal": {
+      "js": 1540.32,
+      "wasm": 1322.42,
+      "gainMs": 217.9,
+      "gainPourcent": 14.15
+    },
+    "msDecorHerbierVegetation": {
+      "js": 1447.05,
+      "wasm": 1253.58,
+      "gainMs": 193.47,
+      "gainPourcent": 13.37
+    }
+  },
+  "mesures": [
+    {
+      "mode": "wasm",
+      "sources": 162939,
+      "triangles": 252348,
+      "sha256Triangles": "993851a2275ee47032e8af7328571fccd05378e943f319191be96de8099b279f",
+      "decoupesWasm": 1,
+      "msNoyauWasm": 183.7,
+      "octetsMemoire": 105512960,
+      "msCircuit": 72.97,
+      "msDecorHerbierVegetation": 1373.31,
+      "msTotal": 1446.28,
+      "finHorodateeApresDigest": "2026-11-22T17:52:18.290+01:00"
+    },
+    {
+      "mode": "js",
+      "sources": 162939,
+      "triangles": 252348,
+      "sha256Triangles": "993851a2275ee47032e8af7328571fccd05378e943f319191be96de8099b279f",
+      "decoupesWasm": 0,
+      "msNoyauWasm": 0,
+      "octetsMemoire": 0,
+      "msCircuit": 93.27,
+      "msDecorHerbierVegetation": 1447.05,
+      "msTotal": 1540.32,
+      "finHorodateeApresDigest": "2026-11-22T17:52:19.989+01:00"
+    },
+    {
+      "mode": "js",
+      "sources": 162939,
+      "triangles": 252348,
+      "sha256Triangles": "993851a2275ee47032e8af7328571fccd05378e943f319191be96de8099b279f",
+      "decoupesWasm": 0,
+      "msNoyauWasm": 0,
+      "octetsMemoire": 0,
+      "msCircuit": 73.56,
+      "msDecorHerbierVegetation": 1438.26,
+      "msTotal": 1511.81,
+      "finHorodateeApresDigest": "2026-11-22T17:52:21.685+01:00"
+    },
+    {
+      "mode": "wasm",
+      "sources": 162939,
+      "triangles": 252348,
+      "sha256Triangles": "993851a2275ee47032e8af7328571fccd05378e943f319191be96de8099b279f",
+      "decoupesWasm": 1,
+      "msNoyauWasm": 179.12,
+      "octetsMemoire": 105512960,
+      "msCircuit": 79.86,
+      "msDecorHerbierVegetation": 1242.56,
+      "msTotal": 1322.42,
+      "finHorodateeApresDigest": "2026-11-22T17:52:23.153+01:00"
+    },
+    {
+      "mode": "wasm",
+      "sources": 162939,
+      "triangles": 252348,
+      "sha256Triangles": "993851a2275ee47032e8af7328571fccd05378e943f319191be96de8099b279f",
+      "decoupesWasm": 1,
+      "msNoyauWasm": 182.5,
+      "octetsMemoire": 105512960,
+      "msCircuit": 67.66,
+      "msDecorHerbierVegetation": 1253.58,
+      "msTotal": 1321.25,
+      "finHorodateeApresDigest": "2026-11-22T17:52:24.622+01:00"
+    },
+    {
+      "mode": "js",
+      "sources": 162939,
+      "triangles": 252348,
+      "sha256Triangles": "993851a2275ee47032e8af7328571fccd05378e943f319191be96de8099b279f",
+      "decoupesWasm": 0,
+      "msNoyauWasm": 0,
+      "octetsMemoire": 0,
+      "msCircuit": 75.17,
+      "msDecorHerbierVegetation": 1536.91,
+      "msTotal": 1612.08,
+      "finHorodateeApresDigest": "2026-11-22T17:52:26.400+01:00"
+    }
+  ],
+  "identite": {
+    "sources": 162939,
+    "triangles": 252348,
+    "sha256Triangles": "993851a2275ee47032e8af7328571fccd05378e943f319191be96de8099b279f",
+    "format": "11 Float64 par triangle, source, neuf coordonnées, aire, dans l’ordre du jeu. Tous les condensats concordent avec le banc indépendant du noyau."
+  },
+  "memoire": {
+    "limiteLineaireMio": 128,
+    "lineaireObserveeOctets": 105512960,
+    "sortieCopiesOctets": 22206624,
+    "conservation": "Seul le module compilé reste référencé, chaque découpe crée une instance et une mémoire privées."
+  },
+  "chargement": {
+    "seuilSources": 65536,
+    "vitrine": "JavaScript y compris au premier écran et au lancement direct de secours",
+    "decodage": "au premier grand herbier en séance",
+    "reseau": false,
+    "repli": "JavaScript si compilation, mémoire, taille de sortie ou limite C empêchent le calcul"
+  },
+  "reconstruction": {
+    "clang": "Homebrew clang 23.1.2",
+    "lld": "Homebrew LLD 23.1.2",
+    "taille": 5961,
+    "sha256Wasm": "b829b98a06dfa5ebd9b3a3376da5f19195674338cbf66c3060b1b96fb0511760",
+    "sha256C": "3ff4e61fa2c75044a4dbf42ece4ae736db8b72702f6373e81411cbae0dff1166"
+  },
+  "tests": {
+    "fichier": "verifications/herbier-wasm.test.mjs",
+    "groupes": 4,
+    "echecs": 0,
+    "taillesSources": [
+      0,
+      1,
+      2,
+      9,
+      256,
+      65535,
+      65536,
+      162939
+    ],
+    "debordementsC": [
+      -1,
+      -2,
+      -3,
+      -4
+    ],
+    "autresCas": [
+      "sans WebAssembly",
+      "allocation refusée",
+      "taille dépassant 4 Gio",
+      "retour de taille invalide",
+      "menu et reprise de saison hors noyau",
+      "doubles identiques au JS"
+    ]
+  },
+  "patchSha256": "e2bb6d109a09be793d8260f77d716daa04b1c2ee5ac37c31a50199f3fed11189"
+}

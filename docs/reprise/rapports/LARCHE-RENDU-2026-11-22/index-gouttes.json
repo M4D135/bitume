@@ -1,0 +1,63 @@
+{
+  "sha256": "0a7373da4527b76498ec4baeae28c5b8966c3a0f8419bd4fc612e9a175bc56f5",
+  "graine": 8913462,
+  "dimensionsCSS": [
+    [
+      1,
+      1
+    ],
+    [
+      9,
+      5
+    ],
+    [
+      41.25,
+      17.1
+    ],
+    [
+      320,
+      180
+    ],
+    [
+      480,
+      270
+    ],
+    [
+      960,
+      1080
+    ],
+    [
+      1920,
+      540
+    ],
+    [
+      1920,
+      1080
+    ],
+    [
+      3840,
+      2160
+    ],
+    [
+      7680,
+      2160
+    ]
+  ],
+  "configurations": 200,
+  "capacites": [
+    0,
+    1,
+    6,
+    12,
+    24,
+    31,
+    32
+  ],
+  "masques": 28800,
+  "verifIndices": 245590,
+  "testsPointEmprise": 2104899,
+  "pointsDansLEmpriseBaseline": 991273,
+  "faussesExclusions": 0,
+  "ordreIdentique": true,
+  "cas": "Frontières ±9e-6 pixel, empreintes hors champ, très petite vue, volet duo horizontal/vertical, diagonales, rayon nul, halo seul, poids du halo au seuil .005, vitesses 0 à 1, bit 31 et tous les bits. Oracle indépendant du GPU, sur le constructeur réel et des emprises calculées séparément en précision float32."
+}

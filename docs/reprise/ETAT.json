@@ -1,8 +1,8 @@
 {
   "date": "2026-11-22",
   "etat_courant": {
-    "version_courante": "0.2.110",
-    "version_publiee_verifiee": "0.2.110",
+    "version_courante": "0.2.111",
+    "version_publiee_verifiee": "0.2.111",
     "physique": "p16",
     "moteur": "FERRO 0.3.16 canonique",
     "circuits": 11,
@@ -14,26 +14,39 @@
     "dernier_lot_clos": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json",
     "prochaine_action": "Rendu des versants et des bâtiments, fluidité à la résolution de chaque appareil et réception en main des manettes.",
     "branche_candidate": "main",
-    "version_candidate": "0.2.110",
+    "version_candidate": "0.2.111",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md"
   },
   "publication": {
-    "version": "0.2.110",
-    "commit_sources": "e10cc3bf12698ce2aaf83c4c04057a0d4c0d7d5e",
+    "version": "0.2.111",
+    "commit_sources": "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
     "statut": "publie_sur_main",
-    "url": "https://github.com/M4D135/bitume/commit/e10cc3bf12698ce2aaf83c4c04057a0d4c0d7d5e",
+    "url": "https://github.com/M4D135/bitume/commit/2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
     "recu": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json",
     "site_deploiement_verifie": false
   },
   "qualification": {
-    "version": "0.2.110",
-    "tete_qualifiee": "e10cc3bf12698ce2aaf83c4c04057a0d4c0d7d5e",
-    "build_octets": 15238343,
-    "build_sha256": "89cf623854ed3caa33a983f1f52b028f1835f30844e0c30fff9c7e1cc5fbaca1",
+    "version": "0.2.111",
+    "tete_qualifiee": "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
+    "build_octets": 15256987,
+    "build_sha256": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59",
     "locale": {
-      "statut": "essais_cibles_sur_Mac",
-      "perimetre": "Essais en jeu Chrome/PhysX, suites ciblées, assemblage en double. Les quatre lots complets Node et les contrôles Python figurent dans GitHub Actions."
+      "suites_node": 229,
+      "suites_en_echec": 0,
+      "tests_python": 8,
+      "lots": [
+        58,
+        57,
+        57,
+        57
+      ],
+      "recontroles": [
+        "manette.test.mjs",
+        "pneus-reseau-integration.test.mjs"
+      ],
+      "statut": "terminee",
+      "rapport": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/qualification-macos-0111.json"
     },
     "reconstruction_identique": true,
     "recu": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json",
@@ -46,19 +59,19 @@
     ],
     "github_actions": {
       "conclusion": "success",
-      "commit": "e10cc3bf12698ce2aaf83c4c04057a0d4c0d7d5e",
-      "version": "0.2.110",
-      "url": "https://github.com/M4D135/bitume/actions/runs/45045468202",
-      "suites_node": 227,
+      "commit": "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
+      "version": "0.2.111",
+      "url": "https://github.com/M4D135/bitume/actions/runs/45047690074",
+      "suites_node": 229,
       "tests_python": 8,
       "suites_en_echec": 0,
-      "sha256_html": "89cf623854ed3caa33a983f1f52b028f1835f30844e0c30fff9c7e1cc5fbaca1",
-      "artefact": 14763373282,
+      "sha256_html": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59",
+      "artefact": 14763803831,
       "lots": [
+        58,
         57,
         57,
-        57,
-        56
+        57
       ],
       "reconstruction_git_identique": true
     }

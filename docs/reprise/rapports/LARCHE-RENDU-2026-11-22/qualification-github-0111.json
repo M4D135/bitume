@@ -1,0 +1,18 @@
+{
+  "conclusion": "success",
+  "commit": "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff",
+  "version": "0.2.111",
+  "url": "https://github.com/M4D135/bitume/actions/runs/45047690074",
+  "suites_node": 229,
+  "tests_python": 8,
+  "suites_en_echec": 0,
+  "sha256_html": "fed7f6e8a7b26624cdb9453b88749e6b48843483ee1c0ac8fb40fbcb572a6c59",
+  "artefact": 14763803831,
+  "lots": [
+    58,
+    57,
+    57,
+    57
+  ],
+  "reconstruction_git_identique": true
+}

@@ -1,0 +1,63 @@
+{
+  "navigateur": "Google Chrome 157.0.8103.80",
+  "portee": "DOM, CSS et fonctions HUD du jeu. Rendu 2D, GPU et WebGL désactivés.",
+  "sources": {
+    "jeu.js": "6a8322b12d7df5dce70c23211085f0a2e5013ee46f0bda706cb776673fa5ba47",
+    "style.css": "02b42e864962bc12bf1717c48d463b2a8f71bda5efb2911d47c0cf421293cc76",
+    "index.html": "0e1dc0b48e9859ec27cb7defcc97cc4f59a40b6ab56cce40399b2024ae5ffd67"
+  },
+  "cas": [
+    {
+      "cas": "tactile",
+      "partage": "",
+      "largeur": 360,
+      "hauteur": 640,
+      "texte": "Bloqué · Pause → Se replacer",
+      "nombreDeLignes": 1,
+      "hauteurLignePx": 18,
+      "deborde": false,
+      "elementsHorsTexteAjoutes": 0,
+      "opacite": "1",
+      "texteApresReprise": ""
+    },
+    {
+      "cas": "manette",
+      "partage": "",
+      "largeur": 1024,
+      "hauteur": 680,
+      "texte": "Bloqué · Options → Se replacer",
+      "nombreDeLignes": 1,
+      "hauteurLignePx": 31,
+      "deborde": false,
+      "elementsHorsTexteAjoutes": 0,
+      "opacite": "1",
+      "texteApresReprise": ""
+    },
+    {
+      "cas": "duo",
+      "partage": "cote",
+      "largeur": 640,
+      "hauteur": 360,
+      "texte": "Bloqué · retour automatique",
+      "nombreDeLignes": 1,
+      "hauteurLignePx": 13.2,
+      "deborde": false,
+      "elementsHorsTexteAjoutes": 0,
+      "opacite": "1",
+      "texteApresReprise": ""
+    },
+    {
+      "cas": "duo",
+      "partage": "haut-bas",
+      "largeur": 640,
+      "hauteur": 360,
+      "texte": "Bloqué · retour automatique",
+      "nombreDeLignes": 1,
+      "hauteurLignePx": 15.84,
+      "deborde": false,
+      "elementsHorsTexteAjoutes": 0,
+      "opacite": "1",
+      "texteApresReprise": ""
+    }
+  ]
+}
