@@ -1,0 +1,114 @@
+[
+  {
+    "circuit": "val",
+    "qualite": "low",
+    "vue": "cockpit",
+    "stations": 48,
+    "stationsAvecAuMoins16Pixels": 4,
+    "groupesTerrestres": 4,
+    "viragesParSens": [
+      2,
+      10
+    ],
+    "maxPixels": 336,
+    "echelleMetres": 87.95833333333333
+  },
+  {
+    "circuit": "val",
+    "qualite": "low",
+    "vue": "poursuite",
+    "stations": 48,
+    "stationsAvecAuMoins16Pixels": 4,
+    "groupesTerrestres": 4,
+    "viragesParSens": [
+      2,
+      10
+    ],
+    "maxPixels": 493,
+    "echelleMetres": 87.95833333333333
+  },
+  {
+    "circuit": "val",
+    "qualite": "high",
+    "vue": "cockpit",
+    "stations": 48,
+    "stationsAvecAuMoins16Pixels": 4,
+    "groupesTerrestres": 4,
+    "viragesParSens": [
+      2,
+      10
+    ],
+    "maxPixels": 560,
+    "echelleMetres": 87.95833333333333
+  },
+  {
+    "circuit": "val",
+    "qualite": "high",
+    "vue": "poursuite",
+    "stations": 48,
+    "stationsAvecAuMoins16Pixels": 11,
+    "groupesTerrestres": 4,
+    "viragesParSens": [
+      2,
+      10
+    ],
+    "maxPixels": 1171,
+    "echelleMetres": 87.95833333333333
+  },
+  {
+    "circuit": "larche",
+    "qualite": "low",
+    "vue": "cockpit",
+    "stations": 368,
+    "stationsAvecAuMoins16Pixels": 0,
+    "groupesTerrestres": 4,
+    "viragesParSens": [
+      85,
+      86
+    ],
+    "maxPixels": 5,
+    "echelleMetres": 87.63404891304349
+  },
+  {
+    "circuit": "larche",
+    "qualite": "low",
+    "vue": "poursuite",
+    "stations": 368,
+    "stationsAvecAuMoins16Pixels": 0,
+    "groupesTerrestres": 4,
+    "viragesParSens": [
+      85,
+      86
+    ],
+    "maxPixels": 0,
+    "echelleMetres": 87.63404891304349
+  },
+  {
+    "circuit": "larche",
+    "qualite": "high",
+    "vue": "cockpit",
+    "stations": 368,
+    "stationsAvecAuMoins16Pixels": 1,
+    "groupesTerrestres": 4,
+    "viragesParSens": [
+      85,
+      86
+    ],
+    "maxPixels": 21,
+    "echelleMetres": 87.63404891304349
+  },
+  {
+    "circuit": "larche",
+    "qualite": "high",
+    "vue": "poursuite",
+    "stations": 368,
+    "stationsAvecAuMoins16Pixels": 9,
+    "groupesTerrestres": 4,
+    "viragesParSens": [
+      85,
+      86
+    ],
+    "maxPixels": 181,
+    "echelleMetres": 87.63404891304349
+  }
+]
