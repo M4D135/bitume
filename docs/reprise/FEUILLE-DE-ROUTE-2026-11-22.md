@@ -3,7 +3,9 @@
 **22 novembre 2026. Runtime de référence 0.2.130, moteur FERRO 0.3.26.** [Sources du jeu](https://github.com/M4D135/bitume/commit/b15cd823af4e1f803fe4c1ac7f5af04882332cca). Les 47 demandes du registre et leurs réceptions historiques figurent dans les sections numérotées. Le tableau ci-dessous donne les priorités qui ont changé depuis la .111.
 
 <!-- bitume-suite-runtime-debut -->
-## Priorités après la version 0.2.130
+## État des demandes à la sortie de la 0.2.130
+
+La décision du 22 novembre au soir donne le même objectif aux huit circuits et à chaque configuration prise en charge. La [feuille de route de nuit](NUIT-2026-11-22-23.md) répartit les lots, la revue du code et les critères de réception.
 
 | Priorité | Demande | État du code et prochaine réception |
 |---|---|---|

@@ -1,7 +1,9 @@
 # BITUME — feuille de route
 
 <!-- bitume-reprise-actuelle-debut -->
-## Priorités du 22 novembre 2026
+## Programme des huit circuits
+
+La décision du 22 novembre au soir donne le même objectif aux huit circuits et à chaque configuration prise en charge. La [feuille de route de nuit](docs/reprise/NUIT-2026-11-22-23.md) répartit les lots, la revue du code et les critères de réception.
 
 Les décisions sur les huit circuits, les trois tracés mixtes, le rendu et les réceptions en course figurent en tête de la [feuille détaillée](docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md). Les programmes historiques suivent ci-dessous.
 
