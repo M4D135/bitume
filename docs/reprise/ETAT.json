@@ -1,10 +1,10 @@
 {
   "date": "2026-11-22",
   "etat_courant": {
-    "version_courante": "0.2.129",
-    "version_publiee_verifiee": "0.2.129",
+    "version_courante": "0.2.130",
+    "version_publiee_verifiee": "0.2.130",
     "physique": "p18",
-    "moteur": "FERRO 0.3.25 canonique",
+    "moteur": "FERRO 0.3.26 canonique",
     "circuits": 8,
     "statut": "integre_sur_main",
     "lot": "catalogue_rendu_course",
@@ -14,29 +14,29 @@
     "dernier_lot_clos": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/RECEPTION.json",
     "prochaine_action": "Cadence de 60 images 3D/s sur chaque kilomètre de Larche en 1080p Fine sous la pluie, deux glaces et douze voitures",
     "branche_candidate": "main",
-    "version_candidate": "0.2.129",
+    "version_candidate": "0.2.130",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/PARALLELE-2026-11-20/README.md"
   },
   "publication": {
-    "version": "0.2.129",
-    "commit_sources": "a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb",
+    "version": "0.2.130",
+    "commit_sources": "b15cd823af4e1f803fe4c1ac7f5af04882332cca",
     "statut": "publie_sur_main",
-    "url": "https://github.com/M4D135/bitume/commit/a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb",
-    "recu": "https://github.com/M4D135/bitume/blob/a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb/SIZE.json",
+    "url": "https://github.com/M4D135/bitume/commit/b15cd823af4e1f803fe4c1ac7f5af04882332cca",
+    "recu": "https://github.com/M4D135/bitume/blob/b15cd823af4e1f803fe4c1ac7f5af04882332cca/SIZE.json",
     "site_deploiement_verifie": true
   },
   "qualification": {
-    "version": "0.2.129",
+    "version": "0.2.130",
     "tete_qualifiee": null,
-    "build_octets": 16638284,
-    "build_sha256": "0d152c11d2167def5e2f97c5c0eacf1c8588cf1f403b69f39ab3e93fe2a357c9",
+    "build_octets": 16651674,
+    "build_sha256": "a8767ad1264598702650507bbb71c3c65c6f7604c9ac25a87afc953fc0c9a74d",
     "locale": {
       "statut": "nouvelle_reception_suspendue"
     },
     "github_actions": {
       "conclusion": null,
-      "commit": "a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb",
+      "commit": "b15cd823af4e1f803fe4c1ac7f5af04882332cca",
       "statut": "suspendu_a_la_demande_du_joueur"
     },
     "recu": null,
@@ -203,7 +203,7 @@
     "priorite_utilisateur": "Optimisation générale et 60 images 3D/s en 1080p Fine sous la pluie sur toute la descente de Larche.",
     "lot_actif": "catalogue_rendu_course",
     "statut": "en_cours",
-    "recu_publication": "https://github.com/M4D135/bitume/blob/a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb/SIZE.json",
+    "recu_publication": "https://github.com/M4D135/bitume/blob/b15cd823af4e1f803fe4c1ac7f5af04882332cca/SIZE.json",
     "prochain_lot": "receptions_sur_demande",
     "dernieres_demandes": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md"
   },
@@ -581,6 +581,36 @@
           "reconstruction_identique": null,
           "essai_utilisateur_valide": null
         }
+      },
+      "a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb": {
+        "publication": {
+          "version": "0.2.129",
+          "commit_sources": "a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb",
+          "statut": "publie_sur_main",
+          "url": "https://github.com/M4D135/bitume/commit/a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb",
+          "recu": "https://github.com/M4D135/bitume/blob/a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb/SIZE.json",
+          "site_deploiement_verifie": true
+        },
+        "qualification": {
+          "version": "0.2.129",
+          "tete_qualifiee": null,
+          "build_octets": 16638284,
+          "build_sha256": "0d152c11d2167def5e2f97c5c0eacf1c8588cf1f403b69f39ab3e93fe2a357c9",
+          "locale": {
+            "statut": "nouvelle_reception_suspendue"
+          },
+          "github_actions": {
+            "conclusion": null,
+            "commit": "a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb",
+            "statut": "suspendu_a_la_demande_du_joueur"
+          },
+          "recu": null,
+          "limites": [
+            "Essais suspendus à la demande du joueur. Les mesures d’une autre version restent identifiées séparément."
+          ],
+          "reconstruction_identique": null,
+          "essai_utilisateur_valide": null
+        }
       }
     }
   },
@@ -711,12 +741,12 @@
   },
   "suivi_du_runtime": {
     "date": "2026-11-22",
-    "revision_runtime": "a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb",
-    "version": "0.2.129",
+    "revision_runtime": "b15cd823af4e1f803fe4c1ac7f5af04882332cca",
+    "version": "0.2.130",
     "physique": "p18",
-    "moteur": "FERRO 0.3.25",
-    "sha256_html": "0d152c11d2167def5e2f97c5c0eacf1c8588cf1f403b69f39ab3e93fe2a357c9",
-    "octets_html": 16638284,
+    "moteur": "FERRO 0.3.26",
+    "sha256_html": "a8767ad1264598702650507bbb71c3c65c6f7604c9ac25a87afc953fc0c9a74d",
+    "octets_html": 16651674,
     "circuits": [
       {
         "id": "forets-du-pacifique",
@@ -819,6 +849,13 @@
       "Sur Sierra-Cuivrée, les pieds de l’arche de grès sont ancrés dans les deux rives. Les blocs d’éboulis reposent sur les faces locales du terrain et possèdent des corps PhysX indépendants.",
       "Le shader WebGL2 intègre le changement de calcul de l’ombre de contact."
     ],
-    "reception_cadence_0129": "La cadence de la .129 à chaud sous la pluie à Pietraporzio et sur les 32 km de Larche reste à mesurer en 1080p Fine."
+    "reception_cadence_0129": "La cadence de la .129 à chaud sous la pluie à Pietraporzio et sur les 32 km de Larche reste à mesurer en 1080p Fine.",
+    "changements_0130": [
+      "En WebGL2, FERRO place les pièces de l’habitacle dans un repère relatif à la caméra. Le compte-tours et les deux cadrans auxiliaires séparent leurs bagues, fonds, graduations et aiguilles.",
+      "La sélection des tribunes tient compte des emprises orientées des gradins et des stands. Le disque de 32 m pouvait retirer des gradins situés de l’autre côté de la piste. La disposition des places suit les tribunes retenues sur toute la grille. À distance, les marches, le mur arrière, le toit et ses piliers d’extrémité restent visibles.",
+      "Les chevrons sont placés sur la glissière extérieure des virages classés serrés. Le seuil de rayon est de 85 m. Dans chaque virage retenu, seules les portions de rail dont la courbure moyenne atteint ce seuil portent les flèches.",
+      "La pluie projetée dans la scène reste visible quand la visière est active. La densité des petites gouttes de visière est multipliée par dix. Le sillage d’un concurrent ajoute des gouttes moyennes et des filets."
+    ],
+    "reception_cadence_0130": "La cadence de la .130 à chaud sous la pluie à Pietraporzio et sur les 32 km de Larche reste à mesurer en 1080p Fine."
   }
 }

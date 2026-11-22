@@ -3,13 +3,13 @@
   "date": "2026-11-22",
   "base": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
   "runtime_livre": {
-    "version": "0.2.129",
-    "moteur": "FERRO 0.3.25",
+    "version": "0.2.130",
+    "moteur": "FERRO 0.3.26",
     "physique": "p18",
-    "commit_sources": "a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb",
-    "html_sha256": "0d152c11d2167def5e2f97c5c0eacf1c8588cf1f403b69f39ab3e93fe2a357c9",
+    "commit_sources": "b15cd823af4e1f803fe4c1ac7f5af04882332cca",
+    "html_sha256": "a8767ad1264598702650507bbb71c3c65c6f7604c9ac25a87afc953fc0c9a74d",
     "circuits": 8,
-    "recu": "https://github.com/M4D135/bitume/blob/a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb/SIZE.json"
+    "recu": "https://github.com/M4D135/bitume/blob/b15cd823af4e1f803fe4c1ac7f5af04882332cca/SIZE.json"
   },
   "destinations_prevues": 17,
   "lot_actif": "catalogue_rendu_course",
@@ -936,10 +936,10 @@
   "base_initiale": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_candidat": {
     "statut": "integre_sur_main",
-    "version": "0.2.129",
+    "version": "0.2.130",
     "branche": "main",
     "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
-    "recu": "https://github.com/M4D135/bitume/blob/a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb/SIZE.json",
+    "recu": "https://github.com/M4D135/bitume/blob/b15cd823af4e1f803fe4c1ac7f5af04882332cca/SIZE.json",
     "physique": "p18"
   },
   "demandes_video_survol_2026_11_20": {
@@ -1126,6 +1126,15 @@
       "html_sha256": "bcf717f0a951134f68f62a2a5e8be149d52f4c3e5233821b48bad7444edf4731",
       "circuits": 8,
       "recu": "https://github.com/M4D135/bitume/blob/9651b7bb218ba55f97c6070a19c9e92c9c0d332e/SIZE.json"
+    },
+    "a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb": {
+      "version": "0.2.129",
+      "moteur": "FERRO 0.3.25",
+      "physique": "p18",
+      "commit_sources": "a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb",
+      "html_sha256": "0d152c11d2167def5e2f97c5c0eacf1c8588cf1f403b69f39ab3e93fe2a357c9",
+      "circuits": 8,
+      "recu": "https://github.com/M4D135/bitume/blob/a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb/SIZE.json"
     }
   },
   "candidats_precedents": {
@@ -1180,16 +1189,24 @@
       "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
       "recu": "https://github.com/M4D135/bitume/blob/9651b7bb218ba55f97c6070a19c9e92c9c0d332e/SIZE.json",
       "physique": "p18"
+    },
+    "0.2.129": {
+      "statut": "integre_sur_main",
+      "version": "0.2.129",
+      "branche": "main",
+      "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
+      "recu": "https://github.com/M4D135/bitume/blob/a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb/SIZE.json",
+      "physique": "p18"
     }
   },
   "suivi_du_runtime": {
     "date": "2026-11-22",
-    "revision_runtime": "a43ba6d387c4cac6ceead2d11dd6f744b4bf31cb",
-    "version": "0.2.129",
+    "revision_runtime": "b15cd823af4e1f803fe4c1ac7f5af04882332cca",
+    "version": "0.2.130",
     "physique": "p18",
-    "moteur": "FERRO 0.3.25",
-    "sha256_html": "0d152c11d2167def5e2f97c5c0eacf1c8588cf1f403b69f39ab3e93fe2a357c9",
-    "octets_html": 16638284,
+    "moteur": "FERRO 0.3.26",
+    "sha256_html": "a8767ad1264598702650507bbb71c3c65c6f7604c9ac25a87afc953fc0c9a74d",
+    "octets_html": 16651674,
     "circuits": [
       {
         "id": "forets-du-pacifique",
@@ -1292,6 +1309,13 @@
       "Sur Sierra-Cuivrée, les pieds de l’arche de grès sont ancrés dans les deux rives. Les blocs d’éboulis reposent sur les faces locales du terrain et possèdent des corps PhysX indépendants.",
       "Le shader WebGL2 intègre le changement de calcul de l’ombre de contact."
     ],
-    "reception_cadence_0129": "La cadence de la .129 à chaud sous la pluie à Pietraporzio et sur les 32 km de Larche reste à mesurer en 1080p Fine."
+    "reception_cadence_0129": "La cadence de la .129 à chaud sous la pluie à Pietraporzio et sur les 32 km de Larche reste à mesurer en 1080p Fine.",
+    "changements_0130": [
+      "En WebGL2, FERRO place les pièces de l’habitacle dans un repère relatif à la caméra. Le compte-tours et les deux cadrans auxiliaires séparent leurs bagues, fonds, graduations et aiguilles.",
+      "La sélection des tribunes tient compte des emprises orientées des gradins et des stands. Le disque de 32 m pouvait retirer des gradins situés de l’autre côté de la piste. La disposition des places suit les tribunes retenues sur toute la grille. À distance, les marches, le mur arrière, le toit et ses piliers d’extrémité restent visibles.",
+      "Les chevrons sont placés sur la glissière extérieure des virages classés serrés. Le seuil de rayon est de 85 m. Dans chaque virage retenu, seules les portions de rail dont la courbure moyenne atteint ce seuil portent les flèches.",
+      "La pluie projetée dans la scène reste visible quand la visière est active. La densité des petites gouttes de visière est multipliée par dix. Le sillage d’un concurrent ajoute des gouttes moyennes et des filets."
+    ],
+    "reception_cadence_0130": "La cadence de la .130 à chaud sous la pluie à Pietraporzio et sur les 32 km de Larche reste à mesurer en 1080p Fine."
   }
 }
