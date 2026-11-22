@@ -1,0 +1,246 @@
+{
+  "format": "bitume-monaco-louis-ii-v1",
+  "osmEdges": [
+    {
+      "osmEdge": 219,
+      "intervals": 8,
+      "lowerBoundMarginM": 37.383
+    },
+    {
+      "osmEdge": 220,
+      "intervals": 9,
+      "lowerBoundMarginM": 36.651
+    },
+    {
+      "osmEdge": 221,
+      "intervals": 16,
+      "lowerBoundMarginM": 36.276
+    },
+    {
+      "osmEdge": 222,
+      "intervals": 16,
+      "lowerBoundMarginM": 36.312
+    },
+    {
+      "osmEdge": 223,
+      "intervals": 16,
+      "lowerBoundMarginM": 36.642
+    },
+    {
+      "osmEdge": 224,
+      "intervals": 16,
+      "lowerBoundMarginM": 36.699
+    },
+    {
+      "osmEdge": 225,
+      "intervals": 16,
+      "lowerBoundMarginM": 35.536
+    },
+    {
+      "osmEdge": 226,
+      "intervals": 16,
+      "lowerBoundMarginM": 32.475
+    },
+    {
+      "osmEdge": 227,
+      "intervals": 16,
+      "lowerBoundMarginM": 27.974
+    },
+    {
+      "osmEdge": 228,
+      "intervals": 16,
+      "lowerBoundMarginM": 23.525
+    },
+    {
+      "osmEdge": 229,
+      "intervals": 16,
+      "lowerBoundMarginM": 20.702
+    },
+    {
+      "osmEdge": 230,
+      "intervals": 16,
+      "lowerBoundMarginM": 18.245
+    },
+    {
+      "osmEdge": 231,
+      "intervals": 16,
+      "lowerBoundMarginM": 15.891
+    },
+    {
+      "osmEdge": 232,
+      "intervals": 16,
+      "lowerBoundMarginM": 12.818
+    },
+    {
+      "osmEdge": 233,
+      "intervals": 16,
+      "lowerBoundMarginM": 11.533
+    },
+    {
+      "osmEdge": 234,
+      "intervals": 16,
+      "lowerBoundMarginM": 10.455
+    },
+    {
+      "osmEdge": 235,
+      "intervals": 16,
+      "lowerBoundMarginM": 10.479
+    },
+    {
+      "osmEdge": 236,
+      "intervals": 13,
+      "lowerBoundMarginM": 10.758
+    },
+    {
+      "osmEdge": 237,
+      "intervals": 13,
+      "lowerBoundMarginM": 11.062
+    },
+    {
+      "osmEdge": 238,
+      "intervals": 13,
+      "lowerBoundMarginM": 11.792
+    },
+    {
+      "osmEdge": 239,
+      "intervals": 13,
+      "lowerBoundMarginM": 12.907
+    },
+    {
+      "osmEdge": 240,
+      "intervals": 13,
+      "lowerBoundMarginM": 13.201
+    },
+    {
+      "osmEdge": 241,
+      "intervals": 13,
+      "lowerBoundMarginM": 12.544
+    },
+    {
+      "osmEdge": 242,
+      "intervals": 13,
+      "lowerBoundMarginM": 11.288
+    },
+    {
+      "osmEdge": 243,
+      "intervals": 13,
+      "lowerBoundMarginM": 9.712
+    },
+    {
+      "osmEdge": 244,
+      "intervals": 6,
+      "lowerBoundMarginM": 9.727
+    }
+  ],
+  "minimumLowerBoundMarginM": 9.712,
+  "marginDefinition": "dXY to neighbouring axis minus dXY to Louis II, along the OSM polyline",
+  "axes": [
+    {
+      "cleabs": "TRONROUT0000000074274447",
+      "endpointsInSourceOrder": [
+        {
+          "vertex": 0,
+          "lon": 7.42794325,
+          "lat": 43.73774443,
+          "zSourceM": 6.9,
+          "coincidentEndpointsXY": [
+            {
+              "cleabs": "TRONROUT0000000074274460",
+              "vertex": 5,
+              "name": "BD LOUIS II",
+              "relativeLevel": "0",
+              "zSourceM": 6.9,
+              "deltaZSourceM": 0.0
+            }
+          ]
+        },
+        {
+          "vertex": 27,
+          "lon": 7.43035575,
+          "lat": 43.74043743,
+          "zSourceM": 9.5,
+          "coincidentEndpointsXY": [
+            {
+              "cleabs": "TRONROUT0000000074271793",
+              "vertex": 0,
+              "name": "BD LOUIS II",
+              "relativeLevel": "0",
+              "zSourceM": 9.5,
+              "deltaZSourceM": 0.0
+            }
+          ]
+        }
+      ],
+      "sourceGradeSegmentsToReview": [
+        {
+          "segmentIndex": 0,
+          "horizontalLengthM": 2.764876914796689,
+          "sourceDeltaZM": 6.6,
+          "sourceGrade": 2.387086370709316,
+          "cause": "unknown",
+          "reason": "abrupt_source_grade",
+          "isQualifiedRoadGrade": false
+        }
+      ]
+    },
+    {
+      "cleabs": "TRONROUT0000000074274448",
+      "endpointsInSourceOrder": [
+        {
+          "vertex": 0,
+          "lon": 7.42795687,
+          "lat": 43.7379043,
+          "zSourceM": 17.1,
+          "coincidentEndpointsXY": [
+            {
+              "cleabs": "TRONROUT0000000074274473",
+              "vertex": 1,
+              "name": "BD DU LARVOTTO",
+              "relativeLevel": "0",
+              "zSourceM": 17.1,
+              "deltaZSourceM": 0.0
+            }
+          ]
+        },
+        {
+          "vertex": 21,
+          "lon": 7.42984438,
+          "lat": 43.7402068,
+          "zSourceM": 11.4,
+          "coincidentEndpointsXY": [
+            {
+              "cleabs": "TRONROUT0000000074271861",
+              "vertex": 0,
+              "name": "BD DU LARVOTTO",
+              "relativeLevel": "-1",
+              "zSourceM": 19,
+              "deltaZSourceM": 7.6
+            },
+            {
+              "cleabs": "TRONROUT0000000074271863",
+              "vertex": 0,
+              "name": "",
+              "relativeLevel": "-1",
+              "zSourceM": 11.4,
+              "deltaZSourceM": 0.0
+            },
+            {
+              "cleabs": "TRONROUT0000000074271868",
+              "vertex": 0,
+              "name": "",
+              "relativeLevel": "-1",
+              "zSourceM": 19,
+              "deltaZSourceM": 7.6
+            }
+          ]
+        }
+      ],
+      "sourceGradeSegmentsToReview": []
+    }
+  ],
+  "uniqueRoadObjects": 9,
+  "readyForRuntime": false,
+  "roadSurfaceSurveyDate": null,
+  "roadAltitudeDatum": null,
+  "measuredRacePortals": null
+}

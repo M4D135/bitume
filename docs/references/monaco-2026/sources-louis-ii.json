@@ -1,0 +1,56 @@
+{
+  "schema": "bitume-monaco-louis-ii-sources-v1",
+  "license": "IGN BD TOPO, Licence Ouverte 2.0",
+  "sources": [
+    {
+      "id": "entree",
+      "file": "sources/louis-ii-20261122/entree.geojson",
+      "sha256": "d07efd8570536e0b48bc2d049bad9bac3f598fb848bbe6371937a94f77cd835f",
+      "bytes": 6388,
+      "url": "https://data.geopf.fr/wfs/ows?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=BDTOPO_V3%3Atroncon_de_route&BBOX=7.42976%2C43.74014%2C7.43043%2C43.74050%2CEPSG%3A4326&COUNT=200&OUTPUTFORMAT=application%2Fjson&SRSNAME=EPSG%3A4326&PROPERTYNAME=geometrie%2Ccleabs%2Cnature%2Cnom_collaboratif_gauche%2Cnom_collaboratif_droite%2Cposition_par_rapport_au_sol%2Cdate_creation%2Cdate_modification%2Cdate_d_apparition%2Cdate_de_confirmation%2Cmethode_d_acquisition_altimetrique%2Cprecision_altimetrique%2Cprecision_planimetrique%2Clargeur_de_chaussee%2Cnombre_de_voies%2Cfictif%2Cetat_de_l_objet%2Csens_de_circulation",
+      "httpDate": "Sun, 22 Nov 2026 13:15:31 GMT",
+      "httpStatus": 200,
+      "responseTimeStamp": "2026-11-22T13:15:31.873Z",
+      "numberMatched": 6,
+      "featureKind": "road_axis",
+      "individualMeasurementDate": null,
+      "verticalDatum": null,
+      "noDataZValues": []
+    },
+    {
+      "id": "sortie",
+      "file": "sources/louis-ii-20261122/sortie.geojson",
+      "sha256": "dc3e17672e6b8f990fcd19be8aec153fea115b8061f491ee988680193060bca8",
+      "bytes": 6024,
+      "url": "https://data.geopf.fr/wfs/ows?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=BDTOPO_V3%3Atroncon_de_route&BBOX=7.42788%2C43.73769%2C7.42803%2C43.73796%2CEPSG%3A4326&COUNT=200&OUTPUTFORMAT=application%2Fjson&SRSNAME=EPSG%3A4326&PROPERTYNAME=geometrie%2Ccleabs%2Cnature%2Cnom_collaboratif_gauche%2Cnom_collaboratif_droite%2Cposition_par_rapport_au_sol%2Cdate_creation%2Cdate_modification%2Cdate_d_apparition%2Cdate_de_confirmation%2Cmethode_d_acquisition_altimetrique%2Cprecision_altimetrique%2Cprecision_planimetrique%2Clargeur_de_chaussee%2Cnombre_de_voies%2Cfictif%2Cetat_de_l_objet%2Csens_de_circulation",
+      "httpDate": "Sun, 22 Nov 2026 13:15:31 GMT",
+      "httpStatus": 200,
+      "responseTimeStamp": "2026-11-22T13:15:31.876Z",
+      "numberMatched": 5,
+      "featureKind": "road_axis",
+      "individualMeasurementDate": null,
+      "verticalDatum": null,
+      "noDataZValues": []
+    }
+  ],
+  "documentaryReferences": [
+    {
+      "publisher": "Automobile Club de Monaco, diffusion FIA",
+      "title": "Official Media Kit, Formula 1 Louis Vuitton Grand Prix de Monaco 2026",
+      "url": "https://www.fia.com/sites/default/files/media_kit_2026_gb_03.06_1.pdf",
+      "pages": "19–20, 25",
+      "httpDate": "Sun, 22 Nov 2026 13:16:27 GMT",
+      "bytes": 21341285,
+      "sha256": "cc2292a7243fc367f89df76cf08973728ba71731442ae62ff76359080833e04b"
+    },
+    {
+      "publisher": "Journal de Monaco",
+      "title": "Arrêté municipal n° 2026-2563 du 5 mai 2026",
+      "url": "https://journaldemonaco.gouv.mc/Journaux/2026/Journal-8798/Arrete-Municipal-n-2026-2563-du-5-mai-2026-reglementant-le-stationnement-et-la-circulation-des-vehicules-ainsi-que-la-circulation-des-pietons-a-l-occasion-du-83eme-Formula-1-Louis-Vuitton-Grand-Prix-de-Monaco",
+      "sections": "Voies fermées pendant les épreuves et article 7",
+      "httpDate": "Sun, 22 Nov 2026 13:16:27 GMT",
+      "bytes": 164782,
+      "sha256": "a2e832d2569b3095085ccd4bbe2268f2596ca6c9a9dc529426e8290660d7668d"
+    }
+  ]
+}
