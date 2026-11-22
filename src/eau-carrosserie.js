@@ -188,11 +188,15 @@
     e.gx = gx; e.gy = gy; e.gz = gz;
     for (let i = 0; i < e.supports.length; i++) {
       const support = e.supports[i], f = support.face, n = f.normal;
+      let du = 0, dv = 0;
       if (e.humide > 0) {
         const fu = f.u[0] * D[0] + f.u[1] * D[1] + f.u[2] * D[2], fv = f.v[0] * D[0] + f.v[1] * D[1] + f.v[2] * D[2];
-        support.du = (fu * f.vv - fv * f.uv) / f.determinant;
-        support.dv = (fv * f.uu - fu * f.uv) / f.determinant;
+        du = (fu * f.vv - fv * f.uv) / f.determinant;
+        dv = (fv * f.uu - fu * f.uv) / f.determinant;
       }
+      support.deplacementInchange = du === support.du && dv === support.dv;
+      support.du = du;
+      support.dv = dv;
       if (!reorienter) continue;
       const composante = gx * n[0] + gy * n[1] + gz * n[2], tx = gx - composante * n[0], ty = gy - composante * n[1], tz = gz - composante * n[2];
       const longueur = Math.hypot(tx, ty, tz), m = support.repere;
@@ -208,6 +212,7 @@
     for (let i = 0; i < MAX; i++) {
       const g = e.gouttes[i], f = g.face;
       g.force = clamp(charge - i, 0, 1); g.allongement = allongement;
+      if ((e.humide === 0 || g.support.deplacementInchange) && g.u === g.u0 && g.v === g.v0) continue;
       if (e.humide === 0) { g.u = g.u0; g.v = g.v0; }
       else {
         g.u = Math.max(g.marge[1], g.u0 + g.support.du);
