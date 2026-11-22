@@ -296,7 +296,8 @@
     if (!s) return false;
     SAISIES.delete(doc);
     if (s.dialogue.open) s.dialogue.close();
-    if (rendreFocus && !(s.zone.contains(s.cible) && restaurerFocus(doc, s.cible))) {
+    if (rendreFocus && !(s.zone.contains(s.cible) && restaurable(doc, s.cible) &&
+        restaurerFocus(doc, s.cible))) {
       restaurerNavigation(s.zone, s.panneau, s.cible);
     }
     return true;
