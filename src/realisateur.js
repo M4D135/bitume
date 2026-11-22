@@ -170,10 +170,6 @@
       }
       return p && p.motif === 'grille' ? p : couper(R, co, 'helico', co.classement[co.classement.length - 1], 1e9, 'grille');
     }
-    if (p && p.motif === 'grille') {
-      if (R.vert < 0) R.vert = t;
-      return t - R.vert < APRES_VERT ? p : couper(R, co, 'tele', co.classement[0], DUREES.tele, 'depart');
-    }
     // Le drapeau : le vainqueur au bord de la piste, puis vu d'en haut jusqu'à la fin de la séance.
     if (co.drapeau !== null) {
       if (R.vainqueur < 0) {
@@ -190,8 +186,14 @@
     const ligneArrivee = co.c.ouvert ? (co.c.arrivee ?? co.c.longueur) - (co.c.depart || 0) : co.toursTotal * co.c.longueur;
     if (!R.sprint && ligneArrivee - tete.progression < SPRINT) {
       R.sprint = true;
-      if (p.sujet !== tete.id || p.nature) return couper(R, co, p.vue === 'poursuite' ? 'cockpit' : 'poursuite', tete.id, 1e9, 'sprint');
+      if (p.sujet !== tete.id || p.nature || (p.vue !== 'cockpit' && p.vue !== 'poursuite')) {
+        return couper(R, co, p.vue === 'poursuite' ? 'cockpit' : 'poursuite', tete.id, 1e9, 'sprint');
+      }
       p.fin = 1e9;
+    }
+    if (p.motif === 'grille') {
+      if (R.vert < 0) R.vert = t;
+      return t - R.vert < APRES_VERT ? p : couper(R, co, 'tele', co.classement[0], DUREES.tele, 'depart');
     }
     // Un plan de circuit garde sa durée tant que sa trajectoire est disponible.
     // Un sprint ou le drapeau garde toujours la priorité ci-dessus.
