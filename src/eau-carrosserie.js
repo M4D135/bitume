@@ -70,14 +70,19 @@
           faces.push({ a, u, v });
           return;
         }
-        const lu = Math.hypot(...u), lv = Math.hypot(...v), lw = Math.hypot(...b.map((x, k) => x - c[k]));
+        const uu = u[0] * u[0] + u[1] * u[1] + u[2] * u[2];
+        const vv = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
+        const minNormal = 2 ** -1022;
+        const lu = uu >= minNormal && Number.isFinite(uu) ? Math.sqrt(uu) : Math.hypot(...u);
+        const lv = vv >= minNormal && Number.isFinite(vv) ? Math.sqrt(vv) : Math.hypot(...v);
+        const lw = Math.hypot(b[0] - c[0], b[1] - c[1], b[2] - c[2]);
         const rayonInscrit = doubleAire / (lu + lv + lw);
         if (rayonInscrit < .0035) {
           faces.push({ a, u, v });
           return;
         }
         const normal = [nx / doubleAire, normaleY, nz / doubleAire];
-        const uu = u.reduce((n, x) => n + x * x, 0), vv = v.reduce((n, x) => n + x * x, 0), uv = u.reduce((n, x, k) => n + x * v[k], 0);
+        const uv = u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
         const f = { piece, shape: p.shape, indice, masque, a, u, v, normal, doubleAire, lu,
           hauteurs: [doubleAire / lw, doubleAire / lv, doubleAire / lu], rayonInscrit,
           uu, uv, vv, determinant: uu * vv - uv * uv };
