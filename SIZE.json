@@ -1,8 +1,8 @@
 {
-  "version": "0.2.137",
-  "raw": 16710173,
-  "gzip": 4638727,
-  "sha256": "4b7c3ab92aa44ec54cea91bb47b0183d86ed290948110c48bd99bf249f6b3fd7",
+  "version": "0.2.138",
+  "raw": 16710449,
+  "gzip": 4638820,
+  "sha256": "4d21c39e8dfb5cfd904a3efa67c5026c4b927185282e1a7ecf19a0547374dc50",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
@@ -99,7 +99,7 @@
     "autoconfig.js": 35407,
     "commandes-manette.js": 8361,
     "scene-bench.js": 23158,
-    "vibrations.js": 9461,
+    "vibrations.js": 9737,
     "ombres.js": 12015,
     "visites.js": 6566,
     "jeu.js": 436580,
