@@ -61,16 +61,27 @@
         const points = tri.slice(0, 3).map(v => { const q = v.map((x, k) => x * p.s[k]);
           return p.o.map((x, k) => x + m[0][k] * q[0] + m[1][k] * q[1] + m[2][k] * q[2]); });
         const a = points[0], b = points[1], c = points[2], u = b.map((x, k) => x - a[k]), v = c.map((x, k) => x - a[k]);
-        const croix = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]], doubleAire = Math.hypot(...croix);
+        const nx = u[1] * v[2] - u[2] * v[1], ny = u[2] * v[0] - u[0] * v[2], nz = u[0] * v[1] - u[1] * v[0];
+        const doubleAire = Math.hypot(nx, ny, nz);
         if (!(doubleAire > 1e-12)) return;
-        const normal = croix.map(x => x / doubleAire), lu = Math.hypot(...u), lv = Math.hypot(...v), lw = Math.hypot(...b.map((x, k) => x - c[k]));
+        // Les faces écartées de la sélection peuvent encore masquer une attache.
+        const normaleY = ny / doubleAire;
+        if (normaleY < -.05) {
+          faces.push({ a, u, v });
+          return;
+        }
+        const lu = Math.hypot(...u), lv = Math.hypot(...v), lw = Math.hypot(...b.map((x, k) => x - c[k]));
+        const rayonInscrit = doubleAire / (lu + lv + lw);
+        if (rayonInscrit < .0035) {
+          faces.push({ a, u, v });
+          return;
+        }
+        const normal = [nx / doubleAire, normaleY, nz / doubleAire];
         const uu = u.reduce((n, x) => n + x * x, 0), vv = v.reduce((n, x) => n + x * x, 0), uv = u.reduce((n, x, k) => n + x * v[k], 0);
-        const f = { piece, shape: p.shape, indice, masque, a, u, v, normal, doubleAire,
-          hauteurs: [doubleAire / lw, doubleAire / lv, doubleAire / lu], rayonInscrit: doubleAire / (lu + lv + lw),
+        const f = { piece, shape: p.shape, indice, masque, a, u, v, normal, doubleAire, lu,
+          hauteurs: [doubleAire / lw, doubleAire / lv, doubleAire / lu], rayonInscrit,
           uu, uv, vv, determinant: uu * vv - uv * uv };
         faces.push(f);
-        // Dessus et flancs, pas les faces sous la voiture ; les très minces filets ne portent pas de grosses perles.
-        if (normal[1] < -.05 || f.rayonInscrit < .0035) return;
         aire += doubleAire * (.2 + .8 * Math.max(0, normal[1]));
         f.cumul = aire; candidates.push(f);
       });
@@ -100,7 +111,7 @@
   // L'orientation et le déplacement projeté appartiennent au triangle ; chaque perle garde son attache et ses limites.
   // Une voiture possède ses propres supports car deux voitures ne subissent pas le même vent ni le même roulis.
   function supportMouille(face) {
-    const n = face.normal, longueur = Math.hypot(...face.u), t = face.u.map(x => x / longueur);
+    const n = face.normal, t = face.u.map(x => x / face.lu);
     const repere = Float64Array.of(t[0], t[1], t[2], n[0], n[1], n[2],
       t[1] * n[2] - t[2] * n[1], t[2] * n[0] - t[0] * n[2], t[0] * n[1] - t[1] * n[0]);
     return { face, repere, du: 0, dv: 0, pose: 0, rotation: new Float64Array(3) };
