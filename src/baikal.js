@@ -84,12 +84,12 @@
       for (let j = 0; j < 2; j++) {
         const x = place.x + Math.cos(place.a) * j * 25, z = place.z + Math.sin(place.a) * j * 25;
         const q = interroger(x, z, 220), a = place.a + (j ? .12 : -.08), l = 9 + j, w = 6.2, coins = [];
-        for (const dx of [-l / 2 - .6, l / 2 + .6]) for (const dz of [-w / 2 - .6, w / 2 + .6]) {
+        for (const dx of [-l / 2, l / 2]) for (const dz of [-w / 2, w / 2]) {
           const px = x + Math.cos(a) * dx - Math.sin(a) * dz, pz = z + Math.sin(a) * dx + Math.cos(a) * dz;
           coins.push(terrain.sol(px, pz));
         }
         const bas = Math.min(...coins), haut = Math.max(...coins);
-        if (q.i < 0 || q.d < 85 || bas < plan.niveauEau + 6 || haut - bas > 2.5) continue;
+        if (q.i < 0 || q.d < 85 || bas < plan.niveauEau + 6 || haut - bas >= 2.5) continue;
         sites.push(Object.freeze({ x, z, a, l, w, bas: bas - .55, sol: haut + .08, s: place.s, variante: sites.length % 3 }));
       }
     }
