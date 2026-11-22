@@ -87,7 +87,7 @@
     const b = p && p.buttons && p.buttons[i];
     if (typeof b === 'number') return limite(b);
     if (!b) return 0;
-    if (Number.isFinite(b.value) && b.value > 0) return limite(b.value);
+    if (Number.isFinite(b.value)) return limite(b.value);
     return b.pressed ? 1 : 0;
   }
   const annulation = p => (bouton(p, 8) > .5 ? 1 : 0) | (bouton(p, 9) > .5 ? 2 : 0);
