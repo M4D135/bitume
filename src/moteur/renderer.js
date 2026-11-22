@@ -1523,7 +1523,39 @@
   // Reuse only bit-identical primitive vertices. Keep expanded vertex storage,
   // triangle order and public geometry snapshots intact: updateShape() can
   // restore a primitive's original index range before editing any occurrence.
-  function indexPrimitiveVertices(source){
+  // Keep the editable vertex stream expanded. A bounded direct-mapped cache
+  // finds recent equal rows without allocating a string or a record per vertex.
+  function indexRegisteredShapes(source, indices, words, byName){
+    const slots=new Int32Array(1024),last=new Int32Array(1024);
+    const stats={shapes:0,references:0,reused:0};
+    for(const name of FORMES_LIBRES.keys()){
+      const range=source.ranges[name];if(!range?.count)continue;
+      const first=range.offset/INDEX_OCTETS,end=first+range.count;
+      let reused=0;
+      for(let i=first;i<end;i++){
+        const vertex=source.indices[i],at=vertex*6;
+        let hash=words[at];
+        for(let k=1;k<6;k++)hash=Math.imul(hash^words[at+k],0x01000193);
+        hash=Math.imul(hash^(hash>>>16),0x85ebca6b);
+        const slot=(hash^(hash>>>13))&1023,prior=slots[slot],p=prior*6;
+        // last stores i+1. A previous shape can never provide a reference.
+        if(last[slot]>first && i-last[slot]<128 &&
+          words[p]===words[at] && words[p+1]===words[at+1] && words[p+2]===words[at+2] &&
+          words[p+3]===words[at+3] && words[p+4]===words[at+4] && words[p+5]===words[at+5]){
+          indices[i]=prior;reused++;
+        }else slots[slot]=vertex;
+        last[slot]=i+1;
+      }
+      if(reused){
+        byName.set(name,{offset:range.offset,indices:source.indices.subarray(first,end),active:true});
+        stats.shapes++;stats.reused+=reused;
+      }
+      stats.references+=range.count;
+    }
+    return stats;
+  }
+
+  function indexPrimitiveVertices(source,registered=false){
     const indices=new Uint32Array(source.indices),words=new Uint32Array(source.vertices.buffer,source.vertices.byteOffset,source.vertices.length),ranges=new Map(),byName=new Map();
     const stats={shapes:0,references:0,vertices:0,restored:0};
     for(const name of ['box','sphere','foliage','cylinder','octa','ring','bevel','wedge']){
@@ -1538,6 +1570,7 @@
       record={offset:range.offset,indices:original,active:changed};ranges.set(key,record);byName.set(name,record);
       stats.shapes+=changed?1:0;stats.references+=original.length;stats.vertices+=seen.size;
     }
+    if(registered)stats.registered=indexRegisteredShapes(source,indices,words,byName);
     return {indices,stats,restore(name){const record=byName.get(name);if(!record?.active)return null;record.active=false;indices.set(record.indices,record.offset/INDEX_OCTETS);stats.restored++;return record;}};
   }
 
@@ -1569,8 +1602,38 @@
       range.offset=offset*INDEX_OCTETS;
       for(let t=0;t<ranks.length;t++)if(ranks[t]<=k)for(let j=0;j<3;j++)indices[offset++]=baseIndices[first+t*3+j];
     }
+    function rewriteSubsets(record,base,upload){
+      const shape=source.ranges[record.name], first=shape.offset/INDEX_OCTETS;
+      // The subset layout belongs to the original shape. Read the cells before
+      // any mutable vertex is written. Inactive ranges have already been restored.
+      for(let k=0;k<8;k++){
+        const range=record.ranges[k];
+        if(!range.count||range.count===shape.count)continue;
+        let out=range.offset/INDEX_OCTETS;
+        for(let i=first;i<first+shape.count;i+=3){
+          const p=source.indices[i]*6,x=Math.floor(Math.fround(source.vertices[p]+.5)*32);
+          const z=Math.floor(Math.fround(source.vertices[p+2]+.5)*32);
+          if(((x*13+z*7)%8+8)%8<=k){indices[out++]=base[i];indices[out++]=base[i+1];indices[out++]=base[i+2];}
+        }
+        if(upload)upload(range.offset,indices.subarray(range.offset/INDEX_OCTETS,out));
+      }
+    }
     return {indices,records,stats:{shapes:records.size,indexBytes:indices.byteLength,additionalIndexBytes:additional*INDEX_OCTETS},
-      invalidate(name){const record=records.get(name);if(record)record.active=false;}};
+      select(base){
+        if(!additional)return base;
+        indices.set(base);
+        for(const record of records.values())if(record.active)rewriteSubsets(record,base);
+        return indices;
+      },
+      invalidate(name,restored,upload){
+        const record=records.get(name);
+        if(restored){
+          if(indices!==baseIndices)indices.set(restored.indices,restored.offset/INDEX_OCTETS);
+          if(upload)upload(restored.offset,restored.indices);
+          if(record?.active)rewriteSubsets(record,source.indices,upload);
+        }
+        if(record)record.active=false;
+      }};
   }
 
   // Pair only static, identical instance rows, with matching near/far groups.
@@ -2787,7 +2850,7 @@
       out.distance=distance;out.tilt=tilt;return out;
     }
     const config=settings(options.sceneReflections?{...options,msaa:0}:options),worldFrag=options.ombresPhoto?photoFragment(worldFragment(config),options.ombresPhoto.pcss!==false):worldFragment(config),postFrag=postFragment(config);
-    const source=geometry(),primitiveIndex=indexPrimitiveVertices(source),groundIndex=groundCoverGeometry(source,primitiveIndex.indices),view=new Float32Array(16),projection=new Float32Array(16),vp=new Float32Array(16),overlayProjection=new Float32Array(16),overlayVP=new Float32Array(16);
+    const source=geometry(),primitiveIndex=indexPrimitiveVertices(source,options.indexRegisteredShapes===true),groundIndex=groundCoverGeometry(source,primitiveIndex.indices),view=new Float32Array(16),projection=new Float32Array(16),vp=new Float32Array(16),overlayProjection=new Float32Array(16),overlayVP=new Float32Array(16);
     const shadowView=new Float32Array(16),shadowProjection=new Float32Array(16),shadowMatrix=new Float32Array(16),shadowMatrices=new Float32Array(48);
     const lightPositions=new Float32Array(36),lightColors=new Float32Array(36),lightRanges=new Float32Array(12),lightDirections=new Float32Array(36),lightCones=new Float32Array(24);
     // BITUME : l’indexation EMPRISE est aussi utilisée sur WebGL2 ; formes libres inchangées.
@@ -3241,13 +3304,14 @@
     // BITUME : désindexer seulement la primitive modifiée ; les anciennes occurrences restent indépendantes.
     function updateShape(name,vertices){
       const range=source.ranges[name];if(!range||vertices.length!==range.count*6)throw new Error('Shape vertex count changed: '+name);
-      groundIndex.invalidate(name);
-      const restored=primitiveIndex.restore(name),start=source.indices[range.offset/INDEX_OCTETS]*6;source.vertices.set(vertices,start);
-      if(restored)groundIndex.indices.set(restored.indices,restored.offset/INDEX_OCTETS);
-      if(!stats.contextLost){
-        if(restored){gl.bindVertexArray(vao);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER,restored.offset,restored.indices);}
-        gl.bindBuffer(gl.ARRAY_BUFFER,vbo);gl.bufferSubData(gl.ARRAY_BUFFER,start*4,vertices);
-      }
+      const restored=primitiveIndex.restore(name), start=source.indices[range.offset/INDEX_OCTETS]*6;
+      if(restored&&!stats.contextLost){gl.bindVertexArray(vao);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);}
+      groundIndex.invalidate(name,restored,stats.contextLost?null:uploadShapeIndices);
+      source.vertices.set(vertices,start);
+      if(!stats.contextLost){gl.bindBuffer(gl.ARRAY_BUFFER,vbo);gl.bufferSubData(gl.ARRAY_BUFFER,start*4,vertices);}
+    }
+    function uploadShapeIndices(offset,indices){
+      gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER,offset,indices);
     }
     let chunks=new Map();const chunkCategories=new WeakMap(),chunkState={index:null,epoch:0};
     function rebuildChunks(){

@@ -2582,7 +2582,7 @@
   function creerMoteurRetro() {
     if (retro.rendu || retro.echec) return !!retro.rendu;
     try {
-      retro.rendu = window.FRender.create($('retro-rendu'), { msaa: 0, shadowMapScale: 1, reflections: false, sea: false, overlayLighting: 'world' });
+      retro.rendu = window.FRender.create($('retro-rendu'), { indexRegisteredShapes: true, msaa: 0, shadowMapScale: 1, reflections: false, sea: false, overlayLighting: 'world' });
       retro.rendu.resize(Math.min(window.devicePixelRatio || 1, 1.5));
       if (retro.rendu.retain) retro.rendu.retain(true);   // FERRO 0.3.10 : cibles gardées malgré 120 rendus sans usage
     } catch (e) {
@@ -2734,6 +2734,28 @@
     camR.fov = 2 * Math.atan(Math.tan(16 * Math.PI / 180) * h / l) * 180 / Math.PI; camR.near = .3; camR.far = PORTEE_VUE;
     return camR;
   }
+  // Les carènes normalisées par BITUME tiennent dans leur cube unité. Une sphère
+  // autour de chaque pièce est conservative quelle que soit sa rotation en suspension.
+  const FORMES_GLACE = new Set(Object.values(B.voiture.FORMES).map(f => f.nom));
+  const BORNE_GLACE = {p:null,radius:0};
+  function ecarterPiecesHorsGlace(objets, camR, largeur, hauteur) {
+    const shared=window.FRender?.shared;
+    if (!shared?.visible || !shared.cameraAxes || !(hauteur>0 && largeur>0)) return;
+    const axes=shared.cameraAxes(camR), vertical=Math.tan(clamp(camR.fov,10,110)*Math.PI/360);
+    const horizontal=vertical*largeur/hauteur;
+    let n=0;
+    for (let k=0;k<objets.length;k++) {
+      const o=objets[k];
+      if (!o.fx && !o.overlay && FORMES_GLACE.has(o.shape)) {
+        const s=o.s;
+        BORNE_GLACE.p=o.p;
+        BORNE_GLACE.radius=.867*Math.max(Math.abs(s[0]),Math.abs(s[1]),Math.abs(s[2]))+.04;
+        if (!shared.visible(BORNE_GLACE,camR.pos,axes,horizontal,vertical,camR.far)) continue;
+      }
+      objets[n++]=o;
+    }
+    objets.length=n;
+  }
   // Une glace : la caméra est à la glace et regarde dans la direction réfléchie du regard.
   function peindreGlace(S, G, i, g, cam, ps, sortie, ambiance, suivie, P, source, l, h, dtGlace) {
     const toiles = G.toiles;
@@ -2741,6 +2763,7 @@
     const sun = camR.sun;
     sun.center[0] = ps.x; sun.center[1] = ps.y; sun.center[2] = ps.z; sun.extent = scene.ombre.extent; sun.depth = scene.ombre.depth;
     const objets = listeGlace(S, camR, sortie, suivie, source.height, i);
+    ecarterPiecesHorsGlace(objets,camR,source.width,source.height);
     retro.foulePublic = publicVisible && retro.vuePublic ? retro.vuePublic.fx : null;
     if (S.nature && (retro.ambianceSource !== S.nature.ambiance || retro.ambianceRevision !== S.nature.ambiance.revision)) {
       if (retro.rendu.setEnvironment) retro.rendu.setEnvironment(S.nature.ambiance.atmosphere);
@@ -5543,7 +5566,7 @@
     try {
       // ombres photo (src/ombres.js) : tuile de 512² ; à 1024², des dents rampent sous la casquette de la planche.
       // Bloc PCSS compilé seulement si la pénombre variable sert (B.ombres.reglages.pcssFine) : shader plus court sinon.
-      const optionsRendu = { msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512, pcss: !!(B.ombres && B.ombres.reglages.pcssFine) } };
+      const optionsRendu = { indexRegisteredShapes: true, msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512, pcss: !!(B.ombres && B.ombres.reglages.pcssFine) } };
       // L'interface garde sa définition CSS ; seule la scène Xbox est bornée
       // à 720p, y compris sur TV 4K et après redimensionnement. FSurface applique
       // ce budget avant l'allocation des cibles WebGL, sans retouche de FERRO.

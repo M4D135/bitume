@@ -1,4 +1,4 @@
-# FERRO — référence commune 0.3.16
+# FERRO — référence commune 0.3.18
 
 Décision de David du 16 novembre 2026 : entièrement procédural, aucun plafond de taille du code ni du build. Moteur prioritaire, atelier secondaire.
 
@@ -80,3 +80,12 @@ la branche principale de FERRO référençait encore la version 0.3.15. L’inst
 commit reproduit les 34 empreintes du verrou de BITUME. Le fondu conserve la géométrie
 et la matière de l’animal. Le souffle des baleines utilise la passe d’effets.
 [Qualification de l’opacité dans le dépôt FERRO](https://github.com/M4D135/FERRO/tree/eda17f82cfb33feda52cf4e3f730b4ab87ffc410/docs/opaque-opacity-0316).
+
+
+## Version 0.3.17 — teintes du terrain
+
+Le terrain de la Stura interpole la couleur aux sommets des versants relevés. Les deux niveaux de détail partagent leur teinte à la jonction de la couronne avec l'accotement. L'option agit dans les passes existantes de WebGL2 et WebGPU. [Canon et qualification des shaders](https://github.com/M4D135/FERRO/tree/767c0d5e50bedc9325c74ce7b1387b9bb352c8c1/docs/terrain-tint-0317)
+
+## Version 0.3.18 — réutilisation des sommets
+
+La scène et les rétroviseurs activent `indexRegisteredShapes`. Deux sommets d’une forme enregistrée partagent un index lorsque leurs six composantes flottantes, position et normale, ont exactement les mêmes bits. Le moteur conserve l’ordre et le nombre des triangles. Le pilote de WebGPU et WebGL2 prend aussi en charge le remplacement d’une forme et la restauration du contexte. [Commit canonique](https://github.com/M4D135/FERRO/commit/39e8e19f90efcfb791f17054e47c7aa798df9fb7)

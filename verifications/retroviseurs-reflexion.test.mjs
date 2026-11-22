@@ -25,8 +25,10 @@ const start = source.indexOf('  function peindreGlace('), end = source.indexOf('
 const refletStart = source.indexOf('  function cameraReflet('), refletEnd = source.indexOf('\n  }', refletStart);
 assert(start >= 0 && end > start, 'fonction réelle de rendu du reflet');
 assert(refletStart >= 0 && refletEnd > refletStart, 'caméra réfléchie commune au rendu et à la faune');
+const triStart = source.indexOf('  const FORMES_GLACE'), triEnd = source.indexOf('  // Une glace : la caméra', triStart);
+assert(triStart >= 0 && triEnd > triStart, 'filtre des pièces dans le reflet');
 const captures = [];
-const paint = new Function('B', 'captures', `
+const { paint, filtrer } = new Function('B', 'captures', 'window', `
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   const CAM_GLACE = { pos: [0, 0, 0], sun: { center: [0, 0, 0] } }, PORTEE_VUE = 6000;
   const scene = { ombre: { extent: 100, depth: 100 }, decor: { tunnelLampes: [] }, index: null };
@@ -34,9 +36,10 @@ const paint = new Function('B', 'captures', `
   const publicVisible = false, horlogeReelle = 0, dureeImage = 16.667;
   const listeGlace = () => [], lampesTunnel = () => [];
   ${source.slice(refletStart, refletEnd + 4)}
+  ${source.slice(triStart, triEnd)}
   ${source.slice(start, end + 4)}
-  return peindreGlace;
-`)(B, captures);
+  return {paint: peindreGlace, filtrer: ecarterPiecesHorsGlace};
+`)(B, captures, c);
 const dot = (a, b) => a.reduce((s, x, i) => s + x * b[i], 0);
 const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
 const minus = (a, b) => Array.from(a, (x, i) => x - b[i]);
@@ -119,4 +122,20 @@ test('le centre d’une voiture à 10, 20 ou 30 m derrière reste dans le champ 
         `centre du suiveur à ${distance} m dans la zone centrale, glace ${i}, œil ${eye}, projection ${p}`);
     }
   }
+});
+
+test('le filtre du miroir conserve les pièces qui coupent le bord du champ et les formes sans borne connue', () => {
+  const formes = Object.values(V.FORMES);
+  for (const forme of formes) {
+    for (const triangle of forme.tri) for (let i = 0; i < 3; i++)
+      assert(triangle[i].every(x => Math.abs(x) <= .500001), forme.nom);
+  }
+  const cam = {pos: [0,0,0], yaw: 0, pitch: 0, roll: 0, fov: 40, far: 100};
+  const bord = 10 * Math.tan(20 * Math.PI / 180);
+  const piece = (x, z) => ({shape: formes[0].nom, p: [x,0,z], s: [1,1,1]});
+  const bordDroit = piece(bord+.3,-10), auFond = piece(0,-100.3);
+  const effet = {...piece(50,-10), fx: true}, libre = {...piece(50,-10), shape: 'forme-externe'};
+  const objets = [piece(-50,-10),bordDroit,effet,piece(50,-10),auFond,libre,piece(0,20)];
+  filtrer(objets,cam,256,256);
+  assert.deepEqual(objets,[bordDroit,effet,auFond,libre]);
 });
