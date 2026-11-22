@@ -15,7 +15,7 @@ function extraire(nom) {
   return source.slice(i,j);
 }
 const ligne = nom => {const m=source.match(new RegExp('^  const '+nom+' = [^\\n]+;', 'm'));assert(m,nom);return m[0];};
-const vues = ['cockpit','arceau','nez','aileron-avant','poursuite-proche','poursuite'];
+const vues = ['aileron-avant','nez','cockpit','arceau','poursuite-proche','poursuite'];
 const prefs = new Function('B','prefs',`
   let session=null,ecran='titre';const clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),matchMedia=()=>({matches:false}),setTimeout=()=>0;
   const stock={'bitume.reglages':JSON.stringify(prefs)},localStorage={getItem:k=>stock[k]||null,setItem:(k,v)=>{stock[k]=v}};
@@ -54,8 +54,9 @@ test('les choix anciens et les six nouveaux choix survivent au stockage sans mig
 });
 test('un cycle complet et un choix direct changent seulement le joueur concerné',()=>{
   const {api,reglages,S}=jeu();S.camCap=.7;S.vueJ2.camCap=1.1;
-  for(const vue of vues.slice(1).concat(vues[0])){api.cycle();assert.equal(reglages.vue,vue);assert.equal(reglages.vue2,'poursuite');assert.equal(S.vueJ2.camCap,1.1);}
-  api.cycle2();assert.equal(reglages.vue2,'cockpit');assert.equal(reglages.vue,'cockpit');
+  const idx0 = vues.indexOf('cockpit');
+  for(const vue of vues.slice(idx0+1).concat(vues.slice(0,idx0+1))){api.cycle();assert.equal(reglages.vue,vue);assert.equal(reglages.vue2,'poursuite');assert.equal(S.vueJ2.camCap,1.1);}
+  api.cycle2();assert.equal(reglages.vue2,'aileron-avant');assert.equal(reglages.vue,'cockpit');
   assert(api.choisir(1,'nez'));assert.equal(reglages.vue2,'nez');assert.equal(api.sauvegardes,8);
   assert(!api.choisir(0,'tele'));assert.equal(reglages.vue,'cockpit');assert.equal(api.sauvegardes,8);
 });

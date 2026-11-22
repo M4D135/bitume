@@ -66,216 +66,371 @@ function findNearestIdx(c, x, z) {
   return best;
 }
 
-function precalcLisse(c) {
-  const n = c.n, pas = c.pas, halfW = Math.round(220 / pas);
-  const preSin = new Float64Array(n + 1), preCos = new Float64Array(n + 1);
-  const preY = new Float64Array(n + 1), preC = new Float64Array(n + 1);
-  const preG15 = new Float64Array(n + 1), preD15 = new Float64Array(n + 1);
-  const preG40 = new Float64Array(n + 1), preD40 = new Float64Array(n + 1);
-  for (let i = 0; i < n; i++) {
-    preSin[i + 1] = preSin[i] + Math.sin(c.cap[i]);
-    preCos[i + 1] = preCos[i] + Math.cos(c.cap[i]);
-    preY[i + 1] = preY[i] + c.y[i];
-    preC[i + 1] = preC[i] + Math.abs(c.courbure[i]);
-    preG15[i + 1] = preG15[i] + clamp(c.coupeTerrain.g15[i], -6, 6);
-    preD15[i + 1] = preD15[i] + clamp(c.coupeTerrain.d15[i], -6, 6);
-    preG40[i + 1] = preG40[i] + clamp(c.coupeTerrain.g40[i], -14, 16);
-    preD40[i + 1] = preD40[i] + clamp(c.coupeTerrain.d40[i], -14, 16);
+// Col de Larche → Vinadio · champ de hauteur 2D monovalué H(x,z) · FERRO 0.3.15 · zéro dépendance · zéro Math.random()
+
+
+/* ──────────────────────────────────────────────
+   BRUIT DÉTERMINISTE (aucun Math.random)
+   ────────────────────────────────────────────── */
+function _hash(ix, iz) {
+  let n = (ix * 1619 + iz * 31337) | 0;
+  n = (n << 13) ^ n;
+  return (((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
+}
+function _noise2(x, z) {
+  const ix = Math.floor(x), iz = Math.floor(z);
+  const fx = x - ix, fz = z - iz;
+  const sx = fx * fx * (3 - 2 * fx), sz = fz * fz * (3 - 2 * fz);
+  const a = _hash(ix, iz), b = _hash(ix + 1, iz);
+  const c2 = _hash(ix, iz + 1), d = _hash(ix + 1, iz + 1);
+  return a * (1 - sx) * (1 - sz) + b * sx * (1 - sz) + c2 * (1 - sx) * sz + d * sx * sz;
+}
+function _fbm(x, z, oct) {
+  let v = 0, a = 1, f = 1, t = 0;
+  for (let o = 0; o < oct; o++) { v += a * _noise2(x * f, z * f); t += a; a *= 0.5; f *= 2.03; }
+  return v / t;
+}
+function _ridge(x, z, oct) {
+  let v = 0, a = 1, f = 1, t = 0;
+  for (let o = 0; o < oct; o++) { v += a * (1 - Math.abs(_noise2(x * f, z * f) * 2 - 1)); t += a; a *= 0.5; f *= 2.07; }
+  return v / t;
+}
+function _smoothstep(lo, hi, x) {
+  const t = Math.max(0, Math.min(1, (x - lo) / (hi - lo)));
+  return t * t * (3 - 2 * t);
+}
+function _clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+function _lerp(a, b, t) { return a + (b - a) * t; }
+
+/* ──────────────────────────────────────────────
+   INDEX SPATIAL DES ÉCHANTILLONS DE ROUTE
+   cellules 160 m + repli grossier → toujours exact même à 480 m
+   ────────────────────────────────────────────── */
+function _buildGrilleRoute(c) {
+  const P = c.pas, n = c.n;
+  const CELL = 240;
+  const map = new Map();
+  for (let i = 0; i < n; i += 2) {
+    const x = c.x[i], z = c.z[i];
+    const cx = Math.floor(x / CELL), cz = Math.floor(z / CELL);
+    const key = cx + ',' + cz;
+    if (!map.has(key)) map.set(key, []);
+    map.get(key).push(i);
   }
-  const capLisse = new Float64Array(n), yLisse = new Float64Array(n), courbLisse = new Float64Array(n);
-  const g15L = new Float32Array(n), d15L = new Float32Array(n), g40L = new Float32Array(n), d40L = new Float32Array(n);
-  for (let i = 0; i < n; i++) {
-    const lo = Math.max(0, i - halfW), hi = Math.min(n - 1, i + halfW), cnt = hi - lo + 1;
-    capLisse[i] = Math.atan2(preSin[hi + 1] - preSin[lo], preCos[hi + 1] - preCos[lo]);
-    yLisse[i] = (preY[hi + 1] - preY[lo]) / cnt;
-    courbLisse[i] = (preC[hi + 1] - preC[lo]) / cnt;
-    g15L[i] = (preG15[hi + 1] - preG15[lo]) / cnt;
-    d15L[i] = (preD15[hi + 1] - preD15[lo]) / cnt;
-    g40L[i] = (preG40[hi + 1] - preG40[lo]) / cnt;
-    d40L[i] = (preD40[hi + 1] - preD40[lo]) / cnt;
-  }
-  return { capLisse, yLisse, courbLisse, g15L, d15L, g40L, d40L };
+  return { map, CELL, P, n, c };
 }
 
-function hauteurCorridor(c, idx, d, x, z, lisse, tBout) {
-  const yRoute = c.y[idx];
-  const devers = (c.devers && c.devers[idx]) || 0;
-  const g15 = d < 0 ? lisse.g15L[idx] : lisse.d15L[idx];
-  const g40 = d < 0 ? lisse.g40L[idx] : lisse.d40L[idx];
-  const absD = Math.abs(d);
-  const graine = c.graine || 210;
-
-  if (absD <= 16) {
-    const yBord = yRoute - d * Math.sin(devers) - 0.14 * smoothstep(6, 16, absD);
-    const tG = smoothstep(9, 16, absD);
-    return yBord + clamp(g15, -3.5, 3.5) * 0.22 * tG;
+function _queryRoute(gr, x, z) {
+  const { map, CELL, P, n, c } = gr;
+  const cx = Math.floor(x / CELL), cz = Math.floor(z / CELL);
+  let bestIdx = -1, bestD2 = 1e18;
+  let sumY = 0, sumW = 0;
+  // Recherche ±2 cellules (±480 m > RANGE=420 m) : rapide et toujours exact !
+  for (let dx = -2; dx <= 2; dx++) {
+    for (let dz = -2; dz <= 2; dz++) {
+      const arr = map.get((cx + dx) + ',' + (cz + dz));
+      if (!arr) continue;
+      for (let k = 0; k < arr.length; k++) {
+        const i = arr[k];
+        const ddx = c.x[i] - x, ddz = c.z[i] - z;
+        const d2 = ddx * ddx + ddz * ddz;
+        if (d2 < bestD2) { bestD2 = d2; bestIdx = i; }
+        if (d2 < 320 * 320) {
+          const w = 1 / ((d2 + 180) * (d2 + 180));
+          sumY += c.y[i] * w; sumW += w;
+        }
+      }
+    }
   }
-  const y16 = yRoute - Math.sign(d) * 16 * Math.sin(devers) - 0.14 + clamp(g15, -3.5, 3.5) * 0.22;
-  const y42 = yRoute + clamp(g40, -10, 12) * 0.58;
-  if (absD <= 42) {
-    const t = smoothstep(16, 42, absD);
-    const undul = fbm(x * 0.5 + graine, z * 0.5 - graine, 2, graine) * 0.8 * t;
-    return lerp(y16, y42, t) + undul;
+  if (bestIdx < 0) {
+    // Repli global rapide (pas 16) si hors bandeau 640 m
+    for (let i = 0; i < n; i += 16) {
+      const ddx = c.x[i] - x, ddz = c.z[i] - z, d2 = ddx * ddx + ddz * ddz;
+      if (d2 < bestD2) { bestD2 = d2; bestIdx = i; }
+    }
+    if (bestIdx < 0) bestIdx = 0;
   }
-  const excess = absD - 42;
-  const penteRaw = clamp((g40 - g15) / 30, -0.32, 0.36);
-  const penteAmortie = penteRaw * Math.tanh(excess / 95);
-  const reliefExt = clamp(penteAmortie * excess * 0.42, -44, 58);
-  const crete = fbm(x * 0.20 + graine * 2, z * 0.20 - graine * 2, 3, graine + 7) * 12 * smoothstep(42, 165, absD);
-  const yBase = lerp(y42, lisse.yLisse[idx], smoothstep(42, 165, absD) * 0.62);
-  return yBase + (reliefExt + crete) * tBout;
+  const i = bestIdx;
+  const iNext = Math.min(n - 1, i + 1), iPrev = Math.max(0, i - 1);
+  const tx = c.x[iNext] - c.x[iPrev], tz = c.z[iNext] - c.z[iPrev];
+  const tl = Math.hypot(tx, tz) || 1;
+  const nx = -tz / tl, nz = tx / tl;
+  const dSigned = (x - c.x[i]) * nx + (z - c.z[i]) * nz;
+  const absD = Math.sqrt(bestD2);
+  const yRoute = c.y[i];
+  const ySmooth = sumW > 0 ? (sumY / sumW) : yRoute;
+  const ds = Math.hypot(c.x[iNext] - c.x[iPrev], c.z[iNext] - c.z[iPrev]);
+  const pente = ds > 0.1 ? (c.y[iNext] - c.y[iPrev]) / ds : 0;
+  return { idx: i, d: dSigned, absD, yRoute, ySmooth, pente, s: i * P };
 }
 
+/* ──────────────────────────────────────────────
+   GÉOMORPHOLOGIE RELATIVE PAR SECTEUR (Valle Stura — deltas doux autour de ySmooth)
+   ────────────────────────────────────────────── */
+function _geomorphoDelta(s, absD, signD, x, z, c) {
+  const sKm = s / 1000;
+  const fMont = _smoothstep(35, 360, absD);
+  const fCr = _smoothstep(110, 420, absD);
+  const ridge = _ridge(x * 0.00095 + 2.7, z * 0.00095 - 3.1, 5);
+  const detail = (_fbm(x * 0.0032 + 5.1, z * 0.0032 + 1.9, 4) - 0.5) * 32;
+
+  // Bassin ouvert du col (km 0..2.5) + cuvette du Lac de la Maddalena
+  const wCol = 1 - _smoothstep(1.8, 3.2, sKm);
+  const hCol = -6 * (1 - fCr) + ridge * 240 * fCr + detail * fMont;
+
+  // Tornanti + haute vallée Stura (km 2.5..14) : versant amont élevé, vallée creusée en contrebas
+  const wVal = _smoothstep(1.8, 3.2, sKm) * (1 - _smoothstep(13.0, 14.5, sKm));
+  const versantAmont = (ridge * 290 + 45) * fMont;
+  const versantAval = -58 * _smoothstep(24, 150, absD) + ridge * 210 * _smoothstep(180, 420, absD);
+  const hVal = (signD > 0 ? versantAmont : versantAval) + detail * fMont;
+
+  // Gole delle Barricate (km 14..20) : canyon calcaire encaissé des deux côtés
+  const wGole = _smoothstep(13.0, 14.5, sKm) * (1 - _smoothstep(19.0, 21.0, sKm));
+  const hGole = (ridge * 310 + 75) * _smoothstep(24, 210, absD) + detail * fMont;
+
+  // Basse vallée Sambuco → Vinadio (km 20..32.8) : vallée alpine boisée puis bassin de Vinadio
+  const wBas = _smoothstep(19.0, 21.0, sKm);
+  const ouvre = _smoothstep(27.5, 32.5, sKm);
+  const hBas = _lerp((signD > 0 ? ridge * 220 : -35 * _smoothstep(25, 130, absD) + ridge * 170 * fCr), ridge * 110 * fCr, ouvre) * fMont + detail * fMont;
+
+  const wSum = wCol + wVal + wGole + wBas || 1;
+  return (hCol * wCol + hVal * wVal + hGole * wGole + hBas * wBas) / wSum;
+}
+
+/* ──────────────────────────────────────────────
+   COLORATION MULTI-STRATES
+   ────────────────────────────────────────────── */
+function _colorTerrain(x, z, y, ny, s, absD, saison) {
+  const sKm = s / 1000;
+  let r, g, b;
+
+  // fond : prairie alpine ocre-verte
+  const prairie = _fbm(x * 0.006 + 1.1, z * 0.006 - 0.7, 3);
+  r = 0.38 + prairie * 0.12; g = 0.52 + prairie * 0.10; b = 0.22 + prairie * 0.06;
+
+  // conifères mélèzes/épicéas (versants moyens 1100–1750 m)
+  const yRouteEst = y; // approximation : y est déjà la hauteur terrain
+  if (ny > 0.55 && ny < 0.84 && sKm > 2 && sKm < 20) {
+    const forest = _fbm(x * 0.004 + 5.5, z * 0.004 + 3.3, 4);
+    if (forest > 0.35) {
+      const t = _smoothstep(0.35, 0.65, forest);
+      r = _lerp(r, 0.12, t); g = _lerp(g, 0.32, t); b = _lerp(b, 0.10, t);
+    }
+  }
+
+  // roche calcaire/granit dès pente raide (ny < 0.84) ou Gole delle Barricate
+  const goles = (s >= 13500 && s <= 19500);
+  if (ny < 0.84 || goles) {
+    const rockT = goles ? _smoothstep(0.95, 0.55, ny) : _smoothstep(0.84, 0.55, ny);
+    const rockNoise = _fbm(x * 0.008 + 17, z * 0.008 - 12, 4);
+    const rr = 0.55 + rockNoise * 0.18, rg = 0.50 + rockNoise * 0.15, rb = 0.42 + rockNoise * 0.12;
+    r = _lerp(r, rr, rockT); g = _lerp(g, rg, rockT); b = _lerp(b, rb, rockT);
+  }
+
+  // neige / névés sur crêtes hautes
+  const yRoute = y; // déjà intégré
+  const neigeSeuil = yRoute + 185;
+  const hautCol = (sKm < 3.5 && y > 1220);
+  let neigeT = 0;
+  if (y > neigeSeuil) neigeT = _smoothstep(neigeSeuil, neigeSeuil + 80, y);
+  if (hautCol) neigeT = Math.max(neigeT, _smoothstep(1220, 1400, y));
+  if (saison && saison.neige) {
+    neigeT = Math.max(neigeT, _smoothstep(900, 1100, y));
+    if (sKm < 5) neigeT = Math.max(neigeT, _smoothstep(700, 900, y));
+  }
+  if (neigeT > 0) {
+    const snow = 0.88 + _fbm(x * 0.01, z * 0.01, 2) * 0.10;
+    r = _lerp(r, snow, neigeT); g = _lerp(g, snow, neigeT); b = _lerp(b, snow + 0.02, neigeT);
+  }
+
+  return [r, g, b];
+}
+
+/* ──────────────────────────────────────────────
+   HAUTEUR DU TERRAIN H(x,z) — monovalué, continu, garanti SOUS la chaussée & les ponts
+   ────────────────────────────────────────────── */
+function _H(x, z, gr, c) {
+  const q = _queryRoute(gr, x, z);
+  const { absD, d, yRoute, ySmooth, s } = q;
+
+  // Sous les 16 ponts : creuser le ravin sous le tablier (absD <= 54 m) pour zéro herbe sur le pont !
+  let sousPont = 0;
+  if (c.ponts && absD < 64) {
+    for (let pi = 0; pi < c.ponts.length; pi++) {
+      const pt = c.ponts[pi];
+      if (s >= pt.debut - 28 && s <= pt.fin + 28) {
+        const uS = _smoothstep(pt.debut - 28, pt.debut + 4, s) * (1 - _smoothstep(pt.fin - 4, pt.fin + 28, s));
+        const uD = 1 - _smoothstep(24, 64, absD);
+        if (uS * uD > sousPont) sousPont = uS * uD;
+      }
+    }
+  }
+
+  // Bandeau de sécurité large (<= 34 m pour grille G=32 m) : aucun triangle ne peut jamais couper l'asphalte !
+  if (absD <= 34) {
+    const tBord = _smoothstep(12, 34, absD);
+    const hBase = yRoute - 0.55 - tBord * 0.65;
+    return hBase - sousPont * 13.5;
+  }
+
+  // Coupe DTM réelle (g15/g40 = gauche d<0, d15/d40 = droite d>=0) au-delà de 34 m
+  const droite = d >= 0;
+  const ct = c.coupeTerrain;
+  const delta40 = ct ? _clamp(lire(c, droite ? ct.d40 : ct.g40, s) || 0, -26, 38) : 0;
+  const yBase = _lerp(yRoute, ySmooth, _smoothstep(34, 72, absD));
+  const geoDelta = _geomorphoDelta(s, absD, droite ? 1 : -1, x, z, c);
+  const tMonte = _smoothstep(34, 88, absD);
+  let h = _lerp(yRoute - 1.2, yBase + delta40 * 0.45 + geoDelta, tMonte) - sousPont * 13.5;
+
+  // Cuvette naturelle du Lac de la Maddalena au col (km 0..1.5)
+  if (c.larche && c.larche.lac && s < 2200) {
+    const lac = c.larche.lac;
+    const dLac = Math.hypot(x - (lac.cx || 0), z - (lac.cz || 0));
+    if (dLac < 260) {
+      const mLac = (1 - _smoothstep(90, 260, dLac)) * _smoothstep(24, 42, absD);
+      h = _lerp(h, lac.y - 2.2, mLac);
+    }
+  }
+  return h;
+}
+
+/* ──────────────────────────────────────────────
+   LECTURE DE TABLE (helper interne)
+   ────────────────────────────────────────────── */
+function lire(c, tab, s) {
+  if (!tab) return 0;
+  const n = tab.length;
+  if (n === 0) return 0;
+  const P = c.pas || 1;
+  const f = ((s / P) % n + n) % n;
+  const i0 = Math.floor(f) % n;
+  const i1 = (i0 + 1) % n;
+  const t = f - Math.floor(f);
+  return tab[i0] * (1 - t) + tab[i1] * t;
+}
+
+/* ──────────────────────────────────────────────
+   FONCTION PRINCIPALE terrain()
+   ────────────────────────────────────────────── */
 function terrain(c, th, interroger, g, ecologie, organique) {
   if (!c || c.id !== 'larche') return null;
-  const graine = c.graine || 210;
-  const n = c.n, altBase = c.altitudeBaseM || 880;
-  const lisse = precalcLisse(c);
-  const { capLisse, yLisse, courbLisse } = lisse;
-  const nCoupes = Math.ceil(c.longueur / PAS_L) + 1;
-  const nNappes = Math.ceil((nCoupes - 1) / (NAPPES_SIZE - 1));
+  const qualite = (g && typeof g === 'object' && g.qualite) || 'high';
+  const saison = (g && typeof g === 'object' && g.saison) || null;
+  const G = 32;
+  const TILE = 256;
+  const RANGE = 420;
+
+  const gr = _buildGrilleRoute(c);
   const liste = [];
 
-  let xMin = Infinity, zMin = Infinity, xMax = -Infinity, zMax = -Infinity;
+  let bxMin = Infinity, bxMax = -Infinity, bzMin = Infinity, bzMax = -Infinity;
+  const tuilesActives = new Map();
+  const rTuiles = Math.ceil(RANGE / TILE);
+  for (let i = 0; i < c.n; i++) {
+    const cx = c.x[i], cz = c.z[i];
+    if (cx < bxMin) bxMin = cx; if (cx > bxMax) bxMax = cx;
+    if (cz < bzMin) bzMin = cz; if (cz > bzMax) bzMax = cz;
+    if (i % 4 === 0 || i === c.n - 1) {
+      const tcx = Math.floor(cx / TILE), tcz = Math.floor(cz / TILE);
+      for (let dx = -rTuiles; dx <= rTuiles; dx++) {
+        for (let dz = -rTuiles; dz <= rTuiles; dz++) {
+          const nx = tcx + dx, nz = tcz + dz;
+          const cle = nx + ',' + nz;
+          if (!tuilesActives.has(cle)) tuilesActives.set(cle, [nx, nz]);
+        }
+      }
+    }
+  }
+  bxMin -= RANGE; bxMax += RANGE; bzMin -= RANGE; bzMax += RANGE;
 
-  for (let nappe = 0; nappe < nNappes; nappe++) {
-    const kStart = nappe * (NAPPES_SIZE - 1);
-    const kEnd = Math.min(kStart + NAPPES_SIZE, nCoupes);
-    const nK = kEnd - kStart;
-    if (nK < 2) continue;
+  for (const [nx, nz] of tuilesActives.values()) {
+    {
+      const tileX0 = nx * TILE, tileZ0 = nz * TILE;
+      const tileX1 = tileX0 + TILE, tileZ1 = tileZ0 + TILE;
 
-    const nVerts = nK * N_LAT;
-    const sommets = new Float32Array(nVerts * FLOATS_VERT);
-    const nQuads = (nK - 1) * (N_LAT - 2);
-    const indices = new Uint32Array(nQuads * 6);
-    let vi = 0, ii = 0;
-    let nxMin = Infinity, nyMin = Infinity, nzMin = Infinity;
-    let nxMax = -Infinity, nyMax = -Infinity, nzMax = -Infinity;
+      const N_LAT = Math.round(TILE / G) + 1;
+      const N_LON = N_LAT;
+      const nVerts = N_LAT * N_LON;
+      const sommets = new Float32Array(nVerts * FLOATS_VERT);
+      const indices = new Uint32Array((N_LAT - 1) * (N_LON - 1) * 6);
+      const herbeTri = [];
 
-    for (let k = 0; k < nK; k++) {
-      const kGlobal = kStart + k;
-      const s = Math.min(kGlobal * PAS_L, c.longueur);
-      const idx = Math.min(Math.round(s / c.pas), n - 1);
-      const rx = c.x[idx], rz = c.z[idx];
-      const capLoc = c.cap[idx], capL = capLisse[idx];
-      const txLoc = -Math.sin(capLoc), tzLoc = Math.cos(capLoc);
-      const txL = -Math.sin(capL), tzL = Math.cos(capL);
-      const cL = courbLisse[idx];
-      const tBout = smoothstep(0, 260, s) * smoothstep(0, 260, c.longueur - s);
+      // pré-calculer les hauteurs
+      const hArr = new Float32Array(nVerts);
+      for (let k = 0; k < N_LON; k++) {
+        for (let j = 0; j < N_LAT; j++) {
+          const wx = tileX0 + j * G, wz = tileZ0 + k * G;
+          hArr[k * N_LAT + j] = _H(wx, wz, gr, c);
+        }
+      }
 
-      for (let j = 0; j < N_LAT; j++) {
-        const dRaw = OFFSETS[j], absD = Math.abs(dRaw);
-        const tNorm = smoothstep(28, 95, absD);
-        let tx = lerp(txLoc, txL, tNorm), tz = lerp(tzLoc, tzL, tNorm);
-        const tl = Math.hypot(tx, tz) || 1;
-        tx /= tl; tz /= tl;
-        const dMax = absD <= 24 ? absD : Math.min(absD, 0.56 / (cL + 0.0024));
-        const dEff = Math.sign(dRaw) * Math.max(Math.min(absD, 24), dMax);
-        const px = rx + tx * dEff;
-        const pz = rz + tz * dEff;
-        let py = hauteurCorridor(c, idx, dEff, px, pz, lisse, tBout);
+      // remplir sommets
+      let vi = 0;
+      let nyMin = Infinity, nyMax = -Infinity;
+      for (let k = 0; k < N_LON; k++) {
+        for (let j = 0; j < N_LAT; j++) {
+          const idx = k * N_LAT + j;
+          const wx = tileX0 + j * G, wz = tileZ0 + k * G;
+          const wy = hArr[idx];
+          if (wy < nyMin) nyMin = wy; if (wy > nyMax) nyMax = wy;
 
-        // Ne jamais traverser une autre branche d'épingle
-        if (absD >= 30 && interroger) {
-          const q = interroger(px, pz, 85, true);
-          if (q && q.i >= 0 && q.d < 34) {
-            py = Math.min(py, c.y[q.i] - 1.8);
+          // normale continue aux bords de tuiles
+          const hL = j > 0 ? hArr[idx - 1] : _H(wx - G, wz, gr, c);
+          const hR = j < N_LAT - 1 ? hArr[idx + 1] : _H(wx + G, wz, gr, c);
+          const hD = k > 0 ? hArr[idx - N_LAT] : _H(wx, wz - G, gr, c);
+          const hU = k < N_LON - 1 ? hArr[idx + N_LAT] : _H(wx, wz + G, gr, c);
+          let dnx = (hL - hR), dny = 2 * G, dnz = (hD - hU);
+          const nl = Math.hypot(dnx, dny, dnz) || 1;
+          dnx /= nl; dny /= nl; dnz /= nl;
+
+          const off = idx * FLOATS_VERT;
+          sommets[off] = wx; sommets[off + 1] = wy; sommets[off + 2] = wz;
+          sommets[off + 3] = dnx; sommets[off + 4] = dny; sommets[off + 5] = dnz;
+          sommets[off + 6] = 0; sommets[off + 7] = 0; sommets[off + 8] = 0;
+          sommets[off + 9] = 25; // organicSoil unifié
+
+          // couleur
+          const q = _queryRoute(gr, wx, wz);
+          const col = _colorTerrain(wx, wz, wy, dny, q.s, q.absD, saison);
+          sommets[off + 10] = col[0]; sommets[off + 11] = col[1]; sommets[off + 12] = col[2];
+          vi++;
+        }
+      }
+
+      // indices (triangles alternés)
+      let ii = 0;
+      for (let k = 0; k < N_LON - 1; k++) {
+        for (let j = 0; j < N_LAT - 1; j++) {
+          const v00 = k * N_LAT + j;
+          const v10 = (k + 1) * N_LAT + j;
+          const v01 = k * N_LAT + j + 1;
+          const v11 = (k + 1) * N_LAT + j + 1;
+          if ((k + j) & 1) {
+            indices[ii++] = v00; indices[ii++] = v11; indices[ii++] = v01;
+            indices[ii++] = v00; indices[ii++] = v10; indices[ii++] = v11;
+          } else {
+            indices[ii++] = v00; indices[ii++] = v10; indices[ii++] = v01;
+            indices[ii++] = v10; indices[ii++] = v11; indices[ii++] = v01;
+          }
+          if (sommets[v00 * FLOATS_VERT + 4] >= 0.72 && sommets[v01 * FLOATS_VERT + 4] >= 0.72) {
+            herbeTri.push(ii - 6, ii - 3);
           }
         }
-
-        const eps = 3;
-        const hL = hauteurCorridor(c, idx, dEff - eps, px - tx * eps, pz - tz * eps, lisse, tBout);
-        const hR = hauteurCorridor(c, idx, dEff + eps, px + tx * eps, pz + tz * eps, lisse, tBout);
-        const idxF = Math.min(idx + 2, n - 1), idxB = Math.max(idx - 2, 0);
-        const hF = hauteurCorridor(c, idxF, dEff, px, pz, lisse, tBout);
-        const hB = hauteurCorridor(c, idxB, dEff, px, pz, lisse, tBout);
-        const dhLat = (hR - hL) / (2 * eps);
-        const dhLon = (hF - hB) / Math.max(1, (idxF - idxB) * c.pas);
-        const cosC = Math.cos(capLoc), sinC = Math.sin(capLoc);
-        let nx = -(dhLat * tx + dhLon * cosC);
-        let nz = -(dhLat * tz + dhLon * sinC);
-        let ny = 1;
-        const nl = Math.hypot(nx, ny, nz) || 1;
-        nx /= nl; ny /= nl; nz /= nl;
-
-        // Coloration 100 % organique continue (domain warp 2 échelles, zéro bande/facette géométrique)
-        const altReal = py + altBase;
-        const wx = px + fbm(px * 0.018, pz * 0.018, 2, graine + 31) * 48;
-        const wz = pz + fbm(px * 0.018 + 7.3, pz * 0.018 - 5.1, 2, graine + 37) * 48;
-        const n1 = 0.5 + 0.5 * fbm(wx * 0.025, wz * 0.025, 3, graine + 19);
-        const n2 = 0.5 + 0.5 * fbm(wx * 0.075, wz * 0.075, 2, graine + 43);
-        const pAlt = smoothstep(1250, 2020, altReal);
-        const pRoche = Math.max(1 - smoothstep(0.66, 0.88, ny), smoothstep(1900 + 60 * n1, 2120 + 60 * n1, altReal) * 0.75);
-        const pNeve = smoothstep(2140 + 45 * n1, 2240 + 45 * n1, altReal) * smoothstep(0.58, 0.78, ny);
-        let r = lerp(0.20, 0.29, pAlt) + (n1 - 0.5) * 0.07 + (n2 - 0.5) * 0.04;
-        let gr = lerp(0.37, 0.39, pAlt) + (n1 - 0.5) * 0.07 + (n2 - 0.5) * 0.04;
-        let b = lerp(0.14, 0.19, pAlt) + (n1 - 0.5) * 0.04;
-        const rRoc = 0.43 + (n1 - 0.5) * 0.08 + (n2 - 0.5) * 0.05;
-        const gRoc = 0.41 + (n1 - 0.5) * 0.07 + (n2 - 0.5) * 0.04;
-        const bRoc = 0.37 + (n1 - 0.5) * 0.06;
-        r = lerp(r, rRoc, pRoche); gr = lerp(gr, gRoc, pRoche); b = lerp(b, bRoc, pRoche);
-        r = lerp(r, 0.90, pNeve); gr = lerp(gr, 0.92, pNeve); b = lerp(b, 0.95, pNeve);
-        const mat = 8; // unifié sur 25 par solsProceduraux : zéro coupure 23↔24↔25
-
-        const off = vi * FLOATS_VERT;
-        sommets[off] = px;
-        sommets[off + 1] = py;
-        sommets[off + 2] = pz;
-        sommets[off + 3] = nx;
-        sommets[off + 4] = ny;
-        sommets[off + 5] = nz;
-        sommets[off + 6] = j / (N_LAT - 1);
-        sommets[off + 7] = kGlobal / nCoupes;
-        sommets[off + 8] = 0;
-        sommets[off + 9] = mat;
-        sommets[off + 10] = clamp(r, 0.04, 0.96);
-        sommets[off + 11] = clamp(gr, 0.04, 0.96);
-        sommets[off + 12] = clamp(b, 0.04, 0.96);
-        vi++;
-
-        if (px < xMin) xMin = px; if (px > xMax) xMax = px;
-        if (pz < zMin) zMin = pz; if (pz > zMax) zMax = pz;
-        if (px < nxMin) nxMin = px; if (px > nxMax) nxMax = px;
-        if (py < nyMin) nyMin = py; if (py > nyMax) nyMax = py;
-        if (pz < nzMin) nzMin = pz; if (pz > nzMax) nzMax = pz;
       }
-    }
 
-    // Indices quads avec diagonales alternées (enroulement +Y strict, sauter -9 <-> +9 sous la chaussée)
-    ii = 0;
-    const herbeTri = [];
-    for (let k = 0; k < nK - 1; k++) {
-      for (let j = 0; j < N_LAT - 1; j++) {
-        if (j === SKIP_COL) continue;
-        const v00 = k * N_LAT + j;
-        const v10 = (k + 1) * N_LAT + j;
-        const v01 = k * N_LAT + j + 1;
-        const v11 = (k + 1) * N_LAT + j + 1;
-        if ((k + j) & 1) {
-          indices[ii++] = v00; indices[ii++] = v01; indices[ii++] = v11;
-          indices[ii++] = v00; indices[ii++] = v11; indices[ii++] = v10;
-        } else {
-          indices[ii++] = v00; indices[ii++] = v01; indices[ii++] = v10;
-          indices[ii++] = v10; indices[ii++] = v01; indices[ii++] = v11;
-        }
-        if (sommets[v00 * FLOATS_VERT + 4] >= 0.72 && sommets[v01 * FLOATS_VERT + 4] >= 0.72) {
-          herbeTri.push(ii - 6, ii - 3);
-        }
-      }
+      const nappeObj = {
+        sommets: sommets.subarray(0, vi * FLOATS_VERT),
+        indices: indices.subarray(0, ii),
+        centre: [(tileX0 + tileX1) / 2, (nyMin + nyMax) / 2, (tileZ0 + tileZ1) / 2],
+        rayon: Math.hypot(tileX1 - tileX0, nyMax - nyMin, tileZ1 - tileZ0) / 2
+      };
+      Object.defineProperty(nappeObj, 'herbeTriangles', { enumerable: false, value: herbeTri });
+      Object.defineProperty(nappeObj, 'surfaceType', { enumerable: false, value: 'terrain' });
+      liste.push(nappeObj);
     }
-
-    const nappeObj = {
-      sommets: sommets.subarray(0, vi * FLOATS_VERT),
-      indices: indices.subarray(0, ii),
-      centre: [(nxMin + nxMax) / 2, (nyMin + nyMax) / 2, (nzMin + nzMax) / 2],
-      rayon: Math.hypot(nxMax - nxMin, nyMax - nyMin, nzMax - nzMin) / 2
-    };
-    Object.defineProperty(nappeObj, 'herbeTriangles', { enumerable: false, value: herbeTri });
-    Object.defineProperty(nappeObj, 'surfaceType', { enumerable: false, value: 'terrain' });
-    liste.push(nappeObj);
   }
 
-  // Lac de la Maddalena
+  /* ── Lac de la Maddalena ── */
   if (c.larche && c.larche.lac) {
     const lac = c.larche.lac;
     const poly = lac.poly;
@@ -296,7 +451,6 @@ function terrain(c, th, interroger, g, ecologie, organique) {
       const sommetsLac = new Float32Array(nLac * FLOATS_VERT);
       const indicesLac = new Uint32Array(nPts * 3);
 
-      // Centroïde
       sommetsLac[0] = cx; sommetsLac[1] = lac.y; sommetsLac[2] = cz;
       sommetsLac[3] = 0; sommetsLac[4] = 1; sommetsLac[5] = 0;
       sommetsLac[6] = 0.5; sommetsLac[7] = 0.5; sommetsLac[8] = 0;
@@ -330,27 +484,59 @@ function terrain(c, th, interroger, g, ecologie, organique) {
     }
   }
 
-  // Fonction sol exacte (spectateurs, bâtiments, arbres parfaitement ancrés)
+  /* ── Ruban du torrent Stura di Demonte (fond de vallée) ── */
+  if (c.stura && c.stura.poly) {
+    const stura = c.stura;
+    const poly = stura.poly;
+    const nPts = poly.length / 2;
+    if (nPts >= 3) {
+      const nS = nPts;
+      const sommetsS = new Float32Array(nS * FLOATS_VERT);
+      const indicesS = new Uint32Array(Math.max(0, (nS - 2) * 3));
+      let si = 0;
+      for (let i = 0; i < nS; i++) {
+        const off = i * FLOATS_VERT;
+        sommetsS[off] = poly[i * 2];
+        sommetsS[off + 1] = stura.y || 0;
+        sommetsS[off + 2] = poly[i * 2 + 1];
+        sommetsS[off + 3] = 0; sommetsS[off + 4] = 1; sommetsS[off + 5] = 0;
+        sommetsS[off + 6] = poly[i * 2] / 2000; sommetsS[off + 7] = poly[i * 2 + 1] / 2000;
+        sommetsS[off + 8] = 0;
+        sommetsS[off + 9] = 12; sommetsS[off + 10] = 0.10; sommetsS[off + 11] = 0.30; sommetsS[off + 12] = 0.42;
+      }
+      for (let i = 1; i < nS - 1; i++) {
+        indicesS[si++] = 0; indicesS[si++] = i; indicesS[si++] = i + 1;
+      }
+      let sxMin = Infinity, sxMax = -Infinity, szMin = Infinity, szMax = -Infinity;
+      for (let i = 0; i < nPts; i++) {
+        if (poly[i*2] < sxMin) sxMin = poly[i*2]; if (poly[i*2] > sxMax) sxMax = poly[i*2];
+        if (poly[i*2+1] < szMin) szMin = poly[i*2+1]; if (poly[i*2+1] > szMax) szMax = poly[i*2+1];
+      }
+      const nappeS = {
+        sommets: sommetsS, indices: indicesS.subarray(0, si),
+        centre: [(sxMin + sxMax) / 2, stura.y || 0, (szMin + szMax) / 2],
+        rayon: Math.hypot(sxMax - sxMin, 4, szMax - szMin) / 2
+      };
+      Object.defineProperty(nappeS, 'herbeTriangles', { enumerable: false, value: [] });
+      Object.defineProperty(nappeS, 'surfaceType', { enumerable: false, value: 'eau' });
+      liste.push(nappeS);
+    }
+  }
+
+  /* ── sol(x,z) exact et O(1) ── */
   function sol(x, z) {
-    const q = interroger ? interroger(x, z, 220, true) : null;
-    const idx = q && q.i >= 0 ? q.i : findNearestIdx(c, x, z);
-    const rx = c.x[idx], rz = c.z[idx];
-    const capI = c.cap[idx];
-    const tx = -Math.sin(capI), tz = Math.cos(capI);
-    const d = (x - rx) * tx + (z - rz) * tz;
-    const s = idx * c.pas;
-    const tBout = smoothstep(0, 260, s) * smoothstep(0, 260, c.longueur - s);
-    return hauteurCorridor(c, idx, d, x, z, lisse, tBout);
+    return _H(x, z, gr, c);
   }
 
   return {
     liste,
     sol,
-    bornes: [xMin - 400, zMin - 400, xMax + 400, zMax + 400],
+    bornes: [bxMin, bzMin, bxMax, bzMax],
     niveauEau: undefined,
     paysageBaikal: null
   };
 }
+
 
 function poser(c, outils) {
   if (!c || c.id !== 'larche') return null;
@@ -359,7 +545,8 @@ function poser(c, outils) {
   const objets = [];
   const isLow = qualite === 'low';
 
-  const MAT_MAP = { pierre: 9, roche: 9, beton: 9, lauze: 1, ardoise: 1, bois: 1, metal: 0, acier: 0, eau: 12, neige: 3, enduit: 13.2 };
+  const MAT_MAP = { pierre: 23, roche: 23, beton: 22, lauze: 23, ardoise: 23, bois: 26, herbe: 25, feuille: 27, metal: 0, acier: 0, eau: 12, neige: 25, enduit: 13.2 };
+  const rocheForme = gr => (B.lieux && B.lieux.rocherPour ? B.lieux.rocherPour('montagne', gr >>> 0) : 'octa');
   function add(objetsArr, loin, x, z, obj) {
     if (!obj) return;
     if (obj.forme && !obj.shape) {
@@ -398,13 +585,16 @@ function poser(c, outils) {
       add(objets, false, bx, bz, borne);
       if (B.decor && B.decor.marquerSolide) B.decor.marquerSolide(borne, 'box', 2);
     }
-    // Portique altitude
-    const px1 = p.x + tx * 12, pz1 = p.z + tz * 12;
-    const px2 = p.x - tx * 12, pz2 = p.z - tz * 12;
+    // Portique altitude (traverse orientée EN TRAVERS de la route : local Z = portée, local X = épaisseur)
+    const px1 = p.x + tx * 11.2, pz1 = p.z + tz * 11.2;
+    const px2 = p.x - tx * 11.2, pz2 = p.z - tz * 11.2;
     if (!estSurRoute(px1, pz1) && !estSurRoute(px2, pz2)) {
-      const pilier1 = { forme: 'box', taille: [0.5, 4.5, 0.5], pos: [px1, p.y + 2.25, pz1], angles: [0, 0, 0], mat: 'pierre', couleur: [0.5, 0.48, 0.44] };
-      const pilier2 = { forme: 'box', taille: [0.5, 4.5, 0.5], pos: [px2, p.y + 2.25, pz2], angles: [0, 0, 0], mat: 'pierre', couleur: [0.5, 0.48, 0.44] };
-      const traverse = { forme: 'box', taille: [24, 0.6, 1.2], pos: [(px1 + px2) / 2, p.y + 4.8, (pz1 + pz2) / 2], angles: [0, -p.cap, 0], mat: 'pierre', couleur: [0.5, 0.48, 0.44] };
+      const y1 = Math.min(p.y, terr ? terr.sol(px1, pz1) : p.y) - 1.5;
+      const y2 = Math.min(p.y, terr ? terr.sol(px2, pz2) : p.y) - 1.5;
+      const yHaut = p.y + 5.6;
+      const pilier1 = { forme: 'box', taille: [0.85, yHaut - y1, 0.85], pos: [px1, (yHaut + y1) / 2, pz1], angles: [0, -p.cap, 0], mat: 'pierre', couleur: [0.5, 0.48, 0.44] };
+      const pilier2 = { forme: 'box', taille: [0.85, yHaut - y2, 0.85], pos: [px2, (yHaut + y2) / 2, pz2], angles: [0, -p.cap, 0], mat: 'pierre', couleur: [0.5, 0.48, 0.44] };
+      const traverse = { forme: 'box', taille: [1.1, 0.85, 23.2], pos: [(px1 + px2) / 2, yHaut + 0.35, (pz1 + pz2) / 2], angles: [0, -p.cap, 0], mat: 'pierre', couleur: [0.52, 0.50, 0.46] };
       add(objets, false, px1, pz1, pilier1);
       add(objets, false, px2, pz2, pilier2);
       add(objets, false, (px1 + px2) / 2, (pz1 + pz2) / 2, traverse);
@@ -413,12 +603,13 @@ function poser(c, outils) {
         B.decor.marquerSolide(pilier2, 'box', 2);
       }
     }
-    // Refuge/douane
+    // Refuge/douane (fondation enfouie sous le sol pour ne jamais flotter en pente)
     if (!isLow) {
       const rx2 = p.x + tx * 22, rz2 = p.z + tz * 22;
       if (!estSurRoute(rx2, rz2)) {
-        const refuge = { forme: 'box', taille: [8, 4, 6], pos: [rx2, p.y + 2, rz2], angles: [0, -p.cap, 0], mat: 'pierre', couleur: [0.6, 0.55, 0.48] };
-        const toit = { forme: 'bevel', taille: [9, 2.5, 7], pos: [rx2, p.y + 5.2, rz2], angles: [0, -p.cap, 0], mat: 'lauze', couleur: [0.35, 0.33, 0.32] };
+        const yRef = terr ? terr.sol(rx2, rz2) : p.y;
+        const refuge = { forme: 'box', taille: [8, 6.4, 6], pos: [rx2, yRef + 1.8, rz2], angles: [0, -p.cap, 0], mat: 'pierre', couleur: [0.6, 0.55, 0.48] };
+        const toit = { forme: 'bevel', taille: [9, 2.5, 7], pos: [rx2, yRef + 5.8, rz2], angles: [0, -p.cap, 0], mat: 'lauze', couleur: [0.35, 0.33, 0.32] };
         add(objets, false, rx2, rz2, refuge);
         add(objets, false, rx2, rz2, toit);
         if (B.decor && B.decor.marquerSolide) B.decor.marquerSolide(refuge, 'box', 2);
@@ -434,60 +625,82 @@ function poser(c, outils) {
       let cx = 0, cz = 0;
       for (let i = 0; i < nPts; i++) { cx += lac.poly[i * 2]; cz += lac.poly[i * 2 + 1]; }
       cx /= nPts; cz /= nPts;
-      // Rive : galets/rochers
+      // Rive : blocs rocheux asymétriques irréguliers et texturés (zéro octaèdre symétrique)
       const nGalets = isLow ? 8 : 24;
       for (let i = 0; i < nGalets; i++) {
-        const ang = (i / nGalets) * PI * 2;
-        const r = 45 + hache(i, graine) * 20;
+        const ang = (i / nGalets) * PI * 2 + (hache(i + 17, graine) - 0.5) * 0.42;
+        const r = 42 + hache(i, graine) * 28;
         const gx = cx + Math.cos(ang) * r;
         const gz = cz + Math.sin(ang) * r;
+        if (estSurRoute(gx, gz)) continue;
         const gy = terr ? terr.sol(gx, gz) : lac.y;
-        const taille = 1.5 + hache(i + 100, graine) * 3;
-        const galet = { forme: 'octa', taille: [taille, taille * 0.6, taille], pos: [gx, gy + taille * 0.3, gz], angles: [0, ang, 0], mat: 'roche', couleur: [0.52, 0.50, 0.46] };
+        const taille = 1.6 + hache(i + 100, graine) * 3.4;
+        const sx = taille * (0.78 + hache(i + 201, graine) * 0.55);
+        const sy = taille * (0.48 + hache(i + 303, graine) * 0.45);
+        const sz = taille * (0.72 + hache(i + 409, graine) * 0.62);
+        const galet = {
+          forme: rocheForme(graine ^ Math.imul(i + 1, 2654435761)),
+          taille: [sx, sy, sz],
+          pos: [gx, gy + sy * 0.25, gz],
+          angles: [(hache(i + 501, graine) - 0.5) * 0.35, hache(i + 601, graine) * PI * 2, (hache(i + 701, graine) - 0.5) * 0.35],
+          mat: 'roche',
+          couleur: [0.48 + hache(i + 809, graine) * 0.08, 0.46 + hache(i + 811, graine) * 0.07, 0.42 + hache(i + 821, graine) * 0.07]
+        };
         add(objets, true, gx, gz, galet);
       }
-      // Ponton bois
-      if (!isLow) {
-        const pIdx = Math.round(900 / c.pas);
-        const px = c.x[pIdx], pz = c.z[pIdx];
-        const ponton = { forme: 'box', taille: [2, 0.3, 12], pos: [px + 8, lac.y + 0.15, pz], angles: [0, -c.cap[pIdx], 0], mat: 'bois', couleur: [0.45, 0.32, 0.18] };
-        add(objets, true, px + 8, pz, ponton);
+      // Ponton bois ancré sur la rive du lac (jamais sur la route ni en l'air)
+      if (!isLow && !estSurRoute(cx, cz)) {
+        const px = cx + 22, pz = cz + 14;
+        if (!estSurRoute(px, pz)) {
+          const ponton = { forme: 'box', taille: [2.2, 0.35, 10], pos: [px, lac.y + 0.18, pz], angles: [0, 0.45, 0], mat: 'bois', couleur: [0.45, 0.32, 0.18] };
+          add(objets, true, px, pz, ponton);
+        }
       }
     }
   }
 
-  // 3. Ponts alpins (16)
+  // 3. Ponts alpins (16) — garde-corps segmentés suivant la courbe et piles strictement SOUS le tablier
   if (c.ponts) {
     for (let pi = 0; pi < c.ponts.length; pi++) {
       const p = c.ponts[pi];
-      const sMid = (p.debut + p.fin) / 2;
-      const pos = getPos(sMid);
-      const capI = pos.cap;
-      const tx = -Math.sin(capI), tz = Math.cos(capI);
-      const demiL = (p.fin - p.debut) / 2;
-      const anglesPont = B.decor && B.decor.angles ? B.decor.angles(...B.decor.base([Math.cos(capI), c.pente[pos.idx] || 0, Math.sin(capI)], [0, 1, 0])) : [0, -capI, 0];
+      const lenPont = Math.max(4, p.fin - p.debut);
+      const nSeg = Math.max(1, Math.ceil(lenPont / 10));
+      const segLen = lenPont / nSeg;
 
-      // Garde-corps
-      for (const cote of [-1, 1]) {
-        const gx = pos.x + tx * (c.largeur / 2 + 0.4) * cote;
-        const gz = pos.z + tz * (c.largeur / 2 + 0.4) * cote;
-        const gc = { forme: 'box', taille: [demiL * 2, 1.1, 0.25], pos: [gx, pos.y + 0.55, gz], angles: anglesPont, mat: 'acier', couleur: [0.4, 0.42, 0.45] };
-        add(objets, false, gx, gz, gc);
-        if (B.decor && B.decor.marquerSolide) B.decor.marquerSolide(gc, 'box', 2);
+      // Garde-corps segmentés pour épouser parfaitement la courbe du pont sans jamais mordre la chaussée
+      for (let si = 0; si < nSeg; si++) {
+        const sSeg = p.debut + (si + 0.5) * segLen;
+        const pos = getPos(sSeg);
+        const capI = pos.cap;
+        const tx = -Math.sin(capI), tz = Math.cos(capI);
+        const anglesPont = B.decor && B.decor.angles ? B.decor.angles(...B.decor.base([Math.cos(capI), c.pente[pos.idx] || 0, Math.sin(capI)], [0, 1, 0])) : [0, -capI, 0];
+        for (const cote of [-1, 1]) {
+          const gx = pos.x + tx * (c.largeur / 2 + 0.55) * cote;
+          const gz = pos.z + tz * (c.largeur / 2 + 0.55) * cote;
+          const gc = { forme: 'box', taille: [segLen + 0.15, 1.05, 0.28], pos: [gx, pos.y + 0.52, gz], angles: anglesPont, mat: 'acier', couleur: [0.42, 0.44, 0.47] };
+          add(objets, false, gx, gz, gc);
+          if (B.decor && B.decor.marquerSolide) B.decor.marquerSolide(gc, 'box', 2);
+        }
       }
 
-      // Piles / arche
+      // Piles strictement SOUS le tablier (jamais au-dessus de c.y - 0.65 !)
       if (!isLow) {
-        const nPiles = Math.max(1, Math.floor((p.fin - p.debut) / 18));
+        const nPiles = Math.max(1, Math.floor(lenPont / 18));
         for (let pp = 0; pp < nPiles; pp++) {
-          const sP = p.debut + (pp + 0.5) * (p.fin - p.debut) / nPiles;
+          const sP = p.debut + (pp + 0.5) * lenPont / nPiles;
           const ppIdx = Math.min(Math.round(sP / c.pas), c.n - 1);
-          const px = c.x[ppIdx], pz = c.z[ppIdx];
-          const solY = terr ? terr.sol(px, pz) : c.y[ppIdx] - 12;
-          const hPile = c.y[ppIdx] - solY + 1;
-          const pile = { forme: 'cylinder', taille: [1.2, hPile, 1.2], pos: [px, solY + hPile / 2, pz], angles: [0, 0, 0], mat: 'pierre', couleur: [0.5, 0.47, 0.42] };
-          add(objets, false, px, pz, pile);
-          if (B.decor && B.decor.marquerSolide) B.decor.marquerSolide(pile, 'cylinder', 2);
+          const capP = c.cap[ppIdx], txP = -Math.sin(capP), tzP = Math.cos(capP);
+          const topY = c.y[ppIdx] - 0.65;
+          for (const cote of [-1, 1]) {
+            const px = c.x[ppIdx] + txP * (c.largeur / 2 - 1.4) * cote;
+            const pz = c.z[ppIdx] + tzP * (c.largeur / 2 - 1.4) * cote;
+            const solY = terr ? terr.sol(px, pz) : topY - 12;
+            const botY = Math.min(solY - 2.0, topY - 1.5);
+            if (topY - solY < 1.2) continue;
+            const hPile = topY - botY;
+            const pile = { forme: 'cylinder', taille: [1.1, hPile, 1.1], pos: [px, (topY + botY) / 2, pz], angles: [0, 0, 0], mat: 'pierre', couleur: [0.50, 0.47, 0.42] };
+            add(objets, false, px, pz, pile);
+          }
         }
       }
     }
@@ -569,23 +782,26 @@ function poser(c, outils) {
         }
       }
     }
-    // Portique d'arrivée
+    // Portique d'arrivée (traverse EN TRAVERS de la route : local Z = portée, piliers ancrés au sol)
     const sArr = c.arrivee;
     const posA = getPos(sArr);
     const txA = -Math.sin(posA.cap), tzA = Math.cos(posA.cap);
-    const aX1 = posA.x + txA * 10, aZ1 = posA.z + tzA * 10;
-    const aX2 = posA.x - txA * 10, aZ2 = posA.z - tzA * 10;
+    const aX1 = posA.x + txA * 10.4, aZ1 = posA.z + tzA * 10.4;
+    const aX2 = posA.x - txA * 10.4, aZ2 = posA.z - tzA * 10.4;
     if (!estSurRoute(aX1, aZ1) && !estSurRoute(aX2, aZ2)) {
-      const ap1 = { forme: 'box', taille: [0.6, 6, 0.6], pos: [aX1, posA.y + 3, aZ1], angles: [0, 0, 0], mat: 'metal', couleur: [0.3, 0.3, 0.35] };
-      const ap2 = { forme: 'box', taille: [0.6, 6, 0.6], pos: [aX2, posA.y + 3, aZ2], angles: [0, 0, 0], mat: 'metal', couleur: [0.3, 0.3, 0.35] };
-      const atr = { forme: 'box', taille: [20, 1, 1], pos: [(aX1 + aX2) / 2, posA.y + 6.5, (aZ1 + aZ2) / 2], angles: [0, -posA.cap, 0], mat: 'metal', couleur: [0.3, 0.3, 0.35] };
+      const ya1 = Math.min(posA.y, terr ? terr.sol(aX1, aZ1) : posA.y) - 1.5;
+      const ya2 = Math.min(posA.y, terr ? terr.sol(aX2, aZ2) : posA.y) - 1.5;
+      const yHautA = posA.y + 6.2;
+      const ap1 = { forme: 'box', taille: [0.7, yHautA - ya1, 0.7], pos: [aX1, (yHautA + ya1) / 2, aZ1], angles: [0, -posA.cap, 0], mat: 'metal', couleur: [0.3, 0.3, 0.35] };
+      const ap2 = { forme: 'box', taille: [0.7, yHautA - ya2, 0.7], pos: [aX2, (yHautA + ya2) / 2, aZ2], angles: [0, -posA.cap, 0], mat: 'metal', couleur: [0.3, 0.3, 0.35] };
+      const atr = { forme: 'box', taille: [1.0, 0.95, 21.6], pos: [(aX1 + aX2) / 2, yHautA + 0.4, (aZ1 + aZ2) / 2], angles: [0, -posA.cap, 0], mat: 'metal', couleur: [0.3, 0.3, 0.35] };
       add(objets, false, aX1, aZ1, ap1);
       add(objets, false, aX2, aZ2, ap2);
       add(objets, false, (aX1 + aX2) / 2, (aZ1 + aZ2) / 2, atr);
     }
   }
 
-  // 6. Rochers alpins organiques
+  // 6. Rochers alpins organiques asymétriques et texturés (zéro octaèdre symétrique)
   if (!isLow) {
     const nRochers = 80;
     for (let r = 0; r < nRochers; r++) {
@@ -598,10 +814,61 @@ function poser(c, outils) {
       const rx = c.x[idx] + tx * dist * cote;
       const rz = c.z[idx] + tz * dist * cote;
       if (estSurRoute(rx, rz)) continue;
-      const ry = terr ? terr.sol(rx, rz) : c.y[idx];
-      const taille = 2 + hache(r + 700, graine) * 6;
-      const rocher = { forme: 'octa', taille: [taille, taille * 0.7, taille * 0.9], pos: [rx, ry + taille * 0.35, rz], angles: [0, hache(r, 99) * PI * 2, 0], mat: 'roche', couleur: [0.42, 0.40, 0.37] };
+      const ry = terr ? Math.min(terr.sol(rx, rz), terr.sol(rx - 5, rz), terr.sol(rx + 5, rz), terr.sol(rx, rz - 5), terr.sol(rx, rz + 5)) : c.y[idx];
+      const taille = 2.2 + hache(r + 700, graine) * 6.5;
+      const sx = taille * (0.75 + hache(r + 711, graine) * 0.65);
+      const sy = taille * (0.45 + hache(r + 723, graine) * 0.55);
+      const sz = taille * (0.70 + hache(r + 739, graine) * 0.68);
+      const rocher = {
+        forme: rocheForme(graine ^ Math.imul(r + 13, 1597334677)),
+        taille: [sx, sy, sz],
+        pos: [rx, ry + sy * 0.10 - 0.55, rz],
+        angles: [(hache(r + 801, graine) - 0.5) * 0.42, hache(r, 99) * PI * 2, (hache(r + 853, graine) - 0.5) * 0.42],
+        mat: 'roche',
+        couleur: [0.38 + hache(r + 901, graine) * 0.10, 0.37 + hache(r + 911, graine) * 0.09, 0.35 + hache(r + 921, graine) * 0.08]
+      };
       add(objets, true, rx, rz, rocher);
+    }
+  }
+
+
+  // 7. Forêts alpines de mélèzes et conifères le long de la Valle Stura (dès s > 2200 m, ancrées sur terr.sol)
+  if (B.botanique && typeof B.botanique.nomForme === 'function' && ajouter) {
+    const qArbre = qualite === 'low' ? 'low' : qualite === 'high' || qualite === 'ultra' ? 'high' : 'medium';
+    const pasArbre = isLow ? 65 : 28;
+    const grF = _buildGrilleRoute(c);
+    for (let s = 2200; s < c.longueur - 180; s += pasArbre) {
+      const idx = Math.min(Math.round(s / c.pas), c.n - 1);
+      const capI = c.cap[idx], txA = -Math.sin(capI), tzA = Math.cos(capI);
+      const nb = isLow ? 2 : 6;
+      for (let m = 0; m < nb; m++) {
+        const h1 = hache(Math.round(s) + m * 31, graine + 17);
+        const h2 = hache(Math.round(s) + m * 59, graine + 43);
+        const h3 = hache(Math.round(s) + m * 83, graine + 71);
+        const cote = (m & 1) ? 1 : -1;
+        const dist = 24 + h1 * 110;
+        const wx = c.x[idx] + txA * dist * cote + (h2 - 0.5) * 26;
+        const wz = c.z[idx] + tzA * dist * cote + (h3 - 0.5) * 26;
+        const qr = _queryRoute(grF, wx, wz);
+        if (qr.absD < 18) continue;
+        const wy = terr ? Math.min(terr.sol(wx, wz), terr.sol(wx - 4, wz), terr.sol(wx + 4, wz), terr.sol(wx, wz - 4), terr.sol(wx, wz + 4)) : c.y[idx];
+        const hL = terr ? terr.sol(wx - 4, wz) : wy, hR = terr ? terr.sol(wx + 4, wz) : wy;
+        const hD = terr ? terr.sol(wx, wz - 4) : wy, hU = terr ? terr.sol(wx, wz + 4) : wy;
+        if (Math.hypot((hL - hR) / 8, (hD - hU) / 8) > 0.65) continue;
+        // Sous 1780 m (ou s > 2200) : conifères & mélèzes verts/dorés réalistes
+        const estMeleze = (h3 > 0.62 && s > 4200 && s < 27000);
+        const essence = estMeleze ? 'feuillu' : 'conifere';
+        const taille = (estMeleze ? 9.5 : 12.0) + h2 * 8.5;
+        const rL = taille * (estMeleze ? 0.85 : 0.68);
+        const ang = h1 * PI * 2;
+        const col = estMeleze
+          ? (saison && saison.automne ? [0.68, 0.50, 0.14] : [0.22, 0.38, 0.14])
+          : [0.10 + h2 * 0.05, 0.23 + h3 * 0.06, 0.09 + h1 * 0.03];
+        const tronc = { shape: 'cylinder', p: [wx, wy + taille * 0.18 - 0.6, wz], s: [0.42, taille * 0.44 + 1.2, 0.42], r: [0, 0, 0], mat: 26, color: [0.24, 0.16, 0.10] };
+        const oProche = { shape: B.botanique.nomForme(essence, false, qArbre), p: [wx, wy + taille * 0.56 - 0.5, wz], s: [rL, taille * 0.84, rL], r: [0, ang, 0], mat: 27, color: col };
+        const oLoin = { shape: B.botanique.nomForme(essence, true, qArbre), p: [wx, wy + taille * 0.56 - 0.5, wz], s: [rL, taille * 0.84, rL], r: [0, ang, 0], mat: 27, color: col };
+        ajouter([tronc, oProche], [oLoin], wx, wz);
+      }
     }
   }
 

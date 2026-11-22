@@ -25,7 +25,7 @@
   const ALLURE = 15;           // m/s : en dessous, pas de caméra portée
   const ARRET = 6;             // m/s : une voiture filmée de près qui s'arrête fait couper
   const SPRINT = 300;          // mètres : la tête arrive au drapeau, on monte à son bord et on ne coupe plus
-  const RALENTI = .35, RALENTI_DUREE = 2.2;   // vitesse et durée (horloge de course) du ralenti d'un choc
+  const RALENTI = 1, RALENTI_DUREE = 0;        // vitesse normale conservée lors des chocs (pas de ralenti vidéo)
 
   function mulberry32(a) {
     return function () {
@@ -165,11 +165,11 @@
     // Un sprint ou le drapeau garde toujours la priorité ci-dessus.
     if (p.nature && !R.sprint) return B.cinema.disponible(cinema, p.ancre, t) && t < p.fin ? p : suivant(R, co);
     if (!R.sprint) {
-      // L'action : un choc fort, filmé de dehors, au ralenti
+      // L'action : un choc fort, filmé de dehors, à vitesse réelle (sans ralenti)
       const a = R.action; R.action = null;
       if (a && t - a.t < 1.2 && p.motif !== 'action' && t - p.debut > .8 && !V[a.id].fini) {
         const vue = tirer(R, ['helico', 'tele', 'sol'].filter(v => v !== p.vue).map(v => [v, 1]));
-        return couper(R, co, vue, a.id, 4.2, 'action', { ralenti: t + RALENTI_DUREE, facteur: RALENTI });
+        return couper(R, co, vue, a.id, 4.2, 'action');
       }
       // Un dépassement dans les huit premiers : on coupe sur celui qui vient de passer
       const ordre = co.classement;
@@ -200,10 +200,9 @@
     return couper(R, co, vue, sujet, sprint ? 1e9 : DUREES[vue], sprint ? 'sprint' : 'cadre');
   }
 
-  // facteur de vitesse de la démo : ralenti d'une action, sinon 1
-  function vitesse(R, co) {
-    const p = R && R.plan;
-    return p && p.ralenti && co.horloge < p.ralenti ? p.facteur : 1;
+  // facteur de vitesse de la démo : toujours 1 (pas de ralenti lors des crash)
+  function vitesse() {
+    return 1;
   }
 
   B.realisateur = { creer, tenir, replier, signaler, vitesse, VUES, VUES_CINEMA, DUREES, PORTEES };

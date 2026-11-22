@@ -26,7 +26,7 @@
   out vec4 couleur;
   uniform sampler2D uScene;
   uniform vec4 uMeteo;       // eau, neige accumulée, nuage de roues, film humide
-  uniform vec4 uMouvement;   // temps, charge d'air ; deux composantes réservées
+  uniform vec4 uMouvement;   // temps, charge d'air, charge vitesse, charge vitesse^2
   uniform vec4 uVue;         // largeur CSS, hauteur CSS, graine, atténuation extérieure
   uniform vec4 uFlux;        // expansion /s, dérive X/Y en hauteurs écran/s, charge d'air
   uniform vec4 uGravite;     // gravité écran, centre de divergence (repère CPU, y vers le bas)
@@ -62,6 +62,11 @@
     vec2 n=vec2(p.x/uVue.x,1.0-p.y/uVue.y),aspect=vec2(uVue.y/uVue.x,1.0);
     vec2 v=(uFlux.x*(n-uGravite.zw)+uFlux.yz*aspect)*(.3+.7*mobilite);
     v+=uGravite.xy*aspect*(mobilite*8.0*(rayon*.35+1.5)/720.0);
+    vec2 radNorm=n-uGravite.zw;
+    float rl=length(radNorm);
+    vec2 radDir=rl>.001 ? normalize(radNorm) : vec2(0,-1);
+    float radialStrength=uMouvement.w*(1.5+14.0*uMouvement.w)*(.25+.75*mobilite);
+    v+=radDir*radialStrength;
     v*=uVue.xy;v.y=-v.y;
     return length(v)>.0001 ? normalize(v) : vec2(0,-1);
   }
@@ -81,27 +86,43 @@
     vec2 sourceCentre=(id+.5+centre)*cellule,centreEcran=positionTransportee(sourceCentre,tr);
     vec2 ancienCentre=positionTransportee(sourceCentre,uHistoire[indice]),trajet=centreEcran-ancienCentre;
     vec2 direction=length(trajet)>.03 ? normalize(trajet) : directionFlux(centreEcran,mobilite,taille);
+    float radialMix=clamp(uMouvement.w*1.25,0.0,0.92);
+    if(radialMix>.001){
+      vec2 rn=vec2(centreEcran.x/uVue.x,1.0-centreEcran.y/uVue.y)-uGravite.zw;
+      float rl=length(rn);
+      if(rl>.001){
+        vec2 rp=vec2(rn.x*uVue.x,-rn.y*uVue.y);
+        direction=normalize(mix(direction,rp,radialMix));
+      }
+    }
     vec2 travers=vec2(-direction.y,direction.x),delta=(local-centre)*tr.x;
     vec2 d=vec2(dot(delta,travers),dot(delta,direction));
     float rayon = taille * (.48 + alea.x*alea.x*.94) / cellule;
-    vec2 axes = vec2(rayon,rayon*(1.12+mobilite*(.5+air*1.5)));
+    // À haute vitesse : les perles s'affinent fortement en largeur et s'étirent en longues traînées radiales vives.
+    float wVit = clamp(uMouvement.w, 0.0, 1.0);
+    float rxCell = max(.006, rayon * mix(1.0, .28, wVit));
+    float ryCell = max(.008, rayon * (1.12 + mobilite * (.5 + air * 1.4) + wVit * (2.6 + 5.2 * mobilite)));
+    vec2 axes = vec2(rxCell, min(.46, ryCell));
     vec2 n = d/max(axes,vec2(.001));
     float angle = atan(n.y,n.x);
     float asymetrie = 1.0 + sin(angle*3.0+alea.y*6.283)*(couche==6.0 ? .23 : .10*taille/12.0);
     if (couche==6.0) asymetrie+=sin(angle*5.0-alea.x*11.0)*.11;
     float r = length(n)*asymetrie;
-    // Anticrénelage dans l'espace des pixels réellement rendus : les perles de moins d'un pixel
-    // gardent une empreinte continue lors d'une baisse de définition ou en écran partagé.
+    // Anticrénelage dans l'espace des pixels réellement rendus
     float aa = clamp(fwidth(r)*.72,.018,.58);
-    float masque = bords(r,aa) * presence * apparition;
-    float longueur=rayon*1.5+min(.22,length(trajet)/cellule),arriere=-d.y;
-    float tx=d.x-sin(arriere*25.0+alea.x*12.0)*rayon*.16;
-    float trace=(1.0-smoothstep(rayon*.09,rayon*.31,abs(tx)))*smoothstep(rayon*.6,rayon*1.6,arriere);
-    trace*=(1.0-smoothstep(longueur*.72,longueur,arriere))*mobilite*presence*apparition*smoothstep(.1,1.5,length(trajet));
+    // Dégagement progressif du centre de l'écran à haute vitesse : les traînées filent vers la périphérie !
+    vec2 uvC = vec2(centreEcran.x/uVue.x, 1.0-centreEcran.y/uVue.y) - uGravite.zw;
+    float dCentre = length(uvC * vec2(1.45, 1.15));
+    float clairCentre = mix(1.0, smoothstep(0.06, 0.46, dCentre), wVit * 0.82);
+    float masque = bords(r,aa) * presence * apparition * clairCentre * mix(1.0, 0.65, wVit);
+    float longueur=min(.46, rayon*1.5+min(.24,length(trajet)/cellule)+rayon*wVit*(2.8+6.5*mobilite)),arriere=-d.y;
+    float tx=d.x-sin(arriere*25.0+alea.x*12.0)*rayon*.10*(1.0-wVit*.6);
+    float trace=(1.0-smoothstep(rxCell*.22,rxCell*.75,abs(tx)))*smoothstep(rayon*.4,rayon*1.2,arriere);
+    trace*=(1.0-smoothstep(longueur*.65,longueur,arriere))*(mobilite+wVit*.35)*presence*apparition*clairCentre*smoothstep(.06,1.2,length(trajet)+wVit*1.4);
     float creux = sqrt(max(0.0,1.0-min(r*r,1.0)));
     vec2 nn=clamp(n,vec2(-1),vec2(1));
     vec2 normale=(travers*nn.x+direction*nn.y)*masque*(.20+.80*creux);
-    return vec4(normale+travers*sign(tx)*trace*.12,max(masque,trace*.34),max(masque*(.34+.66*creux),trace*.2));
+    return vec4(normale+travers*sign(tx)*trace*.12,max(masque,trace*.48),max(masque*(.34+.66*creux),trace*.26));
   }
   vec4 perles(vec2 p,float cellule,float taille,float densite,float couche,float mobilite,int groupe) {
     int i=groupe*2;
@@ -143,17 +164,35 @@
   }
   vec4 gouttesMobiles(vec2 p) {
     vec4 total=vec4(0);
+    vec2 uvP=vec2(p.x/uVue.x,1.0-p.y/uVue.y);
+    float centreDist=length((uvP-uGravite.zw)*vec2(1.55,1.2));
+    float wMob=clamp(uMouvement.w,0.0,1.0);
+    // À haute vitesse : centre dégagé, traînées fines filant vers les bords extérieurs
+    float centreClear=mix(1.0,smoothstep(0.08,0.44,centreDist),wMob*0.80);
     for(int i=0;i<32;i++) {
       if(i>=uNbGouttes) break;
       vec4 g=uGouttes[i],tr=uTrajets[i],impact=uImpacts[i]; float rayon=g.z;
-      float emprise=max(rayon*2.3,impact.y>.005?impact.w*(.65+1.7*impact.x)*1.75+2.0:0.0);
+      float emprise=max(rayon*(2.3+wMob*6.5),impact.y>.005?impact.w*(.65+1.7*impact.x)*1.75+2.0:0.0);
       vec2 bas=min(g.xy,min(tr.xy,tr.zw))-emprise,haut=max(g.xy,max(tr.xy,tr.zw))+emprise;
       // Les calculs de lentille et de courbe sont locaux ; le reste de l'écran ne parcourt que les emprises.
       if(any(lessThan(p,bas))||any(greaterThan(p,haut))) continue;
       vec2 trajet=g.xy-tr.xy,direction=length(trajet)>.03?normalize(trajet):directionFlux(g.xy,1.0,rayon);
+      float radialMix=clamp(wMob*1.35,0.0,0.95);
+      if(radialMix>.001){
+        vec2 rn=vec2(g.x/uVue.x,1.0-g.y/uVue.y)-uGravite.zw;
+        float rl=length(rn);
+        if(rl>.001){
+          vec2 rp=vec2(rn.x*uVue.x,-rn.y*uVue.y);
+          direction=normalize(mix(direction,rp,radialMix));
+        }
+      }
       vec2 travers=vec2(-direction.y,direction.x),delta=p-g.xy;
-      vec2 n=vec2(dot(delta,travers),dot(delta,direction))/vec2(rayon,rayon*(1.30+uMouvement.y*.55));
-      float r=length(n),m=bords(r,max(.025,.85/rayon))*g.w;
+      float rx=max(.9, rayon*mix(1.0, .32, wMob));
+      float ry=max(1.2, rayon*(1.25+uMouvement.y*.55+wMob*5.8));
+      vec2 n=vec2(dot(delta,travers),dot(delta,direction))/vec2(rx,ry);
+      float r=length(n);
+      float aa=rayon>.001 ? max(.025,.85/rayon) : .025;
+      float m=bords(r,aa)*g.w;
       float creux=sqrt(max(0.0,1.0-min(r*r,1.0)));
       vec2 nn=clamp(n,vec2(-1),vec2(1));
       vec2 normale=(travers*nn.x+direction*nn.y)*m*(.18+.82*creux);
@@ -169,13 +208,14 @@
           if(d2<meilleur){meilleur=d2;progres=(float(j-1)+f)*.25;ecart=d;}
           precedent=q;
         }
-        float largeur=max(.7,rayon*mix(.11,.36,progres));
+        float largeur=max(.55,rayon*mix(.05,.18,progres)-rayon*uMouvement.w*.03);
         trace=(1.0-smoothstep(largeur*.45,largeur+1.0,sqrt(meilleur)))*smoothstep(0.0,.14,progres)*g.w*.62;
         normale+=ecart/max(length(ecart),.1)*trace*.35;
       }
       total+=vec4(normale,max(m,trace),max(m*(.5+.5*creux),trace*.45));
       total+=impactGoutte(delta,impact);
     }
+    total*=centreClear;
     return total;
   }
   vec3 scene(vec2 p, float flou) {
@@ -196,19 +236,21 @@
     // Deux granulométries fines indépendantes : des milliers de micro-impacts ponctuels, puis
     // des perles à ménisque net. Le panache renouvelle ces impacts même à grande vitesse.
     vec4 micro=vec4(0);
-    if (uQualite > 0) micro=perles(p+vec2(3.7,8.1),9.5,.76,clamp(eau*.72,0.0,.93),7.0,.015,0);
+    if (uQualite > 0) micro=perles(p+vec2(3.7,8.1),9.5,.76,clamp(eau*(.78+uMouvement.w*.28),0.0,.96),7.0,.015,0);
     vec4 a=perles(p,15.0,1.85,clamp(eau*.94,0.0,.97),1.0,.04,1);
     vec4 b=perles(p,35.0,4.1,clamp(eau*.83,0.0,.93),2.0,.22,2);
-    vec4 c=vec4(0),n=vec4(0);
+    vec4 c=vec4(0),n=vec4(0),filets=vec4(0);
     if (uQualite > 0) {
-      c=perles(p,77.0,9.7,clamp(eau*.70,0.0,.85),3.0,.65,3);
-      n=nappe(p,clamp((eau-.30)*.48+film*.32,0.0,.65));
+      float attenuGros = mix(1.0, 0.18, clamp(uMouvement.w, 0.0, 1.0));
+      c=perles(p,77.0,9.7,clamp(eau*.70*attenuGros,0.0,.85),3.0,.65,3)*attenuGros;
+      n=nappe(p,clamp(((eau-.30)*.48+film*.32)*attenuGros,0.0,.65))*attenuGros;
+      if (eau > .30) filets=perles(p+vec2(11.3,4.7),18.0,1.25,clamp(eau*.95,0.0,.96),4.0,.45,0);
     } else { a*=.6; }
     vec4 mobiles=gouttesMobiles(p);
-    vec2 normale=micro.xy*.20+a.xy*.44+b.xy*.68+c.xy*.9+n.xy+mobiles.xy;
-    float goutte=clamp(micro.z+a.z+b.z+c.z+n.z+mobiles.z,0.0,1.0);
-    float relief=clamp(micro.w*.16+a.w*.3+b.w*.5+c.w*.8+n.w+mobiles.w,0.0,1.0);
-    float menisque=clamp((micro.z-micro.w+a.z-a.w+b.z-b.w+c.z-c.w+n.z-n.w+mobiles.z-mobiles.w)*1.7,0.0,1.0);
+    vec2 normale=micro.xy*.20+filets.xy*.26+a.xy*.44+b.xy*.68+c.xy*.9+n.xy+mobiles.xy;
+    float goutte=clamp(micro.z+filets.z*.72+a.z+b.z+c.z+n.z+mobiles.z,0.0,1.0);
+    float relief=clamp(micro.w*.16+filets.w*.20+a.w*.3+b.w*.5+c.w*.8+n.w+mobiles.w,0.0,1.0);
+    float menisque=clamp((micro.z-micro.w+filets.z-filets.w+a.z-a.w+b.z-b.w+c.z-c.w+n.z-n.w+mobiles.z-mobiles.w)*1.7,0.0,1.0);
     // Brouillard d'eau local dans l'axe : il monte puis retombe dans le modèle, pas d'aplat blanc instantané.
     float turbulent=.5;
     if (embruns>.001 || (uAvecScene && film>.001)) {
@@ -311,7 +353,7 @@
         avancerGeneration(b,flux,param[0],param[1],aspect);l.fondu=Math.min(1,l.fondu+PAS/FONDU_TRANSPORT);
         a.poids=1-l.fondu;b.poids=l.fondu;
         if(l.fondu===1){l.active=1-l.active;l.transition=false;}
-      } else if(a.echelle>1.8 || Math.abs(a.x)>.65 || Math.abs(a.y)>.65 || a.age>18+couche*.71) {
+      } else if(a.echelle>3.8 || Math.abs(a.x)>1.2 || Math.abs(a.y)>1.2 || a.age>18+couche*.71) {
         // Une deuxième population naît sans déplacer la première, puis la remplace en fondu.
         // Hors de ce bref chevauchement, le shader ne calcule qu'une génération par couche.
         initialiserGeneration(b,++l.sequence*173.17+couche*31.9,0);l.fondu=0;l.transition=true;
@@ -327,6 +369,7 @@
       couches:COUCHES.map(()=>({active:0,fondu:0,transition:false,sequence:0,generations:[nouvelleGeneration(),nouvelleGeneration()]})),
       transportUniformes:new Float32Array(48),histoireUniformes:new Float32Array(48),phaseUniformes:new Float32Array(12),
       transportPrecedent:new Float64Array(48),histoirePrecedente:new Float64Array(48),fluxUniformes:new Float32Array(8),
+      fluxTransport:{expansion:0,deriveX:0,deriveY:0,air:0,graviteX:0,graviteY:0,centreX:0,centreY:0},
       graine: options && Number.isInteger(options.graine) ? options.graine : 0 };
     reinitialiserTransport(e);return e;
   }
@@ -349,7 +392,17 @@
   }
   function avancerEtat(e, dt, c) {
     if (c.pause || !Number.isFinite(dt) || dt <= 0) return;
-    const intensite=clamp(nombre(c.intensite,1),0,2),flux=B.vitre.calculerFlux(c,e.depots.flux),air=flux.air;
+    const intensite=clamp(nombre(c.intensite,1),0,2),flux=B.vitre.calculerFlux(c,e.depots.flux),air=nombre(flux.air,0);
+    const niveau=QUALITES[c.qualite]??2;
+    const vitesseBrute=nombre(c.vitesse ?? c.speed ?? c.v, -1);
+    const vitesse=vitesseBrute>=0 ? clamp(vitesseBrute,0,95) : clamp(air,0,1)*95;
+    const charge=clamp(vitesse/95,0,1), charge2=charge*charge;
+    const ft=e.fluxTransport;
+    const expBase=nombre(flux.expansion,0);
+    ft.expansion=expBase>1e-6 ? Math.max(expBase,charge2*1.65) : expBase;
+    ft.deriveX=nombre(flux.deriveX,0); ft.deriveY=nombre(flux.deriveY,0); ft.air=air;
+    ft.graviteX=nombre(flux.graviteX,0); ft.graviteY=nombre(flux.graviteY,0);
+    ft.centreX=nombre(flux.centreX,0.5); ft.centreY=nombre(flux.centreY,0.44);
     const largeur=Math.max(1,nombre(c.largeur,e.depots.largeur)),hauteur=Math.max(1,nombre(c.hauteur,e.depots.hauteur)),aspect=hauteur/largeur;
     const neige=c.abri ? 0 : clamp(nombre(c.neige),0,1);
     const pluie=c.abri || neige>.001 ? 0 : clamp(nombre(c.pluie),0,1);
@@ -359,7 +412,7 @@
     const neigeCible=clamp(neige*intensite/(1+air*7),0,1.25);
     e.accumulateur+=Math.min(.25,dt);
     while (e.accumulateur+1e-10>=PAS) {
-      avancerTransport(e,flux,aspect);
+      avancerTransport(e,ft,aspect);
       e.precedent[0]=e.eau; e.precedent[1]=e.neige; e.precedent[2]=e.embruns; e.precedent[3]=e.film;
       const fonte=e.neige*.18+Math.max(0,e.neige-neigeCible)*(.03+air*.10);
       e.eau+=(eauCible+fonte-e.eau)*(1-Math.exp(-PAS*(eauCible>e.eau ? .72 : .22+air*1.8)));
@@ -377,13 +430,13 @@
     u[0]=e.precedent[0]*(1-k)+e.eau*k; u[1]=e.precedent[1]*(1-k)+e.neige*k;
     u[2]=e.precedent[2]*(1-k)+e.embruns*k; u[3]=e.precedent[3]*(1-k)+e.film*k;
     u[4]=Math.max(0,e.temps-PAS+e.accumulateur); u[5]=air;
-    u[6]=u[7]=0;
+    u[6]=charge; u[7]=charge2;
     u[8]=largeur;u[9]=hauteur; u[10]=e.graine*37.31;
     u[11]=(c.cockpit===false ? .64 : 1)*Math.min(1,intensite);
-    const f=e.fluxUniformes;f[0]=flux.expansion;f[1]=flux.deriveX;f[2]=flux.deriveY;f[3]=flux.air;
-    f[4]=flux.graviteX;f[5]=flux.graviteY;f[6]=flux.centreX;f[7]=flux.centreY;
+    const f=e.fluxUniformes;f[0]=ft.expansion;f[1]=ft.deriveX;f[2]=ft.deriveY;f[3]=ft.air;
+    f[4]=ft.graviteX;f[5]=ft.graviteY;f[6]=ft.centreX;f[7]=ft.centreY;
     preparerTransport(e,k);
-    B.vitre.avancerSimulation(e.depots,dt,c,DEPOTS[QUALITES[c.qualite]??2]);preparerDepots(e);
+    B.vitre.avancerSimulation(e.depots,dt,c,DEPOTS[niveau]);preparerDepots(e);
   }
   function montrer(e, oui) {
     if (e.masquee===!oui) return;
@@ -505,7 +558,7 @@
   }
   function liberer(e) {
     if(!e || e.libere)return;effacer(e);
-    e.canvas.removeEventListener('webglcontextlost',e.perte);e.canvas.removeEventListener('webglcontextrestored',e.restauration);
+    e.canvas.removeEventListener('webglcontextlost',e.perte); e.canvas.removeEventListener('webglcontextrestored',e.restauration);
     if(!e.perdu){e.gl.deleteTexture(e.texture);e.gl.deleteVertexArray(e.vao);e.gl.deleteProgram(e.programme);}
     e.libere=true;e.canvas=null;e.contexte=null;e.source=null;e.sourceContexte=null;e.gl=null;
   }

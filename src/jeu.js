@@ -10,18 +10,19 @@
   const ramener = (s, L) => ((s % L) + L) % L;
 
   // Catalogue progressif : graines originales fixes, tracés générés par circuit.js.
+  // Catalogue épuré (10 identités vraiment uniques, doublons fusionnés : Port-Sable→Corail,
+  // Haut-Col/Carpates/Andes→Route-des-Cimes & Larche, Roche-Fauve→Sierra, Écosse→Val-Brûlé).
   const CATALOGUE = [
-    { id: 'val-brule', nom: 'Val-Brûlé', lieu: 'Forêt', theme: 'foret', graine: 11, longueur: 4200 },
-    { id: 'port-sable', nom: 'Port-Sable', lieu: 'Bord de mer', theme: 'cote', graine: 29, longueur: 3600 },
-    { id: 'haut-col', nom: 'Haut-Col', lieu: 'Montagne', theme: 'montagne', graine: 47, longueur: 5200 },
-    { id: 'lande-noire', nom: 'Lande-Noire', lieu: 'Islande · plateau volcanique', theme: 'islande', graine: 83, longueur: 4600 },
-    { id: 'roche-fauve', nom: 'Roche-Fauve', lieu: 'Afrique · hauts plateaux d’ocre', theme: 'desert', graine: 107, longueur: 4800 },
-    { id: 'brume-de-jade', nom: 'Brume-de-Jade', lieu: 'Asie · pics calcaires et terrasses', theme: 'asie', graine: 131, longueur: 5000 },
+    { id: 'val-brule', nom: 'Val-Brûlé', lieu: 'Forêt tempérée', theme: 'foret', graine: 11, longueur: 4200 },
+    { id: 'corail', nom: 'Baie-du-Corail', lieu: 'Lagon turquoise · atoll et phare blanc', theme: 'corail', graine: 283, longueur: 4500 },
     { id: 'cap-sequoia', nom: 'Cap-Séquoia', lieu: 'États-Unis · falaises du Pacifique', theme: 'pacifique', graine: 157, longueur: 5200 },
-    { id: 'baikal', nom: 'Baïkal', lieu: 'Russie · rives et promontoire', theme: 'baikal', graine: 179, longueur: 5400 },
-    { id: 'route-des-cimes', nom: 'Route-des-Cimes', lieu: 'Grand parcours de montagne · cirque de l’Aiglière', theme: 'montagne', graine: 181, longueur: 9697.52858032384, partition: 'route-des-cimes' },
+    { id: 'fjord', nom: 'Fjord-d’Argent', lieu: 'Norvège · fjord de granit et cascade', theme: 'fjord', graine: 223, longueur: 5100 },
+    { id: 'route-des-cimes', nom: 'Route-des-Cimes', lieu: 'Grand col alpin · cirque de l’Aiglière', theme: 'montagne', graine: 181, longueur: 9697.52858032384, partition: 'route-des-cimes' },
     { id: 'larche', nom: 'Col de Larche → Vinadio', lieu: 'Alpes · descente réelle SS21 (32,8 km)', theme: 'montagne', graine: 210, longueur: 32816.81, ouvert: true },
-    ...(typeof B !== 'undefined' && B.destinations ? B.destinations.CATALOGUE : [])
+    { id: 'lande-noire', nom: 'Lande-Noire', lieu: 'Islande · plateau volcanique', theme: 'islande', graine: 83, longueur: 4600 },
+    { id: 'sierra', nom: 'Sierra-Cuivrée', lieu: 'Canyons ocre · arche et viaduc rouge', theme: 'sierra', graine: 271, longueur: 5000 },
+    { id: 'brume-de-jade', nom: 'Brume-de-Jade', lieu: 'Asie · pics calcaires et terrasses', theme: 'asie', graine: 131, longueur: 5000 },
+    { id: 'baikal', nom: 'Baïkal', lieu: 'Russie · rives gelées et tremplin', theme: 'baikal', graine: 179, longueur: 5400 }
   ];
 
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
@@ -52,7 +53,7 @@
     for (const [cle, valeur] of [...stockEnAttente]) ecrireStock(cle, typeof valeur === 'function' ? valeur() : valeur);
   }
   // Identifiants persistés : « poursuite » conserve son cadre historique à 7,4 m.
-  const VUES_COURSE = Object.freeze(['cockpit', 'arceau', 'nez', 'aileron-avant', 'poursuite-proche', 'poursuite']);
+  const VUES_COURSE = Object.freeze(['aileron-avant', 'nez', 'cockpit', 'arceau', 'poursuite-proche', 'poursuite']);
   const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 70, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'bas-gauche', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
     anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'non', gouttes: 1, forcePluie: 'forte',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
@@ -615,6 +616,7 @@
       if (toucheDe(1, 'troll').includes(e.code)) provoquer(1);
     }
     if (lettre === 'm') couperSon();
+    if (lettre === 'r' && !aDeux()) replacer();
   });
   addEventListener('keyup', e => touches.delete(e.code));
   // Souris (David, 16/11 : « ou alors souris aussi, comme le vrai Vroom », refaite ici) : le pointeur à gauche ou à
@@ -762,7 +764,7 @@
   function etatVibrations() {
     return {
       V: B.vibrations.creer(), evenements: [],
-      entree: { regime: 0, ralenti: 0, maxUtile: 0, gaz: 0, frein: 0, v: 0, surface: 'piste', vibreur: false, patinage: 0,
+      entree: { regime: 0, ralenti: 0, maxUtile: 0, gaz: 0, frein: 0, v: 0, along: 0, surface: 'piste', vibreur: false, patinage: 0,
         blocage: 0, glisseAr: 0, glisseAv: 0, bosse: 0, turbo: 0, force: .5, derive: null, evenements: null },
       // paramètres des effets, réutilisés : le navigateur les lit pendant l'appel
       double: { startDelay: 0, duration: VIB_DUREE, weakMagnitude: 0, strongMagnitude: 0 },
@@ -812,7 +814,7 @@
       const v = !vibreImage || !P.manette ? null : n === 0 ? co.joueur : S.type === 'duo' ? co.voitures[S.locaux[1]] : null;
       if (!v) { J.evenements.length = 0; secouerManette(0, 0, P); continue; }
       const et = v.etat, e = J.entree;
-      e.regime = et.regime; e.ralenti = PR.ralenti; e.maxUtile = PR.maxUtile; e.gaz = et.gaz; e.frein = et.frein; e.v = et.v;
+      e.regime = et.regime; e.ralenti = PR.ralenti; e.maxUtile = PR.maxUtile; e.gaz = et.gaz; e.frein = et.frein; e.v = et.v; e.along = et.along || 0;
       e.surface = et.surface; e.vibreur = et.vibreur; e.patinage = et.patinage; e.blocage = et.blocage;
       e.glisseAr = et.glisseAr; e.glisseAv = et.glisseAv; e.derive = et.derive;
       e.turbo = et.turbo && et.turbo.reste > 0 ? clamp(et.turbo.poussee / pousseeMax, 0, 1) : 0;
@@ -912,6 +914,16 @@
   // menus à la manette : croix pour se déplacer (gauche, droite règlent un curseur), A valide, B revient
   function naviguerManette(nouveau, manette = pad.manette) {
     const zone = $(ecran); if (!zone || zone.hidden) return;
+    if (ecran === 'preparation' && manette && manette.buttons) {
+      const lt = !!(manette.buttons[6] && (manette.buttons[6].pressed || manette.buttons[6].value > .5));
+      const rt = !!(manette.buttons[7] && (manette.buttons[7].pressed || manette.buttons[7].value > .5));
+      const bc = $('p-categories');
+      if (bc && bc._decaler && !$('p-piste').hidden) {
+        if (lt && !bc._lt) bc._decaler(-1);
+        else if (rt && !bc._rt) bc._decaler(1);
+      }
+      if (bc) { bc._lt = lt; bc._rt = rt; }
+    }
     B.navigationMenu.naviguer(zone, nouveau, { pad: manette, temps: performance.now(), activer: activerSon,
       retour: () => ecran === 'pause' ? basculerPause() : retour(),
       demarrer: ecran === 'preparation' ? () => { const b = $('b-depart'); if (b && !b.disabled) b.click(); } : null,
@@ -1122,7 +1134,12 @@
     if (S) {
       if (B.cameraTransition && S.camera && !S.reference && !S.regardArriere) {
         const ct = S.camTransition || (S.camTransition = B.cameraTransition.creer());
-        B.cameraTransition.demander(ct, S.camera, { instantane: reglages.secousses === 0 });
+        const ps = S.poseSuivie;
+        B.cameraTransition.demander(ct, S.camera, {
+          instantane: reglages.secousses === 0,
+          carPos: ps ? [ps.x, ps.y, ps.z] : null,
+          carCap: ps ? ps.cap : undefined
+        });
       }
       S.camCap = null; S.tete = null; S.regardArriere = false;
     }
@@ -1349,12 +1366,19 @@
       const coince = !et.recuperation && et.rapport >= 0 && et.v >= 0 && ((et.v < 1.5 && et.gaz > .5) || (Math.cos(et.psi) < -.5 && et.v < 3));
       S.bloque = coince ? S.bloque + DT : 0;
       if (S.bloque > 3) { replacer(); S.bloque = 0; }
+      // Sortie prolongée derrière une glissière/muret : retour automatique fiable sur la chaussée
+      const demi = (co.c.largeur || 12) * 0.5;
+      const horsCircuit = !et.recuperation && !et.stands && Math.abs(et.d) > demi + 5.5;
+      S.horsPiste = horsCircuit ? (S.horsPiste || 0) + DT : 0;
+      if (S.horsPiste > 2.2) { replacer(); S.horsPiste = 0; }
     }
   }
 
   function replacer() {
     const S = session; if (!S) return;
     const co = S.course, ev = B.course.replacer(co);
+    // Téléportation PhysX synchrone immédiate (ne jamais rester bloqué hors du circuit)
+    if (co.physique && B.physique && B.physique.replacerVoiture) B.physique.replacerVoiture(co, co.joueur);
     remplirPoses(S.cour, co); remplirPoses(S.prec, co);
     synchroniserReplacement(S, ev);
     B.traces.pas(S.fx, co, S.cour, S.suivie || 0, 0, ev);
@@ -2014,19 +2038,55 @@
     const vertical = 2 * Math.atan(tangente) * 180 / Math.PI;
     return clamp(vertical * (1 + (portraitTelephone ? .04 : .05) * clamp(v / 85, 0, 1)), 10, 110);
   }
-  // La tête du pilote vit : elle part vers l'extérieur du virage et vers l'avant au freinage (2 cm au plus), le regard
-  // va vers la corde (4° au plus), et le casque tremble à haute vitesse, sur les vibreurs et dans l'herbe.
+  // La tête du pilote vit : poussée G franche à l'accélération, coup de fouet brutal au changement de rapport,
+  // plongée au freinage, regard vers la corde, et vibrations viscérales du V12 + haute vitesse + vibreurs.
   function cameraCockpit(S, p, et, t, dt) {
-    const T = S.tete || (S.tete = { lat: 0, lon: 0, regard: 0 }), k = 1 - Math.exp(-dt * 7);
-    T.lat += (clamp(et.alat / 26, -1, 1) - T.lat) * k;
-    T.lon += (clamp(et.along / 22, -1, 1) - T.lon) * k;
+    const T = S.tete || (S.tete = { lat: 0, lon: 0, regard: 0, chocRapport: 0, rapportPrev: et.rapport || 1 });
+    const k = 1 - Math.exp(-dt * 8.5);
+    const sec = reglages.secousses;
+    // Détection directe du changement de rapport (auto ou manuel) : coup de bélier sec de boîte F1
+    const rap = et.rapport || 1;
+    if (T.rapportPrev != null && rap !== T.rapportPrev && et.v > 4) {
+      if (rap > T.rapportPrev) T.chocRapport = 1.0;
+      else if (rap > 0 && rap < T.rapportPrev) T.chocRapport = -0.68;
+    }
+    T.rapportPrev = rap;
+    T.chocRapport *= Math.exp(-dt * 12.5);
+    if (Math.abs(T.chocRapport) < 1e-4) T.chocRapport = 0;
+
+    T.lat += (clamp(et.alat / 24, -1, 1) - T.lat) * k;
+    T.lon += (clamp(et.along / 16, -1, 1) - T.lon) * k;
     T.regard += (clamp(et.volant, -1, 1) * clamp(et.v / 28, 0, 1) - T.regard) * (1 - Math.exp(-dt * 3.5));
+
     const OE = B.voiture.OEIL, M = B.voiture.attitude(p.cap, p.tangage, p.roulis);
-    const o = B.voiture.mul(M, [OE[0] - T.lon * .02, OE[1] - Math.max(0, -T.lon) * .006, OE[2] - T.lat * .016]);
-    const vib = (et.surface === 'vibreur' ? .006 : et.surface === 'herbe' ? .004 * Math.min(1, et.v / 20) : 0) + .0011 * Math.pow(clamp(et.v / 85, 0, 1), 2);
+    const PR = B.conduite.PARAMS;
+    const rpmN = clamp(((et.regime || 0) - PR.ralenti) / Math.max(1, PR.maxUtile - PR.ralenti), 0, 1);
+    const vitN = clamp((et.v || 0) / 82, 0, 1);
+    const gaz = et.gaz || 0;
+    const choc = T.chocRapport * sec;
+
+    // Recul net dans le baquet à l'accélération + à-coup brutal de rapport ; avancée franche au freinage
+    const depLon = T.lon * (T.lon > 0 ? .058 : .036) * sec + choc * .048;
+    const depH = -Math.max(0, -T.lon) * .010 * sec + Math.max(0, T.lon) * .005 * sec + Math.abs(choc) * .011;
+    const depLat = T.lat * .022 * sec;
+
+    // Vibrations viscérales cockpit : régime V12 en charge + vitesse + vibreurs + coup de rapport
+    const vibSurface = et.surface === 'vibreur' ? .011 : et.surface === 'herbe' ? .008 * Math.min(1, et.v / 18) : 0;
+    const vibMoteur = .0040 * Math.pow(rpmN, 2.0) * (0.30 + 0.70 * gaz) * (et.v > 1 || gaz > 0.1 ? 1 : 0);
+    const vibVitesse = .0042 * Math.pow(vitN, 1.8);
+    const vibRapport = Math.abs(choc) * .013;
+    const vibTot = (vibSurface + vibMoteur + vibVitesse + vibRapport) * sec;
+    const oscY = (Math.sin(t * 73) * 0.65 + Math.sin(t * 127) * 0.35) * vibTot;
+    const oscLat = Math.cos(t * 97) * vibTot * 0.45;
+    const oscRoll = Math.sin(t * 89) * (vibMoteur + vibVitesse + vibRapport) * 0.38 * sec;
+
+    const o = B.voiture.mul(M, [OE[0] - depLon, OE[1] + depH, OE[2] - depLat + oscLat]);
+    const pitchAcc = (T.lon > 0 ? T.lon * .022 : T.lon * .016) * sec + choc * .028;
     const cam = {
-      pos: [p.x + o[0], p.y + o[1] + Math.sin(t * 73) * vib * reglages.secousses, p.z + o[2]], yaw: p.cap + Math.PI / 2 + T.regard * .07,
-      pitch: p.tangage * .85 + INCLINAISON_COCKPIT + Math.min(0, T.lon) * .012, roll: -p.roulis * .85 + T.lat * .014,
+      pos: [p.x + o[0], p.y + o[1] + oscY, p.z + o[2]],
+      yaw: p.cap + Math.PI / 2 + T.regard * .07,
+      pitch: p.tangage * .85 + INCLINAISON_COCKPIT + pitchAcc,
+      roll: -p.roulis * .85 + T.lat * .018 + oscRoll,
       fov: 60, near: .1, far: PORTEE_VUE
     };
     // La seconde vue hérite de S : elle doit posséder ses buffers, même si J1 a déjà rendu son cockpit.
@@ -2035,7 +2095,10 @@
     C.pose.p[0] = p.x; C.pose.p[1] = p.y; C.pose.p[2] = p.z;
     C.pose.cap = p.cap; C.pose.tangage = p.tangage; C.pose.roulis = p.roulis;
     C.glaces = B.voiture.glacesCockpit(C.pose, C.glaces);
-    cam.fov = champCockpit(canvas.clientWidth / Math.max(1, canvas.clientHeight), et.v, cam, C.glaces, M);
+    const baseFov = champCockpit(canvas.clientWidth / Math.max(1, canvas.clientHeight), et.v, cam, C.glaces, M);
+    // Effet puissance / vitesse en vue intérieure : élargissement dynamique du champ à l'accélération + coup de rapport
+    const boostFov = (Math.max(0, T.lon) * 3.8 + Math.pow(vitN, 1.5) * 3.2 + Math.max(0, choc) * 2.6 + (et.turbo && et.turbo.reste > 0 ? 3.5 : 0)) * sec;
+    cam.fov = clamp(baseFov + boostFov, 10, 110);
     return cam;
   }
   // Écran partagé : la poursuite garde la diagonale du cadre 16:9 dans une moitié plus large ou plus étroite
@@ -2914,8 +2977,9 @@
     else if (CAMERAS_DEMO.has(vue)) cam = cameraDemo(S, ps, S.planVu, vue);
     else if (ANCRAGES_CAMERAS[vue]) cam = cameraEmbarquee(ps, suivie.etat, vue);
     else cam = vue === 'cockpit' ? cameraCockpit(S, ps, suivie.etat, S.tRendu, dtImage) : cameraPoursuite(S, ps, suivie.etat, dtImage, vue);
+    S.poseSuivie = ps;
     if (B.cameraTransition && S.camTransition && S.camTransition.actif && VUES_COURSE.includes(vue) && !S.regardArriere && !S.reference && S.type !== 'demo') {
-      cam = B.cameraTransition.appliquer(S.camTransition, cam, dtImage, { solY: ps.y });
+      cam = B.cameraTransition.appliquer(S.camTransition, cam, dtImage, { solY: ps.y, carPos: [ps.x, ps.y, ps.z], carCap: ps.cap });
     }
     if (S.type === 'demo') {
       const aspect = canvas.clientWidth / Math.max(1, canvas.clientHeight);
@@ -2994,13 +3058,21 @@
       contexte.camera = cam; contexte.aspect = canvas.width / Math.max(1, canvas.height); contexte.vuesSecondaires = S.fauneSecondaires;
       B.faune.dessiner(nature.faune, horlogeReelle, contexte, sortie);
     }
-    // Hélicoptère TV & drones métal de tournage (au-dessus du peloton sur tous les paliers, low inclus)
+    // Hélicoptère TV & drones métal de tournage : suivi peloton de tête + balayage vers le dernier,
+    // survol haut anti-tunnel, anti-arbres et anti-décor (ZÉRO couplage au cap du joueur).
     if (B.aeriens && S.type !== 'vitrine') {
       const ae = S.aeriens || (S.aeriens = creationTardive('aeriens', B.aeriens.creer(c, { qualite: P.palier })));
-      const ctxAe = S.aeriensVue || (S.aeriensVue = creationTardive('contexteAeriens', { qualite: P.palier, cible: [0, 0, 0], cibleCap: 0, cibleVitesse: 0, sCible: 0, nuit: 0, sol: null }));
-      ctxAe.qualite = P.palier; ctxAe.cible[0] = ps.x; ctxAe.cible[1] = ps.y; ctxAe.cible[2] = ps.z;
-      ctxAe.cibleCap = ps.cap; ctxAe.cibleVitesse = suivie.etat.v || 0; ctxAe.sCible = suivie.etat.s || 0;
-      ctxAe.nuit = S.nature?.ambiance?.nuit || 0; ctxAe.sol = scene.decor.sol;
+      const ctxAe = S.aeriensVue || (S.aeriensVue = creationTardive('contexteAeriens', { qualite: P.palier, sTete: 0, sDernier: 0, sCible: 0, nuit: 0, sol: null, obstacles: null }));
+      const cl = co.classement;
+      const vTete = cl && cl.length ? co.voitures[cl[0]] : suivie;
+      const vDernier = cl && cl.length ? co.voitures[cl[cl.length - 1]] : suivie;
+      ctxAe.qualite = P.palier;
+      ctxAe.sTete = vTete && vTete.etat ? vTete.etat.s : (suivie.etat.s || 0);
+      ctxAe.sDernier = vDernier && vDernier.etat ? vDernier.etat.s : ctxAe.sTete;
+      ctxAe.sCible = suivie.etat.s || 0;
+      ctxAe.nuit = S.nature?.ambiance?.nuit || 0;
+      ctxAe.sol = scene.decor.sol;
+      ctxAe.obstacles = scene.decor.obstacles || null;
       B.aeriens.dessiner(ae, S.tRendu, ctxAe, sortie);
     }
     // Panneaux directionnels de virage animés + bandeaux LED dynamiques du portique
@@ -3241,6 +3313,35 @@
     etatSon.joueur2 = cam2 ? sonJoueur2 : null;
     if (cam2) decrireMoteur(sonJoueur2, S2, co.voitures[k2], cam2);
     son.mettreAJour(etatSon, dtImage);
+    if (son.foule) {
+      let intensiteFoule = 0;
+      if ((ecran === 'course' || ecran === 'demo') && S.type !== 'vitrine') {
+        const vj = co.voitures[ks], ej = vj && vj.etat;
+        if (ej) {
+          const c = co.c, L = c.longueur;
+          // Proximité ligne de départ/arrivée & tribunes principales
+          const dDepart = c.ouvert ? Math.min(Math.abs(ej.s - (c.depart || 0)), Math.abs(ej.s - (c.arrivee || L))) : Math.min(ej.s, L - ej.s);
+          if (dDepart < 160) intensiteFoule = Math.max(intensiteFoule, Math.max(0, 1 - dDepart / 160));
+          // Proximité groupes de spectateurs / gradins du public 3D
+          if (S.public && S.public.zones && S.public.zones.length) {
+            const pj = poses[ks];
+            for (let zi = 0; zi < S.public.zones.length; zi++) {
+              const z = S.public.zones[zi];
+              const d = Math.hypot((z.x || 0) - pj.x, (z.z || 0) - pj.z);
+              if (d < 95) intensiteFoule = Math.max(intensiteFoule, (1 - d / 95) * 0.9);
+            }
+          }
+          // Ambiance légère dans les gros virages spectateurs
+          if (intensiteFoule < 0.25 && Math.abs(ej.v) > 20 && c.stands) {
+            const dSt = Math.abs(B.circuit.ecart(c, (c.stands.debut + c.stands.fin) * 0.5, ej.s));
+            if (dSt < 140) intensiteFoule = Math.max(intensiteFoule, (1 - dSt / 140) * 0.85);
+          }
+          son.foule(intensiteFoule, Math.abs(ej.v || 0));
+        }
+      } else {
+        son.foule(0, 0);
+      }
+    }
     if (ec) son.echappement(S.ech.son, ec);
   }
 
@@ -3733,15 +3834,44 @@
     $('o-tours').hidden = $('o-difficulte').hidden = modePrepa === 'chrono';
     $('o-chrono').hidden = modePrepa !== 'chrono';
     const zone = $('circuits');
+    const BIOME_COULEURS = { foret: '#39ff8e', cote: '#00d4ff', montagne: '#8ee8ff', larche: '#5cd6ff', islande: '#ff6b35', desert: '#ffb84d', asie: '#ff66b2', pacifique: '#2dd4bf', baikal: '#60a5fa', fjord: '#38bdf8', carpates: '#a3e635', ecosse: '#34d399', sierra: '#fb923c', corail: '#22d3ee', andes: '#c084fc' };
+    const CATS = { tous: null, 'forets-cotes': ['val-brule', 'corail', 'cap-sequoia', 'fjord'], montagnes: ['route-des-cimes', 'larche'], sauvages: ['lande-noire', 'sierra', 'brume-de-jade', 'baikal'] };
     if (!zone.childElementCount) {
       CATALOGUE.forEach((k, i) => {
         const b = document.createElement('button');
-        b.type = 'button'; b.className = 'carte-circuit'; b.setAttribute('role', 'radio'); b.dataset.index = i;
+        const clefTheme = k.id === 'larche' ? 'larche' : (k.theme || 'foret');
+        b.type = 'button'; b.className = 'carte-circuit'; b.setAttribute('role', 'radio'); b.dataset.index = i; b.dataset.id = k.id; b.dataset.theme = clefTheme;
+        b.style.setProperty('--biome', BIOME_COULEURS[clefTheme] || '#39ff8e');
+        b.style.animationDelay = (i * 18) + 'ms';
         b.innerHTML = '<span class="circuit-rang">' + String(i + 1).padStart(2, '0') + '</span><span class="nom">' + k.nom + '</span>' +
           '<span class="fiche">' + k.lieu + '</span><span class="circuit-distance">' + (k.longueur / 1000).toFixed(1).replace('.', ',') + ' km</span>';
         b.addEventListener('click', () => { reglages.circuit = i; sauverReglages(); majPreparation(); if (son) son.evenement('clic'); if (EL.role === 'hote' && lienActif()) annoncerCourse(); });
         zone.appendChild(b);
       });
+      const barreCat = $('p-categories');
+      if (barreCat && !barreCat.dataset.lie) {
+        barreCat.dataset.lie = '1';
+        const CAT_ORDRE = Object.keys(CATS);
+        let catActive = 'tous';
+        const filtrerCat = cat => {
+          if (!Object.prototype.hasOwnProperty.call(CATS, cat)) return;
+          catActive = cat;
+          const ids = CATS[cat];
+          let visibles = 0;
+          for (const b of zone.children) {
+            const ok = !ids || ids.includes(b.dataset.id);
+            b.hidden = !ok;
+            if (ok) { b.style.animation = 'none'; void b.offsetWidth; b.style.animation = ''; visibles++; }
+          }
+          zone.dataset.menuCols = visibles > 8 ? '4' : visibles > 4 ? '3' : '2';
+          for (const btn of barreCat.querySelectorAll('.cat-btn')) btn.setAttribute('aria-selected', String(btn.dataset.cat === cat));
+          const sel = zone.querySelector('.carte-circuit[aria-checked="true"]:not([hidden])') || zone.querySelector('.carte-circuit:not([hidden])');
+          if (sel) { reglages.circuit = +sel.dataset.index; sauverReglages(); majPreparation(); }
+          if (son) son.evenement('clic');
+        };
+        barreCat.addEventListener('click', ev => { const btn = ev.target.closest('.cat-btn'); if (btn) filtrerCat(btn.dataset.cat); });
+        barreCat._decaler = sens => filtrerCat(CAT_ORDRE[(CAT_ORDRE.indexOf(catActive) + sens + CAT_ORDRE.length) % CAT_ORDRE.length]);
+      }
     }
     for (const nom of ['tours', 'difficulte']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
     for (const r of document.querySelectorAll('input[name="meteo"]')) r.checked = String(reglages.meteo || 'aleatoire') === r.value;
@@ -3834,8 +3964,21 @@
     for (const r of document.querySelectorAll('input[name="saisonDepart"]')) r.checked = r.value === reglages.saison;
     afficherConditions();
     for (const b of $('circuits').children) { const actif = +b.dataset.index === reglages.circuit; b.setAttribute('aria-checked', String(actif)); b.tabIndex = actif ? 0 : -1; }
-    const c = circuit(reglages.circuit);
-    menuArcade.trace(c, fiche(c), CATALOGUE[reglages.circuit], reglages.circuit, CATALOGUE.length);
+    const c = circuit(reglages.circuit), fC = fiche(c), metaC = CATALOGUE[reglages.circuit];
+    menuArcade.trace(c, fC, metaC, reglages.circuit, CATALOGUE.length);
+    // Jauges arcade animées (Vitesse, Technique, Relief)
+    const jVit = clamp(Math.round(92 - Math.min(48, (fC.virages || 8) * 1.9) + Math.min(18, (c.longueur || 4000) / 1400)), 28, 98);
+    const jTech = clamp(Math.round(28 + (fC.virages || 8) * 3.6 + (c.ouvert ? 16 : 0)), 25, 99);
+    const jRel = clamp(Math.round(14 + Math.min(86, Math.sqrt(Math.max(0, fC.relief || 10)) * 4.4)), 15, 100);
+    for (const [id, val, c1, c2] of [
+      ['jauge-vitesse', jVit, '#00e5ff', '#39ff8e'],
+      ['jauge-technique', jTech, '#ffd600', '#ff9100'],
+      ['jauge-relief', jRel, '#ff3860', '#ff6b4a']
+    ]) {
+      const el = $(id), txt = $(id + '-val');
+      if (el) { el.style.setProperty('--val', val + '%'); el.style.setProperty('--jauge-c1', c1); el.style.setProperty('--jauge-c2', c2); }
+      if (txt) txt.textContent = String(val);
+    }
     majChoixTroll(); majBilanArcade();
     const r = records[CATALOGUE[reglages.circuit].id];
     $('p-record').innerHTML = r ? 'Votre record sur ' + CATALOGUE[reglages.circuit].nom + ' : <b>' + chrono(r.tour) + '</b>' : 'Pas encore de temps sur ' + CATALOGUE[reglages.circuit].nom + '.';

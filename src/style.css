@@ -1001,19 +1001,46 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   .arcade-preparation #p-piste:not([hidden]) { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; gap: 10px; }
   .arcade-preparation .selection-circuit { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; gap: 10px; }
   /* Vitrine héroïque 3D en haut (occupe tout l'espace vertical disponible) */
-  .arcade-preparation .apercu-circuit { flex: 1 1 0; min-height: 148px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(300px, 1fr); grid-template-rows: auto 1fr auto; grid-template-areas: "trace titre" "trace chiffres" "legende chiffres"; align-items: stretch; background: linear-gradient(135deg, rgba(16, 22, 29, .92), rgba(24, 32, 42, .82)); border: 1px solid var(--trait-fort); border-top: 3px solid var(--rouge); border-radius: 4px; overflow: hidden; }
-  .arcade-preparation .apercu-entete { grid-area: titre; padding: 12px 20px 6px; border-left: 1px solid var(--trait); }
-  .arcade-preparation .apercu-entete h3 { font-size: clamp(24px, 2.8vw, 38px); line-height: 1; }
-  .arcade-preparation #p-trace-3d { grid-area: trace; width: 100%; height: 100%; min-height: 120px; margin: 0; }
-  .arcade-preparation .apercu-legende { grid-area: legende; padding: 4px 16px 8px; display: flex; align-items: center; justify-content: space-between; }
-  .arcade-preparation .chiffres-circuit { grid-area: chiffres; align-self: center; margin: 0; padding: 10px 20px 12px; border-top: 1px solid var(--trait); border-left: 1px solid var(--trait); gap: 10px; }
-  .arcade-preparation .chiffres-circuit dd { margin: 4px 0 0; font-size: 12px; }
-  .arcade-preparation .chiffres-circuit b { font-size: clamp(20px, 2.3vw, 30px); }
-  /* Grille Arcade 4×4 pleine largeur en bas : 16 destinations visibles d'un coup, zéro troncature */
+  .arcade-preparation .apercu-circuit { flex: 1 1 0; min-height: 140px; display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(300px, 1fr); grid-template-rows: auto auto 1fr auto; grid-template-areas: "trace titre" "trace chiffres" "trace jauges" "legende jauges"; align-items: stretch; background: linear-gradient(135deg, rgba(12, 18, 26, .95), rgba(18, 28, 40, .88)); border: 1px solid #2b4156; border-top: 3px solid var(--rouge); border-radius: 6px; overflow: hidden; box-shadow: 0 8px 28px rgba(0, 0, 0, .42), inset 0 1px 0 rgba(255, 255, 255, .05); }
+  .arcade-preparation .apercu-entete { grid-area: titre; padding: 10px 18px 4px; border-left: 1px solid var(--trait); }
+  .arcade-preparation .apercu-entete h3 { font-size: clamp(22px, 2.6vw, 36px); line-height: 1; text-shadow: 0 0 18px rgba(240, 167, 88, .25); }
+  .arcade-preparation #p-trace-3d { grid-area: trace; width: 100%; height: 100%; min-height: 112px; margin: 0; }
+  .arcade-preparation .apercu-legende { grid-area: legende; padding: 4px 14px 6px; display: flex; align-items: center; justify-content: space-between; font-size: 11px; background: rgba(7, 11, 16, .55); }
+  .arcade-preparation .chiffres-circuit { grid-area: chiffres; align-self: start; margin: 0; padding: 6px 18px 8px; border-top: 1px solid var(--trait); border-left: 1px solid var(--trait); gap: 8px; }
+  .arcade-preparation .chiffres-circuit dd { margin: 2px 0 0; font-size: 11.5px; }
+  .arcade-preparation .chiffres-circuit b { font-size: clamp(18px, 2.0vw, 26px); }
+  .arcade-preparation .jauges-arcade { grid-area: jauges; align-self: center; padding: 6px 18px 10px; border-top: 1px solid var(--trait); border-left: 1px solid var(--trait); display: flex; flex-direction: column; gap: 5px; }
+  .jauge { display: flex; align-items: center; gap: 8px; }
+  .jauge-label { font: 700 10px/1 var(--f-texte); color: #8ecae6; width: 68px; text-transform: uppercase; letter-spacing: .08em; }
+  .jauge-piste { flex: 1; height: 8px; border-radius: 4px; background: #0c141d; border: 1px solid #223446; overflow: hidden; }
+  .jauge-remplissage { height: 100%; width: var(--val, 50%); border-radius: 3px; background: linear-gradient(90deg, var(--jauge-c1, #00e5ff), var(--jauge-c2, #39ff8e)); box-shadow: 0 0 10px var(--jauge-c1, #00e5ff); transition: width .42s cubic-bezier(.22, 1, .36, 1); }
+  .jauge-valeur { font: 700 11px/1 var(--f-titre); color: #fff; width: 24px; text-align: right; font-variant-numeric: tabular-nums; }
+  /* Catégories Arcade + Grille 4×4 pleine largeur en bas : 16 destinations visibles d'un coup, zéro troncature */
   .arcade-preparation .catalogue-circuits { flex: 0 0 auto; overflow: visible; }
-  .arcade-preparation .catalogue-circuits > .arcade-surtitre { margin-bottom: 5px; font-size: 10.5px; letter-spacing: .16em; }
-  .arcade-preparation .circuits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); flex: 0 0 auto; min-height: 0; max-height: none; overflow: visible; gap: 6px; padding: 2px; }
-  .arcade-preparation .carte-circuit { min-height: clamp(40px, 5.6vh, 56px); padding: 5px 9px; grid-template-columns: 20px minmax(0, 1fr) auto; column-gap: 7px; row-gap: 1px; background: rgba(18, 24, 31, .88); border: 1px solid #2b3844; border-top: 2px solid #3c4d5d; border-radius: 3px; transition: transform .1s ease, border-color .1s ease, background .1s ease; }
+  .cat-entete { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+  .cat-barre { flex: 1; display: flex; gap: 5px; }
+  .cat-btn { flex: 1; padding: 5px 8px; border: 1px solid #243648; border-radius: 4px; background: linear-gradient(180deg, #121c27, #0b1118); color: #9db6c8; font: 700 11px/1.15 var(--f-titre); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; position: relative; overflow: hidden; transition: all .18s ease; }
+  .cat-btn::after { content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 2px; background: #00e5ff; transform: translateX(-50%); transition: width .22s ease; }
+  .cat-btn[aria-selected="true"] { background: linear-gradient(135deg, #163248, #1a2434); border-color: #00e5ff; color: #fff; box-shadow: 0 0 12px rgba(0, 229, 255, .28), inset 0 0 8px rgba(0, 229, 255, .14); }
+  .cat-btn[aria-selected="true"]::after { width: 82%; }
+  .cat-btn:hover:not([aria-selected="true"]) { border-color: #4f7b9e; color: #e2eff8; }
+  .cat-btn .cat-count { font-size: 9.5px; opacity: .72; margin-left: 2px; }
+  .cat-raccourci { display: inline-flex; align-items: center; gap: 3px; opacity: .85; }
+  .touch-manette { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 19px; padding: 0 4px; border-radius: 4px; font: 800 9.5px/1 var(--f-texte); color: #fff; background: #143252; border: 1px solid #3c82c4; }
+  .arcade-preparation .circuits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); flex: 0 0 auto; min-height: 0; max-height: none; overflow: visible; gap: 5px; padding: 2px; }
+  .arcade-preparation .carte-circuit { position: relative; min-height: clamp(38px, 5.2vh, 52px); padding: 4px 8px 4px 12px; grid-template-columns: 20px minmax(0, 1fr) auto; column-gap: 7px; row-gap: 1px; background: linear-gradient(135deg, rgba(16, 24, 34, .92), rgba(10, 15, 22, .94)); border: 1px solid #263646; border-radius: 5px; transition: transform .14s ease, border-color .16s ease, box-shadow .18s ease, background .16s ease; animation: carteEntree .28s ease both; }
+  @keyframes carteEntree { from { opacity: 0; transform: translateY(6px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .arcade-preparation .carte-circuit::before { content: ''; position: absolute; left: 0; top: 5px; bottom: 5px; width: 4px; border-radius: 2px; background: var(--biome, #39ff8e); box-shadow: 0 0 8px var(--biome, #39ff8e); }
+  .arcade-preparation .carte-circuit[hidden] { display: none !important; }
+  .arcade-preparation .carte-circuit:hover, .arcade-preparation .carte-circuit:focus-visible { border-color: #f0a758; background: linear-gradient(135deg, rgba(32, 46, 62, .96), rgba(18, 28, 38, .96)); box-shadow: 0 0 0 2px rgba(240, 167, 88, .45), 0 4px 14px rgba(0, 0, 0, .35); transform: translateY(-1px) scale(1.012); }
+  .arcade-preparation .carte-circuit[aria-checked="true"] { border-color: #00e5ff; background: linear-gradient(135deg, rgba(132, 34, 24, .88), rgba(28, 24, 36, .95)); box-shadow: 0 0 16px rgba(226, 75, 55, .36), inset 0 0 10px rgba(0, 229, 255, .14); }
+  .arcade-preparation #b-depart { position: relative; overflow: hidden; box-shadow: 0 0 20px rgba(214, 76, 56, .45), 0 4px 12px rgba(0, 0, 0, .4); }
+  .arcade-preparation #b-depart::after { content: ''; position: absolute; top: 0; left: -65%; width: 45%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .36), transparent); transform: skewX(-22deg); animation: refletArcade 2.8s ease-in-out infinite; pointer-events: none; }
+  @keyframes refletArcade { 0%, 62%, 100% { left: -65%; } 30% { left: 125%; } }
+  @media (prefers-reduced-motion: reduce) {
+    .arcade-preparation .carte-circuit, .jauge-remplissage { animation: none; transition: none; }
+    .arcade-preparation #b-depart::after { animation: none; display: none; }
+  }
   .arcade-preparation .carte-circuit:hover, .arcade-preparation .carte-circuit:focus-visible { border-color: var(--ambre); border-top-color: var(--ambre); background: rgba(34, 42, 52, .96); box-shadow: 0 0 0 2px rgba(240, 167, 88, .45); transform: translateY(-1px); }
   .arcade-preparation .carte-circuit[aria-checked="true"] { border-color: #f0a758; border-top: 3px solid #e24b37; background: linear-gradient(135deg, rgba(124, 34, 22, .85), rgba(44, 18, 16, .92)); box-shadow: 0 4px 16px rgba(226, 75, 55, .28); }
   .arcade-preparation .carte-circuit .nom { font-size: clamp(13px, 1.15vw, 17px); line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

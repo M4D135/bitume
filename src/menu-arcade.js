@@ -1,10 +1,32 @@
-// Aperçu du vrai tracé : projection perspective du relief, sans scène FERRO ni second contexte WebGL.
+// MENU_ARCADE_JS — src/menu-arcade.js (remplacement complet)
 (function (B) {
   'use strict';
   const ETAPES = Object.freeze(['p-piste', 'p-conditions', 'p-pilotes', 'p-bilan']);
   const MAX_POINTS = 240, CACHE = new WeakMap(), INSTALLATIONS = new WeakMap();
   const GESTES = Object.freeze(['majeur', 'poing', 'salut']), KLAXONS = Object.freeze(['classique', 'ancien', 'mariage']);
   const borner = (v, a, b) => Math.max(a, Math.min(b, v));
+
+  const THEMES = Object.freeze({
+    foret:    { bg0:'#0a1f14', bg1:'#041208', halo:'#1aff6e', grid:'#0f4a2a', accent:'#39ff8e' },
+    cote:     { bg0:'#081a2e', bg1:'#030d1a', halo:'#00cfff', grid:'#0a3355', accent:'#00e5ff' },
+    corail:   { bg0:'#06152a', bg1:'#020a18', halo:'#00b4d8', grid:'#083050', accent:'#48cae4' },
+    montagne: { bg0:'#0c1520', bg1:'#050a10', halo:'#7ec8e3', grid:'#1a3050', accent:'#a8dadc' },
+    larche:   { bg0:'#0b1422', bg1:'#040912', halo:'#6db3f2', grid:'#162d4a', accent:'#90caf9' },
+    andes:    { bg0:'#0a1220', bg1:'#040810', halo:'#5b9bd5', grid:'#142840', accent:'#82b1ff' },
+    islande:  { bg0:'#1a0a0a', bg1:'#0d0404', halo:'#ff4500', grid:'#3d1515', accent:'#ff6b35' },
+    desert:   { bg0:'#1f1508', bg1:'#0f0a03', halo:'#ffb347', grid:'#3d2a10', accent:'#ffd166' },
+    sierra:   { bg0:'#1c1206', bg1:'#0e0903', halo:'#e6a817', grid:'#382510', accent:'#f4c430' },
+    asie:     { bg0:'#0a1a14', bg1:'#040d0a', halo:'#00e676', grid:'#0d3328', accent:'#69f0ae' },
+    baikal:   { bg0:'#06101e', bg1:'#020810', halo:'#4fc3f7', grid:'#0a2540', accent:'#81d4fa' },
+    fjord:    { bg0:'#081a12', bg1:'#030d08', halo:'#26a69a', grid:'#0d3328', accent:'#4db6ac' },
+    ecosse:   { bg0:'#0a1810', bg1:'#040c08', halo:'#66bb6a', grid:'#103320', accent:'#81c784' },
+    carpates: { bg0:'#0c1a10', bg1:'#050d08', halo:'#4caf50', grid:'#123320', accent:'#a5d6a7' }
+  });
+  const THEME_DEFAUT = THEMES.foret;
+  function themeDe(source) {
+    if (!source || !source.theme) return THEME_DEFAUT;
+    return THEMES[source.theme] || THEME_DEFAUT;
+  }
 
   function normaliserTroll(source) {
     const choix = source && Array.isArray(source.trollPilotes) ? source.trollPilotes : [];
@@ -15,12 +37,12 @@
   }
 
   function preparerTrace(c, maximum = MAX_POINTS) {
-    if (!c || !Number.isInteger(c.n) || c.n < 3 || !c.x || !c.z) throw new TypeError('Tracé incomplet');
+    if (!c || !Number.isInteger(c.n) || c.n < 3 || !c.x || !c.z || c.x.length < c.n || c.z.length < c.n || (c.y && c.y.length < c.n)) throw new TypeError('Tracé de circuit incomplet');
     const n = Math.min(c.n, borner(Math.floor(maximum) || MAX_POINTS, 12, MAX_POINTS));
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity, y0 = Infinity, y1 = -Infinity;
     for (let i = 0; i < c.n; i++) {
       const x = c.x[i], y = c.y ? c.y[i] : 0, z = c.z[i];
-      if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z)) throw new TypeError('Coordonnée de tracé non finie');
+      if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z)) throw new TypeError('Coordonnées de circuit non finies');
       x0 = Math.min(x0, x); x1 = Math.max(x1, x); z0 = Math.min(z0, z); z1 = Math.max(z1, z);
       y0 = Math.min(y0, y); y1 = Math.max(y1, y);
     }
@@ -28,17 +50,31 @@
     let rayon = 1;
     for (let i = 0; i < c.n; i++) rayon = Math.max(rayon, Math.hypot(c.x[i] - cx, c.z[i] - cz));
     const diametre = rayon * 2, points = new Float64Array(n * 3), indices = new Uint32Array(n);
+    const courbures = new Float64Array(n);
     for (let i = 0; i < n; i++) {
       const j = Math.floor(i * c.n / n); indices[i] = j;
       points[i * 3] = (c.x[j] - cx) / diametre;
       points[i * 3 + 1] = ((c.y ? c.y[j] : 0) - y0) / diametre;
       points[i * 3 + 2] = (c.z[j] - cz) / diametre;
     }
-    return Object.freeze({ n, points, indices, diametre, centre: Object.freeze([cx, y0, cz]), relief: (y1 - y0) / diametre,
-      altitudeMin: y0, altitudeMax: y1, longueur: c.longueur || 0, ouvert: !!c.ouvert });
+    // Courbure locale (déterministe, pas de Math.random)
+    for (let i = 0; i < n; i++) {
+      const p = (i - 1 + n) % n, s = (i + 1) % n;
+      const dx1 = points[i*3]-points[p*3], dz1 = points[i*3+2]-points[p*3+2];
+      const dx2 = points[s*3]-points[i*3], dz2 = points[s*3+2]-points[i*3+2];
+      const cross = dx1*dz2 - dz1*dx2;
+      const len = Math.hypot(dx1,dz1)*Math.hypot(dx2,dz2) || 1;
+      courbures[i] = Math.abs(cross) / len;
+    }
+    // Sommet (point le plus haut)
+    let sommet = 0;
+    for (let i = 1; i < n; i++) if (points[i*3+1] > points[sommet*3+1]) sommet = i;
+    return Object.freeze({ n, points, indices, diametre, centre: Object.freeze([cx, y0, cz]),
+      relief: (y1 - y0) / diametre, altitudeMin: y0, altitudeMax: y1, longueur: c.longueur || 0,
+      ouvert: !!c.ouvert, courbures, sommet, theme: c.theme || 'foret',
+      depart: 0 });
   }
 
-  // Enveloppe valable pour toute rotation : ni tracé coupé, ni zoom qui respire à chaque image.
   function cadrer(trace, largeur, hauteur, cadre) {
     if (!(Number.isFinite(largeur) && largeur > 0 && Number.isFinite(hauteur) && hauteur > 0)) throw new RangeError('Taille de projection invalide');
     const distance = 2.8 + trace.relief * .704, proche = distance - .355 - trace.relief * .704;
@@ -48,7 +84,6 @@
     return cadre;
   }
 
-  // La même échelle sur les trois axes conserve le relief réel. Le troisième canal est la profondeur.
   function projeter(trace, rotation, largeur, sortie, cadre) {
     if (!Number.isFinite(rotation)) throw new RangeError('Rotation de projection invalide');
     if (sortie.length < trace.n * 3) throw new RangeError('Tampon de projection trop petit');
@@ -67,6 +102,7 @@
     return projeter(trace, rotation, largeur, sortie, cadrer(trace, largeur, hauteur, new Float64Array(3)));
   }
 
+  // ─── APERÇU CANVAS 2D ARCADE ───────────────────────────────────────────────
   function creerApercu(canvas) {
     const doc = canvas.ownerDocument, vue = doc.defaultView;
     let ctx = null, source = null, affiche = null, trace = null, proj = null, ordre = [], rotation = -.7, dernier = -Infinity, largeur = 720, hauteur = 400;
@@ -97,14 +133,13 @@
       if (canvas.width !== largeur) canvas.width = largeur;
       if (canvas.height !== hauteur) canvas.height = hauteur;
       compte.resolution[0] = largeur; compte.resolution[1] = hauteur;
-      fond = ctx.createLinearGradient(0, 0, largeur, hauteur); fond.addColorStop(0, '#18232b'); fond.addColorStop(1, '#090e14');
       cadrer(trace, largeur, hauteur, cadre); tailleSale = false;
     }
+
     function dessiner(t, actif, leger = false) {
       if (detruit || !actif || doc.hidden || !source || sansContexte || canvas.closest('[hidden],[inert],[aria-hidden="true"]')) { suspendre(); return false; }
       t = Number.isFinite(t) ? t : vue.performance.now();
       if (t < dernier) dernier = -Infinity;
-      // Les demandes rapprochées (défilement du catalogue compris) sont réunies en une seule image.
       if (t - dernier + .000001 < (leger ? 50 : 1000 / 30)) return false;
       if (visible && source === affiche && (pause || reduit) && !imageSale && !tailleSale && ancienLeger === !!leger) return false;
       const rectangle = canvas.getBoundingClientRect();
@@ -115,7 +150,7 @@
       const debut = vue.performance.now();
       if (source !== affiche) {
         let prochain = CACHE.get(source);
-        if (!prochain) { prochain = preparerTrace(source); CACHE.set(source, prochain); compte.preparations++; }
+        if (!prochain) { prochain = preparerTrace(source); if (!prochain) return false; CACHE.set(source, prochain); compte.preparations++; }
         trace = prochain; affiche = source;
         proj = new Float64Array(trace.n * 3); ordre = Array.from({ length: trace.n }, (_, i) => i);
         rotation = -.7; compte.points = trace.n; tailleSale = imageSale = true; dernier = -Infinity;
@@ -127,55 +162,177 @@
       if (tailleSale) dimensionner(leger, rectangle);
       co = Math.cos(rotation); si = Math.sin(rotation);
       dernier = t; imageSale = false;
-      ctx.fillStyle = fond; ctx.fillRect(0, 0, largeur, hauteur);
-      ctx.strokeStyle = 'rgba(133,176,191,.11)'; ctx.lineWidth = Math.max(.7, largeur / 1000); ctx.beginPath();
-      for (let k = -5; k <= 5; k++) {
-        pointSol(k * .12, -.64, 0); pointSol(k * .12, .64, 3);
+
+      const th = themeDe(source);
+      const tNorm = (t / 1000) % 100; // temps normalisé pour animations
+
+      // ── FOND ATMOSPHÉRIQUE DYNAMIQUE ──
+      const grad = ctx.createLinearGradient(0, 0, 0, hauteur);
+      grad.addColorStop(0, th.bg0); grad.addColorStop(1, th.bg1);
+      ctx.fillStyle = grad; ctx.fillRect(0, 0, largeur, hauteur);
+      // Halo radial néon
+      if (typeof ctx.createRadialGradient === 'function') {
+        const hx = largeur * .5, hy = hauteur * .38;
+        const halo = ctx.createRadialGradient(hx, hy, 0, hx, hy, largeur * .55);
+        halo.addColorStop(0, th.halo + '22'); halo.addColorStop(.6, th.halo + '0a'); halo.addColorStop(1, 'transparent');
+        ctx.fillStyle = halo; ctx.fillRect(0, 0, largeur, hauteur);
+      }
+
+      // ── GRILLE PERSPECTIVE ARCADE ──
+      const scrollOff = (pause || reduit) ? 0 : (tNorm * .04) % .12;
+      ctx.strokeStyle = th.grid + '55'; ctx.lineWidth = Math.max(.5, largeur / 1400); ctx.beginPath();
+      for (let k = -6; k <= 6; k++) {
+        const off = k * .12 + scrollOff;
+        pointSol(off, -.7, 0); pointSol(off, .7, 3);
         ctx.moveTo(sol[0], sol[1]); ctx.lineTo(sol[3], sol[4]);
-        pointSol(-.64, k * .12, 0); pointSol(.64, k * .12, 3);
+        pointSol(-.7, off, 0); pointSol(.7, off, 3);
         ctx.moveTo(sol[0], sol[1]); ctx.lineTo(sol[3], sol[4]);
       }
       ctx.stroke();
+
+      // ── PROJECTION ──
       projeter(trace, rotation, largeur, proj, cadre);
-      // Ombre et supports donnent une lecture du relief sans terrain ni végétation supplémentaires.
-      ctx.strokeStyle = 'rgba(0,0,0,.38)'; ctx.lineWidth = Math.max(5, largeur / 65); ctx.lineJoin = 'round'; ctx.beginPath();
       const limiteSol = trace.ouvert ? trace.n - 1 : trace.n;
+
+      // ── RIDEAU TOPOGRAPHIQUE 3D (facettes verticales) ──
+      ctx.globalAlpha = .18;
+      for (let i = 0; i < limiteSol; i++) {
+        const j = (i + 1) % trace.n;
+        pointSol(trace.points[i*3], trace.points[i*3+2], 0);
+        const sx0 = sol[0], sy0 = sol[1];
+        pointSol(trace.points[j*3], trace.points[j*3+2], 0);
+        const sx1 = sol[0], sy1 = sol[1];
+        ctx.fillStyle = th.accent + '30';
+        ctx.beginPath();
+        ctx.moveTo(proj[i*3], proj[i*3+1]);
+        ctx.lineTo(proj[j*3], proj[j*3+1]);
+        ctx.lineTo(sx1, sy1);
+        ctx.lineTo(sx0, sy0);
+        ctx.closePath(); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      // ── OMBRE PORTÉE AU SOL ──
+      ctx.strokeStyle = 'rgba(0,0,0,.42)'; ctx.lineWidth = Math.max(6, largeur / 55); ctx.lineJoin = 'round'; ctx.beginPath();
       for (let i = 0; i <= limiteSol; i++) {
-        const j = i % trace.n; pointSol(trace.points[j * 3], trace.points[j * 3 + 2], 0);
+        const j = i % trace.n; pointSol(trace.points[j*3], trace.points[j*3+2], 0);
         if (i) ctx.lineTo(sol[0], sol[1]); else ctx.moveTo(sol[0], sol[1]);
       }
       if (!trace.ouvert) ctx.closePath();
       ctx.stroke();
-      ctx.strokeStyle = 'rgba(143,184,196,.24)'; ctx.lineWidth = Math.max(1, largeur / 720); ctx.beginPath();
-      for (let i = 0; i < trace.n; i += Math.max(1, Math.floor(trace.n / 18))) {
-        pointSol(trace.points[i * 3], trace.points[i * 3 + 2], 0);
-        ctx.moveTo(proj[i * 3], proj[i * 3 + 1]); ctx.lineTo(sol[0], sol[1]);
+
+      // ── SUPPORTS VERTICAUX ──
+      ctx.strokeStyle = th.accent + '35'; ctx.lineWidth = Math.max(1, largeur / 800); ctx.beginPath();
+      for (let i = 0; i < trace.n; i += Math.max(1, Math.floor(trace.n / 22))) {
+        pointSol(trace.points[i*3], trace.points[i*3+2], 0);
+        ctx.moveTo(proj[i*3], proj[i*3+1]); ctx.lineTo(sol[0], sol[1]);
       }
-      ctx.stroke(); ordre.sort(trier); ctx.lineCap = 'round';
+      ctx.stroke();
+
+      // ── TRI PROFONDEUR ──
+      ordre.sort(trier);
+      ctx.lineCap = 'round';
+
+      // ── RUBAN NÉON MULTICOUCHE ──
       for (const i of ordre) {
         if (trace.ouvert && i >= trace.n - 1) continue;
-        const j = (i + 1) % trace.n, e = Math.min(largeur, hauteur * 2) / 100 * cadre[2] / proj[i * 3 + 2];
-        ctx.beginPath(); ctx.moveTo(proj[i * 3], proj[i * 3 + 1]); ctx.lineTo(proj[j * 3], proj[j * 3 + 1]);
-        ctx.strokeStyle = i % 12 < 6 ? '#d64c38' : '#e1dccb'; ctx.lineWidth = Math.max(4, e); ctx.stroke();
-        ctx.strokeStyle = '#52636c'; ctx.lineWidth = Math.max(2, e * .55); ctx.stroke();
+        const j = (i + 1) % trace.n;
+        const e = Math.min(largeur, hauteur * 2) / 100 * cadre[2] / proj[i * 3 + 2];
+        const courb = trace.courbures ? trace.courbures[i] : 0;
+        const rapide = courb < .12;
+
+        // Couche 1 : Halo lumineux
+        ctx.beginPath(); ctx.moveTo(proj[i*3], proj[i*3+1]); ctx.lineTo(proj[j*3], proj[j*3+1]);
+        ctx.strokeStyle = rapide ? 'rgba(0,255,220,.25)' : 'rgba(255,100,30,.3)';
+        ctx.lineWidth = Math.max(10, e * 2.8); ctx.stroke();
+
+        // Couche 2 : Chaussée + vibreurs
+        ctx.beginPath(); ctx.moveTo(proj[i*3], proj[i*3+1]); ctx.lineTo(proj[j*3], proj[j*3+1]);
+        ctx.strokeStyle = '#1a1e24'; ctx.lineWidth = Math.max(6, e * 1.6); ctx.stroke();
+        // Vibreurs
+        ctx.strokeStyle = i % 12 < 6 ? '#e63946' : '#f1faee';
+        ctx.lineWidth = Math.max(4, e); ctx.stroke();
+        // Bordure brillante
+        ctx.strokeStyle = th.accent + '99'; ctx.lineWidth = Math.max(2, e * .45); ctx.stroke();
+
+        // Couche 3 : Ligne centrale lumineuse
+        ctx.beginPath(); ctx.moveTo(proj[i*3], proj[i*3+1]); ctx.lineTo(proj[j*3], proj[j*3+1]);
+        ctx.strokeStyle = rapide ? 'rgba(0,255,200,.7)' : 'rgba(255,200,50,.6)';
+        ctx.lineWidth = Math.max(1.5, e * .3); ctx.stroke();
       }
-      const x = proj[0], y = proj[1], r = Math.max(3, largeur / 150);
-      ctx.fillStyle = '#f5bc5b'; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = '#f5bc5b'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x, y - r); ctx.lineTo(x, y - r - hauteur * .07); ctx.stroke();
-      ctx.fillStyle = '#f5bc5b'; ctx.font = '600 ' + Math.max(9, largeur / 75) + 'px system-ui'; ctx.textAlign = 'center';
-      ctx.fillText('DÉPART', x, Math.max(12, y - r - hauteur * .085));
+
+      // ── 3 BOLIDES LUMINEUX AVEC TRAÎNÉE COMÈTE ──
+      const bolides = [0, .333, .666];
+      const couleursBolide = ['#ff3860', '#00e5ff', '#ffd600'];
+      for (let b = 0; b < 3; b++) {
+        const frac = (((rotation / (Math.PI * 2) + bolides[b]) % 1) + 1) % 1;
+        const idx = Math.floor(frac * trace.n) % trace.n;
+        const px = proj[idx * 3], py = proj[idx * 3 + 1];
+        const r = Math.max(3.5, largeur / 120);
+        // Traînée comète (5 segments derrière, sans saut entre fin et départ sur parcours ouvert)
+        ctx.lineCap = 'round';
+        for (let s = 5; s >= 1; s--) {
+          if (trace.ouvert && idx - s < 0) continue;
+          const si2 = ((idx - s) % trace.n + trace.n) % trace.n;
+          const prev = ((idx - s + 1) % trace.n + trace.n) % trace.n;
+          const alpha = (.6 - s * .1).toFixed(2);
+          ctx.beginPath(); ctx.moveTo(proj[si2 * 3], proj[si2 * 3 + 1]);
+          ctx.lineTo(proj[prev * 3], proj[prev * 3 + 1]);
+          ctx.strokeStyle = couleursBolide[b] + Math.round(alpha * 255).toString(16).padStart(2, '0');
+          ctx.lineWidth = Math.max(2, r * (1 - s * .15)); ctx.stroke();
+        }
+        // Bolide
+        ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI * 2);
+        ctx.fillStyle = couleursBolide[b]; ctx.fill();
+        ctx.beginPath(); ctx.arc(px, py, r * .45, 0, Math.PI * 2);
+        ctx.fillStyle = '#fff'; ctx.fill();
+      }
+
+      // ── BALISES ANIMÉES ──
+      const pulse = (pause || reduit) ? 1 : .7 + .3 * Math.sin(tNorm * 4);
+      // DÉPART (or pulsant)
+      const dx = proj[0], dy = proj[1], dr = Math.max(4, largeur / 130) * pulse;
+      ctx.beginPath(); ctx.arc(dx, dy, dr, 0, Math.PI * 2);
+      ctx.fillStyle = '#f5bc5b'; ctx.fill();
+      ctx.strokeStyle = '#f5bc5b'; ctx.lineWidth = 1.5; ctx.beginPath();
+      ctx.moveTo(dx, dy - dr); ctx.lineTo(dx, dy - dr - hauteur * .07); ctx.stroke();
+      ctx.fillStyle = '#f5bc5b'; ctx.font = '700 ' + Math.max(9, largeur / 70) + 'px system-ui';
+      ctx.textAlign = 'center'; ctx.fillText('DÉPART', dx, Math.max(12, dy - dr - hauteur * .085));
+
+      // SOMMET (cyan si dénivelé > 15m)
+      if (trace.altitudeMax - trace.altitudeMin > 15 && trace.sommet > 0) {
+        const sx = proj[trace.sommet*3], sy = proj[trace.sommet*3+1];
+        const sr = Math.max(3.5, largeur / 150) * pulse;
+        ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+        ctx.fillStyle = '#00e5ff'; ctx.fill();
+        ctx.fillStyle = '#00e5ff'; ctx.font = '700 ' + Math.max(8, largeur / 80) + 'px system-ui';
+        ctx.textAlign = 'center'; ctx.fillText('SOMMET', sx, sy - sr - 6);
+      }
+
+      // ARRIVÉE (rouge/blanc si ouvert)
+      if (trace.ouvert) {
+        const ai = trace.n - 1;
+        const ax = proj[ai*3], ay = proj[ai*3+1];
+        const ar = Math.max(4, largeur / 130) * pulse;
+        ctx.beginPath(); ctx.arc(ax, ay, ar, 0, Math.PI * 2);
+        ctx.fillStyle = '#e63946'; ctx.fill();
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+        ctx.fillStyle = '#fff'; ctx.font = '700 ' + Math.max(9, largeur / 70) + 'px system-ui';
+        ctx.textAlign = 'center'; ctx.fillText('ARRIVÉE', ax, ay - ar - 8);
+      }
+
       ctx.lineCap = 'butt';
       compte.images++; compte.derniereMs = vue.performance.now() - debut; compte.maximumMs = Math.max(compte.maximumMs, compte.derniereMs);
       return true;
     }
+
     return Object.freeze({
       choisir(c) {
         if (detruit || source === c) return;
         if (!c || typeof c !== 'object') throw new TypeError('Tracé incomplet');
-        source = c; imageSale = true; // Aucune lecture des coordonnées ni allocation avant une image visible.
+        source = c; imageSale = true;
       },
-      dessiner,
-      suspendre,
+      dessiner, suspendre,
       pause(value) { if (pause !== !!value) { pause = !!value; imageSale = true; dernier = -Infinity; } },
       detruire() {
         if (detruit) return;
@@ -193,6 +350,7 @@
     });
   }
 
+  // ─── INSTALLATION MENU ─────────────────────────────────────────────────────
   function installer(zone, options = {}) {
     if (INSTALLATIONS.has(zone)) return INSTALLATIONS.get(zone);
     const doc = zone.ownerDocument, $ = id => doc.getElementById(id), apercu = creerApercu($('p-trace-3d'));
@@ -207,7 +365,7 @@
       etape = Math.max(0, ETAPES.indexOf(actif && actif.dataset.menuTab));
       if (etape !== precedente) {
         const contenu = zone.querySelector('.panneaux-menu');
-        if (contenu) contenu.scrollTop = 0; // Une nouvelle étape s'ouvre au début, sans déplacer les réglages en cours.
+        if (contenu) contenu.scrollTop = 0;
       }
       zone.dataset.etape = String(etape);
       $('p-etape').textContent = '0' + (etape + 1) + ' / 04';
@@ -236,7 +394,7 @@
       if (detruit) return false;
       const avant = version, cible = ETAPES[borner(Number.isFinite(index) ? Math.trunc(index) : 0, 0, ETAPES.length - 1)];
       if (!B.navigationMenu.ouvrirOnglet(zone, cible)) return false;
-      if (version === avant) actualiser(); // Un changement d'onglet a déjà notifié le bilan une seule fois.
+      if (version === avant) actualiser();
       if (focus) focaliser();
       return true;
     }
@@ -245,21 +403,19 @@
     ecouter($('b-precedent'), 'click', () => options.retour && options.retour());
     ecouter($('p-retour'), 'click', () => options.retour && options.retour());
     function rotation() {
-      const bouton = $('p-rotation'), reduit = apercu.mouvementReduit;
-      mouvementAffiche = reduit; bouton.disabled = reduit;
-      bouton.setAttribute('aria-pressed', String(apercu.enPause || reduit));
-      bouton.textContent = reduit ? 'Rotation désactivée' : apercu.enPause ? 'Reprendre la rotation' : 'Figer le tracé';
-      bouton.title = reduit ? 'Mouvement réduit demandé dans le système' : '';
+      const bouton = $('p-rotation'), r = apercu.mouvementReduit;
+      mouvementAffiche = r; bouton.disabled = r;
+      bouton.setAttribute('aria-pressed', String(apercu.enPause || r));
+      bouton.textContent = r ? 'Rotation désactivée' : apercu.enPause ? 'Reprendre la rotation' : 'Figer le tracé';
+      bouton.title = r ? 'Mouvement réduit demandé dans le système' : '';
     }
     rotation();
-    ecouter($('p-rotation'), 'click', () => {
-      apercu.pause(!apercu.enPause); rotation();
-    });
+    ecouter($('p-rotation'), 'click', () => { apercu.pause(!apercu.enPause); rotation(); });
     ecouter($('circuits'), 'keydown', e => {
       const carte = e.target.closest('[role="radio"]'); if (!carte || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || !disponible(carte)) return;
       const liste = Array.from($('circuits').querySelectorAll('[role="radio"]')).filter(disponible), i = liste.indexOf(carte);
       if (i < 0) return;
-      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
+      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Home','End'].includes(e.key)) {
         e.preventDefault();
         const cols = Number.parseInt($('circuits').dataset.menuCols || '1', 10) || 1;
         let j = i;
@@ -270,7 +426,9 @@
         else if (e.key === 'ArrowUp') j = (i - cols + liste.length) % liste.length;
         else if (e.key === 'ArrowDown') j = (i + cols) % liste.length;
         liste[j].click(); liste[j].focus({ preventScroll: true }); liste[j].scrollIntoView({ block: 'nearest', behavior: 'auto' });
-      } else if (e.key === 'Enter' && carte.getAttribute('aria-checked') === 'true') { e.preventDefault(); if (!e.repeat) { const dep = $('b-depart'); if (dep && !dep.disabled) dep.click(); else avancer(1); } }
+      } else if (e.key === 'Enter' && carte.getAttribute('aria-checked') === 'true') {
+        e.preventDefault(); if (!e.repeat) { const dep = $('b-depart'); if (dep && !dep.disabled) dep.click(); else avancer(1); }
+      }
     });
     const api = Object.freeze({
       ouvrir, actualiser,
@@ -300,5 +458,6 @@
     INSTALLATIONS.set(zone, api);
     return api;
   }
-  B.menuArcade = Object.freeze({ ETAPES, MAX_POINTS, preparerTrace, projeterTrace, creerApercu, installer, normaliserTroll });
+
+  B.menuArcade = Object.freeze({ ETAPES, MAX_POINTS, preparerTrace, cadrer, projeter, projeterTrace, creerApercu, installer, normaliserTroll });
 })(globalThis.BITUME = globalThis.BITUME || {});

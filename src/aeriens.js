@@ -291,7 +291,7 @@
     }
   }
 
-  function creer() {
+  function creer(circuit) {
     preparerFormes();
     const helico = {
       corps: { shape: 'bitume-aerien-helico-corps', p: [0, 0, 0], s: [1, 1, 1], r: [0, 0, 0], mat: 1, color: [0.94, 0.95, 0.97], emissive: 0 },
@@ -313,59 +313,215 @@
     }));
     const objets = [helico.corps, helico.bulle, helico.poutre, helico.patins, helico.nacelle, helico.rotor, helico.anticouple, helico.balise];
     for (const d of drones) objets.push(d.chassis, ...d.helices, ...d.leds);
-    return { actif: true, helico, drones, objets };
+    const p0 = [0, 0, 0];
+    echantillonnerPiste(circuit, 40, p0);
+    const etatVol = (alt0) => ({
+      pos: new Float64Array([p0[0], p0[1] + alt0, p0[2]]),
+      vel: new Float64Array(3),
+      acc: new Float64Array(3),
+      cap: 0, roll: 0, pitch: 0, init: false
+    });
+    return {
+      actif: true, circuit: circuit || null, helico, drones, objets,
+      lastT: -1,
+      volH: etatVol(32),
+      volD: [etatVol(24), etatVol(26)]
+    };
   }
 
   const PROP_OFF = [[0.64, 0.64], [-0.64, 0.64], [-0.64, -0.64], [0.64, -0.64]];
   const LED_OFF = [[0.64, 0.64], [-0.64, -0.64]];
+  const _ptCible = [0, 0, 0];
+
+  function echantillonnerPiste(c, s, out) {
+    if (!c || !c.n || !c.x) { out[0] = 0; out[1] = 0; out[2] = 0; return 0; }
+    const L = c.longueur || (c.n * (c.pas || 2));
+    const pas = c.pas || (L / Math.max(1, c.n));
+    let ss = s;
+    if (c.ouvert) ss = Math.max(0, Math.min(L - pas, ss));
+    else ss = ((ss % L) + L) % L;
+    const f = ss / pas;
+    const i0 = Math.max(0, Math.min(c.n - 1, Math.floor(f)));
+    const i1 = c.ouvert ? Math.min(c.n - 1, i0 + 1) : (i0 + 1) % c.n;
+    const fr = f - Math.floor(f);
+    out[0] = c.x[i0] + (c.x[i1] - c.x[i0]) * fr;
+    out[1] = c.y[i0] + (c.y[i1] - c.y[i0]) * fr;
+    out[2] = c.z[i0] + (c.z[i1] - c.z[i0]) * fr;
+    let dc = c.cap[i1] - c.cap[i0];
+    while (dc > PI) dc -= PI2;
+    while (dc < -PI) dc += PI2;
+    return c.cap[i0] + dc * fr;
+  }
+
+  // Distance signée circulaire ou ouverte entre sA et sB
+  function deltaS(c, sA, sB) {
+    const L = (c && c.longueur) || 4000;
+    let d = sB - sA;
+    if (!c || !c.ouvert) {
+      while (d > L * 0.5) d -= L;
+      while (d < -L * 0.5) d += L;
+    }
+    return d;
+  }
+
+  // Plancher anti-tunnel : rampe cosinus douce 140 m avant / après chaque tunnel ou galerie
+  // pour passer largement AU-DESSUS de la montagne/voûte et ne JAMAIS traverser un tunnel.
+  function hauteurAntiTunnel(c, s, yPiste) {
+    if (!c) return -Infinity;
+    const liste = c.couverts && c.couverts.length ? c.couverts : (c.tunnel ? [c.tunnel] : null);
+    if (!liste) return -Infinity;
+    const L = c.longueur || 4000, RAMPE = 140;
+    const ss = c.ouvert ? s : ((s % L) + L) % L;
+    let yMin = -Infinity;
+    for (let i = 0; i < liste.length; i++) {
+      const cv = liste[i], debut = cv.debut, fin = cv.fin;
+      const distAvant = deltaS(c, ss, debut);
+      const distApres = deltaS(c, fin, ss);
+      const dans = c.ouvert ? (ss >= debut && ss <= fin) : (debut <= fin ? (ss >= debut && ss <= fin) : (ss >= debut || ss <= fin));
+      let u = 0;
+      if (dans) u = 1;
+      else if (distAvant > 0 && distAvant < RAMPE) u = 1 - distAvant / RAMPE;
+      else if (distApres > 0 && distApres < RAMPE) u = 1 - distApres / RAMPE;
+      if (u > 0) {
+        const ramp = 0.5 * (1 - Math.cos(PI * u));
+        const hColline = (cv.hauteur || 7) + 38;
+        const yCible = yPiste + hColline * ramp;
+        if (yCible > yMin) yMin = yCible;
+      }
+    }
+    return yMin;
+  }
+
+  // Empreinte 5 points du relief + obstacles/arches/arbres pour ne JAMAIS traverser décor ni forêt
+  function plancherSecurite(c, x, z, s, yPiste, sol, obstacles, margeCanopee) {
+    const r = 16;
+    let solMax = sol(x, z);
+    const s1 = sol(x + r, z), s2 = sol(x - r, z), s3 = sol(x, z + r), s4 = sol(x, z - r);
+    if (s1 > solMax) solMax = s1;
+    if (s2 > solMax) solMax = s2;
+    if (s3 > solMax) solMax = s3;
+    if (s4 > solMax) solMax = s4;
+    let yMin = Math.max(solMax + margeCanopee, yPiste + margeCanopee * 0.82, hauteurAntiTunnel(c, s, yPiste));
+    if (B.couverts && typeof B.couverts.abri === 'function') {
+      const abri = B.couverts.abri(x, z);
+      if (abri && abri.hauteur) yMin = Math.max(yMin, abri.hauteur + 32);
+    }
+    // Survol garanti au-dessus des grands ouvrages/arches/pylônes/rochers proches
+    if (obstacles && obstacles.length) {
+      for (let i = 0; i < obstacles.length; i++) {
+        const o = obstacles[i];
+        if (!o || o.ymax === undefined || o.ymax < yMin - 10) continue;
+        const dx = o.x - x, dz = o.z - z;
+        const rad = (o.rayon || Math.max(o.demiL || 0, o.demiP || 0) || 4) + 18;
+        if (dx * dx + dz * dz < rad * rad) {
+          const yOb = o.ymax + 12;
+          if (yOb > yMin) yMin = yOb;
+        }
+      }
+    }
+    return yMin;
+  }
+
+  // Enveloppe d'aller-retour peloton de tête -> dernier -> retour rapide vers la tête
+  function facteurBalayage(t, periode, partFocusTete) {
+    const ph = ((t % periode) + periode) % periode / periode;
+    if (ph < partFocusTete) return 0; // focus peloton de tête
+    const u = (ph - partFocusTete) / (1 - partFocusTete); // 0..1 aller-retour
+    let s;
+    if (u < 0.48) s = u / 0.48;
+    else if (u < 0.56) s = 1;
+    else s = 1 - (u - 0.56) / 0.44;
+    return 0.5 * (1 - Math.cos(PI * Math.max(0, Math.min(1, s))));
+  }
+
+  function piloterAppareil(app, cibleX, cibleY, cibleZ, yPlancher, dt, kp, kd, vMax, aMax) {
+    if (!app.init || Math.hypot(cibleX - app.pos[0], cibleZ - app.pos[2]) > 900) {
+      app.pos[0] = cibleX; app.pos[1] = Math.max(cibleY, yPlancher); app.pos[2] = cibleZ;
+      app.vel[0] = 0; app.vel[1] = 0; app.vel[2] = 0;
+      app.init = true;
+      return;
+    }
+    const ty = Math.max(cibleY, yPlancher);
+    let ax = (cibleX - app.pos[0]) * kp - app.vel[0] * kd;
+    let ay = (ty - app.pos[1]) * (kp * 1.9) - app.vel[1] * (kd * 1.4);
+    let az = (cibleZ - app.pos[2]) * kp - app.vel[2] * kd;
+    if (app.pos[1] < yPlancher) ay += (yPlancher - app.pos[1]) * 18;
+    const aNorm = Math.hypot(ax, ay, az);
+    if (aNorm > aMax) { const k = aMax / aNorm; ax *= k; ay *= k; az *= k; }
+    app.acc[0] = ax; app.acc[1] = ay; app.acc[2] = az;
+    app.vel[0] += ax * dt; app.vel[1] += ay * dt; app.vel[2] += az * dt;
+    const sp = Math.hypot(app.vel[0], app.vel[1], app.vel[2]);
+    if (sp > vMax) { const k = vMax / sp; app.vel[0] *= k; app.vel[1] *= k; app.vel[2] *= k; }
+    app.pos[0] += app.vel[0] * dt;
+    app.pos[1] += app.vel[1] * dt;
+    app.pos[2] += app.vel[2] * dt;
+    // Plancher dur anti-collision arbres/tunnels/relief
+    if (app.pos[1] < yPlancher) {
+      app.pos[1] = yPlancher;
+      if (app.vel[1] < 0) app.vel[1] = 0;
+    }
+    const vH = Math.hypot(app.vel[0], app.vel[2]);
+    if (vH > 0.8) {
+      const capCible = Math.atan2(app.vel[2], app.vel[0]);
+      let dc = capCible - app.cap;
+      while (dc > PI) dc -= PI2;
+      while (dc < -PI) dc += PI2;
+      app.cap += dc * Math.min(1, dt * 4.5);
+    }
+    const latAcc = -Math.sin(app.cap) * ax + Math.cos(app.cap) * az;
+    const rollCible = Math.max(-0.42, Math.min(0.42, latAcc * 0.016));
+    const pitchCible = -Math.max(0.02, Math.min(0.18, vH / 340));
+    app.roll += (rollCible - app.roll) * Math.min(1, dt * 5.0);
+    app.pitch += (pitchCible - app.pitch) * Math.min(1, dt * 5.0);
+  }
 
   function dessiner(etat, t, contexte, sortie) {
     if (!etat || !etat.actif || !sortie) return;
     preparerFormes();
+    const c = etat.circuit;
     const qualite = (contexte && contexte.qualite) || 'medium';
-    const cible = (contexte && contexte.cible) || [0, 0, 0];
-    const cibleCap = (contexte && contexte.cibleCap) || 0;
-    const cibleVitesse = (contexte && contexte.cibleVitesse) || 0;
     const nuit = (contexte && contexte.nuit) || 0;
     const sol = (contexte && contexte.sol) || (() => 0);
-    const cosC = Math.cos(cibleCap), sinC = Math.sin(cibleCap);
+    const obstacles = (contexte && contexte.obstacles) || null;
+    const dt = (etat.lastT >= 0 && t > etat.lastT && t - etat.lastT < 0.25) ? (t - etat.lastT) : 0.016;
+    etat.lastT = t;
 
-    // ── Hélicoptère TV réaliste volant BAS (10–14 m au-dessus de la piste, devant & côté) ──
-    const aheadH = 30 + 14 * Math.sin(t * 0.24);
-    const latH = 15 * Math.sin(t * 0.31);
-    const hx = cible[0] + aheadH * cosC - latH * sinC;
-    const hz = cible[2] + aheadH * sinC + latH * cosC;
-    const solH = sol(hx, hz);
-    let hy = Math.max(cible[1] + 11.2 + 2.2 * Math.sin(t * 0.41), solH + 9.2);
-    if (B.couverts && typeof B.couverts.abri === 'function') {
-      const abri = B.couverts.abri(hx, hz);
-      if (abri && abri.hauteur && hy < abri.hauteur + 5) hy = abri.hauteur + 6;
-    }
+    // Position autonome de la course : focus peloton de tête + balayage périodique vers le dernier
+    // (ZÉRO couplage à cibleCap / orientation du joueur !)
+    const sTete = (contexte && Number.isFinite(contexte.sTete)) ? contexte.sTete
+      : (contexte && Number.isFinite(contexte.sCible) ? contexte.sCible : (t * 42));
+    const sDernier = (contexte && Number.isFinite(contexte.sDernier)) ? contexte.sDernier : (sTete - 260);
+    const ecartPeloton = Math.max(-650, Math.min(650, deltaS(c, sTete, sDernier)));
 
-    const capH = cibleCap + 0.24 * Math.cos(t * 0.31);
-    const yawH = -capH;
-    const pitchH = -0.10 * Math.min(1, Math.max(0.25, cibleVitesse / 65));
-    const rollH = 0.16 * Math.cos(t * 0.31);
-    const cosH = Math.cos(capH), sinH = Math.sin(capH);
+    // ── 1. Hélicoptère TV : 65 % sur la tête de course, 35 % aller-retour jusqu'au dernier ──
+    const balH = facteurBalayage(t, 44, 0.62);
+    const sH = sTete + 28 * Math.sin(t * 0.21) + ecartPeloton * balH;
+    const capPisteH = echantillonnerPiste(c, sH, _ptCible);
+    const latH = 26 * Math.sin(t * 0.19 + 0.4) + 12 * Math.cos(t * 0.31);
+    const cxH = _ptCible[0] - Math.sin(capPisteH) * latH;
+    const czH = _ptCible[2] + Math.cos(capPisteH) * latH;
+    const cyH = _ptCible[1] + 30 + 4.5 * Math.sin(t * 0.23);
+    const plancherH = plancherSecurite(c, etat.volH.init ? etat.volH.pos[0] : cxH, etat.volH.init ? etat.volH.pos[2] : czH, sH, _ptCible[1], sol, obstacles, 28);
+    piloterAppareil(etat.volH, cxH, cyH, czH, plancherH, dt, 1.9, 2.2, 115, 24);
+
+    const hx = etat.volH.pos[0], hy = etat.volH.pos[1], hz = etat.volH.pos[2];
+    const capH = etat.volH.cap, yawH = -capH, cosH = Math.cos(capH), sinH = Math.sin(capH);
     const H = etat.helico;
-    attitudeAngles(capH, pitchH, rollH, H.corps.r);
+    attitudeAngles(capH, etat.volH.pitch, etat.volH.roll, H.corps.r);
 
     for (const part of [H.corps, H.bulle, H.poutre, H.patins, H.nacelle]) {
       part.p[0] = hx; part.p[1] = hy; part.p[2] = hz;
       if (part !== H.corps) { part.r[0] = H.corps.r[0]; part.r[1] = H.corps.r[1]; part.r[2] = H.corps.r[2]; }
     }
     H.nacelle.emissive = nuit > 0.2 ? 1.8 * nuit : 0.2;
-    // Rotor principal 4 pales au sommet du mât (+0.15 avant, +1.22 haut)
     H.rotor.p[0] = hx + 0.15 * cosH;
     H.rotor.p[1] = hy + 1.22;
     H.rotor.p[2] = hz + 0.15 * sinH;
     attitudeAngles(capH - (t * 22) % PI2, 0, 0, H.rotor.r);
-    // Rotor anticouple au bout exact de la poutre de queue (-5.65 m derrière, +0.62 m haut, +0.16 m latéral)
     H.anticouple.p[0] = hx - 5.65 * cosH - 0.16 * sinH;
     H.anticouple.p[1] = hy + 0.62;
     H.anticouple.p[2] = hz - 5.65 * sinH + 0.16 * cosH;
     H.anticouple.r[0] = (t * 38) % PI2; H.anticouple.r[1] = yawH + PI * 0.5; H.anticouple.r[2] = 0;
-    // Balise rouge clignotante au sommet de la dérive (-5.80 m, +1.42 m)
     H.balise.p[0] = hx - 5.80 * cosH;
     H.balise.p[1] = hy + 1.42;
     H.balise.p[2] = hz - 5.80 * sinH;
@@ -373,28 +529,25 @@
 
     sortie.push(H.corps, H.bulle, H.poutre, H.patins, H.nacelle, H.rotor, H.anticouple, H.balise);
 
-    // ── 2 Drones métal de tournage (1 en low, 2 en medium/high/ultra) ──
+    // ── 2. Drones TV : Drone 1 sur le peloton de tête, Drone 2 en balayage tête ↔ dernier ──
     const nbDrones = qualite === 'low' ? 1 : 2;
     for (let d = 0; d < nbDrones; d++) {
-      const D = etat.drones[d], phase = d * PI;
-      const dAhead = 18 + 10 * Math.sin(t * 0.35 + phase);
-      const dLat = (d === 0 ? 1 : -1) * (9.5 + 5.5 * Math.sin(t * 0.44 + phase));
-      const dx = cible[0] + dAhead * cosC - dLat * sinC;
-      const dz = cible[2] + dAhead * sinC + dLat * cosC;
-      const solD = sol(dx, dz);
-      let dy = Math.max(cible[1] + 7.8 + 1.8 * Math.sin(t * 0.55 + phase), solD + 6.8);
-      if (B.couverts && typeof B.couverts.abri === 'function') {
-        const abri = B.couverts.abri(dx, dz);
-        if (abri && abri.hauteur && dy < abri.hauteur + 3.5) dy = abri.hauteur + 4.5;
-      }
-      const capD = cibleCap + 0.22 * Math.cos(t * 0.44 + phase);
-      const yawD = -capD;
-      const rollD = 0.24 * Math.sin(t * 0.72 + phase);
-      const pitchD = -0.14 * Math.min(1, Math.max(0.2, cibleVitesse / 75));
-      const ca = Math.cos(capD), sa = Math.sin(capD);
+      const D = etat.drones[d], vol = etat.volD[d];
+      const balD = d === 0 ? facteurBalayage(t + 11, 56, 0.78) * 0.35 : facteurBalayage(t + 6, 30, 0.28);
+      const sD = sTete + (d === 0 ? 34 * Math.cos(t * 0.38) : -12) + ecartPeloton * balD;
+      const capPisteD = echantillonnerPiste(c, sD, _ptCible);
+      const latD = (d === 0 ? 15 : 19) * Math.sin(t * (d === 0 ? 0.42 : 0.31) + d * 2.1);
+      const cxD = _ptCible[0] - Math.sin(capPisteD) * latD;
+      const czD = _ptCible[2] + Math.cos(capPisteD) * latD;
+      const cyD = _ptCible[1] + (d === 0 ? 22 : 25) + 3.0 * Math.sin(t * 0.55 + d);
+      const plancherD = plancherSecurite(c, vol.init ? vol.pos[0] : cxD, vol.init ? vol.pos[2] : czD, sD, _ptCible[1], sol, obstacles, 22);
+      piloterAppareil(vol, cxD, cyD, czD, plancherD, dt, 2.5, 2.5, 130, 30);
+
+      const dx = vol.pos[0], dy = vol.pos[1], dz = vol.pos[2];
+      const capD = vol.cap, yawD = -capD, ca = Math.cos(capD), sa = Math.sin(capD);
 
       D.chassis.p[0] = dx; D.chassis.p[1] = dy; D.chassis.p[2] = dz;
-      attitudeAngles(capD, pitchD, rollD, D.chassis.r);
+      attitudeAngles(capD, vol.pitch, vol.roll, D.chassis.r);
       sortie.push(D.chassis);
 
       for (let p = 0; p < 4; p++) {
@@ -419,6 +572,6 @@
   }
 
   preparerFormes();
-  B.aeriens = { FORMES, creer, dessiner, preparerFormes };
+  B.aeriens = { FORMES, creer, dessiner, preparerFormes, hauteurAntiTunnel };
 })(globalThis.BITUME = globalThis.BITUME || {});
 if (typeof module !== 'undefined' && module.exports) module.exports = globalThis.BITUME.aeriens;

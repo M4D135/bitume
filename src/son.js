@@ -208,7 +208,7 @@
     let ctx = null, pret = false, enPause = false, coupFin = 0;
     let musiqueOn = false, minuteur = null, pas = 0, prochain = 0, busMus = null, echo = null;
     const vols = { general: 1, moteur: 1, effets: 1 };
-    let maitre = null, busMot = null, busEff = null, bruit = null, m = null, m2 = null, pneus = null, vib = null, herbe = null;
+    let maitre = null, busMot = null, busEff = null, bruit = null, m = null, m2 = null, pneus = null, vib = null, herbe = null, fouleNoeud = null;
     let deuxJoueurs = false, joueur2LibereA = 0;
     const voix = [], proches = [], vents = [];
     // échappement : voix préparées, tampons, lecture de la file de src/echappement.js
@@ -318,6 +318,37 @@
         const s = bruitEnBoucle(), pb = filtre('lowpass', 400, 0.7), g = gain(0);
         s.connect(pb).connect(g).connect(busEff); s.start(t);
         herbe = { g };
+      }
+      { // foule / clameurs public au passage devant les tribunes (100 % procédural)
+        let seed = 0xB17E5A1C;
+        const rnd = () => {
+          seed = (seed + 0x6D2B79F5) | 0;
+          let z = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+          z = (z + Math.imul(z ^ (z >>> 7), 61 | z)) ^ z;
+          return ((z ^ (z >>> 14)) >>> 0) / 4294967296;
+        };
+        const sr = ctx.sampleRate, len = Math.floor(sr * 3);
+        const bufF = ctx.createBuffer(1, len, sr), ch = bufF.getChannelData(0);
+        let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+        for (let i = 0; i < len; i++) {
+          const w = rnd() * 2 - 1;
+          b0 = .99886 * b0 + w * .0555179; b1 = .99332 * b1 + w * .0750759;
+          b2 = .96900 * b2 + w * .1538520; b3 = .86650 * b3 + w * .3104856;
+          b4 = .55000 * b4 + w * .5329522; b5 = -.7616 * b5 - w * .0168980;
+          ch[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * .5362) * .12;
+          b6 = w * .115926;
+        }
+        const s = ctx.createBufferSource(); s.buffer = bufF; s.loop = true;
+        const fG = filtre('bandpass', 680, 2.6), fA = filtre('bandpass', 1520, 3.4), fHP = filtre('highpass', 3100, .7);
+        const lfo = osc('sine', .42), lfoG = gain(55); lfo.connect(lfoG).connect(fG.frequency);
+        const lfoC = osc('sine', 8.5), lfoCG = gain(750); lfoC.connect(lfoCG).connect(fHP.frequency);
+        const gG = gain(.42), gA = gain(.24), gHP = gain(.14), master = gain(0);
+        s.connect(fG).connect(gG).connect(master);
+        s.connect(fA).connect(gA).connect(master);
+        s.connect(fHP).connect(gHP).connect(master);
+        master.connect(busEff);
+        s.start(t); lfo.start(t); lfoC.start(t);
+        fouleNoeud = { master, gA, gHP };
       }
       vents.push(vent(0), vent(1));
       { // échappement : tampons et voix préparés ici, avant le départ (rien n'est construit en course)
@@ -696,11 +727,24 @@
       }
     }
 
+    function foule(intensite, vitesse) {
+      if (!pret || !fouleNoeud) return;
+      const t = ctx.currentTime;
+      const niv = enPause ? 0 : Math.max(0, Math.min(1, intensite || 0));
+      const vFac = Math.max(0, Math.min(1, (vitesse || 0) / 80));
+      const cible = niv * (0.45 + 0.55 * vFac) * 0.58;
+      const tau = cible > 0.02 ? 0.14 : 0.35;
+      vise(fouleNoeud.master.gain, cible, t, tau);
+      vise(fouleNoeud.gA.gain, 0.14 + 0.30 * niv, t, 0.15);
+      vise(fouleNoeud.gHP.gain, 0.06 + 0.22 * vFac * niv, t, 0.12);
+    }
+
     function suspendre() {
       enPause = true;
       if (!pret) return;
       const t = ctx.currentTime;
       for (const g of [m.sortie.gain, m.echoG.gain, pneus.g1.gain, pneus.g2.gain, vib.g.gain, herbe.g.gain]) vise(g, 0, t, 0.03);
+      if (fouleNoeud) vise(fouleNoeud.master.gain, 0, t, 0.05);
       if (m2) { vise(m2.sortie.gain, 0, t, .03); vise(m2.echoG.gain, 0, t, .03); }
       for (const v of vents) { vise(v.aiguG.gain, 0, t, .03); vise(v.graveG.gain, 0, t, .03); }
       for (const v of voix) vise(v.sortie.gain, 0, t, .03);
@@ -729,7 +773,7 @@
         klaxons: { voix: pret ? voixKlaxon.length : 0, actives: klaxonsActifs, budget: KLAXON_VOIX, dureeMax: DUREES_KLAXON.mariage, joues: klaxonsJoues, ignores: klaxonsIgnores } };
     }
 
-    return { demarrer, regler, mettreAJour, evenement, echappement, klaxon, musique, suspendre, reprendre, stats };
+    return { demarrer, regler, mettreAJour, evenement, echappement, klaxon, musique, foule, suspendre, reprendre, stats };
   }
 
   B.son = { creer, frequenceAllumage, frequenceCycle, spectreMoteur, coupure, gainDistance, doppler, panoramique, selectionnerRivaux, MAX_RIVAUX, THEME,

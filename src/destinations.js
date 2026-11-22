@@ -103,14 +103,29 @@
     return { x, z, y: terrain.sol(x, z), cap: f.cap, f, cote: 1, s: sPref };
   }
 
+  function horsZoneDepart(c, s) {
+    const L = c.longueur;
+    const ss = ((s % L) + L) % L;
+    if (ss < 340 || ss > L - 340) return false;
+    if (c.stands) {
+      const d0 = ((c.stands.debut - 90) % L + L) % L;
+      const d1 = ((c.stands.fin + 90) % L + L) % L;
+      if (d0 < d1 ? (ss >= d0 && ss <= d1) : (ss >= d0 || ss <= d1)) return false;
+    }
+    return true;
+  }
+
   function trouverLigneDroite(c, sPref) {
-    let bestS = sPref % c.longueur, bestK = Infinity;
-    for (let k = 0; k < 24; k++) {
-      const s = (sPref + k * 170) % c.longueur;
+    let bestS = -1, bestK = Infinity;
+    for (let k = 0; k < 36; k++) {
+      const s = ((sPref + k * 115) % c.longueur + c.longueur) % c.longueur;
+      if (!horsZoneDepart(c, s)) continue;
+      if (B.circuit.dansCouvert && B.circuit.dansCouvert(c, s, 45)) continue;
       const idx = Math.floor(s / c.pas) % c.n;
       const ak = Math.abs(c.courbure[idx]);
-      if (ak < bestK && !(B.circuit.dansCouvert && B.circuit.dansCouvert(c, s, 25))) { bestK = ak; bestS = s; }
+      if (ak < bestK) { bestK = ak; bestS = s; }
     }
+    if (bestS < 0) bestS = Math.max(400, Math.min(c.longueur - 400, c.longueur * 0.45));
     return B.circuit.echantillon(c, bestS);
   }
 
@@ -161,9 +176,11 @@
       push(objs, loin, f.x, f.z);
       marquer('Grand Pont du Fjord-d’Argent', f.x, f.y + 12, f.z, 115, 48);
       const siteC = trouverSite(c, outils, c.longueur * 0.65, 55, 110);
+      const cascForme = B.lieux ? 'bitume-lieu-cascade' : 'bevel';
+      const lacForme = B.lieux ? 'bitume-lieu-lac-organique' : 'cylinder';
       const casc = [
-        { shape: 'cylinder', p: [siteC.x, siteC.y + 24, siteC.z], s: [7, 52, 3], r: [.15, -siteC.cap, 0], mat: 12, color: [.80, .92, .98], emissive: .2 },
-        { shape: 'cylinder', p: [siteC.x, siteC.y + .5, siteC.z], s: [22, .8, 18], r: [0, 0, 0], mat: 12, color: [.10, .30, .42] }
+        { shape: cascForme, p: [siteC.x, siteC.y + 24, siteC.z], s: [8.5, 52, 4.2], r: [.15, -siteC.cap + .2, 0], mat: 12, color: [.80, .92, .98], emissive: .22 },
+        { shape: lacForme, p: [siteC.x, siteC.y + .45, siteC.z], s: [26, .9, 21], r: [0, -siteC.cap + .4, 0], mat: 12, color: [.10, .30, .42] }
       ];
       push(casc, casc, siteC.x, siteC.z);
     } else if (c.theme === 'carpates') {
@@ -195,23 +212,26 @@
       const siteM = trouverSite(c, outils, c.longueur * 0.72, 32, 65);
       const menhirs = [];
       for (let i = 0; i < 9; i++) {
-        const a = i * Math.PI * 2 / 9;
-        const mx = siteM.x + Math.cos(a) * 14, mz = siteM.z + Math.sin(a) * 14, my = terrain.sol(mx, mz);
-        menhirs.push({ shape: rocheShape, p: [mx, my + 2.4, mz], s: [2.2, 5.4 + (i % 3) * 1.1, 1.8], r: [0, a, 0], mat: 9, color: [.36, .37, .38] });
+        const a = i * Math.PI * 2 / 9 + Math.sin(i * 3.7) * 0.22;
+        const distM = 12.5 + Math.sin(i * 2.3) * 3.4;
+        const mx = siteM.x + Math.cos(a) * distM, mz = siteM.z + Math.sin(a) * distM, my = terrain.sol(mx, mz);
+        const tilt = Math.sin(i * 4.1) * 0.14;
+        menhirs.push({ shape: rocheShape, p: [mx, my + 2.4, mz], s: [2.1 + (i % 2) * .6, 4.8 + (i % 3) * 1.3, 1.7 + (i % 3) * .3], r: [tilt, a + i * .7, -tilt * .7], mat: 23, color: [.36, .37, .38] });
       }
       push(objs, loin, site.x, site.z);
       push(menhirs, menhirs.slice(0, 4), siteM.x, siteM.z);
       marquer('Château des Highlands', site.x, site.y + 14, site.z, 105, 42);
     } else if (c.theme === 'sierra') {
-      // Grande Arche de Grès Naturelle au-dessus d'une droite + mesas organiques
+      // Grande Arche de Grès Naturelle au-dessus d'une droite HORS zone départ/stands
       const f = trouverLigneDroite(c, c.longueur * 0.45);
       const rx = -Math.sin(f.cap), rz = Math.cos(f.cap), gres = [.56, .25, .14];
       const objs = [], loin = [];
       for (let i = 0; i <= 12; i++) {
         const a = Math.PI * i / 12;
-        const lat = Math.cos(a) * 19, h = Math.sin(a) * 17 + 4;
+        const asym = Math.sin(i * 2.7 + 0.5) * 1.1;
+        const lat = Math.cos(a) * 21.5 + asym * 0.4, h = Math.sin(a) * 17.5 + 4.8 + asym * 0.5;
         const ax = f.x + rx * lat, az = f.z + rz * lat;
-        const bloc = { shape: galetShape, p: [ax, f.y + h, az], s: [9.5, 6.2, 8.5], r: [0, -f.cap + a * .2, 0], mat: 9, color: gres };
+        const bloc = { shape: (i % 2 === 0 ? rocheShape : galetShape), p: [ax, f.y + h, az], s: [9.2 + (i % 3) * 1.2, 6.0 + (i % 2) * 1.1, 8.2 + ((i + 1) % 3) * 0.9], r: [asym * 0.06, -f.cap + a * .2 + asym * 0.15, asym * 0.05], mat: 23, color: gres };
         if (i === 0 || i === 12) D.marquerSolide(bloc, 'arche-sierra', 2);
         objs.push(bloc); if (i % 2 === 0) loin.push(bloc);
       }

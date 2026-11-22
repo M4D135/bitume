@@ -187,19 +187,19 @@
         </fieldset>
         <fieldset>
           <legend>Vue · Joueur 1</legend>
+          <label><input type="radio" name="vuePret" value="aileron-avant"><span>Aileron avant</span></label>
+          <label><input type="radio" name="vuePret" value="nez"><span>Nez</span></label>
           <label><input type="radio" name="vuePret" value="cockpit"><span>Cockpit</span></label>
           <label><input type="radio" name="vuePret" value="arceau"><span>Arceau · T-cam</span></label>
-          <label><input type="radio" name="vuePret" value="nez"><span>Nez</span></label>
-          <label><input type="radio" name="vuePret" value="aileron-avant"><span>Aileron avant</span></label>
           <label><input type="radio" name="vuePret" value="poursuite-proche"><span>Poursuite proche</span></label>
           <label><input type="radio" name="vuePret" value="poursuite"><span>Poursuite éloignée</span></label>
         </fieldset>
         <fieldset id="pr-vue-2" hidden>
           <legend>Vue · Joueur 2</legend>
+          <label><input type="radio" name="vuePret2" value="aileron-avant"><span>Aileron avant</span></label>
+          <label><input type="radio" name="vuePret2" value="nez"><span>Nez</span></label>
           <label><input type="radio" name="vuePret2" value="cockpit"><span>Cockpit</span></label>
           <label><input type="radio" name="vuePret2" value="arceau"><span>Arceau · T-cam</span></label>
-          <label><input type="radio" name="vuePret2" value="nez"><span>Nez</span></label>
-          <label><input type="radio" name="vuePret2" value="aileron-avant"><span>Aileron avant</span></label>
           <label><input type="radio" name="vuePret2" value="poursuite-proche"><span>Poursuite proche</span></label>
           <label><input type="radio" name="vuePret2" value="poursuite"><span>Poursuite éloignée</span></label>
         </fieldset>
@@ -238,8 +238,24 @@
         <canvas id="p-trace-3d" width="720" height="400" role="img" aria-label="Tracé du circuit en trois dimensions"></canvas>
         <div class="apercu-legende"><span>Tracé réel · relief</span><button type="button" id="p-rotation" aria-pressed="false">Figer le tracé</button></div>
         <dl class="chiffres-circuit"><div><dt>Distance</dt><dd><b id="p-circuit-km"></b> km</dd></div><div><dt>Virages</dt><dd><b id="p-circuit-virages"></b></dd></div><div><dt>Amplitude du relief</dt><dd><b id="p-circuit-relief"></b> m</dd></div></dl>
+        <div class="jauges-arcade" aria-label="Profil arcade du circuit">
+          <div class="jauge"><span class="jauge-label">Vitesse</span><div class="jauge-piste"><div class="jauge-remplissage" id="jauge-vitesse"></div></div><span class="jauge-valeur" id="jauge-vitesse-val">75</span></div>
+          <div class="jauge"><span class="jauge-label">Technique</span><div class="jauge-piste"><div class="jauge-remplissage" id="jauge-technique"></div></div><span class="jauge-valeur" id="jauge-technique-val">60</span></div>
+          <div class="jauge"><span class="jauge-label">Relief</span><div class="jauge-piste"><div class="jauge-remplissage" id="jauge-relief"></div></div><span class="jauge-valeur" id="jauge-relief-val">40</span></div>
+        </div>
       </article>
-      <div class="catalogue-circuits"><p class="arcade-surtitre">Sélection du circuit · 16 destinations</p><div id="circuits" class="circuits" role="radiogroup" data-menu-cols="4" aria-label="Circuit"></div></div>
+      <div class="catalogue-circuits">
+        <div class="cat-entete">
+          <div id="p-categories" class="cat-barre" role="tablist" aria-label="Catégories de circuits">
+            <button type="button" class="cat-btn" role="tab" data-cat="tous" aria-selected="true">Tous <span class="cat-count">(10)</span></button>
+            <button type="button" class="cat-btn" role="tab" data-cat="forets-cotes" aria-selected="false">Forêts &amp; Côtes <span class="cat-count">(4)</span></button>
+            <button type="button" class="cat-btn" role="tab" data-cat="montagnes" aria-selected="false">Montagnes &amp; Cols <span class="cat-count">(2)</span></button>
+            <button type="button" class="cat-btn" role="tab" data-cat="sauvages" aria-selected="false">Terres sauvages <span class="cat-count">(4)</span></button>
+          </div>
+          <span class="cat-raccourci" aria-hidden="true"><span class="touch-manette touch-LT">LT</span><span class="touch-manette touch-RT">RT</span></span>
+        </div>
+        <div id="circuits" class="circuits" role="radiogroup" data-menu-cols="4" aria-label="Circuit"></div>
+      </div>
     </div>
     <div class="options">
       <fieldset id="o-tours">
@@ -340,10 +356,10 @@
       <fieldset id="o-vue">
         <legend>Vue · Joueur 1</legend>
         <label class="select-arcade" for="p-vue"><span>Caméra</span><select id="p-vue" name="vueDepart">
+          <option value="aileron-avant">Aileron avant</option>
+          <option value="nez">Nez</option>
           <option value="cockpit">Cockpit</option>
           <option value="arceau">Arceau · T-cam</option>
-          <option value="nez">Nez</option>
-          <option value="aileron-avant">Aileron avant</option>
           <option value="poursuite-proche">Poursuite proche</option>
           <option value="poursuite">Poursuite éloignée</option>
         </select></label>
@@ -351,10 +367,10 @@
       <fieldset id="o-vue-2" hidden>
         <legend>Vue · Joueur 2</legend>
         <label class="select-arcade" for="p-vue-2"><span>Caméra</span><select id="p-vue-2" name="vueDepart2">
+          <option value="aileron-avant">Aileron avant</option>
+          <option value="nez">Nez</option>
           <option value="cockpit">Cockpit</option>
           <option value="arceau">Arceau · T-cam</option>
-          <option value="nez">Nez</option>
-          <option value="aileron-avant">Aileron avant</option>
           <option value="poursuite-proche">Poursuite proche</option>
           <option value="poursuite">Poursuite éloignée</option>
         </select></label>
@@ -497,19 +513,19 @@
     <div class="grille-reglages">
       <fieldset>
         <legend>Vue · Joueur 1</legend>
+        <label><input type="radio" name="vue" value="aileron-avant"><span>Aileron avant</span></label>
+        <label><input type="radio" name="vue" value="nez"><span>Nez</span></label>
         <label><input type="radio" name="vue" value="cockpit"><span>Cockpit</span></label>
         <label><input type="radio" name="vue" value="arceau"><span>Arceau · T-cam</span></label>
-        <label><input type="radio" name="vue" value="nez"><span>Nez</span></label>
-        <label><input type="radio" name="vue" value="aileron-avant"><span>Aileron avant</span></label>
         <label><input type="radio" name="vue" value="poursuite-proche"><span>Poursuite proche</span></label>
         <label><input type="radio" name="vue" value="poursuite"><span>Poursuite éloignée</span></label>
       </fieldset>
       <fieldset>
         <legend>Vue · Joueur 2</legend>
+        <label><input type="radio" name="vue2" value="aileron-avant"><span>Aileron avant</span></label>
+        <label><input type="radio" name="vue2" value="nez"><span>Nez</span></label>
         <label><input type="radio" name="vue2" value="cockpit"><span>Cockpit</span></label>
         <label><input type="radio" name="vue2" value="arceau"><span>Arceau · T-cam</span></label>
-        <label><input type="radio" name="vue2" value="nez"><span>Nez</span></label>
-        <label><input type="radio" name="vue2" value="aileron-avant"><span>Aileron avant</span></label>
         <label><input type="radio" name="vue2" value="poursuite-proche"><span>Poursuite proche</span></label>
         <label><input type="radio" name="vue2" value="poursuite"><span>Poursuite éloignée</span></label>
       </fieldset>

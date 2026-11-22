@@ -1251,7 +1251,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     };
 
     // Glissières à double lisse sur poteaux, posées à la limite de chaque côté.
-    const PAS_G = 4, sousTunnel = i => B.circuit.dansTunnel && B.circuit.dansTunnel(c, i * c.pas, 6);
+    const PAS_G = c.ouvert ? 2 : 4, sousTunnel = i => B.circuit.dansTunnel && B.circuit.dansTunnel(c, i * c.pas, 6);
     const finG = c.ouvert ? c.n - PAS_G : c.n;
     for (let i = 0; i < finG; i += PAS_G) {
       if (sousTunnel(i)) continue;
@@ -1334,19 +1334,21 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           for (let partie = 0; partie < nombre; partie++) {
             const j0 = i + (suivant - i) * partie / nombre, j1 = i + (suivant - i) * (partie + 1) / nombre;
             const q0 = cadreOuvrage(c, j0), q1 = cadreOuvrage(c, j1), h0 = rehausse(j0), h1 = rehausse(j1);
-            const direction = [q1.x - q0.x, q1.y + h1 - q0.y - h0, q1.z - q0.z], longueur = Math.hypot(...direction);
+            const qy0 = hauteurRoute(q0, 0, w), qy1 = hauteurRoute(q1, 0, w);
+            const direction = [q1.x - q0.x, qy1 + h1 - qy0 - h0, q1.z - q0.z], longueur = Math.hypot(...direction);
             const horizontale = Math.hypot(direction[0], direction[2]), devers = (q0.devers + q1.devers) / 2;
             const normale = [-Math.sin(devers) * direction[2] / horizontale, Math.cos(devers), Math.sin(devers) * direction[0] / horizontale];
             const axes = base(direction, normale), rotation = angles(...axes);
             const angle = Math.abs(Math.atan2(Math.sin(q1.a - q0.a), Math.cos(q1.a - q0.a)));
-            const taille = longueur + .05 + 2 * M * Math.tan(Math.min(angle / 2, .45));
-            const dessus = [(q0.x + q1.x) / 2, (q0.y + q1.y + h0 + h1) / 2, (q0.z + q1.z) / 2];
+            const taille = longueur + .02 + M * Math.tan(Math.min(angle / 2, .45));
+            const antiZ = (partie & 1) ? .0008 : 0;
+            const dessus = [(q0.x + q1.x) / 2, (qy0 + qy1 + h0 + h1) / 2 + antiZ, (q0.z + q1.z) / 2];
             const position = dessus.map((v, k) => v - .05 * axes[1][k]);
-            const sol = marquerSolide({ shape: 'box', p: position, s: [taille, .1, 2 * M], r: rotation, mat: 7, color: SOL, outdoor: false, surface: 'object' }, 'sol-tunnel', 1, 'piste');
+            const sol = marquerSolide({ shape: 'box', p: position, s: [taille, .1, 2 * M], r: rotation, mat: organique ? 21 : 7, color: SOL, outdoor: false, surface: 'object' }, 'sol-tunnel', 1, 'piste');
             objets.push(sol); loin.push(sol);
             for (const cote of [-1, 1]) {
-              const p = dessus.map((v, k) => v + cote * (w - .15) * axes[2][k] + .005 * axes[1][k]);
-              objets.push({ shape: 'box', p, s: [taille, .02, .26], r: rotation, mat: 7, color: LIGNE, outdoor: false, surface: 'object' });
+              const p = dessus.map((v, k) => v + cote * (w - .15) * axes[2][k] + .006 * axes[1][k]);
+              objets.push({ shape: 'box', p, s: [longueur + .04, .02, .26], r: rotation, mat: 7, color: LIGNE, outdoor: false, surface: 'object' });
             }
           }
         } else {
@@ -1363,7 +1365,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
             positionSol = centreDessus.map((v, k) => v - .05 * axesSol[1][k]);
             longSol = normeSol + .05 + ajout0 + ajout1;
           }
-          const sol = marquerSolide({ shape: 'box', p: positionSol, s: [longSol, .1, 2 * M], r: rotationSol, mat: 7, color: SOL, outdoor: false, surface: 'object' }, 'sol-tunnel', 1, 'piste');
+          const sol = marquerSolide({ shape: 'box', p: positionSol, s: [longSol, .1, 2 * M], r: rotationSol, mat: organique ? 21 : 7, color: SOL, outdoor: false, surface: 'object' }, 'sol-tunnel', 1, 'piste');
           objets.push(sol); loin.push(sol);
           for (const cote of [-1, 1]) {
             const p = centreDessus ? centreDessus.map((v, k) => v + cote * (w - .15) * axesSol[2][k] + .005 * axesSol[1][k]) : milieu(cote * (w - .15), .045);
@@ -1404,15 +1406,15 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         if (i >= iD + 3 && i <= iF - 3) {
           const haut = Hc - .5 + 3 * h(1) - (H + .7);
           const formeCrete = organique ? B.lieux.rocherPour(c.theme, (g ^ Math.imul(i | 0, 73856093)) >>> 0) : 'bevel';
-          objets.push({ shape: formeCrete, p: pointPlan(f, (h(2) - .5) * 4, y + H + .7 + haut / 2), s: [12 + 4 * h(3), haut, 2 * M + 8], r: angles(...base(f.t, [0, 1, 0])), mat: 9, color: ROCHES[((Math.floor(i) % 3) + 3) % 3] });
+          objets.push({ shape: formeCrete, p: pointPlan(f, (h(2) - .5) * 4, y + H + .7 + haut / 2), s: [12 + 4 * h(3), haut, 2 * M + 8], r: angles(...base(f.t, [0, 1, 0])), mat: organique ? 23 : 9, color: ROCHES[((Math.floor(i) % 3) + 3) % 3] });
           // un piton par-dessus, de travers, pour casser la ligne de crête
           if (h(4) > .45) {
             const formePiton = organique ? B.lieux.rocherPour(c.theme, (g ^ Math.imul(i | 0, 19349663)) >>> 0) : 'octa';
-            objets.push({ shape: formePiton, p: pointPlan(f, (h(5) - .5) * 16, y + Hc + 1.5 + 2 * h(6)), s: [9 + 6 * h(7), 5 + 6 * h(8), 8 + 6 * h(9)], r: [h(11) * .5, h(12) * 6.3, h(13) * .5], mat: 9, color: ROCHES[((Math.floor(i + 1) % 3) + 3) % 3] });
+            objets.push({ shape: formePiton, p: pointPlan(f, (h(5) - .5) * 16, y + Hc + 1.5 + 2 * h(6)), s: [9 + 6 * h(7), 5 + 6 * h(8), 8 + 6 * h(9)], r: [h(11) * .5, h(12) * 6.3, h(13) * .5], mat: organique ? 23 : 9, color: ROCHES[((Math.floor(i + 1) % 3) + 3) % 3] });
           }
         }
         for (const cote of [-1, 1]) {
-          let lat = M + .6;
+          let lat = M + (organique ? 2.4 : .6);
           const limite = (cote < 0 ? lim.G : lim.D)[f.i];
           for (let k = 0; k < 4; k++) {
             const large = 9 + 6 * h(10 + 2 * k + (cote > 0)), centre = lat + large / 2;
@@ -1424,7 +1426,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
             const av = [Math.cos(f.a + lacet), 0, Math.sin(f.a + lacet)], dessus = [f.r[0] * penche * cote, 1, f.r[2] * penche * cote];
             const pointu = k >= 2 && h(60 + k) > .5;   // dehors, des blocs pointus pour une silhouette de rocher
             const formeFlanc = organique ? B.lieux.rocherPour(c.theme, (g ^ Math.imul((i | 0) * 13 + k * 7 + (cote > 0 ? 1 : 0), 83492791)) >>> 0) : (pointu ? 'octa' : 'bevel');
-            objets.push({ shape: formeFlanc, p: pointPlan(f, cote * centre, y - 2 + (haut + 2) / 2 + (pointu ? haut * .2 : 0)), s: [11 + 5 * h(50 + k), (haut + 2) * (pointu ? 1.5 : 1), large * (pointu ? 1.3 : 1)], r: angles(...base(av, dessus)), mat: 9, color: ROCHES[((Math.floor(i + k + (cote > 0)) % 3) + 3) % 3] });
+            objets.push({ shape: formeFlanc, p: pointPlan(f, cote * centre, y - 2 + (haut + 2) / 2 + (pointu ? haut * .2 : 0)), s: [11 + 5 * h(50 + k), (haut + 2) * (pointu ? 1.5 : 1), large * (pointu ? 1.3 : 1)], r: angles(...base(av, dessus)), mat: organique ? 23 : 9, color: ROCHES[((Math.floor(i + k + (cote > 0)) % 3) + 3) % 3] });
           }
         }
         if (objets.length) {
@@ -1437,10 +1439,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         const f = cadreOuvrage(c, i), y = hauteurRoute(f, 0, w), rot = capRot(f.a), objets = [];
         const devant = (d, h) => { const p = pointPlan(f, d, y + h); return [p[0] + f.t[0] * sens * 1.75, p[1], p[2] + f.t[2] * sens * 1.75]; };
         for (const cote of [-1, 1]) {
-          objets.push({ shape: organique ? B.lieux.rocherPour(c.theme, (g ^ (sens > 0 ? 17 : 31) ^ (cote > 0 ? 5 : 11)) >>> 0) : 'bevel', p: pointPlan(f, cote * (M + 7.3), y + 7.5), s: [organique ? 7.5 : 3, 15.5, 14], r: rot, mat: 9, color: ROCHE });
+          objets.push({ shape: organique ? B.lieux.rocherPour(c.theme, (g ^ (sens > 0 ? 17 : 31) ^ (cote > 0 ? 5 : 11)) >>> 0) : 'bevel', p: pointPlan(f, cote * (M + 7.6), y + 7.5), s: [organique ? 7.5 : 3, 15.5, 14], r: rot, mat: organique ? 23 : 9, color: ROCHE });
           objets.push({ shape: 'box', p: devant(cote * (M + .4), H / 2 - .05), s: [.5, H + .1, .8], r: rot, mat: 3, color: BETON });
         }
-        objets.push({ shape: organique ? B.lieux.rocherPour(c.theme, (g ^ (sens > 0 ? 53 : 71)) >>> 0) : 'bevel', p: pointPlan(f, 0, y + H + 4.5), s: [organique ? 7.5 : 3, 7, 2 * M + 28], r: rot, mat: 9, color: ROCHE2 });
+        objets.push({ shape: organique ? B.lieux.rocherPour(c.theme, (g ^ (sens > 0 ? 53 : 71)) >>> 0) : 'bevel', p: pointPlan(f, 0, y + H + 4.5), s: [organique ? 7.5 : 3, 7, 2 * M + 28], r: rot, mat: organique ? 23 : 9, color: ROCHE2 });
         objets.push({ shape: 'box', p: devant(0, H + .8), s: [.5, 1.6, 2 * M + 2.4], r: rot, mat: 3, color: BETON });
         for (const o of objets) marquerSolide(o, 'portail-tunnel');
         ajouter(objets, objets.slice(), f.x, f.z);
@@ -1767,7 +1769,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       const y = terrain.sol(x, z), t = 2 + r() * 7;
       const fM = r() < .5 ? 'octa' : 'sphere';
       const shapeM = organique ? B.lieux.rocherPour('montagne', (g ^ Math.imul(k + 1, 1319)) >>> 0) : fM;
-      ajouter([{ shape: shapeM, p: [x, y + t * .2, z], s: [t * (1 + r()), t, t * (1 + r())], r: [r(), r() * 6, r()], mat: 9, color: th.roche }], [], x, z);
+      ajouter([{ shape: shapeM, p: [x, y + t * .2, z], s: [t * (1 + r()), t, t * (1 + r())], r: [r(), r() * 6, r()], mat: organique ? 23 : 9, color: th.roche }], [], x, z);
     }
     // Basalte en poches irrégulières : silhouettes conservées au loin, une seule construction par circuit.
     if (th.volcanique) {
@@ -1784,8 +1786,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           if (organique) {
             const formeV = B.lieux.rocherPour('islande', (g ^ Math.imul(k * 7 + j + 1, 2654435761)) >>> 0);
             const lOrg = largeur * 1.35, hOrg = hauteur * .82;
-            objets.push({ shape: formeV, collision: 'roche', p: [x, y + hOrg * .38, z], s: [lOrg, hOrg, lOrg * .86], r: [0, a, 0], mat: 9, color: couleur });
-            objets.push({ shape: 'bitume-lieu-rocher-volcan', p: [x, y + hOrg * .68, z], s: [lOrg * .82, hOrg * .32, lOrg * .72], r: [0, a + .4, 0], mat: saison && saison.neige ? 3 : 8,
+            objets.push({ shape: formeV, collision: 'roche', p: [x, y + hOrg * .38, z], s: [lOrg, hOrg, lOrg * .86], r: [0, a, 0], mat: 23, color: couleur });
+            objets.push({ shape: 'bitume-lieu-rocher-volcan', p: [x, y + hOrg * .68, z], s: [lOrg * .82, hOrg * .32, lOrg * .72], r: [0, a + .4, 0], mat: saison && saison.neige ? 3 : 25,
               color: saison && saison.neige ? [.90, .93, .96] : melange(couleur, th.herbe, mousse) });
           } else {
             objets.push({ shape: 'box', collision: 'roche', p: [x, y + hauteur * .44, z], s: [largeur, hauteur, largeur * .78], r: [0, a, 0], mat: 9, color: couleur });
@@ -1797,7 +1799,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         if (objets.length) ajouter(objets, objets, p[0], p[2]);
       }
     }
-    // Grès érodé en poches : en mode organique, pyramides du désert et galets/dunes arrondis (zéro bloc carré).
+    // Grès érodé en poches : en mode organique, buttes et rochers asymétriques texturés (zéro pyramide symétrique).
     if (th.aride) {
       const rocheR = alea(g ^ 0xa5139d6b);
       for (let k = 0; k < 64; k++) {
@@ -1816,15 +1818,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           }
           if (organique) {
             const gr = (g ^ Math.imul(k * 11 + j + 1, 1597334677)) >>> 0;
-            const estPyramide = (k % 3 === 0) && j === 0;
-            const couleur = melange(th.roche, estPyramide ? th.sable : th.terre, .42 + rocheR() * .25);
-            if (estPyramide) {
-              const bPyr = largeur * 1.55, hPyr = bPyr * .68;
-              objets.push({ shape: B.lieux.pyramidePour(gr), collision: 'roche', p: [x, bas + hPyr * .5 - .3, z], s: [bPyr, hPyr, bPyr], r: [0, a, 0], mat: 9, color: melange(th.sable, th.roche, .28) });
-            } else {
-              const hOrg = h * niveaux * .78, formeD = B.lieux.rocherPour('desert', gr);
-              objets.push({ shape: formeD, collision: 'roche', p: [x, bas + hOrg * .46, z], s: [largeur * 1.15, hOrg, profondeur * 1.15], r: [0, a, 0], mat: 9, color: couleur });
-            }
+            const estButte = (k % 3 === 0) && j === 0;
+            const couleur = melange(th.roche, estButte ? th.sable : th.terre, .42 + rocheR() * .25);
+            const hOrg = estButte ? largeur * .72 : h * niveaux * .78;
+            const formeD = B.lieux.rocherPour(estButte ? 'montagne' : 'desert', gr);
+            const tiltX = (rocheR() - .5) * .16, tiltZ = (rocheR() - .5) * .16;
+            objets.push({ shape: formeD, collision: 'roche', p: [x, bas + hOrg * .46, z], s: [largeur * (estButte ? 1.45 : 1.15), hOrg, profondeur * (estButte ? 1.35 : 1.15)], r: [tiltX, a, tiltZ], mat: 23, color: couleur });
           } else {
             for (let etage = 0; etage < niveaux; etage++) {
               const taille = 1 - etage * .16, couleur = melange(th.roche, etage % 2 ? th.sable : th.terre, .38 + rocheR() * .25);

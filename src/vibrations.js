@@ -34,8 +34,9 @@
       // retenu. Les pics ne s'additionnent pas : on garde le plus fort sur le moteur
       // lourd, qui décroît ensuite de façon exponentielle.
       envFort: 0, decFort: 0.35,
-      envRapportGD: 0, // coup de passage sur la gâchette droite, indépendant
-      envTic: 0,       // « tic » de montée de niveau de dérive sur le moteur lourd
+      envRapportGD: 0,     // coup sec de passage sur la gâchette droite, indépendant
+      envRapportFaible: 0, // claquement sec haute fréquence du changement de rapport
+      envTic: 0,           // « tic » de montée de niveau de dérive sur le moteur lourd
       envDerive: 0,    // battement de dérive déclenché au tour de phase, retombée 0,07 s
       dernierNiveau: -1, // niveau de dérive vu au pas précédent, pour détecter la montée
       // Sorties lissées au temps : la montée est vive, la descente plus douce.
@@ -65,6 +66,7 @@
     var glisseAv = +e.glisseAv || 0;
     var bosse = +e.bosse || 0;
     var turbo = +e.turbo || 0;
+    var along = +e.along || 0;
     var force = e.force == null ? 0.5 : +e.force;
     if (!(force > 0)) force = 0;
     if (force > 1) force = 1;
@@ -78,14 +80,24 @@
     // Contributions brutes par sortie, sommées avant mise en forme.
     var cFaible = 0, cFort = 0, cGG = 0, cGD = 0;
 
-    // a. Moteur : grondement très discret, qui monte avec le régime et la charge.
-    // Le carré de r garde le bas régime presque silencieux ; la base de 0.03 ne s'ajoute
-    // que si la voiture tourne vraiment, pour que le ralenti à l'arrêt reste sous le seuil.
+    // a. Moteur & accélération : grondement vivant du V12 qui monte fort avec le régime, la charge et la poussée réelle.
+    // La base ne s'ajoute que si la voiture tourne vraiment, pour garder le ralenti à l'arrêt silencieux sous le seuil.
     var denom = maxUtile - ralenti;
     var r = denom > 0 ? (regime - ralenti) / denom : 0;
     if (r < 0) r = 0; else if (r > 1) r = 1;
     var motActif = r > 0.001 || gaz > 0.001 || absV > 0.05;
-    if (motActif) cFort += 0.03 + 0.22 * r * r * (0.3 + 0.7 * gaz);
+    if (motActif) {
+      cFort += 0.03 + 0.34 * r * r * (0.35 + 0.65 * gaz);
+      if (gaz > 0.15 && r > 0.35) cFaible += 0.16 * r * r * gaz;
+    }
+    // Ressenti viscéral de l'accélération réelle (along > 1.5 m/s²) : poussée grave dans le moteur lourd + retour gâchette droite
+    if (along > 1.5 && gaz > 0.2) {
+      var accNorm = (along - 1.5) / 14;
+      if (accNorm > 1) accNorm = 1;
+      cFort += 0.44 * accNorm * gaz;
+      cFaible += 0.24 * accNorm * gaz;
+      cGD += 0.38 * accNorm * gaz;
+    }
     // Rupteur : crépitement sec en haut régime, senti sur le léger et la gâchette droite.
     if (r > 0.97) {
       V.phRupteur += FREQ_RUPTEUR * pas;
@@ -167,8 +179,10 @@
         var type = ev.type;
         var fEv = +ev.force || 0;
         if (type === 'rapport') {
-          if (0.6 >= V.envFort) { V.envFort = 0.6; V.decFort = 0.09; }
-          if (0.5 >= V.envRapportGD) V.envRapportGD = 0.5;
+          // Secousse brutale de boîte séquentielle F1 : coup de bélier franc dans les deux moteurs et la gâchette droite
+          if (1.0 >= V.envFort) { V.envFort = 1.0; V.decFort = 0.16; }
+          if (0.95 >= V.envRapportGD) V.envRapportGD = 0.95;
+          if (0.92 >= V.envRapportFaible) V.envRapportFaible = 0.92;
         } else if (type === 'choc' || type === 'contact') {
           var picC = (fEv - 2) / 28; if (picC < 0) picC = 0; else if (picC > 1) picC = 1; picC *= 0.95;
           if (picC >= V.envFort) { V.envFort = picC; V.decFort = 0.35; }
@@ -222,8 +236,13 @@
     }
     if (V.envRapportGD > 0) {
       cGD += V.envRapportGD;
-      V.envRapportGD *= Math.exp(-pas * 4 / 0.09);
+      V.envRapportGD *= Math.exp(-pas * 4 / 0.12);
       if (V.envRapportGD < 1e-6) V.envRapportGD = 0;
+    }
+    if (V.envRapportFaible > 0) {
+      cFaible += V.envRapportFaible;
+      V.envRapportFaible *= Math.exp(-pas * 4 / 0.10);
+      if (V.envRapportFaible < 1e-6) V.envRapportFaible = 0;
     }
     if (V.envTic > 0) {
       cFort += V.envTic;

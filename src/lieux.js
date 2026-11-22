@@ -220,6 +220,70 @@
   // 5. Rocher alpin érodé (arrondi et dissymétrique)
   enregistrer('bitume-lieu-rocher-alpin', rocherOrganique([[2.1, 1.1, .28], [3.9, 2.6, .16], [5.7, .8, .09]], .38, 1.18, 2));
 
+  // 5b. Lac / bassin organique asymétrique (18 sommets, 3 harmoniques déphasées, fermé)
+  enregistrer('bitume-lieu-lac-organique', (function () {
+    const N = 18, rand = prng(0xAC1D0001), verts = [], faces = [];
+    const amp1 = .34 + rand() * .10, amp2 = .13 + rand() * .07, amp3 = .06 + rand() * .04;
+    const ph1 = rand() * TAU, ph2 = rand() * TAU, ph3 = rand() * TAU;
+    for (let i = 0; i < N; i++) {
+      const a = (i / N) * TAU;
+      const r = .52 + amp1 * Math.sin(a + ph1) * .45 + amp2 * Math.sin(3 * a + ph2) + amp3 * Math.sin(5 * a + ph3);
+      const x = Math.cos(a) * r, z = Math.sin(a) * r * (.76 + .18 * Math.sin(2 * a + ph2));
+      verts.push([x, .04, z]);
+      verts.push([x * .96, -.04, z * .96]);
+    }
+    const cTop = verts.length; verts.push([0, .05, 0]);
+    const cBot = verts.length; verts.push([0, -.05, 0]);
+    for (let i = 0; i < N; i++) {
+      const j = (i + 1) % N;
+      const t0 = i * 2, b0 = t0 + 1, t1 = j * 2, b1 = t1 + 1;
+      faces.push([cTop, t1, t0], [cBot, b0, b1]);
+      faces.push([t0, t1, b1], [t0, b1, b0]);
+    }
+    return normaliserBoite(maillageLisse(verts, faces, false));
+  })());
+
+  // 5c. Cascade organique asymétrique (rideau d'eau incurvé à largeur variable, fermé)
+  enregistrer('bitume-lieu-cascade', (function () {
+    const rand = prng(0xCA5C0002), SH = 12, SW = 8, verts = [], faces = [];
+    const larg = [], cx = [], cz = [];
+    for (let j = 0; j <= SH; j++) {
+      const t = j / SH;
+      larg.push(Math.max(.18, .36 + .11 * Math.sin(t * Math.PI * 2.3 + .4) + .05 * Math.sin(t * Math.PI * 5.2)));
+      cx.push(.07 * Math.sin(t * Math.PI * 1.7 + .4) + .03 * Math.sin(t * Math.PI * 4.1));
+      cz.push(.06 * Math.cos(t * Math.PI * 1.9 + .7) + .03 * Math.sin(t * Math.PI * 3.3));
+    }
+    const stride = SW + 1, frontCount = (SH + 1) * stride;
+    for (let face = 0; face < 2; face++) {
+      const zOff = face === 0 ? -.05 : .05;
+      for (let j = 0; j <= SH; j++) {
+        const y = .5 - j / SH, w = larg[j];
+        for (let i = 0; i <= SW; i++) {
+          const u = (i / SW) * 2 - 1;
+          verts.push([u * w + cx[j] + (rand() - .5) * .018, y + (rand() - .5) * .012, cz[j] + zOff + Math.cos(u * Math.PI * .5) * (face === 0 ? -.04 : .02)]);
+        }
+      }
+    }
+    for (let j = 0; j < SH; j++) for (let i = 0; i < SW; i++) {
+      const a = j * stride + i, b = a + 1, c = a + stride, d = c + 1;
+      faces.push([a, c, b], [b, c, d]);
+      const ba = frontCount + a, bb = frontCount + b, bc = frontCount + c, bd = frontCount + d;
+      faces.push([ba, bb, bc], [bb, bd, bc]);
+    }
+    for (let j = 0; j < SH; j++) {
+      const l0 = j * stride, l1 = (j + 1) * stride;
+      faces.push([l0, frontCount + l0, l1], [l1, frontCount + l0, frontCount + l1]);
+      const r0 = j * stride + SW, r1 = (j + 1) * stride + SW;
+      faces.push([r0, r1, frontCount + r0], [r1, frontCount + r1, frontCount + r0]);
+    }
+    for (let i = 0; i < SW; i++) {
+      faces.push([i, i + 1, frontCount + i], [i + 1, frontCount + i + 1, frontCount + i]);
+      const b0 = SH * stride + i, b1 = b0 + 1;
+      faces.push([b0, frontCount + b0, b1], [b1, frontCount + b0, frontCount + b1]);
+    }
+    return normaliserBoite(maillageLisse(verts, faces, false));
+  })());
+
   // 6. Piton calcaire karstique (pain de sucre arrondi fuselé)
   enregistrer('bitume-lieu-rocher-calcaire', (function () {
     const { verts, faces } = icosphere(2);

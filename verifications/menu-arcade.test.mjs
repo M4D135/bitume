@@ -14,7 +14,7 @@ const proche = (a, b, precision = 1e-9) => assert.ok(Math.abs(a - b) < precision
 const petit = () => ({ n: 4, x: [0, 80, 80, 0], y: [5, 15, 25, 10], z: [0, 0, 60, 60], longueur: 280 });
 
 verifier('le catalogue entier conserve ses vrais XYZ, son départ et une seule échelle métrique', () => {
-  assert.equal(catalogue.length, 16);
+  assert.equal(catalogue.length, 10);
   for (const k of catalogue) {
     const c = B.circuit.creer(k.graine, k), avant = [Array.from(c.x), Array.from(c.y), Array.from(c.z)];
     const t = A.preparerTrace(c);

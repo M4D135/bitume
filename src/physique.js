@@ -5,9 +5,10 @@
 (function (B) {
   'use strict';
   const G = 9.81, DT = 1 / 120, SOL = 1, OBSTACLE = 2, VOITURE = 4, DEBRIS = 8;
+  // Suspensions F1 raides (poussoirs courts, débattement compact) pour réactions vives et vrais sauts sur crêtes/tremplins.
   const PROFIL = Object.freeze({ masse: 600, empattement: 2.70, repartition: .44, hauteurCG: .33,
-    inertie: Object.freeze([210, 1014, 980]), courseRepos: .14, courseLibre: .18, courseMax: .32,
-    amortissement: .82, forceMaxRoue: 26000 });
+    inertie: Object.freeze([210, 1014, 980]), courseRepos: .08, courseLibre: .105, courseMax: .17,
+    amortissement: .64, forceMaxRoue: 30000 });
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   const angle = x => x - 2 * Math.PI * Math.round(x / (2 * Math.PI));
   const wrap = (x, L) => (x % L + L) % L;
@@ -31,7 +32,9 @@
     let best = Infinity, bestS = s, bestD = 0, centre = Math.floor(wrap(s, c.longueur) / c.pas);
     function cherche(radius) {
       for (let k = -radius; k <= radius; k++) {
-        const i = (centre + k + c.n) % c.n, j = (i + 1) % c.n, dx = c.x[j] - c.x[i], dz = c.z[j] - c.z[i];
+        const i = c.ouvert ? centre + k : (centre + k + c.n) % c.n;
+        if (c.ouvert && (i < 0 || i >= c.n - 1)) continue;
+        const j = (i + 1) % c.n, dx = c.x[j] - c.x[i], dz = c.z[j] - c.z[i];
         const l2 = dx * dx + dz * dz, t = l2 > 0 ? clamp(((x - c.x[i]) * dx + (z - c.z[i]) * dz) / l2, 0, 1) : 0;
         const ex = x - c.x[i] - t * dx, ez = z - c.z[i] - t * dz, d2 = ex * ex + ez * ez;
         if (d2 < best) { best = d2; bestS = (i + t) * c.pas; bestD = l2 > 0 ? (ez * dx - ex * dz) / Math.sqrt(l2) : 0; }
@@ -146,7 +149,7 @@
         + hit.ny * (ph.right[1] * cd - ph.forward[1] * sd) + hit.nz * (ph.right[2] * cd - ph.forward[2] * sd) : 0;
       const support = roue.r * Math.sqrt(Math.max(0, 1 - axial * axial)) + roue.l * .5 * Math.abs(axial);
       const rayon = hit.hit && incidence > .35 ? support / incidence : roue.r;
-      ph.offsets[w.i] = ph.distant && ph.hasRemote ? ph.remote[6 + w.i] : clamp(PROFIL.courseRepos - (w.distance - rayon), -.18, .14);
+      ph.offsets[w.i] = ph.distant && ph.hasRemote ? ph.remote[6 + w.i] : clamp(PROFIL.courseRepos - (w.distance - rayon), -.085, .075);
       if (ph.world.setShapePose) {
         w.shapePose[1] = roue.r + ph.offsets[w.i]; w.shapePose[4] = -Math.sin(braquage / 2); w.shapePose[6] = Math.cos(braquage / 2);
         ph.world.setShapePose(ph.id, w.i + 1, w.shapePose);
@@ -233,10 +236,13 @@
     }
     for (let j = 0; j < 3; j++) ph.force[j] = ph.forward[j] * F.resistance[0] + ph.right[j] * F.resistance[1];
     world.force(ph.id, ph.force);
-    // Appui aérodynamique réel : chargé par les ressorts au pas suivant, y compris sur les crêtes.
+    // Appui aérodynamique réel : l'effet de sol chute quand les roues décollent d'une crête/tremplin,
+    // permettant à la F1 de décoller franchement au lieu de coller artificiellement à la route.
     if (F.appui > 0) {
+      const effetSol = 0.24 + 0.76 * (ph.groundCount / 4);
+      const appuiEffectif = F.appui * effetSol;
       for (const [x, part] of [[1.35, B.conduite.PARAMS.aeroAvant], [-1.35, 1 - B.conduite.PARAMS.aeroAvant]]) {
-        monde(ph.pose, [x, .3, 0], ph.tmp); for (let j = 0; j < 3; j++) ph.force[j] = -ph.up[j] * F.appui * part;
+        monde(ph.pose, [x, .3, 0], ph.tmp); for (let j = 0; j < 3; j++) ph.force[j] = -ph.up[j] * appuiEffectif * part;
         world.force(ph.id, ph.force, ph.tmp);
       }
     }
@@ -377,5 +383,10 @@
     if (p.solids) { p.solids.ids.length = 0; p.solids.acteurs.clear(); p.solids.libere = true; }
     p.voitures.length = 0; co.physique = null;
   }
-  B.physique = { PROFIL, GROUPES: Object.freeze({ SOL, OBSTACLE, VOITURE, DEBRIS }), installer, avant, pas, liberer, repositionner, quaternion, projeter };
+  function replacerVoiture(co, v) {
+    const p = co && co.physique; if (!p || p.disposed) return;
+    const ph = p.voitures.find(q => q.v === v || q.v.id === (v && v.id));
+    if (ph && !ph.distant) replacer(ph);
+  }
+  B.physique = { PROFIL, GROUPES: Object.freeze({ SOL, OBSTACLE, VOITURE, DEBRIS }), installer, avant, pas, liberer, repositionner, replacerVoiture, quaternion, projeter };
 })(globalThis.BITUME = globalThis.BITUME || {});

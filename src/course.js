@@ -212,6 +212,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     }
     return true;
   }
+
   // `sortie`, facultatif : objet de commandes de l'appelant, rempli et rendu au lieu d'un neuf (la course en garde
   // un par voiture pour ses rivaux). Sans lui, chaque appel rend un objet neuf, comme toujours.
   function commandesIA(course, v, sortie) {
@@ -219,48 +220,45 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     // emprise de la voiture elle-même : le calcul d'empriseIA, sans objet
     const h0 = e.psi + e.beta, ca0 = Math.abs(Math.cos(h0)), sa0 = Math.abs(Math.sin(h0));
     const moiLong = 2.475 * ca0 + 1.01 * sa0, moiLat = 2.475 * sa0 + 1.01 * ca0;
-    const vit=e.v, demi=c.largeur/2, utile=Math.max(.5,demi-moiLat-.25);
-    ia.t = (ia.t || 0) + dt;   // horloge locale de la voiture : le délai entre deux attaques ne dépend pas du temps affiché
-    // Les rivaux engagés aux stands conduisent réellement leur approche, attente et sortie. Le service et ses
-    // pneus restent la responsabilité de stands(), après la conduite et les collisions du pas.
+    const vit = e.v, demi = c.largeur / 2, utile = Math.max(.5, demi - moiLat - .25);
+    ia.t = (ia.t || 0) + dt;   // horloge locale de la voiture
+    // Les rivaux engagés aux stands conduisent réellement leur approche, attente et sortie.
     const arretIA = B.strategieStands && B.strategieStands.commandes(course, v, sortie);
     if (arretIA) return arretIA;
-    // Retour en piste seulement quand la voiture est vraiment dehors (centre au-delà du bord), avec hystérésis :
-    // frôler la trajectoire idéale, qui longe le bord, n'est pas une sortie.
-    const ad=Math.abs(e.d);
-    if (ad>demi+.4) ia.dehors=true; else if (ad<demi-1.2) ia.dehors=false;
-    const recuperer=!!ia.dehors;
-    if (course.mode === 'course' && course.phase === 'course' && course.temps < ia.reaction) { ia.bloque=0;return NEUTRE; }
+    // Retour en piste seulement quand la voiture est vraiment dehors, avec hystérésis.
+    const ad = Math.abs(e.d);
+    if (ad > demi + .4) ia.dehors = true; else if (ad < demi - 1.2) ia.dehors = false;
+    const recuperer = !!ia.dehors;
+    if (course.mode === 'course' && course.phase === 'course' && course.temps < ia.reaction) { ia.bloque = 0; return NEUTRE; }
 
     let hab = ia.hab * (ia.forme || 1);
-    if (v.fini || (v.joueur && course.phase === 'arrivee')) hab *= 0.82; // tour de décélération
+    if (v.fini || (v.joueur && course.phase === 'arrivee')) hab *= 0.82;
     else if (course.mode === 'course' && course.difficulte < 2 && !v.joueur && !course.joueur.fini) {
       const ej = v.progression - course.joueur.progression, f = clamp((Math.abs(ej) - 250) / 500, 0, 1) * 0.02;
-      hab += ej < 0 ? f : -f; // léger élastique
+      hab += ej < 0 ? f : -f;
     }
-    // Même surface et même usure que les forces du joueur ; l'essieu le plus limité fixe la marge de l'IA.
     const chaussee = B.chaussee.lire(c, e.s, undefined, CHAUSSEE_IA);
     const adh = B.conduite.adherenceVoiture(e, chaussee);
     const habSansSurface = hab;
     hab *= Math.sqrt(adh);
 
-    // Vitesse visée et freinage anticipé (jusqu'à 200 m devant). Le freinage finit une fraction de seconde avant
-    // chaque point (avance), et la vitesse visée est la plus basse de ce bout de piste : la voiture arrive à la
-    // corde déjà ralentie, au lieu de freiner en braquant, ce qui prend aux pneus l'adhérence du virage.
+    // Vitesse visée et freinage anticipé (jusqu'à 200 m devant).
     const f = ramener(e.s, c.longueur) / P, i0 = Math.floor(f) % n, fr = f - Math.floor(f);
-    let dec = 0.8 * (14 + 0.15 * vit) * (recuperer ? .6 : 1) * adh; const v2 = vit * vit; // l'herbe freine moins bien
+    let dec = 0.8 * (14 + 0.15 * vit) * (recuperer ? .6 : 1) * adh;
+    const v2 = vit * vit;
     const anticipe = .5 * vit;
-    // vitesse de référence, courbure et trajectoire idéale au droit de la voiture : lues une fois, chacune servait
-    // jusqu'à trois fois (e.s ne bouge pas pendant la décision, et lire est une fonction pure : mêmes valeurs)
+
+    // ── AMÉLIORATION 1 : freinage adapté aux fortes pentes descendantes (cols > 4,5 %) ──
+    const penteAv = c.pente ? Math.min(0, lire(c, c.pente, e.s + Math.min(45, anticipe))) : 0;
+    if (penteAv < -0.045) dec = Math.max(5, dec + 9.81 * (penteAv + 0.045) * 1.4);
+
     const vIci = lire(c, c.vitesse, e.s), kIci = lire(c, c.courbure, e.s), lIci = lire(c, c.ligne, e.s);
     let cible = vIci * hab, besoin = 0, eauPrevue = -1, neigePrevue = -1, adhPrevue = adh;
     for (let q = 1, N = Math.ceil(200 / P); q <= N; q++) {
       const index = (i0 + q) % n, dist = (q - fr) * P;
-      // Une sortie de tunnel enneigée doit être préparée avant le portail, même si la voiture roule au sec.
       const surface = B.chaussee.lire(c, index * P, undefined, CHAUSSEE_ANTICIPEE);
       let adhDevant = adh;
       if (surface.eau !== chaussee.eau || surface.neige !== chaussee.neige) {
-        // La plupart des points partagent la même chaussée : pas de relecture des quatre pneus à chaque mètre.
         if (surface.eau !== eauPrevue || surface.neige !== neigePrevue) {
           adhPrevue = B.conduite.adherenceVoiture(e, surface); eauPrevue = surface.eau; neigePrevue = surface.neige;
         }
@@ -272,37 +270,31 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       if (b > besoin) besoin = b;
     }
 
-    // Trafic : voiture la plus proche devant dans le couloir ; voisines à côté à ne pas serrer. Le regard
-    // s'allonge avec la vitesse (distance d'arrêt + marge) pour qu'un rival lancé voie et évite un obstacle
-    // arrêté bien avant de lereach (Chantier 3 : un rival à 80 m/s doit éviter une voiture arrêtée).
+    // Trafic : voiture la plus proche devant dans le couloir.
     const regard = Math.max(70, v2 / 60 + 30);
-    // prochain virage à portée de freinage : son intérieur est le seul côté où l'on dépasse en freinant
     let kAv = 0;
     for (let q = 1, N = Math.ceil(Math.max(60, v2 / 20 + 30) / P); q <= N; q++) {
       const k = c.courbure[(i0 + q) % n];
       if (Math.abs(k) > 3e-3) { kAv = k; break; }
     }
-    // un attaquant engagé à l'intérieur du virage qui vient freine un peu plus tard, selon sa combativité
     if (ia.cible >= 0 && kAv && ia.cote === Math.sign(kAv)) dec *= 1 + .06 * (ia.agressivite || 0);
     let devant = null, devantI = -1, dsMin = regard, dMin = -utile, dMax = utile;
     for (let i = 0; i < V.length; i++) {
       const o = V[i];
       if (o === v) continue;
       emprise(E, i, o.etat);
-      const ds = ecart(c, e.s, o.etat.s), dd = o.etat.d - e.d, espace=moiLat+E.lat[i]+.35;
+      const ds = ecart(c, e.s, o.etat.s), dd = o.etat.d - e.d, espace = moiLat + E.lat[i] + .35;
       if (ds > 0 && ds < dsMin && Math.abs(dd) < espace) { dsMin = ds; devant = o; devantI = i; }
-      if (Math.abs(ds) < moiLong+E.long[i]+.5 && Math.abs(dd) < espace+.5) { // vraiment côte à côte
+      if (Math.abs(ds) < moiLong + E.long[i] + .5 && Math.abs(dd) < espace + .5) {
         if (dd >= 0) dMax = Math.min(dMax, o.etat.d - espace); else dMin = Math.max(dMin, o.etat.d + espace);
       }
     }
-    // Aspiration : en ligne droite, derrière une voiture à allure voisine (6 à 45 m), on se glisse dans son sillage ;
-    // le gain de vitesse qu'il donne (conduite.js) ouvre le dépassement, par l'intérieur du virage qui vient.
+    // Aspiration.
     if (!recuperer && !kAv && ia.cible < 0 && devant) {
       const gap = dsMin - moiLong - longueurDe(E, devantI, devant.etat);
       ia.sillage = gap > 6 && gap < 45 && Math.abs(devant.etat.v - vit) < 6 ? devant.id : -1;
     } else ia.sillage = -1;
-    // Défense : un poursuivant à moins de 12 m avant un virage ; un pilote qui aime défendre prend l'intérieur, une
-    // fois par virage, au prix d'un peu d'allure ; jamais en serrant une voiture déjà à sa hauteur (dMin, dMax).
+    // Défense.
     if (!recuperer && kAv && ia.cible < 0 && (ia.defense || 0) > .45 && course.phase === 'course') {
       const virage = (i0 + Math.round(Math.max(60, v2 / 20 + 30) / P)) / 40 | 0;
       if (ia.defendu !== virage) {
@@ -315,9 +307,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       }
     }
     if (!kAv && ia.defend && Math.abs(kIci) < 3e-3) ia.defend = 0;
-    // Blocage (lot 3) : un rival combatif tenu de près dans un virage ne se rabat pas sous le nez de son poursuivant,
-    // il tient la ligne qu'il a prise jusqu'à ce que l'autre décroche ou que le virage finisse. Un seul maintien par
-    // virage, aucun élan ajouté : c'est un choix de trajectoire, pas une impulsion réservée à l'IA.
+    // Blocage (lot 3).
     const gene = !!devant && devant.etat.v < vit - 10;
     if (!recuperer && !gene && ia.cible < 0 && Math.abs(e.d) <= utile && (ia.agressivite || 0) > .55 && course.phase === 'course') {
       const virage = (i0 + Math.round(Math.max(60, v2 / 20 + 30) / P)) / 40 | 0;
@@ -325,7 +315,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
         for (let i = 0; i < V.length; i++) {
           const o = V[i];
           if (o === v || o.fini || o.abandon || horsService(o.etat)) continue;
-          const ds = ecart(c, e.s, o.etat.s);                       // o est derrière moi
+          const ds = ecart(c, e.s, o.etat.s);
           if (ds > 1 && ds < 8 + moiLong && Math.abs(o.etat.d - e.d) < moiLat + largeurDe(E, i, o.etat) + .6) {
             if (ia.presse !== o.id) { ia.presse = o.id; ia.presses++; if (course.statsIa) course.statsIa.presses++; }
             ia.tenu = virage; break;
@@ -339,31 +329,25 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     }
     if (devant) {
       emprise(E, devantI, devant.etat);
-      const od=devant.etat, espace=moiLat+E.lat[devantI]+.5, gap=dsMin-moiLong-E.long[devantI];
-      // un obstacle vraiment plus lent (voiture arrêtée ou en perdition) justifie un engagement plus tôt et plus
-      // franc ; la circulation normale (allure voisine) garde la conduite habituelle du peloton.
-      const obstacle = od.v < vit - 10;
+      const od = devant.etat, espace = moiLat + E.lat[devantI] + .5, gap = dsMin - moiLong - E.long[devantI];
+      // ── AMÉLIORATION 2 : évitement précoce des voitures lentes/arrêtées ──
+      const obstacle = od.v < vit - 10 || (od.v < 6 && vit > od.v + 3.5);
       const aspire = ia.sillage === devant.id && gap < 12;
       if (ia.cible < 0 && vit > od.v + 0.3 && gap < IA_PORT) { if (ia.entamee == null) ia.entamee = ia.t; }
       else if (ia.cible < 0) ia.entamee = null;
-      // cible réellement atteignable : à portée, plus lent, et assez de marge de vitesse pour combler l'écart.
-      // Un adversaire en récupération, en replacement ou en service n'est jamais attaqué, mais il reste une voiture
-      // devant soi : l'éviter ou le contourner (obstacle) garde la main, sinon on freine derrière lui jusqu'au
-      // contact. Le délai entre deux engagements ne bride pas non plus l'évitement.
-      // Une voiture hors service reste une voiture devant soi : on la contourne sans bride (ni portée, ni délai) et
-      // sans que ce soit compté comme une attaque. Contre une voiture en course, l'engagement reste mesuré : cible
-      // atteignable et délai entre deux attaques.
       const horsJeu = horsService(od), contourne = horsJeu || obstacle;
       const atteignable = (contourne || gap <= IA_PORT) && vit - od.v > Math.max(0.3, gap * IA_ECART_VITESSE);
       if (!recuperer && ia.cible !== devant.id && (contourne || vit > od.v + 0.3 || aspire) && atteignable &&
           gap < (obstacle ? Math.max(70, v2 / 45 + 25) : 30) && (contourne || ia.t - (ia.derniereAttaque ?? -99) >= IA_ATTENTE)) {
         const interieur = kAv > 0 ? 1 : kAv < 0 ? -1 : (od.d > e.d ? -1 : 1);
-        // côté libre : dans la piste et sans autre voiture sur la trajectoire de dépassement (coteLibre) ;
-        // l'extérieur d'un virage qui arrive mène tout droit dans l'herbe : réservé à l'évitement d'un obstacle
-        const cote = coteLibre(course, E, v, devant, od.d + espace * interieur, utile, e.s, dsMin, moiLat) ? interieur
-          : (!kAv || obstacle) && coteLibre(course, E, v, devant, od.d + espace * -interieur, utile, e.s, dsMin, moiLat) ? -interieur : 0;
+        const douce = Math.abs(kAv) < 0.005 && (vit - od.v) > 3.5;
+        let cote = 0;
+        if (coteLibre(course, E, v, devant, od.d + espace * interieur, utile, e.s, dsMin, moiLat)) {
+          cote = interieur;
+        } else if ((!kAv || obstacle || douce) && coteLibre(course, E, v, devant, od.d + espace * -interieur, utile, e.s, dsMin, moiLat)) {
+          cote = -interieur;
+        }
         if (cote) {
-          // un engagement contre une voiture hors service est un contournement, pas une attaque : compté comme tel
           ia.attaque = !horsJeu;
           ia.cible = devant.id; ia.cote = cote;
           if (ia.attaque) {
@@ -373,52 +357,48 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
           ia.changements++;
         }
       }
-      // dépassement engagé par l'extérieur quand le virage arrive, sans être encore à la hauteur de l'autre : on
-      // renonce et on rentre derrière lui
+      // dépassement engagé par l'extérieur quand le virage arrive : renoncer
       if (ia.cible === devant.id && !obstacle && kAv && ia.cote === -Math.sign(kAv) && gap > -moiLong) renoncer(ia, course);
-      // pas d'emboutissage : tant qu'on est dans les roues de celui de devant, on garde une distance de suivi.
-      // Mais une fois le dépassement amorcé sur un côté libre, on ne rampe pas (sans vitesse, pas de mouvement
-      // latéral) : on garde de quoi dégager la trajectoire, quitte à se rabattre derrière si le côté se referme.
-      if (Math.abs(od.d-e.d)<espace) {
-        if (obstacle && ia.cible === devant.id && Math.abs(od.d-e.d)>espace-.3) {
+      // ── AMÉLIORATION 2b : freinage progressif anti-emboutissage quand bloqué derrière sans côté libre ──
+      if (Math.abs(od.d - e.d) < espace) {
+        if (obstacle && ia.cible === devant.id && Math.abs(od.d - e.d) > espace - .3) {
           const lim = Math.max(od.v + 12, Math.min(vit, od.v + 6 + gap * 0.6));
-          cible = Math.min(cible, Math.max(5,lim));
+          cible = Math.min(cible, Math.max(5, lim));
         } else {
           let lim = od.v + Math.max(0, gap - 3) * 0.9;
           if (ia.cible === devant.id) lim = Math.max(lim, Math.min(5, 1.5 + gap * 0.5));
+          // freinage anti-emboutissage progressif si on arrive nettement plus vite et proche
+          if (vit > od.v + 4 && gap < 22 && ia.cible !== devant.id) {
+            const besoinTrafic = (v2 - od.v * od.v) / (2 * Math.max(2, gap - 2.5));
+            if (besoinTrafic > besoin) besoin = besoinTrafic;
+          }
           cible = Math.min(cible, lim);
         }
       }
     }
-    // Dehors, l'adhérence tombe à un peu plus de la moitié. Tant que la voiture s'éloigne encore de la piste, on
-    // freine fort pour resserrer le virage ; dès qu'elle revient, allure de virage réduite d'autant, sans piler.
+    // Dehors.
     if (recuperer) {
-      ia.cible=-1;ia.cote=0;ia.decalVise=0;
-      cible=Math.min(cible,e.psi*Math.sign(e.d)>.03?Math.max(10,vit*.65):vIci*hab*.74);
+      ia.cible = -1; ia.cote = 0; ia.decalVise = 0;
+      cible = Math.min(cible, e.psi * Math.sign(e.d) > .03 ? Math.max(10, vit * .65) : vIci * hab * .74);
     }
     const base = lIci + ia.decal;
-    if (ia.cible >= 0 && dMin > dMax) renoncer(ia, course);   // coincée : on renonce
+    if (ia.cible >= 0 && dMin > dMax) renoncer(ia, course);
     if (ia.cible >= 0 && horsService(course.voitures[ia.cible] && course.voitures[ia.cible].etat)) renoncer(ia, course);
     if (ia.cible >= 0) {
       const o = course.voitures[ia.cible], avance = ecart(c, o.etat.s, e.s);
-      if (avance > 3+moiLong+longueurDe(E, ia.cible, o.etat) || avance < -(regard + 10)) renoncer(ia, course);
-      else ia.decalVise = o.etat.d+(moiLat+largeurDe(E, ia.cible, o.etat)+.5)*ia.cote-base;
+      if (avance > 3 + moiLong + longueurDe(E, ia.cible, o.etat) || avance < -(regard + 10)) renoncer(ia, course);
+      else ia.decalVise = o.etat.d + (moiLat + largeurDe(E, ia.cible, o.etat) + .5) * ia.cote - base;
     }
     let vise = ia.cible >= 0 ? ia.decalVise : 0, vLat = (ia.cible >= 0 ? (devant && vit > devant.etat.v + 8 ? 6.0 : 3.0) : recuperer ? 4 : .8) * dt;
     if (ia.cible < 0 && !recuperer) {
-      if (ia.presse >= 0) { vise = e.d - base; vLat = 1.2 * dt; }        // tient sa ligne, ne se rabat pas
+      if (ia.presse >= 0) { vise = e.d - base; vLat = 1.2 * dt; }
       else if (ia.sillage >= 0) { vise = clamp(course.voitures[ia.sillage].etat.d - base, -utile - base, utile - base); vLat = 1.6 * dt; }
       else if (ia.defend) { vise = ia.defend * (utile - .6) - base; vLat = 2.2 * dt; cible *= .985; }
     }
     ia.decalDep += clamp(vise - ia.decalDep, -vLat, vLat);
 
-    // Direction : poursuite d'un point de la ligne visée. Face à un obstacle beaucoup plus lent, on vise plus
-    // court pour braquer plus sec et dégager la trajectoire avant d'arriver dessus ; circulation normale : visée longue.
-    // Dehors : retour du côté où l'on est sorti, sans traverser la piste, sous un angle doux (11° au plus), pour
-    // ne pas repartir dans l'herbe d'en face. En piste, l'écart au cap de la trajectoire est borné par une vitesse
-    // latérale (5 m/s, 9 pour éviter un obstacle) : à 200 km/h, un changement de côté ne jette plus la voiture
-    // de travers à l'entrée d'un virage.
-    const evite=!recuperer && ia.cible>=0 && devant && vit>devant.etat.v+10;
+    // Direction.
+    const evite = !recuperer && ia.cible >= 0 && devant && vit > devant.etat.v + 10;
     const la = recuperer ? 10 + 0.6 * vit : (evite ? 5 : 8) + (evite ? 0.30 : 0.45) * vit;
     const ligneLa = lire(c, c.ligne, e.s + la);
     let dVise = recuperer ? Math.sign(e.d) * (demi - 1.8) : clamp(ligneLa + ia.decal + ia.decalDep, -utile, utile);
@@ -426,13 +406,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     const psiL = recuperer ? 0 : Math.atan2(ligneLa - lIci, la);
     const ouverture = recuperer ? .19 : Math.asin(Math.min(1, (evite ? 9 : 5) / Math.max(vit, 1)));
     const psiC = clamp(Math.atan2(dVise - e.d, la), psiL - ouverture, psiL + ouverture);
-    // même loi que le joueur : le volant demande la part d'adhérence avant qui tient la courbure visée. La courbure
-    // de base est celle de la voiture à son décalage (plus serrée à la corde), pas celle de l'axe de la piste.
-    const kVise = kIci / Math.max(1 - kIci * e.d, .3) + 2.2 * (psiC - e.psi) * Math.max(vit, 5) / (10 * Math.max(vit, 3));
+    // ── AMÉLIORATION 3 : contre-braquage en vraie dérive uniquement ──
+    const contreBeta = (vit > 10 && Math.abs(e.beta) > 0.14) ? -0.45 * e.beta : 0;
+    const kVise = kIci / Math.max(1 - kIci * e.d, .3) + 2.2 * (psiC - e.psi) * Math.max(vit, 5) / (10 * Math.max(vit, 3)) + contreBeta;
     let volant = B.conduite.volantPour(e, kVise);
 
-    // Sous-virage : en virage, la voiture s'écarte de sa ligne vers l'extérieur. Comme un pilote, on lève le pied
-    // et on freine un peu : la charge revient sur l'avant et la trajectoire se referme.
+    // Sous-virage.
     if (!recuperer && Math.abs(kIci) > 4e-3) {
       const large = (lIci + ia.decal + ia.decalDep - e.d) * Math.sign(kIci);
       if (large > 2) cible = Math.min(cible, vit * (1 - .03 * Math.min(large - 2, 3)));
@@ -442,53 +421,61 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     if (besoin > 0.7 * dec) frein = clamp((besoin - 0.7 * dec) / (0.3 * dec), 0, 1);
     else if (vit > cible + 2) frein = clamp((vit - cible - 2) / 4, 0, 1);
     else gaz = vit < cible - 1 ? 1 : clamp((cible - vit + 1) / 2, 0, 1);
-    // Même retour progressif que le joueur, après un long blocage non fatal. Une attente de trafic voulue,
-    // un arrêt au stand, un vol ou une casse n'est jamais une invitation à replacer la voiture.
-    const roule=course.phase==='course'||course.phase==='arrivee';
-    // La direction d'une vitesse quasi nulle peut osciller au contact : garder l'épisode tant que la caisse
-    // reste immobile, au lieu de remettre le compteur à zéro un pas sur deux.
-    const gardeRetour=roule && !v.fini && !v.abandon && e.v<.1 && gaz>.1 && frein<.1 &&
-      !(e.degats&&e.degats.casse) && !e.recuperation && !e.saut && !e.accident && !e.reparation && !e.stands && !(e.immunite>0);
-    ia.retourBloque=gardeRetour && (ia.retourBloque || Math.cos(e.psi)<-.2);
-    const intention=gaz>.1 && frein<.1 && (cible>2 || ia.retourBloque);
-    const coince=roule && !v.fini && !v.abandon && e.v<1.5 && intention &&
-      !(e.degats&&e.degats.casse) && !e.recuperation && !e.saut && !e.accident && !e.reparation && !e.stands && !(e.immunite>0);
-    ia.bloque=coince?(ia.bloque||0)+dt:0;
-    // Dégagement d'un contact fixe confirmé, jamais d'un freinage de trafic ou de grille. La manœuvre n'agit
-    // que sur les commandes : même marche arrière bornée à 12 km/h et mêmes collisions que pour le joueur.
-    let marcheArriere = false;
-    ia.degagementAttente=Math.max(0,(ia.degagementAttente||0)-dt);
-    // Deux essais au même endroit suffisent : dans une poche sans issue immédiate, les manœuvres ne doivent
-    // pas remettre indéfiniment à zéro le délai du secours historique. Seul un vrai déplacement les réarme.
-    if(ia.degagementEssais>0 && Math.hypot(ecart(c,ia.degagementOrigineS,e.s),e.d-ia.degagementOrigineD)>=8)ia.degagementEssais=0;
-    const contactFixe=e.auRail || !!course._obstacleMemo?.[v.id]?.size;
-    if(!ia.degagement && ia.bloque>.8 && contactFixe && !ia.degagementAttente && ia.degagementEssais<2) {
-      if(!ia.degagementEssais){ia.degagementOrigineS=e.s;ia.degagementOrigineD=e.d;}
-      ia.degagementEssais++;
-      ia.degagement=1;ia.degagementT=0;ia.degagementDistance=0;ia.degagementS=e.s;ia.degagementD=e.d;
-      ia.cible=-1;ia.cote=0;ia.decalVise=0;ia.decalDep=0;
+
+    // ── AMÉLIORATION 3b : modulation gaz en dérive (anti têtes-à-queue) ──
+    if (vit > 8 && Math.abs(e.beta) > 0.16 && !recuperer) {
+      const betaAbs = Math.abs(e.beta);
+      const tractionCut = clamp(1 - (betaAbs - 0.16) * 2.8, 0.25, 1);
+      gaz *= tractionCut;
+      // contre-braquage supplémentaire sur le volant en dérive serrée
+      if (betaAbs > 0.22) volant -= 0.3 * Math.sign(e.beta) * (betaAbs - 0.22) * 4;
     }
-    if(ia.degagement && (!roule||v.fini||v.abandon||e.recuperation||e.saut||e.accident||e.reparation||e.stands||e.degats?.casse))ia.degagement=0;
-    if(ia.degagement) {
-      ia.bloque=0;ia.degagementT+=dt;
-      ia.degagementDistance+=Math.hypot(ecart(c,ia.degagementS,e.s),e.d-ia.degagementD);
-      ia.degagementS=e.s;ia.degagementD=e.d;
-      const capVise=clamp(-e.d/18,-.45,.45), ecartCap=capVise-e.psi-e.beta;
-      const corr=clamp(2*Math.atan2(Math.sin(ecartCap),Math.cos(ecartCap)),-.9,.9);
-      if(ia.degagement===1 && (ia.degagementDistance>=1.8||ia.degagementT>=3)) {ia.degagement=2;ia.degagementT=0;}
-      if(ia.degagement===1) {marcheArriere=true;gaz=0;frein=1;volant=-corr;}
+
+    // Retour progressif (CONTRAINTES TESTS — ne pas modifier).
+    const roule = course.phase === 'course' || course.phase === 'arrivee';
+    const gardeRetour = roule && !v.fini && !v.abandon && e.v < .1 && gaz > .1 && frein < .1 &&
+      !(e.degats && e.degats.casse) && !e.recuperation && !e.saut && !e.accident && !e.reparation && !e.stands && !(e.immunite > 0);
+    ia.retourBloque = gardeRetour && (ia.retourBloque || Math.cos(e.psi) < -.2);
+    const intention = gaz > .1 && frein < .1 && (cible > 2 || ia.retourBloque);
+    const coince = roule && !v.fini && !v.abandon && e.v < 1.5 && intention &&
+      !(e.degats && e.degats.casse) && !e.recuperation && !e.saut && !e.accident && !e.reparation && !e.stands && !(e.immunite > 0);
+    ia.bloque = coince ? (ia.bloque || 0) + dt : 0;
+
+    // Dégagement d'un contact fixe confirmé.
+    let marcheArriere = false;
+    ia.degagementAttente = Math.max(0, (ia.degagementAttente || 0) - dt);
+    if (ia.degagementEssais > 0 && Math.hypot(ecart(c, ia.degagementOrigineS, e.s), e.d - ia.degagementOrigineD) >= 8) ia.degagementEssais = 0;
+    const contactFixe = e.auRail || !!course._obstacleMemo?.[v.id]?.size;
+    if (!ia.degagement && ia.bloque > .8 && contactFixe && !ia.degagementAttente && ia.degagementEssais < 2) {
+      if (!ia.degagementEssais) { ia.degagementOrigineS = e.s; ia.degagementOrigineD = e.d; }
+      ia.degagementEssais++;
+      ia.degagement = 1; ia.degagementT = 0; ia.degagementDistance = 0; ia.degagementS = e.s; ia.degagementD = e.d;
+      ia.cible = -1; ia.cote = 0; ia.decalVise = 0; ia.decalDep = 0;
+    }
+    if (ia.degagement && (!roule || v.fini || v.abandon || e.recuperation || e.saut || e.accident || e.reparation || e.stands || e.degats?.casse)) ia.degagement = 0;
+    if (ia.degagement) {
+      ia.bloque = 0; ia.degagementT += dt;
+      ia.degagementDistance += Math.hypot(ecart(c, ia.degagementS, e.s), e.d - ia.degagementD);
+      ia.degagementS = e.s; ia.degagementD = e.d;
+      const capVise = clamp(-e.d / 18, -.45, .45), ecartCap = capVise - e.psi - e.beta;
+      const corr = clamp(2 * Math.atan2(Math.sin(ecartCap), Math.cos(ecartCap)), -.9, .9);
+      // ── AMÉLIORATION 5 : reculer jusqu'à 3.0 m (au lieu de 1.8 m) ──
+      if (ia.degagement === 1 && (ia.degagementDistance >= 3.0 || ia.degagementT >= 3.5)) { ia.degagement = 2; ia.degagementT = 0; }
+      if (ia.degagement === 1) { marcheArriere = true; gaz = 0; frein = 1; volant = -corr * 1.4; }
       else {
-        gaz=.65;frein=0;volant=corr;
-        if(e.v>6||ia.degagementT>=4) {ia.degagement=0;ia.degagementAttente=2;}
+        gaz = .65; frein = 0; volant = corr;
+        if (e.v > 6 || ia.degagementT >= 4) { ia.degagement = 0; ia.degagementAttente = 2; }
       }
     }
-    if(ia.bloque>15) { B.conduite.declencherAccident(e,{});ia.bloque=0;ia.cible=-1;ia.cote=0;ia.decalVise=0;ia.decalDep=0; }
-    // l'IA conduit avec l'aide au volant légère, le réglage par défaut du joueur
+    // CONTRAINTE TEST : ne pas modifier
+    if (ia.bloque > 15) { B.conduite.declencherAccident(e, {}); ia.bloque = 0; ia.cible = -1; ia.cote = 0; ia.decalVise = 0; ia.decalDep = 0; }
+    // l'IA conduit avec l'aide au volant légère
     if (!sortie) return { gaz, frein, volant, derive: false, haut: false, bas: false, boite: 'auto', aide: AIDE_IA, marcheArriere };
     sortie.gaz = gaz; sortie.frein = frein; sortie.volant = volant; sortie.derive = false; sortie.haut = false;
     sortie.bas = false; sortie.boite = 'auto'; sortie.aide = AIDE_IA; sortie.marcheArriere = marcheArriere;
     return sortie;
   }
+
 
   // Contacts : rectangles 4,5 × 1,9 m dans le repère (s, d), séparés à chaque pas.
   function contacts(course, ev) {
