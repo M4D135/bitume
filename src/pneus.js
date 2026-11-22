@@ -114,7 +114,7 @@
     for (const { indice } of ROUES) {
       if (!possede(etat.etatPneus, indice)) return false;
       const roue = etat.etatPneus[indice];
-      if (roue === null || roue === undefined) continue;
+      if (roue === null || roue === undefined) return false;
       if (typeof roue !== 'object' || Array.isArray(roue) ||
         !nombreBorne(roue, 'usure', 1) || !nombreBorne(roue, 'salete', 1) ||
         !nombreBorne(roue, 'grainage', 1) || !nombreBorne(roue, 'distance', DISTANCE_MAX) ||
