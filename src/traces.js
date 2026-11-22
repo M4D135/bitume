@@ -253,7 +253,10 @@
       const ux = b.x1 - b.x0, uz = b.z1 - b.z0, lx = x1 - b.x0, lz = z1 - b.z0, lu = Math.sqrt(ux * ux + uz * uz), ll = Math.sqrt(lx * lx + lz * lz);
       if (ll <= LONGUEUR_MAX && lu > 1e-3 && (ux * lx + uz * lz) >= DROIT * lu * ll) {
         b.x1 = x1; b.y1 = y1; b.z1 = z1; b.a0 = Math.max(b.a0, a0); b.age = 0;
-        if (appui) { b.nx = appui.normal[0]; b.ny = appui.normal[1]; b.nz = appui.normal[2]; }
+        if (appui) {
+          b.contact = true;
+          b.nx = appui.normal[0]; b.ny = appui.normal[1]; b.nz = appui.normal[2];
+        }
         placer(b);
         return;
       }
