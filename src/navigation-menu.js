@@ -259,21 +259,33 @@
     if (s.dialogue.open) s.dialogue.close();
     if (!rendreFocus) return true;
 
+    function restaurable(el) {
+      return el && el.isConnected && el.ownerDocument === doc && !bloque(el) && visible(el);
+    }
+
     function restaurer(el) {
-      if (!el.isConnected || el.ownerDocument !== doc || !visible(el)) return false;
+      if (!restaurable(el)) return false;
       try { focaliser(el); } catch (_) { /* Vérifier le focus avant de poursuivre le repli. */ }
       return doc.activeElement === el;
     }
 
-    if (restaurer(s.cible)) return true;
+    if (s.zone.contains(s.cible) && restaurer(s.cible)) return true;
+    const conteneurs = s.zone.contains(s.panneau) ? [s.panneau, s.zone] : [s.zone];
     const essayes = new Set([s.cible]);
-    for (const conteneur of [s.panneau, s.zone]) {
-      if (!conteneur || !conteneur.isConnected) continue;
+    for (const conteneur of conteneurs) {
+      if (!restaurable(conteneur)) continue;
       for (const el of conteneur.querySelectorAll(COMMANDES)) {
         if (essayes.has(el) || !(el.tabIndex >= 0)) continue;
         essayes.add(el);
         if (restaurer(el)) return true;
       }
+    }
+    for (const conteneur of conteneurs) {
+      if (!restaurable(conteneur)) continue;
+      const ajouterTabindex = !conteneur.hasAttribute('tabindex');
+      if (ajouterTabindex) conteneur.setAttribute('tabindex', '-1');
+      if (restaurer(conteneur)) return true;
+      if (ajouterTabindex) conteneur.removeAttribute('tabindex');
     }
     return true;
   }
