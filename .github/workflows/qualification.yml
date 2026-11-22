@@ -14,9 +14,67 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  qualification:
+  suites:
+    name: Suites Node · lot ${{ matrix.lot }}/4
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        lot: [1, 2, 3, 4]
+    env:
+      LOT: ${{ matrix.lot }}
+      NOMBRE_LOTS: ${{ strategy.job-total }}
+      LC_ALL: C
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Exécuter les suites du lot en série
+        shell: bash
+        timeout-minutes: 50
+        run: |
+          mkdir -p qualification
+          # Le bilan compare cette empreinte au HTML reconstruit.
+          export BITUME_HTML="$GITHUB_WORKSPACE/dist/bitume.html"
+          sha256sum dist/bitume.html > "qualification/html-lot-${LOT}.sha256"
+          resultats="qualification/lot-${LOT}.tsv"
+          : > "$resultats"
+          shopt -s nullglob
+          suites=(verifications/*.test.mjs)
+          test "${#suites[@]}" -ge "$NOMBRE_LOTS"
+          echoue=0
+          for ((i=LOT-1; i<${#suites[@]}; i+=NOMBRE_LOTS)); do
+            suite="${suites[i]}"
+            journal="qualification/$(basename "$suite" .test.mjs).log"
+            if node "$suite" > "$journal" 2>&1; then
+              statut=PASS
+            else
+              statut=FAIL
+              echoue=1
+              tail -n 60 "$journal"
+            fi
+            printf '%s\t%s\n' "$statut" "$suite" | tee -a "$resultats"
+          done
+          exit "$echoue"
+      - name: Conserver les rapports du lot même en échec
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapports-lot-${{ matrix.lot }}
+          path: qualification/
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 1
+
+  qualification:
+    needs: suites
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,38 +90,55 @@ jobs:
           git rev-parse HEAD > qualification/COMMIT.txt
           node --version > qualification/ENVIRONNEMENT.txt
           python3 --version >> qualification/ENVIRONNEMENT.txt
-      - name: Reconstruire et verifier toutes les suites
+      - name: Reconstruire et contrôler le HTML publié
         shell: bash
         run: |
-          set -o pipefail
           python3 construire.py 2>&1 | tee qualification/build.log
-          git diff --exit-code -- VERSION.json SIZE.json dist/bitume.html
-          # Les oracles du raccord lisent le HTML réellement publié.
-          export BITUME_HTML="$GITHUB_WORKSPACE/dist/bitume.html"
-          failures=0
-          passed=0
-          for test in verifications/*.test.mjs; do
-            name="$(basename "$test" .test.mjs)"
-            if node "$test" > "qualification/${name}.log" 2>&1; then
-              passed=$((passed + 1))
-              printf 'PASS %s\n' "$test"
-            else
-              failures=$((failures + 1))
-              printf 'FAIL %s\n' "$test"
-              tail -n 60 "qualification/${name}.log"
-            fi
-          done
-          printf 'Suites reussies : %s\nSuites en echec : %s\n' "$passed" "$failures" | tee qualification/RESUME.txt
           sha256sum dist/bitume.html > qualification/SHA256SUMS.txt
-          test "$failures" -eq 0
-      - name: Verifier les mesures de trajectoire dans les pixels
+          git diff --exit-code -- VERSION.json SIZE.json dist/bitume.html
+      - name: Vérifier les mesures de trajectoire dans les pixels
+        if: ${{ !cancelled() }}
         shell: bash
         run: |
-          set -o pipefail
           python3 -m venv "$RUNNER_TEMP/bitume-visiere-png"
           "$RUNNER_TEMP/bitume-visiere-png/bin/python" -m pip install --disable-pip-version-check numpy==2.3.5 Pillow==13.0.0 > qualification/visiere-png-install.log 2>&1
           "$RUNNER_TEMP/bitume-visiere-png/bin/python" verifications/visiere-png.test.py 2>&1 | tee qualification/visiere-png-python.log
-      - name: Conserver sources, build et rapports, meme en cas d'echec
+      - name: Rassembler les quatre lots de rapports
+        if: ${{ !cancelled() }}
+        uses: actions/download-artifact@v4
+        with:
+          pattern: rapports-lot-*
+          path: qualification/
+          merge-multiple: true
+      - name: Vérifier le total, les journaux et les empreintes des lots
+        if: ${{ !cancelled() }}
+        env:
+          LC_ALL: C
+        shell: bash
+        run: |
+          suites=(verifications/*.test.mjs)
+          printf '%s\n' "${suites[@]}" > qualification/SUITES-ATTENDUES.txt
+          resultats=qualification/RESULTATS.tsv
+          : > "$resultats"
+          incomplet=0
+          for lot in 1 2 3 4; do
+            cat "qualification/lot-${lot}.tsv" >> "$resultats" || incomplet=1
+            cmp qualification/SHA256SUMS.txt "qualification/html-lot-${lot}.sha256" || incomplet=1
+          done
+          diff -u qualification/SUITES-ATTENDUES.txt <(cut -f2 "$resultats" | sort) || incomplet=1
+          for suite in "${suites[@]}"; do
+            journal="qualification/$(basename "$suite" .test.mjs).log"
+            if [[ ! -f "$journal" ]]; then echo "Journal manquant : $suite"; incomplet=1; fi
+          done
+          awk -F '\t' -v prevues="${#suites[@]}" '
+            $1 == "PASS" { ok++ } $1 == "FAIL" { ko++ }
+            END {
+              printf "Suites prévues : %d\nRésultats reçus : %d\nSuites réussies : %d\nSuites en échec : %d\n", prevues, NR, ok, ko
+              exit !(NR == prevues && ok == prevues)
+            }' "$resultats" | tee qualification/RESUME.txt || incomplet=1
+          cat qualification/RESUME.txt >> "$GITHUB_STEP_SUMMARY"
+          exit "$incomplet"
+      - name: Conserver sources, build et rapports même en cas d'échec
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -73,4 +148,5 @@ jobs:
             dist/bitume.html
             SIZE.json
           if-no-files-found: error
+          overwrite: true
           retention-days: 14
