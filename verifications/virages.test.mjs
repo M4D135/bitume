@@ -1,3 +1,4 @@
+import { creerCircuitCatalogue } from '../tools/qualification/circuit-catalogue.mjs';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
@@ -229,22 +230,37 @@ test('les lectures ne modifient ni la position ni les tableaux physiques du circ
   assert.equal(lire(c, position(c, 350, { vitesse: Infinity }), suivi), null);
 });
 
+test('une spéciale garde ses virages de départ et de fin distincts et termine ses annonces à l’arrivée', () => {
+  const c = trace([[0, 60, 35], [900, 990, 35]], { longueur: 1000 });
+  c.ouvert = true; c.arrivee = 949;
+  c.n++; // La dernière coordonnée de la spéciale est un sommet, pas un segment de plus.
+  c.courbure = Float64Array.from([...c.courbure, 0]);
+  c.vitesse = Float64Array.from([...c.vitesse, 0]);
+  const plan = planifier(c);
+  assert.deepEqual(plan.map(v => [v.debut, v.fin]), [[0, 60], [900, 949]]);
+  presque(plan[1].longueur, 49); presque(plan[1].angle, 49 / 35);
+  const suivi = {};
+  assert.equal(lire(c, position(c, 845), suivi).id, plan[1].id);
+  assert.equal(lire(c, position(c, 948), suivi), null);
+  assert.equal(lire(c, position(c, 949), suivi), null);
+  assert.equal(lire(c, { s: 1000, progression: 1000, vitesse: 50, actif: true }, suivi), null);
+});
+
 const sourceJeu = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const declaration = sourceJeu.match(/  const CATALOGUE = \[[\s\S]*?\n  \];/);
 assert.ok(declaration, 'catalogue réel disponible');
 const catalogue = new Function(declaration[0] + '; return CATALOGUE;')();
-assert.equal(catalogue.length, 9);
-assert.equal(catalogue[8].id, 'route-des-cimes');
+assert.ok(catalogue.some(k => k.id === 'route-des-cimes'));
 for (const configuration of catalogue) test(`${configuration.nom} : les vrais virages serrés sont couverts sans toucher au tracé`, () => {
-  const c = B.circuit.creer(configuration.graine, configuration), avant = structuredClone(c);
+  const c = creerCircuitCatalogue(B, configuration), avant = structuredClone(c);
   const plan = planifier(c), suivi = {}, annonces = new Map();
   // Les huit circuits historiques gardent leur plafond ; le parcours dirigé de 9,7 km
   // conserve ses 20 vrais virages, sans en supprimer pour satisfaire le budget des circuits courts.
-  const maximum = configuration.partition ? Math.ceil(c.longueur / 400) : 12;
+  const maximum = c.ouvert ? Math.floor(c.arrivee / 14) : configuration.partition ? Math.ceil(c.longueur / 400) : 12;
   assert.ok(plan.length >= 3 && plan.length <= maximum, `${plan.length} annonces pour ${c.longueur} m`);
   assert.ok(plan.some(v => v.difficulte >= 2));
   for (const v of plan) {
-    for (const champ of ['debut', 'sommet', 'fin']) assert.ok(v[champ] >= 0 && v[champ] < c.longueur);
+    for (const champ of ['debut', 'sommet', 'fin']) assert.ok(v[champ] >= 0 && (c.ouvert ? v[champ] <= c.arrivee : v[champ] < c.longueur));
     assert.ok(v.longueur >= 14 && v.longueur < c.longueur);
     assert.ok(ramener(v.sommet - v.debut, c.longueur) < v.longueur);
     assert.ok(v.rayonMin <= 180 && v.angle >= .30 && v.vitesseMin > 0 && v.vitesseMin <= 86);
@@ -253,16 +269,24 @@ for (const configuration of catalogue) test(`${configuration.nom} : les vrais vi
     // Exiger un vrai changement de cap alentour : Lande-Noire contient aussi
     // un pic de seulement 6 m / 3,6° à 408 m, qui ne doit pas devenir une annonce.
     let angleLocal = 0;
-    for (let j = -12; j <= 12; j++) angleLocal += Math.max(0, c.courbure[ramener(i + j, c.n)] * Math.sign(c.courbure[i])) * c.pas;
-    if (angleLocal < .30) continue;
+    const rayonMesure = Math.floor(24 / c.pas);
+    for (let j = -rayonMesure; j <= rayonMesure; j++) {
+      if (c.ouvert && (i + j < 0 || i + j >= c.n)) continue;
+      const k = c.courbure[ramener(i + j, c.n)] * Math.sign(c.courbure[i]);
+      // Sur la spéciale, le raccord de rayon supérieur à 350 m ne fait pas partie du virage annoncé.
+      if (!c.ouvert || k >= 1 / 350) angleLocal += Math.max(0, k) * c.pas;
+    }
+    if (angleLocal < .30 || (c.ouvert && i * c.pas >= c.arrivee)) continue;
     assert.ok(plan.some(v => ramener(i * c.pas - v.debut, c.longueur) < v.longueur
       && v.sens === Math.sign(c.courbure[i])), `courbe serrée à ${i * c.pas} m couverte dans son sens`);
   }
-  for (let p = 0; p < 2 * c.longueur; p += 8) {
+  const passages = c.ouvert ? 1 : 2;
+  for (let p = 0; p < (c.ouvert ? c.arrivee : 2 * c.longueur); p += 8) {
     const a = lire(c, position(c, p, { vitesse: 70 }), suivi);
     if (a?.nouveau) annonces.set(a.cle, (annonces.get(a.cle) || 0) + 1);
   }
-  assert.equal(annonces.size, plan.length * 2, 'une annonce par virage et par tour sur deux tours');
+  assert.equal(annonces.size, plan.length * passages, 'une annonce de chaque virage par passage');
+  if (c.ouvert) assert.equal(lire(c, { s: c.longueur, progression: c.longueur, vitesse: 40, actif: true }, suivi), null);
   assert.ok([...annonces.values()].every(n => n === 1));
   assert.strictEqual(planifier(c), plan);
   assert.deepEqual(planifier(structuredClone(c)), plan);

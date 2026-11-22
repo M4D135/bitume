@@ -54,7 +54,7 @@ function preparer({ duo = false, locaux = [0, 1], commandes = ['auto', 'auto'], 
   const S = { type: duo ? 'duo' : 'course', course: co, locaux, camCap: null, regardArriere: false, sortie: [], rouleVu: [], secousse: 0, tRendu: 1 };
   if (duo) S.vueJ2 = Object.assign(Object.create(S), { camCap: null, regardArriere: false, sortie: [], rouleVu: [] });
   const poses = voitures.map((_, i) => ({ x: 0, y: 0, z: i * 20, cap: 0, tangage: 0, roulis: 0 }));
-  const reglages = { commandes, manettes, boite: 'auto', aide: .35, vue: 'poursuite', vue2: 'poursuite' };
+  const reglages = { commandes, manettes, manettesVersion: 3, boite: 'auto', aide: .35, vue: 'poursuite', vue2: 'poursuite' };
   const navigator = { pads: [], getGamepads() { return this.pads; } };
   const api = fabrique(navigator, B, S, reglages, poses);
   return { api, navigator, S, poses, reglages };
@@ -83,7 +83,7 @@ for (const vue of ['cockpit', 'arceau', 'nez', 'aileron-avant', 'poursuite-proch
 verifier('Y parcourt les six vues indépendamment pour chaque manette', () => {
   const f = preparer({ duo: true }), p1 = manette(0), p2 = manette(1);
   f.navigator.pads = [p1,p2]; f.api.poll(); f.reglages.vue = f.reglages.vue2 = 'cockpit';
-  for (const vue of ['arceau','nez','aileron-avant','poursuite-proche','poursuite','cockpit']) {
+  for (const vue of ['arceau','poursuite-proche','poursuite','aileron-avant','nez','cockpit']) {
     p1.buttons[3] = { value: 1, pressed: true }; f.api.poll(); assert.equal(f.reglages.vue, vue); assert.equal(f.reglages.vue2, 'cockpit');
     f.api.poll(); assert.equal(f.reglages.vue, vue, 'maintien ne répète pas le cycle');
     p1.buttons[3] = { value: 0, pressed: false }; f.api.poll();

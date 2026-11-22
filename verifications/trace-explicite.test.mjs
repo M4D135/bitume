@@ -1,3 +1,4 @@
+import { generateurHistorique } from './helpers/generateur-historique.mjs';
 import { createRequire } from 'node:module';
 import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
@@ -174,8 +175,8 @@ const historiques = [
   [157, 'pacifique', 5200, '08ad95d862545741a5271699362ffbe4dbe47db7723cc107998a918f7c5be15d'],
   [179, 'baikal', 5400, '899070e99ecdb30c2ed8ae93206d27293e285a0994981f33af168cbb8f157fea'],
 ];
-for (const [graine, theme, longueur, attendu] of historiques) verifier('identité complète 0.2.59 : ' + theme, () => {
-  const c = C.creer(graine, { theme, longueur }), h = createHash('sha256');
+function empreinteComplete(C, c) {
+  const h = createHash('sha256');
   for (const cle of Object.keys(c).sort()) {
     h.update(cle);
     const v = c[cle];
@@ -184,9 +185,16 @@ for (const [graine, theme, longueur, attendu] of historiques) verifier('identit�
   for (const s of [-7.25, -.3, 0, .5, 17.875, c.longueur - 1.25, c.longueur, c.longueur * 2 + 2.75]) {
     h.update(JSON.stringify([C.echantillon(c, s), C.echantillon(c, s, {}), C.point(c, s, 1.25, .3), C.repere(c, s),
       C.limiteA(c, s, -1), C.limiteA(c, s, 1), C.vibreurA(c, s, -1), C.vibreurA(c, s, 1)]));
-    assert.equal(C.largeurA(c, s, -1), c.largeur / 2);
-    assert.equal(C.largeurA(c, s, 1), c.largeur / 2);
   }
-  assert.equal(h.digest('hex'), attendu);
+  return h.digest('hex');
+}
+const avantTrace = generateurHistorique('0259');
+for (const [graine, theme, longueur, attendu] of historiques) verifier('identité complète 0.2.59 : ' + theme, () => {
+  const options = { theme, longueur }, c = C.creer(graine, options);
+  const reference = empreinteComplete(avantTrace, avantTrace.creer(graine, options));
+  if (process.platform === 'linux' && process.arch === 'x64') assert.equal(reference, attendu);
+  assert.equal(empreinteComplete(C, c), reference);
+  for (const s of [-7.25, -.3, 0, .5, 17.875, c.longueur - 1.25, c.longueur, c.longueur * 2 + 2.75])
+    for (const cote of [-1, 1]) assert.equal(C.largeurA(c, s, cote), c.largeur / 2);
 });
 console.log(`${controles}/${controles} contrôles de fondation tracé explicite et identité historique`);

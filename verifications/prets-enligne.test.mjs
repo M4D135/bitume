@@ -136,9 +136,9 @@ test('l’annonce ouvre la confirmation sans lancer la course', () => {
   const { a } = hote(); assert.equal(a.etat().ecran, 'prets'); a.avancer(1000); assert.equal(compte(a), 0);
   assert.ok(a.messages.some(x => x.m.t === 'confirmer'));
 });
-for (const [id, nom, index] of [['lande-noire', 'Lande-Noire', 3], ['roche-fauve', 'Roche-Fauve', 4], ['brume-de-jade', 'Brume-de-Jade', 5], ['cap-sequoia', 'Cap-Séquoia', 6]]) test(nom + ' conserve le circuit et les conditions de l’hôte jusqu’au départ invité', () => {
+for (const [id, nom, index] of [['lande-noire', 'Lande-Noire', 7], ['fjord', 'Fjord-d’Argent', 4], ['brume-de-jade', 'Brume-de-Jade', 9], ['cap-sequoia', 'Cap-Séquoia', 3]]) test(nom + ' conserve le circuit et les conditions de l’hôte jusqu’au départ invité', () => {
   const catalogue = new Function(catalogueDeclaration + '; return CATALOGUE;')();
-  assert.deepEqual(catalogue.slice(0, 3).map(k => k.id), ['val-brule', 'port-sable', 'haut-col']);
+  assert.deepEqual(catalogue.slice(0, 3).map(k => k.id), ['val-brule', 'marseille', 'corail']);
   const i = catalogue.findIndex(k => k.id === id);
   assert.equal(i, index, 'identifiants et indices des circuits préservés');
   const a = creer(B), R = a.connecter('hote');

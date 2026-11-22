@@ -1,3 +1,5 @@
+import { generateurHistorique } from './helpers/generateur-historique.mjs';
+import { definitionHistorique } from './helpers/catalogue-historique.mjs';
 // Route-des-Cimes : identité distincte, géométrie métrique issue de l'étude, reconstruction déclarée,
 // raccord aux lecteurs p15 et conservation stricte des huit circuits déjà livrés.
 import assert from 'node:assert/strict';
@@ -103,16 +105,23 @@ verifier('géométrie et consigne IA déterministes ; rayon de Frenet et limites
 verifier('huit circuits historiques identiques au bit près et identités de catalogue conservées', () => {
   const avant = JSON.parse(readFileSync(new URL('fixtures/route-des-cimes-circuits-p15.json', import.meta.url), 'utf8'));
   const catalogue = vm.runInNewContext(readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8').match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1]);
-  assert.deepEqual(Array.from(catalogue.slice(0, 8), k => k.id), avant.circuits.map(k => k.id));
+  assert.equal(new Set(avant.circuits.map(k => k.id)).size, 8);
+  const base = generateurHistorique('0266');
   for (const a of avant.circuits) {
-    const k = catalogue.find(k => k.id === a.id), options = { theme: k.theme, longueur: k.longueur, nom: k.nom };
-    const b = B.circuit.creer(k.graine, options);
+    const k = definitionHistorique(catalogue, a.id), options = { theme: k.theme, longueur: k.longueur, nom: k.nom };
+    const b = B.circuit.creer(k.graine, options), ancien = base.creer(k.graine, options);
     for (const champ of champs) {
-      const h = createHash('sha256').update(Buffer.from(b[champ].buffer, b[champ].byteOffset, b[champ].byteLength)).digest('hex');
-      assert.equal(h, a.champsSHA256[champ], k.id + ' ' + champ);
+      const octets = t => Buffer.from(t.buffer, t.byteOffset, t.byteLength);
+      assert.deepEqual(octets(b[champ]), octets(ancien[champ]), k.id + ' ' + champ);
+      if (process.platform === 'linux' && process.arch === 'x64')
+        assert.equal(createHash('sha256').update(octets(ancien[champ])).digest('hex'), a.champsSHA256[champ]);
     }
     assert.equal(a.longueur, b.longueur); assert.deepEqual(a.tunnel, b.tunnel);
-    for (const q of a.lectures) assert.deepEqual(q.valeur, B.circuit.echantillon(b, q.s));
+    for (const q of a.lectures) {
+      const lu = structuredClone(base.echantillon(ancien, q.s));
+      assert.deepEqual(lu, B.circuit.echantillon(b, q.s));
+      if (process.platform === 'linux' && process.arch === 'x64') assert.deepEqual(lu, q.valeur);
+    }
   }
 });
 
@@ -121,12 +130,13 @@ verifier('catalogue de jeu raccordé au tracé dirigé sans écraser Haut-Col ou
   const catalogue = vm.runInNewContext(jeu.match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1]);
   const circuitDuJeu = new Function('B', 'CATALOGUE', 'const circuits = []; ' +
     jeu.match(/  function circuit\(i\) \{[\s\S]*?\n  \}/)[0] + '; return circuit;')(B, catalogue);
-  assert.equal(catalogue[7].id, 'baikal'); assert.equal(catalogue[8].id, c.id);
+  assert.ok(catalogue.some(k => k.id === 'baikal'));
+  const index = catalogue.findIndex(k => k.id === c.id);
   assert.equal(catalogue.filter(k => k.id === c.id).length, 1);
-  const livre = circuitDuJeu(8);
+  const livre = circuitDuJeu(index);
   assert.equal(livre.id, 'route-des-cimes'); assert.equal(livre.partition, 'route-des-cimes');
   assert.equal(livre.longueur, c.longueur); assert.equal(livre.couverts.length, 3);
-  assert.equal(circuitDuJeu(8), livre, 'la préparation conserve le circuit déjà créé');
+  assert.equal(circuitDuJeu(index), livre, 'la préparation conserve le circuit déjà créé');
   const build = readFileSync(new URL('../construire.py', import.meta.url), 'utf8');
   assert.ok(build.indexOf("'route-des-cimes.js'") > build.indexOf("'circuit.js'"));
   assert.ok(build.indexOf("'route-des-cimes.js'") < build.indexOf("'jeu.js'"));

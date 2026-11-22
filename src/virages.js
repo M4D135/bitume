@@ -11,9 +11,14 @@
   function planifier(c) {
     if (!c || typeof c !== 'object') return VIDE;
     if (plans.has(c)) return plans.get(c);
-    const n = c.n, L = c.longueur, pas = c.pas, K = c.courbure;
-    if (!Number.isInteger(n) || n < 3 || !K || K.length !== n || !Number.isFinite(L) || L <= 0
-      || !Number.isFinite(pas) || pas <= 0 || Math.abs(n * pas - L) > .001) return VIDE;
+    const L = c.longueur, pas = c.pas, K = c.courbure;
+    const segments = c.ouvert ? c.n - 1 : c.n;
+    if (!Number.isInteger(segments) || segments < 3 || !K || K.length !== c.n || !Number.isFinite(L) || L <= 0
+      || !Number.isFinite(pas) || pas <= 0 || Math.abs(segments * pas - L) > .001) return VIDE;
+
+    const arrivee = c.ouvert && Number.isFinite(c.arrivee) ? borner(c.arrivee, 0, L) : L;
+    const n = Math.min(segments, Math.ceil(arrivee / pas));
+    const abscisse = i => c.ouvert ? Math.min(i * pas, arrivee) : ramener(i * pas, L);
 
     // Le bord large (R = 350 m) conserve les raccords d'entrée. La sélection finale
     // exige R <= 180 m, au moins 17° et 14 m : ni frémissements des droites ni pics isolés.
@@ -21,7 +26,11 @@
     let ouvert = null;
     for (let i = 0; i <= n; i++) {
       const k = i < n && Number.isFinite(K[i]) ? K[i] : 0;
-      if (i < n) { plus[i + 1] = plus[i] + Math.max(0, k) * pas; moins[i + 1] = moins[i] + Math.max(0, -k) * pas; }
+      if (i < n) {
+        const ds = c.ouvert ? abscisse(i + 1) - abscisse(i) : pas;
+        plus[i + 1] = plus[i] + Math.max(0, k) * ds;
+        moins[i + 1] = moins[i] + Math.max(0, -k) * ds;
+      }
       const sens = Math.abs(k) >= 1 / 350 ? Math.sign(k) : 0;
       if (ouvert && sens !== ouvert.sens) { ouvert.fin = i; lobes.push(ouvert); ouvert = null; }
       if (sens && !ouvert) ouvert = { debut: i, fin: i + 1, sens };
@@ -35,7 +44,7 @@
       let change = true;
       while (change && liste.length > 1) {
         change = false;
-        for (let i = 0; i < liste.length; i++) {
+        for (let i = 0; i < liste.length - (c.ouvert ? 1 : 0); i++) {
           const j = (i + 1) % liste.length, a = liste[i], b = liste[j];
           const decalage = j === 0 ? n : 0, debut = b.debut + decalage;
           // Deux sommets du même virage restent une seule consigne. Une vraie
@@ -52,7 +61,8 @@
     const groupes = fusionner(lobes.filter(v => integrale(v.sens, v.debut, v.fin) >= .08));
     const resultat = [];
     for (const v of groupes) {
-      const longueur = (v.fin - v.debut) * pas, angle = integrale(v.sens, v.debut, v.fin);
+      const longueur = c.ouvert ? abscisse(v.fin) - abscisse(v.debut) : (v.fin - v.debut) * pas;
+      const angle = integrale(v.sens, v.debut, v.fin);
       let maximum = 0, vitesseMin = Infinity;
       for (let i = v.debut; i < v.fin; i++) {
         const k = K[i % n];
@@ -85,8 +95,8 @@
         const den = maximum - 1.55 * .00155;
         vitesseMin = den <= 0 ? 86 : Math.min(86, Math.sqrt(1.55 * 9.81 / den));
       }
-      resultat.push({ debut: ramener(v.debut * pas, L), sommet: ramener(sommet * pas, L),
-        fin: ramener(v.fin * pas, L), longueur, sens: v.sens, rayonMin, angle, vitesseMin, difficulte, libelle });
+      resultat.push({ debut: abscisse(v.debut), sommet: abscisse(sommet),
+        fin: abscisse(v.fin), longueur, sens: v.sens, rayonMin, angle, vitesseMin, difficulte, libelle });
     }
     resultat.sort((a, b) => a.debut - b.debut);
     for (let i = 0; i < resultat.length; i++) resultat[i] = Object.freeze({ id: i, ...resultat[i] });
@@ -112,15 +122,18 @@
     // Garder la mémoire des annonces pendant un arrêt, une pause ou un recul évite
     // de répéter la même phrase quand la voiture recommence à avancer.
     if (position.actif !== true || vitesse < 1.5 || recul) { etat.actuelle = null; return null; }
-    const L = c.longueur, s = ramener(position.s, L);
+    const L = c.longueur, s = c.ouvert ? position.s : ramener(position.s, L);
+    if (c.ouvert && s >= (c.arrivee ?? L)) { etat.actuelle = null; return null; }
     let actuelle = etat.actuelle;
     if (actuelle && (p > actuelle.fin || p < actuelle.entree - 440)) actuelle = null;
     if (!actuelle) {
       let prochain = null, distance = Infinity;
       for (const v of plan) {
-        const d = ramener(v.debut - s, L);
+        const d = c.ouvert ? v.debut - s : ramener(v.debut - s, L);
+        if (d < 0) continue;
         if (d < distance) { prochain = v; distance = d; }
       }
+      if (!prochain) { etat.actuelle = null; return null; }
       const adh = Number.isFinite(position.adherence) ? borner(position.adherence, .2, 1.2) : 1;
       const v = borner(vitesse, 0, 120), cible = prochain.vitesseMin * Math.sqrt(adh);
       // 1,8 s pour lire/réagir, puis freinage à 14 m/s² sur sec. L'adhérence réduit
@@ -128,7 +141,7 @@
       const portee = borner(30 + 1.8 * v + Math.max(0, v * v - cible * cible) / (28 * adh), 70, 420);
       if (distance > portee) { etat.actuelle = null; return null; }
       const entree = p + distance;
-      const tour = Math.round((entree + (Number.isFinite(c.depart) ? c.depart : 0) - prochain.debut) / L);
+      const tour = c.ouvert ? 0 : Math.round((entree + (Number.isFinite(c.depart) ? c.depart : 0) - prochain.debut) / L);
       actuelle = { virage: prochain, entree, fin: entree + ramener(prochain.sommet - prochain.debut, L),
         tour, cle: prochain.id + ':' + tour };
     }

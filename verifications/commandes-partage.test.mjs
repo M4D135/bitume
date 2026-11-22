@@ -48,7 +48,7 @@ function seance(locaux = [0, 1]) {
   return { type: 'duo', locaux, course: { voitures, joueur: voitures[locaux[0]] } };
 }
 function preparer(options = {}) {
-  const reglages = { boite: 'auto', aide: .35, ...options.reglages };
+  const reglages = { manettesVersion: 3, boite: 'auto', aide: .35, ...options.reglages };
   const session = seance(options.locaux), navigator = { pads: [], userAgent: options.userAgent || '', getGamepads() { return this.pads; } };
   return { reglages, session, navigator, api: fabrique(navigator, B, session, reglages),
     etat: session.course.voitures[session.locaux[1]].etat };
@@ -65,7 +65,7 @@ function charger(etat) {
 }
 function deriveTenue(options) {
   const f = preparer(options);
-  f.navigator.pads = [manette(0, { 0: 1 })]; f.api.poll();
+  f.navigator.pads = [manette(0, { 2: 1 })]; f.api.poll();
   assert.equal(f.api.j2().derive, true);
   charger(f.etat);
   return f;
@@ -305,7 +305,7 @@ for (const choix of ['clavier', 'souris']) test('en solo ' + choix + ', RB/LB/Y 
 function deriveJ1(reglages = {}) {
   const f = preparer({ reglages }); f.session.type = 'course';
   f.etat = f.session.course.joueur.etat;
-  f.navigator.pads = [manette(0, { 0: 1 })]; f.api.poll(); f.api.j1(); charger(f.etat);
+  f.navigator.pads = [manette(0, { 2: 1 })]; f.api.poll(); f.api.j1(); charger(f.etat);
   return f;
 }
 test('J1 conserve la dérive sur sa touche reconfigurée à la perte du pad', () => {
@@ -326,7 +326,7 @@ test('J1 conserve la dérive encore tenue à la souris Auto à la perte du pad',
 test('J1 Clavier : une manette ignorée ne prend pas possession de la dérive clavier', () => {
   const f = preparer({ reglages: { commandes: ['clavier', 'auto'], touches: [{ derive: ['KeyU'] }, {}] } });
   f.session.type = 'course'; const etat = f.session.course.joueur.etat;
-  f.api.touches.add('KeyU'); f.navigator.pads = [manette(0, { 0: 1 })]; f.api.poll();
+  f.api.touches.add('KeyU'); f.navigator.pads = [manette(0, { 2: 1 })]; f.api.poll();
   assert.equal(f.api.j1().derive, true); charger(etat); debrancher(f);
   assert.equal(etat.derive.actif, true); assert.equal(etat.derive.charge, 2);
 });
@@ -375,13 +375,13 @@ test('Troll : remappage et écran pause respectés', () => {
   api.event('keydown', { code: 'KeyT', key: 't' }); assert(p.demande);
   p.demande = false; api.setScreen('pause'); api.event('keydown', { code: 'KeyT', key: 't' }); assert(!p.demande);
 });
-test('Troll L3 : manette de J2, pas de geste à la connexion ni pendant le maintien', () => {
+test('Troll A : manette de J2, pas de geste à la connexion ni pendant le maintien', () => {
   const { api, session, navigator } = preparer();
   session.expressions = B.expressionsPilote.creer(2, 17);
   const p = session.expressions.pilotes;
-  navigator.pads = [manette(0, { 10: 1 })]; api.poll(); assert(!p[0].demande && !p[1].demande);
+  navigator.pads = [manette(0, { 0: 1 })]; api.poll(); assert(!p[0].demande && !p[1].demande);
   navigator.pads = [manette(0)]; api.poll();
-  navigator.pads = [manette(0, { 10: 1 })]; api.poll(); assert(p[1].demande && !p[0].demande);
+  navigator.pads = [manette(0, { 0: 1 })]; api.poll(); assert(p[1].demande && !p[0].demande);
   p[1].demande = false; api.poll(); assert(!p[1].demande);
 });
 test('une manette solo neutre garde la priorité sur les clics souris Auto', () => {

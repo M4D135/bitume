@@ -1,3 +1,4 @@
+import { definitionHistorique } from './catalogue-historique.mjs';
 // Référentiels natifs p14/p15 : chaque replay s'exécute dans un processus neuf et charge le vrai WASM embarqué.
 // Les corps, masses, suspensions et triangles viennent exclusivement des modules de production.
 import assert from 'node:assert/strict';
@@ -112,7 +113,7 @@ async function rejouer(Ecrivain, etatCourse, physique) {
   const catalogue = new Function(source.match(/  const CATALOGUE = \[[\s\S]*?\n  \];/)[0] + '; return CATALOGUE;')();
   const cas = {};
   for (const options of CAS) {
-    const k = catalogue.find(c => c.id === options.circuit); assert.ok(k, options.circuit);
+    const k = definitionHistorique(catalogue, options.circuit);
     const c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition });
     B.bords.limites(c, B.bords.planifier(c));
     const decor = B.decor.construire(c, { qualite: 'low', matieres: true, vegetation: false, saison: options.saison });

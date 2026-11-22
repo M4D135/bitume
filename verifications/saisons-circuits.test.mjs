@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { B, CATALOGUE_SAISONS, creerCircuitSaisons, objetsSaisons, observerSaisons } from '../tools/qualification/saisons-circuits.mjs';
 
-assert.equal(CATALOGUE_SAISONS.length, 9, 'les neuf circuits réellement sélectionnables');
+assert.ok(CATALOGUE_SAISONS.some(k => k.id === 'larche') && CATALOGUE_SAISONS.some(k => k.id === 'marseille'));
+assert.equal(new Set(CATALOGUE_SAISONS.map(k => k.id)).size, CATALOGUE_SAISONS.length);
 for (const qualite of ['low', 'medium', 'high']) for (const definition of CATALOGUE_SAISONS) test(definition.id + ' / ' + qualite + ' : quatre saisons, essences et lots réellement dessinés cohérents', () => {
   const c = creerCircuitSaisons(definition), toutes = [], decors = {};
   for (const saison of B.saisons.IDS) {
@@ -88,7 +89,7 @@ test('les rameaux nus gardent leur repère et toutes leurs attaches ; budgets pr
 });
 
 test('Fine : un seul houppier ou rameau par caduc, même repère entre été/hiver et aucun feuillage nu au loin', () => {
-  const c = creerCircuitSaisons(CATALOGUE_SAISONS[8]);
+  const c = creerCircuitSaisons(CATALOGUE_SAISONS.find(k => k.id === 'route-des-cimes'));
   const ete = B.decor.construire(c, { qualite: 'high', vegetation: false, arbres: 220, saison: 'ete' });
   const hiver = B.decor.construire(c, { qualite: 'high', vegetation: false, arbres: 220, saison: 'hiver' });
   for (const distant of [false, true]) {

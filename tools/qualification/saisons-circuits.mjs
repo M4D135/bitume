@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Inventaire des vrais lots/nappes, sans navigateur ni modification des sources du jeu.
 import fs from 'node:fs';
+import { creerCircuitCatalogue } from './circuit-catalogue.mjs';
 import path from 'node:path';
 import vm from 'node:vm';
 import { createRequire } from 'node:module';
@@ -8,17 +9,17 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url), racine = fileURLToPath(new URL('../../', import.meta.url));
 export const MODULES_SAISONS = ['moteur/renderer', 'circuit', 'couverts', 'route-des-cimes', 'carene', 'botanique',
-  'ecologie', 'saisons', 'bords', 'baikal', 'batiments', 'route-des-cimes-decor', 'chaussee', 'virages', 'decor'];
+  'ecologie', 'saisons', 'bords', 'baikal', 'batiments', 'lieux', 'destinations', 'marseille-decor', 'larche-vinadio-decor', 'route-des-cimes-decor', 'chaussee', 'virages', 'decor'];
 for (const nom of MODULES_SAISONS) require(path.join(racine, 'src', nom + '.js'));
 export const B = globalThis.BITUME;
+for (const [nom, triangles] of Object.entries(B.lieux.FORMES)) globalThis.FRender.forme(nom, triangles);
 export const sha = v => createHash('sha256').update(typeof v === 'string' ? v : JSON.stringify(v)).digest('hex');
 const jeu = fs.readFileSync(path.join(racine, 'src/jeu.js'), 'utf8');
 const catalogue = jeu.match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/);
 if (!catalogue) throw new Error('Catalogue réel introuvable');
 export const CATALOGUE_SAISONS = JSON.parse(JSON.stringify(vm.runInNewContext('(' + catalogue[1] + ')')));
 export function creerCircuitSaisons(definition) {
-  const c = definition.partition === 'route-des-cimes' ? B.routeDesCimes.creer() : B.circuit.creer(definition.graine, definition);
-  B.bords.limites(c, B.bords.planifier(c)); return c;
+  return creerCircuitCatalogue(B, definition);
 }
 export function objetsSaisons(d, loin = false) {
   return (d.lotsHerbier || d.lots).flatMap(l => loin ? l.loin || [] : l.objets);

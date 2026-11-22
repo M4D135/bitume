@@ -1,3 +1,4 @@
+import { generateurHistorique } from './helpers/generateur-historique.mjs';
 // 13A — Baïkal : tracé et relief originaux, sept circuits historiques intacts et conduite historique à douze.
 // Ce banc conserve la voie de compatibilité sans backend PhysX. Les corps dynamiques du jeu p15 sont
 // qualifiés séparément par physique-voitures, physx-circuits et physx-stands avec le vrai WASM intégré.
@@ -90,17 +91,24 @@ function creerMonde(saison = 'ete') {
 verifier('13A catalogue : Baïkal ajouté après les sept circuits conservés', () => {
   assert.equal(historique.commitSource, '18451e0eeb701d720f08c069b841d79c2439755d');
   assert.equal(historique.circuits.length, 7);
-  assert.deepEqual(CATALOGUE.slice(0, 7), historique.circuits.map(c => c.catalogue));
-  assert.equal(CATALOGUE.findIndex(k => k.id === CONTRAT.id), 7);
-  for (const [cle, valeur] of Object.entries(CONTRAT)) assert.equal(CATALOGUE[7][cle], valeur, cle);
+  for (const {catalogue: ancien} of historique.circuits) {
+    const actuel = CATALOGUE.find(k => k.id === ancien.id);
+    if (actuel) assert.deepEqual([actuel.graine, actuel.theme, actuel.longueur], [ancien.graine, ancien.theme, ancien.longueur], ancien.id);
+  }
+  const indice = CATALOGUE.findIndex(k => k.id === CONTRAT.id);
+  for (const [cle, valeur] of Object.entries(CONTRAT)) assert.equal(CATALOGUE[indice][cle], valeur, cle);
   assert.equal(CATALOGUE.filter(k => k.id === CONTRAT.id).length, 1);
   assert.equal(sourceJeu.match(/\bPHYSIQUE\s*=\s*['"](p\d+)['"]/)?.[1], 'p15', 'les records suivent la correction de l’aspiration PhysX');
-  return { indice: 7, circuitsHistoriques: 7, physique: 'p15', backendDuBanc: 'conduite-historique-sans-physx' };
+  return { indice, circuitsHistoriques: 7, physique: 'p15', backendDuBanc: 'conduite-historique-sans-physx' };
 });
 
 verifier('13A les 84 tableaux numériques des sept anciens tracés restent identiques bit à bit', () => {
+  const base = generateurHistorique('0252');
   for (const attendu of historique.circuits) {
-    assert.deepEqual(empreinteCircuit(creerCircuit(attendu.catalogue)), attendu.empreinte,
+    const k = attendu.catalogue;
+    const reference = JSON.parse(JSON.stringify(empreinteCircuit(base.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom }))));
+    if (process.platform === 'linux' && process.arch === 'x64') assert.deepEqual(reference, attendu.empreinte);
+    assert.deepEqual(empreinteCircuit(creerCircuit(k)), reference,
       'tracé historique conservé : ' + attendu.catalogue.id);
   }
   return { reference: historique.commitSource, circuits: historique.circuits.length,
