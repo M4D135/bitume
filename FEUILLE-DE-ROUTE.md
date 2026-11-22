@@ -5,7 +5,7 @@
 
 Les décisions sur les huit circuits, les trois tracés mixtes, le rendu et les réceptions en course figurent en tête de la [feuille détaillée](docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md). Les programmes historiques suivent ci-dessous.
 
-La .127 mutualise la préparation des roues et des effets des rétroviseurs. La visière précalcule le bruit du film d’eau. FERRO 0.3.23 écarte les pièces rigides du cockpit hors champ et les reflets masqués dans les formats compatibles. La cadence de la .127 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer. [Sources de la .127](https://github.com/M4D135/bitume/commit/6febf9fb2b8493101b54b37c8314fd2510443991)
+La .128 ajoute la voie et le service aux stands, les gestes tirés des captures CMU, une flèche jaune de 0,60 m et les arches rocheuses mobiles PhysX. La foule, le décor, les lampes de tunnel et les ombres solaires évitent des calculs répétés. Les nouveaux temps et fantômes utilisent p18, et les enregistrements p17 sont conservés. La cadence de la .128 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer. [Sources de la .128](https://github.com/M4D135/bitume/commit/9651b7bb218ba55f97c6070a19c9e92c9c0d332e)
 
 <!-- bitume-reprise-actuelle-fin -->
 

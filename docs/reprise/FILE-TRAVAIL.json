@@ -3,13 +3,13 @@
   "date": "2026-11-22",
   "base": "6526493d3f2dfc472eb0dc8f8a6e2354dedf6ace",
   "runtime_livre": {
-    "version": "0.2.127",
-    "moteur": "FERRO 0.3.23",
-    "physique": "p17",
-    "commit_sources": "6febf9fb2b8493101b54b37c8314fd2510443991",
-    "html_sha256": "4fd027375aa50a1a37d74ea6627c33a699c9af698ea7d348637f7f051c3081e9",
+    "version": "0.2.128",
+    "moteur": "FERRO 0.3.24",
+    "physique": "p18",
+    "commit_sources": "9651b7bb218ba55f97c6070a19c9e92c9c0d332e",
+    "html_sha256": "bcf717f0a951134f68f62a2a5e8be149d52f4c3e5233821b48bad7444edf4731",
     "circuits": 8,
-    "recu": "https://github.com/M4D135/bitume/blob/6febf9fb2b8493101b54b37c8314fd2510443991/SIZE.json"
+    "recu": "https://github.com/M4D135/bitume/blob/9651b7bb218ba55f97c6070a19c9e92c9c0d332e/SIZE.json"
   },
   "destinations_prevues": 17,
   "lot_actif": "catalogue_rendu_course",
@@ -936,10 +936,11 @@
   "base_initiale": "9f2246df61c6503ea8fa0f71a28813b15b17f51c",
   "runtime_candidat": {
     "statut": "integre_sur_main",
-    "version": "0.2.127",
+    "version": "0.2.128",
     "branche": "main",
     "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
-    "recu": "https://github.com/M4D135/bitume/blob/6febf9fb2b8493101b54b37c8314fd2510443991/SIZE.json"
+    "recu": "https://github.com/M4D135/bitume/blob/9651b7bb218ba55f97c6070a19c9e92c9c0d332e/SIZE.json",
+    "physique": "p18"
   },
   "demandes_video_survol_2026_11_20": {
     "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
@@ -1054,9 +1055,10 @@
   "feuille_courante": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
   "ordre_22_novembre": [
     "Cadence de 60 images 3D/s sur chaque kilomètre de Larche en 1080p Fine sous la pluie, deux glaces et douze voitures",
+    "Recevoir les entrées et sorties des huit cartes, la précision de l’arrêt au box, les roues et le carburant en solo et en réseau, ainsi que les collisions des arches.",
     "Visibilité des voitures, LED et ombres, BVH FERRO, primitives à la demande, appels WebGL2 groupés, rétroviseurs hors écran et budget des bosquets",
     "Huit circuits, trois tracés à deux habitats et huit démonstrations de la course, du tracé et des lieux",
-    "Arrivée et dégagement de la meute, contacts pneu contre pneu, nez déformé et données de la physique p17",
+    "Arrivée et dégagement de la meute, contacts pneu contre pneu, nez déformé et records et fantômes p18, conservation de p17",
     "Altimétrie Monaco 14A, relief de Marseille, lieux et bâtiments de la haute Stura",
     "Matériaux 19/21/23/25, conduite 17, pneus, pilotes, faune 26 et réception des périphériques physiques",
     "Deux joueurs et réseau 27, cache et calcul 28, puis étapes du moteur C++ sur Mac, Linux et Windows"
@@ -1106,6 +1108,15 @@
       "html_sha256": "ae0f7414e9174769ee7f9106d66235284f98a71661721ab5db495266d9fe65cf",
       "circuits": 8,
       "recu": "https://github.com/M4D135/bitume/blob/c6431a04d5f70b54ea95288a8d00bfd3d31b5af5/SIZE.json"
+    },
+    "6febf9fb2b8493101b54b37c8314fd2510443991": {
+      "version": "0.2.127",
+      "moteur": "FERRO 0.3.23",
+      "physique": "p17",
+      "commit_sources": "6febf9fb2b8493101b54b37c8314fd2510443991",
+      "html_sha256": "4fd027375aa50a1a37d74ea6627c33a699c9af698ea7d348637f7f051c3081e9",
+      "circuits": 8,
+      "recu": "https://github.com/M4D135/bitume/blob/6febf9fb2b8493101b54b37c8314fd2510443991/SIZE.json"
     }
   },
   "candidats_precedents": {
@@ -1145,16 +1156,23 @@
       "branche": "main",
       "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
       "recu": "https://github.com/M4D135/bitume/blob/c6431a04d5f70b54ea95288a8d00bfd3d31b5af5/SIZE.json"
+    },
+    "0.2.127": {
+      "statut": "integre_sur_main",
+      "version": "0.2.127",
+      "branche": "main",
+      "fiche": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
+      "recu": "https://github.com/M4D135/bitume/blob/6febf9fb2b8493101b54b37c8314fd2510443991/SIZE.json"
     }
   },
   "suivi_du_runtime": {
     "date": "2026-11-22",
-    "revision_runtime": "6febf9fb2b8493101b54b37c8314fd2510443991",
-    "version": "0.2.127",
-    "physique": "p17",
-    "moteur": "FERRO 0.3.23",
-    "sha256_html": "4fd027375aa50a1a37d74ea6627c33a699c9af698ea7d348637f7f051c3081e9",
-    "octets_html": 16579057,
+    "revision_runtime": "9651b7bb218ba55f97c6070a19c9e92c9c0d332e",
+    "version": "0.2.128",
+    "physique": "p18",
+    "moteur": "FERRO 0.3.24",
+    "sha256_html": "bcf717f0a951134f68f62a2a5e8be149d52f4c3e5233821b48bad7444edf4731",
+    "octets_html": 16620845,
     "circuits": [
       {
         "id": "forets-du-pacifique",
@@ -1193,9 +1211,10 @@
     "etat_des_receptions": "Essais suspendus à la demande du joueur. Les mesures d’une autre version restent identifiées séparément.",
     "ordre_de_suite": [
       "Cadence de 60 images 3D/s sur chaque kilomètre de Larche en 1080p Fine sous la pluie, deux glaces et douze voitures",
+      "Recevoir les entrées et sorties des huit cartes, la précision de l’arrêt au box, les roues et le carburant en solo et en réseau, ainsi que les collisions des arches.",
       "Visibilité des voitures, LED et ombres, BVH FERRO, primitives à la demande, appels WebGL2 groupés, rétroviseurs hors écran et budget des bosquets",
       "Huit circuits, trois tracés à deux habitats et huit démonstrations de la course, du tracé et des lieux",
-      "Arrivée et dégagement de la meute, contacts pneu contre pneu, nez déformé et données de la physique p17",
+      "Arrivée et dégagement de la meute, contacts pneu contre pneu, nez déformé et records et fantômes p18, conservation de p17",
       "Altimétrie Monaco 14A, relief de Marseille, lieux et bâtiments de la haute Stura",
       "Matériaux 19/21/23/25, conduite 17, pneus, pilotes, faune 26 et réception des périphériques physiques",
       "Deux joueurs et réseau 27, cache et calcul 28, puis étapes du moteur C++ sur Mac, Linux et Windows"
@@ -1218,6 +1237,34 @@
       "WebGL2 et WebGPU écartent du dessin couleur les pièces rigides du cockpit entièrement hors champ. Le rendu des ombres conserve les pièces susceptibles d’en projeter.",
       "Pour les images dont les deux dimensions sont divisibles par quatre, dont le 1920 × 1080, la prépasse du halo repère les zones pouvant recevoir un reflet. Avec le cockpit superposé, les reflets en espace écran évitent les groupes masqués. Le raffinement réutilise la profondeur déjà lue sur tous les formats."
     ],
-    "reception_cadence_0127": "La cadence de la .127 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer."
+    "reception_cadence_0127": "La cadence de la .127 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer.",
+    "chronometres_0128": {
+      "physique_courante": "p18",
+      "physique_precedente": "p17",
+      "archives": "Clés p17 conservées séparément des nouveaux records et fantômes p18."
+    },
+    "stands_0128": {
+      "bases": "Les trois circuits fusionnés reprennent chacun la fenêtre de leur recette de fusion. Route-des-Cimes, Sierra-Cuivrée et Baïkal utilisent la partition du générateur ou sa fenêtre de repli.",
+      "ouverts": "Larche et Marseille. Si aucune fenêtre recevable de 208 m n’est trouvée, la carte conserve des stands absents.",
+      "filtrage": "Les instances de décor et les cellules d’arbres déjà présentes sont filtrées par emprise horizontale. Les corps mobiles PhysX et les lots détaillés de lieux ajoutés ultérieurement échappent à ce filtre.",
+      "reception": "Implantations, roulement, service et sortie en course à recevoir sur les huit cartes."
+    },
+    "optimisations_0128": [
+      "La voie des stands quitte la piste à droite, longe un muret doté d’une collision et rejoint la chaussée après le box. La voie et l’aire de service sont en asphalte pour les roues PhysX. Les circuits ouverts recherchent une halte de 208 m compatible avec la courbure, la pente, les ouvrages, les lieux et les autres branches de la route.",
+      "Le service exige une voiture immobile et alignée au box. Le niveau du réservoir, la durée de branchement, les pneus et la remise en route déterminent l’arrêt. L’IA dirige et freine la voiture à l’entrée, au box et à la sortie, avec un motif de ravitaillement selon la distance restante.",
+      "Les mécaniciens font l’aller-retour depuis le garage. Deux séquences publiques de Carnegie Mellon fournissent la marche 07_01 et l’accroupissement 22_14. Le travail de roue, des crics et du ravitailleur est animé dans le jeu à partir de la voiture et de la phase de service.",
+      "Le réseau transmet le carburant et l’état du service avec les instantanés fiables de pneus. La reprise de contrôle peut reprendre un service en cours. L’arbitrage d’un box partagé reste à recevoir avec deux postes.",
+      "Les arches rocheuses naturelles reposent sur leurs pieds au sol. PhysX assemble leurs sections convexes en un corps mobile ; les blocs d’éboulis ont leurs propres corps. La pose du monde physique pilote le rendu.",
+      "Dans les virages, la flèche jaune lumineuse a une hauteur verticale de 0,60 m, y compris sur une glissière inclinée. Cette cote désigne la flèche visible à l’intérieur de son support.",
+      "Les nouveaux temps, records et fantômes utilisent p18. Les classements locaux sont séparés par version et les données p17 demeurent dans leurs clés historiques.",
+      "La foule des tribunes partage des enveloppes de 32 places entre les vues. Le cockpit, les glaces et les ombres écartent les groupes entièrement hors de leur champ avant de classer les sièges.",
+      "Quand toute la tribune est visible sous le premier seuil de fondu, le tampon de silhouettes peut être réutilisé. Les deux yeux et les tuiles d’ombre qui partagent la même pose évitent un second envoi des uniformes d’animation à leur programme.",
+      "Le décor progressif sélectionne les lots proches de l’ensemble des points de vue. Pour les arbres périphériques, les cellules candidates sont réutilisées entre les images et le calcul de proximité de la route est réservé aux changements de détail possibles.",
+      "Les lampes de tunnel candidates sont recherchées par cellule. Les groupes qui finissent de s’éteindre restent suivis après un changement de vue. Les consultations identiques d’abri de la caméra partagent leur résultat.",
+      "Pour les nappes rigides compatibles, WebGL2 transporte 40 octets par sommet au lieu de 52 en omettant les trois composantes de déplacement nulles. Les nappes qui contiennent un sommet déplacé ou animé gardent le format complet.",
+      "La passe Photo de FERRO parcourt les objets dynamiques une seule fois pour répartir les objets de la scène, de l’habitacle et de la tuile d’ombre de la voiture.",
+      "Dans la passe d’ombre solaire WebGL2, les extrémités d’une plage d’instances rigides peuvent être écartées lorsqu’elles sont entièrement hors du volume éclairé. Les autres instances gardent leur ordre de soumission."
+    ],
+    "reception_cadence_0128": "La cadence de la .128 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer."
   }
 }
