@@ -10,15 +10,16 @@ function test(nom, verifier) { verifier(); reussis++; console.log('ok ' + nom); 
 
 test('les commandes Xbox standard conservent pédales analogiques, volant et boutons', () => {
   const p = pad(), s = {}; presser(p, 7, .75); presser(p, 6, .25); p.axes[0] = -.5;
-  for (const i of [0, 2, 3, 4, 5, 10]) presser(p, i);
+  for (const i of [0, 2, 3, 4, 5]) presser(p, i);
   assert.strictEqual(M.lire(p, null, s), s);
   assert.equal(s.gaz, .75); assert.equal(s.frein, .25); assert(s.volant < -.35 && s.volant > -.45);
   for (const a of ['derive', 'haut', 'bas', 'vue', 'troll']) assert.equal(s[a], 1, a);
   p.axes[0] = .04; assert.equal(M.lire(p, null, s).volant, 0);
   p.axes[0] = 1; assert.equal(M.lire(p, null, s).volant, 1);
 });
-test('A et X permettent chacun la dérive sans double affectation nécessaire', () => {
-  for (const i of [0, 2]) { const p = pad(); presser(p, i); assert.equal(M.lire(p).derive, 1); }
+test('X déclenche la dérive et A (Xbox) / B (Switch) déclenche les emotes', () => {
+  const p1 = pad(); presser(p1, 2); assert.equal(M.lire(p1).derive, 1); assert.equal(M.lire(p1).troll, 0);
+  const p2 = pad(); presser(p2, 0); assert.equal(M.lire(p2).troll, 1); assert.equal(M.lire(p2).derive, 0);
 });
 test('absence, déconnexion et valeurs invalides restent neutres et bornées', () => {
   const p = pad(), s = M.lire(p); presser(p, 7); p.axes[0] = 1; M.lire(p, null, s);

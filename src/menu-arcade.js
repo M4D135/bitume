@@ -35,7 +35,7 @@
       points[i * 3 + 2] = (c.z[j] - cz) / diametre;
     }
     return Object.freeze({ n, points, indices, diametre, centre: Object.freeze([cx, y0, cz]), relief: (y1 - y0) / diametre,
-      altitudeMin: y0, altitudeMax: y1, longueur: c.longueur || 0 });
+      altitudeMin: y0, altitudeMax: y1, longueur: c.longueur || 0, ouvert: !!c.ouvert });
   }
 
   // Enveloppe valable pour toute rotation : ni tracé coupé, ni zoom qui respire à chaque image.
@@ -139,11 +139,13 @@
       projeter(trace, rotation, largeur, proj, cadre);
       // Ombre et supports donnent une lecture du relief sans terrain ni végétation supplémentaires.
       ctx.strokeStyle = 'rgba(0,0,0,.38)'; ctx.lineWidth = Math.max(5, largeur / 65); ctx.lineJoin = 'round'; ctx.beginPath();
-      for (let i = 0; i <= trace.n; i++) {
+      const limiteSol = trace.ouvert ? trace.n - 1 : trace.n;
+      for (let i = 0; i <= limiteSol; i++) {
         const j = i % trace.n; pointSol(trace.points[j * 3], trace.points[j * 3 + 2], 0);
         if (i) ctx.lineTo(sol[0], sol[1]); else ctx.moveTo(sol[0], sol[1]);
       }
-      ctx.closePath(); ctx.stroke();
+      if (!trace.ouvert) ctx.closePath();
+      ctx.stroke();
       ctx.strokeStyle = 'rgba(143,184,196,.24)'; ctx.lineWidth = Math.max(1, largeur / 720); ctx.beginPath();
       for (let i = 0; i < trace.n; i += Math.max(1, Math.floor(trace.n / 18))) {
         pointSol(trace.points[i * 3], trace.points[i * 3 + 2], 0);
@@ -151,6 +153,7 @@
       }
       ctx.stroke(); ordre.sort(trier); ctx.lineCap = 'round';
       for (const i of ordre) {
+        if (trace.ouvert && i >= trace.n - 1) continue;
         const j = (i + 1) % trace.n, e = Math.min(largeur, hauteur * 2) / 100 * cadre[2] / proj[i * 3 + 2];
         ctx.beginPath(); ctx.moveTo(proj[i * 3], proj[i * 3 + 1]); ctx.lineTo(proj[j * 3], proj[j * 3 + 1]);
         ctx.strokeStyle = i % 12 < 6 ? '#d64c38' : '#e1dccb'; ctx.lineWidth = Math.max(4, e); ctx.stroke();

@@ -456,10 +456,13 @@ body.tactile .demo-tactile { display: inline; }
 #jeu[data-carte-taille="petite"] { --carte-taille: 120px; }
 #jeu[data-carte-taille="grande"] { --carte-taille: 200px; }
 #jeu[data-carte="non"] { --carte-presence: 0px; }
-#zone-carte { position: fixed; top: calc(var(--hud-top) + 104px); right: max(var(--marge),env(safe-area-inset-right)); width: var(--carte-cote); height: var(--carte-cote); pointer-events: none; }
-#jeu[data-carte-position="gauche"] #zone-carte { right: auto; left: max(var(--marge),env(safe-area-inset-left)); }
+#zone-carte { position: fixed; bottom: max(var(--marge),env(safe-area-inset-bottom)); left: max(var(--marge),env(safe-area-inset-left)); top: auto; right: auto; width: var(--carte-cote); height: var(--carte-cote); pointer-events: none; }
+#jeu[data-carte-position="bas-droite"] #zone-carte { left: auto; right: max(var(--marge),env(safe-area-inset-right)); }
+#jeu[data-carte-position="haut-droite"] #zone-carte, #jeu[data-carte-position="droite"] #zone-carte { top: calc(var(--hud-top) + 104px); bottom: auto; left: auto; right: max(var(--marge),env(safe-area-inset-right)); }
+#jeu[data-carte-position="haut-gauche"] #zone-carte, #jeu[data-carte-position="gauche"] #zone-carte { top: calc(var(--hud-top) + 104px); bottom: auto; right: auto; left: max(var(--marge),env(safe-area-inset-left)); }
 #jeu[data-carte="non"] #zone-carte { display: none; }
-body:not(.tactile) #jeu[data-carte-position="gauche"]:not([data-carte="non"]) .classement { top: calc(var(--hud-top) + 116px + var(--carte-cote)); }
+body:not(.tactile) #jeu:is([data-carte-position="haut-gauche"],[data-carte-position="gauche"]):not([data-carte="non"]) .classement { top: calc(var(--hud-top) + 116px + var(--carte-cote)); }
+body:not(.tactile) #jeu[data-carte-position="bas-droite"]:not([data-carte="non"]) .hud-bas { bottom: calc(max(var(--marge),env(safe-area-inset-bottom)) + var(--carte-cote) + 12px); }
 
 /* ------------------------------------------------------------------ ATH tactile léger, aucune bande réservée */
 body.tactile .ecran { touch-action: pan-y; overscroll-behavior: contain; }
@@ -647,16 +650,20 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] :is(.hud-haut, #zone-carte) { --carte-cockpit: min(160px,21.6cqh); }
   body:not(.tactile) #jeu[data-carte-taille="petite"] :is(#hud, #hud2)[data-vue="cockpit"] :is(.hud-haut, #zone-carte) { --carte-cockpit: min(120px,16.2cqh); }
   body:not(.tactile) #jeu[data-carte-taille="grande"] :is(#hud, #hud2)[data-vue="cockpit"] :is(.hud-haut, #zone-carte) { --carte-cockpit: min(200px,27cqh); }
-  body:not(.tactile) #jeu:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .hud-haut { display: grid; grid-template-columns: minmax(0,1fr) 22%; column-gap: calc(var(--carte-cockpit) + 2 * var(--marge)); }
-  body:not(.tactile) #jeu[data-carte-position="gauche"]:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .hud-haut { grid-template-columns: 22% minmax(0,1fr); }
-  body:not(.tactile) #jeu[data-carte-position="gauche"]:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .compteurs { grid-column: 2; grid-row: 1; justify-content: flex-end; }
-  body:not(.tactile) #jeu[data-carte-position="gauche"]:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .chronos { grid-column: 1; grid-row: 1; }
+  body:not(.tactile) #jeu:is([data-carte-position="haut-droite"],[data-carte-position="droite"],[data-carte-position="haut-gauche"],[data-carte-position="gauche"]):not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .hud-haut { display: grid; grid-template-columns: minmax(0,1fr) 22%; column-gap: calc(var(--carte-cockpit) + 2 * var(--marge)); }
+  body:not(.tactile) #jeu:is([data-carte-position="haut-gauche"],[data-carte-position="gauche"]):not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .hud-haut { grid-template-columns: 22% minmax(0,1fr); }
+  body:not(.tactile) #jeu:is([data-carte-position="haut-gauche"],[data-carte-position="gauche"]):not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .compteurs { grid-column: 2; grid-row: 1; justify-content: flex-end; }
+  body:not(.tactile) #jeu:is([data-carte-position="haut-gauche"],[data-carte-position="gauche"]):not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .chronos { grid-column: 1; grid-row: 1; }
   body:not(.tactile) #jeu:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .chronos { min-width: 0; padding: 4px 0; }
   body:not(.tactile) #jeu:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .ligne-chrono { gap: 4px; }
   body:not(.tactile) #jeu:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .ligne-chrono .etiquette { font-size: 9px; letter-spacing: .08em; }
   body:not(.tactile) #jeu:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .ligne-chrono .temps { font-size: 18px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] #zone-carte { position: absolute; top: max(8px,env(safe-area-inset-top)); bottom: auto; left: auto; right: calc(24% + 1.5 * var(--marge)); width: var(--carte-cockpit); height: auto; aspect-ratio: 1; }
-  body:not(.tactile) #jeu[data-carte-position="gauche"] :is(#hud, #hud2)[data-vue="cockpit"] #zone-carte { right: auto; left: calc(24% + 1.5 * var(--marge)); }
+  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] #zone-carte { position: absolute; width: var(--carte-cockpit); height: auto; aspect-ratio: 1; bottom: max(8px,env(safe-area-inset-bottom)); top: auto; left: max(var(--marge),env(safe-area-inset-left)); right: auto; }
+  body:not(.tactile) #jeu[data-carte-position="bas-droite"] :is(#hud, #hud2)[data-vue="cockpit"] #zone-carte { left: auto; right: max(var(--marge),env(safe-area-inset-right)); }
+  body:not(.tactile) #jeu:is([data-carte-position="haut-droite"],[data-carte-position="droite"]) :is(#hud, #hud2)[data-vue="cockpit"] #zone-carte { top: max(8px,env(safe-area-inset-top)); bottom: auto; left: auto; right: calc(24% + 1.5 * var(--marge)); }
+  body:not(.tactile) #jeu:is([data-carte-position="haut-gauche"],[data-carte-position="gauche"]) :is(#hud, #hud2)[data-vue="cockpit"] #zone-carte { top: max(8px,env(safe-area-inset-top)); bottom: auto; right: auto; left: calc(24% + 1.5 * var(--marge)); }
+  /* En bas à gauche, le classement remonte nettement au-dessus de la carte pour zéro chevauchement. */
+  body:not(.tactile) #jeu[data-carte-position="bas-gauche"]:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .hud-rivaux { bottom: calc(var(--carte-cockpit) + 26px); }
 }
 
 /* Commandes des joueurs : appareil et touches (réglages), choix rapide à la préparation d'une course à deux */
@@ -944,4 +951,68 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   .sm-ligne button { min-height: 36px; }
   #sm-touches, .sm-ligne { gap: 5px; }
   .sm-actions { margin: 10px 0 6px; }
+}
+
+/* Menus sans défilement sur écrans horizontaux (TV Xbox, PC, Mac) : navigation manette limpide. */
+@media (min-width: 760px) and (min-height: 500px) {
+  .reglages { --marge: clamp(10px, 1.5vh, 18px); }
+  .reglages .menu-entete, .reglages .panneaux-menu, .reglages .aide-manette { max-width: 1320px; }
+  .reglages .menu-entete { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--trait); }
+  .reglages .menu-entete .entete { margin-bottom: 0; gap: 12px; }
+  .reglages .menu-entete h2 { font-size: clamp(24px, 2.8vw, 36px); }
+  .reglages .menu-entete .sous { display: none; }
+  .reglages .onglets-menu { padding-bottom: 0; border-bottom: 0; gap: 6px; }
+  .reglages .onglets-menu button { min-height: 38px; padding: 7px 18px; font-size: 14px; }
+  .reglages .panneaux-menu { padding: 10px 4px 6px; overflow-y: hidden; }
+  .reglages .panneau-menu .grille-reglages { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px 12px; max-width: none; align-items: stretch; }
+  .reglages .panneau-menu fieldset { padding: 9px 11px 8px; }
+  .reglages .panneau-menu legend { font-size: 11px; letter-spacing: .12em; }
+  .reglages .panneau-menu fieldset label span { min-height: 32px; padding: 6px 10px 5px; font-size: 13px; margin: 2px 3px 2px 0; }
+  .reglages .panneau-menu .discret { min-height: 34px; padding: 6px 12px; font-size: 13px; }
+  .reglages .note-graphismes, .reglages .aide-reglage { margin-top: 4px; font-size: 11px; line-height: 1.3; max-width: none; }
+  .reglages .curseurs { gap: 6px; }
+  .reglages .curseurs label { gap: 2px; font-size: 10.5px; }
+  .reglages .panneau-menu input[type="range"] { min-height: 22px; margin: 0; }
+  .reglages .ligne-reglage { display: flex; flex-wrap: wrap; gap: 3px; }
+  .reglages .ligne-reglage + .ligne-reglage { margin-top: 4px; }
+  .reglages #r-commandes-panel .etat-manette { margin: 0 0 3px; font-size: 11px; min-height: 1.1em; }
+  .reglages #r-commandes-panel > fieldset { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; padding: 4px 10px; margin-bottom: 5px; }
+  .reglages #r-commandes-panel > fieldset label { display: inline-flex; align-items: center; gap: 8px; margin: 0; }
+  .reglages #r-commandes-panel > fieldset input[type="range"] { width: 160px; }
+  .reglages .commandes-joueurs { gap: 4px 16px; }
+  .reglages .joueur-commandes h3 { font-size: 15px; margin: 0 0 2px; }
+  .reglages .choix-commande { margin-bottom: 3px; }
+  .reglages .choix-commande label span { min-height: 25px; padding: 3px 8px; font-size: 11.5px; margin: 1px 3px 1px 0; }
+  .reglages .table-touches th { padding: 1px 6px 1px 0; font-size: 10.5px; }
+  .reglages .table-touches td { padding: 1px 2px; }
+  .reglages .touche { min-height: 22px; padding: 2px 5px; font-size: 11.5px; }
+  .reglages .note-commandes { font-size: 10.5px; line-height: 1.25; margin: 2px 0 0; max-width: none; }
+  .reglages .actions-commandes { margin-top: 3px; gap: 8px; }
+  .reglages .actions-commandes .discret { min-height: 27px; padding: 4px 10px; font-size: 12px; }
+  .reglages .aide-manette { margin-top: 5px; }
+  /* Préparation : zéro défilement en 720p/1080p ; les 16 circuits tiennent en 2 colonnes compactes. */
+  .arcade-preparation { --marge: clamp(8px, 1.1vh, 14px); }
+  .arcade-preparation .menu-entete { display: grid; grid-template-columns: minmax(220px, .72fr) minmax(0, 1.6fr); align-items: center; gap: 10px; padding-bottom: 6px; }
+  .arcade-preparation .entete { margin-bottom: 0; gap: 10px; }
+  .arcade-preparation .entete h2 { font-size: clamp(22px, 2.4vw, 32px); }
+  .arcade-preparation .onglets-menu { gap: 6px; }
+  .arcade-preparation .onglets-menu button { min-height: 36px; padding: 6px 10px; font-size: 13px; }
+  .arcade-preparation .panneaux-menu { padding: 8px 4px 4px; overflow-y: hidden; }
+  .arcade-preparation .apercu-entete { padding: 8px 14px 0; }
+  .arcade-preparation .apercu-entete h3 { font-size: clamp(20px, 2.2vw, 28px); }
+  .arcade-preparation #p-trace-3d { height: clamp(160px, 25vh, 250px); margin: 4px 0 0; }
+  .arcade-preparation .apercu-legende { padding: 2px 14px 4px; }
+  .arcade-preparation .chiffres-circuit { margin: 4px 0 0; padding: 7px 14px; }
+  .arcade-preparation .chiffres-circuit dd { margin: 3px 0 0; font-size: 11px; }
+  .arcade-preparation .chiffres-circuit b { font-size: 19px; }
+  .arcade-preparation .catalogue-circuits > .arcade-surtitre { margin-bottom: 4px; font-size: 10px; }
+  .arcade-preparation .circuits { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; max-height: none; overflow-y: hidden; padding: 2px; }
+  .arcade-preparation .carte-circuit { min-height: 35px; padding: 3px 6px; grid-template-columns: 16px minmax(0, 1fr) auto; column-gap: 5px; row-gap: 1px; }
+  .arcade-preparation .carte-circuit .nom { font-size: 13px; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .arcade-preparation .carte-circuit .fiche { font-size: 8.5px; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .arcade-preparation .carte-circuit .circuit-distance { font-size: 10px; }
+  .arcade-preparation #p-piste > .options { margin-top: 6px; }
+  .arcade-preparation #p-piste > .options label span { min-height: 30px; padding: 5px 10px; font-size: 12px; }
+  .arcade-preparation .depart-fixe { padding-top: 6px; }
+  .arcade-preparation .aide-manette { margin-top: 4px; }
 }

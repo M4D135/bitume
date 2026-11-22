@@ -19,7 +19,9 @@
     { id: 'brume-de-jade', nom: 'Brume-de-Jade', lieu: 'Asie · pics calcaires et terrasses', theme: 'asie', graine: 131, longueur: 5000 },
     { id: 'cap-sequoia', nom: 'Cap-Séquoia', lieu: 'États-Unis · falaises du Pacifique', theme: 'pacifique', graine: 157, longueur: 5200 },
     { id: 'baikal', nom: 'Baïkal', lieu: 'Russie · rives et promontoire', theme: 'baikal', graine: 179, longueur: 5400 },
-    { id: 'route-des-cimes', nom: 'Route-des-Cimes', lieu: 'Grand parcours de montagne · cirque de l’Aiglière', theme: 'montagne', graine: 181, longueur: 9697.52858032384, partition: 'route-des-cimes' }
+    { id: 'route-des-cimes', nom: 'Route-des-Cimes', lieu: 'Grand parcours de montagne · cirque de l’Aiglière', theme: 'montagne', graine: 181, longueur: 9697.52858032384, partition: 'route-des-cimes' },
+    { id: 'larche', nom: 'Col de Larche → Vinadio', lieu: 'Alpes · descente réelle SS21 (32,8 km)', theme: 'montagne', graine: 210, longueur: 32816.81, ouvert: true },
+    ...(typeof B !== 'undefined' && B.destinations ? B.destinations.CATALOGUE : [])
   ];
 
   // ---------------------------------------------------------------- stockage local (commodités propres au navigateur)
@@ -51,7 +53,7 @@
   }
   // Identifiants persistés : « poursuite » conserve son cadre historique à 7,4 m.
   const VUES_COURSE = Object.freeze(['cockpit', 'arceau', 'nez', 'aileron-avant', 'poursuite-proche', 'poursuite']);
-  const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 70, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
+  const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 70, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'bas-gauche', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
     anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'non', gouttes: 1, forcePluie: 'forte',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
   const reglagesEnregistres = lireStock('bitume.reglages', {});
@@ -74,8 +76,16 @@
   if (!reglages.champRevu) { if (+reglages.champ === 69) reglages.champ = DEFAUT.champ; reglages.champRevu = true; }
   reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
   reglages.gouttes = reglages.gouttes != null && Number.isFinite(+reglages.gouttes) ? clamp(+reglages.gouttes, 0, 2) : DEFAUT.gouttes;
-  // Les anciens placements auto/haut/bas reviennent en haut à droite ; taille et visibilité sont conservées.
-  for (const [cle, valeurs] of Object.entries({ carte: ['oui', 'non'], cartePosition: ['gauche', 'droite'], carteTaille: ['petite', 'normale', 'grande'], annoncesVirages: ['non', 'ecran', 'voix'] }))
+  // Quatre coins disponibles pour la carte ; par défaut en bas à gauche (décision David 21/11).
+  if (!reglages.cartePositionVersion || reglages.cartePositionVersion < 2) {
+    if (reglages.cartePosition === 'gauche') reglages.cartePosition = 'haut-gauche';
+    else if (reglages.cartePosition === 'droite') reglages.cartePosition = 'bas-gauche';
+    reglages.cartePositionVersion = 2;
+  } else {
+    if (reglages.cartePosition === 'gauche') reglages.cartePosition = 'haut-gauche';
+    else if (reglages.cartePosition === 'droite') reglages.cartePosition = 'haut-droite';
+  }
+  for (const [cle, valeurs] of Object.entries({ carte: ['oui', 'non'], cartePosition: ['bas-gauche', 'bas-droite', 'haut-gauche', 'haut-droite'], carteTaille: ['petite', 'normale', 'grande'], annoncesVirages: ['non', 'ecran', 'voix'] }))
     if (!valeurs.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
   const sauverReglages = () => {
     // en course (changement de vue au clavier ou à la manette), l'écriture attend la file
@@ -84,6 +94,7 @@
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
   const PHYSIQUE = 'p15', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const records = lireStock(CLE_RECORDS, {});
+  const recordsEnrichis = B.records ? Object.assign(B.records.migrerAnciens(records, CATALOGUE), B.records.lireTout(globalThis.localStorage, CATALOGUE)) : null;
   // temps et longueur du fantôme gardé, par circuit : lus une fois, puis tenus à jour à chaque écriture (finTour
   // relisait et analysait le fantôme entier à chaque tour de chrono)
   const fantomesGardes = new Map();
@@ -120,9 +131,11 @@
   function circuit(i) {
     if (!circuits[i]) {
       const k = CATALOGUE[i];
-      circuits[i] = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition });
+      circuits[i] = k.id === 'larche' && B.larche
+        ? B.larche.creer(k.graine)
+        : B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom, partition: k.partition });
       // lot 22F : le parapet, le muret ou le bord du fossé d'un bord dangereux devient la limite (une fois, à la création)
-      if (B.bords) B.bords.limites(circuits[i], B.bords.planifier(circuits[i]));
+      if (B.bords && !circuits[i].ouvert) B.bords.limites(circuits[i], B.bords.planifier(circuits[i]));
     }
     return circuits[i];
   }
@@ -153,12 +166,22 @@
   }
   function dessinerTrace(ctx, c, p, epaisseur, couleur) {
     ctx.beginPath();
-    for (let i = 0; i <= c.n; i += 3) { const [x, y] = p.vers(c.x[i % c.n], c.z[i % c.n]); if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
-    ctx.closePath(); ctx.lineJoin = 'round'; ctx.lineWidth = epaisseur; ctx.strokeStyle = couleur; ctx.stroke();
-    // ligne de départ
+    const pas = c.ouvert ? Math.max(4, Math.floor(c.n / 600)) : 3;
+    const fin = c.ouvert ? c.n - 1 : c.n;
+    for (let i = 0; i <= fin; i += pas) { const [x, y] = p.vers(c.x[i % c.n], c.z[i % c.n]); if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
+    if (c.ouvert) { const [x, y] = p.vers(c.x[c.n - 1], c.z[c.n - 1]); ctx.lineTo(x, y); }
+    else ctx.closePath();
+    ctx.lineJoin = 'round'; ctx.lineWidth = epaisseur; ctx.strokeStyle = couleur; ctx.stroke();
+    // ligne de départ (et ligne d'arrivée distincte en parcours ouvert)
     const [x, y] = p.vers(c.x[0], c.z[0]), a = c.cap[0], l = epaisseur * 1.6;
     ctx.beginPath(); ctx.moveTo(x - Math.sin(a) * l, y + Math.cos(a) * l); ctx.lineTo(x + Math.sin(a) * l, y - Math.cos(a) * l);
-    ctx.lineWidth = Math.max(2, epaisseur * .55); ctx.strokeStyle = '#e0301e'; ctx.stroke();
+    ctx.lineWidth = Math.max(2, epaisseur * .55); ctx.strokeStyle = c.ouvert ? '#2ecc71' : '#e0301e'; ctx.stroke();
+    if (c.ouvert && Number.isFinite(c.arrivee)) {
+      const iArr = Math.max(0, Math.min(c.n - 1, Math.round(c.arrivee / c.pas)));
+      const [ax, ay] = p.vers(c.x[iArr], c.z[iArr]), aa = c.cap[iArr];
+      ctx.beginPath(); ctx.moveTo(ax - Math.sin(aa) * l, ay + Math.cos(aa) * l); ctx.lineTo(ax + Math.sin(aa) * l, ay - Math.cos(aa) * l);
+      ctx.lineWidth = Math.max(2, epaisseur * .55); ctx.strokeStyle = '#e0301e'; ctx.stroke();
+    }
   }
 
   // ---------------------------------------------------------------- moteur de rendu et son
@@ -408,7 +431,21 @@
   const pad = { precedent: [], actions: {}, entrees: {}, volant: 0, gaz: 0, frein: 0, derive: false, actif: false, manette: null, deriveEtat: null };
   const pad2 = { precedent: [], actions: {}, entrees: {}, volant: 0, gaz: 0, frein: 0, derive: false, manette: null, deriveEtat: null };   // manette du joueur 2 (écran partagé)
   const consoleXbox = B.autoconfig?.recommander(navigator).xbox === true;
-  const configurationsManettes = [0, 1].map(n => B.commandesManette.normaliser(reglages.manettes?.[n]));
+  const configurationsManettes = [0, 1].map(n => {
+    const m = B.commandesManette.normaliser(reglages.manettes?.[n]);
+    // Migration douce (21/11) : emotes/troll passe sur A Xbox / B Switch (index 0) et dérive reste sur X (index 2).
+    if ((!reglages.manettesVersion || reglages.manettesVersion < 3) &&
+        m.troll.length === 1 && m.troll[0].type === 'bouton' && (m.troll[0].index === 10 || m.troll[0].index === 12)) {
+      m.troll = [{ type: 'bouton', index: 0 }];
+      m.derive = m.derive.filter(l => !(l.type === 'bouton' && l.index === 0));
+      if (!m.derive.length) m.derive = [{ type: 'bouton', index: 2 }];
+    }
+    return m;
+  });
+  if (!reglages.manettesVersion || reglages.manettesVersion < 3) {
+    reglages.manettesVersion = 3;
+    if (Array.isArray(reglages.manettes)) { reglages.manettes = configurationsManettes.map(m => B.commandesManette.normaliser(m)); sauverReglages(); }
+  }
   let captureManette = null, dernierSignalManette = -Infinity;
   let nbManettes = 0, manettes = [];
   const impulsions2 = { haut: false, bas: false };
@@ -747,10 +784,11 @@
     const deux = S !== session;
     if (deux && !pluieVue2) pluieVue2 = creationTardive('pluie', B.meteo.creerPluie($('meteo2')));
     if (!deux && !pluieVue) pluieVue = creationTardive('pluie', B.meteo.creerPluie($('meteo')));
-    // sous la voûte du tunnel, il ne pleut pas : la caméra décide, sinon les gouttes disparaissent pendant que la
-    // vue extérieure montre encore la pluie
-    const abri = sousLaVoute(S.course.c, cam.pos), neige = precipitationsNeige(S);
-    (deux ? pluieVue2 : pluieVue).dessiner(abri || neige > 0 ? Object.assign(METEO_ABRI, { t: S.meteo.t }) : S.meteo, cam, dt, { cockpit: vue === 'cockpit', dpr: window.devicePixelRatio || 1 });
+    // La caméra décide des dépôts sur la visière. Le champ conserve la pluie extérieure
+    // visible par les portails et galeries ; chaque trait est masqué dans le monde.
+    const abri = sousLaVoute(S.course.c, cam.pos) || B.meteo.abriCouverts(S.course.c, cam.pos, S.course.physique), neige = precipitationsNeige(S);
+    S.pluieImage = (deux ? pluieVue2 : pluieVue).dessiner(neige > 0 ? Object.assign(METEO_ABRI, { t: S.meteo.t }) : S.meteo, cam, dt,
+      { cockpit: vue === 'cockpit', dpr: window.devicePixelRatio || 1, palier: profil.palier, circuit: S.course.c, physique: S.course.physique });
     if (B.vitre) {
       if (deux && !vitreVue2) vitreVue2 = creationTardive('vitre', B.vitre.creer($('vitre2'), { graine: 2 }));
       if (!deux && !vitreVue) vitreVue = creationTardive('vitre', B.vitre.creer($('vitre')));
@@ -1006,7 +1044,13 @@
     if (!VUES_COURSE.includes(vue)) return false;
     reglages[n ? 'vue2' : 'vue'] = vue;
     const S = n ? session && session.vueJ2 : session;
-    if (S) { S.camCap = null; S.regardArriere = false; }
+    if (S) {
+      if (B.cameraTransition && S.camera && !S.reference && !S.regardArriere) {
+        const ct = S.camTransition || (S.camTransition = B.cameraTransition.creer());
+        B.cameraTransition.demander(ct, S.camera, { instantane: reglages.secousses === 0 });
+      }
+      S.camCap = null; S.tete = null; S.regardArriere = false;
+    }
     sauverReglages();
     return true;
   }
@@ -1179,6 +1223,13 @@
       records[id] = { tour: e.temps, date: new Date().toISOString().slice(0, 10), mode: co.mode };
       differerStock(CLE_RECORDS, records);   // finTour tourne dans le pas de simulation : l'écriture attend la file
       if (ancien) texte += ' · record du circuit';
+    }
+    if (!S.essai && e.valide !== false && B.records && recordsEnrichis) {
+      B.records.enregistrer(recordsEnrichis, {
+        circuitId: id, sens: 'normal', mode: co.mode,
+        boite: reglages.boite === 'manuelle' ? 'manuelle' : 'auto', versionPhysique: PHYSIQUE
+      }, { tourMs: Math.round(e.temps * 1000) });
+      differerStock('bitume.records.v2', recordsEnrichis);
     }
     if (e.valide === false) texte += ' · hors classement chrono';
     const qui = co.duo ? 0 : undefined;
@@ -1855,15 +1906,36 @@
   $('pr-reglages').addEventListener('click', () => { retirerPret(); retourReglages = 'prets'; aller('reglages'); });
 
   // ---------------------------------------------------------------- caméras
-  // Champ vertical choisi par le joueur. La projection dépend du format d'écran et
-  // de la vitesse ; elle ne se déforme plus pour faire rentrer les vrais rétroviseurs.
-  // Sur un cadre étroit, les pièces hors champ restent à leur place dans la voiture.
-  const INCLINAISON_COCKPIT = 0;
+  // Inclinaison légère vers la piste : rétros, volant, compteurs et roues avant restent lisibles ensemble.
+  const INCLINAISON_COCKPIT = -.035;
   function champCockpit(aspect, v, cam, glaces, M) {
     const t = Math.tan(clamp(+reglages.champ || 70, 60, 105) * Math.PI / 360) * (16 / 9);
     const tv = aspect < 16 / 9 ? Math.hypot(t, t / (16 / 9)) / Math.hypot(1, Math.max(.3, aspect)) : t / (16 / 9);
     const portraitTelephone = estTactile && canvas.clientWidth <= 600 && aspect < 1;
-    const tangente = tv * (portraitTelephone ? .82 : 1);
+    let tangente = tv * (portraitTelephone ? .82 : 1);
+    // En paysage, garantit que les deux rétroviseurs restent entièrement dans le cadre si le champ réglé est serré.
+    if (!portraitTelephone && aspect >= 1.1 && glaces && cam && M) {
+      const cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw), cp = Math.cos(cam.pitch), sp = Math.sin(cam.pitch);
+      const cr = Math.cos(cam.roll || 0), sr = Math.sin(cam.roll || 0);
+      const fwdX = sy * cp, fwdY = sp, fwdZ = -cy * cp;
+      const r0x = cy, r0y = 0, r0z = sy;
+      const u0x = -sy * sp, u0y = cp, u0z = cy * sp;
+      const rx = r0x * cr + u0x * sr, ry = r0y * cr + u0y * sr, rz = r0z * cr + u0z * sr;
+      const ux = u0x * cr - r0x * sr, uy = u0y * cr - r0y * sr, uz = u0z * cr - r0z * sr;
+      let besoin = tangente;
+      for (let g = 0; g < glaces.length; g++) {
+        const coins = glaces[g].coins;
+        for (let i = 0; i < coins.length; i++) {
+          const dx = coins[i][0] - cam.pos[0], dy = coins[i][1] - cam.pos[1], dz = coins[i][2] - cam.pos[2];
+          const zc = dx * fwdX + dy * fwdY + dz * fwdZ;
+          if (!(zc > .12)) continue;
+          const xc = Math.abs(dx * rx + dy * ry + dz * rz), yc = Math.abs(dx * ux + dy * uy + dz * uz);
+          // 92 % du demi-cadre : laisse une marge nette autour des deux boîtiers.
+          besoin = Math.max(besoin, (xc / (zc * aspect)) / .90, (yc / zc) / .90);
+        }
+      }
+      tangente = Math.min(besoin, Math.tan(102 * Math.PI / 360));
+    }
     const vertical = 2 * Math.atan(tangente) * 180 / Math.PI;
     return clamp(vertical * (1 + (portraitTelephone ? .04 : .05) * clamp(v / 85, 0, 1)), 10, 110);
   }
@@ -2763,6 +2835,9 @@
     else if (CAMERAS_DEMO.has(vue)) cam = cameraDemo(S, ps, S.planVu, vue);
     else if (ANCRAGES_CAMERAS[vue]) cam = cameraEmbarquee(ps, suivie.etat, vue);
     else cam = vue === 'cockpit' ? cameraCockpit(S, ps, suivie.etat, S.tRendu, dtImage) : cameraPoursuite(S, ps, suivie.etat, dtImage, vue);
+    if (B.cameraTransition && S.camTransition && S.camTransition.actif && VUES_COURSE.includes(vue) && !S.regardArriere && !S.reference && S.type !== 'demo') {
+      cam = B.cameraTransition.appliquer(S.camTransition, cam, dtImage, { solY: ps.y });
+    }
     if (S.type === 'demo') {
       const aspect = canvas.clientWidth / Math.max(1, canvas.clientHeight);
       // Toutes les vues passent par le même contrôle, y compris les anciens plans télé, sol et orbite.
@@ -2837,6 +2912,28 @@
       contexte.qualite = P.faune; contexte.nuit = nature.ambiance.nuit; contexte.pluie = meteo.pluie || 0; contexte.pose = cam.sujetNature ? S.cinema.poseVue : ps;
       contexte.activite = nature.saison ? nature.saison.faune : 1;
       B.faune.dessiner(nature.faune, horlogeReelle, contexte, sortie);
+    }
+    // Hélicoptère TV & drones métal de tournage (au-dessus du peloton, skippés en palier low)
+    if (B.aeriens && P.palier !== 'low' && S.type !== 'vitrine') {
+      const ae = S.aeriens || (S.aeriens = creationTardive('aeriens', B.aeriens.creer(c, { qualite: P.palier })));
+      const ctxAe = S.aeriensVue || (S.aeriensVue = creationTardive('contexteAeriens', { qualite: P.palier, cible: [0, 0, 0], cibleCap: 0, cibleVitesse: 0, sCible: 0, nuit: 0, sol: null }));
+      ctxAe.qualite = P.palier; ctxAe.cible[0] = ps.x; ctxAe.cible[1] = ps.y; ctxAe.cible[2] = ps.z;
+      ctxAe.cibleCap = ps.cap; ctxAe.cibleVitesse = suivie.etat.v || 0; ctxAe.sCible = suivie.etat.s || 0;
+      ctxAe.nuit = S.nature?.ambiance?.nuit || 0; ctxAe.sol = scene.decor.sol;
+      B.aeriens.dessiner(ae, S.tRendu, ctxAe, sortie);
+    }
+    // Panneaux directionnels de virage animés + bandeaux LED dynamiques du portique
+    if (B.signalisationCourse && S.type !== 'vitrine') {
+      const sig = S.signalisation || (S.signalisation = creationTardive('signalisation', B.signalisationCourse.creer(c, scene.decor)));
+      const ctxSig = S.signalisationVue || (S.signalisationVue = creationTardive('contexteSignalisation', { qualite: P.palier, phase: 'vert', feux: 0, pluie: 0, nuit: 0, cameraPos: null }));
+      ctxSig.qualite = P.palier;
+      ctxSig.pluie = meteo.pluie || 0; ctxSig.nuit = S.nature?.ambiance?.nuit || 0; ctxSig.cameraPos = cam.pos;
+      if (co.phase === 'feux' || co.phase === 'grille') { ctxSig.phase = 'depart'; ctxSig.feux = Math.max(0, Math.min(5, Math.ceil((5 - (co.compte || 0))))); }
+      else if (co.phase === 'arrivee' || suivie.fini) ctxSig.phase = 'damier';
+      else if (meteo.pluie > .35) ctxSig.phase = 'pluie';
+      else if (!c.ouvert && suivie.tours + 1 >= co.toursTotal && co.toursTotal > 1) ctxSig.phase = 'dernier-tour';
+      else ctxSig.phase = 'vert';
+      B.signalisationCourse.mettreAJour(sig, S.tRendu, ctxSig, sortie);
     }
     // Animaux des abords : poses du cerveau interpolées à l'instant affiché des voitures (même horloge de course,
     // mêmes images à 30, 60 ou 120 images/s). Le réglage brut de la faune passe tel quel : en « profil », Légère garde
@@ -3229,9 +3326,15 @@
     texte(H['h-pos'], chronoMode ? '–' : String(j.position)); texte(H['h-sur'], chronoMode ? '' : '/' + nb);
     if (!chronoMode && !demo && S.positionPrec && j.position < S.positionPrec && co.phase === 'course') eclat(H['c-position']);
     S.positionPrec = j.position;
-    const tourAff = chronoMode ? j.tours + (co.chronoParti ? 1 : 0) : Math.min(co.toursTotal, j.tours + 1);
-    texte(H['h-tour'], co.phase === 'grille' || co.phase === 'feux' || (chronoMode && !co.chronoParti) ? '–' : String(tourAff));
-    texte(H['h-tours'], chronoMode ? '' : '/' + co.toursTotal);
+    if (co.c.ouvert) {
+      const resteM = Math.max(0, (co.c.arrivee || co.c.longueur) - (j.etat.s || 0));
+      texte(H['h-tour'], co.phase === 'grille' || co.phase === 'feux' ? '–' : (resteM / 1000).toFixed(1).replace('.', ','));
+      texte(H['h-tours'], ' km');
+    } else {
+      const tourAff = chronoMode ? j.tours + (co.chronoParti ? 1 : 0) : Math.min(co.toursTotal, j.tours + 1);
+      texte(H['h-tour'], co.phase === 'grille' || co.phase === 'feux' || (chronoMode && !co.chronoParti) ? '–' : String(tourAff));
+      texte(H['h-tours'], chronoMode ? '' : '/' + co.toursTotal);
+    }
     if (horlogeReelle >= x.tChiffres) {
       x.tChiffres = horlogeReelle + PERIODE_CHIFFRES;
       const enLice = chronoMode ? co.chronoParti : (co.phase === 'course' || co.phase === 'arrivee');
@@ -4118,6 +4221,9 @@
       if (!S.rouleVu) S.rouleVu = new Float64Array(n);
       if (!S.rouleVrai) S.rouleVrai = new Float64Array(n).fill(NaN);
       if (B.sillage && !S.sillage) S.sillage = B.sillage.creer();
+      if (B.aeriens && !S.aeriens && S.type !== 'vitrine') S.aeriens = B.aeriens.creer(c, { qualite: profilDe(S).palier });
+      if (B.signalisationCourse && !S.signalisation && S.type !== 'vitrine' && scene?.decor) S.signalisation = B.signalisationCourse.creer(c, scene.decor);
+      if (B.cameraTransition && !S.camTransition) S.camTransition = B.cameraTransition.creer();
       if (!S.ambianceImage) S.ambianceImage = {};
       // pluie projetée et vitre : celles du joueur 2 aussi, à deux
       if (!pluieVue) pluieVue = B.meteo.creerPluie($('meteo'));
@@ -5134,6 +5240,7 @@
       v.passages = 0; v.maxPassages = 0; v.debutTour = co.temps;
       co.sAvant[v.id] = et.s;
     }
+    if (co.physique && B.physique.repositionner) B.physique.repositionner(co);
     remplirPoses(S.cour, co); remplirPoses(S.prec, co);
     cameraEssai = null; horlogeReelle = 0; tPrec = 0; dureeImage = 16;
     Object.assign(palier, { n: gpuModeste ? 1 : 0, somme: 0, compte: 0, t: 0, aise: 0 });

@@ -103,7 +103,7 @@
     if (!X || !X.isReady() || !B.solidesPhysX) throw new Error('PhysX et les solides doivent être prêts avant la course');
     if (co.physique) return co.physique;
     const world = X.createWorld({ fixedStep: DT, maxSubSteps: 8, ccdMaxPasses: 8, contacts: true, maxContactPoints: 512 });
-    const p = { world, co, voitures: [], byId: new Map(), collisions: new Map(), impacts: new Map(), temps: 0,
+    const p = { world, co, voitures: [], byId: new Map(), collisions: new Map(), envols: new Map(), impacts: new Map(), temps: 0,
       pas: 0, placements: 0, disposed: false, solids: null, backend: 'PhysX', version: X.status().version };
     try {
       p.solids = B.solidesPhysX.installer(world, co.c, decor);
@@ -195,6 +195,19 @@
     const p = poseDepart(ph); ph.world.setPose(ph.id, p); ph.world.setVelocity(ph.id, [0, 0, 0]); ph.world.setAngularVelocity(ph.id, [0, 0, 0]);
     ph.course.placements++; lecture(ph, false);
   }
+  function repositionner(co) {
+    const p = co && co.physique; if (!p) return;
+    for (const ph of p.voitures) {
+      const pose = poseDepart(ph);
+      ph.world.setPose(ph.id, pose);
+      const v = ph.e.v || 0, cap = ph.cap || 0;
+      const e = B.circuit.echantillon(ph.c, ph.e.s);
+      const pente = e.pente || 0, inv = 1 / Math.hypot(1, pente);
+      ph.world.setVelocity(ph.id, [Math.cos(cap) * v * inv, pente * v * inv, Math.sin(cap) * v * inv]);
+      ph.world.setAngularVelocity(ph.id, [0, 0, 0]);
+      lecture(ph, false);
+    }
+  }
   function appliquer(ph, dt) {
     const e = ph.e, F = ph.forces, world = ph.world, hold = ph.retenue || !!e.recuperation || (e.frein > .08 && Math.abs(e.v) < .45 && !e.gaz && e.rapport !== -1);
     const poids = ph.contacts.reduce((s, q) => s + q.load, 0);
@@ -228,6 +241,67 @@
       }
     }
   }
+  const PA_ROUE = vec(), PB_ROUE = vec(), VEL_ENVOL = vec(), ANG_ENVOL = vec();
+  // Contact pneu contre pneu (style Vroom / F1 roues découvertes) : l'engrenage des deux bandes de
+  // roulement tournant en sens contraire soulève logiquement la roue avant (cabrage, roulis et saut
+  // proportionnels à la vitesse), sans jamais se déclencher sur un simple frôlement de carrosserie.
+  function envolPneuContrePneu(p, key, A, C, magnitude, ev) {
+    if (!A || !C) return;
+    if (p.temps - (p.envols.get(key) ?? -Infinity) < .65) return;
+    const vA = Math.hypot(A.velocity[0], A.velocity[2]), vC = Math.hypot(C.velocity[0], C.velocity[2]);
+    const vMax = Math.max(vA, vC);
+    if (vMax < 16 || magnitude < 180) return;
+    const R = roues();
+    let meilleur = null;
+    for (let i = 0; i < 4; i++) {
+      const rA = R[i];
+      monde(A.pose, [rA.x, rA.r + (A.offsets[i] || 0), rA.z], PA_ROUE);
+      for (let j = 0; j < 4; j++) {
+        const rC = R[j];
+        monde(C.pose, [rC.x, rC.r + (C.offsets[j] || 0), rC.z], PB_ROUE);
+        const dx = PB_ROUE[0] - PA_ROUE[0], dy = PB_ROUE[1] - PA_ROUE[1], dz = PB_ROUE[2] - PA_ROUE[2];
+        const distXZ = Math.hypot(dx, dz), seuil = (rA.r + rC.r) * .95 + (rA.l + rC.l) * .35 + .14;
+        if (distXZ > seuil || Math.abs(dy) > rA.r + rC.r + .12) continue;
+        // Priorité à l'engrenage roue avant sur roue arrière (vrai soulèvement open-wheel).
+        const avantSurArriere = (i < 2 && j >= 2) ? 1 : (j < 2 && i >= 2) ? -1 : 0;
+        const score = (avantSurArriere ? 2 : 1) / (distXZ + .05);
+        if (!meilleur || score > meilleur.score) meilleur = { i, j, avantSurArriere, distXZ, score };
+      }
+    }
+    if (!meilleur) return;
+    if (!meilleur.avantSurArriere && (vMax < 24 || magnitude < 380)) return;
+    // Qui grimpe : celui dont la roue avant engage la roue arrière adverse, sinon le plus rapide.
+    const grimpeA = meilleur.avantSurArriere === 1 ? true : meilleur.avantSurArriere === -1 ? false : vA >= vC;
+    const L = grimpeA ? A : C, cible = grimpeA ? C : A;
+    if (L.distant || L.airborne > .22) return;
+    const iRoue = grimpeA ? meilleur.i : meilleur.j, cote = Math.sign(R[iRoue].z) || 1;
+    const u = clamp((vMax - 15) / 55, 0, 1);
+    const estEngrenage = meilleur.avantSurArriere !== 0;
+    const vy = estEngrenage ? (3.2 + 6.2 * Math.pow(u, 1.12)) : (2.1 + 3.5 * u);
+    const cabrage = estEngrenage ? (1.5 + 2.7 * u) : (.7 + 1.0 * u);
+    const roulis = -cote * (estEngrenage ? (1.2 + 2.3 * u) : (1.0 + 1.7 * u));
+    const lacet = cote * (.55 + .95 * u);
+    // Impulsion de vitesse verticale + léger freinage réaliste de l'accrochage.
+    VEL_ENVOL[0] = L.velocity[0] * .93;
+    VEL_ENVOL[1] = Math.max(L.velocity[1], 0) + vy;
+    VEL_ENVOL[2] = L.velocity[2] * .93;
+    // Rotation physique cohérente : cabrage nez vers le haut (+right), roulis autour de forward.
+    for (let k = 0; k < 3; k++) {
+      ANG_ENVOL[k] = clamp(L.angular[k] + L.right[k] * cabrage + L.forward[k] * roulis + L.up[k] * lacet, -7.5, 7.5);
+    }
+    p.world.setVelocity(L.id, VEL_ENVOL);
+    p.world.setAngularVelocity(L.id, ANG_ENVOL);
+    // Réaction logique et plus faible sur la voiture dont la roue est percutée.
+    if (!cible.distant && cible.airborne < .2) {
+      const iCible = grimpeA ? meilleur.j : meilleur.i, coteC = Math.sign(R[iCible].z) || 1;
+      VEL_ENVOL[0] = cible.velocity[0] * .97 - cible.right[0] * coteC * (1.2 + 1.4 * u);
+      VEL_ENVOL[1] = cible.velocity[1] + .55 + .7 * u;
+      VEL_ENVOL[2] = cible.velocity[2] * .97 - cible.right[2] * coteC * (1.2 + 1.4 * u);
+      p.world.setVelocity(cible.id, VEL_ENVOL);
+    }
+    p.envols.set(key, p.temps);
+    ev.push({ type: 'envol', id: L.v.id, cible: cible.v.id, force: vy, roue: iRoue });
+  }
   function collisions(p, ev) {
     p.impacts.clear();
     const contacts = p.world.contacts;
@@ -241,6 +315,7 @@
     }
     for (const [key, imp] of p.impacts) {
       const magnitude = Math.hypot(imp.x, imp.y, imp.z), old = p.collisions.get(key) ?? -Infinity;
+      if (imp.A && imp.C) envolPneuContrePneu(p, key, imp.A, imp.C, magnitude, ev);
       for (const ph of [imp.A, imp.C]) {
         if (!ph || ph.distant) continue;
         const other = ph === imp.A ? imp.b : imp.a, solid = p.solids.acteurs.get(other);
@@ -263,7 +338,10 @@
       }
       if (magnitude > 200) p.collisions.set(key, p.temps);
     }
-    if (p.pas % 120 === 0) for (const [key, t] of p.collisions) if (p.temps - t > 2) p.collisions.delete(key);
+    if (p.pas % 120 === 0) {
+      for (const [key, t] of p.collisions) if (p.temps - t > 2) p.collisions.delete(key);
+      for (const [key, t] of p.envols) if (p.temps - t > 2) p.envols.delete(key);
+    }
   }
   function pas(co, dt, ev) {
     const p = co.physique; if (!p || p.disposed) return;
@@ -299,5 +377,5 @@
     if (p.solids) { p.solids.ids.length = 0; p.solids.acteurs.clear(); p.solids.libere = true; }
     p.voitures.length = 0; co.physique = null;
   }
-  B.physique = { PROFIL, GROUPES: Object.freeze({ SOL, OBSTACLE, VOITURE, DEBRIS }), installer, avant, pas, liberer, quaternion, projeter };
+  B.physique = { PROFIL, GROUPES: Object.freeze({ SOL, OBSTACLE, VOITURE, DEBRIS }), installer, avant, pas, liberer, repositionner, quaternion, projeter };
 })(globalThis.BITUME = globalThis.BITUME || {});

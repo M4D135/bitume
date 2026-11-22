@@ -280,16 +280,16 @@
   // 126 CK, vues RenderBlade 09/29 et 12/32 : nez étroit devant, épaules entre les roues,
   // puis raccord sous la cellule. Le nez ne s'élargit plus jusqu'au bord des pontons.
   // Proportions adaptées au train roulant existant ; ces rendus ne sont pas des plans cotés.
-  const S_FLECHE = [{ x: 2.08, y0: .22, y1: .25, l: .06, n: 3 }, { x: 1.74, y0: .25, y1: .34, l: .20, n: 4 },
-    { x: 1.48, y0: .28, y1: .40, l: .43, n: 5 }, { x: 1.02, y0: .30, y1: .43, l: .46, n: 5 }, { x: .60, y0: .30, y1: .43, l: .31, n: 5 }];
-  // Pontons distincts derrière les roues avant (09/29, 11/31). Leur bord avant garde
-  // le dégagement du pneu braqué ; le raccord arrière et la cavité du pilote restent communs.
-  const S_PONTONS = [{ x: .98, y0: .14, y1: .42, l: .66, n: 6 }, { x: .94, y0: .10, y1: .50, l: .72, n: 6 }, { x: -.40, y0: .10, y1: .50, l: .72, n: 6 },
-    { x: -.88, y0: .10, y1: .50, l: .72, n: 6 }, { x: -1.01, y0: .12, y1: .49, l: .70, n: 6 }];
-  const S_GOUTTE = [{ x: 2.08, y0: .22, y1: .25, l: .06, n: 3 }, { x: 1.70, y0: .28, y1: .50, l: .20, n: 3 },
-    { x: 1.40, y0: .30, y1: .68, l: .29, n: 4 }, { x: 1.30, y0: .28, y1: .70, l: .30, n: 4 },
-    { x: .95, y0: .28, y1: .72, l: .30, n: 5 }, { x: .44, y0: .28, y1: .74, l: .30, n: 5 },
-    { x: .35, y0: .35, y1: .84, l: .29, n: 5 }];
+  const S_FLECHE = [{ x: 2.12, y0: .215, y1: .255, l: .055, n: 2.6 }, { x: 1.76, y0: .245, y1: .355, l: .19, n: 3.2 },
+    { x: 1.48, y0: .275, y1: .41, l: .41, n: 3.8 }, { x: 1.02, y0: .295, y1: .435, l: .45, n: 4.0 }, { x: .60, y0: .295, y1: .435, l: .31, n: 4.0 }];
+  // Pontons sculptés « bouteille de Coca » : entrée d'air nette derrière les roues avant, flancs tendus
+  // aux arêtes douces (n = 3,8), puis resserrement aérodynamique fluide vers les roues arrière.
+  const S_PONTONS = [{ x: .98, y0: .135, y1: .43, l: .66, n: 3.8 }, { x: .94, y0: .102, y1: .505, l: .72, n: 3.8 }, { x: -.32, y0: .102, y1: .505, l: .72, n: 3.6 },
+    { x: -.72, y0: .105, y1: .485, l: .64, n: 3.2 }, { x: -1.01, y0: .118, y1: .44, l: .52, n: 2.8 }];
+  const S_GOUTTE = [{ x: 2.12, y0: .215, y1: .255, l: .055, n: 2.6 }, { x: 1.72, y0: .275, y1: .51, l: .195, n: 2.8 },
+    { x: 1.40, y0: .295, y1: .68, l: .285, n: 3.4 }, { x: 1.30, y0: .28, y1: .705, l: .298, n: 3.5 },
+    { x: .95, y0: .28, y1: .725, l: .30, n: 3.8 }, { x: .44, y0: .28, y1: .745, l: .298, n: 3.8 },
+    { x: .35, y0: .35, y1: .84, l: .285, n: 3.6 }];
   const OUVERTURE = { de: POSTE_126CK.ouvertureAvant, a: POSTE_126CK.ouvertureArriere, angle: 1.35 };
   const S_MOTEUR = [{ x: -.35, y0: .40, y1: .70, l: .30, n: 3 }, { x: -1.00, y0: .42, y1: .60, l: .34, n: 4 }, { x: -1.40, y0: .38, y1: .51, l: .31, n: 4 }];
   const S_BULLE = [{ x: 1.47, y0: .655, y1: .69, l: .08, n: 2 }, { x: 1.39, y0: .65, y1: .79, l: .18, n: 2.2 },
@@ -446,6 +446,17 @@
       t.slice(0, 3).every(p => { const s = profil(p[0]); return p[1] >= (s.y0 + s.y1) / 2 - 1e-10; }));
   }
   forme('bulle', sauteVent(S_BULLE));
+  {
+    // Fin cadre carbone profilé soulignant la courbe du saute-vent (visible en cockpit et extérieur).
+    const arc = [], b = S_BULLE[S_BULLE.length - 1], ym = (b.y0 + b.y1) / 2, ry = (b.y1 - b.y0) / 2;
+    for (let i = 0; i <= 20; i++) {
+      const a = Math.PI * i / 20, ca = Math.cos(a), sa = Math.sin(a);
+      const y = ym + ry * Math.sign(sa) * Math.abs(sa) ** (2 / b.n);
+      const z = b.l * Math.sign(ca) * Math.abs(ca) ** (2 / b.n);
+      if (y >= .66) arc.push([b.x - .002, y + .001, z]);
+    }
+    forme('bulle-cadre', C.tube(arc, .0055, { cotes: 8, pas: 2 }));
+  }
   // Une seule verrière : retirer le pilote ou changer de caméra ne change jamais sa peau.
   Object.defineProperty(FORMES, 'bulle-pilote', { value: FORMES.bulle });
   {
@@ -453,15 +464,15 @@
     // le nez resserré et le ponton. La seconde couleur reste celle de la livrée originale.
     const f = C.profil(S_FLECHE), p = C.profil(S_PONTONS), nez = [], ponton = [];
     for (let x = 2.04; x > 1.00; x -= .12) { const s = f(x); nez.push([x, (s.y0 + s.y1) / 2, s.l + .002]); }
-    for (const x of [.90, .50, -.20, -.80]) ponton.push([x, .208, p(x).l + .002]);
+    for (const x of [.90, .50, -.15, -.52, -.85]) ponton.push([x, .208, p(x).l + .002]);
     forme('filet', deuxCotes(C.tube(nez, .008, { cotes: 6, pas: 2 }).concat(C.tube(ponton, .008, { cotes: 6, pas: 2 }))));
   }
-  // rétroviseurs : boîtier profilé, glace vers l'arrière (x = 0,53), sur une patte fine fixée au flanc du carénage
+  // rétroviseurs : boîtier profilé, glace vers l'arrière, sur une patte fine fixée au flanc du carénage
   forme('retros', deuxCotes(C.carene([{ x: .61, y0: .560, y1: .575, l: .02, n: 2, z: .47 }, { x: .57, y0: .540, y1: .592, l: .072, n: 3, z: .47 }, { x: .53, y0: .538, y1: .594, l: .078, n: 4, z: .47 }], { cotes: 16, pas: 3 })
     .concat(C.tube([[.565, .53, .27], [.565, .55, .40]], .009, { cotes: 6 }))));
-  // Montage bas et latéral de la 312 T5 : boîtiers au bord du carénage, sur des pattes courtes.
-  // Les deux vues et les images réfléchies partagent ces ancrages métriques, sans remonter les glaces pour le HUD.
-  const RETRO = { x: .83, y: .67, z: .375, l: .12, h: .05, angle: .384, inclinaison: .230 };
+  // Rétroviseurs avancés et surélevés sur le carénage avant (décision David 21/11) :
+  // entièrement visibles et lisibles dans le champ du cockpit dès 60–70°, alignés optiquement sur OEIL.
+  const RETRO = { x: 1.13, y: .700, z: .390, l: .152, h: .062, angle: .295, inclinaison: .1120 };
   // Repère d'une glace (k = −1 à gauche, 1 à droite) : normale vers le pilote et le haut, droite, haut.
   // La glace et son boîtier s'inclinent ensemble ; un plan vertical renverrait les yeux sur le sol.
   function cadreGlace(k) {
@@ -507,8 +518,8 @@
   // Ces proportions visuelles restent adaptées au train roulant p15, pas des cotes constructeur.
   const ARRIERE_126CK = Object.freeze({ arceauX: .32, arceauY: 1.026, plateauAvant: .35,
     plateauArriere: -.30, plateauY: .84, capotArriere: -.80, sortieHauteX: -1.42,
-    sortieHauteY: .58, sortieHauteZ: .215, sortieHauteRayon: .065,
-    sortieBasseX: -1.82, sortieBasseY: .16, sortieBasseZ: .36, sortieBasseRayon: .035 });
+    sortieHauteY: .575, sortieHauteZ: .215, sortieHauteRayon: .052,
+    sortieBasseX: -1.82, sortieBasseY: .16, sortieBasseZ: .36, sortieBasseRayon: .033 });
   {
     const A = ARRIERE_126CK;
     const face = (dest, a, b, c, n) => {
@@ -671,28 +682,53 @@
       for (let i = 0; i < 16; i++) quad(levres, cercle(i, rayon), cercle(i + 1, rayon), cercle(i + 1, interieur), cercle(i, interieur), axe);
     }
     forme('echappements-interieurs', deuxCotes(dedans)); forme('echappements-levres', deuxCotes(C.lisser(levres)));
-    // Aileron à deux profils courbes, vrais bords arrondis et mât central porté par le carter.
-    const mat = plaque([[-1.725, .29], [-1.585, .33], [-1.805, .89], [-1.955, .89], [-1.875, .34]], -.017, .017);
+    // Aileron arrière bi-plan + beam-wing + dérives en flèche + mât central affiné.
+    const mat = plaque([[-1.72, .29], [-1.61, .33], [-1.81, .89], [-1.93, .89], [-1.85, .34]], -.012, .012);
     forme('mat-aileron', mat);
     const profilAile = (x, y, corde, pente, epaisseur) => {
       const p = []; for (let j = 0; j <= 12; j++) { const t = j / 12; p.push([x - corde * t, y + pente * t + epaisseur * Math.sin(Math.PI * t) ** .65]); }
       for (let j = 11; j >= 1; j--) { const t = j / 12; p.push([x - corde * t, y + pente * t - epaisseur * .45 * Math.sin(Math.PI * t) ** .65]); }
       return p;
     };
-    const aileAvant = plaque(profilAile(2.30, .12, .38, .030, .012), -.81, .81);
-    const derivesAvant = deuxCotes(plaque([[1.92, .07], [2.30, .07], [2.30, .20], [2.26, .22], [1.96, .22], [1.92, .19]], .805, .818));
+    // Aileron avant bi-plan (plan principal profilé + flap supérieur cambré) + 2 mâts profilés sous le nez.
+    const aileAvant = plaque(profilAile(2.30, .112, .25, .024, .013), -.81, .81)
+      .concat(plaque(profilAile(2.04, .144, .16, .062, .010), -.80, .80))
+      .concat(deuxCotes(plaque([[2.14, .125], [1.96, .148], [1.98, .225], [2.11, .215]], .072, .086)));
+    const derivesAvant = deuxCotes(plaque([[1.90, .068], [2.30, .068], [2.30, .155], [2.21, .225], [1.93, .238], [1.90, .195]], .805, .820));
     forme('aileron-avant', aileAvant); forme('derives-avant', derivesAvant);
     forme('aileron-avant-simple', aileAvant.concat(derivesAvant));
-    const ailes = plaque(profilAile(-1.725, .865, .32, .05, .025), -.635, .635)
-      .concat(plaque(profilAile(-2.050, .922, .16, .055, .017), -.635, .635));
+    // Aileron arrière bi-plan + petit beam-wing inférieur entre les roues arrière.
+    const ailes = plaque(profilAile(-1.725, .855, .31, .052, .024), -.635, .635)
+      .concat(plaque(profilAile(-2.040, .922, .17, .072, .016), -.635, .635))
+      .concat(plaque(profilAile(-1.74, .445, .18, .048, .013), -.44, .44));
     forme('aileron-arriere', ailes);
-    const derives = deuxCotes(plaque([[-1.710, .785], [-1.690, .82], [-1.690, .935], [-1.725, .967],
-      [-2.175, 1.005], [-2.230, .97], [-2.230, .80], [-2.195, .77]], .635, .648));
+    const derives = deuxCotes(plaque([[-1.705, .745], [-1.685, .81], [-1.690, .942], [-1.730, .972],
+      [-2.175, 1.012], [-2.230, .978], [-2.230, .77], [-2.160, .725], [-1.92, .745]], .635, .650));
     forme('derives-arriere', derives);
     const levresAiles = [];
-    for (const k of [-1, 1]) levresAiles.push(...C.tube([[-1.705, .81, k * .65], [-1.700, .93, k * .65],
-      [-1.735, .953, k * .65], [-2.175, .991, k * .65], [-2.217, .963, k * .65], [-2.217, .81, k * .65]], .004, { cotes: 6, pas: 2 }));
+    for (const k of [-1, 1]) levresAiles.push(...C.tube([[-1.705, .80, k * .65], [-1.700, .935, k * .65],
+      [-1.735, .962, k * .65], [-2.175, 1.000, k * .65], [-2.217, .970, k * .65], [-2.217, .78, k * .65]], .0045, { cotes: 6, pas: 2 }));
     forme('ailerons-levres', levresAiles);
+    // Fond plat carbone + jupes latérales sous les pontons et diffuseur arrière à 4 dérives verticales.
+    const fondPlat = plaque([[-1.04, .092], [.98, .092], [.98, .106], [-1.04, .106]], -.735, .735)
+      .concat(deuxCotes(plaque([[-1.02, .082], [.96, .082], [.96, .112], [-1.02, .112]], .725, .740)));
+    forme('fond-plat', fondPlat);
+    const diffuseur = plaque([[-1.82, .195], [-1.14, .102], [-1.14, .122], [-1.82, .218]], -.46, .46);
+    for (const z of [-.44, -.22, -.07, .07, .22, .44]) {
+      diffuseur.push(...plaque([[-1.82, .102], [-1.20, .102], [-1.20, .130], [-1.82, .215]], z - .007, z + .007));
+    }
+    forme('diffuseur', diffuseur);
+    // Feu de pluie FIA arrière central : boîtier carbone et lentille LED rouge.
+    forme('feu-pluie-boitier', plaque([[-1.815, .258], [-1.765, .258], [-1.765, .322], [-1.815, .322]], -.030, .030));
+    forme('feu-pluie-led', plaque([[-1.822, .266], [-1.812, .266], [-1.812, .314], [-1.822, .314]], -.022, .022));
+    // Étriers de freins sport (fixes sur chaque porte-moyeu, visibles derrière les rayons de jante).
+    const etriers = [];
+    for (const w of ROUES) {
+      const k = Math.sign(w.z), zi = w.z - k * (w.l / 2 - .072);
+      const bx = w.avant ? w.x - .11 : w.x + .12;
+      etriers.push(...plaque([[bx - .042, w.r - .055], [bx + .042, w.r - .055], [bx + .048, w.r + .055], [bx - .048, w.r + .055]], zi - .022, zi + .022));
+    }
+    forme('etriers-freins', etriers);
     // Un lot métallique lointain conserve plateau, arceau/renforts, mécanique et aile.
     // Il n'ajoute aucune instance selon le nombre de petits boulons ou de spires.
     forme('arriere-metal-simple', plateau.concat(arceau, renforts, bloc, boite, carterTri, sorties, mat, ailes, derives));
@@ -983,18 +1019,21 @@
     L('goutte-dedans', MAT, c1.map(v => v * .22));
     L('jonc', MAT, NOIR);
     L('bulle', METAL_MAT, [.30, .50, .86], { fx: true, alpha: .3 });
+    L('bulle-cadre', MAT, CARBONE);
+    Moy(L('fond-plat', MAT, CARBONE));
     Moy(L('moteur', PEINTURE, c1, AR()));
     Moy(L('moteur-dedans', MAT, [.08, .075, .07], AR()));
     L('capot-bord', PEINTURE, c1, AR());
     Moy(L('arceau', METAL_MAT, ARGENT, AR()));
     Moy(L('arceau-renforts', METAL_MAT, ARGENT, AR()));
-    Moy(L('plateau-arriere', METAL_MAT, ARGENT, AR()));
-    L('plateau-details', METAL_MAT, [.55, .56, .57], AR());
+    Moy(L('plateau-arriere', METAL_MAT, [.58, .60, .63], AR()));
+    L('plateau-details', METAL_MAT, [.48, .50, .52], AR());
     L('basculeurs', MAT, NOIR);
     L('triangles', METAL_MAT, SOMBRE);
-    // Aile avant profilée et dérives métalliques, sans plaques rectangulaires flottantes.
-    Moy(L('aileron-avant', METAL_MAT, ARGENT));
-    Moy(L('derives-avant', METAL_MAT, ARGENT));
+    // Aile avant bi-plan profilée + mâts carbone et dérives sculptées.
+    Moy(L('aileron-avant', METAL_MAT, [.84, .85, .87]));
+    Moy(L('derives-avant', MAT, CARBONE));
+    L('etriers-freins', LAQUE, [.76, .09, .07]);
     // Cuve, coque, jonc et saute-vent sont identiques depuis le siège et depuis l'extérieur.
     Moy(L('cuve', METAL_MAT, [.27, .28, .29]));
     Moy(L('assise-pilote', TISSU, [.23, .035, .027]));
@@ -1056,14 +1095,17 @@
     Moy(L('carter-arriere', METAL_MAT, [.43, .44, .44], AR()));
     L('nervures-boite', METAL_MAT, [.53, .54, .53], AR());
     L('platines-arriere', METAL_MAT, [.57, .58, .57], AR());
-    Moy(L('echappements-hauts', METAL_MAT, [.67, .66, .62], AR()));
-    Moy(L('echappements-bas', METAL_MAT, [.48, .47, .43], AR()));
+    Moy(L('echappements-hauts', METAL_MAT, [.50, .44, .37], AR()));
+    Moy(L('echappements-bas', METAL_MAT, [.42, .37, .32], AR()));
     Moy(L('echappements-interieurs', MAT, [.018, .019, .021], AR()));
-    Moy(L('echappements-levres', METAL_MAT, [.57, .55, .51], AR()));
-    Moy(L('mat-aileron', METAL_MAT, ARGENT, AR()));
-    Moy(L('aileron-arriere', METAL_MAT, ARGENT, AR()));
-    Moy(L('derives-arriere', METAL_MAT, ARGENT, AR()));
-    L('ailerons-levres', METAL_MAT, [.58, .59, .60], AR());
+    Moy(L('echappements-levres', METAL_MAT, [.58, .51, .42], AR()));
+    Moy(L('diffuseur', MAT, CARBONE, AR()));
+    L('feu-pluie-boitier', MAT, NOIR, AR());
+    L('feu-pluie-led', LAQUE, [.96, .08, .05], AR({ emissive: 1.8 }));
+    Moy(L('mat-aileron', MAT, CARBONE, AR()));
+    Moy(L('aileron-arriere', METAL_MAT, [.84, .85, .87], AR()));
+    Moy(L('derives-arriere', MAT, CARBONE, AR()));
+    L('ailerons-levres', METAL_MAT, [.64, .65, .67], AR());
     // Chaque pneu porte sa vraie sculpture. La bande neuve d'un slick reste lisse ; pas de barrettes de craie
     // blanches sur ses flancs. Une petite valve arrondie reste un repère de rotation sur le côté extérieur.
     // L'orientation de montage varie d'une roue à l'autre, déterministe pour la livrée et sans hasard par image.
@@ -1083,9 +1125,9 @@
         { pneu: typePneus, usureRoue: j + 1, detailRoueMax: 1 }));
       if (typePneus !== 'slicks') Moy(pieceRoue(surfaces[4], MAT, PNEU,
         { pneu: typePneus, usureRoue: 5, profondeur: typePneus === 'neige' ? .009 : typePneus === 'pluie' ? .007 : .004, detailRoueMax: 1 }));
-      Moy(pieceRoue(jante.fut, METAL_MAT, SOMBRE));
-      Moy(pieceRoue(jante.rayons, METAL_MAT, JANTE));
-      Moy(pieceRoue(jante.moyeu, METAL_MAT, FOND_JANTE));
+      Moy(pieceRoue(jante.fut, METAL_MAT, [.24, .25, .27]));
+      Moy(pieceRoue(jante.rayons, METAL_MAT, [.66, .56, .35]));
+      Moy(pieceRoue(jante.moyeu, METAL_MAT, [.66, .16, .11]));
       pieceRoue(DISQUES_ROUE, METAL_MAT, [.40, .40, .42], { decale: [0, -k * (w.l / 2 - .055), 0], detailRoueMax: 1 });
       pieceRoue(jante.bague, MAT, pneus.cercle, { pneus: typePneus, detailRoueMax: 1 });
       const valve = FORMES['valve-roue'];
@@ -1735,6 +1777,10 @@
     V.push(H.branches = mettre(FORMES.branches.nom, null, FORMES.branches.taille, METAL_MAT, [.025, .025, .028], H.rJante));
     const coussin = FORMES['moyeu-capitonne'];
     H.moyeu.push(mettre(coussin.nom, plus(CV, [WN, coussin.centre[1]]), coussin.taille, TISSU, NOIR, H.rJante));
+    // Écusson central course or/jaune + 2 boutons poussoirs (rouge boost / jaune radio) tournant avec le volant.
+    H.moyeu.push(mettre('box', plus(CV, [WN, .026]), [.022, .003, .017], LAQUE, [.94, .74, .09], H.rJante));
+    H.moyeu.push(mettre('cylinder', plus(CV, [WR, -.072], [WN, .012]), [.010, .008, .010], LAQUE, [.86, .11, .09], H.rJante));
+    H.moyeu.push(mettre('cylinder', plus(CV, [WR, .072], [WN, .012]), [.010, .008, .010], LAQUE, [.94, .74, .09], H.rJante));
     V.push(...H.moyeu);
     // L'arbre suit l'axe du moyeu jusqu'à la vraie face de la planche ; le palier et les attaches sont fixes
     // et gardent leurs dimensions métriques dans les deux vues.
@@ -1750,8 +1796,8 @@
       H.supportVolant.push(mettre('cylinder', centre, [.026, Math.hypot(...axe) + .008, .026], MAT, [.045, .045, .05], selonAxe(axe)));
     }
     const TUBE = .0225 * E_VOLANT;
-    // Joint noir discret au sommet : aucune barre claire qui ressemblerait à une branche verticale.
-    V.push(H.ruban = mettre('cylinder', null, [TUBE + .001, .004, TUBE + .001], TISSU, NOIR, libre()));
+    // Repère central jaune racing à 12h pour sentir l'angle du volant d'un coup d'œil.
+    V.push(H.ruban = mettre('cylinder', null, [TUBE + .0016, .012, TUBE + .0016], TISSU, [.95, .76, .08], libre()));
     V.push(H.tige = mettre('cylinder', null, [.011, 0, .011], METAL_MAT, ARGENT, libre()));
     V.push(H.pommeau = mettre('sphere', null, [.040, .040, .040], METAL_MAT, [.80, .81, .83], null));
     // gant de la couleur de la voiture (sombre si elle est très claire), paume de cuir, garde, élastique, sangle
@@ -1774,7 +1820,7 @@
       const pouce = emplacement('sphere', trois(), TISSU, gant, libre());
       pouce.pilote = true; pouce.raccordPouce = true; main.pieces.push(pouce); V.push(pouce);
       for (let n = 1; n <= 6; n++) {
-        const d = (.050 + .022 * n / 6) * ECHELLE, tube = mettre('cylinder', null, [d, 0, d], TISSU, combi, libre()), boule = mettre('sphere', null, [d, d, d], TISSU, combi, null);
+        const d = (.045 + .028 * Math.pow(n / 6, .85)) * ECHELLE, tube = mettre('cylinder', null, [d, 0, d], TISSU, combi, libre()), boule = mettre('sphere', null, [d, d, d], TISSU, combi, null);
         tube.pilote = boule.pilote = true;
         main.tubes.push(tube); main.boules.push(boule); V.push(tube, boule);
       }
@@ -1785,14 +1831,13 @@
     for (const k of [-1, 1]) {
       const g = cadreGlace(k), { c, n: nr, w, u, m } = g;
       const vers = (dx, dy, dz) => plus(c, [nr, -dx], [u, dy], [w, dz]);
-      // Petite patte presque horizontale fixée au flanc, comme sur les vues 312 T5 de Mont-Tremblant.
-      // L'enfoncement reçoit le pied dans les peaux des trois LOD ; aucune antenne ne monte à hauteur des yeux.
-      const attache = vers(.04, -GH * .30, -k * .055), pied = C.pointSection(C.profil(S_GOUTTE)(c[0] - .04), .43);
-      pied[2] = k * (pied[2] - .004);
+      // Support aérodynamique incliné reliant le dessous du boîtier surélevé au flanc avant de la cellule.
+      const attache = vers(.035, -GH * .45, -k * .042), pied = C.pointSection(C.profil(S_GOUTTE)(c[0] - .03), .46);
+      pied[2] = k * (pied[2] - .006);
       const axe = pied.map((v, i) => v - attache[i]);
       const G = { k, c, n: nr, w, u, suiveurs: [],
         boitier: dans(fb.nom, plus(c, [m[0], fb.centre[0]], [m[1], fb.centre[1]], [m[2], fb.centre[2]]), fb.taille, PEINTURE, c1, m),
-        patte: dans('cylinder', attache.map((v, i) => (v + pied[i]) / 2), [.018, Math.hypot(axe[0], axe[1], axe[2]), .018], PEINTURE, c1, selonAxe(axe)),
+        patte: dans('cylinder', attache.map((v, i) => (v + pied[i]) / 2), [.016, Math.hypot(axe[0], axe[1], axe[2]), .016], MAT, CARBONE, selonAxe(axe)),
         vive: dans('box', vers(-.002, 0, 0), [.003, GH, GL], LAQUE, [.05, .055, .06], m),
         ciel: dans('box', vers(-.002, GH * .25, 0), [.003, GH * .5, GL], LAQUE, trois(), m),
         brume: dans('box', vers(-.002, -GH * .04, 0), [.003, GH * .1, GL], LAQUE, trois(), m),
@@ -2159,6 +2204,11 @@
     J[6] = U[1] * WN[2] - U[2] * WN[1]; J[7] = U[2] * WN[0] - U[0] * WN[2]; J[8] = U[0] * WN[1] - U[1] * WN[0];
     poseeDans(H.jante.o, CV, J, FORMES.jante.centre);
     poseeDans(H.branches.o, BRANCHES, J, FORMES.branches.centre);
+    if (H.moyeu.length >= 4) {
+      const bg = H.moyeu[2].o, bd = H.moyeu[3].o;
+      for (let k = 0; k < 3; k++) { bg[k] = CV[k] - RD[k] * .072 + WN[k] * .012; bd[k] = CV[k] + RD[k] * .072 + WN[k] * .012; }
+      versVoiture(bg); versVoiture(bd);
+    }
     { const o = H.ruban.o; o[0] = CV[0] + U[0] * RV; o[1] = CV[1] + U[1] * RV; o[2] = CV[2] + U[2] * RV; versVoiture(o); }
     AXE[0] = RD[0]; AXE[1] = RD[1]; AXE[2] = RD[2]; selonAxeDans(H.ruban.rep.m, AXE);
     // Levier de vitesses à droite : tige et pommeau d'aluminium, qui passe d'une position de la grille à l'autre

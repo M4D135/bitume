@@ -25,6 +25,18 @@
     const poids = (1 - doux(25, 88, lit)) * (1 - doux(190, 420, Math.abs(across))) * protection;
     const fond = f.y - 55 - across * .025;
     h += (Math.min(h, fond) - h) * poids;
+    // Versant continu dans Les Lacets (x 1150..1610, z -2370..-2130) : élimine la falaise
+    // verticale artificielle en escalier entre les branches empilées séparées de 68 m.
+    if (x > 1130 && x < 1640 && z > -2390 && z < -2115 && (q.i < 0 || q.d > 13)) {
+      const wx = doux(1130, 1210, x) * (1 - doux(1555, 1640, x));
+      const wz = doux(-2390, -2345, z) * (1 - doux(-2155, -2115, z));
+      const wl = wx * wz * (q.i < 0 ? 1 : doux(13, 28, q.d));
+      if (wl > 0) {
+        const hVersant = 179.5 + Math.max(0, -(z + 2142.5)) * .275 + (x - 1350) * .012
+          + 1.9 * Math.sin(x / 31) * Math.cos(z / 27);
+        h += (hVersant - h) * wl * .88;
+      }
+    }
     if (q.i >= 0) for (const v of p.corniches) {
       if (s < v.debut || s > v.fin) continue;
       const a = c.cap[q.i], lateral = -(x - c.x[q.i]) * Math.sin(a) + (z - c.z[q.i]) * Math.cos(a);
@@ -76,11 +88,35 @@
         metrique(pont.debut + (i + 1) / N * portee, cote * 7.25, -.32), .54, .34, 'rive-pont-cimes', [.63, .60, .53]);
     }
     ajouter(objets, loin, p.centre.x, p.centre.z);
-    // Refuge visible au col, sur le sol effectivement dessiné et à l'écart de toute chaussée.
+    // Cascade de la Gorge : chute d'eau dévalant la paroi en aval du Pont de la Gorge + bassin d'écume.
+    {
+      const cf = p.centre, co = Math.cos(cf.cap), si = Math.sin(cf.cap);
+      const cascX = cf.x - si * 42 + co * 22, cascZ = cf.z + co * 42 + si * 22;
+      const yHaut = cf.y - 4, yBas = cf.y - 54, hCasc = yHaut - yBas;
+      const casc = [
+        { shape: 'cylinder', p: [cascX, (yHaut + yBas) / 2, cascZ], s: [5.2, hCasc, 2.2], r: [.14, -cf.cap, 0], mat: 12, color: [.78, .90, .96], emissive: .22, lieuCimes: 'Cascade de la Gorge' },
+        { shape: 'cylinder', p: [cascX - si * 3, yBas + .6, cascZ + co * 3], s: [22, .6, 16], r: [0, -cf.cap, 0], mat: 12, color: [.10, .34, .44], lieuCimes: 'Cascade de la Gorge' },
+        { shape: 'cylinder', p: [cascX - si * 1.5, yBas + 1.0, cascZ + co * 1.5], s: [8.5, 1.1, 6.5], r: [0, -cf.cap, 0], mat: 3, color: [.90, .95, .98], emissive: .15, lieuCimes: 'Cascade de la Gorge' }
+      ];
+      ajouter(casc, [casc[0], casc[1]], cascX, cascZ);
+    }
+    // Refuge visible au col + Lac de l'Aiglière à proximité, sur le sol dessiné et à l'écart de toute chaussée.
     let refuge = null;
     if (B.batiments) {
       const f = B.circuit.echantillon(c, p.refugeS), d = -43;
       const x = f.x - Math.sin(f.cap) * d, z = f.z + Math.cos(f.cap) * d, sol = terrain.sol(x, z);
+      // Lac de l'Aiglière : miroir d'eau alpin bleu profond dans la combe en retrait du refuge, bordé de galets.
+      const lacX = f.x - Math.sin(f.cap) * (-118), lacZ = f.z + Math.cos(f.cap) * (-118);
+      const lacY = terrain.sol(lacX, lacZ) + .25;
+      const lacObj = [
+        { shape: 'cylinder', p: [lacX, lacY, lacZ], s: [74, .5, 52], r: [0, -f.cap + .3, 0], mat: 12, color: [.07, .24, .34], lieuCimes: "Lac de l'Aiglière" }
+      ];
+      const rocheForme = B.lieux ? 'bitume-lieu-galet-a' : 'octa';
+      for (let k = 0; k < 10; k++) {
+        const a = k * Math.PI / 5, rx = lacX + Math.cos(a) * 37, rz = lacZ + Math.sin(a) * 26;
+        lacObj.push({ shape: rocheForme, p: [rx, lacY + .7, rz], s: [4.2 + (k % 3) * 1.4, 2.1 + (k % 2), 3.6 + (k % 3)], r: [0, a, 0], mat: 9, color: [.46, .45, .42], lieuCimes: "Lac de l'Aiglière" });
+      }
+      ajouter(lacObj, [lacObj[0]], lacX, lacZ);
       const site = { x, z, sol, bas: sol - 1.4, a: f.cap, l: 15.5, w: 9.5, h: 5.2, theme: 'montagne', graine: c.graine,
         enduit: [.62, .59, .50] };
       const maison = B.batiments.maison(site, { detail: qualite !== 'low', neige: !!outils.saison?.neige });

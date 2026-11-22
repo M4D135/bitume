@@ -1,5 +1,5 @@
 <title>BITUME</title>
-<meta name="description" content="Course de monoplaces rétro, entièrement procédurale : neuf circuits générés, onze rivaux, dérive et turbo. Moteur FERRO, sans aucun fichier d’image ni de son.">
+<meta name="description" content="Course de monoplaces rétro, entièrement procédurale : seize circuits générés dont Col de Larche → Vinadio, onze rivaux, dérive et turbo. Moteur FERRO, sans aucun fichier d’image ni de son.">
 <style>
 /*STYLE*/
 </style>
@@ -104,7 +104,7 @@
     <p class="pied-titre aide-clavier">Tab : parcourir · Entrée : choisir · Échap : retour</p>
     <p class="pied-titre aide-controleur">Croix ou stick : parcourir · A : choisir · B : retour</p>
     <p class="pied-titre aide-tactile">Touchez un mode pour commencer</p>
-    <p id="aide-console" class="pied-titre" hidden>Xbox : maintenez Menu pour passer aux contrôles de jeu. RT : gaz · LT : frein · A : dérive</p>
+    <p id="aide-console" class="pied-titre" hidden>Xbox : maintenez Menu pour passer aux contrôles de jeu. RT : gaz · LT : frein · X : dérive · A : troll</p>
     <dl id="compteur-visites" class="compteur-visites" aria-label="Fréquentation du jeu" aria-live="polite">
       <div><dt>Visites</dt><dd id="compteur-total">—</dd></div>
       <div><dt>Visiteurs uniques</dt><dd id="compteur-uniques">—</dd></div>
@@ -534,29 +534,21 @@
         <label><input type="radio" name="annoncesVirages" value="non" checked><span>Non</span></label>
         <label><input type="radio" name="annoncesVirages" value="ecran"><span>Écran</span></label>
         <label><input type="radio" name="annoncesVirages" value="voix"><span>Écran et voix</span></label>
-        <p class="aide-reglage">Désactivées par défaut. Direction, difficulté et distance avant le virage. La voix utilise une voix française installée sur l’appareil ; à deux, elle guide le joueur 1. Sans voix disponible, l’annonce reste à l’écran.</p>
+        <p class="aide-reglage">Direction, difficulté et distance (voix française du système si disponible).</p>
       </fieldset>
-      <fieldset>
+      <fieldset class="reglage-carte">
         <legend>Carte du circuit</legend>
-        <label><input type="checkbox" id="v-carte" checked><span>Afficher la carte</span></label>
+        <div class="ligne-reglage"><label><input type="checkbox" id="v-carte" checked><span>Afficher</span></label><label><input type="radio" name="cartePosition" value="bas-gauche" checked><span>Bas gauche</span></label><label><input type="radio" name="cartePosition" value="bas-droite"><span>Bas droite</span></label></div>
+        <div class="ligne-reglage"><label><input type="radio" name="cartePosition" value="haut-gauche"><span>Haut gauche</span></label><label><input type="radio" name="cartePosition" value="haut-droite"><span>Haut droite</span></label></div>
+        <div class="ligne-reglage"><label><input type="radio" name="carteTaille" value="petite"><span>Petite</span></label><label><input type="radio" name="carteTaille" value="normale" checked><span>Normale</span></label><label><input type="radio" name="carteTaille" value="grande"><span>Grande</span></label></div>
       </fieldset>
-      <fieldset>
-        <legend>Position de la carte</legend>
-        <label><input type="radio" name="cartePosition" value="gauche"><span>À gauche</span></label>
-        <label><input type="radio" name="cartePosition" value="droite" checked><span>À droite</span></label>
-      </fieldset>
-      <fieldset>
-        <legend>Taille de la carte</legend>
-        <label><input type="radio" name="carteTaille" value="petite"><span>Petite</span></label>
-        <label><input type="radio" name="carteTaille" value="normale" checked><span>Normale</span></label>
-        <label><input type="radio" name="carteTaille" value="grande"><span>Grande</span></label>
-      </fieldset>
-      <div class="curseurs">
-        <label>Champ vertical du cockpit <output id="v-champ-valeur">70°</output> <input type="range" id="v-champ" min="60" max="105" step="1"></label>
+      <fieldset class="curseurs">
+        <legend>Caméra et effets</legend>
+        <label>Champ vertical cockpit <output id="v-champ-valeur">70°</output> <input type="range" id="v-champ" min="60" max="105" step="1"></label>
         <label>Secousses <output id="v-secousses-valeur">100 %</output> <input type="range" id="v-secousses" min="0" max="1" step="0.05"></label>
-        <label>Gouttes sur l’écran <output id="v-gouttes-valeur">1,0 ×</output> <input type="range" id="v-gouttes" min="0" max="2" step="0.1" value="1" aria-describedby="v-gouttes-aide"></label>
-        <p class="aide-reglage" id="v-gouttes-aide">Pluie et neige sur la vitre. La vitesse les évacue ; à zéro, la vitre reste dégagée.</p>
-      </div>
+        <label>Gouttes vitre <output id="v-gouttes-valeur">1,0 ×</output> <input type="range" id="v-gouttes" min="0" max="2" step="0.1" value="1" aria-describedby="v-gouttes-aide"></label>
+        <p class="aide-reglage" id="v-gouttes-aide">Pluie et neige sur la vitre (évacuées par la vitesse ; 0 = désactivé).</p>
+      </fieldset>
     </div>
       </div>
       <div id="r-audio" class="panneau-menu" role="tabpanel" data-menu-panel aria-labelledby="onglet-r-audio" hidden>

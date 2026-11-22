@@ -4,17 +4,17 @@ import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 const require = createRequire(import.meta.url);
-require('../src/circuit.js'); require('../src/route-des-cimes.js'); require('../src/menu-arcade.js');
+require('../src/circuit.js'); require('../src/route-des-cimes.js'); require('../src/larche-vinadio-data.js'); require('../src/larche-vinadio.js'); require('../src/destinations.js'); require('../src/menu-arcade.js');
 const B = globalThis.BITUME, A = B.menuArcade;
 const jeu = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
-const catalogue = vm.runInNewContext('(' + jeu.match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1] + ')');
+const catalogue = vm.runInNewContext('(' + jeu.match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1] + ')', { B });
 let controles = 0;
 function verifier(nom, f) { f(); controles++; console.log('ok ' + nom); }
 const proche = (a, b, precision = 1e-9) => assert.ok(Math.abs(a - b) < precision, `${a} ≠ ${b}`);
 const petit = () => ({ n: 4, x: [0, 80, 80, 0], y: [5, 15, 25, 10], z: [0, 0, 60, 60], longueur: 280 });
 
 verifier('le catalogue entier conserve ses vrais XYZ, son départ et une seule échelle métrique', () => {
-  assert.equal(catalogue.length, 9);
+  assert.equal(catalogue.length, 16);
   for (const k of catalogue) {
     const c = B.circuit.creer(k.graine, k), avant = [Array.from(c.x), Array.from(c.y), Array.from(c.z)];
     const t = A.preparerTrace(c);

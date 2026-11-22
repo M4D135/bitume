@@ -7,9 +7,9 @@
     gaz: [{ type: 'bouton', index: 7 }], frein: [{ type: 'bouton', index: 6 }],
     gauche: [{ type: 'axe', index: 0, sens: -1, origine: 0 }],
     droite: [{ type: 'axe', index: 0, sens: 1, origine: 0 }],
-    derive: [{ type: 'bouton', index: 0 }, { type: 'bouton', index: 2 }],
+    derive: [{ type: 'bouton', index: 2 }],
     haut: [{ type: 'bouton', index: 5 }], bas: [{ type: 'bouton', index: 4 }],
-    vue: [{ type: 'bouton', index: 3 }], troll: [{ type: 'bouton', index: 10 }]
+    vue: [{ type: 'bouton', index: 3 }], troll: [{ type: 'bouton', index: 0 }]
   };
   for (const a of ACTIONS) { for (const l of DEFAUT[a]) Object.freeze(l); Object.freeze(DEFAUT[a]); }
   Object.freeze(DEFAUT);

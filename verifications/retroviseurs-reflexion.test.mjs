@@ -72,8 +72,8 @@ test('glace, boîtier et coins partagent le vrai plan incliné vers les yeux', (
     const world = V.glacesCockpit(ev), M = V.attitude(ev.cap, ev.tangage, ev.roulis);
     for (let i = 0; i < 2; i++) {
       const frame = V.cadreGlace(world[i].k), g = world[i], pieces = model.objetsRendu.habitacle.glaces[i];
-      assert(frame.n[1] > .20 && frame.n[1] < .30, 'la normale rejoint le nouveau poste 126 CK ; reflet utile contrôlé ci-dessous');
-      close(frame.c, [.83, .67, g.k * .375], 'centres 126 CK communs aux vues');
+      assert(frame.n[1] > .08 && frame.n[1] < .22, 'la normale rejoint les yeux depuis les rétroviseurs avancés ; reflet utile contrôlé ci-dessous');
+      close(frame.c, [V.RETRO.x, V.RETRO.y, g.k * V.RETRO.z], 'centres des rétroviseurs communs aux vues');
       const up = cross(g.normale, g.droite);
       close(unit(g.normale), g.normale, 'normale unitaire');
       close(unit(up), up, 'orthobase sans cisaillement');

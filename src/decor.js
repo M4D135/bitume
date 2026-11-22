@@ -112,7 +112,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
 
   // ---------------------------------------------------------------- géométrie du circuit
   function cadre(c, i) {
-    i = ((i % c.n) + c.n) % c.n;
+    i = c.ouvert ? Math.max(0, Math.min(c.n - 1, i)) : ((i % c.n) + c.n) % c.n;
     const a = c.cap[i];
     return { i, s: i * c.pas, x: c.x[i], y: c.y[i], z: c.z[i], a, t: [Math.cos(a), 0, Math.sin(a)], r: [-Math.sin(a), 0, Math.cos(a)], devers: c.devers[i], k: c.courbure[i] };
   }
@@ -120,7 +120,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
   function cadreOuvrage(c, i) {
     if (Number.isInteger(i)) return cadre(c, i);
     const e = B.circuit.echantillon(c, i * c.pas), a = e.cap;
-    return { i: ((Math.floor(i) % c.n) + c.n) % c.n, s: i * c.pas, x: e.x, y: e.y, z: e.z, a, t: [Math.cos(a), 0, Math.sin(a)], r: [-Math.sin(a), 0, Math.cos(a)], devers: e.devers, k: e.courbure };
+    const idx = c.ouvert ? Math.max(0, Math.min(c.n - 1, Math.floor(i))) : ((Math.floor(i) % c.n) + c.n) % c.n;
+    return { i: idx, s: i * c.pas, x: e.x, y: e.y, z: e.z, a, t: [Math.cos(a), 0, Math.sin(a)], r: [-Math.sin(a), 0, Math.cos(a)], devers: e.devers, k: e.courbure };
   }
   // Hauteur de la chaussée au décalage d (dévers compris) ; au-delà du bord, la pente du dévers s'arrête.
   function hauteurRoute(f, d, w) {
@@ -266,15 +267,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     };
     const blanc = [.86, .86, .83], rouge = [.74, .09, .07], blancBordure = [.90, .90, .87];
     const rougeVirage = [.82, .025, .02], blancVirage = [.98, .99, .96];
-    for (let debut = 0; debut < n; debut += LIGNES) {
-      const fin = Math.min(n, debut + LIGNES);
-      // bandes : d0, d1 (fonctions de la ligne), type
-      const bandes = [
-        ['jupe', -1], ['herbe', -1], ['bord', -1], ['ligne', -1], ['asphalte', 0], ['ligne', 1], ['bord', 1], ['herbe', 1], ['jupe', 1]
-      ];
+    const bandes = [
+      ['jupe', -1], ['herbe', -1], ['bord', -1], ['ligne', -1], ['asphalte', 0], ['ligne', 1], ['bord', 1], ['herbe', 1], ['jupe', 1]
+    ];
+    const hautY = [0, 1, 0], colJupe = (th.volcanique ? th.terre : th.herbe).map(v => v * .86);
+    const premA = new Int32Array(bandes.length), premB = new Int32Array(bandes.length);
+    const limiteBoucle = c.ouvert ? n - 1 : n;
+    for (let debut = 0; debut < limiteBoucle; debut += LIGNES) {
+      const fin = Math.min(limiteBoucle, debut + LIGNES);
       const nap = nappe((fin - debut + 1) * bandes.length * 2), herbeTriangles = [], surfacesPhysX = [];
-      const premiers = [];
-      for (let b = 0; b < bandes.length; b++) premiers.push([]);
+      premA.fill(-1);
       for (let i = debut; i <= fin; i++) {
         const f = cadre(c, i), no = [Math.sin(f.devers) * f.r[0], Math.cos(f.devers), Math.sin(f.devers) * f.r[2]];
         const limG = lim.G[f.i], limD = lim.D[f.i];
@@ -284,7 +286,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           : naturel ? melange(th.herbe, th.herbeClaire, .2 + .65 * fbm(f.x / 65, f.z / 65, c.graine + 391, 3))
           : Math.floor(f.i * c.pas / 20) % 2 ? th.herbe : th.herbeClaire;
         for (let b = 0; b < bandes.length; b++) {
-          const [type, cote] = bandes[b];
+          const type = bandes[b][0], cote = bandes[b][1];
           let d0, d1, y0, y1, mat = 8, col = tonte, n0 = no, n1 = no;
           if (type === 'asphalte') { d0 = -w + .3; d1 = w - .3; y0 = hauteurRoute(f, d0, w); y1 = hauteurRoute(f, d1, w); mat = th.matieres ? th.matieres.asphalte : 14; col = asphalte(f.i); }
           else {
@@ -298,8 +300,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
               if (avec) {
                 mat = 14; col = reperes && reperes.vibreurs[f.i] ? (tranche ? rougeVirage : blancVirage) : (tranche ? rouge : blancBordure);
               } else { mat = 8; col = tonte; }
-            } else if (type === 'herbe') { d0 = bord * (w + 1.2); d1 = bord * ext; y0 = yBord - .015; y1 = yBord - .02 * (ext - w - 1.2); col = tonte; n0 = n1 = [0, 1, 0]; }
-            else { d0 = bord * ext; d1 = bord * (ext + 4); y0 = yBord - .02 * (ext - w - 1.2); y1 = y0 - 2.6; col = (th.volcanique ? th.terre : th.herbe).map(v => v * .86); n0 = n1 = [0, 1, 0]; }
+            } else if (type === 'herbe') { d0 = bord * (w + 1.2); d1 = bord * ext; y0 = yBord - .015; y1 = yBord - .02 * (ext - w - 1.2); col = tonte; n0 = n1 = hautY; }
+            else { d0 = bord * ext; d1 = bord * (ext + 4); y0 = yBord - .02 * (ext - w - 1.2); y1 = y0 - 2.6; col = colJupe; n0 = n1 = hautY; }
             if (cote < 0) { const t = d0; d0 = d1; d1 = t; const u = y0; y0 = y1; y1 = u; }
           }
           const p0 = pointPlan(f, d0, y0), p1 = pointPlan(f, d1, y1);
@@ -309,15 +311,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
             col1 = couleurPrairie(th, col, ecologie.echantillonner(p1[0], p1[2], habitat));
           }
           const ia = sommet(nap, p0, n0, mat, col0), ib = sommet(nap, p1, n1, mat, col1);
-          const prec = premiers[b];
-          if (prec.length && !(B.cimesDecor && B.cimesDecor.couperAccotement(c, f.s - c.pas / 2, type))) {
-            const [pa, pb] = prec;
+          const pa = premA[b];
+          if (pa >= 0 && !(B.cimesDecor && B.cimesDecor.couperAccotement(c, f.s - c.pas / 2, type))
+            && !(B.larcheDecor && B.larcheDecor.couperAccotement(c, f.s - c.pas / 2, type))) {
+            const pb = premB[b];
             if (type === 'herbe' || type === 'jupe') herbeTriangles.push(nap.i.length, nap.i.length + 3);
             nap.i.push(pa, pb, ib, pa, ib, ia);
             const surface = type === 'asphalte' || type === 'ligne' ? 1 : type === 'bord' && mat === 14 ? 2 : 3;
             surfacesPhysX.push(surface, surface);
           }
-          premiers[b] = [ia, ib];
+          premA[b] = ia; premB[b] = ib;
         }
       }
       const fini = finir(nap);
@@ -329,6 +332,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
 
   // Terrain : grille autour du circuit, raccordée à la chaussée par une pondération continue des hauteurs de l'axe.
   function nappesTerrain(c, th, interroger, g, ecologie = null, organique = false) {
+    if (B.larcheDecor) {
+      const corridor = B.larcheDecor.terrain(c, th, interroger, g, ecologie, organique);
+      if (corridor) return corridor;
+    }
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
     for (let i = 0; i < c.n; i++) { x0 = Math.min(x0, c.x[i]); x1 = Math.max(x1, c.x[i]); z0 = Math.min(z0, c.z[i]); z1 = Math.max(z1, c.z[i]); }
     const marge = th.marge, pasT = 24;
@@ -352,8 +359,41 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       for (let i = 0; i < c.n; i++) merDebut = Math.max(merDebut, (c.x[i] - centreX) * mer[0] + (c.z[i] - centreZ) * mer[1]);
       merDebut += th.pacifique ? 70 : 90;
     }
+    // Champ continu au-delà du rayon local de indexAxe (mode organique ou Route-des-Cimes) :
+    // supprime le mur vertical de 300 m à d = 230 m causé par le saut brutal q.i < 0 → d = 1e4 / yT = 0.
+    const champContinu = organique || c.id === 'route-des-cimes';
+    let loinX = null, loinY = null, loinZ = null, loinN = 0, yFond = 0;
+    if (champContinu) {
+      const pasLoin = Math.max(1, Math.round(18 / c.pas));
+      loinN = Math.ceil(c.n / pasLoin);
+      loinX = new Float32Array(loinN); loinY = new Float32Array(loinN); loinZ = new Float32Array(loinN);
+      let yMinC = Infinity;
+      for (let i = 0, k = 0; i < c.n; i += pasLoin, k++) {
+        loinX[k] = c.x[i]; loinY[k] = c.y[i]; loinZ[k] = c.z[i];
+        if (c.y[i] < yMinC) yMinC = c.y[i];
+      }
+      yFond = Number.isFinite(yMinC) ? yMinC : 0;
+    }
     const hauteur = (x, z) => {
-      const q = interroger(x, z, th.karstique ? 380 : 230), d = q.i < 0 ? 1e4 : q.d, yT = q.i < 0 ? 0 : q.y;
+      const rayonQ = th.karstique ? 380 : 230;
+      const q = interroger(x, z, rayonQ);
+      let d = q.i < 0 ? 1e4 : q.d, yT = q.i < 0 ? 0 : q.y;
+      if (champContinu && (q.i < 0 || d > rayonQ - 65)) {
+        let d2min = Infinity, sY = 0, sW = 0;
+        for (let k = 0; k < loinN; k++) {
+          const dx = loinX[k] - x, dz = loinZ[k] - z, d2 = dx * dx + dz * dz;
+          if (d2 < d2min) d2min = d2;
+          const w = 1 / (d2 + 2500);
+          sY += w * loinY[k]; sW += w;
+        }
+        const dLoin = Math.sqrt(d2min);
+        const yLoin = sW > 0 ? sY / sW : yFond;
+        const tBlend = q.i < 0 ? 1 : lisse(rayonQ - 65, rayonQ - 5, d);
+        d = q.i < 0 ? dLoin : (d + (dLoin - d) * tBlend);
+        yT = q.i < 0 ? yLoin : (yT + (yLoin - yT) * tBlend);
+        // Relâcher doucement l'altitude de référence loin du tracé vers le fond de vallée
+        yT += (yFond - yT) * lisse(260, 1050, d) * .65;
+      }
       let h = yT - .9 * (1 - lisse(26, 34, d));
       const nat = (fbm(x / th.echelle, z / th.echelle, g, 5) - .45) * th.relief * 2;
       // Des paliers doux de 7 m forment les terrasses ; le raccord est nul près de toute chaussée.
@@ -1142,7 +1182,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
 
   const HERBIERS = new WeakMap();
   function construire(c, options = {}) {
-    const th = Object.assign({}, THEMES[c.theme] || THEMES.foret), g = (c.graine * 7919 + 13) >>> 0, r = alea(g);
+    const th = Object.assign({}, THEMES[c.theme] || (B.destinations && B.destinations.THEMES && B.destinations.THEMES[c.theme]) || THEMES.foret), g = (c.graine * 7919 + 13) >>> 0, r = alea(g);
     const qualite = normaliserQualite(options.qualite);
     const organique = options.organique === true && !!B.lieux;
     const ecologie = B.ecologie ? B.ecologie.creer(c.graine, c.theme) : null;
@@ -1199,7 +1239,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
 
     // Glissières à double lisse sur poteaux, posées à la limite de chaque côté.
     const PAS_G = 4, sousTunnel = i => B.circuit.dansTunnel && B.circuit.dansTunnel(c, i * c.pas, 6);
-    for (let i = 0; i < c.n; i += PAS_G) {
+    const finG = c.ouvert ? c.n - PAS_G : c.n;
+    for (let i = 0; i < finG; i += PAS_G) {
       if (sousTunnel(i)) continue;
       for (const cote of [-1, 1]) {
         const f0 = cadre(c, i), f1 = cadre(c, i + PAS_G), L0 = (cote < 0 ? lim.G : lim.D)[f0.i], L1 = (cote < 0 ? lim.G : lim.D)[f1.i];
@@ -1269,18 +1310,20 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         const long = longueurAxe + .05 + ajout0 + ajout1, translation = (ajout1 - ajout0) / (2 * longueurAxe);
         const no = [Math.sin(f0.devers) * f0.r[0], Math.cos(f0.devers), Math.sin(f0.devers) * f0.r[2]], rotSol = angles(...base(axe, no));
         const milieu = (d, h) => { const p = pointPlan(f0, d, (y0 + y1) / 2 + h), q = pointPlan(f1, d, 0); return [(p[0] + q[0]) / 2 + axe[0] * translation, p[1] + axe[1] * translation, (p[2] + q[2]) / 2 + axe[2] * translation]; };
-        // Affiner seulement la sortie : une variation de dévers laisse un rebord latéral
-        // au terme d'une dalle. La géométrie d'entrée et du corps déjà roulée reste identique.
-        if (T.type === 'tunnel' && (iF - suivant) * c.pas < 12) {
+        // Affiner les tunnels explicites aux portails et dès que la courbe, le dévers ou la pente varient :
+        // évite toute marche rigide entre deux dalles de 6 m (bug collision/envolée dans le Tunnel du Rocher).
+        const deversVarie = Math.abs(f1.devers - f0.devers) > .0015 || Math.abs(Math.atan2(Math.sin(f1.a - f0.a), Math.cos(f1.a - f0.a))) > .004 || Math.abs((y1 - y0) / Math.max(1e-6, longueurAxe) - (c.pente?.[f0.i] || 0)) > .002;
+        if (T.type === 'tunnel' && ((iF - suivant) * c.pas < 18 || (i - iD) * c.pas < 18 || deversVarie)) {
           const rehausse = j => { const u = Math.max(0, Math.min(1, Math.min(j - iD, iF - j) * c.pas / 6)); return .002 + .038 * u * u * (3 - 2 * u); };
-          const pasSol = .5 / c.pas;
-          const nombre = Math.ceil((suivant - i) / pasSol);
+          const presPortail = (iF - suivant) * c.pas < 14 || (i - iD) * c.pas < 14;
+          const pasSol = (presPortail ? .5 : 1.0) / c.pas;
+          const nombre = Math.max(1, Math.ceil((suivant - i) / pasSol));
           for (let partie = 0; partie < nombre; partie++) {
             const j0 = i + (suivant - i) * partie / nombre, j1 = i + (suivant - i) * (partie + 1) / nombre;
             const q0 = cadreOuvrage(c, j0), q1 = cadreOuvrage(c, j1), h0 = rehausse(j0), h1 = rehausse(j1);
             const direction = [q1.x - q0.x, q1.y + h1 - q0.y - h0, q1.z - q0.z], longueur = Math.hypot(...direction);
             const horizontale = Math.hypot(direction[0], direction[2]), devers = (q0.devers + q1.devers) / 2;
-            const normale = [-Math.sin(devers) * direction[2] / horizontale, 1, Math.sin(devers) * direction[0] / horizontale];
+            const normale = [-Math.sin(devers) * direction[2] / horizontale, Math.cos(devers), Math.sin(devers) * direction[0] / horizontale];
             const axes = base(direction, normale), rotation = angles(...axes);
             const angle = Math.abs(Math.atan2(Math.sin(q1.a - q0.a), Math.cos(q1.a - q0.a)));
             const taille = longueur + .05 + 2 * M * Math.tan(Math.min(angle / 2, .45));
@@ -1845,6 +1888,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     });
 
     const lieuxCimes = B.cimesDecor && B.cimesDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter });
+    const lieuxLarche = B.larcheDecor && B.larcheDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter });
+    const lieuxDest = B.destinations && B.destinations.poser(c, { terrain, limites: lim, interroger, qualite, saison, ajouter, th });
     const lieuxEmblematiques = organique ? B.lieux.poser(c, { terrain, limites: lim, interroger, qualite, saison, ajouter, th }) : null;
 
     // Finition des lots : sphère englobante et portée.
