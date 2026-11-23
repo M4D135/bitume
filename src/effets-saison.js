@@ -66,13 +66,16 @@
     if (profil.feuilles) for (const s of decor.sourcesFeuilles || []) {
       if (![s.x, s.y, s.z, s.rayon, s.sol].every(Number.isFinite) || s.y <= s.sol + .3) continue;
       const r = Math.max(.2, s.rayon), cx = Math.floor(s.x / CELLULE), cz = Math.floor(s.z / CELLULE);
+      if (interdits.has(cleSol(cx, cz))) continue;
       let valide = true, sol = s.sol;
       for (let z = Math.floor((s.z - r - 2.2) / CELLULE); z <= Math.floor((s.z + r + 2.2) / CELLULE); z++)
         for (let x = Math.floor((s.x - r - 2.2) / CELLULE); x <= Math.floor((s.x + r + 2.2) / CELLULE); x++) {
-          const h = solCellule(statique, x, z); if (!Number.isFinite(h)) valide = false;
+          if (interdits.has(cleSol(x, z))) continue;
+          const h = solCellule(statique, x, z);
+          if (!Number.isFinite(h)) valide = false;
           else sol = Math.max(sol, h);
         }
-      if (valide && s.y > sol + .4 && !interdits.has(cleSol(cx, cz))) sources.push({ x: s.x, z: s.z, y: s.y, sol, rayon: r,
+      if (valide && s.y > sol + .4) sources.push({ x: s.x, z: s.z, y: s.y, sol, rayon: r,
         nombre: 3 + melanger(sources.length + statique.graine) % 6 });
     }
     return Object.freeze(statique);
