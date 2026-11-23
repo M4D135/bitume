@@ -155,9 +155,9 @@
     if (!fx || fx.libere) return;
     if (ev) for (let i = 0; i < ev.length; i++) {
       const e = ev[i];
+      if (e.repositionnement) lacher(fx, e.id);
       if (e.type === 'contact') contact(fx, co, poses, e);
       else if (e.type === 'roue' || e.type === 'casse' || e.type === 'panneau') detacher(fx, co, poses, e);
-      if (e.repositionnement) lacher(fx, e.id);
     }
     fx.acc += dt;
     if (fx.acc < PAS * .999) {

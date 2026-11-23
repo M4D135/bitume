@@ -1,8 +1,8 @@
 {
-  "version": "0.2.216",
+  "version": "0.2.217",
   "raw": 16726956,
-  "gzip": 4643059,
-  "sha256": "415cd6b196e0cc9f995e2e2af24b7e415679e4420fbd23b124ba2190675fddf6",
+  "gzip": 4643057,
+  "sha256": "fc61df5678a83db9b3e6136470d4b8ffd014560fd6f51b483686b3d67cf23d14",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
