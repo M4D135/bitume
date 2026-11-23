@@ -65,7 +65,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
       // Le patinage est simulé sur l'essieu moteur arrière. Une glisse latérale résiduelle à l'arrêt n'use rien.
       const frottementArret = i >= 2 ? PARAMS.vitessePatinage * patinage * glisse * dt : 0;
       const distanceActive = d + frottementArret;
-      if (!(distanceActive > 0)) continue;
+      if (!(distanceActive > 1e-9)) continue;
       const sollicitation = charge * (d * (1 + PARAMS.surcroitGlisse * glisse * glisse) +
         (1 + PARAMS.surcroitGlisse) * frottementArret);
       u.distance = Math.min(P.DISTANCE_MAX, borne(u.distance, P.DISTANCE_MAX) + distanceActive);
