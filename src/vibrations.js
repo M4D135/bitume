@@ -114,11 +114,8 @@
     const boite = Math.min(1, V.rapport / .065);
     const apresChoc = 1 - unite(V.envFort / .27);
     const fond = (1 - boite * .76) * apresChoc;
-    fort = Math.max(fort * (1 - boite * .76), .055 * boite);
-    // Chaque choc occupe une fraction de la marge restante sur le canal fort.
-    for (const choc of V.impactsFort) {
-      fort += (1 - fort) * choc.niveau;
-    }
+    // La somme des chocs actifs fixe le canal fort pendant leur décroissance.
+    fort = V.impactsFort.length ? V.envFort : Math.max(fort * (1 - boite * .76), .055 * boite);
     faible = Math.max(faible * fond, .32 * boite * boite * apresChoc);
     gauche *= fond;
     droite = Math.max(droite * fond, .19 * boite * boite * apresChoc);
