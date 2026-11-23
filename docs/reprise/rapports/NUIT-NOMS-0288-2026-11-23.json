@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-23",
+  "branche_candidate": "nuit/2026-11-22",
+  "version_candidate": "0.2.288",
+  "candidate_precedente": "0.2.286",
+  "tete_nuit_avant_fusion": "8d067d57d93b752786a32d5230996a4625ec4802",
+  "physique_candidate": "p54",
+  "moteur": "FERRO 0.3.31",
+  "html_candidate": {
+    "raw": 17489420,
+    "gzip": 4746685,
+    "sha256": "b8188f333f43847b6f077a06176edafff1e24c4dd78df1f521d1ac0eec2df741"
+  },
+  "publication": {
+    "version": "0.2.287",
+    "precedente": "0.2.285",
+    "commit": "783ef1fabd5c586158cd8cb5611fe5293616b510",
+    "url": "https://bitume.estrasse.fr/",
+    "http": 200,
+    "sha256_html_servi": "230b4d9c1489113997f96bb3123b6cd8e52cb4472db17bb331d470366d82e1d9",
+    "octets_html_servi": 17461448
+  },
+  "controle_catalogue": {
+    "pistes": 9,
+    "noms_remplaces": 9,
+    "identifiants_et_ordre_conserves": true,
+    "catalogue_identique_entre_source_publique_source_candidate_et_html_candidate": true
+  },
+  "controles_node": {
+    "reussites": 4,
+    "echecs_reproduits_avant_fusion": [
+      "menu-arcade.test.mjs attend 11 pistes au lieu des 9 présentes",
+      "records-physique.test.mjs attend p17 au lieu de p54"
+    ],
+    "temoin": "8d067d57d93b752786a32d5230996a4625ec4802"
+  },
+  "portee": "Vérification du catalogue livré, des identifiants, de la physique et du contenu HTTP. La réception des courses de la version publique est suivie séparément."
+}

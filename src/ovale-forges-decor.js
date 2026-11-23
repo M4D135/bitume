@@ -1,4 +1,4 @@
-/* BITUME — Le Cocodrome, autodrome côtier des Caraïbes. Toutes les cotes sont en mètres. */
+/* BITUME — Autodrome des Alizés, sur la côte caribéenne. Toutes les cotes sont en mètres. */
 (function (B) {
   'use strict';
   const theme = {

@@ -11,27 +11,27 @@
 
   // L'identité du parcours complet sépare ses résultats et ses fantômes de ceux de chaque ancien tronçon.
   const CATALOGUE = [
-    { id: 'forets-du-pacifique', nom: 'Ça sent le sapin', lieu: 'Val-Brûlé et les falaises de Cap-Séquoia', theme: 'foret', graine: 11,
+    { id: 'forets-du-pacifique', nom: 'Circuit des Longues Ombres', lieu: 'Val-Brûlé et les falaises de Cap-Séquoia', theme: 'foret', graine: 11,
       troncons: [
         { id: 'val-brule', nom: 'Val-Brûlé', theme: 'foret', graine: 11, longueur: 4200 },
         { id: 'cap-sequoia', nom: 'Cap-Séquoia', theme: 'pacifique', graine: 157, longueur: 5200 }
       ] },
-    { id: 'marseille', nom: 'La Sardine en pole', lieu: 'Marseille · du Vieux-Port à la Corniche', theme: 'cote', graine: 313, longueur: 5992, distanceCourse: 5752, ouvert: true },
-    { id: 'karst-et-lagon', nom: 'Ça karste ou ça casse', lieu: 'Terrasses de Brume-de-Jade et Baie-du-Corail', theme: 'asie', graine: 131,
+    { id: 'marseille', nom: 'Promenade de la Corniche', lieu: 'Marseille · du Vieux-Port à la Corniche', theme: 'cote', graine: 313, longueur: 5992, distanceCourse: 5752, ouvert: true },
+    { id: 'karst-et-lagon', nom: 'Boucle des Eaux Dormantes', lieu: 'Terrasses de Brume-de-Jade et Baie-du-Corail', theme: 'asie', graine: 131,
       troncons: [
         { id: 'brume-de-jade', nom: 'Brume-de-Jade', theme: 'asie', graine: 131, longueur: 5000 },
         { id: 'corail', nom: 'Baie-du-Corail', theme: 'corail', graine: 283, longueur: 4500 }
       ] },
-    { id: 'sierra', nom: 'Le Canyon qui klaxonne', lieu: 'Sierra-Cuivrée · arche et viaduc rouge', theme: 'sierra', graine: 271, longueur: 5000 },
-    { id: 'nord-atlantique', nom: 'Fjord à bâbord', lieu: 'Fjord-d’Argent et plateau volcanique de Lande-Noire', theme: 'fjord', graine: 223,
+    { id: 'sierra', nom: 'Circuit du Second Écho', lieu: 'Sierra-Cuivrée · arche et viaduc rouge', theme: 'sierra', graine: 271, longueur: 5000 },
+    { id: 'nord-atlantique', nom: 'Passe du Beau Temps', lieu: 'Fjord-d’Argent et plateau volcanique de Lande-Noire', theme: 'fjord', graine: 223,
       troncons: [
         { id: 'fjord', nom: 'Fjord-d’Argent', theme: 'fjord', graine: 223, longueur: 5100 },
         { id: 'lande-noire', nom: 'Lande-Noire', theme: 'islande', graine: 83, longueur: 4600 }
       ] },
-    { id: 'route-des-cimes', nom: 'Le Col des Fondus', lieu: 'Grand col alpin · cirque de l’Aiglière', theme: 'montagne', graine: 181, longueur: 9697.52858032384, partition: 'route-des-cimes' },
-    { id: 'larche', nom: 'Raclette en roue libre', lieu: 'Col de Larche → Vinadio · SS21', theme: 'montagne', graine: 210, longueur: 32816.81, distanceCourse: 32249.33, ouvert: true },
-    { id: 'baikal', nom: 'Les Glaçons à réaction', lieu: 'Lac Baïkal · rives gelées et tremplin', theme: 'baikal', graine: 179, longueur: 5400 },
-    { id: 'ovale-des-forges', nom: 'Le Cocodrome', lieu: 'Caraïbes · speedway de plage, quatre virages relevés à 24 %',
+    { id: 'route-des-cimes', nom: 'Lacets de l’Aiglière', lieu: 'Grand col alpin · cirque de l’Aiglière', theme: 'montagne', graine: 181, longueur: 9697.52858032384, partition: 'route-des-cimes' },
+    { id: 'larche', nom: 'Descente de Larche–Vinadio', lieu: 'Col de Larche → Vinadio · SS21', theme: 'montagne', graine: 210, longueur: 32816.81, distanceCourse: 32249.33, ouvert: true },
+    { id: 'baikal', nom: 'Circuit de la Glace Vive', lieu: 'Lac Baïkal · rives gelées et tremplin', theme: 'baikal', graine: 179, longueur: 5400 },
+    { id: 'ovale-des-forges', nom: 'Autodrome des Alizés', lieu: 'Caraïbes · speedway de plage, quatre virages relevés à 24 %',
       theme: 'ovale', graine: 347, longueur: 1600, partition: 'ovale-des-forges' }
   ];
 

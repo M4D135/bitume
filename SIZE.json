@@ -1,8 +1,8 @@
 {
-  "version": "0.2.286",
-  "raw": 17489336,
-  "gzip": 4746658,
-  "sha256": "0babc02c57fe49a200f93138b13d5fec4567ba4aedc50b3e84c3afb7b5a9f568",
+  "version": "0.2.288",
+  "raw": 17489420,
+  "gzip": 4746685,
+  "sha256": "b8188f333f43847b6f077a06176edafff1e24c4dd78df1f521d1ac0eec2df741",
   "sources": {
     "ferro/surface.js": 3419,
     "ferro/render-shared.js": 81526,
@@ -12,7 +12,7 @@
     "ferro/engine.js": 2025,
     "ferro/physx-runtime.js": 12063280,
     "ferro/physx.js": 29091,
-    "circuit.js": 47781,
+    "circuit.js": 47815,
     "couverts.js": 13617,
     "circuit-raccords-data.js": 1016947,
     "circuit-raccords.js": 3744,
@@ -52,7 +52,7 @@
     "lieux.js": 61601,
     "herbier-wasm.js": 11016,
     "lagon.js": 8024,
-    "ovale-forges-decor.js": 12007,
+    "ovale-forges-decor.js": 12009,
     "decor.js": 186634,
     "physique.js": 28794,
     "faune.js": 30792,
@@ -106,8 +106,8 @@
     "vibrations.js": 10282,
     "ombres.js": 13366,
     "visites.js": 6566,
-    "jeu.js": 434670,
-    "index.html": 74882,
+    "jeu.js": 434711,
+    "index.html": 74889,
     "style.css": 110844
   }
 }

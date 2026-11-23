@@ -409,7 +409,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
 
   // ---------------------------------------------------------------- création
   function creerOvaleDesForges(graine, options) {
-    if (graine !== 347) throw new Error('BITUME : identité du Cocodrome invalide');
+    if (graine !== 347) throw new Error('BITUME : identité de l’ovale caribéen invalide');
     const droite = 400, courte = 120, virage = 140, raccord = 24, avantLigne = 112;
     const demiTour = droite + courte + 2 * virage, longueur = 2 * demiTour, n = longueur / PAS;
     const premier = droite - avantLigne, second = premier + virage + courte;
@@ -460,7 +460,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     const stands = { cote: -1, detachee: true, retrait: 55, raccord: 124,
       debut: droiteStands + 12, fin: droiteStands + droite - 12,
       garage0: droiteStands + 174, garage1: droiteStands + 226, vitesse: 11 };
-    const c = { id: 'ovale-des-forges', partition: 'ovale-des-forges', graine, nom: 'Le Cocodrome',
+    const c = { id: 'ovale-des-forges', partition: 'ovale-des-forges', graine, nom: options.nom || 'Autodrome des Alizés',
       theme: options.theme || 'ovale', longueur, pas: PAS, n, x, y, z, cap, courbure, pente, devers, vibreur, largeur,
       limite: LIMITE, limiteG: lim.G, limiteD: lim.D, depart: 0, ligneDroite: { debut: -avantLigne, fin: premier },
       secteurs: [longueur / 3, 2 * longueur / 3], stands, tunnel: null, essais: 1 };
