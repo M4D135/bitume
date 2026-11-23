@@ -1,0 +1,515 @@
+{
+  "version": "0.2.283",
+  "commit": "6addfc602fa27391594e339d99b491b2519cfb8b",
+  "sha256_html": "17e2811b0c442a1af13a180f2b31a5b2eea43e74e831ab906ea9b7003789a40f",
+  "moteur": "FERRO 0.3.27",
+  "date": "2026-11-23",
+  "panne_publique_initiale": "Reproduite avec Chrome sur la version 0.2.131. La macro de hauteur produisait un sélecteur GLSL invalide dans le repère caméra et bloquait le démarrage.",
+  "circuits": [
+    {
+      "circuit": "Le Cocodrome",
+      "lieu": "site public",
+      "joueurs_sur_la_grille": 12,
+      "physx": true,
+      "vue": "cockpit",
+      "qualite": "high",
+      "pluie": 0.75,
+      "vitesse_kmh": 65.6,
+      "retroviseurs_visibles": [
+        true,
+        true
+      ],
+      "rafraichissements_retros": [
+        65,
+        65
+      ],
+      "pause_reprise": true,
+      "position_de_reference_m": null,
+      "contexte_webgl_conserve": true,
+      "erreurs_js": []
+    },
+    {
+      "circuit": "Raclette en roue libre",
+      "lieu": "site public",
+      "joueurs_sur_la_grille": 12,
+      "physx": true,
+      "vue": "cockpit",
+      "qualite": "high",
+      "pluie": 0.75,
+      "vitesse_kmh": 75.7,
+      "retroviseurs_visibles": [
+        true,
+        true
+      ],
+      "rafraichissements_retros": [
+        48,
+        47
+      ],
+      "pause_reprise": true,
+      "position_de_reference_m": 17930,
+      "contexte_webgl_conserve": true,
+      "erreurs_js": []
+    },
+    {
+      "circuit": "La Sardine en pole",
+      "lieu": "site public",
+      "joueurs_sur_la_grille": 12,
+      "physx": true,
+      "vue": "cockpit",
+      "qualite": "high",
+      "pluie": 0.75,
+      "vitesse_kmh": 69.1,
+      "retroviseurs_visibles": [
+        true,
+        true
+      ],
+      "rafraichissements_retros": [
+        66,
+        67
+      ],
+      "pause_reprise": true,
+      "position_de_reference_m": null,
+      "contexte_webgl_conserve": true,
+      "erreurs_js": []
+    },
+    {
+      "circuit": "Ça sent le sapin",
+      "lieu": "HTML final local",
+      "joueurs_sur_la_grille": 12,
+      "physx": true,
+      "vue": "cockpit",
+      "qualite": "high",
+      "pluie": 0.75,
+      "vitesse_kmh": 42.1,
+      "retroviseurs_visibles": [
+        true,
+        true
+      ],
+      "rafraichissements_retros": [
+        32,
+        32
+      ],
+      "pause_reprise": false,
+      "position_de_reference_m": null,
+      "contexte_webgl_conserve": true,
+      "erreurs_js": []
+    },
+    {
+      "circuit": "Ça karste ou ça casse",
+      "lieu": "HTML final local",
+      "joueurs_sur_la_grille": 12,
+      "physx": true,
+      "vue": "cockpit",
+      "qualite": "high",
+      "pluie": 0.75,
+      "vitesse_kmh": 42.1,
+      "retroviseurs_visibles": [
+        true,
+        true
+      ],
+      "rafraichissements_retros": [
+        32,
+        32
+      ],
+      "pause_reprise": false,
+      "position_de_reference_m": null,
+      "contexte_webgl_conserve": true,
+      "erreurs_js": []
+    },
+    {
+      "circuit": "Le Canyon qui klaxonne",
+      "lieu": "HTML final local",
+      "joueurs_sur_la_grille": 12,
+      "physx": true,
+      "vue": "cockpit",
+      "qualite": "high",
+      "pluie": 0.75,
+      "vitesse_kmh": 42.1,
+      "retroviseurs_visibles": [
+        true,
+        true
+      ],
+      "rafraichissements_retros": [
+        32,
+        32
+      ],
+      "pause_reprise": false,
+      "position_de_reference_m": null,
+      "contexte_webgl_conserve": true,
+      "erreurs_js": []
+    },
+    {
+      "circuit": "Fjord à bâbord",
+      "lieu": "HTML final local",
+      "joueurs_sur_la_grille": 12,
+      "physx": true,
+      "vue": "cockpit",
+      "qualite": "high",
+      "pluie": 0.75,
+      "vitesse_kmh": 42.1,
+      "retroviseurs_visibles": [
+        true,
+        true
+      ],
+      "rafraichissements_retros": [
+        32,
+        32
+      ],
+      "pause_reprise": false,
+      "position_de_reference_m": null,
+      "contexte_webgl_conserve": true,
+      "erreurs_js": []
+    },
+    {
+      "circuit": "Le Col des Fondus",
+      "lieu": "HTML final local",
+      "joueurs_sur_la_grille": 12,
+      "physx": true,
+      "vue": "cockpit",
+      "qualite": "high",
+      "pluie": 0.75,
+      "vitesse_kmh": 38.1,
+      "retroviseurs_visibles": [
+        true,
+        true
+      ],
+      "rafraichissements_retros": [
+        30,
+        30
+      ],
+      "pause_reprise": false,
+      "position_de_reference_m": null,
+      "contexte_webgl_conserve": true,
+      "erreurs_js": []
+    },
+    {
+      "circuit": "Les Glaçons à réaction",
+      "lieu": "HTML final local",
+      "joueurs_sur_la_grille": 12,
+      "physx": true,
+      "vue": "cockpit",
+      "qualite": "high",
+      "pluie": 0.75,
+      "vitesse_kmh": 42.1,
+      "retroviseurs_visibles": [
+        true,
+        true
+      ],
+      "rafraichissements_retros": [
+        32,
+        32
+      ],
+      "pause_reprise": false,
+      "position_de_reference_m": null,
+      "contexte_webgl_conserve": true,
+      "erreurs_js": []
+    }
+  ],
+  "qualification": {
+    "pietraporzio": {
+      "site": "https://bitume.estrasse.fr/",
+      "pixels_3d": [
+        1920,
+        1080
+      ],
+      "qualite": "Fine",
+      "pluie": "forte",
+      "vue": "cockpit",
+      "retroviseurs": 2,
+      "vitesse_reprise_kmh": 75.7
+    },
+    "rechargement_mobile_emule": [
+      {
+        "s": "titre",
+        "t": true,
+        "d": false,
+        "performance": "navigate",
+        "ecran": "course",
+        "voitures": 12,
+        "horloge": 0.19999999999999998,
+        "details": {
+          "version": "V0.2.283",
+          "tactile": 5,
+          "pixels": [
+            312,
+            675
+          ],
+          "gl": true
+        }
+      },
+      {
+        "s": "titre",
+        "t": true,
+        "d": false,
+        "performance": "reload",
+        "ecran": "course",
+        "voitures": 12,
+        "horloge": 0.29166666666666674,
+        "details": {
+          "version": "V0.2.283",
+          "tactile": 5,
+          "pixels": [
+            312,
+            675
+          ],
+          "gl": true
+        }
+      }
+    ],
+    "webkit": {
+      "safari_app": "Allow remote automation est désactivé. Réglages Safari préservés.",
+      "moteur": "WKWebView macOS 27.2",
+      "mesures": [
+        {
+          "adresse": "dist/bitume.html",
+          "version": "V0.2.283",
+          "fenetreActiveEtPrincipale": true,
+          "documentVisible": true,
+          "qualite": "medium",
+          "circuit": "forets-du-pacifique",
+          "commandes": [
+            "Solo",
+            "Course",
+            "Départ",
+            "ArrowUp"
+          ],
+          "ecranFinal": "course",
+          "phaseFinale": "course",
+          "acceleration": {
+            "debutM": 9641.978519545097,
+            "finM": 9648.515410354677,
+            "distanceM": 6.537,
+            "vitesseKmh": 44.64,
+            "dureeSimulationS": 1.058
+          },
+          "pertesContexte": [
+            {
+              "ms": 1480,
+              "name": "webglcontextlost",
+              "nr": 1,
+              "id": "",
+              "detail": "",
+              "visible": "visible",
+              "focus": true
+            }
+          ],
+          "erreursConsole": [],
+          "etapesPreparationMs": [
+            [
+              "voile",
+              21
+            ],
+            [
+              "decor",
+              593
+            ],
+            [
+              "retro",
+              296
+            ],
+            [
+              "circuit",
+              0
+            ],
+            [
+              "seance",
+              746
+            ],
+            [
+              "creations",
+              96
+            ],
+            [
+              "rendu",
+              0
+            ],
+            [
+              "code",
+              586
+            ],
+            [
+              "zero",
+              1
+            ],
+            [
+              "image",
+              65
+            ]
+          ],
+          "webglPrincipalActif": true
+        },
+        {
+          "adresse": "dist/bitume.html",
+          "version": "V0.2.283",
+          "fenetreActiveEtPrincipale": true,
+          "documentVisible": true,
+          "qualite": "medium",
+          "circuit": "forets-du-pacifique",
+          "commandes": [
+            "Solo",
+            "Course",
+            "Départ",
+            "ArrowUp"
+          ],
+          "ecranFinal": "course",
+          "phaseFinale": "course",
+          "acceleration": {
+            "debutM": 9641.978519545097,
+            "finM": 9648.107010233387,
+            "distanceM": 6.128,
+            "vitesseKmh": 43.21,
+            "dureeSimulationS": 1.025
+          },
+          "pertesContexte": [
+            {
+              "ms": 1665,
+              "name": "webglcontextlost",
+              "nr": 1,
+              "id": "",
+              "detail": "",
+              "visible": "visible",
+              "focus": true
+            }
+          ],
+          "erreursConsole": [],
+          "etapesPreparationMs": [
+            [
+              "voile",
+              21
+            ],
+            [
+              "decor",
+              613
+            ],
+            [
+              "retro",
+              450
+            ],
+            [
+              "circuit",
+              0
+            ],
+            [
+              "seance",
+              1133
+            ],
+            [
+              "creations",
+              153
+            ],
+            [
+              "rendu",
+              1
+            ],
+            [
+              "code",
+              1247
+            ],
+            [
+              "zero",
+              0
+            ],
+            [
+              "image",
+              87
+            ]
+          ],
+          "webglPrincipalActif": true
+        },
+        {
+          "adresse": "https://bitume.estrasse.fr/",
+          "version": "V0.2.283",
+          "fenetreActiveEtPrincipale": true,
+          "documentVisible": true,
+          "qualite": "medium",
+          "circuit": "forets-du-pacifique",
+          "commandes": [
+            "Solo",
+            "Course",
+            "Départ",
+            "ArrowUp"
+          ],
+          "ecranFinal": "course",
+          "phaseFinale": "course",
+          "acceleration": {
+            "debutM": 9641.978519545097,
+            "finM": 9650.048913171613,
+            "distanceM": 8.07,
+            "vitesseKmh": 49.64,
+            "dureeSimulationS": 1.292
+          },
+          "pertesContexte": [
+            {
+              "ms": 1925,
+              "name": "webglcontextlost",
+              "nr": 1,
+              "id": "",
+              "detail": "",
+              "visible": "visible",
+              "focus": true
+            }
+          ],
+          "erreursConsole": [],
+          "etapesPreparationMs": [
+            [
+              "voile",
+              21
+            ],
+            [
+              "decor",
+              607
+            ],
+            [
+              "retro",
+              318
+            ],
+            [
+              "circuit",
+              0
+            ],
+            [
+              "seance",
+              749
+            ],
+            [
+              "creations",
+              165
+            ],
+            [
+              "rendu",
+              1
+            ],
+            [
+              "code",
+              698
+            ],
+            [
+              "zero",
+              0
+            ],
+            [
+              "image",
+              52
+            ]
+          ],
+          "webglPrincipalActif": true
+        }
+      ]
+    },
+    "integration_continue": {
+      "url": "https://github.com/M4D135/bitume/actions/runs/45128781915",
+      "demarrage_chrome_linux": "réussi",
+      "autoconfiguration_ciblee": "20 tests réussis en local"
+    },
+    "tests_generaux": {
+      "version_comparee": "0.2.281",
+      "suite_chrome": "réussie sur Linux",
+      "node_ci": {
+        "reussis": 147,
+        "echoues": 85
+      },
+      "analyse": "82 échecs reproduits sur 0.2.131. Deux seuils de temps et une course passent en local sur les deux versions."
+    },
+    "portee": "Départs et conduite sur Mac M5, émulation tactile dans Chrome, WebKit embarqué et contrôle de démarrage dans Chrome logiciel. La cadence soutenue, les tours complets, le multijoueur et les téléphones physiques sont hors de ces mesures."
+  }
+}

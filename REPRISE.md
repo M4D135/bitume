@@ -3,6 +3,8 @@
 <!-- bitume-reprise-actuelle-debut -->
 ## Par où reprendre
 
+**En ligne le 23 novembre, version 0.2.283, FERRO 0.3.27.** Le shader de hauteur compile dans Chrome et les fenêtres WebKit embarquées utilisent la préférence graphique déjà appliquée dans Safari. La course démarre après un chargement neuf et après rechargement. Les neuf circuits ont été pilotés sous la pluie sur le fichier publié, dont trois depuis le site. À Pietraporzio, le contrôle couvre le cockpit en Fine, en 1 920 × 1 080, avec les deux rétroviseurs. [Détail des contrôles et limites](docs/reprise/rapports/DEMARRAGE-2026-11-23.json)
+
 La décision du 22 novembre au soir donne le même objectif aux neuf circuits et à chaque configuration prise en charge. La [feuille de route de nuit](docs/reprise/NUIT-2026-11-22-23.md) répartit les lots, la revue du code et les critères de réception.
 
 **Version 0.2.131, FERRO 0.3.26, physique p19.** L’accueil affiche Solo, Multijoueur et Réglages. LT et RT changent de famille de circuits ou de page de réglages. Le neuvième parcours, Le Cocodrome, mesure 1 600 m et comporte quatre virages à 24 %, une voie des stands dans l’infield et des tribunes face à la plage. La physique, les reflets de la chaussée, les limites de visibilité du décor et le roulement sur sol mouillé ont évolué. La cadence matérielle de cette version reste à mesurer. [Sources de la .131](https://github.com/M4D135/bitume/commit/9703e711bf9f849fbd2c8d9fdc320f6e0177857d).
