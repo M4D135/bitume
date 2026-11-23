@@ -125,7 +125,6 @@
     // de répéter la même phrase quand la voiture recommence à avancer.
     if (position.actif !== true || vitesse < 1.5 || recul) { etat.actuelle = null; return null; }
     const L = c.longueur, s = c.ouvert ? position.s : ramener(position.s, L);
-    if (c.ouvert && s >= (c.arrivee ?? L)) { etat.actuelle = null; return null; }
     let actuelle = etat.actuelle;
     if (actuelle && (p > actuelle.fin || p < actuelle.entree - 440)) actuelle = null;
     if (!actuelle) {

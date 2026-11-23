@@ -1,8 +1,8 @@
 {
-  "version": "0.2.224",
-  "raw": 16726037,
-  "gzip": 4642818,
-  "sha256": "af47965923e01d9a9802213e948176d7b64ede70105ff1caf8494182e76789af",
+  "version": "0.2.225",
+  "raw": 16725955,
+  "gzip": 4642800,
+  "sha256": "acef449d799f1cf8d9f7bc9bb340df61bcb3ebcce4388f123f52f2985d852944",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
@@ -28,7 +28,7 @@
     "marseille.js": 14511,
     "marseille-decor.js": 50705,
     "destinations.js": 20963,
-    "virages.js": 10949,
+    "virages.js": 10867,
     "ferro/vehicle-dynamics.js": 3980,
     "pneus.js": 10139,
     "usure-pneus.js": 5611,
