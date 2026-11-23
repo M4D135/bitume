@@ -152,7 +152,34 @@
   "ci": {
     "url": "https://github.com/M4D135/bitume/actions/runs/45143618558",
     "demarrage_webgpu_linux": "réussi",
-    "qualification_globale": "en échec"
+    "qualification_globale": "en échec",
+    "suites_par_version": {
+      "0.2.287": {
+        "total": 232,
+        "echecs": 75
+      },
+      "0.2.289": {
+        "total": 233,
+        "echecs": 77
+      }
+    },
+    "ecarts_decor": [
+      {
+        "suite": "decor.test.mjs",
+        "circuit": "Val-Brûlé",
+        "budget_ms": 150,
+        "mesure_ci_ms": 171,
+        "relance_locale": "réussie"
+      },
+      {
+        "suite": "nappes-decor.test.mjs",
+        "circuit": "Route-des-Cimes",
+        "budget_ms": 150,
+        "mesure_ci_ms": 182.8,
+        "relance_locale": "réussie"
+      }
+    ],
+    "comparaison": "Les 75 suites en échec en .287 restent en échec en .289. Les deux dépassements supplémentaires concernent la génération de décor, exercée isolément par ces suites."
   },
   "limites": [
     "Le niveau estime le débit disponible au moment de la mesure. Sur le même M5, le quatrième palier se situe près du seuil en 1080p.",
