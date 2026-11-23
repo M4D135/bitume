@@ -301,6 +301,11 @@
       const cibleValide = cible && cible.isConnected && s.zone.contains(cible) && visible(cible);
       if (!cibleValide || !restaurerFocus(doc, cible)) {
         restaurerNavigation(s.zone, s.panneau, cible);
+        if (doc.activeElement === doc.body && restaurable(doc, s.zone)) {
+          for (const el of s.zone.querySelectorAll(COMMANDES)) {
+            if (el !== cible && el.tabIndex >= 0 && restaurerFocus(doc, el)) break;
+          }
+        }
       }
     }
     return true;
