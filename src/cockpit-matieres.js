@@ -12,7 +12,17 @@
   // Seulement à la préparation du modèle. L'animation réutilise ensuite les
   // mêmes objets, matières et tableaux dans le cockpit et tous les LOD extérieurs.
   function habitacle(H) {
-    for (const piece of H.planche) piece.objet.mat = cuir;
+    const planche = H.planche;
+    if (typeof planche?.[Symbol.iterator] === 'function') {
+      for (const piece of planche) {
+        try {
+          const objet = piece?.objet;
+          if (objet && typeof objet === 'object') objet.mat = cuir;
+        } catch {
+          // Une entrée illisible ou non modifiable ne doit pas bloquer les suivantes.
+        }
+      }
+    }
     H.jante.objet.mat = cuir;
     for (const piece of H.moyeu) piece.objet.mat = cuir;
     H.ruban.objet.mat = tissu;
