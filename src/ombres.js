@@ -52,6 +52,7 @@
       proche: { centre: [0, 0, 0], etendue: TUILE, debut: 0, fin: 0, axe: [1, 0, 0] },
       ombreProche: null, penombre: null,
       score: new Float64Array(16), pris: new Uint8Array(16), rang: new Int32Array(PLACES + 1), axes: new Float64Array(6),
+      axesSuivie: new Float64Array(6),
       forces: new Float32Array(16),
       journal: { niveau: new Int8Array(JOURNAL), ombres: new Uint8Array(JOURNAL), t: new Float64Array(JOURNAL), tete: 0, compte: 0, cle: null },
       carte: null,
@@ -116,7 +117,7 @@
       if (best < 0) break;
       pris[best] = 1; rang[m] = best;
     }
-    let nombre = 0;
+    let nombre = 0, axesSuivieCalcules = false;
     const dehors = m > places ? sc[rang[places]] : PORTEE;
     const retenues = Math.min(m, places);
     if (m > places) pris[rang[places]] = 0;
@@ -136,7 +137,10 @@
       forces[k] = force >= FORCE_MIN ? force : 0;
       if (forces[k] === 0) continue;
       const p = poses[k], o = nombre * FLOTTANTS;
-      ecrire(b, o, p, axes(A, p), R); b[o + 3] = forces[k]; nombre++;
+      const estSuivie = k === suivie;
+      ecrire(b, o, p, axes(estSuivie ? O.axesSuivie : A, p), R);
+      if (estSuivie) axesSuivieCalcules = true;
+      b[o + 3] = forces[k]; nombre++;
     }
     const c = O.contacts, r = ombres ? AVEC_OMBRES : SANS_OMBRES;
     const alpha = c.ambiance === 0 ? 1 : LISSAGE_CONTACT;
@@ -146,10 +150,11 @@
 
     const ps = ombres && suivie >= 0 && fin > debut ? poses[suivie] : null;
     if (ps && Number.isFinite(ps.x)) {
-      axes(A, ps);
+      const As = O.axesSuivie;
+      if (!axesSuivieCalcules) axes(As, ps);
       const pr = O.proche, C = pr.centre, X = pr.axe;
-      C[0] = ps.x + A[0] * CAISSE_X + A[3] * TUILE_Y; C[1] = ps.y + A[1] * CAISSE_X + A[4] * TUILE_Y; C[2] = ps.z + A[2] * CAISSE_X + A[5] * TUILE_Y;
-      X[0] = A[0]; X[1] = A[1]; X[2] = A[2]; pr.debut = debut; pr.fin = fin; pr.etendue = TUILE;
+      C[0] = ps.x + As[0] * CAISSE_X + As[3] * TUILE_Y; C[1] = ps.y + As[1] * CAISSE_X + As[4] * TUILE_Y; C[2] = ps.z + As[2] * CAISSE_X + As[5] * TUILE_Y;
+      X[0] = As[0]; X[1] = As[1]; X[2] = As[2]; pr.debut = debut; pr.fin = fin; pr.etendue = TUILE;
       O.ombreProche = pr;
     } else O.ombreProche = null;
     O.penombre = ombres ? (P.palier === 'high' && reglages.pcssFine ? 'pcss' : 'meteo') : null;
