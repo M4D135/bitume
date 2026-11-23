@@ -1,8 +1,8 @@
 {
-  "version": "0.2.247",
-  "raw": 16730410,
-  "gzip": 4643904,
-  "sha256": "f1999aafe5df3234658e46ef29890fc48652f4cd88d501fcdc2a06021491b25e",
+  "version": "0.2.248",
+  "raw": 16730649,
+  "gzip": 4643994,
+  "sha256": "5cb7035a3ea0187c19420391177f0c711f1014c8f97dd357b04a437a0dbf44ea",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
@@ -53,7 +53,7 @@
     "lagon.js": 7974,
     "ovale-forges-decor.js": 12007,
     "decor.js": 186634,
-    "physique.js": 28555,
+    "physique.js": 28794,
     "faune.js": 30792,
     "aeriens.js": 26840,
     "signalisation-course.js": 16432,

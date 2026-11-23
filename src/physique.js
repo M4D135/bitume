@@ -278,7 +278,10 @@
     if (vMax < 16 || magnitude < 180) return;
     const vitesseA=A.distant?A.velocity:A.beforeVelocity, vitesseC=C.distant?C.velocity:C.beforeVelocity;
     const deltaX = vitesseA[0] - vitesseC[0], deltaZ = vitesseA[2] - vitesseC[2];
-    if (Math.hypot(deltaX,deltaZ) < 3) return;
+    const vitesseRelative = Math.hypot(deltaX, deltaZ);
+    if (vitesseRelative < 3) return;
+    // À forte vitesse relative, un impact rasant peut fermer lentement l’écart entre les roues.
+    const seuilFermeture = 3 - 2.5 * clamp((vitesseRelative - 16) / 24, 0, 1);
     const cx=impact.px/impact.poids,cz=impact.pz/impact.poids;
     const R = roues();
     let meilleur = null;
@@ -296,7 +299,7 @@
         if(Math.hypot(cx-PA_ROUE[0],cz-PA_ROUE[2])>rA.r+rA.l*.5+.24 ||
            Math.hypot(cx-PB_ROUE[0],cz-PB_ROUE[2])>rC.r+rC.l*.5+.24)continue;
         const fermeture = (dx * deltaX + dz * deltaZ) / Math.max(.001, distXZ);
-        if (fermeture < 3) continue;
+        if (fermeture < seuilFermeture) continue;
         // Priorité à l'engrenage roue avant sur roue arrière (vrai soulèvement open-wheel).
         const avantSurArriere = (i < 2 && j >= 2) ? 1 : (j < 2 && i >= 2) ? -1 : 0;
         const score = (avantSurArriere ? 2 : 1) / (distXZ + .05);
