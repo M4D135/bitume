@@ -70,7 +70,6 @@
       let valide = true, sol = s.sol;
       for (let z = Math.floor((s.z - r - 2.2) / CELLULE); z <= Math.floor((s.z + r + 2.2) / CELLULE); z++)
         for (let x = Math.floor((s.x - r - 2.2) / CELLULE); x <= Math.floor((s.x + r + 2.2) / CELLULE); x++) {
-          if (interdits.has(cleSol(x, z))) continue;
           const h = solCellule(statique, x, z);
           if (!Number.isFinite(h)) valide = false;
           else sol = Math.max(sol, h);
