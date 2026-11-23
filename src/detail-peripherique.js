@@ -34,7 +34,7 @@
     // qu'un bord de fenêtre franchisse 128 m ; l'angle et les seuils restent évalués à chaque vue.
     const fenetre = () => ({ i0: NaN, i1: NaN, j0: NaN, j1: NaN, cases: [] });
     return { colonnes, rayonMax, basculeMax, touches, seuils, n: 0, route: [{}, {}, {}, {}, {}],
-      fenetres: [fenetre(), fenetre()], recente: 0 };
+      fenetres: [fenetre(), fenetre()], recente: 0, freinLisse: 0 };
   }
   function casesProches(d, i0, i1, j0, j1) {
     for (let k=0; k<d.fenetres.length; k++) {
@@ -63,6 +63,9 @@
   }
   function appliquer(d, c, et, cam, largeur, hauteur) {
     if (!d.basculeMax || !(hauteur > 0 && largeur > 0)) return;
+    // Atténuer les variations de freinage d'un appel de rendu au suivant.
+    const freinCible = et.frein || 0;
+    d.freinLisse += (freinCible - d.freinLisse) * .15;
     const tan = Math.tan((cam.fov || 75) * Math.PI / 360), horizontal = tan * largeur / hauteur;
     const facteur = TAN_60 / tan * hauteur / 1080;
     const porteeBascule = d.basculeMax * facteur;
@@ -75,7 +78,7 @@
     const ax = sy * cp, ay = sp, az = -cy * cp;
     const rx = cy * cr - sy * sp * sr, ry = cp * sr, rz = sy * cr + cy * sp * sr;
     // À la décélération, garder plus longtemps le point de corde et la sortie du virage.
-    const avance = Math.max(35, Math.min(180, Math.abs(et.v) * (1.65 + .55 * (et.frein || 0))));
+    const avance = Math.max(35, Math.min(180, Math.abs(et.v) * (1.65 + .55 * d.freinLisse)));
     const sens = et.v < 0 ? -1 : 1;
     const route = d.route;
     let routePrete = false;

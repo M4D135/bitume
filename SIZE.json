@@ -1,8 +1,8 @@
 {
-  "version": "0.2.231",
-  "raw": 16727125,
-  "gzip": 4643106,
-  "sha256": "6b6289ff5f743c17f126519c75989fc706639ed8e63109969aacd76bd9e669f7",
+  "version": "0.2.232",
+  "raw": 16727306,
+  "gzip": 4643182,
+  "sha256": "8291361054e54c73d1d9e229d339614bc9fcfca51df7a497ba92c761ef39747b",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
@@ -91,7 +91,7 @@
     "qualite.js": 5329,
     "cadence.js": 41306,
     "graphismes.js": 22460,
-    "detail-peripherique.js": 7345,
+    "detail-peripherique.js": 7526,
     "ambiance.js": 3005,
     "conditions-course.js": 18160,
     "navigation-menu.js": 30930,
