@@ -116,7 +116,7 @@ try {
     const avant = requetes; pa.dessiner({ t: 14, pluie: 0 }, camA, 0, options);
     assert.equal(requetes, avant); assert.equal(pa.stats.traits, 0); assert.equal(pa.stats.masquee, true);
   });
-  verifier('le raccord réel du jeu conserve la pluie dehors et laisse sécher la visière sous abri', () => {
+  verifier('le raccord réel du jeu laisse la lentille tenir les gouttes en conduite et fait sécher la visière sous abri', () => {
     const source = jeuRaccorde();
     const a = source.indexOf('  let pluieVue = null'), b = source.indexOf('  function naviguerManette(', a);
     assert.ok(a >= 0 && b > a);
@@ -136,7 +136,7 @@ try {
     const dehors = camera(0), portail = camera(t.debut + 3, Math.PI);
     for (let i = 0; i < 90; i++) { S.meteo.t += 1 / 30; executer.dessiner(S, dehors); }
     const vitre = executer.vitre(); assert.ok(vitre.stats.gouttes > 0);
-    assert.ok(S.pluieImage.traits > 0 && !S.pluieImage.masquee, 'la pluie dans le monde et les dépôts de la lentille suivent chacun leur exposition');
+    assert.ok(S.pluieImage.traits === 0 && S.pluieImage.masquee, 'en cockpit la lentille tient les gouttes : aucune pluie projetée superposée');
     const sequence = vitre.sequence; executer.dessiner(S, portail);
     assert.equal(S.vitreContexte.abri, true);
     assert.ok(executer.pluie().stats.traits > 20, 'le jeu ne coupe plus globalement la pluie depuis le portail');
@@ -158,9 +158,10 @@ try {
     assert.ok(S.pluieImage.traits > 0); assert.equal(vitre.masquee, true, 'la caméra TV utilise la pluie extérieure');
     const statsJ2 = JSON.stringify(J2.pluieImage);
     for (const vitesse of [0, 80]) {
-      v.etat.v = vitesse; executer.dessiner(S, dehors, 'high', 1/30, 'poursuite');
-      assert.equal(S.pluieImage.candidats, M.GOUTTES.high, 'champ de pluie indépendant de la vitesse de poursuite');
-      assert.ok(S.pluieImage.traits > 0 && !S.pluieImage.masquee && !S.pluieImage.propre);
+      v.etat.v = vitesse;
+      for (let i = 0; i < 10; i++) executer.dessiner(S, dehors, 'high', 1/30, 'poursuite');
+      assert.ok(S.pluieImage.traits === 0 && S.pluieImage.masquee, 'en poursuite comme en cockpit, une seule couche : la lentille');
+      assert.equal(vitre.masquee, false, 'la lentille tient les gouttes de poursuite, à l arrêt comme lancé');
     }
     assert.equal(JSON.stringify(J2.pluieImage), statsJ2, 'J2 garde sa pluie extérieure sous la galerie');
     executer.reglages.gouttes = 0; executer.dessiner(S, dehors);

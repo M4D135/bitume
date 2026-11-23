@@ -962,6 +962,7 @@
     if (deux && !pluieVue2) pluieVue2 = creationTardive('pluie', B.meteo.creerPluie($('meteo2'), { gpu: () => rendu?.gpu }));
     if (!deux && !pluieVue) pluieVue = creationTardive('pluie', B.meteo.creerPluie($('meteo'), { gpu: () => rendu?.gpu }));
     const abri = sousLaVoute(S.course.c, cam.pos) || B.meteo.abriCouverts(S.course.c, cam.pos, S.course.physique), neige = precipitationsNeige(S);
+    let pluieSurLentille = false;
     if (B.vitre) {
       if (deux && !vitreVue2) vitreVue2 = creationTardive('vitre', B.vitre.creer($('vitre2'), { graine: 2, gpu: () => rendu?.gpu }));
       if (!deux && !vitreVue) vitreVue = creationTardive('vitre', B.vitre.creer($('vitre'), { gpu: () => rendu?.gpu }));
@@ -1004,14 +1005,17 @@
       contexte.embruns = contexte.actif && contexte.intensite > 0 && profil.palier !== 'off' && !abri && neige === 0 && B.sillage && B.sillage.exposition
         ? B.sillage.exposition(session.sillage, cam.pos, Math.max(S.meteo.mouille || 0, S.meteo.pluie || 0), voiture.id) : 0;
       const vitre = deux ? vitreVue2 : vitreVue;
-      B.vitre.mettreAJour(vitre, dt, contexte);
+      const etat = B.vitre.mettreAJour(vitre, dt, contexte);
+      pluieSurLentille = !abri && contexte.actif && contexte.intensite > 0 && profil.palier !== 'off' && etat?.pret && !vitre.libere;
     }
-    // L'averse existe dans le monde, y compris au-delà d'un portail. L'intensité de
-    // la visière règle seulement l'eau qui s'attache à la caméra de ce joueur.
+    // En conduite, la lentille tient les gouttes et leur expulsion par la vitesse : une
+    // seule couche à l'écran. La pluie projetée reste visible depuis un abri, au-delà d'un
+    // portail, depuis les caméras TV, ou quand les gouttes de lentille sont coupées.
     const projection = projectionsPluie[deux ? 1 : 0];
     projection.cockpit = vue === 'cockpit'; projection.dpr = window.devicePixelRatio || 1;
     projection.palier = profil.palier; projection.circuit = S.course.c; projection.physique = S.course.physique;
-    S.pluieImage = (deux ? pluieVue2 : pluieVue).dessiner(neige > 0 ? SANS_PLUIE_PROJETEE : S.meteo, cam, dt, projection);
+    const meteoProjetee = neige > 0 || pluieSurLentille ? SANS_PLUIE_PROJETEE : S.meteo;
+    S.pluieImage = (deux ? pluieVue2 : pluieVue).dessiner(meteoProjetee, cam, dt, projection);
   }
 
   // Dans les menus, A valide et Select/View revient. B reste une commande de conduite affectable.
