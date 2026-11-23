@@ -248,8 +248,9 @@ jointe si elle redevient accessible.
   sur toute la largeur + collisions.
 - **E — Renommage** : circuit id `larche` → « Descente des Freins Chauds », sous-titre
   « Grand col alpin · plaquettes en surchauffe » ; id/graine/longueur conservés.
-- **F — Visiteurs** : compteur `serveur/visites.mjs` ; en **tension** avec la décision
-  David « pas d'IP persistée » → tranché vers HMAC opaque. État réel à établir.
+- **F — Visiteurs** : compteur `serveur/visites.mjs` ; dédup navigateur + réseau par empreinte
+  HMAC (secret `fichier.sel`), IP via XFF seulement derrière proxys approuvés, aucune IP brute
+  persistée, migration v1→v2 sans perte. Tension David 21/11 « pas d'IP persistée » résolue.
 - **J — Aériens & démos** : hélico +30→+16 m, drones +22/+25→+10/+12 m, trajectoires
   distinctes, plus de téléportation ; `cameraHelico` +21→+11 m ; poids réalisateur
   orientés bas/proches. Reste : démos basses centrées route sans survol du vide, faune/flore
@@ -271,7 +272,7 @@ Légende état : ✅ livré+qualifié · 🟡 partiel/en cours · ⛔ bloqué (p
 | C | Split-screen 3-4 joueurs | ⬜ | — | — | — | Implémenter grille 2×2 + case 4 carte animée |
 | D | Minimap zoomée défilante | ⬜ | — | — | — | Implémenter suivi tronçon par joueur |
 | E | Renommage Descente des Freins Chauds | ✅ | `183597d` | CATALOGUE jeu.js ; méta index.html | — | Conserver id internes |
-| F | Visiteurs IP/HMAC/atomique | 🟡 | — | `visites-navigateur` 12/12 ; `visites-serveur` 16/16 (exit 0) | **État réel établi** : dédup navigateur (UUID→SHA-256), atomicité (temp+fsync+rename+dir-fsync, double copie, revision, monotonie), migration v0→socle, totaux honnêtes = OK. **MANQUENT** : dédup **réseau**, **HMAC** (clé), **IP proxys de confiance** (absents). Tension David 21/11 « pas d'IP persistée » → résoudre par HMAC(IP) sans IP brute | Implémenter réseau+HMAC+proxys de confiance (configurable, sans persister l'IP) |
+| F | Visiteurs navigateur/réseau, HMAC, proxys, atomique | 🟡 | — | `visites-navigateur` 12/12 ; `visites-serveur` 20/20 (exit 0) ; salon-protocole vert | Implémenté : v2 avec `reseauxUniques`/`reseaux`, HMAC-SHA-256 tronqué via secret `fichier.sel`, IP lue depuis XFF seulement si connexion directe dans `BITUME_VISITES_PROXIES`, route POST passe `{ ip: compteur.ipClient(req) }`, migration v1→v2 sans perte, aucune IP brute persistée. Reste : config/proxys en production, éventuelle affichage titre si David veut la métrique réseau, déploiement Mac | Déployer/configurer proxys depuis Mac ; décider affichage `reseauxUniques` |
 | G | Rendu photoréaliste | ⬜ | — | — | Visuel → Mac | Matières/éclairage/contacts + avant/après Mac |
 | H | Végétation ×100 | ⬜ | — | — | Perf GPU → Mac | Instances/LOD/caches + mesures géométrie/draw calls |
 | I | Route sans fin (arcade) | ⬜ | — | — | — | Cycle plages→montagnes, checkpoints, stations, chrono/joueur |

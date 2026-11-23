@@ -1,7 +1,10 @@
 // BITUME — fréquentation globale, distincte des salons multijoueurs.
 // Les identifiants reçus sont aléatoires ; seuls leurs SHA-256 tronqués à 128 bits sont conservés.
-import { createHash } from 'node:crypto';
-import { mkdir, open, readFile, rename, stat } from 'node:fs/promises';
+// La déduplication réseau n'utilise JAMAIS l'IP brute : uniquement une empreinte HMAC-SHA-256
+// (clé secrète persistée hors fichier de données), et l'IP n'est lue dans X-Forwarded-For que si
+// la connexion directe vient d'un proxy de confiance déclaré (défaut : aucun proxy approuvé).
+import { createHash, createHmac, randomBytes } from 'node:crypto';
+import { mkdir, open, readFile, rename, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -13,6 +16,43 @@ const hacher = s => createHash('sha256').update(s.toLowerCase()).digest().subarr
 const entier = n => Number.isSafeInteger(n) && n >= 0;
 const faute = (status, message) => Object.assign(new Error(message), { status });
 
+// ——— Déduplication réseau : l'IP n'est JAMAIS persistée en clair, uniquement une empreinte HMAC.
+function normaliserIp(brute) {
+  if (typeof brute !== 'string') return null;
+  let ip = brute.trim();
+  const m = ip.match(/^::ffff:([0-9.]+)$/i); if (m) ip = m[1];   // IPv4 cartographié en IPv6
+  if (/^[0-9]{1,3}(\.[0-9]{1,3}){3}$/.test(ip)) {
+    const o = ip.split('.').map(Number);
+    return o.every(x => x >= 0 && x <= 255) ? o.join('.') : null;
+  }
+  if (ip.includes(':') && /^[0-9a-f:]+$/.test(ip)) return ip.toLowerCase();
+  return null;
+}
+const vers32 = s => { const o = s.split('.').map(Number); return ((o[0] << 24) | (o[1] << 16) | (o[2] << 8) | o[3]) >>> 0; };
+function enReseau(ip, cidr) {
+  const [base, masque] = String(cidr).split('/');
+  const b = normaliserIp(base); if (!b) return false;
+  if (masque === undefined) return ip === b;
+  if (!b.includes(':')) {
+    const n = +masque; if (!Number.isInteger(n) || n < 0 || n > 32) return false;
+    const mb = n === 0 ? 0 : (0xffffffff << (32 - n)) >>> 0;
+    return (vers32(ip) & mb) >>> 0 === (vers32(b) & mb) >>> 0;
+  }
+  return false; // IPv6 : correspondance exacte seulement
+}
+function proxyConfiant(ip, proxies) { return !!ip && proxies.some(p => enReseau(ip, p)); }
+// IP du client : X-Forwarded-For n'est lu que si la connexion directe vient d'un proxy approuvé ;
+// sinon on prend la connexion directe (l'XFF d'un client quelconque est spoofable).
+function ipClient(adresseDirecte, entetes, proxies) {
+  const directe = normaliserIp(adresseDirecte);
+  if (!proxyConfiant(directe, proxies)) return directe;
+  const xff = entetes?.['x-forwarded-for'];
+  const liste = (Array.isArray(xff) ? xff.join(',') : typeof xff === 'string' ? xff : '')
+    .split(',').map(s => normaliserIp(s)).filter(Boolean);
+  for (let i = liste.length - 1; i >= 0; i--) if (!proxyConfiant(liste[i], proxies)) return liste[i];
+  return liste.length ? liste[0] : directe;
+}
+
 export function validerIdentifiants(x) {
   if (!x || Array.isArray(x) || Object.keys(x).length !== 2 || !Object.hasOwn(x, 'visitorId') || !Object.hasOwn(x, 'visitId') ||
       typeof x.visitorId !== 'string' || typeof x.visitId !== 'string' || !ID.test(x.visitorId) || !ID.test(x.visitId))
@@ -20,10 +60,10 @@ export function validerIdentifiants(x) {
   return { visiteur: hacher(x.visitorId), session: hacher(x.visitId) };
 }
 
-function vide() { return { version: 1, revision: 0, visites: 0, visiteursUniques: 0, baseVisites: 0, baseUniques: 0, visiteurs: [], sessions: [] }; }
+function vide() { return { version: 2, revision: 0, visites: 0, visiteursUniques: 0, reseauxUniques: 0, baseVisites: 0, baseUniques: 0, baseReseaux: 0, visiteurs: [], sessions: [], reseaux: [] }; }
 function decoder(texte) {
   const paquet = JSON.parse(texte);
-  if ((paquet?.format === 'bitume-visites' && paquet.donnees?.version > 1) || paquet?.version > 1)
+  if ((paquet?.format === 'bitume-visites' && paquet.donnees?.version > 2) || paquet?.version > 2)
     throw Object.assign(new Error('Version des visites plus récente que ce serveur'), { code: 'FORMAT_FUTUR' });
   // Format initial sans identifiants : les totaux historiques deviennent un socle, jamais remis à zéro.
   if (paquet?.version === 0 && Object.keys(paquet).length === 3 && ['visites', 'visiteursUniques'].every(k => Object.hasOwn(paquet, k)) &&
@@ -32,7 +72,7 @@ function decoder(texte) {
       baseVisites: paquet.visites, baseUniques: paquet.visiteursUniques };
   if (paquet?.format !== 'bitume-visites' || empreinte(JSON.stringify(paquet.donnees)) !== paquet.sha256) throw new Error('Empreinte des visites invalide');
   const d = paquet.donnees;
-  if (d?.version !== 1 || !['revision', 'visites', 'visiteursUniques', 'baseVisites', 'baseUniques'].every(k => entier(d[k])) ||
+  if (![1, 2].includes(d?.version) || !['revision', 'visites', 'visiteursUniques', 'baseVisites', 'baseUniques'].every(k => entier(d[k])) ||
       !Array.isArray(d.visiteurs) || !Array.isArray(d.sessions) || d.baseUniques > d.baseVisites) throw new Error('Format des visites invalide');
   const visiteurs = new Set(), sessions = new Map(); let comptes = 0;
   for (const v of d.visiteurs) {
@@ -47,15 +87,35 @@ function decoder(texte) {
   for (const v of d.visiteurs) if (sessions.get(v[2])?.[1] !== v[0] || sessions.get(v[2])?.[2] !== null) throw new Error('Session courante invalide');
   if (d.visites !== d.baseVisites + comptes || d.visiteursUniques !== d.baseUniques + visiteurs.size || d.visiteursUniques > d.visites)
     throw new Error('Totaux des visites incohérents');
+  // Réseau : absent en v1 (socle nul, ensemble vide — migration sans perte), validé en v2.
+  if (d.version === 2) {
+    if (!entier(d.reseauxUniques) || !entier(d.baseReseaux) || !Array.isArray(d.reseaux) || d.baseReseaux > d.baseVisites)
+      throw new Error('Format réseau invalide');
+    const vus = new Set();
+    for (const r of d.reseaux) { if (typeof r !== 'string' || !HASH.test(r) || vus.has(r)) throw new Error('Index réseaux invalide'); vus.add(r); }
+    if (d.reseauxUniques !== d.baseReseaux + vus.size || d.reseauxUniques > d.visiteursUniques)
+      throw new Error('Totaux des réseaux incohérents');
+  } else { d.reseaux = []; d.reseauxUniques = 0; d.baseReseaux = 0; }
+  d.version = 2;
   return d;
 }
 const encoder = d => JSON.stringify({ format: 'bitume-visites', donnees: d, sha256: empreinte(JSON.stringify(d)) }) + '\n';
 
-export function creerCompteurVisites({ fichier = process.env.BITUME_VISITES_FICHIER || fileURLToPath(new URL('../donnees/visites.json', import.meta.url)), maintenant = Date.now, journal = console.error } = {}) {
-  fichier = path.resolve(fichier);
-  let etat, visiteurs, sessions, file = Promise.resolve(), ouverture, copieComplete = true;
-  const totaux = () => ({ visites: etat.visites, visiteursUniques: etat.visiteursUniques });
-  const installer = d => { etat = d; visiteurs = new Map(d.visiteurs.map(v => [v[0], v])); sessions = new Map(d.sessions.map(s => [s[0], s])); };
+export function creerCompteurVisites({ fichier = process.env.BITUME_VISITES_FICHIER || fileURLToPath(new URL('../donnees/visites.json', import.meta.url)), maintenant = Date.now, journal = console.error,
+  proxies = (process.env.BITUME_VISITES_PROXIES || '').split(',').map(s => s.trim()).filter(Boolean), selFichier = fichier + '.sel' } = {}) {
+  fichier = path.resolve(fichier); selFichier = path.resolve(selFichier);
+  let etat, visiteurs, sessions, reseaux, file = Promise.resolve(), ouverture, copieComplete = true, secret = null;
+  const totaux = () => ({ visites: etat.visites, visiteursUniques: etat.visiteursUniques, reseauxUniques: etat.reseauxUniques });
+  const installer = d => { etat = d; visiteurs = new Map(d.visiteurs.map(v => [v[0], v])); sessions = new Map(d.sessions.map(s => [s[0], s])); reseaux = new Set(d.reseaux); };
+  // Empreinte HMAC de l'IP (clé secrète persistée hors des données, jamais l'IP elle-même).
+  const hacherReseau = ip => ip ? createHmac('sha256', secret).update(ip).digest().subarray(0, 16).toString('base64url') : null;
+  async function chargerSecret() {
+    try { secret = await readFile(selFichier); if (secret.length < 16) throw Object.assign(new Error('clé trop courte'), { code: 'SEL_COURT' }); }
+    catch (e) {
+      if (e.code !== 'ENOENT' && e.code !== 'SEL_COURT') throw e;
+      secret = randomBytes(32); await mkdir(path.dirname(selFichier), { recursive: true, mode: 0o700 }); await atomique(selFichier, secret);
+    }
+  }
   async function atomique(destination, texte) {
     const temporaire = destination + '.next', f = await open(temporaire, 'w', 0o600);
     try { await f.writeFile(texte, 'utf8'); await f.sync(); } finally { await f.close(); }
@@ -74,6 +134,7 @@ export function creerCompteurVisites({ fichier = process.env.BITUME_VISITES_FICH
     copieComplete = true;
   }
   async function charger() {
+    await chargerSecret();
     const candidats = []; let presents = 0, erreursLecture = 0;
     for (const nom of [fichier, fichier + '.bak', fichier + '.next', fichier + '.bak.next']) {
       try {
@@ -105,9 +166,10 @@ export function creerCompteurVisites({ fichier = process.env.BITUME_VISITES_FICH
     file = tache.catch(() => {}); return tache;
   };
   const lire = () => serialiser(async () => { if (!copieComplete) await sauver(etat); return totaux(); });
-  const enregistrer = identifiants => {
+  const enregistrer = (identifiants, contexte = {}) => {
     const ids = validerIdentifiants(identifiants);
     return serialiser(async () => {
+      const reseau = hacherReseau(normaliserIp(contexte.ip));
       const t = Math.max(0, Math.floor(maintenant())), proprietaire = sessions.get(ids.session), precedent = visiteurs.get(ids.visiteur);
       if (proprietaire && proprietaire[1] !== ids.visiteur) throw faute(409, 'Identifiant de visite déjà attribué.');
       // Même identifiant : réessai, rechargement ou onglet. Un nouvel ID proche du précédent est un alias de session.
@@ -118,15 +180,20 @@ export function creerCompteurVisites({ fichier = process.env.BITUME_VISITES_FICH
       if (proprietaire && (groupe !== precedent[2] || t - precedent[1] >= SESSION_MS || t - precedent[1] < 30000)) {
         if (!copieComplete) await sauver(etat); return totaux();
       }
+      // Réseau : un réseau (empreinte HMAC de l'IP) n'est compté qu'à sa première apparition,
+      // portée par un nouveau navigateur — jamais l'IP elle-même, et pas de somme de quotidiens.
+      const nouveauReseau = inconnu && reseau && !reseaux.has(reseau);
       const d = { ...etat, revision: etat.revision + 1, visites: etat.visites + (nouvelle ? 1 : 0),
         visiteursUniques: etat.visiteursUniques + (inconnu ? 1 : 0),
+        reseauxUniques: etat.reseauxUniques + (nouveauReseau ? 1 : 0),
         visiteurs: etat.visiteurs.filter(v => v[0] !== ids.visiteur).concat([[ids.visiteur, Math.max(t, precedent?.[1] || 0), groupe]]),
-        sessions: proprietaire ? etat.sessions : etat.sessions.concat([[ids.session, ids.visiteur, nouvelle ? null : groupe]]) };
-      if (![d.revision, d.visites, d.visiteursUniques].every(entier)) throw new Error('Compteur maximal atteint ; données conservées');
+        sessions: proprietaire ? etat.sessions : etat.sessions.concat([[ids.session, ids.visiteur, nouvelle ? null : groupe]]),
+        reseaux: nouveauReseau ? etat.reseaux.concat([reseau]) : etat.reseaux };
+      if (![d.revision, d.visites, d.visiteursUniques, d.reseauxUniques].every(entier)) throw new Error('Compteur maximal atteint ; données conservées');
       await sauver(d); return totaux();
     });
   };
-  return { lire, enregistrer, fichier };
+  return { lire, enregistrer, fichier, ipClient: req => ipClient(req?.socket?.remoteAddress, req?.headers, proxies) };
 }
 
 async function lireCorps(req) {
@@ -178,7 +245,7 @@ export function creerRouteVisites(compteur, { journal = console.error } = {}) {
           (req.headers['content-encoding'] && req.headers['content-encoding'] !== 'identity')) {
         req.resume(); envoyer(415, { erreur: 'JSON UTF-8 attendu.' }); return;
       }
-      envoyer(200, await compteur.enregistrer(await lireCorps(req)));
+      envoyer(200, await compteur.enregistrer(await lireCorps(req), { ip: compteur.ipClient(req) }));
     } catch (e) {
       const status = e.status || 503;
       if (status === 503) journal('Compteur BITUME indisponible ; données conservées.');
