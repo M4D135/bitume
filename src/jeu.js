@@ -4132,6 +4132,101 @@
     return c;
   }
 
+  // Minimap « défilante » : le joueur reste dans une zone stable, le tracé défile autour de lui.
+  // Le suivi suit l'abscisse curviligne s (et non le plus proche x/z) pour ne pas se tromper de
+  // tronçon dans les lacets et les passages superposés. Chaque affichage (HUD1, HUD2) garde son
+  // propre état de défilement. Coût borné : une soixantaine d'échantillons à 15 Hz.
+  function dessinerCarteZoom(x, S, co, j, demo) {
+    const canvas = x.h.carte; if (!canvas || !canvas.getContext) return;
+    const c = co.c, L = c.ouvert ? (c.arrivee || c.longueur) : c.longueur;
+    const W = canvas.width || 220, H = canvas.height || 220, cx = W / 2, cy = H * 0.62;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, W, H);
+    const et = j.etat, prog = Number.isFinite(j.progression) ? j.progression : (et.s || 0);
+    if (x.planCourse !== co || x.planPilote !== j.id) { x.planCourse = co; x.planPilote = j.id; x.planProg = prog; }
+    else { const d = prog - (x.planProg ?? prog); if (Math.abs(d) < L * 0.45) x.planProg += d * 0.35; else x.planProg = prog; }
+    const centre = c.ouvert ? clamp(x.planProg, 0, L) : ((x.planProg % L) + L) % L;
+    const vitesse = Math.max(0, et.v || 0);
+    const devant = clamp(110 + vitesse * 1.25, 120, 320), derriere = clamp(45 + vitesse * 0.35, 35, 110);
+    const demi = c.ouvert ? Math.max(devant, derriere) : Math.min(Math.max(devant, derriere), L / 2);
+    const ppm = (Math.min(W, H) * 0.46) / Math.max(70, demi);
+    const p0 = B.circuit.echantillon(c, centre), ca = Math.cos(p0.cap), sa = Math.sin(p0.cap);
+    const proj = s => {
+      const e = B.circuit.echantillon(c, s), dx = e.x - p0.x, dz = e.z - p0.z;
+      return [cx + (-sa * dx + ca * dz) * ppm, cy - (ca * dx + sa * dz) * ppm];
+    };
+    const dist = s => c.ouvert ? s - centre : B.circuit.ecart(c, centre, s);
+    let debut, fin;
+    if (c.ouvert) { debut = Math.max(0, centre - derriere); fin = Math.min(L, centre + devant); }
+    else if (devant + derriere >= L) { debut = centre - L / 2; fin = centre + L / 2; }
+    else { debut = centre - derriere; fin = centre + devant; }
+    const pas = Math.max(2, (fin - debut) / 64);
+    ctx.beginPath();
+    let premier = true;
+    for (let s = debut; s <= fin + 1e-6; s += pas) {
+      const [px, py] = proj(s);
+      if (premier) { ctx.moveTo(px, py); premier = false; } else ctx.lineTo(px, py);
+    }
+    const [fx, fy] = proj(fin); ctx.lineTo(fx, fy);
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    ctx.lineWidth = 10; ctx.strokeStyle = 'rgba(10,12,15,.82)'; ctx.stroke();
+    ctx.lineWidth = 5; ctx.strokeStyle = '#d9d2c3'; ctx.stroke();
+
+    const marque = (s, couleur, rayon = 4.5) => {
+      const d = dist(s); if (d < -derriere - 20 || d > devant + 20) return null;
+      const [px, py] = proj(s); if (px < -20 || px > W + 20 || py < -20 || py > H + 20) return null;
+      ctx.beginPath(); ctx.arc(px, py, rayon, 0, Math.PI * 2); ctx.fillStyle = couleur; ctx.fill();
+      ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(10,12,15,.85)'; ctx.stroke();
+      return [px, py];
+    };
+    const ligne = (p, couleur) => {
+      if (!p) return;
+      ctx.beginPath(); ctx.moveTo(p[0] - 7, p[1]); ctx.lineTo(p[0] + 7, p[1]);
+      ctx.lineWidth = 2; ctx.strokeStyle = couleur; ctx.stroke();
+    };
+    ligne(marque(0, c.ouvert ? '#2ecc71' : '#e0301e', 4), c.ouvert ? '#2ecc71' : '#e0301e');
+    if (c.ouvert) ligne(marque(c.arrivee || L, '#e0301e', 4), '#e0301e');
+    if (c.stands) {
+      const p = marque(c.stands.sBox, '#39ff8e', 5);
+      if (p) {
+        ctx.fillStyle = '#07110b'; ctx.font = 'bold 9px sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('P', p[0], p[1] + 0.5);
+      }
+    }
+    if (B.virages?.planifier) {
+      for (const v of B.virages.planifier(c)) {
+        if (v.difficulte < 2) continue;
+        const d = dist(v.debut); if (d < -10 || d > devant) continue;
+        const [px, py] = proj(v.debut); if (px < -10 || px > W + 10 || py < -10 || py > H + 10) continue;
+        ctx.beginPath(); ctx.moveTo(px, py - 4); ctx.lineTo(px + 4, py + 3); ctx.lineTo(px - 4, py + 3); ctx.closePath();
+        ctx.fillStyle = v.difficulte >= 3 ? '#e0301e' : '#eab261'; ctx.fill();
+        ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(10,12,15,.8)'; ctx.stroke();
+      }
+    }
+    for (let k = co.voitures.length - 1; k >= 0; k--) {
+      const v = co.voitures[k]; if (v === j) continue;
+      const rel = c.ouvert ? (v.etat.s - et.s) : ((v.progression ?? v.etat.s) - (j.progression ?? et.s));
+      if (rel < -derriere - 10 || rel > devant + 10) continue;
+      const [px, py] = proj(v.etat.s);
+      ctx.beginPath(); ctx.arc(px, py, 3.2, 0, Math.PI * 2); ctx.fillStyle = couleurCss(v); ctx.fill();
+      ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(10,12,15,.85)'; ctx.stroke();
+    }
+    if (co.mode === 'chrono' && B.course?.fantome) {
+      const f = B.course.fantome(co, S?.retardImage);
+      if (f) {
+        const d = dist(f.s);
+        if (d >= -derriere - 10 && d <= devant + 10) {
+          const [px, py] = proj(f.s);
+          ctx.beginPath(); ctx.arc(px, py, 3.6, 0, Math.PI * 2); ctx.fillStyle = '#6fd0ff'; ctx.fill();
+        }
+      }
+    }
+    ctx.beginPath(); ctx.moveTo(cx, cy - 7); ctx.lineTo(cx + 5, cy + 5); ctx.lineTo(cx, cy + 2); ctx.lineTo(cx - 5, cy + 5); ctx.closePath();
+    ctx.fillStyle = demo ? '#6fd0ff' : '#e0301e'; ctx.fill();
+    ctx.lineWidth = 1.5; ctx.strokeStyle = '#f2ecdf'; ctx.stroke();
+  }
+
   const aDeux = () => !!session && session.type === 'duo';
   // à deux : qui = 0 pour l'affichage du joueur 1 seul, 1 pour celui du joueur 2, rien pour les deux
   const affichages = (cle, qui) => !aDeux() || qui === 0 ? [H[cle]] : qui === 1 ? [H2[cle]] : [H[cle], H2[cle]];
@@ -4341,19 +4436,7 @@
     if (reglages.carte === 'non') x.tPlan = -Infinity;
     else if (horlogeReelle >= x.tPlan) {
       x.tPlan = horlogeReelle + PERIODE_PLAN + (x.tPlan === -Infinity ? 1 / 60 : 0);
-      const ctx = H.carte.getContext('2d'), p = scene.plan;
-      ctx.clearRect(0, 0, 220, 220); ctx.drawImage(scene.fond, 0, 0);
-      for (let k = co.voitures.length - 1; k >= 0; k--) {
-        const v = co.voitures[k], ps = tampons.poses[k]; if (!ps) continue;
-        const moi = v === j;
-        ctx.beginPath(); ctx.arc(p.ox + ps.x * p.e, p.oz + ps.z * p.e, moi ? 5.5 : 3.6, 0, Math.PI * 2);
-        ctx.fillStyle = moi && !demo ? '#e0301e' : couleurCss(v); ctx.fill();
-        ctx.lineWidth = moi ? 2 : 1; ctx.strokeStyle = moi ? '#f2ecdf' : 'rgba(10,12,15,.85)'; ctx.stroke();
-      }
-      if (chronoMode) {
-        const f = B.course.fantome(co, S.retardImage);
-        if (f) { const e = B.circuit.echantillon(co.c, f.s); ctx.beginPath(); ctx.arc(p.ox + e.x * p.e, p.oz + e.z * p.e, 4, 0, Math.PI * 2); ctx.fillStyle = '#6fd0ff'; ctx.fill(); }
-      }
+      dessinerCarteZoom(x, S, co, j, demo);
     }
     // compteur d'images : la cadence réellement tenue (images rendues par seconde, lissées sur la grille de l'écran),
     // virée à l'ambre sous 90 % de la cadence visée — l'écran divisé par le diviseur de la cadence, et non 60 d'office :
