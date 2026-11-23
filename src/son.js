@@ -574,7 +574,6 @@
     // etat = { pause, joueur: { id, regime, gaz, rapport, v, glisse, deriveRelative, patinage, blocage, contactPneus, surface, eauRoulement, microRoulement, turbo, vue, muet, aspiration, ventActif },
     //          joueur2: même structure ou null, rivaux: [{ id, distance, angle, regime, gaz, vRel }] }
     // En duo les distances des rivaux viennent de la caméra humaine la plus proche (adaptateur du jeu).
-    let premierRivalId = -1;
     function mettreAJour(etat) {
       if (!pret || !etat) return;
       const t = ctx.currentTime, tc = .015, j = etat.joueur || {}, j2 = etat.joueur2 || null;
@@ -591,9 +590,6 @@
 
       // Les trois plus proches gardent leur voix tant qu’ils restent sélectionnés.
       selectionnerRivaux(etat.rivaux, proches, j.muet ? -1 : j.id, j2 && !j2.muet ? j2.id : -1);
-      const prochainPremierId = proches.length ? proches[0].id : -1;
-      const premierChange = prochainPremierId !== premierRivalId;
-      premierRivalId = prochainPremierId;
       for (const vx of voix) if (vx.id >= 0) {
         let garde = false;
         for (let i = 0; i < proches.length; i++) if (proches[i].id === vx.id) { garde = true; break; }
@@ -629,12 +625,7 @@
           vise(vx.pb.frequency, filtre, t, tc);
           vise(vx.pan.pan, pan, t, 0.05);
         }
-        if (nouvelleVoix || (premierChange && r.id === prochainPremierId)) {
-          vx.sortie.gain.cancelScheduledValues(t);
-          vx.sortie.gain.setValueAtTime(niveau, t);
-        } else {
-          vise(vx.sortie.gain, niveau, t, 0.1 / 3);
-        }
+        vise(vx.sortie.gain, niveau, t, 0.1 / 3);
       }
 
       reglerRaclement(raclements[0], !muet && j.raclement, j2 ? Math.SQRT1_2 : 1, t);
