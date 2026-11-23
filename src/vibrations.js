@@ -16,7 +16,6 @@
   function impact(V, niveau, duree) {
     if (niveau <= 0) return;
     V.impactsFort.push({ niveau, constante: duree * .44 });
-    V.envFort += niveau;
   }
   function intensite(x, gain) {
     const v = unite(x * gain);
@@ -88,17 +87,6 @@
     V.envDerive *= Math.exp(-pas / .025);
     V.envTic *= Math.exp(-pas / .033);
 
-    // Appliquer le temps écoulé aux chocs reçus lors des appels précédents.
-    V.envFort = 0;
-    let restants = 0;
-    for (const choc of V.impactsFort) {
-      choc.niveau *= Math.exp(-pas / choc.constante);
-      if (choc.niveau <= Number.EPSILON) continue;
-      V.impactsFort[restants++] = choc;
-      V.envFort += choc.niveau;
-    }
-    V.impactsFort.length = restants;
-
     const events = e.evenements;
     if (events) for (let i = 0; i < events.length; i++) {
       const ev = events[i];
@@ -109,6 +97,18 @@
       } else if (ev.type === 'roue' || ev.type === 'casse') impact(V, .55, .13);
       else if (ev.type === 'atterrissage') impact(V, .31, .088);
     }
+
+    // Faire décroître tous les chocs actifs avant de reconstruire l’enveloppe.
+    V.envFort = 0;
+    let restants = 0;
+    for (const choc of V.impactsFort) {
+      choc.niveau *= Math.exp(-pas / choc.constante);
+      if (choc.niveau <= Number.EPSILON) continue;
+      V.impactsFort[restants++] = choc;
+      V.envFort += choc.niveau;
+    }
+    V.impactsFort.length = restants;
+
     // Un choc lourd prend le premier plan. La boîte donne une impulsion légère de
     // 40 ms puis s'efface. Chacun atteint au moins une commande même à 144 images/s.
     const boite = Math.min(1, V.rapport / .065);
