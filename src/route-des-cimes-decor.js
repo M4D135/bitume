@@ -32,7 +32,12 @@
       const wz = doux(-2390, -2345, z) * (1 - doux(-2155, -2115, z));
       const wl = wx * wz * (q.i < 0 ? 1 : doux(13, 28, q.d));
       if (wl > 0) {
-        const hVersant = 179.5 + Math.max(0, -(z + 2142.5)) * .275 + (x - 1350) * .012
+        const recul = -(z + 2142.5);
+        const demiRaccord = 8;
+        // Raccord tangent au replat et à la rampe de part et d’autre du seuil.
+        const t = borner((recul + demiRaccord) / (2 * demiRaccord));
+        const rampe = demiRaccord * t * t + Math.max(0, recul - demiRaccord);
+        const hVersant = 179.5 + rampe * .275 + (x - 1350) * .012
           + 1.9 * Math.sin(x / 31) * Math.cos(z / 27);
         h += (hVersant - h) * wl * .88;
       }

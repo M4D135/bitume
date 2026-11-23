@@ -1,8 +1,8 @@
 {
-  "version": "0.2.279",
-  "raw": 16735413,
-  "gzip": 4645123,
-  "sha256": "453fc1c29bbc75c4d7b15fbd57b4ec16d5fe6f3ae2cacbba081723fef28c6cc2",
+  "version": "0.2.280",
+  "raw": 16735690,
+  "gzip": 4645212,
+  "sha256": "c37aca2edf1b0c0e34571c6950e12d34adcbf6ff6ff73c89af7c2bd5dfe99126",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
@@ -16,7 +16,7 @@
     "circuit-raccords-data.js": 1016947,
     "circuit-raccords.js": 3744,
     "route-des-cimes.js": 24290,
-    "route-des-cimes-decor.js": 10273,
+    "route-des-cimes-decor.js": 10550,
     "larche-vinadio-data.js": 331200,
     "larche-vinadio.js": 13285,
     "larche-relief.js": 13215,
