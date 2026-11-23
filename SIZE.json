@@ -1,8 +1,8 @@
 {
-  "version": "0.2.293",
-  "raw": 17508717,
-  "gzip": 4752537,
-  "sha256": "da82261e6106646db64bfcb36c916c9f5de437ad899ea82bce51941cba310d12",
+  "version": "0.2.294",
+  "raw": 17508962,
+  "gzip": 4752668,
+  "sha256": "651ee396162ced7591c27833cac0a0ca2b62d884281e658d52e09c7856bb48ef",
   "sources": {
     "ferro/surface.js": 3419,
     "ferro/render-shared.js": 81526,
@@ -12,7 +12,7 @@
     "ferro/engine.js": 2025,
     "ferro/physx-runtime.js": 12063280,
     "ferro/physx.js": 29091,
-    "circuit.js": 47815,
+    "circuit.js": 48060,
     "couverts.js": 13617,
     "circuit-raccords-data.js": 1016947,
     "circuit-raccords.js": 3744,

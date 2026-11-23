@@ -410,7 +410,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
   // ---------------------------------------------------------------- création
   function creerOvaleDesForges(graine, options) {
     if (graine !== 347) throw new Error('BITUME : identité de l’ovale caribéen invalide');
-    const droite = 400, courte = 120, virage = 140, raccord = 24, avantLigne = 112;
+    const droite = 400, courte = 120, virage = 140, raccord = 24, raccordDevers = 64, avantLigne = 112;
     const demiTour = droite + courte + 2 * virage, longueur = 2 * demiTour, n = longueur / PAS;
     const premier = droite - avantLigne, second = premier + virage + courte;
     const debuts = [premier, second, premier + demiTour, second + demiTour];
@@ -445,9 +445,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
       for (const debut of debuts) {
         const u = s - debut, bord = Math.min(u, virage - u);
         if (bord <= -10) continue;
-        // d<0 est à gauche. Le mesh emploie y - d*sin(devers) : 24 cm/m
-        // au cœur des quatre gauches et 100 m entièrement plats sur chaque petite droite.
-        devers[i] = -Math.asin(.24 * lisse(-10, raccord, bord));
+        // d<0 est à gauche. Le mesh emploie y - d*sin(devers) : dévers porté à 40° au cœur
+        // des quatre gauches. La rampe de dévers est découplée de celle de la courbure
+        // (raccordDevers plus long) pour une entrée et une sortie douces, sans bosse ni creux ;
+        // les petites droites restent entièrement plates (bord <= -10).
+        devers[i] = -Math.asin(Math.sin(40 * Math.PI / 180) * lisse(-10, raccordDevers, bord));
         courbure[i] = -courbureMax * lisse(0, raccord, bord);
         if (bord > 0) vibreur[i] = 1;
         break;
