@@ -1,8 +1,8 @@
 {
-  "version": "0.2.239",
-  "raw": 16729312,
-  "gzip": 4643648,
-  "sha256": "480b1bdd6c8a9dd3b5106e2c14795dc428757fa44d768163e9a5e0c90b2e026f",
+  "version": "0.2.240",
+  "raw": 16729325,
+  "gzip": 4643657,
+  "sha256": "7fa772912299e9afcd2dcb5f8dadbf13bc769cf63d212625681c115db9a4a6d8",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
@@ -31,7 +31,7 @@
     "virages.js": 10867,
     "ferro/vehicle-dynamics.js": 3980,
     "pneus.js": 10139,
-    "usure-pneus.js": 5611,
+    "usure-pneus.js": 5624,
     "chaussee.js": 4096,
     "conduite.js": 55601,
     "degats.js": 7340,

@@ -69,7 +69,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
       if (!(distanceActive > 0)) continue;
       const sollicitation = charge * (d * (1 + PARAMS.surcroitGlisse * glisse * glisse) +
         (1 + PARAMS.surcroitGlisse) * frottementArret);
-      u.distance = Math.min(P.DISTANCE_MAX, borne(u.distance, P.DISTANCE_MAX) + d);
+      u.distance = Math.min(P.DISTANCE_MAX, borne(u.distance, P.DISTANCE_MAX) + distanceActive);
       u.sollicitation = Math.min(P.SOLLICITATION_MAX, borne(u.sollicitation, P.SOLLICITATION_MAX) + sollicitation);
       u.usure = Math.min(1, borne(u.usure) + sollicitation * PARAMS.abrasionParMetre * climat * surf.abrasion);
       const grainCible = glisse * glisse * Math.min(charge, 1) * (1 - .55 * eau) * (1 - .6 * neige);
