@@ -1,11 +1,11 @@
 {
-  "version": "0.2.280",
-  "raw": 16735690,
-  "gzip": 4645212,
-  "sha256": "c37aca2edf1b0c0e34571c6950e12d34adcbf6ff6ff73c89af7c2bd5dfe99126",
+  "version": "0.2.282",
+  "raw": 16735759,
+  "gzip": 4645219,
+  "sha256": "f398f93ee48ec05525685276b126a18f7e70df4322a935fb79d1a022922d5220",
   "sources": {
     "ferro/surface.js": 3419,
-    "moteur/renderer.js": 355491,
+    "moteur/renderer.js": 355560,
     "solides-physx.js": 11920,
     "ferro/engine.js": 2025,
     "ferro/physx-runtime.js": 12063280,

@@ -14,6 +14,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  demarrage:
+    name: Démarrage du jeu publié dans Chrome WebGL2
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Ouvrir le HTML du commit et partir depuis le menu Solo
+        env:
+          CHROME: google-chrome
+        run: node tools/page-essai.mjs dist/bitume.html verifications/demarrage-course.js --angle swiftshader --taille 800,600
+
   suites:
     name: Suites Node · lot ${{ matrix.lot }}/4
     runs-on: ubuntu-latest

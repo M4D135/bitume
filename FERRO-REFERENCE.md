@@ -1,4 +1,4 @@
-# FERRO — référence commune 0.3.26
+# FERRO — référence commune 0.3.27
 
 Décision de David du 16 novembre 2026 : entièrement procédural, aucun plafond de taille du code ni du build. Moteur prioritaire, atelier secondaire.
 
@@ -109,3 +109,7 @@ La version 0.3.25 écarte les groupes d’instances hors du volume de l’ombre 
 ## Version 0.3.26 — précision du cockpit
 
 Les positions des pièces de l’habitacle sont exprimées dans le repère de la caméra avant leur conversion en flottants 32 bits. Les compteurs gardent ainsi leur précision sur les longs parcours. [Commit du moteur](https://github.com/M4D135/FERRO/commit/921f2c19a7de967f58e53ce0283a2d889ab8f883)
+
+## Version 0.3.27 — démarrage WebGL2
+
+La hauteur dans le repère caméra passe par une fonction GLSL typée. Le shader accepte une expression de hauteur pour l’eau et le terrain. Le test du moteur compile et lie les programmes en coordonnées monde et en coordonnées caméra. La qualification de BITUME ouvre le HTML du commit dans Chrome et lance une course par le menu Solo.
