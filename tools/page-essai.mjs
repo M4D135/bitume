@@ -25,8 +25,9 @@ const args = ['--no-sandbox', '--remote-debugging-port=0', '--user-data-dir=' + 
 if (!fenetre) args.unshift('--headless=new');
 if (opt('angle')) args.push('--enable-unsafe-swiftshader', '--use-gl=angle', '--use-angle=' + opt('angle'));
 if (opt('webgpu-logiciel')) {
-  args.push(...argumentsWebGPU('swiftshader'));
-  // Le shader de démarrage travaille sur CPU sous SwiftShader. Le délai du smoke et
+  const pilote = opt('webgpu-logiciel');
+  args.push(...argumentsWebGPU(pilote === true ? 'swiftshader' : pilote));
+  // Le shader de démarrage travaille sur CPU avec un pilote logiciel. Le délai du smoke et
   // celui du job encadrent la progression ; laisser ce pilote terminer sa compilation.
   if (process.platform === 'linux') args.push('--disable-gpu-watchdog');
 }

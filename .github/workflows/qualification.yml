@@ -32,7 +32,14 @@ jobs:
           google-chrome --version
           free -h
           df -h /dev/shm
-          node tools/page-essai.mjs dist/bitume.html verifications/demarrage-course.js --webgpu-logiciel --sans-webgl --taille 800,600 --journal-chrome "$RUNNER_TEMP/chrome-webgpu.log"
+          if ! dpkg-query -W mesa-vulkan-drivers > /dev/null 2>&1 || ! command -v xvfb-run > /dev/null || ! command -v xauth > /dev/null; then
+            sudo apt-get -qq update
+            sudo apt-get install -y --no-install-recommends mesa-vulkan-drivers xvfb xauth
+          fi
+          export VK_DRIVER_FILES="$(dpkg -L mesa-vulkan-drivers | awk '/\/lvp_icd(\.[^/]*)?\.json$/ {print; exit}')"
+          test -r "$VK_DRIVER_FILES"
+          echo "Pilote Mesa : $VK_DRIVER_FILES"
+          xvfb-run -a node tools/page-essai.mjs dist/bitume.html verifications/demarrage-course.js --fenetre --dpr 1 --webgpu-logiciel vulkan-mesa --sans-webgl --taille 800,600 --journal-chrome "$RUNNER_TEMP/chrome-webgpu.log"
       - name: Conserver le diagnostic du processus GPU en cas d'échec
         if: failure()
         run: |

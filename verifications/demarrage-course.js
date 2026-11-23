@@ -27,5 +27,8 @@
   if (moteur.stats.errorEvents.length) throw new Error(moteur.stats.errorEvents.join(' / '));
   if (window.contextesWebGLDemandes?.length) throw new Error('Le jeu a demandé un contexte WebGL');
   if (moteur.stats.triangles < 1) throw new Error('Aucun triangle dessiné');
-  return { ecran: jeu.ecran, voitures: course.voitures.length, horloge: course.horloge };
+  const info = moteur.gpu.adapter.info;
+  return { ecran: jeu.ecran, voitures: course.voitures.length, horloge: course.horloge, backend: moteur.stats.backend,
+    adaptateur: [info.vendor, info.architecture, info.device, info.description].filter(Boolean).join(' '),
+    triangles: moteur.stats.triangles };
 })()
