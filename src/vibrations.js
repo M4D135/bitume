@@ -88,21 +88,15 @@
     V.envTic *= Math.exp(-pas / .033);
 
     // Faire décroître les chocs existants avant de traiter les nouveaux événements.
-    let restants = 0, amplitudeLiberee = 0, chocActifMax = 0;
+    let restants = 0;
+    V.envFort = 0;
     for (const choc of V.impactsFort) {
-      const niveauAvant = choc.niveau;
       choc.niveau *= Math.exp(-pas / choc.constante);
-      if (choc.niveau <= Number.EPSILON) {
-        amplitudeLiberee += niveauAvant;
-        continue;
-      }
-      amplitudeLiberee += niveauAvant - choc.niveau;
-      chocActifMax = Math.max(chocActifMax, niveauAvant);
+      if (choc.niveau <= Number.EPSILON) continue;
       V.impactsFort[restants++] = choc;
+      V.envFort = Math.max(V.envFort, choc.niveau);
     }
     V.impactsFort.length = restants;
-    V.envFort = 0;
-    for (const choc of V.impactsFort) V.envFort += choc.niveau;
 
     const events = e.evenements;
     if (events) for (let i = 0; i < events.length; i++) {
@@ -115,32 +109,24 @@
       else if (ev.type === 'atterrissage') impact(V, .31, .088);
     }
 
-    // Les nouveaux chocs plus faibles se partagent l’amplitude libérée pendant ce pas.
+    // Les nouveaux chocs peuvent prendre le relais dès ce pas.
+    let impactMax = V.envFort;
     let retenus = restants;
     for (let i = restants; i < V.impactsFort.length; i++) {
       const choc = V.impactsFort[i];
-      if (choc.niveau < chocActifMax) {
-        choc.niveau = Math.min(choc.niveau, amplitudeLiberee);
-        amplitudeLiberee -= choc.niveau;
-      }
       if (choc.niveau <= Number.EPSILON) continue;
       V.impactsFort[retenus++] = choc;
-      V.envFort += choc.niveau;
+      impactMax = Math.max(impactMax, choc.niveau);
     }
     V.impactsFort.length = retenus;
 
     // Un choc lourd prend le premier plan. La boîte donne une impulsion légère de
     // 40 ms puis s'efface. Chacun atteint au moins une commande même à 144 images/s.
     const boite = Math.min(1, V.rapport / .065);
-    // Le fond suit la décroissance du plus fort impact encore actif.
-    let impactMax = 0;
-    for (const choc of V.impactsFort) {
-      impactMax = Math.max(impactMax, choc.niveau);
-    }
     const apresChoc = 1 - unite(impactMax / .27);
     const fond = (1 - boite * .76) * apresChoc;
-    // La somme des chocs actifs fixe le canal fort pendant leur décroissance.
-    fort = V.impactsFort.length ? V.envFort : Math.max(fort * (1 - boite * .76), .055 * boite);
+    // Le choc dominant fixe le canal fort tant qu'un choc est actif.
+    fort = V.impactsFort.length ? impactMax : Math.max(fort * (1 - boite * .76), .055 * boite);
     faible = Math.max(faible * fond, .32 * boite * boite * apresChoc);
     gauche *= fond;
     droite = Math.max(droite * fond, .19 * boite * boite * apresChoc);
