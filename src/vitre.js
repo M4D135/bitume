@@ -110,7 +110,10 @@
     e.creditEau = e.creditNeige = 0;
     e.impactsActifs = false; e.impactTampon.fill(0);
   }
-  const sansApportAuSec = (c, pluie, neige) => !pluie && !neige && (c.abri || !(Number(c.embruns) > 0));
+  const sansApport = (c, pluie, neige) => c.abri || (!pluie && !neige && !(Number(c.embruns) > 0));
+  // Une fusion reste dessinable jusqu'au pas suivant, même si son dépôt n'est plus compté.
+  const depotsDessinables = e => e.stats.gouttes || e.stats.neige || e.fines?.fin ||
+    e.gouttes.some(p => p.fusion) || e.neige.some(p => p.fusion);
   function effacer(e) {
     if (!e) return;
     if (e.optique) { B.visiereOptique.effacer(e); return; }
@@ -193,7 +196,10 @@
     let actives = 0;
     for (let j = 0; j < f.fin; j++) {
       const i = j * PAS_FINE;
-      if (!points[i + 5]) continue;
+      if (points[i + 5] <= 0) {
+        points[i + 5] = 0;
+        continue;
+      }
       const x = points[i + 2] = points[i], y = points[i + 3] = points[i + 1];
       const poids = .8 * (points[i + 6] * .35 + 1.5) / 720;
       points[i] += PAS * (dx + flux.graviteX * poids * aspect + (x - flux.centreX) * expansion);
@@ -434,8 +440,8 @@
     // La visière optique vient de remplir ce même champ pour ses couches de réfraction.
     if (fluxPrepare !== e.flux) calculerFlux(c, e.flux);
     e.accumulateur += Math.min(.25, dt);
-    if (sansApportAuSec(c, pluie, neige)) {
-      viderDepots(e);
+    if (sansApport(c, pluie, neige) && !depotsDessinables(e)) {
+      e.creditEau = e.creditNeige = 0;
       e.stats.paires = 0;
       while (e.accumulateur + 1e-10 >= PAS) { e.temps += PAS; e.stats.etapes++; e.accumulateur -= PAS; }
       return e.stats;
@@ -563,17 +569,11 @@
     e.opacite = Math.min(1.25, intensite) * (c.cockpit === false ? .55 : 1);
     suivrePalier(e, budget);
     const pluie = clamp(Number(c.pluie) || 0, 0, 1), neige = clamp(Number(c.neige) || 0, 0, 1);
-    const sec = sansApportAuSec(c, pluie, neige);
-    if (sec) {
-      viderDepots(e);
-      e.stats.paires = 0;
-      if (!e.propre) viderPixels(e);
-      montrer(e, false);
-    }
     if (!Number.isFinite(dt) || dt <= 0) return e.stats;
     e.accumulateur += Math.min(.25, dt);
-    const vide = !e.stats.gouttes && !e.stats.microgouttes && !e.stats.neige;
-    if (sec || (vide && c.abri)) {
+    if (sansApport(c, pluie, neige) && !depotsDessinables(e)) {
+      e.creditEau = e.creditNeige = 0;
+      e.stats.paires = 0;
       if (!e.propre) viderPixels(e);
       montrer(e, false);
       // Sans dépôt ni nouvel apport, seuls les pas d'horloge restent à comptabiliser.
@@ -583,8 +583,9 @@
     if (e.accumulateur + 1e-10 >= PAS) {
       dimensionner(e, c, budget);
       while (e.accumulateur + 1e-10 >= PAS) { avancer(e, c, budget, pluie, neige, intensite); e.accumulateur -= PAS; }
-    } else if (vide && e.propre) return e.stats;
-    if (e.stats.gouttes || e.stats.microgouttes || e.stats.neige || !e.propre) dessiner(e, clamp(e.accumulateur / PAS, 0, 1));
+    }
+    if (!e.propre || depotsDessinables(e)) dessiner(e, clamp(e.accumulateur / PAS, 0, 1));
+    else montrer(e, false);
     return e.stats;
   }
   // Sous le voile de chargement : une goutte et un flocon presque transparents, pour que la première averse ne
