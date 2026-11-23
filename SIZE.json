@@ -1,13 +1,13 @@
 {
-  "version": "0.2.289",
-  "raw": 17475808,
-  "gzip": 4744085,
-  "sha256": "2b4af01efce9bb832c6a952dfd428cdafe2158529cad07c7c3a6db3548b1aad1",
+  "version": "0.2.291",
+  "raw": 17480020,
+  "gzip": 4745111,
+  "sha256": "4e04f69ffa42ba76f7069bcb98920b9eaf5e1da7486df0897803b358877b13fa",
   "sources": {
     "ferro/surface.js": 3419,
     "ferro/render-shared.js": 81526,
     "ferro/webgpu-shaders.js": 844016,
-    "ferro/webgpu-renderer.js": 79849,
+    "ferro/webgpu-renderer.js": 81991,
     "solides-physx.js": 11924,
     "ferro/engine.js": 2025,
     "ferro/physx-runtime.js": 12063280,
@@ -72,7 +72,7 @@
     "humain-donnees.js": 4559,
     "humain-corps.js": 3116,
     "public-shaders.js": 133513,
-    "public-gpu.js": 6398,
+    "public-gpu.js": 6427,
     "public.js": 78538,
     "main.js": 13346,
     "cockpit-matieres.js": 1453,
@@ -107,7 +107,7 @@
     "vibrations.js": 9461,
     "ombres.js": 12015,
     "visites.js": 6566,
-    "jeu.js": 438856,
+    "jeu.js": 440897,
     "index.html": 74974,
     "style.css": 110836
   }

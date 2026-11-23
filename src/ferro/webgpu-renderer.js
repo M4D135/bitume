@@ -22,6 +22,32 @@ function writeUniforms(target,fields,values){
  }
  return target;
 }
+// The manifest and the backing store are fixed for the lifetime of a program slot.
+function uniformWriter(target, fields){
+ const floats=new Float32Array(target),ints=new Int32Array(target),uints=new Uint32Array(target);
+ const list=Array.isArray(fields)?fields:Object.entries(fields||{}).map(([name,f])=>({name,...f}));
+ const layout=list.map(field=>{
+  const type=field.type||'float',components=type==='mat4'?16:/[234]$/.test(type)?Number(type.slice(-1)):1;
+  return {name:field.name,view:type.startsWith('i')?ints:type.startsWith('u')?uints:floats,
+   offset:(field.offset||0)/4,stride:(field.arrayStride||field.stride||components*4)/4,count:field.count||1,components};
+ });
+ return values=>{
+  floats.fill(0);
+  for(const field of layout){
+   const value=values[field.name];
+   if(value==null)continue;
+   if(typeof value==='number'||typeof value==='boolean'){
+    field.view[field.offset]=Number(value)||0;
+    continue;
+   }
+   for(let item=0;item<field.count;item++){
+    const from=item*field.components,to=field.offset+item*field.stride;
+    for(let k=0;k<field.components;k++)field.view[to+k]=Number(value[from+k])||0;
+   }
+  }
+  return target;
+ };
+}
 // Les scopes de validation sont empilés sur le GPUDevice, y compris entre deux moteurs.
 const initializing=new WeakMap(), lossObservers=new WeakMap();
 function observeLoss(device,callback){
@@ -60,10 +86,9 @@ async function create(canvas,options={}){
  device.pushErrorScope('validation');scope=true;
  const canvasFormat=navigator.gpu.getPreferredCanvasFormat(),format='rgba8unorm',depthFormat='depth32float',config=S.settings(options),source=S.geometry(),governor=S.resolutionGovernor();
  const stats={backend:'webgpu',webglVersion:0,webgpu:true,contextLost:false,deviceLost:false,drawCalls:0,triangles:0,instances:0,uploadBytes:0,errorEvents:[],gpuTimingAvailable:features.includes('timestamp-query'),creations:0};
- let disposed=false,quality='auto',autoScale=1,runtimeMsaa=true,environment=null,world=[],lights=[],worldRevision=0,partitionState=null,worldIndex=S.spatialIndex([]),backgroundIndex=S.spatialIndex([]),chunks=new Map(),targetKey='',shadowKey='',targets=null,shadowTarget=null,shadowLight=null,actorLightPlan=null;
- const buffers=new Set(),textures=new Set(),pipelines=new Map(),programs=new Map(),bindings=new Map(),samplers=new Map(),ids=new WeakMap();let nextId=1;
+ let disposed=false,quality='auto',autoScale=1,runtimeMsaa=true,environment=null,world=[],lights=[],worldRevision=0,partitionState=null,worldIndex=S.spatialIndex([]),backgroundIndex=S.spatialIndex([]),chunks=new Map(),targets=null,shadowTarget=null,shadowLight=null,actorLightPlan=null;
+ const buffers=new Set(),textures=new Set(),pipelines=new Map(),programs=new Map(),bindings=new Map(),samplers=new Map();
  initializeCleanup=()=>{disposed=true;try{context.unconfigure();}catch{}for(const b of buffers)b.destroy();for(const t of textures)t.destroy();buffers.clear();textures.clear();releaseDevice();};
- const id=o=>{if(!ids.has(o))ids.set(o,nextId++);return ids.get(o);};
  const view=new Float32Array(16),projection=new Float32Array(16),vp=new Float32Array(16),overlayProjection=new Float32Array(16),overlayVP=new Float32Array(16),relativeView=new Float32Array(16),shadowMatrices=new Float32Array(48),shadowViewMatrix=new Float32Array(16),shadowProjection=new Float32Array(16),shadowMatrix=new Float32Array(16);
  const lightPositions=new Float32Array(36),lightColors=new Float32Array(36),lightRanges=new Float32Array(12),lightDirections=new Float32Array(36),lightCones=new Float32Array(24);
  const staticCaches=Array.from({length:5},()=>({entries:[],batch:S.pack([]),buffer:null,capacity:0})),dynamicSlot={},overlaySlot={},fxSlot={},overlayFxSlot={},crowdSlot={},pdrSlots=[];
@@ -93,6 +118,7 @@ async function create(canvas,options={}){
  const groundIndex=S.groundCoverGeometry(source,primitiveIndexing?.indices||source.indices);stats.groundCoverIndex=groundIndex.stats;
  const vbo=buffer(source.vertices,GPUBufferUsage.VERTEX,'FERRO geometry'),ibo=buffer(groundIndex.indices,GPUBufferUsage.INDEX,'FERRO indices');
  const white=texture(1,1),whiteDepth=texture(1,1,depthFormat);device.queue.writeTexture({texture:white.texture},new Uint8Array([255,255,255,255]),{},[1,1]);
+ gpu.shadowView=whiteDepth.view;
  const clear=device.createCommandEncoder();clear.beginRenderPass({colorAttachments:[],depthStencilAttachment:{view:whiteDepth.view,depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'}}).end();device.queue.submit([clear.finish()]);
  const copyModule=device.createShaderModule({label:'FERRO texture copy/mipmap',code:COPY}),depthResolveModule=device.createShaderModule({label:'FERRO MSAA depth resolve',code:RESOLVE_DEPTH});
  const copyLayout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'float'}},{binding:1,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'filtering'}}]}),copyPipelineLayout=device.createPipelineLayout({bindGroupLayouts:[copyLayout]});
@@ -118,11 +144,26 @@ async function create(canvas,options={}){
  function bind(name,slot,values,textureValues={}){
   if(name==='world'||name==='depth'){values.uWindStrength=vegetationState.strength;values.uGroundCoverEye=vegetationState.eye;values.uGroundCoverDensity=vegetationState.density;values.uGroundCoverRange=vegetationState.range;}
   const p=programs.get(name),d=p.descriptor,key=name+':'+slot;let b=bindings.get(key);
-  if(!b){const data=new ArrayBuffer(d.uniforms.byteLength),uniform=buffer(data,GPUBufferUsage.UNIFORM,key);b={data,uniform,group:null,textureKey:''};bindings.set(key,b);}
-  writeUniforms(b.data,d.uniforms.fields,values);device.queue.writeBuffer(b.uniform,0,b.data);stats.uniformUploadBytes=(stats.uniformUploadBytes||0)+b.data.byteLength;
-  const entries=[{binding:0,resource:{buffer:b.uniform,size:d.uniforms.byteLength}}],keys=[];
-  for(const t of d.textures||[]){const value=textureValues[t.name]||(t.sampleType==='depth'?whiteDepth:white),view=value.view||value;entries.push({binding:t.binding,resource:view});keys.push(id(view));if(t.samplerBinding!==undefined){const smp=value.sampler||sampler(t.samplerType==='comparison'?'comparison':t.samplerType==='non-filtering'||t.sampleType==='depth'?'nearest':t.name.startsWith('uPbr')?'pbr':'linear');entries.push({binding:t.samplerBinding,resource:smp});keys.push(id(smp));}}
-  const textureKey=keys.join(':');if(!b.group||textureKey!==b.textureKey){b.group=device.createBindGroup({label:key,layout:p.layout,entries});b.textureKey=textureKey;}
+  if(!b){
+   const data=new ArrayBuffer(d.uniforms.byteLength),uniform=buffer(data,GPUBufferUsage.UNIFORM,key);
+   const entries=[{binding:0,resource:{buffer:uniform,size:d.uniforms.byteLength}}];
+   const textures=(d.textures||NONE).map(t=>{
+    const view={binding:t.binding,resource:null};entries.push(view);
+    const sampling=t.samplerBinding===undefined?null:{binding:t.samplerBinding,resource:null};
+    if(sampling)entries.push(sampling);
+    const fallback=sampling&&sampler(t.samplerType==='comparison'?'comparison':t.samplerType==='non-filtering'||t.sampleType==='depth'?'nearest':t.name.startsWith('uPbr')?'pbr':'linear');
+    return {name:t.name,view,sampling,fallback,texture:t.sampleType==='depth'?whiteDepth:white};
+   });
+   b={data,uniform,write:uniformWriter(data,d.uniforms.fields),entries,textures,group:null};bindings.set(key,b);
+  }
+  b.write(values);device.queue.writeBuffer(b.uniform,0,b.data);stats.uniformUploadBytes=(stats.uniformUploadBytes||0)+b.data.byteLength;
+  let changed=!b.group;
+  for(const t of b.textures){
+   const value=textureValues[t.name]||t.texture,view=value.view||value;
+   if(t.view.resource!==view){t.view.resource=view;changed=true;}
+   if(t.sampling){const s=value.sampler||t.fallback;if(t.sampling.resource!==s){t.sampling.resource=s;changed=true;}}
+  }
+  if(changed)b.group=device.createBindGroup({label:key,layout:p.layout,entries:b.entries});
   return b.group;
  }
  // Same mathematically generated texture layers as WebGL, including all mip levels.
@@ -291,7 +332,15 @@ async function create(canvas,options={}){
   }
   stats.lotDistanceTests=lotView.distanceTests;return count;
  }
- function freeTargets(){if(targets){for(const t of Object.values(targets))if(t?.texture)freeTexture(t);targets=null;}for(const entry of bindings.values()){entry.group=null;entry.textureKey='';}}
+ function freeTargets(){
+  if(!targets)return;
+  for(const t of Object.values(targets))if(t?.texture)freeTexture(t);
+  targets=null;
+  for(const entry of bindings.values()){
+   entry.group=null;
+   for(const t of entry.textures)t.view.resource=null;
+  }
+ }
  const nativeSurface=options.resolution==='native'&&G.FSurface
   ? G.FSurface.create(canvas,{limit:(device.limits?.maxTextureDimension2D||8192),maxPixels:options.maxPixels,scale:options.renderScale}):null;
  if(nativeSurface)stats.native=nativeSurface.stats;
@@ -315,9 +364,41 @@ async function create(canvas,options={}){
   }
   if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}
   stats.renderScale=nativeSurface?nativeSurface.stats.scale:autoScale;stats.pixelRatio=ratio;stats.width=width;stats.height=height;
-  const samples=config.msaa&&runtimeMsaa?4:1,key=width+'x'+height+':'+quality+':'+samples;if(key!==targetKey){targetKey=key;freeTargets();gpu.samples=samples;context.configure({device,format:canvasFormat,alphaMode:'opaque',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.COPY_SRC});targets={scene:texture(width,height),pre:texture(width,height),depth:texture(width,height,depthFormat,samples),overlayDepth:texture(width,height,depthFormat,samples),resolvedDepth:samples>1?texture(width,height,depthFormat):null,msaa:samples>1?texture(width,height,format,samples):null,a:texture(Math.max(1,Math.ceil(width/4)),Math.max(1,Math.ceil(height/4))),b:texture(Math.max(1,Math.ceil(width/4)),Math.max(1,Math.ceil(height/4))),reflection:texture(Math.ceil(width/2),Math.ceil(height/2))};targets.depthResolveBind=samples>1?device.createBindGroup({layout:depthResolvePipeline.getBindGroupLayout(0),entries:[{binding:0,resource:targets.depth.view}]}):null;}
-  const size=(quality==='high'?1024:512)*runtimeShadowScale;if(shadowKey!==String(size)){shadowKey=String(size);freeTexture(shadowTarget);shadowTarget=texture(size*2,size*2,depthFormat);shadowTarget.size=size;gpu.shadowView=shadowTarget.view;}
+  const samples=config.msaa&&runtimeMsaa?4:1;
+  if(!targets||targets.width!==width||targets.height!==height){
+   freeTargets();
+   context.configure({device,format:canvasFormat,alphaMode:'opaque',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.COPY_SRC});
+   targets={width,height};
+  }else if(samples!==gpu.samples){
+   // Only the scene attachments used for multisampling depend on the sample count.
+   for(const key of ['depth','overlayDepth','msaa']){freeTexture(targets[key]);targets[key]=null;}
+   freeTexture(targets.resolvedDepth);targets.resolvedDepth=null;
+   targets.depthResolveBind=null;
+  }
+  gpu.samples=samples;
   stats.msaa=samples>1?samples:0;return {width,height,ratio};
+ }
+ function prepareFrameTargets(overlay,bloom,reflections,shadows){
+  const {width,height}=targets,samples=gpu.samples;
+  targets.scene??=texture(width,height);
+  targets.depth??=texture(width,height,depthFormat,samples);
+  if(samples>1)targets.msaa??=texture(width,height,format,samples);
+  if(overlay)targets.overlayDepth??=texture(width,height,depthFormat,samples);
+  if(overlay&&reflections)targets.pre??=texture(width,height);
+  if(bloom&&!targets.a){
+   const w=Math.ceil(width/4),h=Math.ceil(height/4);
+   targets.a=texture(w,h);targets.b=texture(w,h);
+  }
+  if(reflections){
+   targets.reflection??=texture(Math.ceil(width/2),Math.ceil(height/2));
+   if(samples>1){
+    targets.resolvedDepth??=texture(width,height,depthFormat);
+    targets.depthResolveBind??=device.createBindGroup({layout:depthResolvePipeline.getBindGroupLayout(0),entries:[{binding:0,resource:targets.depth.view}]});
+   }
+  }
+  const size=(quality==='high'?1024:512)*runtimeShadowScale;
+  if(shadowTarget&&size!==shadowTarget.size){freeTexture(shadowTarget);shadowTarget=null;gpu.shadowView=whiteDepth.view;}
+  if(shadows&&!shadowTarget){shadowTarget=texture(size*2,size*2,depthFormat);shadowTarget.size=size;gpu.shadowView=shadowTarget.view;}
  }
  function lightPlan(eye){const distanceTo=l=>(l.p[0]-eye[0])**2+(l.p[1]-eye[1])**2+(l.p[2]-eye[2])**2,sorted=lights.map(light=>({light,d:distanceTo(light)})).sort((a,b)=>a.d-b.d),candidate=sorted.find(e=>e.light.p[1]>=2.5&&(e.light.power||1)>=7)||sorted.find(e=>e.light.p[1]>=2.5);let chosen=shadowLight;if(candidate&&(!chosen||distanceTo(chosen)>candidate.d*1.35+5))chosen=candidate.light;if(!candidate)chosen=null;const second=sorted.find(e=>e.light!==chosen&&e.light.p[1]>=2.5);return {sorted,distanceTo,chosen,shadowLights:chosen?[chosen,...(second&&!environment?[second.light]:[])]:[]};}
  function actorFilter(camera,fx={}){stats.actorsConsidered=stats.actorsCulled=0;actorLightPlan=null;if(disposed||stats.contextLost){stats.actorFilterMode='inactive';return ()=>true;}const t=fx.time||0,shake=fx.shake||0,p=camera.pos||[0,1.6,0],axes=S.cameraAxes(camera),eye=[p[0]+Math.sin(t*57)*shake*.025,p[1]+Math.sin(t*71)*shake*.015,p[2]],cssWidth=canvas.clientWidth||G.innerWidth||800,cssHeight=canvas.clientHeight||G.innerHeight||600,aspect=Math.max(canvas.width/Math.max(1,canvas.height),cssWidth/cssHeight)+(1+cssWidth/cssHeight)/Math.max(1,cssHeight*.3),tangent=Math.tan(Math.max(10,Math.min(110,camera.fov||75))*Math.PI/360),views=[{eye,axes,h:aspect*tangent,v:tangent,far:camera.far||180}],shadows=shadowsEnabled(fx);let sunVolume=null;if(shadows){const plan=lightPlan(eye);actorLightPlan={eye:eye.slice(),previous:shadowLight,plan};if(!fx.sunOnly){for(const l of plan.shadowLights)views.push({eye:l.p,axes:{right:[1,0,0],up:[0,0,-1],forward:[0,-1,0]},h:Math.tan(138*Math.PI/360),v:Math.tan(138*Math.PI/360),far:32});const torch=eye.map((v,i)=>v+axes.right[i]*.16-axes.up[i]*.08),tan=Math.tan(108*Math.PI/360);views.push({eye:torch,axes,h:tan,v:tan,far:32});}if(environment){const sun=environment.sunDirection,fw=sun.map(x=>-x),length=Math.hypot(fw[0],fw[2]),right=length>.0001?[-fw[2]/length,0,fw[0]/length]:[1,0,0],up=[right[1]*fw[2]-right[2]*fw[1],right[2]*fw[0]-right[0]*fw[2],right[0]*fw[1]-right[1]*fw[0]],a=camera.sun;sunVolume=a?{center:a.center,right,up,forward:fw,extent:a.extent+1,lift:a.depth*.5,depth:a.depth}:{center:[eye[0]+axes.forward[0]*8,eye[1]+1.4,eye[2]+axes.forward[2]*8],right,up,forward:fw,extent:(quality==='high'?36:28)+.25,lift:55,depth:115};}}
@@ -529,7 +610,11 @@ async function create(canvas,options={}){
   const colourOverlay=overlayView?overlayView.select(overlay,eye,axes,horizontal,1/f,colourRadii,warm):overlay;
   stats.overlayCulled=overlay.length-colourOverlay.length;
   const dynamicBatch=detail?photo.splitPack(ordinary,photo.nearMeshes,environment):packDynamic(ordinary,environment,true),torchPosition=eye.map((v,i)=>v+right[i]*.16-up[i]*.08),sunOnly=!!fx.sunOnly,hasOverlay=colourOverlay.length>0||overlayParticles.length>0||overlaySurface;
-  stats.drawCalls=stats.triangles=stats.instances=stats.uploadBytes=stats.uniformUploadBytes=stats.fxInstances=0;stats.bloom=quality!=='low'&&fx.bloom!==false;stats.shadows=shadowsEnabled(fx);stats.shadowTileSize=stats.shadows?shadowTarget.size:0;stats.shadowMapSize=2*stats.shadowTileSize;stats.shadowMode=environment?'sun-atlas':'atlas';stats.shadowMaps=stats.shadows?(sunOnly?0:shadowLights.length+(fx.torch!==false?1:0))+(environment?1:0):0;
+  stats.drawCalls=stats.triangles=stats.instances=stats.uploadBytes=stats.uniformUploadBytes=stats.fxInstances=0;stats.bloom=bloomEnabled(fx);stats.shadows=shadowsEnabled(fx);
+  stats.reflections=config.reflections&&stats.bloom&&fx.reflections!==false&&fx.reflections!=='off';stats.reflectionSteps=stats.reflections?96:0;
+  prepareFrameTargets(hasOverlay,stats.bloom,stats.reflections,stats.shadows);
+  const shadowTexel=stats.shadows?1/(2*shadowTarget.size):1;
+  stats.shadowTileSize=stats.shadows?shadowTarget.size:0;stats.shadowMapSize=2*stats.shadowTileSize;stats.shadowMode=environment?'sun-atlas':'atlas';stats.shadowMaps=stats.shadows?(sunOnly?0:shadowLights.length+(fx.torch!==false?1:0))+(environment?1:0):0;
   ensureSlot(dynamicSlot,dynamicBatch);const crowd=fx.instances?.groups?.length?fx.instances:null;stats.crowdInstances=crowd?crowd.values.length/16:0;if(crowd)ensureSlot(crowdSlot,crowd);
   const pdrLots=[];stats.pdrLotInstances=0;if(Array.isArray(fx.lots))for(let i=0;i<fx.lots.length;i++){const lot=fx.lots[i];if(!lot?.values||!lot?.groups?.length)continue;const slot=pdrSlots[i]||(pdrSlots[i]={lot:null,version:NaN});ensureSlot(slot,lot,slot.lot!==lot||slot.version!==lot.version);slot.lot=lot;slot.version=lot.version;pdrLots.push(slot);stats.pdrLotInstances+=lot.values.length/16;}
   // Slot count follows the active stream rather than growing with every world.
@@ -540,8 +625,7 @@ async function create(canvas,options={}){
   const voile=fx.voile&&fx.voile.force>0&&(fx.voile.textureView||fx.voile.texture?.createView)?fx.voile:null;
   if(voile&&!voile.textureView)voile.textureView=voile.texture.createView();
   const worldTextures={uPbrAlbedo:pbr[0],uPbrNormal:pbr[1],uPbrRough:pbr[2],uShadowMap:stats.shadows?shadowTarget:whiteDepth,uVoile:voile?{view:voile.textureView}:white};
-  const worldValues={uOverlayMode:options.overlayLighting==='world'?1:0,uSeaMode:options.sea===false?0:1,uPhoto:fx.photo||0,uSeaOrigin:fx.sea?.origin||[0,0,0,0],uSeaMotion:fx.sea?.motion||[0,0,-1.25,0],uViewProjection:vp,uEye:eye,uForward:forward,uCloudOffset:fx.cloudOffset||weather.cloudOffset,uWindTime:[weather.wind,t],uLocalWindCount:windFrame.count,uLocalWindPosition:windFrame.positions,uLocalWindMotion:windFrame.motions,uSunDirection:environment?.sunDirection||[.4,.8,.3],uSunColor:weather.sunColor,uAmbient:weather.ambient,uFogColor:weather.fog,uEnvironment:[environment?1:0,weather.fogDensity],uNightHour:[environment?.night||0,environment?.hour??14],uSkyTop:weather.skyTop,uSkyBottom:weather.skyBottom,uWeather:weather.values,uLightDirection:lightDirections,uLightCone:lightCones,uLightPosition:lightPositions,uLightColor:lightColors,uLightRange:lightRanges,uLightCount:selected.length,uResolution:[canvas.width,canvas.height],uEffects:[t,fx.flash||0,fx.damage||0,Math.max(0,Math.min(1,fx.pulse||0))],uShadowMatrix:shadowMatrices,uShadowSettings:[stats.shadows&&!sunOnly?shadowLights.length:0,1/(shadowTarget.size*2),stats.shadows&&!sunOnly&&fx.torch!==false?1:0,stats.shadows&&environment?(sunOnly?2:1):0],uTorchPosition:fx.torch===false?[0,-1e5,0]:torchPosition,uVoileZone:voile?[voile.origine[0],voile.origine[1],1/Math.max(.001,voile.taille[0]),1/Math.max(.001,voile.taille[1])]:[0,0,0,0],uVoileForce:voile?Math.min(1,voile.force):0,uPbrReady:layers.length?1:0,uVignette:config.vignette};
-  stats.reflections=config.reflections&&stats.bloom&&fx.reflections!==false&&fx.reflections!=='off';stats.reflectionSteps=stats.reflections?96:0;
+  const worldValues={uOverlayMode:options.overlayLighting==='world'?1:0,uSeaMode:options.sea===false?0:1,uPhoto:fx.photo||0,uSeaOrigin:fx.sea?.origin||[0,0,0,0],uSeaMotion:fx.sea?.motion||[0,0,-1.25,0],uViewProjection:vp,uEye:eye,uForward:forward,uCloudOffset:fx.cloudOffset||weather.cloudOffset,uWindTime:[weather.wind,t],uLocalWindCount:windFrame.count,uLocalWindPosition:windFrame.positions,uLocalWindMotion:windFrame.motions,uSunDirection:environment?.sunDirection||[.4,.8,.3],uSunColor:weather.sunColor,uAmbient:weather.ambient,uFogColor:weather.fog,uEnvironment:[environment?1:0,weather.fogDensity],uNightHour:[environment?.night||0,environment?.hour??14],uSkyTop:weather.skyTop,uSkyBottom:weather.skyBottom,uWeather:weather.values,uLightDirection:lightDirections,uLightCone:lightCones,uLightPosition:lightPositions,uLightColor:lightColors,uLightRange:lightRanges,uLightCount:selected.length,uResolution:[canvas.width,canvas.height],uEffects:[t,fx.flash||0,fx.damage||0,Math.max(0,Math.min(1,fx.pulse||0))],uShadowMatrix:shadowMatrices,uShadowSettings:[stats.shadows&&!sunOnly?shadowLights.length:0,shadowTexel,stats.shadows&&!sunOnly&&fx.torch!==false?1:0,stats.shadows&&environment?(sunOnly?2:1):0],uTorchPosition:fx.torch===false?[0,-1e5,0]:torchPosition,uVoileZone:voile?[voile.origine[0],voile.origine[1],1/Math.max(.001,voile.taille[0]),1/Math.max(.001,voile.taille[1])]:[0,0,0,0],uVoileForce:voile?Math.min(1,voile.force):0,uPbrReady:layers.length?1:0,uVignette:config.vignette};
   if(photo)preparePhoto(encoder,dynamic,fx,worldValues,worldTextures);
   const mainUniforms=bind('world','main',worldValues,worldTextures);
   // Only SSR needs the world colour before the cockpit. Otherwise both passes share one attachment.
@@ -555,7 +639,7 @@ async function create(canvas,options={}){
   renderNappes(pass,eye,axes,horizontal,1/f,far,mainUniforms,colourRadii);stats.lotsVisibles=warm?renderLotsWarm(pass,false):renderLots(pass,eye,axes,horizontal,1/f,far,null,colourRadii);renderBatch(pass,dynamicBatch,dynamicSlot);if(crowd)renderBatch(pass,crowd,crowdSlot);for(const entry of pdrLots)renderBatch(pass,entry.batch,entry);
   if(typeof fx.foule?.gpuColor==='function'){
    const env=environment||S.indoor;Object.assign(crowdView,{oeil:eye,avant:forward,droite:right,haut:up,fov,tangente:1/f,focale:canvas.height*f*.5,largeur:canvas.width,hauteur:canvas.height,near,far,temps:t,qualite:quality,msaa:gpu.samples>1?gpu.samples:0,soleil:env.sunDirection,couleurSoleil:env.sunColor,ambiance:env.ambient,brouillard:env.fog,densiteBrouillard:env.fogDensity,cielHaut:env.skyTop,cielBas:env.skyBottom});
-   Object.assign(crowdView.ombre,{textureView:stats.shadows?shadowTarget.view:whiteDepth.view,active:!!(stats.shadows&&environment),plein:sunOnly,texel:1/(shadowTarget.size*2)});crowdView.lumieres.nombre=selected.length;countCrowd(fx.foule.gpuColor(pass,crowdView));
+   Object.assign(crowdView.ombre,{textureView:stats.shadows?shadowTarget.view:whiteDepth.view,active:!!(stats.shadows&&environment),plein:sunOnly,texel:shadowTexel});crowdView.lumieres.nombre=selected.length;countCrowd(fx.foule.gpuColor(pass,crowdView));
   }
   if(particles.length)renderEffects(pass,particles,eye,t);
   if(worldSurface)renderSurface(pass,surface,vp,null,eye,weather,false);
@@ -584,7 +668,7 @@ async function create(canvas,options={}){
      const reflectionPass=begin({label:'FERRO screen space reflections',colorAttachments:[{view:targets.reflection.view,loadOp:'clear',clearValue:[0,0,0,0],storeOp:'store'}]});
      reflectionPass.setPipeline(pipeline('ssr',{samples:1}));
      const mask=hasOverlay&&canvas.width%4===0&&canvas.height%4===0;
-     reflectionPass.setBindGroup(0,bind('ssr','main',{uProjection:[1/projection[0],1/projection[5],projection[10],projection[14]],uPixel:[1/canvas.width,1/canvas.height],uReceiverMask:mask?1:0},{uColor:sceneBeforeOverlay,uDepth:targets.resolvedDepth||targets.depth,uReceiverTiles:targets.a}));
+     reflectionPass.setBindGroup(0,bind('ssr','main',{uProjection:[1/projection[0],1/projection[5],projection[10],projection[14]],uPixel:[1/canvas.width,1/canvas.height],uReceiverMask:mask?1:0},{uColor:sceneBeforeOverlay,uDepth:gpu.samples>1?targets.resolvedDepth:targets.depth,uReceiverTiles:targets.a}));
      reflectionPass.draw(3);reflectionPass.end();stats.drawCalls++;
     }
     const target=stage===0?targets.a.view:stage===1?targets.b.view:output;
@@ -600,8 +684,7 @@ async function create(canvas,options={}){
   finishTiming(encoder,timed);device.queue.submit([encoder.finish()]);readTiming(timed);evictIdleLots();stats.gpuBuffers=buffers.size;stats.gpuTextures=textures.size;stats.pipelineCount=pipelines.size;stats.uniformSlots=bindings.size;
  }
  function draw(camera,dynamic,fx){counting=true;try{render(camera,dynamic,fx);}finally{counting=false;}}
- // Préchauffage, mêmes signatures que WebGL 2. Les pipelines sont déjà compilés à la création ; les cibles naissent
- // dans resize() et ne sont jamais libérées à l'inactivité. prewarm rend chaque variante une fois pour créer ce qui
+ // Préchauffage, mêmes signatures que WebGL 2. Les cibles des effets naissent à leur premier rendu. prewarm rend chaque variante une fois pour créer ce qui
  // naît au premier usage (tampons d'uniformes par passe, groupes de liaison, flux d'instances) et attend la file GPU.
  // Limite : le nombre d'échantillons fait partie de la clé des cibles ; basculer msaa ou halo les réalloue.
  const clock=()=>G.performance?.now?.()??Date.now();
@@ -692,5 +775,5 @@ async function create(canvas,options={}){
  }catch(error){if(scope)await device.popErrorScope().catch(()=>{});initializeCleanup();throw error;}
  finally{unlock();if(initializing.get(device)===current)initializing.delete(device);}
 }
-G.FRenderWebGPU={create,writeUniforms};
+G.FRenderWebGPU={create,writeUniforms,uniformWriter};
 })(globalThis);

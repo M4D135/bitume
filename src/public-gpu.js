@@ -62,6 +62,7 @@
         const taille = prog.source.uniforms.byteLength;
         r = { data: new ArrayBuffer(taille), uniform: tampon('Pose et éclairage du public', GPUBufferUsage.UNIFORM, taille),
           instances: tampon('Spectateurs visibles', GPUBufferUsage.VERTEX, capacite), groupe: null, atlas: null };
+        r.ecrire = FRenderWebGPU.uniformWriter(r.data, prog.source.uniforms.fields);
         passes.set(cle, r);
       }
       const u = { uVP: vp, uTemps: temps, uSections: etat.s1, uSections2: etat.s2 };
@@ -73,7 +74,7 @@
           uPdrEnvironnement: [1, v.densiteBrouillard, v.temps, 0], uPdrLumierePosition: l.positions, uPdrLumiereCouleur: l.couleurs,
           uPdrLumiereDirection: l.directions, uPdrLumiereCone: l.cones, uPdrLumierePortee: l.portees, uPdrLumieres: l.nombre });
       }
-      FRenderWebGPU.writeUniforms(r.data, prog.source.uniforms.fields, u);
+      r.ecrire(u);
       device.queue.writeBuffer(r.uniform, 0, r.data);
       device.queue.writeBuffer(r.instances, 0, liste.liste, 0, liste.total);
       const atlas = ombre ? null : v.ombre.textureView;

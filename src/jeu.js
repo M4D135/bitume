@@ -219,6 +219,7 @@
   // ---------------------------------------------------------------- moteur de rendu et son
   let rendu = null, son = null, scene = null, session = null;
   let detectionGraphiqueActive = false, annulerDetection = false, contexteRenduPerdu = false, contexteFragile = false;
+  let imageDemandee = null;
   let materielRendu = 'WebGPU', derniereDetection = null;
   let decorEnrichi = true; // l'outil de référence peut retrouver le décor historique pour une comparaison A/B
   let publicVisible = true; // BITUME_JEU.public.visible : mesurer l'image avec et sans le public
@@ -408,6 +409,7 @@
   let conditionsPreparation = null, conditionsPreparationCle = '', conditionsNumero = 0;
   let conditionsControle = null, conditionsEnCours = null;
   function lancer(type, i, enl, conditionsChoisies) {
+    if (ecran === 'erreur') return null;
     // un lancement direct (référence, banc, démarrage, détection) remplace ce qui se préparait
     if (prepa.enCours && !prepa.interne) annulerPreparation();
     restaurerReference();
@@ -661,6 +663,7 @@
 
   // conduite par position physique des touches (e.code : ZQSD et WASD au même endroit) ; vue, son et pause par lettre
   addEventListener('keydown', e => {
+    if (ecran === 'erreur') return;
     const course = enCourse(), lettre = (e.key || '').toLowerCase();
     if (e.repeat) { if (course) e.preventDefault(); return; }
     // F3 : volet de mesures (FPS, intervalle d'image, CPU, GPU mesuré, draw calls, triangles, voitures)
@@ -746,7 +749,7 @@
   // récente garde le focus et évite une double validation. Les clics du menu
   // à la manette sont programmatiques ; la souris reste disponible au repos.
   function filtrerPointeurConsole(e) {
-    if (!consoleXbox || !e.isTrusted || e.pointerType && e.pointerType !== 'mouse' || e.type === 'click' && !e.detail) return;
+    if (ecran === 'erreur' || !consoleXbox || !e.isTrusted || e.pointerType && e.pointerType !== 'mouse' || e.type === 'click' && !e.detail) return;
     let signal = performance.now() - dernierSignalManette < 450;
     if (!signal) try {
       const liste = navigator.getGamepads?.() || [];
@@ -1250,7 +1253,7 @@
   let sonActif = false, muet = false;
   const voixVirages = B.virages.creerVoix();
   function activerSon() {
-    if (!son) return;
+    if (!son || ecran === 'erreur') return;
     son.demarrer();
     if (!sonActif) { sonActif = true; appliquerVolumes(); son.musique(ecran === 'titre'); }
   }
@@ -4498,6 +4501,7 @@
   }
 
   function aller(nom) {
+    if (ecran === 'erreur') return;
     const precedent = ecran;
     if (nom !== precedent) {
       B.navigationMenu.fermerSaisie(document, false);
@@ -5070,6 +5074,7 @@
   }
   // la touche suivante prend la place choisie ; elle quitte toute autre action, des deux joueurs
   addEventListener('keydown', e => {
+    if (ecran === 'erreur') return;
     if (captureManette) {
       e.preventDefault(); e.stopImmediatePropagation();
       if (e.code === 'Escape') { captureManette = null; majCommandes(); }
@@ -5334,8 +5339,10 @@
     return l;
   }
   // Attend les commandes réellement soumises pendant la préparation de la course.
-  function attendreGPU(moteur) {
-    return moteur?.gpu?.device.queue.onSubmittedWorkDone();
+  async function attendreGPU(moteur) {
+    if (contexteRenduPerdu) throw ANNULE;
+    try { await moteur?.gpu?.device.queue.onSubmittedWorkDone(); }
+    finally { if (contexteRenduPerdu) throw ANNULE; }
   }
   // Céder la main entre deux étapes : une image (le voile et son texte se peignent), ou un message quand l'onglet est
   // caché (requestAnimationFrame y dort) ; cent millisecondes au plus dans tous les cas.
@@ -5751,6 +5758,7 @@
     prepa.enCours = prepa.voile = prepa.attente = false; prepa.etape = null;
     if (prepa.rapport) { prepa.rapport.annule = true; prepa.dernier = prepa.rapport; prepa.rapport = null; }
     delete jeu.dataset.vitrine;
+    if (ecran === 'erreur') { prepa.focus = null; return; }
     if (voile) {
       bloquerEntrees(false); leverVoile(); remettreHud();
       const f = prepa.focus; prepa.focus = null;
@@ -5759,7 +5767,7 @@
     retablirSon();
     tPrec = 0;
   }
-  // abandon (perte de contexte, liaison perdue) : la démo rend le titre, sinon la vitrine reprend la scène installée
+  // Abandon avec retour aux menus (par exemple une liaison perdue) : la démo rend le titre, sinon la vitrine reprend la scène installée
   function abandonnerPreparation() {
     const demo = ecran === 'demo';
     annulerPreparation();
@@ -5793,7 +5801,7 @@
   }
   const ANNULE = { annule: true };
   async function preparerSeance(type, i, enl, conditionsChoisies, o = {}) {
-    if (!rendu) return null;
+    if (!rendu || ecran === 'erreur') return null;
     annulerPreparation();
     restaurerReference();
     const jeton = ++prepa.jeton, debut = performance.now();
@@ -5825,7 +5833,7 @@
     };
     const fermer = () => { const d = R.etapes[R.etapes.length - 1]; if (d && d.debut !== undefined) { d.ms = +(performance.now() - d.debut).toFixed(1); delete d.debut; } };
     // une étape : son texte, puis une image cédée pour qu'il se peigne avant le travail qu'il annonce
-    const etape = async (nom, attendre) => { fermer(); majVoile(nom); if (attendre) await suite(); R.etapes.push({ nom, debut: performance.now() }); };
+    const etape = async (nom, attendre) => { controler(); fermer(); majVoile(nom); if (attendre) await suite(); R.etapes.push({ nom, debut: performance.now() }); };
     const terminer = () => {
       fermer();
       prepa.enCours = prepa.voile = prepa.attente = false; prepa.etape = null;
@@ -5930,6 +5938,7 @@
       rendreImage(S, 0, 0);
       if (!vitrine) { majHud(S); if (S.type === 'duo' && S.vueJ2) majHud(S.vueJ2, HUD2, S.course.voitures[S.locaux[1]]); }
       await attendreGPU(rendu);
+      controler();
       if (!leger) { if (!vitrine) tiedirVoile(S); await suite(); }
       // 11. l'écran de course, puis le fondu. Le bloc optionnel s'écrit ensuite au repos.
       const rapport = terminer();
@@ -5945,9 +5954,9 @@
       console.error('BITUME : préparation de la séance', e);
       R.erreur = String(e && e.message || e);
       if (jeton === prepa.jeton) {
-        if (S && session === S) { try { return terminer(); } catch (f) { console.error(f); abandonnerPreparation(); } }
+        if (e === erreurPhysique) erreur('Le moteur physique n’a pas pu démarrer', R.erreur);
+        else if (S && session === S) { try { return terminer(); } catch (f) { console.error(f); abandonnerPreparation(); } }
         else abandonnerPreparation();
-        if (e === erreurPhysique) erreur('Le moteur physique n’a pas pu démarrer', 'Rechargez la page pour réessayer. ' + R.erreur);
       }
       prepa.dernier = R;
       return R;
@@ -5955,10 +5964,11 @@
   }
   // Vitrine des menus : directe quand sa scène est en place, préparée (vue cachée, menus vivants) quand le décor change.
   function lancerVitrine(i, conditions) {
+    if (ecran === 'erreur') return null;
     restaurerReference();
     const k = conditions || conditionsDuDepart(), saison = B.saisons.normaliser(k.saison);
     if (prepa.enCours && prepa.type === 'vitrine' && prepa.i === i && prepa.saison === saison) { if (conditions) prepa.conditions = conditions; return null; }
-    if (!rendu || detectionGraphiqueActive || contexteRenduPerdu || sceneEnPlace(i, saison)) return lancer('vitrine', i, null, conditions);
+    if (!rendu || detectionGraphiqueActive || sceneEnPlace(i, saison)) return lancer('vitrine', i, null, conditions);
     return preparerSeance('vitrine', i, null, conditions || null);
   }
   // Réglages changés pendant la pause : la nouvelle variante (anticrénelage, ombres, glaces) se chauffe au retour à
@@ -5996,7 +6006,8 @@
     B.mesures.reinitialiser();
   }
   function image(t) {
-    requestAnimationFrame(image);
+    if (ecran === 'erreur') return;
+    imageDemandee = requestAnimationFrame(image);
     const fpsDemo = session?.fpsDemo;
     const demoVisible = fpsDemo && ecran === 'demo' && !document.hidden && !prepa.enCours && !prepa.voile && !detectionGraphiqueActive;
     if (fpsDemo && !demoVisible && fpsDemo.debut !== null) B.cadence.releverImage(fpsDemo, null);
@@ -6134,23 +6145,35 @@
   // Les capacités restent ouvertes pour un choix manuel ; FERRO n'alloue les cibles qu'au moment de les utiliser.
   let gpuModeste = false;
   function signalerPerteGPU(info) {
+    if (contexteRenduPerdu) return;
     contexteRenduPerdu = true;
+    erreur('Le périphérique graphique a été interrompu', info?.message || 'Rechargez le jeu pour réinitialiser WebGPU.');
     libererVerre(rendu);
     libererRenduSecondaire();
     if (session?.fx) B.traces.liberer(session.fx);
-    if (prepa.enCours) abandonnerPreparation();
-    if (enCourse()) basculerPause(true);
-    erreur('Le périphérique graphique a été interrompu', info?.message || 'Rechargez le jeu pour réinitialiser WebGPU.');
-    const bouton = document.createElement('button');
-    bouton.className = 'gros principal';
-    bouton.textContent = 'Relancer le jeu';
-    bouton.addEventListener('click', () => location.reload());
-    $('erreur').append(bouton);
   }
   function erreur(titre, texteErreur) {
+    if (ecran === 'erreur') return;
+    ecran = jeu.dataset.ecran = 'erreur';
+    if (imageDemandee !== null) cancelAnimationFrame(imageDemandee);
+    imageDemandee = null;
+    // Le bouton reste le seul contrôle visible et focalisable, y compris si un dialogue était ouvert.
     const el = $('erreur');
-    el.innerHTML = '<h2></h2><p></p>'; el.querySelector('h2').textContent = titre; el.querySelector('p').textContent = texteErreur;
-    el.hidden = false; $('chargement').classList.add('fini');
+    B.navigationMenu.fermerSaisie(document, false);
+    for (const enfant of jeu.children) if (enfant !== el) { enfant.hidden = true; enfant.inert = true; }
+    el.innerHTML = '<h2></h2><p></p>';
+    el.querySelector('h2').textContent = titre; el.querySelector('p').textContent = texteErreur;
+    const bouton = document.createElement('button');
+    bouton.className = 'gros principal'; bouton.textContent = 'Relancer le jeu';
+    bouton.addEventListener('click', () => location.reload());
+    el.append(bouton); el.hidden = false; bouton.focus();
+    avalerJusque = 0;
+    annulerPreparation();
+    annulerConditions();
+    fermerLiaisonSalon();
+    suspendreAnnoncesVirages();
+    arreterManettes();
+    if (son) { son.musique(false); son.suspendre(); }
   }
   // Une détection par version du jeu et par machine (processeur graphique annoncé) : ni la fenêtre ni l'écran n'y
   // entrent. La version est celle du badge du titre, posée par construire.py.
@@ -6258,8 +6281,14 @@
         else resultat = { ...base, statut: 'ok', motif, repli: true, selection: appareil.selection,
           reglages: A.reglages(appareil.selection), mesures: [], performancesMesurees: false };
       }
-      const applique = appliquerDetection(resultat, !auDemarrage);
       const precedent = lireStock(A.CLE, null);
+      if (resultat.motif === 'contexte_perdu') {
+        // Éviter la même mesure au rechargement, sans remplacer le profil choisi ni les options du joueur.
+        if (!A.cacheValide(precedent, empreinte) || precedent?.methode !== methode) ecrireStock(A.CLE, resultat);
+        derniereDetection = resultat;
+        return resultat;
+      }
+      const applique = appliquerDetection(resultat, !auDemarrage);
       derniereDetection = applique || !A.cacheValide(precedent, empreinte) ? resultat : precedent;
       if (applique && !auDemarrage && !contexteRenduPerdu && !rendu.stats.deviceLost) {
         appliquerPalier();
@@ -6281,7 +6310,7 @@
     if (ecran === 'reglages' && B.autoconfig.CLES.includes(e.target.name)) majDetectionGraphique();
   });
   addEventListener('keydown', e => {
-    if (!detectionGraphiqueActive) return;
+    if (!detectionGraphiqueActive || ecran === 'erreur') return;
     e.stopImmediatePropagation();
     if (e.code === 'Escape' || e.code === 'Tab') {
       e.preventDefault();
@@ -6319,7 +6348,18 @@
       if (pageCachee()) await pageVisible();
       contexteFragile = recoMateriel.mobile || (/AppleWebKit\//i.test(navigator.userAgent) && !/Chrome|Chromium|Android|Edg/i.test(navigator.userAgent));
       gpuModeste = recoMateriel.selection === 'low';
-      rendu = await window.FRenderWebGPU.create(canvas, { ...optionsRendu, onDeviceLost: signalerPerteGPU });
+      try {
+        rendu = await window.FRenderWebGPU.create(canvas, { ...optionsRendu, onDeviceLost: signalerPerteGPU });
+      } catch (e) {
+        if (!contexteRenduPerdu) {
+          console.error(e);
+          const cause = String(e?.message || e);
+          erreur(cause === 'Aucun adaptateur WebGPU' ? 'Aucun adaptateur WebGPU disponible' : 'Le rendu WebGPU n’a pas pu démarrer',
+            cause === 'Aucun adaptateur WebGPU' ? 'Vérifiez que l’accélération graphique est active dans votre navigateur, puis relancez BITUME.' : cause);
+        }
+        return;
+      }
+      if (contexteRenduPerdu || rendu.stats.deviceLost) { signalerPerteGPU(); rendu.dispose(); return; }
       const gpu = rendu.gpu;
       const info = gpu.adapter.info || {};
       materielRendu = ['WebGPU', info.vendor, info.architecture, info.device, info.description, gpu.device.limits.maxTextureDimension2D, navigator.hardwareConcurrency || 0].filter(Boolean).join('|');
@@ -6339,7 +6379,7 @@
           capacitesRendu = Object.freeze({ ...capacitesRendu, gpuModeste });
         }
       }
-      if (contexteRenduPerdu || rendu.stats.deviceLost) return;
+      if (contexteRenduPerdu || rendu.stats.deviceLost) { signalerPerteGPU(); return; }
       // Résoudre le profil avant la première séance :
       // un téléphone ne passe pas brièvement par le profil Auto plus coûteux.
       B.graphismes.stabiliser(etatProfils, reglages.qualite, palier.n, horlogeProfils());
@@ -6352,7 +6392,7 @@
       $('chargement').classList.add('fini');
       aller('titre');
       ouvrirAccesOutils();
-      requestAnimationFrame(image);
+      imageDemandee = requestAnimationFrame(image);
     } catch (e) {
       console.error(e);
       erreur('Le jeu n’a pas pu démarrer', String(e && e.message || e));
