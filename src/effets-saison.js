@@ -227,11 +227,27 @@
       const a = t * (neige ? .57 : 1.23) + s.phase2;
       const px = s.x + Math.sin(a) * s.rayon + e.ventX * phase * .055;
       const pz = s.z + Math.cos(a * .731 + s.phase2) * s.rayon + e.ventZ * phase * .055;
-      if (!neige && e.interdits.has(cleSol(Math.floor(px / CELLULE), Math.floor(pz / CELLULE)))) continue;
+      let facteurAbri = 1;
+      if (!neige) {
+        const cx = Math.floor(px / CELLULE), cz = Math.floor(pz / CELLULE);
+        if (e.interdits.has(cleSol(cx, cz))) continue;
+        // Fondre côté extérieur, en mesurant la distance au bord ou au coin du masque.
+        const largeurFondu = 2;
+        let distanceAbri2 = largeurFondu ** 2;
+        for (let gz = Math.floor((pz - largeurFondu) / CELLULE); gz <= Math.floor((pz + largeurFondu) / CELLULE); gz++) {
+          for (let gx = Math.floor((px - largeurFondu) / CELLULE); gx <= Math.floor((px + largeurFondu) / CELLULE); gx++) {
+            if ((gx === cx && gz === cz) || !e.interdits.has(cleSol(gx, gz))) continue;
+            const dx = Math.max(gx * CELLULE - px, 0, px - (gx + 1) * CELLULE);
+            const dz = Math.max(gz * CELLULE - pz, 0, pz - (gz + 1) * CELLULE);
+            distanceAbri2 = Math.min(distanceAbri2, dx * dx + dz * dz);
+          }
+        }
+        facteurAbri = lisse(0, largeurFondu, Math.sqrt(distanceAbri2));
+      }
       const py = s.haut + (s.bas - s.haut) * phase;
       const distance = neige ? Math.hypot(px - x, py - y, pz - z) : Math.hypot(px - x, pz - z);
       const visible = (1 - lisse(neige ? 14 : 18, neige ? PORTEE_NEIGE : PORTEE_FEUILLES, distance))
-        * lisse(0, .065, phase) * (1 - lisse(.78, .99, phase)) * s.poids;
+        * lisse(0, .065, phase) * (1 - lisse(.78, .99, phase)) * s.poids * facteurAbri;
       if (visible < .006) continue;
       const o = s.objet; o.p[0] = px; o.p[1] = py; o.p[2] = pz;
       const taille = s.taille * Math.sqrt(visible);
@@ -257,10 +273,11 @@
     const pluie = clamp(Number(c.pluie) || 0, 0, 1), nuit = clamp(Number(c.nuit) || 0, 0, 1);
     // Une mesure météo réelle peut commander la neige hors hiver, jamais sur Port-Sable.
     const saison = c.saison || etat.saison;
-    const neige = etat.cote || saison.theme === 'cote' ? 0 : Number.isFinite(c.neige) ? clamp(c.neige, 0, 1) : saison.neige ? pluie : 0;
-    if (budget === BUDGETS.off || c.abri || !pose || !saison.feuilles && !neige && !v.neige.limite && !v.feuilles.limite) {
+    const neige = c.abri || etat.cote || saison.theme === 'cote' ? 0 : Number.isFinite(c.neige) ? clamp(c.neige, 0, 1) : saison.neige ? pluie : 0;
+    if (budget === BUDGETS.off || !pose || !saison.feuilles && !neige && !v.neige.limite && !v.feuilles.limite) {
       if (v.feuilles.limite || v.neige.limite) effacer(v); return stats;
     }
+    if (c.abri && v.neige.limite) effacerPool(v.neige);
     const x = Number.isFinite(pose.x) ? pose.x : pose[0], y = Number.isFinite(pose.y) ? pose.y : pose[1], z = Number.isFinite(pose.z) ? pose.z : pose[2];
     if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z) || !Number.isFinite(temps)) return stats;
     const dt = v.dernierTemps === null ? 0 : Math.max(0, Math.min(.2, temps - v.dernierTemps));
