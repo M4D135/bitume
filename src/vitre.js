@@ -547,14 +547,16 @@
     if (!Number.isFinite(dt) || dt <= 0) return e.stats;
     e.accumulateur += Math.min(.25, dt);
     const vide = !e.stats.gouttes && !e.stats.microgouttes && !e.stats.neige;
+    const pluie = clamp(Number(c.pluie) || 0, 0, 1), neige = clamp(Number(c.neige) || 0, 0, 1);
+    const dejaSec = vide && (c.abri || !(pluie || neige || Number(c.embruns) > 0));
+    if (dejaSec) {
+      if (!e.propre) viderPixels(e);
+      montrer(e, false);
+      // Sans dépôt ni nouvel apport, seuls les pas d'horloge restent à comptabiliser.
+      while (e.accumulateur + 1e-10 >= PAS) { e.temps += PAS; e.stats.etapes++; e.accumulateur -= PAS; }
+      return e.stats;
+    }
     if (e.accumulateur + 1e-10 >= PAS) {
-      const pluie = clamp(Number(c.pluie) || 0, 0, 1), neige = clamp(Number(c.neige) || 0, 0, 1);
-      // Au sec, sous abri ou sans précipitation, visière vide et propre : un pas ne ferait qu'avancer l'horloge
-      // (aucun crédit ne peut atteindre un dépôt). On l'avance sans mesurer la toile ni parcourir les pools.
-      if (vide && e.propre && !(c.abri ? 0 : neige || pluie || Number(c.embruns) > 0)) {
-        while (e.accumulateur + 1e-10 >= PAS) { e.temps += PAS; e.stats.etapes++; e.accumulateur -= PAS; }
-        return e.stats;
-      }
       dimensionner(e, c, budget);
       while (e.accumulateur + 1e-10 >= PAS) { avancer(e, c, budget, pluie, neige, intensite); e.accumulateur -= PAS; }
     } else if (vide && e.propre) return e.stats;
