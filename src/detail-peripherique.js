@@ -78,7 +78,11 @@
     const ax = sy * cp, ay = sp, az = -cy * cp;
     const rx = cy * cr - sy * sp * sr, ry = cp * sr, rz = sy * cr + cy * sp * sr;
     // À la décélération, garder plus longtemps le point de corde et la sortie du virage.
-    const avance = Math.max(35, Math.min(180, Math.abs(et.v) * (1.65 + .55 * d.freinLisse)));
+    const avanceCible = Math.max(35, Math.min(180, Math.abs(et.v) * (1.65 + .55 * d.freinLisse)));
+    // Lisser aussi les variations de vitesse d’un rendu au suivant.
+    const avancePrecedente = d.avanceLisse ?? avanceCible;
+    const avance = avancePrecedente + (avanceCible - avancePrecedente) * .25;
+    d.avanceLisse = avance;
     const sens = et.v < 0 ? -1 : 1;
     const route = d.route;
     let routePrete = false;
