@@ -7,11 +7,11 @@ const a = source.indexOf('  function filtrerPointeurConsole('); assert(a >= 0);
 let b = source.indexOf('{', a), profondeur = 1;
 for (b++; profondeur && b < source.length; b++) { if (source[b] === '{') profondeur++; else if (source[b] === '}') profondeur--; }
 assert.equal(profondeur, 0);
-const factory = new Function('navigator', 'consoleXbox', 'dernierSignalManette', 'performance', source.slice(a, b) + '; return filtrerPointeurConsole;');
+const factory = new Function('navigator', 'consoleXbox', 'dernierSignalManette', 'performance', 'ecran', source.slice(a, b) + '; return filtrerPointeurConsole;');
 const manette = () => ({ connected: true, buttons: Array.from({ length: 17 }, () => ({ value: 0, pressed: false })), axes: [0, 0, 0, 0] });
 function contexte({ xbox = true, signal = -Infinity } = {}) {
   const p = manette(), horloge = { t: 1000 }, nav = { pads: [p], getGamepads() { return this.pads; } };
-  const filtrer = factory(nav, xbox, signal, { now: () => horloge.t });
+  const filtrer = factory(nav, xbox, signal, { now: () => horloge.t }, 'course');
   return { p, nav, horloge, filtrer };
 }
 function evenement(champs = {}) {

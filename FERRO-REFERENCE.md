@@ -1,4 +1,4 @@
-# FERRO — référence commune 0.3.31
+# FERRO — référence commune 0.3.32
 
 Décision de David du 16 novembre 2026 : entièrement procédural, aucun plafond de taille du code ni du build. Moteur prioritaire, atelier secondaire.
 
@@ -9,6 +9,8 @@ Propagation : depuis le checkout de référence, `python3 tools/install-ferro.py
 Distribution et documentation : https://github.com/M4D135/FERRO/tree/main/dist
 
 Le paquet contient les sources, les bundles optionnels, un installateur et le contrôleur des empreintes. Les tailles sont mesurées à titre informatif.
+
+BITUME 0.2.291 alloue les textures de rendu à la première passe qui en a besoin. Les vues des uniformes et les groupes de liaison sont réutilisés pour la scène et la foule. [Révision FERRO 0.3.32](https://github.com/M4D135/FERRO/commit/f12099c171b7e67ffe6bab560f7a89f8a01855dd).
 
 BITUME 0.2.285 embarque le moteur WebGPU et ses shaders WGSL. Le registre de géométrie partagé, les passes de surfaces transparentes et la couleur déjà résolue du monde servent au rendu des monoplaces et de leur saute-vent. La visière, les précipitations et les rétroviseurs utilisent le même périphérique que la scène. [Révision FERRO 0.3.31](https://github.com/M4D135/FERRO/commit/f4cb62f3dab92c8f9d47b7c3921b41df249d2177).
 

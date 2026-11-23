@@ -54,11 +54,11 @@ const orchestration = new Function('base', 'scenario', `
   const etatProfils = base.graphismes.etatStable(), palier = { n: 0 }, horlogeProfils = () => 0;
   let capacitesRendu = base.graphismes.capacites({ msaa: 4, shadowMapScale: 2, reflections: true }, false, 1);
   const moteurs = [], renderer = () => ({ stats: { backend: 'webgpu' }, gpu: { adapter: { info: { description: scenario.materiel || 'GPU-A' } }, device: { limits: { maxTextureDimension2D: 16384 } } },
-    draw() { throw Error('dessin interdit pendant la détection'); },
+    dispose() { appels.push('liberer-rendu'); }, draw() { throw Error('dessin interdit pendant la détection'); },
     setWorld() { appels.push('restaurer-world'); }, setNappes() { appels.push('restaurer-nappes'); }, setLots() { appels.push('restaurer-lots'); } });
-  let rendu = scenario.demarrage ? null : renderer(), son = null;
+  let rendu = scenario.demarrage ? null : renderer(), son = null, imageDemandee = null;
   const window = { devicePixelRatio: 3, screen: { width: 390, height: 844 }, HTMLCanvasElement: scenario.Canvas,
-    FRenderWebGPU: { async create(c, options) { appels.push('renderer'); const r = renderer(); moteurs.push({ options, r }); return r; } },
+    FRenderWebGPU: { async create(c, options) { appels.push('renderer'); const r = renderer(); moteurs.push({ options, r }); if (scenario.creation) await scenario.creation(options, r); return r; } },
     FPhysX: scenario.physx === null ? null : { isReady() { appels.push('physx'); return scenario.physx !== false; } } };
   const interdit = nom => () => { appels.push(nom); throw Error(nom + ' interdit'); };
   let mesures = 0; const signaux = [];
@@ -87,8 +87,8 @@ const orchestration = new Function('base', 'scenario', `
   const lancer = type => { appels.push('lancer:' + type); session = { type, i: 0 }; };
   const aller = nom => { appels.push(nom); ecran = nom; jeu.dataset.ecran = nom; };
   const image = () => {}, requestAnimationFrame = () => appels.push('boucle');
-  const erreur = () => appels.push('erreur'), ouvrirAccesOutils = () => appels.push('outils');
-  const signalerPerteGPU = () => appels.push('perte-gpu');
+  const erreur = (titre, texte) => appels.push(['erreur', titre, texte]), ouvrirAccesOutils = () => appels.push('outils');
+  const signalerPerteGPU = () => { contexteRenduPerdu = true; appels.push('perte-gpu'); };
   ${bloc('  function capacitesDeclarees()', '  async function demarrer()')}
   ${bloc('  async function demarrer()', "  // Outil d'essai")}
   return { detecterGraphismes, majDetectionGraphique, appliquerDetection, empreinteDetection,
@@ -373,6 +373,37 @@ test('perte du GPU : garder l’écran de reprise et éviter la même charge au 
   const retour = orchestration(B, { demarrage: true, stock: h.stockage, reglages: h.reglages });
   await retour.demarrer(); assert.equal(retour.mesures, 0); assert.equal(retour.ecran, 'titre');
   assert.equal(h.appels.includes('titre'), false); assert.equal(h.nodes.get('autodetection').hidden, true);
+});
+
+test('aucun adaptateur et échec du rendu donnent leur diagnostic avant toute initialisation PhysX', async () => {
+  for (const [cause, titre] of [['Aucun adaptateur WebGPU', 'Aucun adaptateur WebGPU disponible'],
+    ['Échec du pipeline', 'Le rendu WebGPU n’a pas pu démarrer']]) {
+    const h = orchestration(B, { demarrage: true, creation() { throw Error(cause); } });
+    await h.demarrer();
+    assert.equal(h.appels.find(a => Array.isArray(a) && a[0] === 'erreur')[1], titre);
+    assert.ok(!h.appels.includes('physx') && !h.appels.includes('boucle') && !h.appels.includes('titre'));
+  }
+});
+
+test('perte notifiée pendant la création du renderer : abandonner avant la mesure ou le titre', async () => {
+  for (const rejeter of [false, true]) {
+    const h = orchestration(B, { demarrage: true, creation(options) {
+      options.onDeviceLost({ message: 'périphérique interrompu' });
+      if (rejeter) throw Error('échec secondaire de la préparation du rendu');
+    } });
+    await h.demarrer();
+    assert.equal(h.appels.includes('liberer-rendu'), !rejeter);
+    assert.ok(h.appels.includes('perte-gpu') && !h.appels.some(a => Array.isArray(a)));
+    assert.ok(!h.appels.includes('titre') && !h.appels.includes('boucle')); assert.equal(h.mesures, 0);
+  }
+});
+
+test('une détection manuelle interrompue par le GPU conserve les préférences et la mesure antérieure', async () => {
+  const avant = orchestration(B, { selection: 'high' }); await avant.detecterGraphismes();
+  const regles = { ...avant.reglages, qualite: 'medium', faune: 'off', fauneCoupeeManuellement: true };
+  const h = orchestration(B, { stock: avant.stockage, reglages: regles, durant({ rendu }) { rendu.stats.deviceLost = true; } });
+  assert.equal((await h.detecterGraphismes()).motif, 'contexte_perdu');
+  assert.deepEqual(h.reglages, regles); assert.deepEqual(h.stockage, avant.stockage);
 });
 
 test('échec technique ou délai : profil prudent explicite, appliqué une fois, relançable dans Image', async () => {
