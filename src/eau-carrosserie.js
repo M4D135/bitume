@@ -216,9 +216,10 @@
     }
     const charge = e.humide * MAX, allongement = 1 + .65 * clamp(Math.abs(v) / 85, 0, 1);
     for (let i = 0; i < MAX; i++) {
-      const g = e.gouttes[i], f = g.face;
-      g.force = clamp(charge - i, 0, 1); g.allongement = allongement;
+      const g = e.gouttes[i];
       if (g.support.deplacementInchange && g.u === g.u0 && g.v === g.v0) continue;
+      const f = g.face;
+      g.force = clamp(charge - i, 0, 1); g.allongement = allongement;
       let u = Math.max(g.marge[1], g.u0 + g.support.du);
       let v = Math.max(g.marge[2], g.v0 + g.support.dv);
       const somme = u + v - g.marge[1] - g.marge[2];
