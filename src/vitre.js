@@ -90,7 +90,7 @@
       creditEau: 0, creditNeige: 0, largeur: canvas ? canvas.clientWidth || canvas.width || 1 : 1280,
       hauteur: canvas ? canvas.clientHeight || canvas.height || 1 : 720, dpr: 1, dprPalier: null, propre: true, libere: false,
       flux: { air: 0, vitesseAir: 0, vitesseIncidente: 0, expansion: 0, deriveX: 0, deriveY: 0, graviteX: 0, graviteY: 1, centreX: .5, centreY: .45 },
-      opacite: 1, impactsActifs: false, impactTampon: new Float32Array(4),
+      opacite: 1, opaciteAbri: 1, impactsActifs: false, impactTampon: new Float32Array(4),
       stats: { backend: 'canvas2d', pret: !!contexte, gouttes: 0, microgouttes: 0, neige: 0, dessins: 0, etapes: 0, largeur: 0, hauteur: 0, dpr: 1, pixels: 0, fraction: 0,
         fusionsEau: 0, fusionsNeige: 0, fonte: 0, expulses: 0, seches: 0, surfaceExpulsee: 0,
         depotsEau: 0, depotsEmbruns: 0, impactsEmis: 0, eauEvacuee: 0, paires: 0 } };
@@ -121,6 +121,7 @@
     montrer(e, false);
     viderDepots(e);
     e.accumulateur = 0;
+    e.opaciteAbri = 1;
     e.dprPalier = null; // nouvelle séance : le prochain appel actif reprend la définition du palier courant
   }
   function liberer(e) {
@@ -382,7 +383,7 @@
       const p = e.gouttes[i]; p.fusion = false; if (!p.vivant) continue;
       p.px = p.x; p.py = p.y; p.pa = p.age; p.pp = p.poids; p.pr = p.taille;
       p.impactAvant = p.impactAge; p.impactAge += PAS;
-      if (!eau && !spray) p.impactForce = 0;
+      if (!e.contexte && !eau && !spray) p.impactForce = 0;
       garderTrajet(p);
       // La vitesse déplace l'eau jusqu'au bord ; elle ne simule plus son évacuation en accélérant son âge.
       p.age += PAS * (eau > .05 || spray > .05 ? 1 : 1.55);
@@ -564,13 +565,16 @@
     const intensite = Number.isFinite(Number(c.intensite)) && c.intensite != null ? clamp(Number(c.intensite), 0, 2) : 1;
     if (!e.contexte || c.actif === false || c.retro === true || !intensite || budget === BUDGETS.off) { effacer(e); return e.stats; }
     if (c.pause === true) return e.stats;
-    e.impactsActifs = impactsExposes(c);
     calculerFlux(c, e.flux);
-    e.opacite = Math.min(1.25, intensite) * (c.cockpit === false ? .55 : 1);
     suivrePalier(e, budget);
     const pluie = clamp(Number(c.pluie) || 0, 0, 1), neige = clamp(Number(c.neige) || 0, 0, 1);
     if (!Number.isFinite(dt) || dt <= 0) return e.stats;
-    e.accumulateur += Math.min(.25, dt);
+    const delta = Math.min(.25, dt);
+    // Sous abri, les dépôts et les impacts en cours continuent d’évoluer pendant le fondu.
+    e.opaciteAbri = clamp(e.opaciteAbri + (c.abri ? -delta : delta) / .45, 0, 1);
+    e.opacite = Math.min(1.25, intensite) * (c.cockpit === false ? .55 : 1) * e.opaciteAbri;
+    e.impactsActifs = true;
+    e.accumulateur += delta;
     if (sansApport(c, pluie, neige) && !depotsDessinables(e)) {
       e.creditEau = e.creditNeige = 0;
       e.stats.paires = 0;
