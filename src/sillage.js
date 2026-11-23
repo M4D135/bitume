@@ -19,10 +19,12 @@
     const k = Math.min(e.reserve.length, Number.isFinite(n) ? Math.max(0, Math.floor(n)) : e.reserve.length);
     for (let i = 0; i < e.reserve.length; i++) {
       const source = e.reserve[i];
-      source.p[0] = source.p[1] = source.p[2] = 0;
-      source.velocity[0] = source.velocity[1] = source.velocity[2] = 0;
       source.id = i; source.strength = 0;
-      if (i < k) e.sources[i] = source;
+      if (i < k) {
+        source.p[0] = source.p[1] = source.p[2] = 0;
+        source.velocity[0] = source.velocity[1] = source.velocity[2] = 0;
+        e.sources[i] = source;
+      }
     }
     e.sources.length = k; e.actifs = 0;
     return e;
