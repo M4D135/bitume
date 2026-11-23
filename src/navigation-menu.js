@@ -301,7 +301,9 @@
       const cibleValide = cible && cible.isConnected && s.zone.contains(cible) && visible(cible);
       if (!cibleValide || !restaurerFocus(doc, cible)) {
         restaurerNavigation(s.zone, s.panneau, cible);
-        if (doc.activeElement === doc.body && restaurable(doc, s.zone)) {
+        const actif = doc.activeElement;
+        if (restaurable(doc, s.zone) &&
+            (actif === doc.body || actif === cible || !s.zone.contains(actif) || !restaurable(doc, actif))) {
           for (const el of s.zone.querySelectorAll(COMMANDES)) {
             if (el !== cible && el.tabIndex >= 0 && restaurerFocus(doc, el)) break;
           }
