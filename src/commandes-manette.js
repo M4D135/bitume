@@ -101,10 +101,11 @@
     const v = p && p.axes && p.axes[l.index];
     if (!Number.isFinite(v)) return 0;
     if (action === 'gaz' || action === 'frein') {
-      const position = v * l.sens;
-      const seuil = l.origine * l.sens + .06;
-      if (position <= seuil) return 0;
-      return limite((position - seuil) / (1 - seuil));
+      const brut = v * l.sens;
+      const origine = l.origine * l.sens;
+      if (brut <= origine + .06) return 0;
+      const course = 1 - origine;
+      return limite((brut - origine) / course);
     }
     const brut = limite((v - l.origine) * l.sens / (1 - l.origine * l.sens));
     return brut <= .06 ? 0 : (brut - .06) / .94;
