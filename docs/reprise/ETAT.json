@@ -1,47 +1,49 @@
 {
   "date": "2026-11-23",
   "etat_courant": {
-    "version_courante": "0.2.287",
-    "version_publiee_verifiee": "0.2.287",
+    "version_courante": "0.2.289",
+    "version_publiee_verifiee": "0.2.289",
     "physique": "p19",
     "moteur": "FERRO 0.3.31 canonique",
     "circuits": 9,
     "statut": "integre_sur_main",
-    "lot": "noms_des_circuits",
+    "lot": "profil_webgpu_et_fps_demo",
     "fiche": "docs/reprise/NUIT-2026-11-22-23.md",
     "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
     "dernieres_demandes": "docs/reprise/NUIT-2026-11-22-23.md",
-    "dernier_lot_clos": "docs/reprise/rapports/CATALOGUE-2026-11-23.json",
+    "dernier_lot_clos": "docs/reprise/rapports/PROFIL-FPS-2026-11-23.json",
     "prochaine_action": "Viser 60 images 3D/s sur les neuf circuits, en 1080p Fine avec les deux rétroviseurs, et couvrir tous les matériels, vues, modes et conditions pris en charge.",
     "branche_candidate": "main",
-    "version_candidate": "0.2.287",
+    "version_candidate": "0.2.289",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/NUIT-2026-11-22-23.md"
   },
   "publication": {
-    "version": "0.2.287",
-    "commit_sources": "783ef1fabd5c586158cd8cb5611fe5293616b510",
+    "version": "0.2.289",
+    "commit_sources": "9a5132acb6821e7457e3a90199241239adea681d",
     "statut": "publie_sur_main",
-    "url": "https://github.com/M4D135/bitume/commit/783ef1fabd5c586158cd8cb5611fe5293616b510",
-    "recu": "docs/reprise/rapports/CATALOGUE-2026-11-23.json",
+    "url": "https://github.com/M4D135/bitume/commit/9a5132acb6821e7457e3a90199241239adea681d",
+    "recu": "docs/reprise/rapports/PROFIL-FPS-2026-11-23.json",
     "site_deploiement_verifie": true
   },
   "qualification": {
-    "version": "0.2.287",
-    "tete_qualifiee": "783ef1fabd5c586158cd8cb5611fe5293616b510",
-    "build_octets": 17461448,
-    "build_sha256": "230b4d9c1489113997f96bb3123b6cd8e52cb4472db17bb331d470366d82e1d9",
+    "version": "0.2.289",
+    "tete_qualifiee": "9a5132acb6821e7457e3a90199241239adea681d",
+    "build_octets": 17475808,
+    "build_sha256": "2b4af01efce9bb832c6a952dfd428cdafe2158529cad07c7c3a6db3548b1aad1",
     "locale": {
-      "statut": "neuf_noms_controles_en_course_sur_le_site",
-      "circuits": 9
+      "statut": "profils_webgpu_et_maximum_demo_controles",
+      "cas_demo_en_ligne": 4
     },
     "github_actions": {
-      "commit": "783ef1fabd5c586158cd8cb5611fe5293616b510",
-      "url": "https://github.com/M4D135/bitume/actions/workflows/qualification.yml"
+      "commit": "9a5132acb6821e7457e3a90199241239adea681d",
+      "url": "https://github.com/M4D135/bitume/actions/runs/45143618558"
     },
-    "recu": "docs/reprise/rapports/CATALOGUE-2026-11-23.json",
+    "recu": "docs/reprise/rapports/PROFIL-FPS-2026-11-23.json",
     "limites": [
-      "Vérification en course sur neuf circuits et lecture des chronos précédents sur Mac M5. Les mesures de cadence et la réception optique .285 figurent dans WEBGPU-2026-11-23.json."
+      "Le niveau estime le débit disponible au moment de la mesure. Sur le même M5, le quatrième palier se situe près du seuil en 1080p.",
+      "Le rendu logiciel et le tactile émulé ne qualifient pas un téléphone ou une console physiques.",
+      "Le démarrage Linux WebGPU passe sur GitHub Actions. La qualification globale reste en échec sur des suites hors du mini-banc et de la démo."
     ],
     "reconstruction_identique": true,
     "essai_utilisateur_valide": null

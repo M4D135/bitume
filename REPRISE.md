@@ -3,7 +3,9 @@
 <!-- bitume-reprise-actuelle-debut -->
 ## Par où reprendre
 
-**Version en ligne du 23 novembre, BITUME 0.2.287.** Les neuf tracés portent des noms de course ou de lieux-dits. Le menu, les chronos déjà enregistrés et la piste au départ affichent le même nom. Les neuf départs ont été contrôlés sur le site public. [Catalogue et réception en course](docs/reprise/rapports/CATALOGUE-2026-11-23.json)
+**Version en ligne du 23 novembre, BITUME 0.2.289.** Au premier lancement de chaque version, le jeu mesure la machine et choisit un des quatre profils graphiques. Les réglages personnalisés sont conservés. En démo, le compteur affiche la cadence et le maximum de la séance. Les quatre contrôles sur le site concordent avec un comptage indépendant des images. [Mesures du mini-banc et des FPS](docs/reprise/rapports/PROFIL-FPS-2026-11-23.json)
+
+**Version précédente, BITUME 0.2.287.** Les neuf tracés portent des noms de course ou de lieux-dits. Le menu, les chronos déjà enregistrés et la piste au départ affichent le même nom. Les neuf départs ont été contrôlés sur le site public. [Catalogue et réception en course](docs/reprise/rapports/CATALOGUE-2026-11-23.json)
 
 **Version précédente, BITUME 0.2.285 et FERRO 0.3.31.** La 3D utilise WebGPU. Le bord inférieur du saute-vent rejoint la carrosserie sur toute sa longueur. La vitre reflète le ciel et le soleil selon l’angle de vue. En qualité Fine, les gouttes déforment la piste visible à travers le verre. Les neuf circuits ont démarré sous la pluie, dont trois depuis le site public. Sur Mac M5, le passage de 16 secondes à Pietraporzio donne 60,00 images 3D/s en 1080p Fine avec les deux rétroviseurs, et 17,6 ms au 95ᵉ percentile. [Contrôles du verre, des circuits et de la cadence](docs/reprise/rapports/WEBGPU-2026-11-23.json)
 
