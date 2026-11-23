@@ -629,7 +629,7 @@
           vise(vx.pb.frequency, filtre, t, tc);
           vise(vx.pan.pan, pan, t, 0.05);
         }
-        if (nouvelleVoix || premierChange) {
+        if (nouvelleVoix || (premierChange && r.id === prochainPremierId)) {
           vx.sortie.gain.cancelScheduledValues(t);
           vx.sortie.gain.setValueAtTime(niveau, t);
         } else {
