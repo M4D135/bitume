@@ -776,8 +776,12 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
     if (etat._physx) {
       const ph = etat._physx, u = ph.u, w = ph.w, r = etat.omega;
       etat.rapport = -1; etat.braquage = etat.volant * P.braquageMeca;
-      if (u > -.04 && !autorise) { etat.rapport = 1; etat.freinRecul = 0; return; }
-      const moteur = autorise
+      // Sortie du recul sur intention avant (gaz) OU relâchement. Pour le joueur, marcheArriere est
+      // toujours vrai (le recul s'engage au frein maintenu à l'arrêt) : sans le gaz ici, rapport
+      // resterait bloqué à -1 et le joueur ne pourrait plus accélérer après avoir reculé.
+      if (u > -.04 && (gaz > 0 || !autorise)) { etat.rapport = 1; etat.freinRecul = 0; return; }
+      // Frein du recul appliqué dès que le joueur demande l'avant (gaz), pas seulement au relâchement.
+      const moteur = (autorise && gaz <= 0)
         ? -ph.mass * P.reculAcc * frein * clamp((P.reculMax + u) / .5, 0, 1)
         : ph.mass * P.reculFrein * Math.max(gaz, .5);
       const a = ph.wheelbase * (1 - ph.front), b = ph.wheelbase * ph.front, ua = Math.max(Math.abs(u), 1);
@@ -799,7 +803,9 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
     else etat.v=Math.min(0,etat.v+.8*dt);
     if(etat.v>=0){
       etat.v=0;etat.omega=0;etat.along=0;etat.alat=0;
-      if(autorise)etat.rapport=-1;
+      // Le joueur garde marcheArriere toujours vrai : seule l'intention avant (gaz) ou le relâchement
+      // fait repasser en marche avant ; sinon la voiture reste bloquée en recul à l'arrêt.
+      if(autorise && gaz<=0)etat.rapport=-1;
       else {etat.rapport=1;etat.freinRecul=0;}
       return;
     }
