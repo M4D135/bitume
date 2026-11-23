@@ -31,7 +31,9 @@
       m.t += pas; m.tp += pas; m.eclair = Math.max(0, m.eclair - pas * 6);
       const flocons = typeof m.precipitationsNeige === 'boolean' ? m.precipitationsNeige : m.neige === true;
       const pluieLiquide = flocons ? 0 : m.pluie;
-      m.mouille = clamp((m.mouille || 0) + pas * (pluieLiquide * .039 - (pluieLiquide > 0 ? .004 : .012)), 0, 1);
+      const apport = pluieLiquide * .039;
+      const sechage = pluieLiquide > 0 ? Math.min(.004, apport) : .012;
+      m.mouille = clamp((m.mouille || 0) + pas * (apport - sechage), 0, 1);
       if (m.phase === 'orage' && m.t >= m.prochainEclair) {
         m.eclair = 1; m.prochainEclair = m.t + 2.8 + hasard(Math.round(m.t * 1000)) * 4.2;
       }
@@ -53,11 +55,12 @@
       const pluieLiquide = m.precipitationsNeige !== true;
       const poidsAncien = clamp(2.5 * k, 0, pas);
       const eau = pluieLiquide ? anciennePluie * poidsAncien + ciblePluie * (pas - poidsAncien) : 0;
-      // Pendant la montée, le séchage suit l'apport liquide sans pouvoir le dépasser.
-      const sechage = pluieLiquide && ciblePluie > 0
-        ? .004 * Math.min(pas, eau / Math.max(ciblePluie, .004 / .039))
-        : .012 * pas;
-      m.mouille = clamp(m.mouille + (eau * .039 - sechage), 0, 1);
+      const apport = eau * .039;
+      const sechageSousPluie = Math.min(apport, .004 * pas);
+      // Après l'averse, reprendre le séchage à sec sous le seuil d'affichage des gouttes.
+      const fractionSeche = !pluieLiquide ? 1 : ciblePluie > 0 ? 0 : clamp(1 - eau / (.025 * pas), 0, 1);
+      const sechage = sechageSousPluie + fractionSeche * (.012 * pas - sechageSousPluie);
+      m.mouille = clamp(m.mouille + (apport - sechage), 0, 1);
       m.t += pas; m.tp += pas; reste -= pas;
       m.eclair = Math.max(0, m.eclair - pas * 6);
       if (p === 3 && m.prochainEclair > 0 && m.t + 1e-10 >= m.prochainEclair) {
