@@ -13,8 +13,6 @@
     return { reserve, sources: [], actifs: 0 };
   }
   function former(source) {
-    source.p[0] = source.p[1] = source.p[2] = 0;
-    source.velocity[0] = source.velocity[1] = source.velocity[2] = 0;
     source.radius = 6;
     source.wake = 10;
   }
@@ -26,6 +24,8 @@
     for (let i = 0; i < e.reserve.length; i++) {
       const source = e.reserve[i];
       former(source);
+      source.p[0] = source.p[1] = source.p[2] = 0;
+      source.velocity[0] = source.velocity[1] = source.velocity[2] = 0;
       source.id = i; source.strength = 0;
       if (i < k) e.sources[i] = source;
     }
