@@ -1,8 +1,8 @@
 {
-  "version": "0.2.278",
-  "raw": 16735363,
-  "gzip": 4645098,
-  "sha256": "e17723fa08254b2bfadd82f01da05c7b4d0eebd9db3a959e896aa8af5304e75e",
+  "version": "0.2.279",
+  "raw": 16735413,
+  "gzip": 4645123,
+  "sha256": "453fc1c29bbc75c4d7b15fbd57b4ec16d5fe6f3ae2cacbba081723fef28c6cc2",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
@@ -50,7 +50,7 @@
     "batiments.js": 14306,
     "lieux.js": 61601,
     "herbier-wasm.js": 11016,
-    "lagon.js": 7974,
+    "lagon.js": 8024,
     "ovale-forges-decor.js": 12007,
     "decor.js": 186634,
     "physique.js": 28794,

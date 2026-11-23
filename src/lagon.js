@@ -113,12 +113,13 @@
     const voisinsDiagonaux = [[-1,-1],[1,1]];
     const voisinsAlternes = [[-1,-1],[1,1],[-1,1],[1,-1]];
     function voisinsDuSommet(i,j) {
-      if (!alterne) return voisinsCardinaux.concat(voisinsDiagonaux);
-      return ((i+j)&1) ? voisinsCardinaux : voisinsCardinaux.concat(voisinsAlternes);
+      const diagonaux = alterne ? (((i+j)&1) ? [] : voisinsAlternes) : voisinsDiagonaux;
+      return voisinsCardinaux.concat(diagonaux).filter(([di,dj]) =>
+        i+di>=i0 && i+di<=i1 && j+dj>=j0 && j+dj<=j1);
     }
     // Pour le phare, prendre un sommet émergé directement voisin d'un triangle humide.
     // Un relief bas au-delà de la baie ne peut pas recevoir le repère ni sa faune littorale.
-    for (let j=j0+1; j<j1; j++) for (let i=i0+1; i<i1; i++) {
+    for (let j=j0; j<=j1; j++) for (let i=i0; i<=i1; i++) {
       const k=masque(i,j), y=H[j*nx+i], haut=y-site.niveau;
       if (haut<.25 || haut>6 || signe[k]>0 || D[j*nx+i]<garde+8) continue;
       let distanceRive = Infinity, denivele = 0;
@@ -136,7 +137,7 @@
     function niveauHabitatA(x,z) {
       if (Number.isFinite(niveauEauA(x,z))) return site.niveau;
       const i=Math.round((x-x0)/pas), j=Math.round((z-z0)/pas);
-      if (i<=i0 || i>=i1 || j<=j0 || j>=j1) return NaN;
+      if (i<i0 || i>i1 || j<j0 || j>j1) return NaN;
       return voisinsDuSommet(i,j).some(([di,dj]) => signe[masque(i+di,j+dj)]>0)
         ? site.niveau : NaN;
     }
