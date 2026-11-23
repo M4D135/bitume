@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 import {test} from 'node:test';
+import vm from 'node:vm';
 const require = createRequire(import.meta.url);
-for (const f of ['graphismes','pneus','ambiance','saisons','chaussee','meteo','conditions-course','cadence','menu-arcade',
+for (const f of ['graphismes','pneus','ambiance','saisons','chaussee','meteo','conditions-course','cadence','menu-arcade','championnat',
   'carene','main','ferro/vehicle-dynamics','usure-pneus','conduite','voiture']) require('../src/' + f + '.js');
 const B = globalThis.BITUME, source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const html = readFileSync(new URL('../src/index.html', import.meta.url), 'utf8');
@@ -16,9 +17,11 @@ function extraire(nom) {
 }
 const ligne = nom => {const m=source.match(new RegExp('^  const '+nom+' = [^\\n]+;', 'm'));assert(m,nom);return m[0];};
 const vues = ['aileron-avant','nez','cockpit','arceau','poursuite-proche','poursuite'];
+const CATALOGUE = vm.runInNewContext(source.match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1]);
 const prefs = new Function('B','prefs',`
   let session=null,ecran='titre';const clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),matchMedia=()=>({matches:false}),setTimeout=()=>0;
   const stock={'bitume.reglages':JSON.stringify(prefs)},localStorage={getItem:k=>stock[k]||null,setItem:(k,v)=>{stock[k]=v}};
+  const CATALOGUE = ${JSON.stringify(CATALOGUE)};
   ${bloc('  function initialiserChoixPneus(', '  function choixPneusLocaux(')}
   ${bloc('  function lireStock(', '  // records et fantômes')}
   return {reglages,sauver:sauverReglages,stock};
