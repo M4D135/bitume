@@ -1,8 +1,8 @@
 {
-  "version": "0.2.272",
-  "raw": 16734675,
-  "gzip": 4644887,
-  "sha256": "50fb319e3a74845b0b8be716e66617dbd3ae466b12a8af012d19612d2b6dffb2",
+  "version": "0.2.273",
+  "raw": 16734674,
+  "gzip": 4644892,
+  "sha256": "dc8c80d45e16d0341ab467059ffdde4d604d2134b6239108d6d8f153e5eb1151",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
@@ -12,7 +12,7 @@
     "ferro/physx.js": 29091,
     "ferro/gpu-profile.js": 2548,
     "circuit.js": 47781,
-    "couverts.js": 13618,
+    "couverts.js": 13617,
     "circuit-raccords-data.js": 1016947,
     "circuit-raccords.js": 3744,
     "route-des-cimes.js": 24290,

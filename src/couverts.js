@@ -138,7 +138,7 @@
           if (l2 < 1e-12) continue;
           const vx = px - A[k], vz = pz - A[k + 2], u0 = (vx * dx + vz * dz) / l2;
           const u = borner(u0, 0, 1), qx = vx - dx * u, qz = vz - dz * u, d2 = qx * qx + qz * qz;
-          if (d2 >= t.mur * t.mur || d2 >= proche) continue;
+          if (d2 > t.mur * t.mur || d2 >= proche) continue;
           const d = (vz * dx - vx * dz) / Math.sqrt(l2), devers = A[k + 4] + (A[k + 9] - A[k + 4]) * u;
           const sol = A[k + 1] + (A[k + 6] - A[k + 1]) * u - d * Math.sin(devers), h = py - sol;
           proche = d2; index = k; fraction = u; decalage = d; hauteur = h; solProche = sol;
