@@ -12,8 +12,13 @@
   }
   function interpoler(points, canaux, facteur, phase, sortie) {
     const fin = points.length / canaux - 1, image = phase * fin;
-    const i = Math.floor(image), t = image - i, a = i * canaux, b = Math.min(i + 1, fin) * canaux;
-    for (let k = 0; k < canaux; k++) sortie[k] = (points[a+k] + (points[b+k] - points[a+k]) * t) * facteur;
+    const i = Math.max(0, Math.min(Math.floor(image), fin - 1));
+    const t = phase >= 1 ? 1 : image - i;
+    const a = i * canaux, b = Math.min(i + 1, fin) * canaux;
+    for (let k = 0; k < canaux; k++) {
+      const valeur = t === 1 ? points[b + k] : points[a + k] + (points[b + k] - points[a + k]) * t;
+      sortie[k] = valeur * facteur;
+    }
     return sortie;
   }
   // Angles en radians. Hanche G, genou G, hanche D, genou D, épaule G, coude G,
