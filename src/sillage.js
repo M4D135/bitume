@@ -8,7 +8,7 @@
   function creer(capacite = MAX_SOURCES) {
     const n = Number.isFinite(capacite) ? clamp(Math.floor(capacite), 0, MAX_SOURCES) : MAX_SOURCES;
     const reserve = Array.from({ length: n }, (_, id) => ({
-      id, p: [0, 0, 0], velocity: [0, 0, 0], radius: 6, strength: 0, wake: 10,
+      id, p: [0, 0, 0], velocity: [0, 0, 0], strength: 0,
     }));
     return { reserve, sources: [], actifs: 0 };
   }
@@ -21,8 +21,6 @@
       const source = e.reserve[i];
       source.p[0] = source.p[1] = source.p[2] = 0;
       source.velocity[0] = source.velocity[1] = source.velocity[2] = 0;
-      source.radius = 6;
-      source.wake = 10;
       source.id = i; source.strength = 0;
       if (i < k) e.sources[i] = source;
     }
@@ -40,7 +38,7 @@
       source.id = v.id === undefined ? i : v.id;
       source.p[0] = p.x; source.p[1] = p.y + .35; source.p[2] = p.z;
       const vitesse = Math.abs(e.v);
-      if (v.abandon || vitesse < .5 || (circuit && B.circuit && (B.circuit.dansCouvert || B.circuit.dansTunnel)?.(circuit, e.s, 0))) continue;
+      if (v.abandon || vitesse <= .5 || (circuit && B.circuit && (B.circuit.dansCouvert || B.circuit.dansTunnel)?.(circuit, e.s, 0))) continue;
       // Le cap dessiné inclut le dérapage de la caisse ; le flux suit la vitesse réelle.
       const capVitesse = p.cap - (Number.isFinite(e.beta) ? e.beta : 0);
       source.velocity[0] = Math.cos(capVitesse) * e.v;
@@ -48,6 +46,11 @@
       source.radius = 6 + 2 * clamp(vitesse / 70, 0, 1);
       source.wake = 10 + Math.min(24, vitesse * .3);
       source.strength = 1; actifs++;
+    }
+    for (let i = n; i < sources.length; i++) {
+      const source = etat.reserve[i];
+      source.strength = 0;
+      source.velocity[0] = source.velocity[1] = source.velocity[2] = 0;
     }
     // la longueur ne change qu'avec le nombre de voitures : la liste garde son stockage d'une image à l'autre
     if (sources.length !== n) sources.length = n;
