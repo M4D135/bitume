@@ -106,7 +106,17 @@
     let refuge = null;
     if (B.batiments) {
       const f = B.circuit.echantillon(c, p.refugeS), d = -43;
-      const x = f.x - Math.sin(f.cap) * d, z = f.z + Math.cos(f.cap) * d, sol = terrain.sol(x, z);
+      const co = Math.cos(f.cap), si = Math.sin(f.cap);
+      const x = f.x - si * d, z = f.z + co * d;
+      const l = 15.5, w = 9.5, longueurSocle = l + 1, largeurSocle = w + 1;
+      const solsCoins = [];
+      for (const dx of [-longueurSocle / 2, longueurSocle / 2]) {
+        for (const dz of [-largeurSocle / 2, largeurSocle / 2]) {
+          solsCoins.push(terrain.sol(x + co * dx - si * dz, z + si * dx + co * dz));
+        }
+      }
+      const sol = Math.max(...solsCoins), solBas = Math.min(...solsCoins);
+      const hauteurSocle = 1.8 + (sol - solBas);
       // Lac de l'Aiglière : miroir d'eau alpin asymétrique bordé de rochers texturés.
       const lacX = f.x - Math.sin(f.cap) * (-118), lacZ = f.z + Math.cos(f.cap) * (-118);
       const lacY = terrain.sol(lacX, lacZ) + .25;
@@ -122,13 +132,12 @@
         lacObj.push({ shape: rocheForme, p: [rx, lacY + .7, rz], s: [4.2 + (k % 3) * 1.4, 2.1 + (k % 2), 3.6 + (k % 3)], r: [Math.sin(k) * .12, a + k * .6, Math.cos(k) * .09], mat: 23, color: [.46, .45, .42], lieuCimes: "Lac de l'Aiglière" });
       }
       ajouter(lacObj, [lacObj[0]], lacX, lacZ);
-      const site = { x, z, sol, bas: sol - 1.4, a: f.cap, l: 15.5, w: 9.5, h: 5.2, theme: 'montagne', graine: c.graine,
+      const site = { x, z, sol, bas: solBas - 1.4, a: f.cap, l, w, h: 5.2, theme: 'montagne', graine: c.graine,
         enduit: [.62, .59, .50] };
       const maison = B.batiments.maison(site, { detail: qualite !== 'low', neige: !!outils.saison?.neige });
-      const point = (dx, dy, dz) => [x + Math.cos(f.cap) * dx - Math.sin(f.cap) * dz, sol + dy,
-        z + Math.sin(f.cap) * dx + Math.cos(f.cap) * dz];
+      const point = (dx, dy, dz) => [x + co * dx - si * dz, sol + dy, z + si * dx + co * dz];
       const enveloppe = [
-        { shape: 'bevel', p: point(0,-.75,0), s: [site.l+1,1.8,site.w+1], r: [0,-f.cap,0], mat: 9, color: pierre, partie: 'socle-refuge' }
+        { shape: 'bevel', p: point(0, .15 - hauteurSocle / 2, 0), s: [longueurSocle, hauteurSocle, largeurSocle], r: [0, -f.cap, 0], mat: 9, color: pierre, partie: 'socle-refuge' }
       ];
       for (const cote of [-1,1]) {
         enveloppe.push({ shape: 'bevel', p: point(0,site.h/2,cote*(site.w/2-.17)), s: [site.l,site.h,.34], r:[0,-f.cap,0], mat:13.2,color:site.enduit,partie:'mur-refuge' });
