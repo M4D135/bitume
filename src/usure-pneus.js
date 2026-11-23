@@ -11,7 +11,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     abrasionParMetre: 1 / 250000, surcroitGlisse: 8,
     vitessePatinage: 2, // mètres de frottement équivalents/seconde, faute de vitesse angulaire simulée
     distanceGrainage: 180, distanceSalissure: 24, distanceNettoyage: 110,
-    pasMax: .1, vitesseContactMax: 180 // garde contre un delta de coordonnées issu d'un replacement
+    pasMax: .1, vitesseContactMax: 180
   });
   const TYPES = Object.freeze({
     slicks: Object.freeze({ sec: 1, mouille: .85, neige: .18 }),
@@ -49,7 +49,6 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
       !Array.isArray(e.roues)) return 0;
     if (recul && (!Number.isFinite(e.v) || e.v >= 0)) return 0;
     const d = Math.abs(distanceSignee);
-    if (d > PARAMS.vitesseContactMax * dt + 1e-9) return 0;
     eau = borne(eau); neige = surface === 'neige' ? 1 : borne(neige);
     const type = P.normaliserType(e.pneus), t = TYPES[type];
     const surf = Object.prototype.hasOwnProperty.call(SURFACES, surface) ? SURFACES[surface] : SURFACES.piste;
