@@ -1,8 +1,8 @@
 {
-  "version": "0.2.267",
-  "raw": 16734144,
-  "gzip": 4644773,
-  "sha256": "a0101cee90847d8631e671421da06c58b300917a5447f5774c77cb02b635b98c",
+  "version": "0.2.268",
+  "raw": 16734382,
+  "gzip": 4644795,
+  "sha256": "94d40a90e88bc7b5dc5762316a53f191ac11b90de75c27b0cd8502f6b4e03e67",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
@@ -76,7 +76,7 @@
     "voiture.js": 203048,
     "eau-carrosserie.js": 19387,
     "animaux.js": 172493,
-    "traces.js": 48156,
+    "traces.js": 48394,
     "echappement.js": 30838,
     "expressions-pilote.js": 16928,
     "cinema.js": 22368,

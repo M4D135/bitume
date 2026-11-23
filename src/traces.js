@@ -161,10 +161,13 @@
     }
     fx.acc += dt;
     if (fx.acc < PAS * .999) {
-      // Un arrêt entre deux mises à jour des traces coupe la bande avant la reprise.
-      const V = co.voitures;
+      // Un arrêt ou une sortie de portée entre deux mises à jour coupe la bande avant la reprise.
+      const V = co.voitures, L = co.c.longueur, ref = V[suivie] ? V[suivie].etat.s : 0;
       for (let k = 0; k < V.length; k++) {
-        if (V[k].etat.v === 0) lacher(fx, k, false);
+        const et = V[k].etat;
+        let ds = (et.s - ref) % L;
+        if (ds > L / 2) ds -= L; else if (ds < -L / 2) ds += L;
+        if (et.v === 0 || (k !== suivie && Math.abs(ds) > PORTEE)) lacher(fx, k, false);
       }
       return;
     }
