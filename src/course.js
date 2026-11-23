@@ -459,7 +459,15 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     const resteDegagement = v.fini && c.ouvert ? (v.arretApresLigne ?? c.longueur) - e.s : Infinity;
     if (resteDegagement !== Infinity) cible = Math.min(cible, Math.sqrt(8 * Math.max(0, resteDegagement - 1)));
     let gaz = 0, frein = 0;
-    if (resteDegagement < 2) frein = vit > 1 ? .65 : .35;
+    if (v.fini && c.ouvert) {
+      // Après l'arrivée d'une spéciale ouverte : on ne reprend jamais le gaz, on freine ferme
+      // jusqu'au point de dégagement (arretApresLigne, réparti entre finisseurs) puis on tient à
+      // l'arrêt. Régression fc3c5fe corrigée : la cible « confort » laissait la voiture finie
+      // rouler à ~45 m/s dans la zone de dégagement — dangereux vers les voitures garées et le
+      // fond de zone, et contraire à l'attente du lot L2 (décélération prompte après la ligne).
+      if (resteDegagement <= 1) frein = vit > 1 ? .8 : .35;
+      else frein = vit > 1 ? .85 : .3;
+    }
     else if (besoin > 0.7 * dec) frein = clamp((besoin - 0.7 * dec) / (0.3 * dec), 0, 1);
     else if (vit > cible + 2) frein = clamp((vit - cible - 2) / 4, 0, 1);
     else gaz = vit < cible - 1 ? 1 : clamp((cible - vit + 1) / 2, 0, 1);
@@ -571,10 +579,14 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       if (meilleur) v.meilleur = temps;
       ev.push({ type: 'tour', id: v.id, tour: 1, temps, meilleur, valide });
       v.fini = true; v.tempsFinal = tPassage; course.finisseurs++;
-      // Le premier va au fond du dégagement. Chacun laisse une longueur de caisse au suivant.
+      // Point d'arrêt après la ligne : distance de freinage confortable (~9 m/s²) depuis la
+      // vitesse de passage, plus un tampon, réparti entre finisseurs. On ne laisse plus la
+      // voiture « rouler jusqu'au fond du dégagement » (régression fc3c5fe) : elle décélère
+      // promptement en zone, sans jamais reprendre le gaz (voir commandesIA, frein post-arrivée).
       const zone = course.c.longueur - (course.c.arrivee ?? course.c.longueur);
       const marge = Math.min(7, zone / (2 * course.voitures.length + 2));
-      v.arretApresLigne = course.c.longueur - marge * course.finisseurs;
+      const freinConfort = (v.etat.v * v.etat.v) / (2 * 9) + 12;
+      v.arretApresLigne = Math.min(course.c.longueur, v.etat.s + freinConfort + marge * (course.finisseurs - 1));
       if (course.drapeau === null) course.drapeau = tPassage;
       ev.push({ type: 'arrivee', id: v.id, position: course.finisseurs });
       if (v.joueur) course.phase = 'arrivee';
