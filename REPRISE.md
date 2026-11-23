@@ -3,7 +3,7 @@
 <!-- bitume-reprise-actuelle-debut -->
 ## Par où reprendre
 
-**Version publique du 23 novembre, BITUME 0.2.289 et FERRO 0.3.31.** Au premier démarrage de cette version sur un GPU, le jeu mesure la configuration graphique. Le menu Image permet de relancer le test. La démo affiche aussi sa cadence maximale. [Sources de la version publique](https://github.com/M4D135/bitume/commit/9a5132acb6821e7457e3a90199241239adea681d).
+**Version en ligne du 23 novembre, BITUME 0.2.289.** Au premier lancement de chaque version, le jeu mesure la machine et choisit un des quatre profils graphiques. Les réglages personnalisés sont conservés. En démo, le compteur affiche la cadence et le maximum de la séance. Les quatre contrôles sur le site concordent avec un comptage indépendant des images. [Mesures du mini-banc et des FPS](docs/reprise/rapports/PROFIL-FPS-2026-11-23.json)
 
 **Candidate locale de nuit, BITUME 0.2.290, physique p54.** Elle reprend le test graphique et le maximum de FPS en démo sur la .288. La pluie, la vitre et le public conservent leurs variantes de nuit. [Réception locale et empreintes des deux versions](docs/reprise/rapports/NUIT-PROFIL-0290-2026-11-23.json).
 

@@ -1,0 +1,189 @@
+{
+  "date": "2026-11-23",
+  "version": "0.2.289",
+  "commit": "9a5132acb6821e7457e3a90199241239adea681d",
+  "url": "https://bitume.estrasse.fr/",
+  "sha256": "2b4af01efce9bb832c6a952dfd428cdafe2158529cad07c7c3a6db3548b1aad1",
+  "profils": {
+    "low": "Faible",
+    "medium": "Moyenne",
+    "high": "Puissante",
+    "extreme": "Extra puissante"
+  },
+  "mesure": "Le banc chronomètre des charges graphiques sur le périphérique WebGPU du jeu et une charge de calcul représentant douze véhicules. La durée du banc exclut le chargement du jeu.",
+  "premiers_lancements": [
+    {
+      "pilote": "Chrome WebGPU Metal sur Mac M5",
+      "origine": "https://bitume.estrasse.fr/",
+      "fenetre": [
+        1920,
+        1080
+      ],
+      "profil": "high",
+      "duree_banc_ms": 139,
+      "reglages_appliques": {
+        "qualite": "high",
+        "anticrenelage": "msaa4",
+        "ombres": "high",
+        "vegetation": "high",
+        "faune": "high",
+        "retro": "auto"
+      },
+      "cache_reutilise_au_rechargement": true,
+      "changement_empreinte_simule": {
+        "duree_ms": 94,
+        "ombres_manuelles_conservees": "off"
+      },
+      "passage_explicite_memorise": true
+    },
+    {
+      "pilote": "Chrome WebGPU Metal sur Mac M5",
+      "origine": "fichier local identique",
+      "fenetre": [
+        1920,
+        1080
+      ],
+      "profil": "extreme",
+      "duree_banc_ms": 162,
+      "reglages_appliques": {
+        "qualite": "high",
+        "anticrenelage": "msaa4",
+        "ombres": "high",
+        "vegetation": "ultra",
+        "faune": "ultra",
+        "retro": "auto"
+      },
+      "cache_reutilise_au_rechargement": true,
+      "changement_empreinte_simule": {
+        "duree_ms": 67,
+        "ombres_manuelles_conservees": "off"
+      },
+      "passage_explicite_memorise": true
+    },
+    {
+      "pilote": "Chrome WebGPU SwiftShader",
+      "origine": "fichier local identique",
+      "fenetre": [
+        960,
+        540
+      ],
+      "profil": "low",
+      "duree_banc_ms": 458,
+      "reglages_appliques": {
+        "qualite": "low",
+        "anticrenelage": "off",
+        "ombres": "off",
+        "vegetation": "off",
+        "faune": "low",
+        "retro": "non"
+      },
+      "cache_reutilise_au_rechargement": true,
+      "changement_empreinte_simule": {
+        "duree_ms": 105,
+        "ombres_manuelles_conservees": "high"
+      },
+      "passage_explicite_memorise": true
+    }
+  ],
+  "fps_demo_en_ligne": [
+    {
+      "appareil": "bureau",
+      "mode": "30",
+      "circuit": "Autodrome des Alizés",
+      "premieres_fps": 30,
+      "maximum_affiche": 30,
+      "maximum_par_comptage_independant": 30,
+      "premier_affichage_ms": 1000
+    },
+    {
+      "appareil": "bureau",
+      "mode": "ecran",
+      "circuit": "Autodrome des Alizés",
+      "premieres_fps": 60,
+      "maximum_affiche": 60,
+      "maximum_par_comptage_independant": 60,
+      "premier_affichage_ms": 1000
+    },
+    {
+      "appareil": "bureau",
+      "mode": "30",
+      "circuit": "Autodrome des Alizés",
+      "premieres_fps": 30,
+      "maximum_affiche": 30,
+      "maximum_par_comptage_independant": 30,
+      "premier_affichage_ms": 1033
+    },
+    {
+      "appareil": "tactile",
+      "mode": "ecran",
+      "circuit": "Autodrome des Alizés",
+      "premieres_fps": 60,
+      "maximum_affiche": 60,
+      "maximum_par_comptage_independant": 60,
+      "premier_affichage_ms": 1017
+    }
+  ],
+  "mobile_emule": {
+    "dimensions": [
+      390,
+      844
+    ],
+    "appels_mini_banc": 2,
+    "captures": 2,
+    "erreurs": 0
+  },
+  "webkit_mac": {
+    "phase": "course",
+    "pluie": 0.75,
+    "surfaces": {
+      "scene": "webgpu",
+      "retro-rendu": "webgpu",
+      "glace-g": "webgpu",
+      "glace-d": "webgpu",
+      "vitre": "webgpu",
+      "meteo": "webgpu"
+    },
+    "erreurs": []
+  },
+  "suites_ciblees": {
+    "configuration_cadence_image": 51,
+    "charges_et_liberation_ressources": 5
+  },
+  "ci": {
+    "url": "https://github.com/M4D135/bitume/actions/runs/45143618558",
+    "demarrage_webgpu_linux": "réussi",
+    "qualification_globale": "en échec",
+    "suites_par_version": {
+      "0.2.287": {
+        "total": 232,
+        "echecs": 75
+      },
+      "0.2.289": {
+        "total": 233,
+        "echecs": 77
+      }
+    },
+    "ecarts_decor": [
+      {
+        "suite": "decor.test.mjs",
+        "circuit": "Val-Brûlé",
+        "budget_ms": 150,
+        "mesure_ci_ms": 171,
+        "relance_locale": "réussie"
+      },
+      {
+        "suite": "nappes-decor.test.mjs",
+        "circuit": "Route-des-Cimes",
+        "budget_ms": 150,
+        "mesure_ci_ms": 182.8,
+        "relance_locale": "réussie"
+      }
+    ],
+    "comparaison": "Les 75 suites en échec en .287 restent en échec en .289. Les deux dépassements supplémentaires concernent la génération de décor, exercée isolément par ces suites."
+  },
+  "limites": [
+    "Le niveau estime le débit disponible au moment de la mesure. Sur le même M5, le quatrième palier se situe près du seuil en 1080p.",
+    "Le rendu logiciel et le tactile émulé ne qualifient pas un téléphone ou une console physiques.",
+    "Le démarrage Linux WebGPU passe sur GitHub Actions. La qualification globale reste en échec sur des suites hors du mini-banc et de la démo."
+  ]
+}
