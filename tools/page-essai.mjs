@@ -10,7 +10,7 @@
 // Ne sert pas à chronométrer : pour les intervalles d'image et les accrocs, voir tools/profil-accrocs.mjs.
 // Aucune dépendance : Node 22 et plus (WebSocket global).
 import { spawn } from 'node:child_process';
-import { mkdtempSync, rmSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, readFileSync, writeFileSync, openSync, closeSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { argumentsWebGPU } from './diagnostic-webgpu.mjs';
@@ -24,9 +24,19 @@ const args = ['--no-sandbox', '--remote-debugging-port=0', '--user-data-dir=' + 
   '--no-default-browser-check', '--disable-background-timer-throttling', '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows'];
 if (!fenetre) args.unshift('--headless=new');
 if (opt('angle')) args.push('--enable-unsafe-swiftshader', '--use-gl=angle', '--use-angle=' + opt('angle'));
-if (opt('webgpu-logiciel')) args.push(...argumentsWebGPU('swiftshader'));
+if (opt('webgpu-logiciel')) {
+  args.push(...argumentsWebGPU('swiftshader'));
+  // Le shader de démarrage travaille sur CPU sous SwiftShader. Le délai du smoke et
+  // celui du job encadrent la progression ; laisser ce pilote terminer sa compilation.
+  if (process.platform === 'linux') args.push('--disable-gpu-watchdog');
+}
+const journal = opt('journal-chrome');
+if (journal) args.push('--enable-logging=stderr');
 args.push('about:blank');
-const proc = spawn(process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', args, { stdio: 'ignore', detached: true });
+const fdJournal = journal ? openSync(journal, 'w') : null;
+const proc = spawn(process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', args,
+  { stdio: ['ignore', 'ignore', fdJournal ?? 'ignore'], detached: true });
+if (fdJournal !== null) closeSync(fdJournal);
 const dormir = ms => new Promise(r => setTimeout(r, ms));
 let ws, suivant = 1; const req = new Map(), erreurs = [];
 const envoyer = (method, params = {}) => new Promise((ok, ko) => { const id = suivant++; req.set(id, { ok, ko }); ws.send(JSON.stringify({ id, method, params })); });
