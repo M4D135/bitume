@@ -1,13 +1,13 @@
 {
-  "version": "0.2.292",
-  "raw": 17508707,
-  "gzip": 4752530,
-  "sha256": "045fc1ca54be115ba94ddf5951ff81be42c8009aee4c347752d84432e6fb9805",
+  "version": "0.2.293",
+  "raw": 17508717,
+  "gzip": 4752537,
+  "sha256": "da82261e6106646db64bfcb36c916c9f5de437ad899ea82bce51941cba310d12",
   "sources": {
     "ferro/surface.js": 3419,
     "ferro/render-shared.js": 81526,
     "ferro/webgpu-shaders.js": 844016,
-    "ferro/webgpu-renderer.js": 81991,
+    "ferro/webgpu-renderer.js": 82001,
     "solides-physx.js": 11924,
     "ferro/engine.js": 2025,
     "ferro/physx-runtime.js": 12063280,
