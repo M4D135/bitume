@@ -24,11 +24,11 @@
         const z = .29 * Math.sin(TAU * u + .2) + .12 * Math.sin(TAU * 2.8 * u - .6);
         const pente = .29 * TAU * Math.cos(TAU * u + .2) + .12 * TAU * 2.8 * Math.cos(TAU * 2.8 * u - .6);
         const vague = .025 * Math.sin(TAU * 2.5 * u) + .018 * Math.sin(TAU * 1.3 * u + .6);
-        const lateral = lisse(0, .13, u) * (1 - lisse(.87, 1, u)), len = Math.hypot(pente, 1);
+        const lateral = lisse(0, .13, u) * (1 - lisse(.87, 1, u)), invLen = 1 / Math.hypot(pente, 1);
         for (let j = 0; j < 3; j++) {
           points.push([x, CENTRES[bande] + (j - 1) * DEMI_HAUTEURS[bande] + vague - .5, z]);
           const face = j === 1 ? lateral : 0, haut = 1 - face, n = Math.hypot(face, haut) || 1;
-          normales.push([pente / len * face / n, haut / n, -face / len / n]);
+          normales.push([pente * invLen * face / n, haut / n, -face * invLen / n]);
         }
       }
       function triangle(a, b, c) {

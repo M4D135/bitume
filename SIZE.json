@@ -1,8 +1,8 @@
 {
-  "version": "0.2.208",
-  "raw": 16726030,
-  "gzip": 4642813,
-  "sha256": "8fd296431fbd5b6f55841999a31d83cd3066a49a3da41ef728865d768b7129d1",
+  "version": "0.2.209",
+  "raw": 16726043,
+  "gzip": 4642824,
+  "sha256": "d92b668b47806a5dcb3be1081a0b139e523ce9ddcc78fc3dce2191e9b64cb365",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
@@ -66,7 +66,7 @@
     "cache.js": 9694,
     "panorama-cache.js": 4486,
     "effets-saison.js": 17892,
-    "aurores.js": 7592,
+    "aurores.js": 7605,
     "carene.js": 16443,
     "humain-donnees.js": 4559,
     "humain-corps.js": 3116,
