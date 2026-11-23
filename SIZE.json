@@ -1,8 +1,8 @@
 {
-  "version": "0.2.221",
-  "raw": 16726032,
-  "gzip": 4642772,
-  "sha256": "c7dd20cce1f6415c9aabc4a34310b81d40198f651b45aa507a7deed2566d3224",
+  "version": "0.2.222",
+  "raw": 16726221,
+  "gzip": 4642845,
+  "sha256": "71e569431f423fa9b66df1186a9d85bb7d43d0197bb69e1de63e7603f546a43c",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
@@ -70,7 +70,7 @@
     "carene.js": 16443,
     "humain-donnees.js": 4559,
     "humain-corps.js": 3116,
-    "public.js": 99456,
+    "public.js": 99645,
     "main.js": 13346,
     "cockpit-matieres.js": 1796,
     "voiture.js": 203048,

@@ -606,7 +606,10 @@
       if (o.ymin < yTete + .3) continue;
       const marge = (o.ymin - yTete) * PENTE_PLUIE, dx = x - o.x, dz = z - o.z;
       const ca = Math.cos(o.angle), sa = Math.sin(o.angle), lx = dx * ca + dz * sa, lz = -dx * sa + dz * ca;
-      if (Math.abs(lx) <= o.hx - marge && Math.abs(lz) <= o.hz - marge) return true;
+      const limiteX = o.hx - marge, limiteZ = o.hz - marge;
+      if (limiteX < 0 || limiteZ < 0) continue;
+      const tolerance = .001; // 1 mm sur chaque axe local du toit
+      if (Math.abs(lx) <= limiteX + tolerance && Math.abs(lz) <= limiteZ + tolerance) return true;
     }
     return false;
   }
