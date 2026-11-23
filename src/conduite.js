@@ -797,7 +797,12 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
     if(gaz>0 || !autorise)etat.v=Math.min(0,etat.v+P.reculFrein*Math.max(gaz,.5)*dt);
     else if(frein>0)etat.v=Math.max(-P.reculMax,etat.v-P.reculAcc*frein*dt);
     else etat.v=Math.min(0,etat.v+.8*dt);
-    if(etat.v>=0){etat.v=0;etat.omega=0;etat.along=0;etat.alat=0;if(gaz>0||!autorise){etat.rapport=1;etat.freinRecul=0;}return;}
+    if(etat.v>=0){
+      etat.v=0;etat.omega=0;etat.along=0;etat.alat=0;
+      if(autorise)etat.rapport=-1;
+      else {etat.rapport=1;etat.freinRecul=0;}
+      return;
+    }
     etat.rapport=-1;etat.regime=P.ralenti+Math.abs(etat.v)/P.reculMax*1800;
     const q=B.circuit.echantillon(c,etat.s,LU.reculA),body=q.cap+etat.psi+etat.beta;
     etat.braquage=etat.volant*P.braquageMeca;etat.omega=etat.v*Math.tan(etat.braquage)/L;
