@@ -926,11 +926,11 @@
       B.sauteVentWebGPU.avancer(verre, dt, vitesse, etat.pluie, abri);
     }
   }
-  function poserEauCarrosserie(S, k, ev, sortie, detail, overlay, matrice, distance2, tanDemi, hauteur, palierVue) {
+  function poserEauCarrosserie(S, k, ev, sortie, detail, overlay, matrice, distance2, tanDemi, hauteur, palierVue, nezIntact) {
     const E = B.eauCarrosserie, etat = S.modeles[k].eauCarrosserie;
     if (!E || !etat) return;
     const lod = E.detailPour(distance2, tanDemi, hauteur, detail, palierVue);
-    E.ajouter(sortie, ev, etat, lod, overlay, matrice);
+    E.ajouter(sortie, ev, etat, lod, overlay, matrice, nezIntact);
   }
   const surfacesVerre = new WeakMap();
   function verrePourVue(moteur, S) {
@@ -3791,7 +3791,7 @@
         etc.ciel = atm.skyBottom; etc.brume = atm.fog; etc.glaceVive = glaceVive;
         const attitude = B.voiture.cockpit(S.modeles[k], ev, sortie, etc);
         poserEauCarrosserie(S, k, ev, sortie, etc.casse ? 'epave' : 'complet', true, attitude,
-          d2, tanDemi, hauteur, P.palier);
+          d2, tanDemi, hauteur, P.palier, true);
         ombreFin = sortie.length;
         continue;
       }

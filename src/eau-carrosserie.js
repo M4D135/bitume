@@ -271,7 +271,7 @@
 
   // Appeler juste après voiture.poser/cockpit ; leur matrice renvoyée peut être réutilisée ici.
   // Reposer dans J2/J1/rétros ne change ni humidité, ni barycentriques, ni âge, ni graine.
-  function ajouter(sortie, pose, e, lod = 'complet', overlay = false, matrice = null) {
+  function ajouter(sortie, pose, e, lod = 'complet', overlay = false, matrice = null, nezIntact = false) {
     const limite = typeof LIMITES[lod] === 'number' ? LIMITES[lod] : 0; e.dernierAjout = 0; e.dernierLOD = lod;
     if (!e.actives || !limite) return 0;
     const M = e.matrice, suivante = e.matriceSuivante;
@@ -294,7 +294,7 @@
       if (matrice && e.anglesAttitude) e.anglesAttitude.length = 0;
     }
     const px = pose.p ? pose.p[0] : pose.x, py = pose.p ? pose.p[1] : pose.y, pz = pose.p ? pose.p[2] : pose.z;
-    const profilNez=pose.zonesDegats?B.voiture.profilImpact(pose.zonesDegats):0;
+    const profilNez=nezIntact?0:(pose.zonesDegats?B.voiture.profilImpact(pose.zonesDegats):0);
     const pas = MAX / limite, masque = lod === 'epave' || lod === 'epave-moyen' || lod === 'epave-leger' ? 4
       : lod === 'moyen' || lod === 'moyen-leger' ? 2 : 1;
     const fin = Math.min(e.actives, MAX);

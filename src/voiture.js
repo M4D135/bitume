@@ -821,7 +821,10 @@
     return point;
   }
   function preparerNez(t,zones) {
-    const profil=profilImpact(zones);
+    // En vue cockpit, la cuve et sa cloison masquent tout le nez sain (flèche et quille montent à
+    // y 0,43, sous le haut de cloison 0,64) ; plié, il déborde de la cuve (z 0,24 contre 0,20) et
+    // montre ses tranches rouges derrière la planche. L'habitacle garde donc le nez intact.
+    const profil=t.cockpit?0:profilImpact(zones);
     if(profil===t.profilNez)return;
     t.profilNez=profil;
     if(profil && !t.originesNez)t.originesNez=t.o.slice();
