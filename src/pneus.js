@@ -107,19 +107,21 @@
       etat.servicePneus !== revisionAttendue || !identite || typeof identite !== 'object' ||
       !identiteValide(identite.seance) || !identiteValide(identite.voiture) ||
       !Array.isArray(etat.etatPneus) || etat.etatPneus.length !== ROUES.length) return false;
-    const nombreBorne = (roue, champ, maximum) => {
-      const valeur = roue[champ];
-      return possede(roue, champ) && Number.isFinite(valeur) && valeur >= 0 && valeur <= maximum;
+    const nombreBorne = (roue, champ, maximum, entierRequis = false) => {
+      const propriete = Object.getOwnPropertyDescriptor(roue, champ);
+      if (!propriete || !propriete.enumerable || !possede(propriete, 'value')) return false;
+      const valeur = propriete.value;
+      return Number.isFinite(valeur) && valeur >= 0 && valeur <= maximum &&
+        (!entierRequis || Number.isInteger(valeur));
     };
     for (const { indice } of ROUES) {
       if (!possede(etat.etatPneus, indice)) return false;
       const roue = etat.etatPneus[indice];
-      if (roue === null || roue === undefined) return false;
-      if (typeof roue !== 'object' || Array.isArray(roue) ||
+      if (!roue || typeof roue !== 'object' || Array.isArray(roue) || Reflect.ownKeys(roue).length !== 6 ||
         !nombreBorne(roue, 'usure', 1) || !nombreBorne(roue, 'salete', 1) ||
         !nombreBorne(roue, 'grainage', 1) || !nombreBorne(roue, 'distance', DISTANCE_MAX) ||
         !nombreBorne(roue, 'sollicitation', SOLLICITATION_MAX) ||
-        !nombreBorne(roue, 'graine', SERVICE_MAX) || !Number.isInteger(roue.graine)) return false;
+        !nombreBorne(roue, 'graine', SERVICE_MAX, true)) return false;
     }
     const suivant = etatNeuf(type, identite, revisionAttendue + 1);
     Object.assign(etat, suivant);
