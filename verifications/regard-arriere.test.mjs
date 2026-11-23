@@ -28,7 +28,7 @@ const fabrique = new Function('navigator', 'B', 'session', 'reglages', 'poses', 
   let ecran = 'course', dernierGeste = 0;
   const compteurVisites = null; // Le compteur du titre est hors du contexte isolé de commandes.
   const enCourse = () => ecran === 'course', activerSon = () => {}, naviguerManette = () => {};
-  const sauverReglages = () => {}, basculerPause = () => { ecran = ecran === 'course' ? 'pause' : 'course'; };
+  const sauverReglages = () => {}, ecrireStock = () => {}, basculerPause = () => { ecran = ecran === 'course' ? 'pause' : 'course'; };
   const sortirDemo = () => { ecran = 'titre'; }, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const angle = a => Math.atan2(Math.sin(a), Math.cos(a)), PORTEE_VUE = 6000;
   const canvas = { clientWidth: 1280, clientHeight: 720 }, scene = { decor: { sol: () => 0 } };
@@ -190,7 +190,7 @@ for (const obstacle of ['paroi', 'plafond']) verifier('rayon natif PhysX : ne pa
   } finally { w.dispose(); }
 });
 verifier('aide en français précise le maintien du stick et la vue concernée', () => {
-  assert(source.includes('stick droit maintenu vers le bas pour regarder derrière dans les six vues'));
+  assert(source.includes('Maintenez le stick droit vers le bas pour regarder derrière dans les six vues'));
   assert.equal(X.status().worlds, 0);
 });
 console.log(controles + ' vérifications regard arrière réussies');

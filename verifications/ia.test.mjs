@@ -28,7 +28,9 @@ function droite(L = 3000, largeur = 12, pas = 5) {
   B.circuit = {
     echantillon(c, s) { const ss = ((s % L) + L) % L; return { x: ss, y: 0, z: 0, cap: 0, courbure: 0, pente: 0, devers: 0, ligne: 0, vitesse: 80 }; },
     ecart(c, s1, s2) { let d = s2 - s1; while (d > L / 2) d -= L; while (d < -L / 2) d += L; return d; },
-    vibreurA() { return false; }
+    vibreurA() { return false; },
+    abscisseGrille(c, place) { return -10 - 8 * place; },
+    surVoieStands() { return false; }
   };
   return { longueur: L, largeur, limite: largeur / 2, pas, n, vitesse, ligne, courbure, depart: 0 };
 }

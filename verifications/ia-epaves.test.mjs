@@ -1,5 +1,5 @@
 import {createRequire} from 'node:module';import assert from 'node:assert/strict';const req=createRequire(import.meta.url);for(const f of ['circuit','conduite','degats','contacts','course'])req(f==='course'&&process.env.BITUME_COURSE?process.env.BITUME_COURSE:'../src/'+f+'.js');const B=globalThis.BITUME,results=[];
-B.circuit={echantillon:(c,s)=>({x:s,y:0,z:0,cap:0,courbure:0,pente:0,devers:0,ligne:0,vitesse:80}),ecart:(c,a,b)=>{let d=b-a;if(d>c.longueur/2)d-=c.longueur;else if(d<-c.longueur/2)d+=c.longueur;return d;},vibreurA:()=>false};
+B.circuit={echantillon:(c,s)=>({x:s,y:0,z:0,cap:0,courbure:0,pente:0,devers:0,ligne:0,vitesse:80}),ecart:(c,a,b)=>{let d=b-a;if(d>c.longueur/2)d-=c.longueur;else if(d<-c.longueur/2)d+=c.longueur;return d;},vibreurA:()=>false,abscisseGrille:(c,place)=>-10-8*place,surVoieStands:()=>false};
 const c={longueur:3000,largeur:12,limite:6,pas:5,n:600,vitesse:new Array(600).fill(80),ligne:new Array(600).fill(0),courbure:new Array(600).fill(0),depart:0};
 for(const [d,h] of [[0,Math.PI/2],[2,Math.PI/2],[-2,Math.PI/2],[0,Math.PI/4]]){
  const co=B.course.creer(c,{rivaux:1,graine:3,tours:1});co.phase='course';co.temps=20;co.feux.vert=true;

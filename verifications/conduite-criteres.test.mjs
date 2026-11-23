@@ -282,7 +282,7 @@ function withIn(x, a, b) { return x >= a && x <= b; }
 }
 {
   const vrai = B.circuit;
-  B.circuit = { echantillon: () => ({ x: 0, y: 0, z: 0, cap: 0, courbure: 0, pente: 0, devers: 0, ligne: 0, vitesse: 0 }), vibreurA: () => false, ecart: CIRCUIT_REEL.ecart };
+  B.circuit = { echantillon: () => ({ x: 0, y: 0, z: 0, cap: 0, courbure: 0, pente: 0, devers: 0, ligne: 0, vitesse: 0 }), vibreurA: () => false, ecart: CIRCUIT_REEL.ecart, surVoieStands: () => false };
   const c = { longueur: 1e6, largeur: 12, limite: 20 }, v0 = 250 / 3.6, cmd = commande({ gaz: 1 }), gain = (derriere, cote) => {
     const rival = CD.creer(1000, 0), suiveur = CD.creer(1000 - derriere, cote), seul = CD.creer(0, 0);
     for (const e of [rival, suiveur, seul]) { e.v = v0; e.rapport = 6; }

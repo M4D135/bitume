@@ -20,7 +20,8 @@ export function circuit({ R = 0, arc = Infinity, pente = 0, largeur = 400, limit
       const th = R ? arc / R : 0, s0 = R ? ss - arc : ss;
       return { x: s0, y: pente * s0, z: 0, cap: th, courbure: 0, pente, devers: 0, ligne: 0, vitesse: 0 };
     },
-    vibreurA() { return false; }
+    vibreurA() { return false; },
+    surVoieStands() { return false; }
   };
   return { longueur: L, largeur, limite };
 }

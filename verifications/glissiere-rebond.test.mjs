@@ -11,7 +11,8 @@ require(join(root,'src/degats.js'));
 const B=globalThis.BITUME;
 B.circuit={
   echantillon(c,s){return {x:s,y:0,z:0,cap:0,courbure:0,pente:0,devers:0,ligne:0,vitesse:0};},
-  vibreurA(){return false;}
+  vibreurA(){return false;},
+  surVoieStands(){return false;}
 };
 const circuit={longueur:100000,largeur:12,limite:8};
 const command={gaz:0,frein:0,volant:0,derive:false,haut:false,bas:false,boite:'auto',aide:0,guidage:0};

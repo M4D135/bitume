@@ -35,6 +35,7 @@ for (const panne of ['modele', 'prechauffage']) test('PhysX : une exception de '
   let contexte;
   const environnement = {
     // Seuls les branchements d'interface sans navigateur sont neutralisés. Circuit, modèles, effets et PhysX restent réels.
+    ecran: 'titre', creerVisibiliteActeurs: () => ({ principal: null, indetermine: false, masque: 0, reflets: [], reflete: () => true, visible: () => true }),
     prepa: { enCours: false, interne: false }, restaurerReference() {}, session: ancienneSession,
     installer: () => ({ c, decor, saison: 'ete' }), rendu: {}, gpuModeste: false,
     reglages: { qualite: 'low', tours: 3, difficulte: 1 }, etatProfils: { decor: {} }, capacitesRendu: {},
@@ -93,34 +94,31 @@ for (const panne of ['modele', 'prechauffage']) test('PhysX : une exception de '
     B.physique.liberer(ancienne); for (const co of courses) B.physique.liberer(co);
   }
 });
-test('PhysX : restaurer le contexte GPU reprend les effets dans le même monde sans toucher aux voitures', () => {
+test('PhysX : la perte du périphérique GPU libère les effets sans toucher aux voitures', () => {
   const co = B.course.creer(c, { mode: 'chrono', rivaux: 0, tours: 3, graine: 2 }); co.phase = 'course';
   const p = B.physique.installer(co, decor), ph = co.joueur.etat._physx, fx = B.traces.creer(1, 345, p.world);
   const S = { course: co, fx }, corps = [...p.world._bodies.keys()];
-  const poseAvant = [...p.world.readPose(ph.id)], vitesseAvant = [...p.world.readVelocity(ph.id)], acteur = p.world._bodies.get(ph.id).actor;
+  const acteur = p.world._bodies.get(ph.id).actor;
   const poses = [{ x: ph.x, y: ph.y, z: ph.z, cap: ph.cap, tangage: 0, roulis: 0 }];
   const evRoue = [{ type: 'roue', id: 0, roue: 0 }];
   B.traces.pas(fx, co, poses, 0, 0, evRoue); assert.equal(B.traces.compter(fx).corps, 1);
-  const seed = fx.graine[0]; // le débris a réellement consommé le générateur avant la perte du contexte
-  B.traces.liberer(fx); // même opération que le gestionnaire webglcontextlost du jeu
-  const contexte = vm.createContext({ B, session: S, scene: { chauffe: {} }, contexteRenduPerdu: true,
-    restaurerDecorApresContexte: false, detectionGraphiqueActive: false, graineCourse: 999 });
+  // Depuis la réécriture WebGPU, le jeu ne restaure plus le contexte en place : signalerPerteGPU
+  // déclare la perte, affiche l'écran d'erreur et libère les effets ; le joueur relance (aa98404).
+  const titres = [];
+  const contexte = vm.createContext({ B, session: S, rendu: {}, contexteRenduPerdu: false, prepa: { enCours: false },
+    abandonnerPreparation() {}, enCourse: () => false, basculerPause() {}, location: { reload() {} },
+    document: { createElement: () => ({ addEventListener() {} }) }, $: () => ({ append() {} }),
+    erreur: (titre) => titres.push(titre), libererVerre() {}, libererRenduSecondaire() {} });
   try {
-    vm.runInContext(fonction('contexteGraphiqueRetabli') + '; contexteGraphiqueRetabli();', contexte);
-    assert.equal(contexte.contexteRenduPerdu, false); assert.equal(contexte.scene.chauffe, null);
-    assert.notEqual(S.fx, fx); assert.equal(S.fx.libere, false); assert.equal(S.fx.partage, true);
-    assert.equal(S.fx.monde, p.world); assert.equal(S.fx.graine[0], seed); assert.equal(X.status().worlds, 1);
-    assert.equal(p.world._bodies.get(ph.id).actor, acteur, 'acteur de voiture reconstruit à la restauration GPU');
-    assert.deepEqual([...p.world._bodies.keys()], corps, 'acteurs statiques/voiture changés');
-    assert.deepEqual([...p.world.readPose(ph.id)], poseAvant); assert.deepEqual([...p.world.readVelocity(ph.id)], vitesseAvant);
-    B.traces.pas(S.fx, co, poses, 0, 0, evRoue); assert.equal(B.traces.compter(S.fx).corps, 1, 'nouveaux effets inactifs');
-    const debris = S.fx.debris.find(d => d.corps), depart = [...p.world.readPose(debris.corps)], ev = [];
-    for (let n = 0; n < 4; n++) B.course.pas(co, { gaz: 0, frein: 1, volant: 0, aide: 0, boite: 'auto' }, 1 / 120, ev);
-    const apres = p.world.readPose(debris.corps);
-    assert.ok(Math.hypot(apres[0] - depart[0], apres[1] - depart[1], apres[2] - depart[2]) > .05, 'débris recréé mais absent de la scène simulée');
-    assert.equal(X.status().worlds, 1); assert.equal(p.placements, 0);
-    rapports.push({ panne: 'restauration GPU', reussi: true, mondeConserve: true, acteurConserve: true, poseConservee: true, effetsRepris: true });
-  } finally { B.traces.liberer(S.fx); B.physique.liberer(co); }
+    vm.runInContext(fonction('signalerPerteGPU') + '; signalerPerteGPU({ message: "device lost" });', contexte);
+    assert.equal(contexte.contexteRenduPerdu, true, 'le jeu se déclare en perte de périphérique');
+    assert.deepEqual(titres, ['Le périphérique graphique a été interrompu'], 'le joueur voit l’écran d’erreur');
+    assert.equal(S.fx.libere, true, 'les effets sont libérés à la perte GPU');
+    assert.equal(p.world._bodies.get(ph.id).actor, acteur, 'la voiture reste dans le monde à la perte GPU');
+    assert.deepEqual([...p.world._bodies.keys()], corps, 'les corps de la séance ne changent pas');
+    assert.equal(X.status().worlds, 1);
+    rapports.push({ panne: 'perte GPU', reussi: true, mondeConserve: true, acteurConserve: true, effetsLiberes: true });
+  } finally { if (!S.fx.libere) B.traces.liberer(S.fx); B.physique.liberer(co); }
 });
 test('PhysX : la chauffe possède son monde, préserve la séance réelle et libère aussi ses erreurs', () => {
   const co = B.course.creer(c, { mode: 'course', rivaux: 1, tours: 3, graine: 4242 });

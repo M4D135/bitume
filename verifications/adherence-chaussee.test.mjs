@@ -145,8 +145,12 @@ verifier('l’IA lit aussi la chaussée après le portail avant de sortir du tun
   try {
     B.meteo.actuel = { pluie: 0, mouille: 0, neigeSol: .75 };
     const cmd = B.course.commandesIA(co, v);
-    assert.ok(lectures.some(r => r.abri && r.neige === 0));
-    assert.ok(lectures.some(r => r.s >= montagne.tunnel.fin && r.neige === .75));
+    assert.ok(lectures.some(r => r.abri && r.neige === 0), 'la voiture lit sa chaussée sous le tunnel');
+    // L'anticipation au-delà du portail passe par la table des abris et l'exposition
+    // (fc3c5fe) : la sortie enneigée doit se lire dans la commande, frein contre sortie sèche.
+    B.meteo.actuel = { pluie: 0, mouille: 0, neigeSol: 0 };
+    const sec = B.course.commandesIA(co, v);
+    assert.ok(cmd.frein > sec.frein + .3, 'l’IA freine pour la sortie enneigée vue au-delà du portail');
     assert.ok(Object.values(cmd).filter(x => typeof x === 'number').every(Number.isFinite));
   } finally { B.chaussee = original; }
 });
