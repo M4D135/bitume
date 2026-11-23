@@ -89,12 +89,14 @@
 
     // Faire décroître les chocs existants avant de traiter les nouveaux événements.
     let restants = 0;
-    V.envFort = 0;
+    let sommeImpacts = 0;
+    let maxImpact = 0;
     for (const choc of V.impactsFort) {
       choc.niveau *= Math.exp(-pas / choc.constante);
       if (choc.niveau <= Number.EPSILON) continue;
       V.impactsFort[restants++] = choc;
-      V.envFort += choc.niveau;
+      sommeImpacts += choc.niveau;
+      maxImpact = Math.max(maxImpact, choc.niveau);
     }
     V.impactsFort.length = restants;
 
@@ -109,24 +111,25 @@
       else if (ev.type === 'atterrissage') impact(V, .31, .088);
     }
 
-    // Ajouter les nouveaux chocs à leur amplitude initiale.
-    let sommeImpacts = V.envFort;
+    // Prendre en compte les nouveaux chocs à leur amplitude initiale.
     let retenus = restants;
     for (let i = restants; i < V.impactsFort.length; i++) {
       const choc = V.impactsFort[i];
       if (choc.niveau <= Number.EPSILON) continue;
       V.impactsFort[retenus++] = choc;
       sommeImpacts += choc.niveau;
+      maxImpact = Math.max(maxImpact, choc.niveau);
     }
     V.impactsFort.length = retenus;
+    V.envFort = maxImpact;
 
     // Un choc lourd prend le premier plan. La boîte donne une impulsion légère de
     // 40 ms puis s'efface. Chacun atteint au moins une commande même à 144 images/s.
     const boite = Math.min(1, V.rapport / .065);
     const apresChoc = 1 - unite(sommeImpacts / .27);
     const fond = (1 - boite * .76) * apresChoc;
-    // La somme des chocs actifs fixe le canal fort.
-    fort = V.impactsFort.length ? sommeImpacts : Math.max(fort * (1 - boite * .76), .055 * boite);
+    // Le choc actif le plus intense fixe le canal fort.
+    fort = V.impactsFort.length ? V.envFort : Math.max(fort * (1 - boite * .76), .055 * boite);
     faible = Math.max(faible * fond, .32 * boite * boite * apresChoc);
     gauche *= fond;
     droite = Math.max(droite * fond, .19 * boite * boite * apresChoc);
