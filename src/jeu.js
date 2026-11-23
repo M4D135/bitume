@@ -6210,8 +6210,12 @@
   function preferenceGraphique() {
     const proto = window.HTMLCanvasElement && window.HTMLCanvasElement.prototype;
     if (!proto || proto.getContextOrigine) return;
-    let fragile = B.autoconfig.recommander(capacitesDeclarees()).mobile
-      || /^((?!chrome|chromium|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent || '');
+    const agent = navigator.userAgent || '';
+    // WKWebView sur Mac annonce AppleWebKit sans le suffixe Safari. Un contexte
+    // haute performance y naît valide mais peut se perdre à la chauffe du décor.
+    const webkitApple = !/Chrome|Chromium|Android|CriOS|FxiOS|Edg/i.test(agent)
+      && (/Safari\//i.test(agent) || (/AppleWebKit\//i.test(agent) && /Macintosh|iPhone|iPad|iPod/i.test(agent)));
+    let fragile = B.autoconfig.recommander(capacitesDeclarees()).mobile || webkitApple;
     if (!fragile) {
       try {
         const essai = document.createElement('canvas').getContext('webgl2', { powerPreference: 'high-performance' });
