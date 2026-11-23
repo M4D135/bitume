@@ -32,7 +32,8 @@ function creerFauxCircuit(type, rayon, largeur, limite) {
       }
       return { x: ss, y: 0, z: 0, cap: 0, courbure: 0, pente: 0, devers: 0, ligne: 0, vitesse: 0 };
     },
-    vibreurA(c, s, cote) { return false; }
+    vibreurA(c, s, cote) { return false; },
+    surVoieStands(c, s, d, marge = 0) { return false; }
   };
   return c;
 }
