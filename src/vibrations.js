@@ -87,6 +87,23 @@
     V.envDerive *= Math.exp(-pas / .025);
     V.envTic *= Math.exp(-pas / .033);
 
+    // Faire décroître les chocs existants avant de traiter les nouveaux événements.
+    let restants = 0, amplitudeLiberee = 0, chocActifMax = 0;
+    for (const choc of V.impactsFort) {
+      const niveauAvant = choc.niveau;
+      choc.niveau *= Math.exp(-pas / choc.constante);
+      if (choc.niveau <= Number.EPSILON) {
+        amplitudeLiberee += niveauAvant;
+        continue;
+      }
+      amplitudeLiberee += niveauAvant - choc.niveau;
+      chocActifMax = Math.max(chocActifMax, niveauAvant);
+      V.impactsFort[restants++] = choc;
+    }
+    V.impactsFort.length = restants;
+    V.envFort = 0;
+    for (const choc of V.impactsFort) V.envFort += choc.niveau;
+
     const events = e.evenements;
     if (events) for (let i = 0; i < events.length; i++) {
       const ev = events[i];
@@ -98,16 +115,19 @@
       else if (ev.type === 'atterrissage') impact(V, .31, .088);
     }
 
-    // Faire décroître tous les chocs actifs avant de reconstruire l’enveloppe.
-    V.envFort = 0;
-    let restants = 0;
-    for (const choc of V.impactsFort) {
-      choc.niveau *= Math.exp(-pas / choc.constante);
+    // Les nouveaux chocs plus faibles se partagent l’amplitude libérée pendant ce pas.
+    let retenus = restants;
+    for (let i = restants; i < V.impactsFort.length; i++) {
+      const choc = V.impactsFort[i];
+      if (choc.niveau < chocActifMax) {
+        choc.niveau = Math.min(choc.niveau, amplitudeLiberee);
+        amplitudeLiberee -= choc.niveau;
+      }
       if (choc.niveau <= Number.EPSILON) continue;
-      V.impactsFort[restants++] = choc;
+      V.impactsFort[retenus++] = choc;
       V.envFort += choc.niveau;
     }
-    V.impactsFort.length = restants;
+    V.impactsFort.length = retenus;
 
     // Un choc lourd prend le premier plan. La boîte donne une impulsion légère de
     // 40 ms puis s'efface. Chacun atteint au moins une commande même à 144 images/s.
