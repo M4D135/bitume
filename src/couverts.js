@@ -123,7 +123,6 @@
     return o;
   }
   // Point monde, pas abscisse de la voiture : deux routes superposées ne partagent jamais leur abri.
-  // Les extrémités restent des portails plans ; seuls les raccords intérieurs joignent les petits segments.
   function position(c, p, destination) {
     const out = destination || {}, px = p?.[0], py = p?.[1], pz = p?.[2]; vider(out);
     if (!fini(px) || !fini(py) || !fini(pz) || !c || !liste(c).length) return null;
@@ -131,7 +130,7 @@
     for (const bloc of preparer(c).blocs) {
       if (horsEmprise(bloc.emprise, px, pz)) continue;
       const { t, axe: A } = bloc;
-      let proche = Infinity, index = -1, fraction = 0, decalage = 0, hauteur = 0, solProche = 0, portail = false;
+      let proche = Infinity, index = -1, fraction = 0, decalage = 0, hauteur = 0, solProche = 0;
       for (const tranche of bloc.tranches) {
         if (horsEmprise(tranche, px, pz)) continue;
         for (let k = tranche.debut; k < tranche.fin; k += 5) {
@@ -142,13 +141,10 @@
           if (d2 >= t.mur * t.mur || d2 >= proche) continue;
           const d = (vz * dx - vx * dz) / Math.sqrt(l2), devers = A[k + 4] + (A[k + 9] - A[k + 4]) * u;
           const sol = A[k + 1] + (A[k + 6] - A[k + 1]) * u - d * Math.sin(devers), h = py - sol;
-          // Le segment le plus proche décide aussi d'un refus au portail. Ne pas l'ignorer puis
-          // accepter le disque arrondi d'un segment intérieur, ce qui abriterait avant le toit.
           proche = d2; index = k; fraction = u; decalage = d; hauteur = h; solProche = sol;
-          portail = k === 0 && u0 <= 0 || k === A.length - 10 && u0 >= 1;
         }
       }
-      if (index < 0 || portail || hauteur < -.12 || hauteur >= t.hauteur || proche >= meilleur) continue;
+      if (index < 0 || hauteur < -.12 || hauteur >= t.hauteur || proche >= meilleur) continue;
       meilleur = proche;
       out.couvert = t; out.type = type(t); out.s = ramener(A[index + 3] + (A[index + 8] - A[index + 3]) * fraction, c.longueur);
       out.d = decalage; out.sol = solProche; out.hauteur = hauteur; out.ouvert = t.ouvert || null;
