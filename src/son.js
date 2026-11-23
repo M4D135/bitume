@@ -331,7 +331,7 @@
       const g1 = gain(.9), pb = filtre('lowpass', 1600, .8), corps = crete(170, 5, 1.1), pan = ctx.createStereoPanner(), sortie = gain(0);
       o1.connect(g1).connect(corps).connect(pb).connect(pan).connect(sortie).connect(busMot);
       o1.start(t);
-      return { o1, pb, pan, sortie, id: -1, libereA: 0 };
+      return { o1, pb, pan, sortie, id: -1, idSortant: -1, libereA: 0 };
     }
 
     // Air au casque : deux bandes de bruit, sans note ni impulsion déclenchée. Le souffle aigu se ferme dans
@@ -448,7 +448,8 @@
       const d = bruit.getChannelData(0);
       for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
       m = moteur();
-      for (let i = 0; i < MAX_RIVAUX; i++) voix.push(voixRival());
+      // Une réserve permet de faire entrer les nouveaux rivaux pendant le fondu des sortants.
+      for (let i = 0; i < 2 * MAX_RIVAUX; i++) voix.push(voixRival());
       { // vibreur : scie à 34 Hz modulée à 18 Hz (profondeur bornée), puis porte de niveau
         const o = osc('sawtooth', 34), am = gain(0.5), lfo = osc('sine', 18), lfoG = gain(0.5), g = gain(0);
         lfo.connect(lfoG).connect(am.gain); o.connect(am).connect(g).connect(busEff); o.start(t); lfo.start(t);
@@ -594,20 +595,28 @@
         let garde = false;
         for (let i = 0; i < proches.length; i++) if (proches[i].id === vx.id) { garde = true; break; }
         if (!garde) {
-          vx.sortie.gain.cancelScheduledValues(t);
-          vx.sortie.gain.setValueAtTime(0, t);
+          vx.idSortant = vx.id;
           vx.id = -1;
-          vx.libereA = 0;
+          vx.libereA = t + 0.1;
+          // Huit constantes de temps laissent un résidu négligeable avant le zéro exact.
+          vise(vx.sortie.gain, 0, t, 0.1 / 8);
+          vx.sortie.gain.setValueAtTime(0, vx.libereA);
         }
       }
       for (const r of proches) {
-        let vx = null;
-        for (let i = 0; i < voix.length; i++) if (voix[i].id === r.id) { vx = voix[i]; break; }
+        let vx = voix.find(v => v.id === r.id);
+        if (!vx) {
+          vx = voix.find(v => v.id < 0 && v.idSortant === r.id && v.libereA > t);
+          if (vx) vx.sortie.gain.cancelScheduledValues(t);
+        }
         const nouvelleVoix = !vx;
         if (nouvelleVoix) {
-          for (let i = 0; i < voix.length; i++) if (voix[i].id < 0) { vx = voix[i]; break; }
-          vx.id = r.id;
+          vx = voix.find(v => v.id < 0 && v.libereA <= t);
+          if (!vx) continue;
         }
+        vx.id = r.id;
+        vx.idSortant = -1;
+        vx.libereA = 0;
         const regime = +r.regime || 0;
         const frequence = frequenceCycle(regime) * doppler(+r.vRel || 0);
         const filtre = coupure(clamp(+r.gaz || 0, 0, 1), regime) * 0.75;
