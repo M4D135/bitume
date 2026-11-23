@@ -77,7 +77,7 @@ export function installerEtatCouverts(s) {
     const surface = monde.raycast([q.x,haut,q.z],[0,-1,0],profondeur,{mask:3,staticOnly:true});
     if(!Number.isFinite(terrainY) || !surface.hit || !Number.isFinite(surface.y)) throw new Error('Surface réelle du survol absente');
     const plancher = Math.max(terrainY,surface.y,q.y+t.hauteur), cible = [sujet.x,sujet.y+.65,sujet.z];
-    const aspect = J.rendu.gl.canvas.width/J.rendu.gl.canvas.height;
+    const aspect = J.rendu.gpu.context.canvas.width/J.rendu.gpu.context.canvas.height;
     // Monter le poste, sans déplacer le relief ni supprimer un obstacle. Le validateur du jeu
     // contrôle le regard et les quatre coins de l'objectif dans le vrai monde statique.
     for(const elevation of [24,40,64,96,144,216]) {
@@ -110,7 +110,7 @@ export function installerEtatCouverts(s) {
     description:'Pose prescrite, rendu et effets du vrai build. Les cinq phases portail sont des états séparés, pas une traversée roulée.' };
 }
 export function observerCouverts() {
-  const J=BITUME_JEU,B=BITUME,S=J.session,c=S.course.c,G=__COUVERTS_CAPTURE,gl=J.rendu.gl,C=B.couverts;
+  const J=BITUME_JEU,B=BITUME,S=J.session,c=S.course.c,G=__COUVERTS_CAPTURE,gpu=J.rendu.gpu,C=B.couverts;
   const vue = V => {
     if(!V?.camera) return null;
     const p=V.camera.pos,q=C.position(c,p),v=V.vitreContexte;
@@ -134,19 +134,19 @@ export function observerCouverts() {
     survol={sujetS,sujetSousCouvert:!!B.circuit.dansCouvert(c,sujetS,8),
       terrainY:J.scene.decor.sol(p[0],p[2]),surfaceY:surface.hit?surface.y:null,cible,
       regardLibre:!regard.hit,obstructionDistance:regard.hit?regard.distance:null,
-      cadreLibre:B.cinema.valider(G.survol.cinema,S.camera,cible,null,S.tRendu,gl.canvas.width/gl.canvas.height)};
+      cadreLibre:B.cinema.valider(G.survol.cinema,S.camera,cible,null,S.tRendu,gpu.context.canvas.width/gpu.context.canvas.height)};
   }
-  const vitres=J.vitres, vitresGL={}, visieresVisibles={};
+  const vitres=J.vitres, vitresGPU={}, visieresVisibles={};
   for (const [joueur,id] of [['j1','vitre'],['j2','vitre2']]) {
     if(joueur==='j2'&&!G.scenario.duo) continue;
     const toile=document.getElementById(id), css=toile&&getComputedStyle(toile);
     visieresVisibles[joueur]=!!toile&&!toile.hidden&&css.display!=='none'&&css.visibility!=='hidden';
-    if(vitres?.[joueur]?.backend==='webgl2') {
-      const g=toile?.getContext('webgl2');
-      vitresGL[joueur]={present:!!g,erreur:g?g.getError():null,perdu:g?g.isContextLost():true};
+    if(vitres?.[joueur]?.backend==='webgpu') {
+      const g=toile?.getContext('webgpu'), v=vitres[joueur];
+      vitresGPU[joueur]={present:!!g && v.pret && (!g.getConfiguration || g.getConfiguration()?.device === J.rendu.gpu.device),erreur:v.erreur || J.rendu.stats.errorEvents[0] || null,perdu:!g || v.perdu || J.rendu.stats.deviceLost};
     }
   }
-  return {glErreur:gl.getError(),glPerdu:gl.isContextLost(),vitres,vitresGL,visieresVisibles,j1:vue(S),j2:G.scenario.duo?vue(S.vueJ2):null,
+  return {gpuErreur:(J.rendu.stats.errorEvents[0] || null),gpuPerdu:J.rendu.stats.deviceLost,vitres,vitresGPU,visieresVisibles,j1:vue(S),j2:G.scenario.duo?vue(S.vueJ2):null,
     sol:present(sol),toit:present(toit),survol,yRoute:q.y,etape:G.etapeIndex,etapeId:G.etapes[G.scenario.portails?G.etapeIndex:0].id,
     abscisse:G.abscisse,pluie:S.meteo.pluie,
     sections:C.liste(c).map(t=>({id:t.id||null,type:C.type(t),debut:t.debut,fin:t.fin})),temps:S.meteo.t};
@@ -155,7 +155,7 @@ export function verifierCouvert(r,s) {
   const e=[]; if(r.fatal)e.push(r.fatal.split('\n')[0]);
   if(!r.build?.sha256 || !/^[a-f0-9]{64}$/.test(r.build.sha256))e.push('Empreinte du HTML absente');
   if(!r.source?.commit || !/^[a-f0-9]{40}$/.test(r.source.commit))e.push('Identité des outils absente');
-  if(r.environnement?.webgl2!==true || r.environnement?.physx?.ready!==true)e.push('WebGL2 ou PhysX natif absent');
+  if(r.environnement?.webgpu!==true || r.environnement?.physx?.ready!==true)e.push('WebGPU ou PhysX natif absent');
   if(r.initialisation?.posePrescrite!==true || r.initialisation?.circuitId!==s.circuitId)e.push('Scène prescrite incorrecte');
   for(const x of r.erreurs||[]) e.push('Erreur page : '+x);
   for(const x of r.avertissements||[])if(/GL_INVALID|shader.*(error|failed)|GLSL|context lost/i.test(x))e.push('Erreur graphique : '+x);
@@ -163,7 +163,7 @@ export function verifierCouvert(r,s) {
   for(const [i,im] of (r.images||[]).entries()) {
     const o=im.observation,abri=!s.dessus&&(!s.portails||i>0&&i<4),interieur=abri&&s.type==='tunnel';
     if(!o){e.push('Observation absente');continue;}
-    if(o.glErreur||o.glPerdu)e.push('Erreur WebGL');
+    if(o.gpuErreur||o.gpuPerdu)e.push('Erreur WebGPU');
     const etapeId=s.portails?['entree-exterieure','entree-interieure','centre','sortie-interieure','sortie-exterieure'][i]:s.dessus?'dessus-toit':'interieur';
     if(o.etapeId!==etapeId)e.push('Étape des portails incorrecte');
     if(!(o.pluie>.5))e.push('Pluie non exercée');
@@ -188,8 +188,8 @@ export function verifierCouvert(r,s) {
     }
     if(s.duo&&(!o.j2?.abri||!o.j2?.abriVisiere||o.j2?.interieur||o.j2?.type!=='galerie'||!Number.isFinite(o.j2?.lumiere)||Math.abs(o.j2.lumiere-1)>.02))e.push('J2 galerie non indépendant de J1 tunnel');
     for (const joueur of ['j1',...(s.duo?['j2']:[])]) {
-      const v=o.vitres?.[joueur], g=o.vitresGL?.[joueur], contexte=o[joueur];
-      if(v?.backend!=='webgl2'||v?.pret!==true)e.push('Visière WebGL2 inactive : '+joueur);
+      const v=o.vitres?.[joueur], g=o.vitresGPU?.[joueur], contexte=o[joueur];
+      if(v?.backend!=='webgpu'||v?.pret!==true)e.push('Visière WebGPU inactive : '+joueur);
       if(v?.erreur||v?.perdu||v?.erreurs>0||v?.erreurs?.length||!g?.present||g?.erreur||g?.perdu)e.push('Erreur visière : '+joueur);
       if(!Number.isFinite(v?.eau)||!Number.isFinite(v?.embruns)||!Number.isFinite(v?.etapes))e.push('Mesures visière absentes : '+joueur);
       if(!(contexte?.pluie>.5))e.push('Contexte pluie absent : '+joueur);

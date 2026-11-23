@@ -74,7 +74,7 @@ export function preparerFaune(s) {
 }
 
 export function observerFaune() {
-  const J = BITUME_JEU, S = J.session, A = BITUME.animaux, F = __FAUNE_PROCHE, E = S.animaux, cam = S.camera, gl = J.rendu.gl;
+  const J = BITUME_JEU, S = J.session, A = BITUME.animaux, F = __FAUNE_PROCHE, E = S.animaux, cam = S.camera, gpu = J.rendu.gpu;
   const stats = E ? A.stats(E) : null, v = E?.visibilite;
   let horlogesEndormiesStables = true, endormisComparables = 0;
   if (v && F.horloges) for (let i = 0; i < v.actifs.length; i++) {
@@ -99,7 +99,7 @@ export function observerFaune() {
     endormisComparables, horlogesEndormiesStables, cible: { espece: F.ancre.espece, animal: F.ancre.animal, position: cible,
       projection: { x, y, profondeur, pixelX: (x + 1) * innerWidth / 2, pixelY: (1 - y) * innerHeight / 2 } },
     camera: { pos: Array.from(cam.pos), yaw: cam.yaw, pitch: cam.pitch, fov: cam.fov },
-    glErreur: gl.getError(), glPerdu: gl.isContextLost() };
+    gpuErreur: (J.rendu.stats.errorEvents[0] || null), gpuPerdu: J.rendu.stats.deviceLost };
 }
 
 export function verifierFaune(r, s) {
@@ -108,14 +108,14 @@ export function verifierFaune(r, s) {
   erreurs.push(...(r.erreurs || []));
   for (const e of r.avertissements || []) if (/GL_INVALID|shader.*(error|failed)|GLSL|context lost/i.test(e)) erreurs.push(e);
   if (r.images.length !== 3) erreurs.push('Trois images requises');
-  if (r.environnement.physx?.ready !== true || !r.environnement.webgl2) erreurs.push('PhysX/WebGL2 réel absent');
+  if (r.environnement.physx?.ready !== true || !r.environnement.webgpu) erreurs.push('PhysX/WebGPU réel absent');
   for (const [i, im] of r.images.entries()) {
     const q = im.observation;
     if (!q) { erreurs.push('Observation absente'); continue; }
     if (q.type !== 'course' || q.ecran !== 'course' || q.vue !== 'poursuite' || q.cameraImposee || q.faune !== s.faune) erreurs.push('Vue ou réglage réel incorrect');
     if (!q.placement || !Number.isFinite(q.placement.ecartAbscisse) || !Number.isFinite(q.placement.ecartCorpsEtat)
       || q.placement.ecartAbscisse > 2 || q.placement.ecartCorpsEtat > .5) erreurs.push('Placement réel PhysX différent du départ demandé');
-    if (q.glErreur || q.glPerdu) erreurs.push('Erreur WebGL');
+    if (q.gpuErreur || q.gpuPerdu) erreurs.push('Erreur WebGPU');
     if (im.vues?.scene?.noir > .97 && im.vues.scene.luminance < .025) erreurs.push('Vue noire');
     if (s.faune === 'off') {
       if (q.populationPresente || q.appels.pas || q.appels.dessins || q.objetsCible) erreurs.push('Faune désactivée encore active');

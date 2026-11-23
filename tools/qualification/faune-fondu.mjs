@@ -121,7 +121,7 @@ export function disposerFondu(fraction, temoin) {
 }
 
 export function observerFondu() {
-  const J = BITUME_JEU, S = J.session, F = __FAUNE_FONDU, cam = S.camera, gl = J.rendu.gl;
+  const J = BITUME_JEU, S = J.session, F = __FAUNE_FONDU, cam = S.camera, gpu = J.rendu.gpu;
   const d = F.ancre.cible.map((v, k) => v - cam.pos[k]);
   const droite = d[0] * Math.cos(cam.yaw) + d[2] * Math.sin(cam.yaw);
   const haut = -d[0] * Math.sin(cam.yaw) * Math.sin(cam.pitch) + d[1] * Math.cos(cam.pitch) + d[2] * Math.cos(cam.yaw) * Math.sin(cam.pitch);
@@ -135,7 +135,7 @@ export function observerFondu() {
     distanceDemandee: F.portee * F.fraction, rendu: F.rendu, animaux: F.derniere,
     reference: S.reference, horlogeCourse: S.course.horloge, acc: S.acc,
     cameraImposee: J.camera !== null, camera: { pos: Array.from(cam.pos), yaw: cam.yaw, pitch: cam.pitch, fov: cam.fov },
-    projection: { x, y, profondeur }, zone, glErreur: gl.getError(), glPerdu: gl.isContextLost() };
+    projection: { x, y, profondeur }, zone, gpuErreur: (J.rendu.stats.errorEvents[0] || null), gpuPerdu: J.rendu.stats.deviceLost };
 }
 
 export function mesurerContribution(image, temoin, zone) {
@@ -167,13 +167,13 @@ function analyserPassage(r, dossier) {
   erreurs.push(...(r.erreurs || []));
   for (const e of r.avertissements || []) if (/GL_INVALID|shader.*(error|failed)|GLSL|context lost/i.test(e)) erreurs.push(e);
   if (r.images.length !== DISTANCES_FONDU.length * 2) erreurs.push('Douze images requises');
-  if (!r.environnement.webgl2 || !r.environnement.physx?.ready) erreurs.push('WebGL2/PhysX réel absent');
+  if (!r.environnement.webgpu || !r.environnement.physx?.ready) erreurs.push('WebGPU/PhysX réel absent');
   let poseInitiale = null, tempsInitial = null, opacitePrecedente = 1;
   for (let i = 0; i + 1 < r.images.length; i += 2) {
     const im = r.images[i], sans = r.images[i + 1], a = im.observation, b = sans.observation;
     if (!a?.animaux || !b?.animaux || !a.rendu || !b.rendu) { erreurs.push('Observation de rendu absente'); continue; }
     if (a.temoin || !b.temoin || a.fraction !== b.fraction || a.fraction !== DISTANCES_FONDU[i / 2]) erreurs.push('Paire de témoins incorrecte');
-    if (a.glErreur || b.glErreur || a.glPerdu || b.glPerdu) erreurs.push('Erreur WebGL');
+    if (a.gpuErreur || b.gpuErreur || a.gpuPerdu || b.gpuPerdu) erreurs.push('Erreur WebGPU');
     if (!a.cameraImposee || !b.cameraImposee || a.camera.fov !== 10 || b.camera.fov !== 10 || a.acc !== -1 || b.acc !== -1)
       erreurs.push('Caméra ou gel de simulation incorrect');
     const pose = JSON.stringify(a.animaux.pose), t = JSON.stringify([a.animaux.temps, a.rendu.temps, a.horlogeCourse]);

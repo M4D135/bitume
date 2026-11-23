@@ -37,7 +37,7 @@ KBZA = str(pathlib.Path.home() / 'bin' / 'kbza')
 RACINE = pathlib.Path(subprocess.run(['git', 'rev-parse', '--show-toplevel'], capture_output=True, text=True,
                                      check=True).stdout.strip())
 REGLE = """Tu modifies le code d'un jeu de navigateur en JavaScript, « BITUME » : course de F1 1980 dans une seule
-page HTML, moteur FERRO (WebGL2), simulation déterministe au pas fixe de 1/120 s, tout est calculé par le code (aucune
+page HTML, moteur FERRO (WebGPU), simulation déterministe au pas fixe de 1/120 s, tout est calculé par le code (aucune
 image, aucun son, aucun modèle importé), modules de la forme (function (B) { … })(globalThis.BITUME = globalThis.BITUME || {}).
 Réponds UNIQUEMENT par des blocs de remplacement, puis une dernière ligne « RÉSUMÉ : » suivie d'une phrase en français.
 Un bloc, à reproduire exactement :

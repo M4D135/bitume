@@ -13,319 +13,345 @@
   const FONDU_TRANSPORT = .55;
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   const nombre = (v, defaut = 0) => Number.isFinite(Number(v)) && v != null ? Number(v) : defaut;
-  const VERTEX = `#version 300 es
-  precision highp float;
-  out vec2 uv;
-  void main() {
-    vec2 p = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2);
-    uv = p; gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0);
-  }`;
-  const LARGEUR_FILM = 24, HAUTEUR_BANDE_FILM = 20;
-  const HACHAGE = `  float h21(vec2 p) {
-    vec3 q = fract(vec3(p.xyx) * vec3(.1031,.1030,.0973));
-    q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z);
+  const OPTIQUE = `
+struct Uniformes {
+  meteo: vec4f, mouvement: vec4f, vue: vec4f, flux: vec4f, gravite: vec4f,
+  image: vec4f,
+  // Taille du texel, qualité et présence de la scène
+  transport: array<vec4f,12>, histoire: array<vec4f,12>, phase: array<vec4f,3>,
+  gouttes: array<vec4f,32>, trajets: array<vec4f,32>, impacts: array<vec4f,32>,
+  tuiles: array<vec4u,36>, origines: array<vec4i,3>, nombre: vec4u,
+};
+@group(0) @binding(0) var<uniform> u: Uniformes;
+@group(0) @binding(1) var source: texture_2d<f32>;
+@group(0) @binding(2) var filtre: sampler;
+@group(0) @binding(3) var cacheFilm: texture_2d<u32>;
+struct Sommet {
+  @builtin(position) position:vec4f, @location(0) uv:vec2f
+};
+@vertex fn sommet(@builtin(vertex_index) i:u32)->Sommet {
+  let p=vec2f(f32((i<<1u)&2u),f32(i&2u));
+  return Sommet(vec4f(p*2.-1.,0.,1.),p);
+}
+fn h21(p:vec2f)->f32 {
+  var q=fract(p.xyx*vec3f(.1031,.1030,.0973));
+  q+=vec3f(dot(q,q.yzx+33.33));
+  return fract((q.x+q.y)*q.z);
+}
+fn h22(p:vec2f)->vec2f {
+  return vec2f(h21(p),h21(p+vec2f(41.7,93.4)));
+}
+fn coins(i:vec2f)->vec4f {
+  return vec4f(h21(i),h21(i+vec2f(1,0)),h21(i+vec2f(0,1)),h21(i+1.));
+}
+fn interpole(p:vec2f,c:vec4f)->f32 {
+  let f=fract(p);
+  let k=f*f*(3.-2.*f);
+  return mix(mix(c.x,c.y,k.x),mix(c.z,c.w,k.x),k.y);
+}
+fn bruit(p:vec2f)->f32 {
+  return interpole(p,coins(floor(p)));
+}
+@fragment fn remplirFilm(@builtin(position) pos:vec4f)->@location(0) vec4u {
+  let c=vec2i(pos.xy);
+  let bande=c.y/20;
+  return bitcast<vec4u>(coins(vec2f(u.origines[bande].xy+vec2i(c.x,c.y%20))));
+}
+fn bruitFilm(p:vec2f,bande:i32)->f32 {
+  let c=vec2i(floor(p))-u.origines[bande].xy;
+  if(all(c>=vec2i(0)) && all(c<vec2i(24,20))) {
+    return interpole(p,bitcast<vec4f>(textureLoad(cacheFilm,c+vec2i(0,bande*20),0)));
   }
-`;
-  // Un texel contient les quatre hachages de la cellule avec leurs bits float32 originaux.
-  // Le shader de composition conserve le calcul des coordonnées et l’interpolation du bruit.
-  const FRAGMENT_CACHE_FILM = `#version 300 es
-  precision highp float;
-  precision highp int;
-  uniform ivec2 uOriginesFilm[3];
-  layout(location=0) out highp uvec4 coins;
-  ${HACHAGE}
-  void main() {
-    ivec2 c=ivec2(gl_FragCoord.xy);
-    int bande=c.y/${HAUTEUR_BANDE_FILM};
-    vec2 i=vec2(uOriginesFilm[bande]+ivec2(c.x,c.y%${HAUTEUR_BANDE_FILM}));
-    coins=floatBitsToUint(vec4(h21(i),h21(i+vec2(1,0)),h21(i+vec2(0,1)),h21(i+1.0)));
-  }`;
-  const FRAGMENT = `#version 300 es
-  precision highp float;
-  in vec2 uv;
-  out vec4 couleur;
-  uniform sampler2D uScene;
-  uniform vec4 uMeteo;       // eau, neige accumulée, nuage de roues, film humide
-  uniform vec4 uMouvement;   // temps, charge d'air, incidence normalisée, pression frontale
-  uniform vec4 uVue;         // largeur CSS, hauteur CSS, graine, atténuation extérieure
-  uniform vec4 uFlux;        // expansion /s, dérive X/Y en hauteurs écran/s, charge d'air
-  uniform vec4 uGravite;     // gravité écran, centre de divergence (repère CPU, y vers le bas)
-  uniform vec4 uTransport[12]; // échelle et translation affine normalisée, poids de la génération
-  uniform vec4 uHistoire[12];   // même transformation il y a environ 0,3 s
-  uniform vec4 uPhase[3];      // graines stables des générations, changées seulement lorsqu'invisibles
-  uniform vec2 uTexel;
-  uniform int uQualite;
-  uniform bool uAvecScene;
-  uniform int uNbGouttes;
-  uniform highp uvec4 uTuilesGouttes[36];   // 16 × 9 tuiles, un bit par goutte mobile
-  uniform bool uAvecTuiles;
-  uniform vec4 uGouttes[32]; // centre en pixels, rayon, opacité ; vraies rencontres du modèle partagé
-  uniform vec4 uTrajets[32]; // milieu et fin de la coulure, historique réel des positions
-  uniform vec4 uImpacts[32]; // phase brève, force, orientation, rayon d'arrivée ; même pool que les perles
-  ${HACHAGE}
-  #ifdef CACHE_FILM
-  uniform highp usampler2D uCacheFilm;
-  uniform highp ivec2 uOriginesFilm[3];
-  #endif
-  vec2 h22(vec2 p) { return vec2(h21(p), h21(p + vec2(41.7,93.4))); }
-  float bruit(vec2 p) {
-    vec2 i = floor(p), f = fract(p); f = f*f*(3.0-2.0*f);
-    return mix(mix(h21(i),h21(i+vec2(1,0)),f.x),mix(h21(i+vec2(0,1)),h21(i+1.0),f.x),f.y);
+  return bruit(p);
+}
+fn bords(r:f32,aa:f32)->f32 {
+  return 1.-smoothstep(1.-aa,1.+aa,r);
+}
+fn positionTransportee(p:vec2f,tr:vec4f)->vec2f {
+  let n=vec2f(p.x/u.vue.x,1.-p.y/u.vue.y)*tr.x+tr.yz;
+  return vec2f(n.x,1.-n.y)*u.vue.xy;
+}
+fn positionSource(p:vec2f,tr:vec4f)->vec2f {
+  let n=(vec2f(p.x/u.vue.x,1.-p.y/u.vue.y)-tr.yz)/tr.x;
+  return vec2f(n.x,1.-n.y)*u.vue.xy;
+}
+fn directionFlux(p:vec2f,mobilite:f32,rayon:f32)->vec2f {
+  let n=vec2f(p.x/u.vue.x,1.-p.y/u.vue.y);
+  let aspect=vec2f(u.vue.y/u.vue.x,1.);
+  var v=(u.flux.x*(n-u.gravite.zw)+u.flux.yz*aspect)*(.3+.7*mobilite);
+  v+=u.gravite.xy*aspect*(mobilite*8.*(rayon*.35+1.5)/720.);
+  v*=vec2f(u.vue.x,-u.vue.y);
+  if(length(v)>.0001){
+    return normalize(v);
   }
-  float bruitFilm(vec2 p, int bande) {
-    #ifdef CACHE_FILM
-    vec2 i=floor(p), cellule=i-vec2(uOriginesFilm[bande]);
-    if(all(greaterThanEqual(cellule,vec2(0))) && all(lessThan(cellule,vec2(${LARGEUR_FILM},${HAUTEUR_BANDE_FILM})))) {
-      highp ivec2 caseFilm=ivec2(cellule)+ivec2(0,bande*${HAUTEUR_BANDE_FILM});
-      vec4 coins=uintBitsToFloat(texelFetch(uCacheFilm,caseFilm,0));
-      vec2 f=fract(p); f=f*f*(3.0-2.0*f);
-      return mix(mix(coins.x,coins.y,f.x),mix(coins.z,coins.w,f.x),f.y);
+  return vec2f(0,-1);
+}
+fn perlesGeneration(p:vec2f,cellule:f32,taille:f32,densite:f32,couche:f32,mobilite:f32,indice:i32)->vec4f {
+  let tr=u.transport[indice];
+  if(tr.w<.0001 || densite==0.){
+    return vec4f(0);
+  }
+  let graine=u.vue.z+u.phase[indice/4][indice%4];
+  let t=u.mouvement.x;
+  let air=u.mouvement.y;
+  let q=positionSource(p,tr)/cellule;
+  let id=floor(q);
+  let local=fract(q)-.5;
+  let alea=h22(id+couche*17.3+graine);
+  let centre=(alea-.5)*.48;
+  let sourceCentre=(id+.5+centre)*cellule;
+  let centreEcran=positionTransportee(sourceCentre,tr);
+  let trajet=centreEcran-positionTransportee(sourceCentre,u.histoire[indice]);
+  var direction=directionFlux(centreEcran,mobilite,taille);
+  if(length(trajet)>.03){
+    direction=normalize(trajet);
+  }
+  let travers=vec2f(-direction.y,direction.x);
+  let delta=(local-centre)*tr.x;
+  let d=vec2f(dot(delta,travers),dot(delta,direction));
+  let rayon=taille*(.48+alea.x*alea.x*.94)/cellule;
+  let wVit=clamp(u.mouvement.w,0.,1.);
+  let bordMin=select(.006,.38/cellule,couche==7.||couche==1.||couche==4.);
+  let rxCell=max(bordMin,rayon*mix(1.,.28,wVit));
+  let ryCell=max(.008,rayon*(1.12+mobilite*(.5+air*1.4)+wVit*(2.6+5.2*mobilite)));
+  let semisDense=couche==7.||couche==1.||couche==2.||couche==4.;
+  let bordCellule=(.5-max(abs(centre.x),abs(centre.y)))*tr.x;
+  let limiteAxe=select(.46,min(.46,.86*bordCellule),semisDense);
+  let axes=vec2f(select(rxCell,min(rxCell,limiteAxe),semisDense),min(limiteAxe,ryCell));
+  let n=d/max(axes,vec2f(.001));
+  let angle=atan2(n.y,n.x);
+  var asymetrie=1.+sin(angle*3.+alea.y*6.283)*select(.10*taille/12.,.23,couche==6.);
+  if(couche==6.){
+    asymetrie+=sin(angle*5.-alea.x*11.)*.11;
+  }
+  let r=length(n)*asymetrie;
+  let aa=clamp(fwidth(r)*.72,.018,.58);
+  let arriere=-d.y;
+  let tracePossible=arriere>rayon*.4 && arriere<.46 && abs(d.x)<=rxCell*.76+rayon*.11;
+  if(r>1.59 && !tracePossible){
+    return vec4f(0);
+  }
+  let vie=fract(t*(.033+alea.x*.022)+alea.y);
+  let apparition=smoothstep(0.,.09,vie)*(1.-smoothstep(.84,1.,vie));
+  var choix=h21(id+73.1+couche+graine);
+  if(couche==2.||couche==4.){
+    choix/=mix(.5,1.,clamp(u.meteo.z,0.,1.));
+  }
+  let presence=(1.-smoothstep(densite-.08,densite+.025,choix))*clamp(densite*8.,0.,1.)*tr.w;
+  if(presence==0.||apparition==0.){
+    return vec4f(0);
+  }
+  let uvC=vec2f(centreEcran.x/u.vue.x,1.-centreEcran.y/u.vue.y)-u.gravite.zw;
+  let clairCentre=mix(1.,smoothstep(.06,.46,length(uvC*vec2f(1.45,1.15))),wVit*.82);
+  let masque=bords(r,aa)*presence*apparition*clairCentre*mix(1.,.65,wVit);
+  var tx=0.;
+  var trace=0.;
+  if(tracePossible){
+    let limiteTrace=select(.46,min(.46,.92*bordCellule),semisDense);
+    let longueur=min(limiteTrace,rayon*1.5+min(.24,length(trajet)/cellule)+rayon*wVit*(2.8+6.5*mobilite));
+    tx=d.x-sin(arriere*25.+alea.x*12.)*rayon*.10*(1.-wVit*.6);
+    trace=(1.-smoothstep(rxCell*.22,rxCell*.75,abs(tx)))*smoothstep(rayon*.4,rayon*1.2,arriere);
+    trace*=(1.-smoothstep(longueur*.65,longueur,arriere))*(mobilite+wVit*.35)*presence*apparition*clairCentre*smoothstep(.06,1.2,length(trajet)+wVit*1.4);
+  }
+  let creux=sqrt(max(0.,1.-min(r*r,1.)));
+  let nn=clamp(n,vec2f(-1),vec2f(1));
+  let normale=(travers*nn.x+direction*nn.y)*masque*(.20+.80*creux);
+  return vec4f(normale+travers*sign(tx)*trace*.12,max(masque,trace*.48),max(masque*(.34+.66*creux),trace*.26));
+}
+fn perles(p:vec2f,cellule:f32,taille:f32,densite:f32,couche:f32,mobilite:f32,groupe:i32)->vec4f {
+  let i=groupe*2;
+  return perlesGeneration(p,cellule,taille,densite,couche,mobilite,i)+perlesGeneration(p,cellule,taille,densite,couche,mobilite,i+1);
+}
+fn impactGoutte(delta:vec2f,impact:vec4f)->vec4f {
+  if(impact.y<.005){
+    return vec4f(0);
+  }
+  let phase=impact.x;
+  let rayon=impact.w*(.65+1.7*phase);
+  let angle=impact.z;
+  let axe=vec2f(cos(angle),sin(angle));
+  let travers=vec2f(-axe.y,axe.x);
+  let local=vec2f(dot(delta,axe),dot(delta,travers)/(.60+.25*phase));
+  let a=atan2(local.y,local.x);
+  let dist=length(local);
+  let irregulier=1.+.10*sin(a*3.+angle)+.055*sin(a*7.-angle);
+  let largeur=max(.7,rayon*.10);
+  let bord=abs(dist-rayon*irregulier);
+  let couronne=(1.-smoothstep(largeur*.5,largeur+1.,bord))*(.62+.38*sin(a*3.+angle)*sin(a*3.+angle));
+  let eclats=(1.-smoothstep(.55,1.5+impact.w*.08,abs(dist-rayon*(1.15+phase*.45))))*pow(max(0.,cos(a*3.-angle)),18.)*(1.-phase);
+  let centre=(1.-smoothstep(rayon*.25,rayon*.8,dist))*(1.-phase)*.18;
+  let eau=max(couronne*.83,max(eclats*.72,centre))*impact.y;
+  let normale=delta/max(length(delta),.1)*(couronne*.52+eclats*.35)*impact.y;
+  return vec4f(normale,eau,(couronne*.22+eclats*.35+centre)*impact.y);
+}
+fn gouttesMobiles(p:vec2f)->vec4f {
+  var total=vec4f(0);
+  let uvP=vec2f(p.x/u.vue.x,1.-p.y/u.vue.y);
+  let centreDist=length((uvP-u.gravite.zw)*vec2f(1.55,1.2));
+  let wMob=clamp(u.mouvement.w,0.,1.);
+  let centreClear=mix(1.,smoothstep(.08,.44,centreDist),wMob*.80);
+  let tuile=clamp(vec2i(p/u.vue.xy*vec2f(16,9)),vec2i(0),vec2i(15,8));
+  let index=tuile.y*16+tuile.x;
+  var masque=u.tuiles[index/4][index%4];
+  while(masque!=0u){
+    let i=firstTrailingBit(masque);
+    masque&=masque-1u;
+    let g=u.gouttes[i];
+    let tr=u.trajets[i];
+    var impact=u.impacts[i];
+    let rayon=g.z*.45;
+    impact.w*=.45;
+    let emprise=max(rayon*(2.3+wMob*6.5),select(0.,impact.w*(.65+1.7*impact.x)*1.75+2.,impact.y>.005));
+    let bas=min(g.xy,min(tr.xy,tr.zw))-emprise;
+    let haut=max(g.xy,max(tr.xy,tr.zw))+emprise;
+    if(any(p<bas)||any(p>haut)){
+      continue;
     }
-    #endif
-    return bruit(p);
-  }
-  float bords(float r, float largeur) { return 1.0 - smoothstep(1.0-largeur,1.0+largeur,r); }
-  vec2 positionTransportee(vec2 p, vec4 tr) {
-    vec2 n=vec2(p.x/uVue.x,1.0-p.y/uVue.y)*tr.x+tr.yz;
-    return vec2(n.x,1.0-n.y)*uVue.xy;
-  }
-  vec2 positionSource(vec2 p, vec4 tr) {
-    vec2 n=(vec2(p.x/uVue.x,1.0-p.y/uVue.y)-tr.yz)/tr.x;
-    return vec2(n.x,1.0-n.y)*uVue.xy;
-  }
-  vec2 directionFlux(vec2 p, float mobilite, float rayon) {
-    vec2 n=vec2(p.x/uVue.x,1.0-p.y/uVue.y),aspect=vec2(uVue.y/uVue.x,1.0);
-    vec2 v=(uFlux.x*(n-uGravite.zw)+uFlux.yz*aspect)*(.3+.7*mobilite);
-    v+=uGravite.xy*aspect*(mobilite*8.0*(rayon*.35+1.5)/720.0);
-    v*=uVue.xy;v.y=-v.y;
-    return length(v)>.0001 ? normalize(v) : vec2(0,-1);
-  }
-  // Les cellules vivent dans leur repère matériel transporté, et non dans une grille écran.
-  // Les centres traversent donc les frontières et les bords sans remise à zéro par cellule.
-  vec4 perlesGeneration(vec2 p, float cellule, float taille, float densite, float couche, float mobilite, int indice) {
-    vec4 tr=uTransport[indice];
-    if(tr.w<.0001 || densite==0.0)return vec4(0);
-    float graine=uVue.z+uPhase[indice/4][indice%4],t=uMouvement.x,air=uMouvement.y;
-    vec2 q=positionSource(p,tr)/cellule;
-    vec2 id = floor(q), local = fract(q) - .5;
-    vec2 alea = h22(id + couche*17.3 + graine);
-    vec2 centre = (alea-.5)*.48;
-    vec2 sourceCentre=(id+.5+centre)*cellule,centreEcran=positionTransportee(sourceCentre,tr);
-    vec2 ancienCentre=positionTransportee(sourceCentre,uHistoire[indice]),trajet=centreEcran-ancienCentre;
-    vec2 direction=length(trajet)>.03 ? normalize(trajet) : directionFlux(centreEcran,mobilite,taille);
-    vec2 travers=vec2(-direction.y,direction.x),delta=(local-centre)*tr.x;
-    vec2 d=vec2(dot(delta,travers),dot(delta,direction));
-    float rayon = taille * (.48 + alea.x*alea.x*.94) / cellule;
-    // À haute vitesse : les perles s'affinent fortement en largeur et s'étirent en longues traînées radiales vives.
-    float wVit = clamp(uMouvement.w, 0.0, 1.0);
-    // Les gouttes fines restent résolues en largeur, même étirées à grande vitesse.
-    float bordMin = couche==7.0 || couche==1.0 || couche==4.0 ? .38/cellule : .006;
-    float rxCell = max(bordMin, rayon * mix(1.0, .28, wVit));
-    float ryCell = max(.008, rayon * (1.12 + mobilite * (.5 + air * 1.4) + wVit * (2.6 + 5.2 * mobilite)));
-    // Dans le semis dense, garder la crête et la pointe de la traînée dans la cellule
-    // de leur centre décalé évite les terminaisons rectangulaires aux fortes incidences.
-    bool semisDense=couche==7.0 || couche==1.0 || couche==2.0 || couche==4.0;
-    float bordCellule=(.5-max(abs(centre.x),abs(centre.y)))*tr.x;
-    float limiteAxe=semisDense ? min(.46,.86*bordCellule) : .46;
-    vec2 axes = vec2(semisDense ? min(rxCell,limiteAxe) : rxCell, min(limiteAxe, ryCell));
-    vec2 n = d/max(axes,vec2(.001));
-    float angle = atan(n.y,n.x);
-    float asymetrie = 1.0 + sin(angle*3.0+alea.y*6.283)*(couche==6.0 ? .23 : .10*taille/12.0);
-    if (couche==6.0) asymetrie+=sin(angle*5.0-alea.x*11.0)*.11;
-    float r = length(n)*asymetrie;
-    // Anticrénelage dans l'espace des pixels réellement rendus
-    float aa = clamp(fwidth(r)*.72,.018,.58);
-    // La dérivée du contour est déjà évaluée pour tous les fragments, voisins des cellules compris.
-    // Le corps finit à 1+aa (au plus 1,58). Le méandre de la trace dévie d’au plus 0,10 rayon.
-    float arriere=-d.y;
-    bool tracePossible=arriere>rayon*.4 && arriere<.46 && abs(d.x)<=rxCell*.76+rayon*.11;
-    if(r>1.59 && !tracePossible)return vec4(0);
-    float vie = fract(t * (.033 + alea.x*.022) + alea.y);
-    float apparition = smoothstep(0.0,.09,vie) * (1.0-smoothstep(.84,1.0,vie));
-    float choix=h21(id+73.1+couche+graine);
-    // Une moitié des sites moyens et des filets est réservée à l'eau soulevée par les pneus.
-    // Augmenter l'exposition révèle de nouveaux centres fixes, sans déplacer les dépôts existants.
-    if(couche==2.0 || couche==4.0) choix/=mix(.5,1.0,clamp(uMeteo.z,0.0,1.0));
-    float presence = (1.0-smoothstep(densite-.08,densite+.025,choix)) * clamp(densite*8.0,0.0,1.0)*tr.w;
-    if(presence==0.0 || apparition==0.0)return vec4(0);
-    // Dégagement progressif du centre de l'écran à haute vitesse : les traînées filent vers la périphérie !
-    vec2 uvC = vec2(centreEcran.x/uVue.x, 1.0-centreEcran.y/uVue.y) - uGravite.zw;
-    float dCentre = length(uvC * vec2(1.45, 1.15));
-    float clairCentre = mix(1.0, smoothstep(0.06, 0.46, dCentre), wVit * 0.82);
-    float masque = bords(r,aa) * presence * apparition * clairCentre * mix(1.0, 0.65, wVit);
-    float tx=0.0,trace=0.0;
-    if(tracePossible) {
-      float limiteTrace=semisDense ? min(.46,.92*bordCellule) : .46;
-      float longueur=min(limiteTrace, rayon*1.5+min(.24,length(trajet)/cellule)+rayon*wVit*(2.8+6.5*mobilite));
-      tx=d.x-sin(arriere*25.0+alea.x*12.0)*rayon*.10*(1.0-wVit*.6);
-      trace=(1.0-smoothstep(rxCell*.22,rxCell*.75,abs(tx)))*smoothstep(rayon*.4,rayon*1.2,arriere);
-      trace*=(1.0-smoothstep(longueur*.65,longueur,arriere))*(mobilite+wVit*.35)*presence*apparition*clairCentre*smoothstep(.06,1.2,length(trajet)+wVit*1.4);
+    let trajet=g.xy-tr.xy;
+    var direction=directionFlux(g.xy,1.,rayon);
+    if(length(trajet)>.03){
+      direction=normalize(trajet);
     }
-    float creux = sqrt(max(0.0,1.0-min(r*r,1.0)));
-    vec2 nn=clamp(n,vec2(-1),vec2(1));
-    vec2 normale=(travers*nn.x+direction*nn.y)*masque*(.20+.80*creux);
-    return vec4(normale+travers*sign(tx)*trace*.12,max(masque,trace*.48),max(masque*(.34+.66*creux),trace*.26));
-  }
-  vec4 perles(vec2 p,float cellule,float taille,float densite,float couche,float mobilite,int groupe) {
-    int i=groupe*2;
-    return perlesGeneration(p,cellule,taille,densite,couche,mobilite,i)+perlesGeneration(p,cellule,taille,densite,couche,mobilite,i+1);
-  }
-  vec4 impactGoutte(vec2 delta,vec4 impact) {
-    if(impact.y<.005)return vec4(0);
-    float phase=impact.x,rayon=impact.w*(.65+1.7*phase),angle=impact.z;
-    vec2 axe=vec2(cos(angle),sin(angle)),travers=vec2(-axe.y,axe.x);
-    vec2 local=vec2(dot(delta,axe),dot(delta,travers)/(.60+.25*phase));
-    float a=atan(local.y,local.x),distance=length(local);
-    float irregulier=1.0+.10*sin(a*3.0+angle)+.055*sin(a*7.0-angle);
-    float largeur=max(.7,rayon*.10),bord=abs(distance-rayon*irregulier);
-    float couronne=(1.0-smoothstep(largeur*.5,largeur+1.0,bord))*(.62+.38*sin(a*3.0+angle)*sin(a*3.0+angle));
-    float eclats=(1.0-smoothstep(.55,1.5+impact.w*.08,abs(distance-rayon*(1.15+phase*.45))))
-      *pow(max(0.0,cos(a*3.0-angle)),18.0)*(1.0-phase);
-    float centre=(1.0-smoothstep(rayon*.25,rayon*.8,distance))*(1.0-phase)*.18;
-    float eau=max(couronne*.83,max(eclats*.72,centre))*impact.y;
-    vec2 normale=delta/max(length(delta),.1)*(couronne*.52+eclats*.35)*impact.y;
-    return vec4(normale,eau,(couronne*.22+eclats*.35+centre)*impact.y);
-  }
-  vec4 gouttesMobiles(vec2 p) {
-    vec4 total=vec4(0);
-    vec2 uvP=vec2(p.x/uVue.x,1.0-p.y/uVue.y);
-    float centreDist=length((uvP-uGravite.zw)*vec2(1.55,1.2));
-    float wMob=clamp(uMouvement.w,0.0,1.0);
-    // À haute vitesse : centre dégagé, traînées fines filant vers les bords extérieurs
-    float centreClear=mix(1.0,smoothstep(0.08,0.44,centreDist),wMob*0.80);
-    ivec2 tuile=clamp(ivec2(p/uVue.xy*vec2(16.0,9.0)),ivec2(0),ivec2(15,8));
-    int caseTuile=tuile.y*16+tuile.x;
-    highp uint masque=uTuilesGouttes[caseTuile/4][caseTuile%4];
-    for(int rang=0;rang<32;rang++) {
-      int i=rang;
-      if(uAvecTuiles) {
-        if(masque==0u)break;
-        // La mantisse est nulle : l'exposant de cette puissance de deux donne l'indice exact.
-        highp uint bit=masque & (0u-masque);
-        i=int(floatBitsToUint(float(bit))>>23u)-127;
-        masque&=masque-1u;
-      } else if(i>=uNbGouttes) break;
-      vec4 g=uGouttes[i],tr=uTrajets[i],impact=uImpacts[i]; float rayon=g.z*.45; impact.w*=.45;
-      float emprise=max(rayon*(2.3+wMob*6.5),impact.y>.005?impact.w*(.65+1.7*impact.x)*1.75+2.0:0.0);
-      vec2 bas=min(g.xy,min(tr.xy,tr.zw))-emprise,haut=max(g.xy,max(tr.xy,tr.zw))+emprise;
-      // Les calculs de lentille et de courbe sont locaux ; le reste de l'écran ne parcourt que les emprises.
-      if(any(lessThan(p,bas))||any(greaterThan(p,haut))) continue;
-      vec2 trajet=g.xy-tr.xy,direction=length(trajet)>.03?normalize(trajet):directionFlux(g.xy,1.0,rayon);
-      vec2 travers=vec2(-direction.y,direction.x),delta=p-g.xy;
-      float rx=max(.9, rayon*mix(1.0, .32, wMob));
-      float ry=max(1.2, rayon*(1.25+uMouvement.y*.55+wMob*5.8));
-      vec2 n=vec2(dot(delta,travers),dot(delta,direction))/vec2(rx,ry);
-      float r=length(n);
-      float aa=rayon>.001 ? max(.025,.85/rayon) : .025;
-      float m=bords(r,aa)*g.w;
-      float creux=sqrt(max(0.0,1.0-min(r*r,1.0)));
-      vec2 nn=clamp(n,vec2(-1),vec2(1));
-      vec2 normale=(travers*nn.x+direction*nn.y)*m*(.18+.82*creux);
-      float trace=0.0;
-      if(distance(g.xy,tr.zw)>rayon*1.2) {
-        float meilleur=1e9,progres=0.0; vec2 precedent=tr.zw,ecart=vec2(0);
-        // Trois positions du modèle forment une courbe, sans traînée verticale inventée pour les perles fixes.
-        for(int j=1;j<=4;j++) {
-          float t=float(j)*.25;
-          vec2 q=mix(mix(tr.zw,tr.xy,t),mix(tr.xy,g.xy,t),t),v=q-precedent;
-          float f=clamp(dot(p-precedent,v)/max(dot(v,v),.001),0.0,1.0);
-          vec2 d=p-(precedent+f*v);float d2=dot(d,d);
-          if(d2<meilleur){meilleur=d2;progres=(float(j-1)+f)*.25;ecart=d;}
-          precedent=q;
+    let travers=vec2f(-direction.y,direction.x);
+    let delta=p-g.xy;
+    let rx=max(.9,rayon*mix(1.,.32,wMob));
+    let ry=max(1.2,rayon*(1.25+u.mouvement.y*.55+wMob*5.8));
+    let n=vec2f(dot(delta,travers),dot(delta,direction))/vec2f(rx,ry);
+    let r=length(n);
+    let aa=select(.025,max(.025,.85/max(.001,rayon)),rayon>.001);
+    let m=bords(r,aa)*g.w;
+    let creux=sqrt(max(0.,1.-min(r*r,1.)));
+    let nn=clamp(n,vec2f(-1),vec2f(1));
+    var normale=(travers*nn.x+direction*nn.y)*m*(.18+.82*creux);
+    var trace=0.;
+    if(distance(g.xy,tr.zw)>rayon*1.2){
+      var meilleur=1e9;
+      var progres=0.;
+      var precedent=tr.zw;
+      var ecart=vec2f(0);
+      for(var j=1;j<=4;j++){
+        let t=f32(j)*.25;
+        let q=mix(mix(tr.zw,tr.xy,t),mix(tr.xy,g.xy,t),t);
+        let v=q-precedent;
+        let f=clamp(dot(p-precedent,v)/max(dot(v,v),.001),0.,1.);
+        let d=p-(precedent+f*v);
+        let d2=dot(d,d);
+        if(d2<meilleur){
+          meilleur=d2;
+          progres=(f32(j-1)+f)*.25;
+          ecart=d;
         }
-        float largeur=max(.55,rayon*mix(.05,.18,progres)-rayon*uMouvement.w*.03);
-        trace=(1.0-smoothstep(largeur*.45,largeur+1.0,sqrt(meilleur)))*smoothstep(0.0,.14,progres)*g.w*.62;
-        normale+=ecart/max(length(ecart),.1)*trace*.35;
+        precedent=q;
       }
-      total+=vec4(normale,max(m,trace),max(m*(.5+.5*creux),trace*.45));
-      total+=impactGoutte(delta,impact);
+      let largeur=max(.55,rayon*mix(.05,.18,progres)-rayon*u.mouvement.w*.03);
+      trace=(1.-smoothstep(largeur*.45,largeur+1.,sqrt(meilleur)))*smoothstep(0.,.14,progres)*g.w*.62;
+      normale+=ecart/max(length(ecart),.1)*trace*.35;
     }
-    total*=centreClear;
-    return total;
+    total+=vec4f(normale,max(m,trace),max(m*(.5+.5*creux),trace*.45))+impactGoutte(delta,impact);
   }
-  vec3 scene(vec2 p, float flou) {
-    p = clamp(p,vec2(.002),vec2(.998));
-    vec3 c = texture(uScene,p).rgb;
-    if (uQualite > 1 && flou > .015) {
-      vec2 d = uTexel*(1.0+flou*7.0);
-      vec3 b = texture(uScene,p+vec2(d.x,d.y)).rgb + texture(uScene,p+vec2(-d.x,d.y)).rgb;
-      b += texture(uScene,p+vec2(d.x,-d.y)).rgb + texture(uScene,p-d).rgb;
-      c = mix(c,b*.25,min(.88,flou));
-    }
-    return c;
+  return total*centreClear;
+}
+// La surface du modèle utilise l'origine basse. Le stockage de présentation WebGPU est orienté vers le bas.
+fn lireScene(p:vec2f)->vec3f {
+  return textureSampleLevel(source,filtre,vec2f(p.x,1.-p.y),0.).rgb;
+}
+fn scene(pixel:vec2f,flou:f32)->vec3f {
+  let p=clamp(pixel,vec2f(.002),vec2f(.998));
+  var c=lireScene(p);
+  if(u.image.z>1. && flou>.015){
+    let d=u.image.xy*(1.+flou*7.);
+    let b=lireScene(p+d)+lireScene(p+vec2f(-d.x,d.y))+lireScene(p+vec2f(d.x,-d.y))+lireScene(p-d);
+    c=mix(c,b*.25,min(.88,flou));
   }
-  void main() {
-    float eau=uMeteo.x, neige=uMeteo.y, embruns=uMeteo.z, film=uMeteo.w;
-    if (max(max(eau,neige),max(embruns,film)) < .001 && uNbGouttes==0) { couleur=vec4(0); return; }
-    vec2 p=uv*uVue.xy;
-    // En deux dimensions, un entraxe divisé par racine(10) donne dix fois plus de sites
-    // sur la même surface. Le rayon reste en pixels CSS ; les grandes perles et les mobiles
-    // conservent leur espacement. Même nombre de couches et une seule cellule par fragment.
-    const float pasPluie=.316227766, pasSillage=.223606798;
-    vec4 micro=vec4(0);
-    if (uQualite > 0) micro=perles(p+vec2(3.7,8.1),9.5*pasPluie,.76,clamp(eau*(.78+uMouvement.w*.28),0.0,.96),7.0,.015,0);
-    vec4 a=perles(p,15.0*pasPluie,1.35,clamp(eau*.94,0.0,.97),1.0,.04,1);
-    vec4 b=perles(p,35.0*pasSillage,2.1,clamp(eau*.83,0.0,.93),2.0,.22,2);
-    vec4 c=vec4(0),filets=vec4(0);
-    if (uQualite > 0) {
-      float attenuGros = mix(1.0, 0.18, clamp(uMouvement.w, 0.0, 1.0));
-      c=perles(p,77.0,3.2,clamp(eau*.34*attenuGros,0.0,.85),3.0,.65,3)*attenuGros;
-      if (eau > .30) filets=perles(p+vec2(11.3,4.7),18.0*pasSillage,1.25,clamp(eau*.95,0.0,.96),4.0,.45,4);
-    } else { a*=.6; }
-    vec4 mobiles=gouttesMobiles(p);
-    vec2 normale=micro.xy*.20+filets.xy*.26+a.xy*.44+b.xy*.68+c.xy*.9+mobiles.xy;
-    float goutte=clamp(micro.z+filets.z*.72+a.z+b.z+c.z+mobiles.z,0.0,1.0);
-    float relief=clamp(micro.w*.16+filets.w*.20+a.w*.3+b.w*.5+c.w*.8+mobiles.w,0.0,1.0);
-    float menisque=clamp((micro.z-micro.w+filets.z-filets.w+a.z-a.w+b.z-b.w+c.z-c.w+mobiles.z-mobiles.w)*1.7,0.0,1.0);
-    // Brouillard d'eau local dans l'axe : il monte puis retombe dans le modèle, pas d'aplat blanc instantané.
-    float turbulent=.5;
-    if (embruns>.001 || (uAvecScene && film>.001)) {
-      turbulent=bruitFilm(uv*vec2(9.0,7.0)+vec2(uMouvement.x*.38,-uMouvement.x*.54),0);
-      turbulent=.67*turbulent+.33*bruitFilm(uv*vec2(21.0,17.0)-uMouvement.x*.27,1);
+  return c;
+}
+@fragment fn reduire(@location(0) uv:vec2f)->@location(0) vec4f {
+  return vec4f(lireScene(uv),1.);
+}
+@fragment fn composer(@location(0) uv:vec2f)->@location(0) vec4f {
+  let eau=u.meteo.x;
+  let neige=u.meteo.y;
+  let embruns=u.meteo.z;
+  let film=u.meteo.w;
+  if(max(max(eau,neige),max(embruns,film))<.001 && u.nombre.x==0u){
+    return vec4f(0);
+  }
+  let p=uv*u.vue.xy;
+  const pasPluie=.316227766;
+  const pasSillage=.223606798;
+  var micro=vec4f(0);
+  if(u.image.z>0.){
+    micro=perles(p+vec2f(3.7,8.1),9.5*pasPluie,.76,clamp(eau*(.78+u.mouvement.w*.28),0.,.96),7.,.015,0);
+  }
+  var a=perles(p,15.*pasPluie,1.35,clamp(eau*.94,0.,.97),1.,.04,1);
+  let b=perles(p,35.*pasSillage,2.1,clamp(eau*.83,0.,.93),2.,.22,2);
+  var c=vec4f(0);
+  var filets=vec4f(0);
+  if(u.image.z>0.){
+    let attenuGros=mix(1.,.18,clamp(u.mouvement.w,0.,1.));
+    c=perles(p,77.,3.2,clamp(eau*.34*attenuGros,0.,.85),3.,.65,3)*attenuGros;
+    if(eau>.30){
+      filets=perles(p+vec2f(11.3,4.7),18.*pasSillage,1.25,clamp(eau*.95,0.,.96),4.,.45,4);
     }
-    vec2 centre=uv-vec2(.5,.57);
-    float panache=exp(-dot(centre*vec2(1.8,1.45),centre*vec2(1.8,1.45))*2.1);
-    float voile=clamp(embruns*panache*(.44+turbulent*.78),0.0,.88);
-    // La neige humide s'agglomère irrégulièrement sur le pourtour, avec de petits amas au centre.
-    float grain=0.0,blanc=0.0;
-    if (neige>.001) {
-      vec2 bord= min(uv,1.0-uv);
-      float distanceBord=min(bord.x*1.32,bord.y);
-      float dentelle=bruit(p/37.0+uVue.z)*.024 + bruit(p/11.0)*.010;
-      float lobes=bruit(p/vec2(173.0,109.0)+uVue.z);
-      float coin=exp(-length(bord*vec2(1.3,1.0))*11.0);
-      float epaisseur=neige*((.021+.078*(1.0-uv.y))*(.35+1.15*lobes)+coin*.046+dentelle);
-      float bourrelet=(1.0-smoothstep(epaisseur*.52,epaisseur+.022+lobes*.015,distanceBord))*neige;
-      grain=bruit(p*.39+uVue.z)*.5+bruit(p*.13)*.5;
-      vec4 amas=perles(p,48.0,4.5,clamp(neige*.65,0.0,.82),6.0,.08,5);
-      float cristaux=smoothstep(.44,.75,bruit(p*.71+uVue.z))*.34;
-      // Des cœurs granuleux blancs dans des ménisques translucides, pas des disques opaques.
-      normale+=amas.xy*neige*.35;
-      goutte=clamp(goutte+amas.z*neige*.35,0.0,1.0);
-      blanc=clamp(bourrelet*(.68+.32*grain)+amas.z*neige*(.26+.53*grain+cristaux),0.0,.96);
+  } else{
+    a*=.6;
+  }
+  let mobiles=gouttesMobiles(p);
+  var normale=micro.xy*.20+filets.xy*.26+a.xy*.44+b.xy*.68+c.xy*.9+mobiles.xy;
+  var goutte=clamp(micro.z+filets.z*.72+a.z+b.z+c.z+mobiles.z,0.,1.);
+  let relief=clamp(micro.w*.16+filets.w*.20+a.w*.3+b.w*.5+c.w*.8+mobiles.w,0.,1.);
+  let menisque=clamp((micro.z-micro.w+filets.z-filets.w+a.z-a.w+b.z-b.w+c.z-c.w+mobiles.z-mobiles.w)*1.7,0.,1.);
+  var turbulent=.5;
+  if(embruns>.001||(u.image.w>0. && film>.001)){
+    turbulent=bruitFilm(uv*vec2f(9,7)+vec2f(u.mouvement.x*.38,-u.mouvement.x*.54),0);
+    turbulent=.67*turbulent+.33*bruitFilm(uv*vec2f(21,17)-u.mouvement.x*.27,1);
+  }
+  let centre=uv-vec2f(.5,.57);
+  let panache=exp(-dot(centre*vec2f(1.8,1.45),centre*vec2f(1.8,1.45))*2.1);
+  let voile=clamp(embruns*panache*(.44+turbulent*.78),0.,.88);
+  var grain=0.;
+  var blanc=0.;
+  if(neige>.001){
+    let bord=min(uv,1.-uv);
+    let distanceBord=min(bord.x*1.32,bord.y);
+    let dentelle=bruit(p/37.+u.vue.z)*.024+bruit(p/11.)*.010;
+    let lobes=bruit(p/vec2f(173,109)+u.vue.z);
+    let coin=exp(-length(bord*vec2f(1.3,1.))*11.);
+    let epaisseur=neige*((.021+.078*(1.-uv.y))*(.35+1.15*lobes)+coin*.046+dentelle);
+    let bourrelet=(1.-smoothstep(epaisseur*.52,epaisseur+.022+lobes*.015,distanceBord))*neige;
+    grain=bruit(p*.39+u.vue.z)*.5+bruit(p*.13)*.5;
+    let amas=perles(p,48.,4.5,clamp(neige*.65,0.,.82),6.,.08,5);
+    let cristaux=smoothstep(.44,.75,bruit(p*.71+u.vue.z))*.34;
+    normale+=amas.xy*neige*.35;
+    goutte=clamp(goutte+amas.z*neige*.35,0.,1.);
+    blanc=clamp(bourrelet*(.68+.32*grain)+amas.z*neige*(.26+.53*grain+cristaux),0.,.96);
+  }
+  let brume=clamp(film*.065+neige*.04,0.,.13);
+  var alpha=clamp(max(goutte*.90,max(voile,blanc))+brume,0.,.98)*u.vue.w;
+  if(alpha<.002){
+    return vec4f(0);
+  }
+  var image=vec3f(.61,.69,.73);
+  if(u.image.w>0.){
+    var deviation=normale*vec2f(3.,3.6)/u.vue.xy;
+    if(film!=0.){
+      deviation+=(vec2f(turbulent,bruitFilm(uv*13.+u.mouvement.x*.2,2))-.5)*film*.002;
     }
-    float brume=clamp(film*.065+neige*.04,0.0,.13);
-    float alpha=clamp(max(goutte*.90,max(voile,blanc)) + brume,0.0,.98)*uVue.w;
-    if (alpha<.002) { couleur=vec4(0); return; }
-    vec3 image=vec3(.61,.69,.73);
-    if (uAvecScene) {
-      vec2 deviation=normale*vec2(3.0,3.6)/uVue.xy;
-      if(film!=0.0) deviation += (vec2(turbulent,bruitFilm(uv*13.0+uMouvement.x*.2,2))-.5)*film*.002;
-      image=scene(uv+deviation,clamp(relief*.22+voile*.88+blanc*.72,0.0,1.0));
-      float ombre=smoothstep(.01,.24,dot(normale,normalize(vec2(.35,-.94))));
-      float reflet=pow(smoothstep(.02,.33,dot(-normale,normalize(vec2(.35,-.94)))),2.0);
-      image *= 1.0-ombre*(.025+menisque*.10)-menisque*.035;
-      image += vec3(.72,.85,.94)*reflet*(.045+menisque*.18);
-    } else {
-      // Légère : ménisques contrastés sur fond transparent, aucune copie ni lecture de la scène.
-      float lumiere=dot(-normale,normalize(vec2(.35,-.94)));
-      image=mix(vec3(.08,.15,.19),vec3(.87,.94,.98),smoothstep(-.2,.5,lumiere));
-      alpha*=.30;
-    }
-    image=mix(image,vec3(.72,.78,.80),voile*.63+brume);
-    image=mix(image,vec3(.86,.91,.94)+grain*.055,blanc);
-    couleur=vec4(clamp(image,0.0,1.0),alpha);
-  }`;
+    image=scene(uv+deviation,clamp(relief*.22+voile*.88+blanc*.72,0.,1.));
+    let ombre=smoothstep(.01,.24,dot(normale,normalize(vec2f(.35,-.94))));
+    let reflet=pow(smoothstep(.02,.33,dot(-normale,normalize(vec2f(.35,-.94)))),2.);
+    image*=1.-ombre*(.025+menisque*.10)-menisque*.035;
+    image+=vec3f(.72,.85,.94)*reflet*(.045+menisque*.18);
+  } else{
+    let lumiere=dot(-normale,normalize(vec2f(.35,-.94)));
+    image=mix(vec3f(.08,.15,.19),vec3f(.87,.94,.98),smoothstep(-.2,.5,lumiere));
+    alpha*=.30;
+  }
+  image=mix(image,vec3f(.72,.78,.80),voile*.63+brume);
+  image=mix(image,vec3f(.86,.91,.94)+grain*.055,blanc);
+  return vec4f(clamp(image,vec3f(0),vec3f(1))*alpha,alpha);
+}
+`;
   function nouvelleGeneration() {
     return { echelle:1,x:0,y:0,poids:0,age:0,graine:0,tempsTrace:0,histoire:new Float64Array(12) };
   }
@@ -461,109 +487,112 @@
     if (e.masquee===!oui) return;
     e.masquee=!oui; if(e.canvas.style) e.canvas.style.visibility=oui ? '' : 'hidden';
   }
-  function shader(gl,type,code) {
-    const s=gl.createShader(type); gl.shaderSource(s,code); gl.compileShader(s);
-    if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)) {
-      const message=gl.getShaderInfoLog(s); gl.deleteShader(s); throw new Error(message);
+  // Un programme et un sampler par format et par appareil. Les textures de scène, le film et
+  // les uniformes appartiennent à chaque joueur : J1 peut reprendre la scène après la copie de J2.
+  const appareils = new WeakMap();
+  const NB_MOTS = 676;
+  let appareilAutonome = null;
+
+  function gpuAutonome() {
+    if (!appareilAutonome) {
+      appareilAutonome = (async () => {
+        const adaptateur = await navigator.gpu.requestAdapter();
+        if (!adaptateur) throw new Error('Adaptateur WebGPU indisponible');
+        const device = await adaptateur.requestDevice();
+        device.lost.then(() => { appareilAutonome = null; });
+        return {device, canvasFormat:navigator.gpu.getPreferredCanvasFormat()};
+      })().catch(err => { appareilAutonome = null; throw err; });
     }
-    return s;
+    return appareilAutonome;
   }
-  function lierProgramme(gl,vs,fragment) {
-    const fs=shader(gl,gl.FRAGMENT_SHADER,fragment), programme=gl.createProgram();
-    gl.attachShader(programme,vs);gl.attachShader(programme,fs);gl.linkProgram(programme);gl.deleteShader(fs);
-    if(!gl.getProgramParameter(programme,gl.LINK_STATUS)) {
-      const message=gl.getProgramInfoLog(programme);gl.deleteProgram(programme);throw new Error(message);
+  function programmes(device, format) {
+    let appareil = appareils.get(device);
+    if (!appareil) {
+      appareil = { clients:new Set(), formats:new Map(), module:device.createShaderModule({label:'BITUME · optique',code:OPTIQUE}),
+        filtre:device.createSampler({label:'BITUME · réfraction linéaire',magFilter:'linear',minFilter:'linear'}) };
+      appareils.set(device,appareil);
+      device.lost.then(info => {
+        appareil.perdu = true;
+        for (const e of appareil.clients) {
+          e.perdu = e.stats.perdu = true;
+          e.pret = e.stats.pret = false;
+          e.stats.erreur = 'Périphérique perdu · ' + (info.message || info.reason);
+          montrer(e,false);
+        }
+      });
     }
-    return programme;
-  }
-  function libererCacheFilm(gl,cache) {
-    if(!cache)return;
-    if(cache.cible)gl.deleteFramebuffer(cache.cible);
-    if(cache.texture)gl.deleteTexture(cache.texture);
-    if(cache.programme)gl.deleteProgram(cache.programme);
-  }
-  function creerCacheFilm(gl,vs) {
-    if(typeof gl.texStorage2D!=='function' || typeof gl.uniform2iv!=='function' || !gl.RGBA32UI)return null;
-    const cache={texture:null,cible:null,programme:null,origines:new Int32Array(6),valide:false};
-    try {
-      cache.texture=gl.createTexture();cache.cible=gl.createFramebuffer();
-      if(!cache.texture || !cache.cible)throw new Error('Cache de bruit indisponible');
-      gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,cache.texture);
-      gl.texStorage2D(gl.TEXTURE_2D,1,gl.RGBA32UI,LARGEUR_FILM,3*HAUTEUR_BANDE_FILM);
-      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
-      gl.bindFramebuffer(gl.FRAMEBUFFER,cache.cible);
-      gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,cache.texture,0);
-      if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw new Error('Cible entière indisponible');
-      cache.programme=lierProgramme(gl,vs,FRAGMENT_CACHE_FILM);
-      cache.uniforme=gl.getUniformLocation(cache.programme,'uOriginesFilm[0]');
-      return cache;
-    } catch(_) {
-      libererCacheFilm(gl,cache);return null;
-    } finally {gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.activeTexture(gl.TEXTURE0);}
-  }
-  function actualiserCacheFilm(e) {
-    const cache=e.cacheFilm,temps=e.simulation.uniformes[4],origines=cache.origines;
-    // Une cellule de garde pour les arrondis aux frontières. La composition sait aussi hacher hors cache.
-    const x=Math.floor(temps*.38)-1,y=Math.floor(-temps*.54)-1;
-    const deux=Math.floor(-temps*.27)-1,trois=Math.floor(temps*.2)-1;
-    if(cache.valide && origines[0]===x && origines[1]===y && origines[2]===deux && origines[4]===trois)return;
-    origines[0]=x;origines[1]=y;origines[2]=origines[3]=deux;origines[4]=origines[5]=trois;
-    const gl=e.gl;
-    gl.bindFramebuffer(gl.FRAMEBUFFER,cache.cible);gl.useProgram(cache.programme);gl.bindVertexArray(e.vao);
-    gl.viewport(0,0,LARGEUR_FILM,3*HAUTEUR_BANDE_FILM);
-    gl.uniform2iv(cache.uniforme,origines);gl.drawArrays(gl.TRIANGLES,0,3);
-    gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.useProgram(e.programme);
-    gl.uniform2iv(e.lieux.uOriginesFilm,origines);cache.valide=true;
-  }
-  function initialiser(e) {
-    const gl=e.gl, vs=shader(gl,gl.VERTEX_SHADER,VERTEX);
-    let programme;
-    try {
-      e.cacheFilm=creerCacheFilm(gl,vs);
-      if(e.cacheFilm) {
-        try {programme=lierProgramme(gl,vs,FRAGMENT.replace('#version 300 es','#version 300 es\n#define CACHE_FILM'));}
-        catch(_) {libererCacheFilm(gl,e.cacheFilm);e.cacheFilm=null;}
+    let p = appareil.formats.get(format);
+    if (!p) {
+      const module = appareil.module;
+      function pipeline(entryPoint, cible) {
+        return device.createRenderPipeline({label:'BITUME · '+entryPoint,layout:'auto',
+          vertex:{module,entryPoint:'sommet'},fragment:{module,entryPoint,targets:[{format:cible}]},primitive:{topology:'triangle-list'}});
       }
-      if(!programme)programme=lierProgramme(gl,vs,FRAGMENT);
-    } finally {gl.deleteShader(vs);}
-    e.reduction=null; e.reductionRefusee=null;
-    e.stockageScene={largeur:1,hauteur:1};
-    e.sousImage={directe:null,reduction:null,secours:null};
-    e.programme=programme; e.vao=gl.createVertexArray(); e.texture=gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D,e.texture);
-    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
-    gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([0,0,0,255]));
-    e.lieux={}; for(const nom of ['uScene','uMeteo','uMouvement','uVue','uTexel','uQualite','uAvecScene','uNbGouttes','uGouttes','uTrajets','uImpacts','uFlux','uGravite','uAvecTuiles','uTuilesGouttes','uTransport','uHistoire','uPhase']) e.lieux[nom]=gl.getUniformLocation(programme,nom);
-    // Ce programme et l'orientation des transferts appartiennent au seul contexte de cette visière.
-    gl.useProgram(programme);gl.uniform1i(e.lieux.uScene,0);
-    if(e.cacheFilm) {
-      gl.uniform1i(gl.getUniformLocation(programme,'uCacheFilm'),1);
-      e.lieux.uOriginesFilm=gl.getUniformLocation(programme,'uOriginesFilm[0]');
+      p = {composer:pipeline('composer',format), film:pipeline('remplirFilm','rgba32uint'), reduire:pipeline('reduire','rgba8unorm'), appareil};
+      appareil.formats.set(format,p);
     }
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
-    e.uniformesVue={w:0,h:0,niveau:-1,scene:null,tuiles:null};
-    gl.disable(gl.DEPTH_TEST); gl.disable(gl.BLEND); gl.clearColor(0,0,0,0);
-    e.pret=true; e.perdu=false; e.stats.pret=true; e.stats.perdu=false;e.stats.erreur=null;
+    return p;
   }
-  function creer(canvas,options) {
-    // Les doubles de Canvas Node et les anciens navigateurs passent au repli Canvas2D de vitre.js.
-    if(!canvas || typeof canvas.addEventListener!=='function' || !canvas.ownerDocument || typeof canvas.getBoundingClientRect!=='function') return null;
-    let gl; try { gl=canvas.getContext('webgl2',{alpha:true,premultipliedAlpha:false,antialias:false,depth:false,stencil:false,preserveDrawingBuffer:false}); } catch (_) { return null; }
-    if(!gl) return null;
-    const copie=canvas.ownerDocument.createElement('canvas'); copie.width=1; copie.height=1;
-    const e={canvas,gl,contexte:gl,tuilesGouttes:new Uint32Array(16*9),simulation:creerEtat(options),source:copie,sourceContexte:copie.getContext('2d',{alpha:false}),
+  function texture(e, label, w, h, format, usage) {
+    const t=e.device.createTexture({label:'BITUME · '+label,size:[w,h],format,usage});
+    return {t,vue:t.createView(),w,h,format};
+  }
+  function detruireRessources(e) {
+    e.pipelines?.appareil.clients.delete(e);
+    e.uniformeGPU?.destroy();
+    e.filmGPU?.t.destroy(); e.vide?.t.destroy(); e.native?.t.destroy(); e.reduite?.t.destroy();
+    e.uniformeGPU=e.filmGPU=e.vide=e.native=e.reduite=null;
+    e.groupeFilm=e.groupeReduction=e.groupeComposition=e.vueLiee=e.pipelines=null;
+    if(e.device) e.contexte.unconfigure();
+    e.device=null; e.pret=e.stats.pret=false;
+  }
+  function rattacher(e, gpu) {
+    const device = gpu?.device;
+    if (!device || e.libere) return false;
+    if (device===e.device) return e.pret && !e.perdu;
+    if (e.device) detruireRessources(e);
+    const format = gpu.canvasFormat || globalThis.navigator.gpu.getPreferredCanvasFormat();
+    e.device=device;
+    try {
+      const p=programmes(device,format);
+      if (p.appareil.perdu) return false;
+      e.pipelines=p; p.appareil.clients.add(e);
+      e.contexte.configure({device,format,alphaMode:'premultiplied'});
+      e.uniformeGPU=device.createBuffer({label:'BITUME · état optique',size:NB_MOTS*4,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});
+      e.filmGPU=texture(e,'atlas de film',24,60,'rgba32uint',GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING);
+      e.vide=texture(e,'source vide',1,1,'rgba8unorm',GPUTextureUsage.TEXTURE_BINDING);
+      e.groupeFilm=device.createBindGroup({layout:p.film.getBindGroupLayout(0),entries:[{binding:0,resource:{buffer:e.uniformeGPU}}]});
+      e.filmValide=false; e.gpu=gpu; e.propre=true; e.perdu=e.stats.perdu=false;
+      e.pret=e.stats.pret=true; e.stats.erreur=null;
+      return true;
+    } catch (err) {
+      detruireRessources(e); e.stats.erreur=String(err.message||err); montrer(e,false); return false;
+    }
+  }
+  function synchroniser(e) {
+    const gpu=e.fournirGPU ? e.fournirGPU() : e.gpu;
+    if (e.fournirGPU && !gpu?.device) { montrer(e,false); return false; }
+    if (gpu?.device && gpu.device !== e.device) rattacher(e,gpu);
+    return e.pret && !e.perdu;
+  }
+  function creer(canvas,options={}) {
+    options ||= {};
+    if (!canvas || typeof canvas.getContext !== 'function' || typeof canvas.getBoundingClientRect !== 'function' ||
+        !canvas.ownerDocument || (!options.gpu && !globalThis.navigator?.gpu)) return null;
+    let contexte;
+    try { contexte=canvas.getContext('webgpu'); } catch (_) { return null; }
+    if (!contexte) return null;
+    const e={canvas,contexte, gpu:null, device:null, fournirGPU:typeof options.gpu==='function' ? options.gpu : null,
+      tuilesGouttes:new Uint32Array(16*9),mots:new Float32Array(NB_MOTS),simulation:creerEtat(options),
       masquee:false,propre:true,perdu:false,libere:false,pret:false,dprPalier:null,largeur:1,hauteur:1,dpr:1,
-      stats:{backend:'webgl2',pret:false,perdu:false,erreur:null,copiesScene:0,copiesDirectes:0,reductionsGPU:0,dessins:0,etapes:0,pixels:0,pixelsSource:0,
-        largeur:0,hauteur:0,dpr:1,eau:0,accumulationNeige:0,embruns:0,gouttes:0,neige:0,
-        fusionsEau:0,expulses:0,depotsEau:0,depotsEmbruns:0,impactsEmis:0,surfaceExpulsee:0}};
-    e.uMeteo=e.simulation.uniformes.subarray(0,4);e.uMouvement=e.simulation.uniformes.subarray(4,8);e.uVue=e.simulation.uniformes.subarray(8,12);
-    e.uFlux=e.simulation.fluxUniformes.subarray(0,4);e.uGravite=e.simulation.fluxUniformes.subarray(4,8);
-    e.perte=event=>{event.preventDefault(); e.perdu=true; e.pret=false; e.stats.perdu=true; e.stats.pret=false; montrer(e,false);};
-    e.restauration=()=>{if(e.libere)return; try{initialiser(e);}catch(err){e.stats.erreur=String(err.message||err);montrer(e,false);}};
-    canvas.addEventListener('webglcontextlost',e.perte,false); canvas.addEventListener('webglcontextrestored',e.restauration,false);
-    try{initialiser(e);}catch(err){e.stats.erreur=String(err.message||err);montrer(e,false);}
-    montrer(e,false); return e;
+      source:{width:1,height:1}, stats:{backend:'webgpu',pret:false,perdu:false,erreur:null,copiesScene:0,copiesDirectes:0,reductionsGPU:0,dessins:0,etapes:0,pixels:0,pixelsSource:0,
+      largeur:0,hauteur:0,dpr:1,eau:0,accumulationNeige:0,embruns:0,gouttes:0,neige:0,
+      fusionsEau:0,expulses:0,depotsEau:0,depotsEmbruns:0,impactsEmis:0,surfaceExpulsee:0}};
+    e.entiers=new Uint32Array(e.mots.buffer); e.origines=new Int32Array(e.mots.buffer,660*4,12);
+    montrer(e,false);
+    if (options.gpu) rattacher(e,e.fournirGPU ? e.fournirGPU() : options.gpu);
+    else e.initialisation=gpuAutonome().then(gpu=>rattacher(e,gpu)).catch(err=>{ e.stats.erreur=String(err.message||err);return false; });
+    return e;
   }
   function dimensionner(e,c,niveau) {
     const palier=niveau>2 ? 1.5 : niveau>1 ? 1.25 : 1;
@@ -580,79 +609,6 @@
     if(e.source.width!==sw || e.source.height!==sh){e.source.width=sw;e.source.height=sh;}
     e.stats.pixelsSource=sw*sh;
   }
-  // La texture est déjà liée. Le premier transfert à une nouvelle taille fournit directement ses pixels.
-  // Une source WebGL et la toile de secours 2D peuvent emprunter des chemins distincts dans le pilote.
-  function televerserCanvas(e,stockage,source,chemin) {
-    const gl=e.gl, w=source.width, h=source.height, accepte=e.sousImage[chemin];
-    if(stockage.largeur===w && stockage.hauteur===h && accepte!==false && typeof gl.texSubImage2D==='function') {
-      try {
-        gl.texSubImage2D(gl.TEXTURE_2D,0,0,0,gl.RGBA,gl.UNSIGNED_BYTE,source);
-        // Une seule sonde par chemin et par contexte. Une erreur WebGL peut arriver sans exception JS.
-        if(accepte===true)return;
-        if(typeof gl.getError!=='function' || gl.getError()===gl.NO_ERROR) {
-          e.sousImage[chemin]=true;
-          return;
-        }
-      } catch(_) { /* Reprendre le transfert complet si le navigateur refuse cette source. */ }
-      e.sousImage[chemin]=false;
-    }
-    gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,source);
-    stockage.largeur=w;stockage.hauteur=h;
-  }
-
-  function libererReduction(e) {
-    const r=e.reduction;
-    if(r && !e.perdu) {
-      if(r.texture)e.gl.deleteTexture(r.texture);
-      if(r.lecture)e.gl.deleteFramebuffer(r.lecture);
-      if(r.ecriture)e.gl.deleteFramebuffer(r.ecriture);
-    }
-    e.reduction=null;
-  }
-  // Réduction d'une scène opaque dans le contexte de sa propre visière.
-  // La texture composée conserve exactement les dimensions de la source bornée.
-  function reduireScene(e,scene) {
-    const gl=e.gl, w=e.source.width, h=e.source.height, sw=scene.width, sh=scene.height;
-    // Au-delà de 4 Mpx, éviter la texture tampon pleine taille : Canvas2D copie au budget borné.
-    if(typeof gl.blitFramebuffer!=='function' || sw*sh>4*MAX_SOURCE_PIXELS)return false;
-    const refus=e.reductionRefusee;
-    if(refus && refus.w===w && refus.h===h && refus.sw===sw && refus.sh===sh)return false;
-    let r=e.reduction;
-    try {
-      if(!r) {
-        r=e.reduction={texture:null,lecture:null,ecriture:null,stockage:{largeur:0,hauteur:0},w:0,h:0,sw:0,sh:0};
-        r.texture=gl.createTexture();r.lecture=gl.createFramebuffer();r.ecriture=gl.createFramebuffer();
-        if(!r.texture || !r.lecture || !r.ecriture)throw new Error('Tampons de réduction indisponibles');
-        gl.bindTexture(gl.TEXTURE_2D,r.texture);
-        gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
-      } else gl.bindTexture(gl.TEXTURE_2D,r.texture);
-      televerserCanvas(e,r.stockage,scene,'reduction');
-      gl.bindFramebuffer(gl.READ_FRAMEBUFFER,r.lecture);gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,r.ecriture);
-      if(r.sw!==sw || r.sh!==sh || r.w!==w || r.h!==h) {
-        gl.framebufferTexture2D(gl.READ_FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,r.texture,0);
-        if(e.stockageScene.largeur!==w || e.stockageScene.hauteur!==h) {
-          gl.bindTexture(gl.TEXTURE_2D,e.texture);
-          gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
-          e.stockageScene.largeur=w;e.stockageScene.hauteur=h;
-        }
-        gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,e.texture,0);
-        if(gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE || gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)
-          throw new Error('Tampons de réduction incomplets');
-        r.w=w;r.h=h;r.sw=sw;r.sh=sh;
-      }
-      gl.blitFramebuffer(0,0,sw,sh,0,0,w,h,gl.COLOR_BUFFER_BIT,gl.LINEAR);
-      e.reductionRefusee=null;
-      return true;
-    } catch(_) {
-      libererReduction(e);e.reductionRefusee={w,h,sw,sh};
-      // L'allocation de la cible peut avoir échoué : le repli 2D doit redéfinir son stockage.
-      e.stockageScene.largeur=0;e.stockageScene.hauteur=0;
-      return false;
-    } finally {gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.bindTexture(gl.TEXTURE_2D,e.texture);}
-  }
-  // Une liste de 32 bits par tuile ; le dernier bit représente aussi une vraie goutte.
-  // Les indices actifs sont lus dans leur ordre d'origine pour maintenir l'addition du shader.
   function preparerTuiles(e) {
     const s=e.simulation, cases=e.tuilesGouttes, gx=s.gouttesUniformes, tr=s.trajetsUniformes, impacts=s.impactsUniformes;
     const tuilesParPixelX=16/e.largeur, tuilesParPixelY=9/e.hauteur, vitesse=clamp(s.uniformes[7],0,1);
@@ -670,62 +626,84 @@
       }
     }
   }
+  function passe(encodeur, vue, pipeline, groupe) {
+    const p=encodeur.beginRenderPass({colorAttachments:[{view:vue,loadOp:'clear',storeOp:'store',clearValue:{r:0,g:0,b:0,a:0}}]});
+    if (pipeline) { p.setPipeline(pipeline); p.setBindGroup(0,groupe); p.draw(3); }
+    p.end();
+  }
+  function copierScene(e,c,encodeur) {
+    const scene=c.sourceScene, gpu=e.fournirGPU ? e.fournirGPU() : e.gpu;
+    if (!scene?.width || !scene.height) return null;
+    // La texture de présentation n’est valable que pendant cette image. Capturer avant
+    // le dessin de l'autre joueur. Aucune lecture CPU ni rétention du swapchain.
+    const original=gpu?.context?.canvas===scene ? gpu.context.getCurrentTexture() : null;
+    const format=original?.format || 'rgba8unorm';
+    const w=original?.width || scene.width, h=original?.height || scene.height;
+    if (!e.native || e.native.w!==w || e.native.h!==h || e.native.format!==format) {
+      e.native?.t.destroy();
+      e.native=texture(e,'copie de la caméra',w,h,format,GPUTextureUsage.COPY_DST|GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.RENDER_ATTACHMENT);
+      e.groupeReduction=null;
+    }
+    if (original && (original.usage&GPUTextureUsage.COPY_SRC)) encodeur.copyTextureToTexture({texture:original},{texture:e.native.t},[w,h]);
+    else e.device.queue.copyExternalImageToTexture({source:scene},{texture:e.native.t},[w,h]);
+    if (w===e.source.width && h===e.source.height) {e.stats.copiesDirectes++;return e.native.vue;}
+    if (!e.reduite || e.reduite.w!==e.source.width || e.reduite.h!==e.source.height) {
+      e.reduite?.t.destroy();
+      e.reduite=texture(e,'réfraction réduite',e.source.width,e.source.height,'rgba8unorm',GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.RENDER_ATTACHMENT);
+    }
+    const p=e.pipelines;
+    if (!e.groupeReduction) e.groupeReduction=e.device.createBindGroup({layout:p.reduire.getBindGroupLayout(0),entries:[
+      {binding:1,resource:e.native.vue},{binding:2,resource:p.appareil.filtre}]});
+    passe(encodeur,e.reduite.vue,p.reduire,e.groupeReduction);e.stats.reductionsGPU++;
+    return e.reduite.vue;
+  }
+  function ecrireUniformes(e,niveau,avecScene) {
+    const s=e.simulation,m=e.mots;
+    s.uniformes[8]=e.largeur; s.uniformes[9]=e.hauteur;
+    m.set(s.uniformes); m.set(s.fluxUniformes,12);
+    m[20]=1/e.source.width; m[21]=1/e.source.height; m[22]=niveau; m[23]=avecScene?1:0;
+    m.set(s.transportUniformes,24); m.set(s.histoireUniformes,72); m.set(s.phaseUniformes,120);
+    m.set(s.gouttesUniformes,132); m.set(s.trajetsUniformes,260); m.set(s.impactsUniformes,388);
+    preparerTuiles(e);e.entiers.set(e.tuilesGouttes,516);e.entiers[672]=s.nbGouttes;
+    e.device.queue.writeBuffer(e.uniformeGPU,0,m);
+  }
   function dessiner(e,c,niveau,chauffe) {
-    const gl=e.gl,u=e.simulation.uniformes;
-    if(e.cacheFilm && (chauffe || u[2]>.001 || niveau>0 && u[3]!==0))actualiserCacheFilm(e);
-    gl.viewport(0,0,e.canvas.width,e.canvas.height); gl.useProgram(e.programme); gl.bindVertexArray(e.vao);
-    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D,e.texture);
-    let avecScene=false;
-    if(niveau>0 && e.sourceContexte && c.sourceScene && c.sourceScene.width>0 && c.sourceScene.height>0) {
-      try {
-        const scene=c.sourceScene;
-        // À taille native, la texture reçoit directement le canvas opaque de cette caméra.
-        // Le passage 2D ne sert qu'au redimensionnement ou au repli d'un navigateur.
-        if(typeof scene.getContext==='function' && scene.width===e.source.width && scene.height===e.source.height) {
-          try {
-            televerserCanvas(e,e.stockageScene,scene,'directe');
-            if(e.reduction)e.reduction.w=0;
-            e.stats.copiesDirectes++;avecScene=true;
-          } catch (_) { /* Le passage 2D peut accepter une source refusée en copie directe. */ }
-        }
-        if(!avecScene && (scene.width!==e.source.width || scene.height!==e.source.height) && typeof scene.getContext==='function') {
-          avecScene=reduireScene(e,scene);if(avecScene)e.stats.reductionsGPU++;
-        }
-        if(!avecScene) {
-          if(e.reduction)e.reduction.w=0;
-          e.sourceContexte.drawImage(scene,0,0,e.source.width,e.source.height);
-          televerserCanvas(e,e.stockageScene,e.source,'secours');
-        }
-        e.stats.copiesScene++;e.stats.erreur=null;avecScene=true;
-      }catch(err){e.stats.erreur='copie scène : '+String(err.message||err);}
+    const u=e.simulation.uniformes,p=e.pipelines,encodeur=e.device.createCommandEncoder({label:'BITUME · visière'});
+    let vue=null;
+    if (niveau>0 && c.sourceScene) {
+      try { vue=copierScene(e,c,encodeur); if(vue){e.stats.copiesScene++;e.stats.erreur=null;} }
+      catch(err) { e.stats.erreur='copie scène · '+String(err.message||err); }
     }
-    u[8]=e.largeur;u[9]=e.hauteur;
-    gl.uniform4fv(e.lieux.uMeteo,e.uMeteo);
-    gl.uniform4fv(e.lieux.uMouvement,e.uMouvement);gl.uniform4fv(e.lieux.uVue,e.uVue);
-    const fixes=e.uniformesVue;
-    if(fixes.w!==e.source.width || fixes.h!==e.source.height) {
-      fixes.w=e.source.width;fixes.h=e.source.height;
-      gl.uniform2f(e.lieux.uTexel,1/fixes.w,1/fixes.h);
+    // Les trois bandes d'entiers préservent les bits des quatre hachages de chaque cellule.
+    // Une mise à jour par changement d'origine suffit ; le bruit reste interpolé par pixel.
+    if (chauffe || u[2]>.001 || (vue && u[3]!==0)) {
+      const t=u[4],o=e.origines,x=Math.floor(t*.38)-1,y=Math.floor(-t*.54)-1,b=Math.floor(-t*.27)-1,k=Math.floor(t*.2)-1;
+      if (!e.filmValide || o[0]!==x || o[1]!==y || o[4]!==b || o[8]!==k) {
+        o[0]=x;o[1]=y;o[4]=o[5]=b;o[8]=o[9]=k;e.filmValide=true;
+        passe(encodeur,e.filmGPU.vue,p.film,e.groupeFilm);
+      }
     }
-    if(fixes.niveau!==niveau){gl.uniform1i(e.lieux.uQualite,niveau);fixes.niveau=niveau;}
-    if(fixes.scene!==avecScene){gl.uniform1i(e.lieux.uAvecScene,avecScene);fixes.scene=avecScene;}
-    const avecTuiles=typeof gl.uniform4uiv==='function';
-    if(fixes.tuiles!==avecTuiles){gl.uniform1i(e.lieux.uAvecTuiles,avecTuiles);fixes.tuiles=avecTuiles;}
-    if(avecTuiles) {
-      preparerTuiles(e);
-      gl.uniform4uiv(e.lieux.uTuilesGouttes,e.tuilesGouttes);
+    ecrireUniformes(e,niveau,!!vue);
+    const lecture=vue || e.vide.vue;
+    if (lecture!==e.vueLiee) {
+      e.vueLiee=lecture;
+      e.groupeComposition=e.device.createBindGroup({layout:p.composer.getBindGroupLayout(0),entries:[
+        {binding:0,resource:{buffer:e.uniformeGPU}},{binding:1,resource:lecture},
+        {binding:2,resource:p.appareil.filtre},{binding:3,resource:e.filmGPU.vue}]});
     }
-    gl.uniform1i(e.lieux.uNbGouttes,e.simulation.nbGouttes);
-    gl.uniform4fv(e.lieux.uGouttes,e.simulation.gouttesUniformes);gl.uniform4fv(e.lieux.uTrajets,e.simulation.trajetsUniformes);
-    gl.uniform4fv(e.lieux.uImpacts,e.simulation.impactsUniformes);
-    gl.uniform4fv(e.lieux.uFlux,e.uFlux);gl.uniform4fv(e.lieux.uGravite,e.uGravite);
-    gl.uniform4fv(e.lieux.uTransport,e.simulation.transportUniformes);gl.uniform4fv(e.lieux.uHistoire,e.simulation.histoireUniformes);
-    gl.uniform4fv(e.lieux.uPhase,e.simulation.phaseUniformes);
-    gl.drawArrays(gl.TRIANGLES,0,3);e.stats.dessins++;e.propre=!!chauffe;montrer(e,!chauffe);
+    passe(encodeur,e.contexte.getCurrentTexture().createView(),p.composer,e.groupeComposition);
+    e.device.queue.submit([encodeur.finish()]);e.stats.dessins++;e.propre=!!chauffe;montrer(e,!chauffe);
+  }
+  function viderToile(e) {
+    if (!e.propre && e.pret && !e.perdu) {
+      const encodeur=e.device.createCommandEncoder();passe(encodeur,e.contexte.getCurrentTexture().createView());
+      e.device.queue.submit([encodeur.finish()]);
+    }
+    e.propre=true;
   }
   function effacer(e) {
     if(!e || e.libere)return;
-    if(!e.propre && e.pret && !e.perdu){e.gl.clear(e.gl.COLOR_BUFFER_BIT);e.propre=true;}
+    viderToile(e);
     const s=e.simulation;s.eau=s.neige=s.embruns=s.film=s.accumulateur=0;s.precedent.fill(0);s.uniformes.fill(0);
     B.vitre.effacer(s.depots);s.nbGouttes=0;s.gouttesUniformes.fill(0);s.trajetsUniformes.fill(0);s.impactsUniformes.fill(0);
     reinitialiserTransport(s);
@@ -735,7 +713,7 @@
     if(!e || e.libere)return e ? e.stats : null;
     c=c||{};
     if(c.actif===false || c.retro===true || c.qualite==='off' || clamp(nombre(c.intensite,1),0,2)===0){effacer(e);return e.stats;}
-    if(c.pause || !e.pret || e.perdu || !Number.isFinite(dt) || dt<=0)return e.stats;
+    if(c.pause || !synchroniser(e) || !Number.isFinite(dt) || dt<=0)return e.stats;
     const niveau=QUALITES[c.qualite]??2, s=e.simulation;
     // Le jeu transmet la toile, sans dimensions CSS dans le contexte : dépôts et shader doivent partager
     // celles de cette vue, y compris J2 et un redimensionnement, avant le premier pas de déplacement.
@@ -745,25 +723,19 @@
     e.stats.gouttes=s.depots.stats.gouttes;e.stats.fusionsEau=s.depots.stats.fusionsEau;e.stats.expulses=s.depots.stats.expulses;
     e.stats.depotsEau=s.depots.stats.depotsEau;e.stats.depotsEmbruns=s.depots.stats.depotsEmbruns;e.stats.surfaceExpulsee=s.depots.stats.surfaceExpulsee;
     e.stats.impactsEmis=s.depots.stats.impactsEmis;
-    if(Math.max(s.eau,s.neige,s.embruns,s.film)<.001&&!s.nbGouttes){if(!e.propre){e.gl.clear(e.gl.COLOR_BUFFER_BIT);e.propre=true;}montrer(e,false);return e.stats;}
+    if(Math.max(s.eau,s.neige,s.embruns,s.film)<.001&&!s.nbGouttes){viderToile(e);montrer(e,false);return e.stats;}
     dessiner(e,c,niveau,false);return e.stats;
   }
   function prechauffer(e,c) {
-    if(!e || e.libere || !e.pret || e.perdu)return false;c=c||{};
+    if(!e || e.libere || !synchroniser(e))return false;c=c||{};
     if(c.actif===false || c.retro || c.qualite==='off' || c.intensite===0)return false;
     const niveau=QUALITES[c.qualite]??2;dimensionner(e,c,niveau);
     const u=e.simulation.uniformes;u[0]=.02;u[1]=.02;u[10]=e.simulation.graine*37.31;u[11]=.01;
-    dessiner(e,c,niveau,true);u.fill(0);e.gl.clear(e.gl.COLOR_BUFFER_BIT);e.propre=true;montrer(e,false);return true;
+    dessiner(e,c,niveau,true);u.fill(0);e.propre=false;viderToile(e);montrer(e,false);return true;
   }
   function liberer(e) {
     if(!e || e.libere)return;effacer(e);
-    e.canvas.removeEventListener('webglcontextlost',e.perte); e.canvas.removeEventListener('webglcontextrestored',e.restauration);
-    libererReduction(e);
-    if(!e.perdu){
-      libererCacheFilm(e.gl,e.cacheFilm);
-      e.gl.deleteTexture(e.texture);e.gl.deleteVertexArray(e.vao);e.gl.deleteProgram(e.programme);}
-    e.libere=true;e.canvas=null;e.contexte=null;e.source=null;e.sourceContexte=null;e.gl=null;
-    e.texture=e.vao=e.programme=e.lieux=e.cacheFilm=null;
+    e.libere=true; detruireRessources(e); e.gpu=e.fournirGPU=e.canvas=e.contexte=null;
   }
-  B.visiereOptique={creer,creerEtat,avancerEtat,mettreAJour,prechauffer,effacer,liberer,MAX_PIXELS,MAX_SOURCE_PIXELS,MAX_GOUTTES_MOBILES,QUALITES,COUCHES};
+  B.visiereOptique={creer,creerEtat,avancerEtat,mettreAJour,prechauffer,effacer,liberer,rattacher,MAX_PIXELS,MAX_SOURCE_PIXELS,MAX_GOUTTES_MOBILES,QUALITES,COUCHES};
 })(globalThis.BITUME=globalThis.BITUME||{});

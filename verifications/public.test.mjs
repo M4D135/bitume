@@ -9,7 +9,7 @@
 //   - animation : fête au départ et à l'arrivée, abris sous la pluie, excitation au passage, même mouvement à
 //     30, 60 et 120 images par seconde ; le hasard du public ne doit rien à la course ni au décor ;
 //   - listes de niveaux : plafonds, trame qui partage [0, 1) sans trou ni recouvrement, paliers ;
-//   - vue WebGL simulée : rien n'est créé après la première image, appels de dessin bornés ;
+//   - vue WebGPU simulée : rien n'est créé après la première image, appels de dessin bornés ;
 //   - aucune allocation par image (processus fils : ramasse-miettes observé, nouvel espace mesuré).
 // Fonctionne sans le branchement (decor.js, jeu.js : docs/reprise/rapports/public-2026-11-18/integration.patch) :
 // les gradins viennent alors de public.decrireGradins, que les marches du décor contrôlent ici. Branchement appliqué,
@@ -22,7 +22,7 @@ import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
 
 const require = createRequire(import.meta.url);
-for (const f of ['carene', 'circuit', 'decor', 'obstacles', 'humain-donnees', 'humain-corps', 'public']) require('../src/' + f + '.js');
+for (const f of ['carene', 'circuit', 'decor', 'obstacles', 'humain-donnees', 'humain-corps', 'public-shaders', 'public-gpu', 'public']) require('../src/' + f + '.js');
 const B = globalThis.BITUME, P = B.public;
 const CATALOGUE = [[11, 'foret', 4200], [29, 'cote', 3600], [47, 'montagne', 5200], [83, 'islande', 4600], [107, 'desert', 4800], [131, 'asie', 5000], [157, 'pacifique', 5200]];
 const circuitDe = ([graine, theme, longueur]) => B.circuit.creer(graine, { theme, longueur });
@@ -88,8 +88,11 @@ const rapport = {};
   const code = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
   for (const interdit of ['Math.random', 'fetch(', 'XMLHttpRequest', 'WebSocket', 'import(', 'localStorage', 'Date.now'])
     assert.ok(!code.includes(interdit), `public.js ne doit pas employer ${interdit}`);
-  assert.ok(P.VS.includes(`uniform vec4 uSections[${P.SECTIONS}]`) && P.VS.includes(`uniform vec4 uSections2[${P.SECTIONS}]`), 'sections du shader');
-  assert.ok(P.VS.startsWith('#version 300 es') && P.FS.startsWith('#version 300 es') && P.FS.includes('/*PDR*/'), 'shaders WebGL 2 et éclairage du monde');
+  for (const shader of Object.values(B.shadersPublic)) {
+    for (const name of ['uSections', 'uSections2']) assert.equal(shader.uniforms.fields.find(f => f.name === name).count, P.SECTIONS);
+    assert.match(shader.vertex, /@vertex/);
+  }
+  assert.match(B.shadersPublic.couleur.fragment, /@fragment/);
   // Construction : public.js après les copies d'EMPRISE dont il appelle les fonctions (si le module est branché).
   const ordre = readFileSync(new URL('../construire.py', import.meta.url), 'utf8');
   if (ordre.includes("'public.js'")) assert.ok(ordre.indexOf("'public.js'") > ordre.indexOf("'humain-corps.js'"), 'public.js se construit après humain-corps.js');
@@ -489,43 +492,44 @@ function simuler(fps, duree, ambianceDe, depart) {
 }
 
 // ------------------------------------------------------------------------------------------------------------------
-// 8. Vue WebGL simulée : ressources créées une fois, puis seulement des mises à jour et au plus 3 + 2 dessins
+// 8. Vue WebGPU simulée : ressources créées une fois, puis seulement des mises à jour et au plus 3 + 2 dessins
 // ------------------------------------------------------------------------------------------------------------------
 {
-  let serie = 0;
-  const constantes = new Map(), appels = new Map();
-  const gl = new Proxy({}, { get(_, k) {
-    if (typeof k !== 'string') return undefined;
-    if (/^[A-Z][A-Z0-9_]*$/.test(k)) { if (!constantes.has(k)) constantes.set(k, ++serie); return constantes.get(k); }
-    if (k === 'isContextLost') return () => false;
-    return () => { appels.set(k, (appels.get(k) || 0) + 1); return k.startsWith('create') || k === 'getUniformLocation' ? { id: ++serie } : undefined; };
-  } });
-  let programmes = 0;
-  const pdr = { glsl: '', generation: 1, programme: () => { programmes++; return { id: ++serie }; }, lier: () => () => {} };
-  const vue = P.vue({ gl, pdr }, pub0);
-  assert.ok(vue.pret && programmes === 2, 'deux programmes : couleur et ombre');
+  const appels = new Map();
+  const compter = nom => appels.set(nom, (appels.get(nom) || 0) + 1);
+  const dispositif = Object.fromEntries(['Buffer', 'ShaderModule', 'Texture', 'RenderPipeline', 'BindGroup', 'BindGroupLayout', 'PipelineLayout', 'Sampler'].map(type =>
+    ['create' + type, () => { compter('create' + type); return { createView: () => ({}), destroy: () => compter('destroy' + type) }; }]));
+  dispositif.queue = { writeBuffer: () => compter('writeBuffer'), writeTexture: () => compter('writeTexture') };
+  globalThis.GPUTextureUsage = globalThis.GPUBufferUsage = globalThis.GPUShaderStage = {};
+  require('../src/ferro/webgpu-shaders.js'); require('../src/ferro/webgpu-renderer.js');
+  const pass = Object.fromEntries(['setPipeline', 'setBindGroup', 'setVertexBuffer', 'setIndexBuffer', 'drawIndexed'].map(nom => [nom, () => compter(nom)]));
+  const moteur = { gpu: { device: dispositif, format: 'rgba8unorm', depthFormat: 'depth32float' }, stats: { contextLost: false } };
+  const vue = P.vue(moteur, pub0);
+  assert.ok(vue.pret);
   const t = pub0.gradins.tribunes[1], oeil = [t.x - Math.sin(t.a) * -7, t.y + 2, t.z + Math.cos(t.a) * -7], avant = [-Math.sin(t.a) * -1, 0, Math.cos(t.a) * -1];
   const v = { vp: new Float32Array(16), oeil, avant, droite: [-avant[2], 0, avant[0]], haut: [0, 1, 0], tangente: .577, focale: 1121, largeur: 1390, hauteur: 1295 };
   const lumiere = { matrice: new Float32Array(16), direction: [.35, .82, .2], centre: [t.x, t.y, t.z], etendue: 60 };
-  const image = k => { P.animer(pub0, k / 60, [], 0, { vert: true }); vue.fx.ombre(gl, lumiere); return vue.fx.couleur(gl, v); };
+  lumiere.viewport = [0, 0, 512, 512];
+  v.ombre = { matrice: v.vp, textureView: {}, active: true }; v.lumieres = { nombre: 0 };
+  const image = k => { P.animer(pub0, k / 60, [], 0, { vert: true }); vue.fx.gpuShadow(pass, lumiere); return vue.fx.gpuColor(pass, v); };
   image(0);
   const apres1 = new Map(appels);
   let dessins = 0;
-  for (let k = 1; k <= 120; k++) { const avantDessins = appels.get('drawElementsInstanced') || 0; const r = image(k); dessins = Math.max(dessins, (appels.get('drawElementsInstanced') || 0) - avantDessins); assert.ok(r && r.instances === vue.mesure.niveaux.reduce((a, b) => a + b, 0)); }
-  for (const nom of ['createBuffer', 'createTexture', 'createVertexArray', 'bufferData', 'texImage2D', 'deleteBuffer', 'deleteTexture', 'getUniformLocation'])
-    assert.equal(appels.get(nom) || 0, apres1.get(nom) || 0, `${nom} appelé en course`);
-  assert.equal(programmes, 2, 'aucun programme recréé en course');
-  assert.equal((appels.get('bufferSubData') || 0) - (apres1.get('bufferSubData') || 0), 240, 'une mise à jour d’instances par passe');
-  assert.ok(dessins >= 2 && dessins <= 5, `appels de dessin par image : ${dessins}`);
+  for (let k = 1; k <= 120; k++) { const avantDessins = appels.get('drawIndexed') || 0; const r = image(k); dessins = Math.max(dessins, (appels.get('drawIndexed') || 0) - avantDessins); assert.ok(r && r.instances === vue.mesure.niveaux.reduce((a, b) => a + b, 0)); }
+  for (const nom of ['createBuffer', 'createTexture', 'createBindGroup', 'createRenderPipeline', 'createShaderModule', 'writeTexture'])
+    assert.equal(appels.get(nom), apres1.get(nom), nom + ' appelé en course');
+  assert.equal(appels.get('createRenderPipeline'), 2);
+  assert.equal(appels.get('writeBuffer') - apres1.get('writeBuffer'), 480, 'uniformes et liste par passe');
+  assert.ok(dessins >= 2 && dessins <= 5, 'nombre de dessins par image');
   assert.ok(vue.mesure.vus > 0 && vue.mesure.appels <= 3 && vue.mesure.ombreInstances > 0);
-  // Contexte rendu par le moteur (nouvelle génération) : les ressources se recréent une seule fois
-  pdr.generation++; image(121); image(122);
-  assert.equal(programmes, 4, 'ressources recréées après la perte du contexte');
+  moteur.stats.contextLost = true;
+  assert.equal(image(122), null); moteur.stats.contextLost = false;
   vue.qualite('low'); image(123);
   assert.equal(vue.mesure.niveaux[0] + vue.mesure.niveaux[1], 0, 'palier Légère en course : silhouettes seules');
   vue.liberer();
   assert.equal(vue.pret, false);
-  rapport.vue = { appelsParImage: dessins, programmes };
+  assert.equal(image(124), null); assert.equal(appels.get('destroyTexture'), 2);
+  rapport.vue = { appelsParImage: dessins, pipelines: appels.get('createRenderPipeline') };
 }
 
 // ------------------------------------------------------------------------------------------------------------------

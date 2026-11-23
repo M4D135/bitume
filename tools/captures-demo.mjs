@@ -98,7 +98,7 @@ export function preparerEtat(s) {
 }
 
 export function observerEtat() {
-  const J = BITUME_JEU, B = BITUME, S = J.session, F = __DEMO_FIXTURE, cam = S.camera, gl = J.rendu.gl, p = S.cour[S.suivie];
+  const J = BITUME_JEU, B = BITUME, S = J.session, F = __DEMO_FIXTURE, cam = S.camera, gpu = J.rendu.gpu, p = S.cour[S.suivie];
   const cible = cam?.cible || (p && [p.x, p.y + .65, p.z]);
   let obstruction = null;
   if (cam && cible) {
@@ -142,7 +142,7 @@ export function observerEtat() {
     agePlan: S.course.horloge - (F.planInitial?.debut ?? 0),
     activiteFaune: B.animaux?.stats && S.animaux ? B.animaux.stats(S.animaux).activite : null,
     vitrage, vitres: J.vitres, vitreVisible: !!vitre && !vitre.hidden && style.display !== 'none' && style.visibility !== 'hidden',
-    saison: J.scene.saison, temps: S.tRendu, glErreur: gl.getError(), glPerdu: gl.isContextLost() };
+    saison: J.scene.saison, temps: S.tRendu, gpuErreur: (J.rendu.stats.errorEvents[0] || null), gpuPerdu: J.rendu.stats.deviceLost };
 }
 
 export function verifierRapport(r, s, candidat = true) {
@@ -157,7 +157,7 @@ export function verifierRapport(r, s, candidat = true) {
     const o = im.observation;
     if (!o) { erreurs.push('Observation absente'); continue; }
     if (o.type !== 'demo' || o.ecran !== 'demo' || o.cameraImposee !== false) erreurs.push('Raccord démo contourné');
-    if (o.glErreur || o.glPerdu) erreurs.push('Échec WebGL');
+    if (o.gpuErreur || o.gpuPerdu) erreurs.push('Échec WebGPU');
     if (im.vues?.scene?.noir > .97 && im.vues.scene.luminance < .025) erreurs.push('Vue rendue noire');
     if (!Array.isArray(o.camera?.pos) || o.camera.pos.length !== 3 || !o.camera.pos.every(Number.isFinite) || ![o.camera?.yaw, o.camera?.pitch, o.camera?.fov].every(Number.isFinite)) erreurs.push('Caméra finale invalide');
     if (o.saison !== s.saison) erreurs.push('Saison demandée non rendue');
@@ -179,10 +179,10 @@ export function verifierRapport(r, s, candidat = true) {
     }
     if (s.pluie) {
       const v = o.vitres?.j1;
-      if (!v || v.backend !== 'webgl2' || v.pret !== true || v.erreur || v.perdu || v.erreurs?.length || typeof v.erreurs === 'number' && v.erreurs > 0) erreurs.push('Diagnostic optique absent ou en erreur');
+      if (!v || v.backend !== 'webgpu' || v.pret !== true || v.erreur || v.perdu || v.erreurs?.length || typeof v.erreurs === 'number' && v.erreurs > 0) erreurs.push('Diagnostic optique absent ou en erreur');
       if (!Number.isFinite(o.vitrage?.pluie) || !(o.vitrage.pluie > 0)) erreurs.push('Pluie demandée non exercée');
       if (s.aerien) {
-        // Le diagnostic WebGL expose les dépôts ; propre/masquee appartiennent seulement à l'état
+        // Le diagnostic WebGPU expose les dépôts ; propre/masquee appartiennent seulement à l'état
         // interne du repli Canvas. Vérifier les vrais pixels composés via la visibilité du DOM.
         if (o.vitrage?.actif !== false || o.vitreVisible !== false ||
             !['eau', 'accumulationNeige', 'embruns', 'gouttes', 'neige'].every(k => v?.[k] === 0)) erreurs.push('Overlay humide présent dans la vue aérienne');

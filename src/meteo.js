@@ -1,6 +1,6 @@
 (function (B) {
   'use strict';
-  // BITUME : pluie volumique projetée en 2D, sans nouvelle passe du moteur.
+  // BITUME : pluie volumique projetée dans la vue, rendue sur le GPU de la course.
   // EMPRISE inspire les graines stables, les rafales et le mouillage ; voir docs/METEO.md.
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   const modulo = (x, n) => x - Math.floor(x / n) * n;
@@ -98,8 +98,6 @@
   // un palier bas montre donc une partie des mêmes gouttes. Sans palier : les 840 gouttes.
   const BUDGETS = Object.freeze(Object.assign(Object.create(null), { low: 420, medium: 630, high: N, ultra: N }));
   const SANS_OPTIONS = Object.freeze({});
-  // Couleur constante : l'opacité de chaque lot passe par globalAlpha, sans chaîne rgba à réanalyser.
-  const COULEUR = 'rgb(190,210,225)';
   const BOITES_COUVERTS = new WeakMap(), VIDE = Object.freeze([]), HAUT = Object.freeze([0, 1, 0]);
   const RAYON_TOIT = Object.freeze({ mask: 2, staticOnly: true }), RAYON_VUE = Object.freeze({ mask: 3, staticOnly: true });
   const GENRE_TOIT = /^(voute-(tunnel|galerie)|portail-tunnel)$/;
@@ -201,10 +199,11 @@
   function abriCouverts(c, p, physique) {
     return !!B.couverts?.abri(c, p) || sousToitReel(p, physique, boitesCouverts(c), HIT_CAMERA);
   }
-  function creerPluie(canvas) {
-    const ctx = canvas && canvas.getContext('2d');
+  function creerPluie(canvas, options) {
+    const presentation = options?.presentation || B.pluieWebGPU?.creer(canvas, options?.gpu, N);
     const graines = new Float64Array(N * 4), graineMasque = new Float64Array(N), segments = new Float32Array(N * 4);
-    const lots = new Uint8Array(N);
+    const lots = new Uint8Array(N), transparences = new Uint8Array(N), comptes = new Uint16Array(3);
+    const largeurs = new Float64Array(3), opacites = new Float64Array(3);
     const stats = { candidats: 0, visibles: 0, traits: 0, lots: 0, lectures: 0, pixels: 0, propre: true, masquee: false,
       spatiaux: 0, abrites: 0, occultes: 0, rayons: 0 };
     const point = [0, 0, 0], queue = [0, 0, 0], milieu = [0, 0, 0], direction = [0, 0, 0], hit = {};
@@ -234,7 +233,7 @@
       if (canvas && canvas.style) canvas.style.visibility = visible ? '' : 'hidden';
     }
     function vider() {
-      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.clearRect(0, 0, canvas.width, canvas.height);
+      presentation.effacer();
       propre = true;
     }
     // Taille CSS donnée par l'appelant (relevée au redimensionnement) ou, à défaut, relue sur la toile ;
@@ -258,7 +257,7 @@
     function dessiner(m, cam, dt, options) {
       const o = options || SANS_OPTIONS;
       stats.candidats = stats.visibles = stats.traits = stats.lots = stats.spatiaux = stats.abrites = stats.occultes = stats.rayons = 0;
-      if (!ctx || !cam) return stats;
+      if (!presentation || !canvas || !cam) return stats;
       const pluie = clamp(m.pluie || 0, 0, 1), sec = pluie < .025;
       mesurer(o, sec);
       if (!(w > 0 && h > 0)) return stats;
@@ -274,8 +273,7 @@
       // Au sec : effacer une seule fois puis masquer ; ensuite ni mise en page, ni effacement, ni composition.
       if (sec) { if (!propre) vider(); montrer(false); stats.propre = propre; return stats; }
       dimensionner(o);
-      if (!propre) vider();
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      comptes.fill(0);
       const cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch), cr = Math.cos(roll), sr = Math.sin(roll);
       // Convention exacte FERRO (projection verticale, y vers le haut).
       const rx = cy * cr - sy * sp * sr, ry = cp * sr, rz = sy * cr + cy * sp * sr;
@@ -365,53 +363,36 @@
         if (opacite === 0) continue;
         const j = stats.visibles++, o4 = j * 4;
         segments[o4] = ex; segments[o4 + 1] = ey; segments[o4 + 2] = ex + dx; segments[o4 + 3] = ey + dy;
-        // Deux bits pour la profondeur, six pour l'opacité.
         const lot = profondeur < 8 ? 0 : profondeur < 17 ? 1 : 2;
-        lots[j] = (opacite << 2) | lot;
+        lots[j] = lot; transparences[j] = opacite; comptes[lot]++;
       }
-      // Couleur et bouts ronds reposés à chaque tracé : une valeur inchangée ne coûte rien, et un contexte
-      // réinitialisé (redimensionnement, perte de contexte) ne peut pas tracer en noir.
-      ctx.lineCap = 'round'; ctx.strokeStyle = COULEUR;
-      for (let lot = 2; lot >= 0; lot--) {
-        const alpha = ((lot === 0 ? .28 : lot === 1 ? .21 : .14) + (lot === 2 ? .17 : .21) * averse) * (.55 + pluie * .45);
-        const largeur = (lot === 0 ? 1 : lot === 1 ? .75 : .5) + .25 * averse;
-        const lotPlein = (63 << 2) | lot;
-        let attenues = false, n = 0;
-        for (let j = 0; j < stats.visibles; j++) {
-          const code = lots[j];
-          if ((code & 3) !== lot) continue;
-          if (code === lotPlein) { n++; continue; }
-          const o4 = j * 4;
-          ctx.lineWidth = largeur; ctx.globalAlpha = alpha * (code >> 2) / 63;
-          ctx.beginPath(); ctx.moveTo(segments[o4], segments[o4 + 1]); ctx.lineTo(segments[o4 + 2], segments[o4 + 3]);
-          ctx.stroke(); stats.lots++; stats.traits++;
-          attenues = true;
+      if (stats.visibles) {
+        for (let lot = 0; lot < 3; lot++) {
+          largeurs[lot] = (lot === 0 ? 1 : lot === 1 ? .75 : .5) + .25 * averse;
+          opacites[lot] = ((lot === 0 ? .28 : lot === 1 ? .21 : .14) + (lot === 2 ? .17 : .21) * averse) * (.55 + pluie * .45);
         }
-        if (n) {
-          ctx.lineWidth = largeur; ctx.globalAlpha = alpha; ctx.beginPath();
-          for (let j = 0; j < stats.visibles; j++) if (lots[j] === lotPlein) {
-            const o4 = j * 4; ctx.moveTo(segments[o4], segments[o4 + 1]); ctx.lineTo(segments[o4 + 2], segments[o4 + 3]);
-          }
-          ctx.stroke(); stats.lots++; stats.traits += n;
+        if (presentation.tracer(segments, lots, stats.visibles, comptes, largeurs, opacites, dpr, !propre, transparences)) {
+          stats.traits = stats.visibles;
+          stats.lots = Number(comptes[0] > 0) + Number(comptes[1] > 0) + Number(comptes[2] > 0);
+          propre = false;
         }
       }
-      ctx.globalAlpha = 1;
-      if (stats.traits) { propre = false; montrer(true); } else montrer(false);
+      if (!stats.traits && !propre) vider();
+      montrer(stats.traits > 0);
       stats.propre = propre;
       return stats;
     }
-    // Sous le voile de chargement : un trait presque transparent, composé une fois, pour que la première
-    // pluie ne paie pas la création de la surface et du tracé 2D. L'appel suivant au sec l'efface et masque.
+    // Exercer le pipeline de la même vue sous le voile de chargement.
     function prechauffer(options) {
       const o = options || SANS_OPTIONS;
-      if (!ctx) return false;
+      if (!presentation || !canvas) return false;
       mesurer(o, false);
       if (!(w > 0 && h > 0)) return false;
       dimensionner(o);
-      if (!propre) vider();
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.lineCap = 'round'; ctx.strokeStyle = COULEUR;
-      ctx.lineWidth = 1; ctx.globalAlpha = 1 / 255; ctx.beginPath();
-      ctx.moveTo(w * .5, h * .5); ctx.lineTo(w * .5 + 1, h * .5 + 8); ctx.stroke(); ctx.globalAlpha = 1;
+      segments[0] = w * .5; segments[1] = h * .5;
+      segments[2] = segments[0] + 1; segments[3] = segments[1] + 8;
+      lots[0] = 0; transparences[0] = 63; comptes.fill(0); comptes[0] = 1; largeurs[0] = 1; opacites[0] = 1 / 255;
+      if (!presentation.tracer(segments, lots, 1, comptes, largeurs, opacites, dpr, !propre, transparences)) return false;
       propre = false; stats.propre = false; montrer(true);
       return true;
     }

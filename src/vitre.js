@@ -64,14 +64,19 @@
     if (e.canvas && e.canvas.style) e.canvas.style.visibility = visible ? '' : 'hidden';
   }
   function creer(canvas, options) {
-    // Un contexte WebGL2 dédié compose les lentilles de la vue courante. Le Canvas2D reste le repli
-    // des navigateurs sans WebGL2 et des bancs de simulation : aucune modification du FERRO verrouillé.
+    // En jeu, la visière partage l'appareil FERRO. Les appels sans moteur conservent
+    // le simulateur et son dessin facultatif sur une toile 2D.
     const optique = B.visiereOptique && B.visiereOptique.creer(canvas, options);
     if (optique) { optique.optique = true; return optique; }
+    if (options?.gpu && canvas?.ownerDocument && typeof canvas.getBoundingClientRect === 'function') {
+      const e = creerSimulation(options, canvas, null);
+      e.indisponible = true; e.stats.backend = 'indisponible'; e.stats.erreur = 'Surface de visière WebGPU indisponible';
+      return e;
+    }
     const contexte = canvas && typeof canvas.getContext === 'function' ? canvas.getContext('2d', { alpha: true }) : null;
     return creerSimulation(options, canvas, contexte);
   }
-  // Même dépôt mobile pour la réfraction WebGL et le repli Canvas ; aucun contexte ni pixel requis ici.
+  // Même dépôt mobile pour la réfraction WebGPU et la simulation ; aucun contexte ni pixel requis ici.
   const BANDES_FUSION = 24, MOTS_FUSION = Math.ceil(BUDGETS.ultra.gouttes / 32);
   // Neuf perles fines par arrivée d'eau dans le repli 2D.
   const FINES_PAR_ARRIVEE = 9, PAS_FINE = 7; // x, y, x précédent, y précédent, âge, durée, rayon CSS
@@ -212,7 +217,7 @@
     if (!actives) f.prochain = f.fin = 0;
     e.stats.microgouttes = actives;
   }
-  // Même enveloppe interpolée pour le Canvas et WebGL. Le tampon appartient à la vue.
+  // Même enveloppe interpolée pour la toile et WebGPU. Le tampon appartient à la vue.
   function lireImpact(p, k, sortie, offset = 0, actif = true) {
     const phase = p.impactDuree > 0 ? clamp(melange(p.impactAvant, p.impactAge, k) / p.impactDuree, 0, 1) : 1;
     // L'impact cesse à la fin de sa brève enveloppe, même si sa perle subsiste plusieurs secondes.
@@ -560,6 +565,7 @@
   }
   function mettreAJour(e, dt, contexte) {
     if (!e || e.libere) return e ? e.stats : null;
+    if (e.indisponible) return e.stats;
     if (e.optique) return B.visiereOptique.mettreAJour(e, dt, contexte);
     const c = contexte || {}, budget = BUDGETS[c.qualite] || BUDGETS.high;
     const intensite = Number.isFinite(Number(c.intensite)) && c.intensite != null ? clamp(Number(c.intensite), 0, 2) : 1;

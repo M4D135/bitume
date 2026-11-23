@@ -116,7 +116,7 @@ export function preparerHabitacle(s) {
     if (s.lod) {
       // Le niveau reste choisi par le jeu. La distance d'inspection est obtenue avec son API publique,
       // puis le niveau effectivement présent dans la liste de rendu sera observé indépendamment.
-      const h = J.rendu.gl.canvas.height, t = Math.tan(s.fov * Math.PI / 360), distances = [];
+      const h = J.rendu.gpu.context.canvas.height, t = Math.tan(s.fov * Math.PI / 360), distances = [];
       for (let d = 2; d <= 800; d += .5) {
         const niveau = B.voiture.detailPour(d * d, t, 0) === 'simple' ? 'simple'
           : B.voiture.detailPour(d * d, t, h, Math.min(1, h / 1080));
@@ -190,14 +190,14 @@ export function observerHabitacle() {
     [nom, corps.filter(o => o.shape === B.voiture.FORMES[nom]?.nom).map(objet)]));
   const cam = S.camera, cible = F.cameraPrescrite?.cible || [p.x, p.y + .65, p.z], direction = cible.map((q, k) => q - cam.pos[k]), distance = Math.hypot(...direction);
   const hit = S.course.physique.world.raycast(cam.pos, direction.map(x => x / distance), Math.max(0, distance - .15), { mask: 3, staticOnly: true });
-  const gl = J.rendu.gl;
+  const gpu = J.rendu.gpu;
   return { type: S.type, ecran: J.ecran, vue: S.vue, vue2: S.vueJ2?.vue || null, instant: F.instant || null, cameraImposee: J.camera !== null,
     reglagesHud: { carte: J.reglages.carte, cartePosition: J.reglages.cartePosition,
       carteTaille: J.reglages.carteTaille, tableau: J.reglages.tableau, annoncesVirages: J.reglages.annoncesVirages },
     rivalDistance: F.scenario.rival ? S.course.voitures[F.sujet === 0 ? 1 : 0].etat.s - v.etat.s : null,
     camera: { pos: [...cam.pos], yaw: cam.yaw, pitch: cam.pitch, roll: cam.roll || 0, fov: cam.fov, near: cam.near },
     cameraPrescrite: F.cameraPrescrite, distanceLOD: F.distanceLOD, obstructionStatique: !!hit.hit,
-    glErreur: gl.getError(), glPerdu: gl.isContextLost(), temps: S.tRendu, pose: { ...p }, oeilVoiture: [...B.voiture.OEIL],
+    gpuErreur: (J.rendu.stats.errorEvents[0] || null), gpuPerdu: J.rendu.stats.deviceLost, temps: S.tRendu, pose: { ...p }, oeilVoiture: [...B.voiture.OEIL],
     volant: v.etat.volant, rapport: v.etat.rapport, rapportAvant: v.rapportAvant,
     passage: Math.max(0, Math.min(1, (S.tRendu - v.tPassage) / .36)),
     expression: S.expressions ? { ...B.expressionsPilote.lire(S.expressions, F.sujet) } : null,
@@ -232,7 +232,7 @@ export function verifierHabitacle(r, s, candidat = true) {
   for (const e of r.erreurs || []) fautes.push('Erreur page : ' + e);
   for (const e of r.avertissements || []) if (/GL_INVALID|shader.*(error|failed)|GLSL|context lost/i.test(e)) fautes.push('Erreur graphique : ' + e);
   if (!/^[a-f0-9]{64}$/.test(r.build?.sha256 || '') || !/^[a-f0-9]{40}$/.test(r.source?.commit || '')) fautes.push('Identité du build ou des outils absente');
-  if (r.environnement?.webgl2 !== true || r.environnement?.physx?.ready !== true) fautes.push('WebGL2 ou PhysX réel absent');
+  if (r.environnement?.webgpu !== true || r.environnement?.physx?.ready !== true) fautes.push('WebGPU ou PhysX réel absent');
   if (r.initialisation?.entree !== 'BITUME_JEU.reference' || r.initialisation.posesPrescrites !== true) fautes.push('Séance de référence absente');
   if (s.qualification && s.cockpit && r.initialisation?.observation?.methode !== 'copie passive des triangles opaques transmis au draw original') fautes.push('Observation du vrai draw absente');
   if (r.images?.length !== s.images) fautes.push('Nombre de captures incomplet');
@@ -248,7 +248,7 @@ export function verifierHabitacle(r, s, candidat = true) {
     if (!cameraValide(o.camera)) fautes.push('Caméra finale invalide');
     if (!s.cockpit && (!cameraValide(o.camera) || !cameraValide(o.cameraPrescrite) || ['yaw', 'pitch', 'fov'].some(k => Math.abs(o.camera[k] - o.cameraPrescrite[k]) > 1e-9) ||
       o.camera.pos.some((x, k) => Math.abs(x - o.cameraPrescrite.pos[k]) > 1e-9))) fautes.push('Caméra finale différente de l’inspection');
-    if (o.glErreur || o.glPerdu) fautes.push('Erreur WebGL');
+    if (o.gpuErreur || o.gpuPerdu) fautes.push('Erreur WebGPU');
     if (o.obstructionStatique !== false) fautes.push('Visée masquée par le décor');
     if (!im.etat?.zones?.scene || im.vues?.scene?.noir > .97 && im.vues.scene.luminance < .025) fautes.push('Scène absente ou noire');
     const volantVitesse = s.volantVitesse ?? .65;

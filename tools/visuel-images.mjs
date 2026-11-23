@@ -119,7 +119,7 @@ export function comparerSequences(reference, candidate) {
     return reglages;
   };
   if (JSON.stringify(reglagesEffectifs(reference)) !== JSON.stringify(reglagesEffectifs(candidate))) ecarts.push('referenceJeu');
-  for (const k of ['navigateur', 'gpu', 'resolution', 'webgl', 'backend', 'gpuModeste', 'physx'])
+  for (const k of ['navigateur', 'gpu', 'resolution', 'webgpu', 'backend', 'gpuModeste', 'physx'])
     if (JSON.stringify(reference.environnement?.[k]) !== JSON.stringify(candidate.environnement?.[k])) ecarts.push('environnement.' + k);
   if (reference.images?.length !== candidate.images?.length) ecarts.push('nombre-images');
   if (ecarts.length) return { comparable: false, ecarts, differences };

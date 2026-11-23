@@ -1,10 +1,11 @@
 #!/usr/bin/env node
+import { environnementWebGPU, argumentsWebGPU } from './diagnostic-webgpu.mjs';
 // Banc navigateur de BITUME : ouvre la page construite dans Chrome sans interface, conduit le jeu par le protocole
 // DevTools, et rend un rapport JSON (banc, volet de mesures, erreurs de console, capture).
 //
 //   node tools/banc-navigateur.mjs --url file:///chemin/dist/bitume.html --duree 20 --qualite high --circuit 0
 //
-// Le rapport distingue ce qui est réellement mesuré de ce qui ne l'est pas : sans EXT_disjoint_timer_query_webgl2,
+// Le rapport distingue ce qui est réellement mesuré de ce qui ne l'est pas : sans timestamp-query,
 // le temps GPU reste N/D, et un rendu logiciel (SwiftShader) ne qualifie pas les performances d'un GPU réel.
 // Aucune dépendance : Node 22 et plus suffisent (WebSocket global).
 
@@ -67,7 +68,7 @@ const chromeArgs = [
   '--window-size=' + taille.join(','), '--hide-scrollbars'
 ];
 // --angle native laisse Chrome choisir le backend matériel de la machine ; le défaut est explicitement logiciel.
-if (args.angle !== 'native') chromeArgs.push('--enable-unsafe-swiftshader', '--use-gl=angle', '--use-angle=' + (args.angle || 'swiftshader'));
+chromeArgs.push(...argumentsWebGPU(args.angle || 'swiftshader'));
 chromeArgs.push('about:blank');
 // groupe détaché : le navigateur lance des processus enfants qu'un simple kill du père laisserait tourner,
 // et un rendu logiciel à 1000 % de CPU qui traîne fausse toutes les mesures suivantes
@@ -125,14 +126,7 @@ try {
     if (a && !a.hidden) { ${args.detection === 'oui' ? '' : "document.getElementById('detection-annuler').click();"} return false; }
     return window.BITUME_JEU.ecran === 'titre'; })()`), Math.max(attendre, 30000), 'écran titre jamais atteint');
 
-  rapport.environnement = await evaluer(`(() => { const r = window.BITUME_JEU.rendu, gl = r.gl, i = gl.getExtension('WEBGL_debug_renderer_info');
-    return { navigateur: navigator.userAgent, rendu: gl.getParameter(gl.RENDERER),
-      nonMasque: i ? gl.getParameter(i.UNMASKED_RENDERER_WEBGL) : null, webgl2: r.stats.webglVersion === 2,
-      backend: r.stats.backend, chronometrageGpu: !!gl.getExtension('EXT_disjoint_timer_query_webgl2'),
-      gpuModeste: window.BITUME_JEU.gpuModeste, resolution: [document.getElementById('scene').width, document.getElementById('scene').height],
-      fenetre: [innerWidth, innerHeight, devicePixelRatio], visible: !document.hidden,
-      version: (document.querySelector('.version-jeu') || {}).textContent || null,
-      signature: !!document.querySelector('.signature'), liensSignature: document.querySelectorAll('.marque a').length }; })()`);
+  rapport.environnement = await evaluer(`(() => { const r = BITUME_JEU.rendu, vue = (${environnementWebGPU.toString()})(r); return { ...vue, version: document.querySelector('.version-jeu')?.textContent || null, gpuModeste: BITUME_JEU.gpuModeste, rendu: vue.gpu, nonMasque: vue.gpu, chronometrageGpu: vue.chronoGpu, resolution: [r.gpu.context.canvas.width,r.gpu.context.canvas.height], fenetre: [innerWidth,innerHeight,devicePixelRatio], visible:!document.hidden, signature:!!document.querySelector('.signature'), liensSignature:document.querySelectorAll('.marque a').length }; })()`);
   rapport.titre = await evaluer(`(() => { const t = document.getElementById('titre'); return { visible: !t.hidden,
     marque: (document.querySelector('.marque h1') || {}).textContent, signature: (document.querySelector('.signature') || {}).textContent || null }; })()`);
 
@@ -237,10 +231,11 @@ try {
   }
   rapport.erreurs = evenements.console.filter(e => e.type === 'error').concat(evenements.exceptions);
   rapport.avertissements = evenements.avertissements;
-  if (!rapport.environnement.chronometrageGpu) rapport.limites.push('EXT_disjoint_timer_query_webgl2 absente : le temps GPU n est pas mesurable ici, le volet affiche N/D.');
+  if (!rapport.environnement.chronometrageGpu) rapport.limites.push('Fonction timestamp-query absente : le temps GPU n est pas mesurable ici, le volet affiche N/D.');
   if (/swiftshader|llvmpipe|software/i.test(String(rapport.environnement.nonMasque || rapport.environnement.rendu)))
     rapport.limites.push('Rendu logiciel (SwiftShader) : ces chiffres ne qualifient les performances d aucun GPU réel, ni d un téléphone, ni d une Xbox Edge.');
   rapport.limites.push('Une session Chrome sans interface ne prouve ni les manettes physiques, ni une vraie partie WebRTC sur plusieurs machines.');
+  await evaluer(`(async () => { const r = BITUME_JEU.rendu; await r.gpu.device.queue.onSubmittedWorkDone(); (${environnementWebGPU.toString()})(r); return true; })()`);
   if (rapport.erreurs.length) code = 1;
 } catch (e) {
   rapport.fatal = String(e && e.message || e);

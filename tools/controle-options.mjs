@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Produit une COPIE de QA autoexécutable, à ouvrir dans un navigateur autorisé avec WebGL2.
+// Produit une COPIE de QA autoexécutable, à ouvrir dans un navigateur autorisé avec WebGPU.
 // Ne lance aucun navigateur, ne modifie pas le build et ne mesure pas les performances.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -12,7 +12,7 @@ function avantJeu(config) {
   const vue = choix.get('vue') || config.vue;
   const charge = choix.get('chargement') || 'valide';
   const Q = window.__BITUME_OPTIONS_QA = { state: 'running', vue, charge, erreurs: [], avertissements: [],
-    controles: [], images: [], erreursWebGL: [], build: config.build, limite: 'Horloge commandée ; aucune mesure FPS.' };
+    controles: [], images: [], erreursWebGPU: [], build: config.build, limite: 'Horloge commandée ; aucune mesure FPS.' };
   const chaine = x => { try { return typeof x === 'string' ? x : JSON.stringify(x); } catch { return String(x); } };
   for (const [methode, destination] of [['error','erreurs'], ['warn','avertissements']]) {
     const origine = console[methode].bind(console);
@@ -48,7 +48,7 @@ async function parcours() {
     document.title = 'BITUME QA — ' + Q.state;
     pre.textContent = JSON.stringify({ state: Q.state, build: Q.build, chargement: Q.charge,
       environnement: Q.environnement, controles: Q.controles, images: Q.images, erreurs: Q.erreurs,
-      erreursWebGL: Q.erreursWebGL, avertissements: Q.avertissements, limite: Q.limite }, null, 2);
+      erreursWebGPU: Q.erreursWebGPU, avertissements: Q.avertissements, limite: Q.limite }, null, 2);
   };
   publier();
   const exiger = (v, m) => { if (!v) throw new Error(m); };
@@ -65,10 +65,10 @@ async function parcours() {
       if (performance.now() - debut > 120000) throw new Error('Le jeu ne démarre pas en 120 secondes');
       await new Promise(r => setTimeout(r,50));
     }
-    const J = window.BITUME_JEU, gl = J.rendu.gl;
-    exiger(J.rendu.stats.backend === 'webgl2' && gl, 'WebGL2 requis pour ce parcours');
+    const J = window.BITUME_JEU, gpu = J.rendu.gpu;
+    exiger(J.rendu.stats.backend === 'webgpu' && gpu?.device, 'WebGPU requis pour ce parcours');
     J.pauseAuto = false; J.mesures = false;
-    const maxSamples = gl.getParameter(gl.MAX_SAMPLES), maxTexture = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+    const maxSamples = 4, maxTexture = gpu.device.limits.maxTextureDimension2D;
     Q.environnement = { backend: J.rendu.stats.backend, gpuModeste: J.gpuModeste, maxSamples, maxTexture,
       resolution: [document.getElementById('scene').width,document.getElementById('scene').height] };
     const choisir = (name,value) => {
@@ -78,7 +78,8 @@ async function parcours() {
     };
     const image = nom => {
       window.__BITUME_CAPTURE.avancer(1000/60);
-      for (let n = 0; n < 16; n++) { const e = gl.getError(); if (!e) break; Q.erreursWebGL.push({ image: nom, code: e }); }
+      for (const message of J.rendu.stats.errorEvents) Q.erreursWebGPU.push({ image: nom, message });
+      if (J.rendu.stats.deviceLost) Q.erreursWebGPU.push({ image: nom, message: 'Périphérique perdu' });
       const s = J.rendu.stats;
       const r = { nom, msaa: s.msaa, shadowMapSize: s.shadowMapSize, shadowTileSize: s.shadowTileSize,
         halo: J.profil.effets.halo, vegetation: J.scene.vegetationQualite, plantes: J.scene.decor.vegetation || null };
@@ -96,7 +97,10 @@ async function parcours() {
       egal(selection(JSON.parse(localStorage.getItem('bitume.reglages'))),
         { anticrenelage: 'off', ombres: 'medium', vegetation: 'low' },'préférences persistées');
     });
-    const ancienneSession = J.session, ancienneScene = J.scene, ancienGl = gl, anciensObstacles = J.scene.c.obstacles;
+    // Le titre est un menu sans séance. Le banc ouvre explicitement une démo synchrone.
+    await BITUME.jeuPret();
+    J.demo(0);
+    const ancienneSession = J.session, ancienneScene = J.scene, ancienGpu = gpu, anciensObstacles = J.scene.c.obstacles;
     tester('MSAA réel sans halo en qualité Légère', () => {
       choisir('anticrenelage','msaa4'); choisir('ombres','off');
       const r = image('low-msaa4');
@@ -122,7 +126,7 @@ async function parcours() {
         const b = image('rallume-' + k); egal(b.shadowMapSize,ombreMoyenne,'atlas réactivé');
         if (maxSamples >= 2) exiger(b.msaa >= 2,'MSAA non réactivé');
       }
-      exiger(J.session === ancienneSession && J.scene === ancienneScene && J.rendu.gl === ancienGl
+      exiger(J.session === ancienneSession && J.scene === ancienneScene && J.rendu.gpu === ancienGpu
         && J.scene.c.obstacles === anciensObstacles,'AA/ombres ont recréé une identité de séance');
     });
     tester('densité différée puis active à la séance suivante', () => {
@@ -153,14 +157,16 @@ async function parcours() {
       J.reference({ qualite: 'medium', anticrenelage: 'msaa4', ombres: 'high', vegetation: densite, retro: 'non', vitesse: 0, vue: 'poursuite', depart: 800 });
       image('capture-herbe');
     }
-    tester('aucune erreur JavaScript ou WebGL observée', () => {
-      egal(Q.erreurs,[],'erreurs JavaScript'); egal(Q.erreursWebGL,[],'erreurs WebGL');
+    await gpu.device.queue.onSubmittedWorkDone();
+    Q.erreursWebGPU.push(...J.rendu.stats.errorEvents.map(message => ({image:'fin',message})));
+    tester('aucune erreur JavaScript ou WebGPU observée', () => {
+      egal(Q.erreurs,[],'erreurs JavaScript'); egal(Q.erreursWebGPU,[],'erreurs WebGPU');
     });
   } catch (e) { Q.controles.push({ nom: 'parcours', resultat: 'fail', erreur: e.message }); }
   finally {
     try { Q.restituerStockage(); }
     catch (e) { Q.controles.push({ nom: 'restauration stockage', resultat: 'fail', erreur: e.message }); }
-    Q.state = Q.erreurs.length || Q.erreursWebGL.length || Q.controles.some(c => c.resultat === 'fail') ? 'fail' : 'pass';
+    Q.state = Q.erreurs.length || Q.erreursWebGPU.length || Q.controles.some(c => c.resultat === 'fail') ? 'fail' : 'pass';
     if (Q.state === 'fail') panneau.open = true;
     publier();
   }

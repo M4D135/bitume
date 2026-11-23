@@ -32,7 +32,7 @@ const orchestration = new Function('base', 'scenario', `
     return nodes.get(id);
   };
   const [innerWidth, innerHeight] = scenario.fenetre || [1280, 720];
-  const navigator = scenario.navigator || ${JSON.stringify(bureau)};
+  const navigator = { gpu: {}, ... (scenario.navigator || ${JSON.stringify(bureau)}) };
   const matchMedia = () => ({ matches: !!scenario.coarse });
   const version = scenario.version || '0.2.80';
   const badge = { textContent: 'V' + version, getAttribute: () => 'Version ' + version };
@@ -54,12 +54,12 @@ const orchestration = new Function('base', 'scenario', `
     pneus: 'pluie', tours: 9, commandes: ['clavier', 'manette'], circuit: 0 }, scenario.reglages || {});
   const etatProfils = base.graphismes.etatStable(), palier = { n: 0 }, horlogeProfils = () => 0;
   let capacitesRendu = base.graphismes.capacites({ msaa: 4, shadowMapScale: 2, reflections: true }, false, 1);
-  const moteurs = [], renderer = () => ({ stats: { backend: 'webgl2' },
+  const moteurs = [], renderer = () => ({ stats: { backend: 'webgpu' }, gpu: { adapter: { info: { description: scenario.materiel || 'GPU-A' } }, device: { limits: { maxTextureDimension2D: 16384 } } },
     draw() { throw Error('dessin interdit pendant la détection'); },
     setWorld() { appels.push('restaurer-world'); }, setNappes() { appels.push('restaurer-nappes'); }, setLots() { appels.push('restaurer-lots'); } });
   let rendu = scenario.demarrage ? null : renderer(), son = null;
   const window = { devicePixelRatio: 3, screen: { width: 390, height: 844 }, HTMLCanvasElement: scenario.Canvas,
-    FRender: { create(c, options) { appels.push('renderer'); const r = renderer(); moteurs.push({ options, r }); return r; } },
+    FRenderWebGPU: { async create(c, options) { appels.push('renderer'); const r = renderer(); moteurs.push({ options, r }); return r; } },
     FPhysX: scenario.physx === null ? null : { isReady() { appels.push('physx'); return scenario.physx !== false; } } };
   const interdit = nom => () => { appels.push(nom); throw Error(nom + ' interdit'); };
   let estimations = 0;
@@ -81,11 +81,11 @@ const orchestration = new Function('base', 'scenario', `
   const aller = nom => { appels.push(nom); ecran = nom; jeu.dataset.ecran = nom; };
   const image = () => {}, requestAnimationFrame = () => appels.push('boucle');
   const erreur = () => appels.push('erreur'), ouvrirAccesOutils = () => appels.push('outils');
-  const webgl2 = () => true;
+  const signalerPerteGPU = () => appels.push('perte-gpu');
   ${bloc('  function capacitesDeclarees()', '  async function demarrer()')}
   ${bloc('  async function demarrer()', "  // Outil d'essai")}
-  return { detecterGraphismes, majDetectionGraphique, appliquerDetection, contexteGraphiqueRetabli, empreinteDetection,
-    capacitesDeclarees, preferenceGraphique, demarrer, appels, erreurs, stockage, reglages, nodes, montrer, moteurs,
+  return { detecterGraphismes, majDetectionGraphique, appliquerDetection, empreinteDetection,
+    capacitesDeclarees, demarrer, appels, erreurs, stockage, reglages, nodes, montrer, moteurs,
     get contexteFragile() { return contexteFragile; },
     get session() { return session; }, scene, canvas, jeu, get ecran() { return ecran; }, get actif() { return detectionGraphiqueActive; },
     get gpuModeste() { return gpuModeste; }, get derniere() { return derniereDetection; }, get estimations() { return estimations; } };
@@ -93,28 +93,16 @@ const orchestration = new Function('base', 'scenario', `
 const trace = (profil, version = '0.2.80') => ({ revision: A.REVISION, methode: A.METHODE, statut: 'ok',
   selection: profil, empreinte: A.empreinte('GPU-A|16384|16', version), mesures: [{}], appliques: A.reglages(profil) });
 
-test('WKWebView Mac sans suffixe Safari protège ses toiles et la chauffe, Chromium de bureau garde le GPU demandé', () => {
+test('WKWebView et Safari limitent la chauffe, Chromium de bureau utilise la chauffe complète', async () => {
   const mac = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)';
-  for (const [agent, fragile] of [
-    [mac, true], [mac + ' Version/27.2 Safari/625.2.8', true],
-    [mac + ' Chrome/144.0.0.0 Safari/537.36', false],
-    [mac + ' Chrome/144.0.0.0 Safari/537.36 Edg/144.0.0.0', false],
-    [mac + ' Chromium/144.0.0.0 Safari/537.36', false],
-  ]) {
-    const appels = [];
-    class Canvas {
-      getContext(type, options) {
-        appels.push([type, options.powerPreference]);
-        return { isContextLost: () => false, getExtension: () => null };
-      }
-    }
-    const h = orchestration(B, { navigator: { ...bureau, platform: 'MacIntel', userAgent: agent }, Canvas });
-    h.preferenceGraphique();
-    assert.equal(h.contexteFragile, fragile, agent);
-    assert.equal(appels.length, fragile ? 0 : 1, agent);
-    const toile = new Canvas();
-    toile.getContext('webgl2', { powerPreference: 'high-performance' });
-    assert.deepEqual(appels.at(-1), ['webgl2', fragile ? 'default' : 'high-performance'], agent);
+  for (const [suffixe, fragile] of [['', true], [' Version/27.2 Safari/625.2.8', true],
+    [' Chrome/144.0.0.0 Safari/537.36', false], [' Chrome/144.0.0.0 Safari/537.36 Edg/144', false], [' Chromium/144.0.0.0', false]]) {
+    const h = orchestration(B, { demarrage: true, navigator: { ...bureau, platform: 'MacIntel', userAgent: mac + suffixe } });
+    await h.demarrer();
+    assert.deepEqual(h.erreurs, []);
+    assert.equal(h.contexteFragile, fragile, suffixe);
+    assert.equal(h.moteurs.length, 1);
+    assert.equal(typeof h.moteurs[0].options.onDeviceLost, 'function');
   }
 });
 
@@ -324,7 +312,7 @@ const memoirePalier = new Function('base', 'scenario', `
   const B = base, materielRendu = scenario.materiel, reglages = { qualite: 'auto' }, gpuModeste = false;
   const palier = { n: scenario.n ?? 0, somme: 0, compte: 0, t: 0, aise: 0 }, PALIERS = 4;
   ${bloc('  const CLE_PALIER', '  // ---------------------------------------------------------------- profils graphiques du menu')}
-  ${bloc('  function empreinteDetection()', '  function restaurerDecorApresDetection()')}
+  ${bloc('  function empreinteDetection()', '  function majDetectionGraphique()')}
   return { retenirPalier, restaurerPalier, palier };
 `);
 test('palier Auto appris en course : conservé pour la même version et la même machine', () => {

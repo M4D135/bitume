@@ -23,7 +23,7 @@ function rapport(s) {
   const mains = actif => [0, 1].map(() => ({ pieces: 5, empreinteLocale: actif ? 'bb000001' : 'aa000001' }));
   return {
     source: { commit: 'a'.repeat(40) }, build: { sha256: 'b'.repeat(64) },
-    environnement: { webgl2: true, physx: { ready: true } }, erreurs: [], avertissements: [],
+    environnement: { webgpu: true, physx: { ready: true } }, erreurs: [], avertissements: [],
     initialisation: { entree: 'BITUME_JEU.reference', mode: 'duo', modulesRemplaces: false, cameraImposee: false, choix: structuredClone(CHOIX_TROLL) },
     images: INSTANTS_TROLL.map((instant, i) => {
       const joues = i === 0 ? 0 : i < 3 ? 1 : 2;
@@ -37,7 +37,7 @@ function rapport(s) {
       return { etat: { zones: Object.fromEntries(['scene', 'scene2', ...(s.vue === 'cockpit' ? ['glace-g', 'glace-d', 'glace-g2', 'glace-d2'] : [])].map(id => [id, {}])) },
         vues: { scene: { noir: .1, luminance: .5 }, scene2: { noir: .1, luminance: .5 } },
         observation: { index: i, t: instant.t, tempsRendu: 6 + instant.t, type: 'duo', ecran: 'course', vue: s.vue, vue2: s.vue, cameraImposee: false,
-          glErreur: 0, glPerdu: false, autresGestes: [], audio: { actif: true, joues, ignores: 0, voix: 5, budget: 5 }, joueurs,
+          gpuErreur: null, gpuPerdu: false, autresGestes: [], audio: { actif: true, joues, ignores: 0, voix: 5, budget: 5 }, joueurs,
           evenement: { pilote: n + 4, sequence: n + 1, geste: choix.geste, klaxon: choix.klaxon, instant: 6 + instant.t }, audioEvenement: { klaxon: choix.klaxon },
           entrees: [0, 1].map(n => ({ appuis: instant.t + 1e-5 >= (n ? .2 : .05) ? 1 : 0, repetitions: i >= 11 ? 2 : i >= 5 ? 1 : 0, relachements: i === 12 ? 1 : 0, nonFiables: 0 })) } };
     })
@@ -87,18 +87,18 @@ test('une pose figée, une montée manquante et un retour incomplet ne closent p
   }
 });
 
-test('la seconde vue, les quatre rétros et le vrai WebGL font partie de la preuve', () => {
+test('la seconde vue, les quatre rétros et le vrai WebGPU font partie de la preuve', () => {
   const s = SCENARIOS_TROLL[0];
   for (const modifier of [
     r => { r.build.sha256 = ''; }, r => { r.source.commit = ''; },
-    r => { r.environnement.webgl2 = false; }, r => { r.environnement.physx.ready = false; },
+    r => { r.environnement.webgpu = false; }, r => { r.environnement.physx.ready = false; },
     r => { r.images[2].observation.vue2 = 'poursuite'; },
     r => { delete r.images[4].etat.zones['glace-d2']; },
     r => { delete r.images[0].etat.zones.scene2; },
     r => { r.images[0].vues.scene2 = { noir: 1, luminance: 0 }; },
     r => { r.images[0].observation.cameraImposee = true; },
-    r => { r.images[2].observation.glErreur = 1282; },
-    r => { r.images[2].observation.glPerdu = true; }
+    r => { r.images[2].observation.gpuErreur = 'GPUValidationError'; },
+    r => { r.images[2].observation.gpuPerdu = true; }
   ]) {
     const r = rapport(s); modifier(r); assert(verifierTroll(r, s).length, modifier.toString());
   }

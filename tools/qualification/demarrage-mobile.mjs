@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Premier démarrage mobile, sans cache et sans substituer les fonctions du jeu.
-// Le vrai rendu WebGL2 suit le titre prêt ; deux images, aucun banc FPS.
+// Le vrai rendu WebGPU suit le titre prêt ; deux images, aucun banc FPS.
 import assert from 'node:assert/strict';
 import { writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -50,7 +50,7 @@ function releverMobile() {
     qualiteEffective: J.reglages.qualite, ecran: J.ecran, type: J.session?.type, phase: J.session?.course?.phase,
     appareil: { userAgent: navigator.userAgent, platform: navigator.platform, touch: navigator.maxTouchPoints,
       taille: [innerWidth, innerHeight], dpr: devicePixelRatio },
-    webgl2: J.rendu?.stats.webglVersion === 2 };
+    webgpu: J.rendu?.stats.backend === 'webgpu' && !!J.rendu.gpu?.device };
 }
 
 export function verifierDemarrageMobile(r) {
@@ -58,13 +58,13 @@ export function verifierDemarrageMobile(r) {
   assert.deepEqual(r.erreurs, [], 'aucune erreur navigateur');
   assert.ok(r.demarrage?.pret && r.demarrage.ecran === 'titre' && r.demarrage.type === null,
     'le titre est prêt sans séance avant reference()');
-  assert.equal(r.environnement.webgl2, true);
+  assert.equal(r.environnement.webgpu, true);
   assert.equal(r.environnement.physx?.ready, true);
   assert.equal(r.images.length, 2, 'deux captures du jeu réel');
   const observations = [r.initialisation, ...r.images.map(i => i.observation)];
   for (const o of observations) {
     assert.deepEqual(o.stockageInitial, [], 'premier lancement sans réglages ni cache préchargés');
-    assert.deepEqual(o.surveilles, { benchmark: true, sceneBench: true, passive: true }, 'fonctions natives surveillées');
+    assert.deepEqual(o.surveilles, { benchmark: true, sceneBench: false, passive: true }, 'fonctions natives surveillées');
     assert.equal(o.appels.benchmark, 0, 'aucun appel du banc autoconfig.executer');
     assert.equal(o.appels.sceneBench, 0, 'aucune création de scène de benchmark');
     assert.ok(o.appels.passive >= 1, 'la recommandation passive a réellement été exécutée');
@@ -72,7 +72,7 @@ export function verifierDemarrageMobile(r) {
     assert.equal(o.cache?.selection, 'low');
     assert.equal(o.cache?.statut, 'ok');
     assert.equal(o.reglagesEnregistres?.qualite, 'low', 'profil prudent persisté avant la référence');
-    assert.equal(o.webgl2, true); assert.equal(o.ecran, 'course'); assert.equal(o.type, 'course'); assert.equal(o.phase, 'course');
+    assert.equal(o.webgpu, true); assert.equal(o.ecran, 'course'); assert.equal(o.type, 'course'); assert.equal(o.phase, 'course');
     assert.deepEqual(o.appareil.taille, [390, 844]); assert.equal(o.appareil.touch, 5);
     assert.equal(o.appareil.platform, 'iPhone'); assert.match(o.appareil.userAgent, /iPhone.*Mobile/);
   }

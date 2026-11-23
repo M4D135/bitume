@@ -11,7 +11,7 @@ function rapport(s) {
   const o = { type: 'demo', ecran: 'demo', cameraImposee: false, gardeDisponible: true, vue: s.attendu,
     plan: { vue: s.attendu, motif: s.realisation ? 'expression' : s.refus ? 'cadre' : 'course', sujet: 0 },
     camera: { pos: [0, 2, 0], yaw: 0, pitch: -.1, fov: 34, secours: false }, obstruction: { hit: false },
-    saison: s.saison, glErreur: 0, glPerdu: false,
+    saison: s.saison, gpuErreur: null, gpuPerdu: false,
     sujetCadre: s.cadrage ? { type: s.cadrage, label: 'Lieu ou route réel', source: s.cadrage === 'lieu' ? 'decor.lieux.marqueurs' : 'circuit',
       marqueurPresent: s.cadrage === 'lieu', projection: { x: .1, y: -.2, profondeur: 80 } } : null,
     gardeSol: 8, agePlan: s.instants?.[0],
@@ -19,7 +19,7 @@ function rapport(s) {
     pilote: s.geste ? { geste: s.geste, gesteIntensite: 1 } : null,
     sillage: s.spray ? { rival: 1, sources: [{ id: 1, exposition: .76 }], casque: .76, lentille } : null,
     vitrage: { actif: !s.aerien, pluie: s.pluie ? 1 : 0, neige: 0, embruns: lentille }, vitreVisible: !s.aerien,
-    vitres: { j1: { backend: 'webgl2', pret: true, erreur: null, erreurs: 0, perdu: false, eau: s.aerien ? 0 : 20, embruns: lentille,
+    vitres: { j1: { backend: 'webgpu', pret: true, erreur: null, erreurs: 0, perdu: false, eau: s.aerien ? 0 : 20, embruns: lentille,
       gouttes: s.aerien ? 0 : 20, neige: 0, accumulationNeige: 0, depotsEmbruns: s.aerien ? 0 : 600, expulses: 250 } } };
   return { initialisation: { entree: 'BITUME_JEU.demo', cameraImposee: false }, environnement: { gpu: 'ANGLE SwiftShader', physx: { ready: true } }, erreurs: [], avertissements: [],
     images: Array.from({ length: s.images }, (_, i) => ({ observation: { ...structuredClone(o), agePlan: s.instants?.[i] }, vues: { scene: { noir: .02, luminance: .4 } } })) };
@@ -30,7 +30,7 @@ function rejette(s, changer, attendu) {
 }
 
 test('les scénarios CI couvrent chaque plan déclaré avec des options bornées', () => {
-  const o = optionsDemo(base); assert.equal(o.cas.length, 38);
+  const o = optionsDemo(base); assert.equal(o.cas.length, 3 * CIRCUITS_DEMO.length + 5);
   assert.deepEqual(optionsDemo([...base, '--cas', 'tele-montagne,lieu-larche']).cas, ['tele-montagne', 'lieu-larche']);
   for (const suite of [['--cas','inconnu'], ['--cas','lieu-larche,lieu-larche'], ['--taille','9000,1'], ['--url','file:///autre'], ['--inconnu','oui'], ['--chrome']])
     assert.throws(() => optionsDemo([...base, ...suite]));
@@ -62,7 +62,7 @@ test('une caméra imposée, une fausse séance ou une visée masquée ne qualifi
 test('les circuits du menu ont route, tracé et lieu, sans sujet de nature autonome', () => {
   const jeu = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
   const catalogue = jeu.match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1];
-  assert.deepEqual([...catalogue.matchAll(/\bid: '([^']+)'/g)].map(m => m[1]), [...CIRCUITS_DEMO]);
+  assert.deepEqual([...catalogue.matchAll(/^    \{ id: '([^']+)'/gm)].map(m => m[1]), [...CIRCUITS_DEMO]);
   for (const [circuit, id] of CIRCUITS_DEMO.entries()) {
     const cas = SCENARIOS.filter(s => s.cadrage && s.circuit === circuit);
     assert.deepEqual(cas.map(s => s.id), ['route-' + id, 'trace-' + id, 'lieu-' + id]);
@@ -102,7 +102,7 @@ test('l’observation projette le vrai marqueur et mesure le terrain indépendam
     ancre: { marqueur, cible: [4, 10, -20], label: marqueur.nom }, planInitial: { debut: 0 } };
   const contexte = { BITUME: { cinema: { valider() {} }, animaux: { solExact: () => 2 } },
     BITUME_JEU: { session: S, ecran: 'demo', camera: null, scene: { saison: 'ete' },
-      rendu: { gl: { getError: () => 0, isContextLost: () => false } } },
+      rendu: { stats: { errorEvents: [], deviceLost: false } } },
     __DEMO_FIXTURE: F, innerWidth: 960, innerHeight: 540,
     document: { getElementById: () => null }, getComputedStyle: () => ({}) };
   const observer = () => runInNewContext(`(${observerEtat.toString()})()`, contexte);
@@ -199,7 +199,7 @@ test('un seul rival à18m arrose le casque et la vraie hauteur de poursuite à23
     BITUME: { ...B, voiture: { FORMES: { jante: { nom: 'jante' } } }, cinema: { valider() {} }, sillage: { exposition(...args) {
       appels.push(args); return B.sillage.exposition(...args);
     } } },
-    BITUME_JEU: { session: S, camera: null, ecran: 'demo', scene: { saison: 'ete' }, rendu: { gl: { getError: () => 0, isContextLost: () => false } } },
+    BITUME_JEU: { session: S, camera: null, ecran: 'demo', scene: { saison: 'ete' }, rendu: { stats: { errorEvents: [], deviceLost: false } } },
     __DEMO_FIXTURE: { scenario: s, sujet: 0, rival: 1 }, document: { getElementById: () => ({ hidden: false }) },
     getComputedStyle: () => ({ display: 'block', visibility: 'visible' })
   });
@@ -213,7 +213,7 @@ test('erreurs page/GL, image noire et archive incomplète bloquent le résultat'
   const s = SCENARIOS[0];
   rejette(s, r => r.erreurs.push('exception'), 'Erreur page');
   rejette(s, r => r.avertissements.push('GL_INVALID_OPERATION'), 'graphique');
-  rejette(s, (_, o) => { o.glErreur = 1282; }, 'WebGL');
+  rejette(s, (_, o) => { o.gpuErreur = 'GPUValidationError'; }, 'WebGPU');
   rejette(s, r => { r.images[0].vues.scene = { noir: 1, luminance: 0 }; }, 'noire');
   rejette(s, r => r.images.pop(), 'incomplet');
 });

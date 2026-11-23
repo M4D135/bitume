@@ -87,17 +87,17 @@ test('le témoin laissé intact, un pixel vide ou une répétition instable ne p
 // Faux reçus seulement pour exercer les refus du vérificateur, jamais pour simuler un renderer.
 function recu() {
   const s = { circuitId: 'route-des-cimes', saison: 'ete', variante: 'reference' }, camera = { pos: [1, 2, 3], yaw: .1, pitch: .2, fov: 44 };
-  const observation = { ...s, circuit: s.circuitId, camera, cameraPrescrite: structuredClone(camera), glErreur: 0, glPerdu: false,
+  const observation = { ...s, circuit: s.circuitId, camera, cameraPrescrite: structuredClone(camera), erreursGPU: [], gpuPerdu: false,
     matieres: { uniques: 278, genres: { 'roche-tunnel': 272, 'portail-tunnel': 6 }, matiereInitiale: 9, matiere: 9 },
     empreintes: Object.fromEntries(['lotsSansRecette', 'nappes', 'solides', 'obstacles', 'racines'].map(k => [k, 'a'.repeat(64)])),
     rendu: { drawCalls: 100, triangles: 1000, instances: 500 },
-    cout: { methode: 'draw-identique-readPixels-CPU-performance.now', mesures: 16, echantillonsMs: Array(16).fill(20), p50Ms: 20, simulationInchangee: true,
+    cout: { methode: 'draw-meme-texture-WebGPU-copyTextureToBuffer-mapAsync', mesures: 16, echantillonsMs: Array(16).fill(20), p50Ms: 20, simulationInchangee: true,
       lecture: { pixel: [76, 81, 68, 255], pixelsMesures: Array.from({ length: 16 }, () => [76, 81, 68, 255]),
-        stable: true, controlesRemplacement: 22, preparationMarqueurHorsChronometrage: true,
-        largeur: 960, hauteur: 540, viewport: [0, 0, 960, 540], scissorActif: false, scissor: [0, 0, 960, 540],
-        dessinFramebuffer: 'defaut', lectureFramebuffer: 'defaut', lectureBuffer: 'BACK', format: 'RGBA/UNSIGNED_BYTE', x: 480, y: 270 } } };
+        stable: true, controlesRemplacement: 22, baliseSoumiseAvantChrono: true, marqueur: [255, 0, 255, 255],
+        largeur: 960, hauteur: 540, tailleCanvas:[960, 540], format:'rgba8unorm',
+        sortie:'GPUCanvasContext.getCurrentTexture', sampleCount:1, dimension:'2d', x: 480, y: 270 } } };
   return { s, r: { build: { sha256: 'b'.repeat(64) }, source: { commit: 'c'.repeat(40) },
-    parametres: { qualite: 'high', saison: 'ete' }, environnement: { webgl2: true, physx: { ready: true } },
+    parametres: { qualite: 'high', saison: 'ete' }, environnement: { webgpu: true, physx: { ready: true } },
     initialisation: { modeleReel: true, methode: 'fixture-matiere-meme-build' }, images: [{ observation }, { observation }] } };
 }
 test('une caméra remplacée, une mesure absente ou une comparaison géométriquement différente échoue', () => {
@@ -111,9 +111,13 @@ test('une caméra remplacée, une mesure absente ou une comparaison géométriqu
   assert.equal(comparerPierres(ancien, r).rapportP50, null, 'aucun ratio de gain avec l’ancienne mesure');
   const temoin = structuredClone(r); temoin.images[1].observation.cout.lecture.pixelsMesures[3] = [255, 0, 255, 255];
   assert(verifierPierres(temoin, s).some(e => /témoin/.test(e)));
+  assert.equal(comparerPierres(temoin, r).rapportP50, null);
+  const fauxMarqueur = structuredClone(r); fauxMarqueur.images[1].observation.cout.lecture.marqueur = [0,0,0,255];
+  assert(verifierPierres(fauxMarqueur, s).some(e => /Achèvement/.test(e)));
+  assert.equal(comparerPierres(fauxMarqueur, r).rapportP50, null);
   const instable = structuredClone(r); instable.images[1].observation.cout.lecture.pixelsMesures[6][0]++;
   assert(verifierPierres(instable, s).some(e => /instable/.test(e)));
-  const partiel = structuredClone(r); partiel.images[1].observation.cout.lecture.viewport[2] = 1;
+  const partiel = structuredClone(r); partiel.images[1].observation.cout.lecture.tailleCanvas[0] = 1;
   assert(verifierPierres(partiel, s).some(e => /partielle/.test(e)));
   const recette = structuredClone(r); recette.images[0].observation.matieres.matiere = 23;
   assert(verifierPierres(recette, s).some(e => /Recette/.test(e)));
@@ -163,4 +167,36 @@ test('une mesure terminée complète seulement le coût ; une erreur ne détruit
   assert.deepEqual({ ...echoue, cout: null }, base);
   assert.equal(echoue.cout.statut, 'non_qualifie'); assert.equal(echoue.cout.motif, 'evaluation_cout_echouee');
   assert.equal(echoue.cout.mesures, null); assert.match(echoue.cout.erreur, /Lecture impossible/);
+});
+
+test('les régions WebGPU lisent les bonnes coordonnées, retirent le padding et décodent BGRA', async t => {
+  const { lireRegionsPresentation } = await import('../tools/lecture-presentation-gpu.mjs');
+  const sauvegardes = new Map();
+  for (const [k,v] of Object.entries({ GPUTextureUsage:{COPY_SRC:1}, GPUBufferUsage:{MAP_READ:1,COPY_DST:2}, GPUMapMode:{READ:1} })) {
+    sauvegardes.set(k, Object.getOwnPropertyDescriptor(globalThis,k));
+    Object.defineProperty(globalThis,k,{configurable:true,value:v});
+  }
+  t.after(() => { for(const [k,d] of sauvegardes) { if(d)Object.defineProperty(globalThis,k,d); else delete globalThis[k]; } });
+  let libere = false;
+  const device = {
+    createBuffer({size}) {
+      const storage=new ArrayBuffer(size);
+      return {storage, mapAsync:async()=>{},getMappedRange:()=>storage,unmap(){},destroy(){libere=true;}};
+    },
+    createCommandEncoder() {
+      const copies=[];
+      return {copyTextureToBuffer(src,dst,size){copies.push({src,dst,size});},finish:()=>copies};
+    },
+    queue:{submit([copies]){
+      for (const {src,dst,size} of copies) {
+        assert.equal(dst.bytesPerRow%256,0); assert.equal(dst.offset%256,0);
+        const [w,h]=size,[x0,y0]=src.origin, bytes=new Uint8Array(dst.buffer.storage);
+        for(let y=0;y<h;y++)for(let x=0;x<w;x++)bytes.set([x+x0,91,y+y0,255],dst.offset+y*dst.bytesPerRow+x*4);
+      }
+    }}
+  };
+  const gpu={device}, texture={format:'bgra8unorm',width:8,height:8,usage:1};
+  const [a,b]=await lireRegionsPresentation(gpu,texture,[{x:3,y:0,w:1,h:2},{x:0,y:6,w:2,h:1}]);
+  assert.deepEqual([...a],[0,91,3,255,1,91,3,255]);assert.deepEqual([...b],[6,91,0,255,6,91,1,255]);
+  assert(libere);await assert.rejects(lireRegionsPresentation(gpu,texture,[{x:8,y:0,w:1,h:1}]),/hors de la présentation/);
 });

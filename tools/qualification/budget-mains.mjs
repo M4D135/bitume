@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
 
 const fichier = fileURLToPath(import.meta.url), racine = path.resolve(path.dirname(fichier), '../..');
-const modules = ['moteur/renderer.js', 'carene.js', 'main.js', 'humain-donnees.js', 'humain-corps.js',
+const modules = ['carene.js', 'main.js', 'humain-donnees.js', 'humain-corps.js',
   'ferro/vehicle-dynamics.js', 'pneus.js', 'usure-pneus.js', 'chaussee.js', 'conduite.js', 'cockpit-matieres.js', 'voiture.js'];
 const sha = contenu => createHash('sha256').update(contenu).digest('hex');
 const git = args => execFileSync('git', args, { cwd: racine, maxBuffer: 64 * 1024 * 1024 });
@@ -24,7 +24,9 @@ if (process.argv[2] === '--mesure') {
   const avant = process.memoryUsage(), debut = performance.now(), empreintes = {};
   const contexte = vm.createContext({ console });
   vm.runInContext('globalThis.window = globalThis', contexte);
-  for (const nom of modules) {
+  const partage = 'ferro/render-shared.js';
+  const rendu = reference === 'travail' || git(['ls-tree','--name-only',reference,'src/'+partage]).length ? partage : 'moteur/renderer.js';
+  for (const nom of [rendu, ...modules]) {
     const source = reference === 'travail' ? readFileSync(path.join(racine, 'src', nom), 'utf8')
       : git(['show', reference + ':src/' + nom]).toString('utf8');
     empreintes[nom] = sha(source);

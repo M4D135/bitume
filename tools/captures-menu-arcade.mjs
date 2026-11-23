@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Parcours du vrai HTML assemblé avec le raccord proposé par 03. Chromium logiciel :
 // aucune mesure matérielle, manette physique, écoute audio ou partie réseau n'est qualifiée.
+import { argumentsWebGPU } from './diagnostic-webgpu.mjs';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -12,7 +13,7 @@ if (!args.url || !args.sortie) throw Error('Usage : --url file:///candidat.html 
 mkdirSync(args.sortie, { recursive: true });
 const rapport = { schema: 1, commit: process.env.GITHUB_SHA || null, nature: 'raccord propose applique dans une copie temporaire', controles: [], captures: [], erreurs: [], limites: ['Chromium logiciel', 'manettes et tactile simules', 'audio non ecoute', 'reseau entre machines non essaye'] };
 const browser = await chromium.launch({ executablePath: args.chrome || '/usr/bin/google-chrome', headless: true,
-  args: ['--no-sandbox', '--disable-dev-shm-usage', '--enable-unsafe-swiftshader', '--use-gl=angle', '--use-angle=swiftshader'] });
+  args: ['--no-sandbox', '--disable-dev-shm-usage', ...argumentsWebGPU('swiftshader')] });
 const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, hasTouch: true });
 const reglagesInit = { qualite: 'low', cadence: '60', retro: 'non', vegetation: 'low', faune: 'off', demo: 'non', meteo: 'soleil', saison: 'ete', saisonMode: 'manuel', moment: 'jour', momentMode: 'manuel', meteoMode: 'manuel' };
 await context.addInitScript(reglagesInit => {
@@ -25,7 +26,9 @@ await context.addInitScript(reglagesInit => {
     if (etat.transitionManette) etat.transitionManette.lectures++;
     return etat.pads;
   } });
-  for (const type of [window.WebGLRenderingContext, window.WebGL2RenderingContext]) if (type) for (const nom of ['drawArrays', 'drawElements', 'drawArraysInstanced', 'drawElementsInstanced']) {
+  const type = window.GPURenderPassEncoder;
+  if (!type) throw Error('Encodeur de rendu WebGPU absent');
+  for (const nom of ['draw', 'drawIndexed', 'drawIndirect', 'drawIndexedIndirect']) {
     const ancien = type.prototype[nom]; if (!ancien) continue;
     type.prototype[nom] = function (...a) { etat.dessins++; return ancien.apply(this, a); };
   }
@@ -83,9 +86,9 @@ async function capture(nom) {
 }
 async function calme(nom, verifierApercu = true) {
   const avant = await lire(); await page.waitForTimeout(240); const apres = await lire();
-  assert.equal(apres.dessins, avant.dessins, nom + ' : dessin WebGL caché');
+  assert.equal(apres.dessins, avant.dessins, nom + ' : dessin WebGPU caché');
   if (verifierApercu) assert.equal(apres.menu.images, avant.menu.images, nom + ' : aperçu caché');
-  notes(nom, { dessinsWebGL: apres.dessins - avant.dessins, imagesApercu: apres.menu.images - avant.menu.images });
+  notes(nom, { dessinsWebGPU: apres.dessins - avant.dessins, imagesApercu: apres.menu.images - avant.menu.images });
 }
 async function etape(n) { await page.locator('[data-menu-tab="' + ['p-piste','p-conditions','p-pilotes','p-bilan'][n] + '"]').click(); await page.waitForFunction(n => BITUME_JEU.menuArcade.etape === n, n); }
 async function verifierMeteoManuelle() {

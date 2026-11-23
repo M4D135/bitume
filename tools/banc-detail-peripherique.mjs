@@ -4,7 +4,7 @@ import { createRequire } from 'node:module';
 import { performance } from 'node:perf_hooks';
 import assert from 'node:assert/strict';
 const require = createRequire(import.meta.url);
-for (const n of ['moteur/renderer', 'graphismes', 'circuit', 'carene', 'ecologie', 'saisons',
+for (const n of ['ferro/render-shared', 'graphismes', 'circuit', 'carene', 'ecologie', 'saisons',
   'vegetation', 'botanique', 'chaussee', 'virages', 'baikal', 'bords', 'batiments', 'destinations',
   'route-des-cimes', 'route-des-cimes-decor', 'larche-vinadio', 'larche-vinadio-decor', 'decor', 'detail-peripherique']) require('../src/'+n+'.js');
 const B = globalThis.BITUME, R = globalThis.FRender.shared, D = B.detailPeripherique;

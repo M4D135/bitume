@@ -69,7 +69,7 @@ export function preparerTroll(reference, choix) {
 }
 
 export function observerTroll() {
-  const J = BITUME_JEU, S = J.session, F = __TROLL_CAPTURE, gl = J.rendu.gl;
+  const J = BITUME_JEU, S = J.session, F = __TROLL_CAPTURE, gpu = J.rendu.gpu;
   if (F.origine === null) F.origine = S.tRendu;
   const mains = H => (H?.mains || []).map(m => {
     // Empreinte de toutes les pièces locales du gant ; les coordonnées monde varient selon la dernière vue.
@@ -79,7 +79,7 @@ export function observerTroll() {
     return { pieces: m.pieces.length, empreinteLocale: (hash >>> 0).toString(16).padStart(8, '0') };
   });
   return { index: F.index, t: S.tRendu - F.origine, tempsRendu: S.tRendu, ecran: J.ecran, type: S.type, vue: S.vue,
-    vue2: S.vueJ2?.vue, cameraImposee: J.camera !== null, glErreur: gl.getError(), glPerdu: gl.isContextLost(),
+    vue2: S.vueJ2?.vue, cameraImposee: J.camera !== null, gpuErreur: (J.rendu.stats.errorEvents[0] || null), gpuPerdu: J.rendu.stats.deviceLost,
     audio: { actif: J.son?.actif, ...J.son?.klaxons },
     entrees: F.entrees.map(x => ({ ...x })), evenement: { ...S.trollEvenement }, audioEvenement: { ...S.trollAudio },
     joueurs: S.locaux.map((id, n) => {
@@ -95,7 +95,7 @@ export function verifierTroll(r, s) {
   for (const e of r.erreurs || []) manque('Erreur page : ' + e);
   for (const e of r.avertissements || []) if (/GL_INVALID|shader.*(error|failed)|GLSL|context lost/i.test(e)) manque('Erreur graphique : ' + e);
   if (!/^[a-f0-9]{64}$/.test(r.build?.sha256 || '') || !/^[a-f0-9]{40}$/.test(r.source?.commit || '')) manque('Identité du build ou des outils absente');
-  if (r.environnement?.webgl2 !== true || r.environnement?.physx?.ready !== true) manque('WebGL2 ou PhysX réel absent');
+  if (r.environnement?.webgpu !== true || r.environnement?.physx?.ready !== true) manque('WebGPU ou PhysX réel absent');
   if (r.initialisation?.entree !== 'BITUME_JEU.reference' || r.initialisation.mode !== 'duo' ||
       r.initialisation.modulesRemplaces !== false || r.initialisation.cameraImposee !== false ||
       JSON.stringify(r.initialisation.choix) !== JSON.stringify(CHOIX_TROLL)) manque('Vraie séance duo ou choix distincts absents');
@@ -107,7 +107,7 @@ export function verifierTroll(r, s) {
     if (!o) { manque('Observation absente : ' + instant.id); continue; }
     if (o.index !== i || !Number.isFinite(o.t) || Math.abs(o.t - instant.t) > 1e-5) manque('Horloge/ordre incorrect : ' + instant.id);
     if (o.type !== 'duo' || o.ecran !== 'course' || o.vue !== s.vue || o.vue2 !== s.vue || o.cameraImposee) manque('Vues réelles incorrectes : ' + instant.id);
-    if (o.glErreur || o.glPerdu) manque('Erreur WebGL : ' + instant.id);
+    if (o.gpuErreur || o.gpuPerdu) manque('Erreur WebGPU : ' + instant.id);
     const zones = ['scene', 'scene2', ...(s.vue === 'cockpit' ? ['glace-g', 'glace-d', 'glace-g2', 'glace-d2'] : [])];
     for (const nom of zones) if (!image.etat?.zones?.[nom]) manque('Vue/rétroviseur absent : ' + nom);
     for (const nom of ['scene', 'scene2']) if (!image.vues?.[nom] || image.vues[nom].noir > .97 && image.vues[nom].luminance < .025) manque('Vue noire/absente : ' + nom);

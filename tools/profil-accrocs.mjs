@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { environnementWebGPU, argumentsWebGPU } from './diagnostic-webgpu.mjs';
 // Profil des accrocs de BITUME : ouvre la page construite dans Chrome, lance une course comme le fait un joueur
 // (ou une séance de référence), relève l'intervalle de CHAQUE image et attribue chaque image longue à sa cause grâce
 // à la trace de Chrome (tâche du fil principal, ramasse-miettes, compilation de shaders dans le processus graphique).
@@ -87,7 +88,7 @@ const chromeArgs = ['--no-sandbox', '--disable-dev-shm-usage', '--remote-debuggi
   '--disable-background-timer-throttling', '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows',
   '--autoplay-policy=no-user-gesture-required'];
 if (args.fenetre !== 'oui') chromeArgs.unshift('--headless=new');
-if (args.angle && args.angle !== 'native') chromeArgs.push('--enable-unsafe-swiftshader', '--use-gl=angle', '--use-angle=' + args.angle);
+chromeArgs.push(...argumentsWebGPU(args.angle || 'native'));
 chromeArgs.push('about:blank');
 const processus = spawn(chrome, chromeArgs, { stdio: ['ignore', 'ignore', 'pipe'], detached: true });
 let stderr = '', lancementErreur = null;
@@ -154,11 +155,7 @@ try {
   rapport.chargementPage = { jusquAuTitreMs: Date.now() - tNav };
   // --detection oui : la détection du premier lancement va à son terme ; son verdict et ses mesures sont relevés.
   if (args.detection === 'oui') rapport.detection = await evaluer(`(() => { try { return JSON.parse(localStorage.getItem('bitume.detection.v1')); } catch (e) { return null; } })()`);
-  rapport.environnement = await evaluer(`(() => { const r = BITUME_JEU.rendu, gl = r.gl, i = gl.getExtension('WEBGL_debug_renderer_info');
-    return { navigateur: navigator.userAgent, gpu: i ? gl.getParameter(i.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
-      toile: [document.getElementById('scene').width, document.getElementById('scene').height], fenetre: [innerWidth, innerHeight, devicePixelRatio],
-      visible: !document.hidden, coeurs: navigator.hardwareConcurrency, version: (document.querySelector('.version-jeu') || {}).textContent || null,
-      compilationParallele: !!gl.getExtension('KHR_parallel_shader_compile'), chronoGpu: !!gl.getExtension('EXT_disjoint_timer_query_webgl2') }; })()`);
+  rapport.environnement = await evaluer(`(() => { const r = BITUME_JEU.rendu, vue = (${environnementWebGPU.toString()})(r); return { ...vue, version: document.querySelector('.version-jeu')?.textContent || null, gpuModeste: BITUME_JEU.gpuModeste, toile: [r.gpu.context.canvas.width, r.gpu.context.canvas.height], fenetre: [innerWidth, innerHeight, devicePixelRatio], visible: !document.hidden, coeurs: navigator.hardwareConcurrency }; })()`);
   if (cpu > 1) await envoyer('Emulation.setCPUThrottlingRate', { rate: cpu });
   // --mesures non : le volet de mesures ouvre le chronomètre GPU du moteur, dont les requêtes peuvent elles-mêmes
   // coûter (coupures de passe sur les processeurs graphiques à tuiles) ; sans lui, la cadence relevée est celle du jeu.
@@ -272,6 +269,7 @@ try {
   if (!avecTrace) for (const i of inter.filter(i => i.t > tDebut && i.dt > Math.max(nominal * 1.5, nominal + 6)).slice(0, 60)) rapport.accrocs.push({ tDepuisCourseS: +((i.t - tCourse) / 1000).toFixed(2), dtMs: +i.dt.toFixed(1) });
   rapport.erreurs = journal.erreurs.concat(journal.exceptions);
   if (args.fenetre !== 'oui') rapport.limites.push('Chrome sans interface : cadence synthétique à 60 Hz, sans synchronisation verticale d un écran réel.');
+  await evaluer(`(async () => { const r = BITUME_JEU.rendu; await r.gpu.device.queue.onSubmittedWorkDone(); (${environnementWebGPU.toString()})(r); return true; })()`);
   if (/swiftshader|llvmpipe|software/i.test(String(rapport.environnement.gpu))) rapport.limites.push('Rendu logiciel : ne qualifie aucun processeur graphique réel.');
   if (cpu > 1) rapport.limites.push('Processeur ralenti ' + cpu + ' fois par le navigateur : le processeur graphique, lui, ne l est pas.');
   if (rapport.erreurs.length) code = 1;

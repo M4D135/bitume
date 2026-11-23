@@ -9,7 +9,7 @@ import { capturer, optionsCapture } from './controle-visuel.mjs';
 import { catalogueJeu } from './qualification/circuit-catalogue.mjs';
 
 const DEPARTS = { 'forets-du-pacifique': 1100, marseille: 1450, 'karst-et-lagon': 2000, sierra: 1900,
-  'nord-atlantique': 1800, 'route-des-cimes': 1400, larche: 4750, baikal: 2000 };
+  'nord-atlantique': 1800, 'route-des-cimes': 1400, larche: 4750, baikal: 2000, 'ovale-des-forges': 250 };
 export const CIRCUITS_SAISONS = Object.freeze(catalogueJeu.map(({ id }, circuit) => Object.freeze({ id, depart: DEPARTS[id], circuit })));
 export const SAISONS = Object.freeze(['printemps', 'ete', 'automne', 'hiver']);
 export function optionsSaisons(argv) {
@@ -122,12 +122,12 @@ export function preparerSaisons(s) {
 export function observerSaisonsCapture() {
   const J = BITUME_JEU, S = J.session, d = J.scene.decor, F = __SAISONS_CAPTURE, cam = S.camera;
   const objets = (d.lotsHerbier || d.lots).flatMap(l => l.objets), troncs = objets.filter(o => o.collision === 'tronc' && o.essenceArbre);
-  const delta = F.cible.map((v, k) => v - cam.pos[k]), distance = Math.hypot(...delta), gl = J.rendu.gl;
+  const delta = F.cible.map((v, k) => v - cam.pos[k]), distance = Math.hypot(...delta), gpu = J.rendu.gpu;
   return { saison: d.saison.id, circuit: J.CATALOGUE[F.scenario.circuit].id, vue: S.vue,
     camera: { pos: [...cam.pos], yaw: cam.yaw, pitch: cam.pitch, fov: cam.fov }, cameraPrescrite: F.camera, arbre: F.arbre,
     foretLibre: F.verifierForet ? F.verifierForet(cam.pos) : null,
     obstruction: !!S.course.physique.world.raycast(cam.pos, delta.map(v => v / distance), Math.max(0, distance - .6), { mask: 3, staticOnly: true }).hit,
-    glErreur: gl.getError(), glPerdu: gl.isContextLost(), arbres: troncs.length,
+    gpuErreur: (J.rendu.stats.errorEvents[0] || null), gpuPerdu: J.rendu.stats.deviceLost, arbres: troncs.length,
     caducs: troncs.filter(o => o.essenceArbre === 'feuillu').length, sourcesFeuilles: d.sourcesFeuilles.length,
     branchesNues: objets.filter(o => o.partieArbre === 'branches').length,
     couronnesCaduques: objets.filter(o => o.partieArbre === 'feuillage' && o.essenceArbre === 'feuillu').length,
@@ -138,7 +138,7 @@ export function verifierSaisons(r, s) {
   if (r.fatal) erreurs.push(r.fatal.split('\n')[0]);
   if (r.erreurs?.length) erreurs.push(...r.erreurs);
   if (!/^[a-f0-9]{64}$/.test(r.build?.sha256 || '') || !/^[a-f0-9]{40}$/.test(r.source?.commit || '')) erreurs.push('Provenance absente');
-  if (r.environnement?.webgl2 !== true || r.environnement?.physx?.ready !== true) erreurs.push('Renderer ou PhysX réel absent');
+  if (r.environnement?.webgpu !== true || r.environnement?.physx?.ready !== true) erreurs.push('Renderer ou PhysX réel absent');
   if (r.initialisation?.modeleReel !== true || r.images?.length !== 2) erreurs.push('Référence ou images incomplètes');
   const inspectionForet = s.id === 'route-des-cimes' && !s.alpin;
   if (inspectionForet && (r.initialisation?.controleForet !== 'enveloppes-troncs-9-rayons' || r.initialisation?.arbre?.essence !== 'feuillu'))
@@ -146,7 +146,7 @@ export function verifierSaisons(r, s) {
   for (const image of r.images || []) {
     const o = image.observation;
     if (!o || o.saison !== s.saison || o.circuit !== s.id || o.vue !== 'poursuite') { erreurs.push('Observation de saison/circuit absente'); continue; }
-    if (o.glErreur || o.glPerdu || o.obstruction !== false) erreurs.push('Erreur graphique ou caméra masquée');
+    if (o.gpuErreur || o.gpuPerdu || o.obstruction !== false) erreurs.push('Erreur graphique ou caméra masquée');
     if (inspectionForet && o.foretLibre !== true) erreurs.push('Silhouette masquée par un houppier ou un solide');
     const a = o.camera, b = o.cameraPrescrite;
     if (!a?.pos?.every(Number.isFinite) || !b?.pos || a.pos.some((v, k) => Math.abs(v - b.pos[k]) > 1e-8) || ['yaw', 'pitch', 'fov'].some(k => !Number.isFinite(a[k]) || Math.abs(a[k] - b[k]) > 1e-8)) erreurs.push('Caméra finale différente');

@@ -1015,355 +1015,56 @@
   // Shaders
   // ---------------------------------------------------------------------------------------------------------------
 
-  const vec3s = l => l.map(c => `vec3(${c.map(v => Number(v).toFixed(3)).join(',')})`).join(',');
-  const VS = `#version 300 es
-  precision highp float;precision highp int;
-  layout(location=0) in vec3 aPosition;
-  layout(location=1) in vec3 aNormale;
-  layout(location=2) in vec2 aPoids;
-  layout(location=3) in uvec4 aInfo;
-  layout(location=4) in uint aSpectateur;
-  uniform highp sampler2D uPublicF;
-  uniform highp usampler2D uPublicU;
-  uniform mat4 uVP;
-  uniform vec4 uTemps;                    // temps (s), abris (pluie ou neige lissée), mouillé, libre
-  uniform vec4 uSections[${SECTIONS}];    // cible du regard (x, y, z), excitation
-  uniform vec4 uSections2[${SECTIONS}];   // poids du regard, fête (départ, arrivée)
-  #ifndef OMBRE
-  out vec3 vMonde;out vec3 vNormale;out vec3 vObjet;
-  flat out vec3 vBase;flat out vec3 vSecond;flat out vec4 vMatiere;flat out vec2 vTrame;flat out uint vMotif;
-  #endif
-  const vec3 PIV_HANCHES=vec3(0.,.95,0.),PIV_COU=vec3(0.,1.52,0.);
-  vec3 rx(vec3 v,float a){float c=cos(a),s=sin(a);return vec3(v.x,v.y*c+v.z*s,-v.y*s+v.z*c);}
-  vec3 ry(vec3 v,float a){float c=cos(a),s=sin(a);return vec3(v.x*c+v.z*s,v.y,-v.x*s+v.z*c);}
-  vec3 rz(vec3 v,float a){float c=cos(a),s=sin(a);return vec3(v.x*c-v.y*s,v.x*s+v.y*c,v.z);}
-  vec3 couleur(uint c){return vec3(float((c>>16)&255u),float((c>>8)&255u),float(c&255u))/255.;}
-  // Angles d'une pose. Bras : rotation de l'humérus vers le dedans (avant-bras ramené devant le corps), flexion vers
-  // l'avant (épaule, coude), abduction vers le dehors, balancier de l'avant-bras. Jambes : flexion de la hanche, du
-  // genou, de la cheville ; ouverture des genoux (assis) et écart (debout).
-  struct Pose{vec2 hanche;vec2 genou;vec2 cheville;vec2 ecart;vec2 ouvre;vec2 epaule;vec2 abduction;vec2 dedans;vec2 coude;vec2 balancier;
-    vec3 torse;vec2 tete;float souffle;};
-  void poserOs(inout vec3 p,inout vec3 n,uint os,Pose q){
-    if(os==4u||os==5u||os==16u||os==17u||os>=20u){
-      int c=(os==4u||os==16u||os==20u)?0:1;float sx=c==0?-.105:.105;
-      if(os>=20u){vec3 k=vec3(sx,.145,0.);p=k+rx(p-k,q.cheville[c]);n=rx(n,q.cheville[c]);}
-      if(os>=16u){vec3 k=vec3(sx,.52,0.);p=k+rx(p-k,q.genou[c]);n=rx(n,q.genou[c]);}
-      vec3 k=vec3(sx,.97,0.);
-      p=k+rz(ry(rx(p-k,q.hanche[c]),q.ouvre[c]),q.ecart[c]);n=rz(ry(rx(n,q.hanche[c]),q.ouvre[c]),q.ecart[c]);
-      return;
-    }
-    if(os==2u||os==3u||os==18u||os==19u){
-      int c=(os==2u||os==18u)?0:1;float sx=c==0?-1.:1.;
-      if(os>=18u){vec3 k=vec3(sx*.255,1.19,0.);p=k+rz(rx(p-k,q.coude[c]),sx*q.balancier[c]);n=rz(rx(n,q.coude[c]),sx*q.balancier[c]);}
-      vec3 k=vec3(sx*.235,1.43,0.);float d=-sx*q.dedans[c],ab=sx*q.abduction[c];
-      p=k+rz(rx(ry(p-k,d),q.epaule[c]),ab);n=rz(rx(ry(n,d),q.epaule[c]),ab);
-      p.y+=.004*q.souffle;
-    }else if(os==1u){
-      p=PIV_COU+ry(rx(p-PIV_COU,-q.tete.y),q.tete.x);n=ry(rx(n,-q.tete.y),q.tete.x);
-    }else{
-      float w=smoothstep(1.06,1.2,p.y)*(1.-smoothstep(1.4,1.48,p.y));
-      p.xz*=1.+.013*q.souffle*w;
-    }
-    p=PIV_HANCHES+ry(rz(rx(p-PIV_HANCHES,-q.torse.x),q.torse.y),q.torse.z);n=ry(rz(rx(n,-q.torse.x),q.torse.y),q.torse.z);
-  }
-  void cacher(){
-    gl_Position=vec4(0.,0.,3.,1.);
-    #ifndef OMBRE
-    vMonde=vec3(0.);vNormale=vec3(0.,1.,0.);vObjet=vec3(0.);vBase=vec3(0.);vSecond=vec3(0.);vMatiere=vec4(0.);vTrame=vec2(0.);vMotif=0u;
-    #endif
-  }
-  void main(){
-    uint idx=aSpectateur&65535u,lo8=(aSpectateur>>16)&255u,hi8=aSpectateur>>24;
-    ivec2 t0=ivec2(int((idx*2u)&1023u),int((idx*2u)>>10)),t1=ivec2(t0.x+1,t0.y);
-    if(hi8<=lo8){cacher();return;}
-    uvec4 U0=texelFetch(uPublicU,t0,0);
-    uint os=aInfo.x,teinte=aInfo.y,partie=aInfo.z,mat=aInfo.w&31u;
-    uint g=U0.x,masque=U0.y,traits=U0.z,section=min(U0.w&255u,${SECTIONS - 1}u);
-    bool assis=(traits&3u)==0u;
-    if(((masque>>partie)&1u)==0u){cacher();return;}
-    float h1=float(g&255u)/255.,h2=float((g>>8)&255u)/255.,h3=float((g>>16)&255u)/255.,h4=float((g>>24)&255u)/255.;
-    // ---- l'animation : excitation de la section, seuils propres au spectateur
-    float t=uTemps.x;vec4 S=uSections[section],S2=uSections2[section];
-    float exc=clamp(max(S.w,S2.y*(.55+.5*h2)),0.,1.);
-    float seuil=.16+.95*h1,lever=assis?smoothstep(seuil,seuil+.17,exc):1.,lev=lever*lever*(3.-2.*lever);
-    float agite=smoothstep(seuil+.04,seuil+.28,exc);
-    bool deuxBras=((traits>>15)&1u)==1u,applaudit=((traits>>16)&1u)==1u;
-    uint abri=(traits>>22)&3u,posture=(traits>>28)&3u;
-    float couvert=smoothstep(.06+.3*h3,.2+.3*h3,uTemps.y);
-    float parapluie=abri==1u?couvert:0.,capuche=abri==2u?couvert:0.;
-    float drapeau=((masque>>${PARTIE.DRAPEAU}u)&1u)==1u?smoothstep(.05,.3,agite):0.;
-    if(partie==${PARTIE.PARAPLUIE}u&&parapluie<.02||partie==${PARTIE.DRAPEAU}u&&drapeau<.02){cacher();return;}
-    float ph=6.2831853*h4,souffle=sin(t*(1.25+.5*h3)+ph),om=9.+5.*h2;
-    Pose q;q.souffle=souffle;
-    // jambes : assis au bord de la marche (cuisse presque à plat, tibia d'aplomb, pied à plat), debout tout droit,
-    // le poids passant d'une jambe à l'autre
-    float hA=1.36+.1*(h3-.5),gA=-(hA+.04),ouvre=.06+.12*h2;
-    for(int c=0;c<2;c++){
-      float sc=c==0?-1.:1.,appui=assis?0.:.06*max(0.,sin(t*.31+ph+float(c)*3.1))*(1.-agite);
-      q.hanche[c]=mix(hA,0.,lev)+appui;q.genou[c]=mix(gA,0.,lev)-appui*2.;q.cheville[c]=-(q.hanche[c]+q.genou[c]);
-      q.ecart[c]=sc*mix(.02,.035+.02*h1,lev);q.ouvre[c]=sc*mix(ouvre,.12+.1*h3,lev);
-    }
-    // bras au repos (flexion, abduction, dedans, coude). Assis : mains sur les cuisses, coudes sur les genoux
-    // (penché) ou mains jointes (adossé). Debout : le long du corps, mains dans les poches ou bras croisés.
-    vec4 R0;
-    if(assis)R0=posture==1u?vec4(.30,.10,.50,1.25):posture==2u?vec4(.08,.06,.62,.85):vec4(.20+.06*h2,.07,.45,.80+.08*h3);
-    else R0=posture==1u?vec4(-.05,.16,.25,.35):posture==2u?vec4(.55,.05,1.1,1.6):vec4(.03+.05*h3,.06+.04*h2,.12,.12+.25*h2);
-    R0=mix(R0,vec4(.05,.06,.12,.2),assis?lev:0.);
-    for(int c=0;c<2;c++){
-      vec4 r=R0;if(!assis&&posture==2u&&c==0)r=vec4(.47,.05,1.05,1.75);  // bras croisés : le gauche passe dessus
-      q.epaule[c]=r.x;q.abduction[c]=r.y;q.dedans[c]=r.z;q.coude[c]=r.w;q.balancier[c]=0.;
-    }
-    // enthousiasme : on applaudit (mains qui se rejoignent devant la poitrine) ou l'on agite les bras levés en V
-    if(applaudit){
-      float k=.5+.5*sin(t*om*1.2+ph);
-      for(int c=0;c<2;c++){q.epaule[c]=mix(q.epaule[c],1.0,agite);q.coude[c]=mix(q.coude[c],1.2,agite);q.abduction[c]=mix(q.abduction[c],.02,agite);q.dedans[c]=mix(q.dedans[c],.72+.32*k,agite);}
-    }else{
-      for(int c=0;c<2;c++){
-        float bras=(c==1||deuxBras)?agite:0.,k=sin(t*om*.62+ph+float(c)*1.7);
-        q.epaule[c]=mix(q.epaule[c],2.55+.12*sin(t*1.7+ph),bras);q.abduction[c]=mix(q.abduction[c],-.30+.10*k,bras);
-        q.dedans[c]=mix(q.dedans[c],0.,bras);q.coude[c]=mix(q.coude[c],.32+.12*sin(t*om*.62+ph+float(c)+1.),bras);q.balancier[c]=.42*k*bras;
-      }
-    }
-    // abris : le parapluie tenu de la main droite, devant la poitrine ; la main gauche agite le drapeau
-    if(parapluie>0.){q.epaule[1]=mix(q.epaule[1],.62,parapluie);q.coude[1]=mix(q.coude[1],1.82,parapluie);q.abduction[1]=mix(q.abduction[1],.1,parapluie);q.dedans[1]=mix(q.dedans[1],.2,parapluie);q.balancier[1]*=1.-parapluie;}
-    if(drapeau>0.){float k=sin(t*7.+ph);q.epaule[0]=mix(q.epaule[0],2.55+.2*k,drapeau);q.abduction[0]=mix(q.abduction[0],-.25+.3*k,drapeau);q.dedans[0]=mix(q.dedans[0],0.,drapeau);q.coude[0]=mix(q.coude[0],.25,drapeau);q.balancier[0]=0.;}
-    // torse : se pencher pour se lever, respirer, osciller ; trois façons d'être assis (droit, penché, adossé)
-    float penche=assis?(posture==1u?.34:posture==2u?-.1:.02+.05*h1):.02;
-    q.torse.x=mix(penche,.03,lev)+(assis?.5*sin(3.1415927*lever):0.)+.012*souffle+.06*agite*sin(t*om*.62+ph);
-    q.torse.y=.022*sin(t*.43+ph)+.03*agite*sin(t*om*.31+ph);
-    // regard : la voiture de la section, sinon des coups d'œil au hasard
-    vec4 A=texelFetch(uPublicF,t0,0),Bf=texelFetch(uPublicF,t1,0);
-    vec3 ancre=A.xyz;float cap=A.w,cc=cos(cap),sc=sin(cap);
-    vec3 X=vec3(cc,0.,-sc),Fv=vec3(sc,0.,cc);
-    vec3 teteMonde=ancre+vec3(0.,mix(.62,1.62-Bf.y,lev),0.)+Fv*Bf.x*lev;
-    vec3 d=S.xyz-teteMonde;float lx=dot(d,X),lz=dot(d,Fv);
-    float lacet=atan(lx,lz),tangage=atan(d.y,max(.5,length(vec2(lx,lz))));
-    float poids=S2.x*(.7+.3*h2)*(1.-smoothstep(1.9,2.5,abs(lacet)));
-    float oisif=.38*sin(t*(.09+.06*h2)+ph*1.3)+.16*sin(t*.27+h1*9.);
-    lacet=mix(oisif,clamp(lacet,-1.5,1.5),poids);
-    q.torse.z=.3*lacet;
-    q.tete.x=clamp(lacet-q.torse.z,-1.15,1.15);
-    q.tete.y=clamp(mix(.08+.06*sin(t*.21+ph),-tangage*.8,poids),-.35,.5)-.25*agite*(1.-parapluie);
-    float saut=((traits>>17)&1u)==1u?.06*max(0.,sin(t*om*.7+ph))*smoothstep(.5,.9,agite):0.;
-    // ---- le sommet
-    vec3 p=aPosition,n=aNormale,objet=aPosition;
-    if(os==1u&&p.y>1.54){
-      // trois visages d'EMPRISE (human.js), ici en continu : mâchoire et nez
-      float v=float((traits>>24)&15u)/7.5-1.,jaw=exp(-pow((p.y-1.605)/.052,2.)),upper=clamp((p.y-1.54)/.10,0.,1.);
-      p.x*=1.+v*(.025+.035*jaw)*upper;
-      p.z+=v*.003*exp(-(pow(p.x/.020,2.)+pow((p.y-1.675)/.035,2.)))*max(0.,p.z/.1);
-    }
-    if(((traits>>10)&1u)==1u&&os<=3u&&os!=1u&&p.y>1.2)p.x*=1.-.025*smoothstep(1.2,1.44,p.y);
-    // tête un peu plus grosse chez les enfants : on n'est pas un adulte en réduction
-    if(os==1u){float k=pow(clamp(1./Bf.z,1.,1.4),.6);p=PIV_COU+(p-PIV_COU)*k;}
-    if(partie==${PARTIE.CASQUETTE}u&&((traits>>14)&1u)==1u){p=vec3(-p.x,p.y,-.008-p.z);n=vec3(-n.x,n.y,-n.z);}
-    if(partie==${PARTIE.CAPUCHE}u){
-      // sans pluie, la capuche est rabattue, aplatie dans le dos
-      vec3 k=vec3(0.,1.53,-.07);float a=1.75*(1.-capuche),e=mix(.5,1.,capuche);
-      p=k+rx((p-k)*vec3(1.,e,e),a);n=rx(normalize(n*vec3(1.,1./e,1./e)),a);
-    }
-    if(partie==${PARTIE.DRAPEAU}u){
-      float u=aPoids.y;p.z+=.07*u*sin(t*11.-u*7.+ph)*drapeau;p.x=-.26+(p.x+.26)*drapeau;p.y=.905+(p.y-.905)*drapeau;
-    }
-    if(partie==${PARTIE.PARAPLUIE}u){
-      // la main droite posée, puis le parapluie droit au-dessus, ouvert selon la pluie
-      vec3 main=vec3(.262,.905,.02),mn=vec3(0.,1.,0.);poserOs(main,mn,19u,q);
-      float r=p.y>.7?mix(.08,1.,parapluie):1.;
-      vec3 l=rx(vec3(p.x*r,p.y,p.z*r),.22);n=rx(n,.22);
-      p=main+l;
-    }else{
-      vec3 pa=p,na=n;poserOs(pa,na,os,q);
-      if((aInfo.w&${DEUX_OS}u)!=0u){vec3 pb=p,nb=n;poserOs(pb,nb,uint(aPoids.x+.5),q);pa=mix(pa,pb,aPoids.y);na=mix(na,nb,aPoids.y);}
-      p=pa;n=na;
-    }
-    // échelle du spectateur (autour de la hanche assis, des pieds debout), puis ancrage et orientation
-    vec3 echelle=vec3(Bf.w,Bf.z,.5+.5*Bf.w),pivot=vec3(0.,.97*(1.-lev),0.);
-    p=pivot+(p-pivot)*echelle;n=n/echelle;
-    p+=mix(vec3(0.,-.97,0.),vec3(0.,-Bf.y,Bf.x),lev);p.y+=saut;
-    vec3 monde=ancre+X*p.x+vec3(0.,p.y,0.)+Fv*p.z;
-    gl_Position=uVP*vec4(monde,1.);
-    #ifndef OMBRE
-    vMonde=monde;vNormale=X*n.x+vec3(0.,n.y,0.)+Fv*n.z;vObjet=objet;
-    vTrame=vec2(float(lo8),float(hi8))/255.;
-    // couleur de la partie
-    uvec4 U1=texelFetch(uPublicU,t1,0);
-    uint peau=(traits>>2)&7u,chev=(traits>>5)&7u,chau=(traits>>8)&3u;
-    const vec3 PEAUX[8]=vec3[8](${vec3s(PEAUX)});
-    const vec3 CHEVEUX[8]=vec3[8](${vec3s(CHEVEUX)});
-    const vec3 CHAUSSURES[4]=vec3[4](${vec3s(CHAUSSURES)});
-    vec3 b;uint motif=0u;
-    bool couvreChef=((masque>>${PARTIE.CASQUETTE}u)&15u)!=0u;
-    if(teinte==${TEINTE.TETE_LOIN}u)teinte=capuche>.5?${TEINTE.HAUT}u:couvreChef?${TEINTE.COIFFE}u:(masque&${(1 << PARTIE.CHEVEUX_DESSUS) | (1 << PARTIE.VOLUME)}u)!=0u?${TEINTE.CHEVEUX}u:${TEINTE.PEAU}u;
-    if(teinte==${TEINTE.HAUT}u&&((traits>>11)&1u)==1u&&(os==2u||os==3u||os==18u||os==19u)&&objet.y<1.255)teinte=${TEINTE.PEAU}u;
-    if(teinte==${TEINTE.BAS}u&&((traits>>12)&1u)==1u&&objet.y<.62&&os!=0u)teinte=${TEINTE.PEAU}u;
-    if(teinte==${TEINTE.PEAU}u&&((traits>>13)&1u)==1u&&(os==18u||os==19u)&&objet.y<.97)teinte=${TEINTE.COIFFE}u;
-    if(teinte==${TEINTE.PEAU}u)b=PEAUX[peau];
-    else if(teinte==${TEINTE.HAUT}u){b=couleur(U1.x);if(partie==0u)motif=(traits>>18)&15u;}
-    else if(teinte==${TEINTE.BAS}u)b=couleur(U1.y);
-    else if(teinte==${TEINTE.CHAUSSURES}u)b=CHAUSSURES[chau];
-    else if(teinte==${TEINTE.CHEVEUX}u)b=CHEVEUX[chev];
-    else if(teinte==${TEINTE.COIFFE}u){b=couleur(U1.z);if(partie==${PARTIE.CASQUETTE}u&&h3>.6)motif=10u;}
-    else if(teinte==${TEINTE.ACCESSOIRE}u){b=couleur(U1.w);if(partie==${PARTIE.PARAPLUIE}u)motif=8u;if(partie==${PARTIE.DRAPEAU}u)motif=9u;}
-    else if(teinte==${TEINTE.BLANC}u)b=vec3(.80,.79,.76);
-    else if(teinte==${TEINTE.SOMBRE}u)b=vec3(.025,.025,.03);
-    else b=vec3(.52,.53,.55);
-    vMotif=motif;vBase=b;vSecond=couleur(U0.w>>8u);
-    // rugosité, métal, mouillé (pas sous un toit, un parapluie ou une capuche), peau du visage (pour les lèvres)
-    float rug=mat==${MATIERE.PEAU}u?.58:mat==${MATIERE.CUIR}u?.5:mat==${MATIERE.CHEVEUX}u?.52:mat==${MATIERE.TOILE}u?.42:mat==${MATIERE.METAL}u?.3:mat==${MATIERE.VERRE}u?.12:mat==${MATIERE.OEIL}u?.25:mat==${MATIERE.PAILLE}u?.82:mat==${MATIERE.LAINE}u?.97:.88;
-    float abrite=abri==${ABRI.TOIT}u?1.:max(parapluie,capuche),textile=mat==${MATIERE.TISSU}u||mat==${MATIERE.LAINE}u||mat==${MATIERE.CHEVEUX}u?1.:0.;
-    vMatiere=vec4(rug,mat==${MATIERE.METAL}u?.85:0.,uTemps.z*(1.-abrite)*textile,teinte==${TEINTE.PEAU}u&&os==1u?1.:0.);
-    #endif
-  }`;
-
-  const FS = `#version 300 es
-  precision highp float;precision highp int;
-  /*PDR*/
-  in vec3 vMonde;in vec3 vNormale;in vec3 vObjet;
-  flat in vec3 vBase;flat in vec3 vSecond;flat in vec4 vMatiere;flat in vec2 vTrame;flat in uint vMotif;
-  out vec4 fragColor;
-  // bande d'un motif, adoucie à la taille du pixel, et fondue vers sa moyenne quand elle devient plus fine que lui
-  float bande(float v,float largeur){float aa=max(fwidth(v)*1.2,1e-4);float d=abs(fract(v)-.5)-(.5-largeur*.5);float k=1.-smoothstep(-aa,aa,d);return mix(k,largeur,smoothstep(.25,.5,aa));}
-  void main(){
-    // fondu tramé entre deux niveaux : chaque pixel appartient à un seul des deux
-    if(vTrame.x>0.||vTrame.y<1.){
-      float d=fract(52.9829189*fract(dot(gl_FragCoord.xy,vec2(.06711056,.00583715))));
-      if(d<vTrame.x||d>=vTrame.y)discard;
-    }
-    vec3 n=normalize(vNormale),base=vBase,o=vObjet;
-    float k=0.;
-    if(vMotif==1u)k=bande(o.y*15.,.45);                                    // marinière
-    else if(vMotif==2u)k=bande(atan(o.x,o.z+.001)*9.,.3);                  // fines rayures verticales
-    else if(vMotif==3u)k=max(bande(o.y*11.,.32),bande(o.x*11.,.32))*.75;    // carreaux
-    else if(vMotif==4u)k=abs(o.x)>.205&&o.y<1.47?1.:0.;                     // manches contrastées
-    else if(vMotif==5u)k=step(1.26,o.y)*step(o.y,1.34);                     // bande de poitrine
-    else if(vMotif==6u)k=step(1.47,o.y);                                    // col contrasté
-    else if(vMotif==8u)k=step(.5,fract(atan(o.z,o.x)*1.2732395));           // panneaux du parapluie
-    else if(vMotif==9u)k=step(.5,fract((o.y-.125)*7.4));                    // drapeau à bandes
-    else if(vMotif==10u)k=step(.04,o.z)*step(o.y,1.79);                     // casquette à façade claire
-    base=mix(base,vSecond,clamp(k,0.,1.));
-    // lèvres : un peu de sang sous la peau du visage
-    if(vMatiere.w>.5){float l=exp(-pow(o.x/.022,2.)-pow((o.y-1.613)/.0055,2.))*step(.06,o.z);base*=mix(vec3(1.),vec3(.86,.6,.58),l);}
-    float rug=vMatiere.x,mouille=vMatiere.z;
-    base*=1.-.28*mouille;rug=mix(rug,.35,mouille*.6);
-    float ombre=pdrOmbreSoleil(vMonde,n);
-    fragColor=vec4(pdrFinir(pdrEclairer(base,n,vMonde,rug,vMatiere.y,0.,ombre),vMonde),0.);
-  }`;
-
-  const FS_OMBRE = `#version 300 es
-  precision highp float;
-  void main(){}`;
-
-  // ---------------------------------------------------------------------------------------------------------------
-  // La vue sur le processeur graphique : une par moteur (le rendu principal, les rétroviseurs)
-  // ---------------------------------------------------------------------------------------------------------------
-
   function reglageDe(palier, niveauMin) {
     return { bande0: palier.bande0, bande1: palier.bande1, plafond0: palier.plafond0, plafond1: palier.plafond1, niveauMin: Math.max(niveauMin || 0, palier.niveauMin) };
   }
   /** options : { niveauMin (0 : tous ; 2 : silhouettes seules), ombre (selon le palier par défaut), proche (m) }. */
   function vue(renderer, pub, options = {}) {
-    const gl = renderer && renderer.gl, pdr = renderer && renderer.pdr;
-    if (!gl || !pdr || !pub) throw new Error('public : il faut un moteur WebGL 2 avec ses points d’accroche (renderer.pdr)');
+    const gpu = renderer?.gpu;
+    if (!gpu?.device || !pub) throw new Error('Public : périphérique WebGPU indisponible');
     const M = maillages(), liste = creerListe(pub), niveauMin = options.niveauMin || 0, proche = options.proche ?? 20;
     let palier = pub.palier, reglage = reglageDe(palier, niveauMin), ombres = options.ombre ?? palier.ombre;
     const oeil = new Float32Array(3), compteRendu = { appels: 0, triangles: 0, instances: 0 };
     const mesure = { listeMs: 0, ombreMs: 0, vus: 0, niveaux: [0, 0, 0], triangles: 0, appels: 0, ombreInstances: 0, ombreTriangles: 0, plafonne: 0 };
     const temps = new Float32Array(4), cadrage = new Float64Array(4), cadrageOmbre = new Float64Array(4);
-    let res = null, generation = -1, oeilConnu = false, imageOmbre = -1;
-    function creerRessources() {
-      const r = { presenceLointaine: null };
-      r.couleur = pdr.programme(VS, FS.replace('/*PDR*/', pdr.glsl));
-      r.ombre = pdr.programme(VS.replace('precision highp int;', 'precision highp int;\n  #define OMBRE 1'), FS_OMBRE);
-      r.uC = { version: -1, seance: -1 }; r.uO = { version: -1, seance: -1 };
-      for (const nom of ['uPublicF', 'uPublicU', 'uVP', 'uTemps', 'uSections', 'uSections2']) { r.uC[nom] = gl.getUniformLocation(r.couleur, nom); r.uO[nom] = gl.getUniformLocation(r.ombre, nom); }
-      r.eclairer = pdr.lier(r.couleur);
-      r.vao = gl.createVertexArray(); gl.bindVertexArray(r.vao);
-      r.vbo = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, r.vbo); gl.bufferData(gl.ARRAY_BUFFER, M.sommets, gl.STATIC_DRAW);
-      gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, SOMMET, 0);
-      gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 3, gl.FLOAT, false, SOMMET, 12);
-      gl.enableVertexAttribArray(2); gl.vertexAttribPointer(2, 2, gl.FLOAT, false, SOMMET, 24);
-      gl.enableVertexAttribArray(3); gl.vertexAttribIPointer(3, 4, gl.UNSIGNED_BYTE, SOMMET, 32);
-      r.ibo = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, r.ibo); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, M.indices, gl.STATIC_DRAW);
-      // Deux tampons d'instances : l'ombre et la couleur ne réécrivent pas, dans la même image, un tampon déjà lu.
-      r.instances = [gl.createBuffer(), gl.createBuffer()];
-      for (const b of r.instances) { gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, liste.resultat.liste.byteLength, gl.DYNAMIC_DRAW); }
-      gl.enableVertexAttribArray(4); gl.vertexAttribIPointer(4, 1, gl.UNSIGNED_INT, 4, 0); gl.vertexAttribDivisor(4, 1);
-      gl.bindVertexArray(null); gl.bindBuffer(gl.ARRAY_BUFFER, null);
-      // Les spectateurs, une fois pour toutes, sur les unités 8 et 9 (le monde emploie 2, 4, 5, 6 et 7 ; l'après 0, 1, 3).
-      gl.activeTexture(gl.TEXTURE8);
-      r.texF = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, r.texF);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, LARGEUR_TEX, pub.lignes, 0, gl.RGBA, gl.FLOAT, pub.flottants);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-      gl.activeTexture(gl.TEXTURE9);
-      r.texU = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, r.texU);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32UI, LARGEUR_TEX, pub.lignes, 0, gl.RGBA_INTEGER, gl.UNSIGNED_INT, pub.entiers);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-      gl.activeTexture(gl.TEXTURE0);
-      res = r; generation = pdr.generation;
-    }
-    function pret() {
-      if (gl.isContextLost && gl.isContextLost()) return false;
-      if (!res || generation !== pdr.generation) creerRessources();
-      return true;
-    }
-    function lier(u, vp) {
+    let oeilConnu = false, imageOmbre = -1, libere = false;
+    const vueGPU = B.publicGPU.creer(gpu, pub, M, SOMMET, LARGEUR_TEX, liste.resultat.liste.byteLength);
+    function dessiner(pass, matrice, vue, ombre) {
       const E = pub.etat;
-      gl.activeTexture(gl.TEXTURE8); gl.bindTexture(gl.TEXTURE_2D, res.texF);
-      gl.activeTexture(gl.TEXTURE9); gl.bindTexture(gl.TEXTURE_2D, res.texU);
-      if (u.version < 0) { gl.uniform1i(u.uPublicF, 8); gl.uniform1i(u.uPublicU, 9); }
-      gl.uniformMatrix4fv(u.uVP, false, vp);
-      // Chaque programme conserve ses uniformes entre les deux yeux ou tuiles d’ombre.
-      // La nouvelle séance et la recréation du programme invalident ce partage.
-      if (u.version !== E.version || u.seance !== E.seance) {
-        temps[0] = E.temps; temps[1] = E.couverture; temps[2] = E.mouille; temps[3] = 0;
-        gl.uniform4fv(u.uTemps, temps);
-        gl.uniform4fv(u.uSections, E.s1); gl.uniform4fv(u.uSections2, E.s2);
-        u.version = E.version; u.seance = E.seance;
-      }
-    }
-    function dessiner(ombre) {
-      const L = liste.resultat, tampon = res.instances[ombre ? 1 : 0];
-      gl.bindVertexArray(res.vao); gl.bindBuffer(gl.ARRAY_BUFFER, tampon);
-      // L’ombre a son propre tampon. Si celui de couleur contient déjà exactement la
-      // suite des silhouettes de cette séance, les indices peuvent rester sur le GPU.
-      if (ombre || L.presenceLointaine === null || L.presenceLointaine !== res.presenceLointaine) {
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, L.liste, 0, L.total);
-        if (!ombre) res.presenceLointaine = L.presenceLointaine;
-      }
+      temps[0] = E.temps; temps[1] = E.couverture; temps[2] = E.mouille;
+      const L = liste.resultat;
+      vueGPU.preparer(pass, matrice, vue, ombre, temps, E, L);
       let appels = 0, triangles = 0, instances = 0;
       for (let k = 0; k < NIVEAUX; k++) {
-        const nombre = L.compte[k]; if (!nombre) continue;
+        const nombre = L.compte[k];
+        if (!nombre) continue;
         const nv = M.niveaux[k];
-        gl.vertexAttribIPointer(4, 1, gl.UNSIGNED_INT, 4, L.debut[k] * 4);
-        gl.drawElementsInstanced(gl.TRIANGLES, nv.compte, gl.UNSIGNED_INT, nv.premier * 4, nombre);
+        pass.drawIndexed(nv.compte, nombre, nv.premier, 0, L.debut[k]);
         appels++; triangles += nv.compte / 3 * nombre; instances += nombre;
         if (!ombre) mesure.niveaux[k] = nombre;
       }
-      gl.bindVertexArray(null); gl.bindBuffer(gl.ARRAY_BUFFER, null); gl.activeTexture(gl.TEXTURE0);
-      compteRendu.appels = appels; compteRendu.triangles = triangles; compteRendu.instances = ombre ? 0 : instances;
+      Object.assign(compteRendu, { appels, triangles, instances: ombre ? 0 : instances });
       return compteRendu;
     }
     const fx = {
       /** Passe d'ombre du soleil (une par tuile de l'atlas) : cadre, biais et programme de profondeur posés par le moteur. */
-      ombre(gl2, lumiere) {
-        if (!ombres || !pub.n || !pret()) return null;
+      gpuShadow(pass, lumiere) {
+        if (libere || !ombres || !pub.n || renderer.stats.contextLost) return null;
         const t0 = performance.now();
         if (imageOmbre !== pub.etat.version) { imageOmbre = pub.etat.version; mesure.ombreMs = 0; mesure.ombreInstances = 0; mesure.ombreTriangles = 0; }
         cadrageOmbre[0] = lumiere.etendue; cadrageOmbre[1] = pub.etat.presence; cadrageOmbre[2] = reglage.niveauMin; cadrageOmbre[3] = proche;
         liste.listerOmbre(lumiere.centre, lumiere.direction, oeilConnu ? oeil : lumiere.centre, cadrageOmbre);
         let r = null;
         if (liste.resultat.total) {
-          gl.useProgram(res.ombre); lier(res.uO, lumiere.matrice);
-          gl.enable(gl.CULL_FACE); gl.enable(gl.DEPTH_TEST);
-          r = dessiner(true);
+          r = dessiner(pass, lumiere.matrice, lumiere, true);
           mesure.ombreInstances += liste.resultat.total; mesure.ombreTriangles += r.triangles;
         }
         mesure.ombreMs += performance.now() - t0;
         return r;
       },
       /** Passe couleur, dans la cible du moteur (MSAA compris), éclairée comme le monde. */
-      couleur(gl2, v) {
-        if (!pub.n || !pret()) return null;
+      gpuColor(pass, v) {
+        if (libere || !pub.n || renderer.stats.contextLost) return null;
         const t0 = performance.now();
         oeil[0] = v.oeil[0]; oeil[1] = v.oeil[1]; oeil[2] = v.oeil[2]; oeilConnu = true;
         cadrage[0] = v.tangente * v.largeur / Math.max(1, v.hauteur); cadrage[1] = v.tangente; cadrage[2] = v.focale; cadrage[3] = pub.etat.presence;
@@ -1372,9 +1073,7 @@
         mesure.niveaux[0] = mesure.niveaux[1] = mesure.niveaux[2] = 0; mesure.triangles = mesure.appels = 0;
         let r = null;
         if (liste.resultat.total) {
-          gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE); gl.disable(gl.BLEND); gl.depthMask(true);
-          gl.useProgram(res.couleur); lier(res.uC, v.vp); res.eclairer(v);
-          r = dessiner(false);
+          r = dessiner(pass, v.vp, v, false);
           mesure.triangles = r.triangles; mesure.appels = r.appels;
         }
         mesure.listeMs = performance.now() - t0;
@@ -1383,19 +1082,11 @@
     };
     /** Changer de palier en course (qualité automatique) : bandes et plafonds, sans rien allouer ni régénérer. */
     function qualite(q) { palier = palierDe(q); reglage = reglageDe(palier, niveauMin); ombres = options.ombre ?? palier.ombre; }
-    function liberer() {
-      if (!res) return;
-      gl.deleteProgram(res.couleur); gl.deleteProgram(res.ombre);
-      for (const b of [res.vbo, res.ibo, ...res.instances]) gl.deleteBuffer(b);
-      gl.deleteTexture(res.texF); gl.deleteTexture(res.texU); gl.deleteVertexArray(res.vao);
-      res = null;
-    }
-    pret();
-    return { fx, mesure, liberer, qualite, get reglage() { return reglage; }, get pret() { return !!res; } };
+    return { fx, mesure, liberer() { libere = true; vueGPU.liberer(); }, qualite, get reglage() { return reglage; }, get pret() { return !libere && !renderer.stats.contextLost; } };
   }
 
   B.public = Object.freeze({ creer, animer, regler, reinitialiser, vue, maillages, trianglesDe, creerListe, decrireGradins, presencePour, alea, hache,
-    PALIERS, OS, TEINTE, PARTIE, MATIERE, SECTIONS, LONG_SECTION, GENRE, ABRI, PENTE_PLUIE, SOMMET, coder, VS, FS,
+    PALIERS, OS, TEINTE, PARTIE, MATIERE, SECTIONS, LONG_SECTION, GENRE, ABRI, PENTE_PLUIE, SOMMET, coder,
     provenance: Object.freeze({ depot: 'M4D135/emprise', commit: 'cc004826a506e6979eaaec217748fe85d5cd6ac5', version: '0.6.8',
       fichiers: Object.freeze(['src/human-data.js', 'src/body-data.js', 'src/human.js', 'src/ferro/crowd.js']) }) });
 })(globalThis.BITUME = globalThis.BITUME || {});

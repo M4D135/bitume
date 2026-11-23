@@ -219,8 +219,7 @@
   // ---------------------------------------------------------------- moteur de rendu et son
   let rendu = null, son = null, scene = null, session = null;
   let detectionGraphiqueActive = false, annulerDetection = false, contexteRenduPerdu = false, contexteFragile = false;
-  let restaurerDecorApresContexte = false;
-  let materielRendu = 'webgl2', derniereDetection = null;
+  let materielRendu = 'WebGPU', derniereDetection = null;
   let decorEnrichi = true; // l'outil de référence peut retrouver le décor historique pour une comparaison A/B
   let publicVisible = true; // BITUME_JEU.public.visible : mesurer l'image avec et sans le public
   // Préparation d'une séance (voir « préparation des séances ») : déclarée avant tout lancement possible. jeton :
@@ -910,8 +909,18 @@
       const p = poses[k], etat = S.modeles[k].eauCarrosserie;
       if (!etat || !p) continue;
       point[0] = p.x; point[1] = p.y + .65; point[2] = p.z;
-      B.eauCarrosserie.mettreAJour(etat, dt, meteo, S.course.voitures[k].etat.v,
-        sousLaVoute(S.course.c, point), S.eauCarrosserieTemps, p);
+      const voiture = S.course.voitures[k], vitesse = voiture.etat.v;
+      const eau = Math.max(meteo.mouille || 0, meteo.pluie || 0);
+      const abri = sousLaVoute(S.course.c, point) || (eau > 0 && B.meteo.abriCouverts(S.course.c, point, S.course.physique));
+      B.eauCarrosserie.mettreAJour(etat, dt, meteo, vitesse, abri, S.eauCarrosserieTemps, p);
+      const verre = S.modeles[k].surfaceVerre;
+      const embruns = !abri && eau > 0 && !precipitationsNeige(S) ? B.sillage?.exposition(S.sillage, point, eau, voiture.id) || 0 : 0;
+      const cible = Math.min(1, .62 * etat.pluie + embruns);
+      const tau = cible > verre.mouillage ? .45 : 5 / (1 + Math.abs(vitesse) / 45);
+      verre.mouillage += (cible - verre.mouillage) * -Math.expm1(-dt / tau);
+      if (cible === 0 && verre.mouillage < .001) verre.mouillage = 0;
+      verre.id = voiture.id; verre.vitesse = vitesse;
+      B.sauteVentWebGPU.avancer(verre, dt, vitesse, etat.pluie, abri);
     }
   }
   function poserEauCarrosserie(S, k, ev, sortie, detail, overlay, matrice, distance2, tanDemi, hauteur, palierVue) {
@@ -919,6 +928,21 @@
     if (!E || !etat) return;
     const lod = E.detailPour(distance2, tanDemi, hauteur, detail, palierVue);
     E.ajouter(sortie, ev, etat, lod, overlay, matrice);
+  }
+  const surfacesVerre = new WeakMap();
+  function verrePourVue(moteur, S) {
+    let verre = surfacesVerre.get(moteur);
+    if (!verre) {
+      const forme = B.voiture.FORMES.bulle;
+      verre = B.sauteVentWebGPU.creer(moteur.gpu, forme.tri.slice(0, forme.tri.length / 2), forme);
+      surfacesVerre.set(moteur, verre);
+    }
+    verre.commencer(S.eauCarrosserieTemps, precipitationsNeige(S) ? 0 : S.meteo.pluie || 0);
+    return verre;
+  }
+  function libererVerre(moteur) {
+    surfacesVerre.get(moteur)?.liberer();
+    surfacesVerre.delete(moteur);
   }
   let pluieVue = null, pluieVue2 = null, vitreVue = null, vitreVue2 = null;
   const projectionsPluie = [{}, {}];
@@ -932,12 +956,12 @@
   function dessinerMeteo(S, dt, cam, vue, profil, suivie) {
     // à deux, les gouttes du joueur 2 tombent sur sa moitié (toile #meteo2)
     const deux = S !== session;
-    if (deux && !pluieVue2) pluieVue2 = creationTardive('pluie', B.meteo.creerPluie($('meteo2')));
-    if (!deux && !pluieVue) pluieVue = creationTardive('pluie', B.meteo.creerPluie($('meteo')));
+    if (deux && !pluieVue2) pluieVue2 = creationTardive('pluie', B.meteo.creerPluie($('meteo2'), { gpu: () => rendu?.gpu }));
+    if (!deux && !pluieVue) pluieVue = creationTardive('pluie', B.meteo.creerPluie($('meteo'), { gpu: () => rendu?.gpu }));
     const abri = sousLaVoute(S.course.c, cam.pos) || B.meteo.abriCouverts(S.course.c, cam.pos, S.course.physique), neige = precipitationsNeige(S);
     if (B.vitre) {
-      if (deux && !vitreVue2) vitreVue2 = creationTardive('vitre', B.vitre.creer($('vitre2'), { graine: 2 }));
-      if (!deux && !vitreVue) vitreVue = creationTardive('vitre', B.vitre.creer($('vitre')));
+      if (deux && !vitreVue2) vitreVue2 = creationTardive('vitre', B.vitre.creer($('vitre2'), { graine: 2, gpu: () => rendu?.gpu }));
+      if (!deux && !vitreVue) vitreVue = creationTardive('vitre', B.vitre.creer($('vitre'), { gpu: () => rendu?.gpu }));
       const contexte = S.vitreContexte || (S.vitreContexte = creationTardive('contexteVitre', {}));
       contexte.pluie = neige > 0 ? 0 : S.meteo.pluie || 0; contexte.neige = neige;
       contexte.ventX = S.meteo.ventX || 0; contexte.ventY = S.meteo.ventY || 0; contexte.ventZ = S.meteo.ventZ || 0;
@@ -2769,7 +2793,7 @@
   // projetés de la glace par une transformation projective (matrix3d). Ce rendu a ses propres copies des nappes et
   // des lots : le moteur range ses tampons dans les lots. Réglage « Image des rétroviseurs » : image simple (fond
   // dessiné dans la glace) en qualité basse et, par défaut, sur écran tactile.
-  const retro = { rendu: null, scene: -1, cote: 0, echec: false, objets: [], toiles: null, ctx: [], l: 0, h: 0 };
+  const retro = { principal: null, attente: null, rendu: null, scene: null, objets: [], l: 0, h: 0 };
   // État des glaces de chaque joueur (J1, J2), créé ici une fois : cadence au temps (dette, secondes écoulées depuis
   // la dernière image de chaque glace), coins des glaces (voiture.js, glacesCockpit, sortie réécrite) et pose CSS de
   // chaque toile, calculée à chaque image et écrite en fin d'image seulement si elle a changé (poserGlaces).
@@ -2803,9 +2827,7 @@
   // niveaux de détail du plus lourd au plus léger : le plus léger des deux
   const RANG_DETAIL = { complet: 2, moyen: 1, simple: 0 };
   const plusLeger = (a, b) => RANG_DETAIL[a] <= RANG_DETAIL[b] ? a : b;
-  // Chrome ne confie au processeur graphique qu'une toile 2D d'au moins 256 × 257 pixels : en deçà, chaque copie de
-  // l'image WebGL vers la toile d'une glace repasse par le processeur central. La toile du moteur des glaces (et donc
-  // celles des glaces, de même taille) garde au moins 66 000 pixels quelle que soit la densité de l'écran.
+  // Conserver la résolution physique des reflets, y compris sur les écrans de faible densité.
   const PIXELS_GLACE = 66000;
   function ratioGlaces(l, h, dpr) {
     let r = Math.min(dpr || 1, 1.5);
@@ -2832,31 +2854,51 @@
   function retroVoulu(S, vue, P) {
     const r = reglages.retro === 'auto' ? (estTactile ? 'non' : 'oui') : reglages.retro;
     // Le profil décide : image des glaces refusée d'office au palier bas et aux paliers Auto les plus serrés.
-    return r === 'oui' && (vue === 'cockpit' || vue === 'arceau') && !S.regardArriere && S.type !== 'vitrine' && !retro.echec && !cameraEssai && (P || profilDe(S)).effets.retroImages;
+    return r === 'oui' && (vue === 'cockpit' || vue === 'arceau') && !S.regardArriere && S.type !== 'vitrine' && !cameraEssai && (P || profilDe(S)).effets.retroImages;
   }
   // Le second moteur, sa copie du décor et les toiles des quatre glaces naissent au chargement, jamais dans le
   // chemin d'une image : tant que la copie n'est pas prête, la glace reste peinte (fond dessiné du cockpit).
   function glacesDe(cle) {
-    return retro[cle] || (retro[cle] = creationTardive('glaces', { toiles: cle === 'j2' ? [$('glace-g2'), $('glace-d2')] : [$('glace-g'), $('glace-d')], ctx: [], cote: 0 }));
+    return retro[cle] || (retro[cle] = creationTardive('glaces', { toiles: cle === 'j2' ? [$('glace-g2'), $('glace-d2')] : [$('glace-g'), $('glace-d')], surfaces: [], opaque: true, cote: 0 }));
   }
   // la séance (ou n'importe quelle course si S est nul) peut-elle montrer des glaces vives, à un palier quelconque
   // que le gouverneur Auto peut atteindre ?
   function glacesPossibles(S) {
     const r = reglages.retro === 'auto' ? (estTactile ? 'non' : 'oui') : reglages.retro, type = S ? S.type : 'course';
-    if (r !== 'oui' || retro.echec || type === 'vitrine' || !window.FRender) return false;
+    if (r !== 'oui' || type === 'vitrine') return false;
     return profilsAtteignables(type, S).some(P => P.effets.retroImages);
   }
-  function creerMoteurRetro() {
-    if (retro.rendu || retro.echec) return !!retro.rendu;
-    try {
-      retro.rendu = window.FRender.create($('retro-rendu'), { indexRegisteredShapes: true, msaa: 0, shadowMapScale: 1, reflections: false, sea: false, overlayLighting: 'world' });
-      retro.rendu.resize(Math.min(window.devicePixelRatio || 1, 1.5));
-      if (retro.rendu.retain) retro.rendu.retain(true);   // FERRO 0.3.10 : cibles gardées malgré 120 rendus sans usage
-    } catch (e) {
-      console.warn('BITUME : image des rétroviseurs indisponible', e); retro.rendu = null; retro.echec = true;
-      for (const G of [retro.j1, retro.j2]) if (G) for (const t of G.toiles) t.hidden = true;
+  function libererRenduSecondaire() {
+    retro.principal = null;
+    retro.vuePublic?.liberer(); retro.vuePublic = null;
+    libererVerre(retro.rendu);
+    retro.rendu?.dispose(); retro.rendu = retro.scene = retro.ambianceSource = null;
+    retro.dpr = 0;
+    for (const G of [retro.j1, retro.j2]) if (G) {
+      G.surfaces.length = 0;
+      for (const toile of G.toiles) toile.hidden = true;
     }
-    return !!retro.rendu;
+    for (const J of ETATS_GLACES) J.vu = false;
+  }
+  function creerMoteurRetro(principal) {
+    if (!principal || principal !== rendu || principal.stats.deviceLost) return Promise.resolve(null);
+    // Un ancien GPUDevice peut encore compiler sur la même toile. Attendre sa libération
+    // avant de la confier au nouveau moteur. Une seule création par périphérique.
+    if (retro.attente) return retro.principal === principal ? retro.attente
+      : retro.attente.catch(() => null).then(() => creerMoteurRetro(principal));
+    if (retro.principal !== principal) { libererRenduSecondaire(); retro.principal = principal; }
+    if (retro.rendu) return Promise.resolve(retro.rendu);
+    retro.attente = window.FRenderWebGPU.create($('retro-rendu'), { sharedGpu: principal.gpu, indexRegisteredShapes: true,
+      msaa: 0, shadowMapScale: 1, reflections: false, sea: false, overlayLighting: 'world' }).then(moteur => {
+      if (principal !== rendu || principal !== retro.principal || principal.stats.deviceLost) { moteur.dispose(); return null; }
+      try {
+        moteur.resize(Math.min(window.devicePixelRatio || 1, 1.5));
+        moteur.retain(true);
+      } catch (e) { moteur.dispose(); throw e; }
+      retro.rendu = moteur;
+      return moteur;
+    }).finally(() => { retro.attente = null; });
+    return retro.attente;
   }
   // Toile du moteur des glaces : au moins PIXELS_GLACE pixels (voir ratioGlaces). Sa taille CSS est fixe (style.css,
   // .retro-rendu) : relue seulement quand la densité de l'écran change. Posée à la préparation des glaces, revue à
@@ -2875,33 +2917,35 @@
     retro.rendu.setWorld([], [], d.atmosphere);
     retro.rendu.setNappes(d.nappes.map(n => Object.assign({}, n)), { staticBounds: true });
     retro.rendu.setLots(d.lots.map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null })), { staticBounds: true, progressif: !!d.fluxDecor });
-    // le public dans les glaces : son propre contexte WebGL, sans le niveau proche ni les ombres (glace sans ombre)
+    // le public dans les glaces : ses propres ressources WebGPU, sans le niveau proche ni les ombres (glace sans ombre)
     if (retro.vuePublic) retro.vuePublic.liberer();
     retro.vuePublic = null;
     if (scene.public) try { retro.vuePublic = B.public.vue(retro.rendu, scene.public, { niveauMin: 1, ombre: false }); } catch (e) { console.warn('BITUME : public des rétroviseurs indisponible', e); }
     retro.scene = scene;
   }
-  function preparerGlaces() {
-    if (!creerMoteurRetro()) return false;
+  async function preparerGlaces(duo, controler) {
+    const principal = rendu, cible = scene, moteur = await creerMoteurRetro(principal);
+    if (controler) controler();
+    if (!moteur || principal !== rendu || cible !== scene || !cible) return false;
     installerRetro();
-    const source = $('retro-rendu'), LT = scene && scene.decor.tunnelLampes;
-    tailleGlaces(source);   // taille de régime posée ici : la première image en cockpit ne réalloue rien
-    for (const cle of ['j1', 'j2']) {
+    const source = $('retro-rendu'), LT = cible.decor.tunnelLampes;
+    tailleGlaces(source);
+    for (const cle of duo ? ['j1', 'j2'] : ['j1']) {
       const G = glacesDe(cle);
-      if (!G.ctx.length) {
-        G.opaque = retro.rendu.stats.backend === 'webgl2'; // FERRO ouvre cette surface avec alpha:false
-        G.toiles.forEach((t, i) => {
+      for (let i = 0; i < G.toiles.length; i++) {
+        const t = G.toiles[i];
+        if (!G.surfaces[i]) {
           t.width = source.width; t.height = source.height;
           t.style.width = source.clientWidth + 'px'; t.style.height = source.clientHeight + 'px';
-          G.ctx[i] = t.getContext('2d', { alpha: !G.opaque });
-          if (G.opaque) G.ctx[i].globalCompositeOperation = 'copy';
-        });
+          G.surfaces[i] = moteur.createPresentation(t);
+        }
       }
-      if (LT && LT.length) for (const k of ['lampes0', 'lampes1']) if (!G[k] || G[k].rev !== scene.index || G[k].lampes !== LT) G[k] = nouvelEtatLampes(scene.index, LT);
+      if (LT && LT.length) for (const k of ['lampes0', 'lampes1']) if (!G[k] || G[k].rev !== cible.index || G[k].lampes !== LT) G[k] = nouvelEtatLampes(cible.index, LT);
     }
     return true;
   }
-  const glacesPretes = G => !!retro.rendu && retro.scene === scene && !!G && G.ctx.length === 2;
+  const glacesPretes = G => !!retro.rendu && retro.principal === rendu && !retro.rendu.stats.deviceLost
+    && retro.scene === scene && !!G?.surfaces[0] && !!G.surfaces[1];
   const glacesVives = (S, vue) => retroVoulu(S, vue) && glacesPretes(S !== session ? retro.j2 : retro.j1);
   // Homographie du carré unité vers le quadrilatère Q (images de (0,0), (1,0), (1,1), (0,1), rangées x0, y0, … x3, y3),
   // pour une toile de l × h pixels CSS : v reçoit les seize valeurs de la matrix3d CSS. Faux si elle n'existe pas
@@ -3119,7 +3163,6 @@
   }
   // Une glace : la caméra est à la glace et regarde dans la direction réfléchie du regard.
   function peindreGlace(S, G, i, g, cam, ps, sortie, ambiance, suivie, P, source, l, h, dtGlace, secondeGlace) {
-    const toiles = G.toiles;
     const champs = S.visibiliteActeurs;
     const prepare = champs && (champs.masque & 1 << i) ? champs.reflets[i] : null;
     const camR = prepare ? prepare.camera : cameraReflet(g, cam, ps, l, h, CAM_GLACE);
@@ -3134,14 +3177,9 @@
       if (retro.rendu.setEnvironment) retro.rendu.setEnvironment(S.nature.ambiance.atmosphere);
       retro.ambianceSource = S.nature.ambiance; retro.ambianceRevision = S.nature.ambiance.revision;
     }
-    retro.rendu.draw(camR, objets, { time: horlogeReelle, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, lights: lampesTunnel(G, i ? 'lampes1' : 'lampes0', scene.decor.tunnelLampes, camR, dtGlace, scene.index), foule: retro.foulePublic });
+    retro.rendu.draw(camR, objets, { time: horlogeReelle, surfaceGPU: verrePourVue(retro.rendu, S), shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, lights: lampesTunnel(G, i ? 'lampes1' : 'lampes0', scene.decor.tunnelLampes, camR, dtGlace, scene.index), foule: retro.foulePublic });
     if (B.mesures.actif) B.mesures.vue('retro', retro.rendu);
-    const ctx = G.ctx[i];
-    if (toiles[i].width !== source.width || toiles[i].height !== source.height) {
-      toiles[i].width = source.width; toiles[i].height = source.height;
-      if (G.opaque) ctx.globalCompositeOperation = 'copy';
-    }
-    ctx.drawImage(source, 0, 0);
+    G.surfaces[i].present();
   }
   // Entre le dessin d'une vue et ses deux reflets, les poses monde et les dégâts sont figés.
   // Une autre variante peut réécrire les objets de la table : seule la dernière pose est réutilisable.
@@ -3423,8 +3461,8 @@
     }
     if (B.meteo) B.meteo.actuel = meteo;
     const P = profilDe(S);
-    // Écran partagé : la vue du joueur 2 d'abord, copiée aussitôt dans sa toile 2D, puis celle du joueur 1, qui reste dans
-    // la toile WebGL. Le moteur lit la taille affichée de sa toile à chaque image : il rend chaque vue à la moitié.
+    // Écran partagé : la vue du joueur 2 d'abord, copiée aussitôt dans sa toile WebGPU, puis celle du joueur 1, qui reste dans
+    // la toile WebGPU principale. Le moteur lit la taille affichée de sa toile à chaque image : il rend chaque vue à la moitié.
     if (S.type === 'duo' && S.vueJ2) {
       // Cadence du second joueur (src/graphismes.js) : au palier serré (30 Hz), sa vue est rendue au temps et garde
       // entre-temps la dernière copiée ; le joueur 1 garde toute la fluidité de la sienne. Le compte d'images en
@@ -3446,9 +3484,7 @@
       approcherDecor(S, cadre1, cadre2, dtImage);
       if (refaireJ2 && cadre2.cam) {
         dessinerVue(S.vueJ2, cadre2.suivie, cadre2.vue, dtJ2, meteo, cadre2.cam, cadre2.pose);
-        const t2 = $('scene2'), ctx2 = t2._ctx || (t2._ctx = creationTardive('toileJ2', t2.getContext('2d')));
-        if (t2.width !== canvas.width || t2.height !== canvas.height) { t2.width = canvas.width; t2.height = canvas.height; }
-        ctx2.drawImage(canvas, 0, 0);
+        S.presentationJ2.present();
       }
       const camJ1 = cadre1.cam && dessinerVue(S, cadre1.suivie, cadre1.vue, dtImage, meteo, cadre1.cam, cadre1.pose);
       poserGlaces();
@@ -3841,7 +3877,7 @@
       if (!S.regardArriere && !S.camTransition?.actif && VUES_COURSE.includes(vue) && S.type !== 'demo' && S.type !== 'vitrine') {
         B.detailPeripherique.appliquer(detail, c, suivie.etat, cam, canvas.width, canvas.height);
       }
-      rendu.draw(cam, sortie, { time: horlogeReelle, msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: optionsVisibilite.reflections, weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, foule: S.foulePublic, contacts: ombresVue.contacts, ombreProche: ombresVue.ombreProche, penombre: ombresVue.penombre });
+      rendu.draw(cam, sortie, { time: horlogeReelle, surfaceGPU: verrePourVue(rendu, S), msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: optionsVisibilite.reflections, weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, foule: S.foulePublic, contacts: ombresVue.contacts, ombreProche: ombresVue.ombreProche, penombre: ombresVue.penombre });
     } finally { B.detailPeripherique.restaurer(detail); }
     if (B.mesures.actif) {
       B.mesures.section('rendu', performance.now() - tDraw);
@@ -5278,18 +5314,9 @@
     B.voiture.fantome({ p: devant(14, 2.5, -.6), cap: cam.yaw - Math.PI / 2, tangage: 0, roulis: 0 }, l);
     return l;
   }
-  // Un pixel lu après la chauffe : le processeur graphique a fini de compiler et de dessiner avant l'étape suivante.
-  const PIXEL = new Uint8Array(4);
-  function attendreGPU(r) {
-    const gl = r && r.gl;
-    if (!gl || (gl.isContextLost && gl.isContextLost())) return;
-    try {
-      if (gl.getParameter(gl.PIXEL_PACK_BUFFER_BINDING)) return;
-      const lu = gl.getParameter(gl.READ_FRAMEBUFFER_BINDING);
-      if (lu) gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
-      gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, PIXEL);
-      if (lu) gl.bindFramebuffer(gl.READ_FRAMEBUFFER, lu);
-    } catch (e) { /* lecture refusée : la chauffe reste valable, seule l'attente manque */ }
+  // Attend les commandes réellement soumises pendant la préparation de la course.
+  function attendreGPU(moteur) {
+    return moteur?.gpu?.device.queue.onSubmittedWorkDone();
   }
   // Céder la main entre deux étapes : une image (le voile et son texte se peignent), ou un message quand l'onglet est
   // caché (requestAnimationFrame y dort) ; cent millisecondes au plus dans tous les cas.
@@ -5340,11 +5367,11 @@
       if (B.cameraTransition && !S.camTransition) S.camTransition = B.cameraTransition.creer();
       if (!S.ambianceImage) S.ambianceImage = {};
       // pluie projetée et vitre : celles du joueur 2 aussi, à deux
-      if (!pluieVue) pluieVue = B.meteo.creerPluie($('meteo'));
-      if (duo && !pluieVue2) pluieVue2 = B.meteo.creerPluie($('meteo2'));
+      if (!pluieVue) pluieVue = B.meteo.creerPluie($('meteo'), { gpu: () => rendu?.gpu });
+      if (duo && !pluieVue2) pluieVue2 = B.meteo.creerPluie($('meteo2'), { gpu: () => rendu?.gpu });
       if (B.vitre) {
-        if (!vitreVue) vitreVue = B.vitre.creer($('vitre'));
-        if (duo && !vitreVue2) vitreVue2 = B.vitre.creer($('vitre2'), { graine: 2 });
+        if (!vitreVue) vitreVue = B.vitre.creer($('vitre'), { gpu: () => rendu?.gpu });
+        if (duo && !vitreVue2) vitreVue2 = B.vitre.creer($('vitre2'), { graine: 2, gpu: () => rendu?.gpu });
         for (const V of vues) if (!V.vitreContexte) V.vitreContexte = {};
         // Compiler, allouer et exercer l'optique sous le voile, y compris au départ d'une course sèche.
         // La première averse n'a ainsi pas à créer son pipeline. L'état des dépôts reste vierge.
@@ -5386,11 +5413,14 @@
       }
       const port = scene && scene.decor.portique;
       if (port && co.mode === 'course' && !S.rotLampe) S.rotLampe = MATRICE_LAMPE(port.cap);
-      if (duo) { const t2 = $('scene2'); if (!t2._ctx) t2._ctx = t2.getContext('2d'); }
+      if (duo) S.presentationJ2 = rendu.createPresentation($('scene2'));
       // rétroviseurs : glaces de chaque joueur, et moteur des miroirs avec sa copie du décor quand la séance peut en montrer
       if (S.type !== 'vitrine') {
         glacesDe('j1'); if (duo) glacesDe('j2');
-        if (glacesPossibles(S) && preparerGlaces() && !S.geometrieGlaces) {
+        if (glacesPossibles(S) && !glacesPretes(duo ? retro.j2 : retro.j1)) {
+          attentes.push(preparerGlaces(duo).catch(e => console.warn('BITUME : préparation des rétroviseurs', e)));
+        }
+        if (glacesPossibles(S) && !S.geometrieGlaces) {
           S.geometrieGlaces = { pieces: [], traces: B.traces.creerReflet(),
             flammes: { pilote: -1, debut: 0, fin: 0, debutPilote: 0, finPilote: 0 },
             voitures: Array.from({ length: n },
@@ -5528,7 +5558,7 @@
     if (!manque.length && !manqueR.length) { r.ms = +(performance.now() - t0).toFixed(1); return r; }
     // synchrone : aucun await, tout se fait dans la tâche de l'appelant (pause, Recommencer)
     let tranche = performance.now();
-    const souffler = async moteur => { if (suite && performance.now() - tranche > 50) { attendreGPU(moteur); await suite(); tranche = performance.now(); } };
+    const souffler = async moteur => { if (suite && performance.now() - tranche > 50) { await attendreGPU(moteur); await suite(); tranche = performance.now(); } };
     // la vraie première image d'abord : caméra, objets, environnement et poses de la séance
     const cam = rendreImage(S, alpha, 0);
     if (manque.length) {
@@ -5538,7 +5568,7 @@
         r.prewarm = true;
         await rendu.prewarm(cam, liste, fxVariante(S, manque[manque.length - 1][1], cam), { variants: manque.map(m => fxVariante(S, m[1], cam)), allShapes: true, reserve: reserveFlux(S, liste) });
       } else for (const [, v] of manque) { rendu.draw(cam, liste, fxVariante(S, v, cam)); r.variantes++; if (!synchrone) await souffler(rendu); }
-      attendreGPU(rendu);
+      if (!synchrone) await attendreGPU(rendu);
       for (const [cle] of manque) E.rendu.add(cle);
     }
     if (manqueR.length) {
@@ -5555,7 +5585,7 @@
         foule: publicVisible && retro.vuePublic ? retro.vuePublic.fx : null });
       if (retro.rendu.prewarm && !synchrone) await retro.rendu.prewarm(camR, objets, fxR(manqueR[manqueR.length - 1][1]), { variants: manqueR.map(m => fxR(m[1])), allShapes: true, reserve: reserveFlux(S, objets) });
       else for (const [, v] of manqueR) { retro.rendu.draw(camR, objets, fxR(v)); r.retro++; if (!synchrone) await souffler(retro.rendu); }
-      attendreGPU(retro.rendu);
+      if (!synchrone) await attendreGPU(retro.rendu);
       for (const [cle] of manqueR) E.retro.add(cle);
     }
     r.ms = +(performance.now() - t0).toFixed(1);
@@ -5585,12 +5615,12 @@
     const vives = glacesVives(S, 'cockpit') || (!!S.vueJ2 && glacesVives(S.vueJ2, 'cockpit'));
     const cockpit = vives ? 2 * Math.max(1, Math.round(30 / Math.max(1, hz))) : 1;
     let n = 0, tranche = performance.now();
-    const souffler = async () => { if (performance.now() - tranche > 50) { attendreGPU(rendu); await suite(); tranche = performance.now(); } };
+    const souffler = async () => { if (performance.now() - tranche > 50) { await attendreGPU(rendu); await suite(); tranche = performance.now(); } };
     // machine déjà connue pour lente : la première vraie image, sous le voile, passe seule par ce chemin
     if (machineLente()) return { n, lent: true };
     const t1 = performance.now();
     rendreImage(S, 0, 0); n++;
-    attendreGPU(rendu);
+    await attendreGPU(rendu);
     // Une image complète, programmes déjà compilés, coûte plus de 50 ms : à cette cadence le code chaud ne se verrait
     // pas, et chaque vue de plus coûterait autant sous le voile. Les préparations suivantes le savent.
     const lent = performance.now() - t1 > IMAGE_LENTE;
@@ -5629,12 +5659,12 @@
     if (!prepa.chaud.has(cle) && !(reste < 1500)) {
       const J = courseJetable(S, 2.5);
       try {
-        while (!J.avancer(40)) { attendreGPU(rendu); await suite(); }
+        while (!J.avancer(40)) { await attendreGPU(rendu); await suite(); }
         // ses effets passent par le vrai chemin de dessin, avec les témoins, puis par le moteur (pas sur une machine
         // lente : leurs programmes sont déjà compilés par la chauffe du rendu, seul leur code de dessin restait froid)
         const cam = S.camera || rendreImage(S, 0, 0), liste = listeChauffe(S, cam, S.sortie);
         J.dessiner(liste, cam.pos);
-        if (!r.lent) { rendu.draw(cam, liste, fxVariante(S, varianteDe(profilDe(S), false, false), cam)); attendreGPU(rendu); }
+        if (!r.lent) { rendu.draw(cam, liste, fxVariante(S, varianteDe(profilDe(S), false, false), cam)); await attendreGPU(rendu); }
         prepa.chaud.add(cle);
         r.simulation = J.rapport;
       } finally { J.liberer(); }
@@ -5822,7 +5852,10 @@
       }
       // 3. moteur des rétroviseurs : sa copie du décor et les toiles des quatre glaces
       await etape('retro', glaces && !leger && (!retro.rendu || retro.scene !== scene));
-      if (glaces) preparerGlaces();
+      if (glaces) {
+        const pretes = await preparerGlaces(typeCode === 'duo', controler);
+        if (!pretes) { controler(); throw Error('Rétroviseurs WebGPU indisponibles'); }
+      }
       // 4. axe du tunnel et registre de chauffe de la scène
       await etape('circuit', false);
       preparerTunnel(scene.c); etatChauffe();
@@ -5877,7 +5910,7 @@
       dureeImage = periode;
       rendreImage(S, 0, 0);
       if (!vitrine) { majHud(S); if (S.type === 'duo' && S.vueJ2) majHud(S.vueJ2, HUD2, S.course.voitures[S.locaux[1]]); }
-      attendreGPU(rendu);
+      await attendreGPU(rendu);
       if (!leger) { if (!vitrine) tiedirVoile(S); await suite(); }
       // 11. l'écran de course, puis le fondu. Le bloc optionnel s'écrit ensuite au repos.
       const rapport = terminer();
@@ -6074,16 +6107,19 @@
   // anticrénelage, avec une carte d'ombres simple, et la qualité Auto commence un palier plus bas (voir paliers).
   // Les capacités restent ouvertes pour un choix manuel ; FERRO n'alloue les cibles qu'au moment de les utiliser.
   let gpuModeste = false;
-  function webgl2() {
-    try {
-      const t = document.createElement('canvas'), gl = t.getContext('webgl2');
-      if (!gl) return false;
-      const info = gl.getExtension('WEBGL_debug_renderer_info'), nom = String(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
-      materielRendu = [nom, gl.getParameter(gl.MAX_TEXTURE_SIZE), navigator.hardwareConcurrency || 0].join('|');
-      gpuModeste = B.autoconfig.recommander(capacitesDeclarees()).selection === 'low';
-      const perte = gl.getExtension('WEBGL_lose_context'); if (perte) perte.loseContext();
-      return true;
-    } catch (e) { return false; }
+  function signalerPerteGPU(info) {
+    contexteRenduPerdu = true;
+    libererVerre(rendu);
+    libererRenduSecondaire();
+    if (session?.fx) B.traces.liberer(session.fx);
+    if (prepa.enCours) abandonnerPreparation();
+    if (enCourse()) basculerPause(true);
+    erreur('Le périphérique graphique a été interrompu', info?.message || 'Rechargez le jeu pour réinitialiser WebGPU.');
+    const bouton = document.createElement('button');
+    bouton.className = 'gros principal';
+    bouton.textContent = 'Relancer le jeu';
+    bouton.addEventListener('click', () => location.reload());
+    $('erreur').append(bouton);
   }
   function erreur(titre, texteErreur) {
     const el = $('erreur');
@@ -6100,7 +6136,7 @@
       maxTouchPoints: navigator.maxTouchPoints, hardwareConcurrency: navigator.hardwareConcurrency,
       deviceMemory: navigator.deviceMemory, pointeurGrossier,
       petitEcran: Math.min(innerWidth, innerHeight) <= 900,
-      gpu: String(materielRendu || '').split('|')[0] };
+      gpu: materielRendu };
   }
   function empreinteDetection() {
     return B.autoconfig.empreinte(materielRendu, versionJeu());
@@ -6109,31 +6145,6 @@
     const badge = document.querySelector('.version-jeu');
     const m = badge && /\d+(?:\.\d+)+/.exec(badge.getAttribute('aria-label') || badge.textContent || '');
     return m ? m[0] : '';
-  }
-  function restaurerDecorApresDetection() {
-    if (!scene || !rendu) { restaurerDecorApresContexte = false; return; }
-    scene.chauffe = null;   // le banc a remplacé le monde du moteur : la chauffe de cette scène est à refaire
-    if (contexteRenduPerdu) { restaurerDecorApresContexte = true; return; }
-    const atm = session && session.nature ? session.nature.ambiance.atmosphere : scene.decor.atmosphere;
-    rendu.setWorld([], [], atm); rendu.setNappes(scene.decor.nappes, { staticBounds: true }); rendu.setLots(scene.decor.lots, { staticBounds: true, progressif: !!scene.decor.fluxDecor });
-    scene.decor.fluxDecor?.reinitialiser();
-    if (session && session.nature) session.nature.revisionRendu = -1;
-    restaurerDecorApresContexte = false;
-  }
-  function contexteGraphiqueRetabli() {
-    contexteRenduPerdu = false;
-    if (scene) {
-      scene.chauffe = null;   // nouveau contexte : programmes et cibles du moteur principal sont à refaire
-      scene.decor.fluxDecor?.reinitialiser();
-    }
-    if (session?.course?.physique && (!session.fx || session.fx.libere)) {
-      // Le contexte GPU ne possède pas les voitures : seul le pool d'effets libéré est recréé.
-      session.fx = B.traces.creer(session.course.voitures.length, session.fx?.graine?.[0] ?? graineCourse, session.course.physique.world);
-    }
-    if (restaurerDecorApresContexte && !detectionGraphiqueActive) {
-      try { restaurerDecorApresDetection(); appliquerPalier(); }
-      catch (e) { console.warn('BITUME : restauration différée du décor', e); }
-    }
   }
   function majDetectionGraphique() {
     const bouton = $('r-detecter'), etat = $('r-detection-etat');
@@ -6202,41 +6213,7 @@
   });
   addEventListener('keydown', e => { if (detectionGraphiqueActive && e.code === 'Escape') { annulerDetection = true; e.preventDefault(); } });
 
-  // Safari perd un contexte WebGL demandé en « haute performance » : dès sa création quand la page n'est pas au premier
-  // plan, ou plus tard, et l'image principale reste noire alors que le jeu continue. Mesuré le 19/11/2026 sur Safari
-  // 27.2 (puce Apple) : contexte par défaut intact, contexte haute performance perdu à la naissance. Le moteur demande
-  // la haute performance ; dans Safari, ou quand un contexte d'essai naît perdu, le jeu la remplace par le réglage par
-  // défaut pour toutes ses toiles. Sur une machine à une seule carte graphique, cela ne change rien au rendu.
-  function preferenceGraphique() {
-    const proto = window.HTMLCanvasElement && window.HTMLCanvasElement.prototype;
-    if (!proto || proto.getContextOrigine) return;
-    const agent = navigator.userAgent || '';
-    // WKWebView sur Mac annonce AppleWebKit sans le suffixe Safari. Un contexte
-    // haute performance y naît valide mais peut se perdre à la chauffe du décor.
-    const webkitApple = !/Chrome|Chromium|Android|CriOS|FxiOS|Edg/i.test(agent)
-      && (/Safari\//i.test(agent) || (/AppleWebKit\//i.test(agent) && /Macintosh|iPhone|iPad|iPod/i.test(agent)));
-    let fragile = B.autoconfig.recommander(capacitesDeclarees()).mobile || webkitApple;
-    if (!fragile) {
-      try {
-        const essai = document.createElement('canvas').getContext('webgl2', { powerPreference: 'high-performance' });
-        fragile = !!essai && essai.isContextLost();
-        const perdre = essai && essai.getExtension('WEBGL_lose_context');
-        if (perdre) perdre.loseContext();
-      } catch (e) { /* pas de contexte d'essai : rien à adapter */ }
-    }
-    if (!fragile) return;
-    contexteFragile = true;
-    const origine = proto.getContext;
-    proto.getContextOrigine = origine;
-    proto.getContext = function (type, attributs) {
-      const doux = type === 'webgl2' && attributs && attributs.powerPreference === 'high-performance';
-      return origine.call(this, type, doux ? Object.assign({}, attributs, { powerPreference: 'default' }) : attributs);
-    };
-  }
-
-  // Safari coupe un contexte graphique créé pendant que la page est cachée (onglet ou fenêtre en arrière-plan ; mesuré le
-  // 19/11/2026 : toile principale perdue 0,8 s après sa création, pendant la liaison des shaders). Le moteur ne se crée
-  // donc qu'une fois la page visible ; d'ici là, le voile de chargement reste affiché.
+  // Les navigateurs suspendent la présentation d’une page en arrière-plan.
   const pageCachee = () => typeof document !== 'undefined' && document.visibilityState === 'hidden';
   function pageVisible() {
     return new Promise(resoudre => {
@@ -6246,30 +6223,35 @@
   }
 
   async function demarrer() {
-    if (!webgl2()) { erreur('WebGL2 indisponible', 'BITUME dessine la piste avec WebGL2. Ouvrez la page dans un navigateur récent (Chrome, Edge, Firefox, Safari 15 ou plus) avec l’accélération graphique active.'); return; }
+    if (!navigator.gpu) {
+      erreur('WebGPU indisponible', window.isSecureContext
+        ? 'BITUME nécessite WebGPU. Vérifiez que l’accélération graphique est active dans votre navigateur.'
+        : 'Ouvrez BITUME en HTTPS pour activer WebGPU.');
+      return;
+    }
     try {
       // ombres photo (src/ombres.js) : tuile de 512² ; à 1024², des dents rampent sous la casquette de la planche.
       // Bloc PCSS compilé seulement si la pénombre variable sert (B.ombres.reglages.pcssFine) : shader plus court sinon.
       const optionsRendu = { indexRegisteredShapes: true, cullRigidOverlay: true, cameraRelativeOverlay: true, cullRigidSunCasters: true, msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512, pcss: !!(B.ombres && B.ombres.reglages.pcssFine) } };
       // L'interface garde sa définition CSS ; seule la scène Xbox est bornée
       // à 720p, y compris sur TV 4K et après redimensionnement. FSurface applique
-      // ce budget avant l'allocation des cibles WebGL, sans retouche de FERRO.
+      // ce budget avant l'allocation des cibles WebGPU, sans retouche de FERRO.
       const recoMateriel = B.autoconfig.recommander(capacitesDeclarees());
       if (recoMateriel.xbox) Object.assign(optionsRendu, { resolution: 'native', maxPixels: 1280 * 720, renderScale: 1 });
       else if (!recoMateriel.mobile && recoMateriel.selection === 'low') Object.assign(optionsRendu, { resolution: 'native', maxPixels: 1600 * 900, renderScale: 1 });
       if (pageCachee()) await pageVisible();
-      preferenceGraphique();
-      rendu = window.FRender.create(canvas, optionsRendu);
+      contexteFragile = recoMateriel.mobile || (/AppleWebKit\//i.test(navigator.userAgent) && !/Chrome|Chromium|Android|Edg/i.test(navigator.userAgent));
+      gpuModeste = recoMateriel.selection === 'low';
+      rendu = await window.FRenderWebGPU.create(canvas, { ...optionsRendu, onDeviceLost: signalerPerteGPU });
+      const gpu = rendu.gpu;
+      const info = gpu.adapter.info || {};
+      materielRendu = ['WebGPU', info.vendor, info.architecture, info.device, info.description, gpu.device.limits.maxTextureDimension2D, navigator.hardwareConcurrency || 0].filter(Boolean).join('|');
       // raccord FERRO : cibles gardées malgré 120 rendus sans usage (sinon une variante chauffée peut être libérée)
       if (rendu.retain) rendu.retain(true);
       // ce que le moteur a réellement ouvert, et non ce que le menu demande : src/graphismes.js ne promet pas
       // une capacité que FRender.create aurait refusée (msaa, atlas d'ombres, reflets d'écran)
       capacitesRendu = B.graphismes.capacites(optionsRendu, gpuModeste, window.devicePixelRatio || 1);
-      // perte de contexte : les pièces détachées n'ont plus de scène où vivre ; on rend leurs corps sans attendre
-      canvas.addEventListener('webglcontextlost', () => { contexteRenduPerdu = true; if (session && session.fx) B.traces.liberer(session.fx); if (prepa.enCours) abandonnerPreparation(); });
-      canvas.addEventListener('webglcontextrestored', contexteGraphiqueRetabli);
       palier.n = gpuModeste ? 1 : 0;
-      if (rendu.stats.backend !== 'webgl2') { erreur('WebGL2 indisponible', 'Le rendu de secours ne sait pas dessiner la piste. Activez l’accélération graphique du navigateur.'); return; }
       const mesure = lireStock(B.autoconfig.CLE, null);
       // La migration d'une ancienne mesure, un premier lancement ou une nouvelle
       // version ne déclenchent qu'une lecture passive des capacités déclarées.

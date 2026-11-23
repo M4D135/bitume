@@ -76,12 +76,12 @@ export function verifierModele(r, s) {
   const fautes = [];
   if (r.fatal) fautes.push('Capture interrompue : ' + r.fatal);
   if (r.erreurs?.length) fautes.push(...r.erreurs);
-  if (r.environnement?.webgl2 !== true) fautes.push('WebGL2 absent');
+  if (r.environnement?.webgpu !== true) fautes.push('WebGPU absent');
   if (!r.build?.sha256 || !r.build?.octets) fautes.push('HTML exact non identifié');
   if (r.images?.length !== s.images) fautes.push('Nombre d’images incorrect');
   for (const im of r.images || []) {
     const q = im.observation, ps = q?.piecesModele || [];
-    if (!q || q.glErreur || q.glPerdu) fautes.push('Observation GL invalide');
+    if (!q || q.gpuErreur || q.gpuPerdu) fautes.push('Observation GL invalide');
     if (q?.sansPilote !== !!s.sansPilote) fautes.push('État avec/sans pilote incorrect');
     if (!im.etat?.referenceConservee || q?.type !== 'course' || q?.ecran !== 'course') fautes.push('Séance de référence perdue');
     if (q?.obstructionStatique) fautes.push('Caméra obstruée par le décor');
@@ -111,7 +111,7 @@ export async function campagneModele(o) {
   const sha = b => createHash('sha256').update(b).digest('hex');
   const build = sha(readFileSync(fileURLToPath(o.url))), observations = {};
   const r = { format: 'bitume-modele-126ck-1', htmlSha256: build, passages: [], comparaisons: [], echecs: 0,
-    limites: ['Vrai jeu et vrai FERRO WebGL2 ; poses et caméras extérieures prescrites pour inspection.',
+    limites: ['Vrai jeu et vrai FERRO WebGPU ; poses et caméras extérieures prescrites pour inspection.',
       'SwiftShader ne qualifie pas les FPS du matériel.', 'Occultations naturelles admises ; aucun déplacement de pièce pour dégager les cadrans.',
       'Ces contrôles prouvent présence et cohérence ; la fidélité aux images exige une inspection visuelle.'] };
   const enregistrer = () => writeFileSync(path.join(o.sortie, 'rapport.json'), JSON.stringify(r, null, 2) + '\n');

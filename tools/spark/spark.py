@@ -30,7 +30,7 @@ REGLE = ("Règles de réponse : en français, 260 mots au plus, en listes. Ne ra
          "pas de répondre à un point, écris « pas dans l'extrait ». L'extrait est un morceau : une fonction coupée au "
          "bord ou un nom défini ailleurs ne sont pas des défauts.")
 JEU = ("Contexte : « BITUME » est un jeu de course de F1 1980 dans le navigateur, en JavaScript, sans aucun fichier "
-       "importé (géométrie, matières et sons calculés), sur le moteur FERRO (WebGL2). Circuits générés par le code, onze "
+       "importé (géométrie, matières et sons calculés), sur le moteur FERRO (WebGPU). Circuits générés par le code, onze "
        "rivaux, simulation déterministe au pas fixe de 1/120 s.")
 
 

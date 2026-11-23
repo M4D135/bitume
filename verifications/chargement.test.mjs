@@ -117,7 +117,8 @@ verifier('tous les lancements passent par la préparation : plus de lancement di
   assert.ok(lancer.includes('if (prepa.enCours && !prepa.interne) annulerPreparation();'));
   assert.ok(lancer.includes('if (!prepa.interne) prechargerSeance(S);'), 'un lancement direct précharge aussi');
   const preparer = section('  async function preparerSeance(', '  function lancerVitrine(');
-  assert.ok(preparer.includes('if (glaces) preparerGlaces()'), 'première vraie séance : miroirs selon le profil');
+  assert.match(preparer, /if \(glaces\)\s*\{\s*const pretes = await preparerGlaces\(typeCode === 'duo', controler\)/,
+    'première vraie séance : attendre les surfaces WebGPU du nombre de joueurs voulu avant le départ');
   // la démo des outils reste synchrone, comme reference() : séance et scène en place au retour de BITUME_JEU.demo
   const outil = section('  const outilsJeu = {', '  function publierOutils()');
   assert.ok(/\bdemo: i => demoDirecte\(/.test(outil), 'BITUME_JEU.demo passe par demoDirecte');

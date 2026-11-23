@@ -1,6 +1,7 @@
 // Oracle indépendant : échantillonne tous les demi-pixels du centre des traits
 // effectivement affichés et confronte leur profondeur à la vraie scène PhysX.
 // Les graines et l'exposition constituent le contrat du champ existant, pas son masque.
+import { pluieMesuree } from './helpers/projection-pluie.mjs';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -71,7 +72,7 @@ const scenarios = [
 try {
   const hit = {}, direction = [0, 0, 0], optionsRayon = { mask: 3, staticOnly: true };
   for (const [nom, obtenirCamera, images, palier] of scenarios) {
-    const canvas = toile(), pluie = M.creerPluie(canvas); let precedente = null, traits = 0, sondes = 0, occultations = 0;
+    const canvas = toile(), pluie = pluieMesuree(M, canvas); let precedente = null, traits = 0, sondes = 0, occultations = 0;
     for (let frame = 0; frame < images; frame++) {
       const cam = obtenirCamera(frame), temps = 12 + frame / 30, vitesse = precedente ? cam.pos.map((p, i) => (p - precedente.pos[i]) * 30) : [0, 0, 0];
       pluie.dessiner({ t: temps, pluie: 1 }, cam, 1 / 30, { circuit: c, physique, palier });

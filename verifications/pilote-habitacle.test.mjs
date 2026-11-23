@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 const racine = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const contexte = vm.createContext({ console });
 vm.runInContext('globalThis.window = globalThis;', contexte);
-for (const nom of ['moteur/renderer.js', 'carene.js', 'main.js', 'humain-donnees.js', 'humain-corps.js', 'ferro/vehicle-dynamics.js',
+for (const nom of ['ferro/render-shared.js', 'carene.js', 'main.js', 'humain-donnees.js', 'humain-corps.js', 'ferro/vehicle-dynamics.js',
   'pneus.js', 'usure-pneus.js', 'chaussee.js', 'conduite.js', 'expressions-pilote.js', 'voiture.js'])
   vm.runInContext(fs.readFileSync(path.join(racine, 'src', nom), 'utf8'), contexte, { filename: nom });
 const V = contexte.BITUME.voiture;
@@ -23,7 +23,7 @@ for (const f of Object.values(V.FORMES)) {
     triangles.push([0, 1, 2].map(k => Array.from(geometrie.vertices.slice(geometrie.indices[i + k] * 6, geometrie.indices[i + k] * 6 + 3))));
   formes.set(f.nom, triangles);
 }
-const primitives = new Map([['cylinder', []], ['sphere', []], ['box', []]]);
+const primitives = new Map([['cylinder', []], ['sphere', []], ['box', []], ['bevel', []]]);
 for (const niveau of [false, true, 2]) {
   const g = contexte.FRender.shared.geometry(niveau);
   for (const [nom, niveaux] of primitives) {

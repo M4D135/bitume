@@ -1,6 +1,6 @@
 // Régression .76 : la glace basse, restée verticale, renvoyait le regard sous l'horizon.
 // Oracle sur peindreGlace du runtime ; aucune image ni caméra de remplacement.
-// Témoin : BITUME_RETROS_RACINE=/chemin/sources-0276 node ce-fichier.mjs.
+// Témoin : BITUME_RETROS_RACINE=/chemin/sources-webgpu node ce-fichier.mjs.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -12,7 +12,7 @@ import { test } from 'node:test';
 const root = process.env.BITUME_RETROS_RACINE || path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const c = vm.createContext({ console });
 vm.runInContext('globalThis.window=globalThis;', c);
-for (const f of ['moteur/renderer.js', 'carene.js', 'main.js', 'humain-donnees.js', 'humain-corps.js',
+for (const f of ['ferro/render-shared.js', 'carene.js', 'main.js', 'humain-donnees.js', 'humain-corps.js',
   'ferro/vehicle-dynamics.js', 'pneus.js', 'usure-pneus.js', 'chaussee.js', 'conduite.js', 'cockpit-matieres.js', 'voiture.js'])
   vm.runInContext(fs.readFileSync(path.join(root, 'src', f), 'utf8'), c, { filename: f });
 const B = c.BITUME, V = B.voiture;
@@ -28,17 +28,17 @@ assert(refletStart >= 0 && refletEnd > refletStart, 'caméra réfléchie commune
 const triStart = source.indexOf('  const FORMES_GLACE'), triEnd = source.indexOf('  // Une glace : la caméra', triStart);
 assert(triStart >= 0 && triEnd > triStart, 'filtre des pièces dans le reflet');
 const captures = [];
-const { paint, filtrer } = new Function('B', 'captures', 'window', `
+const { paint, filtrer, champ } = new Function('B', 'captures', 'window', `
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   const CAM_GLACE = { pos: [0, 0, 0], sun: { center: [0, 0, 0] } }, PORTEE_VUE = 6000;
   const scene = { ombre: { extent: 100, depth: 100 }, decor: { tunnelLampes: [] }, index: null };
   const retro = { rendu: { draw: cam => captures.push(JSON.parse(JSON.stringify(cam))) } };
   const publicVisible = false, horlogeReelle = 0, dureeImage = 16.667;
-  const listeGlace = () => [], lampesTunnel = () => [];
+  const listeGlace = () => [], lampesTunnel = () => [], verrePourVue = () => null;
   ${source.slice(refletStart, refletEnd + 4)}
   ${source.slice(triStart, triEnd)}
   ${source.slice(start, end + 4)}
-  return {paint: peindreGlace, filtrer: ecarterPiecesHorsGlace};
+  return {paint: peindreGlace, filtrer: ecarterPiecesHorsGlace, champ: champGlace};
 `)(B, captures, c);
 const dot = (a, b) => a.reduce((s, x, i) => s + x * b[i], 0);
 const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
@@ -50,8 +50,11 @@ const pose = { p: [0, 0, 0], cap: 0, tangage: 0, roulis: 0, braquage: 0, roule: 
 const mirrors = V.glacesCockpit(pose);
 function reflected(i, eye = V.OEIL) {
   let copies = 0;
-  const target = { toiles: [{ width: l, height: h }, { width: l, height: h }],
-    ctx: [{ drawImage: () => copies++ }, { drawImage: () => copies++ }] };
+  const target = { surfaces: [0, 1].map(cote => ({ present() {
+    assert.equal(cote, i, 'surface WebGPU de la glace réellement planifiée');
+    assert.equal(captures.length, before + 1, 'présentation après draw');
+    copies++;
+  } })) };
   const before = captures.length;
   paint({}, target, i, mirrors[i], { pos: eye }, { x: 0, y: 0, z: 0, roulis: 0 }, [], {}, null,
     { windStrength: 0, groundCover: 0 }, { width: l, height: h }, l, h, 1 / 60);
@@ -136,6 +139,44 @@ test('le filtre du miroir conserve les pièces qui coupent le bord du champ et l
   const bordDroit = piece(bord+.3,-10), auFond = piece(0,-100.3);
   const effet = {...piece(50,-10), fx: true}, libre = {...piece(50,-10), shape: 'forme-externe'};
   const objets = [piece(-50,-10),bordDroit,effet,piece(50,-10),auFond,libre,piece(0,20)];
-  filtrer(objets,cam,256,256);
+  filtrer(objets,cam,champ(cam,256,256));
   assert.deepEqual(objets,[bordDroit,effet,auFond,libre]);
+});
+
+test('une seule création WebGPU par périphérique, scène annulée et propriétaire remplacé pendant la compilation', async () => {
+  const construction = source.slice(source.indexOf('  function libererRenduSecondaire()'), source.indexOf('  // Toile du moteur des glaces'));
+  const preparation = source.slice(source.indexOf('  async function preparerGlaces('), source.indexOf('  const glacesPretes ='));
+  const commandes = [], installations = [], toiles = {};
+  const moteur = () => ({ libere: 0, surfaces: [], resize() {}, retain() {}, dispose() { this.libere++; },
+    createPresentation(t) { this.surfaces.push(t.id); return { present() {} }; } });
+  const principal = () => ({ gpu: {}, stats: { deviceLost: false } });
+  const rig = new Function('commandes', 'installations', 'toiles', `
+    let rendu, scene;
+    const retro = { principal:null, rendu:null, attente:null }, ETATS_GLACES=[];
+    const $ = id => toiles[id] ??= { id, style:{}, width:0, height:0 };
+    const window = { FRenderWebGPU: { create:(canvas, options)=>new Promise((resolve,reject)=>commandes.push({canvas, options, resolve,reject})) } };
+    const glacesDe = cle => retro[cle] ??= { surfaces:[], toiles:[$(cle+'G'),$(cle+'D')] };
+    const installerRetro = () => { retro.scene=scene;installations.push(scene); };
+    const tailleGlaces = () => {}, libererVerre = () => {};
+    ${construction}
+    ${preparation}
+    return { regler:(p,c)=>{rendu=p;scene=c;}, libererRenduSecondaire, preparerGlaces };
+  `)(commandes, installations,toiles);
+  const a = principal(), b = principal(), premier = { decor:{} }, second = { decor:{} };
+  rig.regler(a,premier);
+  const obsolete = rig.preparerGlaces(false), meme = rig.preparerGlaces(true);
+  assert.equal(commandes.length,1); assert.equal(commandes[0].options.sharedGpu,a.gpu);
+  rig.libererRenduSecondaire();
+  rig.regler(b,second);
+  const actuel = rig.preparerGlaces(true);
+  const ancienMoteur = moteur(); commandes[0].resolve(ancienMoteur);
+  assert.deepEqual(await Promise.all([obsolete,meme]),[false,false]);
+  assert.equal(ancienMoteur.libere,1); assert.deepEqual(installations,[]);
+  assert.equal(commandes.length,2); assert.equal(commandes[1].options.sharedGpu,b.gpu);
+  const final = moteur(); commandes[1].resolve(final);
+  assert.equal(await actuel,true); assert.deepEqual(final.surfaces,['j1G','j1D','j2G','j2D']);
+  const annulee = rig.preparerGlaces(false,()=>{throw Error('annulée');});
+  await assert.rejects(annulee,/annulée/);
+  assert.deepEqual(installations,[second]);assert.equal(commandes.length,2);
+  rig.libererRenduSecondaire();assert.equal(final.libere,1);
 });

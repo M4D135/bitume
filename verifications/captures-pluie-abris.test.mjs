@@ -8,10 +8,10 @@ const cas = id => SCENARIOS_PLUIE_ABRIS.find(s => s.id === id);
 function rapport(s) {
   const visible = s.pluieVisible;
   return { build: { sha256: 'a'.repeat(64) }, source: { commit: 'b'.repeat(40) },
-    environnement: { webgl2: true, physx: { ready: true }, resolution: (s.taille || '960,540').split(',').map(Number) },
+    environnement: { webgpu: true, physx: { ready: true }, resolution: (s.taille || '960,540').split(',').map(Number) },
     initialisation: { posePrescrite: true, circuitId: s.circuitId }, erreurs: [], avertissements: [],
     images: Array.from({ length: 2 }, () => ({ etat: { zones: { scene: {} } }, vues: { scene: { noir: .2, luminance: .3 } },
-      observation: { glErreur: 0, glPerdu: false, pluie: 1, qualite: s.qualite || 'high', vue: s.vue,
+      observation: { gpuErreur: null, gpuPerdu: false, pluie: 1, qualite: s.qualite || 'high', vue: s.vue,
         abri: true, abriVisiere: true, abriLogique: s.pose !== 'linteau', camera: { pos: [0, 1.2, 0] },
         pilier: s.pose === 'pilier' ? { hit: true, genre: 'pilier-galerie' } : null,
         statistiques: { candidats: s.qualite === 'low' ? 420 : 840, traits: visible ? 50 : 0, spatiaux: 150, rayons: 240, masquee: !visible },
@@ -82,7 +82,7 @@ test('abri réel, linteau, sécheresse de visière et budgets restent nécessair
 test('des preuves incomplètes, un moteur absent et une autre résolution sont refusés', () => {
   const s = cas('cimes-galerie-portrait');
   for (const changer of [r => { r.build = null; }, r => { r.source = null; }, r => { r.images.pop(); },
-    r => { r.environnement.physx.ready = false; }, r => { r.environnement.webgl2 = false; },
+    r => { r.environnement.physx.ready = false; }, r => { r.environnement.webgpu = false; },
     r => { r.environnement.resolution = [960, 540]; }, r => { r.initialisation.circuitId = 'autre'; },
     r => { r.erreurs.push('exception'); }, r => { r.avertissements.push('GL_INVALID_OPERATION'); },
     r => { r.images[0].vues.scene = { noir: 1, luminance: 0 }; }]) {
