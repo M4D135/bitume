@@ -48,11 +48,12 @@
         for (let i = 0; i < liste.length - (c.ouvert ? 1 : 0); i++) {
           const j = (i + 1) % liste.length, a = liste[i], b = liste[j];
           const decalage = j === 0 ? n : 0, debut = b.debut + decalage;
-          // Deux sommets du même virage restent une seule consigne. Une vraie
-          // inversion (plus de 4,6°) interdit la fusion, même à faible rayon.
-          if (a.sens !== b.sens || (debut - a.fin) * pas > 36
-            || integrale(-a.sens, a.fin, debut) > .08) continue;
-          a.fin = b.fin + decalage;
+          if (a.sens !== b.sens || (debut - a.fin) * pas > 36) continue;
+          const fin = b.fin + decalage;
+          // Limiter la courbure absolue cumulée sur les deux lobes et leur raccord.
+          const angle = integrale(1, a.debut, fin) + integrale(-1, a.debut, fin);
+          if (angle > .08) continue;
+          a.fin = fin;
           liste.splice(j, 1); change = true; break;
         }
       }
