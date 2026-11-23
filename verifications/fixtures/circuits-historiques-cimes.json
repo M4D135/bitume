@@ -1,9 +1,5 @@
 {
-  "schema": 1,
-  "commitSource": "18451e0eeb701d720f08c069b841d79c2439755d",
-  "node": "v24.22.3",
-  "sourceCircuitSha256": "e872944198a9a9bcd0efdd8d33d5f201c4dfd98016cf04e0bccf4a5b5c9a674f",
-  "commentaire": "Référence immuable des sept circuits publiés en 0.2.52. Créée depuis git show du commitSource, jamais depuis le code russe en cours.",
+  "commitSource": "9703e711bf9f849fbd2c8d9fdc320f6e0177857d",
   "circuits": [
     {
       "catalogue": {
@@ -35,13 +31,20 @@
           ],
           "stands": {
             "cote": 1,
-            "d": 4.4,
-            "demi": 1.6,
             "debut": 30,
             "fin": 240,
             "garage0": 70,
             "garage1": 118,
-            "vitesse": 11
+            "vitesse": 11,
+            "d": 9.8,
+            "demi": 2.45,
+            "dMur": 6.45,
+            "mur0": 65,
+            "mur1": 205,
+            "sBox": 94,
+            "dBox": 16.2,
+            "demiBox": 2.65,
+            "dFond": 22
           },
           "theme": "foret",
           "tunnel": null
@@ -65,12 +68,12 @@
           "ligne": {
             "type": "Float64Array",
             "longueur": 2111,
-            "sha256": "d98fbed30e32b5378e5a8b5b903daa0dbf2567ed0f3cfef4c2c7c83d8206c7f8"
+            "sha256": "85dedff9058ef1ba7373b312c318ad68e4afdc04f7111bf7647192eefdc6b6ee"
           },
           "limiteD": {
             "type": "Float32Array",
             "longueur": 2111,
-            "sha256": "e626c87ed7041b1da20a14e7c3e59afd4f1b2420aa3ba51c3a73246aeb0ef6b2"
+            "sha256": "9e31d04e080cbec5dbc89bdec6436cdec3c84b50c3a63090527da18b1065e57b"
           },
           "limiteG": {
             "type": "Float32Array",
@@ -80,7 +83,7 @@
           "pente": {
             "type": "Float64Array",
             "longueur": 2111,
-            "sha256": "22a3e1738d2114a5033072729bd720ffb1893a57c14360cec5706754f1af5772"
+            "sha256": "2e37931ba9d9e18ca881685b081a1648bef89bce9869f514564d63603c27a8c5"
           },
           "vibreur": {
             "type": "Uint8Array",
@@ -100,7 +103,7 @@
           "y": {
             "type": "Float64Array",
             "longueur": 2111,
-            "sha256": "4499017b682fb20af91a9d7327b2390330be731d0902dac36a0c34475aca79e4"
+            "sha256": "78fd0240d8b7be003f54e4e0149f7689cb58b772521ff6c88f379acc6bed4832"
           },
           "z": {
             "type": "Float64Array",
@@ -140,13 +143,20 @@
           ],
           "stands": {
             "cote": 1,
-            "d": 4.4,
-            "demi": 1.6,
             "debut": 30,
             "fin": 234,
             "garage0": 70,
             "garage1": 118,
-            "vitesse": 11
+            "vitesse": 11,
+            "d": 9.8,
+            "demi": 2.45,
+            "dMur": 6.45,
+            "mur0": 65,
+            "mur1": 199,
+            "sBox": 94,
+            "dBox": 16.2,
+            "demiBox": 2.65,
+            "dFond": 22
           },
           "theme": "cote",
           "tunnel": null
@@ -170,12 +180,12 @@
           "ligne": {
             "type": "Float64Array",
             "longueur": 1819,
-            "sha256": "18d59722f8478acd2fe92febc03a9fb6b3dc7ae17bfcb554d6f95e40ba57c171"
+            "sha256": "c4aeb4286dbe40b19e922521fe98de145cfe8cf4024f67fc376f728cac3a948f"
           },
           "limiteD": {
             "type": "Float32Array",
             "longueur": 1819,
-            "sha256": "8d154e9c14ec0d40f579b6da082e304b3833b8c511e1a0aa35caff3c46029dec"
+            "sha256": "f6fa6e130a5db6f9d64f65f8eed10891e020ceb18a73362486eac487fde0878d"
           },
           "limiteG": {
             "type": "Float32Array",
@@ -185,7 +195,7 @@
           "pente": {
             "type": "Float64Array",
             "longueur": 1819,
-            "sha256": "8da3547b3f345728435d43bb7c34724737f94fbe304780af96742509c7d5b2f0"
+            "sha256": "844c668a5acc0b4c64257ce893853f9879c9809192be57b74cf0d5038e2a708e"
           },
           "vibreur": {
             "type": "Uint8Array",
@@ -205,7 +215,7 @@
           "y": {
             "type": "Float64Array",
             "longueur": 1819,
-            "sha256": "d3dbbd7594961855eef975405982d065fb3cd0879b52712b4b5d9d5ab773c086"
+            "sha256": "d9afa9227f75e357009666af8c210288f3cdc3fc2fd1a115d84f60a0079fd304"
           },
           "z": {
             "type": "Float64Array",
@@ -245,13 +255,20 @@
           ],
           "stands": {
             "cote": 1,
-            "d": 4.4,
-            "demi": 1.6,
             "debut": 30,
             "fin": 240,
             "garage0": 70,
             "garage1": 118,
-            "vitesse": 11
+            "vitesse": 11,
+            "d": 9.8,
+            "demi": 2.45,
+            "dMur": 6.45,
+            "mur0": 65,
+            "mur1": 205,
+            "sBox": 94,
+            "dBox": 16.2,
+            "demiBox": 2.65,
+            "dFond": 22
           },
           "theme": "montagne",
           "tunnel": {
@@ -265,7 +282,7 @@
           "cap": {
             "type": "Float64Array",
             "longueur": 2608,
-            "sha256": "e640fc6c445ca6860b1bc12040e469a54f0d71a42f59258658abcbc1502e5081"
+            "sha256": "4785895e0dec202449511bd2a92b6f74abe0d7bb293c0a999db05fdc37ed2106"
           },
           "courbure": {
             "type": "Float64Array",
@@ -280,12 +297,12 @@
           "ligne": {
             "type": "Float64Array",
             "longueur": 2608,
-            "sha256": "ff8fd22f5f355a3662c91dc655d6e8217dbb91d12f2b1321a795ef5ac9d65e54"
+            "sha256": "e7de74e70a226abc25521569e4ef62554a1ab210b597dba1d357e7b8b32a2fad"
           },
           "limiteD": {
             "type": "Float32Array",
             "longueur": 2608,
-            "sha256": "b3f1d9511899534eeb0723c237250861b14bc31d2cc5bf41f58f8615d5816079"
+            "sha256": "3ccd93c55be1123b7b0e4b848c38b2da91d72930a588be941e04a1e951d0a91e"
           },
           "limiteG": {
             "type": "Float32Array",
@@ -295,7 +312,7 @@
           "pente": {
             "type": "Float64Array",
             "longueur": 2608,
-            "sha256": "484fa4ca554ad4740356cc2bd7e248702975d0b7f41bd14be84fe4190c5e6ffa"
+            "sha256": "26ab9ab42367c2545e934286565325b2c8b9fbd6f7ac14b8645e776f0addfc16"
           },
           "vibreur": {
             "type": "Uint8Array",
@@ -315,7 +332,7 @@
           "y": {
             "type": "Float64Array",
             "longueur": 2608,
-            "sha256": "b64fdefdb86435901ebe2b2d1de75f122a29b4163540e596d0958e1dc2a1b71c"
+            "sha256": "11cda581a53ddd82a43aa8862b2d08621a86f59f3a612b0511fbc5cc5500efc8"
           },
           "z": {
             "type": "Float64Array",
@@ -355,13 +372,20 @@
           ],
           "stands": {
             "cote": 1,
-            "d": 4.4,
-            "demi": 1.6,
             "debut": 30,
             "fin": 240,
             "garage0": 70,
             "garage1": 118,
-            "vitesse": 11
+            "vitesse": 11,
+            "d": 9.8,
+            "demi": 2.45,
+            "dMur": 6.45,
+            "mur0": 65,
+            "mur1": 205,
+            "sBox": 94,
+            "dBox": 16.2,
+            "demiBox": 2.65,
+            "dFond": 22
           },
           "theme": "islande",
           "tunnel": null
@@ -390,7 +414,7 @@
           "limiteD": {
             "type": "Float32Array",
             "longueur": 2308,
-            "sha256": "251b88621ce80e1a1e0d0b731236a2f649c4647c6a8d53c043e0d60f5f37591c"
+            "sha256": "2d04f9b0b4dc9153b63b1f79165abde5b1dc5f13ff3a44e7f5144ffaa12706a6"
           },
           "limiteG": {
             "type": "Float32Array",
@@ -400,7 +424,7 @@
           "pente": {
             "type": "Float64Array",
             "longueur": 2308,
-            "sha256": "0cdff87ac7e67b5e1cf206c90b58c23e4c0cb4f9e2414e06cc68f664548dd917"
+            "sha256": "3e53f91cbd485ae47478915e92d5f654bfb850610b85425dbb26d402901a22aa"
           },
           "vibreur": {
             "type": "Uint8Array",
@@ -420,7 +444,7 @@
           "y": {
             "type": "Float64Array",
             "longueur": 2308,
-            "sha256": "8d114f3b30cc9d09b6129d015934b77fecf27b931d02508ad0a682ff66421530"
+            "sha256": "d5391e7e23b457397968ad2ef96f117c4e9f7f648bdf1c5c443958017e582e8e"
           },
           "z": {
             "type": "Float64Array",
@@ -460,13 +484,20 @@
           ],
           "stands": {
             "cote": 1,
-            "d": 4.4,
-            "demi": 1.6,
             "debut": 30,
             "fin": 240,
             "garage0": 70,
             "garage1": 118,
-            "vitesse": 11
+            "vitesse": 11,
+            "d": 9.8,
+            "demi": 2.45,
+            "dMur": 6.45,
+            "mur0": 65,
+            "mur1": 205,
+            "sBox": 94,
+            "dBox": 16.2,
+            "demiBox": 2.65,
+            "dFond": 22
           },
           "theme": "desert",
           "tunnel": null
@@ -475,27 +506,27 @@
           "cap": {
             "type": "Float64Array",
             "longueur": 2417,
-            "sha256": "059cf569e6fa079c7b19fa13bcda4aac2373362126e5ab4b6e7e52d45fcb8a25"
+            "sha256": "536313d7e327a84f40aae9b042dd503ba7c3c13350ddc3168af07406137800c6"
           },
           "courbure": {
             "type": "Float64Array",
             "longueur": 2417,
-            "sha256": "08ef45624083fbd8bf0ddad3b989e70106ce8b70d18a970a89b1e5a28a8c8a99"
+            "sha256": "d82b9564eab6287f66208df007c98fccb9cf52cdb287c5b67ca8fd3fcbd66c0c"
           },
           "devers": {
             "type": "Float64Array",
             "longueur": 2417,
-            "sha256": "4890337aefa6a62e30fd4d8b5e7cacd367103a46ff1cb541a78e794cc972dde4"
+            "sha256": "108224d0baeb068948c9657a8f1480ba1c4211e38a4116402b974ec674195c4c"
           },
           "ligne": {
             "type": "Float64Array",
             "longueur": 2417,
-            "sha256": "f196d6a08754e58d83d78e6da1afaff93350d6ecf9fb9b86d8a0bfe6d4fc58bc"
+            "sha256": "9dbaeaf286aced9a7b2ec489959bfda945384a69e2eba2eb426f7a886871c656"
           },
           "limiteD": {
             "type": "Float32Array",
             "longueur": 2417,
-            "sha256": "899e5ef367a49ef33b1308eb80761e3115b278875cf3488504bee544588cea3f"
+            "sha256": "4d0facb169417866056b670c93a51e97ee03f188c28fe2333122e75cf58d07e2"
           },
           "limiteG": {
             "type": "Float32Array",
@@ -505,7 +536,7 @@
           "pente": {
             "type": "Float64Array",
             "longueur": 2417,
-            "sha256": "834c856a64a2819487c01432a71ba96f6738f42b5fcb65f93d9786074279c76c"
+            "sha256": "0cc565dfbc7c51b846a466d8404ff2f1fa246adc221081bc11ebc97abb07a05c"
           },
           "vibreur": {
             "type": "Uint8Array",
@@ -525,7 +556,7 @@
           "y": {
             "type": "Float64Array",
             "longueur": 2417,
-            "sha256": "941e6df371908079444e6ff4e7cad353a0cbf7937c10321ada97acd3e3902585"
+            "sha256": "8f2770c05d7977c44f427bc0d8afbe93a8b4c4f2fd88fa39a0342503c01ca387"
           },
           "z": {
             "type": "Float64Array",
@@ -565,13 +596,20 @@
           ],
           "stands": {
             "cote": 1,
-            "d": 4.4,
-            "demi": 1.6,
             "debut": 30,
             "fin": 240,
             "garage0": 70,
             "garage1": 118,
-            "vitesse": 11
+            "vitesse": 11,
+            "d": 9.8,
+            "demi": 2.45,
+            "dMur": 6.45,
+            "mur0": 65,
+            "mur1": 205,
+            "sBox": 94,
+            "dBox": 16.2,
+            "demiBox": 2.65,
+            "dFond": 22
           },
           "theme": "asie",
           "tunnel": null
@@ -595,12 +633,12 @@
           "ligne": {
             "type": "Float64Array",
             "longueur": 2509,
-            "sha256": "0f56eb430e7758f3fba2e69c26020f4bcdee81b536e057b67c92bccbdb6df40a"
+            "sha256": "a6bf784a9c441791b819eda6387aa4b24d14a17d915164d69f5eb86744e94add"
           },
           "limiteD": {
             "type": "Float32Array",
             "longueur": 2509,
-            "sha256": "5fa0ddc2b32a355d5fbeb3b7a54b05655bf74979b2aa8dd54f3bb37f4cbf3085"
+            "sha256": "c4b6770c8e2569e5f5d072f5db3b26bb5d6291ca111269e2b95322ef8f0f1286"
           },
           "limiteG": {
             "type": "Float32Array",
@@ -610,7 +648,7 @@
           "pente": {
             "type": "Float64Array",
             "longueur": 2509,
-            "sha256": "218bd4979b828a4aaaba0fd8476a6729e23dde709f83672f3493c81ddceb394e"
+            "sha256": "b5c31369757112d6fa2e45643ef5f7cb6d9a6bfd24c8cd4b29fa96cc6ae93909"
           },
           "vibreur": {
             "type": "Uint8Array",
@@ -630,7 +668,7 @@
           "y": {
             "type": "Float64Array",
             "longueur": 2509,
-            "sha256": "bd250f26f7f2ca85864e005a382461542c6b93a902899c3013bbf1151ac13370"
+            "sha256": "05089d2fd141b26857a16365ec8fd5a9e12f11b82644dd5fdbb48ff763996e72"
           },
           "z": {
             "type": "Float64Array",
@@ -670,13 +708,20 @@
           ],
           "stands": {
             "cote": 1,
-            "d": 4.4,
-            "demi": 1.6,
             "debut": 30,
             "fin": 240,
             "garage0": 70,
             "garage1": 118,
-            "vitesse": 11
+            "vitesse": 11,
+            "d": 9.8,
+            "demi": 2.45,
+            "dMur": 6.45,
+            "mur0": 65,
+            "mur1": 205,
+            "sBox": 94,
+            "dBox": 16.2,
+            "demiBox": 2.65,
+            "dFond": 22
           },
           "theme": "pacifique",
           "tunnel": null
@@ -700,12 +745,12 @@
           "ligne": {
             "type": "Float64Array",
             "longueur": 2617,
-            "sha256": "4bfacf8be2f9664e855d2399930968111d38a9d5c5078af0fe3e1ce4a9e8e9ee"
+            "sha256": "36341a33c4940ce61b719a9afc70319141e23fdbd2fdebc6085aeb454b713453"
           },
           "limiteD": {
             "type": "Float32Array",
             "longueur": 2617,
-            "sha256": "40d64767e1de6ffa3d02cabe710e1df1e68986efe928776aa3dd866032db1ee7"
+            "sha256": "b3a037af2e7935cac527483ed55411549e1b3684c7a42fcf2e56682f5ee4cb59"
           },
           "limiteG": {
             "type": "Float32Array",
@@ -715,7 +760,7 @@
           "pente": {
             "type": "Float64Array",
             "longueur": 2617,
-            "sha256": "453f75de216877be8eda726d2eef5d8e8e3a07d71a0caa991d6ec5003c4a8246"
+            "sha256": "5b01ae800f47fe4a4fa53b5fdd174e2ab7001aa996fb67ae1fbdbbee90890460"
           },
           "vibreur": {
             "type": "Uint8Array",
@@ -735,7 +780,7 @@
           "y": {
             "type": "Float64Array",
             "longueur": 2617,
-            "sha256": "2dc78143e9063da522d99570832c99b8bc474ff7744a36b8982d08c7ba8b3c98"
+            "sha256": "95f46889345acee84e84e2130b855a710b741922165b6f770e1ed1612d7b9973"
           },
           "z": {
             "type": "Float64Array",

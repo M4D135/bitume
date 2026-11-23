@@ -15,8 +15,8 @@ import path from 'node:path';
 const racine = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DT = 1 / 120, TOURS = 3, DUREE_MAX = 1200;
 const GEOMETRIE_SEULE = process.env.BITUME_RUSSIE_GEOMETRIE_SEULE === '1';
-const CONTRAT = Object.freeze({ id: 'baikal', nom: 'Baïkal', theme: 'baikal', graine: 179, longueur: 5400 });
-const historique = JSON.parse(readFileSync(new URL('./fixtures/circuits-historiques-0252.json', import.meta.url), 'utf8'));
+const CONTRAT = Object.freeze({ id: 'baikal', nom: 'Circuit de la Glace Vive', theme: 'baikal', graine: 179, longueur: 5400 });
+const historique = JSON.parse(readFileSync(new URL('./fixtures/circuits-historiques-cimes.json', import.meta.url), 'utf8'));
 const sourceJeu = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const declaration = sourceJeu.match(/  const CATALOGUE = \[[\s\S]*?\n  \];/);
 assert.ok(declaration, 'catalogue du jeu présent');
@@ -32,7 +32,7 @@ function empreintesSources() {
     }
   }
   lire('src');
-  for (const nom of ['verifications/russie.test.mjs', 'verifications/fixtures/circuits-historiques-0252.json']) {
+  for (const nom of ['verifications/russie.test.mjs', 'verifications/fixtures/circuits-historiques-cimes.json']) {
     fichiers[nom] = sha256(readFileSync(path.join(racine, nom)));
   }
   return fichiers;
@@ -89,7 +89,7 @@ function creerMonde(saison = 'ete') {
 }
 
 verifier('13A catalogue : Baïkal ajouté après les sept circuits conservés', () => {
-  assert.equal(historique.commitSource, '18451e0eeb701d720f08c069b841d79c2439755d');
+  assert.equal(historique.commitSource, '9703e711bf9f849fbd2c8d9fdc320f6e0177857d');
   assert.equal(historique.circuits.length, 7);
   for (const {catalogue: ancien} of historique.circuits) {
     const actuel = CATALOGUE.find(k => k.id === ancien.id);
@@ -103,7 +103,7 @@ verifier('13A catalogue : Baïkal ajouté après les sept circuits conservés', 
 });
 
 verifier('13A les 84 tableaux numériques des sept anciens tracés restent identiques bit à bit', () => {
-  const base = generateurHistorique('0252');
+  const base = generateurHistorique('cimes');
   for (const attendu of historique.circuits) {
     const k = attendu.catalogue;
     const reference = JSON.parse(JSON.stringify(empreinteCircuit(base.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom }))));
