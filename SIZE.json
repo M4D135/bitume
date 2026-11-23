@@ -1,8 +1,8 @@
 {
-  "version": "0.2.266",
-  "raw": 16734217,
-  "gzip": 4644795,
-  "sha256": "04636464c9eb9ede657f471b4eb05ea97e90fe8263a84d36e56d7e8a3636e648",
+  "version": "0.2.267",
+  "raw": 16734144,
+  "gzip": 4644773,
+  "sha256": "a0101cee90847d8631e671421da06c58b300917a5447f5774c77cb02b635b98c",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
@@ -86,7 +86,7 @@
     "vitre.js": 39991,
     "sillage.js": 6081,
     "reseau.js": 24284,
-    "pneus-reseau.js": 9733,
+    "pneus-reseau.js": 9660,
     "mesures.js": 19248,
     "qualite.js": 5329,
     "cadence.js": 41306,

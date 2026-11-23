@@ -117,13 +117,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     }
     // Toute la forme du message, y compris les annonces de reprise, est maintenant validée.
     // Une ligne bien formée mais périmée ou sans autorité est ignorée, sans bloquer les autres voitures.
-    const acceptes = [], conflits = [], recues = [];
+    const acceptes = [], conflits = [];
     for (const l of m.voitures) {
       const id = l[0], v = cibles.get(id), origine = ctx.origines[id], reprise = origine !== 0 && repris.has(origine);
       const autorite = reprise ? 0 : origine, epoch = reprise ? 1 : 0;
       const dernier = epoch === ctx.epochs[id] ? ctx.sequencesRecues[id] : 0;
       if (de !== autorite || l[3] !== epoch || l[2] <= dernier) continue;
-      recues.push({ id, sequence: l[2] });
       if (!v || !v.distant || !etatValide(v.etat)) continue;
       const e = v.etat, service = l[1];
       let rejet = service < e.servicePneus, regression = rejet;
@@ -145,15 +144,15 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
           distance: Math.max(memeService ? avant.distance : 0, l[k + 3] / 100),
           sollicitation: Math.max(memeService ? avant.sollicitation : 0, l[k + 4] / 100), graine: l[k + 5] });
       }
-      acceptes.push({ id, v, etat: { versionPneus: P.VERSION_ETAT,
+      acceptes.push({ id, v, sequence: l[2], etat: { versionPneus: P.VERSION_ETAT,
         pneus: TYPES[l[4]], servicePneus: service, etatPneus: roues } });
     }
     for (const machine of repris) transferer(ctx, machine);
-    for (const { id, sequence } of recues) ctx.sequencesRecues[id] = sequence;
     for (const id of conflits) ctx.resynchronisations.add(id);
     for (const a of acceptes) {
       Object.assign(a.v.etat, a.etat);
       if (objet(a.v.livree)) a.v.livree.pneus = a.etat.pneus;
+      ctx.sequencesRecues[a.id] = a.sequence;
       ctx.resynchronisations.delete(a.id);
     }
     return acceptes.map(a => a.id);
