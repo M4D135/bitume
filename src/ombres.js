@@ -131,7 +131,8 @@
       const s = sc[k];
       if (!Number.isFinite(s)) { forces[k] = 0; continue; }
       const cible = retenue ? (1 - lisse(PLEINE, PORTEE, s)) * borne01((dehors - s) / ECART) : 0;
-      const force = forces[k] + (cible - forces[k]) * LISSAGE_CONTACT;
+      let force = forces[k] ?? 0;
+      force += (cible - force) * LISSAGE_CONTACT;
       forces[k] = force >= FORCE_MIN ? force : 0;
       if (forces[k] === 0) continue;
       const p = poses[k], o = nombre * FLOTTANTS;
