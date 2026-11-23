@@ -120,7 +120,7 @@
       etat.actuelle = null; return null;
     }
     const L = c.longueur, precedente = etat.precedente;
-    const pPrecedent = precedente === null ? null : precedente + etat.decalage;
+    const pPrecedent = precedente === null ? null : c.ouvert ? precedente : precedente + etat.decalage;
     // Dérouler les passages de la ligne dans les deux sens, à moins d'un demi-tour par mesure.
     if (!c.ouvert && precedente !== null && precedente >= 0 && precedente <= L
       && progression >= 0 && progression <= L) {
@@ -128,9 +128,10 @@
       if (delta < -L / 2) etat.decalage += L;
       else if (delta > L / 2) etat.decalage -= L;
     }
-    const p = progression + etat.decalage;
+    const p = c.ouvert ? borner(progression, 0, L) : progression + etat.decalage;
     const recul = (pPrecedent !== null && p < pPrecedent - .25) || p < etat.maximum - .75;
-    etat.precedente = progression; etat.maximum = Math.max(etat.maximum, p);
+    etat.precedente = c.ouvert ? p : progression;
+    etat.maximum = Math.max(etat.maximum, p);
     // Garder la mémoire des annonces pendant un arrêt, une pause ou un recul évite
     // de répéter la même phrase quand la voiture recommence à avancer.
     if (position.actif !== true || vitesse < 1.5 || recul) { etat.actuelle = null; return null; }
