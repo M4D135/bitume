@@ -320,10 +320,32 @@
     "jeu": 66,
     "captures": 111,
     "moteur_reussis": 225,
-    "moteur_todo_historique": 1
+    "moteur_todo_historique": 1,
+    "supplements_eau_carrosserie_et_voiture": 39
   },
   "limites": [
     "La mesure de cadence couvre un seul passage de 16 secondes sur Mac M5.",
     "Les GPU mobiles physiques, les consoles et les sessions prolongées restent à mesurer."
-  ]
+  ],
+  "demarrage_linux": {
+    "run": 45135839418,
+    "job": 137561852952,
+    "url": "https://github.com/M4D135/bitume/actions/runs/45135839418/job/137561852952",
+    "statut": "succès",
+    "navigateur": "Chrome Linux 157",
+    "adaptateur": "google swiftshader",
+    "fenetrage": "X11 avec Vulkan",
+    "voitures": 12,
+    "triangles": 533694,
+    "horloge_s": 3.917,
+    "erreurs": [],
+    "webgl_interdit": true
+  },
+  "qualification_node_complete": {
+    "suites_par_revision": 232,
+    "echecs_observes_0283": 84,
+    "echecs_observes_0285_avant_ajustement_des_tests": 77,
+    "echecs_communs": 75,
+    "statut": "La suite globale conserve des échecs. Les deux nouveaux échecs de statut ont été corrigés dans les contrôles du modèle et de la carrosserie, puis vérifiés localement."
+  }
 }
