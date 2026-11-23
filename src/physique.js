@@ -69,20 +69,17 @@
     ph.cap = cap;
     let tangage = Math.atan(pente), bank = Math.atan((q.pente || 0) * Math.sin(rel) + Math.sin(q.devers || 0) * Math.cos(rel));
     const x = q.x - Math.sin(q.cap) * e.d, z = q.z + Math.cos(q.cap) * e.d;
-    let baseY = q.y - e.d * Math.sin(q.devers || 0);
-    if (ph.c.partition === 'ovale-des-forges') {
-      // Dans le raccord d'un virage relevé, les bords montent ou descendent même si l'axe est plat.
-      // Le box intérieur a, lui aussi, son propre sol. Prendre le plan de la face sous la caisse.
-      const demi = ph.c.largeur / 2;
-      baseY = q.y - clamp(e.d, -demi, demi) * Math.sin(q.devers || 0);
-      ph.from[0] = x; ph.from[1] = baseY + 5; ph.from[2] = z;
-      const sol = ph.world.raycast(ph.from, [0, -1, 0], 18, { mask: SOL, staticOnly: true }, ph.hit);
-      if (sol.hit && sol.ny > .65) {
-        const co = Math.cos(cap), si = Math.sin(cap);
-        tangage = Math.atan2(-(sol.nx * co + sol.nz * si), sol.ny);
-        bank = Math.atan2((-sol.nx * si + sol.nz * co) * Math.cos(tangage), sol.ny);
-        baseY = sol.y;
-      }
+    const demi = ph.c.largeur / 2;
+    const dSol = ph.c.partition === 'ovale-des-forges' ? clamp(e.d, -demi, demi) : e.d;
+    let baseY = q.y - dSol * Math.sin(q.devers || 0);
+    // Prendre le plan de la face sous la caisse, y compris dans les raccords et les box.
+    ph.from[0] = x; ph.from[1] = baseY + 5; ph.from[2] = z;
+    const sol = ph.world.raycast(ph.from, [0, -1, 0], 18, { mask: SOL, staticOnly: true }, ph.hit);
+    if (sol.hit && sol.ny > .65) {
+      const co = Math.cos(cap), si = Math.sin(cap);
+      tangage = Math.atan2(-(sol.nx * co + sol.nz * si), sol.ny);
+      bank = Math.atan2((-sol.nx * si + sol.nz * co) * Math.cos(tangage), sol.ny);
+      baseY = sol.y;
     }
     const p = [x, baseY, z, ...quaternion(cap, tangage, bank)];
     // Quatre sondes de placement, dans le même maillage que la suspension. Une seule correction au départ.
@@ -95,9 +92,12 @@
     }
     p[1] = y; return p;
   }
-  function lancerSurSolOvale(ph, pose, vitesse) {
-    tourner(pose, [1, 0, 0], ph.tmp);
-    ph.world.setVelocity(ph.id, [ph.tmp[0] * vitesse, ph.tmp[1] * vitesse, ph.tmp[2] * vitesse]);
+  function lancerSurSol(ph, pose, vitesse) {
+    const avant = tourner(pose, [1, 0, 0], ph.tmp);
+    const pente = avant[1] / Math.hypot(avant[0], avant[2]);
+    const inv = 1 / Math.hypot(1, pente);
+    const cap = ph.cap;
+    ph.world.setVelocity(ph.id, [Math.cos(cap) * vitesse * inv, pente * vitesse * inv, Math.sin(cap) * vitesse * inv]);
   }
   function corps(ph, continuite) {
     const shapes = [{ type: 'box', half: [1.98, .23, .69], pose: [-.12, .31, 0, 0, 0, 0, 1], friction: .55, restitution: .08 }];
@@ -118,8 +118,7 @@
     if (dynamique && continuite) {
       ph.world.setVelocity(ph.id, continuite.velocity); ph.world.setAngularVelocity(ph.id, continuite.angular);
     } else if (dynamique && Math.abs(ph.e.v) > .01) {
-      if (ph.c.partition === 'ovale-des-forges') lancerSurSolOvale(ph, p, ph.e.v);
-      else ph.world.setVelocity(ph.id, [Math.cos(ph.cap || 0) * ph.e.v, 0, Math.sin(ph.cap || 0) * ph.e.v]);
+      lancerSurSol(ph, p, ph.e.v);
     }
     lecture(ph, false);
   }
@@ -226,13 +225,7 @@
     for (const ph of p.voitures) {
       const pose = poseDepart(ph);
       ph.world.setPose(ph.id, pose);
-      const v = ph.e.v || 0, cap = ph.cap || 0;
-      if (ph.c.partition === 'ovale-des-forges') lancerSurSolOvale(ph, pose, v);
-      else {
-        const e = B.circuit.echantillon(ph.c, ph.e.s);
-        const pente = e.pente || 0, inv = 1 / Math.hypot(1, pente);
-        ph.world.setVelocity(ph.id, [Math.cos(cap) * v * inv, pente * v * inv, Math.sin(cap) * v * inv]);
-      }
+      lancerSurSol(ph, pose, ph.e.v || 0);
       ph.world.setAngularVelocity(ph.id, [0, 0, 0]);
       lecture(ph, false);
     }
