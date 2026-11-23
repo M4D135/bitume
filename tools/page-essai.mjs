@@ -46,6 +46,10 @@ try {
   const fin = Date.now() + 60000;
   for (;;) {
     const e = await evaluer(`(() => { if (!(window.BITUME_JEU && BITUME_JEU.rendu)) return null; const a = document.getElementById('autodetection'); if (a && !a.hidden) { document.getElementById('detection-annuler').click(); return 'detection'; } return BITUME_JEU.ecran; })()`).catch(() => null);
+    if (!e) {
+      const message = await evaluer("document.querySelector('#erreur:not([hidden])')?.textContent");
+      if (message) throw new Error(message);
+    }
     if (e === 'titre') break; if (Date.now() > fin) throw new Error('écran titre jamais atteint'); await dormir(100);
   }
   await evaluer('BITUME_JEU.pauseAuto = false; true');

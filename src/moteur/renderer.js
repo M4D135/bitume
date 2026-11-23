@@ -378,12 +378,11 @@
   layout(location=5) in vec4 iColor;
   uniform mat4 uViewProjection;
   #ifdef CAMERA_RELATIVE_OVERLAY
-  uniform vec3 uDrawOrigin;
   #define WORLD_POINT(p) ((p)+uDrawOrigin)
-  #define DRAW_HEIGHT(y) ((y)-uDrawOrigin.y)
+  float drawHeight(float worldHeight){return worldHeight-uDrawOrigin.y;}
   #else
   #define WORLD_POINT(p) (p)
-  #define DRAW_HEIGHT(y) (y)
+  float drawHeight(float worldHeight){return worldHeight;}
   #endif
   uniform vec2 uWindTime;
   uniform float uWindStrength;
@@ -485,8 +484,8 @@
     if(groundCover)localNormal.z-=iScale.w*aNormal.x/max(abs(iScale.x*iScale.z),.0001);
     vNormal=normalize(rotation*localNormal);
         if(uSeaMode>.5&&iPosition.w>11.5&&iPosition.w<12.5&&anchor.y<0.) {
-      if(iPosition.w>12.1&&uSeaMotion.w>.5){vec3 w=seaField(WORLD_POINT(vWorld).xz);vWorld.y=DRAW_HEIGHT(uSeaMotion.z+w.x);vNormal=normalize(vec3(-w.y,1.,-w.z));}
-      else vWorld.y=DRAW_HEIGHT(-1.25+(aPosition.y-.5)*abs(iScale.y));
+      if(iPosition.w>12.1&&uSeaMotion.w>.5){vec3 w=seaField(WORLD_POINT(vWorld).xz);vWorld.y=drawHeight(uSeaMotion.z+w.x);vNormal=normalize(vec3(-w.y,1.,-w.z));}
+      else vWorld.y=drawHeight(-1.25+(aPosition.y-.5)*abs(iScale.y));
     }
 
     vAnchor=anchor;vMaterial=iPosition.w;
@@ -3157,7 +3156,7 @@
     let staticCaches=[],lampCasters=[],actorLightPlan=null,dynamicStream=null,overlayStream=null,fxStream=null;
     const cameraRelativeOverlay=options.cameraRelativeOverlay===true;
     const relativeView=new Float32Array(16),relativeTile=new Float32Array(16);
-    const overlayVertex=src=>cameraRelativeOverlay?src.replace('#version 300 es','#version 300 es\n#define CAMERA_RELATIVE_OVERLAY'):src;
+    const overlayVertex=src=>cameraRelativeOverlay?src.replace('precision highp float;','precision highp float;\n#define CAMERA_RELATIVE_OVERLAY\nuniform vec3 uDrawOrigin;'):src;
     const packDynamic=instancePacker(),packOverlay=instancePacker(),packFx=effectsPacker();
 
     // FERRO 0.3.11 (ombresPhoto) : rien de ceci ne fait d'appel GL sans l'option. photoTile : tuile de la voiture filmée
