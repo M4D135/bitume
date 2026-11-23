@@ -374,7 +374,8 @@
           }
           const p = pointPlan(f, dd, sol - .3);
           const formeRoc = outils.organique && B.lieux ? B.lieux.rocherPour(c.theme, (c.graine || 1) ^ Math.imul(i, 73856093)) : 'bevel';
-          const roc = { shape: formeRoc, collision: 'roche', p: [p[0], p[1] + t * .3, p[2]], s: [t * 1.5, t, t * 1.15], r: [0, a, 0], mat: 9, color: roche.map(v => Math.min(1, v * e)) };
+          const taille = t * e;
+          const roc = { shape: formeRoc, collision: 'roche', p: [p[0], p[1] + taille * .3, p[2]], s: [taille * 1.5, taille, taille * 1.15], r: [0, a, 0], mat: 9, color: roche.map(v => Math.min(1, v * e)) };
           objets.push(roc); loin.push(roc);
         } else if (d.type === 'fosse') {
           // fossé d'eau juste au-delà de la limite (w + 2,5) : on ne creuse pas le terrain ; une eau sombre affleure le
