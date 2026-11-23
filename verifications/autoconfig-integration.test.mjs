@@ -37,6 +37,7 @@ const orchestration = new Function('base', 'scenario', `
   const version = scenario.version || '0.2.80';
   const badge = { textContent: 'V' + version, getAttribute: () => 'Version ' + version };
   const document = { hidden: !!scenario.cache, visibilityState: scenario.cache ? 'hidden' : 'visible',
+    createElement: () => new scenario.Canvas(),
     activeElement: $('r-detecter'), querySelector: s => s === '.version-jeu' ? badge : null,
     addEventListener(t, f) { if (!ecouteurs.has(t)) ecouteurs.set(t, new Set()); ecouteurs.get(t).add(f); },
     removeEventListener(t, f) { ecouteurs.get(t)?.delete(f); } };
@@ -57,7 +58,7 @@ const orchestration = new Function('base', 'scenario', `
     draw() { throw Error('dessin interdit pendant la détection'); },
     setWorld() { appels.push('restaurer-world'); }, setNappes() { appels.push('restaurer-nappes'); }, setLots() { appels.push('restaurer-lots'); } });
   let rendu = scenario.demarrage ? null : renderer(), son = null;
-  const window = { devicePixelRatio: 3, screen: { width: 390, height: 844 },
+  const window = { devicePixelRatio: 3, screen: { width: 390, height: 844 }, HTMLCanvasElement: scenario.Canvas,
     FRender: { create(c, options) { appels.push('renderer'); const r = renderer(); moteurs.push({ options, r }); return r; } },
     FPhysX: scenario.physx === null ? null : { isReady() { appels.push('physx'); return scenario.physx !== false; } } };
   const interdit = nom => () => { appels.push(nom); throw Error(nom + ' interdit'); };
@@ -85,11 +86,37 @@ const orchestration = new Function('base', 'scenario', `
   ${bloc('  async function demarrer()', "  // Outil d'essai")}
   return { detecterGraphismes, majDetectionGraphique, appliquerDetection, contexteGraphiqueRetabli, empreinteDetection,
     capacitesDeclarees, preferenceGraphique, demarrer, appels, erreurs, stockage, reglages, nodes, montrer, moteurs,
+    get contexteFragile() { return contexteFragile; },
     get session() { return session; }, scene, canvas, jeu, get ecran() { return ecran; }, get actif() { return detectionGraphiqueActive; },
     get gpuModeste() { return gpuModeste; }, get derniere() { return derniereDetection; }, get estimations() { return estimations; } };
 `);
 const trace = (profil, version = '0.2.80') => ({ revision: A.REVISION, methode: A.METHODE, statut: 'ok',
   selection: profil, empreinte: A.empreinte('GPU-A|16384|16', version), mesures: [{}], appliques: A.reglages(profil) });
+
+test('WKWebView Mac sans suffixe Safari protège ses toiles et la chauffe, Chromium de bureau garde le GPU demandé', () => {
+  const mac = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)';
+  for (const [agent, fragile] of [
+    [mac, true], [mac + ' Version/27.2 Safari/625.2.8', true],
+    [mac + ' Chrome/144.0.0.0 Safari/537.36', false],
+    [mac + ' Chrome/144.0.0.0 Safari/537.36 Edg/144.0.0.0', false],
+    [mac + ' Chromium/144.0.0.0 Safari/537.36', false],
+  ]) {
+    const appels = [];
+    class Canvas {
+      getContext(type, options) {
+        appels.push([type, options.powerPreference]);
+        return { isContextLost: () => false, getExtension: () => null };
+      }
+    }
+    const h = orchestration(B, { navigator: { ...bureau, platform: 'MacIntel', userAgent: agent }, Canvas });
+    h.preferenceGraphique();
+    assert.equal(h.contexteFragile, fragile, agent);
+    assert.equal(appels.length, fragile ? 0 : 1, agent);
+    const toile = new Canvas();
+    toile.getContext('webgl2', { powerPreference: 'high-performance' });
+    assert.deepEqual(appels.at(-1), ['webgl2', fragile ? 'default' : 'high-performance'], agent);
+  }
+});
 
 for (const [nom, nav] of [['iPhone', iphone], ['iPad avec agent Mac', ipad], ['Android', { ...bureau, userAgent: 'Android 16 Mobile', maxTouchPoints: 5 }]]) {
   test(nom + ' : premier lancement prudent sans scène de mesure ni rétroviseur supplémentaire', async () => {
