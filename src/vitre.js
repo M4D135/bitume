@@ -102,16 +102,22 @@
     e.contexte.setTransform(1, 0, 0, 1, 0, 0); e.contexte.globalAlpha = 1;
     e.contexte.clearRect(0, 0, e.canvas.width, e.canvas.height); e.propre = true;
   }
+  function viderDepots(e) {
+    for (let i = 0; i < e.gouttes.length; i++) e.gouttes[i].vivant = e.gouttes[i].fusion = false;
+    for (let i = 0; i < e.neige.length; i++) e.neige[i].vivant = e.neige[i].fusion = false;
+    if (e.fines) e.fines.fin = e.fines.prochain = 0;
+    e.stats.gouttes = e.stats.microgouttes = e.stats.neige = 0;
+    e.creditEau = e.creditNeige = 0;
+    e.impactsActifs = false; e.impactTampon.fill(0);
+  }
+  const sansApportAuSec = (c, pluie, neige) => !pluie && !neige && (c.abri || !(Number(c.embruns) > 0));
   function effacer(e) {
     if (!e) return;
     if (e.optique) { B.visiereOptique.effacer(e); return; }
     if (!e.propre) viderPixels(e);
     montrer(e, false);
-    for (let i = 0; i < e.gouttes.length; i++) e.gouttes[i].vivant = e.gouttes[i].fusion = false;
-    for (let i = 0; i < e.neige.length; i++) e.neige[i].vivant = e.neige[i].fusion = false;
-    if (e.fines) e.fines.fin = e.fines.prochain = 0;
-    e.stats.gouttes = e.stats.microgouttes = e.stats.neige = 0; e.accumulateur = e.creditEau = e.creditNeige = 0;
-    e.impactsActifs = false; e.impactTampon.fill(0);
+    viderDepots(e);
+    e.accumulateur = 0;
     e.dprPalier = null; // nouvelle séance : le prochain appel actif reprend la définition du palier courant
   }
   function liberer(e) {
@@ -428,6 +434,12 @@
     // La visière optique vient de remplir ce même champ pour ses couches de réfraction.
     if (fluxPrepare !== e.flux) calculerFlux(c, e.flux);
     e.accumulateur += Math.min(.25, dt);
+    if (sansApportAuSec(c, pluie, neige)) {
+      viderDepots(e);
+      e.stats.paires = 0;
+      while (e.accumulateur + 1e-10 >= PAS) { e.temps += PAS; e.stats.etapes++; e.accumulateur -= PAS; }
+      return e.stats;
+    }
     while (e.accumulateur + 1e-10 >= PAS) { avancer(e, c, budget, pluie, neige, intensite); e.accumulateur -= PAS; }
     return e.stats;
   }
@@ -533,7 +545,10 @@
       ctx.ellipse(x - p.cos * r * .38, y - p.sin * r * .38, r * .24, r * .16, p.phase, 0, TAU);
       ctx.ellipse(x + p.sin * r * .35, y - p.cos * r * .35, r * .18, r * .22, p.phase, 0, TAU); ctx.fill();
     }
-    ctx.globalAlpha = 1; e.propre = !e.stats.gouttes && !e.stats.microgouttes && !e.stats.neige; e.stats.dessins++; e.stats.fraction = k;
+    ctx.globalAlpha = 1;
+    e.propre = !e.stats.gouttes && !e.fines?.fin && !e.stats.neige &&
+      !e.gouttes.some(p => p.fusion) && !e.neige.some(p => p.fusion);
+    e.stats.dessins++; e.stats.fraction = k;
     montrer(e, !e.propre);
   }
   function mettreAJour(e, dt, contexte) {
@@ -547,12 +562,18 @@
     calculerFlux(c, e.flux);
     e.opacite = Math.min(1.25, intensite) * (c.cockpit === false ? .55 : 1);
     suivrePalier(e, budget);
+    const pluie = clamp(Number(c.pluie) || 0, 0, 1), neige = clamp(Number(c.neige) || 0, 0, 1);
+    const sec = sansApportAuSec(c, pluie, neige);
+    if (sec) {
+      viderDepots(e);
+      e.stats.paires = 0;
+      if (!e.propre) viderPixels(e);
+      montrer(e, false);
+    }
     if (!Number.isFinite(dt) || dt <= 0) return e.stats;
     e.accumulateur += Math.min(.25, dt);
     const vide = !e.stats.gouttes && !e.stats.microgouttes && !e.stats.neige;
-    const pluie = clamp(Number(c.pluie) || 0, 0, 1), neige = clamp(Number(c.neige) || 0, 0, 1);
-    const dejaSec = vide && (c.abri || !(pluie || neige || Number(c.embruns) > 0));
-    if (dejaSec) {
+    if (sec || (vide && c.abri)) {
       if (!e.propre) viderPixels(e);
       montrer(e, false);
       // Sans dépôt ni nouvel apport, seuls les pas d'horloge restent à comptabiliser.
