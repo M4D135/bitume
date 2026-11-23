@@ -354,12 +354,36 @@ verifier('numéro de flanc : calé entre la bande basse et le filet (voi-3)', ()
 });
 
 verifier('jonc de l\'ouverture : suit le bord, ne bombe pas hors de l\'ouverture (voi-4)', () => {
-  const f = V.FORMES['jonc'];
-  let xMax = -Infinity, xMin = Infinity;
-  for (const t of f.tri) for (let r = 0; r < 3; r++) for (const k of [0]) {
-    const x = t[r][k] * f.taille[k] + f.centre[k];
-    xMax = Math.max(xMax, x); xMin = Math.min(xMin, x);
+  // Un seul maillage regroupe le jonc du cockpit et le joint de la bulle.
+  // Les îlots de triangles soudés sont distincts même lorsque leurs abscisses se recouvrent.
+  const f = V.FORMES.jonc, voisins = new Map(), abscisses = new Map();
+  for (const t of f.tri) {
+    const points = t.slice(0, 3).map(p => {
+      const cle = p.map(x => Math.round(x * 1e6)).join(',');
+      if (!voisins.has(cle)) voisins.set(cle, new Set());
+      abscisses.set(cle, p[0] * f.taille[0] + f.centre[0]); return cle;
+    });
+    for (const a of points) for (const b of points) voisins.get(a).add(b);
   }
+  const bornes = [];
+  for (const cle of abscisses.keys()) {
+    if (!voisins.has(cle)) continue;
+    const sommets = [cle];
+    let min = Infinity, max = -Infinity;
+    while (sommets.length) {
+      const a = sommets.pop(), adjacents = voisins.get(a);
+      if (!adjacents) continue;
+      voisins.delete(a);
+      min = Math.min(min, abscisses.get(a)); max = Math.max(max, abscisses.get(a));
+      for (const b of adjacents) if (voisins.has(b)) sommets.push(b);
+    }
+    bornes.push([min, max]);
+  }
+  bornes.sort((a, b) => a[0] - b[0]);
+  assert.equal(bornes.length, 2, 'deux joints continus, ouverture et embase du saute-vent');
+  const [[xMin, xMax], [embaseMin, embaseMax]] = bornes;
+  const bulle = V.FORMES.bulle, avant = bulle.centre[0] + bulle.taille[0] / 2, arriere = bulle.centre[0] - bulle.taille[0] / 2;
+  assert(Math.abs(embaseMin - arriere) < .006 && Math.abs(embaseMax - avant) < .006, 'joint de 4,5 mm au pied de la bulle');
   assert.ok(xMax < 1.33, `jonc bombe à x ${xMax.toFixed(4)} au-delà du bord avant 126 CK (1,30)`);
   assert.ok(xMin > .39, `jonc bombe à x ${xMin.toFixed(4)} au-delà du bord arrière 126 CK (0,44)`);
 });
