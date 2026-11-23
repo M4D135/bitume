@@ -29,7 +29,7 @@
         { id: 'lande-noire', nom: 'Lande-Noire', theme: 'islande', graine: 83, longueur: 4600 }
       ] },
     { id: 'route-des-cimes', nom: 'Lacets de l’Aiglière', lieu: 'Grand col alpin · cirque de l’Aiglière', theme: 'montagne', graine: 181, longueur: 9697.52858032384, partition: 'route-des-cimes' },
-    { id: 'larche', nom: 'Descente de Larche–Vinadio', lieu: 'Col de Larche → Vinadio · SS21', theme: 'montagne', graine: 210, longueur: 32816.81, distanceCourse: 32249.33, ouvert: true },
+    { id: 'larche', nom: 'Descente des Freins Chauds', lieu: 'Grand col alpin · plaquettes en surchauffe', theme: 'montagne', graine: 210, longueur: 32816.81, distanceCourse: 32249.33, ouvert: true },
     { id: 'baikal', nom: 'Circuit de la Glace Vive', lieu: 'Lac Baïkal · rives gelées et tremplin', theme: 'baikal', graine: 179, longueur: 5400 },
     { id: 'ovale-des-forges', nom: 'Autodrome des Alizés', lieu: 'Caraïbes · speedway de plage, quatre virages relevés à 40°',
       theme: 'ovale', graine: 347, longueur: 1600, partition: 'ovale-des-forges' }
