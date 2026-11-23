@@ -113,7 +113,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     // goût de la défense, régularité d'un tour à l'autre ; tiré à part, sans changer la grille.
     for (const v of voitures) {
       const h = mulberry32((graine ^ Math.imul(v.id + 1, 0x9E3779B1)) >>> 0);
-      Object.assign(v.ia, { agressivite: v.joueur ? .5 : .25 + .75 * h(), defense: v.joueur ? 0 : h(), regularite: v.joueur ? 1 : .55 + .45 * h(), forme: 1, sillage: -1, defend: 0, defendu: -1, adversaireDefense: -1, perteDefense: null,
+      Object.assign(v.ia, { agressivite: v.joueur ? .5 : .25 + .75 * h(), defense: v.joueur ? 0 : h(), regularite: v.joueur ? 1 : .55 + .45 * h(), forme: 1, sillage: -1, defend: 0, defendu: -1, adversaireDefense: -1, debutDefense: null, perteDefense: null,
         t: 0, derniereAttaque: -99, attaques: 0, abandons: 0, presses: 0, presse: -1, tenu: -99, changements: 0,
         // Champs posés en cours de course, déclarés ici dans un ordre fixe : toutes les voitures gardent la même
         // forme d'objet et le pas de l'IA reste compilé pour une seule (sinon chaque voiture les ajoute dans son
@@ -306,18 +306,21 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     } else ia.sillage = -1;
     // Défense.
     if (ia.defend) {
+      ia.debutDefense ??= ia.t;
       const o = V[ia.adversaireDefense];
       let dansLeSillage = false;
       if (o && !o.fini && !o.abandon && !horsService(o.etat)) {
         const ds = ecart(c, o.etat.s, e.s);
-        // La défense s’engage sous 4 m d’écart latéral et se maintient jusqu’au seuil de sortie de 7 m.
-        dansLeSillage = ds > 0 && ds < 15 + 2 * moiLong && Math.abs(o.etat.d - e.d) < 7;
+        // Le seuil latéral de maintien est de 10 m, contre 4 m à l’engagement.
+        dansLeSillage = ds > 0 && ds < 15 + 2 * moiLong && Math.abs(o.etat.d - e.d) < 10;
       }
+      // Sortie après au moins 1,2 s de défense et 0,5 s continues hors de la zone.
       if (dansLeSillage) ia.perteDefense = null;
       else if (ia.perteDefense == null) ia.perteDefense = ia.t;
-      else if (ia.t - ia.perteDefense >= .5) {
+      else if (ia.t - ia.debutDefense >= 1.2 && ia.t - ia.perteDefense >= .5) {
         ia.defend = 0;
         ia.adversaireDefense = -1;
+        ia.debutDefense = null;
         ia.perteDefense = null;
       }
     } else if (!recuperer && kAv && ia.cible < 0 && (ia.defense || 0) > .45 && course.phase === 'course') {
@@ -331,6 +334,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
             ia.defend = Math.sign(kAv);
             ia.defendu = virage;
             ia.adversaireDefense = i;
+            ia.debutDefense = ia.t;
             ia.perteDefense = null;
             break;
           }
