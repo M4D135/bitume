@@ -479,7 +479,7 @@ body.tactile #b-pause { display: block; }
 .demo-tactile, body.tactile .demo-souris { display: none; }
 body.tactile .demo-tactile { display: inline; }
 #jeu[data-ecran="demo"] .feux, #jeu[data-ecran="demo"] #b-pause, #jeu[data-ecran="demo"] #h-delta-ligne, #jeu[data-ecran="demo"] .jauge-derive { display: none !important; }
-#jeu[data-ecran="demo"] :is(#c-pneus, #c-sante, .chronos, #h-fps, #h-virage) { display: none; }
+#jeu[data-ecran="demo"] :is(#c-pneus, #c-sante, .chronos, #h-virage) { display: none; }
 /* Sous 1 000 px de large, compteurs et chronos prennent le haut de l'écran : le bandeau passe dessous. */
 @media (max-width: 1000px) {
   .demo-bandeau { top: calc(max(var(--marge), env(safe-area-inset-top)) + 92px); }
@@ -1294,7 +1294,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre arcade-titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.287">V0.2.287</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.289">V0.2.289</b>
     </div>
     <a class="signature" href="https://bitume.estrasse.fr/" download="BITUME.html" title="Télécharger BITUME"><img class="signature-avatar" src="data:image/jpeg;base64,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" alt="" />m4d135</a>
     <div id="titre-section" hidden><button type="button" class="retour" data-ouvrir-titre="accueil" aria-label="Retour au menu principal">←</button><h2 id="titre-section-nom"></h2></div>
@@ -1664,9 +1664,9 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
     <div class="grille-reglages">
       <fieldset class="detection-reglages" aria-describedby="r-detection-etat">
         <legend>Détection graphique</legend>
-        <button type="button" class="discret" id="r-detecter">Appliquer le profil conseillé</button>
-        <p class="note-graphismes">Choisit un profil prudent à partir des capacités déclarées de l’appareil, sans test de charge. Ce bouton remplace vos choix graphiques actuels.</p>
-        <p class="note-graphismes" id="r-detection-etat" role="status">Profil conseillé sans test de charge.</p>
+        <button type="button" class="discret" id="r-detecter">Mesurer et appliquer le profil</button>
+        <p class="note-graphismes">Le test WebGPU mesure les performances graphiques de votre appareil. Relancer la mesure remplace vos six réglages graphiques par ceux du profil conseillé.</p>
+        <p class="note-graphismes" id="r-detection-etat" role="status">Détection graphique disponible.</p>
         <p class="note-graphismes aide-xbox" hidden>Xbox : scène 3D limitée à 720p pour alléger le rendu sur téléviseur. Menus et textes restent à la résolution de l’écran.</p>
       </fieldset>
       <fieldset>
@@ -1872,13 +1872,13 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
     </footer>
   </section>
 
-  <div id="autodetection" class="autodetection" role="dialog" aria-modal="true" aria-labelledby="detection-titre" hidden>
+  <div id="autodetection" class="autodetection" role="dialog" aria-modal="true" aria-labelledby="detection-titre" aria-describedby="detection-note" hidden>
     <div class="detection-carte">
       <span class="detection-surtitre">BITUME</span>
       <h2 id="detection-titre">Réglage automatique</h2>
-      <p id="detection-texte" role="status" aria-live="polite">Lecture des capacités de l’appareil…</p>
+      <p id="detection-texte" role="status" aria-live="polite">Préparation du test WebGPU…</p>
       <progress id="detection-progres" max="1" value="0" aria-label="Progression de la détection"></progress>
-      <p class="detection-note">Profil prudent, sans test de performances.</p>
+      <p class="detection-note" id="detection-note">Gardez cet onglet visible pendant la mesure. Passer conserve vos réglages actuels.</p>
       <button type="button" class="discret" id="detection-annuler">Passer</button>
     </div>
   </div>
@@ -94849,7 +94849,29 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     e.restants = Math.max(0, ECHECS - C.echecs); e.delaiS = C.delai / 1000;
     return o;
   }
-  B.cadence = { MODES, creer, image, travail, regler, normaliser, oublier, nouvelleSeance, etat };
+  // Débit du rendu principal sur des fenêtres entières de temps réel. Le premier
+  // rendu fixe l'origine : il faut N intervalles complets pour annoncer N images/s.
+  function compteurImages() { return { debut: null, derniere: null, images: 0, actuel: null, maximum: null }; }
+  function releverImage(m, t, cadence) {
+    // Avant la première estimation de la période d'écran, le limiteur dessine à
+    // chaque RAF : le diviseur demandé en 30/60/120 n'est pas encore appliqué.
+    if (cadence && !cadence.grille && cadence.mode !== 'auto' && cadence.mode !== 'ecran') t = null;
+    if (t === null) {
+      m.debut = m.derniere = m.actuel = null; m.images = 0;
+      return;
+    }
+    if (!Number.isFinite(t) || t === m.derniere) return;
+    if (m.debut === null || t < m.derniere) {
+      m.debut = m.derniere = t; m.images = 0; m.actuel = null; return;
+    }
+    m.derniere = t; m.images++;
+    const duree = t - m.debut;
+    if (duree < 1000) return;
+    m.actuel = Math.round(m.images * 1000 / duree);
+    m.maximum = Math.max(m.maximum ?? 0, m.actuel);
+    m.debut = t; m.images = 0;
+  }
+  B.cadence = { MODES, creer, image, travail, regler, normaliser, oublier, nouvelleSeance, etat, compteurImages, releverImage };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -96640,8 +96662,211 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
+// ---- banc-configuration.js ----
+/* BITUME — épreuve de classement sur le périphérique WebGPU de la scène. */
+(function (B) {
+  'use strict';
+  // Une passe plein écran et des quads instanciés sollicitent le remplissage et les sommets.
+  // Le calcul côté navigateur représente douze véhicules. Les durées sont en millisecondes.
+  const charges = [
+    { profil: 'low', instances: 1500, iterations: 2, echelle: .028, cpu: 500 },
+    { profil: 'medium', instances: 7000, iterations: 5, echelle: .026, cpu: 1800 },
+    { profil: 'high', instances: 18000, iterations: 9, echelle: .024, cpu: 4500 },
+    { profil: 'extreme', instances: 40000, iterations: 16, echelle: .022, cpu: 9000 }
+  ];
+  const budget = 1000 / 60, delai = 2000;
+  const WGSL = `
+struct Uniforms {
+  params: vec4<f32>,
+};
+
+@group(0) @binding(0) var<uniform> uniforms: Uniforms;
+
+struct VertexIn {
+  @location(0) pos: vec2<f32>,
+  @location(1) uv: vec2<f32>,
+};
+
+struct VertexOut {
+  @builtin(position) clip_position: vec4<f32>,
+  @location(0) uv: vec2<f32>,
+  @location(1) inst: f32,
+};
+
+@vertex
+fn vertex_main(vi: VertexIn, @builtin(instance_index) inst_index: u32) -> VertexOut {
+  let t = uniforms.params.x;
+  let i = f32(inst_index);
+  let cover = uniforms.params.w;
+
+  var vo: VertexOut;
+  vo.uv = vi.uv;
+  vo.inst = i;
+
+  if (cover > 0.5 && inst_index == 0u) {
+    vo.clip_position = vec4<f32>(vi.pos.x * 2.0, vi.pos.y * 2.0, 0.5, 1.0);
+    return vo;
+  }
+
+  let angle = i * 0.017453292519943295 + t * 0.5;
+  let cs = cos(angle);
+  let sn = sin(angle);
+  let scale = uniforms.params.z * (0.7 + 0.3 * sin(i * 0.13 + t));
+  let px = (cs * vi.pos.x - sn * vi.pos.y) * scale;
+  let py = (sn * vi.pos.x + cs * vi.pos.y) * scale;
+  let ox = sin(i * 0.37 + t) * 0.7;
+  let oy = cos(i * 0.29 + t) * 0.5;
+  let f = 1.2 / (1.0 + 0.2 * sin(i * 0.21 + t));
+
+  vo.clip_position = vec4<f32>((px + ox) * f, (py + oy) * f, 0.5, 1.0);
+  return vo;
+}
+
+@fragment
+fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
+  let uv = frag.uv;
+  let inst = frag.inst;
+  var col = vec3<f32>(
+    0.5 + 0.5 * sin(uv.x * 6.28318530718 + inst),
+    0.5 + 0.5 * sin(uv.y * 6.28318530718 + inst * 0.7),
+    0.5 + 0.5 * cos(uv.x * 3.14159265359 + uv.y * 2.0 + inst * 0.3)
+  );
+
+  let quality = u32(uniforms.params.y);
+  for (var k: u32 = 0u; k < quality; k = k + 1u) {
+    let a = sin(col.x * 1.7 + f32(k) * 0.11);
+    let b = cos(col.y * 2.3 + f32(k) * 0.17);
+    let c = sin(col.z * 1.1 + f32(k) * 0.23);
+    col = vec3<f32>(col.x + 0.02 * a, col.y + 0.02 * b, col.z + 0.02 * c);
+    col = clamp(col, vec3<f32>(0.0), vec3<f32>(1.0));
+  }
+
+  return vec4<f32>(col, 1.0);
+}
+`;
+
+  function creerVertexBuffer(device) {
+    // Quad en triangle-list : 6 sommets, position + uv.
+    const quad = new Float32Array([
+      -0.5, -0.5, 0, 0,
+       0.5, -0.5, 1, 0,
+       0.5,  0.5, 1, 1,
+      -0.5, -0.5, 0, 0,
+       0.5,  0.5, 1, 1,
+      -0.5,  0.5, 0, 1,
+    ]);
+    const buffer = device.createBuffer({
+      size: quad.byteLength,
+      usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+    });
+    device.queue.writeBuffer(buffer, 0, quad);
+    return buffer;
+  }
+
+  function calculVoitures(iterations) {
+    let somme = 0;
+    for (let i = 0; i < iterations; i++) {
+      let x = i * .123456789 % 100, y = i * .987654321 % 100;
+      for (let voiture = 0; voiture < 12; voiture++) {
+        x += .01 * Math.sin(x * .1 + voiture);
+        y += .01 * Math.cos(y * .1 + voiture);
+        somme += Math.sqrt(x * x + y * y + 1);
+      }
+    }
+    return somme;
+  }
+
+  async function mesurer({ device, largeur, hauteur, annule = () => false, progression = () => {} }) {
+    const debut = performance.now(), mesures = [];
+    let selection = 'low', texture, sommets, parametres, timer;
+    function verifier() {
+      if (annule()) throw Object.assign(new Error('Test interrompu'), { motif: 'annule' });
+      if (performance.now() - debut >= delai) throw Object.assign(new Error('Temps de mesure écoulé'), { motif: 'delai' });
+    }
+    const interruption = new Promise((_, rejeter) => {
+      timer = setInterval(() => { try { verifier(); } catch (e) { rejeter(e); } }, 25);
+    });
+    const attendre = tache => Promise.race([tache, interruption]);
+    const rapport = partiel => ({ selection, mesures, partiel, duree: Math.round(performance.now() - debut) });
+    try {
+      verifier();
+      const reduction = Math.min(1, Math.sqrt(640 * 360 / Math.max(1, largeur * hauteur)));
+      const w = Math.max(1, Math.min(device.limits.maxTextureDimension2D, Math.round(largeur * reduction)));
+      const h = Math.max(1, Math.min(device.limits.maxTextureDimension2D, Math.round(hauteur * reduction)));
+      const facteurPixels = Math.max(1, Math.min(12, largeur * hauteur / (w * h)));
+      const format = 'rgba8unorm';
+      const module = device.createShaderModule({ label: 'BITUME · test graphique', code: WGSL });
+      const pipeline = await attendre(device.createRenderPipelineAsync({
+        layout: 'auto', vertex: { module, entryPoint: 'vertex_main', buffers: [{ arrayStride: 16, attributes: [
+          { shaderLocation: 0, offset: 0, format: 'float32x2' }, { shaderLocation: 1, offset: 8, format: 'float32x2' }
+        ] }] }, fragment: { module, entryPoint: 'fragment_main', targets: [{format}] }
+      }));
+      verifier();
+      texture = device.createTexture({ size: [w, h], format, usage: GPUTextureUsage.RENDER_ATTACHMENT });
+      const vue = texture.createView();
+      sommets = creerVertexBuffer(device);
+      parametres = device.createBuffer({ size: 16, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
+      const groupe = device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [
+        { binding: 0, resource: { buffer: parametres } }
+      ] });
+      const epreuve = async (charge, images) => {
+        verifier();
+        const t = performance.now(), enc = device.createCommandEncoder();
+        for (let i = 0; i < images; i++) {
+          const passe = enc.beginRenderPass({ colorAttachments: [{ view: vue,
+            clearValue: {r: 0, g: 0, b: 0, a: 1}, loadOp: 'clear', storeOp: 'store' }] });
+          passe.setPipeline(pipeline); passe.setBindGroup(0, groupe); passe.setVertexBuffer(0, sommets);
+          passe.draw(6, charge.instances); passe.end();
+        }
+        device.queue.submit([enc.finish()]);
+        await attendre(device.queue.onSubmittedWorkDone());
+        verifier();
+        return (performance.now() - t) / images;
+      };
+
+      // Une file déjà chargée et la première activation du pipeline restent hors mesure.
+      await attendre(device.queue.onSubmittedWorkDone());
+      calculVoitures(500);
+      for (const [i, charge] of charges.entries()) {
+        progression('Mesure de la configuration ' + B.autoconfig.profils[charge.profil].nom.toLowerCase() + '…', (i + .2) / charges.length);
+        device.queue.writeBuffer(parametres, 0, new Float32Array([.8, charge.iterations, charge.echelle, 1]));
+        const chauffe = await epreuve(charge, 1);
+        const images = Math.min(6, Math.max(1, Math.floor(12 / Math.max(.25, chauffe))));
+        const temps = [];
+        for (let serie = 0; serie < 3; serie++) temps.push(await epreuve(charge, images));
+        const gpu = temps.sort((a,b) => a-b)[1];
+        const processeur = [];
+        let somme = 0;
+        for (let serie = 0; serie < 3; serie++) {
+          const t = performance.now(); somme += calculVoitures(charge.cpu);
+          processeur.push(performance.now() - t);
+        }
+        const cpu = processeur.sort((a,b) => a-b)[1];
+        // Le proxy a un coût fixe de soumission et de géométrie. Seule sa part de
+        // remplissage est extrapolée à la résolution de jeu.
+        const estime = gpu * (.45 + .55 * facteurPixels);
+        const acceptable = Number.isFinite(somme) && estime <= budget * .8 && cpu <= budget * .5;
+        mesures.push({ profil: charge.profil, cpu, gpu, estime, acceptable, largeur: w, hauteur: h, facteurPixels });
+        if (!acceptable) break;
+        selection = charge.profil;
+      }
+      progression('Mesure terminée', 1);
+      return rapport(false);
+    } catch (e) {
+      if (e.motif === 'delai' && mesures.length) return rapport(true);
+      throw e;
+    } finally {
+      clearInterval(timer);
+      texture?.destroy(); sommets?.destroy(); parametres?.destroy();
+    }
+  }
+
+  B.bancConfiguration = { mesurer };
+})(globalThis.BITUME = globalThis.BITUME || {});
+</script>
+<script>
 // ---- autoconfig.js ----
-/* BITUME — réglages locaux. Le jeu utilise uniquement les capacités déclarées du navigateur.
+/* BITUME — réglages locaux. Le mini-benchmark local WebGPU mesure le débit de rendu au lancement d’une version.
    Le banc de rafales reste disponible pour les outils de qualification explicitement lancés. */
 (function (B) {
   'use strict';
@@ -96652,17 +96877,17 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
   // fil principal mesuré une image par rappel, comme en course ; palier proche de la limite mesuré deux ou trois fois,
   // refus de peu provisoire. Révision 5 : Xbox déclarée par le navigateur,
   // recommandation prudente sans mesure. Révision 6 : silhouettes proches sur le profil léger.
-  const REVISION = 6, CLE = 'bitume.detection.v1', METHODE = 'rafales';
-  const METHODE_PASSIVE = 'capacites-declarees';
+  const REVISION = 7, CLE = 'bitume.detection.v1', METHODE = 'rafales';
+  const METHODE_PASSIVE = 'capacites-declarees', METHODE_WEBGPU = 'mini-webgpu';
   const CLES = Object.freeze(['qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'retro']);
   // Noms courts des options, pour dire dans l'onglet Image lesquelles le joueur a gardées.
   const NOMS = Object.freeze({ qualite: 'qualité', anticrenelage: 'anticrénelage', ombres: 'ombres', vegetation: 'végétation',
     faune: 'faune', retro: 'rétroviseurs' });
   const profils = {
-    low: { nom: 'Légère', qualite: 'low', anticrenelage: 'off', ombres: 'off', vegetation: 'off', faune: 'low', retro: 'non' },
+    low: { nom: 'Faible', qualite: 'low', anticrenelage: 'off', ombres: 'off', vegetation: 'off', faune: 'low', retro: 'non' },
     medium: { nom: 'Moyenne', qualite: 'medium', anticrenelage: 'msaa4', ombres: 'medium', vegetation: 'medium', faune: 'medium', retro: 'auto' },
-    high: { nom: 'Fine', qualite: 'high', anticrenelage: 'msaa4', ombres: 'high', vegetation: 'high', faune: 'high', retro: 'auto' },
-    extreme: { nom: 'Fine · végétation extrême', qualite: 'high', anticrenelage: 'msaa4', ombres: 'high', vegetation: 'ultra', faune: 'ultra', retro: 'auto' },
+    high: { nom: 'Puissante', qualite: 'high', anticrenelage: 'msaa4', ombres: 'high', vegetation: 'high', faune: 'high', retro: 'auto' },
+    extreme: { nom: 'Extra puissante', qualite: 'high', anticrenelage: 'msaa4', ombres: 'high', vegetation: 'ultra', faune: 'ultra', retro: 'auto' },
   };
   for (const p of Object.values(profils)) Object.freeze(p);
   Object.freeze(profils);
@@ -96814,6 +97039,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
   // mesurer (src/jeu.js, premierPlan), et une trace laissée ainsi ne compte pas parmi les tentatives.
   function cacheValide(cache, cle) {
     if (!cache || cache.revision !== REVISION || cache.empreinte !== cle) return false;
+    if (cache.methode === METHODE_WEBGPU) {
+      if (cache.statut === 'interrompu') return cache.motif === 'annule';
+      return cache.statut === 'ok' && Object.hasOwn(profils, cache.selection)
+        && ((cache.performancesMesurees === true && Array.isArray(cache.mesures) && cache.mesures.length > 0)
+          || (cache.performancesMesurees === false && cache.repli === true));
+    }
     if (cache.methode === METHODE_PASSIVE) return cache.statut === 'ok'
       && Object.prototype.hasOwnProperty.call(profils, cache.selection) && cache.performancesMesurees === false;
     if (cache.statut === 'ok') return Object.prototype.hasOwnProperty.call(profils, cache.selection)
@@ -96869,7 +97100,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
   // référence des choix du joueur et compte les tentatives de la même version.
   function marquer(precedent, resultat) {
     const r = { revision: REVISION, statut: 'interrompu', motif: resultat.motif || 'erreur', empreinte: resultat.empreinte,
-      tentatives: tentatives(precedent, resultat), date: Date.now(), methode: METHODE };
+      tentatives: tentatives(precedent, resultat), date: Date.now(), methode: resultat.methode || METHODE };
     const ref = reference(precedent);
     if (ref) r.appliques = ref;
     return r;
@@ -97100,7 +97331,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
       return { revision: REVISION, statut: 'interrompu', motif: e && e.motif || 'erreur', empreinte: cle, mesures, methode: METHODE };
     }
   }
-  B.autoconfig = { REVISION, CLE, CLES, NOMS, METHODE, METHODE_PASSIVE, recommander, passive, BUDGET, FRACTION, LIMITE, IMAGES_SEULES, COURSE_PROCESSEUR, PART_PROCESSEUR,
+  B.autoconfig = { REVISION, CLE, CLES, NOMS, METHODE, METHODE_PASSIVE, METHODE_WEBGPU, mesurerWebGPU: options => B.bancConfiguration.mesurer(options), recommander, passive, BUDGET, FRACTION, LIMITE, IMAGES_SEULES, COURSE_PROCESSEUR, PART_PROCESSEUR,
     LIMITE_PROCESSEUR, GRIS_BAS, GRIS_HAUT, SERIES_MAX, PART_GLACES, EXTREME, ESPOIR, ESPOIR_VITE, SONDE_MS, COURSE_SIMULATION, TENTATIVES,
     DUREE_MAX, DELAI, PREPARATION_MAX, profils, empreinte, reglages, cacheValide, tentatives, reference, referenceProbable, fusionner, marquer,
     bilanRafales, zone, combiner, limiteProfil, choisir, peutEssayerExtreme, executer };
@@ -98251,7 +98482,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
       B.eauCarrosserie.preparer(S.modeles[k], (enl ? enl.graine : graineCourse) + k * 739);
     // bâtis avec la scène (une fois par décor), repris ici de leurs places de départ : sous le voile de la préparation
     S.animaux = animauxDe(sc, S.nature);
-    if (demo) S.cinema = B.cinema.preparer(c, sc.decor, S.animaux, course.physique.world);
+    if (demo) {
+      S.cinema = B.cinema.preparer(c, sc.decor, S.animaux, course.physique.world);
+      S.fpsDemo = B.cadence.compteurImages();
+    }
     // Le public de la séance : moins nombreux sous la pluie, en hiver et la nuit ; son animation repart de zéro.
     if (sc.public) {
       B.public.reinitialiser(sc.public);
@@ -99290,7 +99524,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     numeroSeance: 0, seanceAcceptee: null, dernierDepart: -Infinity };
   const VERSION_CHOIX_PNEUS = 2, VERSION_PNEUS_RESEAU = 1;
   // Empreinte des sources du build, incluant catalogue, générateur, limites et collisions : même piste, même jeu.
-  const REVISION_PISTES = '842356922daea0c2f0179a7942b910c92323702ab8548f8200945508246c5366';
+  const REVISION_PISTES = '8f716f51ce37b86736ab385724f8c9266cf9e248064c613f9fbde27fd1da537d';
   function contratPiste(i) {
     return Number.isInteger(i) && CATALOGUE[i] ? { id: CATALOGUE[i].id, revision: REVISION_PISTES, physique: PHYSIQUE } : null;
   }
@@ -102117,9 +102351,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     // compteur d'images : la cadence réellement tenue (images rendues par seconde, lissées sur la grille de l'écran),
     // virée à l'ambre sous 90 % de la cadence visée — l'écran divisé par le diviseur de la cadence, et non 60 d'office :
     // 30 images tenues sur un écran bridé à 30 Hz ne sont pas une alerte, 100 sur un écran 144 Hz en sont une
-    const fps = Math.round(imageCadence && imageCadence.ips || 1000 / Math.max(.5, dureeImage));
-    const cible = imageCadence ? 1 / (imageCadence.periode * imageCadence.diviseur) : 60;
-    if (H['h-fps']) { texte(H['h-fps'], fps + ' FPS'); classe(H['h-fps'], 'bas', fps < .9 * cible); }
+    if (H['h-fps']) {
+      const cible = imageCadence ? 1 / (imageCadence.periode * imageCadence.diviseur) : 60;
+      const fps = demo ? S.fpsDemo?.actuel : Math.round(imageCadence && imageCadence.ips || 1000 / Math.max(.5, dureeImage));
+      const maximum = demo ? S.fpsDemo?.maximum : null;
+      if (x.fpsAffiche !== fps || x.maxFpsAffiche !== maximum || x.fpsDemoAffiche !== demo) {
+        texte(H['h-fps'], demo ? (fps ?? '—') + ' FPS · MAX ' + (maximum ?? '—') : fps + ' FPS');
+        x.fpsAffiche = fps; x.maxFpsAffiche = maximum; x.fpsDemoAffiche = demo;
+      }
+      classe(H['h-fps'], 'bas', fps != null && fps < .9 * cible);
+    }
   }
 
   // ---------------------------------------------------------------- écrans
@@ -102260,7 +102501,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
 
   function aller(nom) {
     const precedent = ecran;
-    if (nom !== precedent) B.navigationMenu.fermerSaisie(document, false);
+    if (nom !== precedent) {
+      B.navigationMenu.fermerSaisie(document, false);
+      if (precedent === 'demo' && session?.fpsDemo) B.cadence.releverImage(session.fpsDemo, null);
+      if (nom === 'demo') {
+        // Le HUD est partagé avec la course : effacer sa dernière lecture avant de le montrer.
+        const m = session?.fpsDemo;
+        texte(H['h-fps'], '— FPS · MAX ' + (m?.maximum ?? '—')); classe(H['h-fps'], 'bas', false);
+        HUD1.fpsDemoAffiche = null;
+      }
+    }
     if (nom !== 'course') suspendreAnnoncesVirages();
     if (precedent === 'preparation' && nom !== 'preparation') annulerConditions();
     if (nom === 'preparation' && precedent !== 'preparation' && precedent !== 'reglages') {
@@ -103742,12 +103992,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     // Le temps passé dans un onglet masqué ne doit pas faire baisser la qualité au retour, ni compter comme une
     // image ratée ou du temps à rattraper.
     tPrec = 0;
+    if (session?.fpsDemo) B.cadence.releverImage(session.fpsDemo, null);
     B.cadence.oublier(cadence);
     B.qualite.avancer(palier, 0, { actif: false });
     B.mesures.reinitialiser();
   }
   function image(t) {
     requestAnimationFrame(image);
+    const fpsDemo = session?.fpsDemo;
+    const demoVisible = fpsDemo && ecran === 'demo' && !document.hidden && !prepa.enCours && !prepa.voile && !detectionGraphiqueActive;
+    if (fpsDemo && !demoVisible && fpsDemo.debut !== null) B.cadence.releverImage(fpsDemo, null);
     // Le banc possède temporairement le renderer. Aucune seconde boucle de jeu ne pollue la mesure, et l'intervalle
     // qui suit le banc n'est pas du temps à rattraper.
     if (detectionGraphiqueActive) { tPrec = 0; B.cadence.oublier(cadence); return; }
@@ -103834,6 +104088,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     S.imageFigee = horlogeReelle;
     if (S.type === 'vitrine') S.suiviRang = Math.floor(horlogeReelle / 18) % 4;
     const dtVu = tourne ? dtReel : 0, cam = rendreImage(S, alpha, dtVu);
+    // Les rappels RAF ignorés par le limiteur, les glaces et les images de chauffe
+    // n'arrivent pas ici comme vue principale affichée. t reste réel, même au ralenti.
+    if (demoVisible && cam && S.fpsDemo === fpsDemo && ecran === 'demo') B.cadence.releverImage(fpsDemo, t, cadence);
     if (tourne) majPalier(S, f.intervalle, f);
     const tHud = B.mesures.actif ? performance.now() : 0;
     if (S.type !== 'vitrine') {
@@ -103927,19 +104184,23 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
       // la recommandation reste affichée ; les options que le joueur a gardées ou changées depuis sont nommées
       const choisis = B.autoconfig.reglages(dernier.selection), nom = B.autoconfig.profils[dernier.selection].nom;
       const gardes = B.autoconfig.CLES.filter(k => reglages[k] !== choisis[k]);
-      etat.textContent = 'Profil estimé : ' + nom + ' · capacités déclarées, sans test de charge.'
+      const origine = dernier.performancesMesurees ? 'Configuration mesurée par le test WebGPU : '
+        : dernier.repli ? 'Mesure indisponible. Configuration prudente : ' : 'Configuration estimée : ';
+      etat.textContent = origine + nom + '.'
         + (gardes.length ? ' Vos choix gardés : ' + gardes.map(k => B.autoconfig.NOMS[k]).join(', ') + '.'
           : ' Réglages appliqués.');
-    } else etat.textContent = 'Profil prudent disponible, sans test de charge.';
+    } else if (dernier?.motif === 'annule') etat.textContent = 'Détection passée. Vos réglages sont conservés.';
+    else if (dernier?.motif === 'onglet_masque') etat.textContent = 'Détection interrompue en arrière-plan. Vous pouvez la relancer ici.';
+    else etat.textContent = 'Le test WebGPU détermine la configuration conseillée pour cet appareil.';
   }
-  // toutAppliquer (détection lancée à la main) : demande explicite de remplacer TOUS les choix graphiques. Une
-  // détection automatique (nouvelle version) ne change que les options que le joueur n'a pas modifiées depuis la
-  // précédente (sans détection précédente : depuis les valeurs d'usine) ; elle mémorise la recommandation, que
-  // l'onglet Image montre. Passée ou interrompue, elle est notée pour ne pas revenir à chaque ouverture.
+  // Au démarrage, conserver les choix individuels. Le bouton de l’onglet Image
+  // demande explicitement de remplacer les options graphiques par le profil.
   function appliquerDetection(resultat, toutAppliquer) {
     const precedent = lireStock(B.autoconfig.CLE, null);
     if (!resultat || resultat.statut !== 'ok') {
-      if (!toutAppliquer && resultat && resultat.empreinte) ecrireStock(B.autoconfig.CLE, B.autoconfig.marquer(precedent, resultat));
+      if (resultat?.motif === 'annule' && (!toutAppliquer || !B.autoconfig.cacheValide(precedent, resultat.empreinte)
+          || precedent?.methode !== B.autoconfig.METHODE_WEBGPU))
+        ecrireStock(B.autoconfig.CLE, B.autoconfig.marquer(precedent, resultat));
       return false;
     }
     const choisis = B.autoconfig.reglages(resultat.selection);
@@ -103952,7 +104213,6 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     if (toutAppliquer) reglages.fauneCoupeeManuellement = false;
     Object.assign(reglages, f.valeurs);
     resultat.appliques = f.reference; resultat.gardes = f.gardes;
-    // Recommandation prudente ; aucun essai de rendu n'a été lancé.
     gpuModeste = resultat.selection === 'low';
     capacitesRendu = Object.freeze({ ...capacitesRendu, gpuModeste });
     Object.assign(palier, { n: 0, somme: 0, compte: 0, t: 0, aise: 0 });
@@ -103962,19 +104222,59 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
     return true;
   }
   async function detecterGraphismes(auDemarrage = false) {
-    if (detectionGraphiqueActive || !rendu || (session && session.enLigne) || (EL && EL.R)) return null;
+    if (detectionGraphiqueActive || !rendu || contexteRenduPerdu || session?.enLigne || EL?.R) return null;
+    const A = B.autoconfig, empreinte = empreinteDetection(), methode = A.METHODE_WEBGPU;
+    const boite = $('autodetection'), etape = $('detection-texte'), jauge = $('detection-progres');
+    const foyer = document.activeElement;
+    let masque = pageCachee();
+    const surveiller = () => { if (pageCachee()) masque = true; };
+    const interruption = () => contexteRenduPerdu || rendu.stats.deviceLost ? 'contexte_perdu'
+      : annulerDetection ? 'annule' : masque ? 'onglet_masque' : null;
     detectionGraphiqueActive = true;
+    annulerDetection = false;
+    document.addEventListener('visibilitychange', surveiller);
     try {
-      const resultat = B.autoconfig.passive(capacitesDeclarees(), empreinteDetection());
-      derniereDetection = resultat;
-      appliquerDetection(resultat, !auDemarrage);
-      if (!auDemarrage && !contexteRenduPerdu) appliquerPalier();
-      if (!auDemarrage && !contexteRenduPerdu && session && session.type === 'vitrine') lancerVitrine(session.i);
-      if (!auDemarrage && ecran === 'reglages') remplirReglages();
+      etape.textContent = 'Préparation du test WebGPU…';
+      jauge.value = 0;
+      boite.hidden = false;
+      $('detection-annuler').focus();
+      const appareil = A.recommander(capacitesDeclarees());
+      const base = { revision: A.REVISION, methode, empreinte, appareil, date: Date.now() };
+      let resultat;
+      try {
+        if (interruption()) throw { motif: interruption() };
+        const essai = await A.mesurerWebGPU({ device: rendu.gpu.device, largeur: canvas.width, hauteur: canvas.height,
+          annule: () => !!interruption(), progression(texte, fraction) {
+            if (interruption()) return;
+            if (Number.isFinite(fraction)) jauge.value = clamp(fraction, 0, 1);
+            if (texte && texte !== etape.textContent) etape.textContent = texte;
+          } });
+        if (interruption()) throw { motif: interruption() };
+        if (!Object.hasOwn(A.profils, essai.selection) || !Array.isArray(essai.mesures) || !essai.mesures.length)
+          throw { motif: 'mesure_impossible' };
+        resultat = { ...essai, ...base, statut: 'ok', performancesMesurees: true, reglages: A.reglages(essai.selection) };
+      } catch (e) {
+        const motif = interruption() || e?.motif || 'mesure_impossible';
+        if (motif === 'annule' || motif === 'onglet_masque')
+          resultat = { ...base, statut: 'interrompu', motif, mesures: [], performancesMesurees: false };
+        else resultat = { ...base, statut: 'ok', motif, repli: true, selection: appareil.selection,
+          reglages: A.reglages(appareil.selection), mesures: [], performancesMesurees: false };
+      }
+      const applique = appliquerDetection(resultat, !auDemarrage);
+      const precedent = lireStock(A.CLE, null);
+      derniereDetection = applique || !A.cacheValide(precedent, empreinte) ? resultat : precedent;
+      if (applique && !auDemarrage && !contexteRenduPerdu && !rendu.stats.deviceLost) {
+        appliquerPalier();
+        if (session?.type === 'vitrine') lancerVitrine(session.i);
+        if (ecran === 'reglages') remplirReglages();
+      }
       return resultat;
     } finally {
+      document.removeEventListener('visibilitychange', surveiller);
       detectionGraphiqueActive = false;
+      boite.hidden = true;
       majDetectionGraphique();
+      if (!auDemarrage && !contexteRenduPerdu && !rendu.stats.deviceLost) foyer?.focus?.();
     }
   }
   $('r-detecter').addEventListener('click', () => { void detecterGraphismes(false); });
@@ -103982,7 +104282,15 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
   document.addEventListener('change', e => {
     if (ecran === 'reglages' && B.autoconfig.CLES.includes(e.target.name)) majDetectionGraphique();
   });
-  addEventListener('keydown', e => { if (detectionGraphiqueActive && e.code === 'Escape') { annulerDetection = true; e.preventDefault(); } });
+  addEventListener('keydown', e => {
+    if (!detectionGraphiqueActive) return;
+    e.stopImmediatePropagation();
+    if (e.code === 'Escape' || e.code === 'Tab') {
+      e.preventDefault();
+      if (e.code === 'Escape') annulerDetection = true;
+      else $('detection-annuler').focus();
+    }
+  }, true);
 
   // Les navigateurs suspendent la présentation d’une page en arrière-plan.
   const pageCachee = () => typeof document !== 'undefined' && document.visibilityState === 'hidden';
@@ -104024,9 +104332,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
       capacitesRendu = B.graphismes.capacites(optionsRendu, gpuModeste, window.devicePixelRatio || 1);
       palier.n = gpuModeste ? 1 : 0;
       const mesure = lireStock(B.autoconfig.CLE, null);
-      // La migration d'une ancienne mesure, un premier lancement ou une nouvelle
-      // version ne déclenchent qu'une lecture passive des capacités déclarées.
-      if (!B.autoconfig.cacheValide(mesure, empreinteDetection()) || mesure.methode !== B.autoconfig.METHODE_PASSIVE)
+      if (!B.autoconfig.cacheValide(mesure, empreinteDetection()) || mesure.methode !== B.autoconfig.METHODE_WEBGPU)
         await detecterGraphismes(true);
       else {
         derniereDetection = mesure;
@@ -104035,7 +104341,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
           capacitesRendu = Object.freeze({ ...capacitesRendu, gpuModeste });
         }
       }
-      // Résoudre le profil avant la première allocation de cibles de rendu :
+      if (contexteRenduPerdu || rendu.stats.deviceLost) return;
+      // Résoudre le profil avant la première séance :
       // un téléphone ne passe pas brièvement par le profil Auto plus coûteux.
       B.graphismes.stabiliser(etatProfils, reglages.qualite, palier.n, horlogeProfils());
       appliquerPalier();

@@ -10,7 +10,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { horlogeCapture } from '../controle-visuel.mjs';
-import { instrumenterDemarrageMobile } from './demarrage-mobile.mjs';
+import { instrumenterDemarrageMobile, verifierMesureGraphique } from './demarrage-mobile.mjs';
 
 export const UA_XBOX = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox Series X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0';
 
@@ -64,7 +64,7 @@ export function observerConduiteXbox() {
 }
 
 export function releverXbox() {
-  const J = BITUME_JEU, trace = __BITUME_XBOX, passive = __BITUME_MOBILE;
+  const J = BITUME_JEU, trace = __BITUME_XBOX, profil = __BITUME_MOBILE;
   const toile = document.getElementById('scene'), gpu = J.rendu?.gpu, S = J.session, chargement = J.chargement;
   return {
     ecran: J.ecran, etape: J.menuArcade.etape, type: S?.type, phase: S?.course?.phase,
@@ -76,7 +76,7 @@ export function releverXbox() {
     qualite: J.reglages.qualite, manettes: J.reglages.manettes,
     stocke: JSON.parse(localStorage.getItem('bitume.reglages')),
     cache: JSON.parse(localStorage.getItem(BITUME.autoconfig.CLE)),
-    stockageInitial: passive.stockageInitial, appels: { ...passive.appels }, surveilles: { ...passive.surveilles },
+    stockageInitial: profil.stockageInitial, appels: { ...profil.appels }, surveilles: { ...profil.surveilles },
     viewport: [innerWidth, innerHeight, devicePixelRatio], userAgent: navigator.userAgent,
     framebuffer: gpu ? [gpu.context.canvas.width, gpu.context.canvas.height] : null,
     toile: toile ? [toile.width, toile.height] : null,
@@ -97,12 +97,8 @@ export function verifierProfilXbox(q, premier = false) {
   assert.match(q.userAgent, /Xbox.*Edg\//);
   assert.deepEqual(q.viewport, [3840, 2160, 1]);
   assert.equal(q.webgpu, true); assert.equal(q.physx, true);
-  assert.deepEqual(q.surveilles, { benchmark: true, sceneBench: false, passive: true });
-  assert.equal(q.appels.benchmark, 0, 'aucun appel au banc au démarrage ou dans le parcours');
-  assert.equal(q.appels.sceneBench, 0, 'aucune scène de mesure');
-  if (premier) assert.ok(q.appels.passive >= 1, 'recommandation passive exécutée au premier lancement');
-  assert.equal(q.cache?.methode, 'capacites-declarees');
-  assert.equal(q.cache?.selection, 'low'); assert.equal(q.qualite, 'low');
+  verifierMesureGraphique({ ...q, reglagesEnregistres: q.stocke }, premier ? 1 : 0);
+  if (q.cache.statut === 'ok') assert.equal(q.qualite, q.cache.reglages.qualite);
   for (const dimensions of [q.framebuffer, q.toile]) {
     assert.ok(dimensions && dimensions[0] > 0 && dimensions[1] > 0, 'toile réelle créée');
     assert.ok(dimensions[0] <= 1280 && dimensions[1] <= 720, 'rendu Xbox 4K borné : ' + dimensions);
@@ -223,7 +219,7 @@ export async function qualifierCommandesXbox(o) {
   try {
     await page.goto(o.url, { waitUntil: 'load', timeout: 180000 }); await titrePret();
     let q = await lire(); verifierProfilXbox(q, true);
-    noter('Premier démarrage Xbox 4K sans banc et framebuffer borné', { observation: q });
+    noter('Premier démarrage Xbox 4K avec détection WebGPU et framebuffer borné', { observation: q });
     await capture('titre-xbox-4k');
 
     const pointeurAvant = q.pointeur;
@@ -231,28 +227,28 @@ export async function qualifierCommandesXbox(o) {
     assert.equal(q.ecran, 'preparation'); assert.equal(q.etape, 0, 'A n’ouvre qu’une étape');
     assert.match(q.statutPreparation, /Joueur 1 : manette/, 'le solo Auto annonce la manette affectée à J1');
     assert.equal(q.pointeur, pointeurAvant, 'parcours effectué sans pointeur synthétique');
-    await bouton(1); assert.equal((await lire()).ecran, 'titre');
-    noter('Croix et A ouvrent la préparation, B revient, sans activation de pointeur');
+    await bouton(8); assert.equal((await lire()).ecran, 'titre');
+    noter('Croix et A ouvrent la préparation, View revient, sans activation de pointeur');
 
     await choisir('[data-aller="reglages"]'); await ongletCommandes();
     q = await lire(); assert.ok(q.statutJoueur.trim(), 'état de connexion par joueur visible');
     const avantAnnulation = q.manettes;
     await choisir(gazUi); await pas(2);
     assert.equal((await lire()).annulerVisible, true, 'capture de bouton ouverte');
-    await bouton(1); q = await lire();
-    assert.equal(q.ecran, 'reglages', 'B annule la capture sans quitter les réglages');
+    await bouton(8); q = await lire();
+    assert.equal(q.ecran, 'reglages', 'View annule la capture sans quitter les réglages');
     assert.equal(q.annulerVisible, false); assert.deepEqual(q.manettes, avantAnnulation);
-    noter('B annule la capture sans changer les affectations ni quitter les réglages');
+    noter('View annule la capture sans changer les affectations ni quitter les réglages');
 
     await cibler(gazUi); await valeur(0, 1); await pas(1);
     await page.evaluate(() => { __BITUME_XBOX.pads[0].axes[0] = .4; });
     await valeur(0, 0); await pas(2);
     assert.equal((await lire()).annulerVisible, true, 'capture maintenue avec le stick décalé');
-    await bouton(1); q = await lire();
+    await bouton(8); q = await lire();
     assert.equal(q.annulerVisible, false); assert.equal(q.ecran, 'reglages');
     assert.deepEqual(q.manettes, avantAnnulation);
     await page.evaluate(() => { __BITUME_XBOX.pads[0].axes[0] = 0; }); await pas(2);
-    noter('B permet de quitter une capture même si le stick ne revient pas au neutre');
+    noter('View permet de quitter une capture même si le stick ne revient pas au neutre');
 
     await choisir(gazUi); await pas(2); await bouton(2); q = await lire();
     assert.equal(q.annulerVisible, false);
@@ -300,8 +296,8 @@ export async function qualifierCommandesXbox(o) {
     await cibler('input[name="rcmd0"]'); await bouton(14);
     assert.equal(await page.locator('input[name="rcmd0"][value="auto"]').isChecked(), true,
       'le mode Auto est choisi à la manette dans le menu');
-    await bouton(1); assert.equal((await lire()).ecran, 'pause');
-    await bouton(1); assert.equal((await lire()).ecran, 'course');
+    await bouton(8); assert.equal((await lire()).ecran, 'pause');
+    await bouton(8); assert.equal((await lire()).ecran, 'course');
     q = await commandeFraiche(); const vitesseAvantRt = q.vitesse;
     await valeur(7, 1); q = await commandeFraiche(12);
     assert.equal(q.commande.gaz, 1); assert.equal(q.commande.frein, 0);

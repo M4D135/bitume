@@ -1,4 +1,4 @@
-/* BITUME — réglages locaux. Le jeu utilise uniquement les capacités déclarées du navigateur.
+/* BITUME — réglages locaux. Le mini-benchmark local WebGPU mesure le débit de rendu au lancement d’une version.
    Le banc de rafales reste disponible pour les outils de qualification explicitement lancés. */
 (function (B) {
   'use strict';
@@ -9,17 +9,17 @@
   // fil principal mesuré une image par rappel, comme en course ; palier proche de la limite mesuré deux ou trois fois,
   // refus de peu provisoire. Révision 5 : Xbox déclarée par le navigateur,
   // recommandation prudente sans mesure. Révision 6 : silhouettes proches sur le profil léger.
-  const REVISION = 6, CLE = 'bitume.detection.v1', METHODE = 'rafales';
-  const METHODE_PASSIVE = 'capacites-declarees';
+  const REVISION = 7, CLE = 'bitume.detection.v1', METHODE = 'rafales';
+  const METHODE_PASSIVE = 'capacites-declarees', METHODE_WEBGPU = 'mini-webgpu';
   const CLES = Object.freeze(['qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'retro']);
   // Noms courts des options, pour dire dans l'onglet Image lesquelles le joueur a gardées.
   const NOMS = Object.freeze({ qualite: 'qualité', anticrenelage: 'anticrénelage', ombres: 'ombres', vegetation: 'végétation',
     faune: 'faune', retro: 'rétroviseurs' });
   const profils = {
-    low: { nom: 'Légère', qualite: 'low', anticrenelage: 'off', ombres: 'off', vegetation: 'off', faune: 'low', retro: 'non' },
+    low: { nom: 'Faible', qualite: 'low', anticrenelage: 'off', ombres: 'off', vegetation: 'off', faune: 'low', retro: 'non' },
     medium: { nom: 'Moyenne', qualite: 'medium', anticrenelage: 'msaa4', ombres: 'medium', vegetation: 'medium', faune: 'medium', retro: 'auto' },
-    high: { nom: 'Fine', qualite: 'high', anticrenelage: 'msaa4', ombres: 'high', vegetation: 'high', faune: 'high', retro: 'auto' },
-    extreme: { nom: 'Fine · végétation extrême', qualite: 'high', anticrenelage: 'msaa4', ombres: 'high', vegetation: 'ultra', faune: 'ultra', retro: 'auto' },
+    high: { nom: 'Puissante', qualite: 'high', anticrenelage: 'msaa4', ombres: 'high', vegetation: 'high', faune: 'high', retro: 'auto' },
+    extreme: { nom: 'Extra puissante', qualite: 'high', anticrenelage: 'msaa4', ombres: 'high', vegetation: 'ultra', faune: 'ultra', retro: 'auto' },
   };
   for (const p of Object.values(profils)) Object.freeze(p);
   Object.freeze(profils);
@@ -171,6 +171,12 @@
   // mesurer (src/jeu.js, premierPlan), et une trace laissée ainsi ne compte pas parmi les tentatives.
   function cacheValide(cache, cle) {
     if (!cache || cache.revision !== REVISION || cache.empreinte !== cle) return false;
+    if (cache.methode === METHODE_WEBGPU) {
+      if (cache.statut === 'interrompu') return cache.motif === 'annule';
+      return cache.statut === 'ok' && Object.hasOwn(profils, cache.selection)
+        && ((cache.performancesMesurees === true && Array.isArray(cache.mesures) && cache.mesures.length > 0)
+          || (cache.performancesMesurees === false && cache.repli === true));
+    }
     if (cache.methode === METHODE_PASSIVE) return cache.statut === 'ok'
       && Object.prototype.hasOwnProperty.call(profils, cache.selection) && cache.performancesMesurees === false;
     if (cache.statut === 'ok') return Object.prototype.hasOwnProperty.call(profils, cache.selection)
@@ -226,7 +232,7 @@
   // référence des choix du joueur et compte les tentatives de la même version.
   function marquer(precedent, resultat) {
     const r = { revision: REVISION, statut: 'interrompu', motif: resultat.motif || 'erreur', empreinte: resultat.empreinte,
-      tentatives: tentatives(precedent, resultat), date: Date.now(), methode: METHODE };
+      tentatives: tentatives(precedent, resultat), date: Date.now(), methode: resultat.methode || METHODE };
     const ref = reference(precedent);
     if (ref) r.appliques = ref;
     return r;
@@ -457,7 +463,7 @@
       return { revision: REVISION, statut: 'interrompu', motif: e && e.motif || 'erreur', empreinte: cle, mesures, methode: METHODE };
     }
   }
-  B.autoconfig = { REVISION, CLE, CLES, NOMS, METHODE, METHODE_PASSIVE, recommander, passive, BUDGET, FRACTION, LIMITE, IMAGES_SEULES, COURSE_PROCESSEUR, PART_PROCESSEUR,
+  B.autoconfig = { REVISION, CLE, CLES, NOMS, METHODE, METHODE_PASSIVE, METHODE_WEBGPU, mesurerWebGPU: options => B.bancConfiguration.mesurer(options), recommander, passive, BUDGET, FRACTION, LIMITE, IMAGES_SEULES, COURSE_PROCESSEUR, PART_PROCESSEUR,
     LIMITE_PROCESSEUR, GRIS_BAS, GRIS_HAUT, SERIES_MAX, PART_GLACES, EXTREME, ESPOIR, ESPOIR_VITE, SONDE_MS, COURSE_SIMULATION, TENTATIVES,
     DUREE_MAX, DELAI, PREPARATION_MAX, profils, empreinte, reglages, cacheValide, tentatives, reference, referenceProbable, fusionner, marquer,
     bilanRafales, zone, combiner, limiteProfil, choisir, peutEssayerExtreme, executer };

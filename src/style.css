@@ -467,7 +467,7 @@ body.tactile #b-pause { display: block; }
 .demo-tactile, body.tactile .demo-souris { display: none; }
 body.tactile .demo-tactile { display: inline; }
 #jeu[data-ecran="demo"] .feux, #jeu[data-ecran="demo"] #b-pause, #jeu[data-ecran="demo"] #h-delta-ligne, #jeu[data-ecran="demo"] .jauge-derive { display: none !important; }
-#jeu[data-ecran="demo"] :is(#c-pneus, #c-sante, .chronos, #h-fps, #h-virage) { display: none; }
+#jeu[data-ecran="demo"] :is(#c-pneus, #c-sante, .chronos, #h-virage) { display: none; }
 /* Sous 1 000 px de large, compteurs et chronos prennent le haut de l'écran : le bandeau passe dessous. */
 @media (max-width: 1000px) {
   .demo-bandeau { top: calc(max(var(--marge), env(safe-area-inset-top)) + 92px); }

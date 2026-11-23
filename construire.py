@@ -121,7 +121,7 @@ MODULES = [
     'conditions-course.js',
     'navigation-menu.js',
     'menu-arcade.js',  # écrans arcade, vrai tracé XYZ et aperçu 2D à cadence bornée
-    'autoconfig.js',
+    'banc-configuration.js', 'autoconfig.js',
     'commandes-manette.js',  # affectations analogiques indépendantes de chaque joueur
     # vibrations de manette : quatre sorties calculées une fois par image rendue, branchées par jeu.js
     'vibrations.js',

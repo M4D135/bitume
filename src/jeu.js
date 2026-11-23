@@ -480,7 +480,10 @@
       B.eauCarrosserie.preparer(S.modeles[k], (enl ? enl.graine : graineCourse) + k * 739);
     // bâtis avec la scène (une fois par décor), repris ici de leurs places de départ : sous le voile de la préparation
     S.animaux = animauxDe(sc, S.nature);
-    if (demo) S.cinema = B.cinema.preparer(c, sc.decor, S.animaux, course.physique.world);
+    if (demo) {
+      S.cinema = B.cinema.preparer(c, sc.decor, S.animaux, course.physique.world);
+      S.fpsDemo = B.cadence.compteurImages();
+    }
     // Le public de la séance : moins nombreux sous la pluie, en hiver et la nuit ; son animation repart de zéro.
     if (sc.public) {
       B.public.reinitialiser(sc.public);
@@ -4346,9 +4349,16 @@
     // compteur d'images : la cadence réellement tenue (images rendues par seconde, lissées sur la grille de l'écran),
     // virée à l'ambre sous 90 % de la cadence visée — l'écran divisé par le diviseur de la cadence, et non 60 d'office :
     // 30 images tenues sur un écran bridé à 30 Hz ne sont pas une alerte, 100 sur un écran 144 Hz en sont une
-    const fps = Math.round(imageCadence && imageCadence.ips || 1000 / Math.max(.5, dureeImage));
-    const cible = imageCadence ? 1 / (imageCadence.periode * imageCadence.diviseur) : 60;
-    if (H['h-fps']) { texte(H['h-fps'], fps + ' FPS'); classe(H['h-fps'], 'bas', fps < .9 * cible); }
+    if (H['h-fps']) {
+      const cible = imageCadence ? 1 / (imageCadence.periode * imageCadence.diviseur) : 60;
+      const fps = demo ? S.fpsDemo?.actuel : Math.round(imageCadence && imageCadence.ips || 1000 / Math.max(.5, dureeImage));
+      const maximum = demo ? S.fpsDemo?.maximum : null;
+      if (x.fpsAffiche !== fps || x.maxFpsAffiche !== maximum || x.fpsDemoAffiche !== demo) {
+        texte(H['h-fps'], demo ? (fps ?? '—') + ' FPS · MAX ' + (maximum ?? '—') : fps + ' FPS');
+        x.fpsAffiche = fps; x.maxFpsAffiche = maximum; x.fpsDemoAffiche = demo;
+      }
+      classe(H['h-fps'], 'bas', fps != null && fps < .9 * cible);
+    }
   }
 
   // ---------------------------------------------------------------- écrans
@@ -4489,7 +4499,16 @@
 
   function aller(nom) {
     const precedent = ecran;
-    if (nom !== precedent) B.navigationMenu.fermerSaisie(document, false);
+    if (nom !== precedent) {
+      B.navigationMenu.fermerSaisie(document, false);
+      if (precedent === 'demo' && session?.fpsDemo) B.cadence.releverImage(session.fpsDemo, null);
+      if (nom === 'demo') {
+        // Le HUD est partagé avec la course : effacer sa dernière lecture avant de le montrer.
+        const m = session?.fpsDemo;
+        texte(H['h-fps'], '— FPS · MAX ' + (m?.maximum ?? '—')); classe(H['h-fps'], 'bas', false);
+        HUD1.fpsDemoAffiche = null;
+      }
+    }
     if (nom !== 'course') suspendreAnnoncesVirages();
     if (precedent === 'preparation' && nom !== 'preparation') annulerConditions();
     if (nom === 'preparation' && precedent !== 'preparation' && precedent !== 'reglages') {
@@ -5971,12 +5990,16 @@
     // Le temps passé dans un onglet masqué ne doit pas faire baisser la qualité au retour, ni compter comme une
     // image ratée ou du temps à rattraper.
     tPrec = 0;
+    if (session?.fpsDemo) B.cadence.releverImage(session.fpsDemo, null);
     B.cadence.oublier(cadence);
     B.qualite.avancer(palier, 0, { actif: false });
     B.mesures.reinitialiser();
   }
   function image(t) {
     requestAnimationFrame(image);
+    const fpsDemo = session?.fpsDemo;
+    const demoVisible = fpsDemo && ecran === 'demo' && !document.hidden && !prepa.enCours && !prepa.voile && !detectionGraphiqueActive;
+    if (fpsDemo && !demoVisible && fpsDemo.debut !== null) B.cadence.releverImage(fpsDemo, null);
     // Le banc possède temporairement le renderer. Aucune seconde boucle de jeu ne pollue la mesure, et l'intervalle
     // qui suit le banc n'est pas du temps à rattraper.
     if (detectionGraphiqueActive) { tPrec = 0; B.cadence.oublier(cadence); return; }
@@ -6063,6 +6086,9 @@
     S.imageFigee = horlogeReelle;
     if (S.type === 'vitrine') S.suiviRang = Math.floor(horlogeReelle / 18) % 4;
     const dtVu = tourne ? dtReel : 0, cam = rendreImage(S, alpha, dtVu);
+    // Les rappels RAF ignorés par le limiteur, les glaces et les images de chauffe
+    // n'arrivent pas ici comme vue principale affichée. t reste réel, même au ralenti.
+    if (demoVisible && cam && S.fpsDemo === fpsDemo && ecran === 'demo') B.cadence.releverImage(fpsDemo, t, cadence);
     if (tourne) majPalier(S, f.intervalle, f);
     const tHud = B.mesures.actif ? performance.now() : 0;
     if (S.type !== 'vitrine') {
@@ -6156,19 +6182,23 @@
       // la recommandation reste affichée ; les options que le joueur a gardées ou changées depuis sont nommées
       const choisis = B.autoconfig.reglages(dernier.selection), nom = B.autoconfig.profils[dernier.selection].nom;
       const gardes = B.autoconfig.CLES.filter(k => reglages[k] !== choisis[k]);
-      etat.textContent = 'Profil estimé : ' + nom + ' · capacités déclarées, sans test de charge.'
+      const origine = dernier.performancesMesurees ? 'Configuration mesurée par le test WebGPU : '
+        : dernier.repli ? 'Mesure indisponible. Configuration prudente : ' : 'Configuration estimée : ';
+      etat.textContent = origine + nom + '.'
         + (gardes.length ? ' Vos choix gardés : ' + gardes.map(k => B.autoconfig.NOMS[k]).join(', ') + '.'
           : ' Réglages appliqués.');
-    } else etat.textContent = 'Profil prudent disponible, sans test de charge.';
+    } else if (dernier?.motif === 'annule') etat.textContent = 'Détection passée. Vos réglages sont conservés.';
+    else if (dernier?.motif === 'onglet_masque') etat.textContent = 'Détection interrompue en arrière-plan. Vous pouvez la relancer ici.';
+    else etat.textContent = 'Le test WebGPU détermine la configuration conseillée pour cet appareil.';
   }
-  // toutAppliquer (détection lancée à la main) : demande explicite de remplacer TOUS les choix graphiques. Une
-  // détection automatique (nouvelle version) ne change que les options que le joueur n'a pas modifiées depuis la
-  // précédente (sans détection précédente : depuis les valeurs d'usine) ; elle mémorise la recommandation, que
-  // l'onglet Image montre. Passée ou interrompue, elle est notée pour ne pas revenir à chaque ouverture.
+  // Au démarrage, conserver les choix individuels. Le bouton de l’onglet Image
+  // demande explicitement de remplacer les options graphiques par le profil.
   function appliquerDetection(resultat, toutAppliquer) {
     const precedent = lireStock(B.autoconfig.CLE, null);
     if (!resultat || resultat.statut !== 'ok') {
-      if (!toutAppliquer && resultat && resultat.empreinte) ecrireStock(B.autoconfig.CLE, B.autoconfig.marquer(precedent, resultat));
+      if (resultat?.motif === 'annule' && (!toutAppliquer || !B.autoconfig.cacheValide(precedent, resultat.empreinte)
+          || precedent?.methode !== B.autoconfig.METHODE_WEBGPU))
+        ecrireStock(B.autoconfig.CLE, B.autoconfig.marquer(precedent, resultat));
       return false;
     }
     const choisis = B.autoconfig.reglages(resultat.selection);
@@ -6181,7 +6211,6 @@
     if (toutAppliquer) reglages.fauneCoupeeManuellement = false;
     Object.assign(reglages, f.valeurs);
     resultat.appliques = f.reference; resultat.gardes = f.gardes;
-    // Recommandation prudente ; aucun essai de rendu n'a été lancé.
     gpuModeste = resultat.selection === 'low';
     capacitesRendu = Object.freeze({ ...capacitesRendu, gpuModeste });
     Object.assign(palier, { n: 0, somme: 0, compte: 0, t: 0, aise: 0 });
@@ -6191,19 +6220,59 @@
     return true;
   }
   async function detecterGraphismes(auDemarrage = false) {
-    if (detectionGraphiqueActive || !rendu || (session && session.enLigne) || (EL && EL.R)) return null;
+    if (detectionGraphiqueActive || !rendu || contexteRenduPerdu || session?.enLigne || EL?.R) return null;
+    const A = B.autoconfig, empreinte = empreinteDetection(), methode = A.METHODE_WEBGPU;
+    const boite = $('autodetection'), etape = $('detection-texte'), jauge = $('detection-progres');
+    const foyer = document.activeElement;
+    let masque = pageCachee();
+    const surveiller = () => { if (pageCachee()) masque = true; };
+    const interruption = () => contexteRenduPerdu || rendu.stats.deviceLost ? 'contexte_perdu'
+      : annulerDetection ? 'annule' : masque ? 'onglet_masque' : null;
     detectionGraphiqueActive = true;
+    annulerDetection = false;
+    document.addEventListener('visibilitychange', surveiller);
     try {
-      const resultat = B.autoconfig.passive(capacitesDeclarees(), empreinteDetection());
-      derniereDetection = resultat;
-      appliquerDetection(resultat, !auDemarrage);
-      if (!auDemarrage && !contexteRenduPerdu) appliquerPalier();
-      if (!auDemarrage && !contexteRenduPerdu && session && session.type === 'vitrine') lancerVitrine(session.i);
-      if (!auDemarrage && ecran === 'reglages') remplirReglages();
+      etape.textContent = 'Préparation du test WebGPU…';
+      jauge.value = 0;
+      boite.hidden = false;
+      $('detection-annuler').focus();
+      const appareil = A.recommander(capacitesDeclarees());
+      const base = { revision: A.REVISION, methode, empreinte, appareil, date: Date.now() };
+      let resultat;
+      try {
+        if (interruption()) throw { motif: interruption() };
+        const essai = await A.mesurerWebGPU({ device: rendu.gpu.device, largeur: canvas.width, hauteur: canvas.height,
+          annule: () => !!interruption(), progression(texte, fraction) {
+            if (interruption()) return;
+            if (Number.isFinite(fraction)) jauge.value = clamp(fraction, 0, 1);
+            if (texte && texte !== etape.textContent) etape.textContent = texte;
+          } });
+        if (interruption()) throw { motif: interruption() };
+        if (!Object.hasOwn(A.profils, essai.selection) || !Array.isArray(essai.mesures) || !essai.mesures.length)
+          throw { motif: 'mesure_impossible' };
+        resultat = { ...essai, ...base, statut: 'ok', performancesMesurees: true, reglages: A.reglages(essai.selection) };
+      } catch (e) {
+        const motif = interruption() || e?.motif || 'mesure_impossible';
+        if (motif === 'annule' || motif === 'onglet_masque')
+          resultat = { ...base, statut: 'interrompu', motif, mesures: [], performancesMesurees: false };
+        else resultat = { ...base, statut: 'ok', motif, repli: true, selection: appareil.selection,
+          reglages: A.reglages(appareil.selection), mesures: [], performancesMesurees: false };
+      }
+      const applique = appliquerDetection(resultat, !auDemarrage);
+      const precedent = lireStock(A.CLE, null);
+      derniereDetection = applique || !A.cacheValide(precedent, empreinte) ? resultat : precedent;
+      if (applique && !auDemarrage && !contexteRenduPerdu && !rendu.stats.deviceLost) {
+        appliquerPalier();
+        if (session?.type === 'vitrine') lancerVitrine(session.i);
+        if (ecran === 'reglages') remplirReglages();
+      }
       return resultat;
     } finally {
+      document.removeEventListener('visibilitychange', surveiller);
       detectionGraphiqueActive = false;
+      boite.hidden = true;
       majDetectionGraphique();
+      if (!auDemarrage && !contexteRenduPerdu && !rendu.stats.deviceLost) foyer?.focus?.();
     }
   }
   $('r-detecter').addEventListener('click', () => { void detecterGraphismes(false); });
@@ -6211,7 +6280,15 @@
   document.addEventListener('change', e => {
     if (ecran === 'reglages' && B.autoconfig.CLES.includes(e.target.name)) majDetectionGraphique();
   });
-  addEventListener('keydown', e => { if (detectionGraphiqueActive && e.code === 'Escape') { annulerDetection = true; e.preventDefault(); } });
+  addEventListener('keydown', e => {
+    if (!detectionGraphiqueActive) return;
+    e.stopImmediatePropagation();
+    if (e.code === 'Escape' || e.code === 'Tab') {
+      e.preventDefault();
+      if (e.code === 'Escape') annulerDetection = true;
+      else $('detection-annuler').focus();
+    }
+  }, true);
 
   // Les navigateurs suspendent la présentation d’une page en arrière-plan.
   const pageCachee = () => typeof document !== 'undefined' && document.visibilityState === 'hidden';
@@ -6253,9 +6330,7 @@
       capacitesRendu = B.graphismes.capacites(optionsRendu, gpuModeste, window.devicePixelRatio || 1);
       palier.n = gpuModeste ? 1 : 0;
       const mesure = lireStock(B.autoconfig.CLE, null);
-      // La migration d'une ancienne mesure, un premier lancement ou une nouvelle
-      // version ne déclenchent qu'une lecture passive des capacités déclarées.
-      if (!B.autoconfig.cacheValide(mesure, empreinteDetection()) || mesure.methode !== B.autoconfig.METHODE_PASSIVE)
+      if (!B.autoconfig.cacheValide(mesure, empreinteDetection()) || mesure.methode !== B.autoconfig.METHODE_WEBGPU)
         await detecterGraphismes(true);
       else {
         derniereDetection = mesure;
@@ -6264,7 +6339,8 @@
           capacitesRendu = Object.freeze({ ...capacitesRendu, gpuModeste });
         }
       }
-      // Résoudre le profil avant la première allocation de cibles de rendu :
+      if (contexteRenduPerdu || rendu.stats.deviceLost) return;
+      // Résoudre le profil avant la première séance :
       // un téléphone ne passe pas brièvement par le profil Auto plus coûteux.
       B.graphismes.stabiliser(etatProfils, reglages.qualite, palier.n, horlogeProfils());
       appliquerPalier();
