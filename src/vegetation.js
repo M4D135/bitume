@@ -26,8 +26,8 @@
   // Brins par m² dans une poche riche, avant arrondi au maillage disponible. La campagne est moins drue
   // que les abords parcourus en voiture ; le champ écologique module la présence avant toute allocation.
   const TAPIS = Object.freeze({
-    medium: Object.freeze({ densite: 2, terrain: .04, maximum: 180000, maillages: [8, 32], variantes: 1, plafonner: true }),
-    high: Object.freeze({ densite: 8, terrain: .10, maximum: 180000, maillages: [8, 128], variantes: 1, plafonner: true }),
+    medium: Object.freeze({ densite: 2, terrain: .04, maximum: 180000, maillages: [8, 32], variantes: 2, plafonner: true }),
+    high: Object.freeze({ densite: 8, terrain: .10, maximum: 180000, maillages: [8, 128], variantes: 2, plafonner: true }),
     ultra: Object.freeze({ densite: 240, terrain: 2, maximum: 220000, maillages: [8, 128, 1024, 4096], variantes: 2 }),
   });
 
@@ -131,8 +131,8 @@
   // Points bleus périodiques : chaque racine choisit le meilleur de douze candidats, avec la distance
   // torique aux racines déjà placées. Ni lignes de plantation ni amas au centre de la tuile. La génération
   // coûte une seule fois à l'ouverture ; le moteur n'actualise ensuite que ses uniformes de vent.
-  function prairie() {
-    const r = hasard(180729), racines = [], proche = [], loin = [];
+  function prairie(graine) {
+    const r = hasard(graine), racines = [], proche = [], loin = [];
     for (let i = 0; i < BRINS_TUILE; i++) {
       let meilleur = null, distance = -1;
       for (let essai = 0; essai < 12; essai++) {
@@ -147,13 +147,15 @@
       racines.push(meilleur);
       const x = (meilleur[0] - .5) * .90, z = (meilleur[1] - .5) * .90;
       const cap = r() * PI2, largeur = .0035 + r() * .0035, penche = .012 + r() * .025;
-      const hauteur = i === 0 ? 1 : .56 + r() * .44, dx = Math.cos(cap), dz = Math.sin(cap);
+      const hauteur = .56 + r() * .44, dx = Math.cos(cap), dz = Math.sin(cap);
       const a = [x - dz * largeur, -.5, z + dx * largeur];
       const b = [x + dz * largeur, -.5, z - dx * largeur];
       const c = [x + dx * penche, -.5 + hauteur, z + dz * penche];
-      const milieu = p => p.map((v, k) => v + (c[k] - v) * .53), am = milieu(a), bm = milieu(b);
-      // La version proche subdivise EXACTEMENT le triangle lointain : surface, racines, normales et
-      // silhouette identiques au repos. Le milieu sert seulement à courber le brin sous le vent GPU.
+      const courbe = penche * (.12 + r() * .24);
+      const milieu = p => [p[0] + (c[0] - p[0]) * .53 - dx * courbe,
+        p[1] + (c[1] - p[1]) * .53, p[2] + (c[2] - p[2]) * .53 - dz * courbe];
+      const am = milieu(a), bm = milieu(b);
+      // Le maillage proche courbe le brin en gardant le pied et la pointe du triangle lointain.
       triangle(proche, a, b, bm, true); triangle(proche, a, bm, am, true); triangle(proche, am, bm, c, true);
       triangle(loin, a, b, c, true);
     }
@@ -178,7 +180,10 @@
       const dx = Math.cos(cap), dz = Math.sin(cap), largeur = .00020 + r() * .00020, penche = .00015 + r() * .00040;
       const a = [x - dz * largeur, -.5, z + dx * largeur], b = [x + dz * largeur, -.5, z - dx * largeur];
       const c = [x + dx * penche, -.5 + .48 + r() * .52, z + dz * penche];
-      const milieu = p => p.map((v, k) => v + (c[k] - v) * .53), am = milieu(a), bm = milieu(b);
+      const courbe = penche * (.12 + r() * .24);
+      const milieu = p => [p[0] + (c[0] - p[0]) * .53 - dx * courbe,
+        p[1] + (c[1] - p[1]) * .53, p[2] + (c[2] - p[2]) * .53 - dz * courbe];
+      const am = milieu(a), bm = milieu(b);
       triangle(proche, a, b, bm, true); triangle(proche, a, bm, am, true); triangle(proche, am, bm, c, true);
       if (rang === 0) triangle(loin, a, b, c, true);
     }
@@ -291,7 +296,7 @@
   }
   const H = normaliserPaire(herbe(4), herbe(2)), T = normaliserPaire(taillis(4), taillis(2));
   const F = normaliserPaire(fougere(4), fougere(2)), FLE = normaliserPaire(fleur(4), fleur(2));
-  const U = normaliserPaire(terreau(4), terreau(2)), P = prairie();
+  const U = normaliserPaire(terreau(4), terreau(2)), P = prairie(0);
   const FORMES_PRAIRIE = {}, BRINS_FORMES = { 'herbes-val': 9, 'herbes-val-loin': 9, 'prairie-val': 96, 'prairie-val-loin': 96 };
   for (let variante = 0; variante < 2; variante++) {
     const p = prairieTriangle(variante);
