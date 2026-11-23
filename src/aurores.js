@@ -78,11 +78,13 @@
       rubans.push(Object.freeze({ x: cx + Math.sin(a) * d, y: haut + 780 + i * 90, z: cz - Math.cos(a) * d,
         cap: -a, largeur: 3380 - i * 150, hauteur: 390 - i * 28, profondeur: 620 + i * 55, phase }));
     }
-    return Object.freeze({ type: PREPARATION, circuit, actif, rubans: Object.freeze(rubans) });
+    return Object.freeze({ type: PREPARATION, circuit, graine, actif, rubans: Object.freeze(rubans) });
   }
-  // creer(circuit) seul calcule aussi les rubans ; avec la préparation du même circuit, seuls les objets des deux vues sont créés.
+  // creer réutilise les rubans si la préparation correspond au circuit et à sa graine actuelle.
   function creer(circuit, preparation) {
-    const p = preparation && preparation.type === PREPARATION && preparation.circuit === circuit ? preparation : preparer(circuit);
+    const graine = (circuit?.graine || 0) >>> 0;
+    const p = preparation && preparation.type === PREPARATION && preparation.circuit === circuit && preparation.graine === graine
+      ? preparation : preparer(circuit);
     return { actif: p.actif, rubans: p.rubans, preparation: p, vues: p.actif ? [vue(), vue()] : [],
       stats: { rubans: 0, objets: 0, triangles: 0, intensite: 0 } };
   }
