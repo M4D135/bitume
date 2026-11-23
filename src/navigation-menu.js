@@ -455,9 +455,17 @@
   function naviguer(zone, nouveau, options = {}) {
     const saisie = zone && SAISIES.get(zone.ownerDocument);
     if (saisie) {
-      if (saisie.zone !== zone || zone.ownerDocument.hidden) fermerSaisie(zone.ownerDocument, false);
-      else if (!saisie.cible.isConnected || !visible(saisie.cible)) fermerSaisie(zone.ownerDocument);
-      else zone = saisie.dialogue;
+      const doc = zone.ownerDocument;
+      if (doc.hidden) fermerSaisie(doc, false);
+      else if (saisie.zone !== zone) {
+        fermerSaisie(doc, false);
+        const actif = doc.activeElement;
+        if (actif === doc.body || !zone.contains(actif) || !restaurable(doc, actif)) {
+          restaurerNavigation(zone);
+        }
+      } else if (!zone.contains(saisie.cible) || !restaurable(doc, saisie.cible)) {
+        fermerSaisie(doc);
+      } else zone = saisie.dialogue;
     }
     if (!zone || zone.hidden || zone.closest(MASQUE) || zone.ownerDocument.hidden) return false;
     if (!ETATS.has(zone)) initialiser(zone);
