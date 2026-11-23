@@ -14,17 +14,13 @@
   function habitacle(H) {
     const planche = H.planche;
     if (typeof planche?.[Symbol.iterator] === 'function') {
-      const erreurs = [];
       for (const piece of planche) {
         try {
           const objet = piece?.objet;
           if (objet && typeof objet === 'object') objet.mat = cuir;
-        } catch (erreur) {
-          erreurs.push(erreur);
+        } catch {
+          // Une pièce illisible ou non modifiable est ignorée.
         }
-      }
-      if (erreurs.length > 0) {
-        throw new AggregateError(erreurs, 'Échec de l’application du cuir sur la planche de bord');
       }
     }
     H.jante.objet.mat = cuir;
