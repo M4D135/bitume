@@ -1,0 +1,121 @@
+{
+  "date": "2026-11-23",
+  "version": "0.2.287",
+  "commit": "783ef1fabd5c586158cd8cb5611fe5293616b510",
+  "url": "https://bitume.estrasse.fr/",
+  "sha256": "230b4d9c1489113997f96bb3123b6cd8e52cb4472db17bb331d470366d82e1d9",
+  "verification": "Sélection par la carte du menu Solo et départ sur le site en Chrome WebGPU. Le profil de contrôle contient un record p19 de 1 min 28,500 s enregistré sous chacun des neuf identifiants historiques.",
+  "circuits": [
+    {
+      "id": "forets-du-pacifique",
+      "nom": "Circuit des Longues Ombres",
+      "fiche_record": "Votre record sur Circuit des Longues Ombres : 1:28,500",
+      "phase": "course",
+      "physx": true,
+      "voitures": 12,
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "id": "karst-et-lagon",
+      "nom": "Boucle des Eaux Dormantes",
+      "fiche_record": "Votre record sur Boucle des Eaux Dormantes : 1:28,500",
+      "phase": "course",
+      "physx": true,
+      "voitures": 12,
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "id": "sierra",
+      "nom": "Circuit du Second Écho",
+      "fiche_record": "Votre record sur Circuit du Second Écho : 1:28,500",
+      "phase": "course",
+      "physx": true,
+      "voitures": 12,
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "id": "nord-atlantique",
+      "nom": "Passe du Beau Temps",
+      "fiche_record": "Votre record sur Passe du Beau Temps : 1:28,500",
+      "phase": "course",
+      "physx": true,
+      "voitures": 12,
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "id": "route-des-cimes",
+      "nom": "Lacets de l’Aiglière",
+      "fiche_record": "Votre record sur Lacets de l’Aiglière : 1:28,500",
+      "phase": "course",
+      "physx": true,
+      "voitures": 12,
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "id": "baikal",
+      "nom": "Circuit de la Glace Vive",
+      "fiche_record": "Votre record sur Circuit de la Glace Vive : 1:28,500",
+      "phase": "course",
+      "physx": true,
+      "voitures": 12,
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "id": "ovale-des-forges",
+      "nom": "Autodrome des Alizés",
+      "fiche_record": "Votre record sur Autodrome des Alizés : 1:28,500",
+      "phase": "course",
+      "physx": true,
+      "voitures": 12,
+      "dimensions": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "id": "larche",
+      "nom": "Descente de Larche–Vinadio",
+      "fiche_record": "Votre record sur Descente de Larche–Vinadio : 1:28,500",
+      "phase": "course",
+      "physx": true,
+      "voitures": 12,
+      "dimensions": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "id": "marseille",
+      "nom": "Promenade de la Corniche",
+      "fiche_record": "Votre record sur Promenade de la Corniche : 1:28,500",
+      "phase": "course",
+      "physx": true,
+      "voitures": 12,
+      "dimensions": [
+        1920,
+        1080
+      ]
+    }
+  ],
+  "limites": [
+    "Deux tests historiques attendent encore onze circuits et une physique p17. La présente version comporte neuf circuits et utilise p19."
+  ]
+}
