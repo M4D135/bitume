@@ -134,7 +134,7 @@
       const cible = retenue ? (1 - lisse(PLEINE, PORTEE, s)) * borne01((dehors - s) / ECART) : 0;
       let force = forces[k] ?? 0;
       force += (cible - force) * LISSAGE_CONTACT;
-      forces[k] = force >= FORCE_MIN ? force : 0;
+      forces[k] = cible === 0 && force < FORCE_MIN ? 0 : force;
       if (forces[k] === 0) continue;
       const p = poses[k], o = nombre * FLOTTANTS;
       const estSuivie = k === suivie;
