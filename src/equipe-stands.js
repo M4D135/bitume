@@ -246,25 +246,42 @@
       m.barre=p('bevel',[.021,.045,.29],ivoire,16,1);
     }
   }
-  function cadrerCar(eq,v,pose) {
+  function cadrerCar(eq,v,pose,t) {
     const c=eq.car,f=eq.fBox,e=v?.etat,st=e?.stands;
     let x=f.x,y=f.y,z=f.z,cap=f.cap,pitch=Math.atan(f.pente),roll=0;
-    if(v && st.phase==='service'){
-      if(pose&&Number.isFinite(pose.x)){
-        x=pose.x;y=pose.y;z=pose.z;cap=pose.cap;pitch=pose.tangage||0;roll=pose.roulis||0;
-      }else{
+    if(st?.phase==='service'){
+      const poseValide=Number.isFinite(pose?.x),altitudeValide=poseValide&&Number.isFinite(pose.y);
+      const ph=e._physx,levage=hauteurCric(st);
+      if(!poseValide||!altitudeValide){
         // La géométrie des emplacements est fixe ; ce chemin sert aussi aux hôtes sans pose interpolée.
         if(eq.service!==st||eq.serviceS!==st.sService||eq.serviceD!==st.dService){
           eq.service=st;eq.serviceS=st.sService;eq.serviceD=st.dService;
           eq.arret=ancrage(eq.c,Number.isFinite(st.sService)?st.sService:eq.box.s,Number.isFinite(st.dService)?st.dService:eq.box.d);
         }
-        const a=eq.arret,ph=e._physx;
-        x=ph?.x??a.x;y=(ph?.y??(Number.isFinite(e.y)?e.y:a.y))+hauteurCric(st);z=ph?.z??a.z;
+      }
+      if(poseValide){
+        x=pose.x;z=pose.z;cap=pose.cap;pitch=pose.tangage||0;roll=pose.roulis||0;
+      }else{
+        const a=eq.arret;
+        x=ph?.x??a.x;z=ph?.z??a.z;
         cap=ph?.cap??(a.cap+(e.psi||0)+(e.beta||0));pitch=e.tangage||0;roll=e.roulis||0;
       }
-      // Raccorder l'altitude du box à la pose avant le branchement de la buse.
+      // La pose de rendu inclut déjà la levée. Borner seulement le déplacement de l'altitude de base.
+      let cible=altitudeValide?pose.y-levage:Number.isFinite(ph?.y)?ph.y:Number.isFinite(e.y)?e.y:eq.arret.y;
       const u=progression(st);
-      if(u>=0&&u<.16)y=lerp(f.y,y,lisse(0,.16,u));
+      if(u>=0&&u<.16)cible=lerp(f.y,cible,lisse(0,.16,u));
+      if(eq.altitudeService!==st||eq.voitureAltitude!==v||u<eq.progressionAltitude){
+        eq.altitudeService=st;eq.voitureAltitude=v;
+        eq.yService=f.y;eq.tAltitude=t;
+      }
+      const dt=Number.isFinite(t-eq.tAltitude)?Math.max(0,t-eq.tAltitude):0;
+      const pas=Math.min(.05,1.5*dt);
+      eq.yService+=Math.max(-pas,Math.min(pas,cible-eq.yService));
+      eq.tAltitude=t;eq.progressionAltitude=u;
+      y=eq.yService+levage;
+    }else{
+      eq.altitudeService=null;
+      eq.voitureAltitude=null;
     }
     c.x=x;c.y=y;c.z=z;c.tx=Math.cos(cap);c.tz=Math.sin(cap);c.cp=Math.cos(pitch);c.sp=Math.sin(pitch);c.cr=Math.cos(roll);c.sr=Math.sin(roll);
     c.rebond=pose?.rebond||e?._physx?.offsets;
@@ -528,7 +545,7 @@
       return;
     }
     eq.imageLointaine=imageLointaine;eq.entree=entree;eq.monteAttente=nouveau;
-    cadrerCar(eq,v,ctx?.poses?.[v?.id]);
+    cadrerCar(eq,v,ctx?.poses?.[v?.id],t);
     for(let i=0;i<4;i++){const w=roues[i];surCar(eq.moyeux[i],eq.car,w.x,w.r+(eq.car.rebond?.[i]||0),w.z);}
     out.compte=0;
     const ravitaille=Number.isFinite(st?.carburantAvant)&&st.carburantAvant<(B.course?.STANDS?.reservoir??72)-.001;
