@@ -2464,7 +2464,9 @@
     if (S.camCap === null) S.camCap = p.cap;
     S.camCap += angle(p.cap - S.camCap) * (1 - Math.exp(-dt * 1.4));
     const cx = p.x - Math.cos(S.camCap) * 30, cz = p.z - Math.sin(S.camCap) * 30, sol = scene.decor.sol ? scene.decor.sol(cx, cz) : p.y;
-    const y = Math.max(p.y, isFinite(sol) ? sol : p.y) + 21;
+    // Vol bas (David, complément 23/11) : plus de plongée aérienne à 21 m ; la caméra reste
+    // au-dessus de son terrain local (sol échantillonné) et jamais sous tunnel (DANS_LA_ROCHE).
+    const y = Math.max(p.y, isFinite(sol) ? sol : p.y) + 11;
     const dx = p.x + Math.cos(p.cap) * 10 - cx, dy = p.y + .5 - y, dz = p.z + Math.sin(p.cap) * 10 - cz, dist = Math.hypot(dx, dy, dz) || 1;
     return { pos: [cx, y, cz], yaw: Math.atan2(dx, -dz), pitch: Math.asin(clamp(dy / dist, -1, 1)), roll: 0, fov: 38, near: .1, far: PORTEE_VUE };
   }

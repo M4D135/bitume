@@ -1,8 +1,8 @@
 {
-  "version": "0.2.296",
-  "raw": 17509775,
-  "gzip": 4753076,
-  "sha256": "df9d9c94cbb6fce2ce1556bb8814a3cc37fdbce73fcc2d9e83f069aa8bd27c2a",
+  "version": "0.2.297",
+  "raw": 17510160,
+  "gzip": 4753245,
+  "sha256": "1db849be632ac1e9e43d230bd085084adbc341e85f84c08c7c4e8b39f6e252cc",
   "sources": {
     "ferro/surface.js": 3419,
     "ferro/render-shared.js": 81526,
@@ -83,7 +83,7 @@
     "echappement.js": 30838,
     "expressions-pilote.js": 17078,
     "cinema.js": 22368,
-    "realisateur.js": 14343,
+    "realisateur.js": 14531,
     "pluie-webgpu.js": 5981,
     "meteo.js": 25622,
     "saute-vent-webgpu.js": 14625,
@@ -107,7 +107,7 @@
     "vibrations.js": 10282,
     "ombres.js": 13366,
     "visites.js": 6566,
-    "jeu.js": 441279,
+    "jeu.js": 441476,
     "index.html": 74973,
     "style.css": 110836
   }

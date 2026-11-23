@@ -16,7 +16,9 @@
   // Les voitures donnent l'échelle et le rythme ; aucun gros plan autonome roue, pilote ou nature.
   const VUES = ['tele', 'cockpit', 'poursuite', 'helico', 'aileron', 'arriere', 'sol'];
   const DUREES = { tele: 7, cockpit: 6, poursuite: 5, helico: 6, aileron: 6, arriere: 5, sol: 4, peloton: 5 };
-  const POIDS = { tele: 13, cockpit: 10, poursuite: 12, helico: 12, aileron: 11, arriere: 6, sol: 7, peloton: 14 };
+  // Complément 23/11 : privilégier les cadrages bas et proches (bord de piste, poursuite, cockpit),
+  // rendre l'aérienne (helico) rare — elle révélait le vide autour du circuit.
+  const POIDS = { tele: 12, cockpit: 12, poursuite: 14, helico: 5, aileron: 11, arriere: 6, sol: 12, peloton: 12 };
   const VUES_CINEMA = Object.freeze(['panorama', 'lieu', 'peloton']);
   // Caméras portées : jamais sur une voiture lente.
   const PORTEES = new Set(['cockpit', 'poursuite', 'aileron', 'arriere']);
