@@ -89,9 +89,8 @@
           coins.push(terrain.sol(px, pz));
         }
         const bas = Math.min(...coins), haut = Math.max(...coins);
-        if (q.i < 0 || q.d < 85 || bas < plan.niveauEau + 6 || haut - bas >= 2.5) continue;
-        const sol = (coins[0] + coins[1] + coins[2] + coins[3]) / 4;
-        sites.push(Object.freeze({ x, z, a, l, w, bas: bas - .55, sol, s: place.s, variante: sites.length % 3 }));
+        if (q.i < 0 || q.d < 85 || bas < plan.niveauEau + 6 || haut - bas > 2.5) continue;
+        sites.push(Object.freeze({ x, z, a, l, w, bas: bas - .55, sol: haut, s: place.s, variante: sites.length % 3 }));
       }
     }
     return Object.freeze(sites);
