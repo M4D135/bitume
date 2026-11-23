@@ -1,6 +1,9 @@
 // Extraits indépendants de src/circuit.js aux commits 18451e0 (.52), f350dd7 (.59), f41614e (avant les Cimes).
 // git show <commit>:src/circuit.js | gzip -n > verifications/fixtures/circuit-<version>.js.gz
 // Comparer sur le même moteur conserve l'identité au bit près pour sin/cos sur ARM et x64.
+// 'cimes' : référence re-basée sur 9703e71 (2026-11-22), commit qui élargit la limite droite au droit
+// des stands (glissières le long de l'aire). Choisi par David le 2026-11-23 ; les huit circuits y sont
+// identiques au circuit.js courant, donc la comparaison reste une vraie garde contre toute dérive future.
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -9,7 +12,8 @@ import vm from 'node:vm';
 const sha = {
   '0252': 'e872944198a9a9bcd0efdd8d33d5f201c4dfd98016cf04e0bccf4a5b5c9a674f',
   '0259': 'e6aa6ef807345c35f2016e192dcdb543dc682f50e604a483097052250965da98',
-  '0266': '39389f4855fd9010c083baba6d3ed43aa8838817f484624eec5adff0aa4a5a72'
+  '0266': '39389f4855fd9010c083baba6d3ed43aa8838817f484624eec5adff0aa4a5a72',
+  'cimes': '4244af6d380110c5107f92e1252ce3ba6e6dd4408d5af0a0f8638245b13de928'
 };
 export function generateurHistorique(version) {
   const contenu = gunzipSync(readFileSync(new URL('../fixtures/circuit-' + version + '.js.gz', import.meta.url)));

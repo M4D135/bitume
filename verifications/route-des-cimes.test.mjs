@@ -106,7 +106,7 @@ verifier('huit circuits historiques identiques au bit près et identités de cat
   const avant = JSON.parse(readFileSync(new URL('fixtures/route-des-cimes-circuits-p15.json', import.meta.url), 'utf8'));
   const catalogue = vm.runInNewContext(readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8').match(/const CATALOGUE = (\[[\s\S]*?\n  \]);/)[1]);
   assert.equal(new Set(avant.circuits.map(k => k.id)).size, 8);
-  const base = generateurHistorique('0266');
+  const base = generateurHistorique('cimes');
   for (const a of avant.circuits) {
     const k = definitionHistorique(catalogue, a.id), options = { theme: k.theme, longueur: k.longueur, nom: k.nom };
     const b = B.circuit.creer(k.graine, options), ancien = base.creer(k.graine, options);
