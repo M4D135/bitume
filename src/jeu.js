@@ -67,7 +67,7 @@
   const preferenceMouvement = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
   const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 70, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'bas-gauche', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
     anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'non', gouttes: 1, forcePluie: 'forte',
-    secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1; } catch (e) { return 1; } })() };
+    secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : .5; } catch (e) { return .5; } })() };
   const reglagesEnregistres = lireStock('bitume.reglages', {});
   const reglages = Object.assign({}, DEFAUT, reglagesEnregistres);
   const circuitSauve = B.championnat.indiceCircuit(CATALOGUE, reglagesEnregistres?.circuitId, reglagesEnregistres?.circuit);
