@@ -58,7 +58,7 @@
       const apport = eau * .039;
       const sechageSousPluie = Math.min(apport, .004 * pas);
       // Après l'averse, reprendre le séchage à sec sous le seuil d'affichage des gouttes.
-      const fractionSeche = !pluieLiquide ? 1 : ciblePluie > 0 ? 0 : clamp(1 - eau / (.025 * pas), 0, 1);
+      const fractionSeche = !pluieLiquide ? 1 : (pas === 0 || ciblePluie > 0) ? 0 : clamp(1 - eau / (.025 * pas), 0, 1);
       const sechage = sechageSousPluie + fractionSeche * (.012 * pas - sechageSousPluie);
       m.mouille = clamp(m.mouille + (apport - sechage), 0, 1);
       m.t += pas; m.tp += pas; reste -= pas;
