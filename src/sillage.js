@@ -15,8 +15,8 @@
   function former(source) {
     source.p[0] = source.p[1] = source.p[2] = 0;
     source.velocity[0] = source.velocity[1] = source.velocity[2] = 0;
-    // Les valeurs fractionnaires préparent la représentation numérique des champs scalaires.
-    source.radius = 6.5; source.radius = 6; source.wake = 10.5; source.wake = 10;
+    source.radius = 6;
+    source.wake = 10;
   }
   // Prépare pour n voitures l'état donné (ou un neuf s'il n'y en a pas) et le rend : sources de la réserve en place
   // dans la liste, sans souffle, comme à la création. À appeler au lancement de la séance, hors de la boucle d'images.

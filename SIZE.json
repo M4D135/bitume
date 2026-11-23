@@ -1,8 +1,8 @@
 {
-  "version": "0.2.198",
-  "raw": 16724974,
-  "gzip": 4642577,
-  "sha256": "450c1b7b4dcb2d55156973074e8b910ca259e0d4d3ca0b861ef249a01e189859",
+  "version": "0.2.199",
+  "raw": 16724840,
+  "gzip": 4642528,
+  "sha256": "7ab75af627c5a2a95599d56c9af590a898b1a6c355b02a0452056fcb54ed410d",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
@@ -84,7 +84,7 @@
     "meteo.js": 24055,
     "visiere-optique.js": 47890,
     "vitre.js": 39094,
-    "sillage.js": 6118,
+    "sillage.js": 5984,
     "reseau.js": 24284,
     "pneus-reseau.js": 9636,
     "mesures.js": 19248,
