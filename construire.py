@@ -23,14 +23,13 @@ DIST = ICI / 'dist'
 # voiture, les traces et la fumée, le réalisateur de la démo, la coque.
 MODULES = [
     'ferro/surface.js',  # taille physique et plafond de pixels, copie FERRO verrouillée
-    'moteur/renderer.js',
+    'ferro/render-shared.js',
+    'ferro/webgpu-shaders.js',
+    'ferro/webgpu-renderer.js',
     'solides-physx.js',  # prélève les quatre primitives physiques avant les formes de décor et les monoplaces
     'ferro/engine.js',
     'ferro/physx-runtime.js',
     'ferro/physx.js',
-    # chronomètre GPU optionnel du moteur (EXT_disjoint_timer_query_webgl2) : sans lui, rendu.profile() reste nul et
-    # le volet de mesures ne peut pas distinguer le CPU du GPU. Copie verrouillée, chargée telle quelle.
-    'ferro/gpu-profile.js',
     'circuit.js',
     'couverts.js',  # sections, abri 3D et galeries ; avant chaussée/décor/jeu
     'circuit-raccords-data.js',
@@ -91,6 +90,8 @@ MODULES = [
     'carene.js',
     'humain-donnees.js',
     'humain-corps.js',
+    'public-shaders.js',
+    'public-gpu.js',
     'public.js',
     'main.js',
     'cockpit-matieres.js',
@@ -102,7 +103,9 @@ MODULES = [
     'expressions-pilote.js',
     'cinema.js',
     'realisateur.js',
+    'pluie-webgpu.js',
     'meteo.js',
+    'saute-vent-webgpu.js',
     'visiere-optique.js',  # optique procédurale sur la scène courante, hors modules FERRO verrouillés
     'vitre.js',
     'sillage.js',
@@ -120,7 +123,6 @@ MODULES = [
     'menu-arcade.js',  # écrans arcade, vrai tracé XYZ et aperçu 2D à cadence bornée
     'autoconfig.js',
     'commandes-manette.js',  # affectations analogiques indépendantes de chaque joueur
-    'scene-bench.js',
     # vibrations de manette : quatre sorties calculées une fois par image rendue, branchées par jeu.js
     'vibrations.js',
     # ombres photo (FERRO 0.3.11, ombresPhoto) : contact des voitures, tuile de la voiture filmée, pénombre, carte

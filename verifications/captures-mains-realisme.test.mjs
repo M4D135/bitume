@@ -6,7 +6,7 @@ let controles = 0;
 const tester = (nom, fn) => { fn(); controles++; };
 const piece = (role, shape = 'box', pilote = false) => ({ role, shape, pilote, p: [0, 0, 0], r: [0, 0, 0], s: [1, 1, 1] });
 const s = SCENARIOS_MAINS.find(s => s.id === 'prise-gauche');
-const observation = instant => ({ type: 'course', ecran: 'course', glErreur: 0, glPerdu: false, cameraImposee: true,
+const observation = instant => ({ type: 'course', ecran: 'course', gpuErreur: null, gpuPerdu: false, cameraImposee: true,
   sansPilote: false, obstructionStatique: false, camera: { pos: [1, 2, 3], yaw: 0, pitch: 0, roll: 0, fov: 35, near: .1 },
   pose: { x: 0, y: 0, z: 0, cap: 0 }, volant: 0, rapport: 3, passage: 1, expression: { geste: null, gesteIntensite: 0 },
   instant: instant.nom, ageRendu: instant.age, viewportMains: { largeur: 1280, hauteur: 960 },
@@ -14,7 +14,7 @@ const observation = instant => ({ type: 'course', ecran: 'course', glErreur: 0, 
     cadre: { x: 500 + cote * 200, y: 400, profondeur: 1, diametreEnveloppePx: 100 } })),
   piecesModele: ['volant', 'levier', 'pommeau', 'planche', 'support-volant-0'].map(r => piece(r)).concat(
     ['goutte', 'cuve', 'assise-pilote', 'arceau'].map(n => piece('coque:' + n, 'bitume-' + n)), [piece('gant-0-0', 'main', true)]) });
-const rapport = (scenario = s) => ({ environnement: { webgl2: true, physx: { ready: true }, gpu: 'test', resolution: [1280, 960, 1] },
+const rapport = (scenario = s) => ({ environnement: { webgpu: true, physx: { ready: true }, gpu: 'test', resolution: [1280, 960, 1] },
   parametres: { images: scenario.images, pas: scenario.pas }, erreurs: [], build: { sha256: 'a'.repeat(64), octets: 1 },
   initialisation: { mains: { substitutionModele: false } },
   images: scenario.instants.map(i => ({ etat: { referenceConservee: true }, observation: observation(i) })) });

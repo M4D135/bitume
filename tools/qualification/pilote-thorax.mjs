@@ -9,7 +9,7 @@ import {fileURLToPath} from 'node:url';
 import {lireMaillages,trianglesObjet,surface,mesurerContacts,bornes,distanceSurface,raccordEpaule} from './pilote-surfaces.mjs';
 
 const racine=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const noms=['moteur/renderer.js','carene.js','main.js','humain-donnees.js','humain-corps.js','ferro/vehicle-dynamics.js',
+const noms=['ferro/render-shared.js','carene.js','main.js','humain-donnees.js','humain-corps.js','ferro/vehicle-dynamics.js',
  'pneus.js','usure-pneus.js','chaussee.js','conduite.js','expressions-pilote.js','voiture.js'];
 const recouvre=(a,b)=>a.lo.every((x,k)=>x<=b.hi[k]+1e-9&&a.hi[k]+1e-9>=b.lo[k]);
 const membre=role=>/^(gant|bras|avant-bras|manche-joint|coude|epaule)-/.test(role);
@@ -34,7 +34,7 @@ export function qualifier({scenes=scenesCourtes(),details=['complet','moyen','si
  const {V,maillages,modele,empreintes}=preparerBanc(qualite);
  const ev={p:[0,0,0],cap:0,tangage:0,roulis:0,braquage:0,roule:0,v:20,pilote:{}};
  const cache=new Map(),rapport={format:'bitume-pilote-surfaces-1',statut:'en_cours',empreintes,qualite,
-  geometrie:qualite===false?'FRender.shared.geometry(false), répertoire des primitives du rendu WebGL2':'Répertoire réduit du rendu logiciel',
+  geometrie:qualite===false?'FRender.shared.geometry(false), répertoire des primitives du rendu WebGPU':'Répertoire réduit du rendu logiciel',
   attacheM:.035,scenes:scenes.length,scenarios:scenes,lod:{},limites:['Prises jante/pommeau réservées aux tests de contact dédiés.',
   'Appui thorax-assise et liaison au fond de cuve contrôlés par les tests de siège dédiés.',
   'Contrôle des triangles de rendu et des articulations ; ne remplace pas la revue visuelle du jeu.']};

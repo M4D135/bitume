@@ -1,5 +1,6 @@
 // Toile de pluie (#meteo) : au sec ni mise en page, ni effacement, ni composition ; plafond de 2 Mpx ;
 // taille donnée par l'appelant ; budget par palier ; flou fidèle au temps reçu par une vue rendue à demi-cadence.
+import { pluieMesuree } from './helpers/projection-pluie.mjs';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 await import(fileURLToPath(new URL('../src/meteo.js', import.meta.url)));
@@ -22,7 +23,7 @@ const camera = () => ({ pos: [0, 1.2, 0], yaw: 0, pitch: -.02, roll: .01, fov: 6
 
 // 1. Au sec : la toile neuve est masquée d'emblée, rien n'est lu, effacé ni transformé.
 {
-  const s = surface(), p = M.creerPluie(s.canvas), cam = camera();
+  const s = surface(), p = pluieMesuree(M, s.canvas), cam = camera();
   check(s.canvas.style.visibility === 'hidden' && p.stats.masquee, 'toile neuve masquée avant toute goutte');
   for (let i = 0; i < 300; i++) { cam.pos[2] -= .5; p.dessiner({ t: i / 60, pluie: 0 }, cam, 1 / 60, { cockpit: true, dpr: 1 }); }
   check(s.etat.lectures <= 2, 'au sec, une seule mesure de la toile en 300 images');
@@ -33,7 +34,10 @@ const camera = () => ({ pos: [0, 1.2, 0], yaw: 0, pitch: -.02, roll: .01, fov: 6
   check(s.canvas.style.visibility === '' && !p.stats.masquee && !p.stats.propre, 'toile montrée sous la pluie');
   check(s.etat.lectures === lectures + 120 && s.etat.effacements === 59, 'sans taille fournie, lecture à chaque image de pluie ; pas d’effacement de la toile déjà vide');
   check(s.etat.lots.length > 0 && s.etat.lots.length <= 3, 'au plus trois lots par image');
-  check(s.etat.lots.every(l => l.couleur === 'rgb(190,210,225)' && l.bout === 'round' && l.alpha > 0 && l.alpha <= .28) && s.ctx.globalAlpha === 1,
+  const t = (.8 - .35) / .65, averse = t * t * (3 - 2 * t);
+  const attendus = [[1,.28,.21], [.75,.21,.21], [.5,.14,.17]].map(([largeur,alpha,gain]) =>
+    [largeur + .25 * averse, (alpha + gain * averse) * (.55 + .8 * .45)]);
+  check(s.etat.lots.every(l => l.couleur === 'rgb(190,210,225)' && l.bout === 'round' && attendus.some(([largeur,alpha]) => Math.abs(largeur - l.largeur) < 1e-8 && Math.abs(alpha - l.alpha) < 1e-8)) && s.ctx.globalAlpha === 1,
     'couleur constante, opacité par globalAlpha, rétablie après le tracé');
   // Fin de l'averse : un seul effacement, puis plus rien.
   const effacements = s.etat.effacements;
@@ -48,7 +52,7 @@ const camera = () => ({ pos: [0, 1.2, 0], yaw: 0, pitch: -.02, roll: .01, fov: 6
 
 // 2. Taille fournie par l'appelant : aucune lecture de mise en page, sous la pluie comme au sec.
 {
-  const s = surface(1000, 500), p = M.creerPluie(s.canvas), cam = camera();
+  const s = surface(1000, 500), p = pluieMesuree(M, s.canvas), cam = camera();
   for (let i = 0; i < 400; i++) {
     cam.pos[2] -= .6;
     p.dessiner({ t: i / 60, pluie: i % 200 < 120 ? .9 : 0 }, cam, 1 / 60, { dpr: 1.25, largeur: 1000, hauteur: 500 });
@@ -59,11 +63,11 @@ const camera = () => ({ pos: [0, 1.2, 0], yaw: 0, pitch: -.02, roll: .01, fov: 6
 
 // 3. Plafond de 2 Mpx : la géométrie reste en pixels CSS, seule la définition de la toile baisse.
 {
-  const grand = surface(2560, 1440), p = M.creerPluie(grand.canvas), cam = camera();
+  const grand = surface(2560, 1440), p = pluieMesuree(M, grand.canvas), cam = camera();
   p.dessiner({ t: 3, pluie: 1 }, cam, 1 / 60, { dpr: 1.5 });
   check(grand.canvas.width * grand.canvas.height <= M.MAX_PIXELS && grand.canvas.width * grand.canvas.height > .99 * M.MAX_PIXELS, '2560 × 1440 à 1,5 : toile plafonnée à 2 Mpx');
   check(Math.abs(grand.canvas.width / grand.canvas.height - 2560 / 1440) < .002, 'proportions gardées');
-  const petit = surface(390, 844), q = M.creerPluie(petit.canvas);
+  const petit = surface(390, 844), q = pluieMesuree(M, petit.canvas);
   q.dessiner({ t: 3, pluie: 1 }, camera(), 1 / 60, { dpr: 3 });
   check(petit.canvas.width === 585 && petit.canvas.height === 1266, 'petite fenêtre : dpr borné à 1,5 comme avant');
 }
@@ -71,7 +75,7 @@ const camera = () => ({ pos: [0, 1.2, 0], yaw: 0, pitch: -.02, roll: .01, fov: 6
 // 4. Budget par palier : un palier bas garde une partie des mêmes gouttes ; sans palier, les 840.
 {
   const traitsDe = palier => {
-    const s = surface(), p = M.creerPluie(s.canvas), cam = camera();
+    const s = surface(), p = pluieMesuree(M, s.canvas), cam = camera();
     for (let i = 0; i <= 30; i++) { cam.pos[2] -= .7; p.dessiner({ t: 2 + i / 60, pluie: .9 }, cam, 1 / 60, { dpr: 1, palier }); }
     return { stats: { ...p.stats }, traits: s.etat.traits.map(t => t.join()) };
   };
@@ -86,7 +90,7 @@ const camera = () => ({ pos: [0, 1.2, 0], yaw: 0, pitch: -.02, roll: .01, fov: 6
 // 5. Vue rendue une image sur deux : avec le temps cumulé des images sautées, mêmes traits qu'à pleine cadence.
 {
   const pleine = surface(), demi = surface(), fausse = surface();
-  const pp = M.creerPluie(pleine.canvas), pd = M.creerPluie(demi.canvas), pf = M.creerPluie(fausse.canvas);
+  const pp = pluieMesuree(M, pleine.canvas), pd = pluieMesuree(M, demi.canvas), pf = pluieMesuree(M, fausse.canvas);
   const cp = camera(), cd = camera(), cf = camera();
   let egales = 0, differentes = 0;
   for (let n = 1; n <= 240; n++) {
@@ -105,7 +109,7 @@ const camera = () => ({ pos: [0, 1.2, 0], yaw: 0, pitch: -.02, roll: .01, fov: 6
 
 // 6. Préchauffage sous le voile : un trait presque transparent, composé une fois, effacé au premier appel sec.
 {
-  const s = surface(), p = M.creerPluie(s.canvas);
+  const s = surface(), p = pluieMesuree(M, s.canvas);
   check(p.prechauffer({ dpr: 1, largeur: 1280, hauteur: 720 }) === true, 'préchauffage accepté');
   check(s.etat.lots.length === 1 && s.etat.lots[0].alpha === 1 / 255 && s.canvas.style.visibility === '' && s.etat.lectures === 0, 'un trait à 1/255, toile montrée, sans lecture');
   p.dessiner({ t: 0, pluie: 0 }, camera(), 1 / 60, { dpr: 1, largeur: 1280, hauteur: 720 });

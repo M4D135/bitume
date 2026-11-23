@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Parcours natif du vrai HTML : profil Xbox/4K et Gamepad API simulés, sans banc FPS.
 // Les entrées et le temps sont prescrits ; ni commandes de conduite ni résultats de rendu ne le sont.
+import { argumentsWebGPU } from '../diagnostic-webgpu.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -64,7 +65,7 @@ export function observerConduiteXbox() {
 
 export function releverXbox() {
   const J = BITUME_JEU, trace = __BITUME_XBOX, passive = __BITUME_MOBILE;
-  const toile = document.getElementById('scene'), gl = J.rendu?.gl, S = J.session, chargement = J.chargement;
+  const toile = document.getElementById('scene'), gpu = J.rendu?.gpu, S = J.session, chargement = J.chargement;
   return {
     ecran: J.ecran, etape: J.menuArcade.etape, type: S?.type, phase: S?.course?.phase,
     reference: !!S?.reference, pilotageAuto: J.pilotageAuto,
@@ -77,9 +78,9 @@ export function releverXbox() {
     cache: JSON.parse(localStorage.getItem(BITUME.autoconfig.CLE)),
     stockageInitial: passive.stockageInitial, appels: { ...passive.appels }, surveilles: { ...passive.surveilles },
     viewport: [innerWidth, innerHeight, devicePixelRatio], userAgent: navigator.userAgent,
-    framebuffer: gl ? [gl.drawingBufferWidth, gl.drawingBufferHeight] : null,
+    framebuffer: gpu ? [gpu.context.canvas.width, gpu.context.canvas.height] : null,
     toile: toile ? [toile.width, toile.height] : null,
-    webgl2: J.rendu?.stats.webglVersion === 2, physx: globalThis.FPhysX?.status?.().ready === true,
+    webgpu: J.rendu?.stats.backend === 'webgpu' && !!J.rendu.gpu?.device, physx: globalThis.FPhysX?.status?.().ready === true,
     lectures: trace.lectures, commandes: trace.commandes, commande: trace.derniereCommande,
     vitesse: S?.course?.joueur?.etat.v, pointeur: trace.pointeur, vibrations: trace.vibrations,
     souris: document.getElementById('jeu')?.dataset.souris || null,
@@ -95,8 +96,8 @@ export function verifierProfilXbox(q, premier = false) {
   if (premier) assert.deepEqual(q.stockageInitial, [], 'premier lancement sans cache ni réglages préchargés');
   assert.match(q.userAgent, /Xbox.*Edg\//);
   assert.deepEqual(q.viewport, [3840, 2160, 1]);
-  assert.equal(q.webgl2, true); assert.equal(q.physx, true);
-  assert.deepEqual(q.surveilles, { benchmark: true, sceneBench: true, passive: true });
+  assert.equal(q.webgpu, true); assert.equal(q.physx, true);
+  assert.deepEqual(q.surveilles, { benchmark: true, sceneBench: false, passive: true });
   assert.equal(q.appels.benchmark, 0, 'aucun appel au banc au démarrage ou dans le parcours');
   assert.equal(q.appels.sceneBench, 0, 'aucune scène de mesure');
   if (premier) assert.ok(q.appels.passive >= 1, 'recommandation passive exécutée au premier lancement');
@@ -123,7 +124,7 @@ export async function qualifierCommandesXbox(o) {
     ] };
   const { chromium } = createRequire(import.meta.url)('playwright');
   const navigateur = await chromium.launch({ executablePath: o.chrome, headless: true,
-    args: ['--no-sandbox', '--disable-dev-shm-usage', '--enable-unsafe-swiftshader', '--use-gl=angle', '--use-angle=swiftshader'] });
+    args: ['--no-sandbox', '--disable-dev-shm-usage', ...argumentsWebGPU('swiftshader')] });
   const contexte = await navigateur.newContext({ viewport: { width: 3840, height: 2160 }, deviceScaleFactor: 1,
     userAgent: UA_XBOX, hasTouch: false, locale: 'fr-FR' });
   await contexte.addInitScript(horlogeCapture(17017));

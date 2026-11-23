@@ -213,9 +213,9 @@ export async function preparerImageMeteo(s, i, evaluer) {
 }
 
 export function observerEtat() {
-  const J = BITUME_JEU, S = J.session, gl = J.rendu.gl, F = __METEO_FIXTURE;
+  const J = BITUME_JEU, S = J.session, gpu = J.rendu.gpu, F = __METEO_FIXTURE;
   const contexte = v => v ? Object.fromEntries(['pluie', 'neige', 'vitesse', 'vitesseX', 'vitesseY', 'vitesseZ', 'cameraYaw', 'cameraPitch', 'cameraRoll', 'abri', 'cockpit', 'qualite', 'intensite', 'embruns', 'pause', 'actif'].map(k => [k, v[k]])) : null;
-  const vitres = J.vitres || null, vitresGL = {}, visieresVisibles = {}, glaces = {};
+  const vitres = J.vitres || null, vitresGPU = {}, visieresVisibles = {}, glaces = {};
   // Les ancrages 126 CK restent physiques : en portrait une glace peut sortir du champ.
   // Observer les vrais coins employés par la caméra et la vraie toile, sans les déplacer.
   for (const [V, ids] of [[S, ['glace-g', 'glace-d']], [S.vueJ2, ['glace-g2', 'glace-d2']]]) {
@@ -232,9 +232,9 @@ export function observerEtat() {
     const toile = document.getElementById(id), css = toile && getComputedStyle(toile);
     visieresVisibles[joueur] = !!toile && !toile.hidden && css.display !== 'none' && css.visibility !== 'hidden';
   }
-  for (const [joueur, id] of [['j1', 'vitre'], ['j2', 'vitre2']]) if (vitres?.[joueur]?.backend === 'webgl2') {
-    const g = document.getElementById(id)?.getContext('webgl2');
-    vitresGL[joueur] = { present: !!g, erreur: g ? g.getError() : null, perdu: g ? g.isContextLost() : true };
+  for (const [joueur, id] of [['j1', 'vitre'], ['j2', 'vitre2']]) if (vitres?.[joueur]?.backend === 'webgpu') {
+    const g = document.getElementById(id)?.getContext('webgpu'), v=vitres[joueur];
+    vitresGPU[joueur] = { present: !!g && v.pret && (!g.getConfiguration || g.getConfiguration()?.device === J.rendu.gpu.device), erreur: v.erreur || J.rendu.stats.errorEvents[0] || null, perdu: !g || v.perdu || J.rendu.stats.deviceLost };
   }
   let pluie = null;
   if (F.qualificationPluie) {
@@ -270,7 +270,7 @@ export function observerEtat() {
     pluie = { forceDemandee: F.forceDemandee, pluieFixe: S.meteo.pluieFixe, lentilles, impact, carrosserie,
       cameraPrescrite: F.cameraPrescrite, tempsRendu: S.tRendu };
   }
-  return { glErreur: gl.getError(), glPerdu: gl.isContextLost(), vitres, vitresGL, visieresVisibles, glaces,
+  return { gpuErreur: (J.rendu.stats.errorEvents[0] || null), gpuPerdu: J.rendu.stats.deviceLost, vitres, vitresGPU, visieresVisibles, glaces,
     annoncesVirages: J.reglages?.annoncesVirages,
     j1: contexte(S.vitreContexte), j2: contexte(S.vueJ2?.vitreContexte), faune: __METEO_FIXTURE.faune,
     vue: S.vue, vue2: S.vueJ2?.vue || null, positions: __METEO_FIXTURE.controleSillage ? __METEO_FIXTURE.positions() : null,
@@ -314,8 +314,8 @@ export function verifierRapport(r, s, candidat) {
   for (const im of r.images) {
     const o = im.observation;
     if (!o) { fautes.push('Observation absente'); continue; }
-    if (o.glErreur || o.glPerdu) fautes.push('Échec WebGL : ' + o.glErreur + (o.glPerdu ? ' / contexte perdu' : ''));
-    for (const g of Object.values(o.vitresGL || {})) if (!g.present || g.erreur || g.perdu) fautes.push('Échec WebGL de la visière');
+    if (o.gpuErreur || o.gpuPerdu) fautes.push('Échec WebGPU : ' + o.gpuErreur + (o.gpuPerdu ? ' / contexte perdu' : ''));
+    for (const g of Object.values(o.vitresGPU || {})) if (!g.present || g.erreur || g.perdu) fautes.push('Échec WebGPU de la visière');
     for (const vue of ['scene', ...(s.duo ? ['scene2'] : [])]) if (im.vues?.[vue]?.noir > .97 && im.vues[vue].luminance < .025) fautes.push('Vue rendue noire : ' + vue);
     if (s.duo && (!o.j2 || !im.etat.zones.scene2)) fautes.push('Vue J2 incomplète');
     const qualite = s.qualite || 'high';
@@ -361,12 +361,12 @@ export function verifierRapport(r, s, candidat) {
       }
       if (!o.vitres?.j1) fautes.push('Diagnostic de visière J1 absent');
       for (const v of Object.values(o.vitres || {})) if (v?.erreur || v?.erreurs?.length || typeof v?.erreurs === 'number' && v.erreurs > 0 || v?.perdu) fautes.push('Erreur de visière : ' + JSON.stringify(v.erreur || v.erreurs || 'contexte perdu'));
-      if (!s.sec && s.qualite !== 'low' && o.vitres?.j1?.backend !== 'webgl2') fautes.push('Optique WebGL2 inactive');
+      if (!s.sec && s.qualite !== 'low' && o.vitres?.j1?.backend !== 'webgpu') fautes.push('Optique WebGPU inactive');
       if (s.duo && !o.vitres?.j2) fautes.push('Diagnostic visière J2 absent');
       if (!s.sec) for (const joueur of s.duo ? ['j1', 'j2'] : ['j1']) {
         const v = o.vitres?.[joueur];
         if (!v || v.pret !== true || !s.inactif && !(v.dessins > 1 && v.etapes > 0)) fautes.push('Visière non préparée ou non dessinée : ' + joueur);
-        if (!s.inactif && v?.backend === 'webgl2' && s.qualite !== 'low' && !(v.copiesScene > 1 && v.pixelsSource > 0)) fautes.push('Scène non lue par la visière : ' + joueur);
+        if (!s.inactif && v?.backend === 'webgpu' && s.qualite !== 'low' && !(v.copiesScene > 1 && v.pixelsSource > 0)) fautes.push('Scène non lue par la visière : ' + joueur);
       }
       if (s.spray && !(o.j1?.embruns > 0)) fautes.push('Nuage du rival absent');
       if (s.sec && (o.j1?.pluie || o.j1?.neige || o.j1?.embruns)) fautes.push('Effet humide présent au sec');
@@ -411,8 +411,8 @@ export function verifierPluie(r, s) {
       fautes.push('Positions de qualification pluie non figées');
     for (const joueur of s.duo ? ['j1', 'j2'] : ['j1']) {
       const l = q.lentilles?.[joueur], c = o[joueur], camera = joueur === 'j1' ? o.camera : o.camera2;
-      if (!l || !l.sourceCourante || l.pool !== 112 || l.uniformes !== 128 || o.vitres?.[joueur]?.backend !== 'webgl2')
-        fautes.push('Pool ou source WebGL des impacts absent : ' + joueur);
+      if (!l || !l.sourceCourante || l.pool !== 112 || l.uniformes !== 128 || o.vitres?.[joueur]?.backend !== 'webgpu')
+        fautes.push('Pool ou source WebGPU des impacts absent : ' + joueur);
       if (!camera || !Array.isArray(camera.pos) || camera.pos.length !== 3 || !camera.pos.every(Number.isFinite) ||
         ![camera.yaw, camera.pitch, camera.roll, camera.fov].every(Number.isFinite) ||
         !proche(c?.cameraYaw, camera.yaw) || !proche(c?.cameraPitch, camera.pitch) || !proche(c?.cameraRoll, camera.roll))
@@ -429,7 +429,7 @@ export function verifierPluie(r, s) {
       if (!a || !proche(a.instant, s.instantsImpact[i]) || a.instantDemande !== s.instantsImpact[i])
         fautes.push('Chronologie de naissance de la goutte incomplète');
       if (!a || !a.vivant || a.identiteCourante !== a.identite || a.indiceUniforme < 0 || a.uniforme?.length !== 4 || a.perle?.length !== 4)
-        fautes.push('Goutte suivie absente du vrai tampon WebGL');
+        fautes.push('Goutte suivie absente du vrai tampon WebGPU');
       else {
         if (!(a.duree >= .18 && a.duree <= .28) || !proche(a.uniforme[0], Math.min(1, a.age / a.duree)))
           fautes.push('Phase d’impact différente de la particule');

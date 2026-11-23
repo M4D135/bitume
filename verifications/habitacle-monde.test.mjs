@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 const racine = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const contexte = vm.createContext({ console });
 vm.runInContext('globalThis.window = globalThis;', contexte);
-for (const fichier of ['moteur/renderer.js', 'carene.js', 'main.js', 'humain-donnees.js', 'humain-corps.js',
+for (const fichier of ['ferro/render-shared.js', 'carene.js', 'main.js', 'humain-donnees.js', 'humain-corps.js',
   'ferro/vehicle-dynamics.js', 'pneus.js', 'usure-pneus.js', 'chaussee.js', 'conduite.js', 'cockpit-matieres.js', 'voiture.js'])
   vm.runInContext(fs.readFileSync(path.join(racine, 'src', fichier), 'utf8'), contexte, { filename: fichier });
 const V = contexte.BITUME.voiture, geometrie = contexte.FRender.shared.geometry(false);

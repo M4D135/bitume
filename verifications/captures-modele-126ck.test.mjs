@@ -5,8 +5,8 @@ let controles = 0;
 const tester = (nom, fn) => { fn(); controles++; };
 const piece = (role, shape = 'box', pilote = false) => ({ role, shape, pilote, p: [0, 0, 0], r: [0, 0, 0], s: [1, 1, 1], mat: 0 });
 const scenario = SCENARIOS_MODELE.find(s => s.id === 'habitacle-vide');
-const rapport = () => ({ environnement: { webgl2: true }, erreurs: [], build: { sha256: 'candidat', octets: 10 }, images: [{
-  etat: { referenceConservee: true }, observation: { type: 'course', ecran: 'course', glErreur: 0, glPerdu: false,
+const rapport = () => ({ environnement: { webgpu: true }, erreurs: [], build: { sha256: 'candidat', octets: 10 }, images: [{
+  etat: { referenceConservee: true }, observation: { type: 'course', ecran: 'course', gpuErreur: null, gpuPerdu: false,
     cameraImposee: true, sansPilote: true, obstructionStatique: false,
     piecesModele: ['volant', 'levier', 'pommeau', 'planche', 'support-volant-0'].map(r => piece(r)).concat(
       ['goutte', 'cuve', 'assise-pilote', 'arceau'].map(n => piece('coque:' + n, 'bitume-' + n))) }
@@ -32,8 +32,8 @@ tester('siège conservé requis', () => {
   assert.ok(verifierModele(r, scenario).includes('Pièce structurelle absente : assise-pilote'));
 });
 tester('faux moteur et interruption ne passent pas', () => {
-  const r = rapport(); r.environnement.webgl2 = false; r.fatal = 'chrome indisponible';
-  const e = verifierModele(r, scenario); assert.ok(e.includes('WebGL2 absent')); assert.ok(e.some(x => x.startsWith('Capture interrompue')));
+  const r = rapport(); r.environnement.webgpu = false; r.fatal = 'chrome indisponible';
+  const e = verifierModele(r, scenario); assert.ok(e.includes('WebGPU absent')); assert.ok(e.some(x => x.startsWith('Capture interrompue')));
 });
 tester('pièces non finies détectées', () => {
   const r = rapport(); r.images[0].observation.piecesModele[0].p[0] = NaN;

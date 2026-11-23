@@ -1,5 +1,4 @@
-// Simulation réelle et frontière WebGL2. Le faux GL ne qualifie pas les pixels du shader :
-// compilation/rendu GLES puis captures navigateur sont des contrôles distincts.
+import {toileWebGPU as toile} from './support-visiere-webgpu.mjs';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
@@ -8,30 +7,8 @@ const O=globalThis.BITUME.visiereOptique,V=globalThis.BITUME.vitre;
 let nombre=0;const verifier=(nom,f)=>{f();nombre++;console.log('ok '+nom);};
 const contexte=(ajout={})=>({qualite:'high',actif:true,pluie:1,neige:0,embruns:0,vitesse:0,intensite:1,cockpit:true,...ajout});
 function avancer(e,c,secondes,hz=60){for(let i=0;i<Math.round(secondes*hz);i++)O.avancerEtat(e,1/hz,c);}
-function toile(support=true){
-  const appels={dessins:0,copies:0,textures:0,clear:0,supprimes:0,uniformes:{},echouerCopie:false};
-  const gl={VERTEX_SHADER:1,FRAGMENT_SHADER:2,COMPILE_STATUS:3,LINK_STATUS:4,TEXTURE_2D:5,TEXTURE0:6,RGBA:7,UNSIGNED_BYTE:8,
-    COLOR_BUFFER_BIT:9,TRIANGLES:10,DEPTH_TEST:11,BLEND:12,TEXTURE_MIN_FILTER:13,TEXTURE_MAG_FILTER:14,LINEAR:15,
-    TEXTURE_WRAP_S:16,TEXTURE_WRAP_T:17,CLAMP_TO_EDGE:18,UNPACK_FLIP_Y_WEBGL:19,
-    createShader:()=>({}),shaderSource(){},compileShader(){},getShaderParameter:()=>true,getShaderInfoLog:()=>'',deleteShader(){},
-    createProgram:()=>({}),attachShader(){},linkProgram(){},getProgramParameter:()=>true,getProgramInfoLog:()=>'',
-    createVertexArray:()=>({}),createTexture:()=>({}),bindTexture(){},texParameteri(){},texImage2D(...args){if(args[5]===appels.directeRefusee && appels.directeRefusee)throw new Error('texture directe refusée');appels.textures++;},
-    getUniformLocation:(_,nom)=>nom,disable(){},clearColor(){},viewport(){},useProgram(){},bindVertexArray(){},activeTexture(){},pixelStorei(){},
-    uniform1i(n,v){appels.uniformes[n]=v;},uniform2f(n,...v){appels.uniformes[n]=v;},uniform4fv(n,v){appels.uniformes[n]=Array.from(v);},
-    drawArrays(){appels.dessins++;},clear(){appels.clear++;},deleteTexture(){appels.supprimes++;},deleteProgram(){appels.supprimes++;},deleteVertexArray(){appels.supprimes++;}};
-  const ctx={drawImage(){if(appels.echouerCopie)throw new Error('source refusée');appels.copies++;},setTransform(){},clearRect(){},beginPath(){},ellipse(){},fill(){},stroke(){},moveTo(){},lineTo(){},quadraticCurveTo(){}};
-  const listeners=new Map();
-  const canvas={width:1280,height:720,clientWidth:1280,clientHeight:720,style:{},
-    getContext:type=>type==='webgl2'?(support?gl:null):ctx,getBoundingClientRect:()=>({width:1280,height:720}),
-    addEventListener:(n,f)=>listeners.set(n,f),removeEventListener:n=>listeners.delete(n),
-    ownerDocument:{createElement:()=>({width:1,height:1,getContext:()=>ctx})}};
-  return{canvas,appels,listeners};
-}
 verifier('tuiles : trente-deux dépôts, traces et bords suivent chaque toile',()=>{
-  const ta=toile(),tb=toile(),a=V.creer(ta.canvas),b=V.creer(tb.canvas);
-  for(const [t,e] of [[ta,a],[tb,b]]){
-    e.gl.uniform4uiv=(nom,v)=>{t.appels.uniformes[nom]=Array.from(v);};
-  }
+  const ta=toile(),tb=toile(),a=V.creer(ta.canvas,{gpu:ta.gpu}),b=V.creer(tb.canvas,{gpu:tb.gpu});
   const contexteVue=contexte({qualite:'ultra',pluie:0,largeur:960,hauteur:540});
   const d=a.simulation.depots;
   for(let i=0;i<32;i++){
@@ -43,7 +20,7 @@ verifier('tuiles : trente-deux dépôts, traces et bords suivent chaque toile',(
   }
   d.stats.gouttes=32;
   V.mettreAJour(a,.001,contexteVue);const u=ta.appels.uniformes;
-  assert.equal(u.uAvecTuiles,true);assert.equal(u.uNbGouttes,32);
+  assert.equal(u.uNbGouttes,32);
   assert.equal(u.uTuilesGouttes.length,144);
   assert.equal(u.uTuilesGouttes[4*16+7],0x7fffffff,'toutes les gouttes superposées');
   assert.equal(u.uTuilesGouttes[4*16+13],0x80000000,'bit de poids fort au centre');
@@ -54,32 +31,17 @@ verifier('tuiles : trente-deux dépôts, traces et bords suivent chaque toile',(
   for(const p of d.gouttes){p.vivant=false;p.fusion=false;}d.stats.gouttes=0;
   V.mettreAJour(a,.02,{...contexteVue,pluie:1});
   assert(a.tuilesGouttes.every(v=>v===0));
-  const tc=toile(),c=V.creer(tc.canvas);
-  V.mettreAJour(c,.02,{...contexteVue,pluie:1});
-  assert.equal(tc.appels.uniformes.uAvecTuiles,false,'chemin linéaire sans chargement de masques');
-});
-verifier('réduction GPU bornée, retour à la taille native et repli 2D si le tampon est incomplet',()=>{
-  const t=toile(),e=V.creer(t.canvas),gl=e.gl;
-  let blits=0,attaches=0,effaces=0,complet=true;
-  Object.assign(gl,{READ_FRAMEBUFFER:20,DRAW_FRAMEBUFFER:21,FRAMEBUFFER:22,FRAMEBUFFER_COMPLETE:23,
-    COLOR_ATTACHMENT0:24,createFramebuffer:()=>({}),bindFramebuffer(){},deleteFramebuffer(){effaces++;},
-    framebufferTexture2D(){attaches++;},checkFramebufferStatus:()=>complet?23:0,
-    blitFramebuffer(){blits++;}});
-  const scene={getContext(){},width:1920,height:1080};
+ });
+verifier('réduction WebGPU bornée et ressources persistantes entre deux images de même taille',()=>{
+  const t=toile(),e=V.creer(t.canvas,{gpu:t.gpu}),scene={width:1920,height:1080};
   const c=contexte({largeur:1920,hauteur:1080,sourceScene:scene});
-  V.mettreAJour(e,.12,c);
-  assert.equal(blits,1);assert.equal(attaches,2);assert.equal(t.appels.copies,0);
-  assert.equal(e.stats.reductionsGPU,1);
-  V.mettreAJour(e,.12,c);assert.equal(blits,2);assert.equal(attaches,2);
+  t.gpu.context={canvas:scene,getCurrentTexture:()=>({width:scene.width,height:scene.height,format:'bgra8unorm',usage:GPUTextureUsage.COPY_SRC})};
+  V.mettreAJour(e,.12,c);assert.equal(e.stats.reductionsGPU,1);assert.equal(t.appels.copiesGPU,1);assert.equal(t.appels.copies,0);
+  const memoire=[t.appels.textures,t.appels.tampons,t.appels.groupes];
+  V.mettreAJour(e,.12,c);assert.deepEqual([t.appels.textures,t.appels.tampons,t.appels.groupes],memoire);
   scene.width=1280;scene.height=720;
   V.mettreAJour(e,.12,{...c,largeur:1280,hauteur:720});assert.equal(e.stats.copiesDirectes,1);
-  scene.width=1920;scene.height=1080;
-  V.mettreAJour(e,.12,c);assert.equal(blits,3);assert.equal(attaches,4);
-  scene.width=7680;scene.height=2160;
-  V.mettreAJour(e,.12,c);assert.equal(blits,3);assert.equal(t.appels.copies,1);
-  scene.width=1920;scene.height=1080;complet=false;
-  V.mettreAJour(e,.12,c);assert.equal(blits,3);assert.equal(t.appels.copies,2);assert.equal(e.stats.erreur,null);
-  V.liberer(e);assert.equal(effaces,2);
+  assert.equal(t.appels.liberes,1);V.liberer(e);assert.equal(t.appels.liberes,t.appels.textures+t.appels.tampons);
 });
 verifier('état et uniformes identiques aux cadences 30/47/60/120/144 Hz',()=>{
   let ref;
@@ -129,13 +91,15 @@ verifier('pause exacte, temps borné après interruption et indépendance des vu
   avancer(a,contexte({pause:true}),5);avancer(b,contexte({neige:1}),3);assert.equal(JSON.stringify(a),avant);
   const etapes=a.etapes;O.avancerEtat(a,20,contexte());assert.equal(a.etapes-etapes,30);
 });
-verifier('WebGL2 choisit le bon backend ; absence WebGL2 conserve le repli existant',()=>{
-  assert.equal(V.creer(toile().canvas).stats.backend,'webgl2');
-  assert.equal(V.creer(toile(false).canvas).stats.backend,'canvas2d');
+verifier('le jeu partage son périphérique WebGPU ; la simulation hors rendu conserve son chemin 2D',()=>{
+  const oui=toile(),non=toile(false);
+  assert.equal(V.creer(oui.canvas,{gpu:oui.gpu}).stats.backend,'webgpu');assert.deepEqual(oui.appels.contextes,['webgpu']);
+  assert.equal(V.creer(non.canvas,{gpu:non.gpu}).stats.backend,'indisponible');
+  assert.deepEqual(non.appels.contextes,['webgpu']);
   assert.equal(V.creer(null).stats.backend,'canvas2d');
 });
 verifier('préchauffage prépare la vraie passe puis la laisse transparente et sans dépôt',()=>{
-  const t=toile(),e=V.creer(t.canvas),c=contexte({sourceScene:{width:1280,height:720}});
+  const t=toile(),e=V.creer(t.canvas,{gpu:t.gpu}),c=contexte({sourceScene:{width:1280,height:720}});
   assert(V.prechauffer(e,c));assert(t.appels.dessins>0 && t.appels.copies>0);
   assert.equal(e.simulation.eau,0);assert(e.simulation.uniformes.every(v=>v===0));assert(e.propre && e.masquee);
   const dessins=t.appels.dessins,copies=t.appels.copies;
@@ -143,43 +107,32 @@ verifier('préchauffage prépare la vraie passe puis la laisse transparente et s
   assert.equal(t.appels.dessins,dessins);assert.equal(t.appels.copies,copies);
 });
 verifier('source propre à la vue, budgets de pixels et palier Léger sans copie',()=>{
-  const t=toile(),e=V.creer(t.canvas),c=contexte({sourceScene:{width:7680,height:2160},largeur:7680,hauteur:2160,dpr:4});
+  const t=toile(),e=V.creer(t.canvas,{gpu:t.gpu}),c=contexte({sourceScene:{width:7680,height:2160},largeur:7680,hauteur:2160,dpr:4});
   for(let i=0;i<120;i++)V.mettreAJour(e,1/60,c);
   assert(e.stats.pixels<=O.MAX_PIXELS && e.stats.pixelsSource<=O.MAX_SOURCE_PIXELS);assert(e.stats.copiesScene>0);
   const copies=e.stats.copiesScene;V.mettreAJour(e,1/60,{...c,qualite:'low'});
   assert.equal(e.stats.copiesScene,copies);assert.equal(t.appels.uniformes.uAvecScene,false);
   V.mettreAJour(e,1/60,c);assert.equal(e.stats.copiesScene,copies+1);assert.equal(t.appels.uniformes.uAvecScene,true);
 });
-verifier('canvas natif : transfert direct ; dimensions différentes et transfert refusé : redimensionnement 2D',()=>{
-  const t=toile(),e=V.creer(t.canvas),scene={width:1280,height:720,getContext(){}};
-  const c=contexte({largeur:1280,hauteur:720,dpr:1,sourceScene:scene});
-  for(let i=0;i<60;i++)V.mettreAJour(e,1/60,c);
-  assert(e.stats.copiesDirectes>0);assert.equal(e.stats.copiesDirectes,e.stats.copiesScene);
-  assert.equal(t.appels.copies,0);assert.equal(t.appels.uniformes.uAvecScene,true);
-  const directes=e.stats.copiesDirectes;
-  scene.width=1920;V.mettreAJour(e,1/60,c);
-  assert.equal(t.appels.copies,1);assert.equal(e.stats.copiesDirectes,directes);
-  scene.width=1280;t.appels.directeRefusee=scene;V.mettreAJour(e,1/60,c);
-  assert.equal(t.appels.copies,2);assert.equal(e.stats.copiesDirectes,directes);
-  assert.equal(t.appels.uniformes.uAvecScene,true);assert.equal(e.stats.erreur,null);
-});
 verifier('copie refusée : overlay sans scène ; copie suivante valide rétablit la réfraction',()=>{
-  const t=toile(),e=V.creer(t.canvas),c=contexte({sourceScene:{width:1280,height:720}});
+  const t=toile(),e=V.creer(t.canvas,{gpu:t.gpu}),c=contexte({sourceScene:{width:1280,height:720}});
   t.appels.echouerCopie=true;for(let i=0;i<60;i++)V.mettreAJour(e,1/60,c);
   assert.match(e.stats.erreur,/source refusée/);assert.equal(t.appels.uniformes.uAvecScene,false);
   t.appels.echouerCopie=false;V.mettreAJour(e,1/60,c);assert.equal(e.stats.erreur,null);assert.equal(t.appels.uniformes.uAvecScene,true);
 });
-verifier('contexte perdu masque la couche ; restauration redessine et libération nettoie',()=>{
-  const t=toile(),e=V.creer(t.canvas),c=contexte({sourceScene:{width:1280,height:720}});
-  for(let i=0;i<60;i++)V.mettreAJour(e,1/60,c);const dessins=t.appels.dessins;
-  let retenu=false;t.listeners.get('webglcontextlost')({preventDefault(){retenu=true;}});
-  assert(retenu && e.stats.perdu && e.masquee);V.mettreAJour(e,1/60,c);assert.equal(t.appels.dessins,dessins);
-  t.listeners.get('webglcontextrestored')();V.mettreAJour(e,1/60,c);assert(e.stats.pret && !e.stats.perdu && !e.masquee);
-  V.liberer(e);V.liberer(e);assert.equal(t.appels.supprimes,3);assert.equal(t.listeners.size,0);assert.equal(e.canvas,null);
-});
+{
+  const t=toile(),u=toile();let courant=t.gpu;const e=V.creer(t.canvas,{gpu:()=>courant});
+  const c=contexte({sourceScene:{width:1280,height:720}});V.mettreAJour(e,.12,c);
+  const dessins=t.appels.dessins;t.appels.perdre({reason:'destroyed'});await Promise.resolve();
+  assert(e.stats.perdu && e.masquee);V.mettreAJour(e,.12,c);assert.equal(t.appels.dessins,dessins);
+  courant=u.gpu;V.mettreAJour(e,.12,c);assert(e.stats.pret && !e.stats.perdu && !e.masquee);
+  assert.equal(t.appels.liberes,t.appels.textures+t.appels.tampons);V.liberer(e);V.liberer(e);
+  assert.equal(u.appels.liberes,u.appels.textures+u.appels.tampons);assert.equal(e.canvas,null);
+  nombre++;console.log('ok perte du périphérique, remplacement dans le jeu et libération');
+}
 verifier('pause ne copie ni ne dessine ; zéro, rétro et off effacent immédiatement',()=>{
   for(const option of [{intensite:0},{retro:true},{qualite:'off'},{actif:false}]){
-    const t=toile(),e=V.creer(t.canvas),c=contexte({sourceScene:{width:1280,height:720}});
+    const t=toile(),e=V.creer(t.canvas,{gpu:t.gpu}),c=contexte({sourceScene:{width:1280,height:720}});
     for(let i=0;i<60;i++)V.mettreAJour(e,1/60,c);const stats={...e.stats};
     V.mettreAJour(e,.1,{...c,pause:true});assert.deepEqual(e.stats,stats);
     V.mettreAJour(e,0,{...c,pause:true,...option});assert(e.propre && e.masquee);assert.equal(e.simulation.eau,0);
@@ -189,7 +142,7 @@ verifier('sans dimensions dans le contexte du jeu, dépôts et traînées suiven
   const c=Object.freeze(contexte({pluie:0})),vues=[];
   for(const [largeur,hauteur] of [[960,540],[480,270]]){
     const t=toile();t.canvas.clientWidth=largeur;t.canvas.clientHeight=hauteur;
-    const e=V.creer(t.canvas),d=e.simulation.depots,p=d.gouttes[0];
+    const e=V.creer(t.canvas,{gpu:t.gpu}),d=e.simulation.depots,p=d.gouttes[0];
     Object.assign(p,{vivant:true,x:.8,y:.65,px:.8,py:.65,taille:3,pr:3,age:1,pa:1,duree:30,
       poids:1,pp:1,glisse:.04,vitesse:0,phase:0,frequence:.5});p.traceX.fill(.8);p.traceY.fill(.65);d.stats.gouttes=1;
     V.mettreAJour(e,1/120,c);
@@ -236,7 +189,7 @@ verifier('route humide sans pluie dépose de l’eau ; sur route sèche, le vrai
   }
 });
 verifier('la fusion conserve toute l’aire visible à chaque image, même sans film diffus',()=>{
-  const t=toile(),e=V.creer(t.canvas),d=e.simulation.depots;
+  const t=toile(),e=V.creer(t.canvas,{gpu:t.gpu}),d=e.simulation.depots;
   for(const [i,r,x] of [[0,3,.4],[1,4,.402]]){
     const p=d.gouttes[i];Object.assign(p,{vivant:true,x,y:.4,px:x,py:.4,taille:r,pr:r,age:1,pa:1,duree:30,
       poids:1,pp:1,glisse:.04,vitesse:0,phase:0,frequence:.5});p.traceX.fill(x);p.traceY.fill(.4);
@@ -338,8 +291,8 @@ verifier('renouvellement des perles sans saut : populations pondérées, tampons
     assert.equal(e.transportUniformes,t);assert.equal(e.histoireUniformes,h);assert.equal(e.fluxUniformes,f);assert.equal(e.phaseUniformes,ph);
   }
 });
-verifier('la vraie frontière WebGL transmet le champ et les trajectoires des couches',()=>{
-  const t=toile(),e=V.creer(t.canvas),c=contexte({vitesse:300/3.6,cameraRoll:.2,ventX:12,sourceScene:{width:1280,height:720}});
+verifier('le tampon uniforme WebGPU transmet le champ et les trajectoires des couches',()=>{
+  const t=toile(),e=V.creer(t.canvas,{gpu:t.gpu}),c=contexte({vitesse:300/3.6,cameraRoll:.2,ventX:12,sourceScene:{width:1280,height:720}});
   for(let i=0;i<120;i++)V.mettreAJour(e,1/120,c);
   assert.deepEqual(t.appels.uniformes.uFlux,[...e.simulation.fluxUniformes.slice(0,4)]);
   assert.deepEqual(t.appels.uniformes.uGravite,[...e.simulation.fluxUniformes.slice(4)]);

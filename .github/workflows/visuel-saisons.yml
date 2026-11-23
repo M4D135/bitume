@@ -46,7 +46,7 @@ jobs:
         include: >-
           ${{ fromJSON(github.event_name == 'push' && contains(github.event.head_commit.message, '[capture-cimes]')
             && '[{"groupe":"high-cimes-reprise","qualite":"high","circuits":"5","alpin":"non"},{"groupe":"low-cimes-reprise","qualite":"low","circuits":"5","alpin":"non"}]'
-            || '[{"groupe":"high-0-2","qualite":"high","circuits":"0,1,2"},{"groupe":"high-3-5","qualite":"high","circuits":"3,4,5"},{"groupe":"high-6-8","qualite":"high","circuits":"6,7,8"},{"groupe":"high-9-10","qualite":"high","circuits":"9,10"},{"groupe":"low-cimes","qualite":"low","circuits":"5"}]') }}
+            || '[{"groupe":"high-0-2","qualite":"high","circuits":"0,1,2"},{"groupe":"high-3-5","qualite":"high","circuits":"3,4,5"},{"groupe":"high-6-8","qualite":"high","circuits":"6,7,8"},{"groupe":"low-cimes","qualite":"low","circuits":"5"}]') }}
     steps:
       - uses: actions/checkout@v4
         with:

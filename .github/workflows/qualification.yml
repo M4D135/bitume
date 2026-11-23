@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   demarrage:
-    name: Démarrage du jeu publié dans Chrome WebGL2
+    name: Démarrage du jeu publié dans Chrome WebGPU
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
@@ -28,7 +28,7 @@ jobs:
       - name: Ouvrir le HTML du commit et partir depuis le menu Solo
         env:
           CHROME: google-chrome
-        run: node tools/page-essai.mjs dist/bitume.html verifications/demarrage-course.js --angle swiftshader --taille 800,600
+        run: node tools/page-essai.mjs dist/bitume.html verifications/demarrage-course.js --webgpu-logiciel --sans-webgl --taille 800,600
 
   suites:
     name: Suites Node · lot ${{ matrix.lot }}/4

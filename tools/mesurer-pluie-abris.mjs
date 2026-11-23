@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Mesure CPU comparative des modules seuls, Canvas sans raster et vrai PhysX embarqué.
 // Aucun gain FPS, GPU ou matériel de jeu n'est déduit de ces mesures.
+import { pluieMesuree } from '../verifications/helpers/projection-pluie.mjs';
 import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -60,7 +61,7 @@ const scenarios = [
   m: { t: 12 + i / 30, pluie }, cam: cam(i), options: { circuit: c, physique, palier, largeur: 960, hauteur: 540, dpr: 1 }
 })) }));
 function run(v, scene, mesure = false, signature = false) {
-  const canvas = toile(signature), pluie = v.module.creerPluie(canvas), couts = [], debutRayons = rayons;
+  const canvas = toile(signature), pluie = pluieMesuree(v.module, canvas), couts = [], debutRayons = rayons;
   let rayonsMax = 0, spatiauxMax = 0, traitsMin = Infinity, traitsMax = 0;
   const debut = performance.now();
   for (const frame of scene.frames) {

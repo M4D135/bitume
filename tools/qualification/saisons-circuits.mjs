@@ -7,7 +7,7 @@ import { createRequire } from 'node:module';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url), racine = fileURLToPath(new URL('../../', import.meta.url));
-export const MODULES_SAISONS = ['moteur/renderer', 'circuit', 'couverts', 'route-des-cimes', 'carene', 'botanique',
+export const MODULES_SAISONS = ['ferro/render-shared', 'circuit', 'couverts', 'route-des-cimes', 'carene', 'botanique',
   'ecologie', 'saisons', 'bords', 'baikal', 'batiments', 'lieux', 'destinations', 'marseille-decor', 'larche-vinadio-decor', 'route-des-cimes-decor', 'chaussee', 'virages', 'decor'];
 for (const nom of MODULES_SAISONS) require(path.join(racine, 'src', nom + '.js'));
 export const B = globalThis.BITUME;

@@ -16,7 +16,7 @@
   }
   function primitives() {
     if (primitivesPhysiques) return primitivesPhysiques;
-    if (typeof module !== 'undefined' && module.exports && !globalThis.FRender?.shared?.geometry) require('./moteur/renderer.js');
+    if (typeof module !== 'undefined' && module.exports && !globalThis.FRender?.shared?.geometry) require('./ferro/render-shared.js');
     if (!globalThis.FRender?.shared?.geometry) throw new Error('PhysX : géométrie canonique FERRO absente');
     // Lecture publique du moteur, sans le modifier. Les formes de détail des plantes ne deviennent pas solides.
     const g = globalThis.FRender.shared.geometry(), maillages = new Map();

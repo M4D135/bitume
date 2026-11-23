@@ -12,12 +12,12 @@ function rapport(s) {
   const phases = ['entree-exterieure','entree-interieure','centre','sortie-interieure','sortie-exterieure'];
   return {
     build: { sha256:'a'.repeat(64) }, source:{ commit:'b'.repeat(40) },
-    environnement:{ webgl2:true, physx:{ ready:true } },
+    environnement:{ webgpu:true, physx:{ ready:true } },
     initialisation:{ posePrescrite:true, circuitId:s.circuitId }, erreurs:[], avertissements:[],
     images:Array.from({length:s.images||2},(_,i)=>{
       const sousToit=!s.portails||i>0&&i<4, abri=!s.dessus&&sousToit, interieur=abri&&s.type==='tunnel';
       const eau=s.portails?[.65,.25,.1,.04,.55][i]:0;
-      const optique={ backend:'webgl2',pret:true,erreur:null,erreurs:0,perdu:false,eau,embruns:0,gouttes:0,
+      const optique={ backend:'webgpu',pret:true,erreur:null,erreurs:0,perdu:false,eau,embruns:0,gouttes:0,
         etapes:s.dessus?0:90+i*90,dessins:30,copiesScene:30,pixelsSource:518400 };
       const j1={ camera:[0,s.dessus?12:1.2,0],abri,interieur,abriVisiere:abri,visiereActive:!s.dessus,
         lumiere:interieur?1.31:1,lampes:interieur?4:0,type:abri?s.type:null,pluie:1,vue:s.dessus?'helico':'cockpit' };
@@ -25,12 +25,12 @@ function rapport(s) {
       if(!s.dessus)Object.assign(zones,{'glace-g':{},'glace-d':{}});
       if(s.duo)Object.assign(zones,{scene2:{},'glace-g2':{},'glace-d2':{}});
       return {etat:{zones},vues:{scene:{noir:.1,luminance:.2},scene2:{noir:.1,luminance:.2}},observation:{
-        etapeId:s.portails?phases[i]:s.dessus?'dessus-toit':'interieur',glErreur:0,glPerdu:false,
+        etapeId:s.portails?phases[i]:s.dessus?'dessus-toit':'interieur',gpuErreur:null,gpuPerdu:false,
         pluie:1,j1,j2:s.duo?{...j1,type:'galerie',interieur:false,lumiere:1}:null,
         sol:{hit:true,y:0,surface:'piste'},toit:{hit:sousToit,y:sousToit?6.4:null,genre:sousToit?'voute-'+s.type:null},yRoute:0,abscisse:0,
         survol:s.dessus?{sujetS:80,sujetSousCouvert:false,terrainY:8,surfaceY:8,regardLibre:true,cadreLibre:true}:null,
         vitres:{j1:optique,j2:s.duo?structuredClone(optique):null},
-        vitresGL:{j1:{present:true,erreur:0,perdu:false},j2:{present:true,erreur:0,perdu:false}},
+        vitresGPU:{j1:{present:true,erreur:0,perdu:false},j2:{present:true,erreur:0,perdu:false}},
         visieresVisibles:{j1:!s.dessus&&eau>0,j2:false}
       }};
     })
@@ -62,7 +62,7 @@ test('les rapports complets des six scènes passent sans confondre galerie et tu
 
 test('un autre build, une scène inconnue ou un moteur absent ne peut être qualifié',()=>{
   const s=cas('haut-col-portails');
-  for(const changer of [ r=>{r.build=null;}, r=>{r.source=null;}, r=>{r.environnement.webgl2=false;},
+  for(const changer of [ r=>{r.build=null;}, r=>{r.source=null;}, r=>{r.environnement.webgpu=false;},
     r=>{r.environnement.physx.ready=false;},r=>{r.initialisation.circuitId='autre';},r=>{r.images.pop();},
     r=>{r.fatal='Arrêt Chromium';},r=>{r.erreurs.push('erreur script');},r=>{r.avertissements.push('GL_INVALID_OPERATION');} ]) {
     const r=rapport(s);changer(r);assert.ok(verifierCouvert(r,s).length);
@@ -73,7 +73,7 @@ test('une visière absente, en repli ou qui ne rend pas la pluie extérieure est
   const s=cas('haut-col-portails');
   for(const changer of [ o=>{o.vitres=null;},o=>{o.vitres.j1.backend='canvas2d';},o=>{o.vitres.j1.pret=false;},
     o=>{o.vitres.j1.erreurs=1;},o=>{o.vitres.j1.erreur='shader';},o=>{o.vitres.j1.perdu=true;},
-    o=>{o.vitresGL.j1.erreur=1282;},o=>{o.vitresGL.j1.present=false;},o=>{o.vitresGL.j1.perdu=true;},
+    o=>{o.vitresGPU.j1.erreur=1282;},o=>{o.vitresGPU.j1.present=false;},o=>{o.vitresGPU.j1.perdu=true;},
     o=>{o.vitres.j1.eau=0;},o=>{o.vitres.j1.dessins=0;},o=>{o.vitres.j1.copiesScene=0;},o=>{o.vitres.j1.pixelsSource=0;},
     o=>{o.visieresVisibles.j1=false;},o=>{o.j1.pluie=0;},o=>{o.j1.visiereActive=false;} ]) {
     const r=rapport(s);changer(r.images[0].observation);assert.ok(verifierCouvert(r,s).length);
@@ -189,7 +189,7 @@ test('le survol réel des Cimes garde le sujet hors tunnel et les sondes sur sa 
     const S={i:s.circuit,suivie:0,locaux:[0],course:{c,voitures,physique:{world,solids}},
       prec:voitures.map(()=>({})),cour:voitures.map(()=>({})),meteo:{pluie:1,t:0},tRendu:0};
     const catalogue=[];catalogue[s.circuit]={id:s.circuitId};
-    const J={session:S,CATALOGUE:catalogue,scene:{decor},rendu:{gl:{canvas:{width:960,height:540},getError:()=>0,isContextLost:()=>false}}};
+    const J={session:S,CATALOGUE:catalogue,scene:{decor},rendu:{gpu:{context:{canvas:{width:960,height:540}}},stats:{errorEvents:[],deviceLost:false}}};
     const contexte=vm.createContext({BITUME:B,BITUME_JEU:J,document:{getElementById:()=>null}});
     const init=vm.runInContext(`(${installerEtatCouverts.toString()})(${JSON.stringify(s)})`,contexte),G=contexte.__COUVERTS_CAPTURE;
     const t=G.section,centre=t.debut+B.couverts.longueur(c,t)/2,q=B.circuit.echantillon(c,centre);

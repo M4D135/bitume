@@ -29,7 +29,7 @@ test('options de capture bornées, cas explicites et URL valides', () => {
 function rapport(s, patch = {}) {
   const eau = s.sec || s.inactif ? 0 : .6;
   const [largeur, hauteur] = (s.taille || '960,540').split(',').map(Number);
-  const optique = { backend: 'webgl2', pret: true, erreur: null, erreurs: [], perdu: false, dessins: 60, etapes: 720, copiesScene: 60, pixelsSource: 518400,
+  const optique = { backend: 'webgpu', pret: true, erreur: null, erreurs: [], perdu: false, dessins: 60, etapes: 720, copiesScene: 60, pixelsSource: 518400,
     eau, accumulationNeige: 0, embruns: s.spray ? .6 : 0, gouttes: 0, neige: 0 };
   const zones = { scene: { x: 0, y: 0, width: largeur, height: s.duo ? hauteur / 2 : hauteur } };
   if (s.duo) zones.scene2 = { x: 0, y: hauteur / 2, width: largeur, height: hauteur / 2 };
@@ -40,7 +40,7 @@ function rapport(s, patch = {}) {
   const positions = [{ id: 0, s: 280, d: 0, v: s.vitesse }, { id: 1, s: 298, d: 0, v: s.vitesse }];
   return { initialisation: { positions }, erreurs: [], avertissements: [], environnement: { gpu: 'ANGLE SwiftShader', resolution: [largeur, hauteur, 1] }, images: Array.from({ length: s.images || 2 }, (_, i) => ({
     etat: { zones: structuredClone(zones) },
-    observation: { glErreur: 0, glPerdu: false, vitres: { j1: structuredClone(optique), j2: structuredClone(optique) },
+    observation: { gpuErreur: null, gpuPerdu: false, vitres: { j1: structuredClone(optique), j2: structuredClone(optique) },
       j1: { pluie: s.pluie ?? (s.sec ? 0 : s.saison === 'hiver' ? 0 : 1), neige: s.saison === 'hiver' ? 1 : 0, embruns: s.spray ? .6 : 0, abri: !!s.tunnel, qualite: s.qualite || 'high',
         actif: !s.inactif, vitesse: s.vitesse, cockpit: !s.vue || s.vue === 'cockpit', cameraYaw: 0, cameraPitch: 0, cameraRoll: 0 },
       vue: s.vue || 'cockpit', vue2: s.duo ? s.vue2 || 'cockpit' : null, precipitation: { pluie: s.pluie ?? (s.sec ? 0 : 1), mouille: s.mouille ?? (s.sec ? 0 : 1) },
@@ -154,14 +154,14 @@ test('rétros hors champ : coins monde, toile préparée et projection CSS sont 
 test('erreurs de page, GL et repli optique silencieux empêchent la qualification', () => {
   const s = SCENARIOS[0];
   assert.deepEqual(verifierRapport(rapport(s), s, true), []);
-  assert.ok(verifierRapport(rapport(s, { glErreur: 1282 }), s, true).some(e => e.includes('WebGL')));
+  assert.ok(verifierRapport(rapport(s, { gpuErreur: 'GPUValidationError' }), s, true).some(e => e.includes('WebGPU')));
   assert.ok(verifierRapport(rapport(s, { vitres: { j1: { backend: 'canvas2d' } } }), s, true).some(e => e.includes('inactive')));
-  assert.ok(verifierRapport(rapport(s, { vitres: { j1: { backend: 'webgl2', erreurs: 1 } } }), s, true).some(e => e.includes('visière')));
+  assert.ok(verifierRapport(rapport(s, { vitres: { j1: { backend: 'webgpu', erreurs: 1 } } }), s, true).some(e => e.includes('visière')));
   for (const mauvais of [{ erreur: 'shader invalid' }, { pret: false }, { dessins: 0 }, { copiesScene: 0 }, { pixelsSource: 0 }]) {
     const r = rapport(s); Object.assign(r.images[0].observation.vitres.j1, mauvais);
     assert.ok(verifierRapport(r, s, true).length, JSON.stringify(mauvais));
   }
-  assert.ok(verifierRapport(rapport(s, { vitresGL: { j1: { present: true, erreur: 1282, perdu: false } } }), s, true).some(e => e.includes('WebGL')));
+  assert.ok(verifierRapport(rapport(s, { vitresGPU: { j1: { present: true, erreur: 1282, perdu: false } } }), s, true).some(e => e.includes('WebGPU')));
   const noir = rapport(s); noir.images[0].vues = { scene: { noir: 1, luminance: 0 } };
   assert.ok(verifierRapport(noir, s, true).some(e => e.includes('noire')));
   assert.deepEqual(verifierRapport(rapport(s, { vitres: null }), s, false), []); // le build ancien n'a pas le diagnostic
@@ -242,7 +242,7 @@ test('le témoin sec et l’hélico sous pluie restent sans dépôts ; les autre
     for (const changer of [
       o => { o.vitres.j1.eau = .001; }, o => { o.vitres.j1.embruns = .001; },
       o => { o.vitres.j1.gouttes = 1; }, o => { o.visieresVisibles.j1 = true; },
-      o => { o.vitres.j1.erreur = 'shader'; }, o => { o.glErreur = 1282; }
+      o => { o.vitres.j1.erreur = 'shader'; }, o => { o.gpuErreur = 'GPUValidationError'; }
     ]) {
       const mauvais = structuredClone(r); changer(mauvais.images[0].observation);
       assert(verifierRapport(mauvais, s, true).length, id);
@@ -336,10 +336,10 @@ function rapportPluie(s) {
     const o = r.images[i].observation;
     const S = { vitreContexte: o.j1, camera: o.camera, vue: s.vue, sortie: [],
       meteo: { pluie: 1, pluieFixe: 1, mouille: 1, t: temps }, tRendu: temps };
-    const gl = { getError: () => 0, isContextLost: () => false };
-    const toile = { hidden: false, getContext: () => gl };
+    const context = {};
+    const toile = { hidden: false, getContext: type => type === 'webgpu' ? context : null };
     const environnement = {
-      BITUME_JEU: { session: S, rendu: { gl }, vitres: { j1: o.vitres.j1 }, ecran: 'course' },
+      BITUME_JEU: { session: S, rendu: { stats: { errorEvents: [], deviceLost: false }, gpu: { context } }, vitres: { j1: o.vitres.j1 }, ecran: 'course' },
       __METEO_FIXTURE: { qualificationPluie: true, controleSillage: true, positions: () => r.initialisation.positions,
         forceDemandee: 1, instantDemande: instant,
         lentilles: { j1: { e: { simulation: e }, contexte: S.vitreContexte, depart: 0 } },
@@ -430,11 +430,11 @@ test('le pilote CDP avance l’impact natif par commandes bornées et garde les 
     camera: o.camera, vue: s.vue, vitreContexte: { ...o.j1, largeur: 960, hauteur: 540, intensite: 1 } };
   const B = { circuit: { echantillon: (c, x) => ({ x, z: 0, y: 0, cap: 0, pente: 0, devers: 0 }) },
     vitre: { mettreAJour: (e, dt, c) => O.avancerEtat(e.simulation, dt, c) } };
-  const gl = { getError: () => 0, isContextLost: () => false }, toile = { hidden: false, getContext: () => gl };
+  const context = {}, toile = { hidden: false, getContext: type => type === 'webgpu' ? context : null };
   let tempsMs = 1000, pasCommande = null, optiqueArretee = false;
   const commandes = [];
   const environnement = { BITUME: B,
-    BITUME_JEU: { session: S, reglages: {}, ecran: 'course', rendu: { gl }, vitres: { j1: o.vitres.j1 } },
+    BITUME_JEU: { session: S, reglages: {}, ecran: 'course', rendu: { stats: { errorEvents: [], deviceLost: false }, gpu: { context } }, vitres: { j1: o.vitres.j1 } },
     document: { getElementById: id => id === 'vitre' ? toile : null },
     getComputedStyle: () => ({ display: 'block', visibility: 'visible' }),
     __BITUME_CAPTURE: { avancer(ms) {

@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { createRequire } from 'node:module';
-import { optionsSaisons, scenariosSaisons, optionsScenarioSaisons, verifierSaisons, preparerSaisons, foretLibreSaisons } from '../tools/captures-saisons.mjs';
+import { CIRCUITS_SAISONS, optionsSaisons, scenariosSaisons, optionsScenarioSaisons, verifierSaisons, preparerSaisons, foretLibreSaisons } from '../tools/captures-saisons.mjs';
 
-test('couverture des onze circuits du menu et quatre saisons, plus été/hiver sur la roche alpine', () => {
+test('couverture de tous les circuits du menu et quatre saisons, plus été/hiver sur la roche alpine', () => {
   const o = optionsSaisons(['--url', 'file:///tmp/bitume.html', '--sortie', '/tmp/saisons']);
-  const scenes = scenariosSaisons(o); assert.equal(scenes.length, 46);
-  for (let i = 0; i < 11; i++) assert.deepEqual(scenes.filter(s => s.circuit === i && !s.alpin).map(s => s.saison), ['printemps', 'ete', 'automne', 'hiver']);
+  const scenes = scenariosSaisons(o); assert.equal(scenes.length, CIRCUITS_SAISONS.length * 4 + 2);
+  for (let i = 0; i < CIRCUITS_SAISONS.length; i++) assert.deepEqual(scenes.filter(s => s.circuit === i && !s.alpin).map(s => s.saison), ['printemps', 'ete', 'automne', 'hiver']);
   assert.deepEqual(scenes.filter(s => s.alpin).map(s => [s.id, s.saison]), [['route-des-cimes', 'ete'], ['route-des-cimes', 'hiver']]);
   assert(scenes.every(s => Number.isFinite(s.depart)));
   for (const s of scenes) {
@@ -24,9 +24,9 @@ test('job ciblé par circuit/palier et options ambiguës refusées', () => {
 test('le vérificateur refuse une caméra remplacée, les couronnes hivernales et une preuve absente', () => {
   const s = { id: 'route-des-cimes', saison: 'hiver' }, camera = { pos: [1, 2, 3], yaw: .3, pitch: .1, fov: 54 };
   const observation = { saison: s.saison, circuit: s.id, vue: 'poursuite', camera, cameraPrescrite: structuredClone(camera),
-    glErreur: 0, glPerdu: false, obstruction: false, foretLibre: true, caducs: 2, branchesNues: 2, couronnesCaduques: 0, sourcesFeuilles: 0 };
+    gpuErreur: null, gpuPerdu: false, obstruction: false, foretLibre: true, caducs: 2, branchesNues: 2, couronnesCaduques: 0, sourcesFeuilles: 0 };
   const r = { build: { sha256: 'a'.repeat(64) }, source: { commit: 'b'.repeat(40) },
-    environnement: { webgl2: true, physx: { ready: true } },
+    environnement: { webgpu: true, physx: { ready: true } },
     initialisation: { modeleReel: true, controleForet: 'enveloppes-troncs-9-rayons', arbre: { essence: 'feuillu' } }, images: [{ observation }, { observation }] };
   assert.deepEqual(verifierSaisons(r, s), []);
   const faux = structuredClone(r); faux.images[0].observation.camera.pos[0] += 2; assert(verifierSaisons(faux, s).some(e => /Caméra/.test(e)));

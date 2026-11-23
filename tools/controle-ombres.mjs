@@ -18,6 +18,7 @@
 //   - vue poursuite, rivaux écartés (poursuite-ombre) : l'ombre nette que la tuile donne à la voiture filmée tombe
 //     dans la région mesurée ; même contrôle contre la même passe sans tuile.
 // Le journal du gouverneur (BITUME.ombres.journal()) est relevé après 10 s de course en qualité Auto, cadence réelle.
+import { lireRegionsPresentation } from './lecture-presentation-gpu.mjs';
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -74,7 +75,9 @@ const SCENES = [
 ];
 
 const MODELE = `(async () => {
-  const J = BITUME_JEU, B = globalThis.BITUME, R = J.rendu, gl = R.gl;
+  const J = BITUME_JEU, B = globalThis.BITUME, R = J.rendu, gpu = R.gpu;
+  if (!gpu?.device || R.stats.backend !== 'webgpu') throw new Error('Moteur WebGPU absent');
+  const lire = ${lireRegionsPresentation.toString()};
   if (window.FPhysX && FPhysX.init) { try { await FPhysX.init(); } catch (e) {} }
   const vraiRAF = window.requestAnimationFrame.bind(window), image = () => new Promise(r => vraiRAF(r));
   const file = [];
@@ -103,20 +106,20 @@ const MODELE = `(async () => {
   let t = 1000; const PAS = 1000 / 60;
   const pas = () => { t += PAS; for (const cb of file.splice(0)) cb(t); };
   for (let k = 0; k < __CHAUFFE__; k++) pas();
-  const W = gl.drawingBufferWidth, H = gl.drawingBufferHeight;
+  const W = gpu.context.canvas.width, H = gpu.context.canvas.height;
   const regions = __REGIONS__.map(([x0, y0, x1, y1]) => {
     const x = Math.round(x0 * W), w = Math.round((x1 - x0) * W), h = Math.round((y1 - y0) * H), y = Math.round((1 - y1) * H);
-    return { x, y, w, h, data: new Uint8Array(w * h * 4), seq: [] };
+    return { x, y: H - y - h, w, h, seq: [] };
   });
   const S = J.session, s0 = S.course.joueur.etat.s;
   for (let k = 0; k < __N__; k++) {
     pas();
-    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
-    for (const g of regions) {
-      gl.readPixels(g.x, g.y, g.w, g.h, gl.RGBA, gl.UNSIGNED_BYTE, g.data);
+    const pixels = await lire(gpu, gpu.context.getCurrentTexture(), regions);
+    for (const [k, g] of regions.entries()) {
+      const data = pixels[k];
       const L = new Float32Array(Math.ceil(g.w / 2) * Math.ceil(g.h / 2));
       let j = 0;
-      for (let yy = 0; yy < g.h; yy += 2) for (let xx = 0; xx < g.w; xx += 2) { const i = (yy * g.w + xx) * 4; L[j++] = .2126 * g.data[i] + .7152 * g.data[i + 1] + .0722 * g.data[i + 2]; }
+      for (let yy = 0; yy < g.h; yy += 2) for (let xx = 0; xx < g.w; xx += 2) { const i = ((g.h - 1 - yy) * g.w + xx) * 4; L[j++] = .2126 * data[i] + .7152 * data[i + 1] + .0722 * data[i + 2]; }
       g.seq.push(L);
     }
   }
@@ -133,7 +136,7 @@ const MODELE = `(async () => {
     for (const L of g.seq) for (let p = 0; p < P; p++) moy += L[p];
     const serie = [];
     for (let u = 1; u < g.seq.length; u++) { let e = 0; for (let p = 0; p < P; p++) e += Math.abs(g.seq[u][p] - g.seq[u - 1][p]); serie.push(+(e / P).toFixed(3)); }
-    return { region: [g.x, g.y, g.w, g.h], niveauMoyen: +(moy / (P * g.seq.length)).toFixed(1),
+    return { region: [g.x, H - g.y - g.h, g.w, g.h], origineRegion: 'bas-gauche', niveauMoyen: +(moy / (P * g.seq.length)).toFixed(1),
       d1: +(d1 / n1).toFixed(4), d2: +(d2 / n2).toFixed(4), allersRetours: +(1000 * flips / n2).toFixed(2), serie };
   });
   const st = R.stats;
@@ -154,7 +157,7 @@ const dossier = mkdtempSync(path.join(tmpdir(), 'bitume-ombres-'));
 function lancer(nom, js) {
   const f = path.join(dossier, nom + '.js');
   writeFileSync(f, js);
-  const r = spawnSync('node', [path.join(ici, 'page-essai.mjs'), page, f, '--taille', '1280,720'], { encoding: 'utf8', timeout: 600000 });
+  const r = spawnSync('node', [path.join(ici, 'page-essai.mjs'), page, f, '--sans-webgl', '--taille', '1280,720'], { encoding: 'utf8', timeout: 600000 });
   try { const v = JSON.parse(r.stdout); if (v.fatal) throw new Error(v.fatal); return Object.assign(v.valeur, v.erreurs && v.erreurs.length ? { erreurs: v.erreurs.slice(0, 3) } : {}); }
   catch (e) { return { echec: String(e.message || e).slice(0, 400), sortie: (r.stdout || '').slice(0, 400) + (r.stderr || '').slice(0, 400) }; }
 }

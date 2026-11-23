@@ -4,6 +4,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { lireRegionsPresentation } from './lecture-presentation-gpu.mjs';
 import { capturer, optionsCapture } from './controle-visuel.mjs';
 
 import { CATALOGUE_SAISONS } from './qualification/saisons-circuits.mjs';
@@ -128,39 +129,33 @@ export function verifierPixelPierres(pixel, reference = null) {
   if (reference && pixel.some((v, k) => v !== reference[k])) throw new Error('Pixel de dessin instable à simulation figée');
   return true;
 }
-export function etatLecturePierres(gl) {
-  const largeur = gl.drawingBufferWidth, hauteur = gl.drawingBufferHeight;
-  const viewport = Array.from(gl.getParameter(gl.VIEWPORT)), scissor = Array.from(gl.getParameter(gl.SCISSOR_BOX));
-  const scissorActif = gl.isEnabled(gl.SCISSOR_TEST);
-  const dessinDefaut = gl.getParameter(gl.DRAW_FRAMEBUFFER_BINDING) === null, lectureDefaut = gl.getParameter(gl.READ_FRAMEBUFFER_BINDING) === null;
-  // FERRO postPass termine sa composition/bloom sur la sortie par défaut. Une cible intermédiaire
-  // ou une lecture PBO n'est pas un résultat synchrone de cette image : refuser au lieu de deviner.
-  if (!dessinDefaut || !lectureDefaut || gl.getParameter(gl.READ_BUFFER) !== gl.BACK || gl.getParameter(gl.DRAW_BUFFER0) !== gl.BACK
-    || gl.getParameter(gl.PIXEL_PACK_BUFFER_BINDING) !== null || gl.getParameter(gl.PACK_ROW_LENGTH) !== 0
-    || gl.getParameter(gl.PACK_SKIP_ROWS) !== 0 || gl.getParameter(gl.PACK_SKIP_PIXELS) !== 0) throw new Error('Sortie couleur ou lecture de pixel inattendue');
-  const plein = [0, 0, largeur, hauteur];
-  if (!(largeur > 0 && hauteur > 0) || viewport.some((v, k) => v !== plein[k]) || scissorActif && scissor.some((v, k) => v !== plein[k]))
-    throw new Error('Dessin limité par un viewport ou un ciseau inattendu');
-  return { largeur, hauteur, viewport, scissorActif, scissor, dessinFramebuffer: 'defaut', lectureFramebuffer: 'defaut',
-    lectureBuffer: 'BACK', format: 'RGBA/UNSIGNED_BYTE', x: Math.floor(largeur / 2), y: Math.floor(hauteur / 2) };
+export function etatLecturePierres(gpu, texture) {
+  const { width: largeur, height: hauteur, format, sampleCount, dimension } = texture;
+  const canvas = gpu.context.canvas;
+  if (texture !== gpu.context.getCurrentTexture() || canvas.width !== largeur || canvas.height !== hauteur ||
+    largeur < 1 || hauteur < 1 || !['rgba8unorm', 'bgra8unorm'].includes(format) ||
+    sampleCount !== 1 || dimension !== '2d' || !(texture.usage & GPUTextureUsage.COPY_SRC))
+    throw new Error('Sortie de présentation WebGPU inattendue');
+  return { largeur, hauteur, format, sampleCount, dimension, tailleCanvas: [canvas.width, canvas.height],
+    sortie: 'GPUCanvasContext.getCurrentTexture', x: Math.floor(largeur / 2), y: Math.floor(hauteur / 2) };
 }
-export function marquerPixelPierres(gl, lecture) {
-  const actif = gl.isEnabled(gl.SCISSOR_TEST), ciseau = gl.getParameter(gl.SCISSOR_BOX);
-  const couleur = gl.getParameter(gl.COLOR_CLEAR_VALUE), masque = gl.getParameter(gl.COLOR_WRITEMASK);
-  try {
-    gl.enable(gl.SCISSOR_TEST); gl.scissor(lecture.x, lecture.y, 1, 1); gl.colorMask(true, true, true, true);
-    gl.clearColor(1, 0, 1, 1); gl.clear(gl.COLOR_BUFFER_BIT);
-  } finally {
-    gl.clearColor(...couleur); gl.colorMask(...masque); gl.scissor(...ciseau);
-    if (!actif) gl.disable(gl.SCISSOR_TEST);
-  }
-  const pixel = new Uint8Array(4);
-  gl.readPixels(lecture.x, lecture.y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
-  if (gl.getError() !== gl.NO_ERROR || pixel[0] !== 255 || pixel[1] !== 0 || pixel[2] !== 255 || pixel[3] !== 255)
-    throw new Error('Écriture/lecture du pixel témoin non exercée');
+export function creerMarqueurPierres(gpu) {
+  const module = gpu.device.createShaderModule({ code: `
+    @vertex fn vs(@builtin(vertex_index) n:u32)->@builtin(position) vec4f {
+      let p=array<vec2f,3>(vec2f(-1,-1),vec2f(3,-1),vec2f(-1,3)); return vec4f(p[n],0,1);
+    }
+    @fragment fn fs()->@location(0) vec4f { return vec4f(1,0,1,1); }` });
+  return gpu.device.createRenderPipeline({ layout:'auto', vertex:{ module,entryPoint:'vs' },
+    fragment:{ module,entryPoint:'fs',targets:[{ format:gpu.canvasFormat }] } });
 }
-export function observerPierres(i) {
-  const J = BITUME_JEU, S = J.session, F = __PIERRES_CAPTURE, gl = J.rendu.gl, cam = S.camera;
+export function marquerPixelPierres(gpu, texture, pipeline, lecture) {
+  const encodeur = gpu.device.createCommandEncoder();
+  const passe = encodeur.beginRenderPass({ colorAttachments: [{ view: texture.createView(), loadOp:'load', storeOp:'store' }] });
+  passe.setPipeline(pipeline); passe.setScissorRect(lecture.x, lecture.y, 1, 1); passe.draw(3); passe.end();
+  gpu.device.queue.submit([encodeur.finish()]);
+}
+export async function observerPierres(i) {
+  const J = BITUME_JEU, S = J.session, F = __PIERRES_CAPTURE, gpu = J.rendu.gpu, cam = S.camera;
   const stats = () => Object.fromEntries(['drawCalls', 'triangles', 'instances'].map(k => [k, J.rendu.stats[k]]));
   const rendu = stats(), visee = viserPierres(S.course.physique.world, S.course.physique.solids, cam, F.scenario, J.scene.decor.sol);
   let cout = null;
@@ -168,41 +163,47 @@ export function observerPierres(i) {
     if (!F.arguments || F.arguments[0] !== cam) throw new Error('Arguments de la vraie image non observés');
     const avant = JSON.stringify([S.course.horloge, S.tRendu, S.course.voitures.map(v => v.etat)]), temps = [], pixels = [];
     try {
-      const lecture = etatLecturePierres(gl), pixel = new Uint8Array(4);
+      const lecture = etatLecturePierres(gpu, gpu.context.getCurrentTexture());
+      const pipeline = creerMarqueurPierres(gpu), centre = [{ x:lecture.x, y:lecture.y, w:1, h:1 }];
       for (let k = 0; k < 22; k++) {
-        // Témoin magenta lu et état GL restauré AVANT le chronométrage : un vieux framebuffer
-        // stable ou un draw sans effet ne peut passer le contrôle de remplacement.
-        marquerPixelPierres(gl, lecture);
-        const t = performance.now(); F.dessin.apply(J.rendu, F.arguments);
-        // Lecture bloquante vers un tableau CPU, pas vers un PBO. Attend les écritures de couleur.
-        // https://registry.khronos.org/webgl/specs/latest/2.0/#READING_BACK_PIXELS
-        gl.readPixels(lecture.x, lecture.y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
-        const ms = performance.now() - t, couleur = Array.from(pixel);
-        if (gl.getError() !== gl.NO_ERROR) throw new Error('Erreur GL pendant la lecture synchrone');
-        if (JSON.stringify(etatLecturePierres(gl)) !== JSON.stringify(lecture)) throw new Error('Sortie couleur différente après dessin');
+        const texture = gpu.context.getCurrentTexture();
+        if (JSON.stringify(etatLecturePierres(gpu, texture)) !== JSON.stringify(lecture)) throw new Error('Surface de présentation modifiée');
+        // Les deux copies sont soumises dans la même tâche, avant tout await. Le navigateur
+        // ne peut donc pas présenter une autre texture entre la balise et le vrai dessin.
+        marquerPixelPierres(gpu, texture, pipeline, lecture);
+        const balise = lireRegionsPresentation(gpu, texture, centre);
+        const t = performance.now();
+        const dessin = (async () => {
+          F.dessin.apply(J.rendu, F.arguments);
+          if (gpu.context.getCurrentTexture() !== texture) throw new Error('Surface remplacée pendant le dessin');
+          return lireRegionsPresentation(gpu, texture, centre);
+        })();
+        const [[avantDessin], [apresDessin]] = await Promise.all([balise, dessin]);
+        const ms = performance.now() - t, couleur = Array.from(apresDessin);
+        if (!avantDessin.every((v, j) => v === [255, 0, 255, 255][j])) throw new Error('Écriture/lecture de la balise magenta non exercée');
         verifierPixelPierres(couleur, k >= 6 ? pixels[0] : null);
         if (k >= 6) { temps.push(ms); pixels.push(couleur); }
         if (JSON.stringify(stats()) !== JSON.stringify(rendu)) throw new Error('Comptage du dessin répété différent');
       }
       if (JSON.stringify([S.course.horloge, S.tRendu, S.course.voitures.map(v => v.etat)]) !== avant) throw new Error('Simulation modifiée pendant la mesure de dessin');
       const tries = [...temps].sort((a, b) => a - b);
-      cout = { methode: 'draw-identique-readPixels-CPU-performance.now', chauffe: 6, mesures: temps.length,
+      cout = { methode: 'draw-meme-texture-WebGPU-copyTextureToBuffer-mapAsync', chauffe: 6, mesures: temps.length,
         echantillonsMs: temps, p50Ms: tries[Math.floor(tries.length * .5)], p95Ms: tries[Math.floor(tries.length * .95)],
         lecture: { ...lecture, pixel: pixels[0], pixelsMesures: pixels, stable: true, controlesRemplacement: 22,
-          marqueur: [255, 0, 255, 255], preparationMarqueurHorsChronometrage: true },
+          marqueur: [255, 0, 255, 255], baliseSoumiseAvantChrono: true },
         sortie: { composition: !!J.rendu.stats.composition, bloom: !!J.rendu.stats.bloom, msaa: J.rendu.stats.msaa },
         simulationInchangee: true,
-        limite: 'Dessin et lecture CPU synchrone d’un pixel, coût de transfert/interprocessus inclus ; caches chauds et bruit du runner. Les anciennes mesures finish seul ne concluent pas sur ce coût. Aucun FPS ni coût de GPU matériel qualifié.' };
+        limite: 'Temps écoulé entre la soumission du dessin et la fin des deux lectures CPU. La file peut encore achever la balise déjà soumise. Les deux variantes utilisent la même procédure.' };
     } finally { J.rendu.draw = F.dessin; }
   }
   return { saison: J.scene.decor.saison.id, circuit: J.CATALOGUE[F.scenario.circuit].id, variante: F.scenario.variante,
     camera: { pos: [...cam.pos], yaw: cam.yaw, pitch: cam.pitch, fov: cam.fov }, cameraPrescrite: F.camera,
     visee, matieres: F.matieres, empreintes: F.empreintes, rendu, cout,
-    glErreur: gl.getError(), glPerdu: gl.isContextLost() };
+    erreursGPU: [...J.rendu.stats.errorEvents], gpuPerdu: J.rendu.stats.deviceLost };
 }
 export async function observerAvecCoutPierres({ evaluer, i }, delaiMs = 15000) {
   if (!Number.isInteger(delaiMs) || delaiMs <= 0 || delaiMs > 15000) throw new Error('Délai de mesure invalide');
-  const expression = indice => `(() => { ${[viserPierres, verifierPixelPierres, etatLecturePierres, marquerPixelPierres].map(f => 'const ' + f.name + ' = ' + f.toString() + ';').join('\n')} return (${observerPierres.toString()})(${indice}); })()`;
+  const expression = indice => `(() => { ${[viserPierres, verifierPixelPierres, etatLecturePierres, creerMarqueurPierres, marquerPixelPierres, lireRegionsPresentation].map(f => 'const ' + f.name + ' = ' + f.toString() + ';').join('\n')} return (${observerPierres.toString()})(${indice}); })()`;
   // L'observation de l'image existe avant tout dessin supplémentaire. Le coût ne doit jamais
   // faire perdre un PNG déjà pris ni les vérifications de sa scène et de sa caméra.
   const base = await evaluer(expression(0));
@@ -225,12 +226,12 @@ export function verifierPierres(r, s) {
   if (r.fatal) erreurs.push(r.fatal.split('\n')[0]);
   if (r.erreurs?.length) erreurs.push(...r.erreurs);
   if (!/^[a-f0-9]{64}$/.test(r.build?.sha256 || '') || !/^[a-f0-9]{40}$/.test(r.source?.commit || '')) erreurs.push('Provenance absente');
-  if (r.environnement?.webgl2 !== true || r.environnement?.physx?.ready !== true) erreurs.push('Renderer ou PhysX réel absent');
+  if (r.environnement?.webgpu !== true || r.environnement?.physx?.ready !== true) erreurs.push('Renderer ou PhysX réel absent');
   if (r.initialisation?.modeleReel !== true || r.initialisation?.methode !== 'fixture-matiere-meme-build' || r.images?.length !== 2) erreurs.push('Fixture ou images incomplètes');
   for (const im of r.images || []) {
     const o = im.observation;
     if (!o || o.saison !== s.saison || o.circuit !== s.circuitId || o.variante !== s.variante) { erreurs.push('Observation de pierre absente'); continue; }
-    if (o.glErreur || o.glPerdu) erreurs.push('Erreur graphique');
+    if (o.gpuPerdu !== false || !Array.isArray(o.erreursGPU) || o.erreursGPU.length) erreurs.push('Erreur graphique');
     const a = o.camera, b = o.cameraPrescrite;
     if (!a?.pos?.every(Number.isFinite) || !b?.pos || a.pos.some((v, k) => Math.abs(v - b.pos[k]) > 1e-8) || ['yaw', 'pitch', 'fov'].some(k => !Number.isFinite(a[k]) || Math.abs(a[k] - b[k]) > 1e-8)) erreurs.push('Caméra finale différente');
     if (!(o.matieres?.uniques > 0) || ![9, 23].includes(o.matieres.matiereInitiale)
@@ -240,16 +241,15 @@ export function verifierPierres(r, s) {
   }
   const cout = r.images?.[1]?.observation?.cout;
   if (!cout || cout.mesures !== 16 || cout.echantillonsMs?.length !== 16 || cout.echantillonsMs.some(v => !Number.isFinite(v) || v <= 0) || cout.simulationInchangee !== true) erreurs.push('Mesure du dessin absente ou invalide');
-  if (cout?.methode !== 'draw-identique-readPixels-CPU-performance.now' || cout.lecture?.controlesRemplacement !== 22
-    || cout.lecture?.pixelsMesures?.length !== 16 || cout.lecture?.stable !== true || cout.lecture?.preparationMarqueurHorsChronometrage !== true) erreurs.push('Achèvement du dessin non vérifié par lecture CPU');
+  if (cout?.methode !== 'draw-meme-texture-WebGPU-copyTextureToBuffer-mapAsync' || cout.lecture?.controlesRemplacement !== 22
+    || cout.lecture?.pixelsMesures?.length !== 16 || cout.lecture?.stable !== true || cout.lecture?.baliseSoumiseAvantChrono !== true || JSON.stringify(cout.lecture.marqueur) !== '[255,0,255,255]') erreurs.push('Achèvement du dessin non vérifié par lecture CPU');
   else try { for (const pixel of cout.lecture.pixelsMesures) verifierPixelPierres(pixel, cout.lecture.pixel); }
   catch (e) { erreurs.push(e.message); }
-  const lecture = cout?.lecture, plein = [0, 0, lecture?.largeur, lecture?.hauteur];
+  const lecture = cout?.lecture;
   if (!lecture || ![lecture.largeur, lecture.hauteur].every(v => Number.isInteger(v) && v > 0)
-    || JSON.stringify(lecture.viewport) !== JSON.stringify(plein) || typeof lecture.scissorActif !== 'boolean'
-    || lecture.scissorActif && JSON.stringify(lecture.scissor) !== JSON.stringify(plein)
-    || lecture.dessinFramebuffer !== 'defaut' || lecture.lectureFramebuffer !== 'defaut' || lecture.lectureBuffer !== 'BACK'
-    || lecture.format !== 'RGBA/UNSIGNED_BYTE' || lecture.x !== Math.floor(lecture.largeur / 2) || lecture.y !== Math.floor(lecture.hauteur / 2)) erreurs.push('Sortie couleur lue non documentée ou partielle');
+    || JSON.stringify(lecture.tailleCanvas) !== JSON.stringify([lecture.largeur, lecture.hauteur])
+    || lecture.sortie !== 'GPUCanvasContext.getCurrentTexture' || !['rgba8unorm','bgra8unorm'].includes(lecture.format)
+    || lecture.sampleCount !== 1 || lecture.dimension !== '2d' || lecture.x !== Math.floor(lecture.largeur / 2) || lecture.y !== Math.floor(lecture.hauteur / 2)) erreurs.push('Sortie couleur lue non documentée ou partielle');
   return [...new Set(erreurs)];
 }
 export function comparerPierres(a, b) {
@@ -264,7 +264,13 @@ export function comparerPierres(a, b) {
       || JSON.stringify(x.matieres?.genres) !== JSON.stringify(y.matieres?.genres)) erreurs.push('Sélection de pierre différente');
   }
   const ca = a.images?.[1]?.observation?.cout, cb = b.images?.[1]?.observation?.cout;
-  const lectureVerifiee = [ca, cb].every(c => c?.methode === 'draw-identique-readPixels-CPU-performance.now' && c.lecture?.stable && c.lecture?.controlesRemplacement === 22);
+  const lectureVerifiee = [ca, cb].every(c => {
+    const l = c?.lecture;
+    if (c?.methode !== 'draw-meme-texture-WebGPU-copyTextureToBuffer-mapAsync' || !l?.stable || l.controlesRemplacement !== 22
+      || l.sortie !== 'GPUCanvasContext.getCurrentTexture' || !l.baliseSoumiseAvantChrono || JSON.stringify(l.marqueur) !== '[255,0,255,255]'
+      || l.pixelsMesures?.length !== 16) return false;
+    try { return l.pixelsMesures.every(pixel => verifierPixelPierres(pixel, l.pixel)); } catch { return false; }
+  });
   if (!lectureVerifiee) erreurs.push('Comparaison de coût sans lecture CPU vérifiée');
   return { erreurs: [...new Set(erreurs)], dessinReferenceP50Ms: ca?.p50Ms ?? null, dessinProceduralP50Ms: cb?.p50Ms ?? null,
     lectureVerifiee, rapportP50: lectureVerifiee && ca?.p50Ms > 0 && Number.isFinite(cb?.p50Ms) ? cb.p50Ms / ca.p50Ms : null,

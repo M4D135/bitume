@@ -2384,6 +2384,40 @@
     return {values,groups};
   }
 
+  function orthographicSun(sun,photoProjection,photoMatrix,out,c,e,size,lift,near,far,axe,snap){
+    // Math.sqrt plutôt que Math.hypot : appelée à chaque image (tuile), hypot recevrait ses arguments en nombres alloués.
+    const sl=Math.sqrt(sun[0]*sun[0]+sun[1]*sun[1]+sun[2]*sun[2])||1;
+    const fx=-sun[0]/sl,fy=-sun[1]/sl,fz=-sun[2]/sl;
+    let rx,ry,rz;
+    if(axe){rx=axe[0];ry=axe[1];rz=axe[2];}else{const h=Math.sqrt(fx*fx+fz*fz);if(h>.0001){rx=-fz/h;ry=0;rz=fx/h;}else{rx=1;ry=0;rz=0;}}
+    const k=rx*fx+ry*fy+rz*fz;rx-=k*fx;ry-=k*fy;rz-=k*fz;let rl=Math.sqrt(rx*rx+ry*ry+rz*rz);
+    if(rl<.0001){rx=1-fx*fx;ry=-fx*fy;rz=-fx*fz;rl=Math.sqrt(rx*rx+ry*ry+rz*rz)||1;}
+    rx/=rl;ry/=rl;rz/=rl;
+    const ux=ry*fz-rz*fy,uy=rz*fx-rx*fz,uz=rx*fy-ry*fx,texel=e*2/size;
+    let cx=c[0],cy=c[1],cz=c[2];
+    if(snap){const a=rx*cx+ry*cy+rz*cz,b=ux*cx+uy*cy+uz*cz,da=Math.round(a/texel)*texel-a,db=Math.round(b/texel)*texel-b;cx+=rx*da+ux*db;cy+=ry*da+uy*db;cz+=rz*da+uz*db;}
+    const px=cx-fx*lift,py=cy-fy*lift,pz=cz-fz*lift;
+    photoMatrix[0]=rx;photoMatrix[1]=ux;photoMatrix[2]=-fx;photoMatrix[3]=0;photoMatrix[4]=ry;photoMatrix[5]=uy;photoMatrix[6]=-fy;photoMatrix[7]=0;
+    photoMatrix[8]=rz;photoMatrix[9]=uz;photoMatrix[10]=-fz;photoMatrix[11]=0;
+    photoMatrix[12]=-(rx*px+ry*py+rz*pz);photoMatrix[13]=-(ux*px+uy*py+uz*pz);photoMatrix[14]=fx*px+fy*py+fz*pz;photoMatrix[15]=1;
+    photoProjection.fill(0);photoProjection[0]=photoProjection[5]=1/e;photoProjection[10]=-2/(far-near);photoProjection[14]=-(far+near)/(far-near);photoProjection[15]=1;
+    multiply(photoProjection,photoMatrix,out);
+    return texel;
+  }
+  function sunBounds(sun,lots,m,dessous){
+    const sl=Math.hypot(sun[0],sun[1],sun[2])||1,fx=-sun[0]/sl,fy=-sun[1]/sl,fz=-sun[2]/sl,h=Math.hypot(fx,fz);
+    const rx=h>.0001?-fz/h:1,rz=h>.0001?fx/h:0,ux=-rz*fy,uy=rz*fx-rx*fz,uz=rx*fy;
+    let a0=Infinity,a1=-Infinity,b0=Infinity,b1=-Infinity,d0=Infinity,d1=-Infinity;
+    for(const l of lots){
+      const c=l.centre,r=Math.max(0,Number(l.rayon)||0);
+      if(l.ombre===false||l.groundCover||l.detailProcheSeul||!c||!Number.isFinite(c[0])||!Number.isFinite(c[1])||!Number.isFinite(c[2]))continue;
+      const a=rx*c[0]+rz*c[2],b=ux*c[0]+uy*c[1]+uz*c[2],d=fx*c[0]+fy*c[1]+fz*c[2];
+      a0=Math.min(a0,a-r);a1=Math.max(a1,a+r);b0=Math.min(b0,b-r);b1=Math.max(b1,b+r);d0=Math.min(d0,d-r);d1=Math.max(d1,d+r);
+    }
+    if(!(a1>=a0))return null;
+    const a=(a0+a1)/2,b=(b0+b1)/2,d=(d0+d1)/2;
+    return {centre:[rx*a+ux*b+fx*d,uy*b+fy*d,rz*a+uz*b+fz*d],etendue:Math.max(a1-a0,b1-b0)/2+m,lift:d-d0+m,profondeur:d1-d0+m+dessous};
+  }
   function skyColor(values,scale=1){return 'rgb('+values.map(v=>Math.round(Math.pow(Math.max(0,v*scale)/(Math.max(0,v*scale)+.76),.4545)*255)).join(',')+')';}
   function softwareSky(ctx,width,height,axes,tan,environment,time){
     const {right,up,forward}=axes,focal=height/(2*tan),span=Math.hypot(right[1],up[1])||1;
@@ -4543,24 +4577,7 @@
     // Vue orthographique selon le soleil : centre c, demi-côté e, axe x suivant `axe` projeté (sinon l'horizontale du
     // soleil), oeil relevé de lift, profondeur de near à far. Écrit dans out ; rend le pas de grille (m par texel).
     function photoSunMatrix(out,c,e,size,lift,near,far,axe,snap){
-      // Math.sqrt plutôt que Math.hypot : appelée à chaque image (tuile), hypot recevrait ses arguments en nombres alloués.
-      const sun=environment.sunDirection,sl=Math.sqrt(sun[0]*sun[0]+sun[1]*sun[1]+sun[2]*sun[2])||1;
-      const fx=-sun[0]/sl,fy=-sun[1]/sl,fz=-sun[2]/sl;
-      let rx,ry,rz;
-      if(axe){rx=axe[0];ry=axe[1];rz=axe[2];}else{const h=Math.sqrt(fx*fx+fz*fz);if(h>.0001){rx=-fz/h;ry=0;rz=fx/h;}else{rx=1;ry=0;rz=0;}}
-      const k=rx*fx+ry*fy+rz*fz;rx-=k*fx;ry-=k*fy;rz-=k*fz;let rl=Math.sqrt(rx*rx+ry*ry+rz*rz);
-      if(rl<.0001){rx=1-fx*fx;ry=-fx*fy;rz=-fx*fz;rl=Math.sqrt(rx*rx+ry*ry+rz*rz)||1;}
-      rx/=rl;ry/=rl;rz/=rl;
-      const ux=ry*fz-rz*fy,uy=rz*fx-rx*fz,uz=rx*fy-ry*fx,texel=e*2/size;
-      let cx=c[0],cy=c[1],cz=c[2];
-      if(snap){const a=rx*cx+ry*cy+rz*cz,b=ux*cx+uy*cy+uz*cz,da=Math.round(a/texel)*texel-a,db=Math.round(b/texel)*texel-b;cx+=rx*da+ux*db;cy+=ry*da+uy*db;cz+=rz*da+uz*db;}
-      const px=cx-fx*lift,py=cy-fy*lift,pz=cz-fz*lift;
-      photoMatrix[0]=rx;photoMatrix[1]=ux;photoMatrix[2]=-fx;photoMatrix[3]=0;photoMatrix[4]=ry;photoMatrix[5]=uy;photoMatrix[6]=-fy;photoMatrix[7]=0;
-      photoMatrix[8]=rz;photoMatrix[9]=uz;photoMatrix[10]=-fz;photoMatrix[11]=0;
-      photoMatrix[12]=-(rx*px+ry*py+rz*pz);photoMatrix[13]=-(ux*px+uy*py+uz*pz);photoMatrix[14]=fx*px+fy*py+fz*pz;photoMatrix[15]=1;
-      photoProjection.fill(0);photoProjection[0]=photoProjection[5]=1/e;photoProjection[10]=-2/(far-near);photoProjection[14]=-(far+near)/(far-near);photoProjection[15]=1;
-      multiply(photoProjection,photoMatrix,out);
-      return texel;
+      return orthographicSun(environment.sunDirection,photoProjection,photoMatrix,out,c,e,size,lift,near,far,axe,snap);
     }
     // Tuile de l'image : fx.ombreProche = { centre, etendue, debut, fin, axe } (debut et fin : indices de dynamic). Les
     // pièces ordinaires de cet intervalle passent dans nearOrdinary ; le préchauffage en prend une pièce témoin.
@@ -4687,20 +4704,6 @@
     // projettent, marge latérale m ; en profondeur, de m devant le lot le plus proche du soleil à `dessous` au-delà du
     // plus lointain (le sol qui reçoit). Les récepteurs partagent les coordonnées de leurs bloqueurs : le carré des
     // lots suffit, quelle que soit la hauteur du soleil.
-    function photoEmprise(m,dessous){
-      const sun=environment.sunDirection,sl=Math.hypot(sun[0],sun[1],sun[2])||1,fx=-sun[0]/sl,fy=-sun[1]/sl,fz=-sun[2]/sl,h=Math.hypot(fx,fz);
-      const rx=h>.0001?-fz/h:1,rz=h>.0001?fx/h:0,ux=-rz*fy,uy=rz*fx-rx*fz,uz=rx*fy;
-      let a0=Infinity,a1=-Infinity,b0=Infinity,b1=-Infinity,d0=Infinity,d1=-Infinity;
-      for(const l of lots){
-        const c=l.centre,r=Math.max(0,Number(l.rayon)||0);
-        if(l.ombre===false||l.groundCover||l.detailProcheSeul||!c||!Number.isFinite(c[0])||!Number.isFinite(c[1])||!Number.isFinite(c[2]))continue;
-        const a=rx*c[0]+rz*c[2],b=ux*c[0]+uy*c[1]+uz*c[2],d=fx*c[0]+fy*c[1]+fz*c[2];
-        a0=Math.min(a0,a-r);a1=Math.max(a1,a+r);b0=Math.min(b0,b-r);b1=Math.max(b1,b+r);d0=Math.min(d0,d-r);d1=Math.max(d1,d+r);
-      }
-      if(!(a1>=a0))return null;
-      const a=(a0+a1)/2,b=(b0+b1)/2,d=(d0+d1)/2;
-      return {centre:[rx*a+ux*b+fx*d,uy*b+fy*d,rz*a+uz*b+fz*d],etendue:Math.max(a1-a0,b1-b0)/2+m,lift:d-d0+m,profondeur:d1-d0+m+dessous};
-    }
     function precalculerOmbre(demande){
       if(!photo)return null;
       if(!demande){photoFarRequest=null;if(photoFar){deleteTarget(photoFar);photoFar=null;}photoState.loin=false;photoState.loinTaille=0;return null;}
@@ -4715,7 +4718,7 @@
         photoFarRequest={centre:[c[0],c[1],c[2]],etendue:e,taille:size,hauteur:h};
       }
       if(disposed||stats.contextLost||!environment)return null;
-      const r=photoFarRequest,zone=auto?photoEmprise(r.marge,r.dessous):{centre:r.centre,etendue:r.etendue,lift:r.hauteur*.5,profondeur:r.hauteur};
+      const r=photoFarRequest,zone=auto?sunBounds(environment.sunDirection,lots,r.marge,r.dessous):{centre:r.centre,etendue:r.etendue,lift:r.hauteur*.5,profondeur:r.hauteur};
       if(!zone){if(photoFar){deleteTarget(photoFar);photoFar=null;}photoState.loin=false;photoState.loinTaille=0;return null;}
       const start=clock(),e=zone.etendue,h=zone.profondeur;
       gl.activeTexture(gl.TEXTURE10);if(!photoFar||photoFar.size!==size){if(photoFar)deleteTarget(photoFar);photoFar=photoDepthTarget(size);}
@@ -4958,7 +4961,7 @@
   }
   // Both GPU backends share the procedural shapes, instance layout and visibility
   // rules. No rendering calls or GPU state are shared between the APIs.
-  const shared={bitumeWeather,localWindState,vegetationFrame,groundCoverRank,groundCoverGeometry,groundCoverPlan,prepareGroundCover,lotViewState,terrainViewState,rigidOverlayView,rigidTerrainVertices,writeRigidTerrain,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,setFrustumRadii,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,lotDetailDistance,materialFamily,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
+  const shared={orthographicSun,sunBounds,bitumeWeather,localWindState,vegetationFrame,groundCoverRank,groundCoverGeometry,groundCoverPlan,prepareGroundCover,lotViewState,terrainViewState,rigidOverlayView,rigidTerrainVertices,writeRigidTerrain,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,splitPacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,setFrustumRadii,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,lotDetailDistance,materialFamily,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
   function mesh(shape,p,s,mat,r=[0,0,0],emissive=0){
     return {shape,p,s,mat,r,emissive,color:undefined,surface:undefined,overlay:false,fx:false,
       alpha:undefined,opacity:1,additive:undefined,outdoor:undefined,actorPart:undefined,actorLod:0,

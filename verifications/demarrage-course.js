@@ -1,8 +1,8 @@
 // Exécuté par tools/page-essai.mjs, qui attend le titre dans un profil Chrome neuf.
 (async () => {
   const jeu = window.BITUME_JEU;
-  const gl = jeu.rendu.gl;
-  if (!(gl instanceof WebGL2RenderingContext)) throw new Error('Contexte WebGL2 absent');
+  const moteur = jeu.rendu;
+  if (moteur.stats.backend !== 'webgpu' || !moteur.gpu?.device) throw new Error('Moteur WebGPU absent');
   document.querySelector('[data-ouvrir-titre="solo"]').click();
   document.querySelector('[data-aller="course"]').click();
   const depart = document.getElementById('b-depart');
@@ -11,7 +11,7 @@
     const limite = performance.now() + 90000;
     while (!condition()) {
       if (!erreur.hidden) throw new Error(erreur.textContent);
-      if (gl.isContextLost()) throw new Error('Perte du contexte WebGL2');
+      if (moteur.stats.deviceLost) throw new Error('Périphérique WebGPU perdu');
       if (performance.now() > limite) throw new Error(message);
       await new Promise(resolve => setTimeout(resolve, 100));
     }
@@ -20,8 +20,12 @@
   depart.click();
   await attendre(() => jeu.ecran === 'course' && jeu.session?.course, 'Course inaccessible');
   const course = jeu.session.course;
+  if (course.voitures.length !== 12) throw new Error('Grille de départ incomplète');
   const debut = course.horloge;
   await attendre(() => course.horloge > debut + 0.1, 'Simulation immobile après le départ');
-  if (gl.isContextLost() || gl.getError() !== gl.NO_ERROR) throw new Error('Erreur WebGL2 en course');
+  await moteur.gpu.device.queue.onSubmittedWorkDone();
+  if (moteur.stats.errorEvents.length) throw new Error(moteur.stats.errorEvents.join(' / '));
+  if (window.contextesWebGLDemandes?.length) throw new Error('Le jeu a demandé un contexte WebGL');
+  if (moteur.stats.triangles < 1) throw new Error('Aucun triangle dessiné');
   return { ecran: jeu.ecran, voitures: course.voitures.length, horloge: course.horloge };
 })()

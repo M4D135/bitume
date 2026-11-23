@@ -1,7 +1,7 @@
 # BITUME
 
-Course de monoplaces d'époque dans le navigateur, entièrement procédurale : cinq circuits générés, onze rivaux,
-dérive et turbo. Moteur FERRO (WebGL2). Aucune image, aucun son enregistré, aucune police chargée : une seule page
+Course de monoplaces d'époque dans le navigateur, entièrement procédurale : neuf circuits, onze rivaux,
+dérive et turbo. Rendu WebGPU avec FERRO. Aucune image, aucun son enregistré, aucune police chargée : une seule page
 HTML autonome. Sa taille exacte, brute et compressée, est mesurée dans `SIZE.json` à chaque construction.
 
 Première version du 12 novembre 2026. BITUME est la refonte web de vroom-unreal, le projet Unreal de David : il garde le
@@ -9,8 +9,7 @@ genre et les mécaniques inventées pour vroom-unreal, et ne reprend rien du Vro
 
 ## Jouer
 
-En ligne : <https://bitume.estrasse.fr>. On peut aussi ouvrir `dist/bitume.html` dans un navigateur récent avec
-WebGL2 (Chrome, Edge, Firefox, Safari 15 ou plus) : la page se suffit à elle-même. Pour la reconstruire :
+En ligne : <https://bitume.estrasse.fr>. On peut aussi ouvrir `dist/bitume.html` dans un navigateur qui fournit un adaptateur WebGPU avec l’accélération graphique activée. La version en ligne utilise HTTPS. Pour reconstruire la page autonome, exécuter
 
 ```bash
 python3 construire.py
@@ -55,7 +54,7 @@ La version en ligne est la page figée d'un commit. Elle ne change qu'à la main
   Doppler, pneus, vibreur, herbe, chocs, feux et signaux. Une seule musique, sur l'écran titre : un thème original
   calculé note à note. En course, aucun signal ne porte de mélodie.
 - **Image** : rien ne se coupe à distance. Le décor se dessine jusqu'à l'horizon, la brume fait la limite ; les ombres
-  du soleil portent à 176 m devant le pilote. Le moteur WebGL2 repris d’EMPRISE apporte ses matériaux humides,
+  du soleil portent à 176 m devant le pilote. Le moteur FERRO apporte ses matériaux humides,
   ses reflets analytiques et ses nuages. La pluie se projette dans le monde avec le vent et la vitesse de la caméra ;
   la route reste humide après l’averse.
 
@@ -88,8 +87,7 @@ En mode jeu, la croix parcourt les menus, A valide et View revient en arrière. 
 et Menu met en pause. Si le son n'a pas démarré, un clic
 sur la page avec le pointeur du navigateur permet de l'activer avant de repasser aux contrôles de jeu.
 
-Le rendu demande WebGL2. L’écran titre a été confirmé sur une Xbox par David le 16/11/2026. Les parcours manette
-sont testés dans Chromium avec une manette simulée ; course, son et fluidité restent à confirmer sur la console.
+La console doit fournir un adaptateur WebGPU dans Edge. Les parcours manette ont été testés dans Chromium avec une manette simulée. La compatibilité WebGPU et la fluidité sur Xbox physique restent à confirmer.
 
 ## Pour aller plus loin
 

@@ -78,9 +78,9 @@ export function installerPluieAbris(s) {
 }
 
 export function observerPluieAbris() {
-  const J = BITUME_JEU, B = BITUME, S = J.session, G = __PLUIE_ABRIS_CAPTURE, gl = J.rendu.gl;
-  const canvas = document.getElementById('meteo'), ctx = canvas?.getContext('2d'), r = canvas?.getBoundingClientRect();
-  if (!ctx || !r) throw new Error('Toile de pluie absente');
+  const J = BITUME_JEU, B = BITUME, S = J.session, G = __PLUIE_ABRIS_CAPTURE, gpu = J.rendu.gpu;
+  const canvas = document.getElementById('meteo'), contexte = canvas?.getContext('webgpu'), r = canvas?.getBoundingClientRect();
+  if (!gpu?.device || !contexte || !r) throw new Error('Surface WebGPU de pluie absente');
   const css = getComputedStyle(canvas), c = S.course.c;
   let pilier = null;
   if (G.scenario.pose === 'pilier') {
@@ -88,7 +88,7 @@ export function observerPluieAbris() {
     const hit = S.course.physique.world.raycast(a.pos, dir, G.section.mur + 3, { mask: 2, staticOnly: true });
     pilier = { hit: !!hit.hit, genre: hit.hit ? S.course.physique.solids.acteurs.get(hit.body)?.genre || null : null };
   }
-  return { glErreur: gl.getError(), glPerdu: gl.isContextLost(), pluie: S.meteo.pluie, temps: S.meteo.t,
+  return { gpuErreur: (J.rendu.stats.errorEvents[0] || null), gpuPerdu: J.rendu.stats.deviceLost, pluie: S.meteo.pluie, temps: S.meteo.t,
     statistiques: S.pluieImage ? { ...S.pluieImage } : null, qualite: S.vitreContexte?.qualite, vue: S.vue,
     abri: B.meteo.abriCouverts(c, S.camera.pos, S.course.physique), abriLogique: B.couverts.abri(c, S.camera.pos),
     abriVisiere: S.vitreContexte?.abri, visiere: J.vitres?.j1 || null, pilier,
@@ -120,7 +120,7 @@ export function verifierPluieAbris(r, s) {
   const e = [];
   if (r.fatal) e.push(r.fatal.split('\n')[0]);
   if (!/^[a-f0-9]{64}$/.test(r.build?.sha256 || '') || !/^[a-f0-9]{40}$/.test(r.source?.commit || '')) e.push('Identité HTML ou sources absente');
-  if (r.environnement?.webgl2 !== true || r.environnement?.physx?.ready !== true) e.push('WebGL2 ou PhysX natif absent');
+  if (r.environnement?.webgpu !== true || r.environnement?.physx?.ready !== true) e.push('WebGPU ou PhysX natif absent');
   if (s.taille && s.taille.split(',').some((n, i) => r.environnement?.resolution?.[i] !== Number(n))) e.push('Viewport différent du scénario');
   if (r.initialisation?.posePrescrite !== true || r.initialisation?.circuitId !== s.circuitId) e.push('Scène prescrite incorrecte');
   for (const x of r.erreurs || []) e.push('Erreur page : ' + x);
@@ -129,7 +129,7 @@ export function verifierPluieAbris(r, s) {
   for (const im of r.images || []) {
     const o = im.observation, p = o?.statistiques, raster = o?.composition;
     if (!o || !p || !raster) { e.push('Observation pluie/raster absente'); continue; }
-    if (o.glErreur || o.glPerdu) e.push('Erreur WebGL');
+    if (o.gpuErreur || o.gpuPerdu) e.push('Erreur WebGPU');
     if (s.pose === 'pilier' && (!o.pilier?.hit || o.pilier?.genre !== 'pilier-galerie')) e.push('Pilier absent du centre du cadre');
     if (o.abri !== true || o.abriVisiere !== true || o.abriLogique !== (s.pose !== 'linteau')) e.push('Abri réel ou visière incorrect');
     if (!(o.pluie > .5) || o.qualite !== (s.qualite || 'high') || o.vue !== s.vue) e.push('Pluie, qualité ou vue incorrecte');

@@ -200,8 +200,8 @@ function aidePage() {
       if (an.length) Object.assign(r, { animaux: { moyenne: moy(an), max: Math.max(...an) }, objets: { moyenne: moy(ob), max: Math.max(...ob) }, triangles: { moyenne: moy(tri), max: Math.max(...tri) } });
       return r;
     },
-    environnement() { const gl = J.rendu.gl, info = gl && gl.getExtension('WEBGL_debug_renderer_info');
-      return { navigateur: navigator.userAgent, gpu: gl ? (info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER)) : null,
+    environnement() { const info=J.rendu.gpu.adapter.info;
+      return { navigateur:navigator.userAgent, gpu:[info.vendor,info.architecture,info.device,info.description].filter(Boolean).join(' '), backend:J.rendu.stats.backend, logiciel:info.isFallbackAdapter,
         version: document.querySelector('.version-jeu')?.textContent || null, ecran: [innerWidth, innerHeight, devicePixelRatio], formes: A.FORMES.size, trianglesFormes: A.trianglesFormes, chargementMs: A.dureeChargement }; }
   };
   return true;

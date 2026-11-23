@@ -1,5 +1,6 @@
 // Vraies précipitations projetées, vrais ouvrages du décor et vrai PhysX WASM.
 // Le Canvas enregistre les traits : ce banc ne remplace pas les captures du compositing navigateur.
+import { pluieMesuree } from './helpers/projection-pluie.mjs';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { createHash } from 'node:crypto';
@@ -46,7 +47,7 @@ function camera(s, angle = 0, hauteur = 1.2, lateral = 0) {
     yaw: q.cap + Math.PI / 2 + angle, pitch: 0, fov: 70 };
 }
 function passage(nom, cam, palier = 'high', n = 60) {
-  const canvas = toile(), pluie = M.creerPluie(canvas), mesures = [], temps = [], empreinte = createHash('sha256');
+  const canvas = toile(), pluie = pluieMesuree(M, canvas), mesures = [], temps = [], empreinte = createHash('sha256');
   for (let i = 0; i < n; i++) {
     const avant = requetes, debut = performance.now();
     const s = pluie.dessiner({ t: 12 + i / 30, pluie: 1 }, cam, 1 / 30, { circuit: c, physique, palier });
@@ -88,7 +89,7 @@ try {
     assert.ok(passage('dessus-toit', ciel).mesures.every(s => s.traits > 20));
   });
   verifier('loin des couverts, pluie strictement identique et aucune requête native', () => {
-    const cam = camera(0), a = toile(), b = toile(), pa = M.creerPluie(a), pb = M.creerPluie(b);
+    const cam = camera(0), a = toile(), b = toile(), pa = pluieMesuree(M, a), pb = pluieMesuree(M, b);
     for (let i = 0; i < 60; i++) {
       const m = { t: 12 + i / 30, pluie: 1 }, avant = requetes;
       pa.dessiner(m, cam, 1 / 30, { circuit: c, physique, palier: 'high' });
@@ -106,7 +107,7 @@ try {
     }
   });
   verifier('la pause redessine les mêmes traits et J2 ne modifie pas les tampons de J1', () => {
-    const a = toile(), b = toile(), pa = M.creerPluie(a), pb = M.creerPluie(b), camA = camera(t.debut + 3, Math.PI), camB = camera(t.debut + 127, -Math.PI / 2);
+    const a = toile(), b = toile(), pa = pluieMesuree(M, a), pb = pluieMesuree(M, b), camA = camera(t.debut + 3, Math.PI), camB = camera(t.debut + 127, -Math.PI / 2);
     const meteo = { t: 14, pluie: 1 }, options = { circuit: c, physique, palier: 'high' };
     pa.dessiner(meteo, camA, 1 / 60, options); const traits = JSON.stringify(a.traits), stats = JSON.stringify(pa.stats);
     pb.dessiner({ t: 28, pluie: .8 }, camB, 1 / 30, options);
@@ -117,10 +118,11 @@ try {
   });
   verifier('le raccord réel du jeu conserve la pluie dehors et laisse sécher la visière sous abri', () => {
     const source = jeuRaccorde();
-    const a = source.indexOf('  let pluieVue = null'), b = source.indexOf('  // menus à la manette', a);
+    const a = source.indexOf('  let pluieVue = null'), b = source.indexOf('  function naviguerManette(', a);
     assert.ok(a >= 0 && b > a);
     const v = { id: 0, etat: { v: 35 } }, S = { i: 0, suivie: 0, nature: { saison: { neige: false } }, meteo: { t: 12, pluie: 1 }, course: { c, physique, voitures: [v], joueur: v } };
     const executer = new Function('B', 'session', 'toile', `
+      const rendu = null;
       const elements = new Map(), $ = id => { if (!elements.has(id)) elements.set(id, toile()); return elements.get(id); };
       const window = { devicePixelRatio: 1 }, CATALOGUE = [{ theme: 'montagne' }], reglages = { gouttes: 1 }, DT = 1/120;
       const VUES_COURSE = ['poursuite', 'poursuite-proche', 'arceau', 'cockpit', 'nez', 'aileron-avant'];
@@ -130,12 +132,11 @@ try {
       return { reglages, dessiner: (S, cam, palier = 'high', dt = 1/30, vue = 'cockpit') => dessinerMeteo(S, dt, cam, vue, { palier }),
         pluie: (deux = false) => deux ? pluieVue2 : pluieVue, vitre: (deux = false) => deux ? vitreVue2 : vitreVue,
         pause: oui => { ecran = oui ? 'pause' : 'course'; } };
-    `)(B, S, toile);
+    `)({ ...B, meteo: { ...M, creerPluie: can => pluieMesuree(M, can) } }, S, toile);
     const dehors = camera(0), portail = camera(t.debut + 3, Math.PI);
     for (let i = 0; i < 90; i++) { S.meteo.t += 1 / 30; executer.dessiner(S, dehors); }
     const vitre = executer.vitre(); assert.ok(vitre.stats.gouttes > 0);
-    assert.equal(S.pluieImage.traits, 0, 'la pluie sur la lentille remplace les traits extérieurs en conduite');
-    assert.equal(S.pluieImage.masquee, true);
+    assert.ok(S.pluieImage.traits > 0 && !S.pluieImage.masquee, 'la pluie dans le monde et les dépôts de la lentille suivent chacun leur exposition');
     const sequence = vitre.sequence; executer.dessiner(S, portail);
     assert.equal(S.vitreContexte.abri, true);
     assert.ok(executer.pluie().stats.traits > 20, 'le jeu ne coupe plus globalement la pluie depuis le portail');
@@ -158,8 +159,8 @@ try {
     const statsJ2 = JSON.stringify(J2.pluieImage);
     for (const vitesse of [0, 80]) {
       v.etat.v = vitesse; executer.dessiner(S, dehors, 'high', 1/30, 'poursuite');
-      assert.equal(S.pluieImage.candidats, 0, 'une seule pluie en poursuite à ' + vitesse + ' m/s');
-      assert.ok(S.pluieImage.masquee && S.pluieImage.propre, 'les traits du plan précédent sont effacés');
+      assert.equal(S.pluieImage.candidats, M.GOUTTES.high, 'champ de pluie indépendant de la vitesse de poursuite');
+      assert.ok(S.pluieImage.traits > 0 && !S.pluieImage.masquee && !S.pluieImage.propre);
     }
     assert.equal(JSON.stringify(J2.pluieImage), statsJ2, 'J2 garde sa pluie extérieure sous la galerie');
     executer.reglages.gouttes = 0; executer.dessiner(S, dehors);

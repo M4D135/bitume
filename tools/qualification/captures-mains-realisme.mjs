@@ -163,7 +163,7 @@ export async function campagneMains(o) {
   mkdirSync(o.sortie, { recursive: true });
   const builds = { avant: sha(readFileSync(fileURLToPath(o.avant))), candidat: sha(readFileSync(fileURLToPath(o.url))) };
   const campagne = { format: 'bitume-mains-realisme-1', builds, passages: [], echecs: 0,
-    limites: ['Vrai jeu, modèle et FERRO WebGL2 ; caméras et temps prescrits.',
+    limites: ['Vrai jeu, modèle et FERRO WebGPU ; caméras et temps prescrits.',
       'Les mesures de cadrage ne prouvent pas la visibilité des surfaces : inspecter les PNG.',
       'SwiftShader ne qualifie ni les FPS matériels ni le réalisme esthétique.'] };
   const enregistrer = () => {

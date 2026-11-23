@@ -1,14 +1,16 @@
-# FERRO — référence commune 0.3.27
+# FERRO — référence commune 0.3.31
 
 Décision de David du 16 novembre 2026 : entièrement procédural, aucun plafond de taille du code ni du build. Moteur prioritaire, atelier secondaire.
 
-Référence : M4D135/FERRO, dossier src/ferro. Les 34 modules de FERRO.lock.json proviennent de cette source et doivent garder les mêmes empreintes dans les quatre jeux. Les règles et styles du jeu restent dans ses adaptateurs. Le build contrôle le verrou ; ne pas modifier les copies du moteur.
+Référence : M4D135/FERRO, dossier src/ferro. Les 35 modules de FERRO.lock.json proviennent de cette source et doivent garder les mêmes empreintes dans les quatre jeux. Les règles et styles du jeu restent dans ses adaptateurs. Le build contrôle le verrou ; ne pas modifier les copies du moteur.
 
 Propagation : depuis le checkout de référence, `python3 tools/install-ferro.py bitume <checkout>` recopie les modules identiques, régénère `FERRO.lock.json` et `tools/check-ferro-lock.py`. Le jeu ne retouche jamais une copie verrouillée.
 
 Distribution et documentation : https://github.com/M4D135/FERRO/tree/main/dist
 
 Le paquet contient les sources, les bundles optionnels, un installateur et le contrôleur des empreintes. Les tailles sont mesurées à titre informatif.
+
+BITUME 0.2.285 embarque le moteur WebGPU et ses shaders WGSL. Le registre de géométrie partagé, les passes de surfaces transparentes et la couleur déjà résolue du monde servent au rendu des monoplaces et de leur saute-vent. La visière, les précipitations et les rétroviseurs utilisent le même périphérique que la scène. [Révision FERRO 0.3.31](https://github.com/M4D135/FERRO/commit/f4cb62f3dab92c8f9d47b7c3921b41df249d2177).
 
 La version 0.3.4 ajoute quatre recettes de surface opt-in et un seuil de LOD adapté à chaque caméra. BITUME définit leur usage dans `decor.js` et ses formes dans `vegetation.js` ; les modules moteur restent copiés à l’identique. Qualification et limites : `docs/reprise/rapports/LOT5-2026-11-17.md`.
 

@@ -1,10 +1,10 @@
 // Vraies fonctions de jeu.js et vitre.js ; seuls stockage, DOM et pluie projetée sont remplacés.
-// Ce banc vérifie le raccord menu/vues/conditions. Il ne qualifie pas le compositing WebGL du navigateur.
+// Ce banc vérifie le raccord menu/vues/conditions. Il ne qualifie pas le compositing WebGPU du navigateur.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-for (const nom of ['graphismes', 'pneus', 'ambiance', 'saisons', 'chaussee', 'meteo', 'conditions-course', 'cadence', 'circuit', 'conduite', 'vitre', 'sillage']) require('../src/' + nom + '.js');
+for (const nom of ['graphismes', 'pneus', 'ambiance', 'saisons', 'chaussee', 'meteo', 'conditions-course', 'championnat', 'cadence', 'circuit', 'conduite', 'vitre', 'sillage']) require('../src/' + nom + '.js');
 // Dépendance réelle de la lecture commune des réglages avant les contrôles de la vitre.
 require('../src/menu-arcade.js');
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
@@ -30,7 +30,7 @@ const executer = new Function('B', 'prefs', `
   // Les contrôles voisins installent aussi des écouteurs globaux ; les conserver sans simuler un clic.
   const document = Object.assign(new EventTarget(), { querySelectorAll: () => [] }), window = { devicePixelRatio: 1 };
   const majCommandes = () => {}, majDetectionGraphique = () => {}, appliquerVolumes = () => {}, appliquerCarte = () => {}, arreterManettes = () => {}, pad2 = {};
-  const CATALOGUE = [{ theme: 'foret' }, { theme: 'cote' }];
+  const CATALOGUE = [{ id:'forets-du-pacifique',theme:'foret' }, { id:'marseille',theme:'cote' }];
   const VUES_DEHORS = new Set(['tele', 'helico', 'orbite', 'travelling', 'sol', 'panorama', 'lieu', 'peloton']);
   const creationTardive = (nom, valeur) => valeur, sousLaVoute = (c, pos) => !!pos.abri, calmerVibrations = () => {};
   B = { ...B, meteo: { ...B.meteo, creerPluie: () => ({ dessiner() {} }) } };
@@ -38,7 +38,7 @@ const executer = new Function('B', 'prefs', `
   ${bloc('  function lireStock(', '  // records et fantômes')}
   ${bloc('  function remplirPoses(', '  function melange(')}
   ${bloc('  function synchroniserReplacement(', '  // La manette ne vibre')}
-  ${bloc('  let pluieVue = null', '  // menus à la manette')}
+  ${bloc('  let pluieVue = null', '  function naviguerManette(')}
   ${bloc("  for (const nom of ['general', 'moteur', 'effets'])", '  const NOMS_ACTIONS =')}
   ${bloc('  function remplirReglages()', '  function retour()')}
   return { reglages, stockage, elements, remplirReglages, viderStock,
@@ -220,7 +220,7 @@ verifier('précipitations neige réelles, saison et exception côtière restent 
   const j = jeu(), S = seance(); j.initialiser(S);
   S.nature.saison.neige = true; j.dessiner(S); assert.equal(S.vitreContexte.neige, 1); assert.equal(S.vitreContexte.pluie, 0);
   S.meteo.precipitationsNeige = false; j.dessiner(S); assert.equal(S.vitreContexte.neige, 0); assert.equal(S.vitreContexte.pluie, 1);
-  S.meteo.precipitationsNeige = true; S.i = 1; j.dessiner(S); assert.equal(S.vitreContexte.neige, 0);
+  S.meteo.precipitationsNeige = true; S.saisonLocale = { theme: 'cote' }; j.dessiner(S); assert.equal(S.vitreContexte.neige, 0);
   const meteoAvant = JSON.stringify(S.meteo); j.dessiner(S, 'cockpit', 1/30, true);
   assert.equal(S.vitreContexte.abri, true); assert.equal(JSON.stringify(S.meteo), meteoAvant);
 });

@@ -121,7 +121,7 @@
   // texture, cœurs). Ni la taille de la fenêtre, ni la densité de pixels, ni l'écran n'y entrent : la mesure se fait à
   // la taille de l'écran entier (src/jeu.js), un redimensionnement ou un autre écran ne la relancent pas.
   function empreinte(materiel, version) {
-    const texte = [REVISION, version || '?', materiel || 'webgl2'].join('|');
+    const texte = [REVISION, version || '?', materiel || 'WebGPU'].join('|');
     let h = 2166136261;
     for (let i = 0; i < texte.length; i++) h = Math.imul(h ^ texte.charCodeAt(i), 16777619);
     return (h >>> 0).toString(36);

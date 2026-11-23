@@ -1,5 +1,4 @@
-// Arrivées de pluie : vraie simulation commune et frontière du shader WebGL.
-// Le raster GLES dédié complète ces contrôles ; un faux GL ne qualifie pas l'image.
+import {toileWebGPU} from './support-visiere-webgpu.mjs';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { createRequire } from 'node:module';
@@ -14,23 +13,13 @@ function premiere(e, c) {
   const p = e.depots.gouttes.find(p => p.vivant && p.impactForce > 0); assert(p, 'une vraie arrivée de pluie'); return p;
 }
 const forces = e => Array.from(e.impactsUniformes).filter((_, i) => i % 4 === 1);
-function toile(webgl = false) {
+function toile() {
   const appels = { ellipses: [], uniformes: {}, dessins: 0, copies: 0, clears: 0 };
   const ctx = { globalAlpha: 1, setTransform() {}, clearRect() { appels.ellipses.length = 0; },
     beginPath() {}, moveTo() {}, lineTo() {}, quadraticCurveTo() {}, stroke() {}, fill() {},
     ellipse(...p) { appels.ellipses.push([...p, ctx.globalAlpha]); }, drawImage() { appels.copies++; } };
-  const gl = { VERTEX_SHADER: 1, FRAGMENT_SHADER: 2, COMPILE_STATUS: 3, LINK_STATUS: 4, TEXTURE_2D: 5, TEXTURE0: 6,
-    RGBA: 7, UNSIGNED_BYTE: 8, COLOR_BUFFER_BIT: 9, TRIANGLES: 10, DEPTH_TEST: 11, BLEND: 12,
-    TEXTURE_MIN_FILTER: 13, TEXTURE_MAG_FILTER: 14, LINEAR: 15, TEXTURE_WRAP_S: 16, TEXTURE_WRAP_T: 17, CLAMP_TO_EDGE: 18,
-    createShader: () => ({}), shaderSource() {}, compileShader() {}, getShaderParameter: () => true, deleteShader() {},
-    createProgram: () => ({}), attachShader() {}, linkProgram() {}, getProgramParameter: () => true,
-    createVertexArray: () => ({}), createTexture: () => ({}), bindTexture() {}, texParameteri() {}, texImage2D() {},
-    getUniformLocation: (_, nom) => nom, disable() {}, clearColor() {}, viewport() {}, useProgram() {}, bindVertexArray() {},
-    activeTexture() {}, pixelStorei() {}, uniform1i(n, v) { appels.uniformes[n] = v; },
-    uniform2f(n, ...v) { appels.uniformes[n] = v; }, uniform4fv(n, v) { appels.uniformes[n] = Array.from(v); },
-    drawArrays() { appels.dessins++; }, clear() { appels.clears++; } };
   const canvas = { width: 960, height: 540, clientWidth: 960, clientHeight: 540, style: {},
-    getContext: type => type === 'webgl2' ? webgl && gl : ctx,
+    getContext: type => type === '2d' ? ctx : null,
     getBoundingClientRect: () => ({ width: 960, height: 540 }), addEventListener() {}, removeEventListener() {},
     ownerDocument: { createElement: () => ({ width: 1, height: 1, getContext: () => ctx }) } };
   return { canvas, appels };
@@ -119,15 +108,15 @@ test('Canvas2D dessine une couronne locale avant le ruissellement, sans lecture 
   assert.equal(t.canvas.getImageData, undefined); assert.equal(e.contexte.globalAlpha, 1);
 });
 
-test('le vrai raccord WebGL reçoit les impacts en Légère et Fine, avec ses plafonds et sa source de vue', () => {
+test('le raccord WebGPU reçoit les impacts en Légère et Fine, avec ses plafonds et sa source de vue', () => {
   for (const qualite of ['low', 'high']) {
-    const t = toile(true), e = V.creer(t.canvas, { graine: 4 });
+    const t = toileWebGPU(), e = V.creer(t.canvas, { gpu:t.gpu, graine:4 });
     const c = contexte({ qualite, sourceScene: { width: 960, height: 540 } }); let trouve = false;
     for (let i = 0; i < 1200 && !trouve; i++) {
       V.mettreAJour(e, 1 / 120, c);
       trouve = t.appels.uniformes.uImpacts?.some((x, k) => k % 4 === 1 && x > .1);
     }
-    assert(trouve, 'impact effectivement passé à uniform4fv');
+    assert(trouve, 'impact effectivement transmis au tampon GPU');
     assert.deepEqual(t.appels.uniformes.uImpacts, Array.from(e.simulation.impactsUniformes));
     assert(t.appels.uniformes.uNbGouttes <= (qualite === 'low' ? 6 : 24));
     assert.equal(t.appels.uniformes.uAvecScene, qualite !== 'low');

@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import { catalogueJeu } from './qualification/circuit-catalogue.mjs';
+import { environnementWebGPU, argumentsWebGPU } from './diagnostic-webgpu.mjs';
 // Captures déterministes de BITUME et contrôle temporel, hors du jeu et sans dépendance npm.
 // node tools/controle-visuel.mjs --url file:///chemin/dist/bitume.html --sortie /tmp/bitume-visuel --scenario tunnel
 // Ajouter --reference /tmp/avant/rapport.json pour comparer un autre build avec les mêmes réglages.
@@ -57,7 +59,7 @@ export function optionsCapture(argv) {
     angle: choix('angle', 'swiftshader', ['swiftshader', 'native']), attendre: nombre('attendre', 60000, 1000, 300000),
     scenario, taille, images: nombre('images', 48, 2, 1000, true), pas: nombre('pas', .1, 1 / 240, .1), chauffe: nombre('chauffe', 4, 0, 240, true),
     // Le catalogue du jeu valide ensuite l'indice exact ; l'outil accompagne son extension par petits lots.
-    referenceJeu: { graine: nombre('graine', 17017, 0, 0xffffffff, true), circuit: nombre('circuit', scenario === 'tunnel' ? 2 : 0, 0, 255, true),
+    referenceJeu: { graine: nombre('graine', 17017, 0, 0xffffffff, true), circuit: nombre('circuit', scenario === 'tunnel' ? catalogueJeu.findIndex(c => c.id === 'route-des-cimes') : 0, 0, 255, true),
       qualite: choix('qualite', 'high', ['low', 'medium', 'high']), mode: scenario === 'duo' ? 'duo' : 'solo',
       vue: choix('vue', 'cockpit', ['cockpit', 'poursuite']),
       vue2: choix('vue2', 'cockpit', ['cockpit', 'poursuite']),
@@ -160,9 +162,9 @@ export async function capturer(o) {
     rapport.build = { sha256: createHash('sha256').update(html).digest('hex'), octets: html.length };
   }
   const profil = mkdtempSync(path.join(tmpdir(), 'bitume-visuel-'));
-  const argumentsChrome = ['--headless=new', '--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu-sandbox', '--remote-debugging-port=0', '--user-data-dir=' + profil,
+  const argumentsChrome = ['--headless=new', '--enable-gpu', '--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu-sandbox', '--remote-debugging-port=0', '--user-data-dir=' + profil,
     '--window-size=' + o.taille.join(','), '--hide-scrollbars'];
-  if (o.angle === 'swiftshader') argumentsChrome.push('--enable-unsafe-swiftshader', '--use-gl=angle', '--use-angle=swiftshader');
+  argumentsChrome.push(...argumentsWebGPU(o.angle || 'native'));
   argumentsChrome.push('about:blank');
   const navigateur = spawn(o.chrome, argumentsChrome, { stdio: ['ignore', 'ignore', 'pipe'], detached: true });
   let erreurLancement = null, stderr = '', ws = null, identifiant = 0, ferme = false;
@@ -235,11 +237,7 @@ export async function capturer(o) {
       globalThis.__BITUME_REFERENCE = J.session;
     })()`);
     await evaluer('BITUME_JEU.pauseAuto = false; BITUME_JEU.mesures = false; true');
-    rapport.environnement = await evaluer(`(() => { const gl = BITUME_JEU.rendu.gl, info = gl.getExtension('WEBGL_debug_renderer_info');
-      return { navigateur: navigator.userAgent, gpu: info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
-      webgl: gl.getParameter(gl.VERSION), resolution: [innerWidth, innerHeight, devicePixelRatio],
-      version: document.querySelector('.version-jeu')?.textContent || null, backend: BITUME_JEU.rendu.stats.backend,
-      gpuModeste: BITUME_JEU.gpuModeste, webgl2: BITUME_JEU.rendu.stats.webglVersion === 2 }; })()`);
+    rapport.environnement = await evaluer(`(() => { const r = BITUME_JEU.rendu, vue = (${environnementWebGPU.toString()})(r); return { ...vue, version: document.querySelector('.version-jeu')?.textContent || null, gpuModeste: BITUME_JEU.gpuModeste, resolution: [innerWidth,innerHeight,devicePixelRatio] }; })()`);
     rapport.environnement.physx = physx;
     if (/swiftshader|llvmpipe|software/i.test(rapport.environnement.gpu)) rapport.limites.push('Rendu logiciel : aucune performance de GPU réel n’est qualifiée.');
     if (o.initialiser) rapport.initialisation = await o.initialiser({ evaluer, envoyer, rapport });
@@ -268,6 +266,7 @@ export async function capturer(o) {
       rapport.images.push({ fichier, temps: (horloge.temps - 1000) / 1000, etat, vues, observation });
       if (i % 8 === 0 || i === o.images - 1) process.stderr.write(`capture ${i + 1}/${o.images}\n`);
     }
+    await evaluer(`(async () => { const r = BITUME_JEU.rendu; await r.gpu.device.queue.onSubmittedWorkDone(); (${environnementWebGPU.toString()})(r); return true; })()`);
     rapport.alertes = analyserSequence(rapport.images);
     if (o.reference) {
       const reference = JSON.parse(readFileSync(o.reference, 'utf8'));

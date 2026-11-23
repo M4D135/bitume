@@ -13,6 +13,7 @@ import { spawn } from 'node:child_process';
 import { mkdtempSync, rmSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { argumentsWebGPU } from './diagnostic-webgpu.mjs';
 
 const [page, fichier, ...reste] = process.argv.slice(2);
 const opt = n => { const i = reste.indexOf('--' + n); return i < 0 ? null : (reste[i + 1] && !reste[i + 1].startsWith('--') ? reste[i + 1] : true); };
@@ -23,6 +24,7 @@ const args = ['--no-sandbox', '--remote-debugging-port=0', '--user-data-dir=' + 
   '--no-default-browser-check', '--disable-background-timer-throttling', '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows'];
 if (!fenetre) args.unshift('--headless=new');
 if (opt('angle')) args.push('--enable-unsafe-swiftshader', '--use-gl=angle', '--use-angle=' + opt('angle'));
+if (opt('webgpu-logiciel')) args.push(...argumentsWebGPU('swiftshader'));
 args.push('about:blank');
 const proc = spawn(process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', args, { stdio: 'ignore', detached: true });
 const dormir = ms => new Promise(r => setTimeout(r, ms));
@@ -42,6 +44,19 @@ try {
     else if (m.method === 'Runtime.consoleAPICalled' && m.params.type === 'error') erreurs.push((m.params.args || []).map(a => a.value ?? a.description).join(' ').slice(0, 500)); };
   await envoyer('Runtime.enable'); await envoyer('Page.enable');
   if (!fenetre || opt('dpr')) await envoyer('Emulation.setDeviceMetricsOverride', { width: taille[0], height: taille[1], deviceScaleFactor: Number(opt('dpr') || 1), mobile: false });
+  if (opt('sans-webgl')) {
+    await envoyer('Page.addScriptToEvaluateOnNewDocument', { source: `(() => {
+      window.contextesWebGLDemandes = [];
+      for (const type of [window.HTMLCanvasElement, window.OffscreenCanvas]) {
+        if (!type) continue;
+        const original = type.prototype.getContext;
+        type.prototype.getContext = function(nom, ...args) {
+          if (/webgl/i.test(nom)) { window.contextesWebGLDemandes.push(nom); throw new Error('Contexte interdit en WebGPU : ' + nom); }
+          return original.call(this, nom, ...args);
+        };
+      }
+    })()` });
+  }
   await envoyer('Page.navigate', { url: page.startsWith('file:') || page.startsWith('http') ? page : 'file://' + path.resolve(page) });
   const fin = Date.now() + 60000;
   for (;;) {

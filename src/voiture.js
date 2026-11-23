@@ -292,8 +292,6 @@
     { x: .35, y0: .35, y1: .84, l: .285, n: 3.6 }];
   const OUVERTURE = { de: POSTE_126CK.ouvertureAvant, a: POSTE_126CK.ouvertureArriere, angle: 1.35 };
   const S_MOTEUR = [{ x: -.35, y0: .40, y1: .70, l: .30, n: 3 }, { x: -1.00, y0: .42, y1: .60, l: .34, n: 4 }, { x: -1.40, y0: .38, y1: .51, l: .31, n: 4 }];
-  const S_BULLE = [{ x: 1.47, y0: .655, y1: .69, l: .08, n: 2 }, { x: 1.39, y0: .65, y1: .79, l: .18, n: 2.2 },
-    { x: 1.30, y0: .65, y1: .82, l: .23, n: 2.4 }, { x: 1.245, y0: .65, y1: .81, l: .235, n: 2.4 }];
   // Ouïes latérales 126 CK (02/22, 04/24 et 11/31), décroissantes vers les roues avant.
   // Le contour est découpé dans les triangles : pas de panneau noir sur une peau pleine.
   const PONTON_OUIE = Object.freeze([[.10, .302], [.51, .302], [.73, .392], [.73, .416], [.10, .438]].map(Object.freeze));
@@ -444,16 +442,53 @@
     for (let k = 1; k <= 3; k++) bord.push(C.pointSection(g(OUVERTURE.a), Math.PI / 2 + w - 2 * w * k / 4));
     for (let i = 6; i >= 0; i--) { const x = OUVERTURE.de + (OUVERTURE.a - OUVERTURE.de) * i / 6; bord.push(C.pointSection(g(x), Math.PI / 2 - w)); }
     for (let k = 1; k <= 3; k++) bord.push(C.pointSection(g(OUVERTURE.de), Math.PI / 2 - w + 2 * w * k / 4));
-    forme('jonc', C.tube(bord, .012, { cotes: 8, ferme: true, pas: 3 }));
+    const sauteVent = construireSauteVent(peau);
+    forme('bulle', sauteVent.verre);
+    forme('jonc', C.tube(bord, .012, { cotes: 8, ferme: true, pas: 3 })
+      .concat(C.tube(sauteVent.embase, .0045, { cotes: 8, pas: 2 })));
   }
-  // Le saute-vent est une demi-coque ouverte dessous, pas un tube de verre traversant les instruments.
-  // Les angles des 24 côtés comprennent exactement les flancs : cette sélection conserve un bord net.
-  function sauteVent(sections) {
-    const profil = C.profil(sections);
-    return C.carene(sections, { cotes: 24, bouts: false, interieur: 'tout' }).filter(t =>
-      t.slice(0, 3).every(p => { const s = profil(p[0]); return p[1] >= (s.y0 + s.y1) / 2 - 1e-10; }));
+
+  // L'embase du saute-vent suit les triangles peints du nez et revient de chaque côté de l'ouverture.
+  // Le bord supérieur reste libre devant le pilote. Le dessous de la vitre pénètre de 3 mm dans son joint.
+  function construireSauteVent(peau) {
+    const embase = [], faces = [], lignes = [], largeur = .268, arcs = 48, etages = 5;
+    function dessus(x, z) {
+      let haut = -Infinity;
+      for (const [a, b, c] of peau) {
+        const bx = b[0] - a[0], bz = b[2] - a[2], cx = c[0] - a[0], cz = c[2] - a[2];
+        const det = bx * cz - cx * bz;
+        if (Math.abs(det) < 1e-12) continue;
+        const u = ((x - a[0]) * cz - (z - a[2]) * cx) / det;
+        const v = (bx * (z - a[2]) - bz * (x - a[0])) / det;
+        if (u >= -1e-8 && v >= -1e-8 && u + v <= 1 + 1e-8)
+          haut = Math.max(haut, a[1] + u * (b[1] - a[1]) + v * (c[1] - a[1]));
+      }
+      if (!Number.isFinite(haut)) throw Error('Saute-vent : fixation hors de la carrosserie');
+      return haut;
+    }
+    const arriere = 1.245, avance = .255, levee = .82 - dessus(arriere + avance, 0);
+    for (let i = 0; i <= arcs; i++) {
+      const angle = Math.PI * (i / arcs - .5);
+      const arrondi = i === 0 || i === arcs ? 0 : Math.pow(Math.cos(angle), .8);
+      const x = arriere + avance * arrondi, z = largeur * Math.sin(angle), y = dessus(x, z);
+      embase.push([x, y, z]);
+      const ligne = [];
+      for (let j = 0; j <= etages; j++) {
+        const t = j / etages;
+        ligne.push([x - avance * t * arrondi, y - .003 + levee * arrondi * Math.sin(t * Math.PI / 2), z]);
+      }
+      lignes.push(ligne);
+    }
+    for (let i = 0; i < arcs; i++) {
+      const a = lignes[i], b = lignes[i + 1];
+      for (let j = 0; j < etages; j++) {
+        if (i > 0) faces.push([a[j], a[j + 1], b[j]]);
+        if (i + 1 < arcs) faces.push([b[j], a[j + 1], b[j + 1]]);
+      }
+    }
+    const interieur = faces.map(([a, b, c]) => [a, c, b]);
+    return { verre: C.lisser(faces).concat(C.lisser(interieur)), embase };
   }
-  forme('bulle', sauteVent(S_BULLE));
   // Une seule verrière : retirer le pilote ou changer de caméra ne change jamais sa peau.
   Object.defineProperty(FORMES, 'bulle-pilote', { value: FORMES.bulle });
   {
@@ -1081,7 +1116,8 @@
     Moy(L('goutte', PEINTURE, c1));
     L('goutte-dedans', MAT, c1.map(v => v * .22));
     L('jonc', MAT, NOIR);
-    L('bulle', METAL_MAT, [.30, .50, .86], { fx: true, alpha: .3 });
+    const surfaceVerre = { id: livree.numero || 0, vitesse: 0, mouillage: 0 };
+    Moy(L('bulle', METAL_MAT, [.30, .50, .86], { fx: true, alpha: .3, surfaceVerre }));
     Moy(L('fond-plat', MAT, CARBONE));
     Moy(L('moteur', PEINTURE, c1, AR()));
     Moy(L('moteur-dedans', MAT, [.08, .075, .07], AR()));
@@ -1217,7 +1253,7 @@
     });
     // Après casse, ne reste que la cellule du pilote et l'arceau ; roues et carrosserie sont des débris.
     const epave = corps.filter(p => p.pilote || ['cuve', 'goutte', 'goutte-dedans', 'arceau', 'arceau-renforts', 'plateau-arriere', 'assise-pilote', 'siege-dossier', 'siege-stries', 'siege-coutures', 'harnais-poses', 'siege-supports'].some(n => p.shape === FORMES[n].nom));
-    const mod = { corps, simples, epave, moyens: corps.filter(p => moyennes.has(p)), livree };
+    const mod = { corps, simples, epave, surfaceVerre, moyens: corps.filter(p => moyennes.has(p)), livree };
     B.cockpitMatieres?.pilote(corps);
     preparer(mod);
     return mod;
@@ -1444,7 +1480,7 @@
       t.objets.push(objet); t.formesRoues.push(pc.formesRoues || null); t.detailRoueMax.push(pc.detailRoueMax === undefined ? 3 : pc.detailRoueMax);
       t.formesUsees.push(pc.formesUsees || null); t.usureRoue.push(pc.usureRoue || 0); t.profondeur.push(pc.profondeur || 0);
       t.groupe.push(groupe); t.fixe.push(fixe);
-      if (pc.shape === FORMES.bulle.nom) t.bulle = t.n;
+      if (pc.surfaceVerre) { objet.surfaceVerre = pc.surfaceVerre; t.bulle = t.n; }
       if (pc.shape === FORMES['loin-dessus'].nom) t.dessusLoin = t.n;
       o.push(oc[0], oc[1], oc[2]); roues.push(roue); decale.push(dc === null ? 0 : 1);
       if (dc === null) d.push(0, 0, 0); else d.push(dc[0], dc[1], dc[2]);

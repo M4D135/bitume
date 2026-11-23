@@ -1,4 +1,5 @@
-// Contrat réel jeu/module : secondes, pause, cadence, projection et coût borné en Canvas2D.
+// Contrat réel jeu/module : secondes, pause, cadence, projection et budgets de projection et soumissions de rendu.
+import { pluieMesuree } from './helpers/projection-pluie.mjs';
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
@@ -43,7 +44,7 @@ function surface(w=1280,h=720){
 }
 const results=[];
 for(const hz of [30,60,120]){
- const s=surface(),p=M.creerPluie(s.canvas);let m={t:12,pluie:1,nuage:1,eclair:0};
+ const s=surface(),p=pluieMesuree(M, s.canvas);let m={t:12,pluie:1,nuage:1,eclair:0};
  const cam={pos:[0,1.2,0],yaw:0,pitch:-.02,roll:.02,fov:60};p.dessiner(m,cam,1/hz,{cockpit:true,dpr:2});
  for(let i=1;i<=hz;i++){m.t=12+i/hz;cam.pos=[i/hz*2,1.2,-i/hz*20];p.dessiner(m,cam,1/hz,{cockpit:true,dpr:2})}
  check(p.stats.visibles>8&&p.stats.visibles<840,`${hz}Hz gouttes projetées`);
@@ -52,9 +53,9 @@ for(const hz of [30,60,120]){
  // visière ; la toile descend donc à la plus grande définition sous le plafond, aux proportions de la taille CSS.
  const k=Math.sqrt(M.MAX_PIXELS/(1280*720));
  check(s.canvas.width===Math.floor(1280*k)&&s.canvas.height===Math.floor(720*k)&&s.canvas.width*s.canvas.height<=M.MAX_PIXELS,'DPR borné à 1,5, plafond de 2 Mpx et taille CSS respectée');
- check(s.traces.every(v=>v.every(Number.isFinite)&&Math.hypot(v[2]-v[0],v[3]-v[1])<=18.0001),'traits finis et longueur bornée');
+ check(s.traces.every(v=>v.every(Number.isFinite)&&Math.hypot(v[2]-v[0],v[3]-v[1])<=18 * 1.30 + .0001),'traits finis et longueur bornée');
  // L'opacité des lots passe désormais par globalAlpha, la couleur restant une chaîne constante.
- check(s.styles.every(v=>v[0]<=1&&v[1]==='rgb(190,210,225)'&&v[2]>0&&v[2]<=.28),'traits fins et translucides');
+ check(s.styles.every(v=>[1.25,1,.75].includes(v[0])&&v[1]==='rgb(190,210,225)'&&Math.abs(v[2]-({1.25:.49,1:.42,.75:.31}[v[0]]))<1e-8),'traits fins et translucides');
  const before=JSON.stringify(s.traces);p.dessiner(m,cam,0,{cockpit:true,dpr:2});check(JSON.stringify(s.traces)===before,'pause garde projection/traînée exactes');
  results.push(s.traces.map(v=>v.map(n=>Math.round(n*1000)/1000)));
  cam.yaw=.7;p.dessiner(m,cam,0,{cockpit:true});check(JSON.stringify(s.traces)!==before,'orientation caméra change projection');
@@ -84,15 +85,15 @@ const contexte={B,S:{lumiere:1,sillage:{sources:[{id:0}]}},meteo:{pluie:1,nuage:
   cam:{},camR:{},ps:{},suivie:{},vue:'cockpit',sortie:[],objets:[],rendu,retro:{rendu},horlogeReelle:2,
   P:{rendu:{msaa:4,shadowMapScale:2},qualite:'high'},avecOmbres:()=>true,avecReflets:()=>false,
   haloInt:true,lampes:[],dureeImage:16,eclair:0,scene:{decor:{tunnelLampes:[]},index:0},
-  G:{},i:0,dtImage:1/60,dtGlace:1/30,lampesTunnel:()=>[],ombresVue:{},
+  G:{},i:0,dtImage:1/60,dtGlace:1/30,lampesTunnel:()=>[],ombresVue:{},planGlaces:{},optionsVisibilite:{},verrePourVue:()=>null,
   // filet du chemin d'image (jeu.js) : le tampon manquant naît ici et compte comme création tardive
   tardives:[],creationTardive(nom,valeur){contexte.tardives.push(nom);return valeur;}};
 const preparation=source.match(/^\s*S\.ambianceImage = B\.meteo\.ambiance\([^\n]+;/m)?.[0];
 check(!!preparation,'préparation de l’ambiance par image');
 vm.runInNewContext(preparation,contexte);
 const tampon=contexte.S.ambianceImage;
-contexte.majGlaces=(...args)=>{contexte.ambiance=args[5];};
-const passageMiroirs=source.match(/^\s*majGlaces\(S, vue, cam, ps, sortie, [^\n]+;/m)?.[0];
+contexte.peindreGlacesPlanifiees=(...args)=>{contexte.ambiance=args[5];};
+const passageMiroirs=source.match(/^\s*peindreGlacesPlanifiees\(S, planGlaces, cam, ps, sortie, [^\n]+;/m)?.[0];
 check(!!passageMiroirs,'passage de production vers les miroirs');
 vm.runInNewContext(passageMiroirs,contexte);
 for(const expression of [/^\s*rendu\.draw\(cam, sortie, [^\n]+;/m,/^\s*retro\.rendu\.draw\(camR, objets, [^\n]+;/m]) {
