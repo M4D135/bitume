@@ -140,6 +140,31 @@
     }
     BOITES_COUVERTS.set(c, { prepare, boites }); return boites;
   }
+  const FONDU_COUVERT = 1;
+  function visibiliteBordCouvert(point, queue, boites) {
+    const minX = Math.min(point[0], queue[0]), maxX = Math.max(point[0], queue[0]);
+    const minY = Math.min(point[1], queue[1]), maxY = Math.max(point[1], queue[1]);
+    const minZ = Math.min(point[2], queue[2]), maxZ = Math.max(point[2], queue[2]);
+    let distance = FONDU_COUVERT;
+    for (let i = 0; i < boites.length; i++) {
+      const b = boites[i];
+      const dx = Math.max(b.min[0] - maxX, minX - b.max[0], 0);
+      const dy = Math.max(b.min[1] - maxY, minY - b.max[1], 0);
+      const dz = Math.max(b.min[2] - maxZ, minZ - b.max[2], 0);
+      if (dx >= distance || dy >= distance || dz >= distance) continue;
+      if (dx || dy || dz) {
+        distance = Math.min(distance, Math.hypot(dx, dy, dz));
+      } else {
+        // Dans la boîte, prendre la face la plus proche. À cheval sur une face, la distance vaut zéro.
+        distance = Math.min(distance, Math.max(0, Math.min(
+          minX - b.min[0], b.max[0] - maxX, minY - b.min[1], b.max[1] - maxY,
+          minZ - b.min[2], b.max[2] - maxZ)));
+        if (distance === 0) return 0;
+      }
+    }
+    const u = distance / FONDU_COUVERT;
+    return u * u * (3 - 2 * u);
+  }
   function contient(p, b) {
     return p[0] >= b.min[0] && p[0] <= b.max[0] && p[1] >= b.min[1] && p[1] <= b.max[1] && p[2] >= b.min[2] && p[2] <= b.max[2];
   }
@@ -266,11 +291,11 @@
       const intensite = clamp((pluie - .35) / .65, 0, 1), averse = intensite * intensite * (3 - 2 * intensite);
       const exposition = EXPOSITION * (1 + .45 * averse), maximum = Math.min(18, h * .025) * (1 + .30 * averse);
       const cible = Math.round((BUDGETS[o.palier] || N) * pluie);
-      // L'enveloppe inclut la caméra, toutes les têtes et l'exposition entière des queues,
-      // même en marche arrière. Hors de ce volume, aucun trait ni rayon ne peut toucher l'ouvrage.
+      // Inclure les têtes, les queues et la bande de fondu autour de leur enveloppe.
       const ouvrages = boitesCouverts(o.circuit), boites = boitesLocales;
-      const mx = LARGEUR / 2 + Math.abs(ventX - vx) * exposition, mz = LARGEUR / 2 + Math.abs(ventZ - vz) * exposition;
-      const my = HAUTEUR / 2 + (16 + Math.abs(vy)) * exposition;
+      const mx = LARGEUR / 2 + Math.abs(ventX - vx) * exposition + FONDU_COUVERT;
+      const mz = LARGEUR / 2 + Math.abs(ventZ - vz) * exposition + FONDU_COUVERT;
+      const my = HAUTEUR / 2 + (16 + Math.abs(vy)) * exposition + FONDU_COUVERT;
       let nbBoites = 0;
       for (let j = 0; j < ouvrages.length; j++) {
         const b = ouvrages[j];
@@ -336,24 +361,39 @@
             if (occulte(pos, queue, o.physique) || occulte(pos, milieu, o.physique)) { stats.occultes++; continue; }
           }
         }
+        const opacite = boites.length ? Math.round(63 * visibiliteBordCouvert(point, queue, boites)) : 63;
+        if (opacite === 0) continue;
         const j = stats.visibles++, o4 = j * 4;
         segments[o4] = ex; segments[o4 + 1] = ey; segments[o4 + 2] = ex + dx; segments[o4 + 3] = ey + dy;
-        lots[j] = profondeur < 8 ? 0 : profondeur < 17 ? 1 : 2;
+        // Deux bits pour la profondeur, six pour l'opacité.
+        const lot = profondeur < 8 ? 0 : profondeur < 17 ? 1 : 2;
+        lots[j] = (opacite << 2) | lot;
       }
       // Couleur et bouts ronds reposés à chaque tracé : une valeur inchangée ne coûte rien, et un contexte
       // réinitialisé (redimensionnement, perte de contexte) ne peut pas tracer en noir.
       ctx.lineCap = 'round'; ctx.strokeStyle = COULEUR;
       for (let lot = 2; lot >= 0; lot--) {
-        let n = 0;
-        for (let j = 0; j < stats.visibles; j++) if (lots[j] === lot) {
-          if (!n) {
-            ctx.lineWidth = (lot === 0 ? 1 : lot === 1 ? .75 : .5) + .25 * averse;
-            ctx.globalAlpha = ((lot === 0 ? .28 : lot === 1 ? .21 : .14) + (lot === 2 ? .17 : .21) * averse) * (.55 + pluie * .45);
-            ctx.beginPath();
-          }
-          const o4 = j * 4; ctx.moveTo(segments[o4], segments[o4 + 1]); ctx.lineTo(segments[o4 + 2], segments[o4 + 3]); n++;
+        const alpha = ((lot === 0 ? .28 : lot === 1 ? .21 : .14) + (lot === 2 ? .17 : .21) * averse) * (.55 + pluie * .45);
+        const largeur = (lot === 0 ? 1 : lot === 1 ? .75 : .5) + .25 * averse;
+        const lotPlein = (63 << 2) | lot;
+        let attenues = false, n = 0;
+        for (let j = 0; j < stats.visibles; j++) {
+          const code = lots[j];
+          if ((code & 3) !== lot) continue;
+          if (code === lotPlein) { n++; continue; }
+          const o4 = j * 4;
+          ctx.lineWidth = largeur; ctx.globalAlpha = alpha * (code >> 2) / 63;
+          ctx.beginPath(); ctx.moveTo(segments[o4], segments[o4 + 1]); ctx.lineTo(segments[o4 + 2], segments[o4 + 3]);
+          ctx.stroke(); stats.lots++; stats.traits++;
+          attenues = true;
         }
-        if (n) { ctx.stroke(); stats.lots++; stats.traits += n; }
+        if (n) {
+          ctx.lineWidth = largeur; ctx.globalAlpha = alpha; ctx.beginPath();
+          for (let j = 0; j < stats.visibles; j++) if (lots[j] === lotPlein) {
+            const o4 = j * 4; ctx.moveTo(segments[o4], segments[o4 + 1]); ctx.lineTo(segments[o4 + 2], segments[o4 + 3]);
+          }
+          ctx.stroke(); stats.lots++; stats.traits += n;
+        }
       }
       ctx.globalAlpha = 1;
       if (stats.traits) { propre = false; montrer(true); } else montrer(false);
