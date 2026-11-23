@@ -238,8 +238,7 @@
     return true;
   }
 
-  function attitude(M, pose) {
-    const h = pose.cap || 0, p = pose.tangage || 0, r = pose.roulis || 0;
+  function attitude(M, h, p, r) {
     const ch = Math.cos(h), sh = Math.sin(h), cp = Math.cos(p), sp = Math.sin(p), cr = Math.cos(r), sr = Math.sin(r);
     M[0] = ch * cp; M[1] = sp; M[2] = sh * cp;
     M[3] = -ch * sp * cr - sh * sr; M[4] = cp * cr; M[5] = -sh * sp * cr + ch * sr;
@@ -276,12 +275,23 @@
     const limite = typeof LIMITES[lod] === 'number' ? LIMITES[lod] : 0; e.dernierAjout = 0; e.dernierLOD = lod;
     if (!e.actives || !limite) return 0;
     const M = e.matrice, suivante = e.matriceSuivante;
-    if (matrice) for (let c = 0; c < 3; c++) for (let r = 0; r < 3; r++) suivante[c * 3 + r] = matrice[c][r];
-    else attitude(suivante, pose);
+    let comparer = true;
+    if (matrice) {
+      for (let c = 0; c < 3; c++) for (let r = 0; r < 3; r++) suivante[c * 3 + r] = matrice[c][r];
+    } else {
+      const h = pose.cap || 0, p = pose.tangage || 0, r = pose.roulis || 0;
+      const angles = e.anglesAttitude || (e.anglesAttitude = []);
+      comparer = h !== angles[0] || p !== angles[1] || r !== angles[2];
+      if (comparer) {
+        attitude(suivante, h, p, r);
+        angles[0] = h; angles[1] = p; angles[2] = r;
+      }
+    }
     // Les vues peuvent partager les rotations si la matrice de la voiture est identique.
-    if (e.poseEau === 0 || suivante.some((valeur, i) => !Object.is(valeur, M[i]))) {
+    if (comparer && (e.poseEau === 0 || suivante.some((valeur, i) => !Object.is(valeur, M[i])))) {
       M.set(suivante);
       e.poseEau++;
+      if (matrice && e.anglesAttitude) e.anglesAttitude.length = 0;
     }
     const px = pose.p ? pose.p[0] : pose.x, py = pose.p ? pose.p[1] : pose.y, pz = pose.p ? pose.p[2] : pose.z;
     const profilNez=pose.zonesDegats?B.voiture.profilImpact(pose.zonesDegats):0;
