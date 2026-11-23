@@ -21,19 +21,28 @@
       neige: source.neige === true, t: 0, tp: 0, eclair: 0,
       prochainEclair: source.phase === 'orage' ? 3 : 0 };
   }
+  function integrerMouille(mouille, apport, sechageSousPluie, fractionSeche, pas) {
+    const exposant = .012 * fractionSeche * pas;
+    const variation = Math.expm1(-exposant);
+    const poidsApport = exposant > 0 ? -variation / exposant : 1;
+    const apportNet = apport - (1 - fractionSeche) * sechageSousPluie;
+    return clamp(mouille + mouille * variation + apportNet * poidsApport, 0, 1);
+  }
   function avancer(S, dt) {
     const m = S.meteo || (S.meteo = { t: 0, phase: 'clair', tp: 0, pluie: 0, nuage: .12,
       eclair: 0, prochainEclair: 0, mouille: 0, ventX: 1.8, ventZ: .9 });
     if (!(dt > 0) || !Number.isFinite(dt)) return m;
+    if (!Number.isFinite(m.mouille)) m.mouille = 0;
     if (m.reel) {
       // Le temps et l’eau évoluent ; les observations ne deviennent pas une météo variable de jeu.
       const pas = Math.min(.1, dt);
       m.t += pas; m.tp += pas; m.eclair = Math.max(0, m.eclair - pas * 6);
       const flocons = typeof m.precipitationsNeige === 'boolean' ? m.precipitationsNeige : m.neige === true;
       const pluieLiquide = flocons ? 0 : m.pluie;
-      const apport = pluieLiquide * .039;
-      const sechage = pluieLiquide > 0 ? Math.min(.004, apport) : .012;
-      m.mouille = clamp((m.mouille || 0) + pas * (apport - sechage), 0, 1);
+      const apport = pluieLiquide * .039 * pas;
+      const sechageSousPluie = Math.min(apport, .004 * pas);
+      const fractionSeche = pluieLiquide > 0 ? 0 : 1;
+      m.mouille = integrerMouille(m.mouille, apport, sechageSousPluie, fractionSeche, pas);
       if (m.phase === 'orage' && m.t >= m.prochainEclair) {
         m.eclair = 1; m.prochainEclair = m.t + 2.8 + hasard(Math.round(m.t * 1000)) * 4.2;
       }
@@ -41,8 +50,7 @@
     }
     const fixe = m.fixe === true;
     let reste = Math.min(.1, dt);
-    if (!Number.isFinite(m.mouille)) m.mouille = 0;
-    // Découper aux frontières conserve le reliquat et la même évolution à 30, 60 et 120 Hz.
+    // Découper aux frontières conserve le reliquat de chaque pas.
     while (reste > 1e-12) {
       const p = Math.max(0, PHASES.indexOf(m.phase));
       const pas = fixe ? reste : Math.min(reste, Math.max(0, DUREES[p] - m.tp));
@@ -59,8 +67,7 @@
       const sechageSousPluie = Math.min(apport, .004 * pas);
       // Après l'averse, reprendre le séchage à sec sous le seuil d'affichage des gouttes.
       const fractionSeche = !pluieLiquide ? 1 : (pas === 0 || ciblePluie > 0) ? 0 : clamp(1 - eau / (.025 * pas), 0, 1);
-      const sechage = sechageSousPluie + fractionSeche * (.012 * pas - sechageSousPluie);
-      m.mouille = clamp(m.mouille + (apport - sechage), 0, 1);
+      m.mouille = integrerMouille(m.mouille, apport, sechageSousPluie, fractionSeche, pas);
       m.t += pas; m.tp += pas; reste -= pas;
       m.eclair = Math.max(0, m.eclair - pas * 6);
       if (p === 3 && m.prochainEclair > 0 && m.t + 1e-10 >= m.prochainEclair) {
