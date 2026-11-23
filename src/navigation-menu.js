@@ -296,9 +296,12 @@
     if (!s) return false;
     SAISIES.delete(doc);
     if (s.dialogue.open) s.dialogue.close();
-    if (rendreFocus && !(s.zone.contains(s.cible) && restaurable(doc, s.cible) &&
-        restaurerFocus(doc, s.cible))) {
-      restaurerNavigation(s.zone, s.panneau, s.cible);
+    if (rendreFocus) {
+      const cible = s.cible;
+      const cibleValide = cible && cible.isConnected && s.zone.contains(cible) && visible(cible);
+      if (!cibleValide || !restaurerFocus(doc, cible)) {
+        restaurerNavigation(s.zone, s.panneau, cible);
+      }
     }
     return true;
   }
