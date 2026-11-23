@@ -3,7 +3,11 @@
 <!-- bitume-reprise-actuelle-debut -->
 ## Par où reprendre
 
-**En ligne le 23 novembre, version 0.2.283, FERRO 0.3.27.** Le shader de hauteur compile dans Chrome et les fenêtres WebKit embarquées utilisent la préférence graphique déjà appliquée dans Safari. La course démarre après un chargement neuf et après rechargement. Les neuf circuits ont été pilotés sous la pluie sur le fichier publié, dont trois depuis le site. À Pietraporzio, le contrôle couvre le cockpit en Fine, en 1 920 × 1 080, avec les deux rétroviseurs. [Détail des contrôles et limites](docs/reprise/rapports/DEMARRAGE-2026-11-23.json)
+**Version en ligne du 23 novembre, BITUME 0.2.285 et FERRO 0.3.31.** La 3D utilise WebGPU. Le bord inférieur du saute-vent rejoint la carrosserie sur toute sa longueur. La vitre reflète le ciel et le soleil selon l’angle de vue. En qualité Fine, les gouttes déforment la piste visible à travers le verre. Les neuf circuits ont démarré sous la pluie, dont trois depuis le site public. Sur Mac M5, le passage de 16 secondes à Pietraporzio donne 60,00 images 3D/s en 1080p Fine avec les deux rétroviseurs, et 17,6 ms au 95ᵉ percentile. [Contrôles du verre, des circuits et de la cadence](docs/reprise/rapports/WEBGPU-2026-11-23.json)
+
+**Candidate locale de nuit, BITUME 0.2.286, physique p54.** Sur `nuit/2026-11-22`, FERRO 0.3.31 dessine les traits de pluie avec l’atténuation des bords de toit calculée par la simulation de nuit. Le fondu des dépôts sous abri et la fusion des microgouttes sont conservés. Une course sur Larche sous forte pluie a avancé avec douze voitures et les deux rétroviseurs sur Metal. Les deux contrôles encore rouges se reproduisent déjà sur la .284 locale. [Réception locale et empreinte du build](docs/reprise/rapports/NUIT-WEBGPU-2026-11-23.json).
+
+**Version précédente 0.2.283, FERRO 0.3.27.** Le shader de hauteur compile dans Chrome et les fenêtres WebKit embarquées utilisent la préférence graphique déjà appliquée dans Safari. La course démarre après un chargement neuf et après rechargement. Les neuf circuits ont été pilotés sous la pluie sur le fichier publié, dont trois depuis le site. À Pietraporzio, le contrôle couvre le cockpit en Fine, en 1 920 × 1 080, avec les deux rétroviseurs. [Détail des contrôles et limites](docs/reprise/rapports/DEMARRAGE-2026-11-23.json)
 
 La décision du 22 novembre au soir donne le même objectif aux neuf circuits et à chaque configuration prise en charge. La [feuille de route de nuit](docs/reprise/NUIT-2026-11-22-23.md) répartit les lots, la revue du code et les critères de réception.
 

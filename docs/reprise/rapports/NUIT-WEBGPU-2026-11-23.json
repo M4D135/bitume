@@ -1,0 +1,66 @@
+{
+  "version_candidate": "0.2.286",
+  "branche": "nuit/2026-11-22",
+  "version_publique": "0.2.285",
+  "physique_locale": "p54",
+  "moteur": "FERRO 0.3.31",
+  "commit_integration_code": "eb9bbea683b97dfb79c61814ece03847a16eeaab",
+  "sha256_html": "0babc02c57fe49a200f93138b13d5fec4567ba4aedc50b3e84c3afb7b5a9f568",
+  "octets_html": 17489336,
+  "navigateur": "Chrome, Metal matériel, contexte WebGL interdit pendant le parcours",
+  "releve": {
+    "course": {
+      "version": "V0.2.286",
+      "circuit": "larche",
+      "physx": true,
+      "nombre": 12,
+      "temps": [
+        6,
+        6.583333333333362
+      ],
+      "abscisses": [
+        2868,
+        2884.780002139363
+      ],
+      "backend": "webgpu",
+      "adaptateur": [
+        "apple",
+        "metal-3"
+      ],
+      "pluie": 0.75,
+      "dessins": 659,
+      "triangles": 2179027,
+      "glaces": [
+        true,
+        true
+      ],
+      "vitrage": "webgpu"
+    },
+    "attendu": [
+      204,
+      68,
+      0
+    ],
+    "alpha": [
+      204,
+      68,
+      0
+    ],
+    "contextesWebGLDemandes": [],
+    "erreursGPU": [],
+    "perdu": false
+  },
+  "erreurs_navigateur": [],
+  "verification_modules": {
+    "reussites": 27,
+    "echecs": 2,
+    "temoin_preexistant": "a24d7343dbd4eac11dbf6b353d0a82db1d2b284b",
+    "echecs_reproduits": [
+      "meteo-couverts-physx.test.mjs, assertion « linteau hors intervalle historique »",
+      "vitre-cadence.test.mjs, assertion 60 Hz après 25 images en mouvement et zéro figée"
+    ]
+  },
+  "limites": [
+    "Passage court sur Larche et mire des opacités, sans mesure de cadence."
+  ]
+}
