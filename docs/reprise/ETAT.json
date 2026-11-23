@@ -1,47 +1,48 @@
 {
   "date": "2026-11-23",
   "etat_courant": {
-    "version_courante": "0.2.283",
-    "version_publiee_verifiee": "0.2.283",
+    "version_courante": "0.2.285",
+    "version_publiee_verifiee": "0.2.285",
     "physique": "p19",
-    "moteur": "FERRO 0.3.27 canonique",
+    "moteur": "FERRO 0.3.31 canonique",
     "circuits": 9,
     "statut": "integre_sur_main",
-    "lot": "demarrage_webgl_webkit",
+    "lot": "webgpu_saute_vent_pluie",
     "fiche": "docs/reprise/NUIT-2026-11-22-23.md",
     "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
     "dernieres_demandes": "docs/reprise/NUIT-2026-11-22-23.md",
-    "dernier_lot_clos": "docs/reprise/rapports/DEMARRAGE-2026-11-23.json",
+    "dernier_lot_clos": "docs/reprise/rapports/WEBGPU-2026-11-23.json",
     "prochaine_action": "Viser 60 images 3D/s sur les neuf circuits, en 1080p Fine avec les deux rétroviseurs, et couvrir tous les matériels, vues, modes et conditions pris en charge.",
     "branche_candidate": "main",
-    "version_candidate": "0.2.283",
+    "version_candidate": "0.2.285",
     "fiche_optimisation_moteur": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "repartition_parallele": "docs/reprise/NUIT-2026-11-22-23.md"
   },
   "publication": {
-    "version": "0.2.283",
-    "commit_sources": "6addfc602fa27391594e339d99b491b2519cfb8b",
+    "version": "0.2.285",
+    "commit_sources": "27a93d01b2eab0c0cb0a9e812e6b8bc50c97d4dc",
     "statut": "publie_sur_main",
-    "url": "https://github.com/M4D135/bitume/commit/6addfc602fa27391594e339d99b491b2519cfb8b",
-    "recu": "docs/reprise/rapports/DEMARRAGE-2026-11-23.json",
+    "url": "https://github.com/M4D135/bitume/commit/27a93d01b2eab0c0cb0a9e812e6b8bc50c97d4dc",
+    "recu": "docs/reprise/rapports/WEBGPU-2026-11-23.json",
     "site_deploiement_verifie": true
   },
   "qualification": {
-    "version": "0.2.283",
-    "tete_qualifiee": "6addfc602fa27391594e339d99b491b2519cfb8b",
-    "build_octets": 16707613,
-    "build_sha256": "17e2811b0c442a1af13a180f2b31a5b2eea43e74e831ab906ea9b7003789a40f",
+    "version": "0.2.285",
+    "tete_qualifiee": "27a93d01b2eab0c0cb0a9e812e6b8bc50c97d4dc",
+    "build_octets": 17461364,
+    "build_sha256": "341483bef3a825cb9585dde0a82009a1d6aa98d997e2c921e5b51529a048a97d",
     "locale": {
-      "statut": "demarrage_et_conduite_verifies",
+      "statut": "conduite_webgpu_et_optique_verifiees",
       "circuits": 9
     },
     "github_actions": {
-      "commit": "6addfc602fa27391594e339d99b491b2519cfb8b",
-      "statut": "voir_le_run_du_commit"
+      "commit": "27a93d01b2eab0c0cb0a9e812e6b8bc50c97d4dc",
+      "url": "https://github.com/M4D135/bitume/actions/runs/45134765597"
     },
-    "recu": "docs/reprise/rapports/DEMARRAGE-2026-11-23.json",
+    "recu": "docs/reprise/rapports/WEBGPU-2026-11-23.json",
     "limites": [
-      "Départs et conduite sur Mac M5, émulation tactile dans Chrome, WebKit embarqué et contrôle de démarrage dans Chrome logiciel. La cadence soutenue, les tours complets, le multijoueur et les téléphones physiques sont hors de ces mesures."
+      "La mesure de cadence couvre un seul passage de 16 secondes sur Mac M5.",
+      "Les GPU mobiles physiques, les consoles et les sessions prolongées restent à mesurer."
     ],
     "reconstruction_identique": true,
     "essai_utilisateur_valide": null
@@ -77,7 +78,7 @@
       "seuil": 150
     },
     "terrain": "Lignes diagonales sur les pentes claires présentes avant/après, à diagnostiquer dans le lot rendu ; toute correction du moteur passe par FERRO canonique.",
-    "captures": "Chrome WebGL2/Metal pour les essais visuels sur Mac M5. Les parcours complets utilisent le pilote automatique PhysX. Les appareils visés sont précisés dans les rapports.",
+    "captures": "Depuis la .285, Chrome sur Metal, Chrome sur SwiftShader et WebKit embarqué exercent la 3D en WebGPU. Les anciens rapports identifient le moteur utilisé à leur date.",
     "fps_materiels_qualifies": false,
     "manettes_physiques_qualifiees": false,
     "reseau_entre_machines_qualifie": false,

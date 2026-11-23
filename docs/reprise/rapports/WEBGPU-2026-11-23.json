@@ -1,0 +1,329 @@
+{
+  "date": "2026-11-23",
+  "version": "0.2.285",
+  "commit_sources": "27a93d01b2eab0c0cb0a9e812e6b8bc50c97d4dc",
+  "moteur": "FERRO 0.3.31",
+  "commit_ferro": "f4cb62f3dab92c8f9d47b7c3921b41df249d2177",
+  "url": "https://bitume.estrasse.fr/",
+  "html_sha256": "341483bef3a825cb9585dde0a82009a1d6aa98d997e2c921e5b51529a048a97d",
+  "taille_octets": 17461364,
+  "rendu_3d": "WebGPU",
+  "circuits": [
+    {
+      "circuit": "Le Cocodrome",
+      "section": "ovale-des-forges",
+      "source": "site public",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "voitures": 12,
+      "physx": true,
+      "vue": "cockpit",
+      "qualite": "high",
+      "meteo": "pluie",
+      "ecritures_retroviseurs": [
+        231,
+        231
+      ],
+      "etapes": [
+        "réglages",
+        "départ demandé",
+        "feu vert",
+        "voiture en mouvement",
+        "reprise vérifiée"
+      ]
+    },
+    {
+      "circuit": "Raclette en roue libre",
+      "section": "pietraporzio",
+      "source": "site public",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "voitures": 12,
+      "physx": true,
+      "vue": "cockpit",
+      "qualite": "high",
+      "meteo": "pluie",
+      "ecritures_retroviseurs": [
+        23,
+        21
+      ],
+      "etapes": [
+        "réglages",
+        "départ demandé",
+        "feu vert",
+        "voiture en mouvement",
+        "reprise vérifiée"
+      ]
+    },
+    {
+      "circuit": "La Sardine en pole",
+      "section": "marseille",
+      "source": "site public",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "voitures": 12,
+      "physx": true,
+      "vue": "cockpit",
+      "qualite": "high",
+      "meteo": "pluie",
+      "ecritures_retroviseurs": [
+        223,
+        223
+      ],
+      "etapes": [
+        "réglages",
+        "départ demandé",
+        "feu vert",
+        "voiture en mouvement",
+        "reprise vérifiée"
+      ]
+    },
+    {
+      "circuit": "Ça sent le sapin",
+      "section": "forets-du-pacifique",
+      "source": "HTML local identique",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "voitures": 12,
+      "physx": true,
+      "vue": "cockpit",
+      "qualite": "high",
+      "meteo": "pluie",
+      "ecritures_retroviseurs": [
+        233,
+        232
+      ],
+      "etapes": [
+        "réglages",
+        "départ demandé",
+        "feu vert",
+        "voiture en mouvement",
+        "rendu, glaces et progression vérifiés"
+      ]
+    },
+    {
+      "circuit": "Ça karste ou ça casse",
+      "section": "karst-et-lagon",
+      "source": "HTML local identique",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "voitures": 12,
+      "physx": true,
+      "vue": "cockpit",
+      "qualite": "high",
+      "meteo": "pluie",
+      "ecritures_retroviseurs": [
+        241,
+        241
+      ],
+      "etapes": [
+        "réglages",
+        "départ demandé",
+        "feu vert",
+        "voiture en mouvement",
+        "rendu, glaces et progression vérifiés"
+      ]
+    },
+    {
+      "circuit": "Le Canyon qui klaxonne",
+      "section": "sierra",
+      "source": "HTML local identique",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "voitures": 12,
+      "physx": true,
+      "vue": "cockpit",
+      "qualite": "high",
+      "meteo": "pluie",
+      "ecritures_retroviseurs": [
+        233,
+        232
+      ],
+      "etapes": [
+        "réglages",
+        "départ demandé",
+        "feu vert",
+        "voiture en mouvement",
+        "rendu, glaces et progression vérifiés"
+      ]
+    },
+    {
+      "circuit": "Fjord à bâbord",
+      "section": "nord-atlantique",
+      "source": "HTML local identique",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "voitures": 12,
+      "physx": true,
+      "vue": "cockpit",
+      "qualite": "high",
+      "meteo": "pluie",
+      "ecritures_retroviseurs": [
+        232,
+        232
+      ],
+      "etapes": [
+        "réglages",
+        "départ demandé",
+        "feu vert",
+        "voiture en mouvement",
+        "rendu, glaces et progression vérifiés"
+      ]
+    },
+    {
+      "circuit": "Le Col des Fondus",
+      "section": "route-des-cimes",
+      "source": "HTML local identique",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "voitures": 12,
+      "physx": true,
+      "vue": "cockpit",
+      "qualite": "high",
+      "meteo": "pluie",
+      "ecritures_retroviseurs": [
+        219,
+        218
+      ],
+      "etapes": [
+        "réglages",
+        "départ demandé",
+        "feu vert",
+        "voiture en mouvement",
+        "rendu, glaces et progression vérifiés"
+      ]
+    },
+    {
+      "circuit": "Les Glaçons à réaction",
+      "section": "baikal",
+      "source": "HTML local identique",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "voitures": 12,
+      "physx": true,
+      "vue": "cockpit",
+      "qualite": "high",
+      "meteo": "pluie",
+      "ecritures_retroviseurs": [
+        234,
+        233
+      ],
+      "etapes": [
+        "réglages",
+        "départ demandé",
+        "feu vert",
+        "voiture en mouvement",
+        "rendu, glaces et progression vérifiés"
+      ]
+    }
+  ],
+  "saute_vent": {
+    "jour_max_avant_mm": 55.303,
+    "engagement_dans_le_joint_mm": [
+      2.962,
+      3.797
+    ],
+    "longueur_du_bord_sans_appui_mm": 0,
+    "verifications_publiques": {
+      "pluie": {
+        "images_cockpit": 106,
+        "images_avec_refraction_de_la_scene": 106,
+        "mouillage_joueur": 0.5860528180550655,
+        "voitures_distinctes": 12
+      },
+      "sec": {
+        "images_cockpit": 143,
+        "images_avec_refraction_de_la_scene": 0,
+        "mouillage_joueur": 0,
+        "voitures_distinctes": 12
+      }
+    }
+  },
+  "cadence": {
+    "machine": "Apple M5",
+    "navigateur": "Chrome via Metal",
+    "parcours": "Larche–Vinadio, secteur de Pietraporzio",
+    "reference": {
+      "graine": 17017,
+      "circuit": 6,
+      "circuitId": "larche",
+      "graineCircuit": 210,
+      "mode": "solo",
+      "qualite": "high",
+      "anticrenelage": "profil",
+      "ombres": "profil",
+      "vegetation": "profil",
+      "faune": "profil",
+      "moment": "jour",
+      "saison": "ete",
+      "difficulte": 1,
+      "tours": 3,
+      "pilote": true,
+      "vue": "cockpit",
+      "vue2": "cockpit",
+      "partage": "haut-bas",
+      "retro": "oui",
+      "meteo": "pluie",
+      "forcePluie": "forte",
+      "mouille": 0.75,
+      "depart": 17930,
+      "vitesse": 24,
+      "decor": "enrichi",
+      "tunnel": {
+        "debut": 14336.3,
+        "fin": 15155.9
+      }
+    },
+    "dimensions": "1920×1080",
+    "duree_s": 16.02,
+    "images_3d": 961,
+    "images_3d_par_s": 60,
+    "p50_ms": 16.7,
+    "p95_ms": 17.6
+  },
+  "webkit": {
+    "circuit": "Le Cocodrome",
+    "backend": "webgpu",
+    "refractions": 189,
+    "copies_visiere": 188,
+    "erreurs": [],
+    "requetes_webgl": [],
+    "perte_appareil": "pause",
+    "apres_rechargement": "titre",
+    "indisponibilite": "WEBGPU INDISPONIBLE\n\nBITUME nécessite WebGPU. Vérifiez que l’accélération graphique est active dans votre navigateur."
+  },
+  "duo": {
+    "circuit": "Le Cocodrome",
+    "surfaces_distinctes": 6,
+    "retroviseurs": 4,
+    "redimensionnement_verifie": true
+  },
+  "tests_cibles": {
+    "jeu": 66,
+    "captures": 111,
+    "moteur_reussis": 225,
+    "moteur_todo_historique": 1
+  },
+  "limites": [
+    "La mesure de cadence couvre un seul passage de 16 secondes sur Mac M5.",
+    "Les GPU mobiles physiques, les consoles et les sessions prolongées restent à mesurer."
+  ]
+}
