@@ -178,22 +178,28 @@
     // de séchage désactive les perles et restaure la peinture. Le transport des perles
     // reprend à la prochaine pluie.
     if (dejaSec) return true;
+    // Mouillage de la peinture : assombrissement progressif ; les perles apportent les reflets brillants.
+    // Les matériaux satinés du modèle sec et ses couleurs d'origine sont conservés/restaurés exactement.
+    const teinte = 1 - .12 * e.humide;
+    for (let i = 0; i < e.couleurs.length; i++) {
+      const c = e.couleurs[i]; c.couleur[0] = c.base[0] * teinte; c.couleur[1] = c.base[1] * teinte; c.couleur[2] = c.base[2] * teinte;
+    }
+    const D = e.deplacement;
+    if (e.humide === 0) {
+      D.fill(0);
+      return true;
+    }
     const p = Number.isFinite(pose?.tangage) ? pose.tangage : 0, r = Number.isFinite(pose?.roulis) ? pose.roulis : 0;
     // Gravité exprimée dans le repère incliné de la voiture, et air vers l'arrière (inverse en marche arrière).
     const cp = Math.cos(p), gx = -.0018 * Math.sin(p) - .0035 * clamp(v / 85, -1, 1), gy = -.0018 * cp * Math.cos(r), gz = .0018 * cp * Math.sin(r);
-    const D = e.deplacement;
-    if (e.humide === 0) { D[0] = 0; D[1] = 0; D[2] = 0; }
-    else { D[0] += gx * dt; D[1] += gy * dt; D[2] += gz * dt; }
+    D[0] += gx * dt; D[1] += gy * dt; D[2] += gz * dt;
     const reorienter = !Object.is(e.gx, gx) || !Object.is(e.gy, gy) || !Object.is(e.gz, gz);
     e.gx = gx; e.gy = gy; e.gz = gz;
     for (let i = 0; i < e.supports.length; i++) {
       const support = e.supports[i], f = support.face, n = f.normal;
-      let du = 0, dv = 0;
-      if (e.humide > 0) {
-        const fu = f.u[0] * D[0] + f.u[1] * D[1] + f.u[2] * D[2], fv = f.v[0] * D[0] + f.v[1] * D[1] + f.v[2] * D[2];
-        du = (fu * f.vv - fv * f.uv) / f.determinant;
-        dv = (fv * f.uu - fu * f.uv) / f.determinant;
-      }
+      const fu = f.u[0] * D[0] + f.u[1] * D[1] + f.u[2] * D[2], fv = f.v[0] * D[0] + f.v[1] * D[1] + f.v[2] * D[2];
+      const du = (fu * f.vv - fv * f.uv) / f.determinant;
+      const dv = (fv * f.uu - fu * f.uv) / f.determinant;
       support.deplacementInchange = du === support.du && dv === support.dv;
       support.du = du;
       support.dv = dv;
@@ -212,7 +218,6 @@
     for (let i = 0; i < MAX; i++) {
       const g = e.gouttes[i], f = g.face;
       g.force = clamp(charge - i, 0, 1); g.allongement = allongement;
-      if (e.humide === 0) continue;
       if (g.support.deplacementInchange && g.u === g.u0 && g.v === g.v0) continue;
       let u = Math.max(g.marge[1], g.u0 + g.support.du);
       let v = Math.max(g.marge[2], g.v0 + g.support.dv);
@@ -228,12 +233,6 @@
       g.local[0] = f.a[0] + f.u[0] * g.u + f.v[0] * g.v;
       g.local[1] = f.a[1] + f.u[1] * g.u + f.v[1] * g.v;
       g.local[2] = f.a[2] + f.u[2] * g.u + f.v[2] * g.v;
-    }
-    // Mouillage de la peinture : assombrissement progressif ; les perles apportent les reflets brillants.
-    // Les matériaux satinés du modèle sec et ses couleurs d'origine sont conservés/restaurés exactement.
-    const teinte = 1 - .12 * e.humide;
-    for (let i = 0; i < e.couleurs.length; i++) {
-      const c = e.couleurs[i]; c.couleur[0] = c.base[0] * teinte; c.couleur[1] = c.base[1] * teinte; c.couleur[2] = c.base[2] * teinte;
     }
     return true;
   }
