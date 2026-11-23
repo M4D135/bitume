@@ -112,7 +112,12 @@
     // Un choc lourd prend le premier plan. La boîte donne une impulsion légère de
     // 40 ms puis s'efface. Chacun atteint au moins une commande même à 144 images/s.
     const boite = Math.min(1, V.rapport / .065);
-    const apresChoc = 1 - unite(V.envFort / .27);
+    // Le fond suit la décroissance du plus fort impact encore actif.
+    let impactMax = 0;
+    for (const choc of V.impactsFort) {
+      impactMax = Math.max(impactMax, choc.niveau);
+    }
+    const apresChoc = 1 - unite(impactMax / .27);
     const fond = (1 - boite * .76) * apresChoc;
     // La somme des chocs actifs fixe le canal fort pendant leur décroissance.
     fort = V.impactsFort.length ? V.envFort : Math.max(fort * (1 - boite * .76), .055 * boite);
