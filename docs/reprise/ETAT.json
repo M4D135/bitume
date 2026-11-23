@@ -39,7 +39,10 @@
     },
     "github_actions": {
       "commit": "27a93d01b2eab0c0cb0a9e812e6b8bc50c97d4dc",
-      "url": "https://github.com/M4D135/bitume/actions/runs/45134765597"
+      "url": "https://github.com/M4D135/bitume/actions/runs/45134765597",
+      "demarrage_webgpu_linux": "https://github.com/M4D135/bitume/actions/runs/45135839418/job/137561852952",
+      "statut_demarrage": "succès",
+      "statut_suites_globales": "échecs présents"
     },
     "recu": "docs/reprise/rapports/WEBGPU-2026-11-23.json",
     "limites": [

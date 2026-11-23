@@ -9,7 +9,9 @@ export function environnementWebGPU(rendu) {
 
 export function argumentsWebGPU(pilote) {
   if (pilote === 'native') return ['--enable-gpu'];
-  if (pilote !== 'swiftshader') throw new Error('Pilote WebGPU attendu : native ou swiftshader');
+  if (pilote === 'vulkan-mesa') return ['--enable-gpu', '--enable-unsafe-webgpu', '--ozone-platform=x11',
+    '--use-gl=angle', '--use-angle=vulkan', '--enable-features=Vulkan,DefaultANGLEVulkan,VulkanFromANGLE'];
+  if (pilote !== 'swiftshader') throw new Error('Pilote WebGPU attendu : native, vulkan-mesa ou swiftshader');
   return ['--enable-gpu', '--enable-unsafe-webgpu', '--enable-unsafe-swiftshader', '--use-webgpu-adapter=swiftshader',
     '--use-vulkan=swiftshader', '--use-angle=swiftshader'];
 }

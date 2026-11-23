@@ -8,20 +8,22 @@ import vm from 'node:vm';
 const contexte = vm.createContext({ console });
 vm.runInContext('globalThis.window = globalThis;', contexte);
 for (const nom of ['moteur/renderer', 'carene', 'main', 'humain-donnees', 'humain-corps',
-  'ferro/vehicle-dynamics', 'pneus', 'usure-pneus', 'chaussee', 'conduite', 'voiture', 'eau-carrosserie'])
+  'ferro/vehicle-dynamics', 'pneus', 'usure-pneus', 'chaussee', 'conduite', 'voiture', 'eau-carrosserie', 'meteo', 'sillage', 'saute-vent-webgpu'])
   vm.runInContext(readFileSync(new URL('../src/' + nom + '.js', import.meta.url), 'utf8'), contexte, { filename: nom });
 const B = contexte.BITUME, E = B.eauCarrosserie, V = B.voiture;
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const debut = source.indexOf('  function majEauCarrosserie('), fin = source.indexOf('  let pluieVue', debut);
 assert(debut >= 0 && fin > debut);
-const fabriquer = new Function('B', 'sousLaVoute', source.slice(debut, fin)
+const neige = source.slice(source.indexOf('  function precipitationsNeige('), source.indexOf('  function dessinerMeteo('));
+const fabriquer = new Function('B', 'sousLaVoute', neige + source.slice(debut, fin)
   + '\nreturn { majEauCarrosserie, poserEauCarrosserie };');
 const raccord = fabriquer(B, (_c, p) => p[0] > 10);
 
 function seance() {
   const modeles = [V.modele({ couleur: [.8, .12, .1], numero: 1 }), V.modele({ couleur: [.1, .3, .8], numero: 2 })];
   for (let k = 0; k < modeles.length; k++) { V.preparerPneusService(modeles[k]); E.preparer(modeles[k], k + 37); }
-  return { modeles, course: { c: {}, voitures: [{ etat: { v: 35 } }, { etat: { v: 12 } }] },
+  return { modeles, nature: { saison: { theme: 'foret', neige: false } }, meteo: { pluie: 1 },
+    course: { c: {}, voitures: [{ id: 0, etat: { v: 35 } }, { id: 1, etat: { v: 12 } }] },
     eauCarrosserieTemps: 0, eauCarrosseriePoint: new Float64Array(3) };
 }
 const poses = [{ x: 0, y: 0, z: 0, cap: 0, tangage: 0, roulis: 0 }, { x: 25, y: 0, z: 5, cap: .7, tangage: .1, roulis: -.1 }];
@@ -33,10 +35,14 @@ test('mise à jour commune : pluie reçue par voiture, toit propre à sa pose et
   for (let n = 0; n < 60; n++) raccord.majEauCarrosserie(S, poses, 1 / 60, { pluie: .75, precipitationsNeige: false });
   const [a, b] = S.modeles.map(m => m.eauCarrosserie);
   assert(a.humide > 0 && a.actives > 0); assert.equal(b.humide, 0); assert.equal(b.actives, 0);
+  const [verreA, verreB] = S.modeles.map(m => m.surfaceVerre);
+  assert(verreA.mouillage > 0 && !verreA.abri);
+  assert.equal(verreB.mouillage, 0); assert.equal(verreB.abri, true);
+  const phase = verreA.phase;
   assert(Math.abs(a.age - 1) < 1e-12); assert.equal(a.revisions, 60); assert.strictEqual(S.eauCarrosseriePoint, point);
   const avant = etatPhysique(a), temps = S.eauCarrosserieTemps;
   for (let n = 0; n < 5; n++) raccord.majEauCarrosserie(S, poses, 0, { pluie: 1 });
-  assert.equal(etatPhysique(a), avant); assert.equal(S.eauCarrosserieTemps, temps);
+  assert.equal(etatPhysique(a), avant); assert.equal(S.eauCarrosserieTemps, temps); assert.equal(verreA.phase, phase);
 });
 
 test('cockpit, extérieur et rétros reposent les mêmes gouttes ; distance et qualité bornent leur coût', () => {
