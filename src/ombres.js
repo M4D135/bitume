@@ -119,16 +119,18 @@
     let nombre = 0;
     const dehors = m > places ? sc[rang[places]] : PORTEE;
     const retenues = Math.min(m, places);
+    if (m > places) pris[rang[places]] = 0;
     // Les contacts déjà visibles gardent leur place pendant le fondu de sortie.
     // Les nouveaux prennent ensuite les places libres dans l’ordre du classement.
     for (let i = 0; i < n + retenues && nombre < PLACES; i++) {
       const dejaVisible = i < n;
       const k = dejaVisible ? i : rang[i - n];
-      if (dejaVisible ? forces[k] === 0 : pris[k] === 0) continue;
+      const retenue = pris[k] !== 0;
+      if (dejaVisible ? forces[k] === 0 : !retenue) continue;
       pris[k] = 0;
       const s = sc[k];
       if (!Number.isFinite(s)) { forces[k] = 0; continue; }
-      const cible = (1 - lisse(PLEINE, PORTEE, s)) * borne01((dehors - s) / ECART);
+      const cible = retenue ? (1 - lisse(PLEINE, PORTEE, s)) * borne01((dehors - s) / ECART) : 0;
       const force = forces[k] + (cible - forces[k]) * LISSAGE_CONTACT;
       forces[k] = force >= FORCE_MIN ? force : 0;
       if (forces[k] === 0) continue;
