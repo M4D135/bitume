@@ -83,18 +83,20 @@
     return m;
   }
 
-  function bouton(p, i) {
+  function boutonBrut(p, i) {
     const b = p && p.buttons && p.buttons[i];
-    if (typeof b === 'number') return limite(b);
+    if (typeof b === 'number') return b;
     if (!b) return 0;
-    if (Number.isFinite(b.value)) return limite(b.value);
+    if (Number.isFinite(b.value)) return b.value;
     return b.pressed ? 1 : 0;
   }
+  const bouton = (p, i) => limite(boutonBrut(p, i));
   const annulation = p => (bouton(p, 8) > .5 ? 1 : 0) | (bouton(p, 9) > .5 ? 2 : 0);
   function valeur(p, l, action) {
     if (l.type === 'bouton') {
-      const brut = bouton(p, l.index);
-      return (action === 'gaz' || action === 'frein') && brut <= .06 ? 0 : brut;
+      const brut = boutonBrut(p, l.index);
+      if ((action === 'gaz' || action === 'frein') && brut <= .06) return 0;
+      return limite(brut);
     }
     const v = p && p.axes && p.axes[l.index];
     if (!Number.isFinite(v)) return 0;
