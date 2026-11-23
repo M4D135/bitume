@@ -193,7 +193,8 @@
       // Dès que l'on a franchi la jonction physique, s'arrêter pour céder à
       // une voiture derrière soi bloquerait les deux files sur la piste même.
       if (S.detachee && sIci>=jonction) fusionLibre=true;
-      const peutRentrer = separe ? sIci > S.fin + moiLong : contourner || x > S.fin - S.debut - 25;
+      const finRabattement = c.ouvert && !S.detachee ? S.fin : S.fin + moiLong;
+      const peutRentrer = separe ? sIci > finRabattement : contourner || x > S.fin - S.debut - 25;
       if (separe) {
         const part = 1 - rampe(sVue,S.sBox,S.garage1+8);
         if (p.reussi && sIci < S.garage1+8) dVise = axe + (S.dBox-axe)*part;
