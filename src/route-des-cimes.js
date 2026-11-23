@@ -339,6 +339,16 @@ const PARTITION = {
     };
     if (!B.circuit?.preparerParcours) throw new Error('Route-des-Cimes : préparation de parcours absente');
     B.circuit.preparerParcours(c);
+    // preparerStands élargit la limite droite pour la voie des stands APRÈS notre entonnoir : son
+    // raccord (transitionStand) dépasse la pente latérale de 0,35 m/m. On rejoue l'entonnoir pour
+    // qu'aucune glissière ne saute à l'entrée et à la sortie des stands, sans toucher aux huit circuits.
+    for (const L of [c.limiteG, c.limiteD]) {
+      for (let t = 0; t < 6; t++) {
+        for (let j = 1; j <= 2 * n; j++) { const i = j % n, p = (i - 1 + n) % n; L[i] = Math.min(L[i], L[p] + .35 * ds); }
+        for (let j = 2 * n - 1; j >= 0; j--) { const i = j % n, s = (i + 1) % n; L[i] = Math.min(L[i], L[s] + .35 * ds); }
+      }
+      for (let i = 0; i < n; i++) L[i] = Math.max(L[i], w + .9);
+    }
     // Garde des crêtes sans appui aérodynamique, puis enveloppe de freinage corrigée de la gravité.
     // La preuve de roulage reste celle du vrai châssis PhysX ; cette table est une consigne IA, pas un oracle.
     for (let i = 0; i < n; i++) if (kv[i] < -1e-7)
