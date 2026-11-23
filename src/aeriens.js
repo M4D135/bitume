@@ -418,7 +418,8 @@
   }
 
   function piloterAppareil(app, cibleX, cibleY, cibleZ, c, s, yPiste, sol, obstacles, marge, dt, kp, kd, vMax, aMax) {
-    const reprise = !app.init || Math.hypot(cibleX - app.pos[0], cibleZ - app.pos[2]) > 900;
+    // Reprise uniquement au premier cadrage : un changement de cible se VOL, jamais une téléportation.
+    const reprise = !app.init;
     const yPlancher = plancherSecurite(c, reprise ? cibleX : app.pos[0], reprise ? cibleZ : app.pos[2], s, yPiste, sol, obstacles, marge);
     if (reprise) {
       app.pos[0] = cibleX; app.pos[1] = Math.max(cibleY, yPlancher); app.pos[2] = cibleZ;
@@ -493,8 +494,9 @@
     const latH = 26 * Math.sin(t * 0.19 + 0.4) + 12 * Math.cos(t * 0.31);
     const cxH = _ptCible[0] - Math.sin(capPisteH) * latH;
     const czH = _ptCible[2] + Math.cos(capPisteH) * latH;
-    const cyH = _ptCible[1] + 30 + 4.5 * Math.sin(t * 0.23);
-    piloterAppareil(etat.volH, cxH, cyH, czH, c, sH, _ptCible[1], sol, obstacles, 28, dt, 1.9, 2.2, 115, 24);
+    // Vol bas : cible ~16 m au-dessus de la piste (plancher solMax+13, arbres via sommet+12).
+    const cyH = _ptCible[1] + 16 + 4.5 * Math.sin(t * 0.23);
+    piloterAppareil(etat.volH, cxH, cyH, czH, c, sH, _ptCible[1], sol, obstacles, 13, dt, 1.9, 2.2, 115, 24);
 
     const hx = etat.volH.pos[0], hy = etat.volH.pos[1], hz = etat.volH.pos[2];
     // Le pilotage et les obstacles restent actifs hors champ. La queue et le rotor
@@ -529,14 +531,23 @@
     const nbDrones = qualite === 'low' ? 1 : 2;
     for (let d = 0; d < nbDrones; d++) {
       const D = etat.drones[d], vol = etat.volD[d];
-      const balD = d === 0 ? facteurBalayage(t + 11, 56, 0.78) * 0.35 : facteurBalayage(t + 6, 30, 0.28);
-      const sD = sTete + (d === 0 ? 34 * Math.cos(t * 0.38) : -12) + ecartPeloton * balD;
+      // Secteurs longitudinaux distincts (drone 0 en avant, drone 1 en retrait) et bandes
+      // latérales opposées : les trois aéronefs ne tournent plus au même endroit autour de la
+      // même voiture. Phases et vitesses variées, séparation garantie par l'écart de secteur.
+      const coteD = d === 0 ? 1 : -1;
+      const balD = facteurBalayage(t + (d === 0 ? 11 : 6), d === 0 ? 56 : 30, d === 0 ? 0.5 : 0.42) * 0.15;
+      // Drone 0 en avant du leader (bande droite), drone 1 derrière le dernier (bande gauche) :
+      // l'héli balaie le peloton entre les deux sans jamais croiser un drone.
+      const sD = d === 0
+        ? sTete + 130 + 40 * Math.cos(t * 0.38)
+        : sDernier - 90 - 35 * Math.cos(t * 0.31) - ecartPeloton * balD;
       const capPisteD = echantillonnerPiste(c, sD, _ptCible);
-      const latD = (d === 0 ? 15 : 19) * Math.sin(t * (d === 0 ? 0.42 : 0.31) + d * 2.1);
+      const latD = coteD * (16 + 9 * Math.sin(t * (d === 0 ? 0.42 : 0.31) + d * 2.1));
       const cxD = _ptCible[0] - Math.sin(capPisteD) * latD;
       const czD = _ptCible[2] + Math.cos(capPisteD) * latD;
-      const cyD = _ptCible[1] + (d === 0 ? 22 : 25) + 3.0 * Math.sin(t * 0.55 + d);
-      piloterAppareil(vol, cxD, cyD, czD, c, sD, _ptCible[1], sol, obstacles, 22, dt, 2.5, 2.5, 130, 30);
+      // Vol bas : ~10 m (drone 0) et ~12 m (drone 1) au-dessus de la piste.
+      const cyD = _ptCible[1] + (d === 0 ? 10 : 12) + 3.0 * Math.sin(t * 0.55 + d);
+      piloterAppareil(vol, cxD, cyD, czD, c, sD, _ptCible[1], sol, obstacles, d === 0 ? 9 : 10, dt, 2.5, 2.5, d === 0 ? 135 : 122, 30);
 
       const dx = vol.pos[0], dy = vol.pos[1], dz = vol.pos[2];
       if (contexte?.visible && !contexte.visible(dx, dy, dz, 2)) continue;
