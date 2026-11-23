@@ -641,5 +641,27 @@
     e.restants = Math.max(0, ECHECS - C.echecs); e.delaiS = C.delai / 1000;
     return o;
   }
-  B.cadence = { MODES, creer, image, travail, regler, normaliser, oublier, nouvelleSeance, etat };
+  // Débit du rendu principal sur des fenêtres entières de temps réel. Le premier
+  // rendu fixe l'origine : il faut N intervalles complets pour annoncer N images/s.
+  function compteurImages() { return { debut: null, derniere: null, images: 0, actuel: null, maximum: null }; }
+  function releverImage(m, t, cadence) {
+    // Avant la première estimation de la période d'écran, le limiteur dessine à
+    // chaque RAF : le diviseur demandé en 30/60/120 n'est pas encore appliqué.
+    if (cadence && !cadence.grille && cadence.mode !== 'auto' && cadence.mode !== 'ecran') t = null;
+    if (t === null) {
+      m.debut = m.derniere = m.actuel = null; m.images = 0;
+      return;
+    }
+    if (!Number.isFinite(t) || t === m.derniere) return;
+    if (m.debut === null || t < m.derniere) {
+      m.debut = m.derniere = t; m.images = 0; m.actuel = null; return;
+    }
+    m.derniere = t; m.images++;
+    const duree = t - m.debut;
+    if (duree < 1000) return;
+    m.actuel = Math.round(m.images * 1000 / duree);
+    m.maximum = Math.max(m.maximum ?? 0, m.actuel);
+    m.debut = t; m.images = 0;
+  }
+  B.cadence = { MODES, creer, image, travail, regler, normaliser, oublier, nouvelleSeance, etat, compteurImages, releverImage };
 })(globalThis.BITUME = globalThis.BITUME || {});

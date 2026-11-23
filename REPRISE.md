@@ -3,9 +3,13 @@
 <!-- bitume-reprise-actuelle-debut -->
 ## Par où reprendre
 
-**Version publique du 23 novembre, BITUME 0.2.287 et FERRO 0.3.31.** Les neuf circuits portent leurs nouveaux noms en course, dans le salon, le championnat et les démos. Le fichier servi correspond au [commit de publication](https://github.com/M4D135/bitume/commit/783ef1fabd5c586158cd8cb5611fe5293616b510).
+**Version publique du 23 novembre, BITUME 0.2.289 et FERRO 0.3.31.** Au premier démarrage de cette version sur un GPU, le jeu mesure la configuration graphique. Le menu Image permet de relancer le test. La démo affiche aussi sa cadence maximale. [Sources de la version publique](https://github.com/M4D135/bitume/commit/9a5132acb6821e7457e3a90199241239adea681d).
 
-**Candidate locale de nuit, BITUME 0.2.288, physique p54.** Elle reprend les neuf noms de la .287 sur la candidate .286, avec les mêmes identifiants de piste et les classements de la branche de nuit. [Réception du catalogue et empreintes des deux versions](docs/reprise/rapports/NUIT-NOMS-0288-2026-11-23.json).
+**Candidate locale de nuit, BITUME 0.2.290, physique p54.** Elle reprend le test graphique et le maximum de FPS en démo sur la .288. La pluie, la vitre et le public conservent leurs variantes de nuit. [Réception locale et empreintes des deux versions](docs/reprise/rapports/NUIT-PROFIL-0290-2026-11-23.json).
+
+**Version publique précédente, BITUME 0.2.287.** Les neuf tracés portent des noms de course ou de lieux-dits. Le menu, les chronos déjà enregistrés et la piste au départ affichent le même nom. Les neuf départs ont été contrôlés sur le site public. [Catalogue et réception en course](docs/reprise/rapports/CATALOGUE-2026-11-23.json)
+
+**Candidate locale précédente, BITUME 0.2.288, physique p54.** Elle reprend les neuf noms de la .287 sur la candidate .286, avec les mêmes identifiants de piste et les classements de la branche de nuit. [Réception du catalogue et empreintes des deux versions](docs/reprise/rapports/NUIT-NOMS-0288-2026-11-23.json).
 
 **Version publique précédente, BITUME 0.2.285 et FERRO 0.3.31.** La 3D utilise WebGPU. Le bord inférieur du saute-vent rejoint la carrosserie sur toute sa longueur. La vitre reflète le ciel et le soleil selon l’angle de vue. En qualité Fine, les gouttes déforment la piste visible à travers le verre. Les neuf circuits ont démarré sous la pluie, dont trois depuis le site public. Sur Mac M5, le passage de 16 secondes à Pietraporzio donne 60,00 images 3D/s en 1080p Fine avec les deux rétroviseurs, et 17,6 ms au 95ᵉ percentile. [Contrôles du verre, des circuits et de la cadence](docs/reprise/rapports/WEBGPU-2026-11-23.json)
 

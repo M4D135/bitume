@@ -1,0 +1,32 @@
+{
+  "date": "2026-11-23",
+  "branche_candidate": "nuit/2026-11-22",
+  "version_candidate": "0.2.290",
+  "candidate_precedente": "0.2.288",
+  "tete_nuit_avant_fusion": "44f5f4f5eb645fc7714a94a04559a291284f2bc0",
+  "physique_candidate": "p54",
+  "moteur": "FERRO 0.3.31",
+  "html_candidate": {
+    "raw": 17503780,
+    "gzip": 4751189,
+    "sha256": "8dd7f5bc5a30c9955626942f436ccc6dcea4556f7d3e7c08ac229a64e4bb6df6"
+  },
+  "publication": {
+    "version": "0.2.289",
+    "precedente": "0.2.287",
+    "commit": "9a5132acb6821e7457e3a90199241239adea681d",
+    "url": "https://bitume.estrasse.fr/",
+    "sha256_html_servi": "2b4af01efce9bb832c6a952dfd428cdafe2158529cad07c7c3a6db3548b1aad1"
+  },
+  "sources": {
+    "src_jeu_patch_id_public_et_applique_sur_nuit": "a7d67eaa44339af55b1fc7e6aaec0938e5394857",
+    "src_jeu_patch_id_nuit_ancien_et_conserve": "f0487595312afef1f664998cb441e1f2111155d6",
+    "pluie_vitre_public": "identiques à la candidate .288"
+  },
+  "verification_node": {
+    "commande": "node --test --test-reporter=tap verifications/{autoconfig,autoconfig-integration,autoconfig-passive,banc-configuration,cadence,controle-visuel,public,vitre,vitre-flux,vitre-meteo,captures-pluie-abris}.test.mjs",
+    "reussites": 67,
+    "echecs": 0
+  },
+  "portee": "Contrôles des sources, du profil graphique, des maxima de cadence, de la pluie, du public et de la vitre. La réception graphique sur matériel de la version publique est suivie séparément."
+}

@@ -460,9 +460,9 @@
     <div class="grille-reglages">
       <fieldset class="detection-reglages" aria-describedby="r-detection-etat">
         <legend>Détection graphique</legend>
-        <button type="button" class="discret" id="r-detecter">Appliquer le profil conseillé</button>
-        <p class="note-graphismes">Choisit un profil prudent à partir des capacités déclarées de l’appareil, sans test de charge. Ce bouton remplace vos choix graphiques actuels.</p>
-        <p class="note-graphismes" id="r-detection-etat" role="status">Profil conseillé sans test de charge.</p>
+        <button type="button" class="discret" id="r-detecter">Mesurer et appliquer le profil</button>
+        <p class="note-graphismes">Le test WebGPU mesure les performances graphiques de votre appareil. Relancer la mesure remplace vos six réglages graphiques par ceux du profil conseillé.</p>
+        <p class="note-graphismes" id="r-detection-etat" role="status">Détection graphique disponible.</p>
         <p class="note-graphismes aide-xbox" hidden>Xbox : scène 3D limitée à 720p pour alléger le rendu sur téléviseur. Menus et textes restent à la résolution de l’écran.</p>
       </fieldset>
       <fieldset>
@@ -668,13 +668,13 @@
     </footer>
   </section>
 
-  <div id="autodetection" class="autodetection" role="dialog" aria-modal="true" aria-labelledby="detection-titre" hidden>
+  <div id="autodetection" class="autodetection" role="dialog" aria-modal="true" aria-labelledby="detection-titre" aria-describedby="detection-note" hidden>
     <div class="detection-carte">
       <span class="detection-surtitre">BITUME</span>
       <h2 id="detection-titre">Réglage automatique</h2>
-      <p id="detection-texte" role="status" aria-live="polite">Lecture des capacités de l’appareil…</p>
+      <p id="detection-texte" role="status" aria-live="polite">Préparation du test WebGPU…</p>
       <progress id="detection-progres" max="1" value="0" aria-label="Progression de la détection"></progress>
-      <p class="detection-note">Profil prudent, sans test de performances.</p>
+      <p class="detection-note" id="detection-note">Gardez cet onglet visible pendant la mesure. Passer conserve vos réglages actuels.</p>
       <button type="button" class="discret" id="detection-annuler">Passer</button>
     </div>
   </div>

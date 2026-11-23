@@ -4,7 +4,7 @@ import { deflateSync } from 'node:zlib';
 import vm from 'node:vm';
 import { decoderPng, mesurerImage, analyserSequence, comparerSequences, difference } from '../tools/visuel-images.mjs';
 import { optionsCapture, horlogeCapture, attendreDemarrage, capturer } from '../tools/controle-visuel.mjs';
-import { instrumenterDemarrageMobile } from '../tools/qualification/demarrage-mobile.mjs';
+import { instrumenterDemarrageMobile, verifierMesureGraphique } from '../tools/qualification/demarrage-mobile.mjs';
 
 function crc32(b) {
   let c = 0xffffffff;
@@ -185,12 +185,14 @@ test('les compteurs mobiles voient les appels natifs sans remplacer résultat, a
   vm.runInContext('(' + instrumenterDemarrageMobile.toString() + ')()', ctx);
   const resultat = {}, promesse = Promise.resolve(17), erreur = new Error('origine');
   let receveur, argument;
-  ctx.BITUME.autoconfig = { executer(x) { receveur = this; argument = x; return resultat; }, passive() { return promesse; } };
+  ctx.BITUME.autoconfig = { executer(x) { receveur = this; argument = x; return resultat; }, passive() { return promesse; }, mesurerWebGPU() { return promesse; } };
   ctx.BITUME.sceneBench = { creer() { return resultat; } };
   assert.equal(ctx.__BITUME_MOBILE.appels.benchmark, 0, 'installer les wrappers ne lance aucun banc');
   assert.equal(ctx.BITUME.autoconfig.executer(23), resultat);
   assert.equal(receveur, ctx.BITUME.autoconfig); assert.equal(argument, 23);
   assert.equal(ctx.BITUME.autoconfig.passive(), promesse, 'promesse native inchangée');
+  assert.equal(ctx.BITUME.autoconfig.mesurerWebGPU(), promesse);
+  assert.equal(ctx.__BITUME_MOBILE.appels.webgpu, 1);
   assert.equal(ctx.BITUME.sceneBench.creer(), resultat);
   ctx.BITUME.autoconfig.executer = () => { throw erreur; };
   assert.throws(() => ctx.BITUME.autoconfig.executer(), e => e === erreur);
@@ -198,4 +200,19 @@ test('les compteurs mobiles voient les appels natifs sans remplacer résultat, a
   assert.equal(ctx.__BITUME_MOBILE.appels.sceneBench, 1);
   assert.equal(ctx.__BITUME_MOBILE.appels.passive, 1);
   assert.ok(Object.values(ctx.__BITUME_MOBILE.surveilles).every(Boolean));
+});
+
+test('les recettes acceptent une mesure, un repli prudent ou un passage explicite et détectent les faux reçus', () => {
+  const etat = { surveilles: { benchmark: true, sceneBench: false, passive: true, webgpu: true },
+    appels: { benchmark: 0, sceneBench: 0, passive: 0, webgpu: 1 }, reglagesEnregistres: { qualite: 'high' } };
+  const mesure = { methode: 'mini-webgpu', statut: 'ok', selection: 'extreme', reglages: { qualite: 'high' },
+    performancesMesurees: true, mesures: [{ ms: 7 }] };
+  verifierMesureGraphique({ ...etat, cache: mesure }, 1);
+  verifierMesureGraphique({ ...etat, cache: { methode: 'mini-webgpu', statut: 'interrompu', motif: 'annule' } }, 1);
+  verifierMesureGraphique({ ...etat, reglagesEnregistres: { qualite: 'low' },
+    cache: { ...mesure, reglages: { qualite: 'low' }, selection: 'low', performancesMesurees: false, repli: true, mesures: [] } }, 1);
+  for (const erreur of [{ mesures: [] }, { performancesMesurees: false }, { selection: 'inconnue' },
+    { methode: 'capacites-declarees' }, { statut: 'interrompu', motif: 'onglet_masque' }])
+    assert.throws(() => verifierMesureGraphique({ ...etat, cache: { ...mesure, ...erreur } }, 1));
+  assert.throws(() => verifierMesureGraphique({ ...etat, cache: mesure }, 0));
 });

@@ -449,6 +449,10 @@ Ses mots, dans l'ordre où ils sont arrivés. Chaque demande a son lot ; l'ordre
 - Les anciennes réserves R4b ont été corrigées. Les états historiques restent archivés ;
   `REPRISE.md` et les alias actifs d’`ETAT.json` décrivent la réception courante.
 
+## Décision de David du 23 novembre 2026 sur la détection graphique
+
+Au premier lancement d’une version, mesurer les performances sur le périphérique WebGPU du jeu et adapter les réglages parmi quatre profils. Le test doit rester bref et borné sur téléphone. Mémoriser le résultat pour la version et le matériel. L’onglet Image permet de refaire le test. La recommandation issue des capacités déclarées sert de repli quand la mesure échoue. Cette décision actualise les consignes de détection passive ci-dessous.
+
 ## Décision de David — 21 novembre 2026, démarrage sur téléphone
 
 - Le test de performances au démarrage fait planter le navigateur sur téléphone.

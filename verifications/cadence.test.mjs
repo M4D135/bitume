@@ -659,6 +659,48 @@ for (const [hz, gpu, cpu, nom] of [[60, 0, 1, '60 Hz verrouillé'], [144, 0, 1, 
   assert.equal(K.etat(C).diviseur, k, nom + ' : régime inchangé pendant la mesure');
   controles++; console.log('ok aucune allocation en régime permanent : ' + nom + ' (' + mesure.cadence + ' octets en 100 000 rappels)');
 }
+verifier('démo : débit des rendus sur une seconde réelle, pic par séance et reprise après interruption', () => {
+  const m = K.compteurImages();
+  // Le temps fourni par le navigateur n'a pas d'origine nulle garantie : le premier rendu sert d'ancre.
+  const origine = 178000;
+  for (let i = 0; i < 60; i++) K.releverImage(m, origine + i * 1000 / 60);
+  assert.equal(m.actuel, null); assert.equal(m.maximum, null);
+  K.releverImage(m, origine + 1000); assert.equal(m.actuel, 60); assert.equal(m.maximum, 60);
+  for (let i = 1; i <= 30; i++) {
+    const t = origine + 1000 + i * 1000 / 30;
+    K.releverImage(m, t); K.releverImage(m, t); // un second passage au même instant ne compte pas
+  }
+  assert.equal(m.actuel, 30); assert.equal(m.maximum, 60);
+  for (let i = 1; i <= 100; i++) K.releverImage(m, origine + 2000 + i * 5);
+  K.releverImage(m, null); // aucune fenêtre partielle autour d'une pause, du voile ou d'un onglet caché
+  assert.equal(m.actuel, null); assert.equal(m.maximum, 60);
+  for (let i = 0; i < 120; i++) K.releverImage(m, origine + 120000 + i * 1000 / 120);
+  assert.equal(m.actuel, null); assert.equal(m.maximum, 60);
+  K.releverImage(m, origine + 121000); assert.equal(m.actuel, 120); assert.equal(m.maximum, 120);
+  assert.equal(K.compteurImages().maximum, null);
+});
+
+verifier('démo : les toutes premières images non bridées ne deviennent pas un maximum à cadence fixe', () => {
+  for (const [mode, ecran, attendu] of [['30',60,30], ['60',144,72], ['120',120,120], ['ecran',60,60], ['auto',60,60]]) {
+    const C = K.creer({ mode }), m = K.compteurImages();
+    let premiere = null, rendusAmorce = 0;
+    for (let i = 0; i <= 3 * ecran; i++) {
+      const t = 5000 + i * 1000 / ecran;
+      const frame = K.image(C, t, { actif: true, echelle: .25 }); // ralenti du réalisateur
+      if (!frame.rendre) continue;
+      K.releverImage(m, t, C);
+      if (!C.grille) {
+        rendusAmorce++;
+        if (mode === 'auto' || mode === 'ecran') assert.notEqual(m.debut, null);
+        else assert.equal(m.debut, null);
+      }
+      if (premiere === null && m.actuel !== null) premiere = m.actuel;
+    }
+    assert(rendusAmorce > 10, 'le témoin contient des images réellement rendues avant le calage');
+    assert.equal(premiere, attendu); assert.equal(m.maximum, attendu);
+  }
+  // 60 demandé sur écran 144 Hz donne 72 réellement rendus : aucun écrêtage de l’indicateur.
+});
 // Boucle du jeu (src/jeu.js, image) : hors ligne, elle fait les pas que la cadence a comptés et garde leur phase. Un
 // S.acc négatif vient d'un outil d'essai qui fige la boucle pour avancer pas à pas (scripts de captures) : aucun pas
 // alors, l'état précédent montré (alpha nul), comme avec l'ancien accumulateur.

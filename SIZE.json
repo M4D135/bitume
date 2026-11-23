@@ -1,8 +1,8 @@
 {
-  "version": "0.2.288",
-  "raw": 17489420,
-  "gzip": 4746685,
-  "sha256": "b8188f333f43847b6f077a06176edafff1e24c4dd78df1f521d1ac0eec2df741",
+  "version": "0.2.290",
+  "raw": 17503780,
+  "gzip": 4751189,
+  "sha256": "8dd7f5bc5a30c9955626942f436ccc6dcea4556f7d3e7c08ac229a64e4bb6df6",
   "sources": {
     "ferro/surface.js": 3419,
     "ferro/render-shared.js": 81526,
@@ -94,20 +94,21 @@
     "pneus-reseau.js": 9660,
     "mesures.js": 19248,
     "qualite.js": 5329,
-    "cadence.js": 41306,
+    "cadence.js": 42442,
     "graphismes.js": 22460,
     "detail-peripherique.js": 7767,
     "ambiance.js": 3005,
     "conditions-course.js": 18160,
     "navigation-menu.js": 31405,
     "menu-arcade.js": 29734,
-    "autoconfig.js": 35407,
+    "banc-configuration.js": 8418,
+    "autoconfig.js": 35937,
     "commandes-manette.js": 8795,
     "vibrations.js": 10282,
     "ombres.js": 13366,
     "visites.js": 6566,
-    "jeu.js": 434711,
-    "index.html": 74889,
-    "style.css": 110844
+    "jeu.js": 438856,
+    "index.html": 74974,
+    "style.css": 110836
   }
 }
