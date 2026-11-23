@@ -1,8 +1,8 @@
 {
-  "version": "0.2.204",
-  "raw": 16725359,
-  "gzip": 4642708,
-  "sha256": "ed5b145614d17b0c740d23fd11d607f0de774dfa433ca7e1e53b850ffd2b0769",
+  "version": "0.2.205",
+  "raw": 16725668,
+  "gzip": 4642766,
+  "sha256": "1dfd7d40673ac764e03757d10c0c70c2d3c16110e209b96bdbb1461c96089660",
   "sources": {
     "ferro/surface.js": 3419,
     "moteur/renderer.js": 355491,
@@ -26,7 +26,7 @@
     "pietraporzio.js": 13551,
     "larche-vinadio-decor.js": 53924,
     "marseille.js": 14511,
-    "marseille-decor.js": 50396,
+    "marseille-decor.js": 50705,
     "destinations.js": 20963,
     "virages.js": 10933,
     "ferro/vehicle-dynamics.js": 3980,

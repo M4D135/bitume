@@ -487,7 +487,13 @@
     ];
 
     function immeubleProvencal(x, z, yaw, L, H, P, seed, detail) {
-      const ySol = solMin5(x, z, Math.max(L, P) * 0.45);
+      const cos = Math.cos(-yaw), sin = Math.sin(-yaw);
+      const demiL = L * 0.5, demiP = P * 0.5;
+      const solAuCoin = (lx, lz) => terr.sol(x + cos * lx - sin * lz, z + sin * lx + cos * lz);
+      const ySol = terr ? Math.min(
+        solAuCoin(-demiL, -demiP), solAuCoin(-demiL, demiP),
+        solAuCoin(demiL, -demiP), solAuCoin(demiL, demiP)
+      ) : 2;
       const yFond = ySol - 2.6;
       const hTot = H + 2.6;
       const fCol = FACADES[Math.floor(hache(seed, 11) * FACADES.length)];
