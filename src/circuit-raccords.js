@@ -13,6 +13,15 @@
     } catch (cause) {
       throw new Error('BITUME : décodage Base64 du raccord impossible (' + nom + ')', {cause});
     }
+    const reste = flux.length % 3;
+    if (reste !== 0) {
+      const dernier = texte.replace(/[=\t\n\f\r ]+$/, '').slice(-1);
+      const valeur = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.indexOf(dernier);
+      const masque = reste === 1 ? 15 : 3;
+      if ((valeur & masque) !== 0) {
+        throw new Error('BITUME : bits de remplissage Base64 invalides (' + nom + ')');
+      }
+    }
     const taille = nom === 'vibreur' ? 1 : 8, plans = new Uint8Array(n*taille);
     let entree = 0, sortie = 0;
     while (entree < flux.length) {
