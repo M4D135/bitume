@@ -130,16 +130,24 @@
         b*((1-a)*fractions[k+ligne]+a*fractions[k+ligne+3]))/255;
     };
   }
+  const coordonneesPose = new DataView(new ArrayBuffer(16));
+  function bruitPose(graine, sel) {
+    const fraction = bruit(coordonneesPose.getInt32(4),coordonneesPose.getInt32(12),graine^sel);
+    return bruit(coordonneesPose.getInt32(0),coordonneesPose.getInt32(8),fraction*4294967296);
+  }
   function instance(site, loin, p, largeur, h, axes, color, t) {
     const x=Math.floor(p[0]*100), z=Math.floor(p[2]*100);
     const variante=Math.floor(bruit(x,z,t*4294967296)*VARIANTES);
     const shape=site.forme+'-'+variante+(loin?'-loin':'');
-    const angle=bruit(x,z,site.graine+117)*2*Math.PI;
+    // Utiliser les deux mots de chaque coordonnée, y compris pour des centres très proches.
+    coordonneesPose.setFloat64(0,p[0]);
+    coordonneesPose.setFloat64(8,p[2]);
+    const angle=bruitPose(site.graine,0x9e3779b9)*2*Math.PI;
+    const echelle=.84+.16*bruitPose(site.graine,0x85ebca6b);
     const cos=Math.cos(angle), sin=Math.sin(angle);
     const [axeX,axeY,axeZ]=axes;
     const tourneX=axeX.map((v,i)=>v*cos+axeZ[i]*sin);
     const tourneZ=axeZ.map((v,i)=>v*cos-axeX[i]*sin);
-    const echelle=.84+.16*bruit(x,z,site.graine+163);
     const largeurLocale=largeur*echelle;
     const profondeur=largeurLocale*(.78+.22*t);
     return {shape,p,r:B.decor.angles(tourneX,axeY,tourneZ),s:[largeurLocale,h,profondeur],color,mat:11};
