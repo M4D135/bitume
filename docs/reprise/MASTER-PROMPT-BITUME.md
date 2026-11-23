@@ -271,23 +271,47 @@ Légende état : ✅ livré+qualifié · 🟡 partiel/en cours · ⛔ bloqué (p
 | C | Split-screen 3-4 joueurs | ⬜ | — | — | — | Implémenter grille 2×2 + case 4 carte animée |
 | D | Minimap zoomée défilante | ⬜ | — | — | — | Implémenter suivi tronçon par joueur |
 | E | Renommage Descente des Freins Chauds | ✅ | `183597d` | CATALOGUE jeu.js ; méta index.html | — | Conserver id internes |
-| F | Visiteurs IP/HMAC/atomique | 🟡 | — | `serveur/visites.mjs` existant | **État réel à établir** ; arbitrage IP vs HMAC (David 21/11) | Auditer visites.mjs + tests ; aligner HMAC opaque |
+| F | Visiteurs IP/HMAC/atomique | 🟡 | — | `visites-navigateur` 12/12 ; `visites-serveur` 16/16 (exit 0) | **État réel établi** : dédup navigateur (UUID→SHA-256), atomicité (temp+fsync+rename+dir-fsync, double copie, revision, monotonie), migration v0→socle, totaux honnêtes = OK. **MANQUENT** : dédup **réseau**, **HMAC** (clé), **IP proxys de confiance** (absents). Tension David 21/11 « pas d'IP persistée » → résoudre par HMAC(IP) sans IP brute | Implémenter réseau+HMAC+proxys de confiance (configurable, sans persister l'IP) |
 | G | Rendu photoréaliste | ⬜ | — | — | Visuel → Mac | Matières/éclairage/contacts + avant/après Mac |
 | H | Végétation ×100 | ⬜ | — | — | Perf GPU → Mac | Instances/LOD/caches + mesures géométrie/draw calls |
 | I | Route sans fin (arcade) | ⬜ | — | — | — | Cycle plages→montagnes, checkpoints, stations, chrono/joueur |
 | J | Aériens & démos | 🟡 | `d63c523`,`3d6c24c`,`e44d90a` | `verif-aeriens.mjs` (h/drones bas, séparations) ; `terrain-corrections.test.mjs` 3/3 ; `demos-course-virages` | Démos basses centrées route, faune/flore proches, anticipation obstacles | Compléter J ; qual visuel Mac |
 | L | Cohérence & qualité générale | ⬜ | — | — | — | Manette/menus/HUD, modèle commun, poses, Troll préservé |
 
-### Tests rouges préexistants (à diagnostiquer, pas à truquer)
+### Tests rouges (état 2026-11-23)
 
-| Test | Symptôme | Hypothèse | Décision |
-|------|----------|-----------|----------|
-| `menu-arcade` | `catalogue.length` 9 ≠ 11 | Objectif « 16 circuits » : 2 circuits (Monaco/Marseille/…) non livrés | Vérifier contrat ; **objectif futur**, pas de circuits factices, ne pas supprimer l'attente |
-| `parcours-ouvert` | décélération insuffisante (45.015) | Physique/tuning freinage | Diagnostiquer cause réelle avant tout changement |
-| `physx-circuits` | saut doit avoir rencontré la montée à 1 s | Terrain/PhysX | Diagnostiquer cause réelle |
-| `russie` | 84 tableaux bit à bit ; Baïkal ; neige rivaux | bit-à-bit = élargissement stands (re-basable `cimes`) ; Baïkal/neige = autre cause | Traiter par cause ; neige = gameplay réel probable |
+**Vrai périmètre (détection par code de sortie, pas par « fail ») : 79 fichiers sur 236 sont
+rouges** (≈ 33 %). C'est une dette massive préexistante (sessions inachevées + commits
+automatisés « R##### » `[skip ci]`), **pas** des régressions de cette session : chaque échec
+reproduit à l'identique sur HEAD propre. Un problème local n'arrête pas les travaux
+indépendants. À trier par familles, sans jamais relever de seuil ni truquer une référence.
+
+**Cause systémique découverte — inflation de `PHYSIQUE`** : `jeu.js` est à `PHYSIQUE = 'p54'`
+mais plusieurs tests l'épinglent à `'p17'` (`records-physique`, `chaussee-preparation`,
+`determinisme-simulation`, `russie`). Sur les 40 derniers commits ayant modifié `PHYSIQUE`,
+**seuls 6 touchaient `conduite.js`** : 34 bumps pour des changements non-conduite
+(implantation d'habitations, rochers, traces de pneus, humidité…). Violation de la règle
+AGENTS.md (« seul un vrai changement de conduite bump PHYSIQUE ») par le processus automatisé
+« R ». **Conséquent pour les records/fantômes → à trancher par David** (dé-inflation ou
+acceptation). Ne pas « verdir » les tests en épinglant p54 : ce serait masquer le défaut.
+
+| Test | Symptôme | Cause établie | Décision / état |
+|------|----------|---------------|-----------------|
+| `parcours-ouvert` | décélération insuffisante (45 m/s après l'arrivée) | **Régression fc3c5fe** : cible de freinage post-arrivée au fond du dégagement → la voiture finie coastait | **CORRIGÉ** `d19c7a9` : frein ferme, jamais de gaz, arrêt prompt réparti. 8/8 |
+| `russie` (nom) | attendait nom 'Baïkal' | Renommage intentionnel `783ef1f` → « Circuit de la Glace Vive » | **CORRIGÉ** `b6f80fe` : référence à jour |
+| `russie` (84 tableaux) | sha `val-brule` ≠ baseline '0252' | Élargissement stands `9703e71` (accepté par David, réf `cimes`) | **CORRIGÉ** `b6f80fe` : re-basé `cimes`, tracés vérifiés identiques au courant |
+| `russie` (neige) | « replacement de L. Brasquet » (1≠0) | Rival bloqué en neige (sec et pluie passent) | **Gameplay neige réel** — à diagnostiquer (adhérence/IA neige), pas de seuil truqué |
+| `russie` (catalogue/PHYSIQUE) | `PHYSIQUE` p17 ≠ p54 | Inflation PHYSIQUE (ci-dessus) | **Bloqué — arbitrage David** |
+| `physx-circuits` (Baïkal) | saut encore en l'air à 1 s (`saut` true≠false) | Saut PhysX Baïkal : arc trop long / montée ne rattrapant pas à s≈2520 | **À diagnostiquer** (terrain/vélocité Baïkal), propre au lot 13A |
+| `menu-arcade` | `catalogue.length` 9 ≠ 11 | Objectif « 16 circuits » : 2 circuits non livrés | **Objectif futur** — pas de circuits factices, ne pas supprimer l'attente |
 
 ### Historique de mise à jour du suivi
 
 - 2026-11-23 : création du fichier canonique ; consignes David 2026-11-23 enregistrées
   verbatim ; acquis K/A/B/E/J reconstitués ; dépôt vérifié à `832f6f6` (0.2.299).
+- 2026-11-23 (suite) : fixes de tests sûrs (`conduite` stub, `cameras-course` scope) ;
+  **parcours-ouvert corrigé** (régression fc3c5fe, `d19c7a9`) ; **russie** nom + 84 tableaux
+  re-basés `cimes` (`b6f80fe`) ; **état réel de F établi** (navigateur/atomicité/migration OK,
+  réseau/HMAC/proxy manquants) ; **vrai périmètre rouge mesuré : 79/236** ; **cause
+  systémique PHYSIQUE p17→p54 sur-inflée découverte** (34/40 bumps non-conduite) → arbitrage
+  David. Prochaine action : dimension réseau de F (HMAC+proxys, sans IP brute), puis lots C/D.
