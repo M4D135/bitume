@@ -474,7 +474,9 @@
           restaurerNavigation(zone);
         }
       } else if (!zone.contains(saisie.cible) || !restaurable(doc, saisie.cible)) {
+        const retourSaisie = typeof nouveau === 'function' && nouveau(8);
         fermerSaisie(doc);
+        if (retourSaisie) return true;
       } else zone = saisie.dialogue;
     }
     if (!zone || zone.hidden || zone.closest(MASQUE) || zone.ownerDocument.hidden) return false;
