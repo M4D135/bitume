@@ -247,18 +247,15 @@
         const b = j * PI2 / 6 + a;
         return [sommet[0] + Math.cos(b) * rayon, sommet[1] + .015, sommet[2] + Math.sin(b) * rayon];
       };
-      // Au loin, la corolle s'appuie sur le sommet du cœur : la pointe la plus haute reste couverte.
-      const origine = proche ? sommet : [sommet[0], sommet[1] + .05, sommet[2]];
+      // La corolle rejoint la hampe et le cœur conserve sa hauteur aux deux résolutions.
       const petales = proche ? 6 : 3;
-      for (let j = 0; j < petales; j++) triangle(tri, origine, pointe(2 * j), pointe(2 * ((j + 1) % 3)), true);
-      if (proche) {
-        const coeur = [sommet[0], sommet[1] + .05, sommet[2]], r2 = rayon * .45;
-        for (let j = 0; j < 3; j++) {
-          const b1 = j * PI2 / 3, b2 = (j + 1) * PI2 / 3;
-          triangle(tri, coeur,
-            [sommet[0] + Math.cos(b1) * r2, sommet[1] + .012, sommet[2] + Math.sin(b1) * r2],
-            [sommet[0] + Math.cos(b2) * r2, sommet[1] + .012, sommet[2] + Math.sin(b2) * r2]);
-        }
+      for (let j = 0; j < petales; j++) triangle(tri, sommet, pointe(2 * j), pointe(2 * ((j + 1) % 3)), true);
+      const coeur = [sommet[0], sommet[1] + .05, sommet[2]], r2 = rayon * .45;
+      for (let j = 0; j < 3; j++) {
+        const b1 = j * PI2 / 3, b2 = (j + 1) * PI2 / 3;
+        triangle(tri, coeur,
+          [sommet[0] + Math.cos(b1) * r2, sommet[1] + .012, sommet[2] + Math.sin(b1) * r2],
+          [sommet[0] + Math.cos(b2) * r2, sommet[1] + .012, sommet[2] + Math.sin(b2) * r2]);
       }
       for (let j = 0; j < 2; j++) {
         const t = .35 + j * .3, sens = j % 2 ? 1 : -1;
