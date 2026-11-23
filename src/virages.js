@@ -112,19 +112,29 @@
     const plan = planifier(c);
     let etat = suivis.get(suivi);
     if (!etat || etat.c !== c) {
-      etat = { c, maximum: -Infinity, precedente: null, annonces: new Map(), actuelle: null };
+      etat = { c, maximum: -Infinity, precedente: null, decalage: 0, annonces: new Map(), actuelle: null };
       suivis.set(suivi, etat);
     }
-    const p = position && position.progression, vitesse = position && position.vitesse;
-    if (!position || !Number.isFinite(position.s) || !Number.isFinite(p) || !Number.isFinite(vitesse) || !plan.length) {
+    const progression = position && position.progression, vitesse = position && position.vitesse;
+    if (!position || !Number.isFinite(position.s) || !Number.isFinite(progression) || !Number.isFinite(vitesse) || !plan.length) {
       etat.actuelle = null; return null;
     }
-    const recul = etat.precedente !== null && p < etat.precedente - .25 || p < etat.maximum - .75;
-    etat.precedente = p; etat.maximum = Math.max(etat.maximum, p);
+    const L = c.longueur, precedente = etat.precedente;
+    const pPrecedent = precedente === null ? null : precedente + etat.decalage;
+    // Dérouler les passages de la ligne dans les deux sens, à moins d'un demi-tour par mesure.
+    if (!c.ouvert && precedente !== null && precedente >= 0 && precedente <= L
+      && progression >= 0 && progression <= L) {
+      const delta = progression - precedente;
+      if (delta < -L / 2) etat.decalage += L;
+      else if (delta > L / 2) etat.decalage -= L;
+    }
+    const p = progression + etat.decalage;
+    const recul = (pPrecedent !== null && p < pPrecedent - .25) || p < etat.maximum - .75;
+    etat.precedente = progression; etat.maximum = Math.max(etat.maximum, p);
     // Garder la mémoire des annonces pendant un arrêt, une pause ou un recul évite
     // de répéter la même phrase quand la voiture recommence à avancer.
     if (position.actif !== true || vitesse < 1.5 || recul) { etat.actuelle = null; return null; }
-    const L = c.longueur, s = c.ouvert ? position.s : ramener(position.s, L);
+    const s = c.ouvert ? position.s : ramener(position.s, L);
     let actuelle = etat.actuelle;
     if (actuelle && (p > actuelle.fin || p < actuelle.entree - 440)) actuelle = null;
     if (!actuelle) {
