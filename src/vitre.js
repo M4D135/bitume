@@ -229,6 +229,8 @@
   }
   function fusionner(e, liste, limite, neige) {
     if (!limite) return 0;
+    // Chaque goutte peut absorber les fines rencontrées sur son trajet avant de fusionner.
+    if (!neige && e.fines && e.stats.microgouttes) absorberFines(e, liste, limite);
     let nombre = 0;
     const maximum = neige ? MAX_RAYON_NEIGE : MAX_RAYON_EAU, facteur = neige ? .7 : .8;
     const tailleY = facteur / e.hauteur, mots = Math.ceil(limite / 32);
@@ -274,7 +276,8 @@
         if (neige) e.stats.fusionsNeige++; else e.stats.fusionsEau++;
       }
     }
-    if (!neige && e.fines && e.stats.microgouttes) absorberFines(e, liste, limite);
+    // Le déplacement du barycentre et la croissance peuvent recouvrir d’autres fines.
+    if (nombre && !neige && e.fines && e.stats.microgouttes) absorberFines(e, liste, limite);
     return nombre;
   }
   function absorberFines(e, liste, limite) {
