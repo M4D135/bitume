@@ -321,3 +321,12 @@ acceptation). Ne pas « verdir » les tests en épinglant p54 : ce serait masque
   `fb7b602`, `9fcdbdb`) avec grille 2×2, case carte animée à trois joueurs et harnais adaptés ;
   **stands corrigés** (`e3490b1`) et **options image** (`c3c2d27`) ; périmètre rouge re-mesuré
   **79/238** (aucune nouvelle régression détectée par comparaison avec `2f5ff3f`).
+- 2026-11-24 (session reprise) : post-coupure vérifié (aucun lock git, arbre propre, aucun
+  processus orphelin, `dist/` du 02:04 cohérent) ; baseline revérifiée (`construire.py` reproduit
+  0.2.301, FERRO 0.3.33 35 modules ; 11 tests ciblés verts). **Incident production corrigé** :
+  le site servait **V0.2.90** (`ac6a74a4`, basculé dans `current` le 23/11 22:00 GMT par erreur) ;
+  rollback atomique documenté (`ln -sfn` + `mv -T`) vers `releases/e2dab57…` = **0.2.299**, sha256
+  servi `ee016800…` identique au `dist/bitume.html` commité ; `/salon/sante` 200. Note flotte
+  `bitume-incident-deploiement-0290-20261124`. `REPRISE.md` et `ETAT.json` rapprochés de l'état
+  réel (0.2.301 local, 15 commits devant origin). Prochaine action : B requalif largeur+collisions,
+  A contrôles géométriques programmatiques, puis lot I (route sans fin).

@@ -3,6 +3,12 @@
 <!-- bitume-reprise-actuelle-debut -->
 ## Par où reprendre
 
+**Consignes canoniques de la mission (reprise 24 novembre) :** `docs/reprise/MASTER-PROMPT-BITUME.md` — à relire en entier après toute réduction de contexte, avec son **Tableau de suivi** des douze lots A–L. Ne pas redemander les définitions des lots C/D/G/H/I/L : elles sont dans ce fichier.
+
+**Site servi, BITUME 0.2.299** (`e2dab57`, sha256 servi `ee016800…`, identique au `dist/bitume.html` commité). Incident du 23/11 22:00 GMT corrigé le 24/11 : `current` pointait sur l'ancien commit `ac6a74a4` (V0.2.90) ; rollback atomique documenté vers `releases/e2dab57…`. Salon `/salon/sante` HTTP 200.
+
+**Candidate locale Spark, BITUME 0.2.301, physique p54, FERRO 0.3.33** — main locale `4fa9a2f`, **15 commits devant** `origin/main` (`832f6f6`/0.2.299), non poussée, non déployée. Implémenté localement avec tests verts : **C** écran partagé 3-4 joueurs (`05fcf96`, `fb7b602`), **D** minimap zoomée défilante (`eeeed2e`), **F** déduplication réseau HMAC visiteurs (`b666e99`), stands (`e3490b1`), options image (`c3c2d27`), **parcours-ouvert corrigé** (`d19c7a9`), russie re-basé (`b6f80fe`). Baseline vérifiée 24/11 : build reproduit 0.2.301, 11 tests ciblés verts (recul×2, route-des-cimes, split-screen, minimap-zoom, hud-pneus, visites×2, parcours-ouvert). Reste : réceptions Mac (C/D/A/J), lots G/H/I/L, tri des 79/238 rouges préexistants, arbitrage David sur l'inflation PHYSIQUE p17→p54.
+
 **Version en ligne du 23 novembre, BITUME 0.2.289.** Au premier lancement de chaque version, le jeu mesure la machine et choisit un des quatre profils graphiques. Les réglages personnalisés sont conservés. En démo, le compteur affiche la cadence et le maximum de la séance. Les quatre contrôles sur le site concordent avec un comptage indépendant des images. [Mesures du mini-banc et des FPS](docs/reprise/rapports/PROFIL-FPS-2026-11-23.json)
 
 **Candidate locale de nuit, BITUME 0.2.290, physique p54.** Elle reprend le test graphique et le maximum de FPS en démo sur la .288. La pluie, la vitre et le public conservent leurs variantes de nuit. [Réception locale et empreintes des deux versions](docs/reprise/rapports/NUIT-PROFIL-0290-2026-11-23.json).
