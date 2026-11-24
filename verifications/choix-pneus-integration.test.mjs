@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-for (const nom of ['circuit', 'conduite', 'degats', 'contacts', 'course', 'meteo', 'ambiance', 'saisons', 'conditions-course', 'graphismes']) require('../src/' + nom + '.js');
+for (const nom of ['circuit', 'conduite', 'degats', 'contacts', 'course', 'meteo', 'ambiance', 'saisons', 'conditions-course', 'graphismes', 'championnat']) require('../src/' + nom + '.js');
 // La lecture réelle des réglages normalise aussi les préférences Troll depuis le menu.
 require('../src/menu-arcade.js');
 const B = globalThis.BITUME;
@@ -44,7 +44,7 @@ function dom() {
 }
 const assembler = new Function('B', 'D', 'stock', `
   let session = null, ecran = 'preparation', modePrepa = 'course', graineCourse = 200;
-  let conditionsPreparation = null, conditionsPreparationCle = '';
+  let conditionsPreparation = null, conditionsPreparationCle = '', pagePause = 'stands', piloteStand = 0;
   const EL = {R: null, role: null, course: null}, sauvegardes = [], messages = [], appels = [];
   const $ = D.$, document = D.document, matchMedia = () => ({matches: false});
   const texte = (n, t) => n.textContent = t;
@@ -60,6 +60,9 @@ const assembler = new Function('B', 'D', 'stock', `
   const retirerPret = () => appels.push('retirerPret');
   const envoyerPneus = () => { appels.push('envoyer'); messages.push(choixPneusLocaux()); };
   const lienActif = () => false;
+  const RANGS_VUE = { vue: 0, vue2: 1, vue3: 2, vue4: 3, vuePret: 0, vuePret2: 1, vuePret3: 2, vuePret4: 3,
+    vueDepart: 0, vueDepart2: 1, vueDepart3: 2, vueDepart4: 3 };
+  const reglerVue = () => {};
   ${source.slice(debutChange, finChange)}
   return { reglages, sauvegardes, messages, appels, EL, ...D,
     initialiserChoixPneus, appliquerConseilPneus, choisirPneusPilote, choixPneusLocaux, pneusAutomatiques,
@@ -239,13 +242,13 @@ test('pause duo : avaries constatées, remise en piste et vraie fin de service a
   B.conduite.replacer(et, co.c);
   assert.match(bilan(1), /adhérence réduite, carrosserie endommagée/);
   assert.doesNotMatch(bilan(1), /roue|Remise en piste/);
-  Object.assign(et, {s:(g.garage0 + g.garage1)/2, d:g.d, v:0});
+  Object.assign(et, {s:(g.garage0 + g.garage1)/2, d:g.dBox, v:0});
   B.course.stands(co,v,dt,evenements); B.course.stands(co,v,dt,evenements);
   assert.equal(et.stands.phase, 'service'); assert.match(bilan(1), /carrosserie endommagée/);
   et.d = 0; B.course.stands(co,v,dt,evenements); assert.equal(et.stands, null);
   assert.match(bilan(1), /carrosserie endommagée/, 'sortir avant la fin laisse les avaries');
-  et.d = g.d; B.course.stands(co,v,dt,evenements); B.course.stands(co,v,dt,evenements);
-  for (let i=0; i<600 && et.stands.phase === 'service'; i++) B.course.stands(co,v,dt,evenements);
+  et.d = g.dBox; B.course.stands(co,v,dt,evenements); B.course.stands(co,v,dt,evenements);
+  for (let i=0; i<2400 && et.stands.phase === 'service'; i++) B.course.stands(co,v,dt,evenements);
   assert.equal(et.stands.phase, 'sortie'); assert.equal(bilan(1), 'Aucune avarie après le service.');
   assert.equal(bilan(0), 'Dégâts légers.', 'le garage ne répare que le pilote qui s’y arrête');
   v.fini = true; a.majPneusStands();

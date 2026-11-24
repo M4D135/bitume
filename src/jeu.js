@@ -5120,7 +5120,7 @@
     if (!session || ecran !== 'pause' || n < 0 || n > 3 || n >= (session.locaux?.length || 1)) return false;
     const co = session.course, id = session.locaux && session.locaux[n], v = co && co.voitures[id];
     const accepte = !!(v && B.course.demanderPneus(co, v, type));
-    majPneusStands(); return accepte;
+    piloteStand = n; majPneusStands(); return accepte;
   }
   function majPneusStands() {
     if (ecran !== 'pause' || pagePause !== 'stands') return;
@@ -5130,7 +5130,7 @@
       'Ce parcours ne propose pas de réparation complète ni de changement de pneus.');
     for (let n = 0; n < 4; n++) {
       const id = S && S.locaux && S.locaux[n], v = co && co.voitures[id], zone = $('ps-pilote-' + n);
-      zone.hidden = !v || n !== piloteStand; if (zone.hidden) continue;
+      zone.hidden = !v || n !== piloteStand; if (!v) continue;
       const et = v.etat, st = et.stands, service = st && st.phase === 'service';
       const type = B.pneus.estJouable(et.pneusProchainArret) ? et.pneusProchainArret : et.pneus;
       const prochainArret = garage && !v.distant && !v.reprise && !v.fini && !v.abandon && !co.termine;
