@@ -1,7 +1,7 @@
 {
   "date": "2026-11-24",
   "etat_courant": {
-    "version_courante": "0.2.305",
+    "version_courante": "0.2.307",
     "version_publiee_verifiee": "0.2.299",
     "physique": "p55",
     "moteur": "FERRO 0.3.33 canonique (35 modules vérifiés)",
@@ -10,14 +10,14 @@
     "consignes": "docs/reprise/MASTER-PROMPT-BITUME.md",
     "suivi_lots": "docs/reprise/MASTER-PROMPT-BITUME.md#tableau-de-suivi",
     "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
-    "commit_local": "6a98c86",
-    "commits_devant_origin": 23,
+    "commit_local": "3b1a498",
+    "commits_devant_origin": 26,
     "dernier_lot_clos": "docs/reprise/rapports/PROFIL-FPS-2026-11-23.json",
-    "prochaine_action": "Lot I : I-3 stations-service atteignables, I-4 intégration jeu (fenêtre glissante décor/PhysX, menu, HUD, météo cyclique) ; réceptions Mac (C/D/A/B/J) ; lots G/H/L ; tri des 77 rouges ; arbitrage David inflation PHYSIQUE.",
+    "prochaine_action": "Lot I : I-4b branchement jeu.js (écran, HUD compte à rebours, décor/PhysX par intervalle, météo cyclique) ; réceptions Mac (C/D/A/B/J) ; lots G/H/L ; tri des 77 rouges ; arbitrage David inflation PHYSIQUE.",
     "branche_candidate": "main (locale)",
-    "version_candidate": "0.2.305",
+    "version_candidate": "0.2.307",
     "physique_candidate": "p55",
-    "preuve_candidate": "24/11 : construire.py reproduit le build ; 77 rouges identiques à la base propre (aucune régression A, B, I) ; devers-alizes 6/6 (B) ; appui-objets-cimes 3/3 (A : 149/537 flottants → 0) ; route-sans-fin 7/7 (I-1) ; route-sans-fin-course 5/5 (I-2)"
+    "preuve_candidate": "24/11 : construire.py reproduit le build ; 77 rouges identiques à la base propre (aucune régression A, B, I) ; devers-alizes 6/6 (B) ; appui-objets-cimes 3/3 (A) ; route-sans-fin 7/7 (I-1) ; route-sans-fin-course 5/5 (I-2) ; route-sans-fin-stations 5/5 (I-3) ; route-sans-fin-fenetre 6/6 (I-4a)"
   },
   "publication": {
     "version": "0.2.299",
