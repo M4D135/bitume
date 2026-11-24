@@ -12,6 +12,7 @@ WorkingDirectory=/home/ddd/apps/bitume/salon
 Environment=PORT=8790
 Environment=HOTE=127.0.0.1
 Environment=BITUME_VISITES_FICHIER=/home/ddd/apps/bitume/donnees/visites.json
+Environment=BITUME_VISITES_PROXIES=127.0.0.1,::1
 ExecStart=/usr/bin/node /home/ddd/apps/bitume/salon/salon.mjs
 Restart=on-failure
 RestartSec=3
