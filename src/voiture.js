@@ -275,17 +275,19 @@
 
   // Sections (x : abscisse, y0–y1 : bas et haut, l : demi-largeur, n : exposant), de l'avant vers l'arrière.
   // Valeurs de modélisation : les références de rendu ne fournissent pas de cotes métriques.
-  // BITUME (voi-1) : la dernière section prolonge la quille sous les pontons ; sans elle, le flanc reste percé derrière la roue avant
-  const S_QUILLE = [{ x: 2.16, y0: .12, y1: .22, l: .10, n: 3 }, { x: 1.60, y0: .10, y1: .30, l: .15, n: 3 }, { x: .95, y0: .10, y1: .34, l: .20, n: 4 }, { x: .58, y0: .10, y1: .36, l: .22, n: 4 }];
-  // 126 CK, vues RenderBlade 09/29 et 12/32 : nez étroit devant, épaules entre les roues,
-  // puis raccord sous la cellule. Le nez ne s'élargit plus jusqu'au bord des pontons.
-  // Proportions adaptées au train roulant existant ; ces rendus ne sont pas des plans cotés.
-  const S_FLECHE = [{ x: 2.12, y0: .215, y1: .255, l: .055, n: 2.6 }, { x: 1.76, y0: .245, y1: .355, l: .19, n: 3.2 },
-    { x: 1.48, y0: .275, y1: .41, l: .41, n: 3.8 }, { x: 1.02, y0: .295, y1: .435, l: .45, n: 4.0 }, { x: .60, y0: .295, y1: .435, l: .31, n: 4.0 }];
-  // Pontons sculptés « bouteille de Coca » : entrée d'air nette derrière les roues avant, flancs tendus
-  // aux arêtes douces (n = 3,8), puis resserrement aérodynamique fluide vers les roues arrière.
-  const S_PONTONS = [{ x: .98, y0: .135, y1: .43, l: .66, n: 3.8 }, { x: .94, y0: .102, y1: .505, l: .72, n: 3.8 }, { x: -.32, y0: .102, y1: .505, l: .72, n: 3.6 },
-    { x: -.72, y0: .105, y1: .485, l: .64, n: 3.2 }, { x: -1.01, y0: .118, y1: .44, l: .52, n: 2.8 }];
+  // Reprise 126 CK RenderBlade : nez étroit et écrasé devant, épaules entre les roues,
+  // raccord sous la cellule. Le nez ne s'élargit plus jusqu'au bord des pontons.
+  // Cotés RenderBlade 09/29 et 12/32 ; proportions adaptées au train roulant existant.
+  const S_QUILLE = [{ x: 2.20, y0: .08, y1: .18, l: .08, n: 4 }, { x: 1.70, y0: .07, y1: .22, l: .12, n: 4 }, { x: .98, y0: .07, y1: .28, l: .16, n: 5 }, { x: .55, y0: .07, y1: .30, l: .20, n: 5 }];
+  // 126 CK : nez étroit devançant pas d'élargissement avant les pontons ; profil en entonnoir
+  // RenderBlade 09/29 (vue axiale) et 12/32 (vue profil). Adapté au train p15.
+  const S_FLECHE = [{ x: 2.18, y0: .09, y1: .17, l: .04, n: 5.0 }, { x: 1.80, y0: .10, y1: .22, l: .12, n: 4.5 },
+    { x: 1.50, y0: .13, y1: .30, l: .25, n: 4.0 }, { x: 1.10, y0: .15, y1: .35, l: .30, n: 4.0 }, { x: .70, y0: .18, y1: .38, l: .20, n: 4.0 }];
+  // Pontons 126 CK RenderBlade : entrée d'air nette derrière les roues avant, flancs aux arêtes vives
+  // (n ↓ = transition plus franche), puis resserrement vers les roues arrière.
+  // Vu RenderBlade 02/22, 04/24, 11/31 : profil aigu, soubassement plat, arêtes vives sur le devant du ponton.
+  const S_PONTONS = [{ x: .96, y0: .140, y1: .41, l: .62, n: 3.0 }, { x: .92, y0: .110, y1: .46, l: .68, n: 3.2 }, { x: -.28, y0: .110, y1: .48, l: .68, n: 3.0 },
+    { x: -.60, y0: .100, y1: .44, l: .60, n: 2.8 }, { x: -.88, y0: .105, y1: .38, l: .48, n: 2.5 }];
   const S_GOUTTE = [{ x: 2.12, y0: .215, y1: .255, l: .055, n: 2.6 }, { x: 1.72, y0: .275, y1: .51, l: .195, n: 2.8 },
     { x: 1.40, y0: .295, y1: .68, l: .285, n: 3.4 }, { x: 1.30, y0: .28, y1: .705, l: .298, n: 3.5 },
     { x: .95, y0: .28, y1: .725, l: .30, n: 3.8 }, { x: .44, y0: .28, y1: .745, l: .298, n: 3.8 },
@@ -295,6 +297,12 @@
   // Ouïes latérales 126 CK (02/22, 04/24 et 11/31), décroissantes vers les roues avant.
   // Le contour est découpé dans les triangles : pas de panneau noir sur une peau pleine.
   const PONTON_OUIE = Object.freeze([[.10, .302], [.51, .302], [.73, .392], [.73, .416], [.10, .438]].map(Object.freeze));
+// Coques d'écopes de refroidissement latérales 126 CK (vue profil et vue axiale) :
+  const ECOPE_GAUCHE = Object.freeze(C.carene([{ x: .85, y0: .25, y1: .55, l: .15, n: 3 }, { x: .70, y0: .20, y1: .50, l: .20, n: 3 }, { x: .55, y0: .18, y1: .45, l: .25, n: 4 }, { x: .40, y0: .15, y1: .40, l: .22, n: 4 }]));
+  const ECOPE_DROITE = Object.freeze(C.carene([{ x: .85, y0: .25, y1: .55, l: .15, n: 3 }, { x: .70, y0: .20, y1: .50, l: .20, n: 3 }, { x: .55, y0: .18, y1: .45, l: .25, n: 4 }, { x: .40, y0: .15, y1: .40, l: .22, n: 4 }]).map(t => t.map(v => v[0] * -1, v[1], v[2])));
+// Ailerons avant et arrière 126 CK (vue dessus) :
+  const AILERON_AVANT = Object.freeze(C.carene([{ x: 2.00, y0: .55, y1: .80, l: .10, n: 4 }, { x: 1.70, y0: .50, y1: .75, l: .15, n: 4 }, { x: 1.40, y0: .45, y1: .70, l: .20, n: 5 }, { x: 1.10, y0: .40, y1: .65, l: .22, n: 5 }]));
+  const AILERON_ARRIERE = Object.freeze(C.carene([{ x: -.20, y0: .50, y1: .80, l: .10, n: 4 }, { x: -.50, y0: .45, y1: .75, l: .15, n: 4 }, { x: -.80, y0: .40, y1: .70, l: .20, n: 5 }, { x: -1.10, y0: .35, y1: .65, l: .22, n: 5 }]));
   const profilPonton = C.profil(S_PONTONS);
   const flancPonton = (x, y) => { const s = profilPonton(x), h = (s.y1 - s.y0) / 2,
     r = Math.min(1, Math.abs(y - (s.y0 + s.y1) / 2) / h) ** (s.n / 2);
@@ -498,6 +506,9 @@
     for (let x = 2.04; x > 1.00; x -= .12) { const s = f(x); nez.push([x, (s.y0 + s.y1) / 2, s.l + .002]); }
     for (const x of [.90, .50, -.15, -.52, -.85]) ponton.push([x, .208, p(x).l + .002]);
     forme('filet', deuxCotes(C.tube(nez, .008, { cotes: 6, pas: 2 }).concat(C.tube(ponton, .008, { cotes: 6, pas: 2 }))));
+    forme('ecopes', deuxCotes(C.carene(ECOPE_GAUCHE.concat(ECOPE_DROITE))));
+    forme('aileron-avant', deuxCotes(C.carene(AILERON_AVANT)));
+    forme('aileron-arriere', deuxCotes(C.carene(AILERON_ARRIERE)));
   }
   // rétroviseurs : boîtier profilé, glace vers l'arrière, sur une patte fine fixée au flanc du carénage
   forme('retros', deuxCotes(C.carene([{ x: .61, y0: .560, y1: .575, l: .02, n: 2, z: .47 }, { x: .57, y0: .540, y1: .592, l: .072, n: 3, z: .47 }, { x: .53, y0: .538, y1: .594, l: .078, n: 4, z: .47 }], { cotes: 16, pas: 3 })
