@@ -34,6 +34,7 @@ MODULES = [
     'couverts.js',  # sections, abri 3D et galeries ; avant chaussée/décor/jeu
     'circuit-raccords-data.js',
     'circuit-raccords.js',
+    'route-sans-fin.js',  # tronçons déterministes du mode « Route sans fin » (lot I)
     'route-des-cimes.js',
     'route-des-cimes-decor.js',
     'larche-vinadio-data.js',
