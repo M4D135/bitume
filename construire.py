@@ -35,6 +35,7 @@ MODULES = [
     'circuit-raccords-data.js',
     'circuit-raccords.js',
     'route-sans-fin.js',  # tronçons déterministes du mode « Route sans fin » (lot I)
+    'route-sans-fin-fenetre.js',  # fenêtre glissante autour des joueurs (lot I)
     'route-des-cimes.js',
     'route-des-cimes-decor.js',
     'larche-vinadio-data.js',
