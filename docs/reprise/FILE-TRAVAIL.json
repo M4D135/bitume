@@ -24,7 +24,7 @@
     "conditional",
     "blocked_by_evidence"
   ],
-  "regle": "Une preuve appartient à une version exacte. Sauvegarder les checkpoints ; intégrer les candidats qualifiés ; poursuivre sans redemander un go.",
+  "regle": "Une preuve appartient \u00e0 une version exacte. Sauvegarder les checkpoints ; int\u00e9grer les candidats qualifi\u00e9s ; poursuivre sans redemander un go.",
   "lots": [
     {
       "id": "faune_proche_champ",
@@ -36,17 +36,17 @@
         "F1",
         "F2"
       ],
-      "cloture": "Distances aux bords mesurées, animaux visibles depuis la route, aucune simulation détaillée des groupes invisibles, réveil stable ; J1/J2, rétros et Faune désactivée contrôlés.",
+      "cloture": "Distances aux bords mesur\u00e9es, animaux visibles depuis la route, aucune simulation d\u00e9taill\u00e9e des groupes invisibles, r\u00e9veil stable ; J1/J2, r\u00e9tros et Faune d\u00e9sactiv\u00e9e contr\u00f4l\u00e9s.",
       "preuves": [
         "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json",
         "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json",
         "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md"
       ],
-      "reste": "Comparer les budgets sur Xbox et sur GPU intégré."
+      "reste": "Comparer les budgets sur Xbox et sur GPU int\u00e9gr\u00e9."
     },
     {
       "id": "demos_route_lieux",
-      "objectif": "Refaire les démos des neuf circuits : route, tracé et point d’intérêt uniquement",
+      "objectif": "Refaire les d\u00e9mos des neuf circuits : route, trac\u00e9 et point d\u2019int\u00e9r\u00eat uniquement",
       "etat": "qualified",
       "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
       "base_observee": "0e7273c0361996b9c217e6f1051a9ef9a54b18c7",
@@ -54,27 +54,27 @@
         "D1",
         "D2"
       ],
-      "cloture": "Aucun plan herbe/faune/flore ni autre sujet autonome ; séquences cadrées et sans traversée sur les neuf circuits, futurs parcours couverts à leur intégration jouable.",
+      "cloture": "Aucun plan herbe/faune/flore ni autre sujet autonome ; s\u00e9quences cadr\u00e9es et sans travers\u00e9e sur les neuf circuits, futurs parcours couverts \u00e0 leur int\u00e9gration jouable.",
       "preuves": [
         "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json",
         "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/RECEPTION-LOCALE-0287.json",
         "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md"
       ],
-      "reste": "Poursuivre la revue visuelle des séquences complètes et des caméras sous météo variée."
+      "reste": "Poursuivre la revue visuelle des s\u00e9quences compl\u00e8tes et des cam\u00e9ras sous m\u00e9t\u00e9o vari\u00e9e."
     },
     {
       "id": "demarrage_mobile_passif",
-      "objectif": "Démarrer sur téléphone sans scène ni rafale de benchmark",
+      "objectif": "D\u00e9marrer sur t\u00e9l\u00e9phone sans sc\u00e8ne ni rafale de benchmark",
       "etat": "published",
       "fiche": "docs/reprise/DEMARRAGE-MOBILE-SANS-BANC-2026-11-21.md",
       "preuves": [
         "docs/reprise/rapports/DEMARRAGE-MOBILE-2026-11-21/PUBLICATION-0280.json"
       ],
-      "limite": "Chrome iPhone émulé ; Safari/iOS physique et site servi non vérifiés."
+      "limite": "Chrome iPhone \u00e9mul\u00e9 ; Safari/iOS physique et site servi non v\u00e9rifi\u00e9s."
     },
     {
       "id": "references",
-      "objectif": "Références, modèles et programme complet",
+      "objectif": "R\u00e9f\u00e9rences, mod\u00e8les et programme complet",
       "etat": "published",
       "dependances": [],
       "cloture": "Empreintes, liens et JSON ; publier en premier",
@@ -85,7 +85,7 @@
     },
     {
       "id": "habitacle_pilote_commun",
-      "objectif": "Même habitacle monde entre vues, assise plus basse et bras dégagés du buste",
+      "objectif": "M\u00eame habitacle monde entre vues, assise plus basse et bras d\u00e9gag\u00e9s du buste",
       "etat": "published",
       "phase": "126ck_R4b_integres_0279",
       "dependances": [
@@ -93,7 +93,7 @@
       ],
       "fiche": "docs/reprise/PILOTE-HABITACLE-COMMUN-2026-11-20.md",
       "prochain_sous_lot": "mains_realisme",
-      "cloture": "Identité géométrique monde sans homothétie par vue ; assise commune mesurée ; dégagements bras/buste/coque et contacts ; gestes et LOD ; images exactes et coût qualifiés",
+      "cloture": "Identit\u00e9 g\u00e9om\u00e9trique monde sans homoth\u00e9tie par vue ; assise commune mesur\u00e9e ; d\u00e9gagements bras/buste/coque et contacts ; gestes et LOD ; images exactes et co\u00fbt qualifi\u00e9s",
       "preuves": [
         "docs/reprise/preparations/habitacle-commun-2026-11-20/CHECKPOINT.json",
         "docs/reprise/PARALLELE-2026-11-20/preuves/01-habitacle.json",
@@ -104,10 +104,10 @@
         "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
         "docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json"
       ],
-      "acquis": "126 CK, implantation commune et R4b corrigés publiés .79 ; six caméras et compteurs intégrés.",
-      "reste": "Réalisme des doigts et des manches, appréciation du joueur et limites matérielles.",
-      "reserve_lisibilite_cockpit": "Occultation naturelle acceptée ; conserver géométrie commune et seuils de pénétration.",
-      "limite_images_lod": "Quatre PNG LOD extérieurs : coque d’environ 25–30 pixels, silhouette validée ; détails des bras non lisibles dans ces images.",
+      "acquis": "126 CK, implantation commune et R4b corrig\u00e9s publi\u00e9s .79 ; six cam\u00e9ras et compteurs int\u00e9gr\u00e9s.",
+      "reste": "R\u00e9alisme des doigts et des manches, appr\u00e9ciation du joueur et limites mat\u00e9rielles.",
+      "reserve_lisibilite_cockpit": "Occultation naturelle accept\u00e9e ; conserver g\u00e9om\u00e9trie commune et seuils de p\u00e9n\u00e9tration.",
+      "limite_images_lod": "Quatre PNG LOD ext\u00e9rieurs : coque d\u2019environ 25\u201330 pixels, silhouette valid\u00e9e ; d\u00e9tails des bras non lisibles dans ces images.",
       "suivi_lisibilite_cockpit": {
         "statut": "clos_sur_cas_qualifies_0275",
         "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
@@ -120,12 +120,12 @@
         "recu": "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
       },
       "historique_lisibilite_0269": {
-        "reste": "Le volant occulte une partie centrale de la chaussée en caméra réelle du siège, surtout en paysage. Les tests de projection ne mesurent pas cette occultation ; suivi ouvert.",
-        "reserve_lisibilite_cockpit": "Cockpit 960×540 et 540×960, caméra réelle du siège : le volant occulte une partie centrale de la chaussée. Lisibilité non certifiée, suivi ouvert ; aucune nouvelle régression d’assemblage établie. Géométrie commune et T3 restent acquis.",
+        "reste": "Le volant occulte une partie centrale de la chauss\u00e9e en cam\u00e9ra r\u00e9elle du si\u00e8ge, surtout en paysage. Les tests de projection ne mesurent pas cette occultation ; suivi ouvert.",
+        "reserve_lisibilite_cockpit": "Cockpit 960\u00d7540 et 540\u00d7960, cam\u00e9ra r\u00e9elle du si\u00e8ge : le volant occulte une partie centrale de la chauss\u00e9e. Lisibilit\u00e9 non certifi\u00e9e, suivi ouvert ; aucune nouvelle r\u00e9gression d\u2019assemblage \u00e9tablie. G\u00e9om\u00e9trie commune et T3 restent acquis.",
         "suivi_lisibilite_cockpit": {
           "statut": "ouvert",
-          "objet": "Évaluer la visibilité réelle de la chaussée depuis le siège ; les tests de projection de l’horizon ne qualifient pas l’occultation.",
-          "acquis": "Géométrie commune et réception T3 préservées ; aucun blocage des entrées Troll établi par ce constat."
+          "objet": "\u00c9valuer la visibilit\u00e9 r\u00e9elle de la chauss\u00e9e depuis le si\u00e8ge ; les tests de projection de l\u2019horizon ne qualifient pas l\u2019occultation.",
+          "acquis": "G\u00e9om\u00e9trie commune et r\u00e9ception T3 pr\u00e9serv\u00e9es ; aucun blocage des entr\u00e9es Troll \u00e9tabli par ce constat."
         }
       },
       "publication_0275": {
@@ -142,11 +142,11 @@
       },
       "statut": "published",
       "fiche_active": "docs/reprise/MAINS-REALISME-2026-11-21.md",
-      "reserve": "Réalisme des personnages à poursuivre après la réception mécanique .79."
+      "reserve": "R\u00e9alisme des personnages \u00e0 poursuivre apr\u00e8s la r\u00e9ception m\u00e9canique .79."
     },
     {
       "id": "eau_vitesse",
-      "objectif": "Écarter et évacuer les gouttes selon vitesse, flux et orientation caméra",
+      "objectif": "\u00c9carter et \u00e9vacuer les gouttes selon vitesse, flux et orientation cam\u00e9ra",
       "etat": "published",
       "phase": "E0_E3_qualifies_0268",
       "dependances": [
@@ -154,7 +154,7 @@
       ],
       "fiche": "docs/reprise/EAU-VITESSE-2026-11-20.md",
       "prochain_sous_lot": "clos",
-      "cloture": "Trajectoires signées et couches optiques cohérentes en cockpit/poursuite ; gravité lente et souffle rapide ; pause/J1J2/abris/aérien préservés ; séquences visuelles et coût qualifiés",
+      "cloture": "Trajectoires sign\u00e9es et couches optiques coh\u00e9rentes en cockpit/poursuite ; gravit\u00e9 lente et souffle rapide ; pause/J1J2/abris/a\u00e9rien pr\u00e9serv\u00e9s ; s\u00e9quences visuelles et co\u00fbt qualifi\u00e9s",
       "preuves": [
         "docs/reprise/rapports/EAU-VITESSE-2026-11-20/RECUPERATION-0267.json",
         "docs/reprise/rapports/EAU-VITESSE-2026-11-20/CANDIDAT-0268.json",
@@ -163,12 +163,12 @@
     },
     {
       "id": "demos_pilotes",
-      "objectif": "Caméras, sols, volant et pilote expressif",
+      "objectif": "Cam\u00e9ras, sols, volant et pilote expressif",
       "etat": "in_progress",
       "dependances": [
         "references"
       ],
-      "cloture": "Géométrie, trajectoires natives, commandes et captures intégrées",
+      "cloture": "G\u00e9om\u00e9trie, trajectoires natives, commandes et captures int\u00e9gr\u00e9es",
       "preuves": [
         "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/REVUE-DEMOS-0266.json"
       ],
@@ -177,17 +177,17 @@
         "pr": 38,
         "commit_fusion": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8"
       },
-      "reste": "Pilote commun et Troll publiés en 0.2.69 ; visibilité centrale du cockpit et bandeaux masquant certains gestes ou animaux restent ouverts.",
+      "reste": "Pilote commun et Troll publi\u00e9s en 0.2.69 ; visibilit\u00e9 centrale du cockpit et bandeaux masquant certains gestes ou animaux restent ouverts.",
       "cadrage_remplace_par": "demos_route_lieux : fin des plans flore/faune ; conserver les preuves historiques."
     },
     {
       "id": "meteo",
-      "objectif": "Pluie, panache et neige selon les références",
-      "etat": "in_progress",
+      "objectif": "Pluie, panache et neige selon les r\u00e9f\u00e9rences",
+      "etat": "qualified",
       "dependances": [
         "references"
       ],
-      "cloture": "Shader réel, mouvement, abri, J1/J2, pause, vues et captures",
+      "cloture": "Shader r\u00e9el, mouvement, abri, J1/J2, pause, vues et captures",
       "preuves": [
         "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/REVUE-METEO-0266.json"
       ],
@@ -196,16 +196,16 @@
         "pr": 38,
         "commit_fusion": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8"
       },
-      "reste": "Gouttes selon vitesse/flux dans eau_vitesse ; pluie extérieure depuis abri, neige et rendu à enrichir ; prototype abri sauvegardé non intégré."
+      "reste": "Gouttes selon vitesse/flux dans eau_vitesse ; pluie ext\u00e9rieure depuis abri, neige et rendu \u00e0 enrichir ; prototype abri sauvegard\u00e9 non int\u00e9gr\u00e9."
     },
     {
       "id": "couverts",
-      "objectif": "Plusieurs passages couverts et niveaux cohérents",
+      "objectif": "Plusieurs passages couverts et niveaux coh\u00e9rents",
       "etat": "in_progress",
       "dependances": [
         "references"
       ],
-      "cloture": "Physique, météo, lumière, caméra et rétros partagent les sections",
+      "cloture": "Physique, m\u00e9t\u00e9o, lumi\u00e8re, cam\u00e9ra et r\u00e9tros partagent les sections",
       "preuves": [
         "docs/reprise/rapports/COUVERTS-2026-11-20/QUALIFICATION.json",
         "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/REVUE-COUVERTS-0266.json"
@@ -215,7 +215,7 @@
         "pr": 38,
         "commit_fusion": "f3fb3eaa801494c4a2b0b9c0d22baf6eae2bd1a8"
       },
-      "reste": "Socle et trois ouvrages Cimes publiés ; poursuivre l’extension prévue et les réserves météo."
+      "reste": "Socle et trois ouvrages Cimes publi\u00e9s ; poursuivre l\u2019extension pr\u00e9vue et les r\u00e9serves m\u00e9t\u00e9o."
     },
     {
       "id": "cimes",
@@ -224,7 +224,7 @@
       "dependances": [
         "couverts"
       ],
-      "cloture": "Tracé fermé, Mur 30 %, 3 couverts, pont/gorge, châssis et IA",
+      "cloture": "Trac\u00e9 ferm\u00e9, Mur 30 %, 3 couverts, pont/gorge, ch\u00e2ssis et IA",
       "preuves": [
         "docs/reprise/rapports/COUVERTS-CIMES-2026-11-20/PUBLICATION-0266.json"
       ],
@@ -242,112 +242,112 @@
       "dependances": [
         "couverts"
       ],
-      "cloture": "Identité et plan conservés, pentes >10 %, appuis et IA",
+      "cloture": "Identit\u00e9 et plan conserv\u00e9s, pentes >10 %, appuis et IA",
       "preuves": []
     },
     {
       "id": "monaco_sources",
-      "objectif": "Monaco 14A : chaussée, niveaux et provenance",
+      "objectif": "Monaco 14A : chauss\u00e9e, niveaux et provenance",
       "etat": "in_progress",
       "dependances": [
         "references"
       ],
-      "cloture": "Distinguer MNT/chaussée ; largeurs, dévers, portails, incertitudes",
+      "cloture": "Distinguer MNT/chauss\u00e9e ; largeurs, d\u00e9vers, portails, incertitudes",
       "preuves": []
     },
     {
       "id": "monaco_route",
-      "objectif": "Monaco 14B–D : route, murs, IA, stands et tunnel",
+      "objectif": "Monaco 14B\u2013D : route, murs, IA, stands et tunnel",
       "etat": "planned",
       "dependances": [
         "monaco_sources",
         "couverts"
       ],
-      "cloture": "Enveloppes, rues voisines et couches distinctes, course qualifiée",
+      "cloture": "Enveloppes, rues voisines et couches distinctes, course qualifi\u00e9e",
       "preuves": []
     },
     {
       "id": "monaco_ville",
-      "objectif": "Monaco 14E–F : port, architecture et fidélité",
+      "objectif": "Monaco 14E\u2013F : port, architecture et fid\u00e9lit\u00e9",
       "etat": "planned",
       "dependances": [
         "monaco_route"
       ],
-      "cloture": "Repères et rapport mesuré des écarts ; aucune fidélité inventée",
+      "cloture": "Rep\u00e8res et rapport mesur\u00e9 des \u00e9carts ; aucune fid\u00e9lit\u00e9 invent\u00e9e",
       "preuves": []
     },
     {
       "id": "marseille_sources",
-      "objectif": "Marseille 15A–B : corridor et relief",
+      "objectif": "Marseille 15A\u2013B : corridor et relief",
       "etat": "in_progress",
       "dependances": [
         "references"
       ],
-      "cloture": "Résoudre bbox/provenance, densifier chaussée et tabliers",
+      "cloture": "R\u00e9soudre bbox/provenance, densifier chauss\u00e9e et tabliers",
       "preuves": [
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
-      "reste": "Fonds et altimétrie documentés. Vérifier les ruptures et le profil aux ouvrages."
+      "reste": "Fonds et altim\u00e9trie document\u00e9s. V\u00e9rifier les ruptures et le profil aux ouvrages."
     },
     {
       "id": "marseille_course",
-      "objectif": "Marseille 15C–F : route, ville, collisions et IA",
+      "objectif": "Marseille 15C\u2013F : route, ville, collisions et IA",
       "etat": "in_progress",
       "dependances": [
         "marseille_sources",
         "couverts"
       ],
-      "cloture": "Course complète sur relief cohérent, niveaux superposés",
+      "cloture": "Course compl\u00e8te sur relief coh\u00e9rent, niveaux superpos\u00e9s",
       "preuves": [
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
-      "reste": "Spéciale jouable. Terminer sa réception topographique et en course."
+      "reste": "Sp\u00e9ciale jouable. Terminer sa r\u00e9ception topographique et en course."
     },
     {
       "id": "fjord",
-      "objectif": "16A Fjord-d’Argent",
+      "objectif": "16A Fjord-d\u2019Argent",
       "etat": "in_progress",
       "dependances": [
         "couverts"
       ],
-      "cloture": "Destination originale et course/biome qualifiés",
+      "cloture": "Destination originale et course/biome qualifi\u00e9s",
       "preuves": [
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
-      "reste": "Circuit sélectionnable. Finitions et qualification matérielle."
+      "reste": "Circuit s\u00e9lectionnable. Finitions et qualification mat\u00e9rielle."
     },
     {
       "id": "carpates",
-      "objectif": "16B Crêtes-des-Carpates",
+      "objectif": "16B Cr\u00eates-des-Carpates",
       "etat": "planned",
       "dependances": [
         "couverts"
       ],
-      "cloture": "Destination originale et course/biome qualifiés",
+      "cloture": "Destination originale et course/biome qualifi\u00e9s",
       "preuves": []
     },
     {
       "id": "ecosse",
-      "objectif": "16C Landes-d’Écosse",
+      "objectif": "16C Landes-d\u2019\u00c9cosse",
       "etat": "planned",
       "dependances": [
         "couverts"
       ],
-      "cloture": "Destination originale et course/biome qualifiés",
+      "cloture": "Destination originale et course/biome qualifi\u00e9s",
       "preuves": []
     },
     {
       "id": "sierra",
-      "objectif": "16D Sierra-Cuivrée",
+      "objectif": "16D Sierra-Cuivr\u00e9e",
       "etat": "in_progress",
       "dependances": [
         "couverts"
       ],
-      "cloture": "Destination originale et course/biome qualifiés",
+      "cloture": "Destination originale et course/biome qualifi\u00e9s",
       "preuves": [
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
-      "reste": "Circuit sélectionnable. Finitions et qualification matérielle."
+      "reste": "Circuit s\u00e9lectionnable. Finitions et qualification mat\u00e9rielle."
     },
     {
       "id": "corail",
@@ -356,11 +356,11 @@
       "dependances": [
         "couverts"
       ],
-      "cloture": "Destination originale et course/biome qualifiés",
+      "cloture": "Destination originale et course/biome qualifi\u00e9s",
       "preuves": [
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
-      "reste": "Circuit sélectionnable. Finitions et qualification matérielle."
+      "reste": "Circuit s\u00e9lectionnable. Finitions et qualification mat\u00e9rielle."
     },
     {
       "id": "andes",
@@ -369,7 +369,7 @@
       "dependances": [
         "couverts"
       ],
-      "cloture": "Destination originale et course/biome qualifiés",
+      "cloture": "Destination originale et course/biome qualifi\u00e9s",
       "preuves": []
     },
     {
@@ -379,15 +379,15 @@
       "dependances": [
         "references"
       ],
-      "cloture": "521 ch calibrés, niveaux ABS, physique versionnée et contrôles",
+      "cloture": "521 ch calibr\u00e9s, niveaux ABS, physique versionn\u00e9e et contr\u00f4les",
       "preuves": [
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
       "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md",
-      "reste": "Contrat p16, replays et migration conservés. Comparer les signatures haptiques sur les trois manettes.",
+      "reste": "Contrat p16, replays et migration conserv\u00e9s. Comparer les signatures haptiques sur les trois manettes.",
       "reception_22_novembre_rendu": {
         "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/course-0111.json",
-        "resultat": "R5 à R8 intégrés. Les pilotes entendent les états de pneu et les contacts, lisent leur bilan et leur commande de récupération."
+        "resultat": "R5 \u00e0 R8 int\u00e9gr\u00e9s. Les pilotes entendent les \u00e9tats de pneu et les contacts, lisent leur bilan et leur commande de r\u00e9cup\u00e9ration."
       }
     },
     {
@@ -397,88 +397,88 @@
       "dependances": [
         "demos_pilotes"
       ],
-      "cloture": "Défauts reproduits puis corrigés ; moteur via FERRO canonique",
+      "cloture": "D\u00e9fauts reproduits puis corrig\u00e9s ; moteur via FERRO canonique",
       "preuves": [
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
       "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md",
-      "reste": "Relief du Piémont utilisé à Larche. Reprendre matériaux, éclairage et rendu des objets proches.",
+      "reste": "Relief du Pi\u00e9mont utilis\u00e9 \u00e0 Larche. Reprendre mat\u00e9riaux, \u00e9clairage et rendu des objets proches.",
       "reception_22_novembre_rendu": {
         "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/comparaison-geographique-0111.json",
-        "resultat": "Mac M5 en Fine et pluie, 60 i/s au virage à température nominale et 48,33 i/s au même point à chaud en 1080p."
+        "resultat": "Mac M5 en Fine et pluie, 60 i/s au virage \u00e0 temp\u00e9rature nominale et 48,33 i/s au m\u00eame point \u00e0 chaud en 1080p."
       }
     },
     {
       "id": "matieres",
-      "objectif": "23/25 : freins, chaleur, salissures et matières",
+      "objectif": "23/25 : freins, chaleur, salissures et mati\u00e8res",
       "etat": "in_progress",
       "dependances": [
         "demos_pilotes"
       ],
-      "cloture": "Silhouette, ancrages et cockpit préservés ; effets mesurés",
+      "cloture": "Silhouette, ancrages et cockpit pr\u00e9serv\u00e9s ; effets mesur\u00e9s",
       "preuves": [
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
       "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md",
-      "reste": "Bordures des pistes et couleurs du terrain affinées. Étendre la qualification selon matériaux et conditions.",
+      "reste": "Bordures des pistes et couleurs du terrain affin\u00e9es. \u00c9tendre la qualification selon mat\u00e9riaux et conditions.",
       "reception_22_novembre_rendu": {
         "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/Larche-asphalte-pluie.jpg",
-        "resultat": "Granulat et film d’eau de la SS21, géométrie et collisions conservées."
+        "resultat": "Granulat et film d\u2019eau de la SS21, g\u00e9om\u00e9trie et collisions conserv\u00e9es."
       }
     },
     {
       "id": "reseau",
-      "objectif": "27 : invitations sans serveur dédié à administrer",
+      "objectif": "27 : invitations sans serveur d\u00e9di\u00e9 \u00e0 administrer",
       "etat": "in_progress",
       "dependances": [
         "references"
       ],
-      "cloture": "Signalisation, repli et réseaux distincts ; salon conservé jusque-là",
+      "cloture": "Signalisation, repli et r\u00e9seaux distincts ; salon conserv\u00e9 jusque-l\u00e0",
       "preuves": [
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
-      "reste": "Vérification p16 en place. Jouer et mesurer un duel WAN."
+      "reste": "V\u00e9rification p16 en place. Jouer et mesurer un duel WAN."
     },
     {
       "id": "chargement",
-      "objectif": "28B/28D : précréation et installation progressive",
+      "objectif": "28B/28D : pr\u00e9cr\u00e9ation et installation progressive",
       "etat": "in_progress",
       "dependances": [
         "references"
       ],
-      "cloture": "Mesures de tâches et budget de chargement, repli compatible",
+      "cloture": "Mesures de t\u00e2ches et budget de chargement, repli compatible",
       "preuves": [
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
-      "reste": "Séparer les coûts du premier chargement, de la relecture du cache et des transitions sur toutes les pistes."
+      "reste": "S\u00e9parer les co\u00fbts du premier chargement, de la relecture du cache et des transitions sur toutes les pistes."
     },
     {
       "id": "cache",
-      "objectif": "28E : IndexedDB versionné et intègre",
+      "objectif": "28E : IndexedDB versionn\u00e9 et int\u00e8gre",
       "etat": "in_progress",
       "dependances": [
         "chargement"
       ],
-      "cloture": "Invalidation, quota, erreurs, régénération et gain mesuré",
+      "cloture": "Invalidation, quota, erreurs, r\u00e9g\u00e9n\u00e9ration et gain mesur\u00e9",
       "preuves": [
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
-      "reste": "Panorama Larche mis en cache et reçu après rechargement. Poursuivre les autres décors selon leur coût."
+      "reste": "Panorama Larche mis en cache et re\u00e7u apr\u00e8s rechargement. Poursuivre les autres d\u00e9cors selon leur co\u00fbt."
     },
     {
       "id": "calcul_conditionnel",
-      "objectif": "28F–H : Worker/WASM/WebGPU selon mesure",
+      "objectif": "28F\u2013H : Worker/WASM/WebGPU selon mesure",
       "etat": "conditional",
       "dependances": [
         "chargement"
       ],
-      "cloture": "Ne se réalise que pour un coût établi, avec repli",
+      "cloture": "Ne se r\u00e9alise que pour un co\u00fbt \u00e9tabli, avec repli",
       "preuves": [],
       "inspiration_race": "docs/reprise/REFERENCE-RACE-2026-11-21.md"
     },
     {
       "id": "records",
-      "objectif": "Records par circuit, mode, boîte et modèle",
+      "objectif": "Records par circuit, mode, bo\u00eete et mod\u00e8le",
       "etat": "in_progress",
       "dependances": [
         "references"
@@ -487,7 +487,7 @@
       "preuves": [
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
-      "reste": "p15 archivé, espaces de records p16 et fantômes séparés. Réception physique en course à poursuivre."
+      "reste": "p15 archiv\u00e9, espaces de records p16 et fant\u00f4mes s\u00e9par\u00e9s. R\u00e9ception physique en course \u00e0 poursuivre."
     },
     {
       "id": "championnat",
@@ -496,12 +496,12 @@
       "dependances": [
         "records"
       ],
-      "cloture": "Progression, classement, sauvegarde et reprise cohérents",
+      "cloture": "Progression, classement, sauvegarde et reprise coh\u00e9rents",
       "preuves": [
         "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
-      "reste": "Poursuivre la qualification des coupes et des résultats sur les appareils cibles."
+      "reste": "Poursuivre la qualification des coupes et des r\u00e9sultats sur les appareils cibles."
     },
     {
       "id": "qualification_finale",
@@ -526,12 +526,12 @@
         "championnat",
         "meteo"
       ],
-      "cloture": "CI/build/captures exacts ; essais matériels séparés et limites explicites",
+      "cloture": "CI/build/captures exacts ; essais mat\u00e9riels s\u00e9par\u00e9s et limites explicites",
       "preuves": []
     },
     {
       "id": "saisons_catalogue",
-      "objectif": "Quatre saisons cohérentes sur les neuf circuits, arbres et couverture hivernale",
+      "objectif": "Quatre saisons coh\u00e9rentes sur les neuf circuits, arbres et couverture hivernale",
       "etat": "published",
       "phase": "S1_publie_0269",
       "fiche": "docs/reprise/SAISONS-CATALOGUE-2026-11-20.md",
@@ -542,9 +542,9 @@
         "docs/reprise/PARALLELE-2026-11-20/rapports/00-ASSEMBLAGE-0269.json",
         "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
       ],
-      "acquis": "S1 6cbfa7e : 9 circuits × 4 saisons × 3 qualités, 108 préparations, 44 scènes et 88 PNG retenus ; quatre sources reprises à l’identique.",
+      "acquis": "S1 6cbfa7e : 9 circuits \u00d7 4 saisons \u00d7 3 qualit\u00e9s, 108 pr\u00e9parations, 44 sc\u00e8nes et 88 PNG retenus ; quatre sources reprises \u00e0 l\u2019identique.",
       "prochain_sous_lot": "matieres_M1_separees_apres_qualification",
-      "reste": "M1 pierres et travaux suivants distincts ; S1 et sa réception commune publiés.",
+      "reste": "M1 pierres et travaux suivants distincts ; S1 et sa r\u00e9ception commune publi\u00e9s.",
       "publication_0269": {
         "commit_fusion": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
         "pr": 42,
@@ -553,7 +553,7 @@
     },
     {
       "id": "menu_arcade_profils_modestes",
-      "objectif": "Menu arcade multi-écrans, tracé 3D rotatif, manette et profil Xbox/Intel",
+      "objectif": "Menu arcade multi-\u00e9crans, trac\u00e9 3D rotatif, manette et profil Xbox/Intel",
       "etat": "in_progress",
       "phase": "menu_arcade_publie_0269_profils_materiels_non_qualifies",
       "fiche": "docs/reprise/MENU-ARCADE-PROFILS-2026-11-20.md",
@@ -562,9 +562,9 @@
         "docs/reprise/PARALLELE-2026-11-20/rapports/00-ASSEMBLAGE-0269.json",
         "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json"
       ],
-      "acquis": "Menu PR 40 e54b3cc : 196 contrôles, 19 parcours, 14 captures ; raccord jeu.js/construire.py déjà assemblé par 00.",
+      "acquis": "Menu PR 40 e54b3cc : 196 contr\u00f4les, 19 parcours, 14 captures ; raccord jeu.js/construire.py d\u00e9j\u00e0 assembl\u00e9 par 00.",
       "prochain_sous_lot": "optimisations_et_mesures_moteur_role_02",
-      "reste": "Mesures Xbox/Intel et optimisations moteur ; menu assemblé publié avec 19 parcours réussis.",
+      "reste": "Mesures Xbox/Intel et optimisations moteur ; menu assembl\u00e9 publi\u00e9 avec 19 parcours r\u00e9ussis.",
       "publication_0269": {
         "commit_fusion": "89aa13299221ebc8b5f0474ae5a662680dd6fe32",
         "pr": 42,
@@ -574,7 +574,7 @@
     },
     {
       "id": "budget_construction_decor_0269",
-      "objectif": "Caractériser le dépassement observé du budget CPU de construction du décor",
+      "objectif": "Caract\u00e9riser le d\u00e9passement observ\u00e9 du budget CPU de construction du d\u00e9cor",
       "etat": "in_progress",
       "phase": "diagnostic_0275_reserve_ouverte_piste_non_appliquee",
       "preuves": [
@@ -582,8 +582,8 @@
         "docs/reprise/PARALLELE-2026-11-20/rapports/00-PUBLICATION-0269.json",
         "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/diagnostic-decor/DIAGNOSTIC.json"
       ],
-      "prochain_sous_lot": "Transmettre au propriétaire 04 la piste de stockage fixe des indices des nappes Route (19 323 couples temporaires), puis qualifier identité géométrique et mesures alternées avant toute intégration. Aucun code de cette optimisation appliqué.",
-      "cloture": "Identité géométrique et mesures alternées qualifiées avant intégration ; seuil strict <150 ms conservé, aucun gain matériel déduit de ce seul test.",
+      "prochain_sous_lot": "Transmettre au propri\u00e9taire 04 la piste de stockage fixe des indices des nappes Route (19 323 couples temporaires), puis qualifier identit\u00e9 g\u00e9om\u00e9trique et mesures altern\u00e9es avant toute int\u00e9gration. Aucun code de cette optimisation appliqu\u00e9.",
+      "cloture": "Identit\u00e9 g\u00e9om\u00e9trique et mesures altern\u00e9es qualifi\u00e9es avant int\u00e9gration ; seuil strict <150 ms conserv\u00e9, aucun gain mat\u00e9riel d\u00e9duit de ce seul test.",
       "proprietaire": "04",
       "diagnostic_0275": {
         "statut": "ouvert",
@@ -603,35 +603,35 @@
       },
       "reception_22_novembre_rendu": {
         "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/chargement-herbier-0111.json",
-        "resultat": "Onze coûts CPU mesurés ; découpe différée au Fjord et 218 ms gagnées à Larche avec WebAssembly."
+        "resultat": "Onze co\u00fbts CPU mesur\u00e9s ; d\u00e9coupe diff\u00e9r\u00e9e au Fjord et 218 ms gagn\u00e9es \u00e0 Larche avec WebAssembly."
       }
     },
     {
       "id": "transitions_vues_continues",
-      "objectif": "Transitions continues poursuite, arceau et cockpit, chaussée visible pendant tout le trajet",
+      "objectif": "Transitions continues poursuite, arceau et cockpit, chauss\u00e9e visible pendant tout le trajet",
       "etat": "planned",
       "dependances": [
         "habitacle_pilote_commun"
       ],
       "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
       "references": "docs/reprise/REFERENCES-VIDEO-ARCADE-SURVOL-2026-11-20.json",
-      "origine": "Demande explicite David, vidéo Rozz Games puis hélicoptères/drones METAL, 20 novembre 2026",
+      "origine": "Demande explicite David, vid\u00e9o Rozz Games puis h\u00e9licopt\u00e8res/drones METAL, 20 novembre 2026",
       "proprietaire_propose": "00 avec 01 pour enveloppe pilote",
-      "cloture": "Captures temporelles, géométrie commune, J1/J2 indépendants, mouvement réduit et p15 conservés",
+      "cloture": "Captures temporelles, g\u00e9om\u00e9trie commune, J1/J2 ind\u00e9pendants, mouvement r\u00e9duit et p15 conserv\u00e9s",
       "runtime_livre": false
     },
     {
       "id": "virages_inclines",
-      "objectif": "Virages relevés, dévers progressifs, surfaces dessinées et contacts PhysX cohérents",
+      "objectif": "Virages relev\u00e9s, d\u00e9vers progressifs, surfaces dessin\u00e9es et contacts PhysX coh\u00e9rents",
       "etat": "planned",
       "dependances": [
         "conduite"
       ],
       "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
       "references": "docs/reprise/REFERENCES-VIDEO-ARCADE-SURVOL-2026-11-20.json",
-      "origine": "Demande explicite David, vidéo Rozz Games puis hélicoptères/drones METAL, 20 novembre 2026",
+      "origine": "Demande explicite David, vid\u00e9o Rozz Games puis h\u00e9licopt\u00e8res/drones METAL, 20 novembre 2026",
       "proprietaire_propose": "04 avec coordination conduite/00",
-      "cloture": "Continuité chaussée/abords, IA et roulage sec/mouillé ; version physique séparée si surfaces de conduite modifiées",
+      "cloture": "Continuit\u00e9 chauss\u00e9e/abords, IA et roulage sec/mouill\u00e9 ; version physique s\u00e9par\u00e9e si surfaces de conduite modifi\u00e9es",
       "runtime_livre": false
     },
     {
@@ -643,63 +643,63 @@
       ],
       "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
       "references": "docs/reprise/REFERENCES-VIDEO-ARCADE-SURVOL-2026-11-20.json",
-      "origine": "Demande explicite David, vidéo Rozz Games puis hélicoptères/drones METAL, 20 novembre 2026",
+      "origine": "Demande explicite David, vid\u00e9o Rozz Games puis h\u00e9licopt\u00e8res/drones METAL, 20 novembre 2026",
       "proprietaire_propose": "04 avec raccords 00",
-      "cloture": "Sens/difficulté réels, distances, phase commune, lisibilité permanente et coût borné",
+      "cloture": "Sens/difficult\u00e9 r\u00e9els, distances, phase commune, lisibilit\u00e9 permanente et co\u00fbt born\u00e9",
       "runtime_livre": false,
-      "reste": "Grille, animation et couverture des 222 courbes reçues. Tester sur Xbox Edge et GPU intégré.",
+      "reste": "Grille, animation et couverture des 222 courbes re\u00e7ues. Tester sur Xbox Edge et GPU int\u00e9gr\u00e9.",
       "preuves": [
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ]
     },
     {
       "id": "bandeaux_led_course",
-      "objectif": "Bandeaux LED procéduraux affichant drapeaux, tours, secteurs, stands et météo",
+      "objectif": "Bandeaux LED proc\u00e9duraux affichant drapeaux, tours, secteurs, stands et m\u00e9t\u00e9o",
       "etat": "in_progress",
       "dependances": [
         "references"
       ],
       "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
       "references": "docs/reprise/REFERENCES-VIDEO-ARCADE-SURVOL-2026-11-20.json",
-      "origine": "Demande explicite David, vidéo Rozz Games puis hélicoptères/drones METAL, 20 novembre 2026",
-      "proprietaire_propose": "Nouveau module à attribuer ; raccords 00",
-      "cloture": "Messages français conformes à la course, cohérence J1/J2, grille préchargée et mises à jour bornées",
+      "origine": "Demande explicite David, vid\u00e9o Rozz Games puis h\u00e9licopt\u00e8res/drones METAL, 20 novembre 2026",
+      "proprietaire_propose": "Nouveau module \u00e0 attribuer ; raccords 00",
+      "cloture": "Messages fran\u00e7ais conformes \u00e0 la course, coh\u00e9rence J1/J2, grille pr\u00e9charg\u00e9e et mises \u00e0 jour born\u00e9es",
       "runtime_livre": false,
       "reception_22_novembre_rendu": {
         "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/Portique-en-course.png",
-        "resultat": "Portique à texte LED essayé en course. Essais de lecture nocturne sur écran physique ouverts."
+        "resultat": "Portique \u00e0 texte LED essay\u00e9 en course. Essais de lecture nocturne sur \u00e9cran physique ouverts."
       }
     },
     {
       "id": "aeriens_helicopteres",
-      "objectif": "Hélicoptères visibles de retransmission survolant le peloton, rotors et trajectoires animés",
+      "objectif": "H\u00e9licopt\u00e8res visibles de retransmission survolant le peloton, rotors et trajectoires anim\u00e9s",
       "etat": "in_progress",
       "dependances": [
         "references"
       ],
       "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
       "references": "docs/reprise/REFERENCES-VIDEO-ARCADE-SURVOL-2026-11-20.json",
-      "origine": "Demande explicite David, vidéo Rozz Games puis hélicoptères/drones METAL, 20 novembre 2026",
-      "proprietaire_propose": "Nouveau module aérien à attribuer ; raccords 00, son 01, coûts 02",
-      "cloture": "Survol terrain/structures, vues/rétros cohérents, pools/LOD, audio synthétique ; p15 conservée au premier lot",
+      "origine": "Demande explicite David, vid\u00e9o Rozz Games puis h\u00e9licopt\u00e8res/drones METAL, 20 novembre 2026",
+      "proprietaire_propose": "Nouveau module a\u00e9rien \u00e0 attribuer ; raccords 00, son 01, co\u00fbts 02",
+      "cloture": "Survol terrain/structures, vues/r\u00e9tros coh\u00e9rents, pools/LOD, audio synth\u00e9tique ; p15 conserv\u00e9e au premier lot",
       "runtime_livre": false,
       "reception_22_novembre_rendu": {
         "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/survol-catalogue.json",
-        "resultat": "Plancher de survol qualifié sur 2 112 points des onze circuits."
+        "resultat": "Plancher de survol qualifi\u00e9 sur 2 112 points des onze circuits."
       }
     },
     {
       "id": "aeriens_drones_metal",
-      "objectif": "Drones de tournage issus des modèles procéduraux de METAL",
+      "objectif": "Drones de tournage issus des mod\u00e8les proc\u00e9duraux de METAL",
       "etat": "in_progress",
       "dependances": [
         "references"
       ],
       "fiche": "docs/reprise/DEMANDES-VIDEO-ARCADE-SURVOL-2026-11-20.md",
       "references": "docs/reprise/REFERENCES-VIDEO-ARCADE-SURVOL-2026-11-20.json",
-      "origine": "Demande explicite David, vidéo Rozz Games puis hélicoptères/drones METAL, 20 novembre 2026",
-      "proprietaire_propose": "Même module aérien ; raccords 00, son 01, coûts 02",
-      "cloture": "Provenance METAL, adaptation repère/hauteur, rotors, LOD et pools ; aucun système de combat importé",
+      "origine": "Demande explicite David, vid\u00e9o Rozz Games puis h\u00e9licopt\u00e8res/drones METAL, 20 novembre 2026",
+      "proprietaire_propose": "M\u00eame module a\u00e9rien ; raccords 00, son 01, co\u00fbts 02",
+      "cloture": "Provenance METAL, adaptation rep\u00e8re/hauteur, rotors, LOD et pools ; aucun syst\u00e8me de combat import\u00e9",
       "runtime_livre": false,
       "reception_22_novembre_rendu": {
         "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/survol-catalogue.json",
@@ -708,13 +708,13 @@
     },
     {
       "id": "reference_voiture_126ck",
-      "titre": "Galerie complète126CK et nouvel objectif voiture",
+      "titre": "Galerie compl\u00e8te126CK et nouvel objectif voiture",
       "statut": "published",
       "fiche": "docs/reprise/OBJECTIF-126CK-2026-11-21.md",
       "references": "docs/references/ferrari-126ck-renderblade-2026-11-21/README.md",
       "images": 41,
       "runtime_modifie": false,
-      "suite": "Modèle construit et livré .79 ; finitions personnages/mains et appréciation de fidélité à poursuivre.",
+      "suite": "Mod\u00e8le construit et livr\u00e9 .79 ; finitions personnages/mains et appr\u00e9ciation de fid\u00e9lit\u00e9 \u00e0 poursuivre.",
       "publication": "docs/references/ferrari-126ck-renderblade-2026-11-21/PUBLICATION.json",
       "pr": 53,
       "commit": "eb10c539749a1d0a978ba3b2a78c128e368db194"
@@ -731,11 +731,11 @@
       "preuves": [
         "docs/reprise/rapports/MAINS-REALISME-2026-11-21/BASE-0279.json"
       ],
-      "cloture": "Vrais maillages, contacts et 3 LOD ; capture avant/après même phase ; allocations et budgets conservés"
+      "cloture": "Vrais maillages, contacts et 3 LOD ; capture avant/apr\u00e8s m\u00eame phase ; allocations et budgets conserv\u00e9s"
     },
     {
       "id": "personnages_manches",
-      "objectif": "Affiner manches, coudes, épaules et silhouette du personnage commun",
+      "objectif": "Affiner manches, coudes, \u00e9paules et silhouette du personnage commun",
       "etat": "planned",
       "dependances": [
         "mains_realisme"
@@ -744,25 +744,25 @@
     },
     {
       "id": "larche_vinadio",
-      "objectif": "Sommet du col de Larche → Vinadio par SS21, terrain et tracé réels, arrivée définitive",
+      "objectif": "Sommet du col de Larche \u2192 Vinadio par SS21, terrain et trac\u00e9 r\u00e9els, arriv\u00e9e d\u00e9finitive",
       "etat": "in_progress",
       "phase": "L0_sources_identifiees_non_acquises",
       "fiche": "docs/reprise/COL-DE-LARCHE-VINADIO-2026-11-21.md",
       "echelle": 1,
       "topologie": "ouverte",
       "depart_barcelonnette_remplace": true,
-      "reste": "Parcours complet au chrono et en course, y compris sous pluie. Vérifier sur manettes physiques et contrôler la fidélité des épingles.",
+      "reste": "Parcours complet au chrono et en course, y compris sous pluie. V\u00e9rifier sur manettes physiques et contr\u00f4ler la fid\u00e9lit\u00e9 des \u00e9pingles.",
       "preuves": [
         "docs/reprise/rapports/INTEGRATION-2026-11-22/RECEPTION.json"
       ],
       "reception_22_novembre_rendu": {
         "preuve": "docs/reprise/rapports/LARCHE-RENDU-2026-11-22/parcours-pluie-0111.json",
-        "resultat": "Course complète sous la pluie en .111 ; les douze voitures franchissent la ligne des 32,249 km."
+        "resultat": "Course compl\u00e8te sous la pluie en .111 ; les douze voitures franchissent la ligne des 32,249 km."
       }
     },
     {
       "id": "six_vues_course",
-      "objectif": "Six vues F1 du modèle commun et commandes J1/J2 indépendantes",
+      "objectif": "Six vues F1 du mod\u00e8le commun et commandes J1/J2 ind\u00e9pendantes",
       "etat": "published",
       "version": "0.2.79",
       "fiche": "docs/reprise/CAMERAS-F1-2026-11-21.md",
@@ -785,16 +785,16 @@
   ],
   "lots_livres_a_preserver": [
     "5B chargement de base",
-    "12A–F4 roues pneus stands",
-    "13A–B Baïkal",
+    "12A\u2013F4 roues pneus stands",
+    "13A\u2013B Ba\u00efkal",
     "18 public",
-    "20 échappement",
+    "20 \u00e9chappement",
     "24 vibrations",
     "26 faune",
     "28A/C herbier saisons",
-    "p15 aspiration et dégagement natif",
-    "0.2.66 démos/pilotes/météo, socle multi-couverts et Route-des-Cimes",
-    "0.2.68 eau projetée selon vitesse et caméra, perles/nappes et contrôle indépendant des pixels",
+    "p15 aspiration et d\u00e9gagement natif",
+    "0.2.66 d\u00e9mos/pilotes/m\u00e9t\u00e9o, socle multi-couverts et Route-des-Cimes",
+    "0.2.68 eau projet\u00e9e selon vitesse et cam\u00e9ra, perles/nappes et contr\u00f4le ind\u00e9pendant des pixels",
     {
       "lot": "00C_assemblage_0269",
       "version": "0.2.69",
@@ -812,10 +812,10 @@
     }
   ],
   "limites_transversales": [
-    "FPS matériels",
+    "FPS mat\u00e9riels",
     "manettes et audio physiques",
-    "liaison entre réseaux réels",
-    "Monaco : chaussée largeurs dévers non qualifiés"
+    "liaison entre r\u00e9seaux r\u00e9els",
+    "Monaco : chauss\u00e9e largeurs d\u00e9vers non qualifi\u00e9s"
   ],
   "plan_correctifs_visuels": "docs/reprise/PLAN-CORRECTIFS-VISUELS-2026-11-20.md",
   "ordre_courant": [
@@ -828,7 +828,7 @@
     "budget_construction_decor_0269",
     "menu_arcade_profils_modestes"
   ],
-  "priorite_utilisateur_2026_11_20": "Réduire les coûts intrinsèques du moteur pour configurations modestes ; menu arcade ; saisons cohérentes ; emotes humaines choisies avant course et IA aléatoires.",
+  "priorite_utilisateur_2026_11_20": "R\u00e9duire les co\u00fbts intrins\u00e8ques du moteur pour configurations modestes ; menu arcade ; saisons coh\u00e9rentes ; emotes humaines choisies avant course et IA al\u00e9atoires.",
   "dernieres_demandes": {
     "date": "2026-11-21",
     "fiche": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md",
@@ -836,7 +836,7 @@
     "base_main": "0e7273c0361996b9c217e6f1051a9ef9a54b18c7",
     "version_base": "0.2.85",
     "circuits_actuels": 9,
-    "objectif": "Faune près de la route, sans simulation détaillée hors champ ; démos des circuits actuels centrées sur route, tracé et point d’intérêt.",
+    "objectif": "Faune pr\u00e8s de la route, sans simulation d\u00e9taill\u00e9e hors champ ; d\u00e9mos des circuits actuels centr\u00e9es sur route, trac\u00e9 et point d\u2019int\u00e9r\u00eat.",
     "lots": [
       "F1",
       "F2",
@@ -848,21 +848,21 @@
     "preuves_runtime": [
       "docs/reprise/rapports/FAUNE-DEMOS-2026-11-21/CANDIDAT-0286.json"
     ],
-    "larche": "À ajouter aux démos lors de son intégration jouable ; sommet → Vinadio, sans rebouclage.",
+    "larche": "\u00c0 ajouter aux d\u00e9mos lors de son int\u00e9gration jouable ; sommet \u2192 Vinadio, sans rebouclage.",
     "etat": "prepared"
   },
   "demandes_moteur_2026_11_20": {
     "fiche": "docs/reprise/OPTIMISATION-MEMOIRE-GEOMETRIE-MATIERES-2026-11-20.md",
     "statut": "in_progress",
     "axes": [
-      "mémoire, préchargement CPU/GPU, streaming, pools bornés",
-      "géométrie, LOD, shaders, alternatives triangles",
-      "montagnes, terrain, matières proches et cockpit",
-      "importance pour la course selon vitesse et caméra, rendu de type fovéal",
-      "culling et occlusion par vue, étude rayons/reflets séparée"
+      "m\u00e9moire, pr\u00e9chargement CPU/GPU, streaming, pools born\u00e9s",
+      "g\u00e9om\u00e9trie, LOD, shaders, alternatives triangles",
+      "montagnes, terrain, mati\u00e8res proches et cockpit",
+      "importance pour la course selon vitesse et cam\u00e9ra, rendu de type fov\u00e9al",
+      "culling et occlusion par vue, \u00e9tude rayons/reflets s\u00e9par\u00e9e"
     ],
     "publication_demandee": true,
-    "validation": "ouverte ; aucune technique non mesurée annoncée comme livrée"
+    "validation": "ouverte ; aucune technique non mesur\u00e9e annonc\u00e9e comme livr\u00e9e"
   },
   "repartition_parallele": {
     "index": "docs/reprise/PARALLELE-2026-11-20/README.md",
@@ -886,8 +886,8 @@
     "contrats": "docs/reprise/PARALLELE-2026-11-20/raccordements/00.md",
     "inventaire": "docs/reprise/PARALLELE-2026-11-20/rapports/00-INVENTAIRE-20261120.json",
     "lots_prets_observes": [],
-    "prochaine_action": "Lot mains_realisme depuis main avancé avec Gemini ; autres préparations conservées.",
-    "integration": "Premier petit lot indépendant prêt ; ne pas attendre la fin des autres chantiers.",
+    "prochaine_action": "Lot mains_realisme depuis main avanc\u00e9 avec Gemini ; autres pr\u00e9parations conserv\u00e9es.",
+    "integration": "Premier petit lot ind\u00e9pendant pr\u00eat ; ne pas attendre la fin des autres chantiers.",
     "lots_runtime_prets_observes": [],
     "checkpoints_observes": [
       "01",
@@ -905,8 +905,8 @@
     },
     "publication_00": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/reception-0275/PUBLICATION-0275.json",
     "dernier_jalon_publie_00": "publication_0279",
-    "publication_00_portee": "126 CK / R4b / six vues / compteurs publiés .79 ; inventaires précédents conservés comme historiques.",
-    "checkpoints_observes_portee": "Inventaire initial historique conservé ; publication courante décrite par le reçu 0.2.75.",
+    "publication_00_portee": "126 CK / R4b / six vues / compteurs publi\u00e9s .79 ; inventaires pr\u00e9c\u00e9dents conserv\u00e9s comme historiques.",
+    "checkpoints_observes_portee": "Inventaire initial historique conserv\u00e9 ; publication courante d\u00e9crite par le re\u00e7u 0.2.75.",
     "lots_prets_observes_historique": [
       "01_pilote_Troll",
       "03_menu",
@@ -975,13 +975,13 @@
       "cockpit 0.2.76"
     ],
     "autres_demandes": [
-      "FOV 70°",
+      "FOV 70\u00b0",
       "pluie/neige calmes dos au vent",
-      "klaxons réalistes",
+      "klaxons r\u00e9alistes",
       "inspiration satyam-fp/race"
     ],
     "suite_personnages_mains": "docs/reprise/MAINS-REALISME-2026-11-21.md",
-    "priorite_courante": "Faune près de la route, sans simulation détaillée hors champ ; démos des circuits actuels centrées sur route, tracé et point d’intérêt.",
+    "priorite_courante": "Faune pr\u00e8s de la route, sans simulation d\u00e9taill\u00e9e hors champ ; d\u00e9mos des circuits actuels centr\u00e9es sur route, trac\u00e9 et point d\u2019int\u00e9r\u00eat.",
     "faune_demos": "docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md"
   },
   "inspiration_race": {
@@ -1000,7 +1000,7 @@
     "statut": "publie_sur_main",
     "recu": "docs/reprise/rapports/COCKPIT-PLUIE-2026-11-20/candidat-0275/BUILD-0275.json",
     "portes_restantes": [],
-    "reserve_decor": "Ouverte : 172/152/168/155 ms historiques ; diagnostic local 151,87/138,20/141,13/84,43/85,68 ms, un échec au seuil strict <150 ms ; aucun gain prouvé.",
+    "reserve_decor": "Ouverte : 172/152/168/155 ms historiques ; diagnostic local 151,87/138,20/141,13/84,43/85,68 ms, un \u00e9chec au seuil strict <150 ms ; aucun gain prouv\u00e9.",
     "candidat_precedent_bloque": {
       "version": "0.2.74",
       "pr": 50,
@@ -1024,7 +1024,7 @@
     "version": "0.2.77",
     "base_runtime_main": "0.2.75",
     "preparations_conservees": [
-      "PR52 / 02afea62 : météo, son, FOV et modèle refusé",
+      "PR52 / 02afea62 : m\u00e9t\u00e9o, son, FOV et mod\u00e8le refus\u00e9",
       "docs/reprise/preparations/miroirs-0277/README.md"
     ],
     "branche": "codex/bitume-0277-publication-20261121",
@@ -1036,11 +1036,11 @@
     "etat": "en_cours",
     "troll": {
       "humains": "geste et klaxon choisis avant course par joueur",
-      "ia": "geste et klaxon aléatoires, notamment après dépassement",
-      "activation": "un seul bouton Troll, son et mouvement simultanés",
+      "ia": "geste et klaxon al\u00e9atoires, notamment apr\u00e8s d\u00e9passement",
+      "activation": "un seul bouton Troll, son et mouvement simultan\u00e9s",
       "statut": "assemble_T3_local_qualifie_publication_commune_en_attente",
       "preuve": "docs/reprise/PARALLELE-2026-11-20/preuves/01-troll-assemble.json",
-      "limite_reseau": "Préférences négociées ; événements geste/son distants non synchronisés, information avant course."
+      "limite_reseau": "Pr\u00e9f\u00e9rences n\u00e9goci\u00e9es ; \u00e9v\u00e9nements geste/son distants non synchronis\u00e9s, information avant course."
     }
   },
   "runtime_livre_0280_historique": {
@@ -1054,14 +1054,14 @@
   },
   "feuille_courante": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
   "ordre_22_novembre": [
-    "Cadence de 60 images 3D/s sur chaque kilomètre de Larche en 1080p Fine sous la pluie, deux glaces et douze voitures",
-    "Recevoir les entrées et sorties des huit cartes, la précision de l’arrêt au box, les roues et le carburant en solo et en réseau, ainsi que les collisions des arches.",
-    "Visibilité des voitures, LED et ombres, BVH FERRO, primitives à la demande, appels WebGL2 groupés, rétroviseurs hors écran et budget des bosquets",
-    "Huit circuits, trois tracés à deux habitats et huit démonstrations de la course, du tracé et des lieux",
-    "Arrivée et dégagement de la meute, contacts pneu contre pneu, nez déformé et records et fantômes p18, conservation de p17",
-    "Altimétrie Monaco 14A, relief de Marseille, lieux et bâtiments de la haute Stura",
-    "Matériaux 19/21/23/25, conduite 17, pneus, pilotes, faune 26 et réception des périphériques physiques",
-    "Deux joueurs et réseau 27, cache et calcul 28, puis étapes du moteur C++ sur Mac, Linux et Windows"
+    "Cadence de 60 images 3D/s sur chaque kilom\u00e8tre de Larche en 1080p Fine sous la pluie, deux glaces et douze voitures",
+    "Recevoir les entr\u00e9es et sorties des huit cartes, la pr\u00e9cision de l\u2019arr\u00eat au box, les roues et le carburant en solo et en r\u00e9seau, ainsi que les collisions des arches.",
+    "Visibilit\u00e9 des voitures, LED et ombres, BVH FERRO, primitives \u00e0 la demande, appels WebGL2 group\u00e9s, r\u00e9troviseurs hors \u00e9cran et budget des bosquets",
+    "Huit circuits, trois trac\u00e9s \u00e0 deux habitats et huit d\u00e9monstrations de la course, du trac\u00e9 et des lieux",
+    "Arriv\u00e9e et d\u00e9gagement de la meute, contacts pneu contre pneu, nez d\u00e9form\u00e9 et records et fant\u00f4mes p18, conservation de p17",
+    "Altim\u00e9trie Monaco 14A, relief de Marseille, lieux et b\u00e2timents de la haute Stura",
+    "Mat\u00e9riaux 19/21/23/25, conduite 17, pneus, pilotes, faune 26 et r\u00e9ception des p\u00e9riph\u00e9riques physiques",
+    "Deux joueurs et r\u00e9seau 27, cache et calcul 28, puis \u00e9tapes du moteur C++ sur Mac, Linux et Windows"
   ],
   "runtimes_precedents": {
     "2351b2e1715d79f31bdcbb35dcdd83da9ff91fff": {
@@ -1210,11 +1210,11 @@
     "circuits": [
       {
         "id": "forets-du-pacifique",
-        "nom": "Forêts du Pacifique"
+        "nom": "For\u00eats du Pacifique"
       },
       {
         "id": "marseille",
-        "nom": "Marseille · Vieux-Port → Corniche"
+        "nom": "Marseille \u00b7 Vieux-Port \u2192 Corniche"
       },
       {
         "id": "karst-et-lagon",
@@ -1222,7 +1222,7 @@
       },
       {
         "id": "sierra",
-        "nom": "Sierra-Cuivrée"
+        "nom": "Sierra-Cuivr\u00e9e"
       },
       {
         "id": "nord-atlantique",
@@ -1234,88 +1234,88 @@
       },
       {
         "id": "larche",
-        "nom": "Col de Larche → Vinadio"
+        "nom": "Col de Larche \u2192 Vinadio"
       },
       {
         "id": "baikal",
-        "nom": "Baïkal"
+        "nom": "Ba\u00efkal"
       }
     ],
     "feuille": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
-    "etat_des_receptions": "Essais suspendus à la demande du joueur. Les mesures d’une autre version restent identifiées séparément.",
+    "etat_des_receptions": "Essais suspendus \u00e0 la demande du joueur. Les mesures d\u2019une autre version restent identifi\u00e9es s\u00e9par\u00e9ment.",
     "ordre_de_suite": [
-      "Cadence de 60 images 3D/s sur chaque kilomètre de Larche en 1080p Fine sous la pluie, deux glaces et douze voitures",
-      "Recevoir les entrées et sorties des huit cartes, la précision de l’arrêt au box, les roues et le carburant en solo et en réseau, ainsi que les collisions des arches.",
-      "Visibilité des voitures, LED et ombres, BVH FERRO, primitives à la demande, appels WebGL2 groupés, rétroviseurs hors écran et budget des bosquets",
-      "Huit circuits, trois tracés à deux habitats et huit démonstrations de la course, du tracé et des lieux",
-      "Arrivée et dégagement de la meute, contacts pneu contre pneu, nez déformé et records et fantômes p18, conservation de p17",
-      "Altimétrie Monaco 14A, relief de Marseille, lieux et bâtiments de la haute Stura",
-      "Matériaux 19/21/23/25, conduite 17, pneus, pilotes, faune 26 et réception des périphériques physiques",
-      "Deux joueurs et réseau 27, cache et calcul 28, puis étapes du moteur C++ sur Mac, Linux et Windows"
+      "Cadence de 60 images 3D/s sur chaque kilom\u00e8tre de Larche en 1080p Fine sous la pluie, deux glaces et douze voitures",
+      "Recevoir les entr\u00e9es et sorties des huit cartes, la pr\u00e9cision de l\u2019arr\u00eat au box, les roues et le carburant en solo et en r\u00e9seau, ainsi que les collisions des arches.",
+      "Visibilit\u00e9 des voitures, LED et ombres, BVH FERRO, primitives \u00e0 la demande, appels WebGL2 group\u00e9s, r\u00e9troviseurs hors \u00e9cran et budget des bosquets",
+      "Huit circuits, trois trac\u00e9s \u00e0 deux habitats et huit d\u00e9monstrations de la course, du trac\u00e9 et des lieux",
+      "Arriv\u00e9e et d\u00e9gagement de la meute, contacts pneu contre pneu, nez d\u00e9form\u00e9 et records et fant\u00f4mes p18, conservation de p17",
+      "Altim\u00e9trie Monaco 14A, relief de Marseille, lieux et b\u00e2timents de la haute Stura",
+      "Mat\u00e9riaux 19/21/23/25, conduite 17, pneus, pilotes, faune 26 et r\u00e9ception des p\u00e9riph\u00e9riques physiques",
+      "Deux joueurs et r\u00e9seau 27, cache et calcul 28, puis \u00e9tapes du moteur C++ sur Mac, Linux et Windows"
     ],
     "site_deploiement_verifie": true,
     "optimisations_0126": [
-      "Les gouttes de carrosserie partagent les calculs de projection et d’orientation de leur triangle. La visière réutilise le flux d’air des dépôts, et les voitures hors de portée des embruns sont écartées avant leur projection.",
-      "WebGL réutilise les VAO des lots de décor pour conserver la configuration de leurs attributs entre dessins.",
-      "WebGL et WebGPU interrogent un index spatial pour sélectionner les nappes statiques de chaussée et de terrain.",
-      "WebGL2 partage la couleur entre reflets et halo sur les vues sans superposition. WebGPU évite une résolution intermédiaire lorsque l’habitacle est la seule passe suivante et que les reflets sont éteints.",
-      "La visière met à jour la texture de la scène à dimensions constantes. En 1080p Fine, la réduction optique conserve le même filtre et la même résolution.",
-      "La préparation du décor mesure une seule fois par point de vue la distance d’un lot qui occupe plusieurs cases.",
-      "Les vues compatibles réutilisent la pose calculée de la voiture."
+      "Les gouttes de carrosserie partagent les calculs de projection et d\u2019orientation de leur triangle. La visi\u00e8re r\u00e9utilise le flux d\u2019air des d\u00e9p\u00f4ts, et les voitures hors de port\u00e9e des embruns sont \u00e9cart\u00e9es avant leur projection.",
+      "WebGL r\u00e9utilise les VAO des lots de d\u00e9cor pour conserver la configuration de leurs attributs entre dessins.",
+      "WebGL et WebGPU interrogent un index spatial pour s\u00e9lectionner les nappes statiques de chauss\u00e9e et de terrain.",
+      "WebGL2 partage la couleur entre reflets et halo sur les vues sans superposition. WebGPU \u00e9vite une r\u00e9solution interm\u00e9diaire lorsque l\u2019habitacle est la seule passe suivante et que les reflets sont \u00e9teints.",
+      "La visi\u00e8re met \u00e0 jour la texture de la sc\u00e8ne \u00e0 dimensions constantes. En 1080p Fine, la r\u00e9duction optique conserve le m\u00eame filtre et la m\u00eame r\u00e9solution.",
+      "La pr\u00e9paration du d\u00e9cor mesure une seule fois par point de vue la distance d\u2019un lot qui occupe plusieurs cases.",
+      "Les vues compatibles r\u00e9utilisent la pose calcul\u00e9e de la voiture."
     ],
-    "reception_cadence_0126": "La cadence de la .126 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer.",
+    "reception_cadence_0126": "La cadence de la .126 sous la pluie \u00e0 Pietraporzio et sur chaque kilom\u00e8tre de Larche reste \u00e0 mesurer.",
     "optimisations_0127": [
-      "La caisse, les points d’ancrage, les rotations des roues et les centres utilisés pour leurs niveaux de détail sont réutilisés entre vues compatibles. Chaque caméra conserve sa propre décision de détail.",
-      "La vue principale prépare les traces et les flammes d’échappement réutilisées par les deux rétroviseurs. Chaque glace garde son champ et sa limite de portée.",
-      "La visière WebGL2 précalcule les quatre valeurs de bruit d’une cellule du film d’eau dans une texture entière. Le calcul direct reste disponible en repli.",
-      "WebGL2 et WebGPU écartent du dessin couleur les pièces rigides du cockpit entièrement hors champ. Le rendu des ombres conserve les pièces susceptibles d’en projeter.",
-      "Pour les images dont les deux dimensions sont divisibles par quatre, dont le 1920 × 1080, la prépasse du halo repère les zones pouvant recevoir un reflet. Avec le cockpit superposé, les reflets en espace écran évitent les groupes masqués. Le raffinement réutilise la profondeur déjà lue sur tous les formats."
+      "La caisse, les points d\u2019ancrage, les rotations des roues et les centres utilis\u00e9s pour leurs niveaux de d\u00e9tail sont r\u00e9utilis\u00e9s entre vues compatibles. Chaque cam\u00e9ra conserve sa propre d\u00e9cision de d\u00e9tail.",
+      "La vue principale pr\u00e9pare les traces et les flammes d\u2019\u00e9chappement r\u00e9utilis\u00e9es par les deux r\u00e9troviseurs. Chaque glace garde son champ et sa limite de port\u00e9e.",
+      "La visi\u00e8re WebGL2 pr\u00e9calcule les quatre valeurs de bruit d\u2019une cellule du film d\u2019eau dans une texture enti\u00e8re. Le calcul direct reste disponible en repli.",
+      "WebGL2 et WebGPU \u00e9cartent du dessin couleur les pi\u00e8ces rigides du cockpit enti\u00e8rement hors champ. Le rendu des ombres conserve les pi\u00e8ces susceptibles d\u2019en projeter.",
+      "Pour les images dont les deux dimensions sont divisibles par quatre, dont le 1920 \u00d7 1080, la pr\u00e9passe du halo rep\u00e8re les zones pouvant recevoir un reflet. Avec le cockpit superpos\u00e9, les reflets en espace \u00e9cran \u00e9vitent les groupes masqu\u00e9s. Le raffinement r\u00e9utilise la profondeur d\u00e9j\u00e0 lue sur tous les formats."
     ],
-    "reception_cadence_0127": "La cadence de la .127 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer.",
+    "reception_cadence_0127": "La cadence de la .127 sous la pluie \u00e0 Pietraporzio et sur chaque kilom\u00e8tre de Larche reste \u00e0 mesurer.",
     "chronometres_0128": {
       "physique_courante": "p18",
       "physique_precedente": "p17",
-      "archives": "Clés p17 conservées séparément des nouveaux records et fantômes p18."
+      "archives": "Cl\u00e9s p17 conserv\u00e9es s\u00e9par\u00e9ment des nouveaux records et fant\u00f4mes p18."
     },
     "stands_0128": {
-      "bases": "Les trois circuits fusionnés reprennent chacun la fenêtre de leur recette de fusion. Route-des-Cimes, Sierra-Cuivrée et Baïkal utilisent la partition du générateur ou sa fenêtre de repli.",
-      "ouverts": "Larche et Marseille. Si aucune fenêtre recevable de 208 m n’est trouvée, la carte conserve des stands absents.",
-      "filtrage": "Les instances de décor et les cellules d’arbres déjà présentes sont filtrées par emprise horizontale. Les corps mobiles PhysX et les lots détaillés de lieux ajoutés ultérieurement échappent à ce filtre.",
-      "reception": "Implantations, roulement, service et sortie en course à recevoir sur les huit cartes."
+      "bases": "Les trois circuits fusionn\u00e9s reprennent chacun la fen\u00eatre de leur recette de fusion. Route-des-Cimes, Sierra-Cuivr\u00e9e et Ba\u00efkal utilisent la partition du g\u00e9n\u00e9rateur ou sa fen\u00eatre de repli.",
+      "ouverts": "Larche et Marseille. Si aucune fen\u00eatre recevable de 208 m n\u2019est trouv\u00e9e, la carte conserve des stands absents.",
+      "filtrage": "Les instances de d\u00e9cor et les cellules d\u2019arbres d\u00e9j\u00e0 pr\u00e9sentes sont filtr\u00e9es par emprise horizontale. Les corps mobiles PhysX et les lots d\u00e9taill\u00e9s de lieux ajout\u00e9s ult\u00e9rieurement \u00e9chappent \u00e0 ce filtre.",
+      "reception": "Implantations, roulement, service et sortie en course \u00e0 recevoir sur les huit cartes."
     },
     "optimisations_0128": [
-      "La voie des stands quitte la piste à droite, longe un muret doté d’une collision et rejoint la chaussée après le box. La voie et l’aire de service sont en asphalte pour les roues PhysX. Les circuits ouverts recherchent une halte de 208 m compatible avec la courbure, la pente, les ouvrages, les lieux et les autres branches de la route.",
-      "Le service exige une voiture immobile et alignée au box. Le niveau du réservoir, la durée de branchement, les pneus et la remise en route déterminent l’arrêt. L’IA dirige et freine la voiture à l’entrée, au box et à la sortie, avec un motif de ravitaillement selon la distance restante.",
-      "Les mécaniciens font l’aller-retour depuis le garage. Deux séquences publiques de Carnegie Mellon fournissent la marche 07_01 et l’accroupissement 22_14. Le travail de roue, des crics et du ravitailleur est animé dans le jeu à partir de la voiture et de la phase de service.",
-      "Le réseau transmet le carburant et l’état du service avec les instantanés fiables de pneus. La reprise de contrôle peut reprendre un service en cours. L’arbitrage d’un box partagé reste à recevoir avec deux postes.",
-      "Les arches rocheuses naturelles reposent sur leurs pieds au sol. PhysX assemble leurs sections convexes en un corps mobile ; les blocs d’éboulis ont leurs propres corps. La pose du monde physique pilote le rendu.",
-      "Dans les virages, la flèche jaune lumineuse a une hauteur verticale de 0,60 m, y compris sur une glissière inclinée. Cette cote désigne la flèche visible à l’intérieur de son support.",
-      "Les nouveaux temps, records et fantômes utilisent p18. Les classements locaux sont séparés par version et les données p17 demeurent dans leurs clés historiques.",
-      "La foule des tribunes partage des enveloppes de 32 places entre les vues. Le cockpit, les glaces et les ombres écartent les groupes entièrement hors de leur champ avant de classer les sièges.",
-      "Quand toute la tribune est visible sous le premier seuil de fondu, le tampon de silhouettes peut être réutilisé. Les deux yeux et les tuiles d’ombre qui partagent la même pose évitent un second envoi des uniformes d’animation à leur programme.",
-      "Le décor progressif sélectionne les lots proches de l’ensemble des points de vue. Pour les arbres périphériques, les cellules candidates sont réutilisées entre les images et le calcul de proximité de la route est réservé aux changements de détail possibles.",
-      "Les lampes de tunnel candidates sont recherchées par cellule. Les groupes qui finissent de s’éteindre restent suivis après un changement de vue. Les consultations identiques d’abri de la caméra partagent leur résultat.",
-      "Pour les nappes rigides compatibles, WebGL2 transporte 40 octets par sommet au lieu de 52 en omettant les trois composantes de déplacement nulles. Les nappes qui contiennent un sommet déplacé ou animé gardent le format complet.",
-      "La passe Photo de FERRO parcourt les objets dynamiques une seule fois pour répartir les objets de la scène, de l’habitacle et de la tuile d’ombre de la voiture.",
-      "Dans la passe d’ombre solaire WebGL2, les extrémités d’une plage d’instances rigides peuvent être écartées lorsqu’elles sont entièrement hors du volume éclairé. Les autres instances gardent leur ordre de soumission."
+      "La voie des stands quitte la piste \u00e0 droite, longe un muret dot\u00e9 d\u2019une collision et rejoint la chauss\u00e9e apr\u00e8s le box. La voie et l\u2019aire de service sont en asphalte pour les roues PhysX. Les circuits ouverts recherchent une halte de 208 m compatible avec la courbure, la pente, les ouvrages, les lieux et les autres branches de la route.",
+      "Le service exige une voiture immobile et align\u00e9e au box. Le niveau du r\u00e9servoir, la dur\u00e9e de branchement, les pneus et la remise en route d\u00e9terminent l\u2019arr\u00eat. L\u2019IA dirige et freine la voiture \u00e0 l\u2019entr\u00e9e, au box et \u00e0 la sortie, avec un motif de ravitaillement selon la distance restante.",
+      "Les m\u00e9caniciens font l\u2019aller-retour depuis le garage. Deux s\u00e9quences publiques de Carnegie Mellon fournissent la marche 07_01 et l\u2019accroupissement 22_14. Le travail de roue, des crics et du ravitailleur est anim\u00e9 dans le jeu \u00e0 partir de la voiture et de la phase de service.",
+      "Le r\u00e9seau transmet le carburant et l\u2019\u00e9tat du service avec les instantan\u00e9s fiables de pneus. La reprise de contr\u00f4le peut reprendre un service en cours. L\u2019arbitrage d\u2019un box partag\u00e9 reste \u00e0 recevoir avec deux postes.",
+      "Les arches rocheuses naturelles reposent sur leurs pieds au sol. PhysX assemble leurs sections convexes en un corps mobile ; les blocs d\u2019\u00e9boulis ont leurs propres corps. La pose du monde physique pilote le rendu.",
+      "Dans les virages, la fl\u00e8che jaune lumineuse a une hauteur verticale de 0,60 m, y compris sur une glissi\u00e8re inclin\u00e9e. Cette cote d\u00e9signe la fl\u00e8che visible \u00e0 l\u2019int\u00e9rieur de son support.",
+      "Les nouveaux temps, records et fant\u00f4mes utilisent p18. Les classements locaux sont s\u00e9par\u00e9s par version et les donn\u00e9es p17 demeurent dans leurs cl\u00e9s historiques.",
+      "La foule des tribunes partage des enveloppes de 32 places entre les vues. Le cockpit, les glaces et les ombres \u00e9cartent les groupes enti\u00e8rement hors de leur champ avant de classer les si\u00e8ges.",
+      "Quand toute la tribune est visible sous le premier seuil de fondu, le tampon de silhouettes peut \u00eatre r\u00e9utilis\u00e9. Les deux yeux et les tuiles d\u2019ombre qui partagent la m\u00eame pose \u00e9vitent un second envoi des uniformes d\u2019animation \u00e0 leur programme.",
+      "Le d\u00e9cor progressif s\u00e9lectionne les lots proches de l\u2019ensemble des points de vue. Pour les arbres p\u00e9riph\u00e9riques, les cellules candidates sont r\u00e9utilis\u00e9es entre les images et le calcul de proximit\u00e9 de la route est r\u00e9serv\u00e9 aux changements de d\u00e9tail possibles.",
+      "Les lampes de tunnel candidates sont recherch\u00e9es par cellule. Les groupes qui finissent de s\u2019\u00e9teindre restent suivis apr\u00e8s un changement de vue. Les consultations identiques d\u2019abri de la cam\u00e9ra partagent leur r\u00e9sultat.",
+      "Pour les nappes rigides compatibles, WebGL2 transporte 40 octets par sommet au lieu de 52 en omettant les trois composantes de d\u00e9placement nulles. Les nappes qui contiennent un sommet d\u00e9plac\u00e9 ou anim\u00e9 gardent le format complet.",
+      "La passe Photo de FERRO parcourt les objets dynamiques une seule fois pour r\u00e9partir les objets de la sc\u00e8ne, de l\u2019habitacle et de la tuile d\u2019ombre de la voiture.",
+      "Dans la passe d\u2019ombre solaire WebGL2, les extr\u00e9mit\u00e9s d\u2019une plage d\u2019instances rigides peuvent \u00eatre \u00e9cart\u00e9es lorsqu\u2019elles sont enti\u00e8rement hors du volume \u00e9clair\u00e9. Les autres instances gardent leur ordre de soumission."
     ],
-    "reception_cadence_0128": "La cadence de la .128 sous la pluie à Pietraporzio et sur chaque kilomètre de Larche reste à mesurer.",
+    "reception_cadence_0128": "La cadence de la .128 sous la pluie \u00e0 Pietraporzio et sur chaque kilom\u00e8tre de Larche reste \u00e0 mesurer.",
     "optimisations_0129": [
-      "FERRO divise les lots statiques en sous-lots pour sélectionner les instances de la passe d’ombre solaire proche.",
-      "La sélection multi-vues de la faune élimine les groupes au repos hors de portée de toutes les caméras. Le choix du niveau de détail parcourt les individus candidats.",
-      "Le décor périphérique regroupe les arbres par cellule. Une cellule entière peut être écartée avant la sélection individuelle des arbres de la périphérie.",
-      "Le rythme de rafraîchissement des rétroviseurs reste celui du profil. La préparation des poses et des reflets prend en compte les côtés qui seront effectivement repeints.",
-      "Sur une glissière de 8 m, quatre chevrons jaunes se suivent au pas de 2 m. La flèche mesure 60 cm de haut et chaque bras a une épaisseur horizontale d’environ 31 cm.",
-      "Sur Sierra-Cuivrée, les pieds de l’arche de grès sont ancrés dans les deux rives. Les blocs d’éboulis reposent sur les faces locales du terrain et possèdent des corps PhysX indépendants.",
-      "Le shader WebGL2 intègre le changement de calcul de l’ombre de contact."
+      "FERRO divise les lots statiques en sous-lots pour s\u00e9lectionner les instances de la passe d\u2019ombre solaire proche.",
+      "La s\u00e9lection multi-vues de la faune \u00e9limine les groupes au repos hors de port\u00e9e de toutes les cam\u00e9ras. Le choix du niveau de d\u00e9tail parcourt les individus candidats.",
+      "Le d\u00e9cor p\u00e9riph\u00e9rique regroupe les arbres par cellule. Une cellule enti\u00e8re peut \u00eatre \u00e9cart\u00e9e avant la s\u00e9lection individuelle des arbres de la p\u00e9riph\u00e9rie.",
+      "Le rythme de rafra\u00eechissement des r\u00e9troviseurs reste celui du profil. La pr\u00e9paration des poses et des reflets prend en compte les c\u00f4t\u00e9s qui seront effectivement repeints.",
+      "Sur une glissi\u00e8re de 8 m, quatre chevrons jaunes se suivent au pas de 2 m. La fl\u00e8che mesure 60 cm de haut et chaque bras a une \u00e9paisseur horizontale d\u2019environ 31 cm.",
+      "Sur Sierra-Cuivr\u00e9e, les pieds de l\u2019arche de gr\u00e8s sont ancr\u00e9s dans les deux rives. Les blocs d\u2019\u00e9boulis reposent sur les faces locales du terrain et poss\u00e8dent des corps PhysX ind\u00e9pendants.",
+      "Le shader WebGL2 int\u00e8gre le changement de calcul de l\u2019ombre de contact."
     ],
-    "reception_cadence_0129": "La cadence de la .129 à chaud sous la pluie à Pietraporzio et sur les 32 km de Larche reste à mesurer en 1080p Fine.",
+    "reception_cadence_0129": "La cadence de la .129 \u00e0 chaud sous la pluie \u00e0 Pietraporzio et sur les 32 km de Larche reste \u00e0 mesurer en 1080p Fine.",
     "changements_0130": [
-      "En WebGL2, FERRO place les pièces de l’habitacle dans un repère relatif à la caméra. Le compte-tours et les deux cadrans auxiliaires séparent leurs bagues, fonds, graduations et aiguilles.",
-      "La sélection des tribunes tient compte des emprises orientées des gradins et des stands. Le disque de 32 m pouvait retirer des gradins situés de l’autre côté de la piste. La disposition des places suit les tribunes retenues sur toute la grille. À distance, les marches, le mur arrière, le toit et ses piliers d’extrémité restent visibles.",
-      "Les chevrons sont placés sur la glissière extérieure des virages classés serrés. Le seuil de rayon est de 85 m. Dans chaque virage retenu, seules les portions de rail dont la courbure moyenne atteint ce seuil portent les flèches.",
-      "La pluie projetée dans la scène reste visible quand la visière est active. La densité des petites gouttes de visière est multipliée par dix. Le sillage d’un concurrent ajoute des gouttes moyennes et des filets."
+      "En WebGL2, FERRO place les pi\u00e8ces de l\u2019habitacle dans un rep\u00e8re relatif \u00e0 la cam\u00e9ra. Le compte-tours et les deux cadrans auxiliaires s\u00e9parent leurs bagues, fonds, graduations et aiguilles.",
+      "La s\u00e9lection des tribunes tient compte des emprises orient\u00e9es des gradins et des stands. Le disque de 32 m pouvait retirer des gradins situ\u00e9s de l\u2019autre c\u00f4t\u00e9 de la piste. La disposition des places suit les tribunes retenues sur toute la grille. \u00c0 distance, les marches, le mur arri\u00e8re, le toit et ses piliers d\u2019extr\u00e9mit\u00e9 restent visibles.",
+      "Les chevrons sont plac\u00e9s sur la glissi\u00e8re ext\u00e9rieure des virages class\u00e9s serr\u00e9s. Le seuil de rayon est de 85 m. Dans chaque virage retenu, seules les portions de rail dont la courbure moyenne atteint ce seuil portent les fl\u00e8ches.",
+      "La pluie projet\u00e9e dans la sc\u00e8ne reste visible quand la visi\u00e8re est active. La densit\u00e9 des petites gouttes de visi\u00e8re est multipli\u00e9e par dix. Le sillage d\u2019un concurrent ajoute des gouttes moyennes et des filets."
     ],
-    "reception_cadence_0130": "La cadence de la .130 à chaud sous la pluie à Pietraporzio et sur les 32 km de Larche reste à mesurer en 1080p Fine."
+    "reception_cadence_0130": "La cadence de la .130 \u00e0 chaud sous la pluie \u00e0 Pietraporzio et sur les 32 km de Larche reste \u00e0 mesurer en 1080p Fine."
   }
 }
