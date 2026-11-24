@@ -212,24 +212,24 @@
     const derive = (n1 - .5) * 12;
     const calcaire = Math.max(_smoothstep(.90, .62, ny),
       .72 * _smoothstep(48, 125, y), .55 * _smoothstep(5, 28, d + derive));
-    let r = .35 + n1 * .14, g = .41 + n1 * .11, b = .19 + n1 * .06;
+    let r = .15 + n1 * .09, g = .22 + n1 * .08, b = .08 + n1 * .04;
     if (calcaire > 0) {
       const cn = _fbm(x * .011 + 9.2, z * .011 + 5.7, 3);
-      r = _lerp(r, .76 + cn * .14, calcaire);
-      g = _lerp(g, .73 + cn * .13, calcaire);
-      b = _lerp(b, .65 + cn * .11, calcaire);
+      r = _lerp(r, .52 + cn * .14, calcaire);
+      g = _lerp(g, .49 + cn * .13, calcaire);
+      b = _lerp(b, .42 + cn * .11, calcaire);
     }
 
-    const parc = .60 * _smoothstep(4950, 5300, s) * _smoothstep(0, 4, y)
+    const parc = .65 * _smoothstep(4950, 5300, s) * _smoothstep(0, 4, y)
       * (1 - _smoothstep(10, 34, d + derive));
-    r = _lerp(r, .24 + n1 * .08, parc);
-    g = _lerp(g, .44 + n1 * .09, parc);
-    b = _lerp(b, .18 + n1 * .05, parc);
+    r = _lerp(r, .10 + n1 * .05, parc);
+    g = _lerp(g, .24 + n1 * .07, parc);
+    b = _lerp(b, .07 + n1 * .03, parc);
 
     const sable = (1 - _smoothstep(.6, 5.2, y + (n1 - .5))) * _smoothstep(3, 21, d + derive);
-    r = _lerp(r, .78 + n1 * .10, sable);
-    g = _lerp(g, .70 + n1 * .08, sable);
-    b = _lerp(b, .48 + n1 * .06 - (1 - _smoothstep(-1.5, 2.6, y)) * .08, sable);
+    r = _lerp(r, .54 + n1 * .10, sable);
+    g = _lerp(g, .46 + n1 * .08, sable);
+    b = _lerp(b, .30 + n1 * .05 - (1 - _smoothstep(-1.5, 2.6, y)) * .06, sable);
 
     if (saison && saison.automne) { r *= 1.06; g *= 0.96; b *= 0.90; }
     return [r, g, b];
@@ -474,16 +474,16 @@
       );
     }
 
-    // Palette provençale ensoleillée (façades marseillaises)
+    // Palette provençale ensoleillée (albedos linéaires riches sous Reinhard)
     const FACADES = [
-      [0.92, 0.84, 0.68], [0.89, 0.74, 0.54], [0.94, 0.88, 0.78],
-      [0.86, 0.66, 0.52], [0.90, 0.79, 0.62], [0.88, 0.82, 0.74]
+      [0.72, 0.61, 0.45], [0.68, 0.50, 0.34], [0.76, 0.68, 0.56],
+      [0.64, 0.43, 0.31], [0.70, 0.56, 0.40], [0.66, 0.59, 0.50]
     ];
     const TOITS = [
-      [0.72, 0.34, 0.22], [0.66, 0.31, 0.20], [0.76, 0.40, 0.25]
+      [0.50, 0.21, 0.13], [0.44, 0.19, 0.12], [0.54, 0.26, 0.15]
     ];
     const VOLETS = [
-      [0.24, 0.48, 0.68], [0.22, 0.42, 0.28], [0.46, 0.58, 0.64]
+      [0.14, 0.34, 0.52], [0.13, 0.29, 0.18], [0.30, 0.42, 0.48]
     ];
 
     function immeubleProvencal(x, z, yaw, L, H, P, seed, detail) {

@@ -283,6 +283,7 @@
       vegetationQualite,
       saison,
       solsProceduraux: true,
+      pierresProcedurales: decorEnrichi && veut.matieres,
       organique: true,
       public: decorEnrichi && !!B.public,
     });

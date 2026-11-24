@@ -71,7 +71,7 @@
   }
   const BLANC = [.96, .94, .88], ROSE = [.96, .64, .76];
   const ORANGE = [.76, .30, .065], CUIVRE = [.48, .16, .055], OR = [.79, .53, .09];
-  const SEC = [.43, .36, .16], FROID = [.25, .32, .28], NEIGE = [.91, .94, .97];
+  const SEC = [.24, .27, .095], FROID = [.25, .32, .28], NEIGE = [.91, .94, .97];
   function teinte(p, famille, base, x, z, habitat, sortie) {
     const resultat = sortie || new Array(3), n = bruit(x, z, 139), nuance = bruit(x + 197, z - 311, 277);
     const feuillage = famille === 'feuillage' || famille === 'feuillage-caduque' || famille === 'feuillage-persistant', fleurs = famille === 'fleurs';
@@ -102,8 +102,8 @@
       }
     } else if (p.id === 'ete') {
       cible = SEC;
-      part = feuillage ? (caduc ? .18 + .18 * n : .06 + .07 * n)
-        : fleurs ? .12 : .22 + .19 * n + (habitat ? (1 - habitat.herbe) * .10 : 0);
+      part = feuillage ? (caduc ? .10 + .10 * n : .04 + .05 * n)
+        : fleurs ? .10 : .09 + .09 * n + (habitat ? (1 - habitat.herbe) * .06 : 0);
     } else if (p.id === 'automne') {
       if (caduc) {
         cible = p.theme === 'baikal' ? OR : n < .34 ? CUIVRE : n < .67 ? ORANGE : OR; part = .79 + .18 * nuance;

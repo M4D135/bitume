@@ -22,9 +22,9 @@
   // Auto peut alléger ce rendu sans rebâtir la prairie ni retirer des arbres/obstacles en cours de course.
   const PRAIRIE = Object.freeze({
     low: Object.freeze({ density: Object.freeze([7, 16, .125]), distance: Object.freeze([24, 45]) }),
-    medium: Object.freeze({ density: Object.freeze([10, 28, .125]), distance: Object.freeze([42, 80]) }),
-    high: Object.freeze({ density: Object.freeze([16, 38, .125]), distance: Object.freeze([65, 110]) }),
-    ultra: Object.freeze({ density: Object.freeze([20, 52, .125]), distance: Object.freeze([95, 150]) }),
+    medium: Object.freeze({ density: Object.freeze([14, 38, .125]), distance: Object.freeze([56, 102]) }),
+    high: Object.freeze({ density: Object.freeze([22, 58, .125]), distance: Object.freeze([90, 150]) }),
+    ultra: Object.freeze({ density: Object.freeze([26, 72, .125]), distance: Object.freeze([120, 185]) }),
   });
 
   // ---------------------------------------------------------------- bornes du moteur (à ne pas dépasser)

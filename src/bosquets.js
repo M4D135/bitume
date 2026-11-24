@@ -3,60 +3,90 @@
 (function (B) {
   'use strict';
   const especes = {
-    foret:       ['rond', 5.6, [.14,.27,.11]],
-    marseille:         ['rond', 2.8, [.22,.30,.15]],
-    corail:            ['rond', 4.2, [.13,.34,.15]],
-    pacifique:     ['sapin', 11, [.12,.25,.17]],
-    fjord:             ['sapin', 6.4, [.16,.28,.20]],
-    'route-des-cimes': ['sapin', 6.5, [.14,.25,.16]],
-    larche:            ['sapin', 7.8, [.12,.24,.15]],
-    islande:     ['lande', .72, [.30,.34,.20]],
-    sierra:            ['lande', 1.15, [.35,.35,.21]],
-    asie:   ['rond', 4.7, [.15,.31,.16]],
-    baikal:            ['sapin', 7.4, [.14,.27,.20]],
+    foret:             ['rond', 7.2, [.075,.175,.052]],
+    cote:              ['rond', 5.4, [.105,.185,.068]],
+    montagne:          ['sapin', 7.4, [.068,.155,.075]],
+    marseille:         ['rond', 4.6, [.115,.185,.075]],
+    corail:            ['rond', 5.2, [.075,.215,.082]],
+    pacifique:         ['sapin', 13.5, [.062,.152,.082]],
+    fjord:             ['sapin', 7.6, [.078,.168,.095]],
+    'route-des-cimes': ['sapin', 7.8, [.068,.152,.078]],
+    larche:            ['sapin', 8.6, [.064,.148,.075]],
+    islande:           ['lande', .95, [.17,.20,.10]],
+    sierra:            ['lande', 1.45, [.20,.21,.10]],
+    desert:            ['lande', 1.15, [.22,.20,.11]],
+    asie:              ['rond', 5.8, [.078,.195,.092]],
+    baikal:            ['sapin', 8.2, [.072,.162,.098]],
+    ovale:             ['rond', 5.6, [.095,.195,.070]],
   };
   // x, z, hauteur et rayon dans l'enveloppe normalisée, identique pour les deux LOD.
   const sujets = [[-.27,-.14,.72,.125],[.01,-.25,.84,.12],[.26,-.04,.62,.135],
     [-.15,.20,.96,.145],[.13,.22,.74,.13]];
   const VARIANTES = 16;
   function forme(espece, loin, variante) {
-    const triangles = [], pans = loin ? 4 : 6;
-    function face(a,b,c) {
-      const ux=b[0]-a[0],uy=b[1]-a[1],uz=b[2]-a[2];
-      const vx=c[0]-a[0],vy=c[1]-a[1],vz=c[2]-a[2];
-      const n=[uy*vz-uz*vy,uz*vx-ux*vz,ux*vy-uy*vx];
-      const l=Math.hypot(...n), normale=n.map(v=>v/l);
-      triangles.push([a,b,c,normale,normale,normale]);
+    const triangles = [];
+    // Normales organiques lissées (sortantes + légèrement vers le ciel) autour du centre de chaque houppier :
+    // supprime totalement l'aspect « cristal / diamant facetté » en gardant 5 arbres par instance GPU.
+    function normaleDouce(p, cx, cy, cz, biaisHaut = .42) {
+      let nx = p[0] - cx, ny = (p[1] - cy) * .7 + biaisHaut, nz = p[2] - cz;
+      const l = Math.hypot(nx, ny, nz) || 1;
+      return [nx / l, ny / l, nz / l];
     }
-    for (let sujet=0; sujet<sujets.length; sujet++) {
-      const [x,z,hauteur,rayonBase]=sujets[sujet];
-      const orientation=bruit(variante,sujet,17)*2*Math.PI;
-      const echelle=.84+.16*bruit(variante,sujet,63);
-      const h=hauteur*echelle, rayon=rayonBase*echelle;
-      const col = espece === 'sapin' ? .24 : .42;
-      const anneau = (y,r) => Array.from({length:pans}, (_,i) => {
+    function faceDouce(a, b, c, cx, cy, cz, biaisHaut) {
+      triangles.push([a, b, c,
+        normaleDouce(a, cx, cy, cz, biaisHaut),
+        normaleDouce(b, cx, cy, cz, biaisHaut),
+        normaleDouce(c, cx, cy, cz, biaisHaut)]);
+    }
+    function anneauIrregulier(x, z, y, r, pans, orientation, sel, irreg) {
+      return Array.from({ length: pans }, (_, i) => {
         const a = i * 2 * Math.PI / pans + orientation;
-        return [x+r*Math.cos(a), h*y-.5, z+r*Math.sin(a)];
+        const m = 1 + (bruit(variante * 31 + sel, i * 17 + 3, 91) - .5) * irreg;
+        const dy = (bruit(variante * 19 + sel, i * 23 + 7, 53) - .5) * r * .28;
+        return [x + r * m * Math.cos(a), y + dy, z + r * m * Math.sin(a)];
       });
-      const base = anneau(0,rayon*.22), large = anneau(col,rayon);
-      const flanc = (bas,haut) => {
-        for (let i=0;i<pans;i++) {
-          const j=(i+1)%pans;
-          face(bas[i],haut[i],haut[j]); face(bas[i],haut[j],bas[j]);
-        }
-      };
-      if (loin) {
-        const pied=[x,-.5,z];
-        for(let i=0;i<pans;i++) face(pied,large[i],large[(i+1)%pans]);
-      } else flanc(base,large);
-      let sommet=large;
-      if (!loin) {
-        sommet=anneau(.71,rayon*(espece==='sapin' ? .48 : .86));
-        flanc(large,sommet);
+    }
+    function lobe(cx, cy, cz, rx, ry, rz, pans, orientation, sel) {
+      const bas = [cx, cy - ry * .78, cz];
+      const haut = [cx + rx * .06 * Math.cos(orientation), cy + ry, cz + rz * .06 * Math.sin(orientation)];
+      const eq = anneauIrregulier(cx, cz, cy - ry * .05, (rx + rz) * .5, pans, orientation, sel, .34);
+      for (let i = 0; i < pans; i++) {
+        const j = (i + 1) % pans;
+        if (!loin) faceDouce(bas, eq[j], eq[i], cx, cy, cz, .22);
+        faceDouce(eq[i], eq[j], haut, cx, cy, cz, .55);
       }
-      const cos=Math.cos(orientation), sin=Math.sin(orientation);
-      const pointe=[x+rayon*(.07*cos+.12*sin),h-.5,z+rayon*(.07*sin-.12*cos)];
-      for (let i=0;i<pans;i++) face(sommet[i],pointe,sommet[(i+1)%pans]);
+    }
+    for (let sujet = 0; sujet < sujets.length; sujet++) {
+      const [x, z, hauteur, rayonBase] = sujets[sujet];
+      const orientation = bruit(variante, sujet, 17) * 2 * Math.PI;
+      const echelle = .82 + .22 * bruit(variante, sujet, 63);
+      const h = Math.min(.98, hauteur * echelle), rayon = rayonBase * echelle;
+      if (espece === 'sapin') {
+        // Conifère multi-étages léger (60 FPS) : 3 couronnes étagées proches / 2 au loin, normales douces.
+        const etages = loin
+          ? [[.18, .66, 1.05], [.52, .98, .62]]
+          : [[.14, .48, 1.12], [.40, .74, .86], [.66, .99, .54]];
+        const pans = loin ? 4 : 5;
+        for (let e = 0; e < etages.length; e++) {
+          const [y0, y1, fR] = etages[e];
+          const rE = rayon * fR, yb = h * y0 - .5, yt = h * y1 - .5, ym = (yb + yt) * .5;
+          const bord = anneauIrregulier(x, z, yb + (yt - yb) * .16, rE, pans, orientation + e * .78, sujet * 13 + e, .34);
+          const sommet = [x + rE * .07 * Math.cos(orientation + e), yt, z + rE * .07 * Math.sin(orientation + e)];
+          for (let i = 0; i < pans; i++) {
+            const j = (i + 1) % pans;
+            faceDouce(bord[i], sommet, bord[j], x, ym, z, .48);
+          }
+        }
+      } else {
+        // Feuillu / pin parasol léger : 2 lobes feuillus asymétriques (1 au loin), normales douces.
+        const pans = loin ? 5 : 6;
+        lobe(x, h * .56 - .5, z, rayon * 1.12, h * .38, rayon * 1.05, pans, orientation, sujet * 19 + 1);
+        if (!loin) {
+          const a1 = orientation + 1.4;
+          lobe(x + Math.cos(a1) * rayon * .38, h * .64 - .5, z + Math.sin(a1) * rayon * .38,
+            rayon * .80, h * .30, rayon * .76, 5, a1, sujet * 19 + 5);
+        }
+      }
     }
     return triangles;
   }
@@ -135,7 +165,7 @@
     const fraction = bruit(coordonneesPose.getInt32(4),coordonneesPose.getInt32(12),graine^sel);
     return bruit(coordonneesPose.getInt32(0),coordonneesPose.getInt32(8),fraction*4294967296);
   }
-  function instance(site, loin, p, largeur, h, axes, color, t) {
+  function instance(site, loin, p, largeur, h, axes, color, t, mat = 27) {
     const x=Math.floor(p[0]*100), z=Math.floor(p[2]*100);
     const variante=Math.floor(bruit(x,z,t*4294967296)*VARIANTES);
     const shape=site.forme+'-'+variante+(loin?'-loin':'');
@@ -150,12 +180,12 @@
     const tourneZ=axeZ.map((v,i)=>v*cos-axeX[i]*sin);
     const largeurLocale=largeur*echelle;
     const profondeur=largeurLocale*(.78+.22*t);
-    return {shape,p,r:B.decor.angles(tourneX,axeY,tourneZ),s:[largeurLocale,h,profondeur],color,mat:11};
+    return {shape,p,r:B.decor.angles(tourneX,axeY,tourneZ),s:[largeurLocale,h,profondeur],color,mat};
   }
   function ajouterInstance(lot, site, leger, x, z, t, p, largeur, h, axes, loinSeul = false) {
-    const teinte=site.couleur.map(v=>v*(.83+.28*t));
+    const teinte=site.couleur.map(v=>v*(.74+.42*t));
     const color=site.saison ? B.saisons.teinte(site.saison,site.genre==='lande'?'herbe':'feuillage-persistant',teinte,x,z) : teinte;
-    const o=instance(site,leger||loinSeul,p,largeur,h,axes,color,t);
+    const o=instance(site,leger||loinSeul,p,largeur,h,axes,color,t,leger?11:27);
     if (loinSeul) { lot.loin.push(o); return; }
     lot.objets.push(o);
     // En Légère, le modèle unique est déjà le lointain.
@@ -179,7 +209,7 @@
     }
   }
   function nouveauGroupe(progressif, leger, palettes) {
-    const lot={objets:[],loin:[],centre:[0,0,0],rayon:0,portee:Infinity,bascule:90,
+    const lot={objets:[],loin:[],centre:[0,0,0],rayon:0,portee:Infinity,bascule:75,
       lodReferenceFov:60,lodReferenceHeight:1080,arbres:true,bosquets:true};
     const groupe={lot,semis:progressif?[]:null,largeurs:progressif?null:[]};
     if (progressif) {
@@ -234,8 +264,11 @@
     const troncons=(c.tronconsThemes || []).map(t=>({debut:t.debut,fin:t.fin,milieu:milieu(t.id,t.theme)}));
     if (!principal && !troncons.some(t=>t.milieu)) return [];
     const leger=qualite==='low', dense=qualite==='ultra';
-    const pas=leger?39:qualite==='medium'?19:dense?7:11;
-    const quota=leger?2:qualite==='medium'?5:dense?14:9;
+    // Lot H : forêts et lisières denses multi-échelles (1 instance = 5 houppiers -> coût GPU tenu à 60 FPS).
+    const pas=leger?39:qualite==='medium'?7:dense?3:4;
+    const quota=leger?2:qualite==='medium'?16:dense?42:28;
+    const porteeAxe=leger?240:360;
+    const margeRoute=leger?27:22;
     const secteurs=new Uint8Array(Math.ceil(c.longueur/100)+1), groupes=new Map();
     const occupe=zonesProtegees(lots,terrain), foret=c.id==='larche'?foretStura():null;
     const habitat={}, normal=[0,1,0], voisin={i:-1,d:Infinity};
@@ -254,8 +287,8 @@
         // de l'axe et de la pente. Ces refus n'ont besoin d'aucune recherche routière.
         const couvert=foret ? foret(x,z) : 0;
         if (foret && (!(couvert>.29) || t>couvert)) continue;
-        const q=interroger.dansRayon ? interroger.dansRayon(x,z,240,voisin) : interroger(x,z,240,true);
-        if(q.i<0 || q.d<c.largeur/2+27 || q.d>240) continue;
+        const q=interroger.dansRayon ? interroger.dansRayon(x,z,porteeAxe,voisin) : interroger(x,z,porteeAxe,true);
+        if(q.i<0 || q.d<c.largeur/2+margeRoute || q.d>porteeAxe) continue;
         const s=q.i*c.pas, secteur=Math.floor(s/100);
         if(secteurs[secteur]>=quota || B.circuit.dansCouvert?.(c,s,24)) continue;
         // Au raccord, la borne de début appartient au nouveau thème. Un domaine
@@ -267,27 +300,29 @@
         // Le disque de tous les houppiers tient dans le triangle de terrain.
         const ux=V[b]-V[a], uz=V[b+2]-V[a+2], vx=V[d]-V[a], vz=V[d+2]-V[a+2];
         const det=ux*vz-uz*vx;
-        const rayon=Math.min(genre==='lande'?3.2:7.8,Math.abs(det)/(3*Math.max(Math.hypot(ux,uz),Math.hypot(vx,vz),Math.hypot(vx-ux,vz-uz))));
-        if (!(rayon>1.3) || q.d<c.largeur/2+27+rayon || occupe(x,z,rayon)) continue;
-        if(Math.abs(B.circuit.ecart(c,0,s))<320 && q.d<100) continue;
+        const rayon=Math.min(genre==='lande'?3.8:9.2,Math.abs(det)/(2.5*Math.max(Math.hypot(ux,uz),Math.hypot(vx,vz),Math.hypot(vx-ux,vz-uz))));
+        if (!(rayon>1.3) || q.d<c.largeur/2+margeRoute+rayon || occupe(x,z,rayon)) continue;
+        if(Math.abs(B.circuit.ecart(c,0,s))<(leger?320:185) && q.d<(leger?100:34)) continue;
         if(c.id==='marseille') {
           const cote=-(x-c.x[q.i])*Math.sin(c.cap[q.i])+(z-c.z[q.i])*Math.cos(c.cap[q.i]);
-          // Les quais et les plages restent dégagés. La garrigue commence sur
-          // le flanc terrestre, derrière la première ligne bâtie de la Corniche.
-          if(s<1250 || cote>-70 || y<8) continue;
+          // Les quais et les plages restent dégagés. La garrigue et les pins habillent le flanc terrestre.
+          if(s<180 || cote>-22 || y<4) continue;
         }
         if (foret && genre==='lande' && t>couvert*.56) continue;
         if (!foret) {
           const richesse=site.ecologie?.echantillonner(x,z,habitat).boisement;
-          if (!(richesse>.09) || t>richesse*(genre==='lande' ? .56 : 1)) continue;
+          const seuilR=leger?.09:.03;
+          const prob=leger ? richesse*(genre==='lande'?.56:1) : Math.min(.92, richesse*(genre==='lande'?.85:1.55) + .22);
+          if (!(richesse>seuilR) || t>prob) continue;
         }
         const uy=V[b+1]-V[a+1],vy=V[d+1]-V[a+1];
         const dx=(uy*vz-vy*uz)/det,dz=(ux*vy-vx*uy)/det;
-        if(Math.hypot(dx,dz)>(genre==='lande' ? .34 : .24)) continue;
+        const penteMax = leger ? (genre==='lande' ? .34 : .24) : (genre==='lande' ? .58 : .54);
+        if(Math.hypot(dx,dz)>penteMax) continue;
         const cap=bruit(ix,iz,c.graine+17)*Math.PI*2,cos=Math.cos(cap),sin=Math.sin(cap);
-        const h=hauteur*(.77+.39*bruit(ix,iz,c.graine+63));
+        const h=hauteur*(.68+.62*bruit(ix,iz,c.graine+63));
         // Inclure le déport horizontal du sommet lorsque le groupe suit la pente.
-        const largeur=Math.min((rayon-h*Math.hypot(dx,dz))*1.95,genre==='lande'?4.8:15);
+        const largeur=Math.min(Math.max(2.6, (rayon-h*Math.hypot(dx,dz)*.45)*2.15),genre==='lande'?5.6:18);
         if(largeur<2.1) continue;
         normal[0]=-dx; normal[2]=-dz;
         const axes=B.decor.base([cos,dx*cos+dz*sin,sin],normal);

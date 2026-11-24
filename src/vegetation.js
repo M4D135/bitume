@@ -30,33 +30,88 @@
     high: Object.freeze({ densite: 8, terrain: .10, maximum: 180000, maillages: [8, 128], variantes: 2, plafonner: true }),
     ultra: Object.freeze({ densite: 240, terrain: 2, maximum: 220000, maillages: [8, 128, 1024, 4096], variantes: 2 }),
   });
+  // Lot H (mode organique du jeu) : prairies et abords beaucoup plus denses (herbes hautes,
+  // sous-bois, fougères, taillis) tout en préservant les budgets historiques des bancs sans organique.
+  const PALIERS_DENSE = Object.freeze({
+    low: PALIERS.low,
+    medium: Object.freeze({ stations: 220, herbes: 4, fougeres: 2, fleurs: 0, taillis: 1.15, mat: 27, sol: 25, groupes: 16, familles: ['herbes', 'fougères', 'taillis'] }),
+    high: Object.freeze({ stations: 380, herbes: 5, fougeres: 3, fleurs: 4, taillis: 1.65, mat: 27, sol: 25, groupes: 16, familles: ['herbes', 'fougères', 'fleurs', 'taillis'] }),
+    ultra: Object.freeze({ stations: 460, herbes: 6, fougeres: 4, fleurs: 5, taillis: 2.0, mat: 27, sol: 25, groupes: 16, familles: ['herbes', 'fougères', 'fleurs', 'taillis'] }),
+  });
+  const TAPIS_DENSE = Object.freeze({
+    medium: Object.freeze({ densite: 28, terrain: .40, maximum: 160000, maillages: [8, 128, 1024], variantes: 2, plafonner: true }),
+    high: Object.freeze({ densite: 120, terrain: 1.4, maximum: 190000, maillages: [8, 128, 1024, 4096], variantes: 2, plafonner: true }),
+    ultra: Object.freeze({ densite: 240, terrain: 2.6, maximum: 220000, maillages: [8, 128, 1024, 4096], variantes: 2 }),
+  });
 
   // Biomes réellement dessinés par le décor (mêmes noms que THEMES de decor.js). Un biome absent retourne des lots vides.
   // `stations` module la maille d'échantillonnage, `densite` le nombre de plants par station, `taille` la stature.
   const BIOMES = Object.freeze({
     foret: Object.freeze({
       stations: 1, densite: 1, taille: 1, familles: ['herbes', 'fougères', 'fleurs', 'taillis'],
-      herbe: [.21, .34, .105], taillis: [.135, .26, .075], taillisNuance: [.04, .06, 0],
-      fougere: [.115, .27, .10], humus: [.16, .115, .06],
+      herbe: [.12, .24, .062], taillis: [.075, .175, .046], taillisNuance: [.035, .055, .01],
+      fougere: [.072, .195, .062], humus: [.13, .095, .052],
       fleurs: [[.70, .17, .12], [.90, .76, .16], [.86, .86, .90], [.34, .38, .78]],
     }),
     cote: Object.freeze({
-      stations: .72, densite: .78, taille: .9, familles: ['herbes', 'fleurs', 'taillis'],
-      herbe: [.34, .40, .17], taillis: [.22, .27, .13], taillisNuance: [.05, .05, .02],
-      fougere: [.24, .33, .16], humus: [.30, .25, .15],
+      stations: .78, densite: .84, taille: .92, familles: ['herbes', 'fleurs', 'taillis'],
+      herbe: [.18, .255, .095], taillis: [.115, .185, .072], taillisNuance: [.04, .05, .02],
+      fougere: [.14, .225, .095], humus: [.22, .18, .105],
       fleurs: [[.92, .84, .30], [.88, .46, .18], [.94, .93, .88]],
     }),
     montagne: Object.freeze({
-      stations: .62, densite: .66, taille: .78, familles: ['herbes', 'fougères', 'taillis'],
-      herbe: [.21, .33, .14], taillis: [.15, .23, .13], taillisNuance: [.03, .05, .03],
-      fougere: [.14, .26, .15], humus: [.13, .12, .09],
+      stations: .74, densite: .78, taille: .84, familles: ['herbes', 'fougères', 'taillis'],
+      herbe: [.125, .23, .082], taillis: [.082, .16, .072], taillisNuance: [.03, .045, .025],
+      fougere: [.085, .19, .092], humus: [.115, .105, .075],
       fleurs: [[.56, .34, .62], [.88, .82, .28], [.90, .36, .44]],
     }),
     baikal: Object.freeze({
-      stations: .76, densite: .78, taille: .82, familles: ['herbes', 'fougères', 'fleurs', 'taillis'],
-      herbe: [.24, .36, .18], taillis: [.16, .28, .14], taillisNuance: [.035, .05, .025],
-      fougere: [.13, .28, .16], humus: [.18, .16, .12],
+      stations: .78, densite: .82, taille: .86, familles: ['herbes', 'fougères', 'fleurs', 'taillis'],
+      herbe: [.135, .235, .105], taillis: [.088, .185, .088], taillisNuance: [.03, .05, .025],
+      fougere: [.085, .20, .105], humus: [.145, .13, .092],
       fleurs: [[.68, .60, .77], [.90, .88, .82], [.82, .65, .24]],
+    }),
+    pacifique: Object.freeze({
+      stations: .95, densite: .95, taille: 1.05, familles: ['herbes', 'fougères', 'fleurs', 'taillis'],
+      herbe: [.13, .22, .085], taillis: [.075, .165, .072], taillisNuance: [.03, .05, .02],
+      fougere: [.072, .19, .078], humus: [.15, .105, .062],
+      fleurs: [[.90, .74, .22], [.82, .38, .28], [.90, .90, .86]],
+    }),
+    asie: Object.freeze({
+      stations: .85, densite: .88, taille: .96, familles: ['herbes', 'fougères', 'fleurs', 'taillis'],
+      herbe: [.095, .24, .125], taillis: [.072, .185, .095], taillisNuance: [.03, .05, .02],
+      fougere: [.068, .205, .105], humus: [.13, .13, .085],
+      fleurs: [[.92, .56, .66], [.94, .88, .72], [.88, .32, .26]],
+    }),
+    corail: Object.freeze({
+      stations: .80, densite: .84, taille: .94, familles: ['herbes', 'fleurs', 'taillis'],
+      herbe: [.125, .25, .095], taillis: [.082, .205, .082], taillisNuance: [.035, .05, .02],
+      fougere: [.095, .22, .092], humus: [.19, .155, .095],
+      fleurs: [[.96, .52, .34], [.96, .84, .24], [.96, .95, .92]],
+    }),
+    fjord: Object.freeze({
+      stations: .78, densite: .80, taille: .86, familles: ['herbes', 'fougères', 'taillis'],
+      herbe: [.115, .21, .088], taillis: [.078, .155, .078], taillisNuance: [.03, .045, .02],
+      fougere: [.082, .185, .095], humus: [.125, .115, .085],
+      fleurs: [[.62, .42, .72], [.90, .86, .52]],
+    }),
+    sierra: Object.freeze({
+      stations: .52, densite: .58, taille: .72, familles: ['herbes', 'taillis'],
+      herbe: [.26, .24, .11], taillis: [.19, .20, .095], taillisNuance: [.04, .04, .02],
+      fougere: [.18, .20, .09], humus: [.28, .17, .095],
+      fleurs: [[.92, .68, .18], [.88, .38, .16]],
+    }),
+    islande: Object.freeze({
+      stations: .58, densite: .64, taille: .66, familles: ['herbes', 'taillis'],
+      herbe: [.14, .20, .078], taillis: [.11, .165, .072], taillisNuance: [.03, .04, .015],
+      fougere: [.11, .17, .08], humus: [.08, .085, .09],
+      fleurs: [[.78, .72, .86], [.88, .82, .38]],
+    }),
+    ovale: Object.freeze({
+      stations: .82, densite: .85, taille: .90, familles: ['herbes', 'fleurs', 'taillis'],
+      herbe: [.13, .235, .075], taillis: [.092, .185, .068], taillisNuance: [.035, .05, .018],
+      fougere: [.095, .20, .078], humus: [.16, .135, .082],
+      fleurs: [[.92, .82, .26], [.86, .34, .22], [.94, .94, .90]],
     }),
   });
 
@@ -339,11 +394,12 @@
     const qualite = normaliserQualite(options.qualite);
     const vide = { lots: [], herbes: 0, fougeres: 0, fleurs: 0, taillis: 0, brins: 0, brinsTapis: 0, tuiles: 0, objetsHerbe: 0, qualite };
     if (qualite === 'off' || !c || !limites || !interroger) return vide;
+    const organique = options.organique === true;
     const biome = BIOMES[c.theme];
     if (!biome) return vide;
     // Un biome que le décor ne connaît pas n'a pas d'accotement dessiné : rien à végétaliser.
-    if (B.decor && B.decor.THEMES && !B.decor.THEMES[c.theme]) return vide;
-    const palier = PALIERS[qualite];
+    if (B.decor && B.decor.THEMES && !B.decor.THEMES[c.theme] && !(organique && B.destinations?.THEMES?.[c.theme])) return vide;
+    const palier = (organique ? PALIERS_DENSE : PALIERS)[qualite];
     const r = hasard((c.graine ^ 0x53a98b17) >>> 0), groupes = new Map(), groupesTapis = new Map(), w = c.largeur / 2;
     const ecologie = qualite === 'low' ? null : options.ecologie || (B.ecologie && B.ecologie.creer(c.graine, c.theme));
     const habitat = {};
@@ -365,7 +421,8 @@
         const e = ecologie.echantillonner(x, z, habitat);
         const richesse = famille === 'fleurs' ? e.fleurs : famille === 'taillis' ? e.boisement
           : famille === 'fougeres' ? e.herbe * (.35 + .65 * e.boisement) : e.herbe;
-        if (richesse < .08 || tirageSpatial(x, z, famille.length * 911) > richesse) return false;
+        const seuilEco = organique ? .03 : .08;
+        if (richesse < seuilEco || tirageSpatial(x, z, famille.length * 911) > (organique ? Math.min(.95, richesse * 1.45 + .18) : richesse)) return false;
       }
       const q = interroger(x, z, 40), marge = Math.hypot(taille[0], taille[2]) / 2 + .18;
       if (q.i < 0 || q.d < w + 1.2 + marge || Math.abs(B.circuit.ecart(c, i * c.pas, q.i * c.pas)) > 20) return false;
@@ -385,7 +442,8 @@
       return objet;
     }
     function interdit(i) {
-      return Math.abs(B.circuit.ecart(c, 0, i * c.pas)) < 360 || (B.circuit.dansCouvert && B.circuit.dansCouvert(c, i * c.pas, 20));
+      const margeDepart = organique ? (c.ouvert ? 35 : 115) : 360;
+      return Math.abs(B.circuit.ecart(c, 0, i * c.pas)) < margeDepart || (B.circuit.dansCouvert && B.circuit.dansCouvert(c, i * c.pas, 20));
     }
     function tiragesSpecimen(i, d, sel) {
       const cap = c.cap[i];
@@ -411,20 +469,24 @@
           [largeur, h, largeur * (.72 + stature * .20)], [b[0] * vert, b[1] * vert, b[2] * vert], palier.mat)) herbes++;
       }
       if (hasardStation[7] < palier.taillis && espace > 3) {
-        const decalage = cote * Math.min(limite - 2.3, Math.abs(d) + 2.5);
-        const [orientation, ampleur, stature] = qualite === 'low'
-          ? [hasardStation[4], hasardStation[5], hasardStation[6]]
-          : tiragesSpecimen(i, decalage, 1011);
-        const largeur = (1.0 + ampleur * .55) * biome.taille, h = (.75 + stature * .35) * biome.taille;
-        const b = biome.taillis, n = biome.taillisNuance, t = hasardStation[3];
-        if (ajouter(i, decalage, 'taillis', orientation * PI2,
-          [largeur, h, largeur * .85], [b[0] + n[0] * t, b[1] + n[1] * t, b[2] + n[2] * t], palier.mat)) taillis++;
+        const nbTaillis = organique && palier.taillis > 1 ? 1 + Math.floor(hasardStation[1] * 2.2) : 1;
+        for (let tk = 0; tk < nbTaillis; tk++) {
+          const jT = (i + tk * 2) % c.n;
+          const decalage = cote * Math.min(limite - 2.3, Math.abs(d) + 2.2 + tk * 1.1);
+          const [orientation, ampleur, stature] = qualite === 'low'
+            ? [hasardStation[4], hasardStation[5], hasardStation[6]]
+            : tiragesSpecimen(jT, decalage, 1011 + tk * 7);
+          const largeur = (1.0 + ampleur * .62) * biome.taille, h = (.78 + stature * .45) * biome.taille;
+          const b = biome.taillis, n = biome.taillisNuance, t = hasardStation[(3 + tk) % 8];
+          if (ajouter(jT, decalage, 'taillis', orientation * PI2,
+            [largeur, h, largeur * .85], [b[0] + n[0] * t, b[1] + n[1] * t, b[2] + n[2] * t], palier.mat)) taillis++;
+        }
       }
     }
 
     // Plantation en deux dimensions sur les triangles visibles. Aucun ruban ne dépend du sens de
     // la route ; les limites suivent le sol, les bâtiments et les rochers, jusque dans la campagne.
-    const tapis = TAPIS[qualite];
+    const tapis = (organique ? TAPIS_DENSE : TAPIS)[qualite];
     let brinsTapis = 0, brinsAccotements = 0, brinsTerrain = 0, aireAccotements = 0, aireTerrain = 0;
     let aireDisponible = 0, aireRiche = 0, brinsRiches = 0;
     function hash(x, z, sel = 0) {
@@ -450,12 +512,18 @@
         let richesse = 1, lisiere = false;
         if (ecologie) {
           richesse = ecologie.echantillonner(centre[0], centre[2], habitat).herbe;
+          if (organique && source.type === 'accotement') {
+            // Lot H : l'herbe des accotements varie de rase à très drue, sans bande chauve en plastique,
+            // tout en gardant les clairières naturelles du grand terrain (budget 60 FPS tenu).
+            if (richesse < .26) richesse = .26;
+          }
           if (source.type === 'accotement' || d < 140) {
             let min = richesse, max = richesse;
             for (const p of points) {
               const v = ecologie.echantillonner(p[0], p[2], habitat).herbe;
               min = Math.min(min, v); max = Math.max(max, v);
             }
+            if (organique && source.type === 'accotement') { min = Math.max(min, .26); max = Math.max(max, .26); }
             if (max < .025) return;
             lisiere = max - min > .38 || (min === 0 && max > .15);
           }
@@ -495,9 +563,9 @@
         const z = croix(x, y), shear = x.reduce((s, v, k) => s + v * ez[k], 0), sz = z.reduce((s, v, k) => s + v * ez[k], 0);
         if (!(sx > .001 && sz > .001)) return;
         const stature = bruit(centre[0], centre[2], 17, 947), ton = bruit(centre[0], centre[2], 57, 967);
-        const h = (.22 + .20 * stature) * biome.taille;
-        const vert = .86 + ton * .23, sec = bruit(centre[0], centre[2], 113, 163) * .12;
-        const color = [biome.herbe[0] * vert + sec * .22, biome.herbe[1] * vert + sec * .12, biome.herbe[2] * vert];
+        const h = (organique ? (.28 + .26 * stature) : (.22 + .20 * stature)) * biome.taille;
+        const vert = .84 + ton * .28, sec = bruit(centre[0], centre[2], 113, 163) * (organique ? .08 : .12);
+        const color = [biome.herbe[0] * vert + sec * .18, biome.herbe[1] * vert + sec * .11, biome.herbe[2] * vert];
         const nom = 'prairie-val-' + n + '-' + variante;
         const objet = { shape: nom, p: a.map((v, k) => v + (ex[k] + ez[k]) / 2 + y[k] * h / 2 - (k === 1 ? .005 : 0)),
           s: [sx, h, sz], r: [Math.atan2(y[2], z[2]), -Math.asin(Math.max(-1, Math.min(1, x[2]))), Math.atan2(x[1], x[0])],
