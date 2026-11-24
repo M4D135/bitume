@@ -299,7 +299,7 @@
   const PONTON_OUIE = Object.freeze([[.10, .302], [.51, .302], [.73, .392], [.73, .416], [.10, .438]].map(Object.freeze));
 // Coques d'écopes de refroidissement latérales 126 CK (vue profil et vue axiale) :
   const ECOPE_GAUCHE = Object.freeze(C.carene([{ x: .85, y0: .25, y1: .55, l: .15, n: 3 }, { x: .70, y0: .20, y1: .50, l: .20, n: 3 }, { x: .55, y0: .18, y1: .45, l: .25, n: 4 }, { x: .40, y0: .15, y1: .40, l: .22, n: 4 }]));
-  const ECOPE_DROITE = Object.freeze(C.carene([{ x: .85, y0: .25, y1: .55, l: .15, n: 3 }, { x: .70, y0: .20, y1: .50, l: .20, n: 3 }, { x: .55, y0: .18, y1: .45, l: .25, n: 4 }, { x: .40, y0: .15, y1: .40, l: .22, n: 4 }]).map(t => t.map(v => v[0] * -1, v[1], v[2])));
+  const ECOPE_DROITE = Object.freeze(C.carene([{ x: .85, y0: .25, y1: .55, l: .15, n: 3 }, { x: .70, y0: .20, y1: .50, l: .20, n: 3 }, { x: .55, y0: .18, y1: .45, l: .25, n: 4 }, { x: .40, y0: .15, y1: .40, l: .22, n: 4 }]).map(t => t.map(v => v[0] * -1)));
 // Ailerons avant et arrière 126 CK (vue dessus) :
   const AILERON_AVANT = Object.freeze(C.carene([{ x: 2.00, y0: .55, y1: .80, l: .10, n: 4 }, { x: 1.70, y0: .50, y1: .75, l: .15, n: 4 }, { x: 1.40, y0: .45, y1: .70, l: .20, n: 5 }, { x: 1.10, y0: .40, y1: .65, l: .22, n: 5 }]));
   const AILERON_ARRIERE = Object.freeze(C.carene([{ x: -.20, y0: .50, y1: .80, l: .10, n: 4 }, { x: -.50, y0: .45, y1: .75, l: .15, n: 4 }, { x: -.80, y0: .40, y1: .70, l: .20, n: 5 }, { x: -1.10, y0: .35, y1: .65, l: .22, n: 5 }]));

@@ -1,8 +1,8 @@
 {
-  "version": "0.2.322",
-  "raw": 17621685,
-  "gzip": 4785910,
-  "sha256": "efa2f587ea266be0e197b28581897c81539d0f2081b3ee49556cd653894374bf",
+  "version": "0.2.323",
+  "raw": 17621673,
+  "gzip": 4785905,
+  "sha256": "c6c52c8f0bfcd4682b9477fbd9c03afe5263f3f54ddd237904ac2b301f1a2d7c",
   "sources": {
     "ferro/surface.js": 3419,
     "ferro/render-shared.js": 81526,
@@ -79,7 +79,7 @@
     "public.js": 78727,
     "main.js": 13346,
     "cockpit-matieres.js": 1774,
-    "voiture.js": 206344,
+    "voiture.js": 206332,
     "eau-carrosserie.js": 19420,
     "animaux.js": 172493,
     "traces.js": 48394,
