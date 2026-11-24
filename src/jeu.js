@@ -65,7 +65,7 @@
   // Identifiants persistés : « poursuite » conserve son cadre historique à 7,4 m.
   const VUES_COURSE = Object.freeze(['aileron-avant', 'nez', 'cockpit', 'arceau', 'poursuite-proche', 'poursuite']);
   const preferenceMouvement = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
-  const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', vue3: 'poursuite', vue4: 'poursuite', partage: 'haut-bas', joueursLocaux: 1, boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 70, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'haut-droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
+  const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', vue3: 'poursuite', vue4: 'poursuite', partage: 'haut-bas', joueursLocaux: 1, boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 70, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'bas-gauche', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
     anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'non', gouttes: 1, forcePluie: 'forte',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : .5; } catch (e) { return .5; } })() };
   const reglagesEnregistres = lireStock('bitume.reglages', {});
@@ -94,12 +94,10 @@
   }
   reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
   reglages.gouttes = reglages.gouttes != null && Number.isFinite(+reglages.gouttes) ? clamp(+reglages.gouttes, 0, 2) : DEFAUT.gouttes;
-  // Quatre coins disponibles pour la carte ; carte et compteur FPS en haut à droite (demande David 24/11).
-  if (!reglages.cartePositionVersion || reglages.cartePositionVersion < 4) {
-    if (reglages.cartePosition === 'gauche' || reglages.cartePosition === 'droite' || reglages.cartePosition === 'bas-gauche') {
-      reglages.cartePosition = 'haut-droite';
-    }
-    reglages.cartePositionVersion = 4;
+  // Quatre coins disponibles pour la carte ; carte en bas à gauche par défaut (demande David 24/11).
+  if (!reglages.cartePositionVersion || reglages.cartePositionVersion < 5) {
+    reglages.cartePosition = 'bas-gauche';
+    reglages.cartePositionVersion = 5;
   } else {
     if (reglages.cartePosition === 'gauche') reglages.cartePosition = 'bas-gauche';
     else if (reglages.cartePosition === 'droite') reglages.cartePosition = 'haut-droite';

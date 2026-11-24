@@ -3,7 +3,7 @@
 <style>
 /*STYLE*/
 </style>
-<main id="jeu" data-ecran="chargement" data-carte="oui" data-carte-position="haut-droite" data-carte-taille="normale">
+<main id="jeu" data-ecran="chargement" data-carte="oui" data-carte-position="bas-gauche" data-carte-taille="normale">
   <div id="vue-course">
     <canvas id="scene" aria-label="Vue de la course"></canvas>
     <canvas id="scene2" aria-label="Vue du joueur 2"></canvas>
@@ -612,8 +612,8 @@
       </fieldset>
       <fieldset class="reglage-carte">
         <legend>Carte du circuit</legend>
-        <div class="ligne-reglage"><label><input type="checkbox" id="v-carte" checked><span>Afficher</span></label><label><input type="radio" name="cartePosition" value="bas-gauche"><span>Bas gauche</span></label><label><input type="radio" name="cartePosition" value="bas-droite"><span>Bas droite</span></label></div>
-        <div class="ligne-reglage"><label><input type="radio" name="cartePosition" value="haut-gauche"><span>Haut gauche</span></label><label><input type="radio" name="cartePosition" value="haut-droite" checked><span>Haut droite</span></label></div>
+        <div class="ligne-reglage"><label><input type="checkbox" id="v-carte" checked><span>Afficher</span></label><label><input type="radio" name="cartePosition" value="bas-gauche" checked><span>Bas gauche</span></label><label><input type="radio" name="cartePosition" value="bas-droite"><span>Bas droite</span></label></div>
+        <div class="ligne-reglage"><label><input type="radio" name="cartePosition" value="haut-gauche"><span>Haut gauche</span></label><label><input type="radio" name="cartePosition" value="haut-droite"><span>Haut droite</span></label></div>
         <div class="ligne-reglage"><label><input type="radio" name="carteTaille" value="petite"><span>Petite</span></label><label><input type="radio" name="carteTaille" value="normale" checked><span>Normale</span></label><label><input type="radio" name="carteTaille" value="grande"><span>Grande</span></label></div>
       </fieldset>
       <fieldset class="curseurs">
