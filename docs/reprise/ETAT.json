@@ -11,7 +11,7 @@
     "suivi_lots": "docs/reprise/MASTER-PROMPT-BITUME.md#tableau-de-suivi",
     "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
     "commit_local": "16a114d",
-    "commits_devant_origin": 32,
+    "commits_devant_origin": 33,
     "dernier_lot_clos": "docs/reprise/rapports/PROFIL-FPS-2026-11-23.json",
     "prochaine_action": "Lot I : I-6 réception du mode sans-fin en jeu (hitch de reconstruction par segments réutilisés, météo cyclique par biome, résultats à la distance, 4 joueurs locaux) ; réceptions Mac (C/D/A/B/J) ; lots G/H/L ; tri des 77 rouges ; arbitrage David inflation PHYSIQUE.",
     "branche_candidate": "main (locale)",
