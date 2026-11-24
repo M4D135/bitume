@@ -1,23 +1,24 @@
 {
   "date": "2026-11-24",
   "etat_courant": {
-    "version_courante": "0.2.312",
+    "version_courante": "0.2.316",
     "version_publiee_verifiee": "0.2.299",
     "physique": "p55",
     "moteur": "FERRO 0.3.33 canonique (35 modules vérifiés)",
     "circuits": 9,
-    "statut": "candidate_locale_non_poussee",
+    "statut": "poussee_origin_non_deployee",
     "consignes": "docs/reprise/MASTER-PROMPT-BITUME.md",
     "suivi_lots": "docs/reprise/MASTER-PROMPT-BITUME.md#tableau-de-suivi",
     "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
-    "commit_local": "1efef8d",
-    "commits_devant_origin": 36,
-    "dernier_lot_clos": "docs/reprise/rapports/PROFIL-FPS-2026-11-23.json",
-    "prochaine_action": "Lot I : réception navigateur du mode sans-fin (Mac) — premier passage en jeu réel ; puis décor par intervalle (hitch ~1/30 s) et multi-joueurs locaux sur l'écran partagé ; réceptions Mac (C/D/A/B/J) ; lots G/H/L ; tri des 77 rouges ; arbitrage David inflation PHYSIQUE.",
-    "branche_candidate": "main (locale)",
-    "version_candidate": "0.2.312",
+    "commit_local": "ae7b5f6",
+    "build_sha256": "90a4df54cd9c063c97432306e515a87e9c8c194e73bcb33d9356f88675aa803e",
+    "commits_devant_origin": 0,
+    "dernier_lot_clos": "Lot L (0.2.316) — réception Mac Metal-3 WebGPU complète (lots A, B, C, D, G, H, I, J, K, L)",
+    "prochaine_action": "Attente feu vert David : (1) déploiement bitume.estrasse.fr 0.2.299→0.2.316 + config BITUME_VISITES_PROXIES (lot F), (2) arbitrage inflation PHYSIQUE p17→p55 et catalogue 9 vs 11, (3) essai manettes physiques 3-4J.",
+    "branche_candidate": "main (origin/main)",
+    "version_candidate": "0.2.316",
     "physique_candidate": "p55",
-    "preuve_candidate": "24/11 : construire.py reproduit le build ; 77 rouges identiques à la base propre (aucune régression A, B, I) ; devers-alizes 6/6 (B) ; appui-objets-cimes 3/3 (A) ; route-sans-fin 7/7 ; course 5/5 ; stations 5/5 ; fenetre 6/6 ; seance 5/5 ; meteo sans-fin 6/6 ; contrats majMeteo et herbier verts ; mesure reprises 29→18 (I-6a) ; résultats distance + record (I-7b)"
+    "preuve_candidate": "24/11 Mac Metal-3 WebGPU (1440x900 high MSAA 4x) : 60,0 FPS verrouillés (p50=16,7 ms, p95=16,7 ms, pire=16,8 ms, 0 erreur) ; Route sans fin 11,06 km + 4J vérifiés ; Alizés 40° 0 tonneau/0 replacement ; Cimes crêtes+rochers+chalets ancrés ; 17/17 suites Node clés vertes ; russie neige 3 courses 12 voitures 100 % vertes ; physx-circuits 19/19."
   },
   "publication": {
     "version": "0.2.299",
