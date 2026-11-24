@@ -836,10 +836,17 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       if (!s || v.distant) continue;
       const e = v.etat;
       if (!s.elimine) {
-        if (s.dernierS === null) s.dernierS = e.s;
-        const d = B.circuit.ecart(c, s.dernierS, e.s);
-        s.dernierS = e.s;
-        if (Number.isFinite(d)) { s.sAbsolu += d; if (s.sAbsolu > s.sMax) s.sMax = s.sAbsolu; }
+        if (c.sansFinFenetre) {
+          // fenêtre glissante : l'abscisse absolue vient du repère de la fenêtre, jamais d'une
+          // accumulation — un décalage de fenêtre ne doit pas fausser le compteur
+          s.sAbsolu = c.sansFinFenetre.sOrigine + e.s;
+        } else {
+          if (s.dernierS === null) s.dernierS = e.s;
+          const d = B.circuit.ecart(c, s.dernierS, e.s);
+          s.dernierS = e.s;
+          if (Number.isFinite(d)) s.sAbsolu += d;
+        }
+        if (s.sAbsolu > s.sMax) s.sMax = s.sAbsolu;
       }
       v.progression = s.sMax;
       if (s.elimine || !enCourse || v.fini) continue;

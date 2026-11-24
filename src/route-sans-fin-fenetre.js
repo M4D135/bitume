@@ -41,6 +41,7 @@
     const vivantes = positions.filter(s => Number.isFinite(s));
     if (!vivantes.length) return f.c;
     const mini = Math.min(...vivantes), maxi = Math.max(...vivantes);
+    const avant = f.k0 + ':' + f.k1;
     let change = false;
     etendre(f, maxi + f.devant);
     // libérer derrière : on n'avance l'origine que si le joueur le plus en arrière est
@@ -52,7 +53,7 @@
       change = true;
     }
     if (change) etendre(f, maxi + f.devant);   // la libération derrière libère du quota devant
-    if (change || !f.c) f.c = construire(f);
+    if (f.k0 + ':' + f.k1 !== avant || !f.c) f.c = construire(f);   // devant comme derrière : le circuit doit suivre
     return f.c;
   }
 
