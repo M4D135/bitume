@@ -65,14 +65,16 @@
   // Identifiants persistés : « poursuite » conserve son cadre historique à 7,4 m.
   const VUES_COURSE = Object.freeze(['aileron-avant', 'nez', 'cockpit', 'arceau', 'poursuite-proche', 'poursuite']);
   const preferenceMouvement = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
-  const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', partage: 'haut-bas', boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 70, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'bas-gauche', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
+  const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', vue3: 'poursuite', vue4: 'poursuite', partage: 'haut-bas', joueursLocaux: 1, boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 70, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'bas-gauche', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
     anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'non', gouttes: 1, forcePluie: 'forte',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : .5; } catch (e) { return .5; } })() };
   const reglagesEnregistres = lireStock('bitume.reglages', {});
   const reglages = Object.assign({}, DEFAUT, reglagesEnregistres);
   const circuitSauve = B.championnat.indiceCircuit(CATALOGUE, reglagesEnregistres?.circuitId, reglagesEnregistres?.circuit);
   reglages.circuit = circuitSauve >= 0 ? circuitSauve : DEFAUT.circuit;
-  for (const cle of ['vue', 'vue2']) if (!VUES_COURSE.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
+  for (const cle of ['vue', 'vue2', 'vue3', 'vue4']) if (!VUES_COURSE.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
+  // Lot C : un à quatre pilotes locaux. Une valeur écrite à la main hors de ce domaine revient à un seul pilote.
+  reglages.joueursLocaux = [1, 2, 3, 4].includes(+reglages.joueursLocaux) ? +reglages.joueursLocaux : 1;
   Object.assign(reglages, initialiserChoixPneus(reglagesEnregistres));
   reglages.trollPilotes = B.menuArcade.normaliserTroll(reglagesEnregistres);
   reglages.qualite = B.graphismes.normaliser(reglages.qualite);
@@ -306,11 +308,12 @@
     scene = { index: i, enrichi: decorEnrichi, palier: ancre, vegetationQualite, saison, c, decor, fond, plan: p, ombre, detailPeripherique: B.detailPeripherique.creer(decor.lots), public: pub, vuePublic };
     return scene;
   }
-  // Six champs préalloués : vue principale et deux glaces par joueur. Les caméras de rendu
+  // Douze champs préalloués : vue principale et deux glaces par pilote local, jusqu'à quatre (lot C). Les six
+  // derniers restent éteints tant que la séance n'a que deux cases. Les caméras de rendu
   // sont réutilisées ailleurs ; copier leurs nombres évite qu'une autre vue déplace ce champ.
   function creerChampsFaune() {
     const champs = [];
-    for (let i = 0; i < 6; i++) champs.push({ camera: { pos: [0, 0, 0], yaw: 0, pitch: 0, roll: 0, fov: 70 },
+    for (let i = 0; i < 12; i++) champs.push({ camera: { pos: [0, 0, 0], yaw: 0, pitch: 0, roll: 0, fov: 70 },
       qualite: 'off', aspect: 16 / 9, hauteur: 720, valide: false });
     return champs;
   }
@@ -337,10 +340,13 @@
       && Math.abs(y * cr - x * sr) <= z * tan + rayon * (1 + tan);
   }
   function preparerChampsFaune(S, vue, cam, ps, P, acteurs, avecGlaces = glacesVives(S, vue), glaces) {
-    const champs = S.champsFaune, premier = S === session ? 0 : 3;
+    const champs = S.champsFaune, premier = indexVue(S) * 3;
     if (acteurs) { acteurs.masque = 0; acteurs.indetermine = avecGlaces; }
     if (!champs) return;
     for (let i = premier; i < premier + 3; i++) champs[i].qualite = 'off';
+    // Lot C : les cases 3 et 4 n'ont pas de champ de faune propre (effets indexés par vue réservés aux deux
+    // premières) ; leurs champs restent éteints, aucune caméra voisine ne leur est prêtée.
+    if (premier >= 6) return;
     const animaux = reglages.faune !== 'off' && B.animaux;
     const qualite = animaux ? B.animaux.qualite(reglages.faune, P.palier) : 'off';
     const aspect = canvas.width / Math.max(1, canvas.height);
@@ -405,6 +411,8 @@
   // Vitrine et démo : les douze voitures sont à l'IA. La vitrine tourne sans fin derrière les menus ; la démo est
   // une vraie course de trois tours, filmée par le réalisateur, que la suivante remplace sur le circuit d'après.
   const TOURS_DEMO = 3, PILOTE_DEMO = 'N. Aubrac';
+  // Lot C : jusqu'à quatre pilotes locaux en écran partagé (les voitures humaines 0 à 3 de la course).
+  const LOCAUX_DEFAUT = ['Joueur 1', 'Joueur 2', 'Joueur 3', 'Joueur 4'];
   let graineCourse = (Date.now() >>> 7) & 0xffff;
   let conditionsPreparation = null, conditionsPreparationCle = '', conditionsNumero = 0;
   let conditionsControle = null, conditionsEnCours = null;
@@ -423,13 +431,15 @@
     if (enl && enl.locaux.length === 2) type = 'duo';
     const conditions = enl || conditionsChoisies || conditionsDuDepart();
     const sc = installer(i, B.saisons.normaliser(conditions.saison), null, type !== 'vitrine'), c = sc.c, demo = type === 'demo', auto = demo || type === 'vitrine', duo = type === 'duo';
+    // Lot C : deux à quatre pilotes locaux en écran partagé. La grille 2×2 vient avec le troisième joueur.
+    const nbLocaux = duo ? Math.max(2, Math.min(4, joueursLocaux())) : 1;
     // ombre lointaine du circuit (src/ombres.js) : une passe par décor, aucune sans ombres du soleil possibles
     B.ombres.carte(rendu, gpuModeste || !B.ombres.ombresPossibles(reglages.qualite, { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages }), sc.decor.lots);
     // enl : course en ligne (même graine, mêmes réglages des deux côtés ; voir « jeu en ligne »)
     const course = B.course.creer(c, {
       mode: type === 'chrono' ? 'chrono' : 'course', tours: enl ? enl.tours : type === 'vitrine' ? 99 : demo ? TOURS_DEMO : reglages.tours,
       difficulte: enl ? enl.difficulte : auto ? 2 : reglages.difficulte, rivaux: 11, graine: enl ? enl.graine : ++graineCourse, placeJoueur: type === 'vitrine' ? 5 : demo ? 6 : 8,
-      humains: enl ? { noms: enl.humains.map(h => h.nom), locaux: enl.locaux, hote: enl.role === 'hote', enLigne: true } : duo ? { noms: ['Joueur 1', 'Joueur 2'], locaux: [0, 1], hote: true, enLigne: false } : null
+      humains: enl ? { noms: enl.humains.map(h => h.nom), locaux: enl.locaux, hote: enl.role === 'hote', enLigne: true } : duo ? { noms: LOCAUX_DEFAUT.slice(0, nbLocaux), locaux: LOCAUX_DEFAUT.slice(0, nbLocaux).map((_, k) => k), hote: true, enLigne: false } : null
     });
     if (auto) course.joueur.ia.hab = 0.965;
     if (demo) course.joueur.nom = PILOTE_DEMO;
@@ -498,23 +508,32 @@
       EL.recus.clear(); EL.corr.clear(); EL.pasEnvoi = 0;
       initialiserPneusReseau(S, enl);
     }
-    // Écran partagé (David, 16/11 : « multi en écran splitté local, deux manettes, l'un sur l'autre ou côte à côte ») :
-    // la vue du joueur 2 a son propre état de caméra, d'éclair et d'affichage, le reste vient de la séance.
-    if (duo) S.vueJ2 = Object.assign(Object.create(S), { raclement: B.son.creerRaclement(1), camCap: null, regardArriere: false, tete: null, secousse: 0, eclair: 0, lumiere: 1, sol: null, tele: { poste: null, alea: graine32(31 + i) },
-      distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
-      visibiliteActeurs: creerVisibiliteActeurs(),
-      detailsRoues: new Int8Array(course.voitures.length).fill(-1),
-      detailsRouesGlaces: [new Int8Array(course.voitures.length).fill(-1), new Int8Array(course.voitures.length).fill(-1)],
-      suivie: course.duo ? course.voitures.filter(v => v.joueur)[1].id : 1, vue: reglages.vue2, positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null, fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null, animauxVue: null,
-      fauneSecondaires: [S.champsFaune[4], S.champsFaune[5]] });
-    S.locaux = course.voitures.filter(v => v.joueur).map(v => v.id);   // voitures conduites ici (une, ou deux à l'écran partagé)
-    if (joue && S.expressions) configurerTrollLocaux(S);
-    if (joue) {
-      majPneusHUD(HUD1, course.voitures[S.locaux[0] ?? course.joueur.id].etat);
-      if (duo) majPneusHUD(HUD2, course.voitures[S.locaux[1] ?? course.joueur.id].etat);
+    // Écran partagé (David, 16/11 : « multi en écran splitté local, deux manettes, l'un sur l'autre ou côte à côte » ;
+    // lot C, 24/11 : trois et quatre joueurs en grille 2×2) : la vue de chaque joueur a son propre état de caméra,
+    // d'éclair et d'affichage, le reste vient de la séance. S.vueJ2 reste la référence du joueur 2 (compatibilité).
+    const joueursLocauxVoitures = course.voitures.filter(v => v.joueur);
+    if (duo) {
+      const creerVue = n => Object.assign(Object.create(S), { indexVue: n, raclement: B.son.creerRaclement(n), camCap: null, regardArriere: false, tete: null, secousse: 0, eclair: 0, lumiere: 1, sol: null, tele: { poste: null, alea: graine32(31 + n + i) },
+        distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
+        visibiliteActeurs: creerVisibiliteActeurs(),
+        detailsRoues: new Int8Array(course.voitures.length).fill(-1),
+        detailsRouesGlaces: [new Int8Array(course.voitures.length).fill(-1), new Int8Array(course.voitures.length).fill(-1)],
+        suivie: (joueursLocauxVoitures[n] || joueursLocauxVoitures[0] || course.voitures[0]).id, vue: reglages[n === 1 ? 'vue2' : n === 2 ? 'vue3' : 'vue4'], positionPrec: 0, derniereJauge: -9, prochainClassement: 0, profilMeilleur: null, fauneVue: null, saisonVue: null, auroresVue: null, vitreContexte: null, animauxVue: null,
+        // Les effets lourds par vue (faune, pluie de lentille, vitre, rétroviseurs) restent aux deux premières cases :
+        // J3/J4 rendent le monde sans lire l'image d'une case voisine (lot C, réservé à la qualification Mac).
+        fauneSecondaires: n === 1 ? [S.champsFaune[4], S.champsFaune[5]] : n === 2 ? [S.champsFaune[7], S.champsFaune[8]] : [S.champsFaune[10], S.champsFaune[11]] });
+      S.vueJ2 = creerVue(1);
+      S.vueJ3 = nbLocaux >= 3 ? creerVue(2) : null;
+      S.vueJ4 = nbLocaux >= 4 ? creerVue(3) : null;
     }
-    jeu.dataset.partage = duo ? (reglages.partage === 'cote' ? 'cote' : 'haut-bas') : '';
-    delete $('hud').dataset.reduit; delete hud2.dataset.reduit;
+    S.nbJoueurs = duo ? nbLocaux : 1;
+    S.vuesJoueurs = duo ? [S, S.vueJ2, S.vueJ3, S.vueJ4] : [S];
+    S.locaux = course.voitures.filter(v => v.joueur).map(v => v.id);   // voitures conduites ici (une à quatre à l'écran partagé)
+    if (joue && S.expressions) configurerTrollLocaux(S);
+    if (joue) for (let n = 0; n < S.locaux.length; n++) majPneusHUD(HUDS[n], course.voitures[S.locaux[n] ?? course.joueur.id].etat);
+    jeu.dataset.partage = duo ? (nbLocaux >= 3 ? 'grille' : reglages.partage === 'cote' ? 'cote' : 'haut-bas') : '';
+    jeu.dataset.joueurs = duo ? String(nbLocaux) : '1';
+    delete $('hud').dataset.reduit; delete hud2.dataset.reduit; delete hud3.dataset.reduit; delete hud4.dataset.reduit;
     remplirPoses(S.cour, course); remplirPoses(S.prec, course);
     session = S;
     if (enl) {
@@ -565,9 +584,12 @@
   const impulsions = { haut: false, bas: false };
   const pad = { precedent: [], actions: {}, entrees: {}, volant: 0, gaz: 0, frein: 0, derive: false, actif: false, manette: null, deriveEtat: null };
   const pad2 = { precedent: [], actions: {}, entrees: {}, volant: 0, gaz: 0, frein: 0, derive: false, manette: null, deriveEtat: null };   // manette du joueur 2 (écran partagé)
+  const pad3 = { precedent: [], actions: {}, entrees: {}, volant: 0, gaz: 0, frein: 0, derive: false, manette: null, deriveEtat: null };   // lot C : joueur 3
+  const pad4 = { precedent: [], actions: {}, entrees: {}, volant: 0, gaz: 0, frein: 0, derive: false, manette: null, deriveEtat: null };   // lot C : joueur 4
+  const pads = [pad, pad2, pad3, pad4];
   const consoleXbox = B.autoconfig?.recommander(navigator).xbox === true;
   const versionManettes = Number(reglages.manettesVersion) || 0;
-  const configurationsManettes = [0, 1].map(n => B.commandesManette.migrer(reglages.manettes?.[n], versionManettes, n));
+  const configurationsManettes = [0, 1, 2, 3].map(n => B.commandesManette.migrer(reglages.manettes?.[n], versionManettes, n));
   if (versionManettes < B.commandesManette.VERSION) {
     reglages.manettesVersion = B.commandesManette.VERSION;
     if (Array.isArray(reglages.manettes)) {
@@ -579,20 +601,28 @@
   let nbManettes = 0, manettes = [];
   let navigationManetteTraitee = false;
   const impulsions2 = { haut: false, bas: false };
+  const impulsions3 = { haut: false, bas: false };
+  const impulsions4 = { haut: false, bas: false };
+  const impulsionsN = [impulsions, impulsions2, impulsions3, impulsions4];
   // Commandes de chaque joueur (David, 16/11 : « choix manette, clavier ou souris, et gérer les touches de chacun » ;
   // « clavier normal pour un et pavé numérique pour l'autre ») : appareil choisi (auto, manette, clavier, souris) et
   // jusqu'à deux touches par action, réglables ; positions physiques des touches (e.code).
   const ACTIONS = ['gaz', 'frein', 'gauche', 'droite', 'derive', 'haut', 'bas', 'vue', 'troll'];
+  // Lot C : J3 sur le cluster IJKL (main droite haute), J4 sur la rangée des chiffres 4-9 (au-dessus). Ces touches
+  // physiques ne heurtent ni J1 (ZQSD/WASD, flèches, E/Q/C/G, Espace/Maj), ni J2 (pavé numérique), ni les touches
+  // globales du jeu (Échap, P pause, M son, R replacement, F3 mesures).
   const TOUCHES_DEFAUT = [
     { gaz: ['ArrowUp', 'KeyW'], frein: ['ArrowDown', 'KeyS'], gauche: ['ArrowLeft', 'KeyA'], droite: ['ArrowRight', 'KeyD'], derive: ['Space', 'ShiftLeft', 'ShiftRight'], haut: ['KeyE'], bas: ['KeyQ'], vue: ['KeyC'], troll: ['KeyG'] },
-    { gaz: ['Numpad8'], frein: ['Numpad5', 'Numpad2'], gauche: ['Numpad4'], droite: ['Numpad6'], derive: ['Numpad0'], haut: ['Numpad9'], bas: ['Numpad7'], vue: ['NumpadEnter'], troll: ['NumpadDecimal'] }
+    { gaz: ['Numpad8'], frein: ['Numpad5', 'Numpad2'], gauche: ['Numpad4'], droite: ['Numpad6'], derive: ['Numpad0'], haut: ['Numpad9'], bas: ['Numpad7'], vue: ['NumpadEnter'], troll: ['NumpadDecimal'] },
+    { gaz: ['KeyI'], frein: ['KeyK'], gauche: ['KeyJ'], droite: ['KeyL'], derive: ['KeyU'], haut: ['KeyO'], bas: ['Semicolon'], vue: ['KeyN'], troll: ['KeyB'] },
+    { gaz: ['Digit9'], frein: ['Digit7'], gauche: ['Digit4'], droite: ['Digit6'], derive: ['Digit0'], haut: ['Digit8'], bas: ['Digit5'], vue: ['Minus'], troll: ['Equal'] }
   ];
   const commande = n => (reglages.commandes && reglages.commandes[n]) || 'auto';
   const toucheDe = (n, action) => (reglages.touches && reglages.touches[n] && reglages.touches[n][action]) || TOUCHES_DEFAUT[n][action];
   const appuieSur = (n, action) => toucheDe(n, action).some(c => touches.has(c));
   // la souris va au joueur qui l'a choisie ; en Auto, au joueur seul, ou au joueur 2 dans une course à deux
   const sourisPour = (n, duo = !!session && session.type === 'duo') => {
-    const c = commande(n), p = n === 0 ? pad : pad2;
+    const c = commande(n), p = pads[n] || pad;
     // Le pointeur d'Edge Xbox n'est pas un volant. Sur ordinateur, une manette
     // affectée reste prioritaire même quand ses sticks reviennent au neutre.
     return c === 'souris' || (c === 'auto' && !consoleXbox && !p.manette && (duo ? n === 1 && commande(0) !== 'souris' : n === 0));
@@ -600,11 +630,20 @@
   const souris = { active: false, x: 0, largeur: 1, gaz: false, frein: false, derive: false };
   const volantSouris = () => { const x = (souris.x - souris.largeur / 2) / (souris.largeur * .3); return Math.abs(x) < .03 ? 0 : Math.max(-1, Math.min(1, x)); };
   // manettes de la course à deux selon le choix de chacun : deux pour deux ; une seule va au joueur 2, sauf si le joueur
-  // 1 l'a demandée et pas lui
-  const assigner = c => {
-    const v0 = commande(0) === 'auto' || commande(0) === 'manette', v1 = commande(1) === 'auto' || commande(1) === 'manette';
-    if (v0 && v1) return c.length >= 2 ? [c[0], c[1]] : c.length === 1 ? (commande(0) === 'manette' && commande(1) !== 'manette' ? [c[0], null] : [null, c[0]]) : [null, null];
-    return [v0 ? c[0] || null : null, v1 ? c[0] || null : null];
+  // 1 l'a demandée et pas lui. Lot C : au-delà de deux, chaque joueur qui veut une manette en reçoit une, dans l'ordre
+  // (un joueur sans manette reste au clavier ou à l'ordinateur, sans crash).
+  const assigner = (c, nb = 2) => {
+    const veut = n => { const q = commande(n); return q === 'auto' || q === 'manette'; };
+    nb = Math.max(1, Math.min(4, nb | 0));
+    if (nb === 2) {
+      const v0 = veut(0), v1 = veut(1);
+      if (v0 && v1) return c.length >= 2 ? [c[0], c[1]] : c.length === 1 ? (commande(0) === 'manette' && commande(1) !== 'manette' ? [c[0], null] : [null, c[0]]) : [null, null];
+      return [v0 ? c[0] || null : null, v1 ? c[0] || null : null];
+    }
+    if (nb === 1) return [veut(0) ? c[0] || null : null];
+    const libres = c.slice(), out = [];
+    for (let n = 0; n < nb; n++) out.push(veut(n) ? libres.shift() || null : null);
+    return out;
   };
   const doigt = { volant: 0, gaz: false, frein: false, derive: false, id: null, x0: 0 };
   let analogique = false;
@@ -655,7 +694,8 @@
   // Un front de touche, de bouton ou un clic tactile : aucune répétition quand on maintient la commande.
   // L'animation choisit sa variante et son côté sans toucher à l'état de conduite ni au hasard de la course.
   function provoquer(n = 0) {
-    if (!enCourse() || !session?.expressions || (n === 1 && session.type !== 'duo')) return;
+    // Lot C : chaque pilote local a son geste ; un joueur absent (J3/J4 d'une course à deux) ne provoque rien.
+    if (!enCourse() || !session?.expressions || n >= (session.locaux?.length || 1)) return;
     const id = session.locaux?.[n] ?? session.course.joueur.id;
     B.expressionsPilote.demander(session.expressions, id, true);
     B.expressionsPilote.demander(session.expressions, id, false);
@@ -672,7 +712,7 @@
     // démo : n'importe quelle touche, sauf une touche morte seule, ramène à l'écran titre
     if (ecran === 'demo') { if (!/^(Shift|Control|Alt|AltGraph|Meta|OS|CapsLock|Fn)$/.test(e.key || '')) { e.preventDefault(); activerSon(); sortirDemo(); } return; }
     activerSon();
-    if (course && (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code) || [0, 1].some(n => ACTIONS.some(a => toucheDe(n, a).includes(e.code))))) e.preventDefault();
+    if (course && (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code) || [0, 1, 2, 3].some(n => ACTIONS.some(a => toucheDe(n, a).includes(e.code))))) e.preventDefault();
     touches.add(e.code);
     if (e.code === 'Escape' || lettre === 'p') {
       if (course || ecran === 'pause') {
@@ -696,6 +736,19 @@
       if (toucheDe(1, 'vue').includes(e.code)) changerVue2();
       if (toucheDe(1, 'troll').includes(e.code)) provoquer(1);
     }
+    // Lot C : J3 (IJKL) et J4 (rangée 4-9) n'existent qu'au-delà de deux pilotes locaux.
+    if (session && session.type === 'duo' && (session.locaux?.length || 0) >= 3 && (commande(2) === 'auto' || commande(2) === 'clavier')) {
+      if (toucheDe(2, 'haut').includes(e.code)) impulsions3.haut = true;
+      if (toucheDe(2, 'bas').includes(e.code)) impulsions3.bas = true;
+      if (toucheDe(2, 'vue').includes(e.code)) changerVue3();
+      if (toucheDe(2, 'troll').includes(e.code)) provoquer(2);
+    }
+    if (session && session.type === 'duo' && (session.locaux?.length || 0) >= 4 && (commande(3) === 'auto' || commande(3) === 'clavier')) {
+      if (toucheDe(3, 'haut').includes(e.code)) impulsions4.haut = true;
+      if (toucheDe(3, 'bas').includes(e.code)) impulsions4.bas = true;
+      if (toucheDe(3, 'vue').includes(e.code)) changerVue4();
+      if (toucheDe(3, 'troll').includes(e.code)) provoquer(3);
+    }
     if (lettre === 'm') couperSon();
     if (lettre === 'r' && !aDeux()) replacer();
   });
@@ -707,7 +760,7 @@
   addEventListener('pointerdown', e => {
     if (e.pointerType !== 'mouse' || !enCourse()) return;
     if (e.target?.closest?.('button, input, select, a, [role="button"]')) return;
-    if (!sourisPour(0) && !(session && session.type === 'duo' && sourisPour(1))) return;
+    if (!sourisPour(0) && !(session && session.type === 'duo' && (sourisPour(1) || ((session.locaux?.length || 0) >= 3 && sourisPour(2)) || ((session.locaux?.length || 0) >= 4 && sourisPour(3))))) return;
     souris.active = true; souris.x = e.clientX; souris.largeur = innerWidth || 1; boutonsSouris(e); activerSon();
   });
   addEventListener('pointermove', e => { if (e.pointerType !== 'mouse') return; souris.x = e.clientX; souris.largeur = innerWidth || 1; if (souris.active) boutonsSouris(e); }, { passive: true });
@@ -715,7 +768,9 @@
   addEventListener('contextmenu', e => { if (enCourse() || ecran === 'pause') e.preventDefault(); });
   addEventListener('wheel', e => {
     if (!enCourse() || !souris.active || !e.deltaY) return;
-    const imp = session && session.type === 'duo' && sourisPour(1) ? impulsions2 : sourisPour(0) ? impulsions : null;
+    const duo = session && session.type === 'duo';
+    let imp = null;
+    for (let n = 3; n >= 0 && !imp; n--) if ((n <= 1 || (duo && (session.locaux?.length || 0) > n)) && sourisPour(n)) imp = impulsionsN[n];
     if (!imp) return;
     if (e.deltaY < 0) imp.haut = true; else imp.bas = true;
   }, { passive: true });
@@ -777,17 +832,22 @@
     for (const candidate of liste) if (candidate && candidate.connected) connectees.push(candidate);
     nbManettes = connectees.length; manettes = connectees;
     const duoJeu = !!session && session.type === 'duo';
-    const [p1, p2] = duoJeu ? assigner(connectees) : [connectees[0] || null, null];
+    const nbVues = duoJeu ? Math.max(2, Math.min(4, session.nbJoueurs || 2)) : 1;
+    const [p1, p2, p3, p4] = duoJeu ? assigner(connectees, nbVues) : [connectees[0] || null, null, null, null];
     if (captureManette) {
-      pad.manette = p1; pad2.manette = p2;
+      pad.manette = p1; pad2.manette = p2; pad3.manette = p3 || null; pad4.manette = p4 || null;
       lireCaptureManette(connectees);
       if (!captureManette) B.navigationMenu?.initialiser?.($('reglages'));
       memoriserActionsManette(pad, 0, p1); memoriserActionsManette(pad2, 1, p2);
-      pad.gaz = pad.frein = pad.volant = pad2.gaz = pad2.frein = pad2.volant = 0;
-      pad.derive = pad2.derive = pad.actif = false;
+      if (nbVues >= 3) memoriserActionsManette(pad3, 2, p3 || null);
+      if (nbVues >= 4) memoriserActionsManette(pad4, 3, p4 || null);
+      for (const P of pads) { P.gaz = P.frein = P.volant = 0; P.derive = false; }
+      pad.actif = false;
       return;
     }
     if (duoJeu || pad2.manette) lireManette2(p2);
+    if (duoJeu && nbVues >= 3) lireManetteN(2, p3); else if (pad3.manette) lireManetteN(2, pad3.manette);
+    if (duoJeu && nbVues >= 4) lireManetteN(3, p4); else if (pad4.manette) lireManetteN(3, pad4.manette);
     const p = p1;
     const change = (ancienne?.index ?? -1) !== (p?.index ?? -1) || ancienne?.id !== p?.id;
     pad.manette = p;
@@ -842,16 +902,16 @@
   function etatVibrations() {
     return { V: B.vibrations.creer(), sortie: B.vibrations.creerSortie(), actif: false, pasRecu: false, evenements: [], entree: {} };
   }
-  const vibrations = [etatVibrations(), etatVibrations()];
+  const vibrations = [etatVibrations(), etatVibrations(), etatVibrations(), etatVibrations()];   // lot C : une sortie par pilote local, jusqu'à quatre
   let vibreImage = false;
   function arreterVibrations(n) {
     B.vibrations.arreter(vibrations[n].sortie);
     calmerVibrations(n);
   }
-  function arreterManettes() { vibreImage = false; arreterVibrations(0); arreterVibrations(1); }
+  function arreterManettes() { vibreImage = false; for (let n = 0; n < vibrations.length; n++) arreterVibrations(n); }
   function synchroniserVibrations(n) {
     const J = vibrations[n];
-    if (B.vibrations.affecter(J.sortie, (n ? pad2 : pad).manette)) calmerVibrations(n);
+    if (B.vibrations.affecter(J.sortie, (pads[n] || pad).manette)) calmerVibrations(n);
     return J;
   }
   // Événements d'un pas qui touchent la voiture id, gardés pour l'image : la réception d'un saut devient l'atterrissage
@@ -877,10 +937,11 @@
     // Le réseau peut rendre des images du classement ou de la pause sans avancer la simulation.
     if (!vibreImage || !manetteVibre(false)) { arreterManettes(); return; }
     const co = S.course, PR = B.conduite.PARAMS;
-    for (let n = 0; n < 2; n++) {
+    const nb = S.locaux ? S.locaux.length : 1;
+    for (let n = 0; n < nb; n++) {
       const J = synchroniserVibrations(n);
       const mode = commande(n), force = clamp(reglages.vibrationForce != null ? +reglages.vibrationForce : .5, 0, 1);
-      const v = n === 0 ? co.joueur : S.type === 'duo' ? co.voitures[S.locaux[1]] : null;
+      const v = n === 0 ? co.joueur : S.type === 'duo' ? co.voitures[S.locaux[n]] : null;
       if (!J.pasRecu || !v || !force || (mode !== 'auto' && mode !== 'manette') || !J.sortie.routes[J.sortie.route]) {
         arreterVibrations(n); continue;
       }
@@ -962,6 +1023,9 @@
   function dessinerMeteo(S, dt, cam, vue, profil, suivie) {
     // à deux, les gouttes du joueur 2 tombent sur sa moitié (toile #meteo2)
     const deux = S !== session;
+    // Lot C : les cases 3 et 4 n'ont pas de couche de pluie ni de vitre qui leur soit propre ; elles rendent le
+    // monde sans précipitation d'écran plutôt que de lire la toile #meteo2 / #vitre2 de la case voisine.
+    if (!vueLourde(S)) { S.pluieImage = 0; return; }
     if (deux && !pluieVue2) pluieVue2 = creationTardive('pluie', B.meteo.creerPluie($('meteo2'), { gpu: () => rendu?.gpu }));
     if (!deux && !pluieVue) pluieVue = creationTardive('pluie', B.meteo.creerPluie($('meteo'), { gpu: () => rendu?.gpu }));
     const abri = sousLaVoute(S.course.c, cam.pos) || B.meteo.abriCouverts(S.course.c, cam.pos, S.course.physique), neige = precipitationsNeige(S);
@@ -1103,6 +1167,44 @@
     for (const action of ACTIONS) pad2.actions[action] = entrees[action] > .5;
     if (Math.abs(pad2.volant) > .05 || pad2.gaz > .05 || pad2.frein > .05) activerSon();
   }
+  // Lot C : troisième et quatrième manettes, mêmes rapports et même protection de dérive. Le regard arrière
+  // (geste du stick droit) reste réservé aux deux premières cases, comme les rétroviseurs et la pluie de lentille.
+  function lireManetteN(n, p) {
+    const P = pads[n], imp = impulsionsN[n];
+    const ancienne = P.manette, etatDerive = P.deriveEtat;
+    const change = (ancienne?.index ?? -1) !== (p?.index ?? -1) || ancienne?.id !== p?.id;
+    P.manette = p;
+    if (change) {
+      const etatPilote = session?.course?.voitures?.[session?.locaux?.[n]]?.etat;
+      const clavier = commande(n) === 'auto' || commande(n) === 'clavier';
+      if (ancienne && etatDerive === etatPilote && etatDerive?.derive?.actif &&
+          !(clavier && appuieSur(n, 'derive')) && !(souris.active && sourisPour(n) && souris.derive))
+        B.conduite.annulerDerive(etatDerive, true);
+      P.precedent.length = 0; P.deriveEtat = null;
+      const V = session?.vuesJoueurs?.[n];
+      if (V) V.regardArriere = false;
+    }
+    P.manette = p; P.volant = P.gaz = P.frein = 0; P.derive = false;
+    if (!p) { P.precedent.length = 0; return; }
+    const b = i => p.buttons[i] ? (p.buttons[i].value || (p.buttons[i].pressed ? 1 : 0)) : 0, appuye = i => b(i) > .5, nouveau = i => appuye(i) && !P.precedent[i];
+    if (change) for (let i = 0; i < p.buttons.length; i++) P.precedent[i] = appuye(i);
+    const entrees = B.commandesManette.lire(p, configurationsManettes[n], P.entrees);
+    if (change) for (const action of ACTIONS) P.actions[action] = entrees[action] > .5;
+    const nouvelleAction = action => entrees[action] > .5 && !P.actions[action];
+    P.volant = entrees.volant; P.gaz = entrees.gaz; P.frein = entrees.frein; P.derive = entrees.derive > .5;
+    if (p.buttons.some(x => x?.pressed || x?.value > .25) || p.axes.some(x => Math.abs(x) > .25)) dernierSignalManette = performance.now();
+    if (Math.abs(P.volant) > .1 || P.gaz > .1 || P.frein > .1) compteurVisites?.activite();
+    if (ecran === 'course' && !nouveau(9)) {
+      if (nouvelleAction('haut')) imp.haut = true;
+      if (nouvelleAction('bas')) imp.bas = true;
+      if (nouvelleAction('vue')) reglerVue(n, VUES_COURSE[(VUES_COURSE.indexOf(reglages[n === 2 ? 'vue3' : 'vue4']) + 1) % VUES_COURSE.length]);
+      if ((commande(n) === 'auto' || commande(n) === 'manette') && nouvelleAction('troll')) provoquer(n);
+    }
+    routerManette(nouveau, p);
+    for (let i = 0; i < p.buttons.length; i++) P.precedent[i] = appuye(i);
+    for (const action of ACTIONS) P.actions[action] = entrees[action] > .5;
+    if (Math.abs(P.volant) > .05 || P.gaz > .05 || P.frein > .05) activerSon();
+  }
   function commandesJoueur2() {
     let gaz = 0, frein = 0, volant = 0, derive = false, analog = false;
     const c1 = commande(1), clavier = c1 === 'auto' || c1 === 'clavier', manette = c1 === 'auto' || c1 === 'manette';
@@ -1127,6 +1229,34 @@
     pad2.deriveEtat = manette && pad2.manette && pad2.derive ? session?.course?.voitures?.[session?.locaux?.[1]]?.etat : null;
     const cmd = { gaz, frein, volant, derive, marcheArriere: true, haut: impulsions2.haut, bas: impulsions2.bas, boite: reglages.boite, aide: reglages.aide, guidage: analog ? 0 : .15 };
     impulsions2.haut = impulsions2.bas = false;
+    return cmd;
+  }
+  // Lot C : même lecture pour les troisième et quatrième pilotes locaux (J1/J2 gardent leurs fonctions historiques,
+  // que les tests de commandes partagent extraient telles quelles).
+  function commandesJoueurN(n) {
+    let gaz = 0, frein = 0, volant = 0, derive = false, analog = false;
+    const P = pads[n], imp = impulsionsN[n], c = commande(n), clavier = c === 'auto' || c === 'clavier', manette = c === 'auto' || c === 'manette';
+    if (clavier) {
+      if (appuieSur(n, 'gaz')) gaz = 1;
+      if (appuieSur(n, 'frein')) frein = 1;
+      if (appuieSur(n, 'gauche')) volant -= 1;
+      if (appuieSur(n, 'droite')) volant += 1;
+      derive = appuieSur(n, 'derive');
+    }
+    if (c === 'auto' && souris.active && sourisPour(n) && (gaz || frein || volant || Math.abs(P.volant) > .05 || P.gaz > .05)) souris.active = false;
+    if (manette && P.manette) {
+      gaz = Math.max(gaz, P.gaz); frein = Math.max(frein, P.frein);
+      if (Math.abs(P.volant) > Math.abs(volant)) { volant = P.volant; analog = true; }
+      derive = derive || P.derive;
+    }
+    if (souris.active && sourisPour(n)) {
+      gaz = Math.max(gaz, souris.gaz ? 1 : 0); frein = Math.max(frein, souris.frein ? 1 : 0);
+      const vs = volantSouris(); if (Math.abs(vs) > Math.abs(volant)) volant = vs;
+      derive = derive || souris.derive; analog = true;
+    }
+    P.deriveEtat = manette && P.manette && P.derive ? session?.course?.voitures?.[session?.locaux?.[n]]?.etat : null;
+    const cmd = { gaz, frein, volant, derive, marcheArriere: true, haut: imp.haut, bas: imp.bas, boite: reglages.boite, aide: reglages.aide, guidage: analog ? 0 : .15 };
+    imp.haut = imp.bas = false;
     return cmd;
   }
   function commandesJoueur() {
@@ -1216,8 +1346,8 @@
   })();
 
   // Même affectation que la course préparée : en solo, le premier pad va à J1.
-  function entreeDe(n, duo = true) {
-    const c = commande(n), ms = duo ? assigner(manettes) : [manettes[0] || null, null];
+  function entreeDe(n, duo = true, nb = 2) {
+    const c = commande(n), ms = duo ? assigner(manettes, nb) : [manettes[0] || null, null];
     const m = c === 'auto' || c === 'manette' ? ms[n] : null, codes = ['gaz', 'gauche', 'frein', 'droite'].map(a => toucheDe(n, a)[0]);
     const texteClavier = codes.every(k => /^Numpad\d$/.test(k || '')) ? 'pavé numérique (' + codes.map(k => k.slice(6)).join(' ') + ')' : 'clavier (' + codes.map(nomTouche).join(' ') + ')';
     const morceaux = [];
@@ -1230,13 +1360,20 @@
   function changerVue2() {
     reglerVue(1, VUES_COURSE[(VUES_COURSE.indexOf(reglages.vue2) + 1) % VUES_COURSE.length]);
   }
+  function changerVue3() {
+    reglerVue(2, VUES_COURSE[(VUES_COURSE.indexOf(reglages.vue3) + 1) % VUES_COURSE.length]);
+  }
+  function changerVue4() {
+    reglerVue(3, VUES_COURSE[(VUES_COURSE.indexOf(reglages.vue4) + 1) % VUES_COURSE.length]);
+  }
   function changerVue() {
     reglerVue(0, VUES_COURSE[(VUES_COURSE.indexOf(reglages.vue) + 1) % VUES_COURSE.length]);
   }
   function reglerVue(n, vue) {
     if (!VUES_COURSE.includes(vue)) return false;
-    reglages[n ? 'vue2' : 'vue'] = vue;
-    const S = n ? session && session.vueJ2 : session;
+    // Lot C : reglages.vue / vue2 / vue3 / vue4, une caméra par pilote local.
+    reglages[n === 0 ? 'vue' : 'vue' + (n + 1)] = vue;
+    const S = n ? (session && (session.vuesJoueurs ? session.vuesJoueurs[n] : n === 1 ? session.vueJ2 : null)) : session;
     if (S) {
       if (B.cameraTransition && S.camera && !S.reference && !S.regardArriere) {
         const ct = S.camTransition || (S.camTransition = B.cameraTransition.creer());
@@ -1279,7 +1416,7 @@
         S.distances.fill(-1); S.vRel.fill(0); S.secousse = 0; S.eclair = 0;
       }
       if (e.id === S.course.joueur.id) { calmerVibrations(0); S.avertiContresens = false; }
-      if (S.locaux && S.type === 'duo' && e.id === S.locaux[1]) calmerVibrations(1);
+      if (S.locaux && S.type === 'duo') for (let n = 1; n < S.locaux.length; n++) if (e.id === S.locaux[n]) calmerVibrations(n);
     }
   }
 
@@ -1293,7 +1430,9 @@
     const co = S.course;
     const auto = S.type === 'vitrine' || S.type === 'demo' || pilote || pilotageAuto;
     let cmd;
-    if (S.type === 'duo') { const [a, b] = S.locaux; cmd = []; cmd[a] = auto ? B.course.commandesIA(co, co.voitures[a]) : commandesJoueur(); cmd[b] = auto ? B.course.commandesIA(co, co.voitures[b]) : commandesJoueur2(); }
+    // Lot C : chaque pilote local conduit sa voiture (J1/J2 par leurs fonctions historiques, J3/J4 par la voie
+    // générique) ; personne ne reste sans commandes, l'ordinateur ne prend la main qu'en auto/démo/vitrine.
+    if (S.type === 'duo') { cmd = []; S.locaux.forEach((id, n) => { cmd[id] = auto ? B.course.commandesIA(co, co.voitures[id]) : n === 0 ? commandesJoueur() : n === 1 ? commandesJoueur2() : commandesJoueurN(n); }); }
     else cmd = auto ? B.course.commandesIA(co, co.joueur) : commandesJoueur();
     const ev = B.course.pas(co, cmd, DT);
     if (S.enLigne) actualiserPneusDistants(S, DT);
@@ -1301,7 +1440,10 @@
     if (son && sonActif && S.type !== 'vitrine') {
       const v = S.type === 'demo' ? co.voitures[S.suivie] : co.joueur;
       B.son.suivreRaclement(S.raclement, v?.etat._physx, co.horloge);
-      if (S.vueJ2) B.son.suivreRaclement(S.vueJ2.raclement, co.voitures[S.locaux[1]].etat._physx, co.horloge);
+      if (S.type === 'duo') for (let n = 1; n < S.locaux.length; n++) {
+        const V = S.vuesJoueurs?.[n] || (n === 1 ? S.vueJ2 : null);
+        if (V) B.son.suivreRaclement(V.raclement, co.voitures[S.locaux[n]].etat._physx, co.horloge);
+      }
     }
     // vibration manette : le pilote la sent passer dans ses mains — le moteur selon les tours, la route, les
     // vibreurs, l'herbe, le patinage, la glisse et les chocs ; la main reste calme si le réglage est à « non ».
@@ -1310,7 +1452,7 @@
     vibreImage = vibre;
     if (vibre) {
       retenirVibrations(0, ev, co.joueur.id);
-      if (S.type === 'duo') retenirVibrations(1, ev, S.locaux[1]);
+      if (S.type === 'duo') for (let n = 1; n < S.locaux.length; n++) retenirVibrations(n, ev, S.locaux[n]);
     }
     for (const v of co.voitures) {
       v.roule = (v.roule || 0) + v.etat.v * DT; // distance roulée : fait tourner les roues
@@ -1370,14 +1512,16 @@
 
   function traiter(S, ev) {
     const co = S.course, j = co.joueur, V2 = S.vueJ2;
-    if (V2) for (const e of ev) {
-      const id2 = S.locaux[1];
-      if (e.type === 'contact' && (e.a === id2 || e.b === id2)) V2.secousse = Math.min(1, V2.secousse + Math.max(0, e.force - 2) * .07);
-      else if (e.id !== id2) continue;
+    // Lot C : secousses, éclairs et raclements de chaque pilote local, pas seulement du joueur 2.
+    if (co.duo && S.vuesJoueurs) for (const e of ev) for (let n = 1; n < Math.max(2, Math.min(4, S.nbJoueurs || 2)); n++) {
+      const V = S.vuesJoueurs[n], id = S.locaux[n];
+      if (!V || id == null) continue;
+      if (e.type === 'contact' && (e.a === id || e.b === id)) V.secousse = Math.min(1, V.secousse + Math.max(0, e.force - 2) * .07);
+      else if (e.id !== id) continue;
       else if (e.type === 'choc') {
-        if (son && B.son.matiereRaclement(e.obstacle)) son.evenement('choc', e, V2.raclement);
-        V2.secousse = Math.min(1, V2.secousse + Math.max(0, e.force - 2) * .07); if (e.force > 18) V2.eclair = Math.min(.9, (e.force - 18) * .07); }
-      else if (e.type === 'tonneau' || e.type === 'casse') { V2.secousse = 1; V2.eclair = .7; }
+        if (son && B.son.matiereRaclement(e.obstacle)) son.evenement('choc', e, V.raclement);
+        V.secousse = Math.min(1, V.secousse + Math.max(0, e.force - 2) * .07); if (e.force > 18) V.eclair = Math.min(.9, (e.force - 18) * .07); }
+      else if (e.type === 'tonneau' || e.type === 'casse') { V.secousse = 1; V.eclair = .7; }
     }
     // en ligne : chacun annonce le temps officiel de sa voiture, l'hôte aussi ceux des rivaux ; un temps officiel reçu
     // remplace celui mesuré ici sur les états reçus (même classement au millième sur les deux machines)
@@ -1402,13 +1546,13 @@
         case 'vert': son && son.evenement('vert'); message('Départ', 'vert', true); break;
         case 'contact': if (e.a === j.id || e.b === j.id) { son && son.evenement('contact', { force: e.force }); S.secousse = Math.min(1, (S.secousse || 0) + Math.max(0, e.force - 2) * .07); } break;
         case 'tour':
-          if (co.duo && e.id === S.locaux[1]) finTourJ2(S, e);
+          if (co.duo) { const n = S.locaux.indexOf(e.id); if (n >= 1) finTourJ2(S, e, n); }
           if (e.id !== j.id) break;
           son && son.evenement('tour', { meilleur: e.meilleur });
           finTour(S, e);
           break;
         case 'arrivee':
-          if (co.duo && e.id === S.locaux[1]) { const v2 = co.voitures[e.id]; message(v2.position === 1 ? 'Victoire' : 'Arrivée · ' + v2.position + 'e', 'vert', false, 1); sousMessage('Drapeau à damier · ' + chrono(v2.tempsFinal), 1); }
+          if (co.duo) { const n = S.locaux.indexOf(e.id); if (n >= 1) { const v2 = co.voitures[e.id]; message(v2.position === 1 ? 'Victoire' : 'Arrivée · ' + v2.position + 'e', 'vert', false, n); sousMessage('Drapeau à damier · ' + chrono(v2.tempsFinal), n); } }
           if (e.id !== j.id) break;
           son && son.evenement('arrivee');
           S.finA = co.horloge;
@@ -1417,7 +1561,7 @@
           break;
         default:
           if (e.id !== j.id) {
-            if (V2 && e.id === S.locaux[1]) annoncerRecuperation(e, 1);
+            { const n = S.locaux.indexOf(e.id); if (co.duo && n >= 1) annoncerRecuperation(e, n); }
             break;
           }
           annoncerRecuperation(e, 0);
@@ -1472,11 +1616,11 @@
     else if (e.meilleur && j.tours > 1) message('Meilleur tour', 'vert', true, qui);
   }
   // tours du joueur 2, sur son affichage
-  function finTourJ2(S, e) {
-    const co = S.course, v = co.voitures[S.locaux[1]];
-    sousMessage('Tour ' + e.tour + ' · ' + chrono(e.temps), 1);
-    if (co.toursTotal - v.tours === 1) message('Dernier tour', 'ambre', false, 1);
-    else if (e.meilleur && v.tours > 1) message('Meilleur tour', 'vert', true, 1);
+  function finTourJ2(S, e, n = 1) {
+    const co = S.course, v = co.voitures[S.locaux[n]];
+    sousMessage('Tour ' + e.tour + ' · ' + chrono(e.temps), n);
+    if (co.toursTotal - v.tours === 1) message('Dernier tour', 'ambre', false, n);
+    else if (e.meilleur && v.tours > 1) message('Meilleur tour', 'vert', true, n);
   }
 
   function suivreJoueur(S) {
@@ -1540,7 +1684,10 @@
   }
   function identiteSeanceValide(s) { return typeof s === 'string' && s.length > 0 && s.length <= 128; }
   const nomPilote = () => (reglages.nom || '').trim().slice(0, 16) || 'Pilote';
-  const joueursIci = () => reglages.joueursLocaux === 2 ? 2 : 1;
+  // Lot C : un à quatre pilotes locaux. Le réseau reste à deux par machine (protocole du salon) : joueursIci()
+  // garde la valeur réseau bornée à 2, joueursLocaux() donne le nombre réel de pilotes de l'écran partagé local.
+  const joueursLocaux = () => [1, 2, 3, 4].includes(+reglages.joueursLocaux) ? +reglages.joueursLocaux : 1;
+  const joueursIci = () => Math.min(2, joueursLocaux());
   const propre = t => String(t || '').replace(/[<>&"'`\\]/g, '').trim().slice(0, 16) || 'Pilote';
   function etatEnLigne(t) { texte($('l-etat'), t); }
   const lienActif = () => !!(EL.R && EL.R.etat === 'connecte');
@@ -2958,7 +3105,7 @@
   }
   const glacesPretes = G => !!retro.rendu && retro.principal === rendu && !retro.rendu.stats.deviceLost
     && retro.scene === scene && !!G?.surfaces[0] && !!G.surfaces[1];
-  const glacesVives = (S, vue) => retroVoulu(S, vue) && glacesPretes(S !== session ? retro.j2 : retro.j1);
+  const glacesVives = (S, vue) => vueLourde(S) && retroVoulu(S, vue) && glacesPretes(S !== session ? retro.j2 : retro.j1);
   // Homographie du carré unité vers le quadrilatère Q (images de (0,0), (1,0), (1,1), (0,1), rangées x0, y0, … x3, y3),
   // pour une toile de l × h pixels CSS : v reçoit les seize valeurs de la matrix3d CSS. Faux si elle n'existe pas
   // (coins alignés, valeur non finie). Sans tableau ni chaîne : la chaîne n'est refaite que si une valeur change.
@@ -2995,6 +3142,7 @@
   }
   function planifierGlaces(S, cam, ps, dtImage, glaces, voir, P) {
     // à deux, le joueur 2 a ses deux glaces, posées sur sa moitié
+    if (!vueLourde(S)) return null;   // lot C : J3/J4 n'ont pas de glaces (jamais celles du voisin)
     const G = glacesDe(S !== session ? 'j2' : 'j1');
     const toiles = G.toiles, J = ETATS_GLACES[S !== session ? 1 : 0];
     for (const t of toiles) if (t.hidden === voir) t.hidden = !voir;
@@ -3390,21 +3538,21 @@
   }
 
   // Les deux cadrages sont connus avant le premier draw. Un plan de lieu peut viser loin du pilote.
-  const cadresDecor = [{ cam: null, pose: null, suivie: null, vue: '' }, { cam: null, pose: null, suivie: null, vue: '' }];
-  const pilotesDecor = [[0, 0, 0], [0, 0, 0]], vuesDecor = [];
+  const cadresDecor = [0, 1, 2, 3].map(() => ({ cam: null, pose: null, suivie: null, vue: '' }));
+  const pilotesDecor = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]], vuesDecor = [];
   function preparerLotDecor(index, loinSeul) { return rendu?.preparerLot?.(index, loinSeul); }
-  function approcherDecor(S, cadre1, cadre2, dt) {
+  function approcherDecor(S, cadres, dt) {
     const flux = scene.decor.fluxDecor;
     if (!flux || dt <= 0 || prepa.enCours || contexteRenduPerdu || document.hidden || S.type === 'vitrine' ||
         (ecran !== 'course' && ecran !== 'demo')) return;
     let n = 0;
-    for (let k = 0; k < (cadre2 ? 2 : 1); k++) {
-      const cadre = k ? cadre2 : cadre1, camera = cadre.cam || (k ? S.vueJ2.camera : S.camera);
+    for (let k = 0; k < cadres.length; k++) {
+      const cadre = cadres[k], camera = cadre.cam || (k ? (S.vuesJoueurs?.[k] || S.vueJ2).camera : S.camera);
       if (camera) {
         vuesDecor[n++] = camera.pos;
         if (camera.cible) vuesDecor[n++] = camera.cible;
       }
-      const pose = cadre.pose, p = pilotesDecor[k];
+      const pose = cadre.pose, p = pilotesDecor[k] || (pilotesDecor[k] = [0, 0, 0]);
       if (pose) { p[0] = pose.x; p[1] = pose.y; p[2] = pose.z; vuesDecor[n++] = p; }
     }
     vuesDecor.length = n;
@@ -3482,21 +3630,33 @@
       // d'une image : caméras lissées, secousses, pluie et cadence de ses glaces tournaient à moitié. Elle reçoit
       // maintenant tout le temps écoulé depuis son rendu précédent. Toujours rendue : à la première image d'une séance,
       // et aux images arrêtées (pause, quatre par seconde, sans temps qui passe) où un réglage peut avoir changé.
-      const hzJ2 = P.secondaires.partage.hz;
-      S.dtJ2 = (S.dtJ2 || 0) + dtImage;
-      const dtJ2 = S.dtJ2, refaireJ2 = hzJ2 >= 55 || !S.j2Rendue || dtImage === 0 || dtJ2 + dtImage / 2 >= 1 / hzJ2;
-      const cadre1 = cadresDecor[0], cadre2 = cadresDecor[1];
-      if (refaireJ2) {
-        S.dtJ2 = 0; S.j2Rendue = true;
-        rendreVue(S.vueJ2, co.voitures[S.locaux[1]], reglages.vue2, dtJ2, meteo, cadre2);
-      } else {
-        cadre2.cam = S.vueJ2.camera; cadre2.pose = poses[S.locaux[1]];
+      // Lot C : même mécanisme pour les cases 3 et 4, chacune avec sa présentation et sa propre toile.
+      const hzPartage = P.secondaires.partage.hz;
+      const nbVues = Math.max(2, Math.min(4, S.nbJoueurs || 2));
+      const secondaires = [];
+      for (let k = 1; k < nbVues; k++) {
+        const V = S.vuesJoueurs && S.vuesJoueurs[k]; if (!V) continue;
+        V.dtSecondaire = (V.dtSecondaire || 0) + dtImage;
+        const dtV = V.dtSecondaire;
+        const refaire = hzPartage >= 55 || !V.secondaireRendue || dtImage === 0 || dtV + dtImage / 2 >= 1 / hzPartage;
+        const cadre = cadresDecor[k];
+        if (refaire) {
+          V.dtSecondaire = 0; V.secondaireRendue = true;
+          rendreVue(V, co.voitures[S.locaux[k]], reglages['vue' + (k + 1)], dtV, meteo, cadre);
+        } else {
+          cadre.cam = V.camera; cadre.pose = poses[S.locaux[k]];
+        }
+        secondaires.push({ k, V, cadre, dtV, refaire });
       }
+      const cadre1 = cadresDecor[0];
       rendreVue(S, j, reglages.vue, dtImage, meteo, cadre1);
-      approcherDecor(S, cadre1, cadre2, dtImage);
-      if (refaireJ2 && cadre2.cam) {
-        dessinerVue(S.vueJ2, cadre2.suivie, cadre2.vue, dtJ2, meteo, cadre2.cam, cadre2.pose);
-        S.presentationJ2.present();
+      approcherDecor(S, cadresDecor.slice(0, secondaires.length + 1), dtImage);
+      for (const s of secondaires) {
+        if (s.refaire && s.cadre.cam) {
+          dessinerVue(s.V, s.cadre.suivie, s.cadre.vue, s.dtV, meteo, s.cadre.cam, s.cadre.pose);
+          const presentation = S.presentations ? S.presentations[s.k] : s.k === 1 ? S.presentationJ2 : null;
+          if (presentation) presentation.present();
+        }
       }
       const camJ1 = cadre1.cam && dessinerVue(S, cadre1.suivie, cadre1.vue, dtImage, meteo, cadre1.cam, cadre1.pose);
       poserGlaces();
@@ -3514,7 +3674,7 @@
     } else if (j.fini && S.finA !== null && co.horloge - S.finA > 2.5) vue = 'tele';
     const cadre = cadresDecor[0];
     rendreVue(S, suivie, vue, dtImage, meteo, cadre);
-    approcherDecor(S, cadre, null, dtImage);
+    approcherDecor(S, [cadre], dtImage);
     const camVue = cadre.cam && dessinerVue(S, cadre.suivie, cadre.vue, dtImage, meteo, cadre.cam, cadre.pose);
     poserGlaces();
     return camVue;
@@ -3622,8 +3782,8 @@
     const avX = Math.sin(cam.yaw), avZ = -Math.cos(cam.yaw);
     // ombres du soleil autour de ce que l'on regarde : devant le pilote (jusqu'à 176 m), ou autour de la voiture filmée.
     // Un soleil par vue, réécrit à chaque image : le moteur le relit à chaque draw sans le garder.
-    cam.sun = cam.sujetNature ? soleilDe(S === session ? 0 : 1, cam.cible[0], cam.cible[1], cam.cible[2])
-      : soleilDe(S === session ? 0 : 1, exterieur ? ps.x : cam.pos[0] + avX * OMBRE_DEVANT, ps.y, exterieur ? ps.z : cam.pos[2] + avZ * OMBRE_DEVANT);
+    cam.sun = cam.sujetNature ? soleilDe(Math.min(1, indexVue(S)), cam.cible[0], cam.cible[1], cam.cible[2])
+      : soleilDe(Math.min(1, indexVue(S)), exterieur ? ps.x : cam.pos[0] + avX * OMBRE_DEVANT, ps.y, exterieur ? ps.z : cam.pos[2] + avZ * OMBRE_DEVANT);
     // Le jeu ne confie aucun objet statique au moteur (setWorld([], …) partout) : allStatic lui évite d'interroger à
     // chaque draw un index spatial vide (clés de grille et tableaux temporaires). Image identique.
     cam.allStatic = true;
@@ -3656,7 +3816,7 @@
     }
     const toutesVues = planGlaces ? champsActeurs?.visible : acteurVisible;
     // Habitats partagés ; pools propres aux deux vues. Le temps absolu garde les mêmes vols dans les miroirs.
-    if (S.nature && B.faune && P.faune !== 'off' && (!saisonLocale || saisonLocale.faune > 0 || S.fauneVue)) {
+    if (vueLourde(S) && S.nature && B.faune && P.faune !== 'off' && (!saisonLocale || saisonLocale.faune > 0 || S.fauneVue)) {
       const nature = S.nature;
       if (!nature.faune) nature.faune = creationTardive('faune', B.faune.creer(c, scene.decor));
       const contexte = S.fauneVue || (S.fauneVue = creationTardive('contexteFaune', { qualite: P.faune, nuit: 0, pluie: 0, pose: ps, vue: S === session ? 0 : 1 }));
@@ -3712,7 +3872,7 @@
     // mêmes images à 30, 60 ou 120 images/s). Quelques animaux proches en Légère ; aucune pose
     // hors de la vue principale et des champs réfléchis réellement actifs. Contextes préchargés.
     if (!S.animaux && reglages.faune !== 'off' && S.nature && B.animaux) S.animaux = animauxDe(scene, S.nature);
-    if (S.animaux && reglages.faune !== 'off') {
+    if (vueLourde(S) && S.animaux && reglages.faune !== 'off') {
       const contexte = S.animauxVue || (S.animauxVue = creationTardive('contexteAnimaux', { vue: S === session ? 0 : 1, qualite: 'off', camera: null, hauteur: 720, aspect: 16 / 9, vuesSecondaires: S.fauneSecondaires, nuit: 0, pluie: 0 }));
       contexte.qualite = B.animaux.qualite(reglages.faune, P.palier); contexte.camera = cam;
       contexte.hauteur = canvas.height; contexte.aspect = canvas.width / Math.max(1, canvas.height);
@@ -3720,7 +3880,7 @@
       contexte.nuit = S.nature ? S.nature.ambiance.nuit : 0; contexte.pluie = meteo.pluie || 0;
       B.animaux.dessiner(S.animaux, S.tRendu, contexte, sortie);
     }
-    if (S.nature && B.effetsSaison && saisonLocale && (S.nature.effetsSaison || saisonLocale.feuilles || saisonLocale.neige || meteo.neige)) {
+    if (vueLourde(S) && S.nature && B.effetsSaison && saisonLocale && (S.nature.effetsSaison || saisonLocale.feuilles || saisonLocale.neige || meteo.neige)) {
       const nature = S.nature;
       if (!nature.effetsSaison) nature.effetsSaison = creationTardive('effetsSaison', B.effetsSaison.creer(c, scene.decor));
       const contexte = S.saisonVue || (S.saisonVue = creationTardive('contexteSaison', { qualite: 'low', nuit: 0, pluie: 0, neige: 0, ventX: 0, ventZ: 0, pose: cam.pos, vue: S === session ? 0 : 1, abri: false }));
@@ -3733,7 +3893,7 @@
     }
 
     // Rubans lointains en géométrie monde : occultés par le relief, repris dans les rétroviseurs.
-    if (S.nature?.aurorePossible) {
+    if (vueLourde(S) && S.nature?.aurorePossible) {
       const nature = S.nature;
       if (!nature.aurores) nature.aurores = creationTardive('aurores', B.aurores.creer(c));
       const contexte = S.auroresVue || (S.auroresVue = creationTardive('contexteAurores', { vue: S === session ? 0 : 1, qualite: 'low', nuit: 0, pluie: 0, neige: 0, nuages: 0, tunnel: false }));
@@ -3893,19 +4053,19 @@
     } finally { B.detailPeripherique.restaurer(detail); }
     if (B.mesures.actif) {
       B.mesures.section('rendu', performance.now() - tDraw);
-      B.mesures.vue(S === session ? 'principale' : 'joueur2', rendu, { lampes: lampes ? lampes.length : 0, ombres: avecOmbres(P) });
+      B.mesures.vue(S === session ? 'principale' : 'joueur' + (indexVue(S) + 1), rendu, { lampes: lampes ? lampes.length : 0, ombres: avecOmbres(P) });
     }
     dessinerMeteo(S, dtImage, cam, vue, P, suivie);
     peindreGlacesPlanifiees(S, planGlaces, cam, ps, sortie, S.ambianceImage, suivie, P);
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
     S.camera = cam; S.vue = vue; S.suivie = suivie.id;
-    const affichage = S.type === 'duo' && S !== session ? hud2 : $('hud');
+    const affichage = S.type === 'duo' ? HUD_DOMS[Math.min(3, indexVue(S))] : $('hud');
     if (affichage.dataset.vue !== vue) affichage.dataset.vue = vue;
     // En cockpit, la planche donne vitesse, rapport et régime : le tableau réduit retire plan et compteurs, qui
     // couvriraient les pneus avant.
     const reduit = vue === 'cockpit' && reglages.tableau === 'reduit' ? 'oui' : 'non';
     // à deux, chaque affichage suit la vue de son joueur
-    const boite = S.type === 'duo' ? (S === session ? $('hud') : hud2) : jeu;
+    const boite = S.type === 'duo' ? HUD_DOMS[Math.min(3, indexVue(S))] : jeu;
     if (boite.dataset.reduit !== reduit) boite.dataset.reduit = reduit;
     if (boite !== jeu && jeu.dataset.reduit !== 'non') jeu.dataset.reduit = 'non';
     return cam;
@@ -4040,6 +4200,28 @@
   const HUD1 = { h: H, segments, lampes, etiquette: etiquetteDerive, barre };
   const HUD2 = { h: H2, segments: Array.from(H2['jauge-derive'].querySelectorAll('i')), lampes: Array.from(H2.feux.querySelectorAll('i')),
     etiquette: H2['jauge-derive'].querySelector('.etiquette'), barre: H2['h-regime'].querySelector('.barre') };
+  // Lot C : les troisième et quatrième affichages sont faits comme celui du joueur 2 (mêmes identifiants cherchés
+  // dans leur propre arborescence), créés une fois et montrés seulement quand la séance compte assez de pilotes.
+  const hud3 = $('hud').cloneNode(true);
+  hud3.id = 'hud3'; hud3.hidden = true; hud3.setAttribute('aria-label', 'Affichage du joueur 3');
+  for (const el of hud3.querySelectorAll('#b-pause, #h-fps')) el.remove();
+  hud2.after(hud3);
+  const H3 = {};
+  for (const id of Object.keys(H)) H3[id] = hud3.querySelector('#' + id);
+  for (const id of ['h-pneus', 'c-pneus', 'h-pneus-usure', 'h-pneu-0', 'h-pneu-1', 'h-pneu-2', 'h-pneu-3', 'h-sante', 'h-sante-barre', 'h-carburant', 'h-box', 'c-sante']) H3[id] = hud3.querySelector('#' + id);
+  const HUD3 = { h: H3, segments: Array.from(H3['jauge-derive'].querySelectorAll('i')), lampes: Array.from(H3.feux.querySelectorAll('i')),
+    etiquette: H3['jauge-derive'].querySelector('.etiquette'), barre: H3['h-regime'].querySelector('.barre') };
+  const hud4 = $('hud').cloneNode(true);
+  hud4.id = 'hud4'; hud4.hidden = true; hud4.setAttribute('aria-label', 'Affichage du joueur 4');
+  for (const el of hud4.querySelectorAll('#b-pause, #h-fps')) el.remove();
+  hud3.after(hud4);
+  const H4 = {};
+  for (const id of Object.keys(H)) H4[id] = hud4.querySelector('#' + id);
+  for (const id of ['h-pneus', 'c-pneus', 'h-pneus-usure', 'h-pneu-0', 'h-pneu-1', 'h-pneu-2', 'h-pneu-3', 'h-sante', 'h-sante-barre', 'h-carburant', 'h-box', 'c-sante']) H4[id] = hud4.querySelector('#' + id);
+  const HUD4 = { h: H4, segments: Array.from(H4['jauge-derive'].querySelectorAll('i')), lampes: Array.from(H4.feux.querySelectorAll('i')),
+    etiquette: H4['jauge-derive'].querySelector('.etiquette'), barre: H4['h-regime'].querySelector('.barre') };
+  const HUDS = [HUD1, HUD2, HUD3, HUD4];
+  const HUD_DOMS = [$('hud'), hud2, hud3, hud4];
   function texte(el, t) { if (el._t !== t) { el._t = t; el.textContent = t; } }
   function attr(el, nom, v) { if (el['_' + nom] !== v) { el['_' + nom] = v; el.setAttribute(nom, v); } }
   function style(el, nom, v) { if (el['_s' + nom] !== v) { el['_s' + nom] = v; el.style.setProperty(nom, v); } }
@@ -4053,7 +4235,7 @@
   }
   function suspendreAnnoncesVirages() {
     voixVirages.annuler();
-    for (const x of [HUD1, HUD2]) { masquerAnnonceVirage(x); x.tVirage = -Infinity; }
+    for (const x of HUDS) { masquerAnnonceVirage(x); x.tVirage = -Infinity; }
   }
   function majAnnonceVirage(S, x, j) {
     const co = S.course, et = j.etat;
@@ -4124,6 +4306,7 @@
     return lignes;
   }
   HUD1.lignes = lignesClassement(H.classement); HUD2.lignes = lignesClassement(H2.classement);
+  HUD3.lignes = lignesClassement(H3.classement); HUD4.lignes = lignesClassement(H4.classement);
   // couleur CSS d'une voiture (pastilles du plan et du classement) : calculée une fois par voiture, plus à chaque image
   const couleursCss = new WeakMap();
   function couleurCss(v) {
@@ -4228,8 +4411,14 @@
   }
 
   const aDeux = () => !!session && session.type === 'duo';
-  // à deux : qui = 0 pour l'affichage du joueur 1 seul, 1 pour celui du joueur 2, rien pour les deux
-  const affichages = (cle, qui) => !aDeux() || qui === 0 ? [H[cle]] : qui === 1 ? [H2[cle]] : [H[cle], H2[cle]];
+  const nbJoueursSession = () => !session || session.type !== 'duo' ? 1 : Math.max(2, Math.min(4, session.nbJoueurs || 2));
+  // Lot C : rang du pilote local d'une vue (0 = séance/J1, 1 = vueJ2…). Les vues J3/J4 (rang >= 2) rendent le
+  // monde mais restent allégées des effets indexés par vue (faune, bêtes, saisons, aurores, pluie de lentille,
+  // vitre, rétroviseurs) : ils appartiennent aux deux premières cases et ne doivent jamais lire la case voisine.
+  const indexVue = V => !V ? 0 : (V.indexVue != null ? V.indexVue : V === session ? 0 : 1);
+  const vueLourde = V => indexVue(V) < 2;
+  // à deux ou à quatre : qui = rang du pilote local (0..3), rien pour tous les affichages
+  const affichages = (cle, qui) => !aDeux() || qui === 0 ? [H[cle]] : qui >= 1 && qui <= 3 ? [HUDS[qui].h[cle]] : [H[cle], H2[cle], H3[cle], H4[cle]];
   // Messages : relancer l'animation CSS passait par une lecture de géométrie (void offsetWidth), soit un calcul forcé
   // du style et de la mise en page au milieu du pas de simulation. Le message attend maintenant le rappel d'image
   // suivant (appliquerMessages, en tête de image) et s'y relance en changeant de nom d'animation : message et
@@ -4307,6 +4496,28 @@
     }
   }
 
+  // Un affichage par pilote local (lot C) ; à deux, le joueur 2 garde exactement l'appel historique.
+  function majHudLocaux(S) {
+    majHud(S);
+    if (S.type !== 'duo' || !S.vueJ2) return;
+    const nb = Math.max(2, Math.min(4, S.nbJoueurs || 2));
+    for (let n = 1; n < nb; n++) {
+      const V = S.vuesJoueurs && S.vuesJoueurs[n];
+      if (V && HUDS[n]) majHud(V, HUDS[n], S.course.voitures[S.locaux[n]]);
+    }
+    majHudCircuitAnime(S, nb);
+  }
+  // À trois, la quatrième case est une carte animée du circuit : elle suit le leader, sans quatrième pilote.
+  function majHudCircuitAnime(S, nb) {
+    if (nb !== 3 || !S.vuesJoueurs || !S.vuesJoueurs[2]) return;
+    if (reglages.carte === 'non' || !HUD_CIRCUIT) return;
+    if (horlogeReelle < HUD_CIRCUIT.tPlan) return;
+    HUD_CIRCUIT.tPlan = horlogeReelle + PERIODE_PLAN + (HUD_CIRCUIT.tPlan === -Infinity ? 1 / 60 : 0);
+    const co = S.course, leader = co.classement && co.voitures[co.classement[0]] || co.joueur;
+    dessinerCarteZoom(HUD_CIRCUIT, S, co, leader, false);
+  }
+  const HUD_CIRCUIT = (typeof document !== 'undefined' && document.getElementById && document.getElementById('carte-circuit'))
+    ? { h: { carte: document.getElementById('carte-circuit') }, tPlan: -Infinity } : null;
   function majHud(S, x = HUD1, jForce = null) {
     // en démo, l'affichage est celui de la voiture filmée ; à deux, chaque affichage a sa voiture (x : ses éléments)
     const H = x.h, segments = x.segments, lampes = x.lampes, etiquetteDerive = x.etiquette, barre = x.barre;
@@ -4558,7 +4769,9 @@
 
   function pilotesMenu() {
     const membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
-    return modePrepa === 'duo' || (modePrepa === 'enligne' && membre && membre.joueurs === 2) ? 2 : 1;
+    // Lot C : en local, le menu suit le nombre réel de pilotes de l'écran partagé (2 à 4) ; en ligne, deux au plus.
+    if (modePrepa === 'duo') return Math.max(2, Math.min(4, joueursLocaux()));
+    return modePrepa === 'enligne' && membre && membre.joueurs === 2 ? 2 : 1;
   }
   function choixTrollLocaux() { return B.menuArcade.normaliserTroll(reglages); }
   function majChoixTroll() {
@@ -4581,7 +4794,7 @@
     texte($('p-bilan-course'), modePrepa === 'chrono' ? 'Contre-la-montre · fantôme personnel' : reglages.tours + ' tours · rivaux ' + ['faciles', 'normaux', 'coriaces'][reglages.difficulte]);
     texte($('p-bilan-saison'), NOMS_SAISON[k.saison] + ' · ' + NOMS_MOMENT[k.moment]);
     texte($('p-bilan-meteo'), nomMeteoCourse({ ...k, i: reglages.circuit }));
-    texte($('p-bilan-joueurs'), (nombre === 2 ? 'Deux pilotes locaux' : 'Un pilote local') + (modePrepa === 'enligne' ? ' · en ligne' : ''));
+    texte($('p-bilan-joueurs'), (nombre === 1 ? 'Un pilote local' : nombre === 2 ? 'Deux pilotes locaux' : nombre === 3 ? 'Trois pilotes locaux' : 'Quatre pilotes locaux') + (modePrepa === 'enligne' ? ' · en ligne' : ''));
     const gestes = { majeur: 'doigt d’honneur', poing: 'poing levé', salut: 'salut' };
     const klaxons = { classique: 'classique', ancien: 'ancien', mariage: 'mariage' };
     const choix = choixTrollLocaux(), pneus = choixPneusLocaux();
@@ -4618,6 +4831,9 @@
     for (const e of ECRANS) $(e).hidden = e !== nom;
     $('hud').hidden = !(nom === 'course' || nom === 'pause' || nom === 'demo');
     hud2.hidden = !(aDeux() && (nom === 'course' || nom === 'pause'));
+    // Lot C : les cases 3 et 4 ne vivent que dans la grille à trois ou quatre pilotes.
+    hud3.hidden = !(aDeux() && (nom === 'course' || nom === 'pause') && nbJoueursSession() >= 3);
+    hud4.hidden = !(aDeux() && (nom === 'course' || nom === 'pause') && nbJoueursSession() >= 4);
     $('demo').hidden = nom !== 'demo';
     $('jeu').dataset.ecran = nom;
     ecran = nom;
@@ -4789,9 +5005,17 @@
     $('o-partage').hidden = modePrepa !== 'duo';
     $('o-commandes').hidden = false;
     $('p-commandes-j2').hidden = modePrepa !== 'duo';
+    // Lot C : nombre de pilotes, commandes et caméras des troisième et quatrième cases (local uniquement).
+    $('o-joueurs').hidden = modePrepa !== 'duo';
+    $('p-commandes-j3').hidden = !(modePrepa === 'duo' && joueursLocaux() >= 3);
+    $('p-commandes-j4').hidden = !(modePrepa === 'duo' && joueursLocaux() >= 4);
+    $('o-vue-3').hidden = !(modePrepa === 'duo' && joueursLocaux() >= 3);
+    $('o-vue-4').hidden = !(modePrepa === 'duo' && joueursLocaux() >= 4);
+    for (const r of document.querySelectorAll('input[name="joueursLocaux"]')) r.checked = joueursLocaux() === +r.value;
     $('o-vue-2').hidden = !(modePrepa === 'duo' || modePrepa === 'enligne' && joueursIci() === 2);
     $('p-vue').value = reglages.vue; $('p-vue-2').value = reglages.vue2;
-    for (const n of [0, 1]) for (const r of document.querySelectorAll('input[name="cmd' + n + '"]')) r.checked = commande(n) === r.value;
+    if ($('p-vue-3')) $('p-vue-3').value = reglages.vue3; if ($('p-vue-4')) $('p-vue-4').value = reglages.vue4;
+    for (const n of [0, 1, 2, 3]) for (const r of document.querySelectorAll('input[name="cmd' + n + '"]')) r.checked = commande(n) === r.value;
     for (const r of document.querySelectorAll('input[name="partage"]')) r.checked = (reglages.partage === 'cote' ? 'cote' : 'haut-bas') === r.value;
     $('o-tours').hidden = $('o-difficulte').hidden = modePrepa === 'chrono';
     $('o-chrono').hidden = modePrepa !== 'chrono';
@@ -4893,7 +5117,7 @@
   }
   // Choix de service attaché à la voiture de la séance, sans changer les pneus actuellement montés.
   function choisirPneusStands(n, type) {
-    if (!session || ecran !== 'pause' || (n !== 0 && n !== 1)) return false;
+    if (!session || ecran !== 'pause' || n < 0 || n > 3 || n >= (session.locaux?.length || 1)) return false;
     const co = session.course, id = session.locaux && session.locaux[n], v = co && co.voitures[id];
     const accepte = !!(v && B.course.demanderPneus(co, v, type));
     majPneusStands(); return accepte;
@@ -4904,7 +5128,7 @@
     const garage = !!co?.c?.stands;
     texte($('ps-note'), garage ? 'Empruntez la bretelle, puis immobilisez la voiture au repère devant le garage. L’équipe change les quatre pneus, répare la voiture et fait le plein en course. Repartez au feu vert.' :
       'Ce parcours ne propose pas de réparation complète ni de changement de pneus.');
-    for (let n = 0; n < 2; n++) {
+    for (let n = 0; n < 4; n++) {
       const id = S && S.locaux && S.locaux[n], v = co && co.voitures[id], zone = $('ps-pilote-' + n);
       zone.hidden = !v || n !== piloteStand; if (zone.hidden) continue;
       const et = v.etat, st = et.stands, service = st && st.phase === 'service';
@@ -4984,16 +5208,17 @@
       retirerPret(); sauverReglages(); envoyerPneus(); majChoixPneus();
     }
     if (['boitePret', 'vuePret', 'vuePret2', 'vueDepart', 'vueDepart2', 'boite', 'vue', 'vue2'].includes(t.name)) retirerPret();
-    if (/^pneusStand[01]$/.test(t.name)) choisirPneusStands(+t.name.slice(-1), t.value);
+    if (/^pneusStand[0-3]$/.test(t.name)) choisirPneusStands(+t.name.slice(-1), t.value);
     if (t.name === 'boitePret' && ['auto', 'manuelle'].includes(t.value)) { reglages.boite = t.value; sauverReglages(); }
-    if (['vue', 'vue2', 'vuePret', 'vuePret2', 'vueDepart', 'vueDepart2'].includes(t.name)) reglerVue(t.name.endsWith('2') ? 1 : 0, t.value);
+    if (t.name in RANGS_VUE) reglerVue(RANGS_VUE[t.name], t.value);
     if (['meteo', 'forcePluie', 'momentDepart', 'saisonDepart', 'saisonMode', 'momentMode', 'meteoMode'].includes(t.name) && ecran === 'preparation') actualiserConditions();
     if (EL.role === 'hote' && lienActif() && ['tours', 'difficulte'].includes(t.name)) annoncerCourse();
-    if (t.name === 'joueursIci') { reglages.joueursLocaux = t.value === '2' ? 2 : 1; sauverReglages(); }
+    if (t.name === 'joueursIci') { reglages.joueursLocaux = [2, 3, 4].includes(+t.value) ? +t.value : 1; sauverReglages(); }
+    if (t.name === 'joueursLocaux') { reglages.joueursLocaux = [2, 3, 4].includes(+t.value) ? +t.value : 2; sauverReglages(); }
     if (t.name === 'partage') { reglages.partage = t.value === 'cote' ? 'cote' : 'haut-bas'; sauverReglages(); }
-    if (/^r?cmd[01]$/.test(t.name) && NOMS_COMMANDES[t.value]) {
+    if (/^r?cmd[0-3]$/.test(t.name) && NOMS_COMMANDES[t.value]) {
       const n = +t.name.slice(-1);
-      reglages.commandes = [commande(0), commande(1)]; reglages.commandes[n] = t.value; souris.active = false; sauverReglages();
+      reglages.commandes = [0, 1, 2, 3].map(commande); reglages.commandes[n] = t.value; souris.active = false; sauverReglages();
       if (t.name[0] === 'r') majCommandes(); else for (const r of document.querySelectorAll('input[name="rcmd' + n + '"]')) r.checked = r.value === t.value;
     }
     if (['boite', 'qualite', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille'].includes(t.name)) {
@@ -5048,6 +5273,9 @@
   });
   const NOMS_ACTIONS = { gaz: 'Accélérer', frein: 'Freiner', gauche: 'Gauche', droite: 'Droite', derive: 'Dérive', haut: 'Rapport +', bas: 'Rapport −', vue: 'Vue', troll: 'Troll / geste' };
   const NOMS_COMMANDES = { auto: 'Auto', manette: 'Manette', clavier: 'Clavier', souris: 'Souris' };
+  // Lot C : nom de chaque choix de caméra -> rang du pilote local qu'il règle.
+  const RANGS_VUE = { vue: 0, vue2: 1, vue3: 2, vue4: 3, vuePret: 0, vuePret2: 1, vuePret3: 2, vuePret4: 3,
+    vueDepart: 0, vueDepart2: 1, vueDepart3: 2, vueDepart4: 3 };
   let captureTouche = null, carteClavier = null;   // action en attente d'une touche ; noms des touches du clavier réel
   try { if (navigator.keyboard && navigator.keyboard.getLayoutMap) navigator.keyboard.getLayoutMap().then(m => { carteClavier = m; majCommandes(); }, () => {}); } catch (e) { /* pas d'API de disposition */ }
   function nomTouche(code) {
@@ -5072,7 +5300,7 @@
       : actif.dataset.action ? '[data-action="' + actif.dataset.action + '"][data-n="' + actif.dataset.n + '"][data-place="' + actif.dataset.place + '"]'
       : actif.id ? '#' + actif.id : null : null;
     let html = '';
-    for (const n of [0, 1]) {
+    for (const n of [0, 1, 2, 3]) {
       html += '<div class="joueur-commandes"><h3>Joueur ' + (n + 1) + '</h3><fieldset class="choix-commande"><legend>Commande</legend>';
       for (const c of Object.keys(NOMS_COMMANDES)) html += '<label><input type="radio" name="rcmd' + n + '" value="' + c + '"' + (commande(n) === c ? ' checked' : '') + '><span>' + NOMS_COMMANDES[c] + '</span></label>';
       html += '</fieldset><p class="etat-manette" id="r-manette-joueur-' + n + '-status"></p><table class="table-touches"><thead><tr><th>Action</th><th colspan="2">Clavier</th><th>Manette</th></tr></thead><tbody>';
@@ -5110,10 +5338,10 @@
     if (e.target.id === 'r-pad-annuler') { captureManette = captureTouche = null; majCommandes(); }
     if (e.target.id === 'r-pad-defaut') {
       captureManette = captureTouche = null;
-      for (const n of [0, 1]) configurationsManettes[n] = B.commandesManette.normaliser();
+      for (const n of [0, 1, 2, 3]) configurationsManettes[n] = B.commandesManette.normaliser();
       reglages.manettes = configurationsManettes.slice(); sauverReglages(); majCommandes();
     }
-    if (e.target.id === 'r-touches-defaut') { reglages.touches = [{}, {}]; captureTouche = null; sauverReglages(); majCommandes(); }
+    if (e.target.id === 'r-touches-defaut') { reglages.touches = [{}, {}, {}, {}]; captureTouche = null; sauverReglages(); majCommandes(); }
   });
   function manetteConfiguration(n, liste = manettes) {
     // Le choix à deux reste identique à la course. Hors duo, le joueur 1 garde
@@ -5137,7 +5365,7 @@
     if (liaison) {
       configurationsManettes[q.n] = B.commandesManette.affecter(configurationsManettes[q.n], q.action, liaison);
       reglages.manettes = configurationsManettes.slice();
-      reglages.commandes = [commande(0), commande(1)]; reglages.commandes[q.n] = 'manette';
+      reglages.commandes = [0, 1, 2, 3].map(commande); reglages.commandes[q.n] = 'manette';
       captureManette = null; souris.active = false; sauverReglages(); majCommandes();
     } else if (q.suivi.annule) { captureManette = null; majCommandes(); }
     else {
@@ -5173,8 +5401,8 @@
     e.preventDefault(); e.stopImmediatePropagation();
     const q = captureTouche; captureTouche = null;
     if (e.code !== 'Escape' && e.code) {
-      const T = reglages.touches = [0, 1].map(n => Object.assign({}, reglages.touches && reglages.touches[n]));
-      for (const n of [0, 1]) for (const a of ACTIONS) if (toucheDe(n, a).includes(e.code)) T[n][a] = toucheDe(n, a).filter(c => c !== e.code);
+      const T = reglages.touches = [0, 1, 2, 3].map(n => Object.assign({}, reglages.touches && reglages.touches[n]));
+      for (const n of [0, 1, 2, 3]) for (const a of ACTIONS) if (toucheDe(n, a).includes(e.code)) T[n][a] = toucheDe(n, a).filter(c => c !== e.code);
       const liste = toucheDe(q.n, q.action).slice(0, 2);
       liste[Math.min(q.place, liste.length)] = e.code;
       T[q.n][q.action] = liste.filter(Boolean);
@@ -5237,6 +5465,10 @@
       const choix = $('ps-choix-pilote'), deux = session.locaux?.length > 1;
       choix.hidden = !deux;
       if (!deux) piloteStand = 0;
+      // Lot C : les cases 3 et 4 n'ont de ligne de stand que si la séance les compte.
+      const nb = Math.max(2, Math.min(4, session.nbJoueurs || 2));
+      for (const r of choix.querySelectorAll('input[name="piloteStand"]')) r.hidden = +r.value >= nb;
+      if (piloteStand >= nb) piloteStand = nb - 1;
       const radio = choix.querySelector('[value="' + piloteStand + '"]');
       radio.checked = true;
       majPneusStands();
@@ -5332,10 +5564,13 @@
     } else {
       const ordre = co.classement.map(id => co.voitures[id]), tete = ordre[0];
       const meilleurAbsolu = Math.min(...ordre.map(v => v.meilleur ?? Infinity));
-      const [h1, h2] = (S.locaux || [0]).map(id => co.voitures[id]);
-      $('res-titre').textContent = co.duo && h2 ? (h1.position < h2.position ? h1.nom : h2.nom) + ' devant · ' + Math.min(h1.position, h2.position) + 'e et ' + Math.max(h1.position, h2.position) + 'e'
+      const locaux = (S.locaux || [0]).map(id => co.voitures[id]), [h1, h2] = locaux;
+      // Lot C : à trois ou quatre, le titre met en avant le meilleur pilote local et liste les places de chacun.
+      const titreLocaux = locaux.length > 2 && locaux.every(v => v) ?
+        locaux.slice().sort((a, b) => a.position - b.position)[0].nom + ' en tête · ' + locaux.map(v => v.position + 'e').join(', ') : null;
+      $('res-titre').textContent = titreLocaux || (co.duo && h2 ? (h1.position < h2.position ? h1.nom : h2.nom) + ' devant · ' + Math.min(h1.position, h2.position) + 'e et ' + Math.max(h1.position, h2.position) + 'e'
         : j.abandon ? 'Abandon · voiture détruite' : !j.fini ? 'Ligne non franchie · ' + j.position + 'e'
-        : j.position === 1 ? 'Victoire' : 'Arrivée · ' + j.position + 'e';
+        : j.position === 1 ? 'Victoire' : 'Arrivée · ' + j.position + 'e');
       $('res-sous').textContent = nomCircuit + ' · ' + co.toursTotal + (co.toursTotal > 1 ? ' tours' : ' tour') + ' · rivaux ' + ['faciles', 'normaux', 'coriaces'][co.difficulte]
         + (!S.enLigneOrigine || !lienActif() ? '' : !co.termine ? ' · course en cours' : EL.role === 'hote' ? '' : ' · l’hôte choisit la suite');
       entete.innerHTML = '<th>Pos.</th><th>N°</th><th class="nom">Pilote</th><th>Tours</th><th>Temps</th><th>Meilleur tour</th>';
@@ -5464,7 +5699,11 @@
     const attentes = [];
     prepa.precharge = true;
     try {
-      const co = S.course, c = co.c, n = co.voitures.length, duo = S.type === 'duo' && !!S.vueJ2, vues = duo ? [S, S.vueJ2] : [S];
+      const co = S.course, c = co.c, n = co.voitures.length, duo = S.type === 'duo' && !!S.vueJ2;
+      // Lot C : une vue par pilote local (1 à 4). Les effets indexés par vue (faune, bêtes, saisons, aurores)
+      // ne sont montés que pour les deux premières cases ; J3/J4 rendent le monde sans ces couches.
+      const nbVues = duo ? Math.max(2, Math.min(4, S.nbJoueurs || 2)) : 1;
+      const vues = duo && S.vuesJoueurs ? S.vuesJoueurs.slice(0, nbVues).filter(Boolean) : [S];
       for (let k = 0; k < n; k++) {
         const p = tampons.poses[k] || (tampons.poses[k] = {});
         if (!p.rebond) p.rebond = [0, 0, 0, 0];
@@ -5511,24 +5750,31 @@
       const N = S.nature, sa = N && N.saison;
       if (N && B.faune && (!sa || sa.faune > 0 || N.secteurs?.plages.some(p => p.profils[sa.id].faune > 0))) {
         if (!N.faune) N.faune = B.faune.creer(c, scene.decor);
-        for (const V of vues) if (!V.fauneVue) V.fauneVue = { qualite: 'off', nuit: 0, pluie: 0, pose: null, camera: null, aspect: 16 / 9, vuesSecondaires: V.fauneSecondaires, vue: V === S ? 0 : 1 };
+        for (const V of vues) if (!V.fauneVue) V.fauneVue = { qualite: 'off', nuit: 0, pluie: 0, pose: null, camera: null, aspect: 16 / 9, vuesSecondaires: V.fauneSecondaires, vue: indexVue(V) };
       }
       // public des tribunes : ambiance de chaque vue (l'animation lit la pluie, les feux et le drapeau)
       if (scene && scene.vuePublic) for (const V of vues) if (!Object.prototype.hasOwnProperty.call(V, 'ambiancePublic') || !V.ambiancePublic) V.ambiancePublic = ambiancePublic();
       // animaux des abords : un contexte de vue par joueur (l'état vient de lancer, avec la scène)
       if (S.animaux) for (const V of vues) if (!Object.prototype.hasOwnProperty.call(V, 'animauxVue') || !V.animauxVue)
-        V.animauxVue = { vue: V === S ? 0 : 1, qualite: 'off', camera: null, hauteur: 720, aspect: 16 / 9, vuesSecondaires: V.fauneSecondaires, nuit: 0, pluie: 0 };
+        V.animauxVue = { vue: indexVue(V), qualite: 'off', camera: null, hauteur: 720, aspect: 16 / 9, vuesSecondaires: V.fauneSecondaires, nuit: 0, pluie: 0 };
       if (N && B.effetsSaison && sa && (N.effetsSaison || sa.feuilles || sa.neige || (S.meteo && S.meteo.neige) || N.secteurs?.plages.some(p => p.profils[sa.id].feuilles || p.profils[sa.id].neige))) {
         if (!N.effetsSaison) N.effetsSaison = B.effetsSaison.creer(c, scene.decor);
-        for (const V of vues) if (!V.saisonVue) V.saisonVue = { qualite: 'low', nuit: 0, pluie: 0, neige: 0, ventX: 0, ventZ: 0, pose: null, vue: V === S ? 0 : 1, abri: false };
+        for (const V of vues) if (!V.saisonVue) V.saisonVue = { qualite: 'low', nuit: 0, pluie: 0, neige: 0, ventX: 0, ventZ: 0, pose: null, vue: indexVue(V), abri: false };
       }
       if (N?.aurorePossible) {
         if (!N.aurores) N.aurores = B.aurores.creer(c);
-        for (const V of vues) if (!V.auroresVue) V.auroresVue = { vue: V === S ? 0 : 1, qualite: 'low', nuit: 0, pluie: 0, neige: 0, nuages: 0, tunnel: false };
+        for (const V of vues) if (!V.auroresVue) V.auroresVue = { vue: indexVue(V), qualite: 'low', nuit: 0, pluie: 0, neige: 0, nuages: 0, tunnel: false };
       }
       const port = scene && scene.decor.portique;
       if (port && co.mode === 'course' && !S.rotLampe) S.rotLampe = MATRICE_LAMPE(port.cap);
-      if (duo) S.presentationJ2 = rendu.createPresentation($('scene2'));
+      // Lot C : une présentation par case secondaire ; la copie du rendu se fait dans la toile 2D du joueur.
+      S.presentations = [null];
+      if (duo) for (let k = 1; k < nbVues; k++) {
+        const cible = $('scene' + (k + 1));
+        const P = cible ? rendu.createPresentation(cible) : null;
+        S.presentations[k] = P;
+        if (k === 1) S.presentationJ2 = P;
+      }
       // rétroviseurs : glaces de chaque joueur, et moteur des miroirs avec sa copie du décor quand la séance peut en montrer
       if (S.type !== 'vitrine') {
         glacesDe('j1'); if (duo) glacesDe('j2');
@@ -5816,16 +6062,23 @@
   function tiedirVoile(S) {
     $('chargement').classList.add('tiede');
     $('hud').hidden = false;
-    if (S.type === 'duo' && S.vueJ2) hud2.hidden = false;
+    if (S.type === 'duo' && S.vueJ2) {
+      hud2.hidden = false;
+      const nb = nbJoueursSession();
+      if (nb >= 3 && S.vuesJoueurs?.[2]) hud3.hidden = false;
+      if (nb >= 4 && S.vuesJoueurs?.[3]) hud4.hidden = false;
+    }
   }
   // l'affichage de l'écran présent, comme aller() le pose (une préparation annulée a pu le montrer sous le voile)
   function remettreHud() {
     $('hud').hidden = !(ecran === 'course' || ecran === 'pause' || ecran === 'demo');
     hud2.hidden = !(aDeux() && (ecran === 'course' || ecran === 'pause'));
+    hud3.hidden = !(aDeux() && (ecran === 'course' || ecran === 'pause') && nbJoueursSession() >= 3);
+    hud4.hidden = !(aDeux() && (ecran === 'course' || ecran === 'pause') && nbJoueursSession() >= 4);
   }
   // Sous le voile, menus et affichages ne prennent ni clic ni clavier ; le focus revient si la préparation s'annule.
   function bloquerEntrees(oui) {
-    for (const el of [...ECRANS.map($), $('hud'), hud2, $('tactile')]) if (el) el.inert = !!oui;
+    for (const el of [...ECRANS.map($), $('hud'), hud2, hud3, hud4, $('tactile')]) if (el) el.inert = !!oui;
     if (oui) {
       const a = document.activeElement;
       if (a && a !== document.body) { if (!prepa.focus) prepa.focus = a; if (a.blur) a.blur(); }
@@ -6025,7 +6278,7 @@
       periode = (B.cadence && B.cadence.periode && B.cadence.periode()) || prepa.periode || dureeImage;
       dureeImage = periode;
       rendreImage(S, 0, 0);
-      if (!vitrine) { majHud(S); if (S.type === 'duo' && S.vueJ2) majHud(S.vueJ2, HUD2, S.course.voitures[S.locaux[1]]); }
+      if (!vitrine) majHudLocaux(S);
       await attendreGPU(rendu);
       controler();
       if (!leger) { if (!vitrine) tiedirVoile(S); await suite(); }
@@ -6192,8 +6445,7 @@
     if (tourne) majPalier(S, f.intervalle, f);
     const tHud = B.mesures.actif ? performance.now() : 0;
     if (S.type !== 'vitrine') {
-      majHud(S);
-      if (S.type === 'duo' && S.vueJ2) majHud(S.vueJ2, HUD2, S.course.voitures[S.locaux[1]]);
+      majHudLocaux(S);
       const j = S.course.joueur;
       // en ligne, le classement s'affiche 8 s après sa propre arrivée et se complète en direct : la course continue
       // derrière (l'autre pilote est peut-être encore en piste), jusqu'à sa fin commune

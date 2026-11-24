@@ -7,6 +7,10 @@
   <div id="vue-course">
     <canvas id="scene" aria-label="Vue de la course"></canvas>
     <canvas id="scene2" aria-label="Vue du joueur 2"></canvas>
+    <canvas id="scene3" aria-label="Vue du joueur 3"></canvas>
+    <canvas id="scene4" aria-label="Vue du joueur 4"></canvas>
+    <!-- Lot C : à trois joueurs, la quatrième case montre la course par une carte animée (aucune voiture fantôme). -->
+    <div id="case-circuit" aria-hidden="true"><canvas id="carte-circuit" width="440" height="440" aria-label="Plan animé du circuit"></canvas></div>
     <canvas id="retro-rendu" class="retro-rendu" aria-hidden="true"></canvas>
     <canvas id="meteo" aria-hidden="true"></canvas>
     <canvas id="meteo2" aria-hidden="true"></canvas>
@@ -134,6 +138,8 @@
             <legend>Pilotes sur cette machine</legend>
             <label><input type="radio" name="joueursIci" value="1"><span>Un</span></label>
             <label><input type="radio" name="joueursIci" value="2"><span>Deux, écran partagé</span></label>
+            <label><input type="radio" name="joueursIci" value="3"><span>Trois, grille 2×2</span></label>
+            <label><input type="radio" name="joueursIci" value="4"><span>Quatre, grille 2×2</span></label>
           </fieldset>
         </div>
         <button type="button" class="gros principal" id="l-creer" hidden>Créer la partie</button>
@@ -393,12 +399,42 @@
           <option value="poursuite">Poursuite éloignée</option>
         </select></label>
       </fieldset>
+      <fieldset id="o-vue-3" hidden>
+        <legend>Vue · Joueur 3</legend>
+        <label class="select-arcade" for="p-vue-3"><span>Caméra</span><select id="p-vue-3" name="vueDepart3">
+          <option value="aileron-avant">Aileron avant</option>
+          <option value="nez">Nez</option>
+          <option value="cockpit">Cockpit</option>
+          <option value="arceau">Arceau · T-cam</option>
+          <option value="poursuite-proche">Poursuite proche</option>
+          <option value="poursuite">Poursuite éloignée</option>
+        </select></label>
+      </fieldset>
+      <fieldset id="o-vue-4" hidden>
+        <legend>Vue · Joueur 4</legend>
+        <label class="select-arcade" for="p-vue-4"><span>Caméra</span><select id="p-vue-4" name="vueDepart4">
+          <option value="aileron-avant">Aileron avant</option>
+          <option value="nez">Nez</option>
+          <option value="cockpit">Cockpit</option>
+          <option value="arceau">Arceau · T-cam</option>
+          <option value="poursuite-proche">Poursuite proche</option>
+          <option value="poursuite">Poursuite éloignée</option>
+        </select></label>
+      </fieldset>
       <fieldset id="o-commandes" hidden>
         <legend>Commandes</legend>
         <div class="ligne-commande"><b>Joueur 1</b><label><input type="radio" name="cmd0" value="auto"><span>Auto</span></label><label><input type="radio" name="cmd0" value="manette"><span>Manette</span></label><label><input type="radio" name="cmd0" value="clavier"><span>Clavier</span></label><label><input type="radio" name="cmd0" value="souris"><span>Souris</span></label></div>
         <div class="ligne-commande" id="p-commandes-j2"><b>Joueur 2</b><label><input type="radio" name="cmd1" value="auto"><span>Auto</span></label><label><input type="radio" name="cmd1" value="manette"><span>Manette</span></label><label><input type="radio" name="cmd1" value="clavier"><span>Clavier</span></label><label><input type="radio" name="cmd1" value="souris"><span>Souris</span></label></div>
+        <div class="ligne-commande" id="p-commandes-j3" hidden><b>Joueur 3</b><label><input type="radio" name="cmd2" value="auto"><span>Auto</span></label><label><input type="radio" name="cmd2" value="manette"><span>Manette</span></label><label><input type="radio" name="cmd2" value="clavier"><span>Clavier</span></label><label><input type="radio" name="cmd2" value="souris"><span>Souris</span></label></div>
+        <div class="ligne-commande" id="p-commandes-j4" hidden><b>Joueur 4</b><label><input type="radio" name="cmd3" value="auto"><span>Auto</span></label><label><input type="radio" name="cmd3" value="manette"><span>Manette</span></label><label><input type="radio" name="cmd3" value="clavier"><span>Clavier</span></label><label><input type="radio" name="cmd3" value="souris"><span>Souris</span></label></div>
         <p id="p-manettes" class="note-pneus"></p>
         <button type="button" class="discret" id="p-touches">Configurer les commandes</button>
+      </fieldset>
+      <fieldset id="o-joueurs" hidden>
+        <legend>Pilotes locaux</legend>
+        <label><input type="radio" name="joueursLocaux" value="2"><span>Deux, écran partagé</span></label>
+        <label><input type="radio" name="joueursLocaux" value="3"><span>Trois, grille 2×2</span></label>
+        <label><input type="radio" name="joueursLocaux" value="4"><span>Quatre, grille 2×2</span></label>
       </fieldset>
       <fieldset id="o-partage" hidden>
         <legend>Écran</legend>
@@ -630,6 +666,8 @@
         <legend>Pilote</legend>
         <label><input type="radio" name="piloteStand" value="0" checked><span>Joueur 1</span></label>
         <label><input type="radio" name="piloteStand" value="1"><span>Joueur 2</span></label>
+        <label><input type="radio" name="piloteStand" value="2" hidden><span>Joueur 3</span></label>
+        <label><input type="radio" name="piloteStand" value="3" hidden><span>Joueur 4</span></label>
       </fieldset>
       <p id="ps-note" class="note-pneus">À l’arrêt dans le garage, la voiture est réparée et les quatre pneus sont changés à la fin du service.</p>
       <div class="options">
@@ -650,6 +688,24 @@
           <label><input type="radio" name="pneusStand1" value="neige"><span>Neige</span></label>
           <p id="ps-avaries-1" class="note-pneus" role="status"></p>
           <p id="ps-etat-1" class="note-pneus" role="status" aria-live="polite"></p>
+        </fieldset>
+        <fieldset id="ps-pilote-2" hidden>
+          <legend>Joueur 3</legend>
+          <label><input type="radio" name="pneusStand2" value="slicks"><span>Slicks</span></label>
+          <label><input type="radio" name="pneusStand2" value="inter"><span>Intermédiaires</span></label>
+          <label><input type="radio" name="pneusStand2" value="pluie"><span>Pluie</span></label>
+          <label><input type="radio" name="pneusStand2" value="neige"><span>Neige</span></label>
+          <p id="ps-avaries-2" class="note-pneus" role="status"></p>
+          <p id="ps-etat-2" class="note-pneus" role="status" aria-live="polite"></p>
+        </fieldset>
+        <fieldset id="ps-pilote-3" hidden>
+          <legend>Joueur 4</legend>
+          <label><input type="radio" name="pneusStand3" value="slicks"><span>Slicks</span></label>
+          <label><input type="radio" name="pneusStand3" value="inter"><span>Intermédiaires</span></label>
+          <label><input type="radio" name="pneusStand3" value="pluie"><span>Pluie</span></label>
+          <label><input type="radio" name="pneusStand3" value="neige"><span>Neige</span></label>
+          <p id="ps-avaries-3" class="note-pneus" role="status"></p>
+          <p id="ps-etat-3" class="note-pneus" role="status" aria-live="polite"></p>
         </fieldset>
       </div>
     </div>

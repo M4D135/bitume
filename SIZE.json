@@ -1,8 +1,8 @@
 {
-  "version": "0.2.299",
-  "raw": 17511521,
-  "gzip": 4753689,
-  "sha256": "ee016800f8db9714478aab759bb61caa3339ff780bcc914faa85e35b9e4674fd",
+  "version": "0.2.300",
+  "raw": 17543834,
+  "gzip": 4761330,
+  "sha256": "3eacecc1f19a178937940743da5edede8af6699ddbe38bacf22c5e8d288fa557",
   "sources": {
     "ferro/surface.js": 3419,
     "ferro/render-shared.js": 81526,
@@ -39,7 +39,7 @@
     "contacts.js": 8379,
     "obstacles.js": 20076,
     "strategie-stands.js": 21509,
-    "course.js": 59763,
+    "course.js": 60765,
     "son.js": 58876,
     "botanique.js": 25068,
     "ecologie.js": 3127,
@@ -107,8 +107,8 @@
     "vibrations.js": 10282,
     "ombres.js": 13366,
     "visites.js": 6566,
-    "jeu.js": 441476,
-    "index.html": 74973,
-    "style.css": 110836
+    "jeu.js": 465840,
+    "index.html": 79499,
+    "style.css": 113257
   }
 }

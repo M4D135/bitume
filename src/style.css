@@ -616,6 +616,31 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 #jeu[data-partage="cote"] #vitre { width: 50%; }
 #jeu[data-partage="cote"] #vitre2 { display: block; inset: auto; left: 50%; top: 0; width: 50%; height: 100%; }
 
+/* Écran partagé à trois ou quatre (lot C) : grille 2×2, J1 en haut à gauche, J2 en haut à droite, J3 en bas à
+   gauche, J4 en bas à droite. Chaque affichage est mis en page dans une boîte deux fois plus grande puis réduit
+   (k = 0,5). À trois, la quatrième case montre la carte animée du circuit, sans pilote fantôme. */
+#scene3, #scene4 { position: absolute; display: none; background: var(--encre); box-sizing: border-box; }
+#hud3, #hud4 { position: absolute; pointer-events: none; padding: var(--marge); font-variant-numeric: tabular-nums; }
+#case-circuit { position: absolute; display: none; left: 0; top: 50%; width: 50%; height: 50%; box-sizing: border-box;
+  border-top: 2px solid #050607; border-left: 2px solid #050607; background: var(--encre);
+  align-items: center; justify-content: center; }
+#case-circuit canvas { width: 100%; height: 100%; object-fit: contain; }
+#jeu[data-partage="grille"] #scene { width: 50%; height: 50%; }
+#jeu[data-partage="grille"] #scene2 { display: block; left: 50%; top: 0; width: 50%; height: 50%; border-left: 2px solid #050607; }
+#jeu[data-partage="grille"] #scene3 { display: block; left: 0; top: 50%; width: 50%; height: 50%; border-top: 2px solid #050607; }
+#jeu[data-partage="grille"] #scene4 { display: block; left: 50%; top: 50%; width: 50%; height: 50%; border-top: 2px solid #050607; border-left: 2px solid #050607; }
+#jeu[data-partage="grille"][data-joueurs="3"] #scene4 { display: none; }
+#jeu[data-partage="grille"][data-joueurs="3"] #case-circuit { display: flex; }
+#jeu[data-partage="grille"] #hud, #jeu[data-partage="grille"] #hud2, #jeu[data-partage="grille"] #hud3, #jeu[data-partage="grille"] #hud4 {
+  inset: auto; left: 0; top: 0; width: calc(50% / .5); height: calc(50% / .5); transform: scale(.5); transform-origin: 0 0; }
+#jeu[data-partage="grille"] #hud2 { left: 50%; }
+#jeu[data-partage="grille"] #hud3 { top: 50%; }
+#jeu[data-partage="grille"] #hud4 { left: 50%; top: 50%; }
+#jeu[data-partage="grille"] #meteo { width: 50%; height: 50%; }
+#jeu[data-partage="grille"] #meteo2, #jeu[data-partage="grille"] .glaces2 { display: block; left: 50%; top: 0; width: 50%; height: 50%; }
+#jeu[data-partage="grille"] #vitre { width: 50%; height: 50%; }
+#jeu[data-partage="grille"] #vitre2 { display: block; inset: auto; left: 50%; top: 0; width: 50%; height: 50%; }
+
 /* Cockpit large : les panneaux latéraux dégagent les glaces et l'horizon. Le ratio est celui de chaque
    affichage, y compris à deux après réduction ; les vues étroites et le tactile gardent leur disposition haute. */
 @container affichage-course (min-aspect-ratio: 6/5) {

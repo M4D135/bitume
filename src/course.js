@@ -98,8 +98,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       }
       };
     };
-    // écran partagé : deux voitures humaines conduites sur cette machine (course à deux, ou en ligne)
-    const duo = !!humains && humains.locaux.length === 2;
+    // écran partagé : deux voitures humaines ou plus conduites sur cette machine (course à deux, trois ou quatre, ou en ligne)
+    const duo = !!humains && humains.locaux.length >= 2;
     const statsIa = { attaques: 0, abandons: 0, presses: 0, contacts: 0, decisions: 0, tempsDecision: 0 };
     const voitures = humains
       ? humains.noms.slice(0, nH).map((nom, k) => voiture(k, nom, NUMEROS_HUMAINS[k], LIVREES_HUMAINS[k], humains.locaux.includes(k)))
