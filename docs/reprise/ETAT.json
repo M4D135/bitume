@@ -1,23 +1,23 @@
 {
   "date": "2026-11-24",
   "etat_courant": {
-    "version_courante": "0.2.301",
+    "version_courante": "0.2.303",
     "version_publiee_verifiee": "0.2.299",
-    "physique": "p54",
+    "physique": "p55",
     "moteur": "FERRO 0.3.33 canonique (35 modules vérifiés)",
     "circuits": 9,
     "statut": "candidate_locale_non_poussee",
     "consignes": "docs/reprise/MASTER-PROMPT-BITUME.md",
     "suivi_lots": "docs/reprise/MASTER-PROMPT-BITUME.md#tableau-de-suivi",
     "index": "docs/reprise/FEUILLE-DE-ROUTE-2026-11-22.md",
-    "commit_local": "4fa9a2f",
-    "commits_devant_origin": 15,
+    "commit_local": "c1047a5",
+    "commits_devant_origin": 20,
     "dernier_lot_clos": "docs/reprise/rapports/PROFIL-FPS-2026-11-23.json",
-    "prochaine_action": "Réception Mac (C/D/A/J) ; B requalif largeur+collisions ; lots G/H/I/L ; tri 79/238 rouges ; arbitrage David inflation PHYSIQUE.",
+    "prochaine_action": "Réception Mac (C/D/A/B/J) ; lots G/H/I/L ; tri des 77 rouges préexistants ; arbitrage David inflation PHYSIQUE.",
     "branche_candidate": "main (locale)",
-    "version_candidate": "0.2.301",
-    "physique_candidate": "p54",
-    "preuve_candidate": "baseline 24/11 : construire.py reproduit 0.2.301 ; 11 tests ciblés verts (recul-physx, reprise-recul, route-des-cimes, split-screen, minimap-zoom, hud-pneus, visites-serveur, visites-navigateur, parcours-ouvert)"
+    "version_candidate": "0.2.303",
+    "physique_candidate": "p55",
+    "preuve_candidate": "24/11 : construire.py reproduit le build ; 77 rouges identiques à la base propre (aucune régression) ; devers-alizes 6/6 (B, d43c064) ; appui-objets-cimes 3/3 (A, c1047a5 : 149/537 rochers flottants → 0) ; tunnel, route-des-cimes-decor, decor, solides-physx géométrie/wasm verts"
   },
   "publication": {
     "version": "0.2.299",
