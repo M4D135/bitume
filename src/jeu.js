@@ -1054,6 +1054,52 @@
       contexte.ventX = S.meteo.ventX || 0; contexte.ventY = S.meteo.ventY || 0; contexte.ventZ = S.meteo.ventZ || 0;
       const voiture = suivie || S.course.voitures[S.suivie || 0] || S.course.joueur;
       contexte.vitesse = voiture.etat.v || 0; contexte.qualite = profil.palier;
+// Vecteur de vitesse physique complet (PhysX) – utilisé pour le flux d’air orienté.
+    // Déjà disponible dans voiture.etat._physx.velocity [vx, vy, vz].
+    const physV = voiture.etat._physx && voiture.etat._physx.velocity;
+    contexte.vitessePhysX = physV ? [physV[0], physV[1], physV[2]] : null;
+  // === Flux d’air : vent + vecteur de vitesse du support ===
+  // On combine le vent global et la vitesse réelle du véhicule (PhysX), puis on projette
+  // le résultat dans l'espace caméra (droite / haut / avant) pour que les goutles
+  // s’écoulent toujours dans la bonne direction, peu importe le regard ou le changement
+  // de vue (cockpit ↔ poursuite ↔ portrait).
+  function vecteurVentCaméra(vent, vitPhys, cam) {
+    // Vent en monde : [vx, vy, vz]
+    const [vx, vy, vz] = vent || [0, 0, 0];
+    // VitessePhysX du véhicule en monde : [vx, vy, vz]
+    const [px, py, pz] = vitPhys || [0, 0, 0];
+    // Vecteur de déplacement normalisé du véhicule
+    const norme = Math.hypot(px, py, pz) || 1;
+    const npx = px / norme, npy = py / norme, npz = pz / norme;
+    // Projection du vent le long / contre le déplacement du véhicule :
+    // on ajoute une composante proportionnelle à la vitesse du véhicule.
+    // Facteur d’atténuation : à vitesse nulle, on ne fait que suivre le vent ;
+    // à très haute vitesse, le déplacement du véhicule domine.
+    const alpha = Math.min(1, Math.max(0, norme / 50)); // 50 u ≈ 180 km/h approx
+    const projVx = vx * (1 - alpha) + px * alpha / norme;
+    const projVy = vy * (1 - alpha) + py * alpha / norme;
+    const projVz = vz * (1 - alpha) + pz * alpha / norme;
+    // Maintenant on projette dans l'espace caméra.
+    // Les axes caméra : right=[r0,r1,r2], up=[u0,u1,u2], forward=[f0,f1,f2]
+    // On construit ces vecteurs depuis les angles de la caméra.
+    const yaw = cam.yaw || 0, pitch = cam.pitch || 0;
+    const cy = Math.cos(yaw), sy = Math.sin(yaw);
+    const cp = Math.cos(pitch), sp = Math.sin(pitch);
+    const right = [cy, sp * sy, cp * sy];   // x right, y down, z forward-ish
+    const up = [-sy, cy * cp, -sp];         // x left, y up, z backward-ish (signs depend on convention)
+    const forward = [0, cp, sp];            // forward in camera space (z-forward, y-up)
+    // Projecttion : les composantes du flux dans l'espace caméra
+    const fluxRight = projVx * right[0] + projVy * right[1] + projVz * right[2];
+    const fluxUp    = projVx * up[0]    + projVy * up[1]    + projVz * up[2];
+    const fluxForward = projVx * forward[0] + projVy * forward[1] + projVz * forward[2];
+    return { fluxRight, fluxUp, fluxForward };
+  }
+  const vent = S.meteo && S.meteo.ventX !== undefined ? [S.meteo.ventX, S.meteo.ventY || 0, S.meteo.ventZ || 0] : null;
+  const flux = vecteurVentCaméra(vent, contexte.vitessePhysX, cam);
+  contexte.fluxVentRight = flux.fluxRight;
+  contexte.fluxVentUp = flux.fluxVentUp;
+  contexte.fluxVentForward = flux.fluxForward;
+}
       contexte.cameraYaw = cam.yaw || 0; contexte.cameraPitch = cam.pitch || 0; contexte.cameraRoll = cam.roll || 0;
       // La visière et la lentille de poursuite suivent le déplacement réel du support, y compris
       // dérive et marche arrière. Une coupe, un regard arrière ou un replacement de caméra ne
