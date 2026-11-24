@@ -68,7 +68,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     // « Route sans fin » (lot I) : compte à rebours par joueur, checkpoints qui rendent du
     // temps, stations-service. Le joueur éliminé ne bloque ni les autres ni la course.
     const sansFin = o.mode === 'sans-fin';
-    const sfReglage = sansFin ? Object.assign({ temps: 60, bonus: 30 }, o.sansFin || {}) : null;
+    const sfReglage = sansFin ? Object.assign({ temps: 60, bonus: 35, conso: 20, reservoir: STANDS.reservoir }, o.sansFin || {}) : null;
     const sfCheckpoints = sansFin ? (o.checkpoints || []).map((cp, i) => ({ id: i, s: cp.s, nom: cp.nom || ('checkpoint ' + (i + 1)) })) : null;
     const L = c.longueur;
     const difficulte = clamp(Math.round(o.difficulte ?? 1), 0, 2);
@@ -149,7 +149,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
         prog = s;
       }
       v.etat = B.conduite.creer(sAbs, d);
-      v.etat.carburant = c.stands && !chrono ? STANDS.reservoir : null;
+      // sans fin : l'essence compte toujours, même avant la première station entrée dans la fenêtre
+      v.etat.carburant = sansFin ? sfReglage.reservoir ?? STANDS.reservoir : (c.stands && !chrono ? STANDS.reservoir : null);
       Object.assign(v.etat, B.pneus.creerEtat('slicks', { seance: graine, voiture: v.id }));
       v.degats = B.degats ? B.degats.creer() : null; v.etat.degats = v.degats;
       v.progression = prog; v.position = k + 1;
@@ -160,7 +161,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     const toursTotal = c.ouvert ? 1 : (chrono ? 0 : Math.max(1, Math.round(o.tours ?? 3)));
     return {
       c, graine, mode: chrono ? 'chrono' : sansFin ? 'sans-fin' : 'course', toursTotal, difficulte,
-      sansFin: sansFin ? { checkpoints: sfCheckpoints, bonus: sfReglage.bonus, temps: sfReglage.temps } : null,
+      sansFin: sansFin ? { checkpoints: sfCheckpoints, bonus: sfReglage.bonus, temps: sfReglage.temps, conso: sfReglage.conso } : null,
       phase: chrono ? 'course' : 'grille', horloge: 0, temps: 0, dt: 1 / 120,
       feux: { allumes: 0, vert: chrono }, delaiVert: 0.4 + rng() * 1.0,
       voitures, joueur: voitures[humains ? humains.locaux[0] : 0], classement: ordre.map(v => v.id), enLigne: !!humains && !!humains.enLigne, duo,
@@ -903,7 +904,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       const e = v.etat;
       if (e.carburant != null && !retenue && !v.fini && !v.abandon && !e.recuperation && !e.reparation && service?.phase !== 'service') {
         const charge = clamp(e.gaz || 0, 0, 1);
-        e.carburant = Math.max(0, e.carburant - dt * (.0008 + Math.abs(e.v) * (.00024 + .00048 * charge)));
+        const conso = course.sansFin ? course.sansFin.conso : 1;
+        e.carburant = Math.max(0, e.carburant - dt * conso * (.0008 + Math.abs(e.v) * (.00024 + .00048 * charge)));
         if (e.carburant === 0) {
           const libre = v._commandeSansGaz || (v._commandeSansGaz = {});
           cmd = Object.assign(libre, cmd, { gaz: 0, derive: false });

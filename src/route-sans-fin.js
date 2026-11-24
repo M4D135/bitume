@@ -55,7 +55,7 @@
     const biome = biomePour(k), regle = REGLES[biome];
     const variantes = VARIANTES[biome];
     const theme = variantes[Math.floor(r() * variantes.length)];
-    const L = Math.round((1200 + 900 * r()) / PAS) * PAS;
+    const L = Math.round((1200 + 500 * r()) / PAS) * PAS;   // 1 200 à 1 700 m : l'écart de station reste ≤ 3 500
     const nb = 3 + Math.round(regle.virages * (2 + 3 * r()));
     const reliefs = 2 + Math.round(regle.amplitude / 12);
     const largeur = 6 + r() * 1.5, degagement = 10 + r() * 6;
@@ -167,5 +167,88 @@
       depart: 0, arrivee: Math.min(total, mesure - 1e-6), pasMax: PAS, points };
   }
 
-  B.routeSansFin = { PAS, CYCLE, biomePour, profilSegment, pointsSegment, etatBord, creerTrace, REGLES, VARIANTES };
+  // ---------------------------------------------------------------- stations-service
+  // Liste pure des stations jusqu'à l'abscisse absolue s1 : pliage déterministe des tronçons,
+  // mémoïsé, indépendant de l'ordre des requêtes. Grille de cible : la station visée est à
+  // ~2 400 m de la précédente, cherchée dans cible ± 600 m (seuils relâchés puis meilleur
+  // créneau) — l'écart garanti entre stations est donc de 1 800 à 3 600 m, et la première
+  // tombe au plus loin à 2 500 m. Chaque station occupe au moins 208 m.
+  const LONG_STATION = 208, CIBLE_STATION = 2400, MARGE_CIBLE = 600, PREMIERE_MAX = 2500;
+  const memoireStations = new Map();
+  function stationsJusquA(s1, graine) {
+    const cle = (graine >>> 0) + ':' + Math.ceil(s1 / 1200);
+    const vu = memoireStations.get(cle);
+    if (vu) return vu;
+    const liste = [];
+    let sDebut = 0, k = 0;
+    while (sDebut < s1 + 2400) {
+      const seg = pointsSegment(k, graine), L = seg.profil.L;
+      const derniere = liste.length ? liste[liste.length - 1] : null;
+      const cible = derniere ? derniere.debutAbs + CIBLE_STATION : 1500;
+      // bande absolue où la prochaine station a le droit de tomber ; l'échéance (maxi) rend
+      // le créneau obligatoire dans le segment courant, sinon on attend une portion propre
+      const mini = derniere ? derniere.debutAbs + 1800 : 400;
+      const maxi = derniere ? derniere.debutAbs + 3600 : PREMIERE_MAX;
+      const borneBasse = Math.max(sDebut, mini);
+      const borneHaute = Math.min(sDebut + L, Math.max(maxi, sDebut + LONG_STATION));
+      if (borneHaute - borneBasse >= LONG_STATION) {
+        const r = alea((graine >>> 0) * 3266489917 + (k >>> 0) * 374761393 + 29);
+        const urgence = sDebut + L >= maxi;
+        const pose = meilleurCreneau(seg.pts, L, borneBasse - sDebut, borneHaute - sDebut, cible - sDebut, urgence);
+        if (pose) {
+          liste.push({ debutAbs: sDebut + pose.debut, finAbs: sDebut + pose.debut + LONG_STATION,
+            garage0: sDebut + pose.debut + 74, garage1: sDebut + pose.debut + 126, vitesse: 11,
+            cote: r() < .5 ? -1 : 1, troncon: k });
+        }
+      }
+      sDebut += L; k++;
+    }
+    if (memoireStations.size > 4096) memoireStations.clear();
+    Object.freeze(liste);
+    memoireStations.set(cle, liste);
+    return liste;
+  }
+  // meilleur créneau de LONG_STATION dans [lo, hi] (abscisses locales) : premier seuil satisfait,
+  // sinon le créneau minimax (le moins courbé/le plus plat) — la pose est donc toujours garantie.
+  function meilleurCreneau(pts, L, lo, hi, cible, urgence) {
+    const n = pts.length;
+    const kap = new Float64Array(n), pen = new Float64Array(n);
+    for (let i = 1; i < n; i++) {
+      kap[i - 1] = Math.abs(pts[i].cap - pts[i - 1].cap) / PAS;
+      pen[i - 1] = Math.abs(pts[i].y - pts[i - 1].y) / PAS;
+    }
+    const besoin = Math.ceil(LONG_STATION / PAS);
+    const fenetres = [];
+    let run = 0;
+    for (let i = 0; i < n - 1; i++) {
+      if (kap[i] <= 1 / 15 && pen[i] <= .30) {   // tout créneau compte en scan ; le coût choisit le meilleur
+        if (++run >= besoin) {
+          const debut = pts[i - besoin + 1].s, fin = debut + LONG_STATION;
+          if (fin > L) break;
+          if (debut < lo || fin > hi) continue;
+          let kk = 0, pp = 0;
+          for (let j = i - besoin + 1; j <= i; j++) { kk = Math.max(kk, kap[j]); pp = Math.max(pp, pen[j]); }
+          fenetres.push({ debut, kk, pp, cout: kk * 100 + pp + Math.abs(debut - cible) / 400 });
+        }
+      } else run = 0;
+    }
+    if (!fenetres.length) return null;
+    const propres = fenetres.filter(f => f.kk <= 1 / 90 && f.pp <= .055);
+    if (!propres.length && !urgence) return null;
+    const choisis = propres.length ? propres : fenetres;
+    choisis.sort((a, b) => a.cout - b.cout);
+    return { debut: choisis[0].debut };
+  }
+  // Stations dont l'emprise tombe dans [s0, s1[ en abscisses absolues.
+  function stationsEntre(s0, s1, graine) {
+    return stationsJusquA(s1, graine).filter(st => st.debutAbs >= s0 && st.debutAbs < s1);
+  }
+  // la station à servir depuis une abscisse absolue donnée : la plus proche encore devant
+  function stationActive(sAbsolu, liste) {
+    for (const st of liste) if (st.finAbs > sAbsolu) return st;
+    return null;
+  }
+
+  B.routeSansFin = { PAS, CYCLE, biomePour, profilSegment, pointsSegment, etatBord, creerTrace, REGLES, VARIANTES,
+    LONG_STATION, stationsEntre, stationActive };
 })(globalThis.BITUME = globalThis.BITUME || {});
