@@ -1,8 +1,8 @@
 {
-  "version": "0.2.325",
-  "raw": 17621526,
-  "gzip": 4785882,
-  "sha256": "08e5642638bdede3ead2fe754dffd916b8276ae6e6b86f6328d66a66f0208b1f",
+  "version": "0.2.326",
+  "raw": 17622100,
+  "gzip": 4786082,
+  "sha256": "1df226455845e98459136d4209113869813752f4a7a3a25f8cbb2b87b0dec046",
   "sources": {
     "ferro/surface.js": 3419,
     "ferro/render-shared.js": 81526,
@@ -17,7 +17,7 @@
     "circuit-raccords-data.js": 1016947,
     "circuit-raccords.js": 3744,
     "route-sans-fin.js": 14928,
-    "route-sans-fin-fenetre.js": 4954,
+    "route-sans-fin-fenetre.js": 5104,
     "route-sans-fin-seance.js": 6077,
     "route-des-cimes.js": 25009,
     "route-des-cimes-decor.js": 10550,
@@ -110,7 +110,7 @@
     "vibrations.js": 10282,
     "ombres.js": 13366,
     "visites.js": 7590,
-    "jeu.js": 481822,
+    "jeu.js": 482246,
     "index.html": 79995,
     "style.css": 114371
   }
