@@ -89,7 +89,7 @@ test('raccord du jeu : la vitrine et les reprises de saison ne sollicitent jamai
   const a = construire(true); construire(true,a); assert.deepEqual(appels,{ wasm:1, js:1, relier:2 });
   accepte = false; construire(true); assert.deepEqual(appels,{ wasm:2, js:2, relier:3 });
   assert.equal(contexte.COMPTES_HERBIER.wasm,1);
-  assert.match(jeu, /installer\(i, B\.saisons\.normaliser\(conditions\.saison\), null, type !== 'vitrine'\)/);
+  assert.match(jeu, /installer\(i, B\.saisons\.normaliser\(conditions\.saison\), null, type !== 'vitrine'(, [^)]*)?\)/);   // 5e argument facultatif : circuit de la fenêtre sans fin
   assert.match(jeu, /installer\(i, saison, panorama, type !== 'vitrine'\)/);
   assert.match(decor, /entree && entree\.herbier, options\.herbierWasm !== false\)/);
 });

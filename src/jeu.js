@@ -268,12 +268,12 @@
     const options = [v.ancre, decorEnrichi, v.veut.matieres, v.vegetationQualite, 'flux-1'].join('/');
     return 'panorama-v1:' + B.cache.cleDecor(k.id, k.graine, options, v.saison, version);
   }
-  function installer(i, saisonDemandee, panorama, herbierWasm) {
+  function installer(i, saisonDemandee, panorama, herbierWasm, cFourni) {
     // Le décor est bâti sur un palier « ancre » (voir « profils graphiques du menu ») : la même piste ne se
     // reconstruit pas à chaque fluctuation du gouverneur, seulement quand l'ancre ou l'enrichissement change.
     const v = voeuDecor(saisonDemandee), { ancre, veut, vegetationQualite, saison } = v;
-    if (sceneEnPlace(i, saisonDemandee, v)) return scene;
-    const c = circuit(i), decor = B.decor.construire(c, {
+    if (!cFourni && sceneEnPlace(i, saisonDemandee, v)) return scene;
+    const c = cFourni || circuit(i), decor = B.decor.construire(c, {
       decorProgressif: true,
       cachePanorama: panorama && panorama.cle === clePanorama(i, v) ? panorama : null,
       herbierWasm,
@@ -430,13 +430,21 @@
     // en ligne, une machine qui porte deux pilotes joue en écran partagé, comme une course à deux
     if (enl && enl.locaux.length === 2) type = 'duo';
     const conditions = enl || conditionsChoisies || conditionsDuDepart();
-    const sc = installer(i, B.saisons.normaliser(conditions.saison), null, type !== 'vitrine'), c = sc.c, demo = type === 'demo', auto = demo || type === 'vitrine', duo = type === 'duo';
+    const sansFin = type === 'sans-fin';
+    // Route sans fin : le monde n'est pas un circuit du catalogue mais la fenêtre glissante de la séance ;
+    // le tracé naît devant les joueurs et s'allonge à mesure (src/route-sans-fin-seance.js).
+    const seance = sansFin ? B.routeSansFinSeance.creer({ graine: (enl ? enl.graine : graineCourse) >>> 0 }) : null;
+    const sc = installer(i, B.saisons.normaliser(conditions.saison), null, type !== 'vitrine', seance ? seance.c : null), c = sc.c, demo = type === 'demo', auto = demo || type === 'vitrine', duo = type === 'duo';
     // Lot C : deux à quatre pilotes locaux en écran partagé. La grille 2×2 vient avec le troisième joueur.
     const nbLocaux = duo ? Math.max(2, Math.min(4, joueursLocaux())) : 1;
     // ombre lointaine du circuit (src/ombres.js) : une passe par décor, aucune sans ombres du soleil possibles
     B.ombres.carte(rendu, gpuModeste || !B.ombres.ombresPossibles(reglages.qualite, { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages }), sc.decor.lots);
     // enl : course en ligne (même graine, mêmes réglages des deux côtés ; voir « jeu en ligne »)
-    const course = B.course.creer(c, {
+    const course = sansFin ? B.course.creer(c, {
+      mode: 'sans-fin', rivaux: 0, difficulte: reglages.difficulte, graine: ++graineCourse,
+      checkpoints: seance.checkpoints, sansFin: {},
+      humains: { noms: LOCAUX_DEFAUT.slice(0, nbLocaux), locaux: LOCAUX_DEFAUT.slice(0, nbLocaux).map((_, k) => k), hote: true, enLigne: false }
+    }) : B.course.creer(c, {
       mode: type === 'chrono' ? 'chrono' : 'course', tours: enl ? enl.tours : type === 'vitrine' ? 99 : demo ? TOURS_DEMO : reglages.tours,
       difficulte: enl ? enl.difficulte : auto ? 2 : reglages.difficulte, rivaux: 11, graine: enl ? enl.graine : ++graineCourse, placeJoueur: type === 'vitrine' ? 5 : demo ? 6 : 8,
       humains: enl ? { noms: enl.humains.map(h => h.nom), locaux: enl.locaux, hote: enl.role === 'hote', enLigne: true } : duo ? { noms: LOCAUX_DEFAUT.slice(0, nbLocaux), locaux: LOCAUX_DEFAUT.slice(0, nbLocaux).map((_, k) => k), hote: true, enLigne: false } : null
@@ -453,13 +461,13 @@
     const meteoInit = meteoPourConditions(conditions, i, enl ? enl.graine : graineCourse);
     // Pneus : le joueur roule sur ceux de la préparation (présélectionnés selon la météo, qu'il peut changer) ; les
     // rivaux sur ceux que conseille la piste au départ. La caisse les montre (voiture.js) et la conduite les sent.
-    const conseil = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoInit)), joue = type === 'course' || type === 'chrono' || duo;
+    const conseil = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoInit)), joue = type === 'course' || type === 'chrono' || duo || sansFin;
     monterPneusDepart(course, joue, enl, conseil);
     let S = null;
     try {
     B.physique.installer(course, sc.decor);
     S = {
-      type, i, course, c, modeles: course.voitures.map(v => B.voiture.modele(v.livree)),
+      type, i, course, c, seance, conditions, modeles: course.voitures.map(v => B.voiture.modele(v.livree)),
       prec: [], cour: [], sortie: [], acc: 0, tele: { poste: null, alea: graine32(course.voitures.length * 7 + i) },
       camCap: null, regardArriere: false, profil: new Float32Array(Math.ceil(c.longueur / 10) + 2).fill(-1), profilMeilleur: null,
       distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
@@ -1425,6 +1433,19 @@
   // joueur » à l'ordinateur : sans ce garde-fou, son moteur grondait dans les mains devant l'écran titre.
   function manetteVibre(auto) { return !auto && reglages.vibrations === 'oui' && ecran === 'course' && !document.hidden; }
 
+  // Route sans fin : la fenêtre a bougé — le circuit courant change de tronçons. Le décor et les solides
+  // PhysX sont rebâtis sur le nouveau circuit ; les voitures gardent leur état (le moteur les repose).
+  function reinstallerSansFin(S) {
+    const c = S.seance.c;
+    S.c = c; S.course.c = c;
+    // le profil d'ombres est indexé par l'abscisse : une fenêtre qui s'allonge demande un tableau plus long
+    if (Math.ceil(c.longueur / 10) + 2 > S.profil.length) S.profil = new Float32Array(Math.ceil(c.longueur / 10) + 2).fill(-1);
+    B.physique.liberer(S.course);
+    const sc = installer(S.i, B.saisons.normaliser(S.conditions.saison), null, true, c);
+    B.ombres.carte(rendu, gpuModeste || !B.ombres.ombresPossibles(reglages.qualite, { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages }), sc.decor.lots);
+    B.physique.installer(S.course, sc.decor);
+  }
+
   function pasSimulation(S, pilote) {
     if (B.meteo) B.meteo.actuel = S.meteo;
     const co = S.course;
@@ -1476,6 +1497,13 @@
     if (S.banc) S.banc.effets += performance.now() - tFx;
     if (S.type === 'demo') traiterDemo(S, ev);
     else if (S.type !== 'vitrine') { traiter(S, ev); suivreJoueur(S); }
+    // Route sans fin : la fenêtre suit les joueurs ; quand elle bouge, le décor et les solides suivent.
+    if (S.seance) {
+      const vivantes = [];
+      for (const v of co.voitures) if (v.humain && !v.distant && v.sansFin && !v.sansFin.elimine) vivantes.push(v.etat.s);
+      if (!vivantes.length) vivantes.push(co.joueur.etat.s);
+      if (B.routeSansFinSeance.avancer(S.seance, vivantes, DT)) reinstallerSansFin(S);
+    }
   }
 
   // Démo : les sons et les annonces suivent la course et la voiture filmée, pas un joueur.
@@ -4536,7 +4564,11 @@
     texte(H['h-pos'], chronoMode ? '–' : String(j.position)); texte(H['h-sur'], chronoMode ? '' : '/' + nb);
     if (!chronoMode && !demo && S.positionPrec && j.position < S.positionPrec && co.phase === 'course') eclat(H['c-position']);
     S.positionPrec = j.position;
-    if (co.c.ouvert) {
+    if (co.sansFin) {
+      // Hang-On : le temps reste, la distance se lit au compteur de kilomètres parcourus
+      texte(H['h-tour'], co.phase === 'grille' || co.phase === 'feux' ? '–' : Math.max(0, j.sansFin.restant).toFixed(1).replace('.', ','));
+      texte(H['h-tours'], ' s');
+    } else if (co.c.ouvert) {
       const resteM = Math.max(0, (co.c.arrivee || co.c.longueur) - (j.etat.s || 0));
       texte(H['h-tour'], co.phase === 'grille' || co.phase === 'feux' ? '–' : (resteM / 1000).toFixed(1).replace('.', ','));
       texte(H['h-tours'], ' km');
@@ -4791,7 +4823,7 @@
   function majBilanArcade() {
     const k = conditionsDuDepart(), cat = CATALOGUE[reglages.circuit], nombre = pilotesMenu();
     texte($('p-bilan-circuit'), cat.nom);
-    texte($('p-bilan-course'), modePrepa === 'chrono' ? 'Contre-la-montre · fantôme personnel' : reglages.tours + ' tours · rivaux ' + ['faciles', 'normaux', 'coriaces'][reglages.difficulte]);
+    texte($('p-bilan-course'), modePrepa === 'chrono' ? 'Contre-la-montre · fantôme personnel' : modePrepa === 'sans-fin' ? 'La route s’allonge sans fin · ravitaillez-vous aux stations' : reglages.tours + ' tours · rivaux ' + ['faciles', 'normaux', 'coriaces'][reglages.difficulte]);
     texte($('p-bilan-saison'), NOMS_SAISON[k.saison] + ' · ' + NOMS_MOMENT[k.moment]);
     texte($('p-bilan-meteo'), nomMeteoCourse({ ...k, i: reglages.circuit }));
     texte($('p-bilan-joueurs'), (nombre === 1 ? 'Un pilote local' : nombre === 2 ? 'Deux pilotes locaux' : nombre === 3 ? 'Trois pilotes locaux' : 'Quatre pilotes locaux') + (modePrepa === 'enligne' ? ' · en ligne' : ''));
@@ -4799,7 +4831,7 @@
     const klaxons = { classique: 'classique', ancien: 'ancien', mariage: 'mariage' };
     const choix = choixTrollLocaux(), pneus = choixPneusLocaux();
     texte($('p-bilan-troll'), choix.slice(0, nombre).map((c, n) => 'J' + (n + 1) + '\u00a0: ' + NOMS_PNEUS[pneus[n]] + ' · ' + gestes[c.geste] + ' + klaxon ' + klaxons[c.klaxon]).join(' / '));
-    texte($('b-depart'), modePrepa === 'enligne' ? 'Confirmer la course' : modePrepa === 'chrono' ? 'Lancer le chrono' : 'Prendre le départ');
+    texte($('b-depart'), modePrepa === 'enligne' ? 'Confirmer la course' : modePrepa === 'chrono' ? 'Lancer le chrono' : modePrepa === 'sans-fin' ? 'Prendre la route' : 'Prendre le départ');
   }
 
   function aller(nom) {
@@ -4885,7 +4917,7 @@
     const cible = b.dataset.aller;
     // en ligne, la flèche de retour ramène de la préparation au salon, et du salon (lien fermé) au titre
     if (cible === 'titre' && (ecran === 'enligne' || (ecran === 'preparation' && modePrepa === 'enligne'))) retour();
-    else if (cible === 'course' || cible === 'chrono' || cible === 'duo') { modePrepa = cible; aller('preparation'); }
+    else if (cible === 'course' || cible === 'chrono' || cible === 'duo' || cible === 'sans-fin') { modePrepa = cible; aller('preparation'); }
     else if (cible === 'reglages') { retourReglages = ecran; aller('reglages'); }
     else aller(cible);
   });
