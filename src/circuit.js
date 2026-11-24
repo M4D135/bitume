@@ -444,18 +444,25 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
       }
       for (const debut of debuts) {
         const u = s - debut, bord = Math.min(u, virage - u);
-        if (bord <= -10) continue;
+        if (bord <= -48) continue;
         // d<0 est à gauche. Le mesh produit y − d·tan(devers) : l'inclinaison réellement dessinée
-        // et collisionnée vaut donc 40° au cœur des quatre gauches. La rampe de dévers est
-        // découplée de celle de la courbure (raccordDevers plus long) pour une entrée et une
-        // sortie douces, sans bosse ni creux ; les petites droites restent plates (bord <= -10).
-        devers[i] = -40 * Math.PI / 180 * lisse(-10, raccordDevers, bord);
+        // et collisionnée vaut donc 40° au cœur des quatre gauches. La rampe quintique (C2) s'étire
+        // sur 112 m (−48 → 64) pour éliminer la crête verticale à l'intérieur tout en gardant le
+        // milieu des petites droites (bord = −60) parfaitement plat.
+        const tb = Math.max(0, Math.min(1, (bord + 48) / (raccordDevers + 48)));
+        devers[i] = -40 * Math.PI / 180 * tb * tb * tb * (10 + tb * (-15 + 6 * tb));
         courbure[i] = -courbureMax * lisse(0, raccord, bord);
         if (bord > 0) vibreur[i] = 1;
         break;
       }
     }
     const largeur = 16, lim = limites(courbure, n, largeur);
+    // Sur l'anneau relevé à 40°, le mur extérieur épouse le haut du banking (w + 3 m) au lieu
+    // de laisser une falaise d'herbe plate de 12 m qui catapultait les voitures au large.
+    for (let i = 0; i < n; i++) {
+      const partBank = Math.min(1, Math.abs(devers[i]) / (40 * Math.PI / 180));
+      if (partBank > 0) lim.D[i] = Math.min(lim.D[i], largeur / 2 + 3 + (LIMITE - (largeur / 2 + 3)) * (1 - partBank));
+    }
     // La grille de douze tient derrière le départ ; le garage dispose de l'autre
     // grande droite. La route et sa voie latérale alimentent les mêmes triangles PhysX.
     const droiteStands = second + virage;
@@ -467,6 +474,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
       limite: LIMITE, limiteG: lim.G, limiteD: lim.D, depart: 0, ligneDroite: { debut: -avantLigne, fin: premier },
       secteurs: [longueur / 3, 2 * longueur / 3], stands, tunnel: null, essais: 1 };
     preparerParcours(c);
+    // Sur l'anneau relevé à 40°, recentrer la trajectoire dans le couloir central-bas (|d| ≤ 2,8 m)
+    // évite de plonger sur la corde (−6,6 m) où la rampe de dévers déleste les roues, tout en gardant
+    // une ligne continue sans écart brusque en peloton à l'entrée des courbes.
+    for (let i = 0; i < n; i++) c.ligne[i] = Math.max(-2.8, Math.min(2.8, c.ligne[i] * 0.42));
     for (let i = 0; i < n; i++) {
       const s = i * PAS, marge = Math.min(s - (stands.garage0 - 10), stands.garage1 + 10 - s);
       const fondGarage = LIMITE + (Math.abs(stands.dBox) + 13.5 - LIMITE) * lisse(-24, 0, marge);

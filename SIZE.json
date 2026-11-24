@@ -1,8 +1,8 @@
 {
-  "version": "0.2.312",
-  "raw": 17576724,
-  "gzip": 4772372,
-  "sha256": "c012847f887206444e60972d83a68006dc53ff8bcb8cd19e4321e0593f8f5119",
+  "version": "0.2.313",
+  "raw": 17591636,
+  "gzip": 4776855,
+  "sha256": "6a062c1be1dac1a2e85758fca89e5133e46b640285241639d641f85168090e7c",
   "sources": {
     "ferro/surface.js": 3419,
     "ferro/render-shared.js": 81526,
@@ -12,13 +12,13 @@
     "ferro/engine.js": 2025,
     "ferro/physx-runtime.js": 12063280,
     "ferro/physx.js": 29091,
-    "circuit.js": 48278,
+    "circuit.js": 49185,
     "couverts.js": 13617,
     "circuit-raccords-data.js": 1016947,
     "circuit-raccords.js": 3744,
-    "route-sans-fin.js": 13629,
-    "route-sans-fin-fenetre.js": 3685,
-    "route-sans-fin-seance.js": 5328,
+    "route-sans-fin.js": 14928,
+    "route-sans-fin-fenetre.js": 4954,
+    "route-sans-fin-seance.js": 6077,
     "route-des-cimes.js": 25009,
     "route-des-cimes-decor.js": 10550,
     "larche-vinadio-data.js": 331200,
@@ -56,8 +56,8 @@
     "herbier-wasm.js": 11016,
     "lagon.js": 8024,
     "ovale-forges-decor.js": 12009,
-    "decor.js": 188010,
-    "physique.js": 28794,
+    "decor.js": 191862,
+    "physique.js": 29031,
     "faune.js": 30792,
     "aeriens.js": 27646,
     "signalisation-course.js": 16432,
@@ -110,8 +110,8 @@
     "vibrations.js": 10282,
     "ombres.js": 13366,
     "visites.js": 6566,
-    "jeu.js": 471048,
-    "index.html": 79822,
-    "style.css": 113257
+    "jeu.js": 476669,
+    "index.html": 79938,
+    "style.css": 114119
   }
 }

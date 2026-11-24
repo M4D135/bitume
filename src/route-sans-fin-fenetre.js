@@ -63,6 +63,28 @@
     const trace = R.creerTrace(f.k0, f.k1, f.graine);
     const c = B.circuit.creerDepuisTrace(trace, { topologie: 'ouvert' });
     B.circuit.preparerParcours(c);
+    c.graine = f.graine;
+    c.theme = R.pointsSegment(f.k0, f.graine).profil.theme;
+    // Découpage par tronçon de biome : permet au décor de teinter plage → plaine → montagnes
+    // sur la fenêtre active. Les longueurs sont ramenées à c.longueur (corde ≤ arc).
+    const tronconsThemes = [];
+    let sAcc = 0, sBrut = 0;
+    for (let k = f.k0; k < f.k1; k++) sBrut += R.pointsSegment(k, f.graine).profil.L;
+    const echelle = sBrut > 0 ? c.longueur / sBrut : 1;
+    for (let k = f.k0; k < f.k1; k++) {
+      const p = R.pointsSegment(k, f.graine).profil, dL = p.L * echelle;
+      tronconsThemes.push({ theme: p.theme, biome: p.biome, debut: sAcc, fin: Math.min(c.longueur, sAcc + dL) });
+      sAcc += dL;
+    }
+    if (tronconsThemes.length) tronconsThemes[tronconsThemes.length - 1].fin = c.longueur;
+    c.tronconsThemes = tronconsThemes;
+    // Checkpoints visibles (portiques 3D + repères minimap) tombant dans la fenêtre courante (pas 1 500 m).
+    const pasCp = 1500, cps = [];
+    const premierCp = Math.max(1, Math.ceil((f.sOrigine + 10) / pasCp));
+    for (let m = premierCp; m * pasCp <= f.sOrigine + c.longueur - 10; m++) {
+      cps.push({ s: m * pasCp - f.sOrigine, sAbs: m * pasCp, numero: m });
+    }
+    c.checkpointsSansFin = cps;
     c.sansFinFenetre = { k0: f.k0, k1: f.k1, sOrigine: f.sOrigine };
     return c;
   }

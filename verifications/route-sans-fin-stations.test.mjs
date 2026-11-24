@@ -96,14 +96,17 @@ verifier('le service rend essence, pneus et réparations, chrono couru', () => {
   assert.ok(B.degats.sante(v.degats) < 1, 'dégâts de test non appliqués');
   const restantAvant = v.sansFin.restant;
 
-  let essenceReparee = -1;
-  for (let i = 0; i < Math.round(60 / DT); i++) for (const x of B.course.pas(co, [FREIN], DT)) { ev.push(x); if (x.type === 'stand' && x.phase === 'repare') essenceReparee = e.carburant; }
+  let essenceReparee = -1, santeReparee = -1;
+  for (let i = 0; i < Math.round(60 / DT); i++) for (const x of B.course.pas(co, [FREIN], DT)) {
+    ev.push(x);
+    if (x.type === 'stand' && x.phase === 'repare') { essenceReparee = e.carburant; santeReparee = B.degats.sante(v.degats); }
+  }
   for (let i = 0; i < Math.round(30 / DT); i++) for (const x of B.course.pas(co, [GAZ], DT)) ev.push(x);   // sortir de la voie
   const phases = ev.filter(x => x.type === 'stand' && x.id === 0).map(x => x.phase);
   for (const p of ['entree', 'service', 'repare', 'sortie']) assert.ok(phases.includes(p), 'phase ' + p + ' manquante : ' + phases.join(','));
   assert.ok(essenceReparee > 71.5, 'réservoir non refait à la réparation : ' + essenceReparee);
   assert.ok(e.etatPneus.every(p => p.usure < 0.05), 'pneus non changés');
-  assert.ok(B.degats.sante(v.degats) > 0.99, 'carrosserie non réparée : ' + B.degats.sante(v.degats));
+  assert.ok(santeReparee > 0.99, 'carrosserie non réparée : ' + santeReparee);
   assert.ok(restantAvant - v.sansFin.restant >= 20, 'le compte à rebours ne tourne pas pendant le service');
 });
 

@@ -295,7 +295,7 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 
 /* ------------------------------------------------------------------ affichage de course */
 #hud { position: absolute; inset: 0; pointer-events: none; padding: var(--marge); padding-top: max(var(--marge), env(safe-area-inset-top)); font-variant-numeric: tabular-nums; }
-#hud, #hud2 {
+#hud, #hud2, #hud3, #hud4 {
   container: affichage-course / size;
   --verre-course: linear-gradient(155deg, rgba(47, 59, 70, .52), rgba(11, 19, 26, .46) 58%, rgba(12, 19, 25, .38));
   --reflet-course: inset 0 1px rgba(255, 255, 255, .26), inset 0 -1px rgba(255, 255, 255, .07);
@@ -462,7 +462,7 @@ body.tactile #b-pause { display: block; }
 
 /* La carte est indépendante des compteurs supplémentaires du cockpit. */
 #jeu[data-reduit="oui"] .tableau .vitesse, #jeu[data-reduit="oui"] .tableau .regime { display: none; }
-#hud[data-reduit="oui"] .tableau .vitesse, #hud[data-reduit="oui"] .tableau .regime, #hud2[data-reduit="oui"] .tableau .vitesse, #hud2[data-reduit="oui"] .tableau .regime { display: none; }
+#hud[data-reduit="oui"] .tableau .vitesse, #hud[data-reduit="oui"] .tableau .regime, #hud2[data-reduit="oui"] .tableau .vitesse, #hud2[data-reduit="oui"] .tableau .regime, #hud3[data-reduit="oui"] .tableau .vitesse, #hud3[data-reduit="oui"] .tableau .regime, #hud4[data-reduit="oui"] .tableau .vitesse, #hud4[data-reduit="oui"] .tableau .regime { display: none; }
 
 /* ------------------------------------------------------------------ démo */
 /* Écran titre : l'attente avant la démo, un trait qui se remplit en cinq secondes. */
@@ -633,7 +633,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
    (k = 0,5). À trois, la quatrième case montre la carte animée du circuit, sans pilote fantôme. */
 #scene3, #scene4 { position: absolute; display: none; background: var(--encre); box-sizing: border-box; }
 #hud3, #hud4 { position: absolute; pointer-events: none; padding: var(--marge); font-variant-numeric: tabular-nums; }
-#case-circuit { position: absolute; display: none; left: 0; top: 50%; width: 50%; height: 50%; box-sizing: border-box;
+#case-circuit { position: absolute; display: none; left: 50%; top: 50%; width: 50%; height: 50%; box-sizing: border-box;
   border-top: 2px solid #050607; border-left: 2px solid #050607; background: var(--encre);
   align-items: center; justify-content: center; }
 #case-circuit canvas { width: 100%; height: 100%; object-fit: contain; }
@@ -656,32 +656,32 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 /* Cockpit large : les panneaux latéraux dégagent les glaces et l'horizon. Le ratio est celui de chaque
    affichage, y compris à deux après réduction ; les vues étroites et le tactile gardent leur disposition haute. */
 @container affichage-course (min-aspect-ratio: 6/5) {
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .hud-rivaux { position: absolute; left: max(var(--marge),env(safe-area-inset-left)); bottom: 30%; width: min(164px,22%); display: grid; gap: 4px; }
-  body:not(.tactile) #jeu[data-carte-position="gauche"]:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .hud-rivaux { left: auto; right: max(var(--marge),env(safe-area-inset-right)); }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .hud-rivaux { position: absolute; left: max(var(--marge),env(safe-area-inset-left)); bottom: 30%; width: min(164px,22%); display: grid; gap: 4px; }
+  body:not(.tactile) #jeu[data-carte-position="gauche"]:not([data-carte="non"]) :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .hud-rivaux { left: auto; right: max(var(--marge),env(safe-area-inset-right)); }
   /* La main remonte vers le bord en braquant. Réduire seulement le classement avec la hauteur locale
      garde les noms à une ligne, sans rétrécir l'annonce ni la faire remonter vers une glace. */
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement { position: static; inset: auto; width: min(100%,30cqh); justify-self: start; gap: 0; }
-  body:not(.tactile) #jeu[data-carte-position="gauche"]:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .classement { justify-self: end; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li { grid-template-columns: 18px 4px minmax(0,1fr) auto; gap: 5px; padding: 2px 5px 2px 0; font-size: 12px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li .p { font-size: 13px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li .c { width: 4px; height: 11px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li .e { font-size: 11px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li.saut { height: 4px; padding: 0; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .annonce-virage { position: static; inset: auto; transform: none; width: auto; max-width: none; grid-template-columns: 21px minmax(0,1fr); gap: 1px 5px; padding: 4px 6px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .virage-fleche { grid-row: 1 / 3; width: 21px; height: 21px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .virage-nom { font-size: 13px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .virage-distance { grid-column: 2; text-align: left; font-size: 13px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .classement { position: static; inset: auto; width: min(100%,30cqh); justify-self: start; gap: 0; }
+  body:not(.tactile) #jeu[data-carte-position="gauche"]:not([data-carte="non"]) :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .classement { justify-self: end; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .classement li { grid-template-columns: 18px 4px minmax(0,1fr) auto; gap: 5px; padding: 2px 5px 2px 0; font-size: 12px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .classement li .p { font-size: 13px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .classement li .c { width: 4px; height: 11px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .classement li .e { font-size: 11px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .classement li.saut { height: 4px; padding: 0; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .annonce-virage { position: static; inset: auto; transform: none; width: auto; max-width: none; grid-template-columns: 21px minmax(0,1fr); gap: 1px 5px; padding: 4px 6px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .virage-fleche { grid-row: 1 / 3; width: 21px; height: 21px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .virage-nom { font-size: 13px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .virage-distance { grid-column: 2; text-align: left; font-size: 13px; }
   /* Les compteurs supplémentaires restent dans la bande extérieure, même en petit paysage.
      Vitesse, unité, régime et rapport sont tous conservés ; le mode planche seule reste inchangé. */
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .tableau { min-width: 0; width: min(160px,20cqh); padding: 0; gap: 6px; }
-  body:not(.tactile) #jeu:not([data-reduit="oui"]) :is(#hud, #hud2)[data-vue="cockpit"]:not([data-reduit="oui"]) .vitesse { display: grid; justify-items: end; gap: 3px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .vitesse b { font-size: clamp(30px,8cqh,54px); }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .vitesse small { margin-left: 0; font-size: 10px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .regime { gap: 6px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .rapport { min-width: 26px; font-size: 28px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .jauge-derive { right: 0; top: auto; bottom: calc(100% + 8px); width: 100%; display: grid; justify-items: end; gap: 4px; padding: 6px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .jauge-derive .segments { width: 100%; gap: 3px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .jauge-derive i { width: auto; flex: 1; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .tableau { min-width: 0; width: min(160px,20cqh); padding: 0; gap: 6px; }
+  body:not(.tactile) #jeu:not([data-reduit="oui"]) :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"]:not([data-reduit="oui"]) .vitesse { display: grid; justify-items: end; gap: 3px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .vitesse b { font-size: clamp(30px,8cqh,54px); }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .vitesse small { margin-left: 0; font-size: 10px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .regime { gap: 6px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .rapport { min-width: 26px; font-size: 28px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .jauge-derive { right: 0; top: auto; bottom: calc(100% + 8px); width: 100%; display: grid; justify-items: end; gap: 4px; padding: 6px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .jauge-derive .segments { width: 100%; gap: 3px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .jauge-derive i { width: auto; flex: 1; }
 }
 
 /* Petit paysage : six lignes gardent leur largeur et leurs polices. Le retrait des
@@ -689,27 +689,27 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
    remonte le bas du classement de 42 px sans déplacer le haut de l'annonce.
    Les fenêtres plus basses gardent leur disposition ; le partage compact a son bloc dédié. */
 @container affichage-course (min-aspect-ratio: 6/5) and (max-aspect-ratio: 2/1) and (min-height: 400px) and (max-height: 600px) {
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .hud-rivaux { bottom: calc(30% + 42px); gap: 0; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement { gap: 0; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .classement li { padding-block: 0; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .regime { width: min(100%,12cqh); justify-self: end; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .hud-rivaux { bottom: calc(30% + 42px); gap: 0; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .classement { gap: 0; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .classement li { padding-block: 0; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .regime { width: min(100%,12cqh); justify-self: end; }
   /* Le badge FPS reste sous le classement, hors du trajet du poignet en braquage maintenu. */
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] .fps { bottom: 30%; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .fps { bottom: 30%; }
 }
 
 /* Petit partage haut/bas : les lignes gardent leurs textes et leur ancrage bas, mais prennent
    moins de hauteur pour laisser l'annonce sous POSITION/TOUR. Le panneau déjà borné suffit
    à dégager les mains ; la largeur complète conserve des noms reconnaissables à cette échelle. */
 @container affichage-course (min-aspect-ratio: 6/5) and (max-height: 400px) {
-  body:not(.tactile) #jeu[data-partage="haut-bas"] :is(#hud, #hud2)[data-vue="cockpit"] .classement { width: 100%; gap: 1px; }
-  body:not(.tactile) #jeu[data-partage="haut-bas"] :is(#hud, #hud2)[data-vue="cockpit"] .classement li { padding-block: 0; }
-  body:not(.tactile) #jeu[data-partage="haut-bas"] :is(#hud, #hud2)[data-vue="cockpit"] .case.sante .nom-pneus { margin-top: 4px; }
-  body:not(.tactile) #jeu[data-partage="haut-bas"] :is(#hud, #hud2)[data-vue="cockpit"] .case.sante .barre-sante { margin-top: 2px; }
+  body:not(.tactile) #jeu[data-partage="haut-bas"] :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .classement { width: 100%; gap: 1px; }
+  body:not(.tactile) #jeu[data-partage="haut-bas"] :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .classement li { padding-block: 0; }
+  body:not(.tactile) #jeu[data-partage="haut-bas"] :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .case.sante .nom-pneus { margin-top: 4px; }
+  body:not(.tactile) #jeu[data-partage="haut-bas"] :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .case.sante .barre-sante { margin-top: 2px; }
 }
 
 /* En partage horizontal très large, réserver l’emprise réelle de la carte sous le classement. */
 @container affichage-course (min-aspect-ratio: 2/1) {
-  body:not(.tactile) #jeu[data-partage="haut-bas"][data-carte-position="bas-gauche"]:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .hud-rivaux {
+  body:not(.tactile) #jeu[data-partage="haut-bas"][data-carte-position="bas-gauche"]:not([data-carte="non"]) :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .hud-rivaux {
     bottom: calc(var(--carte-cote) + var(--marge) + 8px);
   }
 }
@@ -717,23 +717,23 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 /* Entre 6/5 et 2/1, les glaces occupent les coins hauts : la carte prend une place réservée entre les
    compteurs et les chronos. Sa borne suit la hauteur locale, avec les mêmes rapports 3/4, 1 et 5/4. */
 @container affichage-course (min-aspect-ratio: 6/5) and (max-aspect-ratio: 2/1) {
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] :is(.hud-haut, #zone-carte) { --carte-cockpit: min(160px,21.6cqh); }
-  body:not(.tactile) #jeu[data-carte-taille="petite"] :is(#hud, #hud2)[data-vue="cockpit"] :is(.hud-haut, #zone-carte) { --carte-cockpit: min(120px,16.2cqh); }
-  body:not(.tactile) #jeu[data-carte-taille="grande"] :is(#hud, #hud2)[data-vue="cockpit"] :is(.hud-haut, #zone-carte) { --carte-cockpit: min(200px,27cqh); }
-  body:not(.tactile) #jeu:is([data-carte-position="haut-droite"],[data-carte-position="droite"],[data-carte-position="haut-gauche"],[data-carte-position="gauche"]):not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .hud-haut { display: grid; grid-template-columns: minmax(0,1fr) 22%; column-gap: calc(var(--carte-cockpit) + 2 * var(--marge)); }
-  body:not(.tactile) #jeu:is([data-carte-position="haut-gauche"],[data-carte-position="gauche"]):not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .hud-haut { grid-template-columns: 22% minmax(0,1fr); }
-  body:not(.tactile) #jeu:is([data-carte-position="haut-gauche"],[data-carte-position="gauche"]):not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .compteurs { grid-column: 2; grid-row: 1; justify-content: flex-end; }
-  body:not(.tactile) #jeu:is([data-carte-position="haut-gauche"],[data-carte-position="gauche"]):not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .chronos { grid-column: 1; grid-row: 1; }
-  body:not(.tactile) #jeu:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .chronos { min-width: 0; padding: 4px 0; }
-  body:not(.tactile) #jeu:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .ligne-chrono { gap: 4px; }
-  body:not(.tactile) #jeu:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .ligne-chrono .etiquette { font-size: 9px; letter-spacing: .08em; }
-  body:not(.tactile) #jeu:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .ligne-chrono .temps { font-size: 18px; }
-  body:not(.tactile) #jeu :is(#hud, #hud2)[data-vue="cockpit"] #zone-carte { position: absolute; width: var(--carte-cockpit); height: auto; aspect-ratio: 1; bottom: max(8px,env(safe-area-inset-bottom)); top: auto; left: max(var(--marge),env(safe-area-inset-left)); right: auto; }
-  body:not(.tactile) #jeu[data-carte-position="bas-droite"] :is(#hud, #hud2)[data-vue="cockpit"] #zone-carte { left: auto; right: max(var(--marge),env(safe-area-inset-right)); }
-  body:not(.tactile) #jeu:is([data-carte-position="haut-droite"],[data-carte-position="droite"]) :is(#hud, #hud2)[data-vue="cockpit"] #zone-carte { top: max(8px,env(safe-area-inset-top)); bottom: auto; left: auto; right: calc(24% + 1.5 * var(--marge)); }
-  body:not(.tactile) #jeu:is([data-carte-position="haut-gauche"],[data-carte-position="gauche"]) :is(#hud, #hud2)[data-vue="cockpit"] #zone-carte { top: max(8px,env(safe-area-inset-top)); bottom: auto; right: auto; left: calc(24% + 1.5 * var(--marge)); }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] :is(.hud-haut, #zone-carte) { --carte-cockpit: min(160px,21.6cqh); }
+  body:not(.tactile) #jeu[data-carte-taille="petite"] :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] :is(.hud-haut, #zone-carte) { --carte-cockpit: min(120px,16.2cqh); }
+  body:not(.tactile) #jeu[data-carte-taille="grande"] :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] :is(.hud-haut, #zone-carte) { --carte-cockpit: min(200px,27cqh); }
+  body:not(.tactile) #jeu:is([data-carte-position="haut-droite"],[data-carte-position="droite"],[data-carte-position="haut-gauche"],[data-carte-position="gauche"]):not([data-carte="non"]) :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .hud-haut { display: grid; grid-template-columns: minmax(0,1fr) 22%; column-gap: calc(var(--carte-cockpit) + 2 * var(--marge)); }
+  body:not(.tactile) #jeu:is([data-carte-position="haut-gauche"],[data-carte-position="gauche"]):not([data-carte="non"]) :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .hud-haut { grid-template-columns: 22% minmax(0,1fr); }
+  body:not(.tactile) #jeu:is([data-carte-position="haut-gauche"],[data-carte-position="gauche"]):not([data-carte="non"]) :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .compteurs { grid-column: 2; grid-row: 1; justify-content: flex-end; }
+  body:not(.tactile) #jeu:is([data-carte-position="haut-gauche"],[data-carte-position="gauche"]):not([data-carte="non"]) :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .chronos { grid-column: 1; grid-row: 1; }
+  body:not(.tactile) #jeu:not([data-carte="non"]) :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .chronos { min-width: 0; padding: 4px 0; }
+  body:not(.tactile) #jeu:not([data-carte="non"]) :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .ligne-chrono { gap: 4px; }
+  body:not(.tactile) #jeu:not([data-carte="non"]) :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .ligne-chrono .etiquette { font-size: 9px; letter-spacing: .08em; }
+  body:not(.tactile) #jeu:not([data-carte="non"]) :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .ligne-chrono .temps { font-size: 18px; }
+  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] #zone-carte { position: absolute; width: var(--carte-cockpit); height: auto; aspect-ratio: 1; bottom: max(8px,env(safe-area-inset-bottom)); top: auto; left: max(var(--marge),env(safe-area-inset-left)); right: auto; }
+  body:not(.tactile) #jeu[data-carte-position="bas-droite"] :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] #zone-carte { left: auto; right: max(var(--marge),env(safe-area-inset-right)); }
+  body:not(.tactile) #jeu:is([data-carte-position="haut-droite"],[data-carte-position="droite"]) :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] #zone-carte { top: max(8px,env(safe-area-inset-top)); bottom: auto; left: auto; right: calc(24% + 1.5 * var(--marge)); }
+  body:not(.tactile) #jeu:is([data-carte-position="haut-gauche"],[data-carte-position="gauche"]) :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] #zone-carte { top: max(8px,env(safe-area-inset-top)); bottom: auto; right: auto; left: calc(24% + 1.5 * var(--marge)); }
   /* En bas à gauche, le classement remonte nettement au-dessus de la carte pour zéro chevauchement. */
-  body:not(.tactile) #jeu[data-carte-position="bas-gauche"]:not([data-carte="non"]) :is(#hud, #hud2)[data-vue="cockpit"] .hud-rivaux { bottom: calc(var(--carte-cockpit) + 26px); }
+  body:not(.tactile) #jeu[data-carte-position="bas-gauche"]:not([data-carte="non"]) :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .hud-rivaux { bottom: calc(var(--carte-cockpit) + 26px); }
 }
 
 /* Commandes des joueurs : appareil et touches (réglages), choix rapide à la préparation d'une course à deux */
@@ -1323,7 +1323,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   <!-- Écran titre -->
   <section id="titre" class="ecran titre arcade-titre" hidden>
     <div class="marque">
-      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.312">V0.2.312</b>
+      <h1>BITUME</h1><b class="version-jeu" aria-label="Version 0.2.313">V0.2.313</b>
     </div>
     <a class="signature" href="https://bitume.estrasse.fr/" download="BITUME.html" title="Télécharger BITUME"><img class="signature-avatar" src="data:image/jpeg;base64,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" alt="" />m4d135</a>
     <div id="titre-section" hidden><button type="button" class="retour" data-ouvrir-titre="accueil" aria-label="Retour au menu principal">←</button><h2 id="titre-section-nom"></h2></div>
@@ -1662,6 +1662,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
       </fieldset>
       <fieldset id="o-joueurs" hidden>
         <legend>Pilotes locaux</legend>
+        <label id="o-joueurs-1" hidden><input type="radio" name="joueursLocaux" value="1"><span>Solo</span></label>
         <label><input type="radio" name="joueursLocaux" value="2"><span>Deux, écran partagé</span></label>
         <label><input type="radio" name="joueursLocaux" value="3"><span>Trois, grille 2×2</span></label>
         <label><input type="radio" name="joueursLocaux" value="4"><span>Quatre, grille 2×2</span></label>
@@ -58167,18 +58168,25 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
       }
       for (const debut of debuts) {
         const u = s - debut, bord = Math.min(u, virage - u);
-        if (bord <= -10) continue;
+        if (bord <= -48) continue;
         // d<0 est à gauche. Le mesh produit y − d·tan(devers) : l'inclinaison réellement dessinée
-        // et collisionnée vaut donc 40° au cœur des quatre gauches. La rampe de dévers est
-        // découplée de celle de la courbure (raccordDevers plus long) pour une entrée et une
-        // sortie douces, sans bosse ni creux ; les petites droites restent plates (bord <= -10).
-        devers[i] = -40 * Math.PI / 180 * lisse(-10, raccordDevers, bord);
+        // et collisionnée vaut donc 40° au cœur des quatre gauches. La rampe quintique (C2) s'étire
+        // sur 112 m (−48 → 64) pour éliminer la crête verticale à l'intérieur tout en gardant le
+        // milieu des petites droites (bord = −60) parfaitement plat.
+        const tb = Math.max(0, Math.min(1, (bord + 48) / (raccordDevers + 48)));
+        devers[i] = -40 * Math.PI / 180 * tb * tb * tb * (10 + tb * (-15 + 6 * tb));
         courbure[i] = -courbureMax * lisse(0, raccord, bord);
         if (bord > 0) vibreur[i] = 1;
         break;
       }
     }
     const largeur = 16, lim = limites(courbure, n, largeur);
+    // Sur l'anneau relevé à 40°, le mur extérieur épouse le haut du banking (w + 3 m) au lieu
+    // de laisser une falaise d'herbe plate de 12 m qui catapultait les voitures au large.
+    for (let i = 0; i < n; i++) {
+      const partBank = Math.min(1, Math.abs(devers[i]) / (40 * Math.PI / 180));
+      if (partBank > 0) lim.D[i] = Math.min(lim.D[i], largeur / 2 + 3 + (LIMITE - (largeur / 2 + 3)) * (1 - partBank));
+    }
     // La grille de douze tient derrière le départ ; le garage dispose de l'autre
     // grande droite. La route et sa voie latérale alimentent les mêmes triangles PhysX.
     const droiteStands = second + virage;
@@ -58190,6 +58198,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
       limite: LIMITE, limiteG: lim.G, limiteD: lim.D, depart: 0, ligneDroite: { debut: -avantLigne, fin: premier },
       secteurs: [longueur / 3, 2 * longueur / 3], stands, tunnel: null, essais: 1 };
     preparerParcours(c);
+    // Sur l'anneau relevé à 40°, recentrer la trajectoire dans le couloir central-bas (|d| ≤ 2,8 m)
+    // évite de plonger sur la corde (−6,6 m) où la rampe de dévers déleste les roues, tout en gardant
+    // une ligne continue sans écart brusque en peloton à l'entrée des courbes.
+    for (let i = 0; i < n; i++) c.ligne[i] = Math.max(-2.8, Math.min(2.8, c.ligne[i] * 0.42));
     for (let i = 0; i < n; i++) {
       const s = i * PAS, marge = Math.min(s - (stands.garage0 - 10), stands.garage1 + 10 - s);
       const fondGarage = LIMITE + (Math.abs(stands.dBox) + 13.5 - LIMITE) * lisse(-24, 0, marge);
@@ -58901,10 +58913,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     'grande-montagne': ['montagne', 'andes', 'islande'],
   });
   const REGLES = Object.freeze({
-    'plage': { amplitude: 6, pente: .03, courbure: 1 / 60, virages: .35 },
-    'plaine': { amplitude: 14, pente: .05, courbure: 1 / 45, virages: .55 },
-    'petite-montagne': { amplitude: 22, pente: .10, courbure: 1 / 34, virages: .8 },
-    'grande-montagne': { amplitude: 34, pente: .18, courbure: 1 / 26, virages: 1 },
+    'plage': { amplitude: 6, pente: .03, courbure: 1 / 60, virages: .35, capMax: .45 },
+    'plaine': { amplitude: 14, pente: .05, courbure: 1 / 45, virages: .55, capMax: .68 },
+    'petite-montagne': { amplitude: 22, pente: .10, courbure: 1 / 34, virages: .8, capMax: .90 },
+    'grande-montagne': { amplitude: 34, pente: .18, courbure: 1 / 26, virages: 1, capMax: 1.05 },
   });
   const BORDE = 60;   // placage quintique vers les valeurs de bord, en mètres de part et d'autre
 
@@ -58924,16 +58936,18 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
 
   function biomePour(k) { return CYCLE[((k % 6) + 6) % 6]; }
 
-  // État de bord à la sortie du tronçon k : courbure et pente tirées une seule fois par
-  // (graine, k). L'entrée du tronçon suivant est exactement cette sortie : C1 en courbure et pente.
+  // État de bord à la sortie du tronçon k : cap global borné (|cap| ≤ 0,80 rad ⇒ dx/ds > 0,38 partout,
+  // auto-intersection topologiquement impossible à l'infini), courbure et pente tirés une seule fois
+  // par (graine, k). L'entrée du tronçon suivant est exactement cette sortie : C2 en plan, C1 en pente.
   function sortie(k, graine) {
-    if (k < 0) return { courbure: 0, pente: 0 };
+    if (k < 0) return { cap: 0, courbure: 0, pente: 0 };
     const r = alea((graine >>> 0) * 2654435761 + (k >>> 0) * 40503 + 17);
     const regle = REGLES[biomePour(k)];
     const sens = r() < .5 ? -1 : 1;
-    const courbure = sens * Math.pow(r(), 1.6) * regle.courbure * (k % 3 === 2 ? .25 : 1);
+    const courbure = sens * Math.pow(r(), 1.6) * regle.courbure * .5 * (k % 3 === 2 ? .25 : 1);
     const pente = (r() - .5) * 2 * regle.pente * (0.3 + 0.7 * Math.pow(r(), 1.4));
-    return { courbure, pente };
+    const cap = (r() - .5) * 2 * Math.min(.78, regle.capMax * .85);
+    return { cap, courbure, pente };
   }
 
   function profilSegment(k, graine) {
@@ -58949,25 +58963,42 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
   }
 
   // Points locaux du tronçon k : origine au début, cap local 0, x vers l'avant, z vers la droite.
-  // cap(0)=0, κ(0)=κ_ent, κ(L)=κ_sort ; y(0)=0, y'(0)=pente_ent, y(L)=y_sort, y'(L)=pente_sort.
+  // Le cap global reste dans [−65°, +65°] (cos(cap) ≥ 0,42) par spline Hermite cubique, garantissant
+  // une progression monotone en x (zéro boucle ni recoupement de glissière à toute distance).
   function calculerSegment(k, graine) {
     const p = profilSegment(k, graine), r = p.r, regle = REGLES[p.biome];
     const entree = sortie(k - 1, graine), sortieFin = sortie(k, graine);
 
-    // courbure : nœuds quintiques, valeurs de bord imposées, placage quintique sur les BORDE m
-    const nc = p.nb;
-    const kc = [];
-    for (let j = 0; j <= nc; j++) kc.push(j === 0 ? entree.courbure : j === nc ? sortieFin.courbure : (r() - .5) * 2 * regle.courbure * (0.25 + 0.75 * Math.pow(r(), 1.3)));
-    const courbure = s => {
-      if (s <= 0) return entree.courbure;
-      if (s >= p.L) return sortieFin.courbure;
-      let j = 0;
-      while (j < nc - 1 && s > p.L * (j + 1) / nc) j++;
-      const t = (s - p.L * j / nc) / (p.L / nc);
-      let v = kc[j] + (kc[j + 1] - kc[j]) * quintique(t);
-      if (s < BORDE) v = entree.courbure + (v - entree.courbure) * quintique(s / BORDE);
-      if (s > p.L - BORDE) v = sortieFin.courbure + (v - sortieFin.courbure) * quintique((p.L - s) / BORDE);
-      return borner(v, -regle.courbure * 1.05, regle.courbure * 1.05);
+    // cap global par Hermite cubique : valeurs et courbures exactes aux deux bords, amplitude bornée
+    const nc = Math.max(4, p.nb), hCap = p.L / nc;
+    const capLim = regle.capMax, dCapMax = regle.courbure * hCap * .48;
+    const caps = new Float64Array(nc + 1), kappas = new Float64Array(nc + 1);
+    caps[0] = entree.cap; kappas[0] = entree.courbure;
+    caps[nc] = sortieFin.cap; kappas[nc] = sortieFin.courbure;
+    let signe = r() < .5 ? 1 : -1;
+    for (let j = 1; j < nc; j++) {
+      // Alternance douce de courbes gauche/droite (lacets ou enchaînements S) dans l'enveloppe monotone
+      if (r() < .68) signe = -signe;
+      const cible = signe * (.22 + .78 * Math.pow(r(), 1.15)) * capLim;
+      // Garder un pas atteignable vers le nœud précédent et la sortie du tronçon
+      const lo = Math.max(-capLim, caps[j - 1] - dCapMax, sortieFin.cap - dCapMax * (nc - j));
+      const hi = Math.min(capLim, caps[j - 1] + dCapMax, sortieFin.cap + dCapMax * (nc - j));
+      caps[j] = borner(cible, Math.min(lo, hi), Math.max(lo, hi));
+    }
+    for (let j = 1; j < nc; j++) {
+      // Pente Catmull-Rom bornée : garantit la continuité C1 de la courbure et l'absence de dépassement
+      const sMoy = (caps[j + 1] - caps[j - 1]) / (2 * hCap);
+      kappas[j] = borner(sMoy * .85, -regle.courbure * .55, regle.courbure * .55);
+    }
+    const capLocal = s => {
+      if (s <= 0) return 0;
+      if (s >= p.L) return sortieFin.cap - entree.cap;
+      let j = Math.floor(s / hCap);
+      if (j >= nc) j = nc - 1;
+      const t = (s - j * hCap) / hCap, t2 = t * t, t3 = t2 * t;
+      const capAbs = (2 * t3 - 3 * t2 + 1) * caps[j] + (t3 - 2 * t2 + t) * hCap * kappas[j]
+        + (-2 * t3 + 3 * t2) * caps[j + 1] + (t3 - t2) * hCap * kappas[j + 1];
+      return borner(capAbs, -1.16, 1.16) - entree.cap;
     };
 
     // altitude : Hermite cubique par intervalle (pente continue aux nœuds), pentes de bord imposées
@@ -58986,16 +59017,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
       return (2 * t3 - 3 * t2 + 1) * cotes[j] + (t3 - 2 * t2 + t) * h * pentes[j] + (-2 * t3 + 3 * t2) * cotes[j + 1] + (t3 - t2) * h * pentes[j + 1];
     };
 
-    // intégration du cap et du plan au quart de pas, points à chaque PAS
+    // intégration du plan au quart de pas sur capLocal, points à chaque PAS
     const pts = [], h = PAS / 4;
     let x = 0, z = 0, cap = 0;
     pts.push({ x: 0, y: 0, z: 0, cap: 0, s: 0 });
     const etapes = Math.round(p.L / PAS);
     for (let e = 0; e < etapes; e++) {
       for (let u = 0; u < 4; u++) {
-        const s = e * PAS + u * h, k1 = courbure(s), k2 = courbure(s + h);
-        const cap2 = cap + (k1 + k2) * h / 2, cm = (cap + cap2) / 2;
-        x += Math.cos(cm) * h; z += Math.sin(cm) * h; cap = cap2;
+        const s = e * PAS + u * h;
+        const c1 = capLocal(s), c2 = capLocal(s + h), cm = (c1 + c2) / 2;
+        x += Math.cos(cm) * h; z += Math.sin(cm) * h; cap = c2;
       }
       const s = (e + 1) * PAS;
       pts.push({ x, y: altitude(s), z, cap, s });
@@ -59003,7 +59034,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     return {
       profil: { k: p.k, biome: p.biome, theme: p.theme, L: p.L, largeur: p.largeur, degagement: p.degagement },
       pts,
-      deplacement: { dx: x, dy: cotes[nr], dz: z, dcap: cap },
+      deplacement: { dx: x, dy: cotes[nr], dz: z, dcap: sortieFin.cap - entree.cap },
     };
   }
 
@@ -59218,6 +59249,28 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     const trace = R.creerTrace(f.k0, f.k1, f.graine);
     const c = B.circuit.creerDepuisTrace(trace, { topologie: 'ouvert' });
     B.circuit.preparerParcours(c);
+    c.graine = f.graine;
+    c.theme = R.pointsSegment(f.k0, f.graine).profil.theme;
+    // Découpage par tronçon de biome : permet au décor de teinter plage → plaine → montagnes
+    // sur la fenêtre active. Les longueurs sont ramenées à c.longueur (corde ≤ arc).
+    const tronconsThemes = [];
+    let sAcc = 0, sBrut = 0;
+    for (let k = f.k0; k < f.k1; k++) sBrut += R.pointsSegment(k, f.graine).profil.L;
+    const echelle = sBrut > 0 ? c.longueur / sBrut : 1;
+    for (let k = f.k0; k < f.k1; k++) {
+      const p = R.pointsSegment(k, f.graine).profil, dL = p.L * echelle;
+      tronconsThemes.push({ theme: p.theme, biome: p.biome, debut: sAcc, fin: Math.min(c.longueur, sAcc + dL) });
+      sAcc += dL;
+    }
+    if (tronconsThemes.length) tronconsThemes[tronconsThemes.length - 1].fin = c.longueur;
+    c.tronconsThemes = tronconsThemes;
+    // Checkpoints visibles (portiques 3D + repères minimap) tombant dans la fenêtre courante (pas 1 500 m).
+    const pasCp = 1500, cps = [];
+    const premierCp = Math.max(1, Math.ceil((f.sOrigine + 10) / pasCp));
+    for (let m = premierCp; m * pasCp <= f.sOrigine + c.longueur - 10; m++) {
+      cps.push({ s: m * pasCp - f.sOrigine, sAbs: m * pasCp, numero: m });
+    }
+    c.checkpointsSansFin = cps;
     c.sansFinFenetre = { k0: f.k0, k1: f.k1, sOrigine: f.sOrigine };
     return c;
   }
@@ -59339,7 +59392,25 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     return METEO_BIOME[dominant] || METEO_BIOME.plaine;
   }
 
-  B.routeSansFinSeance = { creer, avancer, meteoCible, PAS_CHECKPOINT, AVANCE_FENETRE, REPRISE_DECOR, PAS_REPRISE };
+  const LIBELLES_BIOME = {
+    plage: 'Plage',
+    plaine: 'Plaine',
+    'petite-montagne': 'Petite montagne',
+    'grande-montagne': 'Grande montagne',
+  };
+  function biomeA(seance, sRel) {
+    const b = seance.cPorteur, sAbs = (b?.sansFinFenetre?.sOrigine || 0) + (Number.isFinite(sRel) ? sRel : 0);
+    let s = b?.sansFinFenetre?.sOrigine || 0;
+    const k0 = b?.sansFinFenetre?.k0 || 0, k1 = b?.sansFinFenetre?.k1 || k0 + 1;
+    for (let k = k0; k < k1; k++) {
+      const p = R.pointsSegment(k, seance.graine).profil;
+      if (sAbs < s + p.L || k === k1 - 1) return { biome: p.biome, label: LIBELLES_BIOME[p.biome] || p.biome, theme: p.theme };
+      s += p.L;
+    }
+    return { biome: 'plage', label: 'Plage', theme: 'cote' };
+  }
+
+  B.routeSansFinSeance = { creer, avancer, meteoCible, biomeA, PAS_CHECKPOINT, AVANCE_FENETRE, REPRISE_DECOR, PAS_REPRISE };
 })(globalThis.BITUME = globalThis.BITUME || {});
 </script>
 <script>
@@ -72637,16 +72708,22 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           else {
             const bord = cote < 0 ? -1 : 1, limite = cote < 0 ? limG : limD, yBord = hauteurRoute(f, bord * w, w);
             const ext = limite + (surPont ? 3.3 : 4);
+            // Dévers fort (> 7°, anneau des Alizés) : côté extérieur haut, prolonger doucement la pente
+            // sur la bordure et le dégagement (plafonné sous 1,5 m) pour supprimer l'arête vive de 40°.
+            const fortExt = bord > 0 && Math.abs(f.devers) > .12 && (-bord * Math.tan(f.devers)) > 0;
+            const penteExt = fortExt ? -bord * Math.tan(f.devers) : 0;
+            const dBordBank = fortExt ? Math.min(.85, largeurBord * penteExt * .75) : 0;
+            const dHerbeBank = fortExt ? Math.min(.55, .35 * penteExt * Math.min(2.2, Math.max(0, ext - w - 1.2))) : 0;
             if (type === 'ligne') { d0 = bord * (w - .3); d1 = bord * w; y0 = hauteurRoute(f, d0, w); y1 = yBord; mat = 14.25; col = blanc; }
             else if (type === 'bord') {
               d0 = bord * w; d1 = bord * (w + largeurBord); y0 = yBord;
               const avec = cote < 0 ? (vib & 1) : (vib & 2);
-              y1 = yBord + (avec ? hautVibreur : basBord);
+              y1 = yBord + (avec ? hautVibreur : basBord) + dBordBank;
               if (avec) {
                 mat = 14.25; col = reperes && reperes.vibreurs[f.i] ? (tranche ? rougeVirage : blancVirage) : (tranche ? rouge : blancBordure);
               } else if (surPont) { mat = MATIERES_PILOTES.beton; col = betonPont; } else { mat = 8; }
-            } else if (type === 'herbe') { d0 = bord * (w + 1.2); d1 = bord * ext; y0 = yBord - .015; y1 = yBord - .02 * (ext - w - 1.2); n0 = n1 = hautY; }
-            else { d0 = bord * ext; d1 = bord * (ext + 4); y0 = yBord - .02 * (ext - w - 1.2); y1 = y0 - 2.6; n0 = n1 = hautY; }
+            } else if (type === 'herbe') { d0 = bord * (w + 1.2); d1 = bord * ext; y0 = yBord - .015 + dBordBank; y1 = fortExt ? y0 + dHerbeBank : y0 - .02 * (ext - w - 1.2); n0 = n1 = fortExt ? no : hautY; }
+            else { d0 = bord * ext; d1 = bord * (ext + 4); y0 = fortExt ? yBord - .015 + dBordBank + dHerbeBank : yBord - .02 * (ext - w - 1.2); y1 = y0 - 2.6; n0 = n1 = hautY; }
             if (surPont && (type === 'herbe' || type === 'jupe')) {
               mat = MATIERES_PILOTES.beton; col = betonPont;
               if (type === 'jupe') { d1 = d0; y1 = y0 - 1.15; n0 = n1 = [bord*f.r[0],0,bord*f.r[2]]; }
@@ -72748,12 +72825,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     }
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
     for (let i = 0; i < c.n; i++) { x0 = Math.min(x0, c.x[i]); x1 = Math.max(x1, c.x[i]); z0 = Math.min(z0, c.z[i]); z1 = Math.max(z1, c.z[i]); }
-    const marge = th.marge, pasT = organique ? 18 : 24;
+    const estSansFin = !!c.sansFinFenetre;
+    const marge = estSansFin ? Math.min(th.marge, 420) : th.marge, pasT = estSansFin ? (organique ? 24 : 28) : (organique ? 18 : 24);
     x0 -= marge; z0 -= marge; x1 += marge; z1 += marge;
     const nx = Math.ceil((x1 - x0) / pasT) + 1, nz = Math.ceil((z1 - z0) / pasT) + 1;
     const H = new Float32Array(nx * nz), D = new Float32Array(nx * nz);
     const secteurs = B.saisons?.secteurs?.(c);
-    const secondaire = secteurs?.plages.find(p => p.theme !== c.theme);
+    const palettesSF = estSansFin && secteurs?.plages?.length > 1
+      ? secteurs.plages.map(p => THEMES[p.theme] || B.destinations?.THEMES?.[p.theme] || th) : null;
+    const plageSolSF = palettesSF ? new Uint8Array(nx * nz) : null;
+    const secondaire = !palettesSF && secteurs?.plages.find(p => p.theme !== c.theme);
     const paletteB = secondaire && (THEMES[secondaire.theme] || B.destinations?.THEMES[secondaire.theme]);
     const poidsAxe = paletteB ? new Uint8Array(c.n) : null, poidsSol = paletteB ? new Uint8Array(nx*nz) : null;
     const poidsPigments = paletteB ? new Uint8Array(nx*nz) : null;
@@ -72812,7 +72893,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           const dx = loinX[k] - x, dz = loinZ[k] - z, d2 = dx * dx + dz * dz;
           if (d2 < d2min) {
             d2min = d2;
-            if (poidsSol && q.i < 0) indiceAxe = k * pasLoin;
+            if ((poidsSol || plageSolSF) && q.i < 0) indiceAxe = k * pasLoin;
           }
           const w = 1 / (d2 + 2500);
           sY += w * loinY[k]; sW += w;
@@ -72884,6 +72965,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         } else h -= 34 * lisse(merDebut - 40, merDebut + 220, p) * lisse(60, 140, d);
       }
       if (B.cimesDecor) h = B.cimesDecor.relief(c, x, z, q, h);
+      if (plageSolSF) plageSolSF[cellule] = indiceAxe >= 0 ? secteurs.indices[Math.min(c.n - 1, indiceAxe)] : 0;
       if (poidsSol) {
         const da=Math.hypot(x-centres[0][0],z-centres[0][1]), db=Math.hypot(x-centres[1][0],z-centres[1][1]);
         const paysage=lisse(-280,280,da-db)*255, rive=indiceAxe>=0?poidsAxe[indiceAxe]:paysage;
@@ -72996,9 +73078,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         const hx = H[j * nx + Math.min(nx - 1, i + 1)] - H[j * nx + Math.max(0, i - 1)];
         const hz = H[Math.min(nz - 1, j + 1) * nx + i] - H[Math.max(0, j - 1) * nx + i];
         const no = [-hx / (2 * pasT), 1, -hz / (2 * pasT)], l = Math.hypot(no[0], no[1], no[2]); no[0] /= l; no[1] /= l; no[2] /= l;
-        const mat=classeHabitat(poidsSol && poidsSol[cle]>=128 ? paletteB : th,h,D[cle],no[1],x,z);
+        const thLocal = palettesSF ? (palettesSF[plageSolSF[cle]] || th) : (poidsSol && poidsSol[cle] >= 128 ? paletteB : th);
+        const mat=classeHabitat(thLocal,h,D[cle],no[1],x,z);
         const part = poidsPigments ? poidsPigments[cle] / 255 : 0;
-        let [col, coefficient] = couleur(h, D[cle], no[1], x, z, part === 1 ? paletteB : th);
+        let [col, coefficient] = couleur(h, D[cle], no[1], x, z, palettesSF ? thLocal : (part === 1 ? paletteB : th));
         if (part > 0 && part < 1) {
           const [autreCol, autreCoefficient] = couleur(h, D[cle], no[1], x, z, paletteB);
           col = melange(col, autreCol, part);
@@ -74061,7 +74144,14 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       const coteLed = sens && sens * cumulCourbure >= PAS_G / B.virages.RAYON_SERRE ? -sens : 0;
       for (const cote of [-1, 1]) {
         const f0 = cadre(c, i), f1 = cadre(c, i + PAS_G), L0 = (cote < 0 ? lim.G : lim.D)[f0.i], L1 = (cote < 0 ? lim.G : lim.D)[f1.i];
-        const y0 = hauteurRoute(f0, cote * w, w) - .02 * (L0 - w - 1.2), y1 = hauteurRoute(f1, cote * w, w) - .02 * (L1 - w - 1.2);
+        const yAcc = (f, L) => {
+          const yb = hauteurRoute(f, cote * w, w);
+          if (!(cote > 0 && Math.abs(f.devers) > .12 && (-cote * Math.tan(f.devers)) > 0)) return yb - .02 * (L - w - 1.2);
+          const pe = -cote * Math.tan(f.devers);
+          const db = Math.min(.85, 1.2 * pe * .75);
+          return yb - .015 + db + Math.min(.55, .35 * pe * Math.min(2.2, Math.max(0, L - w - 1.2)));
+        };
+        const y0 = yAcc(f0, L0), y1 = yAcc(f1, L1);
         const p0 = pointPlan(f0, cote * L0, y0), p1 = pointPlan(f1, cote * L1, y1);
         const dir = [p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]], long = Math.hypot(...dir);
         const [ax, ay, az] = base(dir, [0, 1, 0]), rot = angles(ax, ay, az);
@@ -74386,8 +74476,35 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     }
     for (const o of objetsDepart) lotDe(0, 0, 0).objets.push(o);
     for (const o of loinDepart) lotDe(0, 0, 0).loin.push(o);
-    // tribunes à gauche, stands à droite, le long de la ligne droite
-    const estMarseille = c.id === 'marseille';
+    // Route sans fin : portiques 3D visibles aux checkpoints (style Hang-On / OutRun),
+    // avec piliers ancrés au terrain réel, bandeau LED ambre/or et bande peinte sur la chaussée.
+    if (c.checkpointsSansFin?.length) {
+      for (const cp of c.checkpointsSansFin) {
+        if (!(cp.s > 8 && cp.s < c.longueur - 8)) continue;
+        const fc = cadre(c, Math.round(cp.s / c.pas)), rotC = capRot(fc.a), yC = hauteurRoute(fc, 0, w);
+        const lotCp = lotDe(fc.x, fc.z, fc.i), ob = [], ln = [];
+        for (const cote of [-1, 1]) {
+          const p = pointPlan(fc, cote * (w + 1.8), yC);
+          const ySol = terrain ? Math.min(yC, terrain.sol(p[0], p[2])) - .4 : yC - .4;
+          const haut = (yC + 6.8) - ySol;
+          const pil = { shape: 'box', collision: 'pilier', p: [p[0], ySol + haut / 2, p[2]], s: [.55, haut, .55], r: rotC, mat: 0, color: [.16, .19, .23] };
+          const bague = { shape: 'box', p: [p[0], yC + 2.6, p[2]], s: [.66, .42, .66], r: rotC, mat: 16, color: [.98, .72, .12] };
+          ob.push(pil, bague); ln.push(pil, bague);
+        }
+        const poutreCp = { shape: 'box', collision: 'poutre', p: [fc.x, yC + 6.9, fc.z], s: [.78, 1.05, 2 * w + 4.3], r: rotC, mat: 0, color: [.11, .14, .18] };
+        const ledAv = { shape: 'box', p: [fc.x - fc.t[0] * .42, yC + 6.9, fc.z - fc.t[2] * .42], s: [.06, .62, 2 * w + 3.8], r: rotC, mat: 16, color: [.98, .74, .14] };
+        const ledAr = { shape: 'box', p: [fc.x + fc.t[0] * .42, yC + 6.9, fc.z + fc.t[2] * .42], s: [.06, .62, 2 * w + 3.8], r: rotC, mat: 16, color: [.24, .92, .56] };
+        ob.push(poutreCp, ledAv, ledAr); ln.push(poutreCp, ledAv);
+        for (let k = 0; k < 10; k++) {
+          const d = -w + .4 + (k + .5) * (2 * w - .8) / 10;
+          const p = [fc.x + fc.r[0] * d, hauteurRoute(fc, d, w) + .016, fc.z + fc.r[2] * d];
+          ob.push({ shape: 'box', p, s: [.85, .024, (2 * w - .8) / 10], r: rotC, mat: MATIERES_PILOTES.asphalte, color: k % 2 ? [.96, .74, .14] : [.10, .12, .15] });
+        }
+        lotCp.objets.push(...ob); lotCp.loin.push(...ln);
+      }
+    }
+    // tribunes à gauche, stands à droite, le long de la ligne droite (absentes loin du départ en Route sans fin)
+    const estMarseille = c.id === 'marseille' || (!!c.sansFinFenetre && c.sansFinFenetre.k0 > 0);
     const { candidats, gradins: amenagement } = planGradins(c);
     if (ovale) ovale.asseoir(amenagement,terrain);
     // public.js : la description des gradins, pour y asseoir de vrais spectateurs (options.public)
@@ -75059,9 +75176,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
   }
   function poseDepart(ph) {
     const e = ph.e, q = B.circuit.echantillon(ph.c, e.s), cap = q.cap + e.psi + e.beta;
-    const rel = cap - q.cap, pente = (q.pente || 0) * Math.cos(rel) - Math.sin(q.devers || 0) * Math.sin(rel);
+    const rel = cap - q.cap, pente = (q.pente || 0) * Math.cos(rel) - Math.tan(q.devers || 0) * Math.sin(rel);
     ph.cap = cap;
-    let tangage = Math.atan(pente), bank = Math.atan((q.pente || 0) * Math.sin(rel) + Math.sin(q.devers || 0) * Math.cos(rel));
+    let tangage = Math.atan(pente), bank = Math.atan((q.pente || 0) * Math.sin(rel) + Math.tan(q.devers || 0) * Math.cos(rel));
     const x = q.x - Math.sin(q.cap) * e.d, z = q.z + Math.cos(q.cap) * e.d;
     const demi = ph.c.largeur / 2;
     const dSol = ph.c.partition === 'ovale-des-forges' ? clamp(e.d, -demi, demi) : e.d;
@@ -75094,7 +75211,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     ph.world.setVelocity(ph.id, [Math.cos(cap) * vitesse * inv, pente * vitesse * inv, Math.sin(cap) * vitesse * inv]);
   }
   function corps(ph, continuite) {
-    const shapes = [{ type: 'box', half: [1.98, .23, .69], pose: [-.12, .31, 0, 0, 0, 0, 1], friction: .55, restitution: .08 }];
+    // Garde au sol du fond plat (0,15 m) et faible frottement de glisse (0,15) : évite au coin avant
+    // du boîtier d'accrocher une arête interne des triangles sur les rampes de dévers 40° ou bosses.
+    const shapes = [{ type: 'box', half: [1.98, .20, .69], pose: [-.12, .35, 0, 0, 0, 0, 1], friction: .15, restitution: .04 }];
     // Les contacts latéraux des roues peuvent soulever la caisse ; le contact normal roulant vient des ressorts.
     for (const roue of roues()) {
       const vertices = [];
@@ -75136,7 +75255,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           remote: new Float64Array(11), hasRemote: false };
         roues().forEach((roue, i) => ph.contacts.push({ i, roue, hit: {}, anchor: vec(), point: vec(), normal: [0, 1, 0], tangent: vec(), right: vec(), velocity: vec(),
           shapePose: [roue.x, roue.r, roue.z, 0, 0, 0, 1], load: 0, capacity: 0, fx: 0, fy: 0, surface: 'herbe', distance: PROFIL.courseMax + roue.r, k: mass * G * (i < 2 ? front : 1 - front) / 2 / (PROFIL.courseLibre - PROFIL.courseRepos) }));
-        corps(ph); p.voitures.push(ph); p.byId.set(ph.id, ph);
+        corps(ph, options.continuite?.[v.id]); p.voitures.push(ph); p.byId.set(ph.id, ph);
         Object.defineProperty(v.etat, '_physx', { value: ph, configurable: true, writable: true });
       }
       co.physique = p; return p;
@@ -99824,8 +99943,10 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
     // Route sans fin : le monde n'est pas un circuit du catalogue mais la fenêtre glissante de la séance ;
     // le tracé naît devant les joueurs et s'allonge à mesure (src/route-sans-fin-seance.js).
     const seance = sansFin ? B.routeSansFinSeance.creer({ graine: (enl ? enl.graine : graineCourse) >>> 0 }) : null;
-    const sc = installer(i, B.saisons.normaliser(conditions.saison), null, type !== 'vitrine', seance ? seance.c : null), c = sc.c, demo = type === 'demo', auto = demo || type === 'vitrine', duo = type === 'duo';
-    // Lot C : deux à quatre pilotes locaux en écran partagé. La grille 2×2 vient avec le troisième joueur.
+    if (seance) B.routeSansFinSeance.avancer(seance, [0], B.routeSansFinSeance.AVANCE_FENETRE);
+    const sc = installer(i, B.saisons.normaliser(conditions.saison), null, type !== 'vitrine', seance ? seance.cPorteur : null), c = sc.c, demo = type === 'demo', auto = demo || type === 'vitrine', duo = type === 'duo' || (sansFin && joueursLocaux() >= 2);
+    if (sansFin) installerRetro();
+    // Lot C : deux à quatre pilotes locaux en écran partagé (y compris en Route sans fin). La grille 2×2 vient avec le troisième joueur.
     const nbLocaux = duo ? Math.max(2, Math.min(4, joueursLocaux())) : 1;
     // ombre lointaine du circuit (src/ombres.js) : une passe par décor, aucune sans ombres du soleil possibles
     B.ombres.carte(rendu, gpuModeste || !B.ombres.ombresPossibles(reglages.qualite, { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages }), sc.decor.lots);
@@ -99862,7 +99983,7 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
     try {
     B.physique.installer(course, sc.decor);
     S = {
-      type, i, course, c, seance, conditions, modeles: course.voitures.map(v => B.voiture.modele(v.livree)),
+      type, i, course, c, seance, cDecor: c, sc, cleStationDecor: seance ? seance.cleStation : null, multi: duo, conditions, modeles: course.voitures.map(v => B.voiture.modele(v.livree)),
       prec: [], cour: [], sortie: [], acc: 0, tele: { poste: null, alea: graine32(course.voitures.length * 7 + i) },
       camCap: null, regardArriere: false, profil: new Float32Array(Math.ceil(c.longueur / 10) + 2).fill(-1), profilMeilleur: null,
       distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
@@ -100133,20 +100254,21 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
       if (toucheDe(0, 'vue').includes(e.code)) changerVue();
       if (toucheDe(0, 'troll').includes(e.code)) provoquer(0);
     }
-    if (session && session.type === 'duo' && (commande(1) === 'auto' || commande(1) === 'clavier')) {
+    const estMulti = session && (session.type === 'duo' || !!session.multi);
+    if (estMulti && (commande(1) === 'auto' || commande(1) === 'clavier')) {
       if (toucheDe(1, 'haut').includes(e.code)) impulsions2.haut = true;
       if (toucheDe(1, 'bas').includes(e.code)) impulsions2.bas = true;
       if (toucheDe(1, 'vue').includes(e.code)) changerVue2();
       if (toucheDe(1, 'troll').includes(e.code)) provoquer(1);
     }
     // Lot C : J3 (IJKL) et J4 (rangée 4-9) n'existent qu'au-delà de deux pilotes locaux.
-    if (session && session.type === 'duo' && (session.locaux?.length || 0) >= 3 && (commande(2) === 'auto' || commande(2) === 'clavier')) {
+    if (estMulti && (session.locaux?.length || 0) >= 3 && (commande(2) === 'auto' || commande(2) === 'clavier')) {
       if (toucheDe(2, 'haut').includes(e.code)) impulsions3.haut = true;
       if (toucheDe(2, 'bas').includes(e.code)) impulsions3.bas = true;
       if (toucheDe(2, 'vue').includes(e.code)) changerVue3();
       if (toucheDe(2, 'troll').includes(e.code)) provoquer(2);
     }
-    if (session && session.type === 'duo' && (session.locaux?.length || 0) >= 4 && (commande(3) === 'auto' || commande(3) === 'clavier')) {
+    if (estMulti && (session.locaux?.length || 0) >= 4 && (commande(3) === 'auto' || commande(3) === 'clavier')) {
       if (toucheDe(3, 'haut').includes(e.code)) impulsions4.haut = true;
       if (toucheDe(3, 'bas').includes(e.code)) impulsions4.bas = true;
       if (toucheDe(3, 'vue').includes(e.code)) changerVue4();
@@ -100234,7 +100356,7 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
     const connectees = [];
     for (const candidate of liste) if (candidate && candidate.connected) connectees.push(candidate);
     nbManettes = connectees.length; manettes = connectees;
-    const duoJeu = !!session && session.type === 'duo';
+    const duoJeu = !!session && (session.type === 'duo' || !!session.multi);
     const nbVues = duoJeu ? Math.max(2, Math.min(4, session.nbJoueurs || 2)) : 1;
     const [p1, p2, p3, p4] = duoJeu ? assigner(connectees, nbVues) : [connectees[0] || null, null, null, null];
     if (captureManette) {
@@ -100828,26 +100950,56 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
   // joueur » à l'ordinateur : sans ce garde-fou, son moteur grondait dans les mains devant l'écran titre.
   function manetteVibre(auto) { return !auto && reglages.vibrations === 'oui' && ecran === 'course' && !document.hidden; }
 
-  // Route sans fin : la fenêtre a bougé — le circuit courant change de tronçons. Le décor et les solides
-  // PhysX sont rebâtis sur le nouveau circuit ; les voitures gardent leur état (le moteur les repose).
+  // Route sans fin : la fenêtre a bougé — le circuit courant change de tronçons ou de station.
+  // Les abscisses curvilignes sont recalées par projection sur la nouvelle fenêtre (zéro téléportation
+  // lors du relâchement arrière k0++), les poses/vitesses PhysX sont conservées sans accroc, les
+  // rétroviseurs et traces suivent la nouvelle scène et le nouveau monde PhysX.
   function reinstallerSansFin(S) {
-    const c = S.seance.cPorteur;   // le monde que la séance déclare bâti (la fenêtre glisse devant, en silence)
-    S.c = c; S.course.c = c;
-    // le profil d'ombres est indexé par l'abscisse : une fenêtre qui s'allonge demande un tableau plus long
+    const ancienC = S.c, c = S.seance.cPorteur;
+    const oldOrig = ancienC?.sansFinFenetre?.sOrigine || 0, newOrig = c?.sansFinFenetre?.sOrigine || 0;
+    const deltaOrig = newOrig - oldOrig;
+    const co = S.course, continuite = {};
+    for (const v of co.voitures) {
+      const ph = v.etat._physx;
+      let wx, wz;
+      if (ph && !ph.course?.disposed) {
+        const pose = ph.world.readPose(ph.id);
+        continuite[v.id] = { pose, velocity: ph.world.readVelocity(ph.id), angular: ph.world.readAngularVelocity(ph.id) };
+        wx = pose[0]; wz = pose[2];
+      } else {
+        const q = B.circuit.echantillon(ancienC, v.etat.s);
+        wx = q.x - Math.sin(q.cap) * v.etat.d; wz = q.z + Math.cos(q.cap) * v.etat.d;
+      }
+      const sEstime = clamp(v.etat.s - deltaOrig, 0, c.longueur);
+      if (c !== ancienC) {
+        const proj = B.circuit.projeter ? B.circuit.projeter(c, wx, wz, sEstime) : null;
+        const sNouveau = proj && Number.isFinite(proj.s) ? clamp(proj.s, 0, c.longueur) : sEstime;
+        const decalS = sNouveau - v.etat.s;
+        v.etat.s = sNouveau;
+        if (proj && Number.isFinite(proj.d)) v.etat.d = proj.d;
+        if (co.sAvant && Number.isFinite(co.sAvant[v.id])) co.sAvant[v.id] = clamp(co.sAvant[v.id] + decalS, 0, c.longueur);
+      }
+    }
+    S.c = c; co.c = c;
     if (Math.ceil(c.longueur / 10) + 2 > S.profil.length) S.profil = new Float32Array(Math.ceil(c.longueur / 10) + 2).fill(-1);
-    // seule la station a changé (le circuit est le même objet) : les limites et la voie des stands sont
-    // reposées, mais le décor — le gros du coût — reste en place
-    const sc = S.cDecor === c ? S.sc : installer(S.i, B.saisons.normaliser(S.conditions.saison), null, true, c);
-    if (S.cDecor !== c) {
-      S.cDecor = c; S.sc = sc;
+    const besoinDecor = S.cDecor !== c || S.cleStationDecor !== S.seance.cleStation;
+    const sc = besoinDecor ? installer(S.i, B.saisons.normaliser(S.conditions.saison), null, true, c) : S.sc;
+    if (besoinDecor) {
+      S.cDecor = c; S.sc = sc; S.cleStationDecor = S.seance.cleStation;
+      installerRetro();
       B.ombres.carte(rendu, gpuModeste || !B.ombres.ombresPossibles(reglages.qualite, { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages }), sc.decor.lots);
+      if (S.nature) S.nature.secteurs = B.saisons.secteurs(c);
+      S.animaux = animauxDe(sc, S.nature);
     }
     if (S.meteo) {
       const c2 = B.routeSansFinSeance.meteoCible(S.seance);
       S.meteo.cible = c2.phase; S.meteo.precipitationsNeige = c2.neige;
     }
-    B.physique.liberer(S.course);
-    B.physique.installer(S.course, sc.decor);
+    if (S.fx) B.traces.liberer(S.fx);
+    B.physique.liberer(co);
+    B.physique.installer(co, sc.decor, { continuite });
+    S.fx = B.traces.creer(co.voitures.length, co.graine, co.physique.world);
+    remplirPoses(S.cour, co); remplirPoses(S.prec, co);
   }
 
   function pasSimulation(S, pilote) {
@@ -100857,7 +101009,7 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
     let cmd;
     // Lot C : chaque pilote local conduit sa voiture (J1/J2 par leurs fonctions historiques, J3/J4 par la voie
     // générique) ; personne ne reste sans commandes, l'ordinateur ne prend la main qu'en auto/démo/vitrine.
-    if (S.type === 'duo') { cmd = []; S.locaux.forEach((id, n) => { cmd[id] = auto ? B.course.commandesIA(co, co.voitures[id]) : n === 0 ? commandesJoueur() : n === 1 ? commandesJoueur2() : commandesJoueurN(n); }); }
+    if (S.multi || S.type === 'duo') { cmd = []; S.locaux.forEach((id, n) => { cmd[id] = auto ? B.course.commandesIA(co, co.voitures[id]) : n === 0 ? commandesJoueur() : n === 1 ? commandesJoueur2() : commandesJoueurN(n); }); }
     else cmd = auto ? B.course.commandesIA(co, co.joueur) : commandesJoueur();
     const ev = B.course.pas(co, cmd, DT);
     if (S.enLigne) actualiserPneusDistants(S, DT);
@@ -100865,7 +101017,7 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
     if (son && sonActif && S.type !== 'vitrine') {
       const v = S.type === 'demo' ? co.voitures[S.suivie] : co.joueur;
       B.son.suivreRaclement(S.raclement, v?.etat._physx, co.horloge);
-      if (S.type === 'duo') for (let n = 1; n < S.locaux.length; n++) {
+      if (S.multi || S.type === 'duo') for (let n = 1; n < S.locaux.length; n++) {
         const V = S.vuesJoueurs?.[n] || (n === 1 ? S.vueJ2 : null);
         if (V) B.son.suivreRaclement(V.raclement, co.voitures[S.locaux[n]].etat._physx, co.horloge);
       }
@@ -100877,7 +101029,7 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
     vibreImage = vibre;
     if (vibre) {
       retenirVibrations(0, ev, co.joueur.id);
-      if (S.type === 'duo') for (let n = 1; n < S.locaux.length; n++) retenirVibrations(n, ev, S.locaux[n]);
+      if (S.multi || S.type === 'duo') for (let n = 1; n < S.locaux.length; n++) retenirVibrations(n, ev, S.locaux[n]);
     }
     for (const v of co.voitures) {
       v.roule = (v.roule || 0) + v.etat.v * DT; // distance roulée : fait tourner les roues
@@ -100906,7 +101058,14 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
       const vivantes = [];
       for (const v of co.voitures) if (v.humain && !v.distant && v.sansFin && !v.sansFin.elimine) vivantes.push(v.etat.s);
       if (!vivantes.length) vivantes.push(co.joueur.etat.s);
-      if (B.routeSansFinSeance.avancer(S.seance, vivantes, DT)) reinstallerSansFin(S);
+      const aBouge = B.routeSansFinSeance.avancer(S.seance, vivantes, DT);
+      if (co.sansFin && S.seance.checkpoints.length > co.sansFin.checkpoints.length) {
+        for (let k = co.sansFin.checkpoints.length; k < S.seance.checkpoints.length; k++) {
+          const cp = S.seance.checkpoints[k];
+          co.sansFin.checkpoints.push({ id: k, s: cp.s, nom: cp.nom || ('checkpoint ' + (k + 1)) });
+        }
+      }
+      if (aBouge) reinstallerSansFin(S);
     }
   }
 
@@ -100983,6 +101142,24 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
           son && son.evenement('tour', { meilleur: e.meilleur });
           finTour(S, e);
           break;
+        case 'checkpoint': {
+          const n = S.locaux ? S.locaux.indexOf(e.id) : (e.id === j.id ? 0 : -1);
+          if (n < 0) break;
+          const vCp = co.voitures[e.id], qui = co.duo ? n : undefined;
+          if (n === 0 && son) son.evenement('tour', { meilleur: true });
+          message('Checkpoint +' + Math.round(co.sansFin?.bonus || 35) + ' s', 'vert', true, qui);
+          sousMessage(((vCp?.sansFin?.sMax || 0) / 1000).toFixed(2).replace('.', ',') + ' km · ' + Math.max(0, e.reste || 0).toFixed(1).replace('.', ',') + ' s', qui);
+          break;
+        }
+        case 'elimine': {
+          const n = S.locaux ? S.locaux.indexOf(e.id) : (e.id === j.id ? 0 : -1);
+          if (n < 0) break;
+          const vEl = co.voitures[e.id], qui = co.duo ? n : undefined;
+          if (n === 0 && son) son.evenement('arrivee');
+          message('Temps écoulé', 'rouge', false, qui);
+          sousMessage(((vEl?.sansFin?.sMax || 0) / 1000).toFixed(2).replace('.', ',') + ' km · ' + ((vEl?.sansFin?.checkpoint ?? -1) + 1) + ' checkpoint' + ((vEl?.sansFin?.checkpoint ?? -1) > 0 ? 's' : ''), qui);
+          break;
+        }
         case 'arrivee':
           if (co.duo) { const n = S.locaux.indexOf(e.id); if (n >= 1) { const v2 = co.voitures[e.id]; message(v2.position === 1 ? 'Victoire' : 'Arrivée · ' + v2.position + 'e', 'vert', false, n); sousMessage('Drapeau à damier · ' + chrono(v2.tempsFinal), n); } }
           if (e.id !== j.id) break;
@@ -101105,7 +101282,7 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
     numeroSeance: 0, seanceAcceptee: null, dernierDepart: -Infinity };
   const VERSION_CHOIX_PNEUS = 2, VERSION_PNEUS_RESEAU = 1;
   // Empreinte des sources du build, incluant catalogue, générateur, limites et collisions : même piste, même jeu.
-  const REVISION_PISTES = '82715d271238ddd9de15827b99d028bdba9e059a9015a47a664dcc78e6ad55f1';
+  const REVISION_PISTES = 'd49b26a75ce60dd922994bf60e9fcaffa6f0955b41f239e440e1bbc5b0692572';
   function contratPiste(i) {
     return Number.isInteger(i) && CATALOGUE[i] ? { id: CATALOGUE[i].id, revision: REVISION_PISTES, physique: PHYSIQUE } : null;
   }
@@ -103055,7 +103232,7 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
     const P = profilDe(S);
     // Écran partagé : la vue du joueur 2 d'abord, copiée aussitôt dans sa toile WebGPU, puis celle du joueur 1, qui reste dans
     // la toile WebGPU principale. Le moteur lit la taille affichée de sa toile à chaque image : il rend chaque vue à la moitié.
-    if (S.type === 'duo' && S.vueJ2) {
+    if ((S.multi || S.type === 'duo') && S.vueJ2) {
       // Cadence du second joueur (src/graphismes.js) : au palier serré (30 Hz), sa vue est rendue au temps et garde
       // entre-temps la dernière copiée ; le joueur 1 garde toute la fluidité de la sienne. Le compte d'images en
       // faisait 72 Hz sur un écran 144 Hz et 15 Hz à 30 images par seconde, et la vue ne recevait que l'intervalle
@@ -103491,13 +103668,13 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
     peindreGlacesPlanifiees(S, planGlaces, cam, ps, sortie, S.ambianceImage, suivie, P);
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
     S.camera = cam; S.vue = vue; S.suivie = suivie.id;
-    const affichage = S.type === 'duo' ? HUD_DOMS[Math.min(3, indexVue(S))] : $('hud');
+    const affichage = (S.multi || S.type === 'duo') ? HUD_DOMS[Math.min(3, indexVue(S))] : $('hud');
     if (affichage.dataset.vue !== vue) affichage.dataset.vue = vue;
     // En cockpit, la planche donne vitesse, rapport et régime : le tableau réduit retire plan et compteurs, qui
     // couvriraient les pneus avant.
     const reduit = vue === 'cockpit' && reglages.tableau === 'reduit' ? 'oui' : 'non';
     // à deux, chaque affichage suit la vue de son joueur
-    const boite = S.type === 'duo' ? HUD_DOMS[Math.min(3, indexVue(S))] : jeu;
+    const boite = (S.multi || S.type === 'duo') ? HUD_DOMS[Math.min(3, indexVue(S))] : jeu;
     if (boite.dataset.reduit !== reduit) boite.dataset.reduit = reduit;
     if (boite !== jeu && jeu.dataset.reduit !== 'non') jeu.dataset.reduit = 'non';
     return cam;
@@ -103809,6 +103986,12 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
         ctx.fillText('P', p[0], p[1] + 0.5);
       }
     }
+    if (c.checkpointsSansFin?.length) {
+      for (const cp of c.checkpointsSansFin) {
+        const p = marque(cp.s, '#ffd166', 4.5);
+        if (p) ligne(p, '#ffd166');
+      }
+    }
     if (B.virages?.planifier) {
       for (const v of B.virages.planifier(c)) {
         if (v.difficulte < 2) continue;
@@ -103842,8 +104025,8 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
     ctx.lineWidth = 1.5; ctx.strokeStyle = '#f2ecdf'; ctx.stroke();
   }
 
-  const aDeux = () => !!session && session.type === 'duo';
-  const nbJoueursSession = () => !session || session.type !== 'duo' ? 1 : Math.max(2, Math.min(4, session.nbJoueurs || 2));
+  const aDeux = () => !!session && (session.type === 'duo' || !!session.multi);
+  const nbJoueursSession = () => !session || !(session.type === 'duo' || session.multi) ? 1 : Math.max(2, Math.min(4, session.nbJoueurs || 2));
   // Lot C : rang du pilote local d'une vue (0 = séance/J1, 1 = vueJ2…). Les vues J3/J4 (rang >= 2) rendent le
   // monde mais restent allégées des effets indexés par vue (faune, bêtes, saisons, aurores, pluie de lentille,
   // vitre, rétroviseurs) : ils appartiennent aux deux premières cases et ne doivent jamais lire la case voisine.
@@ -103931,7 +104114,7 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
   // Un affichage par pilote local (lot C) ; à deux, le joueur 2 garde exactement l'appel historique.
   function majHudLocaux(S) {
     majHud(S);
-    if (S.type !== 'duo' || !S.vueJ2) return;
+    if (!(S.multi || S.type === 'duo') || !S.vueJ2) return;
     const nb = Math.max(2, Math.min(4, S.nbJoueurs || 2));
     for (let n = 1; n < nb; n++) {
       const V = S.vuesJoueurs && S.vuesJoueurs[n];
@@ -103968,8 +104151,10 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
     texte(H['h-pos'], chronoMode ? '–' : String(j.position)); texte(H['h-sur'], chronoMode ? '' : '/' + nb);
     if (!chronoMode && !demo && S.positionPrec && j.position < S.positionPrec && co.phase === 'course') eclat(H['c-position']);
     S.positionPrec = j.position;
+    const etiqTour = H['h-tour']?.closest?.('.case')?.querySelector?.('.etiquette');
+    if (etiqTour) texte(etiqTour, co.sansFin ? 'Temps' : co.c.ouvert ? 'Reste' : 'Tour');
     if (co.sansFin) {
-      // Hang-On : le temps reste, la distance se lit au compteur de kilomètres parcourus
+      // Hang-On : le temps reste, la distance et le prochain checkpoint se lisent dans la zone chrono
       texte(H['h-tour'], co.phase === 'grille' || co.phase === 'feux' ? '–' : Math.max(0, j.sansFin.restant).toFixed(1).replace('.', ','));
       texte(H['h-tours'], ' s');
     } else if (co.c.ouvert) {
@@ -103983,19 +104168,36 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
     }
     if (horlogeReelle >= x.tChiffres) {
       x.tChiffres = horlogeReelle + PERIODE_CHIFFRES;
-      const enLice = chronoMode ? co.chronoParti : (co.phase === 'course' || co.phase === 'arrivee');
-      const actuel = j.fini ? j.tempsTours[j.tempsTours.length - 1] : enLice ? co.temps - j.debutTour : null;
-      texte(H['h-actuel'], chrono(actuel));
-      texte(H['h-meilleur'], chrono(j.meilleur));
-      // écart en direct avec le meilleur tour, à distance égale
-      let delta = null;
-      if (enLice && !j.fini && S.profilMeilleur) {
-        const dans = j.progression - j.tours * co.c.longueur, k = Math.floor(dans / 10), u = dans / 10 - k;
-        const a = S.profilMeilleur[k], b = S.profilMeilleur[k + 1];
-        if (a >= 0 && b >= 0) delta = (co.temps - j.debutTour) - lerp(a, b, u);
+      const eAct = H['h-actuel']?.previousElementSibling, eMei = H['h-meilleur']?.previousElementSibling, eDel = H['h-delta']?.previousElementSibling;
+      if (co.sansFin && j.sansFin) {
+        if (eAct) texte(eAct, 'Distance');
+        if (eMei) texte(eMei, 'Checkpoint');
+        if (eDel) texte(eDel, 'Biome');
+        texte(H['h-actuel'], ((j.sansFin.sMax || 0) / 1000).toFixed(2).replace('.', ',') + ' km');
+        const prochainCp = co.sansFin.checkpoints[j.sansFin.checkpoint + 1];
+        const distCp = prochainCp ? Math.max(0, Math.round(prochainCp.s - (j.sansFin.sAbsolu || 0))) : null;
+        texte(H['h-meilleur'], distCp !== null ? '#' + (j.sansFin.checkpoint + 2) + ' · ' + distCp + ' m' : '–');
+        const bio = S.seance && B.routeSansFinSeance?.biomeA ? B.routeSansFinSeance.biomeA(S.seance, j.etat.s) : null;
+        texte(H['h-delta'], bio ? bio.label : '–');
+        classe(H['h-delta'], 'avance', false); classe(H['h-delta'], 'retard', false);
+      } else {
+        if (eAct) texte(eAct, 'Tour en cours');
+        if (eMei) texte(eMei, 'Meilleur');
+        if (eDel) texte(eDel, 'Écart');
+        const enLice = chronoMode ? co.chronoParti : (co.phase === 'course' || co.phase === 'arrivee');
+        const actuel = j.fini ? j.tempsTours[j.tempsTours.length - 1] : enLice ? co.temps - j.debutTour : null;
+        texte(H['h-actuel'], chrono(actuel));
+        texte(H['h-meilleur'], chrono(j.meilleur));
+        // écart en direct avec le meilleur tour, à distance égale
+        let delta = null;
+        if (enLice && !j.fini && S.profilMeilleur) {
+          const dans = j.progression - j.tours * co.c.longueur, k = Math.floor(dans / 10), u = dans / 10 - k;
+          const a = S.profilMeilleur[k], b = S.profilMeilleur[k + 1];
+          if (a >= 0 && b >= 0) delta = (co.temps - j.debutTour) - lerp(a, b, u);
+        }
+        texte(H['h-delta'], delta === null ? '–' : ecartTexte(delta, 2));
+        classe(H['h-delta'], 'avance', delta !== null && delta < 0); classe(H['h-delta'], 'retard', delta !== null && delta > 0);
       }
-      texte(H['h-delta'], delta === null ? '–' : ecartTexte(delta, 2));
-      classe(H['h-delta'], 'avance', delta !== null && delta < 0); classe(H['h-delta'], 'retard', delta !== null && delta > 0);
 
       texte(H['h-vitesse'], String(B.conduite.kmh(et)));
       texte(H['h-rapport'], et.rapport < 0 ? 'R' : String(et.rapport));
@@ -104205,8 +104407,9 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
 
   function pilotesMenu() {
     const membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
-    // Lot C : en local, le menu suit le nombre réel de pilotes de l'écran partagé (2 à 4) ; en ligne, deux au plus.
+    // Lot C : en local, le menu suit le nombre réel de pilotes de l'écran partagé (2 à 4 ; 1 à 4 en Route sans fin).
     if (modePrepa === 'duo') return Math.max(2, Math.min(4, joueursLocaux()));
+    if (modePrepa === 'sans-fin') return Math.max(1, Math.min(4, joueursLocaux()));
     return modePrepa === 'enligne' && membre && membre.joueurs === 2 ? 2 : 1;
   }
   function choixTrollLocaux() { return B.menuArcade.normaliserTroll(reglages); }
@@ -104226,8 +104429,8 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
   }
   function majBilanArcade() {
     const k = conditionsDuDepart(), cat = CATALOGUE[reglages.circuit], nombre = pilotesMenu();
-    texte($('p-bilan-circuit'), cat.nom);
-    texte($('p-bilan-course'), modePrepa === 'chrono' ? 'Contre-la-montre · fantôme personnel' : modePrepa === 'sans-fin' ? 'La route s’allonge sans fin · ravitaillez-vous aux stations' : reglages.tours + ' tours · rivaux ' + ['faciles', 'normaux', 'coriaces'][reglages.difficulte]);
+    texte($('p-bilan-circuit'), modePrepa === 'sans-fin' ? 'Route sans fin' : cat.nom);
+    texte($('p-bilan-course'), modePrepa === 'chrono' ? 'Contre-la-montre · fantôme personnel' : modePrepa === 'sans-fin' ? 'Plage → Plaine → Montagnes · checkpoints & stations-service' : reglages.tours + ' tours · rivaux ' + ['faciles', 'normaux', 'coriaces'][reglages.difficulte]);
     texte($('p-bilan-saison'), NOMS_SAISON[k.saison] + ' · ' + NOMS_MOMENT[k.moment]);
     texte($('p-bilan-meteo'), nomMeteoCourse({ ...k, i: reglages.circuit }));
     texte($('p-bilan-joueurs'), (nombre === 1 ? 'Un pilote local' : nombre === 2 ? 'Deux pilotes locaux' : nombre === 3 ? 'Trois pilotes locaux' : 'Quatre pilotes locaux') + (modePrepa === 'enligne' ? ' · en ligne' : ''));
@@ -104437,23 +104640,26 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
     { nom: 'Speedway', ids: ['ovale-des-forges'] }
   ];
   function remplirPreparation() {
-    $('p-titre').textContent = modePrepa === 'chrono' ? 'Chrono' : modePrepa === 'enligne' ? 'Course en ligne' : modePrepa === 'duo' ? 'Course à deux' : 'Course';
-    $('o-partage').hidden = modePrepa !== 'duo';
+    const estSF = modePrepa === 'sans-fin', nbLocal = estSF ? joueursLocaux() : (modePrepa === 'duo' ? Math.max(2, joueursLocaux()) : 1);
+    const estMultiMenu = modePrepa === 'duo' || (estSF && nbLocal >= 2);
+    $('p-titre').textContent = modePrepa === 'chrono' ? 'Chrono' : modePrepa === 'enligne' ? 'Course en ligne' : modePrepa === 'duo' ? 'Course à deux' : estSF ? 'Route sans fin' : 'Course';
+    $('o-partage').hidden = !(estMultiMenu && nbLocal === 2);
     $('o-commandes').hidden = false;
-    $('p-commandes-j2').hidden = modePrepa !== 'duo';
+    $('p-commandes-j2').hidden = !estMultiMenu;
     // Lot C : nombre de pilotes, commandes et caméras des troisième et quatrième cases (local uniquement).
-    $('o-joueurs').hidden = modePrepa !== 'duo';
-    $('p-commandes-j3').hidden = !(modePrepa === 'duo' && joueursLocaux() >= 3);
-    $('p-commandes-j4').hidden = !(modePrepa === 'duo' && joueursLocaux() >= 4);
-    $('o-vue-3').hidden = !(modePrepa === 'duo' && joueursLocaux() >= 3);
-    $('o-vue-4').hidden = !(modePrepa === 'duo' && joueursLocaux() >= 4);
-    for (const r of document.querySelectorAll('input[name="joueursLocaux"]')) r.checked = joueursLocaux() === +r.value;
-    $('o-vue-2').hidden = !(modePrepa === 'duo' || modePrepa === 'enligne' && joueursIci() === 2);
+    $('o-joueurs').hidden = !(modePrepa === 'duo' || estSF);
+    if ($('o-joueurs-1')) $('o-joueurs-1').hidden = !estSF;
+    $('p-commandes-j3').hidden = !(estMultiMenu && nbLocal >= 3);
+    $('p-commandes-j4').hidden = !(estMultiMenu && nbLocal >= 4);
+    $('o-vue-3').hidden = !(estMultiMenu && nbLocal >= 3);
+    $('o-vue-4').hidden = !(estMultiMenu && nbLocal >= 4);
+    for (const r of document.querySelectorAll('input[name="joueursLocaux"]')) r.checked = nbLocal === +r.value;
+    $('o-vue-2').hidden = !(estMultiMenu || modePrepa === 'enligne' && joueursIci() === 2);
     $('p-vue').value = reglages.vue; $('p-vue-2').value = reglages.vue2;
     if ($('p-vue-3')) $('p-vue-3').value = reglages.vue3; if ($('p-vue-4')) $('p-vue-4').value = reglages.vue4;
     for (const n of [0, 1, 2, 3]) for (const r of document.querySelectorAll('input[name="cmd' + n + '"]')) r.checked = commande(n) === r.value;
     for (const r of document.querySelectorAll('input[name="partage"]')) r.checked = (reglages.partage === 'cote' ? 'cote' : 'haut-bas') === r.value;
-    $('o-tours').hidden = $('o-difficulte').hidden = modePrepa === 'chrono';
+    $('o-tours').hidden = $('o-difficulte').hidden = modePrepa === 'chrono' || estSF;
     $('o-chrono').hidden = modePrepa !== 'chrono';
     const zone = $('circuits');
     const BIOME_COULEURS = { foret: '#39ff8e', cote: '#00d4ff', marseille: '#00c8ff', montagne: '#8ee8ff', larche: '#5cd6ff', islande: '#ff6b35', desert: '#ffb84d', asie: '#ff66b2', pacifique: '#2dd4bf', baikal: '#60a5fa', fjord: '#38bdf8', carpates: '#a3e635', ecosse: '#34d399', sierra: '#fb923c', corail: '#22d3ee', andes: '#c084fc', ovale: '#4bd8ca' };
@@ -104650,7 +104856,12 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
     if (['meteo', 'forcePluie', 'momentDepart', 'saisonDepart', 'saisonMode', 'momentMode', 'meteoMode'].includes(t.name) && ecran === 'preparation') actualiserConditions();
     if (EL.role === 'hote' && lienActif() && ['tours', 'difficulte'].includes(t.name)) annoncerCourse();
     if (t.name === 'joueursIci') { reglages.joueursLocaux = [2, 3, 4].includes(+t.value) ? +t.value : 1; sauverReglages(); }
-    if (t.name === 'joueursLocaux') { reglages.joueursLocaux = [2, 3, 4].includes(+t.value) ? +t.value : 2; sauverReglages(); }
+    if (t.name === 'joueursLocaux') {
+      const autorises = modePrepa === 'sans-fin' ? [1, 2, 3, 4] : [2, 3, 4];
+      reglages.joueursLocaux = autorises.includes(+t.value) ? +t.value : autorises[0];
+      sauverReglages();
+      if (ecran === 'preparation') { remplirPreparation(); majBilanArcade(); }
+    }
     if (t.name === 'partage') { reglages.partage = t.value === 'cote' ? 'cote' : 'haut-bas'; sauverReglages(); }
     if (/^r?cmd[0-3]$/.test(t.name) && NOMS_COMMANDES[t.value]) {
       const n = +t.name.slice(-1);
@@ -105155,7 +105366,7 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
     const attentes = [];
     prepa.precharge = true;
     try {
-      const co = S.course, c = co.c, n = co.voitures.length, duo = S.type === 'duo' && !!S.vueJ2;
+      const co = S.course, c = co.c, n = co.voitures.length, duo = (S.multi || S.type === 'duo') && !!S.vueJ2;
       // Lot C : une vue par pilote local (1 à 4). Les effets indexés par vue (faune, bêtes, saisons, aurores)
       // ne sont montés que pour les deux premières cases ; J3/J4 rendent le monde sans ces couches.
       const nbVues = duo ? Math.max(2, Math.min(4, S.nbJoueurs || 2)) : 1;
@@ -105445,7 +105656,7 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
     await souffler();
     const meteo = majMeteo(S, 0);
     const vue = async (V, voiture, nom, fois = 1) => { for (let k = 0; k < fois; k++) { rendreVue(V, voiture, nom, 0, meteo); n++; } await souffler(); };
-    if (S.type === 'duo' && S.vueJ2) {
+    if ((S.multi || S.type === 'duo') && S.vueJ2) {
       const j2 = co.voitures[S.locaux[1]], t2 = $('scene2');
       for (const nom of VUES_COURSE) for (let k = 0; k < (nom === 'cockpit' || nom === 'arceau' ? cockpit : 1); k++) {
         rendreVue(S.vueJ2, j2, nom, 0, meteo);
@@ -105518,7 +105729,7 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
   function tiedirVoile(S) {
     $('chargement').classList.add('tiede');
     $('hud').hidden = false;
-    if (S.type === 'duo' && S.vueJ2) {
+    if ((S.multi || S.type === 'duo') && S.vueJ2) {
       hud2.hidden = false;
       const nb = nbJoueursSession();
       if (nb >= 3 && S.vuesJoueurs?.[2]) hud3.hidden = false;
@@ -105905,8 +106116,8 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
       const j = S.course.joueur;
       // en ligne, le classement s'affiche 8 s après sa propre arrivée et se complète en direct : la course continue
       // derrière (l'autre pilote est peut-être encore en piste), jusqu'à sa fin commune
-      if ((S.type === 'course' || S.type === 'chrono' || S.type === 'duo') && !S.resultats &&
-          (S.course.termine || (j.abandon && S.course.horloge - j.tAbandon >= 3) || (S.enLigneOrigine && S.locaux.every(id => S.course.voitures[id].fini) && S.course.temps - Math.max(...S.locaux.map(id => S.course.voitures[id].tempsFinal)) >= 8))) {
+      if ((S.type === 'course' || S.type === 'chrono' || S.type === 'duo' || S.type === 'sans-fin') && !S.resultats &&
+          (S.course.termine || (!S.course.sansFin && j.abandon && S.course.horloge - j.tAbandon >= 3) || (S.enLigneOrigine && S.locaux.every(id => S.course.voitures[id].fini) && S.course.temps - Math.max(...S.locaux.map(id => S.course.voitures[id].tempsFinal)) >= 8))) {
         if (!S.enLigneOrigine) S.course.termine = true;
         montrerResultats(S);
       }
@@ -106349,7 +106560,7 @@ fn fragment_main(frag: VertexOut) -> @location(0) vec4<f32> {
     preparer: (o = {}) => {
       const type = o.type || 'course', i = Number.isInteger(o.circuit) ? clamp(o.circuit, 0, CATALOGUE.length - 1) : reglages.circuit;
       if (type === 'demo') return lancerDemo(i);
-      if (!['course', 'chrono', 'duo', 'vitrine'].includes(type)) return Promise.reject(new Error('type de séance inconnu : ' + type));
+      if (!['course', 'chrono', 'duo', 'vitrine', 'sans-fin'].includes(type)) return Promise.reject(new Error('type de séance inconnu : ' + type));
       return preparerSeance(type, i, null, o.conditions || null, { apres: type === 'chrono' ? () => sousMessage('Le chrono part à la ligne') : null });
     },
     // état du chargement : préparation en cours, étape, créations tardives de la séance (zéro en course), dernier compte rendu

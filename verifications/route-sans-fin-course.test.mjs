@@ -55,9 +55,9 @@ verifier('un checkpoint franchi rend du temps, une seule fois', () => {
   assert.equal(cp[0].checkpoint, 0);
   assert.ok(cp[0].reste > 15 - 1 && cp[0].reste < 20 + 15, 'temps rendu incohérent : ' + cp[0].reste);
   assert.equal(v.sansFin.checkpoint, cp.length - 1 < 3 ? cp.length - 1 : 2);
-  // marche arrière sous le checkpoint, puis retour : aucun second bonus
+  // marche arrière sous le checkpoint, puis retour : aucun second bonus (freiner jusqu'à l'arrêt puis reculer)
   const avant = v.sansFin.restant, index = v.sansFin.checkpoint;
-  avancer(co, [RECUL, GAZ], 12, ev);
+  avancer(co, [{ gaz: 0, frein: 1, embrayage: 0, derive: false, rapport: 2, marcheArriere: true }, GAZ], 18, ev);
   assert.ok(v.sansFin.sAbsolu < v.sansFin.sMax, 'la marche arrière ne recule pas sAbsolu — test à revoir');
   const apres = v.sansFin.restant;
   avancer(co, [GAZ, GAZ], 15, ev);

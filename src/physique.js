@@ -65,9 +65,9 @@
   }
   function poseDepart(ph) {
     const e = ph.e, q = B.circuit.echantillon(ph.c, e.s), cap = q.cap + e.psi + e.beta;
-    const rel = cap - q.cap, pente = (q.pente || 0) * Math.cos(rel) - Math.sin(q.devers || 0) * Math.sin(rel);
+    const rel = cap - q.cap, pente = (q.pente || 0) * Math.cos(rel) - Math.tan(q.devers || 0) * Math.sin(rel);
     ph.cap = cap;
-    let tangage = Math.atan(pente), bank = Math.atan((q.pente || 0) * Math.sin(rel) + Math.sin(q.devers || 0) * Math.cos(rel));
+    let tangage = Math.atan(pente), bank = Math.atan((q.pente || 0) * Math.sin(rel) + Math.tan(q.devers || 0) * Math.cos(rel));
     const x = q.x - Math.sin(q.cap) * e.d, z = q.z + Math.cos(q.cap) * e.d;
     const demi = ph.c.largeur / 2;
     const dSol = ph.c.partition === 'ovale-des-forges' ? clamp(e.d, -demi, demi) : e.d;
@@ -100,7 +100,9 @@
     ph.world.setVelocity(ph.id, [Math.cos(cap) * vitesse * inv, pente * vitesse * inv, Math.sin(cap) * vitesse * inv]);
   }
   function corps(ph, continuite) {
-    const shapes = [{ type: 'box', half: [1.98, .23, .69], pose: [-.12, .31, 0, 0, 0, 0, 1], friction: .55, restitution: .08 }];
+    // Garde au sol du fond plat (0,15 m) et faible frottement de glisse (0,15) : évite au coin avant
+    // du boîtier d'accrocher une arête interne des triangles sur les rampes de dévers 40° ou bosses.
+    const shapes = [{ type: 'box', half: [1.98, .20, .69], pose: [-.12, .35, 0, 0, 0, 0, 1], friction: .15, restitution: .04 }];
     // Les contacts latéraux des roues peuvent soulever la caisse ; le contact normal roulant vient des ressorts.
     for (const roue of roues()) {
       const vertices = [];
@@ -142,7 +144,7 @@
           remote: new Float64Array(11), hasRemote: false };
         roues().forEach((roue, i) => ph.contacts.push({ i, roue, hit: {}, anchor: vec(), point: vec(), normal: [0, 1, 0], tangent: vec(), right: vec(), velocity: vec(),
           shapePose: [roue.x, roue.r, roue.z, 0, 0, 0, 1], load: 0, capacity: 0, fx: 0, fy: 0, surface: 'herbe', distance: PROFIL.courseMax + roue.r, k: mass * G * (i < 2 ? front : 1 - front) / 2 / (PROFIL.courseLibre - PROFIL.courseRepos) }));
-        corps(ph); p.voitures.push(ph); p.byId.set(ph.id, ph);
+        corps(ph, options.continuite?.[v.id]); p.voitures.push(ph); p.byId.set(ph.id, ph);
         Object.defineProperty(v.etat, '_physx', { value: ph, configurable: true, writable: true });
       }
       co.physique = p; return p;

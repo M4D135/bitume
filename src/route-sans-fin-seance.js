@@ -100,5 +100,23 @@
     return METEO_BIOME[dominant] || METEO_BIOME.plaine;
   }
 
-  B.routeSansFinSeance = { creer, avancer, meteoCible, PAS_CHECKPOINT, AVANCE_FENETRE, REPRISE_DECOR, PAS_REPRISE };
+  const LIBELLES_BIOME = {
+    plage: 'Plage',
+    plaine: 'Plaine',
+    'petite-montagne': 'Petite montagne',
+    'grande-montagne': 'Grande montagne',
+  };
+  function biomeA(seance, sRel) {
+    const b = seance.cPorteur, sAbs = (b?.sansFinFenetre?.sOrigine || 0) + (Number.isFinite(sRel) ? sRel : 0);
+    let s = b?.sansFinFenetre?.sOrigine || 0;
+    const k0 = b?.sansFinFenetre?.k0 || 0, k1 = b?.sansFinFenetre?.k1 || k0 + 1;
+    for (let k = k0; k < k1; k++) {
+      const p = R.pointsSegment(k, seance.graine).profil;
+      if (sAbs < s + p.L || k === k1 - 1) return { biome: p.biome, label: LIBELLES_BIOME[p.biome] || p.biome, theme: p.theme };
+      s += p.L;
+    }
+    return { biome: 'plage', label: 'Plage', theme: 'cote' };
+  }
+
+  B.routeSansFinSeance = { creer, avancer, meteoCible, biomeA, PAS_CHECKPOINT, AVANCE_FENETRE, REPRISE_DECOR, PAS_REPRISE };
 })(globalThis.BITUME = globalThis.BITUME || {});

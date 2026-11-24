@@ -15,10 +15,10 @@
     'grande-montagne': ['montagne', 'andes', 'islande'],
   });
   const REGLES = Object.freeze({
-    'plage': { amplitude: 6, pente: .03, courbure: 1 / 60, virages: .35 },
-    'plaine': { amplitude: 14, pente: .05, courbure: 1 / 45, virages: .55 },
-    'petite-montagne': { amplitude: 22, pente: .10, courbure: 1 / 34, virages: .8 },
-    'grande-montagne': { amplitude: 34, pente: .18, courbure: 1 / 26, virages: 1 },
+    'plage': { amplitude: 6, pente: .03, courbure: 1 / 60, virages: .35, capMax: .45 },
+    'plaine': { amplitude: 14, pente: .05, courbure: 1 / 45, virages: .55, capMax: .68 },
+    'petite-montagne': { amplitude: 22, pente: .10, courbure: 1 / 34, virages: .8, capMax: .90 },
+    'grande-montagne': { amplitude: 34, pente: .18, courbure: 1 / 26, virages: 1, capMax: 1.05 },
   });
   const BORDE = 60;   // placage quintique vers les valeurs de bord, en mètres de part et d'autre
 
@@ -38,16 +38,18 @@
 
   function biomePour(k) { return CYCLE[((k % 6) + 6) % 6]; }
 
-  // État de bord à la sortie du tronçon k : courbure et pente tirées une seule fois par
-  // (graine, k). L'entrée du tronçon suivant est exactement cette sortie : C1 en courbure et pente.
+  // État de bord à la sortie du tronçon k : cap global borné (|cap| ≤ 0,80 rad ⇒ dx/ds > 0,38 partout,
+  // auto-intersection topologiquement impossible à l'infini), courbure et pente tirés une seule fois
+  // par (graine, k). L'entrée du tronçon suivant est exactement cette sortie : C2 en plan, C1 en pente.
   function sortie(k, graine) {
-    if (k < 0) return { courbure: 0, pente: 0 };
+    if (k < 0) return { cap: 0, courbure: 0, pente: 0 };
     const r = alea((graine >>> 0) * 2654435761 + (k >>> 0) * 40503 + 17);
     const regle = REGLES[biomePour(k)];
     const sens = r() < .5 ? -1 : 1;
-    const courbure = sens * Math.pow(r(), 1.6) * regle.courbure * (k % 3 === 2 ? .25 : 1);
+    const courbure = sens * Math.pow(r(), 1.6) * regle.courbure * .5 * (k % 3 === 2 ? .25 : 1);
     const pente = (r() - .5) * 2 * regle.pente * (0.3 + 0.7 * Math.pow(r(), 1.4));
-    return { courbure, pente };
+    const cap = (r() - .5) * 2 * Math.min(.78, regle.capMax * .85);
+    return { cap, courbure, pente };
   }
 
   function profilSegment(k, graine) {
@@ -63,25 +65,42 @@
   }
 
   // Points locaux du tronçon k : origine au début, cap local 0, x vers l'avant, z vers la droite.
-  // cap(0)=0, κ(0)=κ_ent, κ(L)=κ_sort ; y(0)=0, y'(0)=pente_ent, y(L)=y_sort, y'(L)=pente_sort.
+  // Le cap global reste dans [−65°, +65°] (cos(cap) ≥ 0,42) par spline Hermite cubique, garantissant
+  // une progression monotone en x (zéro boucle ni recoupement de glissière à toute distance).
   function calculerSegment(k, graine) {
     const p = profilSegment(k, graine), r = p.r, regle = REGLES[p.biome];
     const entree = sortie(k - 1, graine), sortieFin = sortie(k, graine);
 
-    // courbure : nœuds quintiques, valeurs de bord imposées, placage quintique sur les BORDE m
-    const nc = p.nb;
-    const kc = [];
-    for (let j = 0; j <= nc; j++) kc.push(j === 0 ? entree.courbure : j === nc ? sortieFin.courbure : (r() - .5) * 2 * regle.courbure * (0.25 + 0.75 * Math.pow(r(), 1.3)));
-    const courbure = s => {
-      if (s <= 0) return entree.courbure;
-      if (s >= p.L) return sortieFin.courbure;
-      let j = 0;
-      while (j < nc - 1 && s > p.L * (j + 1) / nc) j++;
-      const t = (s - p.L * j / nc) / (p.L / nc);
-      let v = kc[j] + (kc[j + 1] - kc[j]) * quintique(t);
-      if (s < BORDE) v = entree.courbure + (v - entree.courbure) * quintique(s / BORDE);
-      if (s > p.L - BORDE) v = sortieFin.courbure + (v - sortieFin.courbure) * quintique((p.L - s) / BORDE);
-      return borner(v, -regle.courbure * 1.05, regle.courbure * 1.05);
+    // cap global par Hermite cubique : valeurs et courbures exactes aux deux bords, amplitude bornée
+    const nc = Math.max(4, p.nb), hCap = p.L / nc;
+    const capLim = regle.capMax, dCapMax = regle.courbure * hCap * .48;
+    const caps = new Float64Array(nc + 1), kappas = new Float64Array(nc + 1);
+    caps[0] = entree.cap; kappas[0] = entree.courbure;
+    caps[nc] = sortieFin.cap; kappas[nc] = sortieFin.courbure;
+    let signe = r() < .5 ? 1 : -1;
+    for (let j = 1; j < nc; j++) {
+      // Alternance douce de courbes gauche/droite (lacets ou enchaînements S) dans l'enveloppe monotone
+      if (r() < .68) signe = -signe;
+      const cible = signe * (.22 + .78 * Math.pow(r(), 1.15)) * capLim;
+      // Garder un pas atteignable vers le nœud précédent et la sortie du tronçon
+      const lo = Math.max(-capLim, caps[j - 1] - dCapMax, sortieFin.cap - dCapMax * (nc - j));
+      const hi = Math.min(capLim, caps[j - 1] + dCapMax, sortieFin.cap + dCapMax * (nc - j));
+      caps[j] = borner(cible, Math.min(lo, hi), Math.max(lo, hi));
+    }
+    for (let j = 1; j < nc; j++) {
+      // Pente Catmull-Rom bornée : garantit la continuité C1 de la courbure et l'absence de dépassement
+      const sMoy = (caps[j + 1] - caps[j - 1]) / (2 * hCap);
+      kappas[j] = borner(sMoy * .85, -regle.courbure * .55, regle.courbure * .55);
+    }
+    const capLocal = s => {
+      if (s <= 0) return 0;
+      if (s >= p.L) return sortieFin.cap - entree.cap;
+      let j = Math.floor(s / hCap);
+      if (j >= nc) j = nc - 1;
+      const t = (s - j * hCap) / hCap, t2 = t * t, t3 = t2 * t;
+      const capAbs = (2 * t3 - 3 * t2 + 1) * caps[j] + (t3 - 2 * t2 + t) * hCap * kappas[j]
+        + (-2 * t3 + 3 * t2) * caps[j + 1] + (t3 - t2) * hCap * kappas[j + 1];
+      return borner(capAbs, -1.16, 1.16) - entree.cap;
     };
 
     // altitude : Hermite cubique par intervalle (pente continue aux nœuds), pentes de bord imposées
@@ -100,16 +119,16 @@
       return (2 * t3 - 3 * t2 + 1) * cotes[j] + (t3 - 2 * t2 + t) * h * pentes[j] + (-2 * t3 + 3 * t2) * cotes[j + 1] + (t3 - t2) * h * pentes[j + 1];
     };
 
-    // intégration du cap et du plan au quart de pas, points à chaque PAS
+    // intégration du plan au quart de pas sur capLocal, points à chaque PAS
     const pts = [], h = PAS / 4;
     let x = 0, z = 0, cap = 0;
     pts.push({ x: 0, y: 0, z: 0, cap: 0, s: 0 });
     const etapes = Math.round(p.L / PAS);
     for (let e = 0; e < etapes; e++) {
       for (let u = 0; u < 4; u++) {
-        const s = e * PAS + u * h, k1 = courbure(s), k2 = courbure(s + h);
-        const cap2 = cap + (k1 + k2) * h / 2, cm = (cap + cap2) / 2;
-        x += Math.cos(cm) * h; z += Math.sin(cm) * h; cap = cap2;
+        const s = e * PAS + u * h;
+        const c1 = capLocal(s), c2 = capLocal(s + h), cm = (c1 + c2) / 2;
+        x += Math.cos(cm) * h; z += Math.sin(cm) * h; cap = c2;
       }
       const s = (e + 1) * PAS;
       pts.push({ x, y: altitude(s), z, cap, s });
@@ -117,7 +136,7 @@
     return {
       profil: { k: p.k, biome: p.biome, theme: p.theme, L: p.L, largeur: p.largeur, degagement: p.degagement },
       pts,
-      deplacement: { dx: x, dy: cotes[nr], dz: z, dcap: cap },
+      deplacement: { dx: x, dy: cotes[nr], dz: z, dcap: sortieFin.cap - entree.cap },
     };
   }
 

@@ -389,16 +389,22 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           else {
             const bord = cote < 0 ? -1 : 1, limite = cote < 0 ? limG : limD, yBord = hauteurRoute(f, bord * w, w);
             const ext = limite + (surPont ? 3.3 : 4);
+            // Dévers fort (> 7°, anneau des Alizés) : côté extérieur haut, prolonger doucement la pente
+            // sur la bordure et le dégagement (plafonné sous 1,5 m) pour supprimer l'arête vive de 40°.
+            const fortExt = bord > 0 && Math.abs(f.devers) > .12 && (-bord * Math.tan(f.devers)) > 0;
+            const penteExt = fortExt ? -bord * Math.tan(f.devers) : 0;
+            const dBordBank = fortExt ? Math.min(.85, largeurBord * penteExt * .75) : 0;
+            const dHerbeBank = fortExt ? Math.min(.55, .35 * penteExt * Math.min(2.2, Math.max(0, ext - w - 1.2))) : 0;
             if (type === 'ligne') { d0 = bord * (w - .3); d1 = bord * w; y0 = hauteurRoute(f, d0, w); y1 = yBord; mat = 14.25; col = blanc; }
             else if (type === 'bord') {
               d0 = bord * w; d1 = bord * (w + largeurBord); y0 = yBord;
               const avec = cote < 0 ? (vib & 1) : (vib & 2);
-              y1 = yBord + (avec ? hautVibreur : basBord);
+              y1 = yBord + (avec ? hautVibreur : basBord) + dBordBank;
               if (avec) {
                 mat = 14.25; col = reperes && reperes.vibreurs[f.i] ? (tranche ? rougeVirage : blancVirage) : (tranche ? rouge : blancBordure);
               } else if (surPont) { mat = MATIERES_PILOTES.beton; col = betonPont; } else { mat = 8; }
-            } else if (type === 'herbe') { d0 = bord * (w + 1.2); d1 = bord * ext; y0 = yBord - .015; y1 = yBord - .02 * (ext - w - 1.2); n0 = n1 = hautY; }
-            else { d0 = bord * ext; d1 = bord * (ext + 4); y0 = yBord - .02 * (ext - w - 1.2); y1 = y0 - 2.6; n0 = n1 = hautY; }
+            } else if (type === 'herbe') { d0 = bord * (w + 1.2); d1 = bord * ext; y0 = yBord - .015 + dBordBank; y1 = fortExt ? y0 + dHerbeBank : y0 - .02 * (ext - w - 1.2); n0 = n1 = fortExt ? no : hautY; }
+            else { d0 = bord * ext; d1 = bord * (ext + 4); y0 = fortExt ? yBord - .015 + dBordBank + dHerbeBank : yBord - .02 * (ext - w - 1.2); y1 = y0 - 2.6; n0 = n1 = hautY; }
             if (surPont && (type === 'herbe' || type === 'jupe')) {
               mat = MATIERES_PILOTES.beton; col = betonPont;
               if (type === 'jupe') { d1 = d0; y1 = y0 - 1.15; n0 = n1 = [bord*f.r[0],0,bord*f.r[2]]; }
@@ -500,12 +506,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     }
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
     for (let i = 0; i < c.n; i++) { x0 = Math.min(x0, c.x[i]); x1 = Math.max(x1, c.x[i]); z0 = Math.min(z0, c.z[i]); z1 = Math.max(z1, c.z[i]); }
-    const marge = th.marge, pasT = organique ? 18 : 24;
+    const estSansFin = !!c.sansFinFenetre;
+    const marge = estSansFin ? Math.min(th.marge, 420) : th.marge, pasT = estSansFin ? (organique ? 24 : 28) : (organique ? 18 : 24);
     x0 -= marge; z0 -= marge; x1 += marge; z1 += marge;
     const nx = Math.ceil((x1 - x0) / pasT) + 1, nz = Math.ceil((z1 - z0) / pasT) + 1;
     const H = new Float32Array(nx * nz), D = new Float32Array(nx * nz);
     const secteurs = B.saisons?.secteurs?.(c);
-    const secondaire = secteurs?.plages.find(p => p.theme !== c.theme);
+    const palettesSF = estSansFin && secteurs?.plages?.length > 1
+      ? secteurs.plages.map(p => THEMES[p.theme] || B.destinations?.THEMES?.[p.theme] || th) : null;
+    const plageSolSF = palettesSF ? new Uint8Array(nx * nz) : null;
+    const secondaire = !palettesSF && secteurs?.plages.find(p => p.theme !== c.theme);
     const paletteB = secondaire && (THEMES[secondaire.theme] || B.destinations?.THEMES[secondaire.theme]);
     const poidsAxe = paletteB ? new Uint8Array(c.n) : null, poidsSol = paletteB ? new Uint8Array(nx*nz) : null;
     const poidsPigments = paletteB ? new Uint8Array(nx*nz) : null;
@@ -564,7 +574,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           const dx = loinX[k] - x, dz = loinZ[k] - z, d2 = dx * dx + dz * dz;
           if (d2 < d2min) {
             d2min = d2;
-            if (poidsSol && q.i < 0) indiceAxe = k * pasLoin;
+            if ((poidsSol || plageSolSF) && q.i < 0) indiceAxe = k * pasLoin;
           }
           const w = 1 / (d2 + 2500);
           sY += w * loinY[k]; sW += w;
@@ -636,6 +646,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         } else h -= 34 * lisse(merDebut - 40, merDebut + 220, p) * lisse(60, 140, d);
       }
       if (B.cimesDecor) h = B.cimesDecor.relief(c, x, z, q, h);
+      if (plageSolSF) plageSolSF[cellule] = indiceAxe >= 0 ? secteurs.indices[Math.min(c.n - 1, indiceAxe)] : 0;
       if (poidsSol) {
         const da=Math.hypot(x-centres[0][0],z-centres[0][1]), db=Math.hypot(x-centres[1][0],z-centres[1][1]);
         const paysage=lisse(-280,280,da-db)*255, rive=indiceAxe>=0?poidsAxe[indiceAxe]:paysage;
@@ -748,9 +759,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         const hx = H[j * nx + Math.min(nx - 1, i + 1)] - H[j * nx + Math.max(0, i - 1)];
         const hz = H[Math.min(nz - 1, j + 1) * nx + i] - H[Math.max(0, j - 1) * nx + i];
         const no = [-hx / (2 * pasT), 1, -hz / (2 * pasT)], l = Math.hypot(no[0], no[1], no[2]); no[0] /= l; no[1] /= l; no[2] /= l;
-        const mat=classeHabitat(poidsSol && poidsSol[cle]>=128 ? paletteB : th,h,D[cle],no[1],x,z);
+        const thLocal = palettesSF ? (palettesSF[plageSolSF[cle]] || th) : (poidsSol && poidsSol[cle] >= 128 ? paletteB : th);
+        const mat=classeHabitat(thLocal,h,D[cle],no[1],x,z);
         const part = poidsPigments ? poidsPigments[cle] / 255 : 0;
-        let [col, coefficient] = couleur(h, D[cle], no[1], x, z, part === 1 ? paletteB : th);
+        let [col, coefficient] = couleur(h, D[cle], no[1], x, z, palettesSF ? thLocal : (part === 1 ? paletteB : th));
         if (part > 0 && part < 1) {
           const [autreCol, autreCoefficient] = couleur(h, D[cle], no[1], x, z, paletteB);
           col = melange(col, autreCol, part);
@@ -1813,7 +1825,14 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       const coteLed = sens && sens * cumulCourbure >= PAS_G / B.virages.RAYON_SERRE ? -sens : 0;
       for (const cote of [-1, 1]) {
         const f0 = cadre(c, i), f1 = cadre(c, i + PAS_G), L0 = (cote < 0 ? lim.G : lim.D)[f0.i], L1 = (cote < 0 ? lim.G : lim.D)[f1.i];
-        const y0 = hauteurRoute(f0, cote * w, w) - .02 * (L0 - w - 1.2), y1 = hauteurRoute(f1, cote * w, w) - .02 * (L1 - w - 1.2);
+        const yAcc = (f, L) => {
+          const yb = hauteurRoute(f, cote * w, w);
+          if (!(cote > 0 && Math.abs(f.devers) > .12 && (-cote * Math.tan(f.devers)) > 0)) return yb - .02 * (L - w - 1.2);
+          const pe = -cote * Math.tan(f.devers);
+          const db = Math.min(.85, 1.2 * pe * .75);
+          return yb - .015 + db + Math.min(.55, .35 * pe * Math.min(2.2, Math.max(0, L - w - 1.2)));
+        };
+        const y0 = yAcc(f0, L0), y1 = yAcc(f1, L1);
         const p0 = pointPlan(f0, cote * L0, y0), p1 = pointPlan(f1, cote * L1, y1);
         const dir = [p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]], long = Math.hypot(...dir);
         const [ax, ay, az] = base(dir, [0, 1, 0]), rot = angles(ax, ay, az);
@@ -2138,8 +2157,35 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     }
     for (const o of objetsDepart) lotDe(0, 0, 0).objets.push(o);
     for (const o of loinDepart) lotDe(0, 0, 0).loin.push(o);
-    // tribunes à gauche, stands à droite, le long de la ligne droite
-    const estMarseille = c.id === 'marseille';
+    // Route sans fin : portiques 3D visibles aux checkpoints (style Hang-On / OutRun),
+    // avec piliers ancrés au terrain réel, bandeau LED ambre/or et bande peinte sur la chaussée.
+    if (c.checkpointsSansFin?.length) {
+      for (const cp of c.checkpointsSansFin) {
+        if (!(cp.s > 8 && cp.s < c.longueur - 8)) continue;
+        const fc = cadre(c, Math.round(cp.s / c.pas)), rotC = capRot(fc.a), yC = hauteurRoute(fc, 0, w);
+        const lotCp = lotDe(fc.x, fc.z, fc.i), ob = [], ln = [];
+        for (const cote of [-1, 1]) {
+          const p = pointPlan(fc, cote * (w + 1.8), yC);
+          const ySol = terrain ? Math.min(yC, terrain.sol(p[0], p[2])) - .4 : yC - .4;
+          const haut = (yC + 6.8) - ySol;
+          const pil = { shape: 'box', collision: 'pilier', p: [p[0], ySol + haut / 2, p[2]], s: [.55, haut, .55], r: rotC, mat: 0, color: [.16, .19, .23] };
+          const bague = { shape: 'box', p: [p[0], yC + 2.6, p[2]], s: [.66, .42, .66], r: rotC, mat: 16, color: [.98, .72, .12] };
+          ob.push(pil, bague); ln.push(pil, bague);
+        }
+        const poutreCp = { shape: 'box', collision: 'poutre', p: [fc.x, yC + 6.9, fc.z], s: [.78, 1.05, 2 * w + 4.3], r: rotC, mat: 0, color: [.11, .14, .18] };
+        const ledAv = { shape: 'box', p: [fc.x - fc.t[0] * .42, yC + 6.9, fc.z - fc.t[2] * .42], s: [.06, .62, 2 * w + 3.8], r: rotC, mat: 16, color: [.98, .74, .14] };
+        const ledAr = { shape: 'box', p: [fc.x + fc.t[0] * .42, yC + 6.9, fc.z + fc.t[2] * .42], s: [.06, .62, 2 * w + 3.8], r: rotC, mat: 16, color: [.24, .92, .56] };
+        ob.push(poutreCp, ledAv, ledAr); ln.push(poutreCp, ledAv);
+        for (let k = 0; k < 10; k++) {
+          const d = -w + .4 + (k + .5) * (2 * w - .8) / 10;
+          const p = [fc.x + fc.r[0] * d, hauteurRoute(fc, d, w) + .016, fc.z + fc.r[2] * d];
+          ob.push({ shape: 'box', p, s: [.85, .024, (2 * w - .8) / 10], r: rotC, mat: MATIERES_PILOTES.asphalte, color: k % 2 ? [.96, .74, .14] : [.10, .12, .15] });
+        }
+        lotCp.objets.push(...ob); lotCp.loin.push(...ln);
+      }
+    }
+    // tribunes à gauche, stands à droite, le long de la ligne droite (absentes loin du départ en Route sans fin)
+    const estMarseille = c.id === 'marseille' || (!!c.sansFinFenetre && c.sansFinFenetre.k0 > 0);
     const { candidats, gradins: amenagement } = planGradins(c);
     if (ovale) ovale.asseoir(amenagement,terrain);
     // public.js : la description des gradins, pour y asseoir de vrais spectateurs (options.public)

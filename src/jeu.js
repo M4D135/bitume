@@ -434,8 +434,10 @@
     // Route sans fin : le monde n'est pas un circuit du catalogue mais la fenêtre glissante de la séance ;
     // le tracé naît devant les joueurs et s'allonge à mesure (src/route-sans-fin-seance.js).
     const seance = sansFin ? B.routeSansFinSeance.creer({ graine: (enl ? enl.graine : graineCourse) >>> 0 }) : null;
-    const sc = installer(i, B.saisons.normaliser(conditions.saison), null, type !== 'vitrine', seance ? seance.c : null), c = sc.c, demo = type === 'demo', auto = demo || type === 'vitrine', duo = type === 'duo';
-    // Lot C : deux à quatre pilotes locaux en écran partagé. La grille 2×2 vient avec le troisième joueur.
+    if (seance) B.routeSansFinSeance.avancer(seance, [0], B.routeSansFinSeance.AVANCE_FENETRE);
+    const sc = installer(i, B.saisons.normaliser(conditions.saison), null, type !== 'vitrine', seance ? seance.cPorteur : null), c = sc.c, demo = type === 'demo', auto = demo || type === 'vitrine', duo = type === 'duo' || (sansFin && joueursLocaux() >= 2);
+    if (sansFin) installerRetro();
+    // Lot C : deux à quatre pilotes locaux en écran partagé (y compris en Route sans fin). La grille 2×2 vient avec le troisième joueur.
     const nbLocaux = duo ? Math.max(2, Math.min(4, joueursLocaux())) : 1;
     // ombre lointaine du circuit (src/ombres.js) : une passe par décor, aucune sans ombres du soleil possibles
     B.ombres.carte(rendu, gpuModeste || !B.ombres.ombresPossibles(reglages.qualite, { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages }), sc.decor.lots);
@@ -472,7 +474,7 @@
     try {
     B.physique.installer(course, sc.decor);
     S = {
-      type, i, course, c, seance, conditions, modeles: course.voitures.map(v => B.voiture.modele(v.livree)),
+      type, i, course, c, seance, cDecor: c, sc, cleStationDecor: seance ? seance.cleStation : null, multi: duo, conditions, modeles: course.voitures.map(v => B.voiture.modele(v.livree)),
       prec: [], cour: [], sortie: [], acc: 0, tele: { poste: null, alea: graine32(course.voitures.length * 7 + i) },
       camCap: null, regardArriere: false, profil: new Float32Array(Math.ceil(c.longueur / 10) + 2).fill(-1), profilMeilleur: null,
       distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
@@ -743,20 +745,21 @@
       if (toucheDe(0, 'vue').includes(e.code)) changerVue();
       if (toucheDe(0, 'troll').includes(e.code)) provoquer(0);
     }
-    if (session && session.type === 'duo' && (commande(1) === 'auto' || commande(1) === 'clavier')) {
+    const estMulti = session && (session.type === 'duo' || !!session.multi);
+    if (estMulti && (commande(1) === 'auto' || commande(1) === 'clavier')) {
       if (toucheDe(1, 'haut').includes(e.code)) impulsions2.haut = true;
       if (toucheDe(1, 'bas').includes(e.code)) impulsions2.bas = true;
       if (toucheDe(1, 'vue').includes(e.code)) changerVue2();
       if (toucheDe(1, 'troll').includes(e.code)) provoquer(1);
     }
     // Lot C : J3 (IJKL) et J4 (rangée 4-9) n'existent qu'au-delà de deux pilotes locaux.
-    if (session && session.type === 'duo' && (session.locaux?.length || 0) >= 3 && (commande(2) === 'auto' || commande(2) === 'clavier')) {
+    if (estMulti && (session.locaux?.length || 0) >= 3 && (commande(2) === 'auto' || commande(2) === 'clavier')) {
       if (toucheDe(2, 'haut').includes(e.code)) impulsions3.haut = true;
       if (toucheDe(2, 'bas').includes(e.code)) impulsions3.bas = true;
       if (toucheDe(2, 'vue').includes(e.code)) changerVue3();
       if (toucheDe(2, 'troll').includes(e.code)) provoquer(2);
     }
-    if (session && session.type === 'duo' && (session.locaux?.length || 0) >= 4 && (commande(3) === 'auto' || commande(3) === 'clavier')) {
+    if (estMulti && (session.locaux?.length || 0) >= 4 && (commande(3) === 'auto' || commande(3) === 'clavier')) {
       if (toucheDe(3, 'haut').includes(e.code)) impulsions4.haut = true;
       if (toucheDe(3, 'bas').includes(e.code)) impulsions4.bas = true;
       if (toucheDe(3, 'vue').includes(e.code)) changerVue4();
@@ -844,7 +847,7 @@
     const connectees = [];
     for (const candidate of liste) if (candidate && candidate.connected) connectees.push(candidate);
     nbManettes = connectees.length; manettes = connectees;
-    const duoJeu = !!session && session.type === 'duo';
+    const duoJeu = !!session && (session.type === 'duo' || !!session.multi);
     const nbVues = duoJeu ? Math.max(2, Math.min(4, session.nbJoueurs || 2)) : 1;
     const [p1, p2, p3, p4] = duoJeu ? assigner(connectees, nbVues) : [connectees[0] || null, null, null, null];
     if (captureManette) {
@@ -1438,26 +1441,56 @@
   // joueur » à l'ordinateur : sans ce garde-fou, son moteur grondait dans les mains devant l'écran titre.
   function manetteVibre(auto) { return !auto && reglages.vibrations === 'oui' && ecran === 'course' && !document.hidden; }
 
-  // Route sans fin : la fenêtre a bougé — le circuit courant change de tronçons. Le décor et les solides
-  // PhysX sont rebâtis sur le nouveau circuit ; les voitures gardent leur état (le moteur les repose).
+  // Route sans fin : la fenêtre a bougé — le circuit courant change de tronçons ou de station.
+  // Les abscisses curvilignes sont recalées par projection sur la nouvelle fenêtre (zéro téléportation
+  // lors du relâchement arrière k0++), les poses/vitesses PhysX sont conservées sans accroc, les
+  // rétroviseurs et traces suivent la nouvelle scène et le nouveau monde PhysX.
   function reinstallerSansFin(S) {
-    const c = S.seance.cPorteur;   // le monde que la séance déclare bâti (la fenêtre glisse devant, en silence)
-    S.c = c; S.course.c = c;
-    // le profil d'ombres est indexé par l'abscisse : une fenêtre qui s'allonge demande un tableau plus long
+    const ancienC = S.c, c = S.seance.cPorteur;
+    const oldOrig = ancienC?.sansFinFenetre?.sOrigine || 0, newOrig = c?.sansFinFenetre?.sOrigine || 0;
+    const deltaOrig = newOrig - oldOrig;
+    const co = S.course, continuite = {};
+    for (const v of co.voitures) {
+      const ph = v.etat._physx;
+      let wx, wz;
+      if (ph && !ph.course?.disposed) {
+        const pose = ph.world.readPose(ph.id);
+        continuite[v.id] = { pose, velocity: ph.world.readVelocity(ph.id), angular: ph.world.readAngularVelocity(ph.id) };
+        wx = pose[0]; wz = pose[2];
+      } else {
+        const q = B.circuit.echantillon(ancienC, v.etat.s);
+        wx = q.x - Math.sin(q.cap) * v.etat.d; wz = q.z + Math.cos(q.cap) * v.etat.d;
+      }
+      const sEstime = clamp(v.etat.s - deltaOrig, 0, c.longueur);
+      if (c !== ancienC) {
+        const proj = B.circuit.projeter ? B.circuit.projeter(c, wx, wz, sEstime) : null;
+        const sNouveau = proj && Number.isFinite(proj.s) ? clamp(proj.s, 0, c.longueur) : sEstime;
+        const decalS = sNouveau - v.etat.s;
+        v.etat.s = sNouveau;
+        if (proj && Number.isFinite(proj.d)) v.etat.d = proj.d;
+        if (co.sAvant && Number.isFinite(co.sAvant[v.id])) co.sAvant[v.id] = clamp(co.sAvant[v.id] + decalS, 0, c.longueur);
+      }
+    }
+    S.c = c; co.c = c;
     if (Math.ceil(c.longueur / 10) + 2 > S.profil.length) S.profil = new Float32Array(Math.ceil(c.longueur / 10) + 2).fill(-1);
-    // seule la station a changé (le circuit est le même objet) : les limites et la voie des stands sont
-    // reposées, mais le décor — le gros du coût — reste en place
-    const sc = S.cDecor === c ? S.sc : installer(S.i, B.saisons.normaliser(S.conditions.saison), null, true, c);
-    if (S.cDecor !== c) {
-      S.cDecor = c; S.sc = sc;
+    const besoinDecor = S.cDecor !== c || S.cleStationDecor !== S.seance.cleStation;
+    const sc = besoinDecor ? installer(S.i, B.saisons.normaliser(S.conditions.saison), null, true, c) : S.sc;
+    if (besoinDecor) {
+      S.cDecor = c; S.sc = sc; S.cleStationDecor = S.seance.cleStation;
+      installerRetro();
       B.ombres.carte(rendu, gpuModeste || !B.ombres.ombresPossibles(reglages.qualite, { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages }), sc.decor.lots);
+      if (S.nature) S.nature.secteurs = B.saisons.secteurs(c);
+      S.animaux = animauxDe(sc, S.nature);
     }
     if (S.meteo) {
       const c2 = B.routeSansFinSeance.meteoCible(S.seance);
       S.meteo.cible = c2.phase; S.meteo.precipitationsNeige = c2.neige;
     }
-    B.physique.liberer(S.course);
-    B.physique.installer(S.course, sc.decor);
+    if (S.fx) B.traces.liberer(S.fx);
+    B.physique.liberer(co);
+    B.physique.installer(co, sc.decor, { continuite });
+    S.fx = B.traces.creer(co.voitures.length, co.graine, co.physique.world);
+    remplirPoses(S.cour, co); remplirPoses(S.prec, co);
   }
 
   function pasSimulation(S, pilote) {
@@ -1467,7 +1500,7 @@
     let cmd;
     // Lot C : chaque pilote local conduit sa voiture (J1/J2 par leurs fonctions historiques, J3/J4 par la voie
     // générique) ; personne ne reste sans commandes, l'ordinateur ne prend la main qu'en auto/démo/vitrine.
-    if (S.type === 'duo') { cmd = []; S.locaux.forEach((id, n) => { cmd[id] = auto ? B.course.commandesIA(co, co.voitures[id]) : n === 0 ? commandesJoueur() : n === 1 ? commandesJoueur2() : commandesJoueurN(n); }); }
+    if (S.multi || S.type === 'duo') { cmd = []; S.locaux.forEach((id, n) => { cmd[id] = auto ? B.course.commandesIA(co, co.voitures[id]) : n === 0 ? commandesJoueur() : n === 1 ? commandesJoueur2() : commandesJoueurN(n); }); }
     else cmd = auto ? B.course.commandesIA(co, co.joueur) : commandesJoueur();
     const ev = B.course.pas(co, cmd, DT);
     if (S.enLigne) actualiserPneusDistants(S, DT);
@@ -1475,7 +1508,7 @@
     if (son && sonActif && S.type !== 'vitrine') {
       const v = S.type === 'demo' ? co.voitures[S.suivie] : co.joueur;
       B.son.suivreRaclement(S.raclement, v?.etat._physx, co.horloge);
-      if (S.type === 'duo') for (let n = 1; n < S.locaux.length; n++) {
+      if (S.multi || S.type === 'duo') for (let n = 1; n < S.locaux.length; n++) {
         const V = S.vuesJoueurs?.[n] || (n === 1 ? S.vueJ2 : null);
         if (V) B.son.suivreRaclement(V.raclement, co.voitures[S.locaux[n]].etat._physx, co.horloge);
       }
@@ -1487,7 +1520,7 @@
     vibreImage = vibre;
     if (vibre) {
       retenirVibrations(0, ev, co.joueur.id);
-      if (S.type === 'duo') for (let n = 1; n < S.locaux.length; n++) retenirVibrations(n, ev, S.locaux[n]);
+      if (S.multi || S.type === 'duo') for (let n = 1; n < S.locaux.length; n++) retenirVibrations(n, ev, S.locaux[n]);
     }
     for (const v of co.voitures) {
       v.roule = (v.roule || 0) + v.etat.v * DT; // distance roulée : fait tourner les roues
@@ -1516,7 +1549,14 @@
       const vivantes = [];
       for (const v of co.voitures) if (v.humain && !v.distant && v.sansFin && !v.sansFin.elimine) vivantes.push(v.etat.s);
       if (!vivantes.length) vivantes.push(co.joueur.etat.s);
-      if (B.routeSansFinSeance.avancer(S.seance, vivantes, DT)) reinstallerSansFin(S);
+      const aBouge = B.routeSansFinSeance.avancer(S.seance, vivantes, DT);
+      if (co.sansFin && S.seance.checkpoints.length > co.sansFin.checkpoints.length) {
+        for (let k = co.sansFin.checkpoints.length; k < S.seance.checkpoints.length; k++) {
+          const cp = S.seance.checkpoints[k];
+          co.sansFin.checkpoints.push({ id: k, s: cp.s, nom: cp.nom || ('checkpoint ' + (k + 1)) });
+        }
+      }
+      if (aBouge) reinstallerSansFin(S);
     }
   }
 
@@ -1593,6 +1633,24 @@
           son && son.evenement('tour', { meilleur: e.meilleur });
           finTour(S, e);
           break;
+        case 'checkpoint': {
+          const n = S.locaux ? S.locaux.indexOf(e.id) : (e.id === j.id ? 0 : -1);
+          if (n < 0) break;
+          const vCp = co.voitures[e.id], qui = co.duo ? n : undefined;
+          if (n === 0 && son) son.evenement('tour', { meilleur: true });
+          message('Checkpoint +' + Math.round(co.sansFin?.bonus || 35) + ' s', 'vert', true, qui);
+          sousMessage(((vCp?.sansFin?.sMax || 0) / 1000).toFixed(2).replace('.', ',') + ' km · ' + Math.max(0, e.reste || 0).toFixed(1).replace('.', ',') + ' s', qui);
+          break;
+        }
+        case 'elimine': {
+          const n = S.locaux ? S.locaux.indexOf(e.id) : (e.id === j.id ? 0 : -1);
+          if (n < 0) break;
+          const vEl = co.voitures[e.id], qui = co.duo ? n : undefined;
+          if (n === 0 && son) son.evenement('arrivee');
+          message('Temps écoulé', 'rouge', false, qui);
+          sousMessage(((vEl?.sansFin?.sMax || 0) / 1000).toFixed(2).replace('.', ',') + ' km · ' + ((vEl?.sansFin?.checkpoint ?? -1) + 1) + ' checkpoint' + ((vEl?.sansFin?.checkpoint ?? -1) > 0 ? 's' : ''), qui);
+          break;
+        }
         case 'arrivee':
           if (co.duo) { const n = S.locaux.indexOf(e.id); if (n >= 1) { const v2 = co.voitures[e.id]; message(v2.position === 1 ? 'Victoire' : 'Arrivée · ' + v2.position + 'e', 'vert', false, n); sousMessage('Drapeau à damier · ' + chrono(v2.tempsFinal), n); } }
           if (e.id !== j.id) break;
@@ -3665,7 +3723,7 @@
     const P = profilDe(S);
     // Écran partagé : la vue du joueur 2 d'abord, copiée aussitôt dans sa toile WebGPU, puis celle du joueur 1, qui reste dans
     // la toile WebGPU principale. Le moteur lit la taille affichée de sa toile à chaque image : il rend chaque vue à la moitié.
-    if (S.type === 'duo' && S.vueJ2) {
+    if ((S.multi || S.type === 'duo') && S.vueJ2) {
       // Cadence du second joueur (src/graphismes.js) : au palier serré (30 Hz), sa vue est rendue au temps et garde
       // entre-temps la dernière copiée ; le joueur 1 garde toute la fluidité de la sienne. Le compte d'images en
       // faisait 72 Hz sur un écran 144 Hz et 15 Hz à 30 images par seconde, et la vue ne recevait que l'intervalle
@@ -4101,13 +4159,13 @@
     peindreGlacesPlanifiees(S, planGlaces, cam, ps, sortie, S.ambianceImage, suivie, P);
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
     S.camera = cam; S.vue = vue; S.suivie = suivie.id;
-    const affichage = S.type === 'duo' ? HUD_DOMS[Math.min(3, indexVue(S))] : $('hud');
+    const affichage = (S.multi || S.type === 'duo') ? HUD_DOMS[Math.min(3, indexVue(S))] : $('hud');
     if (affichage.dataset.vue !== vue) affichage.dataset.vue = vue;
     // En cockpit, la planche donne vitesse, rapport et régime : le tableau réduit retire plan et compteurs, qui
     // couvriraient les pneus avant.
     const reduit = vue === 'cockpit' && reglages.tableau === 'reduit' ? 'oui' : 'non';
     // à deux, chaque affichage suit la vue de son joueur
-    const boite = S.type === 'duo' ? HUD_DOMS[Math.min(3, indexVue(S))] : jeu;
+    const boite = (S.multi || S.type === 'duo') ? HUD_DOMS[Math.min(3, indexVue(S))] : jeu;
     if (boite.dataset.reduit !== reduit) boite.dataset.reduit = reduit;
     if (boite !== jeu && jeu.dataset.reduit !== 'non') jeu.dataset.reduit = 'non';
     return cam;
@@ -4419,6 +4477,12 @@
         ctx.fillText('P', p[0], p[1] + 0.5);
       }
     }
+    if (c.checkpointsSansFin?.length) {
+      for (const cp of c.checkpointsSansFin) {
+        const p = marque(cp.s, '#ffd166', 4.5);
+        if (p) ligne(p, '#ffd166');
+      }
+    }
     if (B.virages?.planifier) {
       for (const v of B.virages.planifier(c)) {
         if (v.difficulte < 2) continue;
@@ -4452,8 +4516,8 @@
     ctx.lineWidth = 1.5; ctx.strokeStyle = '#f2ecdf'; ctx.stroke();
   }
 
-  const aDeux = () => !!session && session.type === 'duo';
-  const nbJoueursSession = () => !session || session.type !== 'duo' ? 1 : Math.max(2, Math.min(4, session.nbJoueurs || 2));
+  const aDeux = () => !!session && (session.type === 'duo' || !!session.multi);
+  const nbJoueursSession = () => !session || !(session.type === 'duo' || session.multi) ? 1 : Math.max(2, Math.min(4, session.nbJoueurs || 2));
   // Lot C : rang du pilote local d'une vue (0 = séance/J1, 1 = vueJ2…). Les vues J3/J4 (rang >= 2) rendent le
   // monde mais restent allégées des effets indexés par vue (faune, bêtes, saisons, aurores, pluie de lentille,
   // vitre, rétroviseurs) : ils appartiennent aux deux premières cases et ne doivent jamais lire la case voisine.
@@ -4541,7 +4605,7 @@
   // Un affichage par pilote local (lot C) ; à deux, le joueur 2 garde exactement l'appel historique.
   function majHudLocaux(S) {
     majHud(S);
-    if (S.type !== 'duo' || !S.vueJ2) return;
+    if (!(S.multi || S.type === 'duo') || !S.vueJ2) return;
     const nb = Math.max(2, Math.min(4, S.nbJoueurs || 2));
     for (let n = 1; n < nb; n++) {
       const V = S.vuesJoueurs && S.vuesJoueurs[n];
@@ -4578,8 +4642,10 @@
     texte(H['h-pos'], chronoMode ? '–' : String(j.position)); texte(H['h-sur'], chronoMode ? '' : '/' + nb);
     if (!chronoMode && !demo && S.positionPrec && j.position < S.positionPrec && co.phase === 'course') eclat(H['c-position']);
     S.positionPrec = j.position;
+    const etiqTour = H['h-tour']?.closest?.('.case')?.querySelector?.('.etiquette');
+    if (etiqTour) texte(etiqTour, co.sansFin ? 'Temps' : co.c.ouvert ? 'Reste' : 'Tour');
     if (co.sansFin) {
-      // Hang-On : le temps reste, la distance se lit au compteur de kilomètres parcourus
+      // Hang-On : le temps reste, la distance et le prochain checkpoint se lisent dans la zone chrono
       texte(H['h-tour'], co.phase === 'grille' || co.phase === 'feux' ? '–' : Math.max(0, j.sansFin.restant).toFixed(1).replace('.', ','));
       texte(H['h-tours'], ' s');
     } else if (co.c.ouvert) {
@@ -4593,19 +4659,36 @@
     }
     if (horlogeReelle >= x.tChiffres) {
       x.tChiffres = horlogeReelle + PERIODE_CHIFFRES;
-      const enLice = chronoMode ? co.chronoParti : (co.phase === 'course' || co.phase === 'arrivee');
-      const actuel = j.fini ? j.tempsTours[j.tempsTours.length - 1] : enLice ? co.temps - j.debutTour : null;
-      texte(H['h-actuel'], chrono(actuel));
-      texte(H['h-meilleur'], chrono(j.meilleur));
-      // écart en direct avec le meilleur tour, à distance égale
-      let delta = null;
-      if (enLice && !j.fini && S.profilMeilleur) {
-        const dans = j.progression - j.tours * co.c.longueur, k = Math.floor(dans / 10), u = dans / 10 - k;
-        const a = S.profilMeilleur[k], b = S.profilMeilleur[k + 1];
-        if (a >= 0 && b >= 0) delta = (co.temps - j.debutTour) - lerp(a, b, u);
+      const eAct = H['h-actuel']?.previousElementSibling, eMei = H['h-meilleur']?.previousElementSibling, eDel = H['h-delta']?.previousElementSibling;
+      if (co.sansFin && j.sansFin) {
+        if (eAct) texte(eAct, 'Distance');
+        if (eMei) texte(eMei, 'Checkpoint');
+        if (eDel) texte(eDel, 'Biome');
+        texte(H['h-actuel'], ((j.sansFin.sMax || 0) / 1000).toFixed(2).replace('.', ',') + ' km');
+        const prochainCp = co.sansFin.checkpoints[j.sansFin.checkpoint + 1];
+        const distCp = prochainCp ? Math.max(0, Math.round(prochainCp.s - (j.sansFin.sAbsolu || 0))) : null;
+        texte(H['h-meilleur'], distCp !== null ? '#' + (j.sansFin.checkpoint + 2) + ' · ' + distCp + ' m' : '–');
+        const bio = S.seance && B.routeSansFinSeance?.biomeA ? B.routeSansFinSeance.biomeA(S.seance, j.etat.s) : null;
+        texte(H['h-delta'], bio ? bio.label : '–');
+        classe(H['h-delta'], 'avance', false); classe(H['h-delta'], 'retard', false);
+      } else {
+        if (eAct) texte(eAct, 'Tour en cours');
+        if (eMei) texte(eMei, 'Meilleur');
+        if (eDel) texte(eDel, 'Écart');
+        const enLice = chronoMode ? co.chronoParti : (co.phase === 'course' || co.phase === 'arrivee');
+        const actuel = j.fini ? j.tempsTours[j.tempsTours.length - 1] : enLice ? co.temps - j.debutTour : null;
+        texte(H['h-actuel'], chrono(actuel));
+        texte(H['h-meilleur'], chrono(j.meilleur));
+        // écart en direct avec le meilleur tour, à distance égale
+        let delta = null;
+        if (enLice && !j.fini && S.profilMeilleur) {
+          const dans = j.progression - j.tours * co.c.longueur, k = Math.floor(dans / 10), u = dans / 10 - k;
+          const a = S.profilMeilleur[k], b = S.profilMeilleur[k + 1];
+          if (a >= 0 && b >= 0) delta = (co.temps - j.debutTour) - lerp(a, b, u);
+        }
+        texte(H['h-delta'], delta === null ? '–' : ecartTexte(delta, 2));
+        classe(H['h-delta'], 'avance', delta !== null && delta < 0); classe(H['h-delta'], 'retard', delta !== null && delta > 0);
       }
-      texte(H['h-delta'], delta === null ? '–' : ecartTexte(delta, 2));
-      classe(H['h-delta'], 'avance', delta !== null && delta < 0); classe(H['h-delta'], 'retard', delta !== null && delta > 0);
 
       texte(H['h-vitesse'], String(B.conduite.kmh(et)));
       texte(H['h-rapport'], et.rapport < 0 ? 'R' : String(et.rapport));
@@ -4815,8 +4898,9 @@
 
   function pilotesMenu() {
     const membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
-    // Lot C : en local, le menu suit le nombre réel de pilotes de l'écran partagé (2 à 4) ; en ligne, deux au plus.
+    // Lot C : en local, le menu suit le nombre réel de pilotes de l'écran partagé (2 à 4 ; 1 à 4 en Route sans fin).
     if (modePrepa === 'duo') return Math.max(2, Math.min(4, joueursLocaux()));
+    if (modePrepa === 'sans-fin') return Math.max(1, Math.min(4, joueursLocaux()));
     return modePrepa === 'enligne' && membre && membre.joueurs === 2 ? 2 : 1;
   }
   function choixTrollLocaux() { return B.menuArcade.normaliserTroll(reglages); }
@@ -4836,8 +4920,8 @@
   }
   function majBilanArcade() {
     const k = conditionsDuDepart(), cat = CATALOGUE[reglages.circuit], nombre = pilotesMenu();
-    texte($('p-bilan-circuit'), cat.nom);
-    texte($('p-bilan-course'), modePrepa === 'chrono' ? 'Contre-la-montre · fantôme personnel' : modePrepa === 'sans-fin' ? 'La route s’allonge sans fin · ravitaillez-vous aux stations' : reglages.tours + ' tours · rivaux ' + ['faciles', 'normaux', 'coriaces'][reglages.difficulte]);
+    texte($('p-bilan-circuit'), modePrepa === 'sans-fin' ? 'Route sans fin' : cat.nom);
+    texte($('p-bilan-course'), modePrepa === 'chrono' ? 'Contre-la-montre · fantôme personnel' : modePrepa === 'sans-fin' ? 'Plage → Plaine → Montagnes · checkpoints & stations-service' : reglages.tours + ' tours · rivaux ' + ['faciles', 'normaux', 'coriaces'][reglages.difficulte]);
     texte($('p-bilan-saison'), NOMS_SAISON[k.saison] + ' · ' + NOMS_MOMENT[k.moment]);
     texte($('p-bilan-meteo'), nomMeteoCourse({ ...k, i: reglages.circuit }));
     texte($('p-bilan-joueurs'), (nombre === 1 ? 'Un pilote local' : nombre === 2 ? 'Deux pilotes locaux' : nombre === 3 ? 'Trois pilotes locaux' : 'Quatre pilotes locaux') + (modePrepa === 'enligne' ? ' · en ligne' : ''));
@@ -5047,23 +5131,26 @@
     { nom: 'Speedway', ids: ['ovale-des-forges'] }
   ];
   function remplirPreparation() {
-    $('p-titre').textContent = modePrepa === 'chrono' ? 'Chrono' : modePrepa === 'enligne' ? 'Course en ligne' : modePrepa === 'duo' ? 'Course à deux' : 'Course';
-    $('o-partage').hidden = modePrepa !== 'duo';
+    const estSF = modePrepa === 'sans-fin', nbLocal = estSF ? joueursLocaux() : (modePrepa === 'duo' ? Math.max(2, joueursLocaux()) : 1);
+    const estMultiMenu = modePrepa === 'duo' || (estSF && nbLocal >= 2);
+    $('p-titre').textContent = modePrepa === 'chrono' ? 'Chrono' : modePrepa === 'enligne' ? 'Course en ligne' : modePrepa === 'duo' ? 'Course à deux' : estSF ? 'Route sans fin' : 'Course';
+    $('o-partage').hidden = !(estMultiMenu && nbLocal === 2);
     $('o-commandes').hidden = false;
-    $('p-commandes-j2').hidden = modePrepa !== 'duo';
+    $('p-commandes-j2').hidden = !estMultiMenu;
     // Lot C : nombre de pilotes, commandes et caméras des troisième et quatrième cases (local uniquement).
-    $('o-joueurs').hidden = modePrepa !== 'duo';
-    $('p-commandes-j3').hidden = !(modePrepa === 'duo' && joueursLocaux() >= 3);
-    $('p-commandes-j4').hidden = !(modePrepa === 'duo' && joueursLocaux() >= 4);
-    $('o-vue-3').hidden = !(modePrepa === 'duo' && joueursLocaux() >= 3);
-    $('o-vue-4').hidden = !(modePrepa === 'duo' && joueursLocaux() >= 4);
-    for (const r of document.querySelectorAll('input[name="joueursLocaux"]')) r.checked = joueursLocaux() === +r.value;
-    $('o-vue-2').hidden = !(modePrepa === 'duo' || modePrepa === 'enligne' && joueursIci() === 2);
+    $('o-joueurs').hidden = !(modePrepa === 'duo' || estSF);
+    if ($('o-joueurs-1')) $('o-joueurs-1').hidden = !estSF;
+    $('p-commandes-j3').hidden = !(estMultiMenu && nbLocal >= 3);
+    $('p-commandes-j4').hidden = !(estMultiMenu && nbLocal >= 4);
+    $('o-vue-3').hidden = !(estMultiMenu && nbLocal >= 3);
+    $('o-vue-4').hidden = !(estMultiMenu && nbLocal >= 4);
+    for (const r of document.querySelectorAll('input[name="joueursLocaux"]')) r.checked = nbLocal === +r.value;
+    $('o-vue-2').hidden = !(estMultiMenu || modePrepa === 'enligne' && joueursIci() === 2);
     $('p-vue').value = reglages.vue; $('p-vue-2').value = reglages.vue2;
     if ($('p-vue-3')) $('p-vue-3').value = reglages.vue3; if ($('p-vue-4')) $('p-vue-4').value = reglages.vue4;
     for (const n of [0, 1, 2, 3]) for (const r of document.querySelectorAll('input[name="cmd' + n + '"]')) r.checked = commande(n) === r.value;
     for (const r of document.querySelectorAll('input[name="partage"]')) r.checked = (reglages.partage === 'cote' ? 'cote' : 'haut-bas') === r.value;
-    $('o-tours').hidden = $('o-difficulte').hidden = modePrepa === 'chrono';
+    $('o-tours').hidden = $('o-difficulte').hidden = modePrepa === 'chrono' || estSF;
     $('o-chrono').hidden = modePrepa !== 'chrono';
     const zone = $('circuits');
     const BIOME_COULEURS = { foret: '#39ff8e', cote: '#00d4ff', marseille: '#00c8ff', montagne: '#8ee8ff', larche: '#5cd6ff', islande: '#ff6b35', desert: '#ffb84d', asie: '#ff66b2', pacifique: '#2dd4bf', baikal: '#60a5fa', fjord: '#38bdf8', carpates: '#a3e635', ecosse: '#34d399', sierra: '#fb923c', corail: '#22d3ee', andes: '#c084fc', ovale: '#4bd8ca' };
@@ -5260,7 +5347,12 @@
     if (['meteo', 'forcePluie', 'momentDepart', 'saisonDepart', 'saisonMode', 'momentMode', 'meteoMode'].includes(t.name) && ecran === 'preparation') actualiserConditions();
     if (EL.role === 'hote' && lienActif() && ['tours', 'difficulte'].includes(t.name)) annoncerCourse();
     if (t.name === 'joueursIci') { reglages.joueursLocaux = [2, 3, 4].includes(+t.value) ? +t.value : 1; sauverReglages(); }
-    if (t.name === 'joueursLocaux') { reglages.joueursLocaux = [2, 3, 4].includes(+t.value) ? +t.value : 2; sauverReglages(); }
+    if (t.name === 'joueursLocaux') {
+      const autorises = modePrepa === 'sans-fin' ? [1, 2, 3, 4] : [2, 3, 4];
+      reglages.joueursLocaux = autorises.includes(+t.value) ? +t.value : autorises[0];
+      sauverReglages();
+      if (ecran === 'preparation') { remplirPreparation(); majBilanArcade(); }
+    }
     if (t.name === 'partage') { reglages.partage = t.value === 'cote' ? 'cote' : 'haut-bas'; sauverReglages(); }
     if (/^r?cmd[0-3]$/.test(t.name) && NOMS_COMMANDES[t.value]) {
       const n = +t.name.slice(-1);
@@ -5765,7 +5857,7 @@
     const attentes = [];
     prepa.precharge = true;
     try {
-      const co = S.course, c = co.c, n = co.voitures.length, duo = S.type === 'duo' && !!S.vueJ2;
+      const co = S.course, c = co.c, n = co.voitures.length, duo = (S.multi || S.type === 'duo') && !!S.vueJ2;
       // Lot C : une vue par pilote local (1 à 4). Les effets indexés par vue (faune, bêtes, saisons, aurores)
       // ne sont montés que pour les deux premières cases ; J3/J4 rendent le monde sans ces couches.
       const nbVues = duo ? Math.max(2, Math.min(4, S.nbJoueurs || 2)) : 1;
@@ -6055,7 +6147,7 @@
     await souffler();
     const meteo = majMeteo(S, 0);
     const vue = async (V, voiture, nom, fois = 1) => { for (let k = 0; k < fois; k++) { rendreVue(V, voiture, nom, 0, meteo); n++; } await souffler(); };
-    if (S.type === 'duo' && S.vueJ2) {
+    if ((S.multi || S.type === 'duo') && S.vueJ2) {
       const j2 = co.voitures[S.locaux[1]], t2 = $('scene2');
       for (const nom of VUES_COURSE) for (let k = 0; k < (nom === 'cockpit' || nom === 'arceau' ? cockpit : 1); k++) {
         rendreVue(S.vueJ2, j2, nom, 0, meteo);
@@ -6128,7 +6220,7 @@
   function tiedirVoile(S) {
     $('chargement').classList.add('tiede');
     $('hud').hidden = false;
-    if (S.type === 'duo' && S.vueJ2) {
+    if ((S.multi || S.type === 'duo') && S.vueJ2) {
       hud2.hidden = false;
       const nb = nbJoueursSession();
       if (nb >= 3 && S.vuesJoueurs?.[2]) hud3.hidden = false;
@@ -6515,8 +6607,8 @@
       const j = S.course.joueur;
       // en ligne, le classement s'affiche 8 s après sa propre arrivée et se complète en direct : la course continue
       // derrière (l'autre pilote est peut-être encore en piste), jusqu'à sa fin commune
-      if ((S.type === 'course' || S.type === 'chrono' || S.type === 'duo') && !S.resultats &&
-          (S.course.termine || (j.abandon && S.course.horloge - j.tAbandon >= 3) || (S.enLigneOrigine && S.locaux.every(id => S.course.voitures[id].fini) && S.course.temps - Math.max(...S.locaux.map(id => S.course.voitures[id].tempsFinal)) >= 8))) {
+      if ((S.type === 'course' || S.type === 'chrono' || S.type === 'duo' || S.type === 'sans-fin') && !S.resultats &&
+          (S.course.termine || (!S.course.sansFin && j.abandon && S.course.horloge - j.tAbandon >= 3) || (S.enLigneOrigine && S.locaux.every(id => S.course.voitures[id].fini) && S.course.temps - Math.max(...S.locaux.map(id => S.course.voitures[id].tempsFinal)) >= 8))) {
         if (!S.enLigneOrigine) S.course.termine = true;
         montrerResultats(S);
       }
@@ -6959,7 +7051,7 @@
     preparer: (o = {}) => {
       const type = o.type || 'course', i = Number.isInteger(o.circuit) ? clamp(o.circuit, 0, CATALOGUE.length - 1) : reglages.circuit;
       if (type === 'demo') return lancerDemo(i);
-      if (!['course', 'chrono', 'duo', 'vitrine'].includes(type)) return Promise.reject(new Error('type de séance inconnu : ' + type));
+      if (!['course', 'chrono', 'duo', 'vitrine', 'sans-fin'].includes(type)) return Promise.reject(new Error('type de séance inconnu : ' + type));
       return preparerSeance(type, i, null, o.conditions || null, { apres: type === 'chrono' ? () => sousMessage('Le chrono part à la ligne') : null });
     },
     // état du chargement : préparation en cours, étape, créations tardives de la séance (zéro en course), dernier compte rendu
