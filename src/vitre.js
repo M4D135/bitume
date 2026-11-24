@@ -40,6 +40,19 @@
     out.expansion = .80 * air * incidence;
     out.deriveX = clamp(tangentX, -120, 120) * .0028;
     out.deriveY = -clamp(tangentY, -120, 120) * .0028;
+    // Intégration du flux vent caméra (E2 : orientation gouttelettes par vent+vitessePhysX)
+    // fluxVentRight > 0 : gouttelettes vers la droite ; < 0 : vers la gauche
+    // fluxVentUp   > 0 : gouttelettes vers le bas (y vers le bas à l'écran) ; < 0 : vers le haut
+    // fluxVentForward > 0 : gouttelettes s'éloignent ; < 0 : vers le spectateur
+    const vr = Number(c.fluxVentRight) || 0;
+    const vu = Number(c.fluxVentUp) || 0;
+    const vf = Number(c.fluxVentForward) || 0;
+    // Facteur d'atténuation : on mélange progressivement avec le flux existant
+    const omega = Math.min(1, Math.max(0, (Math.hypot(vr, vu, vf) / 10))) || 0; // 10 ≈ 36 km/h approx
+    const derivX_mix = out.deriveX * (1 - omega) + vr * omega * .5;
+    const derivY_mix = out.deriveY * (1 - omega) + vu * omega * .5;
+    out.deriveX = derivX_mix;
+    out.deriveY = derivY_mix;
     out.graviteX = -ry; out.graviteY = uy; out.centreX = .5; out.centreY = .45;
     return out;
   }
