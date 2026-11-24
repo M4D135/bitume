@@ -135,9 +135,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     return { i: idx, s: i * c.pas, x: e.x, y: e.y, z: e.z, a, t: [Math.cos(a), 0, Math.sin(a)], r: [-Math.sin(a), 0, Math.cos(a)], devers: e.devers, k: e.courbure };
   }
   // Hauteur de la chaussée au décalage d (dévers compris) ; au-delà du bord, la pente du dévers s'arrête.
+  // Le plan produit par pointPlan a pour pente transversale dy/dd : la hauteur emploie tan pour que
+  // l'inclinaison réellement dessinée et collisionnée vaille exactement devers (sin donnerait atan(sin)).
   function hauteurRoute(f, d, w) {
     const dd = Math.max(-w, Math.min(w, d));
-    return f.y - dd * Math.sin(f.devers);
+    return f.y - dd * Math.tan(f.devers);
   }
   function pointPlan(f, d, y) { return [f.x + f.r[0] * d, y, f.z + f.r[2] * d]; }
 

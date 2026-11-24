@@ -322,7 +322,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
     // un vrai survol n'est pas arrêté par un mur invisible. Même dévers et pente d'accotement que decor.js.
     if (enVol) {
       const q = B.circuit.echantillon(c, etat.s, LU.rail), w = c.largeur / 2, L = limiteCote(c, etat.s, cdg);
-      const haut = q.y - cdg * w * Math.sin(q.devers) - .02 * (L - w - 1.2) + .8;
+      const haut = q.y - cdg * w * Math.tan(q.devers) - .02 * (L - w - 1.2) + .8;
       if (etat.y >= haut || etat.y + 1.1 <= haut - .8) { etat.auRail = false; return; }
     }
     const capRel = etat.psi + etat.beta;
@@ -636,7 +636,7 @@ if(typeof module!=='undefined'&&module.exports&&!globalThis.BITUME?.chaussee)req
     const voieStand = ad > w && B.circuit.surVoieStands(c, etat.s, etat.d);
     etat.vibreur=!voieStand&&ad>w&&ad<=w+P.largeurVibreur&&B.circuit.vibreurA(c,etat.s,etat.d<0?-1:1);
     etat.surface=ad<=w||voieStand?'piste':etat.vibreur?'vibreur':'herbe';
-    etat.y = e.y - clamp(etat.d, -w, w) * Math.sin(e.devers);
+    etat.y = e.y - clamp(etat.d, -w, w) * Math.tan(e.devers);
     if (!voieStand && ad > w + P.largeurVibreur) etat.y -= 0.015 + 0.02 * (ad - w - P.largeurVibreur);
     else if (!voieStand && ad > w) etat.y += (etat.vibreur ? 0.05 : -0.015) * (ad - w) / P.largeurVibreur;
     // petit bond au départ d'une dérive

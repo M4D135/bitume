@@ -445,11 +445,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
       for (const debut of debuts) {
         const u = s - debut, bord = Math.min(u, virage - u);
         if (bord <= -10) continue;
-        // d<0 est à gauche. Le mesh emploie y - d*sin(devers) : dévers porté à 40° au cœur
-        // des quatre gauches. La rampe de dévers est découplée de celle de la courbure
-        // (raccordDevers plus long) pour une entrée et une sortie douces, sans bosse ni creux ;
-        // les petites droites restent entièrement plates (bord <= -10).
-        devers[i] = -Math.asin(Math.sin(40 * Math.PI / 180) * lisse(-10, raccordDevers, bord));
+        // d<0 est à gauche. Le mesh produit y − d·tan(devers) : l'inclinaison réellement dessinée
+        // et collisionnée vaut donc 40° au cœur des quatre gauches. La rampe de dévers est
+        // découplée de celle de la courbure (raccordDevers plus long) pour une entrée et une
+        // sortie douces, sans bosse ni creux ; les petites droites restent plates (bord <= -10).
+        devers[i] = -40 * Math.PI / 180 * lisse(-10, raccordDevers, bord);
         courbure[i] = -courbureMax * lisse(0, raccord, bord);
         if (bord > 0) vibreur[i] = 1;
         break;
@@ -798,9 +798,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
   }
   function point(c, s, d, h = 0) {
     const e = echantillon(c, s), sa = Math.sin(e.cap), ca = Math.cos(e.cap), sd = Math.sin(e.devers), cd = Math.cos(e.devers);
-    // normale de la chaussée : verticale inclinée par le dévers (côté droit plus bas si dévers > 0)
+    // normale de la chaussée : verticale inclinée par le dévers (côté droit plus bas si dévers > 0).
+    // La hauteur emploie tan pour que le plan passant par (d, y − d·tan(devers)) ait exactement
+    // cette normale (pente transversale tan(devers) ⟺ normale inclinée de devers).
     const n = [-sd * sa, cd, sd * ca];
-    return [e.x - sa * d + n[0] * h, e.y - d * sd + n[1] * h, e.z + ca * d + n[2] * h];
+    return [e.x - sa * d + n[0] * h, e.y - d * Math.tan(e.devers) + n[1] * h, e.z + ca * d + n[2] * h];
   }
   function repere(c, s) {
     const e = echantillon(c, s), sa = Math.sin(e.cap), ca = Math.cos(e.cap), sd = Math.sin(e.devers), cd = Math.cos(e.devers);

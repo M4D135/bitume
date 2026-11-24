@@ -50,7 +50,7 @@
       dx = c.x[b] - c.x[a]; dy = c.y[b] - c.y[a]; dz = c.z[b] - c.z[a];
       drx = Math.sin(c.cap[a]) - Math.sin(c.cap[b]);
       drz = Math.cos(c.cap[b]) - Math.cos(c.cap[a]);
-      variationDevers = Math.sin(c.devers[b]) - Math.sin(c.devers[a]);
+      variationDevers = Math.tan(c.devers[b]) - Math.tan(c.devers[a]);
       variationGauche = ((c.vibreur[b] & 1) - (c.vibreur[a] & 1)) * marcheBord;
       variationDroite = (((c.vibreur[b] >> 1) & 1) - ((c.vibreur[a] >> 1) & 1)) * marcheBord;
     }

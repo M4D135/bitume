@@ -80,7 +80,7 @@ function rayonsSol(w) {
 function verifierSupport(c, m, rayon, s, lateral, vide = false) {
   const demi = c.largeur / 2, q = B.circuit.echantillon(c, s);
   const x = q.x - Math.sin(q.cap) * lateral, z = q.z + Math.cos(q.cap) * lateral;
-  const attendu = q.y - Math.max(-demi, Math.min(demi, lateral)) * Math.sin(q.devers), hit = rayon(x, z, attendu + 2);
+  const attendu = q.y - Math.max(-demi, Math.min(demi, lateral)) * Math.tan(q.devers), hit = rayon(x, z, attendu + 2);
   if (vide) assert.ok(!hit || hit.y < attendu - .3, `support fictif au-delà du parapet à s=${s}, d=${lateral}`);
   else {
     assert.ok(hit, `trou à s=${s}, d=${lateral}`);
@@ -167,7 +167,7 @@ for (const k of catalogue) {
       assert.throws(() => verifierSupport(c, m, rayonsSol(trou), s, 0), /trou|support loin sous la route/);
       const q = B.circuit.echantillon(c, s), lateral = demi + 2;
       verifierSupport(c, m, rayon, s, lateral, true);
-      const pos = [q.x - Math.sin(q.cap) * lateral, q.y - demi * Math.sin(q.devers) - .05, q.z + Math.cos(q.cap) * lateral];
+      const pos = [q.x - Math.sin(q.cap) * lateral, q.y - demi * Math.tan(q.devers) - .05, q.z + Math.cos(q.cap) * lateral];
       const fauxSol = { objets: new Map(w.objets) };
       fauxSol.objets.set(-1, { pos, half: [.5, .05, .5], options: { queryGroup: 1, quaternion: [0, 0, 0, 1] } });
       assert.throws(() => verifierSupport(c, m, rayonsSol(fauxSol), s, lateral, true), /support fictif au-delà du parapet/);

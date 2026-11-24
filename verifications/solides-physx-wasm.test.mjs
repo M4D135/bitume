@@ -26,7 +26,7 @@ for (const k of catalogue) {
         // Sur un vrai pont, l’herbe au-delà du parapet n’est plus un sol de roulement.
         if (Math.abs(d) > w + 1 && c.ponts?.some(p => s > p.debut + 3 && s < p.fin - 3)) continue;
         const q = B.circuit.echantillon(c, s), x = q.x - Math.sin(q.cap) * d, z = q.z + Math.cos(q.cap) * d;
-        const sol = q.y - Math.max(-w, Math.min(w, d)) * Math.sin(q.devers);
+        const sol = q.y - Math.max(-w, Math.min(w, d)) * Math.tan(q.devers);
         world.raycast([x, sol + 2, z], [0, -1, 0], 3, { mask: 1, staticOnly: true }, hit); rayons++;
         assert.ok(hit.hit, `appui absent à s=${i * c.pas + .37}, d=${d}`);
         assert.ok(hit.y > sol - .3 && hit.ny > .6, 'appui incohérent avec les triangles visibles');
@@ -65,7 +65,7 @@ for (const k of catalogue) {
     if (fosse) verifier(k.nom + ' : aucun mur abstrait sur la limite du fossé', () => {
       const bornes = B.bords.bornes(c, fosse), s = (bornes.i0 + 2) * c.pas, q = B.circuit.echantillon(c, s), cote = fosse.cote;
       const lim = B.circuit.limiteA(c, s, cote), d = cote * (lim - .7), n = [-Math.sin(q.cap) * cote, 0, Math.cos(q.cap) * cote];
-      const p = [q.x - Math.sin(q.cap) * d, q.y - cote * c.largeur / 2 * Math.sin(q.devers) + .45, q.z + Math.cos(q.cap) * d];
+      const p = [q.x - Math.sin(q.cap) * d, q.y - cote * c.largeur / 2 * Math.tan(q.devers) + .45, q.z + Math.cos(q.cap) * d];
       const hit = world.raycast(p, n, 1.4, { mask: 2, staticOnly: true }); rayons++;
       assert.equal(hit.hit, false, 'un obstacle fictif a remplacé la limite de Frenet');
     });

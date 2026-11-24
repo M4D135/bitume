@@ -374,7 +374,7 @@
       if (Math.abs(d) + marge > limite - .7) return false;
       // Même bande d'accotement que nappesRoute(), pied légèrement enterré, dévers arrêté au bord de piste.
       const ext = limite + 4, u = (Math.abs(d) - w - 1.2) / (ext - w - 1.2);
-      const bord = c.y[i] - cote * w * Math.sin(c.devers[i]);
+      const bord = c.y[i] - cote * w * Math.tan(c.devers[i]);
       const sol = bord - .015 + u * (.015 - .02 * (ext - w - 1.2));
       const objet = { shape: famille + '-val', p: [x, sol + taille[1] / 2 - .025, z], s: taille,
         r: [0, angle, 0], mat, color };

@@ -140,7 +140,7 @@
           const u = borner(u0, 0, 1), qx = vx - dx * u, qz = vz - dz * u, d2 = qx * qx + qz * qz;
           if (d2 > t.mur * t.mur || d2 >= proche) continue;
           const d = (vz * dx - vx * dz) / Math.sqrt(l2), devers = A[k + 4] + (A[k + 9] - A[k + 4]) * u;
-          const sol = A[k + 1] + (A[k + 6] - A[k + 1]) * u - d * Math.sin(devers), h = py - sol;
+          const sol = A[k + 1] + (A[k + 6] - A[k + 1]) * u - d * Math.tan(devers), h = py - sol;
           proche = d2; index = k; fraction = u; decalage = d; hauteur = h; solProche = sol;
         }
       }
@@ -195,7 +195,7 @@
       const centreSol = milieu.map((v, i) => v + (i === 1 ? (h0 + h1) / 2 : 0) - .05 * nSol[i] / nLongueur);
       objets.push(solide(centreSol, [normeSol + long - Math.hypot(...axe), .1, 2 * M], orientation(axeSol, normal), 'sol-galerie', [.20, .20, .205], 7, 1, 'piste'));
       objets.push(solide([milieu[0], milieu[1] + H + .35, milieu[2]], [long, .7, 2 * M + 1.4], r, 'voute-galerie', toit));
-      const d = ferme * (M + .3), y = milieu[1] - d * Math.sin(q.devers || 0);
+      const d = ferme * (M + .3), y = milieu[1] - d * Math.tan(q.devers || 0);
       objets.push(solide([milieu[0] + droit[0] * d, y + H / 2, milieu[2] + droit[2] * d], [long, H + .12, .6], r, 'mur-galerie', beton));
       if (numero % 2 === 0) {
         const p = [milieu[0] + droit[0] * ferme * (M - .12), y + H - .55, milieu[2] + droit[2] * ferme * (M - .12)];
@@ -206,7 +206,7 @@
     }
     for (let s = debut; ; s = Math.min(fin, s + 12)) {
       const q = B.circuit.echantillon(c, s), d = ouvert * (M + .3), x = q.x - Math.sin(q.cap) * d, z = q.z + Math.cos(q.cap) * d;
-      const y = q.y - d * Math.sin(q.devers || 0), o = solide([x, y + H / 2, z], [.65, H + .12, .6], [0, -q.cap, 0], 'pilier-galerie', beton);
+      const y = q.y - d * Math.tan(q.devers || 0), o = solide([x, y + H / 2, z], [.65, H + .12, .6], [0, -q.cap, 0], 'pilier-galerie', beton);
       lots.push({ objets: [o], loin: [o], x: q.x, z: q.z });
       if (s === fin) break;
     }

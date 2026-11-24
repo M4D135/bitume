@@ -168,7 +168,7 @@
       const s = (f.s + ds + c.longueur) % c.longueur, p = B.circuit.echantillon(c, s);
       const n = Math.floor(s/c.pas), t = s/c.pas - n, l = cote < 0 ? lim.G : lim.D;
       const d = l[n%c.n] + (l[(n+1)%c.n] - l[n%c.n])*t + retrait;
-      const y = p.y - cote*w*Math.sin(p.devers) - .02*(d-w-1.2);
+      const y = p.y - cote*w*Math.tan(p.devers) - .02*(d-w-1.2);
       return [p.x - Math.sin(p.cap)*cote*d, y, p.z + Math.cos(p.cap)*cote*d];
     }
     function poutre(a, b, hauteur, largeur, mat, couleur, distant, solide) {

@@ -71,7 +71,7 @@
     const x = q.x - Math.sin(q.cap) * e.d, z = q.z + Math.cos(q.cap) * e.d;
     const demi = ph.c.largeur / 2;
     const dSol = ph.c.partition === 'ovale-des-forges' ? clamp(e.d, -demi, demi) : e.d;
-    let baseY = q.y - dSol * Math.sin(q.devers || 0);
+    let baseY = q.y - dSol * Math.tan(q.devers || 0);
     // Prendre le plan de la face sous la caisse, y compris dans les raccords et les box.
     ph.from[0] = x; ph.from[1] = baseY + 5; ph.from[2] = z;
     const sol = ph.world.raycast(ph.from, [0, -1, 0], 18, { mask: SOL, staticOnly: true }, ph.hit);

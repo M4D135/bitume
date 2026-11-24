@@ -115,7 +115,7 @@
     }
   };
   // records et fantômes suivent la physique : ceux de l'essai 0.1 (avant le modèle à deux essieux) ne se comparent plus
-  const PHYSIQUE = 'p54', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
+  const PHYSIQUE = 'p55', CLE_RECORDS = 'bitume.records.' + PHYSIQUE, CLE_FANTOME = 'bitume.fantome.' + PHYSIQUE + '.';
   const recordsLus = lireStock(CLE_RECORDS, {});
   // JSON.stringify ignore les clés nommées d'un tableau. Reprendre ses temps sous leurs
   // anciens identifiants avant que la première amélioration sur un raccord soit sauvegardée.
@@ -3985,7 +3985,7 @@
         const x = e.x - sa * f.d, z = e.z + ca * f.d, dx = x - pj.x, dz = z - pj.z;
         if (dx * dx + dz * dz > 9 || vue !== 'cockpit') {
           const g = POSE_FANTOME;
-          g.p[0] = x; g.p[1] = e.y - f.d * Math.sin(e.devers); g.p[2] = z; g.cap = e.cap + f.angle; g.tangage = Math.atan(e.pente); g.roulis = e.devers;
+          g.p[0] = x; g.p[1] = e.y - f.d * Math.tan(e.devers); g.p[2] = z; g.cap = e.cap + f.angle; g.tangage = Math.atan(e.pente); g.roulis = e.devers;
           B.voiture.fantome(g, sortie);
         }
       }
@@ -6814,7 +6814,7 @@
       et.s = ramener(depart + (v.id === S.locaux[1] ? -14 : decal), c.longueur);
       if (v.joueur) et.d = 0;
       const e = B.circuit.echantillon(c, et.s);
-      et.y = e.y - et.d * Math.sin(e.devers); et.tangage = Math.atan(e.pente || 0); et.roulis = e.devers || 0;
+      et.y = e.y - et.d * Math.tan(e.devers); et.tangage = Math.atan(e.pente || 0); et.roulis = e.devers || 0;
       et.v = vitesse; et.gaz = .6;
       const rapport = P.vitessePointe.findIndex(pointe => vitesse < pointe * .95);
       et.rapport = rapport < 0 ? P.vitessePointe.length : rapport + 1;

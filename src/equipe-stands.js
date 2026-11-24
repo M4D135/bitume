@@ -53,7 +53,7 @@
   function ancrage(c,s,d) {
     const f=B.circuit.echantillon(c,s), tx=Math.cos(f.cap), tz=Math.sin(f.cap);
     const largeur=c.largeur/2;
-    return { x:f.x-tz*d,y:f.y-Math.max(-largeur,Math.min(largeur,d))*Math.sin(f.devers||0),z:f.z+tx*d,
+    return { x:f.x-tz*d,y:f.y-Math.max(-largeur,Math.min(largeur,d))*Math.tan(f.devers||0),z:f.z+tx*d,
       cap:f.cap,tx,tz,pente:f.pente||0 };
   }
   function centre(c) {
