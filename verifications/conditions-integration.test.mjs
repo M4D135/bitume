@@ -43,7 +43,8 @@ const fabriquer = new Function('B', 'options', `
   const NOMS_PNEUS = B.pneus.NOMS_PNEUS;
   const reglages = { circuit: 0, tours: 3, difficulte: 1, saison: 'ete', moment: 'jour', meteo: 'soleil',
     saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', pneus: 'slicks', pneusPilotes: ['slicks', 'slicks'], pneusAutoPilotes: [true, true], boite: 'auto', vue: 'cockpit', joueursLocaux: 1 };
-  const son = null, palier = {}, pad2 = null, hud2 = $('hud2'), jeu = $('jeu'), estTactile = true, compteurVisites = null;
+  const son = null, palier = {}, pad2 = null, hud2 = $('hud2'), hud3 = $('hud3'), hud4 = $('hud4'), jeu = $('jeu'), estTactile = true, compteurVisites = null;
+  const nbJoueursSession = () => 1;
   const aDeux = () => false, arreterManettes = () => {}, tactile = () => {}, appliquerVolumes = () => {}, viderStock = () => {}, suspendreAnnoncesVirages = () => {}, afficherAideRetour = () => {};
   const remplirReglages = () => {}, message = () => {}, sousMessage = () => {}, finirClassement = () => {}, montrerResultats = () => {};
   const remplirPreparation = () => { actualiserConditions(); };

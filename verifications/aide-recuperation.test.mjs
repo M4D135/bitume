@@ -8,7 +8,7 @@ const fonctions = ['annoncerRecuperation', 'traiter', 'suivreJoueur', 'aideRetou
 function banc(type = 'duo') {
   const pilote = id => ({ id, etat: { gaz: 0, frein: 0, psi: 0, v: 0, d: 0, rapport: 1 }, progression: 0, tours: 0 });
   const j = pilote(4), j2 = pilote(7), hist = [];
-  const co = { c: { longueur: 1000, largeur: 12 }, phase: 'course', mode: 'course', joueur: j, voitures: [j, j2] };
+  const co = { c: { longueur: 1000, largeur: 12 }, phase: 'course', mode: 'course', joueur: j, voitures: [j, j2], duo: type === 'duo' };
   const S = { type, course: co, locaux: [4, 7], vueJ2: type === 'duo' ? {} : null, profil: [], bloque: 0, contresens: 0, horsPiste: 0 };
   const el = { className: 'sous-message', textContent: '', classList: { contains: cls => el.className.split(' ').includes(cls) } };
   const b = createContext({ S, j, j2, hist, el, DT: 1/120, pas: 0, ecran: 'course', son: null, H: { 'sous-message': el },

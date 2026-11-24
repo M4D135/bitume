@@ -29,6 +29,7 @@ function banc() {
     vm.runInContext(fonction(nom), c);
   const S = c.session = { type: 'duo', vue: 'cockpit', animaux: { id: 1 }, champsFaune: c.creerChampsFaune() };
   S.vueJ2 = Object.assign(Object.create(S), { vue: 'cockpit' });
+  c.indexVue = V => V && V.indexVue != null ? V.indexVue : (V === S ? 0 : 1);
   const cam = { pos: [0, 0, 0], yaw: 0, pitch: 0, roll: 0, fov: 70 };
   const ps = { x: 0, y: 0, z: 0, cap: 0, tangage: 0, roulis: 0 };
   const P = { palier: 'high', secondaires: { retroviseurs: { hz: 30 } } };
@@ -47,7 +48,7 @@ test('chaque joueur conserve sa caméra et ses deux champs réfléchis réels', 
   const champs = S.champsFaune, identites = Array.from(champs, v => v.camera.pos);
   c.preparerChampsFaune(S, 'cockpit', cam, ps, P);
   c.preparerChampsFaune(S.vueJ2, 'cockpit', cam, ps, P);
-  assert(champs.every(v => v.qualite === 'high'));
+  assert(champs.slice(0, 6).every(v => v.qualite === 'high'));
   assert(champs[1].camera.fov < cam.fov && champs[2].camera.fov < cam.fov, 'les glaces ne réveillent pas tout l’arrière');
   assert(Math.cos(champs[1].camera.yaw) < -.8 && Math.cos(champs[2].camera.yaw) < -.8, 'les deux vrais champs réfléchis regardent derrière');
   assert.equal(champs[1].aspect, 2.5);
@@ -56,13 +57,13 @@ test('chaque joueur conserve sa caméra et ses deux champs réfléchis réels', 
   assert.equal(champs[0].camera.pos[0], 0, 'une caméra de rendu réutilisée ne déplace pas le champ mémorisé');
   assert.equal(champs[3].camera.yaw, 0);
   c.selectionnerChampsFaune(S);
-  assert(appels.at(-1).vues.every(v => v.qualite === 'high'));
+  assert(appels.at(-1).vues.slice(0, 6).every(v => v.qualite === 'high'));
   c.preparerChampsFaune(S, 'poursuite', cam, ps, P);
   for (let i = 0; i < 6; i++) assert.strictEqual(champs[i].camera.pos, identites[i], 'tampons conservés');
   assert.equal(champs[0].camera.pos[0], 100);
   assert.equal(champs[3].camera.pos[0], 0, 'J1 ne remplace pas le champ de J2');
   assert(champs.slice(1, 3).every(v => v.qualite === 'off'));
-  assert(champs.slice(3).every(v => v.qualite === 'high'));
+  assert(champs.slice(3, 6).every(v => v.qualite === 'high'));
 });
 
 test('glaces hors écran, coupées ou sans cadence n’activent aucune faune arrière', () => {

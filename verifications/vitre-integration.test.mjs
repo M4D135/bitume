@@ -30,6 +30,7 @@ const executer = new Function('B', 'prefs', `
   // Les contrôles voisins installent aussi des écouteurs globaux ; les conserver sans simuler un clic.
   const document = Object.assign(new EventTarget(), { querySelectorAll: () => [] }), window = { devicePixelRatio: 1 };
   const majCommandes = () => {}, majDetectionGraphique = () => {}, appliquerVolumes = () => {}, appliquerCarte = () => {}, arreterManettes = () => {}, pad2 = {};
+  const vueLourde = () => true;
   const CATALOGUE = [{ id:'forets-du-pacifique',theme:'foret' }, { id:'marseille',theme:'cote' }];
   const VUES_DEHORS = new Set(['tele', 'helico', 'orbite', 'travelling', 'sol', 'panorama', 'lieu', 'peloton']);
   const creationTardive = (nom, valeur) => valeur, sousLaVoute = (c, pos) => !!pos.abri, calmerVibrations = () => {};

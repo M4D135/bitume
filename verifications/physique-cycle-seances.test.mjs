@@ -42,7 +42,7 @@ for (const panne of ['modele', 'prechauffage']) test('PhysX : une exception de '
     graineCourse: 3, CATALOGUE: catalogue,
     meteoPourConditions: () => B.chaussee.preparer({}, B.saisons.profil('ete', c.theme)),
     monterPneusDepart() {}, horlogePartagee: x => x, animauxDe: () => null,
-    majPneusHUD() {}, HUD1: {}, HUD2: {}, jeu: element, hud2: element, $: () => element, tactile() {},
+    majPneusHUD() {}, HUD1: {}, HUD2: {}, HUDS: [{}, {}, {}, {}], jeu: element, hud2: element, hud3: element, hud4: element, $: () => element, tactile() {},
     conditions: { saison: 'ete', moment: 'jour', meteo: 'sec' },
     prechargerSeance(S) {
       assert.equal(contexte.session, S, 'la panne doit arriver après publication de la nouvelle séance');
