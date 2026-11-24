@@ -65,6 +65,11 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
 
   function creer(c, o = {}) {
     const chrono = o.mode === 'chrono';
+    // « Route sans fin » (lot I) : compte à rebours par joueur, checkpoints qui rendent du
+    // temps, stations-service. Le joueur éliminé ne bloque ni les autres ni la course.
+    const sansFin = o.mode === 'sans-fin';
+    const sfReglage = sansFin ? Object.assign({ temps: 60, bonus: 30 }, o.sansFin || {}) : null;
+    const sfCheckpoints = sansFin ? (o.checkpoints || []).map((cp, i) => ({ id: i, s: cp.s, nom: cp.nom || ('checkpoint ' + (i + 1)) })) : null;
     const L = c.longueur;
     const difficulte = clamp(Math.round(o.difficulte ?? 1), 0, 2);
     // Jeu en ligne (reseau.js) : deux voitures humaines, 0 pour l'hôte et 1 pour l'invité sur les deux machines ;
@@ -91,6 +96,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       livree: { couleur: liv[0], seconde: liv[1], casque: liv[2], combinaison: liv[1], numero },
       etat: null, tourValide: true, repositionnements: 0, tours: 0, passages: -1, maxPassages: -1, progression: 0, debutTour: 0,
       tempsTours: [], meilleur: null, position: 0, fini: false, abandon: false, tempsFinal: null, ecart: 0, ecartTete: 0,
+      sansFin: sansFin ? { restant: sfReglage.temps, bonus: sfReglage.bonus, temps: 0, checkpoint: -1, sAbsolu: 0, sMax: 0, dernierS: null, elimine: false } : null,
       ia: {
         hab: joueur ? 1 : habBase + (t1 * 2 - 1) * 0.015, decal: joueur ? 0 : (t2 * 2 - 1) * 0.5,
         reaction: joueur ? 0 : 0.12 + t3 * 0.28, cible: -1, cote: 0, decalVise: 0, decalDep: 0,
@@ -153,7 +159,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     for (let i = 0; i < c.n; i++) tRef += c.pas / c.vitesse[i];
     const toursTotal = c.ouvert ? 1 : (chrono ? 0 : Math.max(1, Math.round(o.tours ?? 3)));
     return {
-      c, graine, mode: chrono ? 'chrono' : 'course', toursTotal, difficulte,
+      c, graine, mode: chrono ? 'chrono' : sansFin ? 'sans-fin' : 'course', toursTotal, difficulte,
+      sansFin: sansFin ? { checkpoints: sfCheckpoints, bonus: sfReglage.bonus, temps: sfReglage.temps } : null,
       phase: chrono ? 'course' : 'grille', horloge: 0, temps: 0, dt: 1 / 120,
       feux: { allumes: 0, vert: chrono }, delaiVert: 0.4 + rng() * 1.0,
       voitures, joueur: voitures[humains ? humains.locaux[0] : 0], classement: ordre.map(v => v.id), enLigne: !!humains && !!humains.enLigne, duo,
@@ -819,6 +826,34 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
   }
 
   function tousArrives(V) { for (let i = 0; i < V.length; i++) if (!(V[i].fini || V[i].abandon)) return false; return true; }
+  // Route sans fin : compte à rebours par joueur, checkpoints validés par le plus loin atteint
+  // (jamais par un retour en marche arrière ou un replacement), élimination à zéro sans bloquer les autres.
+  function majSansFin(course, dt, ev) {
+    const c = course.c, sf = course.sansFin, enCourse = course.phase === 'course';
+    for (let i = 0; i < course.voitures.length; i++) {
+      const v = course.voitures[i], s = v.sansFin;
+      if (!s || v.distant) continue;
+      const e = v.etat;
+      if (!s.elimine) {
+        if (s.dernierS === null) s.dernierS = e.s;
+        const d = B.circuit.ecart(c, s.dernierS, e.s);
+        s.dernierS = e.s;
+        if (Number.isFinite(d)) { s.sAbsolu += d; if (s.sAbsolu > s.sMax) s.sMax = s.sAbsolu; }
+      }
+      v.progression = s.sMax;
+      if (s.elimine || !enCourse || v.fini) continue;
+      s.restant -= dt; s.temps += dt;
+      while (s.checkpoint + 1 < sf.checkpoints.length && s.sMax >= sf.checkpoints[s.checkpoint + 1].s) {
+        s.checkpoint++;
+        s.restant += sf.bonus;
+        ev.push({ type: 'checkpoint', id: v.id, checkpoint: s.checkpoint, reste: s.restant });
+      }
+      if (s.restant <= 0) {
+        s.restant = 0; s.elimine = true; v.abandon = true;
+        ev.push({ type: 'elimine', id: v.id, checkpoint: s.checkpoint });
+      }
+    }
+  }
   // `sortie`, facultatif : tableau d'événements de l'appelant, vidé puis rempli et rendu au lieu d'un neuf (un
   // appelant qui avance la course à chaque image peut garder le sien). Sans lui, un tableau neuf, comme toujours.
   function pas(course, cmdJoueur, dt, sortie) {
@@ -893,8 +928,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       const v = V[i], a = course.sAvant[i], b = sLigne(c, v.etat.s);
       if(v.etat.recuperation || (v.degats&&(v.degats.casse||B.degats?.uneRouePerdue(v.degats))))v.tourValide=false;
       const replacements=v.etat.repositionnements||0;
-      if(replacements!==v.repositionnements){v.tourValide=false;v.repositionnements=replacements;course.sAvant[i]=b;v.progression=c.ouvert?b:v.passages*L+b;continue;}
-      if (c.ouvert) {
+      if(replacements!==v.repositionnements){v.tourValide=false;v.repositionnements=replacements;course.sAvant[i]=b;if(!course.sansFin)v.progression=c.ouvert?b:v.passages*L+b;continue;}
+      if (c.ouvert && !course.sansFin) {
         const seuil = (c.arrivee === undefined ? L : c.arrivee) - (c.depart || 0);
         if (!v.fini && a < seuil && b >= seuil) {
           v.passages = 1; v.maxPassages = 1;
@@ -902,7 +937,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
           passageLigne(course, v, t0 + dt * frac, ev);
         }
         v.progression = b;
-      } else {
+      } else if (!course.sansFin) {
         // Un franchissement réellement parcouru peut finir le tour, marqué non valide après accident.
         if (a > 0.75 * L && b < 0.25 * L) {
           v.passages++;
@@ -915,6 +950,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       }
       if (course.mode === 'chrono' && course.chronoParti && v.joueur && v.tourValide !== false) enregistrer(course, v, course.temps);
     }
+    if (course.sansFin) majSansFin(course, dt, ev);
     majClassement(course);
     if (tousArrives(V)) {
       if (course.finSansCourse === undefined) course.finSansCourse = course.horloge;
