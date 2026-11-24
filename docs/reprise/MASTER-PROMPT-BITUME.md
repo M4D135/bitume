@@ -281,7 +281,7 @@ Légende état : ✅ livré+qualifié · 🟡 partiel/en cours · ⛔ bloqué (p
 
 ### Tests rouges (état 2026-11-23)
 
-**Vrai périmètre (détection par code de sortie, pas par « fail ») : 79 fichiers sur 236 sont
+**Vrai périmètre (détection par code de sortie, pas par « fail ») : 79 fichiers sur 238 sont
 rouges** (≈ 33 %). C'est une dette massive préexistante (sessions inachevées + commits
 automatisés « R##### » `[skip ci]`), **pas** des régressions de cette session : chaque échec
 reproduit à l'identique sur HEAD propre. Un problème local n'arrête pas les travaux
@@ -316,3 +316,8 @@ acceptation). Ne pas « verdir » les tests en épinglant p54 : ce serait masque
   réseau/HMAC/proxy manquants) ; **vrai périmètre rouge mesuré : 79/236** ; **cause
   systémique PHYSIQUE p17→p54 sur-inflée découverte** (34/40 bumps non-conduite) → arbitrage
   David. Prochaine action : dimension réseau de F (HMAC+proxys, sans IP brute), puis lots C/D.
+- 2026-11-24 : **F réseau commité** (`b666e99`, tests serveur/navigateur verts) ; **D minimap
+  zoomée commitée** (`eeeed2e`) ; **C écran partagé 3-4 joueurs commité** (`05fcf96`,
+  `fb7b602`, `9fcdbdb`) avec grille 2×2, case carte animée à trois joueurs et harnais adaptés ;
+  **stands corrigés** (`e3490b1`) et **options image** (`c3c2d27`) ; périmètre rouge re-mesuré
+  **79/238** (aucune nouvelle régression détectée par comparaison avec `2f5ff3f`).
