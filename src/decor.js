@@ -2002,10 +2002,18 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           const haut = Hc - .5 + 3 * h(1) - (H + .7);
           const formeCrete = organique ? B.lieux.rocherPour(c.theme, (g ^ Math.imul(i | 0, 73856093)) >>> 0) : 'bevel';
           objets.push({ shape: formeCrete, p: pointPlan(f, (h(2) - .5) * 4, y + H + .7 + haut / 2), s: [12 + 4 * h(3), haut, 2 * M + 8], r: angles(...base(f.t, [0, 1, 0])), mat: organique ? 23 : 9, color: ROCHES[((Math.floor(i) % 3) + 3) % 3] });
-          // un piton par-dessus, de travers, pour casser la ligne de crête
+          // un piton par-dessus, de travers, pour casser la ligne de crête. Son emprise peut
+          // déborder la crête : la base se pose sur le relief local, jamais sous la voûte.
           if (h(4) > .45) {
             const formePiton = organique ? B.lieux.rocherPour(c.theme, (g ^ Math.imul(i | 0, 19349663)) >>> 0) : 'octa';
-            objets.push({ shape: formePiton, p: pointPlan(f, (h(5) - .5) * 16, y + Hc + 1.5 + 2 * h(6)), s: [9 + 6 * h(7), 5 + 6 * h(8), 8 + 6 * h(9)], r: [h(11) * .5, h(12) * 6.3, h(13) * .5], mat: organique ? 23 : 9, color: ROCHES[((Math.floor(i + 1) % 3) + 3) % 3] });
+            const pPiton = pointPlan(f, (h(5) - .5) * 16, 0);
+            const solPiton = terrain.sol(pPiton[0], pPiton[2]);
+            const hautPiton = 5 + 6 * h(8), largePiton = 9 + 6 * h(7), profondPiton = 8 + 6 * h(9);
+            const rPiton = [h(11) * .5, h(12) * 6.3, h(13) * .5];
+            // l'inclinaison fait plonger les coins : sur la voûte, on rehausse de la chute pour ne rien mordre dans le tunnel
+            const chute = largePiton / 2 * Math.abs(Math.sin(rPiton[2])) + profondPiton / 2 * Math.abs(Math.sin(rPiton[0])) + .3;
+            const basePiton = Math.max((Number.isFinite(solPiton) ? solPiton : -Infinity) - 1.2, y + H + .7 + chute);
+            objets.push({ shape: formePiton, p: [pPiton[0], basePiton + hautPiton / 2, pPiton[2]], s: [largePiton, hautPiton, profondPiton], r: rPiton, mat: organique ? 23 : 9, color: ROCHES[((Math.floor(i + 1) % 3) + 3) % 3] });
           }
         }
         for (const cote of [-1, 1]) {
@@ -2021,7 +2029,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
             const av = [Math.cos(f.a + lacet), 0, Math.sin(f.a + lacet)], dessus = [f.r[0] * penche * cote, 1, f.r[2] * penche * cote];
             const pointu = k >= 2 && h(60 + k) > .5;   // dehors, des blocs pointus pour une silhouette de rocher
             const formeFlanc = organique ? B.lieux.rocherPour(c.theme, (g ^ Math.imul((i | 0) * 13 + k * 7 + (cote > 0 ? 1 : 0), 83492791)) >>> 0) : (pointu ? 'octa' : 'bevel');
-            objets.push({ shape: formeFlanc, p: pointPlan(f, cote * centre, y - 2 + (haut + 2) / 2 + (pointu ? haut * .2 : 0)), s: [11 + 5 * h(50 + k), (haut + 2) * (pointu ? 1.5 : 1), large * (pointu ? 1.3 : 1)], r: angles(...base(av, dessus)), mat: organique ? 23 : 9, color: ROCHES[((Math.floor(i + k + (cote > 0)) % 3) + 3) % 3] });
+            // « posées au sol » : la base suit le terrain sous l'emprise, sauf la colonne alignée
+            // sur la piste contre les murs (k = 0 dedans), qui reste calée à la chaussée.
+            const pSol = pointPlan(f, cote * centre, 0);
+            const solFlanc = k || !interieur ? terrain.sol(pSol[0], pSol[2]) : -Infinity;
+            const baseFlanc = (Number.isFinite(solFlanc) ? solFlanc : y) - 2;
+            objets.push({ shape: formeFlanc, p: pointPlan(f, cote * centre, baseFlanc + (haut + 2) / 2 + (pointu ? haut * .2 : 0)), s: [11 + 5 * h(50 + k), (haut + 2) * (pointu ? 1.5 : 1), large * (pointu ? 1.3 : 1)], r: angles(...base(av, dessus)), mat: organique ? 23 : 9, color: ROCHES[((Math.floor(i + k + (cote > 0)) % 3) + 3) % 3] });
           }
         }
         if (objets.length) {

@@ -1,8 +1,8 @@
 {
-  "version": "0.2.302",
-  "raw": 17544271,
-  "gzip": 4761567,
-  "sha256": "d880dcd8ffd87b632fc5715e90e3c9b9b81f0ff54037ecf942e0e31fa62fd85b",
+  "version": "0.2.303",
+  "raw": 17545436,
+  "gzip": 4761921,
+  "sha256": "e45211bb7a2d0231dc501dedf7e53b99d4cc23803dc098674658691b11bfb304",
   "sources": {
     "ferro/surface.js": 3419,
     "ferro/render-shared.js": 81526,
@@ -53,7 +53,7 @@
     "herbier-wasm.js": 11016,
     "lagon.js": 8024,
     "ovale-forges-decor.js": 12009,
-    "decor.js": 186845,
+    "decor.js": 188010,
     "physique.js": 28794,
     "faune.js": 30792,
     "aeriens.js": 27646,
