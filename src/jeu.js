@@ -1099,7 +1099,6 @@
   contexte.fluxVentRight = flux.fluxRight;
   contexte.fluxVentUp = flux.fluxVentUp;
   contexte.fluxVentForward = flux.fluxForward;
-}
       contexte.cameraYaw = cam.yaw || 0; contexte.cameraPitch = cam.pitch || 0; contexte.cameraRoll = cam.roll || 0;
       // La visière et la lentille de poursuite suivent le déplacement réel du support, y compris
       // dérive et marche arrière. Une coupe, un regard arrière ou un replacement de caméra ne
