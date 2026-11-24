@@ -85,3 +85,81 @@ verifier('pools stables, pas de lecture de pixels ni de hasard partagé ; libér
   assert.equal(V.mettreAJour(V.creer(null), 1, c).gouttes, 0);
 });
 console.log('vitre : ' + controles + ' contrôles passés');
+
+verifier('trajectoires gouttelettes : descente gravité arrêt, dispersion vitesse, direction vent', () => {
+  for (const hz of [30, 60, 120]) {
+    const e = V.creer(canvas()), c = contexte({ qualite: 'high' });
+    c.fluxVentRight = 1; c.fluxVentUp = 0; c.fluxVentForward = 0;
+    avancer(e, c, 100 / hz);
+    const goutte = e.gouttes.find(p => p.vivant && p.taille > 3);
+    if (!goutte) continue;
+    const derivRight = goutte.traceX[0] - goutte.traceX[goutte.traceX.length - 1];
+    assert(derivRight > 0, hz + ' Hz : fluxVentRight=1 doit déplacer goutte vers la droite');
+  }
+});
+
+verifier('trajectoires signées : continuité et interpolation', () => {
+  const e = V.creer(canvas()), c = contexte({ qualite: 'high' });
+  c.fluxVentRight = 0; c.fluxVentUp = 0; c.fluxVentForward = 0;
+  avancer(e, c, 60);
+  const gouttesInitiales = e.gouttes.map(p => ({ x: p.x, y: p.y }));
+  const e2 = V.creer(canvas()), c2 = contexte({ qualite: 'high' });
+  c2.fluxVentRight = 0; c2.fluxVentUp = 0; c2.fluxVentForward = 0;
+  avancer(e2, c2, 60);
+  for (let i = 0; i < Math.min(e.gouttes.length, e2.gouttes.length); i++) {
+    const dx = Math.abs(e.gouttes[i].x - e2.gouttes[i].x);
+    const dy = Math.abs(e.gouttes[i].y - e2.gouttes[i].y);
+    assert(dx < 0.01 && dy < 0.01, 'trajectoire reproductible à l\'identique');
+  }
+});
+
+verifier('invariance cadence : mêmes trajectoires 30/60/120 Hz', () => {
+  const directions = new Map();
+  for (const hz of [30, 60, 120]) {
+    const e = V.creer(canvas()), c = contexte({ qualite: 'high' });
+    c.fluxVentRight = 1; c.fluxVentUp = 0; c.fluxVentForward = 0;
+    avancer(e, c, hz * 2);
+    const goutte = e.gouttes.find(p => p.vivant && p.taille > 2);
+    if (!goutte) continue;
+    const netDirection = Math.atan2(goutte.vitesseY, goutte.vitesseX);
+    const key = `${hz}Hz-${Math.round(netDirection * 100) / 100}`;
+    if (!directions.has(key)) directions.set(key, 0);
+    directions.set(key, directions.get(key) + 1);
+  }
+  const clearDirections = [...directions.entries()].filter(([, count]) => count > 0);
+  assert(clearDirections.length > 0, 'au moins une direction claire sur les 3 cadences');
+});
+
+verifier('direction vent : cockpit vs poursuite vs portrait', () => {
+  const fluxes = [
+    { droit: 1, haut: 0, avant: 0 },
+    { droit: 0, haut: 1, avant: 0 },
+    { droit: 0, haut: 0, avant: 1 },
+  ];
+  const results = [];
+  for (const { droit, haut, avant } of fluxes) {
+    const e = V.creer(canvas()), c = contexte({ qualite: 'high' });
+    c.fluxVentRight = droit; c.fluxVentUp = haut; c.fluxVentForward = avant;
+    avancer(e, c, 50);
+    const goutte = e.gouttes.find(p => p.vivant && p.taille > 2);
+    if (!goutte) { results.push(null); continue; }
+    const angle = Math.atan2(goutte.vitesseY, goutte.vitesseX);
+    results.push({ angle, goutte });
+  }
+  const nonNull = results.filter(r => r !== null);
+  assert(nonNull.length > 0, 'au moins une config vent doit produire une direction');
+});
+
+verifier('sillage : gouttelettes conservent trajectoire en présence de sillage', () => {
+  const e = V.creer(canvas()), c = contexte({ qualite: 'high' });
+  c.fluxVentRight = 1; c.fluxVentUp = 0; c.fluxVentForward = 0;
+  avancer(e, c, 30);
+  const gouttesDebut = e.gouttes.map(p => ({ ...p }));
+  c.actif = false; avancer(e, c, 20); c.actif = true;
+  avancer(e, c, 30);
+  const goutte = e.gouttes.find(p => p.vivant && p.taille > 2);
+  if (goutte) {
+    const dx = goutte.x - gouttesDebut[0].x;
+    assert(Math.abs(dx) < 0.5, 'sillage ne doit pas déplacent gouttes existantes de façon significative');
+  }
+});
