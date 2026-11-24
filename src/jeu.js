@@ -5607,6 +5607,26 @@
       $('res-sous').textContent = nomCircuit + ' · ' + tempsSeance + (r ? ' · record ' + chrono(r.tour) : '');
       entete.innerHTML = '<th>' + (co.c.ouvert ? 'Spéciale' : 'Tour') + '</th><th class="nom">Temps</th><th>Écart au meilleur</th>';
       corps.innerHTML = j.tempsTours.map((t, k) => '<tr' + (t === j.meilleur ? ' class="joueur"' : '') + '><td>' + (k + 1) + '</td><td class="nom">' + chrono(t) + '</td><td>' + (j.meilleur == null || t === j.meilleur ? '–' : ecartTexte(t - j.meilleur, 3)) + '</td></tr>').join('');
+    } else if (co.sansFin) {
+      // Route sans fin : pas de tours ni de rivaux — la distance et les checkpoints sont le résultat
+      const locaux = (S.locaux || [co.joueur.id]).map(id => co.voitures[id]).filter(Boolean);
+      const meilleur = locaux.slice().sort((a, b) => (b.sansFin.sMax || 0) - (a.sansFin.sMax || 0))[0] || co.joueur;
+      const km = (meilleur.sansFin.sMax || 0) / 1000;
+      const CLE = 'bitume-sans-fin-record', precedent = lireStock(CLE, 0) || 0;
+      let record = '';
+      if (km * 1000 > precedent) { ecrireStock(CLE, Math.round(meilleur.sansFin.sMax || 0)); record = ' · nouveau record'; }
+      else if (precedent > 0) record = ' · record ' + (precedent / 1000).toFixed(2).replace('.', ',') + ' km';
+      const tousHors = locaux.length && locaux.every(v => v.sansFin.elimine);
+      $('res-titre').textContent = (co.termine && tousHors) ? 'Temps écoulé' : 'Route sans fin';
+      $('res-sous').textContent = 'Le plus loin : ' + meilleur.nom + ' · ' + km.toFixed(2).replace('.', ',') + ' km · '
+        + (meilleur.sansFin.checkpoint + 1) + ' checkpoint' + (meilleur.sansFin.checkpoint > 0 ? 's' : '') + record;
+      entete.innerHTML = '<th>Pos.</th><th class="nom">Pilote</th><th>Distance</th><th>Checkpoints</th><th>Tenu</th>';
+      const ordre = co.voitures.slice().sort((a, b) => (b.sansFin?.sMax || 0) - (a.sansFin?.sMax || 0));
+      corps.innerHTML = ordre.map((v, r) => '<tr' + (v.joueur ? ' class="joueur"' : '') + '><td>' + (r + 1) + '</td>'
+        + '<td class="nom">' + (v.joueur && !co.duo ? 'Vous' : v.nom) + '</td>'
+        + '<td>' + ((v.sansFin?.sMax || 0) / 1000).toFixed(2).replace('.', ',') + ' km</td>'
+        + '<td>' + ((v.sansFin?.checkpoint ?? -1) + 1) + '</td>'
+        + '<td>' + (v.sansFin?.elimine ? 'éliminé à ' : '') + chrono(v.sansFin?.temps || 0) + '</td></tr>').join('');
     } else {
       const ordre = co.classement.map(id => co.voitures[id]), tete = ordre[0];
       const meilleurAbsolu = Math.min(...ordre.map(v => v.meilleur ?? Infinity));
