@@ -76,7 +76,9 @@
         m.prochainEclair = frappe + 2.8 + hasard(Math.round(frappe * 1000)) * 4.2;
       }
       if (!fixe && m.tp + 1e-10 >= DUREES[p]) {
-        m.tp = 0; m.phase = PHASES[(p + 1) % PHASES.length];
+        m.tp = 0;
+        // une cible imposée par le monde (relief de la Route sans fin) prend le pas sur le cycle
+        m.phase = PHASES.includes(m.cible) ? m.cible : PHASES[(p + 1) % PHASES.length];
         if (m.phase === 'orage') m.prochainEclair = m.t + 1.2;
       }
     }

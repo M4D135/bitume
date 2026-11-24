@@ -459,6 +459,11 @@
       }
     }
     const meteoInit = meteoPourConditions(conditions, i, enl ? enl.graine : graineCourse);
+    if (sansFin) {
+      // Route sans fin : le relief que le monde bâti va traverser dicte la phase et la neige
+      const c0 = B.routeSansFinSeance.meteoCible(seance);
+      meteoInit.cible = c0.phase; meteoInit.precipitationsNeige = c0.neige;
+    }
     // Pneus : le joueur roule sur ceux de la préparation (présélectionnés selon la météo, qu'il peut changer) ; les
     // rivaux sur ceux que conseille la piste au départ. La caisse les montre (voiture.js) et la conduite les sent.
     const conseil = B.conduite.pneusConseilles(B.chaussee.lire(null, 0, meteoInit)), joue = type === 'course' || type === 'chrono' || duo || sansFin;
@@ -1446,6 +1451,10 @@
     if (S.cDecor !== c) {
       S.cDecor = c; S.sc = sc;
       B.ombres.carte(rendu, gpuModeste || !B.ombres.ombresPossibles(reglages.qualite, { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages }), sc.decor.lots);
+    }
+    if (S.meteo) {
+      const c2 = B.routeSansFinSeance.meteoCible(S.seance);
+      S.meteo.cible = c2.phase; S.meteo.precipitationsNeige = c2.neige;
     }
     B.physique.liberer(S.course);
     B.physique.installer(S.course, sc.decor);

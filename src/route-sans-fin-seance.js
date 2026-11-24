@@ -44,6 +44,7 @@
     const maxAbs = Math.max(0, ...abs);
     seance.c = F.avancer(f, abs);   // la fenêtre veut des abscisses absolues
     allongerCheckpoints(seance, maxAbs);
+    seance.sJoueur = maxAbs;
     // 1) le monde bâti n'est plus assez long devant le joueur : on bascule sur le monde en construction
     const bati = seance.cPorteur;
     const edgeBati = bati ? bati.sansFinFenetre.sOrigine + bati.longueur : 0;
@@ -69,5 +70,35 @@
     return bascule;
   }
 
-  B.routeSansFinSeance = { creer, avancer, PAS_CHECKPOINT, AVANCE_FENETRE, REPRISE_DECOR, PAS_REPRISE };
+  // Météo cyclique par biome : la cible regarde le relief que le monde bâti va traverser devant le joueur.
+  // Hystérésis : une cible ne change que si le biome dominant tient la distance (pas de clignotement aux coutures).
+  const METEO_BIOME = {
+    plage: { phase: 'couvre', neige: false },
+    plaine: { phase: 'clair', neige: false },
+    foret: { phase: 'couvre', neige: false },
+    'petite-montagne': { phase: 'pluie', neige: false },
+    'grande-montagne': { phase: 'orage', neige: true },
+  };
+  const HORIZON_METEO = 1500, HYSTERESIS_METEO = 1200;
+  function meteoCible(seance) {
+    const b = seance.cPorteur, f = seance.fenetre;
+    const s0 = b.sansFinFenetre.sOrigine, debut = Math.max(s0, seance.sJoueur ?? s0);
+    const fin = Math.min(s0 + b.longueur, debut + HORIZON_METEO);
+    const longueurs = {};
+    // cumul propre : les tronçons du monde bâti commencent à son origine, dans l'ordre k0..k1
+    let s = b.sansFinFenetre.sOrigine;
+    for (let k = b.sansFinFenetre.k0; k < b.sansFinFenetre.k1; k++) {
+      const L = R.pointsSegment(k, seance.graine).profil.L;
+      const de = Math.max(s, debut), vers = Math.min(s + L, fin);
+      if (vers > de) { const bi = R.biomePour(k); longueurs[bi] = (longueurs[bi] || 0) + (vers - de); }
+      s += L;
+    }
+    let dominant = 'plaine', meilleur = -1;
+    for (const bi in longueurs) if (longueurs[bi] > meilleur) { meilleur = longueurs[bi]; dominant = bi; }
+    if (meilleur < HYSTERESIS_METEO && seance.meteoBiome) dominant = seance.meteoBiome;   // pas assez de relief : on garde
+    seance.meteoBiome = dominant;
+    return METEO_BIOME[dominant] || METEO_BIOME.plaine;
+  }
+
+  B.routeSansFinSeance = { creer, avancer, meteoCible, PAS_CHECKPOINT, AVANCE_FENETRE, REPRISE_DECOR, PAS_REPRISE };
 })(globalThis.BITUME = globalThis.BITUME || {});
