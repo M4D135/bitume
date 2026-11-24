@@ -17,6 +17,7 @@ require('../src/qualite.js');
 require('../src/cadence.js');
 // Dépendance réelle de la lecture des réglages, même pour un banc limité aux options Image.
 require('../src/menu-arcade.js');
+require('../src/championnat.js');
 const source = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 function bloc(debut, fin) {
   const a = source.indexOf(debut), b = source.indexOf(fin, a);
@@ -68,6 +69,9 @@ const executer = new Function('B', 'stockage', `
   }
   // la cadence de la boucle, créée comme dans jeu.js avec le réglage lu
   const cadence = B.cadence.creer({ hz: 120, maxPas: 14, mode: reglages.cadence });
+  const RANGS_VUE = { vue: 0, vue2: 1, vue3: 2, vue4: 3, vuePret: 0, vuePret2: 1, vuePret3: 2, vuePret4: 3,
+    vueDepart: 0, vueDepart2: 1, vueDepart3: 2, vueDepart4: 3 };
+  const reglerVue = () => {};
   ${bloc("  document.addEventListener('change', e => {", "  for (const nom of ['general', 'moteur', 'effets'])")}
   ${bloc('  function restaurerReference()', '  // Banc (console)')}
   ${bloc('  function meteoPourConditions(', '  function surfaceAnnoncee(')}
