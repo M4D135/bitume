@@ -1521,9 +1521,17 @@
     if (besoinDecor) {
       S.cDecor = c; S.sc = sc; S.cleStationDecor = S.seance.cleStation;
       installerRetro();
-      B.ombres.carte(rendu, gpuModeste || !B.ombres.ombresPossibles(reglages.qualite, { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages }), sc.decor.lots);
       if (S.nature) S.nature.secteurs = B.saisons.secteurs(c);
-      S.animaux = animauxDe(sc, S.nature);
+      // Ombres et animaux différés : éviter un second gros pic dans la même frame que l'install décor+physique.
+      S._sansFinDecorGen = (S._sansFinDecorGen || 0) + 1;
+      const generation = S._sansFinDecorGen;
+      setTimeout(() => {
+        if (session !== S || S._sansFinDecorGen !== generation) return;
+        try {
+          B.ombres.carte(rendu, gpuModeste || !B.ombres.ombresPossibles(reglages.qualite, { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages }), sc.decor.lots);
+          S.animaux = animauxDe(sc, S.nature);
+        } catch (e) { console.warn('sans-fin: décor différé', e); }
+      }, 0);
     }
     if (S.meteo) {
       const c2 = B.routeSansFinSeance.meteoCible(S.seance);

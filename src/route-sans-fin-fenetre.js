@@ -5,7 +5,7 @@
 (function (B) {
   'use strict';
   const R = B.routeSansFin;
-  const DERRIERE = 600, DEVANT = 1400, MARGE_SEG = 400;
+  const DERRIERE = 600, DEVANT = 2200, MARGE_SEG = 600;
 
   function creer(graine, options = {}) {
     const f = {
@@ -16,7 +16,7 @@
       c: null,
       derriere: options.derriere ?? DERRIERE,
       devant: options.devant ?? DEVANT,
-      maxSegments: options.maxSegments ?? 6,
+      maxSegments: options.maxSegments ?? 10,
     };
     etendre(f, f.devant);
     f.c = construire(f);
@@ -28,7 +28,8 @@
 
   // ajouter des tronçons jusqu'à couvrir l'abscisse absolue demandée
   function etendre(f, sCible) {
-    while (f.sOrigine + f.longueur < sCible + MARGE_SEG && f.k1 - f.k0 < f.maxSegments + 2) {
+    while (f.sOrigine + f.longueur < sCible + MARGE_SEG) {
+      if (f.k1 - f.k0 >= f.maxSegments + 4) break;   // garde-fou mémoire absolu
       const seg = R.pointsSegment(f.k1, f.graine);
       f.k1++;
       f.longueur += seg.profil.L;
@@ -46,9 +47,11 @@
     etendre(f, maxi + f.devant);
     // libérer derrière : on n'avance l'origine que si le joueur le plus en arrière est
     // hors de portée ET qu'il reste assez de route devant lui dans la fenêtre
-    // relâchement groupé : on garde deux tronçons de marge derrière, pour ne pas régénérer le circuit
-    // à chaque tronçon (la libération derrière ne sert qu'à la mémoire, jamais au joueur)
-    while (f.k1 - f.k0 > f.maxSegments && mini - f.derriere > f.sOrigine + R.pointsSegment(f.k0, f.graine).profil.L) {
+    // Libérer derrière : garder de la marge, mais toujours libérer si le devant est affamé
+    // et que le joueur le plus en arrière est déjà loin du premier segment.
+    const frontStarved = () => f.sOrigine + f.longueur < maxi + f.devant + MARGE_SEG;
+    while (f.k1 - f.k0 > 2 && mini - f.derriere > f.sOrigine + R.pointsSegment(f.k0, f.graine).profil.L
+        && (f.k1 - f.k0 > f.maxSegments || frontStarved())) {
       f.sOrigine += R.pointsSegment(f.k0, f.graine).profil.L;
       f.longueur -= R.pointsSegment(f.k0, f.graine).profil.L;
       f.k0++;

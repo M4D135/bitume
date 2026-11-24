@@ -5,7 +5,7 @@
   'use strict';
   const R = B.routeSansFin, F = B.routeSansFinFenetre;
   const PAS_CHECKPOINT = 1500, AVANCE_FENETRE = 0.25;   // secondes entre deux glissements
-  const REPRISE_DECOR = 900, PAS_REPRISE = 300;          // où l'on reprend le décor, et à quel rythme
+  const REPRISE_DECOR = 1500, PAS_REPRISE = 300;         // où l'on reprend le décor, et à quel rythme
 
   function creer(options = {}) {
     const graine = (options.graine ?? 1) >>> 0;
