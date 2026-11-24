@@ -390,20 +390,22 @@
     const doc = zone.ownerDocument, $ = id => doc.getElementById(id), apercu = creerApercu($('p-trace-3d'));
     let etape = 0, version = 0, reliefSale = false, detruit = false, mouvementAffiche = null;
     const retirer = [], ecouter = (el, type, f) => { el.addEventListener(type, f); retirer.push(() => el.removeEventListener(type, f)); };
-    const avancer = (sens, focus = true) => ouvrir(borner(etape + sens, 0, ETAPES.length - 1), focus);
+    const premiereEtape = () => ($('onglet-p-piste')?.hidden ? 1 : 0);
+    const avancer = (sens, focus = true) => ouvrir(borner(etape + sens, premiereEtape(), ETAPES.length - 1), focus);
     function actualiser() {
       if (detruit) return;
       version++;
       const actif = zone.querySelector('[data-menu-tab][aria-selected="true"]');
       const precedente = etape;
-      etape = Math.max(0, ETAPES.indexOf(actif && actif.dataset.menuTab));
+      const min = premiereEtape();
+      etape = Math.max(min, ETAPES.indexOf(actif && actif.dataset.menuTab));
       if (etape !== precedente) {
         const contenu = zone.querySelector('.panneaux-menu');
         if (contenu) contenu.scrollTop = 0;
       }
       zone.dataset.etape = String(etape);
-      $('p-etape').textContent = '0' + (etape + 1) + ' / 04';
-      $('b-precedent').textContent = etape ? 'Précédent' : 'Menu';
+      $('p-etape').textContent = '0' + (etape - min + 1) + ' / 0' + (ETAPES.length - min);
+      $('b-precedent').textContent = etape > min ? 'Précédent' : 'Menu';
       $('b-suivant').hidden = etape === 3; $('b-depart').hidden = false;
       $('b-suivant').textContent = ['Conditions →', 'Pilotes →', 'Récapitulatif →'][etape] || 'Continuer';
       if (etape !== 0) apercu.suspendre();
@@ -478,7 +480,7 @@
     });
     const api = Object.freeze({
       ouvrir, actualiser,
-      retour() { if (detruit || !etape) return false; avancer(-1); return true; },
+      retour() { if (detruit || etape <= premiereEtape()) return false; avancer(-1); return true; },
       valider(el) {
         if (detruit || etape !== 0 || !disponible(el) || !zone.contains(el) || !el.closest('#circuits') || el.getAttribute('aria-checked') !== 'true') return false;
         return avancer(1);

@@ -4907,7 +4907,7 @@
   function choixTrollLocaux() { return B.menuArcade.normaliserTroll(reglages); }
   function majChoixTroll() {
     const choix = choixTrollLocaux(), membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
-    $('o-troll-1').hidden = pilotesMenu() !== 2;
+    $('o-troll-1').hidden = pilotesMenu() < 2;
     $('pr-troll-1').hidden = !(membre && membre.joueurs === 2);
     for (let n = 0; n < 2; n++) for (const prefixe of ['p', 'pr']) {
       $(prefixe + '-geste-' + n).value = choix[n].geste;
@@ -4928,8 +4928,12 @@
     texte($('p-bilan-joueurs'), (nombre === 1 ? 'Un pilote local' : nombre === 2 ? 'Deux pilotes locaux' : nombre === 3 ? 'Trois pilotes locaux' : 'Quatre pilotes locaux') + (modePrepa === 'enligne' ? ' · en ligne' : ''));
     const gestes = { majeur: 'doigt d’honneur', poing: 'poing levé', salut: 'salut' };
     const klaxons = { classique: 'classique', ancien: 'ancien', mariage: 'mariage' };
-    const choix = choixTrollLocaux(), pneus = choixPneusLocaux();
-    texte($('p-bilan-troll'), choix.slice(0, nombre).map((c, n) => 'J' + (n + 1) + '\u00a0: ' + NOMS_PNEUS[pneus[n]] + ' · ' + gestes[c.geste] + ' + klaxon ' + klaxons[c.klaxon]).join(' / '));
+    const choix = choixTrollLocaux(), pneus = choixPneusLocaux(), lignesTroll = [];
+    for (let n = 0; n < nombre; n++) {
+      const c = choix[Math.min(n, choix.length - 1)], pn = pneus[n] || pneus[0];
+      lignesTroll.push('J' + (n + 1) + '\u00a0: ' + NOMS_PNEUS[pn] + ' · ' + gestes[c.geste] + ' + klaxon ' + klaxons[c.klaxon]);
+    }
+    texte($('p-bilan-troll'), lignesTroll.join(' / '));
     texte($('b-depart'), modePrepa === 'enligne' ? 'Confirmer la course' : modePrepa === 'chrono' ? 'Lancer le chrono' : modePrepa === 'sans-fin' ? 'Prendre la route' : 'Prendre le départ');
   }
 
@@ -4991,7 +4995,7 @@
     tactile(nom === 'course' && !aDeux());
     if (nom === 'preparation') {
       remplirPreparation();
-      if (precedent !== 'preparation' && precedent !== 'reglages') menuArcade.ouvrir(0, false);
+      if (precedent !== 'preparation' && precedent !== 'reglages') menuArcade.ouvrir(modePrepa === 'sans-fin' ? 1 : 0, false);
       else menuArcade.actualiser();
     }
     menuArcade.image(performance.now(), false);
@@ -5075,12 +5079,12 @@
       + (profil.neige ? 'Paysage enneigé. Les précipitations manuelles tombent en flocons.' : k.saison === 'hiver' ? 'Hiver doux à Port-Sable, sans neige.' : 'La saison transforme le paysage.');
     $('p-moment-note').textContent = reglages.momentMode === 'reel' ? 'L’éclairage suit l’heure réelle, à vitesse normale.'
       : reglages.momentMode === 'aleatoire' ? 'Moment tiré au sort : ' + NOMS_MOMENT[k.moment] + '.' : 'Cycle jour/nuit de six minutes.';
-    const resume = CATALOGUE[reglages.circuit].nom + ' · ' + NOMS_SAISON[k.saison] + ' · ' + NOMS_MOMENT[k.moment]
+    const resume = (modePrepa === 'sans-fin' ? 'Route sans fin' : CATALOGUE[reglages.circuit].nom) + ' · ' + NOMS_SAISON[k.saison] + ' · ' + NOMS_MOMENT[k.moment]
       + (k.horlogeReelle ? ' (heure réelle)' : '') + ' · ' + nomMeteoCourse({ ...k, i: reglages.circuit });
     texte($('p-resume'), resume);
     majBilanArcade();
     $('p-conditions-reel').hidden = !reel;
-    if ($('p-bdtre')) $('p-bdtre').hidden = CATALOGUE[reglages.circuit].id !== 'larche';
+    if ($('p-bdtre')) $('p-bdtre').hidden = modePrepa === 'sans-fin' || CATALOGUE[reglages.circuit].id !== 'larche';
     $('p-meteo-sources').hidden = reglages.meteoMode !== 'reel';
     $('p-actualiser-conditions').hidden = !reel && !['saison', 'moment', 'meteo'].some(n => reglages[n + 'Mode'] === 'aleatoire');
     texte($('p-actualiser-conditions'), reel ? 'Actualiser les conditions' : 'Tirer à nouveau');
@@ -5134,7 +5138,19 @@
   function remplirPreparation() {
     const estSF = modePrepa === 'sans-fin', nbLocal = estSF ? joueursLocaux() : (modePrepa === 'duo' ? Math.max(2, joueursLocaux()) : 1);
     const estMultiMenu = modePrepa === 'duo' || (estSF && nbLocal >= 2);
-    $('p-titre').textContent = modePrepa === 'chrono' ? 'Chrono' : modePrepa === 'enligne' ? 'Course en ligne' : modePrepa === 'duo' ? 'Course à deux' : estSF ? 'Route sans fin' : 'Course';
+    if ($('onglet-p-piste')) $('onglet-p-piste').hidden = estSF;
+    for (const [id, numSF, numNorm] of [
+      ['onglet-p-conditions', '01', '02'],
+      ['onglet-p-pilotes', '02', '03'],
+      ['onglet-p-bilan', '03', '04']
+    ]) {
+      const puce = $(id)?.querySelector('span');
+      if (puce) puce.textContent = estSF ? numSF : numNorm;
+    }
+    $('p-titre').textContent = modePrepa === 'chrono' ? 'Chrono'
+      : modePrepa === 'enligne' ? 'Course en ligne'
+      : modePrepa === 'duo' ? (nbLocal === 2 ? 'Course à deux' : nbLocal === 3 ? 'Course à trois' : 'Course à quatre')
+      : estSF ? 'Route sans fin' : 'Course';
     $('o-partage').hidden = !(estMultiMenu && nbLocal === 2);
     $('o-commandes').hidden = false;
     $('p-commandes-j2').hidden = !estMultiMenu;
@@ -5231,7 +5247,7 @@
   }
   function majChoixPneus() {
     const choix = choixPneusLocaux(), membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
-    const duoPreparation = modePrepa === 'duo' || (modePrepa === 'enligne' && membre && membre.joueurs === 2);
+    const duoPreparation = pilotesMenu() >= 2;
     $('o-pneus-2').hidden = !duoPreparation;
     $('pr-pneus-2').hidden = !(membre && membre.joueurs === 2);
     for (let n = 0; n < 2; n++) {
@@ -5318,8 +5334,13 @@
       if (txt) txt.textContent = String(val);
     }
     majChoixTroll(); majBilanArcade();
-    const r = records[CATALOGUE[reglages.circuit].id];
-    $('p-record').innerHTML = r ? 'Votre record sur ' + CATALOGUE[reglages.circuit].nom + ' : <b>' + chrono(r.tour) + '</b>' : 'Pas encore de temps sur ' + CATALOGUE[reglages.circuit].nom + '.';
+    if (modePrepa === 'sans-fin') {
+      const recSF = lireStock('bitume-sans-fin-record', 0) || 0;
+      $('p-record').innerHTML = recSF > 0 ? 'Votre record en Route sans fin : <b>' + (recSF / 1000).toFixed(1).replace('.', ',') + ' km</b>' : 'Pas encore de record en Route sans fin.';
+    } else {
+      const r = records[CATALOGUE[reglages.circuit].id];
+      $('p-record').innerHTML = r ? 'Votre record sur ' + CATALOGUE[reglages.circuit].nom + ' : <b>' + chrono(r.tour) + '</b>' : 'Pas encore de temps sur ' + CATALOGUE[reglages.circuit].nom + '.';
+    }
   }
   document.addEventListener('change', e => {
     const t = e.target;
@@ -5483,10 +5504,11 @@
     if (e.target.id === 'r-touches-defaut') { reglages.touches = [{}, {}, {}, {}]; captureTouche = null; sauverReglages(); majCommandes(); }
   });
   function manetteConfiguration(n, liste = manettes) {
-    // Le choix à deux reste identique à la course. Hors duo, le joueur 1 garde
-    // la première manette ; le second peut configurer la suivante sans clavier.
-    return session?.type === 'duo' || ecran === 'reglages' && retourReglages === 'preparation' && modePrepa === 'duo'
-      ? assigner(liste)[n] : liste[n] || null;
+    // Le choix en écran partagé reste identique à la course. Hors multi, le joueur 1 garde
+    // la première manette ; les suivants peuvent configurer la leur sans clavier.
+    const nb = session?.nbJoueurs > 1 ? session.nbJoueurs
+      : ecran === 'reglages' && retourReglages === 'preparation' && (modePrepa === 'duo' || modePrepa === 'sans-fin') ? pilotesMenu() : 1;
+    return nb > 1 ? assigner(liste, nb)[n] : liste[n] || null;
   }
   function lireCaptureManette(liste) {
     const q = captureManette;
@@ -6534,8 +6556,13 @@
     if (jeu.dataset.manette !== modeManette) jeu.dataset.manette = modeManette;
     // deux manettes branchées : « À deux » le signale, et Start sur la seconde, au titre, ouvre la course à deux
     if (ecran === 'titre') $('t-manettes').hidden = nbManettes < 2;
-    // préparation d'une course à deux : qui joue avec quoi, selon les choix et les manettes branchées
-    if (ecran === 'preparation') texte($('p-manettes'), (modePrepa === 'duo' ? [0, 1] : [0]).map(n => 'Joueur ' + (n + 1) + ' : ' + entreeDe(n, modePrepa === 'duo')).join(' · ') + '.');
+    // préparation (solo, duo, 3–4 joueurs, route sans fin) : qui joue avec quoi, selon les choix et manettes branchées
+    if (ecran === 'preparation') {
+      const nbp = pilotesMenu();
+      let resume = '';
+      for (let n = 0; n < nbp; n++) resume += (n ? ' · ' : '') + 'Joueur ' + (n + 1) + ' : ' + entreeDe(n, nbp > 1, nbp);
+      texte($('p-manettes'), resume + '.');
+    }
     menuArcade.image(t, ecran === 'preparation', gpuModeste || reglages.qualite === 'low');
     // Aucune simulation ni image de course derrière les écrans opaques ; les entrées et le compte à rebours restent actifs.
     if (menuOpaque()) { tPrec = 0; B.cadence.oublier(cadence); return; }
