@@ -136,8 +136,9 @@
       }
       if (courbe) {
         const q = B.circuit.echantillon(c, courbe.sommet);
+        // Lot J : cadrage bas centré sur la route et la courbe (fini les vues lointaines à 48 m / 105 m).
         panorama.push({ type: 'panorama', s: courbe.sommet, cap: q.cap, cible: [q.x,q.y+2,q.z],
-          rayon: 105, hauteur: 48, label: courbe.libelle, virage: courbe.id });
+          rayon: 64, hauteur: 19, label: courbe.libelle, virage: courbe.id });
         continue;
       }
       let meilleur = null;
@@ -145,7 +146,7 @@
         const s = debut + (j + .5) * (fin - debut) / 6;
         if (B.circuit.dansCouvert(c, s, 90)) continue;
         const q = B.circuit.echantillon(c, s), score = q.y + Math.abs(q.courbure) * 1800 + Math.abs(q.pente || 0) * 180;
-        if (!meilleur || score > meilleur.score) meilleur = { type: 'panorama', s, cap: q.cap, cible: [q.x, q.y + 2, q.z], rayon: 105, hauteur: 48, label: 'Relief et tracé', score };
+        if (!meilleur || score > meilleur.score) meilleur = { type: 'panorama', s, cap: q.cap, cible: [q.x, q.y + 2, q.z], rayon: 64, hauteur: 19, label: 'Relief et tracé', score };
       }
       if (meilleur) panorama.push(meilleur);
     }
@@ -157,8 +158,8 @@
       const s = plusProche(c, marqueur.x, marqueur.z), q = B.circuit.echantillon(c, s);
       const ecart = Math.hypot(marqueur.x - q.x, marqueur.z - q.z);
       lieu.push({ type: 'lieu', marqueur, s, cap: q.cap, cible: [marqueur.x, marqueur.y + 1.5, marqueur.z],
-        route: [q.x, q.y + 1, q.z], rayon: clamp(85 + ecart * .9, 85, 230),
-        hauteur: clamp(28 + Math.max(0, marqueur.y - q.y) * .18, 28, 55), label: marqueur.nom });
+        route: [q.x, q.y + 1, q.z], rayon: clamp(54 + ecart * .7, 54, 135),
+        hauteur: clamp(16 + Math.max(0, marqueur.y - q.y) * .14, 16, 30), label: marqueur.nom });
     }
     const data = { panorama, lieu, maxY, minY, visuels: rochersVisuels(decor) }; CACHE.set(decor, data); return data;
   }
@@ -353,9 +354,9 @@
       for (const q of poses) { const w = poids(q); if (w > 0) { x += q.x * w; y += q.y * w; z += q.z * w; n += w; } }
       cible[0] = n ? x / n : p.x; cible[1] = (n ? y / n : p.y) + .7; cible[2] = n ? z / n : p.z;
       for (const q of poses) { const w = poids(q); if (w > 0) rayon = Math.max(rayon, Math.hypot(q.x - cible[0], q.z - cible[2]) * w); }
-      const a = p.cap + cote * (.24 + .08 * u), recul = Math.max(36, rayon * 1.5);
-      pos[0] = cible[0] - Math.cos(a) * recul; pos[2] = cible[2] - Math.sin(a) * recul; pos[1] = cible[1] + Math.max(22, rayon * .8);
-      fov = 52;
+      const a = p.cap + cote * (.24 + .08 * u), recul = Math.max(24, rayon * 1.25);
+      pos[0] = cible[0] - Math.cos(a) * recul; pos[2] = cible[2] - Math.sin(a) * recul; pos[1] = cible[1] + Math.max(12, rayon * .45);
+      fov = 50;
     }
     if (!libre(C, pos, cible, marge)) return null;
     const cam = viser(pos, cible, fov, NATURE.has(plan.vue));

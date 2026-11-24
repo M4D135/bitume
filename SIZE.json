@@ -1,8 +1,8 @@
 {
-  "version": "0.2.313",
-  "raw": 17591636,
-  "gzip": 4776855,
-  "sha256": "6a062c1be1dac1a2e85758fca89e5133e46b640285241639d641f85168090e7c",
+  "version": "0.2.314",
+  "raw": 17594400,
+  "gzip": 4777751,
+  "sha256": "df645d68a5b1f37fa5d37438d0be905c45df492555b778ae30206bd82f7632c8",
   "sources": {
     "ferro/surface.js": 3419,
     "ferro/render-shared.js": 81526,
@@ -42,7 +42,7 @@
     "contacts.js": 8379,
     "obstacles.js": 20076,
     "strategie-stands.js": 21509,
-    "course.js": 63579,
+    "course.js": 63993,
     "son.js": 58876,
     "botanique.js": 25068,
     "ecologie.js": 3127,
@@ -59,7 +59,7 @@
     "decor.js": 191862,
     "physique.js": 29031,
     "faune.js": 30792,
-    "aeriens.js": 27646,
+    "aeriens.js": 29858,
     "signalisation-course.js": 16432,
     "mouvements-stand-data.js": 3740,
     "mouvements-stand.js": 1908,
@@ -85,7 +85,7 @@
     "traces.js": 48394,
     "echappement.js": 30838,
     "expressions-pilote.js": 17078,
-    "cinema.js": 22368,
+    "cinema.js": 22477,
     "realisateur.js": 14531,
     "pluie-webgpu.js": 5981,
     "meteo.js": 25766,
@@ -110,7 +110,7 @@
     "vibrations.js": 10282,
     "ombres.js": 13366,
     "visites.js": 6566,
-    "jeu.js": 476669,
+    "jeu.js": 476698,
     "index.html": 79938,
     "style.css": 114119
   }

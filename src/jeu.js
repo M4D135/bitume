@@ -2753,8 +2753,8 @@
         return { pos: pt([-.05, .40, cote * 1.13]), yaw: p.cap + Math.PI / 2 - cote * .07, pitch: -.025 + p.tangage * .85, roll: -p.roulis * .85, fov: 66, near: .05, far: PORTEE_VUE };
       case 'aileron':     // au-dessus de l'arceau, comme les caméras de télévision : casque et nez devant
         return { pos: pt([-.66, 1.17, 0]), yaw: p.cap + Math.PI / 2, pitch: -.12 + p.tangage * .85, roll: -p.roulis * .85, fov: 58, near: .05, far: PORTEE_VUE };
-      case 'arriere':     // sur l'aileron arrière, regard vers le poursuivant
-        return { pos: pt([-1.95, 1.1, 0]), yaw: p.cap - Math.PI / 2, pitch: -.075 - p.tangage * .85, roll: p.roulis * .85, fov: 46, near: .05, far: PORTEE_VUE };
+      case 'arriere':     // sur l'aileron arrière, regard vers le poursuivant (dégagé du bord d'aileron)
+        return { pos: pt([-1.95, 1.18, 0]), yaw: p.cap - Math.PI / 2, pitch: -.08 - p.tangage * .85, roll: p.roulis * .85, fov: 46, near: .05, far: PORTEE_VUE };
       case 'travelling':  // grue qui roule à côté de la voiture et se laisse doucement distancer ; le décor file
         return vise(pt([1.6 - age * .45, 1.15, cote * 6.4]), pt([.2, .45, 0]), 38);
       default: {          // orbite : tour lent autour de la voiture, plus serré pendant une action

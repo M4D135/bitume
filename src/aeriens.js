@@ -405,6 +405,45 @@
     return Math.max(solMax + margeCanopee, yPiste + margeCanopee * .82, hauteurAntiTunnel(c, s, yPiste), sommet + 12);
   }
 
+  // Anticipation avant le long de la vitesse (ou vers la cible) : l'hélico et les drones montent
+  // progressivement ~2,5 s AVANT une crête, un bois élevé, un portique ou une entrée de tunnel,
+  // au lieu de monter brusquement au contact du plancher local.
+  function plancherAnticipe(c, x, z, vx, vz, cibleX, cibleZ, s, yPiste, sol, obstacles, margeCanopee, yLocal) {
+    let yAnt = yLocal;
+    let dx = vx, dz = vz, vH = Math.hypot(dx, dz);
+    if (vH < 6) {
+      dx = cibleX - x; dz = cibleZ - z;
+      const dist = Math.hypot(dx, dz);
+      if (dist > 1) { dx = dx / dist * 20; dz = dz / dist * 20; vH = 20; }
+      else return yAnt;
+    }
+    const dirX = dx / vH, dirZ = dz / vH;
+    const horizons = [0.6, 1.4, 2.4, 3.6];
+    for (let k = 0; k < horizons.length; k++) {
+      const d = Math.max(14, Math.min(180, vH * horizons[k]));
+      const px = x + dirX * d, pz = z + dirZ * d;
+      const solAv = sol(px, pz);
+      if (Number.isFinite(solAv)) {
+        const ySol = solAv + margeCanopee;
+        if (ySol > yAnt) yAnt = ySol;
+      }
+      if (obstacles) {
+        const sommetAv = B.obstacles.sommetProche(obstacles, px, pz, 20);
+        if (sommetAv + 12 > yAnt) yAnt = sommetAv + 12;
+      }
+      const yTunAv = hauteurAntiTunnel(c, s + d, yPiste);
+      if (yTunAv > yAnt) yAnt = yTunAv;
+    }
+    // Vérifier aussi la cible proche (évite de plonger dans une pente juste avant l'arrivée)
+    const solC = sol(cibleX, cibleZ);
+    if (Number.isFinite(solC) && solC + margeCanopee > yAnt) yAnt = solC + margeCanopee;
+    if (obstacles) {
+      const somC = B.obstacles.sommetProche(obstacles, cibleX, cibleZ, 18);
+      if (somC + 12 > yAnt) yAnt = somC + 12;
+    }
+    return yAnt;
+  }
+
   // Enveloppe d'aller-retour peloton de tête -> dernier -> retour rapide vers la tête
   function facteurBalayage(t, periode, partFocusTete) {
     const ph = ((t % periode) + periode) % periode / periode;
@@ -420,20 +459,27 @@
   function piloterAppareil(app, cibleX, cibleY, cibleZ, c, s, yPiste, sol, obstacles, marge, dt, kp, kd, vMax, aMax) {
     // Reprise uniquement au premier cadrage : un changement de cible se VOL, jamais une téléportation.
     const reprise = !app.init;
-    const yPlancher = plancherSecurite(c, reprise ? cibleX : app.pos[0], reprise ? cibleZ : app.pos[2], s, yPiste, sol, obstacles, marge);
+    const yLocal = plancherSecurite(c, reprise ? cibleX : app.pos[0], reprise ? cibleZ : app.pos[2], s, yPiste, sol, obstacles, marge);
     if (reprise) {
-      app.pos[0] = cibleX; app.pos[1] = Math.max(cibleY, yPlancher); app.pos[2] = cibleZ;
+      app.pos[0] = cibleX; app.pos[1] = Math.max(cibleY, yLocal); app.pos[2] = cibleZ;
       app.vel[0] = 0; app.vel[1] = 0; app.vel[2] = 0;
       app.init = true;
       return;
     }
-    const ty = Math.max(cibleY, yPlancher);
+    const yAnticipe = plancherAnticipe(c, app.pos[0], app.pos[2], app.vel[0], app.vel[2], cibleX, cibleZ, s, yPiste, sol, obstacles, marge, yLocal);
+    const ty = Math.max(cibleY, yAnticipe);
     let ax = (cibleX - app.pos[0]) * kp - app.vel[0] * kd;
-    let ay = (ty - app.pos[1]) * (kp * 1.9) - app.vel[1] * (kd * 1.4);
     let az = (cibleZ - app.pos[2]) * kp - app.vel[2] * kd;
-    if (app.pos[1] < yPlancher) ay += (yPlancher - app.pos[1]) * 18;
-    const aNorm = Math.hypot(ax, ay, az);
-    if (aNorm > aMax) { const k = aMax / aNorm; ax *= k; ay *= k; az *= k; }
+    const aH = Math.hypot(ax, az);
+    if (aH > aMax) { const k = aMax / aH; ax *= k; az *= k; }
+    // Autorité verticale dédiée pour l'anticipation d'obstacles / crêtes (sans être étouffée par aH)
+    const ecartY = ty - app.pos[1];
+    const kpY = ecartY > 2 ? kp * 3.4 : kp * 1.9;
+    const kdY = ecartY > 2 ? kd * 1.1 : kd * 1.4;
+    let ay = ecartY * kpY - app.vel[1] * kdY;
+    if (app.pos[1] < yLocal) ay += (yLocal - app.pos[1]) * 18;
+    const aYMax = aMax * 1.35;
+    if (ay > aYMax) ay = aYMax; else if (ay < -aMax) ay = -aMax;
     app.acc[0] = ax; app.acc[1] = ay; app.acc[2] = az;
     app.vel[0] += ax * dt; app.vel[1] += ay * dt; app.vel[2] += az * dt;
     const sp = Math.hypot(app.vel[0], app.vel[1], app.vel[2]);
@@ -441,9 +487,9 @@
     app.pos[0] += app.vel[0] * dt;
     app.pos[1] += app.vel[1] * dt;
     app.pos[2] += app.vel[2] * dt;
-    // Plancher dur anti-collision arbres/tunnels/relief
-    if (app.pos[1] < yPlancher) {
-      app.pos[1] = yPlancher;
+    // Plancher dur anti-collision arbres/tunnels/relief au point courant
+    if (app.pos[1] < yLocal) {
+      app.pos[1] = yLocal;
       if (app.vel[1] < 0) app.vel[1] = 0;
     }
     const vH = Math.hypot(app.vel[0], app.vel[2]);
@@ -456,7 +502,7 @@
     }
     const latAcc = -Math.sin(app.cap) * ax + Math.cos(app.cap) * az;
     const rollCible = Math.max(-0.42, Math.min(0.42, latAcc * 0.016));
-    const pitchCible = -Math.max(0.02, Math.min(0.18, vH / 340));
+    const pitchCible = Math.max(-0.20, Math.min(0.14, -Math.max(0.02, Math.min(0.18, vH / 340)) + app.vel[1] * 0.01));
     app.roll += (rollCible - app.roll) * Math.min(1, dt * 5.0);
     app.pitch += (pitchCible - app.pitch) * Math.min(1, dt * 5.0);
   }

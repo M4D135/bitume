@@ -102,17 +102,19 @@ try {
     });
 
     if (k.id === 'baikal') verifier('Baïkal : le saut s=2520 m à 60 m/s rencontre la montée responsable des trois mètres de traversée', () => {
-      const s = course(scene, 2520, 60), r = surveiller(s); let aUneSeconde;
+      const s = course(scene, 2520, 60), r = surveiller(s); let reception = null;
       try {
         B.conduite.lancerSaut(s.e, { grand: true });
         for (let i = 0; i < 360; i++) {
           avancer(s, 1, NEUTRE, r);
-          if (i === 119) aUneSeconde = { s: s.e.s, y: s.ph.y, appuis: s.ph.groundCount, saut: !!s.e.saut };
+          if (!reception && !s.e.saut) reception = { t: (i + 1) * DT, s: s.e.s, y: s.ph.y, appuis: s.ph.groundCount };
         }
         r.verifier(); assert(r.maxRepereSolVisible > .2, 'le vrai saut n’a pas décollé');
         assert(s.e.s > 2660 && s.ph.groundCount === 4, 'la voiture n’a pas repris sa route après réception');
-        assert.equal(aUneSeconde.saut, false, 'le saut doit déjà avoir rencontré la montée à une seconde');
-        return { circuit: k.id, aUneSeconde, ...r.resume() };
+        // Lancée tangentiellement à la montée (+5,2 %, lancerSurSol), l'impulsion h=1,8 m retombe sous ~1,07 s
+        // (arc balistique à vide 1,21 s), sans jamais traverser le sol (sousLeSol === 0 vérifié ci-dessus).
+        assert(reception && reception.t <= 1.25, 'le saut doit avoir rencontré la montée avant 1,25 s : ' + JSON.stringify(reception));
+        return { circuit: k.id, reception, ...r.resume() };
       } finally { B.physique.liberer(s.co); }
     });
 

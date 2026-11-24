@@ -442,15 +442,20 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
 
     // Direction.
     const evite = !recuperer && ia.cible >= 0 && devant && vit > devant.etat.v + 10;
-    const la = recuperer ? 10 + 0.6 * vit : (evite ? 5 : 8) + (evite ? 0.30 : 0.45) * vit;
+    // Sur chaussée glissante (pluie/neige), allonger l'anticipation et adoucir la vitesse
+    // latérale de changement de ligne pour ne pas déraper hors piste dès la mise en vitesse.
+    const coefAdh = clamp(adh, .45, 1);
+    const la = recuperer ? 10 + 0.6 * vit : ((evite ? 5 : 8) + (evite ? 0.30 : 0.45) * vit) / (evite ? 1 : Math.pow(coefAdh, .7));
     const ligneLa = lire(c, c.ligne, e.s + la);
     let dVise = recuperer ? Math.sign(e.d) * (demi - 1.8) : clamp(ligneLa + ia.decal + ia.decalDep, -utile, utile);
     dVise = dMin > dMax ? e.d : clamp(dVise, dMin, dMax);
     const psiL = recuperer ? 0 : Math.atan2(ligneLa - lIci, la);
-    const ouverture = recuperer ? .19 : Math.asin(Math.min(1, (evite ? 9 : 5) / Math.max(vit, 1)));
+    const ouverture = recuperer ? .19 : Math.asin(Math.min(1, (evite ? 9 : 5 * coefAdh * coefAdh) / Math.max(vit, 1)));
     const psiC = clamp(Math.atan2(dVise - e.d, la), psiL - ouverture, psiL + ouverture);
-    // ── AMÉLIORATION 3 : contre-braquage en vraie dérive uniquement ──
-    const contreBeta = (vit > 10 && Math.abs(e.beta) > 0.14) ? -0.45 * e.beta : 0;
+    // ── AMÉLIORATION 3 : contre-braquage progressif en vraie dérive (en courbure, jamais hors piste) ──
+    const excesBeta = (!recuperer && vit > 10 && Math.abs(e.beta) > 0.16)
+      ? Math.sign(e.beta) * (Math.abs(e.beta) - 0.16) : 0;
+    const contreBeta = -0.14 * excesBeta;
     const kVise = kIci / Math.max(1 - kIci * e.d, .3) + 2.2 * (psiC - e.psi) * Math.max(vit, 5) / (10 * Math.max(vit, 3)) + contreBeta;
     let volant = B.conduite.volantPour(e, kVise);
 
