@@ -173,9 +173,10 @@ export function creerCompteurVisites({ fichier = process.env.BITUME_VISITES_FICH
       const t = Math.max(0, Math.floor(maintenant())), proprietaire = sessions.get(ids.session), precedent = visiteurs.get(ids.visiteur);
       if (proprietaire && proprietaire[1] !== ids.visiteur) throw faute(409, 'Identifiant de visite déjà attribué.');
       // Même identifiant : réessai, rechargement ou onglet. Un nouvel ID proche du précédent est un alias de session.
-      const nouvelle = !proprietaire && (precedent === undefined || t - precedent[1] >= SESSION_MS);
+      // Le réseau est compté par empreinte HMAC (jamais l'IP brute) : premier navigateur vu sur ce réseau.
       const inconnu = precedent === undefined;
-      const groupe = proprietaire ? proprietaire[2] || proprietaire[0] : nouvelle ? ids.session : precedent[2];
+      const nouvelle = !proprietaire && (inconnu || t - precedent[1] >= SESSION_MS);
+      const groupe = proprietaire ? (proprietaire[2] || proprietaire[0]) : nouvelle ? ids.session : precedent[2];
       // Un retry historique ne prolonge ni une autre session ni une session déjà expirée.
       if (proprietaire && (groupe !== precedent[2] || t - precedent[1] >= SESSION_MS || t - precedent[1] < 30000)) {
         if (!copieComplete) await sauver(etat); return totaux();

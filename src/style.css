@@ -345,11 +345,13 @@ body.tactile .case .barre-sante { height: 4px; margin-top: 3px; }
 .feux i { width: clamp(22px, 3.4vw, 34px); aspect-ratio: 1; border-radius: 50%; background: #2a1010; box-shadow: inset 0 0 0 2px rgba(0, 0, 0, .5); }
 .feux i.allume { background: radial-gradient(circle at 40% 35%, #ff9a84, var(--rouge) 45%, #8a1208); box-shadow: 0 0 18px rgba(255, 60, 30, .75); }
 
-/* Compteur FPS en course et en démo, en bas à gauche ; ambre sous la barre des 50. */
-.fps { position: absolute; left: max(12px, env(safe-area-inset-left)); bottom: max(12px, env(safe-area-inset-bottom)); transform: none;
-  padding: 3px 7px; background: var(--verre-course); border: 0; border-radius: 5px; text-shadow: var(--texte-course);
+/* Compteur FPS en haut à droite de l'écran (titre, démo et course) ; ambre sous 90 % de la cible. */
+.fps { position: fixed; top: max(8px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right)); left: auto; bottom: auto; z-index: 35; transform: none;
+  padding: 3px 7px; background: linear-gradient(155deg, rgba(47, 59, 70, .52), rgba(11, 19, 26, .46) 58%, rgba(12, 19, 25, .38)); border: 0; border-radius: 5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .92), 0 0 3px rgba(0, 0, 0, .55);
   color: var(--papier-2); font: 600 11px/1 var(--f-texte); font-variant-numeric: tabular-nums; letter-spacing: .05em; pointer-events: none; }
 .fps.bas { color: var(--ambre); border-color: rgba(244, 165, 28, .5); }
+#hud .hud-haut .chronos { margin-top: 20px; }
 
 .classement { position: absolute; left: var(--marge); top: calc(var(--marge) + 89px); margin: 0; padding: 2px 3px; list-style: none; display: grid; gap: 1px; width: 177px; text-shadow: var(--texte-course); }
 .classement li { display: grid; grid-template-columns: 20px 4px minmax(0,1fr) auto; align-items: center; gap: 6px; padding: 3px 6px 3px 0; border-radius: 4px; font: 600 13px/1.1 var(--f-titre); font-stretch: condensed; letter-spacing: .03em; text-transform: uppercase; }
@@ -384,7 +386,7 @@ body.tactile .case .barre-sante { height: 4px; margin-top: 3px; }
 @keyframes message-bis { 0% { opacity: 0; transform: scale(1.18); } 10% { opacity: 1; transform: scale(1); } 75% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
 
 .hud-bas { position: absolute; left: var(--marge); right: var(--marge); bottom: max(var(--marge), env(safe-area-inset-bottom)); display: flex; justify-content: flex-end; align-items: flex-end; gap: 16px; }
-.carte { display: block; width: 100%; height: 100%; aspect-ratio: 1; background: rgba(10,12,15,.62); border: 1px solid rgba(242,236,223,.22); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.45); filter: drop-shadow(0 1px 2px rgba(0,0,0,.9)); }
+.carte { display: block; width: 100%; height: 100%; aspect-ratio: 1; background: transparent; border: 0; border-radius: 0; box-shadow: none; filter: drop-shadow(0 2px 4px rgba(0,0,0,.88)); }
 .tableau { position: relative; display: grid; justify-items: end; gap: 4px; padding: 6px 8px 7px 10px; min-width: 170px; }
 .vitesse b { font: italic 750 clamp(45px, 5.2vw, 65px)/.88 var(--f-titre); font-stretch: condensed; letter-spacing: .01em; }
 .vitesse small { margin-left: 6px; font: 600 12px/1 var(--f-texte); letter-spacing: .14em; text-transform: uppercase; color: var(--papier-2); }
@@ -681,8 +683,6 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .classement { gap: 0; }
   body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .classement li { padding-block: 0; }
   body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .regime { width: min(100%,12cqh); justify-self: end; }
-  /* Le badge FPS reste sous le classement, hors du trajet du poignet en braquage maintenu. */
-  body:not(.tactile) #jeu :is(#hud, #hud2, #hud3, #hud4)[data-vue="cockpit"] .fps { bottom: 30%; }
 }
 
 /* Petit partage haut/bas : les lignes gardent leurs textes et leur ancrage bas, mais prennent

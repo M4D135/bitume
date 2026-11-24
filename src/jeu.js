@@ -65,7 +65,7 @@
   // Identifiants persistés : « poursuite » conserve son cadre historique à 7,4 m.
   const VUES_COURSE = Object.freeze(['aileron-avant', 'nez', 'cockpit', 'arceau', 'poursuite-proche', 'poursuite']);
   const preferenceMouvement = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
-  const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', vue3: 'poursuite', vue4: 'poursuite', partage: 'haut-bas', joueursLocaux: 1, boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 70, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'bas-gauche', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
+  const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', vue3: 'poursuite', vue4: 'poursuite', partage: 'haut-bas', joueursLocaux: 1, boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 70, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'haut-droite', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
     anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'non', gouttes: 1, forcePluie: 'forte',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : .5; } catch (e) { return .5; } })() };
   const reglagesEnregistres = lireStock('bitume.reglages', {});
@@ -94,16 +94,15 @@
   }
   reglages.secousses = Number.isFinite(+reglages.secousses) ? clamp(+reglages.secousses, 0, 1) : DEFAUT.secousses;
   reglages.gouttes = reglages.gouttes != null && Number.isFinite(+reglages.gouttes) ? clamp(+reglages.gouttes, 0, 2) : DEFAUT.gouttes;
-  // Quatre coins disponibles pour la carte ; par défaut en bas à gauche (décision David 21/11).
-  if (!reglages.cartePositionVersion || reglages.cartePositionVersion < 3) {
-    if (reglages.cartePosition === 'gauche' || reglages.cartePosition === 'droite'
-      || (reglages.cartePositionVersion === 2 && reglages.cartePosition === 'haut-gauche')) {
-      reglages.cartePosition = 'bas-gauche';
+  // Quatre coins disponibles pour la carte ; carte et compteur FPS en haut à droite (demande David 24/11).
+  if (!reglages.cartePositionVersion || reglages.cartePositionVersion < 4) {
+    if (reglages.cartePosition === 'gauche' || reglages.cartePosition === 'droite' || reglages.cartePosition === 'bas-gauche') {
+      reglages.cartePosition = 'haut-droite';
     }
-    reglages.cartePositionVersion = 3;
+    reglages.cartePositionVersion = 4;
   } else {
     if (reglages.cartePosition === 'gauche') reglages.cartePosition = 'bas-gauche';
-    else if (reglages.cartePosition === 'droite') reglages.cartePosition = 'bas-droite';
+    else if (reglages.cartePosition === 'droite') reglages.cartePosition = 'haut-droite';
   }
   for (const [cle, valeurs] of Object.entries({ carte: ['oui', 'non'], cartePosition: ['bas-gauche', 'bas-droite', 'haut-gauche', 'haut-droite'], carteTaille: ['petite', 'normale', 'grande'], annoncesVirages: ['non', 'ecran', 'voix'] }))
     if (!valeurs.includes(reglages[cle])) reglages[cle] = DEFAUT[cle];
@@ -3053,12 +3052,12 @@
   // projetés de la glace par une transformation projective (matrix3d). Ce rendu a ses propres copies des nappes et
   // des lots : le moteur range ses tampons dans les lots. Réglage « Image des rétroviseurs » : image simple (fond
   // dessiné dans la glace) en qualité basse et, par défaut, sur écran tactile.
-  const retro = { principal: null, attente: null, rendu: null, scene: null, objets: [], l: 0, h: 0 };
+  const retro = { principal: null, attente: null, rendu: null, scene: null, objets: [], l: 0, h: 0, embruns: 0 };
   // État des glaces de chaque joueur (J1, J2), créé ici une fois : cadence au temps (dette, secondes écoulées depuis
   // la dernière image de chaque glace), coins des glaces (voiture.js, glacesCockpit, sortie réécrite) et pose CSS de
   // chaque toile, calculée à chaque image et écrite en fin d'image seulement si elle a changé (poserGlaces).
   const nouvelleGlace = () => ({ k: 0, coins: [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]], centre: [0, 0, 0], normale: [0, 0, 0], droite: [0, 0, 0] });
-  const nouvellePoseCss = () => ({ v: new Float64Array(16), w: new Float64Array(16), ok: false, chaine: '', ecrite: null, visible: null });
+  const nouvellePoseCss = () => ({ v: new Float64Array(16), w: new Float64Array(16), ok: false, chaine: '', ecrite: null, visible: null, brume: -1 });
   const ETATS_GLACES = [0, 1].map(() => ({ vu: false, seance: null, dette: 0, masque: 0, geometrie: null, ecoule: [0, 0], glaces: [nouvelleGlace(), nouvelleGlace()],
     poses: [nouvellePoseCss(), nouvellePoseCss()], toiles: null, aPoser: false }));
   // Caméra des glaces et objets de sa liste, réutilisés d'une glace à l'autre (le moteur relit tout à chaque draw)
@@ -3231,6 +3230,11 @@
   // Écrit en fin d'image (après tous les rendus de l'image) les poses des toiles qui ont changé : une écriture de
   // style avant un draw forçait un recalcul de style au draw suivant (le moteur lit la taille de sa toile).
   function poserGlaces() {
+    // Voile des embruns sur les glaces, quantifié pour n'écrire le filtre qu'aux vrais changements.
+    const b = Math.round(Math.min(1, Math.max(0, retro.embruns)) * 10) / 10;
+    const filtre = b > .05
+      ? 'brightness(' + (.9 + b * .18).toFixed(3) + ') contrast(' + (1.04 - b * .10).toFixed(3) + ') saturate(' + (1 - b * .30).toFixed(3) + ') blur(' + (b * .6).toFixed(2) + 'px)'
+      : '';
     for (const J of ETATS_GLACES) {
       if (!J.aPoser) continue;
       J.aPoser = false;
@@ -3238,6 +3242,7 @@
         const t = J.toiles[i], P = J.poses[i];
         if (P.visible !== P.ok) { t.style.visibility = P.ok ? '' : 'hidden'; P.visible = P.ok; }
         if (P.ok && P.ecrite !== P.chaine) { t.style.transform = P.chaine; P.ecrite = P.chaine; }
+        if (P.brume !== b) { P.brume = b; t.style.filter = filtre; }
       }
     }
   }
@@ -4157,6 +4162,9 @@
       B.mesures.vue(S === session ? 'principale' : 'joueur' + (indexVue(S) + 1), rendu, { lampes: lampes ? lampes.length : 0, ombres: avecOmbres(P) });
     }
     dessinerMeteo(S, dtImage, cam, vue, P, suivie);
+    // La même brume d'embruns voile les glaces : sans elle, elles restaient nettes au milieu du panache.
+    const brumeGlaces = S.vitreContexte;
+    retro.embruns = Math.max(brumeGlaces?.embruns || 0, (brumeGlaces?.pluie || 0) * .35);
     peindreGlacesPlanifiees(S, planGlaces, cam, ps, sortie, S.ambianceImage, suivie, P);
     if (S.eclair > 0) S.eclair = Math.max(0, S.eclair - dtImage * 3.2);
     S.camera = cam; S.vue = vue; S.suivie = suivie.id;
@@ -6630,6 +6638,13 @@
     if (demoVisible && cam && S.fpsDemo === fpsDemo && ecran === 'demo') B.cadence.releverImage(fpsDemo, t, cadence);
     if (tourne) majPalier(S, f.intervalle, f);
     const tHud = B.mesures.actif ? performance.now() : 0;
+    const tFps = $('t-fps');
+    if (S.type === 'vitrine' && tFps) {
+      const cible = imageCadence ? 1 / (imageCadence.periode * imageCadence.diviseur) : 60;
+      const fps = Math.round(imageCadence && imageCadence.ips || 1000 / Math.max(.5, dureeImage));
+      if (HUD1.fpsTitre !== fps) { texte(tFps, fps + ' FPS'); HUD1.fpsTitre = fps; }
+      classe(tFps, 'bas', fps != null && fps < .9 * cible);
+    }
     if (S.type !== 'vitrine') {
       majHudLocaux(S);
       const j = S.course.joueur;

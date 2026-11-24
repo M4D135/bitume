@@ -87,9 +87,9 @@ verifier('brume réduite sur les trois biomes, atmosphère source et météo con
   for (const density of [.0011, .0009, .00075]) {
     const base = Object.freeze({ fogDensity: density, fog: [.6, .7, .8], wind: .55 });
     const clair = B.graphismes.atmosphere(base);
-    proche(clair.fogDensity / density, .34); assert.strictEqual(clair.fog, base.fog); assert.equal(clair.wind, .55);
+    proche(clair.fogDensity / density, .22); assert.strictEqual(clair.fog, base.fog); assert.equal(clair.wind, .55);
     const extinctionAvant = 1 - Math.exp(-density * 1000), extinctionApres = 1 - Math.exp(-clair.fogDensity * 1000);
-    assert.ok(extinctionApres < extinctionAvant * .55, 'reliefs plus lisibles à 1 km');
+    assert.ok(extinctionApres < extinctionAvant * .40, 'reliefs plus lisibles à 1 km');
     assert.equal(base.fogDensity, density);
   }
 });

@@ -3,7 +3,7 @@
 <style>
 /*STYLE*/
 </style>
-<main id="jeu" data-ecran="chargement" data-carte="oui" data-carte-position="droite" data-carte-taille="normale">
+<main id="jeu" data-ecran="chargement" data-carte="oui" data-carte-position="haut-droite" data-carte-taille="normale">
   <div id="vue-course">
     <canvas id="scene" aria-label="Vue de la course"></canvas>
     <canvas id="scene2" aria-label="Vue du joueur 2"></canvas>
@@ -116,8 +116,9 @@
     <p id="aide-console" class="pied-titre" hidden>Xbox : maintenez Menu pour passer aux contrôles de jeu. RT : gaz · LT : frein · X : dérive · A : troll</p>
     <dl id="compteur-visites" class="compteur-visites" aria-label="Fréquentation du jeu" aria-live="polite">
       <div><dt>Visites</dt><dd id="compteur-total">—</dd></div>
-      <div><dt>Visiteurs uniques</dt><dd id="compteur-uniques">—</dd></div>
+      <div><dt>Visiteurs</dt><dd id="compteur-uniques">—</dd></div>
     </dl>
+    <div id="t-fps" class="fps" aria-hidden="true">–</div>
   </section>
 
   <!-- Jeu en ligne à deux : créer ou rejoindre une partie -->
@@ -611,8 +612,8 @@
       </fieldset>
       <fieldset class="reglage-carte">
         <legend>Carte du circuit</legend>
-        <div class="ligne-reglage"><label><input type="checkbox" id="v-carte" checked><span>Afficher</span></label><label><input type="radio" name="cartePosition" value="bas-gauche" checked><span>Bas gauche</span></label><label><input type="radio" name="cartePosition" value="bas-droite"><span>Bas droite</span></label></div>
-        <div class="ligne-reglage"><label><input type="radio" name="cartePosition" value="haut-gauche"><span>Haut gauche</span></label><label><input type="radio" name="cartePosition" value="haut-droite"><span>Haut droite</span></label></div>
+        <div class="ligne-reglage"><label><input type="checkbox" id="v-carte" checked><span>Afficher</span></label><label><input type="radio" name="cartePosition" value="bas-gauche"><span>Bas gauche</span></label><label><input type="radio" name="cartePosition" value="bas-droite"><span>Bas droite</span></label></div>
+        <div class="ligne-reglage"><label><input type="radio" name="cartePosition" value="haut-gauche"><span>Haut gauche</span></label><label><input type="radio" name="cartePosition" value="haut-droite" checked><span>Haut droite</span></label></div>
         <div class="ligne-reglage"><label><input type="radio" name="carteTaille" value="petite"><span>Petite</span></label><label><input type="radio" name="carteTaille" value="normale" checked><span>Normale</span></label><label><input type="radio" name="carteTaille" value="grande"><span>Grande</span></label></div>
       </fieldset>
       <fieldset class="curseurs">

@@ -71,8 +71,8 @@ try {
     const f = fixture(), a = creer(f.nouveau().env), b = creer(f.nouveau().env);
     a.titre(true); await a.actualiser(); b.titre(true); await b.actualiser();
     f.temps.t += 40 * 60000; b.activite(); await b.actualiser();
-    const avant = JSON.parse(f.stockage.get('bitume.visite.v1')); await a.actualiser();
-    assert.deepEqual(JSON.parse(f.stockage.get('bitume.visite.v1')), avant);
+    const avant = JSON.parse(f.stockage.get('bitume.visite.v2')); await a.actualiser();
+    assert.deepEqual(JSON.parse(f.stockage.get('bitume.visite.v2')), avant);
     assert.deepEqual(await f.serveur.lire(), { visites: 2, visiteursUniques: 1, reseauxUniques: 0 }); a.detruire(); b.detruire();
   });
   await verifier('stockage bloqué garde le jeu et les vrais totaux, sans fausses identités', async () => {

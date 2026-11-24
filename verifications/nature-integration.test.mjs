@@ -24,10 +24,10 @@ const tardives=[];
 const ctx={B,S:session,session,co:{horloge:180},reglages:{moment:'nuit'},
   rendu:{setEnvironment:v=>env.push(v)},retro:{rendu:{setEnvironment:v=>miroirs.push(v)}},
   c:{},scene:{decor:{}},P:Grap.melange('high',0),canvas:{width:1280,height:720},ps:{x:1,y:2,z:3},cam:{sujetNature:false},meteo:{pluie:.3},horlogeReelle:5,sortie:[],
-  creationTardive:(nom,valeur)=>{tardives.push(nom);return valeur;}};
+  creationTardive:(nom,valeur)=>{tardives.push(nom);return valeur;},vueLourde:()=>true,saisonLocale:null};
 const lumiere=section('    if (S.nature) {','    if (B.meteo) B.meteo.actuel');
 const reflet=section('    if (S.nature && (retro.ambianceSource','    retro.rendu.draw(camR');
-const faune=section("    if (S.nature && B.faune && P.faune !== 'off'",'    // voitures : toujours dessinées');
+const faune=section("    if (vueLourde(S) && S.nature && B.faune && P.faune !== 'off'",'    // Hélicoptère TV & drones métal de tournage');
 let controles=0;
 const verifier=(nom,f)=>{f();controles++;console.log('ok '+nom);};
 

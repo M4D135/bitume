@@ -339,7 +339,7 @@
 
   // Réglage d'image du jeu : le décor de référence et sa géométrie restent intacts.
   // La pluie garde son extinction supplémentaire ; les reliefs restent lisibles au loin.
-  const BRUME = .34;
+  const BRUME = .22;
   function atmosphere(base) {
     if (!base || !Number.isFinite(base.fogDensity)) return base;
     return { ...base, fogDensity: base.fogDensity * BRUME };

@@ -3,7 +3,19 @@
   'use strict';
   const SESSION = 30 * 60 * 1000, RAPPEL = 5 * 60 * 1000;
   const ID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-  const CLE_VISITEUR = 'bitume.visiteur.v1', CLE_SESSION = 'bitume.visite.v1';
+  const CLE_VISITEUR = 'bitume.visiteur.v2', CLE_SESSION = 'bitume.visite.v2', COOKIE_VISITEUR = 'bitume_vid';
+  function lireCookie(doc) {
+    try {
+      const m = String(doc?.cookie || '').match(/(?:^|;\s*)bitume_vid=([0-9a-f-]{36})/i);
+      return m && ID.test(m[1]) ? m[1] : null;
+    } catch { return null; }
+  }
+  function ecrireCookie(doc, id, https) {
+    try {
+      if (doc && typeof doc.cookie === 'string')
+        doc.cookie = COOKIE_VISITEUR + '=' + id + '; Max-Age=31536000; Path=/; SameSite=Lax' + (https ? '; Secure' : '');
+    } catch {}
+  }
   function creer(env = globalThis) {
     const document = env.document, racine = document?.getElementById('compteur-visites');
     const visites = document?.getElementById('compteur-total'), uniques = document?.getElementById('compteur-uniques');
@@ -15,23 +27,27 @@
       derniersTotaux = valeurs;
       if (!racine || !visites || !uniques) return;
       visites.textContent = valeurs ? valeurs.visites.toLocaleString('fr-FR') : '—';
-      uniques.textContent = valeurs ? valeurs.visiteursUniques.toLocaleString('fr-FR') : '—';
+      const nbVisiteurs = valeurs ? (Number.isSafeInteger(valeurs.visiteurs) ? valeurs.visiteurs : valeurs.visiteursUniques) : null;
+      uniques.textContent = nbVisiteurs !== null ? nbVisiteurs.toLocaleString('fr-FR') : '—';
       racine.dataset.etat = valeurs ? 'disponible' : 'indisponible';
-      racine.title = valeurs ? 'Visiteurs uniques : navigateurs reconnus depuis le début du comptage.' : 'Compteur indisponible pour le moment.';
+      racine.title = valeurs ? 'Visites (sessions de 30 min) et visiteurs distincts.' : 'Compteur indisponible pour le moment.';
     };
     function programmer(delai = 120) {
       if (detruit || minuterie !== null) return;
       minuterie = env.setTimeout(() => { minuterie = null; void actualiser(); }, delai);
     }
     function identifiants(t) {
+      if (env.navigator?.webdriver === true) return null;   // automates / sondes headless : lecture seule, aucun comptage
       try {
-        const stock = env.localStorage;
-        let visitorId = stock.getItem(CLE_VISITEUR), cree = false;
+        const stock = env.localStorage, https = env.location?.protocol === 'https:';
+        let visitorId = stock.getItem(CLE_VISITEUR) || lireCookie(document), cree = false;
         if (!ID.test(visitorId || '')) {
           visitorId = env.crypto.randomUUID();
           if (!ID.test(visitorId)) return null;
-          stock.setItem(CLE_VISITEUR, visitorId); cree = true;
+          cree = true;
         }
+        stock.setItem(CLE_VISITEUR, visitorId);
+        ecrireCookie(document, visitorId, https);
         // Relire la valeur commune : deux premiers onglets ne conservent pas deux identités concurrentes.
         visitorId = stock.getItem(CLE_VISITEUR);
         if (!ID.test(visitorId || '')) return null;
@@ -76,7 +92,8 @@
           const d = await reponse.json();
           if (!d || !Number.isSafeInteger(d.visites) || !Number.isSafeInteger(d.visiteursUniques) || d.visiteursUniques < 0 || d.visites < d.visiteursUniques)
             throw new Error('Réponse de compteur invalide');
-          afficher({ visites: d.visites, visiteursUniques: d.visiteursUniques });
+          const nbVis = Number.isSafeInteger(d.reseauxUniques) && d.reseauxUniques > 0 ? Math.min(d.visiteursUniques, d.reseauxUniques) : d.visiteursUniques;
+          afficher({ visites: d.visites, visiteursUniques: d.visiteursUniques, visiteurs: nbVis });
           dernierGet = horloge();
           if (post) { dernierPost = derniereActivite; dernierId = ids.visitId; }
           prochainEssai = 0;

@@ -308,7 +308,8 @@ fn scene(pixel:vec2f,flou:f32)->vec3f {
   }
   let centre=uv-vec2f(.5,.57);
   let panache=exp(-dot(centre*vec2f(1.8,1.45),centre*vec2f(1.8,1.45))*2.1);
-  let voile=clamp(embruns*panache*(.44+turbulent*.78),0.,.88);
+  // Voile d'embruns : présent quand on suit une voiture sur chaussée humide, sans laver l'image.
+  let voile=clamp(embruns*panache*(.24+turbulent*.40),0.,.58);
   var grain=0.;
   var blanc=0.;
   if(neige>.001){
