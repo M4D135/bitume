@@ -13,7 +13,7 @@ const results=[];
 function check(name,fn){try{fn();results.push({name,ok:true});}catch(e){results.push({name,ok:false,error:e.message});}}
 function state(side,psi=.65,v=60){
  const s=1000,q=B.circuit.echantillon(c,s),e=C.creer(s,side*17.4);
- Object.assign(e,{v,psi:side*psi,rapport:6,y:q.y-side*c.largeur/2*Math.sin(q.devers)});e.degats=D.creer();return e;
+ Object.assign(e,{v,psi:side*psi,rapport:6,y:q.y-side*c.largeur/2*Math.tan(q.devers)});e.degats=D.creer();return e;
 }
 function advance(e,n=30){const ev=[];for(let k=0;k<n;k++){const events=C.pas(e,cmd,c,dt);ev.push(...events);if(events.some(x=>x.type==='retour'))break;}return ev;}
 for(const side of [-1,1]){

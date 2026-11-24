@@ -13,7 +13,7 @@ const a = source.indexOf('  function preparerTunnel(c)'), b = source.indexOf('  
 assert.ok(a >= 0 && b > a);
 const T = new Function('B', 'creationTardive', source.slice(a, b) + '\nreturn { preparerTunnel, sousLaVoute, lampesTunnel };')(B, (nom, v) => v);
 const c = B.circuit.creer(47, { theme: 'montagne', longueur: 5200, nom: 'Haut-Col' }), ancien = c.tunnel;
-const p = (s, h = 1.2, d = 0) => { const q = B.circuit.echantillon(c, s); return [q.x - Math.sin(q.cap) * d, q.y - d * Math.sin(q.devers) + h, q.z + Math.cos(q.cap) * d]; };
+const p = (s, h = 1.2, d = 0) => { const q = B.circuit.echantillon(c, s); return [q.x - Math.sin(q.cap) * d, q.y - d * Math.tan(q.devers) + h, q.z + Math.cos(q.cap) * d]; };
 const hash = v => createHash('sha256').update(JSON.stringify(v)).digest('hex');
 verifier('le tableau d’un seul ouvrage conserve exactement le décor historique', () => {
   const options = { qualite: 'low', vegetation: false }, avant = B.decor.construire(c, options);

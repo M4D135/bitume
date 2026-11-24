@@ -55,7 +55,7 @@ for (const qualite of ['low', 'high']) {
   verifier(qualite + ' : le tablier et ses raccords restent continus sur toute la largeur roulable', () => {
     for (let s = pont.debut - 4; s < pont.fin + 4; s += 7) for (const decalage of [-6, 0, 6]) {
       const q = B.circuit.echantillon(c, s), x = q.x - Math.sin(q.cap) * decalage, z = q.z + Math.cos(q.cap) * decalage;
-      const y = solDessine(d.nappes, x, z), attendu = q.y - Math.sin(q.devers) * decalage;
+      const y = solDessine(d.nappes, x, z), attendu = q.y - Math.tan(q.devers) * decalage;
       assert.ok(Number.isFinite(y) && Math.abs(y - attendu) < .06, 'trou du tablier à ' + s + ', d=' + decalage);
     }
   });

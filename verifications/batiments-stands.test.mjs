@@ -129,7 +129,7 @@ for(const [graine,theme,longueur] of catalogue) {
     const nouveaux=tous(d).filter(o=>o.architecture);
     const corps=nouveaux.filter(physique);
     for(let s=S.debut-6;s<=S.fin+6;s+=3)for(const d of [S.d-S.demi+.1,S.d,S.d+S.demi-.1])for(const h of [.25,1.15]) {
-      const q=B.circuit.echantillon(c,s),p=[q.x-Math.sin(q.cap)*d,q.y-d*Math.sin(q.devers)+h,q.z+Math.cos(q.cap)*d];
+      const q=B.circuit.echantillon(c,s),p=[q.x-Math.sin(q.cap)*d,q.y-d*Math.tan(q.devers)+h,q.z+Math.cos(q.cap)*d];
       assert(!corps.some(o=>contient(o,p)),'passage occupé à '+s+' m, décalage '+d);
     }
     const peinture=nouveaux.filter(o=>o.architecture==='voie-service'&&!['panneau','numero','poteau-panneau'].includes(o.partie));

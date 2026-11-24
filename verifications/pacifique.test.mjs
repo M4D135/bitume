@@ -112,7 +112,7 @@ verifier('océan visible, route émergée et falaises asymétriques', () => {
   const eau = ete.nappes.filter(n => n.sommets.length && n.sommets[9] === 12);
   assert.ok(eau.length > 0, 'plan marin dessiné');
   for (let i = 0; i < c.n; i++) {
-    const bordBas = c.y[i] - c.largeur / 2 * Math.abs(Math.sin(c.devers[i]));
+    const bordBas = c.y[i] - c.largeur / 2 * Math.abs(Math.tan(c.devers[i]));
     assert.ok(bordBas > ete.niveauEau + 1, 'chaussée au-dessus de la mer');
   }
   mesures.ete = terrain(ete);

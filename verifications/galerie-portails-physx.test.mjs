@@ -18,7 +18,7 @@ try {
       let avant = null, dalle = false;
       for (let u = -3; u <= 9; u += .25) {
         const s = portail + direction * u, q = B.circuit.echantillon(c, s);
-        const route = q.y - d * Math.sin(q.devers), x = q.x - Math.sin(q.cap) * d, z = q.z + Math.cos(q.cap) * d;
+        const route = q.y - d * Math.tan(q.devers), x = q.x - Math.sin(q.cap) * d, z = q.z + Math.cos(q.cap) * d;
         const hit = world.raycast([x, route + 1, z], [0, -1, 0], 2, { mask: 1, staticOnly: true }); rayons++;
         assert.ok(hit.hit && hit.ny > .8, `${t.nom}, ${nom}, d=${d}, s=${s} : sol réel absent ou vertical`);
         const hauteur = hit.y - route;
