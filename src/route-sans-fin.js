@@ -64,7 +64,7 @@
 
   // Points locaux du tronçon k : origine au début, cap local 0, x vers l'avant, z vers la droite.
   // cap(0)=0, κ(0)=κ_ent, κ(L)=κ_sort ; y(0)=0, y'(0)=pente_ent, y(L)=y_sort, y'(L)=pente_sort.
-  function pointsSegment(k, graine) {
+  function calculerSegment(k, graine) {
     const p = profilSegment(k, graine), r = p.r, regle = REGLES[p.biome];
     const entree = sortie(k - 1, graine), sortieFin = sortie(k, graine);
 
@@ -243,6 +243,18 @@
   function stationsEntre(s0, s1, graine) {
     return stationsJusquA(s1, graine).filter(st => st.debutAbs >= s0 && st.debutAbs < s1);
   }
+  // Tronçons mémoïsés : purs par (graine, k), ils sont recalculés à chaque glissement de fenêtre alors
+  // que deux fenêtres qui se suivent en partagent un ou deux. Les appelants lisent, jamais ne modifient.
+  const memoireSegments = new Map();
+  function pointsSegment(k, graine) {
+    const cle = graine + ':' + k, vu = memoireSegments.get(cle);
+    if (vu) return vu;
+    const s = calculerSegment(k, graine);
+    if (memoireSegments.size > 4096) memoireSegments.clear();
+    memoireSegments.set(cle, s);
+    return s;
+  }
+
   // la station à servir depuis une abscisse absolue donnée : la plus proche encore devant
   function stationActive(sAbsolu, liste) {
     for (const st of liste) if (st.finAbs > sAbsolu) return st;

@@ -28,7 +28,7 @@
 
   // ajouter des tronçons jusqu'à couvrir l'abscisse absolue demandée
   function etendre(f, sCible) {
-    while (f.sOrigine + f.longueur < sCible + MARGE_SEG && f.k1 - f.k0 < f.maxSegments) {
+    while (f.sOrigine + f.longueur < sCible + MARGE_SEG && f.k1 - f.k0 < f.maxSegments + 2) {
       const seg = R.pointsSegment(f.k1, f.graine);
       f.k1++;
       f.longueur += seg.profil.L;
@@ -46,7 +46,9 @@
     etendre(f, maxi + f.devant);
     // libérer derrière : on n'avance l'origine que si le joueur le plus en arrière est
     // hors de portée ET qu'il reste assez de route devant lui dans la fenêtre
-    while (f.k1 - f.k0 > 2 && mini - f.derriere > f.sOrigine + R.pointsSegment(f.k0, f.graine).profil.L) {
+    // relâchement groupé : on garde deux tronçons de marge derrière, pour ne pas régénérer le circuit
+    // à chaque tronçon (la libération derrière ne sert qu'à la mémoire, jamais au joueur)
+    while (f.k1 - f.k0 > f.maxSegments && mini - f.derriere > f.sOrigine + R.pointsSegment(f.k0, f.graine).profil.L) {
       f.sOrigine += R.pointsSegment(f.k0, f.graine).profil.L;
       f.longueur -= R.pointsSegment(f.k0, f.graine).profil.L;
       f.k0++;

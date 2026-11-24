@@ -24,27 +24,35 @@ verifier('la séance naît avec la fenêtre et les checkpoints de tête', () => 
 
 verifier('la fenêtre glisse et le circuit est rendu changant', () => {
   const s = S.creer({ graine: GRAINE });
-  let glissements = 0, c = s.c, station = JSON.stringify(s.c.stands);
-  for (let i = 0; i < 120 * 60; i++) {
-    const pos = [Math.min(9000, i * 55 * DT) - s.fenetre.sOrigine];   // abscisses RELATIVES à la fenêtre
+  let reprises = 0, dernierReprise = -1e9, c = s.cPorteur, station = JSON.stringify(s.cPorteur.stands);
+  const DIST = 16500;
+  for (let i = 0; i <= 120 * 300; i++) {
+    const sAbs = Math.min(DIST, i * 55 * DT);
+    const pos = [sAbs - s.cPorteur.sansFinFenetre.sOrigine];   // abscisses RELATIVES au monde bâti (comme etat.s en jeu)
+    // invariant de sûreté : le monde construit couvre toujours le joueur et sa marge de tête
+    const marge = s.fenetre.sOrigine + s.fenetre.longueur - sAbs;
+    assert.ok(marge > 500, 'le joueur rejoint le bord construit à ' + sAbs + ' (marge ' + marge.toFixed(0) + ' m)');
+    assert.ok(sAbs - s.fenetre.sOrigine >= -1e-6, 'joueur derrière la fenêtre à ' + sAbs);
     if (S.avancer(s, pos, DT)) {
-      glissements++;
-      const nouvelle = JSON.stringify(s.c.stands);
-      assert.ok(s.c !== c || nouvelle !== station, 'rendu vrai sans rien de changé');
-      c = s.c; station = nouvelle;
+      reprises++;
+      const nouvelle = JSON.stringify(s.cPorteur.stands);
+      assert.ok(s.cPorteur !== c || nouvelle !== station, 'rendu vrai sans rien de changé dans le monde bâti');
+      assert.ok(sAbs - dernierReprise > 90, 'reprises harcelées à ' + sAbs + ' (à ' + (sAbs - dernierReprise).toFixed(0) + ' m de la précédente)');
+      dernierReprise = sAbs; c = s.cPorteur; station = nouvelle;
     }
   }
-  assert.ok(glissements >= 3, 'la fenêtre n’a jamais glissé en 60 s à 55 m/s');
+  assert.ok(reprises >= DIST / 2500, 'jamais repris le décor sur ' + DIST + ' m : ' + reprises);
+  assert.ok(reprises <= DIST / 300, 'reprises trop fréquentes : ' + reprises + ' sur ' + DIST + ' m');
   assert.ok(s.fenetre.sOrigine > 1000, 'origine jamais avancée : ' + s.fenetre.sOrigine);
-  assert.ok(s.checkpoints.some(cp => cp.s > 3300), 'checkpoints non allongés devant le joueur');
+  assert.ok(s.checkpoints.some(cp => cp.s > DIST), 'checkpoints non allongés devant le joueur');
 });
 
 verifier('la station active est posée et dérivée sur le circuit courant', () => {
   const s = S.creer({ graine: GRAINE });
   let trouvée = null;
   for (let i = 0; i < 120 * 90 && !trouvée; i++) {
-    S.avancer(s, [Math.min(14000, i * 55 * DT) - s.fenetre.sOrigine], DT);
-    if (s.c.stands && s.c.stands.sBox !== undefined) trouvée = { s: i * 55 * DT, stands: s.c.stands, origine: s.c.sansFinFenetre.sOrigine };
+    S.avancer(s, [Math.min(14000, i * 55 * DT) - (s.cPorteur ? s.cPorteur.sansFinFenetre.sOrigine : 0)], DT);
+    if (s.cPorteur.stands && s.cPorteur.stands.sBox !== undefined) trouvée = { s: i * 55 * DT, stands: s.cPorteur.stands, origine: s.cPorteur.sansFinFenetre.sOrigine };
   }
   assert.ok(trouvée, 'aucune station active en 14 km de route');
   const st = trouvée.stands;
@@ -54,8 +62,8 @@ verifier('la station active est posée et dérivée sur le circuit courant', () 
 
 verifier('mêmes positions, même monde autour des joueurs, quel que soit le chemin', () => {
   const a = S.creer({ graine: GRAINE }), b = S.creer({ graine: GRAINE });
-  for (let i = 0; i <= 120 * 40; i++) S.avancer(a, [i * 55 * DT - a.fenetre.sOrigine], DT);
-  S.avancer(b, [40 * 55 - b.fenetre.sOrigine], S.AVANCE_FENETRE);   // directement à la même position finale
+  for (let i = 0; i <= 120 * 40; i++) S.avancer(a, [i * 55 * DT - a.cPorteur.sansFinFenetre.sOrigine], DT);
+  S.avancer(b, [40 * 55 - b.cPorteur.sansFinFenetre.sOrigine], S.AVANCE_FENETRE);   // directement à la même position finale
   const sFinal = 40 * 55;
   for (const s of [a, b]) assert.ok(sFinal - s.fenetre.sOrigine >= 0 && sFinal - s.fenetre.sOrigine <= s.fenetre.longueur, 'joueur hors fenêtre');
   // la géométrie autour du joueur est la même, quoi que la fenêtre traîne derrière
@@ -65,7 +73,7 @@ verifier('mêmes positions, même monde autour des joueurs, quel que soit le che
     assert.ok(Math.hypot(qa.x - qb.x, qa.y - qb.y, qa.z - qb.z) < 0.02 && Math.abs(qa.cap - qb.cap) < 1e-4, 'monde différent à ' + d + ' m du joueur');
   }
   assert.equal(JSON.stringify(a.checkpoints), JSON.stringify(b.checkpoints));
-  const abs = f => f.c.stands ? (f.c.stands.debut + f.c.sansFinFenetre.sOrigine) + ':' + (f.c.stands.fin + f.c.sansFinFenetre.sOrigine) : null;
+  const abs = f => f.cPorteur.stands ? (f.cPorteur.stands.debut + f.cPorteur.sansFinFenetre.sOrigine) + ':' + (f.cPorteur.stands.fin + f.cPorteur.sansFinFenetre.sOrigine) : null;
   assert.equal(abs(a), abs(b), 'station active absolue différente');
 });
 

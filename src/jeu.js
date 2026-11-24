@@ -1436,13 +1436,18 @@
   // Route sans fin : la fenêtre a bougé — le circuit courant change de tronçons. Le décor et les solides
   // PhysX sont rebâtis sur le nouveau circuit ; les voitures gardent leur état (le moteur les repose).
   function reinstallerSansFin(S) {
-    const c = S.seance.c;
+    const c = S.seance.cPorteur;   // le monde que la séance déclare bâti (la fenêtre glisse devant, en silence)
     S.c = c; S.course.c = c;
     // le profil d'ombres est indexé par l'abscisse : une fenêtre qui s'allonge demande un tableau plus long
     if (Math.ceil(c.longueur / 10) + 2 > S.profil.length) S.profil = new Float32Array(Math.ceil(c.longueur / 10) + 2).fill(-1);
+    // seule la station a changé (le circuit est le même objet) : les limites et la voie des stands sont
+    // reposées, mais le décor — le gros du coût — reste en place
+    const sc = S.cDecor === c ? S.sc : installer(S.i, B.saisons.normaliser(S.conditions.saison), null, true, c);
+    if (S.cDecor !== c) {
+      S.cDecor = c; S.sc = sc;
+      B.ombres.carte(rendu, gpuModeste || !B.ombres.ombresPossibles(reglages.qualite, { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages }), sc.decor.lots);
+    }
     B.physique.liberer(S.course);
-    const sc = installer(S.i, B.saisons.normaliser(S.conditions.saison), null, true, c);
-    B.ombres.carte(rendu, gpuModeste || !B.ombres.ombresPossibles(reglages.qualite, { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages }), sc.decor.lots);
     B.physique.installer(S.course, sc.decor);
   }
 
