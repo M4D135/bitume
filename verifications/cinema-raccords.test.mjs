@@ -18,14 +18,14 @@ const canvas = { clientWidth: 1280, clientHeight: 720 };
 const pad = { manette: { connected: true, axes: [0, 0, 0, 1] } }, pad2 = pad;
 const cameraRegardArriere = () => { throw new Error('regard arrière activé pendant une démo'); };
 ` + source.slice(regardDebut, regardFin);
-const debut = source.indexOf('  function rendreVue('), fin = source.indexOf('    // Habitats partagés', debut);
+const debut = source.indexOf('  function rendreVue('), fin = source.indexOf('    // Le même filtre FERRO', debut);
 assert(debut >= 0 && fin > debut, 'raccord de production introuvable');
 const constantes = ['VUES_DEHORS', 'DANS_LA_ROCHE', 'CAMERAS_DEMO', 'PORTEE_VUE'].map(n => {
   const ligne = source.match(new RegExp('^  const ' + n + ' = [^\\n]+;', 'm'));
   assert(ligne, n); return ligne[0];
 }).join('\n') + '\n' + source.match(/^  const ANCRAGES_CAMERAS = Object\.freeze\(\{[\s\S]*?\n  \}\);/m)[0];
 const raccord = new Function('B', 'tampons', 'reglages', 'profilDe', 'cameraTele', 'cameraPoursuite', 'cameraDemo', 'soleilDe',
-  'session', 'cameraEssai', 'horlogeReelle', 'clamp', regard + '\n' + constantes + '\n' + source.slice(debut, fin) +
+  'session', 'cameraEssai', 'horlogeReelle', 'clamp', regard + '\nconst indexVue=()=>0;\n' + constantes + '\n' + source.slice(debut, fin) +
   '\nreturn { cam, vue, suivie, ps };\n}\nreturn rendreVue;');
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const cameraSimple = nom => (S, v, p) => {
@@ -59,8 +59,9 @@ function filtresReinitialises(S) {
 
 verifier('le paysage garde sa trajectoire ; le masquage crée une coupe puis reste en course', () => {
   const { co, cinema, S, rendre, collision } = seance();
-  S.planVu = R.tenir(S.real, co, cinema);
-  assert.equal(S.planVu.vue, 'panorama');
+  // Caméra diagnostic imposée. Le réalisateur de course n'émet plus de panorama.
+  S.planVu = S.real.plan = {vue:'panorama',sujet:co.classement[0],debut:0,fin:6,n:++S.real.n,
+    cote:1,nature:true,ancre:C.choisir(cinema,'panorama',0,0)};
   const sujet = co.voitures[S.planVu.sujet], avant = S.planVu, n = S.real.n;
   const a = rendre(S, sujet, 'panorama', 1 / 60, {});
   assert.equal(S.regardArriere, false, 'le stick droit ne détourne pas la caméra de démonstration');
@@ -85,7 +86,7 @@ for (const [vue, tunnel] of [['helico', true], ['peloton', false]]) {
     tete.progression = co.toursTotal * c.longueur - 200;
     S.real.vert = 5; S.real.plansCourse = 3;
     S.real.plan = { vue, sujet: tete.id, debut: 99, fin: 110, n: ++S.real.n, cote: 1 };
-    S.planVu = R.tenir(S.real, co, cinema); assert(S.real.sprint); assert.equal(S.planVu.vue, vue);
+    S.planVu = R.tenir(S.real, co, cinema); assert(S.real.sprint); assert.equal(S.planVu.vue, 'poursuite');
     if (tunnel) {
       assert(c.tunnel, 'vrai tunnel de Haut-Col');
       tete.etat.s = (c.tunnel.debut + c.tunnel.fin) / 2;

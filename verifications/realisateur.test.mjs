@@ -46,8 +46,8 @@ verifier('la course va au bout et le film a des plans', () => {
   plans.forEach((p, k) => assert.equal(p.plan.n, k + 1, 'plans numérotés dans l’ordre'));
 });
 
-verifier('avant le vert : toute la grille vue d’hélicoptère depuis la dernière ligne, puis la tête au bord de la piste', () => {
-  assert.deepEqual([plans[0].vue, plans[0].sujet, plans[0].motif], ['helico', grille[grille.length - 1], 'grille']);
+verifier('avant le vert : grille depuis la dernière ligne, puis la tête au bord de la piste', () => {
+  assert.deepEqual([plans[0].vue, plans[0].sujet, plans[0].motif], ['aileron', grille[grille.length - 1], 'grille']);
   assert.ok(Math.abs(plans[1].debut - (film.vert + 2.5)) < .02, `coupe ${(plans[1].debut - film.vert).toFixed(2)} s après le vert`);
   assert.deepEqual([plans[1].vue, plans[1].motif], ['tele', 'depart']);
   assert.equal(plans[1].position, 1, 'le plan du départ suit la tête');
@@ -93,7 +93,7 @@ verifier('au drapeau : on arrive avec la tête, de près ; puis le vainqueur au 
   }
   assert.ok(Math.abs(plans[k].debut - film.drapeau) < .02);
   assert.deepEqual([plans[k].vue, plans[k].sujet], ['tele', vainqueur.id]);
-  assert.deepEqual([plans[k + 1].vue, plans[k + 1].sujet, plans[k + 1].motif], ['helico', vainqueur.id, 'honneur']);
+  assert.deepEqual([plans[k + 1].vue, plans[k + 1].sujet, plans[k + 1].motif], ['sol', vainqueur.id, 'honneur']);
   assert.ok(Math.abs(duree(k) - 6) < .02);
 });
 
@@ -127,7 +127,7 @@ verifier('un geste réel reste animé sans détourner la démo vers un gros plan
   assert.strictEqual(R.tenir(real, co, {}, E), planRoute, 'le sprint garde la priorité');
 });
 verifier('aucun catalogue ni repli ne propose un sujet autonome hors du circuit', () => {
-  const interdits = ['flore', 'faune', 'pilote', 'roue', 'orbite', 'travelling'];
+  const interdits = ['flore', 'faune', 'pilote', 'roue', 'orbite', 'travelling','helico','panorama','lieu'];
   for (const vue of interdits) {
     assert(!R.VUES.includes(vue)); assert(!R.VUES_CINEMA.includes(vue));
     const c = B.circuit.creer(11, {theme:'foret',longueur:4200}), co = B.course.creer(c,{rivaux:1,tours:2});

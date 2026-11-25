@@ -1,0 +1,14 @@
+# Continuation BITUME — 26 novembre
+
+Ordre demandé : alléger ce qui est construit et dessiné, puis poursuivre la feuille entière. Les [47 lots du registre](FILE-TRAVAIL.json), le [programme détaillé](FEUILLE-DE-ROUTE-2026-11-22.md), le [programme multi-plateforme](PLAN-NATIF-CPP-MACOS-LINUX-WINDOWS-2026-11-22.md) et les [lots A–L](MASTER-PROMPT-BITUME.md#tableau-de-suivi) restent les sources. L’index des 47 lots est historique : ses statuts ne certifient pas le build actuel.
+
+| Ordre | Travail et réception |
+|---|---|
+| 1. Calcul et rendu utiles | En .335 : pas de plans de survol en démo ; premier filtrage des tuiles de prairie, horizon simplifié, cache borné. [Mesures avant/après et neuf portions en pluie](rapports/COURSE-0335-MAC.json). Sur les Longues Ombres, 90 354 → 81 442 triangles de terrain ; 90 354 → 56 858 triangles candidats à la plantation. La sélection de prairie réduit le travail soumis ; elle ne prouve pas un gain équivalent de FPS. Les nappes FERRO restent chargées au départ ; la construction intégralement locale n'est pas terminée. |
+| 2. Cadence des 9 pistes, Larche | Le banc 1080p Fine, pluie, douze monoplaces et deux glaces situe les écarts à Cimes, Baïkal et Larche. Pour la descente entière utiliser `tools/banc-navigateur.mjs --mode endurance-larche --angle native --taille 1920,1080 --url file:///…/dist/bitume.html --sortie rapport.json`. Il distingue les dessins réels et les rAF, conserve une progression par kilomètre et signale un arrêt prolongé. |
+| 3. Course | Vérifier intégralement entrées/sorties des stands, carburant, contacts roues/nez, dégagement après le drapeau, conservation des records et fantômes sur p55, split et réseau. Ne pas déduire une réception de ces points d’un banc de vingt secondes. |
+| 4. Destinations | Voir [la coupe Louis-II](../references/monaco-2026/PORTAIL-LOUIS-II-20261122.md) : le MNT sur la dalle ne mesure pas la chaussée sous le couvert. En attendant une source altimétrique exploitable, poursuivre les lots indépendants : terrains Marseille/Larche, raccords mixtes, relief, habitats et destinations hors catalogue. |
+| 5. Présentation et appareils | Éclairage, habitacle 126 CK, mains et manches, météo, bruit et réactions du public, progression du championnat. Éprouver aussi sur téléphone, sur console avec manettes et en WAN ; ne pas compter Chrome Mac comme preuve sur ces appareils. |
+| 6. Cache et natif | Après la purge sélective .335, mesurer quelles données de niveau mettre en cache en plus du panorama de Larche. Natif : boucle Mac unifiée rendu/physique, une voiture, un circuit et parité avant Linux/Windows. |
+
+**Lot F réconcilié avec la production** : la .334 déployée possède déjà l'unité avec les proxys loopback. Vérification en lecture seule de l'environnement du processus en service et des trois totaux HTTPS. Aucun redémarrage ni visite synthétique nécessaire.

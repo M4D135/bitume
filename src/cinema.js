@@ -167,9 +167,10 @@
     }
     const data = { panorama, lieu, maxY, minY, visuels: rochersVisuels(decor) }; CACHE.set(decor, data); return data;
   }
-  function preparer(c, decor, animaux, monde) {
+  function preparer(c, decor, animaux, monde, courseSeule = false) {
     // L'argument historique animaux est ignoré : aucune population ni pose animale ne prépare un plan.
-    const base = statiques(c, decor);
+    const base = courseSeule ? {panorama:[],lieu:[],visuels:rochersVisuels(decor),
+      maxY:c.y.reduce((a,b)=>Math.max(a,b),-Infinity)+300, minY:c.y.reduce((a,b)=>Math.min(a,b),Infinity)-100} : statiques(c, decor);
     const C = { c, decor, monde, ancres: { panorama: base.panorama, lieu: base.lieu }, maxY: base.maxY, minY: base.minY,
       options: {}, poseVue: { x: 0, y: 0, z: 0 },
       rayon: [0, 0, 0], origine: [0, 0, 0], cible: [0, 0, 0], position: [0, 0, 0], hit: {}, solHit: {}, requetes: 0,
@@ -358,8 +359,8 @@
       for (const q of poses) { const w = poids(q); if (w > 0) { x += q.x * w; y += q.y * w; z += q.z * w; n += w; } }
       cible[0] = n ? x / n : p.x; cible[1] = (n ? y / n : p.y) + .7; cible[2] = n ? z / n : p.z;
       for (const q of poses) { const w = poids(q); if (w > 0) rayon = Math.max(rayon, Math.hypot(q.x - cible[0], q.z - cible[2]) * w); }
-      const a = p.cap + cote * (.24 + .08 * u), recul = Math.max(24, rayon * 1.25);
-      pos[0] = cible[0] - Math.cos(a) * recul; pos[2] = cible[2] - Math.sin(a) * recul; pos[1] = cible[1] + Math.max(12, rayon * .45);
+      const a = p.cap + cote * (.24 + .08 * u), recul = clamp(rayon * 1.1,16,32);
+      pos[0] = cible[0] - Math.cos(a) * recul; pos[2] = cible[2] - Math.sin(a) * recul; pos[1] = cible[1] + clamp(rayon * .16,2.6,4.8);
       fov = 50;
     }
     if (!libre(C, pos, cible, marge)) return null;

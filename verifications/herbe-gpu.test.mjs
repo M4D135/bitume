@@ -2,6 +2,18 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import '../src/herbe-gpu.js';
 
+test('tuiles : conserver les lames dans le champ, écarter les pieds masqués et la moitié derrière la caméra', () => {
+  const s={y:0,normal:[0,1,0],color:[.1,.3,.1]};
+  const map=BITUME.herbeGPU.clipmap({surfaceHerbe:(x,z)=>x<0?null:s},()=>{});
+  for(let k=0;k<34;k++) map.maj(0,0);
+  // Projection x/z, cône vers -Z, plan proche 1 m.
+  const vp=[1,0,0,0,0,1,0,0,0,0,-1,-1,0,0,-2,0];
+  const liste=new Int32Array(16000), n=map.visibles({oeil:[0,0,0],vp},true,liste);
+  const t=new Set();
+  for(let i=0;i<n;i+=4){assert.ok(liste[i]>=0);assert.ok(liste[i+1]<=8);t.add(`${liste[i]},${liste[i+1]},${liste[i+2]}`);}
+  assert(t.has('0,-16,10')); assert(t.has('16,-64,0')); assert(n*16<65536);
+});
+
 test('clipmap : ancrage sur la surface masquée, bandes sans doublons et cut de caméra', () => {
   const cellules = new Map(), echantillons = new Map();
   const decor = {

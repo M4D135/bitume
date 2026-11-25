@@ -1,4 +1,12 @@
 {
+  "reprise_2026_11_26": {
+    "programme": "docs/reprise/CONTINUATION-2026-11-26.md",
+    "runtime": "0.2.335",
+    "production_verifiee": "0.2.334 / 93d64ac",
+    "physique": "p55",
+    "mesures": "docs/reprise/rapports/COURSE-0335-MAC.json",
+    "priorite": "Endurance réelle de Larche ; analyser les longues images en pluie, puis continuer les 47 lots."
+  },
   "dernier_lot_verifie": {
     "date": "2026-11-25",
     "version": "0.2.334",

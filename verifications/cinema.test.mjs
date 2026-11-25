@@ -73,13 +73,13 @@ for(const k of catalogue) {
   if(k.id===catalogue[0].id || c.ouvert){
    verifier('lieu au départ, tracé, sprint et drapeau gardent des plans explicites',()=>{
     const r=R.creer(777);co.horloge=0;co.phase='grille';
-    let p=R.tenir(r,co,C);assert.equal(p.motif,'decouverte');assert.equal(p.vue,'lieu');assert.equal(p.label,decor.lieux.marqueurs[0].nom);
+    let p=R.tenir(r,co,C);assert.equal(p.motif,'grille');assert.equal(p.vue,'aileron');
     co.horloge=2.4;co.phase='feux';p=R.tenir(r,co,C);assert.equal(p.motif,'grille');
     co.horloge=5;co.phase='course';R.tenir(r,co,C);co.horloge=7.51;p=R.tenir(r,co,C);assert.equal(p.motif,'depart');
     co.horloge=30;r.plansCourse=3;p.fin=0;for(const v of co.voitures){v.etat.v=30;v.progression=200;}
-    p=R.tenir(r,co,C);assert(p.nature);assert.equal(p.vue,'lieu');const ancien=p, n=r.n;
+    p=R.tenir(r,co,C);assert(!p.nature);const ancien=p, n=r.n;
     p=R.replier(r,co);assert.notEqual(p,ancien);assert.equal(p.n,n+1);assert.equal(p.vue,'tele');assert.equal(p.motif,'cadre');
-    co.horloge=60;r.plansCourse=3;p.fin=0;p=R.tenir(r,co,C);assert.equal(p.vue,'panorama','le tracé doit alterner avec le lieu');
+    co.horloge=60;r.plansCourse=3;p.fin=0;p=R.tenir(r,co,C);assert(!p.nature && p.vue!=='helico');
     const ligne = c.ouvert ? c.arrivee - (c.depart || 0) : co.toursTotal*c.longueur;
     co.voitures[co.classement[0]].progression=ligne-200;p=R.tenir(r,co,C);assert.equal(p.motif,'sprint');assert(!p.nature);
     co.drapeau=61;co.horloge=61;co.voitures[0].fini=true;co.voitures[0].tempsFinal=61;p=R.tenir(r,co,C);assert.equal(p.motif,'arrivee');

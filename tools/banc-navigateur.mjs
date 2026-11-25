@@ -17,6 +17,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { controlerJeu, controlerStand } from './smoke-jeu.mjs';
 import { controlerCachePanorama } from './controle-cache-panorama.mjs';
+import { controlerCacheLRU } from './qualification/cache-lru.mjs';
 
 const args = {};
 for (let i = 2; i < process.argv.length; i += 2) args[process.argv[i].replace(/^--/, '')] = process.argv[i + 1];
@@ -147,7 +148,7 @@ try {
       } throw Error('Prairie introuvable'); })()`);
     await images(60);
     rapport.prairie = await evaluer('BITUME_JEU.scene.prairies[0]?.mesure');
-    if (rapport.prairie?.candidats !== 196608) throw new Error('Prairie ultra incomplète');
+    if (!(rapport.prairie?.candidats > 0 && rapport.prairie.candidats < 196608)) throw new Error('Prairie ultra absente ou non filtrée');
   } else if (args.mode === 'course') {
     // une séance réelle (démo sur le circuit choisi), avancée en simulation jusqu à l endroit voulu, puis quelques
     // secondes d images rendues : c est là que les lampes du tunnel et les rétroviseurs sont réellement dessinés
@@ -206,6 +207,30 @@ try {
     await dormir(2500);
     rapport.apresSeance = await evaluer(`(() => { const S = BITUME_JEU.session;
       return { mondeCourant: !!(S && S.fx && S.fx.monde), mondes: window.FPhysX ? window.FPhysX.status().worlds : null }; })()`);
+  } else if (mode === 'cache-lru') {
+    rapport.cacheLRU = await evaluer(`(${controlerCacheLRU.toString()})()`);
+  } else if (mode === 'endurance-larche') {
+    // Enregistrer les nouvelles images principales (pas seulement les callbacks rAF).
+    const compteur = readFileSync(new URL('../docs/reprise/rapports/LARCHE-ENDURANCE-2026-11-22/Compteur-de-rendus.js',import.meta.url),'utf8');
+    await evaluer(`BITUME_JEU.reference({...${JSON.stringify(referenceJeu)},circuit:BITUME_JEU.CATALOGUE.findIndex(c=>c.id==='larche'),depart:0,meteo:'pluie',qualite:'high',vue:'cockpit',retro:'oui'}); true`);
+    await evaluer(compteur);
+    let dernierKm=-1, maxi=-1, progres=Date.now();
+    for(;;) {
+      await dormir(5000);
+      const etat=await evaluer('recuDescente.etat()');
+      if(etat.kmRoute!==null && etat.kmRoute>maxi+.015){maxi=etat.kmRoute;progres=Date.now();}
+      const km=Math.floor(etat.kmRoute ?? -1);
+      if(km>dernierKm && args.sortie){
+        const precedent=km>0?await evaluer(`recuDescente.troncon(${km-1})`):null;
+        (rapport.kilometres ||= []).push({etat,precedent});
+        writeFileSync(args.sortie+'.progress.json',JSON.stringify(rapport.kilometres)); dernierKm=km;
+      }
+      if(etat.fin || Date.now()-progres>90000){
+        rapport.endurance=await evaluer('recuDescente.fin()');
+        if(!etat.fin?.termine || etat.pertes || etat.erreurs) throw new Error('Descente incomplète ou conditions perdues : '+JSON.stringify(etat));
+        break;
+      }
+    }
   } else if (mode === 'cache-panorama') {
     rapport.cachePanorama = await controlerCachePanorama(evaluer, envoyer, attendre);
   } else if (mode === 'stand') {
@@ -223,6 +248,9 @@ try {
       const scene = BITUME_JEU.scene;
       return p.then(banc => ({ banc, mesures: BITUME_JEU.mesures, finBanc: {
         prairies: scene.prairies?.map(v => v?.mesure),
+        terrain: scene.decor.nappes.filter(n=>n.surfaceType==='terrain').reduce((s,n)=>{
+          s.triangles+=n.indices.length/3; s.herbier+=n.herbeTriangles?.length || 0; s.horizon+=Number(!!n.horizon); return s;
+        },{triangles:0,herbier:0,horizon:0}),
         phase: S.course.phase, simulationEcoulee: S.course.horloge-debutSimulation,
         joueurs: S.locaux.map(id => { const e=S.course.voitures[id].etat; return { id, s:e.s, d:e.d, v:e.v }; }),
         visible: !document.hidden, imagePrincipale: banc.image

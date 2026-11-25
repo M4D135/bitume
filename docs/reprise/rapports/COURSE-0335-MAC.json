@@ -1,0 +1,197 @@
+{
+  "date": "2026-11-26",
+  "mac": "apple metal-3",
+  "navigateur": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.0.0 Safari/537.36",
+  "build_matrice": "278235cef5acec4e9c379bbcebea64f8c46acb82fac69f2a043caf36a42575ce",
+  "conditions": {
+    "taille": [
+      1920,
+      1080
+    ],
+    "meteo": "pluie",
+    "graine": 17017,
+    "palier": "high",
+    "retros": "oui",
+    "chauffe_s": 2,
+    "mesure_s": 20
+  },
+  "limite": "Les quantiles sont des intervalles rAF ; les compteurs du hook prairie sont des soumissions WebGPU réelles et comprennent la chauffe. Une seule portion par circuit.",
+  "circuits": [
+    {
+      "id": "forets-du-pacifique",
+      "depart": 280,
+      "p50": 16.7,
+      "p95": 16.7,
+      "pire": 16.8,
+      "images": 1201,
+      "duree": 20.02,
+      "draws_principaux_chauffe_comprise": 1231,
+      "herbe_moyenne": 22897,
+      "herbe_pic": 38400,
+      "terrain": {
+        "triangles": 81442,
+        "herbier": 56858,
+        "horizon": 113
+      },
+      "erreurs": []
+    },
+    {
+      "id": "marseille",
+      "depart": 280,
+      "p50": 16.7,
+      "p95": 16.7,
+      "pire": 33.4,
+      "images": 1198,
+      "duree": 20.02,
+      "draws_principaux_chauffe_comprise": 1235,
+      "herbe_moyenne": 13739,
+      "herbe_pic": 30144,
+      "terrain": {
+        "triangles": 26624,
+        "herbier": 22594,
+        "horizon": 0
+      },
+      "erreurs": []
+    },
+    {
+      "id": "karst-et-lagon",
+      "depart": 280,
+      "p50": 16.7,
+      "p95": 16.8,
+      "pire": 16.8,
+      "images": 1201,
+      "duree": 20.02,
+      "draws_principaux_chauffe_comprise": 1231,
+      "herbe_moyenne": 7056,
+      "herbe_pic": 29760,
+      "terrain": {
+        "triangles": 138228,
+        "herbier": 52147,
+        "horizon": 250
+      },
+      "erreurs": []
+    },
+    {
+      "id": "sierra",
+      "depart": 280,
+      "p50": 16.7,
+      "p95": 16.8,
+      "pire": 33.4,
+      "images": 1177,
+      "duree": 20.02,
+      "draws_principaux_chauffe_comprise": 1220,
+      "herbe_moyenne": 20287,
+      "herbe_pic": 29760,
+      "terrain": {
+        "triangles": 80678,
+        "herbier": 34812,
+        "horizon": 150
+      },
+      "erreurs": []
+    },
+    {
+      "id": "nord-atlantique",
+      "depart": 280,
+      "p50": 16.7,
+      "p95": 16.8,
+      "pire": 33.4,
+      "images": 1167,
+      "duree": 20.02,
+      "draws_principaux_chauffe_comprise": 1193,
+      "herbe_moyenne": 4633,
+      "herbe_pic": 30272,
+      "terrain": {
+        "triangles": 130174,
+        "herbier": 42657,
+        "horizon": 192
+      },
+      "erreurs": []
+    },
+    {
+      "id": "route-des-cimes",
+      "depart": 280,
+      "p50": 16.7,
+      "p95": 33.4,
+      "pire": 50.1,
+      "images": 820,
+      "duree": 20.02,
+      "draws_principaux_chauffe_comprise": 855,
+      "herbe_moyenne": 13850,
+      "herbe_pic": 30656,
+      "terrain": {
+        "triangles": 133232,
+        "herbier": 11298,
+        "horizon": 221
+      },
+      "erreurs": []
+    },
+    {
+      "id": "larche",
+      "depart": 17950,
+      "p50": 16.7,
+      "p95": 33.4,
+      "pire": 2466.6,
+      "images": 1034,
+      "duree": 20.02,
+      "draws_principaux_chauffe_comprise": 1035,
+      "herbe_moyenne": 29400,
+      "herbe_pic": 42112,
+      "terrain": {
+        "triangles": 98560,
+        "herbier": 98224,
+        "horizon": 0
+      },
+      "erreurs": []
+    },
+    {
+      "id": "baikal",
+      "depart": 280,
+      "p50": 16.7,
+      "p95": 33.4,
+      "pire": 50,
+      "images": 935,
+      "duree": 20.02,
+      "draws_principaux_chauffe_comprise": 970,
+      "herbe_moyenne": 2570,
+      "herbe_pic": 11264,
+      "terrain": {
+        "triangles": 74010,
+        "herbier": 32134,
+        "horizon": 139
+      },
+      "erreurs": []
+    },
+    {
+      "id": "ovale-des-forges",
+      "depart": 280,
+      "p50": 16.7,
+      "p95": 16.7,
+      "pire": 16.8,
+      "images": 1201,
+      "duree": 20.02,
+      "draws_principaux_chauffe_comprise": 1279,
+      "herbe_moyenne": 5256,
+      "herbe_pic": 15232,
+      "terrain": {
+        "triangles": 16768,
+        "herbier": 7791,
+        "horizon": 26
+      },
+      "erreurs": []
+    }
+  ],
+  "comparaison_sec": {
+    "taille": [
+      1440,
+      900
+    ],
+    "circuit": 0,
+    "version_avant": "faddba604bdc6e0dd6af63aff7a28adb03f4152548473cc5913e573092dbd703",
+    "version_intermediaire": "c61568ab21fad532d0dc95ce378755d00fc6d3f8f4294ae5cf22dcb93e834f95",
+    "avant_candidats": 131072,
+    "apres_moyenne": 16327,
+    "apres_pic": 30912,
+    "avant_p95": 16.7,
+    "apres_p95": 16.8
+  }
+}

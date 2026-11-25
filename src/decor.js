@@ -571,7 +571,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
     }
   }
-  function nappesTerrain(c, th, interroger, g, ecologie = null, organique = false, saison = null, cachePanorama = null, pont = null, chausseesOvale = null) {
+  function nappesTerrain(c, th, interroger, g, ecologie = null, organique = false, saison = null, cachePanorama = null, pont = null, chausseesOvale = null, corridor = false) {
     if (B.larcheDecor) {
       const corridor = B.larcheDecor.terrain(c, th, interroger, { saison, cachePanorama }, ecologie, organique);
       if (corridor) return corridor;
@@ -859,6 +859,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const coteTuile = TUILE + 1, indicesTuile = new Uint16Array(coteTuile * coteTuile);
     for (let tj = 0; tj < nz - 1; tj += TUILE) for (let ti = 0; ti < nx - 1; ti += TUILE) {
       const finI = Math.min(nx - 1, ti + TUILE), finJ = Math.min(nz - 1, tj + TUILE);
+      // Une tuile entièrement hors des abords n'alimente aucun semis. Garder son
+      // relief comme horizon, sans envoyer sa géométrie dans la découpe de l'herbier.
+      let horizon = corridor;
+      for(let j=tj;horizon && j<=finJ;j++) for(let i=ti;i<=finI;i++) {
+        if(D[j*nx+i]<420 || (lagon && lagon.contientCellule(i,j))) { horizon=false; break; }
+      }
       const nap = nappe((finI - ti + 1) * (finJ - tj + 1)), idMat = organique ? new Map() : null, coefficientsSaison=saison ? [] : null;
       indicesTuile.fill(0);
       const prendre = (i, j) => {
@@ -909,7 +915,27 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         const m = m0 === m1 || m0 === m2 ? m0 : m1 === m2 ? m1 : m0;
         nap.i.push(avecMat(v0, m), avecMat(v1, m), avecMat(v2, m));
       };
+      // Réduire les plaques lointaines peu accidentées. Chaque bord reste découpé
+      // comme son voisin fin : aucune jupe ni fissure aux changements de résolution.
+      const reduites = horizon ? new Uint8Array(TUILE*TUILE) : null;
+      if(horizon) for(let j=tj;j+4<=finJ;j+=4) for(let i=ti;i+4<=finI;i+=4){
+        const k=j*nx+i, y=H[k], gx=(H[k+4]-y)/4, gz=(H[k+4*nx]-y)/4;
+        let plane=true;
+        for(let b=0;b<=4&&plane;b++) for(let a=0;a<=4;a++){
+          if(Math.abs(H[k+b*nx+a]-(y+a*gx+b*gz))>3){plane=false;break;}
+        }
+        if(!plane) continue;
+        const m=prendre(i+2,j+2);
+        for(let a=0;a<4;a++){
+          emettre(m,prendre(i+a+1,j),prendre(i+a,j));
+          emettre(m,prendre(i,j+a),prendre(i,j+a+1));
+          emettre(m,prendre(i+a,j+4),prendre(i+a+1,j+4));
+          emettre(m,prendre(i+4,j+a+1),prendre(i+4,j+a));
+          reduites.fill(1,(j-tj+a)*TUILE+i-ti,(j-tj+a)*TUILE+i-ti+4);
+        }
+      }
       for (let j = tj; j < finJ; j++) for (let i = ti; i < finI; i++) {
+        if(reduites?.[(j-tj)*TUILE+i-ti]) continue;
         // Une case entièrement sous la chaussée ou ses accotements reste invisible : on la saute.
         if (D[j * nx + i] < 18 && D[j * nx + i + 1] < 18 && D[(j + 1) * nx + i] < 18 && D[(j + 1) * nx + i + 1] < 18) {
           if (!pont) continue;
@@ -923,7 +949,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
       if (nap.i.length) {
         const fini = finir(nap), herbeTriangles = [];
-        for (let k = 0; k < fini.indices.length; k += 3) {
+        for (let k = 0; !horizon && k < fini.indices.length; k += 3) {
           let herbe = true;
           for (let v = 0; v < 3; v++) {
             const id = fini.indices[k + v] * 13;
@@ -941,6 +967,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
           if (herbe) herbeTriangles.push(k);
         }
         Object.defineProperties(fini, { herbeTriangles: { value: herbeTriangles }, surfaceType: { value: 'terrain' } });
+        if(horizon) Object.defineProperty(fini,'horizon',{value:true});
         if (coefficientsSaison) Object.defineProperty(fini,'coefficientsSaison',{value:Uint8Array.from(coefficientsSaison),configurable:true});
         liste.push(fini);
       }
@@ -1019,11 +1046,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     // Lot 28C : la préparation est coupée en deux, lecture des nappes et des masques (lire), puis candidats du noyau
     // (relier) ; mêmes opérations dans le même ordre.
     function lire(c, nappes, lots, lim, enceinte, niveauEau) {
-      let total = 0; for (const nap of nappes) total += nap.indices.length / 3;
+      let total = 0; for (const nap of nappes) if (!nap.horizon) total += nap.indices.length / 3;
       const P = new Float64Array(9 * total), PL = new Float64Array(3 * total), LEN = new Float64Array(total), BX = new Float64Array(4 * total), VEG = new Uint8Array(total);
       const sources = []; // objets de sortie (plan, normale, couleur, type) des seules surfaces végétalisables
       let n = 0; const brutes = [];
       for (const nap of nappes) {
+        if (nap.horizon) continue;
         const herbe = new Set(nap.herbeTriangles || []), S = nap.sommets, I = nap.indices;
         for (let offset = 0; offset < I.length; offset += 3) {
           const i0 = I[offset] * 13, i1 = I[offset + 1] * 13, i2 = I[offset + 2] * 13;
@@ -1871,7 +1899,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     let tunnelLampes = null;   // positions des lampes du tunnel : le jeu en fait des lumières près de la caméra
     const nappes = nappesRoute(c, th, lim, qualite === 'low' ? null : ecologie, saison, reperes, pontFjord, organique);
     const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie, options.organique === true, saison, options.cachePanorama, pontFjord,
-      c.partition === 'ovale-des-forges' ? nappes : null);
+      c.partition === 'ovale-des-forges' ? nappes : null, options.decorProgressif === true);
     const maisonsBaikal = terrain.paysageBaikal ? B.baikal.habitations(c, terrain, interroger, terrain.paysageBaikal) : null;
     // Hasard architectural séparé ; le repli sert seulement à relire l'oracle historique du décor.
     const architecture = options.batiments !== false && B.batiments ? { maisons: [], stands: [] } : null;
@@ -2854,7 +2882,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const ouvrirHerbier = () => {
       if (herbier) return herbier;
       let cache = HERBIERS.get(c); if (!cache) HERBIERS.set(c, cache = new Map());
-      const cle = (qualite === 'low' ? 'low' : 'naturel') + ':' + (options.arbres === undefined ? 2600 : options.arbres) + (ecologie ? ':ecologie' : '');
+      const cle = (qualite === 'low' ? 'low' : 'naturel') + ':' + (options.arbres === undefined ? 2600 : options.arbres) + (ecologie ? ':ecologie' : '') + (options.decorProgressif ? ':corridor' : '');
       const entree = cache.get(cle), couleurSaison = saison ? saison.id : 'historique';
       if (entree && entree.saison === couleurSaison) herbier = entree.herbier;
       if (!herbier) {

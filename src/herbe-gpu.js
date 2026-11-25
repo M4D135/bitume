@@ -13,6 +13,8 @@
   // repart près de l'œil ; le shader ne lit jamais les anciennes cases hors rectangle.
   function clipmap(decor, envoyer) {
     const rect = new Int32Array(4), tampon = new Float32Array(4096 * 8);
+    const occupe = new Uint8Array(N*N), comptes = new Uint8Array(1024);
+    const bas = new Float32Array(1024), haut = new Float32Array(1024);
     // L'eau littorale peut avoir une découpe supplémentaire hors des triangles :
     // dans ce cas garder la racine au point précisément interrogé.
     const sonde = decor.niveauEauA ? {} : {rayonPied:0}, habitat = {};
@@ -27,10 +29,17 @@
             const g = graine(a, b);
             const X = (a + ((g & 255) + .5) / 256) * PAS, Z = (b + (((g >>> 8) & 255) + .5) / 256) * PAS;
             const s = decor.surfaceHerbe(X, Z, sonde);
+            const cellule = (b&255)*256+(a&255), tuile=((b&255)>>3)*32+((a&255)>>3);
+            comptes[tuile] -= occupe[cellule]; occupe[cellule] = 0;
             if (!s) { tampon[i + 7] = 0; continue; }
             tampon[i] = s.y; tampon[i + 1] = s.normal[0]; tampon[i + 2] = s.rayonPied || 0; tampon[i + 3] = s.normal[2];
             tampon[i + 4] = s.color[0]; tampon[i + 5] = s.color[1]; tampon[i + 6] = s.color[2];
             tampon[i + 7] = decor.ecologie ? decor.ecologie.echantillonner(X, Z, habitat).herbe : 1;
+            if (tampon[i+7] > .001) {
+              bas[tuile] = comptes[tuile] ? Math.min(bas[tuile],s.y) : s.y;
+              haut[tuile] = comptes[tuile] ? Math.max(haut[tuile],s.y) : s.y;
+              comptes[tuile]++; occupe[cellule]=1;
+            }
           }
           envoyer(px, pz, w, h, tampon); echantillons += w * h; z += h;
         }
@@ -54,7 +63,37 @@
       }
       return rect;
     }
-    return { maj, get echantillons() { return echantillons; } };
+    // Un descripteur pour 64 pieds. L'enveloppe englobe aussi les pointes couchées ;
+    // une ancienne altitude dans une tuile recyclée ne peut que la rendre plus conservative.
+    function visibles(v, ultra, liste) {
+      const m=v.vp, ex=v.oeil[0], ez=v.oeil[2];
+      let n=0;
+      for(let z=rect[1]>>3;z<=(rect[3]-1)>>3;z++) for(let x=rect[0]>>3;x<=(rect[2]-1)>>3;x++){
+        const k=(z&31)*32+(x&31);
+        if (!comptes[k]) continue;
+        const X=(8*x+4)*PAS, Z=(8*z+4)*PAS, Y=(bas[k]+haut[k])*.5;
+        const dx=Math.max(0,Math.abs(X-ex)-2.2), dz=Math.max(0,Math.abs(Z-ez)-2.2), d2=dx*dx+dz*dz;
+        if(d2>(256*.215)**2) continue;
+        const hy=(haut[k]-bas[k])*.5+.8;
+        const w=m[3]*X+m[7]*Y+m[11]*Z+m[15];
+        let visible=true;
+        for(let j=0;j<3 && visible;j++){
+          const p=m[j]*X+m[4+j]*Y+m[8+j]*Z+m[12+j], signe=p<0?-1:1;
+          const rayon=2.6*(Math.abs(m[3]-signe*m[j])+Math.abs(m[11]-signe*m[8+j]))+hy*Math.abs(m[7]-signe*m[4+j]);
+          visible=w+rayon>=Math.abs(p);
+        }
+        if(!visible) continue;
+        // Les mêmes feuilles mondiales qu'en .334. Les bandes partagent leur portée
+        // avec le fondu WGSL et non avec un seuil en pixels dépendant du rétroviseur.
+        for(let f=0;f<(ultra?15:11);f++){
+          const taille=f===0?256:f>=3&&f<=10?64:128;
+          if(d2>(taille*.215)**2) continue;
+          liste[n++]=x*8; liste[n++]=z*8; liste[n++]=f; liste[n++]=taille;
+        }
+      }
+      return n;
+    }
+    return { maj, visibles, get echantillons() { return echantillons; } };
   }
 
   const shader = `
@@ -66,6 +105,7 @@ struct Vue {
 @group(0) @binding(0) var<uniform> u:Vue;
 @group(0) @binding(1) var sol:texture_2d<f32>;
 @group(0) @binding(2) var atlas:texture_depth_2d;
+@group(0) @binding(3) var<storage,read> tuiles:array<vec4i>;
 struct V { @builtin(position) p:vec4f, @location(0) couleur:vec3f }
 fn hash(c:vec2i)->u32 {
   var h = (u32(c.x)*0x9e3779b1u) ^ (u32(c.y)*0x85ebca77u);
@@ -98,11 +138,8 @@ fn ombrage(r:vec3f)->f32 {
 @vertex fn vs(@builtin(vertex_index) vi:u32,@builtin(instance_index) id:u32)->V {
   // Même budget, distribué par importance : une feuille au loin, davantage de
   // feuilles fines dans les 28 puis 14 mètres. Les identités ne dépendent pas de l'œil.
-  var taille=256u; var slot=id; var feuille=0u;
-  if(id>=131072u){taille=128u;slot=id-131072u;feuille=11u+slot/16384u;}
-  else if(id>=98304u){taille=64u;slot=id-98304u;feuille=3u+slot/4096u;}
-  else if(id>=65536u){taille=128u;slot=id-65536u;feuille=1u+slot/16384u;}
-  let cell=vec2i(floor(u.oeil.xz/.45))-vec2i(i32(taille/2u))+vec2i(i32(slot%taille),i32((slot/taille)%taille));
+  let tuile=tuiles[id>>6u]; let taille=tuile.w; let feuille=tuile.z;
+  let cell=tuile.xy+vec2i(i32(id&7u),i32((id>>3u)&7u));
   var v:V; v.p=vec4f(0.,0.,2.,1.); v.couleur=vec3f(0.);
   if(any(cell<vec2i(u.rect.xy))||any(cell>=vec2i(u.rect.zw))){return v;}
   let phys=(cell&vec2i(255))*vec2i(2,1);
@@ -157,13 +194,17 @@ fn ombrage(r:vec3f)->f32 {
       usage:GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST});
     const vueSol = texture.createView(), u = new Float32Array(60 + 16 * 8);
     const uniform = device.createBuffer({size:u.byteLength, usage:GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST});
+    // Carrés englobants des trois disques + une tuile de marge de chaque côté.
+    const liste = new Int32Array(4*(34*34+6*18*18+8*10*10));
+    const tuiles = device.createBuffer({size:liste.byteLength, usage:GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST});
     const map = clipmap(decor, (x,z,w,h,t) => device.queue.writeTexture({texture, origin:[x*2,z]}, t,
       {bytesPerRow:w*32}, [w*2,h]));
     const module = device.createShaderModule({label:'Brins de prairie', code:shader});
     const layout = device.createBindGroupLayout({entries:[
       {binding:0,visibility:GPUShaderStage.VERTEX,buffer:{}},
       {binding:1,visibility:GPUShaderStage.VERTEX,texture:{sampleType:'unfilterable-float'}},
-      {binding:2,visibility:GPUShaderStage.VERTEX,texture:{sampleType:'depth'}}
+      {binding:2,visibility:GPUShaderStage.VERTEX,texture:{sampleType:'depth'}},
+      {binding:3,visibility:GPUShaderStage.VERTEX,buffer:{type:'read-only-storage'}}
     ]});
     const desc = {label:'Prairie proche', layout:device.createPipelineLayout({bindGroupLayouts:[layout]}),
       vertex:{module,entryPoint:'vs'}, fragment:{module,entryPoint:'fs',targets:[{format}]},
@@ -174,12 +215,17 @@ fn ombrage(r:vec3f)->f32 {
       return pipelines.get(count);
     }
     let publicFx, sources, meteo, parPied, ombre, groupe;
-    const compte = {}, mesure = {images:0,candidats:0,echantillons:0};
+    const compte = {}, mesure = {images:0,candidats:0,totalCandidats:0,picCandidats:0,echantillons:0};
     const fx = {
       gpuShadow(pass,v) { return publicFx?.gpuShadow?.(pass,v); },
       gpuColor(pass,v) {
         const publicVu = publicFx?.gpuColor?.(pass,v);
         const r = map.maj(v.oeil[0],v.oeil[2]);
+        const mots=map.visibles(v,parPied===3,liste), k=mots*16;
+        mesure.images++; mesure.candidats=k; mesure.totalCandidats+=k;
+        mesure.picCandidats=Math.max(mesure.picCandidats,k); mesure.echantillons=map.echantillons;
+        if (!mots) return publicVu;
+        device.queue.writeBuffer(tuiles,0,liste,0,mots);
         u.set(v.vp); u.set(v.ombre.matrice,16); u.set(v.oeil,32); u[35]=v.temps;
         u.set(v.soleil,36); u[39]=+v.ombre.active; u.set(v.couleurSoleil,40); u[43]=+v.ombre.plein;
         u.set(v.ambiance,44); u.set(v.brouillard,48); u[51]=v.densiteBrouillard;
@@ -197,17 +243,16 @@ fn ombrage(r:vec3f)->f32 {
         if (ombre!==v.ombre.textureView) {
           ombre=v.ombre.textureView;
           groupe=device.createBindGroup({layout,entries:[{binding:0,resource:{buffer:uniform}},
-            {binding:1,resource:vueSol},{binding:2,resource:ombre}]});
+            {binding:1,resource:vueSol},{binding:2,resource:ombre},{binding:3,resource:{buffer:tuiles}}]});
         }
         pass.setPipeline(pipeline(v.msaa || 1)); pass.setBindGroup(0,groupe);
-        const k=N*N*parPied; pass.draw(8,k);
-        mesure.images++; mesure.candidats=k; mesure.echantillons=map.echantillons;
+        pass.draw(8,k);
         compte.appels=(publicVu?.appels || 0)+1; compte.triangles=(publicVu?.triangles || 0)+6*k;
         compte.instances=(publicVu?.instances || 0)+k; return compte;
       }
     };
     return {mesure, preparer(pub,s,m,q) { publicFx=pub; sources=s; meteo=m; parPied=q==='ultra'?3:2; return fx; },
-      liberer() { uniform.destroy(); texture.destroy(); pipelines.clear(); } };
+      liberer() { uniform.destroy(); texture.destroy(); tuiles.destroy(); pipelines.clear(); } };
   }
   B.herbeGPU = {creer,clipmap};
 })(globalThis.BITUME = globalThis.BITUME || {});

@@ -507,7 +507,7 @@
     // bâtis avec la scène (une fois par décor), repris ici de leurs places de départ : sous le voile de la préparation
     S.animaux = animauxDe(sc, S.nature);
     if (demo) {
-      S.cinema = B.cinema.preparer(c, sc.decor, S.animaux, course.physique.world);
+      S.cinema = B.cinema.preparer(c, sc.decor, S.animaux, course.physique.world, true);
       S.fpsDemo = B.cadence.compteurImages();
     }
     // Le public de la séance : moins nombreux sous la pluie, en hiver et la nuit ; son animation repart de zéro.

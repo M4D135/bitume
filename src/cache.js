@@ -94,38 +94,53 @@
     });
   }
 
-  function _idbPut(db, entree) {
+  // Libérer les anciennes clés et insérer dans la même transaction. Si le nouveau
+  // bloc ne tient toujours pas, IndexedDB restaure également les anciennes entrées.
+  function _idbPut(db, entree, sousQuota = false) {
     return new Promise((resolve, reject) => {
       try {
         const tx = db.transaction(STORE_NAME, 'readwrite');
         const store = tx.objectStore(STORE_NAME);
-        store.put(entree);
+        const compte = store.count();
+        compte.onsuccess = () => {
+          let retrait = sousQuota ? 1 : Math.max(0, compte.result + 1 - MAX_ENTREES);
+          if (!retrait) { store.put(entree); return; }
+          const present = store.getKey(entree.cle);
+          present.onsuccess = () => {
+            if (!sousQuota && present.result !== undefined) retrait--;
+            if (!retrait) { store.put(entree); return; }
+            const ordre = store.index('accesAt').openKeyCursor();
+            ordre.onsuccess = () => {
+              const cur = ordre.result;
+              if (!cur) { store.put(entree); return; }
+              if (cur.primaryKey !== entree.cle) { store.delete(cur.primaryKey); retrait--; }
+              if (retrait) cur.continue(); else store.put(entree);
+            };
+          };
+        };
         tx.oncomplete = () => resolve(true);
         tx.onabort = () => reject(tx.error);
       } catch (e) { reject(e); }
     });
   }
 
-  function _idbDelete(db, cle) {
+  function _idbPurger(db, filtre) {
     return new Promise((resolve, reject) => {
       try {
         const tx = db.transaction(STORE_NAME, 'readwrite');
         const store = tx.objectStore(STORE_NAME);
-        store.delete(cle);
+        const prefixe = typeof filtre === 'string';
+        // Parcours des seules clés pour le préfixe ; pour la version, un seul
+        // enregistrement désérialisé à la fois au lieu de copier tout le cache en RAM.
+        const req = prefixe ? store.openKeyCursor(IDBKeyRange.lowerBound(filtre)) : store.openCursor();
+        req.onsuccess = () => {
+          const c = req.result;
+          if (!c || (prefixe && !String(c.key).startsWith(filtre))) return;
+          if (prefixe || c.value.versionSchema !== filtre) store.delete(c.primaryKey);
+          c.continue();
+        };
         tx.oncomplete = () => resolve(true);
         tx.onabort = () => reject(tx.error);
-      } catch (e) { reject(e); }
-    });
-  }
-
-  function _idbAll(db) {
-    return new Promise((resolve, reject) => {
-      try {
-        const tx = db.transaction(STORE_NAME, 'readonly');
-        const store = tx.objectStore(STORE_NAME);
-        const req = store.getAll();
-        req.onsuccess = () => resolve(req.result || []);
-        req.onerror = () => reject(req.error);
       } catch (e) { reject(e); }
     });
   }
@@ -139,28 +154,6 @@
         tx.oncomplete = () => resolve(true);
         tx.onabort = () => reject(tx.error);
       } catch (e) { reject(e); }
-    });
-  }
-
-  // ─── Éviction LRU ────────────────────────────────────────────────────────
-  // L'index fournit les clés par ordre d'accès sans relire tous les blocs binaires.
-  function _evictLRU(db) {
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readwrite'), store = tx.objectStore(STORE_NAME);
-      const compte = store.count();
-      compte.onsuccess = () => {
-        let restant = compte.result - MAX_ENTREES;
-        if (restant <= 0) return;
-        const ordre = store.index('accesAt').openKeyCursor();
-        ordre.onsuccess = () => {
-          const curseur = ordre.result;
-          if (!curseur) return;
-          store.delete(curseur.primaryKey);
-          if (--restant > 0) curseur.continue();
-        };
-      };
-      tx.oncomplete = () => resolve(true);
-      tx.onabort = () => reject(tx.error);
     });
   }
 
@@ -213,8 +206,11 @@
     let db;
     try {
       db = await _ouvrirDB();
-      await _idbPut(db, entree);
-      await _evictLRU(db);
+      try { await _idbPut(db, entree); }
+      catch (e) {
+        if (e?.name !== 'QuotaExceededError') throw e;
+        await _idbPut(db, entree, true);
+      }
       return true;
     } catch (_) {
       return false;
@@ -247,14 +243,8 @@
         await _idbClear(db);
         return true;
       }
-      const all = await _idbAll(db);
-      for (const e of all) {
-        if (typeof prefixeOuVersion === 'string' && e.cle.startsWith(prefixeOuVersion)) {
-          await _idbDelete(db, e.cle);
-        } else if (typeof prefixeOuVersion === 'number' && e.versionSchema !== prefixeOuVersion) {
-          await _idbDelete(db, e.cle);
-        }
-      }
+      if (typeof prefixeOuVersion === 'string' || typeof prefixeOuVersion === 'number')
+        await _idbPurger(db, prefixeOuVersion);
       return true;
     } catch (_) {
       return false;
