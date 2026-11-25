@@ -1,8 +1,8 @@
 {
-  "version": "0.2.333",
-  "raw": 17630539,
-  "gzip": 4788723,
-  "sha256": "e6edb04a1f70b26425dc4f2d8843c314491f8aeaa7938d57eba40b5c75940456",
+  "version": "0.2.334",
+  "raw": 17642945,
+  "gzip": 4793323,
+  "sha256": "faddba604bdc6e0dd6af63aff7a28adb03f4152548473cc5913e573092dbd703",
   "sources": {
     "ferro/surface.js": 3419,
     "ferro/render-shared.js": 81526,
@@ -56,7 +56,7 @@
     "herbier-wasm.js": 11016,
     "lagon.js": 8024,
     "ovale-forges-decor.js": 14880,
-    "decor.js": 203535,
+    "decor.js": 204096,
     "physique.js": 29031,
     "faune.js": 30792,
     "aeriens.js": 30687,
@@ -76,6 +76,7 @@
     "humain-corps.js": 3116,
     "public-shaders.js": 133513,
     "public-gpu.js": 6427,
+    "herbe-gpu.js": 11652,
     "public.js": 78727,
     "main.js": 13346,
     "cockpit-matieres.js": 1774,
@@ -98,7 +99,7 @@
     "mesures.js": 19248,
     "qualite.js": 5329,
     "cadence.js": 42442,
-    "graphismes.js": 22462,
+    "graphismes.js": 22458,
     "detail-peripherique.js": 7767,
     "ambiance.js": 3005,
     "conditions-course.js": 18160,
@@ -110,7 +111,7 @@
     "vibrations.js": 10282,
     "ombres.js": 13366,
     "visites.js": 7590,
-    "jeu.js": 483390,
+    "jeu.js": 483542,
     "index.html": 79995,
     "style.css": 114371
   }

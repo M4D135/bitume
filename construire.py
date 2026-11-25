@@ -95,6 +95,7 @@ MODULES = [
     'humain-corps.js',
     'public-shaders.js',
     'public-gpu.js',
+    'herbe-gpu.js',
     'public.js',
     'main.js',
     'cockpit-matieres.js',

@@ -292,6 +292,7 @@
     // Le public (public.js) : de vrais spectateurs à la place des boîtes des gradins, dessinés par le point d'accroche
     // « foule » du moteur. Bâti au palier ancre, comme le décor ; la vue de l'ancienne scène rend ses tampons.
     if (scene && scene.vuePublic) scene.vuePublic.liberer();
+    if (scene) for (const prairie of scene.prairies || []) prairie?.liberer();
     const pub = decor.gradins && B.public ? B.public.creer(c, decor, { qualite: ancre, saison }) : null;
     let vuePublic = null;
     if (pub) try { vuePublic = B.public.vue(rendu, pub); } catch (e) { console.warn('BITUME : public indisponible', e); }
@@ -303,7 +304,7 @@
     // profondeur du volume d'ombre : un point du sol au bord du carré est décalé de OMBRE × cotangente de la hauteur du soleil
     const sol = decor.atmosphere.sunDirection, sinus = sol[1] / Math.hypot(sol[0], sol[1], sol[2]);
     const ombre = { extent: OMBRE, depth: 2 * (OMBRE * Math.sqrt(Math.max(0, 1 - sinus * sinus)) / Math.max(.25, sinus) + 30) };
-    scene = { index: i, enrichi: decorEnrichi, palier: ancre, vegetationQualite, saison, c, decor, fond, plan: p, ombre, detailPeripherique: B.detailPeripherique.creer(decor.lots), public: pub, vuePublic };
+    scene = { index: i, enrichi: decorEnrichi, palier: ancre, vegetationQualite, saison, c, decor, fond, plan: p, ombre, detailPeripherique: B.detailPeripherique.creer(decor.lots), public: pub, vuePublic, prairies: [] };
     return scene;
   }
   // Douze champs préalloués : vue principale et deux glaces par pilote local, jusqu'à quatre (lot C). Les six
@@ -3149,12 +3150,10 @@
     return Math.min(r, 2);
   }
   // Lots du décor pour le moteur des glaces : copies sans les tampons du moteur principal (chaque moteur range les
-  // siens dans le lot) et sans les tapis d'herbe rase (lot.tapis, vegetation.js). Préparée pour la création du moteur
-  // des glaces au chargement (lot « chargement ») : la course copie encore tous les lots (majGlaces), retirer l'herbe
-  // des glaces est un changement d'image à vérifier par captures avant de la brancher.
+  // siens dans le lot). Tapis et touffes basses sont réservés à la vue principale.
   function lotsGlaces(decor) {
     const lots = [];
-    for (const l of decor.lots) if (!l.tapis) lots.push(Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null }));
+    for (const l of decor.lots) if (!l.vegetation) lots.push(Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null }));
     return lots;
   }
   // Axe du regard (vecteur unité) d'une caméra, comme le moteur (cameraAxes)
@@ -3228,7 +3227,7 @@
     const d = scene.decor;
     retro.rendu.setWorld([], [], d.atmosphere);
     retro.rendu.setNappes(d.nappes.map(n => Object.assign({}, n)), { staticBounds: true });
-    retro.rendu.setLots(d.lots.map(l => Object.assign({}, l, { tampon: null, tamponLoin: null, paquet: null, paquetLoin: null })), { staticBounds: true, progressif: !!d.fluxDecor });
+    retro.rendu.setLots(lotsGlaces(d), { staticBounds: true, progressif: !!d.fluxDecor });
     // le public dans les glaces : ses propres ressources WebGPU, sans le niveau proche ni les ombres (glace sans ombre)
     if (retro.vuePublic) retro.vuePublic.liberer();
     retro.vuePublic = null;
@@ -3496,7 +3495,7 @@
       if (retro.rendu.setEnvironment) retro.rendu.setEnvironment(S.nature.ambiance.atmosphere);
       retro.ambianceSource = S.nature.ambiance; retro.ambianceRevision = S.nature.ambiance.revision;
     }
-    retro.rendu.draw(camR, objets, { time: horlogeReelle, surfaceGPU: verrePourVue(retro.rendu, S), shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, lights: lampesTunnel(G, i ? 'lampes1' : 'lampes0', scene.decor.tunnelLampes, camR, dtGlace, scene.index), foule: retro.foulePublic });
+    retro.rendu.draw(camR, objets, { time: horlogeReelle, surfaceGPU: verrePourVue(retro.rendu, S), shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: null, lights: lampesTunnel(G, i ? 'lampes1' : 'lampes0', scene.decor.tunnelLampes, camR, dtGlace, scene.index), foule: retro.foulePublic });
     if (B.mesures.actif) B.mesures.vue('retro', retro.rendu);
     G.surfaces[i].present();
   }
@@ -4196,6 +4195,12 @@
       if (S.palierPublic !== P.palier) { vuePublic.qualite(P.palier); S.palierPublic = P.palier; }
     }
     S.foulePublic = vuePublic ? vuePublic.fx : null;
+    const herbe = P.decor.vegetationQualite;
+    if (scene.enrichi && !saisonLocale?.neige && (herbe === 'ultra' || (herbe === 'high' && P.palier === 'high')) && rendu.gpu?.device) {
+      const i = indexVue(S);
+      const prairie = scene.prairies[i] || (scene.prairies[i] = B.herbeGPU.creer(rendu, scene.decor));
+      S.foulePublic = prairie.preparer(S.foulePublic, S.sillage?.sources, meteo, herbe);
+    }
     const ombresVue = B.ombres.preparer(etatOmbres, P, cam, poses, co.voitures.length, suivie.id, ombreDebut, ombreFin, (S.banc ? S.banc.qualite : reglages.qualite) === 'auto' ? palier.n : -1, horlogeReelle);
     const tDraw = B.mesures.actif ? performance.now() : 0;
     // adaptive: false partout : le gouverneur du moteur baissait la taille de l'image au fil des images lentes, en
@@ -6193,7 +6198,7 @@
       }
       const objets = listeChauffe(S, camR, S.sortie.filter(o => !o.overlay), false);
       const fxR = v => ({ time: horlogeReelle, shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0,
-        weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: v.windStrength, groundCover: v.groundCover, lights: v.lampes ? lampeTemoin(camR) : null,
+        weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: v.windStrength, groundCover: null, lights: v.lampes ? lampeTemoin(camR) : null,
         foule: publicVisible && retro.vuePublic ? retro.vuePublic.fx : null });
       if (retro.rendu.prewarm && !synchrone) await retro.rendu.prewarm(camR, objets, fxR(manqueR[manqueR.length - 1][1]), { variants: manqueR.map(m => fxR(m[1])), allShapes: true, reserve: reserveFlux(S, objets) });
       else for (const [, v] of manqueR) { retro.rendu.draw(camR, objets, fxR(v)); r.retro++; if (!synchrone) await souffler(retro.rendu); }

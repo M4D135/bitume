@@ -1,0 +1,213 @@
+/* BITUME — prairie proche. Une maille décrit un pied, partagé par les feuilles de sa touffe.
+   La surface découpée du décor fait autorité : même point d'échantillonnage sur CPU et GPU. */
+(function (B) {
+  'use strict';
+  const N = 256, PAS = .45;
+  function graine(x, z) {
+    let h = Math.imul(x, 0x9e3779b1) ^ Math.imul(z, 0x85ebca77);
+    h = Math.imul(h ^ h >>> 16, 0x7feb352d);
+    return (h ^ h >>> 15) >>> 0;
+  }
+
+  // Rectangle valide en coordonnées monde, bornes supérieures exclues. À un cut on
+  // repart près de l'œil ; le shader ne lit jamais les anciennes cases hors rectangle.
+  function clipmap(decor, envoyer) {
+    const rect = new Int32Array(4), tampon = new Float32Array(4096 * 8);
+    // L'eau littorale peut avoir une découpe supplémentaire hors des triangles :
+    // dans ce cas garder la racine au point précisément interrogé.
+    const sonde = decor.niveauEauA ? {} : {rayonPied:0}, habitat = {};
+    let echantillons = 0;
+    function remplir(x0, z0, x1, z1) {
+      for (let x = x0; x < x1;) {
+        const px = x & 255, w = Math.min(x1 - x, N - px);
+        for (let z = z0; z < z1;) {
+          const pz = z & 255, h = Math.min(z1 - z, N - pz, Math.floor(4096 / w));
+          let i = 0;
+          for (let b = z; b < z + h; b++) for (let a = x; a < x + w; a++, i += 8) {
+            const g = graine(a, b);
+            const X = (a + ((g & 255) + .5) / 256) * PAS, Z = (b + (((g >>> 8) & 255) + .5) / 256) * PAS;
+            const s = decor.surfaceHerbe(X, Z, sonde);
+            if (!s) { tampon[i + 7] = 0; continue; }
+            tampon[i] = s.y; tampon[i + 1] = s.normal[0]; tampon[i + 2] = s.rayonPied || 0; tampon[i + 3] = s.normal[2];
+            tampon[i + 4] = s.color[0]; tampon[i + 5] = s.color[1]; tampon[i + 6] = s.color[2];
+            tampon[i + 7] = decor.ecologie ? decor.ecologie.echantillonner(X, Z, habitat).herbe : 1;
+          }
+          envoyer(px, pz, w, h, tampon); echantillons += w * h; z += h;
+        }
+        x += w;
+      }
+    }
+    function maj(x, z) {
+      const cx = Math.floor(x / PAS), cz = Math.floor(z / PAS);
+      const a = Math.max(rect[0], cx - 128), b = Math.max(rect[1], cz - 128);
+      const c = Math.min(rect[2], cx + 128), d = Math.min(rect[3], cz + 128);
+      echantillons = 0;
+      if (cx < a || cz < b || cx >= c || cz >= d) {
+        rect[0] = cx - 16; rect[1] = cz - 16; rect[2] = cx + 16; rect[3] = cz + 16;
+        remplir(...rect);
+      } else {
+        const A = Math.max(cx - 128, a - 4), B = Math.max(cz - 128, b - 4);
+        const C = Math.min(cx + 128, c + 4), D = Math.min(cz + 128, d + 4);
+        remplir(A, B, C, b); remplir(A, d, C, D);
+        remplir(A, b, a, d); remplir(c, b, C, d);
+        rect[0] = A; rect[1] = B; rect[2] = C; rect[3] = D;
+      }
+      return rect;
+    }
+    return { maj, get echantillons() { return echantillons; } };
+  }
+
+  const shader = `
+struct Source { pos:vec4f, flux:vec4f }
+struct Vue {
+  vp:mat4x4f, ombre:mat4x4f, oeil:vec4f, soleil:vec4f, direct:vec4f,
+  ambiance:vec4f, brume:vec4f, rect:vec4f, vent:vec4f, sources:array<Source,16>
+}
+@group(0) @binding(0) var<uniform> u:Vue;
+@group(0) @binding(1) var sol:texture_2d<f32>;
+@group(0) @binding(2) var atlas:texture_depth_2d;
+struct V { @builtin(position) p:vec4f, @location(0) couleur:vec3f }
+fn hash(c:vec2i)->u32 {
+  var h = (u32(c.x)*0x9e3779b1u) ^ (u32(c.y)*0x85ebca77u);
+  h = (h ^ (h >> 16u))*0x7feb352du; return h ^ (h >> 15u);
+}
+fn alea(h:u32)->vec2f { return (vec2f(f32(h&255u),f32((h>>8u)&255u))+.5)/256.; }
+// Identité du centre de Voronoï le plus proche, en coordonnées monde.
+fn colonie(p:vec2f)->vec2f {
+  let q=p*.64; let cell=vec2i(floor(q)); var mieux=9.; var direction=vec2f(0.);
+  for(var j=-1;j<=1;j++){for(var i=-1;i<=1;i++){
+    let c=cell+vec2i(i,j); let h=hash(c);
+    let delta=vec2f(c)+.12+.76*alea(h)-q; let d=dot(delta,delta);
+    if(d<mieux){mieux=d; direction=delta*.6+alea(h>>16u)-.5;}
+  }} return direction;
+}
+fn ombrage(r:vec3f)->f32 {
+  if(u.soleil.w<.5){return 1.;}
+  let s=u.ombre*vec4f(r+vec3f(0.,.018,0.),1.);
+  let p=s.xyz/s.w*.5+.5;
+  if(any(p<=vec3f(.001))||any(p>=vec3f(.999))){return 1.;}
+  var uv=p.xy;
+  if(u.direct.w<.5){uv=uv*.5+vec2f(.5,0.);}
+  uv.y=1.-uv.y;
+  let dim=vec2f(textureDimensions(atlas)); let tex=uv*dim-.5; let k=vec2i(floor(tex)); let f=fract(tex);
+  let z=p.z-.0007;
+  let a=step(z,textureLoad(atlas,k,0)); let b=step(z,textureLoad(atlas,k+vec2i(1,0),0));
+  let c=step(z,textureLoad(atlas,k+vec2i(0,1),0)); let d=step(z,textureLoad(atlas,k+vec2i(1,1),0));
+  return mix(.32,1.,mix(mix(a,b,f.x),mix(c,d,f.x),f.y));
+}
+@vertex fn vs(@builtin(vertex_index) vi:u32,@builtin(instance_index) id:u32)->V {
+  // Même budget, distribué par importance : une feuille au loin, davantage de
+  // feuilles fines dans les 28 puis 14 mètres. Les identités ne dépendent pas de l'œil.
+  var taille=256u; var slot=id; var feuille=0u;
+  if(id>=131072u){taille=128u;slot=id-131072u;feuille=11u+slot/16384u;}
+  else if(id>=98304u){taille=64u;slot=id-98304u;feuille=3u+slot/4096u;}
+  else if(id>=65536u){taille=128u;slot=id-65536u;feuille=1u+slot/16384u;}
+  let cell=vec2i(floor(u.oeil.xz/.45))-vec2i(i32(taille/2u))+vec2i(i32(slot%taille),i32((slot/taille)%taille));
+  var v:V; v.p=vec4f(0.,0.,2.,1.); v.couleur=vec3f(0.);
+  if(any(cell<vec2i(u.rect.xy))||any(cell>=vec2i(u.rect.zw))){return v;}
+  let phys=(cell&vec2i(255))*vec2i(2,1);
+  let teinte=textureLoad(sol,phys+vec2i(1,0),0);
+  if(teinte.w<=.001){return v;}
+  let h=hash(cell); let rnd=alea(hash(cell+vec2i(i32(feuille)*139+17,43)));
+  let tsol=textureLoad(sol,phys,0);
+  let n=vec3f(tsol.y,sqrt(max(.01,1.-dot(tsol.yw,tsol.yw))),tsol.w);
+  let ecart=(alea(hash(cell+vec2i(457,73+i32(feuille)*97)))-.5)*1.4*tsol.z;
+  let xz=(vec2f(cell)+alea(h))*.45+ecart;
+  let racine=vec3f(xz.x,tsol.x-dot(n.xz,ecart)/n.y,xz.y);
+  let vers=u.oeil.xyz-racine; let dist=length(vers);
+  let portee=f32(taille)*.215;
+  let fade=(1.-smoothstep(.62*portee,portee,dist))*smoothstep(.0,.32,teinte.w);
+  if(fade<.001){return v;}
+  let proj=u.vp*vec4f(racine,1.);
+  if(proj.w<-.7 || any(abs(proj.xy)>vec2f(proj.w+.85))){return v;}
+  let groupe=colonie(xz); let angle=6.283185*rnd.x;
+  let dir=vec2f(cos(angle),sin(angle)); let cote=vec2f(-dir.y,dir.x);
+  let temps=u.oeil.w; let vent=u.vent.xy; let courant=vent/max(1.,length(vent));
+  let onde=.5+.5*sin(dot(xz,vec2f(.24,.17))-temps*1.9+.7*sin(dot(xz,vec2f(-.11,.08))-temps*.7));
+  var souffle=courant*(.09+.45*onde)*min(1.,length(vent)*.3); var couche=0.;
+  for(var k=0u;k<u32(u.vent.z);k++){
+    let s=u.sources[k]; let delta=xz-s.pos.xz;
+    let arriere=-dot(delta,s.flux.xy); let d=length(delta+s.flux.xy*max(arriere,0.));
+    let force=s.flux.w*(1.-smoothstep(.2,s.pos.w,d))*(1.-smoothstep(0.,s.flux.z,max(arriere,0.)))*
+      (1.-smoothstep(1.,4.,abs(racine.y-s.pos.y)));
+    souffle-=s.flux.xy*force; couche=max(couche,force);
+  }
+  let hauteur=(.09+.17*rnd.y+.06*length(groupe))*(.55+.45*teinte.w)*fade;
+  let t=f32(vi>>1u)/3.; let largeur=(1.-t*t)*(.004+.006*rnd.y)*fade;
+  let pointe=groupe*.72+dir*.5+souffle;
+  // Bézier quadratique : pied fixe, contrôle presque vertical, pointe libre.
+  let centre=racine+n*hauteur*(t*(1.-.52*couche)-.22*t*t)+
+    vec3f(pointe.x,0.,pointe.y)*hauteur*t*t;
+  let bord=select(-largeur,largeur,(vi&1u)==1u);
+  let monde=centre+vec3f(cote.x,0.,cote.y)*bord;
+  v.p=u.vp*vec4f(monde,1.); v.p.z=(v.p.z+v.p.w)*.5;
+  let normale=normalize(n+vec3f(dir.x,0.,dir.y)*(.22+.55*t));
+  let l=u.soleil.xyz; let ombre=ombrage(racine); let vue=vers/max(.01,dist);
+  let transmission=pow(max(0.,dot(-vue,l)),3.)*(.25+.75*t)*.36;
+  let pigment=mix(teinte.rgb,teinte.rgb*vec3f(1.44,1.16,.69),t*t*(.3+.7*rnd.y));
+  let eclairage=u.ambiance.rgb+ombre*u.direct.rgb*(max(.0,dot(normale,l))+vec3f(1.,.78,.41)*transmission);
+  v.couleur=mix(pigment*eclairage*mix(.52,1.13,t),u.brume.rgb,1.-exp(-dist*u.brume.w));
+  return v;
+}
+@fragment fn fs(v:V)->@location(0) vec4f { return vec4f(v.couleur,1.); }
+`;
+  function creer(rendu, decor) {
+    const {device, format, depthFormat} = rendu.gpu;
+    const texture = device.createTexture({label:'Herbier toroïdal', size:[512,256], format:'rgba32float',
+      usage:GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST});
+    const vueSol = texture.createView(), u = new Float32Array(60 + 16 * 8);
+    const uniform = device.createBuffer({size:u.byteLength, usage:GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST});
+    const map = clipmap(decor, (x,z,w,h,t) => device.queue.writeTexture({texture, origin:[x*2,z]}, t,
+      {bytesPerRow:w*32}, [w*2,h]));
+    const module = device.createShaderModule({label:'Brins de prairie', code:shader});
+    const layout = device.createBindGroupLayout({entries:[
+      {binding:0,visibility:GPUShaderStage.VERTEX,buffer:{}},
+      {binding:1,visibility:GPUShaderStage.VERTEX,texture:{sampleType:'unfilterable-float'}},
+      {binding:2,visibility:GPUShaderStage.VERTEX,texture:{sampleType:'depth'}}
+    ]});
+    const desc = {label:'Prairie proche', layout:device.createPipelineLayout({bindGroupLayouts:[layout]}),
+      vertex:{module,entryPoint:'vs'}, fragment:{module,entryPoint:'fs',targets:[{format}]},
+      primitive:{topology:'triangle-strip',cullMode:'none'}, depthStencil:{format:depthFormat,depthCompare:'less-equal',depthWriteEnabled:true}};
+    const pipelines = new Map();
+    function pipeline(count) {
+      if (!pipelines.has(count)) pipelines.set(count,device.createRenderPipeline({...desc,multisample:{count}}));
+      return pipelines.get(count);
+    }
+    let publicFx, sources, meteo, parPied, ombre, groupe;
+    const compte = {}, mesure = {images:0,candidats:0,echantillons:0};
+    const fx = {
+      gpuShadow(pass,v) { return publicFx?.gpuShadow?.(pass,v); },
+      gpuColor(pass,v) {
+        const publicVu = publicFx?.gpuColor?.(pass,v);
+        const r = map.maj(v.oeil[0],v.oeil[2]);
+        u.set(v.vp); u.set(v.ombre.matrice,16); u.set(v.oeil,32); u[35]=v.temps;
+        u.set(v.soleil,36); u[39]=+v.ombre.active; u.set(v.couleurSoleil,40); u[43]=+v.ombre.plein;
+        u.set(v.ambiance,44); u.set(v.brouillard,48); u[51]=v.densiteBrouillard;
+        u.set(r,52);
+        u[56]=meteo?.ventX || 0; u[57]=meteo?.ventZ || 0;
+        let n=0;
+        for (const s of sources || []) {
+          if (!s.strength || Math.abs(s.p[0]-v.oeil[0])>96 || Math.abs(s.p[2]-v.oeil[2])>96) continue;
+          const vit=Math.hypot(s.velocity[0],s.velocity[2]); if (vit<.5) continue;
+          const i=60+n*8; u.set(s.p,i); u[i+3]=s.radius; u[i+4]=s.velocity[0]/vit; u[i+5]=s.velocity[2]/vit;
+          u[i+6]=s.wake; u[i+7]=Math.min(1,vit/55)*s.strength; if (++n===16) break;
+        }
+        u[58]=n;
+        device.queue.writeBuffer(uniform,0,u);
+        if (ombre!==v.ombre.textureView) {
+          ombre=v.ombre.textureView;
+          groupe=device.createBindGroup({layout,entries:[{binding:0,resource:{buffer:uniform}},
+            {binding:1,resource:vueSol},{binding:2,resource:ombre}]});
+        }
+        pass.setPipeline(pipeline(v.msaa || 1)); pass.setBindGroup(0,groupe);
+        const k=N*N*parPied; pass.draw(8,k);
+        mesure.images++; mesure.candidats=k; mesure.echantillons=map.echantillons;
+        compte.appels=(publicVu?.appels || 0)+1; compte.triangles=(publicVu?.triangles || 0)+6*k;
+        compte.instances=(publicVu?.instances || 0)+k; return compte;
+      }
+    };
+    return {mesure, preparer(pub,s,m,q) { publicFx=pub; sources=s; meteo=m; parPied=q==='ultra'?3:2; return fx; },
+      liberer() { uniform.destroy(); texture.destroy(); pipelines.clear(); } };
+  }
+  B.herbeGPU = {creer,clipmap};
+})(globalThis.BITUME = globalThis.BITUME || {});

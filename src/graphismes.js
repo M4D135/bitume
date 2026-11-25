@@ -21,10 +21,10 @@
   // Les plafonds manuels restent indépendants du profil général.
   // Auto peut alléger ce rendu sans rebâtir la prairie ni retirer des arbres/obstacles en cours de course.
   const PRAIRIE = Object.freeze({
-    low: Object.freeze({ density: Object.freeze([7, 16, .125]), distance: Object.freeze([24, 45]) }),
-    medium: Object.freeze({ density: Object.freeze([14, 38, .125]), distance: Object.freeze([56, 102]) }),
-    high: Object.freeze({ density: Object.freeze([22, 58, .125]), distance: Object.freeze([90, 150]) }),
-    ultra: Object.freeze({ density: Object.freeze([26, 72, .125]), distance: Object.freeze([120, 185]) }),
+    low: Object.freeze({ density: Object.freeze([6, 14, .125]), distance: Object.freeze([18, 32]) }),
+    medium: Object.freeze({ density: Object.freeze([10, 22, .125]), distance: Object.freeze([26, 44]) }),
+    high: Object.freeze({ density: Object.freeze([15, 32, .125]), distance: Object.freeze([35, 58]) }),
+    ultra: Object.freeze({ density: Object.freeze([19, 40, .125]), distance: Object.freeze([44, 72]) }),
   });
 
   // ---------------------------------------------------------------- bornes du moteur (à ne pas dépasser)

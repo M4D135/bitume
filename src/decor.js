@@ -1260,6 +1260,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         }
         if (!meilleur) return null;
         sortie.y = hauteur; sortie.normal = meilleur.normal; sortie.color = meilleur.color; sortie.type = meilleur.type;
+        // La prairie GPU peut écarter les brins autour du pied tant que toutes leurs
+        // racines restent dans ce triangle déjà découpé (bitume, stands, obstacles).
+        if (sortie.rayonPied !== undefined) {
+          let rayon = .2;
+          for (let j = 0; j < 3; j++) {
+            const a = meilleur.points[j], b = meilleur.points[(j+1)%3], dx=b[0]-a[0], dz=b[2]-a[2];
+            rayon = Math.min(rayon, Math.abs(dx*(z-a[2])-dz*(x-a[0])) / Math.max(.0001, Math.sqrt(dx*dx+dz*dz)));
+          }
+          sortie.rayonPied = rayon;
+        }
         return sortie;
       }
       return { triangles, surface, aireBrute, aire: aireAccotements + aireTerrain, aireAccotements, aireTerrain, trianglesSources: D.brutes.length, masques: D.nM };

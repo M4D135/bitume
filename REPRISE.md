@@ -3,6 +3,8 @@
 <!-- bitume-reprise-actuelle-debut -->
 ## Par où reprendre
 
+**25 novembre — BITUME 0.2.334, base 0.2.333 `66e5cde`.** La prairie WebGPU proche (`src/herbe-gpu.js`) est intégrée aux vues des pilotes ; les rétroviseurs gardent arbres et bâtiments mais excluent tapis et végétation basse. [Capture Ultra au ras du sol](docs/reprise/rapports/prairie-gpu-0334.jpg). Banc cockpit Fine sur Mac Metal-3, Longues Ombres en été, 1440 × 900 : 1 201 images en 20,02 s, p95 16,7 ms, pire 16,8 ms. Reproduction : `tools/banc-navigateur.mjs --mode prairie` pour le gros plan, `--mode banc --qualite high --duree 20` pour la cadence, avec `--angle native --taille 1440,900 --url file:///…/dist/bitume.html`. Ce lot ne déploie pas le site. L'état du 24 novembre ci-dessous reste historique.
+
 **Consignes canoniques de la mission (reprise 24 novembre) :** `docs/reprise/MASTER-PROMPT-BITUME.md` — à relire en entier après toute réduction de contexte, avec son **Tableau de suivi** des douze lots A–L. Ne pas redemander les définitions des lots C/D/G/H/I/L : elles sont dans ce fichier.
 
 **Site servi, BITUME 0.2.299** (`e2dab57`, sha256 servi `ee016800…`, identique au `dist/bitume.html` commité — **non déployé** vers `0.2.316` sans feu vert explicite de David). Incident du 23/11 22:00 GMT corrigé le 24/11 : `current` pointait sur l'ancien commit `ac6a74a4` (V0.2.90) ; rollback atomique documenté vers `releases/e2dab57…`. Salon `/salon/sante` HTTP 200.

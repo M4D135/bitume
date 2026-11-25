@@ -134,7 +134,21 @@ try {
   // explicite d'overlay, sinon la capture finale serait un rapport vide alors que le chronomètre a tourné.
   if (mode === 'banc' || args.overlay === 'oui') await evaluer('BITUME_JEU.mesures = true; true');
   await evaluer('BITUME_JEU.pauseAuto = false; true');
-  if (args.mode === 'course') {
+  if (mode === 'prairie') {
+    // Vue rasante reproduisible sur une vraie surface herbeuse, sans superposition du cockpit.
+    await evaluer(`BITUME_JEU.reference(${JSON.stringify({...referenceJeu, vue:'poursuite', vegetation:'ultra', retro:'non'})}); true`);
+    rapport.pointPrairie = await evaluer(`(() => {
+      const {c,decor} = BITUME_JEU.scene, sonde={}, habitat={};
+      for(let i=0;i<c.n;i+=3) for(const d of [-14,14,-22,22,-36,36]){
+        const x=c.x[i]-Math.sin(c.cap[i])*d,z=c.z[i]+Math.cos(c.cap[i])*d;
+        if(decor.ecologie.echantillonner(x,z,habitat).herbe<.72 || !decor.surfaceHerbe(x,z,sonde)) continue;
+        const cam={pos:[x,sonde.y+.85,z],yaw:c.cap[i]+Math.PI/2,pitch:-.21,fov:56};
+        BITUME_JEU.camera=()=>cam; return {x,z,d,habitat:habitat.herbe};
+      } throw Error('Prairie introuvable'); })()`);
+    await images(60);
+    rapport.prairie = await evaluer('BITUME_JEU.scene.prairies[0]?.mesure');
+    if (rapport.prairie?.candidats !== 196608) throw new Error('Prairie ultra incomplète');
+  } else if (args.mode === 'course') {
     // une séance réelle (démo sur le circuit choisi), avancée en simulation jusqu à l endroit voulu, puis quelques
     // secondes d images rendues : c est là que les lampes du tunnel et les rétroviseurs sont réellement dessinés
     await evaluer(`BITUME_JEU.reference(${JSON.stringify(referenceJeu)}); true`);
@@ -206,7 +220,9 @@ try {
     // un second appel CDP laisserait entre-temps une image de vitrine contaminer la fenêtre CPU/GPU.
     const releve = await evaluer(`(() => {
       const p = BITUME_JEU.banc(${JSON.stringify(optionsBanc)}), S = BITUME_JEU.session, debutSimulation = S.course.horloge;
+      const scene = BITUME_JEU.scene;
       return p.then(banc => ({ banc, mesures: BITUME_JEU.mesures, finBanc: {
+        prairies: scene.prairies?.map(v => v?.mesure),
         phase: S.course.phase, simulationEcoulee: S.course.horloge-debutSimulation,
         joueurs: S.locaux.map(id => { const e=S.course.voitures[id].etat; return { id, s:e.s, d:e.d, v:e.v }; }),
         visible: !document.hidden, imagePrincipale: banc.image

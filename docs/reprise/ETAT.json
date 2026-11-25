@@ -1,4 +1,13 @@
 {
+  "dernier_lot_verifie": {
+    "date": "2026-11-25",
+    "version": "0.2.334",
+    "sujet": "Prairie GPU et exclusion de la végétation basse dans les rétroviseurs",
+    "build_sha256": "faddba604bdc6e0dd6af63aff7a28adb03f4152548473cc5913e573092dbd703",
+    "capture": "docs/reprise/rapports/prairie-gpu-0334.jpg",
+    "banc_mac": "Metal-3, 1440x900, high, 20,02 s, p95 16,7 ms, pire 16,8 ms",
+    "deploie_par_ce_lot": false
+  },
   "date": "2026-11-24",
   "etat_courant": {
     "version_courante": "0.2.316",
