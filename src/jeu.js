@@ -7118,6 +7118,7 @@
     const duree = options.duree || 20, chauffe = options.chauffe ?? 1, qualite = options.qualite || 'high';
     if (!rendu) return Promise.reject(new Error('rendu absent'));
     if (!B.graphismes.QUALITES.includes(qualite)) return Promise.reject(new Error('qualité inconnue : ' + qualite));
+    const appel = performance.now();
     reference(Object.assign({}, options, { qualite, circuit: options.circuit ?? reglages.circuit }));
     const S = session; S.essai = true; S.banc = { qualite, effets: 0 };
     // le banc mesure chaque image de l'écran : ni diviseur ni cible imposée pendant la mesure
@@ -7127,19 +7128,23 @@
     $('chargement').classList.add('fini');
     aller('course');
     while (S.course.phase !== 'course') pasSimulation(S, true);
+    const pret = performance.now(), debutMesure = pret + chauffe * 1000;
     return new Promise(rendre => {
       const temps = [], effets = []; let t0 = 0, prec = 0;
       const mesurer = t => {
         const interrompu = session !== S || ecran !== 'course';
+        // Chrome peut dater le premier callback d'avant le chargement synchrone.
+        // Les deux bornes de chaque intervalle retenu doivent être après la chauffe.
+        if (!interrompu && t < debutMesure) { requestAnimationFrame(mesurer); return; }
         if (!t0) t0 = t;
         const ecoule = (t - t0) / 1000;
-        if (!interrompu && prec && ecoule > chauffe) { temps.push(t - prec); effets.push(S.banc.effets); }
+        if (!interrompu && prec) { temps.push(t - prec); effets.push(S.banc.effets); }
         S.banc.effets = 0;
         prec = t;
-        if (!interrompu && ecoule < chauffe + duree) { requestAnimationFrame(mesurer); return; }
+        if (!interrompu && ecoule < duree) { requestAnimationFrame(mesurer); return; }
         const tri = temps.sort((a, b) => a - b), q = p => tri.length ? tri[Math.min(tri.length - 1, Math.floor(p * tri.length))] : 0;
         const r = {
-          qualite, duree: +Math.max(0, ecoule - chauffe).toFixed(2), images: tri.length, p50: +q(.5).toFixed(2), p95: +q(.95).toFixed(2),
+          qualite, preparationMs: +(pret-appel).toFixed(1), duree: +ecoule.toFixed(2), images: tri.length, p50: +q(.5).toFixed(2), p95: +q(.95).toFixed(2),
           pire: +(tri.length ? tri[tri.length - 1] : 0).toFixed(2), fenetre: innerWidth + '×' + innerHeight, image: canvas.width + '×' + canvas.height,
           circuit: CATALOGUE[S.i].nom, interrompu,
           reference: S.reference,

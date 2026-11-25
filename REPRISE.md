@@ -3,6 +3,8 @@
 <!-- bitume-reprise-actuelle-debut -->
 ## Par où reprendre
 
+**0.2.337 — Cadence à Pietraporzio.** Les 2,23 s incluaient la préparation synchrone du circuit. Le banc corrigé mesure 2 380,8 ms de préparation, puis p95 33,3 ms et pire 33,4 ms pendant 20,03 s en course sur le Mac. [Détail et reproduction](docs/reprise/rapports/COURSE-0336-MAC.md#chronom%C3%A9trage-corrig%C3%A9-en-02337).
+
 **26 novembre — 0.2.336.** Relief ordinaire réutilisé depuis IndexedDB ; records de `finTour` relus en p55, archives préservées. [Preuves et limites](docs/reprise/rapports/COURSE-0336-MAC.md). L’endurance .335 s’est interrompue au km 15,395. Le second passage court à Pietraporzio reproduit une pause supérieure à deux secondes ; la réception 60 images 3D/s reste ouverte.
 
 **26 novembre — 0.2.335, chantier « uniquement ce qui sert à la course ».** Grille, accidents et arrivée filmés depuis la piste ; le jeu ne prépare plus les trajectoires panoramiques. Prairie sélectionnée par tuiles occupées dans le champ de chaque joueur ; les reliefs ordinaires au-delà du corridor de 420 m ne produisent plus de surfaces à planter. Cache IndexedDB : éviction atomique et purge par préfixe sans recopier les blocs. **Production vérifiée : 0.2.334 (`93d64ac`)**. [Matrice 9 circuits, mesures et empreintes](docs/reprise/rapports/COURSE-0335-MAC.json) · [File de continuation et critères](docs/reprise/CONTINUATION-2026-11-26.md).

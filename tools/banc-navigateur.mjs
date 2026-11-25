@@ -248,6 +248,10 @@ try {
         writeFileSync(args.sortie+'.progress.json',JSON.stringify(rapport.kilometres)); dernierKm=km;
       }
       if(etat.fin || Date.now()-progres>90000){
+        rapport.dernierEtat=await evaluer(`(() => {const J=BITUME_JEU,S=J.session,c=S?.course,e=c?.joueur?.etat;return {
+          ecran:J.ecran,cache:document.hidden,phase:c?.phase,circuit:c?.c.id,vitesse:e?.v,abscisse:e?.s,
+          fini:c?.joueur?.fini,abandon:c?.joueur?.abandon,horloge:c?.horloge,compteur:recuDescente.etat()
+        };})()`);
         rapport.endurance=await evaluer('recuDescente.fin()');
         if(!etat.fin?.termine || etat.pertes || etat.erreurs) throw new Error('Descente incomplète ou conditions perdues : '+JSON.stringify(etat));
         break;
