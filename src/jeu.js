@@ -288,7 +288,7 @@
     decor.atmosphere = B.graphismes.atmosphere(decor.atmosphere);
     if (B.obstacles) c.obstacles = B.obstacles.creer(decor.obstacles);
     rendu.setWorld([], [], decor.atmosphere);
-    rendu.setNappes(decor.nappes, { staticBounds: true });
+    rendu.setNappes(decor.nappes, { staticBounds: true, immutable: true });
     rendu.setLots(decor.lots, { staticBounds: true, progressif: !!decor.fluxDecor });
     // Le public (public.js) : de vrais spectateurs à la place des boîtes des gradins, dessinés par le point d'accroche
     // « foule » du moteur. Bâti au palier ancre, comme le décor ; la vue de l'ancienne scène rend ses tampons.
@@ -3227,7 +3227,7 @@
     if (!retro.rendu || !scene || retro.scene === scene) return;
     const d = scene.decor;
     retro.rendu.setWorld([], [], d.atmosphere);
-    retro.rendu.setNappes(d.nappes.map(n => Object.assign({}, n)), { staticBounds: true });
+    retro.rendu.setNappes(d.nappes, { staticBounds: true, immutable: true });
     retro.rendu.setLots(lotsGlaces(d), { staticBounds: true, progressif: !!d.fluxDecor });
     // le public dans les glaces : ses propres ressources WebGPU, sans le niveau proche ni les ombres (glace sans ombre)
     if (retro.vuePublic) retro.vuePublic.liberer();
@@ -7161,6 +7161,7 @@
     });
   }
   const outilsJeu = { get session() { return session; }, get rendu() { return rendu; }, get ecran() { return ecran; }, reglages, CATALOGUE, avancer, banc, reference, detecterGraphismes,
+    get terrainGlaces() {return {octetsPartages:retro.rendu?.stats.nappeSharedBytes||0,triangles:retro.rendu?.stats.nappeTriangles||0};},
     // ce que le banc et le contrôle visuel vérifient sans toucher au jeu : la scène installée et le profil résolu
     get menuArcade() { return menuArcade.stats(); },
     get scene() { return scene; }, get profil() { return profilDe(session); }, get ancre() { return etatProfils.decor; },

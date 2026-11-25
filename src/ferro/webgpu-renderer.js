@@ -50,6 +50,9 @@ function uniformWriter(target, fields){
 }
 // Les scopes de validation sont empilés sur le GPUDevice, y compris entre deux moteurs.
 const initializing=new WeakMap(), lossObservers=new WeakMap();
+// Only hosts opting in promise that the list, material attributes and source
+// arrays remain immutable. Visibility and projection still belong to each view.
+const terrainDevices=new WeakMap();
 function observeLoss(device,callback){
  let state=lossObservers.get(device);
  if(!state){
@@ -207,20 +210,42 @@ async function create(canvas,options={}){
  // changed by updateShape stays expanded even when indexing is re-enabled.
  function setPrimitiveIndexing(enabled){enabled=enabled===true;if(disposed||stats.contextLost||enabled===stats.primitiveIndexing)return stats.primitiveIndexing;const base=enabled?primitiveIndexing.indices:source.indices;device.queue.writeBuffer(ibo,0,registeredIndexing?groundIndex.select(base):base);stats.primitiveIndexing=enabled;return enabled;}
  const terrainConstants=[];
- function terrainConstant(tint){
-  if(!terrainConstants[tint])terrainConstants[tint]=buffer(new Float32Array([1,1,1,0,0,0,0,tint?98:66,0,0,0,1]),GPUBufferUsage.VERTEX,'FERRO terrain constants');
-  return terrainConstants[tint];
+ function terrainConstant(tint,constants,allocate){
+  if(!constants[tint])constants[tint]=allocate(new Float32Array([1,1,1,0,0,0,0,tint?98:66,0,0,0,1]),GPUBufferUsage.VERTEX,'FERRO terrain constants');
+  return constants[tint];
+ }
+ let terrainLease=null;
+ function releaseTerrain(){
+  if(terrainLease){
+   const t=terrainLease;terrainLease=null;
+   if(--t.views===0){t.cache.delete(t.list);for(const b of t.owned)b.destroy();}
+  }else for(const n of nappes){freeBuffer(n.vertex);freeBuffer(n.instance);freeBuffer(n.index);}
+  nappes=[];
  }
  function setNappes(list,options){
-  for(const n of nappes){freeBuffer(n.vertex);freeBuffer(n.instance);freeBuffer(n.index);}
-  nappes=[];let triangles=0;
+  releaseTerrain();let triangles=0;
+  stats.nappeSharedBytes=0;
+  const share=options?.immutable===true && Array.isArray(list);
+  if(share){
+   let cache=terrainDevices.get(device);if(!cache){cache=new WeakMap();terrainDevices.set(device,cache);}
+   const t=cache.get(list);
+   if(t){terrainLease=t;t.views++;nappes=t.nappes;terrainView.reset(nappes,options?.staticBounds===true);stats.nappeTriangles=t.triangles;stats.nappeSharedBytes=t.bytes;return;}
+   terrainLease={cache,list,views:1,owned:[],bytes:0,nappes,triangles:0};
+  }
+  const allocate=(data,usage,label)=>{
+   const b=buffer(data,usage,label);
+   if(share){terrainLease.owned.push(b);terrainLease.bytes+=align(data.byteLength);buffers.delete(b);}
+   return b;
+  };
+  const constants=share?[]:terrainConstants;
+  try{
   for(const n of list||[]){
    if(!n?.sommets||!n.indices?.length)continue;
    const data=n.sommets,count=data.length/13,rigid=S.rigidTerrainVertices(data),smooth=n.vertexTint==='smooth';
    const vertices=new Float32Array(count*(rigid?10:6));
    let instance=null,constant=null;
    if(rigid){
-    S.writeRigidTerrain(vertices,0,data);constant=terrainConstant(smooth?1:0);
+    S.writeRigidTerrain(vertices,0,data);constant=terrainConstant(smooth?1:0,constants,allocate);
    }else{
     const instances=new Float32Array(count*16);
     for(let i=0;i<count;i++){
@@ -231,13 +256,15 @@ async function create(canvas,options={}){
      instances[row+11]=smooth?34:2;
      instances[row+12]=data[src+10];instances[row+13]=data[src+11];instances[row+14]=data[src+12];instances[row+15]=1;
     }
-    instance=buffer(instances,GPUBufferUsage.VERTEX,'FERRO terrain materials');
+    instance=allocate(instances,GPUBufferUsage.VERTEX,'FERRO terrain materials');
    }
    const index=n.indices instanceof Uint32Array?n.indices:new Uint32Array(n.indices);
-   nappes.push({...n,rigid,vertex:buffer(vertices,GPUBufferUsage.VERTEX,'FERRO terrain vertices'),constant,instance,index:buffer(index,GPUBufferUsage.INDEX,'FERRO terrain indices')});
+   nappes.push({...n,rigid,vertex:allocate(vertices,GPUBufferUsage.VERTEX,'FERRO terrain vertices'),constant,instance,index:allocate(index,GPUBufferUsage.INDEX,'FERRO terrain indices')});
    triangles+=index.length/3;
   }
   terrainView.reset(nappes,options?.staticBounds===true);stats.nappeTriangles=triangles;
+  if(share){terrainLease.triangles=triangles;terrainLease.cache.set(list,terrainLease);}
+  }catch(e){releaseTerrain();terrainView.reset();throw e;}
  }
  // The spatial index uses the source bounds. Buffers, plans and their lifetime belong to this device.
  let lotSlots=[],lotInputSlots=[],progressiveLots=false,lotCursor=0,lotEnvironment=null;
@@ -764,7 +791,7 @@ async function create(canvas,options={}){
   };
   presentations.set(target,presentation);return presentation;
  }
- function dispose(){if(disposed)return;disposed=true;for(const surface of presentations.values())surface.dispose();profiling=false;nativeSurface?.dispose();localWind.reset();terrainView.reset();nappes=[];releaseLots();try{context.unconfigure();}catch{}for(const b of buffers)b.destroy();for(const t of textures)t.destroy();buffers.clear();textures.clear();timing?.query.destroy();bindings.clear();pipelines.clear();copyPipelines.clear();chunks.clear();programs.clear();releaseDevice();}
+ function dispose(){if(disposed)return;disposed=true;for(const surface of presentations.values())surface.dispose();profiling=false;nativeSurface?.dispose();localWind.reset();terrainView.reset();releaseTerrain();releaseLots();try{context.unconfigure();}catch{}for(const b of buffers)b.destroy();for(const t of textures)t.destroy();buffers.clear();textures.clear();timing?.query.destroy();bindings.clear();pipelines.clear();copyPipelines.clear();chunks.clear();programs.clear();releaseDevice();}
  initializeCleanup=dispose;
  // Resolve expensive shader/pipeline compilation before the title screen or a
  // measured gameplay frame. Validation errors fail creation and permit fallback.

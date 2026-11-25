@@ -207,6 +207,17 @@ try {
     await dormir(2500);
     rapport.apresSeance = await evaluer(`(() => { const S = BITUME_JEU.session;
       return { mondeCourant: !!(S && S.fx && S.fx.monde), mondes: window.FPhysX ? window.FPhysX.status().worlds : null }; })()`);
+  } else if (mode === 'terrain-glaces') {
+    rapport.terrains=[];
+    for(const circuit of [0,6,0]){
+      await evaluer(`BITUME_JEU.reference({...${JSON.stringify(referenceJeu)},circuit:${circuit},vue:'cockpit',retro:'oui'});true`);
+      await attendreJusqua(()=>evaluer(`BITUME_JEU.terrainGlaces.octetsPartages>0 &&
+        BITUME_JEU.terrainGlaces.triangles===BITUME_JEU.rendu.stats.nappeTriangles &&
+        ['glace-g','glace-d'].every(id=>!document.getElementById(id).hidden)`),attendre,'terrain absent des rétroviseurs');
+      await images(5);
+      rapport.terrains.push(await evaluer(`(async()=>{await BITUME_JEU.rendu.gpu.device.queue.onSubmittedWorkDone();
+        return {circuit:BITUME_JEU.session.course.c.id,...BITUME_JEU.terrainGlaces};})()`));
+    }
   } else if (mode === 'cache-relief') {
     rapport.cacheRelief=[];
     for(let k=0;k<2;k++){
@@ -234,7 +245,11 @@ try {
   } else if (mode === 'endurance-larche') {
     // Enregistrer les nouvelles images principales (pas seulement les callbacks rAF).
     const compteur = readFileSync(new URL('../docs/reprise/rapports/LARCHE-ENDURANCE-2026-11-22/Compteur-de-rendus.js',import.meta.url),'utf8');
-    await evaluer(`BITUME_JEU.reference({...${JSON.stringify(referenceJeu)},circuit:BITUME_JEU.CATALOGUE.findIndex(c=>c.id==='larche'),depart:0,meteo:'pluie',qualite:'high',vue:'cockpit',retro:'oui'}); true`);
+    if(args.cadence && !['auto','ecran','60','30','120'].includes(args.cadence))throw Error('Cadence invalide');
+    if(args.cadence)await evaluer(`document.querySelector('input[name="cadence"][value="${args.cadence}"]').click();true`);
+    rapport.referenceEffective=await evaluer(`BITUME_JEU.reference({...${JSON.stringify(referenceJeu)},circuit:BITUME_JEU.CATALOGUE.findIndex(c=>c.id==='larche'),depart:0,meteo:'pluie',qualite:'high',vue:'cockpit',retro:'oui'})`);
+    rapport.cadenceInitiale=await evaluer('BITUME_JEU.cadence.mode');
+    if(args.cadence && rapport.cadenceInitiale!==args.cadence)throw Error('Cadence non appliquée');
     await evaluer(compteur);
     let dernierKm=-1, maxi=-1, progres=Date.now();
     for(;;) {
@@ -244,7 +259,8 @@ try {
       const km=Math.floor(etat.kmRoute ?? -1);
       if(km>dernierKm && args.sortie){
         const precedent=km>0?await evaluer(`recuDescente.troncon(${km-1})`):null;
-        (rapport.kilometres ||= []).push({etat,precedent});
+        const cadence=await evaluer('BITUME_JEU.cadence');
+        (rapport.kilometres ||= []).push({etat,precedent,cadence});
         writeFileSync(args.sortie+'.progress.json',JSON.stringify(rapport.kilometres)); dernierKm=km;
       }
       if(etat.fin || Date.now()-progres>90000){
@@ -282,6 +298,7 @@ try {
         terrain: scene.decor.nappes.filter(n=>n.surfaceType==='terrain').reduce((s,n)=>{
           s.triangles+=n.indices.length/3; s.herbier+=n.herbeTriangles?.length || 0; s.horizon+=Number(!!n.horizon); return s;
         },{triangles:0,herbier:0,horizon:0}),
+        terrainGlaces: BITUME_JEU.terrainGlaces,
         phase: S.course.phase, simulationEcoulee: S.course.horloge-debutSimulation,
         joueurs: S.locaux.map(id => { const e=S.course.voitures[id].etat; return { id, s:e.s, d:e.d, v:e.v }; }),
         visible: !document.hidden, imagePrincipale: banc.image

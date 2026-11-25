@@ -1,0 +1,49 @@
+{
+  "build": {
+    "sha256": "42cb61b5460061c1607e9beb72a320fabf47fb017fe6cf648d8adb01bfbe0379",
+    "octets": 17651526
+  },
+  "environnement": {
+    "navigateur": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.0.0 Safari/537.36",
+    "gpu": "apple metal-3",
+    "backend": "webgpu",
+    "webgpu": true,
+    "logiciel": false,
+    "chronoGpu": true,
+    "version": "V0.2.338",
+    "gpuModeste": false,
+    "rendu": "apple metal-3",
+    "nonMasque": "apple metal-3",
+    "chronometrageGpu": true,
+    "resolution": [
+      1920,
+      1080
+    ],
+    "fenetre": [
+      1920,
+      1080,
+      1
+    ],
+    "visible": true,
+    "signature": true,
+    "liensSignature": 0
+  },
+  "terrains": [
+    {
+      "circuit": "forets-du-pacifique",
+      "octetsPartages": 7681536,
+      "triangles": 169026
+    },
+    {
+      "circuit": "larche",
+      "octetsPartages": 13418752,
+      "triangles": 290822
+    },
+    {
+      "circuit": "forets-du-pacifique",
+      "octetsPartages": 7681536,
+      "triangles": 169026
+    }
+  ],
+  "erreurs": []
+}

@@ -3,6 +3,8 @@
 <!-- bitume-reprise-actuelle-debut -->
 ## Par où reprendre
 
+**0.2.338 — Terrain partagé avec les glaces.** FERRO 0.3.34 évite une seconde allocation de 13 418 752 octets à Larche sur le GPU du Mac. [Mesure WebGPU et changements de circuit](docs/reprise/rapports/TERRAIN-GLACES-0338.json). **Endurance .337 terminée** sous la pluie : 32,249 km, 41 124 dessins en 892,781 s (46,06/s ; p95 33,4 ms). [Rapport complet par kilomètre](docs/reprise/rapports/ENDURANCE-LARCHE-0337.json.gz). Le mode Écran est à comparer avec le mode par défaut. La production reste en .334.
+
 **0.2.337 — Cadence à Pietraporzio.** Les 2,23 s incluaient la préparation synchrone du circuit. Le banc corrigé mesure 2 380,8 ms de préparation, puis p95 33,3 ms et pire 33,4 ms pendant 20,03 s en course sur le Mac. [Détail et reproduction](docs/reprise/rapports/COURSE-0336-MAC.md#chronom%C3%A9trage-corrig%C3%A9-en-02337).
 
 **26 novembre — 0.2.336.** Relief ordinaire réutilisé depuis IndexedDB ; records de `finTour` relus en p55, archives préservées. [Preuves et limites](docs/reprise/rapports/COURSE-0336-MAC.md). L’endurance .335 s’est interrompue au km 15,395. Le second passage court à Pietraporzio reproduit une pause supérieure à deux secondes ; la réception 60 images 3D/s reste ouverte.
