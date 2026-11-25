@@ -162,7 +162,7 @@
     fx.acc += dt;
     if (fx.acc < PAS * .999) {
       // Un arrêt ou une sortie de portée entre deux mises à jour coupe la bande avant la reprise.
-      const V = co.voitures, L = co.c.longueur, ref = V[suivie] ? V[suivie].etat.s : 0;
+      const V = co.voitures, L = (co.c || co).longueur, ref = V[suivie] ? V[suivie].etat.s : 0;
       for (let k = 0; k < V.length; k++) {
         const et = V[k].etat;
         let ds = (et.s - ref) % L;
@@ -173,7 +173,7 @@
     }
     fx.acc = Math.max(0, fx.acc - PAS);
     vieillir(fx, PAS);
-    const V = co.voitures, L = co.c.longueur, ref = V[suivie] ? V[suivie].etat.s : 0, choc = B.conduite.PARAMS.chocDuree;
+    const V = co.voitures, L = (co.c || co).longueur, ref = V[suivie] ? V[suivie].etat.s : 0, choc = B.conduite.PARAMS.chocDuree;
     const eau = B.conduite.eauSurPiste ? B.conduite.eauSurPiste() : 0;
     for (let k = 0; k < V.length; k++) {
       const et = V[k].etat, p = poses[k];

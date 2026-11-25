@@ -6,6 +6,7 @@ import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { chargerPhysX } from './helpers/physx-runtime.mjs';
+import { definitionHistorique } from './helpers/catalogue-historique.mjs';
 const require = createRequire(import.meta.url);
 for (const nom of ['circuit', 'conduite', 'degats', 'contacts', 'obstacles', 'botanique', 'ecologie', 'saisons',
   'vegetation', 'bords', 'carene', 'decor', 'meteo', 'strategie-stands', 'course', 'solides-physx', 'physique']) require('../src/' + nom + '.js');
@@ -19,7 +20,7 @@ for (const f of ['physique', 'solides-physx', 'conduite', 'course', 'strategie-s
 
 function circuit(saison) {
   if (!circuits.has(saison)) {
-    const k = CATALOGUE.find(k => k.id === 'val-brule');
+    const k = definitionHistorique(CATALOGUE, 'val-brule');
     const c = B.circuit.creer(k.graine, { theme: k.theme, longueur: k.longueur, nom: k.nom });
     B.bords.limites(c, B.bords.planifier(c));
     // La qualité légère conserve les nappes et solides réels (testés sur les huit circuits).

@@ -18,7 +18,7 @@ function geometrieNappes(d) {
 function masqueHerbe(n) {
   const masque = new Uint8Array(n.sommets.length / 13);
   for (const k of n.herbeTriangles || []) for (let j = 0; j < 3; j++) masque[n.indices[k + j]] = 1;
-  if (n.surfaceType === 'accotement') for (let v = 0; v < masque.length; v++) if (n.sommets[v * 13 + 9] === 8) masque[v] = 1;
+  if (n.surfaceType === 'accotement') for (let v = 0; v < masque.length; v++) if (Math.floor(n.sommets[v * 13 + 9]) === 8) masque[v] = 1;
   return masque;
 }
 function palettes(d) {
@@ -72,7 +72,7 @@ verifier('douze scènes : recoloration seulement, chaussée hivernale lisible, c
         for (let v = 0; v < masque.length; v++) for (let k = 0; k < 3; k++) {
           const couleur = n.sommets[v * 13 + 10 + k];
           const mat = reference.sommets[v * 13 + 9];
-          const asphalte = n.surfaceType === 'accotement' && (mat === 14 || mat === 21)
+          const asphalte = n.surfaceType === 'accotement' && (Math.floor(mat) === 14 || Math.floor(mat) === 21)
             && reference.sommets[v * 13 + 10] < .3
             && reference.sommets[v * 13 + 10] === reference.sommets[v * 13 + 11];
           const neigeRocher = d.saison.neige && theme === 'montagne' && n.surfaceType === 'terrain' && n.sommets[v * 13 + 4] > .45;

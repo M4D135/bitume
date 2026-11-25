@@ -61,7 +61,7 @@ verifier('la voie des stands existe, est a droite et tient dans la ligne droite'
     assert.equal(S.cote, 1, 'cote droit, sous le batiment que dessine decor.js');
     assert.ok(S.debut < S.garage0 && S.garage0 < S.garage1 && S.garage1 < S.fin, 'voie puis garage puis sortie');
     assert.ok(S.debut > 0, 'la voie commence apres la ligne : la grille est derriere');
-    assert.ok(S.d > 0 && S.d + S.demi <= cc.largeur / 2 + .1, 'la voie reste sur la chaussee, pas derriere une glissiere');
+    assert.ok(S.d > 0 && S.d + S.demi <= B.circuit.bordStands(cc, (S.garage0+S.garage1)/2, 1) + .1, 'la voie reste sur la chaussee, pas derriere une glissiere');
     assert.ok(S.vitesse > 5 && S.vitesse < 20, 'vitesse de voie plausible');
     if (cc.tunnel) {
       const T = cc.tunnel;
@@ -117,26 +117,28 @@ verifier('le service se chiffre d apres l etat constate', () => {
 verifier('entrer dans la voie a basse vitesse ouvre un arret et invalide le tour', () => {
   const course = courseToutePrête(), v = course.joueur;
   abimer(v.degats, 0);
-  placer(v, S0.debut + 10, S0.d, 8); degager(course, v);
+  placer(v, S0.sBox, S0.dBox, 8); degager(course, v);
   const ev = B.course.pas(course, NEUTRE, dt);
   assert.ok(v.etat.stands && v.etat.stands.phase === 'voie', 'la voiture est dans la voie');
   assert.equal(v.tourValide, false, 'le tour courant nest pas homologue');
   assert.ok(ev.some(e => e.type === 'stand' && e.phase === 'entree'), 'levenement sort');
 });
 
-verifier('on n entre pas en roulant vite, ni en frolant le bord, ni au depart', () => {
+verifier('on n entre pas en frolant le bord ni au depart ; un pilote rapide entre et subit le limiteur', () => {
   const course = courseToutePrête(), v = course.joueur;
-  placer(v, S0.debut + 10, S0.d, 40);
+  placer(v, S0.garage0 - 20, S0.d, 40);
   B.course.pas(course, NEUTRE, dt);
-  assert.equal(v.etat.stands, null, 'a 144 km/h dans la voie, ce nest pas un stand');
-  placer(v, S0.debut + 10, 0, 8);
+  assert.equal(v.etat.stands?.phase, 'voie', 'un pilote rapide qui s engage dans la voie est retenu');
+  rouler(course, NEUTRE, 5);
+  assert.ok(v.etat.v <= S0.vitesse + .01, 'et subit le limiteur de la voie');
+  placer(v, S0.garage0 - 20, 0, 8);
   B.course.pas(course, NEUTRE, dt);
   assert.equal(v.etat.stands, null, 'au milieu de la piste, rien ne se declenche');
-  placer(v, S0.debut + 10, S0.d + S0.demi - .1, 8);
+  placer(v, S0.garage0 - 20, S0.d + S0.demi - .1, 8);
   B.course.pas(course, NEUTRE, dt);
   assert.equal(v.etat.stands, null, 'une roue sur le bord de la voie ne suffit pas');
   const cours2 = B.course.creer(c, { mode: 'course', graine: 42, placeJoueur: 1 });
-  placer(cours2.joueur, S0.debut + 10, S0.d, 8);
+  placer(cours2.joueur, S0.sBox, S0.dBox, 8);
   B.course.pas(cours2, NEUTRE, dt);
   assert.equal(cours2.joueur.etat.stands, null, 'a l arret du depart, rien');
 });
@@ -145,7 +147,7 @@ verifier('ressortir de la voie sans s arreter annule l arret, sans rien reparer'
   const course = courseToutePrête(), v = course.joueur;
   abimer(v.degats, 0);
   const avant = DG.sante(v.degats), adher = v.degats.adher, tra = v.degats.trainee;
-  placer(v, S0.debut + 10, S0.d, 8); degager(course, v);
+  placer(v, S0.sBox, S0.dBox, 8); degager(course, v);
   B.course.pas(course, NEUTRE, dt);
   assert.ok(v.etat.stands, 'entree');
   v.etat.d = 0;
@@ -162,20 +164,21 @@ verifier('l arret au garage rend la reparation complete, a la duree chiffree', (
   const course = courseToutePrête(), v = course.joueur;
   abimer(v.degats, 0);                                        // des chocs, pas de roue perdue : la voiture roule
   assert.ok(v.degats.trainee > 1.05, 'la carrosserie est abimee');
-  const duree = DG.chiffrerService(v.degats);
-  placer(v, S0.garage0 + 10, S0.d, 6); degager(course, v);
+  assert.ok(DG.chiffrerService(v.degats) > 2.5, 'les degats se chiffrent');
+  placer(v, S0.sBox, S0.dBox, 6); degager(course, v);
   const ev = [];
-  let t = 0, debutService = null, tRepare = null;
-  while (t < duree + 6 && tRepare === null) {
+  let t = 0, debutService = null, dureeAnnoncee = null, tRepare = null;
+  while (t < 40 && tRepare === null) {
     ev.push(...B.course.pas(course, { ...NEUTRE, frein: 1 }, dt)); t += dt;
     if (v.etat.stands && v.etat.stands.phase === 'service' && debutService === null) debutService = t;
+    for (const e of ev) if (e.type === 'stand' && e.phase === 'service' && dureeAnnoncee === null) dureeAnnoncee = e.duree;
     if (ev.some(e => e.type === 'stand' && e.phase === 'repare')) tRepare = t;
   }
   assert.ok(debutService !== null, 'le service a commence');
-  assert.ok(ev.some(e => e.type === 'stand' && e.phase === 'service'), 'et s annonce');
+  assert.ok(dureeAnnoncee !== null, 'et s annonce');
   assert.ok(tRepare !== null, 'la reparation est rendue');
-  assert.ok(Math.abs((tRepare - debutService) - duree) < .3,
-    'le service dure la duree chiffree, attendu ' + duree.toFixed(2) + ', fait ' + (tRepare - debutService).toFixed(2));
+  assert.ok(Math.abs((tRepare - debutService) - dureeAnnoncee) < .3,
+    'le service dure la duree annoncee, attendu ' + dureeAnnoncee.toFixed(2) + ', fait ' + (tRepare - debutService).toFixed(2));
   assert.equal(DG.sante(v.degats), 1, 'la voiture est neuve');
   assert.equal(v.degats.adher, 1); assert.equal(v.degats.trainee, 1);
   assert.equal(v.degats.roues.some(Boolean), false); assert.equal(v.degats.casse, false);
@@ -195,7 +198,7 @@ verifier('rouler dans la voie ne repare rien : il faut l arret', () => {
   const course = courseToutePrête(), v = course.joueur;
   abimer(v.degats, 0);
   const avant = DG.sante(v.degats);
-  placer(v, S0.debut + 5, S0.d, 10); degager(course, v);
+  placer(v, S0.garage0 - 20, S0.d, 10); degager(course, v);
   rouler(course, { ...NEUTRE, gaz: .25 }, 5);
   assert.ok(v.etat.stands, 'la voiture roule dans la voie');
   assert.notEqual(v.etat.stands.phase, 'service', 'sans arret, pas de service');
@@ -204,7 +207,7 @@ verifier('rouler dans la voie ne repare rien : il faut l arret', () => {
 
 verifier('la voie bride a la vitesse des stands', () => {
   const course = courseToutePrête(), v = course.joueur;
-  placer(v, S0.debut + 5, S0.d, 14); degager(course, v);
+  placer(v, S0.garage0 - 20, S0.d, 14); degager(course, v);
   rouler(course, PLEIN, 2);
   assert.ok(v.etat.v <= S0.vitesse + .01, 'briee a ' + S0.vitesse + ' m/s, lu ' + v.etat.v.toFixed(2));
 });
@@ -253,7 +256,7 @@ verifier('un pair distant ne peut pas faire reparer sa voiture', () => {
   const v = course.voitures[1];
   abimer(v.degats, 0);
   const avant = DG.sante(v.degats);
-  placer(v, S0.garage0 + 10, S0.d, 0); degager(course, v);
+  placer(v, S0.sBox, S0.dBox, 0); degager(course, v);
   v.humain = true; v.distant = true;                       // etat d une voiture conduite chez un autre
   const ev = [];
   for (let k = 0; k < 60; k++) B.course.stands(course, v, dt, ev);
@@ -270,7 +273,7 @@ verifier('un arret ne donne ni tour gratuit ni meilleur temps en chrono', () => 
   rouler(course, PLEIN, 1);
   assert.ok(course.chronoParti, 'le chrono est parti');
   assert.equal(v.tourValide, true, 'le tour est homologue tant qu on ne s arrete pas');
-  placer(v, S0.debut + 10, S0.d, 8);
+  placer(v, S0.sBox, S0.dBox, 8);
   B.course.pas(course, NEUTRE, dt);
   assert.equal(v.tourValide, false, 'invalide des l entree au stand');
   const n = course.enreg.n;
@@ -287,13 +290,14 @@ verifier('deux joueurs ont chacun leur sante et leur arret', () => {
   const [a, b] = course.voitures.filter(v => v.humain);
   assert.equal(a, course.joueur, 'le joueur 1');
   abimer(a.degats, 0); abimer(b.degats, 0);                      // les deux sont abîmés, chacun pour soi
-  placer(a, S0.garage0 + 10, S0.d, 4);
+  placer(a, S0.sBox, S0.dBox, 4);
   placer(b, S0.debut - 60, 0, 0);
   for (const o of course.voitures) if (o !== a && o !== b) placer(o, S0.debut - 700, 0, 0);
   const santeB = DG.sante(b.degats);
   assert.ok(santeB < 1, 'le second est abîmé aussi');
   const ev = [];
-  for (let k = 0; k < 120 * 12; k++) ev.push(...B.course.pas(course, [NEUTRE, NEUTRE], dt));
+  const frein = { ...NEUTRE, frein: 1 };
+  for (let k = 0; k < 120 * 20; k++) ev.push(...B.course.pas(course, [frein, frein], dt));
   assert.ok(ev.some(e => e.type === 'stand' && e.id === a.id && e.phase === 'repare'), 'le premier est repare');
   assert.equal(DG.sante(a.degats), 1, 'le premier est neuf');
   assert.equal(b.etat.stands, null, 'le second ny est jamais alle');
@@ -304,7 +308,7 @@ verifier('le meme arret, deux fois, donne le meme resultat', () => {
   const scenario = () => {
     const course = courseToutePrête(), v = course.joueur;
     abimer(v.degats, 0);
-    placer(v, S0.garage0 + 10, S0.d, 5); degager(course, v);
+    placer(v, S0.sBox, S0.dBox, 5); degager(course, v);
     const ev = rouler(course, { ...NEUTRE, frein: 1 }, 12);
     return JSON.stringify(ev.filter(e => e.type === 'stand')) + '|' + DG.sante(v.degats);
   };
@@ -314,7 +318,7 @@ verifier('le meme arret, deux fois, donne le meme resultat', () => {
 verifier('une roue perdue immobilise avant d atteindre le garage : pas de service', () => {
   const course = courseToutePrête(), v = course.joueur;
   v.degats.roues[0] = true;
-  placer(v, S0.garage0 + 10, S0.d, 6); degager(course, v);
+  placer(v, S0.sBox, S0.dBox, 6); degager(course, v);
   let reprise = false, arret = false;
   for (let k = 0; k < 120 * 2; k++) {
     B.course.pas(course, { ...NEUTRE, frein: 1 }, dt);

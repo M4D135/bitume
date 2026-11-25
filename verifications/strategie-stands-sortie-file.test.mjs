@@ -60,7 +60,7 @@ function circuit(id) {
   }
   return circuits.get(id);
 }
-function poser(co, v, s, vitesse = 0, d = co.c.stands.d) {
+function poser(co, v, s, vitesse = 0, d = co.c.stands.dBox) {
   const q = B.circuit.echantillon(co.c, s);
   Object.assign(v.etat, {s, d, v: vitesse, psi: 0, beta: 0, omega: vitesse * q.courbure, y: q.y,
     rapport: vitesse ? 3 : 1, regime: vitesse ? 11000 : 5000});

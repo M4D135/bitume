@@ -100,12 +100,12 @@ test('absence de stands et voiture étrangère ne donnent aucune autorisation', 
 test('l’admission relit une occupation humaine apparue depuis le guidage', () => {
   const { co, v, e, c } = preparer({ use: .95 });
   assert.ok(observer(co, v, 1));
-  e.s = c.stands.garage0 + 10; e.d = c.stands.d; e.v = 0;
+  e.s = c.stands.garage0 + 10; e.d = c.stands.dBox; e.v = 0;
   e.stands = { phase: 'voie', t: 0, repare: false }; v.ia.stand.phase = 'voie';
   co.joueur.etat.s = modulo(e.s - 500, c.longueur);
   assert.equal(B.strategieStands.servicePossible(co, v), true);
   // Arrivée de l'autre pilote entre la décision de guidage et l'admission, comme après les contacts d'un pas.
-  Object.assign(co.joueur.etat, { s: c.stands.garage0 + 30, d: c.stands.d, v: 0 });
+  Object.assign(co.joueur.etat, { s: c.stands.garage0 + 30, d: c.stands.dBox, v: 0 });
   const avant = physique(e); const ev = [];
   assert.equal(B.strategieStands.servicePossible(co, v), false);
   B.course.stands(co, v, co.dt, ev);

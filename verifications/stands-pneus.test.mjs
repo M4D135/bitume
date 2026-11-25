@@ -25,7 +25,7 @@ function seance(type = 'slicks', o = {}) {
   }
   return co;
 }
-function placer(v, s = (S.garage0 + S.garage1) / 2, d = S.d, vitesse = 0) {
+function placer(v, s = (S.garage0 + S.garage1) / 2, d = S.dBox, vitesse = 0) {
   const e = v.etat, q = B.circuit.echantillon(c, s);
   Object.assign(e, { s, d, v: vitesse, psi: 0, beta: 0, omega: 0, y: q.y, distance: s });
   v.progression = s; v.passages = v.maxPassages = 0;
@@ -159,7 +159,7 @@ verifier('la monte du début est figée ; une préférence ultérieure ne change
 
 verifier('entrée seule, sortie avant garage et arrêt loin après le garage : aucun renouvellement', () => {
   const co = seance(), v = co.joueur, e = v.etat, avant = copie(e);
-  placer(v, S.debut + 5, S.d, 8); B.course.stands(co, v, dt, []);
+  placer(v, S.garage0 + 10, S.dBox, 8); B.course.stands(co, v, dt, []);
   assert.equal(e.stands.phase, 'voie'); assert.deepEqual(copie(e), avant);
   e.d = 0; B.course.stands(co, v, dt, []); assert.equal(e.stands, null); assert.deepEqual(copie(e), avant);
   for (const s of [S.debut - 100, S.fin + 100]) {
@@ -297,7 +297,7 @@ verifier('chaque monte peut remplacer une autre, seulement à la fin du service 
 
 verifier('choix possible dans la voie, figé au début et conservé après une interruption', () => {
   const co = seance('slicks'), v = co.joueur, e = v.etat, avant = copie(e);
-  placer(v, S.debut + 5, S.d, 8); B.course.stands(co, v, dt, []);
+  placer(v, S.garage0 + 10, S.dBox, 8); B.course.stands(co, v, dt, []);
   assert.equal(e.stands.phase, 'voie');
   assert.equal(B.course.demanderPneus(co, v, 'pluie'), true);
   placer(v); B.course.stands(co, v, dt, []); assert.equal(e.stands.pneus, 'pluie');

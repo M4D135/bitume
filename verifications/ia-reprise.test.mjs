@@ -1,5 +1,5 @@
 import {createRequire} from 'node:module';import assert from 'node:assert/strict';const req=createRequire(import.meta.url);for(const f of ['circuit','conduite','degats','course'])req('../src/'+f+'.js');const B=globalThis.BITUME,DT=1/120;
-B.circuit={echantillon:(c,s)=>({x:s,y:0,z:0,cap:0,courbure:0,pente:0,devers:0,ligne:0,vitesse:50}),ecart:(c,a,b)=>b-a,vibreurA:()=>false};
+B.circuit={echantillon:(c,s)=>({x:s,y:0,z:0,cap:0,courbure:0,pente:0,devers:0,ligne:0,vitesse:50}),ecart:(c,a,b)=>b-a,vibreurA:()=>false,abscisseGrille:()=>0};
 function session(){const c={longueur:3000,largeur:12,limite:20,pas:5,n:600,vitesse:new Array(600).fill(50),ligne:new Array(600).fill(0),courbure:new Array(600).fill(0),depart:0};const co=B.course.creer(c,{rivaux:0});co.phase='course';co.temps=20;Object.assign(co.joueur.etat,{s:100,v:.03,psi:Math.PI,d:2});return co;}
 function tick(co,n){for(let k=0;k<n;k++)B.course.commandesIA(co,co.joueur);}
 const results=[];function test(name,f){try{f();results.push({name,ok:true});}catch(e){results.push({name,ok:false,error:e.message});}}
