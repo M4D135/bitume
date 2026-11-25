@@ -87,6 +87,7 @@ MODULES = [
     'championnat.js',
     'records.js',
     'cache.js',
+    'cache-relief.js',
     'panorama-cache.js',
     'effets-saison.js',
     'aurores.js',

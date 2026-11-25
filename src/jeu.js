@@ -265,13 +265,14 @@
     const options = [v.ancre, decorEnrichi, v.veut.matieres, v.vegetationQualite, 'flux-1'].join('/');
     return 'panorama-v1:' + B.cache.cleDecor(k.id, k.graine, options, v.saison, version);
   }
-  function installer(i, saisonDemandee, panorama, herbierWasm, cFourni) {
+  function installer(i, saisonDemandee, panorama, herbierWasm, cFourni, cacheRelief) {
     // Le décor est bâti sur un palier « ancre » (voir « profils graphiques du menu ») : la même piste ne se
     // reconstruit pas à chaque fluctuation du gouverneur, seulement quand l'ancre ou l'enrichissement change.
     const v = voeuDecor(saisonDemandee), { ancre, veut, vegetationQualite, saison } = v;
     if (!cFourni && sceneEnPlace(i, saisonDemandee, v)) return scene;
     const c = cFourni || circuit(i), decor = B.decor.construire(c, {
       decorProgressif: true,
+      cacheRelief,
       cachePanorama: panorama && panorama.cle === clePanorama(i, v) ? panorama : null,
       herbierWasm,
       qualite: ancre,
@@ -6411,6 +6412,9 @@
     // lancée : s'il manque quelque chose, le voile devient opaque avant de le faire.
     const cle = aBatir && CATALOGUE[i].id === 'larche' && B.cache?.disponible() && clePanorama(i, voeuDecor(saison));
     const panorama = cle ? B.panoramaCache.ouvrir(cle) : null;
+    const piste=CATALOGUE[i], version=document.querySelector('.version-jeu')?.textContent;
+    const relief=aBatir && type!=='sans-fin' && piste.id!=='larche' && piste.id!=='marseille' && version && B.cache?.disponible()
+      ? B.cacheRelief.ouvrir('grille-v1:'+B.cache.cleDecor(piste.id,piste.graine,voeuDecor(saison).ancre+'/'+Number(decorEnrichi),saison,version)) : null;
     let leger = !vitrine && !aBatir && (prepa.chaud.has(typeCode + ':sec') || prepa.chaud.has(typeCode + ':mouille')) && !!scene.chauffe && scene.chauffe.rendu.size > 0 && (!glaces || glacesPretes(retro.j1));
     const R = { type: typeCode, circuit: i, leger, etapes: [], date: Date.now() };
     Object.assign(prepa, { enCours: true, voile: !vitrine, attente: false, type: typeCode, i, saison, rapport: R, conditions: null, etape: null });
@@ -6472,8 +6476,9 @@
       // 2. décor, s'il change (le seul travail synchrone indivisible : B.decor.construire)
       await etape('decor', aBatir);
       if (aBatir) {
-        installer(i, saison, panorama, type !== 'vitrine');
+        installer(i, saison, panorama, type !== 'vitrine', null, relief);
         if (panorama?.choisi) R.cachePanorama = panorama.rapport;
+        if (relief?.choisi) R.cacheRelief=relief.rapport;
       }
       // 3. moteur des rétroviseurs : sa copie du décor et les toiles des quatre glaces
       await etape('retro', glaces && !leger && (!retro.rendu || retro.scene !== scene));
@@ -6541,6 +6546,7 @@
       // 11. l'écran de course, puis le fondu. Le bloc optionnel s'écrit ensuite au repos.
       const rapport = terminer();
       if (panorama) B.panoramaCache.conserver(panorama);
+      if (relief) B.cacheRelief.conserver(relief);
       return rapport;
     } catch (e) {
       if (panorama) panorama.nappes = null;

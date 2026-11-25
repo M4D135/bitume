@@ -207,6 +207,28 @@ try {
     await dormir(2500);
     rapport.apresSeance = await evaluer(`(() => { const S = BITUME_JEU.session;
       return { mondeCourant: !!(S && S.fx && S.fx.monde), mondes: window.FPhysX ? window.FPhysX.status().worlds : null }; })()`);
+  } else if (mode === 'cache-relief') {
+    rapport.cacheRelief=[];
+    for(let k=0;k<2;k++){
+      if(k){
+        await evaluer('window.__anciennePage=true');
+        await envoyer('Page.reload',{ignoreCache:true});
+        await attendreJusqua(()=>evaluer('!window.__anciennePage && window.BITUME_JEU?.ecran==="titre"').catch(()=>false),attendre,'rechargement du cache relief');
+      }
+      const essai=await evaluer(`(async()=>{
+        const r=await BITUME_JEU.preparer({type:'course',circuit:3,conditions:{saison:'ete',meteo:'soleil',moment:'jour'}});
+        const mesure=r.cacheRelief;
+        if(!mesure)throw Error(r.erreur||'Cache relief absent');
+        const fin=performance.now()+12000;
+        while(mesure.ecriture===null && performance.now()<fin)await new Promise(ok=>setTimeout(ok,50));
+        const grille=BITUME_JEU.scene.decor.maillageSol.H;
+        return {mesure,empreinte:BITUME.cache.checksum(grille.buffer),sommet:grille.length};
+      })()`);
+      rapport.cacheRelief.push(essai);
+    }
+    const [a,b]=rapport.cacheRelief;
+    if(!a.mesure.ecriture || b.mesure.source!=='indexeddb' || a.empreinte!==b.empreinte || a.sommet!==b.sommet)
+      throw Error('Relief non reproduit : '+JSON.stringify(rapport.cacheRelief));
   } else if (mode === 'cache-lru') {
     rapport.cacheLRU = await evaluer(`(${controlerCacheLRU.toString()})()`);
   } else if (mode === 'endurance-larche') {
@@ -244,9 +266,14 @@ try {
     // Le banc restitue les menus avant de résoudre sa promesse. Relever les mesures dans cette microtâche :
     // un second appel CDP laisserait entre-temps une image de vitrine contaminer la fenêtre CPU/GPU.
     const releve = await evaluer(`(() => {
-      const p = BITUME_JEU.banc(${JSON.stringify(optionsBanc)}), S = BITUME_JEU.session, debutSimulation = S.course.horloge;
+      const longues=[], journal=${args.profil === 'oui'} && PerformanceObserver.supportedEntryTypes.includes('long-animation-frame')
+        ? new PerformanceObserver(liste=>longues.push(...liste.getEntries().map(e=>e.toJSON()))) : null;
+      journal?.observe({type:'long-animation-frame'});
+      const appel=performance.now(), p = BITUME_JEU.banc(${JSON.stringify(optionsBanc)}), pret=performance.now(), S = BITUME_JEU.session, debutSimulation = S.course.horloge;
+      const debutImages=[];
+      if(journal)requestAnimationFrame(function debut(t){debutImages.push([t,performance.now()]);if(debutImages.length<4)requestAnimationFrame(debut);});
       const scene = BITUME_JEU.scene;
-      return p.then(banc => ({ banc, mesures: BITUME_JEU.mesures, finBanc: {
+      return p.then(banc => {const longuesImages=journal?[...longues,...journal.takeRecords().map(e=>e.toJSON())].sort((a,b)=>b.duration-a.duration).slice(0,8):null;journal?.disconnect();return { banc, ...(journal?{longues:longuesImages,appel,pret,debutImages}:{}), mesures: BITUME_JEU.mesures, finBanc: {
         prairies: scene.prairies?.map(v => v?.mesure),
         terrain: scene.decor.nappes.filter(n=>n.surfaceType==='terrain').reduce((s,n)=>{
           s.triangles+=n.indices.length/3; s.herbier+=n.herbeTriangles?.length || 0; s.horizon+=Number(!!n.horizon); return s;
@@ -254,7 +281,7 @@ try {
         phase: S.course.phase, simulationEcoulee: S.course.horloge-debutSimulation,
         joueurs: S.locaux.map(id => { const e=S.course.voitures[id].etat; return { id, s:e.s, d:e.d, v:e.v }; }),
         visible: !document.hidden, imagePrincipale: banc.image
-      } }));
+      } };});
     })()`);
     Object.assign(rapport, releve);
     rapport.mesuresPortee = {

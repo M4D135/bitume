@@ -7,18 +7,21 @@ const jeu = readFileSync(new URL('../src/jeu.js', import.meta.url), 'utf8');
 const { PHYSIQUE, CLE_RECORDS, CLE_FANTOME } = new Function(
   jeu.match(/  const PHYSIQUE = .*?;/)[0] + ' return { PHYSIQUE, CLE_RECORDS, CLE_FANTOME };')();
 
-test('une installation p15 retrouve son historique et réserve les nouveaux records et fantômes à p17', () => {
+test('une installation p15 retrouve son historique et réserve les nouveaux records et fantômes à la physique du jeu', () => {
   const contexte = { circuitId: 'val-brule', sens: 'normal', mode: 'chrono', boite: 'auto' };
   const enrichi = { 'bitume:baikal:normal:course:manuelle:p15': { meilleurTourMs: 82500, meilleureCourseMs: null } };
   const mem = new Map([
     ['bitume.records.p15', JSON.stringify({ 'val-brule': { tour: 78.26, mode: 'chrono' } })],
     ['bitume.fantome.p15.val-brule', JSON.stringify({ b64: 'ancien', n: 6 })],
+    ['bitume.records.v2.p54',JSON.stringify({'bitume:val-brule:normal:chrono:auto:p54':{meilleurTourMs:90100,meilleureCourseMs:null}})],
     ['bitume.records.v2', JSON.stringify(enrichi)]
   ]);
   const stock = { getItem: k => mem.get(k) ?? null, setItem: (k, v) => mem.set(k, v) };
   const anciens = new Map(mem), catalogue = [{ id: 'val-brule' }];
   const table = records.lireTout(stock, catalogue);
-  assert.equal(PHYSIQUE, 'p17'); assert.equal(records.VERSION_PHYSIQUE, PHYSIQUE);
+  assert.equal(records.VERSION_PHYSIQUE, PHYSIQUE);
+  assert.equal(records.STORAGE_KEY,'bitume.records.v2.'+PHYSIQUE);
+  assert.equal(records.meilleurCircuit(table,'val-brule','p54').meilleurTourMs,90100);
   assert.equal(records.meilleur(table, { ...contexte, versionPhysique: 'p15' }).meilleurTourMs, 78260);
   assert.equal(records.meilleur(table, contexte), null);
   assert.equal(records.meilleurCircuit(table, 'val-brule'), null);
@@ -46,4 +49,20 @@ test('les anciennes tables p15 par indice sans catalogue daté restent consultab
     [{id:'val-brule'}, {id:'marseille'}]);
   assert.equal(records.meilleurCircuit(table, 'circuit_1', 'p15').meilleurTourMs, 60000);
   assert.equal(records.meilleurCircuit(table, 'marseille','p15'), null);
+});
+
+test('finTour persiste son chrono enrichi sous la clé que le jeu relit', () => {
+  const mem=new Map(), stock={get length(){return mem.size;},key:i=>[...mem.keys()][i],getItem:k=>mem.get(k)??null};
+  const file=[], catalogue=[{id:'val-brule'}];
+  const fabriquer=new Function('B','CATALOGUE','recordsEnrichis','PHYSIQUE','CLE_RECORDS','differerStock',`
+    const records={}, reglages={boite:'manuelle'}, chrono=String, sousMessage=()=>{}, message=()=>{};
+    ${jeu.slice(jeu.indexOf('  function finTour('),jeu.indexOf('  function finTourJ2('))}
+    return finTour;`);
+  const finTour=fabriquer({records},catalogue,{},PHYSIQUE,CLE_RECORDS,(k,v)=>file.push([k,v]));
+  finTour({i:0,profil:new Float32Array(3),course:{mode:'course',joueur:{tours:1},toursTotal:3}},
+    {tour:1,temps:92.345,meilleur:true});
+  for(const [k,v] of file)mem.set(k,JSON.stringify(typeof v==='function'?v():v));
+  const contexte={circuitId:'val-brule',sens:'normal',mode:'course',boite:'manuelle',versionPhysique:PHYSIQUE};
+  assert.equal(JSON.parse(mem.get(records.STORAGE_KEY))[records.cle(contexte)].meilleurTourMs,92345);
+  assert.equal(records.meilleur(records.lireTout(stock,catalogue),contexte).meilleurTourMs,92345);
 });

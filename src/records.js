@@ -6,7 +6,7 @@
    * L’ancien stockage enrichi reste lisible. Chaque nouvelle physique possède sa clé d’écriture.
    */
 
-  const VERSION_PHYSIQUE = 'p54';
+  const VERSION_PHYSIQUE = 'p55';
   const ARCHIVE_ENRICHIE = 'bitume.records.v2';
   const STORAGE_KEY = ARCHIVE_ENRICHIE + '.' + VERSION_PHYSIQUE;
 
@@ -143,7 +143,19 @@
 
   /* ─── LIRE / SAUVER ─── */
   function lireTout(storage, catalogue) {
+    // Un profil neuf n'a aucune des dizaines de générations de physique. Éviter
+    // les requêtes synchrones au stockage pour leurs clés absentes. Si l'origine
+    // est très remplie, interroger directement les clés connues coûte moins cher.
+    const version = Number(VERSION_PHYSIQUE.slice(1));
+    let presentes=null;
+    try {
+      const n=storage.length;
+      if(typeof storage.key==='function' && Number.isInteger(n) && n<2*(version-14)){
+        presentes=new Set(); for(let i=0;i<n;i++)presentes.add(storage.key(i));
+      }
+    } catch { presentes=null; }
     function lire(cle) {
+      if(presentes && !presentes.has(cle))return {};
       try {
         const valeur = JSON.parse(storage.getItem(cle));
         return valeur && typeof valeur === 'object' ? valeur : {};
@@ -152,7 +164,6 @@
     // Les clés de finTour contiennent des secondes. Les anciennes archives enrichies sont déjà en ms.
     // Les tableaux p15 sans identifiants sont antérieurs au tri du catalogue et gardent leurs indices.
     const table = migrerAnciens(lire('bitume.records.p15'), null, 'p15', 1000);
-    const version = Number(VERSION_PHYSIQUE.slice(1));
     for (let n = 16; n <= version; n++) {
       const physique = 'p' + n;
       Object.assign(table, migrerAnciens(lire('bitume.records.' + physique), catalogue, physique, 1000));

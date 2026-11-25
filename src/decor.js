@@ -571,7 +571,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
     }
   }
-  function nappesTerrain(c, th, interroger, g, ecologie = null, organique = false, saison = null, cachePanorama = null, pont = null, chausseesOvale = null, corridor = false) {
+  function nappesTerrain(c, th, interroger, g, ecologie = null, organique = false, saison = null, cachePanorama = null, pont = null, chausseesOvale = null, corridor = false, cacheRelief = null) {
     if (B.larcheDecor) {
       const corridor = B.larcheDecor.terrain(c, th, interroger, { saison, cachePanorama }, ecologie, organique);
       if (corridor) return corridor;
@@ -742,9 +742,13 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       if (pont) h = B.destinations.reliefPontFjord(c, pont, x, z, q, h);
       return { h, d };
     };
-    for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
-      const r = hauteur(x0 + i * pasT, z0 + j * pasT, j*nx+i); H[j * nx + i] = r.h; D[j * nx + i] = r.d;
+    function calculerGrille() {
+      for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
+        const r = hauteur(x0 + i * pasT, z0 + j * pasT, j*nx+i); H[j * nx + i] = r.h; D[j * nx + i] = r.d;
+      }
     }
+    if(cacheRelief) B.cacheRelief.grille(cacheRelief,nx,nz,x0,z0,pasT,[H,D,poidsSol,poidsPigments,plageSolSF],calculerGrille);
+    else calculerGrille();
     if (chausseesOvale) degagerTerreOvale(chausseesOvale, H, x0, z0, nx, nz, pasT);
     const lagon = secondaire?.theme === 'corail' && poidsSol
       ? B.lagon.construire(c, secteurs, interroger, { x0,z0,nx,nz,pas:pasT,H,D,poidsSol,alterne:organique }, { nappe,sommet,finir }) : null;
@@ -1899,7 +1903,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     let tunnelLampes = null;   // positions des lampes du tunnel : le jeu en fait des lumières près de la caméra
     const nappes = nappesRoute(c, th, lim, qualite === 'low' ? null : ecologie, saison, reperes, pontFjord, organique);
     const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie, options.organique === true, saison, options.cachePanorama, pontFjord,
-      c.partition === 'ovale-des-forges' ? nappes : null, options.decorProgressif === true);
+      c.partition === 'ovale-des-forges' ? nappes : null, options.decorProgressif === true, options.cacheRelief);
     const maisonsBaikal = terrain.paysageBaikal ? B.baikal.habitations(c, terrain, interroger, terrain.paysageBaikal) : null;
     // Hasard architectural séparé ; le repli sert seulement à relire l'oracle historique du décor.
     const architecture = options.batiments !== false && B.batiments ? { maisons: [], stands: [] } : null;

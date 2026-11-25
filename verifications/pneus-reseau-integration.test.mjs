@@ -28,11 +28,12 @@ const assembler = new Function('B', `
   ${source.match(/  const PHYSIQUE = .*?;/)[0]}
   let session = null, ecran = 'course', modePrepa = 'course', retourReglages = 'titre', graineCourse = 900;
   let conditionsPreparation = null, conditionsPreparationCle = '', maintenant = 0, numero = 0;
+  let pagePause = 'stands', piloteStand = 0;
   const timers = new Map(), messages = [], elements = new Map(), callbacks = new Map();
   const setTimeout = (f, d) => { const id = ++numero; timers.set(id, {f, t: maintenant + d}); return id; };
   const clearTimeout = id => timers.delete(id);
   const performance = { now: () => maintenant };
-  const $ = id => { if (!elements.has(id)) elements.set(id, {hidden: false, disabled: false, textContent: '', innerHTML: '', classList: {add() {}, remove() {}}}); return elements.get(id); };
+  const $ = id => { if (!elements.has(id)) elements.set(id, {hidden: false, disabled: false, textContent: '', innerHTML: '', setAttribute(k,v){this[k]=v;}, contains(){return true;}, classList: {add() {}, remove() {}}}); return elements.get(id); };
   const document = { querySelector: $, querySelectorAll: () => [] };
   const texte = (n, t) => n.textContent = t, classe = () => {};
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x)), ramener = (x, l) => ((x % l) + l) % l;
@@ -109,8 +110,8 @@ function relayer(h, cible, depuis = 0) {
   return messages;
 }
 function commencer(a, id) {
-  const v = a.co.voitures[id], st = c.stands, s = (st.garage0 + st.garage1) / 2;
-  Object.assign(v.etat, {s, d: st.d, v: 0, psi: 0, beta: 0, omega: 0, y: modules.circuit.echantillon(c, s).y});
+  const v = a.co.voitures[id], st = c.stands, s = st.sBox;
+  Object.assign(v.etat, {s, d: st.dBox, v: 0, psi: 0, beta: 0, omega: 0, y: modules.circuit.echantillon(c, s).y});
   const ev = [];
   a.B.course.stands(a.co, v, DT, ev); a.B.course.stands(a.co, v, DT, ev);
   assert.equal(v.etat.stands?.phase, 'service'); a.traiter(a.S, ev); return v;
