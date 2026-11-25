@@ -44,11 +44,14 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
   // Aucun objet, tableau, événement ou tirage aléatoire n'est créé dans cette boucle.
   function pas(e, dt, distanceSignee, eau = 0, neige = 0, contactsFrais = true, surface = e?.surface) {
     const recul = contactsFrais === 'recul';
-    if ((!recul && contactsFrais !== true) || exclu(e) || !Number.isFinite(dt) || dt <= 0 ||
+    if ((!recul && contactsFrais !== true) || exclu(e) || !Number.isFinite(dt) || dt <= 0 || dt > PARAMS.pasMax ||
       !Number.isFinite(distanceSignee) || !Array.isArray(e.etatPneus) || e.etatPneus.length !== 4 ||
       !Array.isArray(e.roues)) return 0;
     if (recul && (!Number.isFinite(e.v) || e.v >= 0)) return 0;
     const d = Math.abs(distanceSignee);
+    // Un déplacement discontinu (téléportation, replacement) n'est pas du roulage : la vitesse implicite
+    // du pas doit rester dans les bornes plausibles d'un contact de pneu avec le sol.
+    if (!(d / dt <= PARAMS.vitesseContactMax)) return 0;
     eau = borne(eau); neige = surface === 'neige' ? 1 : borne(neige);
     const type = P.normaliserType(e.pneus), t = TYPES[type];
     const surf = Object.prototype.hasOwnProperty.call(SURFACES, surface) ? SURFACES[surface] : SURFACES.piste;
@@ -68,7 +71,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.pneus
       if (!(distanceActive > 1e-9)) continue;
       const sollicitation = charge * (d * (1 + PARAMS.surcroitGlisse * glisse * glisse) +
         (1 + PARAMS.surcroitGlisse) * frottementArret);
-      u.distance = Math.min(P.DISTANCE_MAX, borne(u.distance, P.DISTANCE_MAX) + distanceActive);
+      // La distance d'usure ne compte que le roulage réel (d), jamais le frottement de patinage à l'arrêt.
+      u.distance = Math.min(P.DISTANCE_MAX, borne(u.distance, P.DISTANCE_MAX) + d);
       u.sollicitation = Math.min(P.SOLLICITATION_MAX, borne(u.sollicitation, P.SOLLICITATION_MAX) + sollicitation);
       u.usure = Math.min(1, borne(u.usure) + sollicitation * PARAMS.abrasionParMetre * climat * surf.abrasion);
       const grainCible = glisse * glisse * Math.min(charge, 1) * (1 - .55 * eau) * (1 - .6 * neige);

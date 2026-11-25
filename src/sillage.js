@@ -8,7 +8,7 @@
   function creer(capacite = MAX_SOURCES) {
     const n = Number.isFinite(capacite) ? clamp(Math.floor(capacite), 0, MAX_SOURCES) : MAX_SOURCES;
     const reserve = Array.from({ length: n }, (_, id) => ({
-      id, p: [0, 0, 0], velocity: [0, 0, 0], strength: 0,
+      id, p: [0, 0, 0], velocity: [0, 0, 0], strength: 0, radius: 6, wake: 10,
     }));
     return { reserve, sources: [], actifs: 0 };
   }
@@ -19,7 +19,7 @@
     const k = Math.min(e.reserve.length, Number.isFinite(n) ? Math.max(0, Math.floor(n)) : e.reserve.length);
     for (let i = 0; i < e.reserve.length; i++) {
       const source = e.reserve[i];
-      source.id = i; source.strength = 0;
+      source.id = i; source.strength = 0; source.radius = 6; source.wake = 10;
       if (i < k) {
         source.p[0] = source.p[1] = source.p[2] = 0;
         source.velocity[0] = source.velocity[1] = source.velocity[2] = 0;

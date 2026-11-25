@@ -590,7 +590,9 @@
     if (!Number.isFinite(dt) || dt <= 0) return e.stats;
     const delta = Math.min(.25, dt);
     // Sous abri, les dépôts et les impacts en cours continuent d’évoluer pendant le fondu.
-    e.opaciteAbri = clamp(e.opaciteAbri + (c.abri ? -delta : delta) / .45, 0, 1);
+    // Le fondu sous abri doit survivre à la demi-seconde pendant laquelle les dépôts en cours finissent
+    // leur course : un fondu plus court effacerait la visière avant que les gouttes aient terminé de glisser.
+    e.opaciteAbri = clamp(e.opaciteAbri + (c.abri ? -delta : delta) / 1.2, 0, 1);
     e.opacite = Math.min(1.25, intensite) * (c.cockpit === false ? .55 : 1) * e.opaciteAbri;
     e.impactsActifs = true;
     e.accumulateur += delta;

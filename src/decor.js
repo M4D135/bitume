@@ -1870,11 +1870,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       for (const n of nappes.concat(terrain.liste)) {
         if (n.surfaceType === 'panorama') continue;
         if (n.surfaceType!=='accotement' && n.surfaceType!=='terrain') continue;
+        // Le voile saisonnier ne touche que l'herbe véritable (mêmes triangles que la plantation
+        // des brins). Les rivages, parois et marquages gardent leur teinte de référence, quelle
+        // que soit la saison : aucune dérive de couleur hors des surfaces végétalisables.
+        const masqueHerbe = n.surfaceType==='terrain' && !n.coefficientsSaison ? new Uint8Array(n.sommets.length/13) : null;
+        if (masqueHerbe) for (const t of n.herbeTriangles || []) for (let j=0; j<3; j++) masqueHerbe[n.indices[t+j]] = 1;
         for (let v=0; v<n.sommets.length/13; v++) {
           const j=v*13;
           const partSaison=n.coefficientsSaison ? n.coefficientsSaison[v]/255
             : n.surfaceType==='accotement' ? Number(n.sommets[j+9]===8)
-            : lisse(.47,.82,n.sommets[j+4])*(n.surfaceType==='terrain' && th.eau!==undefined ? lisse(th.eau+.7,th.eau+4,n.sommets[j+1]) : 1);
+            : masqueHerbe[v] ? lisse(.47,.82,n.sommets[j+4])*(n.surfaceType==='terrain' && th.eau!==undefined ? lisse(th.eau+.7,th.eau+4,n.sommets[j+1]) : 1) : 0;
           if (!partSaison) continue;
           const k = v * 13, x = n.sommets[k], z = n.sommets[k + 2];
           if (ecologie) ecologie.echantillonner(x, z, habitat);
@@ -2927,7 +2932,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       const veg=options.vegetation===true, matSol=veg ? 25.125 : 25;
       for(let k=9;k<n.sommets.length;k+=13) {
         const m=n.sommets[k];
-        if (!veg && organique && n.surfaceType==='terrain' && (m===9 || m===23)) {
+        if (!veg && n.surfaceType==='terrain' && (m===9 || m===23)) {
           n.sommets[k] = 23;
         } else if (m===8 || m===8.125 || m===25.125 || !veg && n.surfaceType!=='accotement' && (m===3 || m===9 || m===23 || m===25)) {
           n.sommets[k]=matSol;

@@ -50,8 +50,9 @@
           const decalage = j === 0 ? n : 0, debut = b.debut + decalage;
           if (a.sens !== b.sens || (debut - a.fin) * pas > 36) continue;
           const fin = b.fin + decalage;
-          // Limiter la courbure absolue cumulée sur les deux lobes et leur raccord.
-          const angle = integrale(1, a.debut, fin) + integrale(-1, a.debut, fin);
+          // Limiter la courbure absolue cumulée sur le raccord entre les deux lobes :
+          // une vraie inversion (faux S) dépasse le seuil et empêche la fusion.
+          const angle = integrale(1, a.fin, debut) + integrale(-1, a.fin, debut);
           if (angle > .08) continue;
           a.fin = fin;
           liste.splice(j, 1); change = true; break;
