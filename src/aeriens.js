@@ -604,7 +604,7 @@
       const czD = _ptCible[2] + Math.cos(capPisteD) * latD;
       // Vol bas : ~10 m (drone 0) et ~12 m (drone 1) au-dessus de la piste.
       const cyD = _ptCible[1] + (d === 0 ? 10 : 12) + 3.0 * Math.sin(t * 0.55 + d);
-      piloterAppareil(vol, cxD, cyD, czD, c, sD, _ptCible[1], sol, obstacles, d === 0 ? 9 : 10, dt, 2.5, 2.5, d === 0 ? 135 : 122, 30);
+      piloterAppareil(vol, cxD, cyD, czD, c, sD, _ptCible[1], sol, obstacles, d === 0 ? 9 : 10, dt, 2.5, 2.5, d === 0 ? 135 : 122, 30, cut);
 
       const dx = vol.pos[0], dy = vol.pos[1], dz = vol.pos[2];
       if (contexte?.visible && !contexte.visible(dx, dy, dz, 2)) continue;

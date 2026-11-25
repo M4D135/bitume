@@ -1873,11 +1873,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         // Le voile saisonnier ne touche que l'herbe véritable (mêmes triangles que la plantation
         // des brins). Les rivages, parois et marquages gardent leur teinte de référence, quelle
         // que soit la saison : aucune dérive de couleur hors des surfaces végétalisables.
-        const masqueHerbe = n.surfaceType==='terrain' && !n.coefficientsSaison ? new Uint8Array(n.sommets.length/13) : null;
+        const masqueHerbe = n.surfaceType==='terrain' ? new Uint8Array(n.sommets.length/13) : null;
         if (masqueHerbe) for (const t of n.herbeTriangles || []) for (let j=0; j<3; j++) masqueHerbe[n.indices[t+j]] = 1;
         for (let v=0; v<n.sommets.length/13; v++) {
           const j=v*13;
-          const partSaison=n.coefficientsSaison ? n.coefficientsSaison[v]/255
+          const neigeRocher=saison.neige && th.montagnes && n.surfaceType==='terrain' && n.sommets[j+4]>.45;
+          const partSaison=n.coefficientsSaison ? (masqueHerbe[v] || neigeRocher ? n.coefficientsSaison[v]/255 : 0)
             : n.surfaceType==='accotement' ? Number(n.sommets[j+9]===8)
             : masqueHerbe[v] ? lisse(.47,.82,n.sommets[j+4])*(n.surfaceType==='terrain' && th.eau!==undefined ? lisse(th.eau+.7,th.eau+4,n.sommets[j+1]) : 1) : 0;
           if (!partSaison) continue;
