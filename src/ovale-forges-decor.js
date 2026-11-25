@@ -245,6 +245,59 @@
         r:[0,k*2.39996,0],mat:11,color:[.16+(k%3)*.025,.36,.16]};
       ajouter([tronc,feuillage],[tronc,{...feuillage,shape:'alizes-palmes-loin'}],x,z);
     }
+    // Habillage côtier/infield léger : prairie verte, bosquets tropicaux, lagune/sable clair.
+    const vertBosquet = [.11, .31, .09], vertClair = [.18, .42, .13], sableClair = [.82, .76, .58], eauLagune = [.18, .62, .68];
+    function bosquet(u, v, r, graine) {
+      const [x,z]=plan(u,v), garde=c.largeur/2+24+r, axe=interroger(x,z,garde,true);
+      if (axe && axe.i>=0 && axe.d<=garde) return;
+      let y=-Infinity;
+      for (const a of [-r,r]) for (const b of [-r,r]) {
+        const [px,pz]=plan(u+a,v+b), sol=terrain.sol(px,pz);
+        if (Number.isFinite(sol)) y=Math.max(y,sol);
+      }
+      if (!Number.isFinite(y)) return;
+      const objets=[], loin=[];
+      const sable={shape:'box',p:[x,y+.02,z],s:[r*2.4,.04,r*2.4],r:[0,graine*2.39996,0],mat:24,color:sableClair,masqueHerbier:true};
+      const eau={shape:'box',p:[x,y+.05,z],s:[r*1.4,.04,r*1.4],r:[0,graine*2.39996,0],mat:24,color:eauLagune,masqueHerbier:true};
+      objets.push(sable,eau); loin.push(sable,eau);
+      for (let k=0;k<3;k++) {
+        const a=graine*2.39996+k*2.094, d=r*(.35+.25*((k+graine)%3)/2);
+        const bx=x+Math.cos(a)*d, bz=z+Math.sin(a)*d;
+        const tronc={shape:'cylinder',p:[bx,y+.95,bz],s:[.24,1.9,.24],r:[0,a,0],mat:9,color:[.46,.35,.22]};
+        const feuillage={shape:'alizes-palmes',p:[bx,y+1.95,bz],s:[3.4,1.7,3.4],r:[0,a+graine,0],mat:11,color:k%2?vertClair:vertBosquet};
+        objets.push(tronc,feuillage); loin.push(tronc,{...feuillage,shape:'alizes-palmes-loin'});
+      }
+      for (let k=0;k<4;k++) {
+        const a=graine*1.7+k*1.57, d=r*(.55+.2*((k+graine)%4)/3);
+        const bx=x+Math.cos(a)*d, bz=z+Math.sin(a)*d;
+        const arbuste={shape:'sphere',p:[bx,y+.42,bz],s:[1.1,.72,1.1],r:[0,a,0],mat:11,color:k%2?vertClair:vertBosquet};
+        objets.push(arbuste); loin.push(arbuste);
+      }
+      ajouter(objets,loin,x,z);
+    }
+    const positionsBosquets = [[-120,18],[-82,-42],[-38,76],[26,-18],[74,52],[118,-64]];
+    for (let k=0;k<positionsBosquets.length;k++) {
+      const [u,v]=positionsBosquets[k];
+      bosquet(u,v,7+(k%3)*2,k);
+    }
+    try {
+      const virages = B.virages?.planifier?.(c) || [];
+      const deja = new Set(marqueurs.map(m=>m.nom));
+      let ajoute = 0;
+      for (const v of virages) {
+        if (ajoute >= 4) break;
+        const angle = Math.abs(v.angle) > 1 ? Math.abs(v.angle) * Math.PI / 180 : Math.abs(v.angle);
+        if (!Number.isFinite(angle) || angle < .55) continue;
+        if (!Number.isFinite(v.sommet)) continue;
+        const q = B.circuit.echantillon(c, v.sommet);
+        if (B.circuit.dansCouvert?.(c, v.sommet, 60)) continue;
+        const nom = v.libelle || 'Virage des Alizés';
+        if (deja.has(nom)) continue;
+        deja.add(nom);
+        marqueurs.push({nom, type:'virage', x:q.x, y:q.y+1.2, z:q.z, rayon:45, hauteur:12});
+        ajoute++;
+      }
+    } catch (e) {}
     return {marqueurs};
   }
   B.ovaleForgesDecor={theme,mur,poser,planGradins,asseoir,littoral};

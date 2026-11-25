@@ -11,7 +11,7 @@
 (function (B) {
   'use strict';
   const TAU = Math.PI * 2, PAS = .1, MAX_VUES = 2, MAX_VOITURES = 32, D_MIN = 8, CASE = 4, DEMI_CASE = 2.9;
-  const BANDES_ABORDS = Object.freeze({ foret: 38, cote: 50, montagne: 42, islande: 42, desert: 42, asie: 38, pacifique: 42, baikal: 42, fjord: 42, sierra: 42, corail: 45, marseille: 40 });
+  const BANDES_ABORDS = Object.freeze({ foret: 38, cote: 50, montagne: 42, islande: 42, desert: 42, asie: 38, pacifique: 42, baikal: 42, fjord: 42, sierra: 42, corail: 45, marseille: 40, ovale: 46 });
   const GARDE_BORD = 4, PORTEE_VUES = 360, MAX_CHAMPS = 6;
   const QUALITES = Object.freeze(['off', 'low', 'medium', 'high', 'ultra']);
   const BUDGETS = Object.freeze({
@@ -889,6 +889,7 @@
   };
   const BIOMES = Object.freeze({
     marseille: Object.freeze(['goelandPose', 'goeland']),
+    ovale: Object.freeze(['goelandPose', 'aigrette', 'pelican']),
     corail: Object.freeze(['goelandPose', 'aigrette', 'pelican']),
     fjord: Object.freeze(['cerf', 'mouton', 'aigle']),
     sierra: Object.freeze(['wapiti', 'urubu']),
@@ -1325,7 +1326,8 @@
       }
     };
     const enc = decor.enceinte || { debut: -160, fin: 310 };
-    for (let s = enc.debut; s <= enc.fin; s += 8) disque((c.depart || 0) + s, R_ENCEINTE, ENCEINTE);
+    const encAnimaux = c.partition === 'ovale-des-forges' ? { debut: -90, fin: 180 } : enc;
+    for (let s = encAnimaux.debut; s <= encAnimaux.fin; s += 8) disque((c.depart || 0) + s, R_ENCEINTE, ENCEINTE);
     if (c.stands) for (let s=c.stands.debut; s<=c.stands.fin; s+=8) disque(s,Math.max(R_ENCEINTE,c.stands.dFond+10),ENCEINTE);
     for (const t of (B.couverts ? B.couverts.liste(c) : c.tunnel ? [c.tunnel] : [])) {
       const fin = t.debut + (B.couverts ? B.couverts.longueur(c, t) : t.fin - t.debut);

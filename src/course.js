@@ -991,7 +991,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
     if (c.ouvert) v.etat.s = Math.max(0, Math.min(v.etat.s, c.longueur - 20));
     const ev=B.conduite.replacer(v.etat,c);v.tourValide=false;v.repositionnements=v.etat.repositionnements;
     const i=course.voitures.indexOf(v);if(i>=0)course.sAvant[i]=sLigne(c,v.etat.s);
-    v.progression=c.ouvert?sLigne(c,v.etat.s):v.passages*c.longueur+sLigne(c,v.etat.s);
+    if (!course.sansFin) v.progression=c.ouvert?sLigne(c,v.etat.s):v.passages*c.longueur+sLigne(c,v.etat.s);
     for(const x of ev)x.id=v.id;return ev;
   }
 

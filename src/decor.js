@@ -346,8 +346,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       atmosphere: { skyTop: [.05, .28, .64], skyBottom: [.56, .74, .85], fog: [.52, .68, .78], sunColor: [1.70, 1.48, 1.15], ambient: [.21, .26, .30], fogDensity: .00055 }
     },
     ovale: {
-      herbe: [.105, .21, .062], herbeClaire: [.17, .28, .092], terre: [.20, .165, .10],
-      atmosphere: { skyTop: [.06, .26, .62], skyBottom: [.55, .71, .85], fog: [.53, .66, .78], sunColor: [1.70, 1.44, 1.10], ambient: [.21, .25, .30], fogDensity: .00062 }
+      herbe: [.072, .248, .054], herbeClaire: [.142, .345, .086], terre: [.155, .132, .072], sable: [.73, .67, .49], roche: [.24, .245, .235],
+      atmosphere: { skyTop: [.055, .27, .66], skyBottom: [.58, .75, .87], fog: [.54, .69, .80], sunColor: [1.74, 1.47, 1.12], ambient: [.22, .26, .31], fogDensity: .00058 }
     }
   });
   function appliquerPalettePhoto(th, nomTheme) {

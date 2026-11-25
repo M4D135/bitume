@@ -28,8 +28,9 @@
 
   // ajouter des tronçons jusqu'à couvrir l'abscisse absolue demandée
   function etendre(f, sCible) {
+    const plafond = (f._plafondSegments ?? f.maxSegments) + 2;
     while (f.sOrigine + f.longueur < sCible + MARGE_SEG) {
-      if (f.k1 - f.k0 >= f.maxSegments + 4) break;   // garde-fou mémoire absolu
+      if (f.k1 - f.k0 >= plafond) break;   // garde-fou mémoire absolu
       const seg = R.pointsSegment(f.k1, f.graine);
       f.k1++;
       f.longueur += seg.profil.L;
@@ -44,6 +45,10 @@
     const mini = Math.min(...vivantes), maxi = Math.max(...vivantes);
     const avant = f.k0 + ':' + f.k1;
     let change = false;
+    const segs = Math.max(1, f.k1 - f.k0);
+    const segMoyen = f.longueur > 0 ? f.longueur / segs : 1000;
+    const besoin = Math.ceil((maxi - mini + f.devant + f.derriere + 2 * MARGE_SEG) / Math.max(1, segMoyen));
+    f._plafondSegments = (vivantes.length >= 2 && besoin > f.maxSegments) ? Math.min(24, Math.max(f.maxSegments + 4, besoin)) : f.maxSegments;
     etendre(f, maxi + f.devant);
     // libérer derrière : on n'avance l'origine que si le joueur le plus en arrière est
     // hors de portée ET qu'il reste assez de route devant lui dans la fenêtre
@@ -51,7 +56,7 @@
     // et que le joueur le plus en arrière est déjà loin du premier segment.
     const frontStarved = () => f.sOrigine + f.longueur < maxi + f.devant + MARGE_SEG;
     while (f.k1 - f.k0 > 2 && mini - f.derriere > f.sOrigine + R.pointsSegment(f.k0, f.graine).profil.L
-        && (f.k1 - f.k0 > f.maxSegments || frontStarved())) {
+        && (f.k1 - f.k0 > (f._plafondSegments ?? f.maxSegments) || frontStarved())) {
       f.sOrigine += R.pointsSegment(f.k0, f.graine).profil.L;
       f.longueur -= R.pointsSegment(f.k0, f.graine).profil.L;
       f.k0++;

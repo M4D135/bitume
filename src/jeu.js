@@ -4485,8 +4485,8 @@
     const W = canvas.width || 220, H = canvas.height || 220, cx = W / 2, cy = H * 0.62;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, W, H);
-    const et = j.etat, prog = Number.isFinite(j.progression) ? j.progression : (et.s || 0);
-    if (x.planCourse !== co || x.planPilote !== j.id) { x.planCourse = co; x.planPilote = j.id; x.planProg = prog; }
+    const et = j.etat, prog = c.ouvert ? (Number.isFinite(et.s) ? et.s : 0) : (Number.isFinite(j.progression) ? j.progression : (et.s || 0));
+    if (x.planCircuit !== c || x.planCourse !== co || x.planPilote !== j.id) { x.planCircuit = c; x.planCourse = co; x.planPilote = j.id; x.planProg = prog; }
     else { const d = prog - (x.planProg ?? prog); if (Math.abs(d) < L * 0.45) x.planProg += d * 0.35; else x.planProg = prog; }
     const centre = c.ouvert ? clamp(x.planProg, 0, L) : ((x.planProg % L) + L) % L;
     const vitesse = Math.max(0, et.v || 0);
@@ -4527,20 +4527,28 @@
       ctx.beginPath(); ctx.moveTo(p[0] - 7, p[1]); ctx.lineTo(p[0] + 7, p[1]);
       ctx.lineWidth = 2; ctx.strokeStyle = couleur; ctx.stroke();
     };
-    ligne(marque(0, c.ouvert ? '#2ecc71' : '#e0301e', 4), c.ouvert ? '#2ecc71' : '#e0301e');
-    if (c.ouvert) ligne(marque(c.arrivee || L, '#e0301e', 4), '#e0301e');
+    const sansFin = co.mode === 'sans-fin';
+    if (!sansFin || !(c.sansFinFenetre?.sOrigine > 0))
+      ligne(marque(0, c.ouvert ? '#2ecc71' : '#e0301e', 4), c.ouvert ? '#2ecc71' : '#e0301e');
+    if (c.ouvert && !sansFin) ligne(marque(c.arrivee || L, '#e0301e', 4), '#e0301e');
     if (c.stands) {
-      const p = marque(c.stands.sBox, '#39ff8e', 5);
+      const sSt = Number.isFinite(c.stands.sBox) ? c.stands.sBox : (c.stands.garage0 + c.stands.garage1) * 0.5;
+      const p = marque(sSt, sansFin ? '#2dd4bf' : '#39ff8e', 5.2);
       if (p) {
         ctx.fillStyle = '#07110b'; ctx.font = 'bold 9px sans-serif';
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('P', p[0], p[1] + 0.5);
+        ctx.fillText(sansFin ? 'S' : 'P', p[0], p[1] + 0.5);
       }
     }
     if (c.checkpointsSansFin?.length) {
       for (const cp of c.checkpointsSansFin) {
-        const p = marque(cp.s, '#ffd166', 4.5);
-        if (p) ligne(p, '#ffd166');
+        const p = marque(cp.s, '#ffd166', 4.8);
+        if (p) {
+          ligne(p, '#ffd166');
+          ctx.fillStyle = '#181204'; ctx.font = 'bold 8px sans-serif';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText('C', p[0], p[1] + 0.5);
+        }
       }
     }
     if (B.virages?.planifier) {
@@ -5026,8 +5034,8 @@
     $('hud').hidden = !(nom === 'course' || nom === 'pause' || nom === 'demo');
     hud2.hidden = !(aDeux() && (nom === 'course' || nom === 'pause'));
     // Lot C : les cases 3 et 4 ne vivent que dans la grille à trois ou quatre pilotes.
-    hud3.hidden = !(aDeux() && (nom === 'course' || nom === 'pause') && nbJoueursSession() >= 3);
-    hud4.hidden = !(aDeux() && (nom === 'course' || nom === 'pause') && nbJoueursSession() >= 4);
+    if (typeof hud3 !== 'undefined' && hud3) hud3.hidden = !(aDeux() && (nom === 'course' || nom === 'pause') && nbJoueursSession() >= 3);
+    if (typeof hud4 !== 'undefined' && hud4) hud4.hidden = !(aDeux() && (nom === 'course' || nom === 'pause') && nbJoueursSession() >= 4);
     $('demo').hidden = nom !== 'demo';
     $('jeu').dataset.ecran = nom;
     ecran = nom;
@@ -5037,9 +5045,10 @@
     // en ligne, la pause n'arrête pas la course : pas de « Recommencer »
     if (nom === 'pause') {
       $('b-recommencer').hidden = !!session?.enLigne; $('b-replacer').hidden = aDeux();
-      if (precedent !== 'reglages') piloteStand = 0;
-      ouvrirPagePause(precedent === 'reglages' ? 'options' : 'accueil',
-        precedent === 'reglages' ? $('b-reglages-pause') : $('b-reprendre'));
+      if (precedent !== 'reglages' && typeof piloteStand !== 'undefined') piloteStand = 0;
+      if (typeof ouvrirPagePause === 'function')
+        ouvrirPagePause(precedent === 'reglages' ? 'options' : 'accueil',
+          precedent === 'reglages' ? $('b-reglages-pause') : $('b-reprendre'));
     }
     if (nom === 'championnat') {
       coupe ??= B.championnat.charger(undefined, CATALOGUE);
@@ -5306,7 +5315,7 @@
   }
   function majChoixPneus() {
     const choix = choixPneusLocaux(), membre = EL.R && EL.R.membres.find(m => m.id === EL.R.id);
-    const duoPreparation = pilotesMenu() >= 2;
+    const duoPreparation = typeof pilotesMenu === 'function' ? pilotesMenu() >= 2 : (modePrepa === 'duo' || (modePrepa === 'enligne' && membre && membre.joueurs === 2));
     $('o-pneus-2').hidden = !duoPreparation;
     $('pr-pneus-2').hidden = !(membre && membre.joueurs === 2);
     for (let n = 0; n < 2; n++) {
@@ -5424,7 +5433,7 @@
     if (['boitePret', 'vuePret', 'vuePret2', 'vueDepart', 'vueDepart2', 'boite', 'vue', 'vue2'].includes(t.name)) retirerPret();
     if (/^pneusStand[0-3]$/.test(t.name)) choisirPneusStands(+t.name.slice(-1), t.value);
     if (t.name === 'boitePret' && ['auto', 'manuelle'].includes(t.value)) { reglages.boite = t.value; sauverReglages(); }
-    if (t.name in RANGS_VUE) reglerVue(RANGS_VUE[t.name], t.value);
+    if (typeof RANGS_VUE !== 'undefined' && t.name in RANGS_VUE) reglerVue(RANGS_VUE[t.name], t.value);
     if (['meteo', 'forcePluie', 'momentDepart', 'saisonDepart', 'saisonMode', 'momentMode', 'meteoMode'].includes(t.name) && ecran === 'preparation') actualiserConditions();
     if (EL.role === 'hote' && lienActif() && ['tours', 'difficulte'].includes(t.name)) annoncerCourse();
     if (t.name === 'joueursIci') { reglages.joueursLocaux = [2, 3, 4].includes(+t.value) ? +t.value : 1; sauverReglages(); }

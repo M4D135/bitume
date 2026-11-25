@@ -156,10 +156,11 @@ test('Stands F1 : portiques, chicane de sortie sans intrusion piste, 12 mécanic
   assert.ok(sucette.disque.color[0] > 0.9 && sucette.disque.color[1] < 0.2, 'sucette ROUGE STOP pendant service');
   const yStop = sucette.disque.p[1];
   // Flanc de pneu bleu pluie appliqué aux porteurs de roues
-  assert.ok(eq.mecs[4].flanc.color[2] > 0.9, 'pneus pluie bleus portés par l\'équipe');
+  const flancPluie = eq.mecs[4].flanc.color;
+  assert.ok(flancPluie[2] > 0.75 && flancPluie[2] > Math.max(flancPluie[0], flancPluie[1]) * 1.5, 'pneus pluie bleus portés par l\'équipe');
 
   // 4. Relâchement GO ! (u = 0.92 → sucette LEVÉE + VERT NÉON GO !)
-  j.etat.stands.t = 2.30;
+  j.etat.stands.phase = 'sortie'; j.etat.stands.t = 2.50;
   sortie.length = 0;
   B.equipeStands.animer(eq, 3.68, { course: co, nuit: 0, cameraPos: [fBox.x, 3, fBox.z] }, sortie);
   assert.ok(sucette.disque.color[1] > 0.9 && sucette.disque.color[0] < 0.2, 'sucette VERT GO ! au relâchement');

@@ -157,9 +157,13 @@
       if (![marqueur.x, marqueur.y, marqueur.z].every(Number.isFinite)) continue;
       const s = plusProche(c, marqueur.x, marqueur.z), q = B.circuit.echantillon(c, s);
       const ecart = Math.hypot(marqueur.x - q.x, marqueur.z - q.z);
-      lieu.push({ type: 'lieu', marqueur, s, cap: q.cap, cible: [marqueur.x, marqueur.y + 1.5, marqueur.z],
-        route: [q.x, q.y + 1, q.z], rayon: clamp(54 + ecart * .7, 54, 135),
-        hauteur: clamp(16 + Math.max(0, marqueur.y - q.y) * .14, 16, 30), label: marqueur.nom });
+      const ovale = c.partition === 'ovale-des-forges' || c.theme === 'ovale';
+      const cibleY = marqueur.y + (ovale ? 1.0 : 1.5);
+      const rayon = ovale ? clamp(24 + ecart * .35, 24, 62) : clamp(54 + ecart * .7, 54, 135);
+      const hauteur = ovale ? clamp(5 + Math.max(0, marqueur.y - q.y) * .10, 5, 14) : clamp(16 + Math.max(0, marqueur.y - q.y) * .14, 16, 30);
+      lieu.push({ type: 'lieu', marqueur, s, cap: q.cap, cible: [marqueur.x, cibleY, marqueur.z],
+        route: [q.x, q.y + 1, q.z], rayon,
+        hauteur, label: marqueur.nom });
     }
     const data = { panorama, lieu, maxY, minY, visuels: rochersVisuels(decor) }; CACHE.set(decor, data); return data;
   }

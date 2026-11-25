@@ -94,19 +94,19 @@
     for(const entree of [true,false]){
       const s=entree?S.debut+2:S.fin-2,d=voie(c,s),bord=B.circuit.bordStands?.(c,s,cote);
       const pied=cote*(Math.max(d*cote+S.demi,Number.isFinite(bord)?bord:c.largeur/2)+.95),rep=ancrage(c,s,pied);
-      bloc(s,pied,2.38,'box',.26,4.76,.29,acier,0,true,'pied-portique');
+      bloc(s,pied,2.66,'box',.26,5.32,.29,acier,0,true,'pied-portique');
       bloc(s,pied,.23,'bevel',.56,.46,.56,anthracite,22,true);
-      bloc(s,(pied+d)/2,4.53,'box',.25,.25,Math.abs(pied-d)+.27,acier,0,true);
-      bloc(s,d,4.27,'bevel',.32,.68,2.4,anthracite,24,true,'panneau-voie');
+      bloc(s,(pied+d)/2,5.09,'box',.25,.25,Math.abs(pied-d)+.27,acier,0,true);
+      bloc(s,d,4.83,'bevel',.32,.68,2.4,anthracite,24,true,'panneau-voie');
       const couleur=entree?ambre:vert,texte=entree?'PIT IN':'PIT OUT';
       // Même alphabet que les portiques de course, devant le support et face à l'arrivée.
       if(B.signalisationCourse&&(globalThis.FRender||globalThis.window?.FRender)?.forme){
         for(let i=0;i<texte.length;i++)if(texte[i]!==' '){
-          const signe=bloc(s-.19,d+(i-(texte.length-1)/2)*.29,4.33,'bitume-portique-'+texte[i],.04,.35,.235,ivoire,16,true,'inscription');
+          const signe=bloc(s-.19,d+(i-(texte.length-1)/2)*.29,4.89,'bitume-portique-'+texte[i],.04,.35,.235,ivoire,16,true,'inscription');
           signe.emissive=.6;
         }
       }
-      bloc(s-.17,d,4.035,'box',.025,.042,1.84,couleur,16,true);
+      bloc(s-.17,d,4.595,'box',.025,.042,1.84,couleur,16,true);
       livrer(rep.x,rep.z);
     }
     // Atelier ouvert vers le box. La poutre de rive est en porte-à-faux : aucune colonne entre l'équipe et la roue.

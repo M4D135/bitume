@@ -21,7 +21,7 @@ verifier('la fenêtre naît au départ et couvre la marge de tête', () => {
 });
 
 verifier('la fenêtre suit le joueur et libère derrière lui', () => {
-  const f = F.creer(GRAINE);
+  const f = F.creer(GRAINE, { maxSegments: 6, derriere: 600, devant: 1400 });
   let s = 0;
   for (let i = 0; i < 40; i++) {
     s += 250;
