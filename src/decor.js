@@ -2362,7 +2362,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         l.loin.push({ shape: B.botanique.TRONC_LOINTAIN, p: tronc.p.slice(), s: tronc.s.slice(), r: tronc.r.slice(), mat: tronc.mat, color: tronc.color.slice() });
     }
     function saisonArbre(objets, loin, x, z, essence = th.essence, solSource = null) {
-      const saisonArbreLocale = terrain.saisonSecondaire && terrain.partSecondaire(x,z) >= .5 ? terrain.saisonSecondaire : saison;
+      const saisonArbreLocale = terrain.saisonSecondaire && terrain.partSecondaire && terrain.partSecondaire(x,z) >= .5 ? terrain.saisonSecondaire : saison;
       const pied = objets.find(o => o.collision === 'tronc'), h = pied.s[1] / .84, sol = pied.p[1] - h * .42 + .2;
       if (ecologie) ecologie.echantillonner(x, z, habitatArbre);
       // Forêt basse mêlée aux conifères : choix spatial stable, indépendant de la saison et du hasard
@@ -2884,7 +2884,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       if (saison) {
         const habitat = {};
         for (const lot of v.lots) {
-          const saisonLot = terrain.saisonSecondaire && terrain.partSecondaire(lot.centre[0],lot.centre[2]) >= .5 ? terrain.saisonSecondaire : saison;
+          const saisonLot = terrain.saisonSecondaire && terrain.partSecondaire && terrain.partSecondaire(lot.centre[0],lot.centre[2]) >= .5 ? terrain.saisonSecondaire : saison;
           for (let i=0; i<lot.objets.length; i++) {
             const o = lot.objets[i]; if (!o.color || o.shape === 'humus-val') continue;
             if (ecologie) ecologie.echantillonner(o.p[0], o.p[2], habitat);

@@ -41,7 +41,6 @@
       // File de N indices vers les N événements préalloués : un départ au plus par pilote/image.
       // La séquence reste monotone pour toute la vie de E, même après un retour de l'horloge.
       evenements: new Uint8Array(nombre), evenementsN: 0, evenementsLu: 0, sequence: 0,
-      evenementConsomme: false,
       voitures: new Array(nombre).fill(null), references: new Array(nombre).fill(null),
       x: new Float64Array(nombre), y: new Float64Array(nombre), z: new Float64Array(nombre),
       progression: new Float64Array(nombre), rapport: new Float64Array(nombre), repositionnements: new Uint32Array(nombre),
@@ -61,17 +60,17 @@
   // Contrat 00, révision 1. La sortie appartient à l'appelant et doit être réutilisée.
   // Une lecture fausse laisse ses champs inchangés. La consommation par id partage les mêmes marques.
   function consommerEvenement(E, sortie) {
-    if (!E || !sortie || typeof sortie !== 'object' || E.evenementConsomme) return false;
+    if (!E || !sortie || typeof sortie !== 'object') return false;
     for (let i = E.evenementsLu; i < E.evenementsN; i++) {
       const p = E.pilotes[E.evenements[i]], e = p.evenement;
       if (!p.evenementPret || e.temps !== E.temps) continue;
-      // Valider la consommation avant toute écriture dans la sortie de l'appelant.
-      E.evenementConsomme = true;
-      p.evenementPret = false;
-      E.evenementsLu = i + 1;
+      // Écrire d'abord dans la sortie de l'appelant : une écriture qui échoue (objet gelé) ne doit
+      // pas faire avancer le curseur. L'anti-double-lecture est porté par evenementsLu + evenementPret.
       const { sequence, id, geste, klaxon, temps, cote } = e;
       sortie.sequence = sequence; sortie.pilote = id; sortie.geste = geste;
       sortie.klaxon = klaxon; sortie.instant = temps; sortie.cote = cote;
+      p.evenementPret = false;
+      E.evenementsLu = i + 1;
       return true;
     }
     return false;
@@ -276,7 +275,6 @@
         afficher(p, t);
       }
     }
-    if (E.temps !== t) E.evenementConsomme = false;
     E.course = co; E.phase = co.phase; E.temps = t; return E;
   }
   function lire(E, id, sortie) {

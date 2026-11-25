@@ -346,7 +346,9 @@ verifier('numéros : encre lisible sur les douze livrées de course (voi-2)', ()
 });
 
 verifier('numéro de flanc : calé entre la bande basse et le filet (voi-3)', () => {
-  const seg = mod.corps.filter(p => p.shape === 'box' && p.s[2] === .003 && Math.abs(p.o[2]) > .6);
+  // 126 CK : les pontons sont plus étroits (l 0,60–0,68) que sur la 312 T5, les segments de flanc
+  // se collent à |z| ~ 0,54–0,63 ; on les distingue du numéro de nez par le marqueur numeroNez.
+  const seg = mod.corps.filter(p => p.shape === 'box' && p.s[2] === .003 && !p.numeroNez);
   assert.equal(seg.length, 16, `${seg.length} segments de flanc`);
   const bas = Math.min(...seg.map(p => p.o[1] - p.s[1] / 2)), haut = Math.max(...seg.map(p => p.o[1] + p.s[1] / 2));
   assert.ok(bas > .17, `bas du numéro à ${bas.toFixed(4)} : sous la bande (0,17)`);

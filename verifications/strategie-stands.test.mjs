@@ -218,8 +218,8 @@ verifier('12F4 garage occupé tardivement un humain devant bloque le début du s
   assert.equal(v.etat.stands?.phase, 'voie', 'l’IA a décidé et rejoint réellement la voie');
   const S = co.c.stands;
   // Situation adversaire injectée après la décision : un autre pilote arrive au garage.
-  placerInitialement(co, v, S.garage0 + 10, 0, S.d);
-  placerInitialement(co, humain, S.garage0 + 30, 0, S.d);
+  placerInitialement(co, v, S.garage0 + 10, 0, S.dBox);
+  placerInitialement(co, humain, S.garage0 + 30, 0, S.dBox);
   const avant = roues(v);
   for (let k = 0; k < 120 * 20; k++) {
     const ev = B.course.pas(co, NEUTRE, DT);

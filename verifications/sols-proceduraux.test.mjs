@@ -14,6 +14,9 @@ const rapports = []; let controles = 0;
 function verifier(nom, f) { const r = f(); controles++; console.log('ok  ' + nom); if (r) rapports.push({ nom, ...r }); }
 function circuit(k) { return creerCircuitCatalogue(B, k); }
 function empreinte(x) { return createHash('sha256').update(JSON.stringify(x)).digest('hex'); }
+// Lot G (photoréalisme) : les matières de sol sont des sous-matériaux décimaux (herbe 8.125,
+// sol organique 25.125, roche 23). On compare toujours par partie entière (l'ID matériau logique).
+function base(m) { return Math.floor(m); }
 function solides(d) { return d.lotsHerbier.flatMap(l => l.objets).map(o => o.solidePhysX || null); }
 function photographieVegetation(qualite, actif) {
   const d = B.decor.construire(circuit(catalogue.find(k => k.id === 'val-brule')), { qualite, saison: 'printemps', matieres: true,
@@ -24,8 +27,8 @@ function photographieVegetation(qualite, actif) {
   for (const n of d.nappes) {
     const s = new Float32Array(n.sommets);
     if (n.surfaceType === 'accotement' || n.surfaceType === 'terrain') for (let k = 9; k < s.length; k += 13) {
-      if (!actif && s[k] === 8) s[k] = 25;
-      if (s[k] === 25) convertis++;
+      if (!actif && base(s[k]) === 8) s[k] = 25.125;
+      if (base(s[k]) === 25) convertis++;
     }
     donnees(s); donnees(n.indices); json([n.surfaceType, n.herbeTriangles, n.surfacesPhysX]);
     for (const cle of Object.keys(n)) if (cle !== 'sommets' && cle !== 'indices') json([cle, n[cle]]);
@@ -97,7 +100,7 @@ verifier('Haut-Col : aucun triangle de terrain ne reçoit le béton des bâtimen
     triangles++;
     const ids = [n.indices[k], n.indices[k + 1], n.indices[k + 2]];
     if (ids.some(i => n.sommets[i * 13 + 9] === 3)) fuites++;
-    if (ids.every(i => n.sommets[i * 13 + 9] === 25 && n.sommets[i * 13 + 10] > .9)) neige++;
+    if (ids.every(i => Math.floor(n.sommets[i * 13 + 9]) === 25 && n.sommets[i * 13 + 10] > .9)) neige++;
   }
   assert.equal(fuites, 0, fuites + ' triangles naturels utilisent le béton architectural');
   assert.ok(neige > 0, 'la neige alpine blanche doit rester présente');

@@ -607,7 +607,7 @@
     reglages.manettesVersion = B.commandesManette.VERSION;
     if (Array.isArray(reglages.manettes)) {
       reglages.manettes = configurationsManettes.slice();
-      ecrireStock('bitume.reglages', reglages);
+      if (typeof ecrireStock === 'function') ecrireStock('bitume.reglages', reglages);
     }
   }
   let captureManette = null, dernierSignalManette = -Infinity;
@@ -917,6 +917,8 @@
     return { V: B.vibrations.creer(), sortie: B.vibrations.creerSortie(), actif: false, pasRecu: false, evenements: [], entree: {} };
   }
   const vibrations = [etatVibrations(), etatVibrations(), etatVibrations(), etatVibrations()];   // lot C : une sortie par pilote local, jusqu'à quatre
+  // Tablette de secours : hors du jeu (vérifications), `pads` n'est pas dans la portée ; on retombe sur pad/pad2.
+  const padPilote = n => ((typeof pads === 'undefined' ? null : pads[n]) || (n === 1 ? pad2 : pad) || pad);
   let vibreImage = false;
   function arreterVibrations(n) {
     B.vibrations.arreter(vibrations[n].sortie);
@@ -925,7 +927,7 @@
   function arreterManettes() { vibreImage = false; for (let n = 0; n < vibrations.length; n++) arreterVibrations(n); }
   function synchroniserVibrations(n) {
     const J = vibrations[n];
-    if (B.vibrations.affecter(J.sortie, (pads[n] || pad).manette)) calmerVibrations(n);
+    if (B.vibrations.affecter(J.sortie, padPilote(n).manette)) calmerVibrations(n);
     return J;
   }
   // Événements d'un pas qui touchent la voiture id, gardés pour l'image : la réception d'un saut devient l'atterrissage

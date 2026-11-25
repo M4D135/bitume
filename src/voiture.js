@@ -1914,7 +1914,9 @@
   const BRANCHES = CV.map((v, k) => v + WN[k] * -.004);
   const PIED = [LEVIER[0], LEVIER[1] - .14, LEVIER[2] + .012], ECHELLE = RV / B.main.JANTE.R, PIECES_MAIN = ['gant', 'paume', 'garde', 'poignet', 'sangle', 'dos'];
   const PIVOT_MAIN = MAIN.points.poignet.map((v, i) => (v - MAIN.points.axe[i] * .088) * ECHELLE);
-  const VERS_A = MAIN.points.poignet.map((v, i) => v + MAIN.points.axe[i] * .012), VERS_B = MAIN.points.poignet.map((v, i) => v + MAIN.points.axe[i] * .03);
+  // La manchette part 4 mm plus bas sur l'axe du poignet : son bord glisse sous le gant au lieu de
+  // laisser un jour au raccord, dans les deux vues et aux trois niveaux de détail.
+  const VERS_A = MAIN.points.poignet.map((v, i) => v + MAIN.points.axe[i] * .008), VERS_B = MAIN.points.poignet.map((v, i) => v + MAIN.points.axe[i] * .03);
   const LAMPE_ALLUMEE = [1, .13, .04], LAMPE_ETEINTE = [.20, .03, .02], ALERTE = [1, .14, .05], TEMOIN_ETEINT = [.2, .03, .02];
   const CIEL = [.66, .77, .88], BRUME = [.62, .70, .76], PERSONNE = Object.freeze([]);
   // Segments allumés d'un caractère des afficheurs : bit s pour le segment LETTRES[s]
@@ -2076,7 +2078,11 @@
       const pouce = emplacement('sphere', trois(), TISSU, gant, libre());
       pouce.pilote = true; pouce.raccordPouce = true; main.pieces.push(pouce); V.push(pouce);
       for (let n = 1; n <= 6; n++) {
-        const d = (.045 + .028 * Math.pow(n / 6, .85)) * ECHELLE, tube = mettre('cylinder', null, [d, 0, d], TISSU, combi, libre()), boule = mettre('sphere', null, [d, d, d], TISSU, combi, null);
+        // Profil anatomique de la manche, fixé à la construction (aucun calcul par pose) : manchette
+        // ajustée au poignet, galbe plein de l'avant-bras, renflement d'olécrâne au coude. Le diamètre
+        // maximal au coude reste celui de la base (.073) pour conserver tous les dégagements mesurés.
+        const f = n / 6, d = (.046 + .018 * Math.sin(f * Math.PI * .55) + .009 * f * f * f * f * f * f) * ECHELLE,
+          tube = mettre('cylinder', null, [d, 0, d], TISSU, combi, libre()), boule = mettre('sphere', null, [d, d, d], TISSU, combi, null);
         tube.pilote = boule.pilote = true;
         main.tubes.push(tube); main.boules.push(boule); V.push(tube, boule);
       }
@@ -2200,8 +2206,9 @@
       for (let h = 0; h < 2; h++) {
         const main = H.mains[h], j = h * 9;
         {
-          // Raccord local du thorax à l'humérus : diamètre 52 mm, contenu dans la zone d'attache de 35 mm.
-          const o = objet('sphere', tissuPilote, combi); o.s[0] = o.s[1] = o.s[2] = .052; o.r = V.rotM;
+          // Raccord local du thorax à l'humérus : diamètre 50 mm, contenu dans la zone d'attache de 35 mm.
+          // Léger amincissement : la rotule s'efface sous l'épaulette du thorax au lieu de la border.
+          const o = objet('sphere', tissuPilote, combi); o.s[0] = o.s[1] = o.s[2] = .050; o.r = V.rotM;
           V.pieces.push({ role: 'epaule-' + h, joint: j, objet: o });
         }
         for (let q = 0; q < main.pieces.length; q++) if (niveau === 0 || q === 0 || q === 5 || q === 6)
@@ -2216,7 +2223,8 @@
           ajouter(n === 0 ? 'avant-bras-' + h : 'avant-bras-' + h + '-' + n, main.tubes[n], null);
           ajouter('manche-joint-' + h + '-' + n, main.boules[n], null);
         }
-        const o = objet('sphere', tissuPilote, combi); o.s[0] = o.s[1] = o.s[2] = .075; o.r = V.rotM;
+        // Renflement d'olécrâne : +2 mm sur la rotule de coude, dans les dégagements mesurés vers la cuve.
+        const o = objet('sphere', tissuPilote, combi); o.s[0] = o.s[1] = o.s[2] = .077; o.r = V.rotM;
         V.pieces.push({ role: 'coude-' + h, joint: j + 3, objet: o });
       }
       for (const p of V.pieces) p.corporel = p.role === 'buste' || p.de !== undefined || p.joint !== undefined || !!p.source?.pilote;

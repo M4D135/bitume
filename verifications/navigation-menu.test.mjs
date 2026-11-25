@@ -52,8 +52,11 @@ class Element {
       const tag = s.match(/^[a-zA-Z]+/);
       if (tag && this.tagName !== tag[0].toUpperCase()) return false;
       const attrs = Array.from(s.matchAll(/\[([\w-]+)(?:=["']?([^\]"']*)["']?)?\]/g));
-      if (!tag && !attrs.length) throw new Error('Sélecteur non pris en charge par le banc : ' + s);
-      return attrs.every(([, k, v]) => v === undefined ? this.hasAttribute(k) : this.getAttribute(k) === v);
+      const classes = Array.from(s.matchAll(/\.([\w-]+)/g), m => m[1]);
+      if (!tag && !attrs.length && !classes.length) throw new Error('Sélecteur non pris en charge par le banc : ' + s);
+      const possedees = String(this.className || this.getAttribute('class') || '').split(/\s+/).filter(Boolean);
+      return attrs.every(([, k, v]) => v === undefined ? this.hasAttribute(k) : this.getAttribute(k) === v) &&
+        classes.every(c => possedees.includes(c));
     });
   }
   closest(s) { for (let e = this; e instanceof Element; e = e.parentElement) if (e.matches(s)) return e; return null; }

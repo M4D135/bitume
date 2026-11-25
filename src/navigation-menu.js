@@ -484,7 +484,7 @@
     const etat = ETATS.get(zone), front = typeof nouveau === 'function' ? nouveau : () => false;
     const pad = options.pad, temps = Number.isFinite(options.temps) ? options.temps : performance.now();
     const d = deplacement(etat, pad, front, temps);
-    const retour = front(8), gauche = front(4), droite = front(5), valider = front(0);
+    const retour = front(8) || front(1), gauche = front(4), droite = front(5), valider = front(0);
     const page = zone.id === 'preparation' || zone.id === 'reglages' ? (front(7) ? 1 : front(6) ? -1 : 0) : 0;
     const demarrer = typeof options.demarrer === 'function' && front(9);
     if (!retour && !gauche && !droite && !valider && !demarrer && !d && !page) return false; // Aucun parcours DOM sur une image au repos.

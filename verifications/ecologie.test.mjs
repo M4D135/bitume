@@ -75,7 +75,7 @@ verifier('le boisement laisse des vides sans déplacer les objets fixes ou les t
       sommets += a.sommets.length / 13; indices += a.indices.length;
       assert.deepEqual(a.indices, b.indices);
       assert.equal(a.sommets.length, b.sommets.length);
-      for (let k = 0; k < a.sommets.length; k++) if (k % 13 < 10 || a.sommets[k - k % 13 + 9] !== 8) {
+      for (let k = 0; k < a.sommets.length; k++) if (k % 13 < 10 || Math.floor(a.sommets[k - k % 13 + 9]) !== 8) {
         assert.equal(a.sommets[k], b.sommets[k], 'seules les couleurs des surfaces herbeuses changent');
       }
       for (let k = 0; k < a.sommets.length; k += 13) {

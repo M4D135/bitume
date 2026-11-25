@@ -9,7 +9,7 @@
     gaz: boutons(7), frein: boutons(6),
     gauche: [{ type: 'axe', index: 0, sens: -1, origine: 0 }],
     droite: [{ type: 'axe', index: 0, sens: 1, origine: 0 }],
-    derive: boutons(4), haut: boutons(0), bas: boutons(2), vue: boutons(3), troll: boutons(1)
+    derive: boutons(2), haut: boutons(5), bas: boutons(4), vue: boutons(3), troll: boutons(0)
   };
   for (const a of ACTIONS) { for (const l of DEFAUT[a]) Object.freeze(l); Object.freeze(DEFAUT[a]); }
   Object.freeze(DEFAUT);
@@ -17,7 +17,7 @@
   const DEFAUT_V2 = { ...DEFAUT_V3, derive: boutons(0, 2), troll: boutons(10) };
   const DEFAUT_J1_INCOMPLET = { ...DEFAUT, troll: [] };
   const limite = x => Number.isFinite(x) ? Math.max(0, Math.min(1, x)) : 0;
-  const reserve = i => i === 8 || i === 9 || i === 16; // Select/View : retour ; Menu : pause ; Xbox : système.
+  const reserve = i => i === 1 || i === 9 || i === 16; // B : retour ; Menu : pause ; Xbox : système.
 
   function liaison(v) {
     if (!v || !Number.isInteger(v.index) || v.index < 0) return null;
@@ -91,7 +91,7 @@
     return b.pressed ? 1 : 0;
   }
   const bouton = (p, i) => limite(boutonBrut(p, i));
-  const annulation = p => (bouton(p, 8) > .5 ? 1 : 0) | (bouton(p, 9) > .5 ? 2 : 0);
+  const annulation = p => (bouton(p, 1) > .5 ? 1 : 0) | (bouton(p, 9) > .5 ? 2 : 0);
   function valeur(p, l, action) {
     if (l.type === 'bouton') {
       const brut = boutonBrut(p, l.index);
@@ -103,9 +103,9 @@
     if (action === 'gaz' || action === 'frein') {
       const brut = v * l.sens;
       const origine = l.origine * l.sens;
-      if (brut <= origine + .06) return 0;
       const course = 1 - origine;
-      return limite((brut - origine) / course);
+      const normalise = (brut - origine) / course;
+      return normalise <= .06 ? 0 : limite((normalise - .06) / .94);
     }
     const brut = limite((v - l.origine) * l.sens / (1 - l.origine * l.sens));
     return brut <= .06 ? 0 : (brut - .06) / .94;
