@@ -456,9 +456,11 @@
     return 0.5 * (1 - Math.cos(PI * Math.max(0, Math.min(1, s))));
   }
 
-  function piloterAppareil(app, cibleX, cibleY, cibleZ, c, s, yPiste, sol, obstacles, marge, dt, kp, kd, vMax, aMax) {
-    // Reprise uniquement au premier cadrage : un changement de cible se VOL, jamais une téléportation.
-    const reprise = !app.init;
+  function piloterAppareil(app, cibleX, cibleY, cibleZ, c, s, yPiste, sol, obstacles, marge, dt, kp, kd, vMax, aMax, repriseForcee) {
+    // Reprise au premier cadrage ou sur un cut caméra (changement brutal de cible du réalisateur) :
+    // l'appareil se repositionne sur le sujet en PRENANT le relief à destination (jamais sous un
+    // obstacle/crête). En suivi continu, on ne téléporte jamais : on vole vers la cible.
+    const reprise = !app.init || !!repriseForcee;
     const yLocal = plancherSecurite(c, reprise ? cibleX : app.pos[0], reprise ? cibleZ : app.pos[2], s, yPiste, sol, obstacles, marge);
     if (reprise) {
       app.pos[0] = cibleX; app.pos[1] = Math.max(cibleY, yLocal); app.pos[2] = cibleZ;
@@ -533,6 +535,13 @@
     const sDernier = (contexte && Number.isFinite(contexte.sDernier)) ? contexte.sDernier : (sTete - 260);
     const ecartPeloton = Math.max(-650, Math.min(650, deltaS(c, sTete, sDernier)));
 
+    // Cut caméra : saut brutal du sujet suivi (changement de cible du réalisateur). Les trois
+    // appareils se repositionnent en formation serrée sur le NOUVEAU sujet et prennent le relief
+    // à destination (jamais sous un obstacle/crête), puis reprennent leurs secteurs distincts
+    // dès le cadre suivant. Un suivi continu (sTete qui glisse) ne déclenche JAMAIS ce saut.
+    const cut = etat.lastSTete !== undefined && Math.abs(deltaS(c, etat.lastSTete, sTete)) > 400;
+    etat.lastSTete = sTete;
+
     // ── 1. Hélicoptère TV : 65 % sur la tête de course, 35 % aller-retour jusqu'au dernier ──
     const balH = facteurBalayage(t, 44, 0.62);
     const sH = sTete + 28 * Math.sin(t * 0.21) + ecartPeloton * balH;
@@ -542,7 +551,7 @@
     const czH = _ptCible[2] + Math.cos(capPisteH) * latH;
     // Vol bas : cible ~16 m au-dessus de la piste (plancher solMax+13, arbres via sommet+12).
     const cyH = _ptCible[1] + 16 + 4.5 * Math.sin(t * 0.23);
-    piloterAppareil(etat.volH, cxH, cyH, czH, c, sH, _ptCible[1], sol, obstacles, 13, dt, 1.9, 2.2, 115, 24);
+    piloterAppareil(etat.volH, cxH, cyH, czH, c, sH, _ptCible[1], sol, obstacles, 13, dt, 1.9, 2.2, 115, 24, cut);
 
     const hx = etat.volH.pos[0], hy = etat.volH.pos[1], hz = etat.volH.pos[2];
     // Le pilotage et les obstacles restent actifs hors champ. La queue et le rotor
@@ -584,9 +593,11 @@
       const balD = facteurBalayage(t + (d === 0 ? 11 : 6), d === 0 ? 56 : 30, d === 0 ? 0.5 : 0.42) * 0.15;
       // Drone 0 en avant du leader (bande droite), drone 1 derrière le dernier (bande gauche) :
       // l'héli balaie le peloton entre les deux sans jamais croiser un drone.
-      const sD = d === 0
-        ? sTete + 130 + 40 * Math.cos(t * 0.38)
-        : sDernier - 90 - 35 * Math.cos(t * 0.31) - ecartPeloton * balD;
+      const sD = cut
+        ? sTete + (d === 0 ? 34 * Math.cos(t * 0.38) : -12)
+        : (d === 0
+          ? sTete + 130 + 40 * Math.cos(t * 0.38)
+          : sDernier - 90 - 35 * Math.cos(t * 0.31) - ecartPeloton * balD);
       const capPisteD = echantillonnerPiste(c, sD, _ptCible);
       const latD = coteD * (16 + 9 * Math.sin(t * (d === 0 ? 0.42 : 0.31) + d * 2.1));
       const cxD = _ptCible[0] - Math.sin(capPisteD) * latD;

@@ -145,8 +145,12 @@
         }
       }
       if (index < 0 || hauteur < -.12 || hauteur >= t.hauteur || proche >= meilleur) continue;
+      // Portails ouverts : la projection clampée sur le premier ou le dernier sommet
+      // placerait un point extérieur sous la voûte. La même plage ouverte que segment().
+      const abscisse = ramener(A[index + 3] + (A[index + 8] - A[index + 3]) * fraction, c.longueur);
+      if (!inclut(c, t, abscisse, 0)) continue;
       meilleur = proche;
-      out.couvert = t; out.type = type(t); out.s = ramener(A[index + 3] + (A[index + 8] - A[index + 3]) * fraction, c.longueur);
+      out.couvert = t; out.type = type(t); out.s = abscisse;
       out.d = decalage; out.sol = solProche; out.hauteur = hauteur; out.ouvert = t.ouvert || null;
       out.abri = true; out.interieur = bloc.politique.interieur; out.echo = bloc.politique.echo; out.exposition = bloc.politique.exposition;
     }
