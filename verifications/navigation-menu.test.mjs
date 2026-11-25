@@ -21,6 +21,7 @@ class Element {
     this.min = this.max = this.step = this.name = ''; this.type = tag === 'input' ? 'text' : '';
     for (const [k, v] of Object.entries(attributs)) this.setAttribute(k, v);
   }
+  get isConnected() { for (let e = this; e; e = e.parentElement) if (e === this.ownerDocument.body) return true; return false; }
   get id() { return this.getAttribute('id') || ''; }
   set id(v) { this.setAttribute('id', v); }
   get hidden() { return this.hasAttribute('hidden'); }

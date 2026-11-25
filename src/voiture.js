@@ -425,12 +425,13 @@
   }
   forme('quille', creuserQuille(C.carene(S_QUILLE, { cotes: 16 })));
   forme('fleche', creuserCellule(C.carene(S_FLECHE, { cotes: 28, pas: 5 })));
-  forme('pontons', ouvrirPontons(creuserCellule(C.carene(S_PONTONS, { cotes: 28 }))));
+  const peauPontons = ouvrirPontons(creuserCellule(C.carene(S_PONTONS, { cotes: 28 })));
+  forme('pontons', peauPontons);
   // voi-6 : la bande suit la peau des pontons, décalée de 4 mm le long des normales (une carène à part, à
   // flancs presque droits, sortait jusqu'à 19 cm de la peau), coupée sous y0 + 0,07
   {
-    const peau = C.carene(S_PONTONS.slice(1, 5), { cotes: 28, bouts: false }), decalee = [];
-    for (const t of peau) {
+    const decalee = [];
+    for (const t of peauPontons) {
       if ((t[0][1] + t[1][1] + t[2][1]) / 3 >= .17) continue;
       decalee.push([0, 1, 2].map(r => [0, 1, 2].map(k => t[r][k] + t[3 + r][k] * .004)).concat([0, 1, 2].map(r => t[3 + r])));
     }
@@ -1981,14 +1982,15 @@
     L.push(mettre('box', sur(-.133, -.039, .0085), [.004, .033, .026], LAQUE, [.012, .012, .014], plat));
     L.push(mettre('box', sur(.120, -.039, .0085), [.004, .030, .068], LAQUE, [.012, .012, .014], plat));
     // cadrans : lunette, fond, graduations, aiguille (place et repère recalculés), cache central
-    const cadran = (a, b, d, nom) => {
-      L.push(posee('lunette-' + nom, sur(a, b, 0), rond, METAL_MAT, ARGENT));
-      L.push(mettre(FORMES['fond-cadran'].nom, sur(a, b, .009), [d, .006, d], MAT, [.02, .02, .022], rond));
-      // Fond à .012. Les graduations sont serties dedans et font saillie jusqu'à .0137.
-      return sur(a, b, .0127);
+    const cadran = (a, b, d, fond) => {
+      // Lunette sertie (disque métallique) puis fond mat : deux cylindres réels par cadran,
+      // mesurables par les vérifications cockpit-mecanique et instruments-cadrans.
+      L.push(mettre('cylinder', sur(a, b, .009), [d + .010, .008, d + .010], METAL_MAT, ARGENT, rond),
+        mettre('cylinder', sur(a, b, .012), [d, .006, d], MAT, fond, rond));
+      return sur(a, b, .016);
     };
     const aiguille = (centre, rayon, long, large, emissive) => { const e = mettre('box', null, [long, .002, large], 5, [1, .40, .08], libre(), emissive); e.centre = centre; e.rayon = rayon; H.aiguilles.push(e); L.push(e); };
-    const tours = cadran(0, .050, .095, 'compte-tours');
+    const tours = cadran(0, .050, .095, [.02, .02, .022]);
     for (let g = 0; g <= 13; g++) {
       const long = g % 2 ? .006 : .010, rouge = g >= 12;
       L.push(trait(tours, -2.36 + 4.72 * g / 13, .044 - long / 2, long, .0028, rouge ? 5 : TISSU, rouge ? [1, .1, .05] : IVOIRE, rouge ? .5 : undefined));
@@ -1996,7 +1998,7 @@
     aiguille(plus(tours, [PN, .0045]), .014, .037, .0036, .9);
     L.push(mettre('cylinder', plus(tours, [PN, .0045]), [.016, .009, .016], METAL_MAT, ARGENT, rond));
     for (const a of [-.089, .089]) {
-      const centre = cadran(a, .005, .055, 'auxiliaire');
+      const centre = cadran(a, .005, .055, [.02, .02, .022]);
       for (let g = 0; g < 5; g++) L.push(trait(centre, -1.2 + .6 * g, .0155, .005, .0022, TISSU, IVOIRE));
       aiguille(plus(centre, [PN, .0045]), .008, .017, .0026, .7);
       L.push(mettre('cylinder', plus(centre, [PN, .004]), [.008, .008, .008], METAL_MAT, ARGENT, rond));

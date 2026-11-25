@@ -2920,15 +2920,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     // L'indice des cellules végétalisables est déjà acquis par l'herbier. En mode organique +
     // solsProceduraux, les triangles de roche (9/23, déjà séparés par avecMat/emettre) gardent
     // la recette roche stratifiée + lichen (23), et les sols/neiges reçoivent organicSoil (25.125).
-    const matSol=options.solsProceduraux===true ? 25.125 : 8.125;
     for (const n of decor.nappes) {
       if (n.surfaceType!=='accotement' && n.surfaceType!=='terrain' && n.surfaceType!=='panorama') continue;
       n.vertexTint='smooth';
+      if (options.solsProceduraux!==true) continue;
+      const veg=options.vegetation===true, matSol=veg ? 25.125 : 25;
       for(let k=9;k<n.sommets.length;k+=13) {
         const m=n.sommets[k];
-        if (organique && options.solsProceduraux===true && n.surfaceType==='terrain' && (m===9 || m===23)) {
+        if (!veg && organique && n.surfaceType==='terrain' && (m===9 || m===23)) {
           n.sommets[k] = 23;
-        } else if (m===8 || m===8.125 || m===25.125 || n.surfaceType!=='accotement' && (m===3 || m===9 || m===23 || m===25)) {
+        } else if (m===8 || m===8.125 || m===25.125 || !veg && n.surfaceType!=='accotement' && (m===3 || m===9 || m===23 || m===25)) {
           n.sommets[k]=matSol;
         }
       }
