@@ -4215,6 +4215,7 @@
         B.detailPeripherique.appliquer(detail, c, suivie.etat, cam, canvas.width, canvas.height);
       }
       rendu.draw(cam, sortie, { time: horlogeReelle, surfaceGPU: verrePourVue(rendu, S), msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: optionsVisibilite.reflections, weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, foule: S.foulePublic, contacts: ombresVue.contacts, ombreProche: ombresVue.ombreProche, penombre: ombresVue.penombre });
+      if (S.banc && S === session) S.banc.dessins.push(tPrec);
     } finally { B.detailPeripherique.restaurer(detail); }
     if (B.mesures.actif) {
       B.mesures.section('rendu', performance.now() - tDraw);
@@ -7120,7 +7121,7 @@
     if (!B.graphismes.QUALITES.includes(qualite)) return Promise.reject(new Error('qualité inconnue : ' + qualite));
     const appel = performance.now();
     reference(Object.assign({}, options, { qualite, circuit: options.circuit ?? reglages.circuit }));
-    const S = session; S.essai = true; S.banc = { qualite, effets: 0 };
+    const S = session; S.essai = true; S.banc = { qualite, effets: 0, dessins: [] };
     // le banc mesure chaque image de l'écran : ni diviseur ni cible imposée pendant la mesure
     B.cadence.regler(cadence, 'ecran');
     B.graphismes.stabiliser(etatProfils, qualite, palier.n, horlogeProfils());
@@ -7143,8 +7144,13 @@
         prec = t;
         if (!interrompu && ecoule < duree) { requestAnimationFrame(mesurer); return; }
         const tri = temps.sort((a, b) => a - b), q = p => tri.length ? tri[Math.min(tri.length - 1, Math.floor(p * tri.length))] : 0;
+        const dessins = S.banc.dessins.filter(v=>v>=t0 && v<=t);
+        const nombreRendus = dessins.length - Number(dessins[0] === t0);
+        const intervalles=dessins.slice(1).map((v,i)=>v-dessins[i]).sort((a,b)=>a-b);
+        const quantileRendu=p=>intervalles.length?+intervalles[Math.min(intervalles.length-1,Math.floor(intervalles.length*p))].toFixed(2):null;
         const r = {
           qualite, preparationMs: +(pret-appel).toFixed(1), duree: +ecoule.toFixed(2), images: tri.length, p50: +q(.5).toFixed(2), p95: +q(.95).toFixed(2),
+          renduPrincipal:{images:nombreRendus,ips:ecoule?+(nombreRendus/ecoule).toFixed(2):0,p95:quantileRendu(.95),pire:quantileRendu(1)},
           pire: +(tri.length ? tri[tri.length - 1] : 0).toFixed(2), fenetre: innerWidth + '×' + innerHeight, image: canvas.width + '×' + canvas.height,
           circuit: CATALOGUE[S.i].nom, interrompu,
           reference: S.reference,

@@ -15,7 +15,11 @@ test('un premier rAF datant du chargement ne contamine pas la fenêtre après ch
     ${source}
     return banc({duree:.05,chauffe:1});`);
   const resultat=executer(f=>callbacks.push(f),session);
-  for(const t of [105,2510,3499,3510,3527,3544,3561])callbacks.shift()(t);
+  for(const t of [105,2510,3499,3510,3527,3544,3561]){
+    if(t!==3527)session.banc.dessins.push(t);
+    callbacks.shift()(t);
+  }
   const r=await resultat;
   assert.deepEqual([r.preparationMs,r.images,r.pire,r.p50,r.duree],[2400,3,17,17,.05]);
+  assert.deepEqual(r.renduPrincipal,{images:2,ips:39.22,p95:34,pire:34});
 });

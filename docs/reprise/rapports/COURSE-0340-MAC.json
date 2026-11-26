@@ -1,0 +1,135 @@
+{
+  "build": {
+    "sha256": "f160a31730596d6dee7be8df2b5b7a4ae1dfaa838e2302484599f721d720fb78",
+    "octets": 17653190
+  },
+  "conditions": "Chrome WebGPU apple metal-3, 1920×1080, Fine, pluie, 12 voitures, deux glaces, cockpit, graine 17017, chauffe 2 s. Une portion par circuit.",
+  "portions": [
+    {
+      "id": "baikal",
+      "depart": 280,
+      "duree": 20.02,
+      "preparationMs": 1201.8,
+      "renduPrincipal": {
+        "images": 1201,
+        "ips": 60,
+        "p95": 16.7,
+        "pire": 16.8
+      },
+      "raf": 1201,
+      "erreurs": []
+    },
+    {
+      "id": "forets-du-pacifique",
+      "depart": 280,
+      "duree": 20.02,
+      "preparationMs": 1390.3,
+      "renduPrincipal": {
+        "images": 1201,
+        "ips": 60,
+        "p95": 16.7,
+        "pire": 16.8
+      },
+      "raf": 1201,
+      "erreurs": []
+    },
+    {
+      "id": "karst-et-lagon",
+      "depart": 280,
+      "duree": 20.02,
+      "preparationMs": 1337.9,
+      "renduPrincipal": {
+        "images": 1201,
+        "ips": 60,
+        "p95": 16.8,
+        "pire": 16.8
+      },
+      "raf": 1201,
+      "erreurs": []
+    },
+    {
+      "id": "larche",
+      "depart": 17950,
+      "duree": 20.02,
+      "preparationMs": 2189.7,
+      "renduPrincipal": {
+        "images": 1146,
+        "ips": 57.25,
+        "p95": 16.8,
+        "pire": 33.4
+      },
+      "raf": 1146,
+      "erreurs": []
+    },
+    {
+      "id": "marseille",
+      "depart": 280,
+      "duree": 20.02,
+      "preparationMs": 1102.3,
+      "renduPrincipal": {
+        "images": 1201,
+        "ips": 60,
+        "p95": 16.7,
+        "pire": 16.8
+      },
+      "raf": 1201,
+      "erreurs": []
+    },
+    {
+      "id": "nord-atlantique",
+      "depart": 280,
+      "duree": 20.02,
+      "preparationMs": 1464.4,
+      "renduPrincipal": {
+        "images": 1201,
+        "ips": 60,
+        "p95": 16.8,
+        "pire": 16.8
+      },
+      "raf": 1201,
+      "erreurs": []
+    },
+    {
+      "id": "ovale-des-forges",
+      "depart": 280,
+      "duree": 20.02,
+      "preparationMs": 646,
+      "renduPrincipal": {
+        "images": 1201,
+        "ips": 60,
+        "p95": 16.7,
+        "pire": 16.8
+      },
+      "raf": 1201,
+      "erreurs": []
+    },
+    {
+      "id": "route-des-cimes",
+      "depart": 280,
+      "duree": 20.02,
+      "preparationMs": 1307.4,
+      "renduPrincipal": {
+        "images": 1087,
+        "ips": 54.31,
+        "p95": 33.3,
+        "pire": 33.5
+      },
+      "raf": 1087,
+      "erreurs": []
+    },
+    {
+      "id": "sierra",
+      "depart": 280,
+      "duree": 20.02,
+      "preparationMs": 1193.4,
+      "renduPrincipal": {
+        "images": 1191,
+        "ips": 59.5,
+        "p95": 16.8,
+        "pire": 33.4
+      },
+      "raf": 1191,
+      "erreurs": []
+    }
+  ]
+}

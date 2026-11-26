@@ -1,8 +1,8 @@
 {
-  "version": "0.2.339",
-  "raw": 17652605,
-  "gzip": 4796802,
-  "sha256": "943c10d44cbd4dd4705c48039ae795ebe3d14030c3db7363e98017c1df823e6a",
+  "version": "0.2.340",
+  "raw": 17653190,
+  "gzip": 4797010,
+  "sha256": "f160a31730596d6dee7be8df2b5b7a4ae1dfaa838e2302484599f721d720fb78",
   "sources": {
     "ferro/surface.js": 3419,
     "ferro/render-shared.js": 81526,
@@ -112,7 +112,7 @@
     "vibrations.js": 10282,
     "ombres.js": 13366,
     "visites.js": 7590,
-    "jeu.js": 484576,
+    "jeu.js": 485161,
     "index.html": 79995,
     "style.css": 114371
   }

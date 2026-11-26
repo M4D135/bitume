@@ -1,7 +1,8 @@
 {
   "reprise_2026_11_26": {
     "programme": "docs/reprise/CONTINUATION-2026-11-26.md",
-    "runtime": "0.2.339",
+    "runtime": "0.2.340",
+    "matrice_dessins": "docs/reprise/rapports/COURSE-0340-MAC.json",
     "endurance_ecran": "docs/reprise/rapports/ENDURANCE-LARCHE-0338-ECRAN.json.gz",
     "corridor_larche": "docs/reprise/rapports/CORRIDOR-LARCHE-0339.json",
     "terrain_glaces": "docs/reprise/rapports/TERRAIN-GLACES-0338.json",

@@ -3,6 +3,8 @@
 <!-- bitume-reprise-actuelle-debut -->
 ## Par où reprendre
 
+**0.2.340 — [Cadence sur les neuf circuits](docs/reprise/rapports/COURSE-0340-MAC.json).** Six portions à 60 dessins/s ; Sierra 59,50, Larche 57,25 et Route des Cimes 54,31. Chrome Mac 1080p Fine sous la pluie, 20 s par portion, compte du dessin principal après chauffe. Aucune erreur signalée. Poursuivre en priorité le coût du décor des Cimes, puis les sorties de stands.
+
 **0.2.339 — Corridor de plantation de Larche.** La préparation de l'herbier ne lit plus que 204 322 triangles sur 290 822. Le relief et les masques de couleur restent identiques jusqu'à l'horizon. [Comparaison Chrome](docs/reprise/rapports/CORRIDOR-LARCHE-0339.json). En .338, [descente complète en mode Écran](docs/reprise/rapports/ENDURANCE-LARCHE-0338-ECRAN.json.gz) : 55,81 dessins/s sur 32,249 km ; 60/s sur les trois derniers kilomètres entiers mais 47,36/s sur le 18e. Une pointe de 500,1 ms au km 9,422 ne s'est pas reproduite lors des deux passages courts.
 
 **0.2.338 — Terrain partagé avec les glaces.** FERRO 0.3.34 évite une seconde allocation de 13 418 752 octets à Larche sur le GPU du Mac. [Mesure WebGPU et changements de circuit](docs/reprise/rapports/TERRAIN-GLACES-0338.json). **Endurance .337 terminée** sous la pluie : 32,249 km, 41 124 dessins en 892,781 s (46,06/s ; p95 33,4 ms). [Rapport complet par kilomètre](docs/reprise/rapports/ENDURANCE-LARCHE-0337.json.gz). Le mode Écran est à comparer avec le mode par défaut. La production reste en .334.
