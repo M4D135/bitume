@@ -299,6 +299,7 @@ try {
           s.triangles+=n.indices.length/3; s.herbier+=n.herbeTriangles?.length || 0; s.horizon+=Number(!!n.horizon); return s;
         },{triangles:0,herbier:0,horizon:0}),
         terrainGlaces: BITUME_JEU.terrainGlaces,
+        lectureHerbier:scene.decor.nappes.reduce((s,n)=>{s.disponibles+=n.indices.length/3;s.lus+=n.horizon?0:(n.cellulesHerbier?.length??n.indices.length/3);return s;},{disponibles:0,lus:0}),
         phase: S.course.phase, simulationEcoulee: S.course.horloge-debutSimulation,
         joueurs: S.locaux.map(id => { const e=S.course.voitures[id].etat; return { id, s:e.s, d:e.d, v:e.v }; }),
         visible: !document.hidden, imagePrincipale: banc.image

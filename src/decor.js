@@ -573,8 +573,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
   }
   function nappesTerrain(c, th, interroger, g, ecologie = null, organique = false, saison = null, cachePanorama = null, pont = null, chausseesOvale = null, corridor = false, cacheRelief = null) {
     if (B.larcheDecor) {
-      const corridor = B.larcheDecor.terrain(c, th, interroger, { saison, cachePanorama }, ecologie, organique);
-      if (corridor) return corridor;
+      const vallee = B.larcheDecor.terrain(c, th, interroger, { saison, cachePanorama, corridor }, ecologie, organique);
+      if (vallee) return vallee;
     }
     if (B.marseilleDecor) {
       const coteMarseille = B.marseilleDecor.terrain(c, th, interroger, g, ecologie, organique);
@@ -1050,14 +1050,16 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     // Lot 28C : la préparation est coupée en deux, lecture des nappes et des masques (lire), puis candidats du noyau
     // (relier) ; mêmes opérations dans le même ordre.
     function lire(c, nappes, lots, lim, enceinte, niveauEau) {
-      let total = 0; for (const nap of nappes) if (!nap.horizon) total += nap.indices.length / 3;
+      let total = 0; for (const nap of nappes) if (!nap.horizon) total += nap.cellulesHerbier?.length ?? nap.indices.length / 3;
       const P = new Float64Array(9 * total), PL = new Float64Array(3 * total), LEN = new Float64Array(total), BX = new Float64Array(4 * total), VEG = new Uint8Array(total);
       const sources = []; // objets de sortie (plan, normale, couleur, type) des seules surfaces végétalisables
       let n = 0; const brutes = [];
       for (const nap of nappes) {
-        if (nap.horizon) continue;
+        if (nap.horizon || nap.cellulesHerbier?.length === 0) continue;
         const herbe = new Set(nap.herbeTriangles || []), S = nap.sommets, I = nap.indices;
-        for (let offset = 0; offset < I.length; offset += 3) {
+        const locales = nap.cellulesHerbier, nombre = locales?.length ?? I.length / 3;
+        for (let t = 0; t < nombre; t++) {
+          const offset = locales ? locales[t] : t * 3;
           const i0 = I[offset] * 13, i1 = I[offset + 1] * 13, i2 = I[offset + 2] * 13;
           let ax = S[i0], ay = S[i0 + 1], az = S[i0 + 2], bx = S[i1], by = S[i1 + 1], bz = S[i1 + 2], dx_ = S[i2], dy_ = S[i2 + 1], dz_ = S[i2 + 2];
           // orienter : aire2 de l'original, même ordre d'opérations

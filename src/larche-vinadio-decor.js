@@ -400,6 +400,10 @@ function terrain(c, th, interroger, g, ecologie, organique) {
   const G = 32;
   const TILE = 256;
   const RANGE = 420;
+  // Marge pour la diagonale d'une maille et les échantillons pairs de la route.
+  // Le masque ne concerne que la découpe des pieds ; pigments et arbres gardent le versant.
+  const gardeHerbier = RANGE + G*Math.SQRT2 + 2*c.pas;
+  const videHerbier = new Uint16Array(0);
 
   const gr = _buildGrilleRoute(c);
   const sommetGrille = degagerChaussee(c, G, gr);
@@ -440,6 +444,7 @@ function terrain(c, th, interroger, g, ecologie, organique) {
       const sommets = new Float32Array(nVerts * FLOATS_VERT);
       const indices = new Uint32Array((N_LAT - 1) * (N_LON - 1) * 6);
       const herbeTri = [];
+      const locales = g?.corridor ? [] : null;
 
       // pré-calculer les hauteurs
       const hArr = new Float32Array(nVerts);
@@ -476,7 +481,12 @@ function terrain(c, th, interroger, g, ecologie, organique) {
           sommets[off + 9] = 25; // organicSoil unifié
 
           // couleur
-          const col = _colorTerrain(wx, wz, wy, dny, sommetGrille(wx/G,wz/G), saison, versant, pigmentMesure);
+          const point = sommetGrille(wx/G,wz/G);
+          if (locales && k<N_LON-1 && j<N_LAT-1 && point.absD<=gardeHerbier) {
+            const offset=(k*(N_LAT-1)+j)*6;
+            locales.push(offset,offset+3);
+          }
+          const col = _colorTerrain(wx, wz, wy, dny, point, saison, versant, pigmentMesure);
           sommets[off + 10] = col[0]; sommets[off + 11] = col[1]; sommets[off + 12] = col[2];
           vi++;
         }
@@ -510,6 +520,7 @@ function terrain(c, th, interroger, g, ecologie, organique) {
         rayon: Math.hypot(tileX1 - tileX0, nyMax - nyMin, tileZ1 - tileZ0) / 2
       };
       Object.defineProperty(nappeObj, 'herbeTriangles', { enumerable: false, value: herbeTri });
+      if(locales && locales.length!==ii/3)Object.defineProperty(nappeObj,'cellulesHerbier',{value:locales.length?new Uint16Array(locales):videHerbier});
       Object.defineProperty(nappeObj, 'surfaceType', { enumerable: false, value: 'terrain' });
       if (versant) nappeObj.vertexTint='smooth';
       liste.push(nappeObj);
@@ -525,6 +536,8 @@ function terrain(c, th, interroger, g, ecologie, organique) {
     if (bord) raccorderPigments = () => B.larcheRelief.raccorderPigments(panorama,bord);
     for (const nappe of panorama) {
       if (versant) nappe.vertexTint='smooth';
+      // Le panorama est construit exclusivement sur les cellules absentes du terrain proche.
+      if (g?.corridor) Object.defineProperty(nappe,'cellulesHerbier',{value:videHerbier,configurable:true});
       liste.push(nappe);
     }
   }

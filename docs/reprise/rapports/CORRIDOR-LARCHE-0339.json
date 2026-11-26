@@ -1,0 +1,246 @@
+[
+  {
+    "build": {
+      "sha256": "42cb61b5460061c1607e9beb72a320fabf47fb017fe6cf648d8adb01bfbe0379",
+      "octets": 17651526
+    },
+    "parametres": {
+      "mode": "banc",
+      "duree": 20,
+      "chauffe": 2,
+      "taille": [
+        1920,
+        1080
+      ],
+      "angle": "native",
+      "referenceJeu": {
+        "graine": 17017,
+        "circuit": 6,
+        "qualite": "high",
+        "mode": "solo",
+        "meteo": "pluie",
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "oui",
+        "decor": "enrichi",
+        "depart": 9290,
+        "vitesse": 75
+      }
+    },
+    "banc": {
+      "qualite": "high",
+      "preparationMs": 2115,
+      "duree": 20.02,
+      "images": 1201,
+      "p50": 16.7,
+      "p95": 16.7,
+      "pire": 16.8,
+      "fenetre": "1920×1080",
+      "image": "1920×1080",
+      "circuit": "Descente des Freins Chauds",
+      "interrompu": false,
+      "reference": {
+        "graine": 17017,
+        "circuit": 6,
+        "circuitId": "larche",
+        "graineCircuit": 210,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "oui",
+        "meteo": "pluie",
+        "forcePluie": "forte",
+        "mouille": 0.75,
+        "depart": 9290,
+        "vitesse": 75,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 14336.3,
+          "fin": 15155.9
+        }
+      },
+      "effets": {
+        "moyenne": 0.045,
+        "p95": 0.2
+      },
+      "traces": {
+        "bandes": 512,
+        "fumees": 6,
+        "etincelles": 25,
+        "debris": 0,
+        "embruns": 131,
+        "corps": 0,
+        "dalles": 0
+      }
+    },
+    "finBanc": {
+      "prairies": [
+        {
+          "images": 1319,
+          "candidats": 13248,
+          "totalCandidats": 14796736,
+          "picCandidats": 16256,
+          "echantillons": 0
+        }
+      ],
+      "terrain": {
+        "triangles": 98560,
+        "herbier": 98224,
+        "horizon": 0
+      },
+      "terrainGlaces": {
+        "octetsPartages": 13418752,
+        "triangles": 290822
+      },
+      "phase": "course",
+      "simulationEcoulee": 21.983333333332297,
+      "joueurs": [
+        {
+          "id": 0,
+          "s": 9472.928169230923,
+          "d": -4.915320314388825,
+          "v": 0.012311829462864984
+        }
+      ],
+      "visible": true,
+      "imagePrincipale": "1920×1080"
+    },
+    "erreurs": []
+  },
+  {
+    "build": {
+      "sha256": "943c10d44cbd4dd4705c48039ae795ebe3d14030c3db7363e98017c1df823e6a",
+      "octets": 17652605
+    },
+    "parametres": {
+      "mode": "banc",
+      "duree": 20,
+      "chauffe": 2,
+      "taille": [
+        1920,
+        1080
+      ],
+      "angle": "native",
+      "referenceJeu": {
+        "graine": 17017,
+        "circuit": 6,
+        "qualite": "high",
+        "mode": "solo",
+        "meteo": "pluie",
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "oui",
+        "decor": "enrichi",
+        "depart": 9290,
+        "vitesse": 75
+      }
+    },
+    "banc": {
+      "qualite": "high",
+      "preparationMs": 1993.8,
+      "duree": 20.02,
+      "images": 1201,
+      "p50": 16.7,
+      "p95": 16.8,
+      "pire": 16.8,
+      "fenetre": "1920×1080",
+      "image": "1920×1080",
+      "circuit": "Descente des Freins Chauds",
+      "interrompu": false,
+      "reference": {
+        "graine": 17017,
+        "circuit": 6,
+        "circuitId": "larche",
+        "graineCircuit": 210,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "oui",
+        "meteo": "pluie",
+        "forcePluie": "forte",
+        "mouille": 0.75,
+        "depart": 9290,
+        "vitesse": 75,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 14336.3,
+          "fin": 15155.9
+        }
+      },
+      "effets": {
+        "moyenne": 0.039,
+        "p95": 0.1
+      },
+      "traces": {
+        "bandes": 512,
+        "fumees": 6,
+        "etincelles": 25,
+        "debris": 0,
+        "embruns": 131,
+        "corps": 0,
+        "dalles": 0
+      }
+    },
+    "finBanc": {
+      "prairies": [
+        {
+          "images": 1319,
+          "candidats": 13248,
+          "totalCandidats": 14783488,
+          "picCandidats": 16256,
+          "echantillons": 0
+        }
+      ],
+      "terrain": {
+        "triangles": 98560,
+        "herbier": 98224,
+        "horizon": 0
+      },
+      "terrainGlaces": {
+        "octetsPartages": 13418752,
+        "triangles": 290822
+      },
+      "lectureHerbier": {
+        "disponibles": 290822,
+        "lus": 204322
+      },
+      "phase": "course",
+      "simulationEcoulee": 21.96666666666563,
+      "joueurs": [
+        {
+          "id": 0,
+          "s": 9472.927931733204,
+          "d": -4.915968716754724,
+          "v": 0.06145350417742266
+        }
+      ],
+      "visible": true,
+      "imagePrincipale": "1920×1080"
+    },
+    "erreurs": []
+  }
+]

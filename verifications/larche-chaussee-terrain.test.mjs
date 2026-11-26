@@ -85,7 +85,7 @@ test('les tuiles sont jointives et les points d’appui du décor suivent le tri
 test('le bitume de la SS21 garde ses pigments, sa géométrie, ses marquages et ses surfaces PhysX', t => {
   const options = { qualite: 'high', organique: true, vegetation: false };
   const route = o => B.decor.construire(circuit, o).nappes.filter(n => n.surfaceType === 'accotement');
-  const reference = route(options), enrichie = route({ ...options, matieres: true });
+  const reference = route({ ...options, matieres: false }), enrichie = route({ ...options, matieres: true });
   assert.equal(reference.length, enrichie.length);
   let modifies = 0;
   for (let i = 0; i < reference.length; i++) {
@@ -93,10 +93,10 @@ test('le bitume de la SS21 garde ses pigments, sa géométrie, ses marquages et 
     assert.deepEqual(apres.indices, avant.indices);
     assert.deepEqual(apres.surfacesPhysX, avant.surfacesPhysX);
     for (let k = 9; k < attendu.length; k += 13) {
-      if (apres.sommets[k] !== 21) continue;
-      assert.equal(attendu[k], 14);
+      if (apres.sommets[k] !== 21.125) continue;
+      assert.equal(attendu[k], 14.125);
       assert(attendu[k + 1] < .3, 'le blanc des marquages ne devient pas du goudron');
-      attendu[k] = 21;
+      attendu[k] = 21.125;
       modifies++;
     }
     assert.deepEqual(apres.sommets, attendu);

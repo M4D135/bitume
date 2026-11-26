@@ -1,13 +1,15 @@
 {
   "reprise_2026_11_26": {
     "programme": "docs/reprise/CONTINUATION-2026-11-26.md",
-    "runtime": "0.2.338",
+    "runtime": "0.2.339",
+    "endurance_ecran": "docs/reprise/rapports/ENDURANCE-LARCHE-0338-ECRAN.json.gz",
+    "corridor_larche": "docs/reprise/rapports/CORRIDOR-LARCHE-0339.json",
     "terrain_glaces": "docs/reprise/rapports/TERRAIN-GLACES-0338.json",
     "endurance_complete": "docs/reprise/rapports/ENDURANCE-LARCHE-0337.json.gz",
     "production_verifiee": "0.2.334 / 93d64ac",
     "physique": "p55",
     "mesures": "docs/reprise/rapports/COURSE-0336-MAC.md",
-    "priorite": "Larche : 46,06 dessins/s, ~30 sur la fin ; comparer le mode Écran, puis continuer le chargement local et les 47 lots."
+    "priorite": "Larche en Écran : 55,81 dessins/s, ralentissement principal km 18–24 ; poursuivre résidence locale, cadence des neuf pistes et réceptions course."
   },
   "dernier_lot_verifie": {
     "date": "2026-11-25",
