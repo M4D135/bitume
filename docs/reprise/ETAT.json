@@ -22,7 +22,7 @@
     "banc_mac": "Metal-3, 1440x900, high, 20,02 s, p95 16,7 ms, pire 16,8 ms",
     "deploie_par_ce_lot": false
   },
-  "date": "2026-11-24",
+  "date": "2026-11-26",
   "etat_courant": {
     "version_courante": "0.2.316",
     "version_publiee_verifiee": "0.2.299",
@@ -178,7 +178,7 @@
       "Deux joueurs et réseau 27, cache et calcul 28, puis étapes du moteur C++ sur Mac, Linux et Windows"
     ],
     "acquis_R4b_a_preserver": true,
-    "prochaine_priorite": "Viser 60 images 3D/s sur les neuf circuits, en 1080p Fine avec les deux rétroviseurs, et couvrir tous les matériels, vues, modes et conditions pris en charge."
+    "prochaine_priorite": "Continuer le registre des 47 lots avec la continuation courte et le suivi global, priorité lot 3 (Course) et lot 6 (Cache et natif)"
   },
   "catalogue": {
     "jouables": 9,
