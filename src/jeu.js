@@ -290,6 +290,7 @@
     rendu.setWorld([], [], decor.atmosphere);
     rendu.setNappes(decor.nappes, { staticBounds: true, immutable: true });
     rendu.setLots(decor.lots, { staticBounds: true, progressif: !!decor.fluxDecor });
+    for (let k = 0; k < decor.lots.length; k++) rendu.preparerLot?.(k, false);
     // Le public (public.js) : de vrais spectateurs à la place des boîtes des gradins, dessinés par le point d'accroche
     // « foule » du moteur. Bâti au palier ancre, comme le décor ; la vue de l'ancienne scène rend ses tampons.
     if (scene && scene.vuePublic) scene.vuePublic.liberer();
@@ -3228,7 +3229,7 @@
     const d = scene.decor;
     retro.rendu.setWorld([], [], d.atmosphere);
     retro.rendu.setNappes(d.nappes, { staticBounds: true, immutable: true });
-    retro.rendu.setLots(lotsGlaces(d), { staticBounds: true, progressif: !!d.fluxDecor });
+    const lotsRetro = lotsGlaces(d); retro.nLots = lotsRetro.length; retro.rendu.setLots(lotsRetro, { staticBounds: true, progressif: !!d.fluxDecor }); for (let k = 0; k < lotsRetro.length; k++) retro.rendu.preparerLot?.(k, false);
     // le public dans les glaces : ses propres ressources WebGPU, sans le niveau proche ni les ombres (glace sans ombre)
     if (retro.vuePublic) retro.vuePublic.liberer();
     retro.vuePublic = null;
@@ -3718,7 +3719,16 @@
     if (n) flux.approcher(vuesDecor, dt, preparerLotDecor);
   }
 
+  let curseurMaintien = 0, curseurMaintienRetro = 0;
   function rendreImage(S, alpha, dtImage) {
+    if (scene?.decor?.lots?.length && rendu?.preparerLot) {
+      const nL = scene.decor.lots.length, pasL = Math.min(32, nL);
+      for (let k = 0; k < pasL; k++) { rendu.preparerLot(curseurMaintien, false); curseurMaintien = (curseurMaintien + 1) % nL; }
+    }
+    if (retro.rendu?.preparerLot && retro.scene === scene && retro.nLots > 0) {
+      const nR = retro.nLots, pasR = Math.min(16, nR);
+      for (let k = 0; k < pasR; k++) { retro.rendu.preparerLot(curseurMaintienRetro, false); curseurMaintienRetro = (curseurMaintienRetro + 1) % nR; }
+    }
     appliquerCarte();
     const co = S.course, j = co.joueur;
     const poses = tampons.poses;
@@ -4202,7 +4212,7 @@
       const i = indexVue(S);
       const prairie = scene.prairies[i] || (scene.prairies[i] = B.herbeGPU.creer(rendu, scene.decor));
       S.foulePublic = prairie.preparer(S.foulePublic, S.sillage?.sources, meteo, herbe);
-      if (herbe === 'high') couverture = B.graphismes.prairieCombinee;
+      couverture = herbe === 'ultra' ? B.graphismes.prairieCombineeUltra : B.graphismes.prairieCombinee;
     }
     const ombresVue = B.ombres.preparer(etatOmbres, P, cam, poses, co.voitures.length, suivie.id, ombreDebut, ombreFin, (S.banc ? S.banc.qualite : reglages.qualite) === 'auto' ? palier.n : -1, horlogeReelle);
     const tDraw = B.mesures.actif ? performance.now() : 0;

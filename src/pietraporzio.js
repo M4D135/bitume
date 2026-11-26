@@ -163,6 +163,7 @@
     return false;
   }
   function poser(terrain,position,neige,detail,ajouter,reporter) {
+    const secteurs=reporter?new Map():null;
     for(const {f,poly,largeur,profondeur,formes,montee} of modeles) {
       const loin=[], route=position(f.s);
       const sol=(x,z)=>terrain?terrain.sol(f.x+x,f.z+z):route.y;
@@ -228,10 +229,21 @@
         const sommet=seuil+f.h, hauteur=sommet-base;
         // Englobe le pignon, les cadres et la saillie des volets, y compris les poses en biais.
         const centre=[f.x,base+hauteur/2,f.z], rayon=Math.hypot(largeur+4,hauteur+4,profondeur+4)/2;
-        reporter(centre,rayon,preparerOuvertures);
+        // Un seul appel `reporter` par secteur de 160 m : les ouvertures des maisons voisines sont
+        // préparées ensemble, ce qui divise par ~10 les lots et les dessins de tapis végétal associés.
+        const cle=Math.floor(f.s/160);
+        let secteur=secteurs.get(cle);
+        if(!secteur){secteur={n:0,somme:[0,0,0],rayon:0,prepareurs:[]};secteurs.set(cle,secteur);}
+        secteur.n++;secteur.somme[0]+=centre[0];secteur.somme[1]+=centre[1];secteur.somme[2]+=centre[2];
+        secteur.rayon=Math.max(secteur.rayon,Math.hypot(centre[0],centre[1],centre[2])+rayon);
+        secteur.prepareurs.push(preparerOuvertures);
       } else {
         ajouter([...loin,...preparerOuvertures()],loin,f.x,f.z);
       }
+    }
+    if (reporter) for(const secteur of secteurs.values()) {
+      const centre=secteur.somme.map(v=>v/secteur.n);
+      reporter(centre,secteur.rayon,()=>{const ouvertures=[];for(const preparer of secteur.prepareurs)ouvertures.push(...preparer());return ouvertures;});
     }
   }
   function poserCouronne(neige,ajouter,village='Pietraporzio',detail=true,reporter) {

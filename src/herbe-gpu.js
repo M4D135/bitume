@@ -100,7 +100,7 @@
 struct Source { pos:vec4f, flux:vec4f }
 struct Vue {
   vp:mat4x4f, ombre:mat4x4f, oeil:vec4f, soleil:vec4f, direct:vec4f,
-  ambiance:vec4f, brume:vec4f, rect:vec4f, vent:vec4f, sources:array<Source,16>
+  ambiance:vec4f, brume:vec4f, rect:vec4f, vent:vec4f, ecran:vec4f, sources:array<Source,16>
 }
 @group(0) @binding(0) var<uniform> u:Vue;
 @group(0) @binding(1) var sol:texture_2d<f32>;
@@ -169,8 +169,9 @@ fn ombrage(r:vec3f)->f32 {
       (1.-smoothstep(1.,4.,abs(racine.y-s.pos.y)));
     souffle-=s.flux.xy*force; couche=max(couche,force);
   }
-  let hauteur=(.09+.17*rnd.y+.06*length(groupe))*(.55+.45*teinte.w)*fade;
-  let t=f32(vi>>1u)/3.; let largeur=(1.-t*t)*(.004+.006*rnd.y)*fade;
+  let t=f32(vi>>1u)/2.;
+  let largeur=(1.-.80*t*t)*(.013+.016*rnd.y)*fade;
+  let hauteur=(.11+.20*rnd.y+.08*length(groupe))*(.55+.45*teinte.w)*fade;
   let pointe=groupe*.72+dir*.5+souffle;
   // Bézier quadratique : pied fixe, contrôle presque vertical, pointe libre.
   let centre=racine+n*hauteur*(t*(1.-.52*couche)-.22*t*t)+
@@ -178,24 +179,33 @@ fn ombrage(r:vec3f)->f32 {
   let bord=select(-largeur,largeur,(vi&1u)==1u);
   let monde=centre+vec3f(cote.x,0.,cote.y)*bord;
   v.p=u.vp*vec4f(monde,1.); v.p.z=(v.p.z+v.p.w)*.5;
-  let normale=normalize(n+vec3f(dir.x,0.,dir.y)*(.22+.55*t));
+  let sb=select(-1.,1.,(vi&1u)==1u);
+  let normale=normalize(n+vec3f(dir.x,0.,dir.y)*(.20+.48*t)+vec3f(cote.x,0.,cote.y)*(sb*.22));
   let l=u.soleil.xyz; let ombre=ombrage(racine); let vue=vers/max(.01,dist);
   let transmission=pow(max(0.,dot(-vue,l)),3.)*(.25+.75*t)*.36;
-  let pigment=mix(teinte.rgb,teinte.rgb*vec3f(1.44,1.16,.69),t*t*(.3+.7*rnd.y));
+  let pigment=mix(teinte.rgb*.88,teinte.rgb*vec3f(1.38,1.15,.70),t*(.35+.65*rnd.y));
   let eclairage=u.ambiance.rgb+ombre*u.direct.rgb*(max(.0,dot(normale,l))+vec3f(1.,.78,.41)*transmission);
-  v.couleur=mix(pigment*eclairage*mix(.52,1.13,t),u.brume.rgb,1.-exp(-dist*u.brume.w));
+  let lin=mix(pigment*eclairage*mix(.58,1.18,t),u.brume.rgb,min(.86,1.-exp(-dist*u.brume.w)));
+  v.couleur=pow(max(lin/(lin+vec3f(.76)),vec3f(0.)),vec3f(.4545));
   return v;
 }
-@fragment fn fs(v:V)->@location(0) vec4f { return vec4f(v.couleur,1.); }
+@fragment fn fs(v:V)->@location(0) vec4f {
+  let scr=v.p.xy*u.ecran.xy;
+  let vig=pow(max(0.,16.*scr.x*scr.y*(1.-scr.x)*(1.-scr.y)),.13);
+  return vec4f(v.couleur*mix(u.ecran.z,1.,vig),1.);
+}
 `;
   function creer(rendu, decor) {
     const {device, format, depthFormat} = rendu.gpu;
     const texture = device.createTexture({label:'Herbier toroïdal', size:[512,256], format:'rgba32float',
       usage:GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST});
-    const vueSol = texture.createView(), u = new Float32Array(60 + 16 * 8);
+    const vueSol = texture.createView(), u = new Float32Array(64 + 16 * 8);
     const uniform = device.createBuffer({size:u.byteLength, usage:GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST});
     // Carrés englobants des trois disques + une tuile de marge de chaque côté.
     const liste = new Int32Array(4*(34*34+6*18*18+8*10*10));
+    // Second tableau préalloué : le tri par priorité (premier plan d'abord) se fait
+    // sans aucune allocation par image, à coût d'enveloppe strictement constant.
+    const listeTriee = new Int32Array(liste.length);
     const tuiles = device.createBuffer({size:liste.byteLength, usage:GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST});
     const map = clipmap(decor, (x,z,w,h,t) => device.queue.writeTexture({texture, origin:[x*2,z]}, t,
       {bytesPerRow:w*32}, [w*2,h]));
@@ -221,7 +231,21 @@ fn ombrage(r:vec3f)->f32 {
       gpuColor(pass,v) {
         const publicVu = publicFx?.gpuColor?.(pass,v);
         const r = map.maj(v.oeil[0],v.oeil[2]);
-        const mots=map.visibles(v,parPied===3,liste), k=mots*16;
+        let mots=map.visibles(v,parPied===3,liste);
+        // Enveloppe GPU strictement constante (style F1 2026) : coût fixe quelle que
+        // soit l'ouverture du paysage. On plafonne le nombre de mots (brins) et on
+        // priorise le premier plan (taille 64 = 0-14 m) sans aucune allocation.
+        const maxMots=(parPied===3?220:160)*4;
+        if (mots>maxMots) {
+          let e64=0,e128=0,e256=0;
+          for(let i=0;i<mots;i+=4){const t=liste[i+3];if(t===64)e64++;else if(t===128)e128++;else e256++;}
+          let ec=0;
+          for(let i=0;i<mots && ec<maxMots;i+=4){if(liste[i+3]===64){listeTriee.set(liste.subarray(i,i+4),ec*4);ec++;}}
+          for(let i=0;i<mots && ec<maxMots;i+=4){if(liste[i+3]===128){listeTriee.set(liste.subarray(i,i+4),ec*4);ec++;}}
+          for(let i=0;i<mots && ec<maxMots;i+=4){if(liste[i+3]===256){listeTriee.set(liste.subarray(i,i+4),ec*4);ec++;}}
+          liste.set(listeTriee.subarray(0,ec*4),0); mots=ec;
+        }
+        const k=mots*16;
         mesure.images++; mesure.candidats=k; mesure.totalCandidats+=k;
         mesure.picCandidats=Math.max(mesure.picCandidats,k); mesure.echantillons=map.echantillons;
         if (!mots) return publicVu;
@@ -235,10 +259,12 @@ fn ombrage(r:vec3f)->f32 {
         for (const s of sources || []) {
           if (!s.strength || Math.abs(s.p[0]-v.oeil[0])>96 || Math.abs(s.p[2]-v.oeil[2])>96) continue;
           const vit=Math.hypot(s.velocity[0],s.velocity[2]); if (vit<.5) continue;
-          const i=60+n*8; u.set(s.p,i); u[i+3]=s.radius; u[i+4]=s.velocity[0]/vit; u[i+5]=s.velocity[2]/vit;
+          const i=64+n*8; u.set(s.p,i); u[i+3]=s.radius; u[i+4]=s.velocity[0]/vit; u[i+5]=s.velocity[2]/vit;
           u[i+6]=s.wake; u[i+7]=Math.min(1,vit/55)*s.strength; if (++n===16) break;
         }
         u[58]=n;
+        u[60]=1/Math.max(1,v.largeur); u[61]=1/Math.max(1,v.hauteur);
+        u[62]=rendu.gpu.vignette ?? .59; u[63]=0;
         device.queue.writeBuffer(uniform,0,u);
         if (ombre!==v.ombre.textureView) {
           ombre=v.ombre.textureView;
@@ -246,8 +272,8 @@ fn ombrage(r:vec3f)->f32 {
             {binding:1,resource:vueSol},{binding:2,resource:ombre},{binding:3,resource:{buffer:tuiles}}]});
         }
         pass.setPipeline(pipeline(v.msaa || 1)); pass.setBindGroup(0,groupe);
-        pass.draw(8,k);
-        compte.appels=(publicVu?.appels || 0)+1; compte.triangles=(publicVu?.triangles || 0)+6*k;
+        pass.draw(6,k);
+        compte.appels=(publicVu?.appels || 0)+1; compte.triangles=(publicVu?.triangles || 0)+4*k;
         compte.instances=(publicVu?.instances || 0)+k; return compte;
       }
     };

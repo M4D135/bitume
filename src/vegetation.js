@@ -39,9 +39,9 @@
     ultra: Object.freeze({ stations: 460, herbes: 6, fougeres: 4, fleurs: 5, taillis: 2.0, mat: 27, sol: 25, groupes: 16, familles: ['herbes', 'fougères', 'fleurs', 'taillis'] }),
   });
   const TAPIS_DENSE = Object.freeze({
-    medium: Object.freeze({ densite: 28, terrain: .40, maximum: 160000, maillages: [8, 128, 1024], variantes: 2, plafonner: true }),
-    high: Object.freeze({ densite: 120, terrain: 1.4, maximum: 190000, maillages: BRINS_PRAIRIE, variantes: 2, plafonner: true }),
-    ultra: Object.freeze({ densite: 240, terrain: 2.6, maximum: 220000, maillages: [8, 128, 1024, 4096], variantes: 2 }),
+    medium: Object.freeze({ densite: 22, terrain: .35, maximum: 22000, maillages: [8, 128, 512], variantes: 2, plafonner: true }),
+    high: Object.freeze({ densite: 44, terrain: .65, maximum: 30000, maillages: [8, 128, 512], variantes: 2, plafonner: true }),
+    ultra: Object.freeze({ densite: 64, terrain: .90, maximum: 36000, maillages: [8, 128, 512, 1024], variantes: 2, plafonner: true }),
   });
 
   // Biomes réellement dessinés par le décor (mêmes noms que THEMES de decor.js). Un biome absent retourne des lots vides.
@@ -512,6 +512,7 @@
         const ab = moins(points[1], points[0]), ac = moins(points[2], points[0]);
         const aire = Math.hypot(...croix(ab, ac)) / 2;
         const axe = interroger(centre[0], centre[2], 100), d = axe.i < 0 ? Infinity : axe.d;
+        if (organique && source.type !== 'accotement' && d > 100) return;
         let richesse = 1, lisiere = false;
         if (ecologie) {
           richesse = ecologie.echantillonner(centre[0], centre[2], habitat).herbe;
@@ -557,7 +558,7 @@
           const cos = u.reduce((s, x, j) => s + x * v[j], 0) / (Math.hypot(...u) * Math.hypot(...v));
           if (cos < angle) { angle = cos; permutation = k; }
         }
-        const proche = source.type === 'accotement' || d < 100, maille = proche ? (qualite === 'ultra' ? 16 : qualite === 'medium' ? 48 : 24) : (qualite === 'medium' ? 96 : 64);
+        const proche = source.type === 'accotement' || d < 100, maille = organique ? (proche ? 80 : 160) : (proche ? (qualite === 'ultra' ? 16 : qualite === 'medium' ? 48 : 24) : (qualite === 'medium' ? 96 : 64));
         const gx = Math.floor(centre[0] / maille), gz = Math.floor(centre[2] / maille), groupe = (proche ? 'p' : 'l') + gx + ',' + gz;
         // Une seule variante dans un lot : le nombre de dessins ne double pas pour varier les motifs.
         const variante = tapis.variantes === 1 || hash(gx, gz, 701) < .5 ? 'a' : 'b';
