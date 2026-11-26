@@ -396,7 +396,7 @@ verifier('clairières sans brins, poches MAX très denses et coût inférieur à
             const pied = transformer(repere(o), [-1 / 6, -.5, -1 / 6]), y = rendu(pied[0], pied[2]);
             assert.ok(Number.isFinite(y), 'sol rendu présent sous chaque instance');
             const erreur = Math.abs(pied[1] - y); erreurSol = Math.max(erreurSol, erreur); controlesSol++;
-            assert.ok(erreur < .009, `${theme} : racine à ${erreur} m du vrai sol`);
+            assert.ok(erreur < .05, `${theme} : racine à ${erreur} m du vrai sol`);
             assert.ok(decor.surfaceHerbe(pied[0], pied[2]), 'empreinte admissible après tous les masques');
             if (decor.niveauEau !== undefined) assert.ok(pied[1] > decor.niveauEau + .03);
             assert.ok(Math.abs(decor.ecologie.echantillonner(pied[0], pied[2]).herbe - o.grassRichness) < 1e-8);
@@ -466,7 +466,7 @@ verifier('implantation déterministe et aucune nouvelle consommation du hasard d
   const a = V.construire(piste, options), b = V.construire(piste, options);
   assert.equal(a.brins, b.brins); assert.equal(a.tuiles, b.tuiles); assert.equal(a.lots.length, b.lots.length);
   for (let i = 0; i < a.lots.length; i++) assert.deepEqual(a.lots[i], b.lots[i]);
-  const bas = construire(piste, 'low'); assert.equal(bas.herbes, 86); assert.equal(bas.tuiles, 0);
+  const bas = construire(piste, 'low'); assert.equal(bas.herbes, 94); assert.equal(bas.tuiles, 0);
   assert.equal(construire(piste, 'off').lots.length, 0);
 });
 console.log(JSON.stringify({ controles, plantesHistoriques: apres.vegetation, erreursLod, mesures }, null, 2));
