@@ -238,9 +238,10 @@
   function terrain(c, th, interroger, g, ecologie, organique) {
     if (!c || c.id !== 'marseille') return null;
     const saison = (g && typeof g === 'object' && g.saison) || null;
+    const decorCinema = !!(g && typeof g === 'object' && g.decorCinema);
     const G = 24;
     const TILE = 192;
-    const RANGE = 420;
+    const RANGE = decorCinema ? 256 : 420;
     const gr = _buildGrilleRoute(c);
     const liste = [];
 
@@ -267,11 +268,14 @@
     const nd = c.marseille && c.marseille.ndlg ? c.marseille.ndlg : { x: -193, z: 1347, y: 148 };
     const tx0 = Math.floor(-1500 / TILE), tx1 = Math.floor(450 / TILE);
     const tz0 = Math.floor(350 / TILE), tz1 = Math.floor(2550 / TILE);
-    for (let nx = tx0; nx <= tx1; nx++) {
-      for (let nz = tz0; nz <= tz1; nz++) activer(nx, nz);
+    if (!decorCinema) {
+      for (let nx = tx0; nx <= tx1; nx++) {
+        for (let nz = tz0; nz <= tz1; nz++) activer(nx, nz);
+      }
     }
     const ndx = Math.floor(nd.x / TILE), ndz = Math.floor(nd.z / TILE);
-    for (let dx = -3; dx <= 3; dx++) for (let dz = -3; dz <= 3; dz++) activer(ndx + dx, ndz + dz);
+    const rNd = decorCinema ? 1 : 3;
+    for (let dx = -rNd; dx <= rNd; dx++) for (let dz = -rNd; dz <= rNd; dz++) activer(ndx + dx, ndz + dz);
 
     bxMin = Math.min(bxMin - RANGE, -2600);
     bxMax = Math.max(bxMax + RANGE, 700);
@@ -371,6 +375,7 @@
         const cx = sx + SEA_TILE * 0.5, cz = sz + SEA_TILE * 0.5;
         const qC = _queryRoute(gr, cx, cz);
         if (qC.d < -380 && cz > 520) continue;
+        if (decorCinema && qC.absD > 680) continue;
 
         const sommets = new Float32Array(SN * SN * FLOATS_VERT);
         const indices = new Uint32Array(SEA_SUB * SEA_SUB * 6);

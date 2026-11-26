@@ -1,7 +1,8 @@
 {
   "reprise_2026_11_26": {
     "programme": "docs/reprise/CONTINUATION-2026-11-26.md",
-    "runtime": "0.2.341",
+    "runtime": "0.2.343",
+    "enveloppe_cinema": "docs/reprise/rapports/ENVELOPPE-CINEMA-0343-MAC.json",
     "tapis_cimes": "docs/reprise/rapports/CIMES-0341-MAC.json",
     "matrice_dessins": "docs/reprise/rapports/COURSE-0340-MAC.json",
     "endurance_ecran": "docs/reprise/rapports/ENDURANCE-LARCHE-0338-ECRAN.json.gz",
@@ -10,16 +11,16 @@
     "endurance_complete": "docs/reprise/rapports/ENDURANCE-LARCHE-0337.json.gz",
     "production_verifiee": "0.2.334 / 93d64ac",
     "physique": "p55",
-    "mesures": "docs/reprise/rapports/COURSE-0336-MAC.md",
-    "priorite": "Larche en Écran : 55,81 dessins/s, ralentissement principal km 18–24 ; poursuivre résidence locale, cadence des neuf pistes et réceptions course."
+    "mesures": "docs/reprise/rapports/ENVELOPPE-CINEMA-0343-MAC.json",
+    "priorite": "0.2.343 qualifié à 60 FPS sur les 9 circuits en 1080p Fine pluie (pire <= 19,2 ms, midRaceCreations = 0, couloir decorCinema, caméras basses sans survol, congères 3D ~50 cm en hiver) ; en attente feu vert David pour déploiement VPS."
   },
   "dernier_lot_verifie": {
-    "date": "2026-11-25",
-    "version": "0.2.334",
-    "sujet": "Prairie GPU et exclusion de la végétation basse dans les rétroviseurs",
-    "build_sha256": "faddba604bdc6e0dd6af63aff7a28adb03f4152548473cc5913e573092dbd703",
-    "capture": "docs/reprise/rapports/prairie-gpu-0334.jpg",
-    "banc_mac": "Metal-3, 1440x900, high, 20,02 s, p95 16,7 ms, pire 16,8 ms",
+    "date": "2026-11-26",
+    "version": "0.2.343",
+    "sujet": "Décor cinéma (couloir 3D borné), enveloppe géométrique constante 9 circuits, zéro survol caméra (démo incluse), neige 3D ~50 cm et zéro allocation voiture.js",
+    "build_sha256": "7f7a028fa7bd4ac63f523bda51fd769ca8545d2fb80298bbb02038ba110e1797",
+    "rapport": "docs/reprise/rapports/ENVELOPPE-CINEMA-0343-MAC.json",
+    "banc_mac": "Metal-3 WebGPU, 9 circuits 1920x1080 Fine pluie + démo + neige 50 cm : 59,97–60,17 dessins/s, p95 17,2–17,7 ms, pire 17,5–19,2 ms, midRaceCreations 0 ; Retina 2880x1800 Ultra MSAA 4x : 59,97–59,99 FPS Forêts, 30,0–57,5 FPS Larche km 18",
     "deploie_par_ce_lot": false
   },
   "date": "2026-11-26",

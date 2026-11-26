@@ -359,7 +359,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     return out;
   }
 
-  function nappesRoute(c, th, lim, ecologie = null, saison = null, reperes = null, pont = null, organique = false) {
+  function nappesRoute(c, th, lim, ecologie = null, saison = null, reperes = null, pont = null, organique = false, decorCinema = false) {
     const w = c.largeur / 2, n = c.n, LIGNES = 60, liste = [];
     const largeurBord = 1.2, hautVibreur = .05, basBord = -.015;
     const eclairage = B.chaussee?.creerNormalesRuban?.(c, largeurBord, hautVibreur - basBord);
@@ -376,7 +376,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       // Même couverture initiale que la conduite, lue par portion pour garder le tunnel sec.
       // Couleurs des sommets seulement : géométrie, matériaux, marquages et tirages restent identiques.
       if (meteoRoute && meteoRoute.neigeSol > 0) {
-        const neige = B.chaussee.lire(c, i * c.pas, meteoRoute, surfaceRoute).neige;
+        const neige = B.chaussee.lire(c, i * c.pas, meteoRoute, surfaceRoute).neige * (decorCinema && organique ? .22 : 1);
         if (neige > 0) for (let k = 0; k < 3; k++) col[k] += (neigeRoute[k] - col[k]) * neige;
       }
       return col;
@@ -386,6 +386,8 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const bandes = [
       ['jupe', -1], ['herbe', -1], ['bord', -1], ['ligne', -1], ['asphalte', 0], ['ligne', 1], ['bord', 1], ['herbe', 1], ['jupe', 1]
     ];
+    const neige3D = !!(decorCinema && organique && saison && saison.neige);
+    if (neige3D) bandes.push(['congere-pied', -1], ['congere-talus', -1], ['congere-crete', -1], ['congere-pied', 1], ['congere-talus', 1], ['congere-crete', 1]);
     const coteStands = c.stands?.cote < 0 ? -1 : 1, intervalleStands = {};
     if (c.stands) bandes.push(['voie-stands', coteStands]);
     if (c.stands?.detachee) bandes.push(['terre-plein-stands', coteStands]);
@@ -437,7 +439,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
         const vib = c.vibreur[f.i], tranche = Math.floor(f.i * c.pas / 4) % 2;
         for (let b = 0; b < bandes.length; b++) {
           const type = bandes[b][0], cote = bandes[b][1];
-          let d0, d1, y0, y1, mat = 8, col = null, n0 = no, n1 = no;
+          let d0, d1, y0, y1, mat = 8, col = null, colPied = null, colBordExt = null, n0 = no, n1 = no;
           if (type === 'voie-stands') {
             if (f.s < c.stands.debut-c.pas || f.s > c.stands.fin+c.pas) { premA[b] = -1; continue; }
             d0 = voie.min; d1 = voie.max; y0 = y1 = hauteurRoute(f,coteStands*w,w); n0 = n1 = hautY;
@@ -466,16 +468,62 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
             const penteExt = fortExt ? -bord * Math.tan(f.devers) : 0;
             const dBordBank = fortExt ? Math.min(.85, largeurBord * penteExt * .75) : 0;
             const dHerbeBank = fortExt ? Math.min(.55, .35 * penteExt * Math.min(2.2, Math.max(0, ext - w - 1.2))) : 0;
-            if (type === 'ligne') { d0 = bord * (w - .3); d1 = bord * w; y0 = hauteurRoute(f, d0, w); y1 = yBord; mat = 14.25; col = blanc; }
+            const surStandNeige = cote === coteStands && c.stands && f.s >= c.stands.debut - 14 && f.s <= c.stands.fin + 14;
+            const enneige = neige3D && !surPont && !surStandNeige && !(B.circuit.dansCouvert && B.circuit.dansCouvert(c, f.s, 8));
+            const ondLente = fbm(f.s / 16, cote * 4.3, c.graine + 911, 3), ondFine = bruit(f.s / 4.2, cote * 9.1, c.graine + 947);
+            const ondRafale = bruit(f.s / 9.5, cote * 6.7, c.graine + 983);
+            const hCongere = enneige ? .46 + .32 * ondLente + .15 * ondFine + .11 * Math.max(0, ondRafale - .35) : 0;
+            const hManteau = enneige ? .50 + .18 * fbm(f.s / 24, cote * 2.1, c.graine + 971, 2) : 0;
+            const sinuositePied = enneige ? (.28 * ondLente + .18 * ondFine - .18) : 0;
+            const penteLong = enneige ? (fbm((f.s + 2.2) / 9.5, cote * 4.3, c.graine + 911, 3) - fbm((f.s - 2.2) / 9.5, cote * 4.3, c.graine + 911, 3)) * .62 : 0;
+            if (type === 'congere-pied') {
+              if (!enneige) { premA[b] = -1; continue; }
+              d0 = bord * (w + .10 + Math.max(0, sinuositePied * .25));
+              d1 = bord * Math.max(w + .38, w + largeurBord * .44 + sinuositePied * .55);
+              y0 = yBord + .006 + dBordBank; y1 = yBord + .13 + .05 * ondFine + dBordBank;
+              n0 = [-bord * .32 * f.r[0], .94, -bord * .32 * f.r[2]];
+              n1 = [-bord * .58 * f.r[0] - penteLong * .5 * f.t[0], .80, -bord * .58 * f.r[2] - penteLong * .5 * f.t[2]];
+              mat = 25; colPied = [.55, .61, .69]; colBordExt = [.68, .76, .87];
+              if (cote < 0) { const tmp = colPied; colPied = colBordExt; colBordExt = tmp; }
+            } else if (type === 'congere-talus') {
+              if (!enneige) { premA[b] = -1; continue; }
+              d0 = bord * Math.max(w + .38, w + largeurBord * .44 + sinuositePied * .55);
+              d1 = bord * Math.min(ext, w + largeurBord + 1.08 + sinuositePied * .78);
+              y0 = yBord + .13 + .05 * ondFine + dBordBank; y1 = yBord + hCongere + dBordBank;
+              const nx0 = -bord * .78 * f.r[0] - penteLong * f.t[0], nz0 = -bord * .78 * f.r[2] - penteLong * f.t[2], nl0 = Math.hypot(nx0, .58, nz0) || 1;
+              const nx1 = -bord * .36 * f.r[0] - penteLong * f.t[0], nz1 = -bord * .36 * f.r[2] - penteLong * f.t[2], nl1 = Math.hypot(nx1, .91, nz1) || 1;
+              n0 = [nx0 / nl0, .58 / nl0, nz0 / nl0]; n1 = [nx1 / nl1, .91 / nl1, nz1 / nl1];
+              mat = 25; colPied = [.68, .76, .87]; colBordExt = [.96, .98, 1.0];
+              if (cote < 0) { const tmp = colPied; colPied = colBordExt; colBordExt = tmp; }
+            } else if (type === 'congere-crete') {
+              if (!enneige) { premA[b] = -1; continue; }
+              d0 = bord * Math.min(ext, w + largeurBord + 1.08 + sinuositePied * .78);
+              d1 = bord * Math.min(ext, w + largeurBord + 3.8);
+              y0 = yBord + hCongere + dBordBank; y1 = yBord + hManteau + dBordBank;
+              n0 = [-penteLong * f.t[0] * .55, .975, -penteLong * f.t[2] * .55];
+              n1 = [bord * .24 * f.r[0], .97, bord * .24 * f.r[2]];
+              mat = 25; colPied = [.96, .98, 1.0]; colBordExt = [.89, .94, .99];
+              if (cote < 0) { const tmp = colPied; colPied = colBordExt; colBordExt = tmp; }
+            } else if (type === 'ligne') { d0 = bord * (w - .3); d1 = bord * w; y0 = hauteurRoute(f, d0, w); y1 = yBord; mat = 14.25; col = blanc; }
             else if (type === 'bord') {
               d0 = bord * w; d1 = bord * (w + largeurBord); y0 = yBord;
               const avec = cote < 0 ? (vib & 1) : (vib & 2);
               y1 = yBord + (avec ? hautVibreur : basBord) + dBordBank;
               if (avec) {
                 mat = 14.25; col = reperes && reperes.vibreurs[f.i] ? (tranche ? rougeVirage : blancVirage) : (tranche ? rouge : blancBordure);
-              } else if (surPont) { mat = MATIERES_PILOTES.beton; col = betonPont; } else { mat = 8; }
-            } else if (type === 'herbe') { d0 = bord * (w + 1.2); d1 = bord * ext; y0 = yBord - .015 + dBordBank; y1 = fortExt ? y0 + dHerbeBank : y0 - .02 * (ext - w - 1.2); n0 = n1 = fortExt ? no : hautY; }
-            else { d0 = bord * ext; d1 = bord * (ext + 4); y0 = fortExt ? yBord - .015 + dBordBank + dHerbeBank : yBord - .02 * (ext - w - 1.2); y1 = y0 - 2.6; n0 = n1 = hautY; }
+              } else if (surPont) { mat = MATIERES_PILOTES.beton; col = betonPont; } else if (enneige) { mat = 25; col = [.62, .68, .76]; } else { mat = 8; }
+            } else if (type === 'herbe') {
+              d0 = bord * (enneige ? Math.min(ext, w + largeurBord + 3.8) : w + 1.2); d1 = bord * ext;
+              y0 = yBord - .015 + dBordBank + hManteau;
+              y1 = (fortExt ? yBord - .015 + dBordBank + dHerbeBank : yBord - .015 + dBordBank - .02 * (ext - w - 1.2)) + hManteau;
+              n0 = n1 = fortExt ? no : hautY;
+              if (enneige) { mat = 25; col = [.90, .94, .99]; }
+            } else {
+              d0 = bord * ext; d1 = bord * (ext + 4);
+              y0 = (fortExt ? yBord - .015 + dBordBank + dHerbeBank : yBord - .02 * (ext - w - 1.2)) + hManteau;
+              y1 = y0 - 2.6; n0 = n1 = hautY;
+              if (enneige) { mat = 25; col = [.86, .91, .97]; }
+            }
             if (surPont && (type === 'herbe' || type === 'jupe')) {
               mat = MATIERES_PILOTES.beton; col = betonPont;
               if (type === 'jupe') { d1 = d0; y1 = y0 - 1.15; n0 = n1 = [bord*f.r[0],0,bord*f.r[2]]; }
@@ -507,7 +555,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
             n0 = normaleG; n1 = normaleD;
           }
           const p0 = pointPlan(f, d0, y0), p1 = pointPlan(f, d1, y1);
-          let col0=col || teinteBord(p0[0],p0[2],part), col1=col || teinteBord(p1[0],p1[2],part);
+          let col0 = colPied || col || teinteBord(p0[0],p0[2],part), col1 = colBordExt || col || teinteBord(p1[0],p1[2],part);
           // Lot G : transition gravier/terre douce en rive d'enrobé (bord sans vibreur)
           if (organique && type === 'bord' && !col) {
             const gravier = [th.terre[0] * .95 + .04, th.terre[1] * .92 + .035, th.terre[2] * .88 + .025];
@@ -529,7 +577,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
               };
               pa=reprendre(pa); pb=reprendre(pb);
             }
-            if (!segmentPont && (type === 'herbe' || type === 'jupe' || type === 'terre-plein-stands')) herbeTriangles.push(nap.i.length, nap.i.length + 3);
+            if (!segmentPont && !neige3D && (type === 'herbe' || type === 'jupe' || type === 'terre-plein-stands')) herbeTriangles.push(nap.i.length, nap.i.length + 3);
             if (type === 'intrados') nap.i.push(pa,ib,pb,pa,ia,ib);
             else nap.i.push(pa, pb, ib, pa, ib, ia);
             const surface = type === 'voie-stands' || type === 'asphalte' || type === 'ligne' ? 1 : type === 'bord' && (vib & (cote < 0 ? 1 : 2)) ? 2 : segmentPont ? 1 : 3;
@@ -571,19 +619,19 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       }
     }
   }
-  function nappesTerrain(c, th, interroger, g, ecologie = null, organique = false, saison = null, cachePanorama = null, pont = null, chausseesOvale = null, corridor = false, cacheRelief = null) {
+  function nappesTerrain(c, th, interroger, g, ecologie = null, organique = false, saison = null, cachePanorama = null, pont = null, chausseesOvale = null, corridor = false, cacheRelief = null, decorCinema = false) {
     if (B.larcheDecor) {
-      const vallee = B.larcheDecor.terrain(c, th, interroger, { saison, cachePanorama, corridor }, ecologie, organique);
+      const vallee = B.larcheDecor.terrain(c, th, interroger, { saison, cachePanorama, corridor, decorCinema }, ecologie, organique);
       if (vallee) return vallee;
     }
     if (B.marseilleDecor) {
-      const coteMarseille = B.marseilleDecor.terrain(c, th, interroger, g, ecologie, organique);
+      const coteMarseille = B.marseilleDecor.terrain(c, th, interroger, decorCinema ? { saison, decorCinema } : g, ecologie, organique);
       if (coteMarseille) return coteMarseille;
     }
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
     for (let i = 0; i < c.n; i++) { x0 = Math.min(x0, c.x[i]); x1 = Math.max(x1, c.x[i]); z0 = Math.min(z0, c.z[i]); z1 = Math.max(z1, c.z[i]); }
     const estSansFin = !!c.sansFinFenetre;
-    const marge = estSansFin ? Math.min(th.marge, 420) : th.marge, pasT = estSansFin ? (organique ? 24 : 28) : (organique ? 18 : 24);
+    const marge = decorCinema ? Math.min(th.marge, 340) : estSansFin ? Math.min(th.marge, 420) : th.marge, pasT = estSansFin ? (organique ? 24 : 28) : (organique ? 18 : 24);
     x0 -= marge; z0 -= marge; x1 += marge; z1 += marge;
     const nx = Math.ceil((x1 - x0) / pasT) + 1, nz = Math.ceil((z1 - z0) / pasT) + 1;
     const H = new Float32Array(nx * nz), D = new Float32Array(nx * nz);
@@ -668,6 +716,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       // Des paliers doux de 7 m forment les terrasses ; le raccord est nul près de toute chaussée.
       const niveau = nat / 7, palier = th.karstique ? 7 * (Math.floor(niveau) + lisse(.72, 1, niveau - Math.floor(niveau))) : nat;
       h += palier * lisse(30, 260, d);
+      if (decorCinema && organique && saison?.neige && d > 14 && (th.eau === undefined || h > th.eau + 1.5)) {
+        h += (.46 + .22 * fbm(x / 19, z / 19, g + 977, 2)) * lisse(14, 28, d);
+      }
+      if (decorCinema && d > 130 && (th.eau === undefined || h > th.eau + 2.5)) {
+        h += (16 + 22 * fbm(x / 140, z / 140, g + 97, 2)) * lisse(130, 305, d);
+      }
       if (pics) {
         let sommets = 0;
         for (const [px, pz, rx, rz, haut] of pics) {
@@ -866,6 +920,13 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       // Une tuile entièrement hors des abords n'alimente aucun semis. Garder son
       // relief comme horizon, sans envoyer sa géométrie dans la découpe de l'herbier.
       let horizon = corridor;
+      if (decorCinema) {
+        let dansCouloir = false;
+        for (let j = tj; !dansCouloir && j <= finJ; j++) for (let i = ti; i <= finI; i++) {
+          if (D[j * nx + i] <= 310 || (lagon && lagon.contientCellule(i, j))) { dansCouloir = true; break; }
+        }
+        if (!dansCouloir) continue;
+      }
       for(let j=tj;horizon && j<=finJ;j++) for(let i=ti;i<=finI;i++) {
         if(D[j*nx+i]<420 || (lagon && lagon.contientCellule(i,j))) { horizon=false; break; }
       }
@@ -1903,9 +1964,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     // Le repli false sert à relire l'oracle visuel historique, sans changer les empreintes de référence.
     const reperes = options.reperesVirages !== false && B.virages ? preparerReperes(c) : null;
     let tunnelLampes = null;   // positions des lampes du tunnel : le jeu en fait des lumières près de la caméra
-    const nappes = nappesRoute(c, th, lim, qualite === 'low' ? null : ecologie, saison, reperes, pontFjord, organique);
+    const decorCinema = options.decorCinema === true;
+    const nappes = nappesRoute(c, th, lim, qualite === 'low' ? null : ecologie, saison, reperes, pontFjord, organique, decorCinema);
     const terrain = nappesTerrain(c, th, interroger, g, qualite === 'low' ? null : ecologie, options.organique === true, saison, options.cachePanorama, pontFjord,
-      c.partition === 'ovale-des-forges' ? nappes : null, options.decorProgressif === true, options.cacheRelief);
+      c.partition === 'ovale-des-forges' ? nappes : null, options.decorProgressif === true, options.cacheRelief, decorCinema);
     const maisonsBaikal = terrain.paysageBaikal ? B.baikal.habitations(c, terrain, interroger, terrain.paysageBaikal) : null;
     // Hasard architectural séparé ; le repli sert seulement à relire l'oracle historique du décor.
     const architecture = options.batiments !== false && B.batiments ? { maisons: [], stands: [] } : null;
@@ -2471,8 +2533,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     }
     let nombre = 0;
     const denseArbres = organique && qualite !== 'low' && options.arbres === undefined;
-    const MAX = ovale || estMarseille || th.volcanique || th.aride || th.pacifique ? 0
+    const baseMaxArbres = ovale || estMarseille || th.volcanique || th.aride || th.pacifique ? 0
       : options.arbres === undefined ? (th.karstique ? (denseArbres ? 460 : 160) : (denseArbres ? 4400 : 2600)) : options.arbres;
+    const MAX = decorCinema && options.arbres === undefined ? Math.min(baseMaxArbres, th.karstique ? 260 : 1400) : baseMaxArbres;
     // Le budget réduit du nouveau biome est distribué sur tout le tour, sans remplir seulement le départ.
     const pasArbres = th.karstique ? Math.max(denseArbres ? 4 : 7, Math.ceil(c.n / (denseArbres ? 180 : 72))) : (denseArbres ? 4 : 7);
     const minDistArbre = denseArbres ? 19 : 30;
@@ -2481,7 +2544,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       const f = cadre(c, i);
       for (const cote of [-1, 1]) {
         for (let essai = 0; essai < 3; essai++) {        // si la place est prise (eau, roche, tribunes), on tente une autre distance
-          const t = hache(i * 3 + essai, cote + 5, g + 57), d = (denseArbres ? 21 : 40) + t * (denseArbres ? 135 : 150);
+          const t = hache(i * 3 + essai, cote + 5, g + 57), d = (denseArbres ? (decorCinema ? 20 : 21) : 40) + t * (decorCinema ? 82 : (denseArbres ? 135 : 150));
           const glisse = (hache(i, cote + essai + 7, g + 71) - .5) * 12;
           const p = pointPlan(f, cote * d, 0), jx = p[0] + f.t[0] * glisse, jz = p[2] + f.t[2] * glisse;
           const q = interroger(jx, jz, 120, true);
@@ -2765,10 +2828,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       l.objets.push(...objets); l.loin.push(...loin);
     });
 
-    const lieuxCimes = B.cimesDecor && B.cimesDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter });
-    const lieuxLarche = B.larcheDecor && B.larcheDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter,
+    const lieuxCimes = B.cimesDecor && B.cimesDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter, decorCinema });
+    const lieuxLarche = B.larcheDecor && B.larcheDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter, decorCinema,
       decorProgressif: options.decorProgressif, basculeDetail: qualite === 'low' && organique ? 280 : 520 });
-    const lieuxMarseille = B.marseilleDecor && B.marseilleDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter });
+    const lieuxMarseille = B.marseilleDecor && B.marseilleDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter, decorCinema });
     terrain.nappesRoute = nappes;
     const outilsLieux = { terrain, limites: lim, interroger, qualite, saison, ajouter, th, pontFjord };
     // Les repères prennent leur abscisse dans leur paysage d'origine. Le contrôle
@@ -2888,7 +2951,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const ouvrirHerbier = () => {
       if (herbier) return herbier;
       let cache = HERBIERS.get(c); if (!cache) HERBIERS.set(c, cache = new Map());
-      const cle = (qualite === 'low' ? 'low' : 'naturel') + ':' + (options.arbres === undefined ? 2600 : options.arbres) + (ecologie ? ':ecologie' : '') + (options.decorProgressif ? ':corridor' : '');
+      const cle = (qualite === 'low' ? 'low' : 'naturel') + ':' + (options.arbres === undefined ? 2600 : options.arbres) + (ecologie ? ':ecologie' : '') + (options.decorProgressif ? ':corridor' : '') + (decorCinema ? ':cinema' : '');
       const entree = cache.get(cle), couleurSaison = saison ? saison.id : 'historique';
       if (entree && entree.saison === couleurSaison) herbier = entree.herbier;
       if (!herbier) {
@@ -2920,9 +2983,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     // Les bosquets sont réservés au décor enrichi du jeu. Rassembler uniquement
     // les emprises du mobilier, avant que les lots d'herbe ne soient ajoutés.
     const bosquets = organique && options.vegetation === true && B.bosquets && vegetationQualite !== 'off'
-      ? B.bosquets.construire(c, terrain, lots, interroger, ecologie, saison, vegetationQualite, { progressif: options.decorProgressif === true }) : [];
+      ? B.bosquets.construire(c, terrain, lots, interroger, ecologie, saison, vegetationQualite, { progressif: options.decorProgressif === true, decorCinema }) : [];
     if (B.vegetation && options.vegetation !== false && vegetationQualite !== 'off') {
-      const v = B.vegetation.construire(c, { limites: lim, interroger, qualite: vegetationQualite, organique,
+      const v = B.vegetation.construire(c, { limites: lim, interroger, qualite: vegetationQualite, organique, saison,
         // Les biomes sans implantation sortent avant de demander la découpe des prairies.
         get surfaces() {
           if (vegetationQualite === 'low') return null;

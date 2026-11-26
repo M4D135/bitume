@@ -1268,7 +1268,8 @@
     });
     // Après casse, ne reste que la cellule du pilote et l'arceau ; roues et carrosserie sont des débris.
     const epave = corps.filter(p => p.pilote || ['cuve', 'goutte', 'goutte-dedans', 'arceau', 'arceau-renforts', 'plateau-arriere', 'assise-pilote', 'siege-dossier', 'siege-stries', 'siege-coutures', 'harnais-poses', 'siege-supports'].some(n => p.shape === FORMES[n].nom));
-    const mod = { corps, simples, epave, surfaceVerre, moyens: corps.filter(p => moyennes.has(p)), livree };
+    const mod = { corps, simples, epave, moyens: corps.filter(p => moyennes.has(p)), livree };
+    Object.defineProperty(mod, 'surfaceVerre', { value: surfaceVerre });
     B.cockpitMatieres?.pilote(corps);
     preparer(mod);
     return mod;
@@ -1390,10 +1391,10 @@
     let e = mod.objetsRendu;
     if (e === undefined) {
       e = { M3: [trois(), trois(), trois()], tables: new Array(16).fill(null), retro: [null, null, null, null], habitacle: null, pilote: null,
-        pose: { matrice: new Float64Array(9), epoque: 0, cap: 0, tangage: 0, roulis: 0,
-          px: 0, py: 0, pz: 0, suspension: false, courses: new Float64Array(4), moyeux: [], pieces: new WeakMap(),
+        pose: { matrice: new Float64Array(9), epoque: 0, s: Float64Array.of(0, 0, 0, 0, 0, 0, NaN),
+          suspension: false, courses: new Float64Array(4), moyeux: [], pieces: new WeakMap(),
           centresLOD: new Float64Array(12), epoqueLOD: -1, orientation: 0, rotationsRoues: [], rotationsFixes: [],
-          braquage: NaN, braquages: new Float64Array(2) },
+          braquages: new Float64Array(2) },
         pneus: { cle: new Float64Array(16).fill(NaN), couleurs: new Float64Array(4 * 15), actifs: new Uint8Array(4) } };
       Object.defineProperty(mod, 'objetsRendu', { value: e });   // ni énuméré, ni copié, ni sérialisé avec le modèle
     }
@@ -1402,21 +1403,21 @@
   // La caisse et les suspensions ont la même pose pour toutes les caméras. Les valeurs sont
   // relues car la simulation réutilise ses tableaux et un appelant peut reposer le même modèle ailleurs.
   function actualiserPose(p, ev) {
-    const cap = ev.cap, tangage = ev.tangage || 0, roulis = ev.roulis || 0;
-    const rotation = !p.epoque || !Object.is(cap, p.cap) || !Object.is(tangage, p.tangage) || !Object.is(roulis, p.roulis);
+    const ps = p.s, cap = ev.cap, tangage = ev.tangage || 0, roulis = ev.roulis || 0;
+    const rotation = !p.epoque || !Object.is(cap, ps[0]) || !Object.is(tangage, ps[1]) || !Object.is(roulis, ps[2]);
     if (rotation) {
-      p.cap = cap; p.tangage = tangage; p.roulis = roulis;
+      ps[0] = cap; ps[1] = tangage; ps[2] = roulis;
       attitudeDans(p.matrice, ev);
-      p.orientation++;
+      p.orientation = p.orientation + 1 & 0x3fffffff;
     }
     const x = ev.p[0], y = ev.p[1], z = ev.p[2], suspension = !!ev.rebond;
-    let change = rotation || !Object.is(x, p.px) || !Object.is(y, p.py) || !Object.is(z, p.pz) || suspension !== p.suspension;
-    p.px = x; p.py = y; p.pz = z; p.suspension = suspension;
+    let change = rotation || !Object.is(x, ps[3]) || !Object.is(y, ps[4]) || !Object.is(z, ps[5]) || suspension !== p.suspension;
+    ps[3] = x; ps[4] = y; ps[5] = z; p.suspension = suspension;
     for (let i = 0; i < p.courses.length; i++) {
       const h = suspension ? ev.rebond[i] || 0 : 0;
       if (!Object.is(p.courses[i], h)) { p.courses[i] = h; change = true; }
     }
-    if (change) p.epoque++;
+    if (change) p.epoque = p.epoque + 1 & 0x3fffffff;
     return p.matrice;
   }
   // La projection d'une origine rigide est commune aux tables du modèle. La jante, le pneu,
@@ -1425,21 +1426,22 @@
   function ancrePiece(p, pc, o, roue) {
     const w = ROUES[roue], auMoyeu = w && Object.is(o[0], w.x) && Object.is(o[1], w.r) && Object.is(o[2], w.z);
     let a = auMoyeu ? p.moyeux[roue] : p.pieces.get(pc);
-    if (!a || a.roue !== roue || !Object.is(a.x, o[0]) || !Object.is(a.y, o[1]) || !Object.is(a.z, o[2])) {
-      a = { x: o[0], y: o[1], z: o[2], roue, epoque: -1, a: 0, b: 0, c: 0, X: 0, Y: 0, Z: 0 };
+    if (!a || a.roue !== roue || !Object.is(a.v[0], o[0]) || !Object.is(a.v[1], o[1]) || !Object.is(a.v[2], o[2])) {
+      const v = new Float64Array(9); v[0] = o[0]; v[1] = o[1]; v[2] = o[2];
+      a = { roue, epoque: -1, v };
       if (auMoyeu) p.moyeux[roue] = a; else p.pieces.set(pc, a);
     }
     return a;
   }
   function placerAncre(p, a) {
-    const M = p.matrice, x = a.x, y = a.y, z = a.z;
+    const M = p.matrice, ps = p.s, v = a.v, x = v[0], y = v[1], z = v[2];
     let dx = M[0] * x + M[3] * y + M[6] * z, dy = M[1] * x + M[4] * y + M[7] * z, dz = M[2] * x + M[5] * y + M[8] * z;
-    a.a = dx; a.b = dy; a.c = dz;
+    v[3] = dx; v[4] = dy; v[5] = dz;
     if (p.suspension && a.roue >= 0) {
       const h = p.courses[a.roue];
       dx += M[3] * h; dy += M[4] * h; dz += M[5] * h;
     }
-    a.X = p.px + dx; a.Y = p.py + dy; a.Z = p.pz + dz; a.epoque = p.epoque;
+    v[6] = ps[3] + dx; v[7] = ps[4] + dy; v[8] = ps[5] + dz; a.epoque = p.epoque;
   }
   // Attitude rendue par poser et cockpit, en tableaux imbriqués comme attitude() : une par voiture, réécrite à chaque
   // pose de cette voiture.
@@ -1476,7 +1478,7 @@
         groupe = t.groupes.find(g => g.roue === roue && Object.is(g.tourne, pc.tourne) && memes(g.m, m)) || null;
         if (!groupe) {
           let commun = e.pose.rotationsRoues.find(g => g.roue === roue && Object.is(g.tourne, pc.tourne) && memes(g.m, m));
-          if (!commun) e.pose.rotationsRoues.push(commun = { roue, tourne: pc.tourne, m, orientation: -1, roule: 0, braquage: 0, R: new Float64Array(9), r: trois() });
+          if (!commun) e.pose.rotationsRoues.push(commun = { roue, tourne: pc.tourne, m, orientation: -1, s: new Float64Array(2), R: new Float64Array(9), r: trois() });
           t.groupes.push(groupe = { n: t.groupes.length, roue, avant: w.avant, rayon: w.r, tourne: pc.tourne, m, commun, R: commun.R, r: trois() });
         }
         objet.r = groupe.r;
@@ -1533,7 +1535,8 @@
     return t;
   }
   const T_E = new Float64Array(9), T_F = new Float64Array(9), T_G = new Float64Array(9), T_H = new Float64Array(9), ANG_ROUE = new Float64Array(2);
-  function braquagesDans(d, angles) {
+  function braquagesDans(ps, angles) {
+    const d = ps[6];
     if (Math.abs(d) < 1e-5) { angles[0] = d; angles[1] = d; return; }
     const R = EMPATTEMENT / Math.tan(Math.abs(d));
     const interieur = Math.atan(EMPATTEMENT / (R - DEMI_VOIE_AV)), exterieur = Math.atan(EMPATTEMENT / (R + DEMI_VOIE_AV));
@@ -1542,16 +1545,16 @@
   // Les objets des variantes gardent leurs propres angles publiés. Le produit matriciel et
   // sa décomposition, communs aux variantes, dépendent seulement des entrées de rotation.
   function tournerRoue(g, pose, ev) {
-    const commun = g.commun, roule = g.tourne !== undefined ? ev.roule || 0 : 0, d = g.avant ? ev.braquage || 0 : 0;
-    if (commun.orientation !== pose.orientation || !Object.is(roule, commun.roule) || !Object.is(d, commun.braquage)) {
+    const commun = g.commun, cs = commun.s, roule = g.tourne !== undefined ? ev.roule || 0 : 0, d = g.avant ? ev.braquage || 0 : 0;
+    if (commun.orientation !== pose.orientation || !Object.is(roule, cs[0]) || !Object.is(d, cs[1])) {
       let m = g.m;
       if (g.tourne !== undefined) { ANG_ROUE[0] = g.tourne - roule / g.rayon; m = produitDans(T_E, m, eulerDe(T_F, ANG_ROUE, 0, 1)); }
       if (g.avant) {
-        if (!Object.is(d, pose.braquage)) { braquagesDans(d, pose.braquages); pose.braquage = d; }
+        if (!Object.is(d, pose.s[6])) { pose.s[6] = d; braquagesDans(pose.s, pose.braquages); }
         ANG_ROUE[1] = -pose.braquages[g.roue]; m = produitDans(T_G, eulerDe(T_H, ANG_ROUE, 1, 1), m);
       }
       anglesDans(commun.r, produitDans(commun.R, pose.matrice, m));
-      commun.orientation = pose.orientation; commun.roule = roule; commun.braquage = d;
+      commun.orientation = pose.orientation; cs[0] = roule; cs[1] = d;
     }
     g.r[0] = commun.r[0]; g.r[1] = commun.r[1]; g.r[2] = commun.r[2];
   }
@@ -1619,10 +1622,10 @@
       if (roue >= 0 && roues && roues[roue]) continue;
       const k = 3 * i;
       const ancre = t.ancres[i];
-      let a, b, c, X, Y, Z;
+      let a = 0, b = 0, c = 0, X = 0, Y = 0, Z = 0;
       if (ancre) {
         if (ancre.epoque !== t.pose.epoque) placerAncre(t.pose, ancre);
-        X = ancre.X; Y = ancre.Y; Z = ancre.Z;
+        const av = ancre.v; X = av[6]; Y = av[7]; Z = av[8];
       } else {
         let x = origines[k], y = origines[k + 1], z = origines[k + 2];
         if (t.tete[i]) {
@@ -1640,7 +1643,7 @@
         // `decale` place la pièce hors de l'axe, dans le repère de la roue ; `rebond` (m, par roue) : course de
         // suspension sur les bosses, purement visuelle
         if (t.decale[i] === 1) {
-          if (ancre) { a = ancre.a; b = ancre.b; c = ancre.c; }
+          if (ancre) { const av = ancre.v; a = av[3]; b = av[4]; c = av[5]; }
           const g = t.groupe[i];
           if (t.faitG[g.n] === 0) {
             if (borne) {
@@ -2332,12 +2335,12 @@
   function poserPiloteExterieur(R, variante, M, ev, sortie, retro, sansPilote = false) {
     const V = variante === 10 ? R.cockpit : R.variantes[variante], A = R.articulations;
     const px = ev.p[0], py = ev.p[1], pz = ev.p[2], ca = retro ? Math.cos(ev.cap) : 0, sa = retro ? Math.sin(ev.cap) : 0;
-    V.epoque++;
+    V.epoque = V.epoque + 1 & 0x3fffffff;
     anglesDans(V.rotM, M);
     for (let i = 0; i < V.pieces.length; i++) {
       const e = V.pieces[i], objet = e.objet, p = objet.p;
       if (sansPilote && e.corporel) continue;
-      let x, y, z;
+      let x = 0, y = 0, z = 0;
       if (e.source) {
         const source = e.source, local = source.o;
         if (source.visible === false) continue;
@@ -2793,7 +2796,7 @@
 
   function habitacle(H, M, ev, sortie, etat) {
     const P = ev.p;
-    H.epoque++;
+    H.epoque = H.epoque + 1 & 0x3fffffff;
     anglesDans(H.rotM, M);
     actualiserInstruments(H, etat);
     placerTout(H, H.planche, M, P, sortie);

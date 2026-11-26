@@ -1,7 +1,7 @@
 import { createRequire } from 'node:module';
 import assert from 'node:assert/strict';
 const require = createRequire(import.meta.url);
-require('../src/circuit.js'); require('../src/detail-peripherique.js'); require('../src/moteur/renderer.js');
+require('../src/circuit.js'); require('../src/detail-peripherique.js'); require('../src/ferro/render-shared.js');
 const B = globalThis.BITUME, D = B.detailPeripherique, R = globalThis.FRender.shared;
 const cas = (nom, verifier) => { verifier(); console.log('ok '+nom); };
 const lot = (x,z,options={}) => Object.assign({centre:[x,2,z],rayon:1,objets:[{}],loin:[{}],arbres:true,bascule:160,

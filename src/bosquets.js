@@ -266,8 +266,9 @@
     const leger=qualite==='low', dense=qualite==='ultra';
     // Lot H : forêts et lisières denses multi-échelles (1 instance = 5 houppiers -> coût GPU tenu à 60 FPS).
     const pas=leger?39:qualite==='medium'?7:dense?3:4;
-    const quota=leger?2:qualite==='medium'?16:dense?42:28;
-    const porteeAxe=leger?240:360;
+    const cinema=options&&options.decorCinema===true;
+    const quota=cinema?Math.max(2,Math.ceil((leger?2:qualite==='medium'?16:dense?42:28)*.55)):(leger?2:qualite==='medium'?16:dense?42:28);
+    const porteeAxe=cinema?95:(leger?240:360);
     const margeRoute=leger?27:22;
     const secteurs=new Uint8Array(Math.ceil(c.longueur/100)+1), groupes=new Map();
     const occupe=zonesProtegees(lots,terrain), foret=c.id==='larche'?foretStura():null;

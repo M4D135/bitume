@@ -1,0 +1,360 @@
+{
+  "version": "0.2.343",
+  "date": "2026-11-26",
+  "moteur": "FERRO 0.3.34 (src/ferro intact)",
+  "build_sha256": "7f7a028fa7bd4ac63f523bda51fd769ca8545d2fb80298bbb02038ba110e1797",
+  "voiture_permanents": {
+    "poser_octets_appel": 0.014,
+    "cockpit_octets_appel": 0.027,
+    "poserRetro_octets_appel": 0.027,
+    "gc_mineurs_sur_600k": 1
+  },
+  "p1080": {
+    "label": "1080P_FINE_PLUIE",
+    "results": [
+      {
+        "tag": "forets-du-pacifique-pluie",
+        "canvas": [
+          1920,
+          1080
+        ],
+        "hudFps": "60 FPS",
+        "dessinsS": 59.98,
+        "p50": 16.8,
+        "p95": 17.6,
+        "p99": 17.8,
+        "pire": 18.1,
+        "triAvg": 1476956,
+        "triMax": 1554353,
+        "callsAvg": 780,
+        "instAvg": 46871,
+        "midRaceCreations": 0,
+        "lotsTotal": 887,
+        "prairieCandidats": 43520,
+        "maxCamHauteur": 0.89
+      },
+      {
+        "tag": "marseille-pluie-foule",
+        "canvas": [
+          1920,
+          1080
+        ],
+        "hudFps": "60 FPS",
+        "dessinsS": 59.99,
+        "p50": 16.7,
+        "p95": 17.2,
+        "p99": 17.6,
+        "pire": 18.5,
+        "triAvg": 1110735,
+        "triMax": 1162866,
+        "callsAvg": 547,
+        "instAvg": 8233,
+        "midRaceCreations": 0,
+        "lotsTotal": 291,
+        "prairieCandidats": 7680,
+        "maxCamHauteur": 0.89
+      },
+      {
+        "tag": "karst-et-lagon-pluie",
+        "canvas": [
+          1920,
+          1080
+        ],
+        "hudFps": "60 FPS",
+        "dessinsS": 60,
+        "p50": 16.7,
+        "p95": 17.2,
+        "p99": 17.5,
+        "pire": 17.5,
+        "triAvg": 1029752,
+        "triMax": 1102086,
+        "callsAvg": 616,
+        "instAvg": 2810,
+        "midRaceCreations": 0,
+        "lotsTotal": 667,
+        "prairieCandidats": 0,
+        "maxCamHauteur": 0.89
+      },
+      {
+        "tag": "sierra-pluie",
+        "canvas": [
+          1920,
+          1080
+        ],
+        "hudFps": "60 FPS",
+        "dessinsS": 59.98,
+        "p50": 16.6,
+        "p95": 17.5,
+        "p99": 18.5,
+        "pire": 19.2,
+        "triAvg": 1209905,
+        "triMax": 1286458,
+        "callsAvg": 653,
+        "instAvg": 15420,
+        "midRaceCreations": 0,
+        "lotsTotal": 313,
+        "prairieCandidats": 16640,
+        "maxCamHauteur": 0.89
+      },
+      {
+        "tag": "nord-atlantique-pluie",
+        "canvas": [
+          1920,
+          1080
+        ],
+        "hudFps": "60 FPS",
+        "dessinsS": 60,
+        "p50": 16.7,
+        "p95": 17.5,
+        "p99": 17.7,
+        "pire": 17.8,
+        "triAvg": 1353164,
+        "triMax": 1455887,
+        "callsAvg": 652,
+        "instAvg": 46041,
+        "midRaceCreations": 0,
+        "lotsTotal": 805,
+        "prairieCandidats": 43520,
+        "maxCamHauteur": 0.89
+      },
+      {
+        "tag": "route-des-cimes-pluie",
+        "canvas": [
+          1920,
+          1080
+        ],
+        "hudFps": "60 FPS",
+        "dessinsS": 59.97,
+        "p50": 16.6,
+        "p95": 17.6,
+        "p99": 17.9,
+        "pire": 18,
+        "triAvg": 1297867,
+        "triMax": 1394290,
+        "callsAvg": 697,
+        "instAvg": 27938,
+        "midRaceCreations": 0,
+        "lotsTotal": 623,
+        "prairieCandidats": 26880,
+        "maxCamHauteur": 0.89
+      },
+      {
+        "tag": "larche-km18-pietraporzio",
+        "canvas": [
+          1920,
+          1080
+        ],
+        "hudFps": "60 FPS",
+        "dessinsS": 60.17,
+        "p50": 16.7,
+        "p95": 17.4,
+        "p99": 17.8,
+        "pire": 17.9,
+        "triAvg": 1359678,
+        "triMax": 1519371,
+        "callsAvg": 686,
+        "instAvg": 46125,
+        "midRaceCreations": 0,
+        "lotsTotal": 2158,
+        "prairieCandidats": 43520,
+        "maxCamHauteur": 0.89
+      },
+      {
+        "tag": "baikal-pluie",
+        "canvas": [
+          1920,
+          1080
+        ],
+        "hudFps": "60 FPS",
+        "dessinsS": 60,
+        "p50": 16.6,
+        "p95": 17.5,
+        "p99": 18.1,
+        "pire": 19,
+        "triAvg": 937972,
+        "triMax": 1069364,
+        "callsAvg": 530,
+        "instAvg": 2324,
+        "midRaceCreations": 0,
+        "lotsTotal": 523,
+        "prairieCandidats": 0,
+        "maxCamHauteur": 0.89
+      },
+      {
+        "tag": "ovale-peloton-foule-pluie",
+        "canvas": [
+          1920,
+          1080
+        ],
+        "hudFps": "60 FPS",
+        "dessinsS": 60,
+        "p50": 16.7,
+        "p95": 17.5,
+        "p99": 17.8,
+        "pire": 17.8,
+        "triAvg": 1329542,
+        "triMax": 1382745,
+        "callsAvg": 563,
+        "instAvg": 3513,
+        "midRaceCreations": 0,
+        "lotsTotal": 86,
+        "prairieCandidats": 0,
+        "maxCamHauteur": 0.89
+      },
+      {
+        "tag": "cimes-vue-poursuite",
+        "canvas": [
+          1920,
+          1080
+        ],
+        "hudFps": "60 FPS",
+        "dessinsS": 59.98,
+        "p50": 16.6,
+        "p95": 17.5,
+        "p99": 18.9,
+        "pire": 19.2,
+        "triAvg": 1418450,
+        "triMax": 1454217,
+        "callsAvg": 657,
+        "instAvg": 19646,
+        "midRaceCreations": 0,
+        "lotsTotal": 623,
+        "prairieCandidats": 14592,
+        "maxCamHauteur": 2.45
+      },
+      {
+        "tag": "cimes-mode-demo-sans-survol",
+        "canvas": [
+          1920,
+          1080
+        ],
+        "hudFps": "60 FPS · MAX 60",
+        "dessinsS": 60.16,
+        "p50": 16.7,
+        "p95": 17.5,
+        "p99": 17.7,
+        "pire": 18.4,
+        "triAvg": 1514582,
+        "triMax": 1742990,
+        "callsAvg": 514,
+        "instAvg": 21814,
+        "midRaceCreations": 0,
+        "lotsTotal": 623,
+        "prairieCandidats": 16384,
+        "maxCamHauteur": 3.8
+      },
+      {
+        "tag": "larche-hiver-neige-50cm",
+        "canvas": [
+          1920,
+          1080
+        ],
+        "hudFps": "60 FPS",
+        "dessinsS": 60,
+        "p50": 16.7,
+        "p95": 17.6,
+        "p99": 17.8,
+        "pire": 17.9,
+        "triAvg": 1223229,
+        "triMax": 1313996,
+        "callsAvg": 518,
+        "instAvg": 2510,
+        "midRaceCreations": 0,
+        "lotsTotal": 1257,
+        "prairieCandidats": 0,
+        "maxCamHauteur": 2.45
+      },
+      {
+        "tag": "cimes-hiver-neige-cockpit",
+        "canvas": [
+          1920,
+          1080
+        ],
+        "hudFps": "60 FPS",
+        "dessinsS": 60,
+        "p50": 16.7,
+        "p95": 17.7,
+        "p99": 18.2,
+        "pire": 18.5,
+        "triAvg": 1108774,
+        "triMax": 1162469,
+        "callsAvg": 645,
+        "instAvg": 2612,
+        "midRaceCreations": 0,
+        "lotsTotal": 376,
+        "prairieCandidats": 0,
+        "maxCamHauteur": 0.89
+      }
+    ],
+    "erreurs": []
+  },
+  "retina": {
+    "label": "RETINA_ULTRA",
+    "results": [
+      {
+        "tag": "retina-ultra-forets-cockpit",
+        "canvas": [
+          2880,
+          1800
+        ],
+        "hudFps": "60 FPS",
+        "dessinsS": 59.99,
+        "p50": 16.6,
+        "p95": 17.7,
+        "p99": 18.3,
+        "pire": 18.8,
+        "triAvg": 1802714,
+        "triMax": 1883748,
+        "callsAvg": 846,
+        "instAvg": 53878,
+        "midRaceCreations": 0,
+        "lotsTotal": 906,
+        "prairieCandidats": 50176,
+        "maxCamHauteur": 0.89
+      },
+      {
+        "tag": "retina-ultra-forets-pluie-ext",
+        "canvas": [
+          2880,
+          1800
+        ],
+        "hudFps": "60 FPS",
+        "dessinsS": 59.97,
+        "p50": 16.7,
+        "p95": 17.6,
+        "p99": 18.4,
+        "pire": 19.2,
+        "triAvg": 1773063,
+        "triMax": 1849147,
+        "callsAvg": 722,
+        "instAvg": 53347,
+        "midRaceCreations": 0,
+        "lotsTotal": 906,
+        "prairieCandidats": 50176,
+        "maxCamHauteur": 2.45
+      },
+      {
+        "tag": "retina-ultra-larche-km18",
+        "canvas": [
+          2880,
+          1800
+        ],
+        "hudFps": "30 FPS",
+        "dessinsS": 30,
+        "p50": 33.4,
+        "p95": 34.4,
+        "p99": 34.7,
+        "pire": 35.1,
+        "triAvg": 1637454,
+        "triMax": 1685824,
+        "callsAvg": 759,
+        "instAvg": 53126,
+        "midRaceCreations": 0,
+        "lotsTotal": 2208,
+        "prairieCandidats": 50176,
+        "maxCamHauteur": 0.89
+      }
+    ],
+    "erreurs": []
+  }
+}

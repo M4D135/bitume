@@ -454,6 +454,7 @@
       const z = Math.floor((c.z[i] + Math.cos(cap) * d) * 100);
       return [hash(x, z, sel), hash(x, z, sel + 1), hash(x, z, sel + 2)];
     }
+    const sousNeige = !!(organique && options.saison && options.saison.neige);
     for (let station = 0, i = 0; i < c.n && station < stations; i += pas, station++) {
       const hasardStation = [r(), r(), r(), r(), r(), r(), r(), r()];
       const cote = qualite === 'low' ? (station % 2 ? 1 : -1) : (hasardStation[6] < .5 ? -1 : 1);
@@ -461,7 +462,7 @@
       const limite = cote < 0 ? limites.G[i] : limites.D[i], espace = limite - w - 4.2;
       if (espace < 1.2) continue;
       const d = cote * (w + 2.5 + hasardStation[0] * Math.min(espace - .3, 4.5));
-      for (let k = 0; k < palier.herbes; k++) {
+      if (!sousNeige) for (let k = 0; k < palier.herbes; k++) {
         const j = (i + k * 2) % c.n, decalage = d + cote * k * .75;
         const [orientation, ampleur, stature] = qualite === 'low'
           ? [hasardStation[k + 2], hasardStation[k + 1], hasardStation[k + 3]]
@@ -481,15 +482,19 @@
             : tiragesSpecimen(jT, decalage, 1011 + tk * 7);
           const largeur = (1.0 + ampleur * .62) * biome.taille, h = (.78 + stature * .45) * biome.taille;
           const b = biome.taillis, n = biome.taillisNuance, t = hasardStation[(3 + tk) % 8];
-          if (ajouter(jT, decalage, 'taillis', orientation * PI2,
-            [largeur, h, largeur * .85], [b[0] + n[0] * t, b[1] + n[1] * t, b[2] + n[2] * t], palier.mat)) taillis++;
+          const couleurTaillis = sousNeige
+            ? [b[0] + n[0] * t + .18, b[1] + n[1] * t + .18, b[2] + n[2] * t + .18]
+            : [b[0] + n[0] * t, b[1] + n[1] * t, b[2] + n[2] * t];
+          const plantT = ajouter(jT, decalage, 'taillis', orientation * PI2,
+            [largeur, h, largeur * .85], couleurTaillis, palier.mat);
+          if (plantT) { if (sousNeige) plantT.p[1] += 0.32; taillis++; }
         }
       }
     }
 
     // Plantation en deux dimensions sur les triangles visibles. Aucun ruban ne dépend du sens de
     // la route ; les limites suivent le sol, les bâtiments et les rochers, jusque dans la campagne.
-    const tapis = (organique ? TAPIS_DENSE : TAPIS)[qualite];
+    const tapis = sousNeige ? null : (organique ? TAPIS_DENSE : TAPIS)[qualite];
     let brinsTapis = 0, brinsAccotements = 0, brinsTerrain = 0, aireAccotements = 0, aireTerrain = 0;
     let aireDisponible = 0, aireRiche = 0, brinsRiches = 0;
     function hash(x, z, sel = 0) {
@@ -591,7 +596,7 @@
     }
 
     // Fougères : générées sur leur propre maille, côté opposé aux herbes, avec leur terreau.
-    if (palier.fougeres && biome.familles.includes('fougères')) {
+    if (!sousNeige && palier.fougeres && biome.familles.includes('fougères')) {
       const rf = hasard((c.graine ^ 0x2c1f9a17) >>> 0);
       const stationsDenses = Math.max(1, Math.round(PALIERS.high.stations * biome.stations));
       const stationsF = Math.max(1, Math.round(stationsDenses * .82 * biome.densite));
@@ -629,7 +634,7 @@
     }
 
     // Fleurs : prairie clairsemée en bordure extérieure, palette par biome.
-    if (palier.fleurs && biome.familles.includes('fleurs') && biome.fleurs && biome.fleurs.length) {
+    if (!sousNeige && palier.fleurs && biome.familles.includes('fleurs') && biome.fleurs && biome.fleurs.length) {
       const rl = hasard((c.graine ^ 0x7a19c3d1) >>> 0);
       const stationsL = Math.max(1, Math.round(stations * .9 * biome.densite)), pasL = Math.max(1, Math.ceil(c.n / stationsL));
       for (let station = 0, i = 0; i < c.n && station < stationsL; i += pasL, station++) {

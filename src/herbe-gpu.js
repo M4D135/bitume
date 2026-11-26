@@ -138,18 +138,21 @@ fn ombrage(r:vec3f)->f32 {
 @vertex fn vs(@builtin(vertex_index) vi:u32,@builtin(instance_index) id:u32)->V {
   // Même budget, distribué par importance : une feuille au loin, davantage de
   // feuilles fines dans les 28 puis 14 mètres. Les identités ne dépendent pas de l'œil.
-  let tuile=tuiles[id>>6u]; let taille=tuile.w; let feuille=tuile.z;
-  let cell=tuile.xy+vec2i(i32(id&7u),i32((id>>3u)&7u));
+  let tuile=tuiles[id>>8u]; let taille=tuile.w;
+  let sousBrin=i32(id&3u); let cellIdx=(id>>2u)&63u;
+  let feuille=i32(tuile.z)*4+sousBrin;
+  let cell=tuile.xy+vec2i(i32(cellIdx&7u),i32(cellIdx>>3u));
   var v:V; v.p=vec4f(0.,0.,2.,1.); v.couleur=vec3f(0.);
   if(any(cell<vec2i(u.rect.xy))||any(cell>=vec2i(u.rect.zw))){return v;}
   let phys=(cell&vec2i(255))*vec2i(2,1);
   let teinte=textureLoad(sol,phys+vec2i(1,0),0);
   if(teinte.w<=.001){return v;}
-  let h=hash(cell); let rnd=alea(hash(cell+vec2i(i32(feuille)*139+17,43)));
+  let rnd=alea(hash(cell+vec2i(feuille*139+17,43+sousBrin*67)));
   let tsol=textureLoad(sol,phys,0);
   let n=vec3f(tsol.y,sqrt(max(.01,1.-dot(tsol.yw,tsol.yw))),tsol.w);
-  let ecart=(alea(hash(cell+vec2i(457,73+i32(feuille)*97)))-.5)*1.4*tsol.z;
-  let xz=(vec2f(cell)+alea(h))*.45+ecart;
+  let sub=(vec2f(f32(sousBrin&1),f32(sousBrin>>1))*.5+alea(hash(cell+vec2i(71+feuille*53,29+feuille*97)))*.5-.5)*.44*tsol.z;
+  let ecart=sub+(alea(hash(cell+vec2i(457,73+feuille*97)))-.5)*.38*tsol.z;
+  let xz=(vec2f(cell)+vec2f(.5))*.45+ecart;
   let racine=vec3f(xz.x,tsol.x-dot(n.xz,ecart)/n.y,xz.y);
   let vers=u.oeil.xyz-racine; let dist=length(vers);
   let portee=f32(taille)*.215;
@@ -170,8 +173,8 @@ fn ombrage(r:vec3f)->f32 {
     souffle-=s.flux.xy*force; couche=max(couche,force);
   }
   let t=f32(vi>>1u)/2.;
-  let largeur=(1.-.80*t*t)*(.013+.016*rnd.y)*fade;
-  let hauteur=(.11+.20*rnd.y+.08*length(groupe))*(.55+.45*teinte.w)*fade;
+  let largeur=(1.-.72*t*t)*(.027+.031*rnd.y)*fade;
+  let hauteur=(.15+.27*rnd.y+.10*length(groupe))*(.62+.38*teinte.w)*fade;
   let pointe=groupe*.72+dir*.5+souffle;
   // Bézier quadratique : pied fixe, contrôle presque vertical, pointe libre.
   let centre=racine+n*hauteur*(t*(1.-.52*couche)-.22*t*t)+
@@ -211,7 +214,7 @@ fn ombrage(r:vec3f)->f32 {
       {bytesPerRow:w*32}, [w*2,h]));
     const module = device.createShaderModule({label:'Brins de prairie', code:shader});
     const layout = device.createBindGroupLayout({entries:[
-      {binding:0,visibility:GPUShaderStage.VERTEX,buffer:{}},
+      {binding:0,visibility:GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT,buffer:{}},
       {binding:1,visibility:GPUShaderStage.VERTEX,texture:{sampleType:'unfilterable-float'}},
       {binding:2,visibility:GPUShaderStage.VERTEX,texture:{sampleType:'depth'}},
       {binding:3,visibility:GPUShaderStage.VERTEX,buffer:{type:'read-only-storage'}}
@@ -232,20 +235,19 @@ fn ombrage(r:vec3f)->f32 {
         const publicVu = publicFx?.gpuColor?.(pass,v);
         const r = map.maj(v.oeil[0],v.oeil[2]);
         let mots=map.visibles(v,parPied===3,liste);
-        // Enveloppe GPU strictement constante (style F1 2026) : coût fixe quelle que
-        // soit l'ouverture du paysage. On plafonne le nombre de mots (brins) et on
-        // priorise le premier plan (taille 64 = 0-14 m) sans aucune allocation.
-        const maxMots=(parPied===3?220:160)*4;
-        if (mots>maxMots) {
-          let e64=0,e128=0,e256=0;
-          for(let i=0;i<mots;i+=4){const t=liste[i+3];if(t===64)e64++;else if(t===128)e128++;else e256++;}
+        // Chaque descripteur émet déjà 4 sous-brins stratifiés par cellule (256 brins / tuile 3,6 m).
+        // On retient 3 à 4 passes spatiales symétriques sur les deux rives (f=0 à 55 m, f=1 à 27 m,
+        // f=3..4 à 14 m) sous enveloppe GPU fixe, sans jamais dégarnir un côté de la route.
+        const maxTuiles=parPied===3?196:156;
+        if (mots>0) {
           let ec=0;
-          for(let i=0;i<mots && ec<maxMots;i+=4){if(liste[i+3]===64){listeTriee.set(liste.subarray(i,i+4),ec*4);ec++;}}
-          for(let i=0;i<mots && ec<maxMots;i+=4){if(liste[i+3]===128){listeTriee.set(liste.subarray(i,i+4),ec*4);ec++;}}
-          for(let i=0;i<mots && ec<maxMots;i+=4){if(liste[i+3]===256){listeTriee.set(liste.subarray(i,i+4),ec*4);ec++;}}
-          liste.set(listeTriee.subarray(0,ec*4),0); mots=ec;
+          for(let i=0;i<mots && ec<maxTuiles;i+=4){if(liste[i+2]===0){listeTriee.set(liste.subarray(i,i+4),ec*4);ec++;}}
+          for(let i=0;i<mots && ec<maxTuiles;i+=4){if(liste[i+2]===1){listeTriee.set(liste.subarray(i,i+4),ec*4);ec++;}}
+          for(let i=0;i<mots && ec<maxTuiles;i+=4){if(liste[i+2]===3){listeTriee.set(liste.subarray(i,i+4),ec*4);ec++;}}
+          if(parPied===3){for(let i=0;i<mots && ec<maxTuiles;i+=4){if(liste[i+2]===4){listeTriee.set(liste.subarray(i,i+4),ec*4);ec++;}}}
+          liste.set(listeTriee.subarray(0,ec*4),0); mots=ec*4;
         }
-        const k=mots*16;
+        const k=mots*64;
         mesure.images++; mesure.candidats=k; mesure.totalCandidats+=k;
         mesure.picCandidats=Math.max(mesure.picCandidats,k); mesure.echantillons=map.echantillons;
         if (!mots) return publicVu;

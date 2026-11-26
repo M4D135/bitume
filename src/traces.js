@@ -713,6 +713,10 @@
       const o = f.objet, p = o.p, t = (f.age + h) / f.vie, k = f.taille * (1 + 2.6 * t);
       p[0] = f.x + f.vx * h; p[1] = f.y + f.vy * h; p[2] = f.z + f.vz * h; o.s[0] = o.s[1] = o.s[2] = k;
       o.alpha = f.a0 * (1 - t) * Math.min(1, t * 6);
+      if (tri) {
+        const dxE = p[0] - ox, dyE = p[1] - oy, dzE = p[2] - oz, d2E = dxE * dxE + dyE * dyE + dzE * dzE;
+        if (d2E < 16) o.alpha *= Math.max(.08, d2E / 16);
+      }
       if (o.alpha > .004) {
         if (candidats) candidats[nombre++] = o;
         if (!tri || (p[0] - ox) * ax + (p[1] - oy) * ay + (p[2] - oz) * az >= limite) sortie.push(o);
@@ -754,7 +758,8 @@
       xmin=Math.min(g[0],d[0])-marge; xmax=Math.max(g[0],d[0])+marge;
       zmin=Math.min(g[2],d[2])-marge; zmax=Math.max(g[2],d[2])+marge;
     }
-    const vue2 = VUE * VUE, BD = fx.bandes;
+    const vue2 = tri ? Math.min(VUE * VUE, 95 * 95) : VUE * VUE, BD = fx.bandes;
+    let bandesVue = 0;
     for (let i = 0; i < BD.length; i++) {
       const b = BD[i];
       if (!b.actif) continue;
@@ -765,7 +770,7 @@
       o.alpha = b.a0 * Math.min(1, 1.6 * (1 - (b.age + h) / VIE_TRACE));
       if (o.alpha > .004) {
         if (dansReflets) candidats[nombre++] = o;
-        if (dansVue) sortie.push(o);
+        if (dansVue && (!tri || bandesVue++ < 160)) sortie.push(o);
       }
     }
     if (reflet) reflet.finBandes = nombre;

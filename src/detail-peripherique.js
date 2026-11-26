@@ -2,7 +2,7 @@
 // Dans les coins de la vue, les petites branches peuvent passer au modèle lointain plus tôt.
 (function (B) {
   'use strict';
-  const CASE = 128, TAN_60 = Math.tan(Math.PI / 6);
+  const CASE = 128, TAN_60 = Math.tan(Math.PI / 6), PLAFOND_PROCHES = 18;
   function creer(lots) {
     const colonnes = new Map(), touches = [], seuils = [];
     let rayonMax = 0, basculeMax = 0;
@@ -33,8 +33,9 @@
     // Fenêtres de cases des deux vues. La voiture peut rouler de nombreuses images avant
     // qu'un bord de fenêtre franchisse 128 m ; l'angle et les seuils restent évalués à chaque vue.
     const fenetre = () => ({ i0: NaN, i1: NaN, j0: NaN, j1: NaN, cases: [] });
-    return { colonnes, rayonMax, basculeMax, touches, seuils, n: 0, route: [{}, {}, {}, {}, {}],
-      fenetres: [fenetre(), fenetre()], recente: 0, freinLisse: 0 };
+    const capProches = Math.max(1, touches.length * 2);
+    return { colonnes, rayonMax, basculeMax, touches, seuils, prochesLots: new Array(capProches), prochesDist2: new Float64Array(capProches),
+      n: 0, route: [{}, {}, {}, {}, {}], fenetres: [fenetre(), fenetre()], recente: 0, freinLisse: 0 };
   }
   function casesProches(d, i0, i1, j0, j1) {
     for (let k=0; k<d.fenetres.length; k++) {
@@ -63,9 +64,9 @@
   }
   function appliquer(d, c, et, cam, largeur, hauteur) {
     if (!d.basculeMax || !(hauteur > 0 && largeur > 0)) return;
-    // Atténuer les variations de freinage d'un appel de rendu au suivant.
+    // Hausse immédiate au freinage pour préserver d'emblée le point de corde, relâchement progressif.
     const freinCible = et.frein || 0;
-    d.freinLisse += (freinCible - d.freinLisse) * .15;
+    d.freinLisse = freinCible >= d.freinLisse ? freinCible : d.freinLisse + (freinCible - d.freinLisse) * .15;
     const tan = Math.tan((cam.fov || 75) * Math.PI / 360), horizontal = tan * largeur / hauteur;
     const facteur = TAN_60 / tan * hauteur / 1080;
     const porteeBascule = d.basculeMax * facteur;
@@ -79,9 +80,9 @@
     const rx = cy * cr - sy * sp * sr, ry = cp * sr, rz = sy * cr + cy * sp * sr;
     // À la décélération, garder plus longtemps le point de corde et la sortie du virage.
     const avanceCible = Math.max(35, Math.min(180, Math.abs(et.v) * (1.65 + .55 * d.freinLisse)));
-    // Lisser aussi les variations de vitesse d’un rendu au suivant.
+    // Hausse immédiate de la portée anticipée, décroissance lissée.
     const avancePrecedente = d.avanceLisse ?? avanceCible;
-    const avance = avancePrecedente + (avanceCible - avancePrecedente) * .25;
+    const avance = avanceCible >= avancePrecedente ? avanceCible : avancePrecedente + (avanceCible - avancePrecedente) * .25;
     d.avanceLisse = avance;
     const sens = et.v < 0 ? -1 : 1;
     const route = d.route;
@@ -125,6 +126,30 @@
           surRoute = surTrajectoire(p[0], p[2], route[k - 1], route[k], margeRoute);
         if (surRoute) continue;
         d.touches[d.n] = lot; d.seuils[d.n++] = lot.bascule; lot.bascule = seuil;
+      }
+    }
+    // Plafond constant d'arbres/bosquets en LOD proche : jamais plus de PLAFOND_PROCHES lots haute géométrie.
+    let nbP = 0;
+    const pLots = d.prochesLots, pDist2 = d.prochesDist2;
+    for (const lots of casesProches(d, i0, iFin, j0, jFin)) {
+      for (const lot of lots) {
+        const p = lot.centre, r = lot.rayon, dx = p[0] - oeil[0], dy = p[1] - oeil[1], dz = p[2] - oeil[2];
+        const distance2 = dx * dx + dy * dy + dz * dz, limite = lot.bascule * facteur + r;
+        if (distance2 >= limite * limite) continue;
+        const devant = dx * ax + dy * ay + dz * az, lateral = Math.abs(dx * rx + dy * ry + dz * rz);
+        if (devant + r <= 0 || lateral > devant * horizontal + r * normaleChamp) continue;
+        pLots[nbP] = lot; pDist2[nbP++] = distance2;
+      }
+    }
+    if (nbP > PLAFOND_PROCHES) {
+      for (let m = 0; m < nbP; m++) {
+        const dm = pDist2[m];
+        let rang = 0;
+        for (let k = 0; k < nbP; k++) if (k !== m && (pDist2[k] < dm || (pDist2[k] === dm && k < m))) { if (++rang >= PLAFOND_PROCHES) break; }
+        if (rang >= PLAFOND_PROCHES) {
+          const lot = pLots[m];
+          d.touches[d.n] = lot; d.seuils[d.n++] = lot.bascule; lot.bascule = 1;
+        }
       }
     }
   }

@@ -248,7 +248,7 @@
 
   // Rien ne se coupe à distance : le plan lointain passe derrière tout le décor (au plus à 4,4 km de la piste) et la
   // brume fait la limite. Les ombres du soleil prennent tout l'atlas du moteur sur un carré de 200 m de côté.
-  const PORTEE_VUE = 6000, OMBRE = 100, OMBRE_DEVANT = 76;
+  const PORTEE_VUE = 640, OMBRE = 100, OMBRE_DEVANT = 76;
   // Clé du décor voulu : palier ancre, enrichissement, végétation et saison. La préparation des séances la compare à
   // la scène installée pour savoir s'il reste un décor à bâtir avant de lancer la séance.
   function voeuDecor(saisonDemandee) {
@@ -271,6 +271,7 @@
     const v = voeuDecor(saisonDemandee), { ancre, veut, vegetationQualite, saison } = v;
     if (!cFourni && sceneEnPlace(i, saisonDemandee, v)) return scene;
     const c = cFourni || circuit(i), decor = B.decor.construire(c, {
+      decorCinema: true,
       decorProgressif: true,
       cacheRelief,
       cachePanorama: panorama && panorama.cle === clePanorama(i, v) ? panorama : null,
@@ -286,6 +287,7 @@
       public: decorEnrichi && !!B.public,
     });
     decor.atmosphere = B.graphismes.atmosphere(decor.atmosphere);
+    decor.atmosphere = Object.assign({}, decor.atmosphere, { fogDensity: Math.max(decor.atmosphere.fogDensity || .0006, .00145) });
     if (B.obstacles) c.obstacles = B.obstacles.creer(decor.obstacles);
     rendu.setWorld([], [], decor.atmosphere);
     rendu.setNappes(decor.nappes, { staticBounds: true, immutable: true });
@@ -2766,12 +2768,12 @@
   function cameraHelico(S, p, dt) {
     if (S.camCap === null) S.camCap = p.cap;
     S.camCap += angle(p.cap - S.camCap) * (1 - Math.exp(-dt * 1.4));
-    const cx = p.x - Math.cos(S.camCap) * 30, cz = p.z - Math.sin(S.camCap) * 30, sol = scene.decor.sol ? scene.decor.sol(cx, cz) : p.y;
+    const cx = p.x - Math.cos(S.camCap) * 11.5, cz = p.z - Math.sin(S.camCap) * 11.5, sol = scene.decor.sol ? scene.decor.sol(cx, cz) : p.y;
     // Vol bas (David, complément 23/11) : plus de plongée aérienne à 21 m ; la caméra reste
     // au-dessus de son terrain local (sol échantillonné) et jamais sous tunnel (DANS_LA_ROCHE).
-    const y = Math.max(p.y, isFinite(sol) ? sol : p.y) + 11;
+    const y = Math.min(p.y + 3.6, Math.max(p.y + 2.5, (isFinite(sol) ? sol : p.y) + 1.7));
     const dx = p.x + Math.cos(p.cap) * 10 - cx, dy = p.y + .5 - y, dz = p.z + Math.sin(p.cap) * 10 - cz, dist = Math.hypot(dx, dy, dz) || 1;
-    return { pos: [cx, y, cz], yaw: Math.atan2(dx, -dz), pitch: Math.asin(clamp(dy / dist, -1, 1)), roll: 0, fov: 38, near: .1, far: PORTEE_VUE };
+    return { pos: [cx, y, cz], yaw: Math.atan2(dx, -dz), pitch: Math.asin(clamp(dy / dist, -1, 1)), roll: 0, fov: 46, near: .1, far: PORTEE_VUE };
   }
   // caméra de télévision : postes au bord de la piste, en avant de la voiture suivie
   function cameraTele(S, v, p) {
@@ -2786,9 +2788,9 @@
       const cote = e.courbure > 1e-4 ? -1 : e.courbure < -1e-4 ? 1 : (T.alea() < .5 ? -1 : 1);
       // derrière la glissière ; le long des tribunes et des stands, sur l'accotement, plus bas, pour rester devant eux
       const zone = scene.decor.enceinte, rel = B.circuit.ecart(c, 0, sp), serre = !!zone && rel > zone.debut && rel < zone.fin;
-      const d = cote * (serre ? c.largeur / 2 + 2.2 + T.alea() * 1.6 : B.conduite.limiteCote(c, sp, cote) + 2.5 + T.alea() * 3), sa = Math.sin(e.cap), ca = Math.cos(e.cap);
+      const d = cote * Math.min(c.largeur / 2 + 3.2, B.conduite.limiteCote(c, sp, cote) - .45), sa = Math.sin(e.cap), ca = Math.cos(e.cap);
       const x = e.x - sa * d, z = e.z + ca * d, sol = scene.decor.sol ? scene.decor.sol(x, z) : e.y;
-      T.poste = { s: sp, pos: [x, Math.max(e.y, isFinite(sol) ? sol : e.y) + (serre ? 1.5 + T.alea() * 2 : 2.2 + T.alea() * 4.5), z] };
+      T.poste = { s: sp, pos: [x, Math.min(e.y + 3.1, Math.max(e.y, isFinite(sol) ? sol : e.y) + (serre ? 1.25 + T.alea() * 1.0 : 1.4 + T.alea() * 1.4)), z] };
     }
     const q = T.poste.pos, dx = p.x - q[0], dy = p.y + .55 - q[1], dz = p.z - q[2], dist = Math.hypot(dx, dy, dz) || 1;
     return { pos: q.slice(), yaw: Math.atan2(dx, -dz), pitch: Math.asin(clamp(dy / dist, -1, 1)), roll: 0, fov: clamp(2 * Math.atan(7.5 / dist) * 180 / Math.PI, 10, 50), near: .1, far: PORTEE_VUE };
@@ -2812,10 +2814,10 @@
       case 'arriere':     // sur l'aileron arrière, regard vers le poursuivant (dégagé du bord d'aileron)
         return { pos: pt([-1.95, 1.18, 0]), yaw: p.cap - Math.PI / 2, pitch: -.08 - p.tangage * .85, roll: p.roulis * .85, fov: 46, near: .05, far: PORTEE_VUE };
       case 'travelling':  // grue qui roule à côté de la voiture et se laisse doucement distancer ; le décor file
-        return vise(pt([1.6 - age * .45, 1.15, cote * 6.4]), pt([.2, .45, 0]), 38);
+        return vise(pt([1.6 - age * .45, 1.15, cote * 4.4]), pt([.2, .45, 0]), 38);
       default: {          // orbite : tour lent autour de la voiture, plus serré pendant une action
-        const a = plan.angle + age * .34 * cote, r = plan.motif === 'action' ? 6.2 : 7.8;
-        return vise(pt([Math.cos(a) * r, 1.6 + .5 * Math.sin(age * .5), Math.sin(a) * r]), pt([0, .5, 0]), 44);
+        const a = plan.angle + age * .34 * cote, r = plan.motif === 'action' ? 4.8 : 5.6;
+        return vise(pt([Math.cos(a) * r, 1.35 + .25 * Math.sin(age * .5), Math.sin(a) * r]), pt([0, .5, 0]), 44);
       }
     }
   }
@@ -3394,7 +3396,7 @@
     const ouvre = g.k * .16, co = Math.cos(ouvre), so = Math.sin(ouvre), rx = rf0 * co - rf2 * so, rz = rf0 * so + rf2 * co;
     camR.pos[0] = g.centre[0]; camR.pos[1] = g.centre[1] + .1; camR.pos[2] = g.centre[2];
     camR.yaw = Math.atan2(rx, -rz); camR.pitch = Math.asin(clamp(rf1, -1, 1)) + .06; camR.roll = ps.roulis * .85;
-    camR.fov = 2 * Math.atan(Math.tan(16 * Math.PI / 180) * h / l) * 180 / Math.PI; camR.near = .3; camR.far = PORTEE_VUE;
+    camR.fov = 2 * Math.atan(Math.tan(16 * Math.PI / 180) * h / l) * 180 / Math.PI; camR.near = .3; camR.far = 220;
     return camR;
   }
   // Les carènes normalisées par BITUME tiennent dans leur cube unité. Une sphère
@@ -3540,6 +3542,7 @@
     const co = S.course, poses = tampons.poses;
     const tanDemi = champ ? champ.vertical : Math.tan(clamp(camR.fov, 10, 110) * Math.PI / 360);
     const detailsRoues = S.detailsRouesGlaces[cote];
+    let prochesGlace = 0;
     for (let k = 0; k < co.voitures.length; k++) {
       if (k === suivie.id) continue;
       const p = poses[k], ex = p.x - ox, ez = p.z - oz;
@@ -3558,11 +3561,9 @@
       const niveauRoues = detailsRoues[k] = B.voiture.detailRouesPour(B.voiture.distanceRoues2(pose, camR.pos, S.modeles[k]), tanDemi, hauteur, detailsRoues[k]);
       const o = optionsGlace(k);
       o.rouesDetail = niveauRoues;
-      o.detail = plusLeger(OPTIONS_POSE[k].plafond, detailVoiture(ex * ex + ez * ez, tanDemi, hauteur));
+      const d2G = ex * ex + ez * ez; o.detail = d2G <= 36 * 36 && prochesGlace < 2 ? (prochesGlace++, plusLeger('moyen', OPTIONS_POSE[k].plafond)) : 'simple';
       o.roues = rouesRendues(v); o.casse = !!(v.degats && v.degats.casse);
-      const attitude = poserVoitureGlace(S, k, pose, objets, o, false, secondeGlace);
-      poserEauCarrosserie(S, k, pose, objets, o.casse ? 'epave' : o.detail, false, attitude,
-        ex * ex + ez * ez, tanDemi, hauteur, palierVue);
+      poserVoitureGlace(S, k, pose, objets, o, false, secondeGlace);
     }
     for (let k = S.iVoitures1, n = S.iEffets0; k < n; k++) if (devantGlace(sortie[k], axe, ox, oy, oz)) objets.push(sortie[k]);
     const debutEffets = objets.length, partage = S.geometrieGlaces;
@@ -3889,11 +3890,11 @@
       const accepte = vue === 'poursuite' || B.cinema.valider(S.cinema, cam, cam.cible || [ps.x, ps.y + .65, ps.z], S.planVu, S.tRendu, aspect);
       if (accepte) S.secoursCamera = null;
       else if (S.secoursCamera === S.planVu) {
-        // Une voiture coincée ne provoque pas une rafale de coupes : conserver le dernier cadre libre,
-        // puis reprendre le support embarqué dès qu'il redevient possible.
-        cam = B.cinema.secours(S.cinema, aspect);
-        if (!cam) return;
-        vue = cam.sujetNature ? 'panorama' : 'tele';
+        // Une voiture coincée ne provoque pas une rafale de coupes : repli sur le support embarqué
+        // au-dessus de l'arceau plutôt qu'une caméra de secours.
+        S.planVu = B.realisateur.replier(S.real, co, 'aileron', suivie.id);
+        suivie = co.voitures[S.planVu.sujet]; ps = poses[suivie.id];
+        vue = 'aileron'; cam = cameraDemo(S, ps, S.planVu, 'aileron');
       } else {
         S.planVu = B.realisateur.replier(S.real, co, 'poursuite', suivie.id);
         suivie = co.voitures[S.planVu.sujet]; ps = poses[suivie.id];
@@ -3927,6 +3928,7 @@
     }
     if (regardArriereVoulu(S, suivie, vue)) cam = cameraRegardArriere(S, ps, cam, vue);
     if (cameraEssai) cam = Object.assign({ roll: 0, near: .1, far: PORTEE_VUE, fov: 40 }, cameraEssai(pj, cam));
+    if (!cameraEssai && !S.reference && cam) { if (cam.pos[1] > ps.y + 4.4) cam.pos[1] = ps.y + 4.4; cam.far = Math.min(cam.far || PORTEE_VUE, PORTEE_VUE); }
     if (S.secousse > 0 && !cam.sujetNature) {
       const pitchSur = cam.pitch, yawSur = cam.yaw;
       const a = S.secousse * .05 * reglages.secousses, t = horlogeReelle;
@@ -3943,6 +3945,7 @@
     }
     return dessinerVue(S, suivie, vue, dtImage, meteo, cam, ps);
   }
+  const DIST2_PELOTON = new Float64Array(32);
   function dessinerVue(S, suivie, vue, dtImage, meteo, cam, ps) {
     const co = S.course, c = co.c, sortie = S.sortie, poses = tampons.poses, pj = poses[0], RV = S.rouleVu;
     const P = profilDe(S), exterieur = VUES_DEHORS.has(vue);
@@ -4078,6 +4081,7 @@
     // toile suit l'écran et la résolution du profil ; le seuil suit le champ (un téléobjectif garde le modèle complet
     // bien plus loin).
     const tanDemi = Math.tan(clamp(cam.fov, 10, 110) * Math.PI / 360), hauteur = canvas.height;
+    for (let k = 0; k < Math.min(co.voitures.length, DIST2_PELOTON.length); k++) DIST2_PELOTON[k] = (poses[k].x - cam.pos[0]) ** 2 + (poses[k].z - cam.pos[2]) ** 2;
     const geometrieGlaces = planGlaces && S.geometrieGlaces;
     if (geometrieGlaces) {
       geometrieGlaces.pieces.length = 0;
@@ -4132,7 +4136,9 @@
       // Derrière le plan de la caméra, une voiture ne se voit que par son ombre : modèle moyen au plus, même
       // silhouette. Les glaces la reposent à leur propre niveau, plafonné par la règle de la vue.
       const o = optionsPose(k);
-      o.plafond = detailVoiture(d2, tanDemi, hauteur, k === suivie.id ? null : P.palier);
+      let plusProches = 0; if (k !== suivie.id) for (let m = 0; m < co.voitures.length; m++) if (m !== suivie.id && m !== k && DIST2_PELOTON[m] < d2) plusProches++;
+      const plafondPeloton = k === suivie.id ? null : plusProches < 2 && d2 <= 1024 ? 'complet' : plusProches < 6 ? 'moyen' : 'simple';
+      o.plafond = k === suivie.id ? detailVoiture(d2, tanDemi, hauteur, null) : plusLeger(plafondPeloton, detailVoiture(d2, tanDemi, hauteur, P.palier));
       o.rouesDetail = rouesDetail;
       o.detail = o.plafond === 'complet' && dx * avX + dz * avZ < -DERRIERE_CAMERA ? 'moyen' : o.plafond;
       o.roues = rouesRendues(co.voitures[k]); o.casse = !!(co.voitures[k].degats && co.voitures[k].degats.casse);
@@ -4207,8 +4213,9 @@
     }
     S.foulePublic = vuePublic ? vuePublic.fx : null;
     const herbe = P.decor.vegetationQualite;
-    let couverture = P.groundCover;
-    if (scene.enrichi && !saisonLocale?.neige && (herbe === 'ultra' || (herbe === 'high' && P.palier === 'high')) && rendu.gpu?.device) {
+    let herbeActive = true, couverture = P.groundCover;
+    if (scene.decor.saison && scene.decor.saison.neige) { herbeActive = false; couverture = { density: [0, 1, 0], distance: [0, 1] }; }
+    if (herbeActive && scene.enrichi && !saisonLocale?.neige && (herbe === 'ultra' || (herbe === 'high' && P.palier === 'high')) && rendu.gpu?.device) {
       const i = indexVue(S);
       const prairie = scene.prairies[i] || (scene.prairies[i] = B.herbeGPU.creer(rendu, scene.decor));
       S.foulePublic = prairie.preparer(S.foulePublic, S.sillage?.sources, meteo, herbe);
@@ -4223,7 +4230,7 @@
     // vues du réalisateur retrouvent les seuils de la scène, y compris si le dessin échoue.
     const detail = scene.detailPeripherique;
     try {
-      if (!S.regardArriere && !S.camTransition?.actif && VUES_COURSE.includes(vue) && S.type !== 'demo' && S.type !== 'vitrine') {
+      if (detail && suivie?.etat) {
         B.detailPeripherique.appliquer(detail, c, suivie.etat, cam, canvas.width, canvas.height);
       }
       rendu.draw(cam, sortie, { time: horlogeReelle, surfaceGPU: verrePourVue(rendu, S), msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: optionsVisibilite.reflections, weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: couverture, foule: S.foulePublic, contacts: ombresVue.contacts, ombreProche: ombresVue.ombreProche, penombre: ombresVue.penombre });

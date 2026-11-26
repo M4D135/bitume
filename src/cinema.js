@@ -359,8 +359,8 @@
       for (const q of poses) { const w = poids(q); if (w > 0) { x += q.x * w; y += q.y * w; z += q.z * w; n += w; } }
       cible[0] = n ? x / n : p.x; cible[1] = (n ? y / n : p.y) + .7; cible[2] = n ? z / n : p.z;
       for (const q of poses) { const w = poids(q); if (w > 0) rayon = Math.max(rayon, Math.hypot(q.x - cible[0], q.z - cible[2]) * w); }
-      const a = p.cap + cote * (.24 + .08 * u), recul = clamp(rayon * 1.1,16,32);
-      pos[0] = cible[0] - Math.cos(a) * recul; pos[2] = cible[2] - Math.sin(a) * recul; pos[1] = cible[1] + clamp(rayon * .16,2.6,4.8);
+      const a = p.cap + cote * (.14 + .05 * u), recul = clamp(rayon * .80, 10, 18);
+      pos[0] = cible[0] - Math.cos(a) * recul; pos[2] = cible[2] - Math.sin(a) * recul; pos[1] = cible[1] + clamp(rayon * .09, 1.8, 3.2);
       fov = 50;
     }
     if (!libre(C, pos, cible, marge)) return null;
