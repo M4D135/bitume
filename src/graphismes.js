@@ -346,6 +346,9 @@
   }
 
   B.graphismes = {
+    // Le tapis statique garde sa portée. Les brins GPU animés fournissent déjà
+    // le détail de proximité : alléger progressivement la seconde couche au-delà de 5 m.
+    prairieCombinee: Object.freeze({density:Object.freeze([5,16,.125]),distance:PRAIRIE.high.distance}),
     PALIERS, QUALITES, OPTIONS, PROFILS, PRAIRIE, TABLE_GOUVERNEUR, NIVEAU_MAX, RESOLUTION_PALIER_4, STABILISATION, RECONSTRUCTION,
     normaliser, normaliserOptions, estPalier, profil, resoudre, capacites, melange, budget, budgets, stabiliser, etatStable,
     atmosphere, BRUME,

@@ -34,6 +34,7 @@ const referenceJeu = { graine: Number(args.graine ?? 17017), circuit, qualite, m
   meteo: args.meteo || 'sec', vue: args.vue || 'cockpit', vue2: args.vue2 || 'cockpit', partage: args.partage || 'haut-bas',
   retro: args.retro || 'oui', decor: args.decor || 'enrichi', depart: args.depart === 'tunnel' ? 'tunnel' : Number(args.depart ?? 280), vitesse: Number(args.vitesse ?? 75) };
 const optionsBanc = { ...referenceJeu, duree, chauffe };
+for(const k of ['vegetation','ombres','anticrenelage','faune'])if(args[k])optionsBanc[k]=args[k];
 const chrome = args.chrome || process.env.CHROME || (process.platform === 'darwin' ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' : 'google-chrome');
 const profil = mkdtempSync(path.join(tmpdir(), 'bitume-chrome-'));
 // Sous 20 % de batterie, Chrome bride l'affichage à 30 images par seconde (économie d'énergie) : coupé dans ce profil
@@ -135,6 +136,15 @@ try {
   // explicite d'overlay, sinon la capture finale serait un rapport vide alors que le chronomètre a tourné.
   if (mode === 'banc' || args.overlay === 'oui') await evaluer('BITUME_JEU.mesures = true; true');
   await evaluer('BITUME_JEU.pauseAuto = false; true');
+  if(args.exclure){
+    if(mode!=='banc'||!['tapis','massifs','bosquets','brins'].includes(args.exclure))throw Error('Exclusion expérimentale inconnue');
+    rapport.exclusion=args.exclure;
+    await evaluer(`(()=>{const k=${JSON.stringify(args.exclure)},B=BITUME;
+      if(k==='bosquets')B.bosquets.construire=()=>[];
+      else if(k==='brins')B.herbeGPU.creer=()=>({mesure:{},preparer:pub=>pub,liberer(){}});
+      else {const creer=B.vegetation.construire; B.vegetation.construire=(...a)=>{const v=creer(...a);v.lots=v.lots.filter(l=>k==='tapis'?!l.tapis:l.tapis);return v;};}
+      return true;})()`);
+  }
   if (mode === 'prairie') {
     // Vue rasante reproduisible sur une vraie surface herbeuse, sans superposition du cockpit.
     await evaluer(`BITUME_JEU.reference(${JSON.stringify({...referenceJeu, vue:'poursuite', vegetation:'ultra', retro:'non'})}); true`);

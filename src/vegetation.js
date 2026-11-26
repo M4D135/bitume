@@ -40,7 +40,7 @@
   });
   const TAPIS_DENSE = Object.freeze({
     medium: Object.freeze({ densite: 28, terrain: .40, maximum: 160000, maillages: [8, 128, 1024], variantes: 2, plafonner: true }),
-    high: Object.freeze({ densite: 120, terrain: 1.4, maximum: 190000, maillages: [8, 128, 1024, 4096], variantes: 2, plafonner: true }),
+    high: Object.freeze({ densite: 120, terrain: 1.4, maximum: 190000, maillages: BRINS_PRAIRIE, variantes: 2, plafonner: true }),
     ultra: Object.freeze({ densite: 240, terrain: 2.6, maximum: 220000, maillages: [8, 128, 1024, 4096], variantes: 2 }),
   });
 
@@ -304,9 +304,12 @@
       };
       // La corolle rejoint la hampe et le cœur conserve sa hauteur aux deux résolutions.
       const petales = proche ? 6 : 3;
-      for (let j = 0; j < petales; j++) triangle(tri, sommet, pointe(2 * j), pointe(2 * ((j + 1) % 3)), true);
+      for (let j = 0; j < petales; j++) {
+        const pas=6/petales;
+        triangle(tri,sommet,pointe(pas*j),pointe(pas*((j+1)%petales)),true);
+      }
       const coeur = [sommet[0], sommet[1] + .05, sommet[2]], r2 = rayon * .45;
-      for (let j = 0; j < 3; j++) {
+      for (let j = 0; j < (proche?3:1); j++) {
         const b1 = j * PI2 / 3, b2 = (j + 1) * PI2 / 3;
         triangle(tri, coeur,
           [sommet[0] + Math.cos(b1) * r2, sommet[1] + .012, sommet[2] + Math.sin(b1) * r2],
@@ -464,7 +467,7 @@
           ? [hasardStation[k + 2], hasardStation[k + 1], hasardStation[k + 3]]
           : tiragesSpecimen(j, decalage, 1001);
         const largeur = (.95 + ampleur * .52) * biome.taille, h = (.40 + stature * .28) * biome.taille;
-        const vert = .82 + hasardStation[k + 4] * .30, b = biome.herbe;
+        const vert = .82 + hasardStation[(k + 4) % hasardStation.length] * .30, b = biome.herbe;
         if (ajouter(j, decalage, 'herbes', orientation * PI2,
           [largeur, h, largeur * (.72 + stature * .20)], [b[0] * vert, b[1] * vert, b[2] * vert], palier.mat)) herbes++;
       }

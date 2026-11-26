@@ -1,0 +1,392 @@
+{
+  "conditions": "Chrome Mac WebGPU natif 1920×1080, Fine, pluie ; 2 s chauffe, 20 s mesure. Les triangles incluent la chauffe.",
+  "essais": [
+    {
+      "essai": "sans-bosquets",
+      "sha256": "f160a31730596d6dee7be8df2b5b7a4ae1dfaa838e2302484599f721d720fb78",
+      "reference": {
+        "graine": 17017,
+        "circuit": 5,
+        "circuitId": "route-des-cimes",
+        "graineCircuit": 181,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "oui",
+        "meteo": "pluie",
+        "forcePluie": "forte",
+        "mouille": 0.75,
+        "depart": 280,
+        "vitesse": 75,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 4276.56945810762,
+          "fin": 4581.28921322728
+        }
+      },
+      "rendu": {
+        "images": 1071,
+        "ips": 53.51,
+        "p95": 33.3,
+        "pire": 50.1
+      },
+      "moyenne_triangles_principaux": 3466567.815281276,
+      "erreurs": []
+    },
+    {
+      "essai": "sans-brins",
+      "sha256": "f160a31730596d6dee7be8df2b5b7a4ae1dfaa838e2302484599f721d720fb78",
+      "reference": {
+        "graine": 17017,
+        "circuit": 5,
+        "circuitId": "route-des-cimes",
+        "graineCircuit": 181,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "oui",
+        "meteo": "pluie",
+        "forcePluie": "forte",
+        "mouille": 0.75,
+        "depart": 280,
+        "vitesse": 75,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 4276.56945810762,
+          "fin": 4581.28921322728
+        }
+      },
+      "rendu": {
+        "images": 1094,
+        "ips": 54.66,
+        "p95": 33.3,
+        "pire": 50
+      },
+      "moyenne_triangles_principaux": 3417260.0848434926,
+      "erreurs": []
+    },
+    {
+      "essai": "sans-glaces",
+      "sha256": "f160a31730596d6dee7be8df2b5b7a4ae1dfaa838e2302484599f721d720fb78",
+      "reference": {
+        "graine": 17017,
+        "circuit": 5,
+        "circuitId": "route-des-cimes",
+        "graineCircuit": 181,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "non",
+        "meteo": "pluie",
+        "forcePluie": "forte",
+        "mouille": 0.75,
+        "depart": 280,
+        "vitesse": 75,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 4276.56945810762,
+          "fin": 4581.28921322728
+        }
+      },
+      "rendu": {
+        "images": 1134,
+        "ips": 56.65,
+        "p95": 33.3,
+        "pire": 33.4
+      },
+      "moyenne_triangles_principaux": 3527250.279681275,
+      "erreurs": []
+    },
+    {
+      "essai": "sans-massifs",
+      "sha256": "f160a31730596d6dee7be8df2b5b7a4ae1dfaa838e2302484599f721d720fb78",
+      "reference": {
+        "graine": 17017,
+        "circuit": 5,
+        "circuitId": "route-des-cimes",
+        "graineCircuit": 181,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "oui",
+        "meteo": "pluie",
+        "forcePluie": "forte",
+        "mouille": 0.75,
+        "depart": 280,
+        "vitesse": 75,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 4276.56945810762,
+          "fin": 4581.28921322728
+        }
+      },
+      "rendu": {
+        "images": 1087,
+        "ips": 54.31,
+        "p95": 33.3,
+        "pire": 50
+      },
+      "moyenne_triangles_principaux": 3435817.022369511,
+      "erreurs": []
+    },
+    {
+      "essai": "sans-ombres",
+      "sha256": "f160a31730596d6dee7be8df2b5b7a4ae1dfaa838e2302484599f721d720fb78",
+      "reference": {
+        "graine": 17017,
+        "circuit": 5,
+        "circuitId": "route-des-cimes",
+        "graineCircuit": 181,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "off",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "oui",
+        "meteo": "pluie",
+        "forcePluie": "forte",
+        "mouille": 0.75,
+        "depart": 280,
+        "vitesse": 75,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 4276.56945810762,
+          "fin": 4581.28921322728
+        }
+      },
+      "rendu": {
+        "images": 1145,
+        "ips": 57.2,
+        "p95": 16.8,
+        "pire": 33.4
+      },
+      "moyenne_triangles_principaux": 2528321.2845849805,
+      "erreurs": []
+    },
+    {
+      "essai": "sans-plantes",
+      "sha256": "f160a31730596d6dee7be8df2b5b7a4ae1dfaa838e2302484599f721d720fb78",
+      "reference": {
+        "graine": 17017,
+        "circuit": 5,
+        "circuitId": "route-des-cimes",
+        "graineCircuit": 181,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "off",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "oui",
+        "meteo": "pluie",
+        "forcePluie": "forte",
+        "mouille": 0.75,
+        "depart": 280,
+        "vitesse": 75,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 4276.56945810762,
+          "fin": 4581.28921322728
+        }
+      },
+      "rendu": {
+        "images": 1201,
+        "ips": 60,
+        "p95": 16.7,
+        "pire": 16.8
+      },
+      "moyenne_triangles_principaux": 2345492.978046934,
+      "erreurs": []
+    },
+    {
+      "essai": "sans-tapis",
+      "sha256": "f160a31730596d6dee7be8df2b5b7a4ae1dfaa838e2302484599f721d720fb78",
+      "reference": {
+        "graine": 17017,
+        "circuit": 5,
+        "circuitId": "route-des-cimes",
+        "graineCircuit": 181,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "oui",
+        "meteo": "pluie",
+        "forcePluie": "forte",
+        "mouille": 0.75,
+        "depart": 280,
+        "vitesse": 75,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 4276.56945810762,
+          "fin": 4581.28921322728
+        }
+      },
+      "rendu": {
+        "images": 1201,
+        "ips": 60,
+        "p95": 16.8,
+        "pire": 16.8
+      },
+      "moyenne_triangles_principaux": 2493123.2778198333,
+      "erreurs": []
+    },
+    {
+      "essai": "temoin",
+      "sha256": "f160a31730596d6dee7be8df2b5b7a4ae1dfaa838e2302484599f721d720fb78",
+      "reference": {
+        "graine": 17017,
+        "circuit": 5,
+        "circuitId": "route-des-cimes",
+        "graineCircuit": 181,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "oui",
+        "meteo": "pluie",
+        "forcePluie": "forte",
+        "mouille": 0.75,
+        "depart": 280,
+        "vitesse": 75,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 4276.56945810762,
+          "fin": 4581.28921322728
+        }
+      },
+      "rendu": {
+        "images": 1083,
+        "ips": 54.11,
+        "p95": 33.3,
+        "pire": 33.4
+      },
+      "moyenne_triangles_principaux": 3485544.2394014965,
+      "erreurs": []
+    },
+    {
+      "essai": "cimes341-combine",
+      "sha256": "3d02742813d2ba4a8c37e9ea6782b447db84d5bcb6eee73465ced3f682f7bbeb",
+      "reference": {
+        "graine": 17017,
+        "circuit": 5,
+        "circuitId": "route-des-cimes",
+        "graineCircuit": 181,
+        "mode": "solo",
+        "qualite": "high",
+        "anticrenelage": "profil",
+        "ombres": "profil",
+        "vegetation": "profil",
+        "faune": "profil",
+        "moment": "jour",
+        "saison": "ete",
+        "difficulte": 1,
+        "tours": 3,
+        "pilote": true,
+        "vue": "cockpit",
+        "vue2": "cockpit",
+        "partage": "haut-bas",
+        "retro": "oui",
+        "meteo": "pluie",
+        "forcePluie": "forte",
+        "mouille": 0.75,
+        "depart": 280,
+        "vitesse": 75,
+        "decor": "enrichi",
+        "tunnel": {
+          "debut": 4276.56945810762,
+          "fin": 4581.28921322728
+        }
+      },
+      "rendu": {
+        "images": 1201,
+        "ips": 60,
+        "p95": 16.7,
+        "pire": 16.8
+      },
+      "moyenne_triangles_principaux": 2742949.4731264194,
+      "erreurs": []
+    }
+  ]
+}

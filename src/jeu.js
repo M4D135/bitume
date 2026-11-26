@@ -4197,10 +4197,12 @@
     }
     S.foulePublic = vuePublic ? vuePublic.fx : null;
     const herbe = P.decor.vegetationQualite;
+    let couverture = P.groundCover;
     if (scene.enrichi && !saisonLocale?.neige && (herbe === 'ultra' || (herbe === 'high' && P.palier === 'high')) && rendu.gpu?.device) {
       const i = indexVue(S);
       const prairie = scene.prairies[i] || (scene.prairies[i] = B.herbeGPU.creer(rendu, scene.decor));
       S.foulePublic = prairie.preparer(S.foulePublic, S.sillage?.sources, meteo, herbe);
+      if (herbe === 'high') couverture = B.graphismes.prairieCombinee;
     }
     const ombresVue = B.ombres.preparer(etatOmbres, P, cam, poses, co.voitures.length, suivie.id, ombreDebut, ombreFin, (S.banc ? S.banc.qualite : reglages.qualite) === 'auto' ? palier.n : -1, horlogeReelle);
     const tDraw = B.mesures.actif ? performance.now() : 0;
@@ -4214,7 +4216,7 @@
       if (!S.regardArriere && !S.camTransition?.actif && VUES_COURSE.includes(vue) && S.type !== 'demo' && S.type !== 'vitrine') {
         B.detailPeripherique.appliquer(detail, c, suivie.etat, cam, canvas.width, canvas.height);
       }
-      rendu.draw(cam, sortie, { time: horlogeReelle, surfaceGPU: verrePourVue(rendu, S), msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: optionsVisibilite.reflections, weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: P.groundCover, foule: S.foulePublic, contacts: ombresVue.contacts, ombreProche: ombresVue.ombreProche, penombre: ombresVue.penombre });
+      rendu.draw(cam, sortie, { time: horlogeReelle, surfaceGPU: verrePourVue(rendu, S), msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: optionsVisibilite.reflections, weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: couverture, foule: S.foulePublic, contacts: ombresVue.contacts, ombreProche: ombresVue.ombreProche, penombre: ombresVue.penombre });
       if (S.banc && S === session) S.banc.dessins.push(tPrec);
     } finally { B.detailPeripherique.restaurer(detail); }
     if (B.mesures.actif) {
