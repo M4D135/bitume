@@ -157,7 +157,7 @@
       X[0] = As[0]; X[1] = As[1]; X[2] = As[2]; pr.debut = debut; pr.fin = fin; pr.etendue = TUILE;
       O.ombreProche = pr;
     } else O.ombreProche = null;
-    O.penombre = ombres ? (P.palier === 'high' && reglages.pcssFine ? 'pcss' : 'meteo') : null;
+    O.penombre = ombres ? ((P?.effets?.pcss || (P?.palier === 'high' && reglages.pcssFine)) ? 'pcss' : 'meteo') : null;
     noter(O, niveau, ombres, t);
     return O;
   }

@@ -41,7 +41,7 @@ const executer = new Function('B', 'stockage', `
   const CATALOGUE = [{ id: 'essai', graine: 11, theme: 'foret' }], c = { longueur: 1000 };
   const circuit = () => c, plan = () => ({}), dessinerTrace = () => {}, appliquerCarte = () => {};
   const suspendreAnnoncesVirages = () => { appels.annoncesSuspendues = (appels.annoncesSuspendues || 0) + 1; };
-  const rendu = { resize: v => appels.rendu.push(['resize',v]),
+  const rendu = { plafondInitial: 2400 * 1350, resize: v => appels.rendu.push(['resize',v]), setMaxPixels: v => appels.rendu.push(['maxPixels',v]),
     setWorld: (...args) => appels.rendu.push(['world',...args]), setNappes: v => appels.rendu.push(['nappes',v]), setLots: v => appels.rendu.push(['lots',v]) };
   const gpuModeste = false, EL = { role: null }, retro = { j1: null, j2: null };
   let scene = null, session = null, decorEnrichi = true, graineCourse = 0, cameraEssai = null, horlogeReelle = 0, tPrec = 0, dureeImage = 16, ecran = 'titre';
@@ -250,6 +250,35 @@ verifier('références successives sans options reviennent au profil, puis aux c
   j.restaurerReference();
   assert.deepEqual(options(j.reglages),avant);
   assert.equal(j.reglages.qualite,'low');
+});
+
+verifier('étendue anti-clipping, définition 3D dynamique et optimisations configurables', () => {
+  const j = jeu({ qualite: 'low' });
+  assert.equal(j.appels.decor.at(-1).decorCinema, true);
+  assert.equal(j.appels.decor.at(-1).horizon, 'couloir');
+  j.choisir('horizon', 'complet');
+  j.choisir('matieres', 'on');
+  j.lancer('course', 0);
+  assert.equal(j.appels.decor.at(-1).decorCinema, false, 'complet sans coupe génère toute la carte');
+  assert.equal(j.appels.decor.at(-1).horizon, 'complet');
+  assert.equal(j.appels.decor.at(-1).matieres, true);
+  assert.ok(j.appels.decor.at(-1).echelleBascule > 1.4, 'bascule LOD étendue');
+
+  // Plafond de définition appliqué dynamiquement hors conduite
+  j.choisir('definition', '720p');
+  assert.deepEqual(j.appels.rendu.filter(x => x[0] === 'maxPixels').at(-1), ['maxPixels', 1280 * 720]);
+  j.choisir('definition', 'native');
+  assert.deepEqual(j.appels.rendu.filter(x => x[0] === 'maxPixels').at(-1), ['maxPixels', 0]);
+  j.choisir('definition', 'profil');
+  assert.deepEqual(j.appels.rendu.filter(x => x[0] === 'maxPixels').at(-1), ['maxPixels', 2400 * 1350]);
+
+  // Optimisations fovéa/raycast, halo, reflets et foule persistés
+  j.choisir('optimisations', 'off');
+  j.choisir('foule', 'off');
+  j.choisir('ombres', 'ultra');
+  assert.deepEqual(j.profil.optimisations, { foveal: false, raycast: false });
+  assert.equal(j.profil.decor.foule, false);
+  assert.equal(j.profil.effets.pcss, true);
 });
 
 console.log('options image : ' + controles + ' contrôles passés');

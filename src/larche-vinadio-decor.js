@@ -399,11 +399,13 @@ function terrain(c, th, interroger, g, ecologie, organique) {
   if (!c || c.id !== 'larche') return null;
   const saison = (g && typeof g === 'object' && g.saison) || null;
   const decorCinema = !!(g && typeof g === 'object' && g.decorCinema);
+  const neigeVolume = decorCinema || !!(g && typeof g === 'object' && g.neigeVolume);
+  const horizonMode = (g && typeof g === 'object' && g.horizon) || (decorCinema ? 'couloir' : 'complet');
   const versant = saison?.neige ? null : B.larcheRelief?.pigmentsRelief(B.larcheData?.reliefVallee);
   const pigmentMesure = [0,0,0];
   const G = 32;
   const TILE = 256;
-  const RANGE = decorCinema ? 288 : 420;
+  const RANGE = horizonMode === 'couloir' ? 288 : horizonMode === 'etendu' ? 352 : 420;
   // Marge pour la diagonale d'une maille et les échantillons pairs de la route.
   // Le masque ne concerne que la découpe des pieds ; pigments et arbres gardent le versant.
   const gardeHerbier = RANGE + G*Math.SQRT2 + 2*c.pas;
@@ -456,10 +458,9 @@ function terrain(c, th, interroger, g, ecologie, organique) {
         for (let j = 0; j < N_LAT; j++) {
           const wx = tileX0 + j * G, wz = tileZ0 + k * G;
           let hv = hauteurSommet(wx, wz);
-          if (decorCinema) {
+          if (neigeVolume && saison?.neige) {
             const qr = _queryRoute(gr, wx, wz);
-            if (saison?.neige && qr.absD > 9) hv += (.50 + .22 * _fbm(wx * .04, wz * .04, 2)) * _smoothstep(9, 20, qr.absD);
-            if (qr.absD > 160) hv += 22 * _smoothstep(160, 285, qr.absD);
+            if (qr.absD > 9) hv += (.50 + .22 * _fbm(wx * .04, wz * .04, 2)) * _smoothstep(9, 20, qr.absD) * (1 - _smoothstep(220, 280, qr.absD));
           }
           hArr[k * N_LAT + j] = hv;
         }
@@ -497,7 +498,18 @@ function terrain(c, th, interroger, g, ecologie, organique) {
             locales.push(offset,offset+3);
           }
           const col = _colorTerrain(wx, wz, wy, dny, point, saison, versant, pigmentMesure);
-          sommets[off + 10] = col[0]; sommets[off + 11] = col[1]; sommets[off + 12] = col[2];
+          let omb = 0;
+          if (organique && (decorCinema || neigeVolume)) {
+            const sx = .33, sy = .77, sz = -.51, biais = 5.5 + 16 * (1 - dny);
+            for (let s = 0; s < 4; s++) {
+              const dist = s === 0 ? 96 : s === 1 ? 185 : s === 2 ? 300 : 440;
+              const dh = _H(wx + sx * dist, wz + sz * dist, gr, c) - (wy + biais + sy * dist);
+              if (dh > 0) omb = Math.max(omb, Math.min(1, dh / (.32 * dist + 18)));
+            }
+          }
+          sommets[off + 10] = col[0] * (1 - .26 * omb);
+          sommets[off + 11] = col[1] * (1 - .22 * omb);
+          sommets[off + 12] = col[2] * (1 - .13 * omb);
           vi++;
         }
       }
@@ -539,7 +551,7 @@ function terrain(c, th, interroger, g, ecologie, organique) {
   }
 
   let raccorderPigments;
-  if (!decorCinema && B.larcheData?.reliefVallee && B.larcheRelief) {
+  if (B.larcheData?.reliefVallee && B.larcheRelief) {
     const bord=versant ? B.larcheRelief.sommetsRaccord(maillages,TILE,G) : undefined;
     const construire = () => B.larcheRelief.construire(B.larcheData.reliefVallee, maillages, TILE, G, saison, bord);
     const panorama = g?.cachePanorama ? B.panoramaCache.obtenir(g.cachePanorama, construire) : construire();
@@ -1071,7 +1083,7 @@ function poser(c, outils) {
         couleur: [0.38 + hache(r + 901, graine) * 0.10, 0.37 + hache(r + 911, graine) * 0.09, 0.35 + hache(r + 921, graine) * 0.08]
       };
       add(objets, true, rx, rz, rocher);
-      if (outils.decorCinema && saison?.neige) {
+      if ((outils.decorCinema || outils.neigeVolume) && saison?.neige) {
         add(objets, true, rx, rz, { forme: 'sphere', taille: [sx * .86, .48, sz * .86], pos: [rx, ry + sy * .42, rz], angles: [0, 0, 0], mat: 'neige', couleur: [.92, .95, .99] });
       }
     }
@@ -1114,7 +1126,7 @@ function poser(c, outils) {
         const col = nu ? bois : estMeleze
           ? (saison?.id === 'automne' ? [0.56, 0.35, 0.095] : [0.22 + h1*.07, 0.34 + h2*.08, 0.16 + h3*.04])
           : [0.10 + h2*.055, 0.19 + h3*.075, 0.14 + h1*.045];
-        if (outils.decorCinema && saison?.neige && !nu) { col[0] = .82; col[1] = .88; col[2] = .94; }
+        if ((outils.decorCinema || outils.neigeVolume) && saison?.neige && !nu) { col[0] = .82; col[1] = .88; col[2] = .94; }
         const tronc = { shape: 'cylinder', p: [wx, wy + taille * 0.18 - 0.6, wz], s: [0.42, taille * 0.44 + 1.2, 0.42], r: [0, 0, 0], mat: 26, color: bois };
         // Le pied du fût partagé par les deux silhouettes pénètre le sol de 50 cm.
         const oProche = { shape: B.coniferesAlpins.nom(essence, detail), p: [wx, wy + taille * 0.49 - 0.5, wz], s: [rL, taille * 0.98, rL], r: [0, ang, 0], mat: nu ? 26 : 27, color: col };

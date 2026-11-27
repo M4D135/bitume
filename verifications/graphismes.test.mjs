@@ -60,14 +60,14 @@ verifier('normalisation : valeurs inconnues, anciennes et casse tolérées', () 
 });
 
 verifier('anciens réglages et valeurs corrompues gardent les options du profil', () => {
-  const herite = { anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil' };
-  for (const valeur of [undefined, null, {}, { qualite: 'high' }, { anticrenelage: true, ombres: 3, vegetation: 'dense?' }]) {
+  const herite = Object.fromEntries(Object.keys(G.OPTIONS).map(k => [k, 'profil']));
+  for (const valeur of [undefined, null, {}, { qualite: 'high' }, { anticrenelage: true, ombres: 3, vegetation: 'dense?', horizon: 42, definition: '8k' }]) {
     assert.deepEqual(G.normaliserOptions(valeur), herite);
   }
-  const existant = { qualite: 'medium', anticrenelage: ' MSAA4 ', ombres: 'HIGH', vegetation: ' Ultra ' };
+  const existant = { qualite: 'medium', anticrenelage: ' MSAA4 ', ombres: 'HIGH', vegetation: ' Ultra ', horizon: ' COMPLET ', definition: ' 1440P ' };
   const avant = JSON.stringify(existant);
   const normalise = G.normaliserOptions(existant);
-  assert.deepEqual(normalise, { anticrenelage: 'msaa4', ombres: 'high', vegetation: 'ultra', faune: 'profil' });
+  assert.deepEqual(normalise, { ...herite, anticrenelage: 'msaa4', ombres: 'high', vegetation: 'ultra', horizon: 'complet', definition: '1440p' });
   assert.equal(JSON.stringify(existant), avant, 'la lecture ne réécrit pas les préférences enregistrées');
   assert.ok(Object.isFrozen(normalise));
   for (const cle of Object.keys(G.OPTIONS)) for (const valeur of G.OPTIONS[cle]) {
@@ -380,6 +380,49 @@ verifier('stabiliser : un choix explicite du menu s\'applique à l\'image', () =
   // la même demande, dix fois, ne rebâtit qu'une fois : le verrou tient sous un choix nommé aussi
   assert.equal(G.stabiliser(e, 'high', 0, .4).reconstruit, false, 'plus rien à rebâtir tant que le palier ne bouge pas');
   assert.equal(G.stabiliser(e, 'medium', 4, .4).palier, 'medium', 'le gouverneur n\'a pas la main sur une qualité fixe');
+});
+
+verifier('options étendues : horizon anti-clipping, définition, PCSS, halo, reflets, fovéa/raycast, matières et foule', () => {
+  // Étendue / anti-clipping : couloir léger -> étendu -> complet sans coupe
+  const cCourt = G.melange('high', 0, { options: { horizon: 'couloir' } });
+  const cEtendu = G.melange('medium', 0, { options: { horizon: 'etendu' } });
+  const cComplet = G.melange('low', 0, { options: { horizon: 'complet' } });
+  assert.equal(cCourt.decor.decorCinema, true);
+  assert.equal(cEtendu.decor.decorCinema, true);
+  assert.equal(cComplet.decor.decorCinema, false, 'complet désactive toute coupe cinéma même en profil léger');
+  assert.ok(cCourt.lod.bascule < G.melange('high', 0).lod.bascule);
+  assert.ok(cComplet.lod.bascule > G.melange('low', 0).lod.bascule);
+  sansCoupure(cComplet, 'complet');
+
+  // Définition maximale : plafonds 720p / 1080p / 1440p / native (0 = sans plafond)
+  assert.equal(G.melange('high', 0).rendu.plafondPixels, null);
+  assert.equal(G.melange('high', 0, { options: { definition: '720p' } }).rendu.plafondPixels, 1280 * 720);
+  assert.equal(G.melange('high', 0, { options: { definition: '1080p' } }).rendu.plafondPixels, 1920 * 1080);
+  assert.equal(G.melange('high', 0, { options: { definition: '1440p' } }).rendu.plafondPixels, 2560 * 1440);
+  assert.equal(G.melange('low', 0, { pixelRatio: 2, options: { definition: 'native' } }).rendu.plafondPixels, 0);
+  assert.equal(G.melange('low', 0, { pixelRatio: 2, options: { definition: 'native' } }).rendu.resolution, 2);
+
+  // Ombres Ultra PCSS, Halo et Reflets SSR indépendants
+  const ultraOmb = G.melange('low', 0, { options: { ombres: 'ultra' } });
+  assert.equal(ultraOmb.effets.ombres, true);
+  assert.equal(ultraOmb.effets.pcss, true);
+  assert.equal(ultraOmb.rendu.shadowMapScale, 2);
+  const ssrForce = G.melange('low', 0, { gpuModeste: true, options: { reflets: 'on' } });
+  assert.equal(ssrForce.effets.halo, true);
+  assert.equal(ssrForce.effets.reflets, true);
+  assert.equal(G.melange('high', 0, { options: { halo: 'off', reflets: 'on' } }).effets.reflets, false);
+
+  // Optimisations fovéal & raycast configurables
+  assert.deepEqual(G.melange('high', 0).optimisations, { foveal: true, raycast: true });
+  assert.deepEqual(G.melange('high', 0, { options: { optimisations: 'raycast' } }).optimisations, { foveal: false, raycast: true });
+  assert.deepEqual(G.melange('high', 0, { options: { optimisations: 'foveal' } }).optimisations, { foveal: true, raycast: false });
+  assert.deepEqual(G.melange('high', 0, { options: { optimisations: 'off' } }).optimisations, { foveal: false, raycast: false });
+
+  // Matières et public configurables indépendamment du palier
+  assert.equal(G.melange('low', 0, { options: { matieres: 'on' } }).decor.matieres, true);
+  assert.equal(G.melange('high', 0, { options: { matieres: 'off' } }).decor.matieres, false);
+  assert.equal(G.melange('low', 0, { options: { foule: 'on' } }).decor.foule, true);
+  assert.equal(G.melange('high', 0, { options: { foule: 'off' } }).decor.foule, false);
 });
 
 verifier('le module se charge et décide sans DOM ni moteur', () => {

@@ -781,7 +781,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
 }
 .arcade-titre { justify-content: center; gap: 20px; padding-left: max(var(--marge), calc((100vw - 1180px)/2)); padding-right: max(var(--marge), calc((100vw - 1180px)/2)); }
 .arcade-titre::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .18; background: linear-gradient(132deg, transparent 58%, #e0301e 58%, #e0301e 59%, transparent 59%, transparent 61%, #e0ab65 61%, #e0ab65 61.3%, transparent 61.3%); }
-.arcade-titre > * { position: relative; }
+.arcade-titre > :not(.fps) { position: relative; }
 .arcade-titre .marque { --t-marque: clamp(74px, 11vw, 154px); margin-bottom: 22px; }
 .arcade-surtitre { margin: 0 0 9px; color: #a8b9c4; font: 700 11px/1.4 var(--f-texte); text-transform: uppercase; letter-spacing: .17em; }
 .arcade-titre > .arcade-surtitre { margin-bottom: -8px; }
@@ -1021,7 +1021,7 @@ body.tactile .demo-plan { top: calc(var(--hud-top) + var(--carte-presence) + 98p
   .reglages .menu-entete .sous { display: none; }
   .reglages .onglets-menu { padding-bottom: 0; border-bottom: 0; gap: 6px; }
   .reglages .onglets-menu button { min-height: 38px; padding: 7px 18px; font-size: 14px; }
-  .reglages .panneaux-menu { padding: 10px 4px 6px; overflow-y: hidden; }
+  .reglages .panneaux-menu { padding: 10px 4px 6px; overflow-y: auto; }
   .reglages .panneau-menu .grille-reglages { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px 12px; max-width: none; align-items: stretch; }
   .reglages .panneau-menu fieldset { padding: 9px 11px 8px; }
   .reglages .panneau-menu legend { font-size: 11px; letter-spacing: .12em; }

@@ -23,7 +23,7 @@ function create(canvas,{environment:w=G,limit=16384,maxPixels=8847360,scale=1}={
   if(w.ResizeObserver)try{observer=new w.ResizeObserver(entries=>{const e=entries.find(e=>e.target===canvas)||entries[0],box=e?.devicePixelContentBoxSize,b=box?.[0]||box;
     if(b&&Number.isFinite(b.inlineSize)&&Number.isFinite(b.blockSize)&&b.inlineSize>0&&b.blockSize>0){device[0]=Math.round(b.inlineSize);device[1]=Math.round(b.blockSize);}else measure();
   });try{observer.observe(canvas,{box:'device-pixel-content-box'});}catch{observer.observe(canvas);}}catch{observer=null;}
-  return {stats,measure,size,record,setScale(value){requested=bounded(value);},dispose(){observer?.disconnect();}};
+  return {stats,measure,size,record,setScale(value){requested=bounded(value);},setMaxPixels(value){maxPixels=Number.isFinite(value)&&value>0?value:134217728;},dispose(){observer?.disconnect();}};
 }
 function budget({target=60,onBudget}={}){
   const samples=new Float64Array(240),sorted=new Float64Array(240),log=[],stats={target,p50:0,p95:0,over:0,sustained:false};let count=0,at=0,ticks=0,elapsed=0,lastCall=-Infinity,announced=false;

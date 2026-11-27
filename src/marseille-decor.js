@@ -239,9 +239,11 @@
     if (!c || c.id !== 'marseille') return null;
     const saison = (g && typeof g === 'object' && g.saison) || null;
     const decorCinema = !!(g && typeof g === 'object' && g.decorCinema);
+    const neigeVolume = decorCinema || !!(g && typeof g === 'object' && g.neigeVolume);
+    const horizonMode = (g && typeof g === 'object' && g.horizon) || (decorCinema ? 'couloir' : 'complet');
     const G = 24;
     const TILE = 192;
-    const RANGE = decorCinema ? 256 : 420;
+    const RANGE = horizonMode === 'couloir' ? 360 : 420;
     const gr = _buildGrilleRoute(c);
     const liste = [];
 
@@ -274,7 +276,7 @@
       }
     }
     const ndx = Math.floor(nd.x / TILE), ndz = Math.floor(nd.z / TILE);
-    const rNd = decorCinema ? 1 : 3;
+    const rNd = decorCinema ? 2 : 3;
     for (let dx = -rNd; dx <= rNd; dx++) for (let dz = -rNd; dz <= rNd; dz++) activer(ndx + dx, ndz + dz);
 
     bxMin = Math.min(bxMin - RANGE, -2600);
@@ -322,12 +324,23 @@
 
           const q = _queryRoute(gr, wx, wz);
           const col = _colorTerrain(wx, wz, wy, dny, q, saison);
+          let omb = 0;
+          if (organique && (decorCinema || neigeVolume) && wy > 0) {
+            const sx = -.48, sy = .73, sz = .43, biais = 4.5 + 14 * (1 - dny);
+            for (let s = 0; s < 4; s++) {
+              const dist = s === 0 ? 78 : s === 1 ? 155 : s === 2 ? 260 : 390;
+              const dh = _H(wx + sx * dist, wz + sz * dist, gr, c) - (wy + biais + sy * dist);
+              if (dh > 0) omb = Math.max(omb, Math.min(1, dh / (.30 * dist + 15)));
+            }
+          }
           const off = idx * FLOATS_VERT;
           sommets[off] = wx; sommets[off + 1] = wy; sommets[off + 2] = wz;
           sommets[off + 3] = dnx; sommets[off + 4] = dny; sommets[off + 5] = dnz;
           sommets[off + 6] = 0; sommets[off + 7] = 0; sommets[off + 8] = 0;
           sommets[off + 9] = 25; // organicSoil unifié FERRO
-          sommets[off + 10] = col[0]; sommets[off + 11] = col[1]; sommets[off + 12] = col[2];
+          sommets[off + 10] = col[0] * (1 - .25 * omb);
+          sommets[off + 11] = col[1] * (1 - .21 * omb);
+          sommets[off + 12] = col[2] * (1 - .12 * omb);
         }
       }
 

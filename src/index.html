@@ -118,7 +118,7 @@
       <div><dt>Visites</dt><dd id="compteur-total">—</dd></div>
       <div><dt>Visiteurs</dt><dd id="compteur-uniques">—</dd></div>
     </dl>
-    <div id="t-fps" class="fps" aria-hidden="true">–</div>
+    <div id="t-fps" class="fps" aria-hidden="true" hidden>–</div>
   </section>
 
   <!-- Jeu en ligne à deux : créer ou rejoindre une partie -->
@@ -500,9 +500,9 @@
       <fieldset class="detection-reglages" aria-describedby="r-detection-etat">
         <legend>Détection graphique</legend>
         <button type="button" class="discret" id="r-detecter">Mesurer et appliquer le profil</button>
-        <p class="note-graphismes">Le test WebGPU mesure les performances graphiques de votre appareil. Relancer la mesure remplace vos six réglages graphiques par ceux du profil conseillé.</p>
+        <p class="note-graphismes">Le test WebGPU mesure les performances de votre appareil et règle le profil adapté, de la machine légère à la plus puissante.</p>
         <p class="note-graphismes" id="r-detection-etat" role="status">Détection graphique disponible.</p>
-        <p class="note-graphismes aide-xbox" hidden>Xbox : scène 3D limitée à 720p pour alléger le rendu sur téléviseur. Menus et textes restent à la résolution de l’écran.</p>
+        <p class="note-graphismes aide-xbox" hidden>Xbox : scène 3D limitée à 720p par défaut sur téléviseur. Menus et textes restent à la résolution de l’écran.</p>
       </fieldset>
       <fieldset>
         <legend>Qualité générale</legend>
@@ -512,6 +512,23 @@
         <label><input type="radio" name="qualite" value="high"><span>Fine</span></label>
         <p class="note-graphismes">Les réglages « Selon qualité » suivent ce profil.</p>
       </fieldset>
+      <fieldset aria-describedby="note-horizon">
+        <legend>Étendue du décor · Anti-clipping</legend>
+        <label><input type="radio" name="horizon" value="profil"><span>Selon qualité</span></label>
+        <label><input type="radio" name="horizon" value="couloir"><span>Couloir léger</span></label>
+        <label><input type="radio" name="horizon" value="etendu"><span>Étendu</span></label>
+        <label><input type="radio" name="horizon" value="complet"><span>Complet sans coupe</span></label>
+        <p class="note-graphismes" id="note-horizon">Couloir léger allège au maximum la 3D. Complet sans coupe génère toute la carte et recule les niveaux de détail jusqu’à 3,6 km (prochaine course).</p>
+      </fieldset>
+      <fieldset aria-describedby="note-definition">
+        <legend>Définition maximale 3D</legend>
+        <label><input type="radio" name="definition" value="profil"><span>Selon qualité</span></label>
+        <label><input type="radio" name="definition" value="720p"><span>720p Éco</span></label>
+        <label><input type="radio" name="definition" value="1080p"><span>1080p FHD</span></label>
+        <label><input type="radio" name="definition" value="1440p"><span>1440p QHD</span></label>
+        <label><input type="radio" name="definition" value="native"><span>Native 4K / Retina</span></label>
+        <p class="note-graphismes" id="note-definition">Plafonne la scène 3D pour stabiliser les IPS sur grand écran, ou libère tous les pixels natifs sur carte puissante. Les menus restent nets.</p>
+      </fieldset>
       <fieldset aria-describedby="note-cadence">
         <legend>Cadence d’images</legend>
         <label><input type="radio" name="cadence" value="auto"><span>Auto</span></label>
@@ -519,7 +536,7 @@
         <label><input type="radio" name="cadence" value="120"><span>120 i/s</span></label>
         <label><input type="radio" name="cadence" value="60"><span>60 i/s</span></label>
         <label><input type="radio" name="cadence" value="30"><span>30 i/s</span></label>
-        <p class="note-graphismes" id="note-cadence">Auto suit l’écran et ne divise sa cadence que si la machine ne la tient plus (en qualité Auto, une fois celle-ci au plus bas). Écran suit toujours l’écran ; 120, 60 et 30 visent le diviseur de l’écran le plus proche.</p>
+        <p class="note-graphismes" id="note-cadence">Auto suit l’écran et ne divise sa cadence que si la machine ne la tient plus. 120, 60 et 30 visent un diviseur régulier de l’écran.</p>
       </fieldset>
       <fieldset>
         <legend>Anticrénelage</legend>
@@ -528,11 +545,48 @@
         <label><input type="radio" name="anticrenelage" value="msaa4"><span>MSAA 4×</span></label>
       </fieldset>
       <fieldset>
-        <legend>Ombres</legend>
+        <legend>Ombres et pénombre</legend>
         <label><input type="radio" name="ombres" value="profil"><span>Selon qualité</span></label>
         <label><input type="radio" name="ombres" value="off"><span>Désactivées</span></label>
         <label><input type="radio" name="ombres" value="medium"><span>Moyennes</span></label>
         <label><input type="radio" name="ombres" value="high"><span>Fines</span></label>
+        <label><input type="radio" name="ombres" value="ultra"><span>Ultra PCSS</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Reflets chaussée mouillée</legend>
+        <label><input type="radio" name="reflets" value="profil"><span>Selon qualité</span></label>
+        <label><input type="radio" name="reflets" value="off"><span>Désactivés</span></label>
+        <label><input type="radio" name="reflets" value="on"><span>Raycast SSR</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Halo lumineux · Bloom</legend>
+        <label><input type="radio" name="halo" value="profil"><span>Selon qualité</span></label>
+        <label><input type="radio" name="halo" value="off"><span>Désactivé</span></label>
+        <label><input type="radio" name="halo" value="on"><span>Activé</span></label>
+      </fieldset>
+      <fieldset aria-describedby="note-optimisations">
+        <legend>Rendu fovéal et Raycast</legend>
+        <label><input type="radio" name="optimisations" value="profil"><span>Auto · Les deux</span></label>
+        <label><input type="radio" name="optimisations" value="raycast"><span>Raycast seul</span></label>
+        <label><input type="radio" name="optimisations" value="foveal"><span>Fovéal seul</span></label>
+        <label><input type="radio" name="optimisations" value="off"><span>Brut · Aucun</span></label>
+        <p class="note-graphismes" id="note-optimisations">Concentre la finesse sur le point de corde regardé et masque par lancer de rayons ce qui est caché derrière le relief ou le cockpit.</p>
+      </fieldset>
+      <fieldset aria-describedby="note-matieres">
+        <legend>Matières et rochers 3D</legend>
+        <label><input type="radio" name="matieres" value="profil"><span>Selon qualité</span></label>
+        <label><input type="radio" name="matieres" value="off"><span>Allégés</span></label>
+        <label><input type="radio" name="matieres" value="on"><span>Détaillés</span></label>
+        <p class="note-graphismes" id="note-matieres">Grain minéral du sol, strates et rochers procéduraux (appliqués à la prochaine course).</p>
+      </fieldset>
+      <fieldset aria-describedby="note-retro">
+        <legend>Image des rétroviseurs</legend>
+        <label><input type="radio" name="retro" value="auto"><span>Auto</span></label>
+        <label><input type="radio" name="retro" value="non"><span>Simple</span></label>
+        <label><input type="radio" name="retro" value="eco"><span>Éco · 15 Hz</span></label>
+        <label><input type="radio" name="retro" value="oui"><span>Réelle · 30 Hz</span></label>
+        <label><input type="radio" name="retro" value="ultra"><span>Pleine · 60 Hz</span></label>
+        <p class="note-graphismes" id="note-retro">Éco et 30 Hz alternent une glace par image pour supprimer tout pic GPU.</p>
       </fieldset>
       <fieldset aria-describedby="note-vegetation">
         <legend>Densité de végétation</legend>
@@ -542,7 +596,7 @@
         <label><input type="radio" name="vegetation" value="medium"><span>Moyenne</span></label>
         <label><input type="radio" name="vegetation" value="high"><span>Dense</span></label>
         <label><input type="radio" name="vegetation" value="ultra"><span>Extrême</span></label>
-        <p class="note-graphismes" id="note-vegetation">Brins détaillés à proximité, prairie colorée au loin. Extrême densifie les zones proches. Appliquée à la prochaine course.</p>
+        <p class="note-graphismes" id="note-vegetation">Brins 3D à proximité, prairie colorée au loin. Appliquée à la prochaine course.</p>
       </fieldset>
       <fieldset aria-describedby="note-faune">
         <legend>Faune</legend>
@@ -555,10 +609,10 @@
         <p class="note-graphismes" id="note-faune">Densité de la faune animée selon le circuit, la saison et le moment de la journée.</p>
       </fieldset>
       <fieldset>
-        <legend>Image des rétroviseurs</legend>
-        <label><input type="radio" name="retro" value="auto"><span>Auto</span></label>
-        <label><input type="radio" name="retro" value="oui"><span>Réelle</span></label>
-        <label><input type="radio" name="retro" value="non"><span>Simple</span></label>
+        <legend>Public des tribunes</legend>
+        <label><input type="radio" name="foule" value="profil"><span>Selon qualité</span></label>
+        <label><input type="radio" name="foule" value="off"><span>Tribunes vides</span></label>
+        <label><input type="radio" name="foule" value="on"><span>Spectateurs 3D</span></label>
       </fieldset>
       <fieldset>
         <legend>Démo sur l’écran titre</legend>

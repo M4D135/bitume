@@ -122,6 +122,7 @@ MODULES = [
     'cadence.js',
     'graphismes.js',
     'detail-peripherique.js',
+    'visibilite-raycast.js',
     'ambiance.js',
     'conditions-course.js',
     'navigation-menu.js',

@@ -87,7 +87,8 @@
       const course = panneau.id === 'p-conditions' && (cle === 'o-tours' || cle === 'o-difficulte');
       const paire = course ? 'course' : panneau.id === 'p-pilotes' ? cle.replace(/-[012]$/, '') : null;
       const derniere = pages[pages.length-1];
-      if (derniere && derniere.elements.length === 1 &&
+      const maxParPage = panneau.id === 'r-image' ? 6 : 2;
+      if (derniere && derniere.elements.length < maxParPage &&
           (paire ? paire === derniere.cle : panneau.id !== 'p-conditions')) derniere.elements.push(champ);
       else pages.push({ cle: paire || cle, titre: course ? 'Course' : '', elements: [champ] });
     }

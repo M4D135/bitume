@@ -550,6 +550,7 @@
   uniform vec2 uEnvironment;uniform vec2 uNightHour;
   uniform float uOverlayMode;
   uniform float uPhoto; // BITUME : qualité des reflets analytiques et peinture satinée.
+  uniform vec4 uFovea; // Rendu fovéal [fx, fy, rInterne, rExterne] ; zéro par défaut (neutre).
   // PDR (voile) : voile du brouillard de guerre (fx.voile) : visibilité R8, zone (x0, z0, 1/largeur, 1/profondeur) en mètres, force 0..1.
   uniform sampler2D uVoile;
   uniform vec4 uVoileZone;
@@ -644,6 +645,12 @@
     vec2 centre=(floor(tap/texel)+.5)*texel;
     return step(depth+dot(slope,centre-uv),texture(uShadowMap,tap).r);
   }
+  float foveaEccentricity() {
+    if(uFovea.w<=uFovea.z)return 0.;
+    vec2 screenUV=gl_FragCoord.xy/max(uResolution,vec2(1.));
+    vec2 delta=(screenUV-uFovea.xy)*vec2(uResolution.x/max(uResolution.y,1.),1.);
+    return smoothstep(uFovea.z,uFovea.w,length(delta));
+  }
   float shadow(vec3 n,vec3 l,int slot) {
     // BITUME : le cockpit reçoit les ombres à sa position réelle.
     if((vOverlay>.5&&uOverlayMode<.5)||(slot==0&&uShadowSettings.x<.5)||(slot==1&&uShadowSettings.x<1.5&&uShadowSettings.w<.5)||(slot==2&&uShadowSettings.z<.5))return 1.;
@@ -663,16 +670,19 @@
     float visibility=0.;
     if(slot==1&&uShadowSettings.w>.5){
       // Quadratic B-spline PCF: nine comparisons, continuous sub-texel weights.
-      // Nearest PCF taps used to jump together when the light/camera moved.
-      // Compare at each sampled centre before filtering, retaining the receiver
-      // plane correction so oblique facades do not acquire self-shadow bands.
-      float texel=uShadowSettings.y;
-      vec2 cell=uv/texel,f=fract(cell)-.5,centre=(floor(cell)+.5)*texel;
-      vec3 wx=vec3(.5*(.5-f.x)*(.5-f.x),.75-f.x*f.x,.5*(.5+f.x)*(.5+f.x));
-      vec3 wy=vec3(.5*(.5-f.y)*(.5-f.y),.75-f.y*f.y,.5*(.5+f.y)*(.5+f.y));
-      for(int y=0;y<3;y++)for(int x=0;x<3;x++){
-        vec2 tap=centre+vec2(float(x-1),float(y-1))*texel;
-        visibility+=wx[x]*wy[y]*step(p.z-bias+dot(slope,tap-uv),texture(uShadowMap,tap).r);
+      // Peripheral vision switches smoothly beyond fovea>.42 to a single slope-safe sample.
+      float fovea=foveaEccentricity();
+      if(fovea>.42){
+        visibility=step(p.z-bias,texture(uShadowMap,uv).r);
+      }else{
+        float texel=uShadowSettings.y;
+        vec2 cell=uv/texel,f=fract(cell)-.5,centre=(floor(cell)+.5)*texel;
+        vec3 wx=vec3(.5*(.5-f.x)*(.5-f.x),.75-f.x*f.x,.5*(.5+f.x)*(.5+f.x));
+        vec3 wy=vec3(.5*(.5-f.y)*(.5-f.y),.75-f.y*f.y,.5*(.5+f.y)*(.5+f.y));
+        for(int y=0;y<3;y++)for(int x=0;x<3;x++){
+          vec2 tap=centre+vec2(float(x-1),float(y-1))*texel;
+          visibility+=wx[x]*wy[y]*step(p.z-bias+dot(slope,tap-uv),texture(uShadowMap,tap).r);
+        }
       }
     }else{
       visibility+=depthSample(uv,vec2(-.65,-.65),p.z-bias,slope);
@@ -703,7 +713,9 @@
     float roughness=.47,metalness=.65,organicHeight=0.,urbanHeight=0.,pbrWeight=0.,pbrLayer=1.,recipeHeight=0.;
     float cavity=1.,leafTransmission=0.,soilSnow=0.;
     float pixelSpan=max(fwidth(uv).x,fwidth(uv).y);
-    float fineDetail=1.-smoothstep(.015,.10,pixelSpan);
+    float fovea=foveaEccentricity();
+    float foveaSpan=pixelSpan*(1.+fovea*2.6);
+    float fineDetail=(1.-smoothstep(.015,.10,foveaSpan))*(1.-fovea*.82);
     float grain=noise(uv*23.)*.5+mix(.5,noise(uv*71.),fineDetail)*.2;
     float broad=noise(uv*.7);
     // Architectural joints belong to the building, not to moving armour or the weapon.
@@ -712,9 +724,9 @@
     if(recipe>.5){
       // Original, bounded recipes: broad ageing, medium surface structure and
       // filtered grain share the same coordinates and seedless world field.
-      float patches=surfaceNoise(uv+vec2(17.3,8.1),.17,pixelSpan);
-      float structure=surfaceNoise(uv+vec2(3.7,11.9),2.6,pixelSpan);
-      float aggregate=surfaceNoise(uv,83.,pixelSpan);
+      float patches=surfaceNoise(uv+vec2(17.3,8.1),.17,foveaSpan);
+      float structure=surfaceNoise(uv+vec2(3.7,11.9),2.6,foveaSpan);
+      float aggregate=fovea<.65?surfaceNoise(uv,83.,foveaSpan):.5;
       vec3 tint=vColor.w>.5?tintRGB:vec3(.5);
       if(recipe<1.5){
         if(vColor.w<.5)tint=vec3(.18,.18,.19);
@@ -758,13 +770,15 @@
         float vegetation=clamp((tint.g-max(tint.r*.90,tint.b*1.10))/max(tint.g,.04)*2.7,0.,1.)*(1.-soilSnow);
         float growth=vegetation*(.35+.65*smoothstep(.30,.70,patches+.20*(structure-.5)))*smoothstep(.12,.78,geometricNormal.y);
         vec2 soilUV=mat2(.8,.6,-.6,.8)*uv;
-        vec2 warp=vec2(surfaceNoise(uv+37.2,2.1,pixelSpan),surfaceNoise(uv+69.7,1.7,pixelSpan))-.5;
-        soilUV+=warp*.14;
-        float clods=surfaceNoise(soilUV+vec2(31.2,6.4),8.5,pixelSpan*1.7);
-        float crumbs=surfaceNoise(soilUV+vec2(8.3,23.7),34.,pixelSpan*1.7);
-        float pits=pow(max(0.,.5-crumbs)*2.,2.)*(1.-smoothstep(.015,.045,pixelSpan));
-        float mineral=smoothstep(.65,.82,crumbs)*(1.-smoothstep(.010,.035,pixelSpan));
-        vec2 blades=vec2(.018,0.);if(vegetation>0.)blades=soilBlades(uv,pixelSpan);
+        if(fovea<.48){
+          vec2 warp=vec2(surfaceNoise(uv+37.2,2.1,foveaSpan),surfaceNoise(uv+69.7,1.7,foveaSpan))-.5;
+          soilUV+=warp*.14*(1.-smoothstep(.28,.48,fovea));
+        }
+        float clods=surfaceNoise(soilUV+vec2(31.2,6.4),8.5,foveaSpan*1.7);
+        float crumbs=fovea<.72?surfaceNoise(soilUV+vec2(8.3,23.7),34.,foveaSpan*1.7):.5;
+        float pits=pow(max(0.,.5-crumbs)*2.,2.)*(1.-smoothstep(.015,.045,foveaSpan));
+        float mineral=smoothstep(.65,.82,crumbs)*(1.-smoothstep(.010,.035,foveaSpan));
+        vec2 blades=vec2(.018,0.);if(vegetation>0.&&fovea<.42)blades=soilBlades(uv,foveaSpan);
         float relief=1.-soilSnow*.78;
         // Broad pigment varies smoothly; relief belongs to the smaller grains.
         // Low-frequency value-noise normals would expose their lattice as paving.
@@ -1165,18 +1179,22 @@
       light+=uSunColor*vec3(.65,1.,.38)*leafTransmission*back*(.55+.45*forward)*sunlight;
     }
     specular+=uSunColor*sunlight*metalHighlight(n,view,uSunDirection,roughness,f0);
-    vec3 torchVector=uTorchPosition-vWorld;
-    float torchDistance=length(torchVector);
-    vec3 torchDirection=normalize(torchVector);
-    float cone=smoothstep(.59,.96,dot(-torchDirection,uForward));
-    float torch=cone/(1.+torchDistance*torchDistance*.045)*shadow(geometricNormal,torchDirection,2);
-    light+=vec3(.44,.52,.56)*torch*max(dot(n,torchDirection),0.);
-    specular+=vec3(.44,.52,.56)*torch*metalHighlight(n,view,torchDirection,roughness,f0)*1.5;
-    vec3 muzzleVector=uTorchPosition+uForward*.8-vWorld;
-    float muzzleDistance=length(muzzleVector),muzzlePower=uEffects.y*2.2/(1.+muzzleDistance*muzzleDistance*.14);
-    vec3 muzzleDirection=muzzleVector/max(muzzleDistance,.001);
-    light+=vec3(1.,.48,.12)*muzzlePower*(.22+.78*max(dot(n,muzzleDirection),0.));
-    specular+=vec3(1.,.48,.12)*muzzlePower*metalHighlight(n,view,muzzleDirection,roughness,f0);
+    if(uTorchPosition.y>-90000.){
+      vec3 torchVector=uTorchPosition-vWorld;
+      float torchDistance=length(torchVector);
+      vec3 torchDirection=normalize(torchVector);
+      float cone=smoothstep(.59,.96,dot(-torchDirection,uForward));
+      float torch=cone/(1.+torchDistance*torchDistance*.045)*shadow(geometricNormal,torchDirection,2);
+      light+=vec3(.44,.52,.56)*torch*max(dot(n,torchDirection),0.);
+      specular+=vec3(.44,.52,.56)*torch*metalHighlight(n,view,torchDirection,roughness,f0)*1.5;
+    }
+    if(uEffects.y>0.){
+      vec3 muzzleVector=uTorchPosition+uForward*.8-vWorld;
+      float muzzleDistance=length(muzzleVector),muzzlePower=uEffects.y*2.2/(1.+muzzleDistance*muzzleDistance*.14);
+      vec3 muzzleDirection=muzzleVector/max(muzzleDistance,.001);
+      light+=vec3(1.,.48,.12)*muzzlePower*(.22+.78*max(dot(n,muzzleDirection),0.));
+      specular+=vec3(1.,.48,.12)*muzzlePower*metalHighlight(n,view,muzzleDirection,roughness,f0);
+    }
     if(vOverlay>.5&&uOverlayMode<.5)light+=vec3(.18,.22,.25);
     vec3 color=base*light+specular;
     // Analytic environment reflection: the biome's sky/ground hemisphere and
@@ -1373,7 +1391,7 @@
   precision highp float;
   in vec2 vUV;uniform sampler2D uColor;uniform highp sampler2D uDepth;
   uniform sampler2D uReceiverTiles;uniform int uReceiverMask;
-  uniform vec4 uProjection;uniform vec2 uPixel;out vec4 fragColor;
+  uniform vec4 uProjection;uniform vec2 uPixel;uniform vec4 uFovea;out vec4 fragColor;
   float distanceZ(float depth){return uProjection.w/(depth*2.-1.+uProjection.z);}
   // Depth needs highp even when float already is highp: a low precision sampler
   // quantizes the road into rows before the normal and reflected ray are built.
@@ -1383,6 +1401,12 @@
   vec3 rayPoint(vec3 a,vec3 b,float ka,float kb,float t){return mix(a,b,t)/mix(ka,kb,t);}
   void main(){
     fragColor=vec4(0.);
+    float foveaWeight=1.;
+    if(uFovea.w>uFovea.z){
+      vec2 fd=(vUV-uFovea.xy)*vec2(uPixel.y/max(uPixel.x,1e-6),1.);
+      foveaWeight=1.-smoothstep(uFovea.w*.82,uFovea.w*1.22,length(fd));
+      if(foveaWeight<=.01)return;
+    }
     // The four filtered bits cover every final-scene pixel that can consume this half-size texel.
     if(uReceiverMask!=0&&texture(uReceiverTiles,vUV).a<.01)return;
     vec2 receiver=pixelCenter(vUV);vec4 original=texture(uColor,receiver);
@@ -1404,29 +1428,26 @@
     float clipped=clamp(min(1.,min(limit.x,limit.y)),0.,1.);
     z=mix(a,z,clipped);kb=mix(ka,kb,clipped);span*=clipped;
     float pixels=max(abs(span.x)/uPixel.x,abs(span.y)/uPixel.y);if(pixels<1.)return;
-    float previous=0.,oldT=0.,weight=0.,stride=clamp(2./(512.*uPixel.y),1.,4.);vec2 hit=vec2(0.);int candidates=0;
-    // Perspective-correct traversal: 1--4 source pixels per step, scaled with
-    // image height, and at most 96 steps / three refinements of six steps.
-    // Farther or unseen geometry keeps the existing analytic environment.
-    for(int i=1;i<=96;i++){
-      float atT=min(1.,float(i)*stride/pixels);vec2 uv=start+span*atT;
+    float previous=0.,oldT=0.,curPx=0.,stepPx=clamp(2./(512.*uPixel.y),1.,4.),weight=0.;vec2 hit=vec2(0.);int candidates=0;
+    // Perspective-correct exponential raycast: 18 adaptive steps + 5-step binary refinement.
+    for(int i=1;i<=18;i++){
+      curPx+=stepPx;stepPx*=1.24;
+      float atT=min(1.,curPx/pixels);vec2 uv=start+span*atT;
       float sampled=texture(uDepth,uv).r,sceneZ=distanceZ(sampled),delta=1./mix(ka,kb,atT)-sceneZ;
       if(sampled<.999999&&delta>0.&&previous<=0.){
         candidates++;float lo=oldT,hi=atT,hitDepth=sampled;
-        for(int j=0;j<6;j++){
+        for(int j=0;j<5;j++){
           float mid=(lo+hi)*.5,midDepth=texture(uDepth,start+span*mid).r;
           if(1./mix(ka,kb,mid)-distanceZ(midDepth)>0.){hi=mid;hitDepth=midDepth;}else lo=mid;
         }
         hit=start+span*hi;vec3 point=rayPoint(a,z,ka,kb,hi);
-        float difference=-point.z-distanceZ(hitDepth),thickness=clamp(sceneZ*.004,.025,.20);
-        // Crossing a silhouette is not itself an intersection. Revalidate the
-        // refined hit against a small depth thickness, rather than metres.
+        float difference=-point.z-distanceZ(hitDepth),thickness=clamp(sceneZ*.005,.025,.24);
         if(hitDepth<.999999&&difference>=0.&&difference<thickness){
           float edge=min(min(hit.x,hit.y),min(1.-hit.x,1.-hit.y)),travel=length(point-origin);
-          weight=smoothstep(.01,.12,edge)*(1.-smoothstep(70.,115.,travel))*(1.-smoothstep(80.,96.,float(i)));
+          weight=foveaWeight*smoothstep(.01,.12,edge)*(1.-smoothstep(70.,115.,travel))*(1.-smoothstep(15.,18.,float(i)));
           break;
         }
-        if(candidates>=3)break;
+        if(candidates>=2)break;
       }
       previous=sampled>=.999999?-1.:delta;oldT=atT;if(atT>=1.)break;
     }
@@ -3083,12 +3104,17 @@
       vec2 cell=uv/texel,f=fract(cell)-.5,centre=(floor(cell)+.5)*texel;
       vec3 wx=vec3(.5*(.5-f.x)*(.5-f.x),.75-f.x*f.x,.5*(.5+f.x)*(.5+f.x));
       vec3 wy=vec3(.5*(.5-f.y)*(.5-f.y),.75-f.y*f.y,.5*(.5+f.y)*(.5+f.y));
-      float v=0.;${pcss?`
+      float fovea=foveaEccentricity();
+      float v=0.;
+      if(fovea>.42){
+        v=step(z,texture(uShadowMap,uv).r);
+      }else{${pcss?`
       if(uPenombre.x>1.5&&full)v=photoPcss(uv,centre,wx,wy,z,slope,texel,p.z,n);
       else`:''}
-      for(int y=0;y<3;y++)for(int x=0;x<3;x++){
-        vec2 tap=centre+vec2(float(x-1),float(y-1))*texel;
-        v+=wx[x]*wy[y]*step(z+dot(slope,tap-uv),texture(uShadowMap,tap).r);
+        for(int y=0;y<3;y++)for(int x=0;x<3;x++){
+          vec2 tap=centre+vec2(float(x-1),float(y-1))*texel;
+          v+=wx[x]*wy[y]*step(z+dot(slope,tap-uv),texture(uShadowMap,tap).r);
+        }
       }
       float edge=min(min(p.x,p.y),min(1.-p.x,1.-p.y));
       proche=v;poids=smoothstep(.012,.085,edge);
@@ -3098,7 +3124,8 @@
       vec3 q=(uOmbreLoinMatrice*vec4(vWorld+n*uOmbreLoinReglages.w,1.)).xyz*.5+.5;
       if(q.z<1.&&min(q.x,q.y)>0.&&max(q.x,q.y)<1.){
         float tl=uOmbreLoinReglages.y*.5,zl=q.z-uOmbreLoinReglages.z*(1.+(1.-nl));
-        float a=texture(uOmbreLoin,vec3(q.xy+vec2(-tl,-tl),zl))+texture(uOmbreLoin,vec3(q.xy+vec2(tl,-tl),zl))
+        float foveaLoin=foveaEccentricity();
+        float a=foveaLoin>.65?texture(uOmbreLoin,vec3(q.xy,zl))*4.:texture(uOmbreLoin,vec3(q.xy+vec2(-tl,-tl),zl))+texture(uOmbreLoin,vec3(q.xy+vec2(tl,-tl),zl))
           +texture(uOmbreLoin,vec3(q.xy+vec2(-tl,tl),zl))+texture(uOmbreLoin,vec3(q.xy+vec2(tl,tl),zl));
         float bord=min(min(q.x,q.y),min(1.-q.x,1.-q.y));
         loin=mix(1.,a*.25,smoothstep(0.,.02,bord));
@@ -3214,6 +3241,7 @@
     const native=options.resolution==='native',maxSize=native?Math.min(Number(gl.getParameter(gl.MAX_RENDERBUFFER_SIZE))||16384,Number(gl.getParameter(gl.MAX_TEXTURE_SIZE))||16384):16384;
     const surface=native?window.FSurface.create(canvas,{limit:maxSize,maxPixels:options.maxPixels,scale:options.renderScale}):null;
     const watch=native?window.FSurface.budget({target:60,onBudget:options.onBudget}):null;
+    let runtimeMaxPixels=options.maxPixels>0?options.maxPixels:0;
     if(surface){stats.native=surface.stats;stats.budget=watch.stats;stats.budgetLog=watch.log;}
     let drawing=false,profiler=null,profileOptions=null,reflections=null,probeBuffer=null,probeBatch=null,probeKey='';
     const probeView=new Float32Array(16),probeProjection=new Float32Array(16),probeVP=new Float32Array(16);
@@ -3248,7 +3276,7 @@
     const VIEW_MARGIN=1,VIEW_TILT=8*Math.PI/180;
     const governor=resolutionGovernor();let autoScale=1;
     // PDR (voile) : vrai tant que le voile du jeu occupe l'unité 4 ; draw le retire à la première image sans fx.voile.
-    let pdrVoilePose=false;
+    let pdrVoilePose=false,foveaPose=false,foveaSsrPose=false;
     // PDR (lots) : décor du jeu déjà empaqueté (fx.lots). pdrSlots : un tampon GPU par lot, renvoyé seulement quand le lot
     // change ; pdrLots : les lots de l'image en cours. FERRO a setLots pour le même besoin : à unifier (PROVENANCE.md).
     let pdrSlots=[];const pdrLots=[];
@@ -3466,8 +3494,8 @@
         const linked=linkAll(pairs);fskyProgram=advanced?linked.shift():null;
         [ssrProgram,program,depthProgram,postProgram,skyProgram,fxProgram]=linked;
       }catch(error){fskyProgram=null;throw error;}
-      ssrUniforms={};for(const name of ['uColor','uDepth','uReceiverTiles','uReceiverMask','uProjection','uPixel'])ssrUniforms[name]=gl.getUniformLocation(ssrProgram,name);
-      uniforms={};for(const name of ['uViewProjection','uWindTime','uWindStrength','uGroundCoverEye','uGroundCoverDensity','uGroundCoverRange','uLocalWindCount','uLocalWindPosition','uLocalWindMotion','uSeaOrigin','uSeaMotion','uEye','uForward','uLightPosition','uLightColor','uLightRange','uLightDirection','uLightCone','uWeather','uCloudOffset','uPbrAlbedo','uPbrNormal','uPbrRough','uPbrReady','uLightCount','uResolution','uEffects','uShadowMap','uShadowMatrix','uShadowSettings','uTorchPosition','uSunDirection','uSunColor','uAmbient','uFogColor','uSkyTop','uSkyBottom','uEnvironment','uNightHour','uPhoto','uOverlayMode','uSeaMode','uSceneProbe','uProbeReady','uProbeOrigin']) uniforms[name]=gl.getUniformLocation(program,name);
+      ssrUniforms={};for(const name of ['uColor','uDepth','uReceiverTiles','uReceiverMask','uProjection','uPixel','uFovea'])ssrUniforms[name]=gl.getUniformLocation(ssrProgram,name);
+      uniforms={};for(const name of ['uViewProjection','uWindTime','uWindStrength','uGroundCoverEye','uGroundCoverDensity','uGroundCoverRange','uLocalWindCount','uLocalWindPosition','uLocalWindMotion','uSeaOrigin','uSeaMotion','uEye','uForward','uLightPosition','uLightColor','uLightRange','uLightDirection','uLightCone','uWeather','uCloudOffset','uPbrAlbedo','uPbrNormal','uPbrRough','uPbrReady','uLightCount','uResolution','uEffects','uShadowMap','uShadowMatrix','uShadowSettings','uTorchPosition','uSunDirection','uSunColor','uAmbient','uFogColor','uSkyTop','uSkyBottom','uEnvironment','uNightHour','uPhoto','uFovea','uOverlayMode','uSeaMode','uSceneProbe','uProbeReady','uProbeOrigin']) uniforms[name]=gl.getUniformLocation(program,name);
       postUniforms={};for(const name of ['uScene','uBloom','uReflection','uReflections','uTexel','uPass'])postUniforms[name]=gl.getUniformLocation(postProgram,name);
       skyUniforms={};for(const name of ['uSkyRight','uSkyUp','uSkyForward','uSkyTop','uSkyBottom','uSkyFog','uSunDirection','uSunColor','uSkyFov','uSkyMotion','uWeather','uCloudOffset','uSkyNight'])skyUniforms[name]=gl.getUniformLocation(skyProgram,name);
       fxUniforms={};for(const name of ['uViewProjection','uWindTime','uEye','uAmbient','uSkyTop','uSkyBottom','uFogColor','uEnvironment','uTime'])fxUniforms[name]=gl.getUniformLocation(fxProgram,name);
@@ -3571,9 +3599,12 @@
     }
     const terrainView=terrainViewState();
     const msaaAttachments=[gl.COLOR_ATTACHMENT0,gl.DEPTH_ATTACHMENT];
-    let comptesNappes=new Int32Array(0), debutsNappes=new Int32Array(0);
+    let comptesNappes=new Int32Array(0), debutsNappes=new Int32Array(0), indicesSourceNappes=new Int32Array(0);
     function setNappes(liste,options){
-      nappes=(liste||[]).filter(n=>n&&n.sommets&&n.indices&&n.indices.length);
+      nappes=[];const sources=[];
+      const entree=liste||[];
+      for(let i=0;i<entree.length;i++){const n=entree[i];if(n&&n.sommets&&n.indices&&n.indices.length){nappes.push(n);sources.push(i);}}
+      indicesSourceNappes=Int32Array.from(sources);
       terrainView.reset(nappes,options?.staticBounds===true);
       comptesNappes=new Int32Array(nappes.length);
       debutsNappes=new Int32Array(nappes.length);
@@ -3588,13 +3619,15 @@
         stats.drawCalls+=nombre;
       }
     }
-    function dessinerNappes(eye,axes,horizontal,vertical,far,radii){
+    function dessinerNappes(eye,axes,horizontal,vertical,far,radii,masqueNappes){
       if(!nappeIbo)return;
       const count=terrainView.select(eye,axes,horizontal,vertical,far,radii);
       if(!count)return;
       let flags=0,nombre=0;
       for(let i=0;i<count;i++){
-        const id=terrainView.indices[i],n=nappes[id],suivant=flagsNappe(id);
+        const id=terrainView.indices[i];
+        if(masqueNappes&&masqueNappes[indicesSourceNappes[id]]){stats.nappesOccultees=(stats.nappesOccultees||0)+1;continue;}
+        const n=nappes[id],suivant=flagsNappe(id);
         if(flags!==suivant){
           envoyerNappes(nombre);nombre=0;lierNappe(suivant);flags=suivant;
         }
@@ -3636,7 +3669,7 @@
     }
     // BITUME : les bornes vivent pendant toute la séance. Chaque contexte possède
     // ses propres tampons, créés à l'approche ou dès la première passe qui en a besoin.
-    let lotsProgressifs=false,dernierUsage=null,curseurLots=0,indicesLots=[],ambianceLots=null;
+    let lotsProgressifs=false,dernierUsage=null,curseurLots=0,indicesLots=[],indicesSourceLots=[],ambianceLots=null;
     // Un VAO retient les tampons et les quatre décalages de la rangée d'instances.
     // Les programmes de profondeur et de couleur utilisent le même layout explicite 0..5.
     // Les objets mobiles et le VAO de travail restent indépendants de ce cache par contexte.
@@ -3759,10 +3792,10 @@
     }
     function setLots(liste,options){
       for(const l of lots)viderLot(l);
-      groundPlans=new WeakMap();sunLotPlans=new WeakMap();lots=[];indicesLots=[];ambianceLots=environment;
+      groundPlans=new WeakMap();sunLotPlans=new WeakMap();lots=[];indicesLots=[];indicesSourceLots=[];ambianceLots=environment;
       if(liste)for(let i=0;i<liste.length;i++){
         if(!liste[i]?.objets)continue;
-        indicesLots[i]=lots.length;lots.push(liste[i]);
+        indicesLots[i]=lots.length;indicesSourceLots.push(i);lots.push(liste[i]);
       }
       lotsProgressifs=options?.progressif===true;cacheLignesLots=options?.staticBounds===true;
       dernierUsage=lotsProgressifs?new Float64Array(lots.length):null;curseurLots=0;
@@ -3835,7 +3868,7 @@
       }
       out.length=written;return sunLotSelection;
     }
-    function dessinerLots(eye,axes,horizontal,vertical,far,accepte,radii){
+    function dessinerLots(eye,axes,horizontal,vertical,far,accepte,radii,masqueLots){
       let dessines=0;
       for(const entry of lotView.candidates(accepte,axes,horizontal,vertical,far,radii,!!accepte&&cullSun)){const l=entry.lot;
         if(l.detailProcheSeul&&!entry.near)continue;
@@ -3848,7 +3881,10 @@
           if(!classification)continue;
           clipped=classify&&classification===1;
         }
-        else{if(entry.distance>Math.min(far,entry.range))continue;if(!visible(entry.bounds,eye,axes,horizontal,vertical,far,radii))continue;}
+        else{
+          if(masqueLots&&masqueLots[indicesSourceLots[entry.index]]){stats.lotsOccultes=(stats.lotsOccultes||0)+1;continue;}
+          if(entry.distance>Math.min(far,entry.range))continue;if(!visible(entry.bounds,eye,axes,horizontal,vertical,far,radii))continue;
+        }
         if(lotsProgressifs)chargerLot(entry.index,!entry.near);
         if(!l.tampon&&!l.tamponLoin)continue;
         const plan=entry.cover&&groundPlans.get(l),fresh=plan&&plan.frame!==lotView.frame;
@@ -3962,6 +3998,7 @@
       const cssWidth=canvas.clientWidth||window.innerWidth||800,cssHeight=canvas.clientHeight||window.innerHeight||600;
       ratio=Math.max(.5,Math.min(2,ratio));
       if(quality==='auto')ratio=Math.min(ratio,Math.sqrt(1800000/(cssWidth*cssHeight)))*autoScale;
+      if(runtimeMaxPixels>0)ratio=Math.min(ratio,Math.sqrt(runtimeMaxPixels/(cssWidth*cssHeight)));
       const width=Math.max(1,Math.round(cssWidth*ratio)),height=Math.max(1,Math.round(cssHeight*ratio));
       if(canvas.width!==width||canvas.height!==height) {canvas.width=width;canvas.height=height;}
       stats.renderScale=autoScale;stats.pixelRatio=ratio;stats.width=width;stats.height=height;
@@ -4208,14 +4245,15 @@
       gl.uniform2f(skyUniforms.uSkyFov,(probeSize?1:canvas.width/canvas.height)/f,1/f);gl.uniform4fv(skyUniforms.uWeather,sky.values);gl.uniform2f(skyUniforms.uSkyMotion,time,sky.wind);gl.uniform2fv(skyUniforms.uCloudOffset,cloudOffset);gl.drawArrays(gl.TRIANGLES,0,3);
       stats.drawCalls++;gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);
     }
-    function reflectionsPass(useMask){
+    function reflectionsPass(useMask,fovea){
       gl.disable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);gl.bindVertexArray(postVao);gl.useProgram(ssrProgram);gl.bindFramebuffer(gl.FRAMEBUFFER,post.reflection.framebuffer);gl.viewport(0,0,post.reflection.width,post.reflection.height);
       gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,post.reflectSource.texture);gl.uniform1i(ssrUniforms.uColor,0);gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,post.reflectSource.depthTexture);gl.uniform1i(ssrUniforms.uDepth,1);
       gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,useMask?post.a.texture:whiteTexture);
       gl.uniform1i(ssrUniforms.uReceiverTiles,2);gl.uniform1i(ssrUniforms.uReceiverMask,useMask?1:0);
+      if(fovea||foveaSsrPose){if(fovea)gl.uniform4fv(ssrUniforms.uFovea,fovea);else gl.uniform4f(ssrUniforms.uFovea,0,0,0,0);foveaSsrPose=!!fovea;}
       gl.uniform4f(ssrUniforms.uProjection,1/projection[0],1/projection[5],projection[10],projection[14]);gl.uniform2f(ssrUniforms.uPixel,1/canvas.width,1/canvas.height);gl.drawArrays(gl.TRIANGLES,0,3);stats.drawCalls++;
     }
-    function postPass(sceneTexture,hasOverlay){
+    function postPass(sceneTexture,hasOverlay,fovea){
       gl.disable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);gl.bindVertexArray(postVao);gl.useProgram(postProgram);bindScreen(postProgram);
       gl.uniform1i(postUniforms.uScene,0);gl.uniform1i(postUniforms.uBloom,1);gl.uniform1i(postUniforms.uReflection,3);gl.uniform1i(postUniforms.uReflections,stats.reflections?1:0);gl.activeTexture(gl.TEXTURE3);gl.bindTexture(gl.TEXTURE_2D,post.reflection?.texture||whiteTexture);
       if(composeScreen&&!stats.bloom){
@@ -4227,7 +4265,7 @@
       gl.bindFramebuffer(gl.FRAMEBUFFER,post.a.framebuffer);gl.viewport(0,0,post.a.width,post.a.height);
       gl.uniform1i(postUniforms.uPass,0);gl.uniform2f(postUniforms.uTexel,1/canvas.width,1/canvas.height);gl.drawArrays(gl.TRIANGLES,0,3);
       if(stats.reflections){
-        reflectionsPass(hasOverlay&&canvas.width%4===0&&canvas.height%4===0);
+        reflectionsPass(hasOverlay&&canvas.width%4===0&&canvas.height%4===0,fovea);
         gl.useProgram(postProgram);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,sceneTexture);
         gl.activeTexture(gl.TEXTURE1);gl.viewport(0,0,post.b.width,post.b.height);
       }
@@ -4394,7 +4432,7 @@
         if(tuile)photoTilePass(tuile,dynamicBatch,colourOverlay,t,drawOrigin);
       }
       prof?.end();
-      stats.reflections=reflectionMode==='off'&&!!(stats.bloom&&post.reflectSource&&post.reflection&&fx.reflections!==false&&fx.reflections!=='off');stats.reflectionSteps=stats.reflections?96:0;
+      stats.reflections=reflectionMode==='off'&&!!(stats.bloom&&post.reflectSource&&post.reflection&&fx.reflections!==false&&fx.reflections!=='off');stats.reflectionSteps=stats.reflections?18:0;stats.lotsOccultes=0;stats.nappesOccultees=0;
       const avecOverlay=colourOverlay.length>0||overlayParticles.length>0;
       // Sans habitacle superposé, la couleur finale et l'entrée du SSR historique sont la même image.
       // Avec habitacle, conserver séparément le monde et sa profondeur avant le clear de l'overlay.
@@ -4415,7 +4453,7 @@
       gl.uniform2f(uniforms.uNightHour,environment?.night||0,environment?.hour??14);
       gl.uniform3fv(uniforms.uSkyTop,weather.skyTop);gl.uniform3fv(uniforms.uSkyBottom,weather.skyBottom);
       for(let k=0;k<pbrTextures.length;k++){gl.activeTexture(gl.TEXTURE5+k);gl.bindTexture(gl.TEXTURE_2D_ARRAY,pbrTextures[k]);}
-      gl.uniform1f(uniforms.uOverlayMode,options?.overlayLighting==='world'?1:0);gl.uniform1f(uniforms.uSeaMode,options?.sea===false?0:1);gl.uniform1f(uniforms.uPhoto,fx.photo||0);gl.uniform4fv(uniforms.uWeather,weather.values);gl.uniform3fv(uniforms.uLightDirection,lightDirections);gl.uniform2fv(uniforms.uLightCone,lightCones);gl.uniform3fv(uniforms.uLightPosition,lightPositions);gl.uniform3fv(uniforms.uLightColor,lightColors);gl.uniform1fv(uniforms.uLightRange,lightRanges);gl.uniform1i(uniforms.uLightCount,selected.length);
+      gl.uniform1f(uniforms.uOverlayMode,options?.overlayLighting==='world'?1:0);gl.uniform1f(uniforms.uSeaMode,options?.sea===false?0:1);gl.uniform1f(uniforms.uPhoto,fx.photo||0);if(fx.fovea||foveaPose){if(fx.fovea)gl.uniform4fv(uniforms.uFovea,fx.fovea);else gl.uniform4f(uniforms.uFovea,0,0,0,0);foveaPose=!!fx.fovea;}gl.uniform4fv(uniforms.uWeather,weather.values);gl.uniform3fv(uniforms.uLightDirection,lightDirections);gl.uniform2fv(uniforms.uLightCone,lightCones);gl.uniform3fv(uniforms.uLightPosition,lightPositions);gl.uniform3fv(uniforms.uLightColor,lightColors);gl.uniform1fv(uniforms.uLightRange,lightRanges);gl.uniform1i(uniforms.uLightCount,selected.length);
       gl.uniform2f(uniforms.uResolution,canvas.width,canvas.height);gl.uniform4f(uniforms.uEffects,t,fx.flash||0,fx.damage||0,Math.max(0,Math.min(1,fx.pulse||0)));
       gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,stats.shadows?shadowTarget.texture:whiteTexture);gl.uniform1i(uniforms.uShadowMap,2);
       gl.uniformMatrix4fv(uniforms.uShadowMatrix,false,shadowMatrices);gl.uniform4f(uniforms.uShadowSettings,stats.shadows&&!sunOnly?shadowLights.length:0,shadowTarget?1/(shadowTarget.size*2):1,stats.shadows&&!sunOnly&&fx.torch!==false?1:0,stats.shadows&&environment?(sunOnly?2:1):0);
@@ -4450,7 +4488,7 @@
       renderStatic(shown,0);if(camera.chunked)drawChunks(c=>visible(c,eye,axes,horizontal,vertical,Math.min(far,c.range),colourRadii));
       // BITUME : chaussée et terrain, puis décor par lots, découpés au champ et à la portée de chaque lot.
       if(warm){warm.cible='couleur '+(msaa?'msaa'+msaa.samples:(stats.bloom||composeScreen)?'scene':'ecran');prechaufferNappes();stats.lotsVisibles=prechaufferLots(false);}
-      else{dessinerNappes(eye,axes,horizontal,vertical,far,colourRadii);stats.lotsVisibles=dessinerLots(eye,axes,horizontal,vertical,far,null,colourRadii);}
+      else{dessinerNappes(eye,axes,horizontal,vertical,far,colourRadii,fx.masqueNappes);stats.lotsVisibles=dessinerLots(eye,axes,horizontal,vertical,far,null,colourRadii,fx.masqueLots);}
       renderBatch(dynamicBatch,dynamicBuffer,false);
       if(crowd)renderBatch(crowd,crowdBuffer,false);
       // PDR (lots) : les lots du jeu, dans la cible de la scène (MSAA), avant les effets translucides.
@@ -4514,7 +4552,7 @@
         gl.bindFramebuffer(gl.FRAMEBUFFER,null);
       }
       prof?.begin('post');
-      if(stats.bloom||composeScreen)postPass(couleurFinale.texture,avecOverlay);
+      if(stats.bloom||composeScreen)postPass(couleurFinale.texture,avecOverlay,fx.fovea);
       else if(presenterEcran){
         // FScene a composé sa couleur dans post.scene. Elle arrive telle quelle sur le canvas.
         gl.bindFramebuffer(gl.READ_FRAMEBUFFER,cibleFinale);gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,null);
@@ -4957,7 +4995,7 @@
           gl.uniform3fv(u.uPdrLumiereDirection,l.directions);gl.uniform2fv(u.uPdrLumiereCone,l.cones);gl.uniform1fv(u.uPdrLumierePortee,l.portees);gl.uniform1i(u.uPdrLumieres,l.nombre);
         };
       }};
-    return {setEnvironment(value){environment=environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setNappes,setLots,preparerLot,updateShape,gl,pdr,calibrate,profile,prewarm,retain,resetStats,precalculerOmbre,setRenderScale:value=>surface?.setScale(value),setBudgetTarget:value=>watch?.setTarget(value)};
+    return {setEnvironment(value){environment=environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,stats,actorFilter,setNappes,setLots,preparerLot,updateShape,gl,pdr,calibrate,profile,prewarm,retain,resetStats,precalculerOmbre,setRenderScale:value=>surface?.setScale(value),setMaxPixels(value){runtimeMaxPixels=Number.isFinite(value)&&value>0?value:0;surface?.setMaxPixels?.(runtimeMaxPixels);return resize();},setBudgetTarget:value=>watch?.setTarget(value)};
   }
   // Both GPU backends share the procedural shapes, instance layout and visibility
   // rules. No rendering calls or GPU state are shared between the APIs.

@@ -227,7 +227,7 @@ fn ombrage(r:vec3f)->f32 {
       if (!pipelines.has(count)) pipelines.set(count,device.createRenderPipeline({...desc,multisample:{count}}));
       return pipelines.get(count);
     }
-    let publicFx, sources, meteo, parPied, ombre, groupe;
+    let publicFx, sources, meteo, parPied, ombre, groupe, regard, enCockpit;
     const compte = {}, mesure = {images:0,candidats:0,totalCandidats:0,picCandidats:0,echantillons:0};
     const fx = {
       gpuShadow(pass,v) { return publicFx?.gpuShadow?.(pass,v); },
@@ -235,16 +235,24 @@ fn ombrage(r:vec3f)->f32 {
         const publicVu = publicFx?.gpuColor?.(pass,v);
         const r = map.maj(v.oeil[0],v.oeil[2]);
         let mots=map.visibles(v,parPied===3,liste);
-        // Chaque descripteur émet déjà 4 sous-brins stratifiés par cellule (256 brins / tuile 3,6 m).
-        // On retient 3 à 4 passes spatiales symétriques sur les deux rives (f=0 à 55 m, f=1 à 27 m,
-        // f=3..4 à 14 m) sous enveloppe GPU fixe, sans jamais dégarnir un côté de la route.
-        const maxTuiles=parPied===3?196:156;
+        // Rendu fovéal de la prairie : le tapis continu (f=0 à 55 m) habille symétriquement les deux rives,
+        // tandis que la surdensité (f=1 à 27 m, f=3..4 à 14 m) se concentre dans le cône du regard du pilote.
+        const maxTuiles=parPied===3?188:148;
         if (mots>0) {
           let ec=0;
+          const ox=v.oeil[0], oz=v.oeil[2], avecRegard=!!regard;
+          const gx=avecRegard?regard[0]:0, gz=avecRegard?regard[1]:-1;
+          const dansCone=(i,seuilCos,distMin2)=>{
+            if(!avecRegard)return true;
+            const dx=(liste[i]+4)*PAS-ox, dz=(liste[i+1]+4)*PAS-oz, d2=dx*dx+dz*dz;
+            if(d2<=distMin2)return true;
+            const dotG=(dx*gx+dz*gz)/Math.sqrt(d2);
+            return dotG>=seuilCos;
+          };
           for(let i=0;i<mots && ec<maxTuiles;i+=4){if(liste[i+2]===0){listeTriee.set(liste.subarray(i,i+4),ec*4);ec++;}}
-          for(let i=0;i<mots && ec<maxTuiles;i+=4){if(liste[i+2]===1){listeTriee.set(liste.subarray(i,i+4),ec*4);ec++;}}
-          for(let i=0;i<mots && ec<maxTuiles;i+=4){if(liste[i+2]===3){listeTriee.set(liste.subarray(i,i+4),ec*4);ec++;}}
-          if(parPied===3){for(let i=0;i<mots && ec<maxTuiles;i+=4){if(liste[i+2]===4){listeTriee.set(liste.subarray(i,i+4),ec*4);ec++;}}}
+          for(let i=0;i<mots && ec<maxTuiles;i+=4){if(liste[i+2]===1 && dansCone(i,.48,144)){listeTriee.set(liste.subarray(i,i+4),ec*4);ec++;}}
+          for(let i=0;i<mots && ec<maxTuiles;i+=4){if(liste[i+2]===3 && dansCone(i,enCockpit?.78:.70,49)){listeTriee.set(liste.subarray(i,i+4),ec*4);ec++;}}
+          if(parPied===3){for(let i=0;i<mots && ec<maxTuiles;i+=4){if(liste[i+2]===4 && dansCone(i,enCockpit?.82:.74,36)){listeTriee.set(liste.subarray(i,i+4),ec*4);ec++;}}}
           liste.set(listeTriee.subarray(0,ec*4),0); mots=ec*4;
         }
         const k=mots*64;
@@ -279,7 +287,7 @@ fn ombrage(r:vec3f)->f32 {
         compte.instances=(publicVu?.instances || 0)+k; return compte;
       }
     };
-    return {mesure, preparer(pub,s,m,q) { publicFx=pub; sources=s; meteo=m; parPied=q==='ultra'?3:2; return fx; },
+    return {mesure, preparer(pub,s,m,q,reg,cockpit) { publicFx=pub; sources=s; meteo=m; parPied=q==='ultra'?3:2; regard=reg||null; enCockpit=!!cockpit; return fx; },
       liberer() { uniform.destroy(); texture.destroy(); tuiles.destroy(); pipelines.clear(); } };
   }
   B.herbeGPU = {creer,clipmap};

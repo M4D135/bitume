@@ -66,7 +66,7 @@
   const VUES_COURSE = Object.freeze(['aileron-avant', 'nez', 'cockpit', 'arceau', 'poursuite-proche', 'poursuite']);
   const preferenceMouvement = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
   const DEFAUT = { vue: 'cockpit', vue2: 'poursuite', vue3: 'poursuite', vue4: 'poursuite', partage: 'haut-bas', joueursLocaux: 1, boite: 'auto', aide: 0.35, qualite: 'auto', cadence: 'auto', general: 0.8, moteur: 0.9, effets: 0.9, tours: 3, difficulte: 1, circuit: 0, champ: 70, retro: 'auto', pneus: 'slicks', tableau: 'reduit', carte: 'oui', cartePosition: 'bas-gauche', carteTaille: 'normale', demo: 'oui', vibrations: 'oui', vibrationForce: 0.5, meteo: 'aleatoire',
-    anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'non', gouttes: 1, forcePluie: 'forte',
+    anticrenelage: 'profil', ombres: 'profil', vegetation: 'profil', faune: 'profil', horizon: 'profil', definition: 'profil', reflets: 'profil', halo: 'profil', optimisations: 'profil', matieres: 'profil', foule: 'profil', moment: 'jour', saison: 'ete', saisonMode: 'manuel', momentMode: 'manuel', annoncesVirages: 'non', gouttes: 1, forcePluie: 'forte',
     secousses: (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : .5; } catch (e) { return .5; } })() };
   const reglagesEnregistres = lireStock('bitume.reglages', {});
   const reglages = Object.assign({}, DEFAUT, reglagesEnregistres);
@@ -246,23 +246,35 @@
   }
   appliquerCarte();
 
-  // Rien ne se coupe à distance : le plan lointain passe derrière tout le décor (au plus à 4,4 km de la piste) et la
-  // brume fait la limite. Les ombres du soleil prennent tout l'atlas du moteur sur un carré de 200 m de côté.
-  const PORTEE_VUE = 640, OMBRE = 100, OMBRE_DEVANT = 76;
-  // Clé du décor voulu : palier ancre, enrichissement, végétation et saison. La préparation des séances la compare à
+  // Rien ne se coupe à distance : le plan lointain couvre les reliefs d'horizon jusqu'à 1,85 km sans clipping, tandis
+  // que l'atlas dynamique serré (68 m) offre des ombres nettes relayées au-delà par uOmbreLoin précalculé.
+  const PORTEE_VUE = 1850, OMBRE = 68, OMBRE_DEVANT = 48;
+  const PORTEE_PAR_HORIZON = Object.freeze({ couloir: 950, etendu: 2100, complet: 3600 });
+  function porteeVueActive(S = session) {
+    const h = profilDe(S).decor.horizon;
+    return PORTEE_PAR_HORIZON[h] || PORTEE_VUE;
+  }
+  // Clé du décor voulu : palier ancre, enrichissement, végétation, étendue et saison. La préparation des séances la compare à
   // la scène installée pour savoir s'il reste un décor à bâtir avant de lancer la séance.
   function voeuDecor(saisonDemandee) {
     const ancre = etatProfils.decor;
-    const veut = B.graphismes.melange(ancre, 0, { decor: ancre, capacites: capacitesRendu, options: reglages }).decor;
-    return { ancre, veut, vegetationQualite: decorEnrichi ? veut.vegetationQualite : 'off', saison: B.saisons.normaliser(saisonDemandee ?? reglages.saison) };
+    const mel = B.graphismes.melange(ancre, 0, { decor: ancre, capacites: capacitesRendu, options: reglages });
+    const veut = mel.decor;
+    const baseBascule = B.graphismes.profil(ancre).lod.bascule || 520;
+    return { ancre, veut, horizon: veut.horizon, foule: veut.foule, echelleBascule: mel.lod.bascule / baseBascule,
+      vegetationQualite: decorEnrichi ? veut.vegetationQualite : 'off',
+      saison: B.saisons.normaliser(saisonDemandee ?? reglages.saison) };
   }
   function sceneEnPlace(i, saisonDemandee, v = voeuDecor(saisonDemandee)) {
-    return !!scene && scene.index === i && scene.enrichi === decorEnrichi && scene.palier === v.ancre && scene.vegetationQualite === v.vegetationQualite && scene.saison === v.saison;
+    return !!scene && scene.index === i && scene.enrichi === decorEnrichi && scene.palier === v.ancre &&
+      scene.vegetationQualite === v.vegetationQualite && scene.saison === v.saison &&
+      scene.horizon === v.horizon && scene.matieres === (decorEnrichi && v.veut.matieres) &&
+      scene.foule === (decorEnrichi && v.foule !== false) && scene.echelleBascule === v.echelleBascule;
   }
   function clePanorama(i, v) {
     const k = CATALOGUE[i], version = document.querySelector('.version-jeu')?.textContent;
     if (k.id !== 'larche' || !version) return null;
-    const options = [v.ancre, decorEnrichi, v.veut.matieres, v.vegetationQualite, 'flux-1'].join('/');
+    const options = [v.ancre, decorEnrichi, v.veut.matieres, v.vegetationQualite, v.horizon ? 'flux-1-' + v.horizon : 'flux-1'].join('/');
     return 'panorama-v1:' + B.cache.cleDecor(k.id, k.graine, options, v.saison, version);
   }
   function installer(i, saisonDemandee, panorama, herbierWasm, cFourni, cacheRelief) {
@@ -270,24 +282,30 @@
     // reconstruit pas à chaque fluctuation du gouverneur, seulement quand l'ancre ou l'enrichissement change.
     const v = voeuDecor(saisonDemandee), { ancre, veut, vegetationQualite, saison } = v;
     if (!cFourni && sceneEnPlace(i, saisonDemandee, v)) return scene;
+    const matieresActives = decorEnrichi && veut.matieres;
+    const fouleActive = decorEnrichi && v.foule !== false && !!B.public;
     const c = cFourni || circuit(i), decor = B.decor.construire(c, {
-      decorCinema: true,
+      decorCinema: decorEnrichi ? veut.decorCinema !== false : false,
+      horizon: decorEnrichi ? v.horizon : null,
+      neigeVolume: decorEnrichi,
+      echelleBascule: decorEnrichi ? v.echelleBascule : 1,
       decorProgressif: true,
       cacheRelief,
       cachePanorama: panorama && panorama.cle === clePanorama(i, v) ? panorama : null,
       herbierWasm,
       qualite: ancre,
-      matieres: decorEnrichi && veut.matieres,
+      matieres: matieresActives,
       vegetation: decorEnrichi && veut.vegetation,
       vegetationQualite,
       saison,
       solsProceduraux: true,
-      pierresProcedurales: decorEnrichi && veut.matieres,
+      pierresProcedurales: matieresActives,
       organique: true,
-      public: decorEnrichi && !!B.public,
+      public: fouleActive,
     });
     decor.atmosphere = B.graphismes.atmosphere(decor.atmosphere);
-    decor.atmosphere = Object.assign({}, decor.atmosphere, { fogDensity: Math.max(decor.atmosphere.fogDensity || .0006, .00145) });
+    const brumeMin = v.horizon === 'complet' ? .00062 : v.horizon === 'etendu' ? .00105 : .00145;
+    decor.atmosphere = Object.assign({}, decor.atmosphere, { fogDensity: Math.max(decor.atmosphere.fogDensity || .0006, brumeMin) });
     if (B.obstacles) c.obstacles = B.obstacles.creer(decor.obstacles);
     rendu.setWorld([], [], decor.atmosphere);
     rendu.setNappes(decor.nappes, { staticBounds: true, immutable: true });
@@ -297,7 +315,7 @@
     // « foule » du moteur. Bâti au palier ancre, comme le décor ; la vue de l'ancienne scène rend ses tampons.
     if (scene && scene.vuePublic) scene.vuePublic.liberer();
     if (scene) for (const prairie of scene.prairies || []) prairie?.liberer();
-    const pub = decor.gradins && B.public ? B.public.creer(c, decor, { qualite: ancre, saison }) : null;
+    const pub = decor.gradins && fouleActive ? B.public.creer(c, decor, { qualite: ancre, saison }) : null;
     let vuePublic = null;
     if (pub) try { vuePublic = B.public.vue(rendu, pub); } catch (e) { console.warn('BITUME : public indisponible', e); }
     // plan du circuit pour l'affichage de course, dessiné une fois
@@ -307,8 +325,9 @@
     dessinerTrace(ctx, trace, p, 9, 'rgba(10,12,15,.9)'); dessinerTrace(ctx, trace, p, 4.5, '#d9d2c3');
     // profondeur du volume d'ombre : un point du sol au bord du carré est décalé de OMBRE × cotangente de la hauteur du soleil
     const sol = decor.atmosphere.sunDirection, sinus = sol[1] / Math.hypot(sol[0], sol[1], sol[2]);
-    const ombre = { extent: OMBRE, depth: 2 * (OMBRE * Math.sqrt(Math.max(0, 1 - sinus * sinus)) / Math.max(.25, sinus) + 30) };
-    scene = { index: i, enrichi: decorEnrichi, palier: ancre, vegetationQualite, saison, c, decor, fond, plan: p, ombre, detailPeripherique: B.detailPeripherique.creer(decor.lots), public: pub, vuePublic, prairies: [] };
+    const etendueOmbre = reglages.ombres === 'ultra' ? 96 : OMBRE;
+    const ombre = { extent: etendueOmbre, depth: 2 * (etendueOmbre * Math.sqrt(Math.max(0, 1 - sinus * sinus)) / Math.max(.25, sinus) + 30) };
+    scene = { index: i, enrichi: decorEnrichi, palier: ancre, vegetationQualite, saison, horizon: v.horizon, matieres: matieresActives, foule: fouleActive, echelleBascule: v.echelleBascule, c, decor, fond, plan: p, ombre, detailPeripherique: B.detailPeripherique.creer(decor.lots), visibilite: B.visibiliteRaycast ? B.visibiliteRaycast.creer(decor) : null, public: pub, vuePublic, prairies: [] };
     return scene;
   }
   // Douze champs préalloués : vue principale et deux glaces par pilote local, jusqu'à quatre (lot C). Les six
@@ -2876,13 +2895,16 @@
   // décor, capacités du moteur et les quatre options du menu. melange normalise des chaînes, crée une vingtaine
   // d'objets et les gèle ; rappelé deux à cinq fois par vue et par image (neuf à deux), il ne se recalcule plus que
   // lorsqu'une de ces entrées change : réglage, palier du gouverneur, détection graphique. Même résultat, objet figé.
-  const profilVu = { qualite: null, n: -1, decor: null, capacites: null, anticrenelage: null, ombres: null, vegetation: null, faune: null, profil: null };
+  const CLES_OPTIONS_GRAPHISMES = Object.keys(B.graphismes.OPTIONS);
+  const profilVu = { qualite: null, n: -1, decor: null, capacites: null, optionsCle: '', profil: null };
   function profilDe(S) {
     const q = S && S.banc ? S.banc.qualite : reglages.qualite, m = profilVu;
+    let optionsCle = '';
+    for (let i = 0; i < CLES_OPTIONS_GRAPHISMES.length; i++) optionsCle += (i ? '|' : '') + reglages[CLES_OPTIONS_GRAPHISMES[i]];
     if (m.profil === null || m.qualite !== q || m.n !== palier.n || m.decor !== etatProfils.decor || m.capacites !== capacitesRendu ||
-        m.anticrenelage !== reglages.anticrenelage || m.ombres !== reglages.ombres || m.vegetation !== reglages.vegetation || m.faune !== reglages.faune) {
+        m.optionsCle !== optionsCle) {
       m.qualite = q; m.n = palier.n; m.decor = etatProfils.decor; m.capacites = capacitesRendu;
-      m.anticrenelage = reglages.anticrenelage; m.ombres = reglages.ombres; m.vegetation = reglages.vegetation; m.faune = reglages.faune;
+      m.optionsCle = optionsCle;
       m.profil = B.graphismes.melange(q, palier.n, { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages });
     }
     return m.profil;
@@ -2922,10 +2944,15 @@
   // Résolution réellement donnée au moteur. En changer réalloue ses cibles : un accroc, puis une image plus floue ou
   // plus nette d'un coup. En pleine conduite, le changement attend donc un arrêt — grille et feux, pause, résultats,
   // séance suivante (resolutionDifferee, appliquée par la boucle) ; les autres effets du palier suivent à l'image.
-  let resolutionMoteur = null, resolutionDifferee = false;
+  let resolutionMoteur = null, plafondMoteur = null, resolutionDifferee = false;
   function appliquerPalier() {
     if (!rendu) return;
-    resolutionMoteur = profilDe(session).rendu.resolution; resolutionDifferee = false;
+    const P = profilDe(session);
+    resolutionMoteur = P.rendu.resolution;
+    const plafond = P.rendu.plafondPixels === null ? (rendu.plafondInitial || 0) : P.rendu.plafondPixels;
+    plafondMoteur = plafond;
+    resolutionDifferee = false;
+    if (rendu.setMaxPixels) rendu.setMaxPixels(plafond);
     rendu.resize(resolutionMoteur);
   }
   function conduiteEnCours(S) {
@@ -2933,7 +2960,9 @@
       S.course.phase !== 'feux' && !S.course.termine;
   }
   function appliquerPalierEnCourse(S) {
-    if (rendu && conduiteEnCours(S) && profilDe(session).rendu.resolution !== resolutionMoteur) { resolutionDifferee = true; return; }
+    const P = profilDe(session);
+    const plafond = P.rendu.plafondPixels === null ? (rendu?.plafondInitial || 0) : P.rendu.plafondPixels;
+    if (rendu && conduiteEnCours(S) && (P.rendu.resolution !== resolutionMoteur || plafond !== plafondMoteur)) { resolutionDifferee = true; return; }
     appliquerPalier();
   }
   // À chaque image rendue : une résolution mise en attente passe dès que plus personne ne conduit.
@@ -3166,10 +3195,16 @@
     axe[0] = Math.sin(cam.yaw) * cp; axe[1] = Math.sin(cam.pitch || 0); axe[2] = -Math.cos(cam.yaw) * cp;
     return axe;
   }
+  function modeRetroEffectif() {
+    const r = reglages.retro;
+    if (r === 'auto') return estTactile ? 'non' : 'oui';
+    return ['non', 'eco', 'oui', 'ultra'].includes(r) ? r : 'oui';
+  }
   function retroVoulu(S, vue, P) {
-    const r = reglages.retro === 'auto' ? (estTactile ? 'non' : 'oui') : reglages.retro;
-    // Le profil décide : image des glaces refusée d'office au palier bas et aux paliers Auto les plus serrés.
-    return r === 'oui' && (vue === 'cockpit' || vue === 'arceau') && !S.regardArriere && S.type !== 'vitrine' && !cameraEssai && (P || profilDe(S)).effets.retroImages;
+    const r = modeRetroEffectif();
+    // Le profil décide en mode auto/oui ; les modes explicites éco et ultra forcent l'activation des glaces.
+    return r !== 'non' && (vue === 'cockpit' || vue === 'arceau') && !S.regardArriere && S.type !== 'vitrine' && !cameraEssai &&
+      (r === 'eco' || r === 'ultra' || (P || profilDe(S)).effets.retroImages);
   }
   // Le second moteur, sa copie du décor et les toiles des quatre glaces naissent au chargement, jamais dans le
   // chemin d'une image : tant que la copie n'est pas prête, la glace reste peinte (fond dessiné du cockpit).
@@ -3179,8 +3214,9 @@
   // la séance (ou n'importe quelle course si S est nul) peut-elle montrer des glaces vives, à un palier quelconque
   // que le gouverneur Auto peut atteindre ?
   function glacesPossibles(S) {
-    const r = reglages.retro === 'auto' ? (estTactile ? 'non' : 'oui') : reglages.retro, type = S ? S.type : 'course';
-    if (r !== 'oui' || type === 'vitrine') return false;
+    const r = modeRetroEffectif(), type = S ? S.type : 'course';
+    if (r === 'non' || type === 'vitrine') return false;
+    if (r === 'eco' || r === 'ultra') return true;
     return profilsAtteignables(type, S).some(P => P.effets.retroImages);
   }
   function libererRenduSecondaire() {
@@ -3351,16 +3387,22 @@
     // deux au plus par image ; le même coût par seconde à 30, 60, 120 ou 144 Hz. À l'image la plus proche de
     // l'échéance (demi-image de tolérance) ; une dette bornée à deux glaces : après un accroc, les deux glaces sont
     // repeintes, sans rafale de rattrapage. La première image où les glaces se montrent, les deux sont peintes.
-    const hz = P.secondaires.retroviseurs.hz;
+    const rMode = modeRetroEffectif();
+    const hz = rMode === 'eco' ? 15 : rMode === 'ultra' ? 60 : P.secondaires.retroviseurs.hz;
     if (!(hz > 0)) return null;
-    const intervalle = 1 / (2 * hz), dt = Math.max(0, dtImage || 0);
-    if (!J.vu) { J.vu = true; J.dette = 2 * intervalle; J.ecoule[0] = J.ecoule[1] = 0; }
+    const intervalle = 1 / (2 * hz), dt = Math.max(0, dtImage || 0), dejaVu = J.vu;
+    if (!dejaVu) { J.vu = true; J.dette = 2 * intervalle; J.ecoule[0] = J.ecoule[1] = 0; }
     else J.dette = Math.min(J.dette + dt, 2 * intervalle);
     J.ecoule[0] += dt; J.ecoule[1] += dt;
-    for (let n = 0; n < 2 && J.dette >= intervalle - dt / 2; n++) {
+    const maxParImage = !dejaVu || rMode === 'ultra' ? 2 : 1;
+    for (let n = 0; n < maxParImage && J.dette >= intervalle - dt / 2; n++) {
       J.dette -= intervalle;
       const i = G.cote; G.cote = 1 - G.cote;
       if (J.poses[i].ok) aRepeindre |= 1 << i;
+    }
+    if (dejaVu && maxParImage === 1 && aRepeindre === 3) {
+      const i = G.cote; G.cote = 1 - G.cote;
+      aRepeindre = 1 << i;
     }
     if (!aRepeindre) return null;
     J.masque = aRepeindre;
@@ -3396,7 +3438,9 @@
     const ouvre = g.k * .16, co = Math.cos(ouvre), so = Math.sin(ouvre), rx = rf0 * co - rf2 * so, rz = rf0 * so + rf2 * co;
     camR.pos[0] = g.centre[0]; camR.pos[1] = g.centre[1] + .1; camR.pos[2] = g.centre[2];
     camR.yaw = Math.atan2(rx, -rz); camR.pitch = Math.asin(clamp(rf1, -1, 1)) + .06; camR.roll = ps.roulis * .85;
-    camR.fov = 2 * Math.atan(Math.tan(16 * Math.PI / 180) * h / l) * 180 / Math.PI; camR.near = .3; camR.far = 220;
+    const rMode = modeRetroEffectif();
+    camR.fov = 2 * Math.atan(Math.tan(16 * Math.PI / 180) * h / l) * 180 / Math.PI; camR.near = .3;
+    camR.far = rMode === 'eco' ? 150 : rMode === 'ultra' ? 360 : 210;
     return camR;
   }
   // Les carènes normalisées par BITUME tiennent dans leur cube unité. Une sphère
@@ -3494,12 +3538,14 @@
     const champ = prepare || champGlace(camR, source.width, source.height);
     const objets = listeGlace(S, camR, sortie, suivie, source.height, i, champ, P.palier, secondeGlace);
     ecarterPiecesHorsGlace(objets, camR, champ, retro.debutEffets, G.opaque ? retro.finEffets : 0);
-    retro.foulePublic = publicVisible && retro.vuePublic ? retro.vuePublic.fx : null;
+    const rMode = modeRetroEffectif();
+    retro.foulePublic = publicVisible && rMode !== 'eco' && P.decor.foule !== false && retro.vuePublic ? retro.vuePublic.fx : null;
     if (S.nature && (retro.ambianceSource !== S.nature.ambiance || retro.ambianceRevision !== S.nature.ambiance.revision)) {
       if (retro.rendu.setEnvironment) retro.rendu.setEnvironment(S.nature.ambiance.atmosphere);
       retro.ambianceSource = S.nature.ambiance; retro.ambianceRevision = S.nature.ambiance.revision;
     }
-    retro.rendu.draw(camR, objets, { time: horlogeReelle, surfaceGPU: verrePourVue(retro.rendu, S), shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, weather: ambiance, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: null, lights: lampesTunnel(G, i ? 'lampes1' : 'lampes0', scene.decor.tunnelLampes, camR, dtGlace, scene.index), foule: retro.foulePublic });
+    const foveaRetro = P.optimisations?.foveal !== false ? (retro.fovea || (retro.fovea = new Float32Array([.5, .5, .26, .82]))) : null;
+    retro.rendu.draw(camR, objets, { time: horlogeReelle, surfaceGPU: verrePourVue(retro.rendu, S), shadows: false, bloom: false, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: 0, flash: 0, photo: 0, fovea: foveaRetro, weather: ambiance, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: null, lights: lampesTunnel(G, i ? 'lampes1' : 'lampes0', scene.decor.tunnelLampes, camR, dtGlace, scene.index), foule: retro.foulePublic });
     if (B.mesures.actif) B.mesures.vue('retro', retro.rendu);
     G.surfaces[i].present();
   }
@@ -3927,8 +3973,12 @@
       }
     }
     if (regardArriereVoulu(S, suivie, vue)) cam = cameraRegardArriere(S, ps, cam, vue);
-    if (cameraEssai) cam = Object.assign({ roll: 0, near: .1, far: PORTEE_VUE, fov: 40 }, cameraEssai(pj, cam));
-    if (!cameraEssai && !S.reference && cam) { if (cam.pos[1] > ps.y + 4.4) cam.pos[1] = ps.y + 4.4; cam.far = Math.min(cam.far || PORTEE_VUE, PORTEE_VUE); }
+    const porteeActive = porteeVueActive(S);
+    if (cameraEssai) cam = Object.assign({ roll: 0, near: .1, far: porteeActive, fov: 40 }, cameraEssai(pj, cam));
+    else if (cam) {
+      if (!S.reference && cam.pos[1] > ps.y + 4.4) cam.pos[1] = ps.y + 4.4;
+      cam.far = porteeActive;
+    }
     if (S.secousse > 0 && !cam.sujetNature) {
       const pitchSur = cam.pitch, yawSur = cam.yaw;
       const a = S.secousse * .05 * reglages.secousses, t = horlogeReelle;
@@ -4203,7 +4253,7 @@
     // Le public : excitation et regard par section d'après les voitures, abris d'après la pluie et la neige, fête au
     // départ et au drapeau à damier. Le temps fait l'animation (même mouvement à toute cadence) ; aucune allocation
     // (l'ambiance est créée par prechargerSeance).
-    const vuePublic = publicVisible && scene.vuePublic;
+    const vuePublic = publicVisible && P.decor.foule !== false && scene.vuePublic;
     if (vuePublic) {
       const A = S.ambiancePublic || (S.ambiancePublic = creationTardive('ambiancePublic', ambiancePublic()));
       A.pluie = meteo.pluie || 0; A.neige = precipitationsNeige(S); A.mouille = Math.max(meteo.mouille || 0, A.pluie);
@@ -4212,13 +4262,17 @@
       if (S.palierPublic !== P.palier) { vuePublic.qualite(P.palier); S.palierPublic = P.palier; }
     }
     S.foulePublic = vuePublic ? vuePublic.fx : null;
+    const vis = scene.visibilite, opt = P.optimisations || { foveal: true, raycast: true };
+    const aspectVue = canvas.width / Math.max(1, canvas.height);
+    const fovea = vis && opt.foveal ? B.visibiliteRaycast.calculerFovea(vis, c, suivie?.etat, cam, aspectVue) : null;
+    if (vis && opt.raycast) B.visibiliteRaycast.occulter(vis, cam, aspectVue, { vue, sousCouvert: sousVoute });
     const herbe = P.decor.vegetationQualite;
     let herbeActive = true, couverture = P.groundCover;
     if (scene.decor.saison && scene.decor.saison.neige) { herbeActive = false; couverture = { density: [0, 1, 0], distance: [0, 1] }; }
     if (herbeActive && scene.enrichi && !saisonLocale?.neige && (herbe === 'ultra' || (herbe === 'high' && P.palier === 'high')) && rendu.gpu?.device) {
       const i = indexVue(S);
       const prairie = scene.prairies[i] || (scene.prairies[i] = B.herbeGPU.creer(rendu, scene.decor));
-      S.foulePublic = prairie.preparer(S.foulePublic, S.sillage?.sources, meteo, herbe);
+      S.foulePublic = prairie.preparer(S.foulePublic, S.sillage?.sources, meteo, herbe, opt.foveal ? vis?.directionRegard : null, vue === 'cockpit');
       couverture = herbe === 'ultra' ? B.graphismes.prairieCombineeUltra : B.graphismes.prairieCombinee;
     }
     const ombresVue = B.ombres.preparer(etatOmbres, P, cam, poses, co.voitures.length, suivie.id, ombreDebut, ombreFin, (S.banc ? S.banc.qualite : reglages.qualite) === 'auto' ? palier.n : -1, horlogeReelle);
@@ -4230,10 +4284,10 @@
     // vues du réalisateur retrouvent les seuils de la scène, y compris si le dessin échoue.
     const detail = scene.detailPeripherique;
     try {
-      if (detail && suivie?.etat) {
-        B.detailPeripherique.appliquer(detail, c, suivie.etat, cam, canvas.width, canvas.height);
+      if (detail && opt.foveal && suivie?.etat) {
+        B.detailPeripherique.appliquer(detail, c, suivie.etat, cam, canvas.width, canvas.height, fovea);
       }
-      rendu.draw(cam, sortie, { time: horlogeReelle, surfaceGPU: verrePourVue(rendu, S), msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, reflections: optionsVisibilite.reflections, weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: couverture, foule: S.foulePublic, contacts: ombresVue.contacts, ombreProche: ombresVue.ombreProche, penombre: ombresVue.penombre });
+      rendu.draw(cam, sortie, { time: horlogeReelle, surfaceGPU: verrePourVue(rendu, S), msaa: P.rendu.msaa === 4, shadowMapScale: P.rendu.shadowMapScale, shadows: avecOmbres(P), bloom: haloInt, brightness: S.lumiere, lights: lampes, torch: false, sunOnly: true, adaptive: false, frameMs: dureeImage, damage: eclair, flash: eclair, photo: haloInt ? 1 : 0, fovea, masqueLots: opt.raycast ? vis?.masqueLots : null, masqueNappes: opt.raycast ? vis?.masqueNappes : null, reflections: optionsVisibilite.reflections, weather: S.ambianceImage, windSources: S.sillage && S.sillage.sources, windStrength: P.windStrength, groundCover: couverture, foule: S.foulePublic, contacts: ombresVue.contacts, ombreProche: ombresVue.ombreProche, penombre: ombresVue.penombre });
       if (S.banc && S === session) S.banc.dessins.push(tPrec);
     } finally { B.detailPeripherique.restaurer(detail); }
     if (B.mesures.actif) {
@@ -5498,9 +5552,12 @@
       reglages[t.name] = B.graphismes.normaliserOptions({ [t.name]: t.value })[t.name];
       if (t.name === 'faune') reglages.fauneCoupeeManuellement = reglages.faune === 'off';
       sauverReglages();
-      // AA et ombres sont lus au prochain rendu, sans recréer le contexte. La végétation suit la prochaine
-      // séance : aucun rebâtiment du terrain ni changement d'obstacles au milieu d'une course.
+      if (t.name === 'definition' && rendu) appliquerPalierEnCourse(session);
+      if (t.name === 'retro' && typeof creerMoteurRetro === 'function' && glacesPossibles(session) && rendu) void creerMoteurRetro(rendu);
+      // AA, ombres, halo, reflets et optimisations sont lus au prochain rendu, sans recréer le contexte.
+      // L'étendue, les matières et la végétation suivent la prochaine séance.
     }
+    if (t.name === 'retro' && typeof creerMoteurRetro === 'function' && glacesPossibles(session) && rendu) void creerMoteurRetro(rendu);
     if (t.name === 'aide') { reglages.aide = +t.value; sauverReglages(); }
   });
   for (const nom of ['general', 'moteur', 'effets']) $('v-' + nom).addEventListener('input', e => { reglages[nom] = +e.target.value; sauverReglages(); appliquerVolumes(); });
@@ -5671,7 +5728,7 @@
   function remplirReglages() {
     captureTouche = captureManette = null; majCommandes();
     majDetectionGraphique();
-    for (const nom of ['vue', 'vue2', 'boite', 'qualite', 'cadence', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'aide', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille', 'annoncesVirages']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
+    for (const nom of ['vue', 'vue2', 'boite', 'qualite', 'cadence', 'horizon', 'definition', 'anticrenelage', 'ombres', 'reflets', 'halo', 'optimisations', 'matieres', 'vegetation', 'faune', 'foule', 'aide', 'tableau', 'retro', 'demo', 'cartePosition', 'carteTaille', 'annoncesVirages']) for (const r of document.querySelectorAll('input[name="' + nom + '"]')) r.checked = String(reglages[nom]) === r.value;
     $('v-carte').checked = reglages.carte !== 'non';
     $('v-champ').value = reglages.champ; $('v-champ-valeur').textContent = reglages.champ + '°';
     $('v-secousses').value = reglages.secousses; $('v-secousses-valeur').textContent = Math.round(reglages.secousses * 100) + ' %';
@@ -5754,6 +5811,7 @@
   $('b-recommencer').addEventListener('click', () => session?.mancheChampionnat != null ? partirChampionnat() : demarrerSeance(session ? session.type : 'course'));
   $('b-reglages-pause').addEventListener('click', () => { retourReglages = 'pause'; aller('reglages'); });
   $('b-abandon').addEventListener('click', () => {
+    restaurerReference();
     if (session && session.enLigne) quitterEnLigne();
     else if (session?.mancheChampionnat != null) aller('championnat');
     else if (session && session.type === 'chrono' && session.course.joueur.tempsTours.length) montrerResultats(session);
@@ -6733,11 +6791,12 @@
     const tHud = B.mesures.actif ? performance.now() : 0;
     const tFps = $('t-fps');
     if (S.type === 'vitrine' && tFps) {
+      if (tFps.hidden) tFps.hidden = false;
       const cible = imageCadence ? 1 / (imageCadence.periode * imageCadence.diviseur) : 60;
       const fps = Math.round(imageCadence && imageCadence.ips || 1000 / Math.max(.5, dureeImage));
       if (HUD1.fpsTitre !== fps) { texte(tFps, fps + ' FPS'); HUD1.fpsTitre = fps; }
       classe(tFps, 'bas', fps != null && fps < .9 * cible);
-    }
+    } else if (tFps && !tFps.hidden) tFps.hidden = true;
     if (S.type !== 'vitrine') {
       majHudLocaux(S);
       const j = S.course.joueur;
@@ -6866,7 +6925,12 @@
     const ref = B.autoconfig.reference(precedent) || usine;
     if (!toutAppliquer && reglages.fauneCoupeeManuellement === true && reglages.faune === 'off') ref.faune = 'profil';
     const f = B.autoconfig.fusionner(reglages, ref, choisis, !!toutAppliquer);
-    if (toutAppliquer) reglages.fauneCoupeeManuellement = false;
+    if (toutAppliquer) {
+      reglages.fauneCoupeeManuellement = false;
+      if (B.graphismes?.OPTIONS) {
+        for (const k of Object.keys(B.graphismes.OPTIONS)) if (!B.autoconfig.CLES.includes(k)) reglages[k] = 'profil';
+      }
+    }
     Object.assign(reglages, f.valeurs);
     resultat.appliques = f.reference; resultat.gardes = f.gardes;
     gpuModeste = resultat.selection === 'low';
@@ -6973,18 +7037,18 @@
     try {
       // ombres photo (src/ombres.js) : tuile de 512² ; à 1024², des dents rampent sous la casquette de la planche.
       // Bloc PCSS compilé seulement si la pénombre variable sert (B.ombres.reglages.pcssFine) : shader plus court sinon.
-      const optionsRendu = { indexRegisteredShapes: true, cullRigidOverlay: true, cameraRelativeOverlay: true, cullRigidSunCasters: true, msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512, pcss: !!(B.ombres && B.ombres.reglages.pcssFine) } };
+      const optionsRendu = { indexRegisteredShapes: true, cullRigidOverlay: true, cameraRelativeOverlay: true, cullRigidSunCasters: true, msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512, pcss: true } };
       // L'interface garde sa définition CSS ; seule la scène Xbox est bornée
       // à 720p, y compris sur TV 4K et après redimensionnement. FSurface applique
       // ce budget avant l'allocation des cibles WebGPU, sans retouche de FERRO.
       const recoMateriel = B.autoconfig.recommander(capacitesDeclarees());
       if (recoMateriel.xbox) Object.assign(optionsRendu, { resolution: 'native', maxPixels: 1280 * 720, renderScale: 1 });
-      else if (!recoMateriel.mobile && recoMateriel.selection === 'low') Object.assign(optionsRendu, { resolution: 'native', maxPixels: 1600 * 900, renderScale: 1 });
       if (pageCachee()) await pageVisible();
       contexteFragile = recoMateriel.mobile || (/AppleWebKit\//i.test(navigator.userAgent) && !/Chrome|Chromium|Android|Edg/i.test(navigator.userAgent));
       gpuModeste = recoMateriel.selection === 'low';
       try {
         rendu = await window.FRenderWebGPU.create(canvas, { ...optionsRendu, onDeviceLost: signalerPerteGPU });
+        rendu.plafondInitial = recoMateriel.xbox ? 1280 * 720 : recoMateriel.mobile ? 0 : (gpuModeste ? 1600 * 900 : 2560 * 1440);
       } catch (e) {
         if (!contexteRenduPerdu) {
           console.error(e);
@@ -7077,7 +7141,7 @@
     if (!Number.isInteger(i) || i < 0 || i >= CATALOGUE.length || !Number.isInteger(graine) || graine < 0 || graine > 0xffffffff) throw new Error('circuit ou graine invalide');
     if (!Number.isInteger(difficulte) || difficulte < 0 || difficulte > 2 || !Number.isInteger(tours) || tours < 1 || tours > 99) throw new Error('difficulté ou nombre de tours invalide');
     if (typeof pilote !== 'boolean') throw new Error('pilotage de référence invalide');
-    if (!B.meteo.pour(meteo) || !vues.includes(vue) || !vues.includes(vue2) || !['haut-bas', 'cote'].includes(partage) || !['oui', 'non'].includes(glaces)) throw new Error('paramètre visuel de référence inconnu');
+    if (!B.meteo.pour(meteo) || !vues.includes(vue) || !vues.includes(vue2) || !['haut-bas', 'cote'].includes(partage) || !['oui', 'non', 'eco', 'ultra'].includes(glaces)) throw new Error('paramètre visuel de référence inconnu');
     if (!Number.isFinite(vitesse) || vitesse < 0 || vitesse > 100 || !Number.isFinite(mouille) || mouille < 0 || mouille > 1) throw new Error('vitesse ou humidité invalide');
     if (options.decor !== undefined && !['reference', 'enrichi'].includes(options.decor)) throw new Error('décor de référence inconnu');
     const c = circuit(i);
@@ -7085,7 +7149,7 @@
     const depart = options.depart === 'tunnel' ? c.tunnel.debut - 40 : (options.depart ?? 800);
     if (!Number.isFinite(depart)) throw new Error('abscisse de départ invalide');
     restaurerReference();
-    const cles = ['vue', 'vue2', 'partage', 'qualite', 'anticrenelage', 'ombres', 'vegetation', 'faune', 'moment', 'saison', 'retro', 'meteo', 'forcePluie', 'saisonMode', 'momentMode', 'meteoMode', 'pneus', 'pneusPilotes', 'pneusAutoPilotes', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
+    const cles = ['vue', 'vue2', 'partage', 'qualite', ...Object.keys(B.graphismes.OPTIONS), 'moment', 'saison', 'retro', 'meteo', 'forcePluie', 'saisonMode', 'momentMode', 'meteoMode', 'pneus', 'pneusPilotes', 'pneusAutoPilotes', 'secousses', 'vibrations', 'champ', 'difficulte', 'tours'];
     const avant = Object.fromEntries(cles.map(k => [k, reglages[k]])), decorAvant = decorEnrichi;
     Object.assign(reglages, { vue, vue2, partage, qualite, difficulte, tours, retro: glaces, meteo, forcePluie, saisonMode: 'manuel', momentMode: 'manuel', meteoMode: 'manuel', secousses: 0, vibrations: 'non', champ: DEFAUT.champ });
     Object.assign(reglages, B.graphismes.normaliserOptions(options));

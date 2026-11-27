@@ -94,6 +94,7 @@ async function create(canvas,options={}){
  initializeCleanup=()=>{disposed=true;try{context.unconfigure();}catch{}for(const b of buffers)b.destroy();for(const t of textures)t.destroy();buffers.clear();textures.clear();releaseDevice();};
  const view=new Float32Array(16),projection=new Float32Array(16),vp=new Float32Array(16),overlayProjection=new Float32Array(16),overlayVP=new Float32Array(16),relativeView=new Float32Array(16),shadowMatrices=new Float32Array(48),shadowViewMatrix=new Float32Array(16),shadowProjection=new Float32Array(16),shadowMatrix=new Float32Array(16);
  const lightPositions=new Float32Array(36),lightColors=new Float32Array(36),lightRanges=new Float32Array(12),lightDirections=new Float32Array(36),lightCones=new Float32Array(24);
+ const foveaWorld=new Float32Array(4),foveaSsr=new Float32Array(4);
  const staticCaches=Array.from({length:5},()=>({entries:[],batch:S.pack([]),buffer:null,capacity:0})),dynamicSlot={},overlaySlot={},fxSlot={},overlayFxSlot={},crowdSlot={},pdrSlots=[];
  const overlayView=options.cullRigidOverlay?S.rigidOverlayView(source):null;
  const packDynamic=S.instancePacker(),packOverlay=S.instancePacker(),packFx=S.effectsPacker(),packOverlayFx=S.effectsPacker();
@@ -239,7 +240,9 @@ async function create(canvas,options={}){
   };
   const constants=share?[]:terrainConstants;
   try{
+  let listIndex=-1;
   for(const n of list||[]){
+   listIndex++;
    if(!n?.sommets||!n.indices?.length)continue;
    const data=n.sommets,count=data.length/13,rigid=S.rigidTerrainVertices(data),smooth=n.vertexTint==='smooth';
    const vertices=new Float32Array(count*(rigid?10:6));
@@ -259,7 +262,7 @@ async function create(canvas,options={}){
     instance=allocate(instances,GPUBufferUsage.VERTEX,'FERRO terrain materials');
    }
    const index=n.indices instanceof Uint32Array?n.indices:new Uint32Array(n.indices);
-   nappes.push({...n,rigid,vertex:allocate(vertices,GPUBufferUsage.VERTEX,'FERRO terrain vertices'),constant,instance,index:allocate(index,GPUBufferUsage.INDEX,'FERRO terrain indices')});
+   nappes.push({...n,sourceIndex:listIndex,rigid,vertex:allocate(vertices,GPUBufferUsage.VERTEX,'FERRO terrain vertices'),constant,instance,index:allocate(index,GPUBufferUsage.INDEX,'FERRO terrain indices')});
    triangles+=index.length/3;
   }
   terrainView.reset(nappes,options?.staticBounds===true);stats.nappeTriangles=triangles;
@@ -323,7 +326,7 @@ async function create(canvas,options={}){
   for(let i=0;i<input.length;i++){
    const l=input[i];
    if(!l?.objets&&!l?.paquet?.values&&typeof l?.preparerDetail!=='function')continue;
-   const slot={source:l,ready:false,near:null,far:null,groundPlan:null,used:0};
+   const slot={source:l,inputIndex:i,ready:false,near:null,far:null,groundPlan:null,used:0};
    // The eager view keeps its original snapshot of descriptor properties.
    lots.push(progressiveLots?l:{...l});lotSlots.push(slot);lotInputSlots[i]=slot;
    if(!progressiveLots)uploadLot(slot);
@@ -339,14 +342,14 @@ async function create(canvas,options={}){
    if((slot.near||slot.far)&&now-slot.used>300)releaseLot(slot);
   }
  }
- function renderLots(pass,eye,axes,h,v,far,accept,radii){
+ function renderLots(pass,eye,axes,h,v,far,accept,radii,masqueLots){
   let count=0;
   for(const entry of lotView.candidates(accept,axes,h,v,far,radii)){
-   const l=entry.lot;
+   const l=entry.lot,slot=lotSlots[entry.index];
+   if(!accept&&masqueLots&&masqueLots[slot.inputIndex]){stats.lotsOccultes++;continue;}
    if(entry.cover&&entry.distance>entry.range)continue;
    if(accept?l.ombre===false||!accept(entry.bounds):entry.distance>Math.min(far,entry.range)||!S.visible(entry.bounds,eye,axes,h,v,far,radii))continue;
    if(l.detailProcheSeul&&!entry.near)continue;
-   const slot=lotSlots[entry.index];
    if(!slot.ready)uploadLot(slot,!entry.near);
    const plan=entry.cover&&slot.groundPlan,fresh=plan&&plan.frame!==lotView.frame;
    if(plan&&S.prepareGroundCover(plan,entry,lotView.frame,vegetationState.eye,vegetationState)){
@@ -372,7 +375,7 @@ async function create(canvas,options={}){
   ? G.FSurface.create(canvas,{limit:(device.limits?.maxTextureDimension2D||8192),maxPixels:options.maxPixels,scale:options.renderScale}):null;
  if(nativeSurface)stats.native=nativeSurface.stats;
  const surfaceBudget=nativeSurface?G.FSurface.budget({target:60,onBudget:options.onBudget}):null;
- let runtimeShadowScale=config.shadowMapScale;
+ let runtimeShadowScale=config.shadowMapScale,runtimeMaxPixels=options.maxPixels>0?options.maxPixels:0;
  const bloomEnabled=fx=>quality!=='low'&&fx.bloom!==false;
  const shadowsEnabled=fx=>fx.shadows!==false&&(quality!=='low'||fx.shadows===true);
  const msaaEnabled=fx=>config.msaa&&fx.msaa!==false&&(bloomEnabled(fx)||fx.msaa===true);
@@ -385,6 +388,7 @@ async function create(canvas,options={}){
    ratio=typeof quality==='number'?quality:quality==='low'?.8:quality==='high'?Math.min(pixelRatio,2):Math.min(pixelRatio,1.5);
    ratio=Math.max(.5,Math.min(2,ratio));
    if(quality==='auto')ratio=Math.min(ratio,Math.sqrt(1800000/(cssWidth*cssHeight)))*autoScale;
+   if(runtimeMaxPixels>0)ratio=Math.min(ratio,Math.sqrt(runtimeMaxPixels/(cssWidth*cssHeight)));
    const limit=(device.limits?.maxTextureDimension2D||8192);
    ratio=Math.min(ratio,limit/cssWidth,limit/cssHeight);
    width=Math.max(1,Math.round(cssWidth*ratio));height=Math.max(1,Math.round(cssHeight*ratio));
@@ -545,19 +549,20 @@ async function create(canvas,options={}){
   const storage=overlay?overlayFxSlot:fxSlot;ensureSlot(storage,batch);
   pass.setPipeline(pipeline('fx'));pass.setBindGroup(0,bind('fx',overlay?'overlay':'world',{uViewProjection:clip,uDrawOrigin:origin,uWindTime:[0,time],uSkyTop:environment?.skyTop||[.2,.3,.4],uSkyBottom:environment?.skyBottom||[.5,.6,.6],uEye:eye,uAmbient:environment?.ambient||[.12,.15,.16],uFogColor:environment?.fog||[.009,.018,.024],uEnvironment:[environment?1:0,environment?.fogDensity??.018],uTime:time}));renderBatch(pass,batch,storage);
  }
- function renderNappes(pass,eye,axes,horizontal,vertical,far,uniforms,radii){
+ function renderNappes(pass,eye,axes,horizontal,vertical,far,uniforms,radii,masqueNappes){
   const count=warm?nappes.length:terrainView.select(eye,axes,horizontal,vertical,far,radii);
   if(!count)return 0;
   if(warm)warm.nappes+=count;
-  let mode=null;
+  let mode=null,drawn=0;
   pass.setBindGroup(0,uniforms);
   for(let i=0;i<count;i++){
    const n=nappes[warm?i:terrainView.indices[i]];
+   if(!warm&&masqueNappes&&masqueNappes[n.sourceIndex]){stats.nappesOccultees++;continue;}
    if(mode!==n.rigid){mode=n.rigid;pass.setPipeline(pipeline('world',{nappe:mode?'rigid':true}));}
    pass.setVertexBuffer(0,n.vertex);pass.setVertexBuffer(1,n.constant||n.instance);pass.setIndexBuffer(n.index,'uint32');
-   pass.drawIndexed(n.indices.length);stats.drawCalls++;stats.triangles+=n.indices.length/3;
+   pass.drawIndexed(n.indices.length);stats.drawCalls++;stats.triangles+=n.indices.length/3;drawn++;
   }
-  pass.setPipeline(pipeline('world'));pass.setBindGroup(0,uniforms);return count;
+  pass.setPipeline(pipeline('world'));pass.setBindGroup(0,uniforms);return drawn;
  }
  // Préchauffage : chaque lot, proche ET lointain, sans test de champ ni de portée, puis chaque sous-ensemble d'indices
  // des prairies une fois par passe. En passe d'ombre, les lots « ombre: false » restent exclus, comme en jeu.
@@ -637,8 +642,8 @@ async function create(canvas,options={}){
   const colourOverlay=overlayView?overlayView.select(overlay,eye,axes,horizontal,1/f,colourRadii,warm):overlay;
   stats.overlayCulled=overlay.length-colourOverlay.length;
   const dynamicBatch=detail?photo.splitPack(ordinary,photo.nearMeshes,environment):packDynamic(ordinary,environment,true),torchPosition=eye.map((v,i)=>v+right[i]*.16-up[i]*.08),sunOnly=!!fx.sunOnly,hasOverlay=colourOverlay.length>0||overlayParticles.length>0||overlaySurface;
-  stats.drawCalls=stats.triangles=stats.instances=stats.uploadBytes=stats.uniformUploadBytes=stats.fxInstances=0;stats.bloom=bloomEnabled(fx);stats.shadows=shadowsEnabled(fx);
-  stats.reflections=config.reflections&&stats.bloom&&fx.reflections!==false&&fx.reflections!=='off';stats.reflectionSteps=stats.reflections?96:0;
+  stats.drawCalls=stats.triangles=stats.instances=stats.uploadBytes=stats.uniformUploadBytes=stats.fxInstances=stats.lotsOccultes=stats.nappesOccultees=0;stats.bloom=bloomEnabled(fx);stats.shadows=shadowsEnabled(fx);
+  stats.reflections=config.reflections&&stats.bloom&&fx.reflections!==false&&fx.reflections!=='off';stats.reflectionSteps=stats.reflections?18:0;
   prepareFrameTargets(hasOverlay,stats.bloom,stats.reflections,stats.shadows);
   const shadowTexel=stats.shadows?1/(2*shadowTarget.size):1;
   stats.shadowTileSize=stats.shadows?shadowTarget.size:0;stats.shadowMapSize=2*stats.shadowTileSize;stats.shadowMode=environment?'sun-atlas':'atlas';stats.shadowMaps=stats.shadows?(sunOnly?0:shadowLights.length+(fx.torch!==false?1:0))+(environment?1:0):0;
@@ -651,8 +656,10 @@ async function create(canvas,options={}){
   if(stats.shadows){const pass=begin({label:'FERRO shadow atlas',colorAttachments:[],depthStencilAttachment:{view:shadowTarget.view,depthLoadOp:'clear',depthClearValue:1,depthStoreOp:'store'}});if(!sunOnly)shadowLights.forEach((light,i)=>{const fw=light.dir,lightAxes=fw?{forward:fw,right:[-fw[2],0,fw[0]],up:[0,1,0]}:null;shadowPass(pass,light,dynamicBatch,i,lightAxes,t);});if(environment)sunShadowPass(pass,eye,axes,dynamicBatch,t,camera,fx,crowd,pdrLots);if(!sunOnly&&fx.torch!==false)shadowPass(pass,{p:torchPosition},dynamicBatch,2,axes,t);pass.end();}
   const voile=fx.voile&&fx.voile.force>0&&(fx.voile.textureView||fx.voile.texture?.createView)?fx.voile:null;
   if(voile&&!voile.textureView)voile.textureView=voile.texture.createView();
+  if(fx.fovea&&fx.fovea[3]>fx.fovea[2]){foveaWorld[0]=fx.fovea[0];foveaWorld[1]=1-fx.fovea[1];foveaWorld[2]=fx.fovea[2];foveaWorld[3]=fx.fovea[3];foveaSsr[0]=fx.fovea[0];foveaSsr[1]=fx.fovea[1];foveaSsr[2]=fx.fovea[2];foveaSsr[3]=fx.fovea[3];}
+  else{foveaWorld.fill(0);foveaSsr.fill(0);}
   const worldTextures={uPbrAlbedo:pbr[0],uPbrNormal:pbr[1],uPbrRough:pbr[2],uShadowMap:stats.shadows?shadowTarget:whiteDepth,uVoile:voile?{view:voile.textureView}:white};
-  const worldValues={uOverlayMode:options.overlayLighting==='world'?1:0,uSeaMode:options.sea===false?0:1,uPhoto:fx.photo||0,uSeaOrigin:fx.sea?.origin||[0,0,0,0],uSeaMotion:fx.sea?.motion||[0,0,-1.25,0],uViewProjection:vp,uEye:eye,uForward:forward,uCloudOffset:fx.cloudOffset||weather.cloudOffset,uWindTime:[weather.wind,t],uLocalWindCount:windFrame.count,uLocalWindPosition:windFrame.positions,uLocalWindMotion:windFrame.motions,uSunDirection:environment?.sunDirection||[.4,.8,.3],uSunColor:weather.sunColor,uAmbient:weather.ambient,uFogColor:weather.fog,uEnvironment:[environment?1:0,weather.fogDensity],uNightHour:[environment?.night||0,environment?.hour??14],uSkyTop:weather.skyTop,uSkyBottom:weather.skyBottom,uWeather:weather.values,uLightDirection:lightDirections,uLightCone:lightCones,uLightPosition:lightPositions,uLightColor:lightColors,uLightRange:lightRanges,uLightCount:selected.length,uResolution:[canvas.width,canvas.height],uEffects:[t,fx.flash||0,fx.damage||0,Math.max(0,Math.min(1,fx.pulse||0))],uShadowMatrix:shadowMatrices,uShadowSettings:[stats.shadows&&!sunOnly?shadowLights.length:0,shadowTexel,stats.shadows&&!sunOnly&&fx.torch!==false?1:0,stats.shadows&&environment?(sunOnly?2:1):0],uTorchPosition:fx.torch===false?[0,-1e5,0]:torchPosition,uVoileZone:voile?[voile.origine[0],voile.origine[1],1/Math.max(.001,voile.taille[0]),1/Math.max(.001,voile.taille[1])]:[0,0,0,0],uVoileForce:voile?Math.min(1,voile.force):0,uPbrReady:layers.length?1:0,uVignette:config.vignette};
+  const worldValues={uOverlayMode:options.overlayLighting==='world'?1:0,uSeaMode:options.sea===false?0:1,uPhoto:fx.photo||0,uFovea:foveaWorld,uSeaOrigin:fx.sea?.origin||[0,0,0,0],uSeaMotion:fx.sea?.motion||[0,0,-1.25,0],uViewProjection:vp,uEye:eye,uForward:forward,uCloudOffset:fx.cloudOffset||weather.cloudOffset,uWindTime:[weather.wind,t],uLocalWindCount:windFrame.count,uLocalWindPosition:windFrame.positions,uLocalWindMotion:windFrame.motions,uSunDirection:environment?.sunDirection||[.4,.8,.3],uSunColor:weather.sunColor,uAmbient:weather.ambient,uFogColor:weather.fog,uEnvironment:[environment?1:0,weather.fogDensity],uNightHour:[environment?.night||0,environment?.hour??14],uSkyTop:weather.skyTop,uSkyBottom:weather.skyBottom,uWeather:weather.values,uLightDirection:lightDirections,uLightCone:lightCones,uLightPosition:lightPositions,uLightColor:lightColors,uLightRange:lightRanges,uLightCount:selected.length,uResolution:[canvas.width,canvas.height],uEffects:[t,fx.flash||0,fx.damage||0,Math.max(0,Math.min(1,fx.pulse||0))],uShadowMatrix:shadowMatrices,uShadowSettings:[stats.shadows&&!sunOnly?shadowLights.length:0,shadowTexel,stats.shadows&&!sunOnly&&fx.torch!==false?1:0,stats.shadows&&environment?(sunOnly?2:1):0],uTorchPosition:fx.torch===false?[0,-1e5,0]:torchPosition,uVoileZone:voile?[voile.origine[0],voile.origine[1],1/Math.max(.001,voile.taille[0]),1/Math.max(.001,voile.taille[1])]:[0,0,0,0],uVoileForce:voile?Math.min(1,voile.force):0,uPbrReady:layers.length?1:0,uVignette:config.vignette};
   if(photo)preparePhoto(encoder,dynamic,fx,worldValues,worldTextures);
   const mainUniforms=bind('world','main',worldValues,worldTextures);
   // Only SSR needs the world colour before the cockpit. Otherwise both passes share one attachment.
@@ -663,7 +670,7 @@ async function create(canvas,options={}){
   stats.backgroundWater=backgroundIndex.entries.length;stats.backgroundDrawCalls=0;
   if(backgroundIndex.entries.length){const before=stats.drawCalls;pass.setPipeline(pipeline('world',{background:true}));pass.setBindGroup(0,mainUniforms);renderStatic(pass,backgroundIndex.entries,4);stats.backgroundDrawCalls=stats.drawCalls-before;}
   pass.setPipeline(pipeline('world'));pass.setBindGroup(0,mainUniforms);renderStatic(pass,shown,0);if(camera.chunked)drawChunks(pass,c=>S.visible(c,eye,axes,horizontal,1/f,Math.min(far,c.range),colourRadii));
-  renderNappes(pass,eye,axes,horizontal,1/f,far,mainUniforms,colourRadii);stats.lotsVisibles=warm?renderLotsWarm(pass,false):renderLots(pass,eye,axes,horizontal,1/f,far,null,colourRadii);renderBatch(pass,dynamicBatch,dynamicSlot);if(crowd)renderBatch(pass,crowd,crowdSlot);for(const entry of pdrLots)renderBatch(pass,entry.batch,entry);
+  renderNappes(pass,eye,axes,horizontal,1/f,far,mainUniforms,colourRadii,fx.masqueNappes);stats.lotsVisibles=warm?renderLotsWarm(pass,false):renderLots(pass,eye,axes,horizontal,1/f,far,null,colourRadii,fx.masqueLots);renderBatch(pass,dynamicBatch,dynamicSlot);if(crowd)renderBatch(pass,crowd,crowdSlot);for(const entry of pdrLots)renderBatch(pass,entry.batch,entry);
   if(typeof fx.foule?.gpuColor==='function'){
    const env=environment||S.indoor;Object.assign(crowdView,{oeil:eye,avant:forward,droite:right,haut:up,fov,tangente:1/f,focale:canvas.height*f*.5,largeur:canvas.width,hauteur:canvas.height,near,far,temps:t,qualite:quality,msaa:gpu.samples>1?gpu.samples:0,soleil:env.sunDirection,couleurSoleil:env.sunColor,ambiance:env.ambient,brouillard:env.fog,densiteBrouillard:env.fogDensity,cielHaut:env.skyTop,cielBas:env.skyBottom});
    Object.assign(crowdView.ombre,{textureView:stats.shadows?shadowTarget.view:whiteDepth.view,active:!!(stats.shadows&&environment),plein:sunOnly,texel:shadowTexel});crowdView.lumieres.nombre=selected.length;countCrowd(fx.foule.gpuColor(pass,crowdView));
@@ -695,7 +702,7 @@ async function create(canvas,options={}){
      const reflectionPass=begin({label:'FERRO screen space reflections',colorAttachments:[{view:targets.reflection.view,loadOp:'clear',clearValue:[0,0,0,0],storeOp:'store'}]});
      reflectionPass.setPipeline(pipeline('ssr',{samples:1}));
      const mask=hasOverlay&&canvas.width%4===0&&canvas.height%4===0;
-     reflectionPass.setBindGroup(0,bind('ssr','main',{uProjection:[1/projection[0],1/projection[5],projection[10],projection[14]],uPixel:[1/canvas.width,1/canvas.height],uReceiverMask:mask?1:0},{uColor:sceneBeforeOverlay,uDepth:gpu.samples>1?targets.resolvedDepth:targets.depth,uReceiverTiles:targets.a}));
+     reflectionPass.setBindGroup(0,bind('ssr','main',{uProjection:[1/projection[0],1/projection[5],projection[10],projection[14]],uPixel:[1/canvas.width,1/canvas.height],uReceiverMask:mask?1:0,uFovea:foveaSsr},{uColor:sceneBeforeOverlay,uDepth:gpu.samples>1?targets.resolvedDepth:targets.depth,uReceiverTiles:targets.a}));
      reflectionPass.draw(3);reflectionPass.end();stats.drawCalls++;
     }
     const target=stage===0?targets.a.view:stage===1?targets.b.view:output;
@@ -798,7 +805,7 @@ async function create(canvas,options={}){
  for(const samples of config.msaa?[1,4]:[1]){pipeline('world',{samples});pipeline('world',{samples,background:true});pipeline('world',{samples,overlay:true});pipeline('world',{samples,nappe:true});pipeline('world',{samples,nappe:'rigid'});pipeline('fx',{samples});pipeline('sky',{samples});}
  pipeline('depth',{samples:1});pipeline('ssr',{samples:1});pipeline('post',{samples:1});pipeline('post',{samples:1,target:canvasFormat});copyPipeline(canvasFormat);
  resize();const validationPromise=device.popErrorScope();scope=false;const validation=await validationPromise;if(validation)throw Error('WebGPU initialization: '+validation.message);if(stats.deviceLost)throw Error('FERRO WebGPU : périphérique perdu');
- return {setEnvironment(value){environment=S.environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,createPresentation,stats,actorFilter,setNappes,setLots,preparerLot,updateShape,gpu,prewarm,retain,resetStats,setRenderScale:value=>nativeSurface?.setScale(value),setBudgetTarget:value=>surfaceBudget?.setTarget(value),precalculerOmbre,...(primitiveIndexing?{setPrimitiveIndexing}:{}),setProfiling,getProfiling(){return {available:stats.gpuTimingAvailable,enabled:profiling,samples:timingSamples.slice(),dropped:timingDropped};}};
+ return {setEnvironment(value){environment=S.environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,createPresentation,stats,actorFilter,setNappes,setLots,preparerLot,updateShape,gpu,prewarm,retain,resetStats,setRenderScale:value=>nativeSurface?.setScale(value),setMaxPixels(value){runtimeMaxPixels=Number.isFinite(value)&&value>0?value:0;nativeSurface?.setMaxPixels?.(runtimeMaxPixels);return resize();},setBudgetTarget:value=>surfaceBudget?.setTarget(value),precalculerOmbre,...(primitiveIndexing?{setPrimitiveIndexing}:{}),setProfiling,getProfiling(){return {available:stats.gpuTimingAvailable,enabled:profiling,samples:timingSamples.slice(),dropped:timingDropped};}};
  }catch(error){if(scope)await device.popErrorScope().catch(()=>{});initializeCleanup();throw error;}
  finally{unlock();if(initializing.get(device)===current)initializing.delete(device);}
 }

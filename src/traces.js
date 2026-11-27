@@ -758,7 +758,7 @@
       xmin=Math.min(g[0],d[0])-marge; xmax=Math.max(g[0],d[0])+marge;
       zmin=Math.min(g[2],d[2])-marge; zmax=Math.max(g[2],d[2])+marge;
     }
-    const vue2 = tri ? Math.min(VUE * VUE, 95 * 95) : VUE * VUE, BD = fx.bandes;
+    const vue2 = tri ? Math.min(VUE * VUE, 145 * 145) : VUE * VUE, BD = fx.bandes;
     let bandesVue = 0;
     for (let i = 0; i < BD.length; i++) {
       const b = BD[i];

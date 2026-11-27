@@ -11,10 +11,19 @@
   const QUALITES = Object.freeze(['low', 'medium', 'high', 'auto']);
   const OPTIONS = Object.freeze({
     anticrenelage: Object.freeze(['profil', 'off', 'msaa4']),
-    ombres: Object.freeze(['profil', 'off', 'medium', 'high']),
+    ombres: Object.freeze(['profil', 'off', 'medium', 'high', 'ultra']),
     vegetation: Object.freeze(['profil', 'off', 'low', 'medium', 'high', 'ultra']),
     faune: Object.freeze(['profil', 'off', 'low', 'medium', 'high', 'ultra']),
+    horizon: Object.freeze(['profil', 'couloir', 'etendu', 'complet']),
+    definition: Object.freeze(['profil', '720p', '1080p', '1440p', 'native']),
+    reflets: Object.freeze(['profil', 'off', 'on']),
+    halo: Object.freeze(['profil', 'off', 'on']),
+    optimisations: Object.freeze(['profil', 'complet', 'raycast', 'foveal', 'off']),
+    matieres: Object.freeze(['profil', 'off', 'on']),
+    foule: Object.freeze(['profil', 'off', 'on']),
   });
+  const PLAFONDS_DEFINITION = Object.freeze({ '720p': 1280 * 720, '1080p': 1920 * 1080, '1440p': 2560 * 1440, native: 0 });
+  const ECHELLE_HORIZON = Object.freeze({ couloir: .75, etendu: 1.15, complet: 1.6 });
 
   // Brins proches → sous-ensemble grossier → prairie peinte par le champ écologique sur les nappes existantes.
   // Les portées sont nominales (projection 60°/1080 px) : au loin, aucune géométrie de brin n'est nécessaire.
@@ -210,13 +219,18 @@
     const coupes = q === 'auto' ? TABLE_GOUVERNEUR[niveauDe(palierAuto)] : null;
     const veut = (demande, cle) => demande && !!c[cle] && !(coupes && coupes[cle]);
 
-    const halo = veut(p.effets.halo, 'halo');
+    const haloForce = options.halo === 'on' || (options.halo === 'profil' && options.reflets === 'on');
+    const halo = options.halo === 'off' ? false : haloForce ? !!c.halo : veut(p.effets.halo, 'halo');
+    const ombresActives = options.ombres === 'profil' ? veut(p.effets.ombres, 'ombres') : options.ombres !== 'off' && !!c.ombres;
     const effets = {
-      ombres: options.ombres === 'profil' ? veut(p.effets.ombres, 'ombres') : options.ombres !== 'off' && !!c.ombres,
+      ombres: ombresActives,
+      pcss: options.ombres === 'ultra' && ombresActives,
       halo,
       // Le moteur n'allume les reflets d'écran que si la capacité est ouverte ET avec le bloom
-      // (wantReflections, renderer.js:2216), et le jeu les refuse sur un GPU modeste (jeu.js:1320).
-      reflets: veut(p.effets.reflets, 'reflets') && !c.gpuModeste && halo,
+      // (wantReflections, renderer.js:2216), et le jeu les refuse par défaut sur un GPU modeste (jeu.js:1320).
+      reflets: options.reflets === 'off' ? false
+        : options.reflets === 'on' ? (!!c.reflets && halo)
+        : (veut(p.effets.reflets, 'reflets') && !c.gpuModeste && halo),
       retroImages: veut(p.effets.retroImages, 'retroviseurs'),
     };
 
@@ -224,13 +238,16 @@
     // Un choix manuel de MSAA reste cependant actif sans halo, même en Légère ou au dernier palier d'Auto.
     const msaaProfil = !c.gpuModeste && !(coupes && coupes.halo) ? p.rendu.msaa : 0;
     const msaaDemande = options.anticrenelage === 'profil' ? msaaProfil : options.anticrenelage === 'msaa4' ? MSAA_ACCEPTE : 0;
-    const atlasDemande = options.ombres === 'profil' ? (c.gpuModeste ? 1 : p.rendu.shadowMapScale) : options.ombres === 'high' ? ATLAS_MAX : 1;
+    const atlasDemande = options.ombres === 'profil' ? (c.gpuModeste ? 1 : p.rendu.shadowMapScale)
+      : (options.ombres === 'high' || options.ombres === 'ultra') ? ATLAS_MAX : 1;
+    const plafondPixels = options.definition === 'profil' ? null : PLAFONDS_DEFINITION[options.definition];
     const rendu = {
       msaa: c.msaa ? msaaDemande : 0,
       shadowMapScale: effets.ombres ? Math.max(1, Math.min(ATLAS_MAX, c.shadowMapScale, atlasDemande)) : 1,
       vignette: bornes(p.rendu.vignette, 0, 1, .59),
       bloomThreshold: figer(seuilsDeBloom(p.rendu.bloomThreshold)),
-      resolution: resolutionDe(q, p, c, coupes),
+      resolution: resolutionDe(q, p, c, coupes, options.definition),
+      plafondPixels,
     };
 
     const ancre = estPalier(g.decor) ? g.decor : p.palier;
@@ -238,23 +255,36 @@
     const vegetationQualite = options.vegetation === 'profil' ? (decorProfil.decor.vegetation ? ancre : 'off') : options.vegetation;
     const detailPrairie = options.vegetation === 'profil' ? p.palier : vegetationQualite;
     const faune = options.faune === 'profil' ? p.palier : options.faune;
+    const horizon = options.horizon === 'profil' ? (ancre === 'low' ? 'couloir' : ancre === 'medium' ? 'etendu' : 'complet') : options.horizon;
+    const matieres = options.matieres === 'profil' ? decorProfil.decor.matieres : options.matieres === 'on';
+    const foule = options.foule === 'profil' ? ancre !== 'low' : options.foule === 'on';
+    const optMode = options.optimisations;
+    const optimisations = {
+      foveal: optMode !== 'raycast' && optMode !== 'off',
+      raycast: optMode !== 'foveal' && optMode !== 'off',
+    };
+    const bascule = options.horizon === 'profil' ? p.lod.bascule : Math.round(p.lod.bascule * (ECHELLE_HORIZON[horizon] || 1));
     const glaces = effets.retroImages ? p.secondaires.retroviseurs.glaces : 0;
     const hz = effets.retroImages ? p.secondaires.retroviseurs.hz : 0;
 
     return figer({
       palier: p.palier, libelle: p.libelle, qualite: q,
-      rendu, effets,
+      rendu, effets, optimisations,
       faune, groundCover: PRAIRIE[detailPrairie] || PRAIRIE.low, windStrength: 1,
-      decor: { matieres: decorProfil.decor.matieres, vegetation: vegetationQualite !== 'off', vegetationQualite },
+      decor: { matieres, vegetation: vegetationQualite !== 'off', vegetationQualite, horizon, decorCinema: horizon !== 'complet', foule },
       // Le module ne produit jamais de portée de culling : le moteur coupe par fondu (decor.js:674, portee Infinity).
-      lod: { bascule: p.lod.bascule },
+      lod: { bascule },
       secondaires: {
         retroviseurs: { glaces, hz },
         partage: { hz: p.secondaires.partage.hz },
       },
     });
   }
-  function resolutionDe(q, p, c, coupes) {
+  function resolutionDe(q, p, c, coupes, definition) {
+    if (definition && definition !== 'profil') {
+      if (coupes && coupes.resolution && definition !== 'native') return RESOLUTION_PALIER_4;
+      return Math.max(RESOLUTION_MIN, Math.min(RESOLUTION_MAX, c.pixelRatio));
+    }
     if (coupes && coupes.resolution) return RESOLUTION_PALIER_4; // Auto au dernier palier : le jeu baisse déjà à 0,75
     if (q === 'auto' || typeof p.rendu.resolution !== 'number') return 'auto'; // le gouverneur du moteur garde la main (jeu.js:1307)
     // Un nombre fige le ratio côté moteur : on le borne comme lui (renderer.js:2467-2469) et on ne dépasse jamais

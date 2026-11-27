@@ -209,7 +209,7 @@
     }
   }
   function nouveauGroupe(progressif, leger, palettes) {
-    const lot={objets:[],loin:[],centre:[0,0,0],rayon:0,portee:Infinity,bascule:75,
+    const lot={objets:[],loin:[],centre:[0,0,0],rayon:0,portee:Infinity,bascule:110,
       lodReferenceFov:60,lodReferenceHeight:1080,arbres:true,bosquets:true};
     const groupe={lot,semis:progressif?[]:null,largeurs:progressif?null:[]};
     if (progressif) {
@@ -267,8 +267,10 @@
     // Lot H : forêts et lisières denses multi-échelles (1 instance = 5 houppiers -> coût GPU tenu à 60 FPS).
     const pas=leger?39:qualite==='medium'?7:dense?3:4;
     const cinema=options&&options.decorCinema===true;
-    const quota=cinema?Math.max(2,Math.ceil((leger?2:qualite==='medium'?16:dense?42:28)*.55)):(leger?2:qualite==='medium'?16:dense?42:28);
-    const porteeAxe=cinema?95:(leger?240:360);
+    const horizonMode=(options&&options.horizon)||(cinema?'couloir':'complet');
+    const baseQuota=leger?2:qualite==='medium'?16:dense?42:28;
+    const quota=horizonMode==='couloir'?Math.max(2,Math.ceil(baseQuota*.55)):horizonMode==='etendu'?Math.max(2,Math.ceil(baseQuota*.8)):baseQuota;
+    const porteeAxe=horizonMode==='couloir'?145:horizonMode==='etendu'?225:(leger?240:380);
     const margeRoute=leger?27:22;
     const secteurs=new Uint8Array(Math.ceil(c.longueur/100)+1), groupes=new Map();
     const occupe=zonesProtegees(lots,terrain), foret=c.id==='larche'?foretStura():null;

@@ -1,0 +1,683 @@
+{
+  "version": "0.2.344",
+  "moteur": "FERRO 0.3.35",
+  "date": "2026-11-27T18:55:44.234Z",
+  "p1080": [
+    {
+      "tag": "forets-pacifique-pluie",
+      "circuitNom": "Circuit des Longues Ombres",
+      "fenetreCss": [
+        1920,
+        1080
+      ],
+      "dpr": 1,
+      "canvas": [
+        1920,
+        1080
+      ],
+      "hudFps": "",
+      "diviseurCadence": 1,
+      "ips": 60,
+      "p50": 16.7,
+      "p95": 16.8,
+      "p99": 16.8,
+      "pire": 16.8,
+      "gpuAvailable": true,
+      "gpuP50Ms": 12.12,
+      "gpuP95Ms": 17.43,
+      "gpuMaxMs": 20.97,
+      "triAvg": 1405716,
+      "triMax": 1454977,
+      "callsAvg": 1210,
+      "instAvg": 40078,
+      "lotsTotal": 959,
+      "lotsOccultesAvg": 38,
+      "lotsOccultesMax": 58,
+      "nappesOcculteesAvg": 0,
+      "nappesOcculteesMax": 0,
+      "prairieCandidatsAvg": 34980,
+      "reflectionSteps": 18,
+      "fovea": [
+        0.481,
+        0.533,
+        0.2,
+        0.64
+      ],
+      "midRaceCreations": 0
+    },
+    {
+      "tag": "marseille-corniche-pluie",
+      "circuitNom": "Promenade de la Corniche",
+      "fenetreCss": [
+        1920,
+        1080
+      ],
+      "dpr": 1,
+      "canvas": [
+        1920,
+        1080
+      ],
+      "hudFps": "",
+      "diviseurCadence": 1,
+      "ips": 53.86,
+      "p50": 16.7,
+      "p95": 33.4,
+      "p99": 33.4,
+      "pire": 33.4,
+      "gpuAvailable": true,
+      "gpuP50Ms": 8.45,
+      "gpuP95Ms": 17.69,
+      "gpuMaxMs": 20.12,
+      "triAvg": 1662721,
+      "triMax": 1713250,
+      "callsAvg": 660,
+      "instAvg": 3500,
+      "lotsTotal": 307,
+      "lotsOccultesAvg": 3,
+      "lotsOccultesMax": 6,
+      "nappesOcculteesAvg": 0,
+      "nappesOcculteesMax": 0,
+      "prairieCandidatsAvg": 236,
+      "reflectionSteps": 18,
+      "fovea": [
+        0.425,
+        0.522,
+        0.2,
+        0.64
+      ],
+      "midRaceCreations": 0
+    },
+    {
+      "tag": "karst-lagon-pluie",
+      "circuitNom": "Boucle des Eaux Dormantes",
+      "fenetreCss": [
+        1920,
+        1080
+      ],
+      "dpr": 1,
+      "canvas": [
+        1920,
+        1080
+      ],
+      "hudFps": "",
+      "diviseurCadence": 1,
+      "ips": 60,
+      "p50": 16.7,
+      "p95": 16.7,
+      "p99": 16.8,
+      "pire": 16.8,
+      "gpuAvailable": true,
+      "gpuP50Ms": 8,
+      "gpuP95Ms": 12.71,
+      "gpuMaxMs": 14.16,
+      "triAvg": 1200431,
+      "triMax": 1291090,
+      "callsAvg": 987,
+      "instAvg": 4076,
+      "lotsTotal": 730,
+      "lotsOccultesAvg": 41,
+      "lotsOccultesMax": 61,
+      "nappesOcculteesAvg": 0,
+      "nappesOcculteesMax": 0,
+      "prairieCandidatsAvg": 0,
+      "reflectionSteps": 18,
+      "fovea": [
+        0.495,
+        0.529,
+        0.2,
+        0.64
+      ],
+      "midRaceCreations": 0
+    },
+    {
+      "tag": "sierra-mesa-pluie",
+      "circuitNom": "Circuit du Second Écho",
+      "fenetreCss": [
+        1920,
+        1080
+      ],
+      "dpr": 1,
+      "canvas": [
+        1920,
+        1080
+      ],
+      "hudFps": "",
+      "diviseurCadence": 1,
+      "ips": 60,
+      "p50": 16.7,
+      "p95": 16.7,
+      "p99": 16.8,
+      "pire": 16.8,
+      "gpuAvailable": true,
+      "gpuP50Ms": 9.76,
+      "gpuP95Ms": 14.48,
+      "gpuMaxMs": 16.52,
+      "triAvg": 1326928,
+      "triMax": 1354712,
+      "callsAvg": 812,
+      "instAvg": 41415,
+      "lotsTotal": 350,
+      "lotsOccultesAvg": 11,
+      "lotsOccultesMax": 32,
+      "nappesOcculteesAvg": 0,
+      "nappesOcculteesMax": 0,
+      "prairieCandidatsAvg": 37888,
+      "reflectionSteps": 18,
+      "fovea": [
+        0.485,
+        0.523,
+        0.2,
+        0.64
+      ],
+      "midRaceCreations": 0
+    },
+    {
+      "tag": "nord-atlantique-pluie",
+      "circuitNom": "Passe du Beau Temps",
+      "fenetreCss": [
+        1920,
+        1080
+      ],
+      "dpr": 1,
+      "canvas": [
+        1920,
+        1080
+      ],
+      "hudFps": "",
+      "diviseurCadence": 1,
+      "ips": 60,
+      "p50": 16.7,
+      "p95": 16.8,
+      "p99": 16.8,
+      "pire": 16.8,
+      "gpuAvailable": true,
+      "gpuP50Ms": 7.14,
+      "gpuP95Ms": 14.02,
+      "gpuMaxMs": 16.58,
+      "triAvg": 1202168,
+      "triMax": 1370456,
+      "callsAvg": 759,
+      "instAvg": 16569,
+      "lotsTotal": 909,
+      "lotsOccultesAvg": 98,
+      "lotsOccultesMax": 123,
+      "nappesOcculteesAvg": 2,
+      "nappesOcculteesMax": 5,
+      "prairieCandidatsAvg": 13667,
+      "reflectionSteps": 18,
+      "fovea": [
+        0.527,
+        0.523,
+        0.2,
+        0.64
+      ],
+      "midRaceCreations": 0
+    },
+    {
+      "tag": "route-des-cimes-horizon",
+      "circuitNom": "Lacets de l’Aiglière",
+      "fenetreCss": [
+        1920,
+        1080
+      ],
+      "dpr": 1,
+      "canvas": [
+        1920,
+        1080
+      ],
+      "hudFps": "",
+      "diviseurCadence": 1,
+      "ips": 60,
+      "p50": 16.7,
+      "p95": 16.8,
+      "p99": 16.8,
+      "pire": 16.8,
+      "gpuAvailable": true,
+      "gpuP50Ms": 10.81,
+      "gpuP95Ms": 15.2,
+      "gpuMaxMs": 15.99,
+      "triAvg": 1682134,
+      "triMax": 1789153,
+      "callsAvg": 979,
+      "instAvg": 40553,
+      "lotsTotal": 679,
+      "lotsOccultesAvg": 47,
+      "lotsOccultesMax": 60,
+      "nappesOcculteesAvg": 0,
+      "nappesOcculteesMax": 0,
+      "prairieCandidatsAvg": 35251,
+      "reflectionSteps": 0,
+      "fovea": [
+        0.504,
+        0.593,
+        0.2,
+        0.64
+      ],
+      "midRaceCreations": 0
+    },
+    {
+      "tag": "baikal-pluie",
+      "circuitNom": "Descente des Freins Chauds",
+      "fenetreCss": [
+        1920,
+        1080
+      ],
+      "dpr": 1,
+      "canvas": [
+        1920,
+        1080
+      ],
+      "hudFps": "",
+      "diviseurCadence": 1,
+      "ips": 60,
+      "p50": 16.7,
+      "p95": 16.8,
+      "p99": 16.8,
+      "pire": 16.8,
+      "gpuAvailable": true,
+      "gpuP50Ms": 8.85,
+      "gpuP95Ms": 13.3,
+      "gpuMaxMs": 15.14,
+      "triAvg": 965674,
+      "triMax": 980982,
+      "callsAvg": 598,
+      "instAvg": 3004,
+      "lotsTotal": 2477,
+      "lotsOccultesAvg": 17,
+      "lotsOccultesMax": 18,
+      "nappesOcculteesAvg": 0,
+      "nappesOcculteesMax": 0,
+      "prairieCandidatsAvg": 53,
+      "reflectionSteps": 18,
+      "fovea": [
+        0.472,
+        0.522,
+        0.2,
+        0.64
+      ],
+      "midRaceCreations": 0
+    },
+    {
+      "tag": "larche-km18-gole-pluie",
+      "circuitNom": "Circuit de la Glace Vive",
+      "fenetreCss": [
+        1920,
+        1080
+      ],
+      "dpr": 1,
+      "canvas": [
+        1920,
+        1080
+      ],
+      "hudFps": "",
+      "diviseurCadence": 1,
+      "ips": 60,
+      "p50": 16.7,
+      "p95": 16.8,
+      "p99": 16.8,
+      "pire": 16.8,
+      "gpuAvailable": true,
+      "gpuP50Ms": 8.52,
+      "gpuP95Ms": 14.75,
+      "gpuMaxMs": 17.76,
+      "triAvg": 1340940,
+      "triMax": 1586883,
+      "callsAvg": 676,
+      "instAvg": 40780,
+      "lotsTotal": 551,
+      "lotsOccultesAvg": 2,
+      "lotsOccultesMax": 49,
+      "nappesOcculteesAvg": 0,
+      "nappesOcculteesMax": 0,
+      "prairieCandidatsAvg": 37888,
+      "reflectionSteps": 18,
+      "fovea": [
+        0.78,
+        0.532,
+        0.2,
+        0.64
+      ],
+      "midRaceCreations": 1
+    },
+    {
+      "tag": "larche-vallee-horizon",
+      "circuitNom": "Circuit de la Glace Vive",
+      "fenetreCss": [
+        1920,
+        1080
+      ],
+      "dpr": 1,
+      "canvas": [
+        1920,
+        1080
+      ],
+      "hudFps": "",
+      "diviseurCadence": 1,
+      "ips": 60,
+      "p50": 16.7,
+      "p95": 16.8,
+      "p99": 16.8,
+      "pire": 16.8,
+      "gpuAvailable": true,
+      "gpuP50Ms": 7.8,
+      "gpuP95Ms": 12.85,
+      "gpuMaxMs": 14.61,
+      "triAvg": 1472583,
+      "triMax": 1557541,
+      "callsAvg": 672,
+      "instAvg": 29264,
+      "lotsTotal": 551,
+      "lotsOccultesAvg": 20,
+      "lotsOccultesMax": 74,
+      "nappesOcculteesAvg": 0,
+      "nappesOcculteesMax": 0,
+      "prairieCandidatsAvg": 26237,
+      "reflectionSteps": 0,
+      "fovea": [
+        0.553,
+        0.564,
+        0.2,
+        0.64
+      ],
+      "midRaceCreations": 0
+    },
+    {
+      "tag": "larche-hiver-neige",
+      "circuitNom": "Circuit de la Glace Vive",
+      "fenetreCss": [
+        1920,
+        1080
+      ],
+      "dpr": 1,
+      "canvas": [
+        1920,
+        1080
+      ],
+      "hudFps": "",
+      "diviseurCadence": 1,
+      "ips": 60,
+      "p50": 16.7,
+      "p95": 16.7,
+      "p99": 16.8,
+      "pire": 16.8,
+      "gpuAvailable": true,
+      "gpuP50Ms": 7.34,
+      "gpuP95Ms": 12.52,
+      "gpuMaxMs": 15.2,
+      "triAvg": 1069063,
+      "triMax": 1211939,
+      "callsAvg": 706,
+      "instAvg": 2555,
+      "lotsTotal": 365,
+      "lotsOccultesAvg": 23,
+      "lotsOccultesMax": 43,
+      "nappesOcculteesAvg": 0,
+      "nappesOcculteesMax": 0,
+      "prairieCandidatsAvg": 0,
+      "reflectionSteps": 0,
+      "fovea": [
+        0.504,
+        0.593,
+        0.2,
+        0.64
+      ],
+      "midRaceCreations": 0
+    },
+    {
+      "tag": "ovale-forges-pluie",
+      "circuitNom": "Autodrome des Alizés",
+      "fenetreCss": [
+        1920,
+        1080
+      ],
+      "dpr": 1,
+      "canvas": [
+        1920,
+        1080
+      ],
+      "hudFps": "",
+      "diviseurCadence": 1,
+      "ips": 48.86,
+      "p50": 16.7,
+      "p95": 33.4,
+      "p99": 33.4,
+      "pire": 33.5,
+      "gpuAvailable": true,
+      "gpuP50Ms": 12.26,
+      "gpuP95Ms": 17.5,
+      "gpuMaxMs": 22.02,
+      "triAvg": 1335249,
+      "triMax": 1376896,
+      "callsAvg": 673,
+      "instAvg": 17396,
+      "lotsTotal": 98,
+      "lotsOccultesAvg": 0,
+      "lotsOccultesMax": 0,
+      "nappesOcculteesAvg": 0,
+      "nappesOcculteesMax": 0,
+      "prairieCandidatsAvg": 14415,
+      "reflectionSteps": 18,
+      "fovea": [
+        0.386,
+        0.643,
+        0.2,
+        0.64
+      ],
+      "midRaceCreations": 0
+    }
+  ],
+  "erreurs1080": [],
+  "retina16poucesDpr2": [
+    {
+      "tag": "retina-larche-km18-pluie-cockpit",
+      "circuitNom": "Circuit de la Glace Vive",
+      "fenetreCss": [
+        1728,
+        1117
+      ],
+      "dpr": 2,
+      "canvas": [
+        2239,
+        1447
+      ],
+      "hudFps": "",
+      "diviseurCadence": 1,
+      "ips": 55.28,
+      "p50": 16.7,
+      "p95": 33.3,
+      "p99": 33.4,
+      "pire": 33.4,
+      "gpuAvailable": true,
+      "gpuP50Ms": 9.24,
+      "gpuP95Ms": 19.92,
+      "gpuMaxMs": 21.76,
+      "triAvg": 1424573,
+      "triMax": 1672383,
+      "callsAvg": 722,
+      "instAvg": 41046,
+      "lotsTotal": 551,
+      "lotsOccultesAvg": 2,
+      "lotsOccultesMax": 41,
+      "nappesOcculteesAvg": 0,
+      "nappesOcculteesMax": 1,
+      "prairieCandidatsAvg": 37888,
+      "reflectionSteps": 18,
+      "fovea": [
+        0.78,
+        0.518,
+        0.2,
+        0.64
+      ],
+      "midRaceCreations": 0
+    },
+    {
+      "tag": "retina-ultra-larche-km18-pluie",
+      "circuitNom": "Circuit de la Glace Vive",
+      "fenetreCss": [
+        1728,
+        1117
+      ],
+      "dpr": 2,
+      "canvas": [
+        2239,
+        1447
+      ],
+      "hudFps": "",
+      "diviseurCadence": 1,
+      "ips": 41.75,
+      "p50": 16.7,
+      "p95": 33.4,
+      "p99": 33.4,
+      "pire": 33.4,
+      "gpuAvailable": true,
+      "gpuP50Ms": 16.32,
+      "gpuP95Ms": 24.84,
+      "gpuMaxMs": 26.28,
+      "triAvg": 1637682,
+      "triMax": 1861500,
+      "callsAvg": 791,
+      "instAvg": 51805,
+      "lotsTotal": 557,
+      "lotsOccultesAvg": 10,
+      "lotsOccultesMax": 67,
+      "nappesOcculteesAvg": 0,
+      "nappesOcculteesMax": 1,
+      "prairieCandidatsAvg": 48128,
+      "reflectionSteps": 18,
+      "fovea": [
+        0.627,
+        0.52,
+        0.2,
+        0.64
+      ],
+      "midRaceCreations": 0
+    },
+    {
+      "tag": "retina-forets-pluie-cockpit",
+      "circuitNom": "Circuit des Longues Ombres",
+      "fenetreCss": [
+        1728,
+        1117
+      ],
+      "dpr": 2,
+      "canvas": [
+        2239,
+        1447
+      ],
+      "hudFps": "",
+      "diviseurCadence": 1,
+      "ips": 60,
+      "p50": 16.7,
+      "p95": 16.7,
+      "p99": 16.8,
+      "pire": 16.8,
+      "gpuAvailable": true,
+      "gpuP50Ms": 9.57,
+      "gpuP95Ms": 10.94,
+      "gpuMaxMs": 11.53,
+      "triAvg": 1641844,
+      "triMax": 1702926,
+      "callsAvg": 1266,
+      "instAvg": 51075,
+      "lotsTotal": 979,
+      "lotsOccultesAvg": 64,
+      "lotsOccultesMax": 98,
+      "nappesOcculteesAvg": 0,
+      "nappesOcculteesMax": 0,
+      "prairieCandidatsAvg": 45469,
+      "reflectionSteps": 18,
+      "fovea": [
+        0.511,
+        0.531,
+        0.2,
+        0.64
+      ],
+      "midRaceCreations": 0
+    },
+    {
+      "tag": "retina-cimes-pluie-cockpit",
+      "circuitNom": "Lacets de l’Aiglière",
+      "fenetreCss": [
+        1728,
+        1117
+      ],
+      "dpr": 2,
+      "canvas": [
+        2239,
+        1447
+      ],
+      "hudFps": "",
+      "diviseurCadence": 1,
+      "ips": 60,
+      "p50": 16.7,
+      "p95": 16.7,
+      "p99": 16.8,
+      "pire": 16.8,
+      "gpuAvailable": true,
+      "gpuP50Ms": 10.88,
+      "gpuP95Ms": 11.93,
+      "gpuMaxMs": 12.58,
+      "triAvg": 1673897,
+      "triMax": 1863834,
+      "callsAvg": 1047,
+      "instAvg": 30960,
+      "lotsTotal": 679,
+      "lotsOccultesAvg": 54,
+      "lotsOccultesMax": 70,
+      "nappesOcculteesAvg": 0,
+      "nappesOcculteesMax": 0,
+      "prairieCandidatsAvg": 25618,
+      "reflectionSteps": 18,
+      "fovea": [
+        0.469,
+        0.524,
+        0.2,
+        0.64
+      ],
+      "midRaceCreations": 0
+    },
+    {
+      "tag": "retina-marseille-pluie-cockpit",
+      "circuitNom": "Promenade de la Corniche",
+      "fenetreCss": [
+        1728,
+        1117
+      ],
+      "dpr": 2,
+      "canvas": [
+        2239,
+        1447
+      ],
+      "hudFps": "",
+      "diviseurCadence": 1,
+      "ips": 60,
+      "p50": 16.7,
+      "p95": 16.7,
+      "p99": 16.8,
+      "pire": 16.8,
+      "gpuAvailable": true,
+      "gpuP50Ms": 9.31,
+      "gpuP95Ms": 10.35,
+      "gpuMaxMs": 13.3,
+      "triAvg": 1701062,
+      "triMax": 1815652,
+      "callsAvg": 668,
+      "instAvg": 4726,
+      "lotsTotal": 307,
+      "lotsOccultesAvg": 3,
+      "lotsOccultesMax": 18,
+      "nappesOcculteesAvg": 0,
+      "nappesOcculteesMax": 0,
+      "prairieCandidatsAvg": 1348,
+      "reflectionSteps": 18,
+      "fovea": [
+        0.453,
+        0.519,
+        0.2,
+        0.64
+      ],
+      "midRaceCreations": 0
+    }
+  ],
+  "erreursRetina": []
+}

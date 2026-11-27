@@ -62,7 +62,7 @@
     const ex = x - a.x - dx * t, ez = z - a.z - dz * t;
     return ex * ex + ez * ez <= marge * marge;
   }
-  function appliquer(d, c, et, cam, largeur, hauteur) {
+  function appliquer(d, c, et, cam, largeur, hauteur, fovea) {
     if (!d.basculeMax || !(hauteur > 0 && largeur > 0)) return;
     // Hausse immédiate au freinage pour préserver d'emblée le point de corde, relâchement progressif.
     const freinCible = et.frein || 0;
@@ -87,8 +87,10 @@
     const sens = et.v < 0 ? -1 : 1;
     const route = d.route;
     let routePrete = false;
-    // Une sphère qui touche le centre du champ ou le couloir du prochain virage garde son détail.
-    const centre = .50 * horizontal, bord = .90 * horizontal, normale = Math.sqrt(1 + centre * centre), normaleChamp = Math.sqrt(1 + horizontal * horizontal);
+    // Une sphère qui touche le centre du champ (ou le point fovéal du regard) ou le couloir du prochain virage garde son détail.
+    const decalageFovea = fovea ? (fovea[0] - .5) * 1.4 * horizontal : 0;
+    const attenMax = fovea ? .46 : .34;
+    const centre = (fovea ? .44 : .50) * horizontal, bord = .92 * horizontal, normale = Math.sqrt(1 + centre * centre), normaleChamp = Math.sqrt(1 + horizontal * horizontal);
     const i0 = Math.floor((oeil[0] - portee) / CASE), iFin = Math.floor((oeil[0] + portee) / CASE);
     const j0 = Math.floor((oeil[2] - portee) / CASE), jFin = Math.floor((oeil[2] + portee) / CASE);
     for (const lots of casesProches(d, i0, iFin, j0, jFin)) {
@@ -99,7 +101,7 @@
         // Tout le volume est derrière, au-delà d'un bord ou entièrement dans le cône
         // central protégé. Les cas tangents restent soumis au calcul de chaque lot.
         if (devant+total < 0 || cote-devant*horizontal > total*normaleChamp ||
-            cote-devant*centre < -b.centres*normale) continue;
+            (!fovea && cote-devant*centre < -b.centres*normale)) continue;
         // Même le lot le plus proche est hors de portée au-delà de cette borne.
         const limiteVolume = porteeBascule + total;
         if (x * x + y * y + z * z > limiteVolume * limiteVolume) continue;
@@ -108,12 +110,14 @@
         const p = lot.centre, r = lot.rayon, dx = p[0] - oeil[0], dy = p[1] - oeil[1], dz = p[2] - oeil[2];
         const distance2 = dx * dx + dy * dy + dz * dz, limite = lot.bascule * facteur + r;
         if (distance2 >= limite * limite || distance2 <= (35 + r) ** 2 ||
-            distance2 < (lot.bascule * (1 - .34) * facteur + r) ** 2) continue;
-        const devant = dx * ax + dy * ay + dz * az, lateral = Math.abs(dx * rx + dy * ry + dz * rz);
-        if (devant + r <= 0 || lateral <= devant * centre + r * normale ||
-            lateral > devant * horizontal + r * normaleChamp) continue;
-        const peripherie = Math.min(1, (lateral - devant * centre - r * normale) / Math.max(1, devant * (bord - centre)));
-        const seuil = lot.bascule * (1 - .34 * peripherie);
+            distance2 < (lot.bascule * (1 - attenMax) * facteur + r) ** 2) continue;
+        const devant = dx * ax + dy * ay + dz * az, latSigne = dx * rx + dy * ry + dz * rz;
+        const lateralChamp = Math.abs(latSigne), lateralFovea = Math.abs(latSigne - devant * decalageFovea);
+        if (devant + r <= 0 || lateralFovea <= devant * centre + r * normale ||
+            lateralChamp > devant * horizontal + r * normaleChamp) continue;
+        const peripherie = Math.min(1, (lateralFovea - devant * centre - r * normale) / Math.max(1, devant * (bord - centre)));
+        const courbe = fovea ? peripherie * peripherie : peripherie;
+        const seuil = lot.bascule * (1 - attenMax * courbe);
         if (distance2 < (seuil * facteur + r) ** 2) continue;
         // Seuls les arbres qui changeraient vraiment de LOD ont besoin du tracé.
         if (!routePrete) {
@@ -126,30 +130,6 @@
           surRoute = surTrajectoire(p[0], p[2], route[k - 1], route[k], margeRoute);
         if (surRoute) continue;
         d.touches[d.n] = lot; d.seuils[d.n++] = lot.bascule; lot.bascule = seuil;
-      }
-    }
-    // Plafond constant d'arbres/bosquets en LOD proche : jamais plus de PLAFOND_PROCHES lots haute géométrie.
-    let nbP = 0;
-    const pLots = d.prochesLots, pDist2 = d.prochesDist2;
-    for (const lots of casesProches(d, i0, iFin, j0, jFin)) {
-      for (const lot of lots) {
-        const p = lot.centre, r = lot.rayon, dx = p[0] - oeil[0], dy = p[1] - oeil[1], dz = p[2] - oeil[2];
-        const distance2 = dx * dx + dy * dy + dz * dz, limite = lot.bascule * facteur + r;
-        if (distance2 >= limite * limite) continue;
-        const devant = dx * ax + dy * ay + dz * az, lateral = Math.abs(dx * rx + dy * ry + dz * rz);
-        if (devant + r <= 0 || lateral > devant * horizontal + r * normaleChamp) continue;
-        pLots[nbP] = lot; pDist2[nbP++] = distance2;
-      }
-    }
-    if (nbP > PLAFOND_PROCHES) {
-      for (let m = 0; m < nbP; m++) {
-        const dm = pDist2[m];
-        let rang = 0;
-        for (let k = 0; k < nbP; k++) if (k !== m && (pDist2[k] < dm || (pDist2[k] === dm && k < m))) { if (++rang >= PLAFOND_PROCHES) break; }
-        if (rang >= PLAFOND_PROCHES) {
-          const lot = pLots[m];
-          d.touches[d.n] = lot; d.seuils[d.n++] = lot.bascule; lot.bascule = 1;
-        }
       }
     }
   }
