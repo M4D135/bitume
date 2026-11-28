@@ -133,11 +133,59 @@
       const s = (e + 1) * PAS;
       pts.push({ x, y: altitude(s), z, cap, s });
     }
+    const saut = poserSaut(p, pts, graine);
     return {
       profil: { k: p.k, biome: p.biome, theme: p.theme, L: p.L, largeur: p.largeur, degagement: p.degagement },
-      pts,
+      pts, saut,
       deplacement: { dx: x, dy: cotes[nr], dz: z, dcap: sortieFin.cap - entree.cap },
     };
+  }
+
+  // Saut voulu (David, 28/11 : « ajoute quelque petit endroits propices aux sauts » ; relève du 28/11 : une crête de
+  // saut occasionnelle sur les longues portions droites des biomes plaine, petite et grande montagne). Tiré une fois par
+  // (graine, k) avec son propre générateur : les autres tirages du tronçon ne bougent pas. Même bosse et mêmes règles
+  // que sur les circuits (B.circuit.bosseSaut et SAUT) : droite d'appel et de réception (rayon ≥ 500 m de 120 m avant
+  // la crête à 130 m après), pente de fond ≤ 7 % sur l'emprise, l'IA y arrive lancée (≥ 58 m/s dès 60 m avant) et ne
+  // freine pas avant la fin de la réception. Le relief de fond n'y est pas plus raide que sur un circuit adouci : bosse
+  // de 0,4 g et creux de 0,8 g au plus, à la vitesse maximale. Le tronçon ignore ses voisins : son enveloppe de vitesse
+  // suppose une épingle (15 m/s) à l'entrée comme à la sortie. La crête reste à 500 m au moins du début du tronçon (la
+  // station que l'échéance impose y garde ses 208 premiers mètres libres, voir meilleurCreneau) et l'emprise s'arrête
+  // 140 m au moins avant sa fin (la station du tronçon suivant). La bosse revient à zéro, en hauteur et en pente, aux
+  // deux bouts de son emprise : la sortie du tronçon et les coutures ne changent pas. Sur 6 graines et 90 tronçons
+  // (≈ 785 km) : 88 sauts, un tronçon de plaine sur trois, une petite montagne sur sept, la grande montagne presque
+  // jamais (ses droites sont courtes). Sous PhysX (banc du 28/11, 9 sauts, à la consigne de l'IA, à +10 %, à −20 % et
+  // pied au plancher, 208 à 296 km/h à la crête) : 0,45 à 0,9 s en l'air, 0,3 à 1,05 m au-dessus de la chaussée, 2,1 à
+  // 3,8 m/s à la réception, ni accident ni replacement au saut (seule sortie : 180 m avant une crête, lancée à 341 km/h,
+  // au-delà de la pointe, dans un virage).
+  const SAUT_PROBA = .6, SAUT_RAYON = 500, SAUT_LENT = 15, SAUT_DEBUT = 500, SAUT_MARGE_FIN = 140, SAUT_G_BOSSE = .4, SAUT_G_CREUX = .8;
+  function poserSaut(p, pts, graine) {
+    const C = B.circuit, S = C && C.SAUT;
+    if (p.biome === 'plage' || !S || !C.bosseSaut || !C.vitessesTroncon) return null;
+    const r = alea((graine >>> 0) * 2869860233 + (p.k >>> 0) * 597399067 + 43);
+    if (r() >= SAUT_PROBA) return null;
+    const n = pts.length, e = Math.round((S.rampe + S.creux) / PAS);
+    const avant = Math.round(S.droitAvant / PAS), apres = Math.round(S.droitApres / PAS), lance = Math.round(60 / PAS);
+    const caps = new Float64Array(n);
+    for (let i = 0; i < n; i++) caps[i] = pts[i].cap;
+    const { v, frein, VMAX } = C.vitessesTroncon(caps, PAS, SAUT_LENT, SAUT_LENT);
+    const kvBosse = -SAUT_G_BOSSE * 9.81 / (VMAX * VMAX), kvCreux = SAUT_G_CREUX * 9.81 / (VMAX * VMAX);
+    const possibles = [];
+    for (let i = Math.ceil(SAUT_DEBUT / PAS), fin = n - 1 - e - Math.ceil(SAUT_MARGE_FIN / PAS); i <= fin; i++) {
+      let ok = true;
+      for (let j = i - avant + 1; ok && j <= i + apres; j++) ok = Math.abs(caps[j] - caps[j - 1]) / PAS < 1 / SAUT_RAYON;
+      for (let j = i - e; ok && j < i + e; j++) ok = Math.abs(pts[j + 1].y - pts[j].y) / PAS <= S.penteMax;
+      for (let j = i - e + 1; ok && j < i + e; j++) {
+        const kv = (pts[j - 1].y - 2 * pts[j].y + pts[j + 1].y) / (PAS * PAS);
+        ok = kv >= kvBosse && kv <= kvCreux;
+      }
+      for (let j = i - lance; ok && j <= i + apres; j++) ok = v[j] >= S.vitesseMin && frein[j] >= VMAX;
+      if (ok) possibles.push(i);
+    }
+    if (!possibles.length) return null;
+    const i0 = possibles[Math.floor(r() * possibles.length)];
+    for (let j = i0 - e; j <= i0 + e; j++) pts[j].y += C.bosseSaut((j - i0) * PAS);
+    return Object.freeze({ debut: pts[i0 - e].s, sommet: pts[i0].s, fin: pts[i0 + e].s, hauteur: C.bosseSaut(0),
+      iDebut: i0 - e, iSommet: i0, iFin: i0 + e });
   }
 
   // État global au début du tronçon k : somme pure des déplacements des tronçons 0..k−1.
@@ -163,12 +211,15 @@
   // B.circuit.creerDepuisTrace(..., { topologie: 'ouvert' }). Les jonctions partagent
   // exactement le même point : aucune bosse ni trou à la couture.
   function creerTrace(k0, k1, graine, options = {}) {
-    const points = [];
+    const points = [], sauts = [];
     let total = 0;
     for (let k = k0; k < k1; k++) {
       const seg = pointsSegment(k, graine), bord = etatBord(k, graine);
       const c = Math.cos(bord.cap), s = Math.sin(bord.cap);
       const debut = k > k0 ? 1 : 0;   // le point d'origine est celui du voisin, sans doublon
+      // sauts du tronçon par indices de sommets du tracé : creerDepuisTrace en garde l'abscisse exacte (sautsFenetre)
+      const decal = points.length - debut, z = seg.saut;
+      if (z) sauts.push(Object.freeze({ iDebut: decal + z.iDebut, iSommet: decal + z.iSommet, iFin: decal + z.iFin, hauteur: z.hauteur }));
       for (let i = debut; i < seg.pts.length; i++) {
         const q = seg.pts[i];
         points.push({
@@ -183,7 +234,15 @@
     let mesure = 0;
     for (let i = 1; i < points.length; i++) mesure += Math.hypot(points[i].x - points[i - 1].x, points[i].z - points[i - 1].z);
     return { unite: 'm', topologie: 'ouvert', nom: options.nom || ('Route sans fin ' + k0 + '-' + k1),
-      depart: 0, arrivee: Math.min(total, mesure - 1e-6), pasMax: PAS, points };
+      depart: 0, arrivee: Math.min(total, mesure - 1e-6), pasMax: PAS, points, sauts };
+  }
+
+  // Sauts d'une fenêtre en abscisses de son circuit, tiré de creerTrace par B.circuit.creerDepuisTrace puis préparé
+  // (preparerParcours) : même forme que circuit.poserSauts, que lisent le décor (panneaux) et les bords.
+  function sautsFenetre(trace, c) {
+    const a = c.abscissesSource;
+    return (trace.sauts || []).map(z => ({ debut: a[z.iDebut], sommet: a[z.iSommet], fin: a[z.iFin], hauteur: z.hauteur,
+      vitesse: c.vitesse ? c.vitesse[Math.min(c.n - 1, Math.round(a[z.iSommet] / c.pas))] : undefined }));
   }
 
   // ---------------------------------------------------------------- stations-service
@@ -213,7 +272,7 @@
       if (borneHaute - borneBasse >= LONG_STATION) {
         const r = alea((graine >>> 0) * 3266489917 + (k >>> 0) * 374761393 + 29);
         const urgence = sDebut + L >= maxi;
-        const pose = meilleurCreneau(seg.pts, L, borneBasse - sDebut, borneHaute - sDebut, cible - sDebut, urgence);
+        const pose = meilleurCreneau(seg.pts, L, borneBasse - sDebut, borneHaute - sDebut, cible - sDebut, urgence, seg.saut);
         if (pose) {
           liste.push({ debutAbs: sDebut + pose.debut, finAbs: sDebut + pose.debut + LONG_STATION,
             garage0: sDebut + pose.debut + 74, garage1: sDebut + pose.debut + 126, vitesse: 11,
@@ -229,7 +288,11 @@
   }
   // meilleur créneau de LONG_STATION dans [lo, hi] (abscisses locales) : premier seuil satisfait,
   // sinon le créneau minimax (le moins courbé/le plus plat) — la pose est donc toujours garantie.
-  function meilleurCreneau(pts, L, lo, hi, cible, urgence) {
+  // Aucun créneau ne touche le saut du tronçon (`eviter`) ni ne s'en approche à moins de 140 m. La garantie tient :
+  // l'échéance ne force la pose que dans un tronçon commencé avant elle (la bande va alors de son début à l'échéance,
+  // 208 m au moins), et le saut laisse toujours libres les 208 premiers mètres, 140 m de marge comprise (poserSaut).
+  const MARGE_SAUT_STATION = 140;
+  function meilleurCreneau(pts, L, lo, hi, cible, urgence, eviter = null) {
     const n = pts.length;
     const kap = new Float64Array(n), pen = new Float64Array(n);
     for (let i = 1; i < n; i++) {
@@ -245,6 +308,7 @@
           const debut = pts[i - besoin + 1].s, fin = debut + LONG_STATION;
           if (fin > L) break;
           if (debut < lo || fin > hi) continue;
+          if (eviter && fin > eviter.debut - MARGE_SAUT_STATION && debut < eviter.fin + MARGE_SAUT_STATION) continue;
           let kk = 0, pp = 0;
           for (let j = i - besoin + 1; j <= i; j++) { kk = Math.max(kk, kap[j]); pp = Math.max(pp, pen[j]); }
           fenetres.push({ debut, kk, pp, cout: kk * 100 + pp + Math.abs(debut - cible) / 400 });
@@ -280,6 +344,6 @@
     return null;
   }
 
-  B.routeSansFin = { PAS, CYCLE, biomePour, profilSegment, pointsSegment, etatBord, creerTrace, REGLES, VARIANTES,
-    LONG_STATION, stationsEntre, stationActive };
+  B.routeSansFin = { PAS, CYCLE, biomePour, profilSegment, pointsSegment, etatBord, creerTrace, sautsFenetre, REGLES, VARIANTES,
+    LONG_STATION, MARGE_SAUT_STATION, stationsEntre, stationActive };
 })(globalThis.BITUME = globalThis.BITUME || {});

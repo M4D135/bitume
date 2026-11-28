@@ -141,6 +141,18 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     const dd = Math.max(-w, Math.min(w, d));
     return f.y - dd * Math.tan(f.devers);
   }
+  // Chaussée vrillée (David, 28/11 : « dans certains circuits surtout le ring […] des routes bosselées, irregulieres »).
+  // Entre deux rangées dont le dévers tourne, le quad d'enrobé n'est pas plan : ses deux triangles s'écartent de la
+  // surface réglée de largeur·|Δtan(dévers)|/4 en son centre, un pli diagonal que les roues PhysX sentent (10,6 cm
+  // dans les rampes à 40° des Alizés). L'enrobé se découpe donc en bandes assez étroites pour que ce pli reste sous
+  // 1 cm partout ; là où il y est déjà (dévers doux), une seule bande, comme avant.
+  const PLI_ENROBE = .01;
+  function bandesEnrobe(c, largeur) {
+    const n = c.n, fin = c.ouvert ? n - 1 : n;
+    let pire = 0;
+    for (let i = 0; i < fin; i++) pire = Math.max(pire, Math.abs(Math.tan(c.devers[(i + 1) % n]) - Math.tan(c.devers[i])));
+    return Math.max(1, Math.min(16, Math.ceil(largeur * pire / 4 / PLI_ENROBE - 1e-9)));
+  }
   function pointPlan(f, d, y) { return [f.x + f.r[0] * d, y, f.z + f.r[2] * d]; }
 
   // Limites latérales : glissières à 20 m, rapprochées à l'intérieur des virages serrés pour que le repère du circuit
@@ -383,8 +395,10 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     };
     const blanc = [.86, .86, .83], rouge = [.74, .09, .07], blancBordure = [.90, .90, .87];
     const rougeVirage = [.82, .025, .02], blancVirage = [.98, .99, .96];
+    const enrobe = bandesEnrobe(c, 2 * w - .6);
     const bandes = [
-      ['jupe', -1], ['herbe', -1], ['bord', -1], ['ligne', -1], ['asphalte', 0], ['ligne', 1], ['bord', 1], ['herbe', 1], ['jupe', 1]
+      ['jupe', -1], ['herbe', -1], ['bord', -1], ['ligne', -1], ...Array.from({ length: enrobe }, (_, q) => ['asphalte', 0, q]),
+      ['ligne', 1], ['bord', 1], ['herbe', 1], ['jupe', 1]
     ];
     const neige3D = !!(neigeVolume && organique && saison && saison.neige);
     if (neige3D) bandes.push(['congere-pied', -1], ['congere-talus', -1], ['congere-crete', -1], ['congere-pied', 1], ['congere-talus', 1], ['congere-crete', 1]);
@@ -458,7 +472,12 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
             y0 = hauteurRoute(f,-w,w) - .02*(-d0-w-1.2) - 1.15;
             y1 = hauteurRoute(f,w,w) - .02*(d1-w-1.2) - 1.15;
             mat = MATIERES_PILOTES.beton; col = betonPont; n0 = n1 = basY;
-          } else if (type === 'asphalte') { d0 = -w + .3; d1 = w - .3; y0 = hauteurRoute(f, d0, w); y1 = hauteurRoute(f, d1, w); mat = matAsphalte; col = asphalte(f.i); }
+          } else if (type === 'asphalte') {
+            // bande q sur `enrobe` : les bords partagés sont calculés par la même expression, sans fente ni recouvrement
+            const q = bandes[b][2], de = 2 * w - .6;
+            d0 = q === 0 ? -w + .3 : -w + .3 + de * q / enrobe; d1 = q === enrobe - 1 ? w - .3 : -w + .3 + de * (q + 1) / enrobe;
+            y0 = hauteurRoute(f, d0, w); y1 = hauteurRoute(f, d1, w); mat = matAsphalte; col = asphalte(f.i);
+          }
           else {
             const bord = cote < 0 ? -1 : 1, limite = cote < 0 ? limG : limD, yBord = hauteurRoute(f, bord * w, w);
             const ext = limite + (surPont ? 3.3 : 4);
@@ -1917,6 +1936,43 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
     }
   }
 
+  // Annonce des sauts voulus (circuit.poserSauts, David 28/11) : de chaque côté de la piste, à 150 m puis à 60 m de la
+  // crête, un panneau jaune de danger portant une bosse noire en chevron et la ligne de la route. Même emprise et mêmes
+  // contrôles que les repères de freinage : rien ne déborde des limites, même quand un autre bras de piste passe près.
+  function poserSignauxSauts(c, lim, interroger, ajouter) {
+    const w = c.largeur / 2, largeur = 2.6, jaune = [.97, .74, .04], noir = [.03, .03, .035], gris = [.38, .42, .45];
+    for (const saut of c.sauts || []) for (const avant of [150, 60]) for (const cote of [-1, 1]) {
+      const f = cadre(c, Math.round((saut.sommet - avant) / c.pas)), L = (cote < 0 ? lim.G : lim.D)[f.i];
+      if (zoneSansRepere(c, f.s)) continue;
+      const d = cote * (L + largeur / 2 + 1.4), y = hauteurRoute(f, cote * w, w) - .02 * (Math.abs(d) - w - 1.2);
+      const p = pointPlan(f, d, y), rot = capRot(f.a);
+      let libre = true;
+      for (const lateral of [-largeur / 2, 0, largeur / 2]) {
+        const x = p[0] + f.r[0] * lateral, z = p[2] + f.r[2] * lateral, q = interroger(x, z, 80);
+        if (q.i < 0) { libre = false; break; }
+        const fq = cadre(c, q.i), dq = (x - fq.x) * fq.r[0] + (z - fq.z) * fq.r[2];
+        if (Math.abs(dq) < (dq < 0 ? lim.G : lim.D)[q.i] + .6) { libre = false; break; }
+      }
+      if (!libre) continue;
+      const repere = { type: 'saut', s: f.s, sommet: saut.sommet, metres: avant, cote }, objets = [];
+      const face = (lateral, hauteur, devant = .1) => [p[0] + f.r[0] * lateral - f.t[0] * devant, y + hauteur, p[2] + f.r[2] * lateral - f.t[2] * devant];
+      const boite = (partie, position, taille, couleur, rotation = rot) => objets.push({
+        shape: 'box', p: position, s: taille, r: rotation, mat: 16, color: couleur, repereSaut: repere, symboleSaut: partie
+      });
+      for (const pied of [-1, 1]) boite('poteau', face(pied * .85, 1.3, 0), [.1, 2.6, .1], gris);
+      boite('panneau', face(0, 2.75, 0), [.14, 1.7, largeur], jaune);
+      // la bosse : deux barres inclinées qui se rejoignent en haut, et la ligne de la route dessous
+      for (const sens of [-1, 1]) {
+        const a = face(sens * .78, 2.42, .14), b = face(0, 3.18, .14);
+        const axe = b.map((x, i) => x - a[i]), rotation = angles(...base(axe, f.t.map(x => -x)));
+        boite('bosse', a.map((x, i) => (x + b[i]) / 2), [Math.hypot(...axe), .035, .2], noir, rotation);
+      }
+      boite('route', face(0, 2.12, .14), [.03, .12, 2.0], noir);
+      for (const o of objets) if (o.symboleSaut === 'poteau' || o.symboleSaut === 'panneau') marquerSolide(o, 'repere-saut');
+      ajouter(objets, objets.slice(), p[0], p[2]);
+    }
+  }
+
   // Les secteurs ne contiennent que des indices. La géométrie du premier plan,
   // des deux joueurs et des plans éloignés de la démo peut arriver dans tout ordre.
   function creerFluxDecor(lots) {
@@ -2937,12 +2993,15 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
       for (const o of loin) l.loin.push(o);
     } });
 
-    // Les repères ne créent aucun solide. Leurs lots propres sont ajoutés après tous les lots physiques.
-    if (reperes) poserReperes(c, reperes, lim, interroger, (objets, loin, x, z) => {
+    // Les repères de freinage ne créent aucun solide. Leurs lots propres sont ajoutés après tous les lots physiques ; les
+    // panneaux de saut y vont aussi, leurs poteaux et leur panneau sont solides (« repere-saut »).
+    const ajouterRepere = (objets, loin, x, z) => {
       const q = interroger(x, z, 80), cle = 'v' + Math.floor(q.i * c.pas / TRONCON);
       let l = groupes.get(cle); if (!l) groupes.set(cle, l = { objets: [], loin: [], lointain: false });
       l.objets.push(...objets); l.loin.push(...loin);
-    });
+    };
+    if (reperes) poserReperes(c, reperes, lim, interroger, ajouterRepere);
+    if (c.sauts && c.sauts.length) poserSignauxSauts(c, lim, interroger, ajouterRepere);
 
     const lieuxCimes = B.cimesDecor && B.cimesDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter, decorCinema });
     const lieuxLarche = B.larcheDecor && B.larcheDecor.poser(c, { terrain, limites: lim, qualite, saison, ajouter, decorCinema, neigeVolume,

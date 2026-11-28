@@ -11,7 +11,7 @@
 
   // L'identité du parcours complet sépare ses résultats et ses fantômes de ceux de chaque ancien tronçon.
   const CATALOGUE = [
-    { id: 'forets-du-pacifique', nom: 'Circuit des Longues Ombres', lieu: 'Val-Brûlé et les falaises de Cap-Séquoia', theme: 'foret', graine: 11,
+    { id: 'forets-du-pacifique', nom: 'Circuit des Longues Ombres', lieu: 'Val-Brûlé et les falaises de Cap-Séquoia', theme: 'foret', graine: 11, sauts: 2,
       troncons: [
         { id: 'val-brule', nom: 'Val-Brûlé', theme: 'foret', graine: 11, longueur: 4200 },
         { id: 'cap-sequoia', nom: 'Cap-Séquoia', theme: 'pacifique', graine: 157, longueur: 5200 }
@@ -22,15 +22,16 @@
         { id: 'brume-de-jade', nom: 'Brume-de-Jade', theme: 'asie', graine: 131, longueur: 5000 },
         { id: 'corail', nom: 'Baie-du-Corail', theme: 'corail', graine: 283, longueur: 4500 }
       ] },
-    { id: 'sierra', nom: 'Circuit du Second Écho', lieu: 'Sierra-Cuivrée · arche et viaduc rouge', theme: 'sierra', graine: 271, longueur: 5000 },
-    { id: 'nord-atlantique', nom: 'Passe du Beau Temps', lieu: 'Fjord-d’Argent et plateau volcanique de Lande-Noire', theme: 'fjord', graine: 223,
+    { id: 'sierra', nom: 'Circuit du Second Écho', lieu: 'Sierra-Cuivrée · arche et viaduc rouge', theme: 'sierra', graine: 271, longueur: 5000, sauts: 1 },
+    { id: 'nord-atlantique', nom: 'Passe du Beau Temps', lieu: 'Fjord-d’Argent et plateau volcanique de Lande-Noire', theme: 'fjord', graine: 223, sauts: 2,
       troncons: [
         { id: 'fjord', nom: 'Fjord-d’Argent', theme: 'fjord', graine: 223, longueur: 5100 },
         { id: 'lande-noire', nom: 'Lande-Noire', theme: 'islande', graine: 83, longueur: 4600 }
       ] },
-    { id: 'route-des-cimes', nom: 'Lacets de l’Aiglière', lieu: 'Grand col alpin · cirque de l’Aiglière', theme: 'montagne', graine: 181, longueur: 9697.52858032384, partition: 'route-des-cimes' },
-    { id: 'larche', nom: 'Descente des Freins Chauds', lieu: 'Grand col alpin · plaquettes en surchauffe', theme: 'montagne', graine: 210, longueur: 32816.81, distanceCourse: 32249.33, ouvert: true },
-    { id: 'baikal', nom: 'Circuit de la Glace Vive', lieu: 'Lac Baïkal · rives gelées et tremplin', theme: 'baikal', graine: 179, longueur: 5400 },
+    { id: 'route-des-cimes', nom: 'Lacets de l’Aiglière', lieu: 'Grand col alpin · cirque de l’Aiglière', theme: 'montagne', graine: 181, longueur: 9697.52858032384, partition: 'route-des-cimes',
+      sauts: { nombre: 1, penteMax: .1 } },
+    { id: 'larche', nom: 'Descente des Freins Chauds', lieu: 'Grand col alpin · plaquettes en surchauffe', theme: 'montagne', graine: 210, longueur: 32816.81, distanceCourse: 32249.33, ouvert: true, sauts: 3 },
+    { id: 'baikal', nom: 'Circuit de la Glace Vive', lieu: 'Lac Baïkal · rives gelées et tremplin', theme: 'baikal', graine: 179, longueur: 5400, sauts: 1 },
     { id: 'ovale-des-forges', nom: 'Autodrome des Alizés', lieu: 'Caraïbes · speedway de plage, quatre virages relevés à 40°',
       theme: 'ovale', graine: 347, longueur: 1600, partition: 'ovale-des-forges' }
   ];
@@ -168,7 +169,10 @@
       circuits[i].nom = k.nom;
       // Pistes fluides (David, 28/11 ; règle du 18/11 : « crêtes qui allègent de 0,4 g au plus ») : à la consigne de
       // l'IA, aucune crête n'allège plus de 0,4 g ni aucun creux ne comprime plus de 0,8 g, hors sauts voulus.
-      circuits[i].reliefAdouci = B.circuit.adoucirRelief(circuits[i], { garder: circuits[i].sauts || [] });
+      circuits[i].reliefAdouci = B.circuit.adoucirRelief(circuits[i]);
+      // Sauts voulus (David, 28/11 : « ajoute quelque petit endroits propices aux sauts ») : posés après l'adoucissement,
+      // seule exception à la règle des 0,4 g ; leur nombre, et au besoin la pente de fond tolérée, vient du catalogue.
+      if (k.sauts) B.circuit.poserSauts(circuits[i], typeof k.sauts === 'number' ? { nombre: k.sauts } : k.sauts);
       // lot 22F : le parapet, le muret ou le bord du fossé d'un bord dangereux devient la limite (une fois, à la création)
       if (B.bords && !circuits[i].ouvert) B.bords.limites(circuits[i], B.bords.planifier(circuits[i]));
     }

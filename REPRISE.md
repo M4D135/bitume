@@ -3,7 +3,30 @@
 <!-- bitume-reprise-actuelle-debut -->
 ## Par où reprendre
 
-**28 novembre (07:52) — PROMPT DE RELÈVE PRIORITAIRE : [`docs/reprise/PROMPT-RELEVE-2026-11-28.md`](docs/reprise/PROMPT-RELEVE-2026-11-28.md).**
+**28 novembre (fin de matinée) — relève du 28/11 faite, sauf le titre. Poussé sur `origin/main`, non déployé : 0.2.350.**
+- **En production** : toujours **0.2.345** (`d82f5e1`). Déployer (`./deposer.sh`) seulement sur le GO de David.
+- **Chantier 2, Route sans fin sans gel (0.2.347)** : l'ouvrier prépare le décor et PhysX hors du fil principal, en HTTP
+  comme en `file://`, et le repli sans ouvrier découpe le travail en tranches. Il reste une image de 33 ms à chaque
+  bascule de fenêtre : passer sous 25 ms demande un double tampon des lots et des nappes dans FERRO (module canonique).
+- **Chantier 3, changer de circuit depuis l'aperçu du menu Préparation (0.2.348).**
+- **Chantier 4, pistes fluides et sauts (0.2.349, 0.2.350)** : Larche sans marches ni contre-dévers, courbure verticale
+  bornée sur tous les circuits (crêtes à 0,4 g, creux à 0,8 g à la vitesse de l'IA), sauts voulus annoncés par panneaux
+  sur six circuits et sur la Route sans fin, enrobé des Alizés sans pli diagonal (10,6 cm auparavant, 1 cm au plus).
+  La physique passe en p56 : records et fantômes repartent à zéro. Aux Lacets de l'Aiglière, le saut est sur la
+  descente finale et non sur le Mur (30 % de pente, épingles juste après).
+- **Qualification du 28/11** : suite complète, 47 échecs sur 256, les mêmes qu'en 0.2.349 (même contrôle, même message).
+  Chrome Mac (Apple Metal-3, WebGPU, 1280×720, high) : 60 images/s sur les neuf circuits en passant un saut ; Route sans
+  fin sur 6 km, p99 16,8 ms (une image de 33 ms par bascule, comme avant) ; saut de la Route sans fin passé dans le jeu
+  (286 km/h, 0,68 s en l'air, sans incident). Une image isolée de 117 ms à une bascule au premier passage, non reproduite
+  en quatre passages sur la même route (graine 19692). Piège : `tools/banc-navigateur.mjs` rend en SwiftShader par
+  défaut ; passer `--angle native` (et `--attendre 330000` en `--mode sans-fin`), sinon les chiffres ne valent rien.
+- **Modèle 205 GTI** : posé par ChatGPT dans `modeles/peugeot-205-gti` (644824b, galbes et proportions affinés), pas encore
+  intégré au jeu.
+- **En attente de David** : le titre (TRAJECTOIRE, CONTRE-BRAQUAGE, TALON-POINTE, POINT DE CORDE, LACETS, GOMME,
+  RUPTEUR, TOUR LANCÉ ; voir `AGENTS.md`), la confirmation de la « Renalt 5 GT 3 » (R5 GT Turbo ?), et le GO de
+  déploiement.
+
+**28 novembre (07:52), exécuté depuis, sauf le titre — PROMPT DE RELÈVE PRIORITAIRE : [`docs/reprise/PROMPT-RELEVE-2026-11-28.md`](docs/reprise/PROMPT-RELEVE-2026-11-28.md).**
 - **En production (`https://bitume.estrasse.fr/`)** : **0.2.345** (`d82f5e1`, `FERRO 0.3.36` `20ef396`, sha256 `7a0e897ed944ea15`, salon actif) — gants FIA photoréalistes procéduraux, biomécanique mains/poignets (`prisePommeau`, `0,00 o/appel`), Nomex mat sous la pluie, et correctifs complets des caméras démo/vitrine.
 - **Poussé sur GitHub (`origin/main`, non déployé) : 0.2.346** — ajout de `src/route-sans-fin-flux.js` (Web Worker + cuisson PhysX par micro-tranches `< 1,5 ms`/image + fusion des bascules station/fenêtre + `traces.changerMonde` + `herbeGPU.changerDecor`, 7/7 suites `route-sans-fin*` vertes, bascule GPU tombée à `4,3 ms`).
 - **À exécuter immédiatement par la relève** (tout le diagnostic ligne par ligne est dans [`PROMPT-RELEVE-2026-11-28.md`](docs/reprise/PROMPT-RELEVE-2026-11-28.md)) :

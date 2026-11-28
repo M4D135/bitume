@@ -71,6 +71,7 @@
     const trace = R.creerTrace(f.k0, f.k1, f.graine);
     const c = B.circuit.creerDepuisTrace(trace, { topologie: 'ouvert' });
     B.circuit.preparerParcours(c);
+    c.sauts = R.sautsFenetre(trace, c);
     c.graine = f.graine;
     c.theme = R.pointsSegment(f.k0, f.graine).profil.theme;
     // Découpage par tronçon de biome : permet au décor de teinter plage → plaine → montagnes

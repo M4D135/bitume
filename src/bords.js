@@ -67,6 +67,8 @@
     if (x <= ld.fin + marge || x >= L + ld.debut - marge) return true;
     for (const t of (c.couverts || (c.tunnel ? [c.tunnel] : []))) if (x > t.debut - marge && x < t.fin + marge) return true;
     for (const p of (c.ponts || [])) if (x > p.debut - 20 && x < p.fin + 20) return true;
+    // sauts voulus (circuit.poserSauts) : appel, vol et réception gardent leurs bords ordinaires
+    for (const z of (c.sauts || [])) if (x > z.debut - marge && x < z.fin + marge) return true;
     return false;
   }
 

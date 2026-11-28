@@ -142,6 +142,7 @@
     const trace = R.creerTrace(k0, k1, graine);
     const c = BRef.circuit.creerDepuisTrace(trace, { topologie: 'ouvert' });
     BRef.circuit.preparerParcours(c);
+    c.sauts = R.sautsFenetre(trace, c);
     c.graine = graine;
     c.theme = R.pointsSegment(k0, graine).profil.theme;
     const tronconsThemes = [];

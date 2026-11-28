@@ -246,10 +246,14 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     return d;
   }
 
+  // Loi de vitesse de l'IA : adhérence et appui (MU, AERO), plafond VMAX, freinage à 16 m/s², poussée à fond de la
+  // monoplace (enveloppe des six rapports mesurée sur conduite.js, boîte auto). Partagée par vitesses() et vitessesTroncon().
+  const MU = 1.55, AERO = .00155, VMAX = 86, FREIN = 16;
+  const poussee = u => Math.max(.05, Math.min(12, 15.59 - .2592 * u + .000899 * u * u));
   function vitesses(x, z, cap, ligne, n, pas = PAS, ouvert = false, arrivee = Infinity) {
     const px = new Float64Array(n), pz = new Float64Array(n), v = new Float64Array(n);
     for (let i = 0; i < n; i++) { px[i] = x[i] - Math.sin(cap[i]) * ligne[i]; pz[i] = z[i] + Math.cos(cap[i]) * ligne[i]; }
-    const MU = 1.55, AERO = .00155, VMAX = 86, H = 3;
+    const H = 3;
     for (let i = 0; i < n; i++) {
       const a = ouvert ? Math.max(0, i - H) : (i - H + n) % n;
       const b = ouvert ? Math.min(n - 1, i + H) : (i + H) % n;
@@ -266,16 +270,32 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
         v[n - 1] = 2;
         for (let i = n - 2; i >= iFin; i--) v[i] = Math.min(v[i], Math.sqrt(v[i + 1] * v[i + 1] + 2 * 10 * pas));
       }
-      for (let i = n - 2; i >= 0; i--) v[i] = Math.min(v[i], Math.sqrt(v[i + 1] * v[i + 1] + 2 * 16 * pas));
-      const poussee = u => Math.max(.05, Math.min(12, 15.59 - .2592 * u + .000899 * u * u));
+      for (let i = n - 2; i >= 0; i--) v[i] = Math.min(v[i], Math.sqrt(v[i + 1] * v[i + 1] + 2 * FREIN * pas));
       for (let i = 1; i < n; i++) v[i] = Math.min(v[i], Math.sqrt(v[i - 1] * v[i - 1] + 2 * poussee(v[i - 1]) * pas));
       return v;
     }
-    for (let j = 2 * n - 1; j >= 0; j--) { const i = j % n, s = (i + 1) % n; v[i] = Math.min(v[i], Math.sqrt(v[s] * v[s] + 2 * 16 * pas)); }
-    // poussée à fond de la monoplace (enveloppe des six rapports mesurée sur conduite.js, boîte auto)
-    const poussee = u => Math.max(.05, Math.min(12, 15.59 - .2592 * u + .000899 * u * u));
+    for (let j = 2 * n - 1; j >= 0; j--) { const i = j % n, s = (i + 1) % n; v[i] = Math.min(v[i], Math.sqrt(v[s] * v[s] + 2 * FREIN * pas)); }
     for (let j = 1; j <= 2 * n; j++) { const i = j % n, p = (i - 1 + n) % n; v[i] = Math.min(v[i], Math.sqrt(v[p] * v[p] + 2 * poussee(v[p]) * pas)); }
     return v;
+  }
+
+  // Enveloppe prudente de la vitesse de l'IA sur un morceau de route isolé, décrit par ses caps tous les `pas` mètres
+  // (Route sans fin : un tronçon se tire seul, sans ses voisins). Même loi que vitesses(), sur l'axe (la trajectoire
+  // de course coupe les virages : ses vitesses sont au moins celles-ci), avec une vitesse imposée à l'entrée et à la
+  // sortie, inconnues du tronçon. `frein` est la seule contrainte des virages qui suivent : là où elle vaut VMAX,
+  // l'IA ne freine pas. `v` est une borne basse de la vitesse réelle tant que vEntree en est une.
+  function vitessesTroncon(caps, pas, vEntree, vSortie) {
+    const n = caps.length, H = 3, frein = new Float64Array(n), v = new Float64Array(n);
+    for (let i = 0; i < n; i++) {
+      const a = Math.max(0, i - H), b = Math.min(n - 1, i + H);
+      const den = Math.abs(angle(caps[b] - caps[a])) / ((b - a) * pas) - MU * AERO;
+      frein[i] = den <= 0 ? VMAX : Math.min(VMAX, Math.sqrt(MU * 9.81 / den));
+    }
+    frein[n - 1] = Math.min(frein[n - 1], vSortie);
+    for (let i = n - 2; i >= 0; i--) frein[i] = Math.min(frein[i], Math.sqrt(frein[i + 1] * frein[i + 1] + 2 * FREIN * pas));
+    v[0] = Math.min(frein[0], vEntree);
+    for (let i = 1; i < n; i++) v[i] = Math.min(frein[i], Math.sqrt(v[i - 1] * v[i - 1] + 2 * poussee(v[i - 1]) * pas));
+    return { v, frein, VMAX };
   }
 
   // L’allée se sépare du bord droit, rejoint le box par une aire latérale puis revient sur la route.
@@ -450,6 +470,90 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
       if (modifie[a] || modifie[i] || modifie[b]) c.pente[i] = (y[b] - y[a]) / ((ferme ? 2 : b - a) * ds);
     }
     return { touches, operations, residu: Math.max(0, pire) };
+  }
+
+  // Sauts voulus (David, 28/11 : « ajoute quelque petit endroits propices aux sauts, ajoute du fun sur les tracés des
+  // circuit plutot que de la frustration »). Seule exception à la règle des crêtes à 0,4 g du 18/11, posée après
+  // adoucirRelief. Sur une longue droite rapide, une bosse d'environ 3 m : creux d'appel très doux (montée à `pente`,
+  // 0,4 g au plus à 300 km/h), crête franche (`courbure` au sommet, sur 2·pente/courbure = 10 m), réception droite sur
+  // une descente à `pente`, creux de reprise doux. Le dévers est fondu à zéro de l'appel à la reprise : on atterrit à
+  // plat. Sous PhysX (banc du 28/11, IA et pied au plancher, 225 à 288 km/h à la crête) : 0,4 à 0,65 s en l'air, 0,4 à
+  // 0,7 m au-dessus de la chaussée, 2,2 à 3,4 m/s de vitesse verticale à la réception, ni accident ni replacement.
+  // La bosse est la somme de trois impulsions de courbure verticale en cosinus (aires +pente, −2·pente, +pente)
+  // intégrées exactement : pente et hauteur reviennent à zéro, le relief reste continu en pente et en courbure. Choix
+  // et forme ne dépendent que du circuit : même relief sur toutes les machines.
+  const SAUT = Object.freeze({ pente: .03, courbure: .012, rampe: 100, creux: 50, droitAvant: 120, droitApres: 130,
+    rayonMin: 450, vitesseMin: 58, penteMax: .07, marge: 140, ecart: 900 });
+  // Hauteur relative (m) d'une impulsion d'aire a, de demi-largeur l, centrée en 0, à l'abscisse relative u.
+  function impulsion(a, l, u) {
+    if (u <= -l) return 0;
+    if (u >= l) return a * u;
+    const k = l / Math.PI;
+    return a / (2 * l) * ((u + l) * (u + l) / 2 - k * k * (Math.cos(u / k) + 1));
+  }
+  function bosseSaut(x, S = SAUT) {
+    const demi = 2 * S.pente / S.courbure;   // demi-largeur de la crête : aire 2·pente, sommet de courbure −courbure
+    return impulsion(S.pente, S.creux, x + S.rampe) + impulsion(-2 * S.pente, demi, x) + impulsion(S.pente, S.creux, x - S.rampe);
+  }
+  function poserSauts(c, { nombre = 1, ...reglages } = {}) {
+    const S = { ...SAUT, ...reglages }, n = c.n, ferme = !c.ouvert, L = c.longueur;
+    if (!Array.isArray(c.sauts)) c.sauts = [];
+    if (!(nombre > 0) || !c.y || !c.vitesse || !c.courbure || !(n >= 5)) return c.sauts;
+    const ds = L / (ferme ? n : n - 1), emprise = S.rampe + S.creux;
+    const idx = j => ferme ? ((j % n) + n) % n : j;
+    // échantillons interdits : ligne de départ (ou bouts d'une route ouverte), stands, couverts et tunnels, ponts,
+    // bords dangereux déclarés, chacun avec sa marge
+    const interdit = new Uint8Array(n);
+    const marquer = (debut, fin) => {
+      let j0 = Math.floor((debut - S.marge) / ds), j1 = Math.ceil((fin + S.marge) / ds);
+      if (ferme) j1 = Math.min(j1, j0 + n - 1); else { j0 = Math.max(0, j0); j1 = Math.min(n - 1, j1); }
+      for (let j = j0; j <= j1; j++) interdit[idx(j)] = 1;
+    };
+    if (ferme) { const ld = c.ligneDroite || { debut: -150, fin: 150 }; marquer(ld.debut, ld.fin); }
+    else { marquer(0, 400 - S.marge); marquer((Number.isFinite(c.arrivee) ? c.arrivee : L) - 300 + S.marge, L); }
+    for (const z of [c.stands, c.tunnel, ...(c.couverts || []), ...(c.ponts || []), ...(c.bords || [])])
+      if (z && Number.isFinite(z.debut) && Number.isFinite(z.fin)) marquer(z.debut, z.fin);
+    for (const z of c.sauts) marquer(z.debut, z.fin);
+    const avant = Math.ceil(emprise / ds), apres = Math.ceil(emprise / ds);
+    const dA = Math.ceil(S.droitAvant / ds), dB = Math.ceil(S.droitApres / ds), appel = Math.ceil(60 / ds);
+    const candidats = [];
+    for (let i = ferme ? 0 : avant; i < (ferme ? n : n - apres); i++) {
+      let ok = true;
+      for (let j = i - avant; ok && j <= i + apres; j++) { const k = idx(j); ok = !interdit[k] && Math.abs(c.pente ? c.pente[k] : 0) <= S.penteMax; }
+      for (let j = i - dA; ok && j <= i + dB; j++) ok = Math.abs(c.courbure[idx(j)]) < 1 / S.rayonMin;
+      // vitesse de l'IA : franche à l'appel, et pas de freinage avant la fin de la réception
+      for (let j = i - appel; ok && j <= i + dB; j++) ok = c.vitesse[idx(j)] >= S.vitesseMin;
+      if (ok && c.vitesse[idx(i + dB)] < c.vitesse[i] - 1) ok = false;
+      if (ok) candidats.push(i);
+    }
+    // les plus rapides d'abord (à vitesse égale, le premier rencontré), à `ecart` mètres au moins l'un de l'autre
+    candidats.sort((a, b) => c.vitesse[b] - c.vitesse[a] || a - b);
+    const choisis = [], distance = (a, b) => { const d = Math.abs(a - b) * ds; return ferme ? Math.min(d, L - d) : d; };
+    for (const i of candidats) {
+      if (choisis.length >= nombre) break;
+      if (choisis.every(j => distance(i, j) >= S.ecart) && c.sauts.every(z => distance(i, Math.round(z.sommet / ds)) >= S.ecart)) choisis.push(i);
+    }
+    choisis.sort((a, b) => a - b);
+    const plat = 40, fondu = 40;   // dévers nul de l'appel (−40 m) à la fin de la réception (+110 m), fondu sur 40 m
+    for (const i of choisis) {
+      for (let j = i - avant; j <= i + apres; j++) {
+        const k = idx(j), x = (j - i) * ds;
+        c.y[k] += bosseSaut(x, S);
+        if (c.devers) {
+          const e = x < 0 ? -plat - x : x - 110, t = e <= 0 ? 0 : Math.min(1, e / fondu);
+          c.devers[k] *= t * t * (3 - 2 * t);
+        }
+      }
+      if (c.pente) for (let j = i - avant - 1; j <= i + apres + 1; j++) {
+        const k = idx(j); if (k < 0 || k >= n) continue;
+        const a = ferme ? idx(k - 1) : Math.max(0, k - 1), b = ferme ? idx(k + 1) : Math.min(n - 1, k + 1);
+        c.pente[k] = (c.y[b] - c.y[a]) / ((ferme ? 2 : b - a) * ds);
+      }
+      const sommet = i * ds;
+      c.sauts.push({ debut: sommet - emprise, sommet, fin: sommet + emprise, hauteur: bosseSaut(0, S), vitesse: c.vitesse[i] });
+    }
+    c.sauts.sort((a, b) => a.sommet - b.sommet);
+    return c.sauts;
   }
 
   // Limites latérales : glissières à 20 m, rapprochées à l'intérieur des virages serrés (repère valable : 1 − κd > 0,3).
@@ -926,5 +1030,5 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.couve
     return pb;
   }
 
-  B.circuit = { creer, creerDepuisTrace, preparerParcours, adoucirRelief, preparerStands, abscisseGrille, axeStands, bandeStands, bordStands, surVoieStands, empriseStands, ramener, echantillon, point, repere, ecart, vibreurA, limiteA, largeurA, valider, dansTunnel, dansCouvert, choisirTunnel, PAS, LARGEUR };
+  B.circuit = { creer, creerDepuisTrace, preparerParcours, adoucirRelief, poserSauts, bosseSaut, SAUT, vitessesTroncon, preparerStands, abscisseGrille, axeStands, bandeStands, bordStands, surVoieStands, empriseStands, ramener, echantillon, point, repere, ecart, vibreurA, limiteA, largeurA, valider, dansTunnel, dansCouvert, choisirTunnel, PAS, LARGEUR };
 })(globalThis.BITUME = globalThis.BITUME || {});
