@@ -842,28 +842,31 @@
         float grainSpan=max(fwidth(grainUV).x,fwidth(grainUV).y);
         metalness=0.;
         if(recipe<8.5){
-          // Rounded pores and subdued broad folds, no regular tile or seam.
+          // Rounded pebble pores, micro-creases and subdued broad folds, no regular tile or seam.
           float folds=surfaceNoise(oriented*vec2(1.,.55)+17.,35.,span);
-          float pores=surfaceNoise(grainUV+3.7,410.,grainSpan);
+          float pebble=surfaceNoise(grainUV+11.3,190.,grainSpan);
+          float pores=surfaceNoise(grainUV+3.7,430.,grainSpan);
           float fine=surfaceNoise(grainUV+23.1,1050.,grainSpan);
           float valleys=(1.-pores)*(1.-pores);
-          base=tint*(.94+(pores-.5)*.10+(folds-.5)*.045);
-          roughness=.60+(pores-.5)*.10+(fine-.5)*.035;
-          recipeHeight=(pores-.5)*.00032+(fine-.5)*.000045+(folds-.5)*.00014;
-          cavity=1.-valleys*.045;
+          base=tint*(.94+(pores-.5)*.09+(pebble-.5)*.045+(folds-.5)*.04);
+          roughness=.63+(pores-.5)*.09+(pebble-.5)*.04+(fine-.5)*.03;
+          recipeHeight=(pebble-.5)*.00022+(pores-.5)*.00034+(fine-.5)*.00005+(folds-.5)*.00016;
+          cavity=1.-valleys*.055;
         }else{
-          // Smooth periodic yarns cross over/under; both frequencies tend to
-          // their analytic mean before Nyquist. No unfiltered checkerboard.
-          vec2 phase=grainUV*820.;
+          // Smooth periodic Nomex twill & warp/weft yarns cross over/under; frequencies
+          // tend to their analytic mean before Nyquist. No unfiltered checkerboard.
+          vec2 phase=grainUV*780.;
           vec2 detail=vec2(1.)-smoothstep(vec2(.30),vec2(.80),fwidth(phase));
           vec2 yarn=cos(phase*6.2831853)*detail;
           float crossing=.5+.5*sin(phase.x*3.14159265)*sin(phase.y*3.14159265)*detail.x*detail.y;
+          float twillPhase=(grainUV.x+grainUV.y*.5)*520.;
+          float twill=cos(twillPhase*6.2831853)*(1.-smoothstep(.30,.80,fwidth(twillPhase)));
           float weave=mix(yarn.x,yarn.y,crossing);
           float fibre=surfaceNoise(grainUV+29.4,1550.,grainSpan);
-          base=tint*(.94+weave*.035+(fibre-.5)*.035);
-          roughness=.88-weave*.035+(fibre-.5)*.045;
-          recipeHeight=weave*.000030+(fibre-.5)*.000015;
-          cavity=.985+weave*.015;
+          base=tint*(.95+weave*.032+twill*.018+(fibre-.5)*.036);
+          roughness=.90-weave*.030-twill*.015+(fibre-.5)*.040;
+          recipeHeight=weave*.000046+twill*.000026+(fibre-.5)*.000018;
+          cavity=.978+weave*.014+twill*.008;
         }
       }
     } else if (m<.5) {
@@ -1132,7 +1135,7 @@
       base*=1.-wet*(recipe<1.5?.32:.22);
       roughness=mix(roughness,recipe<1.5?.12:.18,film);
       n=normalize(mix(n,geometricNormal,film*.82));
-    }else if(recipe>4.5){
+    }else if(recipe>4.5&&recipe<7.5){
       // Natural surfaces darken when exposed, retaining a dielectric, mostly
       // rough finish. Bark and leaves do not acquire asphalt puddles.
       float exposed=clamp(vOutdoor,0.,1.)*uEnvironment.x;
@@ -1140,6 +1143,14 @@
       base*=1.-wet*(recipe<5.5?.26*(1.-soilSnow*.85):recipe<6.5?.21:.12);
       roughness=mix(roughness,recipe<5.5?mix(.49,.84,soilSnow):recipe<6.5?.54:.32,wet*.78);
       n=normalize(mix(n,geometricNormal,wet*.30));
+    }else if(recipe>7.5){
+      // Leather and fireproof woven fabric darken subtly in rain without turning
+      // into glossy wet plastic; woven Nomex retains its matte micro-weave.
+      float exposed=clamp(vOutdoor,0.,1.)*uEnvironment.x;
+      float wet=clamp(uWeather.x,0.,1.)*exposed*(.20+.80*max(geometricNormal.y,0.));
+      base*=1.-wet*(recipe<8.5?.11:.16);
+      roughness=mix(roughness,recipe<8.5?.54:.85,wet*(recipe<8.5?.45:.35));
+      n=normalize(mix(n,geometricNormal,wet*(recipe<8.5?.18:.08)));
     }else{
       float wet=uWeather.x*clamp(n.y,0.,1.)*step(13.5,m)*step(m,15.5);
       puddle=smoothstep(.48,.72,noise(vWorld.xz*.29))*wet;
@@ -1225,10 +1236,12 @@
       vec3 sunDir=normalize(uSunDirection);
       vec3 halfV=normalize(view+sunDir);
       float glint=pow(max(dot(n,halfV),0.),mix(240.,28.,roughness))*mix(1.,.12,roughness);
+      if(recipe>7.5)glint*=recipe>8.5?.06:.32;
       color+=uSunColor*glint*sunlight*1.5;
+      if(recipe>8.5)color+=base*(uAmbient*.42+uSunColor*sunlight*.16)*pow(1.-nv,3.6)*.22;
       vec3 groundBounce=mix(vec3(.10,.085,.06),uAmbient*.5,.5);
       color+=groundBounce*environmentFresnel*(1.-smoothstep(-.4,.12,reflected.y))*(.3+.7*(1.-roughness));
-      color+=environmentReflection*environmentFresnel*(1.-roughness)*(1.-roughness)*.5;
+      color+=environmentReflection*environmentFresnel*(1.-roughness)*(1.-roughness)*(recipe>8.5?.12:.5);
     }
     float pulse=.94+.06*sin(uEffects.x*2.2+vWorld.y*3.);
     color+=base*emission*pulse*1.55+windowGlow;

@@ -292,7 +292,9 @@
   }
   function poursuite(C, cam, p, plan, t, aspect = 16 / 9) {
     if (!C || !cam || !p || ![p.x, p.y, p.z].every(Number.isFinite)) return null;
-    const cible = [p.x, p.y + .65, p.z], souhaite = [cam.pos[0], p.y + 2.45, cam.pos[2]];
+    const solLocal = C.decor?.sol ? C.decor.sol(cam.pos[0], cam.pos[2]) : NaN;
+    const baseY = Number.isFinite(solLocal) ? Math.min(Math.max(p.y + 2.45, solLocal + 1.35), Math.max(p.y, solLocal) + 3.8) : p.y + 2.45;
+    const cible = [p.x, p.y + .65, p.z], souhaite = [cam.pos[0], baseY, cam.pos[2]];
     const direction = souhaite.map((v, k) => v - cible[k]), longueur = Math.hypot(...direction);
     if (!Number.isFinite(longueur) || longueur < 1.2) return null;
     for (let k = 0; k < 3; k++) direction[k] /= longueur;
@@ -360,7 +362,8 @@
       cible[0] = n ? x / n : p.x; cible[1] = (n ? y / n : p.y) + .7; cible[2] = n ? z / n : p.z;
       for (const q of poses) { const w = poids(q); if (w > 0) rayon = Math.max(rayon, Math.hypot(q.x - cible[0], q.z - cible[2]) * w); }
       const a = p.cap + cote * (.14 + .05 * u), recul = clamp(rayon * .80, 10, 18);
-      pos[0] = cible[0] - Math.cos(a) * recul; pos[2] = cible[2] - Math.sin(a) * recul; pos[1] = cible[1] + clamp(rayon * .09, 1.8, 3.2);
+      pos[0] = cible[0] - Math.cos(a) * recul; pos[2] = cible[2] - Math.sin(a) * recul;
+      pos[1] = Math.max(cible[1] + clamp(rayon * .09, 1.8, 3.2), sol(C, pos[0], pos[2], cible[1]) + 1.15);
       fov = 50;
     }
     if (!libre(C, pos, cible, marge)) return null;

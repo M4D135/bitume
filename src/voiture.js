@@ -508,8 +508,6 @@
     for (const x of [.90, .50, -.15, -.52, -.85]) ponton.push([x, .208, p(x).l + .002]);
     forme('filet', deuxCotes(C.tube(nez, .008, { cotes: 6, pas: 2 }).concat(C.tube(ponton, .008, { cotes: 6, pas: 2 }))));
     forme('ecopes', deuxCotes(C.carene(ECOPE_GAUCHE.concat(ECOPE_DROITE))));
-    forme('aileron-avant', deuxCotes(C.carene(AILERON_AVANT)));
-    forme('aileron-arriere', deuxCotes(C.carene(AILERON_ARRIERE)));
   }
   // rétroviseurs : boîtier profilé, glace vers l'arrière, sur une patte fine fixée au flanc du carénage
   forme('retros', deuxCotes(C.carene([{ x: .61, y0: .560, y1: .575, l: .02, n: 2, z: .47 }, { x: .57, y0: .540, y1: .592, l: .072, n: 3, z: .47 }, { x: .53, y0: .538, y1: .594, l: .078, n: 4, z: .47 }], { cotes: 16, pas: 3 })
@@ -2063,14 +2061,16 @@
     V.push(H.ruban = mettre('cylinder', null, [TUBE + .0016, .012, TUBE + .0016], TISSU, [.95, .76, .08], libre()));
     V.push(H.tige = mettre('cylinder', null, [.011, 0, .011], METAL_MAT, ARGENT, libre()));
     V.push(H.pommeau = mettre('sphere', null, [.040, .040, .040], METAL_MAT, [.80, .81, .83], null));
-    // gant de la couleur de la voiture (sombre si elle est très claire), paume de cuir, garde, élastique, sangle
-    const combi = liv.combinaison || c1.map(v => v * .7), gant = clarte(c1) > .62 ? [.13, .13, .15] : c1, cuir = [.055, .05, .048];
-    const couleurs = [gant, cuir, gant.map(v => v * .8), [.06, .06, .065], gant.map(v => v * .92), gant];
+    // gant de la couleur de la voiture (sombre si elle est très claire), paume et garde de cuir suédé/capitonné, manchette Nomex, sangle sombre
+    const gantSombre = clarte(c1) > .62;
+    const combi = liv.combinaison || c1.map(v => v * .7), gant = gantSombre ? [.12, .125, .145] : c1.map(v => v * .90 + .008), cuir = [.045, .042, .040];
+    const gardeCouleur = [.062, .058, .056];
+    const couleurs = [gant, cuir, gardeCouleur, gant.map(v => v * .94), [.065, .065, .072], gant];
     const variante = nom => { const fo = FORMES[nom]; return { nom: fo.nom, c: fo.centre.map(v => v * ECHELLE), s: reduite(fo.taille.map(v => v * ECHELLE)) }; };
     H.mains = [-1, 1].map(k => {
       const cote = k > 0 ? 'd' : 'g', rep = libre(), repPaume = libre(), main = { k, rep, repPaume, prise: trois(), originePaume: trois(), pieces: [], tubes: [], boules: [], coude: Float64Array.of(COUDE[0], COUDE[1], k * COUDE[2]) };
       PIECES_MAIN.forEach((nom, q) => {
-        const ferme = variante('main-' + nom + '-' + cote), e = emplacement(ferme.nom, ferme.s, TISSU, couleurs[q], ['paume', 'poignet', 'sangle', 'dos'].includes(nom) ? repPaume : rep, undefined);
+        const ferme = variante('main-' + nom + '-' + cote), e = emplacement(ferme.nom, ferme.s, TISSU, couleurs[q], ['paume', 'garde', 'poignet', 'sangle', 'dos'].includes(nom) ? repPaume : rep, undefined);
         e.ferme = ferme; e.ouvert = k > 0 && nom === 'gant' ? variante('main-gant-d-ouvert') : ferme;
         e.prises = nom === 'gant' ? (k > 0 ? PRISES_MAIN : PRISES_GAUCHE).map(variante) : null;
         e.gestes = nom === 'gant' ? [null, GESTES_MAIN.majeur[cote].map(variante), GESTES_MAIN.poing[cote].map(variante), GESTES_MAIN.salut[cote].map(variante)] : null;
@@ -2530,8 +2530,11 @@
         const ciX = (pX + WN[0] * reculPaume) + WU[0] * leveePaume, ciY = (pY + WN[1] * reculPaume) + WU[1] * leveePaume, ciZ = (pZ + WN[2] * reculPaume) + WU[2] * leveePaume;
         // cockpit-3 : doigts fermés, ils traversaient le tore de la jante (jusqu'à 12,5 mm) et la branche de 3 h
         // pendant le trajet ; la main s'écarte d'abord vers le dehors et vers le pilote avant de tourner, et le
-        // gant passe en variante doigts ouverts dès qu'il ne touche plus le tube (ecart à fond)
-        ecart = H.piloteReel ? ouverture : Math.min(t, 1 - t) / .02; ecart = ecart < 0 ? 0 : ecart > 1 ? 1 : ecart;
+        // gant passe en variante doigts ouverts dès qu'il ne touche plus le tube, puis coiffe le pommeau en demi-prise.
+        let pPom1 = (t - .38) / .08, pPom2 = (t - .62) / .08;
+        pPom1 = pPom1 < 0 ? 0 : pPom1 > 1 ? 1 : pPom1; pPom2 = pPom2 < 0 ? 0 : pPom2 > 1 ? 1 : pPom2;
+        const prisePommeau = pPom1 * pPom1 * (3 - 2 * pPom1) * (1 - pPom2 * pPom2 * (3 - 2 * pPom2));
+        ecart = H.piloteReel ? ouverture * (1 - .32 * prisePommeau) : Math.min(t, 1 - t) / .02; ecart = ecart < 0 ? 0 : ecart > 1 ? 1 : ecart;
         const mouvement = H.piloteReel ? retrait : ecart, dehors = H.piloteReel ? radial : ecart, degagement = H.piloteReel ? .025 : .016, reculPrise = H.piloteReel ? .080 : .016;
         // Le recul supplémentaire contourne aussi le pommeau par le haut :
         // garder sa hauteur initiale ferait passer la manchette sur la boule.
@@ -2647,6 +2650,14 @@
           AXE[0] /= sinus; AXE[1] /= sinus; AXE[2] /= sinus;
           ANGLE[0] = naturel * Math.atan2(sinus, a0 * b0 + a1 * b1 + a2 * b2);
           tournerColonnes(FP, AXE, ANGLE);
+          // Pronation/supination anatomique de l'avant-bras : le radius absorbe une fraction de la torsion au braquage
+          // autour de l'axe longitudinal poignet-coude, sans modifier l'angle poignet/avant-bras ni le pivot des jointures.
+          AXE[0] = b0; AXE[1] = b1; AXE[2] = b2; hypotDans(AXE, 3);
+          if (AXE[3] > 1e-9 && phi !== 0) {
+            AXE[0] /= AXE[3]; AXE[1] /= AXE[3]; AXE[2] /= AXE[3];
+            ANGLE[0] = -.022 * phi * naturel;
+            tournerColonnes(FP, AXE, ANGLE);
+          }
           GP[0] = px - FP[0] * lx - FP[3] * ly - FP[6] * lz;
           GP[1] = py - FP[1] * lx - FP[4] * ly - FP[7] * lz;
           GP[2] = pz - FP[2] * lx - FP[5] * ly - FP[8] * lz;

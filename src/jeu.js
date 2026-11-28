@@ -529,9 +529,9 @@
       B.eauCarrosserie.preparer(S.modeles[k], (enl ? enl.graine : graineCourse) + k * 739);
     // bâtis avec la scène (une fois par décor), repris ici de leurs places de départ : sous le voile de la préparation
     S.animaux = animauxDe(sc, S.nature);
-    if (demo) {
+    if (auto) {
       S.cinema = B.cinema.preparer(c, sc.decor, S.animaux, course.physique.world, true);
-      S.fpsDemo = B.cadence.compteurImages();
+      if (demo) S.fpsDemo = B.cadence.compteurImages();
     }
     // Le public de la séance : moins nombreux sous la pluie, en hiver et la nuit ; son animation repart de zéro.
     if (sc.public) {
@@ -2783,36 +2783,60 @@
     cam.roll = 0; cam.regardArriere = true;
     return cam;
   }
-  // hélicoptère (démo) : en arrière et au-dessus de la voiture suivie, cap lissé ; vise un peu devant elle
+  // hélicoptère (diagnostic / banc aérien) : en arrière et au-dessus de la voiture suivie, cap lissé ; vise devant elle
   function cameraHelico(S, p, dt) {
     if (S.camCap === null) S.camCap = p.cap;
     S.camCap += angle(p.cap - S.camCap) * (1 - Math.exp(-dt * 1.4));
-    const cx = p.x - Math.cos(S.camCap) * 11.5, cz = p.z - Math.sin(S.camCap) * 11.5, sol = scene.decor.sol ? scene.decor.sol(cx, cz) : p.y;
-    // Vol bas (David, complément 23/11) : plus de plongée aérienne à 21 m ; la caméra reste
-    // au-dessus de son terrain local (sol échantillonné) et jamais sous tunnel (DANS_LA_ROCHE).
-    const y = Math.min(p.y + 3.6, Math.max(p.y + 2.5, (isFinite(sol) ? sol : p.y) + 1.7));
+    const cx = p.x - Math.cos(S.camCap) * 30, cz = p.z - Math.sin(S.camCap) * 30, sol = scene.decor.sol ? scene.decor.sol(cx, cz) : p.y;
+    const y = Math.max(p.y, isFinite(sol) ? sol : p.y) + 11;
     const dx = p.x + Math.cos(p.cap) * 10 - cx, dy = p.y + .5 - y, dz = p.z + Math.sin(p.cap) * 10 - cz, dist = Math.hypot(dx, dy, dz) || 1;
-    return { pos: [cx, y, cz], yaw: Math.atan2(dx, -dz), pitch: Math.asin(clamp(dy / dist, -1, 1)), roll: 0, fov: 46, near: .1, far: PORTEE_VUE };
+    return { pos: [cx, y, cz], yaw: Math.atan2(dx, -dz), pitch: Math.asin(clamp(dy / dist, -1, 1)), roll: 0, fov: 38, near: .1, far: PORTEE_VUE };
   }
   // caméra de télévision : postes au bord de la piste, en avant de la voiture suivie
   function cameraTele(S, v, p) {
-    const c = S.course.c, T = S.tele, s = v.etat.s;
-    if (!T.poste || B.circuit.ecart(c, T.poste.s, s) > 18 || B.circuit.ecart(c, T.poste.s, s) < -200) {
-      let sp = ramener(s + 60 + T.alea() * 60, c.longueur);
-      if (B.circuit.dansCouvert(c, sp, 25)) {
-        sp = B.couverts.sortie(c, sp, 25, 5 + T.alea() * 30);
-        if (sp === null) return cameraPoursuite(S, p, v.etat, 0);
+    const c = S.course.c, T = S.tele, s = v.etat.s, cin = !S.reference && S.cinema ? S.cinema : null;
+    const cibleVoiture = [p.x, p.y + .65, p.z];
+    const tropPres = T.poste && cin && Math.hypot(p.x - T.poste.pos[0], p.z - T.poste.pos[2]) < 3.2;
+    const masqueVitrine = T.poste && cin && S.type === 'vitrine' && !B.cinema.libre(cin, T.poste.pos, cibleVoiture);
+    if (!T.poste || B.circuit.ecart(c, T.poste.s, s) > (cin ? 14 : 18) || B.circuit.ecart(c, T.poste.s, s) < -200 || tropPres || masqueVitrine) {
+      const zone = scene.decor.enceinte, tirage = T.alea();
+      const construirePoste = (avance, inversionCote) => {
+        let sp = ramener(s + avance, c.longueur);
+        if (B.circuit.dansCouvert(c, sp, 25)) {
+          sp = B.couverts.sortie(c, sp, 25, 5 + tirage * 25);
+          if (sp === null) return null;
+        }
+        const e = B.circuit.echantillon(c, sp);
+        let cote = e.courbure > 1e-4 ? -1 : e.courbure < -1e-4 ? 1 : (tirage < .5 ? -1 : 1);
+        if (inversionCote) cote = -cote;
+        const rel = B.circuit.ecart(c, 0, sp), serre = !!zone && rel > zone.debut && rel < zone.fin;
+        const d = cote * Math.min(c.largeur / 2 + 3.2, Math.max(c.largeur / 2 + .6, B.conduite.limiteCote(c, sp, cote) - .45));
+        const sa = Math.sin(e.cap), ca = Math.cos(e.cap), x = e.x - sa * d, z = e.z + ca * d;
+        const sol = scene.decor.sol ? scene.decor.sol(x, z) : e.y;
+        const baseSol = Math.max(e.y, isFinite(sol) ? sol : e.y);
+        const h = serre ? 1.35 + tirage * .9 : 1.55 + tirage * 1.25;
+        return { s: sp, pos: [x, Math.min(baseSol + 3.2, baseSol + h), z] };
+      };
+      let choisi = null;
+      if (cin) {
+        const avances = [48 + tirage * 18, 32 + tirage * 12, 68 + tirage * 16, 22 + tirage * 8];
+        for (let a = 0; a < avances.length && !choisi; a++) {
+          for (const inv of [false, true]) {
+            const cand = construirePoste(avances[a], inv);
+            if (cand && Math.hypot(p.x - cand.pos[0], p.z - cand.pos[2]) >= 4 && B.cinema.libre(cin, cand.pos, cibleVoiture)) {
+              choisi = cand; break;
+            }
+          }
+        }
+        if (S.planVu) cin.cadres.delete(S.planVu);
+      } else {
+        choisi = construirePoste(60 + tirage * 60, false);
       }
-      const e = B.circuit.echantillon(c, sp);
-      const cote = e.courbure > 1e-4 ? -1 : e.courbure < -1e-4 ? 1 : (T.alea() < .5 ? -1 : 1);
-      // derrière la glissière ; le long des tribunes et des stands, sur l'accotement, plus bas, pour rester devant eux
-      const zone = scene.decor.enceinte, rel = B.circuit.ecart(c, 0, sp), serre = !!zone && rel > zone.debut && rel < zone.fin;
-      const d = cote * Math.min(c.largeur / 2 + 3.2, B.conduite.limiteCote(c, sp, cote) - .45), sa = Math.sin(e.cap), ca = Math.cos(e.cap);
-      const x = e.x - sa * d, z = e.z + ca * d, sol = scene.decor.sol ? scene.decor.sol(x, z) : e.y;
-      T.poste = { s: sp, pos: [x, Math.min(e.y + 3.1, Math.max(e.y, isFinite(sol) ? sol : e.y) + (serre ? 1.25 + T.alea() * 1.0 : 1.4 + T.alea() * 1.4)), z] };
+      if (!choisi) return cameraPoursuite(S, p, v.etat, 0);
+      T.poste = choisi;
     }
     const q = T.poste.pos, dx = p.x - q[0], dy = p.y + .55 - q[1], dz = p.z - q[2], dist = Math.hypot(dx, dy, dz) || 1;
-    return { pos: q.slice(), yaw: Math.atan2(dx, -dz), pitch: Math.asin(clamp(dy / dist, -1, 1)), roll: 0, fov: clamp(2 * Math.atan(7.5 / dist) * 180 / Math.PI, 10, 50), near: .1, far: PORTEE_VUE };
+    return { pos: q.slice(), yaw: Math.atan2(dx, -dz), pitch: Math.asin(clamp(dy / dist, -1, 1)), roll: 0, fov: clamp(2 * Math.atan(7.8 / dist) * 180 / Math.PI, cin ? 15 : 10, 50), near: .1, far: PORTEE_VUE };
   }
 
   // Caméras de la démo (David, 16/11 : « des démos plus impressionnantes, avec de l'action, des vues différentes »).
@@ -2842,22 +2866,43 @@
   }
   // au ras de la piste, à son bord, un peu devant la voiture : elle arrive, passe tout près, et la caméra la suit
   function cameraSol(S, v, p) {
-    const c = S.course.c, s = v.etat.s, plan = S.planVu;
+    const c = S.course.c, s = v.etat.s, plan = S.planVu, cin = !S.reference && S.cinema ? S.cinema : null;
     if (!S.sol || S.sol.plan !== plan) {
-      let sp = ramener(s + 55 + plan.angle * 4, c.longueur);
-      if (B.circuit.dansCouvert(c, sp, 25)) {
-        sp = B.couverts.sortie(c, sp, 25);
-        if (sp === null) return cameraPoursuite(S, p, v.etat, 0);
+      const cibleVoiture = [p.x, p.y + .65, p.z];
+      const construireSol = (avance, inversionCote) => {
+        let sp = ramener(s + avance, c.longueur);
+        if (B.circuit.dansCouvert(c, sp, 25)) {
+          sp = B.couverts.sortie(c, sp, 25);
+          if (sp === null) return null;
+        }
+        const e = B.circuit.echantillon(c, sp);
+        let cote = e.courbure > 1e-4 ? 1 : e.courbure < -1e-4 ? -1 : (plan ? plan.cote : 1);
+        if (inversionCote) cote = -cote;
+        // lot 22F : rester au moins 45 cm devant la limite et 62 cm au-dessus de l'accotement (congères 50 cm incluses)
+        const d = cote * Math.min(c.largeur / 2 + 1.1, Math.max(c.largeur / 2 + .35, B.conduite.limiteCote(c, sp, cote) - .45));
+        const x = e.x - Math.sin(e.cap) * d, z = e.z + Math.cos(e.cap) * d;
+        const sol = scene.decor.sol ? scene.decor.sol(x, z) : e.y;
+        return [x, Math.max(e.y, isFinite(sol) ? sol : e.y) + .62, z];
+      };
+      let pos = null;
+      const baseAvance = 55 + (plan ? plan.angle * 4 : 0);
+      if (cin) {
+        for (const av of [baseAvance, 38, 26, 68]) {
+          for (const inv of [false, true]) {
+            const cand = construireSol(av, inv);
+            if (cand && Math.hypot(p.x - cand[0], p.z - cand[2]) >= 3.5 && B.cinema.libre(cin, cand, cibleVoiture)) {
+              pos = cand; break;
+            }
+          }
+          if (pos) break;
+        }
+      } else {
+        pos = construireSol(baseAvance, false);
       }
-      const e = B.circuit.echantillon(c, sp);
-      const cote = e.courbure > 1e-4 ? 1 : e.courbure < -1e-4 ? -1 : plan.cote;
-      // lot 22F : un muret (limite à 1 m du bord) ou un parapet (1,4 m) commence à la limite ; à 1,1 m du bord, la
-      // caméra serait dans le mur. Elle reste 40 cm devant la limite ; ailleurs (limites d'au moins 3,2 m), rien ne change.
-      const d = cote * Math.min(c.largeur / 2 + 1.1, B.conduite.limiteCote(c, sp, cote) - .4), x = e.x - Math.sin(e.cap) * d, z = e.z + Math.cos(e.cap) * d;
-      const sol = scene.decor.sol ? scene.decor.sol(x, z) : e.y;
-      S.sol = { plan, pos: [x, Math.max(e.y, isFinite(sol) ? sol : e.y) + .32, z] };
+      if (!pos) return cameraPoursuite(S, p, v.etat, 0);
+      S.sol = { plan, pos };
     }
-    const q = S.sol.pos, dx = p.x - q[0], dy = p.y + .4 - q[1], dz = p.z - q[2], dist = Math.hypot(dx, dy, dz) || 1;
+    const q = S.sol.pos, dx = p.x - q[0], dy = p.y + .45 - q[1], dz = p.z - q[2], dist = Math.hypot(dx, dy, dz) || 1;
     return { pos: q.slice(), yaw: Math.atan2(dx, -dz), pitch: Math.asin(clamp(dy / dist, -1, 1)), roll: 0, fov: clamp(2 * Math.atan(5 / dist) * 180 / Math.PI, 28, 70), near: .1, far: PORTEE_VUE };
   }
 
@@ -3201,7 +3246,7 @@
     return ['non', 'eco', 'oui', 'ultra'].includes(r) ? r : 'oui';
   }
   function retroVoulu(S, vue, P) {
-    const r = modeRetroEffectif();
+    const r = typeof modeRetroEffectif === 'function' ? modeRetroEffectif() : (reglages.retro === 'non' ? 'non' : reglages.retro === 'auto' ? (estTactile ? 'non' : 'oui') : reglages.retro || 'oui');
     // Le profil décide en mode auto/oui ; les modes explicites éco et ultra forcent l'activation des glaces.
     return r !== 'non' && (vue === 'cockpit' || vue === 'arceau') && !S.regardArriere && S.type !== 'vitrine' && !cameraEssai &&
       (r === 'eco' || r === 'ultra' || (P || profilDe(S)).effets.retroImages);
@@ -3880,7 +3925,12 @@
     }
     // caméra : celle du joueur, ou celle que choisit le réalisateur de la démo
     let vue = reglages.vue, suivie = j;
-    if (S.type === 'vitrine') { suivie = co.voitures[co.classement[S.suiviRang || 0]] || j; vue = 'tele'; }
+    if (S.type === 'vitrine') {
+      const rangAuto = ((co.horloge / 11) | 0) % Math.max(1, Math.min(6, co.classement.length));
+      const cibleVitrine = co.voitures[co.classement[S.suiviRang !== undefined ? S.suiviRang : rangAuto]] || j;
+      if (S.suivieVitrine !== cibleVitrine.id) { S.suivieVitrine = cibleVitrine.id; S.tele.poste = null; S.camCap = null; }
+      suivie = cibleVitrine; vue = 'tele';
+    }
     else if (S.type === 'demo') {
       B.cinema.regler(S.cinema, { faune: B.animaux.qualite(reglages.faune, P.palier), nuit: S.nature?.ambiance.nuit || 0, pluie: meteo.pluie || 0 });
       const pl = B.realisateur.tenir(S.real, co, S.cinema, S.expressions, co.voitures[co.classement[0]].etat.s);
@@ -3929,11 +3979,21 @@
     if (B.cameraTransition && S.camTransition && S.camTransition.actif && VUES_COURSE.includes(vue) && !S.regardArriere && !S.reference && S.type !== 'demo') {
       cam = B.cameraTransition.appliquer(S.camTransition, cam, dtImage, { solY: ps.y, carPos: [ps.x, ps.y, ps.z], carCap: ps.cap });
     }
-    if (S.type === 'demo') {
+    if (S.type === 'vitrine' && S.cinema && cam) {
       const aspect = canvas.clientWidth / Math.max(1, canvas.clientHeight);
+      if (!B.cinema.libre(S.cinema, cam.pos, [ps.x, ps.y + .65, ps.z])) {
+        const libre = B.cinema.poursuite(S.cinema, cameraPoursuite(S, ps, suivie.etat, dtImage), ps, null, S.tRendu, aspect);
+        if (libre) { vue = 'poursuite'; cam = libre; }
+        else { vue = 'aileron'; cam = cameraDemo(S, ps, null, 'aileron'); }
+      }
+    } else if (S.type === 'demo') {
+      const aspect = canvas.clientWidth / Math.max(1, canvas.clientHeight);
+      const cibleValidation = vue === 'cockpit'
+        ? [ps.x + Math.cos(ps.cap) * 2.2, ps.y + .75, ps.z + Math.sin(ps.cap) * 2.2]
+        : (cam.cible || [ps.x, ps.y + .65, ps.z]);
       // Toutes les vues passent par le même contrôle, y compris les anciens plans télé, sol et orbite.
       // Un refus change réellement de plan : le repli ne revient pas dans le plan masqué à l'image suivante.
-      const accepte = vue === 'poursuite' || B.cinema.valider(S.cinema, cam, cam.cible || [ps.x, ps.y + .65, ps.z], S.planVu, S.tRendu, aspect);
+      const accepte = vue === 'poursuite' || B.cinema.valider(S.cinema, cam, cibleValidation, S.planVu, S.tRendu, aspect);
       if (accepte) S.secoursCamera = null;
       else if (S.secoursCamera === S.planVu) {
         // Une voiture coincée ne provoque pas une rafale de coupes : repli sur le support embarqué
@@ -3962,7 +4022,8 @@
             S.planVu = B.realisateur.replier(S.real, co, 'cockpit', suivie.id);
             S.camCap = null; S.tete = null;
             vue = 'cockpit'; cam = cameraCockpit(S, ps, suivie.etat, S.tRendu, dtImage);
-            if (!B.cinema.valider(S.cinema, cam, [ps.x, ps.y + .65, ps.z], S.planVu, S.tRendu, aspect)) {
+            const cibleCockpit = [ps.x + Math.cos(ps.cap) * 2.2, ps.y + .75, ps.z + Math.sin(ps.cap) * 2.2];
+            if (!B.cinema.valider(S.cinema, cam, cibleCockpit, S.planVu, S.tRendu, aspect)) {
               S.secoursCamera = S.planVu;
               cam = B.cinema.secours(S.cinema, aspect);
               if (!cam) return;
@@ -3973,12 +4034,9 @@
       }
     }
     if (regardArriereVoulu(S, suivie, vue)) cam = cameraRegardArriere(S, ps, cam, vue);
-    const porteeActive = porteeVueActive(S);
+    const porteeActive = typeof porteeVueActive === 'function' ? porteeVueActive(S) : PORTEE_VUE;
     if (cameraEssai) cam = Object.assign({ roll: 0, near: .1, far: porteeActive, fov: 40 }, cameraEssai(pj, cam));
-    else if (cam) {
-      if (!S.reference && cam.pos[1] > ps.y + 4.4) cam.pos[1] = ps.y + 4.4;
-      cam.far = porteeActive;
-    }
+    else if (cam) cam.far = porteeActive;
     if (S.secousse > 0 && !cam.sujetNature) {
       const pitchSur = cam.pitch, yawSur = cam.yaw;
       const a = S.secousse * .05 * reglages.secousses, t = horlogeReelle;
