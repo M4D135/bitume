@@ -1,0 +1,1610 @@
+{
+  "valid": true,
+  "file": "peugeot-205-gti.glb",
+  "bytes": 1954692,
+  "units": "metres",
+  "axes": {
+    "forward": "+X",
+    "up": "+Y",
+    "right": "+Z"
+  },
+  "errors": [],
+  "warnings": [],
+  "reference_dimensions_m": {
+    "length": 3.705,
+    "body_width_with_arches": 1.589,
+    "height_without_antenna": 1.355,
+    "wheelbase": 2.42,
+    "tyre_radius": 0.2875
+  },
+  "model_origin_world_m": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "glb_version": 2,
+  "asset_generator": "Khronos glTF Blender I/O v4.3.47",
+  "scene": 0,
+  "scene_root_count": 1,
+  "nodes": 78,
+  "active_nodes": 78,
+  "meshes": 43,
+  "materials": 38,
+  "images": 0,
+  "buffers_embedded": true,
+  "external_dependencies": [],
+  "triangles_unique_meshes": 96006,
+  "triangles_scene": 146658,
+  "vertices_unique_meshes": 55473,
+  "degenerate_triangles": 0,
+  "minimum_triangle_area_m2": 2.0232160302906344e-08,
+  "aabb_world_m": {
+    "min": [
+      -1.8150001,
+      -0.0014,
+      -0.9538429
+    ],
+    "max": [
+      1.8899999,
+      1.6015803,
+      0.9538429
+    ],
+    "dimensions": [
+      3.7049999,
+      1.6029803,
+      1.9076858
+    ]
+  },
+  "pivots": {
+    "wheel_FL": {
+      "world_m": [
+        1.21,
+        0.2875,
+        -0.68
+      ],
+      "children": 8,
+      "mesh_nodes_in_subtree": 8,
+      "expected_world_m": [
+        1.21,
+        0.2875,
+        -0.68
+      ],
+      "error_m": 3.9e-08,
+      "under_model_root": true
+    },
+    "wheel_FR": {
+      "world_m": [
+        1.21,
+        0.2875,
+        0.68
+      ],
+      "children": 8,
+      "mesh_nodes_in_subtree": 8,
+      "expected_world_m": [
+        1.21,
+        0.2875,
+        0.68
+      ],
+      "error_m": 3.9e-08,
+      "under_model_root": true
+    },
+    "wheel_RL": {
+      "world_m": [
+        -1.21,
+        0.2875,
+        -0.68
+      ],
+      "children": 8,
+      "mesh_nodes_in_subtree": 8,
+      "expected_world_m": [
+        -1.21,
+        0.2875,
+        -0.68
+      ],
+      "error_m": 3.9e-08,
+      "under_model_root": true
+    },
+    "wheel_RR": {
+      "world_m": [
+        -1.21,
+        0.2875,
+        0.68
+      ],
+      "children": 8,
+      "mesh_nodes_in_subtree": 8,
+      "expected_world_m": [
+        -1.21,
+        0.2875,
+        0.68
+      ],
+      "error_m": 3.9e-08,
+      "under_model_root": true
+    },
+    "steering_wheel": {
+      "world_m": [
+        0.26,
+        0.84,
+        -0.34
+      ],
+      "children": 2,
+      "mesh_nodes_in_subtree": 2,
+      "under_model_root": true
+    }
+  },
+  "mesh_nodes": [
+    {
+      "node": "body__Amber_indicator",
+      "triangles": 1128,
+      "vertices": 576,
+      "aabb_world_m": {
+        "min": [
+          -1.8025358,
+          0.6415,
+          -0.7875
+        ],
+        "max": [
+          1.8403065,
+          0.825,
+          0.7874999
+        ],
+        "dimensions": [
+          3.6428423,
+          0.1835,
+          1.5749999
+        ]
+      }
+    },
+    {
+      "node": "body__Anthracite_mouldings",
+      "triangles": 14388,
+      "vertices": 7316,
+      "aabb_world_m": {
+        "min": [
+          -1.7881536,
+          0.2321014,
+          -0.9538429
+        ],
+        "max": [
+          1.8818001,
+          1.6015803,
+          0.9538429
+        ],
+        "dimensions": [
+          3.6699537,
+          1.3694789,
+          1.9076858
+        ]
+      }
+    },
+    {
+      "node": "body__Badge_silver",
+      "triangles": 866,
+      "vertices": 848,
+      "aabb_world_m": {
+        "min": [
+          -1.8019126,
+          0.696,
+          -0.5030271
+        ],
+        "max": [
+          1.8899999,
+          1.017,
+          0.7162027
+        ],
+        "dimensions": [
+          3.6919125,
+          0.321,
+          1.2192298
+        ]
+      }
+    },
+    {
+      "node": "body__Bright_metal",
+      "triangles": 1136,
+      "vertices": 576,
+      "aabb_world_m": {
+        "min": [
+          -1.8130824,
+          0.192,
+          -0.7815
+        ],
+        "max": [
+          -0.588,
+          0.782,
+          0.7814999
+        ],
+        "dimensions": [
+          1.2250824,
+          0.59,
+          1.5629999
+        ]
+      }
+    },
+    {
+      "node": "body__GTI_red_inlay",
+      "triangles": 1637,
+      "vertices": 1247,
+      "aabb_world_m": {
+        "min": [
+          -1.8028711,
+          0.563,
+          -0.793
+        ],
+        "max": [
+          1.8886746,
+          1.0951209,
+          0.793
+        ],
+        "dimensions": [
+          3.6915458,
+          0.532121,
+          1.586
+        ]
+      }
+    },
+    {
+      "node": "body__Headlamp_fluting",
+      "triangles": 432,
+      "vertices": 288,
+      "aabb_world_m": {
+        "min": [
+          1.8534956,
+          0.653995,
+          -0.683
+        ],
+        "max": [
+          1.8557677,
+          0.786005,
+          0.683
+        ],
+        "dimensions": [
+          0.0022721,
+          0.1320099,
+          1.3660001
+        ]
+      }
+    },
+    {
+      "node": "body__Headlamp_glass",
+      "triangles": 752,
+      "vertices": 384,
+      "aabb_world_m": {
+        "min": [
+          -1.8039737,
+          0.6455,
+          -0.69
+        ],
+        "max": [
+          1.8526559,
+          0.7945001,
+          0.6900001
+        ],
+        "dimensions": [
+          3.6566296,
+          0.149,
+          1.3800001
+        ]
+      }
+    },
+    {
+      "node": "body__Lamp_reflector",
+      "triangles": 752,
+      "vertices": 384,
+      "aabb_world_m": {
+        "min": [
+          1.8324031,
+          0.355,
+          -0.6945
+        ],
+        "max": [
+          1.8477161,
+          0.7985001,
+          0.6944999
+        ],
+        "dimensions": [
+          0.015313,
+          0.4435,
+          1.3889999
+        ]
+      }
+    },
+    {
+      "node": "body__Mirror_silver",
+      "triangles": 856,
+      "vertices": 432,
+      "aabb_world_m": {
+        "min": [
+          0.372,
+          0.9275,
+          -0.9315
+        ],
+        "max": [
+          0.376,
+          0.9865,
+          0.9315
+        ],
+        "dimensions": [
+          0.004,
+          0.059,
+          1.8629999
+        ]
+      }
+    },
+    {
+      "node": "body__Moulding_ridges",
+      "triangles": 1504,
+      "vertices": 768,
+      "aabb_world_m": {
+        "min": [
+          -1.79103,
+          0.65175,
+          -0.549
+        ],
+        "max": [
+          -1.7833598,
+          0.78925,
+          0.549
+        ],
+        "dimensions": [
+          0.0076703,
+          0.1375,
+          1.098
+        ]
+      }
+    },
+    {
+      "node": "body__Plate_characters",
+      "triangles": 651,
+      "vertices": 735,
+      "aabb_world_m": {
+        "min": [
+          -1.7952007,
+          0.3826058,
+          -0.1742147
+        ],
+        "max": [
+          1.8762181,
+          0.490633,
+          0.1732017
+        ],
+        "dimensions": [
+          3.6714188,
+          0.1080272,
+          0.3474165
+        ]
+      }
+    },
+    {
+      "node": "body__Recesses",
+      "triangles": 8228,
+      "vertices": 4204,
+      "aabb_world_m": {
+        "min": [
+          -1.8150001,
+          0.199,
+          -0.77145
+        ],
+        "max": [
+          1.8748592,
+          1.0547,
+          0.77145
+        ],
+        "dimensions": [
+          3.6898593,
+          0.8557,
+          1.5429
+        ]
+      }
+    },
+    {
+      "node": "body__Red_lens_prisms",
+      "triangles": 3008,
+      "vertices": 1536,
+      "aabb_world_m": {
+        "min": [
+          -1.8058914,
+          0.6535,
+          -0.7075
+        ],
+        "max": [
+          -1.803015,
+          0.7265,
+          0.7095
+        ],
+        "dimensions": [
+          0.0028764,
+          0.073,
+          1.417
+        ]
+      }
+    },
+    {
+      "node": "body__Red_tail_lens",
+      "triangles": 1128,
+      "vertices": 576,
+      "aabb_world_m": {
+        "min": [
+          -1.8025357,
+          0.3775,
+          -0.72
+        ],
+        "max": [
+          -1.7819214,
+          0.825,
+          0.72
+        ],
+        "dimensions": [
+          0.0206143,
+          0.4475,
+          1.44
+        ]
+      }
+    },
+    {
+      "node": "body__Rouge_Vallelunga",
+      "triangles": 18524,
+      "vertices": 9452,
+      "aabb_world_m": {
+        "min": [
+          -1.7722516,
+          0.2185,
+          -0.769
+        ],
+        "max": [
+          1.8709327,
+          1.355,
+          0.769
+        ],
+        "dimensions": [
+          3.6431843,
+          1.1365,
+          1.538
+        ]
+      }
+    },
+    {
+      "node": "body__Steel",
+      "triangles": 1192,
+      "vertices": 608,
+      "aabb_world_m": {
+        "min": [
+          -1.7743385,
+          0.162,
+          -0.733
+        ],
+        "max": [
+          1.3246012,
+          0.381,
+          0.733
+        ],
+        "dimensions": [
+          3.0989397,
+          0.219,
+          1.466
+        ]
+      }
+    },
+    {
+      "node": "body__Tire_and_seal_rubber",
+      "triangles": 6088,
+      "vertices": 4090,
+      "aabb_world_m": {
+        "min": [
+          -1.6868376,
+          0.28,
+          -0.94
+        ],
+        "max": [
+          1.5340447,
+          1.3150001,
+          0.94
+        ],
+        "dimensions": [
+          3.2208823,
+          1.0350001,
+          1.88
+        ]
+      }
+    },
+    {
+      "node": "body__Underseal",
+      "triangles": 376,
+      "vertices": 192,
+      "aabb_world_m": {
+        "min": [
+          -1.5120207,
+          0.1725,
+          -0.635
+        ],
+        "max": [
+          1.461925,
+          0.2775,
+          0.635
+        ],
+        "dimensions": [
+          2.9739457,
+          0.105,
+          1.27
+        ]
+      }
+    },
+    {
+      "node": "body__Yellow_driving_lights",
+      "triangles": 376,
+      "vertices": 192,
+      "aabb_world_m": {
+        "min": [
+          1.8427763,
+          0.36,
+          -0.6285
+        ],
+        "max": [
+          1.8477162,
+          0.454,
+          0.6285
+        ],
+        "dimensions": [
+          0.0049399,
+          0.094,
+          1.2570001
+        ]
+      }
+    },
+    {
+      "node": "body__Yellow_lens_fluting",
+      "triangles": 168,
+      "vertices": 112,
+      "aabb_world_m": {
+        "min": [
+          1.8485065,
+          0.366,
+          -0.6149
+        ],
+        "max": [
+          1.8498895,
+          0.448,
+          0.6147
+        ],
+        "dimensions": [
+          0.0013831,
+          0.082,
+          1.2296
+        ]
+      }
+    },
+    {
+      "node": "front_numberplate",
+      "triangles": 188,
+      "vertices": 96,
+      "aabb_world_m": {
+        "min": [
+          1.865499,
+          0.42,
+          -0.229
+        ],
+        "max": [
+          1.8743905,
+          0.512,
+          0.229
+        ],
+        "dimensions": [
+          0.0088915,
+          0.092,
+          0.458
+        ]
+      }
+    },
+    {
+      "node": "rear_numberplate",
+      "triangles": 188,
+      "vertices": 96,
+      "aabb_world_m": {
+        "min": [
+          -1.7934271,
+          0.3535,
+          -0.2335
+        ],
+        "max": [
+          -1.7847978,
+          0.4525,
+          0.2335
+        ],
+        "dimensions": [
+          0.0086293,
+          0.099,
+          0.467
+        ]
+      }
+    },
+    {
+      "node": "glazing__Heated_window_filament",
+      "triangles": 160,
+      "vertices": 96,
+      "aabb_world_m": {
+        "min": [
+          -1.5959469,
+          1.0168501,
+          -0.5880712
+        ],
+        "max": [
+          -1.2138398,
+          1.242275,
+          0.5880712
+        ],
+        "dimensions": [
+          0.3821071,
+          0.2254249,
+          1.1761425
+        ]
+      }
+    },
+    {
+      "node": "glazing__Slight_green_glazing",
+      "triangles": 5056,
+      "vertices": 3507,
+      "aabb_world_m": {
+        "min": [
+          -1.6735407,
+          0.9226837,
+          -0.7201173
+        ],
+        "max": [
+          0.739,
+          1.301,
+          0.7201173
+        ],
+        "dimensions": [
+          2.4125407,
+          0.3783163,
+          1.4402347
+        ]
+      }
+    },
+    {
+      "node": "cabin_anthracite_plastic",
+      "triangles": 1772,
+      "vertices": 1322,
+      "aabb_world_m": {
+        "min": [
+          -0.74,
+          0.334,
+          -0.6505
+        ],
+        "max": [
+          0.7270241,
+          1.1575001,
+          0.6505
+        ],
+        "dimensions": [
+          1.4670241,
+          0.8235001,
+          1.301
+        ]
+      }
+    },
+    {
+      "node": "cabin_black_bolsters",
+      "triangles": 3744,
+      "vertices": 1970,
+      "aabb_world_m": {
+        "min": [
+          -1.3793916,
+          0.3455,
+          -0.63
+        ],
+        "max": [
+          0.4857484,
+          1.1865248,
+          0.63
+        ],
+        "dimensions": [
+          1.86514,
+          0.8410248,
+          1.2599999
+        ]
+      }
+    },
+    {
+      "node": "cabin_brushed_metal",
+      "triangles": 272,
+      "vertices": 186,
+      "aabb_world_m": {
+        "min": [
+          -0.6038852,
+          0.4097458,
+          -0.49
+        ],
+        "max": [
+          0.5455605,
+          1.1214331,
+          0.431
+        ],
+        "dimensions": [
+          1.1494457,
+          0.7116874,
+          0.921
+        ]
+      }
+    },
+    {
+      "node": "cabin_carpet",
+      "triangles": 216,
+      "vertices": 148,
+      "aabb_world_m": {
+        "min": [
+          -1.65,
+          0.3045,
+          -0.62
+        ],
+        "max": [
+          0.72,
+          1.147,
+          0.62
+        ],
+        "dimensions": [
+          2.37,
+          0.8425,
+          1.24
+        ]
+      }
+    },
+    {
+      "node": "cabin_grey_cloth",
+      "triangles": 604,
+      "vertices": 340,
+      "aabb_world_m": {
+        "min": [
+          -1.2340046,
+          0.505,
+          -0.618
+        ],
+        "max": [
+          0.4,
+          0.985,
+          0.618
+        ],
+        "dimensions": [
+          1.6340046,
+          0.48,
+          1.236
+        ]
+      }
+    },
+    {
+      "node": "cabin_instrument_black",
+      "triangles": 476,
+      "vertices": 450,
+      "aabb_world_m": {
+        "min": [
+          0.2225,
+          0.676,
+          -0.615
+        ],
+        "max": [
+          0.38,
+          0.861,
+          0.615
+        ],
+        "dimensions": [
+          0.1575,
+          0.185,
+          1.23
+        ]
+      }
+    },
+    {
+      "node": "cabin_instrument_needles",
+      "triangles": 40,
+      "vertices": 24,
+      "aabb_world_m": {
+        "min": [
+          0.3478,
+          0.7863426,
+          -0.4359
+        ],
+        "max": [
+          0.3502,
+          0.8361607,
+          -0.2070569
+        ],
+        "dimensions": [
+          0.0024,
+          0.049818,
+          0.2288431
+        ]
+      }
+    },
+    {
+      "node": "cabin_instrument_print",
+      "triangles": 484,
+      "vertices": 360,
+      "aabb_world_m": {
+        "min": [
+          0.298,
+          0.6465,
+          -0.4828101
+        ],
+        "max": [
+          0.354,
+          0.849,
+          0.091
+        ],
+        "dimensions": [
+          0.056,
+          0.2025,
+          0.5738101
+        ]
+      }
+    },
+    {
+      "node": "cabin_red_weave",
+      "triangles": 1664,
+      "vertices": 2840,
+      "aabb_world_m": {
+        "min": [
+          -1.2184572,
+          0.5365,
+          -0.6055
+        ],
+        "max": [
+          0.365,
+          0.9813416,
+          0.6055
+        ],
+        "dimensions": [
+          1.5834572,
+          0.4448416,
+          1.2109999
+        ]
+      }
+    },
+    {
+      "node": "cabin_steering_anthracite_plastic",
+      "triangles": 28,
+      "vertices": 16,
+      "aabb_world_m": {
+        "min": [
+          0.2197673,
+          0.8360133,
+          -0.367
+        ],
+        "max": [
+          0.2257377,
+          0.8523837,
+          -0.313
+        ],
+        "dimensions": [
+          0.0059704,
+          0.0163704,
+          0.054
+        ]
+      }
+    },
+    {
+      "node": "cabin_steering_black_bolsters",
+      "triangles": 1040,
+      "vertices": 576,
+      "aabb_world_m": {
+        "min": [
+          0.2027229,
+          0.6762961,
+          -0.51
+        ],
+        "max": [
+          0.3172771,
+          1.0037039,
+          -0.17
+        ],
+        "dimensions": [
+          0.1145542,
+          0.3274078,
+          0.34
+        ]
+      }
+    },
+    {
+      "node": "FL_brake_disc",
+      "triangles": 764,
+      "vertices": 384,
+      "aabb_world_m": {
+        "min": [
+          1.089,
+          0.1665,
+          -0.728
+        ],
+        "max": [
+          1.331,
+          0.4085,
+          -0.716
+        ],
+        "dimensions": [
+          0.242,
+          0.242,
+          0.012
+        ]
+      }
+    },
+    {
+      "node": "FL_tire",
+      "triangles": 1728,
+      "vertices": 864,
+      "aabb_world_m": {
+        "min": [
+          0.9225,
+          0.0,
+          -0.774
+        ],
+        "max": [
+          1.4975,
+          0.575,
+          -0.586
+        ],
+        "dimensions": [
+          0.575,
+          0.575,
+          0.188
+        ]
+      }
+    },
+    {
+      "node": "FL_tire_size",
+      "triangles": 536,
+      "vertices": 560,
+      "aabb_world_m": {
+        "min": [
+          1.1351927,
+          0.037247,
+          -0.77535
+        ],
+        "max": [
+          1.2801927,
+          0.049147,
+          -0.77465
+        ],
+        "dimensions": [
+          0.145,
+          0.0119,
+          0.0007
+        ]
+      }
+    },
+    {
+      "node": "wheel_FL__Recesses",
+      "triangles": 1692,
+      "vertices": 860,
+      "aabb_world_m": {
+        "min": [
+          1.1664731,
+          0.2439731,
+          -0.7955
+        ],
+        "max": [
+          1.3368043,
+          0.4043914,
+          -0.7805
+        ],
+        "dimensions": [
+          0.1703312,
+          0.1604183,
+          0.015
+        ]
+      }
+    },
+    {
+      "node": "wheel_FL__Rim_edge_metal",
+      "triangles": 1436,
+      "vertices": 720,
+      "aabb_world_m": {
+        "min": [
+          1.02,
+          0.0975,
+          -0.789
+        ],
+        "max": [
+          1.4,
+          0.4775,
+          -0.765
+        ],
+        "dimensions": [
+          0.38,
+          0.38,
+          0.024
+        ]
+      }
+    },
+    {
+      "node": "wheel_FL__Speedline_satin_alloy",
+      "triangles": 3828,
+      "vertices": 1902,
+      "aabb_world_m": {
+        "min": [
+          1.019,
+          0.0965,
+          -0.783
+        ],
+        "max": [
+          1.401,
+          0.4785,
+          -0.599
+        ],
+        "dimensions": [
+          0.382,
+          0.382,
+          0.184
+        ]
+      }
+    },
+    {
+      "node": "wheel_FL__Steel",
+      "triangles": 1364,
+      "vertices": 696,
+      "aabb_world_m": {
+        "min": [
+          1.166,
+          0.2435,
+          -0.793
+        ],
+        "max": [
+          1.254,
+          0.3315,
+          -0.721
+        ],
+        "dimensions": [
+          0.088,
+          0.088,
+          0.072
+        ]
+      }
+    },
+    {
+      "node": "wheel_FL__Tread_grooves",
+      "triangles": 5536,
+      "vertices": 2944,
+      "aabb_world_m": {
+        "min": [
+          0.9211,
+          -0.0014,
+          -0.7494024
+        ],
+        "max": [
+          1.4989001,
+          0.5764,
+          -0.6105976
+        ],
+        "dimensions": [
+          0.5778,
+          0.5778,
+          0.1388047
+        ]
+      }
+    },
+    {
+      "node": "FR_brake_disc",
+      "triangles": 764,
+      "vertices": 384,
+      "aabb_world_m": {
+        "min": [
+          1.089,
+          0.1665,
+          0.716
+        ],
+        "max": [
+          1.331,
+          0.4085,
+          0.728
+        ],
+        "dimensions": [
+          0.242,
+          0.242,
+          0.012
+        ]
+      }
+    },
+    {
+      "node": "FR_tire",
+      "triangles": 1728,
+      "vertices": 864,
+      "aabb_world_m": {
+        "min": [
+          0.9225,
+          0.0,
+          0.586
+        ],
+        "max": [
+          1.4975,
+          0.575,
+          0.774
+        ],
+        "dimensions": [
+          0.575,
+          0.575,
+          0.1880001
+        ]
+      }
+    },
+    {
+      "node": "FR_tire_size",
+      "triangles": 536,
+      "vertices": 560,
+      "aabb_world_m": {
+        "min": [
+          1.1398074,
+          0.037247,
+          0.77465
+        ],
+        "max": [
+          1.2848074,
+          0.049147,
+          0.77535
+        ],
+        "dimensions": [
+          0.145,
+          0.0119,
+          0.0007
+        ]
+      }
+    },
+    {
+      "node": "wheel_FR__Recesses",
+      "triangles": 1692,
+      "vertices": 860,
+      "aabb_world_m": {
+        "min": [
+          1.0831958,
+          0.2439731,
+          0.7805
+        ],
+        "max": [
+          1.253527,
+          0.4043914,
+          0.7955
+        ],
+        "dimensions": [
+          0.1703312,
+          0.1604183,
+          0.015
+        ]
+      }
+    },
+    {
+      "node": "wheel_FR__Rim_edge_metal",
+      "triangles": 1436,
+      "vertices": 720,
+      "aabb_world_m": {
+        "min": [
+          1.02,
+          0.0975,
+          0.765
+        ],
+        "max": [
+          1.4,
+          0.4775,
+          0.789
+        ],
+        "dimensions": [
+          0.38,
+          0.38,
+          0.024
+        ]
+      }
+    },
+    {
+      "node": "wheel_FR__Speedline_satin_alloy",
+      "triangles": 3828,
+      "vertices": 1902,
+      "aabb_world_m": {
+        "min": [
+          1.019,
+          0.0965,
+          0.599
+        ],
+        "max": [
+          1.4010001,
+          0.4785,
+          0.783
+        ],
+        "dimensions": [
+          0.382,
+          0.382,
+          0.184
+        ]
+      }
+    },
+    {
+      "node": "wheel_FR__Steel",
+      "triangles": 1364,
+      "vertices": 696,
+      "aabb_world_m": {
+        "min": [
+          1.166,
+          0.2435,
+          0.721
+        ],
+        "max": [
+          1.254,
+          0.3315,
+          0.793
+        ],
+        "dimensions": [
+          0.088,
+          0.088,
+          0.072
+        ]
+      }
+    },
+    {
+      "node": "wheel_FR__Tread_grooves",
+      "triangles": 5536,
+      "vertices": 2944,
+      "aabb_world_m": {
+        "min": [
+          0.9211,
+          -0.0014,
+          0.6105976
+        ],
+        "max": [
+          1.4989001,
+          0.5764,
+          0.7494024
+        ],
+        "dimensions": [
+          0.5778,
+          0.5778,
+          0.1388048
+        ]
+      }
+    },
+    {
+      "node": "RL_brake_disc",
+      "triangles": 764,
+      "vertices": 384,
+      "aabb_world_m": {
+        "min": [
+          -1.331,
+          0.1665,
+          -0.728
+        ],
+        "max": [
+          -1.089,
+          0.4085,
+          -0.716
+        ],
+        "dimensions": [
+          0.242,
+          0.242,
+          0.012
+        ]
+      }
+    },
+    {
+      "node": "RL_tire",
+      "triangles": 1728,
+      "vertices": 864,
+      "aabb_world_m": {
+        "min": [
+          -1.4975,
+          0.0,
+          -0.774
+        ],
+        "max": [
+          -0.9225,
+          0.575,
+          -0.586
+        ],
+        "dimensions": [
+          0.575,
+          0.575,
+          0.188
+        ]
+      }
+    },
+    {
+      "node": "RL_tire_size",
+      "triangles": 536,
+      "vertices": 560,
+      "aabb_world_m": {
+        "min": [
+          -1.2848074,
+          0.037247,
+          -0.77535
+        ],
+        "max": [
+          -1.1398074,
+          0.049147,
+          -0.77465
+        ],
+        "dimensions": [
+          0.145,
+          0.0119,
+          0.0007
+        ]
+      }
+    },
+    {
+      "node": "wheel_RL__Recesses",
+      "triangles": 1692,
+      "vertices": 860,
+      "aabb_world_m": {
+        "min": [
+          -1.253527,
+          0.2439731,
+          -0.7955
+        ],
+        "max": [
+          -1.0831958,
+          0.4043914,
+          -0.7805
+        ],
+        "dimensions": [
+          0.1703312,
+          0.1604183,
+          0.015
+        ]
+      }
+    },
+    {
+      "node": "wheel_RL__Rim_edge_metal",
+      "triangles": 1436,
+      "vertices": 720,
+      "aabb_world_m": {
+        "min": [
+          -1.4,
+          0.0975,
+          -0.789
+        ],
+        "max": [
+          -1.02,
+          0.4775,
+          -0.765
+        ],
+        "dimensions": [
+          0.38,
+          0.38,
+          0.024
+        ]
+      }
+    },
+    {
+      "node": "wheel_RL__Speedline_satin_alloy",
+      "triangles": 3828,
+      "vertices": 1902,
+      "aabb_world_m": {
+        "min": [
+          -1.401,
+          0.0965,
+          -0.783
+        ],
+        "max": [
+          -1.019,
+          0.4785,
+          -0.599
+        ],
+        "dimensions": [
+          0.382,
+          0.382,
+          0.184
+        ]
+      }
+    },
+    {
+      "node": "wheel_RL__Steel",
+      "triangles": 1364,
+      "vertices": 696,
+      "aabb_world_m": {
+        "min": [
+          -1.254,
+          0.2435,
+          -0.793
+        ],
+        "max": [
+          -1.166,
+          0.3315,
+          -0.721
+        ],
+        "dimensions": [
+          0.088,
+          0.088,
+          0.072
+        ]
+      }
+    },
+    {
+      "node": "wheel_RL__Tread_grooves",
+      "triangles": 5536,
+      "vertices": 2944,
+      "aabb_world_m": {
+        "min": [
+          -1.4989001,
+          -0.0014,
+          -0.7494024
+        ],
+        "max": [
+          -0.9211,
+          0.5764,
+          -0.6105976
+        ],
+        "dimensions": [
+          0.5778,
+          0.5778,
+          0.1388047
+        ]
+      }
+    },
+    {
+      "node": "RR_brake_disc",
+      "triangles": 764,
+      "vertices": 384,
+      "aabb_world_m": {
+        "min": [
+          -1.331,
+          0.1665,
+          0.716
+        ],
+        "max": [
+          -1.089,
+          0.4085,
+          0.728
+        ],
+        "dimensions": [
+          0.242,
+          0.242,
+          0.012
+        ]
+      }
+    },
+    {
+      "node": "RR_tire",
+      "triangles": 1728,
+      "vertices": 864,
+      "aabb_world_m": {
+        "min": [
+          -1.4975,
+          0.0,
+          0.586
+        ],
+        "max": [
+          -0.9225,
+          0.575,
+          0.774
+        ],
+        "dimensions": [
+          0.575,
+          0.575,
+          0.1880001
+        ]
+      }
+    },
+    {
+      "node": "RR_tire_size",
+      "triangles": 536,
+      "vertices": 560,
+      "aabb_world_m": {
+        "min": [
+          -1.2801927,
+          0.037247,
+          0.77465
+        ],
+        "max": [
+          -1.1351927,
+          0.049147,
+          0.77535
+        ],
+        "dimensions": [
+          0.145,
+          0.0119,
+          0.0007
+        ]
+      }
+    },
+    {
+      "node": "wheel_RR__Recesses",
+      "triangles": 1692,
+      "vertices": 860,
+      "aabb_world_m": {
+        "min": [
+          -1.3368043,
+          0.2439731,
+          0.7805
+        ],
+        "max": [
+          -1.1664731,
+          0.4043914,
+          0.7955
+        ],
+        "dimensions": [
+          0.1703312,
+          0.1604183,
+          0.015
+        ]
+      }
+    },
+    {
+      "node": "wheel_RR__Rim_edge_metal",
+      "triangles": 1436,
+      "vertices": 720,
+      "aabb_world_m": {
+        "min": [
+          -1.4,
+          0.0975,
+          0.765
+        ],
+        "max": [
+          -1.02,
+          0.4775,
+          0.789
+        ],
+        "dimensions": [
+          0.38,
+          0.38,
+          0.024
+        ]
+      }
+    },
+    {
+      "node": "wheel_RR__Speedline_satin_alloy",
+      "triangles": 3828,
+      "vertices": 1902,
+      "aabb_world_m": {
+        "min": [
+          -1.401,
+          0.0965,
+          0.599
+        ],
+        "max": [
+          -1.019,
+          0.4785,
+          0.783
+        ],
+        "dimensions": [
+          0.382,
+          0.382,
+          0.184
+        ]
+      }
+    },
+    {
+      "node": "wheel_RR__Steel",
+      "triangles": 1364,
+      "vertices": 696,
+      "aabb_world_m": {
+        "min": [
+          -1.254,
+          0.2435,
+          0.721
+        ],
+        "max": [
+          -1.166,
+          0.3315,
+          0.793
+        ],
+        "dimensions": [
+          0.088,
+          0.088,
+          0.072
+        ]
+      }
+    },
+    {
+      "node": "wheel_RR__Tread_grooves",
+      "triangles": 5536,
+      "vertices": 2944,
+      "aabb_world_m": {
+        "min": [
+          -1.4989001,
+          -0.0014,
+          0.6105976
+        ],
+        "max": [
+          -0.9211,
+          0.5764,
+          0.7494024
+        ],
+        "dimensions": [
+          0.5778,
+          0.5778,
+          0.1388048
+        ]
+      }
+    }
+  ]
+}

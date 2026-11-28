@@ -1,0 +1,55 @@
+{
+  "name": "Peugeot 205 GTI 1.9",
+  "visual_reference": "1989 / phase 1.5, left-hand drive, red",
+  "scale": "1 unit = 1 metre",
+  "blender_axes": {
+    "forward": "+X",
+    "left": "+Y",
+    "up": "+Z"
+  },
+  "gltf_ferro_axes": {
+    "forward": "+X",
+    "up": "+Y",
+    "right": "+Z"
+  },
+  "origin": "ground, midway between axles",
+  "nominal_dimensions_m": {
+    "length": 3.705,
+    "width_including_arch_extensions_excluding_mirrors": 1.589,
+    "roof_height": 1.355,
+    "wheelbase": 2.42,
+    "tire_radius": 0.2875
+  },
+  "wheel_centres_gltf": {
+    "wheel_FL": [
+      1.21,
+      0.2875,
+      -0.68
+    ],
+    "wheel_FR": [
+      1.21,
+      0.2875,
+      0.68
+    ],
+    "wheel_RL": [
+      -1.21,
+      0.2875,
+      -0.68
+    ],
+    "wheel_RR": [
+      -1.21,
+      0.2875,
+      0.68
+    ]
+  },
+  "wheel_spin_axis_gltf": "Z",
+  "front_steering_axis_gltf": "Y",
+  "steering_wheel": "separate steering_wheel node; rotate about its own local axis as documented in README",
+  "runtime_integration": false,
+  "external_textures": false,
+  "ferro": {
+    "shapes": 67,
+    "triangles": 146658,
+    "uncompressed_bytes": 28910222
+  }
+}
