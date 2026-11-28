@@ -418,4 +418,26 @@ verifier('repos : aucun parcours des contrôles ni interrogation de géométrie 
   p.doc.activeElement = capture; j.lire([0]); assert.equal(p.doc.activeElement, b); assert.equal(b.events.filter(x => x === 'click').length, 1);
 });
 
+verifier('aperçu [data-menu-defiler] : gauche/droite (clavier, croix) cliquent ‹ › et le focus reste en place', () => {
+  const p = page(), avant = p.creer('button', { id: 'avant' }), apres = p.creer('button', { id: 'apres' });
+  const apercu = p.creer('article', { 'data-menu-defiler': '' });
+  const prec = p.creer('button', { 'data-defiler': '-1' }), suiv = p.creer('button', { 'data-defiler': '1' }), figer = p.creer('button');
+  apercu.append(prec, suiv, figer); p.zone.append(avant, apercu, apres); N.initialiser(p.zone);
+  const clics = b => b.events.filter(t => t === 'click').length;
+  const key = k => { const e = new Evenement('keydown', { key: k, bubbles: true }); p.doc.activeElement.dispatchEvent(e); return e; };
+  suiv.focus(); const j = commandes(p);
+  j.lire([15]); assert.equal(clics(suiv), 1); assert.equal(p.doc.activeElement, suiv, 'la croix ne quitte pas l’aperçu');
+  j.lire([14]); assert.equal(clics(prec), 1); assert.equal(p.doc.activeElement, suiv);
+  figer.focus(); j.lire([15]); assert.equal(clics(suiv), 2); assert.equal(p.doc.activeElement, figer, 'tout contrôle de l’aperçu défile');
+  assert.equal(key('ArrowLeft').defaultPrevented, true); assert.equal(clics(prec), 2); assert.equal(p.doc.activeElement, figer);
+  assert.equal(key('ArrowRight').defaultPrevented, true); assert.equal(clics(suiv), 3);
+  j.lire([13]); j.lire([12]);
+  assert.equal(clics(prec) + clics(suiv), 5, 'haut/bas gardent la navigation par groupes, sans changer de circuit');
+  prec.hidden = suiv.hidden = true; figer.focus();
+  j.lire([15]); key('ArrowRight');
+  assert.equal(clics(prec) + clics(suiv), 5, 'flèches masquées (Route sans fin) : gauche/droite reviennent à la navigation ordinaire');
+  const champ = p.creer('input', { type: 'text' }); prec.hidden = suiv.hidden = false; apercu.append(champ); champ.focus();
+  assert.equal(key('ArrowLeft').defaultPrevented, false, 'un champ de saisie garde ses flèches'); assert.equal(clics(prec), 2);
+});
+
 console.log(controles + ' contrôles navigation menu validés');

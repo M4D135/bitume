@@ -389,7 +389,7 @@
     if (INSTALLATIONS.has(zone)) return INSTALLATIONS.get(zone);
     const doc = zone.ownerDocument, $ = id => doc.getElementById(id), apercu = creerApercu($('p-trace-3d'));
     let etape = 0, version = 0, reliefSale = false, detruit = false, mouvementAffiche = null;
-    const retirer = [], ecouter = (el, type, f) => { el.addEventListener(type, f); retirer.push(() => el.removeEventListener(type, f)); };
+    const retirer = [], ecouter = (el, type, f, o) => { if (!el || !el.addEventListener) return; el.addEventListener(type, f, o); retirer.push(() => el.removeEventListener(type, f, o)); };
     const premiereEtape = () => ($('onglet-p-piste')?.hidden ? 1 : 0);
     const avancer = (sens, focus = true) => ouvrir(borner(etape + sens, premiereEtape(), ETAPES.length - 1), focus);
     function actualiser() {
@@ -419,7 +419,8 @@
     function focaliser() {
       const panneau = $(ETAPES[etape]);
       const selection = Array.from(panneau.querySelectorAll('[role="radio"][aria-checked="true"],input:checked')).find(disponible);
-      const cible = selection || Array.from(panneau.querySelectorAll('select,button,input')).find(disponible) || (etape === 3 ? $('b-depart') : $('b-suivant'));
+      // au récapitulatif, A lance la course : ses boutons de destination ne prennent pas le premier focus
+      const cible = selection || (etape === 3 ? null : Array.from(panneau.querySelectorAll('select,button,input')).find(disponible)) || (etape === 3 ? $('b-depart') : $('b-suivant'));
       if (disponible(cible)) {
         cible.focus({ preventScroll: true });
         const voyant = cible.type === 'radio' || cible.type === 'checkbox' ? cible.closest('label') || cible : cible;
@@ -447,6 +448,36 @@
     }
     rotation();
     ecouter($('p-rotation'), 'click', () => { apercu.pause(!apercu.enPause); rotation(); });
+    // Changer de circuit depuis l'aperçu (David, 28/11) : ‹ › autour du compteur et sur la tuile Destination ; ← → et la
+    // croix passent par navigationMenu ([data-menu-defiler]), qui clique ces mêmes boutons. Sur le tracé : toucher la moitié
+    // gauche ou droite, glisser de côté, ou faire défiler (un seul changement par geste : 180 ms de calme entre deux).
+    const changer = sens => { if (!detruit && sens && options.changerCircuit) options.changerCircuit(sens); };
+    for (const id of ['p-apercu-prec', 'p-apercu-suiv', 'p-bilan-prec', 'p-bilan-suiv']) {
+      const b = $(id); ecouter(b, 'click', () => changer(Math.sign(Number(b.dataset.defiler) || 0)));
+    }
+    ecouter($('p-bilan-ouvrir'), 'click', () => ouvrir(0));
+    const toile = $('p-trace-3d');
+    let derniereMolette = -Infinity, appui = null;
+    ecouter(toile, 'wheel', e => {
+      const horizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY), d = horizontal ? e.deltaX : e.deltaY;
+      if (!d) return;
+      // la molette verticale fait défiler le menu quand il déborde (petits écrans) ; le geste de côté change toujours
+      const contenu = zone.querySelector('.panneaux-menu');
+      if (!horizontal && !e.shiftKey && contenu && contenu.scrollHeight > contenu.clientHeight + 1) return;
+      e.preventDefault();
+      const calme = e.timeStamp - derniereMolette >= 180;
+      derniereMolette = e.timeStamp;
+      if (calme) changer(d > 0 ? 1 : -1);
+    }, { passive: false });
+    ecouter(toile, 'pointerdown', e => { if (e.isPrimary && e.button === 0) appui = { x: e.clientX, y: e.clientY, id: e.pointerId }; });
+    ecouter(toile, 'pointercancel', () => { appui = null; });
+    ecouter(toile, 'pointerup', e => {
+      if (!appui || e.pointerId !== appui.id) return;
+      const dx = e.clientX - appui.x, dy = e.clientY - appui.y, r = toile.getBoundingClientRect();
+      appui = null;
+      if (Math.abs(dx) >= Math.max(32, r.width * .08) && Math.abs(dx) > 1.4 * Math.abs(dy)) changer(dx < 0 ? 1 : -1);   // glisser vers la gauche : suivant
+      else if (Math.hypot(dx, dy) < 10) changer(e.clientX < r.left + r.width / 2 ? -1 : 1);
+    });
     const grille = $('circuits');
     function alignerNavigationGrille() {
       if (!grille.getClientRects().length) return;

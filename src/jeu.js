@@ -5170,7 +5170,8 @@
   let pagePause = 'accueil', piloteStand = 0;
   const enCourse = () => ecran === 'course';
   const menuOpaque = () => ['titre', 'championnat', 'preparation', 'reglages', 'enligne', 'prets'].includes(ecran);
-  const menuArcade = B.menuArcade.installer($('preparation'), { retour, actualiser: () => { majBilanArcade(); majChoixTroll(); } });
+  const menuArcade = B.menuArcade.installer($('preparation'), { retour, actualiser: () => { majBilanArcade(); majChoixTroll(); },
+    changerCircuit: sens => { const barre = $('p-categories'); if (barre && barre._circuit) barre._circuit(sens); } });
 
   let pageTitre = 'accueil', dernierModeTitre = null;
   function ouvrirPageTitre(page) {
@@ -5290,6 +5291,9 @@
   function majBilanArcade() {
     const k = conditionsDuDepart(), cat = CATALOGUE[reglages.circuit], nombre = pilotesMenu();
     texte($('p-bilan-circuit'), modePrepa === 'sans-fin' ? 'Route sans fin' : cat.nom);
+    // la Route sans fin n'a qu'une destination : ni flèches, ni retour au choix du circuit
+    for (const id of ['p-bilan-prec', 'p-bilan-suiv']) if ($(id)) $(id).hidden = modePrepa === 'sans-fin';
+    if ($('p-bilan-ouvrir')) $('p-bilan-ouvrir').disabled = modePrepa === 'sans-fin';
     texte($('p-bilan-course'), modePrepa === 'chrono' ? 'Contre-la-montre · fantôme personnel' : modePrepa === 'sans-fin' ? 'Plage → Plaine → Montagnes · checkpoints & stations-service' : reglages.tours + ' tours · rivaux ' + ['faciles', 'normaux', 'coriaces'][reglages.difficulte]);
     texte($('p-bilan-saison'), NOMS_SAISON[k.saison] + ' · ' + NOMS_MOMENT[k.moment]);
     texte($('p-bilan-meteo'), nomMeteoCourse({ ...k, i: reglages.circuit }));
@@ -5504,6 +5508,8 @@
     { nom: 'Terres sauvages', ids: ['sierra', 'nord-atlantique', 'baikal'] },
     { nom: 'Speedway', ids: ['ovale-des-forges'] }
   ];
+  // Ordre de l'aperçu : les circuits des familles bout à bout (‹ › de l'aperçu et du récapitulatif, compteur « 04 / 09 »).
+  const ORDRE_CIRCUITS = FAMILLES_CIRCUITS.flatMap(f => f.ids);
   function remplirPreparation() {
     const estSF = modePrepa === 'sans-fin', nbLocal = estSF ? joueursLocaux() : (modePrepa === 'duo' ? Math.max(2, joueursLocaux()) : 1);
     const estMultiMenu = modePrepa === 'duo' || (estSF && nbLocal >= 2);
@@ -5569,6 +5575,19 @@
         const cible = zone.children[dernierCircuit.get(arrivee)] || zone.querySelector('[data-id="' + famille.ids[0] + '"]');
         const suivreFocus = zone.contains(document.activeElement);
         afficherFamille(arrivee);
+        cible.click();
+        if (suivreFocus) cible.focus({ preventScroll: true });
+      };
+      // Aperçu du circuit (David, 28/11) : ‹ › parcourent les circuits des familles bout à bout et changent de famille au
+      // besoin ; la carte choisie dans #circuits, la vitrine et le récapitulatif suivent par son clic, comme à la souris.
+      barreCat._circuit = sens => {
+        const n = ORDRE_CIRCUITS.length, i = ORDRE_CIRCUITS.indexOf(CATALOGUE[reglages.circuit].id);
+        const id = ORDRE_CIRCUITS[i < 0 ? (sens > 0 ? 0 : n - 1) : (i + sens + n) % n];
+        const cible = zone.querySelector('[data-id="' + id + '"]');
+        if (!cible) return;
+        const suivreFocus = zone.contains(document.activeElement);
+        dernierCircuit.set(familleChoisie(), reglages.circuit);
+        afficherFamille(FAMILLES_CIRCUITS.findIndex(f => f.ids.includes(id)));
         cible.click();
         if (suivreFocus) cible.focus({ preventScroll: true });
       };
@@ -5688,7 +5707,8 @@
       const actif = +b.dataset.index === reglages.circuit;
       b.setAttribute('aria-checked', String(actif)); b.tabIndex = actif ? 0 : -1;
     }
-    menuArcade.trace(c, fC, metaC, reglages.circuit, CATALOGUE.length);
+    const rang = ORDRE_CIRCUITS.indexOf(metaC.id);
+    menuArcade.trace(c, fC, metaC, rang >= 0 ? rang : reglages.circuit, rang >= 0 ? ORDRE_CIRCUITS.length : CATALOGUE.length);
     // Jauges arcade animées (Vitesse, Technique, Relief)
     const jVit = clamp(Math.round(92 - Math.min(48, (fC.virages || 8) * 1.9) + Math.min(18, (c.longueur || 4000) / 1400)), 28, 98);
     const jTech = clamp(Math.round(28 + (fC.virages || 8) * 3.6 + (c.ouvert ? 16 : 0)), 25, 99);

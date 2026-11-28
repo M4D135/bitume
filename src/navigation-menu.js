@@ -203,6 +203,7 @@
     zone.addEventListener('keydown', e => {
       delete zone.dataset.manette;
       if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
+      if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && defiler(e.target, e.key === 'ArrowRight' ? 1 : -1)) { e.preventDefault(); return; }
       const dansPages = e.target.closest('.pages-reglages'), sensPage =
         e.key === 'PageDown' || (dansPages && e.key === 'ArrowRight') ? 1 :
         e.key === 'PageUp' || (dansPages && e.key === 'ArrowLeft') ? -1 : 0;
@@ -223,6 +224,17 @@
       e.preventDefault();
       if (ts[suivant]) ouvrirOnglet(zone, ts[suivant].dataset.menuTab, true);
     });
+    return true;
+  }
+
+  // Un conteneur [data-menu-defiler] (l'aperçu du circuit, la tuile Destination) garde gauche/droite pour lui :
+  // clavier et manette y cliquent ses boutons [data-defiler="-1"] et [data-defiler="1"], le focus reste en place.
+  function defiler(el, sens) {
+    if (!el || !el.closest || (el.matches && el.matches('input, select, textarea'))) return false;
+    const conteneur = el.closest('[data-menu-defiler]');
+    const bouton = conteneur && Array.from(conteneur.querySelectorAll('[data-defiler="' + sens + '"]')).find(visible);
+    if (!bouton) return false;
+    bouton.click();
     return true;
   }
 
@@ -528,6 +540,7 @@
     }
     const sens = d === 12 || d === 14 ? -1 : 1;
     if (i < 0) { focaliser(el); return true; }
+    if ((d === 14 || d === 15) && defiler(el, sens)) return true;
     const grille = gs[i].type === 'choix' && gs[i].cle ? Number.parseInt(gs[i].cle.dataset.menuCols || '0', 10) : 0;
     if (grille > 1) {
       const idx = gs[i].elements.indexOf(el), n = gs[i].elements.length;

@@ -14,7 +14,11 @@ const proche = (a, b, precision = 1e-9) => assert.ok(Math.abs(a - b) < precision
 const petit = () => ({ n: 4, x: [0, 80, 80, 0], y: [5, 15, 25, 10], z: [0, 0, 60, 60], longueur: 280 });
 
 verifier('le catalogue entier conserve ses vrais XYZ, son départ et une seule échelle métrique', () => {
-  assert.equal(catalogue.length, 11);
+  assert.equal(catalogue.length, 9);
+  // l'aperçu parcourt les familles bout à bout (‹ ›, molette, glisser) : chaque circuit y figure une fois et une seule
+  const familles = vm.runInNewContext('(' + jeu.match(/const FAMILLES_CIRCUITS = (\[[\s\S]*?\n  \]);/)[1] + ')');
+  const ordre = familles.flatMap(f => f.ids);
+  assert.deepEqual([...ordre].sort(), [...catalogue.map(k => k.id)].sort(), 'familles = catalogue');
   for (const k of catalogue) {
     const c = B.circuit.creer(k.graine, k), avant = [Array.from(c.x), Array.from(c.y), Array.from(c.z)];
     const t = A.preparerTrace(c), axeCourse = A.parcoursChronometre(c);
@@ -33,7 +37,7 @@ verifier('le catalogue entier conserve ses vrais XYZ, son départ et une seule �
   }
 });
 
-verifier('onze circuits et 144 rotations : cadrage complet paysage/portrait, relief sans exagération', () => {
+verifier('neuf circuits et 144 rotations : cadrage complet paysage/portrait, relief sans exagération', () => {
   for (const k of catalogue) {
     const t = A.preparerTrace(B.circuit.creer(k.graine, k)), tampon = new Float64Array(t.n * 3);
     for (const [largeur, hauteur] of [[720, 400], [280, 180], [960, 540], [640, 160], [340, 370], [1280, 720]]) {
@@ -246,6 +250,61 @@ verifier('changement d’étape : défilement central remis au début, réglage 
   } finally { menu.detruire(); if (ancien) B.navigationMenu = ancien; else delete B.navigationMenu; }
 });
 
+verifier('aperçu : ‹ ›, molette (180 ms de calme), glisser et toucher une moitié changent de circuit ; Destination aussi', () => {
+  const t = toile(), defilement = { scrollTop: 0 }, elements = new Map(), selection = { dataset: { menuTab: A.ETAPES[0] } };
+  function element(id) {
+    if (!elements.has(id)) elements.set(id, { ...evenements(), id, hidden: false, disabled: false, visibility: 'visible', dataset: {},
+      setAttribute() {}, matches: () => false, closest() { return this.hidden ? this : null; },
+      getClientRects: () => [{}], querySelectorAll: () => [], focus() {}, scrollIntoView() {} });
+    return elements.get(id);
+  }
+  Object.assign(t.canvas, evenements());
+  t.doc.getElementById = id => id === 'p-trace-3d' ? t.canvas : element(id);
+  for (const [id, sens] of [['p-apercu-prec', '-1'], ['p-apercu-suiv', '1'], ['p-bilan-prec', '-1'], ['p-bilan-suiv', '1']]) element(id).dataset.defiler = sens;
+  const zone = { ...evenements(), ownerDocument: t.doc, dataset: {}, querySelector: s => s === '.panneaux-menu' ? defilement : selection };
+  const ancien = B.navigationMenu, sens = [];
+  B.navigationMenu = { ouvrirOnglet(z, id) {
+    if (!A.ETAPES.includes(id)) return false;
+    if (selection.dataset.menuTab !== id) { selection.dataset.menuTab = id; z.emettre('menuongletchange'); }
+    return true;
+  } };
+  const menu = A.installer(zone, { changerCircuit: s => sens.push(s) });
+  const roue = (deltaX, deltaY, timeStamp, extra = {}) => {
+    const e = { deltaX, deltaY, timeStamp, shiftKey: false, annule: false, preventDefault() { this.annule = true; }, ...extra };
+    t.canvas.emettre('wheel', e); return e.annule;
+  };
+  const geste = (x0, y0, x1, y1, extra = {}) => {
+    t.canvas.emettre('pointerdown', { isPrimary: true, button: 0, pointerId: 7, clientX: x0, clientY: y0, ...extra });
+    t.canvas.emettre('pointerup', { pointerId: 7, clientX: x1, clientY: y1 });
+  };
+  try {
+    for (const id of ['p-apercu-suiv', 'p-apercu-prec', 'p-bilan-suiv', 'p-bilan-prec']) element(id).emettre('click');
+    assert.deepEqual(sens, [1, -1, 1, -1], 'les quatre flèches');
+    sens.length = 0;
+    assert.equal(roue(0, 40, 1000), true); assert.deepEqual(sens, [1]);
+    roue(0, 30, 1100); roue(0, 30, 1250); assert.deepEqual(sens, [1], 'une rafale de molette = un seul circuit');
+    roue(0, -30, 1500); assert.deepEqual(sens, [1, -1], 'après 180 ms de calme, le geste suivant compte');
+    roue(-50, 5, 2000); assert.deepEqual(sens, [1, -1, -1], 'molette horizontale vers la gauche : précédent');
+    assert.equal(roue(0, 0, 2500), false); assert.deepEqual(sens, [1, -1, -1]);
+    Object.assign(defilement, { scrollHeight: 900, clientHeight: 500 });
+    assert.equal(roue(0, 40, 3000), false, 'menu qui déborde : la molette verticale le fait défiler'); assert.equal(sens.length, 3);
+    assert.equal(roue(0, 40, 3500, { shiftKey: true }), true); assert.equal(roue(60, 0, 4000), true);
+    assert.deepEqual(sens.slice(3), [1, 1], 'Maj ou geste de côté changent quand même');
+    sens.length = 0;
+    geste(400, 200, 300, 210); assert.deepEqual(sens, [1], 'glisser vers la gauche : suivant');
+    geste(300, 200, 400, 190); assert.deepEqual(sens, [1, -1], 'glisser vers la droite : précédent');
+    geste(400, 100, 430, 300); geste(400, 200, 430, 200); assert.equal(sens.length, 2, 'glisser trop court ou vertical : rien');
+    geste(100, 200, 103, 202); geste(600, 200, 598, 201); assert.deepEqual(sens.slice(2), [-1, 1], 'toucher la moitié gauche ou droite');
+    geste(100, 200, 100, 200, { button: 2 }); t.canvas.emettre('pointerdown', { isPrimary: true, button: 0, pointerId: 8, clientX: 100, clientY: 200 });
+    t.canvas.emettre('pointercancel', {}); t.canvas.emettre('pointerup', { pointerId: 8, clientX: 100, clientY: 200 });
+    assert.equal(sens.length, 4, 'bouton droit et geste annulé ignorés');
+    menu.ouvrir(3, false); element('p-bilan-ouvrir').emettre('click'); assert.equal(menu.etape, 0, 'Destination ramène au choix du circuit');
+  } finally { menu.detruire(); if (ancien) B.navigationMenu = ancien; else delete B.navigationMenu; }
+  sens.length = 0; element('p-apercu-suiv').emettre('click'); t.canvas.emettre('wheel', { deltaX: 0, deltaY: 40, timeStamp: 9000, preventDefault() {} });
+  assert.equal(sens.length, 0, 'détruire débranche les gestes');
+  assert.equal(t.canvas.listeners.get('wheel')?.size || 0, 0);
+});
+
 verifier('Larche et Marseille : les cartes et leurs distances s’arrêtent sur la ligne de course', () => {
   for (const k of catalogue.filter(k => k.ouvert)) {
     const c = (k.id === 'larche' ? B.larche : B.marseille).creer(k.graine);
@@ -264,4 +323,4 @@ verifier('Larche et Marseille : les cartes et leurs distances s’arrêtent sur 
   }
 });
 
-console.log(`${controles} contrôles du menu arcade réussis ; onze circuits, 144 rotations et six formats.`);
+console.log(`${controles} contrôles du menu arcade réussis ; neuf circuits, 144 rotations et six formats.`);

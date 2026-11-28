@@ -261,9 +261,9 @@
     <div class="panneaux-menu">
       <div id="p-piste" class="panneau-menu" role="tabpanel" data-menu-panel aria-labelledby="onglet-p-piste">
     <div class="selection-circuit">
-      <article class="apercu-circuit">
-        <div class="apercu-entete"><div><p id="p-circuit-lieu" class="arcade-surtitre"></p><h3 id="p-circuit-nom"></h3></div><span id="p-circuit-numero" class="arcade-compteur"></span></div>
-        <canvas id="p-trace-3d" width="720" height="400" role="img" aria-label="Tracé du circuit en trois dimensions"></canvas>
+      <article class="apercu-circuit" data-menu-defiler>
+        <div class="apercu-entete"><div><p id="p-circuit-lieu" class="arcade-surtitre"></p><h3 id="p-circuit-nom"></h3></div><div class="apercu-nav"><button type="button" id="p-apercu-prec" class="apercu-fleche" data-defiler="-1" aria-controls="circuits" aria-label="Circuit précédent" title="Circuit précédent">‹</button><span id="p-circuit-numero" class="arcade-compteur"></span><button type="button" id="p-apercu-suiv" class="apercu-fleche" data-defiler="1" aria-controls="circuits" aria-label="Circuit suivant" title="Circuit suivant">›</button></div></div>
+        <canvas id="p-trace-3d" width="720" height="400" role="img" aria-label="Tracé du circuit en trois dimensions" title="Toucher à gauche ou à droite, glisser ou faire défiler pour changer de circuit"></canvas>
         <div class="apercu-legende"><span>Tracé réel · relief</span><button type="button" id="p-rotation" aria-pressed="false">Figer le tracé</button></div>
         <dl class="chiffres-circuit"><div><dt>Distance</dt><dd><b id="p-circuit-km"></b> km</dd></div><div><dt>Virages</dt><dd><b id="p-circuit-virages"></b></dd></div><div><dt>Amplitude du relief</dt><dd><b id="p-circuit-relief"></b> m</dd></div></dl>
         <div class="jauges-arcade" aria-label="Profil arcade du circuit">
@@ -465,7 +465,7 @@
       </div>
       <div id="p-bilan" class="panneau-menu bilan-arcade" role="tabpanel" data-menu-panel aria-labelledby="onglet-p-bilan" hidden>
         <p class="arcade-surtitre">La grille vous attend</p><h3>Prêt à prendre la piste ?</h3>
-        <div class="bilan-grille"><article><span class="etiquette">Destination</span><strong id="p-bilan-circuit"></strong><p id="p-bilan-course"></p></article><article><span class="etiquette">Conditions</span><strong id="p-bilan-saison"></strong><p id="p-bilan-meteo"></p></article><article><span class="etiquette">Pilotes</span><strong id="p-bilan-joueurs"></strong><p id="p-bilan-troll"></p></article></div>
+        <div class="bilan-grille"><article class="bilan-destination" data-menu-defiler><span class="etiquette">Destination</span><div class="bilan-choix"><button type="button" id="p-bilan-prec" class="apercu-fleche" data-defiler="-1" aria-label="Circuit précédent" title="Circuit précédent">‹</button><button type="button" id="p-bilan-ouvrir" class="bilan-ouvrir" title="Revenir au choix du circuit"><strong id="p-bilan-circuit"></strong></button><button type="button" id="p-bilan-suiv" class="apercu-fleche" data-defiler="1" aria-label="Circuit suivant" title="Circuit suivant">›</button></div><p id="p-bilan-course"></p></article><article><span class="etiquette">Conditions</span><strong id="p-bilan-saison"></strong><p id="p-bilan-meteo"></p></article><article><span class="etiquette">Pilotes</span><strong id="p-bilan-joueurs"></strong><p id="p-bilan-troll"></p></article></div>
         <p class="note-pneus">Les choix restent modifiables avec LB / RB ou les étapes ci-dessus.</p>
       </div>
     </div>
