@@ -2267,7 +2267,6 @@ fn pdrFinir(couleur_1: vec3<f32>, monde_4: vec3<f32>) -> vec3<f32> {
     var couleur_2: vec3<f32>;
     var monde_5: vec3<f32>;
     var brume: f32;
-    var ecran: vec2<f32>;
 
     couleur_2 = couleur_1;
     monde_5 = monde_4;
@@ -2279,18 +2278,10 @@ fn pdrFinir(couleur_1: vec3<f32>, monde_4: vec3<f32>) -> vec3<f32> {
     let _e37: vec4<f32> = ferroUniforms.data[110];
     let _e39: f32 = brume;
     couleur_2 = mix(_e33, _e37.xyz, vec3(min(_e39, 0.86f)));
+    // FERRO 0.3.39 : la scène WebGPU est en radiance linéaire ; la courbe d'affichage et le vignettage se font une
+    // seule fois dans post.wgsl. Le public rend sa radiance, brouillard compris, comme les programmes de foule de FERRO.
     let _e44: vec3<f32> = couleur_2;
-    let _e45: vec3<f32> = couleur_2;
-    couleur_2 = pow(max((_e44 / (_e45 + vec3(0.76f))), vec3(0f)), vec3(0.4545f));
-    let _e57: vec4<f32> = gl_FragCoord_1;
-    let _e62: vec4<f32> = ferroUniforms.data[114];
-    ecran = (_e57.xy / _e62.xy);
-    let _e66: vec3<f32> = couleur_2;
-    let _e71: vec2<f32> = ecran;
-    let _e74: vec2<f32> = ecran;
-    let _e78: vec2<f32> = ecran;
-    let _e83: vec2<f32> = ecran;
-    return (_e66 * mix(0.59f, 1f, pow(max(0f, ((((16f * _e71.x) * _e74.y) * (1f - _e78.x)) * (1f - _e83.y))), 0.13f)));
+    return max(_e44, vec3(0f));
 }
 
 fn bande(v_1: f32, largeur: f32) -> f32 {

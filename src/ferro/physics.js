@@ -908,6 +908,16 @@
         const dvx=V[b6]+V[b6+4]*rbz-V[b6+5]*rby-V[a6]-(V[a6+4]*raz-V[a6+5]*ray),dvy=V[b6+1]+V[b6+5]*rbx-V[b6+3]*rbz-V[a6+1]-(V[a6+5]*rax-V[a6+3]*raz),dvz=V[b6+2]+V[b6+3]*rby-V[b6+4]*rbx-V[a6+2]-(V[a6+3]*ray-V[a6+4]*rax);
         const old=cJn[c];let nj=old-cMn[c]*(dvx*nx+dvy*ny+dvz*nz+cRe[c]*cV0[c]);if(nj<0)nj=0;const j=nj-old;cJn[c]=nj;
         V[a6]-=nx*j*ima;V[a6+1]-=ny*j*ima;V[a6+2]-=nz*j*ima;V[a6+3]-=cAN[c6]*j;V[a6+4]-=cAN[c6+1]*j;V[a6+5]-=cAN[c6+2]*j;V[b6]+=nx*j*imb;V[b6+1]+=ny*j*imb;V[b6+2]+=nz*j*imb;V[b6+3]+=cAN[c6+3]*j;V[b6+4]+=cAN[c6+4]*j;V[b6+5]+=cAN[c6+5]*j;
+        // The bounce of an impact keeps its friction: a normal-only impulse at an edge would make it slip. Only an
+        // added bounce impulse widens the cone; the friction already accumulated stays inside it.
+        if(!(j>0))continue;
+        const maxF=cFr[c]*nj;
+        for(let d=0;d<2;d++){
+          const T=d?cT2:cT1,AR=d?cA2:cA1,tx=T[c3],ty=T[c3+1],tz=T[c3+2];
+          const ux=V[b6]+V[b6+4]*rbz-V[b6+5]*rby-V[a6]-(V[a6+4]*raz-V[a6+5]*ray),uy=V[b6+1]+V[b6+5]*rbx-V[b6+3]*rbz-V[a6+1]-(V[a6+5]*rax-V[a6+3]*raz),uz=V[b6+2]+V[b6+3]*rby-V[b6+4]*rbx-V[a6+2]-(V[a6+3]*ray-V[a6+4]*rax);
+          const prev=d?cJ2[c]:cJ1[c];let tj=prev-(d?cM2[c]:cM1[c])*(ux*tx+uy*ty+uz*tz);tj=tj>maxF?maxF:tj<-maxF?-maxF:tj;const k=tj-prev;if(d)cJ2[c]=tj;else cJ1[c]=tj;
+          V[a6]-=tx*k*ima;V[a6+1]-=ty*k*ima;V[a6+2]-=tz*k*ima;V[a6+3]-=AR[c6]*k;V[a6+4]-=AR[c6+1]*k;V[a6+5]-=AR[c6+2]*k;V[b6]+=tx*k*imb;V[b6+1]+=ty*k*imb;V[b6+2]+=tz*k*imb;V[b6+3]+=AR[c6+3]*k;V[b6+4]+=AR[c6+4]*k;V[b6+5]+=AR[c6+5]*k;
+        }
       }
     }
     function clamp(na){for(let n=0;n<na;n++)cap(AL[n]);}

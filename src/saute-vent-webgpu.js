@@ -74,6 +74,31 @@ fn environnement(dir:vec3f,abri:f32)->vec3f {
   let dehors=mix(sol,ciel,smoothstep(-.12,.08,dir.y));
   return mix(dehors,vue.ambiance.rgb*(.18+.18*max(dir.y,0.)),abri);
 }
+// FERRO 0.3.39 : la scène est en radiance linéaire et post.wgsl applique seul la courbe d'affichage (tonemap ferro :
+// c/(c+0,76) puis gamma 1/2,2). Le verre reste réglé à l'œil en valeurs affichées, comme en 0.3.38 ; affiche et
+// radiance sont cette courbe et son inverse exact (0,98 affiché au plus, soit une radiance de 16,7).
+fn affiche(r:vec3f)->vec3f {
+  let x=max(r,vec3f(0.));
+  return pow(x/(x+vec3f(.76)),vec3f(1./2.2));
+}
+fn radiance(d:vec3f)->vec3f {
+  let u=pow(clamp(d,vec3f(0.),vec3f(.98)),vec3f(2.2));
+  return .76*u/(1.-u);
+}
+// 0.3.38 mélangeait le verre en valeurs affichées : sortie = c + k·fond. Mélangé en radiance par « src-alpha,
+// one-minus-src-alpha », le même verre éclaircissait les fonds sombres d'un voile laiteux (capotage, route : jusqu'à
+// +0,4 affiché). La cible ne se lit pas ; le mélange matériel « one, src-alpha » donne a + m·fond en radiance, et a, m
+// sont ajustés pour que l'image affichée soit exacte sous des fonds affichés de 0,1 et 0,6 (radiances ci-dessous) :
+// écart de 0,04 au plus entre 0,03 et 0,6, l'excès restant sur les fonds très clairs. m est borné à 4 quand un reflet
+// solaire sature la cible. Réglé pour le tonemap ferro : AgX ou ACES demanderaient de reprendre ce verre.
+const FOND_SOMBRE=.00482572;
+const FOND_CLAIR=.365988;
+fn melange(c:vec3f,k:f32)->vec4f {
+  let f1=radiance(c+vec3f(k*.1));
+  let f2=radiance(c+vec3f(k*.6));
+  let m=clamp(dot((f2-f1)/(FOND_CLAIR-FOND_SOMBRE),vec3f(.2126,.7152,.0722)),0.,4.);
+  return vec4f(max(f1-vec3f(m*FOND_SOMBRE),vec3f(0.)),m);
+}
 struct Aspect { couleur:vec4f, deviation:vec3f, refraction:f32 };
 fn aspect(f:V)->Aspect {
   let versOeil=vue.oeil.xyz-f.position;
@@ -124,7 +149,8 @@ fn aspect(f:V)->Aspect {
   return Aspect(vec4f(mix(couleur,vue.brume.rgb,brume),alpha),deviation,(.10+relief*.72)*(1.-fresnel));
 }
 @fragment fn verre(f:V)->@location(0) vec4f {
-  return aspect(f).couleur;
+  let c=aspect(f).couleur;
+  return melange(c.rgb*c.a,1.-c.a);
 }
 @fragment fn verreRefractant(f:V)->@location(0) vec4f {
   let a=aspect(f);
@@ -138,8 +164,8 @@ fn aspect(f:V)->Aspect {
   let poids=a.refraction*smoothstep(.5,2.,min(bord.x,bord.y))*smoothstep(.0,.45,length(delta*dim));
   let fond=textureSampleLevel(scene,bilineaire,clamp(lecture,.5/dim,1.-.5/dim),0.).rgb;
   let part=(1.-a.couleur.a)*poids;
-  let alpha=a.couleur.a+part;
-  return vec4f((a.couleur.rgb*a.couleur.a+fond*part)/max(alpha,.0001),alpha);
+  // Le fond réfracté est lu en radiance dans la copie de la scène : il revient en valeur affichée pour le mélange.
+  return melange(a.couleur.rgb*a.couleur.a+affiche(fond)*part,1.-a.couleur.a-part);
 }`;
   function sommetUnique(gpu, triangles) {
     const donnees=new Float32Array(triangles.length*18);
@@ -192,8 +218,11 @@ fn aspect(f:V)->Aspect {
           vertex:{module,entryPoint:'sommet',buffers:[{arrayStride:24,attributes:[
             {shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'}]},
             {arrayStride:80,stepMode:'instance',attributes:Array.from({length:5},(_,i)=>({shaderLocation:2+i,offset:i*16,format:'float32x4'}))}]},
+          // Couleur : a + m·fond (voir `melange`). Alpha : la scène y porte le poids des reflets d'écran de la surface
+          // vue derrière le verre ; le verre n'y touche plus, sans quoi FERRO 0.3.39 mélangerait en radiance des
+          // reflets de la route sous toute la glace.
           fragment:{module,entryPoint:avecScene?'verreRefractant':'verre',targets:[{format:vue.format,blend:{
-            color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha'},alpha:{srcFactor:'one',dstFactor:'one-minus-src-alpha'}}}]},
+            color:{srcFactor:'one',dstFactor:'src-alpha'},alpha:{srcFactor:'zero',dstFactor:'one'}}}]},
           primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:vue.depthFormat,depthCompare:'less-equal',depthWriteEnabled:false},
           multisample:{count:vue.samples}});
         pipelines.set(cle,p);

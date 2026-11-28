@@ -722,6 +722,12 @@
     const object=mesh.overlay||mesh.surface==='object'||objects&&mesh.surface!=='architecture';
     return (mesh.overlay?1:0)+(outdoorMesh(mesh,environment)?2:0)+(object?4:0)+(mesh.windResponsive===true?8:0)+(mesh.groundCover===true?16:0);
   }
+  // Effects only: bits 7-14 carry the fog reduction (mesh.fog, weight 1 by default leaves the flags unchanged), bit 15
+  // the sun lighting of a bulged implicit sphere (mesh.lit, WebGPU). Both stay above the bits read by VERT.
+  function effectFlags(mesh,environment){
+    const fog=Number.isFinite(mesh.fog)?Math.max(0,Math.min(1,mesh.fog)):1;
+    return surfaceFlags(mesh,environment,true)+128*Math.round((1-fog)*255)+(mesh.lit===true?32768:0);
+  }
   function instanceDataW(mesh){return mesh.groundCover===true?(Number.isFinite(mesh.groundShear)?mesh.groundShear:0):(mesh.emissive||0);}
   function opaqueOpacity(mesh){return Number.isFinite(mesh.opacity)?Math.max(0,Math.min(1,mesh.opacity)):1;}
   function opaqueColorMarker(mesh){const opacity=opaqueOpacity(mesh);return opacity===1?(mesh.color?1:0):mesh.color?2+opacity:-1-opacity;}
@@ -802,7 +808,7 @@
       if(last&&last.name===name)last.count++;else groups.push({name,offset:offset*4,count:1});
       const p=mesh.p,s=mesh.s||[1,1,1],r=mesh.r||[0,0,0],c=mesh.color||[.5,.5,.5];
       const material=mesh.window?18:mesh.shape==='ring'&&Number.isFinite(mesh.innerRatio)?20+Math.min(.999,Math.max(0,mesh.innerRatio)):mesh.fxPriority==='hazard'?16:mesh.fxFire?14:mesh.fxSmoke?15:mesh.fxSpark?17:7;
-      values[offset]=p[0];values[offset+1]=p[1];values[offset+2]=p[2];values[offset+3]=material;values[offset+4]=s[0];values[offset+5]=s[1];values[offset+6]=s[2];values[offset+7]=mesh.emissive||0;values[offset+8]=r[0];values[offset+9]=r[1];values[offset+10]=r[2];values[offset+11]=surfaceFlags(mesh,environment,true);values[offset+12]=c[0];values[offset+13]=c[1];values[offset+14]=c[2];values[offset+15]=Math.min(1,Math.max(0,mesh.alpha));offset+=16;
+      values[offset]=p[0];values[offset+1]=p[1];values[offset+2]=p[2];values[offset+3]=material;values[offset+4]=s[0];values[offset+5]=s[1];values[offset+6]=s[2];values[offset+7]=mesh.emissive||0;values[offset+8]=r[0];values[offset+9]=r[1];values[offset+10]=r[2];values[offset+11]=effectFlags(mesh,environment);values[offset+12]=c[0];values[offset+13]=c[1];values[offset+14]=c[2];values[offset+15]=Math.min(1,Math.max(0,mesh.alpha));offset+=16;
     }
     return {values,groups};
   }
@@ -823,7 +829,7 @@
       for(const record of order){const mesh=record.mesh,name=mesh.shape||'sphere',last=groups[groups.length-1];
         if(last&&last.name===name)last.count++;else{const group=groupRecords[groups.length]||(groupRecords[groups.length]={name:'',offset:0,count:0});group.name=name;group.offset=offset*4;group.count=1;groups.push(group);}
         const p=mesh.p,s=mesh.s||one,r=mesh.r||zero,c=mesh.color||gray,material=mesh.window?18:mesh.shape==='ring'&&Number.isFinite(mesh.innerRatio)?20+Math.min(.999,Math.max(0,mesh.innerRatio)):mesh.fxPriority==='hazard'?16:mesh.fxFire?14:mesh.fxSmoke?15:mesh.fxSpark?17:7;
-        out[offset]=p[0]-origin[0];out[offset+1]=p[1]-origin[1];out[offset+2]=p[2]-origin[2];out[offset+3]=material;out[offset+4]=s[0];out[offset+5]=s[1];out[offset+6]=s[2];out[offset+7]=mesh.emissive||0;out[offset+8]=r[0];out[offset+9]=r[1];out[offset+10]=r[2];out[offset+11]=surfaceFlags(mesh,environment,true);out[offset+12]=c[0];out[offset+13]=c[1];out[offset+14]=c[2];out[offset+15]=Math.min(1,Math.max(0,mesh.alpha));offset+=16;
+        out[offset]=p[0]-origin[0];out[offset+1]=p[1]-origin[1];out[offset+2]=p[2]-origin[2];out[offset+3]=material;out[offset+4]=s[0];out[offset+5]=s[1];out[offset+6]=s[2];out[offset+7]=mesh.emissive||0;out[offset+8]=r[0];out[offset+9]=r[1];out[offset+10]=r[2];out[offset+11]=effectFlags(mesh,environment);out[offset+12]=c[0];out[offset+13]=c[1];out[offset+14]=c[2];out[offset+15]=Math.min(1,Math.max(0,mesh.alpha));offset+=16;
       }return batch;
     };
   }
@@ -1153,8 +1159,13 @@
   function settings(options){
     const o=options||{},unit=(v,d)=>Number.isFinite(v)?Math.max(0,Math.min(1,v)):d;
     const bloom=Array.isArray(o.bloomThreshold)?[unit(o.bloomThreshold[0],.56),unit(o.bloomThreshold[1],.86)]:[.56,.86];
+    // WebGPU 0.3.39 (LOT 0.3) : tonemap unique de post.wgsl (agx par défaut, aces, ou ferro = courbe de 0.3.38),
+    // exposition relative à son calibrage, force du halo linéaire et tramage de sortie. WebGL2 ne lit pas ces réglages.
+    const tonemap=['ferro','agx','aces'].includes(o.tonemap)?o.tonemap:'agx';
     return {reflections:o.reflections!==false,msaa:o.msaa===4, // BITUME : SSR optionnel ; aucune cible miroir par défaut.
-      shadowMapScale:o.shadowMapScale===2?2:1,vignette:unit(o.vignette,.59),bloom:bloom[1]>bloom[0]?bloom:[.56,.86]};
+      shadowMapScale:o.shadowMapScale===2?2:1,vignette:unit(o.vignette,.59),bloom:bloom[1]>bloom[0]?bloom:[.56,.86],
+      tonemap,exposure:Number.isFinite(o.exposure)&&o.exposure>0?Math.min(16,o.exposure):1,
+      bloomStrength:Number.isFinite(o.bloomStrength)?Math.max(0,Math.min(4,o.bloomStrength)):1,dither:o.dither!==false};
   }
   const shared={orthographicSun,sunBounds,bitumeWeather,localWindState,vegetationFrame,groundCoverRank,groundCoverGeometry,groundCoverPlan,prepareGroundCover,lotViewState,terrainViewState,rigidOverlayView,rigidTerrainVertices,writeRigidTerrain,geometry,indexPrimitiveVertices,pack,packEffects,instancePacker,splitPacker,effectsPacker,packIndexed,spatialIndex,partitionWorld,planChunks,visible,setFrustumRadii,metadata,environmentInfo,outdoorMesh,surfaceFlags,transientLights,horrorLights,cameraAxes,multiply,detailRanges,lotDetailDistance,materialFamily,extendedDistance,resolutionGovernor,settings,indoor:PDR_INDOOR,shapes:FORMES_LIBRES};
   function mesh(shape,p,s,mat,r=[0,0,0],emissive=0){
@@ -1162,7 +1173,7 @@
       alpha:undefined,opacity:1,additive:undefined,outdoor:undefined,actorPart:undefined,actorLod:0,
       actorScale:undefined,structural:false,debrisId:undefined,sourceId:undefined,material:undefined,
       effectPart:'',fxFire:false,fxSmoke:false,fxSpark:false,fxPriority:undefined,ground:undefined,
-      innerRatio:undefined,region:undefined,windResponsive:false,groundCover:false,groundShear:0};
+      innerRatio:undefined,region:undefined,windResponsive:false,groundCover:false,groundShear:0,fog:undefined,lit:false};
   }
   globalThis.FRender={foliageTriangles,forme,shared,mesh,materials:MATERIALS};
   if(typeof window!=='undefined')window.FRender=globalThis.FRender;

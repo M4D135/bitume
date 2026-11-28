@@ -9,6 +9,61 @@ const RIGID_TERRAIN=[{arrayStride:40,attributes:[{shaderLocation:0,offset:0,form
  {arrayStride:48,stepMode:'instance',attributes:[{shaderLocation:3,offset:0,format:'float32x4'},{shaderLocation:4,offset:16,format:'float32x4'},{shaderLocation:5,offset:32,format:'float32x4'}]}];
 const FULLSCREEN=`struct V { @builtin(position) p:vec4f, @location(0) uv:vec2f }; @vertex fn vs(@builtin(vertex_index) i:u32)->V { let p=vec2f(f32((i<<1u)&2u),f32(i&2u)); var o:V;o.p=vec4f(p*2.-1.,0.,1.);o.uv=vec2f(p.x,1.-p.y);return o; }`;
 const COPY=FULLSCREEN+`@group(0) @binding(0) var t:texture_2d<f32>;@group(0) @binding(1) var s:sampler;@fragment fn fs(v:V)->@location(0) vec4f{return textureSample(t,s,v.uv);}`;
+// LOT 0.3 (0.3.39) : tonemaps de post.wgsl et exposition qui rend au gris moyen (0,18) sa valeur affichée de 0.3.38
+// (0,4718). Le halo additionne quatre niveaux Dual-Kawase ; sa force est divisée par leur nombre.
+const TONEMAPS=Object.freeze({ferro:0,agx:1,aces:2}),TONE_EXPOSURE=Object.freeze({ferro:1,agx:.870119,aces:1.532848}),BLOOM_LEVELS=4;
+// Fond de la scène (intérieurs, vide) : la couleur affichée de 0.3.38 (0,035 ; 0,06 ; 0,073) ramenée en radiance par l'inverse de
+// la courbe historique ; le tonemap ferro la redonne au centre de l'image, AgX et ACES l'assombrissent comme tout noir profond.
+const CLEAR_LINEAR=Object.freeze([...[.035,.06,.073].map(d=>{const x=Math.pow(d,2.2);return .76*x/(1-x);}),1]);
+// LOT 0.4 (0.3.40) : cuisson d'amorçage de boot_bake.wgsl, en un seul passage compute, sans image ni canvas :
+// - les 16 motifs-mères 128×128 et leurs 8 niveaux ;
+// - la LUT de BRDF 64×64 ;
+// - pour une banque de FMaterials (recette ferro-pbr-1), ses deux couches PBR 256×256 et leurs 9 niveaux.
+// Les octets de ces couches égalent ceux des canvas de materials.js à un pas près.
+const PBR_RECIPE='ferro-pbr-1',SLOPE_GAIN=4;
+const BAKE=Object.freeze({motifs:16,motifSize:128,motifLevels:8,lutSize:64,pbrSize:256,pbrLayers:2,pbrLevels:9});
+const bakeBytes=(size,levels,layers,texel)=>{let n=0;for(let m=0;m<levels;m++)n+=Math.max(1,size>>m)**2;return n*layers*texel;};
+async function bootBake(device,{pbr=false,timestamps=false,label='FERRO'}={}){
+ const program=G.FRenderWebGPUShaders?.programs?.bootBake;
+ if(!program?.compute)throw Error('boot_bake.wgsl absent du manifeste WebGPU');
+ if(typeof device.createComputePipelineAsync!=='function')throw Error('compute WebGPU indisponible');
+ const module=device.createShaderModule({label:label+' boot_bake',code:program.compute});
+ const entries=['motif_base','brdf_lut','mip_average',...(pbr?['material_base','mip_srgb']:[])];
+ const pipelines=Object.fromEntries(await Promise.all(entries.map(async entryPoint=>[entryPoint,await device.createComputePipelineAsync({label:label+' '+entryPoint,layout:'auto',compute:{module,entryPoint}})])));
+ const made=[],usage=GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.STORAGE_BINDING|GPUTextureUsage.COPY_SRC;
+ const make=(name,size,layers,format,levels,viewFormats)=>{const t=device.createTexture({label:label+' '+name,size:{width:size,height:size,depthOrArrayLayers:layers},format,mipLevelCount:levels,usage,...(viewFormats?{viewFormats}:{})});made.push(t);return t;};
+ let query=null,resolve=null,read=null;const release=()=>{query?.destroy();resolve?.destroy();read?.destroy();};
+ try{
+  const motifs=make('motifs-mères',BAKE.motifSize,BAKE.motifs,'rgba8unorm',BAKE.motifLevels),lut=make('LUT BRDF',BAKE.lutSize,1,'rgba16float',1);
+  // Le stockage n'accepte pas rgba8unorm-srgb, et une vue sRGB d'une texture de stockage demande une restriction d'usage
+  // que tous les navigateurs n'ont pas : diff est cuit en rgba8unorm, mips compris, puis copié octet pour octet dans sa
+  // texture sRGB finale, sans usage de stockage.
+  const layers=pbr?[make('PBR diff (cuisson)',BAKE.pbrSize,BAKE.pbrLayers,'rgba8unorm',BAKE.pbrLevels),make('PBR nor_gl',BAKE.pbrSize,BAKE.pbrLayers,'rgba8unorm',BAKE.pbrLevels),make('PBR rough',BAKE.pbrSize,BAKE.pbrLayers,'rgba8unorm',BAKE.pbrLevels)]:null;
+  const albedo=pbr?device.createTexture({label:label+' PBR diff',size:{width:BAKE.pbrSize,height:BAKE.pbrSize,depthOrArrayLayers:BAKE.pbrLayers},format:'rgba8unorm-srgb',mipLevelCount:BAKE.pbrLevels,usage:GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.COPY_DST|GPUTextureUsage.COPY_SRC}):null;if(albedo)made.push(albedo);
+  const level=(t,mip)=>t.createView({dimension:'2d-array',baseMipLevel:mip,mipLevelCount:1}),steps=[];
+  // Répartition déduite du groupe de travail de chaque point d'entrée, lu dans le manifeste : (⌈s/x⌉, ⌈s/y⌉, ⌈couches/z⌉).
+  const workgroups=Object.fromEntries(program.entryPoints.map(e=>[e.name,e.workgroupSize]));
+  const groups=(entry,size,count)=>{const [x,y,z]=workgroups[entry];return [Math.ceil(size/x),Math.ceil(size/y),Math.ceil(count/z)];};
+  if(layers)steps.push(['material_base',layers.map((t,i)=>({binding:i+1,resource:level(t,0)})),groups('material_base',BAKE.pbrSize,BAKE.pbrLayers)]);
+  steps.push(['motif_base',[{binding:0,resource:level(motifs,0)}],groups('motif_base',BAKE.motifSize,BAKE.motifs)],['brdf_lut',[{binding:6,resource:lut.createView({dimension:'2d'})}],groups('brdf_lut',BAKE.lutSize,1)]);
+  // Chaque niveau lit le précédent : diff se moyenne en linéaire, comme le rendu sRGB des mips d'avant 0.3.40.
+  const chain=(t,entry,size,levels,count)=>{for(let mip=1;mip<levels;mip++)steps.push([entry,[{binding:4,resource:level(t,mip-1)},{binding:5,resource:level(t,mip)}],groups(entry,Math.max(1,size>>mip),count)]);};
+  if(layers){chain(layers[0],'mip_srgb',BAKE.pbrSize,BAKE.pbrLevels,BAKE.pbrLayers);for(const t of layers.slice(1))chain(t,'mip_average',BAKE.pbrSize,BAKE.pbrLevels,BAKE.pbrLayers);}
+  chain(motifs,'mip_average',BAKE.motifSize,BAKE.motifLevels,BAKE.motifs);
+  if(timestamps){query=device.createQuerySet({label:label+' boot_bake timestamps',type:'timestamp',count:2});resolve=device.createBuffer({label:label+' boot_bake resolve',size:16,usage:GPUBufferUsage.QUERY_RESOLVE|GPUBufferUsage.COPY_SRC});read=device.createBuffer({label:label+' boot_bake readback',size:16,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ});}
+  const encoder=device.createCommandEncoder({label:label+' boot_bake'});
+  const pass=encoder.beginComputePass({label:label+' boot_bake',...(query?{timestampWrites:{querySet:query,beginningOfPassWriteIndex:0,endOfPassWriteIndex:1}}:{})});
+  for(const [entry,bindings,[x,y,z]] of steps){pass.setPipeline(pipelines[entry]);pass.setBindGroup(0,device.createBindGroup({label:label+' '+entry,layout:pipelines[entry].getBindGroupLayout(0),entries:bindings}));pass.dispatchWorkgroups(x,y,z);}
+  pass.end();
+  if(albedo)for(let mip=0;mip<BAKE.pbrLevels;mip++){const s=Math.max(1,BAKE.pbrSize>>mip);encoder.copyTextureToTexture({texture:layers[0],mipLevel:mip},{texture:albedo,mipLevel:mip},[s,s,BAKE.pbrLayers]);}
+  if(query){encoder.resolveQuerySet(query,0,2,resolve,0);encoder.copyBufferToBuffer(resolve,0,read,0,16);}
+  device.queue.submit([encoder.finish()]);
+  // La texture de cuisson de diff n'a servi qu'à cette soumission ; la détruire n'affecte pas le travail déjà soumis.
+  if(albedo){layers[0].destroy();made.splice(made.indexOf(layers[0]),1);}
+  const gpuMs=read?read.mapAsync(GPUMapMode.READ).then(()=>{const [begin,end]=new BigUint64Array(read.getMappedRange());read.unmap();release();return end>begin?Number(end-begin)/1e6:null;},()=>{release();return null;}):Promise.resolve(null);
+  return {motifs,lut,pbr:layers&&[albedo,layers[1],layers[2]],textures:made,dispatches:steps.length,entryPoints:entries,gpuMs,bytes:{motifs:bakeBytes(BAKE.motifSize,BAKE.motifLevels,BAKE.motifs,4),lut:bakeBytes(BAKE.lutSize,1,1,8),pbr:layers?3*bakeBytes(BAKE.pbrSize,BAKE.pbrLevels,BAKE.pbrLayers,4):0}};
+ }catch(error){for(const t of made)t.destroy();release();throw error;}
+}
 const RESOLVE_DEPTH=`@group(0) @binding(0) var t:texture_depth_multisampled_2d;@vertex fn vs(@builtin(vertex_index) i:u32)->@builtin(position) vec4f{let p=vec2f(f32((i<<1u)&2u),f32(i&2u));return vec4f(p*2.-1.,0.,1.);}@fragment fn fs(@builtin(position) p:vec4f)->@builtin(frag_depth) f32{let q=vec2i(p.xy);return min(min(textureLoad(t,q,0),textureLoad(t,q,1)),min(textureLoad(t,q,2),textureLoad(t,q,3)));}`;
 // The shader manifest specifies every std140 offset; arrays and integers never
 // rely on JavaScript object order or WGSL's implicit padding.
@@ -74,21 +129,27 @@ async function create(canvas,options={}){
  if(shared&&(!shared.device||!shared.adapter))throw Error('FERRO WebGPU : périphérique partagé incomplet');
  const adapter=shared?shared.adapter:await navigator.gpu.requestAdapter({powerPreference:'high-performance'});
  if(!adapter)throw Error('Aucun adaptateur WebGPU');
- const requested=['timestamp-query','float32-filterable'].filter(f=>adapter.features.has(f));
+ const requested=['timestamp-query','float32-filterable','rg11b10ufloat-renderable'].filter(f=>adapter.features.has(f));
  const device=shared?shared.device:await adapter.requestDevice({requiredFeatures:requested});
  const features=requested.filter(f=>device.features.has(f));
  const previous=initializing.get(device);let unlock;
  const current=new Promise(resolve=>{unlock=resolve;});initializing.set(device,current);
  if(previous)await previous;
- let context,scope=false,removeObservers=()=>{},released=false;
+ let context,scope=false,removeObservers=()=>{},released=false,baking=null;
  function releaseDevice(){if(released)return;released=true;removeObservers();if(!shared)device.destroy();}
  let initializeCleanup=releaseDevice;
  try{
  if(lossObservers.get(device)?.info)throw Error('FERRO WebGPU : périphérique perdu');
  context=canvas.getContext('webgpu');if(!context)throw Error('Canvas WebGPU indisponible');
  device.pushErrorScope('validation');scope=true;
- const canvasFormat=navigator.gpu.getPreferredCanvasFormat(),format='rgba8unorm',depthFormat='depth32float',config=S.settings(options),source=S.geometry(),governor=S.resolutionGovernor();
- const stats={backend:'webgpu',webglVersion:0,webgpu:true,contextLost:false,deviceLost:false,drawCalls:0,triangles:0,instances:0,uploadBytes:0,errorEvents:[],gpuTimingAvailable:features.includes('timestamp-query'),creations:0};
+ // LOT 0.4 : la cuisson d'amorçage part dès l'ouverture de la portée d'erreurs et n'est attendue qu'en fin de création,
+ // après la demande des pipelines de rendu : sa première compilation, avant le cache de Metal, chevauche la leur.
+ const bank=options.materials||G.RADE?.materials,proceduralPbr=bank?.procedural===PBR_RECIPE;
+ baking=bootBake(device,{pbr:proceduralPbr,timestamps:features.includes('timestamp-query')}).then(bake=>({bake}),error=>({error}));
+ // LOT 0.3 : la scène est une radiance linéaire HDR ; seul post.wgsl écrit des valeurs affichées. Les reflets d'écran lisent
+ // leur poids dans l'alpha de la scène : rgba16float avec reflets, sinon rg11b10ufloat (4 octets) quand le GPU sait y rendre.
+ const canvasFormat=navigator.gpu.getPreferredCanvasFormat(),config=S.settings(options),format=!config.reflections&&features.includes('rg11b10ufloat-renderable')?'rg11b10ufloat':'rgba16float',depthFormat='depth32float',source=S.geometry(),governor=S.resolutionGovernor();
+ const stats={backend:'webgpu',webglVersion:0,webgpu:true,contextLost:false,deviceLost:false,drawCalls:0,maskedDrawCalls:0,triangles:0,instances:0,uploadBytes:0,errorEvents:[],gpuTimingAvailable:features.includes('timestamp-query'),creations:0,sceneFormat:format,tonemap:config.tonemap,exposure:TONE_EXPOSURE[config.tonemap]*config.exposure,bloomLevels:0};
  let disposed=false,quality='auto',autoScale=1,runtimeMsaa=true,environment=null,world=[],lights=[],worldRevision=0,partitionState=null,worldIndex=S.spatialIndex([]),backgroundIndex=S.spatialIndex([]),chunks=new Map(),targets=null,shadowTarget=null,shadowLight=null,actorLightPlan=null;
  const buffers=new Set(),textures=new Set(),pipelines=new Map(),programs=new Map(),bindings=new Map(),samplers=new Map();
  initializeCleanup=()=>{disposed=true;try{context.unconfigure();}catch{}for(const b of buffers)b.destroy();for(const t of textures)t.destroy();buffers.clear();textures.clear();releaseDevice();};
@@ -101,7 +162,7 @@ async function create(canvas,options={}){
  const localWind=S.localWindState(),windFrame=localWind.frame,lotView=S.lotViewState(),colourRadii={horizontal:0,vertical:0},terrainView=S.terrainViewState(),vegetation=S.vegetationFrame(),vegetationState=vegetation.frame;
  const ordinary=[],overlay=[],particles=[],overlayParticles=[];
  let nappes=[],lots=[],lampCasters=[];const chunkCategories=new WeakMap(),chunkState={index:null,epoch:0};
- const gpu={device,adapter,context,format,canvasFormat,depthFormat,samples:config.msaa?4:1,generation:1,shadowView:null,config,vignette:config.vignette};
+ const gpu={device,adapter,context,format,canvasFormat,depthFormat,samples:config.msaa?4:1,generation:1,shadowView:null,config,vignette:config.vignette,lineaire:true};
  const onError=event=>{const message=event.error?.message||String(event.error);stats.errorEvents.push(message);if(stats.errorEvents.length>32)stats.errorEvents.shift();options.onError?.(event.error);};
  device.addEventListener('uncapturederror',onError);
  const stopLoss=observeLoss(device,info=>{stats.contextLost=stats.deviceLost=true;if(!disposed)options.onDeviceLost?.(info);});
@@ -121,7 +182,7 @@ async function create(canvas,options={}){
  stats.primitiveIndexing=!!primitiveIndexing;stats.primitiveIndexStats=primitiveIndexing?.stats||null;
  const groundIndex=S.groundCoverGeometry(source,primitiveIndexing?.indices||source.indices);stats.groundCoverIndex=groundIndex.stats;
  const vbo=buffer(source.vertices,GPUBufferUsage.VERTEX,'FERRO geometry'),ibo=buffer(groundIndex.indices,GPUBufferUsage.INDEX,'FERRO indices');
- const white=texture(1,1),whiteDepth=texture(1,1,depthFormat);device.queue.writeTexture({texture:white.texture},new Uint8Array([255,255,255,255]),{},[1,1]);
+ const white=texture(1,1,'rgba8unorm'),whiteDepth=texture(1,1,depthFormat);device.queue.writeTexture({texture:white.texture},new Uint8Array([255,255,255,255]),{},[1,1]);
  gpu.shadowView=whiteDepth.view;
  const clear=device.createCommandEncoder();clear.beginRenderPass({colorAttachments:[],depthStencilAttachment:{view:whiteDepth.view,depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'}}).end();device.queue.submit([clear.finish()]);
  const copyModule=device.createShaderModule({label:'FERRO texture copy/mipmap',code:COPY}),depthResolveModule=device.createShaderModule({label:'FERRO MSAA depth resolve',code:RESOLVE_DEPTH});
@@ -130,21 +191,32 @@ async function create(canvas,options={}){
  function copyPipeline(targetFormat){if(!copyPipelines.has(targetFormat)){copyPipelines.set(targetFormat,device.createRenderPipeline({label:'FERRO copy '+targetFormat,layout:copyPipelineLayout,vertex:{module:copyModule,entryPoint:'vs'},fragment:{module:copyModule,entryPoint:'fs',targets:[{format:targetFormat}]},primitive:{topology:'triangle-list'}}));created(1);}return copyPipelines.get(targetFormat);}
  function copyBind(view){let group=copyBindings.get(view);if(!group){group=device.createBindGroup({layout:copyLayout,entries:[{binding:0,resource:view},{binding:1,resource:sampler()}]});copyBindings.set(view,group);}return group;}
  const depthResolvePipeline=device.createRenderPipeline({label:'FERRO MSAA depth resolve',layout:'auto',vertex:{module:depthResolveModule,entryPoint:'vs'},fragment:{module:depthResolveModule,entryPoint:'fs',targets:[]},primitive:{topology:'triangle-list'},depthStencil:{format:depthFormat,depthWriteEnabled:true,depthCompare:'always'}});
- async function loadProgram(name){const d=shaderSet[name==='world'&&options.ombresPhoto?'worldPhoto':name];if(!d)throw Error('Shader WebGPU absent : '+name);const vertex=device.createShaderModule({label:'FERRO '+name+' vertex',code:d.vertex}),fragment=d.fragment?device.createShaderModule({label:'FERRO '+name+' fragment',code:d.fragment}):null;
-  for(const module of [vertex,fragment].filter(Boolean)){const info=await module.getCompilationInfo();const errors=info.messages.filter(x=>x.type==='error');if(errors.length)throw Error(name+': '+errors.map(x=>x.lineNum+':'+x.message).join('\n'));}
+ async function loadProgram(name){const d=shaderSet[name==='world'&&options.ombresPhoto?'worldPhoto':name];if(!d)throw Error('Shader WebGPU absent : '+name);const vertex=device.createShaderModule({label:'FERRO '+name+(d.fragment===d.vertex?'':' vertex'),code:d.vertex}),fragment=d.fragment===d.vertex?vertex:d.fragment?device.createShaderModule({label:'FERRO '+name+' fragment',code:d.fragment}):null,fragmentMasked=d.fragmentMasked?device.createShaderModule({label:'FERRO '+name+' masked fragment',code:d.fragmentMasked}):null;
+  for(const module of new Set([vertex,fragment,fragmentMasked].filter(Boolean))){const info=await module.getCompilationInfo();const errors=info.messages.filter(x=>x.type==='error');if(errors.length)throw Error(name+': '+errors.map(x=>x.lineNum+':'+x.message).join('\n'));}
   const entries=[{binding:0,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT,buffer:{type:'uniform',minBindingSize:d.uniforms.byteLength}}];
   for(const t of d.textures||[]){entries.push({binding:t.binding,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT,texture:{sampleType:t.sampleType||'float',viewDimension:t.dimension||'2d',multisampled:false}});if(t.samplerBinding!==undefined)entries.push({binding:t.samplerBinding,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT,sampler:{type:t.samplerType|| (t.sampleType==='depth'?'non-filtering':'filtering')}});}
-  const layout=device.createBindGroupLayout({label:'FERRO '+name+' bindings',entries}),pipelineLayout=device.createPipelineLayout({bindGroupLayouts:[layout]});const p={name,descriptor:d,vertex,fragment,layout,pipelineLayout};programs.set(name,p);return p;
+  const layout=device.createBindGroupLayout({label:'FERRO '+name+' bindings',entries}),pipelineLayout=device.createPipelineLayout({bindGroupLayouts:[layout]});const p={name,descriptor:d,vertex,fragment,fragmentMasked,layout,pipelineLayout};programs.set(name,p);return p;
  }
  const loaded=await Promise.allSettled(['world','depth','sky','fx','post','ssr'].map(loadProgram));
  for(const result of loaded)if(result.status==='rejected')throw result.reason;
- function pipeline(name,{samples=gpu.samples,background=false,overlay=false,nappe=false,front=false,target=format}={}){
-  const key=[name,samples,background,overlay,nappe,front,target].join(':');if(pipelines.has(key))return pipelines.get(key);const p=programs.get(name),mesh=name==='world'||name==='depth'||name==='fx',depth=name==='depth',blend=name==='fx'?{color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'}}:undefined;
+ function pipeline(name,{samples=gpu.samples,background=false,overlay=false,nappe=false,front=false,target=format,masked=false}={}){
+  const key=[name,samples,background,overlay,nappe,front,target,masked].join(':');if(pipelines.has(key))return pipelines.get(key);const p=programs.get(name),mesh=name==='world'||name==='depth'||name==='fx',depth=name==='depth',blend=name==='fx'?{color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'}}:undefined;
   const descriptor={label:'FERRO '+key,layout:p.pipelineLayout,vertex:{module:p.vertex,entryPoint:p.descriptor.vertexEntryPoint||'main',buffers:mesh?(nappe==='rigid'?RIGID_TERRAIN:nappe?[GEOMETRY[0],{...GEOMETRY[1],stepMode:'vertex'}]:GEOMETRY):[]},primitive:{topology:'triangle-list',frontFace:'ccw',cullMode:front?'front':(mesh&&!nappe)?'back':'none'},multisample:{count:samples}};
-  if(p.fragment)descriptor.fragment={module:p.fragment,entryPoint:p.descriptor.fragmentEntryPoint||'main',targets:depth?[]:[{format:target,...(blend?{blend}:{})}]};
+  // LOT 0.2 : le fragment opaque du monde n'a aucun discard ; la profondeur opaque n'a pas d'étage fragment.
+  const fragment=masked&&p.fragmentMasked?p.fragmentMasked:p.fragment;
+  if(fragment)descriptor.fragment={module:fragment,entryPoint:p.descriptor.fragmentEntryPoint||'main',targets:depth?[]:[{format:target,...(blend?{blend}:{})}]};
   if(mesh||name==='sky')descriptor.depthStencil={format:depthFormat,depthWriteEnabled:mesh&&name!=='fx'&&!background,depthCompare:background||name==='sky'?'always':'less-equal',...(depth?{depthBias:2,depthBiasSlopeScale:1.1}:{})};
   const result=device.createRenderPipeline(descriptor);created(1);pipelines.set(key,result);return result;
  }
+ // Élargissement du halo : le niveau inférieur s'ajoute au niveau courant ; l'alpha (tuiles de reflet) est conservé.
+ let additivePost=null;
+ function postAdditive(){
+  if(!additivePost){const p=programs.get('post');additivePost=device.createRenderPipeline({label:'FERRO post additive '+format,layout:p.pipelineLayout,vertex:{module:p.vertex,entryPoint:p.descriptor.vertexEntryPoint||'main'},fragment:{module:p.fragment,entryPoint:p.descriptor.fragmentEntryPoint||'main',targets:[{format,blend:{color:{srcFactor:'one',dstFactor:'one',operation:'add'},alpha:{srcFactor:'zero',dstFactor:'one',operation:'add'}}}]},primitive:{topology:'triangle-list'}});created(1);}
+  return additivePost;
+ }
+ // Seuils historiques du halo (valeurs affichées) ramenés en radiance exposée par l'inverse exact de la courbe de 0.3.38.
+ const bloomKnee=config.bloom.map(d=>{const x=Math.pow(Math.min(d,.999),2.2);return .76*x/(1-x);});
+ function toneSettings(fx){const name=Object.hasOwn(TONEMAPS,fx.tonemap)?fx.tonemap:config.tonemap,user=Number.isFinite(fx.exposure)&&fx.exposure>0?Math.min(16,fx.exposure):config.exposure;return {name,index:TONEMAPS[name],exposure:TONE_EXPOSURE[name]*user};}
  function bind(name,slot,values,textureValues={}){
   if(name==='world'||name==='depth'){values.uWindStrength=vegetationState.strength;values.uGroundCoverEye=vegetationState.eye;values.uGroundCoverDensity=vegetationState.density;values.uGroundCoverRange=vegetationState.range;}
   const p=programs.get(name),d=p.descriptor,key=name+':'+slot;let b=bindings.get(key);
@@ -170,27 +242,93 @@ async function create(canvas,options={}){
   if(changed)b.group=device.createBindGroup({label:key,layout:p.layout,entries:b.entries});
   return b.group;
  }
+ // LOT 0.4 : cuisson d'amorçage (motifs-mères, LUT de BRDF). Une banque de FMaterials n'est plus dessinée dans des canvas :
+ // boot_bake.wgsl écrit ses couches PBR et leurs mips ; une banque d'hôte garde le chemin des images. Sans compute (faux
+ // périphériques des essais), la cuisson s'efface et la banque de FMaterials est chargée puis envoyée comme en 0.3.39.
+ // Seul draw lit pbr et pbrReady : settleMaterials les remplit à la fin de create.
+ const pbr=[];let pbrReady=0;
+ stats.bootBake={pbr:'none',motifs:0,motifSize:BAKE.motifSize,motifLevels:BAKE.motifLevels,slopeGain:SLOPE_GAIN,lutSize:BAKE.lutSize,dispatches:0,bytes:null,gpuMs:null,error:null};
+ async function settleMaterials(){
+ const {bake=null,error}=await baking;if(error)stats.bootBake.error=String(error?.message||error).slice(0,200);
+ if(bake){
+  for(const t of bake.textures)textures.add(t);created(bake.textures.length);
+  Object.assign(stats.bootBake,{motifs:BAKE.motifs,dispatches:bake.dispatches,bytes:bake.bytes});bake.gpuMs.then(ms=>{stats.bootBake.gpuMs=ms;});
+  gpu.motifs={texture:bake.motifs,view:bake.motifs.createView({dimension:'2d-array'}),layers:BAKE.motifs,size:BAKE.motifSize,levels:BAKE.motifLevels,format:'rgba8unorm',slopeGain:SLOPE_GAIN};
+  gpu.brdfLut={texture:bake.lut,view:bake.lut.createView({dimension:'2d'}),size:BAKE.lutSize,format:'rgba16float'};
+ }
+ if(bake?.pbr){
+  for(const t of bake.pbr)pbr.push({texture:t,view:t.createView({dimension:'2d-array'}),width:BAKE.pbrSize,height:BAKE.pbrSize,format:t.format,sampleCount:1,layers:BAKE.pbrLayers,mipLevelCount:BAKE.pbrLevels});
+  pbrReady=1;stats.pbrLayers=BAKE.pbrLayers;stats.bootBake.pbr='gpu';
+ }else{
+ if(proceduralPbr&&!bank.layers.length)await bank.load();
  // Same mathematically generated texture layers as WebGL, including all mip levels.
- const pbr=[];const layers=options.materials?.layers||G.RADE?.materials?.layers||[],pbrSize=layers[0]?.diff.width||1;
+ const layers=options.materials?.layers||G.RADE?.materials?.layers||[],pbrSize=layers[0]?.diff.width||1;
  for(const [index,kind]of ['diff','nor_gl','rough'].entries()){
   const levels=Math.floor(Math.log2(pbrSize))+1,t=texture(pbrSize,pbrSize,index===0?'rgba8unorm-srgb':'rgba8unorm',1,Math.max(1,layers.length),levels,'FERRO procedural PBR '+kind);t.view=t.texture.createView({dimension:'2d-array'});pbr.push(t);
   if(layers.length){for(let layer=0;layer<layers.length;layer++)device.queue.copyExternalImageToTexture({source:layers[layer][kind]},{texture:t.texture,origin:[0,0,layer]},[pbrSize,pbrSize]);const enc=device.createCommandEncoder();for(let layer=0;layer<layers.length;layer++)for(let mip=1;mip<levels;mip++){const src=t.texture.createView({dimension:'2d',baseArrayLayer:layer,arrayLayerCount:1,baseMipLevel:mip-1,mipLevelCount:1}),dst=t.texture.createView({dimension:'2d',baseArrayLayer:layer,arrayLayerCount:1,baseMipLevel:mip,mipLevelCount:1});const pass=enc.beginRenderPass({colorAttachments:[{view:dst,loadOp:'clear',clearValue:[0,0,0,1],storeOp:'store'}]});pass.setPipeline(copyPipeline(t.format));pass.setBindGroup(0,copyBind(src));pass.draw(3);pass.end();}device.queue.submit([enc.finish()]);}
   else device.queue.writeTexture({texture:t.texture},new Uint8Array([128,128,255,255]),{},[1,1]);
  }
- stats.pbrLayers=layers.length;
+ pbrReady=layers.length?1:0;stats.pbrLayers=layers.length;stats.bootBake.pbr=layers.length?'images':'none';
+ }
+ }
  // Un flux qui grandit double sa capacité : pas de nouveau tampon à chaque image où le nombre d'instances monte.
- function ensureSlot(slot,batch,update=true){const required=Math.max(4,batch.values.byteLength);if(!slot.buffer||slot.capacity<required){const size=slot.buffer?Math.max(required,slot.capacity*2):required;freeBuffer(slot.buffer);slot.buffer=buffer(size,GPUBufferUsage.VERTEX,'FERRO instances');slot.capacity=align(size);update=true;}if(update&&batch.values.byteLength){device.queue.writeBuffer(slot.buffer,0,batch.values);stats.uploadBytes+=batch.values.byteLength;}slot.batch=batch;return slot;}
+ // LOT 0.2 de FERRO 0.4 : le pipeline opaque du monde n'a aucun discard (test de profondeur anticipé et élimination
+ // des surfaces cachées). Un groupe d'instances passe au pipeline masqué si l'une d'elles peut rejeter des fragments,
+ // selon les mêmes règles que les nuanceurs : prairie (drapeau 16), fondu d'opacité (marqueur hors de [0,1]), plan de
+ // mer troué (matières 11,5 à 12,1) ; en profondeur, la mer animée (12,1 à 12,4) au lieu des plans troués. Le
+ // classement est fait à l'envoi des instances et rangé dans l'emplacement ; les groupes de l'hôte ne sont pas modifiés.
+ function classifyMasks(slot,batch){
+  const groups=batch.groups||NONE,values=batch.values,n=groups.length;
+  if(!slot.maskColor||slot.maskColor.length<n){slot.maskColor=new Uint8Array(Math.max(8,n));slot.maskDepth=new Uint8Array(slot.maskColor.length);}
+  let any=0;
+  for(let i=0;i<n;i++){
+   const g=groups[i],first=g.offset>>2,end=first+g.count*16;let color=0,depth=0;
+   for(let at=first;at<end;at+=16){
+    const flags=values[at+11],marker=values[at+15],m=values[at+3];
+    if(marker>1||marker<0||(flags&16)){color=depth=1;break;}
+    if(m>=11.5&&m<12.1)color=1;else if(m>12.1&&m<12.4)depth=1;
+    if(color&&depth)break;
+   }
+   slot.maskColor[i]=color;slot.maskDepth[i]=depth;any|=color|depth;
+  }
+  slot.maskBatch=batch;slot.masked=any;
+ }
+ // Phase opaque : les groupes masqués sont différés dans une file réutilisée ; flushMasked les trace ensuite seuls sur
+ // le pipeline masqué de la même passe. Hors phase, tout se trace sur le pipeline courant, comme avant 0.3.38.
+ let maskPhase=false,maskDrawing=false,maskCount=0;const maskPool=[];
+ function deferMasked(kind,a,b,c,d){const r=maskPool[maskCount]||(maskPool[maskCount]={kind:0,a:null,b:null,c:null,d:null});r.kind=kind;r.a=a;r.b=b;r.c=c;r.d=d;maskCount++;}
+ function beginOpaque(){maskPhase=true;maskCount=0;}
+ function flushMasked(pass,name,variant){
+  maskPhase=false;if(!maskCount)return;
+  const main=pipeline(name,{...variant,masked:true}),before=stats.drawCalls;maskDrawing=true;pass.setPipeline(main);
+  try{
+   for(let i=0;i<maskCount;i++){
+    const r=maskPool[i];
+    if(r.kind===0)renderBatch(pass,r.a,r.b,r.c,r.d);
+    else if(r.kind===1)renderGroundCover(pass,r.a,r.b,r.c,r.d);
+    else if(r.kind===2){pass.setPipeline(pipeline(name,{...variant,nappe:r.a.rigid?'rigid':true,masked:true}));drawNappe(pass,r.a);pass.setPipeline(main);}
+    else warmCoverSubsets(pass,r.a,r.b);
+    r.a=r.b=r.c=r.d=null;
+   }
+  }finally{maskDrawing=false;maskCount=0;stats.maskedDrawCalls+=stats.drawCalls-before;}
+ }
+ function ensureSlot(slot,batch,update=true){const required=Math.max(4,batch.values.byteLength);if(!slot.buffer||slot.capacity<required){const size=slot.buffer?Math.max(required,slot.capacity*2):required;freeBuffer(slot.buffer);slot.buffer=buffer(size,GPUBufferUsage.VERTEX,'FERRO instances');slot.capacity=align(size);update=true;}if(update&&batch.values.byteLength){device.queue.writeBuffer(slot.buffer,0,batch.values);stats.uploadBytes+=batch.values.byteLength;}if(update||slot.maskBatch!==batch)classifyMasks(slot,batch);slot.batch=batch;return slot;}
  function renderBatch(pass,batch,storage,shadow=false,excludeNear=false){
   if(!batch?.groups?.length)return;
+  if(storage.maskBatch!==batch)classifyMasks(storage,batch);
+  const masks=shadow?storage.maskDepth:storage.maskColor;let deferred=false;
   pass.setVertexBuffer(0,vbo);pass.setIndexBuffer(ibo,'uint32');
-  for(const group of batch.groups){
-   const count=group.count-(excludeNear?(group.near||0):0);if(!count)continue;
+  for(let i=0;i<batch.groups.length;i++){
+   const group=batch.groups[i],count=group.count-(excludeNear?(group.near||0):0);if(!count)continue;
+   if(maskDrawing){if(!masks[i])continue;}else if(maskPhase&&masks[i]){deferred=true;continue;}
    const shape=source.ranges[group.name];if(!shape)throw Error('Forme WebGPU inconnue : '+group.name);
    pass.setVertexBuffer(1,storage.buffer,group.offset,count*64);pass.drawIndexed(shape.count,count,shape.offset/4,0,0);
    stats.drawCalls++;stats.triangles+=shape.count/3*count;if(!shadow)stats.instances+=count;
   }
+  if(deferred)deferMasked(0,batch,storage,shadow,excludeNear);
  }
- function renderGroundCover(pass,plan,near,far,shadow){pass.setVertexBuffer(0,vbo);pass.setIndexBuffer(ibo,'uint32');for(let i=0;i<plan.count;i++){const at=i*4,group=plan.groups[plan.runs[at]],mode=plan.runs[at+1],first=plan.runs[at+2],count=plan.runs[at+3],shape=mode?group.nearIndex.ranges[mode-1]:source.ranges[group.far.name],slot=mode?near:far;if(!shape.count)continue;pass.setVertexBuffer(1,slot.buffer,first*64,count*64);pass.drawIndexed(shape.count,count,shape.offset/4,0,0);stats.drawCalls++;stats.triangles+=shape.count/3*count;if(!shadow)stats.instances+=count;}}
+ // Les prairies rejettent leurs brins éteints : elles passent toujours au pipeline masqué.
+ function renderGroundCover(pass,plan,near,far,shadow){if(maskPhase&&!maskDrawing){deferMasked(1,plan,near,far,shadow);return;}pass.setVertexBuffer(0,vbo);pass.setIndexBuffer(ibo,'uint32');for(let i=0;i<plan.count;i++){const at=i*4,group=plan.groups[plan.runs[at]],mode=plan.runs[at+1],first=plan.runs[at+2],count=plan.runs[at+3],shape=mode?group.nearIndex.ranges[mode-1]:source.ranges[group.far.name],slot=mode?near:far;if(!shape.count)continue;pass.setVertexBuffer(1,slot.buffer,first*64,count*64);pass.drawIndexed(shape.count,count,shape.offset/4,0,0);stats.drawCalls++;stats.triangles+=shape.count/3*count;if(!shadow)stats.instances+=count;}}
  function renderStatic(pass,entries,slot,shadow=false){const cache=staticCaches[slot],same=cache.entries.length===entries.length&&entries.every((e,i)=>e===cache.entries[i]);if(!same){cache.entries=entries;cache.batch=S.packIndexed(entries);}ensureSlot(cache,cache.batch,!same);renderBatch(pass,cache.batch,cache,shadow);}
  function rebuildChunks(){const next=S.planChunks(worldIndex,chunks,chunkCategories,chunkState);
   let uploads=0;for(const [key,g]of next){if(!g.nextEntries&&g.nextCount===g.entries.length)continue;const c={range:g.range,entries:g.nextEntries||g.entries.slice(0,g.nextCount),min:[Infinity,Infinity,Infinity],max:[-Infinity,-Infinity,-Infinity]};for(const e of c.entries)for(let k=0;k<3;k++){c.min[k]=Math.min(c.min[k],e.p[k]-e.radius);c.max[k]=Math.max(c.max[k],e.p[k]+e.radius);}c.p=c.min.map((v,k)=>(v+c.max[k])/2);c.radius=Math.hypot(...c.max.map((v,k)=>(v-c.min[k])/2));c.batch=S.packIndexed(c.entries);ensureSlot(c,c.batch);uploads+=c.batch.values.byteLength;next.set(key,c);}for(const [key,c]of chunks)if(next.get(key)!==c)freeBuffer(c.buffer);chunks=next;stats.chunks=chunks.size;stats.chunkBuildBytes=uploads;stats.chunkUpdateIncremental=chunkState.incremental;stats.chunkEntriesVisited=chunkState.entriesVisited;
@@ -262,7 +400,8 @@ async function create(canvas,options={}){
     instance=allocate(instances,GPUBufferUsage.VERTEX,'FERRO terrain materials');
    }
    const index=n.indices instanceof Uint32Array?n.indices:new Uint32Array(n.indices);
-   nappes.push({...n,sourceIndex:listIndex,rigid,vertex:allocate(vertices,GPUBufferUsage.VERTEX,'FERRO terrain vertices'),constant,instance,index:allocate(index,GPUBufferUsage.INDEX,'FERRO terrain indices')});
+   let masked=false;if(!rigid)for(let i=9;i<data.length;i+=13)if(data[i]>=11.5&&data[i]<12.1){masked=true;break;}
+   nappes.push({...n,sourceIndex:listIndex,rigid,masked,vertex:allocate(vertices,GPUBufferUsage.VERTEX,'FERRO terrain vertices'),constant,instance,index:allocate(index,GPUBufferUsage.INDEX,'FERRO terrain indices')});
    triangles+=index.length/3;
   }
   terrainView.reset(nappes,options?.staticBounds===true);stats.nappeTriangles=triangles;
@@ -416,9 +555,10 @@ async function create(canvas,options={}){
   if(samples>1)targets.msaa??=texture(width,height,format,samples);
   if(overlay)targets.overlayDepth??=texture(width,height,depthFormat,samples);
   if(overlay&&reflections)targets.pre??=texture(width,height);
+  // Halo Dual-Kawase : 1/4 (préfiltre ; alpha = tuiles de reflet), 1/8, 1/16 et 1/32 de la résolution.
   if(bloom&&!targets.a){
-   const w=Math.ceil(width/4),h=Math.ceil(height/4);
-   targets.a=texture(w,h);targets.b=texture(w,h);
+   const level=d=>texture(Math.ceil(width/d),Math.ceil(height/d));
+   targets.a=level(4);targets.halo8=level(8);targets.halo16=level(16);targets.halo32=level(32);
   }
   if(reflections){
    targets.reflection??=texture(Math.ceil(width/2),Math.ceil(height/2));
@@ -449,7 +589,7 @@ async function create(canvas,options={}){
   const previous=lampCasters[slot],stable=!torchAxes&&previous&&previous.light===light&&previous.p.every((v,k)=>v===p[k]);
   const casters=stable?previous.entries:!worldIndex.entries.length?NONE:worldIndex.query(p,[32,18,0]).filter(e=>S.visible(e,p,axes,1/f,1/f,32));
   if(!torchAxes&&!stable)lampCasters[slot]={light,p:p.slice(),entries:casters};
-  renderStatic(pass,casters,slot+1,true);renderBatch(pass,dynamicBatch,dynamicSlot,true);
+  beginOpaque();renderStatic(pass,casters,slot+1,true);renderBatch(pass,dynamicBatch,dynamicSlot,true);flushMasked(pass,'depth',{samples:1});
  }
  function sunShadowPass(pass,eye,axes,dynamicBatch,time,camera,fx,crowd,pdrLots){
   const sun=environment.sunDirection,fw=sun.map(v=>-v),length=Math.hypot(fw[0],fw[2]),r=length>.0001?[-fw[2]/length,0,fw[0]/length]:[1,0,0],u=[r[1]*fw[2]-r[2]*fw[1],r[2]*fw[0]-r[0]*fw[2],r[0]*fw[1]-r[1]*fw[0]];
@@ -463,10 +603,11 @@ async function create(canvas,options={}){
   pass.setViewport(full?0:shadowTarget.size,full?0:shadowTarget.size,tile,tile,0,1);pass.setPipeline(pipeline('depth',{samples:1}));pass.setBindGroup(0,bind('depth','sun',{uViewProjection:shadowMatrix,uWindTime:[weatherFrame.wind,time],uLocalWindCount:windFrame.count,uLocalWindPosition:windFrame.positions,uLocalWindMotion:windFrame.motions}));
   const inside=e=>{const x=e.p[0]-p[0],y=e.p[1]-p[1],d=e.p[2]-p[2],z=x*fw[0]+y*fw[1]+d*fw[2];return Math.abs(x*r[0]+y*r[1]+d*r[2])<extent+e.radius&&Math.abs(x*u[0]+y*u[1]+d*u[2])<extent+e.radius&&z+e.radius>near&&z-e.radius<far;};
   const casters=camera.chunked||!worldIndex.entries.length?NONE:camera.allStatic?worldIndex.entries:worldIndex.query(center,[extent+24,26,0]).filter(inside);
-  renderStatic(pass,casters,2,true);if(camera.chunked)drawChunks(pass,inside,true);
+  beginOpaque();renderStatic(pass,casters,2,true);if(camera.chunked)drawChunks(pass,inside,true);
   const viewTangent=Math.tan(Math.max(10,Math.min(110,camera.fov||75))*Math.PI/360);
   if(warm)renderLotsWarm(pass,true);else renderLots(pass,eye,axes,0,viewTangent,0,inside);renderBatch(pass,dynamicBatch,dynamicSlot,true,true);if(crowd)renderBatch(pass,crowd,crowdSlot,true);
   for(const entry of pdrLots)renderBatch(pass,entry.batch,entry,true);
+  flushMasked(pass,'depth',{samples:1});
   if(typeof fx.foule?.gpuShadow==='function')countCrowd(fx.foule.gpuShadow(pass,{matrice:crowdSunMatrix,direction:sun,texel,plein:full,viewport:[full?0:shadowTarget.size,full?0:shadowTarget.size,tile,tile],centre:center,etendue:extent,profondeur:far}),true);
  }
  // The optional racing profile uses the canonical photo fragment. Resource owners are per device.
@@ -494,8 +635,8 @@ async function create(canvas,options={}){
   const texel=S.orthographicSun(environment.sunDirection,shadowProjection,shadowViewMatrix,photo.farMatrix,zone.centre,zone.etendue,size,zone.lift,0,zone.profondeur,null,false);
   Object.assign(map,{sun:environment.sunDirection.slice(),lots:lotSlots.map(s=>s.source),bias:Math.min(.02,.6/zone.profondeur),normal:Math.min(2,texel)});
   const encoder=device.createCommandEncoder(),pass=encoder.beginRenderPass({label:'FERRO static sun casters',colorAttachments:[],depthStencilAttachment:{view:map.view,depthLoadOp:'clear',depthClearValue:1,depthStoreOp:'store'}});
-  pass.setPipeline(pipeline('depth',{samples:1}));pass.setBindGroup(0,bind('depth','static-photo',{uViewProjection:photo.farMatrix}));
-  const calls=stats.drawCalls,triangles=stats.triangles;let instances=0;const cold=[];
+  pass.setPipeline(pipeline('depth',{samples:1}));pass.setBindGroup(0,bind('depth','static-photo',{uViewProjection:photo.farMatrix}));beginOpaque();
+  const calls=stats.drawCalls,triangles=stats.triangles,masked=stats.maskedDrawCalls;let instances=0;const cold=[];
   for(const slot of lotSlots){
    const lot=slot.source;if(lot.ombre===false||lot.groundCover||lot.detailProcheSeul)continue;
    const resident=slot.far||slot.near;
@@ -508,9 +649,9 @@ async function create(canvas,options={}){
   for(const entry of worldIndex.entries)cold.push(entry.mesh);
   let stream=null;
   if(cold.length){const batch=S.pack(cold,environment);stream=ensureSlot({},batch);renderBatch(pass,batch,stream,true);instances+=batch.values.length/16;}
-  pass.end();device.queue.submit([encoder.finish()]);if(stream)freeBuffer(stream.buffer);
+  flushMasked(pass,'depth',{samples:1});pass.end();device.queue.submit([encoder.finish()]);if(stream)freeBuffer(stream.buffer);
   const report={taille:size,texel,etendue:zone.etendue,profondeur:zone.profondeur,centre:zone.centre,octets:size*size*4,appels:stats.drawCalls-calls,instances,ms:clock()-start};
-  stats.drawCalls=calls;stats.triangles=triangles;photo.state.loinTaille=size;
+  stats.drawCalls=calls;stats.triangles=triangles;stats.maskedDrawCalls=masked;photo.state.loinTaille=size;
   return report;
  }
  function preparePhoto(encoder,dynamic,fx,values,textures){
@@ -533,7 +674,7 @@ async function create(canvas,options={}){
    for(let row=0;row<4;row++)matrix[12+row]+=matrix[row]*tile.centre[0]+matrix[4+row]*tile.centre[1]+matrix[8+row]*tile.centre[2];
    const p=encoder.beginRenderPass({label:'FERRO vehicle shadow detail',colorAttachments:[],depthStencilAttachment:{view:photo.tile.view,depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'}});
    p.setPipeline(pipeline('depth',{samples:1,front:true}));p.setBindGroup(0,bind('depth','tile-photo',{uViewProjection:matrix}));
-   if(batch.groups.length){ensureSlot(photo.tileSlot,batch);renderBatch(p,batch,photo.tileSlot,true);}p.end();
+   if(batch.groups.length){ensureSlot(photo.tileSlot,batch);beginOpaque();renderBatch(p,batch,photo.tileSlot,true);flushMasked(p,'depth',{samples:1,front:true});}p.end();
   }
   const far=photo.far,farOn=!!(far&&stats.shadows&&fx.ombreLoin!==false&&environment&&far.sun.every((v,k)=>v===environment.sunDirection[k]));
   const pen=fx.penombre,mode=typeof pen==='string'?pen:pen?.mode,pcss=stats.shadows&&mode==='pcss'&&fx.sunOnly&&options.ombresPhoto.pcss!==false;
@@ -547,7 +688,7 @@ async function create(canvas,options={}){
  function renderEffects(pass,meshes,eye,time,clip=vp,overlay=false,origin){
   const batch=(overlay?packOverlayFx:packFx)(meshes,environment,eye,origin);stats.fxInstances+=batch.values.length/16;if(!batch.groups.length)return;
   const storage=overlay?overlayFxSlot:fxSlot;ensureSlot(storage,batch);
-  pass.setPipeline(pipeline('fx'));pass.setBindGroup(0,bind('fx',overlay?'overlay':'world',{uViewProjection:clip,uDrawOrigin:origin,uWindTime:[0,time],uSkyTop:environment?.skyTop||[.2,.3,.4],uSkyBottom:environment?.skyBottom||[.5,.6,.6],uEye:eye,uAmbient:environment?.ambient||[.12,.15,.16],uFogColor:environment?.fog||[.009,.018,.024],uEnvironment:[environment?1:0,environment?.fogDensity??.018],uTime:time}));renderBatch(pass,batch,storage);
+  pass.setPipeline(pipeline('fx'));pass.setBindGroup(0,bind('fx',overlay?'overlay':'world',{uViewProjection:clip,uDrawOrigin:origin,uWindTime:[0,time],uSkyTop:environment?.skyTop||[.2,.3,.4],uSkyBottom:environment?.skyBottom||[.5,.6,.6],uEye:eye,uAmbient:environment?.ambient||[.12,.15,.16],uFogColor:environment?.fog||[.009,.018,.024],uEnvironment:[environment?1:0,environment?.fogDensity??.018],uTime:time,uSunDirection:environment?.sunDirection||[.4,.8,.3],uSunColor:weatherFrame?.sunColor||environment?.sunColor||[1,.95,.85]}));renderBatch(pass,batch,storage);
  }
  function renderNappes(pass,eye,axes,horizontal,vertical,far,uniforms,radii,masqueNappes){
   const count=warm?nappes.length:terrainView.select(eye,axes,horizontal,vertical,far,radii);
@@ -558,12 +699,13 @@ async function create(canvas,options={}){
   for(let i=0;i<count;i++){
    const n=nappes[warm?i:terrainView.indices[i]];
    if(!warm&&masqueNappes&&masqueNappes[n.sourceIndex]){stats.nappesOccultees++;continue;}
+   if(n.masked&&maskPhase){deferMasked(2,n,null,null,null);drawn++;continue;}
    if(mode!==n.rigid){mode=n.rigid;pass.setPipeline(pipeline('world',{nappe:mode?'rigid':true}));}
-   pass.setVertexBuffer(0,n.vertex);pass.setVertexBuffer(1,n.constant||n.instance);pass.setIndexBuffer(n.index,'uint32');
-   pass.drawIndexed(n.indices.length);stats.drawCalls++;stats.triangles+=n.indices.length/3;drawn++;
+   drawNappe(pass,n);drawn++;
   }
   pass.setPipeline(pipeline('world'));pass.setBindGroup(0,uniforms);return drawn;
  }
+ function drawNappe(pass,n){pass.setVertexBuffer(0,n.vertex);pass.setVertexBuffer(1,n.constant||n.instance);pass.setIndexBuffer(n.index,'uint32');pass.drawIndexed(n.indices.length);stats.drawCalls++;stats.triangles+=n.indices.length/3;}
  // Préchauffage : chaque lot, proche ET lointain, sans test de champ ni de portée, puis chaque sous-ensemble d'indices
  // des prairies une fois par passe. En passe d'ombre, les lots « ombre: false » restent exclus, comme en jeu.
  function renderLotsWarm(pass,shadow){
@@ -574,12 +716,15 @@ async function create(canvas,options={}){
    if(l.near){renderBatch(pass,l.near.batch,l.near,shadow);count++;}
    if(l.far){renderBatch(pass,l.far.batch,l.far,shadow);count++;}
    const plan=l.groundPlan;if(!plan||!plan.valid||!l.near)continue;
-   for(const group of plan.groups){const record=group.nearIndex,full=source.ranges[record.name];if(!record.active||seen.has(record))continue;seen.add(record);
-    pass.setVertexBuffer(0,vbo);pass.setIndexBuffer(ibo,'uint32');pass.setVertexBuffer(1,l.near.buffer,group.near.offset,64);
-    for(const range of record.ranges){if(!range.count||range.count===full.count&&range.offset===full.offset)continue;pass.drawIndexed(range.count,1,range.offset/4,0,0);stats.drawCalls++;stats.triangles+=range.count/3;warm.subsets++;}
-   }
+   if(maskPhase)deferMasked(3,l,seen,null,null);else warmCoverSubsets(pass,l,seen);
   }
   warm.lots+=count;return count;
+ }
+ function warmCoverSubsets(pass,l,seen){
+  for(const group of l.groundPlan.groups){const record=group.nearIndex,full=source.ranges[record.name];if(!record.active||seen.has(record))continue;seen.add(record);
+   pass.setVertexBuffer(0,vbo);pass.setIndexBuffer(ibo,'uint32');pass.setVertexBuffer(1,l.near.buffer,group.near.offset,64);
+   for(const range of record.ranges){if(!range.count||range.count===full.count&&range.offset===full.offset)continue;pass.drawIndexed(range.count,1,range.offset/4,0,0);stats.drawCalls++;stats.triangles+=range.count/3;warm.subsets++;}
+  }
  }
  // A bounded ring records real GPU timestamps. Mapping is asynchronous; the game
  // never waits for submitted GPU work. Only explicit benchmark stop drains it.
@@ -604,7 +749,7 @@ async function create(canvas,options={}){
  function renderSurface(pass,surface,clip,origin,eye,weather,overlay,sceneCouleur=null){
   const count=surface.dessiner(pass,{vp:clip,origine:origin||null,oeil:eye,soleil:environment?.sunDirection||[.4,.8,.3],
    couleurSoleil:weather.sunColor,ciel:weather.skyTop,horizon:weather.skyBottom,ambiance:weather.ambient,
-   brouillard:weather.fog,densite:weather.fogDensity,format,depthFormat,samples:gpu.samples,largeur:canvas.width,hauteur:canvas.height,sceneCouleur},overlay);
+   brouillard:weather.fog,densite:weather.fogDensity,format,lineaire:true,depthFormat,samples:gpu.samples,largeur:canvas.width,hauteur:canvas.height,sceneCouleur},overlay);
   if(count){stats.drawCalls+=count.drawCalls||0;stats.triangles+=count.triangles||0;stats.instances+=count.instances||0;stats.fxInstances+=count.instances||0;}
  }
  function render(camera,dynamic,fx){
@@ -642,7 +787,7 @@ async function create(canvas,options={}){
   const colourOverlay=overlayView?overlayView.select(overlay,eye,axes,horizontal,1/f,colourRadii,warm):overlay;
   stats.overlayCulled=overlay.length-colourOverlay.length;
   const dynamicBatch=detail?photo.splitPack(ordinary,photo.nearMeshes,environment):packDynamic(ordinary,environment,true),torchPosition=eye.map((v,i)=>v+right[i]*.16-up[i]*.08),sunOnly=!!fx.sunOnly,hasOverlay=colourOverlay.length>0||overlayParticles.length>0||overlaySurface;
-  stats.drawCalls=stats.triangles=stats.instances=stats.uploadBytes=stats.uniformUploadBytes=stats.fxInstances=stats.lotsOccultes=stats.nappesOccultees=0;stats.bloom=bloomEnabled(fx);stats.shadows=shadowsEnabled(fx);
+  stats.drawCalls=stats.maskedDrawCalls=stats.triangles=stats.instances=stats.uploadBytes=stats.uniformUploadBytes=stats.fxInstances=stats.lotsOccultes=stats.nappesOccultees=0;maskPhase=false;maskCount=0;stats.bloom=bloomEnabled(fx);stats.shadows=shadowsEnabled(fx);
   stats.reflections=config.reflections&&stats.bloom&&fx.reflections!==false&&fx.reflections!=='off';stats.reflectionSteps=stats.reflections?18:0;
   prepareFrameTargets(hasOverlay,stats.bloom,stats.reflections,stats.shadows);
   const shadowTexel=stats.shadows?1/(2*shadowTarget.size):1;
@@ -659,18 +804,19 @@ async function create(canvas,options={}){
   if(fx.fovea&&fx.fovea[3]>fx.fovea[2]){foveaWorld[0]=fx.fovea[0];foveaWorld[1]=1-fx.fovea[1];foveaWorld[2]=fx.fovea[2];foveaWorld[3]=fx.fovea[3];foveaSsr[0]=fx.fovea[0];foveaSsr[1]=fx.fovea[1];foveaSsr[2]=fx.fovea[2];foveaSsr[3]=fx.fovea[3];}
   else{foveaWorld.fill(0);foveaSsr.fill(0);}
   const worldTextures={uPbrAlbedo:pbr[0],uPbrNormal:pbr[1],uPbrRough:pbr[2],uShadowMap:stats.shadows?shadowTarget:whiteDepth,uVoile:voile?{view:voile.textureView}:white};
-  const worldValues={uOverlayMode:options.overlayLighting==='world'?1:0,uSeaMode:options.sea===false?0:1,uPhoto:fx.photo||0,uFovea:foveaWorld,uSeaOrigin:fx.sea?.origin||[0,0,0,0],uSeaMotion:fx.sea?.motion||[0,0,-1.25,0],uViewProjection:vp,uEye:eye,uForward:forward,uCloudOffset:fx.cloudOffset||weather.cloudOffset,uWindTime:[weather.wind,t],uLocalWindCount:windFrame.count,uLocalWindPosition:windFrame.positions,uLocalWindMotion:windFrame.motions,uSunDirection:environment?.sunDirection||[.4,.8,.3],uSunColor:weather.sunColor,uAmbient:weather.ambient,uFogColor:weather.fog,uEnvironment:[environment?1:0,weather.fogDensity],uNightHour:[environment?.night||0,environment?.hour??14],uSkyTop:weather.skyTop,uSkyBottom:weather.skyBottom,uWeather:weather.values,uLightDirection:lightDirections,uLightCone:lightCones,uLightPosition:lightPositions,uLightColor:lightColors,uLightRange:lightRanges,uLightCount:selected.length,uResolution:[canvas.width,canvas.height],uEffects:[t,fx.flash||0,fx.damage||0,Math.max(0,Math.min(1,fx.pulse||0))],uShadowMatrix:shadowMatrices,uShadowSettings:[stats.shadows&&!sunOnly?shadowLights.length:0,shadowTexel,stats.shadows&&!sunOnly&&fx.torch!==false?1:0,stats.shadows&&environment?(sunOnly?2:1):0],uTorchPosition:fx.torch===false?[0,-1e5,0]:torchPosition,uVoileZone:voile?[voile.origine[0],voile.origine[1],1/Math.max(.001,voile.taille[0]),1/Math.max(.001,voile.taille[1])]:[0,0,0,0],uVoileForce:voile?Math.min(1,voile.force):0,uPbrReady:layers.length?1:0,uVignette:config.vignette};
+  const worldValues={uOverlayMode:options.overlayLighting==='world'?1:0,uSeaMode:options.sea===false?0:1,uPhoto:fx.photo||0,uFovea:foveaWorld,uSeaOrigin:fx.sea?.origin||[0,0,0,0],uSeaMotion:fx.sea?.motion||[0,0,-1.25,0],uViewProjection:vp,uEye:eye,uForward:forward,uCloudOffset:fx.cloudOffset||weather.cloudOffset,uWindTime:[weather.wind,t],uLocalWindCount:windFrame.count,uLocalWindPosition:windFrame.positions,uLocalWindMotion:windFrame.motions,uSunDirection:environment?.sunDirection||[.4,.8,.3],uSunColor:weather.sunColor,uAmbient:weather.ambient,uFogColor:weather.fog,uEnvironment:[environment?1:0,weather.fogDensity],uNightHour:[environment?.night||0,environment?.hour??14],uSkyTop:weather.skyTop,uSkyBottom:weather.skyBottom,uWeather:weather.values,uLightDirection:lightDirections,uLightCone:lightCones,uLightPosition:lightPositions,uLightColor:lightColors,uLightRange:lightRanges,uLightCount:selected.length,uResolution:[canvas.width,canvas.height],uEffects:[t,fx.flash||0,fx.damage||0,Math.max(0,Math.min(1,fx.pulse||0))],uShadowMatrix:shadowMatrices,uShadowSettings:[stats.shadows&&!sunOnly?shadowLights.length:0,shadowTexel,stats.shadows&&!sunOnly&&fx.torch!==false?1:0,stats.shadows&&environment?(sunOnly?2:1):0],uTorchPosition:fx.torch===false?[0,-1e5,0]:torchPosition,uVoileZone:voile?[voile.origine[0],voile.origine[1],1/Math.max(.001,voile.taille[0]),1/Math.max(.001,voile.taille[1])]:[0,0,0,0],uVoileForce:voile?Math.min(1,voile.force):0,uPbrReady:pbrReady,uVignette:config.vignette};
   if(photo)preparePhoto(encoder,dynamic,fx,worldValues,worldTextures);
   const mainUniforms=bind('world','main',worldValues,worldTextures);
   // Only SSR needs the world colour before the cockpit. Otherwise both passes share one attachment.
   const keepWorld=hasOverlay&&stats.reflections,sceneBeforeOverlay=keepWorld?targets.pre:targets.scene;
   const mainColor=targets.msaa?targets.msaa.view:sceneBeforeOverlay.view;
-  const pass=begin({label:'FERRO scene',colorAttachments:[{view:mainColor,...(targets.msaa&&(!hasOverlay||keepWorld)?{resolveTarget:sceneBeforeOverlay.view}:{}),loadOp:'clear',clearValue:[.035,.06,.073,1],storeOp:targets.msaa&&!hasOverlay?'discard':'store'}],depthStencilAttachment:{view:targets.depth.view,depthLoadOp:'clear',depthClearValue:1,depthStoreOp:stats.reflections?'store':'discard'}});
+  const pass=begin({label:'FERRO scene',colorAttachments:[{view:mainColor,...(targets.msaa&&(!hasOverlay||keepWorld)?{resolveTarget:sceneBeforeOverlay.view}:{}),loadOp:'clear',clearValue:CLEAR_LINEAR,storeOp:targets.msaa&&!hasOverlay?'discard':'store'}],depthStencilAttachment:{view:targets.depth.view,depthLoadOp:'clear',depthClearValue:1,depthStoreOp:stats.reflections?'store':'discard'}});
   if(environment){pass.setPipeline(pipeline('sky'));pass.setBindGroup(0,bind('sky','main',{uSkyRight:right,uSkyUp:up,uSkyForward:forward,uSkyTop:weather.skyTop,uSkyBottom:weather.skyBottom,uSkyFog:weather.fog,uSunDirection:environment.sunDirection,uSunColor:weather.sunColor,uSkyFov:[horizontal,1/f],uWeather:weather.values,uSkyMotion:[t,weather.wind],uCloudOffset:fx.cloudOffset||weather.cloudOffset,uSkyNight:environment.night}));pass.draw(3);stats.drawCalls++;}
   stats.backgroundWater=backgroundIndex.entries.length;stats.backgroundDrawCalls=0;
-  if(backgroundIndex.entries.length){const before=stats.drawCalls;pass.setPipeline(pipeline('world',{background:true}));pass.setBindGroup(0,mainUniforms);renderStatic(pass,backgroundIndex.entries,4);stats.backgroundDrawCalls=stats.drawCalls-before;}
-  pass.setPipeline(pipeline('world'));pass.setBindGroup(0,mainUniforms);renderStatic(pass,shown,0);if(camera.chunked)drawChunks(pass,c=>S.visible(c,eye,axes,horizontal,1/f,Math.min(far,c.range),colourRadii));
+  if(backgroundIndex.entries.length){const before=stats.drawCalls;pass.setPipeline(pipeline('world',{background:true,masked:true}));pass.setBindGroup(0,mainUniforms);renderStatic(pass,backgroundIndex.entries,4);stats.backgroundDrawCalls=stats.drawCalls-before;}
+  pass.setPipeline(pipeline('world'));pass.setBindGroup(0,mainUniforms);beginOpaque();renderStatic(pass,shown,0);if(camera.chunked)drawChunks(pass,c=>S.visible(c,eye,axes,horizontal,1/f,Math.min(far,c.range),colourRadii));
   renderNappes(pass,eye,axes,horizontal,1/f,far,mainUniforms,colourRadii,fx.masqueNappes);stats.lotsVisibles=warm?renderLotsWarm(pass,false):renderLots(pass,eye,axes,horizontal,1/f,far,null,colourRadii,fx.masqueLots);renderBatch(pass,dynamicBatch,dynamicSlot);if(crowd)renderBatch(pass,crowd,crowdSlot);for(const entry of pdrLots)renderBatch(pass,entry.batch,entry);
+  flushMasked(pass,'world');
   if(typeof fx.foule?.gpuColor==='function'){
    const env=environment||S.indoor;Object.assign(crowdView,{oeil:eye,avant:forward,droite:right,haut:up,fov,tangente:1/f,focale:canvas.height*f*.5,largeur:canvas.width,hauteur:canvas.height,near,far,temps:t,qualite:quality,msaa:gpu.samples>1?gpu.samples:0,soleil:env.sunDirection,couleurSoleil:env.sunColor,ambiance:env.ambient,brouillard:env.fog,densiteBrouillard:env.fogDensity,cielHaut:env.skyTop,cielBas:env.skyBottom});
    Object.assign(crowdView.ombre,{textureView:stats.shadows?shadowTarget.view:whiteDepth.view,active:!!(stats.shadows&&environment),plein:sunOnly,texel:shadowTexel});crowdView.lumieres.nombre=selected.length;countCrowd(fx.foule.gpuColor(pass,crowdView));
@@ -690,31 +836,33 @@ async function create(canvas,options={}){
     S.multiply(overlayProjection,origin?relativeView:view,overlayVP);clip=overlayVP;
    }
    if(blackout)selected.forEach(({light},i)=>{const c=light.color||[1,1,1],power=light.power===undefined?1:light.power;lightColors.set(c.map(v=>v*power),i*3);});
-   if(colourOverlay.length){const batch=packOverlay(colourOverlay,environment,true,origin);ensureSlot(overlaySlot,batch);overlayPass.setPipeline(pipeline('world',{overlay:true}));overlayPass.setBindGroup(0,bind('world','overlay',{...worldValues,uViewProjection:clip,uDrawOrigin:origin},worldTextures));renderBatch(overlayPass,batch,overlaySlot);}
+   if(colourOverlay.length){const batch=packOverlay(colourOverlay,environment,true,origin);ensureSlot(overlaySlot,batch);overlayPass.setPipeline(pipeline('world',{overlay:true}));overlayPass.setBindGroup(0,bind('world','overlay',{...worldValues,uViewProjection:clip,uDrawOrigin:origin},worldTextures));beginOpaque();renderBatch(overlayPass,batch,overlaySlot);flushMasked(overlayPass,'world',{overlay:true});}
    if(overlayParticles.length)renderEffects(overlayPass,overlayParticles,eye,t,clip,true,origin);
    if(overlaySurface)renderSurface(overlayPass,surface,clip,origin,eye,weather,true,keepWorld?targets.pre.view:null);
    overlayPass.end();
   }
   const output=context.getCurrentTexture().createView(),brightness=Number.isFinite(fx.brightness)?Math.max(.5,Math.min(2,fx.brightness)):1;
+  // LOT 0.3 : préfiltre, réflexions d'écran, réduction et élargissement Dual-Kawase, puis une composition unique vers le canvas.
+  const tone=toneSettings(fx);stats.tonemap=tone.name;stats.exposure=tone.exposure;stats.bloomLevels=stats.bloom?BLOOM_LEVELS:0;
+  const postPass=(view,slot,values,inputs,label,additive=false,last=false)=>{
+   const postPassEncoder=begin({label,colorAttachments:[{view,loadOp:additive?'load':'clear',clearValue:[0,0,0,1],storeOp:'store'}]},last);
+   postPassEncoder.setPipeline(additive?postAdditive():pipeline('post',{samples:1,target:last?canvasFormat:format}));
+   postPassEncoder.setBindGroup(0,bind('post',slot,values,inputs));postPassEncoder.draw(3);postPassEncoder.end();stats.drawCalls++;
+  };
   if(stats.bloom){
-   for(let stage=0;stage<3;stage++){
-    if(stage===1&&stats.reflections){
-     const reflectionPass=begin({label:'FERRO screen space reflections',colorAttachments:[{view:targets.reflection.view,loadOp:'clear',clearValue:[0,0,0,0],storeOp:'store'}]});
-     reflectionPass.setPipeline(pipeline('ssr',{samples:1}));
-     const mask=hasOverlay&&canvas.width%4===0&&canvas.height%4===0;
-     reflectionPass.setBindGroup(0,bind('ssr','main',{uProjection:[1/projection[0],1/projection[5],projection[10],projection[14]],uPixel:[1/canvas.width,1/canvas.height],uReceiverMask:mask?1:0,uFovea:foveaSsr},{uColor:sceneBeforeOverlay,uDepth:gpu.samples>1?targets.resolvedDepth:targets.depth,uReceiverTiles:targets.a}));
-     reflectionPass.draw(3);reflectionPass.end();stats.drawCalls++;
-    }
-    const target=stage===0?targets.a.view:stage===1?targets.b.view:output;
-    const postPass=begin({label:'FERRO bloom '+stage,colorAttachments:[{view:target,loadOp:'clear',clearValue:[0,0,0,1],storeOp:'store'}]},stage===2);
-    postPass.setPipeline(pipeline('post',{samples:1,target:stage===2?canvasFormat:format}));
-    postPass.setBindGroup(0,bind('post',stage,{uReflections:stats.reflections?1:0,uPass:stage,uBrightness:brightness,uTexel:stage===0?[1/canvas.width,1/canvas.height]:[1/targets.a.width,1/targets.a.height],uBloomThreshold:config.bloom},{uScene:targets.scene,uBloom:stage===1?targets.a:targets.b,uReflection:stats.reflections?targets.reflection:white}));
-    postPass.draw(3);postPass.end();stats.drawCalls++;
+   postPass(targets.a.view,'prefilter',{uPass:0,uTexel:[1/canvas.width,1/canvas.height],uBloomKnee:bloomKnee,uExposure:tone.exposure},{uScene:targets.scene},'FERRO bloom prefilter');
+   if(stats.reflections){
+    const reflectionPass=begin({label:'FERRO screen space reflections',colorAttachments:[{view:targets.reflection.view,loadOp:'clear',clearValue:[0,0,0,0],storeOp:'store'}]});
+    reflectionPass.setPipeline(pipeline('ssr',{samples:1}));
+    const mask=hasOverlay&&canvas.width%4===0&&canvas.height%4===0;
+    reflectionPass.setBindGroup(0,bind('ssr','main',{uProjection:[1/projection[0],1/projection[5],projection[10],projection[14]],uPixel:[1/canvas.width,1/canvas.height],uReceiverMask:mask?1:0,uFovea:foveaSsr},{uColor:sceneBeforeOverlay,uDepth:gpu.samples>1?targets.resolvedDepth:targets.depth,uReceiverTiles:targets.a}));
+    reflectionPass.draw(3);reflectionPass.end();stats.drawCalls++;
    }
+   const chain=[targets.a,targets.halo8,targets.halo16,targets.halo32];
+   for(let i=1;i<chain.length;i++)postPass(chain[i].view,'down'+i,{uPass:1,uTexel:[1/chain[i-1].width,1/chain[i-1].height]},{uBloom:chain[i-1]},'FERRO bloom down '+i);
+   for(let i=chain.length-1;i>0;i--)postPass(chain[i-1].view,'up'+i,{uPass:2,uTexel:[1/chain[i].width,1/chain[i].height]},{uBloom:chain[i]},'FERRO bloom up '+i,true);
   }
-  else{const copyPass=begin({label:'FERRO present',colorAttachments:[{view:output,loadOp:'clear',clearValue:[0,0,0,1],storeOp:'store'}]},true);if(brightness===1){copyPass.setPipeline(copyPipeline(canvasFormat));copyPass.setBindGroup(0,copyBind(targets.scene.view));}
-   else{copyPass.setPipeline(pipeline('post',{samples:1,target:canvasFormat}));copyPass.setBindGroup(0,bind('post','exposure',{uPass:3,uBrightness:brightness},{uScene:targets.scene}));}
-   copyPass.draw(3);copyPass.end();stats.drawCalls++;}
+  postPass(output,'composite',{uPass:3,uBloomTexel:stats.bloom?[1/targets.a.width,1/targets.a.height]:[0,0],uBloomStrength:stats.bloom?config.bloomStrength/BLOOM_LEVELS:0,uExposure:tone.exposure,uTonemap:tone.index,uReflections:stats.reflections?1:0,uVignette:config.vignette,uScreenEffects:[fx.damage||0,Math.max(0,Math.min(1,fx.pulse||0)),brightness,config.dither?1:0],uResolution:[canvas.width,canvas.height]},{uScene:targets.scene,uBloom:stats.bloom?targets.a:white,uReflection:stats.reflections?targets.reflection:white},'FERRO present',false,true);
   finishTiming(encoder,timed);device.queue.submit([encoder.finish()]);readTiming(timed);evictIdleLots();stats.gpuBuffers=buffers.size;stats.gpuTextures=textures.size;stats.pipelineCount=pipelines.size;stats.uniformSlots=bindings.size;
  }
  function draw(camera,dynamic,fx){counting=true;try{render(camera,dynamic,fx);}finally{counting=false;}}
@@ -802,12 +950,15 @@ async function create(canvas,options={}){
  initializeCleanup=dispose;
  // Resolve expensive shader/pipeline compilation before the title screen or a
  // measured gameplay frame. Validation errors fail creation and permit fallback.
- for(const samples of config.msaa?[1,4]:[1]){pipeline('world',{samples});pipeline('world',{samples,background:true});pipeline('world',{samples,overlay:true});pipeline('world',{samples,nappe:true});pipeline('world',{samples,nappe:'rigid'});pipeline('fx',{samples});pipeline('sky',{samples});}
- pipeline('depth',{samples:1});pipeline('ssr',{samples:1});pipeline('post',{samples:1});pipeline('post',{samples:1,target:canvasFormat});copyPipeline(canvasFormat);
+ for(const samples of config.msaa?[1,4]:[1]){pipeline('world',{samples});pipeline('world',{samples,masked:true});pipeline('world',{samples,background:true,masked:true});pipeline('world',{samples,overlay:true});pipeline('world',{samples,overlay:true,masked:true});pipeline('world',{samples,nappe:true});pipeline('world',{samples,nappe:true,masked:true});pipeline('world',{samples,nappe:'rigid'});pipeline('fx',{samples});pipeline('sky',{samples});}
+ pipeline('depth',{samples:1});pipeline('depth',{samples:1,masked:true});pipeline('ssr',{samples:1});pipeline('post',{samples:1});postAdditive();pipeline('post',{samples:1,target:canvasFormat});
+ await settleMaterials();
  resize();const validationPromise=device.popErrorScope();scope=false;const validation=await validationPromise;if(validation)throw Error('WebGPU initialization: '+validation.message);if(stats.deviceLost)throw Error('FERRO WebGPU : périphérique perdu');
  return {setEnvironment(value){environment=S.environmentInfo(value);},setWorld,updateWorld,draw,resize,dispose,createPresentation,stats,actorFilter,setNappes,setLots,preparerLot,updateShape,gpu,prewarm,retain,resetStats,setRenderScale:value=>nativeSurface?.setScale(value),setMaxPixels(value){runtimeMaxPixels=Number.isFinite(value)&&value>0?value:0;nativeSurface?.setMaxPixels?.(runtimeMaxPixels);return resize();},setBudgetTarget:value=>surfaceBudget?.setTarget(value),precalculerOmbre,...(primitiveIndexing?{setPrimitiveIndexing}:{}),setProfiling,getProfiling(){return {available:stats.gpuTimingAvailable,enabled:profiling,samples:timingSamples.slice(),dropped:timingDropped};}};
- }catch(error){if(scope)await device.popErrorScope().catch(()=>{});initializeCleanup();throw error;}
+ }catch(error){if(scope)await device.popErrorScope().catch(()=>{});
+  // Une cuisson lancée puis abandonnée rend ses textures (les détruire deux fois est sans effet).
+  const late=baking&&await baking;for(const t of late?.bake?.textures||[])t.destroy();initializeCleanup();throw error;}
  finally{unlock();if(initializing.get(device)===current)initializing.delete(device);}
 }
-G.FRenderWebGPU={create,writeUniforms,uniformWriter};
+G.FRenderWebGPU={create,writeUniforms,uniformWriter,bootBake,bake:BAKE,pbrRecipe:PBR_RECIPE};
 })(globalThis);

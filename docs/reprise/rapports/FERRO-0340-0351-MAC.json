@@ -1,0 +1,767 @@
+{
+ "version": "0.2.351",
+ "date": "2026-11-28",
+ "moteur": "FERRO 0.3.40 (M4D135/FERRO e5b0181, src/ferro intact, tools/check-ferro-lock.py)",
+ "base": "e77d949",
+ "build_sha256": "cf3d31137e46d9157229f6e6d0f377ad8f42a32c282e79929c47382dfd0adbfa",
+ "buildQualifie": {
+  "sha256": "cd50800a8408142aaed8aa1090808377bfe43912b9c6fa58e75251cd6407b4df",
+  "note": "les relevés au build final portent sur celui-ci ; le build publié n’en diffère que par un commentaire de src/jeu.js et par l’empreinte des sources (REVISION_PISTES, contrat de piste du jeu en ligne)"
+ },
+ "machine": "Mac, Chrome sans interface, Apple Metal-3, WebGPU (tools/banc-navigateur.mjs --angle native)",
+ "moteurRetenu": {
+  "build": "cd50800a8408142a",
+  "meteo": [
+   {
+    "meteo": "sec",
+    "tonemap": "ferro",
+    "exposure": 1,
+    "sceneFormat": "rgba16float",
+    "reflections": false,
+    "msaa": 4,
+    "bloomLevels": 4,
+    "maskedDrawCalls": 8,
+    "errorEvents": 0,
+    "deviceLost": false,
+    "vignette": 0.59,
+    "bootBake": {
+     "pbr": "none",
+     "motifs": 16,
+     "motifSize": 128,
+     "motifLevels": 8,
+     "slopeGain": 4,
+     "lutSize": 64,
+     "dispatches": 9,
+     "bytes": {
+      "motifs": 1398080,
+      "lut": 32768,
+      "pbr": 0
+     },
+     "gpuMs": 0.65536,
+     "error": null
+    }
+   },
+   {
+    "meteo": "pluie",
+    "tonemap": "ferro",
+    "exposure": 1,
+    "sceneFormat": "rgba16float",
+    "reflections": true,
+    "msaa": 4,
+    "bloomLevels": 4,
+    "maskedDrawCalls": 10,
+    "errorEvents": 0,
+    "deviceLost": false,
+    "vignette": 0.59,
+    "bootBake": {
+     "pbr": "none",
+     "motifs": 16,
+     "motifSize": 128,
+     "motifLevels": 8,
+     "slopeGain": 4,
+     "lutSize": 64,
+     "dispatches": 9,
+     "bytes": {
+      "motifs": 1398080,
+      "lut": 32768,
+      "pbr": 0
+     },
+     "gpuMs": 0.65536,
+     "error": null
+    }
+   }
+  ]
+ },
+ "qualif720": {
+  "build": "cd50800a8408142a",
+  "taille": "1280×720",
+  "qualite": "high",
+  "meteo": "sec",
+  "note": "départ 400 m avant un saut voulu là où il y en a",
+  "circuits": [
+   {
+    "id": 0,
+    "circuit": "Circuit des Longues Ombres",
+    "ips": 60,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pire": 16.8,
+    "image": "1280×720",
+    "erreurs": 0,
+    "interrompu": false
+   },
+   {
+    "id": 1,
+    "circuit": "Promenade de la Corniche",
+    "ips": 60,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 16.8,
+    "image": "1280×720",
+    "erreurs": 0,
+    "interrompu": false
+   },
+   {
+    "id": 2,
+    "circuit": "Boucle des Eaux Dormantes",
+    "ips": 60,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 16.8,
+    "image": "1280×720",
+    "erreurs": 0,
+    "interrompu": false
+   },
+   {
+    "id": 3,
+    "circuit": "Circuit du Second Écho",
+    "ips": 60,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 16.8,
+    "image": "1280×720",
+    "erreurs": 0,
+    "interrompu": false
+   },
+   {
+    "id": 4,
+    "circuit": "Passe du Beau Temps",
+    "ips": 60,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pire": 16.8,
+    "image": "1280×720",
+    "erreurs": 0,
+    "interrompu": false
+   },
+   {
+    "id": 5,
+    "circuit": "Lacets de l’Aiglière",
+    "ips": 60,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pire": 16.8,
+    "image": "1280×720",
+    "erreurs": 0,
+    "interrompu": false
+   },
+   {
+    "id": 6,
+    "circuit": "Descente des Freins Chauds",
+    "ips": 60,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 16.8,
+    "image": "1280×720",
+    "erreurs": 0,
+    "interrompu": false
+   },
+   {
+    "id": 7,
+    "circuit": "Circuit de la Glace Vive",
+    "ips": 60,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 16.8,
+    "image": "1280×720",
+    "erreurs": 0,
+    "interrompu": false
+   },
+   {
+    "id": 8,
+    "circuit": "Autodrome des Alizés",
+    "ips": 60,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 16.8,
+    "image": "1280×720",
+    "erreurs": 0,
+    "interrompu": false
+   }
+  ],
+  "routeSansFin": {
+   "distance": 5830,
+   "duree": 165,
+   "p50": 16.7,
+   "p95": 16.7,
+   "p99": 16.8,
+   "pire": 33.3,
+   "lentes": [
+    {
+     "ms": 33.3,
+     "s": 1200
+    }
+   ],
+   "ouvrier": true,
+   "elimine": true,
+   "erreurs": 0
+  }
+ },
+ "lourd1080": {
+  "build": "b8a6cf8a0b1f1302 (0.2.351 avant la correction du verre)",
+  "taille": "1920×1080",
+  "qualite": "high (Fine)",
+  "meteo": "pluie (reflets d’écran actifs)",
+  "note": "alternance 0.2.350 (FERRO 0.3.36) / 0.2.351 (FERRO 0.3.40), même départ",
+  "circuits": [
+   {
+    "id": 0,
+    "0.2.350": {
+     "circuit": "Circuit des Longues Ombres",
+     "ips": 60,
+     "p50": 16.7,
+     "p95": 16.7,
+     "pire": 16.8,
+     "image": "1920×1080",
+     "erreurs": 0,
+     "interrompu": false
+    },
+    "0.2.351": {
+     "circuit": "Circuit des Longues Ombres",
+     "ips": 60,
+     "p50": 16.7,
+     "p95": 16.7,
+     "pire": 16.8,
+     "image": "1920×1080",
+     "erreurs": 0,
+     "interrompu": false
+    }
+   },
+   {
+    "id": 1,
+    "0.2.350": {
+     "circuit": "Promenade de la Corniche",
+     "ips": 59.95,
+     "p50": 16.7,
+     "p95": 16.7,
+     "pire": 33.4,
+     "image": "1920×1080",
+     "erreurs": 0,
+     "interrompu": false
+    },
+    "0.2.351": {
+     "circuit": "Promenade de la Corniche",
+     "ips": 60,
+     "p50": 16.7,
+     "p95": 16.7,
+     "pire": 16.8,
+     "image": "1920×1080",
+     "erreurs": 0,
+     "interrompu": false
+    }
+   },
+   {
+    "id": 2,
+    "0.2.350": {
+     "circuit": "Boucle des Eaux Dormantes",
+     "ips": 59.8,
+     "p50": 16.7,
+     "p95": 16.7,
+     "pire": 33.4,
+     "image": "1920×1080",
+     "erreurs": 0,
+     "interrompu": false
+    },
+    "0.2.351": {
+     "circuit": "Boucle des Eaux Dormantes",
+     "ips": 58,
+     "p50": 16.7,
+     "p95": 16.8,
+     "pire": 66.7,
+     "image": "1920×1080",
+     "erreurs": 0,
+     "interrompu": false
+    }
+   },
+   {
+    "id": 3,
+    "0.2.350": {
+     "circuit": "Circuit du Second Écho",
+     "ips": 58.8,
+     "p50": 16.7,
+     "p95": 16.8,
+     "pire": 33.4,
+     "image": "1920×1080",
+     "erreurs": 0,
+     "interrompu": false
+    },
+    "0.2.351": {
+     "circuit": "Circuit du Second Écho",
+     "ips": 59.45,
+     "p50": 16.7,
+     "p95": 16.8,
+     "pire": 33.4,
+     "image": "1920×1080",
+     "erreurs": 0,
+     "interrompu": false
+    }
+   },
+   {
+    "id": 4,
+    "0.2.350": {
+     "circuit": "Passe du Beau Temps",
+     "ips": 57.5,
+     "p50": 16.7,
+     "p95": 16.8,
+     "pire": 33.4,
+     "image": "1920×1080",
+     "erreurs": 0,
+     "interrompu": false
+    },
+    "0.2.351": {
+     "circuit": "Passe du Beau Temps",
+     "ips": 60,
+     "p50": 16.7,
+     "p95": 16.7,
+     "pire": 16.8,
+     "image": "1920×1080",
+     "erreurs": 0,
+     "interrompu": false
+    }
+   },
+   {
+    "id": 5,
+    "0.2.350": {
+     "circuit": "Lacets de l’Aiglière",
+     "ips": 50.31,
+     "p50": 16.7,
+     "p95": 33.4,
+     "pire": 50,
+     "image": "1920×1080",
+     "erreurs": 0,
+     "interrompu": false
+    },
+    "0.2.351": {
+     "circuit": "Lacets de l’Aiglière",
+     "ips": 56.31,
+     "p50": 16.7,
+     "p95": 33.3,
+     "pire": 33.4,
+     "image": "1920×1080",
+     "erreurs": 0,
+     "interrompu": false
+    }
+   },
+   {
+    "id": 6,
+    "0.2.350": {
+     "circuit": "Descente des Freins Chauds",
+     "ips": 59.55,
+     "p50": 16.7,
+     "p95": 16.8,
+     "pire": 50.1,
+     "image": "1920×1080",
+     "erreurs": 0,
+     "interrompu": false
+    },
+    "0.2.351": {
+     "circuit": "Descente des Freins Chauds",
+     "ips": 58.9,
+     "p50": 16.7,
+     "p95": 16.8,
+     "pire": 33.4,
+     "image": "1920×1080",
+     "erreurs": 0,
+     "interrompu": false
+    }
+   },
+   {
+    "id": 7,
+    "0.2.350": {
+     "circuit": "Circuit de la Glace Vive",
+     "ips": 59.7,
+     "p50": 16.7,
+     "p95": 16.7,
+     "pire": 33.4,
+     "image": "1920×1080",
+     "erreurs": 0,
+     "interrompu": false
+    },
+    "0.2.351": {
+     "circuit": "Circuit de la Glace Vive",
+     "ips": 60,
+     "p50": 16.7,
+     "p95": 16.7,
+     "pire": 16.8,
+     "image": "1920×1080",
+     "erreurs": 0,
+     "interrompu": false
+    }
+   },
+   {
+    "id": 8,
+    "0.2.350": {
+     "circuit": "Autodrome des Alizés",
+     "ips": 58.9,
+     "p50": 16.7,
+     "p95": 16.8,
+     "pire": 33.4,
+     "image": "1920×1080",
+     "erreurs": 0,
+     "interrompu": false
+    },
+    "0.2.351": {
+     "circuit": "Autodrome des Alizés",
+     "ips": 59.4,
+     "p50": 16.7,
+     "p95": 16.7,
+     "pire": 150,
+     "image": "1920×1080",
+     "erreurs": 0,
+     "interrompu": false
+    }
+   }
+  ]
+ },
+ "routeSansFinAlternee": {
+  "build": "b8a6cf8a0b1f1302",
+  "note": "Route sans fin, même graine, deux passages par version : la bascule de fenêtre donne la même image de 33 ms",
+  "passages": [
+   {
+    "version": "V0.2.350",
+    "passage": 1,
+    "graine": 19692,
+    "distance": 2507,
+    "p99": 16.8,
+    "pire": 16.8,
+    "lentes": [],
+    "bascules": [
+     {
+      "ms": 10.4,
+      "s": 1452
+     }
+    ],
+    "erreurs": 0
+   },
+   {
+    "version": "V0.2.350",
+    "passage": 2,
+    "graine": 19692,
+    "distance": 2507,
+    "p99": 16.8,
+    "pire": 33.3,
+    "lentes": [
+     {
+      "ms": 33.3,
+      "s": 1455
+     }
+    ],
+    "bascules": [
+     {
+      "ms": 13.4,
+      "s": 1452
+     }
+    ],
+    "erreurs": 0
+   },
+   {
+    "version": "V0.2.351",
+    "passage": 1,
+    "graine": 19692,
+    "distance": 2507,
+    "p99": 16.8,
+    "pire": 33.3,
+    "lentes": [
+     {
+      "ms": 33.3,
+      "s": 1455
+     }
+    ],
+    "bascules": [
+     {
+      "ms": 14.4,
+      "s": 1452
+     }
+    ],
+    "erreurs": 0
+   },
+   {
+    "version": "V0.2.351",
+    "passage": 2,
+    "graine": 19692,
+    "distance": 2507,
+    "p99": 16.8,
+    "pire": 33.3,
+    "lentes": [
+     {
+      "ms": 33.3,
+      "s": 1455
+     }
+    ],
+    "bascules": [
+     {
+      "ms": 14.1,
+      "s": 1452
+     }
+    ],
+    "erreurs": 0
+   }
+  ]
+ },
+ "tempsGpu": {
+  "build": "copies figées : 0.2.350 36a383165a896ad8, 0.2.351 b8a6cf8a0b1f1302",
+  "mesure": "rendu.setProfiling (timestamp-query de FERRO), image du moteur principal, de la 4e à la 16e seconde d’un banc de 20 s",
+  "taille": "1920×1080",
+  "qualite": "high",
+  "meteo": "pluie",
+  "ordre": "ABBA par circuit",
+  "passages": [
+   {
+    "ordre": 1,
+    "circuit": 2,
+    "version": "0.2.350",
+    "moyenneMs": 8.76,
+    "p50": 8.85,
+    "p95": 10.68,
+    "max": 12.52,
+    "images": 720,
+    "sceneFormat": "rgba8unorm",
+    "erreurs": 0
+   },
+   {
+    "ordre": 2,
+    "circuit": 2,
+    "version": "0.2.351",
+    "moyenneMs": 7.96,
+    "p50": 8,
+    "p95": 9.37,
+    "max": 11.4,
+    "images": 720,
+    "sceneFormat": "rgba16float",
+    "erreurs": 0
+   },
+   {
+    "ordre": 3,
+    "circuit": 2,
+    "version": "0.2.351",
+    "moyenneMs": 8.98,
+    "p50": 8.91,
+    "p95": 12.58,
+    "max": 19.79,
+    "images": 693,
+    "sceneFormat": "rgba16float",
+    "erreurs": 0
+   },
+   {
+    "ordre": 4,
+    "circuit": 2,
+    "version": "0.2.350",
+    "moyenneMs": 9.46,
+    "p50": 9.44,
+    "p95": 11.47,
+    "max": 13.24,
+    "images": 618,
+    "sceneFormat": "rgba8unorm",
+    "erreurs": 0
+   },
+   {
+    "ordre": 5,
+    "circuit": 5,
+    "version": "0.2.350",
+    "moyenneMs": 13.93,
+    "p50": 13.89,
+    "p95": 15.86,
+    "max": 17.83,
+    "images": 425,
+    "sceneFormat": "rgba8unorm",
+    "erreurs": 0
+   },
+   {
+    "ordre": 6,
+    "circuit": 5,
+    "version": "0.2.351",
+    "moyenneMs": 11.14,
+    "p50": 11.01,
+    "p95": 12.45,
+    "max": 15.34,
+    "images": 443,
+    "sceneFormat": "rgba16float",
+    "erreurs": 0
+   },
+   {
+    "ordre": 7,
+    "circuit": 5,
+    "version": "0.2.351",
+    "moyenneMs": 11.73,
+    "p50": 11.47,
+    "p95": 14.09,
+    "max": 17.76,
+    "images": 479,
+    "sceneFormat": "rgba16float",
+    "erreurs": 0
+   },
+   {
+    "ordre": 8,
+    "circuit": 5,
+    "version": "0.2.350",
+    "moyenneMs": 15.31,
+    "p50": 14.68,
+    "p95": 19.99,
+    "max": 24.44,
+    "images": 406,
+    "sceneFormat": "rgba8unorm",
+    "erreurs": 0
+   }
+  ]
+ },
+ "image": {
+  "build": "cd50800a8408142a",
+  "outil": "tools/controle-visuel.mjs, horloge commandée, 1280×720, 8 images, --angle native",
+  "ecartsA0350": {
+   "piste : 0.2.351 avant la correction du verre": {
+    "image": {
+     "signe": -0.0151,
+     "absolu": 0.0395
+    },
+    "habitacle": {
+     "signe": 0.0177,
+     "absolu": 0.0365
+    },
+    "sombres": {
+     "signe": 0.0262,
+     "absolu": 0.027
+    },
+    "glace": {
+     "signe": 0.0287,
+     "absolu": 0.0381
+    }
+   },
+   "piste : 0.2.351": {
+    "image": {
+     "signe": -0.0154,
+     "absolu": 0.0394
+    },
+    "habitacle": {
+     "signe": 0.0169,
+     "absolu": 0.0363
+    },
+    "sombres": {
+     "signe": 0.0259,
+     "absolu": 0.0267
+    },
+    "glace": {
+     "signe": 0.0247,
+     "absolu": 0.0373
+    }
+   },
+   "pluie : 0.2.351 avant la correction du verre": {
+    "image": {
+     "signe": -0.005,
+     "absolu": 0.015
+    },
+    "habitacle": {
+     "signe": 0.0095,
+     "absolu": 0.0137
+    },
+    "sombres": {
+     "signe": 0.0048,
+     "absolu": 0.0058
+    },
+    "glace": {
+     "signe": 0.0112,
+     "absolu": 0.0137
+    }
+   },
+   "pluie : 0.2.351": {
+    "image": {
+     "signe": -0.0054,
+     "absolu": 0.0152
+    },
+    "habitacle": {
+     "signe": 0.0084,
+     "absolu": 0.0141
+    },
+    "sombres": {
+     "signe": 0.0043,
+     "absolu": 0.0059
+    },
+    "glace": {
+     "signe": 0.006,
+     "absolu": 0.0156
+    }
+   },
+   "piste, halo coupé dans les deux versions": {
+    "image": {
+     "signe": -0.0033,
+     "absolu": 0.0086
+    },
+    "habitacle": {
+     "signe": 0.0044,
+     "absolu": 0.007
+    },
+    "sombres": {
+     "signe": 0.0037,
+     "absolu": 0.0051
+    },
+    "glace": {
+     "signe": 0.0058,
+     "absolu": 0.0113
+    }
+   },
+   "piste : 0.2.351, halo à la force 0,5": {
+    "image": {
+     "signe": -0.0259,
+     "absolu": 0.0401
+    },
+    "habitacle": {
+     "signe": 0.0034,
+     "absolu": 0.029
+    },
+    "sombres": {
+     "signe": 0.0164,
+     "absolu": 0.0174
+    },
+    "glace": {
+     "signe": 0.0094,
+     "absolu": 0.0274
+    }
+   },
+   "piste : 0.2.351, halo à la force 0,25": {
+    "image": {
+     "signe": -0.0319,
+     "absolu": 0.0409
+    },
+    "habitacle": {
+     "signe": -0.0049,
+     "absolu": 0.0256
+    },
+    "sombres": {
+     "signe": 0.0104,
+     "absolu": 0.0116
+    },
+    "glace": {
+     "signe": 0.0004,
+     "absolu": 0.0238
+    }
+   },
+   "piste : 0.2.351, halo coupé": {
+    "image": {
+     "signe": -0.0389,
+     "absolu": 0.0431
+    },
+    "habitacle": {
+     "signe": -0.0153,
+     "absolu": 0.0246
+    },
+    "sombres": {
+     "signe": 0.0024,
+     "absolu": 0.006
+    },
+    "glace": {
+     "signe": -0.0105,
+     "absolu": 0.0241
+    }
+   }
+  },
+  "note": "halo coupé dans les deux versions, l’image de 0.2.351 suit celle de 0.2.350 (écart moyen 0,0086) ; l’écart restant vient du halo Dual-Kawase de FERRO 0.3.39, en radiance avant la courbe (documenté par FERRO), qui éclaircit les zones sombres. Aucune force ne recolle partout : la force 1 (défaut de FERRO) donne le plus petit écart sur l’image entière."
+ },
+ "suite": {
+  "build": "cf3d31137e46d915",
+  "tests": 256,
+  "echecs": 47,
+  "echecsDe0350": 47,
+  "nouveaux": [],
+  "resolus": [],
+  "note": "chaque fichier de verifications/ lancé seul par node (limite 900 s), code de sortie relevé ; comparé à la liste des échecs de 0.2.350 relevée de la même façon"
+ }
+}

@@ -1,6 +1,6 @@
 {
   "format": "ferro-lock",
-  "version": "0.3.36",
+  "version": "0.3.40",
   "reference": "M4D135/FERRO:src/ferro",
   "game": "bitume",
   "modules": [
@@ -12,22 +12,22 @@
     {
       "id": "render",
       "path": "src/moteur/renderer.js",
-      "sha256": "d0cb91685de8ddede5cc3594b5b924adcc4e724fd347b6e745fadec5f7f07403"
+      "sha256": "d17470a7a278bae3aba8bd1c7f07e18b68fa1fdbb75e3e4000fb4ebef04e5ed3"
     },
     {
       "id": "webgpu-shaders",
       "path": "src/ferro/webgpu-shaders.js",
-      "sha256": "b34a94f105d59db958d821ce77f6114763b2953acbca41fde2e60c9cc99a28c4"
+      "sha256": "7ffa5c531964450fb30b2324489cf6263b9d81714f50354725bbf3303f87120a"
     },
     {
       "id": "webgpu",
       "path": "src/ferro/webgpu-renderer.js",
-      "sha256": "e5cb0234348445bd0bdbea5c94d6ec3cf0986e861a3c8a6970dfc58f647da6e7"
+      "sha256": "0521c1735276c4c5dddba68e33f8a9bb089558e06b11efc1b646d25e67dee071"
     },
     {
       "id": "backends",
       "path": "src/ferro/backends.js",
-      "sha256": "769e607b8349aa47bae32a8ef9f4747267119de49e7b057c874294049da9ccea"
+      "sha256": "3d34742923f9dbcf112475e75b9ef7b01ab8e9a4107456a859987b962ab7eb7b"
     },
     {
       "id": "geometry",
@@ -37,7 +37,7 @@
     {
       "id": "materials",
       "path": "src/ferro/materials.js",
-      "sha256": "fd1789bd21ec43d4cd028d3ebffdb490e5bfe53d8b73fa0f7bdbd44ce7d2a954"
+      "sha256": "ac9ccfb1ca72cc5ecf476c431b5031a21a5975a0cac9bd174d56b30a1a24a0f0"
     },
     {
       "id": "vehicle-dynamics",
@@ -62,7 +62,7 @@
     {
       "id": "physics",
       "path": "src/ferro/physics.js",
-      "sha256": "9a6e3dbd9115b13f6f5daf9d2843f6ffa219f0b2d4c53d2106ac9dec769f175a"
+      "sha256": "0715ecbf461f3f7fc447549656b5ec22cb57a7f351bb52fa5cf4b8003ba88bf3"
     },
     {
       "id": "destruction",
@@ -112,7 +112,7 @@
     {
       "id": "render-shared",
       "path": "src/ferro/render-shared.js",
-      "sha256": "ba359732bf26a451f6a7d14eeb392741a6e0c19c6470407dcc75bd00a541f8dc"
+      "sha256": "933f7b79b34716de2c2b35e8a277f79f0af06b54972fbdf30bcb942074913e84"
     },
     {
       "id": "imuse",
@@ -177,7 +177,7 @@
     {
       "id": "host",
       "path": "src/ferro/engine.js",
-      "sha256": "9ce8894af673d3e6a0173b101d7a90707efbb16adff720a062befe3e9ccc155f"
+      "sha256": "119d2219b0ce9670e72e475a82808b3849973b928d56cec099a8667be2426658"
     }
   ]
 }

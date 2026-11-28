@@ -3,6 +3,52 @@
 <!-- bitume-reprise-actuelle-debut -->
 ## Par où reprendre
 
+**28 novembre (après-midi) — FERRO 0.3.40 installé : 0.2.351 poussée sur `origin/main` (commit « 0.2.351 : FERRO 0.3.40… »), non déployée. En ligne : toujours 0.2.350.**
+- **Moteur** : FERRO 0.3.40 (`M4D135/FERRO` `e5b0181`) remplace 0.3.36 par `tools/install-ferro.py` ; `tools/check-ferro-lock.py` :
+  35 modules conformes. Depuis 0.3.39 la scène WebGPU est en radiance linéaire et `post.wgsl` compose l'image une seule fois
+  (courbe, vignettage, halo Dual-Kawase, tramage). BITUME garde `tonemap: 'ferro'` (moteur principal et rétroviseurs) : la
+  courbe de 0.3.38 au pas près.
+- **Programmes de BITUME passés en radiance** :
+  - herbe (`src/herbe-gpu.js`) et public (`src/public-shaders.js`) : plus de courbe ni de vignettage, brume gardée ;
+  - verre (`src/saute-vent-webgpu.js`) : ses couleurs restent réglées en valeurs affichées. Le mélange matériel
+    « one, src-alpha » donne a + m·fond en radiance, ajusté pour redonner le mélange affiché de 0.3.38 à 0,04 près
+    sous des fonds de 0,03 à 0,6. Le verre ne touche plus l'alpha de la scène, qui porte le poids des reflets d'écran ;
+  - la pluie et la visière dessinent sur leurs propres toiles : inchangées.
+- **Correctif du public des rétroviseurs** (`src/public-gpu.js`) : le programme du public est commun au périphérique, que le
+  rétroviseur partage avec le moteur principal, et son pipeline ne se distinguait que par le nombre d'échantillons. Depuis
+  0.3.39 la scène principale est en `rgba16float` (reflets d'écran) et celle du rétroviseur en `rg11b10ufloat` : chaque image
+  du rétroviseur où le public était visible était refusée par WebGPU (commande invalide, image perdue). Le pipeline suit
+  maintenant le format de la vue ; contrôle 8 bis de `verifications/public.test.mjs` (il échoue sur l'ancien code).
+- **Qualification** (rapport `docs/reprise/rapports/FERRO-0340-0351-MAC.json`) :
+  - suite complète : 256 fichiers, 47 en échec, les mêmes qu'en 0.2.350 ;
+  - Chrome Mac (Apple Metal-3, WebGPU, 1280×720, high) : 60 images/s sur les neuf circuits en passant un saut, pire
+    image 16,8 ms, aucune erreur. Build qualifié `cd50800a` ; le build publié `cf3d3113` n'en diffère que par un
+    commentaire et par l'empreinte des sources (`REVISION_PISTES`, contrat de piste du jeu en ligne) ;
+  - Route sans fin sur 5,8 km, ouvrier actif : p99 16,8 ms, une seule image de 33 ms, à une bascule de fenêtre.
+    0.2.350 donne la même, sur la même graine en deux passages par version ;
+  - aucune erreur WebGPU, à sec comme sous la pluie ;
+  - pluie en 1920×1080, alternée avec 0.2.350 : 59,1 images/s en moyenne sur les neuf circuits, contre 58,3 ;
+  - temps GPU de l'image en 1920×1080 sous la pluie (ordre ABBA) : 8,0 et 9,0 ms contre 8,8 et 9,5 ms aux Eaux Dormantes,
+    11,1 et 11,7 ms contre 13,9 et 15,3 ms aux Lacets. L'image coûte moins cher au GPU qu'en 0.2.350, scène en
+    `rgba16float` comprise.
+- **Image** : halo coupé dans les deux versions, 0.2.351 suit 0.2.350 (écart moyen de luminance 0,0086). Avec le halo,
+  l'écart est de 0,039. Le halo de FERRO 0.3.39 est ajouté en radiance avant la courbe, plus large et plus doux ; FERRO
+  le documente : il « ne reproduit pas le halo gaussien de 0.3.38 ». Il éclaircit l'habitacle sombre (+0,026 dans les
+  zones sombres) et auréole la manche, les cadres des rétros et les feux.
+  - Force du halo (`bloomStrength`, à la création du moteur) : 0,5 donne +0,016 dans les zones sombres et 0,25 donne
+    +0,010, mais la force 1, défaut gardé, reste la plus proche sur l'image entière.
+  - À proposer à David avec AgX (captures `docs/reprise/rapports/ferro-0340/`).
+- **Safari** : BITUME rend en WebGPU seul, sans chemin WebGL2. Safari 27.2 n'a pas été essayé :
+  - l'automatisation à distance est désactivée ;
+  - `safaridriver` plante sur ce Mac ;
+  - la sonde du 19/11 demandait de servir la page en local.
+
+  Essai à la main par David à faire.
+- **Suite repérée** : le chrono GPU de BITUME (`mesures.js`) appelle `rendu.profile()`, absent du moteur WebGPU ;
+  `rendu.setProfiling()` et ses `samples` donnent le temps de l'image.
+- **Titre** : David, 28/11 après-midi, après quatre listes de propositions : « garde bitume pour le moment ».
+- **Déployer seulement sur un GO de David.**
+
 **28 novembre (midi) — relève du 28/11 faite, sauf le titre. En ligne : 0.2.350 (`3433896`), déployée vers 11 h 50 sur le GO de David.**
 - **En production (`https://bitume.estrasse.fr/`)** : **0.2.350** (`3433896`, sha256 `36a383165a896ad8`, salon actif). La 0.2.345
   (`d82f5e1`) reste sur amiga pour un retour arrière (commande en tête de `deposer.sh`). Déployer seulement sur un GO de David.

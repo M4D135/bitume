@@ -1274,7 +1274,15 @@
 
   // A separate translucent pass keeps smoke/steam out of depth atlases and
   // leaves the established opaque material shader unchanged.
-  const FX_VERT=VERT.replace('vWorld=rotation*(aPosition*iScale.xyz)+iPosition.xyz;',`
+  // Each edit of VERT must find its target exactly once: before 0.3.37 both edits had lost their target and FX_VERT
+  // stayed VERT in silence (no ring deformation, no grain bound on large effects).
+  function exactReplace(source,target,replacement){
+    const at=source.indexOf(target);
+    if(at<0||source.indexOf(target,at+1)>=0)throw new Error('FERRO FX_VERT : cible '+(at<0?'absente':'multiple')+' dans VERT : '+target);
+    return source.slice(0,at)+replacement+source.slice(at+target.length);
+  }
+  const FX_VERT=[
+    ['vWorld=rotation*localPosition+iPosition.xyz;',`
     vec3 particlePosition=aPosition;
     if(iPosition.w>=20.){
       float radial=length(aPosition.xz);
@@ -1282,10 +1290,13 @@
       float inner=clamp(iPosition.w-20.,0.,.999);
       particlePosition.xz*=mix(inner*.5,.5,side)/max(radial,.0001);
     }
-    vWorld=rotation*(particlePosition*iScale.xyz)+iPosition.xyz;`)
+    vWorld=rotation*(particlePosition*iScale.xyz)+iPosition.xyz;`],
     // PDR (grain) : le grain des fumées et des flammes est pris à l'échelle d'une particule de 2,6 m au plus ; au-delà
     // (colonnes de fumée, nuages de gaz vus de 300 à 900 m), il ne tombe plus sous le pixel en semis de points.
-    .replace('vSurface=vObject>.5?aPosition*iScale.xyz:vWorld;','vSurface=(vObject>.5?aPosition*iScale.xyz:vWorld)*min(1.,2.6/max(max(abs(iScale.x),abs(iScale.y)),max(abs(iScale.z),.001)));');
+    ['vSurface=vObject>.5?localPosition:vWorld;','vSurface=(vObject>.5?localPosition:vWorld)*min(1.,2.6/max(max(abs(iScale.x),abs(iScale.y)),max(abs(iScale.z),.001)));\n    vFogWeight=1.-mod(floor(iRotation.w/128.),256.)/255.;'],
+    // Poids de brouillard par instance (mesh.fog, 1 par défaut) : bits 7 à 14 des drapeaux des effets.
+    ['flat out vec4 vColor;','flat out vec4 vColor;\n  flat out float vFogWeight;']
+  ].reduce((source,[target,replacement])=>exactReplace(source,target,replacement),VERT);
   const FX_FRAG=`#version 300 es
   precision highp float;
   in vec3 vWorld;
@@ -1297,6 +1308,7 @@
   flat in float vEmission;
   flat in float vOutdoor;
   flat in vec4 vColor;
+  flat in float vFogWeight;
   uniform vec3 uEye;
   uniform vec3 uAmbient;uniform vec3 uSkyTop;uniform vec3 uSkyBottom;
   uniform vec3 uFogColor;
@@ -1333,7 +1345,7 @@
     }
     if(smoke)color*=.74+.40*grain;
     if(spark)color=mix(vec3(1.3,.10,.005),vec3(2.6,1.7,.52),smoothstep(-.25,.42,vLocal.y))*(.5+vEmission*.45);
-    float fog=1.-exp(-distanceToEye*mix(.018,uEnvironment.y,clamp(vOutdoor,0.,1.)));
+    float fog=(1.-exp(-distanceToEye*mix(.018,uEnvironment.y,clamp(vOutdoor,0.,1.))))*vFogWeight;
     color=mix(color,uFogColor,min(.86,fog));
     color=pow(max(color/(color+vec3(.76)),vec3(0.)),vec3(.4545));
     fragColor=vec4(color,alpha);
@@ -2042,6 +2054,12 @@
     const object=mesh.overlay||mesh.surface==='object'||objects&&mesh.surface!=='architecture';
     return (mesh.overlay?1:0)+(outdoorMesh(mesh,environment)?2:0)+(object?4:0)+(mesh.windResponsive===true?8:0)+(mesh.groundCover===true?16:0);
   }
+  // Effects only: bits 7-14 carry the fog reduction (mesh.fog, weight 1 by default leaves the flags unchanged), bit 15
+  // the sun lighting of a bulged implicit sphere (mesh.lit, WebGPU). Both stay above the bits read by VERT.
+  function effectFlags(mesh,environment){
+    const fog=Number.isFinite(mesh.fog)?Math.max(0,Math.min(1,mesh.fog)):1;
+    return surfaceFlags(mesh,environment,true)+128*Math.round((1-fog)*255)+(mesh.lit===true?32768:0);
+  }
   function instanceDataW(mesh){return mesh.groundCover===true?(Number.isFinite(mesh.groundShear)?mesh.groundShear:0):(mesh.emissive||0);}
   function opaqueOpacity(mesh){return Number.isFinite(mesh.opacity)?Math.max(0,Math.min(1,mesh.opacity)):1;}
   function opaqueColorMarker(mesh){const opacity=opaqueOpacity(mesh);return opacity===1?(mesh.color?1:0):mesh.color?2+opacity:-1-opacity;}
@@ -2122,7 +2140,7 @@
       if(last&&last.name===name)last.count++;else groups.push({name,offset:offset*4,count:1});
       const p=mesh.p,s=mesh.s||[1,1,1],r=mesh.r||[0,0,0],c=mesh.color||[.5,.5,.5];
       const material=mesh.window?18:mesh.shape==='ring'&&Number.isFinite(mesh.innerRatio)?20+Math.min(.999,Math.max(0,mesh.innerRatio)):mesh.fxPriority==='hazard'?16:mesh.fxFire?14:mesh.fxSmoke?15:mesh.fxSpark?17:7;
-      values[offset]=p[0];values[offset+1]=p[1];values[offset+2]=p[2];values[offset+3]=material;values[offset+4]=s[0];values[offset+5]=s[1];values[offset+6]=s[2];values[offset+7]=mesh.emissive||0;values[offset+8]=r[0];values[offset+9]=r[1];values[offset+10]=r[2];values[offset+11]=surfaceFlags(mesh,environment,true);values[offset+12]=c[0];values[offset+13]=c[1];values[offset+14]=c[2];values[offset+15]=Math.min(1,Math.max(0,mesh.alpha));offset+=16;
+      values[offset]=p[0];values[offset+1]=p[1];values[offset+2]=p[2];values[offset+3]=material;values[offset+4]=s[0];values[offset+5]=s[1];values[offset+6]=s[2];values[offset+7]=mesh.emissive||0;values[offset+8]=r[0];values[offset+9]=r[1];values[offset+10]=r[2];values[offset+11]=effectFlags(mesh,environment);values[offset+12]=c[0];values[offset+13]=c[1];values[offset+14]=c[2];values[offset+15]=Math.min(1,Math.max(0,mesh.alpha));offset+=16;
     }
     return {values,groups};
   }
@@ -2143,7 +2161,7 @@
       for(const record of order){const mesh=record.mesh,name=mesh.shape||'sphere',last=groups[groups.length-1];
         if(last&&last.name===name)last.count++;else{const group=groupRecords[groups.length]||(groupRecords[groups.length]={name:'',offset:0,count:0});group.name=name;group.offset=offset*4;group.count=1;groups.push(group);}
         const p=mesh.p,s=mesh.s||one,r=mesh.r||zero,c=mesh.color||gray,material=mesh.window?18:mesh.shape==='ring'&&Number.isFinite(mesh.innerRatio)?20+Math.min(.999,Math.max(0,mesh.innerRatio)):mesh.fxPriority==='hazard'?16:mesh.fxFire?14:mesh.fxSmoke?15:mesh.fxSpark?17:7;
-        out[offset]=p[0]-origin[0];out[offset+1]=p[1]-origin[1];out[offset+2]=p[2]-origin[2];out[offset+3]=material;out[offset+4]=s[0];out[offset+5]=s[1];out[offset+6]=s[2];out[offset+7]=mesh.emissive||0;out[offset+8]=r[0];out[offset+9]=r[1];out[offset+10]=r[2];out[offset+11]=surfaceFlags(mesh,environment,true);out[offset+12]=c[0];out[offset+13]=c[1];out[offset+14]=c[2];out[offset+15]=Math.min(1,Math.max(0,mesh.alpha));offset+=16;
+        out[offset]=p[0]-origin[0];out[offset+1]=p[1]-origin[1];out[offset+2]=p[2]-origin[2];out[offset+3]=material;out[offset+4]=s[0];out[offset+5]=s[1];out[offset+6]=s[2];out[offset+7]=mesh.emissive||0;out[offset+8]=r[0];out[offset+9]=r[1];out[offset+10]=r[2];out[offset+11]=effectFlags(mesh,environment);out[offset+12]=c[0];out[offset+13]=c[1];out[offset+14]=c[2];out[offset+15]=Math.min(1,Math.max(0,mesh.alpha));offset+=16;
       }return batch;
     };
   }
@@ -2975,8 +2993,13 @@
   function settings(options){
     const o=options||{},unit=(v,d)=>Number.isFinite(v)?Math.max(0,Math.min(1,v)):d;
     const bloom=Array.isArray(o.bloomThreshold)?[unit(o.bloomThreshold[0],.56),unit(o.bloomThreshold[1],.86)]:[.56,.86];
+    // WebGPU 0.3.39 (LOT 0.3) : tonemap unique de post.wgsl (agx par défaut, aces, ou ferro = courbe de 0.3.38),
+    // exposition relative à son calibrage, force du halo linéaire et tramage de sortie. WebGL2 ne lit pas ces réglages.
+    const tonemap=['ferro','agx','aces'].includes(o.tonemap)?o.tonemap:'agx';
     return {reflections:o.reflections!==false,msaa:o.msaa===4, // BITUME : SSR optionnel ; aucune cible miroir par défaut.
-      shadowMapScale:o.shadowMapScale===2?2:1,vignette:unit(o.vignette,.59),bloom:bloom[1]>bloom[0]?bloom:[.56,.86]};
+      shadowMapScale:o.shadowMapScale===2?2:1,vignette:unit(o.vignette,.59),bloom:bloom[1]>bloom[0]?bloom:[.56,.86],
+      tonemap,exposure:Number.isFinite(o.exposure)&&o.exposure>0?Math.min(16,o.exposure):1,
+      bloomStrength:Number.isFinite(o.bloomStrength)?Math.max(0,Math.min(4,o.bloomStrength)):1,dither:o.dither!==false};
   }
 
   // FERRO 0.3.11 : shader du monde avec l'option ombresPhoto. Chaque ancre existe une seule fois dans FRAG ; sans
@@ -3498,8 +3521,8 @@
       if(profiler){profiler.dispose();profiler=window.FGPUProfile.create(gl,profileOptions);}
       fskyProgram=null;fskyBound=null;fskyCache={};skyFrame={};fogCaches.clear();screenCaches.clear();
       // skyFogShader lit fskyProgram : le marquer avant de composer les sources ; le programme réel sort du lien groupé.
-      // FX_VERT est textuellement VERT (ses remplacements ne trouvent pas leur cible) : monde, profondeur et effets
-      // partagent donc un seul shader de sommets compilé, sans changer l'image.
+      // FX_VERT diffère de VERT depuis 0.3.37 (anneaux, grain borné, poids de brouillard) : monde et profondeur
+      // partagent un shader de sommets compilé, les effets ont le leur.
       const advanced=!!(options.advancedSky&&window.FSky);fskyProgram=advanced;
       try{
         const pairs=[[POST_VERT,SSR_FRAG],[overlayVertex(VERT),reflectionShader(screenShader('world',skyFogShader(worldFrag)))],[overlayVertex(VERT),DEPTH_FRAG],[POST_VERT,screenShader('post',postFrag)],[POST_VERT,screenShader('sky',SKY_FRAG)],[overlayVertex(FX_VERT),screenShader('fx',skyFogShader(FX_FRAG))]];
@@ -5018,7 +5041,7 @@
       alpha:undefined,opacity:1,additive:undefined,outdoor:undefined,actorPart:undefined,actorLod:0,
       actorScale:undefined,structural:false,debrisId:undefined,sourceId:undefined,material:undefined,
       effectPart:'',fxFire:false,fxSmoke:false,fxSpark:false,fxPriority:undefined,ground:undefined,
-      innerRatio:undefined,region:undefined,windResponsive:false,groundCover:false,groundShear:0};
+      innerRatio:undefined,region:undefined,windResponsive:false,groundCover:false,groundShear:0,fog:undefined,lit:false};
   }
   globalThis.FRender={create,foliageTriangles,forme,shared,mesh,materials:MATERIALS};
   if(typeof window!=='undefined')window.FRender=globalThis.FRender;

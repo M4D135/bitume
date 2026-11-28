@@ -85,9 +85,13 @@
         }
         r.groupe = device.createBindGroup({ layout: prog.layout, entries }); r.atlas = atlas;
       }
-      const count = ombre ? 1 : gpu.samples || 1;
-      if (!prog.pipelines.has(count)) prog.pipelines.set(count, device.createRenderPipeline({ ...prog.description, multisample: { count } }));
-      pass.setPipeline(prog.pipelines.get(count)); pass.setBindGroup(0, r.groupe);
+      // Le programme est commun au périphérique, que le rétroviseur partage avec le moteur principal, mais chaque vue a
+      // sa cible : depuis FERRO 0.3.39, rgba16float pour la scène principale (reflets d'écran) et rg11b10ufloat pour le
+      // rétroviseur. Le pipeline suit donc le format de la vue qui dessine, en plus de son nombre d'échantillons.
+      const count = ombre ? 1 : gpu.samples || 1, clePipeline = ombre ? 'ombre' : gpu.format + '/' + count;
+      if (!prog.pipelines.has(clePipeline)) prog.pipelines.set(clePipeline, device.createRenderPipeline(ombre ? { ...prog.description, multisample: { count } }
+        : { ...prog.description, fragment: { ...prog.description.fragment, targets: [{ format: gpu.format }] }, multisample: { count } }));
+      pass.setPipeline(prog.pipelines.get(clePipeline)); pass.setBindGroup(0, r.groupe);
       pass.setVertexBuffer(0, commun.sommets); pass.setVertexBuffer(1, r.instances); pass.setIndexBuffer(commun.indices, 'uint32');
     }
     function liberer() {

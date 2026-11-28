@@ -3454,7 +3454,7 @@
     if (retro.principal !== principal) { libererRenduSecondaire(); retro.principal = principal; }
     if (retro.rendu) return Promise.resolve(retro.rendu);
     retro.attente = window.FRenderWebGPU.create($('retro-rendu'), { sharedGpu: principal.gpu, indexRegisteredShapes: true,
-      msaa: 0, shadowMapScale: 1, reflections: false, sea: false, overlayLighting: 'world' }).then(moteur => {
+      msaa: 0, shadowMapScale: 1, reflections: false, sea: false, overlayLighting: 'world', tonemap: 'ferro' }).then(moteur => {
       if (principal !== rendu || principal !== retro.principal || principal.stats.deviceLost) { moteur.dispose(); return null; }
       try {
         moteur.resize(Math.min(window.devicePixelRatio || 1, 1.5));
@@ -7286,7 +7286,11 @@
     try {
       // ombres photo (src/ombres.js) : tuile de 512² ; à 1024², des dents rampent sous la casquette de la planche.
       // Bloc PCSS compilé seulement si la pénombre variable sert (B.ombres.reglages.pcssFine) : shader plus court sinon.
-      const optionsRendu = { indexRegisteredShapes: true, cullRigidOverlay: true, cameraRelativeOverlay: true, cullRigidSunCasters: true, msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512, pcss: true } };
+      // FERRO 0.3.39 : la scène WebGPU est en radiance linéaire, composée une seule fois par post.wgsl. Le tonemap
+      // « ferro » garde la courbe de 0.3.38 (BITUME rend en WebGPU seul, sous Chrome comme sous Safari) ; seul le halo,
+      // plus large et ajouté en radiance, éclaircit un peu les zones sombres. AgX, défaut du moteur, et la force du
+      // halo (bloomStrength, 1 par défaut) se proposent à David à part.
+      const optionsRendu = { indexRegisteredShapes: true, cullRigidOverlay: true, cameraRelativeOverlay: true, cullRigidSunCasters: true, msaa: 4, shadowMapScale: 2, reflections: true, sea: false, overlayLighting: 'world', ombresPhoto: { tuile: 512, pcss: true }, tonemap: 'ferro' };
       // L'interface garde sa définition CSS ; seule la scène Xbox est bornée
       // à 720p, y compris sur TV 4K et après redimensionnement. FSurface applique
       // ce budget avant l'allocation des cibles WebGPU, sans retouche de FERRO.

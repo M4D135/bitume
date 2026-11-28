@@ -14,5 +14,7 @@ function layer(kind){const h=new Float32Array(SIZE*SIZE),seed=kind?731:135;
   }ctx.putImageData(data,0,0);images[key]=canvas;
  }return images;
 }
-G.FMaterials=Object.freeze({create(){return {layers:[],async load(){this.layers=[layer(0),layer(1)];return this.layers;}};}});
+// FERRO 0.3.40 : sous WebGPU, boot_bake.wgsl cuit cette recette (ferro-pbr-1) sur le GPU sans appeler load() ; les
+// canvas ne servent plus qu'à WebGL2 et aux hôtes qui lisent les images. Changer une constante ici change la recette.
+G.FMaterials=Object.freeze({recipe:'ferro-pbr-1',create(){return {procedural:'ferro-pbr-1',layers:[],async load(){this.layers=[layer(0),layer(1)];return this.layers;}};}});
 })(globalThis);

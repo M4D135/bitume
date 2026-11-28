@@ -196,13 +196,13 @@ fn ombrage(r:vec3f)->f32 {
   let pigment=mix(teinte.rgb*.88,teinte.rgb*vec3f(1.38,1.15,.70),t*(.35+.65*rnd.y));
   let eclairage=u.ambiance.rgb+ombre*u.direct.rgb*(max(.0,dot(normale,l))+vec3f(1.,.78,.41)*transmission);
   let lin=mix(pigment*eclairage*mix(.58,1.18,t),u.brume.rgb,min(.86,1.-exp(-dist*u.brume.w)));
-  v.couleur=pow(max(lin/(lin+vec3f(.76)),vec3f(0.)),vec3f(.4545));
+  // FERRO 0.3.39 : la scène WebGPU est en radiance linéaire ; courbe d'affichage et vignettage se font une seule fois
+  // dans post.wgsl. L'herbe rend donc sa radiance, brume comprise.
+  v.couleur=max(lin,vec3f(0.));
   return v;
 }
 @fragment fn fs(v:V)->@location(0) vec4f {
-  let scr=v.p.xy*u.ecran.xy;
-  let vig=pow(max(0.,16.*scr.x*scr.y*(1.-scr.x)*(1.-scr.y)),.13);
-  return vec4f(v.couleur*mix(u.ecran.z,1.,vig),1.);
+  return vec4f(v.couleur,1.);
 }
 `;
   function creer(rendu, decor) {
@@ -281,7 +281,7 @@ fn ombrage(r:vec3f)->f32 {
         }
         u[58]=n;
         u[60]=1/Math.max(1,v.largeur); u[61]=1/Math.max(1,v.hauteur);
-        u[62]=rendu.gpu.vignette ?? .59; u[63]=0;
+        u[62]=rendu.gpu.vignette ?? .59; u[63]=0; // vignettage plus lu depuis FERRO 0.3.39 (post.wgsl le fait seul)
         device.queue.writeBuffer(uniform,0,u);
         if (ombre!==v.ombre.textureView) {
           ombre=v.ombre.textureView;

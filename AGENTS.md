@@ -493,10 +493,19 @@ Au premier lancement d’une version, mesurer les performances sur le périphér
 
 - Titre : « `BITUME` c'est bof ». Le nouveau nom parle de conduite, de route, de volant et de pilotage, pas de la
   seule F1 : « rester sur juste notieon de conduite route volant etc pilotage, car je pense plus tard mettre d'autres
-  vehicules que des vehicules de F1 ». Choix en attente parmi les propositions du 28/11 : TRAJECTOIRE,
-  CONTRE-BRAQUAGE, TALON-POINTE, POINT DE CORDE, LACETS, GOMME, RUPTEUR, TOUR LANCÉ. Le changement ne touchera que le
-  titre visible (`<title>`, description, `.marque`, `VERSION.json` « titre », menus) ; `localStorage` `bitume.*`,
-  `globalThis.BITUME`, `dist/bitume.html` et `deposer.sh` gardent leur nom.
+  vehicules que des vehicules de F1 ». Quatre listes lui ont été proposées le 28/11 :
+  - TRAJECTOIRE, CONTRE-BRAQUAGE, TALON-POINTE, POINT DE CORDE, LACETS, GOMME, RUPTEUR, TOUR LANCÉ ;
+  - PRISE DIRECTE, PLEIN RÉGIME, COUP DE VOLANT, ÉPINGLE, LIGNE BLANCHE, ASPIRATION, VIRÉE, PLEINS PHARES,
+    MOTEUR !, AIGUILLE, DÉPARTEMENTALE, RÉTRO ;
+  - TAILLE LA ROUTE, PIED AU PLANCHER, TANGENTE, DERNIER VIRAGE, RUBAN, SERPENTIN, COURBES, ROUTE LIBRE, DÉRIVE,
+    SILLAGE, DIX HEURES DIX, DOUBLE DÉBRAYAGE ;
+  - ALLURE, FOUGUE, VOLANT, GRISERIE, PLEIN POT, TOUTE BERZINGUE, EN VOITURE !, CAVALCADE, ROUTE NAPOLÉON,
+    ROUTE DES CRÊTES, ZÉRO À CENT, CHEVAUCHÉE.
+
+  Ces noms ne sont pas à reproposer. Puis David a tranché : « garde bitume pour le moment ». Le titre reste
+  BITUME ; ne pas rouvrir le sujet sans lui. Si le nom change un jour, le changement ne touchera que le titre visible
+  (`<title>`, description, `.marque`, `VERSION.json` « titre », menus). `localStorage` `bitume.*`,
+  `globalThis.BITUME`, `dist/bitume.html` et `deposer.sh` garderont leur nom.
 - Futures voitures : une 205 GTI et une « Renalt 5 GT 3 » (sans doute la R5 GT Turbo, à faire confirmer). David :
   « la 205 GTI et La R5 c'est pas à toi de les modéliser, chagpt s'en charge et les posera sur le dépot git ».
   Aucun agent ne modélise ces voitures ; leur intégration attend que leurs modèles soient sur le dépôt et que

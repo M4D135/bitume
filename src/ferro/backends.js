@@ -53,6 +53,8 @@
    }else fallbackReason=supported?'Backend WebGPU non chargé.':'WebGPU indisponible dans ce navigateur.';
   }
   if(!gl)throw new Error('Backend WebGL2 indisponible.');
+  // 0.3.40 : WebGL2 dessine encore les couches d'une banque non chargée (FMaterials), WebGPU les cuit sur le GPU.
+  const bank=options.materials;if(bank&&!bank.layers?.length&&typeof bank.load==='function')await bank.load();
   const renderer=gl(canvas,options);
   if(!renderer?.gl||renderer.stats?.backend!=='webgl2'){release(renderer);throw new Error('Un navigateur avec WebGPU ou WebGL2 est nécessaire.');}
   renderer.stats.requestedBackend=requested;renderer.stats.fallbackReason=fallbackReason;

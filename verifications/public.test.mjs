@@ -533,6 +533,37 @@ function simuler(fps, duree, ambianceDe, depart) {
 }
 
 // ------------------------------------------------------------------------------------------------------------------
+// 8 bis. Deux vues sur un même périphérique, comme le moteur principal et le rétroviseur (sharedGpu) : depuis FERRO
+// 0.3.39 leurs cibles diffèrent (rgba16float avec reflets, rg11b10ufloat sans). Chaque vue dessine avec un pipeline au
+// format et au nombre d'échantillons de sa propre cible, et non ceux de la première vue créée sur le périphérique.
+// ------------------------------------------------------------------------------------------------------------------
+{
+  const crees = [];
+  const dispositif = Object.fromEntries(['Buffer', 'ShaderModule', 'Texture', 'BindGroup', 'BindGroupLayout', 'PipelineLayout', 'Sampler'].map(type =>
+    ['create' + type, () => ({ createView: () => ({}), destroy: () => {} })]));
+  dispositif.createRenderPipeline = d => { const p = { d }; crees.push(p); return p; };
+  dispositif.queue = { writeBuffer: () => {}, writeTexture: () => {} };
+  let courant = null;
+  const pass = { setPipeline: p => { courant = p; }, setBindGroup() {}, setVertexBuffer() {}, setIndexBuffer() {}, drawIndexed() {} };
+  const moteur = (format, samples) => ({ gpu: { device: dispositif, format, depthFormat: 'depth32float', samples }, stats: { contextLost: false } });
+  const vueP = P.vue(moteur('rgba16float', 4), pub0), vueR = P.vue(moteur('rg11b10ufloat', 1), pub0, { niveauMin: 1, ombre: false });
+  const t = pub0.gradins.tribunes[1], oeil = [t.x - Math.sin(t.a) * -7, t.y + 2, t.z + Math.cos(t.a) * -7], avant = [-Math.sin(t.a) * -1, 0, Math.cos(t.a) * -1];
+  const v = { vp: new Float32Array(16), oeil, avant, droite: [-avant[2], 0, avant[0]], haut: [0, 1, 0], tangente: .577, focale: 1121, largeur: 1390, hauteur: 1295,
+    ombre: { matrice: new Float32Array(16), textureView: {}, active: true }, lumieres: { nombre: 0 } };
+  const cible = vue => {
+    courant = null; P.animer(pub0, 0, [], 0, { vert: true });
+    assert.ok(vue.fx.gpuColor(pass, v) && courant, 'la vue dessine le public');
+    return courant.d.fragment.targets[0].format + '/' + courant.d.multisample.count;
+  };
+  assert.equal(cible(vueP), 'rgba16float/4', 'moteur principal');
+  assert.equal(cible(vueR), 'rg11b10ufloat/1', 'rétroviseur : sa propre cible');
+  assert.equal(cible(vueP), 'rgba16float/4', 'moteur principal, après le rétroviseur');
+  assert.equal(crees.length, 2, 'un pipeline par cible, créé une fois');
+  vueP.liberer(); vueR.liberer();
+  rapport.vuesPartagees = { pipelines: crees.length };
+}
+
+// ------------------------------------------------------------------------------------------------------------------
 // 9. Aucune allocation par image (processus fils, ramasse-miettes observé)
 // ------------------------------------------------------------------------------------------------------------------
 {
