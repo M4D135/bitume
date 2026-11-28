@@ -3,6 +3,25 @@
 <!-- bitume-reprise-actuelle-debut -->
 ## Par où reprendre
 
+**28 novembre (fin d'après-midi) — essai d'AgX : 0.2.352 poussée sur `origin/main` (commit « 0.2.352 : essai d'AgX… »), non déployée. En ligne : toujours 0.2.350.**
+- **Demande de David** : « Essayer AgX », devant les captures ferro et AgX de 0.2.351. L'adresse du jeu suivie de
+  `?rendu=agx` rend avec AgX (choix fait dans `demarrer()` de `src/jeu.js` ; les rétroviseurs prennent le tonemap du moteur
+  principal). Sans paramètre, rien ne change : courbe `ferro`, image identique au pixel près à 0.2.351 sur les captures à horloge commandée.
+- **Verre du saute-vent** (`src/saute-vent-webgpu.js`) : il suit la courbe et l'exposition de son moteur (`rendu.stats`).
+  AgX y est retourné exactement (matrices de FERRO, quatre pas de Newton) ; écart à la cible affichée de 0,039 au plus.
+  Images rendues verre coupé : aucun voile sous AgX (excès nul en moyenne, 0,006 au pire sur ~14 400 pixels de verre
+  par image). Le Spark avait cru voir un voile laiteux sur la bulle : la mesure ne le confirme pas.
+- **Qualification AgX** (Chrome Mac, Apple Metal-3, WebGPU, PhysX, 1280×720, high) : 60 images/s sur les neuf circuits,
+  pire image 16,8 ms, aucune erreur ; Route sans fin sur 5,8 km, p99 16,8 ms, aucune image lente. Suite : 256 fichiers,
+  47 en échec, les mêmes qu'en 0.2.350.
+  Rapport : `docs/reprise/rapports/AGX-0352-MAC.json` ; captures ferro | AgX : `docs/reprise/rapports/agx-0352/`.
+- **Image** : AgX assombrit les zones sombres (−0,033 contre ferro, au sec) et compense ainsi le halo de FERRO 0.3.39 dans
+  l'habitacle. Contre 0.2.350 au sec : habitacle +0,001 et zones sombres −0,005 (ferro : +0,017 et +0,026). Sous la
+  pluie, AgX est plus sombre que 0.2.350 (zones sombres −0,031).
+- **Essai par David** : `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" "file:///Users/david/Projects/bitume/dist/bitume.html?rendu=agx"`,
+  et sans `?rendu=agx` pour comparer ; en ligne après un déploiement : `https://bitume.estrasse.fr/?rendu=agx`.
+- **Reste** : son choix (AgX par défaut, ou ferro) ; déployer seulement sur son GO.
+
 **28 novembre (après-midi) — FERRO 0.3.40 installé : 0.2.351 poussée sur `origin/main` (commit « 0.2.351 : FERRO 0.3.40… »), non déployée. En ligne : toujours 0.2.350.**
 - **Moteur** : FERRO 0.3.40 (`M4D135/FERRO` `e5b0181`) remplace 0.3.36 par `tools/install-ferro.py` ; `tools/check-ferro-lock.py` :
   35 modules conformes. Depuis 0.3.39 la scène WebGPU est en radiance linéaire et `post.wgsl` compose l'image une seule fois

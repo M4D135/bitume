@@ -1,0 +1,188 @@
+{
+ "version": "0.2.352",
+ "date": "2026-11-28",
+ "build_sha256": "105820bdb0f0f0d768ebfc71a1041baf563892945873da014ce692d799cdfddb",
+ "base": "d6a9c75 (0.2.351)",
+ "buildMesure": {
+  "sha256": "60333974523500cf",
+  "note": "banc, captures et contrôle du verre faits sur ce build ; le build publié n’en diffère que par l’endroit où le tonemap est choisi (dans demarrer() plutôt qu’en constante du fichier, que l’essai autoconfig-integration n’évalue pas). Captures de la piste refaites sur le build publié, en ferro et en AgX : identiques au pixel près ; réglages du moteur relevés à nouveau sur le build publié."
+ },
+ "demande": "David, 28/11 après-midi, devant les captures ferro et AgX de 0.2.351 : « Essayer AgX »",
+ "essai": "adresse du jeu suivie de ?rendu=agx ; sans paramètre, tonemap ferro comme en 0.2.351",
+ "machine": "Mac, Chrome sans interface, Apple Metal-3, WebGPU, PhysX (--angle native)",
+ "moteur": [
+  {
+   "meteo": "sec",
+   "circuit": 0,
+   "tonemap": "agx",
+   "exposure": 0.870119,
+   "sceneFormat": "rgba16float",
+   "bloomLevels": 4,
+   "errorEvents": 0,
+   "deviceLost": false,
+   "erreursPage": 0
+  },
+  {
+   "meteo": "pluie",
+   "circuit": 0,
+   "tonemap": "agx",
+   "exposure": 0.870119,
+   "sceneFormat": "rgba16float",
+   "bloomLevels": 4,
+   "errorEvents": 0,
+   "deviceLost": false,
+   "erreursPage": 0
+  },
+  {
+   "sansParametre": true,
+   "meteo": "sec",
+   "tonemap": "ferro",
+   "exposure": 1,
+   "errorEvents": 0,
+   "erreursPage": 0
+  }
+ ],
+ "qualif720": {
+  "url": "dist/bitume.html?rendu=agx",
+  "taille": "1280×720",
+  "qualite": "high",
+  "meteo": "sec",
+  "note": "départ 400 m avant un saut voulu là où il y en a",
+  "circuits": [
+   {
+    "id": 0,
+    "circuit": "Circuit des Longues Ombres",
+    "ips": 60,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pire": 16.8,
+    "erreurs": 0,
+    "interrompu": false
+   },
+   {
+    "id": 1,
+    "circuit": "Promenade de la Corniche",
+    "ips": 60,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pire": 16.8,
+    "erreurs": 0,
+    "interrompu": false
+   },
+   {
+    "id": 2,
+    "circuit": "Boucle des Eaux Dormantes",
+    "ips": 60,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pire": 16.8,
+    "erreurs": 0,
+    "interrompu": false
+   },
+   {
+    "id": 3,
+    "circuit": "Circuit du Second Écho",
+    "ips": 60,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 16.8,
+    "erreurs": 0,
+    "interrompu": false
+   },
+   {
+    "id": 4,
+    "circuit": "Passe du Beau Temps",
+    "ips": 60,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pire": 16.8,
+    "erreurs": 0,
+    "interrompu": false
+   },
+   {
+    "id": 5,
+    "circuit": "Lacets de l’Aiglière",
+    "ips": 60,
+    "p50": 16.7,
+    "p95": 16.8,
+    "pire": 16.8,
+    "erreurs": 0,
+    "interrompu": false
+   },
+   {
+    "id": 6,
+    "circuit": "Descente des Freins Chauds",
+    "ips": 60,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pire": 16.8,
+    "erreurs": 0,
+    "interrompu": false
+   },
+   {
+    "id": 7,
+    "circuit": "Circuit de la Glace Vive",
+    "ips": 60,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pire": 16.8,
+    "erreurs": 0,
+    "interrompu": false
+   },
+   {
+    "id": 8,
+    "circuit": "Autodrome des Alizés",
+    "ips": 60,
+    "p50": 16.7,
+    "p95": 16.7,
+    "pire": 16.8,
+    "erreurs": 0,
+    "interrompu": false
+   }
+  ],
+  "routeSansFin": {
+   "distance": 5777,
+   "duree": 164.9,
+   "p50": 16.7,
+   "p95": 16.7,
+   "p99": 16.8,
+   "pire": 16.8,
+   "lentes": [],
+   "ouvrier": true,
+   "erreurs": 0
+  }
+ },
+ "image": {
+  "outil": "tools/controle-visuel.mjs, horloge commandée, 1280×720, 8 images, --angle native",
+  "note": "colonnes : écart moyen absolu de luminance sur l’image, puis habitacle (signé, absolu), puis zones sombres de la référence (signé, absolu)",
+  "ferroContre0351": [
+   "vis-piste-0352f        image 0.0000 | habitacle +0.0000 0.0000 | sombres +0.0000 0.0000",
+   "vis-pluie-0352f        image 0.0000 | habitacle -0.0000 0.0000 | sombres +0.0000 0.0000"
+  ],
+  "agxContre0351": [
+   "vis-piste-0352a        image 0.0132 | habitacle -0.0161 0.0188 | sombres -0.0326 0.0326",
+   "vis-pluie-0352a        image 0.0124 | habitacle -0.0201 0.0211 | sombres -0.0353 0.0354"
+  ],
+  "agxContre0350": [
+   "vis-piste-0352a        image 0.0439 | habitacle +0.0008 0.0361 | sombres -0.0049 0.0363",
+   "vis-pluie-0352a        image 0.0247 | habitacle -0.0117 0.0290 | sombres -0.0307 0.0344"
+  ],
+  "buildPublieContreBuildMesure": [
+   "vis-piste-0352f-b      image 0.0000 | habitacle +0.0000 0.0000 | sombres +0.0000 0.0000",
+   "vis-piste-0352a-b      image 0.0000 | habitacle +0.0000 0.0000 | sombres +0.0000 0.0000"
+  ]
+ },
+ "verreSousAgx": {
+  "methode": "mêmes images rendues verre coupé (copie d’essai) ; idéal : (avecAgx − avecFerro) = k·(sansAgx − sansFerro), k entre 0 et 1 ; l’excès au-dessus de cette borne serait un voile",
+  "piste": "piste pixels du verre 14396 par image | avecAgx−avecFerro -0.0131 | sansAgx−sansFerro -0.0124 | excès moyen 0.0000 sur fonds sombres 0.0000 | pire 0.004 | part > 0,03 : 0.00 %",
+  "pluie": "pluie pixels du verre 14377 par image | avecAgx−avecFerro -0.0188 | sansAgx−sansFerro -0.0225 | excès moyen 0.0000 sur fonds sombres 0.0000 | pire 0.006 | part > 0,03 : 0.00 %"
+ },
+ "suite": {
+  "build": "105820bdb0f0f0d7",
+  "tests": 256,
+  "echecs": 47,
+  "echecsDe0350": 47,
+  "nouveaux": [],
+  "resolus": []
+ }
+}

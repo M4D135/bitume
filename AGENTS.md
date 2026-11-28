@@ -510,3 +510,6 @@ Au premier lancement d’une version, mesurer les performances sur le périphér
   « la 205 GTI et La R5 c'est pas à toi de les modéliser, chagpt s'en charge et les posera sur le dépot git ».
   Aucun agent ne modélise ces voitures ; leur intégration attend que leurs modèles soient sur le dépôt et que
   David la demande.
+- Rendu (FERRO 0.3.40) : devant les captures ferro et AgX de 0.2.351 (`docs/reprise/rapports/ferro-0340/`), David a
+  choisi « Essayer AgX ». 0.2.352 rend avec AgX quand l'adresse porte `?rendu=agx` ; sans ce paramètre, le défaut reste
+  le tonemap `ferro`. Le défaut ne change que sur sa décision, après son essai. La force du halo reste à 1.

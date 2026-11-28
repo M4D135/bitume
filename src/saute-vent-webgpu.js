@@ -12,6 +12,7 @@ struct Vue {
   horizon: vec4f,
   ambiance: vec4f,
   brume: vec4f,
+  rendu: vec4f,
 };
 @group(0) @binding(0) var<uniform> vue: Vue;
 @group(1) @binding(0) var scene:texture_2d<f32>;
@@ -74,30 +75,68 @@ fn environnement(dir:vec3f,abri:f32)->vec3f {
   let dehors=mix(sol,ciel,smoothstep(-.12,.08,dir.y));
   return mix(dehors,vue.ambiance.rgb*(.18+.18*max(dir.y,0.)),abri);
 }
-// FERRO 0.3.39 : la scène est en radiance linéaire et post.wgsl applique seul la courbe d'affichage (tonemap ferro :
-// c/(c+0,76) puis gamma 1/2,2). Le verre reste réglé à l'œil en valeurs affichées, comme en 0.3.38 ; affiche et
-// radiance sont cette courbe et son inverse exact (0,98 affiché au plus, soit une radiance de 16,7).
+// FERRO 0.3.39 : la scène est en radiance linéaire et post.wgsl applique seul la courbe d'affichage, après son
+// exposition (vue.rendu.y). Le verre reste réglé à l'œil en valeurs affichées, comme en 0.3.38 ; affiche et radiance
+// sont la courbe de post.wgsl et son inverse exact. vue.rendu.x choisit la courbe : 0 pour ferro, c/(c+0,76) puis
+// gamma 1/2,2 (0,98 affiché au plus, soit une radiance de 16,7), 1 pour AgX, avec les matrices, l'encodage sur
+// 16,5 IL et la sigmoïde de tonemapAgx (FERRO 0.3.40). ACES n'est pas suivi : BITUME ne s'en sert pas.
+const AGX_ENTREE=mat3x3f(
+  vec3f(.842479062253094,.0423282422610123,.0423756549057051),
+  vec3f(.0784335999999992,.878468636469772,.0784336),
+  vec3f(.0792237451477643,.0791661274605434,.879142973793104));
+// Matrice de sortie de FERRO, inverse exacte de celle d'entrée : chacune défait l'autre dans radiance.
+const AGX_SORTIE=mat3x3f(
+  vec3f(1.19687900512017,-.0528968517574562,-.0529716355144438),
+  vec3f(-.0980208811401368,1.15190312990417,-.0980434501171241),
+  vec3f(-.0990297440797205,-.0989611768448433,1.15107367264116));
+const AGX_MIN=-12.47393;
+const AGX_MAX=4.026069;
+fn agxCourbe(v:vec3f)->vec3f {
+  let v2=v*v;
+  let v4=v2*v2;
+  return 15.5*v4*v2-40.14*v4*v+31.96*v4-6.868*v2*v+.4298*v2+.1191*v-.00232;
+}
+fn agxPente(v:vec3f)->vec3f {
+  let v2=v*v;
+  let v4=v2*v2;
+  return 93.*v4*v-200.7*v4+127.84*v2*v-20.604*v2+.8596*v+.1191;
+}
 fn affiche(r:vec3f)->vec3f {
-  let x=max(r,vec3f(0.));
+  let x=max(r,vec3f(0.))*vue.rendu.y;
+  if(vue.rendu.x>.5) {
+    let v=(clamp(log2(max(AGX_ENTREE*x,vec3f(1e-10))),vec3f(AGX_MIN),vec3f(AGX_MAX))-AGX_MIN)/(AGX_MAX-AGX_MIN);
+    return clamp(AGX_SORTIE*agxCourbe(v),vec3f(0.),vec3f(1.));
+  }
   return pow(x/(x+vec3f(.76)),vec3f(1./2.2));
 }
+// La sigmoïde d'AgX croît sur tout [0, 1] (pente de 0,107 au moins) : quatre pas de Newton depuis 0,3 + 0,7·y la
+// retournent à 0,001 IL près. 0,9985 affiché au plus, soit une radiance de 18,7.
 fn radiance(d:vec3f)->vec3f {
+  if(vue.rendu.x>.5) {
+    let y=clamp(AGX_ENTREE*d,vec3f(-.00232),vec3f(.9985));
+    var v=.3+.7*y;
+    for(var i=0;i<4;i++) { v=clamp(v-(agxCourbe(v)-y)/agxPente(v),vec3f(0.),vec3f(1.)); }
+    return max(AGX_SORTIE*exp2(AGX_MIN+v*(AGX_MAX-AGX_MIN)),vec3f(0.))/vue.rendu.y;
+  }
   let u=pow(clamp(d,vec3f(0.),vec3f(.98)),vec3f(2.2));
-  return .76*u/(1.-u);
+  return .76*u/(1.-u)/vue.rendu.y;
 }
 // 0.3.38 mélangeait le verre en valeurs affichées : sortie = c + k·fond. Mélangé en radiance par « src-alpha,
 // one-minus-src-alpha », le même verre éclaircissait les fonds sombres d'un voile laiteux (capotage, route : jusqu'à
 // +0,4 affiché). La cible ne se lit pas ; le mélange matériel « one, src-alpha » donne a + m·fond en radiance, et a, m
-// sont ajustés pour que l'image affichée soit exacte sous des fonds affichés de 0,1 et 0,6 (radiances ci-dessous) :
-// écart de 0,04 au plus entre 0,03 et 0,6, l'excès restant sur les fonds très clairs. m est borné à 4 quand un reflet
-// solaire sature la cible. Réglé pour le tonemap ferro : AgX ou ACES demanderaient de reprendre ce verre.
-const FOND_SOMBRE=.00482572;
-const FOND_CLAIR=.365988;
+// sont ajustés pour que l'image affichée soit exacte sous des fonds affichés de 0,1 et 0,6 (radiances d'ancrage
+// ci-dessous, à l'exposition 1, pour ferro puis pour AgX) : écart de 0,04 au plus entre 0,03 et 0,6 avec l'une
+// comme avec l'autre courbe, l'excès restant sur les fonds très clairs. m est borné à 4 quand un reflet solaire
+// sature la cible.
+fn ancres()->vec2f {
+  return select(vec2f(.00482572,.365988),vec2f(.0103024,.319638),vue.rendu.x>.5)/vue.rendu.y;
+}
 fn melange(c:vec3f,k:f32)->vec4f {
+  let fonds=ancres();
   let f1=radiance(c+vec3f(k*.1));
   let f2=radiance(c+vec3f(k*.6));
-  let m=clamp(dot((f2-f1)/(FOND_CLAIR-FOND_SOMBRE),vec3f(.2126,.7152,.0722)),0.,4.);
-  return vec4f(max(f1-vec3f(m*FOND_SOMBRE),vec3f(0.)),m);
+  let m=clamp(dot((f2-f1)/(fonds.y-fonds.x),vec3f(.2126,.7152,.0722)),0.,4.);
+  return vec4f(max(f1-vec3f(m*fonds.x),vec3f(0.)),m);
 }
 struct Aspect { couleur:vec4f, deviation:vec3f, refraction:f32 };
 fn aspect(f:V)->Aspect {
@@ -192,7 +231,8 @@ fn aspect(f:V)->Aspect {
     verre.abri=!!abri;
   }
   function signalerPerte(etat){etat.perdu=true;}
-  function creer(gpu, triangles) {
+  // rendu : le moteur FERRO de la vue, dont le verre suit la courbe d'affichage et l'exposition (stats).
+  function creer(gpu, triangles, rendu) {
     if(!gpu?.device || !triangles?.length)return null;
     const device=gpu.device, nombre=triangles.length*3;
     const geometrie=sommetUnique(gpu,triangles), module=device.createShaderModule({label:'BITUME · verre de la monoplace',code:shader});
@@ -205,9 +245,9 @@ fn aspect(f:V)->Aspect {
     let temps=0, pluie=0, etape=0, libere=false;
     const appareil={perdu:false};
     const vues=[0,1].map(()=>{
-      const camera=device.createBuffer({size:176,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});
+      const camera=device.createBuffer({size:192,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});
       const groupe=device.createBindGroup({layout,entries:[{binding:0,resource:{buffer:camera}}]});
-      return {elements:[],ordre:[],vueScene:null,groupeScene:null,n:0,donnees:new Float32Array(20*16),buffer:null,camera,groupe,uniformes:new Float32Array(44)};
+      return {elements:[],ordre:[],vueScene:null,groupeScene:null,n:0,donnees:new Float32Array(20*16),buffer:null,camera,groupe,uniformes:new Float32Array(48)};
     });
     device.lost.then(signalerPerte.bind(null,appareil));
     function pipeline(vue,avecScene){
@@ -261,6 +301,8 @@ fn aspect(f:V)->Aspect {
       u[19]=temps%8192;u.set(v.soleil||soleil,20);u.set(v.couleurSoleil||blanc,24);
       u.set(v.ciel||blanc,28);u.set(v.horizon||blanc,32);u.set(v.ambiance||zero,36);
       u.set(v.brouillard||zero,40);u[43]=v.densite||0;
+      const reglage=rendu?.stats;u[44]=reglage?.tonemap==='agx'?1:0;
+      u[45]=Number.isFinite(reglage?.exposure)&&reglage.exposure>0?reglage.exposure:1;
       device.queue.writeBuffer(vue.camera,0,u);
       if(vue.donnees.length<n*20 || !vue.buffer){
         if(vue.donnees.length<n*20)vue.donnees=new Float32Array(20*2**Math.ceil(Math.log2(n)));

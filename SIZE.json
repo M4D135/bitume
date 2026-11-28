@@ -1,8 +1,8 @@
 {
-  "version": "0.2.351",
-  "raw": 18323266,
-  "gzip": 4927755,
-  "sha256": "cf3d31137e46d9157229f6e6d0f377ad8f42a32c282e79929c47382dfd0adbfa",
+  "version": "0.2.352",
+  "raw": 18325710,
+  "gzip": 4928852,
+  "sha256": "105820bdb0f0f0d768ebfc71a1041baf563892945873da014ce692d799cdfddb",
   "sources": {
     "ferro/surface.js": 3499,
     "ferro/render-shared.js": 82520,
@@ -92,7 +92,7 @@
     "realisateur.js": 12966,
     "pluie-webgpu.js": 5981,
     "meteo.js": 25766,
-    "saute-vent-webgpu.js": 16594,
+    "saute-vent-webgpu.js": 18753,
     "visiere-optique.js": 38734,
     "vitre.js": 41630,
     "sillage.js": 6139,
@@ -114,7 +114,7 @@
     "vibrations.js": 10282,
     "ombres.js": 13390,
     "visites.js": 7590,
-    "jeu.js": 506077,
+    "jeu.js": 506362,
     "index.html": 85248,
     "style.css": 115972
   }
