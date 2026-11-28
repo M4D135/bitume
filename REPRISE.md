@@ -3,7 +3,11 @@
 <!-- bitume-reprise-actuelle-debut -->
 ## Par où reprendre
 
-**28 novembre (fin d'après-midi) — essai d'AgX : 0.2.352 poussée sur `origin/main` (commit « 0.2.352 : essai d'AgX… »), non déployée. En ligne : toujours 0.2.350.**
+**28 novembre (fin d'après-midi) — essai d'AgX : 0.2.352 (`d707210`) en ligne, déployée vers 16 h 42 sur le GO de David (« Oui, mets en ligne »).**
+- **En production (`https://bitume.estrasse.fr/`)** : **0.2.352** (`d707210`, sha256 `105820bdb0f0f0d7`, salon actif, non relancé) ;
+  AgX par `https://bitume.estrasse.fr/?rendu=agx`. Sur amiga restent 0.2.350 (`3433896`) et 0.2.345 (`d82f5e1`) ; `7349601`
+  a été retirée par `deposer.sh` (trois versions gardées). Retour arrière vers 0.2.350 :
+  `ssh amiga 'ln -sfn releases/34338961ff4d20c974dc5c77ad056c4ed005f06c ~/apps/bitume/current.new && mv -T ~/apps/bitume/current.new ~/apps/bitume/current'`.
 - **Demande de David** : « Essayer AgX », devant les captures ferro et AgX de 0.2.351. L'adresse du jeu suivie de
   `?rendu=agx` rend avec AgX (choix fait dans `demarrer()` de `src/jeu.js` ; les rétroviseurs prennent le tonemap du moteur
   principal). Sans paramètre, rien ne change : courbe `ferro`, image identique au pixel près à 0.2.351 sur les captures à horloge commandée.
@@ -19,8 +23,8 @@
   l'habitacle. Contre 0.2.350 au sec : habitacle +0,001 et zones sombres −0,005 (ferro : +0,017 et +0,026). Sous la
   pluie, AgX est plus sombre que 0.2.350 (zones sombres −0,031).
 - **Essai par David** : `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" "file:///Users/david/Projects/bitume/dist/bitume.html?rendu=agx"`,
-  et sans `?rendu=agx` pour comparer ; en ligne après un déploiement : `https://bitume.estrasse.fr/?rendu=agx`.
-- **Reste** : son choix (AgX par défaut, ou ferro) ; déployer seulement sur son GO.
+  et sans `?rendu=agx` pour comparer ; en ligne : `https://bitume.estrasse.fr/?rendu=agx`.
+- **Reste** : son avis sur AgX (par défaut, ou ferro). Tout nouveau déploiement attend son GO.
 
 **28 novembre (après-midi) — FERRO 0.3.40 installé : 0.2.351 poussée sur `origin/main` (commit « 0.2.351 : FERRO 0.3.40… »), non déployée. En ligne : toujours 0.2.350.**
 - **Moteur** : FERRO 0.3.40 (`M4D135/FERRO` `e5b0181`) remplace 0.3.36 par `tools/install-ferro.py` ; `tools/check-ferro-lock.py` :
