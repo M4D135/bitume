@@ -1,8 +1,8 @@
 {
-  "version": "0.2.353",
-  "raw": 18325889,
-  "gzip": 4928935,
-  "sha256": "9848b7b7312650174fea29b8ac5cae49668cfea886ae028fa49c601b4a201b4c",
+  "version": "0.2.354",
+  "raw": 18341883,
+  "gzip": 4933607,
+  "sha256": "d68888c16d6cda2ad2a4d50e045efb67bad1cee98db8a9c660287febf2f9e438",
   "sources": {
     "ferro/surface.js": 3499,
     "ferro/render-shared.js": 82520,
@@ -16,10 +16,11 @@
     "couverts.js": 13878,
     "circuit-raccords-data.js": 1016947,
     "circuit-raccords.js": 3744,
-    "route-sans-fin.js": 20290,
+    "route-sans-fin.js": 20727,
     "route-sans-fin-fenetre.js": 7856,
     "route-sans-fin-seance.js": 10636,
     "route-sans-fin-flux.js": 27698,
+    "alertes-route.js": 5893,
     "route-des-cimes.js": 25009,
     "route-des-cimes-decor.js": 10550,
     "larche-vinadio-data.js": 331200,
@@ -43,7 +44,7 @@
     "contacts.js": 8379,
     "obstacles.js": 20076,
     "strategie-stands.js": 21509,
-    "course.js": 64014,
+    "course.js": 65688,
     "son.js": 58876,
     "botanique.js": 25068,
     "ecologie.js": 3127,
@@ -114,8 +115,8 @@
     "vibrations.js": 10282,
     "ombres.js": 13390,
     "visites.js": 7590,
-    "jeu.js": 506541,
+    "jeu.js": 512705,
     "index.html": 85248,
-    "style.css": 115972
+    "style.css": 117749
   }
 }

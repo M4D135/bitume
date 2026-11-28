@@ -252,14 +252,22 @@
   // créneau) — l'écart garanti entre stations est donc de 1 800 à 3 600 m, et la première
   // tombe au plus loin à 2 500 m. Chaque station occupe au moins 208 m.
   const LONG_STATION = 208, CIBLE_STATION = 2400, MARGE_CIBLE = 600, PREMIERE_MAX = 2500;
+  // Chaque station ne dépend que de la précédente et de son tronçon : la liste d'une graine s'allonge tronçon par
+  // tronçon, sans jamais se refaire. L'ancienne mémoire par tranches de 1 200 m la recalculait depuis l'origine à
+  // chaque tranche nouvelle, sur le fil principal (25 ms vers 6 km, 110 ms vers 60 km). La liste rendue peut
+  // dépasser s1 ; les appelants la filtrent et ne la modifient jamais.
   const memoireStations = new Map();
   function stationsJusquA(s1, graine) {
-    const cle = (graine >>> 0) + ':' + Math.ceil(s1 / 1200);
-    const vu = memoireStations.get(cle);
-    if (vu) return vu;
-    const liste = [];
-    let sDebut = 0, k = 0;
-    while (sDebut < s1 + 2400) {
+    const cle = graine >>> 0;
+    let m = memoireStations.get(cle);
+    if (!m) {
+      if (memoireStations.size >= 64) memoireStations.clear();
+      m = { liste: [], sDebut: 0, k: 0 };
+      memoireStations.set(cle, m);
+    }
+    const liste = m.liste;
+    while (m.sDebut < s1 + 2400) {
+      const sDebut = m.sDebut, k = m.k;
       const seg = pointsSegment(k, graine), L = seg.profil.L;
       const derniere = liste.length ? liste[liste.length - 1] : null;
       const cible = derniere ? derniere.debutAbs + CIBLE_STATION : 1500;
@@ -279,11 +287,8 @@
             cote: r() < .5 ? -1 : 1, troncon: k });
         }
       }
-      sDebut += L; k++;
+      m.sDebut = sDebut + L; m.k = k + 1;
     }
-    if (memoireStations.size > 4096) memoireStations.clear();
-    Object.freeze(liste);
-    memoireStations.set(cle, liste);
     return liste;
   }
   // meilleur créneau de LONG_STATION dans [lo, hi] (abscisses locales) : premier seuil satisfait,

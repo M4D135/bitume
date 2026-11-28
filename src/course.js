@@ -96,7 +96,7 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       livree: { couleur: liv[0], seconde: liv[1], casque: liv[2], combinaison: liv[1], numero },
       etat: null, tourValide: true, repositionnements: 0, tours: 0, passages: -1, maxPassages: -1, progression: 0, debutTour: 0,
       tempsTours: [], meilleur: null, position: 0, fini: false, abandon: false, tempsFinal: null, ecart: 0, ecartTete: 0,
-      sansFin: sansFin ? { restant: sfReglage.temps, bonus: sfReglage.bonus, temps: 0, checkpoint: -1, sAbsolu: 0, sMax: 0, dernierS: null, elimine: false } : null,
+      sansFin: sansFin ? { restant: sfReglage.temps, bonus: sfReglage.bonus, temps: 0, checkpoint: -1, sAbsolu: 0, sMax: 0, dernierS: null, elimine: false, cause: null, panne: 0 } : null,
       ia: {
         hab: joueur ? 1 : habBase + (t1 * 2 - 1) * 0.015, decal: joueur ? 0 : (t2 * 2 - 1) * 0.5,
         reaction: joueur ? 0 : 0.12 + t3 * 0.28, cible: -1, cote: 0, decalVise: 0, decalDep: 0,
@@ -699,6 +699,9 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
   // et dépend du temps de branchement. Le train complet et les réparations sont validés au feu vert.
   const STANDS = Object.freeze({ arret: .35, frein: 18, mouvementService: .12,
     reservoir: 72, debit: 4, branchement: .27, debranchement: .72 });
+  // Panne sèche (Route sans fin) : arrêtée sous 0,5 m/s pendant 2,5 s, hors d'une station, la voiture finit sa route.
+  // Dans la voie d'une station, l'équipe la pousse : au plus 30 % de gaz, sous le limiteur de la voie.
+  const PANNE_SECHE = Object.freeze({ vitesse: .5, delai: 2.5, poussee: .3 });
   const COMMANDE_SERVICE = Object.freeze({ ...NEUTRE, frein: 1 });
   function limiterVoiePhysX(course, v, cmd) {
     const e = v.etat, S = course.c.stands;
@@ -861,9 +864,17 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
         s.restant += sf.bonus;
         ev.push({ type: 'checkpoint', id: v.id, checkpoint: s.checkpoint, reste: s.restant });
       }
-      if (s.restant <= 0) {
-        s.restant = 0; s.elimine = true; v.abandon = true;
-        ev.push({ type: 'elimine', id: v.id, checkpoint: s.checkpoint });
+      // Panne sèche : réservoir vide, voiture arrêtée hors d'une station. Elle a pu finir en roue libre jusqu'à une
+      // station ; arrêtée ailleurs, plus rien ne la remet en route, et la route finit là sans attendre le compte à
+      // rebours (David, 28/11 : « je ne peux plus accélérer, juste reculer »).
+      if (e.carburant === 0 && !e.stands && !e.recuperation && Math.abs(e.v) < PANNE_SECHE.vitesse) s.panne += dt;
+      else s.panne = 0;
+      if (s.panne >= PANNE_SECHE.delai) {
+        s.elimine = true; s.cause = 'panne'; v.abandon = true;
+        ev.push({ type: 'elimine', id: v.id, checkpoint: s.checkpoint, cause: 'panne' });
+      } else if (s.restant <= 0) {
+        s.restant = 0; s.elimine = true; s.cause = 'temps'; v.abandon = true;
+        ev.push({ type: 'elimine', id: v.id, checkpoint: s.checkpoint, cause: 'temps' });
       }
     }
   }
@@ -916,13 +927,19 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.strat
       const e = v.etat;
       if (e.carburant != null && !retenue && !v.fini && !v.abandon && !e.recuperation && !e.reparation && service?.phase !== 'service') {
         const charge = clamp(e.gaz || 0, 0, 1);
-        const conso = course.sansFin ? course.sansFin.conso : 1;
+        // essenceLibre : la voiture du joueur conduite par l'ordinateur (démo, banc, pilote d'essai) ne s'arrête pas aux
+        // stations ; elle roule sans consommer.
+        const conso = course.sansFin ? (course.sansFin.essenceLibre ? 0 : course.sansFin.conso) : 1;
         e.carburant = Math.max(0, e.carburant - dt * conso * (.0008 + Math.abs(e.v) * (.00024 + .00048 * charge)));
-        if (e.carburant === 0) {
-          const libre = v._commandeSansGaz || (v._commandeSansGaz = {});
-          cmd = Object.assign(libre, cmd, { gaz: 0, derive: false });
-          B.conduite.couperTurbo(e);
-        }
+      }
+      // Réservoir vide : plus de moteur, ni en avant ni en arrière (le recul s'engageait encore au frein maintenu), même
+      // après la fin de la route (panne sèche). La voiture roule en roue libre et freine. Dans la voie d'une station,
+      // l'équipe la pousse jusqu'au box.
+      if (e.carburant === 0 && !retenue) {
+        const libre = v._commandeSansGaz || (v._commandeSansGaz = {});
+        const poussee = service?.phase === 'voie' ? Math.min(Math.max(0, +cmd.gaz || 0), PANNE_SECHE.poussee) : 0;
+        cmd = Object.assign(libre, cmd, { gaz: poussee, derive: false, marcheArriere: false });
+        B.conduite.couperTurbo(e);
       }
       cmd = limiterVoiePhysX(course, v, cmd);
       const debut = ev.length, rendus = B.conduite.pas(v.etat, cmd, c, dt, retenue, ev);

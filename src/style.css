@@ -312,6 +312,21 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 .case .barres-pneus i { display: block; border-radius: 2px; background: linear-gradient(90deg, var(--pneu) calc(var(--f, 1) * 100%), #ffffff26 0); }
 .case.pneus[data-usure="forte"] .usure-pneus { color: #ffd166; }
 .case.pneus[data-usure="limite"] .usure-pneus { color: #ff8b7a; }
+/* Route sans fin, alertes (David, 28/11 : « faut que ça clignote ou autre l'essence le temps etc quand ça craint ») :
+   l'élément en cause clignote, ambre et lent pour prévenir, rouge et rapide pour le danger (gravités de
+   src/alertes-route.js, posées par jeu.js) : case Temps, Pneus, Santé (et chauffe), ligne Station, essence. */
+.case.alerte-ambre, .ligne-chrono.alerte-ambre { animation: alerte-ambre 1.2s ease-in-out infinite; }
+.case.alerte-rouge, .ligne-chrono.alerte-rouge { animation: alerte-rouge .6s steps(2, jump-none) infinite; }
+@keyframes alerte-ambre { 50% { background-color: rgba(255, 170, 30, .42); } }
+@keyframes alerte-rouge { 0% { background-color: rgba(228, 36, 20, .72); } }
+.case.alerte-rouge .grand, .ligne-chrono.alerte-rouge .temps { color: #fff2ee; }
+.ligne-chrono.alerte-ambre, .ligne-chrono.alerte-rouge { margin: 0 -6px; padding: 1px 6px; border-radius: 3px; }
+#h-carburant.bas, #h-carburant.vide { display: inline-block; padding: 1px 5px; border-radius: 3px; font-weight: 800; text-shadow: none; }
+#h-carburant.bas { color: #1b1203; background: #ffc23d; animation: alerte-pastille 1.2s ease-in-out infinite; }
+#h-carburant.vide { color: #fff; background: #e4261a; animation: passer .6s steps(2, jump-none) infinite; }
+@keyframes alerte-pastille { 50% { opacity: .45; } }
+/* checkpoint à moins de 300 m (vert) */
+.ligne-chrono .temps#h-meilleur.avance { color: var(--vert); }
 body.tactile .case .usure-pneus { font-size: 8px; margin-top: 3px; }
 body.tactile .case .barres-pneus { height: 2px; margin-top: 2px; }
 /* Santé de la voiture (lot 4) : la barre se lit dans l'état des dégâts, le mot change au stand. */
@@ -450,6 +465,10 @@ body.tactile #b-pause { display: block; }
   .message.visible, .sous-message.visible { animation-duration: .01s; opacity: 1; }
   .gros, .carte-circuit { transition: none; }
   .chargement, .chargement.fini, #vue-course { transition: none; }
+  /* sans mouvement : les alertes restent allumées, sans clignoter */
+  #h-carburant.bas, #h-carburant.vide { animation: none; }
+  .case.alerte-ambre, .ligne-chrono.alerte-ambre { animation: none; background-color: rgba(255, 170, 30, .3); }
+  .case.alerte-rouge, .ligne-chrono.alerte-rouge { animation: none; background-color: rgba(228, 36, 20, .55); }
 }
 
 /* La carte est indépendante des compteurs supplémentaires du cockpit. */

@@ -1738,6 +1738,8 @@
     if (B.meteo) B.meteo.actuel = S.meteo;
     const co = S.course;
     const auto = S.type === 'vitrine' || S.type === 'demo' || pilote || pilotageAuto;
+    // l'ordinateur ne s'arrête pas aux stations de la Route sans fin : ses voitures y roulent sans consommer
+    if (co.sansFin) co.sansFin.essenceLibre = !!auto;
     let cmd;
     // Lot C : chaque pilote local conduit sa voiture (J1/J2 par leurs fonctions historiques, J3/J4 par la voie
     // générique) ; personne ne reste sans commandes, l'ordinateur ne prend la main qu'en auto/démo/vitrine.
@@ -1893,7 +1895,7 @@
           if (n < 0) break;
           const vEl = co.voitures[e.id], qui = co.duo ? n : undefined;
           if (n === 0 && son) son.evenement('arrivee');
-          message('Temps écoulé', 'rouge', false, qui);
+          message(e.cause === 'panne' ? 'Panne sèche' : 'Temps écoulé', 'rouge', false, qui);
           sousMessage(((vEl?.sansFin?.sMax || 0) / 1000).toFixed(2).replace('.', ',') + ' km · ' + ((vEl?.sansFin?.checkpoint ?? -1) + 1) + ' checkpoint' + ((vEl?.sansFin?.checkpoint ?? -1) > 0 ? 's' : ''), qui);
           break;
         }
@@ -5002,13 +5004,79 @@
   }
   const HUD_CIRCUIT = (typeof document !== 'undefined' && document.getElementById && document.getElementById('carte-circuit'))
     ? { h: { carte: document.getElementById('carte-circuit') }, tPlan: -Infinity } : null;
+  // Route sans fin, essence (David, 28/11, en panne sèche à 5,86 km : « je ne peux plus accélérer, juste reculer ») :
+  // l'essence suffit-elle jusqu'à la prochaine station, et jusqu'à celle d'après ? La consommation se mesure en roulant
+  // (litres par mètre, moyenne glissante sur ~600 m) et donne la portée. Les stations viennent de la liste pure de la
+  // route : la séance l'a déjà calculée jusqu'à ~7 km devant, chercher à 5 km ne calcule aucun tronçon de plus.
+  // États : ok, prochaine (s'arrêter à la prochaine station), insuffisant (elle est hors de portée), vide. Les annonces
+  // passent par src/alertes-route.js, avec le temps, les pneus, la santé et la chauffe.
+  const ESSENCE_SF = Object.freeze({ taux: .013, lissage: 600, cherche: 5000 });
+  function essenceSansFin(x, j, co) {
+    const e = j.etat, sf = j.sansFin, seance = session && session.seance;
+    if (e.carburant == null || !sf || sf.elimine || !seance || !B.routeSansFin) return null;
+    let m = x.essence;
+    if (!m || m.voiture !== j) m = x.essence = { voiture: j, s: null, l: 0, taux: ESSENCE_SF.taux, etat: 'ok', st1: null, d1: Infinity };
+    const sAbs = sf.sAbsolu || 0, l = e.carburant;
+    if (m.s === null || l > m.l + .05 || sAbs < m.s) { m.s = sAbs; m.l = l; }   // départ, plein, recul : la mesure repart
+    else if (sAbs - m.s >= 25) {
+      const poids = Math.min(1, (sAbs - m.s) / ESSENCE_SF.lissage);
+      // mesure bornée : un saut des litres (hors plein) ne doit pas emporter la moyenne
+      m.taux = clamp(m.taux + (clamp((m.l - l) / (sAbs - m.s), 0, .05) - m.taux) * poids, .004, .05);
+      m.s = sAbs; m.l = l;
+    }
+    let st1 = null, st2 = null;
+    for (const st of B.routeSansFin.stationsEntre(sAbs - B.routeSansFin.LONG_STATION, sAbs + ESSENCE_SF.cherche, seance.graine)) {
+      if (st.finAbs <= sAbs) continue;
+      if (!st1) st1 = st; else { st2 = st; break; }
+    }
+    // une station encore inconnue est au-delà de la recherche : la borne suffit pour dire qu'elle est hors de portée
+    // portée prise à 88 % : l'alerte part un peu avant (David, 28/11 : « alerte avant un peu »)
+    const portee = .88 * l / m.taux, box1 = st1 ? st1.garage0 - sAbs : Infinity, box2 = st2 ? st2.garage0 - sAbs : ESSENCE_SF.cherche;
+    m.etat = l <= 0 ? 'vide' : portee < box1 ? 'insuffisant' : portee < box2 ? 'prochaine' : 'ok';
+    m.st1 = st1; m.d1 = st1 ? st1.debutAbs - sAbs : Infinity;
+    return m;
+  }
+  // Alertes de la Route sans fin (src/alertes-route.js) : une annonce à la fois, la plus grave d'abord ; le décompte
+  // des cinq dernières secondes bipe. Pas pendant les trois premières secondes (départ), ni après la fin de la route.
+  function alertesSansFin(x, j, co, essence, distCp) {
+    const et = j.etat, sf = j.sansFin;
+    if (!B.alertesRoute || co.phase !== 'course' || sf.elimine || sf.temps <= 3) { marquerAlertes(x, null); return; }
+    const al = x.alertes || (x.alertes = B.alertesRoute.creer());
+    const e = x.etatAlertes || (x.etatAlertes = {});
+    let usure = 0;
+    if (et.etatPneus) for (const p of et.etatPneus) if (p && p.usure > usure) usure = p.usure;
+    e.restant = sf.restant; e.distCp = distCp === null ? NaN : distCp;
+    e.essence = essence ? essence.etat : 'ok'; e.station = essence && essence.st1 ? essence.d1 : NaN;
+    e.usure = usure; e.sante = B.degats.sante(et.degats); e.chauffe = et.chauffe || 0; e.feu = et.feu || 0;
+    const r = B.alertesRoute.evaluer(al, e, horlogeReelle);
+    marquerAlertes(x, al);
+    if (!r) return;
+    const qui = co.duo ? HUDS.indexOf(x) : undefined;
+    message(r.annonce.texte, r.annonce.ton, r.annonce.court, qui);
+    sousMessage(r.annonce.sous || '', qui);
+    if (r.bip && son) son.evenement('feu');
+  }
+  // Clignotement de l'élément en cause (src/style.css) : gravité 1 ambre et lente, 2 rouge et rapide ; sans alertes
+  // (circuits, démo, route finie), tout s'éteint. La case Santé porte aussi la chauffe, la ligne Station l'essence.
+  function marquerAlertes(x, al) {
+    const H = x.h, A = B.alertesRoute;
+    const gTemps = al ? A.gravite('temps', al.niveaux.temps) : 0, gPneus = al ? A.gravite('pneus', al.niveaux.pneus) : 0;
+    const gSante = al ? Math.max(A.gravite('sante', al.niveaux.sante), A.gravite('chauffe', al.niveaux.chauffe)) : 0;
+    const gEssence = al ? A.gravite('essence', al.niveaux.essence) : 0;
+    poserAlerte(H['c-tour'], gTemps); poserAlerte(H['c-pneus'], gPneus); poserAlerte(H['c-sante'], gSante);
+    poserAlerte(H['h-delta']?.parentElement, gEssence);
+  }
+  function poserAlerte(el, g) {
+    if (!el) return;
+    classe(el, 'alerte-ambre', g === 1); classe(el, 'alerte-rouge', g === 2);
+  }
   function majHud(S, x = HUD1, jForce = null) {
     // en démo, l'affichage est celui de la voiture filmée ; à deux, chaque affichage a sa voiture (x : ses éléments)
     const H = x.h, segments = x.segments, lampes = x.lampes, etiquetteDerive = x.etiquette, barre = x.barre;
     const co = S.course, demo = S.type === 'demo', j = jForce || (demo ? co.voitures[S.suivie || 0] : co.joueur), et = j.etat, chronoMode = co.mode === 'chrono';
     const nb = co.voitures.length;
     // nouvelle séance : tout s'écrit dès sa première image
-    if (x.seance !== S) { x.seance = S; x.tChiffres = x.tPlan = -Infinity; }
+    if (x.seance !== S) { x.seance = S; x.tChiffres = x.tPlan = -Infinity; x.essence = null; x.alertes = null; }
     majAnnonceVirage(S, x, j);
     if (x === HUD1) afficherAideRetour(aideRetour(S));
     if (demo && S.planVu) {
@@ -5041,17 +5109,30 @@
       if (co.sansFin && j.sansFin) {
         if (eAct) texte(eAct, 'Distance');
         if (eMei) texte(eMei, 'Checkpoint');
-        if (eDel) texte(eDel, 'Biome');
         texte(H['h-actuel'], ((j.sansFin.sMax || 0) / 1000).toFixed(2).replace('.', ',') + ' km');
         const prochainCp = co.sansFin.checkpoints[j.sansFin.checkpoint + 1];
         const distCp = prochainCp ? Math.max(0, Math.round(prochainCp.s - (j.sansFin.sAbsolu || 0))) : null;
         texte(H['h-meilleur'], distCp !== null ? '#' + (j.sansFin.checkpoint + 2) + ' · ' + distCp + ' m' : '–');
-        const bio = S.seance && B.routeSansFinSeance?.biomeA ? B.routeSansFinSeance.biomeA(S.seance, j.etat.s) : null;
-        texte(H['h-delta'], bio ? bio.label : '–');
-        classe(H['h-delta'], 'avance', false); classe(H['h-delta'], 'retard', false);
+        classe(H['h-meilleur'], 'avance', distCp !== null && distCp < 300 && co.phase === 'course');   // checkpoint en vue
+        // troisième ligne : le biome tant que l'essence suffit, la prochaine station dès qu'il faut s'y arrêter
+        const essence = demo ? null : essenceSansFin(x, j, co);
+        if (!demo) alertesSansFin(x, j, co, essence, distCp);
+        else if (B.alertesRoute) marquerAlertes(x, null);
+        if (essence && essence.etat !== 'ok') {
+          if (eDel) texte(eDel, 'Station');
+          texte(H['h-delta'], essence.st1 ? B.alertesRoute.distance(essence.d1) : '–');
+          classe(H['h-delta'], 'avance', false); classe(H['h-delta'], 'retard', essence.etat !== 'prochaine');
+        } else {
+          if (eDel) texte(eDel, 'Biome');
+          const bio = S.seance && B.routeSansFinSeance?.biomeA ? B.routeSansFinSeance.biomeA(S.seance, j.etat.s) : null;
+          texte(H['h-delta'], bio ? bio.label : '–');
+          classe(H['h-delta'], 'avance', false); classe(H['h-delta'], 'retard', false);
+        }
       } else {
         if (eAct) texte(eAct, 'Tour en cours');
         if (eMei) texte(eMei, 'Meilleur');
+        classe(H['h-meilleur'], 'avance', false);
+        if (B.alertesRoute) marquerAlertes(x, null);
         if (eDel) texte(eDel, 'Écart');
         const enLice = chronoMode ? co.chronoParti : (co.phase === 'course' || co.phase === 'arrivee');
         const actuel = j.fini ? j.tempsTours[j.tempsTours.length - 1] : enLice ? co.temps - j.debutTour : null;
@@ -5081,6 +5162,8 @@
     texte(H['h-sante'], s01 > .999 ? 'Neuve' : Math.round(s01 * 100) + ' %');
     H['h-carburant'].hidden = et.carburant == null;
     if (et.carburant != null) texte(H['h-carburant'], 'Essence ' + Math.ceil(et.carburant) + ' L');
+    const etatEssence = x.essence && x.essence.voiture === j ? x.essence.etat : 'ok';
+    classe(H['h-carburant'], 'bas', etatEssence === 'prochaine'); classe(H['h-carburant'], 'vide', etatEssence === 'insuffisant' || etatEssence === 'vide');
     const box = H['h-box'];
     box.hidden = !st;
     if (st) {
@@ -6134,7 +6217,8 @@
       if (km * 1000 > precedent) { ecrireStock(CLE, Math.round(meilleur.sansFin.sMax || 0)); record = ' · nouveau record'; }
       else if (precedent > 0) record = ' · record ' + (precedent / 1000).toFixed(2).replace('.', ',') + ' km';
       const tousHors = locaux.length && locaux.every(v => v.sansFin.elimine);
-      $('res-titre').textContent = (co.termine && tousHors) ? 'Temps écoulé' : 'Route sans fin';
+      const enPanne = tousHors && locaux.every(v => v.sansFin.cause === 'panne');
+      $('res-titre').textContent = (co.termine && tousHors) ? (enPanne ? 'Panne sèche' : 'Temps écoulé') : 'Route sans fin';
       $('res-sous').textContent = 'Le plus loin : ' + meilleur.nom + ' · ' + km.toFixed(2).replace('.', ',') + ' km · '
         + (meilleur.sansFin.checkpoint + 1) + ' checkpoint' + (meilleur.sansFin.checkpoint > 0 ? 's' : '') + record;
       entete.innerHTML = '<th>Pos.</th><th class="nom">Pilote</th><th>Distance</th><th>Checkpoints</th><th>Tenu</th>';
@@ -6143,7 +6227,7 @@
         + '<td class="nom">' + (v.joueur && !co.duo ? 'Vous' : v.nom) + '</td>'
         + '<td>' + ((v.sansFin?.sMax || 0) / 1000).toFixed(2).replace('.', ',') + ' km</td>'
         + '<td>' + ((v.sansFin?.checkpoint ?? -1) + 1) + '</td>'
-        + '<td>' + (v.sansFin?.elimine ? 'éliminé à ' : '') + chrono(v.sansFin?.temps || 0) + '</td></tr>').join('');
+        + '<td>' + (v.sansFin?.elimine ? (v.sansFin.cause === 'panne' ? 'en panne à ' : 'éliminé à ') : '') + chrono(v.sansFin?.temps || 0) + '</td></tr>').join('');
     } else {
       const ordre = co.classement.map(id => co.voitures[id]), tete = ordre[0];
       const meilleurAbsolu = Math.min(...ordre.map(v => v.meilleur ?? Infinity));
