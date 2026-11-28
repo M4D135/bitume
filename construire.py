@@ -37,6 +37,7 @@ MODULES = [
     'route-sans-fin.js',  # tronçons déterministes du mode « Route sans fin » (lot I)
     'route-sans-fin-fenetre.js',  # fenêtre glissante autour des joueurs (lot I)
     'route-sans-fin-seance.js',  # pilotage de séance : fenêtre, checkpoints, station active (lot I)
+    'route-sans-fin-flux.js',  # flux asynchrone Worker + cuisson PhysX par micro-tranches sans gel aux checkpoints
     'route-des-cimes.js',
     'route-des-cimes-decor.js',
     'larche-vinadio-data.js',

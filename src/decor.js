@@ -3087,5 +3087,5 @@ if (typeof module !== 'undefined' && module.exports && !globalThis.BITUME?.lieux
   }
 
   B.decor = { construire, THEMES, angles, base, limites, hauteurRoute, cadre, planGradins, marquerSolide, CASE_ARBRES, BASCULE_ARBRES, PIXELS_BASCULE,
-    ARBRES_EPARS, CASE_EPARSE, basculeArbres, lotsSecondMoteur, comptesHerbier: COMPTES_HERBIER };
+    ARBRES_EPARS, CASE_EPARSE, basculeArbres, lotsSecondMoteur, creerFluxDecor, comptesHerbier: COMPTES_HERBIER };
 })(globalThis.BITUME = globalThis.BITUME || {});

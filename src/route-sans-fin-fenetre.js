@@ -107,5 +107,50 @@
       cote: st.cote, vitesse: 11 };
   }
 
-  B.routeSansFinFenetre = { creer, avancer, sAbsolu, sFenetre, stationActive, DERRIERE, DEVANT };
+  // Calcule sans allocation ni construction de tracé les bornes [k0, k1[ voulues pour `positions`.
+  function planifier(f, positions) {
+    const vivantes = positions.filter(s => Number.isFinite(s));
+    if (!vivantes.length) return { k0: f.k0, k1: f.k1, sOrigine: f.sOrigine, longueur: f.longueur, plafondSegments: f._plafondSegments ?? f.maxSegments, change: false };
+    const mini = Math.min(...vivantes), maxi = Math.max(...vivantes);
+    let k0 = f.k0, k1 = f.k1, sOrigine = f.sOrigine, longueur = f.longueur;
+    const segs = Math.max(1, k1 - k0);
+    const segMoyen = longueur > 0 ? longueur / segs : 1000;
+    const besoin = Math.ceil((maxi - mini + f.devant + f.derriere + 2 * MARGE_SEG) / Math.max(1, segMoyen));
+    const plafondSegments = (vivantes.length >= 2 && besoin > f.maxSegments) ? Math.min(24, Math.max(f.maxSegments + 4, besoin)) : f.maxSegments;
+    const plafond = plafondSegments + 2;
+    const etendreBornes = sCible => {
+      while (sOrigine + longueur < sCible + MARGE_SEG) {
+        if (k1 - k0 >= plafond) break;
+        const seg = R.pointsSegment(k1, f.graine);
+        k1++;
+        longueur += seg.profil.L;
+      }
+    };
+    etendreBornes(maxi + f.devant);
+    let libere = false;
+    const frontStarved = () => sOrigine + longueur < maxi + f.devant + MARGE_SEG;
+    while (k1 - k0 > 2 && mini - f.derriere > sOrigine + R.pointsSegment(k0, f.graine).profil.L
+        && (k1 - k0 > plafondSegments || frontStarved())) {
+      const L0 = R.pointsSegment(k0, f.graine).profil.L;
+      sOrigine += L0;
+      longueur -= L0;
+      k0++;
+      libere = true;
+    }
+    if (libere) etendreBornes(maxi + f.devant);
+    return { k0, k1, sOrigine, longueur, plafondSegments, change: k0 !== f.k0 || k1 !== f.k1 || !f.c };
+  }
+
+  // Adopte directement un circuit déjà préparé en arrière-plan pour [k0, k1[ sans reconstruire sur le fil principal.
+  function appliquerPrepare(f, cPrepare) {
+    if (!cPrepare?.sansFinFenetre) return f.c;
+    const { k0, k1, sOrigine } = cPrepare.sansFinFenetre;
+    let longueur = 0;
+    for (let k = k0; k < k1; k++) longueur += R.pointsSegment(k, f.graine).profil.L;
+    f.k0 = k0; f.k1 = k1; f.sOrigine = sOrigine; f.longueur = longueur;
+    f.c = cPrepare;
+    return f.c;
+  }
+
+  B.routeSansFinFenetre = { creer, avancer, planifier, appliquerPrepare, sAbsolu, sFenetre, stationActive, DERRIERE, DEVANT };
 })(globalThis.BITUME = globalThis.BITUME || {});

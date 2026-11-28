@@ -819,5 +819,14 @@
     return c;
   }
 
-  B.traces = { creer, pas, dessiner, creerReflet, dessinerReflet, extrapolation, compter, liberer, prechauffer, mondePage, BANDES, FUMEES, ETINCELLES, VIE_TRACE, PAS, DEBRIS, VIE_DEBRIS, PIECES_PAR_VOITURE };
+  // Bascule sans allocation vers un nouveau monde PhysX partagé (Route sans fin) : fige les éventuels débris
+  // en vol de l'ancien monde tout en préservant intégralement gomme, fumée, étincelles et embruns.
+  function changerMonde(fx, nouveauMonde) {
+    if (!fx || fx.libere || fx.monde === nouveauMonde) return;
+    quitterMonde(fx);
+    fx.monde = nouveauMonde || null;
+    fx.partage = !!nouveauMonde;
+  }
+
+  B.traces = { creer, pas, dessiner, creerReflet, dessinerReflet, extrapolation, compter, liberer, changerMonde, prechauffer, mondePage, BANDES, FUMEES, ETINCELLES, VIE_TRACE, PAS, DEBRIS, VIE_DEBRIS, PIECES_PAR_VOITURE };
 })(globalThis.BITUME = globalThis.BITUME || {});

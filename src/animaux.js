@@ -1575,7 +1575,7 @@
     const theme = c.id === 'marseille' ? 'marseille' : BIOMES[c.theme] ? c.theme : 'foret', saison = (B.saisons && B.saisons.normaliser) ? B.saisons.normaliser(options.saison) : (options.saison || 'ete');
     const graine = ((options.graine === undefined ? (c.graine || 1) : options.graine) ^ hacher('animaux:' + theme)) >>> 0, rnd = generateur(graine);
     const etat = { c, theme, saison, moment: options.moment || 'jour', nuitFixe: options.nuit,
-      G: grille(c, decor), groupes: [], volants: [], animaux: [], especes: [], absentes: [], k: 0, depart: true };
+      G: decor?.grilleAnimaux || grille(c, decor), groupes: [], volants: [], animaux: [], especes: [], absentes: [], k: 0, depart: true };
     const G = etat.G;
     const debutCourse = c.ouvert ? c.depart || 0 : 0;
     const finCourse = c.ouvert ? c.arrivee ?? c.longueur : c.longueur;
@@ -2326,6 +2326,6 @@
   }
 
   B.animaux = { PAS, MAX_VUES, D_MIN, QUALITES, BUDGETS, ESPECES, BIOMES, MODELES, FORMES, NOMS_ETATS, PIECES_MAX: MAX_PIECES,
-    BANDES_ABORDS, GARDE_BORD, PORTEE_VUES, MAX_CHAMPS, selectionnerVues, creer, repartir, pas, dessiner, qualite, stats, planche, solExact, praticable, cellule, nuitA, poseVolant, poseAnimal,
+    BANDES_ABORDS, GARDE_BORD, PORTEE_VUES, MAX_CHAMPS, selectionnerVues, creer, grille, repartir, pas, dessiner, qualite, stats, planche, solExact, praticable, cellule, nuitA, poseVolant, poseAnimal,
     get trianglesFormes() { return trianglesFormes; }, dureeChargement };
 })(globalThis.BITUME = globalThis.BITUME || {});

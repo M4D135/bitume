@@ -128,11 +128,12 @@
     const X = globalThis.FPhysX;
     if (!X || !X.isReady() || !B.solidesPhysX) throw new Error('PhysX et les solides doivent être prêts avant la course');
     if (co.physique) return co.physique;
-    const world = X.createWorld({ fixedStep: DT, maxSubSteps: 8, ccdMaxPasses: 8, contacts: true, maxContactPoints: 512 });
+    const pre = options.montagePrepare || null;
+    const world = pre ? pre.world : X.createWorld({ fixedStep: DT, maxSubSteps: 8, ccdMaxPasses: 8, contacts: true, maxContactPoints: 512 });
     const p = { world, co, voitures: [], byId: new Map(), collisions: new Map(), envols: new Map(), impacts: new Map(), temps: 0,
-      pas: 0, placements: 0, disposed: false, solids: null, backend: 'PhysX', version: X.status().version };
+      pas: 0, placements: 0, disposed: false, solids: pre ? pre.solids : null, backend: 'PhysX', version: X.status().version };
     try {
-      p.solids = B.solidesPhysX.installer(world, co.c, decor);
+      if (!p.solids) p.solids = B.solidesPhysX.installer(world, co.c, decor);
       for (const v of co.voitures) {
         const mass = options.masses?.[v.id] || PROFIL.masse, front = PROFIL.repartition;
         const ph = { e: v.etat, v, c: co.c, world, course: p, mass, inertia: PROFIL.inertie.map(x => x * mass / PROFIL.masse),
@@ -440,10 +441,22 @@
     if (p.solids) { p.solids.ids.length = 0; p.solids.acteurs.clear(); p.solids.libere = true; }
     p.voitures.length = 0; co.physique = null;
   }
+  function detacher(co) {
+    const p = co?.physique; if (!p || p.disposed) return null;
+    p.disposed = true;
+    for (const ph of p.voitures) {
+      if (ph.e._physx === ph) delete ph.e._physx;
+      try { p.world.remove(ph.id); } catch (_) {}
+    }
+    p.byId.clear(); p.collisions.clear(); p.impacts.clear();
+    if (p.solids) { p.solids.ids.length = 0; p.solids.acteurs.clear(); p.solids.libere = true; }
+    p.voitures.length = 0; co.physique = null;
+    return p.world;
+  }
   function replacerVoiture(co, v) {
     const p = co && co.physique; if (!p || p.disposed) return;
     const ph = p.voitures.find(q => q.v === v || q.v.id === (v && v.id));
     if (ph && !ph.distant) replacer(ph);
   }
-  B.physique = { PROFIL, GROUPES: Object.freeze({ SOL, OBSTACLE, VOITURE, DEBRIS }), installer, avant, pas, liberer, repositionner, replacerVoiture, quaternion, projeter };
+  B.physique = { PROFIL, GROUPES: Object.freeze({ SOL, OBSTACLE, VOITURE, DEBRIS }), installer, avant, pas, liberer, detacher, repositionner, replacerVoiture, quaternion, projeter };
 })(globalThis.BITUME = globalThis.BITUME || {});

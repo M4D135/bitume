@@ -191,5 +191,100 @@
     montage.libere = montage.ids.length === 0;
     if (premiereErreur) throw premiereErreur;
   }
-  B.solidesPhysX = { installer, lireMobiles, liberer, surface, GROUPES };
+  // Extraction pure CPU (utilisable en Web Worker sans instance PhysX WASM) : compacte à l'avance
+  // les nappes de sol/chaussée et résout les primitives statiques d'obstacles/compléments.
+  function extraire(c, decor) {
+    if (!decor || !Array.isArray(decor.nappes)) throw new TypeError('PhysX : décor absent');
+    const nappesOut = [], statiques = [];
+    const statistiques = { nappes: 0, obstaclesHistoriques: 0, complements: 0, trianglesSol: 0, trianglesObstacles: 0, trianglesEauIgnores: 0 };
+    for (let i = 0; i < decor.nappes.length; i++) {
+      const source = decor.nappes[i];
+      if (source.surfaceType === 'panorama') continue;
+      const g = nappe(source);
+      statistiques.trianglesEauIgnores += g.eauIgnoree;
+      if (!g.indices.length) continue;
+      const vertices = g.vertices, indices = g.indices.slice(), surfaces = g.surfaces.slice();
+      nappesOut.push({
+        vertices, indices, surfaces,
+        info: { genre: source.surfaceType === 'accotement' ? 'chaussee' : 'terrain', groupe: GROUPES.sol, source: 'nappe', index: i }
+      });
+      statistiques.nappes++;
+      statistiques.trianglesSol += indices.length / 3;
+    }
+    const lots = decor.lotsHerbier || decor.lots || [], vus = new Set(), sources = [], complements = [];
+    for (const lot of lots) for (const o of lot.objets || []) {
+      if ((!o.collision && !o.solidePhysX) || vus.has(o)) continue;
+      vus.add(o);
+      if (o.collision) sources.push(o);
+      else if (o.solidePhysX) complements.push(o);
+    }
+    const obstacles = c?.obstacles?.objets || decor.obstacles || [];
+    for (let i = 0; i < obstacles.length; i++) {
+      const o = obstacles[i], source = sources[i];
+      const exact = source && source.collision === o.genre && source.p[0] === (o.type === 'prism' ? o.p[0] : o.x) && source.p[2] === (o.type === 'prism' ? o.p[2] : o.z);
+      const g = primitive(exact ? source : depuisObstacle(o));
+      if (g.indices) statistiques.trianglesObstacles += g.indices.length / 3;
+      statiques.push({ g, info: { genre: o.genre || 'obstacle', groupe: GROUPES.obstacles, source: 'obstacle', index: i } });
+      statistiques.obstaclesHistoriques++;
+    }
+    for (let i = 0; i < complements.length; i++) {
+      const o = complements[i], m = o.solidePhysX;
+      if (m.groupe !== GROUPES.sol && m.groupe !== GROUPES.obstacles) throw new TypeError('PhysX : groupe statique invalide');
+      const g = primitive(o);
+      if (g.indices) statistiques[m.groupe === GROUPES.sol ? 'trianglesSol' : 'trianglesObstacles'] += g.indices.length / 3;
+      statiques.push({ g, info: { genre: m.genre, groupe: m.groupe, surface: m.surface, source: 'primitive', index: i } });
+      statistiques.complements++;
+    }
+    return { nappes: nappesOut, statiques, mobilesModeles: decor.mobilesPhysX || [], statistiques };
+  }
+
+  function creerMontage(world, avecMobiles = false) {
+    return {
+      world, ids: [], mobiles: [], acteurs: new Map(), libere: false, avecMobiles: !!avecMobiles,
+      statistiques: { nappes: 0, obstaclesHistoriques: 0, complements: 0, trianglesSol: 0, trianglesObstacles: 0, trianglesEauIgnores: 0 }
+    };
+  }
+
+  // Insère par tranches bornées en temps (ms) un extrait préparé dans `montage` ; rend true quand tout est cuit.
+  function insererTranche(montage, extrait, curseur, budgetMs = 1.6) {
+    const t0 = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    const world = montage.world;
+    const masqueSup = (montage.avecMobiles || extrait.mobilesModeles?.length) ? GROUPES.obstacles : 0;
+    const ajouter = (g, info) => {
+      const groupe = info.groupe, options = {
+        type: 'static', group: groupe, mask: GROUPES.voitures | GROUPES.debris | masqueSup, queryGroup: groupe,
+        friction: groupe === GROUPES.sol ? .8 : .6, restitution: 0, quaternion: g.quaternion || [0, 0, 0, 1]
+      };
+      const id = g.half ? world.addBox(g.pos, g.half, options) : world.addTriangleMesh(g.vertices, g.indices, { ...options, pos: g.pos || [0, 0, 0] });
+      montage.ids.push(id); montage.acteurs.set(id, info);
+      return id;
+    };
+    if (!curseur.statsCopiees) {
+      Object.assign(montage.statistiques, extrait.statistiques);
+      curseur.statsCopiees = true;
+    }
+    while (curseur.iNappe < extrait.nappes.length) {
+      const n = extrait.nappes[curseur.iNappe++];
+      ajouter({ vertices: n.vertices, indices: n.indices }, { ...n.info, surfaces: n.surfaces });
+      if ((typeof performance !== 'undefined' ? performance.now() : Date.now()) - t0 >= budgetMs) return false;
+    }
+    while (curseur.iStatique < extrait.statiques.length) {
+      const fin = Math.min(extrait.statiques.length, curseur.iStatique + 48);
+      while (curseur.iStatique < fin) {
+        const s = extrait.statiques[curseur.iStatique++];
+        ajouter(s.g, s.info);
+      }
+      if ((typeof performance !== 'undefined' ? performance.now() : Date.now()) - t0 >= budgetMs) return false;
+    }
+    while (curseur.iMobile < (extrait.mobilesModeles?.length || 0)) {
+      const modele = extrait.mobilesModeles[curseur.iMobile++];
+      const mobile = creerMobile(world, modele);
+      montage.ids.push(mobile.id); montage.mobiles.push(mobile);
+      montage.acteurs.set(mobile.id, { genre: modele.mobilePhysX.genre, groupe: GROUPES.obstacles, source: 'mobile' });
+      if ((typeof performance !== 'undefined' ? performance.now() : Date.now()) - t0 >= budgetMs) return false;
+    }
+    return true;
+  }
+
+  B.solidesPhysX = { installer, extraire, creerMontage, insererTranche, lireMobiles, liberer, surface, GROUPES };
 })(globalThis.BITUME = globalThis.BITUME || {});

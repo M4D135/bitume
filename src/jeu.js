@@ -330,6 +330,111 @@
     scene = { index: i, enrichi: decorEnrichi, palier: ancre, vegetationQualite, saison, horizon: v.horizon, matieres: matieresActives, foule: fouleActive, echelleBascule: v.echelleBascule, c, decor, fond, plan: p, ombre, detailPeripherique: B.detailPeripherique.creer(decor.lots), visibilite: B.visibiliteRaycast ? B.visibiliteRaycast.creer(decor) : null, public: pub, vuePublic, prairies: [] };
     return scene;
   }
+  function parametresFluxSansFin(S) {
+    const saisonDemandee = S ? S.conditions.saison : reglages.saison;
+    const v = voeuDecor(saisonDemandee), { ancre, veut, vegetationQualite, saison } = v;
+    const matieresActives = decorEnrichi && veut.matieres;
+    const brumeMin = v.horizon === 'complet' ? .00062 : v.horizon === 'etendu' ? .00105 : .00145;
+    return {
+      v, ancre, vegetationQualite, saison, matieresActives, brumeMin,
+      avecAnimaux: !!(B.animaux && reglages.faune !== 'off'),
+      decorOptions: {
+        decorCinema: decorEnrichi ? veut.decorCinema !== false : false,
+        horizon: decorEnrichi ? v.horizon : null,
+        neigeVolume: decorEnrichi,
+        echelleBascule: decorEnrichi ? v.echelleBascule : 1,
+        decorProgressif: true,
+        herbierWasm: true,
+        qualite: ancre,
+        matieres: matieresActives,
+        vegetation: decorEnrichi && veut.vegetation,
+        vegetationQualite,
+        saison,
+        solsProceduraux: true,
+        pierresProcedurales: matieresActives,
+        organique: true,
+        public: false,
+      }
+    };
+  }
+  function creerFluxSansFinSeance() {
+    if (!B.routeSansFinFlux) return null;
+    return B.routeSansFinFlux.creer({
+      parametres: S => parametresFluxSansFin(S || session),
+      creerAnimaux: (c, decor, S) => {
+        if (!B.animaux || reglages.faune === 'off' || !S?.nature) return null;
+        const nature = S.nature;
+        const reelle = nature.horlogeReelle && B.conditionsCourse && B.conditionsCourse.nuitReelle;
+        const options = {
+          saison: B.saisons.normaliser(S.conditions.saison), moment: nature.moment,
+          nuit: reelle ? B.conditionsCourse.nuitReelle(nature.dateDepart != null ? nature.dateDepart : Date.now(), nature.horlogeReelle) : undefined
+        };
+        return B.animaux.creer(c, decor, options);
+      },
+      creerPlan: c => {
+        const fond = document.createElement('canvas'); fond.width = fond.height = 220;
+        const trace = B.menuArcade.parcoursChronometre(c);
+        const p = plan(trace, 220, 220, 16), ctx = fond.getContext('2d');
+        dessinerTrace(ctx, trace, p, 9, 'rgba(10,12,15,.9)'); dessinerTrace(ctx, trace, p, 4.5, '#d9d2c3');
+        return { fond, plan: p };
+      }
+    });
+  }
+  // Bascule GPU progressive d'une scène Route sans fin déjà bâtie en Worker : zéro préparation synchrone des 300 lots,
+  // réutilisation des pipelines/textures d'herbe WebGPU et partage immédiat des nappes immuables avec les rétroviseurs.
+  function installerPrepareSansFin(i, pret, posesProches) {
+    const { c, decor, params } = pret;
+    const { v, ancre, vegetationQualite, saison, matieresActives } = params;
+    rendu.setWorld([], [], decor.atmosphere);
+    rendu.setNappes(decor.nappes, { staticBounds: true, immutable: true });
+    rendu.setLots(decor.lots, { staticBounds: true, progressif: true });
+    curseurMaintien = 0;
+    if (posesProches?.length && rendu.preparerLot) {
+      for (let k = 0; k < decor.lots.length; k++) {
+        const l = decor.lots[k], lc = l?.centre;
+        if (!lc) continue;
+        const lim = 380 + (l.rayon || 0);
+        for (let p = 0; p < posesProches.length; p++) {
+          const q = posesProches[p], dx = lc[0] - q[0], dz = lc[2] - q[2];
+          if (dx * dx + dz * dz <= lim * lim) { rendu.preparerLot(k, false); break; }
+        }
+      }
+    }
+    if (scene && scene.vuePublic) scene.vuePublic.liberer();
+    const prairies = scene?.prairies || [];
+    for (const prairie of prairies) prairie?.changerDecor?.(decor);
+    const sol = decor.atmosphere.sunDirection, sinus = sol[1] / Math.hypot(sol[0], sol[1], sol[2]);
+    const etendueOmbre = reglages.ombres === 'ultra' ? 96 : OMBRE;
+    const ombre = { extent: etendueOmbre, depth: 2 * (etendueOmbre * Math.sqrt(Math.max(0, 1 - sinus * sinus)) / Math.max(.25, sinus) + 30) };
+    scene = {
+      index: i, enrichi: decorEnrichi, palier: ancre, vegetationQualite, saison, horizon: v.horizon,
+      matieres: matieresActives, foule: false, echelleBascule: v.echelleBascule, c, decor,
+      fond: pret.fond, plan: pret.plan, ombre, detailPeripherique: pret.detailPeripherique,
+      visibilite: pret.visibilite, public: null, vuePublic: null, prairies
+    };
+    if (retro.rendu) {
+      retro.rendu.setWorld([], [], decor.atmosphere);
+      retro.rendu.setNappes(decor.nappes, { staticBounds: true, immutable: true });
+      const lotsRetro = lotsGlaces(decor);
+      retro.nLots = lotsRetro.length;
+      retro.rendu.setLots(lotsRetro, { staticBounds: true, progressif: true });
+      curseurMaintienRetro = 0;
+      if (posesProches?.length && retro.rendu.preparerLot) {
+        for (let k = 0; k < lotsRetro.length; k++) {
+          const l = lotsRetro[k], lc = l?.centre;
+          if (!lc) continue;
+          const lim = 260 + (l.rayon || 0);
+          for (let p = 0; p < posesProches.length; p++) {
+            const q = posesProches[p], dx = lc[0] - q[0], dz = lc[2] - q[2];
+            if (dx * dx + dz * dz <= lim * lim) { retro.rendu.preparerLot(k, false); break; }
+          }
+        }
+      }
+      if (retro.vuePublic) { retro.vuePublic.liberer(); retro.vuePublic = null; }
+      retro.scene = scene;
+    }
+    return scene;
+  }
   // Douze champs préalloués : vue principale et deux glaces par pilote local, jusqu'à quatre (lot C). Les six
   // derniers restent éteints tant que la séance n'a que deux cases. Les caméras de rendu
   // sont réutilisées ailleurs ; copier leurs nombres évite qu'une autre vue déplace ce champ.
@@ -446,6 +551,7 @@
     if (B.vitre) { if (vitreVue) B.vitre.effacer(vitreVue); if (vitreVue2) B.vitre.effacer(vitreVue2); }
     // la séance qui meurt rend ses corps PhysX : la démo enchaîne les courses sans fin et laisserait un monde
     // orphelin par course (les pièces détachées y vivent douze secondes chacune)
+    if (session && session.fluxSansFin && B.routeSansFinFlux) B.routeSansFinFlux.detruire(session.fluxSansFin);
     if (session && session.fx) B.traces.liberer(session.fx);
     if (session && session.course) B.physique.liberer(session.course);
     session = null;
@@ -496,7 +602,7 @@
     try {
     B.physique.installer(course, sc.decor);
     S = {
-      type, i, course, c, seance, cDecor: c, sc, cleStationDecor: seance ? seance.cleStation : null, multi: duo, conditions, modeles: course.voitures.map(v => B.voiture.modele(v.livree)),
+      type, i, course, c, seance, fluxSansFin: sansFin ? creerFluxSansFinSeance() : null, cDecor: c, sc, cleStationDecor: seance ? seance.cleStation : null, multi: duo, conditions, modeles: course.voitures.map(v => B.voiture.modele(v.livree)),
       prec: [], cour: [], sortie: [], acc: 0, tele: { poste: null, alea: graine32(course.voitures.length * 7 + i) },
       camCap: null, regardArriere: false, profil: new Float32Array(Math.ceil(c.longueur / 10) + 2).fill(-1), profilMeilleur: null,
       distances: new Float64Array(course.voitures.length).fill(-1), vRel: new Float64Array(course.voitures.length),
@@ -582,6 +688,7 @@
     if (!prepa.interne) prechargerSeance(S);
     return S;
     } catch (e) {
+      if (S && S.fluxSansFin && B.routeSansFinFlux) B.routeSansFinFlux.detruire(S.fluxSansFin);
       if (S && S.fx) B.traces.liberer(S.fx);
       B.physique.liberer(course);
       if (session === S) session = null;
@@ -1514,22 +1621,23 @@
   // Les abscisses curvilignes sont recalées par projection sur la nouvelle fenêtre (zéro téléportation
   // lors du relâchement arrière k0++), les poses/vitesses PhysX sont conservées sans accroc, les
   // rétroviseurs et traces suivent la nouvelle scène et le nouveau monde PhysX.
-  function reinstallerSansFin(S) {
+  function reinstallerSansFin(S, pret = null) {
     const ancienC = S.c, c = S.seance.cPorteur;
     const oldOrig = ancienC?.sansFinFenetre?.sOrigine || 0, newOrig = c?.sansFinFenetre?.sOrigine || 0;
     const deltaOrig = newOrig - oldOrig;
-    const co = S.course, continuite = {};
+    const co = S.course, continuite = {}, posesProches = [];
     for (const v of co.voitures) {
       const ph = v.etat._physx;
-      let wx, wz;
+      let wx, wy, wz;
       if (ph && !ph.course?.disposed) {
         const pose = ph.world.readPose(ph.id);
         continuite[v.id] = { pose, velocity: ph.world.readVelocity(ph.id), angular: ph.world.readAngularVelocity(ph.id) };
-        wx = pose[0]; wz = pose[2];
+        wx = pose[0]; wy = pose[1]; wz = pose[2];
       } else {
         const q = B.circuit.echantillon(ancienC, v.etat.s);
-        wx = q.x - Math.sin(q.cap) * v.etat.d; wz = q.z + Math.cos(q.cap) * v.etat.d;
+        wx = q.x - Math.sin(q.cap) * v.etat.d; wy = v.etat.y || q.y || 0; wz = q.z + Math.cos(q.cap) * v.etat.d;
       }
+      if (v.humain) posesProches.push([wx, wy, wz]);
       const sEstime = clamp(v.etat.s - deltaOrig, 0, c.longueur);
       if (c !== ancienC) {
         const proj = B.circuit.projeter ? B.circuit.projeter(c, wx, wz, sEstime) : null;
@@ -1542,6 +1650,33 @@
     }
     S.c = c; co.c = c;
     if (Math.ceil(c.longueur / 10) + 2 > S.profil.length) S.profil = new Float32Array(Math.ceil(c.longueur / 10) + 2).fill(-1);
+    if (pret && pret.c === c) {
+      const sc = installerPrepareSansFin(S.i, pret, posesProches);
+      S.cDecor = c; S.sc = sc; S.cleStationDecor = S.seance.cleStation;
+      sc.animaux = pret.animaux; S.animaux = pret.animaux;
+      if (S.nature) S.nature.secteurs = B.saisons.secteurs(c);
+      S._sansFinDecorGen = (S._sansFinDecorGen || 0) + 1;
+      const generation = S._sansFinDecorGen;
+      setTimeout(() => {
+        if (session !== S || S._sansFinDecorGen !== generation) return;
+        try {
+          B.ombres.carte(rendu, gpuModeste || !B.ombres.ombresPossibles(reglages.qualite, { decor: etatProfils.decor, capacites: capacitesRendu, options: reglages }), sc.decor.lots);
+        } catch (e) { console.warn('sans-fin: ombre différée', e); }
+      }, 48);
+      if (S.meteo) {
+        const c2 = B.routeSansFinSeance.meteoCible(S.seance);
+        S.meteo.cible = c2.phase; S.meteo.precipitationsNeige = c2.neige;
+      }
+      const ancienMonde = B.physique.detacher ? B.physique.detacher(co) : null;
+      if (!ancienMonde) B.physique.liberer(co);
+      else B.routeSansFinFlux?.recyclerMonde(S.fluxSansFin, ancienMonde);
+      B.physique.installer(co, sc.decor, { continuite, montagePrepare: pret.montage });
+      if (S.fx && B.traces.changerMonde) B.traces.changerMonde(S.fx, co.physique.world);
+      else { if (S.fx) B.traces.liberer(S.fx); S.fx = B.traces.creer(co.voitures.length, co.graine, co.physique.world); }
+      remplirPoses(S.cour, co); remplirPoses(S.prec, co);
+      return;
+    }
+
     const besoinDecor = S.cDecor !== c || S.cleStationDecor !== S.seance.cleStation;
     const sc = besoinDecor ? installer(S.i, B.saisons.normaliser(S.conditions.saison), null, true, c) : S.sc;
     if (besoinDecor) {
@@ -1563,10 +1698,10 @@
       const c2 = B.routeSansFinSeance.meteoCible(S.seance);
       S.meteo.cible = c2.phase; S.meteo.precipitationsNeige = c2.neige;
     }
-    if (S.fx) B.traces.liberer(S.fx);
     B.physique.liberer(co);
     B.physique.installer(co, sc.decor, { continuite });
-    S.fx = B.traces.creer(co.voitures.length, co.graine, co.physique.world);
+    if (S.fx && B.traces.changerMonde) B.traces.changerMonde(S.fx, co.physique.world);
+    else { if (S.fx) B.traces.liberer(S.fx); S.fx = B.traces.creer(co.voitures.length, co.graine, co.physique.world); }
     remplirPoses(S.cour, co); remplirPoses(S.prec, co);
   }
 
@@ -1626,14 +1761,19 @@
       const vivantes = [];
       for (const v of co.voitures) if (v.humain && !v.distant && v.sansFin && !v.sansFin.elimine) vivantes.push(v.etat.s);
       if (!vivantes.length) vivantes.push(co.joueur.etat.s);
-      const aBouge = B.routeSansFinSeance.avancer(S.seance, vivantes, DT);
+      const candidatPret = S.fluxSansFin ? S.fluxSansFin.pret : null;
+      const asyncOpts = S.fluxSansFin ? { pret: candidatPret, enPreparation: B.routeSansFinFlux.enPreparation(S.fluxSansFin) } : null;
+      const aBouge = B.routeSansFinSeance.avancer(S.seance, vivantes, DT, asyncOpts);
       if (co.sansFin && S.seance.checkpoints.length > co.sansFin.checkpoints.length) {
         for (let k = co.sansFin.checkpoints.length; k < S.seance.checkpoints.length; k++) {
           const cp = S.seance.checkpoints[k];
           co.sansFin.checkpoints.push({ id: k, s: cp.s, nom: cp.nom || ('checkpoint ' + (k + 1)) });
         }
       }
-      if (aBouge) reinstallerSansFin(S);
+      if (aBouge) {
+        const pretUtilise = candidatPret && S.seance.cPorteur === candidatPret.c ? (S.fluxSansFin.pret = null, candidatPret) : null;
+        reinstallerSansFin(S, pretUtilise);
+      }
     }
   }
 
@@ -3813,12 +3953,13 @@
 
   let curseurMaintien = 0, curseurMaintienRetro = 0;
   function rendreImage(S, alpha, dtImage) {
+    const cadenceDouce = S.type === 'sans-fin';
     if (scene?.decor?.lots?.length && rendu?.preparerLot) {
-      const nL = scene.decor.lots.length, pasL = Math.min(32, nL);
+      const nL = scene.decor.lots.length, pasL = Math.min(cadenceDouce ? 6 : 32, nL);
       for (let k = 0; k < pasL; k++) { rendu.preparerLot(curseurMaintien, false); curseurMaintien = (curseurMaintien + 1) % nL; }
     }
     if (retro.rendu?.preparerLot && retro.scene === scene && retro.nLots > 0) {
-      const nR = retro.nLots, pasR = Math.min(16, nR);
+      const nR = retro.nLots, pasR = Math.min(cadenceDouce ? 3 : 16, nR);
       for (let k = 0; k < pasR; k++) { retro.rendu.preparerLot(curseurMaintienRetro, false); curseurMaintienRetro = (curseurMaintienRetro + 1) % nR; }
     }
     appliquerCarte();
@@ -6842,6 +6983,7 @@
     S.imageFigee = horlogeReelle;
     if (S.type === 'vitrine') S.suiviRang = Math.floor(horlogeReelle / 18) % 4;
     const dtVu = tourne ? dtReel : 0, cam = rendreImage(S, alpha, dtVu);
+    if (tourne && S.fluxSansFin && B.routeSansFinFlux) B.routeSansFinFlux.avancerCadre(S.fluxSansFin, S, 1.5);
     // Les rappels RAF ignorés par le limiteur, les glaces et les images de chauffe
     // n'arrivent pas ici comme vue principale affichée. t reste réel, même au ralenti.
     if (demoVisible && cam && S.fpsDemo === fpsDemo && ecran === 'demo') B.cadence.releverImage(fpsDemo, t, cadence);

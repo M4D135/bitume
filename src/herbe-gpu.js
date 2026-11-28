@@ -11,13 +11,15 @@
 
   // Rectangle valide en coordonnées monde, bornes supérieures exclues. À un cut on
   // repart près de l'œil ; le shader ne lit jamais les anciennes cases hors rectangle.
-  function clipmap(decor, envoyer) {
+  function clipmap(decorInit, envoyer) {
+    let decor = decorInit;
     const rect = new Int32Array(4), tampon = new Float32Array(4096 * 8);
     const occupe = new Uint8Array(N*N), comptes = new Uint8Array(1024);
     const bas = new Float32Array(1024), haut = new Float32Array(1024);
     // L'eau littorale peut avoir une découpe supplémentaire hors des triangles :
     // dans ce cas garder la racine au point précisément interrogé.
-    const sonde = decor.niveauEauA ? {} : {rayonPied:0}, habitat = {};
+    let sonde = decor.niveauEauA ? {} : {rayonPied:0};
+    const habitat = {};
     let echantillons = 0;
     function remplir(x0, z0, x1, z1) {
       for (let x = x0; x < x1;) {
@@ -93,7 +95,12 @@
       }
       return n;
     }
-    return { maj, visibles, get echantillons() { return echantillons; } };
+    function reinitialiser(nouveauDecor) {
+      decor = nouveauDecor;
+      sonde = decor.niveauEauA ? {} : {rayonPied:0};
+      rect.fill(0); occupe.fill(0); comptes.fill(0);
+    }
+    return { maj, visibles, reinitialiser, get echantillons() { return echantillons; } };
   }
 
   const shader = `
@@ -288,6 +295,7 @@ fn ombrage(r:vec3f)->f32 {
       }
     };
     return {mesure, preparer(pub,s,m,q,reg,cockpit) { publicFx=pub; sources=s; meteo=m; parPied=q==='ultra'?3:2; regard=reg||null; enCockpit=!!cockpit; return fx; },
+      changerDecor(nd) { if (nd) map.reinitialiser(nd); },
       liberer() { uniform.destroy(); texture.destroy(); tuiles.destroy(); pipelines.clear(); } };
   }
   B.herbeGPU = {creer,clipmap};
