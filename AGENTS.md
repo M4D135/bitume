@@ -488,3 +488,16 @@ Au premier lancement d’une version, mesurer les performances sur le périphér
 - Prévoir Larche → Vinadio quand le parcours sera jouable, sans rebouclage à l’arrivée.
 - Pousser les demandes et leur progression sur Git. Fiche :
   `docs/reprise/FAUNE-PROCHE-DEMOS-CIRCUITS-2026-11-21.md`. État initial : planifié, pas encore réalisé.
+
+## Décisions de David — 28 novembre 2026, titre et futures voitures
+
+- Titre : « `BITUME` c'est bof ». Le nouveau nom parle de conduite, de route, de volant et de pilotage, pas de la
+  seule F1 : « rester sur juste notieon de conduite route volant etc pilotage, car je pense plus tard mettre d'autres
+  vehicules que des vehicules de F1 ». Choix en attente parmi les propositions du 28/11 : TRAJECTOIRE,
+  CONTRE-BRAQUAGE, TALON-POINTE, POINT DE CORDE, LACETS, GOMME, RUPTEUR, TOUR LANCÉ. Le changement ne touchera que le
+  titre visible (`<title>`, description, `.marque`, `VERSION.json` « titre », menus) ; `localStorage` `bitume.*`,
+  `globalThis.BITUME`, `dist/bitume.html` et `deposer.sh` gardent leur nom.
+- Futures voitures : une 205 GTI et une « Renalt 5 GT 3 » (sans doute la R5 GT Turbo, à faire confirmer). David :
+  « la 205 GTI et La R5 c'est pas à toi de les modéliser, chagpt s'en charge et les posera sur le dépot git ».
+  Aucun agent ne modélise ces voitures ; leur intégration attend que leurs modèles soient sur le dépôt et que
+  David la demande.
